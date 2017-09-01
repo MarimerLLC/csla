@@ -1,0 +1,117 @@
+<html><header><title>Minor enhancement request for Email Regex</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Minor enhancement request for Email Regex</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/7083.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>RobKraft posted on Thursday, June 11, 2009</h2>The Email Regex in CSLA Validation restricts the last qualifier of the email address to 2 to 4 characters.  Currently, two valid domain extensions are larger (.museum and .travel).  Also, in 2011? many more Top Level Domains of longer length may be added.<br /><br />http://www.eweek.com/c/a/Web-Services-Web-20-and-SOA/Firms-Unaware-of-Web-Domain-Changes-Survey-Says-806502/<br /><br />Could you change the Regex soon in preparation for the new TLDs?</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, June 12, 2009</h2><P>There are few things in CSLA that I regret more than having put any regular expressions into the framework. What a PITA.</P>
+<P>I'll add this to the wish list, but I must say that I am seriously considering making a breaking change to just remove the regular expressions (not the RegEx rule) from the framework so I don't have to mess with this sort of thing forever.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Tom_W replied on Saturday, June 13, 2009</h2>Just a thought...<br><br>Could the regular expressions be split out of the framework and into a separate library contrib project?&nbsp; That would at least mean all the hard work you'd put into them wouldn't be lost and would avoid everyone coding the same regex's.&nbsp; <br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Saturday, June 13, 2009</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>The RegEx rule method allows you to provide the regular
+expression. The 3 expressions in the framework are just there for convenience &#8211;
+and that&#8217;s the part that I think was a mistake.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Take email. There are a whole lot of expressions out there to validate
+email addresses. And they keep changing, and people argue over who&#8217;s is
+the best. There&#8217;s a whole little mini-religion over the email regex &#8211;
+not unlike the VB/C# debate, only it is all about a silly little text string&#8230;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Tom_W
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Saturday, June 13, 2009 7:07 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] Minor enhancement request for Email Regex<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Just a thought...<br>
+<br>
+Could the regular expressions be split out of the framework and into a separate
+library contrib project?&nbsp; That would at least mean all the hard work you'd
+put into them wouldn't be lost and would avoid everyone coding the same
+regex's.&nbsp; <br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Tom_W replied on Saturday, June 13, 2009</h2>LOL, not another one... who'd like to enter into a debate on singular or plural table names while we're at it... (please, nobody do that!)<br><br>Sorry, all I meant was why not pull the 3 regexs out of the framework and stick them in a separate file that people can use as a basis for their regex's, that way anyone who wants to change them can do so (and most importantly that 'anyone' is not you!)<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RobKraft replied on Friday, June 19, 2009</h2>I agree with Tom_W, let the community do it.  We already have other Regex of our own that we've added and using our own email Regex instead of the CSLA Regex is easy.
+I just wanted to make sure you were aware of the upcoming domain changes in case you felt maintaining that Regex was important.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Saturday, June 20, 2009</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I am very glad you brought up the issue &#8211; I didn&#8217;t
+know about it.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>And I appreciate the feedback regarding whether to keep the
+built-in expressions.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> RobKraft
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Friday, June 19, 2009 8:24 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: Minor enhancement request for Email Regex<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>I agree with Tom_W, let the community do it. We already have
+other Regex of our own that we've added and using our own email Regex instead
+of the CSLA Regex is easy. I just wanted to make sure you were aware of the
+upcoming domain changes in case you felt maintaining that Regex was important.<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>skagen00 replied on Monday, June 22, 2009</h2>Seems to me the whole notion of what RegEx is appropriate for e-mail/etc and maintaining a listing of various RegEx expressions for each purpose is entirely agnostic and separate from CSLA... <br /><br />There are entire sites out there dedicated towards the goal of educating on and providing examples for regular expressions.. one is http://www.regular-expressions.info/ -- there was another one which was a bit more to the point and provided for a rating system on various peoples' RegEx expressions. Not to say some people might not have interest in maintaining a RegEx list here - but maybe that need is already being served. <br /><br />Also, if I remember right, Rocky's regular expression on E-mail doesn't allow an empty string to pass - so I bet most people aren't even using that one... anyways, it would be a pretty easy breaking change to adjust to I would imagine. <br /><br />Chris<br /><br /></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

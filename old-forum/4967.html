@@ -1,0 +1,66 @@
+<html><header><title>WCF Authorization</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>WCF Authorization</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4967.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Alexanderdt posted on Thursday, June 12, 2008</h2>Hi Rocky,<br><br>I am fairly new to wcf, I have been trying to get this WCF up and running with my BusinessObjects Class where I do a Normal call "Products productList = Products.GetProducts();".<br>I have set the "CslaDataPortalProxy" to "Csla.DataPortalClient.WcfProxy, Csla" and I am able to call my BusinessObject as Normal through the Wcf service. I have a problem with the Authorization though,<br>when i set the &lt;add key="CslaAuthentication" value="Csla" /&gt; I get an error: "DataPortal.Fetch failed (Principal must be of type BusinessPrincipal, not System.Security.Principal.GenericPrincipal)"<br>So I set it to use Windows Authentication and that works 100%, but now I want to use this WCF service over the network and if I leave the Authentication on Windows I get an error: "The caller was not authenticated by the service."<br><br>Any form of help would be appreciated.<br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, June 12, 2008</h2><P>If you want to use custom authentication you should read Chapter 12, or the <EM>CSLA .NET Version 2.1 Handbook</EM> for details. It is pretty easy, but you need to configure both client and server to use the same CSLA authentication mode.</P>
+<P>If you want to use Windows authentication then you again must configure CSLA to use the same CSLA authentication mode on client and server. But you also must configure IIS, ASP.NET and/or WCF properly, so you get both authentication and impersonation.</P>
+<P><A href="http://www.codeplex.com/wcfsecurityguide">http://www.codeplex.com/wcfsecurityguide</A>&nbsp;should be helpful in this regard.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Alexanderdt replied on Friday, June 13, 2008</h2>Thanx Rocky,<br><br>At the end I changed by binding to "basicHttpBinding" and it worked 100% over the Network. I couldn't get it up and running on "<span id="ctl00_ctl00_Content_TabContentPanel_Content_wikiSourceLabel">wsHttpBinding", but I will do some more investigation on how to get that right.<br><br>Alex<b><br></b></span></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, June 13, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Ha! I have done exactly the same thing a couple times &#8211;
+not having time in a given phase to fight with WCF, we backed off to
+basicHttpBinding and then allocated more time in a later phase to figure out
+the WCF configuration.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>It just shouldn&#8217;t be that hard&#8230;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Alexanderdt
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Friday, June 13, 2008 7:09 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] WCF Authorization<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Thanx Rocky,<br>
+<br>
+At the end I changed by binding to &quot;basicHttpBinding&quot; and it worked
+100% over the Network. I couldn't get it up and running on
+&quot;wsHttpBinding&quot;, but I will do some more investigation on how to get
+that right.<br>
+<br>
+Alex<b><br>
+</b><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

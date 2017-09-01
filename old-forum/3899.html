@@ -1,0 +1,154 @@
+<html><header><title>Validation rules not working in release mode</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Validation rules not working in release mode</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3899.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonM posted on Thursday, November 15, 2007</h2><P>I have a weird issue with a simple validation rule.&nbsp; I have a custom StringRequired rule.&nbsp; For some reason it works great in Debug and Release mode when run from VS2005.&nbsp; However, when I run the release version outside of VS the rule always fails!&nbsp; The only work around is to add code into the 'set' block on the business property that manually calls the rule, 'ValidationRules.CheckRules("ProperyA")'</P>
+<P>Does anyone have any idea on this one?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, November 15, 2007</h2><P>Are you using PropertyHasChanged() or PropertyHasChanged("PropertyA")?</P>
+<P>If the former, try the latter - you may be getting hit bit a JIT compiler optimization. And if the former, you <EM>are</EM> using the NoInlining attribute right?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonM replied on Friday, November 16, 2007</h2><P>Rocky,</P>
+<P>I'm using the former, the PropertyHasChanged().&nbsp; Also, I have no idea what the NoInlining attribute is.&nbsp; </P>
+<P>Jon</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, November 16, 2007</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>In that case I suggest you switch all your CanReadProperty(),
+CanWriteProperty() and PropertyHasChanged() calls to use the overloads that
+require the property name be passed as a parameter. That should address your
+issue.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> JonM
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Friday, November 16, 2007 7:39 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] Validation rules not working in release mode<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Rocky,<o:p></o:p></p>
+
+<p>I'm using the former, the PropertyHasChanged().&nbsp; Also, I have no idea
+what the NoInlining attribute is.&nbsp; <o:p></o:p></p>
+
+<p>Jon<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonM replied on Friday, November 16, 2007</h2>Okay.&nbsp; Thanks.&nbsp; So what does the no-inlining attribute do?</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, November 16, 2007</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>The attribute prevents the JIT compiler from using an
+optimization called &#8220;inlining&#8221;, where the compiler basically does a
+copy-paste operation on your code to merge code from one method directly into
+any code that calls the method.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> JonM
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Friday, November 16, 2007 8:24 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: Validation rules not working in release
+mode<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Okay.&nbsp; Thanks.&nbsp; So what does the no-inlining
+attribute do?<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>KKoteles replied on Friday, November 16, 2007</h2><P>JonM,</P>
+<P>Follow this thread <A HREF="/forums/thread/5749.aspx">http://forums.lhotka.net/forums/thread/5749.aspx</A>&nbsp;it explains in more detail.</P>
+<P>Ken</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Friday, November 16, 2007</h2><P>The JIT compiler takes the code in one method and writes it in-line with the calling code so that there is 1 method, not 2.</P>
+<P>When using the no-inlining attribute the JIT compiler skips that optimization.</P>
+<P>Rocky's advice to use the overload is good for 2 reasons. </P>
+<P>1. It solves your poblem.</P>
+<P>2. It skips the stack trace method which could be a perofrmance hit - and may have other issues in the future. It also makes it clear what you are doing. </P>
+<P>This is extremely easy to use with a code generator. I strongly recommend it.</P>
+<P>Joe</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonM replied on Friday, November 16, 2007</h2>Thanks for the help everyone.&nbsp; I was really freaked out by this issue.&nbsp; What was really weird is that it worked fine in release mode as long as it was launched from VS.&nbsp; However, if the program was launched directly the rules went crazy.&nbsp; Thanks again.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>LDSK replied on Thursday, April 22, 2010</h2><p>Hi there,</p>
+<p>Did you get resolution for your issue?</p>
+<p>I am facing the same problem and i have tried both solutions suggested by Rocky.</p>
+<p>One to use PropertyhasChanged() and Noinling, other to use PropertyHasChanged(&quot;Commenttext&quot;).</p>
+<p>I am also using StringRequired validation rule from CSLA for the property &quot;commentText&quot;.</p>
+<p>thanks in advance. Will really appreaciate a reply to this.</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, April 22, 2010</h2><p>The whole NoInlining concept, along with the overloads of methods that automatically determine property names has been obsolete now for several years. Any current version of CSLA has those methods actually marked as obsolete, so you should get compiler errors (or at least warnings) for using them.</p>
+<p>They are broken. Do not use them.</p>
+<p>The reason I switched away from them a few years ago was because the 64 bit JIT compiler in .NET uses other optimizations that can&#39;t be disabled. The whole automatic detection of property names was clearly not something .NET would support.</p>
+<p>The only safe answer is to switch to the overloads of CanReadProperty/CanWriteProperty/etc that take an explicit property name. Remember that the strings and property names are case-sensitive.</p>
+<p>Or move to CSLA 3.5 or hgiher and use managed properties, which do all that work for you - saving you around 50% of the code you used to write and maintain by hand.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>LDSK replied on Monday, May 10, 2010</h2><p>Thanks Rocky. We are not currently upgrading to the newer version of CSLA. I will keep this in mind though. </p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Saturday, April 24, 2010</h2><p>In addition to Rocky&#39;s advice you may want to check for case sensitivity.</p>
+<p>Property &quot;commentText&quot; should call PropertyHasChanged(&quot;commentText&quot;) and not PropertyHasChanged(&quot;Commenttext&quot;).</p>
+<p>Joe</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>LDSK replied on Monday, May 10, 2010</h2><p>I implemented the change, then From VS, I set my mode both on my windows app and my Business layer (both in teh same solution), = Release.&nbsp; I run the solution in release mode, i test my code change and it seems to have fixed the issue.</p>
+<p>I now, take the complied version to put it into the test server, and do the same test there and see that this fails. I still get the same issue described in this. What could i be doing wrong?</p>
+<p>I have double checked that i have release mode set. </p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, May 10, 2010</h2><p>Did you switch your code to explictly provide the property name on all CanReadProperty, CanWriteProperty and PropertyHasChanged method calls? </p>
+<p>So you are no longer using the overloads that automatically detect the property names (because they don&#39;t work on 64 bit machines)?</p>
+<p>And you are sure that the spelling and capitalization of the property names is <em>exactly</em> the same as the property itself?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>LDSK replied on Monday, May 10, 2010</h2><p>thanks for getting back.</p>
+<p>Yes, I switched my code to explicity call out the property name - propertyhaschanged(&quot;propertya&quot;).</p>
+<p>&nbsp;I checked the property names, it is spelt correctly and i understand it is case sensitive.</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, May 10, 2010</h2><p>In that case I have no idea why it wouldn&#39;t work in release mode.</p>
+<p>You can override PropertyHasChanged - try overriding it and throwing an exception or writing a trace log statement - basically I want you to see if that method is actually being invoked in release mode.</p>
+<p>The only thing I can think, is that you have an exception being thrown from one of your rules. An exception that is only occuring in your release environment. And that exception is never seen because data binding hides it.</p>
+<p>In other words, the rules are actually running, but one or more are failing and data binding is hiding that fact from you.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>LDSK replied on Monday, May 10, 2010</h2><p>thanks. Let me experiement your thougts.</p>
+<p>The weird thing is that i get a blank validation message box.</p>
+<p>&quot;You have to correct teh following errors and try again&quot;. but there are no errors listed. Thats why i thought the code change would fix this to begin with.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, May 10, 2010</h2><p>What is displaying this validation message box? Your code?</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,26 @@
+<html><header><title>Setting Up Web Service Host with Windows Security, Help!</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Setting Up Web Service Host with Windows Security, Help!</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4231.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Joey posted on Thursday, January 24, 2008</h2><P>I am having difficulty setting up proper security around the web service data portal.&nbsp;If I allow anonymous access in IIS, everything works great using csla, however, that will not fly in my environment so I need to figure out security.&nbsp; I have read through Rocky's book(approx 8hrs worth), reviewed&nbsp;the sample app, and searched the forums, yet&nbsp;I still have not figure this problem out.&nbsp; However, from reading the forums I get a feeling that alot of newbies have ancountered similiar problems around a "known issue"; but I am not sure what version&nbsp;of the csla they were working on and&nbsp;what the exact nature of the known issue was.&nbsp; So, here is what I am encountering:</P>
+<OL>
+<LI>Win client, web service data portal, windows authentication.&nbsp; </LI>
+<LI>Setup web service on local host to do integrated, digest</LI>
+<LI>csla version 2.1.4-070223</LI>
+<LI><FONT color=#0000ff size=2>
+<P><FONT color=#000000>In Win Client config</FONT>: &lt;</FONT><FONT color=#a31515 size=2>add</FONT><FONT color=#0000ff size=2> </FONT><FONT color=#ff0000 size=2>key</FONT><FONT color=#0000ff size=2>=</FONT><FONT size=2>"</FONT><FONT color=#0000ff size=2>CslaAuthentication</FONT><FONT size=2>"</FONT><FONT color=#0000ff size=2> </FONT><FONT color=#ff0000 size=2>value</FONT><FONT color=#0000ff size=2>=</FONT><FONT size=2>"</FONT><FONT color=#0000ff size=2>Windows</FONT><FONT size=2>"</FONT><FONT color=#0000ff size=2> /&gt;</FONT></P></LI>
+<LI>
+<P><FONT color=#0000ff size=2><FONT color=#000000>In Web Data portal&nbsp;proxy config</FONT>: <FONT color=#0000ff size=2>&lt;</FONT><FONT color=#a31515 size=2>add</FONT><FONT color=#0000ff size=2> </FONT><FONT color=#ff0000 size=2>key</FONT><FONT color=#0000ff size=2>=</FONT><FONT color=#000000 size=2>"</FONT><FONT color=#0000ff size=2>CslaAuthentication</FONT><FONT color=#000000 size=2>"</FONT><FONT color=#0000ff size=2> </FONT><FONT color=#ff0000 size=2>value</FONT><FONT color=#0000ff size=2>=</FONT><FONT color=#000000 size=2>"</FONT><FONT color=#0000ff size=2>Windows</FONT><FONT color=#000000 size=2>"</FONT><FONT color=#0000ff size=2>/&gt;</FONT></FONT></P></LI>
+<LI>
+<P><FONT size=2><FONT color=#000000 size=2>In Form_Load of test&nbsp;form in win client:</FONT></FONT><FONT color=#0000ff size=2>&nbsp;AppDomain.CurrentDomain.SetPrincipalPolicy( _<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; System.Security.Principal.PrincipalPolicy.WindowsPrincipal)</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2></P></LI>
+<LI></FONT></FONT>&nbsp;When I do a test fetch (unit tested data access&nbsp;and works with anonymous security) I recieve a 401 access denied.&nbsp; </LI></OL>
+<P>I am not sure what I am doing wrong but I am stuck and need to push forward.&nbsp; I am setting up the application skeleton at this point as a proof of concept in using the csla in our environment.&nbsp; I would like to use winodws authentication and a custom role based authentication (hybrid); but for now I simply want to get the basic window security working.&nbsp; I have worked in .net web apps for 6yrs but never has to tackle the security end of things.&nbsp; Any help would be appreciated. Thanks!</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Joey replied on Wednesday, February 13, 2008</h2><P>I solved my problem by adding the UseDefaultCredentials equal to true to the WebServicesProxy Facoty Function, line 19:</P>
+<P>&nbsp;Public Class WebServicesProxy</P>
+<P>&nbsp;&nbsp;&nbsp; Implements DataPortalClient.IDataPortalProxy</P>
+<P>&nbsp;&nbsp;&nbsp; Private Function GetPortal() As WebServiceHost.WebServicePortal</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Dim wsvc As New WebServiceHost.WebServicePortal<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;wsvc.Url = ApplicationContext.DataPortalUrl.ToString<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<STRONG>wsvc.UseDefaultCredentials = True</STRONG></P>
+<P><STRONG>....</STRONG></P>
+<P>This solved the problem, though I do not like having to edit the CSLA core to do it.&nbsp; If someone has a better solution please provide.</P>
+<P>Best,</P>
+<P>Joey</P>
+<P>&nbsp;</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

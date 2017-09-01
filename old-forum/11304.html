@@ -1,0 +1,23 @@
+<html><header><title>Csla 4.3.10 and Gizmox Visual WebGUI 6.4.0d</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Csla 4.3.10 and Gizmox Visual WebGUI 6.4.0d</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11304.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>tiago posted on Sunday, April 15, 2012</h2><p>For those that aren&#39;t familiar with Visual WebGUI, it&#39;s a development environment for web that resembles Windows Forms as much as it can. It kinda reminds GWT (Google Web Toolkit) as one doesn&#39;t have to know AJAX exists, neither we need to care about the dread triology javascript/CSS/HTML or browser idiosyncrasies. Just C# (or VB) and forms and controls. As I said before, much like Windows Forms. You get the same programming model and he same controls (some of them are improved), etc.</p>
+<p>So how does Csla plays in this environment? If plays well, even better if you port Csla.Windows to Csla.WebGUI.</p>
+<p>It&#39;s not fully tested. I&#39;m trying to talk JonnyBee into publishing it on <a href="http://cslacontrib.codeplex.com/">CslaContrib</a>. In the mean time, you can grab the attached source and give it a shot.</p>
+<p>[EDIT]&nbsp;Attached file with source was deleted. Updated source, library and sample available at <a href="https://cslacontrib.codeplex.com/releases">https://cslacontrib.codeplex.com/releases</a>. You can use NuGet&nbsp;to&nbsp;install the <strong>CslaContrib-WebGUI</strong> package.</p>
+<p>You should build it against Csla 4.3.10 and Visual WebGUI 6.4.0d (two DLL, Gizmox.WebGUI.Common.dll and Gizmox.WebGUI.Forms.dll that aren&#39;t included).</p>
+<p><strong>Differences to Csla.Windows:</strong></p>
+<p>1) BusyAnimation is missing</p>
+<p>2) BindingSourceHelper.cs showed a problem in GetChildBindingSources method that forced me to replace</p>
+<p style="padding-left:30px;">foreach (System.ComponentModel.Component component in container.Components)</p>
+<p>by</p>
+<p style="padding-left:30px;">foreach (IComponent component in container.Components)</p>
+<p>3) all MessageBox.Show have extra parameters for</p>
+<ul>
+<li>objEventHandler:<em> An System.EventHandler function</em></li>
+<li>blnShowModalMask: <em>Determines whether a form has a modal mask when modal</em></li>
+</ul>
+<p>that are needed in order to get the usual WinForms dialog behaviour (needed on CslaActionExtender)</p>
+<p>4) changes to CslaActionExtender as proposed&nbsp;on <a href="http://forums.lhotka.net/forums/t/8009.aspx">this forum post </a>.</p>
+<p>&lt;Edit&gt;</p>
+<p>Forgot to mention:</p>
+<p>1) It includes BindingSourceExtensions.cs that is part of CslaContrib.</p>
+<p>2) It builds on the Server folder as it&#39;s a server technology (just like ASP.NET).</p>
+<p>&lt;/Edit&gt;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

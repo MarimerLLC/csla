@@ -1,0 +1,11 @@
+<html><header><title>Version 4.6.001 prerelease</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Version 4.6.001 prerelease</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/12893.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka posted on Thursday, June 04, 2015</h2><p>I&#39;ve put an early prerelease of version 4.6 on NuGet. Details are here:</p>
+<p><span style="font-size:x-small;">
+<p>https://github.com/MarimerLLC/csla/releases/tag/v4.6.001</p>
+<p>The primary change (and point of risk) is that I consolidated nearly all the code files into a set of shared projects, adding some compiler directives to address any outstanding conflicts between the old duplicate code files.</p>
+<p>The upside of this is that maintenance of CSLA will now be much easier, as will adding support for new platforms or version of .NET over time.</p>
+<p>The downside is that I may have introduced bugs if I got some of the compiler directives wrong - especially likely in the Android and iOS code (the areas most affected by the duplicate code).</p>
+<p>If you find any issues please add issues to GitHub with details on what you encounter - thanks!</p>
+<p>https://github.com/MarimerLLC/csla/issues</p>
+</span>
+<p>&nbsp;</p>
+</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Friday, June 05, 2015</h2><p>Sounds like a great step forward!&nbsp; I think we&#39;re going to be converting our business layers to be Shared source projects as well.&nbsp; Seems like that will be the easiest way to use the BOs in the various client environments.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

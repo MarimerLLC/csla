@@ -1,0 +1,233 @@
+<html><header><title>CSLA 4.2 Polymorphism</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA 4.2 Polymorphism</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10976.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Russ posted on Monday, December 12, 2011</h2><p class="MsoNoSpacing" style="margin:0in 0in 0pt;"><span style="font-size:small;"><span style="font-family:Calibri;">Hi everyone,</span></span></p>
+<p class="MsoNoSpacing" style="margin:0in 0in 0pt;"><span style="font-family:Calibri;font-size:small;">&nbsp;</span></p>
+<p class="MsoNoSpacing" style="margin:0in 0in 0pt;"><span style="font-size:small;"><span style="font-family:Calibri;">I am using CSLA 4.2.1, bxf, MVVM, SL4 and have created a LineItem editable child object that contains a child list that is lazy loaded. The class signature is:</span></span></p>
+<p class="MsoNoSpacing" style="margin:0in 0in 0pt;"><span style="font-family:Calibri;font-size:small;">&nbsp;</span></p>
+<p class="MsoNormal" style="line-height:normal;margin:0in 0in 0pt;mso-layout-grid-align:none;"><span style="font-family:Consolas;color:blue;font-size:9.5pt;">public</span><span style="font-family:Consolas;font-size:9.5pt;"> <span style="color:blue;">class</span> <span style="color:#2b91af;">ChildItemROL</span> : <span style="color:#2b91af;">ReadOnlyListBase</span>&lt;<span style="color:#2b91af;">ChildItemROL</span>, <span style="color:#2b91af;">ChildItem1ROC</span>&gt; { }</span></p>
+<p class="MsoNormal" style="line-height:normal;margin:0in 0in 0pt;mso-layout-grid-align:none;"><span style="font-family:Consolas;font-size:9.5pt;">&nbsp;</span></p>
+<p class="MsoNoSpacing" style="margin:0in 0in 0pt;"><span style="font-size:small;"><span style="font-family:Calibri;">This works as expected. The problem is that the type of LineItem determines the type of child list to be loaded. Here is an example of a few Child Item read only child classes:</span></span></p>
+<p class="MsoNoSpacing" style="margin:0in 0in 0pt;"><span style="font-size:small;"><span style="font-family:Calibri;"><span style="mso-spacerun:yes;">&nbsp;</span></span></span></p>
+<p class="MsoNormal" style="line-height:normal;margin:0in 0in 0pt;mso-layout-grid-align:none;"><span style="font-family:Consolas;color:blue;font-size:9.5pt;">public</span><span style="font-family:Consolas;font-size:9.5pt;"> <span style="color:blue;">class</span> <span style="color:#2b91af;">ChildItem1ROC</span> : <span style="color:#2b91af;">ReadOnlyBase</span>&lt;<span style="color:#2b91af;">ChildItem1ROC</span>&gt; { }</span></p>
+<p class="MsoNormal" style="line-height:normal;margin:0in 0in 0pt;mso-layout-grid-align:none;"><span style="font-family:Consolas;color:blue;font-size:9.5pt;">public</span><span style="font-family:Consolas;font-size:9.5pt;"> <span style="color:blue;">class</span> <span style="color:#2b91af;">ChildItem2ROC</span> : <span style="color:#2b91af;">ReadOnlyBase</span>&lt;<span style="color:#2b91af;">ChildItem2ROC</span>&gt; { }</span></p>
+<p class="MsoNormal" style="line-height:normal;margin:0in 0in 0pt;mso-layout-grid-align:none;"><span style="font-family:Consolas;color:blue;font-size:9.5pt;">public</span><span style="font-family:Consolas;font-size:9.5pt;"> <span style="color:blue;">class</span> <span style="color:#2b91af;">ChildItem3ROC</span> : <span style="color:#2b91af;">ReadOnlyBase</span>&lt;<span style="color:#2b91af;">ChildItem3ROC</span>&gt; { }</span></p>
+<p class="MsoNormal" style="line-height:normal;margin:0in 0in 0pt;mso-layout-grid-align:none;"><span style="font-family:Consolas;font-size:9.5pt;">&nbsp;</span></p>
+<p class="MsoNoSpacing" style="margin:0in 0in 0pt;"><span style="font-size:small;"><span style="font-family:Calibri;">I tried to implement polymorphism using the following blog from Rocky:</span></span></p>
+<p class="MsoNoSpacing" style="margin:0in 0in 0pt;"><span style="font-family:Calibri;font-size:small;">&nbsp;</span></p>
+<p class="MsoNoSpacing" style="margin:0in 0in 0pt;"><a href="http://www.lhotka.net/Article.aspx?id=b8515cd9-7f8e-43df-9efd-cd958dfdc21a"><span style="font-family:Calibri;color:#0000ff;font-size:small;">http://www.lhotka.net/Article.aspx?id=b8515cd9-7f8e-43df-9efd-cd958dfdc21a</span></a></p>
+<p class="MsoNoSpacing" style="margin:0in 0in 0pt;"><span style="font-family:Calibri;font-size:small;">&nbsp;</span></p>
+<p class="MsoNoSpacing" style="margin:0in 0in 0pt;"><span style="font-size:small;"><span style="font-family:Calibri;">I have spent a week tinkering with this and have not been able to get it to work.<span style="mso-spacerun:yes;">&nbsp; </span>I first tried changing the read only list signature to:</span></span></p>
+<p class="MsoNoSpacing" style="margin:0in 0in 0pt;"><span style="font-family:Calibri;font-size:small;">&nbsp;</span></p>
+<p class="MsoNormal" style="line-height:normal;margin:0in 0in 0pt;mso-layout-grid-align:none;"><span style="font-family:Consolas;color:blue;font-size:9.5pt;">public</span><span style="font-family:Consolas;font-size:9.5pt;"> <span style="color:blue;">class</span> <span style="color:#2b91af;">ChildItemROL</span> : <span style="color:#2b91af;">ReadOnlyListBase</span>&lt;<span style="color:#2b91af;">ChildItemROL</span>, Csla.Core.<span style="color:#2b91af;">IReadOnlyObject</span>&gt; { }</span></p>
+<p class="MsoNormal" style="line-height:normal;margin:0in 0in 0pt;mso-layout-grid-align:none;"><span style="font-family:Consolas;font-size:9.5pt;">&nbsp;</span></p>
+<p class="MsoNoSpacing" style="margin:0in 0in 0pt;"><span style="font-size:small;"><span style="font-family:Calibri;">This will compile and appears to load the correct child data by it is unable to pass it across the data portal. I get the following error:</span></span></p>
+<p class="MsoNoSpacing" style="margin:0in 0in 0pt;"><span style="font-family:Calibri;font-size:small;">&nbsp;</span></p>
+<p class="MsoNoSpacing" style="margin:0in 0in 0pt;"><b style="mso-bidi-font-weight:normal;"><span style="font-size:small;"><span style="font-family:Calibri;">Cannot serialize collections not of type IMobileObject</span></span></b></p>
+<p class="MsoNoSpacing" style="margin:0in 0in 0pt;"><span style="font-family:Calibri;font-size:small;">&nbsp;</span></p>
+<p class="MsoNoSpacing" style="margin:0in 0in 0pt;"><span style="font-size:small;"><span style="font-family:Calibri;">So I created my own empty interface that implements the IReadOnlyObject and IMobileObject interfaces:</span></span></p>
+<p class="MsoNoSpacing" style="margin:0in 0in 0pt;"><span style="font-family:Calibri;font-size:small;">&nbsp;</span></p>
+<p class="MsoNormal" style="line-height:normal;margin:0in 0in 0pt;mso-layout-grid-align:none;"><span style="font-family:Consolas;color:blue;font-size:9.5pt;">public</span><span style="font-family:Consolas;font-size:9.5pt;"> <span style="color:blue;">interface</span> <span style="color:#2b91af;">IChildItemROC</span> : <span style="color:#2b91af;">IReadOnlyObject</span>, <span style="color:#2b91af;">IMobileObject </span>{ }</span></p>
+<p class="MsoNormal" style="line-height:normal;margin:0in 0in 0pt;mso-layout-grid-align:none;"><span style="font-family:Consolas;font-size:9.5pt;">&nbsp;</span></p>
+<p class="MsoNoSpacing" style="margin:0in 0in 0pt;"><span style="font-size:small;"><span style="font-family:Calibri;">Then I changed my read only list signature to:</span></span></p>
+<p class="MsoNoSpacing" style="margin:0in 0in 0pt;"><span style="font-family:Calibri;font-size:small;">&nbsp;</span></p>
+<p class="MsoNormal" style="line-height:normal;margin:0in 0in 0pt;mso-layout-grid-align:none;"><span style="font-family:Consolas;color:blue;font-size:9.5pt;">public</span><span style="font-family:Consolas;font-size:9.5pt;"> <span style="color:blue;">class</span> <span style="color:#2b91af;">ChildItemROL</span> : <span style="color:#2b91af;">ReadOnlyListBase</span>&lt;<span style="color:#2b91af;">ChildItemROL</span>, <span style="color:#2b91af;">IChildItemROC</span>&gt;</span></p>
+<p class="MsoNormal" style="line-height:normal;margin:0in 0in 0pt;mso-layout-grid-align:none;"><span style="font-family:Consolas;font-size:9.5pt;">&nbsp;</span></p>
+<p class="MsoNoSpacing" style="margin:0in 0in 0pt;"><span style="font-size:small;"><span style="font-family:Calibri;">and the child item classes to:</span></span></p>
+<p class="MsoNoSpacing" style="margin:0in 0in 0pt;"><span style="font-family:Calibri;font-size:small;">&nbsp;</span></p>
+<p class="MsoNormal" style="line-height:normal;margin:0in 0in 0pt;mso-layout-grid-align:none;"><span style="font-family:Consolas;color:blue;font-size:9.5pt;">public</span><span style="font-family:Consolas;font-size:9.5pt;"> <span style="color:blue;">class</span> <span style="color:#2b91af;">ChildItem1ROC</span> : <span style="color:#2b91af;">ReadOnlyBase</span>&lt;<span style="color:#2b91af;">ChildItem1ROC</span>&gt;, <span style="color:#2b91af;">IChildItemROC</span> { }</span></p>
+<p class="MsoNormal" style="line-height:normal;margin:0in 0in 0pt;mso-layout-grid-align:none;"><span style="font-family:Consolas;color:blue;font-size:9.5pt;">public</span><span style="font-family:Consolas;font-size:9.5pt;"> <span style="color:blue;">class</span> <span style="color:#2b91af;">ChildItem2ROC</span> : <span style="color:#2b91af;">ReadOnlyBase</span>&lt;<span style="color:#2b91af;">ChildItem2ROC</span>&gt;, <span style="color:#2b91af;">IChildItemROC</span> { }</span></p>
+<p class="MsoNormal" style="line-height:normal;margin:0in 0in 0pt;mso-layout-grid-align:none;"><span style="font-family:Consolas;color:blue;font-size:9.5pt;">public</span><span style="font-family:Consolas;font-size:9.5pt;"> <span style="color:blue;">class</span> <span style="color:#2b91af;">ChildItem3ROC</span> : <span style="color:#2b91af;">ReadOnlyBase</span>&lt;<span style="color:#2b91af;">ChildItem3ROC</span>&gt;, <span style="color:#2b91af;">IChildItemROC</span> { }</span></p>
+<p class="MsoNormal" style="line-height:normal;margin:0in 0in 0pt;mso-layout-grid-align:none;"><span style="font-family:Consolas;font-size:9.5pt;">&nbsp;</span></p>
+<p class="MsoNoSpacing" style="margin:0in 0in 0pt;"><span style="font-size:small;"><span style="font-family:Calibri;">It now runs without any error and appears to load the correct data however there is something missing that is causing the binding to not be notified that the data has completed loading.</span></span></p>
+<p class="MsoNoSpacing" style="margin:0in 0in 0pt;"><span style="font-family:Calibri;font-size:small;">&nbsp;</span></p>
+<p class="MsoNoSpacing" style="margin:0in 0in 0pt;"><span style="font-size:small;"><span style="font-family:Calibri;">Am I on the right track here or have I ventured completely off the path?</span></span></p>
+<p class="MsoNoSpacing" style="margin:0in 0in 0pt;"><span style="font-family:Calibri;font-size:small;">&nbsp;</span></p>
+<p class="MsoNoSpacing" style="margin:0in 0in 0pt;"><span style="font-size:small;"><span style="font-family:Calibri;">Thanks</span></span></p>
+<p class="MsoNoSpacing" style="margin:0in 0in 0pt;"><span style="font-size:small;"><span style="font-family:Calibri;">Russ</span></span></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Russ replied on Monday, December 12, 2011</h2><p><span style="font-size:small;"><span style="font-family:Calibri;">
+<p class="MsoNoSpacing" style="margin:0in 0in 0pt;">Still struggling with this one. Rocky&rsquo;s &ldquo;Creating a collection with polymorphic child objects&ldquo; blog states that &ldquo;This interface must derive from Csla.Core.IEditableBusinessObject.&rdquo; So I have replaced the ReadOnly classes with Business classes as follows:</p>
+<p class="MsoNoSpacing" style="margin:0in 0in 0pt;">&nbsp;</p>
+<p class="MsoNormal" style="line-height:normal;margin:0in 0in 0pt;mso-layout-grid-align:none;"><span style="font-family:Consolas;color:blue;font-size:9.5pt;">public</span><span style="font-family:Consolas;font-size:9.5pt;"> <span style="color:blue;">interface</span> <span style="color:#2b91af;">IChildItemEC</span> : <span style="color:#2b91af;">IEditableBusinessObject</span>, <span style="color:#2b91af;">IMobileObject</span> { }<span style="color:#2b91af;"></span></span></p>
+<p class="MsoNoSpacing" style="margin:0in 0in 0pt;">&nbsp;</p>
+<p class="MsoNormal" style="line-height:normal;margin:0in 0in 0pt;mso-layout-grid-align:none;"><span style="font-family:Consolas;color:blue;font-size:9.5pt;">public</span><span style="font-family:Consolas;font-size:9.5pt;"> <span style="color:blue;">class</span> <span style="color:#2b91af;">ChildItemECL</span> : <span style="color:#2b91af;">BusinessListBase</span>&lt;<span style="color:#2b91af;">ChildItemECL</span>, <span style="color:#2b91af;">IChildItemEC</span>&gt;</span></p>
+<p class="MsoNoSpacing" style="margin:0in 0in 0pt;">&nbsp;</p>
+<p class="MsoNormal" style="line-height:normal;margin:0in 0in 0pt;mso-layout-grid-align:none;"><span style="font-family:Consolas;color:blue;font-size:9.5pt;">public</span><span style="font-family:Consolas;font-size:9.5pt;"> <span style="color:blue;">class</span> <span style="color:#2b91af;">ChildItem1EC</span> : <span style="color:#2b91af;">BusinessBase</span>&lt;<span style="color:#2b91af;">ChildItem1EC</span>&gt;, <span style="color:#2b91af;">IChildItemEC</span> { }</span></p>
+<p class="MsoNormal" style="line-height:normal;margin:0in 0in 0pt;mso-layout-grid-align:none;"><span style="font-family:Consolas;color:blue;font-size:9.5pt;">public</span><span style="font-family:Consolas;font-size:9.5pt;"> <span style="color:blue;">class</span> <span style="color:#2b91af;">ChildItem2EC</span> : <span style="color:#2b91af;">BusinessBase</span>&lt;<span style="color:#2b91af;">ChildItem2EC</span>&gt;, <span style="color:#2b91af;">IChildItemEC</span> { }</span></p>
+<p class="MsoNormal" style="line-height:normal;margin:0in 0in 0pt;mso-layout-grid-align:none;"><span style="font-family:Consolas;color:blue;font-size:9.5pt;">public</span><span style="font-family:Consolas;font-size:9.5pt;"> <span style="color:blue;">class</span> <span style="color:#2b91af;">ChildItem3EC</span> : <span style="color:#2b91af;">BusinessBase</span>&lt;<span style="color:#2b91af;">ChildItem3EC</span>&gt;, <span style="color:#2b91af;">IChildItemEC</span> { }</span></p>
+<p class="MsoNoSpacing" style="margin:0in 0in 0pt;">&nbsp;</p>
+<p class="MsoNoSpacing" style="margin:0in 0in 0pt;">I get exactly the same results; the UI is not updated after the data has been loaded.</p>
+<p class="MsoNoSpacing" style="margin:0in 0in 0pt;">&nbsp;</p>
+<p class="MsoNoSpacing" style="margin:0in 0in 0pt;">Does anyone know how to create a collection with polymorphic child objects using CSLA 4.2?</p>
+<p class="MsoNoSpacing" style="margin:0in 0in 0pt;">&nbsp;</p>
+<p class="MsoNoSpacing" style="margin:0in 0in 0pt;">Thanks again</p>
+<p class="MsoNoSpacing" style="margin:0in 0in 0pt;">Russ</p>
+<font size="3"><font face="Calibri">
+<p class="MsoNoSpacing" style="margin:0in 0in 0pt;">&nbsp;</p>
+</font></font></span><font size="3">
+<p class="MsoNoSpacing" style="margin:0in 0in 0pt;">&nbsp;</p>
+</font></span>
+<p class="MsoNoSpacing" style="margin:0in 0in 0pt;">&nbsp;</p>
+</p>
+<p class="MsoNoSpacing" style="margin:0in 0in 0pt;">&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Monday, December 12, 2011</h2><p>Hi Russ, </p>
+<p>In your lazy loading of the property - you MUST make sure that OnPropertyChanged (or PropertyHasChanged) is called to notify the UI of a new value to the property. </p>
+<p>PropertyHasChanged will:</p>
+<ul>
+<li>Mark object a s dirty</li>
+<li>Run rules for that property</li>
+<li>call OnPropertyChanged for property and affected properties from rules</li>
+</ul>
+<p>or just OnPropertyChanged to notify UI.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Russ replied on Monday, December 12, 2011</h2><p class="MsoNoSpacing" style="margin:0in 0in 0pt;"><span style="font-size:small;"><span style="font-family:Calibri;">Thanks for the reply Jonny.</span></span></p>
+<p class="MsoNoSpacing" style="margin:0in 0in 0pt;"><span style="font-family:Calibri;font-size:small;">&nbsp;</span></p>
+<p class="MsoNoSpacing" style="margin:0in 0in 0pt;"><span style="font-size:small;"><span style="font-family:Calibri;">I&rsquo;m convinced this is not a Lazy Loading, MVVM, bxf or DataBinding issue because I can simply change the read only list signature from:</span></span></p>
+<p class="MsoNoSpacing" style="margin:0in 0in 0pt;"><span style="font-family:Calibri;font-size:small;">&nbsp;</span></p>
+<p class="MsoNormal" style="line-height:normal;margin:0in 0in 0pt;mso-layout-grid-align:none;"><span style="font-family:Consolas;color:blue;font-size:9.5pt;">public</span><span style="font-family:Consolas;font-size:9.5pt;"> <span style="color:blue;">class</span> <span style="color:#2b91af;">ChildItemROL</span> : <span style="color:#2b91af;">ReadOnlyListBase</span>&lt;<span style="color:#2b91af;">ChildItemROL</span>, <span style="color:#2b91af;">IChildItemROC</span>&gt;</span></p>
+<p class="MsoNoSpacing" style="margin:0in 0in 0pt;"><span style="font-family:Calibri;font-size:small;">&nbsp;</span></p>
+<p class="MsoNoSpacing" style="margin:0in 0in 0pt;"><span style="font-size:small;"><span style="font-family:Calibri;">to:</span></span></p>
+<p class="MsoNoSpacing" style="margin:0in 0in 0pt;"><span style="font-family:Calibri;font-size:small;">&nbsp;</span></p>
+<p class="MsoNormal" style="line-height:normal;margin:0in 0in 0pt;mso-layout-grid-align:none;"><span style="font-family:Consolas;color:blue;font-size:9.5pt;">public</span><span style="font-family:Consolas;font-size:9.5pt;"> <span style="color:blue;">class</span> <span style="color:#2b91af;">ChildItemROL</span> : <span style="color:#2b91af;">ReadOnlyListBase</span>&lt;<span style="color:#2b91af;">ChildItemROL</span>, <span style="color:#2b91af;">ChildItem1ROC</span>&gt;</span></p>
+<p class="MsoNoSpacing" style="margin:0in 0in 0pt;"><span style="font-family:Calibri;font-size:small;">&nbsp;</span></p>
+<p class="MsoNoSpacing" style="margin:0in 0in 0pt;"><span style="font-size:small;"><span style="font-family:Calibri;">and it works perfectly!<span style="mso-spacerun:yes;">&nbsp; </span>Problem is that the child list is now limited to only child items of type ChildItem1ROC.</span></span></p>
+<p class="MsoNoSpacing" style="margin:0in 0in 0pt;"><span style="font-family:Calibri;font-size:small;">&nbsp;</span></p>
+<p class="MsoNoSpacing" style="margin:0in 0in 0pt;"><span style="font-size:small;"><span style="font-family:Calibri;">To reproduce the problem simply change any read only list that you have by replacing the &ldquo;C&rdquo; part of the ReadOnlyListBase&lt;T, C&gt; with Csla.Core.IReadOnlyObject.</span></span></p>
+<p class="MsoNoSpacing" style="margin:0in 0in 0pt;"><span style="font-family:Calibri;font-size:small;">&nbsp;</span></p>
+<p class="MsoNoSpacing" style="margin:0in 0in 0pt;"><span style="font-size:small;"><span style="font-family:Calibri;">I do not understand why an interface is required to implement the IMobileObject interface since all the ChildItem classes are created as subclasses of ReadOnlyBase.</span></span></p>
+<p class="MsoNoSpacing" style="margin:0in 0in 0pt;"><span style="font-family:Calibri;font-size:small;">&nbsp;</span></p>
+<p class="MsoNoSpacing" style="margin:0in 0in 0pt;"><span style="font-size:small;"><span style="font-family:Calibri;">Thanks</span></span></p>
+<p class="MsoNoSpacing" style="margin:0in 0in 0pt;"><span style="font-size:small;"><span style="font-family:Calibri;">Russ</span></span></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Monday, December 12, 2011</h2><p>Did you define the common properties in IChildItemROC? </p>
+<pre style="font-family:Consolas;font-size:13px;color:black;background:none repeat scroll 0% 0% #fafafa;">&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">interface</span>&nbsp;<span style="color:#2baaaf;">IChildItemROC</span>&nbsp;:&nbsp;<span style="color:#2baaaf;">IReadOnlyObject</span>,&nbsp;<span style="color:#2baaaf;">IMobileObject</span>
+&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">string</span>&nbsp;Name&nbsp;{&nbsp;<span style="color:blue;">get</span>;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">string</span>&nbsp;Address&nbsp;{&nbsp;<span style="color:blue;">get</span>;&nbsp;}
+&nbsp;&nbsp;}
+ 
+&nbsp;&nbsp;[<span style="color:#2b91af;">Serializable</span>]
+&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">class</span>&nbsp;<span style="color:#2b91af;">ChildItemROC</span>&lt;T&gt;&nbsp;:&nbsp;Csla.<span style="color:#2b91af;">ReadOnlyBase</span>&lt;T&gt;,&nbsp;<span style="color:#2baaaf;">IChildItemROC</span>&nbsp;<span style="color:blue;">where</span>&nbsp;T:<span style="color:#2b91af;">ChildItemROC</span>&lt;T&gt;
+&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:green;">//&nbsp;define&nbsp;common&nbsp;properties&nbsp;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">static</span>&nbsp;<span style="color:blue;">readonly</span>&nbsp;<span style="color:#2b91af;">PropertyInfo</span>&lt;<span style="color:blue;">string</span>&gt;&nbsp;NameProperty&nbsp;=&nbsp;RegisterProperty&lt;<span style="color:blue;">string</span>&gt;(c&nbsp;=&gt;&nbsp;c.Name);
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">string</span>&nbsp;Name
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">get</span>&nbsp;{&nbsp;<span style="color:blue;">return</span>&nbsp;GetProperty(NameProperty);&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">private</span>&nbsp;<span style="color:blue;">set</span>&nbsp;{&nbsp;LoadProperty(NameProperty,&nbsp;<span style="color:blue;">value</span>);&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">static</span>&nbsp;<span style="color:blue;">readonly</span>&nbsp;<span style="color:#2b91af;">PropertyInfo</span>&lt;<span style="color:blue;">string</span>&gt;&nbsp;AddressProperty&nbsp;=&nbsp;RegisterProperty&lt;<span style="color:blue;">string</span>&gt;(c&nbsp;=&gt;&nbsp;c.Address);
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">string</span>&nbsp;Address
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">get</span>&nbsp;{&nbsp;<span style="color:blue;">return</span>&nbsp;GetProperty(AddressProperty);&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">private</span>&nbsp;<span style="color:blue;">set</span>&nbsp;{&nbsp;LoadProperty(AddressProperty,&nbsp;<span style="color:blue;">value</span>);&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;}
+ 
+&nbsp;&nbsp;[<span style="color:#2b91af;">Serializable</span>]
+&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">class</span>&nbsp;<span style="color:#2b91af;">ChildItemROC1</span>&nbsp;:&nbsp;<span style="color:#2b91af;">ChildItemROC</span>&lt;<span style="color:#2b91af;">ChildItemROC1</span>&gt;
+&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">static</span>&nbsp;<span style="color:blue;">readonly</span>&nbsp;<span style="color:#2b91af;">PropertyInfo</span>&lt;<span style="color:blue;">string</span>&gt;&nbsp;StateProperty&nbsp;=&nbsp;RegisterProperty&lt;<span style="color:blue;">string</span>&gt;(c&nbsp;=&gt;&nbsp;c.State);
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">string</span>&nbsp;State
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">get</span>&nbsp;{&nbsp;<span style="color:blue;">return</span>&nbsp;GetProperty(StateProperty);&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">private</span>&nbsp;<span style="color:blue;">set</span>&nbsp;{&nbsp;LoadProperty(StateProperty,&nbsp;<span style="color:blue;">value</span>);&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;}
+ 
+&nbsp;&nbsp;[<span style="color:#2b91af;">Serializable</span>]
+&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">class</span>&nbsp;<span style="color:#2b91af;">ChildItemROC2</span>&nbsp;:&nbsp;<span style="color:#2b91af;">ChildItemROC</span>&lt;<span style="color:#2b91af;">ChildItemROC2</span>&gt;
+&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">static</span>&nbsp;<span style="color:blue;">readonly</span>&nbsp;<span style="color:#2b91af;">PropertyInfo</span>&lt;<span style="color:blue;">string</span>&gt;&nbsp;CountryProperty&nbsp;=&nbsp;RegisterProperty&lt;<span style="color:blue;">string</span>&gt;(c&nbsp;=&gt;&nbsp;c.Country);
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">string</span>&nbsp;Country
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">get</span>&nbsp;{&nbsp;<span style="color:blue;">return</span>&nbsp;GetProperty(CountryProperty);&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">private</span>&nbsp;<span style="color:blue;">set</span>&nbsp;{&nbsp;LoadProperty(CountryProperty,&nbsp;<span style="color:blue;">value</span>);&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;}
+ 
+&nbsp;&nbsp;[<span style="color:#2b91af;">Serializable</span>]
+&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">class</span>&nbsp;<span style="color:#2b91af;">ChildItemList</span>&nbsp;:&nbsp;<span style="color:#2b91af;">ReadOnlyListBase</span>&lt;<span style="color:#2b91af;">ChildItemList</span>,&nbsp;<span style="color:#2baaaf;">IChildItemROC</span>&gt;
+&nbsp;&nbsp;{
+ 
+&nbsp;&nbsp;}</pre>
+<p>I wouldn&#39;t be surprised that using Csla.Core.IReadOnlyObject is causing problems -&nbsp; you must define the common behavior in the Interface in order to expose these to consumer of your list.</p>
+<p>Could you provide a small sample download for investigation?</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Russ replied on Monday, December 12, 2011</h2><p class="MsoNoSpacing" style="margin:0in 0in 0pt;"><span style="font-size:small;"><span style="font-family:Calibri;">Hi Jonny,</span></span></p>
+<p class="MsoNoSpacing" style="margin:0in 0in 0pt;"><span style="font-family:Calibri;font-size:small;">&nbsp;</span></p>
+<p class="MsoNoSpacing" style="margin:0in 0in 0pt;"><span style="font-size:small;"><span style="font-family:Calibri;">I added the common property &ldquo;Name&rdquo; as in your example to see if it would affect anything and now the childItem Datagrid is displaying a single column for &ldquo;Name&rdquo;. The DataGrid AutoGenerateColumns is set to true but the DataGrid is not generating any of the specific childitem properties (State, Country in your example).</span></span></p>
+<p class="MsoNoSpacing" style="margin:0in 0in 0pt;"><span style="font-family:Calibri;font-size:small;">&nbsp;</span></p>
+<p class="MsoNoSpacing" style="margin:0in 0in 0pt;"><span style="font-size:small;"><span style="font-family:Calibri;">Maybe this is a weird Silverlight DataGrid binding thing. I have a SL4 UserControl that displays a DataGrid where the ItemsSource is the LineItems read only list. When a user clicks on a row in this DataGrid the RowDetails area is displayed and another DataGrid is displayed.<span style="mso-spacerun:yes;">&nbsp; </span>Here is the XAML:</span></span></p>
+<p class="MsoNoSpacing" style="margin:0in 0in 0pt;"><span style="font-family:Calibri;font-size:small;">&nbsp;</span></p>
+<p class="MsoNormal" style="line-height:normal;margin:0in 0in 0pt;mso-layout-grid-align:none;tab-stops:9.0pt .25in 27.0pt .5in 45.0pt .75in 63.0pt 1.0in;"><span style="font-family:Consolas;color:blue;font-size:8pt;mso-bidi-font-size:9.5pt;">&lt;</span><span style="font-family:Consolas;color:#a31515;font-size:8pt;mso-bidi-font-size:9.5pt;">sdk</span><span style="font-family:Consolas;color:blue;font-size:8pt;mso-bidi-font-size:9.5pt;">:</span><span style="font-family:Consolas;color:#a31515;font-size:8pt;mso-bidi-font-size:9.5pt;">DataGrid.RowDetailsTemplate</span><span style="font-family:Consolas;color:blue;font-size:8pt;mso-bidi-font-size:9.5pt;">&gt;</span><span style="font-family:Consolas;font-size:8pt;mso-bidi-font-size:9.5pt;"></span></p>
+<p class="MsoNormal" style="line-height:normal;margin:0in 0in 0pt;mso-layout-grid-align:none;tab-stops:9.0pt .25in 27.0pt .5in 45.0pt .75in 63.0pt 1.0in;"><span style="font-family:Consolas;color:#a31515;font-size:8pt;mso-bidi-font-size:9.5pt;"><span style="mso-tab-count:1;">&nbsp; </span></span><span style="font-family:Consolas;color:blue;font-size:8pt;mso-bidi-font-size:9.5pt;">&lt;</span><span style="font-family:Consolas;color:#a31515;font-size:8pt;mso-bidi-font-size:9.5pt;">DataTemplate</span><span style="font-family:Consolas;color:blue;font-size:8pt;mso-bidi-font-size:9.5pt;">&gt;</span><span style="font-family:Consolas;font-size:8pt;mso-bidi-font-size:9.5pt;"></span></p>
+<p class="MsoNormal" style="line-height:normal;margin:0in 0in 0pt;mso-layout-grid-align:none;tab-stops:9.0pt .25in 27.0pt .5in 45.0pt .75in 63.0pt 1.0in;"><span style="font-family:Consolas;color:#a31515;font-size:8pt;mso-bidi-font-size:9.5pt;"><span style="mso-tab-count:2;">&nbsp;&nbsp;&nbsp; </span></span><span style="font-family:Consolas;color:blue;font-size:8pt;mso-bidi-font-size:9.5pt;">&lt;</span><span style="font-family:Consolas;color:#a31515;font-size:8pt;mso-bidi-font-size:9.5pt;">sdk</span><span style="font-family:Consolas;color:blue;font-size:8pt;mso-bidi-font-size:9.5pt;">:</span><span style="font-family:Consolas;color:#a31515;font-size:8pt;mso-bidi-font-size:9.5pt;">DataGrid</span><span style="font-family:Consolas;color:red;font-size:8pt;mso-bidi-font-size:9.5pt;"> x</span><span style="font-family:Consolas;color:blue;font-size:8pt;mso-bidi-font-size:9.5pt;">:</span><span style="font-family:Consolas;color:red;font-size:8pt;mso-bidi-font-size:9.5pt;">Name</span><span style="font-family:Consolas;color:blue;font-size:8pt;mso-bidi-font-size:9.5pt;">=&quot;childListDataGrid&quot;</span><span style="font-family:Consolas;color:red;font-size:8pt;mso-bidi-font-size:9.5pt;"> Margin</span><span style="font-family:Consolas;color:blue;font-size:8pt;mso-bidi-font-size:9.5pt;">=&quot;10&quot;</span><span style="font-family:Consolas;color:red;font-size:8pt;mso-bidi-font-size:9.5pt;"> AutoGenerateColumns</span><span style="font-family:Consolas;color:blue;font-size:8pt;mso-bidi-font-size:9.5pt;">=&quot;True&quot;</span><span style="font-family:Consolas;font-size:8pt;mso-bidi-font-size:9.5pt;"> </span></p>
+<p class="MsoNormal" style="line-height:normal;margin:0in 0in 0pt;mso-layout-grid-align:none;tab-stops:9.0pt .25in 27.0pt .5in 45.0pt .75in 63.0pt 1.0in;"><span style="font-family:Consolas;font-size:8pt;mso-bidi-font-size:9.5pt;"><span style="mso-tab-count:5;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color:red;"><span style="mso-tab-count:1;">&nbsp; </span>ItemsSource</span><span style="color:blue;">=&quot;{</span><span style="color:#a31515;">Binding</span><span style="color:red;"> Path</span><span style="color:blue;">=ChildList}&quot;&gt;</span></span></p>
+<p class="MsoNormal" style="line-height:normal;margin:0in 0in 0pt;mso-layout-grid-align:none;tab-stops:9.0pt .25in 27.0pt .5in 45.0pt .75in 63.0pt 1.0in;"><span style="font-family:Consolas;color:#a31515;font-size:8pt;mso-bidi-font-size:9.5pt;"><span style="mso-tab-count:2;">&nbsp;&nbsp;&nbsp; </span></span><span style="font-family:Consolas;color:blue;font-size:8pt;mso-bidi-font-size:9.5pt;">&lt;/</span><span style="font-family:Consolas;color:#a31515;font-size:8pt;mso-bidi-font-size:9.5pt;">sdk</span><span style="font-family:Consolas;color:blue;font-size:8pt;mso-bidi-font-size:9.5pt;">:</span><span style="font-family:Consolas;color:#a31515;font-size:8pt;mso-bidi-font-size:9.5pt;">DataGrid</span><span style="font-family:Consolas;color:blue;font-size:8pt;mso-bidi-font-size:9.5pt;">&gt;</span></p>
+<p class="MsoNormal" style="line-height:normal;margin:0in 0in 0pt;mso-layout-grid-align:none;tab-stops:9.0pt .25in 27.0pt .5in 45.0pt .75in 63.0pt 1.0in;"><span style="font-family:Consolas;color:#a31515;font-size:8pt;mso-bidi-font-size:9.5pt;"><span style="mso-tab-count:1;">&nbsp; </span></span><span style="font-family:Consolas;color:blue;font-size:8pt;mso-bidi-font-size:9.5pt;">&lt;/</span><span style="font-family:Consolas;color:#a31515;font-size:8pt;mso-bidi-font-size:9.5pt;">DataTemplate</span><span style="font-family:Consolas;color:blue;font-size:8pt;mso-bidi-font-size:9.5pt;">&gt;</span><span style="font-family:Consolas;font-size:8pt;mso-bidi-font-size:9.5pt;"></span></p>
+<p class="MsoNormal" style="line-height:normal;margin:0in 0in 0pt;mso-layout-grid-align:none;tab-stops:9.0pt .25in 27.0pt .5in 45.0pt .75in 63.0pt 1.0in;"><span style="font-family:Consolas;color:blue;font-size:8pt;mso-bidi-font-size:9.5pt;">&lt;/</span><span style="font-family:Consolas;color:#a31515;font-size:8pt;mso-bidi-font-size:9.5pt;">sdk</span><span style="font-family:Consolas;color:blue;font-size:8pt;mso-bidi-font-size:9.5pt;">:</span><span style="font-family:Consolas;color:#a31515;font-size:8pt;mso-bidi-font-size:9.5pt;">DataGrid.RowDetailsTemplate</span><span style="font-family:Consolas;color:blue;font-size:8pt;mso-bidi-font-size:9.5pt;">&gt;</span><span style="font-family:Consolas;font-size:8pt;mso-bidi-font-size:9.5pt;"></span></p>
+<p class="MsoNormal" style="line-height:normal;margin:0in 0in 0pt;mso-layout-grid-align:none;"><span style="font-family:Consolas;font-size:9.5pt;">&nbsp;</span></p>
+<p class="MsoNoSpacing" style="margin:0in 0in 0pt;"><span style="font-size:small;"><span style="font-family:Calibri;">This triggers the lazy loading of the ChildList property. <b style="mso-bidi-font-weight:normal;">It appears the AutoGenerateColumns=&rdquo;True&rdquo; mechanism which uses reflection to create a column for each property of the bound object is interrogating the bound object before it has returned the collection and therefore only contains the common property &ldquo;Name&rdquo;.</b></span></span></p>
+<p class="MsoNoSpacing" style="margin:0in 0in 0pt;"><span style="font-family:Calibri;font-size:small;">&nbsp;</span></p>
+<p class="MsoNoSpacing" style="margin:0in 0in 0pt;"><span style="font-size:small;"><span style="font-family:Calibri;">I ruled out the lazy loading getter code by commenting it out and moving the ChildList load logic to the Child_Fetch on the ListItem. I observed the very same DataGrid column binding behavior.</span></span></p>
+<p class="MsoNoSpacing" style="margin:0in 0in 0pt;"><span style="font-family:Calibri;font-size:small;">&nbsp;</span></p>
+<p class="MsoNoSpacing" style="margin:0in 0in 0pt;"><span style="font-size:small;"><span style="font-family:Calibri;">I was hoping to get this AutoGenerateColumn mechanism to work. Otherwise I will have to create a DataTemplateSelector for Silverlight and then have to predefine DataTemplates for all the ChildItem types. A lot of seemingly unnecessary XAML that will need to be maintained. </span><span style="font-family:Wingdings;mso-ascii-font-family:Calibri;mso-ascii-theme-font:minor-latin;mso-hansi-font-family:Calibri;mso-hansi-theme-font:minor-latin;mso-char-type:symbol;mso-symbol-font-family:Wingdings;"><span style="mso-char-type:symbol;mso-symbol-font-family:Wingdings;">L</span></span></span></p>
+<p class="MsoNoSpacing" style="margin:0in 0in 0pt;"><span style="font-family:Calibri;font-size:small;">&nbsp;</span></p>
+<p class="MsoNoSpacing" style="margin:0in 0in 0pt;"><span style="font-size:small;"><span style="font-family:Calibri;">I&rsquo;m not sure how to easily create a small sample for you as this problem is part of a larger project. Maybe I can start with a copy of one of the Sample CSLA Silverlight applications and modify it. Can you recommend which sample to start with?</span></span></p>
+<p class="MsoNoSpacing" style="margin:0in 0in 0pt;"><span style="font-family:Calibri;font-size:small;">&nbsp;</span></p>
+<p class="MsoNoSpacing" style="margin:0in 0in 0pt;"><span style="font-size:small;"><span style="font-family:Calibri;">Thanks</span></span></p>
+<p class="MsoNoSpacing" style="margin:0in 0in 0pt;"><span style="font-size:small;"><span style="font-family:Calibri;">Russ</span></span></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Tuesday, December 13, 2011</h2><p>Hi Russ, </p>
+<p>This is how polymorfism works with general interfaces and base classes. </p>
+<p><strong>Your code does not&nbsp;guarantee that there is only one type of child in the list!!! </strong></p>
+<p>Any object that inplements the <span style="color:#2baaaf;">IChildItemROC <span style="color:#000000;">can be added to the list and the ony safe data fields to display is those defined in the interface.<br /></span></span><span style="color:#2baaaf;"><span style="color:#000000;">It would be perectly legal (code wise) to add objects of type <span style="color:#2b91af;">ChildItemROC1</span>&nbsp;, <span style="color:#2b91af;">ChildItemROC2 and <span style="color:#2b91af;">ChildItemROC3 <span style="color:#000000;">to the same instance of the list. </span></span></span></span></span></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Russ replied on Tuesday, December 13, 2011</h2><p class="MsoNoSpacing" style="margin:0in 0in 0pt;"><span style="font-size:small;"><span style="font-family:Calibri;">Hi Jonny,</span></span></p>
+<p class="MsoNoSpacing" style="margin:0in 0in 0pt;"><span style="font-family:Calibri;font-size:small;">&nbsp;</span></p>
+<p class="MsoNoSpacing" style="margin:0in 0in 0pt;"><span style="font-size:small;"><span style="font-family:Calibri;">I came to the same conclusion as you after sleeping on it.</span></span></p>
+<p class="MsoNoSpacing" style="margin:0in 0in 0pt;"><span style="font-family:Calibri;font-size:small;">&nbsp;</span></p>
+<p class="MsoNoSpacing" style="margin:0in 0in 0pt;"><span style="font-size:small;"><span style="font-family:Calibri;">The use of the interface allows my ChildList to contain a variety of ChildItemROC1, ChildItemROC2 etc. objects in the same collection. This is not what I require because all the items in my child list are always the same for any given LineItem.</span></span></p>
+<p class="MsoNoSpacing" style="margin:0in 0in 0pt;"><span style="font-family:Calibri;font-size:small;">&nbsp;</span></p>
+<p class="MsoNoSpacing" style="margin:0in 0in 0pt;"><span style="font-size:small;"><span style="font-family:Calibri;">My code is working correctly and is lazy loading the required list for each LineItem. In order to correctly display a DataGrid I believe I will need to set AutoGenerateColumns to false to prevent the creation of the columns when the DataGrid is layed out and then listen for the Model.ChildList property changed event to trigger the creation of the correct DataGrid columns for the first row in the returned ChildList. <span style="mso-spacerun:yes;">&nbsp;</span>I&rsquo;ve looked into this a bit and it does not look pretty!</span></span></p>
+<p class="MsoNoSpacing" style="margin:0in 0in 0pt;"><span style="font-family:Calibri;font-size:small;">&nbsp;</span></p>
+<p class="MsoNoSpacing" style="margin:0in 0in 0pt;"><span style="font-size:small;"><span style="font-family:Calibri;">Thanks again for all the help</span></span></p>
+<p class="MsoNoSpacing" style="margin:0in 0in 0pt;"><span style="font-size:small;"><span style="font-family:Calibri;">Russ.</span></span></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Troncho replied on Wednesday, May 23, 2012</h2><p>Hi, Jonny, hi everyone.</p>
+<p>Back to CSLA 3.8, using this example you are providing.</p>
+<p>When I use a BusinessListBase&lt;,&gt; usually, the list gets populated by receiving from the header BusinessBase&lt;&gt; object an array of DAL line objects that were loaded from Linq to Sql. The list passes each line object to the static method included on the line object to get initialized and marked as child. This is done by calling&nbsp;for example:</p>
+<p>static ChildObject Get[..]ChildObject(..dalObject obj) </p>
+<pre style="FONT-FAMILY:Consolas;BACKGROUND:white;COLOR:black;FONT-SIZE:15px;">{
+	<span style="COLOR:blue;">return</span>&nbsp;<span style="COLOR:#2b91af;">DataPortal</span>.FetchChild&lt;<span style="COLOR:#2b91af;">ChildObject</span>&gt;(obj);
+}
+</pre>
+<p style="FONT-FAMILY:Consolas;BACKGROUND:white;COLOR:black;FONT-SIZE:15px;">Now, this is a static method call, which cannot go to the line item Interface. JOnny, how can we solve this issue?</p>
+<p style="FONT-FAMILY:Consolas;BACKGROUND:white;COLOR:black;FONT-SIZE:15px;">Thanks,</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Wednesday, May 23, 2012</h2><p>I&#39;d create a static &lt;Child&gt;Creator class that would inspect the DAL object and create the proper child type.</p>
+<p>So something like this: </p>
+<p>&nbsp;&nbsp;&nbsp; <span style="color:#0000ff;font-weight:bold;">public</span>&nbsp;<span style="color:#ff0000;">class</span>&nbsp;ChildCreator<br />
+&nbsp;&nbsp;&nbsp;&nbsp;{<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#0000ff;font-weight:bold;">public</span>&nbsp;<span style="color:#a52a2a;">static</span>&nbsp;IChild&nbsp;<span style="color:#191970;font-weight:bold;">Fetch</span>(dalItem dalObject)<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#0000ff;font-weight:bold;">if</span>&nbsp;(dalObject.X ==&nbsp;<span style="color:#00008b;">1</span>)&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#000080;">return</span>&nbsp;DataPortal.FetchChild&lt;ChildType1&gt;(dalObject);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#0000ff;font-weight:bold;">if</span>&nbsp;(dalObject.X ==&nbsp;<span style="color:#00008b;">2</span>)&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#000080;">return</span>&nbsp;DataPortal.FetchChild&lt;ChildType2&gt;(dalObject);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#008080;font-weight:bold;">throw</span>&nbsp;<span style="color:#008b8b;font-weight:bold;">new</span>&nbsp;<span style="color:#191970;font-weight:bold;">ArgumentException</span>(<span style="color:#0000ff;">&quot;Unknown child type&quot;</span>);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br />
+&nbsp;&nbsp;&nbsp;&nbsp;}</p>
+<p>and the list like:</p>
+<p>&nbsp; [Serializable]<br />
+&nbsp;&nbsp;<span style="color:#0000ff;font-weight:bold;">public</span>&nbsp;<span style="color:#ff0000;">class</span>&nbsp;ChildBusinessList :<br />
+&nbsp;&nbsp;&nbsp;&nbsp;BusinessListBase&lt;ChildBusinessList,&nbsp;IChild&gt;<br />
+&nbsp;&nbsp;{<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#0000ff;font-weight:bold;">public</span>&nbsp;<span style="color:#a52a2a;">static</span>&nbsp;ChildBusinessList&nbsp;<span style="color:#191970;font-weight:bold;">GetEditableRootList</span>(<span style="color:#ff0000;font-weight:bold;">int</span>&nbsp;id)<br />
+&nbsp;&nbsp;&nbsp;&nbsp;{<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#000080;">return</span>&nbsp;DataPortal.Fetch&lt;ChildBusinessList&gt;(id);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;}<br />
+<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#0000ff;font-weight:bold;">private</span>&nbsp;<span style="color:#ff0000;">void</span>&nbsp;<span style="color:#191970;font-weight:bold;">DataPortal_Fetch</span>(<span style="color:#ff0000;font-weight:bold;">int</span>&nbsp;criteria)<br />
+&nbsp;&nbsp;&nbsp;&nbsp;{<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;RaiseListChangedEvents =&nbsp;<span style="color:#008b8b;font-weight:bold;">false</span>;<br />
+<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#008000;">// Retrive dalList objects by Linq 2 Sql</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#008000;">// load child objects&nbsp;</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#0000ff;font-weight:bold;">foreach</span>&nbsp;(<span style="color:#000080;">var</span>&nbsp;item&nbsp;<span style="color:#0000ff;font-weight:bold;">in</span>&nbsp;dalList)&nbsp;{<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#191970;font-weight:bold;">Add</span>(ChildCreator.<span style="color:#191970;font-weight:bold;">Fetch</span>(item));<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br />
+<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;RaiseListChangedEvents =&nbsp;<span style="color:#008b8b;font-weight:bold;">true</span>;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;}<br />
+&nbsp;&nbsp;}</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Troncho replied on Wednesday, May 23, 2012</h2><p>Now there&#39;s an elegant solution! Your accurate and detailed help is very appreciated <img src="http://forums.lhotka.net/emoticons/emotion-2.gif" alt="Big Smile" /></p>
+<p>Once again: THANK YOU VERY MUCH!</p>
+<p>Troncho</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,42 @@
+<html><header><title>Silverlight: authenticating users</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Silverlight: authenticating users</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10033.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>lukky posted on Saturday, February 05, 2011</h2><p>Hi,</p>
+<p>I know this is not strictly a CSLA thing, but this is probably the only place where I&#39;ll find someone with an answer.</p>
+<p>I&#39;m working on my very first SL application, integrating CSLA.NET 4.x + SL + Prism, but&nbsp;coming from Windows Forms, there is a lot of material to learn and I&#39;m a bit overwhelmed.</p>
+<p>The application will be ran from a web hosting service and&nbsp;should be accessible only to registered users. The data itself is not what I would call highly sensitive, but I&#39;d still want to protect it from prying eyes.</p>
+<p>I have found this thread about Single Sign On, but it dates a few years back, and I don&#39;t know how much of it still applies to newer versions of CSLA:</p>
+<p><a href="http://forums.lhotka.net/forums/t/6544.aspx">http://forums.lhotka.net/forums/t/6544.aspx</a></p>
+<p>Basically, I think I need to consider the following security topcis:</p>
+<ul>
+<li>Secure the web page that will host the SL application</li>
+<li>Secure the SL application itself</li>
+<li>Secure the WcfPortal</li>
+<li>Make sure Username/Password is not sent in plain text</li>
+<li>?</li>
+</ul>
+<p>Is there a resource that would cover what I need to consider WRT securing the application ? I&#39;ve found so many bits of scattered information that I can&#39;t even begin to piece everything together.</p>
+<p>Thanks for any pointers.</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Sunday, February 06, 2011</h2><p>fwiw, there will be a resource: <em>Using CSLA 4: Security</em>. That&#39;s the next ebook I&#39;ll work on after I finish the data access one I&#39;m writing now.</p>
+<p>I know, that doesn&#39;t help... :)</p>
+<p>Basically you are on the right track.</p>
+<ol>
+<li>Use SSL</li>
+<li>Implement Windows, forms, or membership provider authentication on the web site</li>
+<li>Have the SL app go get the principal from the web server as the SL app starts up</li>
+<li>Use an IAuthorizeDataPortal implementation to verify the principal on each data portal call (except calls to retrieve a new principal of course)</li>
+</ol>
+<p>Or</p>
+<ol>
+<li>Use SSL</li>
+<li>Have the SL app ask the user for credentials</li>
+<li>Have the SL app send the credentials to the app server for verification against Windows, membership provider, or a custom store</li>
+<li>Use an IAuthorizeDataPortal implementation to verify the principal on each data portal call (except calls to do that initial login verification)</li>
+</ol>
+<p>With SL 4 and higher you might be able to avoid using SSL by using WCF security, but I&#39;m not sure about that because I haven&#39;t tried. Using WCF security on Windows is a pain though, because you end up having to deploy your own x509 cert. In my view SSL is easier to set up, because I can usually just tell the IT group that the web server needs SSL :)</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>lukky replied on Sunday, February 06, 2011</h2><p>Rocky,</p>
+<p>First, thanks for taking time to reply. I know your schedule is very tight, so I appreciate.</p>
+<p>As for the book on security, I think I&#39;ll definitely buy the series.</p>
+<p>So it seems the SSL road is where I need to go, so I&#39;ll read up on this as I&#39;ve never touched that before.</p>
+<p>Between the 2 scenarios you&#39;ve exposed, the difference seems to be wether the &quot;main&quot; page is itself secured by ASP.NET or not. The other steps are pretty&nbsp; much the same.</p>
+<p>As for WCF security, would you use transport, or message&nbsp;security ?</p>
+<p>Regards</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Sunday, February 06, 2011</h2><p>SSL (https) is transport security. It encrypts the data between the client and server, and is the web standard for this sort of thing.</p>
+<p>WCF on .NET supports message security too. I don&#39;t know if that is supported on Silverlight?</p>
+<p>The Microsoft Patterns and Practices group wrote a book on WCF configuration and security - it is available on CodePlex. They talk about transport and message security, and SSL.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

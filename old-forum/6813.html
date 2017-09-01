@@ -1,0 +1,56 @@
+<html><header><title>WF using CSLALight</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>WF using CSLALight</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6813.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>pondosinat posted on Friday, April 17, 2009</h2><P>We're&nbsp;in the middle of&nbsp;building an&nbsp;HR adminstration app using CSLALight and Silverlight and are ready to incorporate WF, which looks like a perfect fit for modelling HR processes and the elaborate rules engine that goes along with them. We've built some of the UI, CSLA BOs&nbsp;and migrated legacy date into SQL 08. All of that is working great. Now we need to bring WF/WCF into the picture. Up to now we've just been using a&nbsp;local DataPortal to talk to SQL--modeled after the Rolodex sample. Does that need to change now to accomodate WF? Also, is anybody else implementing something like this? I'd be curious to hear of any pifalls or other experiences you can share.</P>
+<P>Thanks,</P>
+<P>Brian</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, April 17, 2009</h2><P>You may want to look at the <A href="http://store.lhotka.net">Using CSLA .NET 3.0 ebook</A>, as it has a chapter on using WF with CSLA .NET.</P>
+<P>The workflow will run on the ASP.NET server (or some app server). You really have two options to invoke it from the client - use a service call or use a remote data portal.</P>
+<P>You can use WCF to expose a workflow endpoint as a service. Then you could invoke that service from the Silverlight client using the local data portal like you are now.</P>
+<P>Or you can use a remote data portal so a business object hops to the application server and invokes the workflow within the DataPortal_Update() or DataPortal_Execute() method.</P>
+<P>Either way, you'll typically reflect a workflow in your object model as a CommandBase object, though I do sometimes invoke a workflow as part of&nbsp;a Save() operation for an editable root.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>pondosinat replied on Friday, April 17, 2009</h2>Thanks very much, Rocky. I'll get the ebook and&nbsp;have a look.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>pondosinat replied on Monday, July 06, 2009</h2><P>I am just now implementing the WF piece of this project but ran into a problem with running CSLALight and my Silverlight class library in my WF Activities assembly. I would like to use synchronous calls on my BOs&nbsp;from within&nbsp;WF if possible, since this code will already be executing on the server. If I have to use async methods, then so be it, but when I tried compiling with my Silverlight project reference, I got this error in the WF project:</P>
+<BLOCKQUOTE dir=ltr>
+<P>Reference required to assembly 'System, Version=2.0.5.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e' containing the implemented interface 'System.ComponentModel.INotifyPropertyChanged'. Add one to your project.&nbsp;</P></BLOCKQUOTE>
+<P dir=ltr>What would be the correct way to go about calling my Silverlight BOs from within WF? When I simply add a CSLALight reference and my SL class library, I run into the error above.</P>
+<P dir=ltr>Thanks</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>pondosinat replied on Monday, July 06, 2009</h2><P>Ok I think I got it figured out. The BO "Get" method I was calling from WF had an "If Silverlight" block around it. I just moved the method outside if that If block so that I can access it from anywhere.</P>
+<P>I then removed any SL-specific references from my WF application and just referenced the server side assemblies, and it appears to be working fine.</P>
+<P>Now I just need to figure out how to call async methods from within a WF activity and will be on my way...</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, July 06, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>You need to create separate assemblies with your business
+classes &#8211; one project is a Silverlight class library, the other project
+is a .NET class library. They should both contain the same files (mostly), but
+they are compiled for the two different platforms.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>The WF part of the project is .NET-only, and so should probably
+be in a third assembly, or in the .NET class library, but don&#8217;t put that
+part of the code on the SL side.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I recommend using the <a href="http://store.lhotka.net/">CSLA
+.NET for Silverlight video series</a> to get the basics of building a
+Silverlight project. Then just remember that use of WF is much like use of
+ADO.NET &#8211; that code must be in the server-only partial classes, compiler
+directive regions or in a separate server-only assembly.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky</span><o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>pondosinat replied on Monday, July 06, 2009</h2><P>Thank you very much - I discovered since my last post that creating separate server-only functions in the "Not Silverlight" scope of my BO's allows my synchronous calls to work properly. </P>
+<P>I am amazed once again at how powerful CSLA is in covering so many different app scenarios with such little effort for the developer. I'll check out the video series to see what else I've missed...</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

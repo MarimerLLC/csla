@@ -1,0 +1,22 @@
+<html><header><title>Dynamically changing authenticated user roles</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Dynamically changing authenticated user roles</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3997.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>DrSpock posted on Thursday, December 06, 2007</h2><P>Hi there,</P>
+<P>I'm converting an old system to dotnet and I'm using CSLA which I find an excellent framework for business development.</P>
+<P>In broad terms, this is a document management application.</P>
+<P>It contains Projects (whole folder trees), and Users are assigned access on a folder-by-folder basis.</P>
+<P>There are certain types of User access:<BR>Manager (has read/write&nbsp;access to a whole Project tree)<BR>Author (has read/write access to a particular folder(s))<BR>Reader&nbsp;(has only read access to a particular folder(s))</P>
+<P>read / write means the user can delete, edit, add folders.</P>
+<P>There is also a Site Admin user with full read/write access to all Project trees in the application.</P>
+<P>Now here is my design question: how do I deal with validating the user access for actions such as Get, Edit, Delete, etc?&nbsp; I mean when overriding the CanGetObject(), CanDeleteObject, etc...</P>
+<P>The issue here is that the user access (or user type you might say) is given by the currently selected folder for that particular user.&nbsp; IE: the user is an Author in folder A, but only a Reader in folder B.&nbsp; So the User Type is not static, it changes according to the folder the user has selected.</P>
+<P>I have some ideas such as Re-Authenticating the user each time she picks a folder - which would set the User Type.</P>
+<P>Would this be a good solution?&nbsp; Does it make sense?</P>
+<P>&nbsp;</P>
+<P>Thanks a million</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Friday, December 07, 2007</h2>Wouldn't the folder be responsible for verifying authorization?&nbsp; It sounds like you may want per instance authorization rules, I don't know why your user object would change at all.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>DrSpock replied on Friday, December 07, 2007</h2><P>Thanks for your answer.</P>
+<P>I think what I will have to do then&nbsp;is determine the User Type for each folder.</P>
+<P>So, code like the following (inside public static bool CanAddObject():</P><FONT color=#0000ff size=2>
+<P>if</FONT><FONT size=2> (Csla.</FONT><FONT color=#008080 size=2>ApplicationContext</FONT><FONT size=2>.User.IsInRole(</FONT><FONT color=#008080 size=2>AccessType</FONT><FONT size=2>.Author.ToString())) </FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>true</FONT><FONT size=2>;</FONT></P>
+<P><FONT size=2>Would have to be changed to something like this pseudocode:</FONT></P>
+<P><FONT size=2>1)&nbsp;Make currentUserType equal to the User Type access for the&nbsp;current folder<BR>2)&nbsp;<FONT color=#0000ff> </FONT>if<FONT size=2> (currentUserType == </FONT><FONT color=#008080 size=2>AccessType</FONT><FONT size=2>.Author) </FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>true</FONT><FONT size=2>;</FONT></FONT></P>
+<P><FONT size=2>Basically the ApplicationContext has no meaning in a case like this I guess.</FONT></P>
+<P><FONT size=2></FONT>&nbsp;</P>
+<P><FONT size=2>&nbsp;</P></FONT><FONT size=2></FONT></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

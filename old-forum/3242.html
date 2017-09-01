@@ -1,0 +1,178 @@
+<html><header><title>Csla 3.0 Business Object only for persisting to disk</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Csla 3.0 Business Object only for persisting to disk</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3242.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>dagware posted on Saturday, July 21, 2007</h2>I'm trying to write a BO that is only going to be used for persisting to (and from) disk. No database at all. In addition to some standard properties, it contains some child and grandchild objects. I thought this was going to be easy, using the XmlSerializer, but then I discovered that there are "limitations" to the XmlSerializer and that I need to peruse Chapter 11 of the book.<br><br>So I have a few questions.<br><br>1) If I don't need to persist in XML format, is there some built-in mechanism I can use for persisting to disk, or at least an easier way than trying to implement XML serialization?<br><br>2) If I decie I need to use XML, does the discussion about this subject in Chapter 11 still apply to Csla 3.0? Any new gotchas or anything like that?<br><br>3) If this has already been discussed, can someone point me to those discussions?<br><br>Thanks!<br><br>-Dan<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>dagware replied on Saturday, July 21, 2007</h2>OK, I did some more research and it looks like using DTOs and the XmlSerializer is the way to go.<br><br>So do I create a parent DTO that contains a list of the child DTOs, which then contain the grandchild DTOs, and serialize everything by serializing the parent object? Or is there some way to create each Csla object's DTO when it is needed, without directly duplicating the heirarchy?<br><br>Secondly, if my DTO structure is going to basically the same as my Csla structure, why am I using Csla objects in the first place? It seems like a lot of synchronized maintenance. I know that's not necessarily something someone else can answer, but any comments would be appreciated.<br><br>Thanks!<br><br>-Dan<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Saturday, July 21, 2007</h2>Is there a reason you can't use the binary formatter and standard CSLA objects?</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Saturday, July 21, 2007</h2><P>It is a really bad idea to use the BinaryFormatter for long-term storage, because it is version sensitive. Upgrading your business DLL could render all your data unreadable.</P>
+<P>In .NET 2.0 Microsoft did add some better versioning tools for the BinaryFormatter, so it is technically <EM>possible</EM> now to overcome those issues, but I still don't think I would recommend it as an approach.</P>
+<P>I think the use of DTOs with the XmlSerializer&nbsp;is pretty good.</P>
+<P>Better yet, use the WCF DataContractSerializer, and the consturctor overload that tells it to preserve the shape of your object graph. The one <EM>serious</EM> problem with the XmlSerializer and the default mode of the DataContractSerializer is that they don't preserve the shape of your object graph on deserialization, and this can be problematic.</P>
+<P>The issue occurs when object P references C1 and C2, but C1 also references C2. (or any other double-reference scenario you care to name). If you look at the serialized XML you'll find the data for C2 in the byte stream <EM>twice</EM>, once for each reference.</P>
+<P>When you <EM>deserialize</EM> the XML, you'll get P referencing C1 and C2, and C1 referencing C3 (which has the same data as C2). Oops!</P>
+<P>DataContractSerializer, as I noted, has a constructor overload where you can tell it to preserve the shape of the object graph, so deserialization results in only C2 as you'd expect.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>dagware replied on Sunday, July 22, 2007</h2>Thanks for the replies. I guess I should have mentioned that I don't like the potential versioning&nbsp; issues with the BinaryFormatter.<br><br>As for the DataContractSerializer, we're not currently using .NET 3.0.<br><br>WRT the problem of an object being referenced by more than one other object, that can't occur in my situation.<br><br>I guess I'll use the DTO option. It's too bad that .NET doesn't allow multiple inheritence. Don't get me wrong -- multiple inheritance can be awful. But in this case, if I could derive a ckass from both a DTO class and a CSLA class, it would virtually eliminate the synchronized maintenance issues with DTO.<br><br>Rocky, can you explain what the term "object graph" refers to, or point me to something to read? Thanks.<br><br>-Dan<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Justin replied on Sunday, July 22, 2007</h2><P>Perhaps some reason why you don't want to use a db? Db4o is hard to beat when it comes to just persisting an object (with graph), but it's not free for commercial use. Also there is SQL mobile edition.</P>
+<P>Is it cost or the need for something embedded for staying away from a db of some sort?</P>
+<P>We needed a local data store for a smart client so it could go offline, we choose to implement our own custom xmlserializer to keep the fidelity the&nbsp;normal on would not. Starting to consider a real embedded db though as any kind of serious query of those persisted objects becomes more and more difficult.</P>
+<P>I don't really get the multiple inheritance for DTO's, at that point why wouldn't your one object be the CSLA business object and DTO with no need for inheritance. This would not be the CSLA way though, I know where your coming from, but with UI,XxxInfo,DTO's there is going&nbsp;lots of synching going on with schema change.</P>
+<P>Justin&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>dagware replied on Sunday, July 22, 2007</h2>I don't want to use a DB because my application doesn't need one. It just needs to persist the data to disk in one chunk, just like saving a file (in fact, exactly like saving a file). Everything in one place. Nothing gets saved until the user clicks "Save". Your typical file-based application, except that I'd like to use CSLA objects to hold everything. Trust me, except for the exact "how" of persisting the information, this is the right thing for this application to do.<br><br>As for multiple inheritance, truthfully it wouldn't complete solve this problem anyway. And I want to make it clear that I'm not a huge fan of multiple inheritance anyway. It's just that I detest synchronized maintenance -- the need to maintain the same code in more than one place. In other words, you have your data fields defined in a DTO, and the same fields defined in a CSLA business object. If you add, remove or change a field in the BO, you have to do the same in the DTO. Not to mention the code that transfers data between the BO and the DTO. In fact, for this reason I would probably break standard coding practice and put the DTO class in the same source file as the BO class, so that both sets of field definitions are as close to each other as possible, increasing the chances of remembering to change both. (Go ahead and berate me -- I'm used to it by now &lt;g&gt;.)<br><br>I'm the type of person who believes that if code can automatically maintain this kind of stuff for you, then that's a good thing. Otherwise it's pretty easy to change something in one place but forget the other. Oh, you find out eventually (usually), but wouldn't it be nice if it was all handled automatically?<br><br>So, if a CSLA BO could be streamed with XML, then that would be ideal. But if I have to write a DTO, I wish the DTO class was the only place the fields were defined, and that it could somehow also be used by the BO to hold its fields. In this case, if you could inherit from both a BO base and the DTO class, you'd be one step closer. Not really, because it would cause all sorts of other issues, but that's besides the point. I just wish I could define the fields in one place, and one place only. If I chose to code standard data-aware classes that were also streamable, that would accomplish the task, but would leave me without the other benefits of CSLA.<br><br>It's truly not the end of the world to code DTOs. I just want to explore other options first. Normally I just jump in and start coding, but in this case I thought I'd actually think about it first. &lt;g&gt;.<br><br>-Dan<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Justin replied on Sunday, July 22, 2007</h2><P>I think your missing the point of an object db like db4o, it isn't some relational db that you have decompose your objects into tables for, you literally persist in one "chunk" just like saving a file except its an object not a file so there is no translation of your object to a file repsentation(visible to you anyway).</P>
+<P>Here is the code from thier online tutorial <A href="http://www.db4o.com/about/productinformation/resources/db4o-6.3-tutorial-net.pdf">(http://www.db4o.com/about/productinformation/resources/db4o-6.3-tutorial-net.pdf</A>):</P>
+<P align=left>Pilot pilot1 = new Pilot("Michael Schumacher", 100);</P>
+<P align=left>db.Set(pilot1);</P>
+<P align=left>does it get any simpler than that?</P>
+<P align=left>Granted using .Nets serialization isn't all more that complicated, but you can't query those objects once thier serialized.</P>
+<P align=left>I am with you on the DTO issue and sychronized schema maintenence, but you will not find alot agreement here on that. Rocky makes some very valid points about why DTO's should be used and how CSLA objects&nbsp;should defined by "behaivor" not data schema. But I am a believer that it is possible to have as Rocky says "One object to rule them all." and eliminate many of&nbsp;the redundant schema definitions that add to change overhead.</P>
+<P align=left>Justin</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>dagware replied on Monday, July 23, 2007</h2>Justin-<br><br>You are correct, I missed the point of db4o. It looks promising -- thanks for pointing it out! I'll look into it further.<br><br>WRT BO schemas vs. DB schemas, I pretty-much agree with Rocky on this one. But I don't see how that relates to the DTO issue, since if I'm not mistaken, the DTO fields should map directly to the fields in the BO that are going to be persisted, regardless of what the DB schema looks like. So you're always going to have the fields defined twice, when you use DTO.<br><br>Still, I understand your points and appreciate them!<br><br>Rocky - Thanks for the explanation.<br><br>-Dan<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, July 23, 2007</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>You can make the DTOs map a couple different ways.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>The best way (imo) to think about DTOs in your context is to
+view them as the result sets of stored procedures. In that view, they are
+defined more by the data storage environment than by the shape of your business
+objects. Then your DataPortal_XYZ methods are still responsible for mapping &#8211;
+just from DTOs rather than ADO.NET.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>The challenges of things like db4o or other ODBMS systems have
+been discussed on this forum before. The big issue is that <i>data is
+relational</i>. By its very nature it is relational. If you don&#8217;t treat
+it relationally, you end up with duplicated, unsynchronized data fields all
+over the place.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>So if your data must be relational, and your objects are
+directly defined by the database, then your objects are, by definition, relational.
+In essence, they are <i>entity objects</i>, which are a very different concept
+from business objects.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>In fact, those entity objects are typically DTOs.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>And so we come full-circle. You can define a set of
+relationally-modeled DTOs and store them in files, in an ODBMS or wherever.
+Doesn&#8217;t matter really, from a CSLA perspective, because your DataPortal_XYZ
+methods will get the DTOs and pull out the data required by <i>that specific
+business object</i> so it can fulfill its responsibility.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>It is true that you can use CSLA to create data-centric apps.
+And that often works quite well &#8211; people do this all the time.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>But it is my view that you will be happier in the long run if
+your business objects are defined based on responsibility and behavior. They
+can then use data-centric entity/DTO objects in the DataPortal_XYZ methods, to
+fetch and save data &#8211; no problem. <o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>This is the future (potentially) thanks to the impending arrival
+of LINQ for SQL and the ADO.NET Entity Framework: both of which follow this
+exact model to sit behind CSLA .NET business objects. And, realistically, this
+is the model used by anyone calling web services as a data layer behind their
+objects, because web services provide and consume DTOs (and so do WCF services
+by default).<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> dagware
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Monday, July 23, 2007 12:06 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] Csla 3.0 Business Object only for persisting to
+disk<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Justin-<br>
+<br>
+You are correct, I missed the point of db4o. It looks promising -- thanks for
+pointing it out! I'll look into it further.<br>
+<br>
+WRT BO schemas vs. DB schemas, I pretty-much agree with Rocky on this one. But
+I don't see how that relates to the DTO issue, since if I'm not mistaken, the
+DTO fields should map directly to the fields in the BO that are going to be
+persisted, regardless of what the DB schema looks like. So you're always going
+to have the fields defined twice, when you use DTO.<br>
+<br>
+Still, I understand your points and appreciate them!<br>
+<br>
+Rocky - Thanks for the explanation.<br>
+<br>
+-Dan<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>dagware replied on Monday, July 23, 2007</h2>Rocky -<br><br>One of the reasons I'm sold on CSLA is your participation in these kinds of discussions, and your always well-thought-out reasoning. Thanks! In this particular subject, I completely agree with you. That doesn't mean it doesn't still bother me a little, though. &lt;g&gt;<br><br>BTW, since this particular application doesn't even have a database, you can't accuse me of defining my objects to match the database schema (not that you accused me of anything -- figure of speach).<br><br>'Nuff said on this subject. Thanks again.<br><br>-Dan<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, July 23, 2007</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>An object graph is just a group of objects that reference each
+other.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>In CSLA the only supported shape (with the existing base classes)
+is a parent-child-granchild-&#8230; shape.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>But an object graph can really take any shape. A tree, a circular
+linked list, a true &#8220;graph&#8221; (multi-connected arbitrary nodes), etc.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky</span><o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Justin replied on Saturday, July 21, 2007</h2><P>I concur binary formatter for simple serialization, although technically storing in a file system is a type of heirchal db, but I assume&nbsp;you&nbsp;meant no&nbsp;relational db.</P>
+<P><A href="http://www.db4o.com">www.db4o.com</A> is always an option, but its a db uh oh. </P>
+<P>Also writing your own xmlserializer is not that difficult if the built in one does not suffice.</P>
+<P>Justin</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,58 @@
+<html><header><title>WinForms databinding. Unwanted ListChanged reset events on child list</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>WinForms databinding. Unwanted ListChanged reset events on child list</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5789.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>tetranz posted on Wednesday, November 12, 2008</h2>Hi all<br><br>I know that WinForms databinding is something that most of us and especially Rocky wishes would go away but ... sorry, I haven't moved to wpf or SilverLight yet.<br><br>I'm running CSLA 3.5.2 and have a very standard BusinessBase parent object which contains a BLB child list. It's bound to a form and grid. While debugging something, I noticed that whenever a property on the parent is changed, the child bindingSource and therefore the grid, receives a ListChanged event with a ListChangedType of Reset. That doesn't seem right to me since the list hasn't changed at all. It causes the grid to do an unnecessary refresh.<br><br>I tried ProjectTracker and observe the same thing happening, e.g, with the resources bindingsource within ProjectEdit. It seems to be related to databinding. The Resources list itself does not produce the event.<br><br>It's not a big deal I guess but it did produce some noticeable performance issues when inserting multiple items into my list with a "paste" operation that my UI has. I guess I can work around it with klugy disabling of events while certain operations happen.<br><br>Any thoughts on this?<br><br>Thanks<br>Ross<br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Wednesday, November 12, 2008</h2>I did notice performance issues when these when programatically adding multiple items to the collection, and turning off the RaiseEvents flag until you're done will work fine.&nbsp; Just remember to call ResetBindings on the bindingsource after your set raiseevents back to true.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tetranz replied on Wednesday, November 12, 2008</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>ajj3085:</strong></div><div>I did notice performance issues when these when programatically adding multiple items to the collection, and turning off the RaiseEvents flag until you're done will work fine.&nbsp; Just remember to call ResetBindings on the bindingsource after your set raiseevents back to true.<br></div></BLOCKQUOTE><br>Thanks but the bindingSource doesn't need it's bindings reset because the bindings were never "unset". I only told it not to raise ListChanged events. All I really need to do is tell my Janus grid to a "Refetch" to catch the changes it missed. In fact I don't even need to do that because after the inserts I call a method on the parent which recalculates some totals which changes a property on the parent which causes the child bindingSource to give it's bogus ListChanged reset which causes the grid to refresh. That's actually how I discovered this. It was like "I need to do something to refresh the grid but ... hang on ... it seems to be already doing that by itself?" That's when I noticed that it receives a reset when any parent property is changed.<br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Wednesday, November 12, 2008</h2>Well, if you tell it to ignore events, it will.&nbsp; When you re-enable them, it's already forgotten any events would have been raised.. so your grid won't refresh.&nbsp; Calling ResetBindings( false ) causes the BindingSource to raise an event to let it know the data has changed, but not the schema.<br><br>What I'm saying is, I don't know if what you're seeing is a bug or not, but it's how I've dealt with the issue, and performance-wise it works out extremely well.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tetranz replied on Wednesday, November 12, 2008</h2>Yes, you're correct. I didn't mean to sound argumentative.&nbsp; It looks like  ResetBindings( false ) just raises ListChanged reset. I thought it did more than that which would be unnecessary here. As for the bug, if I feel inclined I might have a play with a couple of DataTables instead of CSLA objects and see if the same thing happens.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Wednesday, November 12, 2008</h2>No, you didn't sound argumentative.. and neither did I.&nbsp; Sorry if I came off like that.&nbsp; I should have explained in my original reply what the ResetBindings( false ) would do.<br><br>There was a change a bit ago that stopped "bubbling" of events... if I'm remembering correctly.&nbsp; Not sure if you're finding is related.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, November 13, 2008</h2>Yes, there was a bugfix related to how child PropertyChanged events triggered a ListChanged event. I think (but check the change logs to confirm) that I put that fix into 3.0.5, 3.5.2 and 3.6.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tetranz replied on Thursday, November 13, 2008</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div>Yes, there was a bugfix related to how child PropertyChanged events triggered a ListChanged event. I think (but check the change logs to confirm) that I put that fix into 3.0.5, 3.5.2 and 3.6.</div></BLOCKQUOTE><br>Thanks Rocky, but this seems to be something different. I've now upgraded to CSLA 3.6.0 beta 2a and get the same thing.<br><br>You can observe it in RootChildGrandchildWinFormTest. Any change to a root property causes the child and grandchild bindingSources to fire ListChanged reset.<br><br>I don't think it's a CSLA problem. The CSLA collection does not fire the event. The bindingSource somehow decides to do it. Also, I tried a standard Microsoft walkthrough example at http://msdn.microsoft.com/en-us/library/y8c0cxey.aspx and got the same thing. That's Master / Detail with two collections and two grids. But when I got rid of the master grid, made sure the master data table had only one row and bound a few textboxes to the root, I did not get the reset so that suggests there may be a way to avoid it. I'm going to have a further play. Maybe I can find an official MS example which is closer to a single root object with child collection. I'll let you know if I discover anything useful.<br><br>If it's something that happens in lots of WinForms apps then I'm surprised this hasn't been an issue before since it means that every bound property of every child is accessed unnecessarily when a root property is changed. I guess it's all happening at UI speeds so nobody notices. Perhaps the grid only updates visible children.<br><br>Cheers<br>Ross<br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, November 14, 2008</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Oh, I see what you are saying.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Yes, absolutely this is standard Windows Forms behavior! When a
+PropertyChanged event occurs on the root object it causes a refresh of all
+bindings for the root object. if the root object has child objects that are
+bound, those bindings are refreshed too.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>The behavior in WPF is (I think) what you&#8217;d expect. When a
+PropertyChanged event occurs on any object, only bindings for that specific
+property are refreshed. Obviously that&#8217;s more efficient and predictable.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I don&#8217;t know why Windows Forms works the say it does &#8211;
+I suspect it is due to some evolutionary set of changes from .NET 1.0 up to
+2.0.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky</span><b><span><o:p></o:p></span></b></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tetranz replied on Friday, November 14, 2008</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div>
+
+
+
+
+
+
+ 
+Yes, absolutely this is standard Windows Forms behavior! When a
+PropertyChanged event occurs on the root object it causes a refresh of all
+bindings for the root object. if the root object has child objects that are
+bound, those bindings are refreshed too.</div></BLOCKQUOTE><br>Thanks Rocky. I knew about the "one change refreshes all" thing, somehow I just didn't realize that means refreshing entire lists but I guess that makes sense even if the fundamental behavior doesn't.<br><br>The scary thing that I probably shouldn't admit to is that this now sounds vaguely familiar and, searching the forum, I can find a post of mine in 2006 asking the same question and you answering. Must be old age creeping in. <img src="/emoticons/emotion-10.gif" alt="Embarrassed [:$]" /><br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

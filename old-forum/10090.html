@@ -1,0 +1,30 @@
+<html><header><title>Design Question - SimpleOrderEdit</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Design Question - SimpleOrderEdit</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10090.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Norman.Mann posted on Sunday, February 20, 2011</h2><p>Hi all,</p>
+<p>I&#39;m thinking about a good way to implement the following scenario.</p>
+<p>Let&#39;s assume the well-known scenario where there&#39;s an&nbsp;OrderEdit and LineItemEdit objects (with a LineItems collection to connect them).</p>
+<p>What if I want a SimpleOrderEdit where :</p>
+<ul>
+<li>only ONE Item can be ordered </li>
+<li>a shipping fee can be assigned</li>
+</ul>
+<p>The use case for something like that could be a quick checkout in an online store. </p>
+<p>While I can imagine a SimpleOrderEdit object with a set properties like CustomerId, ItemNo, ShippingCharge etc. I wonder how to handle the case where someone tries to open/modify an order with <em>multiple </em>items using the SimpleOrderEdit class.</p>
+<p>Since the object was really designed to deal with simple orders (only containing <em>one </em>item) what are the options to communicate the fact that the order contains more items and only part of the information is retrieved (exception, business rule that might prevent saving, ...) </p>
+<p>Is there a better approach to this kind of&nbsp; problem ?</p>
+<p>-Norman</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Monday, February 21, 2011</h2><p>Hi, </p>
+<p>I&#39;m not sure what you will gain from the SimpleOrderEdit that could not be solved using ordinary OrderEdit with another View/UI. You could always load the OrderEdit&nbsp; an check for one line/multiple lines and open the proper view. </p>
+<p>Your code should not allow an order with more than one line item 
+to be edited by SimpleOrderEdit.So imo, your program should 
+automatically switch to a FullOrderEdit rather that presenting an error 
+to your user if basket contains more than one item.</p>
+<p>If you go down the path to create separate objects then I&#39;d reccommend</p>
+<p>1. The SimpleOrderEdit Fetch method should throw an exception if more than one LineItem was found.</p>
+<p>2. And add AuthorizationRules on LineItemList for :</p>
+<ul>
+<li>CreateObject/DeleteObject and enforce these on the list. - Only one line item allowed, can delete line item (?)</li>
+</ul></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Norman.Mann replied on Monday, February 21, 2011</h2><p>Hi, </p>
+<p>thanx for the quick reply. I initially didn&#39;t intend to create a separate object like SimpleOrderEdit.</p>
+<p>But it seems to be a use case on its own and the main question is of course the different view/UI for this scenario. I would assume that databinding could be tricky using the regular object (OrderEdit) when the form doesn&#39;t acount for multiple line items.</p>
+<p>The form that I had in mind would probably just have (in a simplified world) just 3 Textboxes (for customerid, itemno and shipping charge).</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JCardina replied on Monday, February 21, 2011</h2><p>I&#39;m planning on doing something very similar in a new app and the reason I&#39;m doing it is to make the UI appear simpler in simple cases.&nbsp; In the old days I would have two UI&#39;s for this but it makes more sense to have the UI adapt when more than one item is added otherwise show a simple UI.</p>
+<p>Unless you&#39;re referring to some underlying performance issue this seems to be more of a UI issue as Johnny said.</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>ajj3085 replied on Monday, February 21, 2011</h2><p>Your SimpleOrderEdit could have an OrderItem property instead of OrderItems.&nbsp; Probably your use of this object would be some kind of express checkout, so you end up on the &quot;enter details&quot; (shipping, billing, payment).&nbsp; This likely wouldn&#39;t be tied to any sort of cart; abandoning the &quot;quicky checkout&quot; would likely abandon the entire process.</p>
+<p>Of course I assume all details&nbsp;of this feature&nbsp;have already been worked out; otherwise it seems you&#39;re inventing a use case for the sake of doing so, and YAGNI. :-)</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,17 @@
+<html><header><title>Binding BusinessCollectionbase to NetAdvantage Grid v6.1</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Binding BusinessCollectionbase to NetAdvantage Grid v6.1</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/109.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Pradeep posted on Monday, May 15, 2006</h2><DIV>Hi,</DIV>
+<DIV>I have a CustomerList collection inheriting from CSLA BusinessCollectionBase. This&nbsp;is a collection of Customer object which again is inheriting from CSLA BusinessBase object.</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>I am using NetAdvantage's UltraGrid in my UI. When I set the ugGrid.DataSource = CustomerList, I am able to see all the properties listed. But I am not able to edit any of the properties.</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>I have set the AllowUpdate to true. I am not sure why it is not leting me update it.</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>Has any one of you come across this issue and could you guys help me fixing it.</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>Thank you in advance.</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>&nbsp;</DIV></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Pradeep replied on Monday, May 15, 2006</h2><DIV>I figured out the problem.</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>By Default&nbsp;in BindableCollectionBase the AllowEdit is set to false. I had to set it to true to enable updating the collection....</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>Not sure why it is set to false by default... Have to read the book.....</DIV>
+<DIV>&nbsp;</DIV></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,17 @@
+<html><header><title>Change application functionality based on what all users are doing</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Change application functionality based on what all users are doing</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/8941.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>jamie.clayton posted on Monday, May 17, 2010</h2><p>Please see original post at <a title="StackOverflow Discussion" href="http://stackoverflow.com/questions/2846468/monitor-what-users-are-doing-in-an-net-application-and-trigger-application-funct">StackOverflow.<br /></a></p>
+<p>I need some suggestions for how to implement a very basic mechanism 
+that logs what multiple users are doing in an application to a database. When a feature is running I then need to change the application, to restrict 
+functionality of other features.</p>
+<p><b>Use Case Example</b>
+</p>
+<p>User can normaly edit unpaid records.If the application then runs a 
+Payrun process (Long), I need to then change parts of the application to
+ restrict functionality for a short period of time (eg. Make existing 
+unpaid records readonly). </p>
+<p>
+Any suggestions on how I can do this with the CSLA solutions?</p>
+<p>The StackOverflow post recommends a central database repository that monitors a users application actions at the database level. Ok creating a CSLA BO to do the logging and checking is fairly easy.&nbsp; However I&#39;m not sure how I then would integrate that information into business rules or authorization methods for the existing BO I want to implement this with. For some reason I can&#39;t think of the solution at the moment. TIA.</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Monday, May 17, 2010</h2><p>You can override CanReadProperty/CanWriteProperty/CanExecuteMethod in your business object (or your custom base class) and that&#39;s where, at a per-property level at least, you could leverage your additional authorization metadata to make things read-only or invisible.</p>
+<p>On a per-type level there&#39;s no good answer in 3.8.</p>
+<p>In CSLA 4 the authorization system is much more powerful, and you can just create custom authz rules for properties and types, and your custom authz rule can use your metadata instead of (or in addition to) roles.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jamie.clayton replied on Monday, May 17, 2010</h2><p>Rocky,</p>
+<p>Thanks for the advice. I must admit, from a VB perspective, the<a title="4.0 Business Rules" href="http://www.lhotka.net/weblog/CSLA4BusinessRulesSubsystem.aspx"> 4.0 business rules</a> seem easier to follow than the 3.8 delegates approach.&nbsp; This new rules system looks ok to me. I&#39;ll have to start downloading the CSLA 4.0 nightly build and refactor all my existing business rules to see how I go.</p>
+<p>I&#39;ll have to create some basic unit tests to review the logic needed to perform this style of business rule.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

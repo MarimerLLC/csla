@@ -1,0 +1,75 @@
+<html><header><title>Validate Grandchild Property against Top Level Parent Property</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Validate Grandchild Property against Top Level Parent Property</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/8783.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>reagan123 posted on Thursday, April 08, 2010</h2><p>Hello.&nbsp; I currently have a scenario where I have a parent--child--grandchild relationship.&nbsp; I have a property in the grandchild that needs to be validated against an item in the parent.&nbsp; Can anyone explain how to do this?&nbsp; I tried looking into the .Parent property, but can&#39;t figure anything out.</p>
+<p>Can anyone explain to me how to do this?</p>
+<p>Any help greatly appreciated!</p>
+<p>&nbsp;</p>
+<p>Parent&nbsp;&nbsp;&nbsp;&nbsp; &lt;------------------------------------------------------------------------------------------------------------------<br />-----ChildCollection&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |<br />-----------ChildItem&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |<br />------------------GrandChildCollection&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |<br />-----------------------------GrandChildItem&nbsp; (Need to validate property in here against property here |</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>rsbaker0 replied on Thursday, April 08, 2010</h2><p>Both BusinessBase and BusinessListBase objects have access to their parent. I&#39;ve written some helper methods that let me walk arbitrarily up the parent hierarchy to locate the &quot;ancestor&quot; of the appropriate type. I can post more details if you think this approach would solve your problem. </p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>reagan123 replied on Thursday, April 08, 2010</h2><p>I would love to see the helper methods.&nbsp; That would be great if you could give some more detail.</p>
+<p>Thanks!</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rsbaker0 replied on Friday, April 09, 2010</h2><p>Here is the basic implementation. The &quot;Parent&quot; properties of the CSLA objects we started with weren&#39;t public, so I added an IChild interface that implements a single GetParent() method for returning the immediate parent of all of my CSLA derived classes. So you can always walk as far up the object graph as you need to. </p>
+<pre>        /// 
+        /// Gets the first ancestor object of the specified type
+        /// 
+        /// Matching ancestor, if found.
+        public static object GetAncestor(object current, Type findType)
+        {
+            object found = null;
+            while (current is IChild &amp;&amp; ((IChild)current).GetParent() != null)
+            {
+                current = ((IChild)current).GetParent();
+                if (findType.IsAssignableFrom(current.GetType()))
+                {
+                    found = current;
+                    break;
+                }
+            }
+
+            return found;
+        }
+</pre></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>ajj3085 replied on Friday, April 09, 2010</h2><p>You may want to rethink things if possible.&nbsp; That is, the rule should be in the Parent, checking its grandchildren, not the other way around.</p>
+<p>Its ok for a parent to know about its children (it has to), but you want avoid creating a loop by having the grandchildren know about the parent, if possible.&nbsp; Having that loop increases coupling.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>cousinanthony replied on Saturday, May 15, 2010</h2><p>
+<p class="MsoNormal">I have run into the same exact issue and was going down the
+same path of walking back up the object tree because I have a validation rule
+in the grandchild object with is dependent on a parent property.<span>&nbsp; </span>I would be interested<span>&nbsp; </span>to know how you would approach this issue.</p>
+<p class="MsoNormal">&nbsp;</p>
+<p class="MsoNormal">Here is my scaled down object model</p>
+<p class="MsoNormal">&nbsp;</p>
+<p class="MsoNormal">I have an Event which has a name, start date and end date</p>
+<p class="MsoNormal">The event contains a collection of Tracks which simply has a
+name and a collection of TrackDetails</p>
+<p class="MsoNormal">The TrackDetail contains a start date, start time, and end
+time</p>
+<p class="MsoNormal">&nbsp;</p>
+<p class="MsoNormal">Event</p>
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp; </span>Tracks &ndash; (0<span>&nbsp; </span>- n)</p>
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>TrackDetails (0
+&ndash; n)</p>
+<p class="MsoNormal">&nbsp;</p>
+<p class="MsoNormal">I have a validation rule in TrackDetail that checks if the
+start date is within the Event.StartDate &amp; Event.EndDate.</p>
+<p class="MsoNormal">&nbsp;</p>
+<p class="MsoNormal">Currently I have a property in each object that returns a reference
+to its<span>&nbsp; </span>Parent using the <span>&nbsp;</span>Ctype(Me.Parent, [type])</p>
+<p class="MsoNormal">The Parent value seems to have the proper reference when you
+are creating a new object, but when an object is initialized from the database
+it always <span>&nbsp;</span>seems to be null/Nothing.<span>&nbsp; </span>So I don&rsquo;t fully understand how this Property
+works under the covers.</p>
+<p class="MsoNormal">&nbsp;</p>
+<p class="MsoNormal">If I understand what you are suggesting, my validation rule
+would need to be moved to the Event object.<span>&nbsp;
+</span>My question would be is which property do I attach the broken rule to? <span>&nbsp;</span>Would it be the property the return the Track collection?<span>&nbsp; </span><span>&nbsp;</span>And
+then from the custom validator function, loop through each track and for each
+track loop though each track detail and compare the start dates.</p>
+<p class="MsoNormal">&nbsp;</p>
+<p class="MsoNormal">If that is the correct path, my next question is what is the
+best practice for overall validation </p>
+<p class="MsoNormal">In the case I described above, the validation would be at
+the parent because there is a dependency on a parent property.</p>
+<p class="MsoNormal">But what about child rules where there is no dependency?<span>&nbsp; </span>For example, start and end times for the
+TrackDetail.<span>&nbsp; </span>A validator is needed to
+ensure the end time is after the start time.<span>&nbsp;
+</span>Can this remain in the grandchild property?</p>
+<p class="MsoNormal">&nbsp;</p>
+<p class="MsoNormal">&nbsp;</p>
+<p class="MsoNormal">Thanks</p>
+<p class="MsoNormal">&nbsp;</p>
+</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

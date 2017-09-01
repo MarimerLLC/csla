@@ -1,0 +1,142 @@
+<html><header><title>Configuring a very simple test</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Configuring a very simple test</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10793.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Mark Sulkowski posted on Friday, October 21, 2011</h2><p>I&#39;m using Visual Studio 2008.</p>
+<p>I&#39;d like to create a very simple test of the DataPortal.&nbsp; Preferably, this will be done using a plain Console Application, but if I have to use a Windows Form, that will be fine.</p>
+<p>In one assembly, I have a BusinessObject class defined as a child of BusinessBase&lt;T&gt;.&nbsp; It is marked as Serializable, and&nbsp; as using an&nbsp;ObjectFactory.&nbsp; It has just one field and related property:</p>
+<p><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">private</span></span><span style="font-size:x-small;"> </span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">static</span></span><span style="font-size:x-small;"> </span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">readonly</span></span><span style="font-size:x-small;"> </span><span style="color:#2b91af;font-size:x-small;"><span style="color:#2b91af;font-size:x-small;">PropertyInfo</span></span><span style="font-size:x-small;">&lt;System.</span><span style="color:#2b91af;font-size:x-small;"><span style="color:#2b91af;font-size:x-small;">Guid</span></span><span style="font-size:x-small;">&gt; _GUIDProperty = RegisterProperty&lt;System.</span><span style="color:#2b91af;font-size:x-small;"><span style="color:#2b91af;font-size:x-small;">Guid</span></span><span style="font-size:x-small;">&gt;(p =&gt; p.GUID, </span><span style="color:#2b91af;font-size:x-small;"><span style="color:#2b91af;font-size:x-small;">String</span></span><span style="font-size:x-small;">.Empty);<span style="font-size:x-small;"> </span></span></p>
+<p><span style="font-size:x-small;"><span style="font-size:x-small;"></span></span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">public</span></span><span style="font-size:x-small;"> System.</span><span style="color:#2b91af;font-size:x-small;"><span style="color:#2b91af;font-size:x-small;">Guid</span></span><span style="font-size:x-small;"> GUID { </span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">get</span></span><span style="font-size:x-small;"> { </span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">return</span></span><span style="font-size:x-small;"> GetProperty(_GUIDProperty); }<span style="font-size:x-small;"> </span></span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">private</span></span><span style="font-size:x-small;"> </span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">set</span></span><span style="font-size:x-small;"> { SetProperty(_GUIDProperty, </span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">value)</span></span><span style="font-size:x-small;">; </span><span style="font-size:x-small;">} </span>}</p>
+<p>
+<p>&nbsp;</p>
+<p>And one synchronous factory method:<span style="font-size:x-small;"><span style="font-size:x-small;"><span style="font-size:x-small;"><span style="font-size:x-small;"><span style="font-size:x-small;"><span style="font-size:x-small;"> </span></span>
+<p><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">public</span></span><span style="font-size:x-small;"> </span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">static</span></span><span style="font-size:x-small;"> </span><span style="color:#2b91af;font-size:x-small;"><span style="color:#2b91af;font-size:x-small;">BusinessObject</span></span><span style="font-size:x-small;"> GetNewInstance()
+<p>{ </p>
+</span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">return</span></span><span style="font-size:x-small;"> </span><span style="color:#2b91af;font-size:x-small;"><span style="color:#2b91af;font-size:x-small;">DataPortal</span></span><span style="font-size:x-small;">.Create&lt;</span><span style="color:#2b91af;font-size:x-small;"><span style="color:#2b91af;font-size:x-small;">BusinessObject</span></span><span style="font-size:x-small;">&gt;(); }</span></p>
+</span></span></span></span>&nbsp;</p>
+</p>
+<p>
+<p>&nbsp;</p>
+<p>In a different assembly, there is a class that inherits from ObjectFactory that the business object will try to use.&nbsp; To keep things simple, I will simply return an Activator created instance of the Business Object class.</p>
+<p>When&nbsp;I run my test, I get a DataPortalException with the message DataPortal-Create failed ().&nbsp; I assume this is the expected result for when the application hasn&#39;t been configured yet.&nbsp;&nbsp;Configuration is what I would like to do.</p>
+<p>What are the basics involved in configuring the Console Application (or Windows Form, if need be) to let the BusinessObject know how to communicate with its counterpart ObjectFactory object?&nbsp; Is this as simple a matter as a few app.config entries?</p>
+<p>I don&#39;t care much about authentication issues at this point. I just want to see the Dataportal.Create method work.</p>
+<p>&nbsp;</p>
+<p>Mark Sulkowski</p>
+<p>DigRAD Solutions AB</p>
+</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Friday, October 21, 2011</h2><p>The basic part is - add the ObjectFactory attribute (with fully qualified name for the object factory class)&nbsp; to your BO class and implement the Create method in that ObjectFactory class.&nbsp;</p>
+<p>Look at the sample SimpleNTier for how to use these.</p>
+<p>&nbsp; <span style="color:#006400;">[</span>Serializable<span style="color:#006400;">]</span><br />
+&nbsp;&nbsp;<span style="color:#006400;">[</span>Csla<span style="color:#006400;">.</span>Server<span style="color:#006400;">.</span><span style="color:#191970;font-weight:bold;">ObjectFactory</span><span style="color:#006400;">(</span><span style="color:#0000ff;">&quot;DataAccess.OrderFactory, DataAccess&quot;</span><span style="color:#006400;">)]</span><br />
+&nbsp;&nbsp;<span style="color:#0000ff;font-weight:bold;">public</span>&nbsp;<span style="color:#ff0000;">class</span>&nbsp;Order : BusinessBase<span style="color:#006400;">&lt;</span>Order<span style="color:#006400;">&gt;</span></p>
+<p>&nbsp;&nbsp;&nbsp; <span style="color:#0000ff;font-weight:bold;">public</span>&nbsp;<span style="color:#a52a2a;">static</span>&nbsp;Order&nbsp;<span style="color:#191970;font-weight:bold;">NewOrder</span><span style="color:#006400;">()</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#006400;">{</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#000080;">return</span>&nbsp;DataPortal<span style="color:#006400;">.</span>Create<span style="color:#006400;">&lt;</span>Order<span style="color:#006400;">&gt;();</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#006400;">}</span></p>
+<p>and</p>
+<p>&nbsp; <span style="color:#0000ff;font-weight:bold;">public</span>&nbsp;<span style="color:#ff0000;">class</span>&nbsp;OrderFactory : ObjectFactory<br />
+&nbsp;&nbsp;<span style="color:#006400;">{</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#0000ff;font-weight:bold;">public</span>&nbsp;Order&nbsp;<span style="color:#191970;font-weight:bold;">Create</span><span style="color:#006400;">()</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#006400;">{</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#000080;">var</span>&nbsp;obj =&nbsp;<span style="color:#006400;">(</span>Order<span style="color:#006400;">)</span>MethodCaller<span style="color:#006400;">.</span><span style="color:#191970;font-weight:bold;">CreateInstance</span><span style="color:#006400;">(</span><span style="color:#008b8b;font-weight:bold;">typeof</span><span style="color:#006400;">(</span>Order<span style="color:#006400;">));</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#191970;font-weight:bold;">LoadProperty</span><span style="color:#006400;">(</span>obj<span style="color:#006400;">,</span>&nbsp;Order<span style="color:#006400;">.</span>IdProperty<span style="color:#006400;">,</span>&nbsp;<span style="color:#006400;">-</span><span style="color:#00008b;">1</span><span style="color:#006400;">);</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#191970;font-weight:bold;">MarkNew</span><span style="color:#006400;">(</span>obj<span style="color:#006400;">);</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#191970;font-weight:bold;">CheckRules</span><span style="color:#006400;">(</span>obj<span style="color:#006400;">);</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#000080;">return</span>&nbsp;obj<span style="color:#006400;">;</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#006400;">}</span></p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Mark Sulkowski replied on Monday, November 07, 2011</h2><p>Thanks for the help, JonnyBee, but I was already doing something very similar to what you had&nbsp;suggested.&nbsp; The only substantial difference was that I was using Activator instead of MethodCaller in the Create method.</p>
+<p>I tried using MethodCaller, but I still get the same DataPortalException.&nbsp; I have been using the Serializable and ObjectFactory attributes on the business object, and I&#39;m reasonably certain that I am giving the correct string.&nbsp; (The string is <span style="color:#a31515;font-size:x-small;"><span style="color:#a31515;font-size:x-small;">&quot;DALTest.BusinessObjectFactory, DALTest&quot; </span></span>and DALTest is the name of the assembly.)</p>
+<p>The only thing I can think of is that the business layer doesn&#39;t know where to go to reach the DAL.&nbsp; Could there be some app.config style settings that I need to set?</p>
+<p>I&#39;ll give more of my&nbsp;code if that helps.&nbsp; I get a DataPortalException when DataPortal.Create is called.&nbsp; I get this exception even if I comment out my Create method code and simply return a null.&nbsp;</p>
+<p><span style="font-size:x-small;"><span style="font-size:x-small;"><span style="font-size:x-small;"><span style="font-size:x-small;">
+<p>[</p>
+</span></span></span></span><span style="color:#2b91af;font-size:x-small;"><span style="color:#2b91af;font-size:x-small;">Serializable</span></span><span style="font-size:x-small;">]</span></p>
+<p>&nbsp;</p>
+<p><span style="font-size:x-small;">[Csla.Server.</span><span style="color:#2b91af;font-size:x-small;"><span style="color:#2b91af;font-size:x-small;">ObjectFactory</span></span><span style="font-size:x-small;">(</span><span style="color:#2b91af;font-size:x-small;"><span style="color:#2b91af;font-size:x-small;">FactoryNames</span></span><span style="font-size:x-small;">.BusinessObjectFactoryName)]</span></p>
+<p><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">public</span></span><span style="font-size:x-small;"> </span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">partial</span></span><span style="font-size:x-small;"> </span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">class</span></span><span style="font-size:x-small;"> </span><span style="color:#2b91af;font-size:x-small;"><span style="color:#2b91af;font-size:x-small;">BusinessObject</span></span><span style="font-size:x-small;"> : </span><span style="color:#2b91af;font-size:x-small;"><span style="color:#2b91af;font-size:x-small;">DigRADBusinessBase</span></span><span style="font-size:x-small;">&lt;</span><span style="color:#2b91af;font-size:x-small;"><span style="color:#2b91af;font-size:x-small;">BusinessObject</span></span><span style="font-size:x-small;">&gt; </span>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">
+<p>#region </p>
+</span></span></span></span></span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">
+<p>&nbsp;</p>
+</span></span></span></span>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">private</span></span><span style="font-size:x-small;"> </span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">static</span></span><span style="font-size:x-small;"> </span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">readonly</span></span><span style="font-size:x-small;"> </span><span style="color:#2b91af;font-size:x-small;"><span style="color:#2b91af;font-size:x-small;">PropertyInfo</span></span><span style="font-size:x-small;">&lt;System.</span><span style="color:#2b91af;font-size:x-small;"><span style="color:#2b91af;font-size:x-small;">Guid</span></span><span style="font-size:x-small;">&gt; _GUIDProperty = RegisterProperty&lt;System.</span><span style="color:#2b91af;font-size:x-small;"><span style="color:#2b91af;font-size:x-small;">Guid</span></span><span style="font-size:x-small;">&gt;(p =&gt; p.GUID, </span><span style="color:#2b91af;font-size:x-small;"><span style="color:#2b91af;font-size:x-small;">String</span></span><span style="font-size:x-small;">.Empty);<span style="font-size:x-small;">
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<span style="font-size:x-small;"><span style="font-size:x-small;">
+<p>&nbsp;</p>
+</span></span></span></span></p>
+<p>&nbsp;</p>
+<p><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">public</span></span><span style="font-size:x-small;"> System.</span><span style="color:#2b91af;font-size:x-small;"><span style="color:#2b91af;font-size:x-small;">Guid</span></span><span style="font-size:x-small;">&nbsp;GUID</span></p>
+<p><span style="font-size:x-small;">{</span></p>
+</span></span><span style="font-size:x-small;">properties<span style="font-size:x-small;">
+<p>&nbsp;</p>
+<span style="font-size:x-small;"><span style="font-size:x-small;">
+<p>&nbsp;</p>
+</span></span></span></span></p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">get</span></span><span style="font-size:x-small;"> { </span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">return</span></span><span style="font-size:x-small;"> GetProperty(_GUIDProperty); }<span style="font-size:x-small;"> </span></span></p>
+<p><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">private</span></span><span style="font-size:x-small;"> </span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">set</span></span><span style="font-size:x-small;"> { SetProperty(_GUIDProperty, </span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">value</span></span><span style="font-size:x-small;">);</span></p>
+<p><span style="font-size:x-small;">} </span>
+<p>&nbsp;</p>
+<span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">#endregion</span></span><span style="font-size:x-small;">Synchronous Factory Methods<span style="font-size:x-small;"> </span></span></p>
+<p>
+<p><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">
+<p>#region </p>
+</span></span></span></span></span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">
+<p>&nbsp;</p>
+</span></span></span></span>
+<p>&nbsp;</p>
+</p>
+</p>
+<p><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">public</span></span><span style="font-size:x-small;"> </span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">static</span></span><span style="font-size:x-small;"> </span><span style="color:#2b91af;font-size:x-small;"><span style="color:#2b91af;font-size:x-small;">BusinessObject</span></span><span style="font-size:x-small;"> GetNewInstance() </span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">return</span></span><span style="font-size:x-small;"> </span><span style="color:#2b91af;font-size:x-small;"><span style="color:#2b91af;font-size:x-small;">DataPortal</span></span><span style="font-size:x-small;">.Create&lt;</span><span style="color:#2b91af;font-size:x-small;"><span style="color:#2b91af;font-size:x-small;">BusinessObject</span></span><span style="font-size:x-small;">&gt;(); </span><span style="font-size:x-small;">}</span></p>
+<p>{ </p>
+<p><span style="font-size:x-small;">#endregion</span></p>
+<p><span style="font-size:x-small;">}</span><span style="font-size:x-small;"><span style="font-size:x-small;"><span style="font-size:x-small;">
+<p>&nbsp;</p>
+<span style="font-size:x-small;"><span style="font-size:x-small;">
+<p>&nbsp;</p>
+</span></span></span></span></span>
+<p>&nbsp;</p>
+</p>
+<p>&nbsp;</p>
+<p><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">public</span></span><span style="font-size:x-small;"> </span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">partial</span></span><span style="font-size:x-small;"> </span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">class</span></span><span style="font-size:x-small;"> </span><span style="color:#2b91af;font-size:x-small;"><span style="color:#2b91af;font-size:x-small;">BusinessObjectFactory</span></span><span style="font-size:x-small;"> : </span><span style="color:#2b91af;font-size:x-small;"><span style="color:#2b91af;font-size:x-small;">ObjectFactory</span></span></p>
+<p>
+<p><span style="font-size:x-small;">
+<p>{</p>
+</span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">
+<p>#region&nbsp;</p>
+</span></span></span></span></span></span></span></span></span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">
+<p>&nbsp;</p>
+</span></span></span></span></span></span></span></span>
+<p>&nbsp;</p>
+</span></span></span></span></span></span><span style="font-size:x-small;">Create<span style="font-size:x-small;"> </span></span></p>
+</p>
+</p>
+<p>
+<p><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;"><span style="font-size:x-small;"><span style="font-size:x-small;">
+<p>&nbsp;</p>
+</span></span>
+<p><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">public</span></span><span style="font-size:x-small;"> </span><span style="color:#2b91af;font-size:x-small;"><span style="color:#2b91af;font-size:x-small;">BusinessObject</span></span><span style="font-size:x-small;"> Create()
+<p>{</p>
+<span style="font-size:x-small;">
+<p>&nbsp;</p>
+</span></span></p>
+<p><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">var</span></span><span style="font-size:x-small;"> obj = </span><span style="color:#2b91af;font-size:x-small;"><span style="color:#2b91af;font-size:x-small;">MethodCaller</span></span><span style="font-size:x-small;">.CreateInstance(</span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">typeof</span></span><span style="font-size:x-small;">(</span><span style="color:#2b91af;font-size:x-small;"><span style="color:#2b91af;font-size:x-small;">BusinessObject</span></span><span style="font-size:x-small;">)) </span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">as</span></span><span style="font-size:x-small;"> </span><span style="color:#2b91af;font-size:x-small;"><span style="color:#2b91af;font-size:x-small;">BusinessObject</span></span><span style="font-size:x-small;">;
+<p>MarkNew(obj);</p>
+<p>CheckRules(obj);</p>
+<span style="font-size:x-small;">
+<p>&nbsp;</p>
+</span></span></p>
+<p><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">return</span></span><span style="font-size:x-small;"> obj;
+<p>}</p>
+<span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;"><span style="font-size:x-small;">
+<p>}</p>
+</span></span></span></span></p>
+<p>&nbsp;</p>
+</span></span></p>
+</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>StefanCop replied on Monday, November 07, 2011</h2><p><span style="font-size:small;">You DALTest.dll has to be in the same directory as your console .exe (I assume you run without config/LocalProxy/2-tier; otherwise the dll should be located in the server&#39;s directory). </span></p>
+<p><span style="font-size:small;">Your factory has to implement <span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;"><span style="font-size:small;">public</span></span></span><span style="font-size:x-small;"><span style="font-size:x-small;"><span style="font-size:small;">&nbsp;<span style="color:#2b91af;"><span style="color:#2b91af;">BusinessObject </span></span>Create() </span><span style="color:#000000;"><span style="font-size:small;">, </span>as you&#39;ve posted.&nbsp; </span></span></span></span></span></span></span><span style="font-size:small;"><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;"><span style="font-size:x-small;"><span style="font-size:x-small;"><span style="color:#000000;">And I assume the factory is in a DalTest namespace.</span></span></span></span></span></span></span><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"><br /></span></span></span></span></span></p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,99 @@
+<html><header><title>EitherOrRequired rule</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>EitherOrRequired rule</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10640.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Kevin Fairclough posted on Thursday, August 25, 2011</h2><p>Hi</p>
+<p>Something simple which I cannot get to work :-)</p>
+<p>I need a rule that will examine two properties and error if both are blank. &nbsp;I have created this rule so it takes two IPropertInfo objects.</p>
+<p>
+<pre><span>public</span>&nbsp;<span>class</span>&nbsp;<span>EitherHaveValue</span>&nbsp;:&nbsp;<span>CommonBusinessRule</span><br />&nbsp;&nbsp;&nbsp;&nbsp;{<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>IPropertyInfo</span>&nbsp;SecondaryProperty&nbsp;{<span>get</span>;&nbsp;<span>set</span>;}<br /> <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>///</span><span>&nbsp;</span><span>&lt;summary&gt;</span><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>///</span><span>&nbsp;Creates&nbsp;an&nbsp;instance&nbsp;of&nbsp;the&nbsp;rule.</span><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>///</span><span>&nbsp;</span><span>&lt;/summary&gt;</span><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>///</span><span>&nbsp;</span><span>&lt;param&nbsp;name=</span><span>&quot;primaryProperty&quot;</span><span>&gt;</span><span>Property&nbsp;to&nbsp;which&nbsp;the&nbsp;rule&nbsp;applies.</span><span>&lt;/param&gt;</span><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>public</span>&nbsp;EitherHaveValue(<span>IPropertyInfo</span>&nbsp;primaryProperty,&nbsp;<span>IPropertyInfo</span>&nbsp;secondaryProperty)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;<span>base</span>(primaryProperty)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;PrimaryProperty&nbsp;=&nbsp;primaryProperty;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;SecondaryProperty&nbsp;=&nbsp;secondaryProperty;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>//this.AffectedProperties.Add(PrimaryProperty);</span><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>this</span>.AffectedProperties.Add(SecondaryProperty);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;InputProperties&nbsp;=&nbsp;<span>new</span>&nbsp;<span>List</span>&lt;<span>IPropertyInfo</span>&gt;&nbsp;{&nbsp;primaryProperty,&nbsp;secondaryProperty&nbsp;};<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br /> <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>///</span><span>&nbsp;</span><span>&lt;summary&gt;</span><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>///</span><span>&nbsp;Rule&nbsp;implementation.</span><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>///</span><span>&nbsp;</span><span>&lt;/summary&gt;</span><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>///</span><span>&nbsp;</span><span>&lt;param&nbsp;name=</span><span>&quot;context&quot;</span><span>&gt;</span><span>Rule&nbsp;context.</span><span>&lt;/param&gt;</span><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>protected</span>&nbsp;<span>override</span>&nbsp;<span>void</span>&nbsp;Execute(<span>RuleContext</span>&nbsp;context)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>var</span>&nbsp;value&nbsp;=&nbsp;context.InputPropertyValues[PrimaryProperty];<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>var</span>&nbsp;value2&nbsp;=&nbsp;context.InputPropertyValues[SecondaryProperty];<br /> <br /><span>#if</span>&nbsp;WINDOWS_PHONE<br /><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;(value&nbsp;==&nbsp;null&nbsp;||&nbsp;string.IsNullOrEmpty(value.ToString()))</span><br /><span>#else</span><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>if</span>&nbsp;(value&nbsp;==&nbsp;<span>null</span>&nbsp;||&nbsp;<span>string</span>.IsNullOrWhiteSpace(value.ToString()))<br /><span>#endif</span><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<br /><span>#if</span>&nbsp;WINDOWS_PHONE<br /><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;(value2&nbsp;==&nbsp;null&nbsp;||&nbsp;string.IsNullOrEmpty(value2.ToString()))</span><br /><span>#else</span><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>if</span>&nbsp;(value2&nbsp;==&nbsp;<span>null</span>&nbsp;||&nbsp;<span>string</span>.IsNullOrWhiteSpace(value2.ToString()))<br /><span>#endif</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<br /> <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>var</span>&nbsp;message&nbsp;=<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>string</span>.Format(PrimaryProperty.FriendlyName&nbsp;+&nbsp;<span>&quot;&nbsp;or&nbsp;&quot;</span>&nbsp;+&nbsp;SecondaryProperty.FriendlyName&nbsp;+<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>&quot;&nbsp;required.&quot;</span>);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;context.Results.Add(<span>new</span>&nbsp;<span>RuleResult</span>(RuleName,&nbsp;PrimaryProperty,&nbsp;message)&nbsp;{Severity&nbsp;=&nbsp;Severity});<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>//context.Results.Add(new&nbsp;RuleResult(RuleName,&nbsp;SecondaryProperty,&nbsp;message)&nbsp;{Severity&nbsp;=&nbsp;Severity});</span><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br />&nbsp;&nbsp;&nbsp;&nbsp;}</pre>
+<pre></pre>
+<pre>I can only get this to work properly by adding it twice to the BusinssRules property in the BO:</pre>
+<pre><pre>BusinessRules.AddRule(<span>new</span>&nbsp;Csla.Extensions.Rules.<span>EitherHaveValue</span>(TypeProperty,&nbsp;ValueProperty));<br />BusinessRules.AddRule(<span>new</span>&nbsp;Csla.Extensions.Rules.<span>EitherHaveValue</span>(ValueProperty,&nbsp;TypeProperty));</pre>
+<pre></pre>
+<pre>Doing this however gives me two errors instead of one?</pre>
+<pre>I&#39;m obviously doing this wrong, any ideas?</pre>
+<pre></pre>
+<pre>Regards</pre>
+<pre>Kevin Fairclough</pre>
+</pre>
+</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Thursday, August 25, 2011</h2><p>Hi, </p>
+<p>Here is the AnyRequired rule from CslaContrib:</p>
+<p>Remember to add a <b>Dependency </b>rule from field2 to field1 to make the rule run also when field2 is changed.</p>
+<pre style="font-family:Consolas;font-size:13px;color:black;background:none repeat scroll 0% 0% #fafafa;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;BusinessRules.AddRule(<span style="color:blue;">new</span> <span style="color:#2b91af;">AnyRequired</span>(TypeProperty, ValueProperty, Value2Property));
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; BusinessRules.AddRule(<span style="color:blue;">new</span>&nbsp;<span style="color:#2b91af;">Dependency</span>(ValueProperty, TypeProperty));
+</pre>
+<p>The AnyRequired rule: </p>
+<pre style="font-family:Consolas;font-size:13px;color:black;background:none repeat scroll 0% 0% #fafafa;">&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;summary&gt;</span>
+&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;Check&nbsp;that&nbsp;at&nbsp;least&nbsp;one&nbsp;of&nbsp;the&nbsp;fields&nbsp;of&nbsp;type&nbsp;string&nbsp;or&nbsp;smartvalue&nbsp;field&nbsp;has&nbsp;a&nbsp;value.</span>
+&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;Code&nbsp;must&nbsp;also&nbsp;add&nbsp;Dependency&nbsp;rules&nbsp;from&nbsp;each&nbsp;additional&nbsp;properties&nbsp;to&nbsp;primary&nbsp;property.</span>
+&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;/summary&gt;</span>
+&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">class</span>&nbsp;<span style="color:#2b91af;">AnyRequired</span>&nbsp;:&nbsp;<span style="color:#2b91af;">CommonBusinessRule</span>
+&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;summary&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;Initializes&nbsp;a&nbsp;new&nbsp;instance&nbsp;of&nbsp;the&nbsp;</span><span style="color:gray;">&lt;see&nbsp;cref=</span><span style="color:gray;">&quot;AnyRequired&quot;</span><span style="color:gray;">/&gt;</span><span style="color:green;">&nbsp;class.</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;/summary&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;param&nbsp;name=</span><span style="color:gray;">&quot;primaryProperty&quot;</span><span style="color:gray;">&gt;</span><span style="color:green;">The&nbsp;primary&nbsp;property.</span><span style="color:gray;">&lt;/param&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;param&nbsp;name=</span><span style="color:gray;">&quot;additionalProperties&quot;</span><span style="color:gray;">&gt;</span><span style="color:green;">The&nbsp;additional&nbsp;properties.</span><span style="color:gray;">&lt;/param&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;AnyRequired(<span style="color:#2baaaf;">IPropertyInfo</span>&nbsp;primaryProperty,&nbsp;<span style="color:blue;">params</span>&nbsp;<span style="color:#2baaaf;">IPropertyInfo</span>[]&nbsp;additionalProperties)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;<span style="color:blue;">base</span>(primaryProperty)
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">if</span>&nbsp;(InputProperties&nbsp;==&nbsp;<span style="color:blue;">null</span>)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;InputProperties&nbsp;=&nbsp;<span style="color:blue;">new</span>&nbsp;<span style="color:#2b91af;">List</span>&lt;<span style="color:#2baaaf;">IPropertyInfo</span>&gt;();
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;InputProperties.AddRange(additionalProperties);
+&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;summary&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;Initializes&nbsp;a&nbsp;new&nbsp;instance&nbsp;of&nbsp;the&nbsp;</span><span style="color:gray;">&lt;see&nbsp;cref=</span><span style="color:gray;">&quot;AnyRequired&quot;</span><span style="color:gray;">/&gt;</span><span style="color:green;">&nbsp;class.</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;/summary&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;param&nbsp;name=</span><span style="color:gray;">&quot;primaryProperty&quot;</span><span style="color:gray;">&gt;</span><span style="color:green;">The&nbsp;primary&nbsp;property.</span><span style="color:gray;">&lt;/param&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;param&nbsp;name=</span><span style="color:gray;">&quot;errorMessageDelegate&quot;</span><span style="color:gray;">&gt;</span><span style="color:green;">The&nbsp;error&nbsp;message&nbsp;function.</span><span style="color:gray;">&lt;/param&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;param&nbsp;name=</span><span style="color:gray;">&quot;additionalProperties&quot;</span><span style="color:gray;">&gt;</span><span style="color:green;">The&nbsp;additional&nbsp;properties.</span><span style="color:gray;">&lt;/param&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;AnyRequired(<span style="color:#2baaaf;">IPropertyInfo</span>&nbsp;primaryProperty,&nbsp;<span style="color:#2b91af;">Func</span>&lt;<span style="color:blue;">string</span>&gt;&nbsp;errorMessageDelegate,&nbsp;<span style="color:blue;">params</span>&nbsp;<span style="color:#2baaaf;">IPropertyInfo</span>[]&nbsp;additionalProperties)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;<span style="color:blue;">this</span>(primaryProperty,&nbsp;additionalProperties)
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ErrorMessageDelegate&nbsp;=&nbsp;errorMessageDelegate;
+&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;summary&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;Gets&nbsp;the&nbsp;error&nbsp;message.</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;/summary&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;value&gt;&lt;/value&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">protected</span>&nbsp;<span style="color:blue;">override</span>&nbsp;<span style="color:blue;">string</span>&nbsp;ErrorMessage
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">get</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">return</span>&nbsp;HasErrorMessageDelegate&nbsp;?&nbsp;<span style="color:blue;">base</span>.ErrorMessage&nbsp;:&nbsp;CslaContrib.Properties.<span style="color:#2b91af;">Resources</span>.AnyRequiredRule;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;summary&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;Executes&nbsp;the&nbsp;rule&nbsp;in&nbsp;specified&nbsp;context.</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;/summary&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;param&nbsp;name=</span><span style="color:gray;">&quot;context&quot;</span><span style="color:gray;">&gt;</span><span style="color:green;">The&nbsp;context.</span><span style="color:gray;">&lt;/param&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">protected</span>&nbsp;<span style="color:blue;">override</span>&nbsp;<span style="color:blue;">void</span>&nbsp;Execute(<span style="color:#2b91af;">RuleContext</span>&nbsp;context)
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">foreach</span>&nbsp;(<span style="color:blue;">var</span>&nbsp;field&nbsp;<span style="color:blue;">in</span>&nbsp;context.InputPropertyValues)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:green;">//&nbsp;smartfields&nbsp;have&nbsp;their&nbsp;own&nbsp;implementation&nbsp;of&nbsp;IsEmpty</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">var</span>&nbsp;smartField&nbsp;=&nbsp;field.Value&nbsp;<span style="color:blue;">as</span>&nbsp;<span style="color:#2baaaf;">ISmartField</span>;
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">if</span>&nbsp;(smartField&nbsp;!=&nbsp;<span style="color:blue;">null</span>)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">if</span>&nbsp;(!smartField.IsEmpty)&nbsp;<span style="color:blue;">return</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">else</span>&nbsp;<span style="color:blue;">if</span>&nbsp;(field.Value&nbsp;!=&nbsp;<span style="color:blue;">null</span>&nbsp;&amp;&amp;&nbsp;!field.Value.Equals(field.Key.DefaultValue))&nbsp;<span style="color:blue;">return</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">var</span>&nbsp;fields&nbsp;=&nbsp;context.InputPropertyValues.Select(p&nbsp;=&gt;&nbsp;p.Key.FriendlyName).ToArray();
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">var</span>&nbsp;fieldNames&nbsp;=&nbsp;<span style="color:#2b91af;">String</span>.Join(<span style="color:#a31515;">&quot;,&nbsp;&quot;</span>,&nbsp;fields);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;context.AddErrorResult(<span style="color:blue;">string</span>.Format(ErrorMessage,&nbsp;fieldNames));
+&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;}</pre>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Kevin Fairclough replied on Friday, August 26, 2011</h2><p>Thanks Jonny&nbsp;</p>
+<p>This works however the dependant property doesn&#39;t get an error adorner in our WPF, only the primary property.</p>
+<p>Thanks</p>
+<p>Kevin</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Friday, August 26, 2011</h2><p>Hi,</p>
+<p>There&#39;s been a lot of discussions here on whether to set error/warnin etc on other fields. </p>
+<p>Truth is - this has not worked as expected up until now and has been fixed i Csla 4.2 (trunk only) so that f.ex an AnyRequired rule can</p>
+<ul>
+<li>set an error mesage on all of the fields (not just primary property)</li>
+<li>and rule engine will also consider InputProperties as Dependency so you will not have to add explicit Dependency rules.</li>
+</ul>
+<p>So when you move to Csla 4.2 this will be possible within just one rule.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

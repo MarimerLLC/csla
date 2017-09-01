@@ -1,0 +1,8 @@
+<html><header><title>Use Csla for other purposes</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Use Csla for other purposes</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/628.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>phucphlq posted on Friday, July 14, 2006</h2><P>I use .Net Remoting, I write a class(not inherit from any classes of CSLA) and I want to execute its function at server&nbsp;if client must have CslaAuthentication as BusinessClass. I want to use CslsAuthentication to security my class.</P>
+<P>&nbsp;&nbsp;&nbsp; Ex: </P>
+<P>&nbsp;&nbsp;&nbsp;public class Management:MarshalByRef</P>
+<P>&nbsp;&nbsp; {</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;public void Cal()</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</P>
+<P>&nbsp;&nbsp;&nbsp;}</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Monday, July 17, 2006</h2>You'd have to make use of your class only in a DataPortal_xxx method; code in the DataPortal_xxx methods are always run server side (well, as long as you're following the rules of the framework).<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

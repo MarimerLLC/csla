@@ -1,0 +1,138 @@
+<html><header><title>String.Empty != null</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>String.Empty != null</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6633.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Geeky posted on Thursday, March 19, 2009</h2><P>Hi,</P>
+<P>On line 2143 of Csla.Core.BusinessBase is the following:</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (typeof(P) == typeof(string) &amp;&amp; newValue == null)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; newValue = Utilities.CoerceValue&lt;P&gt;(typeof(string), field, string.Empty);</P>
+<P>Is there a valid reason for this?&nbsp; I know Rocky has posted elsewhere that null can be a problem for data binding (although I can't remember it ever affecting my projects on the web and in WinForms).</P>
+<P>When a property is set, it should return the value that it has been passed.&nbsp; Basically changing the value is horrible.&nbsp; We need to duplicate SQL in order to test that an object can&nbsp;load a null value as we can't set the property to null.</P>
+<P>I would like to remove this line, but before I do, I would like to know it would have any other effects (eg MobileFormatter).</P>
+<P>Cheers</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, March 19, 2009</h2><P>The primary issue is (was?) in WinForms, because data binding would throw null ref exceptions if a string property returned null. Maybe this is no longer the case.</P>
+<P>I agree that in the case where "" and null are not the same from a business perspective this can be problematic. However, in that case you can't just use a TextBox either, because the user can't tell the difference between a "" and null since the TextBox control renders them the same way.</P>
+<P>So where this difference actually matters, you'll typically need a second bool property for each string property so you can bind it to a checkbox or similar control associated with the textbox so the user knows whether the value is "" or null.</P>
+<P>In other words, if null is being used correctly it is virtually never the case that the difference between "" and null for a string matters at the business object/UI layers - because if it actually <EM>does</EM> matter, the null state is managed in some other property.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Geeky replied on Friday, March 20, 2009</h2><P>Thanks for the quick reply.&nbsp; I agree with your point about the UI however if the BO needs to mirror the database, then null should be a valid value.&nbsp; With regards to the UI, surely if setting the value converts null to string.empty, then surely getting the property should do the same?</P>
+<P>Anyway CSLA is great - I still love it and will just remove that line I think :-).</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Friday, March 20, 2009</h2>How will you overcome the fact that a text box will render null and String.Empty exactly the same?<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>lukky replied on Friday, March 20, 2009</h2>Hi,<br><br>I don't know if this would be a solution for your use case, but the WinForms Binding object allows you to specify a string to represent NULL. Could you use that ?<br><br>Regards.<br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, March 20, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>That&#8217;s somewhat true. But you must remember that null and
+DbNull are not the same thing. They have different semantic behaviors and
+different meanings. So while you can treat them the same to a point, they
+really aren&#8217;t the same at all.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>It doesn&#8217;t sound, from what you&#8217;ve said, like the
+business has any DbNull requirement. In other words, it doesn&#8217;t sound
+like there&#8217;s a business requirement to differentiate between a NULL and &#8220;&#8221;
+in a database value. Maybe there is, in which case you really need a
+comprehensive solution. <o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>But if you are like 95% of the apps out there, this is actually
+a technical database issue, not a business issue. In this case, the typical
+answer is to use something like SafeDataReader to simply and automatically make
+sure the database always has NULL, and the object always has &#8220;&#8221;. No
+muss, no fuss. The business people are happy because they didn&#8217;t care
+about this to start with, and the database people are happy because they get to
+keep misusing NULL.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Yes, misusing. This is actually one of my pet peeves, and I&#8217;ve
+posted on the forum in the past about it. I won&#8217;t repeat my rant here,
+because it is possible that your business people <i>do care</i> about the
+difference between a value that was never entered and a value that was entered
+as blank &#8211; which is one of only three valid reasons a database should
+allow a NULL in a column (along with foreign key definition and empty date
+value).<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Geeky replied on Tuesday, March 24, 2009</h2><P>The point is that the database may contain a null.&nbsp; We need to test that we can retrieve a null value (we don't use SafeDataReader - we have our own IDataReader implementation).</P>
+<P>If we can't set the value to null, then we can't test that we can retrieve null.</P>
+<P>AFAIK, SafeDataReader only reads from the database and cannot ensure that an external process does not enter a null value.</P>
+<P>Yes, on the UI we don't care about the difference between null and string.empty however, the UI is a small part of any application.</P>
+<P>If CSLA ensured that a null string is never returned by a property, then I could understand your point, but it does not - it only ensures that&nbsp;if a&nbsp;property is set to null, the value is string.empty which results in confusing behaviour.&nbsp; No one would set a nullable int to 0 just because it was null would they?</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Tuesday, March 24, 2009</h2>Well, what exactly are you trying to test?&nbsp; Your IDataReader implementation?&nbsp; Or what happens if you feed data from your implementation into Csla?&nbsp; If it's the former, you shouldn't be involving Csla at all in your testing.&nbsp; If it's the latter, I would expect that you have some way to prefill your database.. just make sure that includes dropping a null in the relevent column.&nbsp; If your BO doesn't care about the difference between null or an empty string, it should work either way.<br><br>The problem with your comparison to Nullable&lt;int&gt; is that it's very easy to see in a text box the difference between null and the value 0.&nbsp; The same isn't true for null and an empty string.. both are displayed identically.&nbsp; Csla only translates null to String.Empty if you're talking about a string field.... because you can't see the difference on the UI.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, March 24, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I don&#8217;t think we&#8217;re understanding each other
+completely.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>There are only three reasons to care about null values. Of those
+three, only one goes beyond the database: the scenario where the <i>business logic
+cares about the difference</i> between null and &#8220;&#8221;. That isn&#8217;t
+just a UI thing &#8211; it is a <i>business logic thing</i>.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Ask your users &#8211; the business stakeholders &#8211; whether
+the software needs to track whether a value is empty (&#8220;&#8221;) or has
+never been entered at all (null). If they say they care, then you need to use
+null throughout the app. If they look at you blankly, wondering what the heck
+you are talking about, then you don&#8217;t need to use null throughout the
+app.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I suspect you are in the latter situation. In that case, the
+fact that the database allows a null value instead of &#8220;&#8221; is a bug
+in the database design. This happens frequently, due to database designers that
+don&#8217;t understand the purpose of null, or database&#8217;s that evolve
+over time and get new columns, and the person adding the new column is too lazy
+to add the column, set the existing rows to have a valid default value, and
+then disable null values in the column.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Either way, many (most?) databases allow nulls where nulls shouldn&#8217;t
+be allowed.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Just because the database is broken doesn&#8217;t mean your
+business layer or UI layer should be complicated too. Use your data access
+layer to fix the problem. That&#8217;s the purpose behind SafeDataReader &#8211;
+but SafeDataReader is just one example of a broader solution to the problem &#8211;
+which is to have the DAL deal with the busted database design so the BL and UI
+don&#8217;t have to worry about it.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

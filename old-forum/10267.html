@@ -1,0 +1,9 @@
+<html><header><title>ReadOnlyBase / DataPortal_Create</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>ReadOnlyBase / DataPortal_Create</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10267.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Ziad posted on Friday, April 15, 2011</h2><p>Hello,</p>
+<p>I have the following&nbsp;3 classes:</p>
+<p>Company : ReadOnlyBase&lt;Company&gt;</p>
+<p>Activity : BusinessBase&lt;Activity&gt;</p>
+<p>Activities : BusinessListBase&lt;Activity&gt;</p>
+<p>In Activity, I declare a Company Property.</p>
+<p>How can I set the Company Property in Activities, shall I define a special Factory Method in Company? How can I do it?</p>
+<p>Thanks</p>
+<p>Ziad</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Friday, April 15, 2011</h2><p>There is no &quot;create&quot; operation for a read-only object. Only the &quot;fetch&quot; operation has meaning, so you need to use DataPortal.Fetch and DataPortal_Fetch.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

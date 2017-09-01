@@ -1,0 +1,44 @@
+<html><header><title>Can ReadOnlyBase have children?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Can ReadOnlyBase have children?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9668.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>tiago posted on Sunday, October 24, 2010</h2><p>Hi Rocky</p>
+<p>I&#39;m using CSLA.NET 4.0.1 (didn&#39;t install 4.1.0 yet)</p>
+<p>I have a Inbox class defined like this:</p>
+<pre style="FONT-FAMILY:consolas;">[<span style="COLOR:darkblue;">Serializable</span>]<br /><span style="COLOR:blue;">public</span>&nbsp;<span style="COLOR:blue;">class</span>&nbsp;<span style="COLOR:darkblue;">Inbox</span>&nbsp;:&nbsp;<span style="COLOR:darkblue;">ReadOnlyBase</span>&lt;<span style="COLOR:darkblue;">Inbox</span>&gt;<br /></pre>
+<p>I have some&nbsp;properties (auto properties mostly but that&#39;s besides the point) and then some child properties declared as follows:</p>
+<pre style="FONT-FAMILY:consolas;"><span style="COLOR:blue;">public</span>&nbsp;<span style="COLOR:blue;">static</span>&nbsp;<span style="COLOR:darkblue;">PropertyInfo</span>&lt;<span style="COLOR:darkblue;">SentByUserDocList</span>&gt;&nbsp;<span style="COLOR:purple;">SentByDocumentsProperty</span>&nbsp;=&nbsp;<br />&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:darkcyan;">RegisterProperty</span>&lt;<span style="COLOR:darkblue;">SentByUserDocList</span>&gt;(p&nbsp;=&gt;&nbsp;p.<span style="COLOR:purple;">SentByDocuments</span>,&nbsp;<br />&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:#a31515;">&quot;Sent&nbsp;By&nbsp;Documents&quot;</span>,&nbsp;<span style="COLOR:darkblue;">RelationshipTypes</span>.<span style="FONT-WEIGHT:700;COLOR:purple;">Child</span>);<br /> <br /><span style="COLOR:blue;">public</span>&nbsp;<span style="COLOR:darkblue;">SentByUserDocList</span>&nbsp;<span style="COLOR:purple;">SentByDocuments</span><br />{<br />&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:darkcyan;">get</span>&nbsp;{&nbsp;<span style="COLOR:blue;">return</span>&nbsp;<span style="COLOR:darkcyan;">GetProperty</span>(<span style="COLOR:purple;">SentByDocumentsProperty</span>);&nbsp;}<br />}</pre>
+<p>You also need to know a bit about the child type:</p>
+<pre style="FONT-FAMILY:consolas;">[<span style="COLOR:darkblue;">Serializable</span>]<br /><span style="COLOR:blue;">public</span>&nbsp;<span style="COLOR:blue;">partial</span>&nbsp;<span style="COLOR:blue;">class</span>&nbsp;<span style="COLOR:darkblue;">SentByUserDocList</span>&nbsp;:&nbsp;<br />&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:darkblue;">ReadOnlyListBase</span>&lt;<span style="COLOR:darkblue;">SentByUserDocList</span>,&nbsp;<span style="COLOR:darkblue;">SentByUserDocInfo</span>&gt;</pre>
+<p>mostly because it&#39;s a ReadOnlyListBase and its items are </p>
+<pre style="FONT-FAMILY:consolas;">[<span style="COLOR:darkblue;">Serializable</span>]<br /><span style="COLOR:blue;">public</span>&nbsp;<span style="COLOR:blue;">partial</span>&nbsp;<span style="COLOR:blue;">class</span>&nbsp;<span style="COLOR:darkblue;">SentByUserDocInfo</span>&nbsp;:&nbsp;<br />&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:darkblue;">ReadOnlyBase</span>&lt;<span style="COLOR:darkblue;">SentByUserDocInfo</span>&gt;</pre>
+<p>so ReadOnlyBase too.</p>
+<p>The problem is VS2010 is complaining about the </p>
+<pre style="font-family:consolas;"><span style="color:darkblue;">RelationshipTypes</span>.<span style="font-weight:700;color:purple;">Child</span><br /></pre>
+<p>&nbsp;part&nbsp; saying</p>
+<p><strong>Argument type &#39;Csla.RelationshipTypes&#39; is not assignable to parameter type &#39;SentByUserDocList&#39;</strong></p>
+<p>I suppose this means ReadOnlyListBase objects can&#39;t be child. I also suppose that&#39;s why&nbsp;the class</p>
+<pre style="FONT-FAMILY:consolas;"><span style="COLOR:darkblue;">SentByUserDocList</span><br /></pre>
+<p>&nbsp;complains about</p>
+<pre style="FONT-FAMILY:consolas;"><span style="COLOR:darkcyan;">MarkAsChild</span>();<br /></pre>
+<p>&nbsp;</p>
+<p>PS - I started with non-ReadOnly objects and I was trying to transform everything into RO.</p>
+<p>Regards</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>sergeyb replied on Sunday, October 24, 2010</h2><p>Child is editable object concept, not readonly object.&nbsp; You should be able to remove child related code, and everything will still work just fine.</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Sunday, October 24, 2010</h2><p>The child relationship type value is only meaningful for editable objects, as it controls some read-write interactions.</p>
+<p>You can absolutely have child objects in a read-only object graph, but those graphs are much simpler (almost by definition - no undo, no persistence, etc), so that relationship type has no meaning.</p>
+<p>I suppose it could be argued that it should be allowed (and just ignored) to provide consistency.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tiago replied on Monday, October 25, 2010</h2><p><div style='padding-left: 50px;background-color:silver'><b>RockfordLhotka<br></b>
+<p>The child relationship type value is only meaningful for editable objects, as it controls some read-write interactions.</p>
+</div></p>
+<p>Hi Rocky,</p>
+<p>I was under the impression child/lazyload flags&nbsp;are needed to tell CSLA to use <strong>Child_</strong> instead of <strong>DataPortal_</strong> methods. The templates show ROChild and ROChildList but none of the examples show a child or a child list used as a property. I mean:</p>
+<p>EditableRoot&nbsp;=&gt; ROChildList =&gt; ROChild</p>
+<p>or even</p>
+<p>RORoot&nbsp;=&gt; ROChildList =&gt; ROChild</p>
+<p>On the other hand, I couldn&#39;t MarkAsChild (using CSLA.NET 4.0.1) ReadOnlyListBase (didn&#39;t try for ReadOnlyBase).</p>
+<p>Regards</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Monday, October 25, 2010</h2><p>Hi,</p>
+<p>A child and lazy loaded object will have the Fetch operation af a root object (using a static Get method with DataPortal.Fetch&lt;T&gt;) but&nbsp; return child objects. </p>
+<p>A child object that loads within the root object will use the Child_Fetch method.</p>
+<p>So the relationship flags does not control how the child objects are loaded. </p>
+<p><b>RelationshipTypes.LazyLoad: </b><br />If FieldManager.FieldExists returns false and you try to get the value - then FieldManager will throw an Exception. It is a logical error to access the field before it has been initalized/loaded. </p>
+<p><b>RelationshipTypes.Child</b><br />Use this to indicate that Field is not a value type - and will contain a child or child list object. </p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, October 25, 2010</h2><p>IIn reality there is no &quot;child&quot; concept with read-only objects.</p>
+<p>The concept of a child is only important when doing insert/update/delete operations, because a child is persisted as part of its parent. But with read-only objects there&#39;s no save operation at all, so this idea of containment is not real meaningful.</p>
+<p>This is part of why read-only objects are simpler and lighter weight than editable objects - there&#39;s a whole lot of stuff that just doesn&#39;t exist in ReadOnlyBase that does exist in BusinessBase (undo, persistence, business rules, metastate tracking, etc).</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tiago replied on Monday, October 25, 2010</h2><p><div style='padding-left: 50px;background-color:silver'><b>RockfordLhotka<br></b>
+<p>I suppose it could be argued that it should be allowed (and just ignored) to provide consistency.</p>
+<div style="CLEAR:both;"></div>
+</div></p>
+<p>After Jonny&#39;s answer, I think this would be a good idea.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

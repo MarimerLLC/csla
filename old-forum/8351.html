@@ -1,0 +1,24 @@
+<html><header><title>&quot;Old Style&quot; lazy loading</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>&quot;Old Style&quot; lazy loading</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/8351.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>whelzer posted on Thursday, January 14, 2010</h2>Quick question on old style lazy loading a child collections, the article by Rocky dated 4/11/2003,<br>gives the following:<br><br><span id="ctl00_ContentPlaceHolder1_BodyLabel"><font color="#0000ff" size="2">Private</font><font size="2"> 
+  mDetails </font><font color="#0000ff" size="2">As</font><font size="2"> 
+  Details = Details.NewDetails()
+<br><br></font></span><span id="ctl00_ContentPlaceHolder1_BodyLabel"><font color="#0000ff" size="2">Public</font><font size="2"> </font>
+  <font color="#0000ff" size="2">ReadOnly</font><font size="2"> </font>
+  <font color="#0000ff" size="2">Property</font><font size="2"> Details() </font>
+  <font color="#0000ff" size="2">As</font><font size="2"> Details
+  &nbsp; </font><font color="#0000ff" size="2">Get
+  </font><font size="2">
+  <br></font><font color="#0000ff" size="2">&nbsp;&nbsp;&nbsp; If mDetails Is 
+  Nothing Then </font>
+  
+  <font color="#0000ff" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </font>
+  <font color="#0000ff" size="2">mDetails = Details.GetDetails(Me.ID)</font><font color="#0000ff" size="2">End If</font>
+  <font color="#0000ff" size="2">&nbsp;&nbsp;&nbsp; Return</font><font size="2"> 
+  mDetails
+  </font><font size="2">&nbsp; </font><font color="#0000ff" size="2">End</font><font size="2">
+  </font><font color="#0000ff" size="2">Get
+  </font><font size="2">
+  </font><font color="#0000ff" size="2">End</font><font size="2"> </font>
+  <font color="#0000ff" size="2">Property
+</font></span><br><br>My question related to the GetDetails method on the Details child object, should this operation be in a DP_Fetch?&nbsp; By definition child objects don't have DP_ methods so I'm a bit confused.<br><br>Any pointers much appreciated.<br><br>Sooner we away from version 3.0.4 the better!<br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Marjon1 replied on Thursday, January 14, 2010</h2>Yes, the GetDetails should call a normal DP_Fetch, you just have to remember to still call MarkAsChild() and you are good to go.<br /><br />The only other thing to highlight, is that the above code would never actually load the list because mDetails always has a value. The Details.NewDetails() call should be in the DP_Create if you are using one.<br /><br />I am about to have to change about 2 dozen children lists from being loaded as part of the parent to being lazy-loaded, I wish I was on 3.6 or above!</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Thursday, January 14, 2010</h2><P>Or just initialize the variable like this:</P>
+<P><SPAN id=ctl00_ContentPlaceHolder1_BodyLabel><FONT color=#0000ff size=2>Private</FONT><FONT size=2> mDetails </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> Details = Nothing</FONT></SPAN></P>
+<P><SPAN><FONT size=2></FONT></SPAN>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Marjon1 replied on Thursday, January 14, 2010</h2>That's true, it just depends on if there is ever a real scenario to have a new list of details vs always fetching a list and it returning no items within.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>whelzer replied on Friday, January 15, 2010</h2>Thanks for the responses.&nbsp; Works a treat..<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

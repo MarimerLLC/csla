@@ -1,0 +1,38 @@
+<html><header><title>Can't pass custom credentials with remoting</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Can't pass custom credentials with remoting</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/2356.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>miker55 posted on Thursday, February 15, 2007</h2><FONT size=2><FONT size=2>
+<P></FONT><FONT size=3>I'm trying to use Windows authentication with something other than the default credentials.&nbsp; Does anyone know what I'm doing wrong here?</FONT></P>
+<P><FONT size=3>TIA,</FONT></P>
+<P><FONT size=3>Mike</FONT></P>
+<P><FONT face="Courier New" color=#0000ff size=2>static</FONT><FONT size=2><FONT face="Courier New"> RemotingProxy()</FONT></P>
+<P><FONT face="Courier New">{</FONT></P>
+<P></FONT><FONT color=#008000 size=2><FONT face="Courier New">&nbsp; // create and register a custom HTTP channel</FONT></P></FONT><FONT size=2>
+<P></FONT><FONT color=#008000 size=2><FONT face="Courier New">&nbsp; // that uses the binary formatter</FONT></P></FONT><FONT size=2>
+<P></FONT><FONT face="Courier New"><FONT color=#2b91af size=2>&nbsp; Hashtable</FONT><FONT size=2> properties = </FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> </FONT><FONT color=#2b91af size=2>Hashtable</FONT></FONT><FONT size=2><FONT face="Courier New">();</FONT></P>
+<P><FONT face="Courier New">&nbsp; properties[</FONT></FONT><FONT face="Courier New"><FONT color=#a31515 size=2>"name"</FONT><FONT size=2>] = </FONT><FONT color=#a31515 size=2>"HttpBinary"</FONT></FONT><FONT size=2><FONT face="Courier New">;</FONT></P>
+<P></FONT><FONT face="Courier New"><FONT color=#0000ff size=2>&nbsp; if</FONT><FONT size=2> (</FONT><FONT color=#2b91af size=2>ApplicationContext</FONT><FONT size=2>.AuthenticationType == </FONT><FONT color=#a31515 size=2>"Windows"</FONT></FONT><FONT size=2><FONT face="Courier New"> || AlwaysImpersonate)</FONT></P>
+<P><FONT face="Courier New">&nbsp; {</FONT></P></FONT><FONT size=2>
+<P><FONT face="Courier New">&nbsp;&nbsp;&nbsp; properties[</FONT></FONT><FONT face="Courier New"><FONT color=#a31515 size=2>"credentials"</FONT><FONT size=2>] = </FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> </FONT><FONT color=#2b91af size=2>NetworkCredential</FONT><FONT size=2>(</FONT><FONT color=#a31515 size=2>"MIKE"</FONT><FONT size=2>, </FONT><FONT color=#a31515 size=2>"mypassword", "MYDOMAIN"</FONT></FONT><FONT size=2><FONT face="Courier New">);</FONT></P>
+<P><FONT face="Courier New">&nbsp; }</FONT></P>
+<P></FONT><FONT face="Courier New" color=#2b91af size=2>&nbsp; BinaryClientFormatterSinkProvider</FONT><FONT size=2><FONT face="Courier New"> </FONT><FONT face="Courier New">formatter = </FONT></FONT><FONT face="Courier New"><FONT color=#0000ff size=2>new</FONT><FONT size=2> </FONT><FONT color=#2b91af size=2>BinaryClientFormatterSinkProvider</FONT></FONT><FONT size=2><FONT face="Courier New">();</FONT></P>
+<P></FONT><FONT face="Courier New"><FONT color=#2b91af size=2>&nbsp; HttpChannel</FONT><FONT size=2> channel = </FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> </FONT><FONT color=#2b91af size=2>HttpChannel</FONT><FONT size=2>(properties, formatter, </FONT><FONT color=#0000ff size=2>null</FONT></FONT><FONT size=2><FONT face="Courier New">);</FONT></P>
+<P></FONT><FONT face="Courier New" color=#2b91af size=2>&nbsp; ChannelServices</FONT><FONT size=2><FONT face="Courier New">.RegisterChannel(channel, EncryptChannel);</FONT></P>
+<P><FONT face="Courier New">}</FONT></P>
+<P><FONT face="Courier New"></FONT>&nbsp;</P></FONT></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>miker55 replied on Friday, February 16, 2007</h2><P>I got it to work.&nbsp; Just in case anyone else needs it, here is what I had to do.&nbsp; The issue was I had to pass the credentials *after* the portal got created:</P>
+<P><FONT size=2><FONT face="Courier New"><FONT color=#0000ff>private</FONT> Server.<FONT color=#2b91af>IDataPortalServer</FONT></FONT><FONT face="Courier New"> Portal</FONT></FONT></P>
+<P><FONT face="Courier New" size=2>{</FONT></P>
+<P><FONT color=#0000ff><FONT face="Courier New" size=2>&nbsp; get</FONT></P></FONT>
+<P><FONT face="Courier New" size=2>&nbsp; {</FONT></P>
+<P><FONT size=2><FONT face="Courier New"><FONT color=#0000ff>&nbsp; &nbsp; if</FONT> (_portal == <FONT color=#0000ff>null</FONT></FONT><FONT face="Courier New">)</FONT></FONT></P>
+<P><FONT face="Courier New" size=2>&nbsp;&nbsp;&nbsp; {</FONT></P>
+<P><FONT size=2><FONT face="Courier New">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _portal = (Server.</FONT><FONT face="Courier New"><FONT color=#2b91af>IDataPortalServer</FONT>)<FONT color=#2b91af>Activator</FONT></FONT><FONT face="Courier New">.GetObject(</FONT></FONT></P>
+<P><FONT size=2><FONT face="Courier New"><FONT color=#0000ff>typeof</FONT>(Server.Hosts.<FONT color=#2b91af>RemotingPortal</FONT></FONT><FONT face="Courier New">),</FONT></FONT></P>
+<P><FONT size=2><FONT face="Courier New" color=#2b91af>ApplicationContext</FONT><FONT face="Courier New">.DataPortalUrl.ToString());</FONT></FONT></P>
+<P><FONT size=2><FONT face="Courier New"><FONT color=#0000ff>&nbsp; &nbsp;&nbsp;&nbsp; if</FONT> (UserName != <FONT color=#2b91af>String</FONT></FONT><FONT face="Courier New">.Empty)</FONT></FONT></P>
+<P><FONT face="Courier New" size=2>&nbsp;&nbsp;&nbsp; &nbsp; {</FONT></P>
+<P><FONT color=#008000><FONT face="Courier New" size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // they specified a user name, so pass it to ISS for integrated authentication</FONT></P></FONT>
+<P><FONT size=2><FONT face="Courier New"><FONT color=#2b91af>&nbsp; &nbsp;&nbsp;&nbsp; NetworkCredential</FONT> nc = <FONT color=#0000ff>new</FONT> <FONT color=#2b91af>NetworkCredential</FONT></FONT><FONT face="Courier New">(UserName, Password, Domain);</FONT></FONT></P>
+<P><FONT size=2><FONT face="Courier New"><FONT color=#2b91af>&nbsp;&nbsp;&nbsp; &nbsp; ChannelServices</FONT>.GetChannelSinkProperties(_portal)[<FONT color=#a31515>"credentials"</FONT></FONT><FONT face="Courier New">] = nc;</FONT></FONT></P>
+<P><FONT face="Courier New" size=2>&nbsp;&nbsp;&nbsp; }</FONT></P>
+<P><FONT face="Courier New" size=2>&nbsp; }</FONT></P>
+<P><FONT size=2><FONT face="Courier New" color=#0000ff>&nbsp; return</FONT><FONT face="Courier New"> _portal;</FONT></FONT></P>
+<P><FONT face="Courier New" size=2>}</FONT></P>
+<P><FONT face="Courier New" size=2>}</FONT></P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

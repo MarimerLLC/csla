@@ -1,0 +1,22 @@
+<html><header><title>Child_Fetch of object fetched from multiple entities</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Child_Fetch of object fetched from multiple entities</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10315.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>KevinManx posted on Thursday, April 28, 2011</h2><p>I have a object that is populated from multiple EF entities:</p>
+<p><strong><span style="text-decoration:underline;">RiderInfo</span></strong></p>
+<p style="padding-left:30px;">Id &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; from Rider entity.<br />Name &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; from Rider (FirstName LastName).<br />NationalityName &nbsp; &nbsp;from Nationality entity.</p>
+<p>I have the Fetch method:</p>
+<p style="padding-left:30px;">&nbsp;</p>
+<p>private void DataPortal_Fetch(int criteria)<br />&nbsp;&nbsp; &nbsp;{<br />&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;var rider = Rider.GetRider(criteria);<br />&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;Id = rider.Id;<br />&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;Name = string.Format(&quot;{0} {1}&quot;, rider.FirstName, rider.LastName);<br />&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;NationalityName = Nationality.GetNationality(rider.NationalityId).NationalityName;<br />&nbsp;&nbsp; &nbsp;}</p>
+<p>&nbsp;</p>
+<p>Do I have this correct or am I missing something (very possible)? </p>
+<p>I want to build a RiderInfoList object and am lost on how to implement the Child_Fetch method to call from the list&#39;s Fetch method:</p>
+<p style="padding-left:30px;">private void Child_Fetch(System.Data.IDataReader data)</p>
+<p>Thanks</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Thursday, April 28, 2011</h2><p>RiderInfo is a read-only object, and RiderInfoList is a read-only list of RiderInfo?</p>
+<p>Normally you&#39;d do the database query in the RiderInfoList class&#39;s DataPortal_Fetch, so all the data is retrieved in one database call. In your case this will require a join or a predictive load of the secondary entity - at least to be efficient.</p>
+<p>Then the RiderInfo class will have a Child_Fetch method that accepts the entity object, not a data reader - at least that&#39;s the simple scenario assuming you don&#39;t care about having a pluggable DAL.</p>
+<p>The <em>Using CSLA 4: Data Access</em> ebook walks through this process, but assumes a pluggable DAL. So in that book I convert the EF entities into either DTOs or a data reader - the idea being that entity objects aren&#39;t abstract enough to support different databases or mock data (though EF 4.1 now makes that pretty realistic with code-first entities).</p>
+<p>So basically you need to decide if you want:</p>
+<ol>
+<li>A non-pluggable DAL - in which case you can pass designer-generated entities into Child_Fetch</li>
+<li>A pluggable DAL using a DTO or data reader interface like in the <em>Data Access</em> ebook</li>
+<li>A pluggable DAL using the new code-first entity feature of EF 4.1</li>
+</ol>
+<p>In each case though, the list does the query, and passes an entity, DTO, data reader, or code-first entity to the Child_Fetch method.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>KevinManx replied on Thursday, April 28, 2011</h2><p>Cheers Rocky. I was going around in circles on this and kept going off the wrong way. Implemented and now working.</p>
+<p>Thanks.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

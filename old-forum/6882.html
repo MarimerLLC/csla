@@ -1,0 +1,106 @@
+<html><header><title>CSLA and Entity Framework</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA and Entity Framework</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6882.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Frazer posted on Thursday, April 30, 2009</h2><P>I am attempting to use EF for my data access layer. </P>
+<P>I have an editable child list.&nbsp; In the data access implementation for the child (e.g. Child_Update) I get an&nbsp; EF context for my entity set, fetch the corresponding entity object for my child business object,&nbsp; and update it from the properties in my child business object.&nbsp; I then call SaveChanges() on the context to commit the update.</P>
+<P>However, it seems to me that, somehow, the SaveChanges() should be getting called at the parent level, allowing me to make changes to a number of&nbsp;children of the parent business object, then commit all changes (or not) to the data layer with one call to SaveChanges().</P>
+<P>Has anyone encountered this and can provide some pointers on how to approach it?</P>
+<P>Frazer</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, April 30, 2009</h2><P>You should be able to implement the save much like you do a fetch.</P>
+<P>In other words, have the root do the EF call to re-create the EF entity model in memory. Then pass some or all of the EF model down to the child objects as you ask them to update themselves. If you are using the child data portal this should be easy, because you can just pass the appropriate entity object as a parameter to each child.</P>
+<P>The only bit the makes update slightly harder than fetch, is that you need to map the entity object to the child, so you pass the right entity to the right child. You can easily do that with a LINQ query per child (to find the right entity), and that would be pretty inefficient. But the real question is whether that inefficiency is more or less expensive than your current approach, which is also pretty inefficient...</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Thursday, April 30, 2009</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>If
+you are interested, I have a version or Rolodex that uses EF and does not round
+trip on updates.&nbsp; You can find the code here:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><a href="http://cid-2383900f69b808e0.skydrive.live.com/browse.aspx/.res/2383900F69B808E0!244">http://cid-2383900f69b808e0.skydrive.live.com/browse.aspx/.res/2383900F69B808E0!244</a><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img border=0 width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Frazer
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Thursday, April 30, 2009 1:19 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> [CSLA .NET] CSLA and Entity Framework<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>I am attempting to use EF for my data access layer. <o:p></o:p></p>
+
+<p>I have an editable child list.&nbsp; In the data access implementation for
+the child (e.g. Child_Update) I get an&nbsp; EF context for my entity set,
+fetch the corresponding entity object for my child business object,&nbsp; and
+update it from the properties in my child business object.&nbsp; I then call
+SaveChanges() on the context to commit the update.<o:p></o:p></p>
+
+<p>However, it seems to me that, somehow, the SaveChanges() should be getting
+called at the parent level, allowing me to make changes to a number
+of&nbsp;children of the parent business object, then commit all changes (or
+not) to the data layer with one call to SaveChanges().<o:p></o:p></p>
+
+<p>Has anyone encountered this and can provide some pointers on how to approach
+it?<o:p></o:p></p>
+
+<p>Frazer<o:p></o:p></p>
+
+<p>&nbsp;<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Frazer replied on Thursday, April 30, 2009</h2><P>Sergey,</P>
+<P>This is a great example - I am working through it now.&nbsp; I would like to restore the database in your sample - can you tell me how you created rolodex.bak&nbsp; (sqlexpress, sql server version??) </P>
+<P>thanks,</P>
+<P>Frazer</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Frazer replied on Friday, May 01, 2009</h2><P>Sergey...</P>
+<P>I am making progress with your example.&nbsp; In the DataProtal_Insert method of the Company ER, you make this call twice:<FONT color=#2b91af size=2><FONT color=#2b91af size=2></P>
+<P><FONT face="Courier New">DataPortal</FONT></FONT></FONT><FONT face="Courier New"><FONT size=2>.UpdateChild(ReadProperty(ContactsProperty), </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>this</FONT></FONT><FONT size=2>, newCompany);</P></FONT></FONT>
+<P>Once before adding the newCompany entity to the entity set and then again, before saving changes.</P>
+<P>Why twice?</P>
+<P>Great example - this has cleared up a lot of my questions.</P>
+<P>Frazer</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>roberto replied on Thursday, May 27, 2010</h2><p>any news about that twice call?</p>
+<p>I&#39;m refactoring for performance, and I need to better understand those calls.<br />thank you</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

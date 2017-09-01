@@ -1,0 +1,13 @@
+<html><header><title>CSLA Datasource </title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA Datasource </h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3888.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>remithr posted on Monday, November 12, 2007</h2><P><FONT face=Arial size=2>Hi,<BR>How can I manually update a CSLA Datasource, may through a button click.</FONT></P><FONT face=Arial size=2>
+<P><BR>Normally, the CSLA datasource is updated through SelectObject, InsertObject, DeleteObject and UpdateObject events and then GridView is updated. I would like to update the CSLA datasource through a button click.</P>
+<P><BR>e.g. I have a search criteria on the webform and would like to display the search results in the GridView below on the search button click.</FONT></P>
+<P><FONT face=Arial size=2><BR>Thanks<BR></P></FONT>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, November 12, 2007</h2><P>You need to understand how ASP.NET data binding works. The page starts to render, which causes the UI controls to render. If a UI control needs data (because it has none, or someone has called DataBind() on it) then it asks its data source control for data, and the data source control gets the data.</P>
+<P>So to "refresh a data source control" you really need to call DataBind() on the UI control that gets data from that data source control.</P>
+<P>The same is true for update/insert/delete operations. You need to tell the UI control (DetailView, GridView, FormView) to do the insert/update/delete and it will tell data binding, which will tell the data source control, which will raise the event, which allows you to interact with your object, which triggers the data portal, which runs your DataPortal_XZY method, which can talk to the database.</P>
+<P>Quite a flow when you look at it all in a row like that! <img src="/emoticons/emotion-1.gif" alt="Smile [:)]" /></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>remithr replied on Tuesday, November 13, 2007</h2><P class=MsoNormal><SPAN><SPAN>It works for me now.<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN>Thank you RockfordLhotka, for leading me in the right direction. <o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Regards,<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Remith<o:p></o:p></SPAN></P>
+<P>&nbsp;</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

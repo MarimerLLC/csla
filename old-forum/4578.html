@@ -1,0 +1,29 @@
+<html><header><title>Working with CSLA CE for WIndows Mobile 5.0 app - error The type 'xxx' is defined in an assembly that is not referenced</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Working with CSLA CE for WIndows Mobile 5.0 app - error The type 'xxx' is defined in an assembly that is not referenced</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4578.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>adrian.nasui posted on Friday, March 28, 2008</h2><P>I inherit my class from BusinessBase: </P><FONT color=#0000ff size=2>
+<P>using</FONT><FONT size=2> System;</P></FONT><FONT color=#0000ff size=2>
+<P>using</FONT><FONT size=2> System.Collections.Generic;</P></FONT><FONT color=#0000ff size=2>
+<P>using</FONT><FONT size=2> System.Text;</P></FONT><FONT color=#0000ff size=2>
+<P>using</FONT><FONT size=2> CslaCE;</P></FONT><FONT color=#0000ff size=2>
+<P>namespace</FONT><FONT size=2> MyApp.ClassLibrary</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>class</FONT><FONT size=2> </FONT><FONT color=#008080 size=2>ItemCls</FONT><FONT size=2> : </FONT><FONT color=#008080 size=2>BusinessBase</FONT><FONT size=2>&lt;</FONT><FONT color=#008080 size=2>ItemCls</FONT><FONT size=2>&gt;</P>
+<P>{</P>
+<P>&nbsp;</P>
+<P>}</P>
+<P>}</P></FONT>
+<P>and I get: </P>
+<P>Error&nbsp;1&nbsp;The type 'System.ComponentModel.INotifyPropertyChanged' is defined in an assembly that is not referenced. You must add a reference to assembly 'System, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089'.</P>
+<P>&nbsp;</P>
+<P>The reference to System is obviously added...</P>
+<P>This happens wenever I use any class that's part of CSLA CE. (Actually until now I have only tried to use the SafeDataReader, and obtained the same effect)</P>
+<P>Any hints? Thanks.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>adrian.nasui replied on Friday, March 28, 2008</h2><P>I had created a main project (of type device application) and this project would reference CSLACE. </P>
+<P>I encountered two problems. </P>
+<P>1. The error described above.</P>
+<P>2. I tried&nbsp;running the app on my WM 5.0 emulator, with a reference to CSLACE in my main project, (without referencing any classes from CSLA CE as it would have generated error #1), and I found out that the deployment also included the desktop Microsoft .NET 2.0 framework, which of course gave me an "insuficient disk space" error on the emulator. This did not occur if I removed CSLACE from the main project references. </P>
+<P>&nbsp;</P>
+<P>My solution was this. </P>
+<P>I created a new WM 5.0 ClassLibrary named, let's say, CSLAMobile, copied the CSLACE resource file in CSLAMobile properties, built the project, then copied all source files from CSLACE to CSLAMobile, remove serialization attribute and adjust namespaces, etc. </P>
+<P>Now I can use CSLAMobile&nbsp;and it works fine. </P>
+<P>cheers.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>lawrencek replied on Tuesday, April 08, 2008</h2><P>Two things I can think of at the moment.</P>
+<P>1. Check out the latest code from svn</P>
+<P>2.&nbsp;You can remove the references to&nbsp;the system dll's&nbsp;and then add&nbsp;them back.</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>pillesoft replied on Monday, January 26, 2009</h2>thanks!<br><br>i had the same problem, and your proposal works<br>even i downloaded the package from here (not from svn) (cslacecs-3.0.2-070911)<br><br>Ivan<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

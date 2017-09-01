@@ -1,0 +1,23 @@
+<html><header><title>CSLA binding issues</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA binding issues</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9316.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>aidangill posted on Tuesday, August 03, 2010</h2><p>Folks</p>
+<p>We have 2 servers, one which the live application is installed and the other where we run our code base.</p>
+<p>We have are having irregular errors on the live server where we are getting a binding error on a control on the screen.</p>
+<p>The error message is as follows.</p>
+<p>&quot;Cannot access a disposed object named &quot;checkbox&quot;</p>
+<p>&nbsp;The source of the error in the exception message is as follows in summary</p>
+<p>reflectpropertydescription.Setvalue</p>
+<p>windows.forms.binding.SetPropValue</p>
+<p>windows.forms.binding.PushData</p>
+<p>windows.forms.binding.managerbase.pushdata</p>
+<p>windows.forms.propertymanager.oncurrentchanged</p>
+<p>windows.forms.bindtoObject.propvaluechanged</p>
+<p>csla.core.bindablebase.onIsDirtychanged</p>
+<p>CSLA.businessbase.MarkIsDirty</p>
+<p>So do you think there could be an issue with the .NET or CSLA.NET frameworks? </p>
+<p>Can I check the versions of them or something like that?</p>
+<p>I can debug the code and not get the issue, this ONLY happens on the LIVE server.</p>
+<p>Thanks very much</p>
+<p>Aidan</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>aidangill replied on Tuesday, August 03, 2010</h2><p>An update</p>
+<p>Server 1 which runs ok has Framework 1.1 and 2.0</p>
+<p>Server&nbsp;2 which&nbsp;has errors only has Framework 1.1 , could this be an issue?</p>
+<p>Server 2 though is 24/7, how easy is Framework 2.0 to install on a live server?</p>
+<p>Thanks</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

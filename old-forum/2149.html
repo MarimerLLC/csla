@@ -1,0 +1,57 @@
+<html><header><title>Child object definition clarification</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Child object definition clarification</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/2149.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>gderoeck posted on Tuesday, January 16, 2007</h2><P>Hello!</P>
+<P>I am a newbie when it comes to CSLA and have read the majority of Rocky's book VB 2005 Business objects and just would like some clafication when it comes to defining what a Child object would be.&nbsp; As well, I've been trying to learn good OO design methods and habits, so please tell me if I'm way off base with these questions.</P>
+<P>In the past, I've designed some applications containing objects that have other objects as properties.&nbsp; If I have a "Root" object of Office, I may have three properties named PhysicalAddress, MailingAddress and ShippingAddress.&nbsp; Each of these properties would be an Address object.</P>
+<P>Another alternative I thought about would be that these three Address objects could be in a collection class, but I'm a little fuzzy as to how it would relate back to the root Office object.</P>
+<P>Now, using the theories in the book, would these Address objects be considered child objects, and if so, would an Editable Collection object be appropriate for this case?</P>
+<P>Also, say the Office object had an OfficeType object as a property.&nbsp; Would this one object be considered a child object as well?&nbsp; I'm just trying to grasp the concept here.........</P>
+<P>&nbsp;</P>
+<P>Thank you in advance!</P>
+<P>Greg <img src="/emoticons/emotion-1.gif" alt="Smile [:)]" /></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>cds replied on Tuesday, January 16, 2007</h2><P>Hi Greg</P>
+<P>The standard answer you're going to get from this forum, I think, is a question - "What is your use case you're designing your objects for?" </P>
+<P>Each of the options your describe is possible, but it really depends on the purpose of your objects which relates to the use case you're trying to support. Most newbies fall into the trap of designing Business Object classes around the data, which is the wrong approach.</P>
+<P>Craig</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>gderoeck replied on Tuesday, January 16, 2007</h2><P>Craig,</P>
+<P>Thank you for the reply!</P>
+<P>The class library I'm building is going to be used in a variety of applications in the future.&nbsp; The Office object (actually, called Entity) I was decribing will be used as&nbsp;one base object for these applications.&nbsp; The functionality it will have is all the basic Create, Fetch, etc.&nbsp; It also will be a child object for itself, meaning that there will be Entity objects in a collection as a child of Entity.&nbsp; Each of these child objects will also have a collection of Entity objects.&nbsp; In the end, there will be a tree of Entities.</P>
+<P>To give you some perspective, my company is a medical air rescue company that has bases.&nbsp; Each base entity is associated with a Region entity and each Region entity is associated with a Division entity, all the way up to the Coporate entity.&nbsp; Each entity has the same properties and functionality.</P>
+<P>Now, all this aside, each entity also has a physical, mailing and shipping address properties.&nbsp; These properties will have an EntityAddress object associated with them.&nbsp; The functionality for the EntityAddress object will be the standard&nbsp;Create, Fetch, Delete, etc.&nbsp; </P>
+<P>Am I off base here?&nbsp;&nbsp;The Entity object&nbsp;should be general enough (meaning one purpose) so that they can be used with a suite of applications being built to either manage the object or privide entity&nbsp;data to other applications that will contain other functions (objects).&nbsp; So, really, the Entity object just needs to be able to create new entities and store them in a database, fetch and fill an Entity object and delete an Entity object.</P>
+<P>I realize that there are more objects to be created that will&nbsp;contain the functionality I've described - I learned that from the book and this forum.&nbsp; All I'm really looking for is if I'm on track.&nbsp; The Csla framework would take care of the Create, Fetch, Delete capabilites of the objects.</P>
+<P>I hope I answered the question you asked.</P>
+<P>-Greg</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>cds replied on Tuesday, January 16, 2007</h2><P>Greg</P>
+<P>So far, you're really describing the data that your suite of applications will have, and not the behaviour that you're wanting to implement. Sure, there will be these entities in your database and you may choose to represent them as objects, depending on your choice of data access technology. </P>
+<P>However what CSLA drives at is responsibility driven design. You haven't described a use case really, but I suspect you're going to want to have a user be able to maintain these Offices and their Addresses. Typically in CSLA you'd probably have these classes:</P>
+<P>OfficeInfo - a ReadOnlyChild</P>
+<P>OfficeList - a ReadOnlyChildList</P>
+<P>Office - and EditableRootObject</P>
+<P>The OfficeInfo and OfficeList classes allow you to show the user a list of Offices - the OfficeInfo class probably only contains the name and the primary key in the DB of the Office. The user then selects an OfficeInfo and you use the primary key to fetch an Office (EditableRootObject) to display and allow the user to update.</P>
+<P>As for the addresses - it really depends on your requirements. Are they all required? They could be done as separate fields on the Office EditableRootObject, or as 3 separate child objects, or as a collection of Addresses objects, each with a type. </P>
+<P>I guess what I'm driving at here is that there really is no one set way of doing this, but it all comes down to the behaviour required to support the use case.</P>
+<P>I really hope this helps, but I suspect that you're going to have many more questions...</P>
+<P>Craig</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>gderoeck replied on Tuesday, January 16, 2007</h2><P>Craig,</P>
+<P>Thank you so much for the response&nbsp;- you're are exactly right.&nbsp; There will be an application that will maintain the Entity data.&nbsp; Meaning, the user will need to Create an Entity, Delete an Entity, Update and Get.&nbsp; The Entity&nbsp;that's created, modified,&nbsp;fetched or deleted&nbsp;will always be a child of another Entity.&nbsp; As well, the additional classes you suggested will also be built to accomodate those functions.</P>
+<P>The use cases for these applications will dictate the behavior of the class and the related classes&nbsp;- that I understand now.&nbsp; Thank you again for your comments!</P>
+<P>-Greg</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>fseider replied on Tuesday, January 16, 2007</h2><P>I enjoy these types of posts as I learn a lot from them, thanks.&nbsp; My question concerns:</P>
+<BLOCKQUOTE dir=ltr>
+<P>"As for the addresses - it really depends on your requirements. Are they all required? They could be done as separate fields on the Office EditableRootObject, or as 3 separate child objects, or as a collection of Addresses objects, each with a type"</P></BLOCKQUOTE>
+<P>I'd like to see an example use case for each of the three examples above: </P>
+<OL>
+<LI>They could be done as separate fields on the Office EditableRootObject,</LI>
+<LI>or as 3 separate child objects,</LI>
+<LI>or as a collection of Addresses objects</LI></OL>
+<P>That would definitly help me, and others I'm sure, understand&nbsp;better&nbsp;where a specific approach may work better than an alternate approach.</P>
+<P>Any takers?</P>
+<P>Thanks,</P>
+<P>Fred</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>cds replied on Tuesday, January 16, 2007</h2><P>Hi Fred</P>
+<P>OK, since I gave the example, I guess I should expand on it and give you the detail you desire.</P>
+<P>What I was driving at was that the business object classes should be designed in the way that supports the use case and not be driven by the structure of the underlying data. However, use cases are driven by business requirements, and business requirements must be used to drive the modelling of the data and hence the structure of the underlying data store (most usually, a relational database, and since we're in the .NET world, most likely SQL Server). A business object class may choose to present the data in a quite different form to that in the underlying database.</P>
+<P>Some examples of the use cases that would drive the different scenarios I was imagining:</P>
+<P>1. They could be done as separate fields on the Office EditableRootObject - "Each Office has a name, and a single line delivery, billing, and contact address."</P>
+<P>2. or as 3 separate child objects - "Each office has a Delivery Address, a Billing Address, and a Contact address consisting of 3 address lines, a ZIP-code, and&nbsp;drop-down boxes to select city and state."</P>
+<P>3. or as a collection of Address objects - "Each office may have multiple addresses which have a type, either Delivery, Billing, or Contact (more types of address may be added in the future), each of which consist of 3 address lines, a ZIP-code, and drop-down boxes to select city and state."</P>
+<P>In use-case 1 above I'm imagining that for such a simple case the fields might be implemented as columns in the Office table in the database, or they might be in a table of their own. It is up to the data access logic to do the translation - the user of the business object class has no need to know how it gets its data.</P>
+<P>In use-case 2 and 3, (and I think these are the more likely scenarios) the addresses would likely be implemented in a separate table in the database (at least, normalisation would likely dictate this). In these use cases the addresses are child objects - the only differentiator is whether the business requirements dictate many addresses, or a defined number.</P>
+<P>What I've outlined above satisfies a particular use case and the business object classes would be specific to that use case alone. For another use case, say printing invoices you might have a read-only Office object that contained a single BillingAddress child object, or you might even integrate the billing address fields directly into the read-only Office object.</P>
+<P>Make sense?</P>
+<P>Craig</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>fseider replied on Tuesday, January 16, 2007</h2><P>Craig,&nbsp; Thanks for taking the time to spell this out further.&nbsp; This helps a lot.</P>
+<P>Fred</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

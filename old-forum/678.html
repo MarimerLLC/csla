@@ -1,0 +1,90 @@
+<html><header><title>Need to modifiy the GetList method int my ReadOnlyList</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Need to modifiy the GetList method int my ReadOnlyList</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/678.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>RangerGuy posted on Thursday, July 20, 2006</h2><P>By Default the ReadOnlyList Template has this factory method defined</P><FONT size=2></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>
+<P>public</FONT><FONT color=#000000 size=2> </FONT><FONT color=#0000ff size=2>static</FONT><FONT color=#000000 size=2> </FONT><FONT color=#008080 size=2>ReadOnlyList</FONT><FONT color=#000000 size=2> GetReadOnlyList(</FONT><FONT color=#0000ff size=2>string</FONT><FONT size=2><FONT color=#000000> filter)</FONT></P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;return</FONT><FONT size=2> </FONT><FONT color=#008080 size=2>DataPortal</FONT><FONT size=2>.Fetch&lt;</FONT><FONT color=#008080 size=2>ReadOnlyList</FONT><FONT size=2>&gt;(</FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> </FONT><FONT color=#008080 size=2>Criteria</FONT><FONT size=2>(filter));</P>
+<P>}</P>
+<P></FONT></FONT><FONT size=2></FONT>&nbsp;</P>
+<P><FONT size=2>I have a readonlylist that is a child of another object so I do not need to send it to the DataPortal for population it just needs to be passed a SafeDataReader and it's parent object for looping criteria. So I want to change it like this</FONT></P><FONT color=#0000ff size=2>
+<P>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>static</FONT><FONT size=2> </FONT><FONT color=#008080 size=2>ReadOnlyList</FONT><FONT size=2> GetReadOnlyList(</FONT><FONT color=#0000ff size=2>ParentObject myparent, SafeDataReader dr</FONT><FONT size=2>)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;return</FONT><FONT size=2> </FONT><FONT color=#008080 size=2><FONT size=2>DataPortal_Fetch(myparent,dr);</P></FONT></FONT><FONT size=2>
+<P>}</P>
+<P><FONT size=4>OR</FONT></P>
+<P>Can I just change the GetReadOnlyList method to be like this</P>
+<P><FONT color=#0000ff> </FONT></P>
+<P>public<FONT size=2> </FONT><FONT color=#0000ff size=2>static</FONT><FONT size=2> </FONT><FONT color=#008080 size=2>ReadOnlyList</FONT><FONT size=2> GetReadOnlyList(</FONT><FONT color=#0000ff size=2>ParentObject myparent, SafeDataReader dr</FONT><FONT size=2>)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;return</FONT><FONT size=2> fetch</FONT><FONT color=#008080 size=2><FONT size=2>(myparent,dr);</P></FONT></FONT><FONT size=2>
+<P>}</P></FONT>
+<P>would this have any adverse effects. I'm am fairly new to CSLA 2.0 so please excuse my inexperienced questions :)</P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Thursday, July 20, 2006</h2>You should never be exposing SafeDataReader in your public methods and properties.&nbsp; Your static method should provide some way for the UI to specify criteria, and then in your DataPortal_Fetch methods you can use the safe data reader there, but only to load up your business objects with data.<br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RangerGuy replied on Thursday, July 20, 2006</h2><P>So I have&nbsp;ReadOnly Parent List that contains ReadOnly Parent Objects. Each of these Parent Objects will have a ReadOnlyList of Children. Like so</P>
+<P>|-ParentList</P>
+<P>|--Parent</P>
+<P>|---Childlist</P>
+<P>|----Child</P>
+<P>The data for the Child list is contained in the same DataReaderObject as parent result set so we are not returning multiple resultsets. What would be the best method&nbsp;to populate the childlist/objects without having to hit the database again for the info.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>xal replied on Thursday, July 20, 2006</h2>RangerGuy, your second option is ok, but you should not expose the method as public. You'd want to make it friend in scope so that the UI layer won't know about it.<br><br>Also, watch it with the "myparent".. Do you really need a parent reference? are you storing it as a reference in your child objects or collection?<br><br>If you are, then make sure you mark the field that will hold it as [NotUndoable()] and [NonSerialized()].<br><br>Andrés<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RangerGuy replied on Thursday, July 20, 2006</h2><P>OK so I almost got it LOL!</P>
+<P>This is the method that populates a readonly parent object. Except I can not figure out how to create an empty list to manually add the child items since they do not need to go to the dataportal</P><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>internal</FONT><FONT size=2> ParentInfo(</FONT><FONT color=#008080 size=2>SafeDataReader</FONT><FONT size=2> dr)</P>
+<P>{</P>
+<P>_parentid = dr.GetInt32(</FONT><FONT color=#800000 size=2>"ParentID"</FONT><FONT size=2>);</P>
+<P>_parentname = dr.GetString(</FONT><FONT color=#800000 size=2>"ParentIName"</FONT><FONT size=2>);</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>while</FONT><FONT size=2>(dr.Read() &amp;&amp; (_parentid == dr.GetInt32(</FONT><FONT color=#800000 size=2>"ParentID"</FONT><FONT size=2>)))</P>
+<P>{</P>
+<P></FONT><FONT color=#008080 size=2>ChildInfo&nbsp;</FONT><FONT size=2>childinfo = </FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> </FONT><FONT color=#008080 size=2>ChildInfo&nbsp;</FONT><FONT size=2>(dr.GetInt32(</FONT><FONT color=#800000 size=2>"ChildID"</FONT><FONT size=2>),dr.GetString(</FONT><FONT color=#800000 size=2>"ChildName"</FONT><FONT size=2>));</P>
+<P>_childlist.Add(childinfo ); //childlist is a member of Parent info</P>
+<P>}</P>
+<P></P>
+<P></P>
+<P>}</P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RangerGuy replied on Thursday, July 20, 2006</h2><P>Well this doesn't work either because I can't set the child list to ReadOnly = false from the parent object :(</P>
+<P>Anybody have an Idea of how to do this. My readonly list of children doesn't need the dataportal or data access for these objects just needs to access a datareader passed from the parent to populate itself</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Thursday, July 20, 2006</h2><p><font color="#0000ff" size="2">Modify your code as below:<br></font></p><p><font color="#0000ff" size="2"><br></font></p><p><font color="#0000ff" size="2">internal</font><font size="2"> ParentInfo(</font><font color="#008080" size="2">SafeDataReader</font><font size="2"> dr)</font></p>
+<p><font size="2">{</font></p>
+<p><font size="2">_parentid = dr.GetInt32(</font><font color="#800000" size="2">"ParentID"</font><font size="2">);</font></p>
+<p><font size="2">_parentname = dr.GetString(</font><font color="#800000" size="2">"ParentIName"</font><font size="2">);</font></p><p><font size="2">_childlist = ChildListClass.GetList( dr );<br></font></p><font size="2"></font><font size="2">}</font>
+
+
+<p><font size="2">}</font></p><p><br></p><p><font size="2">In your ChildListClass, have this code:</font></p><p><font size="2">internal static ChildListClass( SafeDataReader dr ) {</font></p><p><font size="2">ChildListClass result;</font></p><p><font size="2">result = new ChildListClass();</font></p><p><font size="2">result.LoadList( dr );</font></p><p><font size="2">return result;<br></font></p><p><font size="2">}</font></p><p><font size="2">private void LoadList( SafeDataReader dr ) {</font></p><p><font size="2">IsReadOnly =false;<br></font></p><p><font color="#0000ff" size="2">while</font><font size="2">(dr.Read() &amp;&amp; (_parentid == dr.GetInt32(</font><font color="#800000" size="2">"ParentID"</font><font size="2">)))</font></p>
+
+<p><font size="2">{</font></p><font size="2">_childlist.Add( ChildInfo.GetChild( dr ) ); //childlist is a member of Parent info</font>
+
+<br><p>}</p><p>IsReadOnly = true;</p><p>}<br></p><br>Finally, in your ChildInfo class:<br><br>internal static ChildInfo GetChild( SafeDataReader dr ) {<br><p><font color="#008080" size="2">ChildInfo result;</font></p><p><font color="#008080" size="2">result = new ChildInfo();</font></p><p><font color="#008080" size="2">result.LoadSelf( dr );</font></p><p><font color="#008080" size="2">return result;<br></font></p><p><font color="#008080" size="2">}</font></p><p><font color="#008080" size="2">private void LoadSelf( SafeDataReader dr ) {</font></p><p><font color="#008080" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; myId = dr.GetInt32( "my_id" );</font></p><p><font color="#008080" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; myName = dr.GetString( "myName" );</font></p><p><font color="#008080" size="2">}</font></p><p><br></p><p><br></p><p><font color="#008080" size="2">The idea is that the parent doesn't know how to load the list; it just gets the data and hands it off.&nbsp; The ChildList class knows it has children of type ChildInfo, but doesn't know anything at all about the details (like what properties it has).&nbsp; The child knows how to load itself given a reader.&nbsp; The list knows there can be many children; the parent simply knows how to get the data, it doesn't know what to do with it.</font></p><p><font color="#008080" size="2">HTH</font></p><p><font color="#008080" size="2">Andy<br></font></p><p></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, July 20, 2006</h2>What you are trying to do is, unfortunately, relatively difficult. This is due to the way data comes from the database.<br><br>You want a query that returns two result sets - the first is the list of parent data and the second is the list of child data for all parents.<br><br>Since this data comes sequentially, you are forced to load all the parent objects in one pass, then go back through them a second time so they can load their individual child collections.<br><br>Certainly this can be done, but it does require going through the parent list twice - once to load, and once to load children. (pseudocode follows)<br><br>First load the parent list:<br>While dr.Read()<br>&nbsp; Add(Parent.GetParent(dr))<br>Loop<br><br>Then load the children:<br>dr.NextResult()<br>dr.Read()<br>Loop While this.GetParentById(dr.GetInt32("Id")).LoadChildren(dr)<br><br>This loops through all the parents, loading the child data of each one from the datareader. GetParentById() should be obvious - it just finds the matching parent based on the id value. The interesting bits are in LoadChildren...<br><br>Parent.LoadChildren looks kind of like this:<br>internal bool LoadChildren(DataReader dr)<br>&nbsp;&nbsp;&nbsp; return _children.GetChildren(_id, dr)<br><br>The Children.GetChildren method is mostly a standard child loading loop - with the exception that it needs to watch for the Id column to stop matching the parent's _id value and return at that point (remember that this means the datareader is then pointing to either EOD or the next parent's data, and the EOD (or not) needs to be returned up the call chain<br><br>Children.GetChildren looks like this:<br>internal static GetChildren(int parendId, datareader dr)<br>&nbsp; bool moreData<br>&nbsp; do<br>&nbsp;&nbsp;&nbsp; Add(Child.GetChild(dr))<br>&nbsp;&nbsp;&nbsp; moreData = dr.Read()<br>&nbsp; while moreData and dr.GetInt32("Id")==_id<br>&nbsp; return moreData<br><br><br>Note that I haven't tested this - it is just pseudo-code - so there could be unforseen issues. But the basic concept should be sound.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Brian Criswell replied on Thursday, July 20, 2006</h2>Or you could try my SafeDataRowReader.&nbsp; You retrieve a single DataSet in your root object or collection and then add DataRelations to link the DataTables together:<br>ds.Tables["Table1"].ChildRelations.Add(<br>&nbsp;&nbsp;&nbsp; "Table1.Prop1_Table2.Prop1",<br>&nbsp;&nbsp;&nbsp; ds.Tables["Table1"].Columns["Prop1"], <br>&nbsp;&nbsp;&nbsp; ds.Tables["Table2"].Columns["Prop1"],<br>&nbsp;&nbsp;&nbsp; false);<br><br>You then instantiate a new SafeDataRowReader with the first table.&nbsp; Each level of child data requires a new SafeDataReader.<br>using(SafeDataRowReader dr = new SafeDataRowReader(ds.Tables[0]))<br>{<br>&nbsp;&nbsp;&nbsp; // Root object pattern<br>&nbsp;&nbsp;&nbsp; // load data using dr.Get...();<br>&nbsp;&nbsp;&nbsp; // load child data<br>&nbsp;&nbsp;&nbsp; using (SafeDataRowReader dr = dr.GetData(0))<br>&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp; // first child object / collection<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;  _child1 = Child1.GetChild1(dr);<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;  // next child object / collection<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;  dr.NextResult();<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;  _child2 = Child2.GetChild2(dr);<br>&nbsp;&nbsp;&nbsp; }<br><br>&nbsp;&nbsp;&nbsp; // Root collection pattern<br>
+&nbsp;&nbsp;&nbsp; using (SafeDataRowReader dr = dr.GetData(0))<br>&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;  while (dr.Read())<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;  {<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;  &nbsp;&nbsp;  this.Add(Child1.GetChild1(dr));<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;  }<br>&nbsp;&nbsp;&nbsp; }<br>}<br><br>Children can then load grandchild data using dr.GetData(0).&nbsp; In the Child.Fetch(dr), you load your child data and then use:<br>using(SafeDataRowReader childDr = (SafeDataRowReader)dr.GetData(0))<br>{<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp; // first child object / collection<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;  _child1 = Child1.GetChild1(dr);<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;  // next child object / collection<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;  dr.NextResult();<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;  _child2 = Child2.GetChild2(dr);<br>}<br><br>So you load then next level of children using dr.GetData(0) and move within a level (one child to the next) using dr.NextResult().&nbsp; There, I think I remembered everything.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RangerGuy replied on Friday, July 21, 2006</h2><P>Thanks everybody for the ideas :) This project is turning out to be more complex than expected LOL!</P>
+<P>I'm trying them out right now :)</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RangerGuy replied on Friday, July 21, 2006</h2><P><FONT size=1>Just wanted to thank everybody for the tips. We got it by doing the following</FONT>&nbsp;&nbsp;&nbsp;&nbsp;<FONT color=#0000ff size=2> </FONT></P>
+<P><FONT color=#0000ff size=2>bool <FONT face=Arial color=#000000 size=1>HasMoreChildren = false;</FONT></FONT></P>
+<P><FONT face=Arial size=1>using (SafeDataReader dr = new SafeDataReader(cm.ExecuteReader())) </FONT></P>
+<P><FONT face=Arial size=1>{ </FONT></P>
+<P><FONT face=Arial size=1>IsReadOnly = false; </FONT></P>
+<P><FONT face=Arial size=1>HasMoreChildren = dr.Read(); </FONT></P>
+<P><FONT face=Arial size=1>while (HasMoreChildren)</FONT></P>
+<P><FONT face=Arial size=1>{ </FONT></P>
+<P><FONT face=Arial size=1>ParentInfo info = new ParentInfo(dr,ref HasMoreChildren); </FONT></P>
+<P><FONT face=Arial size=1>this.Add(info); </FONT></P>
+<P><FONT face=Arial size=1>}</FONT></P>
+<P><FONT face=Arial size=1>&nbsp;IsReadOnly = true; </FONT></P>
+<P><FONT face=Arial size=1></FONT>&nbsp;</P>
+<P><FONT face=Arial size=1>}</FONT> </P>
+<P><FONT color=#0000ff size=2>Our Method in the child list object</FONT></P>
+<P><FONT color=#0000ff size=2>internal</FONT><FONT size=2> ChildList(</FONT><FONT color=#0000ff size=2>int</FONT><FONT size=2> currentChildID, </FONT><FONT color=#008080 size=2>SafeDataReader</FONT><FONT size=2> dr, </FONT><FONT color=#0000ff size=2>ref</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>bool</FONT><FONT size=2> <FONT face=Arial size=1>HasMoreChildren</FONT>)</P>
+<P></P>
+<P>{ </P>
+<P></FONT><FONT size=2>&nbsp;</P>
+<P></P>
+<P>IsReadOnly = </FONT><FONT color=#0000ff size=2>false</FONT><FONT size=2>;</FONT></P>
+<P><FONT size=2>&nbsp;</FONT><FONT color=#0000ff size=2>do</P>
+<P></P>
+<P></FONT><FONT size=2>{ </FONT></P>
+<P><FONT size=2><FONT color=#008080 size=2>ChildInfo </FONT><FONT size=2>childInfo =&nbsp; </FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> </FONT><FONT color=#008080 size=2>ChildInfo </FONT><FONT size=2>(dr.GetInt32(</FONT><FONT color=#800000 size=2>"ChildID"</FONT><FONT size=2>), dr.GetString(</FONT><FONT color=#800000 size=2>"ChildName"</FONT><FONT size=2>)); </FONT></FONT></P>
+<P><FONT size=2><FONT size=2>Add(childinfo); </FONT></FONT></P>
+<P><FONT size=2><FONT face=Arial size=1>HasMoreChildren </FONT>= dr.Read(); </FONT></P>
+<P><FONT size=2><FONT size=2>}&nbsp;</FONT><FONT color=#0000ff size=2>while</FONT><FONT size=2> (<FONT face=Arial size=1>HasMoreChildren </FONT>&amp;&amp; (currentChildID== dr.GetInt32(</FONT><FONT color=#800000 size=2>"ChildID"</FONT><FONT size=2>)));</P>
+<P></P>
+<P>IsReadOnly = </FONT><FONT color=#0000ff size=2>true</FONT><FONT size=2>;</P>
+<P></P>
+<P>}</P></FONT>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></FONT></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

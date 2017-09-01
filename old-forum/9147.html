@@ -1,0 +1,61 @@
+<html><header><title>Generic BusinessBase reference or property in windows base controls</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Generic BusinessBase reference or property in windows base controls</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9147.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Lazaro posted on Tuesday, June 29, 2010</h2><p class="MsoNormal"><span style="font-size:small;font-family:Calibri;">We are in the process of migrating CSLA from <span style="color:#333333;mso-ansi-language:EN;" lang="EN">1.3.0 to 3.8.2</span>. We have some issues with generics and the UI and we would like to know if somebody has a solution.</span></p>
+<p class="MsoNormal"><span style="font-size:11pt;font-family:&#39;Calibri&#39;,&#39;sans-serif&#39;;mso-ascii-theme-font:minor-latin;mso-fareast-font-family:Calibri;mso-fareast-theme-font:minor-latin;mso-hansi-theme-font:minor-latin;mso-bidi-font-family:&#39;Times New Roman&#39;;mso-bidi-theme-font:minor-bidi;">We have a control base class (RootEntityControlBase) that has property of type BusinessBase. </span><span style="font-size:11pt;font-family:&#39;Calibri&#39;,&#39;sans-serif&#39;;mso-ascii-theme-font:minor-latin;mso-fareast-font-family:Calibri;mso-fareast-theme-font:minor-latin;mso-hansi-theme-font:minor-latin;mso-bidi-font-family:&#39;Times New Roman&#39;;mso-bidi-theme-font:minor-bidi;">All the entity controls that require a business object inherit from RootEntityControlBase.&nbsp; <span style="mso-spacerun:yes;">&nbsp;</span>Since now the BusinessBase class is generic we found some challenges. <span style="mso-spacerun:yes;">&nbsp;</span>(1) We cannot have the property of a generic type without knowing the actual type. To fix that we made the control itself be generic, which actually sounds like the right way to do it (we can use the type in methods and events as well). <span style="mso-spacerun:yes;">&nbsp;</span>(2) <span style="mso-spacerun:yes;">&nbsp;</span>Since the control base class is generic the designer is not able to render this form giving us the following exception:</span></p>
+<p>
+<span style="font-size:11pt;font-family:&#39;Calibri&#39;,&#39;sans-serif&#39;;mso-ascii-theme-font:minor-latin;mso-fareast-font-family:Calibri;mso-fareast-theme-font:minor-latin;mso-hansi-theme-font:minor-latin;mso-bidi-font-family:&#39;Times New Roman&#39;;mso-bidi-theme-font:minor-bidi;">
+<i>The designer could not be shown for this file because none of the classes within it can be designed. The designer inspected the following classes in the file: LoanSetupEntityControl --- The base class &#39;RootEntityControlBase&#39; could not be loaded. Ensure the assembly has been referenced and that all projects have been built.</i>
+
+<pre></pre>
+</span>
+</p>
+<pre></pre>
+<p>
+<span style="font-size:11pt;font-family:&#39;Calibri&#39;,&#39;sans-serif&#39;;mso-ascii-theme-font:minor-latin;mso-fareast-font-family:Calibri;mso-fareast-theme-font:minor-latin;mso-hansi-theme-font:minor-latin;mso-bidi-font-family:&#39;Times New Roman&#39;;mso-bidi-theme-font:minor-bidi;">What is the best way to have a generic BusinessBase reference or property in windows base controls and still be able to edit UI in visual studio designer?</span>
+</p>
+<pre></pre>
+<p>
+<span style="font-size:11pt;font-family:&#39;Calibri&#39;,&#39;sans-serif&#39;;mso-ascii-theme-font:minor-latin;mso-fareast-font-family:Calibri;mso-fareast-theme-font:minor-latin;mso-hansi-theme-font:minor-latin;mso-bidi-font-family:&#39;Times New Roman&#39;;mso-bidi-theme-font:minor-bidi;">&nbsp;</span><span style="font-size:small;font-family:Calibri;">Example of what we have:</span></p>
+<p>
+<span style="font-size:x-small;"><span style="color:blue;font-family:Consolas;">public</span><span style="font-family:Consolas;">&nbsp;<span style="color:blue;">class</span>&nbsp;<span style="color:#2b91af;">UserControlBase</span>&nbsp;:&nbsp;System.Windows.Forms.<span style="color:#2b91af;">UserControl</span></span></span>
+</p>
+<pre></pre>
+<p>
+<span style="color:blue;font-family:Consolas;"><span style="font-size:x-small;">public</span></span><span style="font-family:Consolas;"><span style="font-size:x-small;">&nbsp;<span style="color:blue;">class</span>&nbsp;<span style="color:#2b91af;">RootEntityControlBase</span>&nbsp;:&nbsp;<span style="color:#2b91af;"> UserControlBase</span><br />{</span></span>
+</p>
+<pre></pre>
+<p class="MsoNormal"><span style="font-size:10pt;font-family:Consolas;mso-fareast-font-family:&#39;Times New Roman&#39;;mso-bidi-font-family:&#39;Courier New&#39;;">&nbsp;&nbsp;&nbsp;&nbsp;[<span style="color:#2b91af;">DefaultValue</span>(<span style="color:blue;">null</span>)]<br />&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">virtual</span>&nbsp;<span style="color:#2b91af;">BusinessBase</span>&nbsp;EntityReference<br />&nbsp;&nbsp;&nbsp;&nbsp;{<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">get</span><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">if</span>(IsDesignMode(<span style="color:blue;">this</span>))&nbsp;<span style="color:blue;">return</span>&nbsp;<span style="color:blue;">null</span>;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">throw</span>&nbsp;<span style="color:blue;">new</span>&nbsp;<span style="color:#2b91af;">Exception</span>(<span style="color:#a31515;">&quot;EntityReference&nbsp;property&nbsp;must&nbsp;be&nbsp;implanted.. &quot;</span>);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</span></p>
+<p class="MsoNormal"><span style="font-size:10pt;font-family:Consolas;mso-fareast-font-family:&#39;Times New Roman&#39;;mso-bidi-font-family:&#39;Courier New&#39;;">&nbsp;&nbsp;&nbsp;&nbsp;}</span></p>
+<p class="MsoNormal"><span style="font-size:small;font-family:Calibri;">}</span></p>
+<p>
+<span style="font-size:x-small;"><span style="color:blue;font-family:Consolas;">public</span><span style="font-family:Consolas;">&nbsp;<span style="color:blue;">class</span>&nbsp;<span style="color:#2b91af;">LoanSetupEntityControl</span>&nbsp;:&nbsp;&nbsp;<span style="color:#2b91af;">RootEntityControlBase</span></span></span>
+</p>
+<pre></pre>
+<p class="MsoNormal"><span style="font-size:small;font-family:Calibri;">&nbsp;</span></p>
+<p class="MsoNormal"><span style="font-size:small;font-family:Calibri;">Example of what we changed it to, but UI cannot render:</span></p>
+<p>
+<span style="font-size:x-small;"><span style="color:blue;font-family:Consolas;">public</span><span style="font-family:Consolas;">&nbsp;<span style="color:blue;">class</span>&nbsp;<span style="color:#2b91af;">UserControlBase</span>&nbsp;:&nbsp;System.Windows.Forms.<span style="color:#2b91af;">UserControl</span></span></span>
+</p>
+<pre></pre>
+<p>
+<span style="font-family:Consolas;"><span style="font-size:x-small;"></span></span>
+</p>
+<pre></pre>
+<p>
+<span style="color:blue;font-family:Consolas;"><span style="font-size:x-small;">public</span></span><span style="font-family:Consolas;"><span style="font-size:x-small;">&nbsp;<span style="color:blue;">class</span>&nbsp;<span style="color:#2b91af;">RootEntityControlBase</span>&lt;T&gt;&nbsp;:&nbsp;<span style="color:#2b91af;">UserControlBase</span><br />&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">where</span>&nbsp;T&nbsp;:&nbsp;<span style="color:#2b91af;">BusinessBase</span>&lt;T&gt;</span></span>
+</p>
+<pre></pre>
+<p class="MsoNormal"><span style="font-size:small;font-family:Calibri;">{</span></p>
+<p>
+<span style="font-family:Consolas;"><span style="font-size:x-small;">&nbsp;&nbsp;&nbsp;&nbsp;[<span style="color:#2b91af;">DefaultValue</span>(<span style="color:blue;">null</span>)]<br />&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">virtual</span>&nbsp;T&nbsp;EntityReference<br />&nbsp;&nbsp;&nbsp;&nbsp;{<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">get</span><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">if</span>(IsDesignMode(<span style="color:blue;">this</span>))&nbsp;<span style="color:blue;">return</span>&nbsp;<span style="color:blue;">null</span>;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">throw</span>&nbsp;<span style="color:blue;">new</span>&nbsp;<span style="color:#2b91af;">Exception</span>(<span style="color:#a31515;">&quot;EntityReference&nbsp;property&nbsp;must&nbsp;be&nbsp;implanted.. &quot;</span>);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br />&nbsp;&nbsp;&nbsp;&nbsp;}</span></span>
+</p>
+<pre></pre>
+<p class="MsoNormal"><span style="font-size:small;font-family:Calibri;">}</span></p>
+<p>
+<span style="font-size:x-small;"><span style="color:blue;font-family:Consolas;">public</span><span style="font-family:Consolas;">&nbsp;<span style="color:blue;">class</span>&nbsp;<span style="color:#2b91af;">LoanSetupEntityControl</span>&nbsp;:&nbsp;<span style="color:#2b91af;">RootEntityControlBase</span>&lt;<span style="color:#2b91af;">LoanSetup</span>&gt;</span></span>
+</p>
+<pre></pre>
+<p>
+<span style="font-family:Consolas;"><span style="font-size:x-small;">&nbsp;</span></span>
+</p>
+<pre></pre></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Tuesday, June 29, 2010</h2><p>Windows Forms is not friendly to generics, so you really need to keep the UI generic-free.</p>
+<p>Generic types are not polymorphic - you need a non-generic base type or interface if you want to write code that can interact with any Blah&lt;T&gt;.</p>
+<p>CSLA exposes (in Csla.Core) a set of interfaces to make it relatively easy to create a UI framework that works regardless of the actual business object type. If you have extra properties or behaviors common to all your business objects, I suggest you follow the same approach - define a non-generic interface and implement it in your custom base class.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

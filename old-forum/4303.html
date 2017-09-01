@@ -1,0 +1,11 @@
+<html><header><title>Controlling database dependency</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Controlling database dependency</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4303.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Angel posted on Wednesday, February 06, 2008</h2><P>This is a general question.</P>
+<P>How do you manage the database dependency in your projects.</P>
+<P>For example, if you modify a database field, how do you find what clases are affected by this change?</P>
+<P>If you use storeprecedures for any database access seems to be easy using a specific name convention or something similar but if you use embeded sql commands seems to be more dificult.</P>
+<P>What are your best practices for this issue?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Wednesday, February 06, 2008</h2><P>I use embedded SQL and it is not a real problem at all.</P>
+<P>I have separate classes for each database table. Each class contains the SQL statements used for that table. I code generate the CRUD methods plus some other basic methods that prove useful. Then I inherit from that class and hand write any other SQL needed.</P>
+<P>The point is that when I change a DB table by adding a field then I re-generate the CRUD class and then get compile errors on all the BOs that use it. I usually am able to just re-generate those BOs and the problem is solved. Sometimes I have to check the hand coded levels to ensure the new field does not affect them too.</P>
+<P>Joe</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Bowman74 replied on Wednesday, February 06, 2008</h2><P>I'm with Joe on this one; use code generation.&nbsp; When the database structure changes I refresh from the DB&nbsp;my&nbsp;and regenerate all my base classes and stored procs.&nbsp; Any overrides and custom stored procs will have to be dealt with by hand, of course.&nbsp; However, these tend to be outliers so there are not too many of them.</P>
+<P>Thanks,</P>
+<P>Kevin</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

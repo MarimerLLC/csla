@@ -1,0 +1,209 @@
+<html><header><title>OT: Is this a pattern?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>OT: Is this a pattern?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/966.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Michael Hildner posted on Monday, August 21, 2006</h2><P>Hi,</P>
+<P>This is kinda OT, but I'm doing it the context of CSLA objects, so...</P>
+<P>My use case is like this. The situation is that a 911 operator receives a 911 call, and needs to dispatch resources to a call location.</P>
+<P>The 911 operator communicates with resources over the radio. The resource is identified by a radio number. What's a little tricky is that a radio number is not always assigned to a police officer or fireman. For example, if there are two officers in a car, a message to radio number "101" - the car, is considered a message to both officers. When they get out of the car they'll each have their own radio number.</P>
+<P>In addition, radio numbers are not permanently assigned. I may have radio number 101 today and radio number 102 tomorrow, perhaps because I'm patrolling a different area.</P>
+<P>All this radio traffic gets typed into the system, and needs to be retrieved for reports later. Reports may be "Radio Traffic by Officer" or "Radio Traffic by Car".</P>
+<P>Is there a pattern or some guidance that would help me out?</P>
+<P>Thanks,<BR>Mike<BR></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, August 21, 2006</h2>As part of your overall system, there must be some use case that describes how an officer checks out a car or radio? </div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Michael Hildner replied on Monday, August 21, 2006</h2><P>Yes, both would be assigned at the beginning of the shift. The officer may tell the dispatcher the radio number, or the dispatcher may assign to the officer, but the dispatcher is the one who inputs it into the system.</P>
+<P>Mike</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>david.wendelken replied on Monday, August 21, 2006</h2><P>So, if I understand you correctly, one of your objects should have a method that returns a collection of officers associated with a given radio number at a given moment in time.&nbsp; Ditto for the cars associated with a radio number (assuming a group of cars can be associated with a "radio number", much like an emailing list group).&nbsp; </P>
+<P>&nbsp;</P>
+<P>public static OfficerInfoList GetOfficersByRadioNumber&nbsp;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(int radioNumber, SmartDate asOfDateTime)</P>
+<P>public static CarInfoList GetCarsByRadioNumber&nbsp;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(int radioNumber, SmartDate asOfDateTime)<BR>or<BR>public static CarInfo GetCarByRadioNumber&nbsp;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(int radioNumber, SmartDate asOfDateTime)</P>
+<P>In fact, the above could simply be the standard factory methods for populating a Csla business object collection with the appropriate parameters...<BR></P>
+<P>your ER model would have to conform to the following statements of fact:</P>
+<UL>
+<LI>Each Car may be assigned one and only one Radio Number at a time.</LI>
+<LI>Each Car may be assigned or more Radio Numbers over time.<BR></LI>
+<LI>Each Officer may be assigned to one and only one Car at a time.</LI>
+<LI>Each Officer may be assigned to one or more Cars over time.<BR></LI>
+<LI>Each Officer may be assigned one and only one Radio Number at a time.</LI>
+<LI>Each Officer may be assigned one or more Radio Numbers over time.<BR></LI>
+<LI>Each Radio Number may be assigned to one and only one Officer or Car at a time.</LI>
+<LI>Each Radio Number may be assigned to one or more Cars or Officers over time.<BR></LI>
+<LI>Each Car may be assigned one or more Officers at a time.</LI></UL>
+<P>Entities could be:</P>
+<UL>
+<LI>Vehicle (car, motorcycle, speedboat, helicopter, horse??, desk?? in which case Duty Station might be a better name))</LI>
+<LI>Officer</LI>
+<LI>Radio Number</LI>
+<LI>Radio Number Assignment&nbsp; (or optionally, Radio Number Vehicle Assignment and Radio Number Officer Assignment)</LI></UL>
+<P>Hope that helps!</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Michael Hildner replied on Monday, August 21, 2006</h2><P>David,</P>
+<P>I just wanted to say thanks for your detailed response. Much appreciated, and it makes sense.</P>
+<P>In my head, I'm still digesting, and trying to figure out the classes as well as the DB schema. I'm thinking now that an officer or car "is a" Radio Number rather than "has a" Radio Number.</P>
+<P>In the application that I inherited, an officer "has a" Radio Number. I'm not quite sure yet what the end result will be, but I can say that the current design has been brittle, fragile, not to to mention that it plain doesn't work for some clients - meaning that they buy someone else's software.</P>
+<P>I have the freedom now to re-create from scratch, so I'd like to do it properly.</P>
+<P>Thanks again,</P>
+<P>Mike</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>david.wendelken replied on Tuesday, August 22, 2006</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>Michael Hildner:</strong></div><div>
+<P>In my head, I'm still digesting, and trying to figure out the classes as well as the DB schema. I'm thinking now that an officer or car "is a" Radio Number rather than "has a" Radio Number.</P>
+<P></div></BLOCKQUOTE></P>
+<P>Officers are *not* Radio Numbers.&nbsp; They may be a Radio Broadcast Recipient.</P>
+<P>More accurately, they are Message Recipients, as there is no need to lock your application design into "Radio" when other communication technologies may supplant it.</P>
+<P>Entities:</P>
+<UL>
+<LI>Officer</LI>
+<LI>Message</LI>
+<LI>Message Recipient</LI></UL>
+<P>Vehicle and Vehicle Assignment (and if "Big Operations" are envisioned:&nbsp;Task Force&nbsp;and Task Force Assignment) would be used as a shorthand way to determine what Message Recipients to record.</P>
+<P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>Michael Hildner:</strong></div><div></P>
+<P>I have the freedom now to re-create from scratch, so I'd like to do it properly.</P>
+<P></div></BLOCKQUOTE></P>
+<P>A nice feeling, isn't it?</P>
+<P>Check out:</P>
+<P><A href="http://www.amazon.com/gp/product/0471380237/sr=8-6/qid=1156250709/ref=pd_bbs_6/102-4317892-6682510?ie=UTF8"><SPAN class=srtitle>The Data Model Resource Book, Vol. 1: A Library of Universal Data Models for All Enterprises</SPAN></A></P>
+<P>Ready-to-go data models applicable to most industries.</P>
+<P><A href="http://www.amazon.com/gp/product/0471353485/sr=8-9/qid=1156250709/ref=pd_bbs_9/102-4317892-6682510?ie=UTF8"><SPAN class=srtitle>The Data Model Resource Book, Vol. 2: A Library of Data Models for Specific Industries</SPAN></A>&nbsp;&nbsp;</P>
+<P>More specific industries covered here.<o:p></o:p></P>
+<P><A href="http://www.amazon.com/gp/product/0932633293/sr=8-2/qid=1156250796/ref=pd_bbs_2/102-4317892-6682510?ie=UTF8"><SPAN class=srtitle>Data Model Patterns: Conventions of Thought</SPAN></A></P>
+<P>Some higher-level, less detailed models applicable to most industries, but also covers the thought processes as to why the model is one one and not another.</P>
+<P><A href="http://www.amazon.com/gp/product/0486270661/sr=8-7/qid=1156250842/ref=pd_bbs_7/102-4317892-6682510?ie=UTF8"><SPAN class=srtitle>The Trial and Death of Socrates: Four Dialogues (Dover Thrift Editions)</SPAN></A>&nbsp;</P>
+<P>The last one displays the Socratic Method for getting to the true nature and meaning of things.&nbsp; Best book on how to actually think thru what you are trying to model I've ever found.&nbsp; The Socratic Method is an "intellectual hot knife thru butter" for understanding your entities/objects true meaning/purpose.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Tuesday, August 22, 2006</h2>I'm going to agree with David here.<br><br>Message Receipient would likely be an interface which both Officer and Vechical can implement.&nbsp; <br><br>Socrates is always good to read / read about, some very interesting ideas.&nbsp; Just to be well rounded though don't forget Hume, Nietzsche, Locke and Keyes.&nbsp; Not sure how much they'd help with coding, but they are great for just thinking about life in general.&nbsp; Why yes, I did take a lot of philosophy in college. <img src="/emoticons/emotion-1.gif" alt="Smile [:)]" /><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, August 22, 2006</h2>Huh, I'd sent this through email (I thought), but it got lost. Let's try again:<br><br><div align="left"><span class="312303116-21082006"><font color="#0000ff" face="Arial" size="2">My guess is that the establishment of a relationship 
+between a radio number and an officer is orthogonal to the tracking of actual 
+radio activity. They are related only because they exist within a temporal 
+context.</font></span></div>
+<div align="left"><span class="312303116-21082006"></span>&nbsp;</div>
+<div align="left"><span class="312303116-21082006"><font color="#0000ff" face="Arial" size="2">In other words, you'll need to log when a radio 
+number&lt;-&gt;officer relationship is made and broken. You'll also need to log 
+radio activity by radio number (because that's what you have). Then as a 
+reporting or batch operation you can use algorithms to establish 
+officer&lt;-&gt;communication relationships based on the temporal relationship 
+between the data.</font></span></div>
+<div align="left"><span class="312303116-21082006"></span>&nbsp;</div>
+<div align="left"><span class="312303116-21082006"><font color="#0000ff" face="Arial" size="2">One very efficient way to do this is by using a tree 
+structure. There's a thing called an interval tree which is widely used in 
+temporal (and spatial) applications. You could construct an interval tree 
+containing all the radio number&lt;-&gt;officer relationships over time. Then 
+you can very efficiently ask that tree for the officer, given a radio number and 
+time.</font></span></div>
+<div align="left"><span class="312303116-21082006"></span>&nbsp;</div>
+<div align="left"><span class="312303116-21082006"><font color="#0000ff" face="Arial" size="2">You'll most likely want to use some sort of balanced tree 
+(like a red-black tree) to do this, because your data is probably loaded in a 
+linear manner which would result in a very lopsided tree. Though you might be 
+able to load your data using an alternate key (like officer) to get the data in 
+a more "random" order that would allow you to create a simpler binary 
+tree.</font></span></div>
+<div align="left"><span class="312303116-21082006"></span>&nbsp;</div>
+<div align="left"><span class="312303116-21082006"><font color="#0000ff" face="Arial" size="2">Many data structures books cover the concept of an interval 
+tree - often including code.</font></span></div></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Michael Hildner replied on Tuesday, August 22, 2006</h2><P>Wow, that's a lot for me to think about - cool.</P>
+<P>I appreciate the responses and the references - I've got some reading to do.</P>
+<P>Thanks,</P>
+<P>Mike</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>malloc1024 replied on Tuesday, August 22, 2006</h2>
+
+<p class="MsoNormal">Ths
+IS-A test is a dangerous one.<span>&nbsp; </span>Replace the
+IS-A test with a BEHAVES-AS-A test.<span>&nbsp; </span>Does
+an officer or car behave as a radio number?<span>&nbsp;
+</span>I hope not.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>SonOfPirate replied on Tuesday, August 22, 2006</h2><P>Here's where my confusion/curiosity lies, and perhaps Mike can provide the clarification for me.&nbsp;&nbsp;I am trying to look at this from a behavior-based perspective and,&nbsp;to me, the radio number is simply an arbitrary value that is used to reference either a vehicle or an officer.&nbsp; But, to make true sense of this, I think there is another entity that needs to be included: the radio.&nbsp; Afterall, it is the radio that handles the behavior that is being depicted - the messaging.</P>
+<P>Do I think that there needs to be a Radio class, not necessarily.&nbsp; Only that the thing that a vehicle and an officer have in common is the radio, the thing that has the number is the radio and the thing handling the communication between the dispatcher and the recipient in the radio.&nbsp; Afterall, in the real world, the reason the call number changes when the officers get out of the car is because they are now being called on their personnal radios instead of the in-car radio.</P>
+<P>One other thing to look at, from a behavioral point-of-view, is what the dispatcher is actually doing.&nbsp; If the radio number is an arbitrarily assigned, then it stands to reason that the dispatcher is not making a call based solely on the radio number but is actually using some other basis for calling the selected vehicle or officers.&nbsp; That criteria is probably something like location and availability.&nbsp; The radio number is what the dispatcher uses to identify the recipient when making the call - presumably because this is an open-band radio rather than a direct connection to the selected&nbsp;radio.&nbsp; So, this further emphasizes that the radio number is simply a tag and not a behavioral element.</P>
+<P>From all of this, it seems to me that there needs to be some sort of MessageRecipient or RadioOwner base class or interface that exposes the behavior aspects of the model plus a RadioNumber property that can be used by the dispatcher to identify who is being called.&nbsp; Both the Vehicle and Officer classes would inherit from this class or implement the interface.&nbsp; The RadioNumber property would allow the temporary assignment and reassignment of the arbitrary numbers via the set accessor or separate AssignRadioNumber method (there can also be validation to ensure that the assignment is unique and throw an error if the number is being used elsewhere).&nbsp; Additional properties and methods would be defined to handle the messaging aspects including all required logging, such as a Call method.&nbsp;&nbsp;I suggested a base class to encapsulate the functionality, but if an interface works better, I would create a Radio helper class that both objects delegate to that provides the required functionality so that it is encapsulated and abstracted from the Vehicle and Officer classes.</P>
+<P>Looking back at the original problem statement, it is clearly stated that it is the calls ByOfficer and ByVehicle that matter.&nbsp; They are not concerned with ByRadio or ByRadioNumber.&nbsp; By selecting the Officer or Vehicle, inheriting RadioOwner (or whatever)&nbsp;from the list, the dispatcher has identified the true object being used in the dispatch.</P>
+<P>I hope I've explained that clearly enough.&nbsp; It certainly makes sense in my head.&nbsp; Let me know if not.</P>
+<P>Hope that helps.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Michael Hildner replied on Tuesday, August 22, 2006</h2><BLOCKQUOTE><div>Afterall, in the real world, the reason the call number changes when the officers get out of the car is because they are now being called on their personnal radios instead of the in-car radio.
+<P>One other thing to look at, from a behavioral point-of-view, is what the dispatcher is actually doing.&nbsp; If the radio number is an arbitrarily assigned, then it stands to reason that the dispatcher is not making a call based solely on the radio number but is actually using some other basis for calling the selected vehicle or officers.&nbsp; That criteria is probably something like location and availability.&nbsp; The radio number is what the dispatcher uses to identify the recipient when making the call - presumably because this is an open-band radio rather than a direct connection to the selected&nbsp;radio.&nbsp; So, this further emphasizes that the radio number is simply a tag and not a behavioral element.</div></BLOCKQUOTE></P>
+<P>That's exactly the case. Radio numbers change because of people getting out of the vehicle and are now using their personal radio. Some agencies might use radio number 101 for the Sheriff, 102 for the undersheriff etc., others will assign radio numbers based on the officer's "beat" or patrol area. So whoever is patrolling beat #3 will alwasys have radio number 202.</P>
+<P>What makes this difficult for me is that different agencies do different things. One agency may always have the sheriff as 101, whether s/he's in a vehicle or not. Some assign by beat #. An ambulance may always have the same radio number. If 8 guys get out of a fire truck, now you've got 8 radio numbers instead of 1 for the truck.</P>
+<P>I'd like to design this system so I can sell to multiple agencies. However the radio number gets assigned, it is, like you said,&nbsp;a tag to identify the recepient. The recepient's tag changes over time, although for some agencies it is infrequent (years) and other agencies it changes on every shift.</P>
+<P>Thanks,</P>
+<P>Mike</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>SonOfPirate replied on Tuesday, August 22, 2006</h2><P>I think you are covered even if 8 guys are getting out of a truck or the numbers rarely change.&nbsp; </P>
+<P>Because the RadioNumber is a tag, is can change as often or as infrequently as needed on a record-by-record basis.&nbsp; In other words, you can have the chief with number 101 for a year and the next record correspond to Engine 1 which has its RadioNumber change every day.&nbsp; As long as you build in logic to prevent duplicate numbers - or have the routine reset the previous owner's number to zero or something invalid - you are safe.</P>
+<P>As for the 8 guys versus 2 getting out of the truck, etc. The responsibility for reaching the recipient is ultimately on the dispatcher.&nbsp; If all 8 guys have gotten out of the truck and the dispatcher selects the row corresponding to the truck, it doesn't matter what number is assigned, their gonna be calling the truck.&nbsp; If the dispatcher expects to reach FireFighterA and knows he/she is out of the truck, then the dispatcher will have to select FireFighterA's row in the list.</P>
+<P>Nice thing about this is that you can take advantage of data-binding in your interface(s), selecting an item from the list corresponds to the concrete Officer/FireFighter/Vehicle so that logging can provide the necessary traceability using that Officer's badge number (or whatever is used).</P>
+<P>I think you're covered.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, August 23, 2006</h2>
+
+
+
+
+<DIV align=left><SPAN class=046252616-22082006><FONT face=Arial color=#0000ff size=2>This is why I suggested that the radio number assignment is 
+a separate issue (use case) from the tracking of radio usage. Only after the 
+fact is there a third use case where you are relating a given radio call to the 
+person/car associated with that radio at that particular 
+time.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=046252616-22082006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=046252616-22082006><FONT face=Arial color=#0000ff size=2>When looking at this using a behavioral/responsibility 
+driven approach, you have to evaluate each use case separately - and only try to 
+consolidate responsibilities after you understand each use 
+case.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=046252616-22082006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=046252616-22082006><FONT face=Arial color=#0000ff size=2>You have (I think) at least 3-4 use 
+cases:</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=046252616-22082006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=046252616-22082006><FONT face=Arial color=#0000ff size=2>1) An officer is associated with a 
+radio</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=046252616-22082006><FONT face=Arial color=#0000ff size=2>1a) An actual radio</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=046252616-22082006><FONT face=Arial color=#0000ff size=2>1b) A car</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=046252616-22082006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=046252616-22082006><FONT face=Arial color=#0000ff size=2>2) A car is associated with a radio</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=046252616-22082006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=046252616-22082006><FONT face=Arial color=#0000ff size=2>3) A radio is used (usage is tracked)</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=046252616-22082006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=046252616-22082006><FONT face=Arial color=#0000ff size=2>4) User wants to know who was contacted in a specific radio 
+usage</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=046252616-22082006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=046252616-22082006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=046252616-22082006><FONT face=Arial color=#0000ff size=2>Rocky</FONT></SPAN></DIV><BR>
+<BLOCKQUOTE>
+  <P></P>
+  <P>That's exactly the case. Radio numbers change because of people getting out 
+  of the vehicle and are now using their personal radio. Some agencies might use 
+  radio number 101 for the Sheriff, 102 for the undersheriff etc., others will 
+  assign radio numbers based on the officer's "beat" or patrol area. So whoever 
+  is patrolling beat #3 will alwasys have radio number 202.</P>
+  <P>What makes this difficult for me is that different agencies do different 
+  things. One agency may always have the sheriff as 101, whether s/he's in a 
+  vehicle or not. Some assign by beat #. An ambulance may always have the same 
+  radio number. If 8 guys get out of a fire truck, now you've got 8 radio 
+  numbers instead of 1 for the truck.</P>
+  <P>I'd like to design this system so I can sell to multiple agencies. However 
+  the radio number gets assigned, it is, like you said,&nbsp;a tag to identify 
+  the recepient. The recepient's tag changes over time, although for some 
+  agencies it is infrequent (years) and other agencies it changes on every 
+  shift.</P></BLOCKQUOTE></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Michael Hildner replied on Wednesday, August 23, 2006</h2><P>Thanks Rocky,</P>
+<P>Seems a lot simpler now &lt;g&gt; Makes sense to me.</P>
+<P>Regards,</P>
+<P>Mike</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, August 23, 2006</h2>
+
+
+
+
+<DIV align=left><SPAN class=312303116-21082006><FONT face=Arial color=#0000ff size=2>My guess is that the establishment of a relationship 
+between a radio number and an officer is orthogonal to the tracking of actual 
+radio activity. They are related only because they exist within a temporal 
+context.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=312303116-21082006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=312303116-21082006><FONT face=Arial color=#0000ff size=2>In other words, you'll need to log when a radio 
+number&lt;-&gt;officer relationship is made and broken. You'll also need to log 
+radio activity by radio number (because that's what you have). Then as a 
+reporting or batch operation you can use algorithms to establish 
+officer&lt;-&gt;communication relationships based on the temporal relationship 
+between the data.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=312303116-21082006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=312303116-21082006><FONT face=Arial color=#0000ff size=2>One very efficient way to do this is by using a tree 
+structure. There's a thing called an interval tree which is widely used in 
+temporal (and spatial) applications. You could construct an interval tree 
+containing all the radio number&lt;-&gt;officer relationships over time. Then 
+you can very efficiently ask that tree for the officer, given a radio number and 
+time.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=312303116-21082006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=312303116-21082006><FONT face=Arial color=#0000ff size=2>You'll most likely want to use some sort of balanced tree 
+(like a red-black tree) to do this, because your data is probably loaded in a 
+linear manner which would result in a very lopsided tree. Though you might be 
+able to load your data using an alternate key (like officer) to get the data in 
+a more "random" order that would allow you to create a simpler binary 
+tree.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=312303116-21082006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=312303116-21082006><FONT face=Arial color=#0000ff size=2>Many data structures books cover the concept of an interval 
+tree - often including code.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=312303116-21082006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=312303116-21082006><FONT face=Arial color=#0000ff size=2>Rocky</FONT></SPAN></DIV><BR>
+<BLOCKQUOTE>
+  <P>Yes, both would be assigned at the beginning of the shift. The officer may 
+  tell the dispatcher the radio number, or the dispatcher may assign to the 
+  officer, but the dispatcher is the one who inputs it into the 
+system.</P></BLOCKQUOTE></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

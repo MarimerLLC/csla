@@ -1,0 +1,108 @@
+<html><header><title>IsSavable, INotifyPropertyChanged and WPF binding</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>IsSavable, INotifyPropertyChanged and WPF binding</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/2548.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>FreeAsInBeer posted on Monday, March 19, 2007</h2>hi all,<br><br>I was trying to bind my CSLA object's IsSavable property to the IsEnabled property on a button, like this;<br><br>&lt;Button Click="SavePerson" Width="150" IsEnabled="{Binding Path=IsSavable, Mode=OneWay}"&gt;Save changes&lt;/Button&gt;<br><br><br>However it looks like the base IsSavable doesnt implement INotifyPropertyChanged. I thought it did. Have I misread something in the code? <br><br>In debugging IsSavable/IsDirty changes as I edit a property, but this change is not updated in the above binding. <br><br>any thoughts?<br><br>tar<br>FaiB<br><br><br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, March 19, 2007</h2><P>The Is___ properties are marked as Browsable(false), which makes them unavailable for data binding.</P>
+<P>For Windows Forms there's a <A href="http://www.lhotka.net/Article.aspx?area=4&amp;id=5faaee8e-8496-4845-86f7-787c6b64096c">perfectly good answer</A>&nbsp;to this issue.</P>
+<P>For WPF I've got a prototype answer in CSLA .NET 3.0. See <A href="http://www.lhotka.net/weblog/CSLANET30WPFSupportProgress.aspx">this&nbsp;blog post</A>&nbsp;and the <A href="http://www.lhotka.net/Article.aspx?area=4&amp;id=0c94aa82-b975-455b-a0c5-f4f7196a2408">CSLA .NET 3.0 change log</A>&nbsp;for details. </P>
+<P>If you want to experiment and/or help test, you can get the current CSLA .NET 3.0 code direct from my <A href="http://www.lhotka.net/Article.aspx?id=5987a664-4b44-45a7-bc1d-695610964718">svn repository</A>. Also, I'm speaking on this at VS Live this coming Sunday, and I'll be putting whatever code is current online prior to teaching that workshop. That'll be at <A href="http://www.lhotka.net/cslanet/download.aspx">www.lhotka.net/cslanet/download.aspx</A>. </P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>FreeAsInBeer replied on Monday, March 19, 2007</h2>ah, thanks. I'd noticed the Browsable(false) attribute, but was not fully aware of what it did. <br><br>I'd love to experiment and/or test CSLA 3.0, but this will have to wait a few weeks. I'm in the middle of doing my first sample WPF app, which is also my first CSLA app, and don't want to introduce a 3rd spanner :)<br><br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, March 19, 2007</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I fully understand about introducing unknowns into your app. But
+if you are even trying to use CSLA behind WPF, I really think you want the
+experimental CSLA .NET 3.0 stuff.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>CslaDataProvider: a data provider control that works with CSLA
+objects<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>ValidationPanel: provides ErrorProvider-like behaviors in your
+WPF form<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>AuthorizationPanel: provides ReadWriteAuthorization-like
+behaviors in your WPF form<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>ObjectStatusPanel: exposes the Is___ properties for binding in
+your form<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Without these new controls you won&#8217;t be able to get
+validation or authorization behaviors, or to use the Is___ properties. WPF
+simply doesn&#8217;t offer the capabilities of Windows Forms in terms of
+validation or bindingsource events, so there are no simple workarounds to do
+what these new Csla.Wpf controls are doing. (I&#8217;ve no doubt that a future
+version of WPF will at least include an ErrorProvider equivalent &#8211; that&#8217;s
+too important for them to ignore for WPF 2.0 &#8211; but in the intervening
+months or years, we need something&#8230;)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>The CslaDataProvider is purely optional, as you can always set the
+DataContext through code. But it does offer async loading of data without you
+having to mess with threading yourself, and that can be nice.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<div>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> FreeAsInBeer
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Monday, March 19, 2007 10:05 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] IsSavable, INotifyPropertyChanged and WPF
+binding<o:p></o:p></span></p>
+
+</div>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>ah, thanks. I'd noticed the Browsable(false) attribute, but
+was not fully aware of what it did. <br>
+<br>
+I'd love to experiment and/or test CSLA 3.0, but this will have to wait a few
+weeks. I'm in the middle of doing my first sample WPF app, which is also my
+first CSLA app, and don't want to introduce a 3rd spanner :)<br>
+<br>
+<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

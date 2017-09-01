@@ -1,0 +1,35 @@
+<html><header><title>Cannot bind an unregistered property in xaml: a bug or a new CSLA4's behaviour?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Cannot bind an unregistered property in xaml: a bug or a new CSLA4's behaviour?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9338.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Cuong posted on Friday, August 06, 2010</h2><p>Hi Rocky,</p>
+<p>I have a business class like below:</p>
+<p>public class MyClass : BusinessBase&lt;MyClass&gt;</p>
+<p>{</p>
+<p>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; public readonly static PropertyInfo&lt;int&gt; DataProperty = RegisterProperty&lt;int&gt;(x =&gt; x.Data);<br />&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; public int Data<br />&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; get { return GetProperty(DataProperty); }<br />&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; set { SetProperty(DataProperty, value); }<br />&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; }</p>
+<p>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; public int Data1<br />
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; {<br />
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; get { return GetData1FromData(this.Data); }<br />
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; set { this.Data = GetDataFromData1AndData2( value, this.Data2); }</p>
+<p>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; }</p>
+<p><br />
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; public int Data2<br />
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; {<br />
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; get { return GetData2FromData(this.Data); }<br />
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; set { this.Data = GetDataFromData1AndData2( this.Data1, value); }<br />
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; }<br />
+}</p>
+<p>In CSLA3.8 &amp; .net 3.5, I can bind MyClass.Data1 and MyClass.Data2 in a xaml like:</p>
+<p>&lt;TextBox Text={Binding Data1, Mode=TwoWay} /&gt;</p>
+<p>&lt;TextBox Text={Binding Data2, Mode=TwoWay} /&gt;</p>
+<p>In CSLA4.0 &amp; .net 4.0, I cannot bind MyClass.Data1 and MyClass.Data2 like above. The application always crashes and throw an exception &quot;Sequence contains no elements&quot;. I cannot determine in source code the place where the exception is thrown. But if I add 2 fake registered properties like below, the application works fine.</p>
+<p>public class MyClass : BusinessBase&lt;MyClass&gt;</p>
+<p>{</p>
+<p>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; public readonly static PropertyInfo&lt;int&gt; Data1Property = RegisterProperty&lt;int&gt;(x =&gt; x.Data1);</p>
+<p>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; public readonly static PropertyInfo&lt;int&gt; Data2Property = RegisterProperty&lt;int&gt;(x =&gt; x.Data2);</p>
+<p>...</p>
+<p>}</p>
+<p>&nbsp;</p>
+<p><b>I&#39;d like to know if it is a bug or a new CSLA4&#39;s behaviour? Must all properties be registered to be bound in a xaml?</b></p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Saturday, August 07, 2010</h2><p>Basic binding should work ok (not great) against the two properties you implemented. Since they don&#39;t raise PropertyChanged events (you aren&#39;t calling OnPropertyChanged for them) your data binding experience will be somewhat substandard&nbsp;- but you can address that by just adding OnPropertyChanged calls in the setters.</p>
+<p>That&#39;s standard XAML binding I&#39;m talking about - it can bind to normal properties just fine (with limitations if the property doesn&#39;t raise PropertyChanged). </p>
+<p>The CSLA 4 UI components like PropertyStatus however - those require registered properties. That&#39;s how PropertyStatus (as an example) is able to get at validation and authorization results for the property.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Cuong replied on Saturday, August 07, 2010</h2><p>Oh yes, I re-checked and I saw the issue resides in the PropertyStatus&#39;s bindings (not controls). </p>
+<p>Could you modify the PropertyStatus on the way it treats unregistered properties? It should ignore unregistered properties instead of throwing an exception. Because the PropertyStatus did not throw the exception with unregistered properties in CSLA3.8. So old applications that worked fine with CSLA3.8, may suddenly&nbsp; crashes with CSLA4.0 and it is hard to search in big projects to change ALL unregistered properties to be registered.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Saturday, August 07, 2010</h2><p>I&nbsp;can&#39;t see how that would be a good change. If PropertyStatus ignored unregistered properties (and there&#39;s no way for it to detect that really), then people would move to CSLA 4 and <em>have no idea why their PropertyStatus controls were failing</em>.</p>
+<p>On the other hand, I can see an argument for improving the exception that&#39;s thrown when someone tries to use CanReadProperty or CanWriteProperty against an unregistered property (because I suspect that&#39;s what&#39;s triggering the exception).</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

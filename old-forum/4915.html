@@ -1,0 +1,88 @@
+<html><header><title>Read only object in an editable list</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Read only object in an editable list</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4915.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>dla0819 posted on Thursday, May 29, 2008</h2><P>I would like to create an editable list of read only objects.&nbsp; My first attempt was as follows:</P><FONT size=2>
+<P>&lt;Serializable()&gt; _</P>
+<P></FONT><FONT color=#0000ff size=2>Public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Class</FONT><FONT size=2> HolidayList</P>
+<P></FONT><FONT color=#0000ff size=2>Inherits</FONT><FONT size=2> BusinessListBase(</FONT><FONT color=#0000ff size=2>Of</FONT><FONT size=2> HolidayList, HolidayInfo)</P>
+<P>&nbsp;</P></FONT><FONT color=#0000ff size=2>
+<P>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Class</FONT></P><FONT color=#0000ff size=2>
+<P><FONT color=#000000><FONT size=3>Where HolidayInfo is a ReadOnlyBase.&nbsp; Obviously I can&nbsp;not do this because BusinessListBase expects to receive the BusinessBase (at least this is how I understand it).&nbsp; So what would be the best way to go about creating a list that I can add and delete objects to the list without the requirement of the objects themselves being editable?</FONT></P></FONT></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Thursday, May 29, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I believe you need to create business base based object
+(HolidayInfo) with all properties declared as read-only.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Senior Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> dla0819
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Thursday, May 29, 2008 4:44 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> [CSLA .NET] Read only object in an editable list<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>I would like to create an editable list of read only objects.&nbsp; My first
+attempt was as follows:<o:p></o:p></p>
+
+<p><span>&lt;Serializable()&gt; _<o:p></o:p></span></p>
+
+<p><span>Public</span><span> <span>Class</span> HolidayList<o:p></o:p></span></p>
+
+<p><span>Inherits</span><span> BusinessListBase(<span>Of</span>
+HolidayList, HolidayInfo)<o:p></o:p></span></p>
+
+<p><span>&nbsp;<o:p></o:p></span></p>
+
+<p><span>End</span><span> <span>Class</span></span><o:p></o:p></p>
+
+<p><span>Where HolidayInfo is a ReadOnlyBase.&nbsp;
+Obviously I can&nbsp;not do this because BusinessListBase expects to receive
+the BusinessBase (at least this is how I understand it).&nbsp; So what would be
+the best way to go about creating a list that I can add and delete objects to
+the list without the requirement of the objects themselves being editable?</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

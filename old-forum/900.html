@@ -1,0 +1,22 @@
+<html><header><title>Adding to Child Collection not marking the Root Collection as Dirty...?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Adding to Child Collection not marking the Root Collection as Dirty...?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/900.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>jender624 posted on Monday, August 14, 2006</h2><P>Hi everybody,</P>
+<P>I have a Resource editable root collection, which is comprised of Resource child objects.&nbsp; Each Resource child object in turn contains a ResourceAvailabilityCollection child collection, which is comprised of ResourceAvailability child objects.&nbsp; So, in visual pseudocode, the hierarchy looks like this:</P>
+<P><FONT color=#000080>Class ResourceCollection&nbsp;(of <FONT color=#006400>Resource</FONT>&nbsp;)</FONT></P>
+<P><FONT color=#000080>End Class</FONT></P>
+<P><FONT color=#006400>Class Resource</FONT></P>
+<P><FONT color=#006400>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Public availabilityCollection as&nbsp;<FONT color=#a52a2a>ResourceAvailabilityCollection</FONT>&nbsp;</FONT></P>
+<P><FONT color=#006400>End Class</FONT></P>
+<P><FONT color=#a52a2a>Class ResourceAvailabilityCollection&nbsp;(of <FONT color=#808080>ResourceAvailability</FONT>)</FONT></P>
+<P><FONT color=#a52a2a>End Class</FONT></P>
+<P><FONT color=#808080>Class ResourceAvailability</FONT></P>
+<P><FONT color=#808080>End Class</FONT></P>
+<P>When I add a <FONT color=#808080>ResourceAvailability</FONT> child object to the <FONT color=#a52a2a>ResourceAvailabilityCollection</FONT> child collection, my <FONT color=#000080>ResourceCollection</FONT> is not being marked as Dirty.&nbsp; Consequently, the DataPortal_Update of the <FONT color=#000080>ResourceCollection</FONT> is not being fired, which means the <FONT color=#006400>Resource</FONT> objects are not being updated, which means the <FONT color=#a52a2a>ResourceAvailabilityCollection</FONT> is not saving the new <FONT color=#808080>ResourceAvailability</FONT> child objects to the database.</P>
+<P>Have I set this up wrong?&nbsp; How do I get my root collection to execute the update?&nbsp; (I hope I haven't confused everybody...)</P>
+<P>Thanks,</P>
+<P>jender624</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Tray replied on Tuesday, August 15, 2006</h2><P><FONT face=Arial>jender624,</FONT></P>
+<P><FONT face=Arial>You have not indicated if you have overridden the IsDirty and IsValid properties in the Resource business object.</FONT></P>
+<P><FONT face=Arial>For the root collection (ResourceCollection) to know that its child objects are dirty, you need to override the default implementations of IsDirty (and IsValid while you're there).</FONT></P>
+<P><FONT face=Arial>Check out page 417 of Rockfords' book (Expert VB 2005 Business Objects) for information on how to implement IsDirty for objects with collections of child objects.</FONT></P>
+<P><FONT face=Arial>In reference to the book, your Resource object is the object that requires overriding - it is the top non-collection object.</FONT></P>
+<P><FONT face=Arial>Hope this helps<BR>Tray</FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jender624 replied on Tuesday, August 15, 2006</h2><P>Awesome, thanks so much Tray...I completely missed the part about overriding IsDirty/IsValid.&nbsp; I'll give that a shot and see if I can get this thing working.</P>
+<P>Thanks again,</P>
+<P>jender624</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jender624 replied on Tuesday, August 15, 2006</h2>That did it!&nbsp; Thanks again!</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

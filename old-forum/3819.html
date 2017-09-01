@@ -1,0 +1,40 @@
+<html><header><title>Error in 3 Tier Business List Base Save()</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Error in 3 Tier Business List Base Save()</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3819.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jeff.Bradford posted on Wednesday, October 31, 2007</h2><P><FONT face=Arial size=2>Hello All,</FONT></P>
+<P><FONT face=Arial size=2>I couldnt find another post on the forums for this topic, so I apologize in advance if it's been covered.&nbsp;I am having a problem in 3 tier that I am not having in 2 tier when running the exact same code. I am finding that after adding a new item to a BusinessListBase collection and saving, the status of IsNew on the item is not propogating back to the collection from the item. I will add the item to the collection, save the collection, MarkOld() on the item and when control goes back to the collection, the item shows IsNew = true. Take the following code snippets for example:</FONT></P><FONT size=2></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>
+<P>protected</FONT><FONT color=#000000 size=2> </FONT><FONT color=#0000ff size=2>override</FONT><FONT color=#000000 size=2> </FONT><FONT color=#0000ff size=2>void</FONT><FONT color=#000000 size=2> DataPortal_Update(){ ... </FONT><FONT color=#008000 size=2>//Update on BusinessListBase Parent Collection</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>foreach</FONT><FONT size=2> (MyItem child </FONT><FONT color=#0000ff size=2>in</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>)</P>
+<P>{ </FONT><FONT color=#008000 size=2>//Stop Point 1, Child.IsNew is true, as it should be</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (child.IsNew)</P>
+<P>child.Insert(</FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>);</P>
+<P>...</P>
+<P>} </FONT><FONT color=#008000 size=2>// At Stop Point 3, Child.IsNew is true as it should NOT be.</P></FONT><FONT size=2>
+<P>}</P></FONT><FONT color=#0000ff size=2>
+<P>internal</FONT><FONT color=#000000 size=2> </FONT><FONT color=#0000ff size=2>void</FONT><FONT color=#000000 size=2> Insert(MyCollection parent) </FONT><FONT color=#008000 size=2>//Insert on Child - BusinessBase</P></FONT><FONT size=2>
+<P>{</P>
+<P>... </FONT><FONT color=#008000 size=2>//Do Inserting Stuff</P></FONT><FONT size=2>
+<P>MarkOld();</P>
+<P>MarkClean();</P>
+<P>} </FONT><FONT color=#008000 size=2>//At Stop Point 2, this.IsNew is False</P>
+<P></FONT></FONT><FONT size=2></FONT>&nbsp;</P>
+<P><FONT face=Arial size=2>Again, this happens in 3 tier mode, but not 2 tier. I am&nbsp;currently&nbsp;using CSLA 3.0.1.&nbsp;Any ideas/clarification?</FONT></P>
+<P><FONT face=Arial size=2>Thanks,</FONT></P>
+<P><FONT face=Arial size=2>Jeff</FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jeff.Bradford replied on Wednesday, October 31, 2007</h2><P><FONT face=Arial size=2>Edit: Upon closing studio and reopening, therefore resetting the local development server, I can not reproduce the error at stop point 3. It now shows false. However, after passing the object back through the portal, the col[item].IsNew is still true. In stepping through the code, the value in the data portal result remains false. As soon as control returns to the script I called MyCollection.Save() from, MyCol[Item].IsNew is still true. Why would it lose this change from the portal object? </FONT></P>
+<P><FONT face=Arial size=2>I apologize if I have confused anyone in my descriptions.</FONT></P>
+<P><FONT face=Arial size=2>Thanks in advance.</FONT></P>
+<P><FONT face=Arial size=2></FONT>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Patrick.Roeper replied on Wednesday, October 31, 2007</h2><P><FONT face=Verdana size=2>Jeff, </FONT></P>
+<P><FONT face=Verdana size=2>I might not understand completely but the scenario you describe sounds similar to one we ran into a few months ago. Our application was running fine in 2 tier mode but when we switched to 3 tier we noticed that whenever we created a new root object and saved it, we saw the changes in the database but the IsNew flag never went to false. So everytime you created a new object, clicked Save on our UI, and then clicked close, you were still prompted with "Would you like to save the new [Root Object]?".</FONT></P>
+<P><FONT face=Verdana size=2>Turns out that we were not Saving the object correctly. Save() returns the updated instance of the root object being saved. When we were calling Save() directly on the business object, we were not updating the original business object to the saved copy that came back from the data portal.</FONT></P>
+<P><FONT face=Verdana size=2>The following code is from chapter 9 of the csla 2.0 book:</FONT></P>
+<P><FONT face=Verdana size=2><STRONG>Project temp = _project.Clone();</STRONG></FONT></P>
+<P align=left><FONT face=Verdana size=2><STRONG>temp.ApplyEdit();</STRONG></FONT></P>
+<P align=left><FONT face=Verdana size=2><STRONG>try</STRONG></FONT></P>
+<P align=left><FONT face=Verdana size=2><STRONG>{</STRONG></FONT></P>
+<P align=left><FONT face=Verdana size=2><STRONG>_project = temp.Save();</STRONG></FONT></P>
+<P><FONT face=Verdana size=2><STRONG>....</STRONG></FONT></P>
+<P><FONT face=Verdana size=2>Once we changed our code over to this we were not seeing the problem anymore. Hopefully what you are dealing with is similar to our previous problem and this will correct the issue.</FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jeff.Bradford replied on Thursday, November 01, 2007</h2><P><FONT face=Arial size=2>Patrick,</FONT></P>
+<P><FONT face=Arial size=2>Yep, that was it. I was just applying a .Save() to my object rather than cloning it and&nbsp;setting the returned&nbsp;object&nbsp;from the portal to my object.&nbsp;Thanks for helping me with something I should have known all along. :P</FONT></P>
+<P><FONT face=Arial size=2>Jeff</FONT></P>
+<P><FONT face=Arial size=2></FONT>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, November 01, 2007</h2><P>In CSLA 3.0.2 there's a config flag: AutoCloneOnUpdate. If you set this to true, it will cause the object to be cloned when the data portal is in local mode. The result is that you'd see this issue at all times <img src="/emoticons/emotion-1.gif" alt="Smile [:)]" /></P>
+<P>This turns out to be a good thing though, partially because it helps you find this sort of bug immediately. But also because you must clone the object&nbsp;if you want to be able to handle any exceptions in the DataPortal_XYZ methods in a&nbsp;stable manner. Specifically, if you want to be able to show the user a working object after such an exception.</P>
+<P>I discuss the details of this in the <EM>Using CSLA .NET 3.0</EM> ebook.</P>
+<P>In CSLA 3.5 I'll be changing the default of AutoCloneOnUpdate to be true. It defaults to false in 3.0.2 for backward compatibility, but it is such an important thing, that I'm changing the default in 3.5 to be what it <EM>should be</EM> - though you'll still be able to set it to the old value if necessary.</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

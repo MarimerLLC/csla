@@ -1,0 +1,85 @@
+<html><header><title>When to call ValidationRules.CheckRules() in CSLA 3.5?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>When to call ValidationRules.CheckRules() in CSLA 3.5?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5772.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>alef posted on Monday, November 10, 2008</h2><br>
+Do we need to call Validation.Checkrules() in the Child_Create() method.<br>
+In 2.1 we need to do that. Is this not anymore the case in 3.5?<br>
+<br>
+eg. ProjectResource<br>
+<br>
+protected override void Child_Create()<br>
+{<br>
+&nbsp;&nbsp;&nbsp; LoadProperty&lt;SmartDate&gt;(AssignedProperty, new SmartDate(System.DateTime.Today));<br>
+&nbsp;&nbsp;&nbsp; Validation.Checkrules();&nbsp;&nbsp; ?????  <br>
+}<br>
+<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Monday, November 10, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Either this or you can call the base method (which is what I do),
+as in base.Child_Create() which does call ValidationRules.CheckRules();<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> alef
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Monday, November 10, 2008 9:11 AM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> [CSLA .NET] When to call ValidationRules.CheckRules() in CSLA
+3.5?<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal><br>
+Do we need to call Validation.Checkrules() in the Child_Create() method.<br>
+In 2.1 we need to do that. Is this not anymore the case in 3.5?<br>
+<br>
+eg. ProjectResource<br>
+<br>
+protected override void Child_Create()<br>
+{<br>
+&nbsp;&nbsp;&nbsp; LoadProperty&lt;SmartDate&gt;(AssignedProperty, new
+SmartDate(System.DateTime.Today));<br>
+&nbsp;&nbsp;&nbsp; Validation.Checkrules();&nbsp;&nbsp; ????? <br>
+}<br>
+<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>k2so replied on Monday, November 10, 2008</h2>That's where I call mine.<br><br>You want to call it here, if you want a validation check every time the child object gets created, one reason being that the UI can show information that's required but missing in order to direct user to input.<br><br>I believe, someone said it somewhere before, that Child_Create in the BusinessBase class already has a Validation.CheckRules call in it, and if you do not override Child_Create, that method would be called by default upon a child creation and Validation.CheckRules gets called in it.<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

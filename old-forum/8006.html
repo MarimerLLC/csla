@@ -1,0 +1,162 @@
+<html><header><title>Using FieldManager to Apply a set of (Templated) property values for existing BO</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Using FieldManager to Apply a set of (Templated) property values for existing BO</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/8006.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Kevin Fairclough posted on Tuesday, November 17, 2009</h2>Hi All<br><br>I have a use case in which one or more templates can be applied to a BO that will automatically set values of the BO with those of the template.&nbsp; I have the template RO object that contains a list of properties and values stored currently as string values, so i'll need conversion too.<br><br>I ideally don't want to use reflection in my BO in order to set property values, I'm using ManagedFields can I use FieldManager in some way for this?<br><br>It is also likely that other BOs will require similar functionality in the future.<br><br>Has anyone done something similar?&nbsp; A pointer to the best approach would be great!<br><br>TIA<br>Kevin<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>chrduf replied on Tuesday, November 17, 2009</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Hi Kevin<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>We have the same requirement. Here&#8217;s what we did&#8230;.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Create a new factory object in your BO<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p><span>&nbsp;1438</span><span>&nbsp;</span><span>&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp; #region</span><span> CreateFromTemplate<o:p></o:p></span></p>
+
+<p><span>&nbsp;1439</span><span>&nbsp;<o:p></o:p></span></p>
+
+<p><span>&nbsp;1440</span><span>&nbsp;</span><span>#if</span><span> !(SILVERLIGHT)<o:p></o:p></span></p>
+
+<p><span>&nbsp;1441</span><span>&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp; </span><span>public</span><span> </span><span>static</span><span> </span><span>RequestEntity</span><span> CreateFromTemplate(</span><span>Guid</span><span> newRequestId, </span><span>Guid</span><span> templateId, </span><span>string</span><span> contactId, </span><span>string</span><span> customerId, </span><span>string</span><span> projectId, </span><span>bool</span><span> clientPortal)<o:p></o:p></span></p>
+
+<p><span>&nbsp;1442</span><span>&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp; {<o:p></o:p></span></p>
+
+<p><span>&nbsp;1443</span><span>&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; </span><span>return</span><span> </span><span>DataPortal</span><span>.Create&lt;</span><span>RequestEntity</span><span>&gt;(</span><span>new</span><span> </span><span>CriteriaCreateFromTemplate</span><span>(newRequestId,
+templateId, contactId, customerId, projectId, clientPortal));<o:p></o:p></span></p>
+
+<p><span>&nbsp;1444</span><span>&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp; }<o:p></o:p></span></p>
+
+<p><span>&nbsp;1445</span><span>&nbsp;</span><span>#endif</span><span><o:p></o:p></span></p>
+
+<p><span>&nbsp;1446</span><span>&nbsp;<o:p></o:p></span></p>
+
+<p><span>&nbsp;1447</span><span>&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp; </span><span>public</span><span> </span><span>static</span><span> </span><span>void</span><span> CreateFromTemplateAsync(</span><span>Guid</span><span> newRequestId, </span><span>Guid</span><span> templateId, </span><span>string</span><span> contactId, </span><span>string</span><span> customerId, </span><span>string</span><span> projectId, </span><span>bool</span><span> clientPortal, </span><span>EventHandler</span><span>&lt;</span><span>DataPortalResult</span><span>&lt;</span><span>RequestEntity</span><span>&gt;&gt;
+handler)<o:p></o:p></span></p>
+
+<p><span>&nbsp;1448</span><span>&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp; {<o:p></o:p></span></p>
+
+<p><span>&nbsp;1449</span><span>&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; </span><span>DataPortal</span><span>&lt;</span><span>RequestEntity</span><span>&gt; dp = </span><span>new</span><span> </span><span>DataPortal</span><span>&lt;</span><span>RequestEntity</span><span>&gt;();<o:p></o:p></span></p>
+
+<p><span>&nbsp;1450</span><span>&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; dp.FetchCompleted += handler;<o:p></o:p></span></p>
+
+<p><span>&nbsp;1451</span><span>&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; dp.BeginCreate(</span><span>new</span><span> </span><span>CriteriaCreateFromTemplate</span><span>(newRequestId,
+templateId, contactId, customerId, projectId, clientPortal));<o:p></o:p></span></p>
+
+<p><span>&nbsp;1452</span><span>&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp; }<o:p></o:p></span></p>
+
+<p><span>&nbsp;1453</span><span>&nbsp;<o:p></o:p></span></p>
+
+<p><span>&nbsp;1454</span><span>&nbsp;</span><span>&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp; #endregion</span><span> <o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p><span>&nbsp;1919</span><span>&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp; </span><span>private</span><span> </span><span>void</span><span> DataPortal_Create(</span><span>CriteriaCreateFromTemplate</span><span> criteria)<o:p></o:p></span></p>
+
+<p><span>&nbsp;1920</span><span>&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp; {<o:p></o:p></span></p>
+
+<p><span>&nbsp;1921</span><span>&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; </span><span>// get your default settings from your
+template object</span><span><o:p></o:p></span></p>
+
+<p><span>&nbsp;1922</span><span>&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; </span><span>RequestTemplateEntity</span><span> requestFrom = </span><span>RequestTemplateEntity</span><span>.GetForCreateFromTemplate(criteria);<o:p></o:p></span></p>
+
+<p><span>&nbsp;1923</span><span>&nbsp;<o:p></o:p></span></p>
+
+<p><span>&nbsp;1924</span><span>&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; </span><span>// use the template properties to
+initialize your BO</span><span><o:p></o:p></span></p>
+
+<p><span>&nbsp;1925</span><span>&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; LoadProperty&lt;</span><span>short</span><span>?&gt;(QuantityProperty,
+requestFrom.Quantity);<o:p></o:p></span></p>
+
+<p><span>&nbsp;1926</span><span>&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; LoadProperty&lt;</span><span>string</span><span>&gt;(DescriptionProperty,
+requestFrom.Description);<o:p></o:p></span></p>
+
+<p><span>&nbsp;1927</span><span>&nbsp;<o:p></o:p></span></p>
+
+<p><span>&nbsp;1928</span><span>&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; ValidationRules.CheckRules();<o:p></o:p></span></p>
+
+<p><span>&nbsp;1929</span><span>&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp; }<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Kevin Fairclough
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Tuesday, November 17, 2009 11:46 AM<br>
+<b>To:</b> chris.dufour@wigets.net<br>
+<b>Subject:</b> [CSLA .NET] Using FieldManager to Apply a set of (Templated)
+property values for existing BO<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Hi All<br>
+<br>
+I have a use case in which one or more templates can be applied to a BO that
+will automatically set values of the BO with those of the template.&nbsp; I
+have the template RO object that contains a list of properties and values
+stored currently as string values, so i'll need conversion too.<br>
+<br>
+I ideally don't want to use reflection in my BO in order to set property
+values, I'm using ManagedFields can I use FieldManager in some way for this?<br>
+<br>
+It is also likely that other BOs will require similar functionality in the
+future.<br>
+<br>
+Has anyone done something similar?&nbsp; A pointer to the best approach would
+be great!<br>
+<br>
+TIA<br>
+Kevin<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Kevin Fairclough replied on Wednesday, November 18, 2009</h2>Hi <br><br>Thanks for the reply.<br><br>Similar to our requirement but not quite the same.&nbsp; We also need to apply many templates to an already fetched BO.&nbsp; I would like to be able to use FieldManager to read and write properties and property values in a generic way.&nbsp; Has anyone used FieldManager in this way?<br><br>Kevin<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Pawz.777 replied on Thursday, November 19, 2009</h2>This might help you.. in this instance I'm using a customized PropertyInfo to declare the database field name and use it to retrieve the correct fields for the property.. It would be easy enough to swap it around and match up the name of the property (field.Name) with the properties of your template...<br><br><font face="Courier New" size="2"><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; foreach (var field in FieldManager.GetRegisteredProperties())<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (field.GetType().GetGenericTypeDefinition() == typeof(CsPropertyInfo&lt;&gt;))<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var fieldProp = (IPropertyDatabase) field;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (!FieldManager.FieldExists(fieldProp))<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; LoadProperty(field, dr.GetValue(fieldProp.DatabaseName));<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</font><br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,10 @@
+<html><header><title>Deferred Deletion: How to delete Editable Child object in an Editable Root Collection (List)</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Deferred Deletion: How to delete Editable Child object in an Editable Root Collection (List)</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9258.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>davidng posted on Thursday, July 22, 2010</h2><p>Hi everyone,</p>
+<p><span style="color:#008000;font-size:x-small;"><span style="color:#008000;font-size:x-small;"><span style="font-size:x-small;">Please show me how to&nbsp;implemement Deferred Deletion on Editable Child Object.</span></span></span></p>
+<p><span style="color:#008000;font-size:x-small;">In&nbsp;VB2008, Rocky did mention how to implement this method on Root object (p. 178), but I could not find the same technique on Child object.</span></p>
+<p><span style="color:#008000;"><span style="font-size:x-small;">Thanks in advance.</span><span style="font-size:x-small;">&nbsp;</span></span></p>
+<p><span style="color:#008000;font-size:x-small;"></span></p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Thursday, July 22, 2010</h2><p>The <i>only</i> way to delete a child object is through deferred deletion. The child object is typically contained in a BusinessListBase, so you do this:</p>
+<p>_myCollection.Remove(myChild)</p>
+<p>That marks the child for deletion and removes it from the active list. When you save the root object, that child&#39;s Child_DeleteSelf() will be invoked, so you can actually do the delete in the database.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>davidng replied on Friday, July 23, 2010</h2><p>Hi Rocky,</p>
+<p>Remove method works very nicely.</p>
+<p>Thank you very much for sharing your knowledge.</p>
+<p>&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

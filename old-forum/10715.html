@@ -1,0 +1,25 @@
+<html><header><title>Bug with the CSLA Action Extender sample with the Save/New button</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Bug with the CSLA Action Extender sample with the Save/New button</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10715.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>xenoputtss posted on Monday, September 26, 2011</h2><p>Hi,</p>
+<p>&nbsp; I haven&#39;t found anyone posting about this, but it seems like there is a problem with the cslaActionExtender with both the 3.8 sample projects (netsamples-3.8.3-100506, and&nbsp;netsamples-3.8.4-100811). &nbsp;The only change I made to reproduce this problem was to change the app config to point to my server and database (which looks like this).</p>
+<p>&lt;add name=&quot;connStr&quot;<span>	</span>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;connectionString=&quot;Data Source=HQDevDB1;Initial Catalog=CslaActionExtenderSample;Integrated Security=True;Asynchronous Processing=true&quot; /&gt;</p>
+<p><span>	</span>&lt;/connectionStrings&gt;</p>
+<div></div>
+<div>The bug is, if you click &quot;Save/New&quot;, none of the buttons work afterwards. &nbsp;The validation rules still apply but the buttons don&#39;t work. &nbsp;(the cancel button does seem to work).</div>
+<div></div>
+<div></div>
+<div>Does anyone know what is going on here and if there is a work around for this, or perhaps a bug fix I can apply to our local csla source?</div></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Monday, September 26, 2011</h2><p>Hi, </p>
+<p>
+I very much doubt that CslaActionExtender has ever been tested for use with the Asynchronous Procession option set to true. <br />Have you tried without Asyncronous Processing? </p>
+<p>I know we have several bugs in the bugtracker related to CslaActionExtender.</p>
+<p>Unfortunately, I don&#39;t think we will be able to do address these bugs for Windows Forms/CslaActionExtender.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>xenoputtss replied on Monday, September 26, 2011</h2><p>I tried it without Asycronous processing and get the exact same problem.</p>
+<p>I did notice something else though. &nbsp;I can click save/new and the save and it will give me the business errors dialog. &nbsp;Actually all the buttons work, until i type in data to pass all the validation rules. &nbsp;Then all the buttons seem to stop working..</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>xenoputtss replied on Monday, September 26, 2011</h2><p>It appears when I debug into the source (breaking on all exceptions) that there is a EditLevel issue in AcceptChanges of the BusinessListBase.cs class and a new Core.UndoException(**) is being thrown (and not shown).</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>xenoputtss replied on Monday, September 26, 2011</h2><p>to narrow this down a little bit more. &nbsp;</p>
+<p>It has nothing to do with the buttons, &nbsp;if you create a new order and bind it using cslaActionExtender, this causes the same problem as described above.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>xenoputtss replied on Tuesday, September 27, 2011</h2><p>ok, so the bug isn&#39;t with cslaActionExtender, it is with&nbsp;BindingSourceNode.</p>
+<p>(I removed cslaActionexender from the form and wired up just&nbsp;BindingSourceNode and get the same error).</p>
+<p>&nbsp;</p>
+<p>I now believe the error has something to do with BindingSourceNode and the Child Collection on the Order object. &nbsp;(I removed &quot;orderDetailListProperty&quot;property from Order class, and all associated bindings, and I am able to save correctly.)</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

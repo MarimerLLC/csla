@@ -1,0 +1,52 @@
+<html><header><title>I am not convinced that type rules are all they are cracked up to be.</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>I am not convinced that type rules are all they are cracked up to be.</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/1476.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>rxelizondo posted on Friday, October 13, 2006</h2><P class=MsoNormal>First of all, I would like to say that I am a little nervous for posting about the topic because I know that a lot of talented people worked on the idea of adding type rules to the CSLA so I have a very strong feeling I am about to make a buffoon of myself. Unfortunately, I can’t help myself so here I go:</P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal>I am posting this because I seriously need to understand why type rules are touted to be such a good idea. I searched the forum looking for some good information regarding this subject but couldn’t find that much information. From the little that I read, apparently it all comes down to memory usage and speed. Supposedly, typed rules are faster and more efficient but I think the benefits are so minimum they are not really worth it, here is why.</P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal>To prove my point I would like to use an example so lets start by changing things a little, the first thing that I would like to do is to get rid of static RuleHandler delegate functions and replace them with normal static functions. Let’s take the “StringMaxLength” RuleHandler delegate function for this example. This function is currently implemented as follows:<o:p></o:p></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>------------------------</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>public</SPAN><SPAN> <SPAN>static</SPAN> <SPAN>bool</SPAN> StringMaxLength(<SPAN>object</SPAN> target, <SPAN>RuleArgs</SPAN> e)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>{<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN><SPAN>int</SPAN> max = ((<SPAN>MaxLengthRuleArgs</SPAN>)e).MaxLength;<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN><SPAN>string</SPAN> value = (<SPAN>string</SPAN>)<SPAN>Utilities</SPAN>.CallByName(target, e.PropertyName, <SPAN>CallType</SPAN>.Get);<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN><SPAN>if</SPAN> (!<SPAN>String</SPAN>.IsNullOrEmpty(value) &amp;&amp; (value.Length &gt; max))<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN>{<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>e.Description = <SPAN>String</SPAN>.Format(<SPAN>Resources</SPAN>.StringMaxLengthRule, e.PropertyName, max.ToString());<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>return</SPAN> <SPAN>false</SPAN>;<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN>}<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN><SPAN>return</SPAN> <SPAN>true</SPAN>;<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>}<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p><SPAN><o:p><SPAN><o:p>------------------------</o:p></SPAN></o:p></SPAN></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p><SPAN><o:p><SPAN><o:p></o:p></SPAN></o:p></SPAN></o:p></SPAN>&nbsp;</P>
+<P class=MsoNormal><SPAN>but I would like to take that and conver it to this:</SPAN></P>
+<P class=MsoNormal><SPAN><o:p></o:p></SPAN>&nbsp;</P><SPAN><o:p>------------------------</o:p></SPAN> 
+<P class=MsoNormal><SPAN>public</SPAN><SPAN> <SPAN>static</SPAN> <SPAN>bool</SPAN> StringMaxLength(<SPAN>string</SPAN> stringToEval, <SPAN>int</SPAN> maxLenght, <SPAN>RuleArgs</SPAN> e)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>{<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN><SPAN>if</SPAN> (!<SPAN>String</SPAN>.IsNullOrEmpty(stringToEval) &amp;&amp; (stringToEval.Length &gt; maxLenght))<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN>{<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>e.Description = <SPAN>String</SPAN>.Format(<SPAN>Resources</SPAN>.StringMaxLengthRule, e.PropertyName, maxLenght.ToString());<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>return</SPAN> <SPAN>false</SPAN>;<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN>}<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN><SPAN>return</SPAN> <SPAN>true</SPAN>;<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>}<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p><SPAN><o:p>------------------------</o:p></SPAN></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p><SPAN><o:p></o:p></SPAN></o:p></SPAN>&nbsp;</P>
+<P class=MsoNormal>What we have avobe, is a strongly typed static function that can be shared by multiple classes, just like the old RuleHandler delegate function. Ok, now that we have that let’s look at the code that will take advantage of this new function. Since we want to limit the number of line of code that we need I will be using anonymous delegates in the code below. <SPAN>&nbsp;</SPAN>The code below is basically what goes inside the AddBusinessRules() method.</P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal><o:p><SPAN><o:p>------------------------</o:p></SPAN></o:p></P>
+<P class=MsoNormal><SPAN>ValidationRules.AddInstanceRule(<SPAN>delegate</SPAN>(<SPAN>object</SPAN> target, Csla.Validation.<SPAN>RuleArgs</SPAN> e) { <SPAN>return</SPAN> Csla.Validation.<SPAN>CommonRules</SPAN>.StringMaxLength(_actualProp, 20, e); }, <SPAN>"PropName"</SPAN>);<o:p></o:p></SPAN></P>
+<P class=MsoNormal><o:p><STRONG>&nbsp;</STRONG><SPAN><o:p>------------------------</o:p></SPAN></o:p></P>
+<P class=MsoNormal><o:p><SPAN><o:p></o:p></SPAN></o:p>&nbsp;</P>
+<P class=MsoNormal>By the way, all this code is untested but I think it would work. The code above simply uses an anonymous RuleHandler delegate function to call the internal static method that runs the actual logic. Now lets analyze the pros and const.</P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal>To begin with, this function will by just as fast or sometimes a lot faster than using the old static RuleHandler delegate function if reflection is involved. </P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal>What about memory? Well, since we are using an extra anonymous RuleHandler delegate function as a wrapper the memory consumed by the type when its instantiated will be a little bigger but seriously…. How many more byte is that code gong to use? 3 or 4? Come on. Besides this code is code that belongs to the type so even if you instantiate thousands of these object the code inside is JITed once and used by all this thousands of objects.</P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal>What else? With type rules we can save a lot of memory because we only use one ValidationRulesManager objec rather than creating thousands of them? Well, couldn’t we also use a static ValidationRulesManager object to hold all of the instance rules as well if we wanted?</P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal>Doing it the way I suggest also makes code much simpler to understand, just look at all that had to be done to the project tracker StartDateGTEndDate function to make it work as a static function.</P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal>So exactly what is the big deal for having Type rules? Doing it the way that I propose we can also get rid of the “object target” parameter on the RuleHandler signature because it won’t be needed any longer (I think).</P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal>Please help, what I am missing here?</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

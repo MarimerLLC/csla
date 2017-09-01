@@ -1,0 +1,273 @@
+<html><header><title>CSLA 4 version 4.3.0 alpha available</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA 4 version 4.3.0 alpha available</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11097.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka posted on Thursday, January 26, 2012</h2><p>I have posted an alpha version of CSLA 4 version 4.3.0 for download from the <a href="http://www.lhotka.net/cslanet/download.aspx">CSLA download page</a>.</p>
+<p>Although Jonny has been extremely busy with a number of bug fixes and some feature changes, I think the biggest change in this alpha release is a major optimization of the <a href="http://www.lhotka.net/weblog/CSLALightObjectSerialization.aspx">MobileFormatter</a>.</p>
+<p>MobileFormatter is used to serialize object graphs on Silverlight and Windows Phone. It is used by the data portal, and n-level undo (if you use that feature).</p>
+<p>Until now, I have recommended that you use compression on the byte stream that flows over the data portal, because the XML created by the MobileFormatter is often quite large. It compresses efficiently, and we&rsquo;re quite efficient about what we put into the byte stream, but it is just plain big.</p>
+<p>Sergey did some really nice work for version 4.3, allowing the use of alternate reader/writer objects so the data can be serialized into something other than XML. Specifically, he created binary reader and writer objects that are around 70% more efficient in terms of byte stream size. That&rsquo;s about as much as you could expect to get with compression!</p>
+<p>The result is that you can probably avoid the CPU intensive overhead of compression and still get a small byte stream to transfer over the network.</p>
+<p>The <a href="http://www.lhotka.net/Article.aspx?area=4&amp;id=1c287e08-d428-4c27-b538-d588e3c55775">CSLA 4 version 4.3.0 change log</a> includes a discussion of the configuration settings you need to change to use the new reader/writer objects.</p>
+<p>This is a non-breaking change, because the default is the same behavior as in 4.2. But this is a <em>big change</em> and we really appreciate your help in testing the new reader/writer objects to ensure they work across a wide range of applications.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Killian35 replied on Thursday, January 26, 2012</h2><p>Hello Rocky!</p>
+<p>This is great news. We all appreciate the hard work you and everyone has put into this framework. </p>
+<p>After tinkering around with the source code, I feel the CslaBinaryReader and CslaBinaryWriter should be extended to support a CslaKnownTypes.Custom. Then having overridable read and write methods. The reason is to allow for custom value types without having to implement IMobileObject on them. I create my own value types that better align with the business domain I work with and have to implement IMobileObject to integrate them without having to override all Get/Set&nbsp;state methods&nbsp;in any business classes that use my datatype.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Thursday, January 26, 2012</h2><p>I thought about it as I worked on it.&nbsp; The issue is that enumeration tells the system how to serialize a specific type.&nbsp; Having Custom is not going to accomplish much as you will only be able to do one extra type.&nbsp; Hence, you now can swap out entire reader/writer pair if you need to.&nbsp; You can probably use existing pair&#39;s code&nbsp;as your starting point.&nbsp; Just a different way to accomplish what you are trying to accomplish.&nbsp; Am I missing something with Custom enumeration value?</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Killian35 replied on Thursday, January 26, 2012</h2><p>The enumeration is only to signal to your base class to hand off the read/write of the next object to an override method. So when your base class comes across an unsupported type, it writes (CslaKnownTypes.Custom) to the writer, then passes the target and writer to an override method (that has a default implementation to throw the not supported exception.) It then becomes responsibility of the derived class&nbsp;to write any additional data to identify my custom type and write the type data to the writer.</p>
+<p>So the byte stream would be (CslaKnownTypes.Custom)(MyCustomTypeIndicator)(my type bytes)...</p>
+<p>When reading the stream back, if it comes across a (CslaKnownTypes.Custom), the base class then calls a virtual method to have the object read back.&nbsp;The derived class&nbsp;would read (MyCustomTypeIndicator)(my type bytes) returning an instance of my custom type.</p>
+<p>I hope that makes some sense.</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Friday, January 27, 2012</h2><p>It does, but you would have to leave your own markers in the stream to let you know how to handle that specific &quot;primitive&quot; type.&nbsp; You would have to do that on both ends: read and write.&nbsp; I think we could open up existing class for that, provided Rocky is cool with that and I have some time to do so along with unit tests to support.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, January 30, 2012</h2><p><div style='padding-left: 50px;background-color:silver'><b>sergeyb<br></b>
+<p>It does, but you would have to leave your own markers in the stream to let you know how to handle that specific &quot;primitive&quot; type.&nbsp; You would have to do that on both ends: read and write.&nbsp; I think we could open up existing class for that, provided Rocky is cool with that and I have some time to do so along with unit tests to support.</p>
+<div style="CLEAR:both;"></div>
+</div></p>
+<p>I don&#39;t think we&#39;ll pursue this. We have a serialization model, and we&#39;ve now opened the model so it is possible for people to swap in their own reader/writer pairs - so if you want something different you can write it.</p>
+<p>In this particular scenario, the value type has to implement two simple methods: OnSetState/OnGetState. Even if we went to all the work to enable a custom serialization type, all that would do is move the code from those two methods into some other location. It wouldn&#39;t save any code, it would just rearrange it.</p>
+<p>To be honest, I&#39;d much rather spend that dev time optimizing the byte stream and making sure we fully and reliably cover all existing serialization scenarios. Obviously MobileFormatter needs to work in a very reliable manner, so having as many people (you!) test it as possible is important, and having Sergey able to do optimizations and fixes is critical.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tiago replied on Monday, January 30, 2012</h2><p>Looking back at my compression adventures (<a href="http://forums.lhotka.net/forums/p/8067/38627.aspx#38627">http://forums.lhotka.net/forums/p/8067/38627.aspx#38627</a>) I found out that the BinaryFormatter byte stream was compressed to 80% of its original size, when using ICSharpCode.SharpZipLib.dll. I guess the Xml byte stream could easily be compressed to 90%. But that&#39;s not the point. The point is the compression/decompression overhead.</p>
+<p>Usually we need to compress ALL data before starting (compressed) data transmission. Likewise, we need to receive all (compressed) data before starting to decompress. The data is delivered to the application only after it&#39;s all decompresssed. This is a nuisance to say the least and only pays back on very low bandwidth lines (like 2 MBps wireless modems); on regular wired networks, compression results on data taking longer to arrive. (I didn&#39;t test on a local wireless network)&nbsp;.</p>
+<p>I also tried other open source compression algorithm - some GPL and&nbsp;some &quot;use as you wish&quot;:&nbsp;SharpZipLib proved to be the one that compresses most but the slowest one.</p>
+<p>At the time I was told to use a Sink and an algorithm that can compress the data as it passes by and doesn&#39;t have to wait for the whole packet but I didn&#39;t try that solution.</p>
+<p>Back to the point</p>
+<p>1) Can the&nbsp;MobileFormatter start transmission&nbsp;of data before... well, never mind. The MobileFormatter doesn&#39;t take care of data transmission, just prepares the packet of data for transmission.</p>
+<p>2) Does the MobileFormatter delivers data faster than a compression engine? Yes, of course it does, since it just does a simple data streamline job and doesn&#39;t use complex mathematical algorithms.</p>
+<p>3) Does the reduced physical transmission time overcome the overhead of the MobileFormatter? I didn&#39;t test, but I believe so.</p>
+<p>4)&nbsp;Does the reduced physical transmission time overcome the overhead of any compression engine? Referring to my previous tests with Remoting, I don&#39;t believe it does.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Friday, February 10, 2012</h2><p>On #4.&nbsp; I think the important thing is the choise that you have.&nbsp; You can decide what is more important to you and your application, CPU/Memory or size of the data over the wire.&nbsp; The choise is entirely yours.&nbsp; My recommendation would be to test all configuration, monitoring memory and CPU usage and then decide.&nbsp; As I mentioned before, you can use compression on top of the new scheme, and will ikley end up still with much better results then before.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>skagen00 replied on Thursday, January 26, 2012</h2><p>Interested in understanding if my general perception is wrong here...</p>
+<p>I&#39;ve always felt that the compression was actually pretty quick - and a bit contrary to the post above I found that most objects were 90-95% compressed, not 70%.</p>
+<p>If it&#39;s indeed 70%, then I would be looking at 3X as much data to go between my users and the server - and I&#39;ve tended to think that this is the aspect that would have some of the most impact on user experience.&nbsp; Isn&#39;t there a good likelihood that while increasing performance in not compressing it&#39;s getting outweighed by the extra data going back and forth?</p>
+<p>Clearly this wouldn&#39;t be moving forward if it wasn&#39;t visibly seen as beneficial to Rocky &amp; his team.</p>
+<p>Just wondering!</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, January 26, 2012</h2><p>skagen00, Please feel free to do independent testing using your real apps/data. That would be incredibly helpful!!</p>
+<p>For me the priority of this was raised dramatically when WinRT showed up and has the same basic restrictions as Silverlight. To me this indicates that the future of .NET app development doesn&#39;t really support BinaryFormatter or NDCS, and so eventually <em>most</em> CSLA apps will use MobileFormatter.</p>
+<p>Either we need to accept the dependency of some compression library (what a mess that would be!), or figure out some other way by which <em>most</em> apps don&#39;t need to use compression to work effectively.</p>
+<p>The MobileFormatter is really quite efficient in terms of minimizing the amount of actual data it tries to serialize. The real problem is with the encoding of that data into a byte stream. </p>
+<p>The XML encoding used by the DataContractSerializer and XmlWriter creates a very large byte stream. I&#39;m sure different compression techniques shrink this by different amounts, but if you are really seeing 95% compression on average I&#39;m surprised. My observations were more like 70% compression.</p>
+<p>A couple years ago I did a bunch of research into possible ways to shrink the byte stream by eliminating obvious duplication of things like .NET type names and other things that get serialized by the DCS. By itself that resulted in a 50% reduction on the whole, but that&#39;s pretty far off the typical compression result, so I stopped pursuing the effort.</p>
+<p>Again, my interest in pursuing this now comes back to WinRT, and the likelihood that MobileFormatter will become the <em>default</em> solution, with BF/NDCS being used only in those rare cases where your app has FullTrust on client and server, and you aren&#39;t using SL/WP7/WinRT.</p>
+<p>I know, that&#39;s been the norm thus far. But I&#39;m skeptical that the wild west FullTrust world is the future...</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Friday, January 27, 2012</h2><p>Even with the new scheme compression will likley shrink the stream some.&nbsp; The key point though is that compression is not free.&nbsp; You are eating up CPU cycles and memory doing it, on both client and server.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tbaldridge replied on Friday, February 10, 2012</h2><p>With our app we send a large amount of data across the wire via CSLA. It was our initial performance issues with the serializer that me looking into how to improve the serialization.&nbsp;<br /><br />I think what should be mentioned though, is that there is a &quot;critical mass&quot; of sorts where this new serializer begins to be a big improvement. In our app, we realized that we were trying to stream 30-70MB of data to the client, and although this compressed down to about 3MB of data after it hit the compressor (SharpZipLib), still, that pressure on the serializer was intense.</p>
+<p>With our custom serializer (which is very very close to the new serializer in 4.3.0) we can send massive lists of objects without issue. We can send 70k records to the server in about a 10th of the time of the old serializer.<br /><br />But back on track...the issue is, the larger your dataset, the more time will be spent in compression, but also the more&nbsp;benefit&nbsp;you will see with compression. The smaller the datasets, the less&nbsp;benefit&nbsp;you&#39;ll see with compression, but also the faster the whole processes will be. So for small datasets, why turn compression off? Compression will only take a fraction of the time it takes to send the data down the wire. For larger datasets (and mobile apps) you pretty much have to have compression, or the client will be waiting forever to get the data.&nbsp;<br /><br />The short version is, we&#39;re using the new serializer format, with compression turned on. And and we have no complaints about either.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jack replied on Thursday, February 16, 2012</h2><p>Would you (or someone else) be able to post some basic configuration infomation on how to set that up in the 4.3.x model?</p>
+<p>I&#39;m having horrible issues going from 4.2.x using a serviceReferences.clientconfig to the new model.</p>
+<p>Thanks</p>
+<p>jack</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, February 17, 2012</h2><p>I would recommend going from 4.2 to 4.3 first - which should be entirely seamless.</p>
+<p>Then work on configuring the client and server to use the new binary reader/writer.</p>
+<p>A Silverlight client must be configured in code as the app starts up. The app server is configured in web.config.</p>
+<p>The change log document has Sergey&#39;s writeup of the required configuration.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jack replied on Tuesday, February 21, 2012</h2><p>
+ 
+  Normal
+  0
+  
+  
+  
+  
+  false
+  false
+  false
+  
+  EN-US
+  X-NONE
+  X-NONE
+  
+   
+   
+   
+   
+   
+   
+   
+   
+   
+  
+  MicrosoftInternetExplorer4
+  
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+  
+
+ 
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+ 
+
+
+
+</p>
+<p class="MsoNormal"><span style="font-size:11pt;font-family:&#39;Calibri&#39;,&#39;sans-serif&#39;;color:#1f497d;">That is one of my issues &ndash; it is a breaking change going from
+4.2 to 4.3 for me.&nbsp; I end up with the Remote server not found
+errors.&nbsp; As I mentioned earlier I tried doing the all or nothing approach,
+that didn&rsquo;t work, so I rolled back, finally got things working again.&nbsp;
+Then I ran the 4.3 installer with the plans of starting another version and it
+replaced my 4.2 install.&nbsp; The way I noticed is my next rebuild then picked
+up the 4.3 dll&rsquo;s and I got the remote server not found errors again.</span></p>
+<p class="MsoNormal"><span style="font-size:11pt;font-family:&#39;Calibri&#39;,&#39;sans-serif&#39;;color:#1f497d;">&nbsp;</span></p>
+<p class="MsoNormal"><span style="font-size:11pt;font-family:&#39;Calibri&#39;,&#39;sans-serif&#39;;color:#1f497d;">I had to then do the rollback and uninstall of all CSLA
+installations (kept complaining about newer version being installed when I ran
+the MSI&rsquo;s).&nbsp; I put back 4.2 and got things running again.</span></p>
+<p class="MsoNormal"><span style="font-size:11pt;font-family:&#39;Calibri&#39;,&#39;sans-serif&#39;;color:#1f497d;">&nbsp;</span></p>
+<p class="MsoNormal"><span style="font-size:11pt;font-family:&#39;Calibri&#39;,&#39;sans-serif&#39;;color:#1f497d;">I then started a new SVN checkout against 4.3 and after a
+fruitless afternoon then posted in the forums.</span></p>
+<p class="MsoNormal"><span style="font-size:11pt;font-family:&#39;Calibri&#39;,&#39;sans-serif&#39;;color:#1f497d;">&nbsp;</span></p>
+<p class="MsoNormal"><span style="font-size:11pt;font-family:&#39;Calibri&#39;,&#39;sans-serif&#39;;color:#1f497d;">My setup is simple Web project to host the Silverlight Client
+and then the Silverlight Client talks directly to the WCF web application using
+the basic compression example in the forums. &nbsp;&nbsp;It is configured with
+a ServiceReferences.ClientConfig file, not the application startup method.</span></p>
+<p class="MsoNormal"><span style="font-size:11pt;font-family:&#39;Calibri&#39;,&#39;sans-serif&#39;;color:#1f497d;">&nbsp;</span></p>
+<p class="MsoNormal"><span style="font-size:11pt;font-family:&#39;Calibri&#39;,&#39;sans-serif&#39;;color:#1f497d;">I haven&rsquo;t changed that since 3.8 (my production deployment) and
+had no problems installing all dev builds through 4.2.x</span></p>
+<p class="MsoNormal"><span style="font-size:11pt;font-family:&#39;Calibri&#39;,&#39;sans-serif&#39;;color:#1f497d;">&nbsp;</span></p>
+<p class="MsoNormal"><span style="font-size:11pt;font-family:&#39;Calibri&#39;,&#39;sans-serif&#39;;color:#1f497d;">Jack</span></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, February 21, 2012</h2><p>I don&#39;t know what is happening. I upgraded all the sample apps without issue...</p>
+<p>Maybe it is something to do with compression? Though&nbsp;a couple of the samples use compression too...</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Wednesday, February 22, 2012</h2><p>Jack,</p>
+<p>This process should work just fine.&nbsp; It should work regardless of you using config file or not.&nbsp; It is not intended to be a breaking change.&nbsp; Can you post a sample project that we can use for testing?&nbsp; Did you try what I suggested and capture WCF debug information?</p>
+<p>Please let me know more details so that I can look some more into the issue.</p>
+<p>Sergey</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jack replied on Monday, February 06, 2012</h2><p>To use this with a SL5 application is the recommended approach to leave the libraries as SL4 or to recompile as SL5?</p>
+<p>Thanks</p>
+<p>jack</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, February 06, 2012</h2><p>In the alpha release you can use SL 4 or 5.</p>
+<p>In the next release the CSLA assemblies will be bound to SL 5, so you&#39;ll need to use SL 5 to use that version of 4.3.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jack replied on Thursday, February 09, 2012</h2><p>I am currently using the SL/WCF Data Portal configuration with a ServiceReferences.ClientConfig and&nbsp;the standard&nbsp;Compression implementation.&nbsp; I tried reverting from the Compression Host to the basic default host as well as implementing the steps outlined in the ReleaseNotes but all I ended up with for all my efforts is a RemoteServer NotFound message.</p>
+<p>I made a few attempts to model my configuration after the ProjectTracker implementation but no avail.</p>
+<p>I then rolled back all my code changes and simply used the 4.3 release and again I had the same issues.</p>
+<p>Rolling back to 4.2 and rebuilding finally restored my application</p>
+<p>Given the information provided in the release notes should that work with my current setup?&nbsp; Are there &#39;baby&#39; steps I can make to ensure it works?&nbsp; My setup is Web to host SL app and SL Client talks directly to WCFHost Web app.</p>
+<p>Also I recompiled the SL4 project as SL5 before referencing in my application.</p>
+<p>Thanks</p>
+<p>jack</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, February 09, 2012</h2><p>You probably can&#39;t use the clientconfig file when using the new serialization model.</p>
+<p>The client-side data portal configures itself either via code or from the config file, but not both. The new serialization model requires code-based configuration.</p>
+<p>This is because there is no System.Configuration in Silverlight, so we can&#39;t really leverage the clientconfig file ourselves - so we need to choose one or the other.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Friday, February 10, 2012</h2><p>404 is the standard message you get from SL WCF stack as a result of almost any possible error on the server.&nbsp; I think you should put in WCF debugging into your web.config to find out the real issue if you have trouble debugging otherwise.</p>
+<p>Just add this section to web.config and run your app to hopefully see the real error:</p>
+<p>&nbsp;</p>
+<p>&lt;system.diagnostics&gt; <br />&lt;sources&gt; <br />&lt;source name=&quot;System.ServiceModel&quot; <br />switchValue=&quot;Information, ActivityTracing&quot; <br />propagateActivity=&quot;true&quot;&gt; <br />&lt;listeners&gt; <br />&lt;add name=&quot;traceListener&quot; <br />type=&quot;System.Diagnostics.XmlWriterTraceListener&quot; <br />initializeData= &quot;c:\Traces.svclog&quot; /&gt; <br />&lt;/listeners&gt; <br />&lt;/source&gt; <br />&lt;/sources&gt; <br />&lt;/system.diagnostics&gt;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

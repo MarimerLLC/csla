@@ -1,0 +1,63 @@
+<html><header><title>ForceUpdate on a child object?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>ForceUpdate on a child object?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4720.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>reagan123 posted on Monday, April 21, 2008</h2>Is there a way to mark a child object IsDirty in order to force it to save?<BR><BR>Thanks!</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, April 21, 2008</h2>What is your scenario? You somehow have a child object that you haven't changed, but you want it to do an update into the database anyway?</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>reagan123 replied on Monday, April 21, 2008</h2><P>Yes... We have a scenarion where I fetch all of my objects from a database server and serialize them to a file.&nbsp; This file is then moved to a disconnected machine that has a blank version of the database on it.&nbsp; I then deserialize the file and save all of our objects to the blank database.</P>
+<P>My issue is that I can force the parent to be dirty, but when I loop through my child collection the IsDirty flag is clean since I haven't changed any data.&nbsp; This means all of my parent objects make it into the database, but no kids/grandkids.</P>
+<P>Hope that made sense.&nbsp; The biggest issue is that we had an incomplete scope of the software and we are trying to make due with the design we have until we can get some time. :(</P>
+<P>I appreciate the response and any further help.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Fintanv replied on Monday, April 21, 2008</h2><P>In cases where I have had to to this I took the route of creating an internally scoped method on the child class that simply calls MarkDirty().&nbsp; Your parent then has the ability to loop through the children and invoke the method as needed.&nbsp; (In your scenario the child would have to do the same thing for its children etc etc.)</P>
+<P>Maybe not particularly elegant, but it got the job done.</P>
+<P>-- Fintan</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, April 21, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>That&#8217;s what I was going to recommend </span><span>J</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Fintanv
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Monday, April 21, 2008 10:03 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] ForceUpdate on a child object?<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>In cases where I have had to to this I took the route of creating an
+internally scoped method on the child class that simply calles
+MarkDirty().&nbsp; Your parent then has the ability to loop through the
+children and invoke the method as needed.&nbsp; (In your scenario the child
+would have to do the same thing for its children etc etc.)<o:p></o:p></p>
+
+<p>Maybe not particularly elegant, but it got the job done.<o:p></o:p></p>
+
+<p>-- Fintan<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>reagan123 replied on Monday, April 21, 2008</h2><P>Thank for the responses from both of you.</P>
+<P>That seems to be a perfect solution to my issue.</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

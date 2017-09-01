@@ -1,0 +1,43 @@
+<html><header><title>Binding Objects to a ASP.NET TreeView</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Binding Objects to a ASP.NET TreeView</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/2232.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Inquistive_Mind posted on Monday, January 29, 2007</h2><P>Hello,</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; I tried quite a few things trying to bind an object to the Treeview but it does not seem to work.</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; I have two readlonly list based objects which I retrieve and form a Parent-Child relationship in the UI using the object adapters and datasets.I want to bind this dataset to the treeviw but I guess its wrong.My application is an ASP.net application. An example would be of great help.</P>
+<P>Root Node -- &gt; Repair Category</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ParentNode--&gt;RepairGroup</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ChildNode--&gt;RepairSubGroup</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ChildNode--&gt;RepairSubGroup</P>
+<P>Thanks</P>
+<P>V</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Inquistive_Mind replied on Monday, January 29, 2007</h2><P>I was able to do it using&nbsp; tree nodes .Sorry for wasting your precious time.Just in case Newbies like me want to bind data to the tree view here is the code.if there is better ways to implement this I would be glad to know and if its&nbsp;not the right way&nbsp;please advice.</P>
+<P>&nbsp;</P><FONT size=2>
+<P></FONT><FONT color=#008080 size=2>DataSet</FONT><FONT size=2> ds = </FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> </FONT><FONT color=#008080 size=2>DataSet</FONT><FONT size=2>();</P></FONT><FONT size=2>
+<P></FONT><FONT color=#008080 size=2>RepairGroupList</FONT><FONT size=2> repairGroupList = </FONT><FONT color=#008080 size=2>RepairGroupList</FONT><FONT size=2>.GetRepairGroupList();</P>
+<P></FONT><FONT color=#008080 size=2>RepairSubGroupList</FONT><FONT size=2> repairSubGroupList = </FONT><FONT color=#008080 size=2>RepairSubGroupList</FONT><FONT size=2>.GetRepairSubGroupList();</P>
+<P></FONT><FONT color=#008080 size=2>ObjectAdapter</FONT><FONT size=2> repairGroupListAdp = </FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> </FONT><FONT color=#008080 size=2>ObjectAdapter</FONT><FONT size=2>();</P>
+<P></FONT><FONT color=#008080 size=2>ObjectAdapter</FONT><FONT size=2> repairSubGroupListAdp = </FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> </FONT><FONT color=#008080 size=2>ObjectAdapter</FONT><FONT size=2>();</P>
+<P>repairGroupListAdp.Fill(ds, </FONT><FONT color=#800000 size=2>"RepairGroup"</FONT><FONT size=2>, repairGroupList);</P>
+<P>repairSubGroupListAdp.Fill(ds, </FONT><FONT color=#800000 size=2>"RepairSubGroup"</FONT><FONT size=2>, repairSubGroupList);</P>
+<P></FONT>
+<P><FONT size=2></P>
+<P></P></FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (ds.Tables[0].Rows.Count &gt; 0)
+<P></P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;foreach</FONT><FONT size=2> (</FONT><FONT color=#008080 size=2>DataRow</FONT><FONT size=2> row </FONT><FONT color=#0000ff size=2>in</FONT><FONT size=2> ds.Tables[0].Rows)</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{</P>
+<P></FONT><FONT color=#008080 size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;TreeNode</FONT><FONT size=2> newNode = </FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> </FONT><FONT color=#008080 size=2>TreeNode</FONT><FONT size=2>();</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;newNode.Text = row[</FONT><FONT color=#800000 size=2>"RepairGroupName"</FONT><FONT size=2>].ToString();</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;newNode.Value = row[</FONT><FONT color=#800000 size=2>"RepairGroupName"</FONT><FONT size=2>].ToString();</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;newNode.PopulateOnDemand = </FONT><FONT color=#0000ff size=2>true</FONT><FONT size=2>;</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;newNode.SelectAction = </FONT><FONT color=#008080 size=2>TreeNodeSelectAction</FONT><FONT size=2>.Expand;</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;tvRepairGroup.Nodes.Add(newNode);</P>
+<P></P>
+<P></FONT><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;foreach</FONT><FONT size=2>( </FONT><FONT color=#008080 size=2>DataRow</FONT><FONT size=2> childRow </FONT><FONT color=#0000ff size=2>in</FONT><FONT size=2> ds.Tables[1].Rows)</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{</P>
+<P></FONT><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if</FONT><FONT size=2>(row[</FONT><FONT color=#800000 size=2>"RepairGroupID"</FONT><FONT size=2>].ToString() == childRow[</FONT><FONT color=#800000 size=2>"RepairSubGroupID"</FONT><FONT size=2>].ToString())</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{</P>
+<P></FONT><FONT color=#008080 size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;TreeNode</FONT><FONT size=2> newChildNode = </FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> </FONT><FONT color=#008080 size=2>TreeNode</FONT><FONT size=2>();</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;newChildNode.Text = childRow[</FONT><FONT color=#800000 size=2>"RepairSubGroupName"</FONT><FONT size=2>].ToString();</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;newChildNode.Value = childRow[</FONT><FONT color=#800000 size=2>"RepairSubGroupName"</FONT><FONT size=2>].ToString();</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;newNode.ChildNodes.Add(newChildNode);</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</P>
+<P>&nbsp;&nbsp;&nbsp;}</P>
+<P>}</P></FONT></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

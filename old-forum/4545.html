@@ -1,0 +1,87 @@
+<html><header><title>RE: Visual Studio Test of BO - Custom Identity</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>RE: Visual Studio Test of BO - Custom Identity</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4545.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>JohnB posted on Monday, March 24, 2008</h2>
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+<DIV align=left><SPAN class=521411916-24032008><FONT face=Arial color=#0000ff size=2>you're welcome!</FONT></SPAN></DIV><BR>
+<DIV class=OutlookMessageHeader align=left>
+<HR>
+<FONT face=Tahoma size=2><B>From:</B> Stanley Canepa [mailto:cslanet@lhotka.net] 
+<BR><B>Sent:</B> Monday, March 24, 2008 11:11 AM<BR><B>To:</B> John 
+Bonano<BR><B>Subject:</B> RE: [CSLA .NET] Visual Studio Test of BO - Custom 
+Identity<BR></FONT><BR></DIV>
+<DIV></DIV>
+<DIV class=Section1>
+<P class=MsoNormal><FONT face=Arial color=navy size=2><SPAN>Thanks.<o:p></o:p></SPAN></FONT></P>
+<P class=MsoNormal><FONT face=Arial color=navy size=2><SPAN>I am experimenting with 
+the last option. I am using Impersonation to change my identity at the start of 
+each test, and I am reading the login information from an XLS file. This is all 
+in a test environment, so I don&#8217;t have any security concerns about storing 
+username/passwords in the XLS file. After I am done, I hope to find the time to 
+create a sample to post back to the site.<o:p></o:p></SPAN></FONT></P>
+<P class=MsoNormal><FONT face=Arial color=navy size=2><SPAN><o:p>&nbsp;</o:p></SPAN></FONT></P>
+<P class=MsoNormal><FONT face=Arial color=navy size=2><SPAN>Thanks for your help 
+and guidance.<o:p></o:p></SPAN></FONT></P>
+<P class=MsoNormal><FONT face=Arial color=navy size=2><SPAN>Stan<o:p></o:p></SPAN></FONT></P>
+<P class=MsoNormal><FONT face=Arial color=navy size=2><SPAN><o:p>&nbsp;</o:p></SPAN></FONT></P>
+<DIV>
+<DIV class=MsoNormal align=center><FONT face="Times New Roman" size=3><SPAN>
+<HR align=center>
+</SPAN></FONT></DIV>
+<P class=MsoNormal><B><FONT face=Tahoma size=2><SPAN>From:</SPAN></FONT></B><FONT face=Tahoma size=2><SPAN> Rockford 
+Lhotka [mailto:cslanet@lhotka.net] <BR><B><SPAN>Sent:</SPAN></B> Monday, March 24, 2008 11:00 
+AM<BR><B><SPAN>To:</SPAN></B> Stanley 
+Canepa<BR><B><SPAN>Subject:</SPAN></B> RE: [CSLA .NET] 
+Visual Studio Test of BO - Custom Identity</SPAN></FONT><o:p></o:p></P></DIV>
+<P class=MsoNormal><FONT face="Times New Roman" size=3><SPAN><o:p>&nbsp;</o:p></SPAN></FONT></P>
+<P class=MsoNormal><FONT face=Calibri color=#1f497d size=2><SPAN>If you are using a 
+custom principal (which you are from your problem description), then you totally 
+control how that principal is established. If you create a DataPortal_Fetch() in 
+your identity object that can load from an XLS file or whatever, then you can do 
+that. Or if you have a separate DAL behind your identity object, then perhaps 
+you can use a provider model to load some other DAL implementation that reads 
+the XLS instead of your normal security database.<o:p></o:p></SPAN></FONT></P>
+<P class=MsoNormal><FONT face=Calibri color=#1f497d size=2><SPAN><o:p>&nbsp;</o:p></SPAN></FONT></P>
+<P class=MsoNormal><FONT face=Calibri color=#1f497d size=2><SPAN>Or if you want to 
+use your normal security database, then perhaps you can have some code in your 
+test project that loads the XLS and provides the appropriate username/password 
+at the start of each test.<o:p></o:p></SPAN></FONT></P>
+<P class=MsoNormal><FONT face=Calibri color=#1f497d size=2><SPAN><o:p>&nbsp;</o:p></SPAN></FONT></P>
+<P class=MsoNormal><FONT face=Calibri color=#1f497d size=2><SPAN>Those options come 
+to me off the top of my head anyway.<o:p></o:p></SPAN></FONT></P>
+<P class=MsoNormal><FONT face=Calibri color=#1f497d size=2><SPAN><o:p>&nbsp;</o:p></SPAN></FONT></P>
+<P class=MsoNormal><FONT face=Calibri color=#1f497d size=2><SPAN>Rocky</SPAN></FONT><B><FONT face=Tahoma size=2><SPAN><o:p></o:p></SPAN></FONT></B></P>
+<P class=MsoNormal><FONT face=Calibri color=#1f497d size=2><SPAN><o:p>&nbsp;</o:p></SPAN></FONT></P></DIV><BR><BR>--<BR>View 
+this message online at: <A href="http://forums.lhotka.net/forums/thread/22224.aspx">http://forums.lhotka.net/forums/thread/22224.aspx</A><BR>--<BR>
+<P><PRE>---------------------------------------------------------------------------
+This message is for the sole use of the intended recipients and may contain confidential information.
+If you are not an intended recipient, you are requested to notify the sender by reply e-mail and
+destroy all copies of the original message.  Any unauthorized review, use, disclosure or distribution
+is prohibited.  Unless expressly stated otherwise, the sender of this e-mail message does not intend
+to be legally bound by any obligations expressed in this message or in any attachment not signed by
+pen and ink in a paper-based format.  While the sender has taken reasonable precautions to minimize
+the risk of viruses, we cannot warrant the absence of, or accept liability for, any such viruses in
+this message or any attachment. We reserve the right to monitor all E-mail communications.
+==============================================================================
+</PRE>
+<P></P><BR><BR>--<BR>View this message online at: <A href="http://forums.lhotka.net/forums/thread/22225.aspx">http://forums.lhotka.net/forums/thread/22225.aspx</A><BR>--<BR>
+<P><pre>---------------------------------------------------------------------------
+This message is for the sole use of the intended recipients and may contain confidential information.
+If you are not an intended recipient, you are requested to notify the sender by reply e-mail and
+destroy all copies of the original message.  Any unauthorized review, use, disclosure or distribution
+is prohibited.  Unless expressly stated otherwise, the sender of this e-mail message does not intend
+to be legally bound by any obligations expressed in this message or in any attachment not signed by
+pen and ink in a paper-based format.  While the sender has taken reasonable precautions to minimize
+the risk of viruses, we cannot warrant the absence of, or accept liability for, any such viruses in
+this message or any attachment. We reserve the right to monitor all E-mail communications.
+==============================================================================
+</pre></P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

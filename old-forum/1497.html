@@ -1,0 +1,247 @@
+<html><header><title>A question of Design (handling the same StringProperty in mutiple Languages)</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>A question of Design (handling the same StringProperty in mutiple Languages)</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/1497.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>pirithoos posted on Monday, October 16, 2006</h2>
+
+<p class="MsoNormal"><span>Hi all.<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><o:p>&nbsp;</o:p></span></p>
+
+<p class="MsoNormal"><span>[Version:
+VB Csla 2.1]<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><o:p>&nbsp;</o:p></span></p>
+
+<p class="MsoNormal"><span>This is
+basically more a question of class design then Csla. Anyway I would like to ask
+if someone has figured out a ‘best practice’ using the Csla Framework.<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><o:p>&nbsp;</o:p></span></p>
+
+<p class="MsoNormal"><span>In Brief:<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><o:p>&nbsp;</o:p></span></p>
+
+<p class="MsoNormal"><span>Certain
+Properties (all Strings) of a BO must be available in different languages as I
+cannot foresee how much languages are handled by the users of my application I will
+not offer the BO an individual property in all languages. So I intend to spend
+the BO a List (Collection) of child objects containing exactly the same Data,
+but in the individual languages required. For instance a BO ‘Product’ with a ‘product
+description’ in three languages (English, German, French). <b><i><u>I do look for a good design</u></i></b>
+to provide consumers of this ProductBO access to the descriptions in the
+individual varying languages.<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><o:p>&nbsp;</o:p></span></p>
+
+<p class="MsoNormal"><span>Details:<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><o:p>&nbsp;</o:p></span></p>
+
+<p class="MsoNormal"><span>I do have a
+BO ‘Product’ with the following properties<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><o:p>&nbsp;</o:p></span></p>
+
+<p class="MsoNormal"><span>BO: Product
+(Inherits BusinessBase)<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span>==============================<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span>Public
+ReadOnly <b>Property ID</b> as Guid<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span>Public
+Property <b>ProductGroup</b> as Integer<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span>Public
+Property <b>Description</b> as String<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><o:p>&nbsp;</o:p></span></p>
+
+<p class="MsoNormal"><span>Within the
+application the Product.Description is processed in different languages
+(typically English, German, French), however I would like to have the option to
+add more languages in future. Therefore I abstained from adding additional
+Properties for each Language (e.g. DescriptionInEnglish, DescriptionInGerman…) in
+the Product BO, but I did add a ‘Languages’ property of type LanguageList
+inherited from BusinessListBase.<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><o:p>&nbsp;</o:p></span></p>
+
+<p class="MsoNormal"><span>This
+ChildBOs of LanguageList are ProductLanguageInfos with the following Properties<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><o:p>&nbsp;</o:p></span></p>
+
+<p class="MsoNormal"><span>BO: ProductLanguageInfo
+(Inherits BusinessBase)<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span>====================================<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span>Public
+ReadOnly Property <b>ProductID</b> <span>&nbsp;</span>as Guid<span>&nbsp;
+</span>(Foreign Key from BO ‘Product’)<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span>Public
+Property <b>LanguageID</b> as Integer <o:p></o:p></span></p>
+
+<p class="MsoNormal"><span>Public
+Property <b>Description</b> as String<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><o:p>&nbsp;</o:p></span></p>
+
+<p class="MsoNormal"><span>The Product
+BO gets an additional Property…<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><o:p>&nbsp;</o:p></span></p>
+
+<p class="MsoNormal"><span>BO :
+Product (Inherits BusinessBase)<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span>==============================<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span>Public
+ReadOnly <b>Property ID</b> as Guid<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span>Public
+Property <b>ProductGroup</b> as Integer<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span>Public
+Property <b>Description</b> as String<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>Public
+Property </span><b>Languages</b><span> as LanguageList</span><o:p></o:p></span></p>
+
+<p class="MsoNormal"><b><span><o:p>&nbsp;</o:p></span></b></p>
+
+<p class="MsoNormal"><span>The UI
+currently processes 3 Languages English, German, and French. <o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><o:p>&nbsp;</o:p></span></p>
+
+<p class="MsoNormal"><span>The
+question is how to access the Description in the individual language,
+considering that the user should edit the Description in all languages together
+in one form/user control<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><o:p>&nbsp;</o:p></span></p>
+
+<p class="MsoNormal"><span>The GUI
+shows 3 Textboxes:<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span>Description
+(EN)<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span>Description
+(DE)<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span>Description
+(FR)<o:p></o:p></span></p>
+
+<p class="MsoNormal"><b><span><o:p>&nbsp;</o:p></span></b></p>
+
+<p class="MsoNormal"><span>My idea is
+to provide an overloaded parameterized Description property in the Product BO…<o:p></o:p></span></p>
+
+<p class="MsoNormal"><b><span><o:p>&nbsp;</o:p></span></b></p>
+
+<p class="MsoNormal"><span>BO :
+Product (Inherits BusinessBase)<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span>==============================<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span>Public
+ReadOnly <b>Property ID</b> as Guid<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span>Public
+Property <b>ProductGroup</b> as Integer<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span>Public
+Property <b>Description</b> as String<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>Public
+Property </span><b>Description</b><span> (LanguageID as
+Integer) as String</span><o:p></o:p></span></p>
+
+<p class="MsoNormal"><span>Public
+Property <b>Languages</b> as LanguageList<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><o:p>&nbsp;</o:p></span></p>
+
+<p class="MsoNormal"><span>The assessors
+of this overloaded Description property interact with the ProductLanguageInfo
+objects of the LaguagesList to get and set the Description.<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><o:p>&nbsp;</o:p></span></p>
+
+<p class="MsoNormal"><span>Each
+Textbox is bound to a corresponding Description.<o:p></o:p></span></p>
+
+<p class="MsoNormal"><b><span><o:p>&nbsp;</o:p></span></b></p>
+
+<p class="MsoNormal"><b><span><o:p>&nbsp;</o:p></span></b></p>
+
+<p class="MsoNormal"><b><span>My Questions:<o:p></o:p></span></b></p>
+
+<p class="MsoNormal"><b><span><o:p>&nbsp;</o:p></span></b></p>
+
+<p class="MsoNormal"><span>Is that a
+‘legal’ and/or recommended design?<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span>Does
+somebody have figured out a better design?<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span>As the
+ProductLanguageList / ProductLanguageInfo are only handled together with the
+Product BO, does it make sense to nest those classes in the Product BO?<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><o:p>&nbsp;</o:p></span></p>
+
+<p class="MsoNormal"><span>As my
+application has this ‘language requirements’ for certain properties in quite a
+lot of different BOs I wonder if there is a easier design pattern available (to
+avoid to code 3 classes for each BO (BO, LanguageList, LanguageInfo).<o:p></o:p></span></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>SonOfPirate replied on Monday, October 16, 2006</h2><P>IMO, you're on the right track.&nbsp; However, a couple of key things to note...</P>
+<P>Consider placing your Product Descriptions in a separate table in your DB with a foreign key reference to the Product and a column for the language (which you may already be doing).&nbsp; The language identifier should be the standard used by .NET (e.g. en, en-US, fr and so on).</P>
+<P>Then, when you instantiate your business object, Product, have your data access code pass the current language identifier to the stored procedure.&nbsp; Your stored procedure can perform a join on the Products and ProductDescriptions table and use the language identifier to filter the rows in ProductDescriptions to only the one corresponding to the current language.</P>
+<P>For your UI, you can still accomodate this by having a drop-down list with supported languages and only a single textbox for the Description populated with the appropriate text based on the language selected in the drop-down box.&nbsp; This would allow you to unify/tie-in any other fields that you may need multi-lingual support for such as the product's name or pricing information (which you may want to localize).</P>
+<P>Using this approach, you only have one business object, Product, with the necessary logic to handle multiple languages.</P>
+<P>Another approach you may want to consider if the description is the only multi-lingual field you are dealing with is to have your Product object define an internal (private)&nbsp;dictionary of descriptions keyed on the language.&nbsp; Then, you can load them all into the Product and in your description property accessor, select the item from the collection that matches the language.&nbsp; So, you would have code such as:</P>
+<P><CODE>public System.String Description<BR>{<BR>&nbsp; &nbsp; get<BR>&nbsp; &nbsp; {<BR>&nbsp; &nbsp; &nbsp; &nbsp; return _descriptions[System.Globalization.CultureInfo.CurrentUICulture.Name];<BR>&nbsp; &nbsp; }<BR>} </CODE></P>
+<P>This approach works well if you only have a small number of multi-lingual fields because you don't have to incur a round-trip to the DB and instantiate a new BO each time you change languages.&nbsp; On the other hand, if you have a lot of multi-lingual fields and are not frequently switching languages on-the-fly, there is quite a bit more overhead loading all of the lists with this approach versus the first where you simply return the appropriate string right from the DB.</P>
+<P>You can still maintain a list &amp; lookup table of supported languages to help drive your UI.&nbsp; Then, when a new Product is created, you either insert a (blank?) record into the ProductDescriptions table for each supported language or build-in some logic to traverse the culture chain to a default in the event the string for the selected language is not present.&nbsp; For instance:</P>
+<P><CODE>public System.String Description<BR>{<BR>&nbsp; &nbsp; get<BR>&nbsp; &nbsp; {<BR>&nbsp; &nbsp; &nbsp; &nbsp; if (_descriptions.Contains[System.Globalization.CultureInfo.CurrentUICulture.Name)<BR>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; return _descriptions[System.Globalization.CultureInfo.CurrentUICulture.Name];<BR>&nbsp; &nbsp; &nbsp; &nbsp; else if (_descriptions.Contains[System.Globalization.CultureInfo.CurrentUICulture.TwoLetterISOLanguageName)<BR>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; return _descriptions[System.Globalization.CultureInfo.CurrentUICulture.TwoLetterISOLanguageName];<BR>&nbsp; &nbsp; &nbsp; &nbsp; else<BR>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; return _descriptions["en"];<BR>&nbsp; &nbsp; }<BR>} </CODE></P>
+<P>(Just an example).</P>
+<P>&nbsp;</P>
+<P>Hope that helps.</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Monday, October 16, 2006</h2>I would recommend having another class that handles getting the translated strings.&nbsp; Its not the main purpose of your BOs.&nbsp; Your BOs responsibility is to enforce business rules.&nbsp; So you should have another object that the BOs can use to get the proper translation.<br><br>HTH<br>Andy<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>SonOfPirate replied on Monday, October 16, 2006</h2>Keep in mind, at least imo, the language aspect is not a behavior - we are not performing translations, only retrieving the appropriate string from the DB.&nbsp; So creating a separate BO is not consistent with a behavior-first approach.&nbsp; That is why I like (&amp; use) the first approach where the BO is responsible for tracking the correct language.&nbsp; Afterall, making sure data is displayed in the correct language is typically a "business rule" albeit not in the same sense as "'x' must be greater than 5".&nbsp; From a behavioral perspective, the current language doesn't change anything other than which string is retrieved.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Monday, October 16, 2006</h2>My comments were aimed to the OP.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>pirithoos replied on Monday, October 16, 2006</h2>Thanks for your prompt response.<br><br>Mayby I did not express clearly what I want / need.<br><br>The ProductBO, when initiated, must immediately allow to access all different descriptions multiligual. So to say I do not what to pre-select in what language the ProductBO / or certain Properties is/are poplulated, but&nbsp; I want to make all language descriptions avaiable at the same time. Still I think this is only possible when the ProductBO holds a list of childobjects&nbsp; whith those DescriptionsStrings and a LanguageID.<br><br>Consindering this I would like to know what's the best practice accessing those DescriptionStrings from one only ProductBO.<br><br>I thought of a <br>Public Property Description (LanguageID) as String, but <br>this makes Databinding an adventure-tour.<br><br>It would be ideal if the ProductBO could expose this certain&nbsp; 'ChildProperties' (the Description in the different languages) for Databinding directly without having to&nbsp; access those via the LanguageList (the nested collection of ChildObjects).<br><br>I dream of a solution where the ProductBO has not only a Desription Property but also Properties for all current languages. (but as said the number of languages may increase in future, and I want to avoid adding a new properties for each future language into the ProductBO).<br><br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Monday, October 16, 2006</h2>What exactly is your Product class supposed to do?&nbsp; Display information?&nbsp; Or allow a user to edit all the desciptions for all languages?&nbsp; Those are two distinct tasks which require different objects.&nbsp; I think it would help if we knew more about your use case that you are trying to implement.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>pirithoos replied on Monday, October 16, 2006</h2>It's intended use is to allow the user to create new and or edit existing products.<br>Some of its data (e.g. DescriptionString and maybe one or two more strings in future) <br>
+must be available in different languages. It must allow the user to edit all descriptions<br>for all languages.<br><br>The application uses a many BO's which must allow&nbsp; to edit multi-ligual Strings<br>e.g. PaymentTermsBO, ProductGroupsBO etc.<br><br>Normally I would design this ProductBO with the followings Properties<br>Description_english<br>Descritpion_german<br>Description_france<br><br>However the number of languages is not clear as yet. So I cannot spend properties<br>for each language in advance. At this point it was clear (IMO) to spend a List of childobjects<br>to the ProductBO which contains the Description multi-ligual.<br><br>Later other objects like OrderPrinterBO uses the ProductBO and depending on<br>the LanguageID provide to the OrderPrinterBO it should print out the Description<br>in the corresponding language.<br><br>The OrderPrinterBO must not load the ProductBO each time the language changes<br>once the OrderPrinterBO is povided with a ProductBO it must be capable to <br>print out the order with the the Product.Description in the right language currently<br>selected in the OrderPrinterBO.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Monday, October 16, 2006</h2>Ok.<br><br>The editable product likely needs a collection of descriptions.&nbsp; Each ProductDescription has a certain language associated with it as well as the text.&nbsp; That's how you should probably tackle this problem.&nbsp; Use a gird for editing.&nbsp; <br><br>For display, the ProductInfo (or whatever you call it) should be able to figure out the proper translation.&nbsp; Behind the scenes though, you'll likely want something that can get arbitrary translated strings.<br><br>HTH<br>andy<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>pirithoos replied on Monday, October 16, 2006</h2>Dear Andy,<br><br>thanks for your advice.<br><br>Probably I just think to complicated. In fact leting the Descriptions be edited by a grid is the most easy way. If I want to get the Description in different languages from the ProductBO without accessing the collection I could think of a function ProductBO.GetDescription(LanguageID as integer) as String which returns the right Description from the nested collection of descriptions for all languages. <br><br>If the GUI still requires to have a single Textbox for each LanguageDescription instead of a Grid , I could think of wrapping the ProductBO in another Object which provides a property for each language.If in future other languages are added only this wrapper plus the GUI must be re-designed, but the library containing the ProductBO can remain unchanged.<br><br>Best Regards<br>Frank<br><br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>SonOfPirate replied on Monday, October 16, 2006</h2><P>I agree with Andy.&nbsp; You've got two use cases that call for two different approaches.&nbsp; Since you want to be able to edit all of the languages on the same UI, you will want a BO with a child&nbsp;collection containing the descriptions in all of the languages.&nbsp; But, your OrderPrinterBO&nbsp;should only have a Description property and use the language to select the right string from the database when retrieving the information.</P>
+<P>I would also agree that a grid is a better UI for your situation - especially since you want to be able to add more languages in the future.&nbsp; Databinding the grid to the collection will allow you to add them easily without having to make changes to your UI as you would if you tried to have a separate textbox for each (unless you created them dynamically in a loop during rendering - ouch!).</P>
+<P>Hope that helps.</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jupp replied on Monday, October 16, 2006</h2><P>I have had a similary dream.&nbsp; I hope the&nbsp;CustomTypeProvider is also useful for your problem.</P>
+<P>In short.</P>
+<P>If&nbsp;you use&nbsp;the CustomTypeProvider&nbsp;you can craft at run time your own pseudo -properties that grap each of your object fields or fields embedded in lists, thus&nbsp;allowing those&nbsp;information to be displayed and edited&nbsp;with&nbsp;"normal " Databinding.</P>
+<P>Please visit the following link for details : </P>
+<P><A href="http://msdn.microsoft.com/msdnmag/issues/05/05/NETMatters/">http://msdn.microsoft.com/msdnmag/issues/05/05/NETMatters/</A>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>pirithoos replied on Wednesday, October 18, 2006</h2>Dear Jupp,<br>
+
+<p class="MsoNormal"><span><br></span></p><p class="MsoNormal"><span>Sounds promising!
+<o:p></o:p></span></p>
+
+
+
+<p class="MsoNormal"><span><o:p></o:p><br></span></p><p class="MsoNormal"><span>I will go
+through this article a.s.a.p. Anyway if you have already used this approach to follow
+up a similarly idea like mine (exposing properties of the items in a child
+collection to the root BO which contains this collection) I would very much
+appreciate if you could share the code with me.<o:p></o:p></span></p>
+
+
+
+<p class="MsoNormal"><span><br></span></p><p class="MsoNormal"><span>Thanks<o:p></o:p></span></p>
+
+
+
+<p class="MsoNormal"><span><br></span></p><p class="MsoNormal"><span>Frank<o:p></o:p></span></p>
+
+<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jupp replied on Thursday, October 19, 2006</h2><P>Dear Frank,</P>
+<P>when I will be back im my home office at the weekend I will look for an example and share it with you.</P>
+<P>Josef Eißing</P>
+<P>Germany</P>
+<P>&nbsp;</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

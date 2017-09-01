@@ -1,0 +1,69 @@
+<html><header><title>WWF - Workflow persistance and business objects becoming stale</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>WWF - Workflow persistance and business objects becoming stale</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5159.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Patrick posted on Sunday, July 27, 2008</h2>Hi,<br><br>I just read in CSLA.NET 3.0 the details regarding suspending and persisting workflows.<br><br>In there the recommended way for long running workflows is to serialize the business objects needed for the activities with the workflow and then let WWF instantiate the objects again when the workflow continues.<br><br>This seems dangerous as we are saving the state of e.g. a customer object inside the workflow. If the workflow runs for a few weeks (being suspended most of the time in the db) the chances are that the customer data would have changed and that the workflow is running against old customer data.<br><br>So I was wondering if there is a sample available which flushes the business objects before the workflow is suspended and then refetches them when the workflow is activated again?<br><br>Thanks,<br>Patrick<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Sunday, July 27, 2008</h2><P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>Patrick:</strong></div><div>Hi,<BR><BR>In there the recommended way for long running workflows is to serialize the business objects needed for the activities with the workflow and then let WWF instantiate the objects again when the workflow continues.<BR></div></BLOCKQUOTE></P>
+<P>You really think it reads like I <EM>recommend</EM> that?</P>
+<P>The entire section titled "Business Objects as Workflow or Activity State" should scare the crap out of most people who'd consider doing such a thing. I was merely pointing out that it is <EM>possible</EM> to do, but only if you are willing to do all the work it took me two pages just to summarize (much less cover in detail)!</P>
+<P>Perhaps I should have been more explicit with something like:</P>
+<BLOCKQUOTE dir=ltr>
+<P><EM>If you just read the past two pages and still think any sane person would choose to do this, please reconsider, because a sane person would </EM>not<EM> do this!</EM></P></BLOCKQUOTE>
+<P>I thought that was reasonably clear, but apparently not. Sorry about that. Hopefully it is more clear now :)</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Patrick replied on Sunday, July 27, 2008</h2><BLOCKQUOTE><div><img src="/Themes/basicblue/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div>You really think it reads like I <em>recommend</em> that?</div></BLOCKQUOTE><br>Hm here is a quote from the book:<br><BLOCKQUOTE><div><img src="/Themes/basicblue/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div><br>It is important to realize that any dependency property values are serialized and persisted (typically in a database) if the workflow is unloaded before it completes. This means that the Project object instance exposed by these Project properties may be serialized!<br>That’s OK, because all CSLA .NET style business objects must be Serializable, and so the serialization will work fine. The fields in your object, and any child objects, will be serialized into a byte stream, which is then stored as part of the workflow’s state.<br>When the workflow is later loaded back into memory, its state is deserialized. Your business object is part of this state, so it is deserialized as well. This deserialization occurs before the workflow resumes running</div></BLOCKQUOTE>.... you talk about the difficulties with versioning the business object and then end with:<br><BLOCKQUOTE><div><img src="/Themes/basicblue/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div>These techniques allow you to construct your business objects in a way that is safe for versioning, even if the business object is serialized and deserialized as part of a workflow’s state.</div></BLOCKQUOTE><br>So yes in the book it gave me the impression that you think it's an ok idea.<br><br>Glad to hear that it isn't :)<br>What I feel is missing is a sample of how to allow the workflow to set all associated business objects to null before suspending and then to reinstantiate them again on initialization.<br>This could maybe be done by implementing an interface on the workflow the WorkflowManager could automatically call, there might be events as part of WWF etc.<br>Once there is a sample it becomes clearer that this is a "best practice" :).<br><br>Thanks,<br>Patrick<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Sunday, July 27, 2008</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Well, there&#8217;s a difference between &#8220;ok idea&#8221;
+and &#8220;recommend&#8221;.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>It IS an ok idea. People do this (with or without CSLA). I&#8217;ve
+seen it done numerous times, and it can work fine if you know what you are
+doing and are willing to think through all the consequences.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I thought it was important to make people aware that it can be
+done, and how to do it.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>My intent was to be neutral on whether it <i>should</i> be done.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I&#8217;m not a WF expert. There are probably only a score of WF
+experts in the world right now &#8211; it is too new, and not widely adopted
+yet. I didn&#8217;t feel I could recommend for or against the idea, just throw
+the possibilities out there so people can make their own choices.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Besides, as a version 1.0 technology, we won&#8217;t know what
+really good practices are for 2 more versions. Nothing gets real stable or well
+understood until version 3 :)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky</span><b><span><o:p></o:p></span></b></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Patrick replied on Sunday, July 27, 2008</h2>You are right I used the wrong word as you didn't actually recommend it but rather explained it as an approach... so sorry about that... I guess I just perceived it as recommended as this was the only example being given.<br><br>So to come back to my original question :) What do you think about this?<br><BLOCKQUOTE><div><img src="/Themes/basicblue/images/icon-quote.gif"> <strong>Patrick:</strong></div><div>What I feel is missing is a sample of how to allow the workflow to set all associated business objects to null before suspending and then to reinstantiate them again on initialization.<br>This could maybe be done by implementing an interface on the workflow the WorkflowManager could automatically call, there might be events as part of WWF etc.</div></BLOCKQUOTE><br>Thank you,<br>Patrick<br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Sunday, July 27, 2008</h2><P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>Patrick:</strong></div><div></P>
+<P>What I feel is missing is a sample of how to allow the workflow to set all associated business objects to null before suspending and then to reinstantiate them again on initialization.<BR>This could maybe be done by implementing an interface on the workflow the WorkflowManager could automatically call, there might be events as part of WWF etc.<BR>Once there is a sample it becomes clearer that this is a "best practice" :).<BR></div></BLOCKQUOTE></P>
+<P>I doubt that's the right approach. I suspect the right approach is to never expose a business object as a dependency property of an activity in the first place.</P>
+<P>Activities must be independent black boxes. Atomic units of operation. You can't just run through all activities and blank their dependency properties before suspending the workflow - that flies in the face of the whole idea of workflow.</P>
+<P>Personally, if I am going to be suspending a workflow, I just won't create dependency properties (or instance fields) that expose business objects, thus avoiding the whole issue. It is harder to build the workflow, because it forces a more "pure" mindset (message-passing between activities), but you dodge the whole serialization/versioning thing.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Patrick replied on Wednesday, August 06, 2008</h2><BLOCKQUOTE><div><img src="/Themes/basicblue/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div>Personally, if I am going to be suspending a workflow, I just won't create dependency properties (or instance fields) that expose business objects, thus avoiding the whole issue. It is harder to build the workflow, because it forces a more "pure" mindset (message-passing between activities), but you dodge the whole serialization/versioning thing.</div></BLOCKQUOTE><br><br>Thanks that sounds like the safest solution.<br><br>All the best,<br>Patrick<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, August 07, 2008</h2><P>Ultimately the issue comes down to this: serialization is not for persistence. Microsoft is quite clear on this point - and yet they unfortunately chose to use serialization to persist workflows (shows that the left hand doesn't always know what the right hand is doing).</P>
+<P>Serialization should be used for transient data only, never persistent data. The BinaryFormatter has grown over the years such that it is capable of versioning reasonably well for limited changes to the shape of an object graph. But if a workflow is suspended for a long time, the changes you make to your object graph shapes may not be limited...</P>
+<P>So I'd suggest that, for long-running/suspended workflows, you almost need to view all dependency properties and instance fields in activities like service contracts. Pretty limiting, and hopefully something that will have a better answer as WF matures over time.</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

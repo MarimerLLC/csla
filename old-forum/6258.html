@@ -1,0 +1,90 @@
+<html><header><title>CSLA custom configuration section (WishList?)</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA custom configuration section (WishList?)</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6258.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>tmg4340 posted on Monday, January 26, 2009</h2><P><FONT face=Tahoma size=2>I've noticed that the number of application-configuration entries for CSLA&nbsp;has grown to quite a few.&nbsp; I'm wondering whether it's time to consider making a custom configuration section just for the CSLA entries.&nbsp; Maybe it's just too much exposure to the EL, but it's been my philosophy that these non-application settings should be segregated into their own section.&nbsp; I realize that some of them could be considered "application specific", but I think they fall more into the "framework driver" category.</FONT></P>
+<P><FONT face=Tahoma size=2>I know that making one of these&nbsp;was a major PITA on .NET 1.1, but it's been made considerably easier from .NET 2.0 onward - especially considering that the CSLA entries are simple name/value entries.&nbsp; Plus, developing a custom section could allow for the configuration entries to evolve beyond name/value pairs if necessary.&nbsp; I'm not suggesting we have to go the whole design-time-configuration route, as the EL configuration allows.&nbsp; But maybe it's something that could be worked into a release.&nbsp; It also wouldn't be hard to keep the backwards compatability of allowing the settings to remain in the "AppSettings" section.</FONT></P>
+<P><FONT face=Tahoma size=2>Just my $0.02 (probably more like $0.005 in the current economy...)&nbsp; Thoughts?</FONT></P>
+<P><FONT face=Tahoma size=2>- Scott</FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Tuesday, January 27, 2009</h2>Sounds like a reasonable sugestion for a future version. Especially since it allows for evolution beyond name/value pairs. There may not be a need for it now but who knows what the future holds?</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, January 27, 2009</h2>I've thought about doing this, and it does make sense.<br><br>The only drawback to it, is that it would <i>force</i> the editing of the config file to add the section definition, even if you otherwise wouldn't have done any configuration.<br><br>Right now all the config values have defaults, and if you fall within the defaults you don't even need app.config. But if I use a custom section, you at least have to define the section handler to avoid an exception.<br><br>Of course maybe I'm wrong about that, but that's my understanding, and so thus far I've hesitated to put that burden on framework users.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tmg4340 replied on Tuesday, January 27, 2009</h2><P><FONT face=Tahoma size=2>Actually, that's not the case.&nbsp; We developed a custom-configuration section for a version of our database provider, to let other programmers create some infrastructure classes for databases&nbsp;the provider didn't support OOTB.&nbsp; If you ask the configuration system for an instance of your custom configuration class, and the configuration file doesn't have the custom section (or custom section definition), you just get a null reference back.</FONT></P>
+<P><FONT face=Tahoma size=2>HTH</FONT></P>
+<P><FONT face=Tahoma size=2>- Scott</FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, January 27, 2009</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>That makes me feel better about the idea then. Really that was
+my only objection &#8211; other than backward compatibility &#8211; to having a
+custom section.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>So you think people will be happy having to add the custom
+section gunk at the top just to add the<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>&lt;add key=&#8221;CslaAuthorization&#8221; value=&#8221;Csla&#8221;
+/&gt;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>line to their config file? Because for a lot of people that&#8217;s
+the only line they need to add. This change, while more elegant, will quadruple
+the amount of XML someone has to type to get running.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> tmg4340
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Tuesday, January 27, 2009 8:30 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] CSLA custom configuration section (WishList?)<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p><span>Actually,
+that's not the case.&nbsp; We developed a custom-configuration section for a
+version of our database provider, to let other programmers create some
+infrastructure classes for databases&nbsp;the provider didn't support
+OOTB.&nbsp; If you ask the configuration system for an instance of your custom
+configuration class, and the configuration file doesn't have the custom section
+(or custom section definition), you just get a null reference back.</span><o:p></o:p></p>
+
+<p><span>HTH</span><o:p></o:p></p>
+
+<p><span>- Scott</span><o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tmg4340 replied on Tuesday, January 27, 2009</h2><P><FONT face=Tahoma size=2>I guess that depends on how you see CSLA shaking out configuration-wise.&nbsp; There&nbsp;are already WPF-related configuration entries, and we've just had a discussion concerning how to handle the divergent WPF/WinForms functionality.&nbsp; The impression I got from the discussion is that you're not all that keen to develop a separate set of assemblies to manage the change.&nbsp; Using that line of thinking, I believe that a "single source solution" will likely entail more WPF-related configuration entries (long-term, I think that using compiler directives will break down.)&nbsp; Presuming that WPF does gain wider adoption, the amount of CSLA-specific configuration information&nbsp;may be more likely to rise - both in amount and what "normal users" have to use.</FONT></P>
+<P><FONT face=Tahoma size=2>Aside from that - and this may defeat the purpose altogether - you can allow for both AppSettings-based configuration entries and/or&nbsp;a custom configuration section.&nbsp; Obviously, it's not recommended that you mix the techniques, but for those folks who only use a single entry, they could still put it in AppSettings.</FONT></P>
+<P><FONT face=Tahoma size=2>I certainly&nbsp;agree that a more elegant solution that&nbsp;adds more work does not make a better solution.&nbsp; And the argument that "Microsoft makes you do it" for such things as the EL is, to be honest,&nbsp;a somewhat flimsy argument.&nbsp; But presuming that you switched to a custom configuration section, I don't believe the extra XML is terribly onerous.&nbsp; It's boilerplate for the most part, and a web.config file requires much more boilerplate than this would.&nbsp; That's certainly not a strong argument - but it's still an argument.&nbsp; <img src="/emoticons/emotion-1.gif" alt="Smile [:)]" /></FONT></P>
+<P><FONT face=Tahoma size=2>- Scott</FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Wednesday, January 28, 2009</h2>See, I'd probably be one of the problem users that would WANT to mix the styles.<br><br>Some settings, like CslaAuthentication, would always be the same for me.&nbsp; But in my configuration setup, I define my own sections (devel, testing, production1, production2, etc) and so there are other settings I would want in the "standard" appSettings (devel is no different than appSettings).&nbsp; In this case, the configuration of the CslaDataPortal would be different in devel vs. testing vs. production1.<br><br>I have my configuration setup this way so that my deployment process can change a single line in my configuration file and be set for the appropriate environment.&nbsp; This works well for me, even though I need to make Csla use my ConfigurationManager instead of the System.Configuration.ConfigurationManager on each release..<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tmg4340 replied on Wednesday, January 28, 2009</h2><P><FONT face=Tahoma size=2>Well... I'm not sure we want to tackle trying to fix the myriad issues with configuration files as they currently exist in .NET.&nbsp; <img src="/emoticons/emotion-1.gif" alt="Smile [:)]" />&nbsp; You've obviously developed a custom solution to deal with the biggest problem - though I'm not exactly sure how MS would solve it, to be honest.</FONT></P>
+<P><FONT face=Tahoma size=2>Given that you've already customized your configuration options and created your own custom section providers, I'd expect that a custom section for CSLA configuration information would probably not be terribly helpful for you.&nbsp; So being able to still use AppSettings would, I think, be of some benefit.</FONT></P>
+<P><FONT face=Tahoma size=2>I suppose this shoots another hole in my suggestion, but the whole configuration-file concept is pretty difficult to cleanly deal with anyway...</FONT></P>
+<P><FONT face=Tahoma size=2>- Scott</FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Wednesday, January 28, 2009</h2>I have thought about using the Enterprise Blocks for my configuration as well, because I'd rather NOT have to maintain a custom solution (not that it's changed at all since I built it).&nbsp; The problem is that I geared my handling of config settings to make my deployment program (originally just a nant script) easier.&nbsp; The less mucking with the .config file, the easier my deployment.&nbsp; I could change it now... but I"d have to rethink my deployment process.. and I'm hesitent to do that considering how well it's been working thus far.&nbsp; Not that I'll never change it... just that it's hard to justify finding time to do so.. unlike other Csla changes, which have had a dramatic impact.&nbsp; Managed properties greatly reduce the amount of code (which was easy to screw up too), Linq to Sql allowed me to ditch my custom DAL solution.&nbsp; <br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

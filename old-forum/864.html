@@ -1,0 +1,54 @@
+<html><header><title>Inheritance of Business Objects Seems to break down</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Inheritance of Business Objects Seems to break down</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/864.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>jdelano posted on Wednesday, August 09, 2006</h2><P>I have two classes called Relationship and Employment and they are declared as follows:</P>
+<P><STRONG>Public Class Relationship<BR></STRONG>&nbsp;&nbsp;&nbsp;Inherits BusinessBase(Of Relationship)<BR>&nbsp;&nbsp;&nbsp;...<BR>End Class</P>
+<P><STRONG>Public Class Employment</STRONG><BR>&nbsp;&nbsp;&nbsp;Inherits Relationship<BR>&nbsp;&nbsp;&nbsp;...<BR>End Class</P>
+<P>I then want to create a collection class called Employments, which I declared as follows:</P>
+<P><STRONG>Public Class Employments<BR></STRONG>&nbsp;&nbsp;&nbsp;Inherits BusinessListBase(Of Employments, Employment)<BR>&nbsp;&nbsp;&nbsp;...<BR>End Class</P>
+<P>The problem is that I get the following error: <STRONG>"Type argument 'Employment' does not inherit from or implement the constraint type 'BusinessBase(Of Employment)'"</STRONG></P>
+<P>I'm kinda new to Generics, and that's what I'm suspecting is causing this issue. Any ideas on how to solve it? I know I could probably use composition instead of inheritance, but in this particular case (using the "behaves-as" or "is-a" test), inheritance makes the most sense. Any ideas?</P>
+<P>Thanks,</P>
+<P>John Delano</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, August 09, 2006</h2>Hmm, I just tried the following (in 2.0.3) and it compiles:<br><br>Public Class R<br>&nbsp; Inherits BusinessBase(Of R)<br><br>&nbsp; Protected Overrides Function GetIdValue() As Object<br>&nbsp;&nbsp;&nbsp; Return 0<br>&nbsp; End Function<br><br>End Class<br><br>Public Class E<br>&nbsp; Inherits R<br><br>End Class<br><br>Public Class LR<br>&nbsp; Inherits BusinessListBase(Of LR, E)<br><br>End Class<br><br><br>I think you may find the solution is to upgrade to 2.0.3. The type constraint for C on BusinessListBase is now Csla.Core.IEditableBusinessObject, rather than on Csla.Core.BusinessBase, and perhaps that resolves the issue (though I really don't see why it would).<br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jdelano replied on Thursday, August 10, 2006</h2><P>Okay, I'm sorry... I left out a critical piece of information... </P>
+<P>I'm trying to create my own "BusinessBase-like" generic class. All of my business objects have the same exact type of ID (Integer) and they all have a Description, so I thought I'd encapsulate that in a "MyProjectBase" class (which inherits from BusinessBase). I also wanted to create my own generic "MyProjectListBase" class (which inherits from BusinessListBase)&nbsp;to handle the Assign, GetItem, Remove, Contains, etc. in one place (do I even need to implement these,&nbsp;by the way?), so here's what I did...</P>
+<P>Public MustInherit Class MyProjectBase(Of T as MyProjectBase(Of T))<BR>&nbsp;&nbsp;&nbsp;Inherits BusinessBase(Of T)<BR>&nbsp;&nbsp;&nbsp;...<BR>End Class</P>
+<P>Public MustInherit Class MyProjectListBase(Of T as MyProjectListBase(Of T, C), C As MyProjectBase(Of C))<BR>&nbsp;&nbsp;&nbsp;Inherits BusinessListBase(Of T, C)<BR>&nbsp;&nbsp;&nbsp;...<BR>End Class</P>
+<P>Then, I declared the classes from my first post as follows:</P>
+<P>Public Class Relationship<BR>&nbsp;&nbsp;&nbsp;Inherits MyProjectBase(Of Relationship)<BR>&nbsp;&nbsp;&nbsp;...<BR>End Class</P>
+<P>Public Class Employment<BR>&nbsp;&nbsp;&nbsp;Inherits&nbsp;Relationship<BR>&nbsp;&nbsp;&nbsp;...<BR>End Class</P>
+<P>Public Class Employments<BR>&nbsp;&nbsp;&nbsp;Inherits MyProjectListBase(Of Employments, Employment)<BR>&nbsp;&nbsp;&nbsp;...<BR>End Class</P>
+<P>Then I get the error I mentioned in my first post. So, I did some thinking after your comment that BusinessListBase's type constraint is IEditableBusinessObject, and I did the same thing in the MyProjectListBase class, and then it worked. The only problem is that now MyProjectListBase doesn't know about any of the fields/properties I've declared in MyProjectBase. In order to implement that functionality, do I need to create another layer of inheritance that isn't generic and stick it in the middle somehow? If so, do you have any ideas on how (i.e. syntax) I would need to accomplish that?</P>
+<P>I guess the worst case scenario is that I'll have to implement common collection methods in all my collection classes... not the end of the world, I guess.</P>
+<P>Thanks for any help,</P>
+<P>John Delano</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, August 10, 2006</h2>
+
+
+
+
+<DIV align=left><SPAN class=188050115-10082006><FONT face=Arial color=#0000ff size=2>It is best to use inheritance to abstract _behavior_, not 
+_data_. So using inheritance to provide common properties is an iffy thing to do 
+(not impossible, but somewhat problematic). On the other hand, if those 
+properties have extensive behavior associated with them, then that's another 
+matter.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=188050115-10082006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=188050115-10082006><FONT face=Arial color=#0000ff size=2>If all you want is a consistent interface for polymorphism, 
+then an interface (often inheriting from IEditableBusinessObject) is the right 
+answer.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=188050115-10082006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=188050115-10082006><FONT face=Arial color=#0000ff size=2>So what you are doing for the businessbase subclass is 
+fine. But you MUST use a derivative of IEditableBusinessObject to get 
+polymorphic behaviors within a collection.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=188050115-10082006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=188050115-10082006><FONT face=Arial color=#0000ff size=2><A href="http://www.lhotka.net/Article.aspx?area=4&amp;id=b8515cd9-7f8e-43df-9efd-cd958dfdc21a">http://www.lhotka.net/Article.aspx?area=4&amp;id=b8515cd9-7f8e-43df-9efd-cd958dfdc21a</A></FONT></SPAN></DIV>
+<DIV align=left><SPAN class=188050115-10082006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=188050115-10082006><FONT face=Arial color=#0000ff size=2>This is because generics aren't polymorphic and so you need 
+some non-generic type that all your objects have in common.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=188050115-10082006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=188050115-10082006><FONT face=Arial color=#0000ff size=2>Rocky</FONT></SPAN></DIV><BR>
+<BLOCKQUOTE>
+  <P>I'm trying to create my own "BusinessBase-like" generic class. All of my 
+  business objects have the same exact type of ID (Integer) and they all have a 
+  Description, so I thought I'd encapsulate that in a "MyProjectBase" class 
+  (which inherits from BusinessBase). I also wanted to create my own generic 
+  "MyProjectListBase" class (which inherits from BusinessListBase)&nbsp;to 
+  handle the Assign, GetItem, Remove, Contains, etc. in one place (do I even 
+  need to implement these,&nbsp;by the way?), so here's what I 
+did...</P></BLOCKQUOTE></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jdelano replied on Thursday, August 10, 2006</h2><P>Thanks, Rocky! That's perfect! I don't know why I didn't think of using an interface before, but that's essentially all I need.&nbsp; Thanks!</P>
+<P>John</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

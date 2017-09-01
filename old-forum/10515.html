@@ -1,0 +1,79 @@
+<html><header><title>How to use CslaDataProvider correctly in CSLA.NET 4.1.0.0</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>How to use CslaDataProvider correctly in CSLA.NET 4.1.0.0</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10515.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>dpfxiangfei posted on Tuesday, July 12, 2011</h2><p>&nbsp; &nbsp; &nbsp; I like CSLA.NET and WPF very much. It&#39;s my first time to use CSLA.NET and WPF in product-like application development. Now i encounter a problem: I don&#39;t know how to use CslaDataProvider correctly.PLS give me some help.The code excerpt &nbsp;as below:</p>
+<p>&nbsp; &nbsp;UI &nbsp; XAML:</p>
+<p>&nbsp;&lt;UserControl.Resources&gt;</p>
+<p>&lt;Xaml:ErrorDialog x:Key=&quot;errorDlg&quot; DialogTItle=&quot;Tips&quot; /&gt;</p>
+<p>&lt;Xaml:CslaDataProvider x:Key=&quot;providerModuleList&quot; &nbsp; OjbectType=&quot;{x:Type Business:ModuleDynamicList}&quot;</p>
+<p>&nbsp; &nbsp;FactoryMethod=&quot;GetModuleDynamicList&quot; &nbsp; IsInitialLoadEnabled=&quot;True&quot; &nbsp; &nbsp; &nbsp;IsAsynchronous=&quot;False&quot;</p>
+<p>&nbsp; DataChangedHandler=&quot;{StaticResource errorDlg}&quot; &nbsp; &nbsp; &nbsp; ManageObjectLifetime=&quot;True&quot;/&gt;</p>
+<p>&lt;DataGrid &nbsp;x:Name=&quot;list&quot; &nbsp;AutoGererateColumns=&quot;False&quot; &nbsp; AlternatingRowBackground=&quot;#D4D0C8&quot; CanUserAddRows=&quot;True&quot; &nbsp;CanUserDeleteRows=&quot;True&quot; &nbsp; &nbsp;CanUserReorderColumns=&quot;True&quot;</p>
+<p>&nbsp;CanUserResizeRows=&quot;False&quot; &nbsp; ItemsSource=&quot;{Binding Source={StaticResource providerModuleList}}&quot;&gt;</p>
+<p>&lt;-- &nbsp;Columns Definitions----&gt;</p>
+<p>&lt;/DataGrid&gt;</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp;Entity Definition:</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp;[serializable]</p>
+<p>&nbsp; &nbsp; &nbsp;public class ModuleDynamicList : DynamicListBase&lt;Module&gt;</p>
+<p>&nbsp; &nbsp;{</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp;public static ModuleDynamicList GetModuleDynamicList()</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;{</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;return &nbsp; &nbsp; DataPortal.Fetch&lt;ModuleDynamicList&gt;();</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;}</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;private void DataPortal_Fetch()</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;{</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;var rlce=RaiseListChangedEvents;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;using(var ctx=ContextManager&lt;SomeDataContext&gt;.GetManager(someDataBaseName))</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;var moduleIds=from module in ctx.DataContext.TblKD_Module</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;select module.Module_ID;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;foreach(var moduleId in moduleIds)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Add(Module.GetModule(moduleId));</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;}</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;}</p>
+<p>}&nbsp;</p>
+<p>&nbsp;</p>
+<p>[Serializable]</p>
+<p>public &nbsp;class Module : BusinessBase&lt;Module&gt;</p>
+<p>&nbsp;{</p>
+<p>&nbsp; &nbsp; &nbsp; #region Property Definitions</p>
+<p>&nbsp; &nbsp;.............................</p>
+<p>&nbsp; &nbsp; #endregion</p>
+<p>&nbsp; &nbsp; &nbsp; public static Module GetModule(string moduleId)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; return DataPortal.Fetch&lt;Module&gt;(moduleId);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;private void DataPortal_Fetch(string moduleId)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;{</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; using(Var ctx=ContextManger&lt;SomeDataContext&gt;.GetManager(someDataBaseName))</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Some Code to Get Linq Object then set Module property values</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;}</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; [Transactional(TransactionalTypes.TransactionScope)]</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; protected override void DataPortal_Update()</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;using(var ctx=ContextManager&lt;SomeDataContext&gt;.GetManager(someDataBaseName))</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;{</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;TblKD_Module module=(from mod in ctx.DataContext.TblKD_Module</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; where mod.Module_ID==Id</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;select mod).FirstOrDefault();</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;if(module == null)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; return;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;module.Module_Order=OrderId;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;-- &nbsp;Set Other Properties --&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;ctx.DataContext.SubmitChanges();</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;FieldManager.UpdateChildren(this);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;}</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;-- &nbsp; &nbsp; Other CRUD Operations Like &nbsp; above DataPortal_Update &nbsp; &nbsp; &nbsp; &nbsp;--&gt;</p>
+<p>}</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; As you can see,I have define a class ModuleDynamicList subclasses &nbsp;DynamicListBase,and contains a number of instances of class Module which subclasses BusnessBase. &nbsp; use CslaDataProvider,I try &nbsp;to bind ModuleDynamicList &nbsp; to a DataGrid,want to have in-edit effect. &nbsp;My problem is: &nbsp;This UI can get CRUD properly,which means data can be saved &nbsp;to database correctly,but when some errors happens during CRUD,the errorDialog doesn&#39;t show ,and after operation,the edited row in datagrid &nbsp;cann&#39;t &nbsp;edit anymore,the edited row &nbsp;uneditable, just like seting the row&#39;s property IsReadonly as True.</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; Please give me &nbsp;some tips to help me out of this delimma.&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; TKS.</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Tuesday, July 12, 2011</h2><p>I suggest that you avoid the CslaDataProvider. Microsoft seems to be moving away from the data provider application model, toward the use of the MVVM design pattern. CSLA .NET has followed Microsoft&#39;s lead in this area over the past couple years.</p>
+<p>I left CslaDataProvider in the code for backward compatibility, but I recommend that you create viewmodel classes instead of using a data provider.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>dpfxiangfei replied on Tuesday, July 12, 2011</h2><p>&nbsp; Thank you very much for your reply.&nbsp;It&#39;s a good suggestion.I will adopt the MVVM model next time.But in my current project,I still want to use the CslaDataProvider in some user Controls just for convenience. I really appreciate if you can give me some tips to solve the problem about using the CslaDataProvider that i mention before.</p>
+<p>&nbsp;&nbsp;&nbsp; TKS.</p>
+<p>&nbsp;&nbsp; </p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, July 12, 2011</h2><p>Several of the samples from CSLA .NET 3.0 and maybe 3.5 use the CslaDataProvider. I recommend looking at those older samples to see how the control is used.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,25 @@
+<html><header><title>Paging in windows forms</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Paging in windows forms</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/1084.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>mikeclimbs posted on Thursday, August 31, 2006</h2><P>I noticed the Csla – Web\CslaDataSource supports paging.&nbsp; Has anyone tried implementing paging for windows using CSLA?&nbsp; </P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, August 31, 2006</h2>You can implement paging the same way as in the web - assuming you have a grid control that supports the concept. Most grid controls do support the concept, but only if you switch to a manual mode where you write code to supply the grid with each row of data. This is often called a virtual mode as well.<br><br>In CSLA .NET 2.1 there's a new interface, IReportTotalRowCount (currently in Csla.Web, but moving to Csla.Core). You can implement this interface on your collection if you want the collection to only contain a page of data - but still be able to report how many total rows of data are available overall. This is used by CslaDataSource to help implement paging.<br><br>You'd probably need similar data when implementing paging in a Windows Forms grid.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>glenntoy replied on Friday, September 01, 2006</h2>A followup question for csladatasource, would it be safe to use .NET 2.0 ObjectDataSource if my Csla object is a readonlylist base in web apps?</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, September 01, 2006</h2>
+
+
+
+
+<DIV align=left><SPAN class=937494914-01092006><FONT face=Arial color=#0000ff size=2>I imagine so.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=937494914-01092006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=937494914-01092006><FONT face=Arial color=#0000ff size=2>You still need to implement a select method for ODS to call 
+- much like the SelectObject event handler for CDS - so using ODS doesn't save 
+you any code in that regard.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=937494914-01092006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=937494914-01092006><FONT face=Arial color=#0000ff size=2>Rocky</FONT></SPAN></DIV><BR>
+<BLOCKQUOTE>
+  <DIV class=OutlookMessageHeader align=left>
+  <HR>
+  <FONT face=Tahoma size=2><B>From:</B> glenntoy [mailto:cslanet@lhotka.net] 
+  <BR><B>Sent:</B> Friday, September 01, 2006 2:01 AM<BR><B>To:</B> 
+  rocky@lhotka.net<BR><B>Subject:</B> Re: [CSLA .NET] Paging in windows 
+  forms<BR></FONT><BR></DIV>
+  <DIV></DIV>A followup question, would it be safe to use .NET 2.0 
+  ObjectDataSource if my Csla object is a readonlylist base?<BR><BR><BR></BLOCKQUOTE></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Lakusha replied on Friday, September 01, 2006</h2><P>&nbsp;</P>
+<P>BTW, paging is incredibly easy and efficient to implement when using SQL 2005 (or Oracle). The windowing functions make it easier and faster than techniques used with SQL 2000.</P>
+<P>Look at the ROW_NUMBER() function in the SQL BOL. Other windowing functions, NTILE(), RANK() and DENSE_RANK() can also be used to acheive different results. It is also quite convenient to use it with a common table expression.</P>
+<P>ex:<BR><FONT face="Courier New">WITH myrowset as<BR>(Select <STRONG>ROW_NUMBER() OVER(Order by [Name]) as [Num]</STRONG><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Column1,<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; etc.<BR>&nbsp;From MyTable<BR>&nbsp;join ...<BR>Where ...<BR>)<BR>Select *<BR>From myrowset <BR><STRONG>Where [Num] between @nextrow and @nextrow + @pagesize;</STRONG></FONT></P>
+<P><BR>&nbsp;</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

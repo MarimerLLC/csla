@@ -1,0 +1,48 @@
+<html><header><title>Slow Fetch() when business rules are implemented.</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Slow Fetch() when business rules are implemented.</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11247.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>gajit posted on Wednesday, March 21, 2012</h2><p>Hi gents,</p>
+<p>Wonder if someone can put me back on the correct path...</p>
+<p>It&#39;s taking an eon to perform a fetch on a single row because I have some properties that when changed, trigger other property changed events... </p>
+<p>I&#39;m pretty certain I&#39;m doing it wrong... but I need a quick shove in the right direction...</p>
+<p>I perform a fetch like so:</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Using data = New Csla.Data.SafeDataReader(dal.Fetch(_customerno))<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; data.Read()</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Using BypassPropertyChecks</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; CustomerNo = data.GetString(data.GetOrdinal(&quot;CUSTOMERNO&quot;))<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; MasterCustomerNo = data.GetString(data.GetOrdinal(&quot;MASTERCUSTOMERNO&quot;))<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Owner = data.GetString(data.GetOrdinal(&quot;OWNER&quot;))<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; CompanyNo = data.GetString(data.GetOrdinal(&quot;COMPANYNO&quot;))<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Company = data.GetString(data.GetOrdinal(&quot;COMPANY&quot;))<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Address1 = data.GetString(data.GetOrdinal(&quot;ADDRESS1&quot;))</p>
+<p>What&#39;s killing the load time, is THIS type of property stub:</p>
+<p>&nbsp;&nbsp;&nbsp; Public Shared ReadOnly StateProperty As PropertyInfo(Of String) = RegisterProperty(Of String)(Function(c) c.State)<br />&nbsp;&nbsp;&nbsp; &lt;Display(Name:=&quot;State&quot;)&gt; _<br />&nbsp;&nbsp;&nbsp; Public Property State() As String<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Get<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return GetProperty(StateProperty)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Get<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Set(value As String)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; SetProperty(StateProperty, value)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; PropertyHasChanged(CountryProperty)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; PropertyHasChanged(BranchProperty)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Set<br />&nbsp;&nbsp;&nbsp; End Property</p>
+<p>I basically have an (execute) command that is fired whenever the user changes the state, country or branch properties of my BO. So to make matters even worse, I have two propertyhaschanged() methods on the other two properties.</p>
+<p>Should I be using a different method? Maybe BusinessRules.CheckRules?</p>
+<p>As soon as a user changes any of the 3 values in the UI, I need to do the check and update the UI accordingly.</p>
+<p>My&nbsp;validation rules look like:</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; .AddRule(New CheckBranchIsValid() With {.PrimaryProperty = StateProperty})<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; .AddRule(New CheckBranchIsValid() With {.PrimaryProperty = BranchProperty})<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; .AddRule(New CheckBranchIsValid() With {.PrimaryProperty = CountryProperty})</p>
+<p>and the execute looks like:</p>
+<p>&nbsp;&nbsp;&nbsp; Private Class CheckBranchIsValid<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Inherits Csla.Rules.BusinessRule<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Protected Overrides Sub Execute(context As Csla.Rules.RuleContext)</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Dim target = DirectCast(context.Target, CustomerEdit)</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; If Not PrimaryProperty.Equals(BranchProperty) Then AffectedProperties.Add(BranchProperty)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; If Not PrimaryProperty.Equals(StateProperty) Then AffectedProperties.Add(StateProperty)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; If Not PrimaryProperty.Equals(CountryProperty) Then AffectedProperties.Add(CountryProperty)</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; If Not CustomerEdit.BranchIsValid(target.Phone, target.Branch, target.State, target.Country) Then<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; context.AddErrorResult(&quot;Branch, Country or State is invalid&quot;)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End If</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Sub<br />&nbsp;&nbsp;&nbsp; End Class</p>
+<p>I know I&#39;m doing &quot;something&quot; wrong, just now sure what.</p>
+<p>Any help would be appreciated.</p>
+<p>Thanks,</p>
+<p>Graham</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>gajit replied on Wednesday, March 21, 2012</h2><p>Having peeked at the CSLA books again, I *think* I&#39;ve fixed it. There&#39;s still some I/O going on when I fetch the data (which I don;t quite understand why - because I&#39;m in a &quot;Using BypassPropertyChecks&quot; </p>
+<p>But I removed all of the PropertyHasChanged method calls and removed the Affectedproperties code in my execute method.</p>
+<p>I created dependency rules on the properties in question as such:</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; .AddRule(New Csla.Rules.CommonRules.Dependency(BranchProperty, StateProperty))<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; .AddRule(New Csla.Rules.CommonRules.Dependency(BranchProperty, CountryProperty))</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; .AddRule(New Csla.Rules.CommonRules.Dependency(StateProperty, BranchProperty))<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; .AddRule(New Csla.Rules.CommonRules.Dependency(StateProperty, CountryProperty))</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; .AddRule(New Csla.Rules.CommonRules.Dependency(CountryProperty, BranchProperty))<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; .AddRule(New Csla.Rules.CommonRules.Dependency(CountryProperty, StateProperty))</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; .AddRule(New CheckBranchIsValid() With {.PrimaryProperty = StateProperty})<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; .AddRule(New CheckBranchIsValid() With {.PrimaryProperty = BranchProperty})<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; .AddRule(New CheckBranchIsValid() With {.PrimaryProperty = CountryProperty})</p>
+<p>&nbsp;</p>
+<p>is this the correct strategy?</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Wednesday, March 21, 2012</h2><p>Just out of curiosity - how many times do you want the same and probably expensive rule to execute?</p>
+<p>My preference is to use InputProperties as dependency to have one and the same rule run just once for one primary property when either primary property or one of the InputProperties is changed. </p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Wednesday, March 21, 2012</h2><p>As a general rule you should have exactly one line in a property setter: the call to SetProperty.</p>
+<p>If you want other properties to change, or their rules to run, when the setter runs you should use rules to do that work. That way the processing will be supressed by BypassPropertyChecks or other rule supression techniques.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>gajit replied on Wednesday, March 21, 2012</h2><p>Thanks Rocky.</p>
+<p>Yep, I think my reworking falls under that technique.</p>
+<p>Graham</p>
+<p>&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

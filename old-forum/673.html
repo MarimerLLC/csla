@@ -1,0 +1,11 @@
+<html><header><title>ReadOnlyListBase Question?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>ReadOnlyListBase Question?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/673.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>RangerGuy posted on Wednesday, July 19, 2006</h2><P>Is it an acceptable practice to make&nbsp;a parent child relationship in a read only base class.</P>
+<P>For Example </P>
+<P>I want to display a readonly tree with as such&nbsp;(So all the objects are for display only but there is a parent child relationship.)</P>
+<P>|-Root</P>
+<P>|---Parent</P>
+<P>|-----&gt;Children</P>
+<P>&nbsp;|--------&gt;Grandchild</P>
+<P>|----Parent</P>
+<P>|-----&gt;Children</P>
+<P>&nbsp;|--------&gt;Grandchild</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Brian Criswell replied on Wednesday, July 19, 2006</h2>Well, yeah.&nbsp; As long as you do not want to save it and you do not mind the loss of the PropertyChanged event, it should work fine.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RangerGuy replied on Wednesday, July 19, 2006</h2><P>Yeh.. it's display purpose only. No editing through these objects.. it purpose is only to display data on the UI.</P>
+<P>&nbsp;</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

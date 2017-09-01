@@ -1,0 +1,215 @@
+<html><header><title>CSLA Silverlight Deserialization Issue</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA Silverlight Deserialization Issue</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5866.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>smims posted on Monday, November 24, 2008</h2><P><FONT face=Arial>I'm working to create a&nbsp;small demo similar to the Rolodex sample.&nbsp; Upon creating a simple login page (identical to the way the Rolodex project works) I'm receiving the following error when I try to login to the database (I'm using the Rolodex database):</FONT></P><FONT face=Arial color=#ff0000 size=3>
+<P>The Type 'myProject.Business.Security.CredentialsCriteria, myProject.Business.Client, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null' was unable to be deserialized, double check that the assembly containing this class has the same name on the Client and Server and that it is referenced by your server application</P>
+<P><FONT color=#000000>Any help is greatly appreciated.</FONT></P>
+<P><FONT color=#000000>Thanks,</FONT></P>
+<P><FONT color=#000000>SMIMS</FONT></P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Monday, November 24, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I think you are missing a reference in your WCF project to .NET
+version of myProject.Business.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> smims
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Monday, November 24, 2008 9:11 AM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> [CSLA .NET] CSLA Silverlight Deserialization Issue<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p><span>I'm working to create
+a&nbsp;small demo similar to the Rolodex sample.&nbsp; Upon creating a simple
+login page (identical to the way the Rolodex project works) I'm receiving the
+following error when I try to login to the database (I'm using the Rolodex database):</span><o:p></o:p></p>
+
+<p><span>The Type
+'myProject.Business.Security.CredentialsCriteria, myProject.Business.Client,
+Version=1.0.0.0, Culture=neutral, PublicKeyToken=null' was unable to be
+deserialized, double check that the assembly containing this class has the same
+name on the Client and Server and that it is referenced by your server
+application<o:p></o:p></span></p>
+
+<p><span>Any help is
+greatly appreciated.</span><span><o:p></o:p></span></p>
+
+<p><span>Thanks,</span><span><o:p></o:p></span></p>
+
+<p><span>SMIMS</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>smims replied on Monday, November 24, 2008</h2><P><FONT face=Arial>What version of CSLA does the&nbsp;WCF project need to reference, .NET or&nbsp;Silverlight?&nbsp; My WCF project is currently referencing the .NET version.&nbsp; I notice if I refernce the Silverlight version the sevice doesn't seem to work.&nbsp; Not sure what&nbsp;reference I could be&nbsp;missing here?</FONT></P>
+<P><FONT face=Arial>Thanks,</FONT></P>
+<P><FONT face=Arial>SMIMS</FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Monday, November 24, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>.NET.&nbsp; I think it is missing referen3ce to your business
+classes assembly, not CSLA.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> smims
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Monday, November 24, 2008 9:25 AM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: CSLA Silverlight Deserialization Issue<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p><span>What version of CSLA does
+the&nbsp;WCF project need to reference, .NET or&nbsp;Silverlight?&nbsp; My WCF
+project is currently referencing the .NET version.&nbsp; I notice if I refernce
+the Silverlight version the sevice doesn't seem to work.&nbsp; Not sure
+what&nbsp;reference I could be&nbsp;missing here?</span><o:p></o:p></p>
+
+<p><span>Thanks,</span><o:p></o:p></p>
+
+<p><span>SMIMS</span><o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>smims replied on Monday, November 24, 2008</h2><FONT face=Arial>My WCF project is referencing my 'myProject.Business.Server' project.&nbsp; That seems right.&nbsp; Thoughts?</FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Monday, November 24, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Assembly name and root namespace in both .NET and SL versions of
+your myProject.Business have to be the same.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> smims
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Monday, November 24, 2008 9:56 AM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: RE: CSLA Silverlight Deserialization Issue<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal><span>My WCF
+project is referencing my 'myProject.Business.Server' project.&nbsp; That seems
+right.&nbsp; Thoughts?</span><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>smims replied on Monday, November 24, 2008</h2><P><FONT face=Arial>Success!&nbsp; That was my problem.&nbsp; </FONT><FONT face=Arial>Thanks for your help Sergey!&nbsp; I really appreciate your prompt responses to my issue.</FONT></P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

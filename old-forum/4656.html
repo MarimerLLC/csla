@@ -1,0 +1,291 @@
+<html><header><title>Another Unit Testing BO question...</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Another Unit Testing BO question...</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4656.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>reagan123 posted on Thursday, April 10, 2008</h2><P>Hi everyone.<BR>I'm new to unit testing and CSLA&nbsp;am currently using NUnit to test my BusinessBase objects. </P>
+<P>I'm trying to test the CRUD operations for my object.&nbsp; My problem is that in the actual application I store the GUID of the logged in user so that anytime an object is saved it records the GUID of the signed in person.<BR><FONT size=2><BR>_PIDStamp = </FONT><FONT color=#0000ff size=2>CType</FONT><FONT size=2>(ApplicationContext.User.Identity, Security.Identity).PIDGuid()</FONT><BR><BR>The issue is that when I'm running my test, i'm not logged in as anyone and this fails.&nbsp; Is there a better approach or a good way around this.<BR><BR>Any tips or info would be greatly appreciated.</P>
+<P>***P.S: I'd also like to see examples of other peoples tests they use for their CSLA objects if possible. </P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Thursday, April 10, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>You can issue a principal login prior to running each test, either
+in test body or in Test Initialize method, such as MyPrincipal.Login()<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Senior Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> reagan123
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Thursday, April 10, 2008 10:48 AM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> [CSLA .NET] Another Unit Testing BO question...<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Hi everyone.<br>
+I'm new to unit testing and CSLA&nbsp;am currently using NUnit to test my
+BusinessBase objects. <o:p></o:p></p>
+
+<p>I'm trying to test the CRUD operations for my object.&nbsp; My problem is
+that in the actual application I store the GUID of the logged in user so that
+anytime an object is saved it records the GUID of the signed in person.<br>
+<span><br>
+_PIDStamp = <span>CType</span>(ApplicationContext.User.Identity,
+Security.Identity).PIDGuid()</span><br>
+<br>
+The issue is that when I'm running my test, i'm not logged in as anyone and
+this fails.&nbsp; Is there a better approach or a good way around this.<br>
+<br>
+Any tips or info would be greatly appreciated.<o:p></o:p></p>
+
+<p>***P.S: I'd also like to see examples of other peoples tests they use for
+their CSLA objects if possible. <o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>reagan123 replied on Thursday, April 10, 2008</h2><P>Seems to work great. Thanks!</P>
+<P>Does anyone want to post what a typical test for their business objects may look like or what type of things you test for?</P>
+<P>Thanks again!</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RikGarner replied on Friday, April 11, 2008</h2><P><FONT face=Arial size=2>Here's an example of a test I wrote very early on in my project:</FONT></P>
+<P><FONT face="Courier New" size=1>[TestFixture]<BR>&nbsp;&nbsp;&nbsp; public class ReportList_Tests<BR>&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [TestFixtureSetUp]<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public void ReportList_Test_Setup()<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; TestUtilities.AuthenticateTestUser();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</FONT></P>
+<P><FONT face="Courier New" size=1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [Test]<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public void ReportList_IsPopulated()<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ReportList list = ReportList.GetReportList();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Assert.IsTrue(list.Count &gt; 0, "List is empty");<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</FONT></P>
+<P><FONT face="Courier New" size=1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [Test]<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public void ReportList_CheckOne()<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ReportList list = ReportList.GetReportList();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Random selector = new Random();</FONT></P>
+<P><FONT face="Courier New" size=1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; int selectNum = selector.Next(list.Count - 1);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ReportInfo selectedItem = list[selectNum];<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ReportEdit fetchedObject = ReportEdit.GetReportEdit(selectedItem.ReportID);</FONT></P>
+<P><FONT face="Courier New" size=1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Assert.IsTrue(selectedItem.ReportType == fetchedObject.ReportType, string.Format("Objects differ {0} {1} {2}", selectedItem.ReportID, selectedItem.ReportType, fetchedObject.ReportType));<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Assert.IsTrue(selectedItem.IsActive == fetchedObject.IsActive, string.Format("Objects differ {0} {1} {2}",selectedItem.ReportID, selectedItem.IsActive , fetchedObject.IsActive));<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Assert.IsTrue(selectedItem.TemplateDocId == fetchedObject.TemplateDocumentId, string.Format("Objects differ {0} {1} {2}", selectedItem.ReportID,selectedItem.TemplateDocId, fetchedObject.TemplateDocumentId));<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</FONT><FONT face="Courier New" size=1><BR>&nbsp;&nbsp;&nbsp; }</FONT></P>
+<P><FONT face=Arial size=2>The tests got a lot more complicated as time went on, for example here is a single test from one fixture:</FONT></P>
+<P><FONT face="Courier New" size=1>[Test]<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public void CaseTaskSet_Tests_TestAddTask()<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; int testRowID = TestHelper.LocateRandomRow("CASE", "CASE_ID");<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Trace.WriteLine((new StackFrame()).GetMethod().Name + " ID=" + testRowID);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; CaseTaskSet targetSet = CaseTaskSet.GetCaseTaskSet(testRowID);</FONT></P>
+<P><FONT face="Courier New" size=1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; CaseTaskEdit newItem = CaseTaskEdit.NewCaseTask();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; newItem.CaseID = testRowID;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; newItem.CaseStageID = 1;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; newItem.TaskType = TaskType.Review;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; newItem.TargetDate = new SmartDate(DateTime.Today);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; newItem.Description = "MbUnit test";<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; targetSet.Add(newItem);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; targetSet.Save();</FONT></P>
+<P><FONT face="Courier New" size=1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; int newId = newItem.CaseTaskID;</FONT></P>
+<P><FONT face="Courier New" size=1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _teardownCommands.Add(string.Format("DELETE FROM {0} WHERE {1}={2}", _tableName, _tablePK, newId));<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; int rowCount = TestHelper.RowCount(_tableName, string.Format("CASE_ID={0}", testRowID));<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Assert.IsTrue(targetSet.Count == rowCount,string.Format("Added task not found: returned {0} items, table contains {1}", targetSet.Count, rowCount));<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</FONT></P>
+<P><FONT face="Courier New" size=1></FONT>&nbsp;</P>
+<P><FONT face=Arial size=2>As you can guess writing all this gets very time consuming very quickly.</FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>reagan123 replied on Friday, April 11, 2008</h2><P>Thanks so much for the code.&nbsp; It's good to see what others do.&nbsp; I've not been able to find many examples of actual tests that are run while searching the internet.</P>
+<P>I appreciate your time.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Joffies replied on Monday, April 21, 2008</h2><P><FONT face=Arial size=2>I have similar question on UNIT testing against CSLA business objects.</FONT></P>
+<P><FONT face=Arial size=2>I am also in the process of writing unit test using NUnit&nbsp;and I am having an issue testing that a start date property should not be after my end date property.</FONT></P>
+<P><FONT face=Arial size=2>The validation rules kick in perfectly through databinding but when I set the properties manually through code it does not. The object stays valid.&nbsp;I am not sure if I am missing something.</FONT></P>
+<P><FONT face=Arial size=2>I am using the exact same function that is used in the Project Tracker sample application.</FONT></P>
+<P><FONT face=Arial size=2>-------------------------------------------------------</FONT></P><FONT face=Arial size=2><FONT color=#008000 size=2><FONT color=#008000 size=2>
+<P>'Start and End Dates</P></FONT></FONT><FONT size=2>
+<P>ValidationRules.AddRule(</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Of</FONT></FONT><FONT size=2> Administrator)(</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>AddressOf</FONT></FONT><FONT size=2> StartDateGTEndDate(</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Of</FONT></FONT><FONT size=2> Administrator), StartDateProperty)</P>
+<P>ValidationRules.AddRule(</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Of</FONT></FONT><FONT size=2> Administrator)(</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>AddressOf</FONT></FONT><FONT size=2> StartDateGTEndDate(</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Of</FONT></FONT><FONT size=2> Administrator), EndDateProperty)</FONT></P>
+<P><FONT size=2><FONT color=#008000>'Function to enforce start date should not be greater then end date</FONT></P></FONT></FONT><FONT size=2>
+<P></FONT><FONT face=Arial><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Private</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Shared</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Function</FONT></FONT><FONT size=2> StartDateGTEndDate(</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Of</FONT></FONT><FONT size=2> T </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>As</FONT></FONT></FONT><FONT size=2><FONT face=Arial> Administrator)( _</FONT></P>
+<P></FONT><FONT face=Arial><FONT color=#0000ff size=2><FONT color=#0000ff size=2>ByVal</FONT></FONT><FONT size=2> target </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>As</FONT></FONT></FONT><FONT size=2><FONT face=Arial> T, _</FONT></P>
+<P></FONT><FONT face=Arial><FONT color=#0000ff size=2><FONT color=#0000ff size=2>ByVal</FONT></FONT><FONT size=2> e </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>As</FONT></FONT><FONT size=2> Validation.RuleArgs) </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>As</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Boolean</P></FONT></FONT></FONT><FONT size=2>
+<P></FONT><FONT face=Arial><FONT color=#0000ff size=2><FONT color=#0000ff size=2>If</FONT></FONT><FONT size=2> target.GetProperty(</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Of</FONT></FONT><FONT size=2> SmartDate)(StartDateProperty) &gt; target.GetProperty(</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Of</FONT></FONT><FONT size=2> SmartDate)(EndDateProperty) </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Then</P></FONT></FONT></FONT><FONT size=2>
+<P><FONT face=Arial>e.Description = </FONT></FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2><FONT face=Arial>"Start date can't be after end date"</FONT></P></FONT></FONT><FONT size=2>
+<P></FONT><FONT face=Arial><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Return</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>False</P></FONT></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2><FONT face=Arial>Else</FONT></P></FONT></FONT><FONT size=2>
+<P></FONT><FONT face=Arial><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Return</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>True</P></FONT></FONT></FONT><FONT size=2>
+<P></FONT><FONT face=Arial><FONT color=#0000ff size=2><FONT color=#0000ff size=2>End</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>If</P></FONT></FONT></FONT><FONT size=2>
+<P></FONT><FONT face=Arial><FONT color=#0000ff size=2><FONT color=#0000ff size=2>End</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Function</FONT></FONT></FONT></P>
+<P><FONT face=Arial><FONT color=#0000ff size=2><FONT color=#0000ff size=2><FONT color=#000000>-----------------------------------------------------</FONT></FONT></FONT></FONT></P>
+<P><FONT face=Arial><FONT color=#0000ff size=2><FONT color=#0000ff size=2><FONT color=#000000>Thanks</FONT></P></FONT></FONT></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Joffies replied on Tuesday, April 22, 2008</h2><P>Any ideas as I really want to get this working and I cannot find anything wrong or indicating what could be wrong.</P>
+<P>Thanks</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RikGarner replied on Tuesday, April 22, 2008</h2><P>Is there some quirk that would cause your test code not to eventually trigger the PropertyHasChanged call inside the Property Set routines? </P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Tuesday, April 22, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I see no reason why the rules would not fire if you set a date
+on object created in code.&nbsp; If you are using VS unit testing, you can
+debug your tests and set breakpoints on PropertyHasChanged(Date) and inside the
+rule itself.&nbsp; This way you should be able to tell what is going on.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Senior Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899<o:p></o:p></span></p>
+
+<p class=MsoNormal><b><i><span>Magenic</span></i></b><span> </span><span>&reg;</span><b><i><span><o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Joffies
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Tuesday, April 22, 2008 8:12 AM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: Another Unit Testing BO question...<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Any ideas as I really want to get this working and I cannot find anything
+wrong or indicating what could be wrong.<o:p></o:p></p>
+
+<p>Thanks<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RikGarner replied on Tuesday, April 22, 2008</h2>Post your test code, or a bit of it at least.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Joffies replied on Tuesday, April 22, 2008</h2><P><FONT face=Arial size=2>Hi Rik</FONT></P>
+<P><FONT face=Arial size=2>Here is the test. I am expecting the object not to be saveable due to the validation rules on the object not being met.</FONT></P>
+<P><FONT face=Arial size=2>Both endDate and startDate values are current as in set to today.</FONT></P>
+<P><FONT face=Arial size=2>&lt;Test()&gt; _</FONT></P>
+<P><FONT size=2><FONT face=Arial><FONT color=#0000ff><FONT color=#0000ff>Public</FONT></FONT> <FONT color=#0000ff><FONT color=#0000ff>Sub</FONT></FONT></FONT><FONT face=Arial> TestDateValidation()</FONT></FONT></P>
+<P><FONT size=2><FONT face=Arial><FONT color=#0000ff><FONT color=#0000ff>Dim</FONT></FONT> adm <FONT color=#0000ff><FONT color=#0000ff>As</FONT></FONT></FONT><FONT face=Arial> Administrator = Administrator.GetAdministrator(_administratorID)</FONT></FONT></P>
+<P><FONT face=Arial size=2>adm.EndDate = _endDate.AddDays(-2).ToString</FONT></P>
+<P><FONT face=Arial size=2>adm.StartDate = _startDate.ToString</FONT></P>
+<P><FONT size=2><FONT face=Arial>Assert.IsFalse(adm.IsSavable, </FONT><FONT color=#a31515><FONT face=Arial color=#a31515>"End Date cannot be before the start date"</FONT></FONT><FONT face=Arial>)</FONT></FONT></P>
+<P><FONT face=Arial size=2>adm.Save()</FONT></P>
+<P><FONT face=Arial><FONT size=2><FONT color=#0000ff><FONT color=#0000ff>End</FONT></FONT> <FONT color=#0000ff><FONT color=#0000ff>Sub</P></FONT></FONT></FONT></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Tuesday, April 22, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>What are the values for both dates at the Assert line?&nbsp; If
+you want try hard values, try this:<o:p></o:p></span></p>
+
+<p><span>adm.EndDate
+= &#8220;1/1/2002&#8221;</span><o:p></o:p></p>
+
+<p><span>adm.StartDate
+= &#8220;1/1/2003&#8221;</span><o:p></o:p></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Senior Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Joffies
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Tuesday, April 22, 2008 9:13 AM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: RE: Another Unit Testing BO question...<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p><span>Hi Rik</span><o:p></o:p></p>
+
+<p><span>Here is the
+test. I am expecting the object not to be saveable due to the validation rules
+on the object not being met.</span><o:p></o:p></p>
+
+<p><span>&lt;Test()&gt;
+_</span><o:p></o:p></p>
+
+<p><span>Public</span><span> <span>Sub</span> TestDateValidation()</span><o:p></o:p></p>
+
+<p><span>Dim</span><span> adm <span>As</span> Administrator =
+Administrator.GetAdministrator(_administratorID)</span><o:p></o:p></p>
+
+<p><span>adm.EndDate
+= _endDate.AddDays(-2).ToString</span><o:p></o:p></p>
+
+<p><span>adm.StartDate
+= _startDate.ToString</span><o:p></o:p></p>
+
+<p><span>Assert.IsFalse(adm.IsSavable,
+<span>&quot;End Date cannot be before the start
+date&quot;</span>)</span><o:p></o:p></p>
+
+<p><span>adm.Save()</span><o:p></o:p></p>
+
+<p><span>End</span><span> <span>Sub<o:p></o:p></span></span></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Joffies replied on Tuesday, April 22, 2008</h2><P><FONT face=Arial size=2>Thanks Sergey.</FONT></P>
+<P><FONT face=Arial size=2>I did check my values and as it is I have made a schoolboy error. :(</FONT></P>
+<P><FONT face=Arial size=2>Apologies. I have set private&nbsp;readonly variables within my test which i purposfully set and did not check. Apologies and thanks for your help.</FONT></P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

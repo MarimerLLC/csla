@@ -1,0 +1,20 @@
+<html><header><title>comments or ideas :  WhoChanged in BO and the database</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>comments or ideas :  WhoChanged in BO and the database</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/1462.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>figuerres posted on Thursday, October 12, 2006</h2><P>I am trying to make a call on how I want to make this work, input and ideas are welcome:</P>
+<P>each table has a set of items that are always persent:</P>
+<P>ID,Active,CreationTimestamp,WhoCreated,LastChnaged,WhoChanged</P>
+<P>CreationTimestamp is datetime, WhoCreated is an int that is set one time</P>
+<P>LastChnaged is datetime of the last update, WhoChnaged is an int id of the user who made the chnages.</P>
+<P>now I want to on a read/edit form to show the name of the person who created the record and the name of the person who made the last update.</P>
+<P>so I am debating on:</P>
+<P>read from db and edit the BO to make the strings RO and not send them out for updates</P>
+<P>or</P>
+<P>make a global list of ID,name and bind a control to show the name</P>
+<P>or </P>
+<P>make a namevalue list and have many instancaes as needed with the same list in memory a bunch of times.</P>
+<P>or ???? ideas ????</P>
+<P>the global list has some points in that it might keep from a lot of db access and the list will not chnage very often.</P>
+<P>but then do I bind it on the form or use a ro property in th BO or???</P>
+<P>just wondered if others have the same kind of thing and how they deal with it.</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JHurrell replied on Thursday, October 12, 2006</h2>You could just join that table on your users table to retrieve the name. Display the name instead of the ID in your BO that displays that audit information.<br><br>The catch is that you can't delete users. You'd have to disable them or the JOIN won't work.<br><br>Keep in mind that what you're proposing will only show the last change and not a HISTORY of changes. <br><br>- John<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>figuerres replied on Thursday, October 12, 2006</h2><P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>JHurrell:</strong></div><div>You could just join that table on your users table to retrieve the name. Display the name instead of the ID in your BO that displays that audit information.<BR><BR>The catch is that you can't delete users. You'd have to disable them or the JOIN won't work.<BR><BR>Keep in mind that what you're proposing will only show the last change and not a HISTORY of changes. <BR><BR>- John<BR></div></BLOCKQUOTE></P>
+<P>&nbsp;</P>
+<P>I know the "Last Changed" is not a history... I keep that in an aduit table when needed.</P>
+<P>I guess I could go with a join on select, then I'd need to tweak my Upddate and Insert procs to ignore the names and use the ID ...</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

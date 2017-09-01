@@ -1,0 +1,14 @@
+<html><header><title>how to reference a dll programmatically  </title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>how to reference a dll programmatically  </h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3581.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>dantes1 posted on Sunday, September 23, 2007</h2><div id="post_message_67897">id like to reference a dll file programmatically. <br>
+<br>
+id like to create an instance of a certain object from a different dll but id like to reference that dll programmatically.<br>
+<br>
+here is my scenario... id like to select a dll file then load that file
+so i could get the objects inside it (CSLA objects). then i will select
+an object... after selecting an object i will select a csv or xls file
+(whose values are converted to a dataset)... inside those files are
+values for the properties of the object... and i would like to map the
+values from the dataset and the properties of the object...<br>
+<br>
+need some help...</div>
+		<img id="progress_67897" src="http://www.vbdotnetforums.com/images/misc/progress.gif" alt="">&nbsp;<a href="http://www.vbdotnetforums.com/editpost.php?do=editpost&amp;p=67897" name="vB::QuickEdit::67897"></a></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, September 24, 2007</h2><P>You can look in the client-side data portal to see how to dynamically load an assembly based on name. The data portal uses this technique to load the appropriate proxy object.</P>
+<P>You can look in DataMapper for some good reflection code to interact with the properties on an object.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>dantes1 replied on Monday, September 24, 2007</h2>how do i get the exact value of a property using reflection that i also set using reflection...???<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Tuesday, September 25, 2007</h2>PropertyInfo.SetValue and PropertyInfo.GetValue<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

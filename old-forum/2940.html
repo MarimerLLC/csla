@@ -1,0 +1,19 @@
+<html><header><title>Complement of Lists</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Complement of Lists</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/2940.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Brad posted on Thursday, May 24, 2007</h2><P>Hi,</P>
+<P>&nbsp;</P>
+<P>I have a problem with a set of use cases I'm working on. The object model for this set of use cases&nbsp;is&nbsp;very similar to that of the Project Tracker sample application.</P>
+<P>Translating my objects into Project Tracker objects, the problem I am having is as follows:</P>
+<P>1) User&nbsp;edits a resource</P>
+<P>2) User presses the "Assign" button</P>
+<P>3) The user is presented with the complete list of projects that they may be assigned to. However, this list does not take into account any projects that have <EM>already</EM> been assigned to the user.</P>
+<P>&nbsp;</P>
+<P>My issue is that I would like to show the user only the valid projects to assign to the resource; this&nbsp;equates to&nbsp;any project that has been assigned and saved, plus any project that has been assigned and <EM>not</EM> saved.</P>
+<P>My first (naive)&nbsp;attempt went back to the database to get the list of projects that were not assigned to the resource. However, as you can probably see, it would be possible for the user to select a project that has been assigned in memory (just not persisted to the database).</P>
+<P>So, I concluded that I'm going to have to get the complement of the two lists. In my case, that means getting the complement of a ReadOnlyList and a EditableChildList. Has anyone got any suggestions on how one might go about this task cleanly and efficently?</P>
+<P>&nbsp;</P>
+<P>Cheers,</P>
+<P>-Brad</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Q Johnson replied on Thursday, May 24, 2007</h2><P>I would reconisder your use case a bit here; but maybe I'm just too lazy.</P>
+<P>It doesn't seem reasonable to me to expect the program to know about assignments that haven't been Saved (persisted to the DB) by users either at this workstation or any other.&nbsp; When you make this clear to the users, they might be more&nbsp;aggresive about saving them right away, too.</P>
+<P>So I think your first solution is <STRONG><FONT size=4>not</FONT></STRONG>&nbsp;naive.&nbsp; Just do it with your database work in DP_Fetch.&nbsp; </P>
+<P>And if you're afraid there will be collisions here because of a stale list of available projects, just offer a Refresh List button in the UI that re-creates your ReadOnlyList.&nbsp; It shouldn't take much time to re-create that list and a user will surely be willing to look at the hour glass for a second or two&nbsp;after they've intentionally requested the re-population process.</P>
+<P>Just my two cents.</P>
+<P>&nbsp;</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

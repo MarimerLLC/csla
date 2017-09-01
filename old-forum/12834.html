@@ -1,0 +1,17 @@
+<html><header><title>MVC Example calling async business method</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>MVC Example calling async business method</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/12834.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>richardb posted on Monday, February 23, 2015</h2><p>Can anyone point me to an example of calling an asynchronous method on a business object from a controller in ASP.Net MVC 5? &nbsp; Or just show me what the call would be and how the business object method is done.</p>
+<p>Currently confused looking at the examples in ProjectTracker, and wondering if GetProjectList&lt;EventHandler&lt;DataPortalResult&lt;ProjectList&gt;&gt; callback) is what I need.</p>
+<p>Thanks,<br />Richard.&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>richardb replied on Monday, February 23, 2015</h2><p>Ok, so I may have finally answered my own question. &nbsp;I was confused with the callback approach, but I understand that&#39;s for Silverlight and some other paltforms. &nbsp;Now with .Net 4.5 we can use Task await approach.</p>
+<p>My Business Object.</p>
+<p>public async static Task&lt;VehicleList&gt; GetVehicleListAsync()<br /> &nbsp; &nbsp;{<br /> &nbsp; &nbsp; &nbsp; &nbsp;return await DataPortal.FetchAsync&lt;VehicleList&gt;();<br /> &nbsp; &nbsp;}</p>
+<p>&nbsp; &nbsp; public async static Task&lt;VehicleList&gt; GetVehicleListAsync(string name)<br /> &nbsp; &nbsp;{<br /> &nbsp; &nbsp; &nbsp; &nbsp;return await DataPortal.FetchAsync&lt;VehicleList&gt;(name);<br /> &nbsp; &nbsp;}</p>
+<p>&nbsp;</p>
+<p>And my controller calls it like this;</p>
+<p>ViewData.Model = await VehicleList.GetVehicleListAsync();</p>
+<p>&nbsp;</p>
+<p>Or if I happended to need multiple(s) and did not have a &quot;Getter&quot; type business object....something like this;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; var vehicles1Task = VehicleList.GetVehicleListAsync();<br /> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; var vehicles2Task = VehicleList.GetVehicleListAsync();</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; //have used same getListXXX method call for demo purposes.</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; await Task.WhenAll(vehicles1Task, vehicles2Task);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; ViewData.Model = vehicles1Task.Result;<br /> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; ViewBag.Vehicles = vehicles2Task.Result;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Monday, February 23, 2015</h2><p>Yes, if you have async / await this is probably your best bet.&nbsp; The other async support is the older methods of doing async in .Net.&nbsp; I think there&#39;s like three async patterns now implemented in the .Net framework. </p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

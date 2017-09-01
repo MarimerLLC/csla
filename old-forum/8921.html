@@ -1,0 +1,14 @@
+<html><header><title>NotUndoable Managed Properties</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>NotUndoable Managed Properties</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/8921.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Andreas posted on Wednesday, May 12, 2010</h2><p>Hi Rocky,</p>
+<p>I&nbsp;found some forum entries and finaly&nbsp;a&nbsp;BugTracker entry about supporting NotUndoable and NonSerizalized managed properites. Is any chance that it will make it in to Csla4.0?&nbsp;If the answer is no, is there any recommended workaround that can be used inbetween?</p>
+<p><a href="http://www.lhotka.net/cslabugs/edit_bug.aspx?id=30">http://www.lhotka.net/cslabugs/edit_bug.aspx?id=30</a></p>
+<p>Regards,<br />Andreas</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Wednesday, May 12, 2010</h2><p>No, this won&#39;t be in CSLA 4. Right now the workaround is to use private backing fields for those properties.</p>
+<p>Solving the problem turns out to be complex, because it could force the field manager to maintain 4 lists of values:</p>
+<ol>
+<li>The normal list like today</li>
+<li>A list of values that should be serialized, but not undo</li>
+<li>A list of values that should not be serialized, but should undo</li>
+<li>A list of values that should not be serialized, and should not undo</li>
+</ol>
+<p>I&#39;m not sure I want to accept the overhead of maintaining four lists, and serializing two of them sometimes but not other times, and I just didn&#39;t have time to perform such major surgery to the field manager and serialization infrastructure for CSLA 4.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rsbaker0 replied on Wednesday, May 12, 2010</h2><p>Might it be possible to at least &quot;simulate&quot; NotUndoable by tinkering with the FieldManager undo implementation?&nbsp; </p>
+<p>At least at some level, the only difference between &quot;should undo&quot; and &quot;should not undo&quot; is that if UndoChanges is called, the current value of the property should be discarded in favor of th saved state for an undoable property and not discarded otherwise, so I&#39;d think you could perhaps leave everything the same except ignore NotUndoable properties in the FieldManager when restoring the previous state. </p>
+<p>Maybe this is a gross oversimplification, but it might work... </p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, May 12, 2010</h2><p>That&#39;s true, NotUndoable probably isn&#39;t so bad. NonSerialized is the harder one.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

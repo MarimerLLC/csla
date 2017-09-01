@@ -1,0 +1,37 @@
+<html><header><title>Generics &amp; Object Hierarchy Question</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Generics &amp; Object Hierarchy Question</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3029.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>GEM posted on Tuesday, June 12, 2007</h2><P>I'm new to CSLA, and am "kicking tires".&nbsp; Simplest way to ask my basic question:</P>
+<P>Does every CSLA business object need to directly inherit from BusinessBase(Of T), for example?</P>
+<P>&nbsp;</P>
+<P>I have a very simple test application working with this hierarchy:</P>
+<P>BusinessBase(Of T)</P>
+<P>&nbsp;&nbsp;&nbsp; UsrGrp (inherits BusinessBase(Of UsrGrp)</P>
+<P>An add-to-database operation is working OK.</P>
+<P>&nbsp;</P>
+<P>What I WANT to do is this:</P>
+<P>BusinessBase(Of T)</P>
+<P>&nbsp;&nbsp;&nbsp; MyLocalBase(inherits BusinessBase(Of MyLocalBase)</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; UsrGrp(inherits MyLocalBase)</P>
+<P>&nbsp;</P>
+<P>MyLocalBase would exist only to contain common private variables with getters and setters as needed.&nbsp; My "want-to" version of UsrGrp would be the same except for the diversion of the common private variables to MyLocalBase.</P>
+<P>&nbsp;</P>
+<P>I have built my "want-to" version of the application, but I get a compile error on the Save() method in UsrGrp:</P>
+<P>Public Overrides Function Save() As UsrGrp' cannot override 'Public Overridable Function Save() As Base.MyLocalBase' because they differ by their return types....</P>
+<P>&nbsp;</P>
+<P>I get a compile to work (and successful&nbsp;add-to-database operation) by this code change:</P>
+<P>&nbsp;&nbsp;&nbsp; From -&nbsp;Public Overrides Function Save() As UsrGrp</P>
+<P>&nbsp;&nbsp;&nbsp; To&nbsp;&nbsp;&nbsp;&nbsp; - Public Shadows Function Save() As UsrGrp</P>
+<P>&nbsp;</P>
+<P>I've played the software game long enough to suspect that Shadows keyword may be a tool for kludge workarounds, and, sure enough, I found the following advice:</P>
+<P>"Avoid Shadows (Visual Basic) or new (C#) keywords in favor of Overridable and virtual keywords, respectively, to redefine methods and properties in derived types."</P>
+<P>&nbsp;&nbsp;&nbsp; from "Practical Guidelines and Best Practices For Microsoft Visual Basic and Visual C# Developers" by Balena and Dimauro, page 54</P>
+<P>&nbsp;</P>
+<P>Am I OK with the Shadows thing?&nbsp; If I someday want to then extend UsrGrp, does Shadows cause a problem?</P>
+<P>Is there something in my approach that is questionable?&nbsp; A better way?</P>
+<P>&nbsp;</P>
+<P>I looked in the forum for a bit, but didn't find this topic covered.</P>
+<P>&nbsp;</P>
+<P>Thank you in advance!</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Brian Criswell replied on Tuesday, June 12, 2007</h2>No, you do not need to inherit the CSLA base classes directly.&nbsp; It is actually encouraged that you subclass these yourself so that you can easily insert your own custom functionality for your application.&nbsp; An example:<br><br>/// &lt;summary&gt;<br>/// Base class from which all objects are derived.<br>/// &lt;/summary&gt;<br>/// &lt;typeparam name="T"&gt;Type of the business object being defined.&lt;/typeparam&gt;<br>public abstract class ObjectBase&lt;T&gt; : Csla.BusinessBase&lt;T&gt;<br>&nbsp;&nbsp;&nbsp; where T: ObjectBase&lt;T&gt;<br>{<br>}<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Wednesday, June 13, 2007</h2><P>Your base class that inherits from CSLA is recommended.</P>
+<P>But maybe you shouldn't have the Save method in it.</P>
+<P>Joe</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>GEM replied on Wednesday, June 13, 2007</h2><P>Thank you both, Brian and Joe, for responding.</P>
+<P>Generics are a new beast to me, and they "dumbed me down" momentarily.</P>
+<P>GEM</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

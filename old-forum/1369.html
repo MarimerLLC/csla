@@ -1,0 +1,29 @@
+<html><header><title>NameValueList question</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>NameValueList question</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/1369.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Pradeep posted on Monday, October 02, 2006</h2><DIV>I have the following lookup items</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>Key&nbsp;&nbsp;&nbsp;Value</DIV>
+<DIV>----&nbsp;&nbsp;&nbsp;------</DIV>
+<DIV>10&nbsp;&nbsp;&nbsp;Open</DIV>
+<DIV>20&nbsp;&nbsp;&nbsp;InProcess</DIV>
+<DIV>30&nbsp;&nbsp;&nbsp;Completed</DIV>
+<DIV>40&nbsp;&nbsp;&nbsp;Terminated</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>I loaded this into NameValueList. But when I try to query the list by index, example MyList[20], it is not searching by the key. I am getting index out of range exception.I think that makes sense. </DIV>
+<DIV>&nbsp;</DIV>
+<DIV>So what I am doing is, inside my property's get method, I am using a for loop to loop through all the key's and see which key matches. Then get the index of that and find the value.</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>Just wondering if there is any other easy way (one line code), to do this. Also I am worried that looping through a list of 100 values everytime might be a performance issue.</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>Please let me know how you guy's do this. Is there more elegant way?</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>Thank You</DIV></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>malloc1024 replied on Monday, October 02, 2006</h2>
+
+<p class="MsoNormal">MyList[20]<span>&nbsp; </span>retrieves
+the 20 item<span>&nbsp; </span>in the list.<span>&nbsp; </span>You get an error because you only have 4 in
+your list.<span>&nbsp; </span>Yes, looping through the list
+is the appropriate way to handle this situation.<span>&nbsp; </span>An alterative is to use a hash table if you
+don’t want to loop.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Brian Criswell replied on Monday, October 02, 2006</h2>This is all the .NET framework does for its Find methods, so I would not worry about searching 100 items.&nbsp; If all you are doing is checking a single property each time through the list, you will blink and miss it finishing.&nbsp; I think you are going in a good direction with this.&nbsp; Make it work, then optimize it if you actually need to do so.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>xal replied on Monday, October 02, 2006</h2>NameValueLists have a "Value()" method that take the id as a parameter.<br><br>Like: myNvl.Value(someId).<br><br>Andrés<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Pradeep replied on Monday, October 02, 2006</h2><DIV>Thank You guy's.</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>Xal,</DIV>
+<DIV>I don't see a value property. I see valuelist property. But again, I am using 1.5 version. May be the value property is in 2.0 version.</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>Pradeep</DIV></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

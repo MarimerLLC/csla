@@ -1,0 +1,19 @@
+<html><header><title>hints needed for first project with WPF/SL, </title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>hints needed for first project with WPF/SL, </h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9835.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>vschaak posted on Monday, December 06, 2010</h2><p>Hi folks,</p>
+<p>currently and as a proof of concept project, we&#39;re planning to build a small app, based on an already launched winforms app that&#39;s business layer is created by using CSLA 3.8.2. Main goal is to proof, that by developing a business layer with a framework like CSLA, it&nbsp;can be reused for both, smart-client and web-apps. All that with exploring new UI-technology like WPF and/or SL. Both collegues newbies to both technologies, but with experience in winforms and ASP.net.</p>
+<p>1) is it wise to reuse the core of the layer already build, or should it be rebuild for SL/WPF-use?</p>
+<p>2) do we need two different versions of CSLA for SL AND WPF? (I&#39;m a little confused about &#39;CSLA for SL&#39; vs. &#39;CSLA for Windows&#39;)</p>
+<p>3) Any simple samples, esp. for SL as UI-technology?</p>
+<p>Where and how to start...?</p>
+<p>Thanks for pushing me/us into the right direction ;-)</p>
+<p>Volker</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Monday, December 06, 2010</h2><p>The&nbsp;</p>
+<p><a href="http://store.lhotka.net"></a>&nbsp;will answer these questions with examples (though that content is aging, the price is discounted too :) ).</p>
+<p>In general you should be able to reuse the existing business classes, though some types of code will be affected and you&#39;ll need to make adjustments.</p>
+<ol>
+<li>No data access code (DataPortal_XYZ) code can exist on the SL side - use #if !SILVERLIGHT statements to block that from builidng in SL</li>
+<li>Factory methods must be async on SL&nbsp;- sync factories aren&#39;t allowed - so add async factories and use #if !SILVERLIGHT to block out your sync factories</li>
+<li>All server interaction is async - this can affect your code in various ways, most notably in some business rules or any lazy loading</li>
+</ol>
+<p>In my experience, with well-designed object models to start with you&#39;ll have to tamper with only a small percentage of your existing code - mostly to block compilation of the DataPortal_XYZ and sync factory methods.</p>
+<p>You will need to build your classes twice - once for .NET and once for SL Your .NET class library will reference Csla.dll for .NET and your SL class library will reference Csla.dll for SL. You can use Visual Studio&#39;s &quot;file linking&quot; capability to easily get your code files to build into both projects.</p>
+<p>There are numerous samples in the CSLA samples download - SimpleApp, etc. Some are more complex, but some are about as simple as can be.</p>
+<p>&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

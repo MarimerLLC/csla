@@ -1,0 +1,26 @@
+<html><header><title>DataGridView Undo/Redo</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>DataGridView Undo/Redo</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/1267.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Sarosh posted on Tuesday, September 19, 2006</h2><P>Hi!</P>
+<P>Just started using CSLA 2.1 and need to create a simple Winform to maintain (Add/Delete/Save/ etc) lookup tables and allow n-level undo/redo functionality to it using a DataGridView Control</P>
+<P>How should I go about this.</P>
+<P>e.g. Have created two BO's</P>
+<P>1] Project : Csla.BusinessBase&lt;Project&gt;</P>
+<P>2] ProjectList : Csla.BusinessListBase&lt;ProjectList, Project&gt;</P>
+<P>3] _projectList = ProjectList.GetProjectList();</P>
+<P>4] BindingSource.DataSource = _projectList;</P>
+<P><FONT size=2><FONT size=3>5] DataGridView.DataSource = BindingSource</FONT>;</FONT></P>
+<P><FONT size=2><FONT size=3>6] Users can&nbsp;Add, Delete, Save, Undo, Redo in the DataGridView</FONT></FONT></P>
+<P><FONT size=2><FONT size=3>Undo/Redo should be able to handle not just changes in rows, columns but also handle New rows and Deleted rows. Is this possible?</FONT></FONT></P>
+<P><FONT size=2><FONT size=3>Any help will really help!</FONT></P></FONT>
+<P>Thanks.</P>
+<P>Sarosh</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, September 19, 2006</h2>So ProjectList is your root object, containing child Project objects?<br><br>This was just discussed in another thread, yesterday I think. You need to:<br><br><ol><li>Create an instance of ProjectList</li><li>Call BeginEdit on ProjectList</li><li>Set your bindingsource.DataSource to your ProjectList</li></ol><br>in that order!<br><br>Then in your Save click handler:<br><br><ol><li>Call bindingsource.EndEdit</li><li>Call ApplyEdit on your ProjectList</li><li>Call Save on your ProjectList</li><li>Rebind by using the steps in the first list</li></ol>
+<br>And in your Cancel click handler:<br><br><ol><li>Call bindingsource.CancelEdit</li><li>Call CancelEdit on your ProjectList</li><li>Rebind by using the steps in the first list</li></ol></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Sarosh replied on Tuesday, September 19, 2006</h2><P>Hi!</P>
+<P>&gt;&gt;So ProjectList is your root object, containing child Project objects?</P>
+<P>Yes it is the root object and contains child project objects.</P>
+<P>I understand Save and Cancel but what about code in the Undo and Redo click handlers?</P>
+<P>Sarosh</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Brian Criswell replied on Tuesday, September 19, 2006</h2>This has been discussed a bit in the past.&nbsp; I think the consensus was that you would need to maintain a separate stack for the undo and redo items.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Sarosh replied on Tuesday, September 19, 2006</h2><P>Hi!</P>
+<P>Not sure what you mean here but are you saying that I need another stack type object to handle this outside of&nbsp; my BO's ?</P>
+<P>Sarosh</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, September 19, 2006</h2>Ahh, I see. Yes, like Brian points out, this is outside the scope of CSLA, and there's another thread where some solutions were discussed (using the command design pattern as I recall).<br><br>CSLA can handle "undo" quite nicely. But there's no concept of "redo" at all. And even the "undo" isn't granular - it operates at a per-object level. See Chapter 3 for details.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Sarosh replied on Tuesday, September 19, 2006</h2><P>Hi!</P>
+<P>Thank you all for the info. this helped a lot.</P>
+<P>I will search for "command design pattern" to see what I can find.</P>
+<P>Thanks again.</P>
+<P>Sarosh</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

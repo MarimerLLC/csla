@@ -1,0 +1,18 @@
+<html><header><title>CslaDataSource + SortedBindingList + PagedDataSource = Confusion!</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CslaDataSource + SortedBindingList + PagedDataSource = Confusion!</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/1093.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>david.wendelken posted on Thursday, August 31, 2006</h2><P>I'm trying to add paging and sorting to a DataList control that is populated from a root collection on my ASP.Net page.</P>
+<P>Frankly, I'm confused, and I bet others are in the same boat (or will be once they try it :).</P>
+<P>I would dearly like to see a good example of how to do this, making appropriate usage of Session variables so that:</P>
+<OL>
+<LI>I don't have to re-query the database just to page or sort.</LI>
+<LI>I have full access to the actual business object collection in all event handlers without having to re-query the database.</LI>
+<LI>It doesn't forget the user's sorting choices when I do re-query the database.&nbsp; </LI>
+<LI>I don't have to re-sort the list every time I do a post-back.</LI>
+<LI>The VS Designer properly shows the object in design mode and knows what kind of properties are available.</LI>
+<LI>The page never loads the unpaged business object into the grid - not even during&nbsp;startup - because I have so many records that it would timeout.</LI>
+<LI>Placing the user on the correct page&nbsp;so that they see the same selected record as before they sorted the list would be a nicety, but I can do that myself. :)</LI></OL>
+<P>It seems like I need 3 session variables to hold each of the three objects (my bo collection, the sorted binding list and the paged data source).&nbsp; </P>
+<P>Do I pass the PagedDataSource into e.BusinessObject in the CslaDataSource OnSelect event handler?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>david.wendelken replied on Saturday, September 02, 2006</h2><P>Surely someone uses DataLists and wants to page them and let the user sort them?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, September 04, 2006</h2>Well it is clear that SortedBindingList is totally useless in this context. Since you don't ever have all the data in memory, you can't sort the data in memory - it can only be sorted within your data query.<br><br>That should reduce the confusion, since you are back to using just the CslaDataSource along with a standard collection base class - presumably with the CSLA 2.1 enhancement that supports paging through the IReportTotalRowCount interface.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>david.wendelken replied on Tuesday, September 05, 2006</h2><P>I've been storing my collection class contents, plus the sorted binding list, plus the paged list in separate session variables.&nbsp; I'm pretty sure it's working right... :)</P>
+<P>Frankly, it hurts my head to keep the whole mess straight in my head.</P>
+<P>I'm looking forward to trying the 2.1 version, but that will have to wait for the next release.</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

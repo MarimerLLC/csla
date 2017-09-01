@@ -1,0 +1,85 @@
+<html><header><title>Summary of Csla 3.5 stereotypes</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Summary of Csla 3.5 stereotypes</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/7631.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>tiago posted on Tuesday, September 15, 2009</h2><P><FONT face=Arial>The following list is plain obvious. I had to do it as I'm rewriting some codegen templates. I thought I might as well shared it. I'll post messages in this thread&nbsp;concerning the child and the parent viewpoints in a while.<BR></FONT></P>
+<P><FONT face=Arial>Csla 3.5 stereotypes</FONT></P>
+<P><FONT face=Arial><STRONG>Objects<BR></STRONG>- EditableRoot<BR>- EditableChild<BR>- EditableSwitchable<BR>- DynamicEditableRoot<BR>- ReadOnlyRoot<BR>- ReadOnlyChild</FONT></P>
+<P><FONT face=Arial><STRONG>Lists</STRONG><BR>- EditableRootList<BR>- EditableChildList<BR>- DynamicEditableRootList<BR>- ReadOnlyRootList<BR>- ReadOnlyChildList</FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tiago replied on Tuesday, September 15, 2009</h2><P><FONT face=Arial>The following list is plain obvious. I had to do it as I'm rewriting some codegen templates and I feel the templates should check parent child relations and warn the user about no sense combinations. I thought I might as well shared it. I'll post a message concerning the parent viewpoint in a while.</FONT></P>
+<P><FONT face=Arial>For each group of Csla stereotypes, I list the possible parents.</FONT></P>
+<P><FONT face=Arial size=5><STRONG>Objects</STRONG></FONT></P>
+<P><FONT face=Arial><STRONG>EditableRoot</STRONG><BR><STRONG>ReadOnlyRoot</STRONG><BR>parent type 1&nbsp;=&nbsp;no parent</FONT></P>
+<P><FONT face=Arial><STRONG>EditableChild</STRONG><BR><STRONG>EditableSwitchable</STRONG><BR>parent type 2&nbsp;= parent of editable objects and lists<BR>- EditableRoot<BR>- EditableChild<BR>- EditableSwitchable<BR>- DynamicEditableRoot<BR>- EditableRootList<BR>- EditableChildList</FONT></P>
+<P><FONT face=Arial><STRONG>ReadOnlyChild</STRONG><BR>parent type 3&nbsp;= parent of readonly objects and lists<BR>- EditableRoot<BR>- EditableChild<BR>- EditableSwitchable<BR>- DynamicEditableRoot<BR>- ReadOnlyRoot<BR>- ReadOnlyChild<BR>- EditableRootList<BR>- EditableChildList<BR>- ReadOnlyRootList<BR>- ReadOnlyChildList</FONT></P>
+<P><FONT face=Arial><STRONG>DynamicEditableRoot</STRONG><BR>parent type 4&nbsp;= parent of dynamic objects<BR>- DynamicEditableRootList</FONT></P>
+<P><BR><FONT face=Arial size=5><STRONG>Collections</STRONG></FONT></P>
+<P><FONT face=Arial><STRONG>EditableRootList</STRONG><BR><STRONG>DynamicEditableRootList</STRONG><BR><STRONG>ReadOnlyRootList</STRONG><BR>parent type 1&nbsp;=&nbsp;no parent</FONT></P>
+<P><FONT face=Arial><STRONG>EditableChildList</STRONG><BR>parent type 2&nbsp;= parent of editable objects and lists<BR>- EditableRoot<BR>- EditableChild<BR>- EditableSwitchable<BR>- DynamicEditableRoot<BR>- EditableRootList<BR>- EditableChildList</FONT></P>
+<P><FONT face=Arial><STRONG>ReadOnlyChildList</STRONG><BR>parent type 3&nbsp;= parent of readonly objects and lists<BR>- EditableRoot<BR>- EditableChild<BR>- EditableSwitchable<BR>- DynamicEditableRoot<BR>- ReadOnlyRoot<BR>- ReadOnlyChild<BR>- EditableRootList<BR>- EditableChildList<BR>- ReadOnlyRootList<BR>- ReadOnlyChildList</FONT></P>
+<P><FONT face=Arial>As you can see, there are only 4 types of parenthood:<BR>- no parent<BR>- parent of&nbsp;editable objects and lists<BR>- parent of readonly objects and lists<BR>- parent of&nbsp;dynamic objects</FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tiago replied on Tuesday, September 15, 2009</h2><P><FONT face=Arial>The following list is plain obvious. I had to do it as I'm rewriting some codegen templates and I feel the templates should check parent child relations and warn the user about no sense combinations. I thought I might as well shared it.</FONT></P>
+<P><FONT face=Arial>For each group of Csla stereotypes, I list the possible children.</FONT></P>
+<P><FONT face=Arial size=5><STRONG>Objects</STRONG></FONT></P>
+<P><FONT face=Arial><STRONG>EditableRoot</STRONG><BR><STRONG>EditableChild</STRONG><BR><STRONG>EditableSwitchable</STRONG><BR><STRONG>DynamicEditableRoot</STRONG><BR>child type 1 = child of editable object and list<BR>- EditableChild<BR>- EditableSwitchable<BR>- ReadOnlyChild<BR>- EditableChildList<BR>- ReadOnlyChildList</FONT></P>
+<P><FONT face=Arial><STRONG>ReadOnlyRoot</STRONG><BR><STRONG>ReadOnlyChild</STRONG><BR>child type 2 = child of readonly object and list<BR>- ReadOnlyChild<BR>- ReadOnlyChildList</FONT></P>
+<P><BR><FONT face=Arial size=5><STRONG>Collections</STRONG></FONT></P>
+<P><FONT face=Arial><STRONG>EditableRootList</STRONG><BR><STRONG>EditableChildList</STRONG><BR>child type 1 = child of editable object and list<BR>- EditableChild<BR>- EditableSwitchable<BR>- ReadOnlyChild<BR>- EditableChildList<BR>- ReadOnlyChildList</FONT></P>
+<P><FONT face=Arial><STRONG>ReadOnlyRootList</STRONG><BR><STRONG>ReadOnlyChildList</STRONG><BR>child type 2 = child of readonly object and list<BR>- ReadOnlyChild<BR>- ReadOnlyChildList</FONT></P>
+<P><FONT face=Arial><STRONG>DynamicEditableRootList</STRONG><BR>child type 3 = child of dynamic list<BR>- DynamicEditableRoot</FONT></P>
+<P><FONT face=Arial>As you can see, there are only&nbsp;3 types of childhood:<BR></FONT>- <FONT face=Arial>child of editable object and list</FONT><BR>- <FONT face=Arial>child of readonly object and list<BR>- child of dynamic list</FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tiago replied on Tuesday, September 15, 2009</h2><P>1. The DynamicEditableRoot family is always a case apart.</P>
+<P>2.&nbsp;Althought it makes no sense for a ReadOnly collection to have editable childs, how about an Editable collection having ReadOnly childs?</P>
+<P>3. Can a collection be the parent of another collection? Or if you put the other way around, can a collection be the child of another collection?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, September 15, 2009</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>tiago:</strong></div><div>
+<P>1. The DynamicEditableRoot family is always a case apart.</P>
+<P></div></BLOCKQUOTE></P>
+<P>Yes, they are a little different.</P>
+<P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>tiago:</strong></div><div></P>
+<P>2.&nbsp;Althought it makes no sense for a ReadOnly collection to have editable childs, how about an Editable collection having ReadOnly childs?</P>
+<P></div></BLOCKQUOTE></P>
+<P>I don't think this is possible - I think the constraint on C in BusinessListBase&lt;T,C&gt; requires the child to be editable.</P>
+<P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>tiago:</strong></div><div></P>
+<P>3. Can a collection be the parent of another collection? Or if you put the other way around, can a collection be the child of another collection?</P>
+<P></div></BLOCKQUOTE></P>
+<P>Not directly, no. The constraint on C in BusinessListBase&lt;T,C&gt; requires the child to be an editable child - basically a BusinessBase&lt;T&gt; subclass. so you must have intermediate objects between collections.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tiago replied on Wednesday, September 16, 2009</h2><FONT face=Arial>Thanks Rocky, I'll correct the above posts.</FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>david.wendelken replied on Friday, September 18, 2009</h2><P>re: 2.&nbsp;Althought it makes no sense for a ReadOnly collection to have editable childs, how about an Editable collection having ReadOnly childs?</P>
+<P>What if I, the programmer, do not want someone (even another programmer) to change which objects are in the list, just edit the objects that are in the list?</P>
+<P>What combination would I use then?&nbsp; (I've got that very situation coming up soon...)</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Friday, September 18, 2009</h2>I've done this.  You still use BLB and BB, you just override InsertItem, RemoveItem, and Clear so that they throw an exception when called.  You'll need a state flag though so that YOU can load the list on fetch though... so your InsertItem will need to check that flag to decide what to do.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, September 18, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>It is pretty simple &#8211; if you need to save changes, you need to
+inherit from BusinessBase or BusinessListBase. If you don&#8217;t need to save
+changes, you can inherit from the read-only base classes.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>The read-only base classes don&#8217;t support saving data, because
+they are read-only. If you want to save data, they are the wrong base classes
+for you.<o:p></o:p></span></p>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tiago replied on Saturday, November 28, 2009</h2><P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>tiago:</strong></div><div></P>
+<P>3. Can a collection be the parent of another collection? Or if you put the other way around, can a collection be the child of another collection?</P>
+<P></div></BLOCKQUOTE></P>
+<P>Not directly, no. The constraint on C in BusinessListBase&lt;T,C&gt; requires the child to be an editable child - basically a BusinessBase&lt;T&gt; subclass. so you must have intermediate objects between collections.</P>
+<P></div></BLOCKQUOTE></P>
+<P>This is an interesting point</P>
+<P>It's a fact that BusinessListBase childs must be EditableBusinessObject objects</P><FONT color=#0000ff size=2><FONT color=#0000ff size=2>
+<P><FONT face="Courier New">public</FONT></FONT></FONT><FONT face="Courier New"><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>abstract</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>class</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>BusinessListBase</FONT></FONT></FONT><FONT face="Courier New"><FONT size=2>&lt;T, C&gt; :<BR>Core.</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>ExtendedBindingList</FONT></FONT><FONT size=2>&lt;C&gt;, Core.</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>IEditableCollection</FONT></FONT><FONT size=2>, Core.</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>IUndoableObject</FONT></FONT><FONT size=2>, </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>ICloneable</FONT></FONT><FONT size=2>, </FONT><FONT size=2>Core.</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>ISavable</FONT></FONT><FONT size=2>, Core.</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>IParent</FONT></FONT><FONT size=2>, Server.</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>IDataPortalTarget</FONT></FONT><FONT size=2>, Core.</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>IPositionMappable</FONT></FONT><FONT size=2>&lt;C&gt;, </FONT></FONT><FONT face="Courier New"><FONT color=#2b91af size=2><FONT color=#2b91af size=2>INotifyBusy<BR></FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>where</FONT></FONT><FONT size=2> T : </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>BusinessListBase</FONT></FONT></FONT><FONT face="Courier New"><FONT size=2>&lt;T, C&gt;<BR></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>where</FONT></FONT><FONT size=2> C : Core.</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>IEditableBusinessObject</P></FONT></FONT></FONT>
+<P>It's also a fact that Csla doesn't restrict what kind of childs ReadOnlyListbBase can have</P><FONT color=#0000ff size=2><FONT color=#0000ff size=2>
+<P><FONT face="Courier New">public</FONT></FONT></FONT><FONT face="Courier New"><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>abstract</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>class</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>ReadOnlyListBase</FONT></FONT></FONT><FONT face="Courier New"><FONT size=2>&lt;T, C&gt; : <BR>Core.</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>ReadOnlyBindingList</FONT></FONT><FONT size=2>&lt;C&gt;, Csla.Core.</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>IReadOnlyCollection</FONT></FONT><FONT size=2>, </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>ICloneable</FONT></FONT><FONT size=2>, Server.</FONT></FONT><FONT face="Courier New"><FONT color=#2b91af size=2><FONT color=#2b91af size=2>IDataPortalTarget<BR></FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>where</FONT></FONT><FONT size=2> T : </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>ReadOnlyListBase</FONT></FONT><FONT size=2>&lt;T, C&gt;</P></FONT></FONT>
+<P>This opens space for having ReadOnlyLists child of a ReadOnlyList. Does it work? Are there problems waiting to be discovered?</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Saturday, November 28, 2009</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>tiago:</strong></div><div>
+<P>This opens space for having ReadOnlyLists child of a ReadOnlyList. Does it work? Are there problems waiting to be discovered?</P>
+<P></div></BLOCKQUOTE></P>
+<P>Probably not from CSLA - though I guess on the Silverlight side you'd need to test MobileFormatter to see if it can handle that combination.</P>
+<P>ROLB doesn't restrict the child type, because you could, if you wanted, use a simple read-only POCO as a child. I used to do that quite a lot before SL came out. Now it isn't realistic, because your object must, at least, inherit from MobileObject - and it is just simpler to inherit from ReadOnlyBase at all times... (to get the automatic serialization with MobileFormatter)</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

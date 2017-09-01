@@ -1,0 +1,128 @@
+<html><header><title>Changing from Private to Managed Backing Fields</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Changing from Private to Managed Backing Fields</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6383.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Peran posted on Monday, February 09, 2009</h2>I would like to change some BB objects with registered properties from private backing fields to managed backing fields with the least amount of effort!<br><br>I would like to canvass option on the following solution:<br><br>I start with a registered property using a private backing field<br><br><font face="Courier New">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; private static PropertyInfo&lt;string&gt; nameProperty = RegisterProperty(new PropertyInfo&lt;string&gt;("Name"));<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; private string name = nameProperty.DefaultValue;<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public string Name<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; get<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return GetProperty(nameProperty, this.name);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; set<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; SetProperty(nameProperty, ref this.name, value);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br></font><br>and convert the private backing field to a private property which wraps up the ReadProperty &amp; LoadProperty functions.<br><br><font face="Courier New">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; private static PropertyInfo&lt;string&gt; nameProperty = RegisterProperty(new PropertyInfo&lt;string&gt;("Name"));<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // replace private backing field with private property<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; private string name<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; get<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return ReadProperty(nameProperty);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; set<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; LoadProperty(nameProperty, value);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public string Name<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; get<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return GetProperty(nameProperty);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; set<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; SetProperty(nameProperty, value);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br></font><br>by doing this I now do not need to change any validation rules or data portal code i.e. the following code replacement do *not* need to be done.<br><br>Valiadtion Rule<br><br><font face="Courier New">if(ExistsCommand.Exists(target.name))<br>if(ExistsCommand.Exists(target.ReadProperty(nameProperty)))<br></font><br>DataPortal_Fetch<br><br><font face="Courier New">this.name = dr.GetString("Name")<br>LoadProperty(nameProperty, dr.GetString("Name"))<br></font><br>DataPortal_Insert<br><br><font face="Courier New">cm.Parameters.AddWithValue("Name", this.name)<br>cm.Parameters.AddWithValue("Name", ReadProperty(nameProperty))<br></font>
+<br>I also prefer the syntax 'this.name' rather than 'this.ReadProperty(nameProperty)' etc.<br><br>I'm sure you have an opinion why I should not do this! but I would be interested in the reasons.<br><br><br>Peran<br>
+<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, February 10, 2009</h2><P>If you access a property directly, you trigger any authorization and validation rules in the get/set code.</P>
+<P>ReadProperty() bypasses the authz check that occurs in GetProperty() (and thus your get block).</P>
+<P>LoadProperty() bypasses the authz and business rules that are run in SetProperty() (and thus in your set block).</P>
+<P>You can use the BypassPropertyChecks object to cause GetProperty() and SetProperty() to work like ReadProperty() and LoadProperty():</P>
+<BLOCKQUOTE dir=ltr>
+<P>using (this.BypassPropertyChecks)<BR>{<BR>&nbsp; var tmp = this.Name;<BR>&nbsp; this.Name = "value";<BR>}</P></BLOCKQUOTE>
+<P>Obviously if you switch to a managed backing field, you can't access the field directly at all, because the field no longer exists. So you must access either the property, or the managed field through the helper methods.</P>
+<P>You do not need to switch to using managed backing fields. They exist primarily to support code in Silverlight (and probably Azure, Compact Framework and other lower trust scenarios in the future). So I think you <EM>should</EM> consider using managed backing fields, as they'll make your life better in the future - but if you really can't stomach the idea, you don't need to use them.</P>
+<P>And even if you stick with private backing fields, you can still use Silverlight, etc. You just need to write OnGetState() and OnSetState() methods in every one of your classes to get/set the private field values into the serialization byte stream. That's a total pain, but it isn't hard code, and if you are using code-gen it is a non-issue.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Peran replied on Wednesday, February 11, 2009</h2>Thanks for the advice, I am switching based on the your recommendations in chapter 7 with automatic serialization for Silverlight in mind.<br><br>The ByPassPropertyChecks looks like a good option.<br><br><br>Regards<br><br>Peran<br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>daniel_higgins replied on Thursday, February 12, 2009</h2><P>Hi Peran, I'm not sure that I understand Rocky's response. What you're doing is the same as what I have done, except that instead of using "name" as the private property, I use "_Name". Just like you have suggested, I put calls to ReadProperty and LoadProperty in this private property. My public "Name" property hits GetProperty and SetProperty. It *appears* to work for me.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, February 12, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>You can absolutely still use private backing fields. That is
+totally supported. And it has better performance than managed backing fields.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Where you&#8217;ll run into trouble is if you try to move to
+Silverlight (and probably to Azure, Compact Framework or other security-restricted
+scenarios). The reason is that in those environments reflection is limited or
+doesn&#8217;t work at all. And so in those environments there is no
+BinaryFormatter or NetDataContractSerializer, nor can one be created.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>This means there&#8217;s no automated way to get at private
+fields in a class.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>CSLA .NET for Silverlight includes the MobileFormatter. We wrote
+this to enable serialization of objects to/from Silverlight. Obviously we did
+this without using reflection, because that&#8217;s not available.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>If you use managed backing fields, MobileFormatter can do all
+the work for you &#8211; serialization just works.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>If you use private backing fields, you need to write two methods
+in every class to help the MobileFormatter. You need to write a method that
+takes the values from your private fields and puts them into the serialization
+stream. And you need to write a method that takes the values from the
+deserialization stream and puts them into your private fields.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>If you did any VB5 or VB6 you may have worked with the PropertyBag.
+This is the same model. Or if you&#8217;ve ever manually implemented
+ISerializable in .NET, this is the same model.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>It is OK to do this &#8211; it is just a bunch of boring grunt
+work, and is the type of code that&#8217;s easy to get wrong (add a new field,
+and forget to update the two methods and you have a hard to find/debug bug).<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>If you never move to Silverlight, Azure or other future
+technologies, you won&#8217;t care. Or if you use code generation you probably
+don&#8217;t care, because your template can generate these methods.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Personally I have taken to using managed backing fields, and
+only fall back to private backing fields if absolutely necessary (which hasn&#8217;t
+actually happened yet).<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky</span><o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>daniel_higgins replied on Thursday, February 12, 2009</h2><P>Hey Rocky,</P>
+<P>I really love the managed fields, "like my absolutely favorite recent change". But I think we've been talking about different things. I meant private PROPERTIES that wrap the calls to ReadProperty and LoadProperty -- for use with managed fields. I use resharper live templates to generate these, and it makes it much easier for my little brain to deal with the data access code. </P>
+<P>Thanks</P>
+<P>Daniel.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, February 12, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Oh, I see.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>There should be no problem doing that &#8211; seems like a good
+idea to me.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky</span><b><span><o:p></o:p></span></b></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Peran replied on Wednesday, February 18, 2009</h2>Hi Daniel,<br><br>It's encouraging to hear that someone else is using the technique :-)<br><br><br>Peran<br><br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

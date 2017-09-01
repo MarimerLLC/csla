@@ -1,0 +1,27 @@
+<html><header><title>Partial Trust Caller</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Partial Trust Caller</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/1529.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>MadGerbil posted on Wednesday, October 18, 2006</h2><P>I've got a solution that has a web project and a business object library (vb) - both projects are within the same solution.&nbsp;&nbsp; The business object library references the CSLA library (csla.dll, csla.serializer.dll) which are compiled and sitting on my workstation.&nbsp; (I don't include CSLA in my solution).</P>
+<P>Now then, in my web application I've decided to tighten up security a wee bit by setting the &lt;trust level="Medium"&gt;.&nbsp; When my application tries to call my business object library (which is signed) it complained at first that the assembly doesn't allow partial trust callers so I gave my assembly the &lt;assembly: AllowPartialTrustCallers()&gt; attribute.</P>
+<P>However, when the code gets down into the CSLA library it still throws this error - I put the &lt;assembly: AllowPartialTrustCallers()&gt; onto the CSLA library itself but I get the error yet again in LocalProxy.vb.&nbsp;&nbsp; The line in red is what blows up.</P><FONT color=#0000ff size=2>
+<P>Namespace</FONT><FONT size=2> DataPortalClient</P>
+<P></FONT><FONT color=#008000 size=2>''' &lt;summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#008000 size=2>''' Implements a data portal proxy to relay data portal</P></FONT><FONT size=2>
+<P></FONT><FONT color=#008000 size=2>''' calls to an application server hosted locally </P></FONT><FONT size=2>
+<P></FONT><FONT color=#008000 size=2>''' in the client process and AppDomain.</P></FONT><FONT size=2>
+<P></FONT><FONT color=#008000 size=2>''' &lt;/summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Class</FONT><FONT size=2> LocalProxy</P>
+<P></FONT><FONT color=#0000ff size=2>Implements</FONT><FONT size=2> DataPortalClient.IDataPortalProxy</P>
+<P></FONT><FONT color=#0000ff size=2>Private</FONT><FONT size=2> mPortal </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> Server.IDataPortalServer = _</P>
+<P></FONT><FONT color=#0000ff size=2>New</FONT><FONT size=2> Server.DataPortal</P>
+<P></FONT><FONT color=#008000 size=2>......... &lt;snip&gt; .......</P></FONT>
+<P><FONT color=#008000 size=2></P></FONT><FONT size=2>
+<P></FONT>
+<P><FONT color=#008000 size=2></P></FONT><FONT size=2></FONT><FONT color=#0000ff size=2>Public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Function</FONT><FONT size=2> Fetch( _
+<P></P>
+<P></FONT><FONT color=#0000ff size=2>ByVal</FONT><FONT size=2> objectType </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> Type, _</P>
+<P></FONT><FONT color=#0000ff size=2>ByVal</FONT><FONT size=2> criteria </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Object</FONT><FONT size=2>, _</P>
+<P></FONT><FONT color=#0000ff size=2>ByVal</FONT><FONT size=2> context </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> Server.DataPortalContext) </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> Server.DataPortalResult _</P>
+<P></FONT><FONT color=#0000ff size=2>Implements</FONT><FONT size=2> Server.IDataPortalServer.Fetch</P>
+<P></FONT><FONT color=#ff0000 size=2>Return</FONT><FONT size=2><FONT color=#ff0000> mPortal.Fetch(objectType, criteria, context)</FONT></P>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Function</P></FONT>
+<P>IS there a way for me to get this to work with medium level of trust?&nbsp; I'd like to use the medium level of trust and have my .dlls signed.&nbsp; Is there another assembly that needs the &lt;assembly: AllowPartialTrustCallers&gt; attribute?</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Wednesday, October 18, 2006</h2>I believe that Csla requires full trust, because the dataportal requires the use of reflection, which requires full trust.&nbsp; I don't think there's anyway around this.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>MadGerbil replied on Wednesday, October 18, 2006</h2><P>Egad!</P>
+<P>Well, I suppose I could set up a custom trust level - but what a pain in the *** that is!</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Wednesday, October 18, 2006</h2>I've updated the faq to include this question.&nbsp; Please see the Faq, and you can find a link to the thread that explains what the problems are in detail.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>MadGerbil replied on Wednesday, October 18, 2006</h2>Many thanks.</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

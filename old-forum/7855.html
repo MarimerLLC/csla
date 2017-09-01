@@ -1,0 +1,54 @@
+<html><header><title>RE: Linq2CSLA:  Group By Into not working inBusinessListBase</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>RE: Linq2CSLA:  Group By Into not working inBusinessListBase</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/7855.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>amselem posted on Friday, October 23, 2009</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>AFAIK there&#8217;s no resolution, but you could workaround using &nbsp;this
+syntax:<o:p></o:p></span></p>
+
+<p class=MsoPlainText><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoPlainText><span>Dim MyGroupedData = (From lin In
+MyBusinessListBase). _<o:p></o:p></span></p>
+
+<p class=MsoPlainText><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; GroupBy(Function(x)(x.PKey))<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>De:</span></b><span> MikeH
+[mailto:cslanet@lhotka.net] <br>
+<b>Enviado el:</b> viernes, 23 de octubre de 2009 1:30<br>
+<b>Para:</b> Jacobo Amselem<br>
+<b>Asunto:</b> Re: [CSLA .NET] Linq2CSLA: Group By Into not working in
+BusinessListBase<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Having same issue ... is there any resolution? Thanks<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

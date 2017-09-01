@@ -1,0 +1,6 @@
+<html><header><title>Lazyload byte[] property</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Lazyload byte[] property</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9811.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Kevin Fairclough posted on Monday, November 29, 2010</h2><p>Hi,</p>
+<p>Has anyone implemented a lazy load property that is not a Csla type (in this case byte[]). &nbsp;Is the best approach to use a Command object?</p>
+<p>TIA</p>
+<p>Kevin</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Monday, November 29, 2010</h2><p>If it is just a load (just retrieving the value) then I&#39;d use a ReadOnlyBase object to do the retrieval. ROB is slightly less overhead across the network than a CommandBase object.</p>
+<p>Either would work though.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

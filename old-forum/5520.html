@@ -1,0 +1,99 @@
+<html><header><title>UI doesn't refresh with calculated fields in silverlight</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>UI doesn't refresh with calculated fields in silverlight</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5520.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>almostchristian posted on Thursday, October 02, 2008</h2><font size="2" face="Tahoma">I've been working in a project with silverlight that has a BO with a calculated field derived from its own fields and another BO with a calculated field that comes from a BusinessList. In the latter BO, the Performance from its children is tallied to give the overall performance.<br><br>The problem comes in with silverlight. The UI doesn't refresh the controls bound to the calculated field whenever the fields that the calculated field depends on is changed. To solve the problem with the first BO, I created a managed CSLA property to hold the calculated value, and update it when the fields it depends on changed. It doesn't look natural, and if I'm not careful, bugs might creep in but it works.<br><br>For the second BO with a BusinessList, I also created another managed property to hold the value but in addition, I needed to override the CopyStateCompleted and added this code:</font><br><br><font size="2" face="Courier New">protected override void CopyStateCompleted()<br>{<br>&nbsp;&nbsp; base.CopyStateCompleted;<br>&nbsp;&nbsp; SuccessFactors.ChildChanged +=<br>&nbsp; &nbsp; &nbsp;&nbsp; (sender, e) =&gt; SetProperty&lt;decimal&gt;(PerformanceProperty, SuccessFactors.Performance) ;<br>}</font><br><font size="2" face="Tahoma"><br>Again, it works well, the UI now updates, but it is not really intuitive. <br>Is there a better way to achieve the same effect?</font><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Friday, October 03, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Just a thought&#8230;&nbsp; Could you have a read only property MyCalcField
+&nbsp;that does the calculations on the fly and simply raise PropertyChanged
+event for it when underlying data changes?&nbsp; For example, if a child in the
+list changes and you need to refresh that field in the root object, you can
+call this.Parent.Parent.RefreshCalculatedField where RefreshCalculatedField has
+OnPropertyChanged(&#8220;MyCalcField&#8221;)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> almostchristian
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Friday, October 03, 2008 2:08 AM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> [CSLA .NET] UI doesn't refresh with calculated fields in
+silverlight<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal><span>I've
+been working in a project with silverlight that has a BO with a calculated
+field derived from its own fields and another BO with a calculated field that
+comes from a BusinessList. In the latter BO, the Performance from its children
+is tallied to give the overall performance.<br>
+<br>
+The problem comes in with silverlight. The UI doesn't refresh the controls
+bound to the calculated field whenever the fields that the calculated field
+depends on is changed. To solve the problem with the first BO, I created a
+managed CSLA property to hold the calculated value, and update it when the
+fields it depends on changed. It doesn't look natural, and if I'm not careful,
+bugs might creep in but it works.<br>
+<br>
+For the second BO with a BusinessList, I also created another managed property
+to hold the value but in addition, I needed to override the CopyStateCompleted
+and added this code:</span><br>
+<br>
+<span>protected override
+void CopyStateCompleted()<br>
+{<br>
+&nbsp;&nbsp; base.CopyStateCompleted;<br>
+&nbsp;&nbsp; SuccessFactors.ChildChanged +=<br>
+&nbsp; &nbsp; &nbsp;&nbsp; (sender, e) =&gt;
+SetProperty&lt;decimal&gt;(PerformanceProperty, SuccessFactors.Performance) ;<br>
+}</span><br>
+<span><br>
+Again, it works well, the UI now updates, but it is not really intuitive. <br>
+Is there a better way to achieve the same effect?</span><br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>almostchristian replied on Friday, October 03, 2008</h2>I can't believe I totally missed the OnPropertyChanged method. Silly me. Thanks, it works great now. <br />I am however gonna stick with attaching a handler to the ChildChanged event. Walking up the parent-child hierarchy doesn't seem right to me</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, October 03, 2008</h2><P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>almostchristian:</strong></div><div></P>
+<P><FONT face=Tahoma size=2>The problem comes in with silverlight. The UI doesn't refresh the controls bound to the calculated field whenever the fields that the calculated field depends on is changed. To solve the problem with the first BO, I created a managed CSLA property to hold the calculated value, and update it when the fields it depends on changed. It doesn't look natural, and if I'm not careful, bugs might creep in but it works.<BR></FONT></div></BLOCKQUOTE></P>
+<P>XAML data binding (in WPF and Silverlight) handles the PropertyChanged event differently from Windows Forms.</P>
+<P>In Windows Forms, a PropertyChanged event causes all bound elements to refresh.</P>
+<P>In WPF and Silverlight, a PropertyChanged event causes elements bound <EM>only to the specified property</EM> to refresh.</P>
+<P>In CSLA .NET for Windows there's a configuration switch you need to set to tell CSLA to work in "XAML mode". In CSLA .NET for Silverlight it only works in XAML mode obviously.</P>
+<P>But if you have calculated properties that are bound to a XAML UI, you need to make sure a PropertyChanged event is raised for those calculated properties, or data binding won't refresh the UI.</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

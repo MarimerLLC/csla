@@ -1,0 +1,180 @@
+<html><header><title>Help with first background thread in SL</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Help with first background thread in SL</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/7765.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jack posted on Sunday, October 11, 2009</h2><P>I have a validation routine that I want to fire when triggering a rowChanged in a Master/Detail scenario.&nbsp; I haven't done this before so I was looking for some advice before I wasted half a day I don't have playing around.</P>
+<P>I'm also not entirely sure if I have to worry about the UI thread or not.&nbsp; Basically I want to do this:</P>
+<P>event RowChanging(){</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp; DoBackground -&gt; CurrentMasterRowBO.ValidateChildData( )</P>
+<P>}</P>
+<P>The Validation of ChildData will call OnPropertyChanged for properties that are databound.&nbsp; Does this mean that this can only run on the UI thread?</P>
+<P>Is this a possible CSLA enhancement -&gt; BO.RunBackGroundMethod("ValidateChildData")?</P>
+<P>Thanks</P>
+<P>jack</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jack replied on Sunday, October 11, 2009</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I think I also want to refresh a bunch of calculated properties
+on the master record as I traverse and enter data on the child rows.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>For example I have a counter of # of invalid records.&nbsp; That
+changes with each modification of child data.&nbsp; I really want the user to be
+able to zip through all the child records doing their data entry as fast as
+possible but when they stop and look up at the monitor they can see the latest
+status (or only wait a few milliseconds until its updated).<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>The ideal solution would be something where I kick off the
+master record refresh and if it isn't completed the next time it is called then
+I abandon and start over as the data is already stale.&nbsp; I know I currently have
+too many linked pieces firing that is slowing it down so there can be a visual
+pause when tabbing from one field to another so I'm trying to streamline that
+but I think pushing all that processing onto another thread would be useful.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Thanks<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Jack [mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> October-11-09 9:13 AM<br>
+<b>To:</b> jaddington@alexandergracie.com<br>
+<b>Subject:</b> [CSLA .NET] Help with first background thread in SL<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>I have a validation routine that I want to fire when triggering a rowChanged
+in a Master/Detail scenario.&nbsp; I haven't done this before so I was looking
+for some advice before I wasted half a day I don't have playing around.<o:p></o:p></p>
+
+<p>I'm also not entirely sure if I have to worry about the UI thread or
+not.&nbsp; Basically I want to do this:<o:p></o:p></p>
+
+<p>event RowChanging(){<o:p></o:p></p>
+
+<p>&nbsp;&nbsp;&nbsp;&nbsp; DoBackground -&gt;
+CurrentMasterRowBO.ValidateChildData( )<o:p></o:p></p>
+
+<p>}<o:p></o:p></p>
+
+<p>The Validation of ChildData will call OnPropertyChanged for properties that
+are databound.&nbsp; Does this mean that this can only run on the UI thread?<o:p></o:p></p>
+
+<p>Is this a possible CSLA enhancement -&gt;
+BO.RunBackGroundMethod(&quot;ValidateChildData&quot;)?<o:p></o:p></p>
+
+<p>Thanks<o:p></o:p></p>
+
+<p>jack<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, October 12, 2009</h2><P>CSLA .NET 3.6 and higher does support async validation rules. Not business rules though, just validation rules.</P>
+<P>You create an async rule method and add it to a property just like you do with a regular rule method. The difference is that the async rule methods are executed (potentially) on a background thread. All results are automatically marshalled back onto the UI thread for display to the user, and there's a property-level IsBusy concept so you can enable/disable a per-property busy animation in the UI (PropertyStatus does this automatically).</P>
+<P>If you need a business rule (so the rule changes the state of the business object) then things are a lot harder, because CSLA .NET isn't threadsafe, and your business objects aren't threadsafe, and Silverlight's UI model isn't threadsafe.</P>
+<P>In other words, writing a method that runs on a background thread that alters the state of a business object is extremely non-trivial. First you need to figure out a way to lock the business object so no other thread (including the UI) can interact with it. Second you need to figure out a way to block any events from being raised that might flow to the UI. Third, you need some way to accumulate a list of everything that did change, so you can marshall something back to the UI thread at the end of the process so the UI actually refreshes to show your changes.</P>
+<P>None of this is easy to do - not necessarily even possible - which is why async rules are validation-only, and operate against a copy (snapshot) of the property values to be validated.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jack replied on Monday, October 12, 2009</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Thanks Rocky,<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>That sounds basically like the 'don't bother' I thought might
+come out of it.&nbsp; A lot of the things I am doing are more validation rules so
+maybe once I've streamlined my process a bit more I'll see if plugging in some
+validation rules helps or not.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> RockfordLhotka [mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> October-12-09 10:35 AM<br>
+<b>To:</b> jaddington@alexandergracie.com<br>
+<b>Subject:</b> Re: [CSLA .NET] Help with first background thread in SL<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>CSLA .NET 3.6 and higher does support async validation rules. Not business
+rules though, just validation rules.<o:p></o:p></p>
+
+<p>You create an async rule method and add it to a property just like you do
+with a regular rule method. The difference is that the async rule methods are
+executed (potentially) on a background thread. All results are automatically
+marshalled back onto the UI thread for display to the user, and there's a
+property-level IsBusy concept so you can enable/disable a per-property busy
+animation in the UI (PropertyStatus does this automatically).<o:p></o:p></p>
+
+<p>If you need a business rule (so the rule changes the state of the business
+object) then things are a lot harder, because CSLA .NET isn't threadsafe, and
+your business objects aren't threadsafe, and Silverlight's UI model isn't
+threadsafe.<o:p></o:p></p>
+
+<p>In other words, writing a method that runs on a background thread that
+alters the state of a business object is extremely non-trivial. First you need
+to figure out a way to lock the business object so no other thread (including
+the UI) can interact with it. Second you need to figure out a way to block any
+events from being raised that might flow to the UI. Third, you need some way to
+accumulate a list of everything that did change, so you can marshall something
+back to the UI thread at the end of the process so the UI actually refreshes to
+show your changes.<o:p></o:p></p>
+
+<p>None of this is easy to do - not necessarily even possible - which is why
+async rules are validation-only, and operate against a copy (snapshot) of the
+property values to be validated.<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,14 @@
+<html><header><title>How can I get the CurrentItem of CollectionViewSource in SL ?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>How can I get the CurrentItem of CollectionViewSource in SL ?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9602.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>HK.Lee posted on Tuesday, October 05, 2010</h2><p>Hi all,</p>
+<p>I&#39;m using CollectionViewSource as in the MVVM Video series as such;</p>
+<p>&lt;CollectionViewSource x:Key=&quot;basicDataLayoutViewModelViewSource&quot; d:DesignSource=&quot;{d:DesignInstance my:BasicDataLayoutViewModel, CreateList=True}&quot; /&gt;</p>
+<p>.</p>
+<p>&lt;Grid x:Name=&quot;LayoutRoot&quot; DataContext=&quot;{Binding Source={StaticResource basicDataLayoutViewModelViewSource}}&quot;&gt;</p>
+<p>My controller class knows view , but don&#39;t know how &nbsp;to extract&nbsp; CurrentItem of &nbsp;CollectionViewSource,which is actually binded viewmodel from known view.&nbsp;&nbsp;It looks simple at first but makes me scratching my head.</p>
+<p>Thank you in advance.</p>
+<p>HK.lee</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, October 05, 2010</h2><p>In XAML it is {Binding Path=CurrentItem} or (WPF only) {Binding Path=/}.</p>
+<p>In code it is harder if I remember right, as you need to cast the CVS to an underlying interface type to get at the CurrentItem property.</p>
+<p>But your viewmodel should never contain such code - because that would create a strongly typed awareness of the view from the viewmodel - bad!</p>
+<p>So you are better off having a property on your viewmodel called CurrentItem (or something like that), and binding it to the current item using a binding expression in the XAML.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>HK.Lee replied on Wednesday, October 06, 2010</h2><p>Thank you for your reply, Rocky.</p>
+<p>As I&#39;m using MEF in this case,&nbsp;my controller class &nbsp;can&nbsp;grab related viewmodel&nbsp;from active view in region and can dynamically set CanXXX state of toolbar button.&nbsp;&nbsp;I think I have to&nbsp;understand deeper regarding collectionviewsource and currentitem.&nbsp;&nbsp;</p>
+<p>Thank you.</p>
+<p>HK.Lee&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

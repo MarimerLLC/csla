@@ -1,0 +1,11 @@
+<html><header><title>CSLA &amp; SQL 2008 Table Value Parameters</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA &amp; SQL 2008 Table Value Parameters</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/8569.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Phlar posted on Tuesday, February 23, 2010</h2><p>Hi All,</p>
+<p>I am attempting to utilize Table Value Parameters in SQL Server 2008 with the CSLA Name/Value Pair object(s) but am receiving an error from SQL Server when calling a stored procedure.</p>
+<p>Is this the correct object to use?&nbsp; I&#39;ve also attempted utilizing a Dictionary object to no avail.&nbsp; The only success I&#39;ve seen is manually iterating through the Name/Value pairs and populating DataRows in a DataTable and passing that to the stored procedure.</p>
+<p>Any suggestions would be appreciated.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Marjon1 replied on Wednesday, February 24, 2010</h2><p>I don&#39;t think the table valued parameters will work with any standard CSLA object.</p>
+<p>The only option like you&#39;ve done is to create a data-table and populate it yourself, I&#39;ve yet to see an example of where this wasn&#39;t used with TVP&#39;s.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>bniemyjski replied on Thursday, February 25, 2010</h2><p>
+<p>Hello,</p>
+<p>What error are you getting when working with the TVP?</p>
+<p>Thanks</p>
+<p>-Blake Niemyjski</p>
+<div></div>
+</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

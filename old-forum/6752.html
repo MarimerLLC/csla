@@ -1,0 +1,341 @@
+<html><header><title>CSLA Light &amp; Lazy Loading</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA Light &amp; Lazy Loading</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6752.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>CampbellCM posted on Tuesday, April 07, 2009</h2>Is it possible to do lazy loading of child objects with CSLA Light?&nbsp; If so, is there an example of how to do that?</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, April 07, 2009</h2><P>Sergey may be able to point to an example.</P>
+<P>But you should know that it is a little tricky due to the async nature of Silverlight. You can't do lazy loading like you would in .NET.</P>
+<P>Consider this:</P>
+<P>public ListType ChildList<BR>{<BR>&nbsp; get<BR>&nbsp; {<BR>&nbsp;&nbsp;&nbsp; if (!FieldManager.FieldExists(ChildListProperty))<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; LazyLoadChildList();<BR>&nbsp;&nbsp;&nbsp; return GetProperty(ChildListProperty);<BR>&nbsp; }<BR>}<BR><BR>private void LazyLoadChildList()<BR>{<BR>&nbsp; ListType.GetList(this.Id, (o, e) =&gt;<BR>&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; LoadProperty(ChildListProperty, e.Object);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; OnPropertyChanged(ChildListProperty.Name);<BR>&nbsp;&nbsp;&nbsp; });<BR>}</P>
+<P>This is pseudocode from memory, but it should be pretty close. The thing I want you to consider is that the first code that tries to access the ChildList property will almost certainly get a null. Then some time late (seconds?) the actual child list will arrive on the client, and the ChildList property will start returning a non-null value.</P>
+<P>So the calling code (probably the UI or View) will need to be able to handle getting a null first, and then getting the real value later.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>CampbellCM replied on Tuesday, April 07, 2009</h2><P>Thanks Rocky, that helps a lot.</P>
+<P>I'm hung up on one thing though.&nbsp; If I'm understanding this correctly the call to OnPropertyChanged is intended to provide a notification that will force a refresh in the UI/View.&nbsp; Is that correct?&nbsp; The problem is that there is no OnPropertyChanged method available and I'm at a loss as to what would be the equivalent.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Tuesday, April 07, 2009</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Here
+is an example of lazy loaded property in Silverlight.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>private</span><span> <span>bool</span>
+_loadingScore = <span>false</span>;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span>private</span> <span>static</span> <span>PropertyInfo</span>&lt;<span>Score</span>&gt;
+ScoreInfoProperty = RegisterProperty(<span>new</span> <span>PropertyInfo</span>&lt;<span>Score</span>&gt;(<span>&quot;ScoreInfo&quot;</span>, <span>&quot;ScoreInfo&quot;</span>));<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span>public</span> <span>Score</span>
+ScoreInfo<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span>get<o:p></o:p></span></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+{<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span>if</span> (!_loadingScore &amp;&amp;
+(!FieldManager.FieldExists(ScoreInfoProperty) || ReadProperty(ScoreInfoProperty)
+== <span>null</span>))<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+{<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>#if</span><span> SILVERLIGHT<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+_loadingScore = true;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Score.GetScore(ReadProperty(ProfileIDProperty),
+ReadProperty(PersonNameProperty), ReadProperty(NicknameProperty), ReadProperty(TeamIDProperty),((TeamMemberInfoList)this.Parent).ParentTeam.Name,
+(o, e) =&gt;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+{<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+LoadProperty(ScoreInfoProperty, e.Object);<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+OnPropertyChanged(ScoreInfoProperty.Name);<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+_loadingScore = false;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+}<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+);<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>#else<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+LoadProperty(ScoreInfoProperty, <span>Score</span>.GetScore(ReadProperty(ProfileIDProperty),
+ReadProperty(PersonNameProperty), ReadProperty(NicknameProperty),
+ReadProperty(TeamIDProperty), ((<span>TeamMemberInfoList</span>)<span>this</span>.Parent).ParentTeam.Name));<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>#endif<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+}<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span>return</span> GetProperty(ScoreInfoProperty);<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+}<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+}</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> CampbellCM
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Tuesday, April 07, 2009 10:40 AM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] CSLA Light &amp; Lazy Loading<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Thanks Rocky, that helps a lot.<o:p></o:p></p>
+
+<p>I'm hung up on one thing though.&nbsp; If I'm understanding this correctly
+the call to OnPropertyChanged is intended to provide a notification that will
+force a refresh in the UI/View.&nbsp; Is that correct?&nbsp; The problem is
+that there is no OnPropertyChanged method available and I'm at a loss as to
+what would be the equivalent.<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>CampbellCM replied on Tuesday, April 07, 2009</h2><P>Thanks Sergey.</P>
+<P>I realize now what my problem is.&nbsp; My BO is RO and that's why I don't have an OnPropertyChanged method.&nbsp; Aside from changing my BO to RW from RO is there anything else I can do?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, April 07, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>You could copy the INotifyPropertyChanged implementation from
+BindableBase into your business class.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>CampbellCM replied on Thursday, April 09, 2009</h2>Thanks Rocky.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Andreas replied on Tuesday, May 12, 2009</h2><P><SPAN>Hi Sergeby,<o:p></o:p></SPAN></P>
+<P><SPAN>your implementation assumes that <o:p></o:p></SPAN></P>
+<P><SPAN>1.&nbsp;Returning a "null" value vom ReadProperty indicates&nbsp;a&nbsp;property that has never been loaded before. What if the lazy loaded property value <EM>equals</EM>&nbsp;"null"?<o:p></o:p></SPAN></P>
+<P><SPAN>2. In asynchronous calls you probalby need to lock&nbsp;the code around&nbsp;_loadingScore because&nbsp;it is&nbsp;shared between two&nbsp;threads.<o:p></o:p></SPAN></P>
+<P>Andreas</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Tuesday, May 12, 2009</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I
+do not need to lock the _loadingScore because it is not static variable.&nbsp;
+In my case this property could not be null when loaded, so I did not need an
+extra check.&nbsp; If I did, I would add another variable _scoreLoaded and look
+at it.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Andreas
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Tuesday, May 12, 2009 10:50 AM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: CSLA Light &amp; Lazy Loading<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Hi Sergeby,<o:p></o:p></p>
+
+<p>your implementation assumes that <o:p></o:p></p>
+
+<p>1.&nbsp;Returning a &quot;null&quot; value vom ReadProperty
+indicates&nbsp;a&nbsp;property that has never been loaded before. What if the
+lazy loaded property value <em>equals</em>&nbsp;&quot;null&quot;?<o:p></o:p></p>
+
+<p>2. In asynchronous calls you probalby need to lock&nbsp;the code
+around&nbsp;_loadingScore because&nbsp;it is&nbsp;shared between
+two&nbsp;threads.<o:p></o:p></p>
+
+<p>Andreas<o:p></o:p></p>
+
+<p>&nbsp;<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Andreas replied on Tuesday, May 12, 2009</h2>OK...I am still taking a learning curve on parallel programming...but would'nt it be possible that the same thread that called this code calls it again by using the same instance (and so using the same _loadingScore member variable) before the delegate returns...?<br /></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, April 07, 2009</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>There should be. BusinessBase inherits from BindableBase, which
+implements a protected method named OnPropertyChanged.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>That method is marked so it only shows up if you have &#8216;advanced&#8217;
+intellisense enabled &#8211; so maybe you just aren&#8217;t seeing it in
+intellisense &#8211; but it is there.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> CampbellCM
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Tuesday, April 07, 2009 9:40 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] CSLA Light &amp; Lazy Loading<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Thanks Rocky, that helps a lot.<o:p></o:p></p>
+
+<p>I'm hung up on one thing though.&nbsp; If I'm understanding this correctly
+the call to OnPropertyChanged is intended to provide a notification that will
+force a refresh in the UI/View.&nbsp; Is that correct?&nbsp; The problem is
+that there is no OnPropertyChanged method available and I'm at a loss as to
+what would be the equivalent.<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>swegele replied on Tuesday, May 12, 2009</h2><P>Wow this async lazy loading issue for silverlight&nbsp;just hit me square in the forehead...been reading all the posts.</P>
+<P>So do you think it is probably just simpler to remove&nbsp;the lazy loaded properties in silverlight (via directive/partial class) if loading them up front is too expensive?&nbsp; So in silverlight the UI developer would have to make another call to a factory method passing in the relevant parent?&nbsp; I think that is what you were getting at in this post <A HREF="/forums/permalink/30507/30529/ShowThread.aspx#30529">http://forums.lhotka.net/forums/permalink/30507/30529/ShowThread.aspx#30529</A></P>
+<P>This async stuff&nbsp;for silverlight is&nbsp;introducing a fair amount of complexity...and that with the&nbsp;<STRONG>TONS</STRONG> of work you and magenic have done to hide most of it.&nbsp; Maybe I am just an old dog trying to learn new tricks :-)&nbsp; Maybe complexity isn't the word as much as a need for "exactness" or "adherance".</P>
+<P>Anyway I am having fun adapting my architecture to 3.6.2 to play well with silverlight...just a lot to learn!&nbsp; Thanks.</P>
+<P>Sean</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Andreas replied on Wednesday, May 13, 2009</h2><P>Hi Sean,</P>
+<P><SPAN>you made a very good point! It is worth to think about.<o:p></o:p></SPAN></P>
+<P><SPAN>Thanks,<o:p></o:p></SPAN></P>
+<P>Andreas</P>
+<P class=MsoNormal><o:p><FONT face=Calibri>&nbsp;</FONT></o:p></P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>bniemyjski replied on Tuesday, August 31, 2010</h2><p>
+<p>Hello,</p>
+<p>We have also addressed this issue in the soon to be released <a href="http://www.codesmithtools.com/generate-csla-code-with-templates.aspx">v3.0.1 of the CodeSmith Templates.</a></p>
+<p>Thanks</p>
+<p>-Blake Niemyjski</p>
+</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

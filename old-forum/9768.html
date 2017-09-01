@@ -1,0 +1,38 @@
+<html><header><title>Lazy loading BusinessListBase several levels down</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Lazy loading BusinessListBase several levels down</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9768.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>ballistic posted on Monday, November 15, 2010</h2><p>This is my current object graph</p>
+<p>Album</p>
+<p>&nbsp;- PhotoList (<span style="color:#2b91af;">BusinessListBase)</span></p>
+<p>&nbsp;- - Photo</p>
+<p>&nbsp;- - - Tags (<span style="color:#2b91af;">BusinessListBase)</span></p>
+<p>&nbsp;- - - - Tag<span style="color:#2b91af;"></span></p>
+<p>I am currently loading the PhotoList and Tags using lazy loading. Within the Album class, to load the list of photos I use:<br />
+
+
+</p>
+<pre style="font-family:consolas;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:#2b91af;">IPhotoList</span>&nbsp;PhotoList<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">get</span><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">if</span>&nbsp;(!FieldManager.FieldExists(PhotoListProperty))<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;LoadProperty(PhotoListProperty,&nbsp;<span style="color:#2b91af;">IoC</span>.Resolve&lt;<span style="color:#2b91af;">IPhotoList</span>&gt;().FindByAlbumIdMemberId(<span style="color:blue;">this</span>.Id,&nbsp;<span style="color:blue;">this</span>.MemberId));<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">return</span>&nbsp;GetProperty(PhotoListProperty);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">set</span>&nbsp;{&nbsp;SetProperty(PhotoListProperty,&nbsp;<span style="color:blue;">value</span>);&nbsp;}<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br /><br /></pre>
+<p>This works fine.</p>
+<p>However, when I use the same code in the Photo class to load the Tags, the FieldManager.FieldExists always returns true.  </p>
+<p>From the looks of it, when the PhotoList gets loaded, it also adds Tags property to the FieldManager.&nbsp; Is there a way to prevent that or to have a different check in the property so I can continue using lazy-loading?</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ballistic replied on Tuesday, November 16, 2010</h2><p>Also, probably related to this problem within the Photo&#39;s DeleteSelf method I call FieldManager&#39;s UpdateChildren so that it would delete the tags first and then delete the photo.</p>
+<p>
+
+<pre style="font-family:consolas;"><span style="color:blue;">protected</span>&nbsp;<span style="color:blue;">void</span>&nbsp;Child_DeleteSelf(<span style="color:#2b91af;">Album</span>&nbsp;parent)<br /><pre style="font-family:consolas;">FieldManager.UpdateChildren(<span style="color:blue;">this</span>);<br /></pre>
+</pre>
+</p>
+<p>However, the Tag&#39;s Child_DeleteSelf is never called, so I get </p>
+<p><span></span></p>
+<h2><i><i>The DELETE statement conflicted with the REFERENCE 
+constraint</i></i></h2>
+<p>This is the first time I work with such a deep object graph so not really sure how stuff should be done.</p>
+<p>&nbsp;</p>
+<p>Thank you,<br /><br />&nbsp;- Andy</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ballistic replied on Tuesday, November 16, 2010</h2><p>So did a little more research and it seems this is a know issue, but it&#39;s not a bug w/ CSLA.</p>
+<p><a href="http://forums.lhotka.net/forums/p/6098/29601.aspx">http://forums.lhotka.net/forums/p/6098/29601.aspx</a><br />&quot;When you manually call the DataPortal method, you are accessing the field in your code &ndash; which triggers the creation of the field. So you do need to wrap that code with an exists check to avoid the issue. There&rsquo;s really nothing CSLA can do for you in that case.&quot;</p>
+<p>Also, in <a href="http://forums.lhotka.net/forums/p/6207/30027.aspx">http://forums.lhotka.net/forums/p/6207/30027.aspx</a></p>
+<p>&quot;Clearly some code is causing the creation of the FieldData object. Which means there&#39;s an unprotected call to one of the read/get/load/set property methods against that field - probably in your insert/update data code.<br /><br />By unprotected I mean that it needs to be wrapped by a check for FieldExists.&quot;</p>
+<p>&nbsp;</p>
+<p>In their case, it was an update, but in my case I&#39;m doing a Fetch. Can someone please show me how I should protect the property so that the DataPortal does not set the field and thereby add it to FieldManager?</p>
+<p>Also, if it makes a difference, I am using CSLA 3.8.</p>
+<p><br />Thank you<br /> - Andy</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>ballistic replied on Tuesday, November 16, 2010</h2><p>I was finally able to solve the problem by adding the RelationshipType to the RegisterProperty</p>
+<p>
+
+<pre style="font-family:consolas;"><span style="color:#2b91af;">RelationshipTypes</span>.Child&nbsp;|&nbsp;<span style="color:#2b91af;">RelationshipTypes</span>.LazyLoad<br /></pre>
+</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

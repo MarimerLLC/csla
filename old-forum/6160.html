@@ -1,0 +1,382 @@
+<html><header><title>Version 3.6.1 test release</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Version 3.6.1 test release</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6160.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka posted on Wednesday, January 14, 2009</h2><P>I just posted a test release for 3.6.1 on the <A href="http://www.lhotka.net/cslanet/download.aspx">download page</A>. You can read the change log to see what's different - it is mostly bug fixes, with a couple minor enhancements as requested on the forum over the past couple weeks.</P>
+<P>I still expect to address a couple more bugs that I think are important, so this isn't final, but for those who reported/requested these items this interrim release should be helpful.</P>
+<P>There's also a 3.6.1 of <A href="http://www.lhotka.net/cslalight">CSLA .NET for Silverlight</A>, and an updated 3.5.3 with a tweak to the fix for null values and string properties.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Thursday, January 15, 2009</h2><P>Awesome!</P>
+<P>Thanks for getting this out early. We are in the middle of some LINQ sorting issues and need to try out the new code for filtering and sorting. We were prepared to wait another 10 days or more&nbsp;for this so it is good that you got this out early.</P>
+<P>Joe</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, January 15, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Release early and often :)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> JoeFallon1
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Thursday, January 15, 2009 8:31 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] Version 3.6.1 test release<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Awesome!<o:p></o:p></p>
+
+<p>Thanks for getting this out early. We are in the middle of some LINQ sorting
+issues and need to try out the new code for filtering and sorting. We were
+prepared to wait another 10 days or more&nbsp;for this so it is good that you
+got this out early.<o:p></o:p></p>
+
+<p>Joe<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>maxal replied on Thursday, January 15, 2009</h2>Rocky,<br><br>You mentioned <span id="ctl00_ContentPlaceHolder1_BodyLabel"><br>Add support for sorting a <span class="CodeInline"><span><font color="#008000" face="Courier New">BusinessListBase</font></span></span> list into a <span class="CodeInline"><span><font color="#008000" face="Courier New">LinqBindingList</font></span></span> through a LINQ query.<br><br>What about </span><span id="ctl00_ContentPlaceHolder1_BodyLabel"><span class="CodeInline"><span><font color="#008000" face="Courier New">EditableRootListBase</font></span></span></span><span id="ctl00_ContentPlaceHolder1_BodyLabel">? Is there difference in how these listes work regarding LINQ support?<br></span></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, January 15, 2009</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>At this point ERLB doesn&#8217;t have any special LINQ support
+like BLB.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>ERLB is a complex thing to start with, and our support for LINQ
+continues to evolve &#8211; and it too is complex (to say the least). At some
+point we may provide LINQ support in ERLB as well &#8211; though I&#8217;m not
+entirely sure what side-effects we&#8217;ll encounter (I suspect they&#8217;ll
+be somewhat nasty).<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> maxal
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Thursday, January 15, 2009 12:28 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] Version 3.6.1 test release<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Rocky,<br>
+<br>
+You mentioned <br>
+Add support for sorting a <span class=codeinline><span>BusinessListBase</span></span> list into a <span class=codeinline><span>LinqBindingList</span></span>
+through a LINQ query.<br>
+<br>
+What about <span class=codeinline><span>EditableRootListBase</span></span>? Is there difference in how
+these listes work regarding LINQ support?<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>maxal replied on Thursday, January 15, 2009</h2>Thank you.<br><br>You intrigued me. Don't want to ask any questions to not ask stupid ones :) But I have a great interest in supporting sorting for all kind of lists for desktop applications. As I found before the only option working for WPF Toolkit DataGrid is using Linq. Which works fine even now with ERLB, the only problem is I have to recreate Linq list (or whatever is the proper name for it) and reassign it to the gird's ItemsSource when items added to or removed from the list. Modification works fine from binding point of view. As our grids are really readonly, we probably do not need that scary stuff you mentioned. Although that's were I may go into stupid comments :)<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, January 15, 2009</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>CSLA has several collection types, all of which work with LINQ.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>BusinessListBase is intended for editable lists of editable
+objects, where all changes are saved as a batch. When you do an identity
+projection against a BLB collection, you get back a LinqBindingList, which is a
+synchronized view over the original collection. Read Chapter 14 of the Expert
+C# 2008 Business Objects book for full information about this.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>ReadOnlyListBase is intended for read-only lists of read-only
+objects. LINQ to Objects works fine over an ROLB, and CSLA does no extra work
+in this case (though the LINQ to CSLA support for indexed queries does work).
+So you&#8217;ll get back a normal IEnumerable&lt;T&gt; from any query.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>EditableRootListBase is intended for editable lists of editable <i>root</i>
+objects, where the list is bound to a datagrid control using in-place editing
+of the data. The whole point of this collection type is that changes made by
+the user are committed automatically to the database when the user moves off
+the row in the grid. So ERLB is designed for a very narrow type of user
+experience in WPF, Silverlight or Windows Forms. CSLA does no extra work around
+ERLB, so a LINQ query against it will return an IEnumerable&lt;T&gt;.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>The whole reason for a BLB query returning an LBL is the
+expectation that LINQ will be used to filter/sort an editable list, and that
+you&#8217;ll want to bind the result of the query to your UI so the user can
+interact with it. I expect the same is true for ERLB &#8211; but the complexity
+of ERLB is quite a bit higher, and so it fell out of scope for the 3.6 release.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> maxal
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Thursday, January 15, 2009 1:15 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: Version 3.6.1 test release<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Thank you.<br>
+<br>
+You intrigued me. Don't want to ask any questions to not ask stupid ones :) But
+I have a great interest in supporting sorting for all kind of lists for desktop
+applications. As I found before the only option working for WPF Toolkit
+DataGrid is using Linq. Which works fine even now with ERLB, the only problem
+is I have to recreate Linq list (or whatever is the proper name for it) and
+reassign it to the gird's ItemsSource when items added to or removed from the
+list. Modification works fine from binding point of view. As our grids are
+really readonly, we probably do not need that scary stuff you mentioned.
+Although that's were I may go into stupid comments :)<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Fintanv replied on Friday, January 16, 2009</h2>&lt;Sigh/&gt; Less than three weeks and my new book is already out of date.... ;-)<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, January 16, 2009</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Oh my! I hope not! :)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Other than a couple minor tweaks, this is pure bug-fix stuff.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky <o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Fintanv
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Friday, January 16, 2009 10:53 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] Version 3.6.1 test release<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>&lt;Sigh/&gt; Less than three weeks and my new book is
+already out of date.... ;-)<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Fintanv replied on Friday, January 16, 2009</h2>Rocky, <br><br>On a more serious note I just wanted to add my voice to the chorus of those saying "Thank you".&nbsp; Having followed and used CSLA.net since version 1.0 I can't express how much I have learned from it, and how much it has helped me to deliver Enterprise class apps to my customers.&nbsp; The amount of effort and commitment provided by you (and by extension the CSLA community), is second to none.<br><br>-- F<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Andreas replied on Sunday, January 18, 2009</h2><P><SPAN>Hi Rocky,<o:p></o:p></SPAN></P>
+<P><SPAN>it would be great if you could&nbsp;consider&nbsp;my two last (and unanswered)&nbsp;"potential bug" posts for the next release. The first one is easy to fix if the different implementation was not by purpose. </SPAN></P>
+<P><SPAN><A HREF="/forums/thread/29255.aspx">http://forums.lhotka.net/forums/thread/29255.aspx</A><BR></SPAN><SPAN><A HREF="/forums/thread/29390.aspx">http://forums.lhotka.net/forums/thread/29390.aspx</A><BR></P></SPAN>
+<P><SPAN>Regards<BR></SPAN><SPAN>Andreas <o:p></o:p></SPAN></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Sunday, January 18, 2009</h2><P>I saw the BLB issue reported and added an item in bugtracker. I missed the other one though, and have added an item now as well.</P>
+<P>You've probably noticed that the traffic on the forum is quite high. While I try to at least skim everything, that isn't always possible, so a quick reminder like this is a good idea :)</P>
+<P>You can see the issues in bugtracker yourself too: <A href="http://www.lhotka.net/cslabugs/bugs.aspx">http://www.lhotka.net/cslabugs/bugs.aspx</A></P>
+<P>By default it shows the wish list, but you can use the combobox to show open bugs as well.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tetranz replied on Sunday, January 18, 2009</h2><P>Rocky,&nbsp;I don't mean to&nbsp;um ... bug you about this, but&nbsp;I've looked in bug tracker and I&nbsp;don't see the issue that Andreas is reporting. I reported it too,&nbsp;<A HREF="/forums/thread/29863.aspx">http://forums.lhotka.net/forums/thread/29863.aspx</A>&nbsp;before I realized that he had already done so. This is about BLB raising two ListChanged when a child property changes.</P>
+<P>Ross</P>
+<P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div>I saw the BLB issue reported and added an item in bugtracker. I missed the other one though, and have added an item now as well.</div></BLOCKQUOTE></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Sunday, January 18, 2009</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Isn&#8217;t it this one?<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><a href="http://www.lhotka.net/cslabugs/edit_bug.aspx?id=286">http://www.lhotka.net/cslabugs/edit_bug.aspx?id=286</a><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>If not, I imagine it is related, so I&#8217;ll add the other
+thread as well so I don&#8217;t lose it.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Thanks!<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> tetranz
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Sunday, January 18, 2009 11:15 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] Version 3.6.1 test release<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Rocky,&nbsp;I don't mean to&nbsp;um ... bug you about this, but&nbsp;I've
+looked in bug tracker and I&nbsp;don't see the issue that Andreas is reporting.
+I reported it too,&nbsp;<a href="/forums/thread/29863.aspx">http://forums.lhotka.net/forums/thread/29863.aspx</a>&nbsp;before
+I realized that he had already done so. This is about BLB raising two
+ListChanged when a child property changes.<o:p></o:p></p>
+
+<p>Ross<o:p></o:p></p>
+
+<blockquote>
+
+<div>
+
+<p class=MsoNormal><span><img border=0 width=100 height=100 id="_x0000_i1025" alt="Image removed by sender."></span><strong>RockfordLhotka:</strong><o:p></o:p></p>
+
+</div>
+
+<div>
+
+<p class=MsoNormal>I saw the BLB issue reported and added an item in
+bugtracker. I missed the other one though, and have added an item now as well.<o:p></o:p></p>
+
+</div>
+
+</blockquote>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tetranz replied on Sunday, January 18, 2009</h2>I think that one is different but ... as you say ... maybe related.<br><br><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+<span>Isn’t it this one?<o:p></o:p></span><div class="Section1">
+
+
+
+<p class="MsoNormal"><span><a href="http://www.lhotka.net/cslabugs/edit_bug.aspx?id=286">http://www.lhotka.net/cslabugs/edit_bug.aspx?id=286</a><o:p></o:p></span></div></BLOCKQUOTE></p>
+
+</div></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,75 @@
+<html><header><title>UpdateModel(model,collection) error</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>UpdateModel(model,collection) error</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11251.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>xequence posted on Friday, March 23, 2012</h2><p>I am unable to update my model for some strange reason without a real exception. What I am doing is selecting an image value from a gridview type dropdownlist,</p>
+<p>
+<p>&nbsp;@{</p>
+<p>&nbsp; &nbsp; var highlightData = SF.Library.PressRelease.digital_asset.DigitalAssetList.GetReadOnlyList();</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; WebGrid highlightImageGrid = new WebGrid(source: highlightData, rowsPerPage: 5, canPage: true, ajaxUpdateContainerId: &quot;HighlightImageGrid&quot;);</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; @highlightImageGrid.GetHtml(htmlAttributes: new { id = &quot;HighlightImageGrid&quot; },</p>
+<p>columns: highlightImageGrid.Columns(</p>
+<p>highlightImageGrid.Column(&quot;&quot;, &quot;&quot;, @&lt;text&gt;&lt;div style=&quot;display: inline-block; float: left;&quot;&gt;</p>
+<p>&nbsp; &nbsp; &lt;input type=&quot;radio&quot; &nbsp;name=&quot;@Model.PressReleaseDigitalAsset.DigitalAssetGuid&quot; value=&quot;@item.FK_Digital_Asset_Guid&quot; /&gt;</p>
+<p>&nbsp; &nbsp; &lt;img src=&quot;@Url.Content(&quot;~/Image/150/150/d/&quot;)@item.DigitalAssetId&quot; &nbsp;/&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;/div&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;/text&gt;)</p>
+<p>&nbsp; &nbsp; )</p>
+<p>&nbsp; &nbsp; )</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</p>
+</p>
+<p>&nbsp;</p>
+<p>The problem is when I try to bind this selected value to my child of my parent object...</p>
+<p>
+<p>[HttpPost]</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; [ValidateInput(false)]</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; public ActionResult Edit(FormCollection collection, PressReleaseEdit pe, int id, Guid? radioValue, Guid? highlightImage)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; var model = PressReleaseEdit.AdminGetPressReleaseById(id);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; if (radioValue.HasValue)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; model.PressReleaseDigitalAsset.DigitalAssetGuid = (Guid)radioValue;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; model.PressReleaseDigitalAsset.FK_PressRelease_ID = model.PressReleaseId;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; else</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; //model.PressReleaseDigitalAsset.DigitalAssetGuid = null;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; collection[&quot;PressReleaseDigitalAsset.DigitalAssetGuid&quot;] = radioValue.ToString();</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; UpdateModel(model, collection);</p>
+<p>&nbsp;</p>
+</p>
+<p>&nbsp;</p>
+<p>
+<p>public readonly static PropertyInfo&lt;SF.Library.PressRelease.digital_asset.DigitalAsset&gt; PressReleaseDigitalAssetProperty = RegisterProperty&lt;SF.Library.PressRelease.digital_asset.DigitalAsset&gt;(p =&gt; p.PressReleaseDigitalAsset);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; public SF.Library.PressRelease.digital_asset.DigitalAsset PressReleaseDigitalAsset</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; get</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; if (!(FieldManager.FieldExists(PressReleaseDigitalAssetProperty)))</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; LoadProperty(PressReleaseDigitalAssetProperty, DataPortal.CreateChild&lt;SF.Library.PressRelease.digital_asset.DigitalAsset&gt;());</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; return GetProperty(PressReleaseDigitalAssetProperty);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; private set { SetProperty(PressReleaseDigitalAssetProperty, value); }</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; }</p>
+</p>
+<p>&nbsp;</p>
+<p>I get this error.</p>
+<p><span>
+<h2><i>The model of type &#39;SF.Library.PressRelease.press_release.PressReleaseEdit&#39; could not be updated.</i></h2>
+</span><span></span><span style="font-family:Arial, Helvetica, Geneva, SunSans-Regular, sans-serif;"><b>Description:&nbsp;</b>An unhandled exception occurred during the execution of the current web request. Please review the stack trace for more information about the error and where it originated in the code.&nbsp;<br /><br /><b>Exception Details:&nbsp;</b>System.InvalidOperationException: The model of type &#39;SF.Library.PressRelease.press_release.PressReleaseEdit&#39; could not be updated.<br /><br /><b>Source Error:</b>&nbsp;<br /><br />
+<table bgcolor="#ffffcc" width="100%">
+<tbody>
+<tr>
+<td><code>
+<pre>Line 59: 
+Line 60: 
+<span style="color:red;">Line 61:             UpdateModel(model, collection);
+</span>Line 62:             LoadProperty(model, PressReleaseEdit.PressReleaseIdProperty, id);
+Line 63: </pre>
+</code></td>
+</tr>
+</tbody>
+</table>
+</span></p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,12 @@
+<html><header><title>CSLA 3.0.5: From VS2005 to VS2010</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA 3.0.5: From VS2005 to VS2010</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10192.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>cjherasmus posted on Wednesday, March 23, 2011</h2><p>I have an intranet application still running on CSLA 3.0.5 created with VS2005 on the .NET 2.0 platform. Still running after 2 years, deployed with ClickOnce, no problems.</p>
+<p>I&#39;m running the same code in VS 2010 but getting a warning &quot;Reference CSLA does not allow partially trusted callers.&quot;</p>
+<p>Here&#39;s what I did:</p>
+<p>Made a copy of my original source code.</p>
+<p>Created a clean .NET 4.0 Solution in VS2010 with no projects. (The idea is to migrate to 4.0 and SL)</p>
+<p>Start to load all source into VS2010, but still keeping the code as &quot;.NET 2.0&quot;.</p>
+<p>Recompile - no problems - executing no problems.</p>
+<p>Then why the warning? Did I miss something? Is VS2010 already that &quot;intelligent&quot; to warn me against these things? Should I just ignore this?</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Wednesday, March 23, 2011</h2><p>I don&#39;t know - a lot has changed in .NET from 2.0 to 4. Maybe something that used to be trusted isn&#39;t trusted anymore.</p>
+<p>If you are going to move to SL, you can&#39;t do it with CSLA .NET 3.0 - not unless you want to reinvent all the stuff we added in 3.6 specifically to support SL.</p>
+<p>In other words, you will be forced to at least 3.8 - but that&#39;s for .NET 3.5 and SL3 - so you should look at moving to CSLA 4 to get full .NET 4 and SL4 support.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>cjherasmus replied on Monday, March 28, 2011</h2><p>Thanks, no worries, I&#39;m just having fun with technology here and (boring boring - establish some level of application integration!!)</p>
+<p>Still running without&nbsp;problems. Have 3 different apps and 5 web apps running on 3 different .NET platforms (2.0, 3.5, 4.0) now in one&nbsp;VS2010 .NET 4 solution. This is fun!</p>
+<p>Running CSLA 3.0.5, 3.83 and 4.1 also from the same solution, also DotSpatial (GIS open-source framework - check it out)</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

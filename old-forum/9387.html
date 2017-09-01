@@ -1,0 +1,740 @@
+<html><header><title>Referential Integrity - Disable child deletion via Validation Rule?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Referential Integrity - Disable child deletion via Validation Rule?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9387.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>alex.williamson@grampianfasteners.com posted on Tuesday, August 17, 2010</h2><div style="color:#000000;font-family:Arial, Helvetica, sans-serif;font-size:12px;margin-top:8px;margin-right:8px;margin-bottom:8px;margin-left:8px;background-image:initial;background-attachment:initial;background-origin:initial;background-clip:initial;background-color:#ffffff;">
+<p><br />This is a long post with source, my apologies but I wanted to be clear with my issue and existing code. I&#39;m sure the answer will be simple and not a case of just catching an exception.</p>
+<p>
+		<strong>Background:</strong></p>
+<p>
+		An IIR (EditableRoot) has a SourceId property (Integer) which must exist.&nbsp;This is enabled through the use of Validation Rules in the IIR:</p>
+<p>
+		&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;Protected Overrides Sub AddBusinessRules()<br />
+		&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;...other rules<br />
+		&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;ValidationRules.AddRule(Of IIR)(AddressOf IIR.SourceIdMustExistRule, SourceIdProperty)<br />
+		&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;...other rules<br />
+		&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;End SubListB is an EditableRootList which has child items ObjectB.&nbsp;</p>
+<div>
+		&nbsp;</div>
+<div>
+		The rule works fine and goes along the lines of:</div>
+<div>
+		&nbsp;</div>
+<div>
+<div>
+			&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;Private Shared Function SourceIdMustExistRule(Of T As IIR)(ByVal target As T, ByVal e As Csla.Validation.RuleArgs) As Boolean</div>
+<div>
+			&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Dim SourceInfoListInstance As SourceKeyValueCollection = SourceKeyValueCollection.GetIIRSourceKeyValueCollection</div>
+<div>
+			&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;If SourceInfoListInstance.ContainsKey(target.ReadProperty(SourceIdProperty)) = True Then</div>
+<div>
+			&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Return True</div>
+<div>
+			&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Else</div>
+<div>
+			&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;e.Description = &quot;A Source with that Id does not exist (Id: &quot; &amp; target.ReadProperty(SourceIdProperty) &amp; &quot;)&quot;</div>
+<div>
+			&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Return False</div>
+<div>
+			&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;End If</div>
+<div>
+			&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;End Function</div>
+<div>
+			&nbsp;</div>
+<p>
+			SourceKeyValueCollection is currently a non-cached (will be cached soon) read-only key-value collection of SourceId -&gt; SourceName items.</p>
+<p>
+			This all works fine.</p>
+<hr />
+<p>
+			<strong>Problem:</strong></p>
+<p>
+			I want to allow the users to edit the list of sources, but I&nbsp;<strong>don&#39;t want them to be able to delete any sources if they&#39;re in use </strong>in an IIR. This rule should be easy to implement in the Validation Rules of an editable Source item.&nbsp;If the source isn&#39;t used it can be deleted.</p>
+<p>
+			I created a SourceList (BusinessListBase)&nbsp;with child SourceListItems (BusinessBase) as per p179 in BO 2008.</p>
+<p>
+			CRUD works well and the items work as expected, except limiting the ability to cancel delete if the SourceListItem&#39;s Id is in use in an IIR.</p>
+<p>
+			<strong>SourceList Implementation:</strong></p>
+<p>&nbsp;</p>
+<div>
+			Imports Csla.Data</div>
+<div>
+			Imports System</div>
+<div>
+			Imports System.Collections.Generic</div>
+<div>
+			Imports Csla</div>
+<div>
+			Imports Csla.Security</div>
+<div>
+			&nbsp;</div>
+<div>
+			&lt;Serializable()&gt; _</div>
+<div>
+			Public Class SourceList</div>
+<div>
+			&nbsp;&nbsp; &nbsp;Inherits BusinessListBase(Of SourceList, SourceListItem)</div>
+<div>
+			&nbsp;</div>
+<div>
+			#Region &quot;Authorization Rules&quot;</div>
+<div>
+			&nbsp;</div>
+<div>
+			&nbsp;&nbsp; &nbsp;Protected Overrides Function AddNewCore() As Object</div>
+<div>
+			&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;Dim obj As SourceListItem = SourceListItem.NewSourceListItem</div>
+<div>
+			&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;Me.Add(obj)</div>
+<div>
+			&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;Return obj</div>
+<div>
+			&nbsp;&nbsp; &nbsp;End Function</div>
+<div>
+			&nbsp;</div>
+<div>
+			&nbsp;&nbsp; &nbsp;Public Function GetDefault() As SourceListItem</div>
+<div>
+			&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;For Each Item As SourceListItem In Me</div>
+<div>
+			&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;If Item.IsDefault = True Then Return Item</div>
+<div>
+			&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;Next</div>
+<div>
+			&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;Return Nothing</div>
+<div>
+			&nbsp;&nbsp; &nbsp;End Function</div>
+<div>
+			&nbsp;</div>
+<div>
+			&nbsp;&nbsp; &nbsp;Protected Shared Sub AddObjectAuthorizationRules()</div>
+<div>
+			&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;Csla.Security.AuthorizationRules.AllowEdit(GetType(SourceList), My.Resources.QAManagers, &quot;Administrators&quot;)</div>
+<div>
+			&nbsp;&nbsp; &nbsp;End Sub</div>
+<div>
+			&nbsp;</div>
+<div>
+			#End Region</div>
+<div>
+			&nbsp;</div>
+<div>
+			#Region &quot;Factory Methods&quot;</div>
+<div>
+			&nbsp;</div>
+<div>
+			&nbsp;&nbsp; &nbsp;Public Shared Function NewSourceList() As SourceList</div>
+<div>
+			&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;Return DataPortal.Create(Of SourceList)()</div>
+<div>
+			&nbsp;&nbsp; &nbsp;End Function</div>
+<div>
+			&nbsp;</div>
+<div>
+			&nbsp;&nbsp; &nbsp;Public Shared Function GetSourceList() As SourceList</div>
+<div>
+			&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;Return DataPortal.Fetch(Of SourceList)()</div>
+<div>
+			&nbsp;&nbsp; &nbsp;End Function</div>
+<div>
+			&nbsp;</div>
+<div>
+			&nbsp;&nbsp; &nbsp;&#39; Require use of factory methods&nbsp;</div>
+<div>
+			&nbsp;&nbsp; &nbsp;Private Sub New()</div>
+<div>
+			&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;AllowNew = True</div>
+<div>
+			&nbsp;&nbsp; &nbsp;End Sub</div>
+<div>
+			&nbsp;</div>
+<div>
+			#End Region</div>
+<div>
+			&nbsp;</div>
+<div>
+			#Region &quot;Data Access&quot;</div>
+<div>
+			&nbsp;</div>
+<div>
+			&nbsp;&nbsp; &nbsp;Private Overloads Sub DataPortal_Fetch()</div>
+<div>
+			&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;RaiseListChangedEvents = False</div>
+<div>
+			&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;Using ctx = ContextManager(Of LinqDAL.IIRTrackerDBLinqDataContext).GetManager(LinqDAL.Database.IIRData)</div>
+<div>
+			&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Dim data = (From o In ctx.DataContext.IIRSources Select o Order By o.Name Ascending).ToArray</div>
+<div>
+			&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;For Each obj As LinqDAL.IIRSource In data</div>
+<div>
+			&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Me.Add(SourceListItem.GetSourceListItem(obj))</div>
+<div>
+			&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Next</div>
+<div>
+			&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;End Using</div>
+<div>
+			&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;RaiseListChangedEvents = True</div>
+<div>
+			&nbsp;&nbsp; &nbsp;End Sub</div>
+<div>
+			&nbsp;</div>
+<div>
+			&nbsp;&nbsp; &nbsp;Protected Overloads Sub DataPortal_Update()</div>
+<div>
+			&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;Me.Child_Update()</div>
+<div>
+			&nbsp;&nbsp; &nbsp;End Sub</div>
+<div>
+			&nbsp;</div>
+<div>
+			#End Region</div>
+<div>
+			End Class</div>
+<div>
+			&nbsp;</div>
+<p>&nbsp;</p>
+<p>
+			<strong>SourceListItem Implementation:</strong></p>
+<p>&nbsp;</p>
+<div>
+			Imports Csla.Security</div>
+<div>
+			Imports Csla</div>
+<div>
+			Imports Csla.Data</div>
+<div>
+			&nbsp;</div>
+<div>
+			&lt;Serializable()&gt; _</div>
+<div>
+			Public Class SourceListItem</div>
+<div>
+			&nbsp;&nbsp; &nbsp;Inherits BusinessBase(Of SourceListItem)</div>
+<div>
+			&nbsp;</div>
+<div>
+			#Region &quot; Business Methods &quot;</div>
+<div>
+			&nbsp;</div>
+<div>
+			&nbsp;&nbsp; &nbsp;Private Shared IdProperty As PropertyInfo(Of Integer) = RegisterProperty(New PropertyInfo(Of Integer)(&quot;Id&quot;, &quot;Id&quot;))</div>
+<div>
+			&nbsp;&nbsp; &nbsp;&#39;&#39;&#39; &lt;Summary&gt;</div>
+<div>
+			&nbsp;&nbsp; &nbsp;&#39;&#39;&#39; Gets and sets the Id value.</div>
+<div>
+			&nbsp;&nbsp; &nbsp;&#39;&#39;&#39; &lt;/Summary&gt;</div>
+<div>
+			&nbsp;&nbsp; &nbsp;Public Property Id() As Integer</div>
+<div>
+			&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;Get</div>
+<div>
+			&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Return GetProperty(IdProperty)</div>
+<div>
+			&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;End Get</div>
+<div>
+			&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;Set(ByVal value As Integer)</div>
+<div>
+			&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;SetProperty(IdProperty, value)</div>
+<div>
+			&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;End Set</div>
+<div>
+			&nbsp;&nbsp; &nbsp;End Property</div>
+<div>
+			&nbsp;</div>
+<div>
+			&nbsp;&nbsp; &nbsp;Private Shared NameProperty As PropertyInfo(Of String) = RegisterProperty(New PropertyInfo(Of String)(&quot;Name&quot;, &quot;Name&quot;))</div>
+<div>
+			&nbsp;&nbsp; &nbsp;&#39;&#39;&#39; &lt;Summary&gt;</div>
+<div>
+			&nbsp;&nbsp; &nbsp;&#39;&#39;&#39; Gets and sets the Name value.</div>
+<div>
+			&nbsp;&nbsp; &nbsp;&#39;&#39;&#39; &lt;/Summary&gt;</div>
+<div>
+			&nbsp;&nbsp; &nbsp;Public Property Name() As String</div>
+<div>
+			&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;Get</div>
+<div>
+			&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Return GetProperty(NameProperty)</div>
+<div>
+			&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;End Get</div>
+<div>
+			&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;Set(ByVal value As String)</div>
+<div>
+			&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;SetProperty(NameProperty, value)</div>
+<div>
+			&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;End Set</div>
+<div>
+			&nbsp;&nbsp; &nbsp;End Property</div>
+<div>
+			&nbsp;</div>
+<div>
+			&nbsp;&nbsp; &nbsp;Private Shared IsDefaultProperty As PropertyInfo(Of Boolean) = RegisterProperty(New PropertyInfo(Of Boolean)(&quot;IsDefault&quot;, &quot;IsDefault&quot;))</div>
+<div>
+			&nbsp;&nbsp; &nbsp;&#39;&#39;&#39; &lt;Summary&gt;</div>
+<div>
+			&nbsp;&nbsp; &nbsp;&#39;&#39;&#39; Gets and sets the IsDefault value.</div>
+<div>
+			&nbsp;&nbsp; &nbsp;&#39;&#39;&#39; &lt;/Summary&gt;</div>
+<div>
+			&nbsp;&nbsp; &nbsp;Public Property IsDefault() As Boolean</div>
+<div>
+			&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;Get</div>
+<div>
+			&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Return GetProperty(IsDefaultProperty)</div>
+<div>
+			&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;End Get</div>
+<div>
+			&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;Set(ByVal value As Boolean)</div>
+<div>
+			&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;SetProperty(IsDefaultProperty, value)</div>
+<div>
+			&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;End Set</div>
+<div>
+			&nbsp;&nbsp; &nbsp;End Property</div>
+<div>
+			&nbsp;</div>
+<div>
+			#End Region</div>
+<div>
+			&nbsp;</div>
+<div>
+			#Region &quot; Validation Rules &quot;</div>
+<div>
+			&nbsp;</div>
+<div>
+			&nbsp;&nbsp; &nbsp;Protected Overrides Sub AddBusinessRules()</div>
+<div>
+			&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;ValidationRules.AddRule(Of SourceListItem)(AddressOf Csla.Validation.CommonRules.StringRequired, NameProperty)</div>
+<div>
+			&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;ValidationRules.AddRule(Of SourceListItem)(AddressOf OnlyOneDefaultSourceListItem, IsDefaultProperty)</div>
+<div>
+			&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;ValidationRules.AddRule(Of SourceListItem)(AddressOf UniqueNameRule, NameProperty)</div>
+<div>
+			&nbsp;&nbsp; &nbsp;End Sub<br />
+			&nbsp;</div>
+<div>
+			&nbsp;&nbsp; &nbsp;Private Shared Function UniqueNameRule(Of T As SourceListItem)(ByVal target As T, ByVal e As Csla.Validation.RuleArgs) As Boolean</div>
+<div>
+			&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;Dim Parent As SourceList = DirectCast(target.Parent, SourceList)</div>
+<div>
+			&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;If Parent IsNot Nothing Then</div>
+<div>
+			&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;For Each item As SourceListItem In Parent</div>
+<div>
+			&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;If item.Name = target.ReadProperty(NameProperty) AndAlso Not (ReferenceEquals(item, target)) Then</div>
+<div>
+			&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;e.Description = &quot;There is another IIR Source List Item with that Name (Current: &quot; &amp; target.Name &amp; &quot;, In Database: &quot; &amp; item.Name &amp; &quot;). Please choose another Id&quot;</div>
+<div>
+			&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Return False</div>
+<div>
+			&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;End If</div>
+<div>
+			&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Next</div>
+<div>
+			&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;End If</div>
+<div>
+			&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;Return True</div>
+<div>
+			&nbsp;&nbsp; &nbsp;End Function</div>
+<div>
+			&nbsp;</div>
+<div>
+			&nbsp;&nbsp; &nbsp;Private Shared Function OnlyOneDefaultSourceListItem(Of T As SourceListItem)(ByVal target As T, ByVal e As Csla.Validation.RuleArgs) As Boolean</div>
+<div>
+			&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;Dim Parent As SourceList = DirectCast(target.Parent, SourceList)</div>
+<div>
+			&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;If Parent IsNot Nothing Then</div>
+<div>
+			&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;If target.IsDefault = True Then</div>
+<div>
+			&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;For Each item As SourceListItem In Parent</div>
+<div>
+			&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;If item.IsDefault = True AndAlso Not (ReferenceEquals(item, target)) Then</div>
+<div>
+			&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;e.Description = &quot;There is another IIR Source set as default&quot;</div>
+<div>
+			&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Return False</div>
+<div>
+			&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;End If</div>
+<div>
+			&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Next</div>
+<div>
+			&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;End If</div>
+<div>
+			&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;End If</div>
+<div>
+			&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;Return True</div>
+<div>
+			&nbsp;&nbsp; &nbsp;End Function</div>
+<div>
+			&nbsp;</div>
+<div>
+			#End Region</div>
+<div>
+			&nbsp;</div>
+<div>
+			#Region &quot; Authorization Rules &quot;</div>
+<div>
+			&nbsp;</div>
+<div>
+			&nbsp;&nbsp; &nbsp;Protected Overrides Sub AddAuthorizationRules()</div>
+<div>
+			&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;AuthorizationRules.AllowWrite(IdProperty, &quot;IIR_QAManagers&quot;, &quot;Administrators&quot;)</div>
+<div>
+			&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;AuthorizationRules.AllowWrite(NameProperty, &quot;IIR_QAManagers&quot;, &quot;Administrators&quot;)</div>
+<div>
+			&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;AuthorizationRules.AllowWrite(IsDefaultProperty, &quot;IIR_QAManagers&quot;, &quot;Administrators&quot;)</div>
+<div>
+			&nbsp;&nbsp; &nbsp;End Sub</div>
+<div>
+			&nbsp;</div>
+<div>
+			&nbsp;&nbsp; &nbsp;Protected Shared Sub AddObjectAuthorizationRules()</div>
+<div>
+			&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;Csla.Security.AuthorizationRules.AllowEdit(GetType(SourceListItem), &quot;IIR_QAManagers&quot;, &quot;Administrators&quot;)</div>
+<div>
+			&nbsp;&nbsp; &nbsp;End Sub</div>
+<div>
+			&nbsp;</div>
+<div>
+			#End Region</div>
+<div>
+			&nbsp;</div>
+<div>
+			#Region &quot; Factory Methods &quot;</div>
+<div>
+			&nbsp;</div>
+<div>
+			&nbsp;&nbsp; &nbsp;Friend Shared Function NewSourceListItem() As SourceListItem</div>
+<div>
+			&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;Return DataPortal.CreateChild(Of SourceListItem)()</div>
+<div>
+			&nbsp;&nbsp; &nbsp;End Function</div>
+<div>
+			&nbsp;</div>
+<div>
+			&nbsp;&nbsp; &nbsp;Friend Shared Function GetSourceListItem(ByVal childData As LinqDAL.IIRSource) As SourceListItem</div>
+<div>
+			&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;Return DataPortal.FetchChild(Of SourceListItem)(childData)</div>
+<div>
+			&nbsp;&nbsp; &nbsp;End Function</div>
+<div>
+			&nbsp;</div>
+<div>
+			&nbsp;&nbsp; &nbsp;Private Sub New()</div>
+<div>
+			&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;&#39;Require use of factory methods</div>
+<div>
+			&nbsp;&nbsp; &nbsp;End Sub</div>
+<div>
+			&nbsp;</div>
+<div>
+			#End Region</div>
+<div>
+			&nbsp;</div>
+<div>
+			#Region &quot; Data Access &quot;</div>
+<div>
+			&nbsp;</div>
+<div>
+			&nbsp;&nbsp; &nbsp;Protected Overrides Sub Child_Create()</div>
+<div>
+			&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;&#39;TODO: load default values</div>
+<div>
+			&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;&#39;omit this override if you have no defaults to set</div>
+<div>
+			&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;MyBase.Child_Create()</div>
+<div>
+			&nbsp;&nbsp; &nbsp;End Sub</div>
+<div>
+			&nbsp;</div>
+<div>
+			&nbsp;&nbsp; &nbsp;Private Sub Child_Fetch(ByVal childData As LinqDAL.IIRSource)</div>
+<div>
+			&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;With childData</div>
+<div>
+			&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;LoadProperty(IdProperty, .Id)</div>
+<div>
+			&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;LoadProperty(NameProperty, .Name)</div>
+<div>
+			&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;LoadProperty(IsDefaultProperty, .IsDefault)</div>
+<div>
+			&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;End With</div>
+<div>
+			&nbsp;&nbsp; &nbsp;End Sub</div>
+<div>
+			&nbsp;</div>
+<div>
+			&nbsp;&nbsp; &nbsp;Private Sub Child_Insert()</div>
+<div>
+			&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;Using ctx = ContextManager(Of LinqDAL.IIRTrackerDBLinqDataContext).GetManager(LinqDAL.Database.IIRData)</div>
+<div>
+			&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Dim data = New LinqDAL.IIRSource</div>
+<div>
+			&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;With data</div>
+<div>
+			&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;.Name = ReadProperty(NameProperty)</div>
+<div>
+			&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;.IsDefault = ReadProperty(IsDefaultProperty)</div>
+<div>
+			&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;End With</div>
+<div>
+			&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;ctx.DataContext.IIRSources.InsertOnSubmit(data)</div>
+<div>
+			&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;ctx.DataContext.SubmitChanges()</div>
+<div>
+			&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;LoadProperty(IdProperty, data.Id)</div>
+<div>
+			&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;End Using</div>
+<div>
+			&nbsp;&nbsp; &nbsp;End Sub</div>
+<div>
+			&nbsp;</div>
+<div>
+			&nbsp;&nbsp; &nbsp;Private Sub Child_Update()</div>
+<div>
+			&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;Using ctx = ContextManager(Of LinqDAL.IIRTrackerDBLinqDataContext).GetManager(LinqDAL.Database.IIRData)</div>
+<div>
+			&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Dim data = (From o In ctx.DataContext.IIRSources Where o.Id = ReadProperty(IdProperty) Select o).Single</div>
+<div>
+			&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;With data</div>
+<div>
+			&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;.Name = ReadProperty(NameProperty)</div>
+<div>
+			&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;.IsDefault = ReadProperty(IsDefaultProperty)</div>
+<div>
+			&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;End With</div>
+<div>
+			&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;ctx.DataContext.SubmitChanges()</div>
+<div>
+			&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;End Using</div>
+<div>
+			&nbsp;&nbsp; &nbsp;End Sub</div>
+<div>
+			&nbsp;</div>
+<div>
+			&nbsp;&nbsp; &nbsp;Friend Sub Child_DeleteSelf()</div>
+<div>
+			&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;Using ctx = ContextManager(Of LinqDAL.IIRTrackerDBLinqDataContext).GetManager(LinqDAL.Database.IIRData)</div>
+<div>
+			&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Dim data = (From o In ctx.DataContext.IIRSources Where o.Id = ReadProperty(IdProperty) Select o).Single</div>
+<div>
+			&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;ctx.DataContext.IIRSources.DeleteOnSubmit(data)</div>
+<div>
+			&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;ctx.DataContext.SubmitChanges()</div>
+<div>
+			&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;End Using</div>
+<div>
+			&nbsp;&nbsp; &nbsp;End Sub</div>
+<div>
+			&nbsp;</div>
+<div>
+			#End Region</div>
+<div>
+			&nbsp;</div>
+<div>
+			End Class</div>
+<div>
+			&nbsp;</div>
+<div>
+			
+<hr />
+</div>
+<p>
+			<strong>What I&#39;ve tried so far:</strong></p>
+<ul>
+<li>
+				I couldn&#39;t see anything in the book for allowing optional deleting of child items.
+				&nbsp;</li>
+<li>
+				I first thought I could override Remove(object) on the parent SourceList, but the only thing I can do is override&nbsp;RemoveItem(integer) which isn&#39;t the same.
+				&nbsp;</li>
+<li>
+				Then I wondered if I could override Delete() on the child SourceListItem, but this method is never called:</li>
+</ul>
+<p>&nbsp;</p>
+<div style="margin-left:80px;">
+			&nbsp;&nbsp; &nbsp;Public Overrides Sub Delete()</div>
+<div style="margin-left:80px;">
+			&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;CanExecuteMethod(&quot;Delete&quot;, True) &nbsp; &nbsp;&nbsp;</div>
+<div style="margin-left:80px;">
+			&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;MyBase.Delete()</div>
+<div>
+<p style="margin-left:80px;">
+				&nbsp;&nbsp; &nbsp;End Sub<br />
+				<br />
+				for completeness here is the CanExecuteMethod:</p>
+<div style="margin-left:80px;">
+				&nbsp;&nbsp; &nbsp;Public Overrides Function CanExecuteMethod(ByVal methodName As String) As Boolean</div>
+<div style="margin-left:80px;">
+				&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;If methodName = &quot;Delete&quot; Then</div>
+<div style="margin-left:80px;">
+				&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Return False &nbsp; &nbsp;<span style="color:#a9a9a9;">&#39; just to get it to work ;-)</span></div>
+<div style="margin-left:80px;">
+				&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;End If</div>
+<div style="margin-left:80px;">
+				&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;Return MyBase.CanExecuteMethod(methodName)</div>
+<div style="margin-left:80px;">
+				&nbsp;&nbsp; &nbsp;End Function</div>
+<div>
+				&nbsp;</div>
+<ul>
+<li>
+					I then tried adding a validation rule which I thought would run when the item is saved:<br />
+					<br />
+<div>
+						&nbsp;&nbsp; &nbsp;Private Shared Function CanDeleteRule(Of T As SourceListItem)(ByVal target As T, ByVal e As Csla.Validation.RuleArgs) As Boolean</div>
+<div>
+						&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;If target.IsDeleted AndAlso SourceUsed.SourceUsed(target.ReadProperty(IdProperty)) Then</div>
+<div>
+						&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;e.Description = &quot;Source used in at least one IIR and cannot be deleted.&quot;</div>
+<div>
+						&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Return False</div>
+<div>
+						&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;End If</div>
+<div>
+						&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;Return True</div>
+<div>
+						&nbsp;&nbsp; &nbsp;End Function</div>
+<br />
+					but what property do I bind it to? I tried binding it to IsDeleted which didn&#39;t work and then tried calling CheckRules() in an overloaded Save() but that doesn&#39;t work either. &nbsp; :(
+					&nbsp;</li>
+<li>
+					The only thing that has worked to far is to do:</li>
+</ul>
+<div>
+<div style="margin-left:80px;">
+					&nbsp;&nbsp; &nbsp;Friend Sub Child_DeleteSelf()</div>
+<div style="margin-left:80px;">
+					&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;If SourceUsed.SourceUsed(ReadProperty(IdProperty)) Then Throw New InvalidOperationException(&quot;Cannot delete a source if it used elsewhere.&quot;)</div>
+</div>
+<div>
+				&nbsp;</div>
+<div style="margin-left:40px;">
+				SourceUsed is a working and tested CommandBase:</div>
+<div style="margin-left:40px;">
+				&nbsp;</div>
+<div>
+<div style="margin-left:80px;">
+					Imports Csla</div>
+<div style="margin-left:80px;">
+					Imports Csla.Data</div>
+<div style="margin-left:80px;">
+					&nbsp;</div>
+<div style="margin-left:80px;">
+					&lt;Serializable()&gt; _</div>
+<div style="margin-left:80px;">
+					Public Class SourceUsed</div>
+<div style="margin-left:80px;">
+					&nbsp;&nbsp; &nbsp;Inherits CommandBase</div>
+<div style="margin-left:80px;">
+					&nbsp;</div>
+<div style="margin-left:80px;">
+					#Region &quot; Authorization Rules &quot;</div>
+<div style="margin-left:80px;">
+					&nbsp;</div>
+<div style="margin-left:80px;">
+					&nbsp;&nbsp; &nbsp;Public Shared Function CanExecuteCommand() As Boolean</div>
+<div style="margin-left:80px;">
+					&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;Return True</div>
+<div style="margin-left:80px;">
+					&nbsp;&nbsp; &nbsp;End Function</div>
+<div style="margin-left:80px;">
+					&nbsp;</div>
+<div style="margin-left:80px;">
+					&nbsp;&nbsp; &nbsp;Private _id As Integer = 0</div>
+<div style="margin-left:80px;">
+					&nbsp;&nbsp; &nbsp;Private _used As Boolean = False</div>
+<div style="margin-left:80px;">
+					&nbsp;</div>
+<div style="margin-left:80px;">
+					&nbsp;&nbsp; &nbsp;Public ReadOnly Property Used As Boolean</div>
+<div style="margin-left:80px;">
+					&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;Get</div>
+<div style="margin-left:80px;">
+					&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Return _used</div>
+<div style="margin-left:80px;">
+					&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;End Get</div>
+<div style="margin-left:80px;">
+					&nbsp;&nbsp; &nbsp;End Property</div>
+<div style="margin-left:80px;">
+					&nbsp;</div>
+<div style="margin-left:80px;">
+					#End Region</div>
+<div style="margin-left:80px;">
+					&nbsp;</div>
+<div style="margin-left:80px;">
+					#Region &quot; Factory Methods &quot;</div>
+<div style="margin-left:80px;">
+					&nbsp;</div>
+<div style="margin-left:80px;">
+					&nbsp;&nbsp; &nbsp;Public Shared Function SourceUsed(ByVal id As Integer) As Boolean</div>
+<div style="margin-left:80px;">
+					&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;Dim result As SourceUsed = DataPortal.Execute(Of SourceUsed)(New SourceUsed(id))</div>
+<div style="margin-left:80px;">
+					&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;Return result.Used</div>
+<div style="margin-left:80px;">
+					&nbsp;&nbsp; &nbsp;End Function</div>
+<div style="margin-left:80px;">
+					&nbsp;</div>
+<div style="margin-left:80px;">
+					&nbsp;&nbsp; &nbsp;Private Sub New(ByVal id As Integer)</div>
+<div style="margin-left:80px;">
+					&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;_id = id</div>
+<div style="margin-left:80px;">
+					&nbsp;&nbsp; &nbsp;End Sub</div>
+<div style="margin-left:80px;">
+					&nbsp;</div>
+<div style="margin-left:80px;">
+					#End Region</div>
+<div style="margin-left:80px;">
+					&nbsp;</div>
+<div style="margin-left:80px;">
+					#Region &quot; Server-side Code &quot;</div>
+<div style="margin-left:80px;">
+					&nbsp;</div>
+<div style="margin-left:80px;">
+					&nbsp;&nbsp; &nbsp;Protected Overrides Sub DataPortal_Execute()</div>
+<div style="margin-left:80px;">
+					&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;Using ctx = ContextManager(Of LinqDAL.IIRTrackerDBLinqDataContext).GetManager(LinqDAL.Database.IIRData)</div>
+<div style="margin-left:80px;">
+					&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Dim data = (From o In ctx.DataContext.IIRs Where o.SourceId = _id)</div>
+<div style="margin-left:80px;">
+					&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;If data.Count &gt; 0 Then _used = True</div>
+<div style="margin-left:80px;">
+					&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;End Using</div>
+<div style="margin-left:80px;">
+					&nbsp;&nbsp; &nbsp;End Sub</div>
+<div style="margin-left:80px;">
+					&nbsp;</div>
+<div style="margin-left:80px;">
+					#End Region</div>
+<div style="margin-left:80px;">
+					&nbsp;</div>
+<div style="margin-left:80px;">
+					End Class</div>
+<div>
+					&nbsp;</div>
+</div>
+<div>
+				
+<hr />
+</div>
+<div>
+				<strong>Other forum posts I tried however gave no joy:</strong></div>
+<div>
+				&nbsp;</div>
+<div>
+				Old topic on Referential Integrity which uses an ugly exception method - not nice:<br />
+				<a href="http://forums.lhotka.net/forums/p/4943/24055.aspx">http://forums.lhotka.net/forums/p/4943/24055.aspx</a></div>
+</div>
+<p>
+			This got close, suggesting a CanExecuteMethod which asks if it can be deleted (just for the UI developer - not implemented in object rules), but doesn&#39;t really do a Validation Rule - is this really the best way?<br />
+			<a href="http://forums.lhotka.net/forums/p/7134/34125.aspx">http://forums.lhotka.net/forums/p/7134/34125.aspx</a></p>
+<p>&nbsp;</p>
+</div>
+<p>&nbsp;</p>
+</div></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>alex.williamson@grampianfasteners.com replied on Friday, August 20, 2010</h2><p>We went with Overriding the RemoveAt(index) on the list and throwing an exception there.</p>
+<p>We also added a CanRemoveItem(throwonfalse) to the list so it can be queried by the UI dev.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Friday, August 20, 2010</h2><p>Hi, yes, that&#39;s how I probably would have recommended you handle this anyway, if a late opinion helps at all. <img src="http://forums.lhotka.net/emoticons/emotion-1.gif" alt="Smile" /></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>alex.williamson@grampianfasteners.com replied on Monday, August 23, 2010</h2><p><div style='padding-left: 50px;background-color:silver'><b>Andy<br></b></p>
+<p>Hi, yes, that&#39;s how I probably would have recommended you handle this anyway, if a late opinion helps at all. <img src="http://forums.lhotka.net/emoticons/emotion-1.gif" alt="Smile" /></p>
+<div style="clear:both;"></div>
+<p></div></p>
+<p>Yep that&#39;s good - thanks for replying. Had to make sure I&#39;m going at least some way in the right direction!</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

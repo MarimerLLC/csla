@@ -1,0 +1,7 @@
+<html><header><title>Child Collection Delete</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Child Collection Delete</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11440.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>tanny posted on Thursday, June 28, 2012</h2><p>All,</p>
+<p>I have parent - child class relationship&nbsp;and there is sceanrio where I need to delete all child objects only (through referential integrity). Can someone please assist on this regard as I&#39;m new to CSLA and trying to understand the basics?</p>
+<p>It would be great help to me&nbsp;if I can get some samples on how delete works in parent child relationship.</p>
+<p>&nbsp;</p>
+<p>Regards,</p>
+<p>Tanny</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Saturday, June 30, 2012</h2><p>As you probably know, CSLA is not an ORM. It is a framework that helps you create powerful IN-MEMORY business objects.</p>
+<p>When you delete a child from a BusinessListBase collection, the object is moved to a DeletedList collection inside the main collection. When the collection is saved, your DAL is invoked to delete the items in the DeletedList, and then to insert/update any changed items in the main list.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

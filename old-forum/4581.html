@@ -1,0 +1,169 @@
+<html><header><title>Streamline and Standardiaze Team Development Work in ASP.NET.</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Streamline and Standardiaze Team Development Work in ASP.NET.</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4581.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>tarekahf posted on Friday, March 28, 2008</h2><p><font face="Times New Roman" size="2">Dear All,</font></p><p><font face="Times New Roman" size="2">I
+truly appreciate your help and feedback. I will give you below a
+background about our situation, the results of the research I made, and
+then I will mention my requirements.</font></p><p><font face="Times New Roman" size="2">I actually was refered to CSLA.NET from www.asp.net forums, and I need to know if CSLA.NET will be of value to us, with reagards to our requirements.<br></font></p><p><font face="Times New Roman" size="2"><font size="2"><u><b>Background:</b></u><br></font></font></p><p><font face="Times New Roman" size="2"><font size="2">1.
+I work in a company in IT Dept., and we are a team of 3-4 developers,
+with different levels of skills in
+ASP.NET, and with excellent development skills each in his area of
+specialty (Lotus Notes, Java ...etc). We have highly skilled
+developers in ASP.NET.
+We are using VS2005/SQL Server for the Web Application Development, and
+VSS for Source Control, in addition to other tools/platforms.<br><br>2.
+The objective of our team is to develop Applications
+for the End Users to increase their productivity (Using Web Based
+Applications).&nbsp; The back-end systems are in UNIX/Adabas. We are using
+CONNX SQL Gateway for Data Access from the Web Apps to Adabas. SAP
+Portals will be deployed in a couple of months, and we are
+migrating from UNIX/Adabas to SAP in a couple of years.
+<br><br>3. The applications we are developing may be targeted for ALL
+Staff, or for
+certain department/section in the company The total number of the Staff
+is 1000 (aprox) and the avareage number of staff in each dept is 30.
+<br><br>4. Our 
+<span>biggest problem
+</span> in developing Good Looking Professional Applications, and we
+have not yet upgraded to VS2008, so I guess AJAX for .NET 3.x,
+Silverlight and Expression are not an option for the near futures, but
+surely, we will have to
+upgrade sooner or later, which will take some time because we have to
+arrange for training, licensing, budget ...etc.
+<br><br>5. The time frame to build the required applications is
+usually tight (and always the users want the application to finish
+yesterday). The average period to launch an application after
+completing a development cycle is 2-3 months. The application goes
+under continuous improvements over 6-10 months, and in some cases, it
+will span over a couple of years.
+<br><br><u>Below is some info I found based on my research, on how to build good looking web applications:</u>
+<br><br>1. Using CMS Tools like DotNetNuke from: </font></font><font face="Times New Roman" size="2"><a href="http://www.dotnetnuke.com/" title="http://www.dotnetnuke.com/" target="_blank">http://www.dotnetnuke.com/</a></font><font face="Times New Roman" size="2"><font size="2">. and.or Umbraco from: 
+    
+<a href="http://www.umbraco.org/" class="moz-txt-link-freetext">http://www.umbraco.org/
+</a> , </font></font><font face="Times New Roman" size="2">where such tools are very good in building attractive UI, </font><font face="Times New Roman" size="2"><font size="2">but usually, as per my personal opinion, I do not recommend using such tools for cases like ours, because of the following:</font></font></p><p><font face="Times New Roman" size="2"><font size="2">&nbsp; 1.1. They do a lot of things for you that you don't need, which causes BLOATED Output and possible performance issues.
+<br>&nbsp; 1,2,&nbsp; They may impose some annoying limitations,&nbsp; which may force
+you to perform some unusual tricks to make them happen, if that is
+possible in the first place. So the time you saved to build the UI, has
+been wasted in finding solutions for tricks.
+<br>&nbsp; 1.3. They may require certain configuration which is not available, or will cause unwanted results.
+<br>&nbsp; 1.4. They require a special learning curve. Each tool has its own
+technique. I prefer to spend my time learning the original APS.NET
+infrastructure instead.<br>&nbsp; 1.5. </font>They duplicate the functionality
+provided by SAP Portal, and the effort needed to implement and learn how
+to use this tool will be wasted.<br>&nbsp; 1.6. </font><font face="Times New Roman" size="2">For DNN, it generates a Huge number of objects
+for SQL Server Database and Web Parts/Files/Folders under IIS, ie, it is
+a Bloated Engine: Each time you create a web site for an application, it
+will create a large number of objects which you have no control over, and
+if you mix different web application in the same web site, it will confusing.</font><font face="Times New Roman" size="2"><br><br>---&gt; <b>I am interested in your feedback </b>about such CMS tools please, and how it compares to CSLA.NET ?<br><br>2. There is
+also many other ASP.NET Starter Kits. or CSK and and the like, some of which
+seems less complex than DNN and umbraco. I need your input on such
+tools and how they are different from CSLA.NET. The related link:</font></p><p><font face="Times New Roman" size="2"><a href="http://www.asp.net/community/projects/" target="_blank">http://www.asp.net/community/projects/</a></font><font face="Times New Roman" size="2"><br><br>3, I also found the Enterprise Library from: <span><a href="http://msdn2.microsoft.com/en-us/library/aa480453.aspx">http://msdn2.microsoft.com/en-us/library/aa480453.aspx</a></span></font><font face="Times New Roman" size="2">. It looks very promising. But, it has no reference
+to Web Templates, Master Pages, Style sheets, Themes, Site Navigation,
+Dynamic Menus and User Interface in Greneral.</font></p><p><font face="Times New Roman" size="2">4. </font><font face="Times New Roman" size="2">I
+have done some research, and found the following links to which have ready
+<b><u>Web Templates for Master Page, Themes, Style Sheets, Menus</u></b>
+...etc...:</font><font face="Times New Roman" size="2">
+<br><br></font>
+
+
+<font face="Times New Roman" size="2"><a href="http://msdn2.microsoft.com/en-us/asp.net/aa336603.aspx" target="_blank">http://msdn2.microsoft.com/en-us/asp.net/aa336603.aspx</a><br><a href="http://msdn2.microsoft.com/en-us/asp.net/aa336602.aspx">http://msdn2.microsoft.com/en-us/asp.net/aa336602.aspx</a>
+<br><a href="http://www.ex-designz.net/template/default.asp" target="_blank">http://www.ex-designz.net/template/default.asp</a>
+<br></font>
+
+
+<font face="Times New Roman" size="2"><a href="http://www.beansoftware.com/ASP.NET-Tutorials/Globalisation-Multilingual-CultureInfo.aspx" target="_blank">http://www.beansoftware.com/ASP.NET-Tutorials/Globalisation-Multilingual-CultureInfo.aspx</a>&nbsp;
+<br><a href="http://www.asp.net/community/control-gallery/browse.aspx?category=22">http://www.asp.net/community/control-gallery/browse.aspx?category=22</a>
+<br><br></font>
+</p><p><font face="Times New Roman" size="2">We have found a lot of web templates and Master Pages
+Samples, and Menu and Navigation Templates... but, the problem is that
+they are Static, we need to do some work to replace the static menus
+with Menu and Navigation Controls of ASP.NET. Do you have any feedback
+on this issue ? Any alternative way ? </font></p><p><font face="Times New Roman" size="2">5. For <b><u>Authentication and Authorization</u></b>,
+I was looking for a way to use Windows Authentication, and User Defined
+Role Based Authorization (using GenericPrincipal instead of Windows NT
+Groups), and I found this link which a sample code that will help me achieve
+my requirement:</font><font face="Times New Roman" size="2">
+<br><br><a href="http://weblogs.asp.net/dneimke/archive/2003/09/29/29499.aspx" target="_blank">http://weblogs.asp.net/dneimke/archive/2003/09/29/29499.aspx</a>
+<br><br></font>
+
+
+
+
+
+
+
+
+<font face="Times New Roman" size="2">And, I will use the info from this link:</font><font face="Times New Roman" size="2">
+<br><br></font>
+
+
+<font face="Times New Roman" size="2"><a href="http://msdn2.microsoft.com/en-us/library/tksy7hd7.aspx" target="_blank">http://msdn2.microsoft.com/en-us/library/tksy7hd7.aspx</a>
+<br><br></font>
+
+
+
+<font face="Times New Roman" size="2">to build the required authorization
+module.</font></p><p><font face="Times New Roman" size="2">6. </font><font face="Times New Roman" size="2">I also found <a href="http://asp.net/ajax/">Ajax Control Toolkit</a> which looks very promissing for UI. How does it compare to CSLA.NET ?</font></p><p><font face="Times New Roman" size="2"><br></font>
+</p><p><font face="Times New Roman" size="2"><u><b><font>Our Requirements:</font></b></u></font></p><p><font face="Times New Roman" size="2"><font size="2">1. We are in bad need for a method, technique, easy to use
+tool, or what ever you want to call it, we are looking for a way to
+standardize and streamline the development of Web Applications</font></font><font face="Times New Roman" size="2"> among
+the Team Members. The objective is to reuse the work completed by others
+and have consistent way of developing application in all aspects, so that
+it will be easy to hand-over the work from one team member to another</font></p><p><font face="Times New Roman" size="2"><font size="2">2. </font></font><font face="Times New Roman" size="2">Rich User Interface. I <b>do not
+</b>mean FLASH, Silverlite and the like,</font><font face="Times New Roman" size="2"><font size="2"> </font></font><font face="Times New Roman" size="2"> I mean good looking and professional web application
+(look and feel and UI). </font><font face="Times New Roman" size="2"><font size="2">To
+be more specific,
+this covers: Master Pages, Themes, Style sheets, Site Navigations,
+Dynamic Menus (with User Roles), ... etc. and it does not have
+to be fully automated. As you know, it is really not easy to work with
+CSS, you must agree with me, don't you ? While CSS Editor/Builder makes
+it a little bit easier, you still need to have the Artistic Skills to
+be able to imagine what colors you need.<br><br>3.&nbsp;</font></font><font face="Times New Roman" size="2">Standardize Authentication and
+Authorization across all applications. We are mainly using Windows Authentication,
+and for Authorization, I want to use user-defined Roles
+and assigning roles to users, and control menu access and system functions
+using roles.</font></p><p><font face="Times New Roman" size="2">4. Complete the development in
+relatively a short period: Rapid Application Development,</font></p><p><font face="Times New Roman" size="2">Your feedback, comments and recommendations will be greatly appreciated.</font></p><p><font face="Times New Roman" size="2">Regards ...</font></p><p><font face="Times New Roman" size="2">Tarek. </font><font face="Times New Roman"><br></font></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>webjedi replied on Friday, March 28, 2008</h2><P>From the sounds of it you are really looking for a UI framework and not an 'application framework' like CSLA.&nbsp; CSLA will help you build the plumbing of the application such that it will be scalable and flexible, but in and of itself it will not help you make your application more professional looking.</P>
+<P>For that you should checkout the controls companies like Telerik and Infragistics...I know many of Teleriks controls are still .Net 2.0 but look and behave remarkably 3.5ish.</P>
+<P>Hope that helps.</P>
+<P>Ryan</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RikGarner replied on Friday, March 28, 2008</h2><P>We have an application that combines several&nbsp;"chunks of framework"&nbsp;from different sources into one coherent whole, of which CSLA was one. </P>
+<P>The Enterprise Libraries provide a good set of "plumbing" code upon which you can build a CSLA based set of business objects (we used the data access app, cache and crypto blocks).</P>
+<P>To&nbsp;build a UI on top of all that we used the Smart Client software factory&nbsp;which provides a framework for creating desktop apps. There is a web client equivalent which, combined with AJAX, should provide a good basis for rich web client applications.</P>
+<P>Although there was a steep learning curve, once the team 'got it' we had a good base to work against.&nbsp; You will need to&nbsp;pick&nbsp;and choose between all the options out there; one of the really useful things about CSLA, apart from all the built in goodies like n-level undo and data binding, is that it imposes a standard pattern on the way business objects are built by developers so the team have a simple template to work inside.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tarekahf replied on Saturday, March 29, 2008</h2>Thanks all for your feedback. It is really very useful.<br><br>Following is my initial feedback in general:<br><br>1. I took a closer look at CSLA, and I am really impresed with it. I think it will be very useful. But I need to complement it with a nice GUI Tool or something like that. I do not necessary have to get a complex engine to do the GUI for us (like DNN). For example, if there is a simple template that I can copy and paste or re-use, it will be OK. I want to avoid editing the commands for CSS, Skins and Themes ... I need something ready and easy to apply different templates. Something like CSS Switcher ?<br><br>2. Any feedback on the problems of DNN I mentioned earlier in this thread, and if there is any other alternatives ?<br><br>3. Teleriks looks very cool ... but they are costly ... I am not sure if this idea will be attractive to the management !!! Let us first exploit the free/open source path ...<br><br><br>Tarek.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tarekahf replied on Saturday, March 29, 2008</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>RikGarner:</strong></div><div><p>We have an application that combines several&nbsp;"chunks of framework"&nbsp;from different sources into one coherent whole, of which CSLA was one. </p>
+<p>The Enterprise Libraries provide a good set of "plumbing" code upon which you can build a CSLA based set of business objects (we used the data access app, cache and crypto blocks).</p>
+<p>To&nbsp;build a UI on top of all that we used the Smart Client software factory&nbsp;which provides a framework for creating desktop apps. There is a web client equivalent which, combined with AJAX, should provide a good basis for rich web client applications.</p>
+<p>Although there was a steep learning curve, once the team 'got it' we had a good base to work against.&nbsp; You will need to&nbsp;pick&nbsp;and choose between all the options out there; one of the really useful things about CSLA, apart from all the built in goodies like n-level undo and data binding, is that it imposes a standard pattern on the way business objects are built by developers so the team have a simple template to work inside.</p></div></BLOCKQUOTE><br>Thanks a lot.<br><br>I am intereseted in getting more info about the approach you followed ?<br><br>Did you use parts from DNN or Umbraco or the like ?<br><br>What do you think about using such CMS Tools ?<br><br>What do you think about re-using such Master Pages Templates, Skins, CSS, Themes ...etc... (which I mentioned in this thread earlier) and do some effort to make them work in a Dynamic Way for Menus and Site Navigation ?<br><br>Please give me some links on the Smart Client Software for web applications.<br><br>Tarek.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RikGarner replied on Monday, March 31, 2008</h2><P>Most of the UI controls we used were out-of-the-box Windows Forms ones, although we did write a couple of controls ourselves. The smart client stuff is at <A href="http://msdn2.microsoft.com/en-us/library/aa480482.aspx">http://msdn2.microsoft.com/en-us/library/aa480482.aspx</A>.</P>
+<P>I haven't had a chance to use the Web client software factory yet, although I expect to use it in the near future; it's msdn page is <A href="http://msdn2.microsoft.com/en-us/library/bb264518.aspx">http://msdn2.microsoft.com/en-us/library/bb264518.aspx</A>.</P>
+<P>It&nbsp;does have support for master pages and probably other similar goodies too (it's been evolving for a couple of years now so I expect it will be pretty full-featured).</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tarekahf replied on Wednesday, April 02, 2008</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>RikGarner:</strong></div><div>
+<P>Most of the UI controls we used were out-of-the-box Windows Forms ones, although we did write a couple of controls ourselves. The smart client stuff is at <A href="http://msdn2.microsoft.com/en-us/library/aa480482.aspx">http://msdn2.microsoft.com/en-us/library/aa480482.aspx</A>.</P>
+<P>I haven't had a chance to use the Web client software factory yet, although I expect to use it in the near future; it's msdn page is <A href="http://msdn2.microsoft.com/en-us/library/bb264518.aspx">http://msdn2.microsoft.com/en-us/library/bb264518.aspx</A>.</P>
+<P>It&nbsp;does have support for master pages and probably other similar goodies too (it's been evolving for a couple of years now so I expect it will be pretty full-featured).</P>
+<P></div></BLOCKQUOTE></P>
+<P>Great !</P>
+<P>I hope that CSLA.NET and WCSF do not overlap, or of they do overlap, it will be minimal. I do not want to confuse the team members about which framework to use for what part ??!!</P>
+<P>So, as per my understanding, we will use CSLA.NET for developing the Business Logic and WCSF for the Front End, UI ...etc.&nbsp; Is my understanding correct ?</P>
+<P>Tarek.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RikGarner replied on Wednesday, April 02, 2008</h2><P>Yes, that is what I am suggesting. You should make it clear that CSLA should be the basis of your business logic layer and that WCSF should be the framework you use to build your user interface. In practice I think you will find that easier than you might imagine.</P>
+<P>It will probably be a good idea to have your business logic (built upon CSLA) in a different project from your UI. This has a couple of advantages;&nbsp;if there was ever a need, you could reuse your business logic dll for a winforms app. Also, you may find some of your team members tend to prefer working on one side or the other or have an aptitude in one area over the other.</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tarekahf replied on Wednesday, April 02, 2008</h2><P>I downloaded the CSLA.NET for ASP.NET 2.0, and tried to follow the instructions, but I have some errors.</P>
+<P>Please see the details in this post:</P>
+<P><A HREF="/forums/22456/ShowThread.aspx#22456">http://forums.lhotka.net/forums/22456/ShowThread.aspx#22456</A></P>
+<P>I appreciate your help.</P>
+<P>Tarek.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>MGervais replied on Wednesday, April 02, 2008</h2><P><FONT face=Tahoma size=2>@RikGarner:</FONT></P>
+<P><FONT face=Tahoma size=2>Can you shed some light on what your experience has been with the integration of CSLA and the SCSF? I am considering make use of the SCSF on top of our CSLA-based BOs but I have heard from others that it was not a easy/simple prospect.</FONT></P>
+<P><FONT face=Tahoma size=2>Thanks.</FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RikGarner replied on Friday, April 04, 2008</h2><P>The integration between CSLA and the UI framework was fine - most of the issues we had were due to the steep learning curve on the SCSF. It is a big framework with a lot of things to get your head around but once the picture starts to emerge from the mist it is an excellent platform on which to build an application. </P>
+<P>We compounded the issue by using team members with no experience of CSLA or of the back end database (Oracle)&nbsp;<img src="/emoticons/emotion-1.gif" alt="Smile [:)]" /></P>
+<P>In the end we didn't end up customising any of the guidance package stuff and just used the framework 'as-is'. </P>
+<P>I'm happy to answer any specific questions if you have them.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tarekahf replied on Friday, April 04, 2008</h2>RikGarner,<br><br>Did you have any chance to see the error I faced after I downlaoded and installed CSLA.NET and tried to run the smple PT Project ?<br><br>I need to put together a complate proposal and a working demo convering all aspects, and if I cannot resolve this error, I cannot propsoe CSLA.NET.<br><br>Your help will be greatly appreciated.<br><br>Tarek.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tarekahf replied on Friday, April 04, 2008</h2>I need your recommendation on the best way to desing the classes in a reusable way using CSLA.NET.<br><br><u><b>Requirement:</b></u><br><br>The required data is stored in 2 different back-end Databases, say: Adabas and SQL Server, for example.<br><br>On the UI, sometimes we need to access the data only from Adabas, and some other times, from both, Adabas SQL Server, for example.<br><br>The SQL Sring for accessing the data from Adabas say:<br><br>select StaffID, StaffName, StaffAge from AdabasTable<br><br>The SQL Sring for access the data from SQL Server say:<br><br>select staffid, Salary from SQLServerTable<br><br>Each SQL String must be executed against the appropriate Connection String, which is stored in the web.config file.<br><br>How I can desing a Business Object (class) that can retrieve the list of staff, from Adabase only, then another class which is reusing the first one to retreive the same list which has both data from Adabas and SQL Server, and combine the result in one list ?<br><br>Say the calsss/methods look something like the followig:<br><br>StaffListAdabas.getStaffList(&lt;some filter param&gt;) <br>returns say DataTable<br><br>StaffListSQLServer.getStaffList(&lt;some filter param&gt;)<br>retruns say DataTable<br><br>The result should be used as a Data Source from some UI element like GridView.<br><br>I hope I was able to clarify my requirement and appreciate your help.<br><br>Tarek.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Cine replied on Friday, April 04, 2008</h2>To me this looks like the standard inversion of control problem. Take an interface as parameter when you create your BO. The interface should have a function called getStaffList that returns a datatable, this way your BO does not need to know who, how or what is in control of fetching the object.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tarekahf replied on Saturday, April 05, 2008</h2><P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>Cine:</strong></div><div>To me this looks like the standard inversion of control problem. Take an interface as parameter when you create your BO. The interface should have a function called getStaffList that returns a datatable, this way your BO does not need to know who, how or what is in control of fetching the object.<BR></div></BLOCKQUOTE></P>
+<P>I am not sure if I made I was able to explain the problem I am facing corectly!</P>
+<P>In the normal situation, the data is supposed to be stored in one Database say only from Adabas. So, the SQL String looks like the following:</P>
+<P>"select StaffID, StaffName, StaffAge, Salary&nbsp;from AdabasTable;"<BR>(Note: This is a simplistic example, of course, the actual case is mor complicated).</P>
+<P>But the above cannot be done becuase the "Salary" is stored in different Database, in SQL Server, which requires another connection string.</P>
+<P>One way to solve this problem, is to define a Linked Server in SQL Server, use OpenQuery() function to open the&nbsp;Adabas Table&nbsp;in SQL Server,&nbsp;and use one SQL String to join the tables between Adabas and SQL Server. But this methods defeets the value of OOP, as you may have already built a class to retrieve the first part, and all what you need to do is to get second part of the data from the other Database. The ideal way is to define another class and re-use the functionality of the first class, but I cannot figure out how to do that exactly.</P>
+<P>So, we can simply build a Staff Class as follows:</P>
+<P>(Note: The syntax my not be 100% correct, this is just for clarification purposes)</P>
+<P>public class clsStaff1<BR>private _StaffID as String<BR>private _StaffName as String<BR>private _StaffAge as Integer<BR>private Salary as double<BR>public propert ReadOnly&nbsp;StaffID() as String<BR>&nbsp; get <BR>&nbsp;&nbsp;&nbsp; return _StaffID<BR>&nbsp; end get<BR>end property<BR>...bla bla bla ...<BR>... bla bla...<BR>... same for StaffName, StaffAge, and Salaray ... read only is needed...<BR>public shared function getStaffList() as DataTable<BR>&nbsp; con = open connection to Adabas Table<BR>&nbsp; SQLStr = "select StaffID, StaffName, StaffAge from AdabasTable"<BR>&nbsp; Execute the SQL String and return the DataTable using Adaptor for example !<BR>end function<BR>end class</P>
+<P>The question is: How to define another class "clsStaff2" the re-uses the first class (inherits) and just add the the "Salary" from SQL Server Table ?</P>
+<P>I think one way to do that is to do the Join between the 2 DataTables in the VB Code, is this possible ?</P>
+<P>Is this approach practical in the first place ?</P>
+<P>Tarek.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tarekahf replied on Saturday, April 05, 2008</h2><P>Good news ! The error was resolved, and I managed to run PTWeb Project and PTWin Project successfully.</P>
+<P>I am now working on developing a model/demo using CLSA.NET Framework with one of the applications, and I need help to get started.</P>
+<P>Please allow me to post a different thread for each requirement, in order to make it easier to track and follow.</P>
+<P>I will stop posting in this thread for getting help on how to use CSLA.NET to implement certain programming requirements. I am happy to receive any other comments in this thread which is related to the original subject.</P>
+<P>Tarek.</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

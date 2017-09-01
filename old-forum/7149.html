@@ -1,0 +1,22 @@
+<html><header><title>Idea to implement Cslalight BusinessBase.WaitBusy</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Idea to implement Cslalight BusinessBase.WaitBusy</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/7149.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Cuong posted on Monday, June 22, 2009</h2>I am developing a Silverlight app. The SaveButton's Click event handler which will save business object is like bellow:<br><br>var obj = this.DataObject;<br><b>if (obj.IsBusy == false)<br></b>{<br>&nbsp;&nbsp;&nbsp; if (obj.IsDirty)<br>&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (obj.IsValid)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; obj.Save();<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; else<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; MessageBox.Prompt(obj.BrokenRulesCollection.First().ToString());<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>&nbsp;&nbsp;&nbsp; }<br>&nbsp;&nbsp;&nbsp; else<br>&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; OnCancel();<br>&nbsp;&nbsp;&nbsp; }<br>}<br><br>So, if a TextBox control is focused, the user have to press the Enter key (that will invoke the SaveButton' Click event handler) twice to save business object because of the checking code <b>"if (obj.IsBusy == false) { ... }"</b>. The first invoking is ignored because the business object is still busy.<br><br>I want to implement an BusinessBase.WaitBusy to lock the application thread until the business object is not busy. So the code will be changed like bellow and the user can press Enter key once to save business object. Now I cannot find any good solution to implement this method. <br><br>Does anyone meet this senario? Do you have an idea to implement this method or have a trick to workaround my issue? I just tried to use Thread.Sleep inside BusinessBase.WaitBusy with no success.<br><br>var obj = this.DataObject;<br><b>
+if (obj.WaitBusy(1000)) // wait 1 second</b><br>
+{<br>
+&nbsp;&nbsp;&nbsp; if (obj.IsDirty)<br>
+&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (obj.IsValid)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; obj.Save();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; else<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; MessageBox.Prompt(obj.BrokenRulesCollection.First().ToString());<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+&nbsp;&nbsp;&nbsp; }<br>
+&nbsp;&nbsp;&nbsp; else<br>
+&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; OnCancel();<br>
+&nbsp;&nbsp;&nbsp; }<br>
+}<br>
+<br><br><br><br>&nbsp;<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, June 23, 2009</h2><P>Anything that blocks the main Silverlight thread (which is the browser's main thread too) is bad. </P>
+<P>The reason is that the browser is then locked up, so the user can't switch to another tab, close the browser or otherwise interact with the browser. There is no way in which this is a good thing.</P>
+<P>So any time you think you want to block this thread, you need to reimagine a solution to the problem.</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

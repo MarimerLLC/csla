@@ -1,0 +1,166 @@
+<html><header><title>How to create a Root object collection</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>How to create a Root object collection</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6229.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>AZS posted on Wednesday, January 21, 2009</h2><P>Is there any sample code that shows how to create an editable root object collection?&nbsp; In the project&nbsp;tracker sample&nbsp;I am finding lots of child editable/readonly collection but no parent root level.</P>
+<P>I tried implementing using the <FONT color=#2b91af size=2><FONT color=#2b91af size=2>BusinessListBase&nbsp;<FONT color=#000000>but am running into errors complaining about being a child object.</FONT></P></FONT></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Wednesday, January 21, 2009</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>BLB is what you need, you still need to make sure it&#8217;s
+containing objects are marked as Child.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> AZS
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Wednesday, January 21, 2009 2:41 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> [CSLA .NET] How to create a Root object collection<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Is there any sample code that shows how to create an editable root object
+collection?&nbsp; In the project&nbsp;tracker sample&nbsp;I am finding lots of
+child editable/readonly collection but no parent root level.<o:p></o:p></p>
+
+<p>I tried implementing using the <span>BusinessListBase&nbsp;</span><span>but am running into errors complaining
+about being a child object.</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>AZS replied on Wednesday, January 21, 2009</h2><P>Thank you for the info:</P>
+<P>I am getting this error message when I try to save the data when&nbsp;my prototype app tries to save the data using the data portal object. I am still looking for some sample code that actually save the data to a database.</P>
+<P>DataPortal.Update failed (System.NotSupportedException: Invalid operation - update not allowed<BR>&nbsp;&nbsp; at Csla.BusinessListBase`2.DataPortal_Update() in C:\Visual Studio Projects\csla\cslacs\Csla\BusinessListBase.cs:line 1143<BR>&nbsp;&nbsp; at dm(Object , Object[] )<BR>&nbsp;&nbsp; at Csla.Reflection.MethodCaller.CallMethod(Object obj, DynamicMethodHandle methodHandle, Object[] parameters) in C:\Visual Studio Projects\csla\cslacs\Csla\Reflection\MethodCaller.cs:line 297)</P>
+<P>Thanks,</P>
+<P>Ahmad</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, January 21, 2009</h2>Have you looked at the ProjectTracker app? It is in the samples download, and is discussed in the <EM>Expert 2008 Business Objects</EM> book. Chapters 17 and 18 in particular, would be very helpful to answer your question.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>AZS replied on Wednesday, January 21, 2009</h2><P>Rocky,</P>
+<P>I have looked at the sample app. As far as I can tell all the collection objects are children collections and are populated by the parent object. Please correct me if I am wrong. I just recently purchased your 2005 business object book right before the 2008 was available and don't have access to the 2008 version.</P>
+<P>All I am trying to do is create an updatable root collection list (using BusinessListBase) and ulitmately bind it to a grid on a webform. I am trying to deliver this prototype by this Friday. Any help in providing some sample code will be appreciated.</P>
+<P>Thanks,</P>
+<P>Ahmad</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rsbaker0 replied on Thursday, January 22, 2009</h2><P>Both EditableRootListBase (ERLB) and BusinessListBase (BLB) can be bound to a data grid for editing. </P>
+<P>The difference is that with BLB, you save all changes to the list -- any and all changed rows -- in a single DataPortal_Update() call. Your UI will need some sort of "Save" button to apply changes to the list (and you would typically call BeginEdit() on the list before binding so that changes to the list can be undone, in which case you'll also want some sort of Undo button). Typically you'll need to unbind when saving and rebind afterwards -- search for RebindUI for lots of discussion on this.</P>
+<P>On the other hand, ERLB will try to save the changes to each row as the focus moves from row to row. The grid will manage the saving and you don't really have manual save/undo support (although the grid may allow an individual row to be undone via some key sequence, but it's doing it by itself and not using CSLA's undo support for this)</P>
+<P>In both cases, you can't call Save() yourself directly on items in the list. With BLB, you call Save() on the list itself to save the entire list.&nbsp; With ERLB, you can call SaveItem() on the list to save individual items.</P>
+<P>Typically, an ERLB is fetched -- e.g. you implement DataPortal_Fetch&nbsp; in a derived class and it is passed an empty list which you populate with child ojects.&nbsp;I could be wrong but I didn't see a DataPortal_Create() implementation for it but I'll double check. I ran into this myself and implemented my own static Create() factory function for my ERLB-derived class when I needed it. </P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Thursday, January 22, 2009</h2><P>You mentioned using a Web Forms grid.</P>
+<P>ERLB is designed only for Windows forms grids. </P>
+<P>I recommend you stop trying to use it.</P>
+<P>Just create a root BO that does nothing except contain a standard child collection. Then when you fetch the root all it does is fetch the collection. Then bind the collection to the web grid normally.</P>
+<P>Joe</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rsbaker0 replied on Thursday, January 22, 2009</h2><P>Oops, I missed the WebForm reference in the OP's last post. Yes, Joe is quite correct in that ERLB is not (at all)&nbsp;well-suited for this. Mea culpa. </P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>AZS replied on Thursday, January 22, 2009</h2><P>Any suggestions on on how to aproach this problem. I am looking for sample code implementing a root level object collection (editable) that can be fully bindable to a Webform grid. </P>
+<P>As I am trying to do this using the "BusinessListBase" object, I am running into problem when I save the collection. I have a feeling that I am not doing something right with the DataProtal.Update of the collection object.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rsbaker0 replied on Thursday, January 22, 2009</h2><P>In your DataPortal_Update(), how are you saving the individual items?</P>
+<P>You can either use the child data portal (new), or you should be actually doing the work to explicitly save/delete each item in the list instead of trying to call Save() directly on them. </P>
+<P>To use the child data portal (which I haven't yet ),&nbsp;I think&nbsp;you implement Child_DeleteSelf, Child_Insert, and Child_Update overrides in your child object, and then just call Child_Update() on your BLB derived list class in your DataPortal_Update() method. These overrides should to the actual work of persisting the changes to each child in the list to the database. </P>
+<P>I have manual code to do the saving, and it looks something like this (very much like the BLB&nbsp;Child_Update() method). The "Update" method below is my own internal method that takes a transaction I have started and does the actual work of writing the changes the database. </P>
+<P><FONT color=#008000 size=2><FONT color=#008000 size=2>// Save deleted items first</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>foreach</FONT></FONT><FONT size=2> (C deletedObject </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>in</FONT></FONT><FONT size=2> DeletedList)</P>
+<P>{</P>
+<P></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2>// Objects must delete themselves</P></FONT></FONT><FONT size=2>
+<P>deletedObject.Delete(transaction);</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>foreach</FONT></FONT><FONT size=2> (C businessObject </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>in</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>this</FONT></FONT><FONT size=2>)</P>
+<P>{</P>
+<P>businessObject.Update(transaction);</P>
+<P>}</P>
+<P>DeletedList.Clear();</P>
+<P>&nbsp;</P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, January 22, 2009</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Have you looked at chapter 7 of the 2005 book, or chapters 4-5
+of the 2008 book?<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>These chapters walk through all the object stereotypes,
+discussing how to create each one. An editable root list is one of the
+stereotypes that&#8217;s covered, including all the code regions required for
+implementing that type of object.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> AZS
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Thursday, January 22, 2009 11:43 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: How to create a Root object collection<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Any suggestions on on how to aproach this problem. I am looking for sample
+code implementing a root level object collection (editable) that can be fully
+bindable to a Webform grid. <o:p></o:p></p>
+
+<p>As I am trying to do this using the &quot;BusinessListBase&quot; object, I am
+running into problem when I save the collection. I have a feeling that I am not
+doing something right with the DataProtal.Update of the collection object.<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

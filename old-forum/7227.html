@@ -1,0 +1,59 @@
+<html><header><title>CslaLight 3.7.0 - Issue with ServiceReferences.ClientConfig</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CslaLight 3.7.0 - Issue with ServiceReferences.ClientConfig</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/7227.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>StuartBale posted on Sunday, July 05, 2009</h2>I've built CSLA.dll for Silverlight 3 using both the 3.6.3 and 3.7.0 codebase.<br /><br />While 3.6.3 works correctly, I receive an error in 3.7.0 in WCFProxy.cs:<br /><br />"Could not find default endpoint element that references contract 'WcfPortal.IWcfPortal' in the ServiceModel client configuration section. This might be because no configuration file was found for your application, or because no endpoint element matching this contract could be found in the client element."<br /><br />The error is on Line 125:<br />    return new WcfPortal.WcfPortalClient();<br /><br />Has anyone else encountered this, or have any suggestions as to why this is happening?<br /><br />Thanks</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Sunday, July 05, 2009</h2><P>Do you have a clientconfig file in your SL application? The one in the Csla project is just a placeholder - the Silverlight runtime only honors a config file if it is in your actual application.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JabbaTheNut replied on Wednesday, July 08, 2009</h2>I am having exactly the same issue.&nbsp; I also have built CSLA for Silverlight 3&nbsp;using both 3.6.3 and 3.7.0.&nbsp; I was successful in the 3.6.3 implementation (albeit with an unresolved async issue that I will post about separately).&nbsp; 3.7.0, however, threw the above mentioned error.&nbsp; I am using the same ServiceReferences.ClientConfig that worked successfully in the 3.6.3 implementation.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JabbaTheNut replied on Wednesday, July 08, 2009</h2><P>I resolved my problem.&nbsp; The problem appears to be with the References.cs file.&nbsp; I did the following and was able to both&nbsp;compile and successfully implement version 3.7.0 for Silverlight 3:</P>
+<P>1.&nbsp; Remove the reference to System.Windows.Controls.Data and then add back the Silverlight 3 version of System.Windows.Control.Data</P>
+<P>2.&nbsp; Replace the 3.7.0 version of the References.cs file with the 3.6.3 version (downloaded from CSLA.Net site).&nbsp; This References.cs file is located under cslalightcs\Csla\Service References\WcfPortal</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, July 08, 2009</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Have you looked at the clientconfig file that&#8217;s in the
+CSLA project? I suspect Microsoft changed some WCF config options, and that may
+mean you need to update your clientconfig as well.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> JabbaTheNut
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Wednesday, July 08, 2009 4:08 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] CslaLight 3.7.0 - Issue with
+ServiceReferences.ClientConfig<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>I am having exactly the same issue.&nbsp; I also have built
+CSLA for Silverlight 3&nbsp;using both 3.6.3 and 3.7.0.&nbsp; I was successful
+in the 3.6.3 implementation (albeit with an unresolved async issue that I will
+post about separately).&nbsp; 3.7.0, however, threw the above mentioned error.&nbsp;
+I am using the same ServiceReferences.ClientConfig that worked successfully in
+the 3.6.3 implementation.<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, July 10, 2009</h2>I have addressed this issue, and the 3.7 beta I just put online should work fine.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>StuartBale replied on Friday, July 17, 2009</h2>Thanks Rocky - i've also noticed that it's necessary to set the correct contract in the client endpoint ... previously i had:<br><blockquote>contract="Csla.WcfPortal.IWcfPortal"<br></blockquote>i changed to:<br><blockquote>contract="WcfPortal.IWcfPortal"<br></blockquote>and it now works ok.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, July 17, 2009</h2>I wonder why? I haven't had to do that in my projects.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Roy Ogborn replied on Wednesday, July 29, 2009</h2>Same issue here.<br /><br />In fact my project had been running on 3.7.0 but had resigned my copy of the 3.7.0 CslaLight projects back to using Rocky's original snk file to keep consistency with a co-developer on the same project and then recompiled.<br /><br />Stuart, thanks for your post! Removing the "Csla." prefix in my ServiceReferences.ClientConfig endpoint contract on the Silverlight app solved the problem.<br /><br />Strange.<br /><br />Roy</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

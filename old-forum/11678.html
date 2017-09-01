@@ -1,0 +1,46 @@
+<html><header><title>Re: Business Rule for Not Allowing Edit or Delete for a Specific Record</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Re: Business Rule for Not Allowing Edit or Delete for a Specific Record</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11678.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>JCardina posted on Monday, November 05, 2012</h2><p>Whups! &nbsp;Have you tried this Jonny? &nbsp;I subclassed my&nbsp;existing&nbsp;rule as per your example, made it the only delete rule and it now calls execute which is progress however Context.Target is *always* null so it does nothing.</p>
+<p>Is this a problem for some reason because I&#39;ve used my subclassed rule for Delete action but used the regular rule for all the other actions? Does this confuse the rule engine or something? &nbsp;I.E.:&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp; public static void AddObjectAuthorizationRules()&nbsp; &nbsp; &nbsp; &nbsp; {&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Csla.Rules.BusinessRules.AddRule(typeof(PartWarehouse), new Admin.IsAllowed(Csla.Rules.AuthorizationActions.GetObject, RootObjectTypes.PartWarehouse));</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Csla.Rules.BusinessRules.AddRule(typeof(PartWarehouse), new Admin.IsAllowed(Csla.Rules.AuthorizationActions.CreateObject, RootObjectTypes.PartWarehouse));</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Csla.Rules.BusinessRules.AddRule(typeof(PartWarehouse), new Admin.IsAllowed(Csla.Rules.AuthorizationActions.EditObject, RootObjectTypes.PartWarehouse));</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; //Instead of running regular delete rule we&#39;ll run the one that checks if its&#39; the default warehouse *in addition* to checking regular permissions</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Csla.Rules.BusinessRules.AddRule(typeof(PartWarehouse), new Admin.IsAllowedOrIsSystemObjectAuthorizationRule(Csla.Rules.AuthorizationActions.DeleteObject,&nbsp; &nbsp;RootObjectTypes.PartWarehouse, IsDefaultWarehouseProperty));</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp;</p>
+<p>And the rule itself:</p>
+<p>
+<p>&nbsp; internal class IsAllowedOrIsSystemObjectAuthorizationRule : IsAllowed</p>
+<p>&nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; private readonly IPropertyInfo _IsSystemObjectField;</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; public IsAllowedOrIsSystemObjectAuthorizationRule( AuthorizationActions action, RootObjectTypes objectType, PropertyInfo&lt;bool&gt; IsSystemObjectBoolField)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; : base(action, objectType)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; _IsSystemObjectField = IsSystemObjectBoolField;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; public override bool CacheResult</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; get</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; return false;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; protected override void Execute(AuthorizationContext context)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; // check the base rule</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; base.Execute(context);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; if(!context.HasPermission) return;</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; if(context.Target == null) return;//It&#39;s always null, this isn&#39;t working!</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; var isSystem = (bool)ReadProperty(context.Target, _IsSystemObjectField);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; context.HasPermission = !isSystem; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp; &nbsp; }//eoc &nbsp;&nbsp;</p>
+</p>
+<p>&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

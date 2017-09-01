@@ -1,0 +1,102 @@
+<html><header><title>Object Model is stumping me :( I really need some help with this one</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Object Model is stumping me :( I really need some help with this one</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/913.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>RangerGuy posted on Wednesday, August 16, 2006</h2><P>Ok so we have quite a complex requirement for the order entry system. Here are the objects and behaviors we came up with. Were hoping that a more experience OO designer can offere some insight.</P>
+<P>&nbsp;</P>
+<P>1)&nbsp;A customer (who belongs to a group of customers)</P>
+<P>2) An order which applies to that entire group of customers (each order detail&nbsp;has a product this is sold to an individual customer)</P>
+<P>3) A Shopping Cart (Our cart for our purposes is pretty straight forward) </P>
+<P>Our definition ShoppingCart(Contains what we want)</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; CommitedOrder (What we already have)</P>
+<P>So</P>
+<P>&nbsp;CartQTY - OrderQTy = New Order (Here is an example)</P>
+<P>For this example i'll display product and qty like Prod(Qty)</P>
+<P>Cart&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CommitedOrder&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;New Order&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(Select Qty = Sum of all orders for group)</P>
+<P>A(2)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;A(3)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;A(-1)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;A(2)</P>
+<P>B(0)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;B(4)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;B(-4)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;B(0)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</P>
+<P>C(5)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;C(1)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;C(4)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;C(5)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</P>
+<P>D(1)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;D(0)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;D(1)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;D(1)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</P>
+<P>4)Payment</P>
+<P>&nbsp;&nbsp;&nbsp;A) Can be made by anyone(May not be a customer in the system) Example( I pay for a group of customers but I'm not part of that group)</P>
+<P>&nbsp;B) Need to apply a payment to mulitple orders Example ( 4 orders each total $10) I make a payment for $40 and assign 10 bucks to each order OR I make a payment for 30 bucks and assign 10 bucks to 2 orders and 5 bucks each on the remaining 2 orders leaving a balance owning of 5 bucks on the last 2 orders.</P>
+<P>PHEW! So with that crazy use cases we came up with these objects</P>
+<P>Customer</P>
+<P>Order</P>
+<P>OrderDetail</P>
+<P>Payment</P>
+<P>Payment Detail</P>
+<P>Where we are having difficulty is making the object relationships because an Order contains orderdetails but each order detail is for 1 customer which belongs to a group of customers and a payment can be for 1 order or multiple orders. </P>
+<P>Also since we don't change orders that are saved in the database we only create new ones because that gives us a history of the customers commited selections we have to sum all the selected quantities from each order for that group of customers. To calculate the total owning or refund etc.</P>
+<P>Really need some suggestions on this one. I don't feel comfortable with our current design :(</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RangerGuy replied on Wednesday, August 16, 2006</h2><P>So if the Order(s) are for a group of customers but we need to display the order as a whole when viewing the details of the group. </P>
+<P>Would it be a good solution to make the order object a child of the customer object so while the group of customers are being entered they behave like it's there own order but when viewing the complete order each customer order becomes the an orderdetail of the group order.</P>
+<P>So each customer in the group would have an order(s) object that has the same information but the order details for each customer would be different in the group. That way when viewing the complete order it comes together as one complete order?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>SonOfPirate replied on Wednesday, August 16, 2006</h2><P>I think part of the confusion may be that your description really doesn't contain true "use cases".&nbsp; Your use cases&nbsp;should include something like:</P>
+<UL>
+<LI>Customer adds item to cart</LI>
+<LI>Customer places order</LI>
+<LI>???? makes payment</LI></UL>
+<P>and so on.</P>
+<P>For my part, the process you are describing is very confusing and would, therefore, be very hard to model without a better understanding of what you are trying to accomplish.&nbsp; For instance, how can a customer "commit" an order for more than was in their cart resulting in a negative quantity for "New Order"?&nbsp; What does this represent?&nbsp; Almost looks like a purchasing/inventory management function to determine quantities to order from your vendors rather a sales function.</P>
+<P>From what I can gather, you have a CustomerGroup which will contain a collection of Customer objects.&nbsp; You want that group to have an associated order that you are allowing each customer within the group to access and add items to the order but want to be able to identify which customer ordered that item.&nbsp; Is that accurate?</P>
+<P>What role does the CustomerGroup serve in the application?&nbsp; If each individual customer can place an order (indirectly via their items within the group's order) and anyone can pay anyone's bill, it is unclear what purpose the CustomerGroup serves other than a logical collection of customers for possible aggregation of data for reporting, such as total orders, etc.</P>
+<P>Without going too deep into your application, it is hard from this explanation to help you out.&nbsp; I'm sure you know the application, process and logic&nbsp;fluently and sometimes that makes it hard to explain to someone who knows nothing about it.&nbsp; I would suggest going back to your use cases and making sure that you have a list of finite cases in the format:</P>
+<P>Actor - Action - Object</P>
+<P>In other words, each use case should describe who does what to what object, such as Customer (who) adds an item (does what) to the cart (to what).&nbsp; This should lend itself to a better understanding of what you are dealing with and you'll end up with a list of objects from both ends of the use case statement and the relationship(s) between them (behaviors).</P>
+<P>The explanation about how payments are allowed really highlights the gap in information.&nbsp; Who are these people making payments if not customers?&nbsp; Where did they come from?&nbsp; What else can they do? and so on.</P>
+<P>I'll be more than happy to go over it again if you can help me get a better understanding of what you're trying to accomplish.</P>
+<P>Hope that helps.</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RangerGuy replied on Wednesday, August 16, 2006</h2><P>Thank you very much for the replay :) I will try to clarify it a bit more</P>
+<P>For my part, the process you are describing is very confusing and would, therefore, be very hard to model without a better understanding of what you are trying to accomplish.&nbsp; For instance, how can a customer "commit" an order for more than was in their cart resulting in a negative quantity for "New Order"?&nbsp; What does this represent?&nbsp; Almost looks like a purchasing/inventory management function to determine quantities to order from your vendors rather a sales function.</P>
+<P><STRONG>My Customer purchases 5 of Product A. Comes back later to the product selection page and changes the order to 3 of Product A. We put this new selection into a cart. </STRONG></P>
+<P><STRONG>She has updated her selected value from 5 to 3 of Product A. </STRONG></P>
+<P><STRONG>So Cart Value Product A (3)&nbsp;- Order Value Product A (5)&nbsp; = Product A (-2)</STRONG></P>
+<P><STRONG>We do it like this because we don't update or delete orders that customers have saved. We create new&nbsp; orders changing selected quantities and sum up all the orders for that customer to get the selected qty of what products they want. So that we can follow an history of data changes. (Customers change there orders all the time)</STRONG></P>
+<P><STRONG>So I have a commited order with ProductA Qty of 2 and save the order. Later&nbsp;I decide I only want 1 of product A. So I come back and change my selected qty to 1. So we do the following</STRONG></P>
+<P><STRONG>Cart: ProductA 1</STRONG></P>
+<P><STRONG>Order 1: ProductA &nbsp;2</STRONG></P>
+<P><STRONG>Order&nbsp;2&nbsp;:&nbsp; ProductA -1 comes from this calculation&nbsp;(Cart- Order 1)</STRONG></P>
+<P><STRONG>Selected Qty for product A is (Order1 - Order2) which equals 1 </STRONG></P>
+<P>From what I can gather, you have a CustomerGroup which will contain a collection of Customer objects.&nbsp; You want that group to have an associated order that you are allowing each customer within the group to access and add items to the order but want to be able to identify which customer ordered that item.&nbsp; Is that accurate? <STRONG>YUP EXACTLY</STRONG></P>
+<P>What role does the CustomerGroup serve in the application?&nbsp; If each individual customer can place an order (indirectly via their items within the group's order) and anyone can pay anyone's bill, it is unclear what purpose the CustomerGroup serves other than a logical collection of customers for possible aggregation of data for reporting, such as total orders, etc.</P>
+<P><STRONG>Customers are entered into our system thru a web ui either by themselves or dataentry staff. Some of these customers are related to other customers. So a customer can enter another customer this causes them to be in a Customer Group.</STRONG></P>
+<P><STRONG>We figured that since a customer can be a on thier own or in a group we just automatically put every customer in a group even if they are they are the&nbsp;only customer in it.</STRONG></P>
+<P>So the site kinda works like this</P>
+<P>1) Customer Enters themself into the system (or searches to find themselves)</P>
+<P>2) Picks Products they would like to purchace</P>
+<P>3) Adds another Customer </P>
+<P>&nbsp;&nbsp;&nbsp;A)then picks that customers products</P>
+<P>&nbsp;&nbsp;&nbsp;B) Can Add another customer OR Confirm the order (Creating an order for the group)</P>
+<P>&nbsp;&nbsp;&nbsp;C) Confirming the group creates an Order which is "Shared" by the group BUT each order detail relates to a specific Customer.</P>
+<P>I really can't see how to properly create an object model to represent this use case. Unless we create a light wieght order which is a child of the Customer object and the Group object that contains the customer children&nbsp;has a the full fledged order and pulls the order details from the customer objects</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>SonOfPirate replied on Wednesday, August 16, 2006</h2><P>So, you basically have a running order?&nbsp; You don't 'close' an order by fullfilling it and have them place a new order each time?</P>
+<P>It sounds like your CustomerGroup/Customer model may be more like a Customer/Buyers type model which I've dealt with before.&nbsp; If that's the case, then it just boils down to semantics and is more understandable.</P>
+<P>Under that model, you would define the customer as being a company, for instance, and all of the people that can access the system and place/modify orders would be added to that Customer/company as authorized Buyers.&nbsp; Does that sound like what you have?</P>
+<P>I think it's starting to come together for me...</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RangerGuy replied on Wednesday, August 16, 2006</h2><P>Oh I forgot to clarify the payment part.</P>
+<P>A customer could have somebody else do the payment. Like say a sponsor or anybody else. So the payee is the name on the Credit Card or Check it may not be the actual customer</P>
+<P>BUT</P>
+<P>So the for the anology of why we&nbsp;relate Payments Details to the Customer&nbsp;not the order is this.</P>
+<P>It's like the phone company.. You pay for a monthly service not a bill.. over the last 12 months you have a accumolated $500 in charges and paid $250 towards your account so you still owe $250 on your account.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>SonOfPirate replied on Wednesday, August 16, 2006</h2><P>I get the payment concept.&nbsp; With a service provider (we are one), we have a customer Account that we would apply recurring charges, such as monthly service fees, as well as any one-time orders and payments would be applied to that account.&nbsp; That makes sense.</P>
+<P>I'm still having a disconnect in regards to the products and ordering process.&nbsp; How and when do you fulfill the orders?&nbsp; With a monthly service, you fulfill it monthly by providing those services.&nbsp; With products, you fulfill it by delivering the products.&nbsp; It is unclear to me at what point this happens.</P>
+<P>In other words, what I am gathering is that a "buyer" adds a quantity 'x' of product A to their cart and submits the order, thereby committing it.&nbsp; Later, they can come back and revise the order to a quantity of 'y' for product A.&nbsp; And, you want to have a history of this change.&nbsp; But the order is now for 'y' items.&nbsp; At what point&nbsp;are those items delivered to the customer/buyer and the order fulfilled?&nbsp; At that point, ordinarily, the customer's account would be restored to zero (0) pending items and the next 'request' would be considered a new order.</P>
+<P>I guess this is where my understanding of the running order concept needs to improve.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RangerGuy replied on Wednesday, August 16, 2006</h2><P>SonOfPirate just want to thank you for this help :)&nbsp; yeh I guess your right it kind of is a running order cause a payment doesn't close off an order like when you buy a product from a store or pay a bill at a restaurant.</P>
+<P>The order is completed based on a date. The products are services offered up until a date. So the client can change the services they want until a certain date then the order&nbsp;could be looked at as closed. BUT! For a customer once an order is submitted and paid for online they can only add or change there products if they are of greater or equal value. We do not processs refunds on line.</P>
+<P>After the order has reached the date they have to call in and an customer associate will deal with applying credits to the order if services have already been recieved based on the complaint etc.</P>
+<P>So how does this sound as a high level explanation of the object model. (I'm trying to stick with the "Objects are defined by behavior not the data they contain" this is proving hard that it sounds LOL!</P>
+<P>CustomerGroupList(EditableRootList)(EditableGrandParent)</P>
+<P>----CustomerGroup(EditableRoot) (Adds/Edits/Deletes&nbsp;Customer From the Group)(EditableParent)</P>
+<P>------Customer (EditableRoot) (Add/Edit a Customer)(EditableChild)</P>
+<P>--------OrderList(EditableChild) (An EditableList of Orders for the Customer)</P>
+<P><STRONG><FONT size=1>(</FONT><FONT size=2>This would be the same order for the entire group just each customer object uses the order object)</FONT></STRONG></P>
+<P><STRONG>-----------Order&nbsp;(EditableChild)(Add/Edit Order)</STRONG></P>
+<P>-------------CustomerOrderDetails(EditableChild)(A EditableList of OrderDetails)</P>
+<P>-----------------CustomerOrderDetail(EditableChild)(Add/Edit/Delete an OrderDetail)</P>
+<P>Now I need to make an "Account" Object to do the suming of the orderdetails etc.</P>
+<P>So now here is the interesting part. I can create a lightwieght for display called&nbsp;CustomerGroupDisplay and a child of this object would be&nbsp;CustomerGroupOrder Object to display the order as a whole. (Remember that each customer in the group is part of the same order only the details of the line items are specific to the customer)</P>
+<P>That's along one :| Sorry LOL!</P>
+<P>Again thank you very much SonOfPirate!&nbsp;Discussing this with another person is really clearing this in my mind.</P>
+<P><STRONG></STRONG>&nbsp;</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RangerGuy replied on Thursday, August 17, 2006</h2><P>I actually just realized this morning that I forgot the shopping cart :(</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>SonOfPirate replied on Thursday, August 17, 2006</h2><P>Yea, I agree that, for me at least, it is always a challenge to think behavior-based rather than data-based.&nbsp; Specializing in relational DB design, I have to constantly remind myself to not think that way.</P>
+<P>It's an interesting application - different than what I'm used to, but not as much as it seemed in the beginning.</P>
+<P>Your last explanation does answer most of the questions and the model you've described looks like it will work.&nbsp; I think there will be a few wrinkles that you have yet to cross, but those can be dealt with, I'm sure.&nbsp; For instance, how does someone access information from the CustomerGroup perspective?&nbsp; Is a particular Customer marked as "primary" so that they log in as the CustomerGroup and have access to that higher-level information?&nbsp; Also, who has the ability to "submit" the order if multiple Customers have added items? (i.e. should Customer A be able to submit an order without Customer B's approval?&nbsp;What if&nbsp;Customer B wasn't ready to commit?</P>
+<P>You don't have to respond to me, these are just questions that pop into my head when considering the implementation of all of this.</P>
+<P>Sounds like you have a good handle on the app and may have just needed a sounding board to work through the concepts.&nbsp; I run into that a lot.&nbsp; I can't tell you how many one-sided conversations I've had with my wife who has learned to just sit there and let it go over her head.</P>
+<P>Good luck and feel free to let me know if you have any more questions I can (try to) help with.</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

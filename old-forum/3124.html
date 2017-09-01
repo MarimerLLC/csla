@@ -1,0 +1,20 @@
+<html><header><title>Combobox with Dynamic NVL</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Combobox with Dynamic NVL</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3124.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Vinodonly posted on Monday, July 02, 2007</h2><P>I searched the forum but was not able to find&nbsp;reply for this issue so posting it here. I have cached data and with that cached data i'm creating NameValueList object and filling it on the fly. </P>
+<P>Something like this :-</P><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Dim</FONT><FONT size=2> ValueList </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>New</FONT><FONT size=2> NVList</P></FONT>
+<P>Then adding the values from the cached data&nbsp;using ValueList.Add</P>
+<P>I'm setting following values in my targeted combo box</P><FONT size=2>
+<P>MyComboBox.DataSource = Nothing</P>
+<P>MyComboBox.DataSource = ValueList</P>
+<P>MyComboBox.DisplayMember = </FONT><FONT color=#a31515 size=2>"Value"</P></FONT><FONT size=2>
+<P>MyComboBox.ValueMember = </FONT><FONT color=#a31515 size=2>"Key"</P></FONT>
+<P>Problem is that at initial form load values are getting filled up but when i make changes in ValueList and refill the Combobox with code mentioned above then combo box becomes empty.</P>
+<P>Pls note I have no binding source and i don't want to use binding source.&nbsp;Reason is that&nbsp;there are lot of comboboxes and i want to handle this all through code without using bindingsource.</P>
+<P>can anybody help me on this..</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonM replied on Monday, July 02, 2007</h2><P>I've also seen some weird issues with combobox binding, try the following tips.</P>
+<P>1.&nbsp; Make sure the datasource is tied to 1 combobox only, when tied to more than 1 unpredicatable things happen.</P>
+<P>2.&nbsp; If you are repopulating the box make sure you have cleared the databindings and set the datasource to null first.&nbsp; (This is also a good thing to do with the datagridview).</P>
+<P>3.&nbsp; For some reason I've occasionally had issues running databinding code from a form's constructor.&nbsp; I've had better luck calling from the 'Activated' event.</P>
+<P>Good Luck.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Vinodonly replied on Monday, July 02, 2007</h2><P>Thanks a lot for your reply and tips. </P>
+<P>Kindly note that i'm creating dynamic NVL's for each combobox, so datasource is different for all the comboboxes.</P>
+<P>I will test out all the tips and post the final outcome.</P>
+<P>Thanks for your help.</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonM replied on Monday, July 02, 2007</h2>Okay, I understand.&nbsp; I recently had to tackle an issue like this.&nbsp; Basically, I had a grid with 2 columns.&nbsp; I wanted the list of items in the second column to get different based on what was selected in the first column.&nbsp; It took me a way from the auto databinding for the most part and forced me to hook to the events in the various datagridview columns.</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

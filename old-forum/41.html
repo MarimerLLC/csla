@@ -1,0 +1,12 @@
+<html><header><title>BindingSource.... Control.Enabled Property</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>BindingSource.... Control.Enabled Property</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/41.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>ward0093 posted on Tuesday, May 09, 2006</h2><P>I am using the BindingSource Object and it is set to my Invoice Root Object.&nbsp; In the Designer, I set a Form Button (Button1) "Enable" Property to the InvoiceBindingSource.IsInvoiceLoaded (ReadOnly) Property.</P>
+<P>The Databinding is added correctly to the control.databindings collection but nothing happens... I mean when the Invoice Object is loaded and the property IsInvoiceLoaded changes... the Button does not become enabled....&nbsp; What am I doing wrong ????</P>
+<P>Here is my Databinding (from the Designer Code):</P><FONT color=#0000ff size=2>
+<P>Me</FONT><FONT size=2>.ButtonInvoiceSave.DataBindings.Add(</FONT><FONT color=#0000ff size=2>New</FONT><FONT size=2> System.Windows.Forms.Binding("Enabled", </FONT><FONT color=#0000ff size=2>Me</FONT><FONT size=2>.InvoiceBindingSource, "IsInvoiceLoaded", </FONT><FONT color=#0000ff size=2>true</FONT><FONT size=2>))</P></FONT>
+<P>P.S. the Invoice Root Object IS NOT a collection object it inherits the BusinessBase Class (there is not a IBindingList object).</P>
+<P>&nbsp;</P>
+<P>ward0093</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ward0093 replied on Tuesday, May 09, 2006</h2><P>I just read the "CSLA .NET 20" Binding Windows Form buttons to IsValid or IsSavable properties on Rockys Site... is this the only way to bind a button control?&nbsp; Through the event chain?</P>
+<P>What good is the Databindings property of a button control if it does not handle the events from the DataSource?</P>
+<P>Is this the only to enable/disable a save button?</P>
+<P>the article: <A href="http://www.lhotka.net/Articles.aspx?id=5faaee8e-8496-4845-86f7-787c6b64096c">http://www.lhotka.net/Articles.aspx?id=5faaee8e-8496-4845-86f7-787c6b64096c</A></P>
+<P>&nbsp;</P>
+<P>ward0093</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

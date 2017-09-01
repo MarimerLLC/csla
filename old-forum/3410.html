@@ -1,0 +1,128 @@
+<html><header><title>Exception Logging</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Exception Logging</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3410.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>juddaman posted on Tuesday, August 21, 2007</h2>
+
+<p class="MsoNormal"><span>I’m after some advice/guidelines on where
+to log exceptions. I’m currently using Microsofts Enterprise Library and doing
+all my logging in the UI layer. For instance any interaction with a business
+object is surrounded in try catch statements where the catch encompasses the
+logging of the exception to a data store and presenting a user with a message indicating
+an error occurred. The errors I’m showing to the user are all custom, i.e. I’m
+not showing the error passed from the dataportal as I’m, reluctant to pass that
+information on, for instance I don’t want to reveal “addProject stored proc can
+not be found” etc.&nbsp;<br></span></p><p class="MsoNormal"><span><br>I’ve heard some people do their logging in the BO’s and some
+in sub-classes of the framework classes e.g. BusinessBase&lt;T&gt; etc. I’d be
+interested to hear what setups people who do this have. I’d be worried about
+logging the same exception twice. As if I caught the exception in the BO and
+logged it, I’d have to rethrow so the UI knew an error has occurred so what
+prevents me re-logging. As no doubt they’d be some exception logging in the UI from
+other errors. <br></span></p><p class="MsoNormal"><br><span></span></p><p class="MsoNormal"><span>I realise this topic has come up before but often the thread has
+digressed into auditing, this is something I don’t require. I’m totally new to
+logging (what to log (exceptions, other things???), where to log), so any
+suggestion on logging using CSLA and beyond are very welcome or if you can give
+me details on good resources on the topic that would also be useful.</span></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ChristianPena replied on Tuesday, August 21, 2007</h2><P>Hi,</P>
+<P>The approach I've taken is to bubble all exceptions up to the UI and log/handle them there. When this is not possible, I bubble the exception up to the highest layer possible. At each layer, I catch the exception and wrap it in an exception which is more appropriate for the layer. Logging then becomes a very simple task of walking through the exception and its inner exceptions&nbsp;recursively (or iteratively)&nbsp;gathering the messages. </P>
+<P>Hope that helps.</P>
+<P>Christian</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>juddaman replied on Tuesday, August 21, 2007</h2>
+
+<p class="MsoNormal"><span>Hi Christian, thanks for the reply. Does
+this mean you have try catch statements wrapping code in your dataportal
+methods to rethrow exceptions as a new type? I know this is a bit general but
+if yes what type of exception do you throw after wrapping the DataPortalException.
+An ApplicationException maybe? With a message something like "Failed to
+add project." in the insert DataPortal method in a Project class. Or do
+you use custom exception types. Am I on the right track here? I think I will
+take continue taking the approach of logging exceptions exclusivly UI. Unless
+somebody comes up with a good reason not to <img src="/emoticons/emotion-1.gif" alt="Smile [:)]" /></span><span><span></span></span><span>. Cheers, George.<o:p></o:p></span></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>GaltSalt replied on Tuesday, August 21, 2007</h2><P>Exception, exception, who's got the exception!</P>
+<P>Now mind you this is all personal opinion.</P>
+<P>My app. I'm in the web.</P>
+<P>I have 3 separate DBs, about 100 business objects wrapped up in a few&nbsp;parents, 2 business abstraction&nbsp;layers above the business objects (how else do can you tell what's up 'between' relational business models that the object trees&nbsp;represent?), and about 60 web forms.</P>
+<P>What do I do about exceptions?</P>
+<P>Within the application, nothing directly.</P>
+<P>In the application, I figure out where a process boundary is. Search for something. Edit something. Print Something. Add Something. Calculate something, submit something...you get it. At some point you will start doing something. At some point&nbsp;you will stop. That's a boundary. I ONLY wrap up&nbsp;those areas in try statements. Validation controls,&nbsp;formated edit controls, and really good business logic&nbsp;take care of the rest. I make my own exception class so I can set a value about what boundary I'm currently dealing with. I always wrap the original exception in it for diagnotic purposes that ops with require for first level triage. </P>
+<P>That's nice. You got an exception. Where do you catch it? My users ONLY ever see what I want them to, and that's a nice java alert box (I'm in the web). My app code doesn't catch it. I make global.asax catch it. It will land there first anyway, so why not let it do it's stuff? I log the exception in the server event viewer in there and then pass on to a little admin web page with a little usercontrol on that page. That user control 'publishes' my error by looking up the "process boundary" code in an exception table, and retrieving both the user centric message (if one is required for the error, as some you never want the user to even know about) and the processing code, or "what to do now" code. this processing code can tell the app to re-run the code, log the error, email someone, display the message, go to another page, log out, or even reset the application, - or any combination. What? I'm not using an Exception Handler Application Block? Oh no! ... Sometimes I love those things. Sometimes simple is better/faster/more manageable/easier to fix or upgrade. Sometimes not.</P>
+<P>My 'inpenetrable fortress' has be broken a few times, but that's what remedials are for. There is always an error that slips through that you just can't test for. Those nasty error screens are fewer and fewer. </P>
+<P>I hope this helps...it's late and I'm rambling...</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ChristianPena replied on Wednesday, August 22, 2007</h2><P>George,</P>
+<P>That is what I was getting at. An example of this is the case where I have an invalid object being saved and I get a ValidationException. I will wrap that in an InvalidObjectException (a custom exception) and pass that up to the UI. I only wrap the types of exceptions I want to do something specific with. Everything else gets a plain old Exception wrapper. In my case of a web app, I catch the exception on Page.RaisePostBackEvent and handle the ones I know how to handle. The rest get thrown again and pass through to Global.asax's Application_Error handler where I handle them.</P>
+<P>Much like Robert's description above, the ones that I handle on the RaisePostBackEvent typically generate messages to the user that they can act upon and the other ones typically indicate an error that must be attended to by IT staff and so&nbsp;they usually end&nbsp;the use case.</P>
+<P>Thanks,</P>
+<P>Christian</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>juddaman replied on Wednesday, August 22, 2007</h2>
+
+<p class="MsoNormal"><span>Hi Galtsalt, Thanks for letting me know the
+secrets of your fortress :-) Seriously though thanks for your thorough reply. I
+really like the idea of returning codes then looking up the user msg. Think it
+would be overkill for my (already design overloaded) app but I may just use
+that technique in the future. </span></p>
+
+<p class="MsoNormal"><span><o:p>&nbsp;</o:p></span></p>
+
+<p class="MsoNormal"><span>Christian – cool thought that’s where you
+were going. Just another question.. why do you wrap the ValidationException? I’m
+presuming it’s so you can include additional information beyond that is in the
+ValidationException? If I’m correct what additional information do you include?
+Or do you just wrap it so you can handle it differently in the UI (a different
+catch). Does this mean you don’t check the IsSaveable or IsValid property
+before trying to save a BO and just rely on catching the exception? When you
+say “Everything else gets a plain old Exception wrapper.” Does this mean all
+your BO layer code? Around the static methods? Thanks for the additional info
+about using RaisePostBackEvent, in my case I’m developing a Win App so doesn’t
+apply at the moment.</span></p>
+
+<p class="MsoNormal"><span><o:p>&nbsp;</o:p></span></p>
+
+<p class="MsoNormal"><span>So far I have set up a Notify Error system
+as described in Craig Larman Applying UML book. I have a singleton that
+provides a Notify() method which I pass my exception and a message to, then the
+method logs the error and uses a simple factory to use the appropriate method
+to display the message to the user at the moment a message box. Seams to work
+nicely at the moment. Though I need to look more in to different categories and
+so forth for logging. Also I’m just catching Exception type exceptions (</span><span><span>J</span></span><span>) at the moment, I don’t know if that an issue?<span>&nbsp; </span>I just don’t seam to have to handle different
+types of exception differently (in the UI) to date. </span></p>
+
+<p class="MsoNormal"><span><o:p>&nbsp;</o:p></span></p>
+
+<p class="MsoNormal"><span>Cheers guys, George.</span></p>
+
+<p class="MsoNormal"><span><o:p>&nbsp;</o:p></span></p>
+
+<p class="MsoNormal"><span><o:p>&nbsp;</o:p></span></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ChristianPena replied on Thursday, August 23, 2007</h2><P>The reason I wrap the ValidationException is because I have created a Web UI framework to handle all common exceptions in a standard way. The way I handle my custom validation exception is to output the broken rules of the business object. The custom exception I use has a property that contains the businessbase object that caused the exception to occur. So in the framework, I can catch that exception and render it easily and not have to worry about it in each individual UI component that might trigger such an error.</P>
+<P>Here is a sample:</P><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>If</FONT><FONT size=2> obj.IsValid </FONT><FONT color=#0000ff size=2>Then</P></FONT><FONT size=2>
+<P>obj&nbsp;= obj.Save()</P>
+<P></FONT><FONT color=#0000ff size=2>Else</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Throw</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>New</FONT><FONT size=2> InvalidObjectException(obj)</P>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>If</FONT></P>
+<P><FONT color=#0000ff size=2><FONT color=#000000 size=3></FONT></FONT>&nbsp;</P>
+<P><FONT color=#0000ff><FONT color=#000000>Names were changed to protect the innocent, of course. </FONT></FONT></P>
+<P>In terms of what gets passed as a standard Exception up to the UI, I was referring to issues such as a lost database connection or invalid stored procedure call. These things get handled by the global error handler because they signal some "catastrophic" error that should be handled not by the user but by IT. Of course, you might see this differently and so implement wrappers around these exceptions and handle them different as well.<FONT color=#0000ff></P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>juddaman replied on Thursday, August 23, 2007</h2>
+
+<p class="MsoNormal"><span>Ohh I see. As my app is a Windows app I'm
+handling things slightly differently. For example where you are throwing an
+exception if IsValid is false I'm just informing the user there and then (and
+logging). I'm in my MainForm so there isn't much higher it can go anyhows! Thanks
+for clearing that up with your code snippet. I've taken the approach of
+wrapping all my ins/out of my BOs so the static methods with a custom exception
+just so I can provide a clearer message for debugging and possibly in the
+future handle these differently. The way I kind of see it at the moment if
+anything goes wrong with an operation say saving, I just inform the user it
+went wrong log it, I don't really care how it why it went wrong. Hence in the
+UI I’m just catching Exception. Obviously I try and prevent that the exception
+been thrown in the first place by checking things such as .IsValid .IsSaveable
+etc. I think its a valid approach. Thanks for sharing your thoughts with me Christian
+much appreciated.</span></p>
+
+<p class="MsoNormal"><span><o:p>&nbsp;</o:p></span></p>
+
+<p class="MsoNormal"><span>I’d still be interested in hearing from
+people who do logging in their BO layer or in custom exceptions. I still can’t
+see how this is a manageable solution, particularly with regards to logging the
+same error multiple times. Ok well if you log within a custom exception you
+could just always handle that differently in the UI but that seams like extra
+work. I’m probably missing something; please point me in the right direction.</span></p>
+
+<p class="MsoNormal"><span><o:p>&nbsp;</o:p></span></p>
+
+<p class="MsoNormal"><span>Regards George</span></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Friday, August 24, 2007</h2>I have done logging in the business layer, but I have moved away from that.&nbsp; It reduces the amount of code if you just have the application handle unhandled exceptions and perform the logging.&nbsp; Plus, if you need to change how you're logging, you only need touch the application, not the business objects.<br><br>Plus the UI can decide if it wants to handle the InvalidOrderException or not; the BO isn't really equipped to make a decision what happens in that case.<br><br>Business objects have enough to do already; keeping the logging out of them gives them one less reason to change.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ChristianPena replied on Friday, August 24, 2007</h2><P>Well said.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>juddaman replied on Friday, August 24, 2007</h2>
+										<a>ajj3085</a> - I totally agree, thanks for your thoughts.<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

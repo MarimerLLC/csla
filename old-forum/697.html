@@ -1,0 +1,153 @@
+<html><header><title>Tricky discussion about how to returnt resultsets. Looking for opions :)</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Tricky discussion about how to returnt resultsets. Looking for opions :)</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/697.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>RangerGuy posted on Friday, July 21, 2006</h2><P><FONT size=1>Ok we have&nbsp; grouping table like so. With the following data</FONT></P>
+<TABLE>
+
+<TR>
+<TD>Groupid </TD>
+<TD>ParentID </TD>
+<TD>ChildID </TD>
+<TD>ParentSortOrder </TD>
+<TD>ChildSortOrder</TD></TR>
+<TR>
+<TD>1</TD>
+<TD>1</TD>
+<TD>1</TD>
+<TD>1</TD>
+<TD>1</TD></TR>
+<TR>
+<TD>1</TD>
+<TD>1</TD>
+<TD>2</TD>
+<TD>1</TD>
+<TD>2</TD></TR>
+<TR>
+<TD>1</TD>
+<TD>1</TD>
+<TD>3</TD>
+<TD>1</TD>
+<TD>3</TD></TR>
+<TR>
+<TD>2</TD>
+<TD>1</TD>
+<TD>1</TD>
+<TD>1</TD>
+<TD>1</TD></TR>
+<TR>
+<TD>2</TD>
+<TD>2</TD>
+<TD>1</TD>
+<TD>1</TD>
+<TD>2</TD></TR></TABLE>
+<P><FONT face=Arial color=#000000 size=1>My partner likes to return the data like so. So we only have to join to the grouping table once. </FONT></P>
+<TABLE>
+
+<TR>
+<TD>Groupid </TD>
+<TD>ParentID </TD>
+<TD>ParentName </TD>
+<TD>ChildID </TD>
+<TD>ChildName</TD>
+<TD>ParentSortOrder </TD>
+<TD>ChildSortOrder</TD></TR>
+<TR>
+<TD>1</TD>
+<TD>1</TD>
+<TD>Parent 1</TD>
+<TD>1</TD>
+<TD>Child 1</TD>
+<TD>1</TD>
+<TD>1</TD></TR>
+<TR>
+<TD>1</TD>
+<TD>1</TD>
+<TD>Parent 1</TD>
+<TD>1</TD>
+<TD>Child 2</TD>
+<TD>1</TD>
+<TD>2</TD></TR>
+<TR>
+<TD>1</TD>
+<TD>2</TD>
+<TD>Parent 2</TD>
+<TD>1</TD>
+<TD>Child 1</TD>
+<TD>1</TD>
+<TD>2</TD></TR>
+<TR>
+<TD>1</TD>
+<TD>2</TD>
+<TD>Parent 2</TD>
+<TD>2</TD>
+<TD>Child 2</TD>
+<TD>1</TD>
+<TD>2</TD></TR></TABLE>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P><FONT size=1>I prefer to have 2 resultsets returned like so. But what I'm concerned with is have to join to the grouping table twice to build these results. So were looking for votes on which way is preferred.</FONT></P>PARENT RESULT SET 
+<TABLE>
+
+<TR>
+<TD>Groupid </TD>
+<TD>ParentID </TD>
+<TD>ParentName </TD>
+<TD>ParentSortOrder</TD></TR>
+<TR>
+<TD>1</TD>
+<TD>1</TD>
+<TD>Parent 1</TD>
+<TD>1</TD></TR>
+<TR>
+<TD>1</TD>
+<TD>2</TD>
+<TD>Parent 2</TD>
+<TD>2</TD></TR></TABLE>
+<P>&nbsp;</P>
+<P>CHILD RESULT SET </P>
+<TABLE>
+
+<TR>
+<TD>ParentID</TD>
+<TD>ChildID </TD>
+<TD>ChildName</TD>
+<TD>ParentSortOrder </TD>
+<TD>ChildSortOrder</TD></TR>
+<TR>
+<TD>1</TD>
+<TD>1</TD>
+<TD>Child 1</TD>
+<TD>1</TD>
+<TD>1</TD></TR>
+<TR>
+<TR>
+<TD>1</TD>
+<TD>2</TD>
+<TD>Child 2</TD>
+<TD>1</TD>
+<TD>2</TD></TR>
+<TR>
+<TD>1</TD>
+<TD>3</TD>
+<TD>Child 3</TD>
+<TD>1</TD>
+<TD>3</TD></TR>
+<TR>
+<TD>2</TD>
+<TD>1</TD>
+<TD>Child 1</TD>
+<TD>1</TD>
+<TD>1</TD></TR>
+<TR>
+<TR>
+<TD>2</TD>
+<TD>2</TD>
+<TD>Child 2</TD>
+<TD>1</TD>
+<TD>2</TD></TR>
+<TR>
+<TD>2</TD>
+<TD>3</TD>
+<TD>Child 3</TD>
+<TD>1</TD>
+<TD>3</TD></TR>
+</TABLE></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>david.wendelken replied on Friday, July 21, 2006</h2><P>Is this a one level deep structure, or is it an n-level hierarchichal structure?</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>chriss replied on Friday, July 21, 2006</h2>As long as the grouping table is well indexed or reasonably small i'd suggest that ther performance difference would be insignificant. </div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RangerGuy replied on Friday, July 21, 2006</h2><P><FONT size=1>The table is N-Level.</FONT></P>
+<P><FONT size=1>So basically comes down to personal preference then?</FONT></P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

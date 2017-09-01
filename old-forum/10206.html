@@ -1,0 +1,62 @@
+<html><header><title>CSLA 4.1: Trigger multiple propertyChanged? </title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA 4.1: Trigger multiple propertyChanged? </h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10206.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Brannon posted on Friday, March 25, 2011</h2><p>In the code below, how do I modify the &quot;Fifths&quot; setter to trigger a property-changed event for the other property?</p>
+<p>
+<p>
+<p>public class KeySignature: Csla.BusinessBase&lt;KeySignature&gt;</p>
+<p><span>	</span>{</p>
+<p><span>		</span>public static readonly Csla.PropertyInfo&lt;int&gt; FifthsProperty = RegisterProperty(new Csla.PropertyInfo&lt;int&gt;(&quot;Fifths&quot;, 0));</p>
+<p>&nbsp;</p>
+<p><span>		</span>public int Fifths</p>
+<p><span>		</span>{</p>
+<p><span>			</span>get { return GetProperty(FifthsProperty); }</p>
+<p><span>			</span>set { SetProperty(FifthsProperty, value); }</p>
+<p><span>		</span>}</p>
+<p>&nbsp;</p>
+<p><span>		</span>public enum KeySignatureNames { Cf = -7, Gf = -6, Df = -5, Af = -4, Ef = -3, Bf = -2, F = -1, C = 0, G = 1, D = 2, A = 3, E = 4, B = 5, Fs = 6, Cs = 7 }</p>
+<p>&nbsp;</p>
+<p><span>		</span>public string Name</p>
+<p><span>		</span>{</p>
+<p><span>			</span>get</p>
+<p><span>			</span>{</p>
+<p><span>				</span>var ret = (KeySignatureNames)(Fifths % 8);</p>
+<p><span>				</span>return ret.ToString();</p>
+<p><span>			</span>}</p>
+<p><span>		</span>}</p>
+<p><span>	</span>}</p>
+</p>
+</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Saturday, March 26, 2011</h2><p>Hi,</p>
+<p>I prefer to have leave my property code a simple as can be so my preferred solution for your question here IMO is #2.</p>
+<p>1. If Name is a registered property I&#39;d prefer to use the Dependency business rule.(Not possible here) </p>
+<pre style="font-family:Consolas;font-size:13;color:#f6e9c0;background:#160d03;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; BusinessRules.AddRule(<span style="color:#e2b155;">new</span>&nbsp;<span style="color:#a9d3df;">Dependency</span>(FifthsProperty,&nbsp;NameProperty));
+</pre>
+<p>2. Override the OnPropertyChanged</p>
+<pre style="font-family:Consolas;font-size:13;color:#f6e9c0;background:#160d03;">&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#e2b155;">protected</span>&nbsp;<span style="color:#e2b155;">override</span>&nbsp;<span style="color:#e2b155;">void</span>&nbsp;OnPropertyChanged(<span style="color:#cc712b;">string </span>propertyName)
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#e2b155;">base</span>.OnPropertyChanged(propertyName);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#e2b155;">if</span>&nbsp;(propertyName ==&nbsp;FifthsProperty.Name)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;OnPropertyChanged(<span style="color:#c9722b;">&quot;Name&quot;</span>);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;}</pre>
+<p>3. Or you may call OnPropertyChanged in Fifths setter:</p>
+<pre style="font-family:Consolas;font-size:13;color:#f6e9c0;background:#160d03;">&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#e2b155;">public</span>&nbsp;<span style="color:#e2b155;">static</span>&nbsp;<span style="color:#e2b155;">readonly</span>&nbsp;Csla.<span style="color:#a9d3df;">PropertyInfo</span>&lt;<span style="color:#e2b155;">int</span>&gt;&nbsp;FifthsProperty&nbsp;=&nbsp;RegisterProperty(<span style="color:#e2b155;">new</span>&nbsp;Csla.<span style="color:#a9d3df;">PropertyInfo</span>&lt;<span style="color:#e2b155;">int</span>&gt;(<span style="color:#c9722b;">&quot;Fifths&quot;</span>,&nbsp;<span style="color:#ac9353;">0</span>));
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#e2b155;">public</span>&nbsp;<span style="color:#e2b155;">int</span>&nbsp;Fifths
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#e2b155;">get</span>&nbsp;{&nbsp;<span style="color:#e2b155;">return</span>&nbsp;GetProperty(FifthsProperty);&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#e2b155;">set</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;SetProperty(FifthsProperty,&nbsp;<span style="color:#e2b155;">value</span>);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;OnPropertyChanged(<span style="color:#c9722b;">&quot;Name&quot;</span>);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp; }
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#e2b155;">public</span>&nbsp;<span style="color:#e2b155;">enum</span>&nbsp;<span style="color:#a9d3df;">KeySignatureNames</span>&nbsp;{&nbsp;Cf&nbsp;=&nbsp;-<span style="color:#ac9353;">7</span>,&nbsp;Gf&nbsp;=&nbsp;-<span style="color:#ac9353;">6</span>,&nbsp;Df&nbsp;=&nbsp;-<span style="color:#ac9353;">5</span>,&nbsp;Af&nbsp;=&nbsp;-<span style="color:#ac9353;">4</span>,&nbsp;Ef&nbsp;=&nbsp;-<span style="color:#ac9353;">3</span>,&nbsp;Bf&nbsp;=&nbsp;-<span style="color:#ac9353;">2</span>,&nbsp;F&nbsp;=&nbsp;-<span style="color:#ac9353;">1</span>,&nbsp;C&nbsp;=&nbsp;<span style="color:#ac9353;">0</span>,&nbsp;G&nbsp;=&nbsp;<span style="color:#ac9353;">1</span>,&nbsp;D&nbsp;=&nbsp;<span style="color:#ac9353;">2</span>,&nbsp;A&nbsp;=&nbsp;<span style="color:#ac9353;">3</span>,&nbsp;E&nbsp;=&nbsp;<span style="color:#ac9353;">4</span>,&nbsp;B&nbsp;=&nbsp;<span style="color:#ac9353;">5</span>,&nbsp;Fs&nbsp;=&nbsp;<span style="color:#ac9353;">6</span>,&nbsp;Cs&nbsp;=&nbsp;<span style="color:#ac9353;">7</span>&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#e2b155;">public</span>&nbsp;<span style="color:#e2b155;">string</span>&nbsp;Name
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#e2b155;">get</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#e2b155;">var</span>&nbsp;ret&nbsp;=&nbsp;(<span style="color:#a9d3df;">KeySignatureNames</span>)(Fifths&nbsp;%&nbsp;<span style="color:#ac9353;">8</span>);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#e2b155;">return</span>&nbsp;ret.ToString();
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;}<br /></pre>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

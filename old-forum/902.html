@@ -1,0 +1,32 @@
+<html><header><title>Question about CodeSmith templates EditableRootList and EditableChild</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Question about CodeSmith templates EditableRootList and EditableChild</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/902.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>DanEssin posted on Monday, August 14, 2006</h2>&nbsp;&nbsp;&nbsp; EditableChild is expecting to be called with the connection and the parent ref as in:<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; internal void Update(SqlConnection cn, ResultDefList parent)<br><br>The EditableRootList is only passing the connection:<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; foreach (ResultDefItem child in this)<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; if (child.IsNew)<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; child.Insert(cn);<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; else<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; child.Update(cn);<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; }<br><br><br>Is this an error or am I using it incorrectly?<br><br>Thanks.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rasupit replied on Monday, August 14, 2006</h2><P>I have to admit, searching for an anwer before posting sometime can be overwhelming when you have too many place to post questions.&nbsp; Now that the workspace has finally moved to CslaContrib hopefully everybody can post codesmith template related post at <A HREF="/forums/8/ShowForum.aspx">http://forums.lhotka.net/forums/8/ShowForum.aspx</A> to make it easier for others to search.</P>
+<P>For your scenario, you would not define a parent on EditableChild.</P>
+<P>Other similar posts can be found:</P>
+<P><A href="http://www.gotdotnet.com/workspaces/messageboard/thread.aspx?id=8aaa6bc5-40c7-4441-bae1-a1e4b076865a&amp;threadid=f53deda4-215f-4af3-8e12-78f7f85cd67f">http://www.gotdotnet.com/workspaces/messageboard/thread.aspx?id=8aaa6bc5-40c7-4441-bae1-a1e4b076865a&amp;threadid=f53deda4-215f-4af3-8e12-78f7f85cd67f</A></P>
+<P><A href="http://community.codesmithtools.com/forums/thread/16339.aspx">http://community.codesmithtools.com/forums/thread/16339.aspx</A></P>
+<P>Ricky</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>DanEssin replied on Wednesday, August 23, 2006</h2>
+
+
+  
+  
+
+
+Thanks<br>
+<br>
+rasupit wrote:
+<blockquote>
+  <p>I have to admit, searching for an anwer before posting sometime
+can be overwhelming when you have too many place to post questions.&nbsp;
+Now that the workspace has finally moved to CslaContrib hopefully
+everybody can post codesmith template related post at <a href="/forums/8/ShowForum.aspx">http://forums.lhotka.net/forums/8/ShowForum.aspx</a>
+to make it easier for others to search.</p>
+  <p>For your scenario, you would not define a parent on EditableChild.</p>
+  <p>Other similar posts can be found:</p>
+  <p><a href="http://www.gotdotnet.com/workspaces/messageboard/thread.aspx?id=8aaa6bc5-40c7-4441-bae1-a1e4b076865a&amp;threadid=f53deda4-215f-4af3-8e12-78f7f85cd67f">http://www.gotdotnet.com/workspaces/messageboard/thread.aspx?id=8aaa6bc5-40c7-4441-bae1-a1e4b076865a&amp;threadid=f53deda4-215f-4af3-8e12-78f7f85cd67f</a></p>
+  <p><a href="http://community.codesmithtools.com/forums/thread/16339.aspx">http://community.codesmithtools.com/forums/thread/16339.aspx</a></p>
+  <p>Ricky</p>
+  <br>
+  <br>
+<br>
+</blockquote>
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

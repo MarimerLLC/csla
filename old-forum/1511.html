@@ -1,0 +1,100 @@
+<html><header><title>What’s the big deal about Type rules???</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>What’s the big deal about Type rules???</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/1511.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>rxelizondo posted on Tuesday, October 17, 2006</h2><P class=MsoNormal>Could someone PLEASE tell me EXACTLY&nbsp;what is the big deal about Type rules? </P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal>I am under the impression that Type rules where added because of some tremendous benefits but I have failed to see such benefit.</P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal>Please educate me.</P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Henrik replied on Tuesday, October 17, 2006</h2><P>The benefit from using type rules is that each instance of a type doesn't load it's own "copy" of the rules into memory. With type rules only one "copy" of the rules is created and stored in memory. The type rules makes each object more lightweight and faster.</P>
+<P>For more info, see Rocky's change log for 2.1 at <A href="http://www.lhotka.net/Article.aspx?area=4&amp;id=f12cc951-0452-42d1-96a6-cfa7656863b1">http://www.lhotka.net/Article.aspx?area=4&amp;id=f12cc951-0452-42d1-96a6-cfa7656863b1</A></P>
+<P>/Henrik</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rxelizondo replied on Tuesday, October 17, 2006</h2><P class=MsoNormal>Thanks,</P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal>Well, I was poking around the CSLA code when all of the sudden I stumbled upon the BusinessBase constructor and a lot of thing started to make sense, specifically, I noticed that this constructor has the following two lines of code:</P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal>if (!Validation.SharedValidationRules.RulesExistFor(this.GetType()))AddBusinessRules();</P>
+<P class=MsoNormal>if (!Security.SharedAuthorizationRules.RulesExistFor(this.GetType()))AddAuthorizationRules();</P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal>Now I can understand how type rules can reduce load type and memory overhead. </P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal>Well, with my new founded knowledge, I think I am ready to make a fool of myself again and make a suggestion regarding how to make the decisions on whether to use type rules or instance rules more clear cut. This suggestion may be absurd since I am still new to the CSLA but here I go:</P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal>I suggest changing the signature of the instance RuleHandler from:</P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal>public delegate bool RuleHandler(object target, RuleArgs e);</P>
+<P class=MsoNormal>public delegate bool RuleHandler&lt;T, R&gt;(T target, R e) where R : RuleArgs;</P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal>To:</P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal>public delegate bool RuleHandler(RuleArgs e);</P>
+<P class=MsoNormal>public delegate bool RuleHandler&lt;R&gt;(R e) where R : RuleArgs;</P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal>The reason I am suggesting this change is because if you think about it, you don’t have to have the “target” parameter on instance rules because when you create instance rules you have access to the actual object so what’s the point.</P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal>Further more, making this change will make it really clear on when to use type and instance rules because the CSLA would crash if you where to try to push a type handler into and instance rule or vise versa.</P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal>Does this make sense to you?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Wednesday, October 18, 2006</h2>I believe RuleHandler is shared by both type and instance rule methods, so this would be a breaking change (and we've already had one of those).<br><br>Trying to use a non-static rule on an instance will cause a run-time exception as well, so there's not much danger of bugs because of getting the rules mismatched.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rxelizondo replied on Wednesday, October 18, 2006</h2><P class=MsoNormal>In my opinion, breaking changes are simply a fact of life and there is not much we can do about it. </P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal>I think one of the primary aims of the framework should be towards simplicity of use. Having an instance RuleHandler that accepts a “target” parameter for no good reason simply creates complexity.</P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal>I think I remember reading a post where Rocky expressed concern regarding the complexity of having two types of rules. I definitely agree that two types of rules adds complexity and I am just proposing a way to make the decision about when to use de different rules much more straight forward.</P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal>Anyone else has an opinion regarding this subject? Rocky, what do you think?</P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Wednesday, October 18, 2006</h2><BLOCKQUOTE><div><img src="/Themes/basicblue/images/icon-quote.gif"> <strong>rxelizondo:</strong></div><div>In my opinion, breaking changes are simply a fact of life and there is not much we can do about it.</div></BLOCKQUOTE><br><br>Framework authors fortunately try to avoid breaking changes whenever possible, because they make it harder for us developers to move to newer versions.&nbsp;&nbsp; If a change is breaking but the result of that change is very compelling then I'm all for it.&nbsp; The change you suggest doesn't buy us anything we don't already have.&nbsp; You can't expect to sit down and use any moderately complex framework just by looking at method signatures.. you need documentation, which for Csla is the book and coming ebooks.<br><br><BLOCKQUOTE><div><img src="/Themes/basicblue/images/icon-quote.gif"> <strong>rxelizondo:</strong></div><div>I think one of the primary aims of the framework should be towards
+simplicity of use. Having an instance RuleHandler that accepts a
+“target” parameter for no good reason simply creates complexity.</div></BLOCKQUOTE><br><br>There's nothing stopping you from using the target parameter.&nbsp; At any rate, instance rules are the exception, not the norm.&nbsp; That is, in almost all cases you'll be using type level rules.<br><br><BLOCKQUOTE><div><img src="/Themes/basicblue/images/icon-quote.gif"> <strong><strong>rxelizondo</strong>:</strong></div><div>I think I remember reading a post where Rocky expressed concern
+regarding the complexity of having two types of rules. I definitely
+agree that two types of rules adds complexity and I am just proposing a
+way to make the decision about when to use de different rules much more
+straight forward.</div></BLOCKQUOTE><br><br>The concerns were addressed.&nbsp; For example, the runtime exception if you try to add an instance rule as a type rule.&nbsp; The framework detects this and gives a clear exception at runtime.&nbsp; Having two different levels does make things a bit more complex, but that complexity also gives great flexibility.<br><br>I think <a href="/forums/thread/4306.aspx">this</a> is the thread you are refering to, and I think you can also see that the resulting discussion aleviated the concerns that Rocky and others had.<br><br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rxelizondo replied on Wednesday, October 18, 2006</h2><P class=MsoNormal>ajj3085 :</P>
+<P class=MsoNormal>&nbsp;</P>
+<P class=MsoNormal>Well, I am speaking for the new generations that will be learning and adopting the CSLA framework. The idea is to keep the framework simple, we are already starting to see some awkward code in the CSLA in the name of backwards compatibility that just makes things complex for new user.</P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal>Now, lest just supposed that this new change was implemented, how big of a deal would it be to make the changes on our programs? </P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal>Since most people would already be using type rules, chances are making this change will not break any code at all for the people following the use only type rules patters.</P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal>But what about the people that do use instance rules? Well, all they would have to do is remove the “target” parameter from their functions and all should work just fine, is that really that much of a big deal?</P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal>Thanks.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Thursday, October 19, 2006</h2><BLOCKQUOTE><div><img src="/Themes/basicblue/images/icon-quote.gif"> <strong>rxelizondo:</strong></div><div>Well, I am speaking for the new generations that will be learning and
+adopting the CSLA framework. The idea is to keep the framework simple,
+we are already starting to see some awkward code in the CSLA in the
+name of backwards compatibility that just makes things complex for new
+user.</div></BLOCKQUOTE><br><br>Well, new users should pick up a copy of the book.&nbsp; The framework is a marketing tool for the book, not the other way around.&nbsp; And Andres raises a good point; every other delegate in the .Net framework includes the object which is 'causing' the event.&nbsp; Keeping consisitent with the .net framework itself is a good ideas.<br><br><BLOCKQUOTE><div><img src="/Themes/basicblue/images/icon-quote.gif"> <strong>rxelizondo:</strong></div><div>Now, lest just supposed that this new change was implemented, how big of a deal would it be to make the changes on our programs?</div></BLOCKQUOTE><br><br>Some people will have to change all or most of their classes.&nbsp; For absolutely zero added benifit.<br><br><BLOCKQUOTE><div><img src="/Themes/basicblue/images/icon-quote.gif"> <strong>rxelizondo:</strong></div><div>Since most people would already be using type rules, chances are making
+this change will not break any code at all for the people following the
+use only type rules patters.</div></BLOCKQUOTE><br><br>We don't know this for a fact though.&nbsp; Its entirely plausable that people simply change the call to AddInstanceBusinessRules and left it at that.&nbsp; That's a valid way to update your code to use 2.1 as well. And again, you're forcing people to change code for NO benefit whatsoever.&nbsp; The addition of type rules adds a very compelling reason to upgrade and update your existing code, which is why the community supported the breaking change.<br><br><BLOCKQUOTE><div><img src="/Themes/basicblue/images/icon-quote.gif"> <strong>rxelizondo:</strong></div><div>But what about the people that do use instance rules? Well, all they
+would have to do is remove the “target” parameter from their functions
+and all should work just fine, is that really that much of a big deal?</div></BLOCKQUOTE><br><br>Why should they have to do anything at all?&nbsp; There's no benefit at all to existing users from this change.&nbsp; Add in Xal's comments, and you're actually making things more confusing, because the Rules delegate pattern is different than any other delegate pattern in the framework.&nbsp; You could make the same argument for Form events.&nbsp; Sender is always the form, yet you have access to the instance properties, so they should remove that.&nbsp; I don't think that's a good idea either.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>xal replied on Wednesday, October 18, 2006</h2>There are good reasons for keeping those delegates that way.<br>1st, all event handlers in .net use that type of delegate, so it's something we're used to see.<br>2nd, suppose you have a complex case where, for some reason, you want an outside live object to validate stuff... I can think of a common object that has parameters and validation rules based on those parameters that would apply to many objects. In that scenario the target would be needed, and the method wouldn't be static.<br><br>Anyway, the target parameter is just there for flexibility, and you are in no way forced to use it if you use instance rules.<br><br>Andrés<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rxelizondo replied on Wednesday, October 18, 2006</h2><P class=MsoNormal>xal:</P>
+<P class=MsoNormal>&nbsp;</P>
+<P class=MsoNormal>Not sure I follow your example but I think you are referring to the idea of having the ValidationRules object call instance objects outside the object that is hosting it.</P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal>If I understand your example correctly, I think you could still do the same thing using a type rule that will then delegate the call to the instance (live) object.</P>
+<P class=MsoNormal><SPAN></SPAN>&nbsp;</P>
+<P class=MsoNormal>I agree with you that flexibility is nice, as long as there is a point to that flexibility, for me having a “target” parameter on instance rules is akin to someone climbing Mount Everest carrying a bowling ball with them, since they wont find a bowling alley up there, what is the point on having the extra weight.<img src="/emoticons/emotion-1.gif" alt="Smile [:)]" /></P>
+<P class=MsoNormal>&nbsp;</P>
+<P class=MsoNormal>Thanks.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Henrik replied on Wednesday, October 18, 2006</h2><P>I for one would oppose strongly against changing the signature, if the breaking change is only for the beauty of our code. I've adopted the breaking changes from 2.0 to 2.1 due to the major memory and performance improvements of type rules.</P>
+<P>I've already released 2 apps last week based on v2.1 and I don't want to neither alter the code in these and re-release nor keep a v2.1 and a v2.1.1 side by side just because newcomers needs simplicity. In the end I think having one signature of rules is the simplest anyway.</P>
+<P>Cheers<BR>/Henrik</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rxelizondo replied on Wednesday, October 18, 2006</h2><P>Henrik:</P>
+<P class=MsoNormal>I think is *very* important to make it as easy as possible for newcomer to adopt the framework, after all, they are the ones that will make the CSLA an even bigger success.</P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal>There are 3 things to note here:</P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<OL>
+<LI class=MsoNormal>These breaking change do not have to require a new release, this change could be added when other braking changes are also required (you know they will happen). 
+<LI class=MsoNormal>This is not beauty code changes, in my opinion this are logical changes. Like I said before, there is absolutely no reason why the RuleHandler should require the “target” parameter for instance rules. 
+<LI class=MsoNormal>Other than making the code more logical, having different RuleHandler signature&nbsp;will allow the compiler to verify that you are adding static methods to type rules and instance methods to instance rules during compile time and not wait until runtime.<o:p>&nbsp;</o:p></LI></OL>
+<P class=MsoNormal><o:p></o:p>One last thing, if you adopted the type rules already then your code should&nbsp;<STRONG><U>NOT</U></STRONG> require any changes so it should have zero impact on the applications you already distributed.</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Thursday, October 19, 2006</h2><BLOCKQUOTE><div><img src="/Themes/basicblue/images/icon-quote.gif"> <strong>:</strong></div><div>I think is *very* important to make it as easy as possible for newcomer
+to adopt the framework, after all, they are the ones that will make the
+CSLA an even bigger success.</div></BLOCKQUOTE><br><br>Rocky's goal isn't to have everyone adopt Csla.&nbsp; His goal is for people to buy the book.<br><br><BLOCKQUOTE><div><img src="/Themes/basicblue/images/icon-quote.gif"> <strong>:</strong></div><div>These breaking change do not have to require a new release, this change
+could be added when other braking changes are also required (you know
+they will happen).</div></BLOCKQUOTE><br><br>You're asking people to spend time changing code when in the end they will have zero benefit.&nbsp; I find that hard to ask of anyone..<br><br><BLOCKQUOTE><div><img src="/Themes/basicblue/images/icon-quote.gif"> <strong><strong>rxelizondo</strong>:</strong></div><div>This is not beauty code changes, in my opinion this are logical
+changes. Like I said before, there is absolutely no reason why the
+RuleHandler should require the “target” parameter for instance rules.</div></BLOCKQUOTE><br><br>No offense, but so far no one else seems to agree.<br><br><BLOCKQUOTE><div><img src="/Themes/basicblue/images/icon-quote.gif"> <strong>rxelizondo:</strong></div><div>Other than making the code more logical, having different RuleHandler
+signature&nbsp;will allow the compiler to verify that you are adding static
+methods to type rules and instance methods to instance rules during
+compile time and not wait until runtime.</div></BLOCKQUOTE><br><br>While catching exceptions earlier is good, in this case the exception is thrown as soon as you try to instanciate the object.. fairly early on, and likely to be caught by any kind of testing.&nbsp; So unless you check in code, and immediately release to production (which is a huge mistake to begin with) you won't have a problem.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Thursday, October 19, 2006</h2><BLOCKQUOTE><div><img src="/Themes/basicblue/images/icon-quote.gif"> <strong><strong>rxelizondo</strong>:</strong></div><div>I agree with you that flexibility is nice, as long as there is a point
+to that flexibility, for me having a “target” parameter on instance
+rules is akin to someone climbing Mount Everest carrying a bowling ball
+with them, since they wont find a bowling alley up there, what is the
+point on having the extra weight.</div></BLOCKQUOTE><br><br>We've explained what object comes in as target.&nbsp; You're free to use it or ignore it.&nbsp; How is having it there hindering you in any way?<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rxelizondo replied on Friday, October 20, 2006</h2><P class=MsoNormal>Further investigation of the CSLA code revealed that it is possible to add static functions to instance rules. I already knew this but I had forgotten.</P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal>Needless to say, if instance rules allow for static methods then the MethodHandler signature must remain the way it is right now, end of discussion.</P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

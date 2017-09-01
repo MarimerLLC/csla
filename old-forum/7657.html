@@ -1,0 +1,155 @@
+<html><header><title>Compression? BinaryFormatter? What are the current techniques?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Compression? BinaryFormatter? What are the current techniques?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/7657.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>bt1 posted on Friday, September 18, 2009</h2><P class=MsoNormal><FONT face=Calibri>I am currently using CSLA 3.6 and am willing to upgrade to 3.8 to obtain any efficiencies.</FONT></P>
+<P class=MsoNormal><FONT face=Calibri>WinForms VS2008 .NET3.5, CSLA 3.6.X, WCFproxy</FONT></P>
+<P class=MsoNormal><FONT face=Calibri>I have been building some CSLA objects and started testing them.<SPAN>&nbsp; </SPAN>I received an error where I needed to increase the maxReceivedMessageSize.<SPAN>&nbsp;&nbsp; </SPAN>However, the object wasn’t that large, it had several (~600) small child objects.<SPAN>&nbsp; </SPAN>I quickly came up with an estimate of what size I thought the object should have been and it (the estimate) was lots smaller.<SPAN>&nbsp; </SPAN>So I used Fiddler2 to look at the packets.<SPAN>&nbsp; </SPAN>Was I shocked at the amount of overhead the XML<SPAN>&nbsp; </SPAN>had added, <SPAN>&nbsp;</SPAN>probably around 10x what the raw data would have been.<SPAN>&nbsp; </SPAN>After some initial research it looks like CSLA WCF is using the NetDataContractSerializer. </FONT></P>
+<P class=MsoNormal><FONT face=Calibri><SPAN>&nbsp;</SPAN>So after some research here I found several optimizations mentioned:</FONT></P>
+<P class=MsoListParagraphCxSpFirst><SPAN><SPAN><FONT face=Calibri>1.</FONT><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN></SPAN></SPAN><FONT face=Calibri>Compression CSLA</FONT></P>
+<P class=MsoListParagraphCxSpMiddle><SPAN><SPAN><FONT face=Calibri>2.</FONT><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN></SPAN></SPAN><FONT face=Calibri>Compression WCF</FONT></P>
+<P class=MsoListParagraphCxSpMiddle><SPAN><SPAN><FONT face=Calibri>3.</FONT><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN></SPAN></SPAN><FONT face=Calibri>BinaryFormatter (WcfBfProxyHost) vs NetDataContractSerializer.</FONT></P>
+<P class=MsoListParagraphCxSpLast><SPAN><SPAN><FONT face=Calibri>4.</FONT><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN></SPAN></SPAN><FONT face=Calibri>BinaryXML (Mobil only?)</FONT></P>
+<P class=MsoNormal><FONT face=Calibri>The problem is that I am having difficulty understanding </FONT></P>
+<P class=MsoListParagraphCxSpFirst><SPAN><SPAN><FONT face=Calibri>1.</FONT><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN></SPAN></SPAN><FONT face=Calibri>which methods to use (in combination with each other).</FONT></P>
+<P class=MsoListParagraphCxSpMiddle><SPAN><SPAN><FONT face=Calibri>2.</FONT><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN></SPAN></SPAN><FONT face=Calibri>Which techniques are the most current (have some been replaced with new better techniques)</FONT></P>
+<P class=MsoListParagraphCxSpMiddle><SPAN><SPAN><FONT face=Calibri>3.</FONT><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN></SPAN></SPAN><FONT face=Calibri>Are some techniques only for Mobile/SL .</FONT></P>
+<P class=MsoListParagraphCxSpLast><SPAN><SPAN><FONT face=Calibri>4.</FONT><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN></SPAN></SPAN><FONT face=Calibri>How to implement them.</FONT></P>
+<P class=MsoNormal><FONT face=Calibri>I know this is asking a lot but can someone outline what the current recommended techniques are and point me in the direction of some info on how to implement them.</FONT></P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, September 18, 2009</h2><P>The .NET serializer (NDCS) does generate some massive amounts of XML, no doubt about it.</P>
+<P>The good news is that much of the bulk is in the form of repeated xmlns, assembly and type strings. The reason this is good news is that compression is extremely effective because the repeated strings are eliminated, plus other compression occurs as well of course.</P>
+<P>The only place you can easily plug compression into the data portal is with the Silverlight data portal. I didn't bother to add those hooks in the .NET side, because you can just go get a compressed WCF binding instead.</P>
+<P>(I rather suspect there are, or will be, compressed WCF bindings for Silverlight too - but they didn't exist when we added the compression hooks to the Silverlight data portal, so some immediate answer was required)</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>DocJames replied on Saturday, September 19, 2009</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div><P>[...] I didn't bother to add those hooks in the .NET side, because you can just go get a compressed WCF binding instead. [...]</P></div></BLOCKQUOTE><br /><br />Is anyone using compressed WCF binding? I would love to see how it's implemented...<br /><br />I have a click once application using the DataPortal via WCF - and I really need compression to speed things up :)<br /><br />Thanks,<br />Jimmy</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Saturday, September 19, 2009</h2>>Is anyone using compressed WCF binding? I would love to see how it's<br />implemented...<br /><br />I know Magenic has at least one client doing this. They just purchased a<br />commercial binding component that does the work. Then it is just a matter of<br />putting the correct lines in the client and server config for WCF to use it<br />- I'm sure the component came with documentation/help describing exactly how<br />to do that.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Saturday, September 19, 2009</h2>I wrote compressed HTTP/ws-HTTP binding extension for exact same project configuration you have - WPF Click Once with CSLA WCF portal.  Unfortunately, client owns the code, so I cannot post it here.  I could give you some guidelines on writing one, but they will be at a high-level, again because I cannot post client code here.  Let me know if you are interested.<br /><br /><br />Sergey Barskiy<br />Principal Consultant<br />office: 678.405.0687 | mobile:&#160;404.388.1899<br /><br />Microsoft Worldwide Partner of the Year | Custom Development Solutions, Technical Innovation<br /><br />-----Original Message-----<br />From: Rockford Lhotka [mailto:cslanet@lhotka.net] <br />Sent: Saturday, September 19, 2009 8:27 AM<br />To: Sergey Barskiy<br />Subject: RE: [CSLA .NET] Compression? BinaryFormatter? What are the current techniques?<br /><br />>Is anyone using compressed WCF binding? I would love to see how it's<br />implemented...<br /><br />I know Magenic has at least one client doing this. They just purchased a<br />commercial binding component that does the work. Then it is just a matter of<br />putting the correct lines in the client and server config for WCF to use it<br />- I'm sure the component came with documentation/help describing exactly how<br />to do that.<br /><br /></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>DocJames replied on Saturday, September 19, 2009</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>sergeyb:</strong></div><div>[...] Let me know if you are interested.</div></BLOCKQUOTE><br /><br />It would be really great with a high-level guideline. It would also point me in the right direction.<br /><br />I'm also considering trying/buying a component like the one Noemax (<a href="http://www.noemax.com" target="_blank" title="http://www.noemax.com">http://www.noemax.com</a>) has.<br /><br />Thanks,<br />Jimmy</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Saturday, September 19, 2009</h2>Now that I am thinking about it, I think you can search the forum.  I believe someone posted a solution for this.  If you are to write your own, then...<br />You can write a custom behavior extension.  You would need to implement a few interfaces that WCF defines: IEndpointBehavior, IDispatchMessageInspector, IClientMessageInspector, IServiceBehavior.  You class would need to inherit from an Attribute as well.<br /><br />IDispatchMessageInspector.AfterReceiveRequest you would decompress a message.  In IDispatchMessageInspector.BeforeSendReply you would compress the message.  In IClientMessageInspector you would do the opposite.<br /><br />In IEndpointBehavior.ApplyClientBehavior you would need to add "this" as another message inspector.  Same with ApplyDispatchBehavior.<br /><br />For compress/decompress you can just use any compression library.  In the actual Compress routine you would need to create new message, copy headers from the old message, create new header and add it to headers collection. <br /><br />You can probably find some sample code on MSDN if you search for those interfaces.<br /><br />The last step is to add new behavior to .  node in web/app.config.  Then you refer to this extension in  node.<br /><br />Sorry I cannot provide more detailed info.<br /><br /><br /><br />Sergey Barskiy<br />Principal Consultant<br />office: 678.405.0687 | mobile:&#160;404.388.1899<br /><br />Microsoft Worldwide Partner of the Year | Custom Development Solutions, Technical Innovation<br /><br /><br />-----Original Message-----<br />From: DocJames [mailto:cslanet@lhotka.net] <br />Sent: Saturday, September 19, 2009 12:28 PM<br />To: Sergey Barskiy<br />Subject: Re: [CSLA .NET] RE: Compression? BinaryFormatter? What are the currenttechniques?<br /><br /> sergeyb:[...] Let me know if you are interested.<br /><br />It would be really great with a high-level guideline. It would also point me in the right direction.<br /><br />I'm also considering trying/buying a component like the one Noemax (http://www.noemax.com) has.<br /><br />Thanks,<br />Jimmy<br /><br /></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>bt1 replied on Monday, September 21, 2009</h2><P class=MsoNormal><FONT face=Calibri>Update:<SPAN>&nbsp; </SPAN>I set up the Csla.Server.Hosts.IWcfBfPortal (BinaryFormatter) and got some good performance increases.</FONT></P>
+<P class=MsoNormal><o:p><FONT face=Calibri>&nbsp;</FONT></o:p></P>
+<P class=MsoNormal><FONT face=Calibri>For the<SPAN>&nbsp; </SPAN>same Same Object (data) I am getting the following increases using Fiddler to track the http request from the client:</FONT></P>
+<P class=MsoNormal><o:p><FONT face=Calibri>&nbsp;</FONT></o:p></P>
+<P class=MsoNormal><FONT face=Calibri>NetDataContractSerializer</FONT></P>
+<P class=MsoNormal><FONT face=Calibri>Request Count: <SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>1</FONT></P>
+<P class=MsoNormal><FONT face=Calibri>Bytes Sent: <SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>8,716</FONT></P>
+<P class=MsoNormal><FONT face=Calibri>Bytes Received: 7,213,938</FONT></P>
+<P class=MsoNormal><FONT face=Calibri>ACTUAL PERFORMANCE</FONT></P>
+<P class=MsoNormal><FONT face=Calibri>Overall Elapsed:<SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>00:00:04.4218467</FONT></P>
+<P class=MsoNormal><o:p><FONT face=Calibri>&nbsp;</FONT></o:p></P>
+<P class=MsoNormal><FONT face=Calibri>IWcfBfPortal (Bindary Formatter)</FONT></P>
+<P class=MsoNormal><FONT face=Calibri>Request Count: <SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>1</FONT></P>
+<P class=MsoNormal><FONT face=Calibri>Bytes Sent: <SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>7,284</FONT></P>
+<P class=MsoNormal><FONT face=Calibri>Bytes Received: 918,732</FONT></P>
+<P class=MsoNormal><FONT face=Calibri>ACTUAL PERFORMANCE</FONT></P>
+<P class=MsoNormal><FONT face=Calibri>Overall Elapsed:<SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>00:00:02.2031109</FONT></P>
+<P class=MsoNormal><o:p><FONT face=Calibri>&nbsp;</FONT></o:p></P>
+<P class=MsoNormal><o:p><FONT face=Calibri>&nbsp;</FONT></o:p></P>
+<P class=MsoNormal><FONT face=Calibri>So, the next question is about the compression that has been mentioned.<SPAN>&nbsp; </SPAN>Will I really get much more of an improvement with compression.<SPAN>&nbsp; </SPAN>As I understand compression doesn’t work well (as well) with binary data.<SPAN>&nbsp; </SPAN></FONT></P>
+<P class=MsoNormal><o:p><FONT face=Calibri>&nbsp;</FONT></o:p></P>
+<P class=MsoNormal><FONT face=Calibri>Or would I be better off not using a Binary Formatter in WCF and using compression (only) in WCF?</FONT></P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, September 21, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>While that&#8217;s true, I suspect you&#8217;ll get even better perf
+increases if you use a compressed binding with NDCS.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I created WcfBfProxyHost as an experiment, in response to
+someone else pointing out the size of the XML created by NDCS. In their testing
+(so just one real data point) it was faster to use WcfProxy with a compressed
+binding.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Using WcfBfProxy with compressed binding is almost
+counter-productive btw. This is because the binary data generated by the
+BinaryFormatter doesn&#8217;t compress well &#8211; as is true of most binary data.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Alexander replied on Thursday, September 24, 2009</h2>Hi everyone!<br><br>Since Noemax was mentioned earlier, I will offer some quick info on what solutions are offered by WCF-Xtensions that could be of help in this case:<br><br>- Fast Infoset message encoding<br><br>Fast Infoset is a binary XML message encoding that is more compact that .NET Binary, available on .NET / .NET CF / Silverlight, and is interoperable with Java. Fast Infoset is an ITU-T/ISO standard.<br><br>- Envelope behavior<br><br>The Envelope behavior is an out-of-the-box solution that produces a very compact message envelope. It works without making any changes to the existing binding configuration. Introducing this component does not break interop with existing clients that do not support the capabilities of the Envelope behavior.<br><br>- HTTP compression<br><br>HTTP compression extends the system-provided HTTP transport with standard content negotiation and compression. Can compress/decompress both requests and responses. Enables support of multiple messages encodings on the same endpoint. It is available on .NET and .NET CF, supported by Silverlight, and interoperable with most HTTP servers. Introducing this component does not break interop with existing clients that do not support the new capabilities of the service.<br><br>- Message compression binding element<br><br>Message compression can be used with any transport and message encoding, including the system-provided TCP transport. Its GZIP implementation provides better compression ratios than the system-provided System.IO.Compression.<br><br>You can also combine some of the above solutions for maximum benefits. If you let me know your project's requirements I will be able to offer more specific suggestions.<br><br>Alexander<br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JohnSchneider replied on Friday, September 25, 2009</h2><P>If you want to get the best performance, take a look at the&nbsp;emerging Efficient XML Interchange (EXI) standard from the World Wide Web Consortium (W3C). It is far more compact than .NET Binary, FastInfoset, BinaryXML (WBXML), compression, etc.&nbsp;and does not incur the processing overhead of compression. The W3C conducted extensive benchmarking of different candidate technologies for the EXI standard&nbsp;and found there was one technology (called "<A href="http://www.agiledelta.com/efx_perffeatures.html">Efficient XML</A>") that consistently achieved the best performance across all their test data, use cases and application classes (see <A href="http://www.w3.org/TR/exi-measurements/">full report</A>). The W3C adopted "Efficient XML" as the basis for the single, global standard for the WWW. FastInfoset was also one the candidates considered; however, it did not achive sufficient compactness or generality to meet the requirements (see <A href="http://www.w3.org/TR/exi-measurements/#contributions-assessment">requirements matrix</A>).</P>
+<P>I work for the small company that developed Efficient XML.&nbsp;We were co-founded by an ex-Microsoft XML veteran and offer a plug-in for Microsoft WCF as well as standard APIs for&nbsp;.NET and&nbsp;.NET CF apps. The plug-in has built-in compression, supports dynamic content-negotiation and&nbsp;interoperates with versions for Java, Java Mobile Edition and native&nbsp;C/C++. If you want to try it out, you can download a trial version of the SDK from <A href="http://www.agiledelta.com/product_efxsdk.html">here</A>.</P>
+<P>&nbsp;&nbsp;&nbsp;Enjoy!,</P>
+<P>&nbsp;&nbsp; John</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jack replied on Friday, September 25, 2009</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>John,<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Is it affordable for a SMB / small app / small user base or is
+this more geared as an enterprise type implementation?<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> JohnSchneider [mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> September-25-09 11:00 AM<br>
+<b>To:</b> jaddington@alexandergracie.com<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: Compression? BinaryFormatter? What are the
+current techniques?<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>If you want to get the best performance, take a look at the&nbsp;emerging
+Efficient XML Interchange (EXI) standard from the World Wide Web Consortium
+(W3C). It is far more compact than .NET Binary, FastInfoset, BinaryXML (WBXML),
+compression, etc.&nbsp;and does not incur the processing overhead of
+compression. The W3C conducted extensive benchmarking of different candidate
+technologies for the EXI standard&nbsp;and found there was one technology
+(called &quot;<a href="http://www.agiledelta.com/efx_perffeatures.html">Efficient
+XML</a>&quot;) that consistently achieved the best performance across all their
+test data, use cases and application classes (see <a href="http://www.w3.org/TR/exi-measurements/">full report</a>). The W3C adopted
+&quot;Efficient XML&quot; as the basis for the single, global standard for the
+WWW. FastInfoset was also one the candidates considered; however, it did not
+achive sufficient compactness or generality to meet the requirements (see <a href="http://www.w3.org/TR/exi-measurements/#contributions-assessment">requirements
+matrix</a>).<o:p></o:p></p>
+
+<p>I work for the small company that developed Efficient XML.&nbsp;We were
+co-founded by an ex-Microsoft XML veteran and offer a plug-in for Microsoft WCF
+as well as standard APIs for&nbsp;.NET and&nbsp;.NET CF apps. The plug-in has
+built-in compression, supports dynamic content-negotiation
+and&nbsp;interoperates with versions for Java, Java Mobile Edition and
+native&nbsp;C/C++. If you want to try it out, you can download a trial version
+of the SDK from <a href="http://www.agiledelta.com/product_efxsdk.html">here</a>.<o:p></o:p></p>
+
+<p>&nbsp;&nbsp;&nbsp;Enjoy!,<o:p></o:p></p>
+
+<p>&nbsp;&nbsp; John<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JohnSchneider replied on Friday, September 25, 2009</h2><P>Both. There are per-copy licenses for smaller deployments, per-application licenses for medium-to-large deployments and&nbsp;unlimited enterprise licenses for very large deployments involving many applications.&nbsp;To find out what might work best for you, I recomended shooting a quick e-mail to <A href="mailto:sales@agiledelta.com">sales@agiledelta.com</A>.</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp; All the best!,</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp; John</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jfreeman replied on Monday, November 16, 2009</h2>What did you have to do to get this setup?  I have several large BOs that take a long time to retrieve and I just started looking at setting up WCF to ue binary.  Thanks.<br /><br />Jonathan</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, November 16, 2009</h2><A href="http://www.lhotka.net/cslanet/faq/DataPortalFaq.ashx">http://www.lhotka.net/cslanet/faq/DataPortalFaq.ashx</A></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

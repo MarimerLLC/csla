@@ -1,0 +1,33 @@
+<html><header><title>Transactions and two EOs</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Transactions and two EOs</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/558.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Bonio posted on Thursday, July 06, 2006</h2><P>Being a newbie to CSLA.Net, I have run into a problem regarding the interaction between two editable root objects.</P>
+<P>What I want to do is as follows:</P>
+<P>Object 1 is relates to Inventory (and is uses the DB table 'Inventory')</P>
+<P>Object 2 is used for writing a an inventory movement log (using 'InventoryLog' table)</P>
+<P>&nbsp;</P>
+<P>\When a change is made to the Inventory object (a Sale or Goods Receive), I would like to</P>
+<P>write an entry into the InventoryLog table. Obviously these two actions need to be wrapped in a transaction if one fails. I could do this via a stored proc, but I would like to keep the InventoryLog as an object as it has other uses elsewhere.</P>
+<P>Could someone suggest a way in which I could get these two objects to participate in the same transacion?</P>
+<P>Thanks</P>
+<P>Bonio</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Michael Hildner replied on Thursday, July 06, 2006</h2><P>Hello Bonio,</P>
+<P>Take my suggestion with a grain of salt. I'm pretty new to CSLA too, hoping I'm not off base.</P>
+<P>I think what you want to do is have Object2 be an editable child object instead of a editable root object. That way your editable root (Object1) can contain an instance of Object2 and when you save Object1, you save your child too.</P>
+<P>You may have another class that uses the same table as Object2 that's an editable root, but that would be a different class altogether.</P>
+<P>Someone please correct me if I'm wrong.</P>
+<P>Regards,</P>
+<P>Mike</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Wal972 replied on Thursday, July 06, 2006</h2><P>That would be one way of doing it. Watch that you don't repeat the any busines logic between the two classes</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jurjen replied on Friday, July 07, 2006</h2><P><FONT face=Verdana size=2>Bonio,</FONT></P>
+<P><FONT face=Verdana size=2>One way of doing this is just adding this Logging feature to the Update/Insert Stored Procedure. As I understand it, your Inventory Log is just that, a log, wich I suppose won't change once written to the database. This way it is in the same transaction.</FONT></P>
+<P><FONT face=Verdana size=2>Another way to do this is to create an EditableChild (or Switchable if you also need it as an EditableRoot) and have Object1 create an instance this EditableChild upon Insert/Update and save it in DataPortal_Update/Insert within the same transaction.</FONT></P>
+<P><FONT face=Verdana size=2>Jurjen.</FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, July 07, 2006</h2><P>You should make sure your objects are designed following the use case. It is rare to have a use case which requires two editable root objects.</P>
+<P>But if you convince yourself that this is, in fact, the case, read on...</P>
+<P>Your use case, as described, has the requirement of saving multiple objects as a single unit (which again implies a single editable root <img src="/emoticons/emotion-1.gif" alt="Smile [:)]" />), and you can do this with multiple root objects through the use of a Command object.</P>
+<OL>
+<LI>Create ERO1 and ERO2</LI>
+<LI>The user interacts with ERO1 and ERO2</LI>
+<LI>The user clicks the save button</LI>
+<LI>The save button creates CO1 (a command object) and gives it references to ERO1 and ERO2</LI>
+<LI>The save button then calls CO1.Execute(), which calls DataPortal.Execute(), which calls DataPortal_Execute(), which runs on the server and should be marked as transactional</LI>
+<LI>DataPortal_Execute() calls Save() on ERO1 and ERO2, updating its references to the return values from each Save() call</LI>
+<LI>Back on the client, the save button can get the new ERO1 and ERO2 values from CO1</LI></OL>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>DansDreams replied on Friday, July 07, 2006</h2>Even in Rocky's explanation, the&nbsp;point is that the design should be such that there is one single entity which is aware of the business requirement that those two things be saved together.&nbsp; It&nbsp;must not simply&nbsp;be represented in the UI's code.&nbsp; To that end, if the two objects can't be edited separately according to your requirements, you probably&nbsp;want to&nbsp;prevent the public Save() on the two objects and have an internal (friend) method that the command object could use.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>DansDreams replied on Friday, July 07, 2006</h2>Reading the original post again more carefully, I think I'd suggest in this specific&nbsp;case&nbsp;that the idea that those are two editable root objects is faulty.&nbsp; The creation of the log entry is a requirement of the save feature of the inventory BO, and&nbsp;meaningful only in that context.&nbsp; Unless specifically required for other reasons, I probably wouldn't even consider the logging to be a business object at all, but rather just code that's part of the inventory BO.&nbsp; You may also want to consider just having a stored procedure for updating inventory that also writes the log entry.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Bonio replied on Friday, July 07, 2006</h2><P>Having read the responses to my original question, I now realise that my original design was flawed and in fact the Logging role is only a net effect of actions by the Inventory object.</P>
+<P>What I will do is to just build logging into the Inventory object rather than have its own separate object.</P>
+<P>Many thanks for all the help/advice received.</P>
+<P>Bonio</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

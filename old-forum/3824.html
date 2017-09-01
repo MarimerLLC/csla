@@ -1,0 +1,202 @@
+<html><header><title>Best practices for cascading update from one property to another?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Best practices for cascading update from one property to another?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3824.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>rsbaker0 posted on Thursday, November 01, 2007</h2><P>We have a situation where an update to one property should cause a related/linked property to be set automatically to a specific value. </P>
+<P>The dependant property validation rules seem to work fine to enforce the relationship between the two and prevent invalid combinations from being saved, but there are cases where I'd like an update to one to automatically set the other one internally in the object. </P>
+<P>Is it OK to use the property setter of the other property while one property is being updated, or should I access the field for the other property directly?</P>
+<P>(I know this might seem unusual, but we're migrating an existing product to CSLA and doing this differently would be a breaking change). </P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Thursday, November 01, 2007</h2>I don't see a problem just changing the field; you probably would want to raise two propertychanged events though, one for each changed property.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rsbaker0 replied on Thursday, November 01, 2007</h2><P>OK, but I'm also willing to use the property setter itself if that wouldn't cause trouble. It would of course fire both dependant validation rules, but then the PropertyChanged() call in the original setter would cause them to refire again. </P>
+<P>Also, is it kosher to change a property during the execution of a validation rule? (e.g. Rule detects something isn't right, but can fix it benignly...)</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Thursday, November 01, 2007</h2>Actually that might bite you.&nbsp; I used to load instance that way in the DP_F, and it did end up causing some problems.&nbsp; <br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>DavidDilworth replied on Friday, November 02, 2007</h2><P>I would suggest that you leave the public property getter/setter methods for what they are intended for&nbsp;- public general purpose usage.</P>
+<P>It sounds to me like you've got a special use case.</P>
+<P>So why not implement&nbsp;special "internal" methods that know about the relationship between the objects.&nbsp; That way you are in complete control of what fields you want to change and you can manage the relationship how you like.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rsbaker0 replied on Friday, November 02, 2007</h2><P>I do have all the access I need to the internals, but I'll need to raise "OnPropertyChanged()" for the related property anyway so that the change will be visible to the UI, and that any related validation rules will fire, so it seems like almost all of the side-effects of calling the property setter would occur anyway. </P>
+<P>Also, our application uses "changed values concurrency", and we capture the original values of the property being changed via the&nbsp;property setter&nbsp;so that the DAL can apply the appropriate conditions when generating the update SQL, so that's something else I would have to worry about. </P>
+<P>I can certainly implement an "InternalPropertySet()" method -- in fact only one would be needed for our entire object layer, I'm just not sure what it would do different than the public property setter. </P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>DavidDilworth replied on Friday, November 02, 2007</h2><P><FONT face=Arial size=2>It sounds like you should just use the setter for the other property then.&nbsp; Assuming your setter code looks something like this:</FONT></P><FONT size=2>
+<P></FONT><FONT face="Courier New" color=#0000ff size=2>set<BR></FONT><FONT face="Courier New"><FONT size=2>{<BR></FONT><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;if</FONT><FONT size=2> (_value != </FONT><FONT color=#0000ff size=2>value</FONT></FONT><FONT face="Courier New" size=2>)<BR>&nbsp;&nbsp;&nbsp;{<BR></FONT><FONT face="Courier New"><FONT color=#008000 size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// Change the value of the field...<BR></FONT><FONT size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_value = </FONT><FONT color=#0000ff size=2>value</FONT></FONT><FONT face="Courier New"><FONT size=2>;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;PropertyHasChanged(</FONT><FONT color=#a31515 size=2>"MyProperty"</FONT></FONT><FONT face="Courier New" size=2>);<BR></FONT><FONT size=2><BR></FONT><FONT face="Courier New" color=#008000 size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// Set a new value into the other property...<BR></FONT><FONT face="Courier New" size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;MyOtherProperty = someValue;<BR>&nbsp;&nbsp;&nbsp;}<BR>}</FONT></P>
+<P><FONT face=Arial size=2>I don't think that you should have a problem.&nbsp; Unless of course you've got some kind of dual-dependency in the second property that refers back to the first one <img src="/emoticons/emotion-43.gif" alt="Confused [8-)]" /></FONT></P>
+<P><FONT size=2>&nbsp;</P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rsbaker0 replied on Saturday, November 03, 2007</h2><P>^^^^</P>
+<P>This illustrates the crux of what I'm trying to understand.&nbsp; It's not clear to me whether or not to set the dependant property before or after calling PropertyHasChanged(). </P>
+<P>Dual-dependencies are indeed tricky. I think this will only work in one direction (unless the dependency naturally short-circuits what would otherwise be runaway recursion). </P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Monday, November 05, 2007</h2>I think that almost always you should call PropertyHasChanged as the last steps; update all your values first, then call those methods.&nbsp; The reason is that the first value you change may be valid with the current value of the second field, but not valid if the second field has some other value.&nbsp; <br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jfreeman replied on Tuesday, September 02, 2008</h2><P>Based on the newest version of the framework, is the property getter/setter the best place to make changes to related fields?&nbsp; For instance, if property 1 is changed by the user, I want to re-calculate property 2 based on the contents of th property 1 and property 3 (property 2 = property 1 X property 3).&nbsp; Anyone have an example of the best way to handle this?&nbsp; Thanks.</P>
+<P>Jonathan</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Tuesday, September 02, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I usually write a small method that does recalculations and
+raises PropertyChanged events for recalculated properties, and call it from all
+three setters.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899<o:p></o:p></span></p>
+
+<p class=MsoNormal><b><i><span>Magenic</span></i></b><span> </span><span>&reg;</span><b><i><span><o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> jfreeman
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Tuesday, September 02, 2008 4:39 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] Best practices for cascading update from one
+property to another?<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Based on the newest version of the framework, is the property getter/setter
+the best place to make changes to related fields?&nbsp; For instance, if
+property 1 is changed by the user, I want to re-calculate property 2 based on
+the contents of th property 1 and property 3 (property 2 = property 1 X
+property 3).&nbsp; Anyone have an example of the best way to handle this?&nbsp;
+Thanks.<o:p></o:p></p>
+
+<p>Jonathan<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jfreeman replied on Tuesday, September 02, 2008</h2><P>Sergey,</P>
+<P>Thanks for the quick reply.&nbsp; Can you post an example of what that looks like and how it is called?&nbsp; Thanks.</P>
+<P>Jonathan</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Tuesday, September 02, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Something like this&#8230;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Public int Property1<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>{<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>Get {return GetProperty&lt;int&gt;(Poperty1Info)}<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>Set {SetProperty&lt;int&gt;(Property1Info, value); RecalcProps();}<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>}<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Public int Property2<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>{<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>Get {return GetProperty&lt;int&gt;(Poperty2Info)}<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>Set {SetProperty&lt;int&gt;(Property2Info, value);}<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>}<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Public int Property3<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>{<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>Get {return GetProperty&lt;int&gt;(Poperty3Info)}<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>Set {SetProperty&lt;int&gt;(Property3Info, value); RecalcProps();}<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>}<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Private void RecalcProps()<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>{<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp; Property2 = Property1 * Property3<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>}<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> jfreeman
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Tuesday, September 02, 2008 4:47 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: Best practices for cascading update from
+one property to another?<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Sergey,<o:p></o:p></p>
+
+<p>Thanks for the quick reply.&nbsp; Can you post an example of what that looks
+like and how it is called?&nbsp; Thanks.<o:p></o:p></p>
+
+<p>Jonathan<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

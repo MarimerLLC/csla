@@ -1,0 +1,72 @@
+<html><header><title>EditableRootListBase example</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>EditableRootListBase example</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/1698.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka posted on Monday, November 06, 2006</h2>Since I forgot to update the templates for 2.1 (and thus didn't add a template for ERLB), here's a quick template of a list that contains objects of type "Root". "Root" objects are normal editable root objects.<br><br>&lt;Serializable()&gt; _<br>Public Class RootList<br>&nbsp; Inherits EditableRootListBase(Of Root)<br><br>#Region " Business Methods "<br><br>&nbsp; Protected Overrides Function AddNewCore() As Object<br><br>&nbsp;&nbsp;&nbsp; Dim item As Root = Root.NewRoot<br>&nbsp;&nbsp;&nbsp; Add(item)<br>&nbsp;&nbsp;&nbsp; Debug.WriteLine("Added " &amp; Me.Count - 1)<br>&nbsp;&nbsp;&nbsp; Return item<br><br>&nbsp; End Function<br><br>#End Region<br><br>#Region " Factory Methods "<br><br>&nbsp; Public Shared Function GetList() As RootList<br>&nbsp;&nbsp;&nbsp; Return DataPortal.Fetch(Of RootList)(New Criteria)<br>&nbsp; End Function<br><br>&nbsp; Private Sub New()<br><br>&nbsp;&nbsp;&nbsp; Me.AllowEdit = True<br>&nbsp;&nbsp;&nbsp; Me.AllowNew = True<br>&nbsp;&nbsp;&nbsp; Me.AllowRemove = True<br><br>&nbsp; End Sub<br><br>#End Region<br><br>#Region " Data Access "<br><br>&nbsp; &lt;Serializable()&gt; _<br>&nbsp; Private Class Criteria<br><br>&nbsp; End Class<br><br>&nbsp; Private Overloads Sub DataPortal_Fetch(ByVal criteria As Criteria)<br><br>&nbsp;&nbsp;&nbsp; ' load list here<br><br>&nbsp; End Sub<br><br>#End Region<br><br>End Class<br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Smirk replied on Tuesday, November 07, 2006</h2><P>Grins #ly</P>
+<P>---------------------------------------------------------------------------------------</P><FONT color=#0000ff>
+<P>using</FONT> System;</P>
+<P><FONT color=#0000ff>using</FONT> System.Diagnostics;</P><FONT color=#0000ff>
+<P>using</FONT> Csla;</P><FONT color=#0000ff>
+<P>using</FONT> Csla.Core;</P><FONT color=#0000ff>
+<P>namespace</FONT> SomeNamespace</P>
+<P>{</P>
+<P>&nbsp;&nbsp;&nbsp;[<FONT color=#008080>Serializable</FONT>()]</P>
+<P><FONT color=#0000ff>&nbsp;&nbsp;&nbsp;public</FONT> <FONT color=#0000ff>class</FONT> <FONT color=#008080>RootList</FONT>: <FONT color=#008080>EditableRootListBase</FONT>&lt;Root&gt;</P>
+<P>&nbsp;&nbsp;&nbsp;{</P><FONT color=#0000ff>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#region</FONT> Business Methods</P>
+<P><FONT color=#0000ff>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;protected</FONT> <FONT color=#0000ff>override</FONT> <FONT color=#0000ff>object</FONT> AddNewCore()</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Root item = Root.NewRoot;</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Add(item);</P>
+<P><FONT color=#008080>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Debug</FONT>.WriteLine(<FONT color=#800000>"Added "</FONT> + <FONT color=#0000ff>this</FONT>.Count -1);</P>
+<P><FONT color=#0000ff>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return</FONT> item;</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</P><FONT color=#0000ff>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#endregion</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#region</FONT> Factory Methods</P>
+<P><FONT color=#0000ff>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;public</FONT> <FONT color=#0000ff>static</FONT> <FONT color=#008080>RootList</FONT> GetList()</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{</P>
+<P><FONT color=#0000ff>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return</FONT> <FONT color=#008080>DataPortal</FONT>.Fetch&lt;<FONT color=#008080>RootList</FONT>&gt;(<FONT color=#0000ff>new</FONT> <FONT color=#008080>Criteria</FONT>());</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</P>
+<P><FONT color=#0000ff>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;private</FONT> RootList()</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{</P>
+<P><FONT color=#0000ff>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;this</FONT>.AllowEdit = <FONT color=#0000ff>true</FONT>;</P>
+<P><FONT color=#0000ff>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;this</FONT>.AllowNew = <FONT color=#0000ff>true</FONT>;</P>
+<P><FONT color=#0000ff>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;this</FONT>.AllowRemove = <FONT color=#0000ff>true</FONT>;</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</P><FONT color=#0000ff>
+<P>&nbsp;&nbsp;&nbsp;#endregion</P>
+<P>&nbsp;&nbsp;&nbsp;#region</FONT> Data Access</P>
+<P>&nbsp;&nbsp;&nbsp;[<FONT color=#008080>Serializable</FONT>()]</P>
+<P><FONT color=#0000ff>&nbsp;&nbsp;&nbsp;private</FONT> <FONT color=#0000ff>class</FONT> <FONT color=#008080>Criteria</P></FONT>
+<P>&nbsp;&nbsp;&nbsp;{</P>
+<P>&nbsp;&nbsp;&nbsp;}</P>
+<P><FONT color=#0000ff>&nbsp;&nbsp;&nbsp;protected</FONT> <FONT color=#0000ff>override</FONT> <FONT color=#0000ff>void</FONT> DataPortal_Fetch(<FONT color=#008080>Criteria</FONT> criteria)</P>
+<P>&nbsp;&nbsp;&nbsp;{</P>
+<P><FONT color=#008000>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// Load list here.</P></FONT>
+<P>&nbsp;&nbsp;&nbsp;}</P><FONT color=#0000ff>
+<P>&nbsp;&nbsp;&nbsp;#endregion</P></FONT>
+<P>&nbsp;&nbsp;&nbsp;}</P>
+<P>}</P>
+<P>----------------------------------------------------------------------------------------------------</P>
+<P>I think I got it all...</P>
+<P>Mark Haley</P>
+<P><FONT size=2></FONT>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tiago replied on Monday, December 04, 2006</h2>I guess the template name should be RootList.cs (and not EditableRootListBase.cs). Correct?</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, December 04, 2006</h2>
+
+
+
+
+<DIV align=left><SPAN class=095102415-04122006><FONT face=Arial color=#0000ff size=2>fwiw, I'm using the term "DynamicRootList" in the 2.1 ebook 
+(which is nearing completion finally).</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=095102415-04122006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=095102415-04122006><FONT face=Arial color=#0000ff size=2>Rocky</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=095102415-04122006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV><BR>
+<BLOCKQUOTE>
+  <DIV class=OutlookMessageHeader align=left>
+  <HR>
+  <FONT face=Tahoma size=2><B>From:</B> tiago [mailto:cslanet@lhotka.net] 
+  <BR><B>Sent:</B> Monday, December 04, 2006 7:07 AM<BR><B>To:</B> 
+  rocky@lhotka.net<BR><B>Subject:</B> Re: [CSLA .NET] EditableRootListBase 
+  example<BR></FONT><BR></DIV>
+  <DIV></DIV>I guess the template name should be RootList.cs (and not 
+  EditableRootListBase.cs). Correct?<BR><BR><BR></BLOCKQUOTE></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rashid replied on Wednesday, July 09, 2008</h2><P>Hi,</P>
+<P>&nbsp;This is Editable Root List base, the methods for update, delete and Add new is not there is the example. Can you please elaborate your example for more details.</P>
+<P>&nbsp;</P>
+<P>Thanks &amp; Regards<img src="/emoticons/emotion-1.gif" alt="Smile [:)]" /></P>
+<P>Rashid</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, July 10, 2008</h2><P>For full details see the <EM>CSLA .NET Version 2.1 Handbook</EM> ebook.</P>
+<P>An ERLB collection contains editable root objects, so each "child" object is responsible for its own insert/update/delete.</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

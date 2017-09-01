@@ -1,0 +1,324 @@
+<html><header><title>Feature request: Bubble up ChildChanged event in Parent/Child/Grandchild object graph</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Feature request: Bubble up ChildChanged event in Parent/Child/Grandchild object graph</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5333.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>McManus posted on Tuesday, September 02, 2008</h2><P>Rocky,</P>
+<P>In version 3.5.1 you've added a ChildChanged event to the BusinessBase class. We use this event to get notified when a Child Object or a Child collection of a Root object changes. This works fine.</P>
+<P>However, when we have the object graph Root -- Child collection&nbsp;-- Grandchild (collection), we don't receive a notification at the root level&nbsp;when a grandchild has changed. Such a notification can be used to enable/disable a Save button (or something like that). The reason that the event does not bubble up automatically is that BusinessListBase does not have the ChildChanged concept.</P>
+<P>We've added a ChildChanged event to our BusinessListBase derived base class (see attachment). When adding a child item to the list, we hookup to&nbsp;the ChildChanged event of the child. If we receive a ChildChanged event from a child item, we raise the ChildChanged event of the List class. This works fine.</P>
+<P>The problem with this approach is that we manually&nbsp;have to hookup to the ChildChanged event of the&nbsp;collection class. It would be nice to have Csla take care of this automatically. </P>
+<P>I'd like to hear your opinion on this!</P>
+<P>Cheers,<BR>Herman</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, September 02, 2008</h2><P>Thank you Herman,</P>
+<P>There's another thread where this was discussed a couple weeks ago. I believe this has been addressed in yesterday's 3.6 pre-release so please look at that and see if it meets your needs.</P>
+<P>The ChildChanged event starts at the parent level (above the originating object) and then bubbles from there all the way to the root object of the object graph.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>nj609eagle replied on Thursday, February 19, 2009</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div> 
+<P>Thank you Herman,</P>
+<P>There's another thread where this was discussed a couple weeks ago. I believe this has been addressed in yesterday's 3.6 pre-release so please look at that and see if it meets your needs.</P>
+<P>The ChildChanged event starts at the parent level (above the originating object) and then bubbles from there all the way to the root object of the object graph.</P>
+<P></div></BLOCKQUOTE></P>
+<P>Using version 3.6.1 this appears to have stopped bubbling up when an Object has been Deserialized using WCF.</P>
+<P>It works fine when not using teh WCF.&nbsp; My other post here:<BR><A HREF="/forums/thread/31083.aspx"><FONT face=Calibri color=#800080>http://forums.lhotka.net/forums/thread/31083.aspx</FONT></A></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, February 19, 2009</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>In 3.6.0 there was a bug where the event was not bubbling
+properly after deserialization. This was one of the things I specifically
+worked on for 3.6.1.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>In other words, there was a bug, and I thought I&#8217;d fixed
+it (I have tests for several scenarios that do work).<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>So it sounds like I missed a scenario in my testing. You can
+help me by providing either a very clear description of the failing scenario,
+or a unit test that illustrates the failure.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Thank you,<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky <o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> nj609eagle
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Thursday, February 19, 2009 9:04 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] Feature request: Bubble up ChildChanged event
+in Parent/Child/Grandchild object graph<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<blockquote>
+
+<div>
+
+<p class=MsoNormal><span><img width=100 height=100 id="_x0000_i1025" alt="Image removed by sender."></span><strong>RockfordLhotka:</strong><o:p></o:p></p>
+
+</div>
+
+<div>
+
+<p>Thank you Herman,<o:p></o:p></p>
+
+<p>There's another thread where this was discussed a couple weeks ago. I
+believe this has been addressed in yesterday's 3.6 pre-release so please look
+at that and see if it meets your needs.<o:p></o:p></p>
+
+<p>The ChildChanged event starts at the parent level (above the originating
+object) and then bubbles from there all the way to the root object of the object
+graph.<o:p></o:p></p>
+
+</div>
+
+</blockquote>
+
+<p>Using version 3.6.1 this appears to have stopped bubbling up when an Object
+has been Deserialized using WCF.<o:p></o:p></p>
+
+<p>It works fine when not using teh WCF.&nbsp; My other post here:<br>
+<a href="/forums/thread/31083.aspx"><span>http://forums.lhotka.net/forums/thread/31083.aspx</span></a><o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>nj609eagle replied on Thursday, February 19, 2009</h2><P class=MsoNormal><FONT face=Calibri>A Root object is of BusinessBase, call it Application.</FONT></P>
+<P class=MsoNormal><FONT face=Calibri>Application has a Child property of BusinessBase, call it Section3_2.</FONT></P>
+<P class=MsoNormal><FONT face=Calibri>Section3_2 has a child property of BusinessListBase, call it Salaries.</FONT></P>
+<P class=MsoNormal><FONT face=Calibri>The Salary Item (BusinessBase) in the List has three numeric properties, Chargeable, non-Chargeable and total. <SPAN>&nbsp;</SPAN>A handler for Me.PropertyChanged which takes the Chargeable and non-chargeable and sets the total.</FONT></P>
+<P class=MsoNormal><FONT face=Calibri>Section3_2 has a handler for Me.<SPAN>ChildChanged</SPAN>, and gets the total for all of the Salary Items listed and set the value to one of its own properties.</FONT></P>
+<P class=MsoNormal><FONT face=Calibri>Application has a similar handler for Me.<SPAN>ChildChanged </SPAN>which sets properties for some of its values.</FONT></P>
+<P class=MsoNormal><FONT face=Calibri>The Property Changed events will fire for the salary Item, but none of the Child Changed events will fire.<SPAN>&nbsp; </SPAN></FONT></P>
+<P class=MsoNormal><FONT face=Calibri><SPAN></SPAN>Being new to VS2008 and CSLA, I’m not really quite sure how to provide you with a unit test for the code that I’m running without the data source.</FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, February 19, 2009</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>When you change the Total property, do you explicitly call
+OnPropertyChanged(“Total”)?<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Or are you storing Total in a managed backing field? In which
+case are you calling SetProperty() to change it?<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> nj609eagle
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Thursday, February 19, 2009 10:08 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: Feature request: Bubble up ChildChanged
+event in Parent/Child/Grandchild object graph<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal><span>A Root object is of BusinessBase,
+call it Application.</span><o:p></o:p></p>
+
+<p class=MsoNormal><span>Application has a Child property of
+BusinessBase, call it Section3_2.</span><o:p></o:p></p>
+
+<p class=MsoNormal><span>Section3_2 has a child property of
+BusinessListBase, call it Salaries.</span><o:p></o:p></p>
+
+<p class=MsoNormal><span>The Salary Item (BusinessBase) in
+the List has three numeric properties, Chargeable, non-Chargeable and total.
+&nbsp;A handler for Me.PropertyChanged which takes the Chargeable and
+non-chargeable and sets the total.</span><o:p></o:p></p>
+
+<p class=MsoNormal><span>Section3_2 has a handler for
+Me.ChildChanged, and gets the total for all of the Salary Items listed and set
+the value to one of its own properties.</span><o:p></o:p></p>
+
+<p class=MsoNormal><span>Application has a similar handler
+for Me.ChildChanged which sets properties for some of its values.</span><o:p></o:p></p>
+
+<p class=MsoNormal><span>The Property Changed events will
+fire for the salary Item, but none of the Child Changed events will fire.&nbsp;
+</span><o:p></o:p></p>
+
+<p class=MsoNormal><span>Being new to VS2008 and CSLA, Iâ€™m
+not really quite sure how to provide you with a unit test for the code that
+Iâ€™m running without the data source.</span><o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>nj609eagle replied on Thursday, February 19, 2009</h2><P>total is being stored in a managed backing field, and I'm calling Setproperty() to change it.</P>
+<P>Attached is a crude diagram of the object model.&nbsp;it's similar to figure 5.1 on C# 2008 ( p188)</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, February 19, 2009</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>One other question &#8211; you are rehooking the childchanged
+events in an ondeserialized() override correct?<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Event hookups don&#8217;t survive serialization. CSLA rehooks
+its internal event handlers, but if you are hooking events in your own code you
+need to rehook them on deserialization.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> nj609eagle
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Thursday, February 19, 2009 10:31 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: RE: Feature request: Bubble up ChildChanged
+event in Parent/Child/Grandchild object graph<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>total is being stored in a managed backing field, and I'm calling
+Setproperty() to change it.<o:p></o:p></p>
+
+<p>Attached is a crude diagram of the object model.&nbsp;it's similar to figure
+5.1 on C# 2008 ( p188)<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>nj609eagle replied on Thursday, February 19, 2009</h2><P>Ahh Haaa!!!&nbsp; No I'm not doing any type of rehooking of events.</P>
+<P>Can you point me to a sample?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, February 19, 2009</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp; protected override void
+OnDeserialized(System.Runtime.Serialization.StreamingContext context)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp; {<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; base.OnDeserialized(context);<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; this.ChildChanged += CustomerEdit_ChildChanged;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp; }<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> nj609eagle
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Thursday, February 19, 2009 12:32 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: RE: RE: Feature request: Bubble up
+ChildChanged event in Parent/Child/Grandchild object graph<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Ahh Haaa!!!&nbsp; No I'm not doing any type of rehooking of events.<o:p></o:p></p>
+
+<p>Can you point me to a sample?<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>nj609eagle replied on Thursday, February 19, 2009</h2><P>Thank you...I was just about to post that I found this elsewhere on the site.</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

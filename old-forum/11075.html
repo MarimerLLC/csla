@@ -1,0 +1,69 @@
+<html><header><title>I need a little bit of help</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>I need a little bit of help</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11075.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>AKaplan posted on Saturday, January 21, 2012</h2><p>I&#39;m currently writing a Silverlight 4 app, and I&#39;m getting an error that I don&#39;t understand. I&#39;m trying to execute the following and it&#39;s getting this error in the debugging output. Can someone tell me what I am doing wrong and how to fix it?</p>
+<p>
+<p>&nbsp;Public Sub btnHelp_Click()</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Bxf.Shell.Instance.ShowView(GetType(HelpView).AssemblyQualifiedName, String.Empty, New Help_ViewModel, &quot;Main&quot;)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; End Sub</p>
+<p>
+<p>Step into: Stepping over method without symbols &#39;Bxf.Shell.Instance.get&#39;</p>
+<p>Step into: Stepping over method without symbols &#39;System.RuntimeType.AssemblyQualifiedName.get&#39;</p>
+<p>Step into: Stepping over method without symbols &#39;Designer.Help_ViewModel.Help_ViewModel&#39;</p>
+<p>Step into: Stepping over method without symbols &#39;Bxf.Shell.ShowView&#39;</p>
+<p>A first chance exception of type &#39;System.InvalidCastException&#39; occurred in Bxf</p>
+<p>A first chance exception of type &#39;System.Reflection.TargetInvocationException&#39; occurred in mscorlib.dll</p>
+<p>Step into: Stepping over method without symbols &#39;Bxf.Xaml.TriggerAction.CallMethod&#39;</p>
+<p>A first chance exception of type &#39;System.InvalidCastException&#39; occurred in Bxf</p>
+<p>Step into: Stepping over method without symbols &#39;MS.Internal.JoltHelper.FireEvent&#39;</p>
+<p>The program &#39;[4440] chrome.exe: Silverlight&#39; has exited with code 0 (0x0).</p>
+<p>The program &#39;[2304] w3wp.exe: Managed (v2.0.50727)&#39; has exited with code 0 (0x0).</p>
+<div></div>
+</p>
+</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Saturday, January 21, 2012</h2><p>Is the application running ok otherwise?&nbsp; Its normal for exceptions to be thrown caught and handled during the course of a running application.&nbsp; </p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>AKaplan replied on Sunday, January 22, 2012</h2><p>Yes the application is running normal until I execute that line. When executed, the app goes blank, and I have to refresh the browser. If it&#39;s any constellation, the view is a child window instead of a usercontrol.&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>AKaplan replied on Thursday, January 26, 2012</h2><p>I still haven&#39;t been able to resolve this issue or even understand what I&#39;m doing wrong. Can anyone please help?</p>
+<p>Public Sub New</p>
+<p>
+<p>AddHandler presenter.OnShowView, Sub(view, region)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Select Case region</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Case &quot;Main&quot;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;MainContent = view</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Case &quot;Menu&quot;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;MenuContent = view</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Case &quot;Samples&quot;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;SampleContent = view</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Case &quot;Product&quot;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;ProductContent = view</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Case &quot;Error&quot;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;_errorClose = DateTime.Now.Add(New TimeSpan(0, 0, 5))</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;ErrorContent = view</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Case &quot;User&quot;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;UserContent = view</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Case &quot;Modal&quot;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Dim cw As New ChildWindow</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;cw.Content = view</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;AddHandler cw.Closed, Sub() cw.DialogResult = False</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;cw.Show()</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Case &quot;Status&quot;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;_statusClose = DateTime.Now.Add(New TimeSpan(0, 0, 5))</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;If view IsNot Nothing Then</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;AppBusy = DirectCast(view, Bxf.Status).IsBusy</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Else</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;AppBusy = False</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;End If</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;StatusContent = view</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;End Select</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;End Sub</p>
+<p>End Sub</p>
+</p>
+<p>&nbsp;Public Sub btnHelp_Click()</p>
+<p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Bxf.Shell.Instance.ShowView(GetType(HelpView).AssemblyQualifiedName, String.Empty, New Help_ViewModel, &quot;Modal&quot;)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; End Sub</p>
+</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, January 26, 2012</h2><p>You should understand that Bxf doesn&#39;t actually do anything beyond route the ShowView method call to your OnShowView handler.</p>
+<p>The secret to almost all debugging is to put a breakpoint at the top of the OnShowView handler and step through it.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>AKaplan replied on Friday, January 27, 2012</h2><p>ok... I&#39;m still stumped. Whats wrong with my handler?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>AKaplan replied on Tuesday, January 31, 2012</h2><p>ok I found the exact culprit in my problem.</p>
+<p>
+<p>&nbsp;Dim vf As New Bxf.ViewFactory</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Dim v = vf.GetView(GetType(View.ProductCategoryListView).AssemblyQualifiedName, &quot;productcategorylistViewSource&quot;, New ViewModel.ProductCategoryList_ViewModel)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Bxf.Shell.Instance.ShowView(v, &quot;Menu&quot;)</p>
+</p>
+<p>&nbsp;</p>
+<p>When I make this approach on the ShowView method, It says it is unable to cast Bxf.View to UserControl. How can I correct this?</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, January 31, 2012</h2><p>This whole thread should be in the Bxf forum at <a href="http://bxf.codeplex.com">http://bxf.codeplex.com</a> - it has nothing to do with CSLA...</p>
+<p>Bxf assumes that views subclass UserControl. The assumption is that your entire UI is composed of UserControl subclassed views that are &quot;hosted&quot; or displayed in regions that are contained in things like a Windows, Page, ChildWindow, etc.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,13 @@
+<html><header><title>Propertystatus not working as expected</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Propertystatus not working as expected</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9632.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Adalton4 posted on Wednesday, October 13, 2010</h2><p>Hi,</p>
+<p>I have a problem concerning the use of propertstatus.</p>
+<p>&nbsp;</p>
+<p>My setup is CSLA 4.01/Silverlight/MVVM&nbsp;using ViewModel&lt;T&gt;</p>
+<p>&nbsp;</p>
+<p>I followed the general way to handle this as per the demo&#39;s provided with the videos around Silverlight and MVVM. Basically, i set up the binding and make it do its job via a propertstatus object.</p>
+<p>&nbsp;</p>
+<p>I have the following case: I display a readonly list where the user can select an item. This item is passed to&nbsp;the MVVM of the editable object, which goes to retrieve and display the object for edit, in the dataportal,&nbsp;CheckRules is performed because the object may be invalid. Or, the user can click on a new button to create a new item. When i create a new item, the dataportal forces also a CheckRules, so the UI shows an errorprovider for all the fields who are invalid. Now, the case is, when the user clicks on the add button, does nothing, and then decides to click in the RO list to retrieve an existing object, the errorproviders are still showing the same like the user just created the object, so it looks like they are not refreshed.</p>
+<p>Can anybody help me in this please?</p>
+<p>&nbsp;</p>
+<p>TIA</p>
+<p>&nbsp;</p>
+<p>D</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

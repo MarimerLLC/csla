@@ -1,0 +1,239 @@
+<html><header><title>Difficulties using WcfPortal in Beta 1</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Difficulties using WcfPortal in Beta 1</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/2934.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>dlutz52 posted on Tuesday, May 22, 2007</h2><P>Good day to all!</P>
+<P>&nbsp;&nbsp;&nbsp;I&nbsp;am using Beta 1 (and the previous test version) of CSLA 3.0 to grok the WcfPortal. I got Project Tracker working with the WcfPortal without any trouble. Great!</P>
+<P>&nbsp;&nbsp;&nbsp;When I went to use this same CSLA functionality with my own business objects, I ran into a problem I have not been able to resolve. I added a reference to my business objects to the WcfPortal project and had my client access this portal via app.config. These business objects work fine when using the SimpleDataPortal.</P>
+<P>&nbsp;&nbsp;&nbsp; When I call the Save(false) method on my ERO, I get an exception stating: "The underlying connection was closed: The connection was closed unexpectedly." </P>
+<P>&nbsp;&nbsp;&nbsp; These business objects work fine when using the SimpleDataPortal&nbsp;within the same test&nbsp;app that I am using here.</P>
+<P>&nbsp;&nbsp;&nbsp; When I turn logging on for the WcfPortal, I find the following in the log file after running my test:</P>
+<P>"&lt;ExceptionString&gt;System.ServiceModel.CommunicationException: There was an error while trying to serialize parameter <A href="http://ws.lhotka.net/WcfDataPortal:UpdateResult">http://ws.lhotka.net/WcfDataPortal:UpdateResult</A>. The InnerException message was 'Enum value '0' is invalid for type 'System.Security.Permissions.SecurityAction' and cannot be serialized. Ensure that the necessary enum values are present and are marked with EnumMemberAttribute attribute if the type has DataContractAttribute attribute.'.&nbsp; Please see InnerException for more details. System.Runtime.Serialization.SerializationException: Enum value '0' is invalid for type 'System.Security.Permissions.SecurityAction' and cannot be serialized. Ensure that the necessary enum values are present and are marked with EnumMemberAttribute attribute if the type has DataContractAttribute attribute."</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp; I have looked at everything that I can think of to see any difference between my business objects (which are generated with a code generator) and the ProjectTracker business objects. I have yet to find anything that lead to a solution to this problem. Since the ProjectTracker objects work fine with WcfPortal, it must be something with the business object code that I am using, but what...? So any help here would be much appreciated.</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp; I have tried to be brief here. If you need more info, just ask...</P>
+<P>&nbsp;&nbsp;&nbsp; BTW, are there any specific instructions somewhere for setting up a WCF project in VS2005 for use as a WcfPortal for CSLA objects? I would imagine that it would be pretty much the same as the instructions for remoting on pg. 611 of the VB 2005 Business Objects book. I have also checked out <A href="http://www.lhotka.net/files/csla20/BuildCsla.pdf">http://www.lhotka.net/files/csla20/BuildCsla.pdf</A>&nbsp;but it appears to be just CSLA 2.0. But I wonder if there is just something that I am missing here.</P>
+<P>Best regards--<BR>David Lutz</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, May 22, 2007</h2>I recommend trying one of the 2.0 channels (remoting, web services, etc) to see what happens. If you problem continues to exist with that channel then we eliminate WCF. If your code works with that channel then that indicates the problem almost certainly must be with the WCF channel.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>dlutz52 replied on Wednesday, May 23, 2007</h2><P><FONT face=Arial size=2>I can confirm that the BOs work fine with remoting. After adding a reference to my BOs in your remoting server, making the necessary config changes and working out the security principal, I was able to get my test app to create and save the business objects to the database using the remoting server.</FONT></P>
+<P><FONT face=Arial size=2>One other thing I discovered after writing the first post: once a reference these business objects were added to your WcfHost project, not even ProjectTracker would work.&nbsp;A similarly worded error happened when trying to retrieve a project. Once the references were removed, ProjectTracker worked fine.</FONT></P>
+<P><FONT face=Arial size=2>Best regards --<BR>David Lutz</FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>dlutz52 replied on Wednesday, May 23, 2007</h2><P><FONT face=Arial size=2>I can now add some additional info to this thread:</FONT></P>
+<P><FONT face=Arial size=2>Once the BusinessPrincipal was implemented in my test app, the remoting test worked. However, I had to hack the class implementing the IIdentity interface to get around and error that returned: "Principal must be of type BusinessPrincipal, not System.Security.Principal.GenericPrincipal" when calling the GetIdentity method which called DataPortal.Fetch. ProjectTracker does not have this problem and calls the remoting server even though a BusinessPrincipal has not been created. I would someday like to understand this better, but for now I just hacked my way around this problem.</FONT></P>
+<P><FONT face=Arial size=2>My hack was to create a constructor that took a name and set IsAuthenicated to True. So now I call this constructor and use the result to set the <FONT size=2>Csla.ApplicationContext.User. Once this is done the saving of these objects via the remoting server works. The same applies to the WCF Host.</FONT></FONT></P>
+<P><FONT face=Arial size=2><FONT size=2>I hope this provides some clarification to this ongoing situation.</FONT></FONT></P>
+<P><FONT face=Arial size=2><FONT size=2>Best regards --<BR>David Lutz</FONT></FONT><FONT face=Arial size=2><FONT size=2></P></FONT></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, May 23, 2007</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>dlutz52:</strong></div><div>
+<P><FONT face=Arial size=2>My hack was to create a constructor that took a name and set IsAuthenicated to True. So now I call this constructor and use the result to set the <FONT size=2>Csla.ApplicationContext.User. Once this is done the saving of these objects via the remoting server works. The same applies to the WCF Host.</FONT></FONT></P>
+<P></div></BLOCKQUOTE></P>
+<P>This is close to what you should do, but not quite. You need to implement a static/Shared Logout() method on your principal, that sets the current principal to an <EM>unauthenticated</EM> instance of your custom principal.</P>
+<P>This is discussed in the book, and you'll notice that all three interfaces in ProjectTracker make sure to do a Logout() before any attempt at calling the data portal.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, May 23, 2007</h2><P>But in any case, this is a valuable clue to what's going on with the WcfProxy. I think that at least one server-side exception class (probably a WCF one) isn't serializable. I'll have to dig into that a bit - because what I think is happening is that an exception occurs on the server, and my code tries to pack up the server-side stack trace to return it to the client. That requires serializing the exception stack, and that appears to be what's failing.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>dlutz52 replied on Wednesday, May 23, 2007</h2><P><FONT face=Arial size=2>Rocky/Andres --</FONT></P>
+<P><FONT face=Arial size=2>Calling the Logout() method fixed everything - for both remoting and WCF. Lesson learned. Funny how you can read something in a book&nbsp;and not grok the&nbsp;full significance of what one has read, later yet remember it when you need it. </FONT></P>
+<P><FONT face=Arial size=2>I thank you both for the help. I hope that this exercise has been helpful in spite of the fact that it arises out of the actions of a fumbling newbie -&nbsp;a fact&nbsp;that will change with time.</FONT></P>
+<P><FONT face=Arial size=2>Best regards --<BR>David</FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>xal replied on Wednesday, May 23, 2007</h2>Whenever you're using Remoting, you're supposed to have an appropriate principal, not necessarily logged in (IsAuthenticated = True).<br>If you look at the project tracker, it calls Logout() somewhere before even attempting to login. Calling logout sets an unauthenticated principal as the current principal and that lets you communicate with the remoting portal.<br><br>I don't know if this is related in any way to wcf, but for remoting, that's the solution to your problem.<br><br>Andrés<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, June 01, 2007</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>dlutz52:</strong></div><div>
+<P>"&lt;ExceptionString&gt;System.ServiceModel.CommunicationException: There was an error while trying to serialize parameter <A href="http://ws.lhotka.net/WcfDataPortal:UpdateResult">http://ws.lhotka.net/WcfDataPortal:UpdateResult</A>. The InnerException message was 'Enum value '0' is invalid for type 'System.Security.Permissions.SecurityAction' and cannot be serialized. Ensure that the necessary enum values are present and are marked with EnumMemberAttribute attribute if the type has DataContractAttribute attribute.'.&nbsp; Please see InnerException for more details. System.Runtime.Serialization.SerializationException: Enum value '0' is invalid for type 'System.Security.Permissions.SecurityAction' and cannot be serialized. Ensure that the necessary enum values are present and are marked with EnumMemberAttribute attribute if the type has DataContractAttribute attribute."</P>
+<P></div></BLOCKQUOTE></P>
+<P>OK, I have isolated this issue. It appears to be a bug in the NetDataContractSerializer (the WCF replacement for the BinaryFormatter). As such, it is not at all clear to me that there's a fix or workaround short of Microsoft addressing the problem.</P>
+<P><A href="http://www.lhotka.net/weblog/WCFNetDataContractSerializerAndSecurityException.aspx">http://www.lhotka.net/weblog/WCFNetDataContractSerializerAndSecurityException.aspx</A></P>
+<P>I haven't quite given up on a workaround yet, but it is hard to see any good solution I can provide...</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>dlabar replied on Sunday, July 27, 2008</h2><P>Rocky,&nbsp;have you found any solution to this issue?&nbsp; I'm having the same problem, but only with certain BO, and only in our production environment, and only if trying to remote from a non-development machine.&nbsp; Any ideas?</P>
+<P>&nbsp;</P>
+<P><A HREF="/forums/24987/ShowThread.aspx#24987">http://forums.lhotka.net/forums/24987/ShowThread.aspx#24987</A></P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Sunday, July 27, 2008</h2><P>Yes, this was fixed in some point release (3.0.x) - it turns out that extra initialization of the SecurityException is required for it to serialize safely through the NDCS. So the issue should be resolved, unless one of the following is true:</P>
+<OL>
+<LI>You throw your own SecurityException and don't initialize it fully</LI>
+<LI>Some other code throws a SecurityException and doesn't initialize it fully</LI>
+<LI>I missed a spot in CSLA where I throw a SecurityException and don't initialize it fully</LI></OL>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>dlabar replied on Sunday, July 27, 2008</h2>I'm running version 3.0.3, should I try upgrading to 3.5.0?&nbsp; I guess I could be throwing a security Exception myself (option number 1).&nbsp; What is required to "fully initialize" it?</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Sunday, July 27, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I honestly don&#8217;t remember &#8211; it was months ago I
+researched this :(<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Some extra property needs to be set manually on the object if I
+remember right.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I just looked at the CSLA code &#8211; it is the Action property
+that must be explicitly set after the SecurityException object has been
+created.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> dlabar
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Sunday, July 27, 2008 1:35 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] Difficulties using WcfPortal in Beta 1<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>I'm running version 3.0.3, should I try upgrading to
+3.5.0?&nbsp; I guess I could be throwing a security Exception myself (option
+number 1).&nbsp; What is required to &quot;fully initialize&quot; it?<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Sunday, July 27, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I honestly don&#8217;t remember &#8211; it was months ago I
+researched this :(<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Some extra property needs to be set manually on the object if I
+remember right.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I just looked at the CSLA code &#8211; it is the Action property
+that must be explicitly set after the SecurityException object has been
+created.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> dlabar
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Sunday, July 27, 2008 1:35 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] Difficulties using WcfPortal in Beta 1<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>I'm running version 3.0.3, should I try upgrading to
+3.5.0?&nbsp; I guess I could be throwing a security Exception myself (option
+number 1).&nbsp; What is required to &quot;fully initialize&quot; it?<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>dlabar replied on Sunday, July 27, 2008</h2>Does it matter what <FONT color=#ffffff size=2><FONT color=#000000 size=2>
+<P>System.Security.Permissions.SecurityAction</P>
+<P>it is set to?</P></FONT></FONT><FONT color=#ffffff size=2><FONT color=#ffffff size=2>
+<P>System.Security.Permissions.SecurityAction</P></FONT></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Sunday, July 27, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I don&#8217;t know for sure&#8230;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> dlabar
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Sunday, July 27, 2008 1:49 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: Difficulties using WcfPortal in Beta 1<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Does it matter what <span><o:p></o:p></span></p>
+
+<p><span>System.Security.Permissions.SecurityAction<o:p></o:p></span></p>
+
+<p><span>it is set to?<o:p></o:p></span></p>
+
+<p><span>System.Security.Permissions.SecurityAction<o:p></o:p></span></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>dlabar replied on Sunday, July 27, 2008</h2><P>In answer to my own question... I'm going to guess not.&nbsp; I'm going to guess that the System.Security.SecurityException.Action enum is defaulted to a value of 0, which is not valid.&nbsp; I'm going to inherit from that class, and give it a default enum value, so that way I don't have to worry about it again.</P>
+<P>&nbsp;</P>
+<P>Thanks a ton Rocky!</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rfcdejong replied on Tuesday, January 17, 2012</h2><p>Sorry for all, sorry for replying in such an old thread. But i bumped into this issue as well since i&#39;m doing Windows authentication and my AuthenticationType should be&nbsp;&quot;Windows&quot;, but we are using csla objects in windows workflow foundation activity&#39;s in the designer of visual studio. During metadata execution there is no config for visual studio so ConfigurationManager.AppSettings[&quot;CslaAuthentication&quot;] returns null and the authentication type is set to &quot;Csla&quot;.<br /><br />Too bad the ApplicationContext.AuthenticationType cannot be set in code (without modifying or reflection)</p>
+<p><strong>On topic:<br /></strong>Because we are using windows authentication and the authentication type is set to csla, the principal is assigned so there is an security exception raised in the server DataPortal without a Action (it&#39;s slashed away)</p>
+<p>The exception cannot be serialized so the following exception is visible<br /><br />There was an error while trying to serialize parameter <a href="http://ws.lhotka.net/WcfDataPortal:FetchResult">http://ws.lhotka.net/WcfDataPortal:FetchResult</a>. The InnerException message was &#39;Enum value &#39;0&#39; is invalid for type &#39;System.Security.Permissions.SecurityAction&#39; and cannot be serialized. Ensure that the necessary enum values are present and are marked with EnumMemberAttribute attribute if the type has DataContractAttribute attribute.&#39;.&nbsp; Please see InnerException for more details.</p>
+<p>The code responsible:</p>
+<pre style="FONT-FAMILY:Consolas;BACKGROUND:white;COLOR:black;FONT-SIZE:13px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:blue;">if</span>&nbsp;(<span style="COLOR:#2b91af;">ApplicationContext</span>.AuthenticationType&nbsp;==&nbsp;<span style="COLOR:#a31515;">&quot;Windows&quot;</span>)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:green;">//&nbsp;When&nbsp;using&nbsp;integrated&nbsp;security,&nbsp;Principal&nbsp;must&nbsp;be&nbsp;null</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:blue;">if</span>&nbsp;(context.Principal&nbsp;!=&nbsp;<span style="COLOR:blue;">null</span>)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;System.Security.<span style="COLOR:#2b91af;">SecurityException</span>&nbsp;ex&nbsp;=
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:blue;">new</span>&nbsp;System.Security.<span style="COLOR:#2b91af;">SecurityException</span>(<span style="COLOR:#2b91af;">Resources</span>.NoPrincipalAllowedException);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:green;">//ex.Action&nbsp;=&nbsp;System.Security.Permissions.SecurityAction.Deny;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:blue;">throw</span>&nbsp;ex;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:green;">//&nbsp;Set&nbsp;.NET&nbsp;to&nbsp;use&nbsp;integrated&nbsp;security</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:#2b91af;">AppDomain</span>.CurrentDomain.SetPrincipalPolicy(<span style="COLOR:#2b91af;">PrincipalPolicy</span>.WindowsPrincipal);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+</pre>
+<pre style="FONT-FAMILY:Consolas;BACKGROUND:white;COLOR:black;FONT-SIZE:13px;">&nbsp;</pre></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, January 17, 2012</h2><p>That code hasn&#39;t changed since we fixed the original issue a few years ago. I wonder if something changed with .NET since that time...</p>
+<p>It appears we may have to entirely abandon the use of SecurityException - a breaking change, but one that may be necessary.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Kyle replied on Friday, October 19, 2012</h2><p>I&#39;ve just come&nbsp;across&nbsp;the same problem which caused me to spend a couple days researching. It turns out the problem was simply that I forgot to put&nbsp;</p>
+<p>&lt;add key=&quot;CslaAuthentication&quot; value=&quot;Windows&quot; /&gt;</p>
+<p>In my WcfPortal web.config file. &nbsp;But since the SecurityException wouldn&#39;t serialize, I had no clue what was going on.</p>
+<p>I uncommented out the following line</p>
+<p>//ex.Action = System.Security.Permissions.SecurityAction.Deny;</p>
+<p>and tried again and the SecurityException was properly serialized and pointed me in the right direction, which is what it is supposed to do.</p>
+<p>Presumably, this line was commented out because the enum &#39;Deny&#39; is deprecated. However, it still works just fine. I recommend putting this line back in with the Deny value or putting it back in with the appropriate non-deprecated value (although I don&#39;t claim to know what is appropriate, I don&#39;t think it really matters).</p>
+<p>&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,33 @@
+<html><header><title>How to bind a Namevaluelist to a combobox?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>How to bind a Namevaluelist to a combobox?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/1295.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>pirithoos posted on Thursday, September 21, 2006</h2>Used Version : CSLA10vb-060519<br><br>It seems that I cannot use a Namevaluelist directly as a DataSource for a ComboBox or ListBox.<br><br><font color="#0000ff"><br>me.combobox1.datasource = myNameValueList.GetList</font><br><br>an error is raised : SystemExeption.<br><font color="#000000">complex databinding accepts IList or IListSource as Datasource</font><br><br>(I use a german Version of VS2003 - therefore pls. appologize if the execption is not translated correctly but the meaning should be clear: the DataSource looks for an implementation of IList of IlistSource in the myNameValueList BO)<br><br>I do understand this in general, but I would like to know if binding a NVList to a Combobox&nbsp; is not an intented use of a NameValueList. Reading Rockys book I assumed that using a NVList to populate a ComboBox or ListBox is a typical use?<br><br>Do I have to wrapp myNameValueList in another BO (collection e.g.) implementing IList ?<br><br>Thanks for your help.<br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Sarosh replied on Thursday, September 21, 2006</h2><P>Hi!</P>
+<P>I have a similar situation and am not sure what to do.</P>
+<P>Have a WinForm with a DataGridView with 20+ columns out of&nbsp; which&nbsp;3 columns in the grid are Combobox's.</P>
+<P>How many and what type BO's do I need. Here is what I think I should do:</P>
+<P><STRONG>For the MainTable: (Project)</STRONG></P>
+<P>1 BO of type EditableRootList (collection) - <STRONG>ProjectList</STRONG></P>
+<P>1 BO of&nbsp; type EditableChild - <STRONG>ProjectItem</STRONG></P>
+<P><STRONG>For LookupTableA (Client)</STRONG></P>
+<P>1 BO's of type NameValueList (to be used in the comboboxcolumn in the grid) - <STRONG>ClientNVL</STRONG></P>
+<P><STRONG>For LookupTableB (Plant)</STRONG></P>
+<P>1 BO's of type NameValueList (to be used in the comboboxcolumn in the grid) - <STRONG>PlantNVL</STRONG></P>
+<P><STRONG>For LookupTableC (Area)</STRONG></P>
+<P>1 BO's of type NameValueList (to be used in the comboboxcolumn in the grid) - <STRONG>AreaNVL</STRONG></P>
+<P>Does the above make sense?</P>
+<P>I use CodeSmith 2.6 and the CSLA20 templates to generate my BO's but I am using CSLA 2.1 beta. Will this cause other issues?</P>
+<P>Thanks</P>
+<P>Sarosh</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Thursday, September 21, 2006</h2><P>In CSLA 1.x there was no BindableList property for the NVL.</P>
+<P>This flaw was discovered early in the release and was overcome by a user who posted the code you need to add to the NVL class in CSLA 1.x in order to make it bindable.</P>
+<P>My copy is all hacked up so I won't post it but here are the comments:</P>
+<P>#Region " Binding "<BR>&nbsp; 'added by JF on 11/14/2003 for databinding a cbo with a hidden ID and displayed Value.<BR>&nbsp; 'posted by Matt Tag in CSLA forum 11/12/2003<BR>&nbsp; 'Thread = Populating a combo box from CSLA...<BR>&nbsp; '&nbsp; Now, from inside your project, you can do this:<BR>&nbsp; 'With cbo<BR>&nbsp; '&nbsp;&nbsp; .DataSource = MyCompany.BO.xxxNVL.BindableList<BR>&nbsp; '&nbsp;&nbsp; .DisplayMember = "Key"<BR>&nbsp; '&nbsp;&nbsp; .ValueMember = "Value"<BR>&nbsp; 'End With</P>
+<P>&nbsp; 'In DataBind code add:<BR>&nbsp; 'BindField(cbo, "SelectedValue", mBO, "BO Property")</P>
+<P>&nbsp; 'Also - handle the SelectedValueChanged event of the cbo. <BR>&nbsp; 'Forces Databinding to work when cbo is changed and NOT tabbed off of.<BR>&nbsp; 'mBO.Property = cbo.SelectedValue</P>
+<P>&nbsp; Private mBindableList As ArrayList</P>
+<P>&nbsp;ReadOnly Property BindableList....</P>
+<P>Do a Search to get the original code.</P>
+<P>Joe</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jay Riggs replied on Thursday, February 08, 2007</h2><P>Joe, thanks for pointing this out.&nbsp; You saved me a lot of time.</P>
+<P>For everyone's reference, here's a <A href="http://www.lhotka.net/wiki/default.aspx/CSLAWiki.HowDoIMakeMyNameValueListsBindable(2005-09-19-23-26-30.6406--24.199.108.203)?diff=y">link </A>to the code (C# &amp; VB)</P>
+<P>&nbsp;</P>
+<P>-Jay</P>
+<P><A href="http://www.lhotka.net/wiki/default.aspx/CSLAWiki.HowDoIMakeMyNameValueListsBindable(2005-09-19-23-26-30.6406--24.199.108.203)?diff=y"></A>&nbsp;</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

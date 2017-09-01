@@ -1,0 +1,23 @@
+<html><header><title>Dates from Business Objects create error in Report Viewer </title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Dates from Business Objects create error in Report Viewer </h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3532.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Lyndon posted on Thursday, September 13, 2007</h2><P>Hi,</P>
+<P>I have connected up my business objects&nbsp; successfully to some reports constructed in the ReportViewer.</P>
+<P>But when the ReportViewer renders the report- the date columns all come up as errors. It appears that the Reportviewer doesnt recognize them as dates ( ie mebbe because they are smartdates?)</P>
+<P>Anyone else seen this behaviour and have ideas how to correct ?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, September 13, 2007</h2><P>Are you exposing your properties as type SmartDate?</P>
+<P>That is not recommended, and is not the purpose of SmartDate. SmartDate should be used <EM>inside</EM> your object to expose a "date" property as a string.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Lyndon replied on Thursday, September 13, 2007</h2><P>That might be it.</P>
+<P>In a class called ServiceRequestInfo, I have&nbsp; a date property defined as follows:</P>
+<P>Public Property DateSubmitted() as SmartDate</P>
+<P>Get </P>
+<P>Return mDateSubmitted</P>
+<P>End Get</P>
+<P>Then I have another class called ServiceRequests which inherits this&nbsp;ServiceRequestInfo as ReadonlyListBase per your code examples.</P>
+<P>The DataPortal_Fetch in the ServiceRequests Class has the dr.GetSmartDate(1)</P>
+<P>&nbsp;</P>
+<P>&nbsp;I am assuming from your comments above that I should be exposing the above property as a string instead&nbsp; and then the DataPortal_Fetch as dr.Getstring(1)?</P>
+<P>Its weird because the datagrid rendering of the data using ServiceRequests seem to be fine, but the reportviewer didnt seem to be.</P>
+<P>Thank you for your response!</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Friday, September 14, 2007</h2><P>Not quite.</P>
+<P>In Fetch you still retrieve SmartDate and populate mDateSubmitted which is of type SmartDate.</P>
+<P>You change your Public Property&nbsp;to:</P><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Overridable</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Property</FONT><FONT size=2> DateSubmitted() </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>String<BR>&nbsp; </FONT><FONT color=#0000ff size=2>Get<BR>&nbsp;&nbsp;&nbsp; </FONT><FONT color=#0000ff size=2>Return</FONT><FONT size=2> mDateSubmitted .Text<BR>&nbsp; </FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Get</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>&nbsp; Set</FONT><FONT size=2>(</FONT><FONT color=#0000ff size=2>ByVal</FONT><FONT size=2> Value </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>String</FONT><FONT size=2>)<BR>&nbsp;&nbsp;&nbsp; </FONT><FONT color=#0000ff size=2>If</FONT><FONT size=2> mDateSubmitted .Text &lt;&gt; Value </FONT><FONT color=#0000ff size=2>Then<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </FONT><FONT size=2>mDateSubmitted .Text = Value<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; PropertyHasChanged(</FONT><FONT color=#ff00ff size=2>"DateSubmitted"</FONT><FONT size=2>)<BR>&nbsp;&nbsp;&nbsp; </FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>If<BR>&nbsp; </FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Set<BR></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Property</P></FONT>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Lyndon replied on Friday, September 14, 2007</h2><P>That was it- now its working perfectly.&nbsp; Dates working properly in both grids and reportviewer reports.</P>
+<P>Way cool!</P>
+<P>Thanks Rocky and&nbsp; Joe!</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

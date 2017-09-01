@@ -1,0 +1,145 @@
+<html><header><title>Correct use of SmartDate in CSLA 4.2?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Correct use of SmartDate in CSLA 4.2?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11199.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>gajit posted on Monday, February 27, 2012</h2><p>I can;t find anything on the SmartDate type in the new eBooks?</p>
+<p>What&#39;s the correct implementation in 4.2?</p>
+<p>In 2.1, I&nbsp; declared the properties as such:</p>
+<p>Private mEFFECTIVEDATE as New SmartDate(False)</p>
+<p>&nbsp;&nbsp;&nbsp; Public Property EFFECTIVEDATE() As String<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Get<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; CanReadProperty(True)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return mEFFECTIVEDATE.Text<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Get<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Set(ByVal Value As String)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; CanWriteProperty(True)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; If mEFFECTIVEDATE &lt;&gt; Value Then<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; mEFFECTIVEDATE.Text = Value<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ValidationRules.CheckRules(&quot;EFFECTIVEDATE&quot;)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; PropertyHasChanged()<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End If<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Set<br />&nbsp;&nbsp;&nbsp; End Property</p>
+<p>Fetching the value I did as:</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; mEFFECTIVEDATE = .GetSmartDate(&quot;EFFECTIVEDATE&quot;, mEFFECTIVEDATE.EmptyIsMin)</p>
+<p>And passing as a datetime parameter to SQL I did:</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; cm.Parameters.AddWithValue(&quot;@pdt_EffectiveDate&quot;, mEFFECTIVEDATE.DBValue)</p>
+<p>Basically, In 4.2, I can&#39;t see how the emptyIsMin is handled in this version. When I read in a date field - which is NULL, update&nbsp;another field on the BO and save, the&nbsp;date field value becomes 1900-01-01 - that&#39;s not the required&nbsp;right...</p>
+<p>Any ideas?</p>
+<p>Thanks,</p>
+<p>Graham&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Monday, February 27, 2012</h2><p>Use the snippets supplied in the Support folder to define properties. </p>
+<p>There you will find the &quot;DefineACslaSmartDateProperty&quot; snippet - shortcut &quot;cslapropdt&quot; and more. </p>
+<p>For an overview of snippets and templates look at the CSLA CheatSheet available in the FAQ: <a href="http://www.lhotka.net/files/csla40/CSLA4CheatSheet.pdf">http://www.lhotka.net/files/csla40/CSLA4CheatSheet.pdf</a></p>
+<p>EmptyIsMin is typically set on the PropertyInfo (RegisterProperty) when supplying a default value for the backing field:</p>
+<p><i>Public Shared ReadOnly StartDateProperty As PropertyInfo(Of SmartDate) = RegisterProperty(Of SmartDate)(Function(c) c.StartDate, Nothing, New SmartDate(EmptyValue.MinDate))</i></p>
+<p><i><div style='padding-left: 50px;background-color:silver'><b>gajit<br></b></i></p>
+<p>Basically, In 4.2, I can&#39;t see how the emptyIsMin is handled in this version. When I read in a date field - which is NULL, update&nbsp;another field on the BO and save, the&nbsp;date field value becomes 1900-01-01 - that&#39;s not the required&nbsp;right...</p>
+<p><i>
+</i></p>
+<div style="clear:both;"></div>
+<p><i>
+</div><br /></i></p>
+<p><b>That is the proper and expected behavior by SmartDate.</b> It will however have .IsEmpty = True and DBValue = DBNull but the internal Date and Text will have a value (either min or max),</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>gajit replied on Tuesday, February 28, 2012</h2><p>Yes, I have that in my declaration.</p>
+<p>But there is no code for the passing of the value as a parameter in the Dal.</p>
+<p>In CSLA 2.x, we passed mMYDATE.DBVALUE, which for a blank smartdate value (the string property), would be NULL.</p>
+<p>In CSLA 4, we don&#39;t use the private mMydate property, we pas the public MYDATE property.</p>
+<p>I can&#39;t do a .AddWithValue(&quot;@Mydate&quot;, MYDATE.DBVALUE)</p>
+<p>??</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>gajit replied on Tuesday, February 28, 2012</h2><p>I see Rocky showed a solution here;</p>
+<p><a href="http://forums.lhotka.net/forums/p/10971/51044.aspx">http://forums.lhotka.net/forums/p/10971/51044.aspx</a></p>
+<p>BUT, is ReadProperty not a method from one of the base models such as BusinessBase?</p>
+<p>Dim temp = ReadProperty(ScheduledDateProperty)<br />cmd.Parameters.AddWithValue(&quot;@ScheduledDate&quot;, temp.DBValue)</p>
+<p>My data access code is in a separate Dal class, NOT in the class bo class and therefore ReadProperty cannot be accessed as a method????!!</p>
+<p>How is this implemented?</p>
+<p>Graham</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Tuesday, February 28, 2012</h2><p>Look at the Csla.Server.ObjectFactory class and make your data accsess class inherit from this or create a ObjectAccessor class.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>gajit replied on Tuesday, February 28, 2012</h2><p>I can&#39;t???</p>
+<p>My CodeDal class IMPLEMENTS ICodeDal. How can I inherit from Objectfactory?</p>
+<p>Honestly.... it&#39;s like pulling teeth this version of the framework....&nbsp;2.x didn&#39;t require one to understand the inner workings of the framework, now the expectation is that the framework user has to implement a helper type as there if no clear guide on how to do it????</p>
+<p>This is my biggest criticism of the current version - that the features are NOT fully documented. The eBook recommedndation is NOT to rollup your data access code into your business object a-la csla 2.x, instead suggesting use of one of the dal models, yet there is no supporting documentation to demonstrate how we implement surviving types like SmartDate.</p>
+<p>This is a fundamental requirement for many CSLA 2 users, and I&#39;m flabberghasted that it isn&#39;t covered concisely.</p>
+<p>CSLA2 helped me develop applications, quickly and cleanly. So far, my progress has been stifled with vague references to &#39;this or that&#39; and frankly I&#39;m developing at a snail&#39;s pace.</p>
+<p>Graham</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Tuesday, February 28, 2012</h2><p>Implements and inherits is 2 different aspects. Your CodeDal can both inherit from one class and implement one or multiple interfaces. </p>
+<p>Yes, there is more ways of coding the data access in Csla 3.x and Csla 4. </p>
+<p>This is described in the <b>Using CSLA4 Data Access </b>ebook: chapter 4, 5 and 6: </p>
+<p>Quote:</p>
+<p><i>When the DAL is external, the data access invocation code is responsible for invoking the DAL to <br />get, save, or delete data. This invocation code might be in your DataPortal_XYZ methods, or it <br />might be in your factory object methods. Either way, the DAL must expose some formal interface <br />that can be invoked. </i></p>
+<p>......</p>
+<p><i>It is also the case that some code must interact with the private state and metastate of the <br />business object to get and set the object&rsquo;s properties and metastate. As I&rsquo;ve already discussed, this <br />can be done in a way that preserves encapsulation by using the DataPortal_XYZ methods, or it can <br />be done by breaking encapsulation with factory objects and the ObjectFactory base class. </i></p>
+<p><i>I&rsquo;ll cover all these concepts, starting with options for the DAL interface. </i></p>
+<p>OR you could just add an extra property in your BO for use in the data access<i>:</i></p>
+<pre style="font-family:Consolas;font-size:13px;color:black;background:none repeat scroll 0% 0% #fafafa;">&nbsp;&nbsp;&nbsp;&nbsp;[<span style="color:#2b91af;">Browsable</span>(<span style="color:blue;">false</span>)]
+&nbsp;&nbsp;&nbsp;&nbsp;[<span style="color:#2b91af;">Display</span>(AutoGenerateField&nbsp;=&nbsp;<span style="color:blue;">false</span>)]
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:#2b91af;">SmartDate</span>&nbsp;AssignedSmartDate
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">get</span>&nbsp;{&nbsp;<span style="color:blue;">return</span>&nbsp;GetProperty(AssignedProperty);&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">set</span>&nbsp;{&nbsp;SetProperty(AssignedProperty,&nbsp;<span style="color:blue;">value</span>);&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;}</pre>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>gajit replied on Tuesday, February 28, 2012</h2><p>Without sounding blunt Jonny, how the heck does that help?</p>
+<p>I&#39;ve read the quoted passages a number of times, and frankly the excerpts do NOT demonstrate how to access the private state or metastate values in the business object.</p>
+<p>I am using the datareader model of the Encapsulated Invoke. NOWHERE does it provide even a hint of a clue on how to access say, the private business value &quot;MyDateProperty&quot; from the Dal. I can only reference &quot;MyDate&quot;</p>
+<p>If there are no examples in the book, and no-one is willing to show me a real-life code example of how I would implement it, then once again I&#39;ve created another post that from my perspective remains &quot;Unanswered&quot;.</p>
+<p>Extremely frustrated.</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>gajit replied on Tuesday, February 28, 2012</h2><p>Would I not want to make the &quot;AssignedSmartDate&quot; private?</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>gajit replied on Tuesday, February 28, 2012</h2><p>That usage of AssignedSmartDate also causes my business object to become &#39;Dirty&#39;&nbsp;after fetch.</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Tuesday, February 28, 2012</h2><p>I&#39;d still prefer to use ObjectFactory and BypassPropertyChecks --&gt; which makes properties and SetProperty behave as LoadProperty.&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>gajit replied on Tuesday, February 28, 2012</h2><p>And i still have no clue.</p>
+<p>Using a separate property to handle the data access isn&#39;t working. The BO is dirty when it loads - and yes, I&#39;m using LoadProperty. I&nbsp;as Loadproperty by definition should ignore checks, then I shouldn&#39;t have to &nbsp;</p>
+<p>I have no idea how you implement ObjectFactory in the model that I have outlined in this post, so unless someone is kind enough to post a working solution to my problem, then I&#39;ll consider it yet another facet of CSLA4 that in my opinion leaves the developer in the dark. If I have to dig for every single change that has happened between version 2 and 4 it makes zero sense for me to adopt this framework, considering the amount of time undertaken.</p>
+<p>I appreciate&nbsp;your efforts to educate me, but I have little time to dig deep into the &quot;how it works&quot; and was hoping for a working CSLA4 code snippet in response to my original CSLA2 working code snippet.</p>
+<p>Graham</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, February 28, 2012</h2><p>This surely isn&#39;t hard enough to be worthy of your anger, frustration, and corresponding outbursts (which I find less and less motivational - how much did you pay for my framework? It was free? Really? And once you&#39;ve learned to build CSLA 4 style classes they run on every known .NET related platform? Wow that&#39;s a good value!!)</p>
+<p>What am I missing from the following example? It has a SmartDate property, it uses an ObjectFactory, and the resulting object isn&#39;t dirty:</p>
+<p>&nbsp;&nbsp;class Program<br />&nbsp; {<br />&nbsp;&nbsp;&nbsp; static void Main(string[] args)<br />&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var obj = DataPortal.Fetch&lt;Test&gt;(123);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Console.WriteLine(obj.Date);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Console.WriteLine(obj.IsDirty);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Console.ReadLine();<br />&nbsp;&nbsp;&nbsp; }</p>
+<p>&nbsp; }</p>
+<p>&nbsp; [Serializable]<br />&nbsp; [Csla.Server.ObjectFactory(typeof(TestFactory))]<br />&nbsp; public class Test : BusinessBase&lt;Test&gt;<br />&nbsp; {<br />&nbsp;&nbsp;&nbsp; public static readonly PropertyInfo&lt;SmartDate&gt; DateProperty = RegisterProperty&lt;SmartDate&gt;(c =&gt; c.Date);<br />&nbsp;&nbsp;&nbsp; public string Date<br />&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; get { return GetPropertyConvert&lt;SmartDate, string&gt;(DateProperty); }<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; set { SetPropertyConvert&lt;SmartDate, string&gt;(DateProperty, value); }<br />&nbsp;&nbsp;&nbsp; }<br />&nbsp; }</p>
+<p>&nbsp; public class TestFactory : Csla.Server.ObjectFactory<br />&nbsp; {<br />&nbsp;&nbsp;&nbsp; public Test Fetch(int id)<br />&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var result = new Test();<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; using (BypassPropertyChecks(result))<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; LoadProperty(result, Test.DateProperty, new SmartDate(&quot;1/1/10&quot;));<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; MarkOld(result);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return result;<br />&nbsp;&nbsp;&nbsp; }<br />&nbsp; }</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>gajit replied on Tuesday, February 28, 2012</h2><p>My anger, frustration and &quot;outbursts&quot; are a culmination of issue after issue with implementing this framework and not finding sufficient coverage in the books.</p>
+<p>I appreciate the investment is small, but you ghave to recognize that there is SOME expectation that the framework does what it has ALWAYS done - and if that has changed dramatically - which it has - provide documentation on how to do that. For the record, based on my CSLA2 experience, I would have paid significantly more for the latest version.</p>
+<p>We&#39;re not ALL software engineers, otherwise we&#39;d all be writing frameworks. I&#39;m, a humble developer who has had success using the earlier versions of the framework, and now wants to maybe open some more doors by using the current technology. The simplest way for me to do that is to be given a code sample - as you have just done - rather than trying to &quot;guess&quot; my way around the various components of the new model.</p>
+<p>I apologise for my &quot;outburst&quot;, but as I didn&#39;t think my original post warranted anything more than a&nbsp;reworked example in&nbsp;CSLA4.&nbsp;(That was the purpose of me posting my CSLA2 code). Instead, I ended up in a downward spiral of trying to understand this, that and the other. That IS frustrating.</p>
+<p>My original post revolved around the issue of not being able to access the private smartdate attributes of my string property when referenced in my Dal. I will review your example, and hopefully it wil translate to what I&#39;m actually doing.</p>
+<p>Thank you.</p>
+<p>Graham</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>gajit replied on Tuesday, February 28, 2012</h2><p>Nope, Sorry.</p>
+<p>I guess I shall go back to the books.</p>
+<p>Having selected the encapsulated invoke model using datareader, I don&#39;t understand where the &quot;factory&quot; class sits in my structure.</p>
+<p>Maybe it&#39;s the terminology, but I thought &quot;factory&quot; implementation was a different model.</p>
+<p>I have three distinct classes/interfaces when I&#39;m building a BO;</p>
+<p>IPersonDal - the interface in my DataAccess project that defines the dataaccess layer</p>
+<p>PersonDal - in my DataAccess.SQL project that contains my Fetch, Insert, Update, etc&nbsp;methods, which implements IPersonDal and interacts with the database</p>
+<p>PersonEdit - my&nbsp;BO that defines the properties of my object and contains the DataPortal_xxx methods </p>
+<p>As I said, I&#39;m going back to the books.</p>
+<p>If it&#39;s not possible for me to do what I need to do using the encapsulated invoke model, I&#39;d appreciate it if you could just let me know, so I&#39;m not heading off on a wild goose chase.</p>
+<p>Thanks,</p>
+<p>Graham</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Tuesday, February 28, 2012</h2><p>So you want this:</p>
+<p>&nbsp; class Program<br />&nbsp; {<br />&nbsp;&nbsp;&nbsp; static void Main(string[] args)<br />&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var obj = DataPortal.Fetch&lt;Test&gt;(123);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Console.WriteLine(obj.Date);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Console.WriteLine(obj.IsDirty);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Console.ReadLine();<br />&nbsp;&nbsp;&nbsp; }<br />&nbsp; }</p>
+<p>&nbsp; [Serializable]<br />&nbsp; //[Csla.Server.ObjectFactory(typeof(TestFactory))]<br />&nbsp; public class Test : BusinessBase&lt;Test&gt;<br />&nbsp; {<br />&nbsp;&nbsp;&nbsp; public static readonly PropertyInfo&lt;SmartDate&gt; DateProperty = RegisterProperty&lt;SmartDate&gt;(c =&gt; c.Date);<br />&nbsp;&nbsp;&nbsp; public string Date<br />&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; get { return GetPropertyConvert&lt;SmartDate, string&gt;(DateProperty); }<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; set { SetPropertyConvert&lt;SmartDate, string&gt;(DateProperty, value); }<br />&nbsp;&nbsp;&nbsp; }</p>
+<p>&nbsp;&nbsp;&nbsp; public void DataPortal_Fetch(int id)<br />&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; using (BypassPropertyChecks)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; LoadProperty(DateProperty, new SmartDate(&quot;1/1/10&quot;));<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br />&nbsp;&nbsp;&nbsp; }<br />&nbsp; }</p>
+<p>The only thing is that you&#39;ll get that date value back from your DAL instead of using a hard-coded value.</p>
+<p>The DAL doesn&#39;t (shouldn&#39;t anyway) be interacting with the object directly. Instead, the object interacts with the DAL and gets the data from the DAL and then sets its own properties.</p>
+<p>The whole point of the models shown in the <em>Data Access</em> book is to avoid breaking encapsulation. That means having the DAL get and return data, and the business object set its own properties.</p>
+<p>In the case of a conversion property (where the property type and backing value type don&#39;t match) you need to use LoadProperty as shown here to set the backing field directly instead of setting the property.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>gajit replied on Tuesday, February 28, 2012</h2><p>Yep, i got that.</p>
+<p>But my initial problem is that my Date property is a string and the code that implemements with the command, </p>
+<p>cm.parameters.addwithvalue(&quot;@mydate, date)</p>
+<p>does not expose a &#39;&quot;dbvalue&quot; on the date property - because it&#39;s a string. i can&#39;t access the underlying smartdate using the model i&#39;&#39;m using... and that&#39;s where Jonny&#39;s responses begun to send me off on a downward spiral.</p>
+<p>Can I only do this with a factory implementation?</p>
+<p>Thanks,</p>
+<p>Graham</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Wednesday, February 29, 2012</h2><p>Which is why I tried to show you how to either </p>
+<ul>
+<li>implement an extra SmartDate property and hide it from DataBinding</li>
+<li>or use ObjectFactory to get access to the inner workings (ReadProperty/LoadProperty).</li>
+</ul>
+<p>ObjectFactory class is a base class that exposes some of the inner workings of the &lt;bo&gt; for properties and &quot;state&quot; management when the data access is not don inside the DataPortal_XYZ methods of the &lt;bo&gt;. </p>
+<p>Do not confuse this with the ObjectFactory Pattern - that is s separate approach to move absolutely all data access away from the &lt;bo&gt;. <br />With this pattern there will be no DataPortal_XYZ of Child_XYZ methods in the &lt;bo&gt;. </p>
+<p>How hard is this:</p>
+<pre id="code-result" class="brush:vbnet">Public Class MyDalClass
+	Inherits ObjectFactory
+	Implements ICodeDal<br />        <br /><br />       &#39; implement Dal methods from ICodeDal<br />       &#39; Code has access to ReadProperty(obj, propertyInfo) and LoadProperty(obj,  propertyInfo) and more to get the underlying data value from obj<br />       &#39; such as a SmartDate when DAL code is outside of business object.  <br />&nbsp;End Class</pre>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Wednesday, February 29, 2012</h2><p>In the code I just posted, notice that LoadProperty takes a SmartDate value, not a string. The corresponding ReadProperty call would return a SmartDate.</p>
+<p>That is the value you&#39;d pass to your DAL, not a string. I am not seeing the issue here?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>gajit replied on Wednesday, February 29, 2012</h2><p>Thanks gents,</p>
+<p>I really do appreciate the time taken to help out here (despite what might seem otherwise). I&#39;ll have another go this morning and see what prevails and let you know.</p>
+<p>Graham</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>gajit replied on Wednesday, February 29, 2012</h2><p>OK.</p>
+<p>So Jonny, I still wasn&#39;t able to implement ReadProperty as per your example using inheritance from ObjectFactory - but at least I&#39;m clear now that there is no conenction between this and the factory model. I couldn;t implement ReadPeoprty because it accepts two parameters, one of which is still the underlying &#39;property&#39; - which I&#39;m still sure I can&#39;t access.</p>
+<p>But Rocky,</p>
+<p>Of course -&nbsp; It works.</p>
+<p>I had actually by luck rather than judgement already gone down that path. By changing the parameters to the Insert() and Update() methods to Smartdate types, my Dal accesses the smartdate values - and I guess the Getpropertyconvert and setpropertyconvert ensure that the values are maintained correctly through the string-&gt;smartdate and smartdate-&gt;string changes.</p>
+<p>That&#39;s the solution I was looking for!</p>
+<p>My apologies again for coming across as an insufferable a**hole. This process can be frustrating for me at times and rather than mellowing with age I think I&#39;m suffering from some distorted sense of entitlement and I shall attempt to convey my frustrations in a more constructive manner.</p>
+<p>Thanks again.</p>
+<p>Graham</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Wednesday, February 29, 2012</h2><p>ReadProperty and LoadProperty accepts the BusinessObject as first parameter and the second parameter is the static PropertyInfo.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>gajit replied on Wednesday, February 29, 2012</h2><p>Jonny,</p>
+<p>Although I&#39;ve resolved this with the solution Rocky provided, I&#39;d still like to know how you implement this.</p>
+<p>By inheriting the Objectfactory I can indeed use the ReadProperty() method, but what &quot;static PropertyInfo&quot; do you mean?</p>
+<p>The only thing I can access from my DAL is the property name passed to the update method, so in this case, my AddDate is available. I cannot reference the static AddDateProperty - that was the whole point of the post.</p>
+<p>If I&#39;m misunderstanding your explanation, please provide me with the code you would expect use.</p>
+<p>Thanks,</p>
+<p>Graham</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

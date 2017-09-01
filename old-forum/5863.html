@@ -1,0 +1,360 @@
+<html><header><title>Wishlist: save without returning new object instance via managed properties</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Wishlist: save without returning new object instance via managed properties</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5863.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Patrick posted on Monday, November 24, 2008</h2><font size="3">Hi, <br>&nbsp;<br>considering that we now have new and great possibilities with the managed properties in CSLA 3.6 I was wondering what it would take to address this:<br>&nbsp;<br>Currently whenever one calls the save method on a root object a new object instance is returned after the save. From my perspective this has several drawbacks:<br>•&nbsp;&nbsp; &nbsp;It makes UI code more complex because all data bound object instances need to be swapped out<br>•&nbsp;&nbsp; &nbsp;When working e.g. with a big node based view it means that all nodes need to be recreate after a save because the references are invalid which turns out be a costly operation<br>•&nbsp;&nbsp; &nbsp;It has the potential to cause bugs as it can easily happen that we work by accident with an old object instance<br>•&nbsp;&nbsp; &nbsp;etc.<br>For CSLA.NET objects which contain all their state in managed properties it seems that it would be possible to automatically refresh the managed properties after a save. <br>So the fields would change but not the business object itself. This in turn would mean that the object reference would remain valid. <br>It wouldn't work if managed properties aren't used but that could just be a requirement to be able to use this feature.<br>&nbsp;<br>Here is another thread from 2006 discussing the same topic: <a href="/forums/2/2757/ShowThread.aspx">http://forums.lhotka.net/forums/2/2757/ShowThread.aspx</a><br>&nbsp;<br>Just wanted to throw it out there for discussion <img src="/emoticons/emotion-1.gif" alt="Smile [:)]" />,<br>Thanks,<br>Patrick<br><br></font></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>DocJames replied on Monday, November 24, 2008</h2><P>That would be a very cool feature! I don't know if it's possible though ...</P>
+<P>At the moment I'm doing it on a child level - I only update the changed children og replace the returned objects&nbsp;in the original collection.&nbsp;Therefore&nbsp;I&nbsp;always reference the original collection in the UI.</P>
+<P>Jimmy</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Patrick replied on Wednesday, November 26, 2008</h2><BLOCKQUOTE><div><img src="/Themes/basicblue/images/icon-quote.gif"> <strong>DocJames:</strong></div><div>That would be a very cool feature! I don't know if it's possible though ...
+</div></BLOCKQUOTE><br>Hi Jimmy,<br><br>it seems like if it was handled on the data portal level... <br>All saves go through the data portal and at some point in time the data portal has the old object and the new object side by side and then it could just invoke a method in the base class of the old object to refresh it's values from the new object.<br>Then instead of returning the new object the data portal would return the old object and dispose of the new one.<br>This would be transparent to the developer... At least that's what it seems :) <br>So I'm wondering if this be a workable solution Rocky?<br><br>Thanks,<br>Patrick<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Ash002 replied on Wednesday, November 26, 2008</h2>If the server is not altering the object, does the client need to use the result of the save? or can it hang onto the original object? <br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rsbaker0 replied on Thursday, November 27, 2008</h2><P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>Ash002:</strong></div><div>If the server is not altering the object, does the client need to use the result of the save? or can it hang onto the original object? <BR><BR></div></BLOCKQUOTE></P>
+<P>Beginning with CSLA 3.0 or so the framework changed to save a clone of the object (first as more of an option, now it's more the default in 3.5 and later). So, the original object is still dirty even after the save is successful. Subsequent attempts to save it would probably produce an error similar to a concurrency violation (e.g. it would look like someone else had changed the object while you were working with it).</P>
+<P>Also, if you are using EditableRootListBase, it&nbsp;replaces the original item with the returned object, so if you are holding your own pre-saved copy of the object somewhere, it is effectively orphaned or dead and subsequent changes to it won't be saved. </P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Patrick replied on Monday, December 01, 2008</h2>Hi,<br><br>just bumping up the thread to see if there are any more thoughts about this (I consider it a very helpful feature for CSLA.NET):<br><BLOCKQUOTE><div><img src="/Themes/basicblue/images/icon-quote.gif"> <strong>Patrick:</strong></div><div><br>Currently whenever one calls the save method on a root object a new object instance is returned after the save. From my perspective this has several drawbacks:<br>•&nbsp;&nbsp; &nbsp;It makes UI code more complex because all data bound object instances need to be swapped out<br>•&nbsp;&nbsp; &nbsp;When working e.g. with a big node based view it means that all nodes need to be recreate after a save because the references are invalid which turns out be a costly operation<br>•&nbsp;&nbsp; &nbsp;It has the potential to cause bugs as it can easily happen that we work by accident with an old object instance<br>•&nbsp;&nbsp; &nbsp;etc.<br>For CSLA.NET objects which contain all their state in managed properties it seems that it would be possible to automatically refresh the managed properties after a save. <br>So the fields would change but not the business object itself. This in turn would mean that the object reference would remain valid. <br>It wouldn't work if managed properties aren't used but that could just be a requirement to be able to use this feature.</div></BLOCKQUOTE><BLOCKQUOTE><div><img src="/Themes/basicblue/images/icon-quote.gif"> <strong>Patrick:</strong></div><div>it seems like if it was handled on the data portal level... <br>All
+saves go through the data portal and at some point in time the data
+portal has the old object and the new object side by side and then it
+could just invoke a method in the base class of the old object to
+refresh it's values from the new object.<br>Then instead of returning the new object the data portal would return the old object and dispose of the new one.<br>This would be transparent to the developer... At least that's what it seems :) <br>So I'm wondering if this be a workable solution Rocky?</div></BLOCKQUOTE><br><br>Thank you very much,<br>Patrick<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, December 01, 2008</h2><P>This can be done, but would basically require abandoning the BinaryFormatter and NetDataContractSerializer.</P>
+<P>I did abandon those for Silverlight, though not by choice, and my replacement serializer comes with some limitations.</P>
+<P>It will be interesting to see, as people start using CSLA .NET for Silverlight, whether that becomes a problem for most people. If it doesn't seem to be a big issue for most people, it would be possible to alter CSLA to use a similar technique to do in-place updates of the object graph.</P>
+<P>However, it is unlikely that such a change could be done in a totally backward compatible manner. Partially because changing the serializer would impose direct restrictions that will likely burn some people. And partially because some apps may assume objects are replaced, and re-using instances could have all sorts of interesting side-effects in terms of state management.</P>
+<P>I suspect this is the kind of change that is more like a CSLA 1.x to 2.x change than a 2.1+ to 3.6. Less evolutionary and more revolutionary.</P>
+<P>It is probably the kind of thing I'll do when I also abandon Windows Forms, asmx and other old technologies - and only if there's broad support for such a big thing.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Skafa replied on Tuesday, December 02, 2008</h2>,,Partially because changing the serializer would impose direct restrictions that will likely burn some people.''<br><br>Just for clarity, what restrictions are you talking about?<br><br>Remco<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, December 02, 2008</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>The BF and NDCS can serialize any Serializable object, and NDCS
+can also serialize any DataContract object.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>The MobileFormatter (the one we wrote for Silverlight) can not
+handle those objects. Your object must implement IMobileObject, which is a
+little tricky. Or it must inherit from MobileObject, MobileList or one of the
+other base classes we created that do implement IMobileObject.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Also, if you use private backing fields, your object must
+override a couple methods to get/set your state during
+serialization/deserialization. If you use managed backing fields this is
+automatic.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>So you can see, that the very obvious restrictions are that all
+objects in your object graph must implement IMobileObject, and must either
+override those two methods and/or use the field manager to manage all field
+values in the object.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>The primary reason for this is that Silverlight doesn&#8217;t
+have the reflection necessary to implement a &#8220;real&#8221; serializer (see
+<a href="http://www.lhotka.net/weblog">my blog</a> for much discussion).
+However, the same techniques we used to avoid reflection are also the basic
+techniques you&#8217;d use to do in-place serialization/deserialization of
+object state.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Patrick replied on Tuesday, December 02, 2008</h2><BLOCKQUOTE><div><img src="/Themes/basicblue/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div>This can be done, but would basically require abandoning the BinaryFormatter and NetDataContractSerializer.</div></BLOCKQUOTE>I'm just trying to understand why it would need to abandon anything? Below is a very simplified example but wouldn't it go in the right direction without needing to change serialization etc.?<br><br>[Serializable()]<br>public abstract class CfxBusinessBase&lt;T&gt; : global::Csla.BusinessBase&lt;T&gt; where T : CfxBusinessBase&lt;T&gt;<br>{<br>&nbsp;&nbsp;&nbsp; /// &lt;summary&gt;<br>&nbsp;&nbsp;&nbsp; ///&nbsp; DataPortal Methods<br>&nbsp;&nbsp;&nbsp; /// &lt;/summary&gt;<br>&nbsp;&nbsp;&nbsp; /// &lt;param name="newBO"&gt;&lt;/param&gt;<br>&nbsp;&nbsp;&nbsp; /// After getting a new object call<br>&nbsp;&nbsp;&nbsp; /// objectToReturn = ManageObjectStateChange(objectToReturn);<br><br>&nbsp;&nbsp;&nbsp; protected bool KeepObjectStateBetweenDataPortalCalls { get; set; }<br>&nbsp;&nbsp;&nbsp; internal virtual T ManageObjectStateChange(T newBO)<br>&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (KeepObjectStateBetweenDataPortalCalls)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return MergeState(newBO);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; else<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return newBO;<br>&nbsp;&nbsp;&nbsp; }<br><br>&nbsp;&nbsp;&nbsp; /// &lt;summary&gt;<br>&nbsp;&nbsp;&nbsp; /// Merges the state a new object with the current object to keep references<br>&nbsp;&nbsp;&nbsp; /// If manged properties aren't used it would need to be overriden <br>&nbsp;&nbsp;&nbsp; /// in an inheriting class to correctly map the properties <br>&nbsp;&nbsp;&nbsp; /// (or the DataMapper could be used?)<br>&nbsp;&nbsp;&nbsp; /// &lt;/summary&gt;<br>&nbsp;&nbsp;&nbsp; /// &lt;param name="newBO"&gt;The new BO.&lt;/param&gt;<br>&nbsp;&nbsp;&nbsp; /// &lt;returns&gt;&lt;/returns&gt;<br>&nbsp;&nbsp;&nbsp; protected virtual T MergeState(T newBO)<br>&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; foreach (Csla.Core.IPropertyInfo iPropertyInfo in newBO.FieldManager.GetRegisteredProperties())<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; this.SetProperty(iPropertyInfo, newBO.GetProperty(iPropertyInfo));<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // Could be extended to go through IEditableBusinessObject <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // and IEditableCollection and call ManageObjectStateChange on them. <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // It would need to check for the correct primary keys and if it's<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // not found add the object as a new object to the IEditableCollection <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return (T) this;<br>&nbsp;&nbsp;&nbsp; }<br>}<br><br>Thanks,<br>Patrick<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Patrick replied on Wednesday, December 03, 2008</h2>Hi,<br><br>looks like the thread got hijacked <img src="/emoticons/emotion-5.gif" alt="Wink [;)]" />.... I'm still wondering about the original question though:<br><br><BLOCKQUOTE><div><img src="/Themes/basicblue/images/icon-quote.gif"> <strong>Patrick:</strong></div><div><BLOCKQUOTE><div><img src="/Themes/basicblue/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div>This can be done, but would basically require abandoning the BinaryFormatter and NetDataContractSerializer.</div></BLOCKQUOTE>I'm just trying to understand why it would need to abandon anything? Below is a very simplified example but wouldn't it go in the right direction without needing to change serialization etc.?<br><br>[Serializable()]<br>public abstract class CfxBusinessBase&lt;T&gt; : global::Csla.BusinessBase&lt;T&gt; where T : CfxBusinessBase&lt;T&gt;<br>{<br>&nbsp;&nbsp;&nbsp; /// &lt;summary&gt;<br>&nbsp;&nbsp;&nbsp; ///&nbsp; DataPortal Methods<br>&nbsp;&nbsp;&nbsp; /// &lt;/summary&gt;<br>&nbsp;&nbsp;&nbsp; /// &lt;param name="newBO"&gt;&lt;/param&gt;<br>&nbsp;&nbsp;&nbsp; /// After getting a new object call<br>&nbsp;&nbsp;&nbsp; /// objectToReturn = ManageObjectStateChange(objectToReturn);<br><br>&nbsp;&nbsp;&nbsp; protected bool KeepObjectStateBetweenDataPortalCalls { get; set; }<br>&nbsp;&nbsp;&nbsp; internal virtual T ManageObjectStateChange(T newBO)<br>&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (KeepObjectStateBetweenDataPortalCalls)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return MergeState(newBO);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; else<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return newBO;<br>&nbsp;&nbsp;&nbsp; }<br><br>&nbsp;&nbsp;&nbsp; /// &lt;summary&gt;<br>&nbsp;&nbsp;&nbsp; /// Merges the state a new object with the current object to keep references<br>&nbsp;&nbsp;&nbsp; /// If manged properties aren't used it would need to be overriden <br>&nbsp;&nbsp;&nbsp; /// in an inheriting class to correctly map the properties <br>&nbsp;&nbsp;&nbsp; /// (or the DataMapper could be used?)<br>&nbsp;&nbsp;&nbsp; /// &lt;/summary&gt;<br>&nbsp;&nbsp;&nbsp; /// &lt;param name="newBO"&gt;The new BO.&lt;/param&gt;<br>&nbsp;&nbsp;&nbsp; /// &lt;returns&gt;&lt;/returns&gt;<br>&nbsp;&nbsp;&nbsp; protected virtual T MergeState(T newBO)<br>&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; foreach (Csla.Core.IPropertyInfo iPropertyInfo in newBO.FieldManager.GetRegisteredProperties())<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; this.SetProperty(iPropertyInfo, newBO.GetProperty(iPropertyInfo));<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // Could be extended to go through IEditableBusinessObject <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // and IEditableCollection and call ManageObjectStateChange on them. <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // It would need to check for the correct primary keys and if it's<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // not found add the object as a new object to the IEditableCollection <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return (T) this;<br>&nbsp;&nbsp;&nbsp; }<br>}</div></BLOCKQUOTE>Thanks,<br>Patrick<br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, December 03, 2008</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Patrick,<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Your idea works in the simple case, and maybe in more complex
+cases, though maybe not.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Consider that it has to work at the <i>object graph</i> level.
+So it has to work with a parent-child-grandchild scenario, where there are
+possible cross-links between some of the objects in the graph. And it has to
+work in the case where an object was deleted from a list, and so the graph
+returned from the server won&#8217;t have a value corresponding to an object
+that the client does have in memory.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I&#8217;m not saying it can&#8217;t be done. I&#8217;m saying
+that it appears simple for an object, but in reality it is quite complex to do
+for an object graph.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Also consider that your existing objects have code in
+OnDeserialized() (and so does CSLA itself) &#8211; none of which would be good
+to run in this new model. While the entire object graph would come back from
+the server, you really don&#8217;t want those objects to <i>do anything</i>
+because you are going to copy the data out of them and discard them.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>There are a lot of assumptions in CSLA, and I suspect in
+business objects, where actions are triggered on deserialization of objects
+from the server. All those assumptions would become wrong, and all that behavior
+would need to be suppressed or moved to some new trigger condition.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Finally, there are performance considerations. The copy of data
+from the returned object to the original object must be done at the field
+level. To do this in a general way requires reflection. If the objects moving
+over the wire were DTOs, at least they&#8217;d have public field data, which
+makes the reflection cheaper. And when combined with the field manager you can
+avoid reflection &#8211; which is what the MobileFormatter does for
+Silverlight.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>What I&#8217;m saying is two things. First, this is a very
+non-trivial idea. Second, the <i>efficient</i> way to do this is to separate
+the object state from the object instance. This is what MobileFormatter does,
+and what BinaryFormatter/NDCS do not. So from an efficiency perspective, MF is
+arguably a better model &#8211; and it is certainly better for the type of
+solution we&#8217;re discussing here.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>So then I&#8217;m left with a choice (assuming I do this at all)
+of doing it in a way that (I think) misuses the BF/NDCS, or of doing it the &#8220;right
+way&#8221; by decoupling the state from the object.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Also, I am looking to the future of Silverlight and Azure (and
+partially trusted web hosting and maybe even .NET CF), where MobileFormatter
+works, and BF/NDCS do not. In that future you could envision CSLA abandoning
+BF/NDCS entirely. That&#8217;s a big step &#8211; and not something I&#8217;d
+do casually &#8211; but it is a consideration.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Patrick replied on Wednesday, December 03, 2008</h2>Thank you very much Rocky. I appreciate you taking the time to answer.<br><BLOCKQUOTE><div><img src="/Themes/basicblue/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div>the efficient way to do this is to separate the object state from the object instance. This is what MobileFormatter does, and what BinaryFormatter/NDCS do not......So then I’m left with a choice (assuming I do this at all) of doing it in a way that (I think) misuses the BF/NDCS, or of doing it the “right way” by decoupling the state from the object.</div></BLOCKQUOTE>I agree and understand that it's a longer process to do it the correct way...<br>Would be good though if "decoupling the state from the object" could make it onto the wish list for a future version as I think there is a lot of benefit in it.<br><br>If me or anyone comes up with a "hack" of making it work in the short term even in limit scenarios I would appreciate if we could post the solution / approach here.<br><br>Thanks,<br>Patrick<br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, December 03, 2008</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I just want to make sure we all understand the complexity here. This
+is a big version change (3.6 to 4.0 or something) because it would effectively
+break many things &#8211; including CslaDataSource, CslaDataProvider,
+CslaActionExtender and a whole slew of lower-level things. It would
+fundamentally change the way a lot of UI code works, along with some business
+object code.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>In other words, this is a breaking change along the line of the
+2.0 to 2.1 shift (at a minimum).<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>And I know the reply is &#8220;it could be optional&#8221; &#8211;
+but this means I&#8217;d have to make CslaDataSource, CslaDataProvider, etc.
+all work with both models. That&#8217;s probably not realistic to do that, and
+to maintain both models over time. It is already really time-intensive to test
+the UI related elements because you can&#8217;t automate or mock data binding
+in all 4 UI technologies (soon to be 5 with MVC).<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>So I see this as an all-or-nothing change. And so it is a change
+that will impact everyone using CSLA now.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>lukky replied on Tuesday, December 02, 2008</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div><p>It is probably the kind of thing I'll do when I also abandon Windows Forms, asmx and other old technologies - and only if there's broad support for such a big thing.</p></div></BLOCKQUOTE><br><br>Rocky,<br><br>Are you saying Windows Forms is an old technology and that you're going to remove support for it from CSLA.NET ? I really don't understand this. I was under the impression that Windows Forms was still going to be around for at least another 5 years.<br><br>Are we supposed to change technologies every 5 years or so ? If I move to WPF today, am I going to have to move again in 5 years ?<br><br>Please reassure me.<br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Tuesday, December 02, 2008</h2>Well, I don't know that there's any date for WinForms support to be dropped.<br><br>Oh, and yes, you will change UI technology every five years or so.&nbsp; Hence why we use Csla.. so that we only have to re-write the UI or data access technology... but the business rules live on!&nbsp; <img src="/emoticons/emotion-5.gif" alt="Wink [;)]" /><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, December 02, 2008</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal>&gt;Oh, and yes, you will change UI technology every five
+years or so.&nbsp; <o:p></o:p></p>
+
+<p class=MsoNormal>&gt;Hence why we use Csla.. so that we only have to re-write
+the UI or <o:p></o:p></p>
+
+<p class=MsoNormal>&gt;data access technology... but the business rules live
+on!<span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Exactly! My comment was somewhat tongue-in-cheek, but is also
+only funny because it is so sadly true&#8230;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Windows Forms may well be around for another 5 years. Probably
+more like 10 really, as technologies die slowly. But remember, Windows Forms is
+already 7 years old, and no technology remains really mainstream for more than
+about 10.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>But let&#8217;s face it, in five years Windows Forms will <i>clearly</i>
+be a legacy technology. Already we know it is a legacy technology &#8211; it is
+just one that is still widely used. But five years from now it will be both
+legacy and generally undesirable.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>My comment regarding CSLA is half serious. Today there is one
+difference between Windows Forms and XAML that requires a config switch (to control
+how PropertyChanged works). Over time I rather expect that to get worse, as
+Windows Forms remains pretty constant and XAML rapidly evolves. I hope I&#8217;m
+wrong, and that they maintain a large amount of functional parity, but I expect
+that won&#8217;t be the case.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>So at some point I&#8217;ll probably be left with a tough choice
+of either maintaining a &#8220;CSLA .NET for Windows Forms&#8221; and &#8220;CSLA
+.NET for Everything-Else&#8221; or of dropping Windows Forms support.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>When will that occur? Or will it occur? I can&#8217;t say. Certainly
+it doesn&#8217;t seem like it will happen in .NET 4.0, though it is too early
+to tell for sure.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I guess what I&#8217;m getting at, is that you should panic or
+worry for the short term. But if you aren&#8217;t considering a migration
+strategy to XAML in your 5 year IT planning, it is probably time to start.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky <o:p></o:p></span></p>
+
+<p class=MsoNormal><b><span><o:p>&nbsp;</o:p></span></b></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tetranz replied on Tuesday, December 02, 2008</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div>
+
+
+
+
+
+
+ 
+<span>I guess what I’m getting at, is that you should panic or
+worry for the short term.</span></div></BLOCKQUOTE>I'll set some time aside for that tomorrow. <img src="/emoticons/emotion-1.gif" alt="Smile [:)]" /><br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, December 02, 2008</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>&gt;you should panic or worry for the short term<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>You SHOULDN&#8217;T panic&#8230;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Geez, fat fingers today&#8230;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>lukky replied on Tuesday, December 02, 2008</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div>
+
+
+
+
+
+
+ 
+
+
+
+<div class="Section1"><span>I guess what I’m getting at, is that you *shouldn't* panic or
+worry for the short term. But if you aren’t considering a migration
+strategy to XAML in your 5 year IT planning, it is probably time to start.<o:p></o:p></span>
+
+
+
+
+
+
+
+<p class="MsoNormal"><span><o:p>&nbsp;</o:p>Rocky <o:p></o:p></span><b><span><o:p><br></o:p></span></b></p><p class="MsoNormal"><b><span><o:p> </o:p></span></b><span></span></div></BLOCKQUOTE></p><p class="MsoNormal">Well, of course I do expect technologies to evolve and eventually decay, but I really wasn't under the impression that WinForms was already at that stage.</p><p class="MsoNormal">As for moving towards XAML, I appreciate your suggestion as it makes me realize that I can't sit on it for too long. I guess my general perception of WPF is that it is still lacking the rich "out of the box" experience that we got from .NET 2.0. By that I mean the fullness of the Controls toolbox. For all I know, there is still not a DataGrid with the possibilities of the Windows Forms' one. Am I wrong ?</p><p class="MsoNormal">Anyway, thank for reassuring me that support for WinForms is not about to disappear from CSLA in the near future.</p><p class="MsoNormal"><br></p><p class="MsoNormal"></p></div></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, December 03, 2008</h2>I did add this to the wish list: <A href="http://www.lhotka.net/cslabugs/edit_bug.aspx?id=248">http://www.lhotka.net/cslabugs/edit_bug.aspx?id=248</A></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Patrick replied on Wednesday, December 03, 2008</h2><BLOCKQUOTE><div><img src="/Themes/basicblue/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div>I did add this to the wish list: <a href="http://www.lhotka.net/cslabugs/edit_bug.aspx?id=248">http://www.lhotka.net/cslabugs/edit_bug.aspx?id=248</a></div></BLOCKQUOTE>Thanks,<br>Patrick<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,28 @@
+<html><header><title>Using Relationships - Best way to represent them</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Using Relationships - Best way to represent them</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/118.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>razorkai posted on Tuesday, May 16, 2006</h2><P>Hi guys.</P>
+<P>One of the situations I have come across several times is where an object is used by another object but is not a child of the other object.&nbsp; In other words Object A can have one or more Object B related to it, but each one of those Object B can exist without Object A - i.e. they are both root objects.&nbsp; I believe this is known as a Using relationship rather than a Parent Child relationship.&nbsp; Anyway, in such a case it is often beneficial to provide an easy way to get a collection of Object B (or in actual fact Object B info objects) through Object A.&nbsp; I have found two ways to do this:-</P>
+<P>1)&nbsp; Implement a property</P>
+<P>[NotUndoable()]&nbsp;&nbsp;&nbsp;//Don't want this saved in N-Level undo!<BR>private ObjectBCollection _objectBCol;<BR>public&nbsp;ObjectBCollection ObjectBCol<BR>{<BR>&nbsp;&nbsp;&nbsp;get<BR>&nbsp;&nbsp;&nbsp;{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if (_objectBCol == null)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_objectBCol = ObjectBList.GetObjectBList(_objectAKey));<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return _objectBCol;<BR>&nbsp;&nbsp;&nbsp;}<BR>}</P>
+<P>2)&nbsp; Implement a property that always refetches the list.</P>
+<P>public&nbsp;ObjectBCollection ObjectBCol<BR>{<BR>&nbsp;&nbsp;&nbsp;get<BR>&nbsp;&nbsp;&nbsp;{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return ObjectBList.GetObjectBList(_objectAKey));<BR>&nbsp;&nbsp;&nbsp;}<BR>}</P>
+<P>Are either of these preferable?&nbsp; Is there a better way to do it?&nbsp; I hope I have explained this OK, it is not easy.</P>
+<P>TIA</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, May 16, 2006</h2><P>I prefer option #2, because I usually just want to provide navigational convenience, and I don't want to be responsible for the lifetime of this other object.</P>
+<P>Option #1 is good, however, if I'm using this other object within the containing object - in which case maintaining a reference is a fine thing. But then you need to realize that you've assumed control for that object's lifetime to some degree - in that the object instance will stay around as long as your containing object stays around.</P>
+<P>If you do #1, make sure to make it as [NonSerialized] as well, because you probably don't want this (presumably root) object moving around the network with your object - that could get a bit messy (unless you plan for it).</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>razorkai replied on Tuesday, May 16, 2006</h2><P>Rocky</P>
+<P>Thanks for pointing out the NonSerialized attribute, I'd overlooked that.&nbsp; </P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>malloc1024 replied on Tuesday, May 16, 2006</h2>You could use the null object pattern.&nbsp; This will help you avoid checking for nulls in your code.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>razorkai replied on Tuesday, May 16, 2006</h2><P>Hi Malloc</P>
+<P>Interesting.&nbsp;&nbsp; I haven't come across that before. Care to demonstrate what you mean with a little code?&nbsp; I have googled it but didn't find much help.</P>
+<P>Thanks.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>malloc1024 replied on Tuesday, May 16, 2006</h2><p class="MsoNormal"><a href="http://www.cs.oberlin.edu/%7Ejwalker/nullObjPattern/"><br>
+</a></p>
+
+<br>
+<br>
+<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>malloc1024 replied on Tuesday, May 16, 2006</h2><p class="MsoNormal">Razorkai,</p>
+
+
+<span>Forget what I said before, I misread your post.<span>&nbsp; </span>Both options are acceptable.<span>&nbsp; </span>It really depends on what you are
+doing.<span>&nbsp; </span>If object A is going to use the
+reference of object B throughout the class I would go with option 1, else I
+would go with option 2. <span>&nbsp;</span></span><span><span>
+Instead of checking for a null reference in option 1, you could
+load the reference to object B in object A's constructor.&nbsp; This
+avoids the checking for null everytime the property is accessed.<br>
+ </span></span></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>razorkai replied on Wednesday, May 17, 2006</h2>The reason I check for null in this way is that I only want to fetch the ObjectBList if the property is accessed, which is not always.&nbsp; Therefore I cannot just create it in the constructor.</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

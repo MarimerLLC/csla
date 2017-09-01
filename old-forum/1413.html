@@ -1,0 +1,28 @@
+<html><header><title>Handling Default Values</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Handling Default Values</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/1413.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>mikeclimbs posted on Friday, October 06, 2006</h2><P>I have&nbsp;multiple&nbsp;objects that contain a field Statu. Status can be one of 3 values Active, Inactive, Discontinued.&nbsp; I need to default&nbsp;it to Active.&nbsp; </P>
+<P>I have a my own businessbase class that overrides MarkNew.&nbsp; I did this to reset the isdirty flag when adding new items.</P>
+<P>I'm thinking of adding an overrideable&nbsp;sub named SetDefaults to my base class that will be called by my MarkNew.&nbsp; This way my objects can just override setdefaults to populate default values, without setting the dirty flag.</P>
+<P>Does this make sense?</P>
+<P>Thanks</P>
+<P>Mike</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, October 06, 2006</h2>The whole point of DataPortal_Create() is to set default values. If you set the defaults by altering the field, rather than the property (which is generally what I recommend in any case), then the object would not be marked as dirty.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jav replied on Friday, October 06, 2006</h2><P>Rocky,</P>
+<P>Setting the values through the Properties can sometimes land you into trouble because setting a property triggers a Rule evaluation which results in calls to IsValid, IsDirty etc&nbsp;and since the object is still being created and therefore some other parts of the object, by definition,&nbsp;would still be Null, you can easily get Object is Null errors. And these tend to be real head scratchers.</P>
+<P>Jav</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>mikeclimbs replied on Friday, October 06, 2006</h2><P>Rocky,</P>
+<P>Thanks for the help.</P>
+<P>I went down this road because, I'm using the CSLA templates to generate splitbase.&nbsp; The template puts DataPortal_Create() in the base.&nbsp; I didn't want to readd the defaults after regenerating base and came up with this workaround.</P>
+<P>Should the templates change so DataPortal_Create() is in the user generated unit?</P>
+<P>On a side not I need to override marknew&nbsp;so I only prompt for save if new records&nbsp;are modifed by the user.</P>
+<P>Thanks</P>
+<P>Mike</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>mikeclimbs replied on Friday, October 06, 2006</h2><P>I realized I can handle the defaults&nbsp;by overriding DataPortal_Create() in the user generated unit.</P>
+<P>Thanks</P>
+<P>Mike</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Saturday, October 07, 2006</h2><P>I use split classes too.</P>
+<P>I decided that DataPortal_Create should call an Overridable Sub SetDefaults.</P>
+<P>Some reasons for this:</P>
+<P>1. It occurs *after* ActivatorCreateInstance which means all of the Constructors have already run. This is important because if you call an Overridabble method from a Constructor you are not guaranteed that all of the fields have been initialized yet. So there is an FxCop rule against that practice. I had run into some subtle bugs using that style of coding. By using DP_Create to call the Sub you know that all fields have been intialized.</P>
+<P>2. This is in line with using the factory pattern to always use DP_Create to create your BOs. Keeps things consistent.</P>
+<P>3. I use &lt;RunLocal&gt; in the Gen level class. If I need to hit the database then in the next level I can Override DP_Create and change the entire behavior.</P>
+<P>4. By having DP_Create call an Overridable Sub I can code gen as much as I need to and instead of having to override the entire DP_Create method I only have to override this one piece.</P>
+<P>5. If I want to keep the Base behaivor then I us MyBase.SetDefaults first and then set any others that are needed for this class. If not, I can skip that and just set what I want.</P>
+<P>Joe</P>
+<P>&nbsp;</P>
+<P>PS - Jav - Rocky is recommending setting the field - NOT the Property - from DP_Create. I think you mis-read his comments.</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

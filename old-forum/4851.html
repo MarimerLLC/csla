@@ -1,0 +1,92 @@
+<html><header><title>Custom Rule Checking</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Custom Rule Checking</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4851.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Manu Singhal posted on Thursday, May 15, 2008</h2><P>Hi!</P>
+<P>&nbsp;</P>
+<P>I am finding a strange problem! I have created a BusinessObject From BusinessBase. I have added 3 Instance Rules in the AddCustomRules Method.</P>
+<P>&nbsp;</P>
+<P>These Rules are invoked the First time an object is created By using the new factory method. But in all subsequent calls to New Factory method My Custom Rules are not checked. I am wondering what might be the problem.</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Manu Singhal replied on Sunday, May 18, 2008</h2><P>Further describing the problem. I have an Invoice Object which is having 3 Instance Rules Checking for the Exisitence of a Guid Value in 3 properties which is not equal to null or NewGuid. The 3 Properties are og Type Nullable&lt;Guid&gt;.</P>
+<P>Now in the AddCustomRules Method I have added these rules as Instance Rules. The First time an instance of the Invoice is Created Using NewInvoice the Rules are checked. But on all subsequent calls to NewInvoice() a new object is constructed and returned but the instance rules are not checked.</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Sunday, May 18, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Do you have validationrules.checkrules call in your code?&nbsp;
+Just making sure&#8230;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Senior Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Manu Singhal
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Sunday, May 18, 2008 4:51 AM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] Custom Rule Checking<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Further describing the problem. I have an Invoice Object which is having 3
+Instance Rules Checking for the Exisitence of a Guid Value in 3 properties
+which is not equal to null or NewGuid. The 3 Properties are og Type
+Nullable&lt;Guid&gt;.<o:p></o:p></p>
+
+<p>Now in the AddCustomRules Method I have added these rules as Instance Rules.
+The First time an instance of the Invoice is Created Using NewInvoice the Rules
+are checked. But on all subsequent calls to NewInvoice() a new object is
+constructed and returned but the instance rules are not checked.<o:p></o:p></p>
+
+<p>&nbsp;<o:p></o:p></p>
+
+<p>&nbsp;<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Monday, May 19, 2008</h2><P>Just curious - but why are you using Instance rules?</P>
+<P>Do the rules vary with each invoice?</P>
+<P>I have not seen many examples of instance rules and would like to better understand why they are used.</P>
+<P>Joe</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Manu Singhal replied on Monday, May 19, 2008</h2><P>Well My custom rule involves checking if the Guid is NewGuid or Null. It fails if one of them is true. I have created a method for the same and then added it as instance rule.</P>
+<P>Is there any other way in which this type of&nbsp;business rule&nbsp;can be used?</P>
+<P>To My Surprise the rules work fine when the first instance is created using NewInvoice() Mehtod. But on all subsequent calls to NewInvoice() the rules are not checked</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Manu Singhal replied on Wednesday, May 28, 2008</h2><P>Ok I have changed the Business Object Design by removing the validation logic from Instance Rule. and Adding a static Method to check the rules.</P>
+<P>&nbsp;</P>
+<P>But I sincerely dont understand yet why was the instance rule i added was&nbsp;being checked the first time i created the object using New Factory method and on all subsequent calls to New Factory Method the instance rules were not checked.</P>
+<P>&nbsp;</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

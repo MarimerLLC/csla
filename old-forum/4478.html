@@ -1,0 +1,114 @@
+<html><header><title>Bug in 3.5 BusinessBase IsValid()?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Bug in 3.5 BusinessBase IsValid()?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4478.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>skagen00 posted on Friday, March 07, 2008</h2><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>virtual</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>bool</FONT><FONT size=2> IsValid</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>get</FONT><FONT size=2> { </FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> ValidationRules.IsValid &amp;&amp; (_fieldManager != </FONT><FONT color=#0000ff size=2>null</FONT><FONT size=2> || FieldManager.IsValid()); }</P>
+<P>}</P>
+<P>The simplified object model I'm dealing with is an individual which contains a collection of individual names. </P>
+<P>FieldManager.IsValid is false, but it doesn't matter because _fieldManager is not null. So when an individual name is invalid, individual is still returning that it's valid. </P>
+<P>Certainly it only looks like _fieldManager is assigned if FieldManager is ever first referenced, so I assume this should be == null? </P>
+<P>Chris</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>skagen00 replied on Friday, March 07, 2008</h2>Please note that IsDirty has this logic as well. </div><div style='padding:0 15 3 15;background-color:powderblue'><h2>skagen00 replied on Monday, March 10, 2008</h2><P>*Bump*</P>
+<P>I just wanted to make sure that Rocky notices this as I saw him swipe by with a few posts yesterday. I checked the SVN in advance but it's still unchanged -- just want to make sure this doesn't get lost in case it's a bug as a suspect it is. </P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, March 12, 2008</h2><P>Yes, I think you are right - there's a bug. Here's a truth table that shows a problem (if I did it right - been a long time...):</P>
+<P>T &amp; (T | T) = T<BR>T &amp; (F | T) = T (but would blow up)<BR>T &amp; (T | F) = T (WRONG)<BR>F&nbsp;&amp; (T | T) = F<BR>F&nbsp;&amp; (F | T) =&nbsp;F<BR>F&nbsp;&amp; (T | F) = F</P>
+<P>I think this is what it should be:</P>
+<P>T &amp; (T&nbsp;&amp; T) = T<BR>T &amp; (F&nbsp;&amp; T) = F<BR>T &amp; (T&nbsp;&amp; F) = F<BR>F&nbsp;&amp; (T&nbsp;&amp; T) = F<BR>F&nbsp;&amp; (F&nbsp;&amp; T) =&nbsp;F<BR>F&nbsp;&amp; (T&nbsp;&amp; F) = F</P>
+<P>So if I am doinig this right, the problem is the OR should be an AND.</P>
+<P>For IsDirty it would be:</P>
+<P>T&nbsp;| (T&nbsp;&amp; T) = T<BR>T | (F&nbsp;&amp; T) = T<BR>T | (T&nbsp;&amp; F) = T<BR>F&nbsp;| (T&nbsp;&amp; T) = T<BR>F&nbsp;| (F&nbsp;&amp; T) =&nbsp;F<BR>F&nbsp;| (T&nbsp;&amp; F) = F</P>
+<P>Do you agree?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>skagen00 replied on Wednesday, March 12, 2008</h2><P>So it's currently:</P>
+<P><FONT size=2>ValidationRules.IsValid &amp;&amp; (_fieldManager != <FONT color=#0000ff>null</FONT> || FieldManager.IsValid());</FONT></P>
+<P><FONT size=2>You're proposing:</FONT></P>
+<P><FONT size=2>ValidationRules.IsValid &amp;&amp; (_fieldManager != <FONT color=#0000ff>null</FONT>&nbsp;&amp;&amp; FieldManager.IsValid());</FONT></P>
+<P><FONT size=2>I initially suggested (and think is probably the right answer):</FONT></P>
+<P><FONT size=2>ValidationRules.IsValid &amp;&amp; (_fieldManager == <FONT color=#0000ff>null</FONT>&nbsp;|| FieldManager.IsValid());</FONT></P>
+<P><FONT size=2>I initially suggested what I did because I wasn't entirely clear if _fieldManager got initialized when dealing with a class with no properties. I figured if it's the case that users who don't use managed properties don't get this initialized, _fieldManager == null would be a "valid" supporting condition.</FONT></P>
+<P><FONT size=2>It looked like there were many cases in the code where you were hitting FieldManager only if _fieldManager was not null - that is, it looked like perhaps you only wanted the property setting/getting to establish a FieldManager - kind of an on-demand thing. </FONT></P>
+<P><FONT size=2>There were a couple cases in code where however it was going right to FieldManager without checking if _fieldManager was null - effectively triggering an instance for _fieldManager - below are two:</FONT></P>
+<BLOCKQUOTE dir=ltr>
+<P><FONT size=2>Child_ListChanged</FONT></P>
+<P><FONT size=2>Child_PropertyChanged</FONT></P></BLOCKQUOTE>
+<P dir=ltr><FONT size=2>I don't quite follow why you would change it to an "and" to be honest.... maybe I'm missing something?</FONT></P>
+<P><FONT size=2>Chris</FONT></P>
+<P><FONT size=2></FONT>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Wednesday, March 12, 2008</h2>You're right, the problem is that if _fieldManger is null, _fieldManager != null returns false, so that entire expression is false, so the return will always be false when it should return just the evaluatin of ValidationRules.IsValid.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Wednesday, March 12, 2008</h2><BLOCKQUOTE><div><img src="/Themes/basicblue/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div><p>Yes, I think you are right - there's a bug. Here's a truth table that shows a problem (if I did it right - been a long time...):</p>
+<p>T &amp; (T | T) = T<br>T &amp; (F | T) = T (but would blow up)<br>T &amp; (T | F) = T (WRONG)<br>F&nbsp;&amp; (T | T) = F<br>F&nbsp;&amp; (F | T) =&nbsp;F<br>F&nbsp;&amp; (T | F) = F</p>
+<p>I think this is what it should be:</p>
+<p>T &amp; (T&nbsp;&amp; T) = T<br><b>T &amp; (F&nbsp;&amp; T) = F</b>&nbsp; </div></BLOCKQUOTE></p><p>Shouldn't this be True.&nbsp; There's no field manager to check, so it should = T... (F &amp; T) can't exist, it will always blow up.<br></p><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, March 12, 2008</h2><P>Chris,</P>
+<P>The problem with using OR is that it can blow up (and it is wrong if my table is correct). If the first part of OR returns false then the second part gets evaluated - which is exactly what we don't want!</P>
+<P>Andy,</P>
+<P>That bolded statement (T &amp; (F | T)) is both False and safe. It is False because the inner expression returns False (F&amp;T = F), and it is safe because the OR short-circuits and the second part is never evaluated because the first is False.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Wednesday, March 12, 2008</h2>You're right, it won't blow up, but shouldn't IsValid still return true if ValidationRules.IsValid is true and the fieldManger is null?&nbsp; <br><br>( _fieldManager != null &amp;&amp; fieldManager.IsValid ) always returns false if _fieldManager is null, so the entire expression will be false.&nbsp;&nbsp; So the object will always say its not valid if _fieldManager is null if you use T &amp; ( F &amp; T ).&nbsp; Or am I missing something?<br><br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, March 12, 2008</h2><P>I see what you are saying, that's correct. Perhaps this can't be done in a single line. It should probably be this:</P>
+<BLOCKQUOTE dir=ltr>
+<P>bool result = false;<BR>if (ValidationRules.IsValid)<BR>{<BR>&nbsp; if (fieldManager == null)<BR>&nbsp;&nbsp;&nbsp; result = true;<BR>&nbsp; else&nbsp;if (FieldManager.IsValid)<BR>&nbsp;&nbsp;&nbsp; result = true;<BR>}<BR>return result;</P></BLOCKQUOTE>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, March 13, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>OK, so I think the original suggestion was right (change != to
+==).<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>This isn&#8217;t that hard, but I&#8217;m so busy I&#8217;m only
+getting a minute here and there to think about it, which is really not fun&#8230;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> ajj3085
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Wednesday, March 12, 2008 10:14 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] Bug in 3.5 BusinessBase IsValid()?<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>You're right, it won't blow up, but shouldn't IsValid still
+return true if ValidationRules.IsValid is true and the fieldManger is
+null?&nbsp; <br>
+<br>
+( _fieldManager != null &amp;&amp; fieldManager.IsValid ) always returns false
+if _fieldManager is null, so the entire expression will be false.&nbsp;&nbsp;
+So the object will always say its not valid if _fieldManager is null if you use
+T &amp; ( F &amp; T ).&nbsp; Or am I missing something?<br>
+<br>
+<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>skagen00 replied on Thursday, March 13, 2008</h2><P>Thank you Rocky, no hurries, just didn't want it to get lost. </P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Saturday, March 15, 2008</h2><P>I have checked in a fix for the IsValid issue. IsDirty was already correct, and oddly enough so was the VB code on both counts. But the fix is in, so things should be good now.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>skagen00 replied on Wednesday, March 12, 2008</h2><P>Actually if _fieldManager is not null (i.e. _fieldManager == null is false) don't you want to test IsValid for FieldManager?</P>
+<P>I must be still missing something.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Wednesday, March 12, 2008</h2>NT<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>skagen00 replied on Wednesday, March 12, 2008</h2><P>I like it but w/&nbsp;_fieldManager :) </P>
+<P>Chris</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>McManus replied on Wednesday, March 12, 2008</h2><P>Andy,</P>
+<P>This one looks OK, but I don't see the functional difference with Rocky's last solution.</P>
+<P>Cheers,<BR>Herman</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Wednesday, March 12, 2008</h2>Well the problem with the last code snippet was that it didn't check _fieldManager.IsValid if _fieldManager wasn't null.&nbsp; <br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>McManus replied on Wednesday, March 12, 2008</h2><P>If ValidationRules.IsValid is false, why bother checking _fieldManager.IsValid, since the end result will be false anyway!</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>skagen00 replied on Wednesday, March 12, 2008</h2><P>**nevermind**</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

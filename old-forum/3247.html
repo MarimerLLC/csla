@@ -1,0 +1,63 @@
+<html><header><title>Enums or NameValueList</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Enums or NameValueList</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3247.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>lprada posted on Sunday, July 22, 2007</h2>I have to create a Criteria to search by a Invoice Status, what is the best porcedure, to have a enum as a parameter of the criteria or have a NameValueList and an int as the parameter?</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>skagen00 replied on Monday, July 23, 2007</h2><P>I prefer using something like a NameValueList. You have the flexibility of being able to show the descriptions associated with the values (enums you can't have spaces/etc). Also, you can have static properties on your NameValueList to represent any "magic numbers" you'd like to represent. (Such as InvoiceStatus.Paid). </P>
+<P>Also, I don't know if it applies to you but if you have the ability for users to define their own status codes (over time) an enumeration wouldn't work well.</P>
+<P>Good luck,</P>
+<P>Chris</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>lprada replied on Tuesday, July 24, 2007</h2><P>Thanks for the quickly response, now I have two Questions:</P>
+<P>1) Adding the Static properties means that If I have to add a value to the list I have to added the property too, I use to have this discutions with my fellow&nbsp;&nbsp;classmate and we never have a better idea, is any?</P>
+<P>2)&nbsp;Add the property to the NVList or create a new class?</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, July 25, 2007</h2><P>Or potentially use the best of both worlds</P>
+<P><A HREF="/forums/post/16045.aspx">http://forums.lhotka.net/forums/post/16045.aspx</A></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>skagen00 replied on Wednesday, July 25, 2007</h2><P>This is nice if these two things aren't important:</P>
+<P>1) client defined codes on top of enumerated "magic number" system codes</P>
+<P>2) more than one word or description separate (culture variants or spaces in the description, etc)&nbsp;from that of the enum's name. Such as Dark Red instead of DarkRed.&nbsp; (Of course, one could use certain rules to add proper spaces to the enum names).</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>lprada replied on Wednesday, July 25, 2007</h2>I like the Rocky solution but I need translation of text, so what can I do, is there a way to ue reflexion to search into Properties.Resources?</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, July 25, 2007</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>You probably shouldn&#8217;t use an enum if you need
+translation. You&#8217;d be better off making this list drive off a database
+table in that case.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> lprada
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Wednesday, July 25, 2007 9:55 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] Enums or NameValueList<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>I like the Rocky solution but I need translation of text, so
+what can I do, is there a way to ue reflexion to search into
+Properties.Resources?<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

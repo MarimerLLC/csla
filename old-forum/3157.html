@@ -1,0 +1,14 @@
+<html><header><title>BusinessListBase &amp; ReadOnlyListBase, generic &quot;Find&quot; method missing</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>BusinessListBase &amp; ReadOnlyListBase, generic &quot;Find&quot; method missing</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3157.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>ixman posted on Monday, July 09, 2007</h2><P>Hi,</P>
+<P>Does anyone know why there is no generic "Find" method implemented in the BusinessListBase &amp; ReadOnlyListBase classes?</P>
+<P>Any good&nbsp;workaround other than just implement a "Find" method with the&nbsp;required "predicate"&nbsp;on each class that inherit those classes?</P>
+<P>&nbsp;</P>
+<P>Thank you,</P>
+<P>George</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, July 09, 2007</h2><P>Primarily because the concept isn't on the base classes from which they derive. However, the predicate methods are on the wish list (<A href="http://www.lhotka.net/cslanet/wishlist.aspx">www.lhotka.net/cslanet/wishlist.aspx</A>).</P>
+<P>On the other hand, LINQ makes them largely useless, and so I may never implement them.</P>
+<P>On the third hand, all these things are dangerous (Find&lt;&gt; and LINQ) because they return lists that are <EM>not linked to the original</EM>. So you might do a find query and get back a list of matching results. You might then add or remove an item from that list - which of course would have <EM>no impact</EM> on the real list...</P>
+<P>This is why Csla.FilteredBindingList is probably your best option. It effectively does a find operation that returns all matching results, using a delegate method (much like generic Find). But the resulting list <EM>is linked to the original</EM> so you can add and remove items from the filtered list and those changes are actually reflected in the real list.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ixman replied on Monday, July 09, 2007</h2><P>Hi&nbsp;Rocky, </P>
+<P>I'll go for the Csla.FilteredBindingList. The "link to the original list"&nbsp;feature is very&nbsp;handy.</P>
+<P>&nbsp;</P>
+<P>Thank you,</P>
+<P>George</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,56 @@
+<html><header><title>Instructions on Showing Severity Rules (information, warning, Eritical Error) in Developer Express XTRAGrid</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Instructions on Showing Severity Rules (information, warning, Eritical Error) in Developer Express XTRAGrid</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/2887.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Plum posted on Wednesday, May 16, 2007</h2><P><FONT size=2>Hi Everyone</FONT></P>
+<P><FONT size=2>I was I figured out how to impliment the diferent severity rules in CSLA 2.14 into Developer Express XtraGrid. For instance if you have a severity rule that is marked as a warning, a little warning icon will appear next to the record in the grid and a description of the warning.&nbsp; This is cool !!</FONT></P>
+<P><FONT size=2>You will need to have at least V7.1.2.0 of the XtraGrid&nbsp;installed on your Machine.</FONT></P>
+<P><FONT size=2>1. Open up the CSLA frame work code in Visual Studio 2005. </FONT></P>
+<P><FONT size=2>2. Make a reference to <STRONG><U>DEvExpress.Data.v7.1</U> .</STRONG></FONT></P>
+<P><FONT size=2>3. Locate the abstract BusinessBase Class (</FONT></P>
+<P><FONT size=2><FONT color=#0000ff>public</FONT> <FONT color=#0000ff>abstract</FONT> <FONT color=#0000ff>class</FONT> <FONT color=#2b91af>BusinessBase</FONT> : )</FONT></P>
+<P><FONT size=2>4. Place this (<FONT color=#0000ff> </FONT></FONT></P>
+<P><FONT size=2>using<FONT color=#000000> DevExpress.XtraEditors.DXErrorProvider; ) in the using section of the code.</FONT></FONT></P>
+<P><FONT size=2>5.&nbsp; Make the BusinessBase class use the interface <FONT color=#2b91af><STRONG>IDXDataErrorInfo.</STRONG> </FONT><FONT color=#000000>Your code should look like the following :</FONT></FONT><STRONG><FONT color=#2b91af size=2></FONT></STRONG></P>
+<P><FONT size=2>&nbsp;</FONT> <FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>abstract</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>class</FONT><FONT size=2> </FONT><FONT color=#2b91af size=2>BusinessBase</FONT><FONT size=2> :</P>
+<P>Csla.Core.</FONT><FONT color=#2b91af size=2>UndoableBase</FONT><FONT size=2>, </FONT><FONT color=#2b91af size=2>IEditableBusinessObject</FONT><FONT size=2>,</P>
+<P>System.ComponentModel.</FONT><FONT color=#2b91af size=2>IEditableObject</FONT><FONT size=2>, System.ComponentModel.</FONT><FONT color=#2b91af size=2>IDataErrorInfo</FONT><FONT size=2>, </FONT><FONT size=6><FONT color=#2b91af><STRONG><U>IDXDataErrorInfo</U></STRONG></FONT><STRONG><U>,</U></STRONG></FONT></P><FONT size=2>
+<P></FONT><FONT color=#2b91af size=2>ICloneable</FONT><FONT size=2>, Csla.Security.</FONT><FONT color=#2b91af size=2>IAuthorizeReadWrite</P></FONT><FONT size=2>
+<P>&nbsp;6. Copy and Paste the following code snippet into the body of the BusinessBase Class and compile.</P></FONT>
+<P>&nbsp;</P><FONT color=#0000ff size=2>
+<P>#region</FONT><FONT size=2> IDXDataErrorInfo</P>
+<P></FONT><FONT color=#0000ff size=2>void</FONT><FONT size=2> </FONT><FONT color=#2b91af size=2>IDXDataErrorInfo</FONT><FONT size=2>.GetPropertyError(</FONT><FONT color=#0000ff size=2>string</FONT><FONT size=2> propertyName, </FONT><FONT color=#2b91af size=2>ErrorInfo</FONT><FONT size=2> info)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (!IsValid)</P>
+<P>{</P>
+<P>Validation.</FONT><FONT color=#2b91af size=2>BrokenRule</FONT><FONT size=2> rule =</P>
+<P>ValidationRules.GetBrokenRules().GetFirstBrokenRule(propertyName);</P>
+<P></FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (rule != </FONT><FONT color=#0000ff size=2>null</FONT><FONT size=2>)</P>
+<P>{</P>
+<P>info.ErrorText = rule.Description;</P>
+<P>info.ErrorType = </FONT><FONT color=#2b91af size=2>ErrorType</FONT><FONT size=2>.Critical;</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2>;</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (ValidationRules.GetBrokenRules().WarningCount &gt; 0)</P>
+<P>{ </P>
+<P>Validation.</FONT><FONT color=#2b91af size=2>BrokenRule</FONT><FONT size=2> rule = ValidationRules.GetBrokenRules().GetFirstMessage(propertyName, Csla.Validation.</FONT><FONT color=#2b91af size=2>RuleSeverity</FONT><FONT size=2>.Warning);</P>
+<P></FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (rule != </FONT><FONT color=#0000ff size=2>null</FONT><FONT size=2>)</P>
+<P>{</P>
+<P>info.ErrorText = rule.Description;</P>
+<P>info.ErrorType = </FONT><FONT color=#2b91af size=2>ErrorType</FONT><FONT size=2>.Warning;</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2>;</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (ValidationRules.GetBrokenRules().InformationCount &gt; 0)</P>
+<P>{</P>
+<P>Validation.</FONT><FONT color=#2b91af size=2>BrokenRule</FONT><FONT size=2> rule = ValidationRules.GetBrokenRules().GetFirstMessage(propertyName, Csla.Validation.</FONT><FONT color=#2b91af size=2>RuleSeverity</FONT><FONT size=2>.Information);</P>
+<P></FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (rule != </FONT><FONT color=#0000ff size=2>null</FONT><FONT size=2>)</P>
+<P>{</P>
+<P>info.ErrorText = rule.Description;</P>
+<P>info.ErrorType = </FONT><FONT color=#2b91af size=2>ErrorType</FONT><FONT size=2>.Information;</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2>;</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2>;</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>void</FONT><FONT size=2> </FONT><FONT color=#2b91af size=2>IDXDataErrorInfo</FONT><FONT size=2>.GetError(</FONT><FONT color=#2b91af size=2>ErrorInfo</FONT><FONT size=2> info) { }</P>
+<P></FONT><FONT color=#008000 size=2>//&lt;/gridControl1&gt;</P>
+<P></FONT><FONT color=#0000ff size=2>#endregion</P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>csanchez replied on Tuesday, November 27, 2007</h2>Great. <br><br>I'm using it right now and it's fantastic.<br><br>Thanks.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>DocJames replied on Tuesday, November 27, 2007</h2><P>Just what I needed. Thanks for Sharing! :)</P>
+<P>Jimmy</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

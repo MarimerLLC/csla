@@ -1,0 +1,135 @@
+<html><header><title>Silverlight deployment to a virtual directory</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Silverlight deployment to a virtual directory</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10624.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>CrikeyMoses posted on Thursday, August 18, 2011</h2><p>I&#39;ve successfully deployed my silverlight app as a&nbsp;separate&nbsp;website and everything runs fine. But when i try to deploy it as a virtual directory underneath the Default website i&#39;m having trouble with the WcfSlPortal.svc<br /><br />I can hit the web service but the <span>svcutil.exe link comes up with the &#39;computer name&#39; (</span><span>svcutil.exe&nbsp;</span><span><a href="http://kess_web_svr/BulkMailer/WcfSlPortal.svc?wsdl">http://my_web_svr/BulkMailer/WcfSlPortal.svc?wsdl</a></span>)&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>CrikeyMoses replied on Friday, August 19, 2011</h2><p>I seem to have narrowed the issue down to the site being run over SSL, when i unchecked the Always HTTPS rule the web service works just fine. Will keep looking into this and report any progress.</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>Peran replied on Friday, August 19, 2011</h2><p>Have you configured WCF (Web.config/ServiceReferences.ClientConfig) to use https?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>CrikeyMoses replied on Friday, August 19, 2011</h2><p><span>Definitely</span>&nbsp;didn&#39;t, I&#39;m quite new to this all but thanks for the heads up mate.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Peran replied on Friday, August 19, 2011</h2><p>Web.config: In &lt;services&gt; comment/uncomment to switch between HTTP EndPoint &amp; HTTPS EndPoint</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp; &lt;system.serviceModel&gt;</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &lt;serviceHostingEnvironment aspNetCompatibilityEnabled=&quot;true&quot;</p>
+<p>&nbsp; &nbsp; &nbsp; multipleSiteBindingsEnabled=&quot;true&quot; /&gt;</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &lt;services&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &lt;!-- The service name should match the service value in WcfPortal.svc--&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &lt;!-- HTTP endpoint --&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &lt;service name=&quot;Csla.Server.Hosts.Silverlight.WcfPortal&quot;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;behaviorConfiguration=&quot;serviceBehavior_IWcfPortal&quot;&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &lt;endpoint address=&quot;&quot;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; binding=&quot;basicHttpBinding&quot;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; bindingConfiguration=&quot;basicHttpBinding_IWcfPortal&quot;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; contract=&quot;Csla.Server.Hosts.Silverlight.IWcfPortal&quot;&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;identity&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;dns value=&quot;localhost&quot;/&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;/identity&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &lt;/endpoint&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &lt;endpoint address=&quot;mex&quot;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; binding=&quot;mexHttpBinding&quot;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; contract=&quot;IMetadataExchange&quot;/&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &lt;/service&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &lt;!-- HTTPS endpoint --&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &lt;!--&lt;service name=&quot;Csla.Server.Hosts.Silverlight.WcfPortal&quot;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;behaviorConfiguration=&quot;serviceBehavior_IWcfPortal_SSL&quot;&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &lt;endpoint address=&quot;&quot;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; binding=&quot;basicHttpBinding&quot;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; bindingConfiguration=&quot;basicHttpBinding_IWcfPortal_SSL&quot;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; contract=&quot;Csla.Server.Hosts.Silverlight.IWcfPortal&quot;&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;identity&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;dns value=&quot;localhost&quot;/&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;/identity&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &lt;/endpoint&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &lt;endpoint address=&quot;mex&quot;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; binding=&quot;mexHttpsBinding&quot;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; contract=&quot;IMetadataExchange&quot;/&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &lt;/service&gt;--&gt;</p>
+<p>&nbsp; &nbsp; &lt;/services&gt;</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &lt;behaviors&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &lt;serviceBehaviors&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &lt;behavior name=&quot;serviceBehavior_IWcfPortal&quot;&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;serviceMetadata httpGetEnabled=&quot;true&quot; /&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;serviceDebug includeExceptionDetailInFaults=&quot;true&quot; /&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &lt;/behavior&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &lt;behavior name=&quot;serviceBehavior_IWcfPortal_SSL&quot;&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;serviceMetadata httpsGetEnabled=&quot;true&quot; /&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;serviceDebug includeExceptionDetailInFaults=&quot;true&quot; /&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &lt;/behavior&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &lt;/serviceBehaviors&gt;</p>
+<p>&nbsp; &nbsp; &lt;/behaviors&gt;</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &lt;bindings&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &lt;basicHttpBinding&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &lt;binding name=&quot;basicHttpBinding_IWcfPortal&quot;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;maxReceivedMessageSize=&quot;2147483647&quot;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;maxBufferPoolSize=&quot;2147483647&quot;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;closeTimeout=&quot;00:10:00&quot;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;openTimeout=&quot;00:10:00&quot;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;sendTimeout=&quot;00:10:00&quot;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;messageEncoding=&quot;Text&quot;&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;readerQuotas maxDepth=&quot;2147483647&quot;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; maxStringContentLength=&quot;2147483647&quot;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; maxArrayLength=&quot;2147483647&quot;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; maxBytesPerRead=&quot;2147483647&quot;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; maxNameTableCharCount=&quot;2147483647&quot;/&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &lt;/binding&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &lt;binding name=&quot;basicHttpBinding_IWcfPortal_SSL&quot;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;maxReceivedMessageSize=&quot;2147483647&quot;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;maxBufferPoolSize=&quot;2147483647&quot;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;closeTimeout=&quot;00:10:00&quot;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;openTimeout=&quot;00:10:00&quot;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;sendTimeout=&quot;00:10:00&quot;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;messageEncoding=&quot;Text&quot;&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;readerQuotas maxDepth=&quot;2147483647&quot;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; maxStringContentLength=&quot;2147483647&quot;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; maxArrayLength=&quot;2147483647&quot;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; maxBytesPerRead=&quot;2147483647&quot;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; maxNameTableCharCount=&quot;2147483647&quot;/&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;security mode=&quot;Transport&quot; /&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &lt;/binding&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &lt;/basicHttpBinding&gt;</p>
+<p>&nbsp; &nbsp; &lt;/bindings&gt;</p>
+<p>&nbsp;</p>
+<p>&nbsp; &lt;/system.serviceModel&gt;</p>
+<div></div>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Peran replied on Friday, August 19, 2011</h2><p>ServiceReferences.ClientConfig: in &lt;client&gt; comment/uncomment to switch between http/https</p>
+<p>&nbsp;</p>
+<p>
+<p>&nbsp; &lt;system.serviceModel&gt;</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &lt;client&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &lt;!-- NOTE: Csla Silverlight defaults to use the endpoint named BasicHttpBinding_IWcfPortal --&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &lt;!-- HTTP endpoint --&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &lt;endpoint name=&quot;BasicHttpBinding_IWcfPortal&quot;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; address=&quot;http://mysite.com/app/WcfPortal.svc&quot;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; binding=&quot;basicHttpBinding&quot;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; bindingConfiguration=&quot;BasicHttpBinding_IWcfPortal&quot;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; contract=&quot;WcfPortal.IWcfPortal&quot; /&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &lt;!-- HTTPS endpoint --&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &lt;!--&lt;endpoint name=&quot;BasicHttpBinding_IWcfPortal&quot;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; address=&quot;https://mysite.com/app/WcfPortal.svc&quot;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; binding=&quot;basicHttpBinding&quot;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; bindingConfiguration=&quot;BasicHttpBinding_IWcfPortal_SSL&quot;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; contract=&quot;WcfPortal.IWcfPortal&quot; /&gt;--&gt;</p>
+<p>&nbsp; &nbsp; &lt;/client&gt;</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &lt;bindings&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &lt;basicHttpBinding&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &lt;binding name=&quot;BasicHttpBinding_IWcfPortal&quot;&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;maxBufferSize=&quot;2147483647&quot;&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;maxReceivedMessageSize=&quot;2147483647&quot;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;closeTimeout=&quot;00:10:00&quot;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;openTimeout=&quot;00:10:00&quot;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;receiveTimeout=&quot;00:10:00&quot;&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;sendTimeout=&quot;00:10:00&quot;&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &lt;/binding&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &lt;binding name=&quot;BasicHttpBinding_IWcfPortal_SSL&quot;&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;maxBufferSize=&quot;2147483647&quot;&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;maxReceivedMessageSize=&quot;2147483647&quot;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;closeTimeout=&quot;00:10:00&quot;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;openTimeout=&quot;00:10:00&quot;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;receiveTimeout=&quot;00:10:00&quot;&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;sendTimeout=&quot;00:10:00&quot;&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;security mode=&quot;Transport&quot; /&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &lt;/binding&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &lt;/basicHttpBinding&gt;</p>
+<p>&nbsp; &nbsp; &lt;/bindings&gt;</p>
+<p>&nbsp;</p>
+<p>&nbsp; &lt;/system.serviceModel&gt;</p>
+<div></div>
+</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

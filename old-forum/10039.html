@@ -1,0 +1,29 @@
+<html><header><title>Shouldn't LoadProperty reset the Parent reference of the oldValue?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Shouldn't LoadProperty reset the Parent reference of the oldValue?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10039.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>stefan posted on Monday, February 07, 2011</h2><p>Hi Rocky,</p>
+<p>I just debugged the call to LoadProperty which set the value of an editable child object.</p>
+<p>Csla calls SetParent for the newValue, but does not care about resetting the parent reference of the oldValue...</p>
+<p>There might be references to the old child somewhere else (UI, etc.), which would still interact with the parent.</p>
+<p>I suspect the same is true for SetProperty.</p>
+<p>Another thing that comes to my mind is the loading of Inter-Graph references where setting the parent seems wrong.</p>
+<p>This relates to Csla 4.8.4 and maybe also Csla 4</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Monday, February 07, 2011</h2><p>What do you think the parent reference should be for an old value? null?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>stefan replied on Tuesday, February 08, 2011</h2><p>I am aware that calling LoadProperty on an editable child property outside the context of the root object&#39;s fetch or update operation is rare.</p>
+<p>When following the standard pattern this will never happen. But it is still thinkable e. g. refreshing an editable child with the current data from the DB.</p>
+<p>I just did this in the context of a unit of work object. I delegated Save to a command object that provided the UoW object with updated data. In order to achieve this, I had to call LoadProperty on the editable child property...</p>
+<p>I would sugest the following logic in BusinessBase:</p>
+<p>IEditableBusinessObject oVal = oldValue as IEditableBusinessObject</p>
+<p>if (oVal != null &amp;&amp; oVal.Parent != null &amp;&amp; ReferenceEquals(oVal.Parent,this))</p>
+<p>{</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; oVal.SetParent(null);</p>
+<p>}</p>
+<p>This will also handle inter-graph references correctly, at least references to list items.</p>
+<p>This should be called in</p>
+<p>private void LoadPropertyValue&lt;P&gt;(PropertyInfo&lt;P&gt; propertyInfo, P oldValue, P newValue, bool markDirty)</p>
+<p>somewhere around the call to RemoveEventHooks(old);</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, February 08, 2011</h2><p>There&#39;s a wish list item to make child references of single objects work more like a child in BLB.</p>
+<p>If that change occurs (and I would like to do it at some point), the standard behavior when you replace an existing child with a different child, is that the old child would go to a &quot;deleted list&quot; and would be marked for deletion. When the parent is saved, any old child objects would be deleted.</p>
+<p>When an item in a BLB is moved to the DeletedList its Parent property is unaffected (the Parent is still the BLB), and from a consistency perspective the same would be true for the child of a single editable object.</p>
+<p>What you are suggesting isn&#39;t without value - but it directly contradicts the plans I&#39;m describing here for a future change in CSLA.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>stefan replied on Tuesday, February 08, 2011</h2><p>OK, I see your point there.</p>
+<p>What initially bothered me, was a scenario, where an &quot;old child&quot;, that has been replaced by LoadProperty or SetProperty, could still interact with its parent through business rules still beeing executed (asynchronously!) on the &quot;old child&quot; and probably raise events in the parent...therefore my objections.</p>
+<p>I see this is &quot;pre Child_Changed style&quot;, and nobody knows how many of us still have those rules interacting with the parent.</p>
+<p>So if resetting the parent reference is not an option, disabling the business rule subsystem on the oldValue child instance would solve my problem.</p>
+<p>And now I am on slippery ground, because I haven&#39;t checked if that is already implemented / or possible.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, February 08, 2011</h2><p>Before CSLA 4 there&#39;s a property on ValidationRules that will suppress rule checking. Set it to true in your object and it stops running rules.</p>
+<p>In CSLA 4 there&#39;s a property on BusinessRules that will suppress rule checking - it does the same thing. </p>
+<p>In CSLA 4 there&#39;s also an ICheckRules interface that allows you to turn off rules for an object from the outside. This is intended for use in ASP.NET MVC apps, but it can be used in other scenarios as well.</p>
+<p>I discuss all the ways to suppress rule checking in CSLA 4 in the <em>Using CSLA 4: Creating Business Objects</em> ebook.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, February 08, 2011</h2><p><a href="http://www.lhotka.net/cslabugs/edit_bug.aspx?id=49">http://www.lhotka.net/cslabugs/edit_bug.aspx?id=49</a></p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

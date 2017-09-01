@@ -1,0 +1,126 @@
+<html><header><title>Where does WF fit in?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Where does WF fit in?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5167.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>SonOfPirate posted on Tuesday, July 29, 2008</h2><P>I have a specific use-case for an application under development that I am struggling to solve.&nbsp; The application is designed to be deployed either stand-alone (with its own back-end data store), integrated with a third-party package (like an ERP system) or both.&nbsp; So, when a user posts a transaction to the system, the steps required will vary based on the deployment scenario.&nbsp; I'm looking to leverage Windows Workflow Foundation (WF) for the processing side, especially since it will allow us to develop different workflows for each deployment scenario that we can "plug" into the application.&nbsp; My problem is figuring out how to properly integrate WF with my CSLA business objects.&nbsp; Oh, and the application uses a web service interface.</P>
+<P>So, using a simple inventory scenario as an example, let's say that the customer has to record receipt of a particular item into two different data stores: one used by accounting to record the&nbsp;receipt of the item&nbsp;for payment and another that tracks the inventory for shipping and receiving purposes.</P>
+<P>When the client application posts that it received an item, it calls my web service and passes the item information.&nbsp; Here's where the question is.&nbsp; Should the web service start the workflow process or should there be an intermediary (business?) object that is used by the service?</P>
+<P>For example, the service could start the PostReceiptActivity (workflow) which would&nbsp;instantiate my PostReceipt CSLA business object, populate it with the values provided by the client, validate the object then Save it.&nbsp; But who handles the fact that it has to be stored in two places?&nbsp; Do I create two BO's - one for each data store?&nbsp; This seems logical and my workflow can be designed to handle what happens if one write fails, etc.&nbsp; But wouldn't each of these steps actually be activities within the workflow?&nbsp; Then, if I deployed the solution in a stand-along environment, the workflow could be changed to only include the one activity.</P>
+<P>Am I making sense?&nbsp; I'm sure someone else has had to implement something similar, can you share some insights how you did it?</P>
+<P>Thanks in advance!</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, July 29, 2008</h2>You may or may not get a lot of response - in my observation WF is not widely used. It is just too new, too immature, and it makes people nervous at the moment.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>SonOfPirate replied on Tuesday, July 29, 2008</h2><P>So am I heading down the wrong path?&nbsp; I would certainly appreciate your take.</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, July 29, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I don&#8217;t know about the _<i>wrong</i>_ path &#8211; just one
+that is not well charted :)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>There&#8217;ve been a couple threads on WF here before, and my
+views haven&#8217;t changed. <o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I think it is good when you want power users to edit your
+workflows (and you actually believe that makes any sense). Or at least low-end
+developers (which might make more sense).<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I think it is good (potentially) when you have long-running
+processes that you want to suspend/resume over a period of
+hours/days/weeks/months. While you can do that yourself with state tracking
+tables, it <i>might</i> be the case that WF is easier &#8211; but only way to
+know is to try it.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I think it is good when using the WCF/WF integration in VS 2008.
+Microsoft is making it pretty darn easy to create/consume services with
+workflows. So there&#8217;s something to be said for creating a WCF service
+where the service implementation is a workflow &#8211; just to take advantage
+of the tooling in VS.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> SonOfPirate
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Tuesday, July 29, 2008 4:42 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] Where does WF fit in?<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>So am I heading down the wrong path?&nbsp; I would certainly appreciate your
+take.<o:p></o:p></p>
+
+<p>&nbsp;<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>SonOfPirate replied on Tuesday, July 29, 2008</h2><P>Yea, I've noticed that support and had considered exposing the workflow directly as a service; however, we allow the actual workflow to be swapped in the application's configuration file as a way to further customize the application (eg, when the logic is so different that we create a new, compiled workflow for the user).</P>
+<P>In addition, something I failed to mention earlier, is that we support both Web (for public use) and WCF (for internal client applications) services.&nbsp; So, there is a common service class that both service implementations delegate to.&nbsp; This class is where we resolve which workflow activity to use based on the configuration settings.</P>
+<P>It seems after giving this more thought that the proper point of integration for WF and CSLA is the individual WF activity.&nbsp; In other words, my business objects are there to support what each activity is supposed to accomplish.&nbsp; For instance, if the workflow activity is used to persist data, then I would use a business object to do this.</P>
+<P>However, when the service call is first made, it makes sense to perform authorization to make sure the user can perform the operation.&nbsp; This would require a business object up-front.&nbsp; Or maybe authorization should be an activity in the workflow???</P>
+<P>And then I should validate the BO before going too far into a workflow.&nbsp; Another activity?</P>
+<P>I'm still uneasy about how to put it all together (obviously).&nbsp; Like you said, uncharted territory.&nbsp; I would certainly feel better if I had an example to reference.</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, July 29, 2008</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>The <i>Using CSLA .NET 3.0</i> ebook has a chapter specifically
+covering WF, including the idea of using a Command object and the
+Csla.Workflow.WorkflowManager to easily launch a workflow. You could consider putting
+the authorization code into the Command object, so only an authorized user was
+allowed to execute the command. If authorized, the command would use the
+WorkflowManager to launch the workflow based on the workflow type name from
+your config file.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky</span><b><span><o:p></o:p></span></b></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>SonOfPirate replied on Wednesday, July 30, 2008</h2>That's perfect, Rocky!&nbsp; I had read the ebook a while back and scimmed that section because I wasn't into WF yet and completely forgot about it.&nbsp; Thanks for the reminder!</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

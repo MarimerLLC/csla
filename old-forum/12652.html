@@ -1,0 +1,84 @@
+<html><header><title>Handy fluent-like quick rule to speed up writing your light-weight rules</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Handy fluent-like quick rule to speed up writing your light-weight rules</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/12652.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jaans posted on Friday, May 30, 2014</h2><p>Hi all</p>
+<p>We&#39;ve spend a considerable amount of time bringing a CSLA
+3.8 project into the present with CSLA 4.5.</p>
+<p>Our biggest challenge was the legacy rules, and while
+&quot;converting&quot; them is straight forward enough, it&#39;s a bit tedious and
+verbose (mostly for the small and simple ones).</p>
+<p>PS: I&#39;m aware of the hard work @JonnyBee has put into
+CSLA-Validation project to help with this special scenario of running legacy
+rules under CSLA 4&#39;s new rules system. Unfortunately, having to use special
+subclasses for our business objects made it a non-starter for us.</p>
+<p>We found that we would regularly use the CSLA built-in
+Lambda rule for the convenient shorthand it offers on simplistic rules.</p>
+<p>To make it even easier and more productive we created our
+own variation on the Lambda rule to make it a bit more flexible, compact and
+readable. Enter &quot;QuickRule&quot; <img src="http://forums.lhotka.net/emoticons/emotion-11.gif" alt="Cool" />...</p>
+<p>@JonnyBee / @Rocky - Feel free to adapt / use in framework,
+or just let me know if I should create a pull request for it if you want it in
+the framework.</p>
+<p>With it you can write things like:</p>
+<p>
+<code>
+</code></p>
+<p><code><i>// Example 1. This sample creates and adds a lambda
+rule (LogChangeRule) </i></code></p>
+<p><code>
+</code></p>
+<p><code><i>// for the primary property PostCode</i></code></p>
+<p><code>
+<p>BusinessRules.AddRule( new <strong>QuickRule</strong>( LogChangeRule
+).<strong>For</strong>( PostCodeProperty ) );</p>
+<p>&nbsp;</p>
+<p><i>// Example 2. This sample creates and adds a lambda
+rule (CheckIfExistsRule) </i></p>
+<p><i>// for the primary property PostCode, and uses it
+as an input property</i></p>
+<p>BusinessRules.AddRule( <strong>new</strong> <strong>QuickRule</strong>( CheckIfExistsRule
+).<strong>For</strong>( PostCodeProperty ).<strong>UsingIt</strong>() );</p>
+<p>&nbsp;</p>
+<p><i>// Example 3. This sample creates and adds a lambda
+rule (MutatePostCodeToUpperCase) </i></p>
+<p><i>// for the primary property PostCode (using the
+PostCode as an &quot;input property&quot;)</i></p>
+<p><i>// and affects the FormattedAddress property as a
+consequence (&quot;affected properties&quot;)</i></p>
+<p>BusinessRules.AddRule( </p>
+<p>&nbsp;&nbsp;&nbsp; <strong>new</strong>
+<strong>QuickRule</strong>( MutatePostCodeToUpperCase )</p>
+<p>&nbsp;&nbsp;&nbsp; .<strong>For</strong>( PostCodeProperty
+).UsingIt()</p>
+<p>&nbsp;&nbsp;&nbsp; .<strong>Affects</strong>(
+FormattedAddressProperty ) );</p>
+<p>&nbsp;</p>
+<p><i>// Example 4. This sample creates and adds a Lambda
+rule (MutateTotals) for the primary</i></p>
+<p><i>// property ProductCode and uses SellingPrice and
+Quantity properties as input properties.</i></p>
+<p><i>// The LineTotal and Tax properties are affected by
+the rule.</i></p>
+<p>BusinessRules.AddRule( </p>
+<p>&nbsp;&nbsp;&nbsp; <strong>new</strong>
+<strong>QuickRule</strong>( MutateTotals )</p>
+<p>&nbsp;&nbsp;&nbsp; .<strong>For</strong>( ProductCodeProperty
+)</p>
+<p>&nbsp;&nbsp;&nbsp; .<strong>Using</strong>( SellingPriceProperty,
+QuantityProperty )</p>
+<p>&nbsp;&nbsp;&nbsp; .<strong>Affects</strong>(
+LineTotalProperty, TaxProperty ) );</p>
+<p>&nbsp;</p>
+</code></p>
+<p>&nbsp;</p>
+<p>Please refer to the following gist for the implementation
+details.</p>
+<p><a href="https://gist.github.com/Jaans/d305de962638022b04e5">https://gist.github.com/Jaans/d305de962638022b04e5</a>
+</p>
+<p>
+
+</p>
+<p>You are welcome to use and abuse as you see fit - just don&#39;t hold me liable ;-)&nbsp;</p>
+<p><br />Hope that helps,</p>
+<p>Jaans</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Thursday, June 26, 2014</h2><p>I like the concept/idea and will look into this.&nbsp;</p>
+<p>Maybe FluentRule or FluentLambdaRule is a better name than QuickRule to make the class name more self explaining.&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jaans replied on Thursday, June 26, 2014</h2><p>Great! By all means - adapt and change as you need. We actually use the name FluentRule for ourselves. We add extension methods to it on a project by project basis for frequently used scenarios.</p>
+<p>Given that this makes it quick and easy to manipulate the the input / affected properties, I&#39;m finding that I have less need to create distinct classes for rules overall and it is quite productive for the frequently used / simplistic rules.&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

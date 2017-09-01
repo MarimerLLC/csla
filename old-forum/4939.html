@@ -1,0 +1,19 @@
+<html><header><title>GlobalContext, WPF and Multi-Threading</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>GlobalContext, WPF and Multi-Threading</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4939.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>handaajay15 posted on Thursday, June 05, 2008</h2><P>N-Tier application with WPF/WCF and CSLA Version: 3.0</P>
+<P><STRONG>Problem Statement:</STRONG> We are having problem in finding the best way for handling and communicating&nbsp;Business Errors. The business errors can occur on client as well as on server. We need a uniform way of handling business errors. </P>
+<P>We can not use BrokenRules collections because of Legacy systems complex validation processes which are out side of the entity and they are SET based. </P>
+<P>Can we add business errors to GlobalContext&nbsp;so that&nbsp;other calling server side and client side methods can check the GlobalContext for the error key and take action.</P>
+<P>Is this Thread safe? If I run 2 instances of my application on the same machine then will both the instances be able to get their own error message without stepping on each other.</P>
+<P>The FACT that we have a WPF application, Does that makes a difference of how we access global context?</P>
+<P>Please suggest appropriate way of handling such scenario.</P>
+<P>&nbsp;</P>
+<P dir=ltr>&nbsp;</P>
+<P>&nbsp;&nbsp;&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>handaajay15 replied on Friday, June 06, 2008</h2>We really really need some help here, somebody, anybody?</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, June 06, 2008</h2><P>Csla.ApplicationContext stores the context data in a per-thread location. So while it is _safe_ in a threaded scenario, it probably won't do what you want - which would be to share values across threads.</P>
+<P>WPF, btw, is not intrinsically multi-threaded. The UI elements of WPF are not threadsafe at all, and can only be manipulated by the main UI thread.</P>
+<P>If you want to create some global repository for a list of broken rules in a WPF client you might consider hanging the values off the AppDomain. If I remember right, AppDomain has a "Tag" like construct (I don't remember what it is called) where you can put global values.</P>
+<P>Obviously you'll have to create some threadsafe container object to manage all your broken rules in a way where they can be accessed and manipulated across multiple threads - no small task, especially if performance matters.</P>
+<P>Good luck!</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,11 @@
+<html><header><title>how do we know that a save operation was successful or not</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>how do we know that a save operation was successful or not</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/12334.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>simisreedharan posted on Monday, January 27, 2014</h2><p>I am new to csla framework. In my aspx.cs page i am calling say category.save. This goes to the DataPortal_Insert and saves the record and the procedure returns a value which says whether the insert was successful or not. This value is not returned back to the aspx.cs page. So how could i return this value to the front so that i could check its value and say whether the save was succesful or not?</p>
+<p>Thanks</p>
+<p>Simi</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Monday, January 27, 2014</h2><p>Hi,</p>
+<p>Not sure what your problem is.&nbsp;</p>
+<p>The return value should be part of the business object and you must also remember that Save returns a new object.&nbsp;</p>
+<p>IE:</p>
+<p>savedCategory = category.Save();<br />saveOK = savedCategory.ResultCode == 0;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>simisreedharan replied on Monday, January 27, 2014</h2><p>Thankyou. This is what i was looking for. I was wondering whether i could add ResultCode as a property of business object.</p>
+<p>Thanks</p>
+<p>simi</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

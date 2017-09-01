@@ -1,0 +1,28 @@
+<html><header><title>vb.net syntax for CSLA 4.3.12</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>vb.net syntax for CSLA 4.3.12</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/12895.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>st3fanus posted on Friday, June 05, 2015</h2><p>Hi all ,</p>
+<p>currently i used csla ver 4.3.12 in c#. but recently I got a small project which need vb.net as language</p>
+<p>so, i need a easy migration from my c# syntax into vb.net ?</p>
+<p>&nbsp;</p>
+<p>could anyone give a suggestion ?</p>
+<p>public static readonly PropertyInfo&lt;string&gt; InvNoProperty =<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; RegisterProperty&lt;string&gt;(t =&gt; t.InvoiceNo);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public string InvoiceNo<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; get { return GetProperty(InvNoProperty); }<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; private set { LoadProperty(InvNoProperty, value); }<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</p>
+<p>into a vb.net ????</p>
+<p>&nbsp;</p>
+<p>thanks </p>
+<p>stefanus</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>ajj3085 replied on Friday, June 05, 2015</h2><p>Well plugging that into a converter I get this: </p>
+<p><span style="color:#0000ff;">Dim&nbsp;</span><span style="color:#000000;">InvNoProperty&nbsp;</span><span style="color:#0000ff;">As&nbsp;</span><span style="color:#000000;">PropertyInfo(Of&nbsp;</span><span style="color:#0000ff;">String</span><span style="color:#000000;">)&nbsp;</span><span style="color:#0000ff;">=&nbsp;</span><span style="color:#000000;">RegisterProperty(()&nbsp;</span><span style="color:#0000ff;">=</span><span style="color:#000000;">&gt;&nbsp;{&nbsp;&nbsp;},&nbsp;t.InvoiceNo)<br /><br />&nbsp;&nbsp;&nbsp;&nbsp;<br />&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">Public&nbsp;Property&nbsp;</span><span style="color:#000000;">InvoiceNo&nbsp;</span><span style="color:#0000ff;">As&nbsp;String<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Get<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Return&nbsp;</span><span style="color:#000000;">GetProperty(InvNoProperty)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">End&nbsp;Get<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Set<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#000000;">LoadProperty(InvNoProperty,&nbsp;value)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">End&nbsp;Set<br />&nbsp;&nbsp;&nbsp;&nbsp;End&nbsp;Property</span></p>
+<p><span style="color:#0000ff;"><span style="color:#000000;">But off the top of my head the PropertyInfo doesn&#39;t look to have had the static parsed correctly (Shared in Vb.net I think?).&nbsp; Or the readonly, which I don&#39;t know if vb.net supports.&nbsp; I used </span><a href="http://www.carlosag.net/Tools/CodeTranslator/"><span style="color:#000000;">http://www.carlosag.net/Tools/CodeTranslator/</span></a><span style="color:#000000;">&nbsp;which should be a starting point, there may be other changes you need to do, so don&#39;t just run code through the converter and think you&#39;re done.</span></span></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>wilfreds replied on Friday, June 05, 2015</h2><p>The telerik converter is very accurate:</p>
+<p>Public Shared ReadOnly InvNoProperty As PropertyInfo(Of String) = RegisterProperty(Of String)(Function(t) t.InvoiceNo)<br />Public Property InvoiceNo() As String<br />&nbsp;&nbsp;&nbsp; Get<br />&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; Return GetProperty(InvNoProperty)<br />&nbsp;&nbsp;&nbsp; End Get<br />&nbsp;&nbsp;&nbsp; Private Set<br />&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; LoadProperty(InvNoProperty, value)<br />&nbsp;&nbsp;&nbsp; End Set<br />End Property</p>
+<p>http://converter.telerik.com/</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>st3fanus replied on Saturday, June 06, 2015</h2><p>thanks andy &amp; wilfreds</p>
+<p>could i ask another ?</p>
+<p>Private Overrides Sub DataPortal_Fetch(orderno As String)</p>
+<p>&nbsp;</p>
+<p>End Sub</p>
+<p>I don&#39;t know why this code failed to replace my C# code</p>
+<p>&nbsp;</p>
+<p>private void DataPortal_Fetch(string orderno)</p>
+<p>{</p>
+<p>&nbsp;</p>
+<p>}</p>
+<p>&nbsp;</p>
+<p>thanks</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

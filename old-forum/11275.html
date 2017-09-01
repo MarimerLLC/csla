@@ -1,0 +1,128 @@
+<html><header><title>csla new object insert still required child object </title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>csla new object insert still required child object </h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11275.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>xequence posted on Monday, April 02, 2012</h2><p>Very basic insert routine, but this object is used for my edit routine and has a child object. When I try to do an insert, it is telling me that my validation is required for my child object. Why?</p>
+<p>&nbsp;</p>
+<p>Here is my child object.</p>
+<p>
+<p>&nbsp;public readonly static PropertyInfo&lt;HighlightEdit&gt; HighlightProperty = RegisterProperty&lt;HighlightEdit&gt;(p =&gt; p.Highlight);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; public HighlightEdit Highlight</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; get</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; if (!(FieldManager.FieldExists(HighlightProperty)))</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; LoadProperty(HighlightProperty, DataPortal.CreateChild&lt;HighlightEdit&gt;());</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; return GetProperty(HighlightProperty);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; private set { LoadProperty(HighlightProperty, value); }</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; }</p>
+</p>
+<p>My validation logic is as follows:</p>
+<p>
+<p>&nbsp;protected override void AddBusinessRules()</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; // TODO: add validation rules</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; //BusinessRules.AddRule(new Rule(), IdProperty);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; base.AddBusinessRules();</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; BusinessRules.AddRule(new StartDateGTEndDate { PrimaryProperty = StartDateProperty, AffectedProperties = { StartDateProperty, EndDateProperty, HighlightTitleProperty, DisplayOrderProperty, FK_Digital_Asset_GuidProperty } });</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; BusinessRules.AddRule(new StartDateGTEndDate { PrimaryProperty = EndDateProperty, AffectedProperties = { EndDateProperty, StartDateProperty, HighlightTitleProperty, DisplayOrderProperty, FK_Digital_Asset_GuidProperty } });</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; BusinessRules.AddRule(new TitleRequiredIfDirty { PrimaryProperty = HighlightTitleProperty, AffectedProperties = { HighlightTitleProperty, StartDateProperty, EndDateProperty, DisplayOrderProperty, FK_Digital_Asset_GuidProperty } });</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; BusinessRules.AddRule(new DisplayOrderRequired { PrimaryProperty = DisplayOrderProperty, AffectedProperties = { DisplayOrderProperty, StartDateProperty, EndDateProperty, HighlightTitleProperty, FK_Digital_Asset_GuidProperty } });</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; BusinessRules.AddRule(new ImageRequired { PrimaryProperty = FK_Digital_Asset_GuidProperty, AffectedProperties = { FK_Digital_Asset_GuidProperty, StartDateProperty, EndDateProperty, HighlightTitleProperty, DisplayOrderProperty } });</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; BusinessRules.AddRule(new StartDateRequired { PrimaryProperty = StartDateProperty, AffectedProperties = { StartDateProperty, EndDateProperty, HighlightTitleProperty, DisplayOrderProperty, FK_Digital_Asset_GuidProperty } });</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; BusinessRules.AddRule(new EndDateRequired { PrimaryProperty = EndDateProperty, AffectedProperties = { StartDateProperty, EndDateProperty, HighlightTitleProperty, DisplayOrderProperty, FK_Digital_Asset_GuidProperty } });</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; private class StartDateGTEndDate : Csla.Rules.BusinessRule</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; protected override void Execute(Csla.Rules.RuleContext context)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; var target = (HighlightEdit)context.Target;</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; var started = target.ReadProperty(StartDateProperty);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; var ended = target.ReadProperty(EndDateProperty);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; if (started.HasValue &amp;&amp; ended.HasValue &amp;&amp; started &gt; ended || !started.HasValue &amp;&amp; ended.HasValue)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; context.AddErrorResult(&quot;Start date can&#39;t be after end date&quot;);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; private class TitleRequiredIfDirty : Csla.Rules.BusinessRule</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; protected override void Execute(Csla.Rules.RuleContext context)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; var target = (HighlightEdit)context.Target;</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; var title = target.ReadProperty(HighlightTitleProperty);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; if (title.Length &lt;= 0)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; context.AddErrorResult(&quot;Title required.&quot;);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; private class DisplayOrderRequired : Csla.Rules.BusinessRule</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; protected override void Execute(Csla.Rules.RuleContext context)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; var target = (HighlightEdit)context.Target;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; var displayOrder = target.ReadProperty(DisplayOrderProperty);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; if (!displayOrder.HasValue)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; context.AddErrorResult(&quot;Display order required.&quot;);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; private class EndDateRequired : Csla.Rules.BusinessRule</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; protected override void Execute(Csla.Rules.RuleContext context)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; var target = (HighlightEdit)context.Target;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; var endDate = target.ReadProperty(EndDateProperty);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; if (!endDate.HasValue)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; context.AddErrorResult(&quot;End date required.&quot;);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; private class StartDateRequired : Csla.Rules.BusinessRule</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; protected override void Execute(Csla.Rules.RuleContext context)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; var target = (HighlightEdit)context.Target;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; var startDate = target.ReadProperty(StartDateProperty);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; if (!startDate.HasValue)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; context.AddErrorResult(&quot;Start date required.&quot;);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; private class ImageRequired : Csla.Rules.BusinessRule</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; protected override void Execute(Csla.Rules.RuleContext context)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; var target = (HighlightEdit)context.Target;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; var guid = target.ReadProperty(FK_Digital_Asset_GuidProperty);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; if (!guid.HasValue)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; if (target.ReadProperty(FK_Digital_Asset_IdProperty) != null)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; return;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; else</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; context.AddErrorResult(&quot;Image required.&quot;);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; }</p>
+</p>
+<p>If I remove said validation, the object is inserted correctly. Why is my validation firing off when none of the properties were chagned?</p>
+<p>My modelstate shows the errors, but I am confused as to why it is trying to validate an object that I have not modified.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>xequence replied on Monday, April 02, 2012</h2><p>If I change my LoadProperty &nbsp;to a fetchChild instead of Create child, my object is not dirty but is this the correct way to fix my parent objects child object?</p>
+<p>
+<p>public readonly static PropertyInfo&lt;SF.Library.HighlightAssignment.HighlightAssignmentEdit&gt; HighlightProperty = RegisterProperty&lt;SF.Library.HighlightAssignment.HighlightAssignmentEdit&gt;(p =&gt; p.Highlight);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; public SF.Library.HighlightAssignment.HighlightAssignmentEdit Highlight</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; get</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; if (!(FieldManager.FieldExists(HighlightProperty)))</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; // LoadProperty(HighlightProperty, DataPortal.CreateChild&lt;HighlightAssignmentEdit&gt;());</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; LoadProperty(HighlightProperty, DataPortal.FetchChild&lt;HighlightAssignmentEdit&gt;(null));</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; return GetProperty(HighlightProperty);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; private set { LoadProperty(HighlightProperty, value); }</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; }</p>
+</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Marjon1 replied on Tuesday, April 03, 2012</h2><p>The reason your validation rules are running on creation is because the base implementation of Child_Create() runs ValidationRules.CheckRules() whereas a Child_Fetch() does not unless specifically added by your code.</p>
+<p>Given that these fields are required, it is probably a good thing the validation rules are running but that all depends on your use case, you may want to create a new child object if the root is new and fetch on an&nbsp;existing&nbsp;root object.If that was the case I would call the CreateChild in your DataPortal_Create method on your root object and leave the lazy loaded code to only do a fetch (because you would assume if it hadn&#39;t be loaded then you had fetched the object).</p>
+<p>The only thing to be careful of, is that the Create/FetchChild methods do not go across to the AppServer like a standard DataPortal.Create/Fetch which depending on how you deploy may be an issue for you.&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

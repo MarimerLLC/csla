@@ -1,0 +1,14 @@
+<html><header><title>Re: Howto extending the role based security model?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Re: Howto extending the role based security model?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/2878.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>ozitraveller posted on Tuesday, May 15, 2007</h2><P>Hi</P>
+<P>I'm&nbsp;hoping that someone can help me. How would I&nbsp;extend&nbsp;role based security to deal with the scenario below? The user and roles tables are in a security database.</P>
+<P>The scenario:</P>
+<P>I have an application that a number of companies what to use.&nbsp;Where each company has a number of branches/offices.</P>
+<P>Each table in the application has a CompanyID and BranchID to isolate each companies data.</P>
+<P>Each Company wants to be capable of&nbsp;administering users/roles for the whole company and to be able to run reports for the company as a whole, or&nbsp;one or more branches.&nbsp;</P>
+<P>Branches are responsible for maintaining users/roles for their own branch only. And users can only see data for their own branch.</P>
+<P>Any help would be gratefully appreciated.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, May 15, 2007</h2><P>My guess is that you don't need to extend/alter the role-based authorization at all - just use it as-is.</P>
+<P>Instead, what you can do is put the Company/Branch values into either your custom identity class or into ApplicationContext.ClientContext. Either way those values automatically become globally available to all client- and server-side code.</P>
+<P>The important part is that they are available to your server-side code, and in particular to your data access code. This means your data access code can always apply these values as a filter to any WHERE clause, ensuring that the current user only ever sees the values for their Company/Branch.</P>
+<P>The role-based authorization can then work as normal, restricting what the user can do or see within the data they are able to retrieve, but they'll never even have access to, or be aware of, any data outside their realm.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ozitraveller replied on Tuesday, May 15, 2007</h2><P>Thanks Rocky. I should have thought of that myself, but I have too much to do and so little time.</P>
+<P>&nbsp;</P>
+<P>EDIT:</P>
+<P>I just wanted to clarify your suggestion 'put the Company/Branch values into either your custom identity'. To me this suggests that Company/Branch values be columns in the user table and then returned using the Logon stored proc, is this correct?</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

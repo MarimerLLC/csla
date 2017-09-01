@@ -1,0 +1,29 @@
+<html><header><title>Silverlight novice needs help</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Silverlight novice needs help</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9456.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>griff posted on Tuesday, August 31, 2010</h2><p>Hi</p>
+<p>Gone back to basics....two fields, one button...field accepts an ID, button goes and gets BO and populates field2. Using latest Codesmith templates (3.0).</p>
+<p>here is my &quot;Asynchronous Root Factory Method&quot;</p>
+<p>Public Shared Sub GetByProductIdAsync(ByVal productId As System.String, ByVal handler As EventHandler(Of DataPortalResult(Of Product)))</p>
+<p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Dim dp As New DataPortal(Of Product)()</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;AddHandler dp.FetchCompleted, handler</p>
+<p>&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;Dim criteria As New ProductCriteria()</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;criteria.ProductId = productId</p>
+<p>&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;dp.BeginFetch(criteria)</p>
+<p>&nbsp;&nbsp; End Sub</p>
+</p>
+<p>&nbsp;</p>
+<p>Button behind code is....</p>
+<p>
+<p>&nbsp;&nbsp; &nbsp;Private Sub LoadData(ByVal ID As String)</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;Dim bo As Business.Product = Business.Product.GetByProductIdAsync(ID,?????????? )</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;ProdDesc.Content = bo.Description</p>
+<p>&nbsp;&nbsp; &nbsp;End Sub</p>
+<div>I don&#39;t know what to put for the ???????? (it&#39;s&nbsp;expecting&nbsp;ByVal handler As EventHandler(Of DataPortalResult(Of Product))</div>
+<div></div>
+<div>Please can you help...</div>
+<div></div>
+<div>Richard</div>
+</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Tuesday, August 31, 2010</h2><p>Hi,</p>
+<p>Basically - you need to supply the address of a sub to be called when the async Fetch is completed:</p>
+<p>&nbsp;&nbsp; Private Sub LoadData(ByVal ID As String)<br />&nbsp;&nbsp; &nbsp; &nbsp;&nbsp; Business.Product.GetByProductIdAsync(ID, AddressOf FetchCompleted)<br />&nbsp;&nbsp;&nbsp; End Sub</p>
+<p>&nbsp; Private Sub FetchCompleted(ByVal sender As Object, ByVal e As Csla.DataPortalResult(Of Product))<br />&nbsp;&nbsp;&nbsp; If e.Error IsNot Nothing Then<br />&nbsp;&nbsp;&nbsp;&nbsp; &#39; an execption occured - notify the user<br />&nbsp;&nbsp;&nbsp; Else<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ProdDesc.Content = e.Object.Description<br />&nbsp;&nbsp;&nbsp; End If<br />&nbsp; End Sub</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>griff replied on Tuesday, August 31, 2010</h2><p>Thanks Jonny, just managed to sort myself as well......it&#39;s good to know I was on the right lines...thankls once again</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

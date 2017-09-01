@@ -1,0 +1,12 @@
+<html><header><title>IsValid vs IsSelfValid</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>IsValid vs IsSelfValid</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/7233.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>colemn203 posted on Monday, July 06, 2009</h2><P>I have not seen this covered but here goes.</P>
+<P><BR>I believe that IsSelfValid means that the current object is Valid and IsValid checks both itself and any children.</P>
+<P>If that is correct then how can IsSelfValid = True and IsValid = False when there are no children and the BrokenRulesList is empty?</P>
+<P>&nbsp;</P>
+<P>I've regenerated my objects and have been beating my head against it off and on for a day or two.</P>
+<P>Any insight would be awsome.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>colemn203 replied on Monday, July 06, 2009</h2>Never mind I was able to figure it out.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>DocJames replied on Monday, July 06, 2009</h2><br />And the answer is?</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Monday, July 06, 2009</h2><P>You can't just pull a "Roseanne Rosannadanna" and leave us hanging like that! &lt;g&gt;</P>
+<P>What was the issue? </P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>colemn203 replied on Tuesday, July 07, 2009</h2><P>We had pulled in the custom code from the previous objects that where using a 2.x version of CSLA and had overridden IsValid. For some reason we were not calling mybase.IsValid and where just calling IsValid.</P>
+<P>I knew it was something dumb from the start but I overlooked it. The plus side is that I have a good understanding of the whole validation process works.</P>
+<P>&nbsp;</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

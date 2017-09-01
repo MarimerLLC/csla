@@ -1,0 +1,44 @@
+<html><header><title>Incremental Transaction Number on Multiuser Environment</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Incremental Transaction Number on Multiuser Environment</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/12082.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>st3fanus posted on Sunday, July 21, 2013</h2><p>Hi.. </p>
+<p>I have a problem about How to generate Incremental Transaction Number on Multiuser environment ?</p>
+<p>for example : 13070001, 13070002, 13070003, etc..</p>
+<p>This number is generated when users open a new transaction so when a User Interface displayed, that number is already on database and user can&#39;t look that number on their screen.</p>
+<p>What I&#39;m afraid here is about more than one user open new transaction and then when my business object generate that number ,then writed on DB Primary Key Collision Happened ?</p>
+<p>&nbsp;</p>
+<p>is there any suggestions ? or any idea is ok, </p>
+<p>thanks a lot</p>
+<p>&nbsp;</p>
+<p>stefanus</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>comp1mp replied on Monday, July 22, 2013</h2><p>Does it have to be a sequential number?</p>
+<p>If not, in my opinion Guids are superior primary keys.</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>GregDobbs replied on Monday, July 22, 2013</h2><p>If you wish to use a number then the server will have to generate it. </p>
+<p>Each time a user begins a new transaction you&#39;ll send a request to the server to get the next transaction number (you could create a master transaction number table). Then you&#39;re assured of a unique number regardless of how many users request a new transaction.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>cfarren replied on Monday, July 22, 2013</h2><p>Create a table called dbo.AutomaticTransactionNumber (or give it whatever schema you want) with the following columns</p>
+<p>TransactionType, NextNumber</p>
+<p>Then have a stored procedure called getNextAutomaticTransactionNumber that has a Type nvarchar(255) parameter called @Type. The type parameter is a string representation of the transaction type you want to generate the number for. In the stored proc do the following.</p>
+<p>SELECT NextNumber FROM dbo.AutomaticTransactionNumber WHERE Type = @Type</p>
+<p>UPDATE dbo.AutomaticTransactionNumber SET NextNumber = [NextNumber]+1 WHERE Type = @Type</p>
+<p>&nbsp;</p>
+<p>This will return the nextnumber for the transaction and then increment it for next time.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Tuesday, July 23, 2013</h2><p>I&acute;m not fond of this table structure and have found it to be not safe when used in a hight traffic site within transactions (and even nested transactions). In general - you do not want to have the sequence counter generator to be part of transactions and rollbacks in the database. On a high-traffic site this will cause your transactions to be slowed down to one singe transaction at the time when the counter generator is locked for the entire duration of a transaction.</p>
+<p>My preference for sql server is to create a separate ID table with only an autoincrement counter for each counter. Simple and safe to use within SQL Server wheher within a transaction or not.&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>st3fanus replied on Tuesday, July 23, 2013</h2><p>Hi jonny..</p>
+<p>&nbsp;</p>
+<p>what do you mean transaction is on DataAccess region .. or on store proc ?</p>
+<p>I still don&#39;t understand with the reason : counter generator is locked for entire during transaction ?</p>
+<p>could you give me an example bad and good example ? :)</p>
+<p>&nbsp;</p>
+<p>thanks a lot jonny</p>
+<p>&nbsp;</p>
+<p>stefanus</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Wednesday, July 24, 2013</h2><p>Transactions is typically set for the entire data access (ex DataPortal_Update) and databases use either table, page or rowlock in transactions.&nbsp;</p>
+<p>My key issue here is that the single rown in counter table is shared so even if the database use rowlock mechanism on the other tables it has a single exclusive lock on the counter.- thus limiting the database to process a single transaction at the time.</p>
+<p>Yhis is of course assuming tht you generate the counter ID as part oi the DataPortal_Update (which is my preference).</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>st3fanus replied on Monday, July 22, 2013</h2><p>Hi all...</p>
+<p>thanks a lot for your respond..</p>
+<p>@Matthew : YES , I want sequential number, because there is a government regulation that something like invoice must be in order number.</p>
+<p>@cfarren : yes the logic is like your suggestion, But I approach that generating in order trans number is a business rules, and I want to try to look a way to do it on Business Layer ( MAINTAINABLE Reason )</p>
+<p>@GregDobbs : Could you explain more detail ? Create Master Transaction Number Table, Assure each user get unique number..</p>
+<p>&nbsp;</p>
+<p>OR My problem is can&#39;t solve at Business Layer ? Like Cfarren&#39;s suggestion it must be solved at DataBase Level ?</p>
+<p>&nbsp;</p>
+<p>thanks a lot all..</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>cfarren replied on Monday, July 22, 2013</h2><p>If you want to maintain it in a business rule then where do the numbers and increment amounts etc come from? If they come from the database (which they should, especially for multi user) then you have to touch the database anyway so you might as well handle it there too.</p>
+<p>That being said, you could always just do the select and update in the business rule instead of using a stored procedure but you will need the automatic numbering table.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>comp1mp replied on Thursday, July 25, 2013</h2><p><div style='padding-left: 50px;background-color:silver'><b>Stefanus <br></b>@Matthew : YES , I want sequential number, because there is a government regulation that something like invoice must be in order number.</div></p>
+<p>My next thought is you could still use a guid for your primary key and use a separate identity column to auto increment an InvoiceNumber. This avoids the risk of primary key conflict.</p>
+<p>Edit: Given Fitanv&#39;s reply below, this works only if you do not need the Invoice Number until after the initial insert. Based on your original post, that the user never sees this number, I am assuming that this is the case.</p>
+<p>Not a database guru, so I am unsure about issues (if any) of using an Identity column in this way.</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Fintanv replied on Friday, July 26, 2013</h2><p>The architecture for this is straight forward, something will have to have responsibility for generating your sequence number. &nbsp;Whether is is maintained on the database side or handled by a stand alone WCF service, you can access it via a command object.</p>
+<p>The more interesting question is &#39;<strong>when</strong>&#39; do you get the number. &nbsp;This leads to all sorts of additional questions. &nbsp;If you get it at the beginning of a process, what happens if the process fails and needs to roll back? &nbsp;What if other processes have grabbed transaction numbers in the meanwhile? &nbsp;Does this mean you now have gaps in your sequence? &nbsp;Is this okay or a problem? &nbsp;What happens if you grab the number at the last possible moment instead? &nbsp;Should you lock the process that generates the number? &nbsp;How would this affect throughput?</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

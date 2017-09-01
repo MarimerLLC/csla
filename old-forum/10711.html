@@ -1,0 +1,219 @@
+<html><header><title>Abstract class design &amp; development</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Abstract class design &amp; development</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10711.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>msrs_it posted on Saturday, September 24, 2011</h2><p>Hi,</p>
+<p>I have an abstract class Company and derived classes AutoDealer, Fleet, etc...</p>
+<p>There exists differences in autodealer and fleet companies. Both have some common data and functionality which I want to place in the abstract class. For example, both the companies may or may not add their bank account details in to the system, which depends on the type of account they&#39;ve chosen. Let us say standard and preferred accounts. The preferred account user needs to enter their bank account details in to system. The system has to allow up to 3 bank accounts for each company in which one should be the default account.</p>
+<p> The autodealer requires additional data and behavior like dealership license details and purchase of vehicles. The fleet has a different behavior that required to track transport booking and delivery details.</p>
+<p>I&#39;ve declared the required common company properties in the abstract class. I was stuck with declaring the EditableChildList property of CompanyBankAccountsList in company abstract class. And CompanyBankAccount is declared as EditableChild having problem in declaring the data access methods too. Because this Editable Child object requires parent object as a parameter to insert and update methods.</p>
+<p>Can anybody help me in providing an example code for this situation like this?</p>
+<p>&nbsp;</p>
+<p>Thanks &amp; Regards,</p>
+<p>SreeRam.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>msrs_it replied on Saturday, September 24, 2011</h2><p>Hi,</p>
+<p>Below is the data access code I&#39;ve written for EditableChild object to perform insert operation. Is this works or not?</p>
+<p>&nbsp;</p>
+<p>private void Child_Insert&lt;T&gt;(T company) where T: Company&lt;T&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Child_Insert(company.Id);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; private void Child_Insert(int companyId)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; using (var ctx = LX.Dal.DalFactory.GetManager())</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; var dal = ctx.GetProvider&lt;LX.Dal.ICompanyBankAccountDal&gt;();</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; using (BypassPropertyChecks)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; var item = new LX.Dal.CompanyBankAccountDto</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;{</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;CompanyId = companyId,</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;BankAccountStatus = this.BankAccountStatus,</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;AccountName = this.AccountName,</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;AccountNumber = this.AccountNumber,</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;AddedDate = DateTime.UtcNow,</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;BankAccountTypeId = this.BankAccountTypeId,</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;BankId = this.BankId,</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;StreetAddress = this.StreetAddress,</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;City = this.City,</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;StateId = this.StateId,</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Zip = this.Zip,</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;RoutingNumber = this.RoutingNumber,</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;ModifiedDate = DateTime.UtcNow,</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;IsDefault = this.IsDefault,</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;IsDisabled = this.IsDisabled,</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;IsNew = this.IsNew,</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;IsDeleted = this.IsDeleted</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;};</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; dal.Update(item);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Id = item.BankAccountId;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; TimeStamp = item.LastChanged;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>Thanks &amp; Regards</p>
+<p>SreeRam</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Monday, September 26, 2011</h2><p>Hi,</p>
+<p> 
+I&#39;d remove the generic Child_Insert&lt;T&gt; method (and others) and just keep<b> Child_XYZ(int companyId)</b> methods.</p>
+<p>In your &quot;root&quot;/parent object - just use the </p>
+<ul>
+<li>FieldManager.UpdateChild(ChildObject, CompanyId)&nbsp;&nbsp; or </li>
+<li>FieldManager.UpdateChildren(CompanyId)</li>
+</ul>
+<p>The last one will process all child objects in managed fields in this object and call Child_XYZ with whatever parameters you add to the call. </p>
+<p>Beware -&nbsp; this requires that ALL you Chlid_Insert, Child_Update, Child_DeleteSelf methods have the same signature - with all the parameter that you add as parameters to the Update function. This is a dynamic call using MethodCaller.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>msrs_it replied on Wednesday, October 05, 2011</h2><p><div style='padding-left: 50px;background-color:silver'><b>JonnyBee<br></b></p>
+<p>Hi,</p>
+<p> 
+I&#39;d remove the generic Child_Insert&lt;T&gt; method (and others) and just keep<strong> Child_XYZ(int companyId)</strong> methods.</p>
+<p>In your &quot;root&quot;/parent object - just use the </p>
+<ul>
+<li>FieldManager.UpdateChild(ChildObject, CompanyId)&nbsp;&nbsp; or </li>
+<li>FieldManager.UpdateChildren(CompanyId)</li>
+</ul>
+<p>The last one will process all child objects in managed fields in this object and call Child_XYZ with whatever parameters you add to the call. </p>
+<p>Beware -&nbsp; this requires that ALL you Chlid_Insert, Child_Update, Child_DeleteSelf methods have the same signature - with all the parameter that you add as parameters to the Update function. This is a dynamic call using MethodCaller.</p>
+<div style="clear:both;"></div>
+<p></div></p>
+<p>Hi Jonny,</p>
+<p>I know that you gave reply to my second post which contains code sample I&#39;ve pasted. As you said, the framework requires the DataPortal_Fetch(), Child_Fetch() or any data access method must maintain the signature to get executed at server side.</p>
+<p>If you go through my first post I&#39;ve stated the situation I&#39;m facing in the business object design. I thought that the Company class should be declared as an abstract class which is the base class for AutoDealer and Fleet companies.</p>
+<p>Could you please go through that post once again and suggest me weather to use abstract class or not.</p>
+<p>However, we can remove the abstraction and can accept additional inputs like dealership license number, etc... from auto dealer by creating a custom rule and force user to enter the inputs. But how can we achieve a separate behavior (only auto dealer can purchase a vehicle) for an auto dealer. In the same way the Fleet can provide quote to the request sent by an auto dealer.</p>
+<p>Awaiting for your reply.</p>
+<p>Thanks &amp; Regards,</p>
+<p>SreeRam.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Thursday, October 06, 2011</h2><p>Hi, </p>
+<p>abstract classes means that you cannot create an instance of that class.</p>
+<p>You could create an abstract generic base class (ex Company&lt;T&gt;) and an accompanying interface class (İCompany) that you could pass to the child lists/objects (ex Child_XYZ methods). </p>
+<p>İ am travelling home from vacation now and should be able to provide some samples tomorrow. </p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>msrs_it replied on Thursday, October 06, 2011</h2><p>Hi,</p>
+<p>Thank you for your response. I&#39;ll wait for your examples.</p>
+<p>For your information here i&#39;m I&#39;ll explain my object design a little bit</p>
+<p>Company is an abstract class and the AutoDealer and Fleet are the derived classes.</p>
+<p>CompanyBankAccounts is an editable child class which is required to all the derived classes.</p>
+<p>Hence I want to place this class in the abstract class (Company&lt;T&gt;) as a child object.</p>
+<p>You can observe the Class Diagram Image. In that Company is having a property &quot;BankAccounts&quot;.</p>
+<p><img src="http://istor.indyarocks.com/741848/BaseClasses_19161548881.jpg" border="0" style="max-width:550px;" alt="" /></p>
+<p>The main activity of the Auto dealer is to purchase the vehicles online. Where as the Fleet will get a quote requests from other companies and will provide the quotes. On confirmation, the order will raise and vehicle will be transported by the fleet.</p>
+<p>Both the companies Auto dealer and Fleet have some common behavior like Selling the vehicles. Which I want to implement this behavior in the base class.</p>
+<p>Your suggestions are valuable to me. I always&nbsp;appreciate&nbsp;your help.</p>
+<p>Thanks &amp; Regards,</p>
+<p>SreeRam.</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Thursday, October 06, 2011</h2><p>I believe your abstract class should be something like this:</p>
+<pre style="font-family:Consolas;font-size:13px;color:black;background:none repeat scroll 0% 0% #fafafa;">&nbsp;&nbsp;[<span style="color:#2b91af;">Serializable</span>]
+&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">abstract</span>&nbsp;<span style="color:blue;">class</span>&nbsp;<span style="color:#2b91af;">Company</span>&lt;T&gt;&nbsp;:&nbsp;<span style="color:#2b91af;">BusinessBase</span>&lt;T&gt;,&nbsp;<span style="color:#2baaaf;">ICompany</span>&nbsp;<span style="color:blue;">where</span>&nbsp;T&nbsp;:&nbsp;<span style="color:#2b91af;">Company</span>&lt;T&gt;
+&nbsp;&nbsp;{
+<span style="color:#000085;">&nbsp;&nbsp;&nbsp;&nbsp;#region</span>&nbsp;Business&nbsp;Methods
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">static</span>&nbsp;<span style="color:blue;">readonly</span>&nbsp;<span style="color:#2b91af;">PropertyInfo</span>&lt;<span style="color:blue;">int</span>&gt;&nbsp;IdProperty&nbsp;=&nbsp;RegisterProperty&lt;<span style="color:blue;">int</span>&gt;(c&nbsp;=&gt;&nbsp;c.Id);
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">int</span>&nbsp;Id
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">get</span>&nbsp;{&nbsp;<span style="color:blue;">return</span>&nbsp;GetProperty(IdProperty);&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">set</span>&nbsp;{&nbsp;SetProperty(IdProperty,&nbsp;<span style="color:blue;">value</span>);&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">static</span>&nbsp;<span style="color:blue;">readonly</span>&nbsp;<span style="color:#2b91af;">PropertyInfo</span>&lt;<span style="color:blue;">string</span>&gt;&nbsp;NameProperty&nbsp;=&nbsp;RegisterProperty&lt;<span style="color:blue;">string</span>&gt;(c&nbsp;=&gt;&nbsp;c.Name);
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">string</span>&nbsp;Name
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">get</span>&nbsp;{&nbsp;<span style="color:blue;">return</span>&nbsp;GetProperty(NameProperty);&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">set</span>&nbsp;{&nbsp;SetProperty(NameProperty,&nbsp;<span style="color:blue;">value</span>);&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">static</span>&nbsp;<span style="color:blue;">readonly</span>&nbsp;<span style="color:#2b91af;">PropertyInfo</span>&lt;<span style="color:#2b91af;">BankAccountList</span>&gt;&nbsp;AccountListProperty&nbsp;=&nbsp;RegisterProperty&lt;<span style="color:#2b91af;">BankAccountList</span>&gt;(c&nbsp;=&gt;&nbsp;c.AccountList,&nbsp;<span style="color:#2baf9a;">RelationshipTypes</span>.Child);
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:#2b91af;">BankAccountList</span>&nbsp;AccountList
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">get</span>&nbsp;{&nbsp;<span style="color:blue;">return</span>&nbsp;GetProperty(AccountListProperty);&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">set</span>&nbsp;{&nbsp;SetProperty(AccountListProperty,&nbsp;<span style="color:blue;">value</span>);&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;}</pre>
+<p>And the AutoDealer like this:</p>
+<pre style="font-family:Consolas;font-size:13px;color:black;background:none repeat scroll 0% 0% #fafafa;">&nbsp;&nbsp;[<span style="color:#2b91af;">Serializable</span>]
+&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">class</span>&nbsp;<span style="color:#2b91af;">AutoDealer</span>&nbsp;:&nbsp;<span style="color:#2b91af;">Company</span>&lt;<span style="color:#2b91af;">AutoDealer</span>&gt;
+&nbsp;&nbsp;{
+<span style="color:#000085;">&nbsp;&nbsp;&nbsp;&nbsp;#region</span>&nbsp;Business&nbsp;Methods
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">static</span>&nbsp;<span style="color:blue;">readonly</span>&nbsp;<span style="color:#2b91af;">PropertyInfo</span>&lt;<span style="color:#2b91af;">SmartDate</span>&gt;&nbsp;LicenseIssueDateProperty&nbsp;=&nbsp;RegisterProperty&lt;<span style="color:#2b91af;">SmartDate</span>&gt;(c&nbsp;=&gt;&nbsp;c.LicenseIssueDate,&nbsp;<span style="color:blue;">null</span>,&nbsp;<span style="color:blue;">new</span>&nbsp;<span style="color:#2b91af;">SmartDate</span>());
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">string</span>&nbsp;LicenseIssueDate
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">get</span>&nbsp;{&nbsp;<span style="color:blue;">return</span>&nbsp;GetPropertyConvert&lt;<span style="color:#2b91af;">SmartDate</span>,&nbsp;<span style="color:blue;">string</span>&gt;(LicenseIssueDateProperty);&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">set</span>&nbsp;{&nbsp;SetPropertyConvert&lt;<span style="color:#2b91af;">SmartDate</span>,&nbsp;<span style="color:blue;">string</span>&gt;(LicenseIssueDateProperty,&nbsp;<span style="color:blue;">value</span>);&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;}</pre>
+<p>I&#39;d also suggest to have the DataPortal_XYZ implemented only in the inherited classes (here AutoDealer).</p>
+<p>Ex in AutoDealer:</p>
+<pre style="font-family:Consolas;font-size:13px;color:black;background:none repeat scroll 0% 0% #fafafa;">&nbsp;&nbsp;&nbsp;&nbsp;[<span style="color:#2b91af;">Transactional</span>(<span style="color:#2baf9a;">TransactionalTypes</span>.TransactionScope)]
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">protected</span>&nbsp;<span style="color:blue;">override</span>&nbsp;<span style="color:blue;">void</span>&nbsp;DataPortal_Insert()
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:green;">//&nbsp;update value properties</span><br /><br /><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="color:green;">//&nbsp;update child properties</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; FieldManager.UpdateChildren(<span style="color:blue;">this</span>);
+&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;[<span style="color:#2b91af;">Transactional</span>(<span style="color:#2baf9a;">TransactionalTypes</span>.TransactionScope)]
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">protected</span>&nbsp;<span style="color:blue;">override</span>&nbsp;<span style="color:blue;">void</span>&nbsp;DataPortal_Update()
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:green;">//&nbsp;update&nbsp;direct&nbsp;properties</span>
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="color:green;">//&nbsp;update child properties</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; FieldManager.UpdateChildren(<span style="color:blue;">this</span>);
+&nbsp;&nbsp;&nbsp;&nbsp;}</pre>
+<p>Then in BankAccount you would have: </p>
+<pre style="font-family:Consolas;font-size:13px;color:black;background:none repeat scroll 0% 0% #fafafa;">&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">private</span>&nbsp;<span style="color:blue;">void</span>&nbsp;Child_Insert(<span style="color:blue;">object</span>&nbsp;parent)
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">var</span>&nbsp;company&nbsp;=&nbsp;(<span style="color:#2baaaf;">ICompany</span>)&nbsp;parent;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:green;">//&nbsp;</span><span style="font-weight:bold;color:darkblue;">TODO:&nbsp;insert&nbsp;values</span>
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">private</span>&nbsp;<span style="color:blue;">void</span>&nbsp;Child_Update(<span style="color:blue;">object</span>&nbsp;parent)
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">var</span>&nbsp;company&nbsp;=&nbsp;(<span style="color:#2baaaf;">ICompany</span>)parent;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:green;">//&nbsp;</span><span style="font-weight:bold;color:darkblue;">TODO:&nbsp;update&nbsp;values</span>
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;}</pre>
+<p>Did this solve your problem?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>msrs_it replied on Friday, October 07, 2011</h2><p>Hi,</p>
+<p>Thanks Jonny :)</p>
+<p>I&#39;ve one more doubt. I&#39;ve not used any Interface like ICompany.</p>
+<p>But I understood that the interface helps in identifying the parent object type in the child objects.</p>
+<p>Other than this, is anything special purpose for this interface definition (in your sense)</p>
+<p>&nbsp;</p>
+<p>Thanks &amp; Regards,</p>
+<p>SreeRam.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>msrs_it replied on Friday, October 07, 2011</h2><p>Hi,</p>
+<p><span>
+<pre><span>private</span>&nbsp;<span>void</span>&nbsp;Child_Insert(<span>object</span>&nbsp;parent)
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>var</span>&nbsp;company&nbsp;=&nbsp;(<span>ICompany</span>)&nbsp;parent;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>//&nbsp;</span><span>TODO:&nbsp;insert&nbsp;values</span>
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;<span>private</span>&nbsp;<span>void</span>&nbsp;Child_Update(<span>object</span>&nbsp;parent)
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>var</span>&nbsp;company&nbsp;=&nbsp;(<span>ICompany</span>)parent;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>//&nbsp;</span><span>TODO:&nbsp;update&nbsp;values</span>
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;}</pre>
+<pre>Here company is not exposing any properties or methods that are declared in the base class.</pre>
+<pre>Except the properties mentioned in the ICompany interface.</pre>
+<pre>Any suggestions ....</pre>
+<pre>Thanks &amp; Regards</pre>
+<pre>SreeRam.</pre>
+</span></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Friday, October 07, 2011</h2><p>Hi, 
+</p>
+<p>When you use generic classes you need to:</p>
+<ul>
+<li>Know the generic contraint (like Company&lt;AutoDealer&gt;) or&nbsp;
+</li>
+<li>use interface class to get to the properties/methods (like ICompany)</li>
+<li>use the non-generic base class (like Csla.Core.BusinessBase)</li>
+</ul>
+<p>Your child objects , ex BankAccount, should not know about AutoDealer or Supplier - only that the parent is a Company&lt;T&gt; that implements ICompany. . </p>
+<p>If they need to know the parent object type then consider to make them separate objects or use a generic base class with properties like Company&lt;T&gt;.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>lazaroms replied on Tuesday, September 03, 2013</h2><p>Hi JonnyBee:</p>
+<p>&nbsp;</p>
+<p>And how must be implemented the ICompany interface in this example?</p>
+<p>&nbsp;</p>
+<p>Thanks,</p>
+<p>&nbsp;</p>
+<p>Lazaro</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Tuesday, September 03, 2013</h2><p>The interface must define the properties and methods that you want to expose to code that should not require knowledge of the actual inherited type.&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>lazaroms replied on Tuesday, September 03, 2013</h2><p>Thanks Jonny Bee.</p>
+<p>Another question derived from this. I&#39;m working with CSLA 4.5 in &nbsp;project with Library, DAL &amp; DalEF.</p>
+<p>I have an abstract class: Country and two derived classes (Residence country and Destiny country)</p>
+<p>I read your explanation in this thread and I understood it, my question is: Do we have to treat the inheritance even in the DAL &amp; DalEF or it&#39;s just in the library?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ntimothys replied on Wednesday, January 02, 2013</h2><p>I hd a similar problem - the Generics did not work out.</p>
+<p>The base insert method was too much the same to duplicate.</p>
+<p>&nbsp;</p>
+<p>I interfaced out the base class.</p>
+<p>&nbsp;</p>
+<p><b>Child_Insert(ICompany parent)</b></p>
+<p>&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

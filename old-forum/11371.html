@@ -1,0 +1,25 @@
+<html><header><title>Culture dependent order of _fieldData items in the SOAP message</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Culture dependent order of _fieldData items in the SOAP message</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11371.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>bounty posted on Wednesday, May 23, 2012</h2><p class="MsoNormal"><span lang="EN-GB">Hi,</span></p>
+<p class="MsoNormal"><span lang="EN-GB">&nbsp;</span></p>
+<p class="MsoNormal"><span lang="EN-GB">we are using CSLA
+v3.8.1.0 in a WPF application. The application is working fine when connecting
+to a local dataportal (with Slovak regional settings), but when connecting to a
+dataportal hosted on our dev server (with English regional settings) the
+properties of the business objects are getting mixed up. I think that this is a
+result of different regional/culture setting on the dev server and on my machine
+that is running the WPF front end. While comparing the soap envelopes received
+from the dev server and from the local instance of the data portal, I have
+found out that the properties of the</span>&nbsp;<span>&nbsp;</span>business object in
+the response message are in a different order. Our business object has the
+following properties: <b>BusinessUnitName</b>, <b>ChannelName</b>, <b>ExternalID</b>. The dev server
+is returning the fields in the specified order, but the local dataportal is
+returning them in this order: <b>BusinessUnitName</b>, <b>ExternalID</b>, <b>ChannelName</b>. This
+is because the letter &quot;ch&quot; (from the ChannelName property) comes
+after letter &quot;h&quot; in Slovak. So the WPF front end is probably
+expecting the properties in Slovak order, but when connected to the dev server,
+it is getting them in English order. </p>
+<p class="MsoNormal">Is there a way to make the ordering of the
+properties culture independent?&nbsp;</p>
+<p class="MsoNormal">Thanks,</p>
+<p class="MsoNormal">Zoltan</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Wednesday, May 23, 2012</h2><p>This is solved in later versions of CSLA. </p>
+<p>IIRC: You will need to update Csla.Core.FieldDataManager.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

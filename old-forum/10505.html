@@ -1,0 +1,14 @@
+<html><header><title>Unexpected behaviour from CslaModelBinder 4.1</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Unexpected behaviour from CslaModelBinder 4.1</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10505.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>j0552 posted on Friday, July 08, 2011</h2><p>Hi</p>
+<p>I&#39;m using the ProjectTracker sample code which accompanies the Csla4 MVC ebook.</p>
+<p>I&#39;ve noticed that the CslaModelBinder is not working as I would expect.</p>
+<p>if I comment out </p>
+<p>@*@Html.EditorFor(model =&gt; model.Name)*@</p>
+<p>in the create.cshtml view and post a new project to this action:</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public ActionResult Create(FormCollection collection)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var project = ProjectEdit.NewProject();</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; try<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; UpdateModel(project, collection);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; catch (Exception)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ViewData.Model = project;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return View();<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</p>
+<p><br />the brokenrule does not get added to the ModelState.</p>
+<p>if I use the DefaultModelBinder it does get added.</p>
+<p><br />This would be more of a problem if there was an unselected radio button which needed to bind to a property with the [Required] attribute for example. I don&#39;t think this is desirable. </p>
+<p>Can you suggest a solution for this?</p>
+<p>Thanks<br />Andrew</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Saturday, July 09, 2011</h2><p>This sounds like a bug in the model binder. I&#39;ve added it to the bug list: <a href="http://www.lhotka.net/cslabugs/edit_bug.aspx?id=938">http://www.lhotka.net/cslabugs/edit_bug.aspx?id=938</a></p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

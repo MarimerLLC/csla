@@ -1,0 +1,24 @@
+<html><header><title>Silverlight CSLA - BO invokes DAL </title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Silverlight CSLA - BO invokes DAL </h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11034.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>cconte posted on Friday, January 06, 2012</h2><p>&nbsp;</p>
+<p>Hi All,</p>
+<p>I&#39;ve just completed watching &nbsp;the CSLA Core and MvvM video series. &nbsp;We currently are utilizing the standard DataPortal_XYZ methods into an Silverlight&nbsp;application&nbsp;to retrieve our data but we want to move to utilize a separate DAL (BO invokes DAL) to have both DataAccess.MsSQL and DataAccess.MySQL.</p>
+<p>Has anyone utilize this option &nbsp;into silverlight Application ?</p>
+<p>Additionally, are there any silverlight examples available in constructing this DAL project with SQLExpress available? &nbsp;Actually, i have tried to realized &nbsp;a DalFactory class like i saw in som WPF samples but the ConfigurationManager class is not available in Silverlight. So, i&#39;m wondering what is the best pratice to made it ?</p>
+<p>Thanks in advance for your help,</p>
+<p>Cedric</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Friday, January 06, 2012</h2><p>Do you expect to have both available at the same time? </p>
+<p>Silverlight has no data access (no database drivers)&nbsp; - so you you can use the DataPortal to communicate with a serveside (.NET) based layer. </p>
+<p>The options for your DataAccess can then be:</p>
+<ul>
+<li>Repository pattern, using DataPortal_XYZ methods and Repository objects that hide the actual DAL implementation </li>
+<li>ObjectFactory pattern where you can create separate ObjectFactories for each database type. </li>
+</ul>
+<p>Or use Csla in the Silverlight app only and call WCF Data Services on a server to do the data access. </p>
+<p>A couple small sample apps on&nbsp; <a href="http://cslacontrib.codeplex.com">http://cslacontrib.codeplex.com</a> shows how you can utilize MEF to create a &quot;pluggable&quot; data access layer with either Repository pattern or ObjectFactory pattern (download latest source code). </p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>cconte replied on Friday, January 06, 2012</h2><p>
+<div>
+<p>Thanks JonnyBee.</p>
+<p>We only want one of them available at the same time (DataAccess.MsSQL or DataAcess.MySQL).&nbsp;Each D<span>ataAccess must be implemented in a in separate assembly and choosed by the application with an option write into</span>&nbsp;web.config file.</p>
+<p>I will have a look at these samples.</p>
+<p>Best regards,</p>
+<p>Cedric&nbsp;</p>
+</div>
+</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>bill.mybiz replied on Sunday, January 08, 2012</h2><p>There are also superb examples in the Csla Data Access e-book download.&nbsp; They&#39;re exactly what you&#39;re looking for.&nbsp; The EncapsulatedInvokeDto is what I referred to most, as I am using Dtos, but they also have an EncapsulatedInvoke data reader example, as well as object factory pattern examples.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>cconte replied on Monday, January 09, 2012</h2><p>Thx for a tips.&nbsp;<span>&nbsp;Actually, i&#39;m learning from</span><span>&nbsp;samples provide from&nbsp;</span>CSLA Silverlight video series.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

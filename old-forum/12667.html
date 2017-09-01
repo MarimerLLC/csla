@@ -1,0 +1,32 @@
+<html><header><title>EditLevelMismatch after cloning a bound object</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>EditLevelMismatch after cloning a bound object</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/12667.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>g.beraudo@castsoftware.com posted on Monday, June 16, 2014</h2><p>Dear Rocky, dear all,</p>
+<p>I&#39;m facing some EditLevelMismatch in Silverlight 5 &amp; CSLA 4.5.500</p>
+<p>My scenario is to have a DynamicListBase &quot;ChildList&quot; with children: &quot;Child &quot;and a grand child: &nbsp;&quot;Child&quot; (the same type used for children).</p>
+<p>&nbsp;</p>
+<p>I&#39;m opening the details of a &#39;Child&#39;, then add a grand child (the Clone of itself), then commit the changes:</p>
+<p>&nbsp;</p>
+<p><strong>(Child as IEditableObject).BeginEdit();</strong> -- Child.EditLevel = 1 which seems fine</p>
+<p><strong>Child.GrandChild = Child.CloneAsNew();</strong> &nbsp; &nbsp; &nbsp;-- GrandChild.EditLevel = 0, due to UndoableBase.ResetChildEditLevel, as the bindingEdit is true:</p>
+<p>&nbsp; &nbsp; &nbsp; -- if (bindingEdit &amp;&amp; targetLevel &gt; 0 &amp;&amp; !(child is FieldManager.FieldDataManager))</p>
+<p>&nbsp; &nbsp; &nbsp; -- &nbsp; &nbsp; targetLevel--;</p>
+<p><strong>(Child as IEditableObject).EndEdit();</strong> &nbsp;-- UndoException in AcceptChanges(0), it seems that 1 is expected for the child.EditLevel</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>With <strong>CloneAsNew()</strong> being sensibely equal to:</p>
+<p><strong><span>	</span>var clone = this.Clone();</strong></p>
+<p><strong><span>	</span>clone.ID = -1; &nbsp;--reset primary key</strong></p>
+<p><strong><span>	</span>clone.MarkNew();</strong></p>
+<p><strong><span>	</span>clone.BusinessRules.CheckRules()</strong></p>
+<p><strong><span>	</span>return clone;</strong></p>
+<p>&nbsp;</p>
+<p>Am I doing something wrong? Is this an unsupported scenario?</p>
+<p>I just reopened your very good &quot;Expert VB 2008 Business Objects&quot; N-Level Undo... but I can&#39;t get it right.</p>
+<p>Any guidance will be welcome.</p>
+<p>Regards,</p>
+<p>Gilles</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>g.beraudo@castsoftware.com replied on Tuesday, June 17, 2014</h2><p>I&#39;m renaming the thread, as looking for how to patch CSLA code gave me some clues.</p>
+<p>It seems that the problem comes from the fact that, when the clone object is still with &#39;BindingEdit&#39; set true.</p>
+<p>I have modified my CloneAsNew() as follow and it seems to work:</p>
+<p>clone.BindingEdit = false;</p>
+<p>I&#39;m still not sure if I&#39;m using CSLA incorrectly? And will get further complications by using the Clone() API.</p>
+<p>Any feedback would be welcome</p>
+<p>Regards,</p>
+<p>Gilles</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

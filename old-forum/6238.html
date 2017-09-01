@@ -1,0 +1,13 @@
+<html><header><title>AddNew Child object - best way to intercept the process and initialize values after I have a parent</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>AddNew Child object - best way to intercept the process and initialize values after I have a parent</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6238.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>DCottle posted on Thursday, January 22, 2009</h2><P>I have been using CSLA.NET for a few years now, but in my previous assignment our children were being added via a grid on the UI, and therefore the AddNewCore&nbsp;and OnAddNew methods were being fired by the grid.&nbsp; I could simply put the initialization code that I needed inside one of those methods and all was good with the world.</P>
+<P>I have since moved to a different assignment and we have the need to do something like this:</P>
+<P>Order.OrderDetails.Add(OrderDetail.NewOrderDetail());</P>
+<P>&nbsp;</P>
+<P>What is the best way to "hook" into this process and initialize some values on the OrderDetail object AFTER it has a reference to its parent object.&nbsp; For example, I want to traverse up my parent tree and get the key from the Order object to set that on my child.</P>
+<P>Thanks in advance,</P>
+<P>&nbsp;</P>
+<P>David</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>simon_may replied on Thursday, January 22, 2009</h2><P>This may not be the conventional way in the CSLA world but I have the parent BO&nbsp;handle the BLB's AddingNew event and provide a new child with various properties initialised.</P>
+<P>HTH</P>
+<P>Simon</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rsbaker0 replied on Thursday, January 22, 2009</h2><P>I have this exact same scenario, but I still take (partial) advantage of AddNewCore() to do this (that's were I would be calling your equivalent of OrderDetail.NewOrderDetail())</P>
+<P>However, I think you can override either InsertItem() or OnAddingNew() to hook into the process of the item being added to the list. </P>
+<P>I vaguely recall&nbsp;difficulties with trying to supply&nbsp;the new object using OnAddingNew(), so&nbsp;I create the item in AddNewCore() and do additional property setting in InsertItem()</P>
+<P>&nbsp;</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

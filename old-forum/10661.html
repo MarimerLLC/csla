@@ -1,0 +1,20 @@
+<html><header><title>Can my project without any root obj or root business list?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Can my project without any root obj or root business list?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10661.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>kingmoon posted on Saturday, September 03, 2011</h2><p>Just mark all obj or collection as child but not root ? &nbsp;Will it occur some problem</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Saturday, September 03, 2011</h2><p>You cannot call Save() on a Child object and you cannon call BeginEdit, ApplyEdit, CancelEdit on editable collection that is marked as Child.</p>
+<p>You could override the default Save method tho:</p>
+<pre style="font-family:Consolas;font-size:13;color:black;background:#fafafa;">&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">virtual</span>&nbsp;T&nbsp;Save()
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;T&nbsp;result;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">if</span>&nbsp;(<span style="color:blue;">this</span>.IsChild)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">throw</span>&nbsp;<span style="color:blue;">new</span>&nbsp;<span style="color:#2b91af;">InvalidOperationException</span>(<span style="color:#2b91af;">Resources</span>.NoSaveChildException);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">if</span>&nbsp;(EditLevel&nbsp;&gt;&nbsp;0)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">throw</span>&nbsp;<span style="color:blue;">new</span>&nbsp;<span style="color:#2b91af;">InvalidOperationException</span>(<span style="color:#2b91af;">Resources</span>.NoSaveEditingException);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">if</span>&nbsp;(!IsValid&nbsp;&amp;&amp;&nbsp;!IsDeleted)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">throw</span>&nbsp;<span style="color:blue;">new</span>&nbsp;Rules.<span style="color:#2b91af;">ValidationException</span>(<span style="color:#2b91af;">Resources</span>.NoSaveInvalidException);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">if</span>&nbsp;(IsBusy)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">throw</span>&nbsp;<span style="color:blue;">new</span>&nbsp;<span style="color:#2b91af;">InvalidOperationException</span>(<span style="color:#2b91af;">Resources</span>.BusyObjectsMayNotBeSaved);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">if</span>&nbsp;(IsDirty)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;result&nbsp;=&nbsp;(T)<span style="color:#2b91af;">DataPortal</span>.Update(<span style="color:blue;">this</span>);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">else</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;result&nbsp;=&nbsp;(T)<span style="color:blue;">this</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;OnSaved(result,&nbsp;<span style="color:blue;">null</span>,&nbsp;<span style="color:blue;">null</span>);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">return</span>&nbsp;result;
+&nbsp;&nbsp;&nbsp;&nbsp;}</pre></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>kingmoon replied on Saturday, September 03, 2011</h2><p>In my project, I want to create a XmlModelBase derive from BusinessBase and implement auto save and fetch from xml file. But I don&#39;t want to relize four suit code(a child obj , a root obj, &nbsp;a child business list, a root business list ). Now I have implemented two suit for Child Business Obj and Child Business List Obj. Can I declare a root obj and all child obj&#39;s parent reference to this root obj. &nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

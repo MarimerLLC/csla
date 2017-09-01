@@ -1,0 +1,22 @@
+<html><header><title>[Transactional(TransactionalTypes.TransactionScope)] not working with 'Microsoft.Jet.OLEDB.4.0'</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>[Transactional(TransactionalTypes.TransactionScope)] not working with 'Microsoft.Jet.OLEDB.4.0'</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/1557.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>rxelizondo posted on Saturday, October 21, 2006</h2><P class=MsoNormal>Apparently, using the [Transactional] attribute to let the .Net handle transactions for us is not working with the 'Microsoft.Jet.OLEDB.4.0' provider, the exact message I get is:</P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal><EM>The ITransactionLocal interface is not supported by the 'Microsoft.Jet.OLEDB.4.0' provider.<SPAN>&nbsp; </SPAN>Local transactions are unavailable with the current provider.</EM></P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal>I was able to work around this problem by using similar transaction techniques like the ones use on the CSLA 1.X version. </P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal>Anyone knows of some quick fix so that the [Transactional] attribute works with the 'Microsoft.Jet.OLEDB.4.0' provider?</P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal>Thanks.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Henrik replied on Saturday, October 21, 2006</h2><P>rx</P>
+<P>The transactioscope attribute is only available if you use it against SQL Server 2005. </P>
+<P>Rocky has a link to a trick where you can get it to work with SQL Server 2000 as well on: <A href="http://www.lhotka.net/Article.aspx?area=4&amp;id=39c79955-ddc9-42c7-a657-d5c2ed49975e">http://www.lhotka.net/Article.aspx?area=4&amp;id=39c79955-ddc9-42c7-a657-d5c2ed49975e</A></P>
+<P>I doubt that you can get it to work with the Jet OLEDB provider, though.</P>
+<P>However, you will be able to&nbsp;use manual transactions.</P>
+<P>/Henrik</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rxelizondo replied on Saturday, October 21, 2006</h2><P class=MsoNormal>Henrik:</P>
+<P class=MsoNormal>&nbsp;</P>
+<P class=MsoNormal>Oh well, I was hoping to be able to use this new technology when working against Access databases. Manual transactions will have to do for now, I guess the only benefit for the use of the [Transactional] attribute was simplicity of code (I hope) so everything should be fine.</P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal>I appreciate your help, thanks.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rxelizondo replied on Saturday, October 21, 2006</h2><P class=MsoNormal>Henrik:</P>
+<P class=MsoNormal>&nbsp;</P>
+<P class=MsoNormal>Oh well, I was hoping to be able to use this new technology when working against Access databases. Manual transactions will have to do for now, I guess the only benefit for the use of the [Transactional] attribute was simplicity of code (I hope) so everything should be fine.</P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal>I appreciate your help, thanks.</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

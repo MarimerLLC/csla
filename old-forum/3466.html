@@ -1,0 +1,45 @@
+<html><header><title>error when login</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>error when login</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3466.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>lionel posted on Monday, September 03, 2007</h2><P><SPAN>&nbsp;Hello, I got error after enter user/pass.&nbsp; and when I set to use com+. I'm using win2000 server. </SPAN></P>
+<P><SPAN>&nbsp;&lt;add key="CslaDataPortalProxy" <BR>&nbsp;&nbsp;&nbsp; value="EnterpriseServicesHost.EnterpriseServicesProxy, EnterpriseServicesHostcs"/&gt;</SPAN></P>
+<P><SPAN>works fine for RemotingProxy and WebServicesProxy.&nbsp; Can someone pls help?</SPAN></P>
+<P><SPAN>Thanks,</SPAN></P>
+<P><SPAN>=======================================================</SPAN></P>
+<P><SPAN></SPAN><SPAN>&nbsp;</P>
+<H1>Server Error in '/PTWeb' Application. 
+<HR>
+</H1>
+<H2><I>Object reference not set to an instance of an object.</I> </H2></SPAN><FONT face="Arial, Helvetica, Geneva, SunSans-Regular, sans-serif "><B>Description: </B>An unhandled exception occurred during the execution of the current web request. Please review the stack trace for more information about the error and where it originated in the code. <BR><BR><B>Exception Details: </B>System.NullReferenceException: Object reference not set to an instance of an object.<BR><BR><B>Source Error:</B> <BR><BR>
+<TABLE bgColor=#ffffcc>
+
+<TR>
+<TD><CODE><PRE>Line 171:        if (proxy.IsServerRemote)
+Line 172:          ApplicationContext.SetGlobalContext(result.GlobalContext);
+<FONT color=red>Line 173:        throw new DataPortalException("DataPortal.Fetch " + 
+</FONT>Line 174:          Resources.Failed, ex.InnerException, result.ReturnObject);
+Line 175:      }</PRE></CODE></TD></TR></TABLE><BR><B><FONT face=Verdana>Source File: </FONT></B>C:\Visual Studio Projects\csla20cs\Csla\DataPortal\Client\DataPortal.cs<B><FONT face=Verdana> &nbsp;&nbsp; Line: </FONT></B>173 <BR><BR><B><FONT face=Verdana>Stack Trace:</FONT></B> <BR><BR>
+<TABLE bgColor=#ffffcc>
+
+<TR>
+<TD><CODE><PRE>[NullReferenceException: Object reference not set to an instance of an object.]
+
+[CallMethodException: DataPortal_Fetch method call failed]
+
+[DataPortalException: DataPortal.Fetch failed]
+   Csla.DataPortal.Fetch(Object criteria) in C:\Visual Studio Projects\csla20cs\Csla\DataPortal\Client\DataPortal.cs:173
+   Csla.DataPortal.Fetch(Object criteria) in C:\Visual Studio Projects\csla20cs\Csla\DataPortal\Client\DataPortal.cs:138
+   ProjectTracker.Library.Security.PTPrincipal.Login(String username, String password) in C:\Visual Studio Projects\ProjectTracker20cs\ProjectTracker.Library\Security\PTPrincipal.cs:15
+   PTMembershipProvider.ValidateUser(String username, String password) in c:\Visual Studio Projects\ProjectTracker20cs\www\PTWeb\App_Code\PTMembershipProvider.cs:11
+   System.Web.UI.WebControls.Login.OnAuthenticate(AuthenticateEventArgs e) +160
+   System.Web.UI.WebControls.Login.AttemptLogin() +105
+   System.Web.UI.WebControls.Login.OnBubbleEvent(Object source, EventArgs e) +99
+   System.Web.UI.Control.RaiseBubbleEvent(Object source, EventArgs args) +35
+   System.Web.UI.WebControls.Button.OnCommand(CommandEventArgs e) +115
+   System.Web.UI.WebControls.Button.RaisePostBackEvent(String eventArgument) +163
+   System.Web.UI.WebControls.Button.System.Web.UI.IPostBackEventHandler.RaisePostBackEvent(String eventArgument) +7
+   System.Web.UI.Page.RaisePostBackEvent(IPostBackEventHandler sourceControl, String eventArgument) +11
+   System.Web.UI.Page.RaisePostBackEvent(NameValueCollection postData) +33
+   System.Web.UI.Page.ProcessRequestMain(Boolean includeStagesBeforeAsyncPoint, Boolean includeStagesAfterAsyncPoint) +5102
+</PRE></CODE></TD></TR></TABLE><BR>
+<HR>
+<B><FONT face=Verdana>Version Information:</FONT></B>&nbsp;Microsoft .NET Framework Version:2.0.50727.832; ASP.NET Version:2.0.50727.832 </FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>webjedi replied on Monday, October 01, 2007</h2><DIV class=ForumPostContentText id=ctl00_ctl01_bcr_ctl00___PostRepeater_ctl02_PostViewWrapper>
+<P>Check step 7 from this document:</P>
+<P><A href="http://www.lhotka.net/files/csla20/BuildCsla.pdf">http://www.lhotka.net/files/csla20/BuildCsla.pdf</A></P></DIV></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

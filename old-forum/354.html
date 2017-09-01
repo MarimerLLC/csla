@@ -1,0 +1,35 @@
+<html><header><title>Configuration Settings</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Configuration Settings</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/354.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Tim FOrd posted on Tuesday, June 13, 2006</h2>
+
+<p class="MsoNormal">Hi Everyone,<br>
+<br>
+I have a question regarding configuration settings. In our previous
+applications we designed an object (context) that held all the information
+regarding security settings and database settings that was initialised when the
+application was loaded and passed/set on each business object, this was
+designed in VB6.<br>
+<br>
+Having now moved over to VB.net and CSLA i was wondering how people where
+working with configuration settings and passing the connection string around to
+different business object that access the database. <br>
+<br>
+How does this affect the business object when enterprise services/remoting?? primarily
+at the moment we will be running our business object with ASP.net.<br>
+<br>
+I would be very interested in know how this can be achieved simply and
+generically.<br>
+<br>
+Thanks, Tim.<o:p></o:p></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>DavidDilworth replied on Tuesday, June 13, 2006</h2><P>Generally it is considered good practice to put your connection string only in 1 place in the .config file.&nbsp; So for a WebForms application this will be the web.config file and for a WinForms application this will be the app.config file.</P>
+<P>It is not usually "passed around" to different BOs.&nbsp; But a standard method of accessing the data (i.e. an API or method call) is usually provided to get it in a standard way.</P>
+<P>CSLA uses this technique.&nbsp; So for example, you might&nbsp;have two connections strings defined in your .config file - for example&nbsp;"Customer" for your Customer data and "Invoice" for your invoice data.</P>
+<P>Each BO then identifies which database it should get its data from by name - either "Customer" or "Invoice".</P>
+<P>See the ProjectTracker code for an example of this.</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Tuesday, June 13, 2006</h2><BLOCKQUOTE><div><img src="/Themes/basicblue/images/icon-quote.gif"> <strong>Tim FOrd:</strong></div><div>I have a question regarding configuration settings. In our previous
+applications we designed an object (context) that held all the information
+regarding security settings and database settings that was initialised when the
+application was loaded and passed/set on each business object, this was
+designed in VB6.</div></BLOCKQUOTE><br><br>For security, usually you'll want to use Csla.ApplicationContext.User.IsInRole to determine if the user belongs to a role which can access certain parts of your code.<br><br>Other configuration settings can be stored in the applications configuration file (usually called App.Config in your Exe project).<br><p class="MsoNormal">
+<BLOCKQUOTE><div><img src="/Themes/basicblue/images/icon-quote.gif"> <strong>Tim FOrd:</strong></div><div>Having now moved over to VB.net and CSLA i was wondering how people where
+working with configuration settings and passing the connection string around to
+different business object that access the database. </div></BLOCKQUOTE></p><p class="MsoNormal">There's a property on the Application Context to get the connection string.&nbsp; I don't use it though, as I have my own DAL which worries about connections.&nbsp; The only exception is that my DAL provides a way for my business layer to open a connection and keep it open until the business layer closes, so that I can keep all data operations which should be in a transaction on a single connection.<br></p><p class="MsoNormal"><BLOCKQUOTE><div><img src="/Themes/basicblue/images/icon-quote.gif"> <strong>Tim FOrd:</strong></div><div>
+How does this affect the business object when enterprise services/remoting?? primarily
+at the moment we will be running our business object with ASP.net.</div></BLOCKQUOTE></p>With remoting, you'll need to keep that database in your Web.config for the web application which is hosting the data portal.&nbsp; There'll be no need for your client application to know the connection string at all, since all calls to the database are made via the DataPortal.&nbsp; The dataportal ensures that your BO is remoted to the application server before running data access code.&nbsp; You said that your UI layer will be built in Asp.Net.&nbsp; The web config for THAT site does not need to have the connectin string settings; only the remoting host IIS application needs the setting.<br><br>HTH<br>Andy<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Tim FOrd replied on Tuesday, June 13, 2006</h2>Cheers guys, Hit the nail on the head. Exactly what i wanted to know. I had a look at the code example as well and dosn't look as difficult as first expected.<br><br>Thanks for you help.<br><br>Tim.<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,12 @@
+<html><header><title>RootObject with Editable ChildList containing Read-Only Child Objects ?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>RootObject with Editable ChildList containing Read-Only Child Objects ?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11316.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>alex.enjoy posted on Wednesday, April 18, 2012</h2><p>Hello,</p>
+<p>please assume you have users and group.<br />Each user can be a member of many groups.<br /><br />The UI should display the users details and a list of referenced groups.<br />Additionally it has to be possible to remove selected groups,<br />and to add a group selected by a separate combo-box containing available groups.</p>
+<p>My idea was to create the following stereotypes<br />&nbsp;- UserEdit as EditableRoot Object<br />&nbsp;- GroupList as Editable Child List<br />&nbsp;- GroupInfo as Read-Only Child Object</p>
+<p>Unfortunately it seems that an EditableChildList cannot contain Read-Only Child objects.<br />What do I miss here?<br />Why has the Group object to be an editable object? I only want to display informations of it.<br />Only the referencing list has to be modified, but not the containing elements.</p>
+<p>Thanks in advance,<br />Alexander</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Wednesday, April 18, 2012</h2><p>An editable list will only accept editable objects that implements:</p>
+<pre style="font-family:Consolas;font-size:13px;color:black;background:none repeat scroll 0% 0% #fafafa;"><span style="color:#2baaaf;">ISupportUndo</span>,&nbsp;<span style="color:#2baaaf;">IUndoableObject</span>,&nbsp;<span style="color:#2baaaf;">ITrackStatus</span>
+</pre>
+<p>IE: Can participate in N-Level undo and keeps track of whether they are dirty or not. </p>
+<p>ReadOnly objects do NOT implement these interfaces and cannot be used in an editable list. </p>
+<p>You do NOT only want to display information - you must also know whether item status is IsDeleted, IsNew og none (existing). </p>
+<p>And the list has an &quot;owning&quot; reference to all it&#39;s child objects - so they CANNOT be owned by multiple lists in order to participate in N-Level undo.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

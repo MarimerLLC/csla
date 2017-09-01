@@ -1,0 +1,137 @@
+<html><header><title>Help Debugging /w More Silverlight Pain</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Help Debugging /w More Silverlight Pain</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6351.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jack posted on Thursday, February 05, 2009</h2>Okay so I've got my bits and pieces connected and I'm trying to get data for a large BO.&nbsp; I have a number of childListBO's in my BO and when I try to retrieve everything I get the following after my Fetch.&nbsp; <br><br>Type 'System.Collections.Generic.List`1[[System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]' with data contract name 'ArrayOfstring:http://schemas.microsoft.com/2003/10/Serialization/Arrays' is not expected. Add any types not known statically to the list of known types - for example, by using the KnownTypeAttribute attribute or by adding them to the list of known types passed to DataContractSerializer.<br><br>I'm assuming the issue is related to some piece of data I might be using that can't map into Silverlight?&nbsp; I was able to suppress the loading of all my child objects and I can successfully retrieve my data (big step forward) but other than commenting out and then uncommenting one child object at a time I'm hoping there is an easier way to tell where it is blowing up.<br><br>Thanks<br><br>jack<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jack replied on Thursday, February 05, 2009</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I ended up commenting down the chain but looks like the problem
+was with List&lt;string&gt; that I was using to collect messages.&nbsp; I
+switched it to MobileList&lt;string&gt; and it isn&#8217;t crashing there
+anymore.&nbsp; <o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I&#8217;m now getting a CopyState error after my fetch.&nbsp;
+This is a little bit confusing as I&#8217;m not sure where this BeginEdit() is
+coming from&#8230; could that be the XAML databinding?&nbsp; <o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>This is the same getBO function call I make in winforms.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>All I&#8217;ve done is binded to a single property.&nbsp; If I
+remove all the population of childBOs then it works fine so it is linked
+somehow.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>&gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Csla!Csla.Silverlight.CslaDataProvider.Error.set(System.Exception
+value = {Csla.Core.UndoException: Edit level mismatch in CopyState<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp; at Csla.Core.UndoableBase.CopyState(Int32
+parentEditLevel)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp; at
+Csla.Core.UndoableBase.Csla.Core.IUndoableObject.CopyState(Int32
+parentEditLevel, Boolean parentBindingEdit)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp; at Csla.BusinessListBase`2.CopyState(Int32
+parentEditLevel)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp; at
+Csla.BusinessListBase`2.Csla.Core.IUndoableObject.CopyState(Int32 parentEditLevel,
+Boolean parentBindingEdit)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp; at
+Csla.Core.FieldManager.FieldDataManager.Csla.Core.IUndoableObject.CopyState(Int32
+parentEditLevel, Boolean parentBindingEdit)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp; at
+Csla.Core.BusinessBase.OnCopyState(SerializationInfo state)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp; at Csla.Core.UndoableBase.CopyState(Int32
+parentEditLevel)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp; at Csla.Core.BusinessBase.BeginEdit()<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp; at
+Csla.Silverlight.CslaDataProvider.set_ObjectInstance(Object value)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp; at
+Csla.Silverlight.CslaDataProvider.QueryCompleted(Object sender, EventArgs e)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp; at Csla.DataPortal`1.OnFetchCompleted(DataPortalResult`1
+e)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp; at Csla.DataPortal`1.proxy_FetchCompleted(Object
+sender, DataPortalResult`1 e)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp; at
+Csla.DataPortalClient.WcfProxy`1.OnFetchCompleted(DataPortalResult`1 e)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp; at
+Csla.DataPortalClient.WcfProxy`1.proxy_FetchCompleted(Object sender,
+FetchCompletedEventArgs e)}) Line 271 + 0x26 bytes&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; C#<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Jack
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Thursday, February 05, 2009 4:30 PM<br>
+<b>To:</b> jaddington@alexandergracie.com<br>
+<b>Subject:</b> [CSLA .NET] Help Debugging /w More Silverlight Pain<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Okay so I've got my bits and pieces connected and I'm trying
+to get data for a large BO.&nbsp; I have a number of childListBO's in my BO and
+when I try to retrieve everything I get the following after my Fetch.&nbsp; <br>
+<br>
+Type 'System.Collections.Generic.List`1[[System.String, mscorlib,
+Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]' with data
+contract name
+'ArrayOfstring:http://schemas.microsoft.com/2003/10/Serialization/Arrays' is
+not expected. Add any types not known statically to the list of known types -
+for example, by using the KnownTypeAttribute attribute or by adding them to the
+list of known types passed to DataContractSerializer.<br>
+<br>
+I'm assuming the issue is related to some piece of data I might be using that
+can't map into Silverlight?&nbsp; I was able to suppress the loading of all my
+child objects and I can successfully retrieve my data (big step forward) but
+other than commenting out and then uncommenting one child object at a time I'm
+hoping there is an easier way to tell where it is blowing up.<br>
+<br>
+Thanks<br>
+<br>
+jack<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

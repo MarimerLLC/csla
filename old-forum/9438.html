@@ -1,0 +1,23 @@
+<html><header><title>No more BusinessBase.SetDataProperties/SetEFODataProperties?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>No more BusinessBase.SetDataProperties/SetEFODataProperties?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9438.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>lee_b posted on Thursday, August 26, 2010</h2><p>Hello again. Sorry if I&#39;m becoming a bit of a forum-hog here. I have a few posts regarding various issues I&#39;m encountering regarding a change of CSLA version. Would it be more appropriate to keep them all in a single thread?</p>
+<p>Anyway, further to my shift from .100201 to 100723, the methods for SetDataProperties and SetEFODataProperties no longer appear to be in the BusinessBase class.</p>
+<p>Using a Data Portal ObjectFactory, I am calling a fetch:</p>
+<p>public object Fetch(UserListCriteria criteria)<br />{</p>
+<p style="padding-left:30px;">User o = null;</p>
+<p style="padding-left:30px;">using (VEntities ctx = new VEntities()){</p>
+<p style="padding-left:60px;">user efo = ctx.users.Where(&quot;it.id = &quot; + criteria.Id).First&lt;user&gt;();<br />Populate(efo, ref o);</p>
+<p style="padding-left:30px;">}</p>
+<p>}</p>
+<p>...</p>
+<p>public void Populate(EntityObject o, ref User u)<br />{</p>
+<p style="padding-left:30px;">//U inherits from BusinessBase<br />u.SetDataProperties(o);</p>
+<p>}</p>
+<p>and a similar method for updating, except using a PopulateEFO method that used u.SetEfoDataProperties(o).</p>
+<p>&nbsp;</p>
+<p>These used to work, but now they do not. Do these methods exist somewhere else, or been made redundant?<br /><br />Again, sorry if this has been mentioned elsewhere already. I checked the forums and changelog but found nothing.</p>
+<p>Thanks</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Friday, August 27, 2010</h2><p>I have no idea what you are talking about here. Those methods have never existed in CSLA. They must be part of some custom base class in your application?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>lee_b replied on Friday, August 27, 2010</h2><p>Ack!</p>
+<p>The solution I am working with I originally got from somebody else. They must have tinkered with the CSLA source :(</p>
+<p>Oh well, I&#39;m using legit code straight from the official page now, hopefully there haven&#39;t been too many customisations!</p>
+<p>&nbsp;</p>
+<p>Thanks again</p>
+<p>&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

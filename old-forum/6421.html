@@ -1,0 +1,490 @@
+<html><header><title>Error in ApplyEdit() if child is added after BeginEdit()</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Error in ApplyEdit() if child is added after BeginEdit()</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6421.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>oscarmorasu posted on Friday, February 13, 2009</h2><P>Hello.</P>
+<P>I'm using CSLA 3.6.1. All my business objects inherit from BusinessBase&lt;T&gt;. I have a parent object "P" that contains a child object "C".</P>
+<P>In one scenario an instance of P already exists, and I call BeginEdit(). Then I create an instance of C and assign it&nbsp;to P.</P>
+<P>When I call P.ApplyEdit() I get an UndoException in AcceptChanges. Looking at the implementation of UndoableBase. AcceptChanges() I see:</P><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>if</FONT></FONT><FONT size=2> (</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>this</FONT></FONT><FONT size=2>.EditLevel - 1 != parentEditLevel)</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>throw</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>new</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>UndoException</FONT></FONT><FONT size=2>(</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>string</FONT></FONT><FONT size=2>.Format(</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>Resources</FONT></FONT><FONT size=2>.EditLevelMismatchException, </FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>"AcceptChanges"</FONT></FONT><FONT size=2>));</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>if</FONT></FONT><FONT size=2> (EditLevel &gt; 0)</P>
+<P>{...</P></FONT>
+<P>I get the exception because the logic first compares the current instance's EditLevel against the parent's. Since C was created after P.BeginEdit() those levels don't match and I get the exception. Is that an expected behavior? Is there a way to synchronize&nbsp;C's EditLevel?</P>
+<P>Now, in the UndoableBase.UndoChanges() I see the opposite:</P><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>if</FONT></FONT><FONT size=2> (EditLevel &gt; 0)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>if</FONT></FONT><FONT size=2> (</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>this</FONT></FONT><FONT size=2>.EditLevel - 1 != parentEditLevel)</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>throw</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>new</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>UndoException</FONT></FONT><FONT size=2>(</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>string</FONT></FONT><FONT size=2>.Format(</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>Resources</FONT></FONT><FONT size=2>.EditLevelMismatchException, </FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>"UndoChanges"</FONT></FONT><FONT size=2>));</P></FONT>
+<P>In this case the logic first checks for EditLevel &gt;&nbsp;0 followed by the parent EditLevel validation. If ApplyEdit() followed this order I wouldn't get the exception.</P>
+<P>Any thoughts?</P>
+<P>Thanks.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, February 13, 2009</h2><P>If you use a managed backing field to reference your child then CSLA should set the edit level of the child to match the parent.</P>
+<P>If you use a private backing field to reference your child then you must manage edit levels of the child yourself (that's no different than any pre-3.6 code you'd have written in this case).</P>
+<P>If you are using a managed backing field and you are still seeing this issue, then please share the code where you declare the child property in the parent, and where you create/add the child object.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>oscarmorasu replied on Monday, February 23, 2009</h2>Thanks for your answer Rocky, I'll look deeper into managed fileds.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rsbaker0 replied on Monday, February 23, 2009</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>oscarmorasu:</strong></div><div>
+<P>..In one scenario an instance of P already exists, and I call BeginEdit(). Then I create an instance of C and assign it&nbsp;to P....</P>
+<P></div></BLOCKQUOTE></P>
+<P>If you can do this with a managed property per Rocky, then if you call LoadProperty() to assign the value it will automatically set the edit level properly to match the containing parent object's edit level. </P>
+<P>Edit level issues were the #1 reason I went almost completely to managed properties for child objects. There are some potential gotchas in complicated undo scenarios, but so far I find they work very well. </P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Andreas replied on Friday, May 08, 2009</h2><P>Unfortunately&nbsp;LoadProperty doesn't&nbsp;set the child level to its parent level. Only SetProperty()&nbsp;does this job.&nbsp;But that's probably not what you realy want if you think in terms of&nbsp;"lazy loading"&nbsp;child properties because SetProperty() marks you parent object as dirty, fires&nbsp;OnPropertyChanged-Events and&nbsp;checking validation and authorisation rules etc. So how do we implement lasy loading child properties on any parent EditLevel value&nbsp;without corupting the object tree?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Andreas replied on Friday, May 08, 2009</h2><P>...I need to add, that&nbsp;the behavior depends on which LoadProperty() member you call:<BR><FONT color=#0000ff>protected</FONT> <FONT color=#0000ff>void</FONT> LoadProperty&lt;P&gt;(<FONT color=#2b91af>PropertyInfo</FONT>&lt;P&gt; propertyInfo, P newValue)<BR>works the way rsbaker0 described</P>
+<P>but</P>
+<P><FONT color=#0000ff>protected</FONT> <FONT color=#0000ff>void</FONT> LoadProperty(<FONT color=#2b91af>IPropertyInfo</FONT> propertyInfo, <FONT color=#0000ff>object</FONT> newValue)<BR>works the way I described (the trap&nbsp;I steped into). </P>
+<P>For implementing&nbsp;child&nbsp;lazy loading the right&nbsp;way you have make sure&nbsp;to call&nbsp;<BR>protected <FONT color=#0000ff>void</FONT> LoadProperty&lt;P&gt;(<FONT color=#2b91af>PropertyInfo</FONT>&lt;P&gt; propertyInfo, P newValue)</P>
+<P>Rocky, can you comment why they work different?</P>
+<P>Andreas</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Saturday, May 09, 2009</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>This seems like a bug.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>The late-bound overload that accepts an object parameter was
+added very late in the process to accommodate data load scenarios where types
+aren&#8217;t known. Obviously you take a performance hit for using that
+overload, but it allows for looser coupling of a sort.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Andreas
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Friday, May 08, 2009 4:42 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] Error in ApplyEdit() if child is added after
+BeginEdit()<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>...I need to add, that&nbsp;the behavior depends on which LoadProperty()
+member you call:<br>
+<span>protected</span> <span>void</span>
+LoadProperty&lt;P&gt;(<span>PropertyInfo</span>&lt;P&gt;
+propertyInfo, P newValue)<br>
+works the way rsbaker0 described<o:p></o:p></p>
+
+<p>but<o:p></o:p></p>
+
+<p><span>protected</span> <span>void</span>
+LoadProperty(<span>IPropertyInfo</span> propertyInfo, <span>object</span> newValue)<br>
+works the way I described (the trap&nbsp;I steped into). <o:p></o:p></p>
+
+<p>For implementing&nbsp;child&nbsp;lazy loading the right&nbsp;way you have
+make sure&nbsp;to call&nbsp;<br>
+protected <span>void</span> LoadProperty&lt;P&gt;(<span>PropertyInfo</span>&lt;P&gt; propertyInfo, P newValue)<o:p></o:p></p>
+
+<p>Rocky, can you comment why they work different?<o:p></o:p></p>
+
+<p>Andreas<o:p></o:p></p>
+
+<p>&nbsp;<o:p></o:p></p>
+
+<p>&nbsp;<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Andreas replied on Wednesday, May 13, 2009</h2><P class=MsoNormal><SPAN>Here is a possible&nbsp;fix.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Two new, not-generic members of LoadProperty. The only differnce is that they use the not-generic members Fieldmanager.LoadFiledData and Fieldmanager.SetFieldData. The existing LoadPropertyValue&lt;P&gt;() and LoadProperty&lt;P&gt;() now refer to these new not-generic members.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>This change is requried if someone needs a custom PropertyInfo implementation (e.g. derived from PropertyInfo&lt;P&gt;). In this case IPropertInfo is needed to interface with BusinessBase and its LoadProperty members. With this change CSLA now handles child objects correctly.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Will this be fixed in 3.6.3?<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN>//private void LoadPropertyValue&lt;P&gt;(PropertyInfo&lt;P&gt; propertyInfo, P oldValue, P newValue, bool markDirty)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN>private void LoadPropertyValue(IPropertyInfo propertyInfo, object oldValue, object newValue, bool markDirty)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN>{<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>var</SPAN> valuesDiffer = <SPAN>false</SPAN>;<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>if</SPAN> (oldValue == <SPAN>null</SPAN>)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>&nbsp;&nbsp;&nbsp;</SPAN>valuesDiffer = newValue != <SPAN>null</SPAN>;<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>else<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>valuesDiffer = !(oldValue.Equals(newValue));<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>if</SPAN> (valuesDiffer)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>{<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>IBusinessObject</SPAN> old = oldValue <SPAN>as</SPAN> <SPAN>IBusinessObject</SPAN>;<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>if</SPAN> (old != <SPAN>null</SPAN>)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>RemoveEventHooks(old);<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>IBusinessObject</SPAN> @new = newValue <SPAN>as</SPAN> <SPAN>IBusinessObject</SPAN>;<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>if</SPAN> (@new != <SPAN>null</SPAN>)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>AddEventHooks(@new);<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>if</SPAN> (<SPAN>typeof</SPAN>(<SPAN>IEditableBusinessObject</SPAN>).IsAssignableFrom(propertyInfo.Type))<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>{<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</SPAN><SPAN>// remove old event hook<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>//if (oldValue != null)<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>//{<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>//<SPAN>&nbsp; </SPAN>INotifyPropertyChanged pc = (INotifyPropertyChanged)oldValue;<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>//<SPAN>&nbsp; </SPAN>pc.PropertyChanged -= new PropertyChangedEventHandler(Child_PropertyChanged);<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>//}<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>if</SPAN> (markDirty)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>{<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>OnPropertyChanging(propertyInfo.Name);<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>//FieldManager.SetFieldData&lt;P&gt;(propertyInfo, newValue);<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>FieldManager.SetFieldData(propertyInfo, newValue);<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>PropertyHasChanged(propertyInfo.Name);<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>}<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>else<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>{<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>//FieldManager.LoadFieldData&lt;P&gt;(propertyInfo, newValue);<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>FieldManager.LoadFieldData(propertyInfo, newValue);<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>}<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>IEditableBusinessObject</SPAN> child = (<SPAN>IEditableBusinessObject</SPAN>)newValue;<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>if</SPAN> (child != <SPAN>null</SPAN>)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>{<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>child.SetParent(<SPAN>this</SPAN>);<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>// set child edit level<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>UndoableBase</SPAN>.ResetChildEditLevel(child, <SPAN>this</SPAN>.EditLevel, <SPAN>this</SPAN>.BindingEdit);<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>// reset EditLevelAdded <o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>child.EditLevelAdded = <SPAN>this</SPAN>.EditLevel;<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>// hook child event<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>//INotifyPropertyChanged pc = (INotifyPropertyChanged)newValue;<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>//pc.PropertyChanged += new PropertyChangedEventHandler(Child_PropertyChanged);<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>}<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>}<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>else</SPAN> <SPAN>if</SPAN> (<SPAN>typeof</SPAN>(<SPAN>IEditableCollection</SPAN>).IsAssignableFrom(propertyInfo.Type))<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>{<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</SPAN><SPAN>// remove old event hooks<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>//if (oldValue != null)<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>//{<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>//<SPAN>&nbsp; </SPAN>IBindingList pc = (IBindingList)oldValue;<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>//<SPAN>&nbsp; </SPAN>pc.ListChanged -= new ListChangedEventHandler(Child_ListChanged);<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;</SPAN><SPAN>//}<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>if</SPAN> (markDirty)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>{<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>OnPropertyChanging(propertyInfo.Name);<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>//FieldManager.SetFieldData&lt;P&gt;(propertyInfo, newValue);<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>FieldManager.SetFieldData(propertyInfo, newValue);<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>PropertyHasChanged(propertyInfo.Name);<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</SPAN>}<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>else<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>{<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>//FieldManager.LoadFieldData&lt;P&gt;(propertyInfo, newValue);<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>FieldManager.LoadFieldData(propertyInfo, newValue);<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>}<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>IEditableCollection</SPAN> child = (<SPAN>IEditableCollection</SPAN>)newValue;<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>if</SPAN> (child != <SPAN>null</SPAN>)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</SPAN>{<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>child.SetParent(<SPAN>this</SPAN>);<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>IUndoableObject</SPAN> undoChild = child <SPAN>as</SPAN> <SPAN>IUndoableObject</SPAN>;<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>if</SPAN> (undoChild != <SPAN>null</SPAN>)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>{<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>// set child edit level<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</SPAN><SPAN>UndoableBase</SPAN>.ResetChildEditLevel(undoChild, <SPAN>this</SPAN>.EditLevel, <SPAN>this</SPAN>.BindingEdit);<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>}<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>//IBindingList pc = (IBindingList)newValue;<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>//pc.ListChanged += new ListChangedEventHandler(Child_ListChanged);<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>}<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>}<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>else<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>{<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>if</SPAN> (markDirty)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>{<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>OnPropertyChanging(propertyInfo.Name);<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>//FieldManager.SetFieldData&lt;P&gt;(propertyInfo, newValue);<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>FieldManager.SetFieldData(propertyInfo, newValue);<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</SPAN>PropertyHasChanged(propertyInfo.Name);<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>}<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>else<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>{<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>//FieldManager.LoadFieldData&lt;P&gt;(propertyInfo, newValue);<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>FieldManager.LoadFieldData(propertyInfo, newValue);<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>}<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>}<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>}<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN>}<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN><SPAN>///</SPAN><SPAN> </SPAN><SPAN>&lt;summary&gt;<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN><SPAN>///</SPAN><SPAN> Loads a property's managed field with the <o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN><SPAN>///</SPAN><SPAN> supplied value calling PropertyHasChanged <o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN><SPAN>///</SPAN><SPAN> if the value does change.<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN><SPAN>///</SPAN><SPAN> </SPAN><SPAN>&lt;/summary&gt;<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN><SPAN>///</SPAN><SPAN> </SPAN><SPAN>&lt;param name="propertyInfo"&gt;<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN><SPAN>///</SPAN><SPAN> PropertyInfo object containing property metadata.</SPAN><SPAN>&lt;/param&gt;<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN><SPAN>///</SPAN><SPAN> </SPAN><SPAN>&lt;param name="newValue"&gt;<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN><SPAN>///</SPAN><SPAN> The new value for the property.</SPAN><SPAN>&lt;/param&gt;<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN><SPAN>///</SPAN><SPAN> </SPAN><SPAN>&lt;remarks&gt;<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN><SPAN>///</SPAN><SPAN> No authorization checks occur when this method is called,<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN><SPAN>///</SPAN><SPAN> and no PropertyChanging or PropertyChanged events are raised.<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN><SPAN>///</SPAN><SPAN> Loading values does not cause validation rules to be<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN><SPAN>///</SPAN><SPAN> invoked.<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN><SPAN>///</SPAN><SPAN> </SPAN><SPAN>&lt;/remarks&gt;<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN>//protected void LoadProperty&lt;P&gt;(PropertyInfo&lt;P&gt; propertyInfo, object newValue)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN>protected void LoadProperty(IPropertyInfo propertyInfo, object newValue)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN>{<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>try<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>{<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>object</SPAN> oldValue;<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>var</SPAN> fieldData = FieldManager.GetFieldData(propertyInfo);<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>if</SPAN> (fieldData == <SPAN>null</SPAN>)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>{<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>oldValue = propertyInfo.DefaultValue;<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>//fieldData = FieldManager.LoadFieldData&lt;P&gt;(propertyInfo, oldValue);<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>fieldData = FieldManager.LoadFieldData(propertyInfo, oldValue);<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>}<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>else<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</SPAN>{<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>//var fd = fieldData as FieldManager.IFieldData&lt;P&gt;;<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>var fd = fieldData as FieldManager.IFieldData;<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>if</SPAN> (fd != <SPAN>null</SPAN>)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>oldValue = fd.Value;<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>else<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>oldValue = fieldData.Value;<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>}<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>//LoadPropertyValue&lt;P&gt;(propertyInfo, oldValue, newValue, false);<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>LoadPropertyValue(propertyInfo, oldValue, newValue, false);<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>}<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>catch</SPAN> (<SPAN>Exception</SPAN> ex)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>{<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>throw</SPAN> <SPAN>new</SPAN> <SPAN>PropertyLoadException</SPAN>(<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>string</SPAN>.Format(Properties.<SPAN>Resources</SPAN>.PropertyLoadException, propertyInfo.Name, ex.Message), ex);<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>}<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN>}<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p><FONT face=Calibri>&nbsp;</FONT></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN>protected void LoadProperty&lt;P&gt;(PropertyInfo&lt;P&gt; propertyInfo, P newValue)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN>{<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>this.LoadProperty(propertyInfo as IPropertyInfo, newValue);<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN>}<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN>private void LoadPropertyValue&lt;P&gt;(PropertyInfo&lt;P&gt; propertyInfo, P oldValue, P newValue, bool markDirty)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN>{<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>this.LoadPropertyValue(propertyInfo as IPropertyInfo, oldValue, newValue, markDirty);<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN>}<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><o:p><FONT face=Calibri>&nbsp;</FONT></o:p></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, May 18, 2009</h2><P>We surely don't want the generic LoadProperty&lt;T&gt;() to invoke a non-generic LoadProperty().</P>
+<P>There's a lot of complex stuff going on in the field manager to avoid boxing/unboxing of values when the generic methods are used. If you use the non-generic methods you pay a performance penalty, but get looser behaviors (and more agressive type coercion).</P>
+<P>In other words, I basically implemented two code paths that do almost the same thing - on purpose. The generic code path (and IPropertyInfo&lt;T&gt; and FieldData&lt;T&gt;) all exist to avoid boxing and type coercion. The non-generic code path should have the same behavior, but with boxing and type coercion.</P>
+<P>So the bug here is that the non-generic LoadProperty() isn't doing the right thing - but that needs to be solved without causing the generic implementation to use a less efficient code path.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Andreas replied on Tuesday, May 19, 2009</h2><P>Yes, Rocky everything you said makes perfektly sense.&nbsp;With IPropertyInfo&lt;T&gt;&nbsp;I could fix&nbsp;the&nbsp;problem much cleaner....but where do I find IPropertyInfo&lt;T&gt;?&nbsp;There is only PropertyInfo&lt;T&gt; and IFieldData&lt;T&gt;....?</P>
+<P>Andreas</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, May 19, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Sorry, you are right, there is the IPropertyInfo interface, and
+the PropertyInfo&lt;T&gt; class. But that is all you need.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Remember that you create the PropertyInfo&lt;T&gt; instance in
+your RegisterProperty() method call. You can create any IPropertyInfo object
+you choose when you call RegisterProperty() &#8211; it only cares about the
+interface. So that object can be generic or non-generic as you choose. It doesn&#8217;t
+even have to be the same type for every property if you wanted variety.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Your IPropertyInfo implementation object (normally
+PropertyInfo&lt;T&gt;) is responsible for creating the IFieldData&lt;T&gt;
+instance (normally FieldData&lt;T&gt;), and so you choose exactly what class to
+use when creating your field data container object.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I must confess that I&#8217;ve lost the reason we&#8217;re
+discussing this.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>There&#8217;s a bug in LoadProperty() (non-generic overload)
+that needs to be addressed &#8211; but how did we get off on replacing the
+PropertyInfo&lt;T&gt; and FieldData&lt;T&gt; types?<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Andreas replied on Tuesday, May 19, 2009</h2>Not an easy question, how to get of replacing the generic types. I asked this question myself before I implemented the non-generic LoadProperty member. I have no answer to it and I only think that IPropertyInfo is simply missing in the framework.<br />My  suggestion would be that BusinessBase can have both, non-generic and generic LoadProperty, executing more or less the same code. The only difference is that one of them refer to the generic and the other to the non-generic LoadFieldData and SetFieldData of FieldManager. But for performance reasons the framework uses the generic ones internally only. By the way: Why did you provide non-generic LoadFieldData and SetFieldData of FieldManager when you think boxing and unboxing will lead to an inacceptable performance penalty?<br />I think we end up with a little CSLA design problem here, don't we? If you really wanted to prevent boxing and unboxing you probably should have introduce IPropertyInfo in the first place just like IFieldData.<br /><br />Andreas</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Andreas replied on Tuesday, May 19, 2009</h2><P>Sorry, but&nbsp;IE8&nbsp;swallowed all "&lt;T&gt;" in my last post:</P>
+<P>Not an easy question, how to get of replacing the generic types. I asked this question myself before I implemented the non-generic LoadProperty member. I have no answer to it and I only think that "IPropertyInfo&lt; T &gt;" is simply missing.<BR>My suggestion would be that BusinessBase can have both, non-generic and generic LoadProperty, executing more or less the same code. The only difference is that one of them refer to the generic and the other to the non-generic LoadFieldData and SetFieldData of FieldManager. But for performance reasons the framework uses the generic ones internally only. By the way: Why did you provide non-generic LoadFieldData and SetFieldData of FieldManager when you think boxing and unboxing will lead to an inacceptable performance penalty?<BR>I think we end up with a little CSLA design problem here, don't we? If you really wanted to prevent boxing and unboxing you probably should have introduce "IPropertyInfo&lt; T &gt;" in the first place just like "IFieldData&lt; T &gt;".</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, May 19, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I should point out too, that CSLA doesn&#8217;t need an
+IPropertyInfo&lt;T&gt; to avoid boxing or type coercion.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>The only place where boxing and type coercion come into play is
+when interacting with the field data container objects (IFieldData&lt;T&gt;).
+You might notice that there are both IFieldData and IFieldData&lt;T&gt;, and
+CSLA will try to use the generic one when possible, falling back to the
+non-generic when necessary.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>But there&#8217;s really no need for an IPropertyInfo&lt;T&gt;,
+because the framework doesn&#8217;t need type information from the property metadata
+container, only the field data container.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, May 19, 2009</h2>The non-generic LoadProperty() method exists purely to support loosely<br />coupled data access layer implementations.<br /><br />Some people implement their DAL by calling a service or other external<br />entity that returns a DTO, and their DAL doesn't actually know the type of<br />the DTO. Using various techniques (reflection, dynamic types, etc) it is<br />possible to load the business object's properties.<br /><br />In that case a compile-time concept like generics is not useful because no<br />type information is actually available until runtime, hence the non-generic<br />LoadProperty().<br /><br />As I mentioned earlier, this was not part of the original design. This was<br />something added later in the development process based on community<br />feedback.<br /><br />And this is (to some degree) why the editlevel bug exists - because if you<br />use the non-generic LoadProperty() in its intended usage scenario you'd<br />never encounter a case where the edit level needs to be set.<br /><br />All that said, it does seem reasonably valid that someone might use the<br />non-generic LoadProperty() outside the DAL, and would then expect it to have<br />the same semantic behaviors as the generic implementation - which is why I<br />do think this is a bug.<br /><br />Rocky</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Andreas replied on Tuesday, May 19, 2009</h2><P class=MsoNormal><SPAN>Rocky, I don't want to stress this to much b</SPAN><SPAN>ut I can't hardly believe, that DAL scenario was the only use case and motivation&nbsp;for adding the non-generic LoadProperty - which was of cause not the original design. But what about custom or derived PropertyInfo&lt;T&gt; implementations? This is another use case,</SPAN><I><SPAN> where a non-generic LoadProperty(IPropertyInfo,..) is needed,</SPAN></I><SPAN> in any case&nbsp;you want to call LoadProperty. This&nbsp;is (from what I know so far) definitely an intended use case from the beginning, isn't it? </SPAN></P>
+<P class=MsoNormal><SPAN>Will this bug be fixed in 3.6.3?</SPAN></P>
+<P class=MsoNormal><SPAN></SPAN>&nbsp;</P>
+<P class=MsoNormal><SPAN>Andreas</SPAN></P>
+<P class=MsoNormal><SPAN></SPAN>&nbsp;</P>
+<P class=MsoNormal><SPAN><o:p><FONT face=Calibri>&nbsp;</FONT></o:p></SPAN></P>
+<P class=MsoNormal><o:p><FONT face=Calibri>&nbsp;</FONT></o:p></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, May 19, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Three things.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>First, the design scenario for the non-generic LoadProperty()
+was something the community came up with late in the development cycle, and is
+purely centered around the DAL. I guess in the end you can believe what you would
+like, but as I&#8217;m the guy who decided to create the overload for that
+purpose I&#8217;m pretty sure that was the only thing in my mind at the time.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Second, I <i>think</i> I&#8217;ll fix LoadProperty() regarding
+the editlevel issue in 3.6.3, but I can&#8217;t say for sure. It might have to
+wait until 3.6.4 or something. I&#8217;m only one guy, and I also do work where
+I make money and that takes precedence over the wish list. Alternately I can
+hold 3.6.3 until this feature is done, but that really won&#8217;t change the
+timeframe in which I can get to it, and it would prevent valuable bug fixes
+from being released in the shorter term.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Third, I think you are talking about a different issue, and I confess
+I don&#8217;t understand the issue you are talking about. Clearly it is something
+other than the editlevel bug in LoadProperty(), and has something to do with a
+custom PropertyInfo&lt;T&gt; equivalent. I think it would be helpful if you
+would clearly explain the scenario you are facing.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Andreas replied on Wednesday, May 20, 2009</h2><P>Here is my scenario:</P>
+<P>1.&nbsp;I decided to create my custom PropertyInfo class (class MyPropertyInfo implementing IPropertyInfo). The decision came out from the following discussion:&nbsp;<A HREF="/forums/thread/28071.aspx">http://forums.lhotka.net/forums/thread/28071.aspx</A><BR>2.&nbsp;Then I wanted to implement lazy loading of some properties. Before the lazy loading starts the owning parent already can have&nbsp;a certain Editlevel &gt; 0.&nbsp; Here is the implementation of the property getter</P>
+<P>get<BR>{<BR>&nbsp;&nbsp; //ChildPropertyInfo is of&nbsp;type MyPropertyInfo<BR>&nbsp;&nbsp;&nbsp;if(FieldManager.FieldExists(this.ChildProperty)==false)<BR>&nbsp;&nbsp;&nbsp;{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ChildType childValue = DataPortal.Fetch&lt;ChildType&gt;.Fetch(new SingelCriteria&lt;ChildType, int&gt;(this.id);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;this.LoadProperty(ChildProperty, childValue); //LoadProperty(IPropertyInfo, object value) is&nbsp;called and hits me with the EditLevel bug...<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;this.OnPropertyChanged(this.ChildProperty.Name);<BR>&nbsp;&nbsp;&nbsp;}<BR>&nbsp;&nbsp;&nbsp;return this.GetProperty(this.ChildProperty);<BR>}<BR><BR>By reviewing&nbsp;my code during this discussion I&nbsp;changed my MyPropertyInfo implemenation which now derives from PropertyInfo&lt;T&gt; instead of&nbsp;implementing IPropertyInfo from the ground up. Now I can force the code to call the&nbsp;LoadProperty&lt;T&gt;() member. So this will work for me even if you&nbsp;decided to fix it in version&nbsp;&gt;3.6.3. Thanks for the valuable discussion!</P>
+<P>Andreas</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, May 20, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>So the only reason for creating a custom IPropertyInfo is to
+provide a more advanced field data container? If that&#8217;s true, then you <i>should</i>
+subclass PropertyInfo&lt;T&gt; as a solution.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>There are two primary scenarios for creating a custom
+IPropertyInfo<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoListParagraph><span><span>1.<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span></span><span>To override the method that creates the field data container
+object for a property<o:p></o:p></span></p>
+
+<p class=MsoListParagraph><span><span>2.<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span></span><span>To add more metadata properties describing the property (such as
+values describing how this property should be persisted)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Both scenarios can be accomplished by subclassing
+PropertyInfo&lt;T&gt;.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I don&#8217;t have a scenario at this time, where a raw
+implementation of IPropertyInfo would be necessary.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

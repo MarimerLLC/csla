@@ -1,0 +1,736 @@
+<html><header><title>Delete child objects</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Delete child objects</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10532.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Tous-Citi posted on Monday, July 18, 2011</h2><p>I have just recently converted my Windows application from CSLA 3.6.2 to 4.1.0. &nbsp;After many hours of converting authorization, validation and property definitions, I finally got the application to compile. &nbsp;I went to run the app and found that I can no longer delete items from a child list.</p>
+<p>From the UI I call the following (this used to work, now fails when attempting to saveitem():</p>
+<p>&nbsp;</p>
+<pre>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>AccountGroupItem</span>&nbsp;parent&nbsp;=&nbsp;(<span>AccountGroupItem</span>)bindingSource1.Current;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;parent.AccountGroupOmmViewableItemCollection.Remove(item);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;saveItem(); </pre>
+<pre></pre>
+<p>Below is a copy of the Parent object and one of the Child object (sorry for all the detail).  The error that I&#39;m getting is an index out of range. &nbsp;It&#39;s as though the CSLA framework is expecting x items in the list, but because of the &quot;Remove&quot; there&#39;s only x-1. &nbsp;Did something change in how 4.1 handles child objects? &nbsp;Any help will be greatly appreciated. &nbsp;Thanks.</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>
+<p>PARENT</p>
+<p>===============================</p>
+<p>&nbsp;</p>
+<p>using Csla;</p>
+<p>using Csla.Data;</p>
+<p>using System;</p>
+<p>using System.ComponentModel.DataAnnotations;</p>
+<p>using System.Data;</p>
+<p>using TradeRec.DalOracle;</p>
+<p>using Oracle.DataAccess.Client;</p>
+<p>using Csla.Rules.CommonRules;</p>
+<p>&nbsp;</p>
+<p>namespace TradeRec.Library.Maintenance</p>
+<p>{</p>
+<p>&nbsp; &nbsp; [Serializable()]</p>
+<p>&nbsp; &nbsp; public partial class AccountGroupItem : BusinessBase&lt;AccountGroupItem&gt;</p>
+<p>&nbsp; &nbsp; {</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; private static Int32 _returnCode = 0;</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; public enum ReturnStatus</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Redefined_Option_Stocks = 2,</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; NO_Exercise_Assignment_Trans = 1,</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Successful = 0,</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Failed_Error = -1</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; public ReturnStatus ReturnCode</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; get { return (ReturnStatus)_returnCode; }</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; #region Business Properties and Methods</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; private static PropertyInfo&lt;decimal&gt; AcctGroupIdProperty = RegisterProperty&lt;decimal&gt;(p =&gt; p.AcctGroupId);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; [System.ComponentModel.DataObjectField(true, false)]</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; public decimal AcctGroupId</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; get { return GetProperty&lt;decimal&gt;(AcctGroupIdProperty); }</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; private static PropertyInfo&lt;string&gt; AcctGroupCdProperty = RegisterProperty&lt;string&gt;(p =&gt; p.AcctGroupCd);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; [Display(Name = &quot;AcctGroupCd&quot;)]</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; [Required]</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; [StringLength(10)]</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; public string AcctGroupCd</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; get { return GetProperty&lt;string&gt;(AcctGroupCdProperty); }</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; set { SetProperty&lt;string&gt;(AcctGroupCdProperty, value); }</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; private static PropertyInfo&lt;string&gt; AcctGroupDescProperty = RegisterProperty&lt;string&gt;(p =&gt; p.AcctGroupDesc);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; [Display(Name = &quot;AcctGroupDesc&quot;)]</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; [StringLength(50)]</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; public string AcctGroupDesc</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; get { return GetProperty&lt;string&gt;(AcctGroupDescProperty); }</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; set { SetProperty&lt;string&gt;(AcctGroupDescProperty, value); }</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; private static PropertyInfo&lt;decimal&gt; GlcostCenterIdProperty = RegisterProperty&lt;decimal&gt;(p =&gt; p.GlcostCenterId);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; public decimal GlcostCenterId</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; get { return GetProperty&lt;decimal&gt;(GlcostCenterIdProperty); }</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; set { SetProperty&lt;decimal&gt;(GlcostCenterIdProperty, value); }</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; private static PropertyInfo&lt;string&gt; GlcostCenterCdProperty = RegisterProperty&lt;string&gt;(p =&gt; p.GlcostCenterCd);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; [Display(Name = &quot;GlcostCenterCd&quot;)]</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; [StringLength(10)]</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; public string GlcostCenterCd</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; get { return GetProperty&lt;string&gt;(GlcostCenterCdProperty); }</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; set { SetProperty&lt;string&gt;(GlcostCenterCdProperty, value); }</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; private static PropertyInfo&lt;string&gt; GlcostCenterDescProperty = RegisterProperty&lt;string&gt;(p =&gt; p.GlcostCenterDesc);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; [Display(Name = &quot;GlcostCenterDesc&quot;)]</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; [StringLength(50)]</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; public string GlcostCenterDesc</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; get { return GetProperty&lt;string&gt;(GlcostCenterDescProperty); }</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; set { SetProperty&lt;string&gt;(GlcostCenterDescProperty, value); }</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; //child properties</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; public static readonly PropertyInfo&lt;AccountGroupOmmViewableItemList&gt; AccountGroupOmmViewableItemCollectionProperty = RegisterProperty&lt;AccountGroupOmmViewableItemList&gt;(c =&gt; c.AccountGroupOmmViewableItemCollection, RelationshipTypes.Child | RelationshipTypes.LazyLoad);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; public AccountGroupOmmViewableItemList AccountGroupOmmViewableItemCollection</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; get</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; if (!FieldManager.FieldExists(AccountGroupOmmViewableItemCollectionProperty))</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; if (this.IsNew)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; LoadProperty&lt;AccountGroupOmmViewableItemList&gt;(AccountGroupOmmViewableItemCollectionProperty, AccountGroupOmmViewableItemList.NewAccountGroupOmmViewableItemList());</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; else</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; LoadProperty&lt;AccountGroupOmmViewableItemList&gt;(AccountGroupOmmViewableItemCollectionProperty, AccountGroupOmmViewableItemList.GetAccountGroupOmmViewableItemList(this));</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; return GetProperty&lt;AccountGroupOmmViewableItemList&gt;(AccountGroupOmmViewableItemCollectionProperty);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; private set</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; LoadProperty(AccountGroupOmmViewableItemCollectionProperty, value);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; OnPropertyChanged(AccountGroupOmmViewableItemCollectionProperty);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; #endregion //Business Properties and Methods</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; #region &nbsp;Business Rules</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; protected override void AddBusinessRules()</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; base.AddBusinessRules();</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; protected static void AddObjectAuthorizationRules()</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; // add object-level authorization rules here</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Csla.Rules.BusinessRules.AddRule(typeof(AccountGroupItem), new Csla.Rules.CommonRules.IsInRole(Csla.Rules.AuthorizationActions.CreateObject, &quot;Administrator&quot;, &quot;Support&quot;, &quot;SupportISA&quot;));</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Csla.Rules.BusinessRules.AddRule(typeof(AccountGroupItem), new Csla.Rules.CommonRules.IsInRole(Csla.Rules.AuthorizationActions.GetObject, &quot;Administrator&quot;, &quot;Support&quot;, &quot;SupportISA&quot;, &quot;ReadOnly&quot;));</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Csla.Rules.BusinessRules.AddRule(typeof(AccountGroupItem), new Csla.Rules.CommonRules.IsInRole(Csla.Rules.AuthorizationActions.EditObject, &quot;Administrator&quot;, &quot;Support&quot;, &quot;SupportISA&quot;));</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Csla.Rules.BusinessRules.AddRule(typeof(AccountGroupItem), new Csla.Rules.CommonRules.IsInRole(Csla.Rules.AuthorizationActions.DeleteObject, &quot;Administrator&quot;, &quot;Support&quot;, &quot;SupportISA&quot;));</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; #endregion &nbsp;//Business Rules</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; #region Factory Methods</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; public AccountGroupRiskManagerItem AddNewAccountGroupRiskManagerItem(decimal accountGroupId)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; AccountGroupRiskManagerItem item = AccountGroupRiskManagerItem.NewAccountGroupRiskManagerItem(accountGroupId);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; item.RevUsrId = TradeRec.DalOracle.Database.UserId;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; item.CreateUsrId = TradeRec.DalOracle.Database.UserId;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; AccountGroupRiskManagerItemCollection.Add(item);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; return item;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; public AccountGroupOmmViewableItem AddNewAccountGroupOmmViewableItem(decimal accountGroupId)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; AccountGroupOmmViewableItem item = AccountGroupOmmViewableItem.NewAccountGroupOmmViewableItem(accountGroupId);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; item.RevUsrId = TradeRec.DalOracle.Database.UserId;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; item.CreateUsrId = TradeRec.DalOracle.Database.UserId;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; AccountGroupOmmViewableItemCollection.Add(item);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; return item;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; public static AccountGroupItem NewAccountGroupItem()</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; if (!Csla.Rules.BusinessRules.HasPermission(Csla.Rules.AuthorizationActions.GetObject, typeof(AccountGroupItem)))</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; throw new System.Security.SecurityException(&quot;User is not authorized to add an AccountGroupItem&quot;);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; return DataPortal.Create&lt;AccountGroupItem&gt;(new SingleCriteria&lt;AccountGroupItem, decimal&gt;(0));</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; public static AccountGroupItem NewAccountGroupItem(decimal basketId)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; if (!Csla.Rules.BusinessRules.HasPermission(Csla.Rules.AuthorizationActions.GetObject, typeof(AccountGroupItem)))</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; throw new System.Security.SecurityException(&quot;User is not authorized to add an AccountGroupItem&quot;);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; return DataPortal.Create&lt;AccountGroupItem&gt;(new SingleCriteria&lt;AccountGroupItem, decimal&gt;(basketId));</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; public static AccountGroupItem GetAccountGroupItem(SafeDataReader dr)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; if (!Csla.Rules.BusinessRules.HasPermission(Csla.Rules.AuthorizationActions.GetObject, typeof(AccountGroupItem)))</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; throw new System.Security.SecurityException(&quot;User is not authorized to view an AccountGroupItem&quot;);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; return DataPortal.Fetch&lt;AccountGroupItem&gt;(dr);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; public static void DeleteAccountGroupItem(decimal basketId)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; if (!Csla.Rules.BusinessRules.HasPermission(Csla.Rules.AuthorizationActions.DeleteObject, typeof(AccountGroupItem)))</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; throw new System.Security.SecurityException(&quot;User is not authorized to remove an AccountGroupItem&quot;);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; DataPortal.Delete &lt;AccountGroupItem&gt;(new SingleCriteria&lt;AccountGroupItem, decimal&gt;(basketId));</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; public override AccountGroupItem Save()</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; if (IsDeleted &amp;&amp; !Csla.Rules.BusinessRules.HasPermission(Csla.Rules.AuthorizationActions.DeleteObject, typeof(AccountGroupItem)))</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; throw new System.Security.SecurityException(&quot;User is not authorized to remove an AccountGroupItem&quot;);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; else if (IsNew &amp;&amp; !Csla.Rules.BusinessRules.HasPermission(Csla.Rules.AuthorizationActions.CreateObject, typeof(AccountGroupItem)))</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; throw new System.Security.SecurityException(&quot;User is not authorized to add an AccountGroupItem&quot;);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; else if (!Csla.Rules.BusinessRules.HasPermission(Csla.Rules.AuthorizationActions.EditObject, typeof(AccountGroupItem)))</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; throw new System.Security.SecurityException(&quot;User is not authorized to edit an AccountGroupItem&quot;);</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; return base.Save();</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; private AccountGroupItem()</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; { /* require use of factory method */ }</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; #endregion //Factory Methods</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; #region Data Access</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; #region Data Access - Create</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; [RunLocal]</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; private void DataPortal_Create(SingleCriteria&lt;AccountGroupItem, decimal&gt; criteria)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; bool cancel = false;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; OnCreating(criteria, ref cancel);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; if (cancel) return;</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; LoadProperty&lt;decimal&gt;(AcctGroupIdProperty, criteria.Value);</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; OnCreated();</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; partial void OnCreating(SingleCriteria&lt;AccountGroupItem, decimal&gt; criteria, ref bool cancel);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; partial void OnCreated();</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; #endregion //Data Access - Create</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; #region Data Access - Fetch</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; private void FetchObject(SafeDataReader dr)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; //Debug.WriteLine(dr.GetString(&quot;BASKET_DESC&quot;));</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; LoadProperty&lt;decimal&gt;(AcctGroupIdProperty, dr.GetDecimal(&quot;ACCT_GROUP_ID&quot;));</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; LoadProperty&lt;string&gt;(AcctGroupCdProperty, dr.GetString(&quot;ACCT_GROUP_CD&quot;));</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; LoadProperty&lt;string&gt;(AcctGroupDescProperty, dr.GetString(&quot;ACCT_GROUP_DESC&quot;));</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; OnMemberLoaded();</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; private void DataPortal_Fetch(SafeDataReader dr)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; bool cancel = false;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; OnFetching(dr, ref cancel);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; if (cancel) return;</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; OnMemberLoading();</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; FetchObject(dr);</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; // BDT - Do not validate when fetching data. &nbsp;Some rules can only be applied on update.</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; //BusinessRules.CheckRules();</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; OnFetched();</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; partial void OnFetching(SafeDataReader dr, ref bool cancel);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; partial void OnFetching(SingleCriteria&lt;AccountGroupItem, decimal&gt; criteria, ref bool cancel);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; partial void OnFetched();</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; partial void OnMemberLoading();</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; partial void OnMemberLoaded();</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; #endregion //Data Access - Fetch</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; #region &nbsp;Data Access - Insert/Update</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; private void AddDbParameters(ref OracleCommand cmd, bool isInsert)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; OracleParameter parmAcctGroupId = new OracleParameter(&quot;acct_group_id_IN&quot;, OracleDbType.Int32, ParameterDirection.Input);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; parmAcctGroupId.Value = AcctGroupId;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; if (!isInsert) cmd.Parameters.Add(parmAcctGroupId);</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; OracleParameter parmAcctGrpCd = new OracleParameter(&quot;acct_group_cd_IN&quot;, OracleDbType.Varchar2, ParameterDirection.Input);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; parmAcctGrpCd.Value = AcctGroupCd;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; cmd.Parameters.Add(parmAcctGrpCd);</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; OracleParameter parmAcctGrpDesc = new OracleParameter(&quot;acct_group_desc_IN&quot;, OracleDbType.Varchar2, ParameterDirection.Input);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; parmAcctGrpDesc.Value = AcctGroupDesc;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; cmd.Parameters.Add(parmAcctGrpDesc);</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; OracleParameter parmGlCostCenterId = new OracleParameter(&quot;glcost_center_id_IN&quot;, OracleDbType.Int32, ParameterDirection.Input);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; parmGlCostCenterId.Value = GlcostCenterId;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; if (!isInsert) cmd.Parameters.Add(parmGlCostCenterId);</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; OracleParameter parmAcctGroupIdOut = new OracleParameter(&quot;acct_group_id_OUT&quot;, OracleDbType.Int32, ParameterDirection.Output);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; if (isInsert) cmd.Parameters.Add(parmAcctGroupIdOut);</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; OracleParameter parmRC = new OracleParameter(&quot;rc_out&quot;, OracleDbType.Int32, ParameterDirection.Output);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; cmd.Parameters.Add(parmRC);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; #endregion &nbsp;//Data Access - Insert/Update</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; #region Data Access - Insert</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; private void ExecuteInsert(ConnectionManager&lt;OracleConnection&gt; ctx)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; OracleCommand cmd = new OracleCommand();</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; cmd.Connection = ctx.Connection;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; cmd.CommandText = &quot;sp_maintain.acct_group_insert&quot;;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; cmd.CommandType = CommandType.StoredProcedure;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; AddDbParameters(ref cmd, true);</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; cmd.ExecuteNonQuery();</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; LoadProperty&lt;decimal&gt;(AcctGroupIdProperty, Convert.ToDecimal(((OracleParameter)cmd.Parameters[cmd.Parameters.IndexOf(&quot;acct_group_id_OUT&quot;)]).Value.ToString()));</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; protected override void DataPortal_Insert()</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; bool cancel = false;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; OnInserting(ref cancel);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; if (cancel) return;</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; OracleTransaction tn;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; using (var ctx = TradeRec.DalOracle.ConnectionManager.GetManager(Database.ConnectionString))</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; tn = ctx.Connection.BeginTransaction();</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; OnMemberReading();</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; ExecuteInsert(ctx);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; OnMemberRead();</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; tn.Commit();</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; //Insert Child object(s)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; FieldManager.UpdateChildren(this);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; OnInserted();</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; partial void OnInserting(ref bool cancel);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; partial void OnInserted();</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; partial void OnMemberReading();</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; partial void OnMemberRead();</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; #endregion //Data Access - Insert</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; #region Data Access - Update</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; private void ExecuteUpdate(ConnectionManager&lt;OracleConnection&gt; ctx)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; OracleCommand cmd = new OracleCommand();</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; cmd.Connection = ctx.Connection;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; cmd.CommandText = &quot;sp_maintain.acct_group_update&quot;;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; cmd.CommandType = CommandType.StoredProcedure;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; AddDbParameters(ref cmd, false);</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; cmd.ExecuteNonQuery();</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; protected override void DataPortal_Update()</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; bool cancel = false;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; OnUpdating(ref cancel);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; if (cancel) return;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; OracleTransaction tn;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; using (var ctx = TradeRec.DalOracle.ConnectionManager.GetManager(Database.ConnectionString))</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; tn = ctx.Connection.BeginTransaction();</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; OnMemberReading();</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; if (IsSelfDirty)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; ExecuteUpdate(ctx);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; //Update Child object(s)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; //DataPortal.UpdateChild(ReadProperty&lt;BasketStockItemList&gt;(BasketStockCollectionProperty), this);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; FieldManager.UpdateChildren(this);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; OnMemberRead();</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; tn.Commit();</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; OnUpdated();</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; partial void OnUpdating(ref bool cancel);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; partial void OnUpdated();</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; #endregion //Data Access - Update</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; #region Data Access - Delete</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; protected override void DataPortal_DeleteSelf()</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; bool cancel = false;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; OnSelfDeleting(ref cancel);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; if (cancel) return;</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; OracleTransaction tn;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; using (var ctx = TradeRec.DalOracle.ConnectionManager.GetManager(Database.ConnectionString))</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; OnMemberSelfDeleting();</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; OracleCommand cmd = new OracleCommand();</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; cmd.Connection = ctx.Connection;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; cmd.CommandText = &quot;sp_maintain.acct_group_delete&quot;;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; cmd.CommandType = CommandType.StoredProcedure;</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; OracleParameter parmId = new OracleParameter(&quot;acct_group_id_IN&quot;, OracleDbType.Int32, ParameterDirection.Input);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; parmId.Value = ReadProperty&lt;decimal&gt;(AcctGroupIdProperty);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; cmd.Parameters.Add(parmId);</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; OracleParameter parmRC = new OracleParameter(&quot;rc_out&quot;, OracleDbType.Int32, ParameterDirection.Output);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; cmd.Parameters.Add(parmRC);</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; tn = cmd.Connection.BeginTransaction();</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; //Delete Child object(s), which may contain concurrency check</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; FieldManager.UpdateChildren(this);</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; cmd.ExecuteNonQuery();</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; tn.Commit();</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; _returnCode = Convert.ToInt32(parmRC.Value.ToString());</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; SetProperty&lt;AccountGroupOmmViewableItemList&gt;(AccountGroupOmmViewableItemCollectionProperty, AccountGroupOmmViewableItemList.GetAccountGroupOmmViewableItemList(this));</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; OnSelfDeleted();</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; partial void OnSelfDeleting(ref bool cancel);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; partial void OnSelfDeleted();</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; partial void OnMemberSelfDeleting();</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; partial void OnMemberSelfDeleted();</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; private void DataPortal_Delete(SingleCriteria&lt;AccountGroupItem, decimal&gt; criteria)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; bool cancel = false;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; OnDeleting(criteria, ref cancel);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; if (cancel) return;</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; OracleTransaction tn;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; using (var ctx = TradeRec.DalOracle.ConnectionManager.GetManager(Database.ConnectionString))</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; OnMemberDeleting();</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; ////Delete Child object(s)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; //mgr.DataContext.BasketStockItem.DeleteAllOnSubmit(data.BasketStockItem);</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; OracleCommand cmd = new OracleCommand();</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; cmd.Connection = ctx.Connection;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; cmd.CommandText = &quot;sp_maintain.acct_group_delete&quot;;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; cmd.CommandType = CommandType.StoredProcedure;</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; OracleParameter parmId = new OracleParameter(&quot;acct_group_id_IN&quot;, OracleDbType.Int32, ParameterDirection.Input);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; parmId.Value = criteria.Value;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; cmd.Parameters.Add(parmId);</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; OracleParameter parmRC = new OracleParameter(&quot;rc_out&quot;, OracleDbType.Int32, ParameterDirection.Output);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; cmd.Parameters.Add(parmRC);</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; tn = cmd.Connection.BeginTransaction();</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; cmd.ExecuteNonQuery();</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; tn.Commit();</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; OnMemberDeleted();</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; if (System.Convert.ToInt32(parmRC.Value.ToString()) == 0)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; throw new Exception(&quot;Unable to delete the account group record.&quot;);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; SetProperty&lt;AccountGroupOmmViewableItemList&gt;(AccountGroupOmmViewableItemCollectionProperty, AccountGroupOmmViewableItemList.GetAccountGroupOmmViewableItemList(this));</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; OnDeleted();</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; partial void OnDeleting(SingleCriteria&lt;AccountGroupItem, decimal&gt; criteria, ref bool cancel);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; partial void OnDeleted();</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; partial void OnMemberDeleting();</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; partial void OnMemberDeleted();</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; #endregion //Data Access - Delete</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; #endregion //Data Access</p>
+<p>&nbsp; &nbsp; }</p>
+<p>}</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>CHILD</p>
+<p>==========================</p>
+<p>using Csla;</p>
+<p>using Csla.Data;</p>
+<p>using Csla.Security;</p>
+<p>using System;</p>
+<p>using System.ComponentModel.DataAnnotations;</p>
+<p>using System.Data;</p>
+<p>using System.Transactions;</p>
+<p>using TradeRec.DalOracle;</p>
+<p>using Oracle.DataAccess.Client;</p>
+<p>using Oracle.DataAccess.Types;</p>
+<p>using Csla.Rules.CommonRules;</p>
+<p>&nbsp;</p>
+<p>namespace TradeRec.Library.Maintenance</p>
+<p>{</p>
+<p>&nbsp; &nbsp; [Serializable()]</p>
+<p>&nbsp; &nbsp; public partial class AccountGroupOmmViewableItem : BusinessBase&lt;AccountGroupOmmViewableItem&gt;</p>
+<p>&nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; #region Business Properties and Methods</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; private static PropertyInfo&lt;decimal&gt; AccountGroupIdProperty = RegisterProperty&lt;decimal&gt;(p =&gt; p.AccountGroupId, RelationshipTypes.Child);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; [System.ComponentModel.DataObjectField(true, false)]</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; public decimal AccountGroupId</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; get { return GetProperty&lt;decimal&gt;(AccountGroupIdProperty); }</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; set { SetProperty&lt;decimal&gt;(AccountGroupIdProperty, value); }</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; private static PropertyInfo&lt;string&gt; AgViewCdProperty = RegisterProperty&lt;string&gt;(p =&gt; p.AgViewCd, RelationshipTypes.Child);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; public string AgViewCd</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; get { return GetProperty&lt;string&gt;(AgViewCdProperty); }</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; set { SetProperty&lt;string&gt;(AgViewCdProperty, value); }</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; private static PropertyInfo&lt;decimal&gt; AgViewIdProperty = RegisterProperty&lt;decimal&gt;(p =&gt; p.AgViewId, RelationshipTypes.Child);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; [System.ComponentModel.DataObjectField(true, false)]</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; public decimal AgViewId</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; get { return GetProperty&lt;decimal&gt;(AgViewIdProperty); }</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; set { SetProperty&lt;decimal&gt;(AgViewIdProperty, value); }</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; #endregion //Business Properties and Methods</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; #region Validation Rules</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; protected override void AddBusinessRules()</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; base.AddBusinessRules();</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; #endregion //Validation Rules</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; #region Factory Methods</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; internal static AccountGroupOmmViewableItem NewAccountGroupOmmViewableItem(decimal accountGroupId)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; return DataPortal.CreateChild&lt;AccountGroupOmmViewableItem&gt;(accountGroupId);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; internal static AccountGroupOmmViewableItem GetAccountGroupOmmViewableItem(SafeDataReader dr)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; return DataPortal.FetchChild&lt;AccountGroupOmmViewableItem&gt;(dr);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; private AccountGroupOmmViewableItem()</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; { /* &nbsp;require use of factory method */ }</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; #endregion //Factory Methods</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; #region Data Access</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; #region SQLText</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; [Serializable()]</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; private class SQL</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; public string Select;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; public string Insert;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; public string Delete;</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; public SQL(decimal accountGroupId)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; System.Text.StringBuilder sb = new System.Text.StringBuilder();</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; sb.Append(&quot;SELECT a.acct_group_id, a.ag_view_id, b.acct_group_cd as ag_view_cd, a.create_dt, &quot;);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; sb.Append(&quot;<span>	</span> &nbsp; a.create_usr_id, a.rev_dt, a.rev_usr_id &quot;);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; sb.Append(&quot;FROM &nbsp; ag_viewable a, acct_group b &quot;);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; sb.Append(&quot;WHERE a.ag_view_id = b.acct_group_id &quot;);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; sb.Append(&quot; &nbsp;AND a.acct_group_id = &quot; + accountGroupId.ToString() + &quot; &quot;);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; sb.Append(&quot;ORDER BY INITCAP (b.trading_staff_nm) ASC &quot;);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; this.Select = sb.ToString();</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; public SQL(bool isDelete, decimal accountGroupId, decimal agViewId)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; System.Text.StringBuilder sb = new System.Text.StringBuilder();</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; if (isDelete)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; sb.Append(&quot;DELETE FROM ag_viewable a &quot;);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; sb.Append(&quot;WHERE &nbsp;a.acct_group_id = &quot; + accountGroupId.ToString() + &quot; &quot;);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; sb.Append(&quot; &nbsp;AND a.ag_view_id = &quot; + agViewId.ToString());</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; this.Delete = sb.ToString();</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; else</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; sb.Append(&quot;INSERT INTO ag_viewable &nbsp;&quot;);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; sb.Append(&quot;(ag_view_id, acct_group_id, create_dt, create_usr_id, rev_dt, rev_usr_id ) VALUES (&quot;);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; sb.Append(agViewId.ToString() + &quot;,&quot; + accountGroupId.ToString() + &quot;,SYSDATE,USER,SYSDATE,USER) &quot;);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; this.Insert = sb.ToString();</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; #endregion //SQLText</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; #region Criteria</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; [Serializable()]</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; private class Criteria</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; public decimal AccountGroupId;</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; public Criteria(decimal accountGroupId)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; this.AccountGroupId = accountGroupId;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; #endregion //Criteria</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; #region Data Access - Create</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; private void Child_Create(decimal accountGroupId)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; bool cancel = false;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; OnCreating(accountGroupId, ref cancel);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; if (cancel) return;</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; LoadProperty&lt;decimal&gt;(AccountGroupIdProperty, accountGroupId);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; BusinessRules.CheckRules();</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; OnCreated();</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; partial void OnCreating(decimal accountGroupId, ref bool cancel);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; partial void OnCreated();</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; #endregion //Data Access - Create</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; #region Data Access - Fetch</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; private void FetchObject(SafeDataReader dr)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; LoadProperty&lt;decimal&gt;(AccountGroupIdProperty, dr.GetDecimal(&quot;ACCT_GROUP_ID&quot;));</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; LoadProperty&lt;string&gt;(AgViewCdProperty, dr.GetString(&quot;AG_VIEW_CD&quot;));</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; LoadProperty&lt;decimal&gt;(AgViewIdProperty, dr.GetDecimal(&quot;AG_VIEW_ID&quot;));</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; private void Child_Fetch(Criteria criteria)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; MarkAsChild(); &nbsp;// Because of Lazy Loading, we need to mark this object as a child object.</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; using (var ctx = TradeRec.DalOracle.ConnectionManager.GetManager(Database.ConnectionString))</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; OracleCommand cmd = new OracleCommand();</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; cmd.Connection = ctx.Connection;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; cmd.CommandText = new SQL(criteria.AccountGroupId).Select;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; cmd.CommandType = CommandType.Text;</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; SafeDataReader dr = new SafeDataReader(cmd.ExecuteReader());</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; bool cancel = false;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; OnLoading(dr, ref cancel);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; if (cancel) return;</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; dr.Read();</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; FetchObject(dr);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; BusinessRules.CheckRules();</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; OnLoaded();</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; private void Child_Fetch(SafeDataReader dr)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; bool cancel = false;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; OnLoading(dr, ref cancel);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; if (cancel) return;</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; FetchObject(dr);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; BusinessRules.CheckRules();</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; OnLoaded();</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; partial void OnLoading(SafeDataReader dr, ref bool cancel);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; partial void OnLoaded();</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; #endregion //Data Access - Fetch</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; #region Data Access - Insert</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; private void ExecuteInsert(ConnectionManager&lt;OracleConnection&gt; ctx, AccountGroupItem parent)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; OracleCommand cmd = new OracleCommand();</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; cmd.Connection = ctx.Connection;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; cmd.CommandText = new SQL(false, parent.AcctGroupId, AgViewId).Insert;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; cmd.CommandType = CommandType.Text;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; cmd.ExecuteNonQuery();</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; private void Child_Insert(AccountGroupItem parent)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; bool cancel = false;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; OnInserting(parent, ref cancel);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; if (cancel) return;</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; using (var ctx = TradeRec.DalOracle.ConnectionManager.GetManager(Database.ConnectionString))</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; ExecuteInsert(ctx, parent);</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; OnInserted();</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; partial void OnInserting(AccountGroupItem parent, ref bool cancel);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; partial void OnInserted();</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; partial void OnMemberReading();</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; partial void OnMemberRead();</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; #endregion //Data Access - Insert</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; #region Data Access - DeleteSelf</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; private void ExecuteDelete(ConnectionManager&lt;OracleConnection&gt; ctx)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; OracleCommand cmd = new OracleCommand();</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; cmd.Connection = ctx.Connection;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; cmd.CommandText = new SQL(true, AccountGroupId, AgViewId).Delete;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; cmd.CommandType = CommandType.Text;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; cmd.ExecuteNonQuery();</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; private void Child_DeleteSelf(ExchangeItem parent)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; bool cancel = false;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; OnSelfDeleting(parent, ref cancel);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; if (cancel) return;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; OnMemberSelfDeleting();</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; using (var ctx = TradeRec.DalOracle.ConnectionManager.GetManager(Database.ConnectionString))</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; ExecuteDelete(ctx);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; OnMemberSelfDeleted();</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; OnSelfDeleted();</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; partial void OnSelfDeleting(ExchangeItem parent, ref bool cancel);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; partial void OnSelfDeleted();</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; partial void OnMemberSelfDeleting();</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; partial void OnMemberSelfDeleted();</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; #endregion //Data Access - DeleteSelf</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; #endregion //Data Access</p>
+<p>&nbsp; &nbsp; }</p>
+<p>}</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Monday, July 18, 2011</h2><p>I think you have a wrong parameter type in Child_DeleteSelf:</p>
+<p><b>Is:</b></p>
+<p><i><b>private void Child_DeleteSelf(ExchangeItem parent)</b></i></p>
+<p><b>Should be: <br /></b></p>
+<p><i><b>private void Child_DeleteSelf(AccountGroupItem parent).</b></i></p>
+<p>When you use FieldManager.UpdateCildren(parent) you must make sure to have the SAME parameter types for ALL Child_XYZ methods as the argument you send into UpdateChilder or UpdateChild.</p>
+<p>So what happends is that FieldManager can not find an appropriate Child_DeleteSelf method that accepts an AccountGroupItem.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Tous-Citi replied on Tuesday, July 19, 2011</h2><p>Thank-you sooo much!<img src="http://forums.lhotka.net/emoticons/emotion-2.gif" alt="Big Smile" />&nbsp; This is some of the&nbsp;remnant&nbsp;code that was left over from the CSLA 2.0 implementation. &nbsp;This conversion to 4.0 has been a good clean-up project. &nbsp;On with the new. &nbsp;Thanks again.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

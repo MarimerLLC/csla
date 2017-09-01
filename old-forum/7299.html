@@ -1,0 +1,115 @@
+<html><header><title>CSLA SilverLight Errors</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA SilverLight Errors</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/7299.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>SouthSpawn posted on Saturday, July 18, 2009</h2><DIV>I am getting two new errors dealing with CSLA SilverLight.</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>1. <A href="http://img238.imageshack.us/img238/7329/errormessage2.jpg">http://img238.imageshack.us/img238/7329/errormessage2.jpg</A><BR><BR>This one is with the project I created.</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>2. <A href="http://img268.imageshack.us/img268/4285/errormessagej.jpg">http://img268.imageshack.us/img268/4285/errormessagej.jpg</A></DIV>
+<DIV><BR>This one I get with the demo project Demo004 from the SilverLight Training Videos.</DIV>
+<DIV><BR>I have been working on this for 6 hours, any help would be create.<BR><BR>Is there something special with IIS on my local machine I have to do.<BR><BR>I am running this on IIS 5 on window XP.</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>Thanks</DIV></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Sunday, July 19, 2009</h2><P>I don't see anything obvious from those stack traces. It isn't clear that the calls are getting off the client, so it could be a problem with the client configuration file maybe?</P>
+<P>You can always put a breakpoint at the top of your data portal methods on the server to see if the call gets there - but it doesn't look to me like you are getting off the client.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>SouthSpawn replied on Sunday, July 19, 2009</h2><DIV>Rocky,</DIV>
+<DIV><BR>How does the BeginCreate method work.<BR><BR>My Client Object is excatly coded the same as the one in the training videos.<BR>It seems as the stack trace is failing at the "BeginCreate" method.</DIV>
+<DIV><BR>When I mess around with the Visual Studio 2008 SilverLight Designer, that's when it is popping up that long stack trace method.</DIV>
+<DIV><BR>I notice that it says "Object not set to an instance of an object".</DIV>
+<DIV><BR>I wonder is the designer trying to fire off the server side code and is returning nothing?<BR></DIV>
+<DIV>Also, I am not getting how does the WcfSlProtal.svc know which server side class to call?<BR><BR>I&nbsp;am really confused here.</DIV>
+<DIV><BR>Thoughts?</DIV></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Sunday, July 19, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Oh, that might explain it.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>The data portal will detect that your code is running in design
+time and will route any create/fetch operations to a method named
+DesignTime_Create() in your root class &#8211; that&#8217;s the client-side
+class.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>This is necessary because the config file for Visual Studio (or
+for Blend) won&#8217;t have the correct WCF configuration to talk to your app
+server, and your app server may well not be running either &#8211; so this
+bypasses all those concerns.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>DesignTime_Create() should be implemented just like a DataPortal_Create()
+that takes no parameters &#8211; as an instance method that returns void. This
+is true in 3.6.3, but not in 3.6.0 &#8211; where the method was static and the
+implementation was kind of jumbled :(<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky</span><b><span><o:p></o:p></span></b></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>SouthSpawn replied on Sunday, July 19, 2009</h2><DIV>Rocky,</DIV>
+<DIV><BR>Are you saying that I should do the following in my SilverLight "Class.Client" <BR><BR>public static void DesignTime_Create()<BR>{<BR><BR>}</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>&nbsp;</DIV></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Sunday, July 19, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>If you are using the old version yes.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>If you are current you should do<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>public void DesignTime_Create()<br>
+{<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>}<o:p></o:p></span></p>
+
+<p class=MsoNormal><b><span><o:p>&nbsp;</o:p></span></b></p>
+
+<p class=MsoNormal><span>Calling a static method was a bug in data portal that has been
+fixed in current code.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>SouthSpawn replied on Sunday, July 19, 2009</h2><DIV>Thanks for all your help Rocky as I know you are a super busy person.</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>But, that didn't fix my issue.<BR><BR>I am still getting the "Object not set to an instance" error.</DIV>
+<DIV><BR>I still also get the error <SPAN class=Apple-style-span>Cannot find 'ServiceReferences.ClientConfig' in the .xap application package. <BR><BR>I even tried the advice at <A href="http://www.dontcodetired.com/blog/post/Cannot-find-ServiceReferencesClientConfig-in-the-xap-application-package-when-running-Silverlight-unit-tests.aspx">http://www.dontcodetired.com/blog/post/Cannot-find-ServiceReferencesClientConfig-in-the-xap-application-package-when-running-Silverlight-unit-tests.aspx</A>&nbsp;to fix the error and that didn't work.</SPAN></DIV>
+<DIV><BR>It's just frustrating here.<BR><BR>I'll keep at it, but I am pretty stuck.</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>Thanks For your help anyways.</DIV>
+<DIV><BR>Mark</DIV></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

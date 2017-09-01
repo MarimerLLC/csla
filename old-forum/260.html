@@ -1,0 +1,22 @@
+<html><header><title>Binding controls to child objects that may be empty</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Binding controls to child objects that may be empty</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/260.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>gmclean posted on Friday, June 02, 2006</h2>I have a windows form bound to a BO with child objects. It is possible
+that the child objects will have no records in the database. In this
+case I am having trouble binding a member of the child object to a
+control. <br>
+<br>
+In the editable root I get the child like:<br>
+<br>
+mChild = ChildBO.GetChild(ID, True)<br>
+<br>
+If there are no corresponding database records I get a child object
+with string fields that are Nothing. The problem comes when I try to
+bind the fields in the ChildBO to controls. <br>
+<br>
+Any suggestions on the best way to handle this?<br>
+<br>
+Thanks<br>
+<br>
+George<br>
+<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>xal replied on Friday, June 02, 2006</h2>You should always initialize your fields in their declaration. It's a must if you're using databinding.<br><br>Andrés<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>gmclean replied on Monday, June 05, 2006</h2>Thanks Andres - It is always simple once someone points out the answer!<br>
+<br>
+George<br>
+<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

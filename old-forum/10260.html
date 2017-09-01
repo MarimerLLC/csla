@@ -1,0 +1,25 @@
+<html><header><title>Help with MobileFormatter (syntax issue)</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Help with MobileFormatter (syntax issue)</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10260.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jack posted on Tuesday, April 12, 2011</h2><p>I&#39;m trying to implement some CSLA objects along with the Sterling DB project and having some troubles plugging in the MobileFormatter as a custom Serializer.&nbsp; I&#39;m pretty sure I&#39;m just getting the syntax wrong.&nbsp; I can do this:</p>
+<p>Save:</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; IsolatedStorageSettings.ApplicationSettings[&quot;Test&quot;] = MobileFormatter.Serialize(dataToCache);</p>
+<p>Retrieve:</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var test = MobileFormatter.Deserialize((byte[])IsolatedStorageSettings.ApplicationSettings[&quot;Test&quot;]) as EpmCacheLookupData;</p>
+<p>Just fine however to integrate I have to plug the Deserialize step into the method below where the BinaryReader is used to return the isolated storage data.&nbsp; I can&#39;t get the syntax right to create my type based on it being dynamically supplied as Type type nor can I get the data to deserialize correctly.&nbsp; It is either missing bits and pieces or I&#39;m not grabbing it correctly.</p>
+<p>public override object Deserialize(Type type, BinaryReader reader)</p>
+<p>{</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var buffer = new byte[reader.BaseStream.Length];<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; reader.Read(buffer, 0, (int)reader.BaseStream.Length);</p>
+<p>fails here:</p>
+<p>var obj = MobileFormatter.Deserialize(buffer) ;</p>
+<p>if it did work I just have an obj not a MyBusinessClass.</p>
+<p>}</p>
+<p>thanks</p>
+<p>jack</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Wednesday, April 13, 2011</h2><p>The MobileFormatter has rather strict rules about what it can serialize/deserialize. Are you sure your classes follow these rules?</p>
+<ol>
+<li>The class must be marked as Serializable</li>
+<li>The class must implement IMobileObject (or inherit from a base class that implements that interface)</li>
+<li>Or the value must be a primitive value, or special-case type like string or Guid</li>
+</ol>
+<p>&quot;Normal&quot; .NET types can&#39;t be serialized by MobileFormatter (other than primitive types), so you must either subclass something like MobileObject or MobileList, or implement IMobileObject manually.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jack replied on Wednesday, April 13, 2011</h2><p>Rocky,</p>
+<p>The object I&#39;m trying to serialize is a BusinessBase class and per my example I can serialize/deserialize it from Isolated Storage on my own just fine.&nbsp; My problem I believe is the syntax using it within the Sterling DB framework&#39;s method.&nbsp; My test is essentially grabbing it from the dataPortal fetch and caching it with SterlingDB, and then trying to read it out again.</p>
+<p>The SterlingDB method is presenting the Type and an open BinaryReader.&nbsp; I&#39;m still trying to confirm if 100% of the stream is my object or if I&#39;m somehow suppose to know how much to read (some of the examples suggest as much).&nbsp; I made the assumption that 100% of the stream is my object but I&#39;m still getting stuck.</p>
+<p>Thanks, especially since I&#39;m sure you are busy at Mix.</p>
+<p>jack</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

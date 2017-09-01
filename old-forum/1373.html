@@ -1,0 +1,16 @@
+<html><header><title>Updated data is stored truncated (exactly one character long) in DB</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Updated data is stored truncated (exactly one character long) in DB</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/1373.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>SQueek posted on Tuesday, October 03, 2006</h2><P>Maybe another noob error&nbsp; but I don't get the solution.&nbsp;When I send an update query to the database, the values in the updated table only shows the first character of the value passed to the query. The business object contains the correct values when passed to the StoredProcedure.</P>
+<P>Would appreciate any help for getting this error done.</P>
+<P>Thank you</P>
+<P>Mario</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>figuerres replied on Tuesday, October 03, 2006</h2><P>Are you using CodeSmith to create your stored procs ??</P>
+<P>there is a bug in the class they supply that processes nvarchar(max) or varchar(max) as 1 char.</P>
+<P>or see if anywhere else this might be happening.</P>
+<P>I had this happen to me and I found the problem and reported it to CodeSmith.</P>
+<P>my quick fix was to copy GetSqlParameterStatement() into my codebehind and add a tiny bit of code:</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;if (column.NativeType != "text" &amp;&amp; column.NativeType != "ntext"){<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if (column.Size &gt; 0)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;param += "(" + column.Size + ")";<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;else<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if( column.Size == -1)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;param += "(MAX)";<BR>&nbsp;&nbsp;&nbsp;&nbsp;}</P>
+<P>this chnaged the proc from:</P>
+<P>foo nvarchar,</P>
+<P>to</P>
+<P>foo nvarchar(MAX),</P>
+<P>which in my case fixed the bug.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>SQueek replied on Tuesday, October 03, 2006</h2><P>Thanks for your reply. I don't use CodeSmith templates but your answer&nbsp;lead to the solution. But to be true, I hadn't understood why it worked ;-) Now I do. Varchar size is&nbsp;defined as bytes and nvarchar datatypes size are defined as characters.</P>
+<P>I changed varchars to nvarchar. After that updates worked like exptected.</P>
+<P>Greetings Mario</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

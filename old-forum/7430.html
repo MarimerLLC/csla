@@ -1,0 +1,31 @@
+<html><header><title>&quot;Value cannot be null. Parameter name: element&quot; when calling into DataPortal.Create method</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>&quot;Value cannot be null. Parameter name: element&quot; when calling into DataPortal.Create method</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/7430.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>SethSpearman posted on Sunday, August 09, 2009</h2>Hello, <br /><br />I have a new business object class where I am getting the error ""Value cannot be null. Parameter name: element" when calling into the Create method of CSLA framework.  Here is the shared function<br />--------------------<br />        Friend Shared Function GetGroupMemberInfo(ByVal dr As SafeDataReader) As T<br />            Dim child As T = DataPortal.Create(Of T)()<br />            child.Fetch(dr)<br />            Return child<br />        End Function<br />-------------------<br /><br />The first line in the method is where I get the error.  <br /><br />Here is the call stack...<br />---------------------<br />"   at System.Attribute.IsDefined(MemberInfo element, Type attributeType, Boolean inherit)    at Csla.DataPortal.RunLocal(MethodInfo method)    at Csla.DataPortal.Create(Type objectType, Object criteria)    at Csla.DataPortal.Create[T]()    at GoodMins.MeetingMgr.BizObjects.GroupMemberInfoBase`1.GetGroupMemberInfo(SafeDataReader dr) in C:\\GroupMemberInfoBase.vb:line 184"<br />---------------------<br /><br />Thanks for your help.<br /><br />Seth  B Spearman</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, August 11, 2009</h2>Which one is line 184?</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>SethSpearman replied on Tuesday, August 11, 2009</h2>Sorry for the lack of details.<br><br>In this case the BOs I am working on are a RootList of type GroupMembersList which is populated with GroupMemberInfo objects.&nbsp; Both of these classes are derived from code-genned BASE classes.&nbsp; So GroupMemberList derives from GroupMemberListBase and GroupMemberInfois derived from GroupMemberInfoBase.&nbsp;&nbsp; <br><br>In this case the error is in GroupMemberInfoBase.&nbsp;&nbsp; The call to here is being made in the enumerator of GroupMembersListBase that loads each item.&nbsp; <br><br>Here is the create method of GroupMemberInfoBase:<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;RunLocal()&gt; _<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Private Sub DataPortal_Create(ByVal criteria As Object)<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Sub<br><br>Something tells me that I the issue is with the Criteria object or the way I am using it.&nbsp; But I have compared the classes to some of my others and they look the same.&nbsp; But, unlike the others, this one is derived from ReadOnlyBase rather than BusinessListBase.&nbsp; <br><br>Thanks.<br><br>Seth B Spearman<br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, August 11, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>If you put a breakpoint in the first line of your
+DataPortal_Create() method does it get there? If so then the problem is almost
+certainly in your code. If not, then the data portal is somehow confused.</span><b><span><o:p></o:p></span></b></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>SethSpearman replied on Tuesday, August 11, 2009</h2>Rocky,<br><br>Thanks for your help.&nbsp; I am positive that the issue is with my code...not the framework.&nbsp; That said...I am not sure what&nbsp; the issue is or how to debug it.&nbsp; <br><br>The direct answer to your question...the code breaks at ...<br>Dim child As T = DataPortal.Create(Of T)()<br><br>and never hits DataPortal_Create.&nbsp; <br><br>Seth<br><br>PS you are a genius.&nbsp; I love CSLA framework.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, August 11, 2009</h2><P>Assuming this is all your live code, then your problem is that you are calling</P>
+<P>DataPortal.Create(Of T)()</P>
+<P>but are implementing</P>
+<P>DataPortal_Create(ByVal criteria As object)</P>
+<P>Notice that the parameters don't line up.</P>
+<P>I'd have expected the data portal to throw a method not found exception, but I suspect this is your problem nonetheless.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>SethSpearman replied on Tuesday, August 11, 2009</h2>Thanks Rocky.<br><br>Seth<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>SethSpearman replied on Tuesday, August 11, 2009</h2>That was it.<br><br>Thanks.<br><br>Seth<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

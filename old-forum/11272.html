@@ -1,0 +1,50 @@
+<html><header><title>UserName Authentication Issues</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>UserName Authentication Issues</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11272.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>comp1mp posted on Friday, March 30, 2012</h2><p>&nbsp;</p>
+<p>Hello,</p>
+<p>Been developing an app for a few months now with a physical single tier mode and just now starting to try and get it to run in physical 3 tier mode. (Csla 3.8.3, .Net 3.5 SP1, Windows Server 2003 (IIS 6))</p>
+<p>&nbsp;</p>
+<p>Windows Forms Smart Client</p>
+<p>WCF DataPortal hosted in IIS 6.0</p>
+<p>SQL Server</p>
+<p>&nbsp;</p>
+<p>I was under the impression that this scenario would work out of the box with using the WcfDataPortalProxy, custom principal/identity object and custom authentication using Message based UserName credentials.</p>
+<p>I believe i have everything configured properly on client and server (which was no small feat as the instructions from the 2008 book for getting a development self signed certificate were out of date or wrong)</p>
+<p>I have implemented a custom principal and identity object according to the book.</p>
+<p>I have implemented the PrincipalPolicy(IAuthorizationPolicy), and a CredentialValidator as described in chapter 21.</p>
+<p>When I make my first call to CustomPrincipal.Login(username,password) I get back an exception that &quot;The username is not provided.Specify the username in ClientCredentials&quot;</p>
+<p>A couple of questions:</p>
+<p>First , is WCF supposed to be using my custom principal object as the credential for username message security, or is it a separate set of credentials?</p>
+<p>Second, assuming they are separate credentials (which now that I think about it, they would need to be because WCF could never decrypt the serialized custom Csla principal for impersonation by Server.DataPortal)</p>
+<p>a. Where does one assign those credentials?</p>
+<p>b. We may ultimately have several customers hitting the&nbsp; same service. CredentialValidator simply takes a username and password. Is there a method where we can get additional information which would act as a customer identifier?</p>
+<p>I will hold off on posting config info until it becomes absolutely necessary</p>
+<p>Many Thanks,</p>
+<p>Matthew</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, March 30, 2012</h2><p>It sounds like you are trying to use username/password credentials at the WCF service level, not at the application level.</p>
+<p>That is a whole thing unto itself.</p>
+<p>The examples in the <em>Using CSLA 4: Data Portal Configuration</em> book cover application level authentication. I specifically didn&#39;t cover transport level authentication (like WCF service authentication) because that is a massive, complex topic and it has little or nothing to do with CSLA itself.</p>
+<p>On the upside, I did cover how to do username/pw authentication at the WCF service level in the <em>Using CSLA 3.0</em> ebook. It is tricky stuff, with numerous steps that must be done exactly right.</p>
+<p>Honestly, you&#39;d think it would be easier, but apparently the username/pw model just isn&#39;t something Microsoft views as mainstream, so they didn&#39;t make it easy...</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>comp1mp replied on Monday, April 02, 2012</h2><p>Hi Rocky,</p>
+<p>&nbsp;</p>
+<p>Thanks for the reply.</p>
+<p>&nbsp;</p>
+<p>&quot;On the upside, I did cover how to do username/pw authentication at the WCF service level in the <em>Using CSLA 3.0</em> ebook. It is tricky stuff, with numerous steps that must be done exactly right.&quot;</p>
+<p>&nbsp;</p>
+<p>I implemented everything in chapter 21 of you Expert C# 2008 Business objects. Is that the same material that is in your 3.0 ebook or is it different .</p>
+<p>As I said, I think I have everything set up correctly, but don&#39;t understand how i pass credentials to the WCF service initialization. </p>
+<p>I assumed that implementing a custom BusinessPrincipalBase and CallistoIdentity would do this for me automatically.</p>
+<p>&nbsp;</p>
+<p>Thanks,</p>
+<p>Matthew</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, April 02, 2012</h2><p>The Principal stuff and the WCF stuff are totally separate from each other. Microsoft didn&#39;t make the WCF authn interact with Principal concepts at all.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>comp1mp replied on Monday, April 02, 2012</h2><p>ok so they are separate credentials.</p>
+<p>Two Questions:</p>
+<p>From a smart windows forms client how do I pass a username and password for WCF?</p>
+<p>The app requires application level authentication and authorization only, and that the traffic between the client and application server be encrypted. Should I be using transport level security instead? </p>
+<p>Thanks,</p>
+<p>Matthew</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>comp1mp replied on Monday, April 02, 2012</h2><p><div style='padding-left: 50px;background-color:silver'><b>RockfordLhotka<br></b></p>
+<p>The Principal stuff and the WCF stuff are totally separate from each other. Microsoft didn&#39;t make the WCF authn interact with Principal concepts at all.</p>
+<div style="clear:both;"></div>
+<p></div></p>
+<p>Actually now that i read this again, I must be doing a poor job of using the correct language.</p>
+<p>According to chapter 21 in your book, you can implement a custom WCF&nbsp; UserNamePasswordValidator and a custom WCF authorization policy. The code in the those implementations consume a class derived from Csla.BusinessPrincipalBase.</p>
+<p>I am confused by your statement.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, April 02, 2012</h2><p>In _my_ implementation I chose to use the WCF transport credentials to load the server-side Principal object for each request. That was my choice in my implementation, because I thought that was a scenario that made sense.</p>
+<p>The hard part was getting WCF to flow the credential through the network, because that required a cert, and some finicky configuration settings, along with a two-part processing step in the service. First, verify the pw, second, load the principal.</p>
+<p>Because the typical csla approach does verify and principal create in one step, I added the principalcache concept as a short-term storage to avoid hitting the security db twice. By short-term I mean something like nanoseconds.</p>
+<p>I can&#39;t say why your implementation isn&#39;t working. It took me hours of time, working with other experts to create the solution in the book, and it was VERY finicky in terms of configuration and getting that cert right...</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,20 @@
+<html><header><title>Problem using SortedBindingList</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Problem using SortedBindingList</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3862.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Blarm posted on Thursday, November 08, 2007</h2><P>Iam getting the following error on the line marked as 'LINE WTH ERROR below:</P>
+<P>Unable to cast object of type 'ColasInvoicing.Library.CIDocLines' to type 'System.Collections.Generic.IList`1[ColasInvoicing.Library.CIDocLines]'.</P>
+<P>I am using the SortedBindingList in my BusinessBase object:<BR>(Code was copied from the post <A HREF="/forums/post/14118.aspx">http://forums.lhotka.net/forums/post/14118.aspx</A> by xal (Andres))</P>
+<P>&nbsp;&nbsp;&nbsp; &lt;NonSerialized(), NotUndoable()&gt; _<BR>&nbsp;&nbsp;&nbsp; Private m_SortedcIDocLines As SortedBindingList(Of CIDocLines)<BR>&nbsp;&nbsp;&nbsp; Public ReadOnly Property SortedCIDoclines() As SortedBindingList(Of CIDocLines)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Get<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; If m_SortedcIDocLines Is Nothing Then<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; m_SortedcIDocLines = New SortedBindingList(Of CIDocLines)(Me.m_cIDocLines) 'LINE WITH ERROR<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; m_SortedcIDocLines.ApplySort("DLLine", ComponentModel.ListSortDirection.Ascending)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End If<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return m_SortedcIDocLines<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Get<BR>&nbsp;&nbsp;&nbsp; End Property</P>
+<P><BR>where m_cIDocLines is declared and used:</P>
+<P>Private m_cIDocLines As CIDocLines = CIDocLines.NewCIDocLines(Me)</P>
+<P>Private Sub FetchChildren(ByVal dr As SafeDataReader)<BR>&nbsp;&nbsp;&nbsp; dr.NextResult()<BR>&nbsp;&nbsp;&nbsp; m_cIDocLines = CIDocLines.GetCIDocLines(dr)<BR>&nbsp;&nbsp;&nbsp; m_cIDocLines.SetParent(Me)<BR>End Sub</P>
+<P>and the CIDocLines class is decared as:</P>
+<P>&lt;Serializable()&gt; _<BR>Public Partial Class CIDocLines<BR>&nbsp;Inherits BusinessListBase(Of CIDocLines, CIDocLine)</P>
+<P>and the CIDocLine class is declared as:</P>
+<P>&nbsp;&lt;Serializable()&gt; _<BR>&nbsp;Public Partial Class CIDocLine<BR>&nbsp;&nbsp;Inherits BusinessBase(Of CIDocLine)</P>
+<P>In my asp.net UI I am using:</P>
+<P>&nbsp;&nbsp;&nbsp; Private Function GetCIDocLines() As SortedBindingList(Of CIDocLines)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Dim obj As CIDocHead = GetCIDocHead()<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; If obj IsNot Nothing Then<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return obj.SortedCIDoclines<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Else<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return Nothing<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End If<BR>&nbsp;&nbsp;&nbsp; End Function</P>
+<P>Could someone let me know what I am doing wrong.</P>
+<P>Thanks,</P>
+<P>Bill</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>McManus replied on Thursday, November 08, 2007</h2><P>Bill,</P>
+<P>The type argument of SortedBindingList must be CIDocLine instead of CIDocLines</P>
+<P>Cheers,<BR>Herman</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Blarm replied on Thursday, November 08, 2007</h2><P>Thanks very much Herman.</P>
+<P>&nbsp;</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

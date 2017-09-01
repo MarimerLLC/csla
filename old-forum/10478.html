@@ -1,0 +1,21 @@
+<html><header><title>What's the best way to make a parent valid that has an InValid child that is marked for deletion?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>What's the best way to make a parent valid that has an InValid child that is marked for deletion?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10478.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>JackMetcalfe posted on Wednesday, June 29, 2011</h2><p>What is the best way to make a parent valid that has an InValid&nbsp;child that is marked for deletion?</p>
+<p>I have a parent that has an optional child object object.&nbsp; The child object is not valid causing the parent to not be valid.</p>
+<p>Based on some criteria&nbsp;in the parent&#39;s&nbsp;OnChildChanged&nbsp;the child is marked for deletion (((IEditableBusinessObject)childObject).DeleteChild()).&nbsp; However, the parent remains InValid after it is marked for deletion.</p>
+<p>If I change the child object that is marked for deletion so that it becomes valid then it works but it seems this approach is like &quot;spitting into the wind&quot; and a better practice must exist.</p>
+<p>The rule being broken on the child is that a required field is missing.&nbsp; Another possible workaround is to create my own &#39;IsRequired&#39; rule that checks if the object is marked for deletion (IsDeleted) and if it is then to not consider the rule broken.</p>
+<p>Any suggestions?</p>
+<p>Thanks in advance,</p>
+<p>Jack</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Wednesday, June 29, 2011</h2><p>Assuming that the child is a managed property - you should be able to just override IsValid on the child object to something like </p>
+<pre style="font-family:Consolas;font-size:13px;color:black;background:none repeat scroll 0% 0% #fafafa;">&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">override</span>&nbsp;<span style="color:blue;">bool</span>&nbsp;&nbsp;IsValid
+&nbsp;&nbsp;&nbsp;&nbsp;{
+	&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">get</span>&nbsp;
+	&nbsp;&nbsp;&nbsp;&nbsp;{&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;       &nbsp;<span style="color:blue;">if</span>&nbsp;(IsDeleted)&nbsp;<span style="color:blue;">return</span>&nbsp;<span style="color:blue;">true</span>;
+&nbsp;&nbsp;&nbsp;            <span style="color:blue;">return</span>&nbsp;<span style="color:blue;">base</span>.IsValid;
+	&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;}</pre>
+<p>The IsValid property on the Parent will cascade down to it&#39;s children on managed properties.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JackMetcalfe replied on Wednesday, June 29, 2011</h2><p>Thank you!&nbsp; Simple and elegant.</p>
+<p>Is the reason why&nbsp;IsValid does not already work this way because it is difficult to foresee all the possible scenarios?</p>
+<p>Is there specific&nbsp;situations that&nbsp;you have encountered where this would not be the desired behavior.</p>
+<p>Thanks again,</p>
+<p>Jack</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Saturday, July 02, 2011</h2><p>Ya IMO this should be a bug.&nbsp; The user can&#39;t make the object valid once it&#39;s been deleted, which is a bad user experience.&nbsp; I would expect that Csla then not consider IsValid for things in the deleted list.&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Saturday, July 09, 2011</h2><p>In this case/question there is a 1:1 realtionship (not involving a list) and then the FieldManager will cascade the IsValid to all children that implements ITrackStatus. For 1:n with a BusinessList child type this is handled correctly by Csla.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

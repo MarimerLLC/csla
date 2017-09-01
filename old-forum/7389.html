@@ -1,0 +1,306 @@
+<html><header><title>Crash Silverlight3, CSLA 3.7.0 when PropertyStatus applied.  Possibly Tab-Page issue?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Crash Silverlight3, CSLA 3.7.0 when PropertyStatus applied.  Possibly Tab-Page issue?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/7389.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>FraggleRocks posted on Monday, August 03, 2009</h2>Has anyone noticed this?<br />If we apply PropertyStatus to a textbox bound to a CSLA property) (e.g. to report max length exceeded data entry error.  We get a crash reported “.InvalidOperationException: Collection was modified; enumeration operation may not execute.<br /> at System.ThrowHelper.ThrowInvalidOperationException(ExceptionResource resource)<br />   at System.Collections.Generic.Dictionary`2.Enumerator.MoveNext()<br />   at System.Windows.FrameworkElement.NotifyDataContextChanged(DataContextChangedEventArgs e)<br />”.  <br />The code works in Firefox, on a machine that only has Silverlight 3.  But fails on IE8 (all machines) and also on machines that historically had Silverlight 2 installed (all browsers)<br /><br />We are using CSLA 3.7.0 and Silverlight 3.<br /><br />I read the article, http://www.lhotka.net/weblog/AddingDataContextChangedInSilverlight.aspx - so it sounds like changes are being made in this area.<br /><br />A) Has anyone else experienced this?<br />B) Does anyone have a fix?<br />C) Is 3.7.1 due soon so we can see if that fixes it?<br /><br />For your information we have a tab control, all of the textboxes on the first tab are working fine, but two textboxes on another tab consistently fail.<br /><br />Please help!</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, August 03, 2009</h2><P>The blog post you refer to deals with changes I'm making for 3.7.1 (or maybe 3.8 - I might need to change the version number).</P>
+<P>3.7.0 is 3.6.3 compiled for SL3.</P>
+<P>In other words, the issue you are seeing has something to do with a framework change from SL2 to SL3 that must be causing an issue.</P>
+<P>I haven't encountered this issue - can you provide any more specifics that might provide further clues? Or can you create a simple repro you can share?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>FraggleRocks replied on Tuesday, August 04, 2009</h2>I have sent a code sample via email.<br /><br />Hopefully you will be able to reproduce the problem and report back.<br /><br />Many thanks.  Rob.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, August 04, 2009</h2>I don't have time to create the database and so forth - but I quickly pulled<br />out the essence of your sample. Interestingly, I'm not able to replicate the<br />issue with this simple code, so clearly the issue goes beyond anything to do<br />with simple interactions between the TabControl and PropertyStatus control.<br /><br />My page is simple, but captures the structure of your failing code:<br /><br />    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" <br />    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"<br />    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"<br />xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" <br /> <br />xmlns:WinCtl="clr-namespace:System.Windows.Controls;assembly=System.Windows.<br />Controls"<br />             xmlns:csla="clr-namespace:Csla.Silverlight;assembly=Csla"<br />    mc:Ignorable="d" d:DesignWidth="640" d:DesignHeight="480"><br />  <br />    <br />                               DataChangedHandler="{StaticResource ErrorDialog}"<br />                           ManageObjectLifetime="True"<br />                           IsInitialLoadEnabled="True"<br />                           ObjectType="PropertyStatusTabs.Data,<br />PropertyStatusTabs"<br />                           FactoryMethod="NewData"/><br />  <br />  ClientData}, Path=Data}"><br />    <br />      <br />        <br />          Mode=TwoWay}" Width="150" Margin="5"/><br />          RelativeTargetName="NameTextBox" Margin="5"/><br />        <br />      <br />    <br />      <br />        <br />          Mode=TwoWay}" Width="150" Margin="5"/><br />          RelativeTargetName="CityTextBox" Margin="5"/><br />        <br />      <br />    <br />  <br /><br /><br />The only difference is that I'm not calling a WCF service to create the<br />object - the NewData() method runs locally and creates an empty mock object.<br />The "Data" object has two string properties, each with a StringRequired rule<br />and that's it.<br /><br />If I get some more time later I'll try to work on this some more, but<br />there's clearly something going on in your code that triggers the issue.<br /><br />If you can continue to streamline your example to the point where it<br />succeeds that may reveal the crux of the problem.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, August 04, 2009</h2>Or can you provide a complete stack trace from the point of failure, that<br />might help.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>FraggleRocks replied on Wednesday, August 05, 2009</h2>Hi,<br /><br />I am whittling my sample down.  Still crashing at the moment, I will let you know if I manage to associatye the crash with one particular aspect. <br /><br />My hunches were it was something to do with lazy loading, or not using latest silverlight page navigator controls.  I have eliminated both of these.<br /><br />My sample is now a single page displaying , with editableRoot with Editable-child.<br /><br />My stack trace is as follows, I am not sure it will help much, as namespaces are system and MS.Internal!<br /><br /> Webpage error details<br /><br />User Agent: Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 6.0; Trident/4.0; SLCC1; .NET CLR 2.0.50727; InfoPath.2; .NET CLR 3.5.21022; .NET CLR 3.0.30618; .NET CLR 3.5.30729)<br />Timestamp: Wed, 5 Aug 2009 16:38:05 UTC<br /><br /><br />Message: Unhandled Error in Silverlight 3 Application <br />Code: 4004    <br />Category: ManagedRuntimeError       <br />Message: System.InvalidOperationException: Collection was modified; enumeration operation may not execute.<br />   at System.ThrowHelper.ThrowInvalidOperationException(ExceptionResource resource)<br />   at System.Collections.Generic.Dictionary`2.Enumerator.MoveNext()<br />   at System.Windows.FrameworkElement.NotifyDataContextChanged(DataContextChangedEventArgs e)<br />   at System.Windows.FrameworkElement.OnAncestorDataContextChanged(DataContextChangedEventArgs e)<br />   at System.Windows.FrameworkElement.NotifyDataContextChanged(DataContextChangedEventArgs e)<br />   at System.Windows.FrameworkElement.OnAncestorDataContextChanged(DataContextChangedEventArgs e)<br />   at System.Windows.FrameworkElement.NotifyDataContextChanged(DataContextChangedEventArgs e)<br />   at System.Windows.FrameworkElement.OnTreeParentUpdated(DependencyObject newParent, Boolean bIsNewParentAlive)<br />   at System.Windows.DependencyObject.UpdateTreeParent(IManagedPeer oldParent, IManagedPeer newParent, Boolean bIsNewParentAlive, Boolean keepReferenceToParent)<br />   at MS.Internal.FrameworkCallbacks.ManagedPeerTreeUpdate(IntPtr oldParentElement, IntPtr parentElement, IntPtr childElement, Byte bIsParentAlive, Byte bKeepReferenceToParent)     <br /><br />Line: 53<br />Char: 13<br />Code: 0<br />URI: http://localhost:49868/MobileSalesAssistantTestPage.html<br /><br /></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, August 05, 2009</h2>The problem is we don't know what collection it is talking about - an internal one, or one in CSLA or one of yours...</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, August 06, 2009</h2><P>I believe I resolved the issue and the fix is in the 3.7.x branch in svn.</P>
+<P>I still don't fully understand the nature of the issue, but it seems that the XAML visual tree may not be entirely stable when PropertyStatus is initially rendered. In other words, I think the visual tree is changing out from under PropertyStatus as it is being loaded - an apparently new behavior of SL3.</P>
+<P>My resolution may or may not be a real fix. As the control loads, it now bypasses the method that attempts to resolve the relative path to the UI control to be manipulated for authz purposes. All my test apps appear to work fine with this change, but I am suspicious that there might be some edge case where it won't work properly now.</P>
+<P>In any case, the PropertyStatus control is in the middle of a facelift for CSLA .NET 3.8 and I'm hoping to entirely eliminate this issue with the redesign (and grant more power to the XAML designer).</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>FraggleRocks replied on Friday, August 07, 2009</h2>Great work Rocky,<br /><br />I was suspecting that something under the hood of SL3 was giving CSLA propertystatus trouble, but analysing the problem was outside my area of expertese.  Thanks for your persistance in tracking this down and adding a workaround into CSLA.  I will upgrade to 3.8 when it is released.<br /><br />Thanks.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, August 07, 2009</h2>Just be aware that 3.8 will have breaking changes to the Silverlight and WPF<br />controls. I'm reworking the Silverlight controls to exploit new SL features<br />like element and relative binding, as well as (maybe) trigger and behavior<br />actions.<br /><br />For parity I'm doing similar changes to the WPF side.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Adam replied on Thursday, August 13, 2009</h2>
+ 
+  Normal
+  0
+  
+  
+  
+  
+  false
+  false
+  false
+  
+  EN-US
+  X-NONE
+  X-NONE
+  
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+  
+  MicrosoftInternetExplorer4
+  
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+  
+
+ 
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+ 
+
+
+
+
+ /* Style Definitions */
+ table.MsoNormalTable
+	{mso-style-name:"Table Normal";
+	mso-tstyle-rowband-size:0;
+	mso-tstyle-colband-size:0;
+	mso-style-noshow:yes;
+	mso-style-priority:99;
+	mso-style-qformat:yes;
+	mso-style-parent:"";
+	mso-padding-alt:0in 5.4pt 0in 5.4pt;
+	mso-para-margin-top:0in;
+	mso-para-margin-right:0in;
+	mso-para-margin-bottom:10.0pt;
+	mso-para-margin-left:0in;
+	line-height:115%;
+	mso-pagination:widow-orphan;
+	font-size:11.0pt;
+	font-family:"Calibri","sans-serif";
+	mso-ascii-font-family:Calibri;
+	mso-ascii-theme-font:minor-latin;
+	mso-fareast-font-family:"Times New Roman";
+	mso-fareast-theme-font:minor-fareast;
+	mso-hansi-font-family:Calibri;
+	mso-hansi-theme-font:minor-latin;}
+
+
+
+<p class="MsoNormal"><span>Hi people</span></p><p class="MsoNormal"><span><br></span></p>
+
+
+
+<p class="MsoNormal"><span>I have recently had this issue and have
+found that if you use a direct reference instead of a relative reference it
+appears to work! Samples below...</span></p><p class="MsoNormal"><span><br></span></p>
+
+<p class="MsoNormal"><span>This works... (direct reference)</span></p>
+
+<p class="MsoNormal"><span>&lt;</span><span>StackPanel</span><span> DataContext</span><span>="{</span><span>Binding</span><span> Path</span><span>=Data.KitFund}"&gt;</span><span><span> </span></span><span><o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp; </span></span><span>&lt;</span><span>TextBlock</span><span> Text</span><span>="Opening
+Balance"</span><span> </span><span>/&gt;<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp; </span>&lt;</span><span>TextBox</span><span> x</span><span>:</span><span>Name</span><span>="OpeningBalanceTextBox"</span><span> Text</span><span>="{</span><span>Binding</span><span> Mode</span><span>=TwoWay,</span><span>
+Path</span><span>=OpeningBalance}"/&gt;<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;</span><span>&nbsp;</span></span><span>&lt;</span><span>csla</span><span>:</span><span>PropertyStatus</span><span>
+RelativeTargetName</span><span>="OpeningBalanceTextBox"</span><span> Property</span><span>="OpeningBalance"</span><span> <b>Source</b></span><b><span>="{</span><span>Binding</span><span> Path</span></b><span><b>=Data.KitFund}"</b>/&gt;<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span>&lt;/</span><span>StackPanel</span><span>&gt;</span></p><p class="MsoNormal"><br><span><o:p></o:p></span></p>
+
+<p class="MsoNormal"><span>This
+doesn’t… (relative reference)<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span>&lt;</span><span>StackPanel</span><span> DataContext</span><span>="{</span><span>Binding</span><span> Path</span><span>=Data.KitFund}"&gt;</span><span><span></span></span><span></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp; </span></span><span>&lt;</span><span>TextBlock</span><span> Text</span><span>="Opening
+Balance"</span><span> </span><span>/&gt;<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp; </span>&lt;</span><span>TextBox</span><span> x</span><span>:</span><span>Name</span><span>="OpeningBalanceTextBox"</span><span> Text</span><span>="{</span><span>Binding</span><span> Mode</span><span>=TwoWay,</span><span>
+Path</span><span>=OpeningBalance}"/&gt;<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;</span><span>&nbsp;</span></span><span>&lt;</span><span>csla</span><span>:</span><span>PropertyStatus</span><span>
+RelativeTargetName</span><span>="OpeningBalanceTextBox"</span><span> Property</span><span>="OpeningBalance"</span><span> <b>Source</b></span><b><span>="{</span><span>Binding</span></b><span><b>}"</b>/&gt;<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span>&lt;/</span><span>StackPanel</span><span>&gt;</span></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, August 13, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>That&#8217;s really strange, but I&#8217;m glad there&#8217;s a workaround.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I say it is strange, because I traced the crash down to code
+where it establishes the reference to the target UI control using
+RelativeTargetName. So it is unclear why changing the Source reference would
+make a difference.<o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Adam replied on Thursday, August 13, 2009</h2>Please note this doesn't work for all PropertyStatues but it worked for most of mine!<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, August 13, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Have you tried 3.7.1, as it should fix the issue.<o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

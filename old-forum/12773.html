@@ -1,0 +1,44 @@
+<html><header><title>Firing business rules on property changed for a private backing field</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Firing business rules on property changed for a private backing field</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/12773.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>EGraeb posted on Tuesday, October 14, 2014</h2><p>We are just upgrading from an older version of CSLA to the new framework (4.5.6) and having a little difficulty with one scenario.</p>
+<p>I have a CSLA class (Model) referencing properties on another CSLA class (Relation) as a private backing field. The registration is setup like this:</p>
+<p>Public Shared ReadOnly ReferenceProperty As PropertyInfo(Of ReferenceType) = RegisterProperty(Of ReferenceType)(Function(c) c.ReferenceType, &quot;Reference Type&quot;, RelationshipTypes.PrivateField)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Public Property ReferenceType() As ReferenceType<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Get<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return GetProperty(ReferenceProperty,_reference.ReferenceType)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Get<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Set(ByVal value As ReferenceType)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; SetProperty(ReferenceProperty,_reference.ReferenceType,value)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Set<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Property</p>
+<p>The &quot;Model&quot; montors for changes to the property in &quot;Relation&quot; and fires OnPropertyChanged(&quot;string name of property&quot;) on itself to fire the business rules on itself in case it&#39;s changed elsewhere. The property in Relation and the property in Model have the same string name: </p>
+<p>Private Sub ReferencePropertyChanged(ByVal sender As Object, ByVal e As PropertyChangedEventArgs) Handles _reference.PropertyChanged<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; If Me.GetType.GetMembers.Select(Function(m) m.Name).Contains(e.PropertyName) Then<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; OnPropertyChanged(e.PropertyName)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End If<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Sub</p>
+<p>The problem is that firing this OnPropertyChanged doesn&#39;t fire the business rules tied to the Model property any more. I can fire the business rule manually by adding a little more reflection and that works fine:</p>
+<p>Dim prop As IPropertyInfo = FindProperty(e.PropertyName)<br />If prop IsNot Nothing Then<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; BusinessRules.CheckRules(prop)<br />End If</p>
+<p>Whenever I need to use reflection though I run under the assumption I must be doing something wrong. Is there something extra I need to do to have validation rules fire OnPropertyChanged for private backing fields?</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Wednesday, October 15, 2014</h2><p>Hi, </p>
+<p>OnPropertyChanged on a BO must NEVER be used to trigger business rules!!!<br />It must ONLY be used to notify the UI of changes to content or state of a property.</p>
+<p>There are 3 ways to trigger a business rules for a property: </p>
+<ul>
+<li>BusinessRules.CheckRules(propertyInfo)</li>
+<li>PropertyHasChanged(propertyInfo)</li>
+<li>CheckPropertyRules(propertyInfo)</li>
+</ul>
+<p>The difference between PropertyHasChanged and CheckPropertyRules is that PropertyHasChanged will also mark the object as Dirty before calling CheckPropertyRules that in turn will call BusinessRules.CheckRules and call OnPropertyChanged as necessary.</p>
+<p>So you could write the event handler as:</p>
+<pre style="font-family:Consolas;font-size:13;color:black;background:white;"><span style="color:blue;">private</span>&nbsp;<span style="color:blue;">void</span>&nbsp;ReferencePropertyChanged(<span style="color:blue;">object</span>&nbsp;sender,&nbsp;<span style="color:#2b91af;">PropertyChangedEventArgs</span>&nbsp;e)
+{
+&nbsp;&nbsp;&nbsp; <span style="color:green;">// you could even check that the propertyInfo is flagged as PrivateField - not shown <br /></span>&nbsp;&nbsp;&nbsp; <span style="color:blue;">var</span>&nbsp;myProperty&nbsp;=&nbsp;FieldManager.GetRegisteredProperties().FirstOrDefault(p&nbsp;=&gt;&nbsp;p.Name&nbsp;==&nbsp;e.PropertyName);
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">if</span>&nbsp;(myProperty&nbsp;!=&nbsp;<span style="color:blue;">null</span>)
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;PropertyHasChanged(myProperty);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:green;">//&nbsp;or&nbsp;if&nbsp;you&nbsp;do&nbsp;not&nbsp;want&nbsp;to&nbsp;mark&nbsp;the object&nbsp;as&nbsp;dirty&nbsp;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:green;">//&nbsp;CheckPropertyRules(myProperty);</span>
+&nbsp;&nbsp;&nbsp;&nbsp;}
+}
+</pre>
+<p>and just for reference this is the PropertyHasChanged and CheckPropertyRules method:</p>
+<pre style="font-family:Consolas;font-size:13;color:black;background:white;"><span style="color:blue;">protected</span>&nbsp;<span style="color:blue;">virtual</span>&nbsp;<span style="color:blue;">void</span>&nbsp;PropertyHasChanged(Csla.Core.IPropertyInfo&nbsp;property)
+{
+&nbsp;&nbsp;MarkDirty(<span style="color:blue;">true</span>);
+&nbsp;&nbsp;CheckPropertyRules(property);
+}</pre>
+<pre style="font-family:Consolas;font-size:13;color:black;background:white;"><span style="color:blue;">protected</span>&nbsp;<span style="color:blue;">virtual</span>&nbsp;<span style="color:blue;">void</span>&nbsp;CheckPropertyRules(IPropertyInfo&nbsp;property)
+{
+&nbsp;&nbsp;<span style="color:blue;">var</span>&nbsp;propertyNames&nbsp;=&nbsp;BusinessRules.CheckRules(property);
+&nbsp;&nbsp;<span style="color:blue;">if</span>&nbsp;(ApplicationContext.PropertyChangedMode&nbsp;==&nbsp;ApplicationContext.PropertyChangedModes.Windows)
+&nbsp;&nbsp;&nbsp;&nbsp;OnPropertyChanged(property);
+&nbsp;&nbsp;<span style="color:blue;">else</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">foreach</span>&nbsp;(<span style="color:blue;">var</span>&nbsp;name&nbsp;<span style="color:blue;">in</span>&nbsp;propertyNames)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;OnPropertyChanged(name);
+}</pre></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

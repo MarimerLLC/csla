@@ -1,0 +1,14 @@
+<html><header><title>DataPortal_Update() is not executed when DataGridView is updated</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>DataPortal_Update() is not executed when DataGridView is updated</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/2974.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>DocJames posted on Friday, June 01, 2007</h2><P>Hey,</P>
+<P>I have</P>
+<UL>
+<LI>Account : BusinessBase&lt;Account&gt;&nbsp;</LI>
+<LI>Accounts : BusinessListBase&lt;Accounts, Account&gt;</LI></UL>
+<P>I have created a data source to Accounts, dragged it to a form as a DataGridView. Everything works fine, I can edit, delete and add new in the DataGridView.</P>
+<P>But on updates, DataPortal_Update() on Account is not executed.</P>
+<P>I can debug that EndEdit() is called in BusinessBase - and then I'm lost. I can't figure out why DataPortal_Update() is not updated. I don't know where to look ...</P>
+<P>Anyone else had the same problem?</P>
+<P>Thanks,</P>
+<P>Jimmy<FONT size=2></P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Brian Criswell replied on Friday, June 01, 2007</h2>You have to call Save on the list manually.&nbsp; If you want the items to automatically be saved as soon as you finish editing an item in the grid, you need to use the RootListBase instead of BusinessListBase.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>DocJames replied on Friday, June 01, 2007</h2><P>Good info - thanks!</P>
+<P>I have found the description/template in the&nbsp;2.1&nbsp;e-book.</P>
+<P>Is there any place / site with an overview of the different base classes and their use - besides piecing it together from the book and the 2.1 e-book?</P>
+<P>Thanks,<BR>Jmmy</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

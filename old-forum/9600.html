@@ -1,0 +1,12 @@
+<html><header><title>Csla DataMapper and Newtonsoft Json serializer</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Csla DataMapper and Newtonsoft Json serializer</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9600.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>peterbartels posted on Tuesday, October 05, 2010</h2><p>Hi,</p>
+<p>I have a question about using the Csla mapping method.&nbsp;</p>
+<p>We are developing a medical application. We use many Csla functionalities, which are great!</p>
+<p>We want to use the Csla DataMapper because we have a similar structure of business object in the GUI (which is made in javascript).</p>
+<p>We use the combination Ext.Direct-&gt;Newtonsoft-&gt;Csla and all actions from the GUI are received in a controller method:</p>
+<p>public ActionResult UpdatePrescription(Prescription p)</p>
+<p>Newtonsoft provides a way to directly map a Json string to a business object.</p>
+<p>However, the business object is a Csla BusinessBase and can only be created by using the Csla Prescription.NewPrescription while Newtonsoft uses a public constructor to create a new instance.&nbsp;</p>
+<p>Using this, it&#39;s not an official Csla object. Also Child object are created using the public constructor and will not be official Csla objects.</p>
+<p>Does anyone have a solution for using the DataMapper with Newtonsoft?</p>
+<p>Regards,</p>
+<p>Peter</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

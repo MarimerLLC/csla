@@ -1,0 +1,20 @@
+<html><header><title>CSLA 2.1 CodeSmith Templates</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA 2.1 CodeSmith Templates</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/1528.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Sarosh posted on Wednesday, October 18, 2006</h2><P>Hi!</P>
+<P>I am using CSLA 2.x CodeSmith Templates for C# and am not very clear on when to use what template.</P>
+<P>I want to create&nbsp;a WinForm with three DataGridView's the first grid (parentDataGridView) is an editable parent with two editable child grid's (child1DataGridView and child2DataGridView)</P>
+<P>I have created two BO's ParentBOList using the EditableRootList template and&nbsp;ParentBOItem using the EditableChild template.</P>
+<P>In the EditableRootList the ChildName property is set to "ParentBOItem" and in the EditableChild the ParentName property is set to "ParentBOList" so far so good (I think)</P>
+<P>In the WinForm with one grid (parentDataGridView) everything works fine now how do I proceed?</P>
+<P>Do I need to create 4 more BO's for the two child grids and how do I link them to the parent (ParentBOList or ParentBOItem)?</P>
+<P>Child1BOList &lt;---&gt; Child1BOItem</P>
+<P>Child2BOList &lt;---&gt; Child2BOItem</P>
+<P>Thanks.</P>
+<P>Sarosh</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>david.wendelken replied on Thursday, October 19, 2006</h2><P>This is my understanding...</P>
+<P>ParentBOList&nbsp;-&gt;&nbsp;&nbsp;EditableRootList</P>
+<P>ParentBO&nbsp;-&gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; EditableChild</P>
+<P>Child1BOList and Child2BOList&nbsp; -&gt; EditableChildList</P>
+<P>Child1BO and Child2BO -&gt; EditableChild</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Sarosh replied on Thursday, October 19, 2006</h2><P>Hi!</P>
+<P>Thanks for the reply.</P>
+<P>One more question.</P>
+<P>When creating the ParentBO&nbsp;-&gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; EditableChild</P>
+<P>am I correct in thinking that&nbsp;the Child1BOList and Child2BOList&nbsp; -&gt; EditableChildList be defined in&nbsp; the&nbsp;"ChildCollectionNames" property (for the EditableChildList template) and not&nbsp;Child1BO and Child2BO -&gt; EditableChild?</P>
+<P>Sarosh</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

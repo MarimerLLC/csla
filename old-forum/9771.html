@@ -1,0 +1,17 @@
+<html><header><title>Method not found: 'Boolean Csla.Validation.CommonRules.MaxValueNullableDecimal</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Method not found: 'Boolean Csla.Validation.CommonRules.MaxValueNullableDecimal</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9771.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>cqncsla posted on Tuesday, November 16, 2010</h2><p>Hi,</p>
+<p>I&#39;m having an error message &#39;Method not found: &#39;Boolean Csla.Validation.CommonRules.MaxValueNullableDecimal&#39;. It only happens to some users but not others. This is not the new codes and all users didn&#39;t have this error before. I can&#39;t debug since it never happens to me. Does anyone have any idea?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>bniemyjski replied on Tuesday, November 16, 2010</h2><p>
+<p>Hello,</p>
+<p>Can you please post the full stack trace. Also do you have different screens based on authorization levels? Can you narrow down to what users are experiencing this error and see if their is a pattern.</p>
+<p>Thanks</p>
+<p>-Blake Niemyjski</p>
+<div></div>
+</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>cqncsla replied on Wednesday, November 17, 2010</h2><p>Stack trace:</p>
+<p>System.MissingMethodException: Method not found: &#39;Boolean Csla.Validation.CommonRules.MaxValueNullableDecimal(System.Object, Csla.Validation.RuleArgs)&#39;.<br />&nbsp;&nbsp; at Library.NewLoan.AddBusinessRules()<br />&nbsp;&nbsp; at Csla.Core.BusinessBase..ctor()<br />&nbsp;&nbsp; at Csla.BusinessBase`1..ctor()</p>
+<p>I use ClickOnce to deploy the app to IIS server. I found out that the CSLA.dll on the client machine is not updated with the CSLA.dll in the deployment website.&nbsp;However it just happened to some users recently. If I manually update the CSLA.dll&nbsp;on the user machine, it solves the problem.</p>
+<p>My question is now about the ClickOnce. My last version of CSLA.dll was built on 4/7/2010 and deployed to the server. When CSLA.dll is downloaded to user machine via ClickOnce, it shows the date of the installation date. In this case, it works.</p>
+<p>The weird thing is on the machine that CSLA.dll is not updated. Even if the app is uninstalled, the CSLA.dll is removed from the user machine. Then&nbsp;a new install again&nbsp;downloads the OLD CSLA.dll. I don&#39;t know&nbsp;how the old one keeps being downloaded to that machine. </p>
+<p>Do you have any idea?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Wednesday, November 17, 2010</h2><p>Hi,</p>
+<p>Does the Csla assemblies have the same version number and file version number? </p>
+<p>That could &quot;fool&quot; the click once installer to think that the correct assembly is already installed.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>cqncsla replied on Friday, November 19, 2010</h2><p>The Csla have the same version number and file version number.</p>
+<p>My solution was to&nbsp;remove Csla reference and add it back before publishing. That forced the ClickOnce to update the assembly on user machine with the one on the server.</p>
+<p>Thanks for your all participation.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

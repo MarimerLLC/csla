@@ -1,0 +1,122 @@
+<html><header><title>DataBind CSLADataSource Textbox in Webform</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>DataBind CSLADataSource Textbox in Webform</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4255.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>jstevens posted on Tuesday, January 29, 2008</h2><P>Can anyone tell me how to databind a textbox in an aspx&nbsp;webform without using controls such as detailsview or formview with a CSLADataSource?</P>
+<P>Thanks!</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, January 30, 2008</h2>I don't think that is possible. My understanding of the ASP.NET 2.0 data binding model is that datasource controls provide data only to the gridview/detailsview/formview controls. The CslaDataSource control is just like any other datasource control.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jstevens replied on Wednesday, January 30, 2008</h2><P><SPAN>thanx Rocky - to further elaborate, I was wondering if we could do something similar to this example with the CSLADataSource:</SPAN></P>
+<P>ASPX&nbsp;<PRE class=coloredcode>First Product:&lt;<SPAN class=tag>br</SPAN> /&gt;
+&lt;<SPAN class=tag>asp:<B>textbox</B></SPAN><SPAN class=attr> id=</SPAN><SPAN class=attrv>"txtProductName"</SPAN><SPAN class=attr> runat=</SPAN><SPAN class=attrv>"server"</SPAN> /&gt;
+&lt;<SPAN class=tag>asp:sqldatasource</SPAN><SPAN class=attr> id=</SPAN><SPAN class=attrv>"SqlDataSource1"</SPAN><SPAN class=attr> runat=</SPAN><SPAN class=attrv>"server"</SPAN><SPAN class=attr> connectionstring=</SPAN><SPAN class=attrv>"<SPAN class=dir>&lt;%$</SPAN> ConnectionStrings:NorthwindConnectionString <SPAN class=dir>%&gt;</SPAN>"</SPAN>
+<SPAN class=attr>	selectcommand=</SPAN><SPAN class=attrv>"SELECT TOP (1) * FROM [Products]"</SPAN>&gt;
+&lt;/<SPAN class=tag>asp:sqldatasource</SPAN>&gt;</PRE>
+<P>CODE-BEHIND&nbsp;<PRE class=coloredcode><SPAN class=kwd>protected void</SPAN> Page_Load(<SPAN class=kwd>object</SPAN> sender, EventArgs e)
+{
+	<SPAN class=kwd>if</SPAN> (!<SPAN class=kwd>this</SPAN>.IsPostBack)
+	{
+		<SPAN class=kwd>this</SPAN>.GetData();
+	}
+}
+
+<SPAN class=kwd>private void</SPAN> GetData()
+{
+	DataView dv = (DataView)SqlDataSource1.Select(DataSourceSelectArguments.Empty);
+	DataRowView drv = dv[0];
+
+	txtProductName.Text = drv[<SPAN class=st>"ProductName"</SPAN>].ToString();
+}</PRE><PRE class=coloredcode>&nbsp;</PRE></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, January 30, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>That example doesn&#8217;t use data binding &#8211; it just uses
+the datasource control as a way of executing the query, and then manually
+copies the value(s) into the UI control(s).<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Why wouldn&#8217;t you take the simpler route (with CSLA anyway)
+and do this in the code behind:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>protected void Page_Load(&#8230;)<br>
+{<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp; if (!this.IsPostBack)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp; {<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp; GetData();<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp; }<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>}<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>private void GetData()<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>{<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp; Product product = Product.GetProduct();<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp; txtProductName.Text = product.Name;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>}<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>This avoids all the reflection overhead of interacting with a
+datasource control and gets the same result.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> jstevens
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Wednesday, January 30, 2008 10:29 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] DataBind CSLADataSource Textbox in Webform<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>thanx Rocky - to further elaborate, I was wondering if we could do something
+similar to this example with the CSLADataSource:<o:p></o:p></p>
+
+<p>ASPX&nbsp;<o:p></o:p></p>
+
+<pre>First Product:&lt;<span class=tag>br</span> /&gt;<o:p></o:p></pre><pre>&lt;<span class=tag>asp:<b>textbox</b></span><span class=attr> id=</span><span class=attrv>&quot;txtProductName&quot;</span><span class=attr> runat=</span><span class=attrv>&quot;server&quot;</span> /&gt;<o:p></o:p></pre><pre>&lt;<span class=tag>asp:sqldatasource</span><span class=attr> id=</span><span class=attrv>&quot;SqlDataSource1&quot;</span><span class=attr> runat=</span><span class=attrv>&quot;server&quot;</span><span class=attr> connectionstring=</span><span class=attrv>&quot;</span><span class=dir>&lt;%$</span><span class=attrv> ConnectionStrings:NorthwindConnectionString </span><span class=dir>%&gt;</span><span class=attrv>&quot;</span><o:p></o:p></pre><pre><span class=attr>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; selectcommand=</span><span class=attrv>&quot;SELECT TOP (1) * FROM [Products]&quot;</span>&gt;<o:p></o:p></pre><pre>&lt;/<span class=tag>asp:sqldatasource</span>&gt;<o:p></o:p></pre>
+
+<p>CODE-BEHIND&nbsp;<o:p></o:p></p>
+
+<pre><span class=kwd>protected void</span> Page_Load(<span class=kwd>object</span> sender, EventArgs e)<o:p></o:p></pre><pre>{<o:p></o:p></pre><pre>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class=kwd>if</span> (!<span class=kwd>this</span>.IsPostBack)<o:p></o:p></pre><pre>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<o:p></o:p></pre><pre>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class=kwd>this</span>.GetData();<o:p></o:p></pre><pre>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<o:p></o:p></pre><pre>}<o:p></o:p></pre><pre><o:p>&nbsp;</o:p></pre><pre><span class=kwd>private void</span> GetData()<o:p></o:p></pre><pre>{<o:p></o:p></pre><pre>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; DataView dv = (DataView)SqlDataSource1.Select(DataSourceSelectArguments.Empty);<o:p></o:p></pre><pre>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; DataRowView drv = dv[0];<o:p></o:p></pre><pre><o:p>&nbsp;</o:p></pre><pre>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; txtProductName.Text = drv[<span class=st>&quot;ProductName&quot;</span>].ToString();<o:p></o:p></pre><pre>}<o:p></o:p></pre><pre>&nbsp;<o:p></o:p></pre>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jstevens replied on Wednesday, January 30, 2008</h2><P>Rocky you are right...&nbsp; Been programming for 16 straight hours and didn't think of that approach at all.&nbsp; That's why you get paid the big bucks!</P>
+<P>By the way - excellent work on the new framework 3.0.3.&nbsp; Very stable and I have been using WCF for all my new projects.&nbsp; It has been a learing curve to understand CSLA over the last several months, but now utilizing code generators, I can just fly on my new projects.&nbsp; Just wanted to say thanks for all your hard work!</P>
+<P>Julian</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

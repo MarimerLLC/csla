@@ -1,0 +1,207 @@
+<html><header><title>.net binding framework or csla problem? or mine :)</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>.net binding framework or csla problem? or mine :)</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4699.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Cosmin posted on Wednesday, April 16, 2008</h2>Hi,<br><br>I've got a simple hierarchy:<br>Customer<br>&nbsp;&nbsp;&nbsp; Orders&lt;Order&gt;<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;  &nbsp;&nbsp;&nbsp; OrderItems&lt;OrderItem&gt;<br><br>Using CSLA 3.0.4<br><br>I've got 2 grids on the UI one with the Orders bound to customer.Orders and the other one with details bound to customer.Orders.OrderItems. Binding is done trhough 2 binding sources not directly. The project is like the PTWin sample except it has a grand child collection.<br><br>Didn't need to do anything to syncronize the 2 grids which was nice. <br>The problem:<br>&nbsp;&nbsp;&nbsp; When I bind the interface to data I also do customer.BeginEdit() like in the project tracker example. This works fine until after I accept the changes and try to rebind. Exception thrown is "edit level missmatch in CopyState". I debugged CSLA code and noted that when I call ApplyChanges or CancelChanges the OrderItem objects don't decrement their editlevel to 0. Actually only the first item in the grid doesn't. The orderitems grid is actually calling BeginEdit on the first element everytime I select a row in the OrdersGrid.<br><br>The problem occurs only when you use a grand child colection bound like I explained above. In case of child colections there is no issue.<br><br>I worked around it by calling EndEdit() on the OrderItemsBindingSource.Current in OnSlectedRowChanged event of the OrdersGrid.<br><br>Am I doing it the wrong way or there is an issue with the databinding framework or csla?<br><br>Thanks,<br>Cosmin Onea<br><br><br><br><br><br><br><br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Wednesday, April 16, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I think you are missing a step on unbinding the data cleanly
+prior to calling save.&nbsp; Look at the project tracker&#8217;s any form &#8211;
+you will code to unbind data before saving.&nbsp; What you did I think was not
+work-around, but something that needs to be done.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Senior Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Cosmin
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Wednesday, April 16, 2008 8:53 AM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> [CSLA .NET] .net binding framework or csla problem? or mine :)<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Hi,<br>
+<br>
+I've got a simple hierarchy:<br>
+Customer<br>
+&nbsp;&nbsp;&nbsp; Orders&lt;Order&gt;<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp; OrderItems&lt;OrderItem&gt;<br>
+<br>
+Using CSLA 3.0.4<br>
+<br>
+I've got 2 grids on the UI one with the Orders bound to customer.Orders and the
+other one with details bound to customer.Orders.OrderItems. Binding is done
+trhough 2 binding sources not directly.<br>
+<br>
+Didn't need to do anything to syncronize the 2 grids which was nice. <br>
+The problem:<br>
+&nbsp;&nbsp;&nbsp; When I bind the interface to data I also do
+customer.BeginEdit() like in the project tracker example. This works fine until
+after I accept the changes and try to rebind. Exception thrown is &quot;edit
+level missmatch in CopyState&quot;. I debugged CSLA code and noted that when I
+call ApplyChanges or CancelChanges the OrderItem objects don't decrement their
+editlevel to 0. The orderitems grid is actually calling BeginEdit on the first
+element everytime I select a row in the Ord ersGrid.<br>
+<br>
+The problem occurs only when you use a grand child colection bound like I
+explained above. In case of child colections there is no issue.<br>
+<br>
+I worked around it by calling EndEdit() on the OrderItemsBindingSource.Current
+in OnSlectedRowChanged event of the OrdersGrid.<br>
+<br>
+Am I doing it the wrong way or there is an issue with the databinding framework
+or csla?<br>
+<br>
+Thanks,<br>
+Cosmin Onea<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Cosmin replied on Wednesday, April 16, 2008</h2>Hi Sergey,<br><br>Belive me I did it the proper way. I unbound all the bindingsources, apply/cancel edit and then bind again. I copied and adapted the code from PT. <br><br>Private Sub RebindUI(ByVal saveObject As Boolean, ByVal rebind As Boolean)<br>.................................................................................................<br>UnbindBindingSource(OrderItemsBindingSource, saveObject, False) '<i><b>Here it doesnt decrement the edit level of the first order item in the list. In case I dont touch the ordersgrid it does decrement it.</b></i><br>UnbindBindingSource(OrdersBindingSource, saveObject, False)<br>UnbindBindingSource(CustomerBindingSource, saveObject, True)<br><br>OrdersBindingSource.DataSource = CustomerBindingSource<br>OrderItemsBindingSource.DataSource = OrdersBindingSource<br><br>Try<br>&nbsp;&nbsp;&nbsp; ........................ Cancel/Apply Changes....................................................<br>Catch<br>Finally<br>&nbsp;&nbsp;&nbsp; CustomerBindingSource.ResetBindings(False)<br>&nbsp;&nbsp;&nbsp; OrdersBindingSource.ResetBindings(False)<br>&nbsp;&nbsp;&nbsp; OrderItemsBindingSource.ResetBindings(False)<br>End Try<br><br><br>I just noticed, if I <i><b>don't touch</b></i> the OrdersGrid and save the customer <i><b>everything works fine</b></i>. If I select any row it throws an exception after save when I do BeginEdit() again in BindUI() Method.<br><br>Could you please try it first before replying anything. I exhausted all my possibilities and left with the work around above.<br><br>Cosmin.<br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Wednesday, April 16, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I was just trying to help, man.&nbsp; Did you trace into UndindBindinSource
+to see what Current is pointing to and check edit level after Current.Apply/Cancel
+edit?<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Senior Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Cosmin
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Wednesday, April 16, 2008 10:08 AM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: .net binding framework or csla problem? or
+mine :)<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Hi Sergey,<br>
+<br>
+Belive me I did it the proper way. I unbound all the bindingsources,
+apply/cancel edit and then bind again. I copied and adapted the code from PT. <br>
+<br>
+Private Sub RebindUI(ByVal saveObject As Boolean, ByVal rebind As Boolean)<br>
+.................................................................................................<br>
+UnbindBindingSource(OrderItemsBindingSource, saveObject, False) '<b><i>Here it
+doesnt decrement the edit level of the first order item in the list. In case I
+dont touch the ordersgrid it does decrement it.</i></b><br>
+UnbindBindingSource(OrdersBindingSource, saveObject, False)<br>
+UnbindBindingSource(CustomerBindingSource, saveObject, True)<br>
+<br>
+OrdersBindingSource.DataSource = CustomerBindingSource<br>
+OrderItemsBindingSource.DataSource = OrdersBindingSource<br>
+<br>
+Try<br>
+&nbsp;&nbsp;&nbsp; ........................ Cancel/Apply
+Changes....................................................<br>
+Catch<br>
+Finally<br>
+&nbsp;&nbsp;&nbsp; CustomerBindingSource.ResetBindings(False)<br>
+&nbsp;&nbsp;&nbsp; OrdersBindingSource.ResetBindings(False)<br>
+&nbsp;&nbsp;&nbsp; OrderItemsBindingSource.ResetBindings(False)<br>
+End Try<br>
+<br>
+<br>
+I just noticed, if I <b><i>don't touch</i></b> the OrdersGrid and save the
+customer <b><i>everything works fine</i></b>. If I select any row it throws an
+exception after save when I do BeginEdit() again in BindUI() Method.<br>
+<br>
+Could you please try it first before replying anything. I exhausted all my
+possibilities and left with the work around above.<br>
+<br>
+Cosmin.<br>
+<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>McManus replied on Wednesday, April 16, 2008</h2><P>Cosmin,</P>
+<P>There was a discussion before on this (<A HREF="/forums/thread/20590.aspx">http://forums.lhotka.net/forums/thread/20590.aspx</A>).</P>
+<P>The solution to this problem is similar to your workaround. We wired a handler to the CurrentChanged event of the ordersBindingSource. In this handler, EndEdit() must be called on the orderItemsBindingSource.</P>
+<P>Cheers,<BR>Herman</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Cosmin replied on Thursday, April 17, 2008</h2>Excellent, yes CurrentChanged is better to hook.<br>Thanks Herman.<br><br>I'm still facing problems with this one:<br><br>What if you have a collection in the root object but you don't bind it
+to any bindingsource. The edit level of the first child is 2 and after
+applying the changes the level 1(which is wrong) and it breaks next
+time I begin edit.<br><br>To fix it I just bound the collection to a hidden grid and let the binding framework do the work.<br><br>Is this a problem in the UndoableBase class?<br><br>Thanks,<br>Cosmin<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

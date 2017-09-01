@@ -1,0 +1,143 @@
+<html><header><title>Binding meltdown with 2.1.4</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Binding meltdown with 2.1.4</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/2762.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>DanEssin posted on Monday, April 23, 2007</h2>I'm back to binding after about 6 months. The old apps are working fine.<br>Now I've got 2.1.4 and (supposedly) the latest CSLA CodeSmith Templates.<br><br>I can successfully put a grid (DevExp) and a binding source on a form and get it to populate - but - I can't get it to "add new"<br><br>I've set the allownew properties on the binding source, the navigator and the EditableRootList object.<br><br>If I siwtch to a MS binding navigator and click the +, it tells me that the EditableChild object has no public constructor.<br><br>If someone has a short checklist of things to do to make binding work, I'd appreciate the help.<br><br>Thanks,<br>Dan<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tetranz replied on Monday, April 23, 2007</h2><P>See the remarks here for BindingList.AddNew.</P>
+<P>&nbsp;<A href="http://msdn2.microsoft.com/en-us/library/ms132687(VS.80).aspx">http://msdn2.microsoft.com/en-us/library/ms132687(VS.80).aspx</A></P>
+<P>You need to either have a public default constructor, which you don't normally have with CSLA, or handle the AddingNew event.</P>
+<P>Overwrite OnAddingNew and in it create the new object and add it to the collection.</P>
+<P>Cheers<BR>Ross</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>DanEssin replied on Tuesday, April 24, 2007</h2>
+
+
+  
+  
+
+
+<font size="+1">Thanks, I'll study it.<br>
+<br>
+Dan<br>
+</font><br>
+tetranz wrote:
+<blockquote>
+  <p>See the remarks here for BindingList.AddNew.</p>
+  <p>&nbsp;<a href="http://msdn2.microsoft.com/en-us/library/ms132687%28VS.80%29.aspx">http://msdn2.microsoft.com/en-us/library/ms132687(VS.80).aspx</a></p>
+  <p>You need to either have a public default constructor, which you
+don't normally have with CSLA, or handle the AddingNew event.</p>
+  <p>Overwrite OnAddingNew and in it create the new object and add it
+to the collection.</p>
+  <p>Cheers<br>
+Ross</p>
+  <br>
+  <br>
+<br>
+</blockquote>
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, April 23, 2007</h2>Or even better, in your collection you can override AddNewCore(), where you create&nbsp;a new child, add it to the collection and return a reference to the new object. That, and setting AllowNew to true, is all you should have to do to enable in-place adding of new rows.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>DanEssin replied on Tuesday, April 24, 2007</h2>
+
+
+  
+
+
+<font size="+1">Thanks.<br>
+<br>
+I'll need to study this - especially after I get your reply to the
+other message so thaat I am sure that I am making the correct choice of
+base class for each object. (I'm not sure that I'm good enough yet to
+be able to tell an editable root apart from an editable child or a
+switchable just by inspecting the code.) <br>
+<br>
+Dan<br>
+</font><br>
+RockfordLhotka wrote:
+<blockquote>Or even better, in your collection you can override
+AddNewCore(), where you create&nbsp;a new child, add it to the collection
+and return a reference to the new object. That, and setting AllowNew to
+true, is all you should have to do to enable in-place adding of new
+rows.<br>
+  <br>
+<br>
+</blockquote>
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>DCottle replied on Thursday, May 17, 2007</h2><P>I have one question about this local creation of the objects.&nbsp; In the SimpleDataPortal.Create method you have a call that marks the object being created as New</P><FONT size=2>
+<P>MethodCaller.CallMethodIfImplemented(obj, </FONT><FONT color=#a31515 size=2>"MarkNew"</FONT><FONT size=2>)</FONT></P>
+<P><FONT size=2><FONT size=3>Obviously, if I am not using the dataportal this method is not going to get called.&nbsp; Where would be the best place to mark the object as new when creating in this manner?&nbsp; Should it go in the override to AddNewCore?</FONT></FONT></P>
+<P><FONT size=2><FONT size=3></FONT></FONT>&nbsp;</P>
+<P><FONT size=2><FONT size=3>Thanks</FONT></FONT><FONT size=2></P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, May 17, 2007</h2>
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>MarkNew should be called from inside the object itself. Even if
+you don&#8217;t use the data portal, I recommend using a factory method, which
+can make the call, or your constructor can make the call.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Realistically however, the only reason for calling MarkNew is to
+ensure that IsDirty returns false. So you don&#8217;t need to call it on a new
+object unless you set some properties (thus marking the object as dirty) during
+its creation.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> DCottle
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Thursday, May 17, 2007 1:15 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] Binding meltdown with 2.1.4<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>I have one question about this local creation of the objects.&nbsp; In the
+SimpleDataPortal.Create method you have a call that marks the object being
+created as New<o:p></o:p></p>
+
+<p><span>MethodCaller.CallMethodIfImplemented(obj, <span>&quot;MarkNew&quot;</span>)</span><o:p></o:p></p>
+
+<p>Obviously, if I am not using the dataportal this method is not going to get
+called.&nbsp; Where would be the best place to mark the object as new when
+creating in this manner?&nbsp; Should it go in the override to AddNewCore?<o:p></o:p></p>
+
+<p>&nbsp;<o:p></o:p></p>
+
+<p>Thanks<span><o:p></o:p></span></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+<p><span>No virus found in this incoming message.<br>
+Checked by AVG Free Edition.<br>
+Version: 7.5.467 / Virus Database: 269.7.1/807 - Release Date: 5/16/2007 6:05
+PM</span><o:p></o:p></p>
+
+</div>
+
+
+
+
+<BR>
+
+<P><FONT SIZE=2>No virus found in this outgoing message.<BR>
+Checked by AVG Free Edition.<BR>
+Version: 7.5.467 / Virus Database: 269.7.1/807 - Release Date: 5/16/2007 6:05 PM<BR>
+</FONT> </P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

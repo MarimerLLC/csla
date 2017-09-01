@@ -1,0 +1,24 @@
+<html><header><title>RegisterProperty</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>RegisterProperty</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/12040.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>NemisisJedi posted on Wednesday, June 26, 2013</h2><p>Got a problem with values coming from somewhere else, and i am unsure why this would happen, but i wondered if it has anything to do with the RegisterProperty function?</p>
+<p>We have recently changed all our code to inherit from a BaseObject, and this BaseObject inherits from BusinessBase(Of T).</p>
+<p>If doing this, it is ok to use the basic RegisterProperty like</p>
+<p>Private Shared NameProperty As PropertyInfo(Of String) = RegisterProperty(New PropertyInfo(Of String)(&quot;Name&quot;))</p>
+<p>Or do you have to pass in the type as well like...</p>
+<p>Private Shared NameProperty As PropertyInfo(Of String) = RegisterProperty(GetType(MyObject), New PropertyInfo(Of String)(&quot;Name&quot;))</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Wednesday, June 26, 2013</h2><p>Hi,</p>
+<p>Your BaseObject must be a generic base class, ie BaseObject(Of T) that inherits from BusinessBase(Of T)</p>
+<p>Only the lowest level call can be non-generic for inheritance.&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>NemisisJedi replied on Wednesday, June 26, 2013</h2><p>Yes my base object is defined as</p>
+<p>Public Class EditableBase(Of T As BusinessBase(Of T))</p>
+<p>&nbsp; &nbsp; Inherits BusinessBase(Of T)</p>
+<p>&nbsp;</p>
+<p>End Class</p>
+<p>&nbsp;</p>
+<p>So what about the RegisterProperty calls? &nbsp;Do i need to pass the type if i inherit from this object or is it ok without it?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Wednesday, June 26, 2013</h2><p>Hi,</p>
+<p>Maybe we should rewind to which version of CSLA do you use?&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>NemisisJedi replied on Wednesday, June 26, 2013</h2><p>Sorry, i am using 4.3.1</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Wednesday, June 26, 2013</h2><p>Then you do not need to supply the object type.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>NemisisJedi replied on Friday, June 28, 2013</h2><p>And what about if i am inheriting from the following BaseObject? &nbsp;I&#39;m guessing there isnt a problem doing the same with ReadOnlyBase?</p>
+<p>&lt;Serializable()&gt; _</p>
+<p>Public MustInherit Class NonEditableBase(Of T As NonEditableBase(Of T))</p>
+<p>&nbsp; &nbsp; Inherits ReadOnlyBase(Of T)</p>
+<p>&nbsp;</p>
+<p>End Class</p>
+<p>&nbsp;</p>
+<p>My problem is that i have a webapp, and that send a message to a messagequeue with details of something that the user is doing along with a GUID for that user. &nbsp;I then pickup these messages using a windows service. Problem is that the details do not match the users GUID. &nbsp;its like someone else has done somethign at the same time and somehow the messages are mixed..... That is why i wondered if something like this was possible because of the RegisterProperty method and then using GetProperty/SetProperty?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Saturday, June 29, 2013</h2><p>I do not think this has anything to do with RegisterPropery.&nbsp;</p>
+<p>Which serializer do you use?&nbsp;</p>
+<p>Can you provide us a code sample?&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

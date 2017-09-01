@@ -1,0 +1,7 @@
+<html><header><title>Initialize function question...</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Initialize function question...</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/1196.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>albator posted on Tuesday, September 12, 2006</h2><P>Hi,<o:p></o:p></P>
+<P>I was thinking that<FONT face=Arial> Initialize</FONT> can be used to reinitialize none serializable&nbsp;property or event handler after object deserialization.<o:p></o:p></P>
+<P>But it seems that it is not the case, Initialize in not called after object&nbsp;deserialization in 3 tiers mode.<o:p></o:p></P>
+<P>OnDeserialized should continue to be used for that kind of initialization instead of Initialize; I’m right?<o:p></o:p></P>
+<P>Alain Martineau<o:p></o:p></P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, September 12, 2006</h2><P>That is correct. Initialize() is used to initialize the object, and is purely designed to support some scenarios for partial class code-gen.</P>
+<P>OnDeserialized() is designed as a "plumbing" feature to deal with the realities of serialization and the fact that some things (like events) don't carry through automatically.</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

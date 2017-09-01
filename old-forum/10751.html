@@ -1,0 +1,12 @@
+<html><header><title>DatagridView (Winforms) behavior when upgrading to 4.0</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>DatagridView (Winforms) behavior when upgrading to 4.0</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10751.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>vschaak posted on Sunday, October 09, 2011</h2><p>Hi,</p>
+<p>I upgrade a .NET 2.0 and CSLA 3.8 Projekt to .NET 4.0 and CSLA 4. I&#39;ve got a BO with a child-collection bound to a bindingsource. Via a button new elements could be added to the child collection. OK so far and unchanged.</p>
+<p>But other than before, the Datagrid which is bound to the child-BS doesn&#39;t show the new data, which is definitly added.</p>
+<p>Any thoughts on that?</p>
+<p>Thx &amp; kind regards</p>
+<p>Volker</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Sunday, October 09, 2011</h2><p>Hi,</p>
+<p>Did you change your lists to inherit from BusinessBindingList/ReadOnlyBindingList etc.</p>
+<p>Default lists in CSLA 4 now inherits from ObservableList that has different events (and does not work as expected with WinForms controls) and the &quot;old&quot; BindingList base classes is renamed. </p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>vschaak replied on Monday, October 10, 2011</h2><p>Hi Jonny,</p>
+<p>that exactly was the reason! (and an easy fix <img src="http://forums.lhotka.net/emoticons/emotion-2.gif" alt="Big Smile" />)</p>
+<p>Thanks a lot...</p>
+<p>Volker</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,94 @@
+<html><header><title>Security in my Silverlight Application</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Security in my Silverlight Application</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6198.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>CyclingFoodmanPA posted on Monday, January 19, 2009</h2><P>I am getting further in my Silverlight prototype and have a question pertaining to security.&nbsp; I am prototyping my application after the Rolodex, however, I have a couple of differences in my security database (which the Rolodex example has the security tables in the Rolodex db).</P>
+<P>I have a BASSecurity database with a Role table and a Users table.&nbsp; My role table is comprised of a RoleId int and a RoleName varchar (30) field.&nbsp; My Users table is comprised of a UserId int, Username varchar(15), Password varchar (15) field, FirstName field, etc.&nbsp; I also have a UsersRole table which is comprised of RoleId int and UserId int and have sprocs to return the valid roles upon a correct entry of a userid and password.</P>
+<P>I noticed the Rolodex example put the security tables in the main database and I have been stepping through the GetCslaIdentity&lt;BasIdentity&gt;(...) for a while and am having a hard time figuring out where the selects are in the code that gets the valid userid and password from the table.&nbsp; Oh I also put the additional connection string for the security database in the DataConnection class.</P>
+<P>If all else fails, I will put the security tables my main database instead of having the security database as that complicates things, but I will have to figure out how things work anyway, so I may as well beat my head against the wall now!&nbsp; So, any ideas on where the validation occurs for a valid user and password would be most helpfull.</P>
+<P>Thank you,</P>
+<P>Keith</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Monday, January 19, 2009</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>It is in DataPortal_Fetch of the Rolodex identity class.&nbsp;
+You can put your own connection string different from the main connection
+string.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 | mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> CyclingFoodmanPA
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Monday, January 19, 2009 3:06 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> [CSLA .NET] Security in my Silverlight Application<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>I am getting further in my Silverlight prototype and have a question
+pertaining to security.&nbsp; I am prototyping my application after the
+Rolodex, however, I have a couple of differences in my security database (which
+the Rolodex example has the security tables in the Rolodex db).<o:p></o:p></p>
+
+<p>I have a BASSecurity database with a Role table and a Users table.&nbsp; My
+role table is comprised of a RoleId int and a RoleName varchar (30)
+field.&nbsp; My Users table is comprised of a UserId int, Username varchar(15),
+Password varchar (15) field, FirstName field, etc.&nbsp; I also have a
+UsersRole table which is comprised of RoleId int and UserId int and have sprocs
+to return the valid roles upon a correct entry of a userid and password.<o:p></o:p></p>
+
+<p>I noticed the Rolodex example put the security tables in the main database
+and I have been stepping through the GetCslaIdentity&lt;BasIdentity&gt;(...)
+for a while and am having a hard time figuring out where the selects are in the
+code that gets the valid userid and password from the table.&nbsp; Oh I also
+put the additional connection string for the security database in the
+DataConnection class.<o:p></o:p></p>
+
+<p>If all else fails, I will put the security tables my main database instead
+of having the security database as that complicates things, but I will have to
+figure out how things work anyway, so I may as well beat my head against the
+wall now!&nbsp; So, any ideas on where the validation occurs for a valid user
+and password would be most helpfull.<o:p></o:p></p>
+
+<p>Thank you,<o:p></o:p></p>
+
+<p>Keith<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

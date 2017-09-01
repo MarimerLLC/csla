@@ -1,0 +1,21 @@
+<html><header><title>How to add No. Of Days to SmartDate ?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>How to add No. Of Days to SmartDate ?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5896.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Mandar C. Jambotkar posted on Thursday, November 27, 2008</h2><P><FONT face=Arial>Hi,</FONT></P>
+<P><FONT face=Arial>I have some properties which I'll be using for periods, i.e. User will select some respective date (From_Date) and I want to change the (To_Date) for respective period selected.</FONT></P>
+<P><FONT face=Arial>Now this "Period" can be "Weekly" / "Fortnightly" / "Monthly".</FONT></P>
+<P><FONT face=Arial>Hence I want to add 7, 15 or 30 days respectively to the From_Date field to generate To_Date.</FONT></P>
+<P><FONT face=Arial>Please guide me through to handle it using smartdate.</FONT></P>
+<P><FONT face=Arial>Thanks !</FONT></P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P><FONT face=Arial></FONT>&nbsp;</P>
+<P><FONT face=Arial></FONT>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Marjon1 replied on Friday, November 28, 2008</h2>The smart date object has a date property which you could then use the standard add functions to add the number of days and get a new date. I'm assuming the To_Date field cannot be set unless the From_Date value actually has a value. <br /><br />Assuming your To_Date field is populate when you set the period property, you could have good like this in your setter.<br /><br /> If Not _FromSmartDate.IsEmpty() Then<br />   _ToDate = new SmartDate(_FromSmartDate.Date.Add("d", _periodvalue))<br /> End if<br /><br />Apologies for any silly mistakes in code, it's late and I'm too lazy to confirm in VS! :)</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Mandar C. Jambotkar replied on Sunday, November 30, 2008</h2><FONT color=#0000ff size=2><FONT size=2>
+<P><FONT face=Arial color=#000000>'Below samples are for adding Days and Months to current date respectively.</FONT></FONT></P>
+<P><FONT face=Arial><FONT color=#0000ff size=2>If</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Not</FONT><FONT size=2> _weekPaysFromDate.IsEmpty </FONT><FONT color=#0000ff size=2>Then</P></FONT></FONT><FONT size=2>
+<P><FONT face=Arial color=#000000>_weekPaysToDate = </FONT></FONT><FONT face=Arial color=#0000ff size=2>New</FONT><FONT size=2><FONT face=Arial color=#000000> SmartDate(_weekPaysFromDate.Date.AddDays(6))</FONT></P>
+<P></FONT><FONT face=Arial><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>If</FONT></FONT></P>
+<P><FONT face=Arial><FONT color=#0000ff size=2>&nbsp;</P></FONT></FONT>
+<P><FONT face=Arial>If</FONT></FONT><FONT face=Arial><FONT size=2> </FONT><FONT color=#0000ff size=2>Not</FONT><FONT size=2> _monthlyPaysFromDate.IsEmpty </FONT><FONT color=#0000ff size=2>Then</P></FONT></FONT><FONT size=2>
+<P><FONT face=Arial>_monthlyPaysToDate = </FONT></FONT><FONT face=Arial color=#0000ff size=2>New</FONT><FONT size=2><FONT face=Arial> SmartDate(_monthlyPaysFromDate.Date.AddMonths(1))</FONT></P>
+<P></FONT><FONT face=Arial><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>If</FONT></FONT></P>
+<P><FONT face=Arial><FONT color=#0000ff size=2></FONT></FONT>&nbsp;</P>
+<P><FONT face=Arial><FONT color=#0000ff size=2>Marjon, Thank you so much for your help !!!</FONT></FONT></P>
+<P><FONT face=Arial><FONT color=#0000ff size=2>You sent me a hint even though it was late night, thanks again !</P></FONT></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, December 01, 2008</h2>In CSLA 3.6 you should be able to directly do date math with a SmartDate object. It might even work in 3.5. The reason is that I've added in a lot of type conversion code so .NET is better able to treat a SmartDate as a DateTime when necessary.</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,27 @@
+<html><header><title>Validation Rule Question</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Validation Rule Question</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/220.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Steven posted on Monday, May 29, 2006</h2><P class=MsoNormal><SPAN><o:p></o:p></SPAN>&nbsp;</P>
+<P class=MsoNormal><SPAN><o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Is it possible to create a validation rule that will check a users input against values in a database table.<SPAN>&nbsp; </SPAN>For example if my database contained a table that stores the list of all valid </SPAN><SPAN>US</SPAN><SPAN> zip codes.<SPAN>&nbsp; </SPAN>I would like to create a validation rule that will check the users input in the zip Code entry field against the valid zip codes in the table.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>And if so is it possible to only have this type of validation occurs when the user chooses to save the form instead of doing it when the user tabs off the field which could cause a delay as it goes back to the server to do the check.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Thanks<o:p></o:p></SPAN></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, May 29, 2006</h2><P>Yes. To do this, you can either use a ReadOnlyBase or CommandBase object - which is often private and nested within your business object to avoid cluttering the object model (either that, or put it in a sub-namespace).</P>
+<P>You can see how a command object like this might work by looking at how the Equals() methods are implemented in Project and Resource, as discussed in Chapter 7. In your case however, you probably won't have a public static/Shared method like Equals(), but rather will have a private method that invokes the command.</P>
+<P>You can invoke the command from within a rule method - but in that case it would run any time CheckRules() is called for the associated property, which doesn't sound like what you want.</P>
+<P>So instead, you can override Save() and call it there.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Steven replied on Tuesday, May 30, 2006</h2><P>Rocky did you mean to look at how the Equals() or Exists() method are implemented in Project and Resource&nbsp;?</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, May 30, 2006</h2>
+
+
+
+
+<DIV align=left><SPAN class=531054702-31052006><FONT face=Arial color=#0000ff size=2>Exists...</FONT></SPAN></DIV><BR>
+<BLOCKQUOTE>
+  <DIV class=OutlookMessageHeader align=left>
+  <HR>
+  <FONT face=Tahoma size=2><B>From:</B> Steven [mailto:cslanet@lhotka.net] 
+  <BR><B>Sent:</B> Tuesday, May 30, 2006 9:32 PM<BR><B>To:</B> 
+  rocky@lhotka.net<BR><B>Subject:</B> Re: [CSLA .NET] Validation Rule 
+  Question<BR></FONT><BR></DIV>
+  <DIV></DIV>
+  <P>Rocky did you mean to look at how the Equals() or Exists() method are 
+  implemented in Project and Resource&nbsp;?</P></BLOCKQUOTE></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>phowatt replied on Tuesday, May 30, 2006</h2>I typically create a list class using the ReadOnlyBase from Rocky's framework and this way the entire list is resident in memory.&nbsp; Since it is in memory the lookup is very fast and does not require any more trips to the server and doing the check upon tabbing from the field is not a problem. I have written a class I call the GlobalListManager that uses shared methods to populate any and all lists that I might need in a class and where most lists do not need to be refreshed some do so I can refresh a list whenever it's need using my GlobalListManager methods. </div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

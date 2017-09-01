@@ -1,0 +1,10 @@
+<html><header><title>CLSA Impersonation different user</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CLSA Impersonation different user</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/12738.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>toshan posted on Tuesday, September 02, 2014</h2><p>Hi Guys,</p>
+<p>&nbsp;</p>
+<p>I am new to this forum and also CSLA.NET. I was wondering if there is a way in CSLA to impersonate a different user when making SQL calls. I want all my sql statements to be executed under a specific user account. Any help will me much appreciated.</p>
+<p>&nbsp;</p>
+<p>Regards</p>
+<p>&nbsp;</p>
+<p>Toshan</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Wednesday, September 03, 2014</h2><p>Hi,</p>
+<p>1. Specify username/password in connection string</p>
+<p>2. Specify that user account as the ApplicationPool user and use integrated security</p>
+<p>3.Use impersonation and impersonate in code before you do data access (this may require other changes/configuration to allow impersonation)</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

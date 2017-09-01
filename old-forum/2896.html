@@ -1,0 +1,205 @@
+<html><header><title>Save VS Command</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Save VS Command</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/2896.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>ksirmons posted on Thursday, May 17, 2007</h2><P>Howdy,</P>
+<P>I have a question on when I should use the save methods vs command objects.</P>
+<P>We have a medical record.&nbsp; It has several "states" that it may be in.&nbsp; </P>
+<P>I hold the state info in a couple of boolean columns in the database.</P>
+<P>This state info is pulled into the MedicalRecord object as well as the actual "data" and we use this state info to enable or disable certian buttons in the GUI.</P>
+<P>I understand that when the "data" in the MedicalRecord is changed, the object is marked dirty and a save persists this new "data" to the database.</P>
+<P>Should I change the "state" info through properties, marking the object dirty, and then save the object or should I use a command object&nbsp;to perform the state change.</P>
+<P>An example of a state change is Finalization.&nbsp; When a record is complete, someone will desiginate the record finalized.&nbsp; We change a bit field in the database, is_finialized, from 0 to 1 and insert the users id and the current date.</P>
+<P>I can see doing this with both the save or command object.&nbsp; Can you tell me which is the most correct method?</P>
+<P>Thank you,</P>
+<P>Keith</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Thursday, May 17, 2007</h2><P>Both ways are correct.</P>
+<P>I would lean towards the one that gives you the most re-use in the most use cases.</P>
+<P>e.g. Maybe you change the state in 5 uses cases so if you have a small command object to do this you can use it 5 times. This updates the single field you are interested in.</P>
+<P>If you Save the BO then you potentially update each field in the row and that is "overkill" in relation to your needs.</P>
+<P>I guess it depends on if you want to update single fields or whole rows. </P>
+<P>I would lean toward the command object for the single field updates.</P>
+<P>Joe</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ksirmons replied on Friday, May 18, 2007</h2><P>Joe,</P>
+<P>Thank you for your help.&nbsp; I will look at out use cases closer and see which method works best.</P>
+<P>Keith</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Friday, May 18, 2007</h2>This sounds similar to something I've done.&nbsp; In my case, I have a document which starts as a quote, then is converted to an order, and the order is converted to an invoice.<br><br>The suggestion Rocky made to me was to have a seperate object which handled the details of the state change.&nbsp; The original BO need know nothing about the rules for conversion, its this second BO which would.&nbsp; You may need a way to invalidate or cause the orginal BO to refresh though, depending on your use case.<br><br>This has worked well with me so far, and is an option you should probably consider.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ksirmons replied on Friday, May 18, 2007</h2><P>Ajj,&nbsp; Do you have a link to your original question that Rocky answered?</P>
+<P>Thank you,</P>
+<P>Keith</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, May 18, 2007</h2><P>Ultimately you should consider the way each type of object works.</P>
+<P>BusinessBase:&nbsp;A criteria travels to the server and the object comes back. Then when the object is saved, it goes to the server and comes back.</P>
+<P>CommandBase: The object starts on the client, goes to the server and comes back.</P>
+<P>ReadOnlyBase: A criteria travels to the server and the object comes back.</P>
+<P>If you step back from all the other details, these are three models of cross-network commication and you can pick the one that suits your needs best.</P>
+<P>For example, the <EM>cheapest</EM> way to execute an arbitrary command on the server, and to know whether it worked, is to use a ReadOnlyBase-derived object, because a small criteria goes to the server, and a small read-only result object comes back.</P>
+<P>But that confuses a lot of people, which is why I created CommandBase. It more clearly defines a way to execute commands on the server, and as long as you limit the number of intance fields in the class it is also quite cheap. The advantage to CommandBase is that it provides for a pattern where you can:</P>
+<OL>
+<LI>Run code on the client</LI>
+<LI>Run code on the server</LI>
+<LI>Run code on the client</LI></OL>
+<P>All within the context of a single object. So if you have some work that spans both client and server, then CommandBase is a very good choice.</P>
+<P>BusinessBase itself is designed to support the editable root stereotype. Typically the Save() method is called because the user is done working with the object and wants to save it. Save() is not a great choice for small operations that might occur in cases where the user doesn't really want to save the entire object's state.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ksirmons replied on Tuesday, May 22, 2007</h2><P>Thank you.&nbsp; I think you made the case for using the CommandBase for my <SPAN>situation</SPAN>.</P>
+<P>&nbsp;</P>
+<P>Keith</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>MikeHamilton replied on Wednesday, August 01, 2007</h2><P>In relation to this discussion...</P>
+<P>I just ran into this issue today, and have a question about the Command methods.&nbsp; in the book the example for a command case is an "exists" check, and is implemented as a Shared/Static method (I believe, at least the Exists command I have - which was copied from sample code is).</P>
+<P>the question is: Is this a requirement? or can you have a&nbsp;command method that is an instance method? I believe it would be the second option, but just want to make sure.</P>
+<P>Thanks,</P>
+<P>Mike</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, August 01, 2007</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>It is my recommendation that the actual command be a
+static/Shared method.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>But you can invoke that method from an instance method.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>So with the Exists() command, you can do this today:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>if (Project.Exists(_projectId))<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>but you could change the static method to be private (and have a
+different name) and do this:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>if (_project.Exists())<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Inside the Project class your instance method would be:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>public bool Exists()<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>{<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp; return Project.ProjectExists(_projectId);<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>}<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>This is what I&#8217;d recommend anyway.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> MikeHamilton
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Wednesday, August 01, 2007 3:37 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] Save VS Command<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>In relation to this discussion...<o:p></o:p></p>
+
+<p>I just ran into this issue today, and have a question about the Command
+methods.&nbsp; in the book the example for a command case is an
+&quot;exists&quot; check, and is implemented as a Shared/Static method (I
+believe, at least the Exists command I have - which was copied from sample code
+is).<o:p></o:p></p>
+
+<p>the question is: Is this a requirement? or can you have a&nbsp;command
+method that is an instance method? I believe it would be the second option, but
+just want to make sure.<o:p></o:p></p>
+
+<p>Thanks,<o:p></o:p></p>
+
+<p>Mike<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>MikeHamilton replied on Wednesday, August 01, 2007</h2><P>Thanks for the fast reply. When you have time if you can explain why you recommend this way?</P>
+<P>Mike</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, August 01, 2007</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Because I like consistency </span><span>J</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>The command object should be implemented like every other
+business object: with a static/Shared factory method. That way every object in
+your business layer works the same way &#8211; follows the same structure &#8211;
+which reduces maintenance costs in the long run.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> MikeHamilton
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Wednesday, August 01, 2007 5:07 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: Save VS Command<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Thanks for the fast reply. When you have time if you can explain why you
+recommend this way?<o:p></o:p></p>
+
+<p>Mike<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

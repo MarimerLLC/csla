@@ -1,0 +1,476 @@
+<html><header><title>EditLevel Problem with Databinding</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>EditLevel Problem with Databinding</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5265.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>wjcomeaux posted on Tuesday, August 19, 2008</h2><P>Hello all:</P>
+<P>I've read various forums here on issues that occur when databinding RootLists to DataGridViews. I seem to be having pretty much the same issues described in those posts but, so far, none of the fixes seem to be working for me.</P>
+<P>I started out with version 3.0.4 of the framework&nbsp;I upgraded to 3.5.1 this morning. I get different errors with the different versions.</P>
+<P>With both versions I&nbsp;get EditLevel mismatch errors but in different places.</P>
+<P>Scenario: TaxNotice_EditableRootList bound to a datagridview.</P>
+<P>Each TaxNotice_EditableChild contains a&nbsp;TaxNoticeAction_EditableRootList which is bound to a second grid.</P>
+<P>I have turned off AllowUserToAddRows and AllowUserToDeleteRows for both grids ( I perform adds and deletes through&nbsp;context menus).</P>
+<P>There is a listbox that causes the initial datagrid (TaxNotices) to load for the selected Employer. The TaxNotices grid causes the TaxNoticeActions grid to display it's data (through the SelectionChanged event).</P>
+<P>On SelectedIndexChanged of the listbox I do this</P><FONT size=2>
+<P>RebindUI(</FONT><FONT color=#0000ff size=2>false</FONT><FONT size=2>, </FONT><FONT color=#0000ff size=2>false</FONT><FONT size=2>);</P>
+<P>_selectedEmployerID = </FONT><FONT color=#0000ff size=2>int</FONT><FONT size=2>.Parse(payrollEmployer_RORLListBox.SelectedValue.ToString());</P>
+<P>selectedPayrollEmployerTaxNotice_ERL = </FONT><FONT color=#2b91af size=2>PayrollEmployerTaxNotice_ERL</FONT><FONT size=2>.GetPayrollEmployerTaxNotice_ERL(_selectedEmployerID);</FONT></P>
+<P><FONT size=2>BindUI();</FONT></P>
+<P>My BindUI and RebindUI functions are based on the&nbsp;PTracker project except I've substituted my own objects.</P>
+<P>After the above code has executed my EditLevels look like this</P>
+<P>selectedTaxNotice_EditableRootList ---- 1</P>
+<P>selectedTaxNotice_EditableRootList[0] ---- 2</P>
+<P>selectedTaxNotice_EditableRootList[0].TaxNoticeAction_EditableRootList ----- 1</P>
+<P>selectedTaxNotice_EditableRootList[0].TaxNoticeAction_EditableRootList[0] ----- 2</P>
+<P>Previously with the older version I was not able to add new items to selectedTaxNotice_EditableRootList but other edits and cancels to existing items worked. However, with the latest version of CSLA&nbsp;I can add and then cancel new TaxNotice objects however, if I Add then edit the new item and then click cancel or save&nbsp;I get an EditLevel mismatch in CopyState error.</P>
+<P>I will post the relevant parts of my code below. The business objects were all generated with CodeSmith. Sorry about the formatting if this doesn't turn out nicely. And TIA for reading!</P>
+<P>Will</P><FONT color=#0000ff size=2>
+<P>protected</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>void</FONT><FONT size=2> FormMain_Load(</FONT><FONT color=#0000ff size=2>object</FONT><FONT size=2> sender, </FONT><FONT color=#2b91af size=2>EventArgs</FONT><FONT size=2> e)</P>
+<P>{</P>
+<P>taxSpecialist_NVLBindingSource.DataSource = Hps.Business.</FONT><FONT color=#2b91af size=2>TaxSpecialist_NVL</FONT><FONT size=2>.GetTaxSpecialist_NVL();</P>
+<P>payrollEmployerTaxNoticeActionType_NVLBindingSource.DataSource = _payrollEmployerTaxNoticeActionType_NVL;</P>
+<P>payrollEmployerTaxType_NVLBindingSource.DataSource = _payrollEmployerTaxType_NVL;</P>
+<P>}</P>
+<P>///This is what causes the main grid to refresh</P></FONT><FONT color=#0000ff size=2>
+<P>private</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>void</FONT><FONT size=2> payrollEmployer_RORLListBox_SelectedIndexChanged(</FONT><FONT color=#0000ff size=2>object</FONT><FONT size=2> sender, </FONT><FONT color=#2b91af size=2>EventArgs</FONT><FONT size=2> e)</P>
+<P>{</P>
+<P>RebindUI(</FONT><FONT color=#0000ff size=2>false</FONT><FONT size=2>, </FONT><FONT color=#0000ff size=2>false</FONT><FONT size=2>);</P>
+<P>_selectedEmployerID = </FONT><FONT color=#0000ff size=2>int</FONT><FONT size=2>.Parse(payrollEmployer_RORLListBox.SelectedValue.ToString());</P>
+<P>selectedPayrollEmployerTaxNotice_ERL = </FONT><FONT color=#2b91af size=2>PayrollEmployerTaxNotice_ERL</FONT><FONT size=2>.GetPayrollEmployerTaxNotice_ERL(_selectedEmployerID);</P>
+<P>BindUI();</P>
+<P>}</P><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>private</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>void</FONT><FONT size=2> btnSave_Click(</FONT><FONT color=#0000ff size=2>object</FONT><FONT size=2> sender, </FONT><FONT color=#2b91af size=2>EventArgs</FONT><FONT size=2> e)</P>
+<P>{RebindUI(</FONT><FONT color=#0000ff size=2>true</FONT><FONT size=2>, </FONT><FONT color=#0000ff size=2>true</FONT><FONT size=2>);}</P>
+<P></FONT><FONT color=#0000ff size=2>private</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>void</FONT><FONT size=2> btnCancel_Click(</FONT><FONT color=#0000ff size=2>object</FONT><FONT size=2> sender, </FONT><FONT color=#2b91af size=2>EventArgs</FONT><FONT size=2> e)</P>
+<P>{RebindUI(</FONT><FONT color=#0000ff size=2>false</FONT><FONT size=2>, </FONT><FONT color=#0000ff size=2>true</FONT><FONT size=2>);}</P></FONT><FONT color=#0000ff size=2>
+<P>protected</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>void</FONT><FONT size=2> AddNewTaxNotice(</FONT><FONT color=#0000ff size=2>object</FONT><FONT size=2> sender, </FONT><FONT color=#2b91af size=2>EventArgs</FONT><FONT size=2> e)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (selectedPayrollEmployerTaxNotice_ERL != </FONT><FONT color=#0000ff size=2>null</FONT><FONT size=2>)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (!selectedPayrollEmployerTaxNotice_ERL.IsDirty)</P>
+<P>{</P>
+<P>selectedPayrollEmployerTaxNotice_EC = selectedPayrollEmployerTaxNotice_ERL.AddNew();</P>
+<P>selectedPayrollEmployerTaxNotice_EC.EmployerOID = _selectedEmployerID;</P>
+<P></FONT><FONT color=#2b91af size=2>PayrollEmployerTaxNoticeAction_EC</FONT><FONT size=2> newPayrollEmployerTaxNoticeAction_EC = selectedPayrollEmployerTaxNotice_EC.PayrollEmployerTaxNoticeAction_ERL.AddNew();</P>
+<P>newPayrollEmployerTaxNoticeAction_EC.Description = </FONT><FONT color=#a31515 size=2>"Tax Notice Opened"</FONT><FONT size=2>;</P>
+<P>newPayrollEmployerTaxNoticeAction_EC.PayrollEmployerTaxNoticeActionTypeID = _payrollEmployerTaxNoticeActionType_NVL.GetItemByValue(</FONT><FONT color=#a31515 size=2>"Opened"</FONT><FONT size=2>).Key;</P>
+<P>payrollEmployerTaxNotice_ERLBindingSource.ResetBindings(</FONT><FONT color=#0000ff size=2>false</FONT><FONT size=2>);</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>else</P></FONT><FONT size=2>
+<P>{</P>
+<P></FONT><FONT color=#2b91af size=2>MessageBox</FONT><FONT size=2>.Show(</FONT><FONT color=#a31515 size=2>"You currently have pending changes in an existing tax notice. Please save or cancel those changes before adding a new tax notice"</FONT><FONT size=2>, </FONT><FONT color=#a31515 size=2>"Unsaved Changes"</FONT><FONT size=2>, </FONT><FONT color=#2b91af size=2>MessageBoxButtons</FONT><FONT size=2>.OK);</P>
+<P>}}}</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P><FONT color=#0000ff size=2>
+<P>private</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>void</FONT><FONT size=2> BindUI()</P>
+<P>{</P>
+<P>selectedPayrollEmployerTaxNotice_ERL.BeginEdit();</P>
+<P>payrollEmployerTaxNotice_ERLBindingSource.DataSource = selectedPayrollEmployerTaxNotice_ERL;</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>private</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>void</FONT><FONT size=2> RebindUI(</FONT><FONT color=#0000ff size=2>bool</FONT><FONT size=2> saveObject, </FONT><FONT color=#0000ff size=2>bool</FONT><FONT size=2> rebind)</P>
+<P>{</P>
+<P></FONT><FONT color=#008000 size=2>// disable events</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>.payrollEmployerTaxNoticeAction_ERLBindingSource.RaiseListChangedEvents = </FONT><FONT color=#0000ff size=2>false</FONT><FONT size=2>;</P>
+<P></FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>.payrollEmployerTaxNotice_ERLBindingSource.RaiseListChangedEvents = </FONT><FONT color=#0000ff size=2>false</FONT><FONT size=2>;</P>
+<P></FONT><FONT color=#0000ff size=2>try</P></FONT><FONT size=2>
+<P>{</P>
+<P></FONT><FONT color=#008000 size=2>// unbind the UI</P></FONT><FONT size=2>
+<P>UnbindBindingSource(</FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>.payrollEmployerTaxNoticeAction_ERLBindingSource, saveObject, </FONT><FONT color=#0000ff size=2>false</FONT><FONT size=2>);</P>
+<P>UnbindBindingSource(</FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>.payrollEmployerTaxNotice_ERLBindingSource, saveObject, </FONT><FONT color=#0000ff size=2>true</FONT><FONT size=2>);</P>
+<P></FONT><FONT color=#008000 size=2>//this.AssignmentsBindingSource.DataSource = this.ResourceBindingSource;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#008000 size=2>// save or cancel changes</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (saveObject)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (selectedPayrollEmployerTaxNotice_ERL != </FONT><FONT color=#0000ff size=2>null</FONT><FONT size=2>)</P>
+<P>{</P>
+<P>selectedPayrollEmployerTaxNotice_ERL.ApplyEdit();</P>
+<P></FONT><FONT color=#0000ff size=2>try</P></FONT><FONT size=2>
+<P>{</P>
+<P>selectedPayrollEmployerTaxNotice_ERL = selectedPayrollEmployerTaxNotice_ERL.Save();</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>catch</FONT><FONT size=2> (Csla.</FONT><FONT color=#2b91af size=2>DataPortalException</FONT><FONT size=2> ex)</P>
+<P>{</P>
+<P></FONT><FONT color=#2b91af size=2>MessageBox</FONT><FONT size=2>.Show(ex.BusinessException.ToString(), </FONT><FONT color=#a31515 size=2>"Error saving"</FONT><FONT size=2>, </FONT><FONT color=#2b91af size=2>MessageBoxButtons</FONT><FONT size=2>.OK, </FONT><FONT color=#2b91af size=2>MessageBoxIcon</FONT><FONT size=2>.Exclamation);</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>catch</FONT><FONT size=2> (</FONT><FONT color=#2b91af size=2>Exception</FONT><FONT size=2> ex)</P>
+<P>{</P>
+<P></FONT><FONT color=#2b91af size=2>MessageBox</FONT><FONT size=2>.Show(ex.ToString(), </FONT><FONT color=#a31515 size=2>"Error Saving"</FONT><FONT size=2>, </FONT><FONT color=#2b91af size=2>MessageBoxButtons</FONT><FONT size=2>.OK, </FONT><FONT color=#2b91af size=2>MessageBoxIcon</FONT><FONT size=2>.Exclamation);</P>
+<P>}}}</P>
+<P></FONT><FONT color=#0000ff size=2>else</P></FONT><FONT size=2>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (selectedPayrollEmployerTaxNotice_ERL != </FONT><FONT color=#0000ff size=2>null</FONT><FONT size=2>)</P>
+<P>{</P>
+<P>selectedPayrollEmployerTaxNotice_ERL.CancelEdit();</P>
+<P>}}}</P>
+<P></FONT><FONT color=#0000ff size=2>finally</P></FONT><FONT size=2>
+<P>{</P>
+<P></FONT><FONT color=#008000 size=2>// rebind UI if requested</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (rebind)</P>
+<P>BindUI();</P>
+<P></FONT><FONT color=#008000 size=2>// restore events</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>.payrollEmployerTaxNotice_ERLBindingSource.RaiseListChangedEvents = </FONT><FONT color=#0000ff size=2>true</FONT><FONT size=2>;</P>
+<P></FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>.payrollEmployerTaxNoticeAction_ERLBindingSource.RaiseListChangedEvents = </FONT><FONT color=#0000ff size=2>true</FONT><FONT size=2>;</P>
+<P></FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (rebind)</P>
+<P>{</P>
+<P></FONT><FONT color=#008000 size=2>// refresh the UI if rebinding</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>.payrollEmployerTaxNotice_ERLBindingSource.ResetBindings(</FONT><FONT color=#0000ff size=2>false</FONT><FONT size=2>);</P>
+<P></FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>.payrollEmployerTaxNoticeAction_ERLBindingSource.ResetBindings(</FONT><FONT color=#0000ff size=2>false</FONT><FONT size=2>);</P>
+<P>}}}</P>
+<P></FONT><FONT color=#0000ff size=2>protected</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>void</FONT><FONT size=2> UnbindBindingSource(</FONT><FONT color=#2b91af size=2>BindingSource</FONT><FONT size=2> source, </FONT><FONT color=#0000ff size=2>bool</FONT><FONT size=2> apply, </FONT><FONT color=#0000ff size=2>bool</FONT><FONT size=2> isRoot)</P>
+<P>{</P>
+<P>System.ComponentModel.</FONT><FONT color=#2b91af size=2>IEditableObject</FONT><FONT size=2> current = source.Current </FONT><FONT color=#0000ff size=2>as</FONT><FONT size=2> System.ComponentModel.</FONT><FONT color=#2b91af size=2>IEditableObject</FONT><FONT size=2>;</P>
+<P></FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (isRoot)</P>
+<P>{</P>
+<P>source.DataSource = </FONT><FONT color=#0000ff size=2>null</FONT><FONT size=2>;</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (current != </FONT><FONT color=#0000ff size=2>null</FONT><FONT size=2>)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (apply)</P>
+<P>{current.EndEdit();}</P>
+<P></FONT><FONT color=#0000ff size=2>else</P></FONT><FONT size=2>
+<P>{current.CancelEdit();}</P>
+<P>}}</P></FONT></FONT></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>wjcomeaux replied on Wednesday, August 20, 2008</h2><P>Anyone? This is really driving me up the wall. Not to mention oncoming deadlines.</P>
+<P>For those not wanting to read the entire post below the gist is this. I am getting EditLevel mismatches when databinding to DataGridViews using the latest (and previous) version of CSLA and business objects generated with CodeSmith.</P>
+<P>Depending on which version of CSLA I use I get different errors. I've followed everything that's been posted on this forum so far, unless I'm missing something.</P>
+<P>Any input is much appreciated.</P>
+<P>Thanks,</P>
+<P>Will</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, August 20, 2008</h2><P>The problem is probably something in your UI code. It is possible there yet another bug in CSLA in this regard, but I think we've finally found them all (and by "we" I mean people on this forum, like yourself, who've done a ton of research).</P>
+<P>You should compare your UI code to this sample:</P>
+<P><A href="http://www.lhotka.net/cslacvs/viewvc.cgi/samples/trunk/RootChildGrandchildWinFormTest/">http://www.lhotka.net/cslacvs/viewvc.cgi/samples/trunk/RootChildGrandchildWinFormTest/</A></P>
+<P>This is my core test for data binding. It works on 3.0.4 and 3.5.1 (and 3.6).</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>wjcomeaux replied on Monday, August 25, 2008</h2><P>Hey Rocky. Thanks for the reply. I'm still having troubles. As far as I can tell, the only difference between our code is that you are using the property manager in your business objects and I am not. Could this be the cause of the problem? I am still getting EditLevel mismatch errors at different points.</P>
+<P>For instance, if I click on my employer list (to cause the TaxNotice (root) and TaxNoticeAction (child) grids to load then immediately click cancel (without performing any edits) I get this error. I have stepped all the way down into the code&nbsp; and the error happes in line 258 of UndoableBase</P><FONT size=2>
+<P>((Core.IUndoableObject)value).UndoChanges(</FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>.EditLevel, BindingEdit); I</FONT>n this case "this.EditLevel" = 0 and "BindingEdit" = false.</P>
+<P>This call is made from the block of code inside"<FONT color=#0000ff>foreach</FONT> (<FONT color=#2b91af>FieldInfo</FONT> field <FONT color=#0000ff>in</FONT> fields)" and the field in question is my TaxNoticeAction_EditableRootList (my child object -- actually collection of objects).</P>
+<P>Any thoughts? I've pasted the entirety of my FormMain code below in case you want to load it into a code window and take a look. It's pretty simple stuff.</P>
+<P>Thanks,</P>
+<P><FONT size=2><FONT size=2><FONT size=3>Will</FONT></FONT></FONT></P>
+<P><FONT size=2><FONT size=2><FONT size=3></FONT></FONT></FONT>&nbsp;</P><FONT size=2><FONT size=2><FONT color=#0000ff size=2>
+<P>using</FONT><FONT size=2> System;</P></FONT><FONT color=#0000ff size=2>
+<P>using</FONT><FONT size=2> System.Collections.Generic;</P></FONT><FONT color=#0000ff size=2>
+<P>using</FONT><FONT size=2> System.ComponentModel;</P></FONT><FONT color=#0000ff size=2>
+<P>using</FONT><FONT size=2> System.Data;</P></FONT><FONT color=#0000ff size=2>
+<P>using</FONT><FONT size=2> System.Drawing;</P></FONT><FONT color=#0000ff size=2>
+<P>using</FONT><FONT size=2> System.Text;</P></FONT><FONT color=#0000ff size=2>
+<P>using</FONT><FONT size=2> System.Windows.Forms;</P></FONT><FONT color=#0000ff size=2>
+<P>using</FONT><FONT size=2> Csla;</P></FONT><FONT color=#0000ff size=2>
+<P>using</FONT><FONT size=2> Hps.Business;</P></FONT><FONT color=#0000ff size=2>
+<P>namespace</FONT><FONT size=2> Hps.Windows.Applications.Enterprise.Modules.TaxNoticeManager</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>partial</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>class</FONT><FONT size=2> </FONT><FONT color=#2b91af size=2>FormMain</FONT><FONT size=2> : </FONT><FONT color=#2b91af size=2>Form</P></FONT><FONT size=2>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>private</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>int</FONT><FONT size=2> _selectedEmployerID;</P>
+<P></FONT><FONT color=#0000ff size=2>private</FONT><FONT size=2> </FONT><FONT color=#2b91af size=2>FilteredBindingList</FONT><FONT size=2>&lt;Hps.Business.</FONT><FONT color=#2b91af size=2>PayrollEmployer_RORL</FONT><FONT size=2>&gt; _payrollEmployer_FilteredBindingList;</P>
+<P></FONT><FONT color=#0000ff size=2>private</FONT><FONT size=2> </FONT><FONT color=#2b91af size=2>PayrollEmployerTaxNotice_ERL</FONT><FONT size=2> selectedPayrollEmployerTaxNotice_ERL;</P>
+<P></FONT><FONT color=#0000ff size=2>private</FONT><FONT size=2> </FONT><FONT color=#2b91af size=2>PayrollEmployerTaxNotice_EC</FONT><FONT size=2> selectedPayrollEmployerTaxNotice_EC;</P>
+<P></FONT><FONT color=#0000ff size=2>private</FONT><FONT size=2> </FONT><FONT color=#2b91af size=2>ContextMenu</FONT><FONT size=2> _contextMenuForTaxNoticeDataGridView = </FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> </FONT><FONT color=#2b91af size=2>ContextMenu</FONT><FONT size=2>();</P>
+<P></FONT><FONT color=#0000ff size=2>private</FONT><FONT size=2> </FONT><FONT color=#2b91af size=2>PayrollEmployerTaxNoticeActionType_NVL</FONT><FONT size=2> _payrollEmployerTaxNoticeActionType_NVL = </FONT><FONT color=#2b91af size=2>PayrollEmployerTaxNoticeActionType_NVL</FONT><FONT size=2>.GetPayrollEmployerTaxNoticeActionType_NVL();</P>
+<P></FONT><FONT color=#0000ff size=2>private</FONT><FONT size=2> </FONT><FONT color=#2b91af size=2>PayrollEmployerTaxType_NVL</FONT><FONT size=2> _payrollEmployerTaxType_NVL = </FONT><FONT color=#2b91af size=2>PayrollEmployerTaxType_NVL</FONT><FONT size=2>.GetPayrollEmployerTaxType_NVL();</P>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> FormMain()</P>
+<P>{</P>
+<P>InitializeComponent();</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>protected</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>void</FONT><FONT size=2> FormMain_Load(</FONT><FONT color=#0000ff size=2>object</FONT><FONT size=2> sender, </FONT><FONT color=#2b91af size=2>EventArgs</FONT><FONT size=2> e)</P>
+<P>{</P>
+<P>taxSpecialist_NVLBindingSource_ForGrid.DataSource = Hps.Business.</FONT><FONT color=#2b91af size=2>TaxSpecialist_NVL</FONT><FONT size=2>.GetTaxSpecialist_NVL();</P>
+<P>cboFilterTaxSpecialist.Items.Add(</FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> Csla.</FONT><FONT color=#2b91af size=2>NameValueListBase</FONT><FONT size=2>&lt;</FONT><FONT color=#0000ff size=2>int</FONT><FONT size=2>, </FONT><FONT color=#0000ff size=2>string</FONT><FONT size=2>&gt;.</FONT><FONT color=#2b91af size=2>NameValuePair</FONT><FONT size=2>(0, </FONT><FONT color=#a31515 size=2>"Any"</FONT><FONT size=2>));</P>
+<P></FONT><FONT color=#0000ff size=2>foreach</FONT><FONT size=2> (Csla.</FONT><FONT color=#2b91af size=2>NameValueListBase</FONT><FONT size=2>&lt;</FONT><FONT color=#0000ff size=2>int</FONT><FONT size=2>, </FONT><FONT color=#0000ff size=2>string</FONT><FONT size=2>&gt;.</FONT><FONT color=#2b91af size=2>NameValuePair</FONT><FONT size=2> item </FONT><FONT color=#0000ff size=2>in</FONT><FONT size=2> </FONT><FONT color=#2b91af size=2>TaxSpecialist_NVL</FONT><FONT size=2>.GetTaxSpecialist_NVL())</P>
+<P>{</P>
+<P>cboFilterTaxSpecialist.Items.Add(item);</P>
+<P>}</P>
+<P>payrollEmployerTaxNoticeActionType_NVLBindingSource.DataSource = _payrollEmployerTaxNoticeActionType_NVL;</P>
+<P>payrollEmployerTaxType_NVLBindingSource.DataSource = _payrollEmployerTaxType_NVL;</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>protected</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>void</FONT><FONT size=2> payrollEmployerTaxNotice_ERLBindingSource_CurrentChanged(</FONT><FONT color=#0000ff size=2>object</FONT><FONT size=2> sender, </FONT><FONT color=#2b91af size=2>EventArgs</FONT><FONT size=2> e)</P>
+<P>{</P>
+<P>payrollEmployerTaxNoticeAction_ERLBindingSource.EndEdit();</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>private</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>void</FONT><FONT size=2> payrollEmployer_RORLListBox_SelectedIndexChanged(</FONT><FONT color=#0000ff size=2>object</FONT><FONT size=2> sender, </FONT><FONT color=#2b91af size=2>EventArgs</FONT><FONT size=2> e)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (payrollEmployer_RORLListBox.SelectedValue != </FONT><FONT color=#0000ff size=2>null</FONT><FONT size=2>)</P>
+<P>{</P>
+<P>_selectedEmployerID = </FONT><FONT color=#0000ff size=2>int</FONT><FONT size=2>.Parse(payrollEmployer_RORLListBox.SelectedValue.ToString());</P>
+<P>selectedPayrollEmployerTaxNotice_ERL = </FONT><FONT color=#2b91af size=2>PayrollEmployerTaxNotice_ERL</FONT><FONT size=2>.GetPayrollEmployerTaxNotice_ERL(_selectedEmployerID);</P>
+<P>BindUI(selectedPayrollEmployerTaxNotice_ERL);</P>
+<P>}</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>protected</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>void</FONT><FONT size=2> CloseTaxNotice(</FONT><FONT color=#0000ff size=2>object</FONT><FONT size=2> sender, </FONT><FONT color=#2b91af size=2>EventArgs</FONT><FONT size=2> e)</P>
+<P>{</P>
+<P>selectedPayrollEmployerTaxNotice_EC.CloseTaxNotice();</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>protected</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>void</FONT><FONT size=2> ReOpenTaxNotice(</FONT><FONT color=#0000ff size=2>object</FONT><FONT size=2> sender, </FONT><FONT color=#2b91af size=2>EventArgs</FONT><FONT size=2> e)</P>
+<P>{</P>
+<P>selectedPayrollEmployerTaxNotice_EC.ReOpenTaxNotice();</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>protected</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>void</FONT><FONT size=2> AddNewTaxNotice(</FONT><FONT color=#0000ff size=2>object</FONT><FONT size=2> sender, </FONT><FONT color=#2b91af size=2>EventArgs</FONT><FONT size=2> e)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (selectedPayrollEmployerTaxNotice_ERL != </FONT><FONT color=#0000ff size=2>null</FONT><FONT size=2>)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (!selectedPayrollEmployerTaxNotice_ERL.IsDirty)</P>
+<P>{</P>
+<P>selectedPayrollEmployerTaxNotice_EC = selectedPayrollEmployerTaxNotice_ERL.AddNew();</P>
+<P>selectedPayrollEmployerTaxNotice_EC.EmployerOID = _selectedEmployerID;</P>
+<P></FONT><FONT color=#2b91af size=2>PayrollEmployerTaxNoticeAction_EC</FONT><FONT size=2> newPayrollEmployerTaxNoticeAction_EC = selectedPayrollEmployerTaxNotice_EC.PayrollEmployerTaxNoticeAction_ERL.AddNew();</P>
+<P>newPayrollEmployerTaxNoticeAction_EC.Description = </FONT><FONT color=#a31515 size=2>"Tax Notice Opened"</FONT><FONT size=2>;</P>
+<P>newPayrollEmployerTaxNoticeAction_EC.PayrollEmployerTaxNoticeActionTypeID = _payrollEmployerTaxNoticeActionType_NVL.GetItemByValue(</FONT><FONT color=#a31515 size=2>"Opened"</FONT><FONT size=2>).Key;</P>
+<P>payrollEmployerTaxNotice_ERLBindingSource.ResetBindings(</FONT><FONT color=#0000ff size=2>false</FONT><FONT size=2>);</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>else</P></FONT><FONT size=2>
+<P>{</P>
+<P></FONT><FONT color=#2b91af size=2>MessageBox</FONT><FONT size=2>.Show(</FONT><FONT color=#a31515 size=2>"You currently have pending changes in an existing tax notice. Please save or cancel those changes before adding a new tax notice"</FONT><FONT size=2>, </FONT><FONT color=#a31515 size=2>"Unsaved Changes"</FONT><FONT size=2>, </FONT><FONT color=#2b91af size=2>MessageBoxButtons</FONT><FONT size=2>.OK);</P>
+<P>}</P>
+<P>}</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>protected</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>void</FONT><FONT size=2> AddNewAction(</FONT><FONT color=#0000ff size=2>object</FONT><FONT size=2> sender, </FONT><FONT color=#2b91af size=2>EventArgs</FONT><FONT size=2> e)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (selectedPayrollEmployerTaxNotice_EC != </FONT><FONT color=#0000ff size=2>null</FONT><FONT size=2>)</P>
+<P>{</P>
+<P></FONT><FONT color=#2b91af size=2>PayrollEmployerTaxNoticeAction_EC</FONT><FONT size=2> newPayrollEmployerTaxNoticeAction_EC = selectedPayrollEmployerTaxNotice_EC.PayrollEmployerTaxNoticeAction_ERL.AddNew();</P>
+<P>payrollEmployerTaxNoticeAction_ERLBindingSource.ResetBindings(</FONT><FONT color=#0000ff size=2>false</FONT><FONT size=2>);</P>
+<P>}</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>protected</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>void</FONT><FONT size=2> payrollEmployerTaxNotice_ERLDataGridView_MouseUp(</FONT><FONT color=#0000ff size=2>object</FONT><FONT size=2> sender, </FONT><FONT color=#2b91af size=2>MouseEventArgs</FONT><FONT size=2> e)</P>
+<P>{</P>
+<P></FONT><FONT color=#008000 size=2>// Load context menu on right mouse click</P></FONT><FONT size=2>
+<P></FONT><FONT color=#2b91af size=2>DataGridView</FONT><FONT size=2>.</FONT><FONT color=#2b91af size=2>HitTestInfo</FONT><FONT size=2> hitTestInfo;</P>
+<P></FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (e.Button == </FONT><FONT color=#2b91af size=2>MouseButtons</FONT><FONT size=2>.Right)</P>
+<P>{</P>
+<P>hitTestInfo = payrollEmployerTaxNotice_ERLDataGridView.HitTest(e.X, e.Y);</P>
+<P></FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (hitTestInfo.Type == </FONT><FONT color=#2b91af size=2>DataGridViewHitTestType</FONT><FONT size=2>.ColumnHeader)</P>
+<P>{</P>
+<P>_contextMenuForTaxNoticeDataGridView.MenuItems.Clear();</P>
+<P>_contextMenuForTaxNoticeDataGridView.MenuItems.Add(</FONT><FONT color=#a31515 size=2>"Add New Tax Notice"</FONT><FONT size=2>, </FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> </FONT><FONT color=#2b91af size=2>EventHandler</FONT><FONT size=2>(AddNewTaxNotice));</P>
+<P>_contextMenuForTaxNoticeDataGridView.Show(payrollEmployerTaxNotice_ERLDataGridView, </FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> </FONT><FONT color=#2b91af size=2>Point</FONT><FONT size=2>(e.X, e.Y));</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (hitTestInfo.Type == </FONT><FONT color=#2b91af size=2>DataGridViewHitTestType</FONT><FONT size=2>.Cell)</P>
+<P>{</P>
+<P></FONT><FONT color=#2b91af size=2>PayrollEmployerTaxNotice_EC</FONT><FONT size=2> notice = (</FONT><FONT color=#2b91af size=2>PayrollEmployerTaxNotice_EC</FONT><FONT size=2>)payrollEmployerTaxNotice_ERLBindingSource.Current;</P>
+<P></FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (notice.IsOpenTaxNotice)</P>
+<P>{</P>
+<P>_contextMenuForTaxNoticeDataGridView.MenuItems.Clear();</P>
+<P>_contextMenuForTaxNoticeDataGridView.MenuItems.Add(</FONT><FONT color=#a31515 size=2>"Close Tax Notice"</FONT><FONT size=2>, </FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> </FONT><FONT color=#2b91af size=2>EventHandler</FONT><FONT size=2>(CloseTaxNotice));</P>
+<P>_contextMenuForTaxNoticeDataGridView.Show(payrollEmployerTaxNotice_ERLDataGridView, </FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> </FONT><FONT color=#2b91af size=2>Point</FONT><FONT size=2>(e.X, e.Y));</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>else</P></FONT><FONT size=2>
+<P>{</P>
+<P>_contextMenuForTaxNoticeDataGridView.MenuItems.Clear();</P>
+<P>_contextMenuForTaxNoticeDataGridView.MenuItems.Add(</FONT><FONT color=#a31515 size=2>"ReOpen Tax Notice"</FONT><FONT size=2>, </FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> </FONT><FONT color=#2b91af size=2>EventHandler</FONT><FONT size=2>(ReOpenTaxNotice));</P>
+<P>_contextMenuForTaxNoticeDataGridView.Show(payrollEmployerTaxNotice_ERLDataGridView, </FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> </FONT><FONT color=#2b91af size=2>Point</FONT><FONT size=2>(e.X, e.Y));</P>
+<P>}</P>
+<P>}</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>else</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (e.Button == </FONT><FONT color=#2b91af size=2>MouseButtons</FONT><FONT size=2>.Left)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (payrollEmployerTaxNotice_ERLDataGridView.CurrentRow != </FONT><FONT color=#0000ff size=2>null</FONT><FONT size=2>)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (payrollEmployerTaxNotice_ERLDataGridView.Columns[payrollEmployerTaxNotice_ERLDataGridView.CurrentCell.ColumnIndex].Name == </FONT><FONT color=#a31515 size=2>"AddComment"</FONT><FONT size=2>)</P>
+<P>{</P>
+<P>commentTextBox.Left = e.X;</P>
+<P>commentTextBox.Top = e.Y + 50;</P>
+<P>commentTextBox.Text = </FONT><FONT color=#0000ff size=2>string</FONT><FONT size=2>.Empty;</P>
+<P>commentTextBox.Show();</P>
+<P>commentTextBox.Focus();</P>
+<P>}</P>
+<P>}</P>
+<P>}</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>protected</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>void</FONT><FONT size=2> commentTextbox_LostFocus(</FONT><FONT color=#0000ff size=2>object</FONT><FONT size=2> sender, </FONT><FONT color=#2b91af size=2>EventArgs</FONT><FONT size=2> e)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (commentTextBox.Text != </FONT><FONT color=#0000ff size=2>string</FONT><FONT size=2>.Empty)</P>
+<P>{</P>
+<P>selectedPayrollEmployerTaxNotice_EC.AddComment(commentTextBox.Text, (</FONT><FONT color=#0000ff size=2>int</FONT><FONT size=2>)Security.</FONT><FONT color=#2b91af size=2>CurrentUser</FONT><FONT size=2>.CurrentIdentity.User.EmployeeID.Value);</P>
+<P>commentTextBox.Text = </FONT><FONT color=#0000ff size=2>string</FONT><FONT size=2>.Empty;</P>
+<P>}</P>
+<P>commentTextBox.Hide();</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>protected</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>void</FONT><FONT size=2> payrollEmployerTaxNotice_ERLDataGridView_DataError(</FONT><FONT color=#0000ff size=2>object</FONT><FONT size=2> sender, </FONT><FONT color=#2b91af size=2>DataGridViewDataErrorEventArgs</FONT><FONT size=2> e)</P>
+<P>{</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>protected</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>void</FONT><FONT size=2> payrollEmployerTaxNotice_ERLDataGridView_SelectionChanged(</FONT><FONT color=#0000ff size=2>object</FONT><FONT size=2> sender, </FONT><FONT color=#2b91af size=2>EventArgs</FONT><FONT size=2> e)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>try</P></FONT><FONT size=2>
+<P>{</P>
+<P>selectedPayrollEmployerTaxNotice_EC = (Hps.Business.</FONT><FONT color=#2b91af size=2>PayrollEmployerTaxNotice_EC</FONT><FONT size=2>)payrollEmployerTaxNotice_ERLDataGridView.CurrentRow.DataBoundItem;</P>
+<P></FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (selectedPayrollEmployerTaxNotice_EC != </FONT><FONT color=#0000ff size=2>null</FONT><FONT size=2>)</P>
+<P>{</P>
+<P>payrollEmployerTaxNoticeAction_ERLBindingSource.DataSource = selectedPayrollEmployerTaxNotice_EC.PayrollEmployerTaxNoticeAction_ERL;</P>
+<P>payrollEmployerTaxNoticeAction_ERLBindingSource.ResetBindings(</FONT><FONT color=#0000ff size=2>false</FONT><FONT size=2>);</P>
+<P>payrollEmployerTaxNoticeAction_ERLDataGridView.Enabled = </FONT><FONT color=#0000ff size=2>true</FONT><FONT size=2>;</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>else</P></FONT><FONT size=2>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>.payrollEmployerTaxNoticeAction_ERLDataGridView.Enabled = </FONT><FONT color=#0000ff size=2>false</FONT><FONT size=2>;</P>
+<P>}</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>catch</FONT><FONT size=2> (</FONT><FONT color=#2b91af size=2>Exception</FONT><FONT size=2> ex)</P>
+<P>{</P>
+<P>}</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>protected</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>void</FONT><FONT size=2> payrollEmployerTaxNoticeAction_ERLDataGridView_DataError(</FONT><FONT color=#0000ff size=2>object</FONT><FONT size=2> sender, </FONT><FONT color=#2b91af size=2>DataGridViewDataErrorEventArgs</FONT><FONT size=2> e)</P>
+<P>{</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>protected</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>void</FONT><FONT size=2> cboFilterTaxSpecialist_SelectedIndexChanged(</FONT><FONT color=#0000ff size=2>object</FONT><FONT size=2> sender, </FONT><FONT color=#2b91af size=2>EventArgs</FONT><FONT size=2> e)</P>
+<P>{</P>
+<P>ApplyEmployeeFilter();</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>protected</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>void</FONT><FONT size=2> Search_KeyPress(</FONT><FONT color=#0000ff size=2>object</FONT><FONT size=2> sender, </FONT><FONT color=#2b91af size=2>KeyPressEventArgs</FONT><FONT size=2> e)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (e.KeyChar == </FONT><FONT color=#a31515 size=2>'\r'</FONT><FONT size=2>)</P>
+<P>{</P>
+<P>ApplyEmployeeFilter();</P>
+<P>}</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>private</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>void</FONT><FONT size=2> btnApplyEmployerFilter_Click(</FONT><FONT color=#0000ff size=2>object</FONT><FONT size=2> sender, </FONT><FONT color=#2b91af size=2>EventArgs</FONT><FONT size=2> e)</P>
+<P>{</P>
+<P>ApplyEmployeeFilter();</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>private</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>void</FONT><FONT size=2> ApplyEmployeeFilter()</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (cboFilterTaxSpecialist.SelectedIndex &gt; 0)</P>
+<P>{</P>
+<P>payrollEmployer_RORLBindingSource.DataSource = Hps.Business.</FONT><FONT color=#2b91af size=2>PayrollEmployer_RORL</FONT><FONT size=2>.GetPayrollEmployer_RORL(txtFilterMerchantName.Text, txtFilterMerchantNumber.Text, ((Csla.</FONT><FONT color=#2b91af size=2>NameValueListBase</FONT><FONT size=2>&lt;</FONT><FONT color=#0000ff size=2>int</FONT><FONT size=2>, </FONT><FONT color=#0000ff size=2>string</FONT><FONT size=2>&gt;.</FONT><FONT color=#2b91af size=2>NameValuePair</FONT><FONT size=2>)cboFilterTaxSpecialist.SelectedItem).Key);</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>else</P></FONT><FONT size=2>
+<P>{</P>
+<P>payrollEmployer_RORLBindingSource.DataSource = Hps.Business.</FONT><FONT color=#2b91af size=2>PayrollEmployer_RORL</FONT><FONT size=2>.GetPayrollEmployer_RORL(txtFilterMerchantName.Text, txtFilterMerchantNumber.Text, 0);</P>
+<P>}</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>private</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>void</FONT><FONT size=2> btnSave_Click(</FONT><FONT color=#0000ff size=2>object</FONT><FONT size=2> sender, </FONT><FONT color=#2b91af size=2>EventArgs</FONT><FONT size=2> e)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>.payrollEmployerTaxNoticeAction_ERLBindingSource.RaiseListChangedEvents = </FONT><FONT color=#0000ff size=2>false</FONT><FONT size=2>;</P>
+<P></FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>.payrollEmployerTaxNotice_ERLBindingSource.RaiseListChangedEvents = </FONT><FONT color=#0000ff size=2>false</FONT><FONT size=2>;</P>
+<P></FONT><FONT color=#2b91af size=2>PayrollEmployerTaxNotice_ERL</FONT><FONT size=2> payrollEmployerTaxNotice_ERL = (</FONT><FONT color=#2b91af size=2>PayrollEmployerTaxNotice_ERL</FONT><FONT size=2>)</FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>.payrollEmployerTaxNotice_ERLBindingSource.DataSource;</P>
+<P>UnbindBindingSource(</FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>.payrollEmployerTaxNoticeAction_ERLBindingSource, </FONT><FONT color=#0000ff size=2>true</FONT><FONT size=2>);</P>
+<P>UnbindBindingSource(</FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>.payrollEmployerTaxNotice_ERLBindingSource, </FONT><FONT color=#0000ff size=2>true</FONT><FONT size=2>);</P>
+<P></FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>.payrollEmployerTaxNoticeAction_ERLBindingSource.EndEdit();</P>
+<P></FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>.payrollEmployerTaxNotice_ERLBindingSource.EndEdit();</P>
+<P></FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (payrollEmployerTaxNotice_ERL != </FONT><FONT color=#0000ff size=2>null</FONT><FONT size=2>)</P>
+<P>{</P>
+<P>payrollEmployerTaxNotice_ERL.ApplyEdit();</P>
+<P>BindUI(payrollEmployerTaxNotice_ERL);</P>
+<P>}</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>private</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>void</FONT><FONT size=2> btnCancel_Click(</FONT><FONT color=#0000ff size=2>object</FONT><FONT size=2> sender, </FONT><FONT color=#2b91af size=2>EventArgs</FONT><FONT size=2> e)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>.payrollEmployerTaxNoticeAction_ERLBindingSource.EndEdit();</P>
+<P></FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>.payrollEmployerTaxNoticeAction_ERLBindingSource.RaiseListChangedEvents = </FONT><FONT color=#0000ff size=2>false</FONT><FONT size=2>;</P>
+<P></FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>.payrollEmployerTaxNotice_ERLBindingSource.RaiseListChangedEvents = </FONT><FONT color=#0000ff size=2>false</FONT><FONT size=2>;</P>
+<P></FONT><FONT color=#2b91af size=2>PayrollEmployerTaxNotice_ERL</FONT><FONT size=2> payrollEmployerTaxNotice_ERL = (</FONT><FONT color=#2b91af size=2>PayrollEmployerTaxNotice_ERL</FONT><FONT size=2>)</FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>.payrollEmployerTaxNotice_ERLBindingSource.DataSource;</P>
+<P>UnbindBindingSource(</FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>.payrollEmployerTaxNoticeAction_ERLBindingSource, </FONT><FONT color=#0000ff size=2>false</FONT><FONT size=2>);</P>
+<P>UnbindBindingSource(</FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>.payrollEmployerTaxNotice_ERLBindingSource, </FONT><FONT color=#0000ff size=2>false</FONT><FONT size=2>);</P>
+<P></FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (payrollEmployerTaxNotice_ERL != </FONT><FONT color=#0000ff size=2>null</FONT><FONT size=2>)</P>
+<P>{</P>
+<P>payrollEmployerTaxNotice_ERL.CancelEdit();</P>
+<P>BindUI(payrollEmployerTaxNotice_ERL);</P>
+<P>}</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>private</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>void</FONT><FONT size=2> BindUI(</FONT><FONT color=#2b91af size=2>PayrollEmployerTaxNotice_ERL</FONT><FONT size=2> payrollEmployerTaxNoticeAction_ERL)</P>
+<P>{</P>
+<P>payrollEmployerTaxNoticeAction_ERL.BeginEdit();</P>
+<P></FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>.payrollEmployerTaxNotice_ERLBindingSource.DataSource = payrollEmployerTaxNoticeAction_ERL;</P>
+<P></FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>.payrollEmployerTaxNoticeAction_ERLBindingSource.RaiseListChangedEvents = </FONT><FONT color=#0000ff size=2>true</FONT><FONT size=2>;</P>
+<P></FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>.payrollEmployerTaxNotice_ERLBindingSource.RaiseListChangedEvents = </FONT><FONT color=#0000ff size=2>true</FONT><FONT size=2>;</P>
+<P></FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>.payrollEmployerTaxNoticeAction_ERLBindingSource.ResetBindings(</FONT><FONT color=#0000ff size=2>false</FONT><FONT size=2>);</P>
+<P></FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>.payrollEmployerTaxNotice_ERLBindingSource.ResetBindings(</FONT><FONT color=#0000ff size=2>false</FONT><FONT size=2>);</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>protected</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>void</FONT><FONT size=2> UnbindBindingSource(</FONT><FONT color=#2b91af size=2>BindingSource</FONT><FONT size=2> source, </FONT><FONT color=#0000ff size=2>bool</FONT><FONT size=2> apply)</P>
+<P>{</P>
+<P>System.ComponentModel.</FONT><FONT color=#2b91af size=2>IEditableObject</FONT><FONT size=2> current = source.Current </FONT><FONT color=#0000ff size=2>as</FONT><FONT size=2> System.ComponentModel.</FONT><FONT color=#2b91af size=2>IEditableObject</FONT><FONT size=2>;</P>
+<P></FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (!(source.DataSource </FONT><FONT color=#0000ff size=2>is</FONT><FONT size=2> </FONT><FONT color=#2b91af size=2>BindingSource</FONT><FONT size=2>))</P>
+<P>{</P>
+<P>source.DataSource = </FONT><FONT color=#0000ff size=2>null</FONT><FONT size=2>;</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (current != </FONT><FONT color=#0000ff size=2>null</FONT><FONT size=2>)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (apply)</P>
+<P>{</P>
+<P>current.EndEdit();</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>else</P></FONT><FONT size=2>
+<P>{</P>
+<P>current.CancelEdit();</P>
+<P>}</P>
+<P>}</P>
+<P>}</P>
+<P>}</P>
+<P>}</P></FONT></FONT></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>wjcomeaux replied on Tuesday, August 26, 2008</h2><P>Ok, I've rewritten the application to be pretty much just like the sample you provided. What I've done is added a root object (PayrollEmployee as editable root).</P>
+<P>PayrollEmployee has an EditableRootList called PayrollEmployeeTaxNotice_ERL</P>
+<P>PayrollEmployeeTaxNotice has an EditableRootList called PayrollEmployeeTaxNoticeAction_ERL</P>
+<P>I've wired up my grids the same way yours is using a binding source tied to PayrollEmployer, a binding source tied to the PayrollEmployerTaxNotice property of the PayrollEmployer binding source and a binding source tied to the PayrollEmployerTaxNoticeAction property of the PayrollEmployerTaxNotice binding source.</P>
+<P>Outside of the names "root", "children" and "grandchildren" we have the same code on our form and I still get errors with EditLevel mismatch. </P>
+<P>At this point I can only think it's because my business objects are generated using the C# 2.0 templates and not the C# 3.5 templates which manage all of the properties differently.</P>
+<P>Wasn't this functionality all available in CSLA 2.0? And ideas if I'm doing something wrong?</P>
+<P>Thanks,</P>
+<P>Will</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Tuesday, August 26, 2008</h2>Ok, something is jumping out at me now.&nbsp; You sayd that PayrollEmployee has an ERL, and so does PayrollExmployeeTaxNotice.&nbsp; ERL should NEVER be contained within another business object.&nbsp; It fills one very specific nitch; to allow users to edit a grid in which each row within the grid is a root object, and committed independently of the other items in the list.&nbsp; As soon as the grid calls ApplyEdit, the row being edited is Saved by Csla.&nbsp; The other objects in the list are independent.<br><br>It sounds like you should have your ERL actually subclass BusinessListBase, and they should be marked as a child object because they are contained within another instance that is also editable.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>wjcomeaux replied on Tuesday, August 26, 2008</h2><P>Well, the reason for using EditableRootLists instead of EditableChildLists is the templates provide gets for EditableChildLists by dataReader only. In reality, my parent object has an ID which I then use to get the list of child objects. I don't return then as separate datatable objects.</P>
+<P>I can write the filter criteria as part of my editable child list objects but it's code I was trying to not write since it seems like an object with a property that happens to be an Editable Root List would still be treated as a child when it comes to managing the EditLevel.</P>
+<P>Will</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, August 26, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>ERLB (dynamic lists) can never be child objects. They are a root
+list of root objects, and are designed to fill a very specific niche: editing
+in a Windows Forms (or WPF or Silverlight) grid control such that the user&#8217;s
+changes are committed as the user exits each row. Use of ERLB outside this
+scenario is not supported, and often just won&#8217;t work.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>ERLB doesn&#8217;t participate in undo as a child, because it is
+not designed to ever be a child.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>If you want a list of editable child objects, you must use BusinessListBase
+to create an editable list of those objects. That&#8217;s the only model that
+works.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> wjcomeaux
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Tuesday, August 26, 2008 1:59 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] EditLevel Problem with Databinding<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Well, the reason for using EditableRootLists instead of EditableChildLists
+is the templates provide gets for EditableChildLists by dataReader only. In
+reality, my parent object has an ID which I then use to get the list of child
+objects. I don't return then as separate datatable objects.<o:p></o:p></p>
+
+<p>I can write the filter criteria as part of my editable child list objects
+but it's code I was trying to not write since it seems like an object with a
+property that happens to be an Editable Root List would still be treated as a
+child when it comes to managing the EditLevel.<o:p></o:p></p>
+
+<p>Will<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>wjcomeaux replied on Tuesday, August 26, 2008</h2><P>Ok, thanks guys.&nbsp; I'm working on the changes now.</P>
+<P>Will</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

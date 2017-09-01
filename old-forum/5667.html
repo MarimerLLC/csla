@@ -1,0 +1,379 @@
+<html><header><title>Silverlight Navigator control and parameters</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Silverlight Navigator control and parameters</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5667.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>dnwheeler posted on Friday, October 24, 2008</h2><P>Perhaps I'm missing something but it doesn't look like there's any way to automatically send parameters using the NavigationProvider control. Specifically, I have several controls (HyperlinkButtons) on a page that all navigate to the same page, but need to provide different parameters.</P>
+<P>The OnBeforeNavigation event gives me an opportunity to set the parameters, but by that point, I've lost the context of the control that initiated the navigation.</P>
+<P>Is the code simply not complete, or is the current design inadequate for this type of navigation (specifically, navigating to a new page with parameters)? If the latter, then I'll work on modifying the code to suit my needs (add a Parameters property to the NavigationProvider and add a Parameters parameter to the Navigate method on the Navigator).</P>
+<P>--Doug</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>dnwheeler replied on Friday, October 24, 2008</h2><P>I've gone ahead and made the changes I mentioned (added a Parameters property to the NavigationProvider and added a Navigate overload on the Navigator that takes a parameters string). That was very easy and works great (IMO, this should be added to the official CSLA code).</P>
+<P>The next problem I've run into is that due to the asynchronous nature of Silverlight WCF calls, I don't know the title of the page until too late. Right now, the parameter passed to a page is a record number, and in the "SetParameters" call, I start a fetch of the record. The problem is that the ISupportNavigation.Title property is read before the data has been fetched, so I can't provide a meaningful (i.e. contextual)&nbsp;title.</P>
+<P>Any thoughts on dealing with this issue? Is there some way to change the title later or postpone the step of adding the bookmark to the navigation history?</P>
+<P>--Doug</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Friday, October 24, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Thanks, Doug.&nbsp; I will try to work on incorporating your
+suggestions today and next week.&nbsp; Could you elaborate a little on the need
+to have parameters property in Navigator control?&nbsp; I am not 100% sure I understand
+why you needed this.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Thanks.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899<o:p></o:p></span></p>
+
+<p class=MsoNormal><b><i><span>Magenic</span></i></b><span> </span><span>&reg;</span><b><i><span><o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> dnwheeler
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Friday, October 24, 2008 2:49 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] Silverlight Navigator control and parameters<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>I've gone ahead and made the changes I mentioned (added a Parameters
+property to the NavigationProvider and added a Navigate overload on the
+Navigator that takes a parameters string). That was very easy and works great
+(IMO, this should be added to the official CSLA code).<o:p></o:p></p>
+
+<p>The next problem I've run into is that due to the asynchronous nature of
+Silverlight WCF calls, I don't know the title of the page until too late. Right
+now, the parameter passed to a page is a record number, and in the
+&quot;SetParameters&quot; call, I start a fetch of the record. The problem is
+that the ISupportNavigation.Title property is read before the data has been
+fetched, so I can't provide a meaningful (i.e. contextual)&nbsp;title.<o:p></o:p></p>
+
+<p>Any thoughts on dealing with this issue? Is there some way to change the
+title later or postpone the step of adding the bookmark to the navigation
+history?<o:p></o:p></p>
+
+<p>--Doug<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>dnwheeler replied on Friday, October 24, 2008</h2><P>Basically, I have a databound list of HyperlinkButtons representing data records. Clicking on any of the links navigates to a details page to display the record details. To do this, I have the NavigatorProvider's Parameters property (that I added) databound to the record ID. This way, the Navigator then then call the control factory to create the details page and then send the ID as the parameter.</P>
+<P>The XAML for the Hyperlink Button looks like this:</P><PRE>&lt;HyperlinkButton Height="16"
+                 csla:NavigatorProvider.NavigatorProvider="{StaticResource NavProvider}"
+                 csla:NavigatorProvider.ControlTypeName="TheApp.DetailsPage, TheApp, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null"
+                 csla:NavigatorProvider.Parameters="{Binding Id}"
+                 csla:NavigatorProvider.TriggerEvent="Click"&gt;
+    &lt;HyperlinkButton.Content&gt;
+        ...
+    &lt;/HyperlinkButton.Content&gt;
+&lt;/HyperlinkButton&gt;
+</PRE>
+<P>The HyperlinkButton.Content contains an icon and text that databinds to another property. Doing this allows navigation to the details page for any of the items without any associated code.</P>
+<P>The details page then loads its contents (the complete record associated with the Id from the HyperlinkButton)&nbsp;when the SetParameters method is called.</P>
+<P>BTW, the change I made to Navigator.cs is very simple:</P><PRE>public void Navigate(string controlTypeName)
+{
+    Navigate(controlTypeName, string.Empty);
+}
+
+public void Navigate(string controlTypeName, string parameters)
+{
+    NavigationEventArgs args = new NavigationEventArgs(controlTypeName, parameters, false);
+    ...
+</PRE>
+<P>And in the NavigatorProvider, I added a new dependency property called "Parameters" and pass its value to the new Navigate method.</P>
+<P>--Doug</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Friday, October 24, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Got you.&nbsp; Parameters property is for navigator provider, not
+navigator itself.&nbsp; This makes sense.&nbsp; I will post a reply to this
+thread once this change is done.&nbsp; It seems like a very good suggestion.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Thanks again.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899<o:p></o:p></span></p>
+
+<p class=MsoNormal><b><i><span>Magenic</span></i></b><span> </span><span>&reg;</span><b><i><span><o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> dnwheeler
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Friday, October 24, 2008 4:58 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: Silverlight Navigator control and
+parameters<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Basically, I have a databound list of HyperlinkButtons representing data
+records. Clicking on any of the links navigates to a details page to display
+the record details. To do this, I have the NavigatorProvider's Parameters
+property (that I added) databound to the record ID. This way, the Navigator
+then then call the control factory to create the details page and then send the
+ID as the parameter.<o:p></o:p></p>
+
+<p>The XAML for the Hyperlink Button looks like this:<o:p></o:p></p>
+
+<pre>&lt;HyperlinkButton Height=&quot;16&quot;<o:p></o:p></pre><pre>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; csla:NavigatorProvider.NavigatorProvider=&quot;{StaticResource NavProvider}&quot;<o:p></o:p></pre><pre>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; csla:NavigatorProvider.ControlTypeName=&quot;TheApp.DetailsPage, TheApp, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null&quot;<o:p></o:p></pre><pre>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; csla:NavigatorProvider.Parameters=&quot;{Binding Id}&quot;<o:p></o:p></pre><pre>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; csla:NavigatorProvider.TriggerEvent=&quot;Click&quot;&gt;<o:p></o:p></pre><pre>&nbsp;&nbsp;&nbsp; &lt;HyperlinkButton.Content&gt;<o:p></o:p></pre><pre>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ...<o:p></o:p></pre><pre>&nbsp;&nbsp;&nbsp; &lt;/HyperlinkButton.Content&gt;<o:p></o:p></pre><pre>&lt;/HyperlinkButton&gt;<o:p></o:p></pre>
+
+<p>The HyperlinkButton.Content contains an icon and text that databinds to
+another property. Doing this allows navigation to the details page for any of
+the items without any associated code.<o:p></o:p></p>
+
+<p>The details page then loads its contents (the complete record associated
+with the Id from the HyperlinkButton)&nbsp;when the SetParameters method is
+called.<o:p></o:p></p>
+
+<p>BTW, the change I made to Navigator.cs is very simple:<o:p></o:p></p>
+
+<pre>public void Navigate(string controlTypeName)<o:p></o:p></pre><pre>{<o:p></o:p></pre><pre>&nbsp;&nbsp;&nbsp; Navigate(controlTypeName, string.Empty);<o:p></o:p></pre><pre>}<o:p></o:p></pre><pre><o:p>&nbsp;</o:p></pre><pre>public void Navigate(string controlTypeName, string parameters)<o:p></o:p></pre><pre>{<o:p></o:p></pre><pre>&nbsp;&nbsp;&nbsp; NavigationEventArgs args = new NavigationEventArgs(controlTypeName, parameters, false);<o:p></o:p></pre><pre>&nbsp;&nbsp;&nbsp; ...<o:p></o:p></pre>
+
+<p>And in the NavigatorProvider, I added a new dependency property called
+&quot;Parameters&quot; and pass its value to the new Navigate method.<o:p></o:p></p>
+
+<p>--Doug<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Friday, October 24, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Thanks.&nbsp; I just checked in a set of changes. &nbsp;&nbsp;Here
+is description from bug tracker.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&#8220;Make improvements to Navigator.&nbsp; Add more
+information to ISupportNavigation.&nbsp; Add LoadCompleted event and
+CreateBookmarkAfterLoadCompleted.&nbsp; Add ParametersProperty from
+NavigatorProvider&#8221;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>So, this addresses your main suggestion as well as provides the
+way to deal with delayed bookmarking.&nbsp; In control that need to load data,
+then set the title, return True for CreateBookmarkAfterLoadCompleted property, otherwise
+return False.&nbsp; After the data is loaded, simply raise LoadCompleted event,
+signaling to data provider that the control is ready for title setting and
+bookmarking.&nbsp; You can look at either CS or VB version of NavigationApp
+sample solution (in samples/Cslalight folder) &nbsp;for a sample implementation
+that I used for testing of this change.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Thanks again for your suggestion.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899<o:p></o:p></span></p>
+
+<p class=MsoNormal><b><i><span>Magenic</span></i></b><span> </span><span>&reg;</span><b><i><span><o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> dnwheeler
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Friday, October 24, 2008 4:58 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: Silverlight Navigator control and
+parameters<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Basically, I have a databound list of HyperlinkButtons representing data
+records. Clicking on any of the links navigates to a details page to display
+the record details. To do this, I have the NavigatorProvider's Parameters
+property (that I added) databound to the record ID. This way, the Navigator
+then then call the control factory to create the details page and then send the
+ID as the parameter.<o:p></o:p></p>
+
+<p>The XAML for the Hyperlink Button looks like this:<o:p></o:p></p>
+
+<pre>&lt;HyperlinkButton Height=&quot;16&quot;<o:p></o:p></pre><pre>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; csla:NavigatorProvider.NavigatorProvider=&quot;{StaticResource NavProvider}&quot;<o:p></o:p></pre><pre>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; csla:NavigatorProvider.ControlTypeName=&quot;TheApp.DetailsPage, TheApp, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null&quot;<o:p></o:p></pre><pre>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; csla:NavigatorProvider.Parameters=&quot;{Binding Id}&quot;<o:p></o:p></pre><pre>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; csla:NavigatorProvider.TriggerEvent=&quot;Click&quot;&gt;<o:p></o:p></pre><pre>&nbsp;&nbsp;&nbsp; &lt;HyperlinkButton.Content&gt;<o:p></o:p></pre><pre>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ...<o:p></o:p></pre><pre>&nbsp;&nbsp;&nbsp; &lt;/HyperlinkButton.Content&gt;<o:p></o:p></pre><pre>&lt;/HyperlinkButton&gt;<o:p></o:p></pre>
+
+<p>The HyperlinkButton.Content contains an icon and text that databinds to
+another property. Doing this allows navigation to the details page for any of
+the items without any associated code.<o:p></o:p></p>
+
+<p>The details page then loads its contents (the complete record associated
+with the Id from the HyperlinkButton)&nbsp;when the SetParameters method is
+called.<o:p></o:p></p>
+
+<p>BTW, the change I made to Navigator.cs is very simple:<o:p></o:p></p>
+
+<pre>public void Navigate(string controlTypeName)<o:p></o:p></pre><pre>{<o:p></o:p></pre><pre>&nbsp;&nbsp;&nbsp; Navigate(controlTypeName, string.Empty);<o:p></o:p></pre><pre>}<o:p></o:p></pre><pre><o:p>&nbsp;</o:p></pre><pre>public void Navigate(string controlTypeName, string parameters)<o:p></o:p></pre><pre>{<o:p></o:p></pre><pre>&nbsp;&nbsp;&nbsp; NavigationEventArgs args = new NavigationEventArgs(controlTypeName, parameters, false);<o:p></o:p></pre><pre>&nbsp;&nbsp;&nbsp; ...<o:p></o:p></pre>
+
+<p>And in the NavigatorProvider, I added a new dependency property called
+&quot;Parameters&quot; and pass its value to the new Navigate method.<o:p></o:p></p>
+
+<p>--Doug<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>dnwheeler replied on Monday, October 27, 2008</h2><P>Sergey,</P>
+<P>I've tried everything out and it works great! This solves all my issues with navigation (and allowed me to get rid of my own similar/inferior implementation).</P>
+<P>Thanks for your time and effort.</P>
+<P>--Doug</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Monday, October 27, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>My pleasure.&nbsp; I am glad it worked out for you.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899<o:p></o:p></span></p>
+
+<p class=MsoNormal><b><i><span>Magenic</span></i></b><span> </span><span>&reg;</span><b><i><span><o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> dnwheeler
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Monday, October 27, 2008 2:13 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: RE: Silverlight Navigator control and
+parameters<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Sergey,<o:p></o:p></p>
+
+<p>I've tried everything out and it works great! This solves all my issues with
+navigation (and allowed me to get rid of my own similar/inferior
+implementation).<o:p></o:p></p>
+
+<p>Thanks for your time and effort.<o:p></o:p></p>
+
+<p>--Doug<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

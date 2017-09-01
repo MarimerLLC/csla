@@ -1,0 +1,28 @@
+<html><header><title>Validation Rules</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Validation Rules</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/437.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Crestline posted on Wednesday, June 21, 2006</h2>We are getting our heads wrapped around Validation rules at the moment and have a couple questions.&nbsp; <br>
+<br>
+As we understand it, a validation rule is checked when
+PropertyHasChanged() is called or when it is explicitly called.&nbsp;
+How would you implement a validation rule for a 'required property' if
+the user never enters anything for that property.&nbsp; Because
+PropertyHasChanged() will never fire, where should we explicitly call
+CheckRules() to make sure it is in fact been checked?<br>
+<br>
+What is a good way to handle saves when an object is invalid?&nbsp;
+Right now just an exception is thrown because the save is allowed to
+run.&nbsp; How do we go about intercepting before the save and crash
+happens?<br>
+<br>
+Thanks for any ideas,<br>
+BR<br>
+<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Wednesday, June 21, 2006</h2>There's a couple of things you can do.&nbsp; For one, in your DataPortal_Create, you could set the value via the property (which would call the propertyhaschanged, which in turn will run rules).&nbsp; Or you could set the intial value by setting the fields directly, and before your DataPortal_Create exists, call ValidationRules.CheckRules, to run all teh checks at once.<br><br>Regarding saves in an invalid state.. that may mean you have another BO requirement.&nbsp; For example,&nbsp; you may have a Quote which you can save at any time (and thus the rules only reflect the data required to save a quote, they don't tell you if the quote is 'valid').&nbsp; You could then have an order object which is created from a quote... so:&nbsp; Order myOrder = Order.NewOrder( myQuote );&nbsp; Which would bomb if the quote was not in a 'valid enough' state to create the order.<br><br>There has been much discussion on this topic in the past; you might want to search the forum for other ideas as well.<br><br>HTH<br>Andy<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Crestline replied on Wednesday, June 21, 2006</h2>Also to double check, when data binding our objects, is the set method
+of the public property actually run or does datatbinding just effect
+the internal properties?&nbsp; If it's just internal properties, then
+the PropertyHasChanged() will never fire...<br>
+<br>
+<br>
+<br>
+<br>
+<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Wednesday, June 21, 2006</h2><BLOCKQUOTE><div><img src="/Themes/basicblue/images/icon-quote.gif"> <strong>Crestline:</strong></div><div>Also to double check, when data binding our objects, is the set method
+of the public property actually run or does datatbinding just effect
+the internal properties?&nbsp; If it's just internal properties, then
+the PropertyHasChanged() will never fire...</div></BLOCKQUOTE><br><br>Data binding only works with public properties and fields, so the PropertyhasChanged will be called properly.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Crestline replied on Wednesday, June 21, 2006</h2>Ok, great.&nbsp; Thanks for the clarification.&nbsp; We should be able to get this figured out.<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

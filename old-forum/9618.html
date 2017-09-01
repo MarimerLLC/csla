@@ -1,0 +1,18 @@
+<html><header><title>WCF and Parent/Child Relationship</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>WCF and Parent/Child Relationship</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9618.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>JasonG posted on Friday, October 08, 2010</h2><p>Hello, I&#39;m building a WCF service app&nbsp;using CSLA business objects. The business objects function correctly when tested by themselves. Where I&#39;m&nbsp;stuck is in the service implementation. What is best way to transfer the child object to/from the datacontract. I looked at the Project Tracker app, but i don&#39;t see where the &quot;Resources&quot; child objects are converted into Datacontracts and back to child objects. </p>
+<p>Can someone point me in the right direction?</p>
+<p>thanks,</p>
+<p>Jason</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Friday, October 08, 2010</h2><p>Most service implementations are really just simple mapping functions.</p>
+<p>Your business object graph has a shape (parent-child-grandchild, etc).</p>
+<p>Your data contract has a shape too. So it is typically just a matter of doing a bunch of looping (or LINQ queries) to populate the data contract with business data, of course honoring any authorization rules in the process.</p>
+<p>And it is that last part where the service code gets interesting, because you need to decide how to handle cases where the caller isn&#39;t authorized to see specific objects or property values. The CSLA objects will block those requests - with an exception by default - but you can call the CSLA authorization methods before trying to get the data to avoid the exceptions, and then it is a business decision as to how you handle that scenario in terms of what gets returned to the caller.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JasonG replied on Friday, October 08, 2010</h2><p>Sounds simple enough,&nbsp;but why&nbsp;was i confused.. I think its because I&#39;m using a&nbsp;&quot;Translator&quot; class instead of the&nbsp;DataMapper. &nbsp;In the Project Tracker app, the &quot;Resources&quot; are excluded when calling the DataMapper, so the child object would be&nbsp;handled like this.. &quot;<span style="font-size:x-small;">CSLA.Data.DataMapper.Map(project.Resouces, result.Resource);&quot; ??</span></p>
+<p><span style="font-size:x-small;"></span></p>
+<p><span style="font-size:x-small;">
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<font size="2">
+<p>&nbsp;</p>
+</font></span></p>
+<p>&nbsp;&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, October 08, 2010</h2><p>If the business object graph has parent-child relationships, you&#39;ll typically end up mapping the parent into the data contract, then mapping its children into the data contract, then moving on to the next parent, etc.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JasonG replied on Friday, October 08, 2010</h2><p>so not like in my previous post, but map one child at a time in a loop?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, October 08, 2010</h2><p>DataMapper maps one object to another, it doesn&#39;t operate on lists. So it is up to you to do the looping, or use some other object-to-object mapper that supports lists (if one exists).</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

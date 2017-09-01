@@ -1,0 +1,127 @@
+<html><header><title>Can I treat CSLA BusinessBase class as EF4 Code First classes</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Can I treat CSLA BusinessBase class as EF4 Code First classes</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9586.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>tikluganguly posted on Wednesday, September 29, 2010</h2><p>Hi,</p>
+<p>&nbsp;&nbsp; &nbsp; Based on my understanding it is quite possible to treat the csla buisnessbase (or readonlybusinessbase) classes as ef4 code first classes.</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Please do let me know if I am correct.</p>
+<p>&nbsp;</p>
+<p>Regards</p>
+<p>Tiklu</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Wednesday, September 29, 2010</h2><p>If you are able to get this to work, please share your findings.</p>
+<p>I suspect it might work in some simple cases, but probably won&#39;t work if the object graph is anything but trivial, and I can&#39;t imagine it would work if you use managed backing fields (which are basically required to support Silverlight or WP7).</p>
+<p>Remember that any code external to your object (such as an ORM) can&#39;t get/set property values directly, because that&#39;ll trigger business rules. The best case is that performance would be poor, but more likely the object will refuse to get/set some values due to authorization rules.</p>
+<p>So any external code really needs to set field values, not property values. Technologies like BinaryFormatter and NetDataContractSerializer do this, which is why they work well for CSLA. Perhaps EF can do this too?</p>
+<p>But if you use managed backing fields, then you <i>have no private fields</i>, in which case any external code actually needs to invoke ReadProperty/LoadProperty - and that implies that the external technology (like EF) has hooks where you can plug in your own code for any get/set operations.</p>
+<p>At one point the EF team did plan to have such hooks in EF 4, and I&#39;d discussed with them how this might work. I don&#39;t think that feature made it into the final release of EF though. But if I&#39;m wrong, I&#39;d love to hear about it - because it would be really cool :)</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tikluganguly replied on Thursday, October 07, 2010</h2><p>Hi Rocky,</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;First of all sorry for replying you back after so many days. Please do have a look at my code which I have attached to this post. As you can see it is basically a very simple object getting saved to the db. To run the code you would be needing ef4 futures ctp 4 and&nbsp;obviously&nbsp;CSLA 4. If you see the dbcontext class you will see that I have specifically mapped only the properties which I need to put in the db, which is actually skipping all the other businessbase classes like isbusy, isdirty etc.&nbsp;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Also if you see the code is written in a very simple way. If required we can even improve the performance of saving/loading data with the help of doing some server side caching of the dbcontext. Also I do believe by following this technique we can also save very complex data&#39;s too. I am still doing some research of my own to extend this demo to work on some more complex data graph.</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;Please do let me know your feedbacks on it</p>
+<p>Regards</p>
+<p>Tiklu</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, October 07, 2010</h2><p>I&#39;ll try to look at this when I get a chance, but it won&#39;t be any time soon.</p>
+<p>The one thing to remember is that you can&#39;t use property getters and setters directly without running authorization and business rules. To avoid that you need to call ReadProperty and LoadProperty, which aren&#39;t normally public. However, if you can put the EF related code into an ObjectFactory subclass you can get at those methods.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tikluganguly replied on Thursday, October 07, 2010</h2><p>Got It, I will go in that direction. Also you are correct if we directly use setproperty and getproperty, which is what i have used in my code it would prevent an user from loading a particular value from db if he does not have a permission, and which in turn may just crash the whole code.&nbsp;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Lets see if i can come up with something with ObjectFactory. I will surely post you my findings on that</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>tikluganguly replied on Friday, October 08, 2010</h2><p>Hi Rocky,</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;As you said the trick was to somehow skip the setpropery and getpropery methods, and this is how I did it.</p>
+<p>&nbsp;</p>
+<p>First I created one EFBusinessBase which inherits from BusinessBase and overriden the setproperty like this</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>public new void SetProperty&lt;P&gt;(PropertyInfo&lt;P&gt; propertyInfo, P newValue)</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;{</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;if (isReady)</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;{</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;base.SetProperty&lt;P&gt;(propertyInfo, newValue);</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;}</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;else</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;{</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;base.LoadProperty&lt;P&gt;(propertyInfo, newValue);</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;}</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;}</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>Similarly for get property it is</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>public new P GetProperty&lt;P&gt;(PropertyInfo&lt;P&gt; propertyInfo)</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;{</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;if (isReady)</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;{</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;return base.GetProperty&lt;P&gt;(propertyInfo);</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;}</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;else</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;{</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;return base.ReadProperty&lt;P&gt;(propertyInfo);</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;}</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;}</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>I also have another method in the business base called MarkReady as</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>void IEFBusinessBase.MarkReady()</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;{ &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;this.isReady = true;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;}</p>
+<p>&nbsp;</p>
+<p>Now I did also created a new class called CSLADBContext where in ObjectMaterialized event I am doing the following</p>
+<p>&nbsp;</p>
+<p>
+<p>void ObjectContext_ObjectMaterialized(object sender, System.Data.Objects.ObjectMaterializedEventArgs e)</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;{</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;var entity = e.Entity as IEFBusinessBase;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;if (entity != null)</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;{</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;entity.MarkReady();</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;}</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;}</p>
+<p>&nbsp;</p>
+</p>
+<p>So this event actually gets fired once all the values for an entity is set and at that time i am also setting the the isready flag variable to true. and thus enabling the business validations and authorization rules only after the object is fully materialized.&nbsp;</p>
+<p>Also inside the dataportal_fetch I am just directly adding the objects to the list like this</p>
+<p>
+<p>protected void DataPortal_Fetch()</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;{</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;PersonDbContext ctx = new PersonDbContext();</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;ctx.Database.CreateIfNotExists();</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;var items = from p in ctx.Persons select p;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;this.RaiseListChangedEvents = false;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;foreach (var itm in items)</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;{</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Add(itm);</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;}</p>
+<p>&nbsp;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;this.RaiseListChangedEvents = true;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;}</p>
+<p>As you can see i am directly adding the items to the list. The only problem that I am getting with this is the person objects are not properly responding to the property change (i.e not marking an object as dirty)...I think I do have to add some code for that in the MarkReady method. If you can give me some hint here, then that would be nice...</p>
+<p>&nbsp;&nbsp;Again I have added the code with this reply...in case you find this post interesting then please do have a look at that</p>
+</p>
+<p>&nbsp;</p>
+<p>Regards</p>
+<p>Tiklu</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tikluganguly replied on Friday, October 08, 2010</h2><p>Hi Rocky,</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; The last problem that I was getting because I was not serializing isReady using the mobile formtter. Now I did that and it is working fine now..</p>
+<p>As of now the MarkReady has been changed like this</p>
+<p>&nbsp;</p>
+<p>
+<p>void IEFBusinessBase.MarkReady()</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;{</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;this.MarkAsChild();</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;this.MarkOld(); &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;this._isReady = true;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;}</p>
+</p>
+<p>&nbsp;</p>
+<p>and I have added the _isReady variable to mobileformatter as</p>
+<p>&nbsp;</p>
+<p>
+<p>protected override void OnSetState(Csla.Serialization.Mobile.SerializationInfo info, Csla.Core.StateMode mode)</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;{</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;base.OnSetState(info, mode);</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;_isReady = info.GetValue&lt;bool&gt;(&quot;Mazik.EFCSLA._isReady&quot;);</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;}</p>
+<p>&nbsp;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;protected override void OnGetState(Csla.Serialization.Mobile.SerializationInfo info, Csla.Core.StateMode mode)</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;{</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;base.OnGetState(info, mode);</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;info.AddValue(&quot;Mazik.EFCSLA._isReady&quot;, this._isReady);</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;}</p>
+<p>Now it is working fine</p>
+<p>Regards</p>
+<p>Tiklu</p>
+</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, October 08, 2010</h2><p>That&#39;s great!</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

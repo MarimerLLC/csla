@@ -1,0 +1,6 @@
+<html><header><title>Re: Alternative to timestamp for Optimistic Concurrency for MySql ?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Re: Alternative to timestamp for Optimistic Concurrency for MySql ?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4949.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>tiago posted on Sunday, June 08, 2008</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>burmajam:</strong></div><div> 
+<P>Hi there,</P>
+<P>Here's information for MySql. From version 5.0.* there are triggers&nbsp;so you can do as Rocky said, but if you don't need high resolution (less then one second) you can use DateTime or TimeStamp field and treat it as other columns. Just pay attention what happens if you don't have application server or time synchronisation on clients, because of the problem with different clock settings.</P>
+<P></div></BLOCKQUOTE></P>
+<P>&nbsp;</P>
+<P>"Timestamp" is a misnomer - it should be "Rowversion" as it starts at 0 (or 1?) and increments by 1 every time you update the row.</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

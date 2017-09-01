@@ -1,0 +1,151 @@
+<html><header><title>OnDeserializedHandler</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>OnDeserializedHandler</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/2692.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 posted on Friday, April 13, 2007</h2>Hi,<br><br>I'm overriding OnDeserialized in my BLB class, to handle resetting some references after deserialization.<br><br>The problem I'm running into is that OnDeserializedHandler calls OnDeserialized BEFORE it has set the parent objects for all children in the collection.&nbsp; Because of this, I can't get my OnDeserialized to do what it needs to, as my handler needs the parent already in place.<br><br>Has anyone else encountered this, and is so, how have you handled it?&nbsp; Is there a reason OnDeserialized is called first?&nbsp; If so, could an OnDeserializedComplete hook be added in as well?<br><br>Thanks<br> Andy</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Friday, April 13, 2007</h2>I made the change to Csla that will call OnDeserialized after the Parent properties are reset, and this solves my problem.<br><br>So Rocky, in the spirit of not breaking backward compatability, could we get an OnDeserializedComplete that fires after the items in the collection have their parents set?<br><br>I'd do this in my own BLB subclass, but I'm not sure which method would get called if both classes in the inheritance chain have an OnDeserialized attribute applied, or if both get called, but I don't know the order.<br><br>Andy<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>xal replied on Friday, April 13, 2007</h2>How about handling stuff from the parent? You could have an OnDeserializedComplete method in your child and the parent could call that when it's fully deserialized...<br><br><br>Andrés<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Friday, April 13, 2007</h2>Well, I do handle it in the parent.&nbsp; The problem is its parent has not yet been set, and it needs to give that information to the children.<br><br>The ultimate parent could handle it, but then it needs to know more about its children; some get the ultimate parent, some do not..&nbsp; its a bit confusing I know, but the requirements in this area are pretty heavy.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Thursday, May 10, 2007</h2>Just wanted to bump this up; is there any reason that Parent shouldn't be set before the OnDeserialized method is called in BusinessListBase.<br><br>This is the code I changed:<br>&nbsp;&nbsp;&nbsp; [OnDeserialized()]<br>&nbsp;&nbsp;&nbsp; private void OnDeserializedHandler(StreamingContext context)<br>&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; OnDeserialized(context);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; foreach (Core.IEditableBusinessObject child in this)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; child.SetParent(this);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; INotifyPropertyChanged c = child as INotifyPropertyChanged;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (c != null)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; c.PropertyChanged += new PropertyChangedEventHandler(Child_PropertyChanged);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; foreach (Core.IEditableBusinessObject child in DeletedList)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; child.SetParent(this);<br>&nbsp;&nbsp;&nbsp; }<br><br>to<br><br>&nbsp;&nbsp;&nbsp; [OnDeserialized()]<br>&nbsp;&nbsp;&nbsp; private void OnDeserializedHandler(StreamingContext context)<br>&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; foreach (Core.IEditableBusinessObject child in this)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; child.SetParent(this);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; INotifyPropertyChanged c = child as INotifyPropertyChanged;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (c != null)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; c.PropertyChanged += new PropertyChangedEventHandler(Child_PropertyChanged);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; foreach (Core.IEditableBusinessObject child in DeletedList)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; child.SetParent(this);<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // Now sets up relationships before deserializing<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; OnDeserialized(context);<br>
+&nbsp;&nbsp;&nbsp; }<br><br>Anything wrong with this?&nbsp; Could this change be added to the framework?<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Robert replied on Friday, October 03, 2008</h2><P>I see this post is old, but I ran into&nbsp;something simular today. Is there any good reason for not having the call last? It feels like when&nbsp;an object is deserialized, it should be ready to use. No? Yes?</P>
+<P>Robert</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Friday, October 03, 2008</h2>I'm not sure.. but I'm glad you posted this, since I had forgotten I made this change.&nbsp; Of course, deserialization has changed quite a bit in 3.6.. I'll need to test my code to see if it all still works.<br><br>It looks like it does, because I don't' have tests failing... but I'll need to do more testing.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Friday, October 03, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I am pretty sure this has been addressed in 3.6.&nbsp; Could you
+give it a try and see?<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899<o:p></o:p></span></p>
+
+<p class=MsoNormal><b><i><span>Magenic</span></i></b><span> </span><span>&reg;</span><b><i><span><o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> ajj3085
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Friday, October 03, 2008 2:41 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] OnDeserializedHandler<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>I'm not sure.. but I'm glad you posted this, since I had
+forgotten I made this change.&nbsp; Of course, deserialization has changed
+quite a bit in 3.6.. I'll need to test my code to see if it all still works.<br>
+<br>
+It looks like it does, because I don't' have tests failing... but I'll need to
+do more testing.<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Robert replied on Saturday, October 04, 2008</h2><FONT size=2>
+<P>It looks like it's the same, at least in&nbsp;BusinessBase.</P>
+<P>[</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>OnDeserialized</FONT></FONT><FONT size=2>()]<BR></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>private</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>void</FONT></FONT><FONT size=2> OnDeserializedHandler(</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>StreamingContext</FONT></FONT><FONT size=2> context)<BR>{<BR>&nbsp;&nbsp;&nbsp;OnDeserialized(context);<BR>&nbsp;&nbsp;&nbsp;OnDeserializedInternal();<BR></FONT><FONT size=2>}</FONT></P>
+<P><FONT size=2>It may be a&nbsp;reson for this, but if so, it would be nice&nbsp;to have it explained.</FONT></P>
+<P><FONT size=2>Robert</FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Saturday, October 04, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I wonder if you could just override OnDeserializedInternal and
+call base.OnDeserializedInternal, then do your work?<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899<o:p></o:p></span></p>
+
+<p class=MsoNormal><b><i><span>Magenic</span></i></b><span> </span><span>&reg;</span><b><i><span><o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Robert
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Saturday, October 04, 2008 5:33 AM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: OnDeserializedHandler<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p><span>It looks like it's the same, at least
+in&nbsp;BusinessBase.<o:p></o:p></span></p>
+
+<p><span>[<span>OnDeserialized</span>()]<br>
+<span>private</span> <span>void</span>
+OnDeserializedHandler(<span>StreamingContext</span>
+context)<br>
+{<br>
+&nbsp;&nbsp;&nbsp;OnDeserialized(context);<br>
+&nbsp;&nbsp;&nbsp;OnDeserializedInternal();<br>
+}</span><o:p></o:p></p>
+
+<p><span>It may be a&nbsp;reson for this, but if so,
+it would be nice&nbsp;to have it explained.</span><o:p></o:p></p>
+
+<p><span>Robert</span><o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Robert replied on Sunday, October 05, 2008</h2><P>Yes, off course! "Internal" seemed so private, he he. Didn't notice it. Thanks...</P>
+<P>Robert</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>PC Tech replied on Monday, October 06, 2008</h2><P>It looks like overriding OnDeserializedInternal() is a good work around if you're using 3.6 but this is still a problem for us in 3.5. After studying what Rocky does in his code for BusinessBase&nbsp;I came up with the following solution for 3.5 (and maybe earlier?):</P><FONT size=2>
+<P>[System.Runtime.Serialization.</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>OnDeserialized</FONT></FONT><FONT size=2>()]</FONT> 
+<P><FONT color=#0000ff size=2>private</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>void</FONT></FONT><FONT size=2> OnDeserializedHandler(System.Runtime.Serialization.</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>StreamingContext</FONT></FONT><FONT size=2> context) </FONT>
+<P><FONT size=2>{ </FONT>
+<P><FONT size=2>&nbsp;&nbsp;&nbsp;//this code executes after BusinessBase's OnDeserializedHandler</FONT>
+<P><FONT size=2>}</FONT> 
+<P>This code can go in your Business object and apparently does get called after it's counterpart in BusinessBase. We haven't had a chance to fully test the reliability of this approach but so far it does seem that methods marked with the OnDeserialized attribute in base classes get called by the serialization engine before methods in derived classes marked with the attribute. We use the above method in our business objects to reattach delegates to ListChanged events for child lists. The ListChanged event does not survive serialization and needs to be reattached after any Fetch, Create, Save, Clone, and Undo operation. If we try to override the OnDeserialized() method we encouter a similar problem to the one&nbsp;mentioned in one of the first posts in that the FieldManager is not initialized until after OnDeserialized() is called. The child lists we need access are managed fields.</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,63 @@
+<html><header><title>TransactionScope with BO?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>TransactionScope with BO?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3958.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Samnang Chhun posted on Wednesday, November 28, 2007</h2><span>I try to use
+TransactionScope class to make Distributed Transactions in simple like code
+below:<br><br></span><code>TransactionOptions options = new TransactionOptions();<br>options.IsolationLevel = IsolationLevel.ReadCommitted;<br>options.Timeout = new TimeSpan(0, 2, 0);<br><br>using (TransactionScope scope = new TransactionScope(TransactionScopeOption.Required, options))<br>{<br>&nbsp;&nbsp;&nbsp; //Save the data<br>&nbsp;&nbsp;&nbsp; listingGeneral.Save();<br>&nbsp;&nbsp;&nbsp; //Save the audit transaction<br>&nbsp;&nbsp;&nbsp; auditTransaction.Save();<br><br>&nbsp;&nbsp;&nbsp; scope.Complete();<br>}<br><br></code><span>I get an error
+message : "<span>Network access for Distributed
+Transaction Manager (MSDTC) has been disabled. Please enable DTC for network
+access in the security configuration for MSDTC using the Component Services
+Administrative tool.</span>", but I have started Distributed Transaction
+Coordinator service in Services.msc already.<br><br>Cheers,<br>Samnang<br></span><code><br></code></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, November 29, 2007</h2>I'm guessing you are running Windows XP SP2? There's a whole Microsoft knowledge base article on how to get DTC reenabled in that environment. You have to start the service, but you also need to open a port in the firewall and I think there's another step beyond that.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Samnang Chhun replied on Thursday, November 29, 2007</h2>Sure, my development pc is running Windows XP SP2 and database server is running Windows Server 2003, but I've disabled firewall already. I still get an error, how can I do?<br><br>Cheers,<br>Samnang<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, November 29, 2007</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Read the KB article. As I say, I think there&#8217;s one other
+step you need to do, but I don&#8217;t recall what it is&#8230;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Samnang Chhun
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Thursday, November 29, 2007 1:18 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] TransactionScope with BO?<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Sure, my development pc is running Windows XP SP2 and
+database server is running Windows Server 2003, but I've disabled firewall
+already. I still get an error, how can I do?<br>
+<br>
+Cheers,<br>
+Samnang<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

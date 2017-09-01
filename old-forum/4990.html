@@ -1,0 +1,20 @@
+<html><header><title>CSLADataSource, GridView and editing</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLADataSource, GridView and editing</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4990.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>uwillmore posted on Wednesday, June 18, 2008</h2><P>Hi everyone,</P>
+<P>I know this is more of an ASP.NET or C# question than an CSLA question, but I am not finding the answer anywhere else, so I thought you might be able to help me out. So here goes:</P>
+<P>I have a CSLADataSource that is assigned to a GridView. The Grid is set to autogenerate Edit, Update and Delete buttons and the CSLADataSource has event handlers assigned for each of the 3 event initiated by the buttons when one is clicked. I load the GridViewwith data&nbsp;in the OnSelectedObject event handler using a CSLA BusinessBaseList object that is initialized from the database. Everything so far is straight forward and causes no problems. But now I got to do something a little different. I have one item in each row that may be modified only if another item in the same row has a specific value, well actually does not have a specific value. Essentially I need to set the ReadOnly, Visible, or Enable&nbsp;property for a specific cell depending on the value of another cell. I can do this in on-edit mode just fine using code similar to this.</P>
+<P>If (GridView1.rows[currentRow].Cells[3].text.ToString() == "AllowEdit")</P>
+<P>{GridView1.rows[CurrentRow].Cells[5].Enabled = true;</P>
+<P>GridView1.rows[CurrentRow].Cells[5].Visible= true;}</P>
+<P>else</P>
+<P>{GridView1.rows[CurrentRow].Cells[5].Enabled = false;</P>
+<P>GridView1.rows[CurrentRow].Cells[5].Visible= false;}</P>
+<P>This works fine and does what I want, until I click the Edit button. When the Edit button is clicked the grid is redisplayed with only one row and now all columns/fields in the row are visible and editable, regardless of the values of the ReadOnly, Visible, or Enable properties. The only property that seems to affect what can be edited is the ReadOnly Property. If I set ReadOnly to True when I declare the column ( i.e. in the HTML or in the ColumnProperties pop-up in VisualStudio) then the field can not be changed in edit mode. Unfortunately, ReadOnly is not a property of the Cells collection and so I can not set its value at run time. </P>
+<P>And here is the question that all this leads to:</P>
+<P>Does anyone know how to reset the Readonly property of a cell in a GridView at run-time? </P>
+<P>or</P>
+<P>Does anyone know how to make a specific field in a row non-editable? I can use the RowEditing event handler to do this,&nbsp;which gives me the &nbsp;index of the row being edited in&nbsp; the GridViewEditEventArgs parameter, if that helps.</P>
+<P>Any help would be greatly appreciated. </P>
+<P>TIA</P>
+<P>URW</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>uwillmore replied on Sunday, June 22, 2008</h2><P>I found the solution to this problem. It is really simple too.</P>
+<P>I needed to set the Enabled property in the RowDataBound event not in the RowEditing event handler. That's it. </P>
+<P>I thought you might like to know</P>
+<P>URW</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

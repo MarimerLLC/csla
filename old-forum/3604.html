@@ -1,0 +1,42 @@
+<html><header><title>Cloning issue?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Cloning issue?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3604.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 posted on Thursday, September 27, 2007</h2>Hi,<br><br>I have an odd object model, admittedly.<br><br>I have a line item, called Simple.&nbsp; There's also a LineItemList which contains anything that implements ILineItem.<br><br>I have a GroupItem, which has an Items collection, which contains GroupSubItems.&nbsp; A GroupSubItem is a composite (wrapper) around a Simple line item.<br><br>Everything is great, until I go to clone.&nbsp; Actually, its great until after I clone a second time it seems.<br><br>Simple has its BusinessBase.Parent item set, which it needs to function.&nbsp; After Saving the LineItemList (which is a child of another Document object), a subsequent Clone of the Document results in the Simple item which is wrapped losing its reference to Parent.&nbsp; <br><br>Now, it seems that this should not be happening, but it is.&nbsp; I've fixed it for now by adding some code in the GroupSubItem's OnDeserialized method, but it seems odd that its losing this reference anyway.&nbsp; <br><br>I'm using Csla 3.0.2 test 4.<br><br>Thanks<br>Andy<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, September 28, 2007</h2><P>You mean the parent field managed by BB is losing its value? That value is lost during deserialization, but the OnDeserialized() code in BLB loops through and calls SetParent() to reset the value - so by the time deserialization is complete it should have been reset.</P>
+<P>But if the parent is not a BLB, then this is not automatic, and you'd have to write code in the parent's OnDeserialized() method to call SetParent().</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Friday, September 28, 2007</h2>Yes, the Parent from BB was affected.&nbsp; I forgot that Csla was handling the resetting of that for me... for some reason I thought that the Serializer did that. <br><br>Glad to know this was expected, and I implemented the correct solution.<br><br>Thanks!<br>Andy<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, September 28, 2007</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>That&#8217;s something I&#8217;d like to implement at some
+point: a &#8220;child manager&#8221; you can use when one object is a child of
+another object that isn&#8217;t a list. This &#8220;child manager&#8221; would
+do all the things BLB does to manage the child&#8217;s lifetime, including calling
+SetParent().<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Beyond that, what I envision is more of a &#8220;children
+manager&#8221;, because that would allow me to automatically handle IsValid and
+IsDirty (so you don&#8217;t need to do the overrides), manage the Parent
+property and so forth.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>But I just haven&#8217;t had time to dig into this enough yet&#8230;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky</span><o:p></o:p></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

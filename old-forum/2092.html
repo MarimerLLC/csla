@@ -1,0 +1,38 @@
+<html><header><title>Hierarchial Datagrid (Creating Parent-Child relationship)</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Hierarchial Datagrid (Creating Parent-Child relationship)</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/2092.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Inquistive_Mind posted on Monday, January 08, 2007</h2><P>Hello All,</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; I am fairly new to CSLA and right now working on a prototype to check the feasibilty of the framework.I need to create a Hierarchial Grid display of items.</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Right now I have three BO's</P>
+<P>Editable Root</P>
+<P>Editable Child</P>
+<P>Editable Child Collection.</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; I need to display the&nbsp;root objects first and when the user clicks on the primany key field of the root object displayed on the grid its respectives children objects&nbsp;should be listed.&nbsp;My other problem was my database tables have int as the datatype for the primary keys and it uses the auto incrementing feature to create the unique primary key.For the children object I was able to handle it using the technique posted at&nbsp; <A href="http://www.onelittlevictory.com/">http://www.onelittlevictory.com/</A>&nbsp;but for the parent root object Iam not quite sure how to go about it.especially in the Dataportal_Create method.</P>
+<P>Any information,help regarding binding objects to get a hierarchial display and creating objects using int as the dattype for primary key fields would be great.</P>
+<P>PS: Im using Infragistics Datagrids and not regular ASp.Net Datagrids.</P>
+<P>Thanks in Advance,</P>
+<P>V</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Brian Criswell replied on Monday, January 08, 2007</h2>I am assuming that you root objects should also have a grid, although
+that seems to be missing from your example.&nbsp; If you are doing
+that, you would also need EditableRootList for your list of root
+objects for the user to select one.&nbsp; You could then handle the
+CurrentChanged event on the binding source to set the DataSource on the
+BindingSource for the child DataGridView.<br>
+<br>
+A lot of people here would consider adding a list of read only objects
+for getting the minimal information needed for the user to select which
+one they want to edit from the list.&nbsp; So you would have<br>
+RORootList and RORoot.&nbsp; When the user selects one of the items in
+the list, the UI then loads the corresponding EditableRoot.&nbsp;
+However, your choice of which path to take depends on your use case.<br>
+<br>
+As for presetting the id property, one way that people have gone about
+that is to set the id value to a constantly decrementing negative
+number.&nbsp; There was a thread with examples for this.<br>
+<br>
+EDIT: Oops.&nbsp; I just noticed that you are in a web
+environment.&nbsp; Some of the concepts in the second paragraph may
+help you, but I imagine that someone else will pop in and steer you in
+the right direction.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Inquistive_Mind replied on Monday, January 08, 2007</h2>Thanks Brian for the info.will try you suggestions and will post it :-)</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Inquistive_Mind replied on Tuesday, January 09, 2007</h2>So that means I would require Editable Root,Editable Root Collection for n number of Parents and editable child ,editable child collection for n number of children?</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Brian Criswell replied on Thursday, January 11, 2007</h2>My idea was more along the lines of:<br><br>For selecting the item to edit:<br>RORootList&nbsp;&nbsp;  - Load this from the database.&nbsp; It contains a list of<br>RORoot&nbsp;&nbsp;  &nbsp;&nbsp;  &nbsp;&nbsp;  - Thi contains just an id and description.&nbsp; The user selects one of these and the user interface uses the id to load<br><br>EditableRoot&nbsp;&nbsp;  &nbsp;&nbsp;  &nbsp;&nbsp;  - Loaded from database using id of the item selected by the user.&nbsp; Contains all edit fields.<br>EditableChildList&nbsp;&nbsp;  - Contains a list of<br>EditableChild&nbsp;&nbsp;  &nbsp;&nbsp;  &nbsp;&nbsp;  - A child of the EditableRoot contains all fields needed to edit the child.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Inquistive_Mind replied on Thursday, January 11, 2007</h2><P>Thanks again Brian.But for my prototype I want both the Parent List and the Child List to be loaded automatically and then there is only one grid.I am usinf Infragistics controls and it has a Viewtype propoerty Hierarchila.If the object is created properly then automatically the grid displays it as a Parent Child relationship.Another requirement is that the data access should happen in one hit.So the RORoot object when&nbsp; created&nbsp;should create its children based on its ID.</P>
+<P>I am able to &nbsp;create this behaviour using ASP.net grid but there I have two adapters for Parent and Child respectivly and I populate the dataset and creat the relationship in the UI code. Automatically the grid dispalys a hierarchy.I want this behaviour with CSLA objects and thats where I am stuck.</P>
+<P>&nbsp;</P>
+<P>Thanks Again,</P>
+<P>V</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Inquistive_Mind replied on Thursday, January 11, 2007</h2><P>Hello,</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Finally I was able to create the Parent child Relationship and&nbsp;bind it to&nbsp;the Infragistic grid as a Hierarchial Dispaly.Thanks for all your help.</P>
+<P>V</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

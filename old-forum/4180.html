@@ -1,0 +1,14 @@
+<html><header><title>ListChanged and ValidationRules</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>ListChanged and ValidationRules</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4180.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>gtryf posted on Wednesday, January 16, 2008</h2><P>Hi all,</P>
+<P>I have created a business object (Floorplan) which owns a list of characteristcs (Characteristics, instance of FloorplanCharacteristicsList). I have placed a validation rule which requires that said list contains at least one member, according to the instructions given in another thread:</P>
+<P>1) Created&nbsp;a ListChanged handler for the Characteristcs property on the Floorplan object;</P>
+<P>2) Created&nbsp;the validation rule in the floorplan object;</P>
+<P>3) In the ListChanged handler I added a call to PropertyHasChanged("Code").</P>
+<P>&nbsp;</P>
+<P>Code is another property of Floorplan, which is represented on my form by a textbox, so that whenever that rule is broken it can be displayed by an ErrorProvider.</P>
+<P>&nbsp;</P>
+<P>The problem is that whenever I remove a member of Characteristcs, my program crashes with an ArgumentOutOfRangeException in external code. I use a grid (C1TrueDBGrid) to display the characteristcs and it seems that the exception occurs whenever the grid tries to repaint itself after a characteristc is removed.</P>
+<P>&nbsp;</P>
+<P>The problem is resolved if I remove the call to PropertyHasChanged() from the ListChanged handler - but then I get no validation.</P>
+<P>&nbsp;</P>
+<P>Any suggestions?</P>
+<P>George</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

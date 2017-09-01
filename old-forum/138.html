@@ -1,0 +1,23 @@
+<html><header><title>Did I get the wrong book?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Did I get the wrong book?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/138.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>jlazanowski posted on Thursday, May 18, 2006</h2><P>I had Expert Business Objects on preorder with Amazon.com. I just recently got around to spending some time with it. I jumped ahead to Chapter 6 and started working with the PTracker application in Chapter 7, and now I am lost.<o:p></o:p></P>
+<P>&nbsp;<o:p></o:p></P>
+<P>An excerpt from my book<o:p></o:p></P>
+<P>&lt;code&gt;<o:p></o:p></P>
+<P>public class Project : BuisnessBase&nbsp; &lt;-- no &lt;&gt; here<o:p></o:p></P>
+<P>&nbsp;&nbsp;&nbsp;....<o:p></o:p></P>
+<P>&nbsp;public string Name<o:p></o:p></P>
+<P>{...<o:p></o:p></P>
+<P>&nbsp;&nbsp;&nbsp;set { if (value == null) value = string.Empty;<o:p></o:p></P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (_name != value) <o:p></o:p></P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{ <o:p></o:p></P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_name = value;<o:p></o:p></P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;BrokenRules.Assert("NameLen", Name To Long", (value.Length &gt; 50));<o:p></o:p></P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;..... MarkDirty();<o:p></o:p></P>
+<P>&nbsp;&lt;/code&gt;<o:p></o:p></P>
+<P>In the PTracker Application there are&nbsp;no BrokenRules.Assert commands. Instead they are contained in an overridden AddBuisnessRules method. I checked on the change long between 1.x and 2.x of CSLA.net and one of the changes listed was that BrokenRules.Assert() was gone.... so I am a bit confused. Do I have the wrong book? Anyone else notice this?<o:p></o:p></P>
+<P><BR>Thanks,<o:p></o:p></P>
+<P>Justin<o:p></o:p></P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Mark replied on Thursday, May 18, 2006</h2><P>Yep - it looks like you have the book for the 1.x release, not the 2.x release.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>DavidDilworth replied on Thursday, May 18, 2006</h2><P><FONT face=Arial size=2>Check the link at the top of the page (and the title of the forum).&nbsp; They both refer to the 2005 version of the books.</FONT></P>
+<P><FONT face=Arial size=2>If your book doesn't say 2005 on it, then you've got the previous edition.</FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jlazanowski replied on Thursday, May 18, 2006</h2><P>That should have been the big give away huh? The 2005 missing from the cover. (Beats head against desk)</P>
+<P>Thanks. Now I have to get with Amazon to find out what the screwup was. I appreciate the quick response.</P>
+<P>&nbsp;</P>
+<P>Justin</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,192 @@
+<html><header><title>Test</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Test</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5533.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>KJosh posted on Saturday, October 04, 2008</h2><P>Hi,</P>
+<P>Is there any example to know how to perform the unti test for business classes inheriting from CSLA base classes. In the unti test,</P>
+<P>[Test]</P>
+<P>public void TestGetProjects()</P>
+<P>{</P>
+<P>Project p = Project.GetProject();</P>
+<P>Assert.IsTrue(p.Name == "Finance");</P>
+<P>}</P>
+<P>Could we call directly the business object method in the test or how we test the busienss object methods, fields? If we are able to call like the above(like Project.GetProject()), Then where we need to use the Mocking concept?</P>
+<P>b) How we test the Busienss object derived from NameValueListBase?</P>
+<P>Thanks in advance</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonStonecash replied on Sunday, October 05, 2008</h2>This is an area that I have been exploring extensively in my blog: http://blog.magenic.com/blogs/jons/default.aspx.<br><br>This might be of help to you.<br><br>Jon Stonecash<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>FrankM replied on Monday, October 06, 2008</h2>We use repository pattern to loose couple CSLA BO and DAL, and then use structuremap as the IOC container to inject the mock repository object for unit-testing CSLA BO.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>nermin replied on Monday, October 06, 2008</h2>Frank - are you using custom ObjectFactory implementation for injecting mock repository objects into Csla BO or?<br><br>I am really curios as - since the DP is instantiating CSLA BOs on the server, I found no better way to inject the Repository other than using custom ObjectFactory.<br><br>Or are you just using the 2 constructors scenario where the first - default is called by the DP, and second one accepts the IRepository&lt;T&gt; as a parameter, therefore alllowing injection and being the one used for testing (obviously default constructor calls the second one with the default repository as a parameter).<br><br>My last approach in separating the Repository from BO for tests was to use TypeMock, which does not need a reference to the Repository in order to mock it - no dependency injection (they use the Profiler API to inject Mock Repository at runtime directly into the running code).<br><br>I am looking for alternative approaches, so if you have an example please let us know.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>FrankM replied on Monday, October 06, 2008</h2>Actually I had tried the exact same "the custom constructor" way trying to inject the mock repository, but once I saw the the inject syntax provided by stuctureMap, thing becomes much easier. Here is the idea.<br><br>In your CSLA　BO, use IOC container to get the repository instance, <br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; protected override void DataPortal_Fetch()<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; #　Note: this objectfactory is in StructureMap namespace<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ICityRepository repostitory = ObjectFactory.GetInstance&lt;ICityRepository&gt;();<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ....data process...<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br><br>Then your unit-test can be easily done by create a mock repository and then inject into.<br><blockquote>namespace Specs_for_CityBO<br>{<br><br>&nbsp;&nbsp;&nbsp; [TestFixture]<br>&nbsp;&nbsp;&nbsp; public class When_Fetching : ContextForBOTest<br>&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [Test]<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public void Should_get_one_BO_back_given_an_existing_id()<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // Arrange<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _mockRepository.Stub(x =&gt; x.FindById(1)).Return(<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; OneValidTestDTO );<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // Action<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var bo = CityBO.GetCityBO(1);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // Assert<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Assert.That(bo.Name, Is.EqualTo("Mock city"));<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [Test]<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [ExpectedException(typeof (DataPortalException))]<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public void Should_throw_exception_when_id_does_not_exist()<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _mockRepository.Stub(x =&gt; x.FindById(-100)).Throw(new DataException("Data not found."));<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var bo = CityBO.GetCityBO(-100);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>&nbsp;&nbsp;&nbsp; }<br>&nbsp;&nbsp;&nbsp; public class ContextForBOTest<br>&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; protected ICityRepository _mockRepository;<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [SetUp]<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public void Setup()<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _mockRepository = MockRepository.GenerateStub&lt;ICityRepository&gt;();<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ObjectFactory.Inject(typeof(ICityRepository), _mockRepository);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [TearDown]<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public void TearDown()<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // Assert<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _mockRepository.VerifyAllExpectations();<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ObjectFactory.Reset();<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public CityDTO OneValidTestDTO<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; get<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return new CityDTO<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; CityId = 1,<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; CityType = "City",<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; CountryId = 1,<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Name = "Mock city",<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ProvinceId = 1,<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; };<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br></blockquote><br>That's it. I was thinking to recommend Rocky don't use ObjectFactory term in the new version of CSLA.net. This won't be a problem but unitl structure Map became popular in CSLA community.<br><br>In the upcoming StructureMap 2.5, the above code can be a little bit shorter by using the build-in AutoMocker feature. http://devlicio.us/blogs/derik_whittaker/archive/2008/10/05/using-the-rhinoautomocker-that-is-part-of-structuremap-2-5.aspx<br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>nermin replied on Monday, October 06, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Thanks,<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>That is an excellent example </span><span>J</span><span>.&nbsp; Very simple and
+elegant solution.&nbsp; For some reason I did not think of putting StructureMap
+GetInstance call directly to the DP_XYZ().&nbsp; <o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> FrankM
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Monday, October 06, 2008 4:31 PM<br>
+<b>To:</b> Nermin Dibek<br>
+<b>Subject:</b> Re: [CSLA .NET] Test<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Actually I had tried the exact same &quot;the custom
+constructor&quot; way trying to inject the mock repository, but once I saw the
+the inject syntax provided by stuctureMap, thing becomes much easier. Here is
+the idea.<br>
+<br>
+In your CSLA???BO, use IOC container to get the repository instance, <br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; protected override void
+DataPortal_Fetch()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; #???Note: this
+objectfactory is in StructureMap namespace<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+ICityRepository repostitory =
+ObjectFactory.GetInstance&lt;ICityRepository&gt;();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ....data
+process...<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+<br>
+Then your unit-test can be easily done by create a mock repository and then
+inject into.<o:p></o:p></p>
+
+<p class=MsoNormal>namespace Specs_for_CityBO<br>
+{<br>
+<br>
+&nbsp;&nbsp;&nbsp; [TestFixture]<br>
+&nbsp;&nbsp;&nbsp; public class When_Fetching : ContextForBOTest<br>
+&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [Test]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public void
+Should_get_one_BO_back_given_an_existing_id()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // Arrange<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+_mockRepository.Stub(x =&gt; x.FindById(1)).Return(<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+OneValidTestDTO );<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // Action<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var bo =
+CityBO.GetCityBO(1);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // Assert<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Assert.That(bo.Name, Is.EqualTo(&quot;Mock city&quot;));<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [Test]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [ExpectedException(typeof
+(DataPortalException))]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public void
+Should_throw_exception_when_id_does_not_exist()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+_mockRepository.Stub(x =&gt; x.FindById(-100)).Throw(new
+DataException(&quot;Data not found.&quot;));<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var bo =
+CityBO.GetCityBO(-100);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+&nbsp;&nbsp;&nbsp; }<br>
+&nbsp;&nbsp;&nbsp; public class ContextForBOTest<br>
+&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; protected ICityRepository
+_mockRepository;<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [SetUp]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public void Setup()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+_mockRepository = MockRepository.GenerateStub&lt;ICityRepository&gt;();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+ObjectFactory.Inject(typeof(ICityRepository), _mockRepository);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [TearDown]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public void TearDown()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // Assert<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+_mockRepository.VerifyAllExpectations();<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+ObjectFactory.Reset();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public CityDTO OneValidTestDTO<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; get<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+return new CityDTO<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+CityId = 1,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+CityType = &quot;City&quot;,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+CountryId = 1,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Name = &quot;Mock city&quot;,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+ProvinceId = 1,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+};<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+That's it. I was thinking to recommend Rocky don't use ObjectFactory term in
+the new version of CSLA.net. This won't be a problem but unitl structure Map
+became popular in CSLA community.<br>
+<br>
+In the upcoming StructureMap 2.5, the above code can be a little bit shorter by
+using the build-in AutoMocker feature.
+http://devlicio.us/blogs/derik_whittaker/archive/2008/10/05/using-the-rhinoautomocker-that-is-part-of-structuremap-2-5.aspx<br>
+<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>FrankM replied on Monday, October 06, 2008</h2>We actually created a RepositoryManager in our CSLA BO, and put those GetInstance&lt;&gt;() code there. So the dataportal method is calling this RepositoryManger instead.<br><br><blockquote>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; private void DataPortal_Fetch(SingleCriteria&lt;CityBO, int&gt; criteria)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var data = RepositoryManager.CityRepository.FindById(criteria.Value);<br>...<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br><br>&nbsp;&nbsp;&nbsp; public static class RepositoryManager<br>&nbsp;&nbsp;&nbsp; {<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public static ICityRepository CityRepository<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; get{ return ObjectFactory.GetInstance&lt;ICityRepository&gt;();}<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br></blockquote>This "wrapper" can allow us to easily switch to another IOC if that happens later.<br><br><blockquote>&nbsp;<br><br></blockquote></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>KJosh replied on Monday, October 06, 2008</h2><P>Hi,</P>
+<P>What are repository patterns? and object factory patterns? How these are related to Tests? Could you provide me any links which will describe more about these concepts.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonStonecash replied on Tuesday, October 07, 2008</h2><P>A reference for the repository pattern:</P>
+<P><A href="http://martinfowler.com/eaaCatalog/repository.html">http://martinfowler.com/eaaCatalog/repository.html</A></P>
+<P>A couple of references for using the repository pattern with Linq:</P>
+<P><A href="http://iridescence.no/post/Linq-to-Sql-Programming-Against-an-Interface-and-the-Repository-Pattern.aspx">http://iridescence.no/post/Linq-to-Sql-Programming-Against-an-Interface-and-the-Repository-Pattern.aspx</A></P>
+<P><A href="http://nixusg.com/post/2008/08/05/The-Automated-Testing-Continuum-Part-2-(Unit-Testing-LinQ).aspx">http://nixusg.com/post/2008/08/05/The-Automated-Testing-Continuum-Part-2-(Unit-Testing-LinQ).aspx</A></P>
+<P>The ObjectFactory is a function of StructureMap.&nbsp; StructureMap is an Inversion of Control (IOC) container that introduces a layer of in direction between the logic needing a dependent class/object and the dependent class/object.&nbsp; StructureMap is but one of&nbsp;a number of IOC containers.&nbsp; For a description of the IOC pattern see:</P>
+<P><A href="http://www.martinfowler.com/articles/injection.html">http://www.martinfowler.com/articles/injection.html</A></P>
+<P>or </P>
+<P><A href="http://en.wikipedia.org/wiki/Inversion_of_control">http://en.wikipedia.org/wiki/Inversion_of_control</A></P>
+<P>As I said, there are a number of IOC packages:</P>
+<P>StructureMap: <A href="http://structuremap.sourceforge.net/Default.htm">http://structuremap.sourceforge.net/Default.htm</A></P>
+<P>Unity: <A href="http://www.pnpguidance.net/Post/Unity10ReleasedMicrosoftIoCDependencyInjection.aspx">http://www.pnpguidance.net/Post/Unity10ReleasedMicrosoftIoCDependencyInjection.aspx</A></P>
+<P>WinsorCastle: <A href="http://www.castleproject.org/container/index.html">http://www.castleproject.org/container/index.html</A></P>
+<P>And many more.</P>
+<P>Jon Stonecash</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>twistedstream replied on Saturday, January 31, 2009</h2>For those interested, I've put together a pretty straight-forward implementation of the Repository Pattern in CSLA.NET that uses dependency injection via Unity.&nbsp; There are a couple blog posts that start <a href="http://beyondthispoint.blogspot.com/2009/01/using-repository-pattern-with-cslanet.html">here</a> that cover my implementation and another more general blog <a href="http://beyondthispoint.blogspot.com/2008/12/using-dependency-injection-with-cslanet.html">post</a> that explains the dependency injection technique it uses with CSLA.NET.<br><br>~pete<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

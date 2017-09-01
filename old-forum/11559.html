@@ -1,0 +1,22 @@
+<html><header><title>CSLA 4.5 DataPortalT.cs</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA 4.5 DataPortalT.cs</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11559.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>tiago posted on Thursday, August 30, 2012</h2><p>Hi Rocky,</p>
+<p>I was having a&nbsp;look at&nbsp; CSLA (Trunk 4.5.1.0) and VS2012 refuses to compile both <strong>Csla.Net4</strong> and <strong>Csla.Silverlight</strong> (SL5) projects on the grounds:</p>
+<p>&#39;System.Threading.Tasks.Task&#39; does not contain a definition for &#39;Run&#39;</p>
+<p>It&#39;s the only error I got on both projects.</p>
+<p>Microsoft.CompilerServices.AsyncTargetingPack 1.0.0 is installed. Microsoft.CompilerServices.AsyncTargetingPack.Net4 and Microsoft.CompilerServices.AsyncTargetingPack.Silverlight5 references are all right.</p>
+<p>It&#39;s a Windows 7 Pro system, fully updated.</p>
+<p>After some investigation,&nbsp;I added a&nbsp;NET45 symbol to the <strong>Csla</strong> project and changed the offending line as follows:</p>
+<p>#if NET45<br />&nbsp; return Task.Run(() =&gt; dp.DoFetchAsync(objectType, criteria, true)).Result; <br />#else<br />&nbsp; return TaskEx.Run(() =&gt; dp.DoFetchAsync(objectType, criteria, true)).Result; <br />#endif </p>
+<p>Everything builds. Don&#39;t know if it runs :)</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Thursday, August 30, 2012</h2><p>Hi,</p>
+<p>Seems like you have the AsyncCTP installed (TaskEx) and not the latest AsyncTargetingPack. </p>
+<p>I run on Windows 7 Pro with VS2012 Premium and AsyncTargetingPack.</p>
+<p>Use NuGet to install the targeting pack into these projects. <br /><b>Install-Package Microsoft.CompilerServices.AsyncTargetingPack</b></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tiago replied on Friday, August 31, 2012</h2><p>Hi Jonny,</p>
+<p>Been there done that. Today I repeated the steps Uninstall-Package / Install-Package several times . Even cleared the proxy cache.</p>
+<p>As a side note, since both the reference and the DLL&nbsp;were already there, the Install-Package operation made no changes. I must conclude this wasn&#39;t needed at all. Every now and again some guys at Microsoft come up with some brilliant ideas. This is a simple DLL and it should be possible to add a reference as we do for every other DLL. Forcing us to use the package manager to add a&nbsp;reference to a project is really brilliantly convoluted. I guess they won the 2012 Olympics gold medal for the most convoluted idea.</p>
+<p>Back to the&nbsp;trunk sources, if you take a look at</p>
+<p>Microsoft.CompilerServices.AsyncTargetingPack.Net4.xml</p>
+<p>that is in</p>
+<p>...\Source\packages\Microsoft.CompilerServices.AsyncTargetingPack.1.0.0\lib\net40</p>
+<p>you will notice that around line 1778 TaskEx shows up. The respective DLL seems to know TaskEx also.</p>
+<p>So... I feel confused. Any ideas?</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Friday, August 31, 2012</h2><p>Mmmm,&nbsp; must something that is added lately in the code that breaks the SL5 and .NET 4 projects. </p>
+<p>So, yes - you are correct. We need to add compiler directives if this is the way to go. </p>
+<p>I believe Rocky has been trying to find a way to make the sync portal use the async methods internally..<br />Just not sure if it is all working as it should yet. </p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tiago replied on Friday, August 31, 2012</h2><p>I just wish to add that, since CSLA sources include the DLL and XML files, there is no need to install anything at all. Just tested with a fresh project.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

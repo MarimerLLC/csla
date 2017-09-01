@@ -1,0 +1,275 @@
+<html><header><title>How do I bind CSLA business objects to SQL Server 2005 RS Report?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>How do I bind CSLA business objects to SQL Server 2005 RS Report?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/2337.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>lazaropi posted on Tuesday, February 13, 2007</h2>I have what may seem like a stupid question:<br><br>I am using CSLA and have lots of objects created and I've succesfully used them on WinForms and ASP pages.<br>
+I am new to SSRS and cannot find how to use the BOs to a report.<br><br>I found on this forum that I can use my BOs as a data source for SSRS<br><br>check: http://forums.lhotka.net/forums/post/11839.aspx <br>3.Base your reports on your BO.&nbsp; This is a new feature in SQL Server 2005 <span><b>Reporting</b></span> Services<br><br>How can I do this?<br><br>thanks!!<br><br>lazaropi<br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>GlennMiller replied on Tuesday, April 03, 2007</h2>We have the same question. We have a smart-client app using remoting to get data across the internet, but client-side reporting is s-l-o-w for lots of records. Server-side reporting with SSRS looks great but we'd rather not recreate our whole business layer to access the database directly. Instead we'd like to use the CSLA business objects we already have, even if we have to use an ObjectAdaptor to trick SSRS into thinking they're real datasets. Lazaropi above references a Rocky post where he claims SSRS 2005 supports BO binding, but we can't find this anywhere in Microsoft documentation. Is this functionality actually client-side only? (In which case it would be the SQL Server Report Viewer that supports BO binding, not technically Sql Server Reporting Services).<br><br>Thanks,<br>Glenn, CarteGraph Systems<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Tuesday, April 03, 2007</h2>If you want to use server side reports, forget about .Net at all and simply build some views and bind your reports to the views.&nbsp; <br><br>If you want to use your Csla BOs as datasources, you can only use client side reports.&nbsp; SSRS doesn't support using objects as datasources when creating a server side report.<br><br>Its not a function of the ReportViewer control, its the underlying report framework.&nbsp; If you look, you'll see there are actually seperate Report objects for server and local:<br><br>Microsoft.Reporting.WinForms.LocalReport<br>Microsoft.Reporting.WinForms.ServerReport<br><br>HTH<br>Andy<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Tuesday, April 03, 2007</h2><P>My team tried to use SSRS for a project and we ran into way too many limitations.</P>
+<P>It does not seem designed to handle application specific reporting scenarios.</P>
+<P>We opted to go with Active Reports .Net and find it to be an excellent product.</P>
+<P>We built a reporting framework usng CSLA BOs as the datasource for unbound reports. The framework fetches the Header data and the Detail data and then maps the properties to the controls.</P>
+<P>We built 50 reports in a couple of weeks using this framework. Designing the layout of the report was the hardest part. </P>
+<P>The only catch is that the data has to be pre-sorted and grouped - the report tool does not do it for you. So your queries have to be just a little bit smarter.</P>
+<P>Joe</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>GlennMiller replied on Tuesday, April 03, 2007</h2>We're using ActiveReports in some of our other products and it *is* very nice, but in this scenario we have tens of thousands of records, and remoting them all to the client for reporting is way too slow. AR doesn't appear to do server-side reports. By hard-coding our SQL we're getting SSRS to generate our reports server-side, and it's nice and fast, and since we were using SQL Report Viewer client-side before, we don't have to re-do our report layouts (much). But it's going to be a pain to re-do our business layer to add dynamic SQL just for reports. Using the BOs would be much nicer.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Tuesday, April 03, 2007</h2>If everything is working fine server side, why do you need to redo your BOs?<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>GlennMiller replied on Tuesday, April 03, 2007</h2>It's only working fine server-side with our one test report where we hard-coded the SQL to do some performance tests. In the live application the user can add custom fields to the database, so the report SQL needs to be dynamically generated at run time. Our BOs do that for us.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Wednesday, April 04, 2007</h2>Ahhh.. that's an important detail.<br><br>Assuming the users that can change the schema are administrators and don't do this very often, you may want some BOs that generate the approprate Sql (perhaps as views) and server reports as the users add and remove the custom fields.&nbsp; <br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>brian_peterson replied on Wednesday, April 04, 2007</h2>Even if you did not give the users the ability to customize the database it seems to me that you would still have to redo your Buisness Logic (writing everything in raw SQL statements) if you wanted to do SQL 2005 Reporting Services Server Side? <br><br>Your idea is an interesting idea though. It would be nice that you would not have to dupilcate that code. I wonder if there is a way to create a custom plugin of some sort into SQL to use CSLA Buisness Objects Server Side? <br><br>Because if you are doing remoting (not enterprise) over the Internet and 'real' reports (like 10,000) I would think that the performance would be painfully slow, if not, unuseable? <br><br>Server Side reports in your case sound like the only option. Because even if you did pagination any report that did grouping, sorting, or a chart would still need to get all the data for a Client Side (local) reports. I remember reading Rocky said something about being careful sending down no more than 1,000 in a list. Anyone have anyother thoughts on this?<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Wednesday, April 04, 2007</h2>Another suggestion; since you're using remoting, perhaps you should look at Xal's CompressedRemotingProxy?&nbsp; He posted recently about that; you may be able to heavily compress the remoting stream to speed transmission of the data.<br><br>Andy<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>GlennMiller replied on Tuesday, April 10, 2007</h2>ajj3085 thanks for the information about the CompressedRemotingProxy. We will check that out!<br><br>We have an update. We have successfully found a way to
+use CSLA.NET and Server Side SQL 2005 Reporting Services without any
+duplication of code! What we did was create a "Custom Data Processing
+Extension" for SQL 2005 Reporting Server. Here is an article from
+Microsoft: <a href="http://msdn2.microsoft.com/en-us/library/ms154655.aspx">http://msdn2.microsoft.com/en-us/library/ms154655.aspx</a>
+
+<br><br>What this gives you is a way of essentially binding your
+Business Objects, just like you would in Local Reporting. Initial testing looks
+promising. Huge reports seem real snappy with Pagination turned on. This is
+because we don't remote all the data at once to the client (like local
+reporting). It processes everything server side and then just sends a page of
+data at a time. This seems like the only solution if you have thousands and
+thousands of records and you are using CSLA's remoting.
+
+
+
+
+
+<p class="MsoPlainText">Microsoft has a skeleton code project to jump start off
+with in SQL 2005 Samples called: "FsiDataExtension"<span>&nbsp; </span>(<a href="http://msdn2.microsoft.com/en-us/library/ms160918.aspx">http://msdn2.microsoft.com/en-us/library/ms160918.aspx</a>).
+You can get the sample using the SQL 2005 installer, or off of Microsoft's
+website. Here is another good example: <br><a href="http://www.devx.com/dbzone/Article/31336/0/page/1">http://www.devx.com/dbzone/Article/31336/0/page/1</a><br></p>
+
+
+
+
+
+<p class="MsoPlainText">There are a few little tips we found out.</p>
+
+
+
+
+
+
+
+
+<p class="MsoPlainText">Server Side:<br>Copy DLLs to c:\Program Files\Microsoft SQL
+Server\MSSQL.3\Reporting Services\ReportServer\bin. This Includes CSLA.</p>
+
+
+
+
+
+<p class="MsoPlainText">In the ReportServer directory, in rssrvpolicy.config, you
+need to have a "code group" for both the your strong key and for
+CSLA's, which would be different than yours. We used secutil to generate "publickeyblobs"
+for both (secutil -hex -s dllname). </p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<p class="MsoPlainText">E.g:<o:p>&nbsp;</o:p><br>&lt;CodeGroup<br><span>&nbsp;&nbsp;&nbsp; </span>class="UnionCodeGroup"<br><span>&nbsp;&nbsp;&nbsp; </span>version="1"<br><span>&nbsp;&nbsp;&nbsp; </span>PermissionSetName="FullTrust"<span><br></span>&nbsp;&nbsp;&nbsp; Name="Kodiak_Strong_Name"<br><span>&nbsp;&nbsp;&nbsp; </span>Description="Key for Your DLLs."&gt;<br><span>&nbsp;&nbsp;&nbsp; </span>&lt;IMembershipCondition<br><span></span><span></span><span></span>&nbsp;&nbsp; class="StrongNameMembershipCondition"<br><span></span>&nbsp;&nbsp; version="1"<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>&nbsp;&nbsp;&nbsp; PublicKeyBlob="0q238490821093480293845908230945802938450923840582390485really-long"<br><span></span>/&gt;<br>&lt;/CodeGroup&gt;</p><p class="MsoPlainText">&lt;CodeGroup<br><span></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; class="UnionCodeGroup"<br><span></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; version="1"<br><span></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; PermissionSetName="FullTrust"<br><span></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Name="CSLA_Strong_Name"<br><span>&nbsp;&nbsp;&nbsp; &nbsp; </span>Description="Key for CSLA DLL."&gt;<br><span>&nbsp;&nbsp;&nbsp; &nbsp; </span>&lt;IMembershipCondition<br><span>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; </span>class="StrongNameMembershipCondition"<br><span></span>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; version="1"<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span>&nbsp;&nbsp;</span><span>&nbsp;&nbsp;&nbsp; </span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>PublicKeyBlob="0024000004800000940000000602000000240000525341310004000001000100AFE494440F03A57E64464D6D407F83E51F2C8A412F8E9144BDAF02DF16234C2074149908E37A67E060E61E23456E985515C1FAE98050E802CE6859E9929587C5BB66AC32D21DBCF823D3E055CD9483AF45BDC12DC4A47168CF04FC384F485F3EA588B72A1FD60BEC53AD6DF5B1A26FE4F9BBBCE560AAF27014F65D099A1994BE"<br>/&gt;<br>&lt;/CodeGroup&gt;</p>
+
+
+
+
+
+<p class="MsoPlainText">In the same ReportServer directory, web.config contains
+the appsettings and connectionsettings for the two-tier CLSA connection to the
+database. </p>
+
+
+
+
+
+<p class="MsoPlainText">In the ReportServer directory, the rsreportserver.config
+file contains a line in the Data section for your new data source.</p>
+
+
+
+
+
+
+
+
+<p class="MsoPlainText">E.g:<br>&lt;Extension Name="KODIAK"
+Type="Kodiak.Infrastructure.ReportConnector.CgConnection,Infrastructure.ReportConnector"/&gt;<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></p>
+
+
+
+
+
+
+
+
+<p class="MsoPlainText">Client Side:<br>(for the Business Intelligent Report Designer (integrates
+into Visual Studio 2005)... Can be installed off of the SQL 2005 Disk):</p>
+
+
+
+
+
+<p class="MsoPlainText">Copy DLLs to Program Files\Microsoft Visual Studio
+8\Common7\IDE\PrivateAssemblies. You will also need CSLA, and
+Microsoft.ReportingServices.Infrastructure (you can get that off of your
+reporting server).</p>
+
+
+
+
+
+<p class="MsoPlainText">In the same directory, RSReportDesigner.config, you need
+lines for the your new data source in the Data and Designer sections. Note that
+the lines are different -- the data section refers to your project namespaces
+and assemblies, whereas the Designer section references Microsoft stuff. </p>
+
+
+
+
+
+
+
+
+
+
+
+<p class="MsoPlainText"><o:p></o:p>E.g:<br>&lt;Extension Name="CSLADATA"
+Type="XYZ.ReportConnector.Connection, XYZ.ReportConnector"/&gt; <br></p><p class="MsoPlainText">&lt;Extension Name=" CSLADATA "
+Type="Microsoft.ReportingServices.QueryDesigners.VDTQueryDesigner,Microsoft.ReportingServices.QueryDesigners"/&gt;<o:p>&nbsp;</o:p></p>
+
+
+<p class="MsoPlainText">In the same directory, you need the CodeGroup for your
+strong key, with its PublicKeyBlob. </p>
+
+
+<p class="MsoPlainText">In this directory's parent (the IDE directory itself),
+devenv.exe.config needs the application settings -- appsettings for CSLA
+authentication and connectionstring for two-tier db access. Or three tier.</p>
+
+
+
+
+
+<p class="MsoPlainText">You don't need to publish your reports!!! You can just
+send them from the client and the Reporting server will temporarily store them.
+This allows for a more dynamic reporting solution where you could change your
+RDL files on the fly. See this article. <a href="http://msdn2.microsoft.com/en-us/library/ms167274.aspx">http://msdn2.microsoft.com/en-us/library/ms167274.aspx</a></p>
+
+
+
+
+
+<p class="MsoPlainText">For your Custom Data Extension you will need to call your
+login method for your CSLA Business Objects (passing username and password,
+perhaps as a parameter... You should setup SSL on Reporting Services). This
+method call is in the connection class "void IDbConnection.Open()".
+You call your logout here: "void IDbConnection.Close()".</p>
+
+
+
+
+
+<p class="MsoPlainText">You would get a CSLA Buisness Object List in this method
+"internal DataReader(string cmdText)" within the DataReader Class.
+Also you would read each record here: bool IDataReader.Read(). You need to get
+the name of the field here "string IDataReader.GetName". Here is
+where you get the datatype "System.Type IDataReader.GetFieldType(int
+fieldIndex)"... Returning
+"System.Type.GetType("System.&lt;whatever the datatype
+is&gt;")"; "object IDataReader.GetValue(int fieldIndex)" is
+where the report gets its actual values. </p>
+
+
+
+
+
+<p class="MsoPlainText">The rest of the classes in the Microsoft example can be
+left alone.</p>
+
+
+
+
+
+<span>Of course whenever you try to do anything with
+SQL Reporting Services you will end up sending inordinate amounts of time
+banging your head. Don't say we didn't warn you! There are very few things you
+can to debug and you will just have to guess. But once you get everything in
+place the benefits do outweigh the pains of setup.</span><br><span></span></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Tuesday, April 10, 2007</h2>Glenn,<br><br>Thanks for the update!&nbsp; It sounds like a lot of work, but its good to know there is a solution that is possible.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tarekahf replied on Saturday, December 27, 2008</h2><P>GlennMiller,</P>
+<P>Thank you for the information. We&nbsp;have completed&nbsp;a full course for SSRS few weeks ago, and I was wondering how I could reuse our CSLA .NET BO with SSRS Reports. The course instructor was unable to answer this question for me. My basic question was how to bind SSRS Report to a DataSet or BO Datasource ?</P>
+<P>I have developed a BO based on CSLA .NET, and it connects to SQL Server, MS Access &amp; Adabas to retrieve Staff Information in a list&nbsp;format.</P>
+<P>I was wondering how I could reuse this logic to develop reports using SQL Server Reports.</P>
+<P>I will try the approach you referred to.</P>
+<P>If you have any useful updated, I would appreciate letting me know.</P>
+<P>Tarek.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Monday, December 29, 2008</h2>I've only done this with local reports, but it should be just a matter of adding to the DataSources collection on the LocalReport instance.&nbsp; If it's a BB derived class, make sure to create an IList and put the BO into the list, and give the list as a datasource.&nbsp; The reports always expect something that implements IList or ICollection or something.<br><br>HTH<br>Andy<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tarekahf replied on Monday, December 29, 2008</h2><P>ajj3085,</P>
+<P>Thank you for the info.</P>
+<P>There is one small issue which is confusing me a little bit.</P>
+<P>I found another nice article:</P>
+<P><A href="http://msdn.microsoft.com/en-us/library/ms251692(VS.80).aspx">http://msdn.microsoft.com/en-us/library/ms251692(VS.80).aspx</A></P>
+<P>By checking this article, it does not tell you to do any kind of inheritance from SSRS Interfaces. It looks like it is much simpler than I expected, since the article referenced in this thread ask you to implement several Interfaces which looks a bit complex.</P>
+<P>Do you have any comment on this ?</P>
+<P>Thank you.</P>
+<P>Tarek.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Tuesday, December 30, 2008</h2>Well, this is an older thread.. which link are you referring to?&nbsp; My use of reports has been limited to the winforms reportviewer using rdlc reports.&nbsp;&nbsp; So my comments are geared toward that kind of setup.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tarekahf replied on Wednesday, December 31, 2008</h2><P>I did some more research, and now I have better understanding.</P>
+<P>It looks like .rdlc are client side reports, and much easier to work with. I was actually referring to .rdl Server Based SSRS Reports, which I think it is the proper way to go. During my experience, client-side have always been problematic. So, I will not spend time on it.</P>
+<P>With .rdl, it looks like if you want to implement a middle tier using a BO to retrieve your data, which is the professional way of doing the work (to avoid rewriting and redoing the work, and to utilize the work you have done before)&nbsp;in order to do that, you have to pay some dues, ie, you have to implement&nbsp;some minimum number of Interfaces of the SSRS Data Extensions.</P>
+<P>Well, I need to spend some time in that. I will&nbsp;do some effort, and try to post back the results.</P>
+<P>Tarek.</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

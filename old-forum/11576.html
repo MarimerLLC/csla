@@ -1,0 +1,31 @@
+<html><header><title>ValidationRules and UI</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>ValidationRules and UI</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11576.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>alainrodriguez posted on Wednesday, September 12, 2012</h2><p>I am trying on the UI control event&nbsp;<span>OnValidating(</span><span>CancelEventArgs</span>&nbsp;e), to recurse thru all the BrokenValidationRules and &#39;highlight&#39; the controls requiring validation.</p>
+<p>My concern is that I need a &#39;unique&#39; way to identify each Rule to each corresponding control on the form. Using the&nbsp;BizObject.BrokenRulesCollection, except the Property and the OriginProperty is null since this is ValidationRule without a PrimaryProperty as:</p>
+<p>&nbsp;</p>
+<pre><pre>BusinessRules.AddRule(<span>new</span><span>&nbsp;</span><span>PropertyRequired</span>());</pre>
+<pre>...</pre>
+<pre><pre>&nbsp;<span>private</span>&nbsp;<span>class</span>&nbsp;<span>PropertyRequired</span>&nbsp;:&nbsp;<span>BusinessRule</span>
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>protected</span>&nbsp;<span>override</span>&nbsp;<span>void</span>&nbsp;Execute(<span>RuleContext</span>&nbsp;context)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;   ....
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;context.AddErrorResult(<span>&quot;The object name &quot; + myobj.Name.toString() + &quot; required a Property!&quot;</span>);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;}
+</pre>
+</pre>
+<pre>...</pre>
+<pre>Matching the description is not possible since it is a dynamic string,&nbsp;</pre>
+<pre>  and this is resolved only when the rule is broken.</pre>
+<pre>What mechanism can I use for this?</pre>
+<pre>Thanks!</pre>
+</pre>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<pre></pre></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Thursday, September 13, 2012</h2><p>I assume we are talking Windows Forms UI here? </p>
+<p><b>First make sure that your rules is attached to a property. context.AddErrorResult has overloads that accept <br />a PropertyInfo to tell which property the message is related to.&nbsp; An object level rule may add messages to <br />several&nbsp;properties (provided they are added to the AffectedProperties list in the constructor of the rule).</b></p>
+<p>IE:&nbsp; Context.AddErrorResult<b>(&lt;propertyInfo&gt;</b>, <span>&quot;The object name &quot; + myobj.Name.toString() + &quot; required a Property!&quot;</span>);<br /><br />Next - there is standard components that do this for you. Looke at the ErrorWarnInfoProvider in <a href="http://forums.lhotka.net/cslacontrib.codeplex.com">CslaContrib</a> </p>
+<p><b>I would also encourage you to use PropertyRules as much as&nbsp; possible as these are automatically executed by <br />CSLA when you change a property.</b> ObjectLevel rules must be manually triggered by your code!!! </p>
+<p>The OnValidating is probably not the correct event to hook into either. The rules is run (and possibly async) and may affect a number of properties when the value is written to the BO. That does not happen until after OnValidating. </p>
+<p>You should rather hook into the OnPropertyChanged on the BO or use the CurrentItemChanged on the BindingSource. </p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>alainrodriguez replied on Thursday, September 13, 2012</h2><p>thanks for the prompt reply!, very useful! that does it :)</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

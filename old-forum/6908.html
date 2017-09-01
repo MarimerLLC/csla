@@ -1,0 +1,17 @@
+<html><header><title>No record count using CSLADataSource</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>No record count using CSLADataSource</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6908.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Chaz4Code posted on Wednesday, May 06, 2009</h2><P>I have a csladatasource pointing to a readOnlyListBase object.&nbsp; While it binds fine unlike the other datasource controls there is no way to specify the RecordCount method.&nbsp; I have implemented the IReportTotalRowCount interface on my business object but the TotalRowCount property is never called.</P>
+<P>I would think given the obvious need to not load every record at once the answer is simple but currently I've had no luck finding any explanation on how IReportTotalRowCount is supposed to work and as a result my gridview thinks the total row count is how many items I returned from my query.</P>
+<P>Any suggests would be appreciated.</P>
+<P>thanks.</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, May 06, 2009</h2><P>The basic approach is to take the arguments object passed into the select method from data binding, and pass some or all of that information through your criteria object to the DataPortal_Fetch() method so you can do the sorting/filtering/paging at the database level.</P>
+<P>When you do this, it is your responsibility, in the factory method, to report the total row count, and provide a paged subset of the overall data.</P>
+<OL>
+<LI>Implement IReportTotalRowCount in your collection</LI>
+<LI>Accept the SelectObjectArgs parameter in your static factory method</LI>
+<LI>Include the SelectObjectArgs value as a field in your criteria object</LI>
+<LI>Use the starting row indiex and page size values from the SelectObjectArgs in your DataPortal_Fetch() method to load the collection with only the specfiied page of data</LI>
+<LI>In your DataPortal_Fetch() method, load the total number of rows of data available</LI>
+<LI>Set the TypeSupportsPaging property of your CslaDataSource control to true</LI>
+<LI>Enable paging in the GridView control</LI></OL>
+<P>Full coverage of sorting/filtering/paging is in the <EM>CSLA .NET Version 2.1 Handbook</EM> ebook from <A href="http://store.lhotka.net">http://store.lhotka.net</A>. But you need a factory method something like this:</P>
+<P>public static MyList GetPage(Csla.Web.SelectObjectArgs args)<BR>{<BR>&nbsp; return DataPortal.Fetch&lt;MyList&gt;(new SingleCriteria&lt;MyList, Csla.Web.SelectObjectArgs)(args));<BR>}</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Chaz4Code replied on Thursday, May 07, 2009</h2>Thanks for your quick response Rocky.&nbsp; Much appreciated.</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

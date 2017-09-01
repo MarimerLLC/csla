@@ -1,0 +1,27 @@
+<html><header><title>WPF PropertyStatus Request</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>WPF PropertyStatus Request</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/7972.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Wokket posted on Wednesday, November 11, 2009</h2>G'day guys,<br /><br />I'm playing with WPF in an attempt to get over the huge learning curve, and getting back into the CSLA space at the same time.<br /><br />I've rigged up a demo BB customer object, with a cross property validation rule, via the AddDependantProperty mechanism.<br /><br />This rule fires beautifully, however the PropertyStatus control does not update when the dependant control is altered, as it listens for PropertyChanged only on the property it's attached to:<br /><font face="Lucida Console" size="2"><br /> private void source_PropertyChanged(object sender, PropertyChangedEventArgs e)<br />    {<br />      if (e.PropertyName == _bindingPath || string.IsNullOrEmpty(e.PropertyName))<br />        UpdateState();<br />    }<br /></font><br /><br />This is entirely reasonable from a performance point of view, but does cause hassles with the cross-property rules.<br /><br />To my mind, the PropertyStatus control (or at least the validation rules part of it, I haven't played with the Auth/Busy stuff) really needs to be listening to an event off the Broken Rules collection, rather than property changed... as it's really the Broken Rules state it's reflecting.<br /><br />I had a quick play with various combinations of:<br /><br />ChildChanged<br />ListChanged (too hard to quickly get access to the required info, may be a chance though)<br />AddingNew (never seemed to fire)<br />RemovingItem (fired prior to the item actually being removed, and so state was left unchanged)<br /><br />While ListChanged was a pretty average event to handle (with just the old/new list indexes to play with), it may be sufficient for our needs.  If we update the BrokenRule state on every Rule collection change we will definately stay in synch, but at the extra cost off all the controls keeping in synch, rather than just the one.<br /><br />Removing the BrokenRule state update from PropertyChanged should offset the extra cost of updating all the PropertyStatus controls at once though, as it saves each control potentially updating itself per-keystroke, even though there's no change in rule.<br /><br />I'd imagine rule changes on average occur far less frequently than property changes... the question is whether the number of PropertyStatus controls * number of rule changes <br />Food for thought, I'll keep playing.<br /><br />Cheers,<br />Tim<br /><br /><br /><br /></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, November 11, 2009</h2><P>WPF handles PropertyChanged events differently from Windows Forms. As you can imagine from history, CSLA follows the Windows Forms model by default today.</P>
+<P>You need to set a config switch to tell CSLA to use the Xaml model for PropertyChanged. This is ApplicationContext.PropertyChangedMode - set it once as your app starts up (like in App.xaml) and you should be set. Or you can set it in your config file with the CslaPropertyChangedMode key.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, November 11, 2009</h2><P>I should also point out that the default for PropertyChangedMode will switch to Xaml in CSLA .NET 4.0. I'm sure that'll cause a few bouts of forum threads as Windows Forms performance tanks when people forget to set the value, but such is life.</P>
+<P>(that's the thing - Windows Forms <EM>works either way</EM>, it is just less efficient with the Xaml option; while WPF <EM>only works</EM> with the Xaml setting)</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Wokket replied on Wednesday, November 11, 2009</h2>Thanks for that Rocky.&nbsp; I obviously missed that setting in the demo code I was copyin^H^H^H^H^H learning from.<br><br>Tim<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, November 11, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Keep in mind that things are generally easier/better in 3.8 &#8211;
+but there are some breaking changes from 3.6/3.7 in these controls.</span><b><span><o:p></o:p></span></b></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

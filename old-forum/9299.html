@@ -1,0 +1,37 @@
+<html><header><title>Converting/casting System.Reflection.PropertyInfo to CSLA.PropertyInfo&lt;T&gt; object</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Converting/casting System.Reflection.PropertyInfo to CSLA.PropertyInfo&lt;T&gt; object</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9299.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>fahahm posted on Friday, July 30, 2010</h2><p>HI,</p>
+<p>In one of my model class I registered a property using CSLA.PropertyInfo&lt;T&gt; object.</p>
+<p><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;"><font size="2" color="#0000ff"><font size="2" color="#0000ff">
+<p>private</p>
+</font></font></span><font size="2" color="#0000ff">
+<p>&nbsp;</p>
+</font></span>
+<p>&nbsp;</p>
+<span style="font-size:x-small;"> </span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">static</span></span><span style="font-size:x-small;"> </span><span style="color:#2b91af;font-size:x-small;"><span style="color:#2b91af;font-size:x-small;">PropertyInfo</span></span><span style="font-size:x-small;">&lt;</span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">string</span></span><span style="font-size:x-small;">&gt; LastNameProperty = RegisterProperty&lt;</span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">string</span></span><span style="font-size:x-small;">&gt;(</span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">new</span></span><span style="font-size:x-small;"> </span><span style="color:#2b91af;font-size:x-small;"><span style="color:#2b91af;font-size:x-small;">PropertyInfo</span></span><span style="font-size:x-small;">&lt;</span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">string</span></span><span style="font-size:x-small;">&gt;(</span><span style="color:#a31515;font-size:x-small;"><span style="color:#a31515;font-size:x-small;">&quot;LastName&quot;</span></span><span style="font-size:x-small;">, </span><span style="color:#a31515;font-size:x-small;"><span style="color:#a31515;font-size:x-small;">&quot;Last Name&quot;</span></span><span style="font-size:x-small;">, </span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">string</span></span>
+<p><span style="font-size:x-small;">.Empty));</span></p>
+<p><span style="font-size:x-small;">Now at the client side, I am using a sliverlight grid to bind the list of records. I need to retrieve all properteis of that model object and for that I am using the following linq code.</span></p>
+</p>
+<p><span style="font-size:x-small;"><span style="font-size:x-small;"><font size="2">
+<p>&nbsp;</p>
+</font></span>
+<p><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">var</span></span><span style="font-size:x-small;"> result = </span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">from</span></span><span style="font-size:x-small;"> res </span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">in</span></span><span style="font-size:x-small;"> MyGrid.SelectedItem.GetType().GetProperties()<font size="2">
+<p>&nbsp;</p>
+</font></span></p>
+<p><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">where</span></span><span style="font-size:x-small;"> res.DeclaringType.FullName == MyGrid.SelectedItem.GetType().FullName<font size="2"><font size="2">
+<p>
+<p>&nbsp;</p>
+<p><span style="font-size:x-small;">The problem is the GetProperties() method returns enumberator of System.Reflection.PropertyInfo objects and I really need to either cast/convert it to the CSLA object so that I can fetch additonal information like friendly name that I added during registering it. </span></p>
+<p><span style="font-size:x-small;">Anybody have any idea how to do this?</span></p>
+<p><span style="font-size:x-small;"></span><span style="font-size:x-small;">Fahahm</span></p>
+</p>
+</font><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">select</span></span><span style="font-size:x-small;"> res;</span></font></span></p>
+<font size="2">
+<p>
+<p><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">select</span></span><span style="font-size:x-small;"> res;</span></p>
+<p><span style="font-size:x-small;">The problem is the GetProperties() method returns enumberator of System.Reflection.PropertyInfo objects and I really need to either cast/convert it to the CSLA object so that I can fetch additonal information like friendly name that I added during registering it. </span></p>
+<p><span style="font-size:x-small;">Anybody have any idea how to do this?</span></p>
+<p><span style="font-size:x-small;"></span><span style="font-size:x-small;">Fahahm</span></p>
+</p>
+</font></span></p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, July 30, 2010</h2><p>.NET reflection will obviously return .NET reflection types, not CSLA types.</p>
+<p>To get the Csla.Core.IPropertyInfo (PropertyInfo&lt;T&gt;) objects you&#39;ll need to call a method on FieldManager from within your object itself. If you need this information outside the object, you&#39;ll need to add a public method on your object to externalize the information.</p>
+<p>I suppose another option is to use .NET reflection to get all static fields from the object, then filter the results so you only have Csla.Core.IPropertyInfo objects - that&#39;d get you all the properties with public PropertyInfo&lt;T&gt; fields.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

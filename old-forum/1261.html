@@ -1,0 +1,19 @@
+<html><header><title>Has anyone seen problems with System.Transactions?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Has anyone seen problems with System.Transactions?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/1261.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>JZuerlein posted on Tuesday, September 19, 2006</h2><P>I've been writing unit tests with NUnit, and using System.Transactions to undo my modifications to the database.&nbsp; It works really well when I run a small number of tests (5-10)&nbsp;at the same time.&nbsp; When click on the top node of my unit test tree in NUnit and run all my tests(100+), I get a handful of failures.&nbsp; If those tests are run as part of a smaller set, they complete fine.&nbsp; The error message is always the same....</P>
+<P>EPAS.BusinessObjects.UnitTests.FormTestFixtures.CommentQuestionFixture.InsertCommentQuestion : Csla.DataPortalException : DataPortal.Update failed<BR>&nbsp; ----&gt; Csla.Server.CallMethodException : DataPortal_Update method call failed<BR>&nbsp; ----&gt; System.Data.SqlClient.SqlException : New request is not allowed to start because it should come with valid transaction descriptor.</P>
+<P>I've applied the hotfix that looks like it should solve this problem, but it's still there.</P>
+<P><A href="http://support.microsoft.com/kb/916002">http://support.microsoft.com/kb/916002</A></P>
+<P>Anyone have any ideas?</P>
+<P>Jeff</P>
+<P>&nbsp;</P>
+<P>UnitTest Sample....</P><FONT size=2>
+<P>&lt;SetUp()&gt; _</P>
+<P></FONT><FONT color=#0000ff size=2>Public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Sub</FONT><FONT size=2> Setup()</P>
+<P>_scope = </FONT><FONT color=#0000ff size=2>New</FONT><FONT size=2> TransactionScope(TransactionScopeOption.RequiresNew)</P>
+<P>_form = InsertForm()</P>
+<P>_formID = _form.FormID</P>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Sub</P></FONT><FONT size=2>
+<P>&lt;TearDown()&gt; _</P>
+<P></FONT><FONT color=#0000ff size=2>Public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Sub</FONT><FONT size=2> TearDown()</P>
+<P>_scope.Dispose()</P>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Sub</P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>KFoster replied on Thursday, April 05, 2007</h2>Did you ever find out what was wrong? We are seeing this same error. Even on dataportal_fetch() calls that are not transaction oriented. We were wondering if a previous, transactioned, connection failed and left a connection in the Connection Pool in an odd state. This problem seems intermittent, but when it happens it happens quite a bit, kind of a flurry of errors rather than a consistent pattern.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JZuerlein replied on Friday, April 06, 2007</h2><P>I never did find an answer.&nbsp; I still feel like it is a bug in System.Transactions, but I don't have any hard evidence to support that.&nbsp; I was able to find a few references to similar problems posted on Microsoft's various sites.&nbsp; In the end, I had to stop searching because of other priorities.</P>
+<P>&nbsp;Jeff</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>reagan123 replied on Tuesday, June 17, 2008</h2>Sorry to bring up an old thread... we have a few machines having this problem... any ideas???<br><br>Thanks!<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

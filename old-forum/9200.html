@@ -1,0 +1,10 @@
+<html><header><title>ChildUpdate order..</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>ChildUpdate order..</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9200.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>idroesse posted on Tuesday, July 13, 2010</h2><p>Hi guys, just a question.&nbsp; When I save a Parent Object, FieldManager.UpdateChildren is used to save every children, what is the saving order? Let me explain...</p>
+<p>Parent Object</p>
+<p>------ Child 1</p>
+<p>------ Child 2</p>
+<p>Saving order is Parent, Child 1 and then Child 2 (using alphabetical order I suppose). Is it possibile to change this&nbsp;sequence in order to save Parent, Child 2 and then Child 1&nbsp; (without renaming Child 2 in Child 1)?</p>
+<p>Thanks a lot</p>
+<p>Enrico</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>Marjon1 replied on Tuesday, July 13, 2010</h2><p>You cannot guarantee the order in which child objects are updated, unless you manually call each DataPortal.UpdateChild in the sequence required. If the only importance that Child2 was done first you could then do FieldManager.UpdateChildren for it to do the remaining objects. </p>
+<p>I&#39;m going off memory with the code example below, apologies for any mistakes.</p>
+<p><span style="font-family:&#39;courier new&#39;, courier;">DataPortal.UpdateChild(Child2, Parameters)<br /></span><span style="font-family:&#39;courier new&#39;, courier;">FieldManager.UpdateChildren</span></p>
+<p><span style="font-family:mceinline;"><br /></span></p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

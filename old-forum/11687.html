@@ -1,0 +1,17 @@
+<html><header><title>WCF DataPortal large message error: System.ServiceModel.EndpointNotFoundException: There was no endpoint listening at WcfPortal.svc that could accept the message</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>WCF DataPortal large message error: System.ServiceModel.EndpointNotFoundException: There was no endpoint listening at WcfPortal.svc that could accept the message</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11687.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>shawndewet posted on Thursday, November 08, 2012</h2><p>I have a use case in my ASP.MVC app in which I need to save a collection of about 15k records (this is from a CSV file upload). &nbsp;I&#39;m putting it through CSLA business objects in order validate the uploaded data with business rules.</p>
+<p>I&#39;m making use of the WCF DataPortal. When save is called I get this error after about 30s to 45s:</p>
+<p>System.ServiceModel.EndpointNotFoundException: There was no endpoint listening at [my dataportal IIS host address]\WcfPortal.svc that could accept the message.</p>
+<p>I have determined that if I break down the collection into smaller chunks, and call save on each of those chunks, the use case completes without a problem.</p>
+<p>I have configured my Service to use the max values as follows (recommended in Rocky&#39;s book) (and increased the sendTimeout based on other guidance):</p>
+<p>&nbsp;</p>
+<p>&lt;binding name=&quot;wsHttpBinding_IWcfPortal&quot; maxReceivedMessageSize=&quot;2147483647&quot; sendTimeout=&quot;05:00:00&quot;&gt;</p>
+<p>&nbsp; &nbsp; &lt;readerQuotas maxBytesPerRead=&quot;2147483647&quot; maxArrayLength=&quot;2147483647&quot; &nbsp; &nbsp; &nbsp; &nbsp; maxStringContentLength=&quot;2147483647&quot; maxNameTableCharCount=&quot;2147483647&quot; maxDepth=&quot;2147483647&quot;/&gt;</p>
+<p>&lt;/binding&gt;</p>
+<p>Now I KNOW for a fact that my data does not exceed the 2147486347 size limit. &nbsp;Besides, if it did, I would expect to get a more meaningful error message indicating this (like I did when the size limits were at their defaults).</p>
+<p>I have turned on WCF logging/tracing, which reveals nothing. &nbsp;This error seems to be some communication level error that gets hit before WCF stack comes into the picture.</p>
+<p>&nbsp;</p>
+<p>Please advise as to why I would be getting this error when trying to save this large collection?</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, November 13, 2012</h2><p>Your data, when converted into XML, might exceed the max size limits of WCF?</p>
+<p>Or perhaps you are hitting a limitation of the serializer (NDCS). In fact this seems more likely given that your WCF trace isn&#39;t showing anything. It seems reasonable to think that the NDCS is failing to serialize the data before the WCF transport plumbing is being invoked.</p>
+<p>You may have no real choice but to chunk the data.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

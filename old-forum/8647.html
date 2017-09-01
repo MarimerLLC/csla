@@ -1,0 +1,11 @@
+<html><header><title>Binding Textbox.MaxLength to Maxlength Validation rule</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Binding Textbox.MaxLength to Maxlength Validation rule</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/8647.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Devman posted on Thursday, March 11, 2010</h2><p>Hi,</p>
+<p>We have Maximum Length validation rules for some properties in our business object. However what we would like to do ideally, is bind MaxLength on a textbox to this validation rule to stop invalid lengths being entered in the first place. Has anyone else tired this?</p>
+<p>Any help would be greatly appreciated.</p>
+<p>Regards</p>
+<p>David</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Thursday, March 11, 2010</h2><p>You can get at the rules attached to a property through the ValidationRules object (inside your business object). You can get a list (string[] array) of rule:// URI items that describe all the rules attached to all properties for the object.</p>
+<p>You can then use the RuleDescriptor type to parse the rule:// URI values into parts, including things like the property name, rule name and rule arguments.</p>
+<p>That should make it relatively easy to find the StringMaxLength rule items and get the max length value for each.</p>
+<p>Once you have that information, you then need to design an API to expose the information to the UI in a way that your UI can consume the information.</p>
+<p>If you are in SL or WPF you could possibly subclass PropertyStatus and just add a MaxLength property, then bind the TextBox control&#39;s length property to PropertyStatus.</p>
+<p>If you are in another UI technology you&#39;ll need a slightly different approach, but the concept would be similar.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>maridob replied on Tuesday, June 07, 2011</h2><p>&nbsp;</p>
+<p>I wrote this in my <a href="http://mariabrinas.com/?p=89">blog</a>, hopefully it will help somebody :-)</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

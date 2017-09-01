@@ -1,0 +1,149 @@
+<html><header><title>Sql Server Session State and Business Rule not braking, works good on InProc. CSLA version 2.1.4.0</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Sql Server Session State and Business Rule not braking, works good on InProc. CSLA version 2.1.4.0</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4617.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Soumya posted on Friday, April 04, 2008</h2><P><FONT size=2>Hi All,</FONT></P>
+<P><FONT size=2>&nbsp; I have a serialized Invoice Class inherited BusinessBase class and a member InvoiceDetailsList&nbsp;(BusinessListBase) of InvoiceDetail(BusinessBase) is define withevents.</FONT></P>
+<P><FONT size=2>And also defined business rule as If Invoice amount and Detials.sum donot match brake the rule.</FONT></P>
+<P><FONT size=2>And in AddBusinessRules Added Rule as</FONT></P>
+<P><FONT size=2><FONT size=3><FONT size=2>&nbsp;ValidationRules.AddRule(<FONT color=#0000ff><FONT color=#0000ff>Of</FONT></FONT> Invoice)(<FONT color=#0000ff><FONT color=#0000ff>AddressOf</FONT></FONT> ExpenseSumRule(<FONT color=#0000ff><FONT color=#0000ff>Of</FONT></FONT> Invoice), <FONT color=#a31515><FONT color=#a31515>"InvoiceAmount"</FONT></FONT>)</FONT></P>
+<P><FONT size=2>ValidationRules.AddDependantProperty(<FONT color=#a31515><FONT color=#a31515>"Details"</FONT></FONT>, <FONT color=#a31515><FONT color=#a31515>"InvoiceAmount"</FONT></FONT>, <FONT color=#0000ff><FONT color=#0000ff>True</FONT></FONT>)</FONT></P>
+<P><FONT size=2>And also defined in Invoice class</FONT></P>
+<P><FONT size=2>&nbsp;&nbsp;<FONT color=#0000ff><FONT color=#0000ff>Private</FONT></FONT> <FONT color=#0000ff><FONT color=#0000ff>Sub</FONT></FONT> Details_ListChanged(<FONT color=#0000ff><FONT color=#0000ff>ByVal</FONT></FONT> sender <FONT color=#0000ff><FONT color=#0000ff>As</FONT></FONT> <FONT color=#0000ff><FONT color=#0000ff>Object</FONT></FONT>, <FONT color=#0000ff><FONT color=#0000ff>ByVal</FONT></FONT> e <FONT color=#0000ff><FONT color=#0000ff>As</FONT></FONT> System.ComponentModel.ListChangedEventArgs) <FONT color=#0000ff><FONT color=#0000ff>Handles</FONT></FONT> m_details.ListChanged</FONT></P>
+<P><FONT size=2>PropertyHasChanged(<FONT color=#a31515><FONT color=#a31515>"Details"</FONT></FONT>)</FONT></P>
+<P><FONT size=2><FONT color=#0000ff><FONT color=#0000ff>End</FONT></FONT> <FONT color=#0000ff><FONT color=#0000ff>Sub</FONT></FONT></FONT></P>
+<P><FONT color=#000000 size=2>When I change my value in my details grid, and Invoice amoutn, mismatch detail sum business rule validation should be checked, and should brake rule. Its working in InProc session state and&nbsp; its failing on Sql Server Sessiion state.&nbsp; It seems PropertyHasChanged on detail is never getting fired and My Business rule is not braking. Where as in Save ( in DataPortal_Insert) Details and Invoice Amounts coming different. How should I handle this behavior. some other business rules which also braking on SQL server Session State.</FONT></P>
+<P><FONT color=#000000 size=2>I'm using 2.1.4.0 version (VB.NET 2005 - Framework 2.0) Is there any solution for it. I read something about Customizing Deserialzation, but couldn't follow. I'm new to CSLA. Please provide me sample</FONT></P>
+<P><FONT color=#000000 size=2>Thanks,</FONT></P>
+<P><FONT size=2>Regards</FONT></P>
+<P><FONT size=2>Soumya</FONT></P>
+<P><FONT size=2></FONT><FONT color=#000000>&nbsp;</P>
+<P><FONT size=2>&nbsp;</FONT></FONT></P></FONT></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>xAvailx replied on Friday, April 04, 2008</h2>See this post...<br><br>http://forums.lhotka.net/forums/thread/16992.aspx<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Soumya replied on Friday, April 04, 2008</h2><P>Thanks but I donot want to make any change at CSLA.dll level. I rather prefer change in my Business&nbsp;Object. Can you provide me a sample? It seems even list change event is not getting fired for SS sesion state. Do I do same for that?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>xAvailx replied on Sunday, April 13, 2008</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>Soumya:</strong></div><div><p>Thanks but I donot want to make any change at CSLA.dll level. I rather prefer change in my Business&nbsp;Object. Can you provide me a sample? It seems even list change event is not getting fired for SS sesion state. Do I do same for that?</p></div></BLOCKQUOTE><br><br>In your BO, implement the interface.<br><br>public class YourBO : BusinessBase, IDeserializationCallback<br><br>Then re-attach your rules:<br><br>public virtual void OnDeserialization(object sender) {<br>&nbsp; // do things here - re-hook parents, etc.<br>&nbsp;&nbsp; AddBusinessRules();<br>&nbsp;} <br><br>If you don't fix in csla, then I would suggest you create a base class and implement there, otherwise all your businessbase bos will need this.<br><br>HTH.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Sunday, April 13, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Actually, all you have to do is re-attach event handlers after
+BO for Invoice has been de-serialized.&nbsp; You would overrides OnDeserialzed
+of Invoice class and re-attach the handler there as in<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Sub Protected Overrides OnDesizerilized &#8230;.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>AddHandler </span><span>m_details.ListChanged, AddressOf Details_ListChanged<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>End Sub<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Senior Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> xAvailx
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Sunday, April 13, 2008 8:32 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] Sql Server Session State and Business Rule not
+braking, works good on InProc. CSLA version 2.1.4.0<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<blockquote>
+
+<div>
+
+<p class=MsoNormal><img id="_x0000_i1025" src="/Themes/default/images/icon-quote.gif"><strong>Soumya:</strong><o:p></o:p></p>
+
+</div>
+
+<div>
+
+<p>Thanks but I donot want to make any change at CSLA.dll level. I rather
+prefer change in my Business&nbsp;Object. Can you provide me a sample? It seems
+even list change event is not getting fired for SS sesion state. Do I do same
+for that?<o:p></o:p></p>
+
+</div>
+
+</blockquote>
+
+<p class=MsoNormal><br>
+<br>
+In your BO, implement the interface.<br>
+<br>
+public class YourBO : BusinessBase, IDeserializationCallback<br>
+<br>
+Then re-attach your rules:<br>
+<br>
+public virtual void OnDeserialization(object sender) {<br>
+&nbsp; // do things here - re-hook parents, etc.<br>
+&nbsp;&nbsp; AddBusinessRules();<br>
+&nbsp;} <br>
+<br>
+If you don't fix in csla, then I would suggest you create a base class and
+implement there, otherwise all your businessbase bos will need this.<br>
+<br>
+HTH.<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Sunday, April 13, 2008</h2><P>In CSLA .NET 2.0 and higher you don't need to implement IDeserializationCallback. Microsoft changed the serializers to use an attribute-based scheme, and BusinessBase already takes care of the hard parts. You just need to override OnDeserialized() in your code to rehook events, etc.</P>
+<P>In CSLA .NET 3.5 you don't need to do anything - CSLA takes care of rehooking child events and other child object details automatically.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>xAvailx replied on Monday, April 14, 2008</h2>Ah, I am still on 1.53 for .net 2. Had to make this change so the business rules wouldn't dissapear after serializing when using database for session. Also had to re-hook OnChildIsDirty in BusinessCollectionBase in the Deserialized method.<br><br>Thx.<br><br><br><br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Anderson replied on Thursday, April 10, 2008</h2>
+
+<p class="MsoNormal">hello <span>Soumya,<o:p></o:p></span></p>
+
+
+
+<p class="MsoNormal">as here you are facing problems about inherited Business
+Base rules, it would be better to have a knowledge based business suite working
+for your rules based systems. I had faced some similar technical problems while
+working for my organization after which I moved to few solution providers. And
+as I know some of providers, one is Easyrules that provides <a href="http://easyrules.com/uk/legislation-law-services.htm"><b>Business knowledge
+management</b></a> software and it’s totally user friendly software and I am almost
+satisfied with this software.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>WillC replied on Saturday, June 14, 2008</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>Anderson:</strong></div><div><p class="MsoNormal">hello <span>Soumya,<o:p></o:p></span></p>
+
+
+
+<p class="MsoNormal">as here you are facing problems about inherited Business
+Base rules, it would be better to have a knowledge based business suite working
+for your rules based systems. I had faced some similar technical problems while
+working for my organization after which I moved to few solution providers. And
+as I know some of providers, one is Easyrules that provides <a href="http://easyrules.com/uk/legislation-law-services.htm"><b>Business knowledge
+management</b></a> software and it’s totally user friendly software and I am almost
+satisfied with this software.</p></div></BLOCKQUOTE><br><br>Hi Anderson,<br><br>You have mentioned about some easyrules software for <a href="http://www.easyrules.com/">Business Knowledge Management</a><br>Can you focus on how does it help for business management. I have refered the link you have put. I want to know something on your experience using this software for your organization!<br><br>Cheers!<br>Will C<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

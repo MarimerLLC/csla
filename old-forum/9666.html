@@ -1,0 +1,120 @@
+<html><header><title>Having problem with BusinessListBase type child for a BusinessBase Class</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Having problem with BusinessListBase type child for a BusinessBase Class</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9666.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>tikluganguly posted on Sunday, October 24, 2010</h2><p>Hi,</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; I am trying to keep a BusinessListBase type child for a BusinessBase class. Basically in my case I am using the Northwind database and have created a Customer Class derived from BusinessBase and it is having OrderList property holding all the Orders for a&nbsp;particular&nbsp;Customer. I am using the lazy load process as suggested by Rocky to Lazy load the child objects. But when I am trying to load the child BusinessListBase object I am getting the serialization exception saying List Of Order as an Unknown Type. Can you please guide me what I missed? Just to metion, the OrderList is working fine when I am accessing it as a separate object and not as a child of The Customer class.</p>
+<p>Regards</p>
+<p>Tiklu</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>vbbeta replied on Sunday, October 24, 2010</h2><p>Are you trying to do a GridView (control) to bind the list or some other ways to bind the lsit to the UI?</p>
+<p>if your doing a grid then you should use BusinessBindingList NOT BusinessListBase</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Sunday, October 24, 2010</h2><p><div style='padding-left: 50px;background-color:silver'><b>vbbeta<br></b></p>
+<p>if your doing a grid then you should use BusinessBindingList NOT BusinessListBase</p>
+<div style="clear:both;"></div>
+<p></div></p>
+<p>That depends on the UI technology though, and perhaps even specific controls.</p>
+<ul>
+<li>In Windows Forms you need to use BusinessBindingListBase.</li>
+<li>In WPF you need to determine what your datagrid control wants and choose the right base class, but when not using a datagrid you should use BusinessListBase</li>
+<li>In Silverlight you should use BusinessListBase</li>
+<li>In Web Forms you should use BusinessListBase</li>
+<li>In ASP.NET MVC you should use BusinessListBase</li>
+</ul>
+<p>WPF is the tricky one, since it depends very much on the specific datagrid control you are using and how that control works with collections.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tikluganguly replied on Monday, October 25, 2010</h2><p>Sorry I forgot to mention this in the first place..I am using Silverlight 4 with CSLA 4 and the data is getting bound to a telerik datagrid.&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tikluganguly replied on Monday, October 25, 2010</h2><p>Also the exception that I am getting is this</p>
+<p>&nbsp;</p>
+<p>Type &#39;Northwind.Model.OrderList&#39; with data contract name &#39;ArrayOfOrder:http://schemas.datacontract.org/2004/07/Northwind.Model&#39; is not expected. Consider using a DataContractResolver or add any types not known statically to the list of known types - for example, by using the KnownTypeAttribute attribute or by adding them to the list of known types passed to DataContractSerializer.</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>tikluganguly replied on Monday, October 25, 2010</h2><p>Hi All,</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp;Finally I have been able to fix the problem. Here is what I was trying to do.</p>
+<p>&nbsp;</p>
+<p>1) I have written a Generic Lazy Load Method like this</p>
+<p>&nbsp;</p>
+<p>
+<p>protected F LazyLoadProperty&lt;F&gt;(PropertyInfo&lt;F&gt; prop, object criteria)</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;where F:IMobileObject</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;{</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;if (!FieldManager.FieldExists(prop))</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;{ &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;MarkBusy();</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;if (this.IsNew)</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;{</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;DataPortal.BeginCreate&lt;ChildLoader&lt;F&gt;&gt;(criteria, (o, e) =&gt;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;{</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;if (e.Error == null)</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;{ &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;LoadProperty&lt;F&gt;(prop, e.Object.Child);</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;}</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;else</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;{</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;throw e.Error;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;}</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;MarkIdle();</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;OnPropertyChanged(prop);</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;});</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;}</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;else</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;{</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;DataPortal.BeginFetch&lt;ChildLoader&lt;F&gt;&gt;(criteria, (o, e) =&gt;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;{</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;if (e.Error == null)</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;{<span style="font-size:11.6667px;">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;</span></p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;LoadProperty&lt;F&gt;(prop, e.Object.Child);</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;}</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;else</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;{</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;throw e.Error;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;}</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;MarkIdle();</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;OnPropertyChanged(prop);</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;});</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;} &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;}</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;return GetProperty&lt;F&gt;(prop);</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;}</p>
+</p>
+<p>&nbsp;</p>
+<p>2) And the Child Loader Class is like this</p>
+<p>&nbsp;</p>
+<p>
+<p>[Serializable]</p>
+<p>&nbsp;&nbsp; &nbsp;public partial class ChildLoader&lt;T&gt; : BindableBase</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;where T:IMobileObject</p>
+<p>&nbsp;&nbsp; &nbsp;{</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;#region Child &nbsp; &nbsp; &nbsp; &nbsp;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;private T _child;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;public T Child</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;{</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;get { return _child; }</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;private set</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;{</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;OnPropertyChanging(&quot;Child&quot;);</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;_child = value;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;OnPropertyChanged(&quot;Child&quot;);</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;}</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;}&nbsp;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;#endregion</p>
+<p>&nbsp;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;#region Mobile Formatter<span style="font-size:11.6667px;">&nbsp;&nbsp; &nbsp; &nbsp;&nbsp;</span></p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;protected override void OnGetChildren(SerializationInfo info, MobileFormatter formatter)</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;{</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;base.OnGetChildren(info, formatter);</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;if (this._child != null)</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;{</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;var fmt = formatter.SerializeObject(this._child);</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;info.AddChild(&quot;Phoenix.Model.Base.ChildLoader._child&quot;, fmt.ReferenceId);</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;}</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;}</p>
+<p>&nbsp;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;protected override void OnSetChildren(SerializationInfo info, MobileFormatter formatter)</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;{</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;if (info.Children.ContainsKey(&quot;Phoenix.Model.Base.ChildLoader._child&quot;))</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;{</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;var data = info.Children[&quot;Phoenix.Model.Base.ChildLoader._child&quot;];</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;this._child = (T)formatter.GetObject(data.ReferenceId);</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;}</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;base.OnSetChildren(info, formatter);</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;}</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;#endregion<span style="font-size:11.6667px;">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;</span></p>
+<p><span style="font-size:11.6667px;">&nbsp;&nbsp; &nbsp; &nbsp; #if !SILVERLIGHT</span></p>
+<p><span style="font-size:11.6667px;">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;</span>private void DataPortal_Fetch(object criteria)</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;{</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;this.Child = DataPortal.FetchChild&lt;T&gt;(criteria);</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;}</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; #endif</p>
+<p>&nbsp;&nbsp; &nbsp;}</p>
+</p>
+<p>&nbsp;</p>
+<p>The part I was missing was with the OnGetChildren and OnSetChildren. I copied the code from ReadOnlyBase of CSLA 4.0.1 and now it is working fine.&nbsp;</p>
+<p>&nbsp;&nbsp; Still just posted the code as it may just help somebody trying to do a lazyload of csla property</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

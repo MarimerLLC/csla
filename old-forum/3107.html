@@ -1,0 +1,28 @@
+<html><header><title>Winform Databinding Performance</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Winform Databinding Performance</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3107.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Cslah posted on Wednesday, June 27, 2007</h2><P class=MsoNormal><FONT size=2><FONT face=Tahoma>I'm finding some performance threads on the group here but not like I'd expect with what I'm experiencing, which leads me to believe I'm missing something slap-myself-in-the-forehead-obvious.</FONT></FONT></P>
+<P class=MsoNormal><FONT size=2><FONT face=Tahoma></FONT></FONT>&nbsp;</P>
+<P class=MsoNormal><FONT size=2><FONT face=Tahoma>I'm binding a collection (BusinessListBase) to a winform DataGridView using Csla 2.1.4. I've only had to trap a few events to make it behave well and I generally have liked everything, until I load the collection with some records. Performance is to the point of my app being unusable. Even with something as small as 400 objects in the collection, it takes 10 seconds for the winform to pop up. If I load a collection with 1000 items it's unusable as it takes almost 45 seconds to load.<o:p></o:p></FONT></FONT></P>
+<P class=MsoNormal><o:p><FONT face=Tahoma size=2>&nbsp;</FONT></o:p></P>
+<P class=MsoNormal><FONT size=2><FONT face=Tahoma>In tracking this down I've uncommented one line of code to find the bottleneck:<o:p></o:p></FONT></FONT></P>
+<P class=MsoNormal><o:p><FONT face=Tahoma size=2>&nbsp;</FONT></o:p></P>
+<P class=MsoNormal><FONT size=2><FONT face=Tahoma><FONT color=#0000ff>MyBindingSource.DataSource = MyCollection<o:p></o:p></FONT></FONT></FONT></P>
+<P class=MsoNormal><o:p><FONT face=Tahoma size=2>&nbsp;</FONT></o:p></P>
+<P class=MsoNormal><FONT size=2><FONT face=Tahoma>The collection loads (even with 1000 items) in a few seconds. This one line of code kills everything else.<o:p></o:p></FONT></FONT></P>
+<P class=MsoNormal><o:p><FONT face=Tahoma size=2>&nbsp;</FONT></o:p></P>
+<P class=MsoNormal><FONT size=2><FONT face=Tahoma>I've tried several things:<o:p></o:p></FONT></FONT></P>
+<UL>
+<LI>
+<DIV class=MsoNormal><FONT size=2><FONT face=Tahoma>Turning the BindingSourceRefresh to False</FONT></FONT></DIV>
+<LI>
+<DIV class=MsoNormal><FONT size=2><FONT face=Tahoma>Converting the collection to an EditableRootListBase (I actually handle some funny events to make the BusinessListBase work, which is fine)</FONT></FONT></DIV>
+<LI>
+<DIV class=MsoNormal><FONT size=2><FONT face=Tahoma>Making sure our objects have RaiseListChangedEvents turned off when fetching<o:p></o:p></FONT></FONT></DIV>
+<LI>
+<DIV class=MsoNormal><FONT size=2><FONT face=Tahoma>Make sure that none of my winform UI events are called when the datasource is being set.<o:p></o:p></FONT></FONT></DIV>
+<LI>
+<DIV class=MsoNormal><FONT size=2><FONT face=Tahoma>Turning RaiseListChangedEvents off before setting the datasource, then turning them back on afterwards and calling ResetBindings(False)<o:p></o:p></FONT></FONT></DIV>
+<LI>
+<DIV class=MsoNormal><FONT size=2><FONT face=Tahoma>I've even, just for a test, turned off RaiseListChangedEvents in my collection to see if things improve. They did slightly, but not near enough.</FONT></FONT></DIV>
+<LI>
+<DIV class=MsoNormal><FONT size=2><FONT face=Tahoma>As another test, I removed all of my columns except for 1 (string) and it seems reasonable. Note that I've only got about 8 columns.</FONT></FONT></DIV></LI></UL>
+<P class=MsoNormal><FONT size=2><FONT face=Tahoma>Does anyone have any recommendations on how to improve databinding performance?</FONT></FONT></P><SPAN></SPAN>
+<P class=MsoNormal><o:p><FONT face=Tahoma size=2>&nbsp;</FONT></o:p></P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

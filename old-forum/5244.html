@@ -1,0 +1,64 @@
+<html><header><title>Advice from the Csla web gurus</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Advice from the Csla web gurus</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5244.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 posted on Thursday, August 14, 2008</h2>Hi,<br><br>It's been a while since I've done an Asp.net site.&nbsp; I'm trying to do a fair simple one right now for my company.&nbsp; I think I'm getting it.. but I do need some tips.<br><br>One is that a user can enter customer information, or select a pre-existing customer to use.&nbsp; To select a pre-existing customer, I have a method on the BO SetCustomer that accepts a read-only customer object.&nbsp; So my question here is dual.. how do I get a similar search / select popup as I would in the Windows forms world (I can tie this to IE, it's just me, and I don't have time to support any other browsers), and two, even when selected.. what's the best way to get the read only object to the method call.<br><br>Second.. what's the best way to get child and grandchild editing done?&nbsp; I'd like to keep things as simple as possible.&nbsp; <br><br>I do have access to Infragistics controls, version 20072, but trying to get the UltraWebGrid was frustrating, because for some reason it didn't output the html properly (ie., it was spitting out &lt;Infragistics.Web.UI.UltraGrid.UltraGridColumn&gt; instead of &lt;infragistics:UltraGridColumn&gt;).&nbsp; But if someone can tell me where I'm going wrong, I'd appreciate that.&nbsp; Double clicking the control in the toolbar also didn't add it to the page, unlike the standard Asp.net controls..<br><br>I'm using Csla 3.5.1, VS 2008 and .Net 3.5SP1.<br><br>Thanks<br>Andy<br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tmg4340 replied on Thursday, August 14, 2008</h2><P><FONT face=Tahoma size=2>I can't provide much CSLA help here - I've never used it in a web app - but I might be able to shed some light on your Infragistics problem.&nbsp; I'm betting that 2007 Vol 2 isn't 3.5-compatible.&nbsp; I don't think 3.5 was around when 2007 Vol 2 was released, or if it was, they didn't compile a version against the 3.5 framework.&nbsp; That's probably why you're seeing the weird Infragistics behavior.&nbsp; Based on what I see on their website, you'd have to step up to a 2008 release to get a 3.5-compatible toolset.&nbsp; Depending on how old your subscription is, you might be able to get that for free.</FONT></P>
+<P><FONT face=Tahoma size=2>HTH</FONT></P>
+<P><FONT face=Tahoma size=2>- Scott</FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Thursday, August 14, 2008</h2>The controls themselves seem to work fine, once I fix the bad html it spits out into the aspx file.&nbsp; I was hoping they'd still play nice with the 2008 designer though.. but perhaps not.&nbsp; I'm suprised they still show up in the toolbox.<br><br>20072 was released a little over a year ago, unfortunately that was the last version I was eligible to upgrade to.&nbsp; I guess i'll have to decide if the controls are worth the money.. the web grid does seem like it would save me a lot of effort given the children / grand children editing I need to allow.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tmg4340 replied on Thursday, August 14, 2008</h2><P><FONT face=Tahoma size=2>I'm not surprised they show up, or that they work.&nbsp; We&nbsp;had some 2.0 projects that used 1.1 controls, and&nbsp;they seemed to work just fine.&nbsp; But we had the same situation you do - designer support isn't what you would hope it to be.&nbsp; Getting controls in the right framework version is probably better for performance as well - different framework&nbsp;versions probably load into the AppDomain differently, and incur some sort of marshalling overhead.&nbsp; But I could be wrong there; we never really tested it, and those "hybrid" projects didn't stay that way for long.</FONT></P>
+<P><FONT face=Tahoma size=2>I can't really say whether the WebGrid will make your day or not.&nbsp; For hierarchical display, it certainly is relatively easy to use.&nbsp; But it's also kinda heavy if&nbsp;all you're doing is read-only tree displays, and making the grid read-only introduces some annoying rendering side-effects.&nbsp; We do very little in-place editing in our grids.&nbsp; I've done it before on flat grids, and it is pretty slick, but I don't know whether the technique I used translates when the grid is hierarchical.&nbsp;&nbsp;And&nbsp;I didn't&nbsp;use the row template features either.&nbsp; Another programmer here did on one project, and he was fighting&nbsp;to get it working&nbsp;for quite a while.&nbsp; But that could have been his inexperience with the control.</FONT></P>
+<P><FONT face=Tahoma size=2>- Scott</FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Friday, August 15, 2008</h2>Ya, I think I'm gonna ask to buy the newer version.&nbsp; I won't be using the grid for readonly.. that would be overkill.&nbsp; But for editing, I'm hoping it will save me a lot of effort.&nbsp; I'm also hoping it's similar enough to the WinGrid control that I'll be able to pick it up pretty quickly.&nbsp; <img src="/emoticons/emotion-1.gif" alt="Smile [:)]" /><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>nermin replied on Friday, August 15, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>If you are going to buy a new version, my advice to you is to go
+with another manufacturer.&nbsp; I believe you mentioned Infragistics in one of your
+earlier messages, and as far as I can tell those controls whether Windows or
+Web have always been a nightmare.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> ajj3085
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Friday, August 15, 2008 7:33 AM<br>
+<b>To:</b> Nermin Dibek<br>
+<b>Subject:</b> Re: [CSLA .NET] Advice from the Csla web gurus<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Ya, I think I'm gonna ask to buy the newer version.&nbsp; I
+won't be using the grid for readonly.. that would be overkill.&nbsp; But for
+editing, I'm hoping it will save me a lot of effort.&nbsp; I'm also hoping it's
+similar enough to the WinGrid control that I'll be able to pick it up pretty
+quickly.&nbsp; <img id="_x0000_i1025" src="/emoticons/emotion-1.gif" alt="Smile <img src=" />"><br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Friday, August 15, 2008</h2><P>"So my question here is dual.. how do I get a similar search / select popup as I would in the Windows forms world (I can tie this to IE, it's just me, and I don't have time to support any other browsers), and two, even when selected.. what's the best way to get the read only object to the method call."</P>
+<P>FWIW, here is how I do it in my web app:</P>
+<P>1. I have a Search screen where the user can input criteria (name, ID, address, etc.) and each row of criteria has a check box so I can tell if they filled it in or not. Then I send this crtieria BO to a ROC as the "Criteria" and ask it for the "filter" to use as part of the WHERE clause. It loops over the "checked" properties and builds the filter.</P>
+<P>2. The ROC is then fetched and bound to a grid. The last column of the grid contains buttons like Edit or Delete.</P>
+<P>3. When the user clicks Edit, the querystring includes the ID of the object in that row. The edit page opens, reads the querystring, and fetches the root BO based on the ID. No need to pass a full blown RO object to the edit page. The RO object on the ROC only has a small part of the total information anyway - just the ID and Name and Status (for example).</P>
+<P>HTH<BR>Joe</P>
+<P><BR><BR>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Friday, August 15, 2008</h2>Hmm... that may work.&nbsp; I'll have to think about it.&nbsp; If tweak your idea, perhaps my select contact page could also take a delegate which to call when the contact is selected.&nbsp; I could use the SetCustomer method to match the delegate.. that way I can reuse the select contact page.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Friday, August 15, 2008</h2>Hmm.. I've actually been pretty happy with them.&nbsp; At any rate, I already have a pretty large WinForms application that uses their controls pretty extensively, and I'm not sure I'd want to go back now and have to retouch all those screens.&nbsp;&nbsp; Of course, this will be first time using the Asp.Net controls... which also seem good, it's just the designer that isn't working for them properly anymore.<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

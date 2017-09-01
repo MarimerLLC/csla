@@ -1,0 +1,24 @@
+<html><header><title>Advice on Updating a VERY LONG ChildList</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Advice on Updating a VERY LONG ChildList</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11271.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>jpmir posted on Friday, March 30, 2012</h2><p>Hi guys,</p>
+<p>I&#39;m looking for your expert advice on this topic. </p>
+<p>I&#39;m working on some specific process which involves an EditableRoot with an EditableChildList. This EditableChildList may have 5 or 6K rows and it is being filled by a&nbsp;server side&nbsp;process (No user interaction at this point... duh!).</p>
+<p>The thing is, in very specific scenarios, users require to edit one or more records of that list.</p>
+<p>Being said this, my first approach was a paginated list but how to keep track of updated items? how Dataportal will know which items are deleted and which items were not loaded at all (because of pagination system)?...</p>
+<p>So I guess that direct edition of a regular CSLA Editable List is not posible...</p>
+<p>Any ideas?</p>
+<p>Thanks in advance</p>
+<p>JP</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Friday, March 30, 2012</h2><p>The Samples\Net\cs\Csla.DiffGram sample shows a way to solve the problem of sparse updates in a large collection.</p>
+<p>You lose some of the cooler benefits of the data portal using this technique, but it is usually worth it for this particular type of scenario.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jpmir replied on Friday, March 30, 2012</h2><p>
+<p>Hi Rocky</p>
+<p>Thank you, this seems to solve the situation...&nbsp;</p>
+<p>(If anyone looks for more details, look here: http://forums.lhotka.net/forums/t/7511.aspx)</p>
+<p>Now, this approach forces me to send the entire collection to the client (Silverlight application) which in my opinion is a very large amount of data. Certainly it will not travel back to the server, but still is a huge object graph...&nbsp;</p>
+<p>Do you see any possibility of doing this while the list is being paginated at server side?</p>
+<p>Regards!</p>
+<p>JP</p>
+</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

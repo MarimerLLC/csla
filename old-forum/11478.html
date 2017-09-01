@@ -1,0 +1,12 @@
+<html><header><title>Multiple BindingSources, DisableIEditableObject and CSLA 3.8.x</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Multiple BindingSources, DisableIEditableObject and CSLA 3.8.x</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11478.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>comp1mp posted on Monday, July 16, 2012</h2><p>Hello,</p>
+<p>I have backported the changes necessary to support multiple binding sources on a single object to CSLA 3.8.3 source.</p>
+<p>It is still a mighty struggle when dealing with a complex object graph. In fact the Multiple BindingSource sample in 4.0 has a logical bug which further confuses the issue of proper implementation. (I will make a separate post reporting that)</p>
+<p>After further reading, I determined that I would try using DisableIEditableObject. My project does not need N Level Undo.</p>
+<p>My experience has been surprising. It appears from my proof of concept work, this is by far the easiest way to work with multiple binding sources in a complex object graph, at least for 3.8.x</p>
+<p>I just want to make sure I am not missing something.</p>
+<p>Per Rocky from a post long ago.</p>
+<p><a href="http://forums.lhotka.net/forums/p/3947/19406.aspx#19406">&quot;The specific rule is that you should never call the *Edit() methods on the business object <em>while it is data bound to a bindingsource</em>.&quot;</a></p>
+<p>Does this rule apply if I am using DisableIEditableObject set to true in my objects?</p>
+<p>Does this rule only apply to root objects?</p>
+<p>I have child objects in a list that are each bound to an there own instance of a BindingSource contained in a custom control. I do not unbind them when I call Root.ApplyEdit() or Root.CancelEdit() and it seems to work fine.</p>
+<p>AM I missing a possible gotcha by not unbinding the child objects?</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,66 @@
+<html><header><title>Business object Calling Another Business Object</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Business object Calling Another Business Object</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3234.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>devbanana posted on Friday, July 20, 2007</h2><P>;Hello,</P>
+<P>&nbsp;</P>
+<P>What is the best way to call another business object from a business object, say from one of the DataPortal_xx methods?</P>
+<P>&nbsp;</P>
+<P>Kind of like what the Resource class does with its Exists method&nbsp;in the example.</P>
+<P>&nbsp;</P>
+<P>I have a business object Report, that needs to call ReportList to search for a certain bit of data. I just want to call the fetch for this list. Is this possible?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, July 20, 2007</h2><P>Business objects can interact with each other in the same way the UI interacts with the objects.</P>
+<P>In other words, your Report object can get an instance of ReportList by calling the ReportList.GetList() factory method (or whatever you called it).</P>
+<P>This works on the client or app server - the functionality is location transparent.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>devbanana replied on Friday, July 20, 2007</h2><P>Hi,</P>
+<P>&nbsp;</P>
+<P>Yeah I know that works; but then why did the exists command example in project tracker do it using DataPortal, passing the type to the generic method?</P>
+<P>&nbsp;</P>
+<P>The reason&nbsp;I wanted to do it this way more than anything is that the GetReportList method of the ReportList assumes it is the top of the business layer, and so if something goes wrong it basically handles the exception and throws a UiException for the UI layer to handle, which is much more generic than the business exception. This is only done however in the GetReportList method and not in the fetch itself, since I view the fetch as the data layer.</P>
+<P>&nbsp;</P>
+<P>So I would've loved just to call the DataPortal_Fetch method of the ReportList object somehow. Is it possible?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, July 20, 2007</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>You absolutely should NOT call DataPortal_XYZ methods directly.
+That would bypass the data portal and you&#8217;d lose all the benefits of the
+data portal.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>You can call the <i>data portal</i> directly, but you&#8217;d
+need access to the appropriate Criteria object to do that. Typically a Criteria
+class is private (and it should be), so you can&#8217;t call the data portal
+externally.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I would criticize my own code in the case of Exists(). It <i>should</i>
+call a factory method from ExistsCommand rather than calling the data portal
+directly. That is an example of me being in a hurry and writing some sloppy
+code.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>In your case, I suggest creating a second factory method on
+ReportList &#8211; make it Friend/internal in scope so you don&#8217;t confuse
+the UI developers and you should be fine.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky</span><o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>devbanana replied on Friday, July 20, 2007</h2><P>Hi,</P>
+<P>&nbsp;</P>
+<P>Oh of course I wasn't going to call the DataPortal_Fetch method directly, just was talking about doing what you did with the command object.</P>
+<P>&nbsp;</P>
+<P>But I like your idea better indeed. Thank you for the suggestion.</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

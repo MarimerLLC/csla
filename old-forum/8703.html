@@ -1,0 +1,25 @@
+<html><header><title>Problem with managed property!</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Problem with managed property!</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/8703.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>alexsychev posted on Tuesday, March 23, 2010</h2><p>Hi,</p>
+<p>I&#39;m using csla 3.6.2.</p>
+<p>Recently&nbsp; I came across veery strange issue in my project: it appeared that csla swapped the values of certain properties under some conditions. </p>
+<p>After some research I found the source of the problem. Managed properties rely very much on the fact that cached list of properties is sorted in the same way on client and on server. </p>
+<p>The sorting is based on PropertyInfo&lt;T&gt; IComparable implementation:</p>
+<p>&nbsp; int IComparable.CompareTo(object obj)<br />&nbsp;&nbsp;&nbsp; {&nbsp;&nbsp;&nbsp;&nbsp; <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return _name.CompareTo((Core.IPropertyInfo)obj).Name);<br />&nbsp;&nbsp;&nbsp; }</p>
+<p>&nbsp;</p>
+<p>To my surprise I found that if CurrentCulture is &#39;sv-SE&#39; (like it was on client) the following is true:</p>
+<p>&quot;vb&quot;.CompareTo(&quot;wa&quot;) == 1</p>
+<p>In other cultures (like it was on server):</p>
+<p>&quot;vb&quot;.CompareTo(&quot;wa&quot;) == -1&nbsp; (which makes more sense to me)</p>
+<p>&nbsp;</p>
+<p>What you think about this? I&#39;d say the &#39;CompareTo&#39; is unreliable.</p>
+<p>Thanks.</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Tuesday, March 23, 2010</h2><p>Hmm... I&#39;m not familar with Swedish, but it looks to me like CompareTo is respecting the culture rules of the language.&nbsp; What is the CurrentCultrure on the server?&nbsp; My guess is that this CompareTo call is occuring before Csla sets the CurrentCulture, so maybe it should be using the InvariantCulture when doing the compare.</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Tuesday, March 23, 2010</h2><p>Hmmm..&nbsp; </p>
+<p>That looks like a bug i PropertyInfo, could you try the following in your PropertyInfo&lt;T&gt; ?</p>
+<p>&nbsp;&nbsp;&nbsp; int IComparable.CompareTo(object obj)<br />&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return string.Compare(_name, ((Core.IPropertyInfo)obj).Name, CultureInfo.InvariantCulture, CompareOptions.None);<br />&nbsp;&nbsp;&nbsp; }</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>alexsychev replied on Thursday, March 25, 2010</h2><p>Yes, that&#39;s what I did, thanks.</p>
+<p>I&#39;d say it should be fixed in CSLA also.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

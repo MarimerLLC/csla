@@ -1,0 +1,54 @@
+<html><header><title>Silverlight - Windows Authentication: No problems running on IIS?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Silverlight - Windows Authentication: No problems running on IIS?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/8825.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>rasupit posted on Wednesday, April 21, 2010</h2><p>I finally get a chance to work on Silverlight after getting back from maternity leave then on with a new project.&nbsp; </p>
+<p>I&#39;m able to configure my WcfPortal as integrated windows authentication.&nbsp; There are several interesting findings with regard to current principal that CSLA handles for windows authentication scenario.</p>
+<p>I found that the WindowsIdentity will work only when you turn off impersonation.&nbsp; This is very interesting choice for a default implementation where the majority apps with windows authentication does not turn on impersonation.&nbsp; With impersonation turn off, WindowsIdentity.GetCurrent() will return aspnet or network (service acct).&nbsp; I was trying to override/re-write the PopulateWindowsIdentity() but need to have the property info accessible on the overriding class.</p>
+<p>By design, I see that WcfPortal shuttles back and forth the IPrincipal object.&nbsp; I&#39;m not sure if this is necessary or even correct when using windows authentication.&nbsp; In my opinion, it should be one way, from server to silverlight client; so that silverlight client have a copy of authenticated principal but we should not set the ApplicationContext.User with IPrincipal from client side because the server has the original copy.</p>
+<p>Thanks,</p>
+<p>Ricky</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Wednesday, April 21, 2010</h2><p>OT: When posting, you need to separate tags with a ; or , - otherwise it is just one big (and useless) tag.</p>
+<p>To your question:</p>
+<p>Silverlight has no concept of Windows identity or Windows authentication. None. Nada. Zip. Zilch. Remember that Silverlight runs on the Mac and other platforms too - no Windows to be seen.</p>
+<p>Of course people want to use Windows authn, so CSLA supports it in a way. The concept relies on the browser and ASP.NET to do the work - because they do understand Windows authn.</p>
+<ol>
+<li>Log into the server via the browser, ASP.NET now knows your Windows identity</li>
+<li>Have the browser load the SL app</li>
+<li>Have the SL app call the server to get the user&#39;s identity</li>
+<li>CSLA copies relevant data from the real Windows principal/identity into a CSLA &quot;WindowsIdentity&quot;</li>
+<li>The SL client retains the principal object containing a copy of the Windows info</li>
+</ol>
+<p>Arguably the SL client wouldn&#39;t need to pass this principal to the server each time, because the server should already know (via the browser login) which Windows user to impersonate on each call. But that&#39;d preclude the use of an IAuthorizeDataPortal check to make sure the client principal still matches the server principal - something not everyone will do, but certainly a valid double-check against some mischief on the client.</p>
+<p>Your IAuthorizeDataPortal code could easily set Csla.ApplicationContext.User to the real WindowsPrincipal too, if you&#39;d prefer to be using that principal in the server-side code.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rasupit replied on Wednesday, April 21, 2010</h2><p>Rocky, Thanks for such a quick reply.&nbsp; </p>
+<p>Yes, I do understand the creation of WindowsIdentity class so that CSLA can support windows authentication. I guess I&#39;m ok the shuttles back and forth to make sure both uses CSLA&#39;s &quot;WindowsIdentity&quot; although to me is somewhat redundant.&nbsp; However the issue is when WindowsIdentity contains not the actual identity of the user but the identity of the service account (aspnet).&nbsp; This is happens when your app choose not to use Impersonate=True.&nbsp; see this to clarify: http://msdn.microsoft.com/en-us/library/aa302377.aspx</p>
+<p>Implementing IAuthorizeDataPortal will not help here because by the time it calls Authorize method,&nbsp; the actual user identity which expected to be available in HttpContext.Current.User or Thread.CurrentPrincipal already being set (by WcfPortal.SetContext) with aspnet principal.</p>
+<p>I think the main issue is that WindowsIdentity.PopulateWindowsIdentity() does not take into account when impersonate=True and I&#39;m unable to override this method from my custom windows identity class. I also need to be able to access the property infos of these properties.&nbsp; </p>
+<p>Making Csla.Server.Hosts.Silverlight.WcfPortal.SetContext as protected virtual can also give me the ability to stop principal being pass back to server, which not important but a nice ability to have.</p>
+<p>Thanks,</p>
+<p>Ricky</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, April 21, 2010</h2><p>The CSLA WindowsIdentity class assumes you have impersonation turned on. I don&#39;t see how it could be of any use if you don&#39;t have impersonation turned on.</p>
+<p>There are other identity types (membership, custom) that should be used if impersonation is turned off and you are trying to use other authentication models.</p>
+<p>Changing the server-side SetContext() method doesn&#39;t help prevent the principal from flowing from client to server - it would just allow you to ignore it on the server. The more correct solution is to provide a way to tell CSLA to not pass the principal from the client, and to tell CSLA to not expect it on the server. That&#39;s what CslaAuthentication does in the .NET data portal, and there should probably be an equivalent for the SL data portal (added to wish list).</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rasupit replied on Wednesday, April 21, 2010</h2><p>Without impersonation which is using the second scenario,&nbsp; I can use HttpContext.Current.User or Thread.CurrentPrincipal to get user name then use active directory to get the user&#39;s group.</p>
+<table class="dtTABLE">
+<tbody>
+<tr>
+<th>Web.config Settings</th><th>Variable Location</th><th>Resultant Identity</th>
+</tr>
+<tr>
+<td>&lt;identity impersonate=&quot;true&quot;/&gt;<br />
+&lt;authentication mode=&quot;Windows&quot; /&gt;</td>
+<td>HttpContext<br />
+WindowsIdentity<br />
+Thread</td>
+<td>Domain\UserName<br />
+Domain\UserName<br />
+Domain\UserName</td>
+</tr>
+<tr>
+<td>&lt;identity impersonate=&quot;false&quot;/&gt;<br />
+&lt;authentication mode=&quot;Windows&quot; /&gt;</td>
+<td>HttpContext<br />
+WindowsIdentity<br />
+Thread</td>
+<td>Domain\UserName<br />
+MACHINE\ASPNET<br />
+Domain\UserName</td>
+</tr>
+</tbody>
+</table></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, April 21, 2010</h2><p>What I&#39;m saying is that the CSLA WindowsIdentity class is just a specialized custom principal designed to work with impersonation turned on. If you aren&#39;t using impersonation, don&#39;t use WindowsIdentity - use a custom identity of your own design.</p>
+<p>And what I&#39;m saying is that in your IAuthorizeDataPortal you can reset the server principal to whatever you&#39;d like. Set Csla.ApplicationContext.User to HttpContext.Current.User if that&#39;s the correct value.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rasupit replied on Wednesday, April 21, 2010</h2><p>No problem, I&#39;ll implement from CustomPrincipal.&nbsp; I was just trying point out what I think is an issue with CSLA WindowsIdentity when impersonation is turned off.&nbsp; Which I think is dengerous, because if this object is used for authentication, the result is always IsAuthenticated = true since the windows identity is always grab the service account</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

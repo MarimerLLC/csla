@@ -1,0 +1,666 @@
+<html><header><title>Wrapping my head around basic concepts</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Wrapping my head around basic concepts</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/321.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Michael Hildner posted on Thursday, June 08, 2006</h2><P>I'm confused and hoping someone can help me with some basics. I'm trying to figure out what type of business objects I should create (EditableRoot, EditableChild etc.).</P>
+<P>I'm confused because it seems like I want both an EditableRoot and an EditableChild for the same DB table. For example, I have an Invoice table (there's also an InvoiceItem table). It seemed to make sense to have Invoice as an EditableRoot, but sometimes I may want to work with a collection of Invoices - reporting, lookups etc. I can see where tables like Customer, StockItems etc. would be the same.</P>
+<P>As far as I can tell right now, to work with collections, you need to use BusinessListBase, so that would make pretty much every object a child. I have the feeling I'm going down the wrong road.</P>
+<P>Any help is much appreciated, thanks,</P>
+<P>Mike</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, June 08, 2006</h2><P>As soon as you say "sometimes I may want to..." you are almost certainly describing a different use case.</P>
+<P>Sure, you have an "Enter an Invoice" use case. But then you have a "Find an Invoice" use case where you need a list of invoice data, and a "Report Invoice Data" use case where you need something a bit different.</P>
+<P>You are suffering from the single most common OO design anti-pattern: data-centric thinking.</P>
+<P>Instead, you need to remember, as I discuss in Chapter 6, that every object has exactly one, simple, clear, responsibility. It is therefore impossible for Invoice to be responsible for "entering valid invoice data" and also for "displaying a subset of invoice data for selection" or for "displaying a subset of invoice data for reporting". All of these are different responsibilities and thus require different objects (classes).</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Luzius replied on Tuesday, July 11, 2006</h2><P>Hi,</P>
+<P>There is one thing confuses me still and I haven't really found an answer yet.</P>
+<P>Ok, lets say I have and MDI-Environment and I display a collection od read-only InvoiceInfo-objects for selection. At the same time I save an editible Invoice-object. How do&nbsp;synchronize&nbsp;the read-only collection without reloading the whole collection? It's even worse when I create a new Invoice?</P>
+<P>I understand that this problemwill be solved with&nbsp;the new collection of editible Root-Objects in CSLA 2.1 but what would you do with CSLA 2.0?</P>
+<P>Luzius</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, July 11, 2006</h2>
+
+
+
+
+<DIV align=left><SPAN class=671203521-11072006><FONT face=Arial color=#0000ff size=2>I wouldn't say that the new collection type in 2.1 will 
+solve this issue - far from it.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=671203521-11072006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=671203521-11072006><FONT face=Arial color=#0000ff size=2>The new collection type in 2.1 is designed merely to do 
+immediate updates into the database as each child item is inserted/deleted - you 
+actually still need to call a SaveChild() method to trigger updates on a 
+per-child basis (since there's no way for the collection to know you are done 
+editing a given child).</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=671203521-11072006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=671203521-11072006><FONT face=Arial color=#0000ff size=2>The solution to your problem is a broader one - involving 
+coming up with a unified way by which arbitrary listeners (objects and forms) 
+can be notified of changes in some source object. The solution is the Observer 
+pattern, or the use of the publisher/subscriber concept.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=671203521-11072006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=671203521-11072006><FONT face=Arial color=#0000ff size=2>You need an "observer" who acts as a clearing-house for 
+events - tracking subscribers to certain types of events, and relaying those 
+events when they are raised by a source object.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=671203521-11072006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=671203521-11072006><FONT face=Arial color=#0000ff size=2>If you look at ProjectTracker - in particular the Roles 
+admin object - you'll see that I implement a limited form of this concept 
+between Roles and RoleList, where the RoleList cache is invalidated (on both 
+client and server) when Roles is saved. This is the sort of thing you need to do 
+- but if you are doing it application-wide you may find it easier to manage with 
+a more formal observer object in the middle.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=671203521-11072006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=671203521-11072006><FONT face=Arial color=#0000ff size=2>Rocky</FONT></SPAN></DIV><BR>
+<BLOCKQUOTE>
+  <DIV class=OutlookMessageHeader align=left>
+  <HR>
+  <FONT face=Tahoma size=2><B>From:</B> Luzius [mailto:cslanet@lhotka.net] 
+  <BR><B>Sent:</B> Tuesday, July 11, 2006 4:29 PM<BR><B>To:</B> 
+  rocky@lhotka.net<BR><B>Subject:</B> Re: [CSLA .NET] Wrapping my head around 
+  basic concepts<BR></FONT><BR></DIV>
+  <DIV></DIV>
+  <P>Hi,</P>
+  <P>There is one thing which confuses me still and I haven't really found an 
+  answer yet.</P>
+  <P>Ok, lets say I have and MDI-Environment and I display a collection od 
+  read-only InvoiceInfo-objects for selection. At the same time I save an 
+  editible Invoice-object. How do&nbsp;synchronize&nbsp;the read-only collection 
+  without reloading the whole collection? It's even worse when I create a new 
+  Invoice?</P>
+  <P>I understand that this problemwill be solved with&nbsp;the new collection 
+  of editible Root-Objects in CSLA 2.1 but what would you do with CSLA 2.0?</P>
+  <P>Luzius</P><BR><BR><BR></BLOCKQUOTE></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Igor replied on Tuesday, July 11, 2006</h2><P>One possible solution is to share the BO between your forms/grids/controls. With this design there is no need in an observer/events/etc. But:</P>
+<P>1. make sure that this is what your users/BA are comfortable with (which is often true: normally people are confused if&nbsp;different views show different state of the same BO/entity); and generally, ogject sharing may not be an option with your requirements.</P>
+<P>2. Take into account that if you go this way your objects would need to support greater sets of behaviours than they would otherwise; that would make the objects more data-centric.</P>
+<P>I am using this approach in my current project, and I am reasonably happy with it.</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>DansDreams replied on Wednesday, July 12, 2006</h2><P>I unfortunately don't have time right now to get really involved in this thread... but I thought I'd offer this tidbit.</P>
+<P>I find a useful "litmus test" to be to think in the context of an object-oriented database.&nbsp; I've found this tends to be more useful in the particular discussion regarding whether a business object is just an abstraction of a database table such that there is basically a 1-to-1 relationship between business objects and tables.&nbsp; But in general when you consider that your business layer needs to work exactly the same if you replaced SQL with an OODB or even XML files it is sometimes very illuminating.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>xal replied on Thursday, June 08, 2006</h2>The problem is that you're not diferentiating data from behaviour.<br>Yes, you have one invoice table, but it doesn't mean that you'll want just one object for that data.<br>So, what you should be asking yourself is:<br>What do I want to do with the data in the table? How do I want to do it?<br><br>So, you want to have a list of invoices? Then you probably want something that loads fast so that the user get the list quick and so that it doesn't use up much resources because, well, it's just a list of invoices....<br><br>You want to be able to create a new invoice? Edit an existing one? Then an invoice should have information about their line items and have full loading / saving capabilities.<br><br>So, basically you want have a lightweight object that can be added to a list and a full blown object with all the information you need.<br><br>Now that you know this, you realize that you want a list of Invoices (ReadOnlyCollection) that contains read only InvoiceInfo items (ReadOnlyChild). You also want an Invoice object (EditableRoot) that contains and editable list (EditableChildCollection) of LineItems (EditableChild).<br><br>I hope it's clear enough. You'll read this phrase hundreds of times if you look frequently at this forum: "Objects are defined by behaviour, not by data".<br><br><br>Andrés<br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Michael Hildner replied on Thursday, June 08, 2006</h2><P>Thanks for the replies. Makes sense now why I was confused. I'm coming from using a commercial business object framework - in that framework there's exactly one business object for each table. Guess I was trying to make CSLA work the way that one did.</P>
+<P>I appreciate the information,</P>
+<P>Mike</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Friday, June 09, 2006</h2>FWIW, I wouldn't call that previous framework a Business framework; its more of a DAL framework.<br><br>We made this mistake before; we had data objects which represented tables, but put business rules in there too.&nbsp; We got it to work, but there were some very weird classes created to handle certain cases.<br><br>Andy<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Q Johnson replied on Friday, June 09, 2006</h2>
+
+
+
+
+<DIV align=left><SPAN class=078415722-09062006><FONT face=Arial color=#0000ff size=2>The key is to remember that your objects should be defined 
+by their behavior.&nbsp; And those invoices of yours have different behaviors 
+depending on the context in which you are using them.&nbsp; </FONT></SPAN></DIV>
+<DIV align=left><SPAN class=078415722-09062006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=078415722-09062006><FONT face=Arial color=#0000ff size=2>So you'll have a root object invoice for those times you 
+view/edit/create invoices and their lineitems, but you'll have a child object 
+invoice for those times you are working with a customer and want to see a list 
+of their invoices.&nbsp; And you may even have a read-only collection or NVL 
+class for them when making them available in a list context.&nbsp; None of these 
+contexts exhibit the same behavior (in fact, they probably even have different 
+property sets,too) so they will be defined as different classes in each 
+case.&nbsp; </FONT></SPAN></DIV>
+<DIV align=left><SPAN class=078415722-09062006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=078415722-09062006><FONT face=Arial color=#0000ff size=2>You probably are going to have far more classes in your 
+application than you&nbsp;thought, eh?</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=078415722-09062006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><FONT face=Arial color=#0000ff size=2><SPAN class=078415722-09062006>At least it doesn't have to be a huge amount of 
+typing.&nbsp; Between using snippets, sample tempates, vb macros, and code 
+generation there is bound to be a technique you can apply to save yourself some 
+of the class creation grunt work.&nbsp; And I think there's less of that grunt 
+work in version 2.0 of CSLA anyway.&nbsp; Double bonus.</SPAN></FONT></DIV>
+<DIV align=left><FONT face=Arial color=#0000ff size=2><SPAN class=078415722-09062006></SPAN></FONT>&nbsp;</DIV>
+<DIV align=left><FONT face=Arial color=#0000ff size=2><SPAN class=078415722-09062006>Good luck with CSLA!</SPAN></FONT></DIV>
+<DIV align=left><FONT face=Arial color=#0000ff size=2><SPAN class=078415722-09062006></SPAN></FONT>&nbsp;</DIV>
+<DIV align=left><FONT face=Arial color=#0000ff size=2><SPAN class=078415722-09062006>Q Johnson</SPAN></FONT></DIV>
+<DIV align=left><FONT face=Arial color=#0000ff size=2></FONT>&nbsp;</DIV>
+<DIV align=left><FONT face=Arial color=#0000ff size=2></FONT>&nbsp;</DIV>
+<DIV align=left>
+<HR>
+</DIV>
+<DIV align=left><FONT face=Tahoma size=2><B>From:</B> Michael Hildner 
+[mailto:cslanet@lhotka.net] <BR><B>Sent:</B> Friday, June 09, 2006 4:47 
+PM<BR><B>To:</B> QJohnson@TeamNFP.com<BR><B>Subject:</B> [CSLA .NET] Wrapping my 
+head around basic concepts<BR></FONT><BR></DIV>
+<DIV></DIV>
+<P>I'm confused and hoping someone can help me with some basics. I'm trying to 
+figure out what type of business objects I should create (EditableRoot, 
+EditableChild etc.).</P>
+<P>I'm confused because it seems like I want both an EditableRoot and an 
+EditableChild for the same DB table. For example, I have an Invoice table 
+(there's also an InvoiceItem table). It seemed to make sense to have Invoice as 
+an EditableRoot, but sometimes I may want to work with a collection of Invoices 
+- reporting, lookups etc. I can see where tables like Customer, StockItems etc. 
+would be the same.</P>
+<P>As far as I can tell right now, to work with collections, you need to use 
+BusinessListBase, so that would make pretty much every object a child. I have 
+the feeling I'm going down the wrong road.</P>
+<P>Any help is much appreciated, thanks,</P>
+<P>Mike</P><BR><BR><BR></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Michael Hildner replied on Friday, June 09, 2006</h2><P>&gt;&gt; <SPAN class=078415722-09062006><FONT face=Arial color=#0000ff size=2>You probably are going to have far more classes in your application than you&nbsp;thought, eh?</FONT></SPAN></P>
+<P>Yeah, no doubt about that. Not that that's a big deal with snippets and what not like you say. Part of me is a little worried about duplicating code and having to maintain that, but we'll see how that goes.</P>
+<P>Right now I don't see the advantage, for example,&nbsp;in having two classes - one for editing data and one for displaying that same data. I mean one *could* just use one class, but use them differently. Since these classes will be in the same assembly, I don't think there's any way to enforce how another developer decides to use my classes anyway. Plus, there would be less code to maintain.</P>
+<P>Not that I'm going to break best practices right now, but it is in the back of my mind.</P>
+<P>Regards,</P>
+<P>Mike</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>pelinville replied on Friday, June 09, 2006</h2><P>Yes, this is something that is very difficult.&nbsp; </P>
+<P>&nbsp;</P>
+<P>Part of this problem is the whole "objects are defined by their behavior, not their data" mantra.</P>
+<P>&nbsp;</P>
+<P>I guess it is correct but there is a cognitive problem with it.</P>
+<P>&nbsp;</P>
+<P>With data it is easier for me, and I would assume most others as well, to conceptualize how one set of data subsumes another.<SPAN>&nbsp; </SPAN>Data by it's very nature is concrete and lends itself to this recognition.</P>
+<P>&nbsp;</P>
+<P>Behavior by its very nature is amorphous.<SPAN>&nbsp; </SPAN>It is action.<SPAN>&nbsp; </SPAN>And how can one action subsume another (and I am NOT talking about inheritance).<SPAN>&nbsp; </SPAN>Can it?<SPAN>&nbsp; </SPAN>It hurts the brain to even think about it.</P>
+<P><BR>This is phenomenon is well understood in OOP circles but not talked about enough in my opinion.<SPAN>&nbsp; </SPAN>Or rather it is talked about but not directly. I believe it is the main reason the whole agile/extreme programming methodologies arose because of this very thing.</P>
+<P>&nbsp;</P>
+<P>It is why you also have some still railing against OOP/OOD.<SPAN>&nbsp; </SPAN>Because it doesn't make sense to them.<SPAN>&nbsp; </SPAN>Truth be told it doesn't make sense to anybody if you want to sit down and actually define what you are doing.<SPAN>&nbsp; </SPAN>Kinda like trying to define what morals are or what pornography is.</P>
+<P>&nbsp;</P>
+<P>But back to your statement.<SPAN>&nbsp; </SPAN>Editable objects do, in many cases, satisfy a bunch of different use cases.</P>
+<P>&nbsp;</P>
+<P>Xal Said: "Now that you know this, you realize that you want a list of Invoices (ReadOnlyCollection) that contains read only InvoiceInfo items (ReadOnlyChild). You also want an Invoice object (EditableRoot) that contains and editable list (EditableChildCollection) of LineItems (EditableChild)."</P>
+<P>&nbsp;</P>
+<P>It could very well be that LineItem not only holds the same data as InvoiceInfo but also has the behavior needed to satisfy InvoiceInfo requirements.</P>
+<P>&nbsp;</P>
+<P>It becomes even more confusing when you start saying things like "performs fast" and "doesn't need to save, update."<SPAN>&nbsp; </SPAN>Well LineItem may be able to save or update, but that doesn’t mean it has to.</P>
+<P>&nbsp;</P>
+<P>Use cases are not really a lot of help in many cases.<SPAN>&nbsp; </SPAN>Even though a use case may say "Can Display needed information" it does not always say "cannot update or save information."<BR></P>
+<P>And that is the question.<SPAN>&nbsp; </SPAN>If your use case can be satisfied by another object but that object provides more behavior than required do you use it?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Michael Hildner replied on Friday, June 09, 2006</h2><P>Hello pelinville,</P>
+<P>That was a great post. Gives me something to chew on. You summed it up nicely with "If your use case can be satisfied by another object but that object provides more behavior than required do you use it?".</P>
+<P>That's exactly what I'm wondering, but couldn't say it succintly. Right now I've got read-only classes and editable classes and they both have fetch type methods. Since I'll have to maintain these when things change, I'm thinking it might be better to have the read-only class wrap the editable class and limit the funcationality. That way I don't have two methods in two classes that do the same thing.</P>
+<P>But that also bugs me. One time I hired this guy who I guess knows more about OOP than me. I got&nbsp;a little flustered one&nbsp;time when he wrapped the System.IO.File class in his own class that only exposed the methods he needed. It satisfied his use case, but I thought it was stupid for a couple reasons. He had to write this limiting code, it increased the surface area of our app, and he'd have to modify two classes if he needed another method. Why not just use the class directly?</P>
+<P>In a way it's nice to look at a class and know what it's supposed to do. I really have no idea of the best approach, and it smells like this will come with experience. I image this is one of those deals where there's no definitive answer, and you do what you think is best given your requirement.</P>
+<P>Regards,</P>
+<P>Mike</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, June 09, 2006</h2>
+
+
+
+
+<DIV align=left><FONT face=Arial color=#0000ff size=2></FONT>&nbsp;</DIV>
+<BLOCKQUOTE>
+  <P>But that also bugs me. One time I hired this guy who I guess knows more 
+  about OOP than me. I got&nbsp;a little flustered one&nbsp;time when he wrapped 
+  the System.IO.File class in his own class that only exposed the methods he 
+  needed. It satisfied his use case, but I thought it was stupid for a couple 
+  reasons. He had to write this limiting code, it increased the surface area of 
+  our app, and he'd have to modify two classes if he needed another method. Why 
+  not just use the class directly?</P></BLOCKQUOTE>
+<DIV><SPAN class=737012803-10062006><FONT face=Arial color=#0000ff size=2>Yeah, 
+see that makes little sense, because it is almost certainly the case that his 
+class had the same (or a clear sub-set of) responsibility as the 
+original.</FONT></SPAN></DIV>
+<DIV><SPAN class=737012803-10062006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV><SPAN class=737012803-10062006><FONT face=Arial color=#0000ff size=2>HOWEVER, there are other reasons why you might do what he did. 
+Specifically, I wrap Remoting/Web Services/Enterprise Services and will most 
+certainly wrap WCF. Even if I'm basically writing something that just does 
+remote procedure calls, which is what these all do. Why? Because I want to 
+shield myself from something I _know_ is going to change; and change in ways 
+that will make my life downright miserable in the future if I'm not 
+careful.</FONT></SPAN></DIV>
+<DIV><SPAN class=737012803-10062006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV><SPAN class=737012803-10062006><FONT face=Arial color=#0000ff size=2>Now 
+shielding yourself from file IO is debatable, because that hasn't changed 
+substantively for over a decade. But that DOS-&gt;Windows switch in 1995 was a 
+bad one for a lot of people!!</FONT></SPAN></DIV>
+<DIV><SPAN class=737012803-10062006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV><SPAN class=737012803-10062006><FONT face=Arial color=#0000ff size=2>Many, 
+many years ago I was involved in porting some satellite data analysis software 
+from a PRIME to OpenVMS. The original developers had, nicely enough, wrapped 
+every single use of a system or IO operation within a function library (this was 
+in FORTRAN). They called THEIR delete method rather than the one from the 
+operating system. Talk about nice! It made the process of getting the code 
+running on the VAX much simpler, because we rewrote this function library. All 
+remaining issues (and there were plenty) were due to differences in the FORTRAN 
+compilers.</FONT></SPAN></DIV>
+<DIV><SPAN class=737012803-10062006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV><SPAN class=737012803-10062006><FONT face=Arial color=#0000ff size=2>But 
+that's a cost-benefit analysis that must be done. Because abstracting the OS has 
+become increasingly difficult. Today that means abstracting any use of the .NET 
+BCL!! Is that even realistic? Perhaps. Is it cost effective? Almost certainly 
+not...</FONT></SPAN></DIV>
+<DIV><SPAN class=737012803-10062006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV><SPAN class=737012803-10062006><FONT face=Arial color=#0000ff size=2>Rocky</FONT></SPAN></DIV></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>pelinville replied on Friday, June 09, 2006</h2>&nbsp;
+<P>I understand your frustration.</P>
+<P>&nbsp;</P>
+<P>Let me say first I am what Rocky would call a "mort".&nbsp; Secondly I must add that my formal training is in Cognitive Psychology so I could very well be reading way to much into the word "behavior". Combine those two statements and you could easily disregard anything I have to say.</P>
+<P>&nbsp;</P>
+<P>But...</P>
+<P>&nbsp;</P>
+<P>I have created classes that effectively limited another class.&nbsp;When I did this it was because I found the original class confusing and wanted to simplify. I didn't do it for any specific use case but, instead,&nbsp;because I am lazy and forgetful.&nbsp; Maybe that is what he was doing.&nbsp; (I think that is the idea behind the "My" namespace in VB.NET and it is absolutely wonderful.)</P>
+<P>&nbsp;</P>
+<P>If he did do it simply&nbsp;because of a use case I would say that&nbsp;is taking it to far.</P>
+<P>&nbsp;</P>
+<P>I am going to post about what you are concerned about.&nbsp; There is a problem with&nbsp;having read only and editable and reporting and&nbsp;foo&nbsp;squared&nbsp;classes.&nbsp; I think that&nbsp;the&nbsp;problem is not only a maintenance one which is there even with code snippets and codegen. It is a problem with the statement "Objects are defined by behavior and not data" itself. Don't misunderstand, I think it is basically correct.&nbsp; However it does not capture the essence of class necessity as well a theorem could.</P>
+<P>&nbsp;</P>
+<P>(I have a sneaky feeling that part of it is part OOP elitism, part overcoming legacy thinking and part of it is simple confusion of what behavior is.)</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, June 09, 2006</h2>
+
+
+
+
+<DIV align=left><FONT face=Arial color=#0000ff size=2></FONT>&nbsp;</DIV>
+<BLOCKQUOTE>
+  <P>And that is the question.<SPAN>&nbsp; </SPAN>If your use case can be 
+  satisfied by another object but that object provides more behavior than 
+  required do you use it?<SPAN class=034211503-10062006><FONT face=Arial color=#0000ff size=2>&nbsp;</FONT></SPAN></P>
+  <P><SPAN class=034211503-10062006>&nbsp;</SPAN></P></BLOCKQUOTE><SPAN class=034211503-10062006>
+<DIV align=left><SPAN class=034211503-10062006><FONT face=Arial size=2>Only if it doesn't compromise the object's responsibility. Too many 
+behaviors isn't a problem (typically), as long as the responsibility isn't 
+distorted, or the object misused.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=034211503-10062006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=034211503-10062006><FONT face=Arial size=2>I 
+characterize misuse of an object for a different responsibility as a form of 
+"stress". It is like we all face in our day-to-day work. Most of us are software 
+designers or programmers, yet from time to time we end up in staff meetings or 
+dealing with personnel issues or stuff like that. It is crap, and we know it is 
+crap and we dislike it and are stressed by it. If we get too much of it we 
+eventually become discontent and our work starts to suffer. All because we are 
+being diverted from our true responsibility.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=034211503-10062006><FONT face=Arial size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=034211503-10062006><FONT face=Arial size=2>The same is true with objects, but this "stress" shows up as conditional 
+logic, extra branching, lazy loading and other things that complicate the code 
+in a class. If you can't look at a class and almost instantly understand its 
+responsibility then your class is too complex. If you look at a method and can't 
+figure out how it fits into the context of the object's responsibility, then 
+your object has become distorted. It is stressed.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=034211503-10062006><FONT face=Arial size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=034211503-10062006><FONT face=Arial size=2>Like with humans, when an object becomes stressed its work starts to 
+suffer. It becomes less able to do what it is _supposed_ to do, and tends to do 
+a poor job of the other things it is being asked to do. </FONT></SPAN></DIV>
+<DIV align=left><SPAN class=034211503-10062006><FONT face=Arial size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=034211503-10062006><FONT face=Arial size=2>And like with humans, the priorities start to get mixed up. Do you need 
+to go to the staff meeting, or do you need to finish that TPS report? Which do 
+you do first? If you go to the meeting, are you thinking about the TPS report 
+rather than focusing on the meeting? The same is true with objects. Is it a root 
+or a child? Should it load that field or not? All questions that have NOTHING to 
+do with its core responsibility, but which are artifacts of stress (complexity) 
+the object has gained because it isn't being used for a single responsibility or 
+purpose.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=034211503-10062006><FONT face=Arial size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=034211503-10062006><FONT face=Arial size=2>I 
+know, this all sounds fluffy. Like I've gone down the new age, crystal powered 
+path to programming enlightenment or something. But analogies are perhaps the 
+only tool we have to express the reality of responsibility or behavior driven OO 
+design.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=034211503-10062006><FONT face=Arial size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=034211503-10062006><FONT face=Arial size=2>The primary reason OOD/OOP gets a bad rap, as I see it, is that it is 
+done wrong more often than it is done right. The same was/is true for procedural 
+design. I spent many years writing FORTRAN, Pascal and procedural Basic, and we 
+cheated all over the place. We cheated _constantly_. My guess, is that if we'd 
+actually followed the _rules_ for procedural design it probably wouldn't have 
+been bad, but we went our own way because doing it right was "too hard". The 
+same is true with OOD. Doing it right means re-learning how to think about 
+software design, and that's just plain hard. No doubt there.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=034211503-10062006><FONT face=Arial size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=034211503-10062006><FONT face=Arial size=2>Rocky</FONT></SPAN></DIV></SPAN></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, June 09, 2006</h2>
+
+
+
+
+<DIV align=left><SPAN class=768074302-10062006><FONT face=Arial color=#0000ff size=2>While you might find a few property blocks duplicated, one 
+core part of designing objects around behavior is that no behavior should ever 
+be duplicated.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=768074302-10062006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=768074302-10062006><FONT face=Arial color=#0000ff size=2>A property is not a behavior, but any validation, 
+authorization, calculation, manipulation IS a behavior and should exist exactly 
+once in your object model. As I say in Chapter 6, the trick is to stop 
+normalizing data and start normalizing behavior.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=768074302-10062006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=768074302-10062006><FONT face=Arial color=#0000ff size=2>Every class should have exactly one, simple responsibility. 
+It should then use appropriate behaviors to fulfill that responsibility. If a 
+behavior is required by more than one class, then that behavior should be 
+normalized into a third class. Behaviors that are related to each other (that 
+are cohesive) should be grouped together into individual classes so they form 
+logical groups of behavior - grouped together by a common responsibility. In 
+other words, even these classes that come into being through behavioral 
+normalization must have a single, clear, responsibility.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=768074302-10062006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=768074302-10062006><FONT face=Arial color=#0000ff size=2>Rocky</FONT></SPAN></DIV>
+<DIV align=left><FONT face=Arial color=#0000ff size=2></FONT><FONT face=Arial color=#0000ff size=2></FONT>&nbsp;</DIV>
+<BLOCKQUOTE>
+  <DIV></DIV>
+  <P>&gt;&gt; <SPAN class=078415722-09062006><FONT face=Arial color=#0000ff size=2>You probably are going to have far more classes in your application 
+  than you&nbsp;thought, eh?</FONT></SPAN></P>
+  <P>Yeah, no doubt about that. Not that that's a big deal with snippets and 
+  what not like you say. Part of me is a little worried about duplicating code 
+  and having to maintain that, but we'll see how that 
+goes.</P></BLOCKQUOTE></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>pelinville replied on Friday, June 09, 2006</h2>&nbsp;
+<P>"Objects are defined by behavior, not data"</P>
+<P>&nbsp;</P>
+<P>Now maybe I am just dense but&nbsp;this statement confuses&nbsp;me just as often as it helps me.</P>
+<P>&nbsp;</P>
+<P>Rocky wrote "Sure, you have an "Enter an Invoice" use case. But then you have a "Find an Invoice" use case where you need a list of invoice data, and a "Report Invoice Data" use case where you need something a bit different."&nbsp; </P>
+<P>&nbsp;</P>
+<P>Now I am not trying to pick on anybody but this really throws me.&nbsp; I have seen this type of statement many times in this forum. On it's surface it appears rather elementary but when thinking about it is not so clear. Not only in the posts but also when I am designing my own cases. </P>
+<P>&nbsp;</P>
+<P>Example:</P>
+<P>&nbsp;</P>
+<P>I have a Object called Student and it has a set of responsibilities. But a Student has tons of data. It takes about 15 objects plus 15 fields.<SPAN>&nbsp; </SPAN>Of course as far as the object is concerned all this is just "stuff" and any of it can be added or removed without consequence to the class/object.</P>
+<P>&nbsp;</P>
+<P>There is another object, StudentCollection, that is responsible for controlling a list of students based on user needs.<SPAN>&nbsp; </SPAN>The user may want to act on students in a particular grade, or in a class or all students taught by a Teacher etc.<SPAN>&nbsp; </SPAN>(There are other objects such as ScoreCalculator that uses StudentCollection to do it's job).</P>
+<P>&nbsp;</P>
+<P>Another requirement of the application is to display the student data in a grid so that an administrator or secretary can see in a glance the relative information of the desired student.<SPAN>&nbsp; </SPAN></P>
+<P>&nbsp;</P>
+<P>Now Student has all the data needed but much of it, as mentioned, is contained in classes.<SPAN>&nbsp; </SPAN>Student has an Address object but that is really just data.<SPAN>&nbsp; </SPAN>It has an Enrollment collection but that is just data.<SPAN>&nbsp; </SPAN>That Enrollment collection has a behavior that knows what the last enrollment was.<SPAN>&nbsp; </SPAN>Every Enrollment object knows the Grade enrolled in and the Grade holds a collection of GradingScale (data).<SPAN>&nbsp; </SPAN>But one of the Grades behavior is to know the default grading Scale. </P>
+<P>&nbsp;</P>
+<P>And on and on.</P>
+<P>&nbsp;</P>
+<P>So the student summary must, in part, show the Address fields, the enrollment fields and the grade fields plus the fields that the Student has.<SPAN>&nbsp; </SPAN></P>
+<P>&nbsp;</P>
+<P>The use case is something to the effect of "Display this data based on one or more of the following: grade enrolled, zip code living or date enrolled".</P>
+<P>&nbsp;</P>
+<P>StudentCollection can already do all of what is asked and Student has all the data…. BUT!!!!</P>
+<P>&nbsp;</P>
+<P>Student cannot display it's information "easily".<SPAN>&nbsp; </SPAN>Meaning you cannot bind the Collection to a grid and have all that information displayed to the user.<SPAN>&nbsp; </SPAN>At best the grid is smart enough to know that one of the data elements is another object so will allow drill down.<SPAN>&nbsp; </SPAN>It satisfies the use case but does not satisfy the user.<SPAN>&nbsp; </SPAN>At worse, and as is with most the grids I know, it simply shows the .ToString method of the object that contains the data field of the parent object.</P>
+<P>&nbsp;</P>
+<P>To overcome this I created a new class that exposes all the contained objects fields as properties. I did a supper fancy join to get all the fields and created one of those read only classes.<SPAN>&nbsp; </SPAN>And this bothers me to no end.<SPAN>&nbsp; </SPAN></P>
+<P>&nbsp;</P>
+<P>I am NOT doing this to satisfy a use case.<SPAN>&nbsp; </SPAN>I am doing it to satisfy some other "computer thing".<SPAN>&nbsp; </SPAN>The control cannot be configured to display the fields of child objects.<SPAN>&nbsp; </SPAN>And please remember these sub objects are nothing but data as far as the Student object is concerned.</P>
+<P>&nbsp;</P>
+<P>With all this said the problem I run into is that Objects ARE, at least in part, defined by their data. It can not be denied and to do so is simple folly.</P>
+<P>&nbsp;</P>
+<P>My new class StudentSummary has no special responsibilities beyond Student. Both Student and StudentSummary has to expose it's data to a consumer. I will not change one character of Student.vb to satisfy StudentSummary.vb.</P>
+<P>&nbsp;</P>
+<P>Well Maybe there is subtle behavior here? The user in this case is the particular windows component to be used. And it has a use case of "Display Student data like".</P>
+<P>&nbsp;</P>
+<P>This causes the use cases to explode because how many components are available?<SPAN>&nbsp; </SPAN>And if using anything like the MVC you can't even consider the components, can you?</P>
+<P>&nbsp;</P>
+<P>If you do, then StudentSummary class would be a part of the Controller (or is it view?) and take a Student in the constructor and display the data in a certain format .<SPAN>&nbsp; </SPAN>But that has huge performance and implementation implications.<SPAN>&nbsp;&nbsp; </SPAN>Remember a Student has about 15 objects/classes (data).</P>
+<P>&nbsp;</P>
+<P>Which brings me to another point.<SPAN>&nbsp; </SPAN>Pure OOP/OOD is not concerned with performance or scalability. It expects the data to just be there. Now I don't think it should be concerned because OOP is not really a technology. It is a state of mind that technology tries to implement.</P>
+<P>&nbsp;</P>
+<P>But that also confuses the statement in question. Because while we shouldn't be concerned with the data when designing a class it cannot be ignored because said data could make the application unusable.</P>
+<P>&nbsp;</P>
+<P>Ted Newards "Effective Enterprise Java" covers all these issues and I follow his advice.<SPAN>&nbsp; </SPAN>This advice often boils down to "whatever works the best".</P>
+<P>&nbsp;</P>
+<P>So… </P>
+<P>&nbsp;</P>
+<P>We don't really get paid enough, do we?<SPAN>&nbsp; </SPAN>But I still think we need a sticky to justify and expand the statement "objects are defined by behavior, not data".</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Saturday, June 10, 2006</h2>
+
+
+
+
+<DIV align=left><SPAN class=596315513-10062006><FONT face=Arial color=#0000ff size=2>Though we're playing semantic games to some degree, stating 
+that an object has a "set of" responsibilities is not good. An object should 
+have exactly one responsibility, and then should have behaviors that support 
+that responsibility. If some of those behaviors are required by other objects, 
+then those behaviors should be normalized into a separate class that has its own 
+responsibility, and the other (original) objects should collaborate with this 
+new object.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=596315513-10062006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=596315513-10062006><FONT face=Arial color=#0000ff size=2>Collaboration is a very important part of this overall view 
+on OOD.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=596315513-10062006><FONT face=Arial size=2></FONT></SPAN>&nbsp;</DIV>
+<BLOCKQUOTE>
+  <P>I have a Object called Student and it has a set of responsibilities. But a 
+  Student has tons of data. It takes about 15 objects plus 15 
+  fields.<SPAN>&nbsp; </SPAN>Of course as far as the object is concerned all 
+  this is just "stuff" and any of it can be added or removed without consequence 
+  to the class/object.<SPAN class=596315513-10062006><FONT face=Arial color=#0000ff size=2>&nbsp;</FONT></SPAN></P>
+  <P><SPAN class=596315513-10062006><FONT face=Arial color=#0000ff size=2>[...]</FONT></SPAN></P>
+  <P><SPAN class=596315513-10062006>With all this said the problem I run into is 
+  that Objects ARE, at least in part, defined by their data. It can not be 
+  denied and to do so is simple folly.</SPAN></P>
+  <P><SPAN class=596315513-10062006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</P></BLOCKQUOTE>
+<P><SPAN class=596315513-10062006><FONT face=Arial color=#0000ff size=2>I 
+respectfully disagree. The object is _defined_ by its responsibility and 
+behaviors. In order to accomplish that responsibility and to implement those 
+behaviors it requires a set of data.</FONT></SPAN></P>
+<P><SPAN class=596315513-10062006><FONT face=Arial color=#0000ff size=2>The data 
+follows the behavior, not the other way around. Well, technically the data 
+follows the _responsibility_, because the object must have the data required to 
+fulfill its responsibility. (though the object might not _directly_ have the 
+data or behaviors, because it may collaborate with other objects at 
+times)</FONT></SPAN></P>
+<P><SPAN class=596315513-10062006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</P>
+<P><SPAN class=596315513-10062006><FONT face=Arial color=#0000ff size=2>In any 
+case, I always use this litmus test: if I were doing this with a 
+DataSet/RecordSet/ResultSet/whatever, would I really load this particular set of 
+data to accomplish the given task?</FONT></SPAN></P>
+<P><SPAN class=596315513-10062006><FONT face=Arial color=#0000ff size=2>Even in 
+a data-centric world no sane developer loads all the data for a Student just to 
+display a handful of fields in a search results window. No, they create a new 
+DataSet/DataTable that only has that small subset of the data.</FONT></SPAN></P>
+<P><SPAN class=596315513-10062006><FONT face=Arial color=#0000ff size=2>Only the 
+most idealistic and naïve OO developer would do anything different. Building a 
+Student object that loads all the data for editing and then reusing that same 
+object to display search results is a prime example. (I certainly fit this 
+description a decade ago, and my guess is that almost every OO developer HAS fit 
+this description at one point or another! I don't think I've every met anyone 
+who didn't try this at least once.)</FONT></SPAN></P>
+<P><SPAN class=596315513-10062006><FONT face=Arial color=#0000ff size=2>You can 
+resolve this issue by either turning to the data-centric side, which is quicker 
+and more seductive, but not more powerful. Design your objects around the data 
+they contain, and control that data just like you would if you were using a 
+DataSet for design.</FONT></SPAN></P>
+<P><SPAN class=596315513-10062006><FONT face=Arial color=#0000ff size=2>Or you 
+can turn to the responsibility/behavioral OOD side, which _does_ require 
+changing the way you think about software design, but ultimately (imo) really is 
+more powerful. Yes, objects have data, but only in service to behavior. And 
+behavior only exists to support responsibility.</FONT></SPAN></P>
+<P><SPAN class=596315513-10062006><FONT face=Arial color=#0000ff size=2>Rocky</FONT></SPAN></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jav replied on Sunday, June 11, 2006</h2><P>Rocky,</P>
+<P>Those of us living in&nbsp;the Csla world have an added mental hurdle to jump over in the issue of behavior vs data and the related question of responsibility.&nbsp; </P>
+<P>Every Csla object begins with data in instance variables, deals&nbsp;in and "mother hens" the data thru Property acessors, applies rules that are mostly data-centric, and fetches and saves the data.&nbsp; In other words, out of the box, 99% of a Csla object's functionality is like a intelligent suitcase full of data.&nbsp; And auto-generation methodologies neatly put a wrapper on this, since they all work with data tables. That is <STRONG><EM>not</EM></STRONG> a problem, of course - in fact Csla performs that indispensable function beautifully.&nbsp; It does, however, tend to make us see the world as being composed of nothing but Csla objects.</P>
+<P>Three&nbsp;areas of responsibilty&nbsp;are always mentioned when talking about Csla objects. 1. Add new or update/delete existing data&nbsp; 2. Provide ReadOnly access to data, 3. Provide a list of "information items" in the data store.&nbsp; Of these, the second and third may or may not be limited to single tables, and it doesn't matter much&nbsp;because they are merely the front ends for a Sql query and&nbsp;I don't think that any of us have much problem grasping the use case or&nbsp;the behavior of these.</P>
+<P>It is the first one, the Editable object, which causes the greatest difficulty in our understanding of behavior vs data, and unfortunately in these discussions&nbsp;is probably the hardest to dissect out in order to make the point. For one thing, the primary advertised responsibilty of an Editable Csla object pretty much has to do with DataTable(s), and by "definition" that reponsibilty is to fetch the data, guard it with&nbsp;its life, and&nbsp;when I&nbsp;modify it, save the changes back to the database.&nbsp; The trouble is that practically all of the custom code that gives an object its added "behavior"&nbsp;gets added to this type of object, hence the perennial question "why can't I reuse it" or "how can I reuse it" etc.&nbsp; Perhaps, it would help if there was a bit more discussion of OO kind of&nbsp;ways of how and why of this.&nbsp; </P>
+<P>For example,&nbsp;talking about the Switchable object, it recently dawned on me that I can derive a switchable (Root) object by merely subclassing an existing child&nbsp;object and&nbsp;by removing the MarkAsChild call out of the child Constructor and making the child Constructor Protected and providing a Save method in the root.&nbsp; Similarly, I suppose what you are saying is that if there is functionality that we are stuffing into an Editable object, functionality&nbsp;that would be of use to other objects, it can be separated into a separate Class so it can be shared.</P>
+<P>Jav</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>pelinville replied on Sunday, June 11, 2006</h2>&nbsp;
+<P>First I want to say that I am not trying to pick a fight or cause a ruckus.<SPAN>&nbsp; </SPAN>I am genuinely confused at times and I think some of this confusion is cause by two things.*<SPAN>&nbsp; </SPAN></P>
+<P>&nbsp;</P>
+<OL>
+<LI>Ambiguous terms and assumed knowledge of said terms.<SPAN>&nbsp; </SPAN></LI>
+<LI>State of current technology.</LI></OL>
+<P>&nbsp;</P>
+<P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div> </P>
+<P>Though we're playing semantic games to some degree, stating that an object has a "set of" responsibilities is not good.</P>
+<P>&nbsp;</P>
+<P>I respectfully disagree. The object is _defined_ by its responsibility and behaviors. In order to accomplish that responsibility and to implement those behaviors it requires a set of data.</P>
+<P>&nbsp;</P>
+<P>The data follows the behavior, not the other way around. Well, technically the data follows the _responsibility_, because the object must have the data required to fulfill its responsibility. (though the object might not _directly_ have the data or behaviors, because it may collaborate with other objects at times)</P>
+<P>&nbsp;</P>
+<P></div></BLOCKQUOTE></P>
+<P>&nbsp;</P>
+<P>Yes, that is usually what gets me. It is like the nature vs. nurture debate.<SPAN>&nbsp; </SPAN>They cannot be separated.<SPAN>&nbsp; </SPAN>But depending on what you are trying to do you must assume one is first/dominate and go from there.</P>
+<P>&nbsp;</P>
+<P>I think this is true with the Data vs. Behavior thing. You cannot separate them but you must give one prominence depending on what the goals are.</P>
+<P>&nbsp;</P>
+<P>It would be beneficial for those first attempting this approach if this was actually declared in more concrete terms.<SPAN>&nbsp; </SPAN></P>
+<P>&nbsp;</P>
+<P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div> </P>
+<P>An object should have exactly one responsibility, and then should have behaviors that support that responsibility. If some of those behaviors are required by other objects, then those behaviors should be normalized into a separate class that has its own responsibility, and the other (original) objects should collaborate with this new object.</P>
+<P>&nbsp;</P>
+<P>Collaboration is a very important part of this overall view on OOD.</P>
+<P></div></BLOCKQUOTE></P>
+<P>&nbsp;</P>
+<P>The term "responsibility", I believe, needs to be defined.<SPAN>&nbsp; </SPAN>Well, you just defined it. But maybe this (and other) definitions should be stickied someplace or a forum section created for common definitions.</P>
+<P>&nbsp;</P>
+<P>I say this mainly because one of my favorite books "Object Thinking" by David West says multiple times that responsibilities should be limited but at any rate kept to less than seven.</P>
+<P>&nbsp;</P>
+<P>Maybe David West was refering&nbsp;to "Behavior" when he was speaking of responsibility?<SPAN>&nbsp; </SPAN>I am not sure.</P>
+<P>&nbsp;</P>
+<P>But Robert Martin defines it as you do in the "Single Responsibility Principle" and it has nothing to do with what a class does but how a class can change.<SPAN>&nbsp; </SPAN>Martin<SPAN>&nbsp; </SPAN>modified/expanded/limited/changed the cohesion term which was define by DeMarco (I think) and somebody else. And who knows how the SRP has been interpreted by others.</P>
+<P>&nbsp;</P>
+<P>But when I read the definition of cohesion for the first time I did not envision the SRP.<SPAN>&nbsp; </SPAN>I have read in many places, however, where people use cohesion and SRP interchangeably. And I don't really think they are interchangeable.<SPAN>&nbsp; </SPAN>I think they simply have the same goals.</P>
+<P>&nbsp;</P>
+<P>And beyond that it has to be pointed out that defining a responsibility is tricky to say the least.<SPAN>&nbsp; </SPAN>I don't see the "how to" discussed very much.<SPAN>&nbsp; </SPAN></P>
+<P>&nbsp;</P>
+<P>And the term "objects are defined by their behavior, and not data" does not even mention responsibility. Shouldn't it be "Objects are defined by their responsibility, not behavior or data?"</P>
+<P>&nbsp;</P>
+<P>Then "Behavior is demonstrated in an object if it's responsibility requires it."<SPAN>&nbsp; </SPAN>I put it this way because said behavior may actually be implemented in another class and can be reused in many place.<SPAN>&nbsp; </SPAN>Behavior is now a thing.</P>
+<P>&nbsp;</P>
+<P>Then "Data in an object is only present because it's behavior requires it."</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div> </P>
+<P>&nbsp;</P>
+<P>In any case, I always use this litmus test: if I were doing this with a DataSet/RecordSet/ResultSet/whatever, would I really load this particular set of data to accomplish the given task?</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P></div></BLOCKQUOTE></P>
+<P>&nbsp;</P>
+<P>I take a lazy way.<SPAN>&nbsp; </SPAN>If the SQL can't fit into the top half of the screen in Visual Studio I start thinking something is wrong.</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div> </P>
+<P>Even in a data-centric world no sane developer loads all the data for a Student just to display a handful of fields in a search results window. No, they create a new DataSet/DataTable that only has that small subset of the data.</P>
+<P>&nbsp;</P>
+<P>Only the most idealistic and naïve OO developer would do anything different. Building a Student object that loads all the data for editing and then reusing that same object to display search results is a prime example. (I certainly fit this description a decade ago, and my guess is that almost every OO developer HAS fit this description at one point or another! I don't think I've every met anyone who didn't try this at least once.)</P>
+<P>&nbsp;</P>
+<P>You can resolve this issue by either turning to the data-centric side, which is quicker and more seductive, but not more powerful. Design your objects around the data they contain, and control that data just like you would if you were using a DataSet for design.</P>
+<P>&nbsp;</P>
+<P>Or you can turn to the responsibility/behavioral OOD side, which _does_ require changing the way you think about software design, but ultimately (imo) really is more powerful. Yes, objects have data, but only in service to behavior. And behavior only exists to support responsibility.</P>
+<P>&nbsp;</P>
+<P></div></BLOCKQUOTE></P>
+<P>&nbsp;</P>
+<P>This the problem with current technology that frustrates me. Like I said the Student object has behavior and I think this behavior demands all the data needed.<SPAN>&nbsp; </SPAN>But it is some other part in the system which comes up short**.</P>
+<P>&nbsp;</P>
+<P>In an ideal world the idealistic and naïve could actually be such. And I think it will get there one day. Many things we take for granted today used to be "naïve thinking". Creating a basic Windows Form with a couple of lines of code for example. </P>
+<P>&nbsp;</P>
+<P>But even if I had the magic bullet (or the requirements of the application) allowed me to load all the Student data in one go I still would be stymied because of what I mentioned before.<SPAN>&nbsp; </SPAN>Data binding does not really handle arbitrary reference types all that well.<SPAN>&nbsp; </SPAN>(You can't define the display member to be "Address.Line1" for example.<SPAN>&nbsp; </SPAN>I find this kinda silly but that is the way it is.) </P>
+<P>&nbsp;</P>
+<P>So this part of my frustration is rather juvenile and doesn't add to the discussion. But I hope that this negative, but hopeful, energy will be picked up, somehow, by the Einstein's of the world to be solved.</P>
+<P>&nbsp;</P>
+<P>I do have many other questions but they are more specific than this thread allows.<SPAN>&nbsp; </SPAN>And it is quite possible that they would be out of place in this forum.<SPAN>&nbsp; </SPAN>(Which is why I have not asked them.<SPAN>&nbsp; </SPAN>Most of this place seems to be devoted to specific technical issues.) </P>
+<P>&nbsp;</P>
+<P>As Jav said, it would be very helpful if we could discuss how we can take the basics discussed in the books and expand it to real world issues.</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>*And I often question whether this forum is the place to confess my confusion.<SPAN>&nbsp; </SPAN>But I figure since the first .NET BO book was the </P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>**But this problem is caused by the current persisting mechanisms for applications built today. RDBMS's being a primary one. A thing that has, unfortunately, become used for all kinds of things that it isn't really designed for.<SPAN>&nbsp; </SPAN>For example OOP/OOD.</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>malloc1024 replied on Monday, June 12, 2006</h2><p class="MsoNormal">I seriously doubt that David West is suggesting an object
+can have up to 7 responsibilities.<span>&nbsp; </span>Take
+a look at Rocky’s blog.<span>&nbsp; </span>He certainly doesn’t
+think David West was suggesting using 7 responsibilities in a class. <a href="http://www.lhotka.net/WeBlog/WhatIGotOutOfObjectThinking.aspx">http://www.lhotka.net/WeBlog/WhatIGotOutOfObjectThinking.aspx</a></p>
+
+
+
+
+<p class="MsoNormal"><o:p>&nbsp;</o:p><br>
+The single-responsibility principle is a very well-known and
+fundamental OOP principle.<span>&nbsp; </span>An object
+should only have one responsibility.<span>&nbsp; </span>In other
+words, it should only have one reason to change.<span>&nbsp; </span>If it has more than one reason to change, it
+has more than one responsibly and thus breaks the single-responsibility principle.<span>&nbsp; </span><span>A responsibility is a “reason to change”.&nbsp; </span>It&nbsp; is anything a class does or
+knows.<span>&nbsp; </span>Behaviors simply describe the <span>responsibility </span>.<br>
+</p>
+<p class="MsoNormal"><span><br>
+Perhaps the statement “Objects are defined by
+behavior not data.” can be replaced with the statement “Objects are not defined by data. They are defined by
+behavior that describes a single </span><span>responsibility. </span><span>”.</span></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>pelinville replied on Monday, June 12, 2006</h2><DIV>I know it doesn't seem like it.&nbsp; And that is what started one argument between us but one quote</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>David <FONT class=BackLite><FONT class=BackLite>West</FONT></FONT>, Object Thinking pg 215 when&nbsp;talking about CRC cards&nbsp;"No object should have a disproportionate share of responsibilities. You will find that you are limited to six or seven entries. This is an excellent heuristic for the maximum number of responsibilities that an object can or should assume." </DIV>
+<DIV>&nbsp;</DIV>
+<DIV>West may have defined "responsibility" some place else that&nbsp;I missed but I don't remember seeing it.&nbsp; I do think he is talking more about behavior than responsibility as defined by the SRP but I don't know.</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>I also remember a few books, one focusing on CRC cards, that said basically the same thing.&nbsp; They did all say, as far as I can remember, that a goal is to always keep the responsiblity to a minimum.&nbsp; I guess 1 would be the minimum.</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>And browsing varios blogs and&nbsp;other forums&nbsp;I see this&nbsp;alluded to.&nbsp; (This isn't in the Agile/xp community.)&nbsp; </DIV>
+<DIV>&nbsp;</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>*edit, I do like your maxim though.</DIV></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>malloc1024 replied on Monday, June 12, 2006</h2><p class="MsoNormal"><span>Pelinville, I knew this discussion
+sounded familiar.<span>&nbsp; </span>Were you
+SerratedBobcat in the old forum?<br>
+</span></p>
+<p class="MsoNormal">
+
+</p>
+
+
+<p class="MsoNormal"><br>
+<span><o:p></o:p></span></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>malloc1024 replied on Monday, June 12, 2006</h2><p class="MsoNormal"><span>The definition of a responsibility
+for CRC cards is a little different than in the single responsibility principle.<span>&nbsp; </span>A responsibility in CRC cards is anything a
+class knows or does.<span>&nbsp; </span>This includes data
+and behavior.<span>&nbsp; </span>The definition of responsibility
+in the single-responsibility principle is </span>a reason to change.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, June 12, 2006</h2>
+
+
+
+
+<DIV align=left><SPAN class=784042621-12062006><FONT face=Arial color=#0000ff size=2>Yes, exactly. And David West is very much a CRC person, 
+which is cool. He has a lot of excellent ideas, but mapping some of them to the 
+real world can be (imo) challenging.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=784042621-12062006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=784042621-12062006><FONT face=Arial color=#0000ff size=2>On the other hand, modifying CRC so a class has just one 
+responosibility, but a limited number of behaviors which support that 
+responsibility makes far more sense - at least to me. Especially when combined 
+with the Collaboration part of the scheme, which allows for a very obvious way 
+by which you can normalize behaviors into objects and use collaboration to reach 
+those behaviors.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=784042621-12062006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=784042621-12062006><FONT face=Arial color=#0000ff size=2>Rocky</FONT></SPAN></DIV><BR>
+<BLOCKQUOTE>
+  <DIV class=OutlookMessageHeader align=left>
+  <HR>
+  <FONT face=Tahoma size=2><B>From:</B> malloc1024 [mailto:cslanet@lhotka.net] 
+  <BR><B>Sent:</B> Monday, June 12, 2006 1:57 PM<BR><B>To:</B> 
+  rocky@lhotka.net<BR><B>Subject:</B> Re: [CSLA .NET] Wrapping my head around 
+  basic concepts<BR></FONT><BR></DIV>
+  <DIV></DIV>
+  <P class=MsoNormal><SPAN>The definition of a responsibility for CRC cards is a 
+  little different than in the single responsibility principle.<SPAN>&nbsp; 
+  </SPAN>A responsibility in CRC cards is anything a class knows or 
+  does.<SPAN>&nbsp; </SPAN>This includes data and behavior.<SPAN>&nbsp; 
+  </SPAN>The definition or responsibility in the single-responsibility principle 
+  is </SPAN>a reason to change.</P><BR><BR><BR></BLOCKQUOTE></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rahulbpatel replied on Monday, June 19, 2006</h2><P>Rocky,</P>
+<P>Do you have other books to recommend in addition to Object Thinking and Object Technology?&nbsp; I've read both those books (as well as yours) to try to get on the right path to understanding&nbsp; OOP/OOD.&nbsp; Unfortunately, I don't still feel like I "get it" regardless of how many times I repeat the mantra "objects are defined by behavior not data".&nbsp; Any recommendations and/or pointers appreciated.</P>
+<P>Thanks...</P>
+<P>-Rahul</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, July 12, 2006</h2>
+
+
+
+
+<DIV align=left><SPAN class=406161316-12072006><FONT face=Arial color=#0000ff size=2>I like Erik Evans book on domain 
+modeling.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=406161316-12072006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=406161316-12072006><FONT face=Arial color=#0000ff size=2>Rocky</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=406161316-12072006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=406161316-12072006>
+<DIV align=left>
+<DIV align=left>
+<DIV align=left><STRONG><FONT face=Arial><A title="blocked::http://www.lhotka.net/&#10;http://www.lhotka.net/"><FONT size=4>Rockford Lhotka</FONT><FONT size=1> 
+</FONT></A></FONT></STRONG><FONT size=2><FONT face=Arial size=1>&nbsp;</FONT><FONT face=Arial color=#000000 size=1>(rocky@lhotka.net</FONT><FONT face=Arial><FONT size=1>)<BR></FONT></FONT></FONT><FONT face=Arial><A title="blocked::http://www.magenic.com/&#10;http://www.magenic.com/"><B>Magenic 
+Technologies</B> </A></FONT><FONT face=Arial size=1>Principal Technology 
+Evangelist</FONT></DIV>
+<DIV align=left><FONT face=Arial size=1>Author of the <I><A title="blocked::http://www.lhotka.net/ArticleIndex.aspx?area=CSLA .NET&#10;http://www.lhotka.net/ArticleIndex.aspx?area=CSLA%20.NET">Expert VB 
+2005&nbsp;and C# 2005 Business Objects</A></I> books<FONT face="Times New Roman" size=3> </FONT></FONT></DIV>
+<DIV align=left><FONT face=Arial size=1><FONT size=2>
+<DIV align=left><FONT face=Arial size=1>Microsoft <A title="blocked::http://www.microsoft.com/rd&#10;http://www.microsoft.com/rd">Regional Director </A>and <A title="blocked::http://www.microsoft.com/mvp&#10;http://www.microsoft.com/mvp">MVP</A></FONT></FONT></FONT></DIV></DIV></DIV></DIV></SPAN></DIV><BR>
+<BLOCKQUOTE>
+  <DIV class=OutlookMessageHeader align=left>
+  <HR>
+  <FONT face=Tahoma size=2><B>From:</B> rahulbpatel [mailto:cslanet@lhotka.net] 
+  <BR><B>Sent:</B> Monday, June 19, 2006 9:10 PM<BR><B>To:</B> 
+  rocky@lhotka.net<BR><B>Subject:</B> Re: [CSLA .NET] RE: Wrapping my head 
+  around basic concepts<BR></FONT><BR></DIV>
+  <DIV></DIV>
+  <P>Rocky,</P>
+  <P>Do you have other books to recommend in addition to Object Thinking and 
+  Object Technology?&nbsp; I've read both those books (as well as yours) to try 
+  to get on the right path to understanding&nbsp; OOP/OOD.&nbsp; Unfortunately, 
+  I don't still feel like I "get it" regardless of how many times I repeat the 
+  mantra "objects are defined by behavior not data".&nbsp; Any recommendations 
+  and/or pointers appreciated.</P>
+  <P>Thanks...</P>
+  <P>-Rahul</P><BR><BR><BR></BLOCKQUOTE></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>gbahns replied on Friday, October 20, 2006</h2><P>I realize that I missed this thread by a few months, but it just so happens that I was looking for information on this topic yesterday, and this is an interesting topic, so I'd like to chime in.</P>
+<P>I think the discord for many developers comes from what Rocky referred to as a "naive and ideological" way of thinking.&nbsp; According to this mindset, object-oriented design and programming means that there should be a <EM>one-to-one</EM> correspondence between objects in your code and objects in the real world, and thus also between classes in your code and types of objects in the real world.&nbsp; According to this way of thinking, there should not be a Customer class <EM>and</EM> a CustomerInfo class, much less additional Customer classes for every other type of responsibility Customer entitiy might have.&nbsp; A customer is a customer, and should be represented by a single customer class.&nbsp; The real world, of course, dictates that if you're displaying a list of customers with 5 columns, you don't want to pull back all 80 columns for each one, any more than you want to bring back a million rows if the user only views 20 at a time.&nbsp; The idealist might say, "let me adapt the Customer class to only populate the columns that I need, and use lazy loading for the rest", while the behaviorist would say "I'll just implement a CustomerInfo class that does exactly what I need for this search results list, and when the user double-clicks one, then I'll instantiate a real Customer object for the user to view and edit."</P>
+<P>Like many, I definitely come from this idealistic way of thinking.&nbsp; I think this was the appeal of object-oriented programming when I first started learning about it.&nbsp; However, like many others here, I've also come to see the advantage in a behavior-centric, such that you can ensure that only the behaviors that are appropriate in a given scenario are available.&nbsp; The difficulty in the change in thinking is that the concept of a "customer" is now more of an abstract concept that is not directly represented in your code.&nbsp; The business entity of "customer" is represented by the collection of classes the implement its responsibilities in various contexts, as well as the data in the database.</P>
+<P>In my case, though I've bought into the idea of behavior-centric classes, I'm still stumbling a bit.&nbsp; In&nbsp;my application, I have the concept of a "request".&nbsp; A request is submitted by the client to the server to have some work done.&nbsp; The&nbsp;client submits requests and checks on their status until the requested work is complete.&nbsp; The server picks up requests from the queue, performs the work,&nbsp;updating the progress as it goes along, and finally marks the request complte.&nbsp;&nbsp;</P>
+<P>Following the idealistic approach, I would have a single Request object which implemented all of the functionality required by both client and server.&nbsp; This would obviously be bad, because even if you trust developers on both sides to use the object appropriately, it simply complicates things on both sides, because developers have to look at the full public interface of the class and determine which methods are appropriate for them.&nbsp; Therefore, it's definitely preferable to have separate ClientRequest and ServerRequest classes.</P>
+<P>The stumbling block is this: both ClientRequest and ServerRequest require the exact same data.&nbsp; ClientRequest needs read-only properties to access the data, and ServerRequest needs read-write properties.&nbsp; To avoid duplicating the private data members in each class, you have to declare them as "protected" instead of "private", which is generally frowned upon.&nbsp; If understand Rocky's comments, the approach he generally takes is to just give in and duplicate the data members between the two classes.&nbsp; In principle, I am opposed to this sort of duplication&nbsp;- in my simple example, it's only the duplication of 10 private member declarations, but in more complex scenarios it would only get worse.</P>
+<P>So, is it ok to violate encapsulation by making the private members protected?&nbsp; Or do we just give in and duplicate?&nbsp; Is there a better answer?</P>
+<P>Greg Bahns</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Brian Criswell replied on Friday, October 20, 2006</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>gbahns:</strong></div><div><p>I think the discord for many developers comes from what Rocky referred to as a "naive and ideological" way of thinking.&nbsp; According to this mindset, object-oriented design and programming means that there should be a <em>one-to-one</em> correspondence between objects in your code and objects in the real world, and thus also between classes in your code and types of objects in the real world.&nbsp; According to this way of thinking, there should not be a Customer class <em>and</em> a CustomerInfo class, much less additional Customer classes for every other type of responsibility Customer entitiy might have.</p></div></BLOCKQUOTE><br>I will let some of the better designers than me respond to most of your post, but I wanted to point out something here that I think you missed.&nbsp; Rocky and others do not say that there should be a one-to-one between your objects and objects in the real world.&nbsp; Rather they say that there should be a one-to-one correllation between your use cases and your objects.&nbsp; If you have a use case for editing a customer and another use case for listing summary information about clients then you <i>will</i> have a Customer and CustomerInfo object.&nbsp; This means that there is some duplication of data, but that is okay because behaviour is king.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>gbahns replied on Friday, October 20, 2006</h2><P>To clarify, I was speaking of the <EM>idealist</EM> as the one who would strive&nbsp;for a one-to-one correspondence between objects and the real world.&nbsp; I did not mean to imply that this is what Rocky currently believes - obviously not.</P>
+<P>Thanks to both of you for your replies.&nbsp; I'll consider Andy's suggestions for class design.&nbsp; I'm not sure I agree that the client should have a Request and a RequestStatus class - I was planning on having a single ClientRequest class used for submission and status polling.&nbsp; I would argue that the the <EM>behaviors</EM> of submitting a request and polling the status fit within the <EM>responsibility</EM> of servicing the client, but I can see that I might be off base there (i.e. what I'm calling a <EM>behavior</EM> might actually be the <EM>responsibility</EM>, and the <EM>behaviors</EM> are actually more fine-grained).</P>
+<P>(Actually, as I've implemented it, there's just a static method for clients to submit requests, so they don't actually need a separate class for submitting.&nbsp; All they need is a class for polling the status.)</P>
+<P>Greg</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Friday, October 20, 2006</h2><BLOCKQUOTE><div><img src="/Themes/basicblue/images/icon-quote.gif"> <strong>:</strong></div><div>I'm not sure I agree that the client should have a Request and a
+RequestStatus class - I was planning on having a single ClientRequest
+class used for submission and status polling.</div></BLOCKQUOTE><br><br>Those are two different behaviors though.&nbsp;&nbsp; Classes should have a single responsiblity, one reason to change.&nbsp; Merging the two would break that; if you change how status is read, you change that class.&nbsp; Likewise, if you change how requests are inserted into the system, you change that class.<br><br><BLOCKQUOTE><div><img src="/Themes/basicblue/images/icon-quote.gif"> <strong>:</strong></div><div>I would argue that the the <em>behaviors</em> of submitting a request and polling the status fit within the <em>responsibility</em> of servicing the client, but I can see that I might be off base there (i.e. what I'm calling a <em>behavior</em> might actually be the <em>responsibility</em>, and the <em>behaviors</em> are actually more fine-grained).</div></BLOCKQUOTE><br><br>Servicing the client is a set of functionality.&nbsp; You have two different use cases though, do you not?&nbsp; Use case one:&nbsp; create a request.&nbsp; I doubt that use case includes the steps to check the status of the request, which should be use case two.&nbsp;&nbsp; Does a user have to create a request before they can check the status of it?&nbsp; <br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Friday, October 20, 2006</h2>I'm not sure anyone says with certainty there should be a one to one in all scenarios though.&nbsp; You build objects based on your use cases, and of course one use case may dictate many objects.&nbsp; In your next use case, if you can reuse already created objects, great, but if you can't without substancually altering the objects, you create new ones (if their behaviors differ quite a bit).<br><br>Your use case would have many objects.&nbsp; A Request, which is used to put a request onto the queue.&nbsp; You'll also likely have a RequestStatus object, which tells you the status of a request.. You may also have a RequestList which lists all Requests currently on the server (or a subset)... this list of course would contain RequestStatus objects.<br><br>Then on your server side, you'd have RequestHandler.. or perhaps many of them, if each request is a totally different.&nbsp; For example, a ReportRequest and SendFilesRequest.&nbsp; It depends on what your requests need to do.&nbsp; You may need a RequestExecutor, which is responsible for looking for unprocessed requests.&nbsp; A RequestHandlerFactory could 'figure out' exactly what kind of request class is needed to fulfill the request.&nbsp; The RequestExector would ask the factory to create a requesthanlder object, then tell the object it gets back to Execute.&nbsp; It may even put the call to execute on its own thread, if requests can run in paraell.<br><br>HTH<br>Andy<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>malloc1024 replied on Friday, October 20, 2006</h2>
+
+<p class="MsoNormal"><span>Gbahns,<o:p></o:p></span></p>
+
+
+<p class="MsoNormal"><span>I enjoyed
+your post and glad you brought the topic up.<span>&nbsp;
+</span>I find myself more in the idealistic camp that you describe.<span>&nbsp; </span>When you create an address class, idealistically
+that would be the only one you will ever need.<span>&nbsp;
+</span>The behavior of an address should not change between each project.<span>&nbsp; </span>A small downside to this is that you might
+end up with properties that you don’t use in a particular project. <span>&nbsp;</span>Is this so bad? <span>&nbsp;</span>A use-case driven design dictates that you
+must create a separate class for each use-case. <span>&nbsp;</span>Therefore, you end up with many more address classes.<span>&nbsp; </span>It doesn’t seem to me that a use-case driven
+design promotes reuse as much.<span>&nbsp; </span>I would
+rather have one address class that represent an idealistic view of an address opposed
+to many that fit different use-cases. <span>&nbsp;</span>Objects should be designed based on behavior
+not necessary use-cases.<span>&nbsp; </span>Use-cases can
+help with your design but probably should not dictate your design completely.<span>&nbsp; </span><o:p></o:p></span></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>malloc1024 replied on Monday, June 12, 2006</h2>
+
+<p class="MsoNormal">I have looked at some sites that describe CRC cards.<span>&nbsp; </span>Some have different definitions for responsibility.<span>&nbsp; </span>This just makes things more confusing.<span>&nbsp; </span>Anyway, do not compare the definition of responsibility
+in CRC cards to the responsibility in the single-responsibility principle.<span>&nbsp; </span>This will only lead to confusion.<span>&nbsp; </span></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jav replied on Sunday, June 11, 2006</h2><P>Rocky,</P>
+<P>Those of us living in&nbsp;the Csla world have an added mental hurdle to jump over in the issue of behavior vs data and the related question of responsibility.&nbsp; </P>
+<P>Every Csla object begins with data in instance variables, deals&nbsp;in and "mother hens" the data thru Property acessors, applies rules that are mostly data-centric, and fetches and saves the data.&nbsp; In other words, out of the box, 99% of a Csla object's functionality is like a intelligent suitcase full of data.&nbsp; And auto-generation methodologies neatly put a wrapper on this, since they all work with data tables. That is <STRONG><EM>not</EM></STRONG> a problem, of course - in fact Csla performs that indispensable function beautifully.&nbsp; It does, however, tend to make us see the world as being composed of nothing but Csla objects.</P>
+<P>Three&nbsp;areas of responsibilty&nbsp;are always mentioned when talking about Csla objects. 1. Add new or update/delete existing data&nbsp; 2. Provide ReadOnly access to data, 3. Provide a list of "information items" in the data store.&nbsp; Of these, the second and third may or may not be limited to single tables, and it doesn't matter much&nbsp;because they are merely the front ends for a Sql query and&nbsp;I don't think that any of us have much problem grasping the use case or&nbsp;the behavior of these.</P>
+<P>It is the first one, the Editable object, which causes the greatest difficulty in our understanding of behavior vs data, and unfortunately in these discussions&nbsp;is probably the hardest to dissect out in order to make the point. For one thing, the primary advertised responsibilty of an Editable Csla object pretty much has to do with DataTable(s), and by "definition" that reponsibilty is to fetch the data, guard it with&nbsp;its life, and&nbsp;when I&nbsp;modify it, save the changes back to the database.&nbsp; The trouble is that practically all of the custom code that gives an object its added "behavior"&nbsp;gets added to this type of object, hence the perennial question "why can't I reuse it" or "how can I reuse it" etc.&nbsp; Perhaps, it would help if there was a bit more discussion of OO kind of&nbsp;ways of how and why of this.&nbsp; </P>
+<P>For example,&nbsp;talking about the Switchable object, it recently dawned on me that I can derive a switchable (Root) object by merely subclassing an existing child&nbsp;object and&nbsp;by removing the MarkAsChild call out of the child Constructor and making the child Constructor Protected and providing a Save method in the root.&nbsp; Similarly, I suppose what you are saying is that if there is functionality that we are stuffing into an Editable object, functionality&nbsp;that would be of use to other objects, it can be separated into a separate Class so it can be shared.</P>
+<P>Jav</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,40 @@
+<html><header><title>Something causing serialization?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Something causing serialization?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5130.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 posted on Monday, July 21, 2008</h2>Hi,<br><br>I have a winforms app, using csla 3.5.&nbsp; I've been updating to the new features of Csla and starting replacing my dal with linq.&nbsp; One user is getting an odd error I can't reproduce, and I don't think she's getting it all the time.<br><br>I have a process which runs on a background thread to save some data (not the main BO.. other BOs).&nbsp; Sometimes I'm getting an error that one of my DAL objects couldn't be serialized, and it shouldn't be... everything data access wise should be happing in the remote dataportal, and it looks like my code is doing just that.&nbsp; Still, the error persists.<br><br>I had a similar issue with another user; same DAL object, but that user was directly editing one of the BO's in question (as opposed to indirectly because of a service layer I have, which is was the first user is doing).&nbsp; The solution for him was to uninstall my application and re-install it.&nbsp; It's been fine since.<br><br>The same hasn't worked for this other user.. but she has four seperate installs of my application (each install is a branded version for different companies).&nbsp; <br><br>I was wondering if anyone had things expected wanting to serialize in the remote dataportal when it wasn't needed.&nbsp; Perhaps I just need to uninstall all instances... but I can't do that just yet.<br><br>Thanks<br>Andy<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, July 21, 2008</h2><P>There are a limited number of things that can cause serialization. Here are some:</P>
+<OL>
+<LI>Calling DataPortal.Update() with AutoCloneOnUpdate turned on (it is on by default in 3.5)</LI>
+<LI>Calling Clone()</LI>
+<LI>Transitioning a call from one machine to another</LI>
+<LI>Transitioning a call from one&nbsp;AppDomain to another</LI>
+<LI>Transitioning a call from one&nbsp;context to another</LI></OL>
+<P>Of course 1 and 2 will only serialize the objects flowing through the data portal or clone operation - your business objects. They would only serialize your DAL object if you somehow stored the DAL object in an object-level instance field.</P>
+<P>3-5 are less common, but can occur if you trigger such a transition. </P>
+<P>3 occurs inside the data portal, but that's really a variation on 1 in that case. And you'd know if you were calling Remoting/WCF/whatever yourself.</P>
+<P>4 can sneak up on you when using something like nunit, but in your own code I think you'd know if you created your own AppDomain.</P>
+<P>5 is most rare, because you need to create context-bound objects (MarshalByRefObject is most common). One way this can happen is if you use an AOP framework, because a lot of them use context-bound objects as&nbsp;a hack to trigger pre- and post-call aspects. You'd know if you were using an AOP framework, or if you'd inherited from MRBO I think.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Monday, July 21, 2008</h2>It sounds like it could only be option 3 causing this.<br><br>I do have a portion of code that runs in the data portal that calls another piece of code which does a DataPortal.Fetch... but if it's already remoted then I would think a local data portal would be used, and it doesn't sound like the local one would cause serialization.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, July 21, 2008</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Hmm. DataPortal.Fetch() should never cause serialization in
+local mode, only DataPortal.Update() would do that.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky</span><b><span><o:p></o:p></span></b></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

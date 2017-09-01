@@ -1,0 +1,198 @@
+<html><header><title>CslaAutoCloneOnUpdate issue?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CslaAutoCloneOnUpdate issue?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3851.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>ixman posted on Wednesday, November 07, 2007</h2><P class=MsoNormal><FONT face=Calibri>Hi,</FONT></P>
+<P class=MsoNormal><FONT face=Calibri>I&nbsp;have a strange behavior working with the CslaDataProvider and WPF. I have a LocalDataPortal configuration.</FONT></P>
+<P class=MsoNormal><FONT face=Calibri>The problem occurred when I’ve added the CslaAutoCloneOnUpdate = True. </FONT></P>
+<P class=MsoNormal><FONT face=Calibri>The problem is that before CslaDataProvider.Save() method call, the BO IsDirty<SPAN>&nbsp;</SPAN>property is True, this is correct, but after the Save call,&nbsp;the IsDirty <STRONG>is</STRONG> <STRONG>still true</STRONG> and this is wrong because will save the object again(the BO behind the Data property is not synchronized). Going deeper i found that when&nbsp;I set the "AutoUpdate" to true there is no cloning performed :(</FONT></P>
+<P class=MsoNormal><FONT face=Calibri>The condition for cloning the object is like this (CslaDataProvider.cs):</FONT></P>
+<P class=MsoNormal><o:p><FONT face=Calibri>&nbsp;.......</FONT></o:p></P>
+<P class=MsoNormal><SPAN>if</SPAN><SPAN> (<STRONG>!</STRONG>Csla.<SPAN>ApplicationContext</SPAN>.AutoCloneOnUpdate)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>{<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>// clone the object if possible<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>ICloneable</SPAN> clonable = savable <SPAN>as</SPAN> <SPAN>ICloneable</SPAN>;<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>if</SPAN> (clonable != <SPAN>null</SPAN>)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>savable = (Csla.Core.<SPAN>ISavable</SPAN>)clonable.Clone();<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>}<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><FONT face=Calibri>From this code I understand that when CslaAutoCloneOnUpdate = True the condition is FALSE, so no cloning is performed. Is this correct?</FONT></P>
+<P class=MsoNormal><FONT face=Calibri>I think something is wrong here...</FONT></P>
+<P class=MsoNormal><o:p><FONT face=Calibri>&nbsp;</FONT></o:p></P>
+<P class=MsoNormal><FONT face=Calibri>Thanks for any comments on this,</FONT></P>
+<P class=MsoNormal><FONT face=Calibri>George</FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, November 07, 2007</h2><P>No, that should be correct. If AutoCloneOnUpdate is true, then the <EM>data portal</EM> does the clone. That occurs in the client-side data portal.</P>
+<P>CslaDataProvider and EditableRootListBase both do cloning "manually" only if AutoCloneOnUpdate is false - otherwise you'd get duplicate cloning.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ixman replied on Thursday, November 08, 2007</h2><P class=MsoNormal><FONT face=Calibri>Hi Rocky,</FONT></P>
+<P class=MsoNormal><o:p><FONT face=Calibri>&nbsp;</FONT></o:p></P>
+<P class=MsoNormal><FONT face=Calibri>Thanks for the answer. </FONT></P>
+<P class=MsoNormal><FONT face=Calibri>My issue with the AutoCloneOnUpdate<SPAN> </SPAN>is that if I have&nbsp;it set&nbsp;to true, then in the code behind in my xaml page, I have something like this:</FONT></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>private</SPAN><SPAN> <SPAN>void</SPAN> Save_Click(<SPAN>object</SPAN> sender, <SPAN>RoutedEventArgs</SPAN> e)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>{<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>CslaDataProvider</SPAN><SPAN> documentTypesProvider = (<SPAN>CslaDataProvider</SPAN>)FindResource(<SPAN>"DocumentsTypesProvider"</SPAN>);<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>documentTypesProvider.Save();<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>}<o:p></o:p></SPAN></P>
+<P class=MsoNormal><o:p><FONT face=Calibri>&nbsp;</FONT></o:p></P>
+<P class=MsoNormal><FONT face=Calibri>The problem is that after the Save() the IsDirty property of the CslaDataProvider BO&nbsp;<EM>((DocumentTypes)(documentTypesProvider.Data)).IsDirty</EM> <STRONG>is still true</STRONG>, which I think is not correct (the clone and the real object that I’m using in the binding are not synchronized correctly?).</FONT></P>
+<P class=MsoNormal><FONT face=Calibri>If I put in the config AutoCloneOnUpdate = False, <STRONG>I get false</STRONG> for IsDirty after the Save().</FONT></P>
+<P class=MsoNormal><o:p><FONT face=Calibri>Is this a correct behaviour?</FONT></o:p></P>
+<P class=MsoNormal><o:p><FONT face=Calibri></FONT></o:p>&nbsp;</P>
+<P class=MsoNormal><o:p><FONT face=Calibri></FONT></o:p>&nbsp;</P>
+<P class=MsoNormal><o:p><FONT face=Calibri>Thanks,</FONT></o:p></P>
+<P class=MsoNormal><o:p><FONT face=Calibri>George Barbu</FONT></o:p></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, November 12, 2007</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I ran into something similar, perhaps this is the same issue.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>The WPF data binding infrastructure doesn’t treat Equals() like
+it should (in my view). So if a data provider (or any datacontext) is set to an
+object that is equal to (using Equals()) the previous object, then the new
+object is ignored. It is an “optimization”, but it means you cannot use logical
+equality between objects.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>If you have C1 and C1’ – two instances of <i>exactly the same
+object</i> they are equal, even if they are different objects right?<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>But what does equality mean? Does it mean all fields of the
+object, and all child objects, are identical? Sure.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Does it mean that C1.Id = C2.Id? Maybe. You might say yes, that
+is equality, and it is a valid form of logical equality to make that statement.
+CSLA does this.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Unfortunately WPF, in their wisdom, says that NEITHER of those
+two are correct. If Equals() returns true they <i>ignore the new object</i>.
+And this sucks, because in either of those two cases you might have very valid
+reasons for wanting to use the new object instance.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>WPF <i>should have used ReferenceEquals()</i> to do their
+optimization, but they messed up. In my view anyway.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>So it is possible that you are getting back (within
+CslaDataProvider) a new object instance, which is being ignored by data binding
+in WPF.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>However, that really shouldn’t happen, because I put code in
+CslaDataProvider to overcome this issue by setting the datacontext to
+null/Nothing and then back to the new object.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><i><span>However</span></i><span>, I ran into issues there, because of YAO
+(yet another optimization) where it appears that the datacontext isn’t restored
+immediately from the provider, so the setting-the-value-to-null step is
+ignored. Ugh. Version 1.0 technologies can be a pain…<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I did solve my particular case, but I don’t know that it is a
+real solution – it involved some quirky UI code.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>This is a long-winded way of saying that I realize there are
+some issues here – but I don’t know of a good solution as yet. If you find any
+workarounds or solutions, please share them!<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> ixman
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Thursday, November 08, 2007 8:04 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] CslaAutoCloneOnUpdate issue?<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal><span>Hi Rocky,</span><o:p></o:p></p>
+
+<p class=MsoNormal><span>&nbsp;</span><o:p></o:p></p>
+
+<p class=MsoNormal><span>Thanks for the answer. </span><o:p></o:p></p>
+
+<p class=MsoNormal><span>My issue with the AutoCloneOnUpdate
+is that if I have&nbsp;it set&nbsp;to true, then in the code behind in my xaml
+page, I have something like this:</span><o:p></o:p></p>
+
+<p class=MsoNormal>&nbsp;<o:p></o:p></p>
+
+<p class=MsoNormal>private
+void Save_Click(object sender, RoutedEventArgs e)<o:p></o:p></p>
+
+<p class=MsoNormal>{<o:p></o:p></p>
+
+<p class=MsoNormal>CslaDataProvider
+documentTypesProvider = (CslaDataProvider)FindResource(&quot;DocumentsTypesProvider&quot;);<o:p></o:p></p>
+
+<p class=MsoNormal>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+documentTypesProvider.Save();<o:p></o:p></p>
+
+<p class=MsoNormal>}<o:p></o:p></p>
+
+<p class=MsoNormal><span>&nbsp;</span><o:p></o:p></p>
+
+<p class=MsoNormal><span>The problem is that after the Save()
+the IsDirty property of the CslaDataProvider BO&nbsp;<em><span>((DocumentTypes)(documentTypesProvider.Data)).IsDirty</span></em>
+<strong><span>is still true</span></strong>,
+which I think is not correct (the clone and the real object that Iâ€™m using in
+the binding are not synchronized correctly?).</span><o:p></o:p></p>
+
+<p class=MsoNormal><span>If I put in the config
+AutoCloneOnUpdate = False, <strong><span>I
+get false</span></strong> for IsDirty after the Save().</span><o:p></o:p></p>
+
+<p class=MsoNormal><span>Is this a correct behaviour?</span><o:p></o:p></p>
+
+<p class=MsoNormal>&nbsp;<o:p></o:p></p>
+
+<p class=MsoNormal>&nbsp;<o:p></o:p></p>
+
+<p class=MsoNormal><span>Thanks,</span><o:p></o:p></p>
+
+<p class=MsoNormal><span>George Barbu</span><o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

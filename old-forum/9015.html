@@ -1,0 +1,33 @@
+<html><header><title>Cancel Edits in Web Application - DetailsView.</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Cancel Edits in Web Application - DetailsView.</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9015.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>tarekahf posted on Tuesday, June 01, 2010</h2><p>I am facing a minro issue, but a tricky one.</p>
+<p>I have a DetailsView with Edit/Cancle/Update functions.</p>
+<p>When the user click &quot;Edit&quot; make changes and Update, if there are validation problems, it will throw the errors of invalid data, and keep in edit mode. But then if the user click cancle, the DetailsView will be in ReadMode, and will show the incorrect value. I am not re-loading the BO from Database after cancel.</p>
+<p>So, to solve this problem, I decided to use BO.BeginEdit()&nbsp;when DetailsView CommandName=&quot;Edit&quot; and BO.CancelEdit() when DetailsView CommandName=&quot;Cancel&quot;, and before I can the &quot;SaveObject()&quot; from the UI, I do the following in code-behined:</p>
+<p><blockquote style="overflow-x: scroll;"><pre style="margin: 0px;"> </p>
+<p>If BO.IsValid() Then&nbsp;<br />&nbsp; BO.ApplyEdit() <br />End If<br />Session(&quot;BusinessObject&quot;) = BO.Save() </p>
+<p></pre></blockquote></p>
+<p>In general, it is working fine, but I will get a confusing error message &quot;Object is still being edited and can not be saved&quot; if there are broken validation rules.</p>
+<p>And, if I change the above code as follows:</p>
+<p><blockquote style="overflow-x: scroll;"><pre style="margin: 0px;"> </p>
+<p>BO.ApplyEdit() <br />Session(&quot;BusinessObject&quot;) = BO.Save() </p>
+<p></pre></blockquote></p>
+<p>Then, BO.CancelEdits() will have no effect.</p>
+<p>What is the proper way to implement a &quot;Cancel&quot; command in DetailsView in web application ? If I want to avoid re-loading the BO from Database after cancel ?</p>
+<p>Tarek.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tarekahf replied on Wednesday, June 02, 2010</h2><p>I found the solution.</p>
+<p>Basically, I examined the sample code for using Undo features from the Book for Windows Forms, and followed the same way, but for Web Forms.</p>
+<p>I think it is better to <span style="text-decoration:underline;">undo the changes</span> made to the BO, after a failed save operation due to broken rules, <span style="text-decoration:underline;">instead of re-loading</span> the complete values back from the Database, or force the user to navigate away completely from the Edit Mode of the DetailsView to a different screen.</p>
+<p>If you have any feedback, do let me know.</p>
+<p>Tarek.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, June 02, 2010</h2><p>For non-web apps it is almost always better to use undo than to reload the object.</p>
+<p>In web apps that is not necessarily true. To use undo in a web app you usually have to use Session, which has a set of negative consequences. Reloading the object also has negative consequences. You just need to decide which negative consequences are least bad for you.</p>
+<p>(which is why I find web development so frustrating - web development is just a continual series of choosing the lesser of two evils - I find it depressing...)</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tarekahf replied on Wednesday, June 02, 2010</h2><p>Thank you for the reply.</p>
+<p>I was checking the PT Sample Application, the web part (Csla 2.x ProjectEdit.aspx), and I noticed that the method implemented after a failed save operation due to broken rules is to force either to input correct data and save, or to navigate back to the Project List view, which meas Reloading from DB.</p>
+<p>I am not sure I understand what I will loose if I use Undo in web application, since I am already using a Session to cache the BO between screen post-backs.</p>
+<p>The only thing&nbsp;I did is the following:</p>
+<p>1. On click&nbsp;on Edit Command, I call BO.BeginEdit()</p>
+<p>2. On click&nbsp;on Cancel Command, I call BO.CancelEdit()</p>
+<p>3. On Click&nbsp;on Update&nbsp;Command, I&nbsp;do the following:</p>
+<p>&nbsp; temp = BO.Clone()&nbsp; &#39; new</p>
+<p>&nbsp; temp.ApplyEdits()&nbsp; &#39; new</p>
+<p>&nbsp; Sesison(&quot;BO&quot;) = temp.save()&nbsp;&nbsp; &#39; same like before</p>
+<p>I don&#39;t understand how is this method considered &quot;not better&quot; when compared to Windows Application.</p>
+<p>Tarek.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, June 02, 2010</h2><p>If you are already using Session then the only cost you&#39;ll pay with n-level undo is that it will increase the size of your object in memory (since the object contains a snapshot of its previous state). If that isn&#39;t causing you problems on your web server, then there&#39;s no problem.</p>
+<p>My response was in the broader context of &quot;web purity&quot;, where people often try to avoid Session so they can achieve higher scaling and fault tolerance. If you don&#39;t need those things - or if you choose to get scaling via sticky IP web farms (and give up fault tolerance) then you have no problem either.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

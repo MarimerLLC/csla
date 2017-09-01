@@ -1,0 +1,25 @@
+<html><header><title>Csla Sample Bugs</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Csla Sample Bugs</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10795.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>cnowicki posted on Friday, October 21, 2011</h2><p>Hi, I&#39;ve just downloaded the Csla 4.1 and the corresponding samples.&nbsp;</p>
+<p>The first sample I tried was the ClsaMVC sample because I&#39;m a fan of MVC and I&#39;m curious to see how Clsa works - I learn best by messing around with samples. In any case, the sample simply won&#39;t run - it gives the error shown below.</p>
+<p><span><span>
+<h2><i>Configuration Error</i></h2>
+</span><span style="font-family:Arial, Helvetica, Geneva, SunSans-Regular, sans-serif;"><b>Description:&nbsp;</b>An error occurred during the processing of a configuration file required to service this request. Please review the specific error details below and modify your configuration file appropriately.&nbsp;<br /><br /><b>Parser Error Message:&nbsp;</b>Could not load file or assembly &#39;Csla.Web.Mvc, Version=4.0.2.0, Culture=neutral, PublicKeyToken=93be5fdc093e4c30&#39; or one of its dependencies. The located assembly&#39;s manifest definition does not match the assembly reference. (Exception from HRESULT: 0x80131040)<br /><br /><b>Source Error:</b>&nbsp;<br /><br />
+<table bgcolor="#ffffcc" width="100%">
+<tbody>
+<tr>
+<td><code>
+<pre>Line 24:         &lt;add assembly=&quot;System.Web.Routing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31BF3856AD364E35&quot;/&gt;
+Line 25:         &lt;add assembly=&quot;System.Data.Linq, Version=4.0.0.0, Culture=neutral, PublicKeyToken=B77A5C561934E089&quot;/&gt;
+<span style="color:red;">Line 26:         &lt;add assembly=&quot;Csla.Web.Mvc, Version=4.0.2.0, Culture=neutral, PublicKeyToken=93be5fdc093e4c30&quot;/&gt;
+</span>Line 27:       &lt;/assemblies&gt;
+Line 28:     &lt;/compilation&gt;</pre>
+</code></td>
+</tr>
+</tbody>
+</table>
+</span></span></p>
+<p><br /><b>Source File:&nbsp;</b>C:\Users\christian.nowicki\Documents\Visual Studio 2010\Projects\CSLA Samples\NET\cs\CslaMVC\CslaMVC.Web\web.config<b>&nbsp;&nbsp;&nbsp; Line:&nbsp;</b>26&nbsp;<br /><br /><b>Assembly Load Trace:</b>&nbsp;The following information can be helpful to determine why the assembly &#39;Csla.Web.Mvc, Version=4.0.2.0, Culture=neutral, PublicKeyToken=93be5fdc093e4c30&#39; could not be loaded</p>
+<p>----------</p>
+<p>Originally I had downloaded the beta (version 4.2) and tried to compile and run the BusinessRuleDemo - this did not work - the sample contained a number of compiler errors. Then I tried the MVC sample - didn&#39;t compile either. So I thought to myself - ok this is a Beta and downloaded the latest &quot;stable&quot; version - which contains more bugs.</p>
+<p>I posted this as a discussion rather than a question because I can get the demos working. The reason for the post is that I would like to see CSLA do well. I know it is being shown at various Microsoft shows, however I can&#39;t think of a better way to turn off potential interest than buggy samples. </p>
+<p>Thanks&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Friday, October 21, 2011</h2><p>Check the version number in the add assembly for Csla.Web.Mvc.&nbsp; It probably should be 4.2.0.0, or whatever version of Csla you&#39;re using (the on you posted looks like Csla 4.0 (4.0.2 to be exact).</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,15 @@
+<html><header><title>ValidateOnException</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>ValidateOnException</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11555.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>st3fanus posted on Sunday, August 26, 2012</h2><p>Hi all..</p>
+<p>&nbsp;</p>
+<p>I want to know is it possible to prevent save a business object when there is a validate on exception error ?</p>
+<p>&nbsp;</p>
+<p>thanks</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Monday, August 27, 2012</h2><p>What do you mean by &quot;validate on exception error&quot;? </p>
+<p>If the object is not <em><strong>IsValid </strong></em>then BeginSave and Save methods will fail with ValidationException.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>st3fanus replied on Monday, August 27, 2012</h2><p>Hi jonny..</p>
+<p>thanks for quick response</p>
+<p>&nbsp;</p>
+<p>I mean ValidateOnException is set to true on XAML will preven t wrong type data type is not continue to Business Object Property,</p>
+<p>When I save this Business Object there is no error or preventive action happened,</p>
+<p>So there is a solution to prevent this Business Object saved when there is an exception ?</p>
+<p>&nbsp;</p>
+<p>thanks a lot jonny :)</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Monday, August 27, 2012</h2><p>That would have to handled by your code as the CSLA object never gets the value.</p>
+<p>So this it is all in you XAML code and you must handle it in your own code.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>st3fanus replied on Tuesday, August 28, 2012</h2><p>Thanks a lot jonny :)</p>
+<p>&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,65 @@
+<html><header><title>How to ignore PropertyInfo data used for Mocking objects in unit tests.</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>How to ignore PropertyInfo data used for Mocking objects in unit tests.</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11602.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>jamie.clayton posted on Wednesday, September 26, 2012</h2><p>I just want the communities feedback on a unit test issue I have.</p>
+<h2>Use Case</h2>
+<p>
+<ul>
+<li>I have a very complex business object that configures various business rules around selling products and commission payments. There are a significant permutation of rules for commission payments.</li>
+<li>There is a very simple class that examines a sale and determines how much to pay the sales guys for a selling that product.</li>
+<li>My unit tests need to confirm I have programmed all the business rules.</li>
+<li>I created a method that allows the product to be injected (IOC &amp; Cache Performance reasons) into the CSLA Business object that sets the commission for each sale, so I can mock all the permutations (without &nbsp;using a mocking framework). This data is saved in a CSLA PropertyInfo backing variable.</li>
+<li>So I can now test the code by passing in lots of partially completed product business rules and confirm the code works correctly. :)&nbsp;</li>
+<li>When I come to unit testing the save method, I run into problems because this _ProductProperty is also evaluated by the &quot;IsValid&quot; method when it drills into the child objects and finds it&#39;s incomplete/Invalid. This &nbsp;property data is never saved in the business object and is only really a &quot;helper&quot; property.</li>
+<li>How do I &quot;ignore&quot; the property for the standard CSLA &nbsp;framework methods (IsValid, IsSavable etc).</li>
+</ul>
+</p>
+<p>So I figured &nbsp;I can just override IsValid and IsSavable as I&#39;ve done bellow.</p>
+<p>
+<pre><span>        &#39;&#39;&#39;&nbsp;</span><span>&lt;summary&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>&#39;&#39;&#39;&nbsp;Ensure&nbsp;that&nbsp;this&nbsp;object&nbsp;is&nbsp;valid&nbsp;and&nbsp;ignore&nbsp;any&nbsp;extended&nbsp;propertyInfo&nbsp;classes&nbsp;that&nbsp;are&nbsp;used&nbsp;in&nbsp;calculations&nbsp;but&nbsp;not&nbsp;saved&nbsp;to&nbsp;the&nbsp;database.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>&#39;&#39;&#39;&nbsp;</span><span>&lt;/summary&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>&#39;&#39;&#39;&nbsp;</span><span>&lt;value&gt;&lt;/value&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>&#39;&#39;&#39;&nbsp;</span><span>&lt;returns&gt;&lt;/returns&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>&#39;&#39;&#39;&nbsp;</span><span>&lt;remarks&gt;</span><span>In&nbsp;this&nbsp;case&nbsp;we&nbsp;are&nbsp;passing&nbsp;in&nbsp;mocked&nbsp;Product&nbsp;rule&nbsp;CSLA&nbsp;object&nbsp;to&nbsp;this&nbsp;class&nbsp;for&nbsp;unit&nbsp;testing,&nbsp;and&nbsp;it&nbsp;is&nbsp;incomplete&nbsp;(invalid).&nbsp;If&nbsp;ByBase.IsValid&nbsp;is&nbsp;used,&nbsp;then&nbsp;that&nbsp;invalid&nbsp;property&nbsp;is&nbsp;detected&nbsp;and&nbsp;it&nbsp;blocks&nbsp;saving&nbsp;the&nbsp;record.</span><span>&lt;/remarks&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>Public</span>&nbsp;<span>Overrides</span>&nbsp;<span>ReadOnly</span>&nbsp;<span>Property</span>&nbsp;IsValid()&nbsp;<span>As</span>&nbsp;<span>Boolean</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>Get</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>Return</span>&nbsp;<span>MyBase</span>.IsSelfValid&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>&#39;ByBase.IsValid&nbsp;checks&nbsp;all&nbsp;child&nbsp;object&nbsp;validity&nbsp;(which&nbsp;for&nbsp;product&nbsp;member&nbsp;contains&nbsp;incomplete&nbsp;payment&nbsp;rules&nbsp;for&nbsp;unit&nbsp;tests)</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>End</span>&nbsp;<span>Get</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>End</span>&nbsp;<span>Property</span>
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>&#39;&#39;&#39;&nbsp;</span><span>&lt;summary&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>&#39;&#39;&#39;&nbsp;We&nbsp;want&nbsp;to&nbsp;ignore&nbsp;one&nbsp;of&nbsp;the&nbsp;PropertyInfo&nbsp;that&nbsp;includes&nbsp;data&nbsp;that&nbsp;doesn&#39;t&nbsp;need&nbsp;to&nbsp;be&nbsp;saved.</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>&#39;&#39;&#39;&nbsp;During&nbsp;unit&nbsp;testing&nbsp;these&nbsp;products&nbsp;supplied&nbsp;to&nbsp;the&nbsp;class&nbsp;don&#39;t&nbsp;exist&nbsp;and&nbsp;aren&#39;t&nbsp;valid.&nbsp;We&nbsp;want&nbsp;to&nbsp;ignore&nbsp;that&nbsp;data&nbsp;during&nbsp;the&nbsp;validation&nbsp;checks.&nbsp;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>&#39;&#39;&#39;&nbsp;</span><span>&lt;/summary&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>&#39;&#39;&#39;&nbsp;</span><span>&lt;value&gt;&lt;/value&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>&#39;&#39;&#39;&nbsp;</span><span>&lt;returns&gt;&lt;/returns&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>&#39;&#39;&#39;&nbsp;</span><span>&lt;remarks&gt;&lt;/remarks&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>Public</span>&nbsp;<span>Overrides</span>&nbsp;<span>ReadOnly</span>&nbsp;<span>Property</span>&nbsp;IsSavable&nbsp;<span>As</span>&nbsp;<span>Boolean</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>Get</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>Return</span>&nbsp;<span>MyBase</span>.IsSelfValid
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>End</span>&nbsp;<span>Get</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>End</span>&nbsp;<span>Property</span></pre>
+</p>
+<h2>Questions</h2>
+<p><ol>
+<li>Can you use Attributes, DataAnnotations or PropertyInfo({options...} to effectively ignore a CSLA backing property?</li>
+<li>Is Overriding the IsValid, IsSavable methods the easiest approach?</li>
+<li>Long term, how easy is it to mock a CSLA business object at the object level, rather than the DataPortal level, without resorting to a Mocking framework? Would love to hear about which of the mocking frameworks work well with CSLA.</li>
+</ol></p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Thursday, September 27, 2012</h2><p>Hi Jamie, </p>
+<p>If you have Rockys <i><b>Using CSLA 4 Objects </b></i>(book 2)&nbsp; then look up </p>
+<ul>
+<li>Child references </li>
+<li>Using reference </li>
+<li>Inter-Graph reference </li>
+</ul>
+<p>Understanding how to handle these relationship types is important for your application and some times also performance and memory consumption. </p>
+<p><b>Basically - if you have an object that is not a child (owning) reference then you must use private backing fields.</b></p>
+<p>Private backing fields are not automatically checked by IsValid/IsDirty etc (you must override and add these checks when applicable).</p>
+<p>And private backing fields may also have attributes like</p>
+<ul>
+<li> NotUndoable - ie: not included in the snapshot in BeginEdit</li>
+<li>NonSerialized - ie: not serialized and sent to remote server. </li>
+</ul>
+<p>1. You cannot use attributes to ignore a managed backing field. <br />&nbsp;&nbsp;&nbsp; Private backing fields is not automatically checked and you can add attributes to exclude a private field from snapshot and serialization.</p>
+<p>2. I would change ProductProperty to use a private field - and thus it is excluded from IsDirty/IsValid. </p>
+<p>3. I prefer to use &quot;fake&quot; objects of the real type. <br />We typically use public constructor (due to limitations in SL/WinRT) and so it is easy to create fake objects with a &quot;given&quot; state. You can also create an ObjectAccessor class derived from ObjectFactory to get access to f.ex BypassPropertyChecks/LoadProperty etc and load property values without triggering rules.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

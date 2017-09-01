@@ -1,0 +1,60 @@
+<html><header><title>CSLA 4 version 4.3 release</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA 4 version 4.3 release</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11206.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka posted on Sunday, March 04, 2012</h2><p>I am pleased to announce the release of CSLA 4 version 4.3. It is available from the <a href="http://www.lhotka.net/cslanet/download.aspx">CSLA download page</a>.</p>
+<p>This release adds support for Silverlight 5.</p>
+<blockquote>
+<p><em>Silverlight 4 is still supported. The assemblies are in a Silverlight4.zip file in the bin folder created by the setup program in your Program Files folder or other install location.</em></p>
+</blockquote>
+<p>Other major enhancements include:</p>
+<ul>
+<li>New binary serialization scheme for MobileFormatter resulting in <em>substantially</em> smaller data flowing across the data portal from Silverlight and Windows Phone client applications. The ProjectTracker sample application has been updated to use this new scheme &ndash; look at the app server web.config and the SilverlightUI and WpUI app.xaml.cs files to see how the client and server configuration is handled.</li>
+<li>Numerous enhancements to the business rules subsystem. See the <a href="http://www.lhotka.net/Article.aspx?id=1c287e08-d428-4c27-b538-d588e3c55775">change log</a> for more information.</li>
+<li>Bug fixes to address some specific data portal issues. See the <a href="http://www.lhotka.net/Article.aspx?id=1c287e08-d428-4c27-b538-d588e3c55775">change log</a> for more information.</li>
+<li>CommandBase now supports managed properties.</li>
+</ul>
+<p>With this version, CSLA 4 now supports the following platforms:</p>
+<ul>
+<li>Microsoft .NET 4
+<ul>
+<li>Windows Forms</li>
+<li>ASP.NET Web Forms</li>
+<li>ASP.NET asmx services</li>
+<li>WPF</li>
+<li>WCF services</li>
+<li>ASP.NET MVC 3</li>
+</ul>
+</li>
+<li>Silverlight 5</li>
+<li>Silverlight 4</li>
+<li>Windows Phone 7.5</li>
+<li>Mono
+<ul>
+<li>OS X</li>
+<li>Linux</li>
+</ul>
+</li>
+<li>Mono for Android</li>
+</ul>
+<p>The source code also includes a version of CSLA 4 that builds for WinRT (Windows 8) Consumer Preview. This is largely untested, but does demonstrate that existing business classes (especially those built for 3- and 4-tier deployments in Silverlight) can be simply recompiled for use in WinRT applications. Consider this a preview of CSLA 4 version 4.5, coming later this year with support for .NET 4.5 and WinRT.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Sunday, March 04, 2012</h2><p>Version 4.3.10 is also available via nuget: <a href="https://nuget.org/packages?q=CSLA">https://nuget.org/packages?q=CSLA</a>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>artsd replied on Sunday, March 04, 2012</h2><p>Awesome! Thanks Rocky.</p>
+<p>Does the improved Silverlight serializer mean that there is no need to use a zip based compressed proxy any longer?</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Sunday, March 04, 2012</h2><p>In many cases that is exactly what it means.</p>
+<p>There is still value in compression, but less than before. And for a lot of applications it may no longer be that important, because the stream size using the new technology is perhaps 30% of what it was before. Specific sizes vary a lot based on the size and composition of the object graph, but the larger the graph, the bigger the savings tend to be.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Russ replied on Monday, March 05, 2012</h2><p>Hi Rocky,</p>
+<p>Thanks again for all the great work. </p>
+<p>I did a straight replacement of my 4.3.2 references with the new 4.3.10 ones and received the following errors:</p>
+<p>&nbsp;<span style="font-family:Consolas;font-size:xx-small;"><span style="font-family:Consolas;font-size:xx-small;">c:\Windows\Microsoft.NET\Framework\v4.0.30319\Microsoft.Common.targets(1360,9): warning MSB3258: The primary reference &quot;Csla&quot; could not be resolved because it has an indirect dependency on the .NET Framework assembly &quot;mscorlib, Version=5.0.5.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e&quot; which has a higher version &quot;5.0.5.0&quot; than the version &quot;2.0.5.0&quot; in the current target framework.
+<p>c:\Windows\Microsoft.NET\Framework\v4.0.30319\Microsoft.Common.targets(1360,9): warning MSB3258: The primary reference &quot;Csla&quot; could not be resolved because it has an indirect dependency on the .NET Framework assembly &quot;System, Version=5.0.5.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e&quot; which has a higher version &quot;5.0.5.0&quot; than the version &quot;2.0.5.0&quot; in the current target framework.</p>
+<p>c:\Windows\Microsoft.NET\Framework\v4.0.30319\Microsoft.Common.targets(1360,9): warning MSB3258: The primary reference &quot;Csla&quot; could not be resolved because it has an indirect dependency on the .NET Framework assembly &quot;System.Windows, Version=5.0.5.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e&quot; which has a higher version &quot;5.0.5.0&quot; than the version &quot;2.0.5.0&quot; in the current target framework.</p>
+<p>c:\Windows\Microsoft.NET\Framework\v4.0.30319\Microsoft.Common.targets(1360,9): warning MSB3258: The primary reference &quot;Csla&quot; could not be resolved because it has an indirect dependency on the .NET Framework assembly &quot;System.ServiceModel, Version=5.0.5.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35&quot; which has a higher version &quot;5.0.5.0&quot; than the version &quot;2.0.5.0&quot; in the current target framework.</p>
+<p>c:\Windows\Microsoft.NET\Framework\v4.0.30319\Microsoft.Common.targets(1360,9): warning MSB3258: The primary reference &quot;Csla&quot; could not be resolved because it has an indirect dependency on the .NET Framework assembly &quot;System.Core, Version=5.0.5.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e&quot; which has a higher version &quot;5.0.5.0&quot; than the version &quot;2.0.5.0&quot; in the current target framework.</p>
+<p>c:\Windows\Microsoft.NET\Framework\v4.0.30319\Microsoft.Common.targets(1360,9): warning MSB3258: The primary reference &quot;Csla&quot; could not be resolved because it has an indirect dependency on the .NET Framework assembly &quot;System.Net, Version=5.0.5.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e&quot; which has a higher version &quot;5.0.5.0&quot; than the version &quot;2.0.5.0&quot; in the current target framework.</p>
+<p>c:\Windows\Microsoft.NET\Framework\v4.0.30319\Microsoft.Common.targets(1360,9): warning MSB3258: The primary reference &quot;Csla&quot; could not be resolved because it has an indirect dependency on the .NET Framework assembly &quot;System.Runtime.Serialization, Version=5.0.5.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e&quot; which has a higher version &quot;5.0.5.0&quot; than the version &quot;2.0.5.0&quot; in the current target framework.</p>
+<p>c:\Windows\Microsoft.NET\Framework\v4.0.30319\Microsoft.Common.targets(1360,9): warning MSB3258: The primary reference &quot;Csla&quot; could not be resolved because it has an indirect dependency on the .NET Framework assembly &quot;System.Xml, Version=5.0.5.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e&quot; which has a higher version &quot;5.0.5.0&quot; than the version &quot;2.0.5.0&quot; in the current target framework.</p>
+</span></span></p>
+<p>I suspect this means that I need to install .Net Framswork 4.5.&nbsp;&nbsp;&nbsp;I have been following the forum and I understood that CSLA 4.3 would work with .Net Framework 4.0 and CSLA 4.5 would be targeting .Net Framework 4.5.&nbsp; Is this correct?</p>
+<p>Thanks</p>
+<p>Russ.</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, March 05, 2012</h2><p>Is this in Silverlight or .NET?</p>
+<p>I built all this on&nbsp;a machine that has never had VS11 or .NET 4.5 installed.</p>
+<p>But the Silverlight assemblies do target Silverlight 5, not 4. The Silverlight 4 assemblies are in a zip file in the bin folder created by the installer.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Russ replied on Monday, March 05, 2012</h2><p>This is in Silverlight 5.&nbsp; I have VS2010 Premium v10.0.40219.1 SP1Rel and .Net Framework 4.0.30319 SP1Rel. </p>
+<p>I recently upgraded my solution from SL4 to SL5 by installing the SL5 developer runtime, SL5 SDK, SL5 Toolkit and SL5 tools for VS2010. I then installed CSLA 4.3.2. Everything worked great until I installed CSLA 4.3.10 todya and updated my project references.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, March 05, 2012</h2><p>I thought it was SL, based on the 2.0.5 runtime version stuff - that&#39;s Silverlight 4.</p>
+<p>Did you update your SL projects to target SL5?</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Russ replied on Monday, March 05, 2012</h2><p>You are a genius!&nbsp; I changed my main Silverlight project to target SL5 however I didn&#39;t think to change the Library.Silverlight project to target SL5.&nbsp; I just did this now and it works perfectly!</p>
+<p>Thanks again.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, March 05, 2012</h2><p>Not so much genius as having been there and faced the same pain :)</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

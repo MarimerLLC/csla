@@ -1,0 +1,280 @@
+<html><header><title>CSLA Entity Framework 4.1 Code First</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA Entity Framework 4.1 Code First</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10376.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergioadh posted on Monday, May 16, 2011</h2><p>Hi, I&#39;m trying to make this work, but I haven&#39;t got it correctly, I&#39;m using my CSLA entities to create my database with Entity Framework 4.1.</p>
+<p>&nbsp;</p>
+<p>But I&#39;m having a problem with the declaration and managing of child objects.</p>
+<p>I can&#39;t seem to retrieve my entities &#39;Maestro&#39; and I don&#39;t know what am I doing wrong, because I have a class Alumno which can retrieve correctly its collections but the collections object has an object which I can&#39;t seem to retrieve</p>
+<p>Altough I do seem to save it correctly into DB</p>
+<p>Class Clase</p>
+<p>
+<p>&nbsp; &nbsp; [Serializable]</p>
+<p>&nbsp; &nbsp; public class Clase : BusinessBase&lt;Clase&gt;</p>
+<p>&nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; #region Business Methods</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; private static PropertyInfo&lt;Guid&gt; IdProperty = RegisterProperty(typeof(Clase), new PropertyInfo&lt;Guid&gt;(&quot;Id&quot;));</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; [Key]</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; public Guid Id</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; get { return GetProperty(IdProperty); }</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; set { SetProperty(IdProperty, value); }</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; private static PropertyInfo&lt;string&gt; NombreProperty = RegisterProperty(typeof(Clase), new PropertyInfo&lt;string&gt;(&quot;Nombre&quot;, &quot;Nombre de la Clase&quot;));</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; [Display(Name = &quot;Nombre de la Clase&quot;)]</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; [Required(ErrorMessage = &quot;Nombre de Clase requerido&quot;)]</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; public string Nombre</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; get { return GetProperty(NombreProperty); }</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; set { SetProperty(NombreProperty, value); }</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; private static PropertyInfo&lt;Maestro&gt; MaestroProperty = RegisterProperty(typeof(Clase), new PropertyInfo&lt;Maestro&gt;(&quot;Maestro&quot;, &quot;Maestro de la Clase&quot;));</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; [Display(Name = &quot;Maestro de la Clase&quot;)]</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; [Required(ErrorMessage = &quot;La clase requiere de un Maestro&quot;)]</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; public Maestro Maestro</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; get</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; if (!FieldManager.FieldExists(MaestroProperty))</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; LoadProperty(MaestroProperty, Maestro.GetMaestro(this));</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; return GetProperty(MaestroProperty);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; set { SetProperty(MaestroProperty, value); }</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; private static PropertyInfo&lt;Sesiones&gt; SesionesProperty = RegisterProperty(typeof(Clase), new PropertyInfo&lt;Sesiones&gt;(&quot;Sesiones&quot;, &quot;Horario de la Clase&quot;));</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; [Display(Name = &quot;Horario de la Clase&quot;)]</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; public virtual Sesiones Sesiones</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; get</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; if (!(FieldManager.FieldExists(SesionesProperty)))</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; LoadProperty(SesionesProperty, Sesiones.NewSesiones());</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; return GetProperty(SesionesProperty);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; private static PropertyInfo&lt;Equipos&gt; EquiposProperty = RegisterProperty(typeof(Clase), new PropertyInfo&lt;Equipos&gt;(&quot;Equipos&quot;, &quot;Equipos de la Clase&quot;));</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; [Display(Name = &quot;Equipos de la Clase&quot;)]</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; public virtual Equipos Equipos</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; get</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; if (!(FieldManager.FieldExists(EquiposProperty)))</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; LoadProperty(EquiposProperty, Equipos.NewEquipos());</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; return GetProperty(EquiposProperty);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; #endregion</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; #region &nbsp;Factory Methods</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; public static Clase NewClase()</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; return DataPortal.CreateChild&lt;Clase&gt;();</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; public static Clase GetClase(Guid Id)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; return DataPortal.FetchChild&lt;Clase&gt;(new SingleCriteria&lt;Clase, Guid&gt;(Id));</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; public static Clase GetClase(Clase data)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; return DataPortal.FetchChild&lt;Clase&gt;(new SingleCriteria&lt;Clase, Clase&gt;(data));</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; private Clase()</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; { /* require use of factory methods */ MarkAsChild(); }</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; #endregion</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; #region Data Access</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; [RunLocal()]</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; protected override void Child_Create()</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; LoadProperty(IdProperty, Guid.NewGuid());</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; BusinessRules.CheckRules();</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; [Transactional(TransactionalTypes.TransactionScope)]</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; private void Child_Insert(object parent)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; var ctx = Horario.GetContexto();</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Alumno Alumno = ctx.Alumnos.Find(((Alumno)parent).Id);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Alumno.Clases.Add(this);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; ctx.SaveChanges();</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; FieldManager.UpdateChildren(this);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; [Transactional(TransactionalTypes.TransactionScope)]</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; private void Child_Update(object parent)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; var ctx = Horario.GetContexto();</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; var Clase = ctx.Clases.Find(ReadProperty(IdProperty));</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Clase.Nombre = ReadProperty(NombreProperty);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; ctx.SaveChanges();</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; FieldManager.UpdateChildren(this);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; private void Child_Fetch(SingleCriteria&lt;Clase, Clase&gt; criteria)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; LoadProperty(IdProperty, criteria.Value.Id);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; LoadProperty(NombreProperty, criteria.Value.Nombre);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; LoadProperty(MaestroProperty, Maestro.GetMaestro(criteria.Value.Id));</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; LoadProperty(SesionesProperty, Sesiones.GetSesiones(criteria.Value.Sesiones.ToArray()));</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; LoadProperty(EquiposProperty, Equipos.GetEquipos(criteria.Value.Equipos.ToArray()));</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; private void Child_Fetch(SingleCriteria&lt;Clase, Guid&gt; criteria)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; var ctx = Horario.GetContexto();</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; var data = ctx.Clases.Find(criteria.Value);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; LoadProperty(IdProperty, data.Id);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; LoadProperty(NombreProperty, data.Nombre);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; LoadProperty(MaestroProperty, data.Maestro);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; LoadProperty(SesionesProperty, Sesiones.GetSesiones(data.Sesiones.ToArray()));</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; LoadProperty(EquiposProperty, Equipos.GetEquipos(data.Equipos.ToArray()));</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; #endregion</p>
+<p>&nbsp; &nbsp; }</p>
+</p>
+<p>&nbsp;</p>
+<p>Class Maestro</p>
+<p>
+<p>&nbsp; &nbsp; [Serializable()]</p>
+<p>&nbsp; &nbsp; public class Maestro : IPersona</p>
+<p>&nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; #region &nbsp;Factory Methods</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; public static Maestro NewMaestro()</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; return DataPortal.CreateChild&lt;Maestro&gt;();</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; internal static Maestro GetMaestro(Clase parent)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; return DataPortal.FetchChild&lt;Maestro&gt;(new SingleCriteria&lt;Maestro, Guid&gt;(parent.Id));</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; internal static Maestro GetMaestro(Guid id)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; return DataPortal.FetchChild&lt;Maestro&gt;(new SingleCriteria&lt;Maestro, Guid&gt;(id));</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; private Maestro()</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; { /* require use of factory methods */ MarkAsChild(); }</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; #endregion</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; #region Data Access</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; protected override void Child_Create()</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; LoadProperty(IdProperty, Guid.NewGuid());</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; BusinessRules.CheckRules();</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; [Transactional(TransactionalTypes.TransactionScope)]</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; private void Child_Insert(object parent)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; var ctx = Horario.GetContexto();</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; var Clase = ctx.Clases.Find(((Clase)parent).Id);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Clase.Maestro = this;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; ctx.SaveChanges();</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; FieldManager.UpdateChildren(this);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; [Transactional(TransactionalTypes.TransactionScope)]</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; private void Child_Update(object parent)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; var ctx = Horario.GetContexto();</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; var Clase = ctx.Clases.Find(((Clase)parent).Id);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Clase.Maestro.Nombre = ReadProperty(NombreProperty);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Clase.Maestro.Correo = ReadProperty(CorreoProperty);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Clase.Maestro.Telefono = ReadProperty(TelefonoProperty);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; ctx.SaveChanges();</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; FieldManager.UpdateChildren(this);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; private void Child_Fetch(SingleCriteria&lt;Maestro, Maestro&gt; criteria)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; LoadProperty(IdProperty, criteria.Value.Id);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; LoadProperty(NombreProperty, criteria.Value.Nombre);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; LoadProperty(CorreoProperty, criteria.Value.Correo);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; LoadProperty(TelefonoProperty, criteria.Value.Telefono);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; private void Child_Fetch(SingleCriteria&lt;Maestro, Guid&gt; criteria)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; var ctx = Horario.GetContexto();</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; var data = ctx.Clases.Find(criteria.Value).Maestro;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; LoadProperty(IdProperty, data.Id);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; LoadProperty(NombreProperty, data.Nombre);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; LoadProperty(CorreoProperty, data.Correo);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; LoadProperty(TelefonoProperty, data.Telefono);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; #endregion</p>
+<p>&nbsp; &nbsp; }</p>
+</p>
+<p>&nbsp;</p>
+<p>Class IPersona</p>
+<p>
+<p>&nbsp; &nbsp; [Serializable()]</p>
+<p>&nbsp; &nbsp; public class IPersona : BusinessBase&lt;IPersona&gt;</p>
+<p>&nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; #region Business Methods</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; protected static PropertyInfo&lt;Guid&gt; IdProperty = RegisterProperty(typeof(IPersona), new PropertyInfo&lt;Guid&gt;(&quot;Id&quot;));</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; [Key]</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; public Guid Id</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; get { return GetProperty(IdProperty); }</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; set { SetProperty(IdProperty, value); }</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; protected static PropertyInfo&lt;string&gt; NombreProperty = RegisterProperty(typeof(IPersona), new PropertyInfo&lt;string&gt;(&quot;Nombre&quot;, &quot;Nombre de Usuario&quot;));</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; [Display(Name = &quot;Nombre de Usuario&quot;)]</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; [Required(ErrorMessage = &quot;Nombre de Usuario requerido&quot;)]</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; public string Nombre</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; get { return GetProperty(NombreProperty); }</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; set { SetProperty(NombreProperty, value); }</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; protected static PropertyInfo&lt;string&gt; CorreoProperty = RegisterProperty(typeof(IPersona), new PropertyInfo&lt;string&gt;(&quot;Correo&quot;, &quot;Correo Electr&oacute;nico&quot;));</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; [Display(Name = &quot;Correo Electr&oacute;nico&quot;)]</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; [DataType(System.ComponentModel.DataAnnotations.DataType.EmailAddress)]</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; [RegularBLOCKED EXPRESSION; }</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; #endregion</p>
+<p>&nbsp; &nbsp; }</p>
+</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergioadh replied on Monday, May 16, 2011</h2><p>Ok I&#39;m mistaken I had</p>
+<p>&nbsp;</p>
+<p>
+<p>private static PropertyInfo&lt;Maestro&gt; MaestroProperty = RegisterProperty(typeof(Clase), new PropertyInfo&lt;Maestro&gt;(&quot;Maestro&quot;, &quot;Maestro de la Clase&quot;));</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; [Display(Name = &quot;Maestro de la Clase&quot;)]</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; [Required(ErrorMessage = &quot;La clase requiere de un Maestro&quot;)]</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; public Maestro Maestro</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; get</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; if (!FieldManager.FieldExists(MaestroProperty))</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; LoadProperty(MaestroProperty, Maestro.NewMaestro());</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; return GetProperty(MaestroProperty);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; set { SetProperty(MaestroProperty, value); }</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; }</p>
+</p>
+<p>&nbsp;</p>
+<p>The thing is that I CAN retrieve from my parent class it&#39;s Clases (which is a list of Clase) with no problem but when I retrieve each Clase from my Clases when they try to get Maestro it creates a new one.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

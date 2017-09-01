@@ -1,0 +1,33 @@
+<html><header><title>Where is my Cache?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Where is my Cache?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6164.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Gravy posted on Thursday, January 15, 2009</h2><P>Hi,</P>
+<P>Having finally started some work with CSLA 3.6 I find myslef having to come to terms clients side code and server code. I was hoping someone could tell me if the follow is correct:</P>
+<P>1. When talking about CSLA, then server side code is basically anything that is executed in (or from) the DataPortal_xyz methods. </P>
+<P>2. If my BO library is running just on a windows forms&nbsp;client, (i.e. no WCF, Web Services or other server hosting environments) then my 'server side' code also runs on the client.</P>
+<P>3. If I host on an application server then it is only the DataPortal that is remoted. My windows forms client still has a copy of the BO's locally, it's just when the object is saved or loaded does my app server get used.</P>
+<P>4. If I have data that is retrieved from the Client application, say the locale for the user (this is hypathetical), then in order for the server side code to read it I should put it in either the ClientContext or GlobalContext.</P>
+<P>5. If I wanted to create a caching class that contained data that the DataPortal methods needed (could be a connection string that was dependant on some client specific data) then so long as I populate the cache and read from it in the server side code then it would live on the server.&nbsp;It&nbsp;wouldn't typically be available to the client side code.</P>
+<P>&nbsp;</P>
+<P>Hopefully some of these questions will make some sense!!</P>
+<P>Regards</P>
+<P>Graham</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, January 15, 2009</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>Gravy:</strong></div><div>
+<P>1. When talking about CSLA, then server side code is basically anything that is executed in (or from) the DataPortal_xyz methods. </P>
+<P></div></BLOCKQUOTE></P>
+<P>Right</P>
+<P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>Gravy:</strong></div><div></P>
+<P>2. If my BO library is running just on a windows forms&nbsp;client, (i.e. no WCF, Web Services or other server hosting environments) then my 'server side' code also runs on the client.</P>
+<P></div></BLOCKQUOTE></P>
+<P>Right</P>
+<P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>Gravy:</strong></div><div>3. If I host on an application server then it is only the DataPortal that is remoted. My windows forms client still has a copy of the BO's locally, it's just when the object is saved or loaded does my app server get used.</P>
+<P></div></BLOCKQUOTE></P>
+<P>Not exactly. Read chapter 1, which explains this pretty well I think. The whole point of the data portal is that the business objects are mobile - they literally move between client and server.</P>
+<P>It is true that, in most apps, the business objects spend&nbsp;a lot of time on the client, and only run on the server when being retrieved or updated.</P>
+<P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>Gravy:</strong></div><div>4. If I have data that is retrieved from the Client application, say the locale for the user (this is hypathetical), then in order for the server side code to read it I should put it in either the ClientContext or GlobalContext.</P>
+<P></div></BLOCKQUOTE></P>
+<P>Global context values should usually go into ClientContext. </P>
+<P>Some things, like the user's principal and the user's culture (locale) are automatically managed by CSLA and you don't need to worry about them.</P>
+<P>GlobalContext really exists for debug-oriented log/trace scenarios. You can use it for whatever you'd like, but be aware that it is serialized to/from the server and so the more you put into GlobalContext, the more overhead you incur on each data portal call.</P>
+<P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>Gravy:</strong></div><div>5. If I wanted to create a caching class that contained data that the DataPortal methods needed (could be a connection string that was dependant on some client specific data) then so long as I populate the cache and read from it in the server side code then it would live on the server.&nbsp;It&nbsp;wouldn't typically be available to the client side code.</P>
+<P></div></BLOCKQUOTE></P>
+<P>That's true, as long as you don't maintain a reference to that object from any of your business objects. When a business object is serialized, all objects it references (from instance fields) will also be serialized and moved to the client.</P>
+<P>If you ensure your cache objects are not marked with the Serializable attribute you won't have to worry about them moving - and if you accidentally keep a reference to the cache object you'll get a nice serialization exception telling you that you have a problem :)</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Gravy replied on Thursday, January 15, 2009</h2><P>Rocky, thank you.</P>
+<P>I feel relived I got most of it right. Onwards and upwards as they say :)</P>
+<P>Graham</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

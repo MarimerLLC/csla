@@ -1,0 +1,287 @@
+<html><header><title>I am missing something somewhere!</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>I am missing something somewhere!</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6211.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>CyclingFoodmanPA posted on Tuesday, January 20, 2009</h2><P>I have been going through the Rolodex example with a fine tooth comb and I am trying to figure out where the code DataPortal_Fetch is called in RolodexIdentity when in Silverlight mode?&nbsp; I have stepped through GetCslaIdentity&lt;RolodexIdentity&gt;(completed, new CredentialsCriteria(username, password)); and gone through the Csla framework and still have not found where the sproc GetUser or Login is called.</P>
+<P>Reason I am battling with this is my Silverlight prototype application continuously comes up with "Invalid login. Try again." and I have gone through the Web.config in the WcfHostWeb file and am sure I have the correct connection string.&nbsp; I have turned on debugging in the Web.config file of the WcfHostWeb file and things seem to be ok, but I am still a little fuzzy with the Wcf stuff but am getting there.&nbsp; But there are no glaring errors like not able to connect to the database or invalid connection string.</P>
+<P>I am sure when I figure this out or someone steers me in the right direction, it will be a major "ahh duh" moment and I am anxiously awaiting that ahh duh monent because for the life of me, I cannot figure out how or where the Rolodex example is calling the sproc to validate the username and password.</P>
+<P>Thanks for your help.</P>
+<P>Keith</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Tuesday, January 20, 2009</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>It is in DataPortal_Fetch in ROlodexIdentity.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> CyclingFoodmanPA
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Tuesday, January 20, 2009 3:37 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> [CSLA .NET] I am missing something somewhere!<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>I have been going through the Rolodex example with a fine tooth comb and I
+am trying to figure out where the code DataPortal_Fetch is called in
+RolodexIdentity when in Silverlight mode?&nbsp; I have stepped through
+GetCslaIdentity&lt;RolodexIdentity&gt;(completed, new
+CredentialsCriteria(username, password)); and gone through the Csla framework
+and still have not found where the sproc GetUser or Login is called.<o:p></o:p></p>
+
+<p>Reason I am battling with this is my Silverlight prototype application
+continuously comes up with &quot;Invalid login. Try again.&quot; and I have
+gone through the Web.config in the WcfHostWeb file and am sure I have the
+correct connection string.&nbsp; I have turned on debugging in the Web.config
+file of the WcfHostWeb file and things seem to be ok, but I am still a little
+fuzzy with the Wcf stuff but am getting there.&nbsp; But there are no glaring
+errors like not able to connect to the database or invalid connection string.<o:p></o:p></p>
+
+<p>I am sure when I figure this out or someone steers me in the right
+direction, it will be a major &quot;ahh duh&quot; moment and I am anxiously
+awaiting that ahh duh monent because for the life of me, I cannot figure out
+how or where the Rolodex example is calling the sproc to validate the username
+and password.<o:p></o:p></p>
+
+<p>Thanks for your help.<o:p></o:p></p>
+
+<p>Keith<o:p></o:p></p>
+
+<p>&nbsp;<o:p></o:p></p>
+
+<p>&nbsp;<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>CyclingFoodmanPA replied on Tuesday, January 20, 2009</h2><P>Hi Sergey,</P>
+<P>Yes, I see it there and I set breakpoints there, but it never stops at the breakpoint.&nbsp; And also, it is after the #else for the #if SILVERLIGHT so it is not available for the Silverlight part of the code.&nbsp; Do breakpoints not work in the code when you are executing apps in Silverlight?</P>
+<P>Thanks,</P>
+<P>Keith</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>solheim replied on Wednesday, January 21, 2009</h2><P>Hi Keith,</P>
+<P>You need to attach to the server process in order to debug the data-access code.</P>
+<P>For Rolodex:</P>
+<P>1. Open RolodexIdentity.cs from the Rolodex.Business.Server project.</P>
+<P>2. Add breakpoint on DataPortal_Fetch</P>
+<P>3. Start Debugging</P>
+<P>4. In Visual Studio menu choose "Debug / Attach to process"</P>
+<P>5. Choose process "ASP.NET Development Server - Port 2430" and click "Attach"<BR>&nbsp;&nbsp; (The WcfHostWeb Project is configured to run on port 2430)</P>
+<P>6. Try Login in the silverlight client, you should hit the breakpoint on DataPortal_Fetch.</P>
+<P><BR>The same goes for debugging all manner of serverside Dataportal code.</P>
+<P><BR>Paul</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Wednesday, January 21, 2009</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>An alternative, which is something I mentioned before, is to
+combine two web sites (WCF host and SL app host) into a single web application.&nbsp;
+At that point both client and server will run in a single process, thus
+enabling you to debug client and server code from the same instance of VS.&nbsp;
+Rolodex was setup the way it was to demonstrate how to split them up (which
+will be an advantage in production environment) and demonstrate the usage of
+cross-domain configuration files, but it does negatively affect development.&nbsp;
+<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> solheim
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Wednesday, January 21, 2009 8:15 AM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: I am missing something somewhere!<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Hi Keith,<o:p></o:p></p>
+
+<p>You need to attach to the server process in order to debug the data-access
+code.<o:p></o:p></p>
+
+<p>For Rolodex:<o:p></o:p></p>
+
+<p>1. Open RolodexIdentity.cs from the Rolodex.Business.Server project.<o:p></o:p></p>
+
+<p>2. Add breakpoint on DataPortal_Fetch<o:p></o:p></p>
+
+<p>3. Start Debugging<o:p></o:p></p>
+
+<p>4. In Visual Studio menu choose &quot;Debug / Attach to process&quot;<o:p></o:p></p>
+
+<p>5. Choose process &quot;ASP.NET Development Server - Port 2430&quot; and
+click &quot;Attach&quot;<br>
+&nbsp;&nbsp; (The WcfHostWeb Project is configured to run on port 2430)<o:p></o:p></p>
+
+<p>6. Try Login in the silverlight client, you should hit the breakpoint on
+DataPortal_Fetch.<o:p></o:p></p>
+
+<p><br>
+The same goes for debugging all manner of serverside Dataportal code.<o:p></o:p></p>
+
+<p><br>
+Paul<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>CyclingFoodmanPA replied on Wednesday, January 21, 2009</h2><P>Ok Sergey that makes more sense now.&nbsp; I guess it is important to know both aspects of development - merging both projects Wcf and Silverlight into one app and splitting both of them.&nbsp; I guess the bottom line is you have to do what is best for a production environment.&nbsp; You cannot develop an application in one format, then switch it for production!&nbsp; Well, you could, but you might not be employed for long!</P>
+<P>Thank you both Paul and Sergey.&nbsp; I have been beating my head against the wall for a week to figure out how to debug the DataPortal_Fetch and it was really, really bugging me.&nbsp; You gus are great!</P>
+<P>Take care,</P>
+<P>Keith</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Wednesday, January 21, 2009</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>IMHO, it is totally acceptable in this case to have two setups &#8211;
+one for production, one for development.&nbsp; Essentially, by merging all you
+have to do is copy your .svc file over and merge WCF portion of web.config
+over.&nbsp; Since there is really no code that you write for the web site,
+there is close to no risk in switching your setup for production and QA as
+well. Moreover, you do have to split the web sites for production eatiher,
+although it is probably a good idea.&nbsp; All depends on amount of traffic and
+scaling out infrastructure.&nbsp; If you are scaling web servers separately from
+application server, you have to split the web sites.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> CyclingFoodmanPA
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Wednesday, January 21, 2009 8:31 AM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: RE: I am missing something somewhere!<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Ok Sergey that makes more sense now.&nbsp; I guess it is important to know
+both aspects of development - merging both projects Wcf and Silverlight into
+one app and splitting both of them.&nbsp; I guess the bottom line is you have
+to do what is best for a production environment.&nbsp; You cannot develop an
+application in one format, then switch it for production!&nbsp; Well, you
+could, but you might not be employed for long!<o:p></o:p></p>
+
+<p>Thank you both Paul and Sergey.&nbsp; I have been beating my head against
+the wall for a week to figure out how to debug the DataPortal_Fetch and it was
+really, really bugging me.&nbsp; You gus are great!<o:p></o:p></p>
+
+<p>Take care,<o:p></o:p></p>
+
+<p>Keith<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>CyclingFoodmanPA replied on Wednesday, January 21, 2009</h2><P>Paul,</P>
+<P>Thank you, thank you, thank you.&nbsp; That was it.&nbsp; I have been banging my head against the wall for the last few days trying to figure this out.&nbsp; You are the man!</P>
+<P>Keith</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

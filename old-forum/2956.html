@@ -1,0 +1,58 @@
+<html><header><title>Ordered List</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Ordered List</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/2956.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>josh.kodroff posted on Wednesday, May 30, 2007</h2>I have a (CSLA) list where order matters: each item in the list has a sequence number, which can be set by the user.<br><br>I followed the implementation in this thread: http://forums.lhotka.net/forums/thread/7131.aspx<br><br>So I have code that looks like this (this is the only code I wrote for this implementation):<br><font face="Courier New" size="2">&nbsp;&nbsp; Public Sub MoveUp(ByVal index As Integer)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; If index &gt; 0 And Me.Count &gt; 1 Then<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; RaiseListChangedEvents = False<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Dim temp As StudyComponent = Me(index)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Me(index) = Me(index - 1)<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Me(index - 1) = temp<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ' Seq No starts at 1 so we need to add 1 to the index.<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Me(index).SetSeqNo(index + 1)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Me(index - 1).SetSeqNo(index)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; RaiseListChangedEvents = True<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End If<br>&nbsp;&nbsp;&nbsp; End Sub<br><br>&nbsp;&nbsp;&nbsp; Public Sub MoveDown(ByVal index As Integer)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; If index &lt; Me.Count - 1 And Me.Count &gt; 1 Then<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; RaiseListChangedEvents = False<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Dim temp As StudyComponent = Me(index)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Me(index) = Me(index + 1)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Me(index + 1) = temp<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ' Seq No starts at 1 so we need to add 1 to the index.<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Me(index).SetSeqNo(index + 1)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Me(index + 1).SetSeqNo(index + 2)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; RaiseListChangedEvents = True<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End If<br>&nbsp;&nbsp;&nbsp; End Sub<br><br><font face="Times New Roman" size="3">The problem is, whenever my MoveUp or MoveDown is called, items are added to the DeletedList collection, which in turn is calling MarkNew.&nbsp; This means that whenever I change the order of my list, the Insert function is called instead of the Update function.<br><br>Can anyone lend any help?<br><br>Thanks.<br>JK</font><br></font></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>SimpleCSLA replied on Wednesday, May 30, 2007</h2>Any reason why you couldn't put a button on the page that has the Update code in it?<br><br>That way you wouldn't make any calls to the database until the user was done changing the indexes.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>josh.kodroff replied on Wednesday, May 30, 2007</h2>I'm not sure what you mean.&nbsp; I'm not making any calls to the database except through the standard data acess methods in my business objects.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, May 30, 2007</h2><P>Can you just wrap your collection in a SortedBindingList and sort on your sequence property value?</P>
+<P>In the database you can, of course, store the sequence value as well, but this way you don't really care about the order of items in memory, yet they would show up in order on the screen because they'd be sorted.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>josh.kodroff replied on Wednesday, May 30, 2007</h2>Rocky, you seem to be implying that if I just change the seq no property values instead of swapping members of the list, this will solve my problem.<br><br>Is this correct?<br><br>Also, while it's not critical that I understand why this would solve my problem (so long as it does), why are the items being added to the DeletedList when I'm swapping them?<br><br>Also also, consider this my request for an ordered list class in the next CSLA.NET version.&nbsp; ;)<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, May 30, 2007</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Yes, you can change the seq # property and then re-apply the
+sort and the items will display in order based on that property.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>If you look at your MoveUp/MoveDown code you&#8217;ll see that
+you are doing a &#8220;set&#8221; operation on two items in the list. A SetItem
+operation means that a new object is replacing an existing object in the list.
+For n-level undo to work, BusinessListBase must be able to undo that operation &#8211;
+eliminating the newly added item and restoring the original. To accomplish
+this, the original (which is obviously no longer active in the real list) must
+be moved to the deleted list, and the newly added item must have its
+editleveladded value set.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>In CSLA 3 I address a bit of an oversight here, by also ensuring
+that the newly added item is at the same edit level as the collection itself &#8211;
+thus addressing a bug that would appear in some scenarios when doing in-place
+editing of a list in a grid control.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Regarding an ordered list: CSLA 1.x collections had a native
+ability to sort themselves. That was a serious PITA, and turns out to have been
+a poor implementation choice. The CSLA 2 approach of using SortedBindingList to
+create a sorted <i>view</i> of a list is a far superior solution &#8211; both in
+terms of implementation simplicity, but also in terms of composability &#8211;
+for instance, being able to combine SortedBindingList and FilteredBindingList
+to get a sorted, filtered, view.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,18 @@
+<html><header><title>Issue with Validation Rules Refreshing with Prism...</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Issue with Validation Rules Refreshing with Prism...</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10957.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>reagan123 posted on Wednesday, December 07, 2011</h2><p>Hello,<br />We are using CSLA 4 and Prism 4 for a WPF application.&nbsp; Currently, we are using the CSLA.ViewModelBase for our view models.&nbsp; The first time I navigate to a view, the object is created and the validation errors show correctly.&nbsp; The issue comes the second time I load the view.&nbsp; It seems like the PropertyStatus control is not being refreshed, but I really don&#39;t know.<br /><br />Has anyone seen either seen this behavior or have a suggestion of what to try?<br /><br />Thank you.</p>
+<p>Additional Details:<br />We are loading the view using &quot;RegionManager.RequestNavigation&quot;<br />We are loading the model &nbsp;&quot;OnNavigatedTo&quot; </p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>reagan123 replied on Wednesday, December 07, 2011</h2><p>I&#39;m wondering if this is the issue that says it&#39;s fixed in 4.2.&nbsp; We are going to update to test it out.&nbsp; Any feedback still would be appreciated.</p>
+<p>
+<table width="625" cellpadding="0" cellspacing="0" border="1" class="LightShading-Accent11" style="width:468.9pt;border-collapse:collapse;mso-border-top-alt:solid #4F81BD 1.0pt;mso-border-top-themecolor:accent1;mso-border-bottom-alt:solid #4F81BD 1.0pt;mso-border-bottom-themecolor:accent1;mso-yfti-tbllook:1184;mso-padding-alt:0in 5.4pt 0in 5.4pt;">
+<tbody>
+<tr style="height:15pt;mso-yfti-irow:22;">
+<td width="64" valign="top" style="padding-bottom:0in;padding-left:5.4pt;width:48pt;padding-right:5.4pt;background:#d3dfee;height:15pt;padding-top:0in;mso-background-themecolor:accent1;mso-background-themetint:63;border:#f0f0f0;">
+<p align="right" class="MsoNormal" style="text-align:right;margin:0in 0in 0pt;mso-yfti-cnfc:68;"><b><span style="font-family:&#39;Calibri&#39;, &#39;sans-serif&#39;;color:black;font-size:11pt;">926</span></b></p>
+</td>
+<td width="561" valign="top" style="padding-bottom:0in;padding-left:5.4pt;width:420.9pt;padding-right:5.4pt;background:#d3dfee;height:15pt;padding-top:0in;mso-background-themecolor:accent1;mso-background-themetint:63;border:#f0f0f0;">
+<p class="MsoNormal" style="margin:0in 0in 0pt;mso-yfti-cnfc:64;"><span style="font-family:&#39;Calibri&#39;, &#39;sans-serif&#39;;color:black;font-size:11pt;">PropertyStatus misses in syncing BO and UI and updating UI</span></p>
+</td>
+</tr>
+</tbody>
+</table>
+</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Wednesday, December 07, 2011</h2><p>Yes, you should try the updated PropertyStatus.</p>
+<p>If it still fail then please provide us with a simple sample that reproduces the behavior so we can dig into the issue.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>reagan123 replied on Wednesday, December 07, 2011</h2><p>That worked... Thanks for the quick reply.&nbsp; Looks like we are going to upgrade to 4.2.1.</p>
+<p>&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

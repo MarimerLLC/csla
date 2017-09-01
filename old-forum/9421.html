@@ -1,0 +1,28 @@
+<html><header><title>CSLA 4.0 - Required DLLs for an MVC website</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA 4.0 - Required DLLs for an MVC website</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9421.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>j0552 posted on Monday, August 23, 2010</h2><p class="MsoPlainText" style="margin:0cm 0cm 0pt;"><a name="_MailAutoSig"><span style="font-size:small;"><span style="font-family:Consolas;">Hi</span></span></a></p>
+<p class="MsoPlainText" style="margin:0cm 0cm 0pt;"><span><span style="font-family:Consolas;font-size:small;">&nbsp;</span></span></p>
+<p class="MsoPlainText" style="margin:0cm 0cm 0pt;"><span><span style="font-size:small;"><span style="font-family:Consolas;">I&#39;m not sure if this behaviour is by design or a minor bug. If I have an MVC website using authentication it seems I must have Csla.Web referenced for it to work correctly. </span></span></span></p>
+<p class="MsoPlainText" style="margin:0cm 0cm 0pt;"><span><span style="font-family:Consolas;font-size:small;">&nbsp;</span></span></p>
+<p class="MsoPlainText" style="margin:0cm 0cm 0pt;"><span><span style="font-size:small;"><span style="font-family:Consolas;">My website compiles with or without the assembly but after compiling without it looks like setting the ApplicationContext.User doesn&#39;t set the underlying HttpContext.User object. e.g. if I add this after authentication I get true and false respectively.</span></span></span></p>
+<p class="MsoPlainText" style="margin:0cm 0cm 0pt;"><span><span style="font-family:Consolas;font-size:small;">&nbsp;</span></span></p>
+<p class="MsoPlainText" style="margin:0cm 0cm 0pt;"><span><span style="font-size:small;"><span style="font-family:Consolas;"><span style="mso-spacerun:yes;">&nbsp;</span>Debug.WriteLine(Csla.ApplicationContext.User.IsInRole(&quot;Administrator&quot;), &quot;Csla.ApplicationContext.User.IsInRole&quot;); // true</span></span></span></p>
+<p class="MsoPlainText" style="margin:0cm 0cm 0pt;"><span><span style="font-size:small;"><span style="font-family:Consolas;">Debug.WriteLine(User.IsInRole(&quot;Administrator&quot;), &quot;HttpApplication.User.IsInRole&quot;); // false</span></span></span></p>
+<p class="MsoPlainText" style="margin:0cm 0cm 0pt;"><span><span style="font-family:Consolas;font-size:small;">&nbsp;</span></span></p>
+<p class="MsoPlainText" style="margin:0cm 0cm 0pt;"><span><span style="font-size:small;"><span style="font-family:Consolas;">Seems a bit odd. Is this to be expected?</span></span></span></p>
+<p class="MsoPlainText" style="margin:0cm 0cm 0pt;"><span><span style="font-family:Consolas;font-size:small;">&nbsp;</span></span></p>
+<p class="MsoPlainText" style="margin:0cm 0cm 0pt;"><span><span style="font-size:small;"><span style="font-family:Consolas;">Thanks</span></span></span></p>
+<p class="MsoPlainText" style="margin:0cm 0cm 0pt;"><span><span style="font-family:Consolas;font-size:small;">Andrew</span></span><span><span style="mso-fareast-language:EN-GB;mso-no-proof:yes;"></span></span></p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Monday, August 23, 2010</h2><p>When building applications in ASP.NET you should reference:</p>
+<ul>
+<li>Csla.dll</li>
+<li>Csla.Web.dll</li>
+</ul>
+<p>When building ASP.NET MVC applications you should additionally reference:</p>
+<ul>
+<li>Csla.Web.Mvc.dll</li>
+</ul>
+<p>Csla.Web.dll contains some important ASP.NET support, including web-specific behaviors for ApplicationContext.</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Monday, August 23, 2010</h2><p>You should also be aware that there&#39;s a bug in the ApplicationContext implementation in 4.0.0 that is fixed in 4.0.1. This bug should only affect you in a couple scenarios:</p>
+<ul>
+<li>You are creating background threads within your server-side code</li>
+<li>Your web site hosts both web pages and WCF service endpoints</li>
+</ul>
+<p>If you encounter issues, try using 4.0.1, as it fixes the bug.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>j0552 replied on Monday, August 23, 2010</h2><p>Thank you for the clarification Rocky.</p>
+<p>Andrew</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

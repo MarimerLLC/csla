@@ -1,0 +1,167 @@
+<html><header><title>Are InputProperties always considered as AffectedProperties?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Are InputProperties always considered as AffectedProperties?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11500.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Andreas posted on Monday, July 23, 2012</h2><p><span lang="EN-US" style="font-family:&#39;Arial&#39;,&#39;sans-serif&#39;;color:black;font-size:9pt;mso-ansi-language:EN-US;">Hi!<span style="mso-tab-count:1;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></span></p>
+<p><span lang="EN-US" style="font-family:&#39;Arial&#39;,&#39;sans-serif&#39;;color:black;font-size:9pt;mso-ansi-language:EN-US;">Are properties added to the InputProperties collection in a custom BusinessRule implementation always considered as AffectedProperties? </span></p>
+<p><span lang="EN-US" style="font-family:&#39;Arial&#39;,&#39;sans-serif&#39;;color:black;font-size:9pt;mso-ansi-language:EN-US;">If so, how can I make sure that rules with higher priority are called after business rules with lower priority?</span></p>
+<p><span lang="EN-US" style="font-family:&#39;Arial&#39;,&#39;sans-serif&#39;;color:black;font-size:9pt;mso-ansi-language:EN-US;">I have a BussinesRule with high priority (1) attached to property &quot;Property_1&quot;, because I want this rule to be executed after all other rules which have the default priority (0). But some of the other BusinessRules with priority &quot;0&quot; need the value of &quot;Property_1&quot; to calculate its rule result. So I have to add &quot;Property_1Property&quot; to their BusinesssRule constructor and also to its InputProperties collection to get access to its value when the rule is executed. </span></p>
+<p><span lang="EN-US" style="font-family:&#39;Arial&#39;,&#39;sans-serif&#39;;color:black;font-size:9pt;mso-ansi-language:EN-US;">Now, the Rule attached to Property_1 with priority 1, is executed on the same priority level as the BusinessRules a priority &quot;0&quot;, because it is automatically identified as an AffectedProperty and AffectedProperties are always executed after the primary property. Unfortunately this breaks my business logic because, as I said, I have to make sure that the rule attached to Propertiy_1 should only execute after all standard business rules with priority 0. Any advises are very much appreciated.</span></p>
+<p><span lang="EN-US" style="font-family:&#39;Arial&#39;,&#39;sans-serif&#39;;color:black;font-size:9pt;mso-ansi-language:EN-US;">Regards,</span></p>
+<p><span lang="EN-US" style="font-family:&#39;Arial&#39;,&#39;sans-serif&#39;;color:black;font-size:9pt;mso-ansi-language:EN-US;">Andreas</span></p>
+<p class="MsoNormal"><span lang="EN-US" style="mso-ansi-language:EN-US;"><span style="font-family:Calibri;font-size:small;">&nbsp;</span></span></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Monday, July 23, 2012</h2><p>InputProperties is always considered a dependency (starting from Csla 4.2).</p>
+<p>I do not quite understand the problem tho&acute;, as the the rule prosessing always follows the priority.</p>
+<p><ol>
+<li><span>Rule is always execute in ordered sequence Priority (asc) for the &quot;PrimaryProperty&quot; that was changed.</span></li>
+<li><span>Then accumulated AffectedProperties from &nbsp;execution PLUS other properties where PrimaryProperty is an InpuProperty is executed.</span></li>
+<li><span>The Rules is exuted on a &quot;per-property&quot; basis (possible alphabetically sorted - &nbsp;can&acute;t remeber from my memory) sorted by Priority (asc).</span></li>
+</ol></p>
+<p>So the rules do not mix the priority levels.&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Andreas replied on Monday, July 23, 2012</h2><p>Hi Jonny,</p>
+<p>thanks. As you pointed out, rules are executed on a &quot;per-propery&quot; basis sorted by priority. That&#39;s what I was missing and it explains the way the rules are executing in my code. But, I&nbsp;am still looking for a way to execute a rule&nbsp;at the very end, after all other BusinessRules have been completed.</p>
+<p>Andreas</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Monday, July 23, 2012</h2><p>Mmmm, that could be little tricky.</p>
+<p>I assume you are talking SYNC rules only - &nbsp;as ASYNC rules will finish at an &quot;undertemined&quot; time.&nbsp;</p>
+<p>1. You could override PropertyHasChanged and call an ObjectRule (or fictive property rule) after the SYNC rules have completed. (ie after base.PropertyHasChanged(property)).</p>
+<p>When all rules have complete (SYNC and ASYNC) you will get the ValidationCompleted event. However - I do not think that you should start new rules within this event.&nbsp;</p>
+<p>Another possibility is to review options on Dependency and Priority. &nbsp;Like consider to add a &quot;fictivious&quot; property named &quot;ZZZZ&quot; and add this as dependency. &nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Andreas replied on Tuesday, July 24, 2012</h2><p>So there is&nbsp;no way to control the order of business rule execution on &quot;per object type&quot; basis (vs. &quot;per&nbsp;property&quot;&nbsp;basis)? I think, currently the order in which the rules are added determines the order in which they are executed.&nbsp;Wouldn&#39;t it make sence to be able to control&nbsp;the order&nbsp;of the business rule execution on &quot;per object type&quot; basis?&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Tuesday, July 24, 2012</h2><p>Hi, </p>
+<p>CSLA supports 2 types of rules: PropertyRules and ObjectRules.&nbsp;</p>
+<p>PerPropertyRules is executed from PropertyHasChanged (autmatically when property is set to a new value) &nbsp;or when you call BusinessRules.CheckRules() </p>
+<p>ObjectRules is only executed when your code call &lt;bo&gt;.CheckObjectRules() &nbsp;(databound) or BusinessRules.CheckRules or BusinessRules,CheckObjectRules().&nbsp;</p>
+<p>RULES IS ALWAYS EXEUTED IN ASCENDING ORDER ON PRIORITY - BOTH PER-PROPERTY AND PER-OBJECT.&nbsp;</p>
+<p>Within the same priority I consider the sort sequence random and of no significant order!!!!!</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Andreas replied on Tuesday, July 24, 2012</h2><p>Sorry Jonny for the confusion, but&nbsp;I am looking for a way to make sure that BusinessRules attached to property&nbsp;&quot;B&quot; are executed before the rules&nbsp;attached to&nbsp;property&nbsp;&quot;A&quot;.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Tuesday, July 24, 2012</h2><p>In which condition? PropertyB is edited by the user? CheckRules() &nbsp;to check all rules? &nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Andreas replied on Tuesday, July 24, 2012</h2><p>When CheckRules() is called.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Tuesday, July 24, 2012</h2><p>Why dows it matter?&nbsp;</p>
+<p>Ex:</p>
+<p>PropertyA &nbsp;=&gt; AffectedProperty = PropertyB<br /><span>or<br />PropertyB has InputProperty = PropertyA</span></p>
+<p><span>Rules for PropertyB will ba run at least 2 times in CheckRules():</span></p>
+<p><ol>
+<li><span>After execution of propertyRules for propertyA</span></li>
+<li><span>As PropertyRules on PropertyB (whether before or after PropertyA@s rules is executed).</span></li>
+</ol></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Andreas replied on Tuesday, July 24, 2012</h2><p class="MsoNormal"><span style="mso-ansi-language:EN-US;" lang="EN-US"><span style="font-size:small;"><span style="font-family:Calibri;">If you have a property that are assembled from other properties. For example a phone number&rsquo;s string representation is assembled from country code, city code and the phone number extension. My UI uses three different input boxes for the country code, city code and the local phone number. Each one has DataAnnotationRules attached. In my database I have only&nbsp;one column &ldquo;PhoneNumber&rdquo; that has to follow a specific format: &ldquo;++&lt;ContryCode&gt; (&lt;CityCode&gt;) &lt;Number&gt;&rdquo;</span></span></span></p>
+<p class="MsoNormal"><span style="mso-ansi-language:EN-US;" lang="EN-US"><span style="font-size:small;"><span style="font-family:Calibri;">I attach a &ldquo;PhoneFormatRule&rdquo; to the PhoneNumber. It creates a string like &ldquo;++&lt;ContryCode&gt; (&lt;CityCode&gt;) &lt;Number&gt;&rdquo; and pass it as a parameter to AddOutValue(). In this case I have to make sure that PhoneFormatRule is called after the rules for CountryCode, CityCode and Number. I use context.IsCascadeContext to check if the rule is called because of an AffectedProperty condition. I execute the Rules formatting logic only if context. IsCascadeContext==false and I added this rule as the last&nbsp;one in AddBusinessRules(). It works for me, but it&rsquo;s probably a hack that will break in the future.</span></span></span></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Tuesday, July 24, 2012</h2><p>Does this mean that the user can edit ANY of the 4 fields - including the calculated one?</p>
+<p>Do you attach business rules to fields tht the user is not allowed to edit?</p>
+<p>No, I wouldn&acute;t do this as you have done - but is unable to post my solution now as I am soon travelling home from vacation.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rfcdejong replied on Wednesday, July 25, 2012</h2><p>Whenever you are back from vacation i would like to see into the same solution since a&nbsp;<span>colleague</span><span>&nbsp;of my&nbsp;</span>has a simulair problem which tried to explain in here&nbsp;<a href="http://forums.lhotka.net/forums/t/11506.aspx">http://forums.lhotka.net/forums/t/11506.aspx</a></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Wednesday, July 25, 2012</h2><p>I would claim that your data access code should have the responsibility for setting the correct values during Fetch/Create. </p>
+<p>Then I would have a rule to PhoneNumber property to ALWAYS format the field (assuming that the user is not allowed to edit all 4 fields). If user is allowed to edit all 4 fields the &quot;calculation rules&quot; must be attached to each property to know exactly which field was changed.</p>
+<pre style="font-family:Consolas;font-size:13;color:black;background:#fafafa;">&nbsp; <span style="color:blue;">public</span>&nbsp;<span style="color:blue;">class</span>&nbsp;<span style="color:#2b91af;">FormatPhoneNumber</span>&nbsp;:&nbsp;Csla.Rules.CommonRules.<span style="color:#2b91af;">CommonBusinessRule</span>
+&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">private</span>&nbsp;<span style="color:blue;">readonly</span>&nbsp;<span style="color:#2b91af;">PropertyInfo</span>&lt;<span style="color:blue;">int</span>&gt;&nbsp;_countryProperty;
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">private</span>&nbsp;<span style="color:blue;">readonly</span>&nbsp;<span style="color:#2b91af;">PropertyInfo</span>&lt;<span style="color:blue;">int</span>&gt;&nbsp;_cityProperty;
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">private</span>&nbsp;<span style="color:blue;">readonly</span>&nbsp;<span style="color:#2b91af;">PropertyInfo</span>&lt;<span style="color:blue;">int</span>&gt;&nbsp;_numberProperty;
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;FormatPhoneNumber(<span style="color:#2b91af;">PropertyInfo</span>&lt;<span style="color:blue;">string</span>&gt;&nbsp;phoneNumber,&nbsp;<span style="color:#2b91af;">PropertyInfo</span>&lt;<span style="color:blue;">int</span>&gt;&nbsp;countryProperty,&nbsp;<span style="color:#2b91af;">PropertyInfo</span>&lt;<span style="color:blue;">int</span>&gt;&nbsp;cityProperty,&nbsp;<span style="color:#2b91af;">PropertyInfo</span>&lt;<span style="color:blue;">int</span>&gt;&nbsp;numberProperty)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;<span style="color:blue;">base</span>(phoneNumber)
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_countryProperty&nbsp;=&nbsp;countryProperty;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_cityProperty&nbsp;=&nbsp;cityProperty;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_numberProperty&nbsp;=&nbsp;numberProperty;
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;InputProperties&nbsp;=&nbsp;<span style="color:blue;">new</span>&nbsp;<span style="color:#2b91af;">List</span>&lt;<span style="color:#2baaaf;">IPropertyInfo</span>&gt;()&nbsp;{&nbsp;countryProperty,&nbsp;cityProperty,&nbsp;numberProperty&nbsp;};
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CanRunInCheckRules&nbsp;=&nbsp;<span style="color:blue;">false</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CanRunOnServer&nbsp;=&nbsp;<span style="color:blue;">false</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">protected</span>&nbsp;<span style="color:blue;">override</span>&nbsp;<span style="color:blue;">void</span>&nbsp;Execute(<span style="color:#2b91af;">RuleContext</span>&nbsp;context)
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">var</span>&nbsp;country&nbsp;=&nbsp;context.InputPropertyValues[_countryProperty];
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">var</span>&nbsp;city&nbsp;=&nbsp;context.InputPropertyValues[_cityProperty];
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">var</span>&nbsp;number&nbsp;=&nbsp;context.InputPropertyValues[_numberProperty];
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;context.AddOutValue(<span style="color:blue;">string</span>.Format(<span style="color:#a31515;">&quot;++</span><span style="color:mediumseagreen;">{0}</span><span style="color:#a31515;">&nbsp;(</span><span style="color:mediumseagreen;">{1}</span><span style="color:#a31515;">)&nbsp;</span><span style="color:mediumseagreen;">{2}</span><span style="color:#a31515;">&quot;</span>,&nbsp;country,&nbsp;city,&nbsp;number));
+&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;}</pre>
+<p>Added to the root object like this: </p>
+<pre style="font-family:Consolas;font-size:13;color:black;background:#fafafa;">&nbsp; [<span style="color:#2b91af;">Serializable</span>]
+&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">class</span>&nbsp;<span style="color:#2b91af;">Root</span>&nbsp;:&nbsp;<span style="color:#2b91af;">BusinessBase</span>&lt;<span style="color:#2b91af;">Root</span>&gt;
+&nbsp;&nbsp;{
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">static</span>&nbsp;<span style="color:blue;">readonly</span>&nbsp;<span style="color:#2b91af;">PropertyInfo</span>&lt;<span style="color:blue;">int</span>&gt;&nbsp;CountryProperty&nbsp;=&nbsp;RegisterProperty&lt;<span style="color:blue;">int</span>&gt;(c&nbsp;=&gt;&nbsp;c.Country);
+&nbsp;&nbsp;&nbsp;&nbsp;[<span style="color:#2b91af;">Range</span>(1,&nbsp;99)]
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">int</span>&nbsp;Country
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">get</span>&nbsp;{&nbsp;<span style="color:blue;">return</span>&nbsp;GetProperty(CountryProperty);&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">set</span>&nbsp;{&nbsp;SetProperty(CountryProperty,&nbsp;<span style="color:blue;">value</span>);&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">static</span>&nbsp;<span style="color:blue;">readonly</span>&nbsp;<span style="color:#2b91af;">PropertyInfo</span>&lt;<span style="color:blue;">int</span>&gt;&nbsp;CityProperty&nbsp;=&nbsp;RegisterProperty&lt;<span style="color:blue;">int</span>&gt;(c&nbsp;=&gt;&nbsp;c.City);
+&nbsp;&nbsp;&nbsp;&nbsp;[<span style="color:#2b91af;">Range</span>(1,&nbsp;99)]
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">int</span>&nbsp;City
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">get</span>&nbsp;{&nbsp;<span style="color:blue;">return</span>&nbsp;GetProperty(CityProperty);&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">set</span>&nbsp;{&nbsp;SetProperty(CityProperty,&nbsp;<span style="color:blue;">value</span>);&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">static</span>&nbsp;<span style="color:blue;">readonly</span>&nbsp;<span style="color:#2b91af;">PropertyInfo</span>&lt;<span style="color:blue;">int</span>&gt;&nbsp;NumberProperty&nbsp;=&nbsp;RegisterProperty&lt;<span style="color:blue;">int</span>&gt;(c&nbsp;=&gt;&nbsp;c.Number);
+&nbsp;&nbsp;&nbsp;&nbsp;[<span style="color:#2b91af;">Range</span>(1,&nbsp;999999)]
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">int</span>&nbsp;Number
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">get</span>&nbsp;{&nbsp;<span style="color:blue;">return</span>&nbsp;GetProperty(NumberProperty);&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">set</span>&nbsp;{&nbsp;SetProperty(NumberProperty,&nbsp;<span style="color:blue;">value</span>);&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">static</span>&nbsp;<span style="color:blue;">readonly</span>&nbsp;<span style="color:#2b91af;">PropertyInfo</span>&lt;<span style="color:blue;">string</span>&gt;&nbsp;PhoneNumberProperty&nbsp;= <br />                           RegisterProperty&lt;<span style="color:blue;">string</span>&gt;(c&nbsp;=&gt;&nbsp;c.PhoneNumber,&nbsp;<span style="color:blue;">null</span>,&nbsp;<span style="color:#a31515;">&quot;&lt;invalid&gt;&quot;</span>);
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">string</span>&nbsp;PhoneNumber
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">get</span>&nbsp;{&nbsp;<span style="color:blue;">return</span>&nbsp;GetProperty(PhoneNumberProperty);&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">set</span>&nbsp;{&nbsp;SetProperty(PhoneNumberProperty,&nbsp;<span style="color:blue;">value</span>);&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">protected</span>&nbsp;<span style="color:blue;">override</span>&nbsp;<span style="color:blue;">void</span>&nbsp;AddBusinessRules()
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:green;">//&nbsp;add&nbsp;data&nbsp;validation&nbsp;rules</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">base</span>.AddBusinessRules();
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;BusinessRules.AddRule(<span style="color:blue;">new</span>&nbsp;<span style="color:#2b91af;">FormatPhoneNumber</span>(PhoneNumberProperty,&nbsp;CountryProperty, <br />                                                  CityProperty,&nbsp;NumberProperty){&nbsp;Priority&nbsp;=&nbsp;-1});
+&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+&nbsp;&nbsp;&nbsp; <span style="color:blue;">public</span>&nbsp;<span style="color:blue;">static</span>&nbsp;<span style="color:#2b91af;">Root</span>&nbsp;NewEditableRoot()
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">return</span>&nbsp;<span style="color:#2b91af;">DataPortal</span>.Create&lt;<span style="color:#2b91af;">Root</span>&gt;();
+&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">protected</span>&nbsp;<span style="color:blue;">override</span>&nbsp;<span style="color:blue;">void</span>&nbsp;DataPortal_Create()
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;LoadProperty(PhoneNumberProperty,&nbsp;<span style="color:blue;">string</span>.Empty);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">base</span>.DataPortal_Create();
+&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;}</pre>
+<p>The end result is that whenever the user edits one of the inputproperties in WinForms/WPF/SL/WinRT the PhoneNumber property is set and then other rules for PhoneNumber is ossible validation rules for PhoneNumberProperty is rerun. </p>
+<p>In my case I want the PhoneNumber to ALWAYS be calculated. If i wanted to hide an Invalid value in PhoneNumber from being shown to the user I could also add: </p>
+<pre style="font-family:Consolas;font-size:13;color:black;background:#fafafa;">&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">private</span> <span style="color:#2b91af;">static List</span>&lt;<span style="color:blue;">string</span>&gt;&nbsp;inputForPhoneNumber&nbsp;= <br />                    <span style="color:blue;">new</span>&nbsp;<span style="color:#2b91af;">List</span>&lt;<span style="color:blue;">string</span>&gt;&nbsp;{&nbsp;CountryProperty.Name,&nbsp;CityProperty.Name,&nbsp;NumberProperty.Name&nbsp;};
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">override</span>&nbsp;<span style="color:blue;">bool</span>&nbsp;CanReadProperty(Csla.Core.<span style="color:#2baaaf;">IPropertyInfo</span>&nbsp;property)
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">if</span>&nbsp;(property&nbsp;==&nbsp;PhoneNumberProperty)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">return</span> !((BusinessRules.GetBrokenRules().Any(
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;      p&nbsp;=&gt;&nbsp;p.Severity&nbsp;==&nbsp;<span style="color:#2baf9a;">RuleSeverity</span>.Error&nbsp;&amp;&amp;&nbsp;inputForPhoneNumber.Contains(p.Property))));
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">return</span>&nbsp;<span style="color:blue;">base</span>.CanReadProperty(property);
+&nbsp;&nbsp;&nbsp;&nbsp;}</pre>
+<p>And the PhoneNumberProperty would then hide the actual value and return the default value (&quot;&lt;invalid&gt;&quot;) for the field when one of the input properties has a validation error. </p>
+<p>So: </p>
+<ol>
+<li>Transformation should always run to keep ALL backing fields updated at ANY time</li>
+<li>Use CanReadProperty/CanWriteProperty to add logic to hide actual value or prevent user from editing a field.</li>
+<li>These rules should only run in user side logic for rich clients (CanRunInServer = false, CanRunInCheckRules = false)</li>
+<li>For WEB application they must run in CheckRules but not on serverside (CanRunInServer = false, CanRunInCheckRules = true)</li>
+</ol></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Andreas replied on Thursday, July 26, 2012</h2><p><span lang="EN-US" style="color:black;mso-ansi-language:EN-US;"><span style="font-size:small;"><span style="font-family:Times New Roman;">
+<p><span lang="EN-US" style="color:black;mso-ansi-language:EN-US;">Thanks Jonny. <span>Especially the very clever combination of BrokenRules with CanReadPropery/CanWriteProperty opened my eyes for other useful scenarios inside my current project. </span></span><span lang="EN-US" style="font-family:&#39;Arial&#39;,&#39;sans-serif&#39;;color:black;font-size:9pt;mso-ansi-language:EN-US;"></span></p>
+<span></span></span></span></span></p>
+<p><span lang="EN-US" style="color:black;mso-ansi-language:EN-US;"><span style="font-size:small;"><span style="font-family:Times New Roman;">There is only one point where I slightly disagree, from what you wrote. I don&#39;t think that it is always possible to setup all properties inside the data access code. Some calculated properties depend on data and behavior that is not fully available at fetch/create time. That again means that the calculation of these properties needs to be delayed until the business object as a certain status. And because I love the rules engine of Csla I would like implement all these calculations inside business rules only and not inside the data access code (Fetch/Create) and not inside the property getter and setter. But then I think, I need more control over the way business rules are executed. <br />As I already said I would like to have control about the order of business rule execution on property basis (for ex. property B first and property A last). Or do you think that this kind of business logic should be not implemented in Business Rules, but in a separate member function of the business object?</span></span></span></p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Thursday, July 26, 2012</h2><p>Hi, </p>
+<p>No, I do not agree. Rules for a property should not have that type of &quot;workflow&quot; defined. </p>
+<p>Each property/object has an autonomous set of rules. </p>
+<p><b>If you should ever need to check rules for another property first I would rather override PropertyHasChanged and add that logic there. </b></p>
+<p>That way you could still use:</p>
+<p>using (BypassPropertyChecks()) <br />{<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; PropertyA = ..;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; PropertyB = ...;<br />}</p>
+<p>as in this DataAccessCode there will be no PropertyHasChanged called. </p>
+<p><b>Properties is NOT code and should ONLY be get/set with the exception of lazy loading that must make a DataPortal call to get the object. </b></p>
+<p>I would encourage you to look at the Samples\Net\cs\RuleTutorial sample in Csla Samples download and the Rules sample <a href="http://cslagenfork.codeplex.com/releases/view/83993">http://cslagenfork.codeplex.com/releases/view/83993</a> as there is a load of interesting rules to use and learn from. </p>
+<p>Like ShortCircuit rules for:</p>
+<ul>
+<li>StopIfIsNew</li>
+<li>StopIfIsNotNew</li>
+<li>StopIfNotCanWrite</li>
+<li>StopIfNotFieldExists</li>
+</ul>
+<p>or Gateway rules that wraps another rule:</p>
+<ul>
+<li>IsNew</li>
+<li>IsNotNew</li>
+<li>CanWrite</li>
+</ul>
+<p>and loads more....</p>
+<p>You could as an example create a rule like <b>StopIfNotFieldAExists </b>of <b>StopIfNotFieldAHasValue</b> so that no rules for FieldB will not be allowed to run until FieldA has received a value.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

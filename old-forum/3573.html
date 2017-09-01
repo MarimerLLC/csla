@@ -1,0 +1,273 @@
+<html><header><title>Validating Child Value based on Parent's Value</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Validating Child Value based on Parent's Value</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3573.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>BVeenstra posted on Thursday, September 20, 2007</h2><p class="MsoNormal"><span><b>IN SHORT: </b>I am trying to
+make sure that for a given value on a child object conforms to a value on a
+parent object using CSLA 2.1.4 validation framework.<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><o:p>&nbsp;</o:p></span></p>
+
+<p class="MsoNormal"><u><span><b>GORY DETAILS</b><o:p></o:p></span></u></p>
+
+
+
+<p class="MsoNormal"><span><o:p>&nbsp;</o:p>Here’s the object graph:<o:p></o:p></span></p>
+
+<ul><li class="MsoNormal"><span>AllocationList (BusinessListBase)<o:p></o:p></span></li><ul><li class="MsoNormal"><span>Allocation (BusinessBase)<o:p></o:p></span></li><ul><li class="MsoNormal"><span>AllocationDetailList
+       (BusinessListBase)<o:p></o:p></span></li><ul><li class="MsoNormal"><span>AllocationDetail
+        (BusinessBase)<o:p></o:p></span></li></ul></ul></ul></ul>
+
+<p class="MsoNormal"><span>Allocation</span><span> objects have a field
+"ProductLine".<br>
+<br>
+<span>AllocationDetail</span>
+objects have a field "Part".<br>
+<br>
+I would like CSLA to <b>validate</b> that each <span>AllocationDetail</span>.Part chosen also belongs to it's <span>Allocation</span>.ProductLine.<br>
+<br>
+I have a lookup table in memory of type List&lt;Part&gt; that I build for a
+given <span>Allocation</span>.ProductLine.<br>
+<br>
+<i>One more thing... </i>the Allocation object is not supposed to allow edits
+(which I accomplished only using SETTERS), but it has a RemainingAllocation
+field that should get updated from all the child objects... I’m trying to use
+this as a trigger…<br>
+<br>
+<br>
+What I'm currently doing is this:<br>
+<br>
+<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp; </span>[<span>Serializable</span>]<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp; </span><span>public</span> <span>class</span> <span>Allocation</span> :
+<span>BusinessBase</span>&lt;<span>Allocation</span>&gt;<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp; </span>{<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span>//snip<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span>private</span><span> <span>AllocationDetailList</span> <span>detailList</span>;<span> </span><o:p></o:p></span></p>
+
+<p class="MsoNormal"><span>//snip<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span>protected</span>
+<span>override</span> <span>void</span> <span>AddBusinessRules</span>()<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>{<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span>base</span>.<span>AddBusinessRules</span>();<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><o:p>&nbsp;</o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span>ValidationRules</span>.<span>AddInstanceRule</span>&lt;<span>Allocation</span>&gt;(<span>AllocationDetailsEqualAllocationAmount</span>, </span><span>"RemainingAllocation"</span><span>);<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span>&nbsp;&nbsp;&nbsp;&nbsp;</span><span>ValidationRules</span>.<span>AddInstanceRule</span>&lt;<span>Allocation</span>&gt;(<span>PartsBelongsToPL</span>, </span><span>"RemainingAllocation"</span><span>);<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>}<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span>//snip<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span>private</span>
+<span>bool</span> <span>PartsBelongsToPL</span>(<span>Allocation</span> <span>target</span>,
+<span>RuleArgs</span> <span>e</span>)<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>{<o:p></o:p></span></p><p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span>bool</span>
+<span>foundPart</span> = <span>detailList</span>.<span>CheckPartsForPL</span>(<span>target</span>);<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp; </span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span>if</span> (<span>foundPart</span>)<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>{<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span>e</span>.<span>Description</span> = </span><span>"Parts in the allocation do not belong to the
+originating Product Line."</span><span>;<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span>e</span>.<span>Severity</span> = <span>RuleSeverity</span>.<span>Error</span>;<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span>return</span>
+<span>false</span>;<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>}<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span>else<o:p></o:p></span></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp; </span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>{<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span>e</span>.<span>Description</span> = <span>string</span>.<span>Empty</span>;<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span>return</span>
+<span>true</span>;<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>}<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>}<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span>//snip<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span>void</span> <span>detailList_ListChanged</span>(<span>object</span>
+<span>sender</span>, <span>ListChangedEventArgs</span>
+<span>e</span>)<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>{<o:p></o:p></span></p><p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span>//Recalculate
+RemainingAmount and fire a REFRESH up the STACK!<o:p></o:p></span></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span>PropertyHasChanged</span>(</span><span>"RemainingAllocation"</span><span>);<o:p></o:p></span></p><p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>}<span><o:p></o:p></span></span></p>
+
+<p class="MsoNormal"><span>//snip</span><span><o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp; </span>}<o:p></o:p></span></p><br><p class="MsoNormal"><span><o:p>&nbsp;</o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp; </span>[<span>Serializable</span>]<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp; </span><span>public</span> <span>class</span> <span>AllocationDetailList</span>
+: <span>BusinessListBase</span>&lt;<span>AllocationDetailList</span>, <span>AllocationDetail</span>&gt;<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp; </span>{<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span>//snip<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span>internal</span>
+<span>bool</span> <span>CheckPartsForPL</span>(<span>Allocation</span> <span>allocation</span>)<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>{<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span>RaiseListChangedEvents</span>
+= <span>false</span>;<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><o:p>&nbsp;</o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span>List</span>&lt;<span>Part</span>&gt; <span>list</span> = <span>Lookups</span>.<span>PartsForProductLine</span>(<span>allocation</span>.<span>ProductLine</span>);<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span>bool</span>
+<span>foundPart</span> = <span>false</span>;<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span>foreach</span>
+(<span>AllocationDetail</span> <span>detail</span>
+<span>in</span> <span>this</span>)<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>{<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span>foreach</span>
+(<span>Part</span> <span>pTest</span>
+<span>in</span> <span>list</span>)<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>{<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span>if</span>
+(<span>pTest</span>.<span>ID</span>
+== <span>detail</span>.<span>PartID</span>)<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>{<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span>foundPart</span> = <span>true</span>;<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span>break</span>;<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>}<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;</span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>}<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span>detail</span>.<span>SetBelongsToParentProductLine</span>(<span>foundPart</span>);<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>}<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span>RaiseListChangedEvents</span>
+= <span>true</span>;<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span>return</span>
+<span>foundPart</span>;<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>}<span><o:p></o:p></span></span></p>
+
+<p class="MsoNormal"><span>//snip<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp; </span>}<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><o:p>&nbsp;</o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp; </span><span>public</span> <span>class</span> <span>AllocationDetail</span>
+: <span>BusinessBase</span>&lt;<span>AllocationDetail</span>&gt;<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp; </span>{<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span>//snip<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span>private</span>
+<span>bool</span> <span>belongsToParentProductLine</span>
+= <span>true</span>;<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span>//snip<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span>public</span> <span>void</span> <span>SetBelongsToParentProductLine</span>(<span>bool</span> <span>value</span>)<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>{<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span>belongsToParentProductLine</span>
+= <span>value</span>;<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span>PropertyHasChanged</span>(</span><span>"PartName"</span><span>);<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>}<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span>//snip<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span>protected</span>
+<span>override</span> <span>void</span> <span>AddBusinessRules</span>()<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>{<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span>base</span>.<span>AddBusinessRules</span>();<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp; </span><span>//snip<o:p></o:p></span></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp; </span><span>ValidationRules</span>.<span>AddInstanceRule</span>&lt;<span>AllocationDetail</span>&gt;(<span>CheckBelongsToParentPL</span>, </span><span>"PartName"</span><span>);<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>}<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><o:p></o:p></span></p>
+
+<p class="MsoNormal"><span>//snip<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span>private</span>
+<span>bool</span> <span>CheckBelongsToParentPL</span>(<span>AllocationDetail</span> <span>target</span>,
+<span>RuleArgs</span> <span>e</span>)<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>{<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span>if</span>
+(<span>target</span>.<span>BelongsToParentProductLine</span>
+== <span>false</span>)<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>{<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span>e</span>.<span>Description</span> = </span><span>"Part does not belong to main Product Line,
+please adjust the Part to match the original Product Line."</span><span>;<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span>e</span>.<span>Severity</span> = <span>RuleSeverity</span>.<span>Error</span>;<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span>return</span>
+<span>false</span>;<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>}<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span>else<o:p></o:p></span></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span>return</span>
+<span>true</span>;<o:p></o:p></span></p><p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>}<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span>//snip<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp; </span>}<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><o:p>&nbsp;</o:p></span></p>
+
+<p class="MsoNormal"><span><o:p>&nbsp;</o:p></span></p>
+
+<p class="MsoNormal"><span>Obviously this isn’t working
+properly, but I cannot see why… My gut tells me I’m doing something the “hard
+way”.<o:p></o:p></span></p><span><o:p></o:p></span><span><o:p>&nbsp;</o:p></span>
+
+<p class="MsoNormal"><span>I am using:<o:p></o:p></span></p>
+
+<ul><li class="MsoNormal"><span>CSLA 2.1.4<o:p></o:p></span></li><li class="MsoNormal"><span>Visual Studio 2005 SP1<o:p></o:p></span></li><li class="MsoNormal"><span>.NET 2.0<o:p></o:p></span></li><li class="MsoNormal"><span>Windows 2000 SP4<o:p></o:p></span></li></ul>
+
+<br>Thanks for any comments, large or small!<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, September 24, 2007</h2><P>Child objects in a list have a Parent property that you can use to get at the list object.</P>
+<P>You can implement a Parent property in your list, if it is contained by some other object. You need to set that Parent property when the list is created, and in the OnDeserialized() override. Also, make sure it is marked as NonSerialized and NotUndoable.</P>
+<P>But once you have the Parent properties all set up, you should be able to implement a rule method that would go up the object graph to find whatever parent information you need to do the validation.</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

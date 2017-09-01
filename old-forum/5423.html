@@ -1,0 +1,420 @@
+<html><header><title>Using CSLA 3.5 with NHibernate 2.0?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Using CSLA 3.5 with NHibernate 2.0?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5423.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Devman posted on Thursday, September 18, 2008</h2><P>Hi</P>
+<P>We are in the early stages of a project which will use&nbsp;CSLA as the framework and NHibernate for persistence. There's a&nbsp;number of ways to implement&nbsp;the two together and being newbies&nbsp;we are not sure which route to take. Any feedback would be greatly appreciated;</P>
+<P>One way is to extend CSLAs BO base classes to implentment Nhibernate&nbsp;ovverriding the dataportal fetch&nbsp;&nbsp;methods etc. (ie same&nbsp;implementation as ProjectTracker.NHibernate&nbsp;in CSLAContrib). This&nbsp;requires deploying nHibernate (2MB) on the client. </P>
+<P>Another&nbsp;way its to map DTOs in NHibernate, retrieve them via NH, and then copy their data&nbsp;into CSLA BO's. My understanding is that the advantage with that approach is that we wouldn't need to deploy NHibernate on the client. Secondly there's a cleaner seperation between framework and persistence layers therefore the source is easier to understand.&nbsp; The&nbsp;downside&nbsp;with this&nbsp;however is that there is an overhead with the copying at the data retrieval and persistence stages.</P>
+<P>I guess one of the questions im asking is, has anyone tried the DTO implementation, and are there any pitfalls with that approach?</P>
+<P>TIA</P>
+<P>Devman</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Thursday, September 18, 2008</h2>I would opt for the second route.&nbsp; It allows you to remove NHibernate more easily down the road.&nbsp; The copying of values isn't likely to cause any performance problems; your biggest bottleneck is talking to the database.&nbsp; So Csla's use of reflection and simple copying of values when compared to the network overhead is very small.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, September 18, 2008</h2><P>And, if I read that correctly about altering the base class structure of CSLA, you'll avoid a ton of headaches when moving to version 3.6. To support CSLA .NET for Silverlight, there are numerous changes to the base class structure of the CSLA base classes - all invisible to a normal user of the framework, but <EM>very</EM> visible if you've customized the code!</P>
+<P>Also, if it is any consolation, DataMapper now uses dynamic method invocation to minimize its use of reflection (thanks to Ricky Supit), which should ease some perf concerns when copying data to/from objects using that technique.</P>
+<P>And finally, the new ObjectFactory concept in 3.6 is designed to make the use of ORM tools easier. Whether it helps with nHibernate I don't know - time will tell - but it opens up a much more flexbile technique for creating/updating business objects. See my blog for info about ObjectFactory.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rsbaker0 replied on Thursday, September 18, 2008</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div> 
+<P>And, if I read that correctly about altering the base class structure of CSLA, you'll avoid a ton of headaches when moving to version 3.6. To support CSLA .NET for Silverlight, there are numerous changes to the base class structure of the CSLA base classes - all invisible to a normal user of the framework, but <EM>very</EM> visible if you've customized the code!</P>
+<P></div></BLOCKQUOTE></P>
+<P>I think you can do everything&nbsp;without the DTO approach simply by inserting a common BusinessBase&lt;T&gt; derived class between the objects fetched by NHibernate and CSLA (e.g NHibernateBusinessBase)</P>
+<P>NHibernateBusinessBase would include NHibernate-aware versions of DataPortal_Fetch, _Update, etc, but there is no need to modify the CSLA Framework. </P>
+<P>If you want to move to another DAL later on, you just swap out the one class. (This is basically what we did, starting with the NHibernate sample and converting it to use the Wilson ORM instead)</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Kevin Fairclough replied on Thursday, September 18, 2008</h2>Does that mean you have to install Wilson dll's on your client machines?<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rsbaker0 replied on Thursday, September 18, 2008</h2><P>Yes, I have to deploy the WilsonORMapper.DLL on the client, although the Wilson DLL is tiny compared to NHibernate, a mere 200K. Our CodeSmith-generated DAL for our database (slightly modified Paul Welter templates), by contrast, is 1.2 MB. </P>
+<P>My understanding of CSLA is that if you want the flexibility of deploying using however many tiers that you want (including single desktop), that you put all the binaries for your BOL and DAL on each tier except for thin clients like a browser. </P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, September 18, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Ideally you wouldn&#8217;t have to put the DAL or ORM
+components/code on the client. Though with the technique you describe, that&#8217;s
+obviously required.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>But if you have a separate DAL, and use a remote data portal,
+the idea is that the DAL assembly(ies) would only be deployed to the app
+server.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>If you use a local data portal, it is absolutely true that
+everything has to deploy to the client.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>With the remote data portal, keeping that clean separation of
+dependencies is potentially very important if you want to move to Silverlight.
+Most DAL/ORM tools won&#8217;t run on Silverlight (probably ever), and so it is
+important to keep your business objects &#8220;pristine&#8221; and
+self-sufficient so they can deploy to that other platform.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> rsbaker0
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Thursday, September 18, 2008 9:26 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] Using CSLA 3.5 with NHibernate 2.0?<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Yes, I have to deploy the WilsonORMapper.DLL on the client (although the
+Wilson DLL is tiny compared to NHibernate, a mere 200K. Our CodeSmith-generated
+DAL for our database (slightly modified Paul Welter templates), by contrast, is
+1.2 MB. <o:p></o:p></p>
+
+<p>My understanding of CSLA is that if you want the flexibility of deploying
+using however many tiers that you want (including single desktop), that you put
+all the binaries for your BOL and DAL on each tier except for thin clients like
+a browser. <o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, September 18, 2008</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>If that&#8217;s true, then the new ObjectFactory stuff should
+make this even easier &#8211; because you could just have an NHibernate-aware
+DAL, and a PW ORM-aware DAL and switch between them &#8211; possibly without
+needing to change base classes.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky</span><b><span><o:p></o:p></span></b></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Kevin Fairclough replied on Thursday, September 18, 2008</h2>With regard to NHibernate dll's (about 2mb inc dependencies ) copied to client.&nbsp; <br><br>We (are/were) originally basing our development on CSLAContrib's ProjectTracker.NHibernate which I'am assuming is similar in architecture to rsbaker0.&nbsp; This is great and it works but it means we will have to deploy all the dependencies.&nbsp; <br><br>The ObjectFactory may save that need,&nbsp; but we don't know how to use it, yet.&nbsp; We are also not sure if we will need some sort of dependency injection aswell as ObjectFactory.<br><br>Our DAL and DTO's do not exist at the moment we are in design and looking into alternatives.<br><br>We are confused about calls to the DAL,&nbsp; would the DAL calls be fine-grained.&nbsp; The root object has a collection of child objects(5), each child object is modified.&nbsp; The DAL is called 6 times passing individual rows to I/U/D.&nbsp; The Child_XYZ data portal confuses the calls further, there seems a lot of new *stuff* since 3.0 eBook and we are having trouble getting the right way.<br><br>Any pointers or places to look would be appeciated.<br><br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rsbaker0 replied on Thursday, September 18, 2008</h2><P>While we're on the subject of NHibernate, you need to think about how you want to deal with NHibernate "session" management as well as concurrency issues. </P>
+<P>When working directly with NHibernate (as I recall), you would keep an ISession object around and let NHibernate keep track of which objects had changed and persist them for you. </P>
+<P>However, with CSLA and using a remote data portal, would you be keeping the session around of the lifetime of the object? If not, how will you detect collisions between updates of the same object by different users?</P>
+<P>My solution for the Wilson mapper was, ..., cough, ..., er, interesting. :)</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Kevin Fairclough replied on Thursday, September 18, 2008</h2>For Session Management:<br><br>When the DAL is finished doing its stuff the session will be closed.&nbsp; I was thinking of storing the Session in the LocalContext for Parent&gt;Child batches etc.&nbsp; I will let CSLA do its job of tracking dirty,new,deleted etc.&nbsp; This is what is confusing me about requiring fine-grained persistence.&nbsp; If I send a collection of rows to a DAL I will also need to send IsDirty, IsNew, IsDeleted etc. therefore the DTO needs IsNew,IsDeleted properties.<br><br>For Concurrency:<br><br>We will probably be using the Version property, which results in each editable BO having a Version property, NHibernate throws a StaleObjectStateException if the row being updated has a different Version to when the object was initially retrieved.<br><br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rsbaker0 replied on Thursday, September 18, 2008</h2><P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>Kevin Fairclough:</strong></div><div>For Session Management:<BR><BR>When the DAL is finished doing its stuff the session will be closed.&nbsp; I was thinking of storing the Session in the LocalContext for Parent&gt;Child batches etc.&nbsp; I will let CSLA do its job of tracking dirty,new,deleted etc.&nbsp;<BR><BR></div></BLOCKQUOTE></P>
+<P>I guess this is what confounded me when I was initially coming up with an architecture for handling CSLA+ORM. </P>
+<P>Say you have a WinForms client + remote data portal, and it loads some objects that you fetch from your Session. </P>
+<P>Ten minutes later, the user saves the data. How does the same Session get used to apply the changes?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, September 18, 2008</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>This is the problem with these ORM technologies that are designed
+for 2-tier client/server scenarios. They really don&#8217;t work well for the
+web, web services or 3-tier client/server. This includes LINQ to SQL and
+ADO.NET Entity Framework btw &#8211; they are both really lame in this area.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>There&#8217;s no realistic way to keep the context alive between
+stateless calls &#8211; that&#8217;s kind of the point of having a
+stateless/scalable server.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>So on every client request, the app server must somehow recreate
+the context, or work around the fact that it isn&#8217;t there.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>When using LINQ to SQL, I&#8217;ve been doing all my
+insert/update/delete operations with stored procedures &#8211; not trying to
+let L2S do the ORM thing at all. It is just too painful to recreate the
+context, and it requires too much code to &#8220;spoof&#8221; the operation
+with an empty context.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Basically you have three options:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoListParagraph><span><span>1.<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span></span><span>Recreate the context by requerying the database (ugh)<o:p></o:p></span></p>
+
+<p class=MsoListParagraph><span><span>2.<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span></span><span>Create an empty context and &#8220;spoof&#8221; it by attaching
+entity objects to that context as new/edited/deleted items (doable, but messy
+code)<o:p></o:p></span></p>
+
+<p class=MsoListParagraph><span><span>3.<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span></span><span>Call stored procedures (L2S wraps them in strongly-typed
+methods, so this is easy and clean)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I suppose there&#8217;s also option 4: come up with some clever
+scheme to keep the original context alive and valid for x minutes/hours between
+client requests. But this seems highly unrealistic.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>How this translates to NHibernate I don&#8217;t know, but these
+are the primary options for L2S or EF.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky</span><b><span><o:p></o:p></span></b></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rsbaker0 replied on Thursday, September 18, 2008</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div> 
+
+<P class=MsoNormal>
+<P class=MsoNormal><SPAN><o:p></o:p></SPAN></P>
+<DIV class=Section1><SPAN><SPAN><FONT color=#000000><SPAN><SPAN>2.<SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN></SPAN></SPAN><SPAN>Create an empty context and “spoof” it by attaching entity objects to that context as new/edited/deleted items (doable, but messy code)</SPAN></FONT></SPAN></SPAN>&nbsp;</DIV>
+<DIV class=Section1><SPAN><SPAN><SPAN></SPAN></SPAN></SPAN>&nbsp;</DIV>
+<DIV class=Section1><SPAN><SPAN><SPAN>&nbsp;</SPAN></SPAN></SPAN></div></BLOCKQUOTE></DIV>
+<P class=MsoListParagraph>&nbsp;</P>
+<P>My concurrency model provided a unique solution that worked well with Wilson (and might also with NHibernate). </P>
+<P>I keep lazy-loaded cache in each object that tracks the original value of any changed property. The ultimate purpose of this allows the UPDATE sql to include the original values&nbsp;in the WHERE clause along with the key. </P>
+<P>What it also lets me do is quickly reconstruct the original object from the changed one, so to do an update using the ORM:</P>
+<P>(1) Reconstruct original object from one being saved</P>
+<P>(2) Tell ORM to start tracking the original in an unchanged state</P>
+<P>(3) Now apply the changed properties to the object being tracked by the ORM.</P>
+<P>(4) Tell the ORM to persist the object. It won't know the difference between this sequence of updates and one in which it was tracking the object all along. </P>
+<P>I get some other neat benefits from&nbsp;this infrastructure. For instance, I can tell if a specific property is dirty. More importantly, if you put the property back to it's original value, it's not dirty any more. </P>
+<P>I can also do user configurable&nbsp;field-level auditing of any object (e.g. write who made the change and before/after values to an auditing log), etc. </P>
+<P>All this is done by a single BusinessBase&lt;T&gt; derived class that sits between CSLA and my DAL classes, and since I have found this to be so flexible, it's the main reason I recommend having your own common BB class. </P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Kevin Fairclough replied on Friday, September 19, 2008</h2>Food for thought...<br><br>We were actually thinking of mapping the DTO objects to NHibernate.&nbsp; The mappings are completely separate from the DTO object and the DTO is unaware it is mapped. <br><br>DTO objects are reattached to a new NH Session and because of the PK having a value and the Version property it can understand the state of the row.&nbsp; You can control how it determines new/old (I/U) rows in the mapping, i.e. a Version of NULL is a new object, or a PK of NULL is a new object.<br><br>In this case I guess:<br><ul><li>Object lives intially in NH retieved into DTO, Dies when the Session is closed.(App Server)<br></li><li>Passed/copied into CSLA BO (App Server).</li><li>Modified by user. (Client) </li><li>Copied back into a DTO (App Server) </li><li>Re-attached to a new Session and saved (App Server)</li></ul>Optimistic concurrency issues are automatically dealt with ...WHERE PK = pkVal and VERSION = versionVal.<br><br>Rocky: I guess this is Option 2 but NH may do the messy stuff automatically.<br><br>We haven't even tried to implement this so it may not work.&nbsp; NHibernate/Hibernate I believe is used quite a lot in 3 tier architectures.&nbsp; Spring.NET uses it which is ASP.NET so something should work.<br><br>I guess I'm not fully aware yet of the Session problem, which I may get when I attempt to trial this method and think about it a little more.&nbsp; The one is issue I can see is that lazy loading cannot be done automatically, which is a feature of NH,&nbsp; I will have to have separate DataPortal calls in property gets&nbsp; to deal with it.<br><br>PS: I thought MS were looking for Entity Framework to be used in data services (Astoria) though this may be just retrieval.<br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rsbaker0 replied on Friday, September 19, 2008</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>Kevin Fairclough:</strong></div><div>In this case I guess:<BR>
+<UL>
+<LI>Object lives intially in NH retieved into DTO, Dies when the Session is closed.(App Server)<BR>
+<LI>Passed/copied into CSLA BO (App Server). 
+<LI>Modified by user. (Client) 
+<LI>Copied back into a DTO (App Server) 
+<LI>Re-attached to a new Session and saved (App Server)</LI></UL>
+<P>Optimistic concurrency issues are automatically dealt with ...WHERE PK = pkVal and VERSION = versionVal.<BR></div></BLOCKQUOTE></P>
+<P>This will work fine&nbsp;- it looks like you have a good handle on things. I wasn't sure how NHibernate allowed external objects to be attached to new&nbsp;Sessions, but as long you can tell it whether the object is "New" or just being updated, this is a good approach. </P>
+<P>You're exactly right about lazy loading also -- you have to do this yourself but it works fine with separate data portal calls.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>GeorgeGr replied on Thursday, December 11, 2008</h2>Hi, <br /><br />At the moment we are looking into going into the same path as you, using CSLA+NHibernate for a 3-tier project at work. CSLA and Nhibernate are completly new to us and we are trying to explore new areas :). <br />Can you please tell us how have you progressed?</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Kevin Fairclough replied on Thursday, December 11, 2008</h2>We haven't really progressed at all.&nbsp; CSLA has been changing pretty dramatically lately (or since we started looking at it) and all the changes have made us stumble to decide the best approach.&nbsp; The main one being ObjectFactory, should we use it or not.&nbsp; The answer being most probably yes, but with us being new to .Net also CSLA is not as easy to understand because of it.&nbsp; Managed fields also, do we use them or not, do we use backing fields or not?<br><br>The new book will help us when it is out.<br><br>We are still not sure about DTO's or direct NHibernate mapping to CSLA BO.&nbsp; I would like in an ideal world to map to the CSLA BO but collections need to be copied back and forth to an NHibernate compatible IList or ISet and this doesn't fit nicely for me.&nbsp; What I want to get is CSLA collections that are compatible with NNibernate, but I'm struggling badly with NHibernates IUserCollectionType and understanding how CSLA deals with the list internally.<br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>GeorgeGr replied on Thursday, December 11, 2008</h2>Thanks for your quick response :)<br /><br />I have managed (by using CodeSmith) to generate a set of business objects (POCO(s)) that map our entire database schema along with all the necessary classes to talk to nhibernate (session Management etc). So we dont deal with nhibernate specific types and we were able to seriliaze those BO(s) in Wcf. So having those nhibernate derived BO(s) you may not have to map to a nhibernate type but just to IList<> which is heavily used in the generated BO(s).<br /><br />I am at the moment evaluating/understanding nhibernate in more detail, specificaly the part with the dettached objects model (long unit of work). and what are the best practises in the nhibernate world in dealing with stateless calls (as in disconnected datasets).<br />Also looking into if I could use those generated BO(s) to map them into CSLA.<br /><br />The common census here is that we prefer to have a more clear cut line between our DAL and BO layers and we think these generated BO will give us that.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, September 18, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I know it is small consolation, but the Expert 2008 Business
+Objects is coming along &#8211; should be out in December &#8211; and it
+provides at least some coverage of these things (though mostly from the
+perspective of how they are implemented).<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>How you create your DAL though, that&#8217;s really up to you. Fine-grained
+or coarse-grained are both options, depending on your technology and approach. If
+you have a fine-grained DAL, you may call it many times. If you have a
+coarse-grained DAL (probably an ORM that creates/consumes your objects) you
+might make just one call.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>In the new book I&#8217;m using LINQ to SQL, which is comparable
+to using the Entity Framework. The result is a fairly fine-grained DAL.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I&#8217;m hopeful that some future version of EF will allow for
+a more coarse-grained DAL &#8211; it would be really nice if EF could directly
+load data into the business objects, and perhaps that&#8217;ll happen someday. The
+hope that this will happen was my primary driver for adding the new ObjectFactory
+concept. Sadly that is not the case today&#8230;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>So in 3.6 there are three primary models:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoListParagraph><span><span>1.<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span></span><span>The 3.0 and older model &#8211; data portal calls DataPortal_XYZ
+and you do everything else<o:p></o:p></span></p>
+
+<p class=MsoListParagraph><span><span>2.<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span></span><span>The 3.5+ model &#8211; the data portal calls DataPortal_XYZ and
+you use the child data portal to save code/effort and increase consistency<o:p></o:p></span></p>
+
+<p class=MsoListParagraph><span><span>3.<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span></span><span>The ObjectFactory model &#8211; the data portal calls methods on
+a separate factory object that you write, and your factory object assumes <i>all</i>
+responsibility for creating and interacting with any business objects<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Option 2 is the simplest approach for most scenarios, and is the
+one I&#8217;m using the in book.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Option 1 is really like option 2, but requires more work. Or to
+put it another way, the reason for adding the child data portal was to help
+automate what everyone was already doing. So option 2 shouldn&#8217;t increase
+complexity &#8211; it should reduce it by letting you focus on the DAL
+interaction, not the CSLA plumbing.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Option 3 server two goals. First, it hopefully enables some
+future scenarios with ORM tools &#8211; assuming the ORM can get/set fields in
+business objects directly. Second, it opens the architecture to be more
+flexible (though often requiring more work on your part), thus possibly making
+the TDD people happier because they can use DI and other patterns to do
+whatever they want. Again, requiring more code &#8211; but arguably the code is
+more testable/flexible/etc.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Kevin Fairclough
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Thursday, September 18, 2008 9:47 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: Using CSLA 3.5 with NHibernate 2.0?<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>With regard to NHibernate dll's (about 2mb inc dependencies
+) copied to client.&nbsp; <br>
+<br>
+We (are/were) originally basing our development on CSLAContrib's
+ProjectTracker.NHibernate which I'am assuming is similar in architecture to
+rsbaker0.&nbsp; This is great and it works but it means we will have to deploy
+all the dependencies.&nbsp; <br>
+<br>
+The ObjectFactory may save that need,&nbsp; but we don't know how to use it,
+yet.&nbsp; We are also not sure if we will need some sort of dependency
+injection aswell as ObjectFactory.<br>
+<br>
+Our DAL and DTO's do not exist at the moment we are in design and looking into
+alternatives.<br>
+<br>
+We are confused about calls to the DAL,&nbsp; would the DAL calls be
+fine-grained.&nbsp; The root object has a collection of child objects(5), each
+child object is modified.&nbsp; The DAL is called 6 times passing individual
+rows to I/U/D.&nbsp; The Child_XYZ data portal confuses the calls further,
+there seems a lot of new *stuff* since 3.0 eBook and we are having trouble
+getting the right way.<br>
+<br>
+Any pointers or places to look would be appeciated.<br>
+<br>
+<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Devman replied on Thursday, September 18, 2008</h2>Thanks for the reply.<br><br>We were being drawn to DTO approach.&nbsp; This led us to the next question, If you had a CSLA collection where only some of the child rows were dirty, would you copy the whole collection back into a DTO or would you simily send just the dirty rows one by one? <br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, September 18, 2008</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>That depends on how your DAL works.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>When using something like LINQ to SQL, I would only create DTOs
+for the changed (insert/update/delete) objects. Those would be attached to the
+L2S datacontext object so the context knows which are new/update/delete. Then
+you tell the context to apply changes and it does the work.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>But if your DAL requires access to all the data (even unchanged)
+then you&#8217;d have to create DTOs for everything.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Either way, remember that insert/update operations affect the
+original list. The operations often generate new ID values, timestamp values,
+etc. So you need to take the DTOs resulting from the update and merge their
+data back into your actual business object graph.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

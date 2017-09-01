@@ -1,0 +1,32 @@
+<html><header><title>Calculating Properties from a Child List</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Calculating Properties from a Child List</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6590.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>BarryC posted on Wednesday, March 11, 2009</h2><P>Hi All,</P>
+<P>I am developing a system where some of the properties in a parent object are calculated from properties of child objects in a child list.&nbsp; The parent&nbsp;properties must be updated whenever one of the corresponding properties in the child list is altered and whenever a child object is added or deleted from the list.</P>
+<P>Does anybody know how I should go about this?</P>
+<P>Thanks,</P>
+<P>Barry C</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>wilfreds replied on Wednesday, March 11, 2009</h2><br>If you use the latest version of the framework you can use managed properties.<br><br>So, in this vb sample you would listen to the events sent to _ChildList to update your parent object.<br><br><p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp; </span><span>' declare child
+member(s)<o:p></o:p></span></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp; </span><span>Private</span> <span>WithEvents</span> _ChildList <span>As</span>
+ChildList = Library.ChildList.NewChildList(<span>Me</span>)<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><o:p>&nbsp;</o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp; </span><span>Private</span> <span>Shared</span> ChildListProperty <span>As</span>
+PropertyInfo(<span>Of</span> ChildList) = RegisterProperty(<span>New</span> PropertyInfo(<span>Of</span> ChildList)(<span>"ChildList"</span>))<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp; </span><span>Public</span> <span>ReadOnly</span> <span>Property</span> ChildList()
+<span>As</span> ChildList<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span>Get<o:p></o:p></span></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span>If</span> <span>Not</span> FieldManager.FieldExists(ChildListProperty) <span>Then<o:p></o:p></span></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>LoadProperty(<span>Of</span> ChildList)(ChildListProperty, _ChildList) <span><o:p></o:p></span></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span>End</span> <span>If<o:p></o:p></span></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span>Return</span>
+GetProperty(<span>Of</span> ChildList)(ChildListProperty)<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span>End</span> <span>Get<o:p></o:p></span></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp; </span><span>End</span> <span>Property<o:p></o:p></span></span></p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

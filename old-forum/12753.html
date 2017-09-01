@@ -1,0 +1,36 @@
+<html><header><title>why is it be error: &quot;Not a legal OleAut&quot; when importing Excel2007 into SQL 2005 ?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>why is it be error: &quot;Not a legal OleAut&quot; when importing Excel2007 into SQL 2005 ?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/12753.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>dong posted on Wednesday, September 17, 2014</h2><p>I am be an error importing the Excel2007: &quot;Not a legal OleAut date&quot;, you see my code below:</p>
+<p>&nbsp;</p>
+<p><blockquote style="overflow-x: scroll;"><pre style="margin: 0px;"></p>
+<p>public static void ImportToSql(string excelfilepath)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; string ssqltable = &quot;TABHD&quot;;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; string myexceldataquery = &quot;SELECT * FROM [dbo_TABHD]&quot;;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; try</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; string sexcelconnectionstring = &quot;Provider=Microsoft.ACE.OLEDB.12.0;Data Source =&quot; + excelfilepath + &quot;; Extended Properties=\&quot;Excel 12.0; HDR=Yes; IMEX=2\&quot;&quot;;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; string ssqlconnectionstring = @&quot;server = itfriend;Database=HD;integrated security = true&quot;;</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; //execute a query to erase any previous data from our destination table</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; string sclearsql = &quot;delete &quot; + ssqltable;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; INSERTING IT.INSTEAD I WANT TO UPDATE TABLE DATA&quot;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; SqlConnection sqlconn = new SqlConnection(ssqlconnectionstring); &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; OleDbConnection oledbconn = new OleDbConnection(sexcelconnectionstring);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; OleDbCommand oledbcmd = new OleDbCommand(myexceldataquery, oledbconn);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; oledbconn.Open();</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; OleDbDataReader dr = oledbcmd.ExecuteReader();</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; SqlBulkCopy bulkcopy = new SqlBulkCopy(ssqlconnectionstring);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; bulkcopy.DestinationTableName = ssqltable;</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; bulkcopy.WriteToServer(dr); // Eror in here: &quot;Not a legal OleAut date&quot;</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Console.WriteLine(&quot;.xlsx file imported succssessfully into database.&quot;, bulkcopy.NotifyAfter);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; oledbconn.Close();</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; catch (Exception ex)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; //handle exception</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; MessageBox.Show(ex.Message.ToString(), &quot;Warning !&quot;);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p></pre></blockquote></p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

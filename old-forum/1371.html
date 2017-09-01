@@ -1,0 +1,37 @@
+<html><header><title>mAuthorizationRules is nothing after deserialization</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>mAuthorizationRules is nothing after deserialization</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/1371.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Henrik posted on Monday, October 02, 2006</h2><P class=MsoNormal><SPAN>I’m confused. In my web-app I have a simple ReadOnlyBase object holding info about a customer, that I need on every request. Therefore I stuff it into session state.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>However, when I retrieve it from session state it doesn’t seem to deserialize authorization rules correctly (or at all).<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>I debugged my way to where the exception is thrown. It is on the first call to a CanReadProperty(&lt;propname&gt;, True), which eventually calls the <o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>AuthorizationRules.HasReadAllowedRoles(propertyName)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>line 264 of ReadOnlyBase in the VB version of the framework,&nbsp;</SPAN><SPAN>which&nbsp;now returns nothing. <o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Then I had a look at the Core.BusinessBase and saw that it had an OnDeserializedHandler which sets up authorization rules. ReadOnlyBase doesn’t have such a handler. Shouldn’t it have one also, to set up authorization rules?<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Anyway, I added an OnDeserializedHandler to ReadOnlyBase and had it call the AddAuthorizationRules but to no avail. The </SPAN><SPAN>mAuthorizationRules </SPAN>is still nothing.</P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal><SPAN>I’ve searched through the forum and think it relates to the problems described in this thread:<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><A HREF="/forums/thread/5398.aspx">http://forums.lhotka.net/forums/thread/5398.aspx</A><o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>and it looks like the Dictionary(Of TKey, TValue) is the culprit, by not deserializing properly (or maybe doesn’t serialize it's values at all).<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>I’m really lost on this issue. Have any of you guys stumbled upon this and found a solution.</SPAN><SPAN><o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>/Henrik<o:p></o:p></SPAN></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Henrik replied on Monday, October 02, 2006</h2><P>Just wanted to add to my first post.</P>
+<P>Another thing that wonders me is that the member that holds authorization rules in ReadOnlyBase i different from that in Core.BusinessBase. It's decalared like this:</P>
+<P><FONT size=2>&lt;NotUndoable()&gt; _<BR>&lt;NonSerialized()&gt; _<BR></FONT><FONT color=#0000ff size=2>Private</FONT><FONT size=2> mAuthorizationRules </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>New</FONT><FONT size=2> Security.AuthorizationRules(</FONT><FONT color=#0000ff size=2>Me</FONT><FONT size=2>.GetType)</FONT></P>
+<P>and the property that returns it i declared as</P><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Protected</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>ReadOnly</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Property</FONT><FONT size=2> AuthorizationRules()&nbsp; </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> Security.AuthorizationRules<BR>&nbsp; </FONT><FONT color=#0000ff size=2>Get<BR>&nbsp;&nbsp;&nbsp; </FONT><FONT size=2></FONT><FONT color=#0000ff size=2>Return</FONT><FONT size=2> mAuthorizationRules<BR>&nbsp; </FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Get<BR></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Property</P></FONT>
+<P>where in Core.BusinessBase it isn't instantiated in the member declaration but in the property like this:</P><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Protected</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>ReadOnly</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Property</FONT><FONT size=2> AuthorizationRules()&nbsp; </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> Security.AuthorizationRules<BR>&nbsp; </FONT><FONT color=#0000ff size=2>Get<BR>&nbsp;&nbsp;&nbsp; </FONT><FONT color=#0000ff size=2>If</FONT><FONT size=2> mAuthorizationRules </FONT><FONT color=#0000ff size=2>Is</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Nothing</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Then<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </FONT><FONT size=2>mAuthorizationRules = </FONT><FONT color=#0000ff size=2>New</FONT><FONT size=2> Security.AuthorizationRules(</FONT><FONT color=#0000ff size=2>Me</FONT><FONT size=2>.GetType)<BR>&nbsp;&nbsp;&nbsp; </FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>If<BR>&nbsp;&nbsp;&nbsp; </FONT><FONT color=#0000ff size=2>Return</FONT><FONT size=2> mAuthorizationRules<BR>&nbsp; </FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Get<BR></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Property</P></FONT>
+<P>I have changed the readonly base to do the same thing as Core.BusinessBase and now everything works fine.</P>
+<P>Rocky, is this a bug in ReadOnlyBase or am I missing something?</P>
+<P>/Henrik</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, October 03, 2006</h2>It sounds like a bug - is this in 2.0 or 2.1?<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Henrik replied on Tuesday, October 03, 2006</h2><P>Hi Rocky</P>
+<P>It's in v2.1 RC1, but I just checked the 2.1 RTM and it has the same issues.</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, October 03, 2006</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>Henrik:</strong></div><div><p>Hi Rocky</p>
+<p>It's in v2.1 RC1, but I just checked the 2.1 RTM and it has the same issues.</p>
+</div></BLOCKQUOTE><br><br>OK, I have updated the RTM with the fix to this issue - please download the current file and see if it solves your issue - thanks for finding this.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Henrik replied on Tuesday, October 03, 2006</h2><P>Yep, now it works perfectly.</P>
+<P>Sorry for not catching this before the RTM.</P>
+<P>Cheers</P>
+<P>/Henrik</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

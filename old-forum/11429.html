@@ -1,0 +1,59 @@
+<html><header><title>https://www.google.com/accounts/o8/id</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>https://www.google.com/accounts/o8/id</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11429.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>maxg13 posted on Monday, June 25, 2012</h2><p>
+<p>I would like to implement Factory Pattern in CSLA. I can use an abstract base class or an interface for the abstraction. I have decided to use an abstract class, only because I have certain common functionality such as, saving to store, retrieving from store, and deletion of the record. Also, some properties that would apply to all implemented objects.</p>
+<p>C# only allows for inheritance from one class, so I can either use BusinessBase or the abstract class. I would also like the concrete types to have their own set of business rules. How can this be done with CSLA?</p>
+<p>If I do what I have listed below, will the rules in both the abstract class as well as the concrete class get fired?</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>Some code ...</p>
+<p>Abstract class:</p>
+<p>public class Form : BusinessBase&lt;Form&gt; {</p>
+<p>&nbsp; &nbsp;private static PropertyInfo&lt;string&gt; FormNameProperty = RegisterProperty&lt;string&gt;(c =&gt; c.FormName);</p>
+<p>&nbsp; &nbsp;public string FormName</p>
+<p>&nbsp; &nbsp;{</p>
+<p>&nbsp; &nbsp; &nbsp; get { return GetProperty(FormNameProperty); }</p>
+<p>&nbsp; &nbsp;}</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp;public abstract void LoadContent();</p>
+<p>&nbsp; &nbsp;protected override void AddBusinessRules()</p>
+<p>&nbsp; &nbsp;{</p>
+<p>&nbsp; &nbsp; &nbsp; // business rules that are commmon for all implementations</p>
+<p>&nbsp; &nbsp;}</p>
+<p>}</p>
+<p>&nbsp;</p>
+<p>Concrete implementation:</p>
+<p>&nbsp;</p>
+<p>public class FormA : Form {</p>
+<p>&nbsp; &nbsp;private static PropertyInfo&lt;string&gt; FirstNameProperty = RegisterProperty&lt;string&gt;(c =&gt; c.FirstName);</p>
+<p>&nbsp; &nbsp;public string FirstName</p>
+<p>&nbsp; &nbsp;{</p>
+<p>&nbsp; &nbsp; &nbsp; get { return GetProperty(FirstNameProperty); }</p>
+<p>&nbsp; &nbsp;}</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp;public override void LoadContent(){</p>
+<p>&nbsp; &nbsp; &nbsp; // some custom code</p>
+<p>&nbsp; &nbsp;}</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp;protected override void AddBusinessRules()</p>
+<p>&nbsp; &nbsp;{</p>
+<p>&nbsp; &nbsp; &nbsp; // business rules that only apply to this class</p>
+<p>&nbsp; &nbsp;}</p>
+<p>}</p>
+<p>&nbsp;</p>
+<p>Factory:</p>
+<p>&nbsp;</p>
+<p>public static class FormFactory{</p>
+<p>&nbsp; &nbsp;public static Form GetForm(string formanmae) {</p>
+<p>&nbsp; &nbsp; &nbsp; Type formType = GetFormType(formName);</p>
+<p>&nbsp; &nbsp; &nbsp; if(formType == null)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;return null;</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; var form = Activator.CreateInstance(formType) as ReferralForm;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;return form;</p>
+<p>&nbsp; &nbsp;}</p>
+<p>}</p>
+</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Monday, June 25, 2012</h2><p>To create a base class you really need to make it MyBusinessBase&lt;T&gt; so the real business class is</p>
+<p>public class MyRealClass : MyBusinessBase&lt;MyRealClass&gt;</p>
+<p>The way CSLA uses generics in the base&nbsp;classes assumes T is always the type of the real business class.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>maxg13 replied on Tuesday, June 26, 2012</h2><p>Rock, thanks for your reply. &nbsp;How about this post?</p>
+<p><a href="http://forums.lhotka.net/forums/p/10711/50007.aspx">http://forums.lhotka.net/forums/p/10711/50007.aspx</a></p>
+<p>The solution provided by JonnyBee is similar to what I was looking for. &nbsp;I am currently in the middle of coding that solution in my app. &nbsp;Can you provide your insight on this solution?</p>
+<p>Thanks</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, June 26, 2012</h2><p>Jonny is describing exactly what I am saying, yes.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

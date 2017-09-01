@@ -1,0 +1,130 @@
+<html><header><title>Paging is really confusing me (Need some advice badly please help)</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Paging is really confusing me (Need some advice badly please help)</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/2363.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>RangerGuy posted on Friday, February 16, 2007</h2><P><FONT face=Arial size=1>Hi there,</FONT></P>
+<P><FONT face=Arial size=1>I'm attempting to implement the new paging in the csla framework. </FONT></P>
+<P><FONT face=Arial size=1>My web form has several Text Boxes the user can enter criteria in to filter thier results. Then they submit the form and a webgrid is populated with the filtered and paged result.</FONT></P>
+<P><FONT face=Arial size=1>My Stored proc handles the dynamic criteria and paging by passing in the critiera and PageIndex and PageSize.</FONT></P>
+<P><FONT face=Arial size=1>Is SelectObjArg populated with the values from the textboxes on the form. Then in the Criteria object constructor would we pull those values and assign them to the appropriate private members of the critiera class?</FONT></P>
+<P><FONT face=Arial size=1>I'm am confused on how to join my filtered results from the stored proc&nbsp;to my collection then bind it to the webgrid. </FONT></P>
+<P><FONT face=Arial size=1>Also I'm not understanding on how "totalRowCount" is collected. Should I be returning a count of how many rows are found by the query? So my stored proc would return 2&nbsp; results the first being a row count and the second being the paged results.</FONT></P>
+<P>&nbsp;</P>
+<P><FONT face=Arial size=1></FONT>&nbsp;</P>
+<P><FONT face=Arial size=1></FONT>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, February 16, 2007</h2><P>Each time select is called you create a NEW collection and populate it only with that one page of data. There is no cumulative merging of pages of data into a collection - this is all designed for the web, which is stateless, so you can't accumulate the data.</P>
+<P>TotalRowCount is the total <EM>possible</EM> number of rows. Not the number in the page, but the <EM>total</EM> number. You'll almost certainly need a second SELECT statement to find this value.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RangerGuy replied on Friday, February 16, 2007</h2><P><FONT face=Arial size=1>Thanks for the quick reply Rocky :)</FONT></P>
+<P><FONT face=Arial size=1>I have altered my stored proc to return 2 results the first is the total rows found. The second is the&nbsp;requested page of data.&nbsp;I have a readonly property in my Collection. </FONT></P>
+<P><FONT face=Arial size=1>My Confusion is how to get the value from the form that is used to provide the values for the criteria of the search to the factory method because when you use the default objectbindingsource it gives you options to choice where the method parameters come from.</FONT></P>
+<P><FONT face=Arial size=1>I guess we could alter the method below to this and pass these values on to the criteria object?</FONT></P><FONT face="Courier New" size=1>
+<P align=left>protected void CslaDataSource1_SelectObject(</P>
+<P align=left>object sender, Csla.Web.SelectObjectArgs e)</P>
+<P align=left>{</P></FONT><B><FONT face="Courier New" size=1>
+<P align=left>e.BusinessObject =</P>
+<P align=left>CslaDSTestLibrary.PersonList.GetPage(e,textbox1.text,textbox2.text);</P></B></FONT><FONT face="Courier New" size=1>
+<P align=left>}</P>
+<P align=left>Thanks again for the help I'm trying this now. I'll let ya know how it goes</P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, February 16, 2007</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>The CSLA .NET Version 2.1 Handbook covers how to do this, at
+least if you are letting data binding do most of the hard work for you </span><span>J</span><span> As
+shown in the book, you can just pass the SelectObjectArgs (which contains the
+data binding args) right through your criteria.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>If you are manually controlling the page number/size you&#8217;d
+just need to add those values to your criteria class so you can pass them
+through. That shouldn&#8217;t be required if you are using the GridView or
+DetailsView controls though.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<div>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> RangerGuy
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Friday, February 16, 2007 11:50 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] Paging is really confusing me (Need some advice
+badly please help)<o:p></o:p></span></p>
+
+</div>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p><span>Thanks for
+the quick reply Rocky :)</span><o:p></o:p></p>
+
+<p><span>I have
+altered my stored proc to return 2 results the first is the total rows found.
+The second is the&nbsp;requested page of data.&nbsp;I have a readonly property
+in my Collection. </span><o:p></o:p></p>
+
+<p><span>My Confusion
+is how to get the value from the form that is used to provide the values for
+the criteria of the search to the factory method because when you use the
+default objectbindingsource it gives you options to choice where the method
+parameters come from.</span><o:p></o:p></p>
+
+<p><span>I guess we
+could alter the method below to this and pass these values on to the criteria
+object?</span><o:p></o:p></p>
+
+<p><span>protected void
+CslaDataSource1_SelectObject(<o:p></o:p></span></p>
+
+<p><span>object sender,
+Csla.Web.SelectObjectArgs e)<o:p></o:p></span></p>
+
+<p><span>{<o:p></o:p></span></p>
+
+<p><b><span>e.BusinessObject
+=<o:p></o:p></span></b></p>
+
+<p><b><span>CslaDSTestLibrary.PersonList.GetPage(e,textbox1.text,textbox2.text);<o:p></o:p></span></b></p>
+
+<p><span>}<o:p></o:p></span></p>
+
+<p><span>Thanks again for the
+help I'm trying this now. I'll let ya know how it goes<o:p></o:p></span></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RangerGuy replied on Friday, February 16, 2007</h2><P>Yeh I have the 2.1 ebook :) </P>
+<P>I have it working now :) I had to manually add the columns and pass the form values in my SelectObject method in my aspx form.</P>
+<P>Now on to sorting :)</P>
+<P>Thanks for the help Rocky!</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Saturday, February 17, 2007</h2><P>Sorting is the same thing. If you are using the GridView then data binding just handles it all automatically, ensuring that you are provided with the sort information through the SelectObjectArgs parameter, and you can just pass that through to the DP_F() method.</P>
+<P>If you are doing it all by hand, you'll need to pass appropriate fields through your Criteria object on your own.</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

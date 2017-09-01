@@ -1,0 +1,31 @@
+<html><header><title>Silverlight Csla.Utilities.ToErrorInfo does not set ExceptionTypeName</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Silverlight Csla.Utilities.ToErrorInfo does not set ExceptionTypeName</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11703.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Peran posted on Wednesday, November 14, 2012</h2><p>I have been doing some testing with a Silverlight app being&nbsp;temporarily disconnected from the internet.</p>
+<p>I was having&nbsp;difficulty&nbsp;identifying&nbsp;the type of exception because DataPortalException.ErrorInfo.ExceptionTypeName was being return as null when thrown on the client.</p>
+<p>This would be fixed in the Csla.Silverlight project by modifying&nbsp;Csla.Utilities.ToErrorInfo to include initialization of ExceptionTypeName.</p>
+<p>&nbsp;</p>
+<p>
+<p>
+<pre>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>public</span>&nbsp;<span>static</span>&nbsp;<span>WcfErrorInfo</span>&nbsp;ToErrorInfo(<span>this</span>&nbsp;<span>Exception</span>&nbsp;ex)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>WcfErrorInfo</span>&nbsp;info&nbsp;=&nbsp;<span>null</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>if</span>&nbsp;(ex&nbsp;!=&nbsp;<span>null</span>)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;info&nbsp;=&nbsp;<span>new</span>&nbsp;<span>WcfErrorInfo</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ExceptionTypeName&nbsp;=&nbsp;ex.GetType().FullName,
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Message&nbsp;=&nbsp;ex.Message,
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;StackTrace&nbsp;=&nbsp;ex.StackTrace,
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;InnerError&nbsp;=&nbsp;ex.InnerException.ToErrorInfo()
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;};
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>return</span>&nbsp;info;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</pre>
+</p>
+<div></div>
+<div>Rocky, let me know if you want svn updated.</div>
+<div></div>
+<div></div>
+<div>Regards</div>
+<div></div>
+<div>Peran</div>
+</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, November 14, 2012</h2><p>Yes, good catch.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

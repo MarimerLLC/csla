@@ -1,0 +1,78 @@
+<html><header><title>Help With Old CancelEdit Problem</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Help With Old CancelEdit Problem</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6511.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Ian posted on Thursday, February 26, 2009</h2><P>Sorry about reviving an old topic again, but I just can't seem to get it into my head why this won't work.&nbsp; It's regarding deleting an item from a child collection, executing CancelEdit(), but not seeing the item return to its original position in the list.&nbsp; The only old thread I found that directly addresses this is this year old post <A href="/forums/thread/19023.aspx">http://forums.lhotka.net/forums/thread/19023.aspx</A>&nbsp;where Rocky explains that it is too complicated.&nbsp; I've revisited the examples in Chapter 13 where he shows how complicated it can be, but I've convinced myself that it's not that difficult to fix.&nbsp; Maybe I'm missing a critical concept here, but the following possible solution (with extremely little code) does appear to work with his examples.&nbsp; </P>
+<P>Suppose 2 methods in BusinessListBase were modified thus:</P><FONT size=1>
+<P></FONT><FONT color=#0000ff size=1>protected</FONT><FONT size=1> </FONT><FONT color=#0000ff size=1>override</FONT><FONT size=1> </FONT><FONT color=#0000ff size=1>void</FONT><FONT size=1> InsertItem(</FONT><FONT color=#0000ff size=1>int</FONT><FONT size=1> index, C item)</P>
+<P>{</P>
+<P></FONT><FONT color=#008000 size=1>// set parent reference</P></FONT><FONT size=1>
+<P>item.SetParent(</FONT><FONT color=#0000ff size=1>this</FONT><FONT size=1>);</P>
+<P></FONT><FONT color=#008000 size=1>// set child edit level</P></FONT><FONT size=1>
+<P>Core.</FONT><FONT color=#2b91af size=1>UndoableBase</FONT><FONT size=1>.ResetChildEditLevel(item, </FONT><FONT color=#0000ff size=1>this</FONT><FONT size=1>.EditLevel, </FONT><FONT color=#0000ff size=1>false</FONT><FONT size=1>);</P>
+<P></FONT><FONT color=#008000 size=1>// when an object is inserted we assume it is</P></FONT><FONT size=1>
+<P></FONT><FONT color=#008000 size=1>// a new object and so the edit level when it was</P></FONT><FONT size=1>
+<P></FONT><FONT color=#008000 size=1>// added must be set</P></FONT><FONT size=1>
+<P>item.EditLevelAdded = _editLevel;</P>
+<P>InsertIndexItem(item);</P>
+<P></FONT><FONT color=#0000ff size=1>base</FONT><FONT size=1>.InsertItem(index, item);</P>
+<P></FONT><FONT size=2><STRONG>item.OriginalIndex = </STRONG><FONT color=#0000ff><STRONG>this</STRONG></FONT><STRONG>.IndexOf(item);&nbsp;&nbsp; &lt; -- extra line</STRONG></FONT><FONT size=1></P>
+<P>InsertIntoMap(item, index);</P>
+<P>}</P><FONT size=1>
+<P></FONT><FONT color=#0000ff size=1>private</FONT><FONT size=1> </FONT><FONT color=#0000ff size=1>void</FONT><FONT size=1> UnDeleteChild(C child)</P>
+<P>{</P>
+<P></FONT><FONT color=#008000 size=1>// since the object is no longer deleted, remove it from</P></FONT><FONT size=1>
+<P></FONT><FONT color=#008000 size=1>// the deleted collection</P></FONT><FONT size=1>
+<P>DeletedList.Remove(child);</P>
+<P></FONT><FONT color=#008000 size=1>// we are inserting an _existing_ object so</P></FONT><FONT size=1>
+<P></FONT><FONT color=#008000 size=1>// we need to preserve the objects editleveladded value</P></FONT><FONT size=1>
+<P></FONT><FONT color=#008000 size=1>// because it will be changed by the normal add process</P></FONT><FONT size=1>
+<P></FONT><FONT color=#0000ff size=1>int</FONT><FONT size=1> saveLevel = child.EditLevelAdded;</P>
+<P></FONT><FONT size=2><STRONG><FONT color=#0000ff>int</FONT> i = <FONT color=#0000ff>this</FONT></STRONG><STRONG>.Count;</STRONG></FONT></P>
+<P><FONT size=2><STRONG><FONT color=#0000ff>while</FONT> (i &gt; 0 &amp;&amp; (child.OriginalIndex &lt; <FONT color=#0000ff>this</FONT></STRONG><STRONG>[i-1].OriginalIndex ))</STRONG></FONT></P>
+<P><STRONG><FONT size=2>{</FONT></STRONG></P>
+<P><STRONG><FONT size=2>i--;</FONT></STRONG></P>
+<P><STRONG><FONT size=2>}</FONT></STRONG></P>
+<P><STRONG><FONT size=2>Insert(i, child);</FONT></STRONG></P><FONT size=1>
+<P>InsertIndexItem(child);</P>
+<P></FONT><FONT color=#008000 size=1>//Add(child);</P></FONT><FONT size=1>
+<P>child.EditLevelAdded = saveLevel;</P>
+<P>}</P>
+<P><FONT size=3>An extra property, </FONT><FONT size=2><STRONG>OriginalIndex , </STRONG>would have to be added to each child object.&nbsp; Using this property, it <EM>does seem clear</EM> as to where undeleted items need to be reinserted.&nbsp; </FONT></P>
+<P><FONT size=2>Using the example on page 389 of the 2008 book, after items A, B and C get removed, then we call CancelEdit(), C (OriginalIndex <STRONG>=</STRONG> 2) is the only item in the list at index 0.&nbsp; CancelEdit again undeletes item B (OriginalIndex =1).&nbsp; Since B's OriginalIndex &lt; C's, B is inserted before C instead of index [1] where is used to be.&nbsp; This insures that B always gets placed back into the list ahead of C.&nbsp; Likewise, a 3rd CancelEdit() will put A at the beginning of the list.&nbsp; </FONT></P>
+<P><FONT size=2>I know Rocky mentioned how arbitrary Adds, Deletes and Clears make this a chore to do, but I don't see it.&nbsp; At the time a CancelEdit needs to Undelete an object, all of the Adds, Deletes and Clears that happened after the initial deletion have been rolled back, so they are no longer relevent.&nbsp; The list is in the exact same state it was when the item was deleted in the first place, so it IS possible to put it back where it came from.</FONT></P>
+<P><FONT size=2>Am I missing something here?&nbsp; This seems much too simple of a solution to&nbsp;be overlooked for so long.&nbsp; Can someone please provide an example where this doesn't work?&nbsp; I would very much like to see this happen.</FONT></P>
+<P><FONT size=2>Regards,</FONT></P>
+<P><FONT size=2>Ian</FONT></P></FONT></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Ian replied on Thursday, February 26, 2009</h2><P>Before you restate that the solution is to use SortedBindingList, I'd like to first point out why this won't work for my scenario.&nbsp; </P>
+<P>SortedBindingList requires that each object has an editable field to sort by, eg LineNumber.&nbsp; As items are deleted, added, undeleted, the developer has to write code that cycles through all of the items in the list, and maintain this field so that each object's LineNumber field is in sync.&nbsp; It's a pain and I've never liked it.&nbsp; Wouldn't it be easier if something already existed to do this chore for us?&nbsp; As luck would have it, there is!&nbsp; BusinessListBase already takes care of this for us.&nbsp; Instead of maintaining my own field, I do the following:</P><FONT size=1>
+<P></FONT><FONT color=#0000ff size=1>private</FONT><FONT size=1> </FONT><FONT color=#0000ff size=1>int</FONT><FONT size=1> _origLineNumber;</P>
+<P></FONT><FONT color=#0000ff size=1>public</FONT><FONT size=1> </FONT><FONT color=#0000ff size=1>int</FONT><FONT size=1> LineNumber</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=1>get</P></FONT><FONT size=1>
+<P>{</P>
+<P></FONT><FONT color=#2b91af size=1>QuoteItems</FONT><FONT size=1> parentList = </FONT><FONT color=#0000ff size=1>this</FONT><FONT size=1>.Parent </FONT><FONT color=#0000ff size=1>as</FONT><FONT size=1> </FONT><FONT color=#2b91af size=1>QuoteItems</FONT><FONT size=1>;</P>
+<P></FONT><FONT color=#0000ff size=1>return</FONT><FONT size=1> parentList.IndexOf(</FONT><FONT color=#0000ff size=1>this</FONT><FONT size=1>) + 1;</P>
+<P>}</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=1>public</FONT><FONT size=1> </FONT><FONT color=#0000ff size=1>override</FONT><FONT size=1> </FONT><FONT color=#0000ff size=1>bool</FONT><FONT size=1> IsDirty</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=1>get</P></FONT><FONT size=1>
+<P>{</P>
+<P></FONT><FONT color=#2b91af size=1>QuoteItems</FONT><FONT size=1> parentList = </FONT><FONT color=#0000ff size=1>this</FONT><FONT size=1>.Parent </FONT><FONT color=#0000ff size=1>as</FONT><FONT size=1> </FONT><FONT color=#2b91af size=1>QuoteItems</FONT><FONT size=1>;</P>
+<P></FONT><FONT color=#0000ff size=1>if</FONT><FONT size=1> (parentList != </FONT><FONT color=#0000ff size=1>null</FONT><FONT size=1>)</P>
+<P></FONT><FONT color=#0000ff size=1>if</FONT><FONT size=1> (LineNumber != _origLineNumber)</P>
+<P></FONT><FONT color=#0000ff size=1>return</FONT><FONT size=1> </FONT><FONT color=#0000ff size=1>true</FONT><FONT size=1>; </P>
+<P></FONT><FONT color=#0000ff size=1>return</FONT><FONT size=1> </FONT><FONT color=#0000ff size=1>base</FONT><FONT size=1>.IsDirty;</P>
+<P>}</P>
+<P>}</P>
+<P><FONT size=3>The LineNumber field is directly linked to the item's position in its parent's collection.&nbsp; You can delete, add and cancel records in a grid with reckless abandon, and the LineNumber is always kept up to date, with no maintenance on my part.&nbsp; It just simply works.&nbsp; Of course, when originally loading the collection, you have to ORDER BY LineNumber when you query the database to insure the items are in the correct order in the first place.</FONT></P>
+<P><FONT size=3>The origLineNumber is set once, when the child object is first created from database values.&nbsp; The only place it's used is to determine if the object is dirty.&nbsp; Even if no data has been changed, if it's position in the collection has changed, it needs to be written.</FONT></P>
+<P><FONT size=3>I really like this code.&nbsp; It's far better than maintaining my own CurrentLineNumber field, imo.&nbsp; However, using a SortedBindingList will not solve the problem of sorting items in the list because it will be sorting using the item's index anyway, which is out of sync when an item gets undeleted.</FONT></P>
+<P><FONT size=3>Thoughts?</FONT></P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Ian replied on Monday, March 02, 2009</h2>cricket</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, March 02, 2009</h2><P>You are correct, the order could be preserved within some margin of error. It would work fine if no other items were added or removed. If any other items had been added or removed there'd be ordering issues based on when items were un-added and un-removed.</P>
+<P>In other words, it is relatively straightforward to fix the simple problem of un-removing one item, but it gets hard from there. Fixing the simple problem would just mean I'd have someone else (or maybe you :) ) coming back a little while later asking for the "real" fix.</P>
+<P>Consider the case where two items are removed, both from position 3 (an arbitrary number).</P>
+<P>Then un-remove them, and you'll find that the order in which they are un-removed matters, or they'll swap positions in the list.</P>
+<P>Again, a solvable problem - probably using some sort of fix-up on either the remove or un-remove.</P>
+<P>But it gets even more fun if two items are removed from position 3, and then a couple other items are inserted into positions 0 to 2. Now it matters whether items are un-added or un-removed first, because "position 3" has actually shifted down to some lower position in the list.</P>
+<P>And then add in multi-level undo, where there are nested Begin/CancelEdit() steps with intermixed add/remove operations.</P>
+<P>If position matters to the business domain, then position should be a property of the child object, and you really can use SortedBindingList or a LINQ query to ensure that the items appear in positional order.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Ian replied on Thursday, March 05, 2009</h2><P>I understand what you're saying, but I think the reason your current logic doesn't work is that you're concerned with the position of deleted items <EM>at the time they are deleted,</EM> rather than <EM>at the time they are inserted into the list</EM>.&nbsp; </P>
+<P>You say, 2 items are removed from position 3.&nbsp; Yes, but only one was at position 3 when the list was loaded.&nbsp; The second item must have been at position 4, only moving to position 3 when the original position 3 item was deleted.&nbsp; When the list is loaded from the database, item[3].OriginalIndex = 3, whereas item[4].OriginalIndex = 4.&nbsp; Using these OriginalIndex values, it is clear which order these 2 items should be in after undeletion, regardless of the order they were undeleted.</P>
+<P>Example #2, 2 are items deleted from position 3, 2 items are inserted into posistions 0 to 2.&nbsp; "Position 3" has moved down the list.&nbsp; Of course it matters which order the un-added or un-removed happens, but this order is predictable.&nbsp; You roll back the main list first, then the deleted list.&nbsp; So the items get un-added first, returning "position 3" back to its original posistion, then 2 items get undeleted, once again using their OriginalIndex to determine insertion order.&nbsp; In combination with OriginalIndex, the edit level of the item that was added to the list can insure that, say, an item with OriginalIndex =3 at edit level 1, always gets inserted before and item with OriginalIndex=3 at edit level 2.</P>
+<P>I don't _think_ N-level undo should cause a problem.&nbsp; Any given edit level, say edit level 3, can predict its undo order.&nbsp; Newly added items get removed first, deleted items get restored to their OriginalIndex position, coming after an item with the same OriginalIndex but an earlier edit level.&nbsp; So by the time edit level 2 gets rolled back, the list should be the same as it was before a BeginEdit() caused edit level 3 to happen.&nbsp; So on and so forth until the edit level that started the CancelEdit().</P>
+<P>Unless there is a complex example that I haven't though of yet, I still think this is doable.&nbsp; Whether it's worth it for you is a different question.&nbsp; One of these days I'd like to tinker with the CSLA source code to see if I can get this to work.&nbsp; It might be a while though.&nbsp; Very unfortunately, software development is not my primary job so I get pulled away from it quite often.&nbsp; I wish I got paid to do this all day every day, but I don't.&nbsp; But hopefully one of these days I can bring something more concrete to the table.</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

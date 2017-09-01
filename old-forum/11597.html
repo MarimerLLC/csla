@@ -1,0 +1,19 @@
+<html><header><title>quick newbie question - Csla.ApplicationContext.User.Identity.Name</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>quick newbie question - Csla.ApplicationContext.User.Identity.Name</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11597.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>griff posted on Tuesday, September 25, 2012</h2><p>Hi</p>
+<p>Enviroment: &nbsp;Silverlight &nbsp;app</p>
+<p>is this a correct way of using.... (<b><span style="text-decoration:underline;">Csla.ApplicationContext.User.Identity.Name)</span></b>..to update &#39;createdby&#39; ..or is there a better way.</p>
+<p>
+<pre>[Csla.<span>RunLocal</span>]
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>protected</span>&nbsp;<span>override</span>&nbsp;<span>void</span>&nbsp;DataPortal_Create()
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;LoadProperty(VenueIDProperty,&nbsp;System.Threading.<span>Interlocked</span>.Decrement(<span>ref</span>&nbsp;_lastID));
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;LoadProperty(DateNewProperty,&nbsp;<span>DateTime</span>.Now);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;LoadProperty(CreatedByProperty,&nbsp;<b><span style="text-decoration:underline;">Csla.<span>ApplicationContext</span>.User.Identity.Name</span></b>);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;LoadProperty(StatusProperty,&nbsp;<span>&quot;C&quot;</span>);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>var</span>&nbsp;args&nbsp;=&nbsp;<span>new</span>&nbsp;<span>DataPortalHookArgs</span>();
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;OnCreate(args);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>base</span>.DataPortal_Create();
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</pre>
+</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Tuesday, September 25, 2012</h2><p>That should be fine, but it does rely on you having set Csla.ApplicationContext.User to some valid value first.</p>
+<p>Silverlight doesn&#39;t have any concept of a user identity, so CSLA includes one that matches the .NET principal/identity concept. But because Silverlight doesn&#39;t have this concept, you are responsible for setting it to a useful value either as the app starts up or when the user logs into your app.</p>
+<p>The &#39;Using CSLA 4&#39; books have more information on this, especially the &#39;Data Portal Configuration&#39; and &#39;WPF and Silverlight&#39; books.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>griff replied on Wednesday, September 26, 2012</h2><p>Very good. &nbsp;I have managed to set this on login (and re-login) ..whilst it works on my dev machine I just needed to know if it would work once I uploaded to server. Thanks.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,17 @@
+<html><header><title>Problem with Binding Source</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Problem with Binding Source</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11225.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>megha posted on Monday, March 12, 2012</h2><p>Quick reply please.........</p>
+<p>Hi..</p>
+<p>I have a Grid for selecting a Type name from a pop-up form .This gridview is bound to a BindingSource.For a existing item, when I try to add new item to grid,multiple records are added with blank type names, Its going to many times to the following piece of code</p>
+<p>protected override object AddNewCore()</p>
+<p>&nbsp;</p>
+<p>CSLA Version 3.0.5.0</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Monday, March 12, 2012</h2><p>Sounds like your code inside AddNewCore calls AddNewCore recursively (f.ex by calling list.AddNew). </p>
+<p>What is the code inside AddNewCore? </p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>megha replied on Monday, March 12, 2012</h2><p>
+<p>protected override object AddNewCore()</p>
+<p>&nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; DepartmentType item =&nbsp;DepartmentType.NewADepartmentType();</p>
+<p>&nbsp; &nbsp; &nbsp; this.Add(item); &nbsp; &nbsp;&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; return item;</p>
+<p>&nbsp; &nbsp; }</p>
+</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Wednesday, March 14, 2012</h2><p>Have you added additional code to events in the binding source? </p>
+<p>Anyhow - you need to set a breakpoint inside AddNewCore and inspect the call stack when the call comes in for the first, second and third time. This should help you pinpoint where AddNewCore is called from. </p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,72 @@
+<html><header><title>Contains / Uses --- Root / Child, 95% Uninteresting</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Contains / Uses --- Root / Child, 95% Uninteresting</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11187.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>martinw posted on Thursday, February 23, 2012</h2><p>Hi all,</p>
+<p>it&#39;s my first post here, and I&#39;m curious whether someone can save my day (week, month...)</p>
+<p>My problem is, that I&#39;m doing the so called 95% boring part of my application, and I&#39;m stuck with modelling the data-centric BO&#39;s.</p>
+<p>Given the following use case:</p>
+<p><i>Client can create a new Order. The order can be assigned an existing Customer.</i></p>
+<p><i>The customer to whom the Order belongs to can be changed at any time.</i></p>
+<p>Given an existing ERM with Order and Customer, with a foreginkey in Order to Customer allowing null values:</p>
+<p><i>&lt;Order&gt; * ------- 0, 1 &lt;Customer&gt;</i></p>
+<p>Given this question:</p>
+<p><i>What&#39;s the Csla stereotypes to use?</i></p>
+<p>I already tried:</p>
+<p>Order = EditableRootObject</p>
+<p>Customer = EditableRootObject</p>
+<p>CustomerInfo =&nbsp; ReadOnlyChildObject.</p>
+<p>Order.Customer as type CustomerInfo</p>
+<p>Problem with this is.</p>
+<p>Following the concept,&nbsp; whenever a new Order is created, it has to create it&#39;s Customer which is CustomerInfo in this case. However ReadOnlyChildObjects are intended to be read from existing data.</p>
+<p>Thinking further it may not be possible to swap the Customer with another one. How should one get a reference to a CustomerInfo object, when these are loaded in context of a root object.</p>
+<p>Throwing in a root object Customer for the Order doesn&#39;t seem to respect the BO guidelines as well.</p>
+<p>Ok Csla is not ORM but stated here: </p>
+<p>http://forums.lhotka.net/forums/t/10243.aspx </p>
+<p><i>&quot;The maintenance screens are generally data-centric, and so the screens, 
+and their domain objects, and the data entity objects in the DAL all 
+look like the table being edited.&quot;</i></p>
+<p><i><br /></i></p>
+<p>Please someone shed some light on tihs.</p>
+<p>Regards Martin</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Thursday, February 23, 2012</h2><p>Hi,</p>
+<p>Which is exactly why we typically &quot;merge&quot; 1:1 objects in terms of BusinessObjects (but not as entities in a database). <br />IE: Order to Customer is 1:1 - so I would have the necessary customer properties on the Order object. </p>
+<p>The point of Business Objects is NOT reuse - it&#39;s Maintainability with lowest level of coupling and complexity.<br />Read Rocky&#39;s post here: <a>http://forums.lhotka.net/forums/p/3465/17230.aspx#17257</a> </p>
+<p>BusinessObjects works best when they support the UI to make 
+easy-to-bind objects and properties that encapsulate the behavior for 
+that use case. </p>
+<p>For more info read these posts: (and especially Rocky&#39;s posts in these threads):</p>
+<p><a href="http://www.lhotka.net/cslanet/faq/CslaObjectFaq.ashx%20">http://www.lhotka.net/cslanet/faq/CslaObjectFaq.ashx</a> </p>
+<p><a>http://forums.lhotka.net/forums/p/3465/17230.aspx#17230</a></p>
+<p><a>http://forums.lhotka.net/forums/t/10243.aspx</a></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>martinw replied on Thursday, February 23, 2012</h2><p>Thanks JonnyBee,</p>
+<p>I already read the topics in detail.</p>
+<p>Rocky states, these Data-Centric Objects are code generation candidates.</p>
+<p>However the available Csla-Codegenerators/Templates don&#39;t seem to merge anything.</p>
+<p>Binding I think becomes harder when we merge. Given an Order having a property of type Customer allows me to reuse the Control that is used to display a Customer. Further I have support for dynamically throwing in a Control at runtime based on the datatype of some property e.g. a ContentPresenter is beeing bound to, using DataTemplates.</p>
+<p>Last but not least, there may be issues with the naming of properties when objects/entites are merged, not to mention the intellectual extra-effort one has to come up with.</p>
+<p>Ah, forgot to mention, what if the Customer contains other complex types, let&#39;s say an address object, or maybe some kind of list?</p>
+<p>Isn&#39;t there a concpet in CSLA to put a reference to something, what is actually a root object, into another rootobject? - Put the Customer inside the Order,</p>
+<p>allowing for an easy swap to another Customer and so on?</p>
+<p>Thanks again,</p>
+<p>Martin</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tiago replied on Thursday, February 23, 2012</h2><p><div style='padding-left: 50px;background-color:silver'><b>Martin<br></b></p>
+<p>Rocky states, these Data-Centric Objects are code generation candidates.</p>
+<p>However the available Csla-Codegenerators/Templates don&#39;t seem to merge anything.</p>
+<p></div></p>
+<p>A code generator doesn&#39;t impose any object design technique. You should design your objects according to UI needs. Forget object re-use, just focus on the use case (what&#39;s needed for the UI):</p>
+<p>&quot;What do I need to show on this form? What is the user requested to fill on this form?&quot;</p>
+<p>Sometimes a&nbsp;use case&nbsp;is quite similar to another (say a list and a detail form), as there are just some properties that are different. That&#39;s <strong>today</strong> requisites. <strong>Tomorrow</strong> there will be different requisites (say the form needs new fields). If you separate your use cases (list and detail form) and design objects for each of them, you only need to change the form and won&#39;t need to pay any attention to the list.</p>
+<p>On the other hand, if you think of your list as a subset of the form data, the list takes&nbsp;longer to load and when you change the form, you might need to change something around the list.</p>
+<p>Back to code generators, after designing your object (A property, B property, C child list, etc), you open your code generator, create the object and choose the object properties by click and point to database columns. When you do that, there are several cases:</p>
+<ul>
+<li>all properties of an object are on a single table and all table columns are used by the object (1:1 mapping)</li>
+<li>all properties of an object are on a single table but not all table columns are used by the object</li>
+<li>object properties come from several tables</li>
+</ul>
+<p>Code generation should take care of all the above cases including the later, and should take care of all SQL handing for you.</p>
+<p>Going back to the requisite change referred above, code generation really shines when you need to change your form:</p>
+<ol>
+<li>adjust the database as fit</li>
+<li>re-open your code generator and your old project file</li>
+<li>add (or remove) the needed properties</li>
+<li>re-generate</li>
+</ol>
+<p>Hope that helps.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

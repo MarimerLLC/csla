@@ -1,0 +1,104 @@
+<html><header><title>Question about using Interfaces</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Question about using Interfaces</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/1129.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>RangerGuy posted on Tuesday, September 05, 2006</h2>I need to expose a few fields from a child object to a list of grandchildren. I was thinking that instead of each grandchild containing private members that hold the data needed from the parent. 
+
+I could just use an interface to expose the data that the grandchild would like to reference OR would a reference back from grandchild to child be ok?
+
+Have I totally missed this concept of Interfaces :|</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, September 05, 2006</h2>From a pure design perspective, interfaces are to implement an "acts-as" behavior. If an object is one thing, but can "act as" something else, then an interface is the right answer.<br><br>Interfaces are also a programmer tool, that enable some technical scenarios where "acts-as" isn't really applicable. Decoupling is the primary one, where you can use an interface (often in a seperate assembly) to decouple a caller from a callee. Sometimes you'll even do this if the callee's native interface (public members) are the same as those of the interface. I suppose you could say the object "acts-as" itself, but that seems a bit silly...<br><br>Ideally though, the programmatic usage should fit within an "acts-as" relationship - thus satisfying the real goal behind the concept of interfaces.<br><br>The question you need to ask, is whether the parent "acts-as" something different from itself, or whether you want the child objects to be decoupled from the parent so they could talk to other parents that might implement that interface as well? Or, does the interface truly abstract an idea, so the parent really does "act as" something else (or a subset of itself) in a meaningful manner.<br><br>My guess is that you can create an interface that satisfies the "acts-as" requirement, and also provides decoupling so the child can be contained by any parent with that interface.<br><br>Your bigger issue will be safely providing the parent reference. The collection object will automate part of the process - in that each child automatically has a safe reference to its parent collection. But it is up to you to store and manage any reference to the object containing the collection itself. Personally what I'd recommend is having the collection maintain a reference to the parent (mark it as nonserialized and notundoable!), and then having a ParentObject property in your child class that uses the pre-existing collection reference to get to the collection, and then uses that to get to the real parent.<br><br>So in your child class:<br><br>Private ReadOnly Property ParentObject() As IFoo<br>&nbsp; Get<br>&nbsp;&nbsp;&nbsp; Return CType(CType(Parent, IHaveAParent).Parent, IFoo)<br>&nbsp; End Get<br>End Property<br><br>You must define IFoo and IHaveAParent.<br><br>Your collection will implement IHaveAParent, which will require a read-only Parent property. It will also have a Friend/internal method, SetParent(), and it will store the parent reference in a nonserialized, notundoable field.<br><br>Your parent object will implement IFoo, which has whatever properties you want. It must also call SetParent() on the child collection as needed. At a minimum this means calling SetParent() any time you create an instance of the collection (like in DataPortal_Create()), and in an override of OnDeserialized to reset the value after deserialization.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RangerGuy replied on Wednesday, September 06, 2006</h2>Thanks again for the awesome reply Rocky :)
+
+I'm going to try and implement this idea today.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>nmkr replied on Friday, May 18, 2007</h2><P>Hello RangerGuy,</P>
+<P>Did you get a chance to implement this..?. </P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>david.wendelken replied on Monday, May 21, 2007</h2>Is there any good reason why interfaces do not allow properties or static methods?</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, May 21, 2007</h2>
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Interfaces do allow properties.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>The reason static methods aren&#8217;t allowed, I think, is
+because they can&#8217;t be overridden by a subclass, but interfaces allow a
+type of inheritance &#8211; and so there&#8217;s a fundamental conflict of
+ideas there.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Even if a subclass <i>could</i> override a static method, it
+would be a mess, because you invoke a static method on the class, not an
+instance. So you&#8217;d never actually invoke a subclass implementation anyway.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> david.wendelken
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Monday, May 21, 2007 8:37 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] Question about using Interfaces<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Is there any good reason why
+interfaces do not allow properties or static methods?<br>
+<br>
+<o:p></o:p></p>
+
+<p><span>No virus found in this incoming message.<br>
+Checked by AVG Free Edition.<br>
+Version: 7.5.467 / Virus Database: 269.7.6/813 - Release Date: 5/20/2007 7:54
+AM</span><o:p></o:p></p>
+
+</div>
+
+
+
+
+<BR>
+
+<P><FONT SIZE=2>No virus found in this outgoing message.<BR>
+Checked by AVG Free Edition.<BR>
+Version: 7.5.467 / Virus Database: 269.7.6/813 - Release Date: 5/20/2007 7:54 AM<BR>
+</FONT> </P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>david.wendelken replied on Monday, May 21, 2007</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div> 
+
+<DIV class=Section1>
+<P class=MsoNormal><SPAN>Interfaces do allow properties.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></div></BLOCKQUOTE></P></DIV>
+<P>Could you give an example of a property in an interface?&nbsp; I must not have the right syntax, because when I try to do it, I get an error message that says "Interfaces cannot have fields".</P>
+<P>How would you specify a read-only, write-only, or read-write boolean property, for example?</P>
+<P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div> 
+</P>
+<P class=MsoNormal><SPAN>The reason static methods aren’t allowed, I think, is because they can’t be overridden by a subclass, but interfaces allow a type of inheritance – and so there’s a fundamental conflict of ideas there.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Even if a subclass <I>could</I> override a static method, it would be a mess, because you invoke a static method on the class, not an instance. So you’d never actually invoke a subclass implementation anyway.</SPAN></P>
+<P class=MsoNormal><SPAN><FONT color=#000000></div></BLOCKQUOTE></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT color=#000000>Yes, but you would know that you could do it for an object of that class, which is a very handy thing to know at times.&nbsp; An example would be a static factory method that&nbsp; creates an object of the correct type, when a whole series of classes have that same type of factory method.&nbsp; Very handy to be able to know that you can call it using the simple "is interfaceName" syntax instead of having to use reflection.</FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT color=#000000>Never let the purists get in the way of pragmatic productivity is my motto! :)</FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT color=#000000></FONT></SPAN>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, May 21, 2007</h2><P>Don't get me wrong - a formalized interface concept for static/Shared methods would be awesome! But it makes sense to me why the current interface declaration concept can't be used for the purpose.</P>
+<P>Regarding properties, you can see examples in Csla.Core.</P>
+<P>Public Interface Foo<BR>&nbsp; Property X() As Integer<BR>&nbsp; ReadOnly Property Y() As String<BR>End Interface</P>
+<P>public interface Foo<BR>{<BR>&nbsp; int X { get; set; }<BR>&nbsp; string Y { get; }<BR>}</P>
+<P>&nbsp;</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

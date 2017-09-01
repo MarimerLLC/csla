@@ -1,0 +1,18 @@
+<html><header><title>server error  </title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>server error  </h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10066.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>DanielK posted on Sunday, February 13, 2011</h2><div class="CommonMessageHeader">
+                            <strong><br /></strong></div>
+<div>Hey
+guys i&#39;m facing a problem on my published and uploaded application to
+the server. when i try to insert and update it populates the following
+error message.
+&quot;Object is not valid and can not be saved&quot;
+any one can help me?
+</div></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Sunday, February 13, 2011</h2><p>This is caused by your object having broken rules (with severity Error) and thus is Invalid. </p>
+<p>Csla will throw this exception if you try to call Save on an object that is invalid. </p>
+<p>So check the broken rules collection and your rules for possible problems.</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>DanielK replied on Sunday, February 13, 2011</h2><p>Thanks Jonny, But how could i check The BrokenRulesCollection? </p>
+<p>thanks</p>
+<p>Daniel</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>DanielK replied on Sunday, February 13, 2011</h2><p>Hey guys, let me elaborate what i did which causes this error. I changed one of the column length of my table from 50 to 100. and updated all my insert and update procedures accordingly. Do u thing i have to change anything from my classes side?</p>
+<p>thanks</p>
+<p>Daniel</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>DanielK replied on Sunday, February 13, 2011</h2><p>oh, thanks for the idea i got it. it was in validation section. I will never forget the BrokenRulesCollection any more...loool</p>
+<p>thanks a lot</p>
+<p>Daniel</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>Marjon1 replied on Sunday, February 13, 2011</h2><p>That suggests that there is a broken rule on the object (or one of it&#39;s children) that is preventing the call the save working, check the BrokenRulesCollection on the object for a bit more information. Does your save button have any logic to prevent saving if the object isn&#39;t valid?</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

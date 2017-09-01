@@ -1,0 +1,63 @@
+<html><header><title>Implementing multiple DalManagers?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Implementing multiple DalManagers?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11184.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>gajit posted on Wednesday, February 22, 2012</h2><p>I need some advice, or recommendations.</p>
+<p>I&#39;ve successfully implemented my custom authentication model, which retrieves/validates user credentials from a separate &#39;Security&#39; database than the &#39;application data&#39;.</p>
+<p>My problem is, is that the implementation of ConnectionManager is done in DalManager;</p>
+<p>Public Sub New()<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ConnectionManager = Csla.Data.ConnectionManager(Of SqlConnection).GetManager(&quot;Security&quot;)<br />&nbsp;&nbsp;&nbsp; End Sub</p>
+<p>so do I need to create a separate library for my Security classes and subsequently reference the DalManager in that Library? </p>
+<p>Or is there another way whereby I can specify the connection in my bo/concrete dals?</p>
+<p>Thanks,</p>
+<p>Graham</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Thursday, February 23, 2012</h2><p>I&#39;d rather not have the connection defined like this in an instance variable. In an N-Tier application you may experience serious performannve problems if the app only has one connection available .</p>
+<p>The ConnectionManager will return the &quot;same&quot; connection in &quot;nested&quot; contexts so I prefer to just let the data access code use the ConnectionManager and use the connection for as short as possible time period. </p>
+<p>It is your code that introduces the limits.</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>gajit replied on Thursday, February 23, 2012</h2><p>That doesn&#39;t really make things any clearer for mr Jonny.</p>
+<p>This DalManager is the one used in the examples in the eBook series and in the sample code.If this isn&#39;t the correct implementation than how SHOULD it be implemented?</p>
+<p>I don&#39;t understand why we go to the trouble of doing something like THIS in&nbsp;concrete Dal:</p>
+<p>&nbsp;Using ctx = ConnectionManager(Of SqlConnection).GetManager(&quot;Security&quot;)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Using cm = ctx.Connection.CreateCommand()<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; cm.CommandType = System.Data.CommandType.StoredProcedure<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; cm.CommandText = &quot;VerifyUser&quot;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; cm.Parameters.AddWithValue(&quot;@ps_Username&quot;, username)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; cm.Parameters.AddWithValue(&quot;@ps_Password&quot;, password)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; cm.Parameters.AddWithValue(&quot;@pn_IsValid&quot;, 0)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; cm.Parameters(&quot;@pn_IsValid&quot;).Direction = ParameterDirection.Output</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Dim r = cm.ExecuteScalar()<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Dim newId As Boolean = cm.Parameters(&quot;@pn_IsValid&quot;).Value<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return newId<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Using<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Using</p>
+<p>When ultimately the settng is pulled from that hard coded value in the connection manager??????</p>
+<p>Why?</p>
+<p>Graham</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Thursday, February 23, 2012</h2><p>Because ConnectionManager maintains a reference count and allows you to write code that does not send the connection as parameter on a number of functions - but still the the database calls are made on the SAME connection and transaction. </p>
+<p>Think:&nbsp;&nbsp; root.Save - save children - save grandchildren all executes on the same connection and transaction without having to send the connection object as a parameter in your code</p>
+<p>This is handled inside ConnectionManager that &quot;stores&quot; the actual active connection in a slot on the current thread and maintains a reference count so that when the &quot;top-most&quot; using goes out of scope the connection is closed and transaction is submitted or if an error occurs the transaction is rolled back.</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>gajit replied on Thursday, February 23, 2012</h2><p>Clearly i&#39;m too !#@#!* dense for this...</p>
+<p>The csla 2 implementation was quite clear and concise.</p>
+<p>My dataportal methods determine the connection I want to use - why the connection manager has any need to do the same I don&#39;t get.</p>
+<p>THIS is CSLA 2 code:</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Using cn As New SqlConnection(Database.SecurityConnection)</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Using cm As SqlCommand = cn.CreateCommand<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; cm.CommandType = CommandType.StoredProcedure<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; cm.CommandText = &quot;VerifyUser&quot;</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; cm.Parameters.AddWithValue...</p>
+<p>Simple, concise and most importantly, the CSLA books at the time documented and explained this methodology in its entirety.</p>
+<p>My biggest obstacle in all of this is the the books, samples, etc do NOT provide that same level of understanding. I am constantly trying to interpret what is provided as a sample as opposed to what will actually work.</p>
+<p>Many developers just want to pick this up and run with it. Be told what is the correct implementation. Not be presented with something that *might* work.</p>
+<p>As the Custom authentication model is still supported by CSLA and as such the concept of multiple databases is supported, then why is there no CLEAR definition of how to implement this in the Samples or in the eBooks? </p>
+<p>Graham</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Thursday, February 23, 2012</h2><p>The code from CSLA 2 is still valid for CSLA 4. </p>
+<p>But when in a parent/child structure you will always have to send the connection object to all the children - thereby making you BO&#39;s code/interface tied to that data access technology. Somewhere down the line in development CSLA object interfaces should not be that influenced by the choice of data access layer. </p>
+<p>So the ConnectionManager, ContextManager and ObjectContextManager are helper classes to make the code look pretty much the same -&nbsp; less code to edit/change in your BO&#39;s.</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>gajit replied on Thursday, February 23, 2012</h2><p>And that&#39;s the thing. I&#39;m trying to move forward and implement data layer non-specific objects, but using the structure set out in the samples and books, it&#39;s not possible to do what I require. And that is to have a connection manager that&nbsp;just pools the connection that is specified in the bo.</p>
+<p>What Im saying Jonny, how is it implemented? How do I create a bo and dal implementation that has a connection manager that supports multiple specified connections? As it stands, the code that passes the &quot;connectionname&quot; in the business object is basically ignored - and I don&#39;t see how I can control the connection manager, so that it uses different database connection strings.</p>
+<p>Maybe I&#39;m wrong, maybe there ARE samples, but I dont see them.</p>
+<p>Graham</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>gajit replied on Thursday, February 23, 2012</h2><p>FYI.</p>
+<p>As it stands the way I&#39;ve had to implement this, is to create separate objects.</p>
+<p>DataAccess</p>
+<p>SecurityDalFactory.vb</p>
+<p>DataAccess.SQL</p>
+<p>SecurityDalManager.vb</p>
+<p>My BO&#39;s in Library.Net implement the dalManager as:</p>
+<p>
+<p><span style="font-family:Tahoma;color:#0000ff;font-size:small;"><span style="font-family:Tahoma;color:#0000ff;font-size:small;"><span style="font-family:Tahoma;color:#0000ff;font-size:small;"><font face="Tahoma" size="3" color="#0000ff"><font face="Tahoma" size="3" color="#0000ff"><font face="Tahoma" size="3" color="#0000ff">
+<p>Using dalManager = ParabolaSols.DataAccess.<strong>SecurityDalFactory</strong>.GetManager()</p>
+</font></font></font></span><font face="Tahoma" size="3" color="#0000ff"><font face="Tahoma" size="3" color="#0000ff">
+<p>&nbsp;</p>
+</font></font></span><font face="Tahoma" size="3" color="#0000ff">
+<p>&nbsp;</p>
+</font></span>
+<p>
+<p><span style="font-family:Tahoma;font-size:small;"><span style="font-family:Tahoma;font-size:small;"></span></span></p>
+&nbsp;and obviously I now have an app.config entry that represent &quot;SecurityDalManagerType&quot;</p>
+<p>I&#39;m all &quot;thinked out&quot; on this. But hopefully that will endure the test of time until someone can come up with a more compact approach - if there is one.</p>
+<p>Graham</p>
+</p>
+</p>
+<p>&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

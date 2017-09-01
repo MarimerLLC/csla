@@ -1,0 +1,11 @@
+<html><header><title>Validation confusion</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Validation confusion</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/911.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Michael Hildner posted on Tuesday, August 15, 2006</h2><P>Hi,</P>
+<P>I have an Editable Child class that has a single CommonRules.StringRequired rule.</P>
+<P>I've been using this class for a while (creating new), and it saves ok, even though this property is never populated.</P>
+<P>So, I've gotten around to fetching. In my Fetch method, there's a ValidationRules.CheckRules() call. When I fetch, the object is not valid, which makes sense.</P>
+<P>Why is the object valid when I create a new one and save? I'm not sure what to look at to track it down.</P>
+<P>Thanks,<BR>Mike</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>razorkai replied on Wednesday, August 16, 2006</h2><P>Hi Mike.</P>
+<P>It is quite common to have&nbsp;ValidationRules.CheckRules in your object's DataPortal_Create method after populating any default values.&nbsp; See page 423 of the book.</P>
+<P>HTH.</P>
+<P><FONT size=1><FONT size=3>John.</FONT></P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Michael Hildner replied on Wednesday, August 16, 2006</h2><P>Thanks John, helps a bunch. I appreciate the book reference - it's explained quite nicely in there.</P>
+<P>Regards,</P>
+<P>Mike</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

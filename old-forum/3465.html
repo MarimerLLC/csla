@@ -1,0 +1,265 @@
+<html><header><title>inherit ? contain ?? behavior-centric ????? - One more time ....</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>inherit ? contain ?? behavior-centric ????? - One more time ....</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3465.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>tsaltd posted on Monday, September 03, 2007</h2><P>Greetings all ...</P>
+<P>I'm doing another iteration of a domain model in C# -- a part of which has an object model of:</P>
+<P>1.0.0.0 Actor<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp; 1.1.0 Individual<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp; &nbsp;&nbsp;&nbsp;1.1.1&nbsp;Employee<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 1.1.2&nbsp; Contact</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 1.2.0 Organization<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 1.2.1&nbsp; Internal Organization<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 1.2.2 External Organization<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 1.2.2.1&nbsp; Vendor<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1.2.2.2&nbsp; Customer</P>
+<P>I've implemented something similar using CSLA and found the Forum theread on </P>
+<UL>
+<UL>
+<LI>Animal</LI>
+<UL>
+<LI>Cat</LI>
+<LI>Fish</LI></UL></UL></UL>
+<P>to be quite helpful.</P>
+<P>Yet I'm concerned that I am still stuck in a data-centric design view.</P>
+<P>I just dont feel confident that I "get" the behavior-centric thing and certainly don't see how I might be able to avoid creating too much complexity by using containment instead of inheritance.</P>
+<P>I've browsed GOF concepts and other best practices guides and still don't feel confident that I have wrapped my head around a convincing alternative design.</P>
+<P>What I'd really like to see ( if indeed there is a "better practice alternative" to my hierarchical inheritance tree ) is some views on re-factoring my Actor object graf that takes advantage of containment and behavior-centric design.</P>
+<P>Any pointers to literature that focuses on these issues will be a big help ... but of course, I'm hoping that this note will trigger a stimulating discussion.</P>
+<P>Thanks again,</P>
+<P>Steve</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>juddaman replied on Monday, September 03, 2007</h2>
+
+<p class="MsoNormal"><span>Hi Steve<br>
+<br>
+I'll have a go at helping you, though I'm no expert or anything so you may want
+to do some more reading around. I thought I had a good understand of OO before
+I came across CSLA, it really through the spanner in the works. I think I've
+got my head around the problem now, basically in framework level code there
+is lots of behaviour going on so inheritance is common place this does not
+translate into business applications. Meaning many BO don't deal with much behaviour,
+well not really ballsy behaviour like you find at lower levels. Remember you
+should inherit behaviour not data. Any behaviour you do want to “pass on”,
+particularly in the business layer is probably better provided to multiple
+objects by means of composition. Anyway that’s just random background thought
+on how I’m getting to grips with CSLA, Use-Case driven and SRP. </span></p>
+
+<p class="MsoNormal"><span><o:p>&nbsp;</o:p></span></p>
+
+<p class="MsoNormal"><span>Moving on to the problem at hand, I think
+you desperately need to take a step back to use-case level. When you laying out
+your object I’m presuming your suggesting Employee inherit Individual which inherits
+Actor?</span></p>
+
+<p class="MsoNormal"><span><o:p>&nbsp;</o:p></span></p>
+
+<p>1.0.0.0 Actor<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp; 1.1.0 Individual<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp; &nbsp;&nbsp;&nbsp;1.1.1&nbsp;Employee<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+1.1.2&nbsp; Contact</p>
+
+<p>I think you need to ask yourself (and the objects), why? Is there shared behavior,
+is more probably just shared data? Be honest with yourself here! It took me a
+while to convince myself about this on occasion.</p>
+
+<p>If they are just sharing data break them up so Employee and Contact are
+there own root BOs. Lets say somewhere in your system you need a list of
+individuals and there phone numbers, so at this point you might be thinking,
+well if I’d sub-classed Individual I could just take my objects and regardless
+of there actual type get there Name and Number as that data are properties of
+the Individual class. However you can do this, you just need to prepared to make
+the BO to match you use-case. Your use-case being provide user with a list of individuals
+names and numbers.. blah blah.. So at this point you’d need to think do any of
+my BOs (currently Employee and Contact) provide me with this info, the answer
+being no. Employee maintains a single Employee and Contact and single Contact. So
+you need a need object say IndividualInfo which has the properties Name and
+Number. Make a list say, IndividualsList which is a list of these IndivudalInfo
+objects. So now you have the object set to meet the use-case. Simply get the
+data from the various database tables (or other data store) and put it in the
+info objects.</p>
+
+<p>I’m yet to find any specific literature that would demonstrate such concepts
+as multiple Customer objects for different use-cases for instance. However the Applying
+UML and patterns book by Craig Larmen is an excellent overview of OO
+techniques. The two cases studies in the book are not forms-over-data style
+apps though. There is a point of sale system and a monopoly game both of these
+are rich in behavior so you have to take a step back and remember that they are
+different types of systems to what most people develop most the time. </p>
+
+<p>Sorry it’s a bit rambley, I just through a few ideas down; if anything
+catches your interest and you want me to be clearer on something let me know.</p>
+
+<p><o:p>&nbsp;</o:p></p>
+
+<p>George.<o:p></o:p></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tsaltd replied on Monday, September 03, 2007</h2><P><FONT face="Times New Roman">Thanks, George ... I'm just starting to process your feedback ... here are my initial reactions / conclusions <o:p></o:p></FONT></P>
+<P><FONT face="Times New Roman">Encapsulating&nbsp; CRUD/ DataPortal functions in an inheritance chain of business objects ... that really cool pattern of passing the&nbsp;command object &nbsp;from the&nbsp;Organization and Individual&nbsp;up to the&nbsp;Actor &nbsp;--&nbsp;&nbsp;base.insert(cm) &nbsp;--- to populate parameters before excecuting the DoInsertUpdate function in the Organization orIndividual&nbsp;</FONT></P>
+<P><FONT face="Times New Roman">... That's not really an appropriate use of inheritance???<o:p></o:p></FONT></P>
+<P><FONT face="Times New Roman">Better to contain an instances of :</FONT></P>
+<UL>
+<LI><FONT face="Times New Roman">Actor&nbsp;and Individual in Employee and Contact</FONT></LI></UL>
+<BLOCKQUOTE dir=ltr>
+<BLOCKQUOTE dir=ltr>
+<P><FONT face="Times New Roman">and </FONT></P></BLOCKQUOTE></BLOCKQUOTE>
+<UL>
+<LI><FONT face="Times New Roman">Actor and Organization in Vendor and InternaOrg</FONT></LI></UL>
+<P><FONT face="Times New Roman"></FONT>&nbsp;</P>
+<P><FONT face="Times New Roman">I'm puzzling over how I can follow that containment pattern and keep the number of database command executions to a minimum.<o:p></o:p></FONT></P>
+<P><FONT face="Times New Roman">I see the value in creating a separate "IndividualInfo"&nbsp; object for the phone and address attributes for … Individuals and Organizations</FONT></P>
+<P><FONT face="Times New Roman">I'm starting to come around ... What would really be helpful is to see an example of where the type of inheritance that am so attached to and am trying to unlearn&nbsp;IS actually a "best practice" .... ie: the use cases where inheritance is actually "behavior-centric" and is a better choice than containment.<o:p></o:p></FONT></P>
+<P><FONT face="Times New Roman">If I could understand that, then I would have more to go on in terms of what to look for&nbsp;in analyzing when Inheritance is the "best practice" and when it is better to go with containment.</FONT></P>
+<P><FONT face="Times New Roman">Is this art ?&nbsp;engineering ?? religion ?????</FONT></P>
+<P><FONT face="Times New Roman">Thanks,<o:p></o:p></FONT></P>
+<P><FONT face="Times New Roman">Steve<o:p></o:p></FONT></P>
+<P class=MsoNormal><o:p><FONT face="Times New Roman">&nbsp;</FONT></o:p></P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>juddaman replied on Tuesday, September 04, 2007</h2><P>Hi</P>
+<P>In this case I'm not even suggesting you should contain <FONT face="Times New Roman">Actor&nbsp;and Individual in Employee and Contact. Rather Employee should have all the"data" it needs. So basically this involves cutting and pasting all your properties from Actor&nbsp;and Individual into Employee and Contact. Any shared behavouir such as custom validation methods etc can be put into another object, like what Rocky did with the Assignment class in the project managment system&nbsp;described in the book. Thats just my opinion of how you should go anyway. There is no hard fast rule at the end of the day.. if it works it works kind of thing. In general I'd say you shouldn't find yourself inherting your own BO's. Though you may find your self creating inhertience structures with your none BOs, your behavouir class's etc. Then using these via&nbsp;client-supplier in yours BOs.&nbsp;Does this help?</FONT></P>
+<P>George</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tsaltd replied on Tuesday, September 04, 2007</h2><P>I'm going to need more convincing&nbsp;before I consider&nbsp;implementing re-use via cutting and pasting, George .... The Actor Class is actually part of 3 or&nbsp;4 other entities, and I have other Business Objects that share data and behavior ( CRUD / Data Portal ).</P>
+<P>Maybe I don't understand the downside of placing references in Roots to Editable Child ... I got some inspiration from Rocky in this post:</P>
+<P><A HREF="/forums/post/12714.aspx">http://forums.lhotka.net/forums/post/12714.aspx</A></P>
+<BLOCKQUOTE dir=ltr>
+<P><FONT size=2>You can have an editable root directly contain an editable child, that is fine. The property in the editable root that allows access to the child should be a read-only property, because you don't want the UI to change that reference, only gain access to the child object.</FONT></P>
+<P><FONT size=2>The idea of containment (or aggregation) is at the core of object-oriented design. Objects contain other objects all the time, this is not a bad thing. In fact, it is a way to express important relationships between objects.</FONT></P>
+<P><FONT size=2>In most cases this is not a form of tight coupling. The root object is aware of its child, but probably won't interact with it very much. The child object may be entirely unaware of its parent</FONT>.</P>
+<P>&nbsp;</P></BLOCKQUOTE>
+<P dir=ltr>Again, a major objective of my posting here is to understand when it is ( if ever )&nbsp; a "good practice" to create sub-classes for the types of entities that are modeled as sub-classes in a relational DB design </P>
+<P dir=ltr>.. ie: </P>
+<P dir=ltr>&nbsp;Person</P>
+<BLOCKQUOTE dir=ltr>
+<P dir=ltr>Employee</P>
+<BLOCKQUOTE dir=ltr>
+<P dir=ltr>Hourly Employee</P>
+<P dir=ltr>Exempt Employee&nbsp;</P></BLOCKQUOTE></BLOCKQUOTE>
+<P dir=ltr>More thoughts ???</P>
+<P dir=ltr>Steve</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, September 04, 2007</h2><P>I think one key element of understanding all this is the following:</P>
+<BLOCKQUOTE dir=ltr>
+<P><FONT size=4><STRONG>Properties are not behavior. Reuse of properties (and thus fields) is not a priority.</STRONG></FONT></P></BLOCKQUOTE>
+<P>Using inheritance to "reuse" properties and fields is counter-productive. It results in more complexity and coupling (fragility) costs than can be offset by any benefits of reuse.</P>
+<P>This leads to the second big concept:</P>
+<BLOCKQUOTE dir=ltr>
+<P><FONT size=4><STRONG>Reuse is not&nbsp;the goal. Maintainability is the goal. </STRONG></FONT></P></BLOCKQUOTE>
+<P>Reuse can <EM>decrease</EM> maintainabiltiy if it results in coupling. Coupling is the big danger, and inheritance is (almost) always a form of tight coupling. Thus inheritance should generally be avoided. Which leads to the maxim:</P>
+<BLOCKQUOTE dir=ltr>
+<P><FONT size=4><STRONG>Favor composition over inheritance.</STRONG></FONT></P></BLOCKQUOTE>
+<P>But actual composition can have some serious downsides in terms of performance, especially when it comes to data access. At least if you view composition as the use of multiple object instances working in a coordinated manner.</P>
+<P>However, if composition becomes <EM>combination</EM>&nbsp;- at least of properties/fields - then you avoid the performance issues. And now we're to the point where you would have separate objects for HourlyEmployee and ExemptEmployee, even though they share some properties/fields.</P>
+<P>The key, imo, is that you don't want to replicate <EM>behavior</EM> (methods). Replicating properties/fields doesn't matter - they can be code-genned or created with snippets. There's little to no variation in a property - they are just stamped out like widgets.</P>
+<P>But methods are unqiue. Most methods actually do something interesting (unlike properties), and so you only want to write and maintain a method exactly once. This leads to</P>
+<BLOCKQUOTE dir=ltr>
+<P><FONT size=4><STRONG>Normalization of behavior.</STRONG></FONT></P></BLOCKQUOTE>
+<P>The idea is that you normalize behaviors that are common across objects. To do this, at a <EM>design level</EM> you move that behavior into its own object. Related behaviors can go into the same object (a concept called cohesion).</P>
+<P>Of course at the&nbsp;<EM>implementation level</EM> you may actually implement many of these behaviors as Shared/static methods and so not have <EM>real</EM> objects. But that's an implementation artifact and doesn't impact the design process.</P>
+<P>In CSLA objects, most behavior is in the form of rule methods, and those are easily normalized (they are normally Shared/static to start with).</P>
+<P>Other custom methods (like calculating a price, or a wage or something) are more interesting, but are typically also easily normalized.</P>
+<P>In ProjectTracker I do this normalization into the Assignment "object". At a design level, this object contains behaviors common to ResourceAssignment and ProjectResource. At an implementation level it is a collection of Shared/static methods.</P>
+<P>But the result is that all interesting business logic that would have been duplicated is now centralized, and the two original objects now collaborate with this Assignment object to do their work.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tsaltd replied on Tuesday, September 04, 2007</h2><P>Thanx, RL ...</P>
+<P>I think we're close to putting this to bed .... tho I must again say that the seeing the little trick of implementing inheritence in BO's by passing the command object to add parameters from a base class's InsertUpdate method using base.insert(cm) , then returning it back to the subclass to execute the command added a whole new level of excitement to my life as a developer.</P>
+<P>&nbsp;Does that make me an Elvis or an Einstein ??&nbsp; Or just a hot-dogger ??????</P>
+<P>I agree whole heartedly with what you are saying, but one thing in particular needs clarification ....</P>
+<BLOCKQUOTE dir=ltr>
+<BLOCKQUOTE dir=ltr>
+<P><FONT size=2>"And now we're to the point where you would have separate objects for HourlyEmployee and ExemptEmployee, even though they share some properties/fields."</FONT></P></BLOCKQUOTE></BLOCKQUOTE>
+<P>What about adopting the approach where we have HourlyEmployee and ExemptEmployee objects that contain PersonInfo and EmployeeInfo Objects&nbsp; ??</P>
+<P>.... I read what you said about re-use ... but implementing this way allows:</P>
+<UL>
+<LI>the HourlyEmployee to instantiate the PersonInfo and EmployeeInfo objects as EditableChildren&nbsp;.... </LI>
+<LI>The same PersonInfo editable-children and EmployeeInfo BO's&nbsp;are used in the ExemptEmployee<BR><BR>and<BR></LI>
+<LI>PersonInfo could be contained/reused in Contacts</LI></UL>
+<P>Reuse, Maintainibility .... elegance ???&nbsp; Too brittle ?????</P>
+<P>Thanks again.</P>
+<P>Steve</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, September 04, 2007</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>tsaltd:</strong></div><div>
+<P>I agree whole heartedly with what you are saying, but one thing in particular needs clarification ....</P>
+<BLOCKQUOTE dir=ltr>
+<BLOCKQUOTE dir=ltr>
+<P><FONT size=2>"And now we're to the point where you would have separate objects for HourlyEmployee and ExemptEmployee, even though they share some properties/fields."</FONT></P></BLOCKQUOTE></BLOCKQUOTE>
+<P>What about adopting the approach where we have HourlyEmployee and ExemptEmployee objects that contain PersonInfo and EmployeeInfo Objects&nbsp; ??</P>
+<P>.... I read what you said about re-use ... but implementing this way allows:</P>
+<UL>
+<LI>the HourlyEmployee to instantiate the PersonInfo and EmployeeInfo objects as EditableChildren&nbsp;.... 
+<LI>The same PersonInfo editable-children and EmployeeInfo BO's&nbsp;are used in the ExemptEmployee<BR><BR>and<BR>
+<LI>PersonInfo could be contained/reused in Contacts</LI></UL>
+<P></div></BLOCKQUOTE></P>
+<P>This can work. It is a use of both composition and containment.</P>
+<P>However, you'll probably find that it is awkward at the UI level. Data binding prefers to have a single, flat object in most cases. Because you'll have a two-part "flat" object data binding will have a harder time working with this model. Or more accurately, you'll have a harder time convincing data binding to work with this model.</P>
+<P>In other words, you've achieved some potential elegance at the business layer, but you've increased the complexity at the UI layer (where complexity is more expensive).</P>
+<P>Also, you've got a potential data access issue. You may need to hit the database twice to load an object - once for the employee stuff, once for the person stuff.</P>
+<P>While you could combine the data access into a single, merged, query, that would result in coupling again. Adding a field to PersonInfo would require alteration to objects and/or queries used to load several other objects - while directly illustrates how coupling creates fragility.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tsaltd replied on Tuesday, September 04, 2007</h2><P>OK - I'm getting "Mort"-ified .....</P>
+<P>I'm obviously holding on to my data-centric focus ... and the value of the elegance / reusability "normalization of 'un-interesting' behavior"</P>
+<P>I&nbsp;guess I should just hold my nose and go ahead and maintain multiple versions of the same code.</P>
+<P>However ... </P>
+<P>I am &nbsp;thinking that even tho the BO design pattern that I don't want to give up on may have data access functions that get pretty funky .... the data binding issues could be "normalized" by using a wrapper ... something similar to the "facades" that are created for CSLA Web Service interfaces&nbsp;that would (?) and certainly could be a workaround for the databinding issue.</P>
+<P>I don't want to beat this to death ... but there is a germ in this thread that makes me think in terms of an MVC pattern /&nbsp;a controller class that feeds a "flat" boundary object for data binding.</P>
+<P>I certainly don't want to trade off the benefits of the CSLA data portal architecture to do this ...</P>
+<P>Get the picture ?</P>
+<P>Have there been discussions / Are there any examples of anything like this ???&nbsp; </P>
+<P>The&nbsp;picture is getting much clearer .... very informative .. thanks.</P>
+<P>Steve</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>juddaman replied on Tuesday, September 04, 2007</h2>Hey Steve<br><br>Glad to see you are getting to grips with the method. Think the "the value of the elegance / reusability "normalization of 'un-interesting' behavior" line sums that up. :-) Though you say:<br><br><b>I&nbsp;guess I should just hold my nose and go ahead and maintain multiple versions of the same code.<br><br></b>Take this as an advantage as you have decoupled your objects so they can change independently.<br><br>Implementing the MVC pattern is a lot of work even with plain objects with a few properties with BOs and errors coming back and forth you'd spent a hell of a lot of time writing code that doesn't do anything interesting. Copying and pasting a few properties would be a lot quicker and more maintainable. Properties only exist to aid encapsulation without them youd only be copying a line per data item so don't worry about copying them.<br><br>Regards<br><br>George<br><br><br>.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>juddaman replied on Tuesday, September 04, 2007</h2>Rocky<br><br>In the post above you said:<br><br>&nbsp;"if composition becomes <em>combination</em>&nbsp;- at least of properties/fields - then you avoid the performance issues."<br><br>Would you mind defining combination for me please? Are we talking about copying and pasting or something fancier maybe, making "dumb" object with all the properties that are shared in or something? <br><br>When you talk about collaborating with Assignment this is by association right?<br><br>Cheers, George.<em></em><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, September 04, 2007</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>&#8220;Combination&#8221; is basically copy-paste </span><span>J</span><span>&nbsp;
+Or better, it is code-gen of properties for both objects. The idea is to create
+a resulting object with the &#8220;shape&#8221; (properties) required by the
+use case.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>The &#8220;dumb&#8221; object idea is problematic because you
+lose interactive data binding.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>The relationship with Assignment is more collaboration than
+association. In implementation terms there really is no Assignment &#8211; just
+a bunch of shared methods. But at design time, ProjectResource and
+ResourceAssignment are collaborating with (or using) Assignment.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> juddaman
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Tuesday, September 04, 2007 2:27 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] inherit ? contain ?? behavior-centric ????? -
+One more time ....<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Rocky<br>
+<br>
+In the post above you said:<br>
+<br>
+&nbsp;&quot;if composition becomes <em>combination</em>&nbsp;- at least of
+properties/fields - then you avoid the performance issues.&quot;<br>
+<br>
+Would you mind defining combination for me please? Are we talking about copying
+and pasting or something fancier maybe, making &quot;dumb&quot; object with all
+the properties that are shared in or something? <br>
+<br>
+When you talk about collaborating with Assignment this is by association right?<br>
+<br>
+Cheers, George.<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>juddaman replied on Tuesday, September 04, 2007</h2>Hi,<br><br>Thanks for clearing up the use of&nbsp; <span>“Combination” I can use that in future posts :-) People do get freaked out when "copy and paste is mentioned". lol. Im sure I prob did the first time thou, until I realised the time I would have saved if avoiding subclassing for the sake of properties, I've been there!<br><br><font color="#000080">[It's interesting how the relationship (or at least naming of the relationship) changes from design to implementation. </font></span><font color="#000080"><span>Collaboration confused me, as at implementation time this suggest a strong whole-part relationship with X creating and instances of Y. In the Assignment case </span></font><span><font color="#000080">no Assignment object is ever even created. At anyalsis time the word collaborating seams to make sense though as a word not a implementation concept.] </font>Actually I'm confusing myself.. I think the ambiguity comes from the difference between UMLs and CRCs use of the word </span><span></span><span>Collaboration.At implementation level the </span><span></span><span></span><span>"collaboration</span><span>" doesn't even exist, like you said its just a bunch of helpers.</span><br><span><br>Regards<br><br>George<br><br></span><span>&nbsp;<br></span></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Tom_W replied on Friday, May 29, 2009</h2>Apologies for resurrecting an old post, but I've been struggling with getting my head round behaviour-centric design since I started looking at CSLA and this post has helped immensely.<br><br>Rocky, is there anyway you could add a read only 'Learning CSLA Basics' forum section where posts like this could be archived for quick access?&nbsp; I think it would be a really useful resource for newbies (me) and the more experienced (everyone who helps me here!) alike.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, May 29, 2009</h2><P>What I can do (and just started) is create a list of links to forum posts that are particularly useful</P>
+<P><A href="http://www.lhotka.net/cslanet/faq/CslaObjectFaq.ashx">http://www.lhotka.net/cslanet/faq/CslaObjectFaq.ashx</A></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Tom_W replied on Friday, May 29, 2009</h2>Brilliant, thanks Rocky<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

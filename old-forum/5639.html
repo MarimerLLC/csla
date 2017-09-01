@@ -1,0 +1,292 @@
+<html><header><title>XamDataGrid</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>XamDataGrid</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5639.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 posted on Tuesday, October 21, 2008</h2>HI,<br><br>I'm trying to use a XamDataGrid to display a BLB subclass, PartLocations.<br><br>The list displays fine, but I'm trying to get a red border around a cell that has a data error (the grid doesn't support this just yet).<br><br>Each PartLocation in the collection has a rule that ensures it is unique.&nbsp; When the Location property is changed, it runs the rule fine.&nbsp; Also, the PartLocations overrides OnChildChanged, and asks each instance to also run it's rule checks.&nbsp; The result should be that if there's a duplicate, all duplicate rows will be given a red border.<br><br>The rules seem to run fine, but I'm having trouble figuring out how to get the cell with the error to draw with a red border.&nbsp; Anyone else using this grid?<br><br>Thanks<br>Andy<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Curelom replied on Tuesday, October 21, 2008</h2><P>I've just started looking at this grid last week.&nbsp; If you are editing within the grid itself, the below methods seem to work, however if&nbsp;editing outside the grid I haven't had any success with data triggers on the isvalid property.&nbsp; The grid doesn't update, I have to scroll the row out of view, then back in view for the new background/border to show up.&nbsp; Frustrating.&nbsp; I have a forum link on this problem here <A href="http://forums.infragistics.com/forums/p/14994/55821.aspx#55821">http://forums.infragistics.com/forums/p/14994/55821.aspx#55821</A></P>
+<P>&nbsp;</P><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>private</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>void</FONT></FONT><FONT size=2> userGrid_RecordUpdating(</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>object</FONT></FONT><FONT size=2> sender, Infragistics.Windows.DataPresenter.Events.</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>RecordUpdatingEventArgs</FONT></FONT><FONT size=2> e) {</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>if</FONT></FONT><FONT size=2> (((</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>IDataErrorInfo</FONT></FONT><FONT size=2>)((</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>Object</FONT></FONT><FONT size=2>)((Infragistics.Windows.DataPresenter.</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>DataRecord</FONT></FONT><FONT size=2>)e.Record).DataItem)).Error.Length &gt; 0)</P>
+<P>e.Action = Infragistics.Windows.DataPresenter.</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>RecordUpdatingAction</FONT></FONT><FONT size=2>.CancelUpdateRetainChanges; </P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>private</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>void</FONT></FONT><FONT size=2> userGrid_EditModeEnded(</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>object</FONT></FONT><FONT size=2> sender, Infragistics.Windows.DataPresenter.Events.</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>EditModeEndedEventArgs</FONT></FONT><FONT size=2> e) {</P>
+<P></FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>IDataErrorInfo</FONT></FONT><FONT size=2> obj = (</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>IDataErrorInfo</FONT></FONT><FONT size=2>)((</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>Object</FONT></FONT><FONT size=2>)((Infragistics.Windows.DataPresenter.</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>Cell</FONT></FONT><FONT size=2>)e.Cell).Record.DataItem);</P>
+<P></P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>string</FONT></FONT><FONT size=2> errorMessage = obj.Error;</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>if</FONT></FONT><FONT size=2> (errorMessage.Length &gt; 0) {</P>
+<P>e.Editor.BorderBrush = </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>Brushes</FONT></FONT><FONT size=2>.Red;</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>if</FONT></FONT><FONT size=2> (e.Editor.ToolTip != </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>null</FONT></FONT><FONT size=2>)</P>
+<P>e.Editor.Tag = e.Editor.ToolTip;</P>
+<P>e.Editor.ToolTip = errorMessage;</P>
+<P>} </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>else</FONT></FONT><FONT size=2> {</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>if</FONT></FONT><FONT size=2> (e.Editor.Tag != </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>null</FONT></FONT><FONT size=2>) {</P>
+<P>e.Editor.ToolTip = e.Editor.Tag;</P>
+<P>e.Editor.Tag = </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>null</FONT></FONT><FONT size=2>;</P>
+<P>} </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>else</P></FONT></FONT><FONT size=2>
+<P>e.Editor.ToolTip = </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>null</FONT></FONT><FONT size=2>;</P>
+<P>e.Editor.BorderBrush = </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>null</FONT></FONT><FONT size=2>;</P>
+<P>}</P>
+<P>}</P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Curelom replied on Tuesday, October 21, 2008</h2>When the IsValid property changes, does it send a property changed event?</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Tuesday, October 21, 2008</h2>No, it doesn't look like that happens.&nbsp; I think that's the problem I'm hitting; the other item in the collection needs to notify something that it's no longer valid, so the cell can have it's border updated.<br><br>What I tried doing was hooking an event to each PartLocation's BrokenRulesCollection ListChanged event... but the problem there was I couldn't get to the cell / value editor for the record... so I couldn't update anything!<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Curelom replied on Tuesday, October 21, 2008</h2><P>hmmm,</P>
+<P>I wonder if throwing a property changed event for IsValid from the ListChanged event might work.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Tuesday, October 21, 2008</h2>Possibly... but this kind of "bubbling" is what caused problems in Winforms, so I'd be careful.&nbsp; I've moved on to getting other parts of my control working, but I will have to come back to this issue.&nbsp; <br><br>It's frustrating that I couldn't figure out how to get to the proper cell using the DataRecord.. that's the only thing that kept from from solving this problem.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, October 21, 2008</h2><P>In Silverlight we solved the problem with validation/authorization by creating our own column types that incorporate a PropertyStatus control into each cell. PropertyStatus is far more powerful than the standard WPF validation, and it provides authorization and busy notification, so it was important that the grid have this option.</P>
+<P>I wonder if the WPF grid isn't designed in a similar manner, where you can create custom column types to render cells as you desire?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Wednesday, October 22, 2008</h2>Hmm... I can look into that.&nbsp; You can tell it the editor to use, so maybe I can plug in a custom editor.&nbsp; Does simply running a rule, which causes IsValid to change value, cause some kind of notification that PropertyStatus picks up on?&nbsp; <br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, October 22, 2008</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>PropertyStatus binds to the same business object property as the
+&#8220;target control&#8221;. So if you bind a TextBox to a FirstName property,
+you&#8217;d bind PropertyStatus to that same FirstName property. It then uses
+PropertyChanged to know to do its work.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Wednesday, October 22, 2008</h2>Ok.. I'm not sure what to do at this point.&nbsp; My problem is that an existing item in the collection can become invalid when another item is added to the collection with the same value... so there's no PropertyChanged.&nbsp; I'll have to do more research.. maybe binding to brokenrules to trigger an event handler.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Wednesday, October 22, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Are you saying that if there are two items in the collection
+with the same value for same property, then each item is invalid?<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899<o:p></o:p></span></p>
+
+<p class=MsoNormal><b><i><span>Magenic</span></i></b><span> </span><span>&reg;</span><b><i><span><o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> ajj3085
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Wednesday, October 22, 2008 12:05 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: XamDataGrid<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Ok.. I'm not sure what to do at this point.&nbsp; My problem
+is that an existing item in the collection can become invalid when another item
+is added to the collection with the same value... so there's no PropertyChanged.&nbsp;
+I'll have to do more research.. maybe binding to brokenrules to trigger an
+event handler.<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Wednesday, October 22, 2008</h2>Yes, that's correct.<br><br>This is done to support the "new row" on the grid.&nbsp; The row gets added, which creates the BO with the default value, so I can't do the check there.&nbsp; Instead, the check occurs when the property value is changed (via normal Csla validation).&nbsp; In addition, the BLB overrides OnChildChanged, and asks all OTHER rows to re-run their rule check.<br><br>The user could correct the data by then changing either of the instances, which should cause both to validate. The user could also delete one of the rows which will cause everything to become valid again.<br><br>I'm not sure what other way to go without breaking out of standard Csla validation (allow invalid data, but flag it).<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Wednesday, October 22, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I think you should be able to use Property Status in this
+scenario as long as you raise Property Changed event as part of your rules run,
+which would force property status to refresh.&nbsp; I think this might just
+work<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> ajj3085
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Wednesday, October 22, 2008 2:13 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: RE: XamDataGrid<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Yes, that's correct.<br>
+<br>
+This is done to support the &quot;new row&quot; on the grid.&nbsp; The row gets
+added, which creates the BO with the default value, so I can't do the check
+there.&nbsp; Instead, the check occurs when the property value is changed (via
+normal Csla validation).&nbsp; In addition, the BLB overrides OnChildChanged,
+and asks all OTHER rows to re-run their rule check.<br>
+<br>
+The user could correct the data by then changing either of the instances, which
+should cause both to validate. The user could also delete one of the rows which
+will cause everything to become valid again.<br>
+<br>
+I'm not sure what other way to go without breaking out of standard Csla
+validation (allow invalid data, but flag it).<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Wednesday, October 22, 2008</h2>Ok, I wasn't sure if that was a valid thing to do anymore.&nbsp; I'll try it and find out.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Wednesday, October 22, 2008</h2>Well, I've hit a snag.&nbsp; Raising PropertyChanged causes the list to again ask other instances to check their Location property, which causes a StackOverflowException.<br><br>Is there any way to code a business rule such that it will only perform an action if some other condition is not met?<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, October 22, 2008</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>A business rule is just a method &#8211; you can make it as
+complex as you&#8217;d like. So you sure could have your rule check some other
+condition to decide whether it should do its <i>real</i> check or not.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Wednesday, October 22, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>The only suggestion that I have right now is to move the rule
+from ListChanged into each item.&nbsp; Each item can check all other items in
+the same list, return false from rule if duplicate found, set a static Boolean flag
+(like validation in progress), then call all its piers to do the same.&nbsp; Each
+of those will just check itself and not call the piers based on static
+flag.&nbsp; The item that initiated the check to begin with will reset the static
+flag and return true/false from the rule.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Does this make sense?<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> ajj3085
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Wednesday, October 22, 2008 5:00 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: RE: RE: XamDataGrid<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Well, I've hit a snag.&nbsp; Raising PropertyChanged causes
+the list to again ask other instances to check their Location property, which
+causes a StackOverflowException.<br>
+<br>
+Is there any way to code a business rule such that it will only perform an
+action if some other condition is not met?<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

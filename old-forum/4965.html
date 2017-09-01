@@ -1,0 +1,459 @@
+<html><header><title>New Child Row Cancellation</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>New Child Row Cancellation</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4965.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>FatPigeon posted on Wednesday, June 11, 2008</h2><P class=MsoNormal><FONT face=Calibri>Hi All,</FONT></P>
+<P class=MsoNormal><FONT face=Calibri>I have an issue with a child list that I would like to discuss.</FONT></P>
+<P class=MsoNormal><FONT face=Calibri>I am using CSLA 3.5.</FONT></P>
+<P class=MsoNormal><FONT face=Calibri>I have a BusinessBase descendant called customer which has a list (a descendent of BusinessListBase) of BusinessBase decedents called orders. I have bound the list of orders to a grid and allowed new rows to be added.</FONT></P>
+<P class=MsoNormal><FONT face=Calibri>When a user clicks on the ‘new row’ of the order grid a new order row is created. If the user then clicks away from the new row or presses the Esc key before editing the new row I want the creation of the new order to be cancelled as per the normal grid behaviour when using a data set.</FONT></P>
+<P class=MsoNormal><FONT face=Calibri>I find that if I declare the order list property using the method from ProjectTracker (i.e. using FieldManager and the LoadProperty method) I do not get this behaviour. I find if I do one of the following I do get this behaviour:</FONT></P>
+<P class=MsoListParagraphCxSpFirst><SPAN><SPAN><FONT face=Calibri>1</FONT><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN></SPAN></SPAN><FONT face=Calibri>Use a private backing field and not the field manager and initialise the field in code.</FONT></P>
+<P class=MsoListParagraphCxSpLast><SPAN><SPAN><FONT face=Calibri>2</FONT><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN></SPAN></SPAN><FONT face=Calibri>Override the OnPropertyChanged method on the customer so that I can avoid invoking the _nonSerializableChangedHandlers</FONT></P>
+<P class=MsoNormal><FONT face=Calibri>Both of these have side effects that have to be addressed. </FONT></P>
+<P class=MsoNormal><FONT face=Calibri>Can anyone tell me if one of the above is a good approach, and if not, then what is?</FONT></P>
+<P class=MsoNormal><FONT face=Calibri>Regards,</FONT></P>
+<P class=MsoNormal><FONT face=Calibri>Patrick</FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, June 12, 2008</h2>There were some bugs around this area in 3.5, that should be addressed in 3.5.1. Please try the test release of 3.5.1 (<A href="http://www.lhotka.net/cslanet.download.aspx">download here</A>) and see if that resolves your issue.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>FatPigeon replied on Thursday, June 12, 2008</h2><P class=MsoNormal><FONT face=Calibri>Thanks for your reply Rocky, but I still seem to get the problem.</FONT></P>
+<P class=MsoNormal><FONT face=Calibri>I have replicated the problem in PTWin (V3.5.1) by adding a new form and dragging the project data source and then the project resources from the data source window onto it. I have put a line in the constructor to create a project instance using the GetProject method of the project class using a hard coded guid. This project is assigned to the data source of the project binding source. To get the grid to work I have added a simple AddNewCore method to ProjectResources that adds a new project resource using a hard coded resource id.</FONT></P>
+<P class=MsoNormal><FONT face=Calibri>I can get the grid to cancel newly added resources by overriding OnPropertyChanged in Project with an empty method which suggests it might be something to do with what this method does in BusinessBase, but of course this has unacceptable side effects. </FONT></P>
+<P class=MsoNormal><FONT face=Calibri>I have got the grid view working in my current project by not using the FieldManager but would prefer to use the recommended technique if this can be done.</FONT></P>
+<P class=MsoNormal><FONT face=Calibri>Thanks again for you help,</FONT></P>
+<P class=MsoNormal><FONT face=Calibri>Regards,</FONT></P>
+<P class=MsoNormal><FONT face=Calibri>Patrick</FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, June 12, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Thanks for checking. The best thing you can do to help is to
+replicate the problem in the test project specifically targeted at Windows
+Forms data binding issues:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>svn://svn.lhotka.net/csla/samples/trunk/RootChildGrandchildWinFormTest<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>You&#8217;ll need TortoiseSvn to download the code, but if you
+can get the issue to occur in that sample, and can then send me the repro
+steps, that&#8217;d be incredibly helpful!<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> FatPigeon
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Thursday, June 12, 2008 11:17 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] New Child Row Cancellation<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal><span>Thanks for your reply Rocky, but I
+still seem to get the problem.</span><o:p></o:p></p>
+
+<p class=MsoNormal><span>I have replicated the problem in
+PTWin (V3.5.1) by adding a new form and dragging the project data source and
+then the project resources from the data source window onto it. I have put a
+line in the constructor to create a project instance using the GetProject
+method of the project class using a hard coded guid. This project is assigned
+to the data source of the project binding source. To get the grid to work I
+have added a simple AddNewCore method to ProjectResources that adds a new
+project resource using a hard coded resource id.</span><o:p></o:p></p>
+
+<p class=MsoNormal><span>I can get the grid to cancel newly
+added resources by overriding OnPropertyChanged in Project with an empty method
+which suggests it might be something to do with what this method does in
+BusinessBase, but of course this has unacceptable side effects. </span><o:p></o:p></p>
+
+<p class=MsoNormal><span>I have got the grid view working in
+my current project by not using the FieldManager but would prefer to use the
+recommended technique if this can be done.</span><o:p></o:p></p>
+
+<p class=MsoNormal><span>Thanks again for you help,</span><o:p></o:p></p>
+
+<p class=MsoNormal><span>Regards,</span><o:p></o:p></p>
+
+<p class=MsoNormal><span>Patrick</span><o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>FatPigeon replied on Friday, June 13, 2008</h2><P>Hi Rocky,</P>
+<P>I have had a look at the RootChildGrandChildWinFormTest project and have found that it already illustrates the problem as is. To see what I mean:</P>
+<P>1&nbsp;Run the application<BR>2&nbsp;Click on the new row of the child grid and you get a new row with id 5.<BR>3&nbsp;Click on the row for id 4 and the new row stays:</P>
+<P>Or</P>
+<P>1&nbsp;Run the application<BR>2&nbsp;Click on the new row and you get a new row with id 5.<BR>3&nbsp;Press Esc and the new row stays.</P>
+<P>If you override the OnPropertyChanged with an empty method the new row will go at step 3. You have to edit the new row to confirm that you actually meant to create a new row and it was not just an accidental click.<BR>There is a related problem with undo:</P>
+<P>1&nbsp;Run the application<BR>2&nbsp;Click on a new row to get the new child with id 5.<BR>3&nbsp;Put some text in the name cell<BR>4&nbsp;Click on the row with id 4 to trigger the end edit.<BR>5&nbsp;Click on the row with id 5 and edit the name.<BR>6&nbsp;Move to the id cell with id 5 by pressing shift tab or using the mouse making sure you do not move to another row.<BR>7&nbsp;Press esc – the row should undo and does once the above change has been made.</P>
+<P>There are similar problems with the grandchild grid which can be overcome by overriding the OnPropertyChanged method of the child class with an empty method.</P>
+<P>Sorry to be a pain,</P>
+<P>Regards,</P>
+<P>Patrick<BR></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, June 16, 2008</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I wonder what the correct rule/pattern is then.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Obviously disabling INotifyPropertyChanged by never raising a
+PropertyChanged event isn&#8217;t the right answer &#8211; that&#8217;d have
+negative side-effects all over the place.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>So does the grid somehow expect that new rows won&#8217;t raise
+the event, but all other rows will?<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>FatPigeon replied on Tuesday, June 17, 2008</h2><DIV><FONT face=Arial size=2>I agree, disabling&nbsp;INotifyPropertyChanged is not the right answer.&nbsp;I mentioned that having an empty OnPropertyChanged method has an effect because I thought this may be helpful in tracking down the problem. I did not mean to suggest is was the answer.</FONT></DIV>
+<DIV><FONT face=Arial size=2></FONT>&nbsp;</DIV>
+<DIV><FONT face=Arial size=2>Your question about 'what the grid expects' is a good one - I wish I knew - do you&nbsp;have any contacts at Microsoft that may help?.</FONT></DIV>
+<DIV><FONT face=Arial size=2></FONT>&nbsp;</DIV>
+<DIV><FONT face=Arial size=2>However, before continuing with this issue, do you think I should be expecting this 'new row cancellation' behavior or should I just work with the way the grid&nbsp;behaves in RootChildGrandchildWinFormTest?</FONT></DIV>
+<DIV><FONT face=Arial size=2></FONT>&nbsp;</DIV>
+<DIV><FONT face=Arial size=2>Regards,</FONT></DIV>
+<DIV><FONT face=Arial size=2></FONT>&nbsp;</DIV>
+<DIV><FONT face=Arial size=2>Patrick.</FONT></DIV></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, June 17, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I&#8217;ll be honest, I don&#8217;t have time to research it in
+the near future. So your options are to have me put it on the wish list and
+wait until I have time &#8211; perhaps this fall or winter &#8211; or to
+research it yourself and see if you can figure out the answer &#8211; or to
+live with the way the grid behaves now.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> FatPigeon
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Tuesday, June 17, 2008 7:08 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: RE: New Child Row Cancellation<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<div>
+
+<p class=MsoNormal><span>I
+agree, disabling&nbsp;INotifyPropertyChanged is not the right answer.&nbsp;I
+mentioned that having an empty OnPropertyChanged method has an effect because I
+thought this may be helpful in tracking down the problem. I did not mean to
+suggest is was the answer.</span><o:p></o:p></p>
+
+</div>
+
+<div>
+
+<p class=MsoNormal>&nbsp;<o:p></o:p></p>
+
+</div>
+
+<div>
+
+<p class=MsoNormal><span>Your
+question about 'what the grid expects' is a good one - I wish I knew - do
+you&nbsp;have any contacts at Microsoft that may help?.</span><o:p></o:p></p>
+
+</div>
+
+<div>
+
+<p class=MsoNormal>&nbsp;<o:p></o:p></p>
+
+</div>
+
+<div>
+
+<p class=MsoNormal><span>However,
+before continuing with this issue, do you think I should be expecting this 'new
+row cancellation' behavior or should I just work with the way the
+grid&nbsp;behaves in RootChildGrandchildWinFormTest?</span><o:p></o:p></p>
+
+</div>
+
+<div>
+
+<p class=MsoNormal>&nbsp;<o:p></o:p></p>
+
+</div>
+
+<div>
+
+<p class=MsoNormal><span>Regards,</span><o:p></o:p></p>
+
+</div>
+
+<div>
+
+<p class=MsoNormal>&nbsp;<o:p></o:p></p>
+
+</div>
+
+<div>
+
+<p class=MsoNormal><span>Patrick.</span><o:p></o:p></p>
+
+</div>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>FatPigeon replied on Tuesday, June 17, 2008</h2><DIV><FONT face=Arial size=2>Thanks for your honesty. I would be grateful if you could add it to the wish list, I would like to see an 'official' technique. Meanwhile I will see how I get on. I may need to wait for the 2008 book to help me work out how everything works to get a good solution.</FONT></DIV>
+<DIV><FONT face=Arial size=2></FONT>&nbsp;</DIV>
+<DIV><FONT face=Arial size=2>And thanks for you help.</FONT></DIV>
+<DIV><FONT face=Arial size=2></FONT>&nbsp;</DIV>
+<DIV><FONT face=Arial size=2>Patrick</FONT></DIV></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, July 22, 2008</h2>Thanks to help from another member of the forum, I was able to identify and resolve this issue and the fix will be in the next 3.5.1 release (it is in subversion now).</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>FatPigeon replied on Wednesday, July 23, 2008</h2><P>Thanks Rocky, I will try it out.</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>FatPigeon replied on Wednesday, July 23, 2008</h2><P>Rocky,</P>
+<P>I have downloaded Csal 3.5.1 beta 2 (<A href="http://www.lhotka.net/cslanet/download.aspx">http://www.lhotka.net/cslanet/download.aspx</A>) but it does not seem to have the ChildChanged stuff in it. Althought the change log mentions it.</P>
+<P>Am I missing something?</P>
+<P>Regards,</P>
+<P>Patrick</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Wednesday, July 23, 2008</h2><P>The code change is only in the source - it is not in Beta 2. Should be in Beta 3 or the Released version.</P>
+<P>Joe</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>FatPigeon replied on Wednesday, July 23, 2008</h2><P>Hi Joe,</P>
+<P>And where is the source?</P>
+<P>Patrick</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, July 23, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Please note that the fix you want is in RTM release 0807xx &#8211;
+the RTM is beyond Beta 2, and the &#8216;xx&#8217; indicates that it isn&#8217;t
+out yet &#8211; otherwise those digits would be the rest of the release date.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>To get the ChildChanged stuff, you need to get the code directly
+from subversion or wait until I do the RTM release.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> FatPigeon
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Wednesday, July 23, 2008 7:09 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: RE: RE: New Child Row Cancellation<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Rocky,<o:p></o:p></p>
+
+<p>I have downloaded Csal 3.5.1 beta 2 (<a href="http://www.lhotka.net/cslanet/download.aspx">http://www.lhotka.net/cslanet/download.aspx</a>)
+but it does not seem to have the ChildChanged stuff in it. Althought the change
+log mentions it.<o:p></o:p></p>
+
+<p>Am I missing something?<o:p></o:p></p>
+
+<p>Regards,<o:p></o:p></p>
+
+<p>Patrick<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>FatPigeon replied on Wednesday, July 23, 2008</h2><P>Rocky,</P>
+<P>Thanks for the information.</P>
+<P>I have tried to find the source code but am having no luck</P>
+<P>I have used tortoise svn to navigate to :</P>
+<P>svn://svn.lhotka.net/csla/tags/V3</P>
+<P>but there is no entry 3.5.1. 3.5.0 is the latest.</P>
+<P>I have tried to navigate to :</P>
+<P>svn://svn.lhotka.net/cslacvs/viewcv.cgi/trunk/</P>
+<P>but get an message:</P>
+<P>Error * No repository found in 'svn://svn.lhotka.net/cslacvs/viewcv.cgi/trunk'</P>
+<P>Any ideas?</P>
+<P>Patrick<BR></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tetranz replied on Wednesday, July 23, 2008</h2>When I tried getting the fix from svn a day or two ago I ended up with a permissions error. Someone else reported the same thing a week or so ago. My understanding of svn is very close to zero but I managed to navigate around the web interface and get the two files checked in for that fix.<br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, July 23, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>My ISP has been having some trouble the last 2-3 days. They say
+they replaced a router, so hopefully that helps.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> tetranz
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Wednesday, July 23, 2008 4:42 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: RE: RE: RE: New Child Row Cancellation<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>When I tried getting the fix from svn a day or two ago I
+ended up with a permissions error. Someone else reported the same thing a week
+or so ago. My understanding of svn is very close to zero but I managed to
+navigate around the web interface and get the two files checked in for that
+fix.<br>
+<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, July 23, 2008</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>This page is a master index into the web view and also provides
+the URIs needed to use TortoiseSvn (or other subversion client) to directly
+access the repository:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><a href="http://www.lhotka.net/cslanet/Repository.aspx">http://www.lhotka.net/cslanet/Repository.aspx</a><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>The latest 3.5.1 code is in the CSLA .NET dev tree (svn://svn.lhotka.net/csla/trunk
+or <a href="http://www.lhotka.net/cslacvs/viewvc.cgi/trunk/">http://www.lhotka.net/cslacvs/viewvc.cgi/trunk/</a>)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky</span><o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>FatPigeon replied on Thursday, July 24, 2008</h2><P>Rocky, Tetranz</P>
+<P>Thanks for your help - found it now.</P>
+<P>So far I have only tried it out on RootChildGrandChildWinFormTest but it seems to work fine.</P>
+<P>Regards,</P>
+<P>Patrick</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

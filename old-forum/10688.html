@@ -1,0 +1,44 @@
+<html><header><title>3.x and 4.x with a single Client....Cleverness Challenge</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>3.x and 4.x with a single Client....Cleverness Challenge</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10688.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>jh72i posted on Thursday, September 15, 2011</h2><p>I need to upgrade our own framework which is based on (inherits, etc.) Csla but my issue arises from the fact that I cannot justify an upgrade of everything in one swoop. </p>
+<p>I have winform and web apps currently and want to help move the business toward WPF and Silverlight and ideally open the doors to WP, iPad, etc. So Csla4.0 is a compelling move to make. </p>
+<p>I have a lot of projects that encapsulate different parts of our own framework split out in a manner that folks can use features of our world with varying degrees of buy-in to our approaches/patterns/practices/etc. and mostly these don&#39;t need any upgrading. </p>
+<p>However, I have a few core projects that inherit from Csla and add behaviours, etc. common to our world so that in the real application business layers very little plumbing has to be done (very much in the spirit of Csla itself). I can upgrade these pretty easily I think (from some investigations) but I&#39;m wondering how I can continue to support the old and new worlds in the same client application. </p>
+<p>If I wasn&#39;t concerned about supporting a single evolving client app moving elements from winform to wpf or simply adding new wpf elements I don&#39;t think I&#39;d have any problem: I&#39;d simply create new projects, share/link files, add references to new csla, etc. and build as the same assembly name and namespaces. Because they&#39;d be deploy to different locations everything would work smoothly. </p>
+<p>But, because I&#39;ll have scenarios where I have a single rich client application hosting winforms and wpf along side eachother this approach cannot work. So I essentially have to come up with new namespaces for the new stuff so there is no conflict with the old. This means that in every file that doesn&#39;t require any update work (the linked/shared files that make up 99% of the code) I have to change to put in an compiler directive to alter the namespace. </p>
+<p>Surely there is some more clever way of achieving what I need - sharing Csla3.x and 4.x (and my own 3.x and 4.x framework) in a single client without major surgery throughout?</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Saturday, September 17, 2011</h2><p>Hi, </p>
+<p>In practice - you have 2 possible options. </p>
+<p><b>1. 2 versions of CSLA: </b><br />&nbsp;&nbsp;&nbsp;&nbsp; You cannot load the same namespace.classname from 2 assemblies in onto the same AppDomain. So in order to use 2 versions of Csla:</p>
+<ul>
+<li> one of them has to be in a new namespace (ex Csla.38) and</li>
+<li>your apps must be updated to use the new namespace</li>
+<li>and then you can add a reference to Csla 4.x and gradually port your app to 4.x</li>
+</ul>
+<p><b>&nbsp;2.&nbsp; Migrate to Csla4<br />&nbsp;&nbsp;&nbsp;&nbsp;</b> Migrate your app to Csla 4 as quickly as possible and recode your Business+Authz rules.</p>
+<p>I tried #1 when I migrated an app this summer but ended up doing #2.</p>
+<p>Thanks to Andres I learned that I could add the old rules (common rules and couple of base classes) from 3.8.x and create extension methods to AddRules so that the old style of ValidationRules would be wrapped and added as Lambda rule in Csla 4.&nbsp; I haven&#39;t published or made these extensions available yet.</p>
+<p><b>I did have to recode the Authz rules (or comment out) to make the app compile but I had my app up and running in very little time on Csla 4 and could then start working with the code and turn business rules into classes.</b></p>
+<p>You should keep in mind the breaking changes from 3.8 to 4.x, here&#39;s some of the most important ones:</p>
+<ul>
+<li>new Rule engine (all rules are now classes)</li>
+<li>AddAuthorizationRules is no longer used (Authz rules is now added in AddBusinessRules)</li>
+<li>No more instance rules</li>
+<li>BusinessListBase/ReadOnlyListBase etc renamed to BusinessBindingListBase/ReadOnlyBindingListBase (BindingList&lt;&gt;)</li>
+<li>BusinessListBase/ReadOnlyListBase etc now inherit from ObservableCollection</li>
+</ul></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jh72i replied on Monday, September 19, 2011</h2><p>Thanks for taking the time out to reply Jonny. I would have thought a lot of folks are in a similar situation but then I read many of the early posts about 4.0 and got a different impression which surprised me. If I had being paying attention at the time I defintely would have been asking Rocky to think deeply about those who have invested heavily in earlier versions and would be in the winform-moving-to-wpf camp for some time (years probably). How can the multi (MULTI) million dollar products that have evolved over years manage this handicap. <br /><br />What I definitely want to do is your suggestion 2 and I have (in my spare time) taken a crack at this. It has gone pretty well but then it&#39;ll be the devils in the detail that hurt me later when I find some developers following their own patterns using methods/property/combinations that I wouldn&#39;t have intended (I got this a lot in the move from 1.x to 2.x because, unlike Rocky, I didn&#39;t set out to write a framework but instead a set of encapsulated behaviours that could be reused and/or provide default behaviour).</p>
+<p>Thank you so much for the list of important things to look out for in moving 3.x to 4.x. Weirdly, the rules engine is the one that will give me the most problems I reckon. I was a very early adopter of Clsa and, unfortunately now, had to extend the rules engine pretty extensively right from day 1. In later upgrades it still never matched the capabilities I needed/had so I have kept with my original. I definitely have to reinvestigate that whole area now and get with the Csla way of doing things if they provide all the capabilities I need.</p>
+<p>However, I cannot get any backing for taking this route and, from experience, not having backing is just too risky in this environment. So I&#39;m stuck with option 1. Looks like a regex find/replace throughout the entire code base is on the cards :(</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Monday, September 19, 2011</h2><p>Hi, </p>
+<p>I expect you will find the new Rule engine to be very powerful and quite easy to use.&nbsp; <br />However, you can only attach rules to RegisteredProperties (ie, a&nbsp; PropertyInfo is <br />required) or object (when PropertyInfo is null)&nbsp;plus there is no more instance rules. </p>
+<p>On the up side&nbsp;you can:</p>
+<ul>
+<li>change message text and level on CommonRules (in 4.2). </li>
+<li>restrict when rule is allowed to execue (in 4.2)</li>
+<li>an exstensive Rule library&nbsp; with additiional rules is available at 
+<ul>
+<li><a href="http://CslaContrib.codeplex.com">http://CslaContrib.codeplex.com</a>&nbsp; and </li>
+<li><a href="http://CslaGenFork.codeplex.com">http://CslaGenFork.codeplex.com</a> </li>
+</ul>
+</li>
+<li>same code style for sync and async rules. </li>
+<li>a rule can set error/warn/info on other fields than PrimaryProperty (in 4.2)</li>
+</ul>
+<p>Which capabilities have you missed in the Csla rule engine? </p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

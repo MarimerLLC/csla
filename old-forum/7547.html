@@ -1,0 +1,121 @@
+<html><header><title>Issues related with Linq in CSLA</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Issues related with Linq in CSLA</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/7547.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Vinodonly posted on Tuesday, September 01, 2009</h2>I'm doing some filtering based on the selection by user on my BLB.. I have designed UI related classes in a generic way so that it can work on all the BO's.. <br /><br />My problem is that once I use the linq query, the returned object is linqbindinglist...<br /><br />If I try to cast it to Linqbindinglist then it fails...<br /><br />I want to get 2 properties from each bo i.e. IsSavable and IsDirty, How I can get it from the linq result in a generic way</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Vinodonly replied on Tuesday, September 01, 2009</h2>I found one more issue which i think is related with the previous problem.<br /><br />I'm using following linq query..<br /><br />from OC in OrderColors<br />where OC.SomeValue = "XYZ"<br />Select OC;<br /><br />OrderColors is Business ListBase which is having OrderColor objects..<br /><br />The above query is returning linqbindinglist with T param as OrderColor instead of OrderColors. This is creating problems which adding new record etc. is failing..<br /><br />How I can modify the above linq query to return linqbindinglist of OrderColors instead of OrderColor.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, September 01, 2009</h2><P>If you start with a List&lt;T&gt; and do a normal LINQ query you'll get back an IEnumerable&lt;T&gt;.</P>
+<P>The 'T' type is the type of the items contained in the list.</P>
+<P>If you start with a List&lt;T&gt; and do a L2C query you'll get back a LinqBindingList&lt;T&gt;.</P>
+<P>Again, the 'T' type is the type of the items contained in the list.</P>
+<P>Never does LINQ return a list of the original list type - well, not unless you started with a basic IEnumerable&lt;T&gt; - and even then you'll get back a different instance of the same type.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Vinodonly replied on Wednesday, September 02, 2009</h2>Although I understood your point theoritically but i'm still blank on practical side of it..<br /><br />Taking the same example, if i want to get OrderColors collection back even as a different instance type then how the query will be formed..<br /><br />I tried different combinations but was not able to get that..<br /><br />The problem is that AddNewCore and other required methods are in parent collection so that is needed..<br /><br />I also want to point that although the book is having a dedicated chapter on this thing but how this is to be used practically is not given..<br /><br />are there any posts or links where this is given with some examples so it is little clear..<br /><br />I'm using linq for other objects and this was my first attempt in using it with csla..</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Vinodonly replied on Wednesday, September 02, 2009</h2>After trying various tests, I found following issues but was not able to find solution<br /><br />1. How to form a query which can get the Original Collection i.e. OrderColors of BLB.<br /><br />2. If I modify program to support LinqBindingList of type Ordercolor then in ordercolor, parent object is set to null which is throwing error.<br /><br />3. If I try to cast the result of Linqbindinglist in a generic way i.e. casting it to ItrackStatus or IEditableBusinessobject then it is throwing error, so how I can get the IsSavable and IsDirty properties in a generic way so it can work for all bo's.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, September 02, 2009</h2><P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>Vinodonly:</strong></div><div></P>
+<P>1. How to form a query which can get the Original Collection i.e. OrderColors of BLB. </P>
+<P></div></BLOCKQUOTE></P>
+<P>You can't, because LINQ doesn't work that way. LINQ creates and returns a new list - typically an IEnumerable&lt;T&gt; (the simplest list type in .NET), and L2C <EM>sometimes</EM> makes it return a LinqBindingList&lt;T&gt;.</P>
+<P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>Vinodonly:</strong></div><div></P>
+<P>2. If I modify program to support LinqBindingList of type Ordercolor then in ordercolor, parent object is set to null which is throwing error. </P>
+<P></div></BLOCKQUOTE></P>
+<P>If you have a LinqBindingList, it should act as a view over the original list. In other words adding an item to the LBL adds it to the original list, removing an item from the LBL removes it from the original list, etc.</P>
+<P>If you can provide a specific unit test showing a failure condition I'll loop Aaron into this thread so he can help troubleshoot/fix the issue.</P>
+<P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>Vinodonly:</strong></div><div></P>
+<P>3. If I try to cast the result of Linqbindinglist in a generic way i.e. casting it to ItrackStatus or IEditableBusinessobject then it is throwing error, so how I can get the IsSavable and IsDirty properties in a generic way so it can work for all bo's.</P>
+<P></div></BLOCKQUOTE></P>
+<P>LBL doesn't implement those interfaces. It is not a replacement for the original list, it is a view over the original list.</P>
+<P>Any sort of persistence or complex interactions still need to be done on the original list, not on the view.</P>
+<P>LBL is designed to give you a view of the original list that can be databound to a datagrid, supporting data binding, adding, editing and removing items from the original list, but through the view.</P>
+<P>But it is a <EM>view</EM> and is not a replacement for the original list.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Vinodonly replied on Wednesday, September 02, 2009</h2>Thanks for your help.. This cleared lot of doubts..<br /><br />Reg Point 2 :- If we run a linq query as mentioned in my previous posts, then in the ChildPortal_Fetch, this.parent ref is set to null..<br /><br />I'm getting some values from Parent collection but when I use linq query then bcos the parent ref is null, it is throwing errors.<br /><br />Reg Point 3 :- What I understand is that with Linqbindinglist, we cannot get to the original object properties which is contained in that, Pls correct me if I'm wrong...<br /></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, September 02, 2009</h2>I don't completely understand what you are trying to do, or where you are<br />using L2C.<br /><br />The Parent property of a child is set when it is added to the original list.<br />BusinessListBase sets the Parent property as the child is added. If the<br />child isn't added to the original list, then Parent wouldn't be set.<br /><br />If you are using a LBL, it would be a view over a BLB. When you add an item<br />to the LBL, it should automatically get added to the underlying BLB, which<br />should trigger setting the Parent property.<br /><br />If that is not happening, please provide a small unit test that illustrates<br />the problem as it could be a bug.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Vinodonly replied on Thursday, September 03, 2009</h2>After your reply, I'm sure that this is a bug.. <br /><br />Here is what I'm doing to reproduce this problem also..<br /><br />I have a businesslistbase called ordercolors with ordercolor as businessbase. When user gets the record first time, all recs are retreived from db i.e. normal bo retrieval without linq.<br /><br />On top of the form there are filtering options for 2 fields i.e. Type and Tag..<br /><br />Once user chooses filtering option then linq is executed (same query which I gave before). Filtered records are shown to user, where he can do entries for that particular Type or Tag...<br /><br />Now when he tries to add a record, Child_Create is called, which gets some info using this.parent.. In linq query, this is not getting properly set whereas in normal bo's ref is auto set properly..<br /><br />Hope this is clear..</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, September 03, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoPlainText><span>This
+test passes:<o:p></o:p></span></p>
+
+<p class=MsoPlainText><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoPlainText><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+var list = TestCollection.GetList();<o:p></o:p></span></p>
+
+<p class=MsoPlainText><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Assert.AreEqual(list.Count, 5);<o:p></o:p></span></p>
+
+<p class=MsoPlainText><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoPlainText><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+var filtered = from r in list<o:p></o:p></span></p>
+
+<p class=MsoPlainText><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+where r.Id &gt; 10<o:p></o:p></span></p>
+
+<p class=MsoPlainText><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+select r;<o:p></o:p></span></p>
+
+<p class=MsoPlainText><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Assert.AreEqual(filtered.Count(), 3);<o:p></o:p></span></p>
+
+<p class=MsoPlainText><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoPlainText><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+var lbl = filtered as Csla.LinqBindingList&lt;TestItem&gt;;<o:p></o:p></span></p>
+
+<p class=MsoPlainText><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Assert.IsNotNull(lbl);<o:p></o:p></span></p>
+
+<p class=MsoPlainText><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Assert.AreEqual(lbl.Count, 3);<o:p></o:p></span></p>
+
+<p class=MsoPlainText><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoPlainText><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+var @new = (TestItem)lbl.AddNew();<o:p></o:p></span></p>
+
+<p class=MsoPlainText><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Assert.AreEqual(list.Count, 6);<o:p></o:p></span></p>
+
+<p class=MsoPlainText><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Assert.AreEqual(lbl.Count, 3);<o:p></o:p></span></p>
+
+<p class=MsoPlainText><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Assert.IsTrue(@new.HasParent());<o:p></o:p></span></p>
+
+<p class=MsoPlainText><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoPlainText><span>Where
+TestCollection has AllowNew=true and an AddNewCore() override that calls
+DataPortal.CreateChild&lt;TestItem&gt;(). The TestItem class has a HasParent()
+method like this:<o:p></o:p></span></p>
+
+<p class=MsoPlainText><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoPlainText><span>&nbsp;&nbsp;&nbsp;
+public bool HasParent()<o:p></o:p></span></p>
+
+<p class=MsoPlainText><span>&nbsp;
+&nbsp;&nbsp;{<o:p></o:p></span></p>
+
+<p class=MsoPlainText><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+return (Parent != null);<o:p></o:p></span></p>
+
+<p class=MsoPlainText><span>&nbsp;&nbsp;&nbsp;
+}<o:p></o:p></span></p>
+
+<p class=MsoPlainText><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoPlainText><span>You
+can see the full AddNewItemToLBL() test here:<o:p></o:p></span></p>
+
+<p class=MsoPlainText><span><a href="http://www.lhotka.net/cslacvs/viewvc.cgi/trunk/cslatest/Csla.Test/Basic/CollectionTests.cs?view=markup">http://www.lhotka.net/cslacvs/viewvc.cgi/trunk/cslatest/Csla.Test/Basic/CollectionTests.cs?view=markup</a><o:p></o:p></span></p>
+
+<p class=MsoPlainText><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoPlainText><span><o:p>&nbsp;</o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Vinodonly replied on Thursday, September 03, 2009</h2>I’m out of office now and will be back on Saturday.. from my side I did the testing and it was giving error. In any case, I will rechk this test as well as my code and post final reply on Saturday..<br /></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,23 @@
+<html><header><title>Is there any possibility to cancel 'FetchAsync' operation?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Is there any possibility to cancel 'FetchAsync' operation?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/12278.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>sash_kr posted on Sunday, December 22, 2013</h2><p>I&#39;m converting my existence project to 
+CSLA.NET
+. </p>
+<p>Now, I&#39;m working on &#39;live search&#39; feature (like when you type letters in google search textbox and it suggests you results). My project based on ADO.NET, so I&#39;m just using something like this:</p>
+<div style="border:#000080 1px solid;color:#000;font-family:&#39;Courier New&#39;, Courier, Monospace;font-size:10pt;">
+<div style="background-color:#ffffff;overflow:auto;padding:2px 5px;white-space:nowrap;">async <span style="color:#0000ff;">Task</span>&lt;DataTable&gt; SearchText(<span style="color:#0000ff;">string</span> text, <span style="color:#0000ff;">CancellationTokenSource</span> cancelToken)<br />
+{<br />
+&nbsp;&nbsp;&nbsp;&nbsp;...<br />
+&nbsp;&nbsp;&nbsp;&nbsp;var asyncRes = cmd.BeginExecuteReader();<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#0000ff;">while</span> (!asyncRes.IsCompleted)<br />
+&nbsp;&nbsp;&nbsp;&nbsp;{<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#0000ff;">if</span> (cancelToken.IsCancellationRequested)<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cmd.Cancel();<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#0000ff;">Thread</span>.Sleep(5);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;}<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#0000ff;">using</span> (var dr = cmd.EndExecuteReader(asyncRes))<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;...<br />
+}</div>
+</div>
+<p>Every time when TextBox.TextChanged event raised I&#39;m canceling current &quot;SearchText&quot; operation and execute new one&nbsp; &quot;SearchText&quot; operation.</p>
+<p>Can I do something similar in CSLA.NET?</p>
+<p>I know, I can just ignore &quot;FetchAsync&quot; result but I think it would be inefficient.</p>
+<p>&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

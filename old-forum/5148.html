@@ -1,0 +1,44 @@
+<html><header><title>Remove not working</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Remove not working</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5148.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Wal972 posted on Thursday, July 24, 2008</h2><P>I have a BLB with the following code. When its called it exits at point marked. WHY any help appreciated</P><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Overloads</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Sub</FONT><FONT size=2> Remove(</FONT><FONT color=#0000ff size=2>ByVal</FONT><FONT size=2> ShiftID </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> Int16)</P>
+<P></FONT><FONT color=#0000ff size=2>For</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Each</FONT><FONT size=2> Item </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> Shift </FONT><FONT color=#0000ff size=2>In</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Me&nbsp;&nbsp;&nbsp;<FONT color=#ff0000><STRONG>DOES NOT ENTER</STRONG></FONT></P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>If</FONT><FONT size=2> Item.ShiftID = ShiftID </FONT><FONT color=#0000ff size=2>Then</P></FONT><FONT size=2>
+<P>Remove(Item)</P>
+<P></FONT><FONT color=#0000ff size=2>Exit</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>For</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>If</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Next</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Sub</FONT></P>
+<P><FONT size=2></FONT>&nbsp;</P>
+<P><FONT color=#000000>Thanks</FONT></P>
+<P><FONT color=#0000ff size=2><FONT color=#000000 size=3>Ellie</FONT></P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>reagan123 replied on Friday, July 25, 2008</h2>I'm new to this so this could be wrong, but the only thing I can think of is that your collection doesn't contain any items.&nbsp; Have you checked the count on the collection?<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Friday, July 25, 2008</h2><P>Ellie,</P>
+<P>The problem is that your code:</P>
+<P><FONT color=#0000ff size=2>Public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Overloads</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Sub</FONT><FONT size=2> Remove(</FONT><FONT color=#0000ff size=2>ByVal</FONT><FONT size=2> ShiftID </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> Int16)<BR>&nbsp; </FONT><FONT color=#0000ff size=2>For</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Each</FONT><FONT size=2> Item </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> Shift </FONT><FONT color=#0000ff size=2>In</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Me&nbsp;&nbsp;&nbsp;<FONT color=#ff0000><STRONG>DOES NOT ENTER</STRONG></FONT></P></FONT>
+<P>most likely has an identical signature to a real method in a base class and is not being called - the base method is called.</P>
+<P>Also you have Overloads instead of Overrides, so you are not Overriding the base behavior.</P>
+<P>If you really want to have a parallel method then add a dummy second parameter and re-run the code.</P>
+<P><FONT color=#0000ff size=2>Public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Overloads</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Sub</FONT><FONT size=2> Remove(</FONT><FONT color=#0000ff size=2>ByVal</FONT><FONT size=2> ShiftID </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> Int16, ByVal DummyValue As Boolean)<BR>&nbsp; </FONT><FONT color=#0000ff size=2>For</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Each</FONT><FONT size=2> Item </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> Shift </FONT><FONT color=#0000ff size=2>In</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Me&nbsp;&nbsp;&nbsp;<FONT color=#ff0000><STRONG>DOES NOT ENTER</STRONG></FONT></P></FONT>
+<P>The base method signature may be slightly different (e.g. ShiftID as Integer instead of Int16.)</P>
+<P>But code can't tell the difference between the 2 when they are so similar and it must choose the neares match which is the base method.</P>
+<P>Joe</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Monday, July 28, 2008</h2>It's really a shame VB decided to handle overloads by requiring an Overloads keyword.&nbsp; Seems like this is a pretty common mistake, and one that could have been avoided by not needing the keyword.&nbsp; Anyone know why it was done this way?<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Monday, July 28, 2008</h2><P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>ajj3085:</strong></div><div>It's really a shame VB decided to handle overloads by requiring an Overloads keyword.&nbsp; Seems like this is a pretty common mistake, and one that could have been avoided by not needing the keyword.&nbsp; Anyone know why it was done this way?<BR></div></BLOCKQUOTE></P>
+<P>Paul Vick's book on VB.Net explains it on pages 302-305.</P>
+<P>The gist of it is that Shadows is a key word that hides base methods. Overloads allows the base method to still be exposed - *as long as the signature is different.*</P>
+<P>"Overloads is used because it allows methods and properties to be overloaded across the inheritnace hierarchy."</P>
+<P>"If a member decalred as Overloads conflicts with a base class memebr that is not the same kind of member, Overloads is the equivalent of Shadows." </P>
+<P>So you can have a base method and a derived Property with&nbsp;the same name and signature and the Overloaded Property will hide the base method!</P>
+<P>"A method declared as Overloads will still hide a memebr with the same name and parameter list in the base class. This is because it would otherwise be impossible for the compiler to choose..."</P>
+<P>Note: Overloads is only required when doing overloading across the inheritance hierarchy. It is never required when you are doing overloading within a class.</P>
+<P>Joe</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Monday, July 28, 2008</h2><BLOCKQUOTE><div><img src="/Themes/basicblue/images/icon-quote.gif"> <strong>JoeFallon1:</strong></div><div>The gist of it is that Shadows is a key word that hides base methods.</div></BLOCKQUOTE><br><br>Right, it's the equivalent of the new keyword in C#.<br><br><BLOCKQUOTE><div><img src="/Themes/basicblue/images/icon-quote.gif"> <strong>JoeFallon1:</strong></div><div>Overloads allows the base method to still be exposed - *as long as the signature is different.*
+<p>"Overloads is used because it allows methods and properties to be overloaded across the inheritnace hierarchy."</p>
+<p>"If a member decalred as Overloads conflicts with a base class
+memebr that is not the same kind of member, Overloads is the equivalent
+of Shadows." </p>
+<p>So you can have a base method and a derived Property with&nbsp;the same
+name and signature and the Overloaded Property will hide the base
+method!</p>
+<p>"A method declared as Overloads will still hide a memebr with the
+same name and parameter list in the base class. This is because it
+would otherwise be impossible for the compiler to choose..."</p>
+<p>Note: Overloads is only required when doing overloading across the
+inheritance hierarchy. It is never required when you are doing
+overloading within a class.</div></BLOCKQUOTE></p><p>Ahh.. well at least it's not required when overloading within a class.&nbsp; I didn't know that, I thought it was always required.</p><p>Still.. I'm not sure why it's needed across the inheritance hierarchy.&nbsp; C# gives a compiler warning... of course it really should be changed to a compiler error.&nbsp; Something like that SHOULD require a keyword if you'll be hiding an inherited member.. but it seems overkill to always require it even if the signature is different. <br></p><p>So, I still don't totally understand.. but then I don't understand why the C# compiler doesn't make hiding a member without the new keyword a compiler error either.<br></p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

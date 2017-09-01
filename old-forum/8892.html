@@ -1,0 +1,73 @@
+<html><header><title>Poor perform in Save - cloneable code</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Poor perform in Save - cloneable code</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/8892.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Nemisis posted on Thursday, May 06, 2010</h2><p>Hi everyone, i have an object inherited from BusinessBase, within that object i have a BusinessListBase item, that has 30 BusinessBase items in it. Within those BusinessBase items are some properties and another BusinessListBase with up to 30 BusinessBase Items within it.</p>
+<p>The perform on saving this item seems very slow, and when i looked at the code it appears to be the following code that is slowing the save procudure down.</p>
+<p>DataPortal.cs - line 450 within the Update method is the following code</p>
+<p>
+<p>try<br />&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;{</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;if (!proxy.IsServerRemote &amp;&amp; ApplicationContext.AutoCloneOnUpdate)</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;{</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;// when using local data portal, automatically</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;// clone original object before saving</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;ICloneable cloneable = obj as ICloneable;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;if (cloneable != null)</p>
+<p><b>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;obj = cloneable.Clone();</b></p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;}</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;result = proxy.Update(obj, dpContext);</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;}</p>
+</p>
+<p>&nbsp;</p>
+<p>The code in bold seems to take an awfully long time?? &nbsp;Is there anyway to speed this up??</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Thursday, May 06, 2010</h2><p>The clone process uses native .NET serialization (unless you are on Silverlight), and there&#39;s not a lot you can do to speed it up. The only real thing you can do is make sure you don&#39;t have any circular references within your object graph - and if you do then break the circle by using the NonSerialized attribute. That will have a small impact by making the serialization more efficient.</p>
+<p>The other alternative is to turn off AutoCloneOnUpdate. In that case your UI will need to have extra code to detect that a failure occurred during the save process, and it will need to discard the business object, because it will be in an indeterminate (invalid) state in memory.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, May 10, 2010</h2><p>The serialization is pure .NET, so I don&#39;t know of anything you can do to optimize it.</p>
+<p>There really is something different about your object graph from a typical object graph, because the performance problems you are seeing are not typical. Maybe your objects maintain a reference to a large image or massive strings or some other memory intensive data?</p>
+<p>As I said earlier:</p>
+<p><div style='padding-left: 50px;background-color:silver'><b>RockfordLhotka<br></b></p>
+<p>&nbsp;</p>
+<p>The other alternative is to turn off AutoCloneOnUpdate. In that case your UI will need to have extra code to detect that a failure occurred during the save process, and it will need to discard the business object, because it will be in an indeterminate (invalid) state in memory.</p>
+<div style="CLEAR:both;"></div>
+<p></div></p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Nemisis replied on Monday, May 10, 2010</h2><p>Rocky, &nbsp;I dont really want to turn off the AutoCloneOnUpdate as that would make life difficult for us.</p>
+<p>I have looked into this further and it appears to be the list property that takes so long to serialize. &nbsp;If i dont load the data into this property, serialize is fine.</p>
+<p>With this in mind, i have created an example project for you to look at using some basic code attached.&nbsp;I am using a basic parent object, with a list property and the list object itself.</p>
+<p>TemplateItem - Parent<br />MeasureCommentAnswerList - List within Template&nbsp;<br />MeasureCommentAnswerItem - Item within the List<br /><br />I have then created 2 further variations of this, both keeping the same Parent object.<br /><br />Version 2<br />TemplateWithListItem - Parent but with a List Of property instead of&nbsp;MeasureCommentAnswerList&nbsp;<br />List (Of&nbsp;MeasureCommentAnswerItem) - Uses List Of instead of Csla BusinessListBase<br />MeasureCommentAnswerItem&nbsp;- Same as above</p>
+<p>Version 3<br />TemplateWithListItemAndNoCslaChild - Parent but with List Of property and uses&nbsp;MeasureCommentAnswerNotCsla instead of MeasureCommentAnswerItem<br />List Of MeasureCommentAnswerNotCsla - Uses List Of instead of csla businessListbase<br />MeasureCommentAnswerNotCsla - doesnt inherit from csla at all, just basic coded class&nbsp;</p>
+<p>The example is windows forms and by pressing each button you can see how long each method takes to run.&nbsp;<br /><br />I understand that csla may take slightly longer, but the results for each appear very different.&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rsbaker0 replied on Monday, May 10, 2010</h2><p>Wow. I&#39;ve downloaded your sample and confirm the performance anomaly. Even on my reasonably fast machine, it&#39;s taking 7 seconds to Clone the object. I don&#39;t see an obvious cause yet though. </p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rsbaker0 replied on Thursday, May 06, 2010</h2><p>I&#39;m curious, have you done some actual benchmarking as to how long the clone operation is taking? (I guess I&#39;m asking specially how long the Clone is taking?)</p>
+<p>I am asking only because a clone would (in theory) generally be slightly faster than sending the object over a remote data portal, since that involves the same steps and additionally there is the time to transmit the data over the network.</p>
+<p>Since I can fetch thousands of objects per second over a remote portal, it seems odd for the Clone() operation to be taking an especially long time unless there is something unusual going on.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Nemisis replied on Friday, May 07, 2010</h2><p>I have timed the clone operation and it takes 14 seconds to run!! &nbsp;Surely this isnt right???</p>
+<p>Here is a breakdown of the actual object in question and what is contains, it is a fairly large object as you will see, but works well. &nbsp;Retrieving and populating takes less then a second.</p>
+<p>BusinessBase - Contains 8 int properties and a BusinessListBase called SectionList</p>
+<p>SectionList - Contains approx 30 items called Section, which is a BusinessBase</p>
+<p>Section - Contains 2 string properties and a BusinessListBase called measureList</p>
+<p>MeasureList - Contains approx 40 items called Measure, which is a BusinessBase</p>
+<p>Measure - Contains 30 properties and 3 BusinessListBase, called AnswerList, PromptList and CommentList</p>
+<p>AnswerList - Contains 4 BusinessBase items with 5 properties</p>
+<p>PromptList - Contains BusinessBase items, but this list is empty in this scenario</p>
+<p>CommentList - Contains 3 BusinessBase items called Comment</p>
+<p>Comment - contains 3 properties and 2 BusinessListBase called Answers and Prompts</p>
+<p>Answers - contains businessbase items but is currently empty</p>
+<p>Prompts - contains businessbase items but is currently empty</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, May 07, 2010</h2><p>That doesn&#39;t seem right - something else is going on.</p>
+<p>Some things to check:</p>
+<ul>
+<li>Have you implemented ISerializable? If so, your code is running during the process - check that.</li>
+<li>Have you overridden OnDeserialized()? If so, your code is running during the process - check that.</li>
+</ul>
+<p>One way or another, you have some code that is running during serialization or deserialization, and that&#39;s probably what is causing the perf issue.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Nemisis replied on Saturday, May 08, 2010</h2><p>I have not implemented ISerializable or have i overridden OnDeserialized.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Nemisis replied on Sunday, May 09, 2010</h2><p>I have checked and i dont believe anything else is running. &nbsp;I am debugging via vs 2008 and nothing seems to be running? &nbsp;Have you got a good method for checking?</p>
+<p>I have checked the stream length and its&nbsp;16685005, should it still cause a slow serialize/deserialize when the object is this big?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Nemisis replied on Monday, May 10, 2010</h2><p>Rocky, I have downloaded the red-gate profiler to see if anything else is going on. &nbsp;I have taken some screen shots and attached them here, and i do believe it is the serialize and deserialize methods.</p>
+<p>The object is 16mb in size, as i took the length from the memorystream once read. &nbsp;</p>
+<p>Do you have any other suggestions? &nbsp;I wonder if it would be worth implementing the ISerializable interface?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, May 10, 2010</h2><p>The sample is using an object graph with over 20,000 business 
+objects, each of which has various support objects (like brokenrules) 
+attached to it. It doesn&#39;t surprise me that this takes 7 seconds to 
+serialize/deserialize.</p>
+<p>The initial post was talking about an 
+object graph of more like 900 business objects. That shouldn&#39;t take nearly so long, but the initial post is talking about that graph taking many seconds (24?) to clone.</p>
+<p>If your user really is interacting with massive lists with thousands of items you should look at the Csla.DiffGram sample, which shows how to save only those items that actually have changes (which is usually a tiny subset of the graph in such a scenario).</p>
+<p>But if you are seeing 24 second Clone times with 900 objects in a graph then we&#39;re back to something else going on. If I change the sample to create a graph of 900 objects it takes 270 ms to do the clone, which is pretty realistic.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Nemisis replied on Tuesday, May 11, 2010</h2><p>The object graph i sent you was using our actual live code, which is too big to post so i thought i would make a simple example using what i think is the problem.<br /><br />The simple example is to show that &nbsp;the save/serialize methods take very long on csla businesslistbase or businessbase (not sure which one)</p>
+<p>I have changed the example to load objects that are NOT DIRTY and the save operation takes 121 milliseconds the other two example take 0-1 milliseconds.<br /><br />I have included another button to make 5 items in the list dirty (for each object), now look at the save (more importantly the serialize) method, it takes far longer. &nbsp;Why??&nbsp;<br /><br />If you load and make 5 items in the list dirty and 1 item in the parent, the first example takes&nbsp;5613 milliseconds to run? The other 2 take&nbsp;4393 and&nbsp;497.</p>
+<p>I still think something isnt quite right?? &nbsp;I think the save method is fine, but it is the cloning/serialization of the objects. &nbsp;This happens on line 450 in the DataPortal.cs file</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Nemisis replied on Wednesday, May 12, 2010</h2><p>Can anyone confirm what i am seeing?? &nbsp;Am i doing something wrong, or can someone explain this?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, May 12, 2010</h2><p>Saving 20k objects will take some time. End of story. To avoid that, 
+use the DiffGram concept from the Samples to only update the changed 
+objects.</p>
+<p>But your initial post wasn&#39;t saving 20k objects, it was saving around 900, and that was taking far longer than this sample takes to save 20k objects. Right?</p>
+<p>Do you want me to help you identify why saving 20k objects is slow? You&#39;ve already done that: it takes the BinaryFormatter a long time to serialize/deserialize a 20k object graph. If you want that to be faster you need to avoid cloning the object graph - I can&#39;t change the way .NET serializes things.</p>
+<p>Turning off autoclone can get you there, but with undesirable side-effects.</p>
+<p>Using the DiffGram concept can get you there even better, but it has some side-effects too since the server-side code doesn&#39;t have access to the full object graph.</p>
+<p>But if you are really pulling back and then saving 20k objects, the DiffGram approach is the solution I&#39;d recommend.</p>
+<p>None of which means anything relative to the original question about 900 objects.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

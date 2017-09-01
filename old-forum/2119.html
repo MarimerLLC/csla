@@ -1,0 +1,38 @@
+<html><header><title>OT: Generics... Declaring a Variable</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>OT: Generics... Declaring a Variable</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/2119.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>ward0093 posted on Thursday, January 11, 2007</h2><P>O.K... just starting to understand Generics</P>
+<P>Here is what I want to do...</P>
+<P>I have two&nbsp;methods in a NON-GENERIC class that have the following def.</P><FONT color=#0000ff size=2>
+<P>Public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Class</FONT><FONT size=2> MyClassObj</P>
+<P></FONT><FONT color=#0000ff size=2>private</FONT><FONT size=2> mActiveItem </FONT><FONT color=#0000ff size=2>as</FONT><FONT size=2> ??? = </FONT><FONT color=#0000ff size=2>Nothing</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>private</FONT><FONT size=2> mActiveReadOnlyItem </FONT><FONT color=#0000ff size=2>as</FONT><FONT size=2> ??? = </FONT><FONT color=#0000ff size=2>nothing</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Sub</FONT><FONT size=2> MyFunction(</FONT><FONT color=#0000ff size=2>Of</FONT><FONT size=2> T </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> CSLA.BusinessBase(</FONT><FONT color=#0000ff size=2>Of</FONT><FONT size=2> T))(</FONT><FONT color=#0000ff size=2>ByVal</FONT><FONT size=2> activeObj </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> T)</P>
+<P>mActiveItem = activeObj</P>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Sub</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Sub</FONT><FONT size=2> MyFunction(</FONT><FONT color=#0000ff size=2>Of</FONT><FONT size=2> C </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> CSLA.ReadOnlyBase(</FONT><FONT color=#0000ff size=2>Of</FONT><FONT size=2> C))(</FONT><FONT color=#0000ff size=2>ByVal</FONT><FONT size=2> activeObj </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> C)</P>
+<P>mActiveReadOnlyItem = activeObj</P>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Sub</P>
+<P>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Class</FONT></P>
+<P><FONT color=#000000></FONT>&nbsp;</P>
+<P><FONT color=#000000>How do i finish the Module Level definitions (the variables with the ???)?&nbsp; I want to set the "activeObj" coming in to a module level variable for use later.</FONT></P>
+<P>I can not seem to figure it out... it appears I want to create a variable of type CSLA.BusinessBase(of CSLA.BusinessBase)... but that does not work.&nbsp; I am i going about this the wrong way?</P>
+<P>any help would be great</P>
+<P>ward0093</P>
+<P><FONT color=#0000ff size=4></FONT><FONT size=2><FONT color=#0000ff size=4></FONT>&nbsp;</P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>skagen00 replied on Thursday, January 11, 2007</h2><P>You would either store the variable as an interface (like IEditableBusinessObject) or Core.BusinessBase would probably work too (but really wouldn't be the proper approach).</P>
+<P>To use an example I like to use - I may have a generic class called Profile&lt;T&gt;, of which I have Individual : Profile&lt;Individual&gt; and Organization : Profile&lt;Organization&gt;. I can't store something as simply a profile - it's a generic class template. So I put an interface on Profile&lt;T&gt; and expose members of Profile&lt;T&gt;&nbsp;in this interface - let's call it IProfile. </P>
+<P>Now, I can store an IProfile - which Individual and Organization implement by nature of descending from Profile. And I can call any members declared on IProfile, such as Id, Name, Status, etc. </P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ward0093 replied on Thursday, January 11, 2007</h2><P>but than can you CType the variable back into the Class Object it originally was? I mean say i pass in a "Customer" object (def: Public Class Customer - Inherits CSLA.BusinessBase(of Customer)) and this object is stored in the module variable mActiveItem (def: private mActiveItem as IMyLocalBusinessBase)... </P>
+<P>How do I CType(mActiveObject, CLSA.BusinessBase(Of ???))?</P>
+<P>ward0093</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>skagen00 replied on Thursday, January 11, 2007</h2><P>If something isn't on the interface that I'm storing the variable for - let's say I have an individual stored in my IProfile variable and I want to use some functionality for individuals...</P>
+<P>I can test the variable like this: if (myIProfile is Individual) (C#) </P>
+<P>And then just:</P>
+<P>Individual myIndividual = &nbsp;(Individual)myIProfile;</P>
+<P>myIndividual.Gender = Gender.Male;</P>
+<P>I'm sure there's the VB equivalent. Is this what you were asking? </P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ward0093 replied on Thursday, January 11, 2007</h2><P>maybe...</P>
+<P>I want to CType the interface back into the complete original object</P>
+<P>if typeof&nbsp;MyClassObj.activeItem is Library.Customer then</P>
+<P>'Do Something</P>
+<P>ElseIf typeof MyClassObj.activeReadOnlyItem is Library.CustomerInfo then</P>
+<P>'Do Something</P>
+<P>end </P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Brian Criswell replied on Thursday, January 11, 2007</h2><p>if typeof&nbsp;MyClassObj.activeItem is Library.Customer then</p><p>&nbsp;&nbsp;&nbsp; Dim customer as Library.Customer = DirectCast(MyClassObj.ActiveItem, Library.Customer)<br></p>
+<p>&nbsp;&nbsp;&nbsp; 'Do Something to customer<br></p>
+<p>ElseIf typeof MyClassObj.activeReadOnlyItem is Library.CustomerInfo then<br></p><p>&nbsp;&nbsp;&nbsp; Dim customer as Library.CustomerInfo = DirectCast(MyClassObj.ActiveItem, Library.CustomerInfo)</p>
+<p>&nbsp;&nbsp;&nbsp; 'Do Something to customer<br></p>
+<p>end </p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Thursday, January 11, 2007</h2>You don't want to do that; something may be wrong with your design if you need to do that typically. <br><br>"Depend on high level abstractions, not concrete classes."<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>xal replied on Thursday, January 11, 2007</h2>I'm still failing to see the point of what you're trying to accomplish with that code. Could you explain a little bit further?<br>If what you want is to store the "current" bo, the i don't think generics are the way to go, because you're going to be storing objects of different types. Generics won't change the current type once the instance was made, so you can't have a local variable that will change it's type as you store different object types.<br><br>So, while you can have generic methods in your class, the variables at the object level comply with what you define at the class level. ie:<br><br>Public Class MyGenericClassContainer(Of T)<br>&nbsp;&nbsp;&nbsp; Private mField as T<br>End Class<br><br>Once you make an instance of, say, MyGenericClassContainer(Of Integer), all you can store in mField are integers.<br>I think generic methods are not meant to do what you're trying to do.<br><br>Andrés<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

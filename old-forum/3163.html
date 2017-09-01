@@ -1,0 +1,130 @@
+<html><header><title>Create separate objects for templates?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Create separate objects for templates?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3163.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>tmg4340 posted on Tuesday, July 10, 2007</h2><P><FONT face=Tahoma size=2>I'm working on an order-entry&nbsp;system.&nbsp; One of the functions we're providing is allowing&nbsp;users to create a template of parts of an order.&nbsp; An order can consist of several items, each of which has a relatively complex hierarchy of components, and customers tend to order the same types of things over and over.&nbsp; So we're allowing the users&nbsp;to construct an order and save any part of it as a template that can be imported into future orders.&nbsp; There will also be a set of screens to create templates from scratch.&nbsp; These are essentially the same as the order screens, minus some functionality (like cost calculations) that's not related to templates.</FONT></P>
+<P><FONT face=Tahoma size=2>Database-wise, the template data is stored in separate tables in the database, though the structure is pretty much identical to the order tables.&nbsp; Adding a template to an order is not a server-side thing - we're not going to issue a database command that adds everything and then re-load the order on the client.&nbsp; This is a two-tier desktop app, so we're taking advantage of that by pre-loading the templates to the client when the order screen is first opened.</FONT></P>
+<P><FONT face=Tahoma size=2>Given how templates work, the object hierarchy for them is 99.5% the same as the hierarchy for orders - outside of the top-level object, pretty much everything else is the same.&nbsp; As such, I'm looking at merging the two hierchies and only having one set of objects.&nbsp; Directing to the appropriate tables is easy enough - but I'm wondering whether the "proper OO way" would be to create a second hierarchy of objects.</FONT></P>
+<P><FONT face=Tahoma size=2>(We may do this anyway, but in that case we would be creating read-only versions that would be used on the order screen.&nbsp; No template editing functionality is needed there, and it could provide memory-consumption and performance gains.&nbsp; We're going to test first.)</FONT></P>
+<P><FONT face=Tahoma size=2>The pro's to creating a second set are that it's not a 100% match - templates will have no objects for line-item costs, for example&nbsp;- and it&nbsp;really is a different&nbsp;type of functionality in the application.&nbsp;&nbsp;The con is that&nbsp;they're so close that I'd be essentially creating many child objects that are different in name only.&nbsp; Sure, they write to different database tables, but it's only the table name that's different.&nbsp; Add in that the screens to create an order and a template will be largely the same...</FONT></P>
+<P><FONT face=Tahoma size=2>Any thoughts?</FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, July 10, 2007</h2><P>Though perhaps not a direct answer to your question, this is the reason DataPortal_Create() exists.</P>
+<P>The idea behind DataPortal_Create() is to allow you to initialize a new object as it is created - often by pulling in data from config tables or templates.</P>
+<P>So in general, if you want to pre-load and cache the template data, then I'd suggest you create a set of read-only objects for that purpose.</P>
+<P>Then your order object's DataPortal_Create() method can include code to determine if it should initialize the order based on a template, or just return a blank order or whatever. If it needs to pre-load based on a template, it can use the cached read-only template objects to load itself as appropriate.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tmg4340 replied on Tuesday, July 10, 2007</h2><P><FONT face=Tahoma size=2>Actually, the templates will not be for an entire order - at least the users aren't asking for it.&nbsp; The templates will be for an item (or part of an item).&nbsp; Constructing an item from its constituent components can be a non-trivial exercise, and in this case there is no pre-defined catalog of items - only a list of components and basic item types.&nbsp; So in a way,&nbsp;the templates will serve as an item catalog that's built over time.</FONT></P>
+<P><FONT face=Tahoma size=2>Anyway, that doesn't change the fact that DataPortal_Create() is how the order items will be created.&nbsp; One of the many selling points for using CSLA was the built-in functionality for creation by template.&nbsp; It just seems like an awful lot of data transfer code, especially when you factor in that the objects are, from a property perspective, identical.&nbsp; We'll end up with a&nbsp;significant percentage of code that looks like this:</FONT></P><FONT face=Tahoma size=2>OrderItem.A = TemplateItem.A</FONT><BR><FONT face=Tahoma size=2>OrderItem.B = TemplateItem.B</FONT><BR><FONT face=Tahoma size=2>&lt;etc.&gt;</FONT><BR>
+<P><FONT face=Tahoma size=2>which would also be on the children and&nbsp;grandchildren&nbsp;of the "OrderItem" object.&nbsp; We could take advantage of reflection, but the reflection code would still have to be in each object.&nbsp; Contrast that with </FONT><FONT face=Tahoma size=2>something like this:</FONT></P>
+<P><FONT face=Tahoma size=2>OrderItem = TemplateItem.Clone()</FONT></P>
+<P><FONT face=Tahoma size=2>where one line of code gets it all done.&nbsp; It's this kind of thing that got me thinking that maybe the order and template objects should be the same object.</FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, July 10, 2007</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>You may be able to use DataMapper to help copy the properties
+without writing so much code.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky</span><o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tmg4340 replied on Tuesday, July 10, 2007</h2><P><FONT face=Tahoma size=2>That's true - I never thought about using that.&nbsp; I think that would work nicely.&nbsp; It would still have to be in each object, but it's a lot less code.</FONT></P>
+<P><FONT face=Tahoma size=2>Thanks!</FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tmg4340 replied on Tuesday, July 10, 2007</h2><P><FONT face=Tahoma size=2>So then would you also create separate Template objects for creating templates from scratch?&nbsp; While technically a different use case from creating an order,&nbsp;creating a template and creating an order contain largely the same steps.&nbsp; The screens they use in the application will be the same, with some conditional logic to hide the pieces that are order-creation-specific.&nbsp; Outside of the top-level object (Order vs. Template), and the omission of the pricing data from the template hierarchy, they are the same object tree.&nbsp; They write to different database tables, but the table structures are the same.</FONT></P>
+<P><FONT face=Tahoma size=2>So again, I'm looking at creating objects that, to my way of thinking,&nbsp;are essentially different in name only.&nbsp; This seems like duplication of code, when a couple of internal behavioral flags might be all that's needed.&nbsp; But that also fairly tightly couples order creation and template creation.&nbsp; Right now, that's not a problem - but if the templates turn into a catalog of sorts, I could see different authorization requirements at that point.&nbsp; Not necessarily a big deal, since only one set would apply at object creation...</FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, July 10, 2007</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>If I understand correctly, the user can be entering an order and
+then just decide to save it as a template instead of an order right?<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>So to me that sounds like a command object that can take an
+OrderEdit object graph and save its data into the template tables. So when the
+user clicks &#8220;Save Order&#8221; you&#8217;d call _order.Save(), but when
+they click &#8220;Save as Template&#8221; you&#8217;d do something like this:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>OrderTemplateConverter.SaveTemplate(_order)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>And OrderTemplateConverter would be a CommandBase-derived object
+that would (probably) bring the OrderEdit object to the server, and then pull
+out its properties as needed to save them into the template table(s).<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> tmg4340
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Tuesday, July 10, 2007 1:27 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: Create separate objects for templates?<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p><span>So then
+would you also create separate Template objects for creating templates from
+scratch?&nbsp; While technically a different use case from creating an
+order,&nbsp;creating a template and creating an order contain largely the same
+steps.&nbsp; The screens they use in the application will be the same, with
+some conditional logic to hide the pieces that are
+order-creation-specific.&nbsp; Outside of the top-level object (Order vs.
+Template), and the omission of the pricing data from the template hierarchy,
+they are the same object tree.&nbsp; They write to different database tables,
+but the table structures are the same.</span><o:p></o:p></p>
+
+<p><span>So again,
+I'm looking at creating objects that, to my way of thinking,&nbsp;are
+essentially different in name only.&nbsp; This seems like duplication of code,
+when a couple of internal behavioral flags might be all that's needed.&nbsp;
+But that also fairly tightly couples order creation and template
+creation.&nbsp; Right now, that's not a problem - but if the templates turn
+into a catalog of sorts, I could see different authorization requirements at
+that point.&nbsp; Not necessarily a big deal, since only one set would apply at
+object creation...</span><o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tmg4340 replied on Wednesday, July 11, 2007</h2><P><FONT face=Tahoma size=2>Well,&nbsp;sort of&nbsp;- a user can choose to take portions of an order and save it as a template.&nbsp; They would still likely save the order as well.&nbsp; But that's not exactly what I'm asking about here.&nbsp; I'm sorry I'm being so confusing...</FONT></P>
+<P><FONT face=Tahoma size=2>I have two issues to contend with: creating templates from a portion of an order as the order is being created, or creating templates from scratch.&nbsp; For creating templates from an order, I would agree that a TemplateConverter object is the way to go.&nbsp;&nbsp;That is actually fairly easy, since the structures are so similar.</FONT></P>
+<P><FONT face=Tahoma size=2>What I am trying to&nbsp;tackle now is when a user wants to create a template from scratch.&nbsp; M</FONT><FONT face=Tahoma size=2>y problem is that the way a user creates a template and the way the user creates an order are&nbsp;basically the same.&nbsp; The application will use the same screens, and the object tree for a template and an order are the same (minus the branches that deals with order cost and order payment.)&nbsp; The validation of data is the same.&nbsp; The tables that template and order data are saved to are different names, but are structurally the same.&nbsp; The people that enter orders and enter templates would be the same.</FONT></P>
+<P><FONT face=Tahoma size=2>So should I create separate objects for templates, or should I merge&nbsp;them&nbsp;with the order objects?&nbsp; Creating a separate set of objects would isolate the functionality, and more directly relate to the use cases, but the two sets would be essentially identical.&nbsp; That could change down the road - I could see separating the group of people who create orders from those who create templates - but that's purely speculation on my part, and that's still relatively easy to handle within one set of objects.&nbsp; And I see template and order structure &amp; functionality to be fairly tightly integrated for the life of this application, since one feeds the other.</FONT></P>
+<P><FONT face=Tahoma size=2>I know this is really starting to stray from a strictly CSLA-related question...</FONT></P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

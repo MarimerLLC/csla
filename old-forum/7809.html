@@ -1,0 +1,84 @@
+<html><header><title>Cache for CSLA.NET</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Cache for CSLA.NET</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/7809.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>ayubu posted on Sunday, October 18, 2009</h2><P>Hi all</P>
+<P>It has been a good time once again to share with you what i am trying to do. Apart from sharing also i want to get other insight form others . As what my collegue out there are thinking in regard to the issue of caching.</P>
+<P>For a long time i have trying to have a generic cache which&nbsp;is a first class citizen in the csla.net framework . </P>
+<P>To have a first class cache for csla.net is no an easy task due to many reason but the most intuitive once are:</P>
+<P>&nbsp; 1) CSLA.NET is not tied to any data access technology. So the idea of intercepting queries and targeting to the cache&nbsp;is &nbsp;very ideal for you have to define the&nbsp;query interceptors for all data access technoligies.</P>
+<P>2) CSLA.NET objects&nbsp;are mobile&nbsp;so its data access can run &nbsp;locally or at the server . IF the cache is locally located fine but when you change form 2 tire to 3 -tire the cache will be have to be tuned accordingly of course a lot of work.</P>
+<P>3) CSLA.NEt objects are designed to work even in the silverlight runtime. so any cache to support the objects are also need to accomodate the behaviour of silverlight if at all we want to honour the easy of switching the objects&nbsp;working in&nbsp;windows environment &nbsp;to silverlight runtime&nbsp;</P>
+<P>Due to all that reason i have come up with the attached code which follows these design decisions.</P>
+<P>- I dropped the idea of incorparating the cache into&nbsp; fething XYZ-dataportal methods as their execution&nbsp;location is not known( locally or at the server ?).</P>
+<P>&nbsp;&nbsp; Also putting the cache is the fetching &nbsp;XYZ methods does not bring sense as XYX methods are to be&nbsp;intercepted ( the should be called&nbsp;only if there is not data at the client)&nbsp;</P>
+<P>&nbsp; Lasty the cache should be working also in the silverlight runtime where there is not xyz methods (if not local proxy)</P>
+<P>- I dropped the idea of query interceptors due to&nbsp;absence of supported in csla.net&nbsp;data access technology( which is good)</P>
+<P>Also query interceptors are not feasible if the cache is to work in the silverlight environment for the query structure has some &nbsp;dependency on the structure dataaccess technology. Escpeciaaly of ADO.NET EF , LINQ to SQL which their definitions&nbsp;i dont know if they can deployed in the silverlight runtime.</P>
+<P>The options lead me to:</P>
+<P>1)Intercept execution of dataportal xyz fetch methods and not query result.</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; So the developer ends up doing whatever in the xyz and the cache is totally ignorant to the&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; logic&nbsp;&nbsp;&nbsp;&nbsp; i n the xyz</P>
+<P>How it does.</P>
+<P>First we cache csla.net Objects and not raw&nbsp;data.</P>
+<P>So if&nbsp;you have two different&nbsp;objects(classes) with the same data( Database table&nbsp;as well columns) they will all be&nbsp;cached as two different&nbsp;cacheitem</P>
+<P>The only thing i could use to intercept execution of dataportalXYZ fetch method is by using the criteria objects.</P>
+<P>IF ANY FETCH METHOD IN AN OBJECT&nbsp;&nbsp;EXECUTES ONLY ONE SQL COMMAND</P>
+<P>IT CAN BE SAID THAT CRITERIA OBJECT IS REPRESENTS&nbsp;THE QUERY</P>
+<P>Before any execution the cache constructs the key from&nbsp;criteria object&nbsp;&nbsp;.</P>
+<P>Private Function CreateKeyString(Of T As csla.Core.MobileObject)(ByVal key As Object) As String</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Dim _key As String = GetType(T).FullName + key.GetType.FullName</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; For Each df In key.GetType.GetProperties<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _key = _key + df.GetValue(key, Nothing).ToString()<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Next<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return _key</P>
+<P>&nbsp;&nbsp;&nbsp; End Function</P>
+<P>The function has a generic type T&nbsp;which passes the type which a criteria is for. This is so since there a re some citeria which will be used by&nbsp;more than one type. There are&nbsp;other possibilites here is see especially if the&nbsp;criteria is&nbsp;of type criteria base. But the function is private no worry much.</P>
+<P>The method constructs the key by getting the values of the criteria objects and the name of the object .The result is that the key will be unique for any call.</P>
+<P>&nbsp;</P>
+<P>Another thing is that i have written a cachefactory, to be renamed to cachedataportal or ....? i dont know.</P>
+<P>Its main entry point is </P>
+<P>Public Function GetCache(ByVal name As String) As Cache '(Of csla.Core.MobileObject)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return GetCache(name, 10, True)<BR>&nbsp;&nbsp;&nbsp; End Function</P>
+<P>Public Function GetCache(ByVal name As String, ByVal expiryTime As Integer, ByVal allowOffLine As Boolean) As Cache '(Of csla.Core.MobileObject)</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; If Not caches.ContainsKey(name) Then<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; CreateCache(name, expiryTime, allowOffLine)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End If<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return caches(name)<BR>&nbsp;&nbsp;&nbsp; End Function</P>
+<P><BR>&nbsp;&nbsp;&nbsp; Private Sub CreateCache(ByVal name As String, ByVal validDuration As Integer, ByVal AllowOfLine As Boolean)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; caches.Add(name, New Cache(name, validDuration, AllowOfLine))<BR>&nbsp;&nbsp;&nbsp; End Sub</P>
+<P>&nbsp;&nbsp;&nbsp; Private Function GetCache() As Cache<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return GetCache("default")<BR>&nbsp;&nbsp;&nbsp; End Function</P>
+<P>I have the idea of the concept of named cache. You can have different&nbsp;a policies on different type of objects. rather than defining on each obects you can define a cache with name, ExpiryTime as well as it can be offline or not and other(to be done).</P>
+<P>Then objects will be cached in their allocated cache.</P>
+<P>Default cache is named "default", with 10 minuted validDuration and AllowOFLine of false.</P>
+<P>If the cache is not there it will be created</P>
+<P>&nbsp;Private _caches As Dictionary(Of String, Cache)</P>
+<P>Private Sub CreateCache(ByVal name As String, ByVal validDuration As Integer, ByVal AllowOfLine As Boolean)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; caches.Add(name, New Cache(name, validDuration, AllowOfLine))<BR>&nbsp;&nbsp;&nbsp; End Sub</P>
+<P>&nbsp;</P>
+<P>//FOR WINDOWS</P>
+<P>&nbsp;</P>
+<P>&nbsp; Public Function Fetch(Of T As csla.Core.MobileObject)(ByVal criteria As Object) As T<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Dim _cache As Cache = Nothing<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; If TypeOf criteria Is CachableCriteria Then<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _cache = GetCache(CType(criteria, CachableCriteria).CacheName)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Else<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _cache = GetCache()<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End If<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return _cache.Get(Of T)(criteria)<BR>&nbsp;&nbsp;&nbsp; End Function</P>
+<P>&nbsp;</P>
+<P>// FOR SILVERLIGHT</P>
+<P>//INCOMPLETE but latery before&nbsp;current refactoring &nbsp;it worked</P>
+<P>//Italiced words needs to be removed . I am sory</P>
+<P>&nbsp;Public&nbsp;<EM>Function</EM> BeginFetch(Of T As csla.Core.MobileObject)(ByVal criteria As Object) <EM>as T</EM><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Dim _cache As Cache = Nothing<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; If TypeOf criteria Is <STRONG>CachableCriteria</STRONG> Then<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _cache = GetCache(CType(criteria, CachableCriteria).CacheName)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Else<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _cache = GetCache()<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End If<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; '&nbsp; Return _cache.<BR>&nbsp;&nbsp;&nbsp; End <EM>Function</EM></P>
+<P>I have also defined the <STRONG>CachableCriteria </STRONG>inherits from Criteria base</P>
+<P><EM>&lt;Serializable()&gt; _</EM><I><BR><EM>Public MustInherit Class CachableCriteria</EM><BR><EM>&nbsp;&nbsp;&nbsp; Inherits csla.CriteriaBase</EM></I></P>
+<P>&nbsp;</P>
+<P><EM>&nbsp;&nbsp;&nbsp; Public Overridable ReadOnly Property CacheName() As String</EM><I><BR><EM>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Get</EM><BR><EM>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return "default"</EM><BR><EM>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Get</EM><BR><EM>&nbsp;&nbsp;&nbsp; End Property</EM></I></P>
+<P>&nbsp;</P>
+<P><EM>End Class</EM></P>
+<P>This is designed so that you can define in which cache the criteria result should be cached. And all the policies defined on the cache will be applied to the result.</P>
+<P>If you just want to use the default cache just inherit the criteria from criterabase or do as you like.</P>
+<P>To save in the other cache inherite the criteria object from the CachableCriteria class and override the cache name returning the cachename to be used otherwise it will end up using the default cache.</P>
+<P>For modification:&nbsp; I plan to have another cache class &nbsp;property&nbsp;&nbsp;IsEnabled with default true. In case&nbsp;one anticipate to use the cache but not for now.</P>
+<P><BR>How to use.</P>
+<P>&nbsp;</P>
+<P>Look in the class2</P>
+<P>In the factory</P>
+<P>&nbsp; Public Shared Sub GetClass(ByVal age As Integer)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; CacheFactory.Fetch(Of Class2)(New NGH(age))<BR>&nbsp;&nbsp;&nbsp; End Sub</P>
+<P><EM>The cach will call dataportal fetch in case the object is not cached or is invalidated.</EM></P>
+<P><EM>The cachefactory/cache &nbsp;can be also the dataportal by itself not decided.</EM></P>
+<P><EM>Note i just made this codes yesterday. so they are mainly proof of concept and not tested vigourously apart from the example&nbsp;</EM></P>
+<P><EM>Of line /Online capability will be added. By having the classes inherit from CachableBusinessBase (to be writtern) which will override Save and BeginSave and&nbsp;just check the factory if online proceed otherwise check validation rules&nbsp;if valid &nbsp;serielize and/or encrypt to disk.</EM></P>
+<P><EM>We shall add the fonfiguration capabity so that the names and policies of caches can be defined in the configuration file.</EM></P>
+<P><EM>Should the configuration file( or just a&nbsp;file)&nbsp;be placed in the application server so that the changes are automatically rolled to&nbsp;all client ??&nbsp;<o:p></o:p></EM></P>
+<P><EM>There is a work to hook the objects saved event in the cache.<o:p></o:p></EM></P>
+<P><EM>The cache caches only the parent objects but it has not tested against other&nbsp;objects stereotypes such as lists and readonly. Obvious it will not cache command objects(at least for now)<o:p></o:p></EM></P>
+<P><EM>There are many design issues and actual work to be done.</EM></P>
+<P><EM>The project for silverlight and Windows share the same files , assembly name though i dont think the cache itself will move between the two&nbsp;runtime, but think it will enable the same csla.net obects two function between the environments with easy while maintaining/using the cache.</EM></P>
+<P><EM>The root namespace is csla for easy usage.</EM></P>
+<P><EM>Note still under development so very flagile codes</EM></P>
+<P><EM></EM>&nbsp;</P>
+<P><EM></EM>&nbsp;</P>
+<P><EM>The thanx for your hand</EM></P>
+<P><EM>Ayubu</EM></P>
+<P class=MsoNormal><o:p><FONT face=Calibri>&nbsp;</FONT></o:p></P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

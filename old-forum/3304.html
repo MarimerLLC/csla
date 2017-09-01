@@ -1,0 +1,123 @@
+<html><header><title>EditLevel mismatch with multiple undo for hierarchical object model</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>EditLevel mismatch with multiple undo for hierarchical object model</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3304.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>sai posted on Tuesday, July 31, 2007</h2><P>I have few queries with multiple undo with hierarchical object model. The object model is something like this</P>
+<P>BusinessBase&lt;A&gt; has "Bs" as data member</P>
+<P>BusinessListBase&lt;Bs,B&gt; </P>
+<P>BusinessBase&lt;B&gt; has "Cs" as data member</P>
+<P>BusinessListBase&lt;Cs,C&gt;</P>
+<P>BusinessBase&lt;C&gt;</P>
+<P>I use instances of B and C for data binding. </P>
+<P>With this object model if I want to implement multiple undo what is the best practice? </P>
+<P>1. copy the state of root object i.e. A, for all scenarios&nbsp;</P>
+<P>2.&nbsp;copy the state of A, B or C whichever is applicable for that scenario. Can I keep a mix of such scenarios and work without getting any "EditLevel mismatch" errors?</P>
+<P>&nbsp;&nbsp;&nbsp; Copy the state of A&nbsp;if a data member "Bs" is modified i.e. a new member added or existing deleted</P>
+<P>&nbsp;&nbsp;&nbsp; Copy the state of B where it is bound to control and details for this object are modified</P>
+<P>&nbsp;&nbsp;&nbsp; Copy the state of&nbsp;C where it is bound to control and details for this object are modified</P>
+<P>Thanks</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, July 31, 2007</h2><P>First, be aware that a bug was recently reported for this scenario, and CSLA 3.0.2 (in test) has a bug fix to address the problem.</P>
+<P>Second, when you say "multiple undo" what do you mean?</P>
+<P>The 3.0.2 fix means that you get <EM>one</EM> level of undo for the specific object(s) being edited by your grid controls. This makes data binding and the grid controls work properly.</P>
+<P>If you <EM>also</EM> want a form-level Cancel button that complicates matters. To make that work, you need to do a manual BeginEdit() on your root object <EM>before binding to the form</EM>. Then in your Cancel button's click event, you must <EM>unbind all objects from the form</EM> and then manually call CancelEdit().</P>
+<P>The 3.0 PTWin forms demonstrate how to unbind the objects from the form, so you can adapt that code to your needs.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sai replied on Tuesday, July 31, 2007</h2><P>Thanks for the reply.</P>
+<P>My code calls BeginEdit() and CancelEdit() manually. The operations with my object model are </P>
+<P>- adding/removing members&nbsp;of Bs (which is a menber data of A), </P>
+<P>- adding/removing members of Cs(which is a member data of B),</P>
+<P>- modifying details of B</P>
+<P>- modifying details of C</P>
+<P>There is no particular order user may follow while performing above operations and these operations may get performed numerous times before actual save. </P>
+<P>I would like to know if I want to implement multiple undo what should be best practice,&nbsp;always copy state of&nbsp;root parent object (A) or&nbsp;copy state of&nbsp;particular object (A or B or C) based on which operation is carried out.</P>
+<P>Thanks</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, July 31, 2007</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>There is no one best practice. It depends on what you are trying
+to accomplish in your UI.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>If you are using data binding there are very specific best
+practices that you must follow or you&#8217;ll get sync exceptions.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>But if you are calling n-level undo manually at all times, the
+only rule is that there must be symmetry. A BeginEdit() call must be paired
+with a corresponding CancelEdit() or ApplyEdit() call.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>If you want a form-level Cancel button, then you&#8217;ll almost
+certainly start with a BeginEdit() call to your root object. If you want
+incremental undo on child objects, you&#8217;ll need to call BeginEdit() (and
+cancel/apply) on those child objects as appropriate. That&#8217;s what data
+binding does as the user starts/leaves editing of each child object.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> sai
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Tuesday, July 31, 2007 2:48 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] EditLevel mismatch with multiple undo for
+hierarchical object model<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Thanks for the reply.<o:p></o:p></p>
+
+<p>My code calls BeginEdit() and CancelEdit() manually. The operations with my
+object model are <o:p></o:p></p>
+
+<p>- adding/removing members&nbsp;of Bs (which is a menber data of A), <o:p></o:p></p>
+
+<p>- adding/removing members of Cs(which is a member data of B),<o:p></o:p></p>
+
+<p>- modifying details of B<o:p></o:p></p>
+
+<p>- modifying details of C<o:p></o:p></p>
+
+<p>There is no particular order user may follow while performing above
+operations and these operations may get performed numerous times before actual
+save. <o:p></o:p></p>
+
+<p>I would like to know if I want to implement multiple undo what should be
+best practice,&nbsp;always copy state of&nbsp;root parent object (A) or&nbsp;copy
+state of&nbsp;particular object (A or B or C) based on which operation is
+carried out.<o:p></o:p></p>
+
+<p>Thanks<o:p></o:p></p>
+
+<p>&nbsp;<o:p></o:p></p>
+
+<p>&nbsp;<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

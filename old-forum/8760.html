@@ -1,0 +1,17 @@
+<html><header><title>How should references be set up for Silverlight project with 4.0.0 preview 2?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>How should references be set up for Silverlight project with 4.0.0 preview 2?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/8760.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Dane posted on Saturday, April 03, 2010</h2><p>I&#39;ve read Rocky&#39;s blog on setting up an n-tier Silverlight project but the assemblies seem to have changed for 4.0.0 and I&#39;m not sure what the purpose is for the various assemblies now.&nbsp; I downloaded the binaries and there&#39;s are Release and Debug folders in the package.&nbsp; The Release folder has only Client and Server sub-folders but the Debug has a Silverlight folder as well.&nbsp; I&#39;m assuming that is because Silverlight isn&#39;t fully supported in 4.0.0 yet?</p>
+<p>The Silverlight folder contains Csla.dll and System.Windows.Interactivity.dll.&nbsp; I&#39;m assuming both of these need to be referenced by the Silverlight projects?</p>
+<p>The Client folder contains Csla.dll, Csla.Windows.dll, Csla.Xaml.dll and System.Windows.Interactivty.dll.&nbsp;&nbsp;My&nbsp;assumption is Csla.Windows.dll would be a&nbsp;needed reference for Winforms projects, Csla.Xaml.dll for WPF projects and Csla.dll and System.Windows.Interactivity.dll would be references for both?</p>
+<p>The Server folder contains Csla.dll, Csla.Web.dll, Csla.Web.Mvc.dll and System.Windows.Interactivity.dll.&nbsp; These look to be the assemblies for ASP and possibly web services projects?</p>
+<p>Which folder&#39;s version of Csla.dll should be used for the .net business object library projects?</p>
+<p>If I&#39;ve missed a relevant post somewhere I apologize.&nbsp; Any help you can provide would be greatly appreciated.</p>
+<p>Thanks,</p>
+<p>Dane R. Vinson</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Saturday, April 03, 2010</h2><p>I&#39;ll be doing another preview release soon - next week some time. That should help on the SL4 side of things.</p>
+<p>The previous prerelease was mostly focused on .NET, because SL4 was still very immature at the time - but obviously things have changed rapidly in the past couple months, and both .NET 4 and SL4 are launching the week of April 12.</p>
+<p>CSLA 4 is the first time I&#39;ve included binaries in the releases. I hope to have a setup (.msi) program to distribute at least the binaries and basic source code. I have it sort of working, so we&#39;ll see.</p>
+<p>In any case, the projects now build to the top-level bin folder, and into debug and release folders.</p>
+<ul>
+<li>bin\...\Client is the .NET client profile output - including the .NET Csla.dll</li>
+<li>bin\...\Server includes the full .NET assemblies</li>
+<li>bin\...\Silverlight includes the Silverlight Csla.dll</li>
+</ul>
+<p>That&#39;s not how it worked in the previous prerelease, but this is what&#39;s coming next week.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

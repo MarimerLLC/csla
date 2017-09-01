@@ -1,0 +1,76 @@
+<html><header><title>Possible IsDirty / IsSelfDirty Issue</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Possible IsDirty / IsSelfDirty Issue</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4546.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Bob Matthew posted on Monday, March 24, 2008</h2><P><FONT face=Arial size=2>I’m overriding IsSelfDirty for a particular object to return “true”, but IsDirty still returns “false”.&nbsp; In looking at the code in Core.BusinessBase.cs, lines 119, the IsDirty getter says the following:</FONT></P>
+<UL>
+<LI><FONT face=Arial size=2>get { return _isDirty || (_fieldManager != null &amp;&amp; FieldManager.IsDirty()); }</FONT></LI></UL>
+<P><FONT face=Arial size=2>Should it say the following instead?</FONT></P>
+<UL>
+<LI><FONT face=Arial size=2>get { return IsSelfDirty || (_fieldManager != null &amp;&amp; FieldManager.IsDirty()); }</FONT></LI></UL>
+<P><FONT face=Arial size=2>Otherwise, I’ll have to override IsDirty as well as IsSelfDirty and implement the same code, or at least call another method.</FONT></P>
+<P><FONT face=Arial size=2>The main problem is that during the Core.BusinessBase.cs Save method (line 118) it does an IsDirty check and ignores the IsSelfDirty.</FONT></P>
+<P><FONT face=Arial size=2>I would assume that if an object IsSelfDirty that it would also be IsDirty as well.</FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, March 25, 2008</h2>Perhaps - what do others think?</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Cine replied on Tuesday, March 25, 2008</h2>What would be a reasoning behind NOT being dirty if isselfdirty says you are?<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Wednesday, March 26, 2008</h2>Well... if IsSelfDirty returns true, I think it would follow that IsDirty should return true as well.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Wednesday, March 26, 2008</h2><P>I think it makes sense for the particular case Bob is explaining. Since IsSelfDirty is Overridable he should be able to Override it and get correct answers.</P>
+<P>But what about the reverse case??</P>
+<P>What if (in another BO) he later wants to Override IsDirty but NOT override IsSelfDirty?</P>
+<P>Would it work if you made the code change he is requesting for the first case? Or would this case now be broken?</P>
+<P>Joe</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Wednesday, March 26, 2008</h2>I don't think IsDirty would need to be overridable; if you don't want child objects, you can query IsSelfDirty.&nbsp; <br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Wednesday, March 26, 2008</h2><P>I am not sure of your point. Both IsDirty and IsSelfDirty currently are Overridable. I do not see that changing.</P>
+<P>So my original question still stands - would the reverse case be an issue if Rocky made the change requested or not?</P>
+<P>Joe</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Wednesday, March 26, 2008</h2>Well my point is that IsDirty probably shouldn't be overridable.&nbsp; It probably should be changed, because otherwise you end up with the problem you state; IsDirty may return false even though IsSelfDirty returns true.. that doesn't make sense to me why you'd want that.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, March 26, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Yeah, then there&#8217;s that ugly backward compatibility issue&#8230;
+IsDirty has always been overridable, and changing that would effectively break
+every parent class out there, preventing a controlled migration from &lt;3.5
+into 3.5.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> ajj3085
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Wednesday, March 26, 2008 1:46 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] Possible IsDirty / IsSelfDirty Issue<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Well my point is that IsDirty probably shouldn't be
+overridable.&nbsp; It probably should be changed, because otherwise you end up
+with the problem you state; IsDirty may return false even though IsSelfDirty
+returns true.. that doesn't make sense to me why you'd want that.<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Wednesday, March 26, 2008</h2>True, but there was a time when all validation rules were instance rules too.&nbsp; <br><br>The fix for someone migrating would be to remove the IsDirty override in the parent class.. which was one of the goals for 3.5.&nbsp; It's just that you have to remove it instead of getting to wait until later.<br><br>I think that's better than running into the issue the OP is.. your object not being dirty when you expect it to be, and possibly spending hours trying to track down why.&nbsp; I'd rather a compile error personally.<br><br><br>EDIT:&nbsp; On second thought, this change precludes the old way of doing things completely.&nbsp; So I guess it's not as cut and dry as I was thinking.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Bob Matthew replied on Wednesday, March 26, 2008</h2><P><FONT face=Arial size=2>Perhaps I should chime back in on this one.</FONT></P>
+<P><FONT face=Arial size=2>For me, it’s not really a matter of a method being marked virtual or not; being virtual makes things easier should I decide to override a method for my own purposes.&nbsp; For example, if the decision is made to go with the status quo in this instance, I’ll probably override IsDirty in my base class to handle this scenario.</FONT></P>
+<P><FONT face=Arial size=2>The heart of the matter is this:&nbsp; Should IsDirty be true if IsSelfDirty is true?</FONT></P>
+<P><FONT face=Arial size=2>Per the default IsDirty code found in the Core\BusinessBase.cs file, what it appears to be saying is “Am I marked as dirty or are any of my child objects marked dirty?”</FONT></P>
+<P><FONT face=Arial size=2>My thought is that the first part of the question, “am I marked dirty” should probably be answered by asking the property that knows the answer, “IsSelfDirty”.</FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Wednesday, March 26, 2008</h2>Heh... well I think everyone has agreed that it probably should.<img src="/emoticons/emotion-1.gif" alt="Smile [:)]" /><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, March 26, 2008</h2><P>And so the change is now in svn so IsDirty and IsValid delegate to IsSelfDirty and IsSelfValid.</P>
+<P>I didn't change what is or is not overridable - if that happens it will be in some future version.</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

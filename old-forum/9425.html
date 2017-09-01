@@ -1,0 +1,40 @@
+<html><header><title>How to restore object after exception during saving?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>How to restore object after exception during saving?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9425.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>maxal posted on Wednesday, August 25, 2010</h2><p>I need advise about restoring original object after Saving failed. Here is what I am doing:</p>
+<p>I use ViewModelBase for my WPF application with&nbsp;ManageObjectLifetime set to false, since I want to control it myself.</p>
+<p>1. &quot;Edit&quot; button pressed, &nbsp;I call ISupportUndo.BeginEdit. Object considered to be in edit mode. EditLevel = 1</p>
+<p>2. Save button called</p>
+<p style="padding-left:30px;">ISupportUndo.ApplyEdit called. Suppose all rules are fine, EditLevel = 0</p>
+<p style="padding-left:30px;">I call BeginSave from the base class, When saving into the database Unique Index exception is thrown</p>
+<p>3. I handle OnError and OnSaved, proper error message is shown, Model is not changed. But I am no longer in &quot;Edit&quot; mode. My EditLevel is 0, I cannot Press Cancel and restore to original values as I could before pressing Save.</p>
+<p>What I want to have is the same state as before pressing Save button.</p>
+<p>I can try to save object clone before pressing Save, but it looks like hack. What would be more elegant solution?</p>
+<p>&nbsp;</p>
+<p>I tried to search for the answer but all I could find is this:&nbsp;<a href="http://forums.lhotka.net/forums/p/6103/29610.aspx">http://forums.lhotka.net/forums/p/6103/29610.aspx</a>. And there is no solution there.</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Wednesday, August 25, 2010</h2><p>If you want the Cancel button to work so the user can cancel after an exception during save, you will need to take a clone of the object graph before calling ApplyEdit.</p>
+<p>ApplyEdit tells the graph that you are done - it commits all changes in memory. There is no cancel after that point.</p>
+<p>So if you want to cancel, you need to have a copy of the graph from <i>before the ApplyEdit</i>.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>maxal replied on Wednesday, August 25, 2010</h2><p>Thank you for such quick reply. Will do that. I don&#39;t want user to see the difference between errors from validation rules, exception on the client or exceptions on the server.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>maxal replied on Tuesday, March 29, 2011</h2><p>I did what was&nbsp;advised&nbsp;and now I seems to have a problem with this with some very specific sequence of events. I am using ViewModel from Csla.Xaml</p>
+<p>-- Edit button pressed</p>
+<p>1. Begin Edit is called</p>
+<p>2. Data modified the way some rules are broken</p>
+<p>--- User presses Save button</p>
+<p>3. Clone is created using IClonable.GetClone method</p>
+<p>4. ApplyEdit is called</p>
+<p>5. Begin Save is called which results in Error</p>
+<p>6. Model is set to previously saved Clone</p>
+<p>-- User presses Cancel button</p>
+<p>7. CancelEdit is called</p>
+<p>-- Edit button pressed</p>
+<p>8. Begin Edit is called again</p>
+<p>9. Object is modified to have rules broken again</p>
+<p>-- User presses Save button</p>
+<p>10. Clone is created</p>
+<p>And here we have interesting thing. In this new clone, BusinessRules.Target is incorrect. It looks that&#39;s another duplicate instance of an object is created and BusinessRules.Target points to it.</p>
+<p>&nbsp;</p>
+<p>I would appreciate if you point into any direction. I am going to create stripped down example with dummy object to duplicate it.</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>maxal replied on Wednesday, March 30, 2011</h2><p>I found my problem. Please disregard my question.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Wednesday, March 30, 2011</h2><p>Would you mind sharing what the problem and solution was?&nbsp; Maybe it could help others.</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>maxal replied on Thursday, March 31, 2011</h2><p>Sure,</p>
+<p>I didn&#39;t get to the very bottom of it, but generally, we had some non-CSLA class as part of our business object. In this class we were not careful about serialization. The biggest issue was that this class referenced our business object and our object referenced this class, and these references were not marked as [NonSerializable].</p>
+<p>At this moment I just commented few things out, we are going to address it little bit later. But I believe having these references created &quot;shadow&quot; copy of our business object during &quot;CancelEdit&quot; operation. And then, we the clone was created, business rules switched to this shadow copy. As I said it required very specific steps to reproduce to get to this problem.</p>
+<p>1. BeginEdit</p>
+<p>2.GetClone</p>
+<p>3.Clone.CancelEdit</p>
+<p>4.CloneBeginEdit</p>
+<p>5.GetClone from first Clone</p>
+<p>And only on this second clone we have the problem. Not earlier, not until CancelEdit involved.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

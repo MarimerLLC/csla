@@ -1,0 +1,115 @@
+<html><header><title>Why have child objects? Why not all roots?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Why have child objects? Why not all roots?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6317.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Cary Mcanally posted on Tuesday, February 03, 2009</h2><P>I have searched this forum over and over and still can not find an answer.</P>
+<P>I see where roots and childs are described here and in the book&nbsp;but never is it explained WHY have them at all.&nbsp; Why mark an object as child?&nbsp; Why not just use a root objects?</P>
+<P>They have the same basic structure.&nbsp;&nbsp;Child objects have an internal constructors to be used by a parent, but so can a root.</P>
+<P>Is there a <U>performance problem</U> with calling Save on child objects and going through the portal?&nbsp; Is that why child object has to use internal non portal Data Access methods?</P>
+<P>I see where you can have a Swithable object but it seems like&nbsp;a level of complexity for little gain.&nbsp; I do not see the justification for marking an object as child and changing it's behavior.</P>
+<P>So far I see where the BLB is the only object requiring an object to be marked as a child.&nbsp;&nbsp;Specifically in the REMOVE. WHY?</P>
+<P>My question stems from implementing an workflow solution that needs to work with an object as both a Root and Child.</P>
+<P>Thanks in advance.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Tuesday, February 03, 2009</h2>Child objects are used when changing and updating them outside of their intended context doesn't make sense.&nbsp; Take an order for example.&nbsp; Does it make any sense at all to work with a single LineItem WITHOUT having the other line items or information about the order available?&nbsp; Probably not... especially considering that a line item may have a rule that it can be the only instance in an order (for example, a PackingFeeLineItem that must appear at most once in the entire order).<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Cary Mcanally replied on Tuesday, February 03, 2009</h2><P>This does not answer the question WHY CSLA requires objects to be&nbsp;marked as a child in collections.&nbsp; </P>
+<P>Because&nbsp;BLB&nbsp;are requiring their items to be Child objects this is forcing me to use Switchable objects.&nbsp;&nbsp;I am looking for an explaination of why the BLB requires this.&nbsp; It looks like they could easily not require their items to be child object and CSLA would work fine.&nbsp;&nbsp;What other behaviors are affected.</P>
+<P>Repling to the&nbsp;&nbsp;example in the previous post:&nbsp; </P>
+<P>In a workflow use case&nbsp;you may have users that only verify if&nbsp;they have the quantity on hand&nbsp;listed on an Order Item..&nbsp;&nbsp; They do not need to load the order object they just work the order item objects.&nbsp; As I currently understand CSLA to implement your example in my environment&nbsp;you have to do one of two things. Create a switchable object or create two objects0 (one as child and&nbsp; as root) and duplicate the business logic between the two.&nbsp;&nbsp;Also&nbsp;you can not rely on the Order enforcing you have only one Order Item.&nbsp; The rule has to be in the Order Item to not save if it finds an existing item in the data store.&nbsp; Otherwise you could get two users entering bad data using two order objects.&nbsp; This example and logic does not require the item to be a child.</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Tuesday, February 03, 2009</h2>Well one reason is to prevent Save from being called directly on the child.&nbsp; FWIW, nothing is forcing you to use switchable object, and in most cases the need to create switchables indicated a bad design.&nbsp; You're trying to re-use the same class in two use cases where the behavior is different.<br><br>The rest of your post sounds like you're talking about locking issues and concurrency.&nbsp; If two users can edit the same order you'll need to detect if the the order has changed and take action.&nbsp; In my case, I tell the user that someone else has already modified the order and they will have to re-open the order and redo their changes.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, February 03, 2009</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>Cary Mcanally:</strong></div><div><P>This does not answer the question WHY CSLA requires objects to be&#160;marked as a child in collections.&#160; </P></div></BLOCKQUOTE><br /><br />That isn't an accurate statement. CSLA certainly allows you to create all root objects.<br /><br />In stateless scenarios, like a stateless web app, this is sometimes the preferred solution.<br /><br />The drawback to doing this has nothing to do with CSLA, and everything to do with OO design. It comes down to a simple matter of cost vs benefit.<br /><br />If you design objects to work together to solve a business problem, you can often embed business rules into the very relationships between objects. The fact that orders have line items, and line items always belong to an order becomes a natural extension of the business model itself. No explicit coding is required to enforce this relationship.<br /><br />If all objects are "root" objects, and you don't use any concept of containment or aggregation, then you must explicitly write code to enforce those rules that would have been implicit.<br /><br />In short, you have to write and debug more code.<br /><br />So it is more expensive to have all root objects, because you give up a lot of the benefit of OO design and programming.<br /><br />On the other hand, if you need super-scaling in a web site, you'll pay that cost because (regardless of CSLA or not) this is what you must do to get that level of scalability.<br /><br />Your example of workflow is, I think, a little different.<br /><br />A workflow orchestrates a sequences of activities. Each activity is a black box with clearly defined inputs and outputs (or at least that's how they should be viewed). In other words, an activity is very much like a FORTRAN or Pascal procedure.<br /><br />That's the view from the outside. The view from the inside of the activity is different. Inside an activity, you get clearly defined inputs, and you must provide clearly defined outputs. And you must perform a (hopefully) clearly defined task.<br /><br />That's the definition of a use case. In other words, an activity is an almost academic example of an OO use case. Which means that you can implement your activity (internally) using OO concepts.<br /><br />If you search the forum's history, you'll find that I consistently say that objects should be defined and designed on a per-use case basis. This is true for activities too. You should define and design your objects to meet the needs of the activity.<br /><br />For many simpler activities, this really might mean that you have just one root object that performs the required task.<br /><br />For more complex activities you might have more complex object models - all root, or objects with children. It really depends on the use case and how the object model falls out to meet that use case.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Cary Mcanally replied on Friday, February 06, 2009</h2><P>I am missing something somewhere.&nbsp; I am trying to use only root objects but I do not see where CLSA alows it.</P>
+<P>The Delete methods on the BusinessBase are throwing execeptions when removing objects from a BusinessListBase object.&nbsp; </P>
+<P>Is there a switch to change this in CSLA and if no how do you bypass the exceptions CLSA throws?</P>
+<P>I do not want to modify CSLA but so far I can see any other way around the exceptions.&nbsp; Any help would very appreciated.</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Friday, February 06, 2009</h2>A BO in a collection is, by definition, a child.&nbsp; It's directly contained in another BO.&nbsp; <br><br>If you're using WinForms or maybe even WPF, you can have the collection subclasss EditableRootListBase.<br><br>If you're using asp.net, you'll need to get rid of the collection completely.&nbsp; It may also be that you're using an editable collection where you want a readonly collection, and each child in the collection has a GetEditObject method which loads the root editable object.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Cary Mcanally replied on Friday, February 06, 2009</h2><P>I have an EditableRootListBase.&nbsp; The problem come in when you try to use the Remove on the collection.&nbsp; The BusinessBase throws and exception that the BusinessBase must be a child or you have to call the delete on the object.</P>
+<P>If this is true then do you loose the ablilty to mark objects in the collection as deleted?&nbsp; Basically you no longer have UNDO functionality on the collections.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, February 06, 2009</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Your base class for your collection is almost certainly
+BusinessListBase. You need it to be EditableRootListBase.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>BLB contains child objects. End of story.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>ERLB contains root objects. If you want a collection of root
+objects, this is one way to get that.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>However, you must understand that ERLB is designed specifically to
+support in-place grid editing scenarios in Windows Forms, WPF and Silverlight.
+Using it outside that scenario may or may not meet your needs.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Be aware that changes to an ERLB occur immediately. Remove an
+item, and that item goes and deletes itself <i>right now</i> from the database.
+No undo. No going back.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Also be aware that outside a rich client grid binding scenario
+you must manually call SaveItem() to save changes to an object in the
+collection. In a rich client scenario this occurs automatically due to data
+binding, but in the web you must do this manually because Web Forms data
+binding has no concept along these lines.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Cary Mcanally
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Friday, February 06, 2009 10:20 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] Why have child objects? Why not all roots?<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>I have an EditableRootListBase.&nbsp; The problem come in when you try to
+use the Remove on the collection.&nbsp; The BusinessBase throws and exception
+that the BusinessBase must be a child or you have to call the delete on the
+object.<o:p></o:p></p>
+
+<p>If this is true then do you loose the ablilty to mark objects in the
+collection as deleted?&nbsp; Basically you no longer have UNDO functionality on
+the collections.<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Cary Mcanally replied on Friday, February 06, 2009</h2><P>I am binding to an in-place editing grid.</P>
+<P>I can deal with not having UNDO in the ERLB.&nbsp;</P>
+<P>I think I setup my ERLB up just like the it says in pg 188 of the 2008 book and my REMOVE&nbsp;is throwing errors that the object must be a child. </P>
+<P>Is there something else I have to do to change the behavior or is the REMOVE method not valid in an ERLB.&nbsp; If the Remove is not usable is it simply calling Delete on the child object and manually removing it from the list.</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Friday, February 06, 2009</h2>Post all the code for your ERLB subclass.&nbsp; Also post the exact exception and stacktrace information.<br><br>Also post all the code for the root class contained in the ERLB subclass.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rsbaker0 replied on Tuesday, February 03, 2009</h2><P>Well, at least&nbsp;in my current implementation, all of the non-collection objects can be either root or child objects. I'm not using switchable objects per se (at least not as I have seen them described). If I want to put them in a collection, then the Fetch method just has to mark them as children and assign their Parent. Otherwise, they are roots.</P>
+<P>Also, while it seems to me that there is at least a strong tendency for the actual instances of collections in the&nbsp;CSLA examples to be concrete non-generic types (e.g.&nbsp;ProjectResources)&nbsp;mine are generic more often than not (e.g. mine would be MyBusinessListBase&lt;Resource&gt; or something similar). </P>
+<P>I'm sure there are potential problems with this approach, but I haven't run into anything yet I can't manage. The main issue is that it's&nbsp;possible for more than one&nbsp;*copy* of (not reference to)&nbsp;the same object to appear at different levels in the object graph, but in practice that requires some creative navigation through the UI. </P>
+<P>I'd certainly be very interested if someone has specific reasons why this is ultimately doomed to failure.</P>
+<P>That being said, I completely understand the rationale here for building separate objects for each use case. However, it's a question of resources. I don't currently have the luxury of having different classes which are (at least from our current use) apparently identical in almost every respect except for (1) whether or not they have a parent, and (2) what Type is the parent? </P>
+<P>&nbsp;</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

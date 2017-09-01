@@ -1,0 +1,15 @@
+<html><header><title>Managed Backing fields and WCF contracts</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Managed Backing fields and WCF contracts</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9446.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>wkempter posted on Friday, August 27, 2010</h2><p>Hi all,</p>
+<p>We have an interesting issue when passing a csla based object as a parameter to a WCF call ([OperationContract]). I am not very familiar with WCF, so forgive any ignorance I might show using WCF terminology. I am the author of the csla business objects and another developer is the author of the WCF code. &nbsp;The gory details... We are using Csla 3.8.2 and the Business objects are using managed backing fields and when passed as a parameter to a WCF Operation Contract, we get the following exception:&nbsp;</p>
+<p><span style="font-family:Calibri, sans-serif;font-size:x-small;">There was an 
+error while trying to serialize parameter http://tempuri.org/:stat. The 
+InnerException message was&nbsp;</span>Type &#39;Csla.Core.FieldManager.FieldData`1[[System.String, 
+mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]&#39; 
+with data contract name 
+&#39;FieldDataOfstring:http://schemas.datacontract.org/2004/07/Csla.Core.FieldManager&#39; 
+is not expected. Add any types not known statically to the list of known types - 
+for example, by using the KnownTypeAttribute attribute or by adding them to the 
+list of known types passed to DataContractSerializer.</p>
+<p>If we change the business object to use private backing fields, the object flows flawlessly across WCF. While I have no problem changing our business object to use private backing fields for non-child properties, most of our business objects contain at least one Child reference property. I also want to be consistent in that all our business objects use the same backing mechanism. Has anyone else run into this situation and is there a work around? Do later versions of Csla possibly address this? Any ideas?</p>
+<p>&nbsp;</p>
+<p>Thanks!</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>ajj3085 replied on Saturday, August 28, 2010</h2><p>Csla objects are not designed to be directly input or output of a web service.&nbsp; Instead your web service should be exposing DTOs, which your service maps into and out of Csla based objects.</p>
+<p>See this page for more information:&nbsp; <a href="http://www.lhotka.net/cslanet/faq/XmlServicesFaq.ashx">http://www.lhotka.net/cslanet/faq/XmlServicesFaq.ashx</a></p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>wkempter replied on Saturday, August 28, 2010</h2><p>Thanks much for the info Andy, That is pretty much what I suspected, and just wanted conformation from some folks who have more expreience using this framework.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

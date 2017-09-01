@@ -1,0 +1,261 @@
+<html><header><title>Can someone explain this Syntax?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Can someone explain this Syntax?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/7217.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Mark Richardson posted on Thursday, July 02, 2009</h2><DIV>Hello Guys,</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>I am pretty new to this style of syntax?<BR><BR>Can someone explain it to me in the most "generic" terms what the following piece of code is doing?</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>///////////////////////////////////////////////////////////////////////<BR>What is this doing?<BR>///////////////////////////////////////////////////////////////////////</DIV>
+<DIV>private static PropertyInfo&lt;string&gt; CityProperty = RegisterProperty&lt;string&gt;(c =&gt; c.City); //new PropertyInfo&lt;string&gt;("City", "City"));</DIV>
+<DIV>///////////////////////////////////////////////////////////////////////</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>///////////////////////////////////////////////////////////////////////</DIV>
+<DIV>//I&nbsp;understand the code below.<BR>///////////////////////////////////////////////////////////////////////</DIV>
+<DIV>public string City</DIV>
+<DIV>{<BR>&nbsp;&nbsp;&nbsp; get </DIV>
+<DIV>&nbsp;&nbsp; {</DIV>
+<DIV>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return GetProperty(CityProperty); </DIV>
+<DIV>&nbsp;&nbsp; }<BR>&nbsp;&nbsp;&nbsp;set </DIV>
+<DIV>&nbsp;&nbsp; { </DIV>
+<DIV>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;SetProperty(CityProperty, value); </DIV>
+<DIV>&nbsp;&nbsp; }</DIV>
+<DIV>}</DIV></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, July 02, 2009</h2><P>I recommend reading the <EM>Expert 2008 Business Objects</EM> book, as this is discussed in many places through the book.</P>
+<P>The short answer is that the static PropertyInfo&lt;T&gt; field maintains metadata about your property, and acts as a strongly-typed token you can use instead of using string literal values all over the place.</P>
+<P>Without the PropertyInfo&lt;T&gt; field your property would look like this:</P>
+<P>public string City<BR>{<BR>&nbsp; get { return GetProperty&lt;string&gt;("City"); }<BR>&nbsp; set { SetProperty&lt;string&gt;("City", value); }<BR>}</P>
+<P>You'd have to supply the property type because it couldn't be inferred, and you'd have to supply the property name as a hard-to-maintain string literal. Very bad.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Mark Richardson replied on Thursday, July 02, 2009</h2><DIV>Rocky,</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>I understand that, I was more confused with the Lambda code.</DIV>
+<DIV>I have read about Lambda, and I get even more confused reading about it.</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>I was trying to see if someone can explain the Lambda parts of it.</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>Sorry for the confusion.</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>Mark</DIV></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, July 02, 2009</h2><P>Lambdas can be hard to read to start - no doubt there!</P>
+<P>the (c =&gt; c.Id) is a simple lambda expression where 'c' represents an instance of the current business object type. So that expression is returning the Id property of the current business object type.</P>
+<P>The RegisterProperty() method uses some reflection behind the scenes to take that property and get a reflection object that describes the property, which allows us to pull out the property's name and data type.</P>
+<P>The real value here is that the 'c.Id' part is a strongly-typed, compiler-checked construct. And even better, if you do a symbolic rename (rename refactor) on the property, the rename will fix this code too, where it wouldn't fix a string literal.</P>
+<P>So while the syntax looks a bit odd the first time you see it, the value in terms of maintainabilty is really high, and so it is (imo) worth using.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Mark Richardson replied on Thursday, July 02, 2009</h2><DIV>Rocky,</DIV>
+<DIV><BR>Thanks for the response.</DIV>
+<DIV><BR>But how does "(c =&gt; c.Id)" know that "c" represents an instance of the current business object type?<BR><BR>It looks like you just magically declared "c" and something automatically knew it's type.<BR><BR>What am I missing here?<BR><BR>Also, </DIV>
+<DIV><FONT size=2><STRONG><FONT color=#0000ff><FONT color=#0000ff size=2><FONT color=#0000ff size=2><BR><FONT color=#0000ff>DataService is a proxy class to the webservice you created.<BR>I don't see a WebServiceSoapClient method inside the service, where is this coming from?</FONT><FONT color=#2b91af><BR></FONT><BR>var</FONT></FONT><FONT color=#000000 size=2> svc = </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>new</FONT></FONT><FONT color=#000000 size=2> DataService.</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>WebServiceSoapClient</FONT></FONT><FONT size=2><FONT color=#000000>(); <BR><BR>What is this?<BR><BR>What is the (o,e) part?<BR>How does o and e get a value and where from?</FONT></DIV>
+<DIV>
+<P></FONT>svc.GetDataCompleted += (o, e) =&gt;<BR></FONT></STRONG>{</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>if</FONT></FONT><FONT size=2> (e.Error == </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>null</FONT></FONT><FONT size=2>)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>using</FONT></FONT><FONT size=2> (BypassPropertyChecks)</P>
+<P>{</P>
+<P>Id = e.Result.Id;</P>
+<P>Name = e.Result.Name;</P>
+<P>City = e.Result.City;</P>
+<P>}</P>
+<P>}</P>
+<P>handler(</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>this</FONT></FONT><FONT size=2>, e.Error);</P>
+<P>};</P>
+<P>Also,<BR><BR><FONT size=2>How does to know to call the "GetData" method on the service?<BR>svc.GetDataAsync(criteria.Value);</P></FONT></FONT></DIV></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Thursday, July 02, 2009</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>It
+is typed in framework based on generic type parameter for BB / you class.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Mark Richardson
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Thursday, July 02, 2009 2:47 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] Can someone explain this Syntax?<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<div>
+
+<p class=MsoNormal>Rocky,<o:p></o:p></p>
+
+</div>
+
+<div>
+
+<p class=MsoNormal><br>
+Thanks for the response.<o:p></o:p></p>
+
+</div>
+
+<div>
+
+<p class=MsoNormal><br>
+But how does &quot;(c =&gt; c.Id)&quot; know that &quot;c&quot; represents an
+instance of the current business object type?<br>
+<br>
+It looks like you just magically declared &quot;c&quot; and something
+automatically knew it's type.<br>
+<br>
+What am I missing here?<o:p></o:p></p>
+
+</div>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Mark Richardson replied on Thursday, July 02, 2009</h2><DIV>Not following you here?</DIV></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Thursday, July 02, 2009</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Look
+in CSLA business base&#8217;s register property &#8211; it will make more
+sense.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Mark Richardson
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Thursday, July 02, 2009 5:08 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: Can someone explain this Syntax?<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<div>
+
+<p class=MsoNormal>Not following you here?<o:p></o:p></p>
+
+</div>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>robdal replied on Thursday, July 02, 2009</h2>Hope this helps: (this sample is taken from the tutorial Lambda Expression from LearnVisualStudio.com<br />class Class1<br />    {<br />        // step 1<br />        public delegate bool FunctionForNumber(int number);<br /><br />        // step 2<br />        public static int[] PerformOperationOnNumberArray(int[] myNumbers, FunctionForNumber myFunction)<br />        {<br />            System.Collections.ArrayList myList = new System.Collections.ArrayList();<br />            foreach (int number in myNumbers)<br />            {<br />                if (myFunction(number))<br />                {<br />                    myList.Add(number);<br />                }<br />            }<br /><br />            return (int[])myList.ToArray(typeof(int));<br />        }<br />        // step 3<br />        public static bool GreaterThan10(int number)<br />        {<br />            return number > 10;<br />        }<br /><br />        static void Main(string[] args)<br />        {<br />            int[] myNumbers = { 1, 2, 15, 22 };<br />            //option 1<br />            //int[] numbersA = PerformOperationOnNumberArray(myNumbers, GreaterThan10);<br />            //option 2<br />            //int[] numbersA = PerformOperationOnNumberArray(myNumbers, delegate(int number) { return number > 10; });<br />            //option 3<br />            int[] numbersA = PerformOperationOnNumberArray(myNumbers, (number => number > 10));<br /><br />            foreach (int number in numbersA)<br />            {<br />                Console.WriteLine(number);<br />            }<br /><br />            Console.ReadLine();<br />        }<br />    }<br /><br />Similarly, if you have a Person class with lastname and firstname you can do something like:<br /> public class PersonManager<br />    {<br />        private List people = new List();<br />        public PersonManager() <br />        {<br />            Person person = new Person();<br />            person.FirstName = "Mark";<br />            person.LastName = "Richardson";<br /><br />            person = new Person();<br />            person.FirstName = "Roberto";<br />            person.LastName = "Dalmonte";<br /><br />            person = new Person();<br />            person.FirstName = "Ricky";<br />            person.LastName = "Lohtka";<br />        }<br />        public Person GetLastNameStartsWithR()<br />        {<br />           return people.First(p => p.LastName.StartsWith("R"));<br />        }<br />    }<br /><br />Roberto Dalmonte</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Mark Richardson replied on Thursday, July 09, 2009</h2><DIV>Rocky,</DIV>
+<DIV><BR>Below, you said</DIV>
+<DIV>&nbsp;</DIV>
+<DIV><EM>the (<STRONG>c =&gt; c.Id</STRONG>) is a simple lambda expression where 'c' represents an instance of the current business object type. So that expression is returning the Id property of the current business object type.</EM></DIV>
+<DIV><BR>What is confusing me here, is how does it know that "c" is reference to the business object.<BR><BR>If I always do a (a =&gt; a.id)<BR><BR>Is "a" the same as going "this.id"<BR><BR>I hope I explained this correctly.<BR><BR>Mark</DIV>
+<DIV>&nbsp;</DIV>
+<DIV><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div></DIV>
+<P>&nbsp;</P>
+<P>Lambdas can be hard to read to start - no doubt there!</P>
+<P>the (c =&gt; c.Id) is a simple lambda expression where 'c' represents an instance of the current business object type. So that expression is returning the Id property of the current business object type.</P>
+<P>The RegisterProperty() method uses some reflection behind the scenes to take that property and get a reflection object that describes the property, which allows us to pull out the property's name and data type.</P>
+<P>The real value here is that the 'c.Id' part is a strongly-typed, compiler-checked construct. And even better, if you do a symbolic rename (rename refactor) on the property, the rename will fix this code too, where it wouldn't fix a string literal.</P>
+<P>So while the syntax looks a bit odd the first time you see it, the value in terms of maintainabilty is really high, and so it is (imo) worth using.</P></div></BLOCKQUOTE></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, July 09, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>The identifier you use (&#8216;c&#8217; in my case) is
+arbitrary. It is like the identifier you use for a type parameter in a generic &#8211;
+you can use whatever you&#8217;d like.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>The type of the identifier is determined by the declaration of
+the parameter as defined by the RegisterProperty() method. As Sergey suggested,
+you can look in BusinessBase&lt;T&gt; to see how RegisterProperty() is defined,
+and what you&#8217;ll discover is that this parameter matches a specific method
+signature, where the type is defined as being the type of the business class.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>This allows the compiler to infer the type of your identifier (&#8216;c&#8217;)
+as being the type of the business class.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky</span><b><span><o:p></o:p></span></b></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

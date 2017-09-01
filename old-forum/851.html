@@ -1,0 +1,64 @@
+<html><header><title>Template for Stored Procedures</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Template for Stored Procedures</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/851.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>thilker posted on Wednesday, August 09, 2006</h2>Hi!<br><br>Great work!<br><br>The only thing I'm missing is a template to create the stored procedures that fit the generated BOs.<br>I found a template in the codesmith scheme "DatabaseSchema". It is quite ok, but not perfect.<br><br>Greetings!<br><br>Thorsten<br><br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rasupit replied on Thursday, August 10, 2006</h2><P>Thorsten,</P>
+<P>I was planning to add stored procedure template but I have not able to spend time on this.&nbsp; This summer, It has been a struggle for me to choose between working on template and golf or other outdoor activities.&nbsp; It very hard to pass on the latter <img src="/emoticons/emotion-3.gif" alt="Surprise [:O]" /></P>
+<P>I think modifying an existing will be the quickest approach.&nbsp; In fact, I think I'll&nbsp;do this and hopefully include&nbsp;this on the next release.</P>
+<P>Ricky.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jaans replied on Sunday, August 27, 2006</h2><P><FONT face=Verdana size=2>Gents</FONT></P>
+<P><FONT face=Verdana size=2>I've modified the StoredProcedure template that is included with CodeSmith a little bit. Hopefully this can be a starting point for tweaking it further. I would like to upload it (perhaps make it part of the CSLA Contrib. on CodePlex) so that the community can help improve it further.</FONT></P>
+<P><FONT face=Verdana size=2>So far it generates stored procedures with the same naming convention as that which CSLA Template 0.9.5 currently generates ("Add&lt;TableName&gt;";"Get&lt;TableName(Plural)&gt;"; etc). I have also made some crude but fast changes so that when a table has an identity column (or GUID)&nbsp;that the stored procedure that is generated, uses the "New" prefix (as per the CSLA template). I hope this helps you out a bit.</FONT></P>
+<P><FONT face=Verdana size=2>How do we make this part of the CSLA contributions&nbsp;on CodePlex ?</FONT></P>
+<P><FONT face=Verdana size=2>Thanks!</FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JTWebMan replied on Tuesday, August 29, 2006</h2>You can ask Rocky to have him add you as a Developer on the project. Or if you want you can email me them to me and I can put them up for you. jtwebman ( at ) gmail ( dot ) com<br><br>I was thinking of putting them in the CodeGenTemplates/CodeSmith/CSLA20/StoreProc Folder.<br><br>Does that sound ok with everyone?<br><br>JT<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jaans replied on Tuesday, August 29, 2006</h2><P><FONT face=Verdana size=2>Great thanks ! <img src="/emoticons/emotion-2.gif" alt="Big Smile [:D]" />&nbsp;Sounds good to me...</FONT></P>
+<P><FONT face=Verdana size=2>I'll drop you an email with the template.</FONT></P>
+<P><FONT face=Verdana size=2>Regards</FONT></P>
+<P><FONT face=Verdana size=2>Jaans</FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JTWebMan replied on Tuesday, August 29, 2006</h2>I added this to the source control but it does work in CodeSmith 2.6.<br><br>---------------- Compile started -----------------<br><br>(551,2): error CS0246: The type or namespace name 'FileDialog' could not be found (are you missing a using directive or an assembly reference?)<br><br>Build complete -- 1 errors, 0 warnings<br><br>---------------------- Done ----------------------<br><br>Build failed<br><br>JT<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jstevens replied on Friday, September 01, 2006</h2><P>Hi All,</P>
+<P>I see that the CSLAExpress VB&nbsp;templates generate stored procedures as well - Is anyone using these?&nbsp; Or maybe take a look at them and collaborate on some ideals?</P>
+<P>Thanx!</P>
+<P>Julian</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>djjlewis replied on Friday, September 01, 2006</h2>
+
+<p class="MsoNormal">I started using the CSLA Express VB templates last week, as
+I only had CodeSmith 2.6 at the time and the other set didn't work with it
+(they have been fixed now though).<br>
+<br>
+On the whole the templates are very good, and as you have noticed generate stored
+procedures based on the CSLA model plus a few other niceties such as error
+code checking etc.<br>
+<br>
+You can also opt to use SQL Transactions and it will modify the sprocs
+accordingly (although I haven't tested these).<br>
+<br>
+There is a bug in the current release regarding concurrency checking but I have
+been in touch with the author, wcm777, and I believe he is going to upload some
+fixes into CodePlex.<br>
+<br>
+The CSLA business objects that are generated are very similar to the book and
+based on 2.0.2. All the logic and template output is stored in the
+CSLAExpress20.vb file, and it is very easy to open up and debug directly in
+Visual Studio (the VS project is included with the templates).<br>
+<br>
+At the moment I think there are good bits to both sets of templates (split-base
+and xml file support in one, sprocs and good seperation in the other etc) so I think I will
+probably end up combining the best of both worlds, at least for my own needs...<br>
+<br>
+Regards,<br>
+<br>
+Dan.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>chiefy81 replied on Tuesday, November 07, 2006</h2>Did you ever complete those stored procedure templates?&nbsp; Right now im struggling with loading the child elements in the nested fashion that CSLA is expecting, only because its so manual.&nbsp; For example when the child element gets the datareader from the parent, my stored procedures generated dont have the child data in them.&nbsp; Any ideas for a solution that involves code generation?<br><br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>figuerres replied on Friday, August 25, 2006</h2><P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>thilker:</strong></div><div>Hi!<BR><BR>Great work!<BR><BR>The only thing I'm missing is a template to create the stored procedures that fit the generated BOs.<BR>I found a template in the codesmith scheme "DatabaseSchema". It is quite ok, but not perfect.<BR><BR>Greetings!<BR><BR>Thorsten<BR><BR><BR></div></BLOCKQUOTE></P>
+<P>&nbsp;</P>
+<P>Yah I have been hacking thru that ....</P>
+<P>&nbsp;</P>
+<P>I may put together my edits and share them soon....</P>
+<P>I have modified the proc_names and how a few columns are managed</P>
+<P>also took some of the code from the tracker sample app and added it to the template</P>
+<P>I am working thru generating some BO classes now so I can see if my Proc's and BO's match up and work w/o major problems :-)</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Rob @ Fluent replied on Monday, October 23, 2006</h2><P>Hi there Thorsten</P>
+<P>Did the stored procedure template get uploaded anywhere?</P>
+<P>I don't seem to be able to find it on CSLAContrib.</P>
+<P>Kind regards</P>
+<P>&nbsp;</P>
+<P>Rob</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>david.wendelken replied on Wednesday, November 01, 2006</h2><P>I really like the CSLA framework, but the naming convention used in the sample application for stored procedure names is not one of them.</P>
+<P>The format is "Add&lt;ThingName&gt;", "Update&lt;ThingName&gt;", etc.</P>
+<P>I prefer "&lt;ThingName&gt;Add", "&lt;ThingName&gt;Update", etc.</P>
+<P>That way, when I look in the database at the list of procedures, I see all the &lt;ThingName&gt; procedures sorted together.&nbsp; It makes it much easier to notice if I forgot one (or intentionally didn't create one).</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jervit replied on Monday, November 06, 2006</h2><P><FONT face=Arial size=2>Hi,</FONT></P>
+<P><FONT face=Arial size=2>Do you have any idea why am I getting this error in CodeSmith 2.6 when I open the .cst file?</FONT></P>
+<P>---------------- Compile started -----------------</P>
+<P>(448,8): error CS0117: 'SchemaExplorer.TableSchema' does not contain a definition for 'HasPrimaryKey'<BR>(472,5): error CS0162: Unreachable code detected</P>
+<P>Build complete -- 1 errors, 1 warnings</P>
+<P>---------------------- Done ----------------------</P>
+<P>Build failed</P>
+<P><FONT face=Arial size=2>Thanks!</FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>LeeB replied on Saturday, December 16, 2006</h2>Is there a resolution to this problem (post 8840)?&nbsp; I am having the same problem.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>chiefy81 replied on Monday, November 27, 2006</h2>Are there any updates here?&nbsp; I am having a serious problem finding a template that will allow me to generated the nested BO stored procedure style that CSLA is looking for.&nbsp; Any help is much appreciated.&nbsp; What is everyone using, tool wise, template wise, etc to generate these stored procedures?<br><br>Mike<br><br><br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

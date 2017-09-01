@@ -1,0 +1,145 @@
+<html><header><title>ReadOnly in Csla.Core.IPropertyInfo</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>ReadOnly in Csla.Core.IPropertyInfo</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/8847.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>jlfernandezmiranda posted on Tuesday, April 27, 2010</h2><p>I have been studying Csla.Core.IPropertyInfo interface and I could not to find an answer. I need to check If a property is ReadOnly.</p>
+<p>For Each prop As IPropertyInfo In FieldManager.GetRegisteredProperties</p>
+<p>........ How to check here if prop Is ReadOnly?</p>
+<p>Next</p>
+<p>Any Ideas? Thanks</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>ajj3085 replied on Tuesday, April 27, 2010</h2><p>You should be able to call CanWriteProperty method using the information from the property info instance.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jlfernandezmiranda replied on Tuesday, April 27, 2010</h2><p>&nbsp;I can&acute;t call CanWriteProperty Andy, my code is the follow:&nbsp;</p>
+<p><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">Public </span></span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">Module</span></span><span style="font-size:x-small;"> HelperModule</span></p>
+<p><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">Public</span></span><span style="font-size:x-small;"> </span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">Sub</span></span><span style="font-size:x-small;"> AutorizatePropsPerType(</span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">ByVal</span></span><span style="font-size:x-small;"> NamespaceRoot </span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">As</span></span><span style="font-size:x-small;"> </span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">String</span></span><span style="font-size:x-small;">, </span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">ByVal</span></span><span style="font-size:x-small;"> Ar </span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">As</span></span><span style="font-size:x-small;"> AuthorizationRules, </span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">ByVal</span></span><span style="font-size:x-small;"> FM </span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">As</span></span><span style="font-size:x-small;"> FieldDataManager)<span style="font-size:x-small;"> <span style="font-size:x-small;"><span style="font-size:x-small;"><span style="font-size:x-small;"><span style="font-size:x-small;"><span style="font-size:x-small;"><font size="2">
+<p>&nbsp;F</p>
+</font></span></span></span></span>
+<p>&nbsp;</p>
+<p>
+<p>&nbsp;</p>
+</p>
+</span></span></span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">or</span></span><span style="font-size:x-small;"> </span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">Each</span></span><span style="font-size:x-small;"> prop </span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">As</span></span><span style="font-size:x-small;"> IPropertyInfo </span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">In</span></span><span style="font-size:x-small;"> FM.GetRegisteredProperties<span style="font-size:x-small;"> <span style="font-size:x-small;"><span style="font-size:x-small;"><span style="font-size:x-small;"><span style="font-size:x-small;"><span style="font-size:x-small;"><font size="2">
+<p>
+<p>&nbsp;T</p>
+</p>
+</font></span></span></span></span></span></span></span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">ry</span></span></p>
+<p>
+<p>&nbsp;<span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">&#39;&#39;&#39;&#39;&#39;&#39;&#39;&nbsp; <span style="color:#a31515;font-size:x-small;"><span style="color:#a31515;font-size:x-small;">If prop is ReadOnly i want to bypass this line</span></span></span></span></p>
+</p>
+<p>&nbsp;<span style="font-size:x-small;">Ar.AllowWrite(prop.Name, NamespaceRoot + prop.Name + </span><span style="color:#a31515;font-size:x-small;"><span style="color:#a31515;font-size:x-small;">&quot;.Write&quot;</span></span><span style="font-size:x-small;">)
+<p>&#39;&#39;&#39;&#39;&#39;&#39; <span style="color:#a31515;">but this line is checked Always</span></p>
+<span style="font-size:x-small;"><span style="font-size:x-small;"><span style="font-size:x-small;"><span style="font-size:x-small;"><span style="font-size:x-small;"><span style="font-size:x-small;"><font size="2">
+<p>Ar.AllowRead(prop.Name, NamespaceRoot + prop.Name +&nbsp;</p>
+</font></span></span></span></span>
+<p>&nbsp;</p>
+</span></span></span><span style="color:#a31515;font-size:x-small;"><span style="color:#a31515;font-size:x-small;">&quot;.Read&quot;</span></span><span style="font-size:x-small;">)</span></p>
+<p>&nbsp;<span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">Catch</span></span><span style="font-size:x-small;"> ex </span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">As</span></span><span style="font-size:x-small;"> Exception<span style="font-size:x-small;">&nbsp;</span></span></p>
+<p><span style="font-size:x-small;"><span style="font-size:x-small;"><span style="font-size:x-small;"><span style="font-size:x-small;">&nbsp;</span></span></span></span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">Throw</span></span><span style="font-size:x-small;"> </span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">New</span></span><span style="font-size:x-small;"> ApplicationException(</span><span style="color:#a31515;font-size:x-small;"><span style="color:#a31515;font-size:x-small;">&quot;Failed Autorization Rules&nbsp;at method AuthorizatedPropsPerType, location:&nbsp;HelperModule.&quot;</span></span><span style="font-size:x-small;"> + ex.Message + ex.StackTrace)<span style="font-size:x-small;"> <span style="font-size:x-small;"><span style="font-size:x-small;"><span style="font-size:x-small;"><span style="font-size:x-small;"><span style="font-size:x-small;"><font size="2">
+<p>
+<p>&nbsp;E</p>
+</p>
+</font></span></span></span></span></span></span></span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">nd</span></span><span style="font-size:x-small;"> </span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">Try</span></span><span style="font-size:x-small;"><span style="font-size:x-small;"> <span style="font-size:x-small;"><span style="font-size:x-small;"><span style="font-size:x-small;"><span style="font-size:x-small;"><span style="font-size:x-small;"><font size="2">
+<p>
+<p>&nbsp;</p>
+</p>
+</font></span></span></span></span></span></span></span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">Next<span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;"> <span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;"><font size="2" color="#0000ff"><font size="2" color="#0000ff">
+<p>
+<p>&nbsp;E</p>
+</p>
+</font></font></span></span></span></span></span></span></span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;"><font size="2" color="#0000ff">
+<p>
+<p>&nbsp;</p>
+</p>
+</font></span></span></span></span></span></span></span></span></span></span></span></span></span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">nd<span style="color:#000000;font-size:x-small;"> </span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">Su</span></span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">b</span></span></span></span></p>
+<p>
+<p>&nbsp;</p>
+</p>
+<p>
+<p>&nbsp;</p>
+</p>
+<p>
+<p>&nbsp;</p>
+</p>
+<p>
+<p>&nbsp;<span style="font-size:x-small;"><span style="color:#0000ff;">End</span> <span style="color:#0000ff;"><span style="color:#0000ff;">Module</span></span></span></p>
+</p>
+<p>So in a BussinessBase Class I do</p>
+<p>Public Class Customer : Inherits BusinessBase(Of Customer)</p>
+<p>&#39;Here I declare Props</p>
+<p>...............</p>
+<p>&nbsp;<span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">Protected </span></span></span></span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">Overrides</span></span><span style="font-size:x-small;"> </span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">Sub</span></span><span style="font-size:x-small;"> AddAuthorizationRules()</span></p>
+<p>&nbsp;AutorizatePropsPerType(&quot;MyApp.Customers.&quot; , <span style="font-size:x-small;">Me.AuthorizationRules,</span>&nbsp;Me.FieldManager)&nbsp;</p>
+<p><span style="font-size:x-small;"><span style="color:#0000ff;">End</span><span style="font-size:x-small;"> </span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">Su</span></span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">b</span></span></span></p>
+<p>End Class</p>
+<p>&nbsp;Thanks</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jlfernandezmiranda replied on Tuesday, April 27, 2010</h2><p>&nbsp;I can&acute;t call CanWriteProperty Andy, my code is the follow:&nbsp;</p>
+<p><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">Public </span></span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">Module</span></span><span style="font-size:x-small;"> HelperModule</span></p>
+<p><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">Public</span></span><span style="font-size:x-small;"> </span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">Sub</span></span><span style="font-size:x-small;"> AutorizatePropsPerType(</span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">ByVal</span></span><span style="font-size:x-small;"> NamespaceRoot </span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">As</span></span><span style="font-size:x-small;"> </span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">String</span></span><span style="font-size:x-small;">, </span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">ByVal</span></span><span style="font-size:x-small;"> Ar </span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">As</span></span><span style="font-size:x-small;"> AuthorizationRules, </span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">ByVal</span></span><span style="font-size:x-small;"> FM </span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">As</span></span><span style="font-size:x-small;"> FieldDataManager)<span style="font-size:x-small;"> <span style="font-size:x-small;"><font size="2">
+<p>&nbsp;</p>
+</font></span></span>
+<p>&nbsp;</p>
+</span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">For</span></span><span style="font-size:x-small;"> </span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">Each</span></span><span style="font-size:x-small;"> prop </span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">As</span></span><span style="font-size:x-small;"> IPropertyInfo </span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">In</span></span><span style="font-size:x-small;"> FM.GetRegisteredProperties<span style="font-size:x-small;"> <span style="font-size:x-small;"><font size="2">
+<p>
+<p>&nbsp;</p>
+</p>
+</font></span></span></span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">Try</span></span></p>
+<p>
+<p>&nbsp;</p>
+</p>
+<p><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">&#39;&#39;&#39;&#39;&#39;&#39;&#39;&nbsp; <span style="color:#a31515;font-size:x-small;"><span style="color:#a31515;font-size:x-small;">If prop is ReadOnly i want to bypass this line</span></span></span></span></p>
+<p>&nbsp;<span style="font-size:x-small;">Ar.AllowWrite(prop.Name, NamespaceRoot + prop.Name +</span><span style="color:#a31515;font-size:x-small;"><span style="color:#a31515;font-size:x-small;">&quot;.Write&quot;</span></span><span style="font-size:x-small;">)
+<p>&#39;&#39;&#39;&#39;&#39;&#39; <span style="color:#a31515;">but this line is checked Always</span></p>
+<span style="font-size:x-small;"><span style="font-size:x-small;"><font size="2">
+<p>Ar.AllowRead(prop.Name, NamespaceRoot + prop.Name +</p>
+</font></span></span>
+<p>&nbsp;</p>
+</span><span style="color:#a31515;font-size:x-small;"><span style="color:#a31515;font-size:x-small;">&quot;.Read&quot;</span></span><span style="font-size:x-small;">)</span></p>
+<p>&nbsp;&nbsp;<span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">Catch</span></span><span style="font-size:x-small;"> ex </span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">As</span></span><span style="font-size:x-small;"> Exception<span style="font-size:x-small;"> <span style="font-size:x-small;"><font size="2">
+<p>
+<p>&nbsp;</p>
+</p>
+</font></span></span></span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">Throw</span></span><span style="font-size:x-small;"> </span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">New</span></span><span style="font-size:x-small;"> ApplicationException(</span><span style="color:#a31515;font-size:x-small;"><span style="color:#a31515;font-size:x-small;">&quot;Failed Autorization Rules&nbsp;at method AuthorizatedPropsPerType, location:&nbsp;HelperModule.&quot;</span></span><span style="font-size:x-small;"> + ex.Message + ex.StackTrace)<span style="font-size:x-small;"> <span style="font-size:x-small;"><font size="2">
+<p>
+<p>&nbsp;</p>
+</p>
+</font></span></span></span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">End</span></span><span style="font-size:x-small;"> </span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">Try</span></span><span style="font-size:x-small;"><span style="font-size:x-small;"> <span style="font-size:x-small;"><font size="2">
+<p>
+<p>&nbsp;</p>
+</p>
+</font></span></span></span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">Next<span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;"> <span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;"><font size="2" color="#0000ff"><font size="2" color="#0000ff">
+<p>
+<p>&nbsp;</p>
+</p>
+</font></font></span></span></span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;"><font size="2" color="#0000ff">
+<p>
+<p>&nbsp;</p>
+</p>
+</font></span></span></span></span></span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">End<span style="color:#000000;font-size:x-small;"> </span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">Su</span></span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">b</span></span></span></span></p>
+<p>
+<p>&nbsp;</p>
+</p>
+<p>
+<p>&nbsp;</p>
+</p>
+<p>
+<p>&nbsp;</p>
+</p>
+<p>
+<p>&nbsp;</p>
+</p>
+<p><span style="font-size:x-small;"><span style="color:#0000ff;">End</span> <span style="color:#0000ff;"><span style="color:#0000ff;">Module</span></span></span></p>
+<p>So in a BussinessBase Class I do</p>
+<p>Public Class Customer : Inherits BusinessBase(Of Customer)</p>
+<p>&#39;Here I declare Props</p>
+<p>...............</p>
+<p>&nbsp;</p>
+<p><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;"><font size="2" color="#0000ff"><font size="2" color="#0000ff">
+<p>Protected </p>
+</font></font></span></span></span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;"><font size="2" color="#0000ff">
+<p>&nbsp;</p>
+</font></span></span></span>
+<p>&nbsp;</p>
+</span></span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">Overrides</span></span><span style="font-size:x-small;"> </span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">Sub</span></span><span style="font-size:x-small;"> AddAuthorizationRules()</span></p>
+<p>&nbsp;AutorizatePropsPerType(&quot;MyApp.Customers.&quot; , <span style="font-size:x-small;">Me.AuthorizationRules,</span>&nbsp;Me.FieldManager)&nbsp;</p>
+<p><span style="font-size:x-small;"><span style="color:#0000ff;">End</span><span style="font-size:x-small;"> </span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">Su</span></span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">b</span></span></span></p>
+<p>End Class</p>
+<p>&nbsp;Thanks</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Tuesday, April 27, 2010</h2><p>The simplest way to determine if a .NET property is read-only is to use the .NET PropertyDescriptor and TypeDescriptor subsystem in System.ComponentModel. This doesn&#39;t exist on Silverlight, but it is the simplest thing to do in .NET.</p>
+<p>You can see examples of its use if you search the CSLA codebase for &quot;TypeDescriptor&quot; - I believe it is used in DataMapper, and in the Csla.Web functionality, and perhaps other places.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jlfernandezmiranda replied on Tuesday, April 27, 2010</h2><p>Thanks Rocky, you fixed my issue. I will study to find an answer for Silverlight.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, April 27, 2010</h2><p>In Silverlight you use standard System.Reflection types like PropertyInfo. It isn&#39;t as easy as PropertyDescriptor, but you can infer the read-only status with some care. I think I do this in the PropertyStatus control in SL if I remember correctly.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

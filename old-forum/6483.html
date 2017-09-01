@@ -1,0 +1,14 @@
+<html><header><title>Is it possible to store AuthorizationRules in the database?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Is it possible to store AuthorizationRules in the database?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6483.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>stiv posted on Sunday, February 22, 2009</h2><P>Is it possible to store in the database the roles allowed to create, update or delete objects, or to read and write properties?<BR>The idea is to allow the system administrator to create new customs roles without the need of new object compilations.</P>
+<P>I understood, from Rocky´s book, that Csla manage custom security like this </P>
+<P>Properties</P>
+<P>AuthorizationRules.AllowWrite(NameProperty, "ProjectManager");</P>
+<P>or </P>
+<P>Objects</P>
+<P>AuthorizationRules.AllowCreate(typeof(Project), "ProjectManager"); </P>
+<P>Is it possible at this level of the object life to gain access to the DB to read user permissions?</P>
+<P>Thanks in advance,</P>
+<P>Stiv</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Programmer1987 replied on Monday, February 23, 2009</h2>this is what I need , if you found the answer could forward it to me <br><br>thanks :)<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tmg4340 replied on Monday, February 23, 2009</h2><P><FONT face=Tahoma size=2>There have been discussions in the forum previously concerning this.&nbsp; Here's a link to (an admittedly older) one:</FONT></P>
+<P><A HREF="/forums/thread/10400.aspx"><FONT face=Tahoma size=2>http://forums.lhotka.net/forums/thread/10400.aspx</FONT></A></P>
+<P><FONT face=Tahoma size=2>Otherwise, if you search the forums for something like "authorization rules database", you should get some decent information.</FONT></P>
+<P><FONT face=Tahoma size=2>HTH</FONT></P>
+<P><FONT face=Tahoma size=2>- Scott</FONT></P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

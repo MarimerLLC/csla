@@ -1,0 +1,106 @@
+<html><header><title>Csla List Naming conventions</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Csla List Naming conventions</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5584.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>decius posted on Tuesday, October 14, 2008</h2><P>When possible, I like to make an effort to stick as closely to a communities naming convention as possible.&nbsp; I am curious about the naming conventions for Csla Lists (i.e. those found in ProjectTracker).&nbsp; </P>
+<P>I thought I understood, but it seems I don't: what's the difference between these two conventions?</P>
+<OL>
+<LI><STRONG>ResourceAssignment and ResourceAssignments</STRONG></LI>
+<LI><STRONG>ProjectInfo and ProjectList</STRONG></LI></OL></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JohnB replied on Tuesday, October 14, 2008</h2>ResourceAssignment is a BusinessBase object<br />ResourceAssignments is a BusinessListBase object.<br /><br />ResourceAssignments is a collection of ResourceAssignment objects<br /><br />ProjectInfo is a read-only object<br />ProjectList is a read-only collection<br /><br />ProjectList contains a list of ProjectInfo objects.<br /><br />HTH,<br />John</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>decius replied on Tuesday, October 14, 2008</h2>fabulous, I had just been using List and Info suffixes for ALL Csla Lists.&nbsp; That helps a lot, thanks!</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>decius replied on Tuesday, October 14, 2008</h2><P>One last question: </P>
+<P>But what happens if you have a need for a&nbsp;Parent BusinessBase version of Resource?&nbsp; What would that class be called since the name "Resource" is already taken by the child of Resources?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>decius replied on Tuesday, October 14, 2008</h2><P>It seems to me that this naming convention will ultimately clash like so...</P>
+<UL>
+<LI><STRONG>Object</STRONG> (BusinessBase Child of <STRONG>Objects</STRONG>) 
+<LI><STRONG>Objects </STRONG>(BusinessListBase Root/Parent&nbsp;of <STRONG>Object</STRONG>) 
+<LI><STRONG>ObjectInfo </STRONG>(ReadOnlyBase Child of <STRONG>ObjectList</STRONG>) 
+<LI><STRONG>ObjectList </STRONG>(ReadOnlyListBase Root/Parent of <STRONG>ObjectInfo</STRONG>) 
+<LI><STRONG>Object</STRONG>???? (BusinessBase Root, clashes with the child '<STRONG>Object' </STRONG>of <STRONG>Objects</STRONG>)</LI></UL>
+<P>How are people avoiding this issue?&nbsp; At first I figured to just add an additional Get factory method to <STRONG>Object </STRONG>that goes through the DataPortal<STRONG>, </STRONG>but I think that would be unintuitive for the UI Developer.... any thoughts?</P>
+<P>&nbsp;</P><STRONG></STRONG></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Michael Hildner replied on Tuesday, October 14, 2008</h2><P>I'll just throw out what I do, FWIW.</P>
+<P>I like to look at the class names in the solution explorer and know what the object does. So I suffix my bo's like:</P>
+<P>CustomerER - editable root</P>
+<P>CustomerRORL - read only root list</P>
+<P>CustomerROC - read only child</P>
+<P>CustomerERL - editable root list</P>
+<P>etc.</P>
+<P>Mike</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>decius replied on Tuesday, October 14, 2008</h2><P>I like that, I might adopt this actually as it solves my problem.&nbsp; However, I hate to stray from the mainstream's established naming conventions.&nbsp; I also found this thread useful, though it also didn't address the problem i mentioned in my last post</P><A HREF="/forums/thread/18044.aspx">http://forums.lhotka.net/forums/thread/18044.aspx</A>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>triplea replied on Tuesday, October 14, 2008</h2><P>Out of curiosity, what convention do people use when you have the following within the same namespace:</P>
+<P>ProjectInfo (read-only object)<BR>Project<STRONG>Info</STRONG>List (read-only collection of ProjectInfo)</P>
+<P>Project (BusinessBase object)<BR>ProjectList(BusinessListBase collection of Project)</P>
+<P>I use the above info bit in my read-only list but maybe there is a more elegant convention...</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Tuesday, October 14, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I use the same one as you &#8211; adding word &#8220;list&#8221;
+for BLB and ROLB classes.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> triplea
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Tuesday, October 14, 2008 9:46 AM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] Csla List Naming conventions<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Out of curiosity, what convention do people use when you have the following
+within the same namespace:<o:p></o:p></p>
+
+<p>ProjectInfo (read-only object)<br>
+Project<strong>Info</strong>List (read-only collection of ProjectInfo)<o:p></o:p></p>
+
+<p>Project (BusinessBase object)<br>
+ProjectList(BusinessListBase collection of Project)<o:p></o:p></p>
+
+<p>I use the above info bit in my read-only list but maybe there is a more
+elegant convention...<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Tuesday, October 14, 2008</h2>I use a plural name for BLBs, and List suffix for ROLB.&nbsp; So Prices is an editable list of Price objects, and PriceList is readonly.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>decius replied on Tuesday, October 14, 2008</h2><P>thanks for the input <STRONG>ajj3085, </STRONG>but what about when you need to create both an Editable Root and an Editable Child in the same namespace like so:</P>
+<UL>
+<LI><STRONG>Price </STRONG>(Editable Child of <STRONG>Prices</STRONG>)</LI>
+<LI><STRONG>Prices</STRONG> (Editable Root List)</LI>
+<LI><STRONG>Price</STRONG>???? (Editable Root [clashes with the editable child of <STRONG>Prices</STRONG>])</LI></UL>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Tuesday, October 14, 2008</h2>I had something kinda like that come up.<br><br>I had a PriceList, which contained a list of pricing data; a price for every product in the system.&nbsp; I chose to use ProductPrices for it's BLB and ProductPrice for the BB.&nbsp; Then, in the Product class, I simply had a Prices child BLB which contained Price BB.&nbsp; <br><br>It makes sense (to me at least); a price list is a list of prices for products, and a product has a list of prices (one price for each list in the system).<br><br>So, I think I kinda used the use case to help give a more specific name than the ones I had orginally chose.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>decius replied on Tuesday, October 14, 2008</h2><P>thanks for the input <STRONG>ajj3085, </STRONG>but what about when you need to create both an Editable Root and an Editable Child in the same namespace like so:</P>
+<UL>
+<LI><STRONG>Price </STRONG>(Editable Child of <STRONG>Prices</STRONG>)</LI>
+<LI><STRONG>Prices</STRONG> (Editable Root List)</LI>
+<LI><STRONG>Price</STRONG>???? (Editable Root [clashes with the editable child of <STRONG>Prices</STRONG>])</LI></UL>
+<P>&nbsp;</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

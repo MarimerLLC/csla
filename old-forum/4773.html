@@ -1,0 +1,91 @@
+<html><header><title>RO base containing ERLB</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>RO base containing ERLB</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4773.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>esteban404 posted on Wednesday, April 30, 2008</h2><P>I have a use case where the user needs to call up an existing order and work with&nbsp;items it contains. So I have<BR>Order : ReadOnlyBusinessBase<BR>&nbsp;&nbsp;&nbsp;&nbsp; OrderDefects : EditableRootListBase (DynamicList?)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Defect : BusinessBase (DynamicRoot?)</P>
+<P>Are there any framework rules I'm gonna break here? It seems correct-ish. The&nbsp;factors I need to keep in mind is that the Order cannot be modified in any way, Order is used to create new defects for the ERLB objects, Order&nbsp;must be read only. Order's collections should be manageable from within the UI I imagine, but haven't written this type of hybrid yet.</P>
+<P>Thanks,</P>
+<P>_E</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Wednesday, April 30, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>One of the issues you will be dealing with is the fact that </span><span>ReadOnlyBusinessBase</span><span> does
+not have IsDirty, IsValid, etc&#8230;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>Just a thought, but I would consider changing your root object
+to Business Base with all properties being read-only.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Senior Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899<o:p></o:p></span></p>
+
+<p class=MsoNormal><b><i><span>Magenic</span></i></b><span> </span><span>&reg;</span><b><i><span><o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> esteban404
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Wednesday, April 30, 2008 10:20 AM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> [CSLA .NET] RO base containing ERLB<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>I have a use case where the user needs to call up an existing order and work
+with&nbsp;items it contains. So I have<br>
+Order : ReadOnlyBusinessBase<br>
+&nbsp;&nbsp;&nbsp;&nbsp; OrderDefects : EditableRootListBase (DynamicList?)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Defect : BusinessBase
+(DynamicRoot?)<o:p></o:p></p>
+
+<p>Are there any framework rules I'm gonna break here? It seems correct-ish.
+The&nbsp;factors I need to keep in mind is that the Order cannot be modified in
+any way, it's used to create new defects for the ERLB objects, Order&nbsp;must
+be read only. Order's collections should be manageable from within the UI I
+imagine, but haven't written this type of hybrid yet.<o:p></o:p></p>
+
+<p>Thanks,<o:p></o:p></p>
+
+<p>_E<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>esteban404 replied on Wednesday, April 30, 2008</h2><P>Thanks, Sergey,</P>
+<P>I thought that the ERLB collection would auto save the items as the grid is edited/navigated, so there'd be no reason to use the IsDirty or IsValid&nbsp;at the root order level, but at the ERLB item level there would be as part of the auto save. The users will&nbsp;need immediate action on the data, so it should never&nbsp;be in an in-between state that I'd need to check for these. Hmm. I'll have review deeper and&nbsp;be careful.</P>
+<P>Good thought for thoroughness, thanks!</P>
+<P>BTW, I'm using CSLA 3.0.4 for this.</P>
+<P>_E</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>esteban404 replied on Wednesday, April 30, 2008</h2><P>I re-read the requirements and changes in the 2.1 e-book. Since the IParent interface is utilized by ERLB, it may not work correctly with a ROB object. I created a new object inheriting from BB to hold the ERLB collection of defects, but the methods for insert, update, delete, and deleteself don't apply to the root object as nothing can be modified and the fields only have get accessors.</P>
+<P>Since nothing can change&nbsp; would this big honkin container of Order need to implement an Update so it can fire the ERLB object code? Seemed like that was being done by the ERLB base item&nbsp;object.</P>
+<P>I'll write a test fixture to see how it moves through it all. Any more opinions about this&nbsp;are welcome, of course. I think this project will have more of these due to the nature of the client's business flow.</P>
+<P>Cheers,</P>
+<P>_E</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

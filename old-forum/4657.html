@@ -1,0 +1,300 @@
+<html><header><title>Transactions in CSLA</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Transactions in CSLA</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4657.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>manulisa posted on Thursday, April 10, 2008</h2><P>Hi, </P>
+<P>I've taken the example of the book and i wander if in case you save the parent (in this case the project object) and next the attached childs (resources) if and parent and child update is inlisted in the same transaction ? So, if some error occures in the _resources.Update(this), will this cause also a rollback of the parent (project in this case) -&gt; I guess the TransactionalTypes.TransactionScope takes care of this ?</P>
+<P>thx for any response.</P>
+<P>manulisa.</P>
+<P>&nbsp;</P>
+<P><B><FONT face=TheSansMonoCondensed-Bold size=1>[Transactional(TransactionalTypes.TransactionScope)]</P>
+<P align=left>protected override void DataPortal_Insert()</P>
+<P align=left>{</P>
+<P align=left>using (SqlConnection cn = new SqlConnection(Database.PTrackerConnection))</P>
+<P align=left>{</P>
+<P align=left>cn.Open();</P>
+<P align=left>using (SqlCommand cm = cn.CreateCommand())</P>
+<P align=left>{</P>
+<P align=left>cm.CommandText = "addProject";</P>
+<P align=left>DoInsertUpdate(cm);</P>
+<P align=left>}</P>
+<P align=left>}</P>
+<P align=left>// update child objects</P>
+<P align=left>_resources.Update(this);</P>
+<P align=left>}</P></B></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JohnB replied on Thursday, April 10, 2008</h2>You are correct. Any calls made within the method will be in the same transaction.<br><br><br>John</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Thursday, April 10, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>The only note is that MDC will be governing this transaction,
+and you need to make sure that Microsoft Distributed Transactions coordinator is
+running on that machine.&nbsp; If you opt for light-weight SQL transactions,
+you will need to manage them yourself by creating one in parent class and
+passing it to child class(es).<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Senior Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> JohnB
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Thursday, April 10, 2008 11:41 AM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] Transactions in CSLA<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>You are correct. Any calls made within the method will be in
+the same transaction.<br>
+<br>
+<br>
+John<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, April 10, 2008</h2><P>When using TransactionScope the DTC is only used if you talk to a non-SQL 2005 database, or if you open more than one database connection.</P>
+<P>The <EM>CSLA .NET Version 2.1 Handbook</EM> discusses techniques you can use to reuse an open database connection to avoid the DTC coming into play, and CSLA .NET 3.5 now includes the Csla.Data.ConnectionManager class that helps you reuse a database connection without having to worry about the details in your code.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Thursday, April 10, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Sure.&nbsp; The code from project tracker that was enclosed does
+exactly that, opening second connection in child list.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Senior Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> RockfordLhotka
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Thursday, April 10, 2008 1:47 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: Transactions in CSLA<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>When using TransactionScope the DTC is only used if you talk to a non-SQL
+2005 database, or if you open more than one database connection.<o:p></o:p></p>
+
+<p>The <em>CSLA .NET Version 2.1 Handbook</em> discusses techniques you can use
+to reuse an open database connection to avoid the DTC coming into play, and
+CSLA .NET 3.5 now includes the Csla.Data.ConnectionManager class that helps you
+reuse a database connection without having to worry about the details in your
+code.<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>William replied on Thursday, April 10, 2008</h2>Rocky,<br><br>You mentioned that DTC is used when the application opens more than one database connection. Does this apply to the scenario where the application always uses the same connection string to connect the same database, instead of passing the connection object?<br><br>Thanks.<br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, April 10, 2008</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Yes, unfortunately TransactionScope brings in the DTC as soon as
+a second connection is opened &#8211; even if that connection uses the same
+connection string as the first.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>acheema replied on Wednesday, July 09, 2008</h2>Hi everyone!<br><br>Recently, I have also gone throught this issue, the exception says, Unable to interact with DTC. Looking at CSLA Handbook for 2.1 ver, I am passing the sqlconnection to all child objects, as it suggested in handbook. I stopped DTC, purposly, so my objects persistance do not use DTC, while deleting parent Object, Dataportal_Delete with [Transactional(TransactionalTypes.TransactionScope)] attribute, CSLA framework was generating exception, at last statement of SimpleDataPortal, 'return Activator.CreateInstance(businessType, true);' generating Unable to communicate with DTC error. My understanding was transaction only starts in Dataportal_Delete method, where it 'cn.Open();' opens the connection with SqlServer, and having DTC unavailable occures when one connection already opened, and if object tries to open 2nd connection . Any suggesion, why object is generationg exception.<br><br>After removing [Transactional(TransactionalTypes.TransactionScope)] attribute, connection did opened, it object got deleted.<br><br>Thanks.<br>acheema.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>acheema replied on Thursday, July 10, 2008</h2>Here is further detail about the exception aspx page is generating:<br><br>[COMException (0x8004d01b): The Transaction Manager is not available. (Exception from HRESULT: 0x8004D01B)]
+   System.Transactions.Oletx.IDtcProxyShimFactory.ConnectToProxy(String nodeName, Guid resourceManagerIdentifier, IntPtr managedIdentifier, Boolean&amp; nodeNameMatches, UInt32&amp; whereaboutsSize, CoTaskMemHandle&amp; whereaboutsBuffer, IResourceManagerShim&amp; resourceManagerShim) +0
+   System.Transactions.Oletx.DtcTransactionManager.Initialize() +170
+
+[TransactionManagerCommunicationException: Communication with the underlying transaction manager has failed.]
+   System.Transactions.Oletx.OletxTransactionManager.ProxyException(COMException comException) +183368
+   System.Transactions.Oletx.DtcTransactionManager.Initialize() +420
+   System.Transactions.Oletx.DtcTransactionManager.get_ProxyShimFactory() +63
+   System.Transactions.TransactionInterop.GetOletxTransactionFromTransmitterPropigationToken(Byte[] propagationToken) +180
+   System.Transactions.TransactionStatePSPEOperation.PSPEPromote(InternalTransaction tx) +78
+   System.Transactions.TransactionStateDelegatedBase.EnterState(InternalTransaction tx) +177
+   System.Transactions.EnlistableStates.Promote(InternalTransaction tx) +15
+   System.Transactions.Transaction.Promote() +61
+   System.Transactions.TransactionInterop.ConvertToOletxTransaction(Transaction transaction) +46
+   System.Transactions.TransactionInterop.GetExportCookie(Transaction transaction, Byte[] whereabouts) +193
+   System.Data.SqlClient.SqlInternalConnection.GetTransactionCookie(Transaction transaction, Byte[] whereAbouts) +35
+   System.Data.SqlClient.SqlInternalConnection.EnlistNonNull(Transaction tx) +450
+   System.Data.SqlClient.SqlInternalConnection.Enlist(Transaction tx) +58
+   System.Data.SqlClient.SqlInternalConnectionTds.Activate(Transaction transaction) +47
+   System.Data.ProviderBase.DbConnectionInternal.ActivateConnection(Transaction transaction) +33
+   System.Data.ProviderBase.DbConnectionPool.GetConnection(DbConnection owningObject) +1318
+   System.Data.ProviderBase.DbConnectionFactory.GetConnection(DbConnection owningConnection) +100
+   System.Data.ProviderBase.DbConnectionClosed.OpenConnection(DbConnection outerConnection, DbConnectionFactory connectionFactory) +116
+   System.Data.SqlClient.SqlConnection.Open() +154
+   enRoute.BDM.Lib.Consignee.DataPortal_Delete(Criteria criteria) in D:\Projects\enRouteDEV\enRouteV3CTP\enRoute.BDM.Lib\Consignee.cs:771
+
+[CallMethodException: DataPortal_Delete method call failed]
+   Csla.MethodCaller.CallMethod(Object obj, MethodInfo info, Object[] parameters) in D:\Projects\CSLA\CSLA2.1\csla20cs-2.1.4-070223\csla20cs\Csla\DataPortal\MethodCaller.cs:118
+   Csla.MethodCaller.CallMethod(Object obj, String method, Object[] parameters) in D:\Projects\CSLA\CSLA2.1\csla20cs-2.1.4-070223\csla20cs\Csla\DataPortal\MethodCaller.cs:99
+   Csla.Server.SimpleDataPortal.Delete(Object criteria, DataPortalContext context) in D:\Projects\CSLA\CSLA2.1\csla20cs-2.1.4-070223\csla20cs\Csla\DataPortal\Server\SimpleDataPortal.cs:261
+
+[DataPortalException: DataPortal.Delete failed (System.Transactions.TransactionManagerCommunicationException: Communication with the underlying transaction manager has failed. ---&gt; System.Runtime.InteropServices.COMException (0x8004D01B): The Transaction Manager is not available. (Exception from HRESULT: 0x8004D01B)
+   at System.Transactions.Oletx.IDtcProxyShimFactory.ConnectToProxy(String nodeName, Guid resourceManagerIdentifier, IntPtr managedIdentifier, Boolean&amp; nodeNameMatches, UInt32&amp; whereaboutsSize, CoTaskMemHandle&amp; whereaboutsBuffer, IResourceManagerShim&amp; resourceManagerShim)
+   at System.Transactions.Oletx.DtcTransactionManager.Initialize()
+   --- End of inner exception stack trace ---
+   at System.Transactions.Oletx.OletxTransactionManager.ProxyException(COMException comException)
+   at System.Transactions.Oletx.DtcTransactionManager.Initialize()
+   at System.Transactions.Oletx.DtcTransactionManager.get_ProxyShimFactory()
+   at System.Transactions.TransactionInterop.GetOletxTransactionFromTransmitterPropigationToken(Byte[] propagationToken)
+   at System.Transactions.TransactionStatePSPEOperation.PSPEPromote(InternalTransaction tx)
+   at System.Transactions.TransactionStateDelegatedBase.EnterState(InternalTransaction tx)
+   at System.Transactions.EnlistableStates.Promote(InternalTransaction tx)
+   at System.Transactions.Transaction.Promote()
+   at System.Transactions.TransactionInterop.ConvertToOletxTransaction(Transaction transaction)
+   at System.Transactions.TransactionInterop.GetExportCookie(Transaction transaction, Byte[] whereabouts)
+   at System.Data.SqlClient.SqlInternalConnection.GetTransactionCookie(Transaction transaction, Byte[] whereAbouts)
+   at System.Data.SqlClient.SqlInternalConnection.EnlistNonNull(Transaction tx)
+   at System.Data.SqlClient.SqlInternalConnection.Enlist(Transaction tx)
+   at System.Data.SqlClient.SqlInternalConnectionTds.Activate(Transaction transaction)
+   at System.Data.ProviderBase.DbConnectionInternal.ActivateConnection(Transaction transaction)
+   at System.Data.ProviderBase.DbConnectionPool.GetConnection(DbConnection owningObject)
+   at System.Data.ProviderBase.DbConnectionFactory.GetConnection(DbConnection owningConnection)
+   at System.Data.ProviderBase.DbConnectionClosed.OpenConnection(DbConnection outerConnection, DbConnectionFactory connectionFactory)
+   at System.Data.SqlClient.SqlConnection.Open()
+   at enRoute.BDM.Lib.Consignee.DataPortal_Delete(Criteria criteria) in D:\Projects\enRouteDEV\enRouteV3CTP\enRoute.BDM.Lib\Consignee.cs:line 771)]
+   Csla.DataPortal.Delete(Object criteria) in D:\Projects\CSLA\CSLA2.1\csla20cs-2.1.4-070223\csla20cs\Csla\DataPortal\Client\DataPortal.cs:371
+   enRoute.BDM.Lib.Consignee.DeleteConsignee(String id) in D:\Projects\enRouteDEV\enRouteV3CTP\enRoute.BDM.Lib\Consignee.cs:504
+   OMM_ZSXLSDataLoad.Page_Load(Object sender, EventArgs e) in d:\Projects\enRouteDEV\enRouteV3CTP\www\enRoute.RoutingV1\ODLR\ZoneSetXLSDataLoad.aspx.cs:106
+   System.Web.Util.CalliHelper.EventArgFunctionCaller(IntPtr fp, Object o, Object t, EventArgs e) +14
+   System.Web.Util.CalliEventHandlerDelegateProxy.Callback(Object sender, EventArgs e) +35
+   System.Web.UI.Control.OnLoad(EventArgs e) +99
+   System.Web.UI.Control.LoadRecursive() +50
+   System.Web.UI.Page.ProcessRequestMain(Boolean includeStagesBeforeAsyncPoint, Boolean includeStagesAfterAsyncPoint) +627
+<br><br>Follwoing is my code snippets:<br>&nbsp;&nbsp;&nbsp; public static void DeleteConsignee(string id)<br>&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (!CanDeleteObject())<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; throw new System.Security.SecurityException("User not authorized to remove a Consignee");<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; DataPortal.Delete(new Criteria(id)); &lt;=== Line 504<br>&nbsp;&nbsp;&nbsp; }&nbsp;<span>&nbsp;</span>
+
+<br><br>&nbsp;&nbsp;&nbsp; [Transactional(TransactionalTypes.TransactionScope)]<br>&nbsp;&nbsp;&nbsp; private void DataPortal_Delete(Criteria criteria)<br>&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; HybridDictionary cntxt = Csla.ApplicationContext.LocalContext;<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; using (SqlConnection cn = new SqlConnection(Database.BDMConnection))<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; cn.Open();<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ExecuteDelete(cn, criteria); &lt;=== Line 771<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }//using<br><br>&nbsp;&nbsp;&nbsp; }<br><br>I have disabled DTC on my machine, cuz. my application is dealing with one Sqlserver DB, and i always open one connection as pass the context to child obects. Insert and Update DataPortals are working fine, but some how in Delete Dataportal, when trying to open connection at line 771, System.Transaction.TransactionManager finds that there is one connection already opened, and trying to open another connection using DTC, where it fails.<br><br>Anyone have any suggestions, where to look into.<br>Thanks.<br>acheema.<br><br><br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>acheema replied on Thursday, July 10, 2008</h2>Found the bug in my code, in my Consignee() constructor, there was code which was opening connection to initialize some provate variables. And when DataPortal_Delete executes, CSLA framework create Consignee object on Serverside and it create object with default constructor Consignee(), which intern opens a DB connection, and when control comes in DataPortal_Delete, another connection was opened, thats where DTC comes in .<br><br>Thanks.<br>acheema.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Thursday, July 10, 2008</h2>You should see if you can backport ConnectionManager in Csla 3.5 to whatever version you're using.&nbsp; That can help you ensure that you're always using just one connection.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, July 10, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Yes, it should back-port pretty easily to at least 2.1 or so. It
+relies on Csla.ApplicationContext.LocalContext and so would be harder to make
+work for anything before 2.1.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> ajj3085
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Thursday, July 10, 2008 1:18 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] Transactions in CSLA<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>You should see if you can backport ConnectionManager in Csla
+3.5 to whatever version you're using.&nbsp; That can help you ensure that
+you're always using just one connection.<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

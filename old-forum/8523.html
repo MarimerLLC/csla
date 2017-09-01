@@ -1,0 +1,17 @@
+<html><header><title>Is Silverlight mature? Check CslaLight samples</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Is Silverlight mature? Check CslaLight samples</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/8523.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>tiago posted on Saturday, February 13, 2010</h2><p>I&#39;m not the kind of guy that rides the newest techonology wave just because it&#39;s the newest. I prefer to step on solid ground. Interestingly enough, many of my coworkers (almost all in fact) think the opposite: &quot;You are always looking for new stuff. Why should we change the way we do things? Just because this is a new way? If tomorrow there is an even newer way to do things, we should redo everything once over and over? No way! Show me something that is working.&quot;</p>
+<p>&quot;If Silverlight is the future. Let&#39;s give it a try. Then I can show them something that is working and convince them to change&quot; I said to myself.</p>
+<p>So using CSLA.NET and Silverlight was the goal. I never used Silverlight before. My projects are all WinForms mostly because of the superior user experience. And faster design time. And easier debugging. And... you name it.</p>
+<p>I checked out svn://svn.lhotka.net/csla/core/trunk/Samples/CslaLight and tried build some samples. I gave up after the first 2 or 3 samples. All had build problems: missing references, stuff that moved to other namespaces, etc. I was never sure if I was using the right DLL or the wrong Silverlight version or ... </p>
+<p>The samples should build on Silverlight 3. There is a Silverlight 3 SDk and a Silverlight 3 toolkit. But some samples use stuff that is on the Silverlight 2 toolkit. Confusing enough. Should I also use the Silverlight 2 SDK? Or do I need some stuff from Silverlight 1 SDK?</p>
+<p>I found out that this is a common problem with Silverlight. It&#39;s not stable and developers aren&#39;t available to port applications to the latest Silverlight version, not until Microsoft stabilizes the project and makes it &quot;a technology&quot;.</p>
+<p>There are 15 C# samples. Please tell me if you know of some samples that only need updated Silverlight 3 stuff:</p>
+<ul>
+<li>Silverlight 3 - v.3.0.50106.0</li>
+<li>Silverlight 3 SDK - v.9.0.40818.0</li>
+<li>Silverlight 3 Toolkit&nbsp; - v.November 2009</li>
+<li>Silverlight 3 Tools for Visual Studio 2008 SP1 - v.30730.126</li>
+</ul>
+<p>Thanks.</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Monday, February 15, 2010</h2><p>Your problem is that you grabbed /core/trunk - which is the rapidly changing 4.0 version of CSLA .NET that targets SL4 (or will when we&#39;re done).</p>
+<p>If you want something reasonably stable, and that targets SL3, get the 3.8.2 samples or pull from the 3.8.x branch in svn.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tiago replied on Wednesday, February 17, 2010</h2><p>Thanks Rocky.</p>
+<p>I fectched the suggested sources, give them a try and report back.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

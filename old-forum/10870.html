@@ -1,0 +1,17 @@
+<html><header><title>DataPortal_Create and CommandBase Object</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>DataPortal_Create and CommandBase Object</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10870.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>xenoputtss posted on Monday, November 14, 2011</h2><p>We have run into a strange issue that (of course) I don&#39;t understand.</p>
+<p>First some basic info</p>
+<p>we are using CSLA 3.8, WCF, and Impersonation (Lets call this App1). We also have another app that is WinForms (using windows auth), and using a WCF Dataportal (this App2).</p>
+<p>&nbsp;</p>
+<p>we have this code</p>
+<p>
+<p><b><span>		</span>protected override void DataPortal_Create(){</b></p>
+<p><b><span></span>&nbsp; &nbsp;CreateId = BusinessLayer.Command.GetUnityUserIdCommand.GetCurrentlyLoggedInUnityUserId();</b></p>
+<p><b><span>		</span>}</b></p>
+<p>Now when App2 runs, this all works correctly and a call is made to our DB with the right account.</p>
+<div>But when App1 runs, this will fail because the account that it uses is the account of the IIS Worker Process.</div>
+<div>Now, If I were to move that line into the DataPortal_Insert(), it will work. &nbsp;It seems as though when using the DataPortal_Create and a CommandBase Object that CSLA forgets to impersonate the user.</div>
+<div></div>
+<div>What am i doing wrong? &nbsp;Aside from this issue everything else is working great.</div>
+<div></div>
+</p>
+<p>&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

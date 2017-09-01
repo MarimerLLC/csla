@@ -1,0 +1,99 @@
+<html><header><title>Errors running the cslatests with NUnit</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Errors running the cslatests with NUnit</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6730.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>jpose posted on Thursday, April 02, 2009</h2><P class=MsoNormal>Is anybody else having problems sucussfully running the NUint tests in cslatest.sln</P>
+<P class=MsoNormal>I was using nunit 2.4.8 but switched to 2.4.4 because the readme stated a dependency on 2.4.4</P>
+<P class=MsoNormal>&nbsp;</P>
+<P class=MsoNormal>I am running on Vista SP1. It was suggested that I try running NUnit as Administrator&nbsp;but that seems to have no effect. </P>
+<P class=MsoNormal><STRONG><U></U></STRONG>&nbsp;</P>
+<P class=MsoNormal><STRONG><U></U></STRONG>&nbsp;</P>
+<P class=MsoNormal><STRONG>Cslatest.sln&nbsp;unit test failures</STRONG></P>
+<P class=MsoNormal>The results&nbsp;seem to be inconsistant and I am wondering if the isssue is Csla, NUnit or the tests themselves. I am most concerned about Serialization Test since we are not using ObjectFactory yet.</P>
+<P class=MsoNormal><B><o:p></o:p></B>&nbsp;</P>
+<P class=MsoNormal><STRONG><U>Serialization Tests</U></STRONG></P>
+<P class=MsoNormal><FONT color=#0000ff>When I run the complete test suite I get CommandOverDataPortal&nbsp; test to fail. When I run just the SerializationTests the first time the test succeed but if I run Serialization Tests a second time&nbsp;</FONT></P>
+<P class=MsoNormal><FONT color=#0000ff>TestIndexAfterSerialization&nbsp;fails with OutOfMemoryException.</FONT> </P>
+<P class=MsoNormal>============</P>
+<P class=MsoNormal>Csla.Test.Serialization.SerializationTests.CommandOverDataPortal :&nbsp;&nbsp; Expected string length 23 but was 16. Strings differ at index 16.<BR>&nbsp; Expected: "test data server server"<BR>&nbsp; But was:&nbsp; "test data server"<BR>&nbsp; ---------------------------^</P>
+<P class=MsoNormal>============</P>
+<P class=MsoNormal>Csla.Test.Serialization.SerializationTests.TestIndexAfterSerialization : System.OutOfMemoryException : Exception of type 'System.OutOfMemoryException' was thrown.</P>
+<P class=MsoNormal>============<BR></P>
+<P class=MsoNormal>&nbsp;</P>
+<P class=MsoNormal><STRONG><U>Object factory&nbsp;Failed Tests</U></STRONG></P>
+<P class=MsoNormal><o:p><FONT color=#0000ff>When running the whole test suite I get the following 2 errors</FONT></o:p></P><o:p><o:p>
+<P class=MsoNormal>============</P>
+<P class=MsoNormal>Csla.Test.ObjectFactory.ObjectFactoryTests.Create :<SPAN>&nbsp;&nbsp; </SPAN>Location should match</P>
+<P class=MsoNormal><SPAN>&nbsp; </SPAN>Expected: Server</P>
+<P class=MsoNormal><SPAN><FONT face="Times New Roman"><SPAN>&nbsp; </SPAN>But was:<SPAN>&nbsp; </SPAN>Client</FONT></SPAN></o:p></o:p></P>
+<P class=MsoNormal><o:p><o:p>============</o:p></o:p></P>
+<P class=MsoNormal><o:p><o:p></o:p></o:p>&nbsp;</P>
+<P class=MsoNormal>Csla.Test.ObjectFactory.ObjectFactoryTests.CreateMissing : Csla.DataPortalException : DataPortal.Create failed ()</P>
+<P class=MsoNormal><o:p><o:p></o:p></o:p>&nbsp;<SPAN><FONT face="Times New Roman">----&gt; System.NotImplementedException : <SPAN>Create not implemented</SPAN></FONT></SPAN></P>
+<P class=MsoNormal><o:p><o:p>============</o:p></o:p></P>
+<P class=MsoNormal><o:p><o:p></o:p></o:p>&nbsp;</P>
+<P class=MsoNormal><o:p><o:p><FONT color=#0000ff>When running just&nbsp;ObjectFactory tests I get the following 2 errors</FONT></o:p></o:p></P>
+<P class=MsoNormal><o:p><o:p>============</o:p></o:p></P>
+<P class=MsoNormal><o:p><o:p>Csla.Test.ObjectFactory.ObjectFactoryTests.UpdateEnterpriseServices :&nbsp;&nbsp; Transactional type should match<BR>&nbsp; Expected: EnterpriseServices<BR>&nbsp; But was:&nbsp; Manual</o:p></o:p></P>
+<P class=MsoNormal><o:p><o:p>============</o:p></o:p></P>
+<P class=MsoNormal><o:p><FONT face=Calibri><o:p><FONT face="Times New Roman">Csla.Test.ObjectFactory.ObjectFactoryTests.UpdateEnterpriseServices :&nbsp;&nbsp; Transactional type should match<BR>&nbsp; Expected: EnterpriseServices<BR>&nbsp; But was:&nbsp; Manual<BR></FONT><BR></o:p></FONT></o:p></P>
+<P class=MsoNormal><o:p><FONT face=Calibri><o:p><BR>&nbsp;</P></o:p></FONT></o:p>
+<P class=MsoNormal>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Saturday, April 04, 2009</h2><P>I'm pretty sure that some of the tests are accidentally interdependent. In other words, failure of a test may cause subsequent tests to have incorrect results. For example, in the case of the transactional test I think the ES fail causes a TS fail.</P>
+<P>Not that CSLA fails&nbsp;- the test fails - which is a very different thing.</P>
+<P>These tests have been written by people of varying skill over a period of several years. And let's face it, very few of them are "unit" tests. Most of them are integration tests. The end result is that the tests are relatively spotty in some areas, really good in some areas and non-existent in some areas.</P>
+<P>If I took a few months off from working on the framework (and from the writing/speaking that funds this whole thing), I'm sure I could rework the tests to be far better. But honestly, that's not going to happen...</P>
+<P>On the other hand, if you dig into these issues and find actual CSLA problems, I think everyone here will agree that I tend to address things pretty rapidly. And if you can point to a relatively quick fix to a test, I'm happy to fix tests as well.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Vaxman2 replied on Monday, May 11, 2009</h2>I have the same issues running it on XP with admin rights also..</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, May 12, 2009</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I looked into this a little &#8211; and there was at least one
+bug in a test that I fixed for 3.6.3.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I am strongly considering dropping the ES tests though. They complicate
+matters with UAC, and I suspect very few people use ES. On top of which, I haven&#8217;t
+touched the ES code for several years, and don&#8217;t anticipate touching it
+any time in the near future.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Vaxman2
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Monday, May 11, 2009 9:56 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] Errors running the cslatests with NUnit<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>I have the same issues running it on XP with admin rights
+also..<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Vaxman2 replied on Tuesday, May 12, 2009</h2><P>I apologize for not seeing your first reply to this thread. :(</P>
+<P>Thanks for the reply!</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,173 @@
+<html><header><title>Business Rules Applying To Multiple Properties</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Business Rules Applying To Multiple Properties</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11027.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Chris62 posted on Wednesday, December 28, 2011</h2><p>I have a biz object where I need to check that Work has been assigned to either a person(UserId) or a group of people(Group), <i>but not both</i>. &nbsp;I&#39;m having problems when I try to assign a user(using test cases to test my work). &nbsp;Below is my code(some parts snipped out for clarity).</p>
+<p>&nbsp;</p>
+<p>
+<p style="padding-left:30px;">[Serializable]</p>
+<p style="padding-left:30px;">public partial class Work : BusinessBase&lt;Work&gt;</p>
+<p style="padding-left:30px;">{</p>
+<p style="padding-left:30px;"><span>		</span>private static readonly PropertyInfo&lt;System.Int32?&gt; UserIdAssignToProperty = RegisterProperty&lt;System.Int32?&gt;(p =&gt; p.UserIdAssignTo, &quot;User Id Assign To&quot;);</p>
+<p style="padding-left:30px;">&nbsp; &nbsp; &nbsp; &nbsp; public System.Int32? UserIdAssignTo</p>
+<p style="padding-left:30px;">&nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p style="padding-left:30px;">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; get { return GetProperty(UserIdAssignToProperty); }</p>
+<p style="padding-left:30px;">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; set { SetProperty(UserIdAssignToProperty, value); } &nbsp;// error is happening here</p>
+<p style="padding-left:30px;">&nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p style="padding-left:30px;"><span>		</span></p>
+<p style="padding-left:30px;"><span>		</span>private static readonly PropertyInfo&lt;Group&gt; GroupProperty = RegisterProperty&lt;Group&gt;(p =&gt; p.GroupAssignTo, &quot;Group Assign To&quot;, Csla.RelationshipTypes.LazyLoad);</p>
+<p style="padding-left:30px;">&nbsp; &nbsp; &nbsp; &nbsp; public Group GroupAssignTo</p>
+<p style="padding-left:30px;">&nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p style="padding-left:30px;">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; get</p>
+<p style="padding-left:30px;">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p style="padding-left:30px;">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; bool cancel = false;</p>
+<p style="padding-left:30px;">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; OnChildLoading(GroupProperty, ref cancel);</p>
+<p style="padding-left:30px;">&nbsp;</p>
+<p style="padding-left:30px;">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; if (!cancel)</p>
+<p style="padding-left:30px;">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p style="padding-left:30px;">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; if(!FieldManager.FieldExists(GroupProperty))</p>
+<p style="padding-left:30px;">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p style="padding-left:30px;">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; LoadProperty(GroupProperty, Group.GetByWorkChild(this));</p>
+<p style="padding-left:30px;">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p style="padding-left:30px;">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p style="padding-left:30px;">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; return GetProperty(GroupProperty);&nbsp;</p>
+<p style="padding-left:30px;">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p style="padding-left:30px;">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; protected set { SetProperty(GroupProperty, value); }</p>
+<p style="padding-left:30px;">&nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p style="padding-left:30px;">&nbsp;</p>
+<p style="padding-left:30px;"><span>		</span>protected override void AddBusinessRules()</p>
+<p style="padding-left:30px;"><span>		</span>{</p>
+<p style="padding-left:30px;"><span>			</span>base.AddBusinessRules();</p>
+<p style="padding-left:30px;"><span>			</span></p>
+<p style="padding-left:30px;"><span>			</span>BusinessRules.AddRule(new AssignWork(UserIdAssignToProperty, GroupProperty));</p>
+<p style="padding-left:30px;"><span>			</span>BusinessRules.AddRule(new AssignWork(GroupProperty, UserIdAssignToProperty));</p>
+<p style="padding-left:30px;"><span>			</span></p>
+<p style="padding-left:30px;"><span>			</span>BusinessRules.AddRule(new AnotherBizRule(UserIdAssignToProperty));</p>
+<p style="padding-left:30px;"><span>		</span>}</p>
+<p style="padding-left:30px;"><span>		</span>// parent factory methods</p>
+<p style="padding-left:30px;"><span>		</span>// parent data portal</p>
+<p style="padding-left:30px;"><span>		</span></p>
+<p style="padding-left:30px;">}</p>
+<p style="padding-left:30px;">&nbsp;</p>
+<p style="padding-left:30px;">[Serializable]</p>
+<p style="padding-left:30px;">public partial class Group : BusinessBase&lt;Group&gt;</p>
+<p style="padding-left:30px;">{</p>
+<p style="padding-left:30px;"><span>		</span>private static readonly PropertyInfo&lt;System.Int32?&gt; IdProperty = RegisterProperty&lt;System.Int32?&gt;(p =&gt; p.Id, &quot;Group Id&quot;);</p>
+<p style="padding-left:30px;">&nbsp; &nbsp; &nbsp; &nbsp; public System.Int32? Id</p>
+<p style="padding-left:30px;">&nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p style="padding-left:30px;">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; get { return GetProperty(IdProperty); }</p>
+<p style="padding-left:30px;">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; set { SetProperty(IdProperty, value); }</p>
+<p style="padding-left:30px;">&nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p style="padding-left:30px;"><span>		</span></p>
+<p style="padding-left:30px;"><span>		</span>private static readonly PropertyInfo&lt;System.String&gt; NameProperty = RegisterProperty&lt;System.String&gt;(p =&gt; p.Name, &quot;Group Name&quot;);</p>
+<p style="padding-left:30px;">&nbsp; &nbsp; &nbsp; &nbsp; public System.String Name</p>
+<p style="padding-left:30px;">&nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p style="padding-left:30px;">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; get { return GetProperty(NameProperty); }</p>
+<p style="padding-left:30px;">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; set { SetProperty(NameProperty, value); }</p>
+<p style="padding-left:30px;">&nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p style="padding-left:30px;"><span>		</span></p>
+<p style="padding-left:30px;"><span>		</span>// child factory methods</p>
+<p style="padding-left:30px;"><span>		</span>// child data portal methods</p>
+<p style="padding-left:30px;">}</p>
+<p style="padding-left:30px;">&nbsp;</p>
+<p style="padding-left:30px;">internal class AssignWork : BusinessRule</p>
+<p style="padding-left:30px;">{</p>
+<p style="padding-left:30px;"><span>	</span>public AssignWork(IPropertyInfo PrimaryProperty, IPropertyInfo SecondaryProperty)</p>
+<p style="padding-left:30px;">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; : base(PrimaryProperty)</p>
+<p style="padding-left:30px;"><span>	</span>{</p>
+<p style="padding-left:30px;"><span>		</span>if (InputProperties == null)</p>
+<p style="padding-left:30px;"><span>		</span>{</p>
+<p style="padding-left:30px;"><span>			</span>InputProperties = new List&lt;IPropertyInfo&gt;();</p>
+<p style="padding-left:30px;"><span>		</span>}</p>
+<p style="padding-left:30px;"><span>		</span>InputProperties.Add(PrimaryProperty);</p>
+<p style="padding-left:30px;"><span>		</span>InputProperties.Add(SecondaryProperty);</p>
+<p style="padding-left:30px;"><span>	</span>}</p>
+<p style="padding-left:30px;"><span>	</span></p>
+<p style="padding-left:30px;"><span>	</span>protected override void Execute(Csla.Rules.RuleContext context)</p>
+<p style="padding-left:30px;"><span>	</span>{</p>
+<p style="padding-left:30px;"><span>		</span>base.Execute(context);</p>
+<p style="padding-left:30px;">&nbsp;</p>
+<p style="padding-left:30px;"><span>		</span>IPropertyInfo groupProp = InputProperties.Find(prop =&gt; prop.FriendlyName.Equals(&quot;Group Assign To&quot;));</p>
+<p style="padding-left:30px;"><span>		</span>IPropertyInfo userProp = InputProperties.Find(prop =&gt; prop.FriendlyName.Equals(&quot;User Id Assign To&quot;));</p>
+<p style="padding-left:30px;">&nbsp;</p>
+<p style="padding-left:30px;"><span>		</span>var userId = (dynamic)context.InputPropertyValues[userProp];</p>
+<p style="padding-left:30px;"><span>		</span>var group = (dynamic)context.InputPropertyValues[groupProp];</p>
+<p style="padding-left:30px;">&nbsp;</p>
+<p style="padding-left:30px;"><span>		</span>if (userId != null &amp;&amp; (group != null &amp;&amp; group.Id == null))</p>
+<p style="padding-left:30px;"><span>		</span>{</p>
+<p style="padding-left:30px;"><span>			</span>context.AddErrorResult(String.Format(&quot;Either assign to {0} or {1}, not both&quot;, userProp.FriendlyName, groupProp.FriendlyName));</p>
+<p style="padding-left:30px;"><span>		</span>}</p>
+<p style="padding-left:30px;">&nbsp;</p>
+<p style="padding-left:30px;"><span>	</span>}</p>
+<p style="padding-left:30px;">}</p>
+<p style="padding-left:30px;">&nbsp;</p>
+<p style="padding-left:30px;">internal class AnotherBizRule : BusinessRule</p>
+<p style="padding-left:30px;">{</p>
+<p style="padding-left:30px;"><span>	</span>public AnotherBizRule(IPropertyInfo PrimaryProperty, IPropertyInfo SecondaryProp)</p>
+<p style="padding-left:30px;">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; : base(PrimaryProperty)&nbsp;</p>
+<p style="padding-left:30px;"><span>	</span>{</p>
+<p style="padding-left:30px;"><span>		</span>if (InputProperties == null)</p>
+<p style="padding-left:30px;"><span>		</span>{</p>
+<p style="padding-left:30px;"><span>			</span>InputProperties = new List&lt;IPropertyInfo&gt;();</p>
+<p style="padding-left:30px;"><span>		</span>}</p>
+<p style="padding-left:30px;"><span>		</span>InputProperties.Add(PrimaryProperty);</p>
+<p style="padding-left:30px;"><span>	</span>}</p>
+<p style="padding-left:30px;"><span>			</span></p>
+<p style="padding-left:30px;"><span>	</span>protected override void Execute(Csla.Rules.RuleContext context)</p>
+<p style="padding-left:30px;"><span>	</span>{</p>
+<p style="padding-left:30px;"><span>		</span>base.Execute(context);</p>
+<p style="padding-left:30px;">&nbsp;</p>
+<p style="padding-left:30px;"><span>		</span>// do some biz rule on the UserId property, it works in this rule</p>
+<p style="padding-left:30px;">&nbsp;</p>
+<p style="padding-left:30px;"><span>	</span>}</p>
+<p style="padding-left:30px;">}</p>
+<p style="padding-left:30px;">&nbsp;</p>
+<p style="padding-left:30px;">// Unit Test &nbsp;Case (mbUnit)</p>
+<p style="padding-left:30px;">[Test]</p>
+<p style="padding-left:30px;">public void Test1()</p>
+<p style="padding-left:30px;">{</p>
+<p style="padding-left:30px;"><span>	</span>Work myWork = Work.NewWork();</p>
+<p style="padding-left:30px;"><span>	</span>myWork.UserIdAssignTo = 123; // errors here</p>
+<p style="padding-left:30px;"><span>	</span>myWork.Group = SomeGroup;</p>
+<p style="padding-left:30px;"><span>	</span></p>
+<p style="padding-left:30px;"><span>	</span>// check BrokenRulesCollection to see if I caught the broken rule(s)</p>
+<p style="padding-left:30px;">}</p>
+<p style="padding-left:30px;">&nbsp;</p>
+<p style="padding-left:30px;">[Test]</p>
+<p style="padding-left:30px;">public void Test2()</p>
+<p style="padding-left:30px;">{</p>
+<p style="padding-left:30px;"><span>	</span>Work myWork = Work.NewWork();</p>
+<p style="padding-left:30px;"><span>	</span></p>
+<p style="padding-left:30px;"><span>	</span>myWork.Group = SomeGroup;</p>
+<p style="padding-left:30px;"><span>	</span>myWork.UserIdAssignTo = 123;&nbsp;</p>
+<p style="padding-left:30px;"><span>	</span></p>
+<p style="padding-left:30px;"><span>	</span>// check BrokenRulesCollection to see if I caught the broken rule(s)</p>
+<p style="padding-left:30px;">}</p>
+<p>Any help/suggestions would be greatly appreciated.</p>
+</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Chris62 replied on Wednesday, December 28, 2011</h2><p>Forgot to include the error I was getting:</p>
+<p>Error from Vis. Studio:</p>
+<p>Property load or set failed for property UserIdAssignTo (Property get not allowed)</p>
+<p>Inner Exception:&nbsp;{&quot;Property get not allowed&quot;}</p>
+<p>Stack Trace:</p>
+<p>
+<p>&nbsp; &nbsp;at Csla.Core.BusinessBase.ReadProperty(IPropertyInfo propertyInfo)</p>
+<p>&nbsp; &nbsp;at Csla.Core.BusinessBase.Csla.Core.IManageProperties.ReadProperty(IPropertyInfo propertyInfo)</p>
+<p>&nbsp; &nbsp;at Csla.Rules.BusinessRules.RunRules(IEnumerable`1 rules)</p>
+<p>&nbsp; &nbsp;at Csla.Rules.BusinessRules.CheckRulesForProperty(IPropertyInfo property, Boolean cascade)</p>
+<p>&nbsp; &nbsp;at Csla.Rules.BusinessRules.CheckRules(IPropertyInfo property)</p>
+<p>&nbsp; &nbsp;at Csla.Core.BusinessBase.PropertyHasChanged(IPropertyInfo property)</p>
+<p>&nbsp; &nbsp;at Csla.Core.BusinessBase.LoadPropertyValue[P](PropertyInfo`1 propertyInfo, P oldValue, P newValue, Boolean markDirty)</p>
+<p>&nbsp; &nbsp;at Csla.Core.BusinessBase.SetProperty[P](PropertyInfo`1 propertyInfo, P newValue, NoAccessBehavior noAccess)</p>
+</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Thursday, December 29, 2011</h2><p>The error is connected with Lazy loading of fields. </p>
+<ol>
+<li>A rule should NOT trigger lazy loading when a field has not been initialized yet.</li>
+<li>BusinessObjects will throw an exception if your code (here rule) tries to read the field value before it has been initalized.</li>
+</ol>
+<p>When your rule is using a lazy loaded field you must create the rule as an inner rule inside your BO so the rule can have access to FieldDataManager and check if the value is created or not. You cannot use the InputProperties to specify the lazy field as an input to the rule. </p>
+<p><i>As a side note:</i></p>
+<p>I am curios about the relationship between <b>Work </b>and <b>Group</b>. Is it a</p>
+<ul>
+<li> Owning reference, </li>
+<li>Inter-graph reference or</li>
+<li>Using reference </li>
+</ul>
+<p>This is described in the&nbsp;<b> UsingCsla4-02-Objects</b> ebook from Rocky and have slightly different property declaration syntax.&nbsp; </p>
+<p>From what I can see from your code - I&#39;d rather have GroupId and GroupName as properties of the Work object rather than having an owning lazy loaded Group object. (and a rule that will lookup and set GroupName asyncronously when GroupId is set).</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Chris62 replied on Thursday, December 29, 2011</h2><p>Thanks for your help JonnyBee, I originally had Group as GroupId, but figured I&#39;d make &quot;Group&quot; a child object to the Parent &quot;Work&quot;. &nbsp;I went ahead and switched back to a GroupId(I really don&#39;t need the GroupName to persist to the db).</p>
+<p>&nbsp;</p>
+<p>I think I need to go back and reread the Csla4-02 Objects book, my understanding may not be where it needs to be...</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

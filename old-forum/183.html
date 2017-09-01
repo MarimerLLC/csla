@@ -1,0 +1,37 @@
+<html><header><title>Tree Structure in CSLA</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Tree Structure in CSLA</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/183.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>PitDog posted on Tuesday, May 23, 2006</h2><P>Hello all,</P>
+<P>Perhaps this is not the right place to post something like this however I have been reading this for months and decided to ask.</P>
+<P>I faced with an problem at work where I need to model a simple tree structure from a database. For instance.</P>
+<P><U>ID&nbsp;&nbsp;&nbsp;PARENT_ID&nbsp;&nbsp;&nbsp;NAME</U></P>
+<P>1&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; NULL&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Manager</P>
+<P>2&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 1&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Employee</P>
+<P>3&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Intern</P>
+<P>4&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NULL&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;President</P>
+<P>5&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Gov</P>
+<P>6&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;5&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Mayor</P>
+<P>I am just looking at some general advise as to how one may model this. I would like to have the whole object graph created by the Root objects. Meaning if I go after a Parent I should get the entire object graph. </P>
+<P>Any insight would be great. I will keep searching in the mean time.</P>
+<P>&nbsp;</P>
+<P>PitDog</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, May 24, 2006</h2><P>Your object model should reflect your business (user's) use cases, not the data structure.</P>
+<P>Is there really a case where the user needs to retrieve all the data in these objects all at once for the purpose of editing? Typically that's not a valid user scenario.</P>
+<P>Instead, determine the user scenarios (use cases) that need to be implemented and design objects to match those scenarios. I discuss this in Chapter 6.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>PitDog replied on Wednesday, May 24, 2006</h2><P>Hey Rocky,</P>
+<P>Thanks for the reply! One particular use case that I am speaking of is how the menu should work. </P>
+<P>Imagine that I have a site selling cars. I want to create a menu that will allow for the user to navigate the cars that my site sells. Granted these are going to be read only objects I will still need to get a object graph with the data needed to build a menu below.</P>
+<P>Ford</P>
+<P>&nbsp;&nbsp;&nbsp;-Vans</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-Van 1</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-Van 2</P>
+<P>&nbsp;&nbsp;&nbsp;-Cars</P>
+<P>&nbsp;&nbsp;&nbsp;-suv</P>
+<P>VW</P>
+<P>&nbsp;&nbsp;&nbsp;-Cars</P>
+<P>&nbsp;&nbsp;-&nbsp;Vans</P>
+<P>&nbsp;&nbsp;&nbsp;-Suv</P>
+<P>&nbsp;</P>
+<P>PitDog</P>
+<P>&nbsp;</P>
+<P>P.S. I am very excited about the 2.0 version. I have used your 1.5 framework for 4 projects and it has proven well!!</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>skagen00 replied on Wednesday, May 24, 2006</h2><P>I replaced NameValueListBase with a similar structure that&nbsp;contains list of nodes (not just name &amp; value) that each node can contain links to other nodes in the list. After implementing IHierarchicalDataSource, I can bind my list to a DropDownList (with the text member being "Extended Display" to either do "-Cars" "--Honda" or "Vehicles/Cars/Honda" "Vehicle/Cars" or a TreeView control (because of IHierarchicalDataSource). </P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>vbexpert replied on Wednesday, May 24, 2006</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>skagen00:</strong></div><div> 
+<P>I replaced NameValueListBase with a similar structure that&nbsp;contains list of nodes (not just name &amp; value) that each node can contain links to other nodes in the list. After implementing IHierarchicalDataSource, I can bind my list to a DropDownList (with the text member being "Extended Display" to either do "-Cars" "--Honda" or "Vehicles/Cars/Honda" "Vehicle/Cars" or a TreeView control (because of IHierarchicalDataSource). </P>
+<P></div></BLOCKQUOTE></P>
+<P>Do you mind posting some code here? Thanks</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>CaymanIslandsCarpediem replied on Wednesday, May 24, 2006</h2><P>There was actually a question much like this discussed on the old forum just prior to the move to this new one.&nbsp; Here it is:</P>
+<P><A href="http://groups.msn.com/CSLANET/general.msnw?action=get_message&amp;mview=0&amp;ID_Message=26774&amp;LastModified=4675571662244908534">http://groups.msn.com/CSLANET/general.msnw?action=get_message&amp;mview=0&amp;ID_Message=26774&amp;LastModified=4675571662244908534</A></P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

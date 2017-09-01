@@ -1,0 +1,21 @@
+<html><header><title>Delete</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Delete</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5655.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>KJosh posted on Wednesday, October 22, 2008</h2><P>Hi,</P>
+<P>I have the classes structure like the below:</P>
+<P>Parent : BusinessBase</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp; ChildList : BusinessListBase&lt;childLits, Child&gt;</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Child : BusinessBase</P>
+<P>In the parent, included the childList as the property. The ChildList&nbsp; has the remove method which will remove the child from the childlist collection. Then from the Parent's DataPortal_DeleteSelf, how we delete the child objects which are in childlist collection based on the childId?</P>
+<P>Parent class:</P>
+<P>Private override void DataPortal_DeleteSelf()</P>
+<P>{</P>
+<P>&nbsp;&nbsp; <STRONG>Here need to do like for each child in deletedList,&nbsp; How to call the child's DeleteSelf method?</STRONG></P>
+<P>}</P>
+<P>from the UI: Parent.ChildList.Remove(child1);</P>
+<P>&nbsp;&nbsp;&nbsp;parent.Save() -&gt; This will call the Parent's DeleteSelf method. Then How to achieve the above?</P>
+<P><BR>&nbsp;&nbsp;&nbsp; </P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tetranz replied on Wednesday, October 22, 2008</h2>I think you are asking what happens when you delete the parent which means, of course, that all children must be deleted. The answer is to do it directly on the database with your stored procedure or Linq or whatever. i.e, delete the child records from the database and then the parent record. You don't need to do anything with the child objects. See the ProjectTracker example. It covers must common scenarios.<br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>KJosh replied on Wednesday, October 22, 2008</h2><P>No, I do not want to delete from the parent in the stored procedure. I want to delete the selected child items from the childlist not all? Thatswhy from the parent, I need to call the Child_Deleteself method by passing the childId like</P>
+<P>foreach(child c in deletedlist)</P>
+<P>{</P>
+<P>c.delete_self(c.Id);</P>
+<P>}</P>
+<P>I need to do the above for loop in the Parent's deleteself method. But in that method deletedlist not available? How to achieve this?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tetranz replied on Wednesday, October 22, 2008</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>KJosh:</strong></div><div><br>from the UI: Parent.ChildList.Remove(child1);
+
+<p>&nbsp;&nbsp;&nbsp;parent.Save() -&gt; This will call the Parent's DeleteSelf method. Then How to achieve the above?<br></div></BLOCKQUOTE></p><p>No, if you remove a child then parent.Save() will call the parent's DataPortal_Update, not the parent's DeleteSelf. It will only call the parent's DeleteSelf if you actually delete the parent.</p><p>Again, I suggest that you look at the ProjectTracker example. See how Project.cs calls DataPortal.UpdateChild( ... ). That will call the child's Child_Insert, Child_Update or Child_DeleteSelf as required. CSLA does all the looping and "magic" for you.<br></p><p>Project tracker doesn't show it but you can reduce the code slightly more. Instead of DataPortal.UpdateChild ( ... ) you can simply call FieldManager.UpdateChildren( ... ). That does the same thing except that it will do all child collections if you have more than one. The parameters are a parameter array so you can pass anything. Those parameters are passed to the Child_Insert, Child_Update or Child_DeleteSelf so it is very flexible. Very cool <img src="/emoticons/emotion-1.gif" alt="Smile [:)]" /><br></p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

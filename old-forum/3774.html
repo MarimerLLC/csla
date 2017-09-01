@@ -1,0 +1,146 @@
+<html><header><title>disable mult-language support</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>disable mult-language support</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3774.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>codereaver posted on Wednesday, October 24, 2007</h2>I was wondering if there was a way to turn off multi-language. I do not need all the extra dll's that are being created.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Henrik replied on Wednesday, October 24, 2007</h2><P>Just delete the&nbsp;language dll's that your application shouldn't support. .NET will automatically fall back on the default language (english) if it can't find a resource dll for the locale specified in the users regional settings.</P>
+<P>Cheers<BR>/Henrik</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>codereaver replied on Wednesday, October 24, 2007</h2>agreed but the next time you build the solution it will put all of them back in and I was wondering if there was a flag to turn this off in csla so not to have to constantly be deleting the extra dll and also the cost to build those dll's.&nbsp; Thanks,</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>david.wendelken replied on Wednesday, October 24, 2007</h2>There are a set of resource files for each language.<br>Delete the resource files.&nbsp; I'm not sure if there will be references to them in assembly.info or not.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, October 26, 2007</h2><P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>david.wendelken:</strong></div><div>There are a set of resource files for each language.<BR>Delete the resource files.&nbsp; I'm not sure if there will be references to them in assembly.info or not.<BR></div></BLOCKQUOTE></P>
+<P>There are references to them in the proj file. But if you open the project in VS and delete the resx files (all but the primary one!!!!) that will remove all the satellite assemblies that are created for each language on the next build (and all subsequent builds).</P>
+<P>The other posters are right though.&nbsp;Directly modifying the CSLA project almost certainly means you've chosen to lock into whatever version of CSLA you started with. If you are OK with being stuck there without bug fixes or enhancements that's cool - but that is the cost you pay by going down that road.</P>
+<P>In any case, including CSLA directly into a business solution is generally a bad idea. It plays havok with the Windows, Web and WPF controls in particular, and can confuse the heck out of VS. Especially the Web controls will suffer from this problem. I don't view including the Csla project in a solution with a business project as a supported scenario - there are just too many issues around it, and the easiest solution to all of them is to keep the Csla project in a separate solution.</P>
+<P>From a source control perspective, my recommendation (and what I actually do) is to put Csla.dll into your source repository. Then your business projects can reference THAT assembly. I do this with all third-party components, as it is the only way you can ensure that a given build of code in your repository is still buildable in the future.</P>
+<P>The side-effect is cool. A year from now, you can go back and check out today's version of your code (along with all third-party binaries that code relies on) and do your build.</P>
+<P>Obviously other issues, like the OS or Visual Studio changing, are harder to deal with in this manner, but the approach does solve a whole host of common build-from-history issues.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Monday, October 29, 2007</h2><P>I also add 3rd party components to source control for exactly the same reasons. It is a very good idea.</P>
+<P>Joe</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>SethSpearman replied on Monday, October 29, 2007</h2><P>What you are saying is to include CSLA in your solution using a FILE reference only?&nbsp; Don't use a PROJECT reference?&nbsp; I have not been doing that (but I will change it if it is considered best practice.)&nbsp; </P>
+<P>And I am not sure I understand the question about source control.&nbsp; Are you saying that, for example,&nbsp;your BO class sets a file reference to CSLA.dll.&nbsp; Then, on build, the CSLA.dll is copied into the BIN directory of my BO project.&nbsp; ARe you saying to add THAT copy to Source Control?</P>
+<P>Sorry for the question.&nbsp; I am still&nbsp;learning this stuff.</P>
+<P>Seth</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>SethSpearman replied on Monday, October 29, 2007</h2><P>BTW, I am using Subversion for source control.&nbsp; Can you set a file reference directly to the source control version?&nbsp; Using Subversion?</P>
+<P>Seth</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Pawz replied on Monday, October 29, 2007</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>SethSpearman:</strong></div><div><p>BTW, I am using Subversion for source control.&nbsp; Can you set a file reference directly to the source control version?&nbsp; Using Subversion?</p>
+<p>Seth</p></div></BLOCKQUOTE><br><br>I would imagine you'd put the CSLA dll in a seperate folder in your working copy, then upload your working copy whenever you commit your changes, including your 'ExtraDlls' folder with your upload. That way any changes to the DLLs would automatically be detected and committed as well, and your reference would be to the local file in your working copy, not on the SVN server.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, October 29, 2007</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Yes, exactly.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I typically have a folder structure like this:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>\Solution<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp; &nbsp;&nbsp;\Csla<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp; &nbsp;&nbsp;\UIproject<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp; &nbsp;&nbsp;\Libraryproject<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp; &nbsp;&nbsp;\www\DataportalHostproject<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>In the \Csla directory I put Csla.dll. Manually copied from
+where I built the Csla solution.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>That \Csla directory is in svn, along with everything else under
+\Solution.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Then all the other projects do a FILE reference of
+\Solution\Csla\Csla.dll.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>If I want to update Csla.dll, it is a conscious choice. I
+manually copy the new version of the DLL into the \Solution\Csla folder and
+check it into svn. All the other projects automatically pick up the new
+version, because they use a file reference from that location.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Pawz
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Monday, October 29, 2007 9:36 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] disable mult-language support<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<blockquote>
+
+<div>
+
+<p class=MsoNormal><img id="_x0000_i1025" src="/Themes/default/images/icon-quote.gif"><strong>SethSpearman:</strong><o:p></o:p></p>
+
+</div>
+
+<div>
+
+<p>BTW, I am using Subversion for source control.&nbsp; Can you set a file
+reference directly to the source control version?&nbsp; Using Subversion?<o:p></o:p></p>
+
+<p>Seth<o:p></o:p></p>
+
+</div>
+
+</blockquote>
+
+<p class=MsoNormal><br>
+<br>
+I would imagine you'd put the CSLA dll in a seperate folder in your working
+copy, then upload your working copy whenever you commit your changes, including
+your 'ExtraDlls' folder with your upload. That way any changes to the DLLs
+would automatically be detected and committed as well, and your reference would
+be to the local file in your working copy, not on the SVN server.<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>SethSpearman replied on Tuesday, October 30, 2007</h2><P>Great,</P>
+<P>That is exactly how I did it too after reading the post.&nbsp; </P>
+<P>Seth</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Cslah replied on Wednesday, October 24, 2007</h2><P>I'm wondering, have you've included the Csla project into your own, like as in the source code? If so, this is why they're building all the time.</P>
+<P>Assuming this to be the case, this is what we do:<BR>1. Compile Csla and make a copies of the Dll's.<BR>2. Place these in a \binaries\ folder in our project. We reference the debug dll's for the project and use the release dll's for the installer. For debug dll's be sure to include the pdb files so that you can step into Csla if necessary.<BR>3. For the installer you can use whatever language resource dll's you need (or none, just use Csla.dll for the English default), just include them in the package.</P>
+<P>Hope this helps, if I'm understanding correctly.<BR>Brian</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>codereaver replied on Wednesday, October 24, 2007</h2>Sorry I should have clarified what I did was start out with CSLA as a foundation and then included it into my solution and then modified some of CSLA to handle even more than it did. That is why it gets built everytime due to I don't want to have to remember to check the build button for csla when I make changes. I was just wondering if there was a way but it seems there is not a simple solution to this minor issue. Thank you all for you help. </div><div style='padding:0 15 3 15;background-color:powderblue'><h2>DavidDilworth replied on Thursday, October 25, 2007</h2><P>Personally, I would advise against changing the CSLA framework source files.&nbsp; In fact I would advise against changing any framework source files, not just CSLA ones.&nbsp; Once you go down this route it becomes increasingly more difficult to manage "official" CSLA patches and upgrades.</P>
+<P>By all means extend the functionality of the CSLA framework with your own specific extensions.&nbsp; That is what we did with CSLA and NHibernate.&nbsp; Importantly though, we did not change any source files from either of the two frameworks.&nbsp; Both remain "official" product releases and we are able to upgrade each of them&nbsp;independently of the other from "official" sources.</P>
+<P>I really would suggest you try and set up your solution differently as suggested by a previous poster.&nbsp; There is really no need to have CSLA as part of your solution and continually keep re-building it. </P>
+<P>You should treat CSLA as a fixed framework, just like you do with the .NET framework itself.&nbsp; Once you've built CSLA, just put the compiled assemblies in a fixed place and reference them in your project from there.</P>
+<P>For example, we have a fixed folder called "3rdParty\bin" where we keep ALL 3rd party DLLs that we reference (CSLA, NHibernate, NMock, Castle, Telerik).</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Thursday, October 25, 2007</h2><P>I agree with David.</P>
+<P>You should have Base classes which inherit from CSLA.</P>
+<P>Then all of your Business Objects should inherit from YOUR base classes.</P>
+<P>This allows you to override or add behaviors for your work&nbsp;environment.</P>
+<P>Joe</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>wbrproductions replied on Friday, October 26, 2007</h2><P>Count me as one more developer wanting to know how to turn off multi-language support. Can anyone here answer this question, or are we all preoccupied with how perfect the CSLA codebase is and why we shouldn't be touching it? Its a pretty simple question.</P>
+<P>Thanks.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Friday, October 26, 2007</h2>If you read the thread again you'll see that question has already been answered...<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>DavidDilworth replied on Friday, October 26, 2007</h2><P>Agreed.&nbsp; See Henrik's post.</P>
+<P>But unless you're writing a multi-lingual application, the extra resource DLLs would never actually be used anyway.</P>
+<P>Think of it being like the&nbsp;.NET framework itself - you don't "turn off" multi-lingual support in that.&nbsp; It's always there, but you just don't use it if you don't need it.</P>
+<P>&nbsp;</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

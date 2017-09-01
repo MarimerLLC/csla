@@ -1,0 +1,145 @@
+<html><header><title>Dataportal Fetch fails when included around Transactionscope</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Dataportal Fetch fails when included around Transactionscope</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/7247.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>hampole posted on Wednesday, July 08, 2009</h2>I am using .net Framework 3.5 and CSLA 3.5 on XP. I am getting dataportal fetch error when called wrapped around TransactionScope. Here is the error. Please help!<br><br>Thanks,<br>Ravi<br>here is the code:<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; TransactionOptions options = new TransactionOptions();<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; options.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; //options.Timeout = new TimeSpan(0, 30, 0);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; using (TransactionScope ts = new TransactionScope(TransactionScopeOption.Required, options))<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; success = SaveKioskActivateProcess();<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (success)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ts.Complete();<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; else<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ts.Dispose();<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>Inside the method SaveKioskActivateProcess, I have calls to BOs.<br><br><div id="ctl00_BodyCenterPanel_userMsg">DataPortal Exception: 
+Csla.DataPortalException: DataPortal.Fetch failed (The operation is not valid 
+for the state of the transaction.) ---&gt; Csla.Reflection.CallMethodException: 
+DataPortal_Fetch method call failed ---&gt; 
+System.Transactions.TransactionException: The operation is not valid for the 
+state of the transaction. at 
+System.Transactions.TransactionState.EnlistPromotableSinglePhase(InternalTransaction 
+tx, IPromotableSinglePhaseNotification promotableSinglePhaseNotification, 
+Transaction atomicTransaction) at 
+System.Transactions.Transaction.EnlistPromotableSinglePhase(IPromotableSinglePhaseNotification 
+promotableSinglePhaseNotification) at 
+System.Data.SqlClient.SqlInternalConnection.EnlistNonNull(Transaction tx) at 
+System.Data.SqlClient.SqlInternalConnection.Enlist(Transaction tx) at 
+System.Data.SqlClient.SqlInternalConnectionTds.Activate(Transaction transaction) 
+at System.Data.ProviderBase.DbConnectionInternal.ActivateConnection(Transaction 
+transaction) at 
+System.Data.ProviderBase.DbConnectionPool.GetConnection(DbConnection 
+owningObject) at 
+System.Data.ProviderBase.DbConnectionFactory.GetConnection(DbConnection 
+owningConnection) at 
+System.Data.ProviderBase.DbConnectionClosed.OpenConnection(DbConnection 
+outerConnection, DbConnectionFactory connectionFactory) at 
+System.Data.SqlClient.SqlConnection.Open() at 
+System.Data.Linq.SqlClient.SqlConnectionManager.UseConnection(IConnectionUser 
+user) at System.Data.Linq.SqlClient.SqlProvider.get_IsSqlCe() at 
+System.Data.Linq.SqlClient.SqlProvider.InitializeProviderMode() at 
+System.Data.Linq.SqlClient.SqlProvider.System.Data.Linq.Provider.IProvider.Execute(Expression 
+query) at System.Data.Linq.DataContext.ExecuteMethodCall(Object instance, 
+MethodInfo methodInfo, Object[] parameters) at 
+PSI.Applications.RemoteManagement.Dal.RMDBDataContext.usp_GetInActiveKioskList() 
+in c:\remotemanagement\trunc\common\dbconnectionlib\rmdb.designer.cs:line 1317 
+at 
+PSI.Applications.RemoteManagement.BusinessObjects.InActiveKioskList.DataPortal_Fetch() 
+in 
+C:\RemoteManagement\Trunc\BusinessObjects\BusinessObjectsCustom\KioskManagement\InActiveKioskList.cs:line 
+49 at dm(Object , Object[] ) at Csla.Reflection.MethodCaller.CallMethod(Object 
+obj, DynamicMethodHandle methodHandle, Object[] parameters) in 
+C:\Projects\CSLA3.5SP1\cslacs\Csla\Reflection\MethodCaller.cs:line 221 --- End 
+of inner exception stack trace --- at 
+System.Transactions.TransactionState.EnlistPromotableSinglePhase(InternalTransaction 
+tx, IPromotableSinglePhaseNotification promotableSinglePhaseNotification, 
+Transaction atomicTransaction) at 
+System.Transactions.Transaction.EnlistPromotableSinglePhase(IPromotableSinglePhaseNotification 
+promotableSinglePhaseNotification) at 
+System.Data.SqlClient.SqlInternalConnection.EnlistNonNull(Transaction tx) at 
+System.Data.SqlClient.SqlInternalConnection.Enlist(Transaction tx) at 
+System.Data.SqlClient.SqlInternalConnectionTds.Activate(Transaction transaction) 
+at System.Data.ProviderBase.DbConnectionInternal.ActivateConnection(Transaction 
+transaction) at 
+System.Data.ProviderBase.DbConnectionPool.GetConnection(DbConnection 
+owningObject) at 
+System.Data.ProviderBase.DbConnectionFactory.GetConnection(DbConnection 
+owningConnection) at 
+System.Data.ProviderBase.DbConnectionClosed.OpenConnection(DbConnection 
+outerConnection, DbConnectionFactory connectionFactory) at 
+System.Data.SqlClient.SqlConnection.Open() at 
+System.Data.Linq.SqlClient.SqlConnectionManager.UseConnection(IConnectionUser 
+user) at System.Data.Linq.SqlClient.SqlProvider.get_IsSqlCe() at 
+System.Data.Linq.SqlClient.SqlProvider.InitializeProviderMode() at 
+System.Data.Linq.SqlClient.SqlProvider.System.Data.Linq.Provider.IProvider.Execute(Expression 
+query) at System.Data.Linq.DataContext.ExecuteMethodCall(Object instance, 
+MethodInfo methodInfo, Object[] parameters) at 
+PSI.Applications.RemoteManagement.Dal.RMDBDataContext.usp_GetInActiveKioskList() 
+in c:\remotemanagement\trunc\common\dbconnectionlib\rmdb.designer.cs:line 1317 
+at 
+PSI.Applications.RemoteManagement.BusinessObjects.InActiveKioskList.DataPortal_Fetch() 
+in 
+C:\RemoteManagement\Trunc\BusinessObjects\BusinessObjectsCustom\KioskManagement\InActiveKioskList.cs:line 
+49 at dm(Object , Object[] ) at Csla.Reflection.MethodCaller.CallMethod(Object 
+obj, DynamicMethodHandle methodHandle, Object[] parameters) in 
+C:\Projects\CSLA3.5SP1\cslacs\Csla\Reflection\MethodCaller.cs:line 221 at 
+Csla.Reflection.MethodCaller.CallMethod(Object obj, DynamicMethodHandle 
+methodHandle, Object[] parameters) in 
+C:\Projects\CSLA3.5SP1\cslacs\Csla\Reflection\MethodCaller.cs:line 225 at 
+Csla.Reflection.MethodCaller.CallMethod(Object obj, String method, Object[] 
+parameters) in 
+C:\Projects\CSLA3.5SP1\cslacs\Csla\Reflection\MethodCaller.cs:line 149 at 
+Csla.Reflection.LateBoundObject.CallMethod(String method) in 
+C:\Projects\CSLA3.5SP1\cslacs\Csla\Reflection\LateBoundObject.cs:line 70 at 
+Csla.Server.SimpleDataPortal.Fetch(Type objectType, Object criteria, 
+DataPortalContext context) in 
+C:\Projects\CSLA3.5SP1\cslacs\Csla\DataPortal\Server\SimpleDataPortal.cs:line 
+124 --- End of inner exception stack trace --- at 
+System.Transactions.TransactionState.EnlistPromotableSinglePhase(InternalTransaction 
+tx, IPromotableSinglePhaseNotification promotableSinglePhaseNotification, 
+Transaction atomicTransaction) at 
+System.Transactions.Transaction.EnlistPromotableSinglePhase(IPromotableSinglePhaseNotification 
+promotableSinglePhaseNotification) at 
+System.Data.SqlClient.SqlInternalConnection.EnlistNonNull(Transaction tx) at 
+System.Data.SqlClient.SqlInternalConnection.Enlist(Transaction tx) at 
+System.Data.SqlClient.SqlInternalConnectionTds.Activate(Transaction transaction) 
+at System.Data.ProviderBase.DbConnectionInternal.ActivateConnection(Transaction 
+transaction) at 
+System.Data.ProviderBase.DbConnectionPool.GetConnection(DbConnection 
+owningObject) at 
+System.Data.ProviderBase.DbConnectionFactory.GetConnection(DbConnection 
+owningConnection) at 
+System.Data.ProviderBase.DbConnectionClosed.OpenConnection(DbConnection 
+outerConnection, DbConnectionFactory connectionFactory) at 
+System.Data.SqlClient.SqlConnection.Open() at 
+System.Data.Linq.SqlClient.SqlConnectionManager.UseConnection(IConnectionUser 
+user) at System.Data.Linq.SqlClient.SqlProvider.get_IsSqlCe() at 
+System.Data.Linq.SqlClient.SqlProvider.InitializeProviderMode() at 
+System.Data.Linq.SqlClient.SqlProvider.System.Data.Linq.Provider.IProvider.Execute(Expression 
+query) at System.Data.Linq.DataContext.ExecuteMethodCall(Object instance, 
+MethodInfo methodInfo, Object[] parameters) at 
+PSI.Applications.RemoteManagement.Dal.RMDBDataContext.usp_GetInActiveKioskList() 
+in c:\remotemanagement\trunc\common\dbconnectionlib\rmdb.designer.cs:line 1317 
+at 
+PSI.Applications.RemoteManagement.BusinessObjects.InActiveKioskList.DataPortal_Fetch() 
+in 
+C:\RemoteManagement\Trunc\BusinessObjects\BusinessObjectsCustom\KioskManagement\InActiveKioskList.cs:line 
+49 at dm(Object , Object[] ) at Csla.Reflection.MethodCaller.CallMethod(Object 
+obj, DynamicMethodHandle methodHandle, Object[] parameters) in 
+C:\Projects\CSLA3.5SP1\cslacs\Csla\Reflection\MethodCaller.cs:line 221 at 
+Csla.Reflection.MethodCaller.CallMethod(Object obj, DynamicMethodHandle 
+methodHandle, Object[] parameters) in 
+C:\Projects\CSLA3.5SP1\cslacs\Csla\Reflection\MethodCaller.cs:line 225 at 
+Csla.Reflection.MethodCaller.CallMethod(Object obj, String method, Object[] 
+parameters) in 
+C:\Projects\CSLA3.5SP1\cslacs\Csla\Reflection\MethodCaller.cs:line 149 at 
+Csla.Reflection.LateBoundObject.CallMethod(String method) in 
+C:\Projects\CSLA3.5SP1\cslacs\Csla\Reflection\LateBoundObject.cs:line 70 at 
+Csla.Server.SimpleDataPortal.Fetch(Type objectType, Object criteria, 
+DataPortalContext context) in 
+C:\Projects\CSLA3.5SP1\cslacs\Csla\DataPortal\Server\SimpleDataPortal.cs:line 
+124 at Csla.DataPortal.Fetch(Type objectType, Object criteria) in 
+C:\Projects\CSLA3.5SP1\cslacs\Csla\DataPortal\Client\DataPortal.cs:line 249 at 
+Csla.DataPortal.Fetch[T]() in 
+C:\Projects\CSLA3.5SP1\cslacs\Csla\DataPortal\Client\DataPortal.cs:line 179 at 
+PSI.Applications.RemoteManagement.BusinessObjects.InActiveKioskList.GetInActiveKioskList() 
+in 
+C:\RemoteManagement\Trunc\BusinessObjects\BusinessObjectsCustom\KioskManagement\InActiveKioskList.cs:line 
+31 at 
+Admin_KioskAdmin_ManageKioskActivateDeactivate.GetInprocessAndPendingCount() in 
+c:\RemoteManagement\Trunc\Web\WebSite\Admin\KioskAdmin\ManageKioskActivateDeactivate.aspx.cs:line 
+557 at Admin_KioskAdmin_ManageKioskActivateDeactivate.ValidateLicense() in 
+c:\RemoteManagement\Trunc\Web\WebSite\Admin\KioskAdmin\ManageKioskActivateDeactivate.aspx.cs:line 
+449 at Admin_KioskAdmin_ManageKioskActivateDeactivate.SaveKioskActivateProcess() 
+in 
+c:\RemoteManagement\Trunc\Web\WebSite\Admin\KioskAdmin\ManageKioskActivateDeactivate.aspx.cs:line 
+371 at Admin_KioskAdmin_ManageKioskActivateDeactivate.btnActivate_Click(Object 
+sender, EventArgs e) in 
+c:\RemoteManagement\Trunc\Web\WebSite\Admin\KioskAdmin\ManageKioskActivateDeactivate.aspx.cs:line 
+188<br><br><br></div><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Curelom replied on Wednesday, July 08, 2009</h2>Is there a specific reason you are doing a fetch within a transaction?  If not, it's best to have a transaction for a fetch.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>hampole replied on Wednesday, July 08, 2009</h2>Thanks for your reply.<br>I am doing multiple records within that method where Fetch is called. I have to update if the record exists, otherwise, I have to create. Also I am checking how many records are active and if they go over the certain limit, I want to rollback. In the fetch, i have this.<br>private void DataPortal_Fetch()<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; bool cancel = false;<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; OnFetching(ref cancel);<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; if (cancel) return;<br><br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; using (var mgr = ContextManager&lt;Dal.RMDBDataContext&gt;<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; .GetManager(Database.RMDB))<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; RaiseListChangedEvents = false;<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; IsReadOnly = false;<br><br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; this.AddRange(<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; from row in mgr.DataContext.usp_GetKioskList()<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; select KioskInfo.GetKioskInfo(row)<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; );<br><br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; IsReadOnly = true;<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; RaiseListChangedEvents = true;<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; }//using<br><br><br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; OnFetched();<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; }<br>Am I doing something wrong.<br><br>Ravi<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

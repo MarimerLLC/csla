@@ -1,0 +1,47 @@
+<html><header><title>enumerated type as a datasource</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>enumerated type as a datasource</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3593.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>jhw posted on Tuesday, September 25, 2007</h2><P>I have a 'company' class that uses an enumerated type to set what type of company it is(eg: oil company, trucking company). When I am binding the company to the form, I need to set the datasource of&nbsp;the company type&nbsp;combobox to the enumerated type. What is the best way to do this. </P>
+<P>So far I had to build a ro collection object and fill it with ro objects that have the enumerated value and an associated string. While this works, it is a lot of work to set it up. Is there an easier way?</P>
+<P>&nbsp;</P>
+<P>Thanks</P>
+<P>Heath</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ben replied on Wednesday, September 26, 2007</h2><P class=MsoNormal><SPAN>Hi <A HREF="/members/jhw.aspx"><SPAN>jhw</SPAN></A>,<o:p></o:p></SPAN></P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal><SPAN>I don’t know if this is the best way but it is one:<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Enum</SPAN><SPAN> MyEnum<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp; </SPAN>Test1<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp; </SPAN>Test2<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>End</SPAN><SPAN> <SPAN>Enum<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Me</SPAN><SPAN>.cboMyCombo.DataSource = [Enum].GetNames(<SPAN>GetType</SPAN>(MyEnum))<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>With this solution your will have to parse the value selected from the ComboBox to have the real enumerated value:<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Dim</SPAN><SPAN> myValue <SPAN>As</SPAN> <SPAN>String<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN>Dim</SPAN><SPAN> enumValue <SPAN>As</SPAN> MyEnum</SPAN></P>
+<P class=MsoNormal><SPAN><o:p></o:p></SPAN>&nbsp;</P>
+<P class=MsoNormal><SPAN>myValue = <SPAN>CStr</SPAN>(<SPAN>Me</SPAN>.cboMyCombo.SelectedValue)</SPAN></P>
+<P class=MsoNormal><SPAN>enumValue = <SPAN>DirectCast</SPAN>([Enum].Parse(<SPAN>GetType</SPAN>(MyEnum), myValue), MyEnum)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>I hope it will help you.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Benjamin<o:p></o:p></SPAN></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ben replied on Wednesday, September 26, 2007</h2><P class=MsoNormal><SPAN>Hi <A HREF="/members/jhw.aspx"><SPAN>jhw</SPAN></A>,<o:p></o:p></SPAN></P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal><SPAN>I don’t know if this is the best way but it is one:<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Enum</SPAN><SPAN> MyEnum<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp; </SPAN>Test1<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp; </SPAN>Test2<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>End</SPAN><SPAN> <SPAN>Enum<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Me</SPAN><SPAN>.cboMyCombo.DataSource = [Enum].GetNames(<SPAN>GetType</SPAN>(MyEnum))<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>With this solution your will have to parse the value selected from the ComboBox to have the real enumerated value:<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Dim</SPAN><SPAN> myValue <SPAN>As</SPAN> <SPAN>String<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN>Dim</SPAN><SPAN> enumValue <SPAN>As</SPAN> MyEnum</SPAN></P>
+<P class=MsoNormal><SPAN><o:p></o:p></SPAN>&nbsp;</P>
+<P class=MsoNormal><SPAN>myValue = <SPAN>CStr</SPAN>(<SPAN>Me</SPAN>.cboMyCombo.SelectedValue)</SPAN></P>
+<P class=MsoNormal><SPAN>enumValue = <SPAN>DirectCast</SPAN>([Enum].Parse(<SPAN>GetType</SPAN>(MyEnum), myValue), MyEnum)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>I hope it will help you.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Benjamin<o:p></o:p></SPAN></P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

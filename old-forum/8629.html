@@ -1,0 +1,85 @@
+<html><header><title>Filter on CSLA datasource</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Filter on CSLA datasource</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/8629.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>bharat0204 posted on Monday, March 08, 2010</h2><p>Hi,</p>
+<p>i have a CSLA datasource with column Id , Name and status.</p>
+<p>i want top apply filter to get records whose status =&quot;Active&quot;.</p>
+<p><span style="color:#2b91af;font-size:x-small;"><span style="color:#2b91af;font-size:x-small;"><span style="color:#2b91af;font-size:x-small;"><span style="color:#2b91af;font-size:x-small;"><span style="color:#2b91af;font-size:x-small;"><span style="color:#2b91af;font-size:x-small;"><span style="color:#2b91af;font-size:x-small;"><span style="color:#2b91af;font-size:x-small;"><span style="color:#2b91af;font-size:x-small;"><span style="color:#2b91af;font-size:x-small;"><span style="color:#2b91af;font-size:x-small;"><span style="color:#2b91af;font-size:x-small;"><font size="2" color="#2b91af"><font size="2" color="#2b91af">
+<p>PersonalInfoCollection <span style="font-size:x-small;">obj = </span><span style="color:#2b91af;font-size:x-small;"><span style="color:#2b91af;font-size:x-small;">PersonalInfoCollection </span></span><span style="font-size:x-small;">.GetPersonalInfoCollection();</span></p>
+</font></font></span></span></span></span></span><span style="color:#2b91af;font-size:x-small;"><span style="color:#2b91af;font-size:x-small;"><span style="color:#2b91af;font-size:x-small;"><span style="color:#2b91af;font-size:x-small;"><font size="2" color="#2b91af">
+<p>&nbsp;</p>
+</font></span></span></span></span></span>
+<p>&nbsp;</p>
+<p>
+<p><span style="font-size:x-small;">now i have obj collection with all records and i want to filter.</span></p>
+<p><span style="font-size:x-small;">i am trying to use obj.select&lt;&gt; but as i am new to CSLA so dont know how it work.</span></p>
+<p><span style="font-size:x-small;">please help.</span></p>
+<p><span style="font-size:x-small;">thanks in advance.</span></p>
+</p>
+</span></span></span></span>&nbsp;</span></span></p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>Curelom replied on Monday, March 08, 2010</h2><p>You will need to create a new methos in your collection.&nbsp; Something like PersonalInfoCollection.GetActivePersonalInfoCollection.&nbsp; This would be similar to your current get method only it will have your filter information in it.&nbsp; Use this new method in the CSLA datasource.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>bharat0204 replied on Tuesday, March 09, 2010</h2><p>Hi,</p>
+<p>thanks for your reply.</p>
+<p>but to create a new method and again querying to database for active results is not a good idea and unnecessary hit database twice for same result and having filter condition.</p>
+<p>please let me know if there is some way to do it in library or UI itself.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Curelom replied on Tuesday, March 09, 2010</h2><p>That is how you have to do it with the CSLA DataSource.&nbsp; If you want some more efficiencies, you can cache the results of the full list and have the new Active Method grab the cached results if they exist&nbsp;and return the filtered list via linq or some other filtering method.</p>
+<p>I recommend you don&#39;t use the CslaDataSource in the first place as it is being removed from future versions of CSLA.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, March 09, 2010</h2><p>It is CslaDataProvider that is being removed (in Silverlight at least). CslaDataSource is a key part of Web Forms support and is not being removed.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, March 09, 2010</h2><p>The <a href="http://store.lhotka.net">Version 2.1 Handbook</a> has information on paging/sorting and filtering with the CslaDataSource.</p>
+<p>You can absolutely do filtering of the data on the web server, without going back to the database. But to do so, you must cache all the data in memory on the web server. Unless your table is quite small, this is probably a very bad idea, and it will be cheaper and more effective to go back to the database.</p>
+<p>But you need to make that determination yourself.</p>
+<p>There are actually four places you can do sort/filter operations in a web forms app:</p>
+<ol>
+<li>In the select data event handler for the data source</li>
+<li>In the object&#39;s factory method</li>
+<li>In the DataPortal_Fetch() method</li>
+<li>In the database</li>
+</ol>
+<p>Options 1 and 2 only work if you cache all the data in memory on the web server, which could be good or bad depending. Options 3 and 4 are always available, because they have access to the full set of data.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>bharat0204 replied on Tuesday, March 09, 2010</h2><p>Hi Rocky,</p>
+<p>thank you very very much for your reply.</p>
+<p>i am looking for something which you suggested.</p>
+<p>here in my case there are only max 10 records so i want to do it through web application itself by putting data into session.</p>
+<p>but the problem i am facing here i could not find out method or property which will do filter there only.</p>
+<p>i have collection of all tasks and i want to filter only active task if user select ..</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p><span style="font-size:x-small;"><font size="2">
+<p>&nbsp;</p>
+</font></span>
+<p>&nbsp;</p>
+<span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">protected</span></span><span style="font-size:x-small;"> </span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">void</span></span><span style="font-size:x-small;"> btnFilter_Click(</span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">object</span></span><span style="font-size:x-small;"> sender, </span><span style="color:#2b91af;font-size:x-small;"><span style="color:#2b91af;font-size:x-small;">EventArgs</span></span><span style="font-size:x-small;"> e)
+<p>{</p>
+<font size="2">
+<p>&nbsp;</p>
+</font></span>
+<p>&nbsp;</p>
+<p><span style="color:#008000;font-size:x-small;"><span style="color:#008000;font-size:x-small;"></span></span></p>
+<span style="font-size:x-small;"><font size="2">
+<p>&nbsp;</p>
+</font></span>
+<p>&nbsp;</p>
+<span style="color:#2b91af;font-size:x-small;"><span style="color:#2b91af;font-size:x-small;">TaskInfoCollection</span></span><span style="font-size:x-small;"> allTask = (</span><span style="color:#2b91af;font-size:x-small;"><span style="color:#2b91af;font-size:x-small;">TaskInfoCollection</span></span><span style="font-size:x-small;">)Session[</span><span style="color:#a31515;font-size:x-small;"><span style="color:#a31515;font-size:x-small;">&quot;currentObject&quot;</span></span><span style="font-size:x-small;">];<font size="2">
+<p>&nbsp;</p>
+</font></span>
+<p><span style="font-size:x-small;"><span style="font-size:x-small;">allTask.Select&lt;&gt; </span><span style="color:#008000;font-size:x-small;"><span style="color:#008000;font-size:x-small;">// something by that i can filter the records here only.</span></span></span></p>
+</p>
+<p>
+<p><span style="font-size:x-small;">}</span></p>
+<p><span style="font-size:x-small;">please suggest if there is some mech. by that i can do filter active records here only.</span></p>
+<p><span style="font-size:x-small;">or some way around ..as the same is supported in .Net dataset.</span></p>
+<p><span style="font-size:x-small;">waiting for your reply.</span></p>
+<p><span style="font-size:x-small;">thanks in advance.</span></p>
+<p><span style="font-size:x-small;"></span></p>
+</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, March 09, 2010</h2><p>Can&#39;t you just use a LINQ where clause?</p>
+<p>e.BusinessObject&nbsp;= allTask.Where(c =&gt; c.Property == filterValue);</p>
+<p>Obviously you have some &quot;filterValue&quot; that you got from the user in the UI right? And you want to filter using that value against some property of your business objects - so the .Where() should do what you need.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>bharat0204 replied on Tuesday, March 09, 2010</h2><p>Thank you very much Rocky.</p>
+<p>you are great and it works as i expect.</p>
+<p>just for understanding what is c here..i didn&#39;t get this.</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>bharat0204 replied on Tuesday, March 09, 2010</h2><p>and also i want to filter the recordset on two or three cateria so how to do that..</p>
+<p>&nbsp;</p>
+<p>like</p>
+<p>
+<p><span style="font-size:x-small;"><font size="2">
+<p>e.BusinessObject = obj.Where(c =&gt; c.Status == </p>
+</font></span>
+<p><span style="color:#a31515;font-size:x-small;"><span style="color:#a31515;font-size:x-small;">&quot;active&quot;</span></span><span style="font-size:x-small;"> AND c.Status == </span><span style="color:#a31515;font-size:x-small;"><span style="color:#a31515;font-size:x-small;">&quot;frozen&quot;</span></span><span style="font-size:x-small;">);</span></p>
+<p><span style="font-size:x-small;">as i am writing this but it is giving me syntax error.</span></p>
+</p>
+</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, March 09, 2010</h2><p>obj.Where(c =&gt; c.Status == &quot;active&quot; &amp;&amp; c.Status == &quot;frozen&quot;);</p>
+<p>Though that obviously won&#39;t work, because c.Status can never equal those two values at the same time...</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

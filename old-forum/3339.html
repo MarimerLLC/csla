@@ -1,0 +1,17 @@
+<html><header><title>For ERC base.RemoveItem(index) is giving Error &quot;Invalid for root objects - use Delete instead&quot;</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>For ERC base.RemoveItem(index) is giving Error &quot;Invalid for root objects - use Delete instead&quot;</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3339.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Raju posted on Tuesday, August 07, 2007</h2><P>Hi ,</P>
+<P>I bind ERC (Editable Root Collection)&nbsp;object to DataGridView.</P>
+<P>When I want to Delete a&nbsp;row in DataGridView, internally the "RemoveItem(..)" is called (I have given the syntax for that below). </P>
+<P>Inside the RemoveItem, when the base.RemoveItem(index) is executed, I get the following error..</P>
+<P><FONT color=#a52a2a><FONT size=2>1) Error&nbsp; --&nbsp;</FONT><FONT size=2>&nbsp;System.NotSupportedException "Invalid for root objects - use Delete instead".</FONT></FONT></P><FONT size=2><FONT color=#0000ff size=2>
+<P><FONT color=#006400>2) Code for "RemoveItem"</FONT></P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; protected</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>override</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>void</FONT><FONT size=2> RemoveItem(</FONT><FONT color=#0000ff size=2>int</FONT><FONT size=2> index)</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; this</FONT><FONT size=2>[index].Delete();</P>
+<P></FONT><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; base</FONT><FONT size=2>.RemoveItem(index);</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</P>
+<P><FONT color=#ff0000>3) Question - For a Root object, if I have to remove it from the collection, what is the approach should I follow?. Because I want the Removed item to be in the DeletedList in my ERC, so that I can use it for NLevel UNDO.</FONT></FONT></FONT></P>
+<P><FONT size=2>Thanks in advance</FONT></P>
+<P><FONT size=2>Raju</FONT>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, August 07, 2007</h2><P>You can't have an ERC contain an ERO (editable root object). An ERC contains ECOs (editable child objects).</P>
+<P>If you want a collection that contains EROs, you'll have to use EditableRootListBase - though that has some different behaviors than ERC, so read up on it in the <EM>CSLA .NET Version 2.1 Handbook</EM> so you know what to expect. Given your #3 question, it sounds like ERLB won't work though.</P>
+<P>Or you'll need to create your own collection base class, sort of like BusinessListBase, but also sort of like ERLB. </P>
+<P>Or you'll need to change your EROs to be ECOs so they fit into the supported model.</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,45 @@
+<html><header><title>RE: Creating JMS Dataportal Channels/Routers. A security question.</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>RE: Creating JMS Dataportal Channels/Routers. A security question.</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/988.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka posted on Wednesday, August 23, 2006</h2>
+
+
+
+
+<DIV align=left><SPAN class=703360000-23082006><FONT face=Arial color=#0000ff size=2>So I understand, what you are doing with JMS is passing 
+messages from a .NET client to a .NET server - but that server is hosted within 
+a process created by JMS? And, of course, JMS doesn't have any mechanism by 
+which it can flow the client Windows credentials through to the server for 
+impersonation, so on the server you actually want to use some type of custom 
+principal that emulates the user's Windows identity?</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=703360000-23082006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=703360000-23082006><FONT face=Arial color=#0000ff size=2>Rocky</FONT></SPAN></DIV><BR>
+<BLOCKQUOTE>
+  <DIV class=OutlookMessageHeader align=left>
+  <HR>
+  <FONT face=Tahoma size=2><B>From:</B> slabanum [mailto:cslanet@lhotka.net] 
+  <BR><B>Sent:</B> Tuesday, August 22, 2006 5:04 PM<BR><B>To:</B> 
+  rocky@lhotka.net<BR><B>Subject:</B> Re: [CSLA .NET] Creating JMS Dataportal 
+  Channels/Routers. A security question.<BR></FONT><BR></DIV>
+  <DIV></DIV>
+  <P>Rocky,</P>
+  <P>Sorry, but I have to ask&nbsp;this questions so it becomes clear.&nbsp; 
+</P>
+  <P>1) Where is the most likely place for me to call 
+  ApplicationContext.ClientContext.Add("ClientPrincipal", 
+  Serialize(GetPrincipal()))?&nbsp; Should it be on the initialization phase 
+  (eg. Form Load or main()) of a UI or should it be during the Initialize() 
+  phase of my business object (override Core.BusinessBase.Initialize())?</P>
+  <P>2)&nbsp;When I check for authorization should I check for it on the 
+  ClientContext like the example on DataPortal_xyz:</P>
+  <P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if not (Ctype( 
+  Deserialize(ApplicationContext.ClientContext.Item("ClientPrincipal"), 
+  IPrincipal).IsInRole("SomeRole") then</P>
+  <P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;throw some exception</P>
+  <P>&nbsp;&nbsp;&nbsp; end if</P>
+  <P>The reason I asked is on the server-side, ApplicationContext.User would 
+  return the user that is used to start my server-side component, not the 
+  client's principal since Server.DataPortal.SetContext does not set the 
+  ApplicationContext.User to the client's principal (In the first place 
+  Client.DataPortal's GetPrincipal return's nothing on "Windows" 
+  authentication).</P>
+  <P>I guess this is a trade-off for marrying&nbsp;different worlds of 
+  technology.</P>
+  <P>Thanks.</P><BR><BR><BR></BLOCKQUOTE></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

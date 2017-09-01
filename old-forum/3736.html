@@ -1,0 +1,260 @@
+<html><header><title>Record Already Exists</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Record Already Exists</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3736.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Inquistive_Mind posted on Wednesday, October 17, 2007</h2><P>Hello,</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; I have a Business base BO which I am using for normal DB operations.For the record already exists condition,&nbsp;based on the exception raised (on UI)&nbsp;I am displaying a message that duplicate records cannot be added.This was a short term solution inorder to get things working.</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Right now I would like to implement this checking in the BO itself by using a Command Object in my Business Base BO.Is my approach right?Are there other approaches?Any sample code?</P>
+<P>Thanks In Advance</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>KKoteles replied on Wednesday, October 17, 2007</h2><P class=MsoNormal><FONT face=Calibri><SPAN>I have made use of the Exists command Rocky demonstrated quite a bit.<SPAN>&nbsp; </SPAN>Additionally, I have created my own custom rule to make use of it.<SPAN>&nbsp; </SPAN>One change I made to the Exists method was to try to use my cached list object first (to try to avoid another trip to the database).<SPAN>&nbsp; </SPAN>I had to make sure the user was allowed to get the list though before I tried to use it.<SPAN>&nbsp; </SPAN>I didn’t add authorizations to the Exists command because in my case it was always allowed; however, it is easy enough to add in if you need it.<SPAN>&nbsp; </SPAN>Here are some snippets of code:</SPAN><SPAN><o:p></o:p></SPAN></FONT></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><FONT face=Calibri><SPAN><FONT color=#0000ff>protected void</FONT></SPAN><SPAN> AddCustomRules()<o:p></o:p></SPAN></FONT></P>
+<P class=MsoNormal><SPAN><FONT face=Calibri>{<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT face=Calibri><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN><FONT color=#006400>//<o:p></o:p></FONT></SPAN></FONT></SPAN></P>
+<P class=MsoNormal><FONT face=Calibri><FONT color=#006400><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN></SPAN><SPAN>// Name<o:p></o:p></SPAN></FONT></FONT></P>
+<P class=MsoNormal><FONT face=Calibri><FONT color=#006400><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN></SPAN><SPAN>//<o:p></o:p></SPAN></FONT></FONT></P>
+<P class=MsoNormal><SPAN><FONT face=Calibri><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>ValidationRules.AddRule&lt;<SPAN><FONT color=#800080>StatusType</FONT></SPAN>&gt;(UniqueName&lt;<SPAN><FONT color=#800080>StatusType</FONT></SPAN>&gt;, <SPAN><FONT color=#a52a2a>"Name"</FONT></SPAN>);<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT face=Calibri>}<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><FONT face=Calibri><SPAN><FONT color=#0000ff>private static bool</FONT></SPAN><SPAN> UniqueName&lt;T&gt;(T target, Csla.Validation.<SPAN><FONT color=#800080>RuleArgs</FONT></SPAN> e) <SPAN><FONT color=#0000ff>where</FONT></SPAN> T: <SPAN><FONT color=#800080>StatusType<o:p></o:p></FONT></SPAN></SPAN></FONT></P>
+<P class=MsoNormal><SPAN><FONT face=Calibri>{<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT face=Calibri><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN><FONT color=#0000ff>if</FONT></SPAN> (<SPAN><FONT color=#800080>StatusTypeList</FONT></SPAN>.CanGetObject())<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT face=Calibri><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>{<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT face=Calibri><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN><FONT color=#800080>StatusTypeInfo</FONT></SPAN> test = <SPAN><FONT color=#800080>StatusTypeList</FONT></SPAN>.Get()[target._name];<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><FONT face=Calibri><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN><FONT color=#0000ff>if</FONT></SPAN> (test != <SPAN><FONT color=#0000ff>null</FONT></SPAN> &amp;&amp; test.ID != target._id)<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT face=Calibri><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>{<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT face=Calibri><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>e.Description = <SPAN><FONT color=#a52a2a>"Name must be unique"</FONT></SPAN>;<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT face=Calibri><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN><FONT color=#0000ff>return false</FONT></SPAN>;<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT face=Calibri><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>}<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT face=Calibri><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN><FONT color=#0000ff>else<o:p></o:p></FONT></SPAN></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT face=Calibri><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>{<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT face=Calibri><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN><FONT color=#0000ff>return true</FONT></SPAN>;<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT face=Calibri><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>}<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT face=Calibri><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>}<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT face=Calibri><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN><FONT color=#0000ff>else if</FONT></SPAN> (<SPAN><FONT color=#800080>StatusType</FONT></SPAN>.Exists(target._name))<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT face=Calibri><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>{<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT face=Calibri><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN><FONT color=#800080>StatusType</FONT></SPAN> test = <SPAN><FONT color=#800080>StatusType</FONT></SPAN>.Get(target._name);<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><FONT face=Calibri><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN><FONT color=#0000ff>if</FONT> </SPAN>(test.ID != target._id)<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT face=Calibri><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>{<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT face=Calibri><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>e.Description = <SPAN><FONT color=#a52a2a>"Name must be unique"</FONT></SPAN>;<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT face=Calibri><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN><FONT color=#0000ff>return false</FONT></SPAN>;<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT face=Calibri><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>}<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT face=Calibri><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN><FONT color=#0000ff>else<o:p></o:p></FONT></SPAN></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT face=Calibri><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>{<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT face=Calibri><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN><FONT color=#0000ff>return true</FONT></SPAN>;<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT face=Calibri><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>}<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT face=Calibri><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>}<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT face=Calibri><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN><FONT color=#0000ff>else<o:p></o:p></FONT></SPAN></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT face=Calibri><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>{<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT face=Calibri><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN><FONT color=#0000ff>return true</FONT></SPAN>;<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT face=Calibri><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>}<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT face=Calibri>}<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><FONT face=Calibri><SPAN><FONT color=#0000ff>#region</FONT></SPAN><SPAN> Data Access - Exists<o:p></o:p></SPAN></FONT></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><FONT face=Calibri><SPAN><FONT color=#0000ff>public static bool</FONT></SPAN><SPAN> Exists(<SPAN><FONT color=#0000ff>int</FONT></SPAN> id)<o:p></o:p></SPAN></FONT></P>
+<P class=MsoNormal><SPAN><FONT face=Calibri>{<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT face=Calibri><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN><FONT color=#0000ff>if</FONT></SPAN> (<SPAN><FONT color=#800080>StatusTypeList</FONT></SPAN>.CanGetObject())<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT face=Calibri><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>{<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT face=Calibri><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN><FONT color=#0000ff>return</FONT></SPAN> Example.Business.<SPAN><FONT color=#000080>StatusTypeList</FONT></SPAN>.Get().Contains(id);<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT face=Calibri><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>}<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT face=Calibri><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN><FONT color=#0000ff>else<o:p></o:p></FONT></SPAN></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT face=Calibri><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>{<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT face=Calibri><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN><FONT color=#800080>ExistsCommand</FONT></SPAN> result;<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT face=Calibri><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>result = <SPAN><FONT color=#800080>DataPortal</FONT></SPAN>.Execute&lt;<SPAN><FONT color=#800080>ExistsCommand</FONT></SPAN>&gt;(<SPAN><FONT color=#0000ff>new</FONT></SPAN> <SPAN><FONT color=#800080>ExistsCommand</FONT></SPAN>(id));<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT face=Calibri><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN><FONT color=#0000ff>return</FONT></SPAN> result.Exists;<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT face=Calibri><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>}<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT face=Calibri>}<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><FONT face=Calibri><SPAN><FONT color=#0000ff>public static bool</FONT></SPAN><SPAN> Exists(<SPAN><FONT color=#0000ff>string</FONT></SPAN> name)<o:p></o:p></SPAN></FONT></P>
+<P class=MsoNormal><SPAN><FONT face=Calibri>{<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT face=Calibri><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN><FONT color=#0000ff>if</FONT></SPAN> (<SPAN><FONT color=#800080>StatusTypeList</FONT></SPAN>.CanGetObject())<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT face=Calibri><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>{<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT face=Calibri><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN><FONT color=#0000ff>return</FONT></SPAN> Example.Business.<SPAN><FONT color=#800080>StatusTypeList</FONT></SPAN>.Get().Contains(name);<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT face=Calibri><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>}<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT face=Calibri><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN><FONT color=#0000ff>else<o:p></o:p></FONT></SPAN></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT face=Calibri><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>{<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT face=Calibri><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN><FONT color=#800080>ExistsCommand</FONT></SPAN> result;<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT face=Calibri><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>result = <SPAN><FONT color=#800080>DataPortal</FONT></SPAN>.Execute&lt;<SPAN><FONT color=#000080>ExistsCommand</FONT></SPAN>&gt;(<SPAN><FONT color=#0000ff>new</FONT> </SPAN><SPAN><FONT color=#800080>ExistsCommand</FONT></SPAN>(name));<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT face=Calibri><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN><FONT color=#0000ff>return</FONT></SPAN> result.Exists;<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT face=Calibri><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>}<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT face=Calibri>}<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><FONT face=Calibri>[<SPAN><FONT color=#800080>Serializable</FONT></SPAN>()]<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><FONT face=Calibri><SPAN><FONT color=#0000ff>private class</FONT></SPAN><SPAN> <SPAN><FONT color=#800080>ExistsCommand</FONT></SPAN> : <SPAN><FONT color=#800080>CommandBase<o:p></o:p></FONT></SPAN></SPAN></FONT></P>
+<P class=MsoNormal><SPAN><FONT face=Calibri>{<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT face=Calibri><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN><FONT color=#0000ff>private bool</FONT></SPAN> _exists = <SPAN><FONT color=#0000ff>false</FONT></SPAN>;<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT face=Calibri><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN><FONT color=#0000ff>private int</FONT></SPAN> _id = 0;<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT face=Calibri><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN><FONT color=#0000ff>private string</FONT></SPAN> _name = <SPAN><FONT color=#0000ff>string</FONT></SPAN>.Empty;<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><FONT face=Calibri><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN><FONT color=#0000ff>public bool</FONT></SPAN> Exists<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT face=Calibri><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>{<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT face=Calibri><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN><FONT color=#0000ff>get<o:p></o:p></FONT></SPAN></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT face=Calibri><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>{<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT face=Calibri><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN><FONT color=#0000ff>return</FONT></SPAN> _exists;<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT face=Calibri><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>}<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT face=Calibri><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>}<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><FONT face=Calibri><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN><FONT color=#0000ff>public</FONT></SPAN> ExistsCommand(<SPAN><FONT color=#0000ff>int</FONT></SPAN> id)<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT face=Calibri><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>{<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT face=Calibri><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>_id = id;<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT face=Calibri><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>}<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><FONT face=Calibri><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN><FONT color=#0000ff>public</FONT></SPAN> ExistsCommand(<SPAN><FONT color=#0000ff>string</FONT></SPAN> name)<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT face=Calibri><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>{<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT face=Calibri><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>_name = name;<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT face=Calibri><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>}<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><FONT face=Calibri><FONT color=#0000ff><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>protected override void</SPAN> </FONT>DataPortal_Execute()<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT face=Calibri><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>{<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT face=Calibri><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN><FONT color=#0000ff>using</FONT></SPAN> (<SPAN><FONT color=#800080>SqlConnection</FONT></SPAN> cn = <SPAN><FONT color=#0000ff>new</FONT></SPAN> <SPAN><FONT color=#800080>SqlConnection</FONT></SPAN>(KJJK.RBAC.<SPAN><FONT color=#800080>Database</FONT></SPAN>.DatabaseConnection(<SPAN><FONT color=#a52a2a>"Example"</FONT></SPAN>)))<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT face=Calibri><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>{<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT face=Calibri><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>cn.Open();<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><FONT face=Calibri><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN><FONT color=#0000ff>using</FONT></SPAN> (<SPAN><FONT color=#800080>SqlCommand</FONT></SPAN><SPAN> </SPAN>cm = cn.CreateCommand())<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT face=Calibri><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>{<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT face=Calibri><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>cm.CommandType = <SPAN><FONT color=#800080>CommandType</FONT></SPAN>.StoredProcedure;<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><FONT face=Calibri><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN><FONT color=#0000ff>if</FONT></SPAN> (_id != 0)<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT face=Calibri><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>{<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT face=Calibri><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>cm.CommandText = <SPAN><FONT color=#a52a2a>"ExistsStatusTypeByID_sp"</FONT></SPAN>;<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT face=Calibri><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>cm.Parameters.AddWithValue(<SPAN><FONT color=#a52a2a>"@ID"</FONT></SPAN>, _id);<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT face=Calibri><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>}<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><FONT face=Calibri><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN><FONT color=#0000ff>if</FONT></SPAN> (_name.Equals(<SPAN><FONT color=#0000ff>string</FONT></SPAN>.Empty) == <SPAN><FONT color=#0000ff>false</FONT></SPAN>)<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT face=Calibri><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>{<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT face=Calibri><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>cm.CommandText = <SPAN><FONT color=#a52a2a>"ExistsStatusTypeByName_sp"</FONT></SPAN>;<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT face=Calibri><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>cm.Parameters.AddWithValue(<SPAN><FONT color=#a52a2a>"@Name"</FONT></SPAN>, _name);<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT face=Calibri><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>}<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><FONT face=Calibri><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN><FONT color=#0000ff>int</FONT></SPAN> count = (<SPAN><FONT color=#0000ff>int</FONT></SPAN>)cm.ExecuteScalar();<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT face=Calibri><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>_exists = (count &gt; 0);<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT face=Calibri><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>} <SPAN><FONT color=#006400>//using SqlCommand<o:p></o:p></FONT></SPAN></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT face=Calibri><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>} <SPAN><FONT color=#006400>//using SqlConnection<o:p></o:p></FONT></SPAN></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT face=Calibri><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>}<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><FONT face=Calibri>}<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><FONT face=Calibri><SPAN><FONT color=#0000ff>#endregion</FONT></SPAN><SPAN> <SPAN><FONT color=#006400>//Data Access - Exists<o:p></o:p></FONT></SPAN></SPAN></FONT></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><FONT face=Calibri>Enjoy,<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT face=Calibri>Ken<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><o:p><FONT face=Calibri>&nbsp;</FONT></o:p></SPAN></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Inquistive_Mind replied on Wednesday, October 17, 2007</h2><P>Thanks for the&nbsp;information Ken,</P>
+<P>Yes, I was able to implement the ExistsCommand object and check for duplicates.But what are you thoughts on checking for an exception type and displaying the message accordingly?Right now I have 2 Catch blocks one specfic for duplicate records and the other a generalized one.This saves me one trip to the database in case of an Insert and Update.Using command based logic takes 2 trips for a successful insert,update where as exception based check just takes one both for a successful,failed insert and update.</P>
+<P>Thanks,</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>KKoteles replied on Thursday, October 18, 2007</h2><P>Inquistive_Mind,</P>
+<P>I'm not sure why you are trying to catch exceptions.&nbsp; All you really need to do is make the object Invalid (using a BusinessRule) so it cannot be saved.&nbsp; Then since you know the object is Invalid, you just need to check the BrokenRules collection within the object itself.&nbsp; If you use something like the ErrorProvider object, then this is handled for you pretty easily - it displays the message as a tooltip over the icon it displays.</P>
+<P>When your business rules are checked, you might have to make one trip to the database for the Exists command (maybe not if the List was cached); however, nothing else is done because your object is Invalid.&nbsp; I'm not sure I follow your concern...</P>
+<P>Ken&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tetranz replied on Thursday, October 18, 2007</h2>Don't forget that the only real test is whether or not you succeed in saving where there is a unique index on your database. Checking before you save and making the BO invalid with a "That name already exists" broken rule is all good stuff and makes the UI friendly but there may be the possibility that someone else saves between your check (or when your cached list was loaded) and the actual save. That's when you need to catch the exception and maybe display something like "oops ...&nbsp; someone else just created that name moments ago."<br><br>Ross<br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Inquistive_Mind replied on Thursday, October 18, 2007</h2><P>Hello Ken,</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; I'm pasting the code snippnet for both ways here,maybe that would make it clearer to comment about the approaches.</P><FONT color=#0000ff size=2>
+<BLOCKQUOTE dir=ltr>
+<P>try</P></FONT><FONT size=2>
+<P>{</P>
+<BLOCKQUOTE dir=ltr>
+<P>assetTransmission = </FONT><FONT color=#2b91af size=2>AssetTransmission</FONT><FONT size=2>.NewAssetTransmission();</P>
+<P>assetTransmission.Transmission = TLTransmissionListUserControl.SelectedValue.ToString();</P>
+<P>assetTransmission.AssetID =&nbsp; </FONT><FONT color=#008000 size=2>Convert.ToInt32(Session["AssetID"]);</P></FONT><FONT size=2>
+<P>assetTransmission.FluidCapacity = </FONT><FONT color=#2b91af size=2>Convert</FONT><FONT size=2>.ToDecimal(AssetTransmissionFluidCapacityRadNumericTextBox.Text);</P>
+<P>assetTransmission.FluidID = </FONT><FONT color=#2b91af size=2>Convert</FONT><FONT size=2>.ToInt32(TLFluidListUserControl.SelectedValue);</P>
+<P>assetTransmission.TransSerialNumber = AssetTransmissionSerialNumberTextBox.Text;</P>
+<P>assetTransmission.Save();</P></BLOCKQUOTE>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>catch</FONT><FONT size=2> (</FONT><FONT color=#2b91af size=2>Exception</FONT><FONT size=2> ex)</P>
+<P>{</P>
+<BLOCKQUOTE dir=ltr>
+<P>result = </FONT><FONT color=#0000ff size=2>false</FONT><FONT size=2>;</P>
+<P></FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (((System.Data.SqlClient.</FONT><FONT color=#2b91af size=2>SqlException</FONT><FONT size=2>)ex.GetBaseException()).Number == 2627)</P>
+<P>{</P>
+<BLOCKQUOTE dir=ltr>
+<P>MessageLabel.Text = </FONT><FONT color=#a31515 size=2>"Value(s) already exist and cannot be added"</FONT><FONT size=2>;</P>
+<P>MessageLabel.Visible = </FONT><FONT color=#0000ff size=2>true</FONT><FONT size=2>;</P></BLOCKQUOTE></BLOCKQUOTE>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</P>
+<P>}</P>
+<P>Now using the Exists Command Class I have it as below</P><FONT color=#0000ff size=2>
+<P>if</FONT><FONT size=2> (!</FONT><FONT color=#2b91af size=2>AssetFuel</FONT><FONT size=2>.IsExists(<FONT color=#008000>Convert.ToInt32(Session["AssetID"])</FONT>, TLFuelRadComboBox.SelectedValue))</FONT></P>
+<P><FONT size=2>{</P>
+<BLOCKQUOTE dir=ltr>
+<P>assetFuel = </FONT><FONT color=#2b91af size=2>AssetFuel</FONT><FONT size=2>.NewAssetFuel();</P>
+<P></FONT><FONT color=#0000ff size=2>try</P></FONT><FONT size=2>
+<P>{</P>
+<BLOCKQUOTE dir=ltr>
+<P>assetFuel.AssetID =&nbsp;</FONT><FONT color=#008000 size=2> Convert.ToInt32(Request.Params["AssetID"]);</P></FONT><FONT size=2>
+<P>assetFuel.Fuel = TLFuelRadComboBox.SelectedValue;</P>
+<P>assetFuel.FuelCapacity = </FONT><FONT color=#2b91af size=2>Convert</FONT><FONT size=2>.ToDecimal(AssetFuelCapacityRadNumericTextBox.Text);</P>
+<P>assetFuel.FuelUnitID = </FONT><FONT color=#2b91af size=2>Convert</FONT><FONT size=2>.ToInt32(TLUnitRadComboBox.SelectedValue);</P>
+<P>assetFuel.Save();</P></BLOCKQUOTE>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>catch</FONT><FONT size=2> (</FONT><FONT color=#2b91af size=2>Exception</FONT><FONT size=2> ex)</P>
+<P>{</P>
+<BLOCKQUOTE dir=ltr>
+<P>result = </FONT><FONT color=#0000ff size=2>false</FONT><FONT size=2>;</P>
+<P></FONT><FONT color=#2b91af size=2>Logger</FONT><FONT size=2>.Error(ex.Message );</P></BLOCKQUOTE>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> result;</P></BLOCKQUOTE>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>else</P></FONT><FONT size=2>
+<P>{</P>
+<BLOCKQUOTE dir=ltr>
+<P>result = </FONT><FONT color=#0000ff size=2>false</FONT><FONT size=2>;</P>
+<P>MessageLabel.Visible = </FONT><FONT color=#0000ff size=2>true</FONT><FONT size=2>;</P>
+<P>MessageLabel.Text = </FONT><FONT color=#a31515 size=2>"Fuel already exists."</FONT><FONT size=2>;</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> result;</P></BLOCKQUOTE>
+<P>}</P></BLOCKQUOTE>
+<P dir=ltr></FONT></FONT>In the first code snippnet the BO does not have a static method IsExists() that can call a Command Object to check for existence of the record for whihc i am making use of the exception number to determine if there exisits a duplicate.</P>
+<P dir=ltr>However in the second code snippet I do have a static method whihc can invoke the Command Object to check for duplicate record. </P>
+<P dir=ltr>Both works but not sure whihc one to pick because I would like to follow one standard and more ever in the first case it only works if the DB is SQL and in the second case the cost&nbsp;is the&nbsp;extra trip to the DB for every insert,update.</P>
+<P dir=ltr>Thanks in Advance for all your responses.</P>
+<P dir=ltr>P.S: NEWBIE HERE</P>
+<P dir=ltr>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>KKoteles replied on Thursday, October 18, 2007</h2><P>OK,&nbsp; I kind of see what you are trying to do.&nbsp; It looks as if you are trying to do this with no direct feedback to the user at the time they are filling out the screen.&nbsp; One way is to disable the 'Save' button if your object is Invalid.&nbsp; That way they can't even try to save the object unless it is valid.&nbsp; You have a slight feedback problem to your users though if they don't know WHY the button is disabled (this is where I use the ErrorProvider).&nbsp; OK, even if you leave the 'Save' enabled - I think I would lean closer to what you are doing in your first try .. catch; however, I would check to see if the object IsValid before I try to save it.&nbsp; If it is not valid, then you can display the BrokenRules collection.&nbsp; tetranz also is correct in that you will still need to guard against a possible caching issue so I wouldn't get rid of the exception checking.&nbsp; Normally I have several catches - one for Csla.DataPortalException, one for System.Security.SecurityException, and finally Exception.&nbsp; Here is how I'd quickly change your sample code.&nbsp; This assumes you do have an Exists command though in order to be used within the validation rule; otherwise, the object will never mark itself as being InValid.&nbsp; It is at the point at which you set your field as to when the validation will occur - and as a result the call to Exists.&nbsp; You should not need to call it directly from your UI.&nbsp; You can if you want, but it might end up in another call to the database.</P>
+<P>assetTransmission = <FONT color=#2b91af size=2>AssetTransmission</FONT><FONT size=2>.NewAssetTransmission();</P>
+<P>assetTransmission.Transmission = TLTransmissionListUserControl.SelectedValue.ToString();</P>
+<P>assetTransmission.AssetID =&nbsp; </FONT><FONT color=#008000 size=2>Convert.ToInt32(Session["AssetID"]);</P></FONT><FONT size=2>
+<P>assetTransmission.FluidCapacity = </FONT><FONT color=#2b91af size=2>Convert</FONT><FONT size=2>.ToDecimal(AssetTransmissionFluidCapacityRadNumericTextBox.Text);</P>
+<P>assetTransmission.FluidID = </FONT><FONT color=#2b91af size=2>Convert</FONT><FONT size=2>.ToInt32(TLFluidListUserControl.SelectedValue);</P>
+<P>assetTransmission.TransSerialNumber = AssetTransmissionSerialNumberTextBox.Text;</P></FONT>
+<P><FONT color=#0000ff size=2>if</FONT><FONT size=2> (assetTransmission.IsValid == false</FONT><FONT size=2>)</P>
+<P>{</P>
+<BLOCKQUOTE dir=ltr><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>foreach</FONT><FONT size=2> (</FONT><FONT color=#2b91af size=2>BrokenRule</FONT><FONT size=2> rule </FONT><FONT color=#0000ff size=2>in</FONT><FONT size=2> assetTransmission.BrokenRulesCollection)</P>
+<P>{</P></FONT><FONT color=#0000ff size=2></BLOCKQUOTE>
+<BLOCKQUOTE dir=ltr>
+<P dir=ltr>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT color=#000000>MessageLabel.Text += rule.Description +</FONT> <FONT color=#a31515 size=2>"&nbsp;\r\n"</FONT><FONT size=2><FONT color=#000000>;</FONT></P></FONT><FONT size=2></BLOCKQUOTE>
+<BLOCKQUOTE dir=ltr>
+<P></FONT></FONT><FONT size=2>}</P></BLOCKQUOTE>
+<P dir=ltr></FONT></FONT><FONT size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;MessageLabel.Visible = <FONT color=#0000ff size=2>true</FONT><FONT size=2>;</P>
+<P dir=ltr></FONT>}</P>
+<P>else</P>
+<P>{</P>
+<P></FONT>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;try</P><FONT size=2>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{</P>
+<BLOCKQUOTE dir=ltr></FONT><FONT size=2>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;assetTransmission.Save();</P></BLOCKQUOTE>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</P>
+<P></FONT><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;catch</FONT><FONT size=2> (</FONT><FONT color=#2b91af size=2>Exception</FONT><FONT size=2> ex)</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{</P>
+<BLOCKQUOTE dir=ltr>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;result = </FONT><FONT color=#0000ff size=2>false</FONT><FONT size=2>;</P>
+<P></FONT><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if</FONT><FONT size=2> (((System.Data.SqlClient.</FONT><FONT color=#2b91af size=2>SqlException</FONT><FONT size=2>)ex.GetBaseException()).Number == 2627)</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{</P>
+<BLOCKQUOTE dir=ltr>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;MessageLabel.Text = </FONT><FONT color=#a31515 size=2>"Value(s) already exist and cannot be added"</FONT><FONT size=2>;</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;MessageLabel.Visible = </FONT><FONT color=#0000ff size=2>true</FONT><FONT size=2>;</P></BLOCKQUOTE></BLOCKQUOTE>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</P></FONT>
+<P>}</P>
+<P>Ken</P>
+<P>(and we are all NEWBIES - I learn something new everyday!)</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Adalton4 replied on Thursday, October 18, 2007</h2><P>Ken,</P>
+<P>&nbsp;</P>
+<P>I would like to do this.</P>
+<P>&nbsp;</P>
+<P>Use the Command object to give visual clues in the UI that something is wrong. This can indeed be done with the method you are proposing.</P>
+<P>&nbsp;</P>
+<P>But when the object gets saved, I want to re-check again inside the saving transaction because in the mean time, some other transaction could have inserted (or some other transactional business rule) the same record. I don't want to rely on an exception during insert.</P>
+<P>&nbsp;</P>
+<P>My real question is, is there a way to re-use the command object for this?</P>
+<P>&nbsp;</P>
+<P>Rgds</P>
+<P>Adalton4</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>KKoteles replied on Thursday, October 18, 2007</h2><P>Adalton4,</P>
+<P>With the UniqueName validation rule and with what you proposed before by calling the Exists command right before the save can both be done - where the exact same Exists method is called.&nbsp; So yes, you are reusing the command object.&nbsp; If the code is as you outlined, the time difference between when you set the property (and the Exists method is checked as part if its validation rule) and the time where you would call AssestFuel.IsExists("") is minimal so I don't think I would do them both.&nbsp; The problem is that each of them is done before the actual save itself - so in theory no matter when you checked using the Exists command&nbsp;there is still a possibility that by the time the save hits the database that you end up with&nbsp;a duplicate.&nbsp; You will always have to be able to handle the error from a duplicate entry (coming back from the database); however, doing one check (validation rule check before the save), the other check (Exists command right before the save), or both - can reduce the likely hood of it occuring.&nbsp; If there is a greater time period between when you set the property value (and the property validation rules are checked) and when you call the save method of the object, then I would be more inclined to do as you proposed (and that is to call the Exists command before calling the save because in the time that elapsed there is a possibility that what was unique at the time the property value was set is no longer unique at the time the object is saved).</P>
+<P>I'm not sure if I'm helping anymore at this point or not...</P>
+<P>Ken</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Adalton4 replied on Thursday, October 18, 2007</h2><P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>Inquistive_Mind:</strong></div><div>implement this checking in the BO itself by using a Command Object in my Business Base BO</div></BLOCKQUOTE></P>
+<P>KKToles,</P>
+<P>Shouldn't you pass the connection to the Command Object? In this case the exists command runs outside the transaction in the BO... How would you do this?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>KKoteles replied on Thursday, October 18, 2007</h2><P>Adalton4,</P>
+<P>The Exists command / method is a static call.&nbsp; It can be called without even having an instance of the object; therefore, it doesn't make sense to try to pass it a connection.&nbsp; The method simply returns true or false - independant of anythign else going on within the object.&nbsp; I'm not sure why you think you would want to do so?</P>
+<P>Ken</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

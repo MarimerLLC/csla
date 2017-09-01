@@ -1,0 +1,74 @@
+<html><header><title>Csla.DataPortalException: ChildDataPortal.Update failed on the server </title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Csla.DataPortalException: ChildDataPortal.Update failed on the server </h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10713.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>7designs posted on Monday, September 26, 2011</h2><p>Initially had a problem when trying to save a datagridview that was bound&nbsp; using binding source(http://www.lhotka.net/Article.aspx?area=4&amp;id=91e15def-fa1c-4236-86b5-b204bfc4a0aa). That was resolved by overriding DataPortal_Update() method in BusinessListBase(http://forums.lhotka.net/forums/p/6398/34829.aspx). but now I am getting another error.</p>
+<p>&nbsp;</p>
+<p>Here is where it breaks because mh.DynamicMethod is null:</p>
+<p>public static object CallMethod(object obj, string method, params object[] parameters)<br />&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var mh = GetCachedMethod(obj, method, parameters);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (mh == null || mh.DynamicMethod == null)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; throw new NotImplementedException(method + &quot; &quot; + Resources.MethodNotImplemented);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return CallMethod(obj, mh, parameters);<br />&nbsp;&nbsp;&nbsp; }</p>
+<p>Exception Message:</p>
+<p>{&quot;DataPortal.Update failed (Csla.DataPortalException: ChildDataPortal.Update failed on the server ---&gt; System.NotImplementedException: Child_Update not implemented\r\n&nbsp;&nbsp; at Csla.Reflection.MethodCaller.CallMethod(Object obj, String method, Object[] parameters) in C:\\Users\\ddavis\\Desktop\\cslacs-3.8.4-100811\\cslacs\\Csla\\Reflection\\MethodCaller.cs:line 269\r\n&nbsp;&nbsp; at Csla.Reflection.LateBoundObject.CallMethod(String method, Object[] parameters) in C:\\Users\\ddavis\\Desktop\\cslacs-3.8.4-100811\\cslacs\\Csla\\Reflection\\LateBoundObject.cs:line 86\r\n&nbsp;&nbsp; at Csla.Server.ChildDataPortal.Update(Object obj, Object[] parameters) in C:\\Users\\ddavis\\Desktop\\cslacs-3.8.4-100811\\cslacs\\Csla\\Server\\ChildDataPortal.cs:line 207\r\n&nbsp;&nbsp; --- End of inner exception stack trace ---\r\n&nbsp;&nbsp; at Csla.Reflection.MethodCaller.CallMethod(Object obj, String method, Object[] parameters) in C:\\Users\\ddavis\\Desktop\\cslacs-3.8.4-100811\\cslacs\\Csla\\Reflection\\MethodCaller.cs:line 269\r\n&nbsp;&nbsp; at Csla.Reflection.LateBoundObject.CallMethod(String method, Object[] parameters) in C:\\Users\\ddavis\\Desktop\\cslacs-3.8.4-100811\\cslacs\\Csla\\Reflection\\LateBoundObject.cs:line 86\r\n&nbsp;&nbsp; at Csla.Server.ChildDataPortal.Update(Object obj, Object[] parameters) in C:\\Users\\ddavis\\Desktop\\cslacs-3.8.4-100811\\cslacs\\Csla\\Server\\ChildDataPortal.cs:line 207\r\n&nbsp;&nbsp; at Csla.Server.ChildDataPortal.Update(Object obj, Object[] parameters) in C:\\Users\\ddavis\\Desktop\\cslacs-3.8.4-100811\\cslacs\\Csla\\Server\\ChildDataPortal.cs:line 258\r\n&nbsp;&nbsp; at Csla.DataPortal.UpdateChild(Object child, Object[] parameters) in C:\\Users\\ddavis\\Desktop\\cslacs-3.8.4-100811\\cslacs\\Csla\\DataPortal.cs:line 939\r\n&nbsp;&nbsp; at Csla.BusinessListBase`2.Child_Update(Object[] parameters) in C:\\Users\\ddavis\\Desktop\\cslacs-3.8.4-100811\\cslacs\\Csla\\BusinessListBase.cs:line 966\r\n&nbsp;&nbsp; at Medflow.DataAccess.MFFACILITIESList.DataPortal_Update() in C:\\SSUPDATES\\NET 2.0\\DLLs\\MedflowDataAccess\\Code\\Collections\\MFFACILITIESList.DataAccess.cs:line 73\r\n&nbsp;&nbsp; at dm(Object , Object[] )\r\n&nbsp;&nbsp; at Csla.Reflection.MethodCaller.CallMethod(Object obj, DynamicMethodHandle methodHandle, Object[] parameters) in C:\\Users\\ddavis\\Desktop\\cslacs-3.8.4-100811\\cslacs\\Csla\\Reflection\\MethodCaller.cs:line 357)&quot;}</p>
+<p>&nbsp;</p>
+<p>Stack Trace:</p>
+<p>at Csla.Reflection.MethodCaller.CallMethod(Object obj, String method, Object[] parameters) in C:\Users\ddavis\Desktop\cslacs-3.8.4-100811\cslacs\Csla\Reflection\MethodCaller.cs:line 269<br />&nbsp;&nbsp; at Csla.Reflection.LateBoundObject.CallMethod(String method, Object[] parameters) in C:\Users\ddavis\Desktop\cslacs-3.8.4-100811\cslacs\Csla\Reflection\LateBoundObject.cs:line 86<br />&nbsp;&nbsp; at Csla.Server.ChildDataPortal.Update(Object obj, Object[] parameters) in C:\Users\ddavis\Desktop\cslacs-3.8.4-100811\cslacs\Csla\Server\ChildDataPortal.cs:line 207<br />&nbsp;&nbsp; at Csla.Server.ChildDataPortal.Update(Object obj, Object[] parameters) in C:\Users\ddavis\Desktop\cslacs-3.8.4-100811\cslacs\Csla\Server\ChildDataPortal.cs:line 258<br />&nbsp;&nbsp; at Csla.DataPortal.UpdateChild(Object child, Object[] parameters) in C:\Users\ddavis\Desktop\cslacs-3.8.4-100811\cslacs\Csla\DataPortal.cs:line 939<br />&nbsp;&nbsp; at Csla.BusinessListBase`2.Child_Update(Object[] parameters) in C:\Users\ddavis\Desktop\cslacs-3.8.4-100811\cslacs\Csla\BusinessListBase.cs:line 966<br />&nbsp;&nbsp; at Medflow.DataAccess.MFFACILITIESList.DataPortal_Update() in C:\SSUPDATES\NET 2.0\DLLs\MedflowDataAccess\Code\Collections\MFFACILITIESList.DataAccess.cs:line 73<br />&nbsp;&nbsp; at dm(Object , Object[] )<br />&nbsp;&nbsp; at Csla.Reflection.MethodCaller.CallMethod(Object obj, DynamicMethodHandle methodHandle, Object[] parameters) in C:\Users\ddavis\Desktop\cslacs-3.8.4-100811\cslacs\Csla\Reflection\MethodCaller.cs:line 357<br />&nbsp;&nbsp; at Csla.Reflection.MethodCaller.CallMethod(Object obj, DynamicMethodHandle methodHandle, Object[] parameters) in C:\Users\ddavis\Desktop\cslacs-3.8.4-100811\cslacs\Csla\Reflection\MethodCaller.cs:line 361<br />&nbsp;&nbsp; at Csla.Reflection.MethodCaller.CallMethod(Object obj, String method, Object[] parameters) in C:\Users\ddavis\Desktop\cslacs-3.8.4-100811\cslacs\Csla\Reflection\MethodCaller.cs:line 270<br />&nbsp;&nbsp; at Csla.Reflection.LateBoundObject.CallMethod(String method) in C:\Users\ddavis\Desktop\cslacs-3.8.4-100811\cslacs\Csla\Reflection\LateBoundObject.cs:line 70<br />&nbsp;&nbsp; at Csla.Server.SimpleDataPortal.Update(Object obj, DataPortalContext context) in C:\Users\ddavis\Desktop\cslacs-3.8.4-100811\cslacs\Csla\Server\SimpleDataPortal.cs:line 230<br />&nbsp;&nbsp; at Csla.DataPortal.Update(Object obj) in C:\Users\ddavis\Desktop\cslacs-3.8.4-100811\cslacs\Csla\DataPortal.cs:line 480<br />&nbsp;&nbsp; at Csla.DataPortal.Update[T](T obj) in C:\Users\ddavis\Desktop\cslacs-3.8.4-100811\cslacs\Csla\DataPortal.cs:line 336<br />&nbsp;&nbsp; at Csla.BusinessListBase`2.Save() in C:\Users\ddavis\Desktop\cslacs-3.8.4-100811\cslacs\Csla\BusinessListBase.cs:line 1027<br />&nbsp;&nbsp; at MFFacilitiesBL.Facilities.SaveForm(BindingSource bsFacilities, Boolean rebind) in C:\SSUPDATES\NET 2.0\DLLs\MFFacilitiesBL\Code\Facilities.cs:line 55</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Monday, September 26, 2011</h2><p>Hi, </p>
+<p>
+Looks like the list item in Medflow.DataAccess.MFFACILITIESList does not implement a Child_Update method with the expected signature (parameters).</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>7designs replied on Monday, September 26, 2011</h2><p>No it does not.&nbsp; According to this article(http://forums.lhotka.net/forums/p/6398/34829.aspx) I only needed to override DataPortal_Update to call Child_Update().&nbsp; Is there something more that needs to be done?</p>
+<p>&nbsp;</p>
+<p>&nbsp;protected override void DataPortal_Update()<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; using (SqlConnection connection = new SqlConnection(ADOHelper.ConnectionString))<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; connection.Open();<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Child_Update();<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br /><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Monday, September 26, 2011</h2><p>This is most likely the code you call in BusinessListBase:
+    </p>
+<pre style="font-family:Consolas;font-size:13px;color:black;background:none repeat scroll 0% 0% #fafafa;">&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">protected</span>&nbsp;<span style="color:blue;">virtual</span>&nbsp;<span style="color:blue;">void</span>&nbsp;Child_Update(<span style="color:blue;">params</span>&nbsp;<span style="color:blue;">object</span>[]&nbsp;parameters)
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">var</span>&nbsp;oldRLCE&nbsp;=&nbsp;<span style="color:blue;">this</span>.RaiseListChangedEvents;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">this</span>.RaiseListChangedEvents&nbsp;=&nbsp;<span style="color:blue;">false</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">try</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">foreach</span>&nbsp;(<span style="color:blue;">var</span>&nbsp;child&nbsp;<span style="color:blue;">in</span>&nbsp;DeletedList)
+<b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#2b91af;">DataPortal</span>.UpdateChild(child,&nbsp;parameters);</b>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DeletedList.Clear();
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">foreach</span>&nbsp;(<span style="color:blue;">var</span>&nbsp;child&nbsp;<span style="color:blue;">in</span>&nbsp;<span style="color:blue;">this</span>)
+&nbsp;&nbsp;<b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">if</span>&nbsp;(child.IsDirty)&nbsp;<span style="color:#2b91af;">DataPortal</span>.UpdateChild(child,&nbsp;parameters);</b>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">finally</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">this</span>.RaiseListChangedEvents&nbsp;=&nbsp;oldRLCE;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;}</pre>
+<p>&nbsp;</p>
+<p>And the DataPortal.UpdateChild will in turn call ChildDataPortal.Update (semantic code shown below) for each Deleted item or IsDirty item:</p>
+<pre style="font-family:Consolas;font-size:13px;color:black;background:none repeat scroll 0% 0% #fafafa;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="color:blue;">if</span>&nbsp;(busObj.IsDeleted)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">if</span>&nbsp;(!busObj.IsNew)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:green;">//&nbsp;tell&nbsp;the&nbsp;object&nbsp;to&nbsp;delete&nbsp;itself</span>
+<b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;lb.CallMethod(<span style="color:#a31515;">&quot;Child_DeleteSelf&quot;</span>,&nbsp;parameters);</b>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; lb.CallMethodIfImplemented(<span style="color:#a31515;">&quot;MarkNew&quot;</span>); 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">else</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">if</span>&nbsp;(busObj.IsNew)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+<b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:green;">//&nbsp;tell&nbsp;the&nbsp;object&nbsp;to&nbsp;insert&nbsp;itself</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;lb.CallMethod(<span style="color:#a31515;">&quot;Child_Insert&quot;</span>,&nbsp;parameters);
+</b>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">else</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:green;">//&nbsp;tell&nbsp;the&nbsp;object&nbsp;to&nbsp;update&nbsp;itself</span>
+<b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;lb.CallMethod(<span style="color:#a31515;">&quot;Child_Update&quot;</span>,&nbsp;parameters);</b>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">if</span>&nbsp;(target&nbsp;!=&nbsp;<span style="color:blue;">null</span>)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;target.MarkOld();
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">else</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;lb.CallMethodIfImplemented(<span style="color:#a31515;">&quot;MarkOld&quot;</span>);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+</pre>
+<p>The point being that your items class in the BusinessList must implement these 3 methods to save itself:</p>
+<ul>
+<li><b>Child_DeleteSelf</b></li>
+<b>
+</b>
+<li><b>Child_Insert</b></li>
+<b>
+</b>
+<li><b>Child_Update</b></li>
+</ul>
+<p>Now your code in the list calls Child_Update with no parameters (like a parentId from the parent object for relationship) so for your existing code these methods must exist with no parameters. </p>
+<p>&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

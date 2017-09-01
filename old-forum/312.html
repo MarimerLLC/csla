@@ -1,0 +1,16 @@
+<html><header><title>Collection creating</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Collection creating</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/312.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Wal972 posted on Wednesday, June 07, 2006</h2><P>Hi.</P>
+<P>I need to create the collection item LineItems and then have different types created. Now I know how to the different items ProductLineItem, ServiceLineItem etc. But when I create the collection and I am fetching the various line items, do I use a case selection or something else.</P>
+<P>ie. in the fetch command of the LineItemsCollection do I</P>
+<P>Select Case Type</P>
+<P>&nbsp;&nbsp;&nbsp;Case "Product"</P>
+<P>&nbsp;&nbsp;&nbsp;Case "Service"</P>
+<P>&nbsp;&nbsp;&nbsp;etc</P>
+<P>End Select</P>
+<P>Thanks</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Wal972 replied on Saturday, June 10, 2006</h2>Urgent assistance thanks guys</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Pradeep replied on Sunday, June 11, 2006</h2><DIV>If I understand correctly, You want to create a LineItems collection, which is a collection of different types of line items like ProductLineItem, ServiceLineItem, etc.</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>You have to have only one collection that will fetch all types of LineItems. And later when you try to open a LineItem by say double clicking on the grid, you will see what type of LineItem that object is and open the appropriate one (Product or Service).</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>So you will have a LineItem base object and all your other LineItem type objects will inherit from this. Then you will create a LineItem Collection object that is basically a collection of any type of LineItem object.</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>HTH</DIV>
+<DIV>Pradeep</DIV></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

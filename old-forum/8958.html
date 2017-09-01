@@ -1,0 +1,21 @@
+<html><header><title>WebForms UI validation</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>WebForms UI validation</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/8958.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>juhilt posted on Wednesday, May 19, 2010</h2><p>Hello!</p>
+<p>I am new to the CSLA .NET and I am wondering how the CSLA business entities can be used with Web Forms UI. I am going to use CSLA 3.8 with .NET 3.5 Framework.</p>
+<p>How can I for example use validation rules from the business entity to validate multiple textboxes?</p>
+<p>How does the validation logic for example handle type casting from string to int and give a reasonable error messages to user when using data binding? Does type casting error stop validation, does it continue or does it crash the whole application? Can I call the validation to test if the user input can be type casted?</p>
+<p>How can I for example change the color of a specific textbox to red when validation or type casting of the data fails? Is there some way to map the UI element to the business entity property or do I need to create a mapper by my self? If latter, how should I do it?</p>
+<p>A very simple example</p>
+<p>Web form</p>
+<p>First name: [textbox]</p>
+<p>Last name: [textbox]</p>
+<p>Age: [textbox]</p>
+<p>Organisation id: [textbox]</p>
+<p>Business entity</p>
+<p>string FirstName {get; set;}</p>
+<p>string LastName {get; set;}</p>
+<p>int Age {get; set;}</p>
+<p>int OrganisationId {get; set;}</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Wednesday, May 19, 2010</h2><p>You should start by reading Chapter 20 of the <i>Expert 2008 Business Objects</i> book to get the basics.</p>
+<p>In general there&#39;s no great answer for client-side validation in Web Forms. The Web Forms technology doesn&#39;t have data binding that is comparable to a rich client model like WPF, Silverlight or Wndows Forms - it just isn&#39;t there.</p>
+<p>Generally, client-side validation in Web Forms comes from validation controls that the UI developer puts into the UI. That&#39;s far from ideal, because those controls are really duplicating business logic that is in your business objects.</p>
+<p>If you are really good at Web Forms development, you can write code in your page to automatically inject validation controls into your UI. CSLA business objects expose their rules as rule:// URIs - this is discussed in Chapter 11. You can use that metadata information about the rules to know what validation controls to project into the UI. Sadly, Web Forms doesn&#39;t have any way to do this by itself...</p>
+<p>You must always remember, of course, that some of your rules can&#39;t be projected into the UI. Any rules with interesting business logic, or data access, or anything beyond basic validation, will always run on the server. So whatever you do in your UI must include the ability to report server-side rule issues back to the user on postback. That&#39;s just the nature of the web.</p>
+<p>During the postback you can always get the list of broken rules from your business object. Again, Chapter 11 talks about the different ways to get broken rule information from the object. When combined with LINQ, it is extremely easy to get broken rules by severity, by property, etc. Assuming your UI design includes a model for displaying server-side errors, you just render the broken rules into the UI as appropriate.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

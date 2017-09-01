@@ -1,0 +1,31 @@
+<html><header><title>Sending parameter to DataPortal_Create()</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Sending parameter to DataPortal_Create()</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10877.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>CrikeyMoses posted on Tuesday, November 15, 2011</h2><p>We are using Csla 4.1, Silverlight 4 and MVVM.&nbsp;</p>
+<p>We have some custom validations that depends on two different business objects,</p>
+<p>I want to know if it is possible to send a parameter to the DataPortal_Create(), something like the following:</p>
+<p>So in my view model i will call the Business.Client method as follows:<br />public ParticipantVM(string compId)</p>
+<p>{&nbsp;BeginRefresh(&quot;NewParticipant&quot;, compId);&nbsp;}</p>
+<p>&nbsp;</p>
+<p><br />On the Business.Client side i want to do a call&nbsp;similar&nbsp;to the following;<br />public static void NewParticipant(string compId, EventHandler&lt;DataPortalResult&lt;Participant&gt;&gt; callback)</p>
+<p>&nbsp;{</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; var dp = new DataPortal&lt;Participant&gt;();</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; dp.CreateCompleted += callback;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; dp.BeginCreate(); &nbsp;&lt;-- This is where i want to pass the parameter like this&nbsp;dp.BeginCreate(compId);</p>
+<p>&nbsp;}</p>
+<p>Then obviously on the Business.Server side I want to catch it:<br />protected override void DataPortal_Create(string compId)</p>
+<p>{}</p>
+<p>&nbsp;</p>
+<p>Can someone please me if this is possible and how to&nbsp;achieve&nbsp;it.</p>
+<p>Thanks</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>CrikeyMoses replied on Wednesday, November 16, 2011</h2><p>Is there any way to send parameters to the DataPortal_Create(), if i try is tells me there is no override for DataPortal_Crate(params)</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>edore replied on Wednesday, November 16, 2011</h2><p>Hi!</p>
+<p>Of course there is no override, Rocky doesn&#39;t know your virtual methods signature required in BusinessBase in order to support your scenarios, plus mine, and theirs...&nbsp; But he uses reflection to find a signature that must look like this if you pass one string parameter&nbsp;for example :</p>
+<p>&nbsp;</p>
+<pre style="font-family:Consolas;background:white;color:black;font-size:13px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">protected</span>&nbsp;<span style="color:blue;">void</span>&nbsp;DataPortal_Create(<span style="color:#2b91af;">string </span>name)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</pre></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ryansilva replied on Tuesday, December 27, 2011</h2><p>Is it possible to pass multiple parameters in create function ?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tiago replied on Tuesday, December 27, 2011</h2><p>I&#39;m afraid you can&#39;t do it: just one parameter allowed.</p>
+<p>If you need to pass several parameters build a Criteria Class with where the class properties are your parameters. If you are using Silverlight, make sure that the Criteria Class inherits from CriteriaBase or even BusinessBase.</p>
+<p>P.S. - If you are using Silverlight, you must also pass the parameter</p>
+<pre style="font-family:Consolas;background:white;color:black;font-size:13px;"><span style="color:darkblue;">Csla</span>.<span style="color:darkblue;">DataPortalClient</span>.<span style="color:darkblue;">LocalProxy</span>&lt;<span style="color:darkblue;">Doc</span>&gt;.<span style="color:darkblue;">CompletedHandler</span>&nbsp;handle
+</pre>
+<p>[Edit]</p>
+<p>Please refer to <a href="http://forums.lhotka.net/forums/p/10506/49151.aspx#49151">http://forums.lhotka.net/forums/p/10506/49151.aspx#49151</a></p>
+<p>[Edit end]</p>
+<p>&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,36 @@
+<html><header><title>Enable form fields with ReadWriteAuthorization1 </title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Enable form fields with ReadWriteAuthorization1 </h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5414.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Warren posted on Tuesday, September 16, 2008</h2><FONT color=#0000ff size=2>
+<P><FONT color=#000000 size=3>Howdy, </FONT></P>
+<P><FONT color=#000000 size=3>I am using ReadWriteAuthorization1 to reset individual controls on my forms. My understanding is that it will disable individual controls if a user doesn't have access to an individual property that a control is bound to.&nbsp; </FONT></P>
+<P><FONT color=#000000 size=3>I would like my form fields to be disabled when the form first loads.&nbsp; They will be empty. Can ReadWriteAuthorization1 be used to enable form fields when a user *does* have access to the control binding property?</FONT></P>
+<P><FONT color=#000000 size=3>Otherwise, I need to reference the individual fields in my &nbsp;code to enable/disable them like below.</FONT></P>
+<P><FONT color=#000000 size=3>Thanks in advance.</FONT></P>
+<P><FONT color=#000000 size=3></FONT>&nbsp;</P>
+<P>Region</FONT><FONT size=2> </FONT><FONT color=#a31515 size=2>" Class Methods "</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Private</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Sub</FONT><FONT size=2> ApplyAuthorizationRules()</P>
+<P></FONT><FONT color=#0000ff size=2>Dim</FONT><FONT size=2> canEdit </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Boolean</FONT><FONT size=2> = Client.CanEditObject</P>
+<P></FONT><FONT color=#0000ff size=2>Dim</FONT><FONT size=2> allowEdit </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Boolean</FONT><FONT size=2> = mClient </FONT><FONT color=#0000ff size=2>IsNot</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Nothing</P></FONT><FONT size=2>
+<P></FONT><FONT color=#008000 size=2>' enable/disable buttons </P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Me</FONT><FONT size=2>.ButtonNew.Enabled = canEdit</P>
+<P></FONT><FONT color=#0000ff size=2>If</FONT><FONT size=2> allowEdit </FONT><FONT color=#0000ff size=2>Then</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Me</FONT><FONT size=2>.ButtonSave.Enabled = canEdit </FONT><FONT color=#0000ff size=2>And</FONT><FONT size=2> mClient.IsSavable()</P>
+<P></FONT><FONT color=#0000ff size=2>Me</FONT><FONT size=2>.ButtonDelete.Enabled = canEdit </FONT><FONT color=#0000ff size=2>And</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Not</FONT><FONT size=2> mClient.IsDirty</P>
+<P></FONT><FONT color=#0000ff size=2>Else</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Me</FONT><FONT size=2>.ButtonSave.Enabled = </FONT><FONT color=#0000ff size=2>False</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Me</FONT><FONT size=2>.ButtonDelete.Enabled = </FONT><FONT color=#0000ff size=2>False</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>If</P></FONT><FONT size=2>
+<P></FONT><FONT color=#008000 size=2>' enable/disable controls</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Me</FONT><FONT size=2>.TextBoxFullName.Enabled = allowEdit</P>
+<P></FONT><FONT color=#0000ff size=2>Me</FONT><FONT size=2>.TextBoxAddress1.Enabled = allowEdit</P>
+<P></FONT><FONT color=#0000ff size=2>Me</FONT><FONT size=2>.TextBoxAddress2.Enabled = allowEdit</P>
+<P></FONT><FONT color=#0000ff size=2>Me</FONT><FONT size=2>.TextBoxAddress3.Enabled = allowEdit</P>
+<P></FONT><FONT color=#0000ff size=2>Me</FONT><FONT size=2>.TextBoxAddress4.Enabled = allowEdit</P>
+<P></FONT><FONT color=#0000ff size=2>Me</FONT><FONT size=2>.TextBoxTitle1.Enabled = allowEdit</P>
+<P></FONT><FONT color=#0000ff size=2>Me</FONT><FONT size=2>.TextBoxTitle2.Enabled = allowEdit</P>
+<P></FONT><FONT color=#0000ff size=2>Me</FONT><FONT size=2>.TextBoxTitle3.Enabled = allowEdit</P>
+<P></FONT><FONT color=#0000ff size=2>Me</FONT><FONT size=2>.TextBoxEmail.Enabled = allowEdit</P>
+<P></FONT><FONT color=#0000ff size=2>Me</FONT><FONT size=2>.ComboBoxPaymentType.Enabled = allowEdit</P>
+<P></FONT><FONT color=#008000 size=2>' Disable any individual controls this users does not have acccess to </P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Me</FONT><FONT size=2>.ReadWriteAuthorization1.ResetControlAuthorization()</P>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Sub</P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, September 18, 2008</h2><P>I'm not sure I understand the question?</P>
+<P>ReadWriteAuthorization is designed specifically to enable/disable controls in a detail form based on whether the user is allowed to read or write to the property bound to each control.</P>
+<P>You need to detect when the current principal has changed (as the user logs in and out) because .NET doesn't notify when this happens. And when you detect that change, you need to call the reset method. This concept, and one solution, is discussed in Chapter 9.</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

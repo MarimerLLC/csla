@@ -1,0 +1,54 @@
+<html><header><title>General Routine that works on a concrete type</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>General Routine that works on a concrete type</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/1341.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Sarosh posted on Wednesday, September 27, 2006</h2><P>Hi!</P>
+<P>I would like to create general routine that works on a concrete type based on the BusinessListBase&lt;T, C&gt;. where I won’t know the type, ‘T’, 'C' until runtime.</P>
+<P>How can I achieve this?</P>
+<P>e.g. I want to create a&nbsp;BaseMaintForm that will be used for Maintaining all Lookup/Reference Tables.</P>
+<P>1] This Form will have a bindingSource, and a dataGridView</P>
+<P>2] From the Menu I would like to pass the concerete class e.g. ProjectList&nbsp; (BusinessListBase&lt;T, C&gt;) to the BaseMaintForm which will then set that to a private variable (field/property) in the constructor</P>
+<P>public partial class BaseMaintForm : Form</P>
+<P>{</P>
+<P>&nbsp;&nbsp;&nbsp;private object _mainbo; // What type should this be?</P>
+<P>&nbsp;&nbsp;&nbsp;public BaseMaintForm(object mainBO) // What type should this be?</P>
+<P>&nbsp;&nbsp;&nbsp;{</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;this._mainbo = mainBO;</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;this.mainBindingSource.DataSource = this._mainbo.GetList();</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;this.mainDataGridView.DataSource = this.mainBindingSource;</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;this._mainbo.BeginEdit()</P>
+<P>&nbsp;&nbsp;&nbsp;}</P>
+<P>}</P>
+<P>What I can't figure out is what type should I define _mainbo and mainBO as ? </P>
+<P>Thanks</P>
+<P>Sarosh</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Wednesday, September 27, 2006</h2>Not sure if this will work, but have you tried:<br><br><font color="#0000ff">public partial class </font><font color="#008000">BaseMaintForm</font>&lt;T, C&gt; : <font color="#008000">Form <br></font>&nbsp;&nbsp;&nbsp; <font color="#0000ff">where </font>T : <font color="#008000">BusienssListBase</font>&lt;T, C&gt;, C : <font color="#008000">BusienssBase</font>&lt;C&gt; {<br><br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp; <font color="#0000ff">private</font> T _mainbo; <font color="#008000">// What type should this be?</font><br><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#0000ff">this</font>._mainbo = mainBO;</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#0000ff">this</font>.mainBindingSource.DataSource = <font color="#0000ff">this</font>._mainbo.GetList();</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#0000ff">this</font>.mainDataGridView.DataSource = <font color="#0000ff">this</font>.mainBindingSource;</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#0000ff">this</font>._mainbo.BeginEdit()</p><br>&nbsp;}<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, September 27, 2006</h2>Unforutunately generics rarely work with Windows Forms, as the designers don't understand them...<br><br>However, there are some interfaces defined by CSLA to help solve this problem. Specifically, the Csla.Core.IEditableBusinessObject interface, which provides access to a number of key properties. <br><br>Also, in CSLA 2.1 I added the ISavable interface to allow the creation of a common UI framework that can easily save editable objects (single and collection types).<br><br>So mainBO could be IEditableBusinessObject or ISavable, depending on what you need to do with the object. And beneath IEditableBusinessObject is IUndoableObject and beneath that (common to all business classes - editable and readonly) is IBusinessObject.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Sarosh replied on Wednesday, September 27, 2006</h2><P>Hi!</P><FONT color=#000000 size=2>
+<P>IEditableBusinessObject does not have .GetList() and .BeginEdit() Methods.</P>
+<P>What interface can I use so that I have access to the following PEM's.</P>
+<P>GetList()</P>
+<P>BeginEdit()</P>
+<P>ApplyEdit()</P>
+<P>Save()</P>
+<P>AddNew()</P><FONT size=2>
+<P>CanEditObject()</P></FONT><FONT size=2>
+<P>CanAddObject()</P><FONT size=2>
+<P>CanDeleteObject()</P><FONT size=2>
+<P>IsDirty</P><FONT size=2>
+<P>IsValid</P>
+<P>Can I use the bindingSource or the dataGridView's PEMS instead of some of the above mentioned PEM's</P>
+<P>Thanks</P>
+<P>Sarosh</P></FONT></FONT></FONT></FONT></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, September 27, 2006</h2>There is no single interface that provides everything you list in your post. In fact, it isn't possible to have such a single interface, since you are mixing concepts from single objects and collections. I suppose you could create such an interface and just have the single object implementations throw exceptions for the collection-only elements.<br><br>If you want a unified interface like you describe, you'll need to define it yourself. You can do this, and create your own base classes that subclass the 7 CSLA base classes. This subclassing concept has been discussed on other threads. Your new base classes could then implement your common interface - which would inherit from all the other interfaces that do include the members you list.<br><br>Here's some info on the items in your list:<br><br>You shouldn't call BeginEdit, CancelEdit or ApplyEdit directly. You should allow the bindingsource control to do that on your behalf. There is errata regarding this on <a href="http://www.lhotka.net">www.lhotka.net</a>, and there've been threads about this previously on the forum.<br><br>The Save() method is in ISavable (in CSLA 2.1), along with a Saved event.<br><br>The CanXYZObject() authorization methods are static/Shared, and so can't be part of an interface. I have not figured out a good way to standardize these methods in a nice way - ideas are welcome!<br><br>What is GetList()? You mean the method off the IBindingSource interface from a DataSet?<br><br>IsDirty and IsValid are included in IEditableBusinessObject in CSLA 2.1.<br><br>AddNew() flows from a standard .NET collection interface (either IList or ICollection).<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Sarosh replied on Wednesday, September 27, 2006</h2><P>Hi!</P>
+<P>&gt;&gt;You shouldn't call BeginEdit, CancelEdit or ApplyEdit directly</P>
+<P>How else can I set the BO for n-level Undo before seeting it to the bindingSource's DataSource.</P>
+<P>&gt;&gt;What is GetList()? You mean the method off the IBindingSource interface from a DataSet?</P>
+<P>GetList() is the static constructor for the BO e.g. </P>
+<P>&nbsp;&nbsp;&nbsp;/// &lt;summary&gt;<BR>&nbsp;&nbsp;&nbsp; /// Returns a list of roles.<BR>&nbsp;&nbsp;&nbsp; /// &lt;/summary&gt;<BR>&nbsp;&nbsp;&nbsp; public static RoleList GetList()<BR>&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (_list == null)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _list = DataPortal.Fetch&lt;RoleList&gt;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (new Criteria(typeof(RoleList)));<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return _list;<BR>&nbsp;&nbsp;&nbsp; }</P>
+<P>Am I correct in saying that it will be very difficult to do what I am trying here?</P>
+<P>Sarosh</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Mark replied on Wednesday, September 27, 2006</h2><P>Don't worry about n-level undo - the BindingSource will handle that for you.</P>
+<P>GetList() - as you've defined - is a static method and can't be part of the interface (see Rocky's remarks about CanXXXObject).</P>
+<P>Based on what I've seen in your posts, you should probably retrieve the list externally and then simply pass the object reference to the form via the constructor - probably typed as IEditableBusinessObject.&nbsp; You can also role your own interface as Rocky explained previously.</P>
+<P>What you want to do *can* be done - you just have to understand the limitations of generics with regards to polymorphism.&nbsp; Coding to an interface will solve the majority of your issues.&nbsp; You'll have to find some other solution if you need to access static members of the object (possibly pass the values in as additional parameters on the constructor).&nbsp; For example...</P>
+<P>public BaseMaintForm(IEditableBusinessObject obj, bool canAddObject, bool canEditObject, bool canDeleteObject)<BR>{<BR>&nbsp;&nbsp; //Do whatever<BR>}</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Sarosh replied on Wednesday, September 27, 2006</h2><P>Hi!</P>
+<P>Thank you all&nbsp;for your ideas.</P>
+<P>I will try them out and will post my findings.</P>
+<P>Sarosh</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>xal replied on Thursday, September 28, 2006</h2>Hi!<br>Just one remark: as long as you don't use inheritance from your generic form, it should work.<br>If you want to use inheritance, you should go for an approach such as the one I discuss in <a HREF="/forums/thread/341.aspx">this post</a>.<br><br><br>Andrés<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

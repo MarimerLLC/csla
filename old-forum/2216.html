@@ -1,0 +1,29 @@
+<html><header><title>very basic question about CSLA and database.</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>very basic question about CSLA and database.</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/2216.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>SethSpearman posted on Saturday, January 27, 2007</h2><font face="Arial" size="2"><span>I am 
+developing a commercial winforms application.&nbsp; For the record, it may be ported 
+someday to asp.net and even have components running on pocket pc.&nbsp; This is one 
+reason, among others, that attracts me so strongly to the framework.&nbsp; But I am 
+having trouble on deciding on a database engine.&nbsp; Keeping in mind that right now 
+I am thinking of a COMMERCIAL WinForms APP and that deploying my app with sql 
+express edition would be a total nightmare (50+ meg redist, permissions etc) and 
+so I am thinking of other options.&nbsp; I have narrowed it down to 2 choices.&nbsp; The 
+first is SQL Compact edition because it embeds right into the app and can be 
+deployed with just a couple of files.&nbsp; The downside is that it has no native 
+support for stored procs which is very limiting (although MS makes a decent case 
+that this is not all bad).&nbsp; And I also know that I could use CSLA to do the data 
+portal and just put the CRUD right into the portal code rather on the DB but my 
+instinct is to not do it that way.&nbsp; Secondly, however, I am thinking of using 
+the firebird DBMS because it is “embeddable” just like SQL compact edition but 
+also can execute stored procs.&nbsp; In fact, it seems just right, except that it is 
+a NEW engine and would require me to learn all of its particular oddities and 
+differences and will have much less tool support (like CodeSmith templates for 
+example).&nbsp; So the learning curve is scaring me a bit. <br><br><br>What&nbsp; would you do?<br><br>Seth<o:p></o:p></span></font></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Saturday, January 27, 2007</h2><P>I would use <FONT face=Arial size=2>SQL compact edition myself.</FONT></P>
+<P><FONT face=Arial size=2>SP support is not critical. I only use a handful of them right now on regular SQL Server.</FONT></P>
+<P><FONT face=Arial size=2>I have separate classes to support the SQL code. Basically one class per table. So I can get the SQL from it using code like:&nbsp; </FONT></P>
+<P><FONT face=Arial size=2>SQLForTable1.SelectAll</FONT></P>
+<P><FONT face=Arial size=2>SQLForTable1.Delete(id As Integer)</FONT></P>
+<P><FONT face=Arial size=2>etc.</FONT></P>
+<P><FONT face=Arial size=2>This keeps the DataPortal code neat and clean.</FONT></P>
+<P><FONT face=Arial size=2>I also have a DataAccess Layer so the ADO.Net code is also abstracted out of the DataPortal.</FONT></P>
+<P><FONT face=Arial size=2>dr = DAL.ExecuteReader(SQLForTable1.SelectAll)</FONT></P>
+<P><FONT face=Arial size=2>Joe</FONT></P>
+<P>&nbsp;</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,41 @@
+<html><header><title>Need to do a deferred delete all children in one statement</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Need to do a deferred delete all children in one statement</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/8494.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>j055 posted on Monday, February 08, 2010</h2><p>Hi</p>
+<p>I have a root object with a child collection. Sometimes I need to delete all the children when the root object is saved. Normally each Child_DeleteSelf is called for each item in the DeletedList but if I&#39;ve called a method on the list like:</p>
+<p>public void RemoveAll()<br />{<br />&nbsp;&nbsp;&nbsp; Clear();<br />}</p>
+<p>I&#39;d like to call a single stored proc instead of a one proc for each item when I call Save on the root.</p>
+<p>Is there a way to easily adapt the child collection to do this?</p>
+<p>Thanks<br />Andrew</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Monday, February 08, 2010</h2><p>Sure, just override the collection&#39;s Child_Update() method and call your DAL from there. Don&#39;t echo the call to the child objects in DeletedList - just clear the DeletedList and you should be set.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>j055 replied on Tuesday, February 09, 2010</h2><p>Thanks for your suggestion. Adopted this approach.&nbsp;</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; private void Child_Update()<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; RaiseListChangedEvents = false;</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (Count == 0 &amp;&amp; DeletedList.Count &gt; 0)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// call a stored proc to delete using a foreign key.</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;// is this necessary? doesn&#39;t seem to do any harm<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; DeletedList.Clear();<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; else<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// otherwise do the normal deletes<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Child_Update();<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; RaiseListChangedEvents = true;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</p>
+<p>Cheers</p>
+<p>Andrew</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, February 09, 2010</h2><p>Is DeletedList.Clear() necessary? Yes. If you don&#39;t clear the list, then Child_Update() will call Child_DeleteSelf() on each of those child objects, which seems like a bit of a waste, and forces you to implement the method in that class, even though that method won&#39;t actually do anything.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rxelizondo replied on Tuesday, February 09, 2010</h2><p>The solution to your problem looks fine but I think you are walking a fine line here (at least in my opinion).</p>
+<p>Manually clearing the DeletedList collection seems risky to me, such task is something that the CSLA is normally charged with doing and its best to leave that task to the CSLA itself (again this is just my opinion).</p>
+<p>The fact that you are sometimes bypassing the standard Child_Update() code is simply creating more maintenance issues. I mean, what&rsquo;s going to happen if Rocky updates that function later to fix a bug or enhance it? Perhaps then your DeletedList clearout wont work anymore the way you have it becuase there must be some other steps that must happen before you do that.... I mean, who knows.</p>
+<p>But if you want to go that way, I would change your code a little to something like this:</p>
+<p>Don&rsquo;t thing you need to worry about the &ldquo;RaiseListChangedEvents&rdquo; since you are only cleareing the DeleteList wich is property and not the collection itself.</p>
+<p>&nbsp;protected override void Child_Update(params object[] parameters)<br />{<br />&nbsp;&nbsp;&nbsp; if (Count == 0 &amp;&amp; DeletedList.Count &gt; 0)<br />&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // call a stored proc to delete using a foreign key.</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; DeletedList.Clear();<br />&nbsp;&nbsp;&nbsp; }<br />&nbsp;&nbsp;&nbsp; else<br />&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; base.Child_Update(parameters);<br />&nbsp;&nbsp;&nbsp; }<br />} </p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>xAvailx replied on Monday, February 08, 2010</h2><p>Another option is to let the database do the deleting for you by setting your foreign keys with cascade delete.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rxelizondo replied on Monday, February 08, 2010</h2><p>&nbsp;</p>
+<p class="MsoNormal">If you don&rsquo;t want to mess around with the CSLA metadata (I personally
+wouldn&rsquo;t like to mess with it myself):</p>
+<p class="MsoNormal">&nbsp;</p>
+<p class="MsoNormal">On my root object DataPortal_Update, I would do a count on the
+non deleted list and if the count is zero then that means all children have
+been deleted. If that was the case, I would run my database delete command to
+delete all the children in one shot from there.</p>
+<p class="MsoNormal">&nbsp;</p>
+<p class="MsoNormal">I would then iterate through all deleted children on the
+DeletedList collection and set some DontRunDeleteCode flag to True on each of
+them. Once that&rsquo;s done, I would continue with my normal call to FieldManager.UpdateChildren().</p>
+<p class="MsoNormal">&nbsp;</p>
+<p class="MsoNormal">On the Child_DeleteSelf method, I would check for the DontRunDeleteCode
+value and if true I would simply exit the function. If the flag was true that
+would mean that deletion of the object was taken care by the parent.</p>
+<p class="MsoNormal">&nbsp;</p>
+<p class="MsoNormal">That&rsquo;s just me of course, like I said, I rather let the CSLA
+do its stuff and don&rsquo;t mess around with its internal implementation such as
+clearing the DeletedList&nbsp;myself&hellip;. Oh boy, did I just&nbsp;imply&nbsp;that I don&rsquo;t like
+Rocky&rsquo;s suggestion&hellip;. I think I am in trouble <img src="http://forums.lhotka.net/emoticons/emotion-2.gif" alt="Big Smile" /></p>
+<p>&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

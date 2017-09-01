@@ -1,0 +1,67 @@
+<html><header><title>Composite pattern and Csla</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Composite pattern and Csla</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4177.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 posted on Tuesday, January 15, 2008</h2>Hi,<br><br>I'm currently trying to implement the Composite pattern with Csla.&nbsp; I have a LineItem, which may (or may not) support containing other line items.&nbsp; The implementation so far is very similar to that of the sample in Head First Design Patterns, for those with that book.&nbsp; <br><br>The part I've come up against so far is tracking deleted items,because even the top level class which is deisgned to always be the root ends up inheriting from BusinessBase.&nbsp;&nbsp; <br><br>There are behaviors from both BusinessBase and BusinessListBase that would seem to apply, but since we can't have multiple inheritence, I'm not sure what do to.&nbsp; So far I've added my own deletion tracking to LineItemNode (the subclass of LineItem that supports containing children), but I'm not sure if this is the proper way to do this.<br><br>Has anyone else implemented the composite pattern around Csla objects?&nbsp; Any insight?<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, January 17, 2008</h2><P>Andy, </P>
+<P>Your problem isn't clear to me from your description. Maybe that's because I haven't read the head first book?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Thursday, January 17, 2008</h2>My design is like this:<br><br>public abstract class LineItemContainer : BusinessBase&lt;LineItemContainer&gt; {<br>&nbsp;&nbsp; // item properties / methods, most have default behaviors because most line items support these<br>
+&nbsp;&nbsp; // regardless of whether or not they have child line items.<br>&nbsp;&nbsp; public virtual decimal UnitPrice { get; set; }<br>&nbsp;&nbsp; public virtual bool SupportsChildren { get; }<br>&nbsp;&nbsp; public void MoveUp();<br>&nbsp;&nbsp; // other line item stuff<br>&nbsp;<br>&nbsp;&nbsp; // collection stuff<br>&nbsp;&nbsp; public virtual Add( LineItemContainer child );<br>&nbsp;&nbsp; public virtual Remove( LineItemContainer child );<br>&nbsp;&nbsp; // other collection stuff; all implementation here also throws NotSupportedExceptions<br>}<br><br>public abstract class LineItemLeaf : LineItemContainer {<br>&nbsp;&nbsp; // item properties / methods, all implementation in this class throws NotSupportedException<br>
+&nbsp;&nbsp; public override decimal UnitPrice { get; set; }<br>
+&nbsp;&nbsp; public override bool SupportsChildren { get; }<br>
+&nbsp;&nbsp; // other line item stuff<br>
+<br>
+&nbsp;&nbsp; // Methods like Add aren't overridden, so they still throw NotSupportedException<br>
+}<br>
+<br>
+public abstract class LineItemNode : LineItemContainer {<br>
+&nbsp;&nbsp; // possibly overrides default Line item behaviors<br>
+<br>
+&nbsp;&nbsp; // collection stuff<br>
+&nbsp;&nbsp; public override Add( LineItemContainer child );<br>
+&nbsp;&nbsp; public override  Remove( LineItemContainer child );<br>
+&nbsp;&nbsp; // other collection stuff<br>
+}<br>
+<br>
+For the subclasses of LineItemNode, the instance should support both
+BusinessBase behaviors as well as BusinessListBase behaviors.&nbsp;&nbsp; For
+example, the GroupLineItem can have a valid UnitPrice, Quantity can be
+set for the group, but it also contains directly other line items (they
+should hold anything that subclasses LineItemContainer, so leaves or
+other nodes).<br><br>So LineItemNodes need to track deleted children just like a BusinessListBase list would, but I'm not sure how to proceed, because LineItemNode already tracks back to BusinessBase.&nbsp; This is the first time I wish C# had multiple inheritance.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, January 17, 2008</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I think the issue may be that CSLA isn&#8217;t designed to allow
+collections to have properties. There is no concept of a BB/BLB combination.
+You may need to create such a beast &#8211; merging much of the code from BB
+into BLB&#8230; Ugh.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Or follow the CSLA model of keeping them separate:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Root contains<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp; LineItemContainer contains<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp; LineItem contains<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; LineItemContainer &#8230;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky</span><o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Thursday, January 17, 2008</h2>Ya, I thought I may have to create such a class.&nbsp; Not something I'd really want to do.<br><br>I moved to the composite pattern because I was running into issues with having a BLB as a parent.. it was basically in the way, so to speak.&nbsp; <br><br>I'm still working on this though, so maybe I'll end up at that... maybe the collection classes could act as a bridge so to speak to between parent and child objects.&nbsp; <br><br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

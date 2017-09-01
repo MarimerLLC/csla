@@ -1,0 +1,31 @@
+<html><header><title>Use of 'List&lt;T&gt;' in the framework...</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Use of 'List&lt;T&gt;' in the framework...</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/1452.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>hammdo posted on Wednesday, October 11, 2006</h2><P><FONT size=2>I'm a huge fan of the framework.&nbsp; Part of my normal practice is running fxCop on code.&nbsp; While most of the time, I don't have any real 'issue', today I ran into a Microsoft reference to the use of List:</FONT></P><FONT color=#0000ff size=2>
+<P>Error, Certainty 95, for <B>DoNotExposeGenericLists</P></B></FONT><FONT color=#000080 size=2>
+<P>{</P>
+<P><B>Target</B> : </FONT><B><FONT color=#008000 size=2>GetFields(System.String,System.String,System.String):System.Collections.Generic.List`1&lt;Csla.Web.Design.ObjectFieldInfo&gt;</B></FONT><FONT color=#000080 size=2> (IntrospectionTargetMethodBase)</P>
+<P><B>Location</B> : </FONT><FONT color=#0000ff size=2>file:///C:/Code%2520Tools/CSLA/CSLA.NET%25202.1/csla20cs/csla20cs/Csla/Web/Design/TypeLoader.cs&lt;183&gt;</FONT><FONT color=#000080 size=2> (String)</P>
+<P><B>Resolution</B> : </FONT><B><FONT color=#0000ff size=2>"Change 'System.Collections.Generic.List`1&lt;Csla.Web.Design.ObjectFieldInfo&gt;' </P>
+<P>in TypeLoader.GetFields(String, String, String):List`1&lt;Csla.Web.Design.ObjectFieldInfo&gt; </P>
+<P>to use Collection&lt;T&gt;, ReadOnlyCollection&lt;T&gt; or KeyedCollection&lt;K,</P>
+<P>V&gt;</FONT><FONT color=#000080 size=2>"</P></B>
+<P><B>Help</B> : </FONT><FONT color=#0000ff size=2>http://www.gotdotnet.com/team/fxcop/docs/rules.aspx?version=1.35&amp;url=/Design/DoNotExposeGenericLists.html</FONT><FONT color=#000080 size=2> (String)</P>
+<P><B>Category</B> : </FONT><FONT color=#0000ff size=2>Microsoft.Design</FONT><FONT color=#000080 size=2> (String)</P>
+<P><B>CheckId</B> : </FONT><FONT color=#0000ff size=2>CA1002</FONT><FONT color=#000080 size=2> (String)</P>
+<P><B>RuleFile</B> : </FONT><FONT color=#0000ff size=2>Design Rules</FONT><FONT color=#000080 size=2> (String)</P>
+<P><B>Info</B> : </FONT><FONT size=2>"Do not expose List&lt;T&gt; in object models. Use Collection&lt;T&gt;, </P>
+<P>ReadOnlyCollection&lt;T&gt; or KeyedCollection&lt;K,V&gt; instead. </P>
+<P>List&lt;T&gt; is meant to be used from implementation, not </P>
+<P>in object model API. List&lt;T&gt; is optimized for performance </P>
+<P>at the cost of long term versioning. For example, if </P>
+<P>you return List&lt;T&gt; to the client code, you will not </P>
+<P>ever be able to receive notifications when client code </P>
+<P>modifies the collection."</P></FONT><FONT color=#000080 size=2>
+<P><B>Created</B> : </FONT><FONT size=2>10/11/2006 5:22:22 PM</FONT><FONT color=#000080 size=2> (DateTime)</P>
+<P><B>LastSeen</B> : </FONT><FONT size=2>10/11/2006 5:46:21 PM</FONT><FONT color=#000080 size=2> (DateTime)</P>
+<P><B>Status</B> : </FONT><FONT color=#008000 size=2>Active</FONT><FONT color=#000080 size=2> (MessageStatus)</P>
+<P><B>Fix Category</B> : </FONT><FONT color=#008000 size=2>Breaking</FONT><FONT color=#000080 size=2> (FixCategories)</P>
+<P>}</P>
+<P>&nbsp;</P>
+<P>I'm sure there was a very valid reason for List&lt;T&gt;.&nbsp; I've read the book, but I did not see it.&nbsp; Any info would be great.</P>
+<P>&nbsp;</P>
+<P>Thanks for a great framework!</P>
+<P>-Don</P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, October 11, 2006</h2>I just picked the lightest weight collection type that did what I needed. Technically ObjectFieldInfo could be non-public - it isn't needed by the outside world. But of course, Microsoft actually implemented this functionality in .NET - and didn't make it public - which is why I had to write it in the first place. Frustrating... But perhaps they didn't make it public so they could use List&lt;T&gt; and not worry about FxCop? <img src="/emoticons/emotion-1.gif" alt="Smile [:)]" /><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>hammdo replied on Thursday, October 12, 2006</h2>Thanks Rocky!&nbsp; I know how it is sometimes with MS ' do as I say, not as I do' (I think my parents used that one on me too...).&nbsp; I don't disagree with your approach -- I figured it was because it was fast and light -- it just struck me that fxCop would complain about it when in&nbsp;their own explanation, they state is was fast and light weight.</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

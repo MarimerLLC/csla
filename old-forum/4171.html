@@ -1,0 +1,378 @@
+<html><header><title>Unable to write data to the transport connection</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Unable to write data to the transport connection</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4171.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>mr_lasseter posted on Monday, January 14, 2008</h2>I am getting the following error when trying to save an object using remoting. Anyone have any ideas? Using Csla 3.0.2<br><br>System.IO.IOException: Unable to write data to the transport connection: An established connection was aborted by the software in your host machine. ---&gt; System.Net.Sockets.SocketException: An established connection was aborted by the software in your host machine<br>&nbsp;&nbsp; at System.Net.Sockets.Socket.Send(Byte[] buffer, Int32 offset, Int32 size, SocketFlags socketFlags)<br>&nbsp;&nbsp; at System.Net.Sockets.NetworkStream.Write(Byte[] buffer, Int32 offset, Int32 size)<br>&nbsp;&nbsp; --- End of inner exception stack trace ---<br><br>Thanks,<br>Mike<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, January 14, 2008</h2>Do other objects work?</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>mr_lasseter replied on Monday, January 14, 2008</h2>Yes.&nbsp; I am thinking it must be to do with the size of the object.&nbsp; I can save small objects of this type but when I save large (a collection that has 75K) children it fails with this error.&nbsp; This was just a test case as I shouldn't have collections that large in production, but it would be nice to know what is causing the error.<br><br>Thanks,<br><br>Mike</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, January 14, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I&#8217;m surprised you didn&#8217;t get an exception about
+size. But I imagine this is the issue. If you are using the http channel, you
+just need to expand the allowed size for an http upload &#8211; that&#8217;s
+been discussed on the forum in the past and is easy to do.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>If you are using the TCP channel then I am not sure how to
+adjust that setting. Maybe Ingo Rammer&#8217;s book has a clue? Or someone else
+here?<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> mr_lasseter
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Monday, January 14, 2008 3:58 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] Unable to write data to the transport
+connection<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Yes.&nbsp; I am thinking it must be to do with the size of
+the object.&nbsp; I can save small objects of this type but when I save large
+(a collection that has 75K) children it fails with this error.&nbsp; This was
+just a test case as I shouldn't have collections that large in production, but
+it would be nice to know what is causing the error.<br>
+<br>
+Thanks,<br>
+<br>
+Mike<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>TheSquirrelKing replied on Tuesday, May 13, 2008</h2>Hey, sorry to bump an old thread, but could anyone tell me how to expand the allowed http upload size as Rocky suggests? I have not been able to find the posts he refers to.<br /><br />Thanks!</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>GlutenBoy replied on Wednesday, May 14, 2008</h2>I've been runnning into something similar lately. Has anyone found a solution yet?<br><br>Thx<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Wednesday, May 14, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>How long does it take from the time that the call is initiated
+until the time you get the error?<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Senior Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899<o:p></o:p></span></p>
+
+<p class=MsoNormal><b><i><span>Magenic</span></i></b><span> </span><span>&reg;</span><b><i><span><o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> GlutenBoy
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Wednesday, May 14, 2008 8:58 AM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: Unable to write data to the transport
+connection<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>I've been runnning into something similar lately. Has anyone
+found a solution yet?<br>
+<br>
+Thx<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>GlutenBoy replied on Wednesday, May 14, 2008</h2>The times varies from less than an hour to 5 hours. This is using the same data source every time.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Wednesday, May 14, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>That is one long running process!<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>I had to deal with remoting timeouts on long running processes
+before (not in CSLA though).&nbsp; Here is what I would try:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>In web.config for remoting web site: add timeout as in so:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>&lt;channel ref=&quot;http&quot; timeout=&quot;30&quot;&gt;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>You also unfortunately have to modify CSLA framework as
+well.&nbsp; In RemotingProxy.VB (or CS) add another property to properties bag:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>Below properties(&quot;name&quot;) = &quot;HttpBinary&quot;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>Add properties(&quot;timeout &quot;) = &quot;30&quot;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Where 30 is timeout in seconds for a single call.&nbsp; So, if
+your call can last up to 5 hours, set timeout to 18000.&nbsp; You can also set
+timeout to -1 for infinite, but I am not sure if you want to do this, although
+you certainly can for testing.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Please let me know if this works at all for you.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>Thanks.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Senior Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> GlutenBoy
+[mailto:cslanet@lhotka.net<br>
+<b>Sent:</b> Wednesday, May 14, 2008 9:39 AM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: RE: Unable to write data to the transport
+connection<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>The times varies from less than an hour to 5 hours. This is
+using the same data source every time.<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>GlutenBoy replied on Friday, May 16, 2008</h2>Unfortunately this did not fix the problem. The process we are running create a large number of child objects by importing information from an equally large number of files. To break up the load, we save the parent object (which contains the child object collection) every x number of files. When using remoting, the error occurs after roughly 14000 files depending of value of x. When connecting directly to the database, this number varies greatly from about 50 000 to almost 100 000 files, before we get a transaction aborted exception. We are desperate and confused.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Friday, May 16, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>If you tried timeout of -1, I am not really sure how to solve
+this problem traditionally.&nbsp; I think, your best bet at this point is to
+convert the import process to a Windows Service that exposes a command to start
+the import (or you can have it poll DB for a start flag).&nbsp; Make sure you
+install the service on the same machine as data portal.&nbsp; Essentially, you
+are converting your process to be asynchronous, and use DB to poll for status
+of it.&nbsp; I believe this will work.&nbsp; This is all based on assumption
+that the import is not running on the client, but on the server(data portal).<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>Hopefully, this is an option for you.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Senior Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> GlutenBoy
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Friday, May 16, 2008 8:49 AM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: RE: RE: Unable to write data to the
+transport connection<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Unfortunately this did not fix the problem. The process we
+are running create a large number of child objects by importing information
+from an equally large number of files. To break up the load, we save the parent
+object (which contains the child object collection) every x number of files.
+When using remoting, the error occurs after roughly 14000 files depending of
+value of x. When connecting directly to the database, this number varies
+greatly from about 50 000 to almost 100 000 files, before we get a transaction
+aborted exception. We are desperate and confused.<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Friday, May 16, 2008</h2>I did something similar, and we also had to go the service route.&nbsp; Our process would create about a million rows at a shot.&nbsp; Also had to "batch" the sql commands; there was a point where the sql text was too big to send to the server.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>TheSquirrelKing replied on Tuesday, May 27, 2008</h2><P>I just thought I would give an update in case anyone else is interested or having the same problem:</P>
+<P>In our case, the import does run on the client due to the distributed nature of our architecture. We ended up being able to partially solve the problem by modifying the &lt;system.web&gt; section of the Web.config as follows:</P>
+<BLOCKQUOTE dir=ltr>
+<P><FONT face="Courier New">&lt;httpRuntime maxRequestLength="2097151" executionTimeout="43210000" /&gt;</FONT></P></BLOCKQUOTE>
+<P>This fixed things for us in the short-term, but, ultimately, the 2097151 KB maximum imposed by the .NET framework ended up being too small for some Save operations (usually once the file count got up into the 100 000 to 1 000 000 range).</P>
+<P>This has led us to our current hackish solution of just calling our stored procs for insert operations directly and thus avoiding the overhead of the CSLA Insert/Save process. I'm not too happy with having to "cheat" and go around the framework like this, but the performance requirements have made this a necessary evil.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, May 27, 2008</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>If you are doing an import of a large (huge?) file, you might
+consider streaming the file to the server and then doing the import. WCF supports
+the concept of streaming, or multi-block transfers, of data. The data portal
+doesn&#8217;t &#8211; but you could easily add another svc to your host for the
+purpose of &#8220;uploading&#8221; the large data to a temporary location on
+the server, and then triggering the import process from there &#8211; on the
+server.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Architecturally that seems like a much better overall solution.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>TheSquirrelKing replied on Wednesday, May 28, 2008</h2><P>Well, it's not so much a single huge file as it is ~ 1 010 000 files in this particular case, and we are looking to keep the processing of these files to the distributed clients. And as for WCF, as much as I've been looking forward to giving that a spin, we're still stuck using version 2.1.2 of the framework (long story, not my choice...).</P>
+<P>In any case, directly calling the object's Insert() methods and skipping the Save() overhead seems to be working well enough for now on the getting the data/objects into the DB side of things. The problem we're having now is Fetching() them back out again. Reconstituting a collection of a million+ objects is having the effect of turning my client machines into quivering, unresponsive wrecks before they can get through the whole collection. Thusfar, I haven't been able to actually complete a Fetch() operation on collections of this size - though I guess I could leave it going overnight tonight to see if it'll eventually slog through to the end. </P>
+<P>On that note, I was wondering if anyone else has had any experience with pulling down such large collections and how to get past the performance-crippling effects of doing so.</P>
+<P>Thanks!</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, May 28, 2008</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Oh, I doubt very much that you can create that many objects &#8211;
+that&#8217;s just not the right design.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>You should consider using a flyweight and/or iterator design
+pattern if you need to process all that data. Or better yet, when processing
+huge amounts of data I always start first by trying to do the work in stored
+procedures. (not that I&#8217;m a fan of T-SQL programming, but for processing
+huge amounts of data it is the right tool for the job)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky</span><b><span><o:p></o:p></span></b></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

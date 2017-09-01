@@ -1,0 +1,58 @@
+<html><header><title>Strategy</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Strategy</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/311.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>PitDog posted on Wednesday, June 07, 2006</h2><P>I have a question about building a strategy pattern with CSLA. Here is my problem. </P>
+<P>I have 3 different types of products that I need to model. So following the standard practice of Abstracting the things that are similar and implementing the things that are different I have come up with a Strategy&nbsp;pattern&nbsp;to model it. </P>
+<P>Here are the classes involved.</P>
+<P>AbstractProduct : ReadOnlyBase</P>
+<P>ConcreteProductA:AbstractProduct </P>
+<P>ConcreteProductB:AbstractProduct </P>
+<P>ConcreteProductC:AbstractProduct </P>
+<P>&nbsp;</P>
+<P>With this design you really cant use a standard static FactoryMethod because Static methods in a Abstract base class can not be overriden. So I am wondering if anyone here has done this and can give me a quick over view of how to handle object creation. As well as object initialization.</P>
+<P>Thanks,</P>
+<P>PD</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Pradeep replied on Thursday, June 08, 2006</h2><DIV>I had a similar situation and have implemented as follows. Not sure if this is the the right way. If there&nbsp;is any better way, I would be happy to know about it.</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>I have an Order object which has a Deal object as Child. This Deal object can be of three types. DealA, DealB or DealC. What I did was created an abstract class called Deal and inherit DealA, DealB and DealC from it. You would not have any static methods in Deal (since it is abstract and you cannot create an object of that type.</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>I have another factory class which has&nbsp;static method for deal creation&nbsp;and that takes in DealType as parameter and then calls in&nbsp;appropriate Deal's static creation methods. So in my Order object when I want to create/get a deal object I would&nbsp;call DealFactory.NewDeal(DealType). </DIV>
+<DIV>&nbsp;</DIV>
+<DIV>My NewDeal method in factory&nbsp;class looks like this.</DIV>
+<DIV>&nbsp;</DIV>
+<DIV><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>static</FONT><FONT size=2> Deal NewDeal(DealType type)</DIV>
+<DIV>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;switch</FONT><FONT size=2>(type)</P>
+<P>&nbsp;&nbsp;&nbsp;{</P>
+<P></FONT><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;case</FONT><FONT size=2> DealType.TypeA:</P>
+<P></FONT><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return</FONT><FONT size=2> DealA.NewDeal();</P>
+<P></FONT><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;case</FONT><FONT size=2> DealType.TypeB:</P>
+<P></FONT><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return</FONT><FONT size=2> DealB.NewDeal();</P>
+<P></FONT><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;case</FONT><FONT size=2> DealType.TypeC:</P>
+<P></FONT><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return</FONT><FONT size=2> DealC.NewDeal();</P>
+<P></FONT><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;default</FONT><FONT size=2>:</P>
+<P></FONT><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;throw</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> NotSupportedException("Invalid deal Source. Cannot get Deal from the given type");</P>
+<P>&nbsp;&nbsp;&nbsp;}</P>
+<P>}</P></FONT></DIV>
+<DIV>&nbsp;</DIV>
+<DIV>Apart from this, my Deal class has all the necessary abstract methods (DataPortal_Create, Fetc, etc), just to make sure all my dealType classes implement them.</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>HTH</DIV>
+<DIV>Pradeep</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>&nbsp;</DIV></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>PitDog replied on Thursday, June 08, 2006</h2><P>Thanks Pradeep,</P>
+<P>Looks like we both did the same thing :-)... I think it is a good solution. In fact some OOP folks may argue that this is the best way. That perhaps object creation is not a role that a business object should worry about. </P>
+<P>Anyone care to chime in with other possible ways?</P>
+<P>&nbsp;</P>
+<P>PD</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, June 08, 2006</h2><P>This is one reason I give strong preference to using factory methods over calling a constructor directly - you get this kind of flexibility.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>razorkai replied on Thursday, August 10, 2006</h2><P>I have just hit a very similar situation but can't quite seem to get it to work like this.</P>
+<P>I have a class based on BusinessListBase defined as follows</P><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>abstract</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>class</FONT><FONT size=2> </FONT><FONT color=#008080 size=2>Notification</FONT><FONT size=2>&lt;T, C&gt; : </FONT><FONT color=#008080 size=2>BusinessListBase</FONT><FONT size=2>&lt;T, C&gt;<BR></FONT><FONT color=#0000ff size=2>where</FONT><FONT size=2> T : </FONT><FONT color=#008080 size=2>BusinessListBase</FONT><FONT size=2>&lt;T, C&gt;<BR></FONT><FONT color=#0000ff size=2>where</FONT><FONT size=2> C : Csla.Core.</FONT><FONT color=#008080 size=2>IEditableBusinessObject</FONT></P>
+<P><FONT color=#008080 size=2><FONT color=#000000 size=3>I then have other classes defined as follows</FONT></FONT></P><FONT color=#008080 size=2><FONT color=#0000ff size=2>
+<P>public</FONT><FONT color=#000000 size=2> </FONT><FONT color=#0000ff size=2>class </FONT><FONT color=#008080 size=2>NotificationTypeA</FONT><FONT color=#000000 size=2> : </FONT><FONT color=#008080 size=2>Notification</FONT><FONT color=#000000 size=2>&lt;</FONT><FONT color=#008080 size=2>NotificationTypeA</FONT><FONT color=#000000 size=2>, </FONT><FONT color=#008080 size=2>NotificationTypeAChild</FONT><FONT size=2><FONT color=#000000>&gt;<BR></FONT></FONT>public<FONT color=#000000 size=2> </FONT><FONT color=#0000ff size=2>class </FONT><FONT color=#008080 size=2>NotificationTypeB</FONT><FONT color=#000000 size=2> : </FONT><FONT color=#008080 size=2>Notification</FONT><FONT color=#000000 size=2>&lt;</FONT><FONT color=#008080 size=2>NotificationTypeB</FONT><FONT color=#000000 size=2>, </FONT><FONT color=#008080 size=2>NotificationTypeBChild</FONT><FONT size=2><FONT color=#000000>&gt;</FONT></FONT></P>
+<P><FONT size=2><FONT color=#000000 size=3>Then I have a method defined in Notification like this</FONT></FONT></P><FONT size=2><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>static</FONT><FONT size=2> </FONT><FONT color=#008080 size=2>Notification</FONT><FONT size=2>&lt;T, C&gt; GetNotifications(</FONT><FONT color=#008080 size=2>NotificationTypeEnum</FONT><FONT size=2> notificationType)<BR>{<BR></FONT><FONT color=#0000ff size=2>switch</FONT><FONT size=2> (notificationType)<BR>{<BR>&nbsp;&nbsp;&nbsp;</FONT><FONT color=#0000ff size=2>case</FONT><FONT size=2> </FONT><FONT color=#008080 size=2>NotificationTypeEnum</FONT><FONT size=2>.TypeA:<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> </FONT><FONT color=#008080 size=2>NotificationTypeA</FONT><FONT size=2>.GetNotifications();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</FONT><FONT color=#0000ff size=2>break</FONT><FONT size=2>;<BR></FONT><FONT color=#008000 size=2><FONT color=#008080>&nbsp;&nbsp;&nbsp;</FONT><FONT color=#0000ff size=2>case</FONT><FONT color=#008080><FONT size=2> </FONT><FONT size=2>NotificationTypeEnum</FONT></FONT><FONT color=#008080 size=2>.TypeB:<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</FONT><FONT color=#0000ff size=2>return</FONT><FONT color=#008080><FONT size=2> </FONT><FONT size=2>NotificationTypeB</FONT></FONT><FONT color=#008080 size=2>.GetNotifications();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</FONT><FONT color=#0000ff size=2>break</FONT><FONT color=#008080 size=2>;<BR></FONT></FONT><FONT size=2>}</FONT></P>
+<P><FONT color=#000000 size=3>And then an example of the actual GetNotifications implementation is</FONT></P><FONT size=2><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>static</FONT><FONT size=2> </FONT><FONT color=#008080 size=2>NotificationTypeA</FONT><FONT size=2> GetNotifications()<BR>{<BR></FONT><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;return</FONT><FONT size=2> </FONT><FONT color=#008080 size=2>DataPortal</FONT><FONT size=2>.Fetch&lt;</FONT><FONT color=#008080 size=2>NotificationTypeA</FONT><FONT size=2>&gt;(</FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> </FONT><FONT color=#008080 size=2>Criteria</FONT><FONT size=2>());<BR>}</FONT></P>
+<P><FONT size=2><FONT color=#000000 size=3>This won't compile and generates the exception </FONT></FONT></P>
+<P><FONT size=2>Error&nbsp;1&nbsp;Cannot implicitly convert type 'NotificationTypeA' to 'Notification&lt;T,C&gt;'</FONT></P>
+<P><FONT size=2><FONT color=#000000 size=3>What am I doing wrong here?&nbsp; I am still getting to grips with generics and can't figure it out.</FONT></FONT></P>
+<P><FONT size=2><FONT color=#000000 size=3>TIA.</FONT></FONT></P>
+<P><FONT size=2><FONT color=#000000 size=3>John.</FONT></P></FONT></FONT></FONT></FONT></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

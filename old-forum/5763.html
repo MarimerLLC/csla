@@ -1,0 +1,171 @@
+<html><header><title>Rolodex - Preview CompanyEditor.xaml exception</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Rolodex - Preview CompanyEditor.xaml exception</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5763.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Michael Hildner posted on Friday, November 07, 2008</h2><P>I'm getting an error trying to preview CompanyEditor.xaml. When I try to open it, I get the error dialog in the preview pane with the below message. This is happening in both the CS and VB samples. In addition, when I try to open with Expression Blend, it tells me "Invalid XAML" with a whole slew of errors in the results pane.</P>
+<P>Anyone else see this/know how to fix?</P>
+<P>Thanks,</P>
+<P>Mike</P><SPAN>
+<P>Cannot find 'ServiceReferences.ClientConfig' in the .xap application package. This file is used to configure client proxies for web services, and allows the application to locate the services it needs. Either include this file in the application package, or modify your code to use a client proxy constructor that specifies the service address and binding explicitly. Please see inner exception for details.</P></SPAN></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Friday, November 07, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Are you running VS 2008 SP 1 and Blend 2.0 SP1 with the latest
+SL tools installed?<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Michael Hildner
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Friday, November 07, 2008 11:34 AM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> [CSLA .NET] Rolodex - Preview CompanyEditor.xaml exception<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>I'm getting an error trying to preview CompanyEditor.xaml. When I try to
+open it, I get the error dialog in the preview pane with the below message.
+This is happening in both the CS and VB samples. In addition, when I try to
+open with Expression Blend, it tells me &quot;Invalid XAML&quot; with a whole
+slew of errors in the results pane.<o:p></o:p></p>
+
+<p>Anyone else see this/know how to fix?<o:p></o:p></p>
+
+<p>Thanks,<o:p></o:p></p>
+
+<p>Mike<o:p></o:p></p>
+
+<p>Cannot find 'ServiceReferences.ClientConfig' in the .xap application
+package. This file is used to configure client proxies for web services, and
+allows the application to locate the services it needs. Either include this
+file in the application package, or modify your code to use a client proxy
+constructor that specifies the service address and binding explicitly. Please
+see inner exception for details.<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Michael Hildner replied on Tuesday, November 11, 2008</h2><P>I didn't have Blend 2 SP1 - that takes care of most of the errors, but still have one - The element "CancelButton" could not be displayed because of a problem with system.String: DP_NotValidValueForProperty. It doesn't like line 58 of that xaml - <FONT color=#ff0000 size=2><FONT color=#ff0000 size=2></P>
+<P>csla</FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>:</FONT></FONT><FONT color=#ff0000 size=2><FONT color=#ff0000 size=2>InvokeMethod.ManualEnableControl</FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>="False"</P></FONT></FONT>
+<P>Not sure if that's why the design won't display in VS.</P>
+<P>I do have VS 2008 SP1, Blend 2.0 SP1 and Silverlight Tools for Visual Studio 2008 SP1.</P>
+<P>Thanks,</P>
+<P>Mike</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Tuesday, November 11, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>When we worked on design time support, the effort was
+concentrated on Blend, not VS designer.&nbsp; VS designer in SL does not have a
+whole lot to offer to you to start with.&nbsp; The checks put in to detect
+design time apparently are failing in VS, and it is trying to call actual data
+portal </span><span>L</span><span>.&nbsp;
+This should probably be added to issues list, although I am not sure what
+priority.&nbsp; As far as ManualEnable control goes, I do not quite know what
+is going on there. &nbsp;&nbsp;Sounds like a Blend design time bug because the
+setting does work properly at run time.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Michael Hildner
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Tuesday, November 11, 2008 10:30 AM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: Rolodex - Preview CompanyEditor.xaml
+exception<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>I didn't have Blend 2 SP1 - that takes care of most of the errors, but still
+have one - The element &quot;CancelButton&quot; could not be displayed because
+of a problem with system.String: DP_NotValidValueForProperty. It doesn't like
+line 58 of that xaml - <span><o:p></o:p></span></p>
+
+<p><span>csla</span><span>:</span><span>InvokeMethod.ManualEnableControl</span><span>=&quot;False&quot;<o:p></o:p></span></p>
+
+<p>Not sure if that's why the design won't display in VS.<o:p></o:p></p>
+
+<p>I do have VS 2008 SP1, Blend 2.0 SP1 and Silverlight Tools for Visual Studio
+2008 SP1.<o:p></o:p></p>
+
+<p>Thanks,<o:p></o:p></p>
+
+<p>Mike<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Michael Hildner replied on Tuesday, November 11, 2008</h2>Ok, thanks for the information. I'm not worried about this so much, just thought I'd point it out. At least I have Rolodex running - thanks for the samples.</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

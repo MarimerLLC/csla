@@ -1,0 +1,35 @@
+<html><header><title>Authorizer problem</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Authorizer problem</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5643.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 posted on Tuesday, October 21, 2008</h2>Hi,<br><br>I'm having a problem with the authorizer.&nbsp; I have two user controls; one displays readonly data.&nbsp; It has a progress bar visible while it's loading data, bound to the controls CslaDataProvider IsBusy property (well... actually it's bound to the BO's IsBusy property.. BindsDirectlyToSource=False).<br><br>Anyway, I'm using the view only user control in another user control, and the readonly control (call it DataViewCtrl) is contained within an authorizer, which is contained within an objectstatus.<br><br>The problem is that the progress bar correctly hides when the form is displayed.&nbsp; However, once the Save command is execute on the parent user control, the authorizer somehow digs into the DataViewCtrl and changes the progress bar's Visiblity to Visible.&nbsp; <br><br>I've tried adding csla:Authroizer.NotVisibleMode="Ignore", but the behavior persists.&nbsp; <br><br>Any ideas?<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Tuesday, October 21, 2008</h2>More details:<br><br>The authorizer's source is the edited BO, which is expected.&nbsp; It's trying to check the IsBusy property (where it got that, I'm not sure..) and of course that can always be read.&nbsp; <br><br>So SetRead falls into the switch for visiblityMode (collapsed) and the control (which is the progress bar on DataViewControl!!) is collasped (correctly) and the authorizer changes it to Visible.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Tuesday, October 21, 2008</h2>Well, I fixed this by putting csla:Authorizer.NotVisibleMode="Ignore" on the progress bar directly.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, October 21, 2008</h2><P>There's a known issue with Authorizer and complex controls, where it messes with subcontrols inside the main control. It is in the bug list to be fixed.</P>
+<P>However, its priority dropped in 3.6 because PropertyStatus does a <EM>much</EM> better job of dealing with authorization, and I'm seriously considering dropping Authorizer at some point. Even if this bug were fixed, it is (comparatively) very inefficient.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Wednesday, October 22, 2008</h2>Ahh.. didn't know it was a known issue.&nbsp; <br><br>Is there any good documentation on using PropertyStatus?&nbsp; It looks like it appeared in 3.6.&nbsp; Is it meant to replace ObjectStatus and Authorizer?<br><br>Thanks<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, October 22, 2008</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>PropertyStatus is meant to replace Authorizer, and to handle
+validation rules (all three severities), and to handle async busy notification.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>It does not replace ObjectStatus. In Silverlight
+CslaDataProvider actually replaces ObjectStatus. In WPF I still use
+ObjectStatus, though as a resource, not a container. That&#8217;s a simpler
+model.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Wednesday, October 22, 2008</h2>Ok... that clears up a lot of me.. thanks!<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

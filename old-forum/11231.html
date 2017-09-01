@@ -1,0 +1,95 @@
+<html><header><title>Problem with Transactional attribute in the factory method</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Problem with Transactional attribute in the factory method</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11231.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>oleg posted on Wednesday, March 14, 2012</h2><p>Hi everyone.</p>
+<p><span>I have a problem.</span></p>
+<p><span class="hps">My&nbsp;</span>business&nbsp;<span class="hps">class&nbsp;</span>TemplateEdit<span>&nbsp;</span><span class="hps">has</span><span>&nbsp;</span><span class="hps">a method:</span></p>
+<p><span></span>public&nbsp;static&nbsp;void&nbsp;DeleteTemplate(string&nbsp;id)</p>
+<p>{</p>
+<p style="padding-left:30px;">DataPortal.Delete&lt;TemplateEdit&gt;(id);</p>
+<p>}</p>
+<p>Factory&nbsp;class&nbsp;<span>has a method:</span></p>
+<p><span></span>[RunLocal]</p>
+<p>[Transactional(TransactionalTypes.TransactionScope)]</p>
+<p>public&nbsp;void&nbsp;Delete(string&nbsp;id)</p>
+<p>
+<pre>{			</pre>
+<pre style="padding-left:30px;"><span>using</span>&nbsp;(<span>ConnectionManager</span>&lt;<span>FbConnection</span>&gt;&nbsp;trx&nbsp;=&nbsp;<span>ConnectionManager</span>&lt;<span>FbConnection</span>&gt;.GetManager(<span>&quot;DatabaseName&quot;</span>))
+<span>using</span>&nbsp;(<span>FbCommand</span>&nbsp;cmd&nbsp;=&nbsp;trx.Connection.CreateCommand())
+{			
+	// do work		
+}			</pre>
+<pre>}</pre>
+</p>
+<p><span>I get&nbsp;</span><span>error: &quot;There is no active TransactionScope to enlist transactions.&quot;</span></p>
+<p><span>Version of CSLA:&nbsp;</span>4.1.0.0</p>
+<p><span class="hps">There are no problems with&nbsp;other f</span>actory <span class="hps">methods withTransactional attribute.</span></p>
+<p><span class="hps"><span class="hps">May be</span><span>&nbsp;</span><span class="hps">the problem</span><span>&nbsp;</span><span class="hps">in a static method?</span></span></p>
+<p><span class="hps"><span class="hps"><span>Thanks for your help.</span></span></span></p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Thursday, March 15, 2012</h2><p>Hi Oleg, </p>
+<p>Yes, this is a bug in Csla.Server.DataPortal. Good catch. </p>
+<p>Added to Bugtracker: <a href="http://www.lhotka.net/cslabugs/edit_bug.aspx?id=1033">http://www.lhotka.net/cslabugs/edit_bug.aspx?id=1033 </a></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Thursday, March 15, 2012</h2><p>This code will fix the problem in Csla 4.x:&nbsp;</p>
+<p> Csla.Server.DataPortal.cs</p>
+<pre style="font-family:Consolas;font-size:13px;color:#c8c8c8;background:none repeat scroll 0% 0% #1e1e1e;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#569cd6;">public</span>&nbsp;DataPortalResult&nbsp;Delete(<span style="color:#4ec9b0;">Type</span>&nbsp;objectType,&nbsp;<span style="color:#569cd6;">object</span>&nbsp;criteria,&nbsp;DataPortalContext&nbsp;context)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#569cd6;">try</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;SetContext(context);
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Authorize(<span style="color:#569cd6;">new</span>&nbsp;AuthorizeRequest(objectType,&nbsp;criteria,&nbsp;DataPortalOperations<span style="color:#9b9b9b;">.</span>Delete));
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DataPortalResult&nbsp;result;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DataPortalMethodInfo&nbsp;method;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#569cd6;">var</span>&nbsp;factoryInfo&nbsp;<span style="color:#9b9b9b;">=</span>&nbsp;ObjectFactoryAttribute<span style="color:#9b9b9b;">.</span>GetObjectFactoryAttribute(objectType);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#569cd6;">if</span>&nbsp;(factoryInfo&nbsp;<span style="color:#9b9b9b;">!=</span>&nbsp;<span style="color:#569cd6;">null</span>)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#569cd6;">var</span>&nbsp;factoryType&nbsp;<span style="color:#9b9b9b;">=</span>&nbsp;FactoryDataPortal<span style="color:#9b9b9b;">.</span>FactoryLoader<span style="color:#9b9b9b;">.</span>GetFactoryType(factoryInfo<span style="color:#9b9b9b;">.</span>FactoryTypeName);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#569cd6;">string</span>&nbsp;methodName&nbsp;<span style="color:#9b9b9b;">=</span>&nbsp;factoryInfo<span style="color:#9b9b9b;">.</span>DeleteMethodName;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;method&nbsp;<span style="color:#9b9b9b;">=</span>&nbsp;Server<span style="color:#9b9b9b;">.</span>DataPortalMethodCache<span style="color:#9b9b9b;">.</span>GetMethodInfo(factoryType,&nbsp;methodName,&nbsp;criteria);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#569cd6;">else</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;method&nbsp;<span style="color:#9b9b9b;">=</span>&nbsp;DataPortalMethodCache<span style="color:#9b9b9b;">.</span>GetMethodInfo(objectType,&nbsp;<span style="color:#d69d85;">&quot;DataPortal_Delete&quot;</span>,&nbsp;criteria);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;IDataPortalServer&nbsp;portal;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#569cd6;">switch</span>&nbsp;(method<span style="color:#9b9b9b;">.</span>TransactionalType)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+<span style="color:#9b9b9b;">#if</span>&nbsp;!MONO
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#569cd6;">case</span>&nbsp;TransactionalTypes<span style="color:#9b9b9b;">.</span>EnterpriseServices:
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;portal&nbsp;<span style="color:#9b9b9b;">=</span>&nbsp;<span style="color:#569cd6;">new</span>&nbsp;ServicedDataPortal();
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#569cd6;">try</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;result&nbsp;<span style="color:#9b9b9b;">=</span>&nbsp;portal<span style="color:#9b9b9b;">.</span>Delete(objectType,&nbsp;criteria,&nbsp;context);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#569cd6;">finally</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;((ServicedDataPortal)portal)<span style="color:#9b9b9b;">.</span>Dispose();
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#569cd6;">break</span>;
+<span style="color:#9b9b9b;">#endif</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#569cd6;">case</span>&nbsp;TransactionalTypes<span style="color:#9b9b9b;">.</span>TransactionScope:
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;portal&nbsp;<span style="color:#9b9b9b;">=</span>&nbsp;<span style="color:#569cd6;">new</span>&nbsp;TransactionalDataPortal();
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;result&nbsp;<span style="color:#9b9b9b;">=</span>&nbsp;portal<span style="color:#9b9b9b;">.</span>Delete(objectType,&nbsp;criteria,&nbsp;context);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#569cd6;">break</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#569cd6;">default</span>:
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;portal&nbsp;<span style="color:#9b9b9b;">=</span>&nbsp;<span style="color:#569cd6;">new</span>&nbsp;DataPortalSelector();
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;result&nbsp;<span style="color:#9b9b9b;">=</span>&nbsp;portal<span style="color:#9b9b9b;">.</span>Delete(objectType,&nbsp;criteria,&nbsp;context);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#569cd6;">break</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#569cd6;">return</span>&nbsp;result;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#569cd6;">catch</span>&nbsp;(Csla<span style="color:#9b9b9b;">.</span>Server<span style="color:#9b9b9b;">.</span>DataPortalException&nbsp;ex)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#4ec9b0;">Exception</span>&nbsp;tmp&nbsp;<span style="color:#9b9b9b;">=</span>&nbsp;ex;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#569cd6;">throw</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#569cd6;">catch</span>&nbsp;(<span style="color:#4ec9b0;">Exception</span>&nbsp;ex)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#569cd6;">throw</span>&nbsp;<span style="color:#569cd6;">new</span>&nbsp;DataPortalException(
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#d69d85;">&quot;DataPortal.Delete&nbsp;&quot;</span>&nbsp;<span style="color:#9b9b9b;">+</span>&nbsp;Resources<span style="color:#9b9b9b;">.</span>FailedOnServer,
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#569cd6;">new</span>&nbsp;DataPortalExceptionHandler()<span style="color:#9b9b9b;">.</span>InspectException(objectType,&nbsp;criteria,&nbsp;<span style="color:#d69d85;">&quot;DataPortal.Delete&quot;</span>,&nbsp;ex),
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#569cd6;">new</span>&nbsp;DataPortalResult());
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#569cd6;">finally</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ClearContext(context);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</pre></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Thursday, March 15, 2012</h2><p>Issue is fixed in branches/v4-3-x and trunk. </p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

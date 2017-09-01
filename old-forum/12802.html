@@ -1,0 +1,54 @@
+<html><header><title>CSLA and Microsoft Application Insight incompatibility</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA and Microsoft Application Insight incompatibility</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/12802.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>geordiepaul posted on Wednesday, November 19, 2014</h2><p>Hoping someone could offer some insight as I&#39;ve been battling with this for some time.</p>
+<p>I have a long term CSLA (4.5.6) web project that I&#39;m trying to add the latest version of Application Insights. This was a simple process however it did not work. The site worked as usualt but nothing was posted to Application Insights, i.e there was an error in the HTTP Module added by AI, with no source I couldn&#39;t track this down. </p>
+<p>After a long process of trial and error I narrowed it down to some binding redirect in the config file..</p>
+<pre><span>&lt;dependentAssembly&gt;</span>
+<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;assemblyIdentity&nbsp;name=&quot;System.Runtime&quot;&nbsp;publicKeyToken=&quot;b03f5f7f11d50a3a&quot;&nbsp;culture=&quot;neutral&quot;&nbsp;/&gt;</span>
+<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;bindingRedirect&nbsp;oldVersion=&quot;0.0.0.0-2.5.19.0&quot;&nbsp;newVersion=&quot;2.5.19.0&quot;&nbsp;/&gt;</span>
+<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/dependentAssembly&gt;</span>
+<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;dependentAssembly&gt;</span>
+<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;assemblyIdentity&nbsp;name=&quot;System.Threading.Tasks&quot;&nbsp;publicKeyToken=&quot;b03f5f7f11d50a3a&quot;&nbsp;culture=&quot;neutral&quot;&nbsp;/&gt;</span>
+<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;bindingRedirect&nbsp;oldVersion=&quot;0.0.0.0-2.5.19.0&quot;&nbsp;newVersion=&quot;2.5.19.0&quot;&nbsp;/&gt;</span>
+<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/dependentAssembly&gt;</span></pre>
+<p>Commenting this out resulted in Application Insights working however the site crashed completely. It seems Ai has a dependancy on the Microsoft.Bcl libraries (which incidently I didn&#39;t think were needed for 4.5) and adds the&nbsp;Microsoft.Threading.Tasks.*.dll&#39;s which kills CSLA.</p>
+<p>Looking at CSLA source these are also referenced but never copied to bin folders.</p>
+<p>Can anyone advise on the compatibility of the older .Net 4.0 async libs (ie Microsoft.Blc etc) and the CSLA. If I remove those dll;&#39;s the app works again but Application Insights doesn&#39;t.</p>
+<p>I don&#39;t think this is a CSLA issue but it would be nice to know what&#39;s going on. :(</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Wednesday, November 19, 2014</h2><p>Csla 4.5.600 used under .Net 4 also has dependencies on those same assemblies, but different versions.&nbsp; I think it needs 2.6.8 for System.Runtime and System.Threading.Tasks.&nbsp; Sounds like a version conflict and perhaps there are breaking changes in those assemblies.</p>
+<p>You might be able to make everything happy by setting the newVersion to the 2.6.8.0 version Csla requires.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>geordiepaul replied on Wednesday, November 19, 2014</h2><p>Where are you getting the version numbers from?</p>
+<p>this is a project running under 4.5.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Wednesday, November 19, 2014</h2><p>Those are from the assemblies needed to use async await in .net 4.0 via the bcl nugget packages.&nbsp; I would be surprised if they were smaller in .net 4.5 so if AI is installing older versions that would be an issue.&nbsp; did somehow the .net 4 version of AI get pulled in?&nbsp; Are you sure it works under 4.5?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Thursday, November 20, 2014</h2><p>Then you should recheck your references,&nbsp;</p>
+<p>Csla 4.5.601 has</p>
+<p>&nbsp;</p>
+<ul>
+<li>For .NET 4.5 has no dependencies</li>
+<li>For .NET 4.0 dependencies to Microsoft.Bcl.Async &gt; 1.0.165 and Microsoft.Bcl &gt; 1.1.6</li>
+<li>For Silverlight 5 dependencies&nbsp;Microsoft.Bcl.Async &gt; 1.0.165 and Microsoft.Bcl &gt; 1.1.6</li>
+</ul>
+<p>&nbsp;</p>
+<p>So make sure all you projects have target framework .NET 4.5.x and maybe remove and add the NuGet packages again.&nbsp;</p>
+<p>Seems like your project i referencing the assemblies in the net40 folder in the nuget packages. <br />You can verify this by looking at properties on the references in your projects.</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Thursday, November 20, 2014</h2><p>And for some reason the ApplicationInsights team has only provided assemblies for .NET 4.0 in the&nbsp;Microsoft.ApplicationInsights NuGet package.</p>
+<p>So this package has dependencies to:&nbsp;</p>
+<p>
+<ul>
+<li>Microsoft.Bcl.Async &gt; 1.0.168
+<ul>
+<li>Microsoft.Bcl &nbsp;&gt; 1.0.168</li>
+</ul>
+</li>
+</ul>
+</p>
+<p>In my opinion the Microsoft.Bcl team broke the distribution chain when the made Microsoft.Bcl 1.0.x and 1.1.x and NuGet will initially always try to resolve/add the &quot;lowest&quot; compatible version number. So it is quite possible that you have references to 2 different versions of Microsoft.Bcl in your solution.</p>
+<p>First: make sure that you have the correct references to CSLA 4.5 assemblies.&nbsp;</p>
+<p>Test if all works fine!</p>
+<p>Second: If still failure the open &quot;Nuget Package Manager&quot; on the solution and upgrade all packages.&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>geordiepaul replied on Thursday, November 20, 2014</h2><p>I have checked all nuget packages...</p>
+<p>CSLA is 4.5 version of 4.5.6 (confirmed using Dot Peek)</p>
+<p>All other packages are up to date.</p>
+<p>And without Application Insights there are no unexpected dependencies added to the projects. and everything works fine.</p>
+<p>After adding Application Insights nuget package this add the BCL libraries/nuget packages. There are 3 main dll&#39;s to application insights two are 4.5 and one is 4. The application is dead after the first request. No errors just unresponsive. I don&#39;t think this is directly related to CSLA. Some other conflict that seem impossible to find.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Thursday, November 20, 2014</h2><p>First, I&#39;m not aware of a release version of Csla which is 4.5.6.&nbsp; Do you mean 4.5.600 or 4.5.601?</p>
+<p>Second, the BCL libraries shouldn&#39;t be needed as those became part of the .Net 4.5 framework; or rather, the BCL packages are only needed in .Net 4 as they backport the async / await features so that VS2012 users on .Net 4 can use them.&nbsp; But those same assemblies are already in the framework in 4.5, so you should no have any references to them.&nbsp; </p>
+<p>It sounds like the AI package is not built correctly as it shouldn&#39;t be adding those BCL dependences since as I said they are already in .Net 4.5.&nbsp; Can you remove the reference to the 4.0 AI assembly as well as the binding redirects?&nbsp; Its possible that the 4.0 assembly should only get added if you&#39;re using .Net 4.&nbsp; I&quot;ve seen a few packages that are built for both 4.0 and 4.5 but the 4.0 needs to &quot;backport&quot; some stuff not required in 4.5, much like the BCL is a backport of something which is just part of .net 4.5.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>geordiepaul replied on Thursday, November 20, 2014</h2><p>Yes I did mean 4.5.600......</p>
+<p>Microsoft.ApplicationInsights.dll is built to .net 4.0 and has a dependency on the Bcl stuff. So it adds them. I have tried updating these libraries, this didn&#39;t work. I have removed them which fixed my app but then AI didn&#39;t work.</p>
+<p>The strange/annoying thing is all the other Microsoft.ApplicationInsights.*.dll have been built to 4.5 except the root. one.</p>
+<p>It is a pre-release so I&#39;m hoping it&#39;s &nbsp;updated to 4.5 soon.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Thursday, November 20, 2014</h2><p>Have you tried removing the bcl references and updating the binding redirects to force use of the versions that come with the 4.5 framework?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>geordiepaul replied on Friday, November 21, 2014</h2><p>Yes, same problem. :(</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>OlegSych replied on Friday, December 19, 2014</h2><p>Microsoft.ApplicationInsights NuGet package does not include a .NET 4.5 binary in addition to the .NET 4.0 binary because that would force creation of additional binaries in NuGet packages that depend on it. The .NET 4 version of the Microsoft.ApplicationInsights.dll has a dependency on the Microsoft.Bcl and Microsoft.Bcl.Async nuget packages. Unlike Microsoft.Bcl&nbsp;package, Microsoft.Bcl.Async contains executable assemblies that are required by applications running on .NET 4.5. In other words, a .NET 4.5 application referencing Microsoft.ApplicationInsights.dll (a .NET 4.0 binary) should work. We have multiple web applications and services running successfully.</p>
+<p>Can you help to narrow this problem down? Can you share a (preferably small) project we could use to reproduce the problem?</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

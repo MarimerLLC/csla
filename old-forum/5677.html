@@ -1,0 +1,21 @@
+<html><header><title>Deepdata with FieldManager</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Deepdata with FieldManager</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5677.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>alef posted on Sunday, October 26, 2008</h2><P>How do I write the deepdata example with the use of the FieldManager in CSLA 3.5.2.</P>
+<P>In particular the following code (class OrderInfo.cs):</P><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>private</FONT><FONT size=2> </FONT><FONT color=#2b91af size=2>LineItemList</FONT><FONT size=2> _lineItems = </FONT><FONT color=#2b91af size=2>LineItemList</FONT><FONT size=2>.NewList();</P>
+<P></FONT><FONT color=#808080 size=2>///&lt;summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///&lt;/summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#2b91af size=2>LineItemList</FONT><FONT size=2> LineItems</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>get</P></FONT><FONT size=2>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> _lineItems;</P>
+<P>}</P>
+<P>}</P>
+<P>&nbsp;</P><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>internal</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>void</FONT><FONT size=2> LoadItem(SafeDataReader data)</P>
+<P>{</P>
+<P>_lineItems.LoadChild(data);</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>internal</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>void</FONT><FONT size=2> LoadDetail(SafeDataReader data)</P>
+<P>{</P>
+<P>_lineItems.FindById(data.GetInt32(</FONT><FONT color=#a31515 size=2>"LineId"</FONT><FONT size=2>)).LoadDetail(data);</P>
+<P>}</P></FONT></FONT></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,35 @@
+<html><header><title>WebServiceHost issues with MissingMethod errors</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>WebServiceHost issues with MissingMethod errors</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3336.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>gartnerj posted on Monday, August 06, 2007</h2><P>Folks,</P>
+<P>i am getting the following when I switch from local running of the BO to the WebServiceHost on a remote machine.&nbsp; I have checked that the dll's are all up to date, and this NVList where the error occurs is VERY similary to another NVlist that does work.</P>
+<P>The error is:</P><FONT size=2>
+<P>Method not found: 'System.Collections.Generic.List`1&lt;Dal.CustomReleaseOptions&gt; .Dal.CustomReleaseOptions.FetchMultiSelectCodes()'.</P>
+<P>I've already checked that the class is marked Serializable, I've used Reflector -- the FetchMultiSelectCodes IS in the DAL dll that is on the WebServicesHost.</P>
+<P>Does anyone have any good methodologies for solving these types of problems with the webservicehost?</P>
+<P>Thanks,</P>
+<P>Jim</P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Tuesday, August 07, 2007</h2><P>I learned something recently about generics, refelction, methods and base classes that came to light when I upgraded from 1.x to 2.1.</P>
+<P>Let's use the Item method of a ROC as an example.</P>
+<P>In 1.x I wrote code directly in my ROC that created the Item method and any overloads.</P>
+<P>e.g.&nbsp; </P>
+<P>Item(index as Integer)</P>
+<P>Item (ID as String)</P>
+<P>Item(index as Integer, useInterface As Boolean)</P>
+<P>When I upgraded to 2.0, the&nbsp;Item(index as Integer) became part of the CSLA base class and then I moved Item(index as Integer, useInterface As Boolean) into my Base class that inherits from CSLA and that all my ROCs then inherit from.</P>
+<P>I noticed that my reflection code "sees" the methods in the order of their base classes so an array of MemberInfo objects sees them like this:</P>
+<P>0 = Item (ID as String)</P>
+<P>1 = Item(index as Integer, useInterface As Boolean)</P>
+<P>2 = Item(index as Integer)</P>
+<P>In my reflection code when I called Item and passed an Integer I assumed it would find the right method - but it did not. It gave a similar error to what you are seeing about incorrect parameters and the generic '1.</P>
+<P>So in order to get the correct propertyinfo I used code like this:</P><FONT size=2>
+<P></FONT><FONT color=#008000 size=2>'JF 6/26/07 - This gets us the correct propertyinfo for any collection with Item(ByVal index As Integer)<BR></FONT><FONT color=#0000ff size=2>Dim</FONT><FONT size=2> itemProp </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> PropertyInfo = Parent.GetType().GetProperty(</FONT><FONT color=#ff00ff size=2>"Item"</FONT><FONT size=2>, </FONT><FONT color=#0000ff size=2>New</FONT><FONT size=2> Type() {</FONT><FONT color=#0000ff size=2>GetType</FONT><FONT size=2>(</FONT><FONT color=#0000ff size=2>Integer</FONT><FONT size=2>)})</P>
+<P></P></FONT>
+<P>So you should review your class hierarchy and see if you have overlaoded methods and then determine which one is really being called.</P>
+<P>Joe</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>gartnerj replied on Wednesday, August 08, 2007</h2><P>Thanks for the help Joe -- it turned out that a member of my team install a version of a shared assembly (the one that was being complained about with the missing method) into the GAC without telling anyone, so of course THAT version didn't have the method in question, so....</P>
+<P>&nbsp;</P>
+<P>Still, I'm wondering if anyone has a good way of debugging these situations -- remote debugger, other tools?????</P>
+<P>Thanks</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

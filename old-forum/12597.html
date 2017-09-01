@@ -1,0 +1,39 @@
+<html><header><title>Unable to Run Test Multiple Time With Save Method </title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Unable to Run Test Multiple Time With Save Method </h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/12597.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>RumbleCow posted on Wednesday, April 23, 2014</h2><p>Csla 4.3.13 /&nbsp;<span style="font-size:12px;">Visual Studio 2010</span></p>
+<p>I am unable to run test scripts multiple time which contains a call to the save method without rebuilding the solution. If the po.save is commented out in the code below can be run an infinite number of time. If the save is included I receive &#39;DataPortal.Fetch failed (Subquery returned more than 1 value. This is not permitted when the subquery follows =, !=, &lt;, &lt;= , &gt;, &gt;= or when the subquery is used as an expression.)&#39; upon the call to &nbsp;GetVendor. &nbsp;The PO.Insert is run inside using statements&nbsp;</p>
+<p>
+<code>
+&nbsp; &nbsp; &nbsp; &nbsp; [TestMethod()]
+</code></p>
+<p><code><code>&nbsp; &nbsp; &nbsp; &nbsp; public void _MultiRunDiagnostics()</code></code></p>
+<p><code>
+</code></p>
+<p><code><code>
+</code></code></p>
+<p><code>
+</code></p>
+<p><code><code>&nbsp; &nbsp; &nbsp; &nbsp; {</code></code></p>
+<p><code>
+<code>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; PO po = PO.NewPO();</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; po.Vendor = ror.Vendor.GetVendor(1);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; po.Number = DateTime.Now.Ticks.ToString().Substring(0, 12);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; po.Date = DateTime.Now;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Assert.IsTrue(po.IsSelfValid);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Assert.IsFalse(po.IsSavable);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Assert.IsTrue(po.IsStatus(PO.eStatus.New));</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Assert.AreEqual&lt;string&gt;(DateTime.Today.ToShortDateString(), po.StatusDate.ToShortDateString());</p>
+<p><span style="font-size:12px;">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; PODetailListItem detail = po.DetailLines.AddNew();</span></p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; detail.ItemID = 4;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; detail.Quantity = 1;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Assert.AreEqual&lt;Decimal&gt;(1.01m, detail.Cost);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Assert.IsTrue(detail.IsSavable);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Assert.IsTrue(po.IsSavable);</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; // test can be run repeatedly if save is excluded</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; po = po.Save();</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp;</p>
+</code></code></p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Thursday, April 24, 2014</h2><p>Then you must resolve the issues in the GetVendor or the Save method.&nbsp;</p>
+<p>Obviously something is not either inserted into a database (and create duplicates) or there is something wrong with the SQL in Vendor.DataPortal_Fetch.</p>
+<p>&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

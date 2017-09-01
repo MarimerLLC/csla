@@ -1,0 +1,29 @@
+<html><header><title>Firing of calculation business rules</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Firing of calculation business rules</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11996.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>vikas_kumar82 posted on Monday, May 27, 2013</h2><p>Hi,<br /><br />I am using CSLA and silverlight in my project. I am using the calculation business rules. There is a situation that one calculation rule has to be applied on one or more properties (which is already been set by another calculation rule). In the UI, both are shown in Label and cannot be directly edited. Although, one of the Labels changes when the first rule fires, but this change doesn&#39;t fire the second rule (which is dependent on the value of first label) and the value of the second Label is not affected. However, when we save the page, and when the page reloads again, then the calculation fire and set the value of that property.<br /><br />For example: <br /><b><br />Rule1_ChangingLabel1(prop1, prop2, targetprop)</b><br />--&gt; When there is a change in prop1 or prop2, this calculates the &#39;targetprop&#39; (in Label). <br /><br />When the value of &#39;targetprop&#39; changes by the above rule, the second rule below should fire.<br /><b><br />Rule2_ChangingLabel2(targetprop, prop3, prop4)</b><br /><br /><br />But the second rule doesn&#39;t fire when the &#39;targetprop&#39; changes.<br /><br /><br />Could this be because it is in a Label? I would be thankful if anyone could let me know some solution.</p>
+<p>Regards,</p>
+<p>Vikas</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Monday, May 27, 2013</h2><p>Hi,</p>
+<p>No , this has nothing to with it being a label.&nbsp;</p>
+<p>Which version of CSLA do you use?&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>vikas_kumar82 replied on Monday, May 27, 2013</h2><p>Hi,</p>
+<p>The CSLA version is:</p>
+<p>Version - 4.3.10.0</p>
+<p>Runtime Version - v4.0.30319</p>
+<p>&nbsp;</p>
+<p>Regards,</p>
+<p>Vikas</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Monday, May 27, 2013</h2><p>Hi, </p>
+<p>
+Look at these posts:</p>
+<p><a href="http://jonnybekkum.wordpress.com/2011/08/29/csla-4-2-rules-update/">http://jonnybekkum.wordpress.com/2011/08/29/csla-4-2-rules-update/</a><br /><a href="http://jonnybekkum.wordpress.com/2012/04/29/unit-test-csla-4-businessrules/">http://jonnybekkum.wordpress.com/2012/04/29/unit-test-csla-4-businessrules/</a>&nbsp;</p>
+<p>They describe how the rule engine works internally.&nbsp;</p>
+<p>Basically&nbsp;</p>
+<p><ol>
+<li>Rules will be executed for the PrimaryProperty that was changed.</li>
+<li>Then recheck rules for dependent properties (only first level and dependent properties is AffecteProperties from 1) and ProparyProperties from &quot;type-rules&quot; where InputProperties conatin PrimaryProperty in 1.)&nbsp;</li>
+</ol></p>
+<p>So you probably hit the barrier of &quot;only 1 level down&quot; on dependent properties.&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>vikas_kumar82 replied on Monday, May 27, 2013</h2><p>Hi, </p>
+<p>I tried making primaryproperty of dependent rule as AffectedProperty in rule 1 but still doesn&#39;t work.</p>
+<p>Could you please elaborate on the second point?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Monday, May 27, 2013</h2><p>Dependend properties is only checked for the first level. IE: It is not recursive.&nbsp;</p>
+<p>Which meand that when&nbsp;Property1 is changed:</p>
+<p><ol>
+<li>Rules where Property1 is PrimaryProperty is checked</li>
+<li>For (aggregated list of AffectedProperties + Properties where Prioperty1 is an InputProperty) check rules&nbsp;</li>
+</ol></p>
+<p>BUT - not in a recursive manner - so if Property3 is an AffectedProperty of 2) above it will not be revalidated.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

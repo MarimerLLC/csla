@@ -1,0 +1,33 @@
+<html><header><title>BeginFetch with criteria requires KnownTypeAttribute?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>BeginFetch with criteria requires KnownTypeAttribute?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11603.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>mrkenn posted on Thursday, September 27, 2012</h2><p>(Csla 4, Silverlight 5)</p>
+<p>I&#39;m having some trouble understanding how to accomplish calling fetch on a BLB when the call requires multiple parameters.</p>
+<p>In .Net, I usually have a simple class with my parameters as class properties that I wrap in a SingleCriteria during the fetch:</p>
+<p>&nbsp;</p>
+<p><strong>MyCriteria c = new&nbsp;MyCriteria(param1, param2, param3);<br />MyObj bo = DataPortal.Fetch&lt;MyObj&gt;(new SingleCriteria&lt;MyObj, MyCriteria&gt;(c));<br />return bo;</strong></p>
+<p>In Silverlight, I tried the same thing:</p>
+<p><strong>MyCriteria c = new&nbsp;MyCriteria(param1, param2, param3);<br />DataPortal&lt;MyObj&gt; dp = new DataPortal&lt;MyObj&gt;();<br />dp.FetchCompleted += handler;<br />dp.BeginFetch(new SingleCriteria&lt;MyObj, MyCriteria&gt;(c));</strong></p>
+<p>&nbsp;</p>
+<div>Unfortunately, I get the following at runtime:</div>
+<div></div>
+<div><i>Type &#39;[namespace].MyCriteria&#39; with data contract name &#39;MyCriteria:http://schemas.datacontract.org/2004/07/[namespace]&#39; is not expected. Add any types not known statically to the list of known types - for example, by using the KnownTypeAttribute attribute or by adding them to the list of known types passed to DataContractSerializer.</i></div>
+<p>&nbsp;</p>
+<div>Is there a better way to wrap up parameters I need to execute the fetch?</div>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Thursday, September 27, 2012</h2><p>The data portal requires that all types you pass through the data portal implement IMobileObject. The easiest way to accomplish this is to subclass one of the CSLA base types. In your case, subclass CriteriaBase.</p>
+<p>Also, make sure to use managed backing fields so they automatically serialize. Otherwise you&#39;ll need to override the get/set state methods as described in the &#39;Using CSLA 4&#39; books.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>mrkenn replied on Thursday, September 27, 2012</h2><p>Thanks for the quick response Rocky. I had gave that a shot (I &nbsp;tried before without managed backers) with the same results. Am I missing something obvious?</p>
+<p>&nbsp;</p>
+<p><strong>using System;<br />using Csla;<br />using Csla.Serialization;<br />namespace MyNamespace<br />{<br />&nbsp; &nbsp; [Serializable]<br />&nbsp; &nbsp; public class MyCriteria : CriteriaBase&lt;MyCriteria&gt;<br />&nbsp; &nbsp; {<br />&nbsp; &nbsp; &nbsp; &nbsp; private String _param1;<br />&nbsp; &nbsp; &nbsp; &nbsp; public String param1<br />&nbsp; &nbsp; &nbsp; &nbsp; {<br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; get { return _param1; }<br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; set { _param1 = value; }<br />&nbsp; &nbsp; &nbsp; &nbsp; }</strong></p>
+<p><span style="font-weight:bold;">&nbsp; &nbsp; &nbsp; &nbsp; private String _param2;<br /></span><span style="font-weight:bold;">&nbsp; &nbsp; &nbsp; &nbsp; public String param2<br /></span><span style="font-weight:bold;">&nbsp; &nbsp; &nbsp; &nbsp; {<br /></span><span style="font-weight:bold;">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; get { return _param2; }<br /></span><span style="font-weight:bold;">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; set { _param2 = value; }<br /></span><span style="font-weight:bold;">&nbsp; &nbsp; &nbsp; &nbsp; }</span></p>
+<p><strong><strong>&nbsp; &nbsp; &nbsp; &nbsp; private String _param3;<br />&nbsp; &nbsp; &nbsp; &nbsp; public String param3<br />&nbsp; &nbsp; &nbsp; &nbsp; {<br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; get { return _param3; }<br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; set { _param3 = value; }<br />&nbsp; &nbsp; &nbsp; &nbsp; }</strong></strong></p>
+<p><span><strong>&nbsp; &nbsp; &nbsp; &nbsp; public&nbsp;MyCriteria&nbsp;() { }</strong></span></p>
+<p><strong><strong>&nbsp; &nbsp; }</strong></strong></p>
+<div></div>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Thursday, September 27, 2012</h2><p>Use managed properties. </p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>mrkenn replied on Friday, September 28, 2012</h2><p>Thanks for the response, tho apparently my understanding of what &quot;managed backing fields&quot; is incorrect.</p>
+<p>My criteria class had private backing fields for the properties, tho even a class with no properties at all has the same error. Per your suggestion, I added the properties as such with the same results:</p>
+<p>&nbsp;</p>
+<p><strong>public static PropertyInfo&lt;int?&gt; param1Property = RegisterProperty(new PropertyInfo&lt;int?&gt;(&quot;param1&quot;, &quot;param1&quot;));<br /></strong><span style="font-weight:bold;">public int?&nbsp;param1</span></p>
+<p><strong><strong>{<br />&nbsp; get { return ReadProperty(param1Property); }<br />&nbsp; set { LoadProperty(param1</strong><span>Property</span><span>, value); }</span></strong></p>
+<p><strong><strong>}</strong></strong></p>
+<div></div>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Friday, September 28, 2012</h2><p>SingleCriteria is supposed to ONLY wrap one value - not a new criteria object and should now be considered oblsolete..</p>
+<p>So your MyCriteria object should inherit from CriteriaBase and implement managed properties and have a default (parameterless) public constructor.</p>
+<p>Then use that object itself - do not wrap inside a SingleCriteria object.</p>
+<p><strong>MyCriteria c = new&nbsp;MyCriteria(param1, param2, param3);<br />DataPortal&lt;MyObj&gt; dp = new DataPortal&lt;MyObj&gt;();<br />dp.FetchCompleted += handler;<br />dp.BeginFetch(c);</strong></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>mrkenn replied on Friday, September 28, 2012</h2><p>That now makes perfect sense... thanks for the assist!</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

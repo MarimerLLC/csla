@@ -1,0 +1,25 @@
+<html><header><title>Problem with CSLA 3.6</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Problem with CSLA 3.6</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5449.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>alexsychev posted on Tuesday, September 23, 2008</h2><P>Hi,</P>
+<P>I've just tried to upgrade to CSLA 3.6 from 3.5.1 , but faced a confusing problem.</P>
+<P>I have&nbsp;root object &nbsp;Role (from BusinessBase) which contains&nbsp;child RolePermissions (BusinessListBase of RolePermission).</P>
+<P>When I call Role.Save() in 3.5.1 everything is ok. </P>
+<P>In 3.6 however I get Null Reference exception in RolePermissions object:</P><FONT color=#0000ff size=2>
+<P>private</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>void</FONT><FONT size=2> Child_Update()</P>
+<P>{</P><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>int</FONT><FONT size=2> _roleNo = (Parent </FONT><FONT color=#0000ff size=2>as</FONT><FONT size=2> </FONT><FONT color=#2b91af size=2>Role</FONT><FONT size=2>).RoleNo;</FONT></P>
+<P><FONT size=3></FONT>&nbsp;</P>
+<P><FONT size=3>For some reason Parent is reset for RolePermissions object.</FONT></P>
+<P>I've tried to debug it and found that the problem is that Role object is not properly cloned : after ObjectCloner.Clone() method is executed (it is done as part of Save operation) the newly created object graph is not correct. What I don't understand is&nbsp;why it happens :). The executed code source seems to be the same in 3.5.1. and 3.6. I'm using local data portal and .net 3.5. sp1, btw.</P>
+<P>Any ideas? </P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Tuesday, September 23, 2008</h2><P>In your UI is the save code like this:</P>
+<P>mBO.Save()&nbsp;&nbsp;&nbsp; ' wrong!!</P>
+<P>or&nbsp; like this:</P>
+<P>mBO = mBO.Save()&nbsp;&nbsp;&nbsp; 'RIGHT</P>
+<P>The local dataportal now acts like a remote dataportal so that bugs in your code show up earlier in the development process. The wrong code above used to work in earlier versions for a local dataportal. But then you app broke when you switched to a remote dataportal and you had to re-write parts of it once you figured this out. Rocky's goal was to make the local and remote dataportals act the same way so that your code only needed to be written (correctly) once.</P>
+<P>Joe</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>alexsychev replied on Wednesday, September 24, 2008</h2><P>Thanks for response.</P>
+<P>Actually I call role = role.Save(), so it is not the source of the problem.</P>
+<P>I'll try try to reproduce the problem in sample project and post it.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, September 24, 2008</h2>Sergey checked this, and it is a bug. The fix will be in the next release of 3.6 (might be in svn already).</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

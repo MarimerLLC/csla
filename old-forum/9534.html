@@ -1,0 +1,59 @@
+<html><header><title>Initialize Server-Side Code - Object Factory</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Initialize Server-Side Code - Object Factory</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9534.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Kevin Fairclough posted on Tuesday, September 14, 2010</h2><p>Hi</p>
+<p>I need to call some code that will intialize certain server-side responsibilites.&nbsp; These calls require assemblies that&nbsp;are not referenced from my main application as I am using ObjectFactory&nbsp;so I cannot use the entry point in&nbsp;WPF app.cs.&nbsp; </p>
+<p>The question is where do I put this code?</p>
+<p>Regards</p>
+<p>Kevin</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rfcdejong replied on Tuesday, September 14, 2010</h2><p>First of all: if u have only 1 tier u need to have all te assemblies in one output directory, it&#39;s easy to reference them all from your main (frontend) project.<br />If u have a server tier then u don&#39;t need them in your main project, just reference them in your server app.</p>
+<p>For your initialization u have several possible solutions:</p>
+<p>1) per call / factory, if u look at Csla.Server.FactoryDataPortal u&#39;ll see that each call does &quot;Invoke&quot; and then the factory method (create, fetch, update, delete) u can use this Invoke method todo <br />2) per session or single host or even for per call in wcf as create own ServiceHost and a an ServiceHostFactory and override the InitializeRuntime()</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Kevin Fairclough replied on Tuesday, September 14, 2010</h2><p>Thanks for the reply.&nbsp; I need to do this once for the lifetime of the application.</p>
+<p>So In my Wpf app.cs I need to scan for assemblies and somehow call the code dynamically, as I cannot add a reference to my data assembly.&nbsp; Foreach server-side technology I need to hook into the startup event and run it there.</p>
+<p>If only there was a hook inside Dataportal Server that allowed me to add a static class to my Data assembly which would be called once the DataPortal is requested (Server-side).&nbsp; Then I could put the code there and not have to write code in the front end or foreach backend.</p>
+<p>Kevin</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Tuesday, September 14, 2010</h2><p>The problem of initializing server side code is more complex than this. </p>
+<p>1. Server side code is a multithreaded server (typically running under IIS or AppFabric). If initalizing code was to run at the first DataPortal call you would have to lock the code to prevent new threads/requests from running the initializing code.</p>
+<p>2. ServerSide ApplicationPool may be recycled at any given point depending on IIS configuration. </p>
+<p>You could achieve 1) by hooking on to the &quot;CslaAuthorizationProvider&quot; which is always called once for each serverside DataPortal cal, even tho&#39; it is not intended for this purpose. </p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Kevin Fairclough replied on Tuesday, September 14, 2010</h2><p><div style='padding-left: 50px;background-color:silver'><b>JonnyBee<br></b>
+<p>The problem of initializing server side code is more complex than this. </p>
+<p>1. Server side code is a multithreaded server (typically running under IIS or AppFabric). If initalizing code was to run at the first DataPortal call you would have to lock the code to prevent new threads/requests from running the initializing code.</p>
+<p>2. ServerSide ApplicationPool may be recycled at any given point depending on IIS configuration. </p>
+<p>You could achieve 1) by hooking on to the &quot;CslaAuthorizationProvider&quot; which is always called once for each serverside DataPortal cal, even tho&#39; it is not intended for this purpose. </p>
+<div style="CLEAR:both;"></div>
+</div></p>
+<p>Surely if its static, or done in a static constructor it will be ok?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rfcdejong replied on Tuesday, September 14, 2010</h2><p>The hook is available when the servicehost is created, write a custom servicehostfactory and create an custom servicehost.<br /><br />public class MyServiceHost : ServiceHost<br />{<br />&nbsp; public MyServiceHost(Type serviceType, params Uri[] baseAddresses)<br />&nbsp;&nbsp;&nbsp; : base(serviceType, baseAddresses) { }<br />&nbsp; <br />&nbsp; protected override void InitializeRuntime()<br />&nbsp; {<br />&nbsp;&nbsp;&nbsp; .. here your&nbsp;init..<br />&nbsp; }<br />// if u want&nbsp; protected override void OnOpening...&nbsp;<br />// if u want&nbsp; protected override void OnClosing...<br />// if u want&nbsp; protected override void OnFaulted.. <br />}</p>
+<p>public class&nbsp;MyServiceHostFactory : ServiceHostFactory&nbsp;<br />{<br />&nbsp; protected override ServiceHost CreateServiceHost(Type serviceType, Uri[] baseAddresses)<br />&nbsp; {<br />&nbsp;&nbsp;&nbsp; return new MyServiceHost(serviceType, baseAddresses);<br />&nbsp; }<br />}<br /><br />and in WcfPortal.svc<br /><br />&lt;%@ ServiceHost Factory=&quot;namespace.MyServiceHostFactory&quot; Service=&quot;Csla.Server.Hosts.WcfPortal&quot; %&gt;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Kevin Fairclough replied on Tuesday, September 14, 2010</h2><p><div style='padding-left: 50px;background-color:silver'><b>rfcdejong<br></b>
+<p>The hook is available when the servicehost is created, write a custom servicehostfactory and create an custom servicehost.<br /><br />public class MyServiceHost : ServiceHost<br />{<br />&nbsp; public MyServiceHost(Type serviceType, params Uri[] baseAddresses)<br />&nbsp;&nbsp;&nbsp; : base(serviceType, baseAddresses) { }<br />&nbsp; <br />&nbsp; protected override void InitializeRuntime()<br />&nbsp; {<br />&nbsp;&nbsp;&nbsp; .. here your&nbsp;init..<br />&nbsp; }<br />// if u want&nbsp; protected override void OnOpening...&nbsp;<br />// if u want&nbsp; protected override void OnClosing...<br />// if u want&nbsp; protected override void OnFaulted.. <br />}</p>
+<p>public class&nbsp;MyServiceHostFactory : ServiceHostFactory&nbsp;<br />{<br />&nbsp; protected override ServiceHost CreateServiceHost(Type serviceType, Uri[] baseAddresses)<br />&nbsp; {<br />&nbsp;&nbsp;&nbsp; return new MyServiceHost(serviceType, baseAddresses);<br />&nbsp; }<br />}<br /><br />and in WcfPortal.svc<br /><br />&lt;%@ ServiceHost Factory=&quot;namespace.MyServiceHostFactory&quot; Service=&quot;Csla.Server.Hosts.WcfPortal&quot; %&gt;</p>
+<div style="CLEAR:both;"></div>
+</div></p>
+<p>If it&#39;s not configured for n-tier then WCF will not be used,&nbsp; I would have preferred to put it in only&nbsp;one place and forget about it.&nbsp; If DataPortal.Server had an Init I could hook up to (by creating a static class in my data assembly) then it would be the same for all server DataPortal configurations, or is this not possible or practical?</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tmg4340 replied on Tuesday, September 14, 2010</h2><p>I&#39;m a little confused... if your app isn&#39;t n-tier, why are you worrying about &quot;server side responsibilities&quot;?&nbsp; Or are you trying to cover all the possible installations of your app, some of which may be n-tier and some may not?&nbsp; That would seem to invite problems, but...</p>
+<p>In any event, let&#39;s touch on what we can.</p>
+<p>1. Having your initialization code in a static constructor or static class does not automatically make it thread-safe.&nbsp; You must write code to make it so (or apply the appropriate attributes to your class/methods).&nbsp; It&#39;s not hard to do unless you have serious performance/scalability issues to contend with.</p>
+<p>2. Rocky has touched on&nbsp;this before, because it is a thorny problem for the reasons JonnyBee mentioned.&nbsp; The technique JonnyBee mentioned is, I believe, the one technique Rocky has offered up as a possible solution.&nbsp; Otherwise, I&#39;m pretty sure you&#39;re out of luck on the server side.</p>
+<p>HTH</p>
+<p>- Scott</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Kevin Fairclough replied on Wednesday, September 15, 2010</h2><p>Yes my app may be configured differently, either local or n-tier.&nbsp; That was one of my main reasons for choosing CSLA in the first place.</p>
+<p>What I dont understand is; I was under the impression that a static constructor is threadsafe so why is this a problem.</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, September 15, 2010</h2><p>Even if you use a static constructor, something has to touch a static member of that specific type to trigger the cctor to run. So you&#39;d still need some bit of code that you know will touch a static member of that type on every data portal request.</p>
+<p>So the answer still comes back to implementing an &quot;authorizer&quot;, because that&#39;s the one place you know will be invoked on every call.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Kevin Fairclough replied on Wednesday, September 15, 2010</h2><p>Ok, I will mark it as an answer.&nbsp; It would be nice if Csla allowed for an Initializer that called an Initialize method, at least then my code would look like its in the correct place.</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, September 15, 2010</h2><p>Yes, I should have named the &quot;authorizer&quot; with a broader name. When I added the feature I was solving a specific issue with authorization, but of course it is possible to do many other things at that point in the process flow. At some point I suppose I&#39;ll have to fix that - breaking everyone who uses the feature. Or maybe add a second step in the workflow: </p>
+<ol>
+<li>Initialize</li>
+<li>Authorize</li>
+<li>Run server-side data portal</li>
+</ol>
+<p>For example, the &quot;authorizer&quot; is also a good place to initialize an IoC container, or establish important server-side ApplicationContext values.</p>
+<p>It would also be ideal to have a post-processing hook - something that is invoked after all server processing is complete (other than final serialization of the results) for each call.</p>
+<ol>
+<li>Initialize</li>
+<li>Authorize</li>
+<li>Run server-side data portal</li>
+<li>Complete</li>
+</ol>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Kevin Fairclough replied on Thursday, September 16, 2010</h2><p>Sounds perfect.</p>
+<p>Thanks everyone for your help.</p>
+<p>Kevin</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

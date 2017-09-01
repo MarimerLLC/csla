@@ -1,0 +1,168 @@
+<html><header><title>Extending the DataPortal</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Extending the DataPortal</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/7565.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>pgroenenstein posted on Thursday, September 03, 2009</h2>HI Everybody<br><br>I'm finally moving old software based on VB6 CSLA over to the new .Net.&nbsp; 
+But i need a quick pointer in the right direction (time is against me to 
+figure it out).
+<br>
+<br>What I need is as follows:
+<br>
+<br>I have an invoice object with a collection of children representing 
+items on the invoice.
+<br>As the user works with the invoice he has the ability to save as he 
+carries on putting items on the invoice (i.e. Saving as he feels like 
+it. Sometimes it might take days to actually get the invoice ready for 
+processing, which means he would need the ability to save it, reload or 
+edit it) Now of course there is no problem here at all the framework 
+works EXCELLENT with all the validation and the DataPortal "FETCH", 
+"INSERT" and "UPDATE" functionality.
+<br>
+<br>We keep the "Temp" invoices in different tables and once the "Finalize" 
+button is hit we need to save it to the permanent tables in the DB. Most 
+of the time a invoice would not even have been saved to the DB, but 
+would go to "finalize" state without ever been saved in the "Temp" tables.
+<br>
+<br>However i have ONE problem if you can point me in the right direction. 
+Once the invoice is ready to be processed the user hits the button and 
+we call a "Finalize" method on the invoice object to "book" the invoice 
+object which also must of course "book" the items too. Much like the 
+"Insert" option in the Dataportal. But all the items MUST be booked 
+REGARDLESS of&nbsp; the "Isnew", or "IsEdited" flags, the only prerequisite 
+being that it should be valid for booking purposes.
+<br>
+<br>As the "Insert" and "Update" methods is already used for normal saving 
+and retrieving we can't "misuse" them for this purpose since we need 
+that functionality along with the "Finalize" functionality.
+<br>So we need an EXTRA function from the DataPortal to be able to do this. 
+I tried to use "Execute" but I'm having a hard time to figure out how to 
+use it for that, it would seem that is is only suited for limited data 
+functionality and not really the way to go if I need&nbsp; to "execute" on 
+the child objects too.
+<br>
+<br>Is it possible to add to the DataPortal that functionality without 
+changing the framework, i.e. from the buss obj's side?
+<br>
+<br>What I need is a "DataPortal_Finalize" option that would work pretty 
+much like the "SAVE" option with SOME changes to how it works e.g. 
+Ignoring "Edit" and "Dirty" states and committing all objects to the DB.
+<br>
+<br>Not sure if I have expressed myself clear enough on my need<div id="refHTML"></div></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rsbaker0 replied on Thursday, September 03, 2009</h2><P>There is no need to modify the data portal to do this (and several possible solutions).</P>
+<P>I'd suggest that you just implement a CommandBase derived class (FinalizeInvoiceCommand) to do the finalizing. </P>
+<P>One of class' members would be the invoice. Its DataPortal_Execute method can perform an arbitrary data transformation on your invoice on the server side of the data portal. </P>
+<P>I use this technique in several&nbsp;places to implement alternative methods of "saving" a BO that already has a primary DataPortal_Update implementation. </P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>pgroenenstein replied on Thursday, September 03, 2009</h2>Thanks for the reply<br><br>I'm on a crash-course to learn CSLA.Net in a couple of days and don't really have all the concepts of CSLA.NET figured yet. <br><br>Can you please explain a bit more in detail as to what you mean. How would you caal the "Childs" Finalize subs then?<div id="refHTML"></div></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Thursday, September 03, 2009</h2><P>When you use a Command object you call DataPortal Execute and once the BO is "on the server" you can do whatever you want to with it.</P>
+<P>Since it contains the Invoice object it has access to the header rows and the line rows.</P>
+<P>You can start a transaction and then directly call ExecuteNonQuery to perform the Insert of all the header data. The loop over the child lines and directly Insert each of them too. (Obviously, the data in each BO are the input parameters to your SP or SQL).</P>
+<P>Then call transaction.commit and you are done.</P>
+<P>Notice that you "bypassed" calling the DataPortal methods of the Invoice and its child objects.</P>
+<P>Joe</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>pgroenenstein replied on Thursday, September 03, 2009</h2>Joe<br><br>Thanks for your response. It seems I would be taking the path you suggested.<br><br>You also said:<br>"Notice that you "bypassed" calling the DataPortal methods of the Invoice and its child objects."<br><br>Is that good,  bad or not a issue at all?<br>(sorry for asking dumb question but I'm trying to get up to speed with CSLA.NET like in 5 days.<br><br>Phillip<br><div id="refHTML"></div></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>pgroenenstein replied on Thursday, September 03, 2009</h2>Joe <br><br>Can you just give me a quick pointer on how best to use the "Command object". Would that be a private class in the the "invoice object" and if so what is the preferred way to access the invoice "parent" object from there then?<br><br>Thanks <br><br>Phillip<br><div id="refHTML"></div></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rsbaker0 replied on Thursday, September 03, 2009</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>pgroenenstein:</strong></div><div>Can you just give me a quick pointer on how best to use the "Command object". Would that be a private class in the the "invoice object" and if so what is the preferred way to access the invoice "parent" object from there then?<BR><BR>Thanks <BR><BR>Phillip<BR> 
+<DIV id=refHTML></DIV>
+<P></div></BLOCKQUOTE></P>
+<P>Yes, a nested class inside your Invoice class would work fine. </P>
+<P>You can extend your Invoice with an additional Finalize() method that internally constructs your nested FinalizeCommand() -- perhaps&nbsp;using itself as an argument to the constructor so the command will have access to it, and then invokes the Execute method on the command. </P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>pgroenenstein replied on Thursday, September 03, 2009</h2>Is it possible to post some sample of what this "Nested" commandbase class should look like. It would go a great deal towards understanding what is to be done. <br><br>Phillip<br><div id="refHTML"></div></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rsbaker0 replied on Thursday, September 03, 2009</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>pgroenenstein:</strong></div><div>Is it possible to post some sample of what this "Nested" commandbase class should look like. It would go a great deal towards understanding what is to be done. <BR><BR>Phillip<BR> 
+<DIV id=refHTML></DIV>
+<P></div></BLOCKQUOTE></P>
+<P>Here is a generic class I have written for this purpose. It has some things you don't need (the database key), but basically it can have generic argument of any type (e.g. your Invoice), and then it calls a virtual Execute() method -- typically all the derived class need implement -- when executed via the Data Portal. (We do our own transaction management, which is what the TransactionContext is, so the point of this class is to centralize the ability to pass an argument to a command that gets executed inside a database transaction)</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P><PRE>using System;
+
+namespace Csla.WORMapper
+{
+    /// 
+    /// Execute a command with a generic argument in a database transaction, automatically enlisting in 
+    /// current one if active
+    /// 
+    /// Usually, derived classes need only override the Execute(TransactionContext context) method
+    /// 
+    /// A class that inherits from .
+    /// An argument of any type.
+    [Serializable()]
+    public class TransactionalCommand<FONT size=2>&lt;T, V&gt; : </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>CommandBase</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>where</FONT></FONT><FONT size=2> T : </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>TransactionalCommand</FONT></FONT><FONT size=2>&lt;T, V&gt;</FONT>    </PRE><PRE>&nbsp;&nbsp;&nbsp; {
+        protected V _arg;
+        protected string _databaseKey;
+
+        protected TransactionalCommand()
+            : this("Base")
+        {
+        }
+
+        protected TransactionalCommand(string databaseKey)
+        {
+            _databaseKey = databaseKey;
+        }
+
+        public static V Execute(V arg )
+        {
+            return Execute(arg, "Base");
+        }
+
+        bool _autoBeginTrans = true;
+
+        public virtual bool AutoBeginTrans
+        {
+            get { return _autoBeginTrans; }
+            set { _autoBeginTrans = value; }
+        }
+
+        public V Argument
+        {
+            get { return _arg; }
+        }
+        public static V Execute(V arg, string databaseKey)
+        {
+            // Must retrieve via data portal
+            TransactionalCommand command = Activator.CreateInstance();
+            command._arg = arg;
+            command._databaseKey = databaseKey;
+            return DataPortal.Execute&gt;(command)._arg;
+        }
+
+        protected override void DataPortal_Execute()
+        {
+            TransactionContext.ExecuteInTransaction(_databaseKey, Execute, AutoBeginTrans);
+        }
+
+        protected virtual void Execute(TransactionContext context)
+        {
+            throw new System.NotImplementedException("Method Execute() must be implemented in derived class");
+        }
+    }
+}
+
+</PRE>
+<P>Here is a typical instance of the command (it takes a PO and just increments the print count, possibly changing the status). You'll see why I went to the trouble to implement the generic class -- now I can implement Commands that basically are just the single Execute method that does all the work... </P><PRE>        [Serializable]
+<FONT color=#0000ff size=2><FONT color=#0000ff size=2><P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;class</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>POIncrementCommand</FONT></FONT><FONT size=2> : Csla.WORMapper.</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>TransactionalCommand</FONT></FONT><FONT size=2>&lt;</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>POIncrementCommand</FONT></FONT><FONT size=2>, </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>PO</FONT></FONT><FONT size=2>&gt;</P></FONT>        {
+            protected override void Execute(Csla.WORMapper.TransactionContext context)
+            {
+                _arg.PrintCount = (short)(_arg.PrintCount.GetValueOrDefault(0) + 1);
+
+                // Move status from APPROVED to ORDERED when printed
+                if (_arg.IsPOStatus(POStatuses.Approved) &amp;&amp; GlobalSettingsCache.Get("Purchasing", "SetPOToOrderedWhenPrinted", true)) // Took out the check for first print 4/9/03 for Version 6.2 (Jim) // APo.m_PrintCount == 1 &amp;&amp;
+                {
+                    SetStatus(context, _arg, POStatuses.Ordered, 0);
+                }
+
+                _arg.Update(context);
+            }
+        }
+</PRE>
+<P>Invocation is trivial. Here is a static method that takes a PO and invokes the command...</P><PRE>        static public void IncrementPrintCount(PO aPO)
+        {
+            POIncrementCommand.Execute(aPO);
+        }
+</PRE>
+<P>&nbsp;</P>
+<P>(Sorry about the cut/paste -- I'm not sure how to best format code for the forum -- it was omitting the generic parameters for some reason)</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>pgroenenstein replied on Sunday, September 06, 2009</h2>Joe <br><br>I quote:<br>"Since it contains the Invoice object it has access to the header rows and the line rows."<br><br>How exactly do you get to the Parent&nbsp; object (Invoice),&nbsp; Collection object and the child objects from within the "Command Object (which is a nested class in the invoice object)"?&nbsp; <br><br>I am not sure how to reference these object from within the command object.<br><br><br><br><br><br><div id="refHTML"></div></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Sunday, September 06, 2009</h2><P>You have gotten a lot of advice in this thread and you have mixed some of it together. </P>
+<P>I do not have a Command Object as a nested class inside my invoice object. </P>
+<P>I have a regular Root BO which I call a Use Case Controller (or Unit Of Work). This root BO contains other BOs (including the Invoice BO which has its collection of lines.)</P>
+<P>So when I am inside the UOW I can just do:</P>
+<P>Me.mInvoice.mLines.Item(0).Price</P>
+<P>Joe</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>pgroenenstein replied on Sunday, September 06, 2009</h2>Joe<br><br>I was thinking of wrapping it all in Controller Object, but was not sure if that would be a good design when working with CSLA Now I understand your posting better, and it seems to me the "better" way to go. Thanks for helping a newbie like me out.<br><br>Thanks<br><div id="refHTML"></div></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rsbaker0 replied on Sunday, September 06, 2009</h2><P>I don't have my source code in front of me, but if memory serves both BusinessBase and BusinessListBase implement IChild, which can be used to walk up the ancestor tree from a CSLA object. If the command object contains a reference to a BO (BusinessBase or BusinessListBase), you should be be able to walk up the object heirarchy.</P>
+<P>Here is a thread on this...</P>
+<P><A HREF="/forums/thread/25967.aspx">http://forums.lhotka.net/forums/thread/25967.aspx</A></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, September 03, 2009</h2><P>It seems to me like there are a couple primary options to consider.</P>
+<P>If this is all one use case, so the user is on a form and at the bottom of the form are two buttons: "Save draft" and "Finalize", that's one thing.</P>
+<P>If this is two use cases: <EM>edit invoice data</EM> and <EM>finalize invoice</EM>, that's another thing.</P>
+<P>Assuming a single use case, I'd consider just putting a Finalize() method on the root class:</P>
+<P>public Invoice Finalize()<BR>{<BR>&nbsp; IsFinalized = true;<BR>&nbsp; return this.Save();<BR>}</P>
+<P>Your data access code can use IsFinalized to decide whether to write to the temp tables or the real tables. And if IsNew is false, then it knows to blank the temp table data.</P>
+<P>If this is two use cases then the second use case (finalize) is probably best done with a command object - but it sounds like this is probably not the case.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>pgroenenstein replied on Thursday, September 03, 2009</h2>Rocky<br><br>It is all one use case, I did considered using a "Finalize" flag. But using the "Execute" method somehow appeals to me to. <br><br>What would your suggestion be in choosing between the two? Given Joe's answer would that not be better as it seems you would have more control over the code.<br><br><br><div id="refHTML"></div></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Friday, September 04, 2009</h2>I deal with invoices as well, but my requirements are different.  In my case, invoices are always stored in the same table, and whether they are "finalized" or not is part of the state of the invoice, so its also a database column (in my case they Close invoices, which also triggers them to be exported to our accounting software).  But even with two tables, it seems like this is the simplier approach, and the BO can just check the flag to save to the proper spot.<br /><br />A command object is more appropriate if you have a requirement like I do.. where you also have quotes and orders, and a quote can be converted to an order which can be converted to an invoice.  The command "knows" how to convert from one kind of document to another; the document isn't at all responsible for that (although you can ask it to get a Converter instance to use).  <br /><br />I think the button location is a bit misleading, since my convert button is also on a toolbar, but I'm not sure converting is the same use case as the normal editing of an invoice.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>robert_m replied on Thursday, September 03, 2009</h2>Seems to me that all you need is a "final" flag in your Invoice object so the <b>DataPortal_Insert</b> and <b>DataPortal_Update</b> methods can decide what to do with it, ie. in which set of tables to save it. <br>So if the invoice is not yet finalized it gets saved into temp tables, and if it's finalized it gets saved into permanent tables.<br>As for the IsNew and IsDirty properties, it should be no problem either. You can always force either one of them to become true via MarkNew() &amp; MarkDirty() methods if you have the need to do so...<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>pgroenenstein replied on Thursday, September 03, 2009</h2>Robert <br><br>Thanks for your reply. <br><br>My question is this if one of the lines on the invoice was loaded after it was save and no editing happened on that line wouldn't the status of the flags (i.e. Isnew = False, IsDirty = False) result in one or more lines not being "booked" once the finalized flag is set?<br><br>I could force the flags to a state that would "Force" updating to the DB, but "Forcing" a flag cannot possible be a good thing. Consider after such a "force" the DB (I suse ADO.Net with Stored Procedures) might for some or other reason reject the update (e.g. not enough stock quantities on hand to sell) and then, if I'm right, your buss obj would be in a "Confused" state.<br><br><br><div id="refHTML"></div></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

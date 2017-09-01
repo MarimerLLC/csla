@@ -1,0 +1,29 @@
+<html><header><title>Combo box resets to initial value</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Combo box resets to initial value</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3624.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>rayc posted on Sunday, September 30, 2007</h2><P>Hello, newbie CSLA here.</P>
+<P>I have a datagridview that has a datagridviewcombobox column. I fill this combo box using NameValueListBase. The problem I'm having is that when I run the application, and then change the item in the combo box (modify a value), the value goes back to the original value when I leave the cell. I"m able to modify the other columns. Any help would be greatly appreciated.</P>
+<P>&nbsp;</P>
+<P>Ray</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jhw replied on Sunday, September 30, 2007</h2><P>Are you manually entering in a value or selecting a value from the nvl? As you are databound to the nvl, I would think you are going to have to choose from the list.</P>
+<P>Heath</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rayc replied on Sunday, November 04, 2007</h2><P>When I open the form, the datagrid view shows the correct values in the datagridviewcombobox column for all the records.&nbsp;&nbsp;But then, I want to modify the value from one of the records in the datagridviewcombobox column, say the first record. The item that I selected changes back to the original item when I tab to the next field (column) in the datagridview, or when I click in another field in the datagridview.</P>
+<P>Yes, I select an item from the combobox.</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Monday, November 05, 2007</h2><P>Be sure you only bind the NVL once.</P>
+<P>Not on every postback! Otherwise you keep re-setting the value.</P>
+<P>Joe</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rayc replied on Wednesday, November 07, 2007</h2><P>This isn't a web form, it's a Windows Forms application.<BR>That's what I find strange.</P>
+<P>I have a Windows form with a DataGridView which has a combobox column. It's this column that is giving me a problem. When I change the value, it resets when I tab out or when I click to another field. What causes it combo box to rest?</P>
+<P>Thanks</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>praevsky replied on Friday, January 04, 2008</h2>I've had this problem, and it's perplexing.&nbsp; The last time, a combobox on one form worked, while another didn't.&nbsp; I examined both and assured myself that they were configured correctly and similarly.&nbsp; I'd change one combobox, tab off, and it would change back.&nbsp; Finally, I decided to strip everything away.&nbsp; One thing at a time.<br>First I removed the readWriteAuthorization, bindingSourceRefresh, and errorProvider.<br>I found that I could now tab off, without the value changing back.&nbsp; But saving didn't save.<br>So, I deleted the combobox, changed the field in the datasource to a textbox, and dragged it on.<br>Progress.&nbsp; The key displayed, like I expected, and what's more, it saved.<br>Here's the perplexing part.<br>I deleted the textbox, changed the field in the datasource to a combobox, and dragged it on.<br>I changed the Databindings, Advanced, Text to none, and configured the combobox using the 'smart panel'.&nbsp; I checked Use Data Bound Items, and set the Data Source, Display Member, Value Member, and Selected Value appropriately.&nbsp; And it worked.<br>I put the readWriteAuthorization, bindingSourceRefresh, and errorProvider back, and now my form is identical to the original form, which didn't work.<br>Go figure.<br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jimbo replied on Saturday, January 05, 2008</h2>Just don't use the designer to configure you grids and populate the combos ... get used to doing it programatically.<br>
+<br>
+jimbo<br>
+<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jimbo replied on Saturday, January 05, 2008</h2>I should have mentioned that the BindingSourserefresh control
+(mentioned in the previous response) is not relevant for datagridviews
+as it only applies to simple controls.<br>
+<br>
+jimbo<br>
+<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jimbo replied on Saturday, January 05, 2008</h2>Of course if ravc is not using a BindingSourceControl&nbsp; then that could be the root of the problem.<br>
+<br>
+jimbo<br>
+<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>so24wo replied on Sunday, January 06, 2008</h2><P><STRONG>2 rayc:</STRONG></P>
+<P>To find a bag your Form.cs and Form.Designer.cs files are required.</P>
+<P><STRONG>2 praevsky:</STRONG></P>
+<P>Intresting. Can you show all four source files?<BR>Both old Form.cs and Form.Designer.cs which didn't work and new two.</P>
+<P>Or you can just compare them youself and say&nbsp;to us are there any differencies.</P>
+<P>&nbsp;</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

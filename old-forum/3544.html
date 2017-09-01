@@ -1,0 +1,19 @@
+<html><header><title>Streamlining &quot;DeepData&quot;</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Streamlining &quot;DeepData&quot;</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3544.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>tsaltd posted on Saturday, September 15, 2007</h2><P>What's the "best practice" for new systems based on the DeepData pattern ( primarily to take advantage of moving the DataPortal_XYZ functions out of my BOs to a separate DAL assembly -- tho the child grandchild fetch pattern is also excellent ) </P>
+<P>I don't see why I would ever use anything but FetchDTO ... (I'm using an ORM tool&nbsp;that eliminates all&nbsp;ADO.NET code ) </P>
+<P>After stepping thru the debugger, I think I've got a handle on all the necessary functions that need to be migrated to my new app (&nbsp;I'm also moving it from VB to C# ).</P>
+<P>Of course I don't want to re-invent the wheel ... but I haven't seen anything that&nbsp;focuses on the&nbsp;modular DAL&nbsp;/ DeepData functionality ... or a C# version ...</P>
+<P>Is there any exisiting support for what I'm trying to do ???</P>
+<P>&nbsp;???&nbsp; Any gotcha's on moving away from the "dynamic" DAL functionality ??</P>
+<P>Thanks,</P>
+<P>Steve&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tsaltd replied on Monday, September 17, 2007</h2><UL>
+<LI><FONT size=2>No calls to app.config for "flexible DAL Libraries"&nbsp; I'm putting constants in the DataFactory.GetYourNewXYZDataObject()</FONT></LI></UL><FONT color=#2b91af>
+<BLOCKQUOTE dir=ltr>
+<BLOCKQUOTE dir=ltr>
+<P><FONT size=1>Type</FONT></FONT><FONT size=1> dalType = <FONT color=#2b91af>Type</FONT>.GetType(<FONT color=#a31515>"MyNew.DAL.DTO.TransportData,YourNew.DAL.DTO"</FONT>, <FONT color=#0000ff>true</FONT>, <FONT color=#0000ff>true</FONT>);</FONT></P></BLOCKQUOTE></BLOCKQUOTE>
+<UL>
+<LI>
+<DIV><FONT size=2>No ADO in the Business Objects ...only using DAL.DTO library with calls to ORM code in the DAL.DTO constructors</FONT></DIV></LI></UL>
+<P><FONT size=2>I'm not abandoning the possiblity of a different type of DAL library ... so I am sticking with&nbsp;implementing the IDisposable interfaces in MyNew.Dal for the MyNewDal.DTO.</FONT></P>
+<P><FONT size=2>Just scratching the surface .. but things are moving along.</FONT></P>
+<P><FONT size=2>Steve</P></FONT></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

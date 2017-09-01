@@ -1,0 +1,77 @@
+<html><header><title>CSLA.NET in planning &amp; scheduling system</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA.NET in planning &amp; scheduling system</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/7706.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>jasonlaw posted on Wednesday, September 30, 2009</h2>I have a problem in planning &amp; scheduling system. <br />Says we have a machine to perform a sequence of tasks, a task has attribute StartTime and EndTime. A task's StartTime is depended on previous task's EndTime + some delay duration. If either one of the task change its delay duration, it needs to propagate the change to subsequence tasks.<br />In this case where should I put the propagation logic ( the logic can sometime be very complex) ? I am thinking of putting it in stored procedure or database trigger, but it violate the idea of using CSLA.NET which all the business logic should be in BO. <br />Any suggestion for me?<br />Thanks in advance.<br /><br /><br /></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, September 30, 2009</h2><P>If you have a use case where the user is editing or adding a task - and they don't see or interact with other dependent tasks - then there's no problem (imo) having your DAL or database do the alterations on the dependent tasks when the user-edited task is saved.</P>
+<P>On the other hand, if the dependent tasks are visible to the user as part of the use case, then wouldn't they expect to see the cascade effect on-screen? In that case I'd think you'd have the objects do the data changes so they are visible to the user immediately, and then they'd be saved to the database.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonStonecash replied on Wednesday, September 30, 2009</h2>All other things being equal, I would want to avoid putting complex business logic into stored procedures.&nbsp; My primary motivation is that it would be much easier to unit test the business logic in side of the BO than in stored procedures.&nbsp; Without knowing all of the details, I would guess that the scheduling logic would be in the collection object or (to facilitate unit testing) a separate class that took a collection of the scheduled business objects as an argument.<br><br>Jon Stonecash <br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Wednesday, September 30, 2009</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Personally
+the only time I would consider putting business logic in DB is when this
+approach would make a huge difference in performance.&nbsp; For example implementing
+custom logic through business objects would involve fetching many thousands of
+rows, updating one field in each one, and saving them one at a time (takes many
+minutes and creates a ton of network traffic) vs. running one query in DB (takes
+seconds or less).<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> JonStonecash
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Wednesday, September 30, 2009 12:32 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] CSLA.NET in planning &amp; scheduling system<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>All other things being equal, I would want to avoid putting
+complex business logic into stored procedures.&nbsp; My primary motivation is
+that it would be much easier to unit test the business logic in side of the BO
+than in stored procedures.&nbsp; Without knowing all of the details, I would
+guess that the scheduling logic would be in the collection object or (to
+facilitate unit testing) a separate class that took a collection of the
+scheduled business objects as an argument.<br>
+<br>
+Jon Stonecash <br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

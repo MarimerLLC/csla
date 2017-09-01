@@ -1,0 +1,15 @@
+<html><header><title>SilverLight Performance</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>SilverLight Performance</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/7342.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>SouthSpawn posted on Monday, July 27, 2009</h2><DIV>I used the "ObjectFactory" to create a seperate DataAccess class.</DIV>
+<DIV><BR>I enjoy the seperation of code here.</DIV>
+<DIV><BR>But it does seem like the database calls can be a bit faster.</DIV>
+<DIV><BR>2 questions here.</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>1. Will dropping the data access layer improve performance greatly?</DIV>
+<DIV>2. I am using LinqToSQL as the data access methods.</DIV>
+<DIV>Will going straight to ADO.net give me a boost as well?<BR><BR>Thanks</DIV></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, July 27, 2009</h2><P>All data access technologies are abstractions over raw ADO.NET (connection/command/datareader). So they are all slower than raw ADO.NET by definition.</P>
+<P>Separating data access into a different object like you do with ObjectFactory provides separation of concerns, at the cost of breaking encapsulation (unless you are very careful). Breaking encapsulation like this not only causes tight coupling, but often has a negative performance impact.</P>
+<P>Make sure to read Chapter 18 in the <EM>Expert 2008 Business Objects</EM> book, as I discuss many of these tradeoffs there.</P>
+<P>This is all about tradeoffs. </P>
+<P>Abstraction can simplify/reduce code making maintenance easier, but almost always at the cost of performance. </P>
+<P>Separation of concerns provides flexibility and clarity making maintenance easier, but often at the cost of complexity (more moving parts) and sometimes performance.</P>
+<P>The "best" data access technique is different for different orgs and apps. You might require flexibility and reduced code, so you go for a high level of abstraction and lots of separation. Sure, your code runs slower, but it is really easy to maintain and you can support multiple data sources (SQL, Oracle, etc).</P>
+<P>Someone else might require high performance, so they go with raw ADO.NET and tighter coupling. Their code <EM>might</EM> be harder to maintain, but it will be faster.</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

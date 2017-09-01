@@ -1,0 +1,178 @@
+<html><header><title>Request for new DataProvider events</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Request for new DataProvider events</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/7204.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jack posted on Tuesday, June 30, 2009</h2>Rocky,<br><br>I'm using the DataProvider as a property in a ViewModel and has replicated a number of the CanXXX properties.&nbsp; Would it be possible to get an event for each of RefreshCanOperationsValues and RefreshCanOperationsOnObjectLevel to indicate that those methods have fired?&nbsp; <br><br>I'd like to trigger a PropertyChanged event for all my related&nbsp; CanXXX in one go vs. trapping and mapping each firing of&nbsp; the CSLADataProvider.PropertyChanged event.&nbsp; <br><br>Currently I'm looking for Properties where the name StartsWith("Can") and just replicating the call but I would like to know on a global level.<br><br>Thanks<br><br>jack<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, June 30, 2009</h2><P>This is why I think the MVVM pattern is kind of silly - at least when you have something other than an anemic Model.</P>
+<P>You are writing all that code in your VM to replicate functionality that already exists in the Model and/or the data provider. Doesn't that seem really silly to you? It does to me.</P>
+<P>I really think the long-term answer is probably to create a ViewModelBase class in CSLA .NET so you can inherit from it to get a VM that already does all the basic stuff that the CslaDataProvider does for you.</P>
+<P>In other words, I don't think I'll be bastardizing the data provider model to fit the MVVM pattern, because they are different things. I think the correct answer is to provide direct support for the MVVM pattern - at least the variant of the pattern than is reasonably sane for dealing with a rich Model like one you get when creating CSLA .NET objects.</P>
+<P>And I'm sure I'll make some people unhappy in so doing, because they'll want to use one of the MVVM variants designed for anemic Models with CSLA .NET - but I'm OK with that, because to me that's just silly :)</P>
+<P>Sorry for the rant - just had to get that out of my system.</P>
+<P>Seriously - I think you should consider ripping the code out of CslaDataProvider and creating your own ViewModelBase class that already implements all the Can___() methods and so forth. You are going to want those on every VM anyway, so why write that code over and over and over again?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jack replied on Tuesday, June 30, 2009</h2><font face="Tahoma">Rocky,<br><br>Well there are worse things than being silly :-) but I do hear and understand your point.&nbsp; Its also very hard to get a grasp of all the different ideas and methodologies and acronyms etc out there and come up with a simple concept that meets ones needs.&nbsp; Especially if you want to combine ideas and frameworks from multiple sources.<br><br>I actually have a base class that implements most of the CanXyz in a MyAppModelBase but then I extended it to be a MyAppCslaModelBase where it pulled in the CSLADataProvider as a property for the scenarios (many) where I want to use a the data provider to do much of the work.&nbsp; I have an ICslaModel interface that I just use to ensure I map the work you've already done and make sure I implement what I need.<br><br>Then I've taken some of the properties (such as IsBusy) and modified it to do<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; get{ return _isBusy || _cslaDataProvider.IsBusy;}<br><br>other just stay the same<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public bool CanCancel {return _cslaDataProvider.CanCancel;}<br><br>So my ViewModel is a hybrid of whatever I choose / need.&nbsp; I'm actually pretty happy with it.&nbsp; What I think would be most useful would be a CSLA managed interface that I can include to ensure that whatever CanXyz or (silly MVVM Base implementations) I also pick up.&nbsp; That keeps me confident I am working from the same starting point as you/CSLA.<br><br>So if the CslaDataProvider could implement ISillyViewModel then I could also and never have to worry that I miss a modification or good idea that CSLA implements.<br><br>ISillyViewModel for me is the CanXyz's.<br><br>It took me longer to write these two posts than it did to cut/paste and replicate the properties I cared about so to me it wasn't a waste of effort.<br><br>Thanks<br><br>jack<br><br></font></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, July 01, 2009</h2><P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>Jack:</strong></div><div><FONT face=Tahoma>Rocky,<BR><BR>Well there are worse things than being silly :-) but I do hear and understand your point.&nbsp; </FONT></P>
+<P><FONT face=Tahoma><FONT face="Times New Roman"></div></BLOCKQUOTE></FONT></FONT></P>
+<P><FONT face=Tahoma>I meant no offense. I've just observed that patterns come and go like&nbsp;fads, and the MVVC pattern is the current "pattern of the day". It is too young (imo) to know if it is actually any good, but a lot of people are experimenting with it, so in a couple years I'm sure we'll know whether it actually provides good value - and if so, how.</FONT></P>
+<P><FONT face=Tahoma>I'm just not sure that the CslaDataProvider has any place in an MVVM scenario. I can see where some of the <EM>functionality in the data provider</EM> would have value in a VM, but perhaps not the data provider itself.</FONT></P>
+<P><FONT face=Tahoma>The data provider model is something WPF introduced when it came out. The purpose of the data provider is to allow a XAML designer/developer to access data and use data binding without writing any code behind the form.</FONT></P>
+<P><FONT face=Tahoma>The MVVM pattern has you writing code "behind the form" in a VM. So already we see that this departs from the data provider model of "no code".</FONT></P>
+<P><FONT face=Tahoma>I know, what I'm saying here is heresy - implying that the VM is "code behind" - but it is. Unless you write a VM that can be used behind multiple forms, all you are doing is writing code-behind, but in a more complex manner than you need to.</FONT></P>
+<P><FONT face=Tahoma>My goal in enhancing and extending the data provider model was to take the "no code behind" concept and carry it as far as possible, so you could at least create basic data view/entry screens without writing any code in the UI layer - just pure XAML.</FONT></P>
+<P><FONT face=Tahoma>I still think that's a good goal. I think <EM>most forms</EM> should not require a manually-created VM class. That's just code in the UI, and code in the UI is bad.</FONT></P>
+<P><FONT face=Tahoma>I do appreciate that <EM>some forms</EM> are so complex that they will require code in the UI. And I understand people not wanting to use the actual code-behind model because it feels like VB3. But if a VM class just contains code that would have been in the code-behind, then that's silly, because it is just a developer doing extra work to pretend to solve a problem - when all they've really done is added unnecessary complication to arrive at the same place.</FONT></P>
+<P><FONT face=Tahoma>To put it another way, I think that any code written in the UI (in an ideal world) would be written in XAML controls or attached properties, so that code is leveraged (or not) entirely by the XAML designer/developer.</FONT></P>
+<P><FONT face=Tahoma>Not that I do that either - because it is harder. But it is better, because it shifts the control to the XAML and provides better decoupling.</FONT></P>
+<P><FONT face=Tahoma>And ultimately coupling is the issue. If your VM is tightly coupled to your V, then the VM is just a complicated version of code-behind, and so it seems to me that you have all the negatives of code-behind PLUS all the negatives of extra complexity. A total lose-lose scenario.</FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jack replied on Wednesday, July 01, 2009</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Rocky,<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>No offense taken at all - I was just being cheeky.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>As you clearly point out I am purely after the functionality and
+leveraging your efforts and won't pretend to be able to speak to the correct
+use of various patterns etc.&nbsp; With respect to Silverlight everything is so
+young that I'm finding myself just trying to stick to a few standards and I'll
+see what happens.&nbsp; I'm sure version 2.0 of my application under CSLA 4.x
+and Silverlight x will look completely different and I'll be far wiser.&nbsp;
+Hopefully I get paid to do all the rework :-).<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>If you feel that it is a better approach to expose the
+functionality of the DataProvider for re-use so that one doesn't actually add a
+data provider then please consider adding that as an enhancement.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I think it would be helpful to the community if it is easier to
+re-use and implement your logic vs. re-writing.&nbsp; I fully agree that you
+shouldn't start basterdising CSLA to support fad's and I especially will heed
+your warnings.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>thanks<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>jack<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> RockfordLhotka [mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> July-01-09 9:07 AM<br>
+<b>To:</b> jaddington@alexandergracie.com<br>
+<b>Subject:</b> Re: [CSLA .NET] Request for new DataProvider events<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<blockquote>
+
+<div>
+
+<p class=MsoNormal><img id="_x0000_i1025" src="/Themes/default/images/icon-quote.gif"><strong>Jack:</strong><o:p></o:p></p>
+
+</div>
+
+<div>
+
+<p class=MsoNormal><span>Rocky,<br>
+<br>
+Well there are worse things than being silly :-) but I do hear and understand
+your point.&nbsp; </span><o:p></o:p></p>
+
+</div>
+
+</blockquote>
+
+<p><span>I meant no offense. I've
+just observed that patterns come and go like&nbsp;fads, and the MVVC pattern is
+the current &quot;pattern of the day&quot;. It is too young (imo) to know if it
+is actually any good, but a lot of people are experimenting with it, so in a
+couple years I'm sure we'll know whether it actually provides good value - and if
+so, how.</span><o:p></o:p></p>
+
+<p><span>I'm just not sure that the
+CslaDataProvider has any place in an MVVM scenario. I can see where some of the
+<em><span>functionality in the data
+provider</span></em> would have value in a VM, but perhaps not the data
+provider itself.</span><o:p></o:p></p>
+
+<p><span>The data provider model is
+something WPF introduced when it came out. The purpose of the data provider is
+to allow a XAML designer/developer to access data and use data binding without
+writing any code behind the form.</span><o:p></o:p></p>
+
+<p><span>The MVVM pattern has you
+writing code &quot;behind the form&quot; in a VM. So already we see that this
+departs from the data provider model of &quot;no code&quot;.</span><o:p></o:p></p>
+
+<p><span>I know, what I'm saying here
+is heresy - implying that the VM is &quot;code behind&quot; - but it is. Unless
+you write a VM that can be used behind multiple forms, all you are doing is
+writing code-behind, but in a more complex manner than you need to.</span><o:p></o:p></p>
+
+<p><span>My goal in enhancing and
+extending the data provider model was to take the &quot;no code behind&quot;
+concept and carry it as far as possible, so you could at least create basic
+data view/entry screens without writing any code in the UI layer - just pure
+XAML.</span><o:p></o:p></p>
+
+<p><span>I still think that's a good
+goal. I think <em><span>most forms</span></em>
+should not require a manually-created VM class. That's just code in the UI, and
+code in the UI is bad.</span><o:p></o:p></p>
+
+<p><span>I do appreciate that <em><span>some forms</span></em> are so complex
+that they will require code in the UI. And I understand people not wanting to
+use the actual code-behind model because it feels like VB3. But if a VM class
+just contains code that would have been in the code-behind, then that's silly,
+because it is just a developer doing extra work to pretend to solve a problem -
+when all they've really done is added unnecessary complication to arrive at the
+same place.</span><o:p></o:p></p>
+
+<p><span>To put it another way, I
+think that any code written in the UI (in an ideal world) would be written in XAML
+controls or attached properties, so that code is leveraged (or not) entirely by
+the XAML designer/developer.</span><o:p></o:p></p>
+
+<p><span>Not that I do that either -
+because it is harder. But it is better, because it shifts the control to the
+XAML and provides better decoupling.</span><o:p></o:p></p>
+
+<p><span>And ultimately coupling is
+the issue. If your VM is tightly coupled to your V, then the VM is just a
+complicated version of code-behind, and so it seems to me that you have all the
+negatives of code-behind PLUS all the negatives of extra complexity. A total
+lose-lose scenario.</span><o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

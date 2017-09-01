@@ -1,0 +1,38 @@
+<html><header><title>Event ObjectChanged ?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Event ObjectChanged ?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/1135.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoOfMetL posted on Wednesday, September 06, 2006</h2>Hello, <br>
+<br>
+I would like that my objects have a new event: ObjectChanged.&nbsp;&nbsp;&nbsp; <br>
+<br>
+This event will be launched when any property of my object, or one of
+its children, or one of its grandChild are modified.&nbsp;&nbsp;&nbsp; <br>
+<br>
+There is the event propertyChanged, but he is launched when one of the
+properties is modified (what normal), but not if a child is
+modified.&nbsp;&nbsp; <br>
+<br>
+My problem arises when my object has grandchild, and I don't know how
+to go up information to announce that a grandchild is modified.<br>
+<br>
+Have an idea?&nbsp;&nbsp;&nbsp; <br>
+<br>
+Thank you <br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Brian Criswell replied on Wednesday, September 06, 2006</h2>Just attach an event handler to each of your child changed events (ListChanged, PropertyChanged, etc.) and call OnPropertyChanged(string.Empty).<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoOfMetL replied on Wednesday, September 06, 2006</h2><br>
+I wanted to use the OnPropertyChanged event, but I don't want reload all my objet.<br>
+<br>
+If a property of a grandChild is modified, I do not want that the data
+of my EditableRoot is reloaded. For a single object, it is not
+inevitably annoying, but for a collection, that creates a problem. So I
+wanted to avoid using the OnPropertyChanged event <br>
+<br>
+What do you think about it? <br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Brian Criswell replied on Wednesday, September 06, 2006</h2>My personal opinion is that it is better to work within the .NET framework when possible and practical.&nbsp; Using PropertyChanged will make changes work with data binding which will be useful if you ever have a root object rule property that recalculates based on changes in its children.<br><br>What problem are you experiencing with collections?<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoOfMetL replied on Wednesday, September 06, 2006</h2><br>
+I was afraid that if a collection were displayed with each time a
+property of a grandChild was modified, the screen is continuously
+updated is thus worse performances. <br>
+<br>
+I will test like that to see the result. <br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>DansDreams replied on Wednesday, September 06, 2006</h2>The only time this seems to be a problem is with list controls displaying large collection.&nbsp; But in that case the list control is going to be responding to the collection's change events anyway.&nbsp; There are cases where you need to turn off that event/handler cycle when doing lots of updates to&nbsp;a displayed&nbsp;collection in code, but the effect on the controls displaying the parent object is usually fairly trivial.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoOfMetL replied on Thursday, September 07, 2006</h2>I implement the solution : <br>
+&nbsp;&nbsp;&nbsp; Attach an event handler to each of child changed events
+(ListChanged, PropertyChanged, etc.) and call
+OnPropertyChanged(string.Empty).<br>
+<br>
+And it's works.<br>
+<br>
+Thank you<br>
+<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

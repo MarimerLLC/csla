@@ -1,0 +1,26 @@
+<html><header><title>Problem in child object</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Problem in child object</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/12143.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Sundar posted on Friday, September 06, 2013</h2><p>Hi All,</p>
+<p>I&#39;m very new for CSLA.NET. Can anyone suggest me how can I handle this scenario?</p>
+<p>I have OrderMaster root object and 2 child objects OrderDetails and OrderAddress in web form. I can create/Update the OrderMaster and OrderAddress because 1 to 1 relationship. OrderDetail is 1 to many. when I test the orderDetail i can update but I couldn&#39;t insert the transaction.</p>
+<p>I would appreciate if anyone suggest me how can I implement above scenario. Thank you.</p>
+<p>Sundar</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Friday, September 06, 2013</h2><p>Normally your grid control would call AddNew on the collection, assuming you bound the grid to the Order.OrderDetails collection.&nbsp; If you&#39;re adding the new line item some other way, it might be that its not being added to the collection.&nbsp; If you post some code showing your OrderMaster and&nbsp;OrderDetails that might help.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Sundar replied on Tuesday, September 10, 2013</h2><p>Thank you Andy,</p>
+<p>When I save the OrderDetails , it throw below error.</p>
+<p><span style="font-family:Arial,Helvetica,Geneva,SunSans-Regular,sans-serif;"><code>
+<pre>[ValidationException: Object is not valid and can not be saved]
+   Csla.BusinessBase`1.Save() +352
+   Web_Sample1.CustomerOrder.CustomerOrderEntry1.CslaDSOrderDetails_InsertObject(Object sender, InsertObjectArgs e) in D:\CSLA_Samples\CSLA_SampleCodes\WebApps\WebSample-1\Web-Sample1\CustomerOrder\CustomerOrderEntry1.aspx.cs:55
+   Csla.Web.CslaDataSource.OnInsertObject(InsertObjectArgs e) +105
+   Csla.Web.CslaDataSourceView.ExecuteInsert(IDictionary values) +106
+   System.Web.UI.DataSourceView.Insert(IDictionary values, DataSourceViewOperationCallback callback) +89
+   System.Web.UI.WebControls.FormView.HandleInsert(String commandArg, Boolean causesValidation) +377
+   System.Web.UI.WebControls.FormView.HandleEvent(EventArgs e, Boolean causesValidation, String validationGroup) +612
+   System.Web.UI.WebControls.FormView.OnBubbleEvent(Object source, EventArgs e) +95
+   System.Web.UI.Control.RaiseBubbleEvent(Object source, EventArgs args) +37
+   System.Web.UI.WebControls.FormViewRow.OnBubbleEvent(Object source, EventArgs e) +112
+   System.Web.UI.Control.RaiseBubbleEvent(Object source, EventArgs args) +37
+   System.Web.UI.WebControls.LinkButton.OnCommand(CommandEventArgs e) +125
+   System.Web.UI.WebControls.LinkButton.RaisePostBackEvent(String eventArgument) +169
+   System.Web.UI.WebControls.LinkButton.System.Web.UI.IPostBackEventHandler.RaisePostBackEvent(String eventArgument) +9
+   System.Web.UI.Page.RaisePostBackEvent(IPostBackEventHandler sourceControl, String eventArgument) +13
+   System.Web.UI.Page.RaisePostBackEvent(NameValueCollection postData) +176
+   System.Web.UI.Page.ProcessRequestMain(Boolean includeStagesBeforeAsyncPoint, Boolean includeStagesAfterAsyncPoint) +5563</pre>
+</code></span></p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

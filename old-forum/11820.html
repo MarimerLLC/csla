@@ -1,0 +1,198 @@
+<html><header><title>CSLA 4.5:  No &quot;CSLA.Server.Hosts.Silverlight namespace?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA 4.5:  No &quot;CSLA.Server.Hosts.Silverlight namespace?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11820.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>drobisonoh posted on Tuesday, February 05, 2013</h2><p>I am updating my Silverlight app which was previously using CSLA 4.1.&nbsp; In configuring the web server, I had added an SlPortal.svc file as the service endpoint for making calls to the data portal.&nbsp; Works great with CSLA 4.1 but when I changed to CSLA 4.5, it gave me an error message saying it could not find WcfPortal.&nbsp;&nbsp; I&nbsp;downloaded and reviewed the CSLA 4.5&nbsp;source code to find that the while the WcfPortal contract exists under &quot;CSLA.Server.Hosts&quot; directory (for .NET), that the Silverlight directory &quot;CSLA.Server.Hosts.Silverlight&quot; no longer exists.&nbsp;&nbsp; The only subdirectories in the source under CSLA.Server.Hosts now are &quot;Mobile&quot; and &quot;WCFChannel&quot;.</p>
+<p>What happened to the Silverlight folder (namespace)?&nbsp; How should I be configuing the web.config file for Silverlight now without it?</p>
+<p>Thanks in advance for any assistance.</p>
+<p>David.</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>NET-H24 replied on Wednesday, February 06, 2013</h2><p>Check this link</p>
+<p>
+ 
+  Normal
+  0
+  
+  
+  
+  
+  false
+  false
+  false
+  
+  EN-US
+  X-NONE
+  X-NONE
+  
+   
+   
+   
+   
+   
+   
+   
+   
+   
+  
+  MicrosoftInternetExplorer4
+  
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+  
+</p>
+<p>
+ 
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+ 
+
+
+
+<p class="MsoListParagraph"><span style="color:#1f497d;"><a href="http://forums.lhotka.net/forums/t/11624.aspx">http://forums.lhotka.net/forums/t/11624.aspx</a></span></p>
+</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>drobisonoh replied on Wednesday, February 06, 2013</h2><p>Thanks, Net-H24.&nbsp; I was wondering if Mobile was the new Silverlight !!&nbsp;&nbsp; I did not know how to verify that.&nbsp; Thanks for the info.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, February 07, 2013</h2><p>Because the &quot;Silverlight&quot; data portal is now available across several (all) platforms:</p>
+<ul>
+<li>Silverlight</li>
+<li>.NET 4.5</li>
+<li>.NET 4</li>
+<li>WinRT</li>
+<li>WP8 (WinPRT)</li>
+</ul>
+<p>I chose to rename the namespace and types to reflect that they aren&#39;t really related to Silverlight anymore.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

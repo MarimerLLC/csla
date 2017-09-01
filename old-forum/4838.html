@@ -1,0 +1,157 @@
+<html><header><title>BeginEdit for child list throws exception.</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>BeginEdit for child list throws exception.</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4838.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>maxal posted on Tuesday, May 13, 2008</h2><P>I have an object with children (Receipt and items + other detail lists).</P>
+<P>I handle BeginEdit/CancelEdit myself by calling BeginEdit when modal window is opened (WinForms). It works well both&nbsp;for root objects (receipt) and child objects (item). However, now I want to modify one of the detail lists and then either apply all changes in the list or cancel them.</P>
+<P>BeginEdit doesn't work for list because it's child list (Exception is thrown).</P>
+<P>Practical question is what should I do.</P>
+<P>Theoretical is why not to allow call BeginEdit for the child list?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Tuesday, May 13, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoListParagraph><span><span>1.<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span></span><span>&nbsp;issue begin edit and cancel edit on the root regardless what
+part of the object graph is modified.<o:p></o:p></span></p>
+
+<p class=MsoListParagraph><span><span>2.<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span></span><span>Root object is the one responsible for cancel (restore previous
+state) of the entire object graph.&nbsp; So, if you maintain a separate state
+stack of a child object, root object will not be able to properly restore the
+child&#8217;s object state.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Senior Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> maxal
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Tuesday, May 13, 2008 1:00 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> [CSLA .NET] BeginEdit for child list throws exception.<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>I have an object with children (Receipt and items + other detail lists).<o:p></o:p></p>
+
+<p>I handle BeginEdit/CancelEdit myself by calling BeginEdit when modal window
+is opened (WinForms). It works well both&nbsp;for root objects (receipt) and
+child objects (item). However, now I want to modify one of the detail lists and
+then either apply all changes in the list or cancel them.<o:p></o:p></p>
+
+<p>BeginEdit doesn't work for list because it's child list (Exception is
+thrown).<o:p></o:p></p>
+
+<p>Practical question is what should I do.<o:p></o:p></p>
+
+<p>Theoretical is why not to allow call BeginEdit for the child list?<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>maxal replied on Tuesday, May 13, 2008</h2><P>Are you saying that when I call BeginEdit/CancelEdit for item of the receipt, which I edit it in modal form, it's also not a good idea, even if it works? It's always happening between parents BeginEdit/CancelEdit calls. And it is looks like overhead to call parent's BeginEdit for that.</P>
+<P>Because originally I just relied on binding events to call those methods.&nbsp;And they&nbsp;kind of&nbsp;created separate stack (or&nbsp;rather extension) of states.&nbsp;Later I found that there are too many unnecessary calls and switch to manual.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Tuesday, May 13, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Correct.&nbsp; The guidelines that I follow based on what I know(which
+may not be much :-)), is to call Begin edit on root object only and do this
+once after it is loaded initially.&nbsp; In cancel button there is only one
+CancelEdit call as well and Begin edit to follow, also on root object only.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Senior Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> maxal
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Tuesday, May 13, 2008 1:16 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: BeginEdit for child list throws exception.<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Are you saying that when I call BeginEdit/CancelEdit for item of the
+receipt, which I edit it in modal form, it's also not a good idea, even if it
+works? It's always happening between parents BeginEdit/CancelEdit calls. And it
+is looks like overhead to call parent's BeginEdit for that.<o:p></o:p></p>
+
+<p>Because originally I just relied on binding events to call those
+methods.&nbsp;And they&nbsp;kind of&nbsp;created separate stack (or&nbsp;rather
+extension) of states.&nbsp;Later I found that there are too many unnecessary
+calls and switch to manual.<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

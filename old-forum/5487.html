@@ -1,0 +1,559 @@
+<html><header><title>Rolodex Sample Project - Error</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Rolodex Sample Project - Error</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5487.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>MGervais posted on Monday, September 29, 2008</h2><P><FONT face=Tahoma size=2>I have started toying with the sample projects released along with the latest CSLA.NET Lite release. Unfortunately, there is very documentation on how to best get these projects to execute and I have run up against the following&nbsp;exception being raised:</FONT></P>
+<P><FONT face=Tahoma size=2>"The remote server returned an error: NotFound"</FONT></P>
+<P><FONT face=Tahoma size=2>Now, this is likely a simple configuration mistake on my part, but I am a little confused. Any assistance would be appreciated.</FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Monday, September 29, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Try to check ServiceReferences.ClientConfig and compare the port
+number to the port of the web project.&nbsp; They need to be pointing to the
+same port number.&nbsp; <o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> MGervais
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Monday, September 29, 2008 12:53 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> [CSLA .NET] Rolodex Sample Project - Error<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p><span>I have
+started toying with the sample projects released along with the latest CSLA.NET
+Lite release. Unfortunately, there is very documentation on how to best get
+these projects to execute and I have run up against the
+following&nbsp;exception being raised:</span><o:p></o:p></p>
+
+<p><span>&quot;The
+remote server returned an error: NotFound&quot;</span><o:p></o:p></p>
+
+<p><span>Now, this
+is likely a simple configuration mistake on my part, but I am a little
+confused. Any assistance would be appreciated.</span><o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>MGervais replied on Monday, September 29, 2008</h2><P><FONT face=Tahoma size=2>Thanks for the quick response, Sergey. However, everything is pointing to the same port (3026) and that is the port being used by the service site. Should I try setting up the service site within IIS and then removing the port number from the configs?</FONT></P>
+<P><FONT face=Tahoma size=2>EDIT: Sorry, I was looking at the wrong project. The ServiceReference.ClientConfig is using port 2430 and so is the Service Site itself.</FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Monday, September 29, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>That would be something to try, however the solution was setup
+to run in development server.&nbsp; Does login screen come up at all?&nbsp; You
+can also change VS configuration to break on thrown exception just to see if
+you can get any insight into the issue&#8230;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> MGervais
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Monday, September 29, 2008 1:27 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: Rolodex Sample Project - Error<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal><span>Thanks
+for the quick response, Sergey. However, everything is pointing to the same
+port (3026) and that is the port being used by the service site. Should I try
+setting up the service site within IIS and then removing the port number from
+the configs?</span><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>MGervais replied on Monday, September 29, 2008</h2><FONT face=Tahoma size=2>The login screen comes up. the exception is thrown when I try logging in using one the sets of credentials.</FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Monday, September 29, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Do you have .\SQLEXPRESS running?<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> MGervais
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Monday, September 29, 2008 1:36 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: RE: Rolodex Sample Project - Error<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal><span>The
+login screen comes up. the exception is thrown when I try logging in using one
+the sets of credentials.</span><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>MGervais replied on Monday, September 29, 2008</h2><FONT face=Tahoma size=2>Yes, I believe so.</FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Monday, September 29, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Could you try to setup VS to break on thrown exceptions?&nbsp; I
+think we need more info on what is going on..<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> MGervais
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Monday, September 29, 2008 1:42 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: RE: RE: Rolodex Sample Project - Error<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal><span>Yes,
+I believe so.</span><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>MGervais replied on Monday, September 29, 2008</h2><P><FONT face=Tahoma size=2>Pardon my ignorance, but I do not see a VS setting for breaking on thrown exceptions. Under Tools | Options I have made sure the following settings are enabled:</FONT></P>
+<UL>
+<LI><FONT face=Tahoma size=2>Debugging | General - Break all processes when one process breaks</FONT> 
+<LI><FONT face=Tahoma size=2>Debugging | general - Break when exceptions cross AppDomain...</FONT></LI></UL>
+<P><FONT face=Tahoma size=2>Is there another setting somewhere?</FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>MGervais replied on Monday, September 29, 2008</h2><P><FONT face=Tahoma size=2>Here are the Exception Details:</FONT></P>
+<P><FONT face=Tahoma size=2>System.ServiceModel.CommunicationException was unhandled by user code<BR>&nbsp; Message="The remote server returned an error: NotFound"<BR>&nbsp; StackTrace:<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at System.ServiceModel.AsyncResult.End[TAsyncResult](IAsyncResult result)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at System.ServiceModel.Channels.ServiceChannel.SendAsyncResult.End(SendAsyncResult result)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at System.ServiceModel.Channels.ServiceChannel.EndCall(String action, Object[] outs, IAsyncResult result)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at System.ServiceModel.ClientBase`1.ChannelBase`1.EndInvoke(String methodName, Object[] args, IAsyncResult result)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at Csla.WcfPortal.WcfPortalClient.WcfPortalClientChannel.EndFetch(IAsyncResult result)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at Csla.WcfPortal.WcfPortalClient.Csla.WcfPortal.IWcfPortal.EndFetch(IAsyncResult result)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at Csla.WcfPortal.WcfPortalClient.OnEndFetch(IAsyncResult result)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at System.ServiceModel.ClientBase`1.OnAsyncCallCompleted(IAsyncResult result)<BR>&nbsp; InnerException: System.Net.WebException<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Message="The remote server returned an error: NotFound"<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; StackTrace:<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at System.Net.AsyncHelper.BeginOnUI(SendOrPostCallback beginMethod, Object state)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at System.Net.BrowserHttpWebRequest.EndGetResponse(IAsyncResult asyncResult)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at System.ServiceModel.Channels.HttpChannelFactory.HttpRequestChannel.HttpChannelAsyncRequest.CompleteGetResponse(IAsyncResult result)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; InnerException: System.Net.WebException<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Message="The remote server returned an error: NotFound"<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; StackTrace:<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at System.Net.BrowserHttpWebRequest.InternalEndGetResponse(IAsyncResult asyncResult)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at System.Net.BrowserHttpWebRequest.&lt;&gt;c__DisplayClass5.&lt;EndGetResponse&gt;b__4(Object sendState)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at System.Net.AsyncHelper.&lt;&gt;c__DisplayClass2.&lt;BeginOnUI&gt;b__0(Object sendState)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; InnerException: <BR></P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Monday, September 29, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>NP.&nbsp; Under Debug menu there should be an items called &#8220;Exceptions&#8230;&#8221;&nbsp;
+If you do not see it, you can add it by going to Tools-&gt;Customize.&nbsp;
+Then click Rearrange Commands.&nbsp; Once you add the menu, you can check the
+option under Exceptions&#8230;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> MGervais
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Monday, September 29, 2008 1:54 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: RE: RE: RE: Rolodex Sample Project - Error<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p><span>Pardon my
+ignorance, but I do not see a VS setting for breaking on thrown exceptions.
+Under Tools | Options I have made sure the following settings are enabled:</span><o:p></o:p></p>
+
+<ul>
+ <li class=MsoNormal><span>Debugging
+     | General - Break all processes when one process breaks</span><o:p></o:p></li>
+ <li class=MsoNormal><span>Debugging
+     | general - Break when exceptions cross AppDomain...</span><o:p></o:p></li>
+</ul>
+
+<p><span>Is there
+another setting somewhere?</span><o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>MGervais replied on Monday, September 29, 2008</h2><P><FONT face=Tahoma size=2>Is there a particular option you want set? There are 5 categories...I selected CLR Exceptions and checked the Thrown box beside it.</FONT></P>
+<P><FONT face=Tahoma size=2>Upon executing, the result is the same...an exception being thrown as indicated previously. I am not clear what additional information you are hoping to gather.</FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Monday, September 29, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Nope, that was it.&nbsp; The problem is that there could be a
+number of error that may result in 404, so I was trying to see which one may be
+occurring.&nbsp; Just to cover all the bases, you do have RC 0 installed, including
+developer run time?&nbsp; Can you put a breakpoint inside RolodexIndetity.DataPortal_Fetch
+to see if it gets hit?&nbsp; Next step would be to setup IIS virtual directory
+just to eliminate Cassini.<o:p></o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> MGervais
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Monday, September 29, 2008 2:13 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] Rolodex Sample Project - Error<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p><span>Is there a
+particular option you want set? There are 5 categories...I selected CLR
+Exceptions and checked the Thrown box beside it.</span><o:p></o:p></p>
+
+<p><span>Upon
+executing, the result is the same...an exception being thrown as indicated
+previously. I am not clear what additional information you are hoping to
+gather.</span><o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>MGervais replied on Monday, September 29, 2008</h2><P><FONT face=Tahoma size=2>I do have RC0 installed along with the developer runtime.</FONT></P>
+<P><FONT face=Tahoma size=2>The Rolodexidentity class is referenced in two projects: Rolodex.Business.Client and Rolodex.Business.Server. Because the SILVERLIGHT compiler switch is on, the DataPortal_Fetch method is not compiled into the project and thus never called. The GetIdentity method is called and goes through a whole string&nbsp;of method calls, but nothing that appears to be a call to a Fetch&nbsp;method.</FONT></P>
+<P><FONT face=Tahoma size=2>For my own sanity, can you verify that my assumption of the communication pathway is correct? The Web project is simply a starting point and calls the Rolodex Silverlight project. The Rolodex.Business.Client project is referenced by the Silverlight project for client-side work. When data is required, a WCF call is made to the WcfWebHost which in turns calls Rolodex.Business.Server. Is this correct?</FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Monday, September 29, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Correct.&nbsp; You can probably start another version of VS,
+attach it to WcfWebHost instance of IE.&nbsp; Then you can set a breakpoint in
+DataPortal_Fetch.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> MGervais
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Monday, September 29, 2008 3:04 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] Rolodex Sample Project - Error<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p><span>I do have
+RC0 installed along with the developer runtime.</span><o:p></o:p></p>
+
+<p><span>The
+Rolodexidentity class is referenced in two projects: Rolodex.Business.Client
+and Rolodex.Business.Server. Because the SILVERLIGHT compiler switch is on, the
+DataPortal_Fetch method is not compiled into the project and thus never called.
+The GetIdentity method is called and goes through a whole string&nbsp;of method
+calls, but nothing that appears to be a call to a Fetch&nbsp;method.</span><o:p></o:p></p>
+
+<p><span>For my own
+sanity, can you verify that my assumption of the communication pathway is
+correct? The Web project is simply a starting point and calls the Rolodex
+Silverlight project. The Rolodex.Business.Client project is referenced by the
+Silverlight project for client-side work. When data is required, a WCF call is
+made to the WcfWebHost which in turns calls Rolodex.Business.Server. Is this
+correct?</span><o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>MGervais replied on Monday, September 29, 2008</h2><P><FONT face=Tahoma size=2>Well...I have no idea what I did, but it is now working. I am seriously confused...happy it is working...but confused by what it works now and didn't before.</FONT></P>
+<P><FONT face=Tahoma size=2>Thanks for you assistance, Sergey...I really appreciate it.</FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Monday, September 29, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I am just glad it is working </span><span>J</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> MGervais
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Monday, September 29, 2008 3:27 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] Rolodex Sample Project - Error<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p><span>Well...I
+have no idea what I did, but it is now working. I am seriously confused...happy
+it is working...but confused by what it works now and didn't before.</span><o:p></o:p></p>
+
+<p><span>Thanks for
+you assistance, Sergey...I really appreciate it.</span><o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,34 @@
+<html><header><title>VS 2010 And WPF</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>VS 2010 And WPF</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9918.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>st3fanus posted on Wednesday, January 05, 2011</h2><p>Hi.. I&#39;m sorry before</p>
+<p>I have post this topic several days ago. And I want to post this again , because i didn&#39;t get an answer yet.</p>
+<p>I know may be this is not a correct forum. But this forum the comunity i have now.. And i want to try if there is anyone who have face the same problem like me..</p>
+<p>I tried to create a small WPF application</p>
+<p>But the problem is : When i run ( f5 )&nbsp; by visual studio 2010 i just get a blank window ( black screen )</p>
+<p>The conditio is : I use .NET Framework 4.</p>
+<p>I can get the correct answer if i do one of these ways : </p>
+<p>1. I run from debug folder on a solution.</p>
+<p>2. I run from f5 ( run )&nbsp; by vs 2010, but i change to .NET Framework 3.5</p>
+<p>&nbsp;</p>
+<p>IS there anyone can explain or give me a clue what is going on ??</p>
+<p>&nbsp;</p>
+<p>Thanks a lot</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>Stefanus</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Wednesday, January 05, 2011</h2><p>Have you checked the content of app.xaml: </p>
+<p>
+
+<pre style="font-family:consolas;">&lt;<span style="color:#efc986;">Application</span>&nbsp;x:Class=<span style="color:#dfaf8f;">&quot;WpfUI.App&quot;</span><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;xmlns=<span style="color:#dfaf8f;">&quot;http://schemas.microsoft.com/winfx/2006/xaml/presentation&quot;</span><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;xmlns:x=<span style="color:#dfaf8f;">&quot;http://schemas.microsoft.com/winfx/2006/xaml&quot;</span><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>StartupUri=<span style="color:#dfaf8f;">&quot;MainWindow.xaml&quot;</span>&gt;</b><br /><span style="color:#dfaf8f;">&nbsp;&nbsp;&nbsp;&nbsp;</span>&lt;<span style="color:#efc986;">Application.Resources</span>&gt;<br /><span style="color:#dfaf8f;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><br /><span style="color:#dfaf8f;">&nbsp;&nbsp;&nbsp;&nbsp;</span>&lt;/<span style="color:#efc986;">Application.Resources</span>&gt;<br />&lt;/<span style="color:#efc986;">Application</span>&gt;<br /><br />Look at the SimpleNTier sample in the samples download for Csla4.</pre>
+</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>st3fanus replied on Thursday, January 06, 2011</h2><p><div style='padding-left: 50px;background-color:silver'><b>JonnyBee<br></b></p>
+<p>Have you checked the content of app.xaml: </p>
+<p>&nbsp;</p>
+<pre style="font-family:consolas;">&lt;<span style="color:#efc986;">Application</span>&nbsp;x:Class=<span style="color:#dfaf8f;">&quot;WpfUI.App&quot;</span><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;xmlns=<span style="color:#dfaf8f;">&quot;http://schemas.microsoft.com/winfx/2006/xaml/presentation&quot;</span><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;xmlns:x=<span style="color:#dfaf8f;">&quot;http://schemas.microsoft.com/winfx/2006/xaml&quot;</span><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>StartupUri=<span style="color:#dfaf8f;">&quot;MainWindow.xaml&quot;</span>&gt;</b><br /><span style="color:#dfaf8f;">&nbsp;&nbsp;&nbsp;&nbsp;</span>&lt;<span style="color:#efc986;">Application.Resources</span>&gt;<br /><span style="color:#dfaf8f;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><br /><span style="color:#dfaf8f;">&nbsp;&nbsp;&nbsp;&nbsp;</span>&lt;/<span style="color:#efc986;">Application.Resources</span>&gt;<br />&lt;/<span style="color:#efc986;">Application</span>&gt;<br /><br />Look at the SimpleNTier sample in the samples download for Csla4.</pre>
+<div style="clear:both;"></div>
+<p></div></p>
+<p>Thanks a lot jonny for your respond.. but I&#39;m sorry.. I still don&#39;t understand what should i check in&nbsp; app.xaml ?</p>
+<p>thanks a lot</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Curelom replied on Thursday, January 06, 2011</h2><p>You should ensure that the StartupUri is pointed to your starting window.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>st3fanus replied on Thursday, January 06, 2011</h2><p>Yah Cure and Jonn..</p>
+<p>I have already set StartupUri to the correct xaml, and the result is what i wrote above..</p>
+<p>I can have the correct result if i run directly from debug folder.. but if i run from f5 i got a blank window</p>
+<p>&nbsp;</p>
+<p>Thanks a lot</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

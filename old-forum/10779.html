@@ -1,0 +1,17 @@
+<html><header><title>Re: CSLA ObservableBindingList&lt;T&gt; causes System.Xml.XmlException due to auto property</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Re: CSLA ObservableBindingList&lt;T&gt; causes System.Xml.XmlException due to auto property</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10779.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>StefanCop posted on Monday, October 17, 2011</h2><p>Rocky</p>
+<p>I&#39;m also puzzled, because I use a TCP binding out of the &quot;WCF box&quot; 
+(we use WPF). Why an XML encoding problem? I have been unsure if 
+actually binary encoded is used.</p>
+<p>Therefore, I looked at the stack a bit in a debugger, 
+and although im not a WCF expert, I got to the conculsion that some 
+validation is made on XML base,&nbsp; either before or after the actual encoding (that
+ I guessed from method names on the stack indicating something like 
+&quot;validate&quot;).</p>
+<p>The encoder property of some WCF class was set to BinaryFormatter, which is what I really wanted to be sure.</p>
+<p>I could the &quot;first chance exception&quot; narrowed to the already 
+mentioned auto property in our classes and 
+ObservableBindingList (AllowEdit, AllowNew, AllowRemove). So, I stick 
+with the &quot;old style&quot; properties with an explicit internal field. That 
+reduces the chatty messages in
+ VisualStudio&#39;s Output. a lot.&nbsp;</p>
+<p>Stefan</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

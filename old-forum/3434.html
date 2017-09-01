@@ -1,0 +1,252 @@
+<html><header><title>Understanding the CSLA Transaction Attribute</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Understanding the CSLA Transaction Attribute</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3434.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>dmccrory posted on Tuesday, August 28, 2007</h2><P>I am trying to understand the CSLA Transaction Attribute and would like to ask the more experienced developers here for some help. I have a base object DataPortal_Insert( ) function that is handling the insertion of&nbsp;an object into the database. It is a one to one relationship between the object and the database table. </P>
+<P>The method&nbsp;is decorated with the <FONT color=#2b91af>Transactional</FONT>(<FONT color=#2b91af>TransactionalTypes</FONT><FONT size=2><FONT size=3>.TransactionScope)], even though it is probably not needed.</FONT></FONT></P>
+<P>Secondly, I have other objects that inherit from the base object that are "owned" by other objects. These objects override the DataPortal_Insert() method. The overridden method calls the base.DataPortal_Insert() method first to insert the object, then makes another database call to insert the record in the "link" table. This method is also decorated with the same attribute and needs to be handled as a transaction. I want to rollback the database if either table fails to update. With just the attribute in place, the database updates the first table even if the second one fails, but if I wrap the code in a using TransactionScope statement as shown below, the transaction works as expected. I have read back through the book looking for reasons why the attribute does not work as expected, but with my limited knowledge in this area, I do not understand why. I would appreciate any light that can be shed on this subject and advice that can be given on the "correct" or "standard" way to accomplish this.</P>
+<P>&nbsp;</P><FONT size=2>
+<P>[</FONT><FONT color=#2b91af size=2>Transactional</FONT><FONT size=2>(</FONT><FONT color=#2b91af size=2>TransactionalTypes</FONT><FONT size=2>.TransactionScope)]</P>
+<P></FONT><FONT color=#0000ff size=2>protected</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>override</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>void</FONT><FONT size=2> DataPortal_Insert()</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;using</FONT><FONT size=2> (</FONT><FONT color=#2b91af size=2>TransactionScope</FONT><FONT size=2> ts = </FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> </FONT><FONT color=#2b91af size=2>TransactionScope</FONT><FONT size=2>())</P>
+<P>&nbsp;&nbsp;&nbsp;{</P>
+<P></FONT><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;base</FONT><FONT size=2>.DataPortal_Insert();</P>
+<P></FONT><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;using</FONT><FONT size=2> (</FONT><FONT color=#2b91af size=2>SqlCommand</FONT><FONT size=2> cmd = </FONT><FONT color=#2b91af size=2>SQLStoredProcedure</FONT><FONT size=2>.New(</FONT><FONT color=#2b91af size=2>DataConnection</FONT><FONT size=2>.ConnectionString).Command)</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cmd.CommandText = </FONT><FONT color=#a31515 size=2>"InsertEmployeeOwner"</FONT><FONT size=2>;</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cmd.Parameters.AddWithValue(</FONT><FONT color=#a31515 size=2>"@ownerID"</FONT><FONT size=2>, _ownerID);</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cmd.Parameters.AddWithValue(</FONT><FONT color=#a31515 size=2>"@employeeID"</FONT><FONT size=2>, ObjectID);</P>
+<P></FONT><FONT color=#2b91af size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;IAsyncResult</FONT><FONT size=2> result = cmd.BeginExecuteNonQuery();</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cmd.EndExecuteNonQuery(result);</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ts.Complete();</P>
+<P>&nbsp;&nbsp;&nbsp;}</P>
+<P>}</P>
+<P>&nbsp;</P>
+<P>Thanks in advance....David</P>
+<P>&nbsp;</P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Tuesday, August 28, 2007</h2>Well, in your code you don't need the attribute because you're handling transactions yourself.&nbsp; If you keep the attribute, you can remove the using ( ts = ... ) and ts.Complete() statemetns, because the dataportal will handle the transaction scope for you.<br><br>On other comment; there doesn't seem to be a reason to use BeginExecute and EndExecute; you'll block just the same as if you used the normal ExecuteNonQuery.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>dmccrory replied on Wednesday, August 29, 2007</h2><P>That is the point...if I remove the using (ts = ) and the ts.Complete() and just use the attribute, the code does not process in a transaction.</P>
+<P>On your other comment, the code is just test code that I am&nbsp;using to try&nbsp;out different scenarios. At one point I was working with asyncronous calls and just left the code as is. But&nbsp;I appreciate the advice.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Wednesday, August 29, 2007</h2><BLOCKQUOTE><div><img src="/Themes/basicblue/images/icon-quote.gif"> <strong>dmccrory:</strong></div><div>That is the point...if I remove the using (ts = ) and the ts.Complete() and just use the attribute, the code does not process in a transaction.</div></BLOCKQUOTE><br><br>I think I understand your original post now.&nbsp; What exactly is your design for these objects?&nbsp; You have a base class, with subclasses, and these subclasses are child objects of some othe root object?&nbsp; If that's the case, child objects shouldn't override DP_I, and the attribute should be on the DP_I of the root object only.&nbsp; <br><br>If the subclasses are root objects, then I believe the attribute needs to be on the subclasses DP_I, because that is the one that the dataportal will examine via reflection.&nbsp; It wouldn't do anything if applied to the base class' DP_I.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>dmccrory replied on Friday, August 31, 2007</h2><P>I have some very generic objects such as Address, Email and Telephone. These objects can belong to any one of a number of other objects such as an Employee, a Client or a Vendor. The database is designed to allow the 2 tables (i.e. Address and Employee) to be linked via a separate table. The idea was to only have one address table and use in anytime I had the need for an address and link it to the owner of the address regardless who that owner was. I didn't want to repeat fields like street, city and state in every table such as CleintAddress, EmployeeAddress and VendorAddress.</P>
+<P>The Address and Client objects are derived from the same Base class because the only difference between the 2 objects is the fact that the Address object has an owner and the Client object does not. The base object takes care of the CRUD function for the base object and the object that has an "owner" has an overriden DataPortal_Insert() method that calls the base.DataPortal_Insert() to populate the main table, then has addditional code to populate the "owner" or link table.</P>
+<P>There is probably a "better" or "more intuitive" way to do this, but with my limited experience, it&nbsp;is the solution that I am attempting to make work.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Saturday, September 01, 2007</h2><P>I strongly recommend against using inheritance to reuse fields. Inheritance should be used to reuse methods only. That's a design best practice overall, because inheritance is about reuse of behavior, not reuse of data.</P>
+<P>It sounds like you should have two classes: Address and Client. And they should both inherit from BusinessBase&lt;T&gt; directly. They clearly have different responsibilities in your use cases and so should be separate types.</P>
+<P>It is fine to have Address be an editable child that can be a child of several parents. There should be no problem with that, as long as you are consistent with how you manage transactions across all your root objects.</P>
+<P>But Client is very clearly something different from Address. It sounds like it is an editable root, and that it plays a different role in your use cases from storing address information for some other object. If it has a&nbsp;different responsibility, then it should be its own object.</P>
+<P>That'll make your life much simpler.</P>
+<P>Remember that reuse isn't the goal. Maintainability is the goal. Too much reuse <EM>decreases</EM> maintainability because it increases coupling and thus complexity.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>dmccrory replied on Saturday, September 01, 2007</h2><P>Rocky,</P>
+<P class=MsoNormal>I created a DatabaseObject&lt;T&gt; that inherits directly from BusinessBase&lt;T&gt; and contains all of the audit type data fields that are included in every table for these types of objects such as EnteredBy, EnteredDateTime and LastChanged. I also created a “DataHelper” object that uses custom attributes on the object’s properties to “fill” the object’s custom fields or the stored procedure parameters as needed. I did this to try to apply the DRY principle to my code because, after reviewing the initial code, the only differences in the code were the stored procedure name and the custom fields for each object.</P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal>This is an area of great frustration to me. I am a self taught programming enthusiast. I have read countless books on every topic imaginable and have tried to understand and apply the principles the author is trying to convey. It is not what I do for a living, but it is definitely what motivates me. It is my hobby and my passion and I aspire to get to a level to allow me to develop “rich” applications applying the “best practices” available. I consider your (Rocky) book one of the best learning tools I have read. From Chapter one, I just felt like I “got it”. While some of the details and examples are over my knowledge level, I felt like I understood “why” you were doing what you were doing. But when trying to apply other principles and practices that I have read, I don’t quite understand which should be applied and which should not. I always think that there has to be a reason why some of the other principles are not applied, but I struggle understanding when to and when NOT do apply certain principles or practices.</P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal>I went straight to work in the railroad industry right out of high school so I do not have the college education that most do in this field have, but I have worked myself into an “analyst” type position working for a software company that writes software for the railroad industry. Our software is written for the iSeries platform with a case tool called Synon. We have a small .NET initiative, but most of the code written in Visual Basic in a “procedural” type style with very little object oriented principles applied so I don’t have the luxury of finding someone that can guide me in my current work environment.</P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal>What I long for is a “mentor” type person that can review my code and direct me to the correct or “best practice” way to accomplish my task. I am not looking for someone to write the code for me and I am willing to do the research and work needed, I just need someone to help me understand the when and where of it all. I am not looking for something for nothing and do not have a monetary need so if I were to find someone willing to teach or coach me to be a better programmer, I would be willing to trade development time for free. I think I have a good enough understanding to be able to write some of the simple type coding that has to be done every day by someone. </P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal>I apologize for the long winded reply and appreciate anyone who has taken the time to read this far. I truly appreciate the amount of work and time required to develop the talent and skill the people in this forum display on a daily basis and I am at “awe” sometimes at how the answers to, what I consider, very technical questions are handled with ease providing much needed insight to all.</P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal>Thanks,</P>
+<P class=MsoNormal>-David</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>dmccrory replied on Sunday, September 09, 2007</h2><P>Ok...I took the forum's advice and decided to move all of the fields into each object and not inherit them as I was doing before. Now back to the original question. My DataPortal_Insert() method (see below) is not handled as a transaction with the <FONT size=2>[</FONT><FONT color=#2b91af size=2>Transactional</FONT><FONT size=2>(</FONT><FONT color=#2b91af size=2>TransactionalTypes</FONT><FONT size=2>.TransactionScope)] </FONT>tag, but if I use <FONT size=2><FONT color=#0000ff>using</FONT> (<FONT color=#2b91af>TransactionScope</FONT> ts = <FONT color=#0000ff>new</FONT> <FONT color=#2b91af>TransactionScope</FONT>())</FONT>, it works as expected. Can someone please explain the difference?</P>
+<P>This does not work....I intentionally created an error for the second table....the first table is updated and the second is not.</P><FONT size=2>
+<P>[</FONT><FONT color=#2b91af size=2>Transactional</FONT><FONT size=2>(</FONT><FONT color=#2b91af size=2>TransactionalTypes</FONT><FONT size=2>.TransactionScope)]</P>
+<P></FONT><FONT color=#0000ff size=2>protected</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>override</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>void</FONT><FONT size=2> DataPortal_Insert()</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>try</P></FONT><FONT size=2>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>using</FONT><FONT size=2> (</FONT><FONT color=#2b91af size=2>SqlCommand</FONT><FONT size=2> cmd = </FONT><FONT color=#2b91af size=2>SQLStoredProcedure</FONT><FONT size=2>.New(</FONT><FONT color=#2b91af size=2>DataConnection</FONT><FONT size=2>.ConnectionString).Command)</P>
+<P>{</P>
+<P>cmd.CommandText = </FONT><FONT color=#a31515 size=2>"InsertEmployee"</FONT><FONT size=2>;</P>
+<P></FONT><FONT color=#2b91af size=2>SqlParameter</FONT><FONT size=2> parm = </FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> </FONT><FONT color=#2b91af size=2>SqlParameter</FONT><FONT size=2>(</FONT><FONT color=#a31515 size=2>"@newID"</FONT><FONT size=2>, </FONT><FONT color=#2b91af size=2>SqlDbType</FONT><FONT size=2>.UniqueIdentifier);</P>
+<P>parm.Direction = </FONT><FONT color=#2b91af size=2>ParameterDirection</FONT><FONT size=2>.Output;</P>
+<P>cmd.Parameters.Add(parm);</P>
+<P>AssignObjectParameters(cmd);</P>
+<P>cmd.Parameters.AddWithValue(</FONT><FONT color=#a31515 size=2>"@enteredBy"</FONT><FONT size=2>, Csla.</FONT><FONT color=#2b91af size=2>ApplicationContext</FONT><FONT size=2>.User.Identity.Name);</P>
+<P>cmd.Parameters.AddWithValue(</FONT><FONT color=#a31515 size=2>"@enteredDateTime"</FONT><FONT size=2>, </FONT><FONT color=#2b91af size=2>DateTime</FONT><FONT size=2>.Now);</P>
+<P>parm = </FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> </FONT><FONT color=#2b91af size=2>SqlParameter</FONT><FONT size=2>(</FONT><FONT color=#a31515 size=2>"@newLastChanged"</FONT><FONT size=2>, </FONT><FONT color=#2b91af size=2>SqlDbType</FONT><FONT size=2>.Timestamp);</P>
+<P>parm.Direction = </FONT><FONT color=#2b91af size=2>ParameterDirection</FONT><FONT size=2>.Output;</P>
+<P>cmd.Parameters.Add(parm);</P>
+<P>cmd.ExecuteNonQuery();</P>
+<P>_auditInfo.LastChanged = (</FONT><FONT color=#0000ff size=2>byte</FONT><FONT size=2>[])cmd.Parameters[</FONT><FONT color=#a31515 size=2>"@newLastChanged"</FONT><FONT size=2>].Value;</P>
+<P>EmployeeID = (</FONT><FONT color=#2b91af size=2>Guid</FONT><FONT size=2>)cmd.Parameters[</FONT><FONT color=#a31515 size=2>"@newID"</FONT><FONT size=2>].Value;</P>
+<P>cmd.CommandText = </FONT><FONT color=#a31515 size=2>"InsertEmployeeOwner"</FONT><FONT size=2>;</P>
+<P>cmd.Parameters.Clear();</P>
+<P>cmd.Parameters.AddWithValue(</FONT><FONT color=#a31515 size=2>"@ownerID"</FONT><FONT size=2>, _ownerID);</P>
+<P>cmd.Parameters.AddWithValue(</FONT><FONT color=#a31515 size=2>"@employeeID"</FONT><FONT size=2>, EmployeeID);</P>
+<P>cmd.ExecuteNonQuery();</P>
+<P>UpdateObjectLists();</P>
+<P>}</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>catch</FONT><FONT size=2> (</FONT><FONT color=#2b91af size=2>SqlException</FONT><FONT size=2> exc)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>throw</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> </FONT><FONT color=#2b91af size=2>Exception</FONT><FONT size=2>(exc.Message);</P>
+<P>}</P>
+<P>}</P>
+<P><FONT size=3>This works....with the intentional error, neither table is updated as expected.</FONT></P><FONT size=2></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>
+<P>protected</FONT><FONT color=#000000 size=2> </FONT><FONT color=#0000ff size=2>override</FONT><FONT color=#000000 size=2> </FONT><FONT color=#0000ff size=2>void</FONT><FONT size=2><FONT color=#000000> DataPortal_Insert()</FONT></P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>try</P></FONT><FONT size=2>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>using</FONT><FONT size=2> (</FONT><FONT color=#2b91af size=2>TransactionScope</FONT><FONT size=2> ts = </FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> </FONT><FONT color=#2b91af size=2>TransactionScope</FONT><FONT size=2>())</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>using</FONT><FONT size=2> (</FONT><FONT color=#2b91af size=2>SqlCommand</FONT><FONT size=2> cmd = </FONT><FONT color=#2b91af size=2>SQLStoredProcedure</FONT><FONT size=2>.New(</FONT><FONT color=#2b91af size=2>DataConnection</FONT><FONT size=2>.ConnectionString).Command)</P>
+<P>{</P>
+<P>cmd.CommandText = </FONT><FONT color=#a31515 size=2>"InsertEmployee"</FONT><FONT size=2>;</P>
+<P></FONT><FONT color=#2b91af size=2>SqlParameter</FONT><FONT size=2> parm = </FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> </FONT><FONT color=#2b91af size=2>SqlParameter</FONT><FONT size=2>(</FONT><FONT color=#a31515 size=2>"@newID"</FONT><FONT size=2>, </FONT><FONT color=#2b91af size=2>SqlDbType</FONT><FONT size=2>.UniqueIdentifier);</P>
+<P>parm.Direction = </FONT><FONT color=#2b91af size=2>ParameterDirection</FONT><FONT size=2>.Output;</P>
+<P>cmd.Parameters.Add(parm);</P>
+<P>AssignObjectParameters(cmd);</P>
+<P>cmd.Parameters.AddWithValue(</FONT><FONT color=#a31515 size=2>"@enteredBy"</FONT><FONT size=2>, Csla.</FONT><FONT color=#2b91af size=2>ApplicationContext</FONT><FONT size=2>.User.Identity.Name);</P>
+<P>cmd.Parameters.AddWithValue(</FONT><FONT color=#a31515 size=2>"@enteredDateTime"</FONT><FONT size=2>, </FONT><FONT color=#2b91af size=2>DateTime</FONT><FONT size=2>.Now);</P>
+<P>parm = </FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> </FONT><FONT color=#2b91af size=2>SqlParameter</FONT><FONT size=2>(</FONT><FONT color=#a31515 size=2>"@newLastChanged"</FONT><FONT size=2>, </FONT><FONT color=#2b91af size=2>SqlDbType</FONT><FONT size=2>.Timestamp);</P>
+<P>parm.Direction = </FONT><FONT color=#2b91af size=2>ParameterDirection</FONT><FONT size=2>.Output;</P>
+<P>cmd.Parameters.Add(parm);</P>
+<P>cmd.ExecuteNonQuery();</P>
+<P>_auditInfo.LastChanged = (</FONT><FONT color=#0000ff size=2>byte</FONT><FONT size=2>[])cmd.Parameters[</FONT><FONT color=#a31515 size=2>"@newLastChanged"</FONT><FONT size=2>].Value;</P>
+<P>EmployeeID = (</FONT><FONT color=#2b91af size=2>Guid</FONT><FONT size=2>)cmd.Parameters[</FONT><FONT color=#a31515 size=2>"@newID"</FONT><FONT size=2>].Value;</P>
+<P>cmd.CommandText = </FONT><FONT color=#a31515 size=2>"InsertEmployeeOwner2"</FONT><FONT size=2>;</P>
+<P>cmd.Parameters.Clear();</P>
+<P>cmd.Parameters.AddWithValue(</FONT><FONT color=#a31515 size=2>"@ownerID"</FONT><FONT size=2>, _ownerID);</P>
+<P>cmd.Parameters.AddWithValue(</FONT><FONT color=#a31515 size=2>"@employeeID"</FONT><FONT size=2>, EmployeeID);</P>
+<P>cmd.ExecuteNonQuery();</P>
+<P>UpdateObjectLists();</P>
+<P>}</P>
+<P>ts.Complete();</P>
+<P>}</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>catch</FONT><FONT size=2> (</FONT><FONT color=#2b91af size=2>SqlException</FONT><FONT size=2> exc)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>throw</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> </FONT><FONT color=#2b91af size=2>Exception</FONT><FONT size=2>(exc.Message);</P>
+<P>}</P>
+<P>}</P></FONT></FONT></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, September 10, 2007</h2><P>I am not familiar with the SqlStoredProcedure type. My only guess is you are using a DAL framework, and perhaps it is somehow messing with the way CSLA uses TransactionScope.</P>
+<P>Though even that seems unlikely, given that all CSLA does is wrap the call to DP_I inside a using block just like the one you are creating by hand.</P>
+<P>Are you sure the exception is flowing up from your DP_I method? CSLA relies on your exception to trigger the rollback.</P>
+<P>You could step through the code in the debugger (if you have a version of Csla.dll built for debug) and see where the code goes as it flows back into the data portal.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>dmccrory replied on Monday, September 10, 2007</h2><P>The SqlStoredProcedure isn't really doing anything other than returning a SqlCommand. </P>
+<P>I will do some more work to see if the exception is flowing correctly.</P>
+<P>Thanks,</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>dmccrory replied on Monday, September 10, 2007</h2><P>Could this be because I am throwning a System.Exception in my catch block? Should I be throwing a different type of exception? I tried throwing a DataPortalException, but got the same results...</P>
+<P>-David</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, September 10, 2007</h2><P>System.Exception should be fine.</P>
+<P>But where are you opening the db connection? Since that wasn't in your code, I figured it was being opened in that SqlStoredProcedure object or something?</P>
+<P>I believe that the connection must be opened after you are inside the TransactionScope, so it gets enlisted in the transaction properly (though I don't know that for a fact).</P>
+<P>But that's my guess, is that somehow the connection isn't being opened at the right time or in the right way or something such that it doesn't get enlisted in the transaction created by the TransactionScope.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>dmccrory replied on Monday, September 10, 2007</h2><P>Yes I am opening the db connection and returning the SqlCommand from that object.</P>
+<P>If I am using the TransactionScope attribute, I&nbsp;was assuming that the entire method&nbsp;would be&nbsp;inside the TransactionScope.</P>
+<P>I will eliminate the SqlStoredProcedure object and see if the problem is corrected.</P>
+<P>Thanks,</P>
+<P>David</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>dmccrory replied on Monday, September 10, 2007</h2><P>I have changed the DataPortal_Insert() method to contain all of the code without any outside calls. However the results are the same.....the Insert method is not handled as a transaction.</P>
+<P>I will continue to investigating, but I would appreciate any information if someone has had the same problem, or sees something wrong with the code.</P>
+<P><FONT size=2>[</FONT><FONT color=#2b91af size=2>Transactional</FONT><FONT size=2>(</FONT><FONT color=#2b91af size=2>TransactionalTypes</FONT><FONT size=2>.TransactionScope)]</P>
+<P></FONT><FONT color=#0000ff size=2>protected</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>override</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>void</FONT><FONT size=2> DataPortal_Insert()</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>try</P></FONT><FONT size=2>
+<P>{</P></FONT><FONT size=2>
+<P></FONT><FONT color=#2b91af size=2>SqlConnection</FONT><FONT size=2> con = </FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> </FONT><FONT color=#2b91af size=2>SqlConnection</FONT><FONT size=2>(</FONT><FONT color=#2b91af size=2>DataConnection</FONT><FONT size=2>.ConnectionString);</P>
+<P>con.Open();</P>
+<P></FONT><FONT color=#2b91af size=2>SqlCommand</FONT><FONT size=2> cmd = con.CreateCommand();</P>
+<P>cmd.CommandType = </FONT><FONT color=#2b91af size=2>CommandType</FONT><FONT size=2>.StoredProcedure;</P>
+<P>cmd.CommandText = </FONT><FONT color=#a31515 size=2>"InsertEmployee"</FONT><FONT size=2>;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#2b91af size=2>SqlParameter</FONT><FONT size=2> parm = </FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> </FONT><FONT color=#2b91af size=2>SqlParameter</FONT><FONT size=2>(</FONT><FONT color=#a31515 size=2>"@newID"</FONT><FONT size=2>, </FONT><FONT color=#2b91af size=2>SqlDbType</FONT><FONT size=2>.UniqueIdentifier);</P>
+<P>parm.Direction = </FONT><FONT color=#2b91af size=2>ParameterDirection</FONT><FONT size=2>.Output;</P>
+<P>cmd.Parameters.Add(parm);</P>
+<P>FillObjectParameters(cmd);</P>
+<P>cmd.Parameters.AddWithValue(</FONT><FONT color=#a31515 size=2>"@enteredBy"</FONT><FONT size=2>, Csla.</FONT><FONT color=#2b91af size=2>ApplicationContext</FONT><FONT size=2>.User.Identity.Name);</P>
+<P>cmd.Parameters.AddWithValue(</FONT><FONT color=#a31515 size=2>"@enteredDateTime"</FONT><FONT size=2>, </FONT><FONT color=#2b91af size=2>DateTime</FONT><FONT size=2>.Now);</P>
+<P>parm = </FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> </FONT><FONT color=#2b91af size=2>SqlParameter</FONT><FONT size=2>(</FONT><FONT color=#a31515 size=2>"@newLastChanged"</FONT><FONT size=2>, </FONT><FONT color=#2b91af size=2>SqlDbType</FONT><FONT size=2>.Timestamp);</P>
+<P>parm.Direction = </FONT><FONT color=#2b91af size=2>ParameterDirection</FONT><FONT size=2>.Output;</P>
+<P>cmd.Parameters.Add(parm);</P>
+<P>cmd.ExecuteNonQuery();</P>
+<P>_auditInfo.LastChanged = (</FONT><FONT color=#0000ff size=2>byte</FONT><FONT size=2>[])cmd.Parameters[</FONT><FONT color=#a31515 size=2>"@newLastChanged"</FONT><FONT size=2>].Value;</P>
+<P>EmployeeID = (</FONT><FONT color=#2b91af size=2>Guid</FONT><FONT size=2>)cmd.Parameters[</FONT><FONT color=#a31515 size=2>"@newID"</FONT><FONT size=2>].Value;</P>
+<P>cmd.CommandText = </FONT><FONT color=#a31515 size=2>"InsertEmployeeOwner2"</FONT><FONT size=2>;</P>
+<P>cmd.Parameters.Clear();</P>
+<P>cmd.Parameters.AddWithValue(</FONT><FONT color=#a31515 size=2>"@ownerID"</FONT><FONT size=2>, _ownerID);</P>
+<P>cmd.Parameters.AddWithValue(</FONT><FONT color=#a31515 size=2>"@employeeID"</FONT><FONT size=2>, EmployeeID);</P>
+<P>cmd.ExecuteNonQuery();</P></FONT><FONT size=2>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>catch</FONT><FONT size=2> (</FONT><FONT color=#2b91af size=2>SqlException</FONT><FONT size=2> exc)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>throw</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> </FONT><FONT color=#2b91af size=2>Exception</FONT><FONT size=2>(exc.Message);</P>
+<P>}</P>
+<P>}</P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Tuesday, September 11, 2007</h2>That looks like it should be fine..&nbsp; do you get an exception?<br><br>Probably unrelated, but I'd remove your try catch block completely.&nbsp; You're actually losing exception detail with the way you're handling the exception.. no stack trace or anything.&nbsp; If you are getting an exception, you're losing valuable information as to what the exception is (beyond the message itself).<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>dmccrory replied on Tuesday, September 11, 2007</h2><P>Thanks for taking a look and for the suggestion. I have removed the Try and Catch blocks as suggested,&nbsp;but the results are the same. </P>
+<P>I know what the exception is because I am purposely generating it to test the transaction. The first&nbsp;stored procedure&nbsp;is&nbsp;inserting the record properly&nbsp;and the second&nbsp;stored procedure&nbsp;(which has an incorrect Stored Procedure name) generates an exception. </P>
+<P>If&nbsp;I use a <FONT size=2><FONT color=#0000ff>using</FONT> (<FONT color=#2b91af>TransactionScope</FONT> ts = <FONT color=#0000ff>new</FONT> <FONT color=#2b91af>TransactionScope</FONT>()) </FONT><FONT size=3>block with a call to <FONT size=2>ts.Complete();</FONT> </FONT>the code runs as a transaction and the first table insert is rolled back when the second table&nbsp;insert fails.</P>
+<P>If I use the <FONT size=2>[<FONT color=#2b91af>Transactional</FONT>(<FONT color=#2b91af>TransactionalTypes</FONT>.TransactionScope)]&nbsp; </FONT>attribute the first table insert does not rollback when the second table&nbsp;insert fails.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Wednesday, September 12, 2007</h2>Have you tried stepping in to the DataPortal.Insert method.&nbsp; This should let you know which dataportal is being used (Transactional, Simple, etc.).&nbsp; You can also see if the code is correctly finding the attribute.<br><br>I suspect something in your code that we haven't seen, because I use this attribute exclusively for transactions, and it works as expected.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>dean replied on Wednesday, September 12, 2007</h2>I suspect that an event somewhere is being run right after your code and messing something up. So the event is either in CSLA or your code. Can you alter the two classes being tested : strip out/comment all the variables and properties except the GetIDValue override, strip out all the validation and authorization overrides, and don't assign anything in your data access code that is being tested. At this pont you pretty much eliminate any possiblity of it being your code. Then we can try this on some other machines and see if we can reproduce it.<br><br>Dean<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>dmccrory replied on Thursday, September 13, 2007</h2><P>Ok. I think I will create a stripped down object to test with. If it passes, I will start adding things back to try to isolate the problem.</P>
+<P>Thanks for your time. I will let you know the results.</P>
+<P>-David</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>dmccrory replied on Monday, September 17, 2007</h2><P>I have stripped everything out of my object that is not needed and I am still experiencing the same problem so I&nbsp;beginning to think&nbsp;the problem is not related to my code. I have an employee object that inherits directly from BusinessBase&lt;T&gt;. The DataPortal_Insert()&nbsp;method does not make any outside calls other than a static call to get the connection string. The code for the insert event is posted below.</P>
+<P>Just to restate the problem so you don't have to read the entire thread. </P>
+<P>The DataPortal_Insert() method is not being handled as a transaction when using the&nbsp;<FONT size=2> </FONT>[<FONT color=#2b91af size=2>Transactional</FONT><FONT size=2>(</FONT><FONT color=#2b91af size=2>TransactionalTypes</FONT><FONT size=2>.TransactionScope)] </FONT>attribute, but if I use a <FONT size=2><FONT color=#0000ff>using</FONT> (<FONT color=#2b91af>TransactionScope</FONT> ts = <FONT color=#0000ff>new</FONT> <FONT color=#2b91af>TransactionScope</FONT>())&nbsp; </FONT>block the transaction is rolled back properly. I am purposely creating an exception by setting the second CommandText property to an invalid stored procedure name.</P>
+<P>Could someone please try to reproduce this and let me know if they experience the same problem? I am using Visual Studio 2008 Beta 2 Professional and CSLA 3.0.1</P>
+<P>Thanks,</P>
+<P>-David</P>
+<P><FONT color=#ff0000>This code is not handled as a transaction. The first table is updated even though the second table fails.</FONT></P><FONT size=2>
+<P>[</FONT><FONT color=#2b91af size=2>Transactional</FONT><FONT size=2>(</FONT><FONT color=#2b91af size=2>TransactionalTypes</FONT><FONT size=2>.TransactionScope)]</P>
+<P></FONT><FONT color=#0000ff size=2>protected</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>override</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>void</FONT><FONT size=2> DataPortal_Insert()</P>
+<P>{</P>
+<P></FONT><FONT color=#2b91af size=2>SqlConnection</FONT><FONT size=2> con = </FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> </FONT><FONT color=#2b91af size=2>SqlConnection</FONT><FONT size=2>(</FONT><FONT color=#2b91af size=2>DataConnection</FONT><FONT size=2>.ConnectionString);</P>
+<P>con.Open();</P>
+<P></FONT><FONT color=#2b91af size=2>SqlCommand</FONT><FONT size=2> cmd = con.CreateCommand();</P>
+<P>cmd.CommandType = </FONT><FONT color=#2b91af size=2>CommandType</FONT><FONT size=2>.StoredProcedure;</P>
+<P>cmd.CommandText = </FONT><FONT color=#a31515 size=2>"InsertEmployee"</FONT><FONT size=2>;</P>
+<P>cmd.Parameters.AddWithValue(</FONT><FONT color=#a31515 size=2>"@firstName"</FONT><FONT size=2>, _firstName);</P>
+<P>cmd.Parameters.AddWithValue(</FONT><FONT color=#a31515 size=2>"@middleName"</FONT><FONT size=2>, _middleName);</P>
+<P>cmd.Parameters.AddWithValue(</FONT><FONT color=#a31515 size=2>"@lastName"</FONT><FONT size=2>, _lastName);</P>
+<P>cmd.Parameters.AddWithValue(</FONT><FONT color=#a31515 size=2>"@hireDate"</FONT><FONT size=2>, _hireDate);</P>
+<P>cmd.Parameters.AddWithValue(</FONT><FONT color=#a31515 size=2>"@hireDateNumber"</FONT><FONT size=2>, _hireDateNumber);</P>
+<P>cmd.Parameters.AddWithValue(</FONT><FONT color=#a31515 size=2>"@active"</FONT><FONT size=2>, _active);</P>
+<P>cmd.Parameters.AddWithValue(</FONT><FONT color=#a31515 size=2>"@enteredBy"</FONT><FONT size=2>, Csla.</FONT><FONT color=#2b91af size=2>ApplicationContext</FONT><FONT size=2>.User.Identity.Name);</P>
+<P>cmd.Parameters.AddWithValue(</FONT><FONT color=#a31515 size=2>"@enteredDateTime"</FONT><FONT size=2>, </FONT><FONT color=#2b91af size=2>DateTime</FONT><FONT size=2>.Now);</P>
+<P></FONT><FONT color=#2b91af size=2>SqlParameter</FONT><FONT size=2> parm = </FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> </FONT><FONT color=#2b91af size=2>SqlParameter</FONT><FONT size=2>(</FONT><FONT color=#a31515 size=2>"@newID"</FONT><FONT size=2>, </FONT><FONT color=#2b91af size=2>SqlDbType</FONT><FONT size=2>.UniqueIdentifier);</P>
+<P>parm.Direction = </FONT><FONT color=#2b91af size=2>ParameterDirection</FONT><FONT size=2>.Output;</P>
+<P>cmd.Parameters.Add(parm);</P>
+<P>parm = </FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> </FONT><FONT color=#2b91af size=2>SqlParameter</FONT><FONT size=2>(</FONT><FONT color=#a31515 size=2>"@newLastChanged"</FONT><FONT size=2>, </FONT><FONT color=#2b91af size=2>SqlDbType</FONT><FONT size=2>.Timestamp);</P>
+<P>parm.Direction = </FONT><FONT color=#2b91af size=2>ParameterDirection</FONT><FONT size=2>.Output;</P>
+<P>cmd.Parameters.Add(parm);</P>
+<P>cmd.ExecuteNonQuery();</P>
+<P>_lastChanged = (</FONT><FONT color=#0000ff size=2>byte</FONT><FONT size=2>[])cmd.Parameters[</FONT><FONT color=#a31515 size=2>"@newLastChanged"</FONT><FONT size=2>].Value;</P>
+<P>_employeeID = (</FONT><FONT color=#2b91af size=2>Guid</FONT><FONT size=2>)cmd.Parameters[</FONT><FONT color=#a31515 size=2>"@newID"</FONT><FONT size=2>].Value;</P>
+<P>cmd.CommandText = </FONT><FONT color=#a31515 size=2>"InsertEmployeeOwner2"</FONT><FONT size=2>;</P>
+<P>cmd.Parameters.Clear();</P>
+<P>cmd.Parameters.AddWithValue(</FONT><FONT color=#a31515 size=2>"@ownerID"</FONT><FONT size=2>, _ownerID);</P>
+<P>cmd.Parameters.AddWithValue(</FONT><FONT color=#a31515 size=2>"@employeeID"</FONT><FONT size=2>, _employeeID);</P>
+<P>cmd.ExecuteNonQuery();</P>
+<P>}</P>
+<P><FONT color=#ff0000 size=3>This code is handled as a transaction. The first table rolls back when the second table fails.</FONT></P><FONT color=#0000ff size=2>
+<P>protected</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>override</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>void</FONT><FONT size=2> DataPortal_Insert()</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>using</FONT><FONT size=2> (</FONT><FONT color=#2b91af size=2>TransactionScope</FONT><FONT size=2> ts = </FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> </FONT><FONT color=#2b91af size=2>TransactionScope</FONT><FONT size=2>())</P>
+<P>{</P>
+<P></FONT><FONT color=#2b91af size=2>SqlConnection</FONT><FONT size=2> con = </FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> </FONT><FONT color=#2b91af size=2>SqlConnection</FONT><FONT size=2>(</FONT><FONT color=#2b91af size=2>DataConnection</FONT><FONT size=2>.ConnectionString);</P>
+<P>con.Open();</P>
+<P></FONT><FONT color=#2b91af size=2>SqlCommand</FONT><FONT size=2> cmd = con.CreateCommand();</P>
+<P>cmd.CommandType = </FONT><FONT color=#2b91af size=2>CommandType</FONT><FONT size=2>.StoredProcedure;</P>
+<P>cmd.CommandText = </FONT><FONT color=#a31515 size=2>"InsertEmployee"</FONT><FONT size=2>;</P>
+<P>cmd.Parameters.AddWithValue(</FONT><FONT color=#a31515 size=2>"@firstName"</FONT><FONT size=2>, _firstName);</P>
+<P>cmd.Parameters.AddWithValue(</FONT><FONT color=#a31515 size=2>"@middleName"</FONT><FONT size=2>, _middleName);</P>
+<P>cmd.Parameters.AddWithValue(</FONT><FONT color=#a31515 size=2>"@lastName"</FONT><FONT size=2>, _lastName);</P>
+<P>cmd.Parameters.AddWithValue(</FONT><FONT color=#a31515 size=2>"@hireDate"</FONT><FONT size=2>, _hireDate);</P>
+<P>cmd.Parameters.AddWithValue(</FONT><FONT color=#a31515 size=2>"@hireDateNumber"</FONT><FONT size=2>, _hireDateNumber);</P>
+<P>cmd.Parameters.AddWithValue(</FONT><FONT color=#a31515 size=2>"@active"</FONT><FONT size=2>, _active);</P>
+<P>cmd.Parameters.AddWithValue(</FONT><FONT color=#a31515 size=2>"@enteredBy"</FONT><FONT size=2>, Csla.</FONT><FONT color=#2b91af size=2>ApplicationContext</FONT><FONT size=2>.User.Identity.Name);</P>
+<P>cmd.Parameters.AddWithValue(</FONT><FONT color=#a31515 size=2>"@enteredDateTime"</FONT><FONT size=2>, </FONT><FONT color=#2b91af size=2>DateTime</FONT><FONT size=2>.Now);</P>
+<P></FONT><FONT color=#2b91af size=2>SqlParameter</FONT><FONT size=2> parm = </FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> </FONT><FONT color=#2b91af size=2>SqlParameter</FONT><FONT size=2>(</FONT><FONT color=#a31515 size=2>"@newID"</FONT><FONT size=2>, </FONT><FONT color=#2b91af size=2>SqlDbType</FONT><FONT size=2>.UniqueIdentifier);</P>
+<P>parm.Direction = </FONT><FONT color=#2b91af size=2>ParameterDirection</FONT><FONT size=2>.Output;</P>
+<P>cmd.Parameters.Add(parm);</P>
+<P>parm = </FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> </FONT><FONT color=#2b91af size=2>SqlParameter</FONT><FONT size=2>(</FONT><FONT color=#a31515 size=2>"@newLastChanged"</FONT><FONT size=2>, </FONT><FONT color=#2b91af size=2>SqlDbType</FONT><FONT size=2>.Timestamp);</P>
+<P>parm.Direction = </FONT><FONT color=#2b91af size=2>ParameterDirection</FONT><FONT size=2>.Output;</P>
+<P>cmd.Parameters.Add(parm);</P>
+<P>cmd.ExecuteNonQuery();</P>
+<P>_lastChanged = (</FONT><FONT color=#0000ff size=2>byte</FONT><FONT size=2>[])cmd.Parameters[</FONT><FONT color=#a31515 size=2>"@newLastChanged"</FONT><FONT size=2>].Value;</P>
+<P>_employeeID = (</FONT><FONT color=#2b91af size=2>Guid</FONT><FONT size=2>)cmd.Parameters[</FONT><FONT color=#a31515 size=2>"@newID"</FONT><FONT size=2>].Value;</P>
+<P>cmd.CommandText = </FONT><FONT color=#a31515 size=2>"InsertEmployeeOwner2"</FONT><FONT size=2>;</P>
+<P>cmd.Parameters.Clear();</P>
+<P>cmd.Parameters.AddWithValue(</FONT><FONT color=#a31515 size=2>"@ownerID"</FONT><FONT size=2>, _ownerID);</P>
+<P>cmd.Parameters.AddWithValue(</FONT><FONT color=#a31515 size=2>"@employeeID"</FONT><FONT size=2>, _employeeID);</P>
+<P>cmd.ExecuteNonQuery();</P>
+<P>ts.Complete();</P>
+<P>}</P>
+<P>}</P></FONT></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Monday, September 17, 2007</h2>Could you attach a small sample project that reproduces the issue?&nbsp; Please include any Sql scripts necessary to build the db.<br><br>Andy<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>dmccrory replied on Monday, September 17, 2007</h2><P>I would but I am embarrased to say that I don't know how to attach anything to posts in this forum......lol</P>
+<P>-David<img src="/emoticons/emotion-2.gif" alt="Big Smile [:D]" /></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Monday, September 17, 2007</h2>When composing a post, click on the Options tab.&nbsp; there's a button there to attach files.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>dmccrory replied on Monday, September 17, 2007</h2>Crap!!....how embarrasing....I never saw the tabs above.......ok I will zip it up and attach it as soon as I get a chance.....</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>dmccrory replied on Monday, September 17, 2007</h2><P>I have attached the files, including the 3 stored procedures. Let me know if there is anything else you need to look at.</P>
+<P>Thanks, </P>
+<P>-David</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Monday, September 17, 2007</h2>Ok, I see the problem.<br><br>The problem is that youv'e set your EmployeeTest as a Child object.&nbsp;&nbsp; attributes won't do anything there when saving or updating (because that can only be done on the parent collection, EmployeeListTest).&nbsp; The DP has already executed the root DP_U (which in your case is EmployeeTestList) to see if transactions shoudl apply.&nbsp; Since there is no attribute on your BLB classes DP_U, csla assumes manual.&nbsp; In your BLB, apply the TransactionScope attribute to the DP_U method there, and remove it from your EmployeeTest class (attributes will have no affect there, since you cannot call Save on the EmployeeTest class).<br><br>Note that your entire collection will be saved or rolled back as a group.&nbsp; If you want the EmployeeTest instances to be savable outside the root (ie, they will be root as in they manage their own transactions),you'll need to use EditableRootListBase.<br><br><br><br>HTH<br>Andy<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>dmccrory replied on Monday, September 17, 2007</h2><P>Andy,</P>
+<P>Thanks for taking the time to examine and explain the problem. I have made the changes and I am now getting the results as you described. This will go a long way to helping me understand this part of the framework.</P>
+<P>As for your note...In this case, I think I will need to examine the EditableRootListBase as, although there is a collection of employees, each&nbsp;employee really stands on it's own.</P>
+<P>Thanks again, you have been a big help <img src="/emoticons/emotion-19.gif" alt="Party!!! [<:o)]" /></P>
+<P>-David</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Tuesday, September 18, 2007</h2>One thing to keep in mind; a "root" object is one on which Save will be called, and can usually be fetched on its own.&nbsp; Its child objects cannot exist outside the context of the root, and it doesn't make sense to edit them outside the context of the root object.&nbsp; A root and its children will always be part of a single transaction.<br><br>That certainly seems to be the case if you're talking about editing an Employee.&nbsp; I would think that each change to an employee would be independant of editing other employees.&nbsp; The only reason to use EditableRootListBase would be to allow editing of employees in a grid setting on Windows Forms.&nbsp; That's the intended use of ERLB and you probably won't use it in any other case.&nbsp; <br><br>Also, if you're using ERLB, you need to remove the MarkAsChild call in the EmployeeTest's constructor.<br><br>Glad you're on the right track; if you haven't done so already, you should probably get Rocky's book.&nbsp; Chapter 8 talks about use case driven business object design, and this has helped me greatly figuring our which Csla framework objects to use as base classes.<br><br>HTH<br>Andy<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>dmccrory replied on Tuesday, September 18, 2007</h2><P>So maybe I am still off a little. I am displaying the list in a grid, but editing in an edit form. I have read the book (and bought the handbook today) but I will re-read it again and see if it is clearer now. </P>
+<P>The one thing that always confuses me is when objects are part of a collection. If I have a collection of employees that belong to a specific client. I am assuming that the client is the root and the employees are children of the client. But each employee is also an indepent object. I need to re-visit this in the book now that I have spent some time with the framework.</P>
+<P>Thanks again for all of your help</P>
+<P>-David</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Wednesday, September 19, 2007</h2>Ahh, if you have a list just for display, you should have an EmployeeList and EmployeeInfo, which inherit ReadOnlyListBase and ReadOnlyBase respectively.&nbsp; Employee would inherit BusinessBase and likely be a root object.&nbsp; <br><br>The client can be your root, which could include an EmployeeList instance.&nbsp; It depends on your use case. Do you need client information and the list at the same time?&nbsp; <br><br>HTH<br>Andy<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>dmccrory replied on Wednesday, September 19, 2007</h2><P>I re-read chapter 8 last night and came to the same conclusion. I understood the "add" and "edit" functions because the user was presented with an edit screen and the root object (employee) was saved as expected. But the "delete" function was confusing me. The user selects a record from the grid to delete and a confirmation box is all that is displayed. If confirmed, I was able to delete the employee object, but I could not remove it from the list because it was not a child. </P>
+<P>I have changed this to&nbsp;match the scenario&nbsp;you describe. I have a Client object (root), an EmployeeInfo object (child), an EmployeeList object (collection of EmployeeInfo objects) and an Employee object (root). If the user wants to add or edit an employee, the root employee object is retrieved and diplayed in an edit screen. If the user wants to delete an employee, the&nbsp;Employee object is deleted and the&nbsp;EmployeeInfo object is deleted from the EmployeeList. I think this is how this is supposed to work.</P>
+<P>I do have one question though. In my original design, Employee&nbsp;was a root object and EmployeeList&nbsp;was a collection of Employees. I could use Add() to add an Employee to EmployeeList, but I could not use Remove() to remove an Employee from EmployeeList because Employee was not a child. Shouldn't that&nbsp;work the same either way? Why can I add an object that is not a child, but I cannot remove an object that is not a child?</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

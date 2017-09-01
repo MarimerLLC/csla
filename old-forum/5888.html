@@ -1,0 +1,9 @@
+<html><header><title>Design Suggestions for AutoSave feature</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Design Suggestions for AutoSave feature</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5888.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jack posted on Wednesday, November 26, 2008</h2><P>I need to implement a background auto-save process that runs off a timer.&nbsp; I essentially keep a replicated copy of the data with different keys in the database and then remove it after a final save is done.&nbsp; The data entry process can take a long time and with a web/silverlight implementation and the such it is an important piece.&nbsp; I have a pre-defined key inplace at the creation of my objects for the new auto-save parent key so I can go and find the auto-save data if I need it.</P>
+<P>Anyhow I thought there were two real options and I'm leaning to the first which seems the most simple:</P>
+<P>1) Every x minutes I execute background commandBO and pass a copy of my BO and all associated BOLists.&nbsp; The command object does a simple database insert/update over the previous autoSave data and returns success / fail.&nbsp; </P>
+<P>or</P>
+<P>2) Every x minutes I set a 'IsAutoSaveFlag' call an async&nbsp;Save , reset the 'IsAutoSaveFlag' and let the dataportal handle things but I ignore whatever comes back.</P>
+<P>The second option seems like lots of extra overhead etc but I'm wondering if anybody else implementing such a feature can recommend a reason why this may be a better choice.</P>
+<P>Any other gotcha's out there?&nbsp; I suppose I need to deal with what happens if the autosave takes too long or doesn't come back etc.</P>
+<P>Thanks</P>
+<P>jack</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

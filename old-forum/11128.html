@@ -1,0 +1,132 @@
+<html><header><title>IsSavable is set to true when object is loaded how do I set it to false?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>IsSavable is set to true when object is loaded how do I set it to false?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11128.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Harry posted on Sunday, February 05, 2012</h2><p>Hi,</p>
+<p>I&#39;m using CSLA 4.1 and also MVVMLight. I have loaded a list of DynamicListBase objects.&nbsp; When each object is created from my datasource the IsSavable property is set to true before I have edited the object. Once the object is saved is it set to false, but how do it set it to false during the inital load of data. I want to use it IsSavable property in a CanSave routine of the relayCommand.</p>
+<p>I creat the list with in the ViewModel:</p>
+<p><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"><font face="Consolas" size="2"><font face="Consolas" size="2">
+<p>Users = U</p>
+</font></font></span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></span></span></span>
+<p>&nbsp;</p>
+<p><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">In Library.Net the Userlist code is:</span></span></p>
+</span></span><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;">serList</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">.GetUserList();</span></span></p>
+<p><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"><font face="Consolas" size="2"><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></font></span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></span></span></span>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">return</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> </span></span><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;">DataPortal</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">.Fetch&lt;</span></span><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;">UserList</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">&gt;();}<span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">
+<p>&nbsp;</p>
+</span></span></span><span style="font-family:Consolas;font-size:x-small;">
+<p>&nbsp;</p>
+</span></span></p>
+<p><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">private</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> </span></span><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">void</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> DataPortal_Fetch()</span></span></p>
+<p><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">{<span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> <span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"><font face="Consolas" size="2"><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></font></span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></span></span></span>
+<p>&nbsp;</p>
+</span></span><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">using</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> (</span></span><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">var</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> dalManager = DataAccess.</span></span><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;">DalFactory</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">.GetManager()) </span></span><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">var</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> dal = dalManager.GetProvider&lt;DataAccess.</span></span><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;">IUserDal</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">&gt;();<span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> <span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"><font face="Consolas" size="2"><font face="Consolas" size="2">
+<p>
+<p>&nbsp;</p>
+</p>
+</font></font></span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"><font face="Consolas" size="2">
+<p>
+<p>&nbsp;</p>
+</p>
+</font></span></span></span></span></span><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">var</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> data = dal.Fetch();<span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> <span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"><font face="Consolas" size="2"><font face="Consolas" size="2">
+<p>
+<p>&nbsp;</p>
+</p>
+</font></font></span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"><font face="Consolas" size="2">
+<p>
+<p>&nbsp;</p>
+</p>
+</font></span></span></span></span></span><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">var</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> rlce = RaiseListChangedEvents;<span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> <span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"><font face="Consolas" size="2"><font face="Consolas" size="2">
+<p>
+<p>RaiseListChangedEvents =&nbsp;</p>
+</p>
+</font></font></span><span style="font-family:Consolas;font-size:x-small;">&nbsp;</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"><font face="Consolas" size="2">
+<p>
+<p>&nbsp;</p>
+</p>
+</font></span><span style="font-family:Consolas;font-size:x-small;">&nbsp;</span></span></span></span><span style="font-family:Consolas;font-size:x-small;">&nbsp;</span></span><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">false</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">;<span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> <span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"><font face="Consolas" size="2"><font face="Consolas" size="2">
+<p>
+<p>&nbsp;</p>
+</p>
+</font></font></span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"><font face="Consolas" size="2">
+<p>
+<p>&nbsp;</p>
+</p>
+</font></span></span></span></span></span><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">foreach</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> (</span></span><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">var</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> i </span></span><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">in</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> data) </span></span><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">var</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> u = </span></span><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;">DataPortal</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">.Fetch&lt;</span></span><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;">UserInfo</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">&gt;(); </span></span></p>
+<p>
+<p>{</p>
+<span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"><font face="Consolas" size="2"><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></font></span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></span></span></span>
+<p>&nbsp;</p>
+</p>
+<p>
+<p>&nbsp;</p>
+</p>
+<p>
+<p>&nbsp;</p>
+</p>
+<p>
+<p>&nbsp;</p>
+</p>
+<p>
+<p>&nbsp;</p>
+</p>
+<p>
+<p>{</p>
+</p>
+<p>
+<p>u.UserId = i.UserId;</p>
+<p>u.UserName = i.UserName;</p>
+<p>u.Email = i.Email;</p>
+<p>u.UserLanguage = i.UserLanguage;</p>
+<p>u.UserGroup = i.UserGroup;</p>
+<p>u.LoggedOnFlag = i.LoggedOnFlag;</p>
+<p>u.LoggedOnProduct = i.LoggedOnProduct;</p>
+<p>u.LoggedOnFunction = i.LoggedOnFunction;</p>
+<p>u.LastUpdate = i.LastUpdate;</p>
+<p>Add(u);</p>
+<p>}</p>
+<p>RaiseListChangedEvents = rlce;</p>
+<p>}</p>
+<p>}</p>
+</p>
+</span></span><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">public</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> </span></span><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">static</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> </span></span><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;">UserList</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> GetUserList()<span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> <span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"><font face="Consolas" size="2"><font face="Consolas" size="2">
+<p>
+<p>{</p>
+</p>
+</font></font></span><span style="font-family:Consolas;font-size:x-small;">
+<p>&nbsp;</p>
+</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></span><span style="font-family:Consolas;font-size:x-small;">
+<p>&nbsp;</p>
+</span></span></span></span><span style="font-family:Consolas;font-size:x-small;">
+<p>&nbsp;</p>
+</span></span></span></span></p>
+<p>TIA.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Marjon1 replied on Sunday, February 05, 2012</h2><p>Because you are using the properties directly to assign the values, the object is being marked as dirty.</p>
+<p>You either need to wrap those statements around a U.BypassPropertyChecks() call or call MarkAsOld directly on the User object before adding it to list. This obviously is depends on what access you have to the object though.&nbsp;</p>
+<p>This will also mean that no validation rules are run on your object, you would need to call this manually if required.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Harry replied on Sunday, February 05, 2012</h2><p>Marjon1 thanks for the reply. You say &quot;because you are using the properties directly to assign the values&quot; is there another way?</p>
+<p>I have added a procedure to my object that copies the data from the datasource and creates the object&nbsp;then calls MarkOld() which seems to work OK but if there is a &quot;better&quot; way to do this I would like to know.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Monday, February 06, 2012</h2><p>I highly recommend Rockys <i><b>Using CSLA 4 </b></i>ebook series. Thes go into detail on this.You can also look at the ProjectTracker sample.</p>
+<p>The recommended way is to delegate property set/load into the item class and use BypassPropertyChecks.</p>
+<p>When you set your objects properties like that you will</p>
+<ul>
+<li>check authorizations (CanWrite...)</li>
+<li>trigger rules per peropert</li>
+<li>raise OnPropertyChanged</li>
+</ul>
+<p>And you do not want to do this in your DAL. DAL should use BypassPropertyChecks or LoadProperty to just load values into properties. </p>
+<p>The code in you child item should be like this: </p>
+<p>&nbsp;&nbsp;&nbsp; private void Child_Fetch(ProjectTracker.Dal.AssignmentDto data)<br />&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; using (BypassPropertyChecks)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ResourceId = data.ResourceId;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Role = data.RoleId;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; LoadProperty(AssignedProperty, data.Assigned);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; TimeStamp = data.LastChanged;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br />&nbsp;&nbsp;&nbsp; }</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Harry replied on Monday, February 06, 2012</h2><p>Thanks Jonney,</p>
+<p>I have the books and have read them, there is a lot of information there and a newbie can miss the important bits.&nbsp; I&#39;m sure its the fault of the reader not the writer <img src="http://forums.lhotka.net/emoticons/emotion-1.gif" alt="Smile" />.</p>
+<p>Thanks for the pointers I&#39;ll redo my code.&nbsp; I understand the use of ByPassPropertyChecks better now.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

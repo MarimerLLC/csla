@@ -1,0 +1,135 @@
+<html><header><title>Composite WPF and CSLA</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Composite WPF and CSLA</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5269.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>triplea posted on Tuesday, August 19, 2008</h2><P>The author of the following article did a great job not only&nbsp;giving a good overview of&nbsp;how SCSF works but also how you can best use it with CSLA:</P>
+<P><A href="http://www.codeproject.com/KB/smart/SCSF_CSLA_ProjectTracker.aspx">http://www.codeproject.com/KB/smart/SCSF_CSLA_ProjectTracker.aspx</A></P>
+<P>It would be great to see a version of PTracker using Composite WPF :-)</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>nermin replied on Tuesday, August 19, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I need to comment on SCSF in general and using Csla with it.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I have not worked with the latest &#8211; WPF version of SCSF,
+but rather with an older version running on top of WinForms.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>The advantages that one gets with SCSF, for me where following:<o:p></o:p></span></p>
+
+<p class=MsoListParagraph><span><span>1)<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span></span><span>Very clean separation of concerns &#8211; cleaner code with MVC
+(or MVC like) architecture<o:p></o:p></span></p>
+
+<p class=MsoListParagraph><span><span>2)<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span></span><span>Dependency Injection and loose coupling you get with it (not
+having to manage large amount of references sometimes is truly a great thing)<o:p></o:p></span></p>
+
+<p class=MsoListParagraph><span><span>3)<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span></span><span>Ease of testability.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>There were others, like modularization, tight integration with Enterprise
+Library, etc but to me the top 3 were most valuable.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>What I have learned over time is that SCSF is overly complex,
+that one can easily build and use MVC apps without a need for complex
+framework.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>SCSF Dependency Injection engine did not work well with Csla &#8211;
+it needed a public constructor in order to build a Csla object.&nbsp; Due to
+that I had to &#8220;wrap&#8221; Csla objects into &#8220;Service Objects&#8221;
+which were nothing but containers for Csla objects and exposed API that was
+passing calls to internal Csla BOs, as well as returning constructed ones back.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>This was few years ago.&nbsp; Again same like MVC, it would have
+been a lot easier to use a true DI Frameworks like StructureMap or Windsor which
+allow injecting references and constructing objects through Factory Methods &#8211;
+lot friendlier than a truly complex and not customizable (or for that matter
+debugable ObjectBuilder)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>The best advice I can give you is:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>Do not go automatically with the solution from Microsoft P&amp;P
+team (that includes Ent Lib), as generally frameworks built by those folks are
+a copy of already implemented Open Source project, and for that matter, it
+appears to me that P&amp;P folks use these projects to &#8220;learn&#8221;
+about technology and practices built by folks that implement Open Source
+version of those tools.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>That leads to MS version of the thing being generally unnecessarily
+more complex.&nbsp; Open Source version in addition are built with support of
+community and their comments (example of that being Csla), whereas MS P&amp;P
+libraries are built and then given to us &#8211; we do not have much control or
+influence on&nbsp; these tools.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Please make sure you consider all of these facts prior to going
+with something only because it comes from MS.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Nermin <o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> triplea
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Tuesday, August 19, 2008 2:27 PM<br>
+<b>To:</b> Nermin Dibek<br>
+<b>Subject:</b> [CSLA .NET] Composite WPF and CSLA<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>The author of the following article did a great job not only&nbsp;giving a
+good overview of&nbsp;how SCSF works but also how you can best use it with
+CSLA:<o:p></o:p></p>
+
+<p><a href="http://www.codeproject.com/KB/smart/SCSF_CSLA_ProjectTracker.aspx">http://www.codeproject.com/KB/smart/SCSF_CSLA_ProjectTracker.aspx</a><o:p></o:p></p>
+
+<p>It would be great to see a version of PTracker using Composite WPF :-)<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>triplea replied on Tuesday, August 19, 2008</h2><P>Hi Nermin</P>
+<P>Thanks for the suggestion and comments. I can imagine that there are a lot of people sharing your views but SCSF has got quite a big following.&nbsp;My experience developing with SCSF + CSLA has been great. Not without issues but for the first time in my career I feel I can truly develop rapidly and solidly (if I may say so).&nbsp;I wouldn't attempt to write&nbsp;even a simple MVC UI framework as I recognise I am a bit weak in&nbsp;creating something solid from scratch to use as a framework/base/whatever, I prefer to be developing BOs and views!&nbsp;So the (very steep indeed) learning curve has paid off as far as I am concerned. </P>
+<P>I'm not going to support or complain about the P&amp;P team, I think they do a decent job but am not following them blindly. Just thought that its time to start learning WPF and that Composite WPF would be part of the learning curve for me as well. Oh and I dislike some parts of the Ent Lib I have used. Really...</P>
+<P>A note on using other DI frameworks: that&nbsp;was one of the main deliverables (ObjectBuilder gone altogether by popular demand) and even though Unity is mainly used, there&nbsp;has been a lot of talk on how easy it is to use others such as Windsor.<BR>EDIT: Actually there is a reference to an assembly ObjectBuilder2 in UnityExtensions. Need to investigate a bit more I guess...</P>
+<P>In any case its great to see many different technologies and frameworks&nbsp;using CSLA BOs. A Composite WPF example wouldn't hurt, who knows I might even dislike and not use it :-)</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>hayrob replied on Wednesday, August 20, 2008</h2><P>As the author of the article referred to (thanks for the kind comments), can I just say that I am in the process of upgrading (?) my application to use WPF.</P>
+<P>This time however I've not used SCSF or PRISM but build my own framework on top of Csla. I have however used Unity which I think is magic - so much easier to use than the full blown CAB stuff. Using the Jeremy Miller concepts, <A href="http://codebetter.com/blogs/jeremy.miller/archive/2007/07/25/the-build-your-own-cab-series-table-of-contents.aspx">http://codebetter.com/blogs/jeremy.miller/archive/2007/07/25/the-build-your-own-cab-series-table-of-contents.aspx</A>, you can build a much lighter weight solution.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>triplea replied on Thursday, August 21, 2008</h2>Cool thanks for the link and feedback. Looking forward to see the outcome.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>AAKLebanon replied on Saturday, September 13, 2008</h2><P><A HREF="/forums/thread/26058.aspx">http://forums.lhotka.net/forums/thread/26058.aspx</A></P>
+<P>&nbsp;</P>
+<P>I hope that some one see what I see about the role of a&nbsp;CSLA business object in the model-view-presentation model pattern !</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

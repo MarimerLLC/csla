@@ -1,0 +1,202 @@
+<html><header><title>Can't get Silverlight Rolodex sample to work - 3.6.1</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Can't get Silverlight Rolodex sample to work - 3.6.1</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6373.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>cds posted on Sunday, February 08, 2009</h2><P>I've downloaded the 3.6.1 version of the Cslalight Rolodex sample (C# version) and tried to get it to work but without success. I've had the SimpleApp sample working...</P>
+<P>I've seen other posts on the forum where people have run into trouble - but I think I've covered all the obvious things. </P>
+<P>I have 3.6.1 of CSLA downloaded and I've built the solutions for CSLA and CslaLight.&nbsp;I have the following project references:</P>
+<UL>
+<LI>Rolodex and Rolodex.Business.Client&nbsp;-&gt; CslaLight's ClientBin\Csla.dll</LI>
+<LI>Rolodex.Business.Server and WcfHostWeb -&gt; Csla's bin\Debug\Csla.dll</LI></UL>
+<P>I've updated the connection string to point to the physical locaiton of the database (on my H:\ drive).</P>
+<P>Then, I set Web as the startup project, and Default.aspx as the start page. </P>
+<P>I then run and the Silverlight page comes up, and I enter Admin/admin as the username/password. I get Invalid login. Try again.</P>
+<P>I don't think it's going anywhere near the server. I put a breakpoint in the Rolodex.Identity class on GetIdentity, and DataPortal_Fetch methods (and I use Debug -&gt; Attach to process to connect to the WCF Host process - the breakpoints then come alive - i.e. turn into full red dots) and try to logon, but it doesn't get anywhere near that code.</P>
+<P>So, now I try adding the CSLA and CslaLight projects to my solution and updating the references. That way, I can put breakpoints directly in the CSLA code and see what's going on. Then I rebuild and run again, reattaching the debugger to the WCF Host process.</P>
+<P>This time, after much debugging, I put a breakpoint in the SimpleDataPortal's Fetch Method. This is the DataPortal that seems to be being utilized. I can break in there, and get to the line:</P><FONT size=2>
+<P>obj = </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>new</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>LateBoundObject</FONT></FONT><FONT size=2>(objectType);</P></FONT>
+<P>whereupon it throws an exception:</P>
+<P>base {System.SystemException} = {"The type initializer for 'Rolodex.Business.Security.RolodexIdentity' threw an exception."}</P>
+<P>with the inner exception:</P>
+<P>Message = "Can not register property UserId after containing type has been instantiated"</P>
+<P>&nbsp;&nbsp; at Rolodex.Business.Security.RolodexIdentity..ctor()<BR>&nbsp;&nbsp; at ctor()<BR>&nbsp;&nbsp; at Csla.Reflection.MethodCaller.CreateInstance(Type objectType) in H:\CSLA.NET\cslacs\Csla\Reflection\MethodCaller.cs:line 103<BR>&nbsp;&nbsp; at Csla.Reflection.LateBoundObject..ctor(Type objectType) in H:\CSLA.NET\cslacs\Csla\Reflection\LateBoundObject.cs:line 29<BR>&nbsp;&nbsp; at Csla.Server.SimpleDataPortal.Fetch(Type objectType, Object criteria, DataPortalContext context) in H:\CSLA.NET\cslacs\Csla\Server\SimpleDataPortal.cs:line 106</P>
+<P>&nbsp;</P>
+<P>Now, this makes me suspect that there's something wrong in the configuration and that it's not using the remote data portal but somehow using the local one and that the business object is already initialised.&nbsp;&nbsp;Or am I off track here.&nbsp;(When I look at the&nbsp;DataPortalContext object,&nbsp;its IsRemotePortal property is false.)&nbsp;</P>
+<P>Anyway, can somebody point me in the right direction for this please. I'm hoping to get this going sometime soon!</P>
+<P>Thanks,</P>
+<P>Craig</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Monday, February 09, 2009</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>There is an issue with Rolodex sample that was recently
+uncovered.&nbsp; You need to update RolodexIdentity to have type in
+RegisterProperty line, as in:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>RegisterProperty(typeof(RolodexIdentity), new ProeprtyInfo&#8230;)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I think I already replied to a similar issue a few days ago.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Thanks.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> cds
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Sunday, February 08, 2009 11:02 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> [CSLA .NET] Can't get Silverlight Rolodex sample to work -
+3.6.1<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>I've downloaded the 3.6.1 version of the Cslalight Rolodex sample (C#
+version) and tried to get it to work but without success. I've had the
+SimpleApp sample working...<o:p></o:p></p>
+
+<p>I've seen other posts on the forum where people have run into trouble - but
+I think I've covered all the obvious things. <o:p></o:p></p>
+
+<p>I have 3.6.1 of CSLA downloaded and I've built the solutions for CSLA and
+CslaLight.&nbsp;I have the following project references:<o:p></o:p></p>
+
+<ul>
+ <li class=MsoNormal>Rolodex and Rolodex.Business.Client&nbsp;-&gt;
+     CslaLight's ClientBin\Csla.dll<o:p></o:p></li>
+ <li class=MsoNormal>Rolodex.Business.Server and WcfHostWeb -&gt;
+     Csla's bin\Debug\Csla.dll<o:p></o:p></li>
+</ul>
+
+<p>I've updated the connection string to point to the physical locaiton of the
+database (on my H:\ drive).<o:p></o:p></p>
+
+<p>Then, I set Web as the startup project, and Default.aspx as the start page. <o:p></o:p></p>
+
+<p>I then run and the Silverlight page comes up, and I enter Admin/admin as the
+username/password. I get Invalid login. Try again.<o:p></o:p></p>
+
+<p>I don't think it's going anywhere near the server. I put a breakpoint in the
+Rolodex.Identity class on GetIdentity, and DataPortal_Fetch methods (and I use
+Debug -&gt; Attach to process to connect to the WCF Host process - the
+breakpoints then come alive - i.e. turn into full red dots) and try to logon,
+but it doesn't get anywhere near that code.<o:p></o:p></p>
+
+<p>So, now I try adding the CSLA and CslaLight projects to my solution and
+updating the references. That way, I can put breakpoints directly in the CSLA
+code and see what's going on. Then I rebuild and run again, reattaching the
+debugger to the WCF Host process.<o:p></o:p></p>
+
+<p>This time, after much debugging, I put a breakpoint in the
+SimpleDataPortal's Fetch Method. This is the DataPortal that seems to be being
+utilized. I can break in there, and get to the line:<o:p></o:p></p>
+
+<p><span>obj = <span>new</span> <span>LateBoundObject</span>(objectType);<o:p></o:p></span></p>
+
+<p>whereupon it throws an exception:<o:p></o:p></p>
+
+<p>base {System.SystemException} = {&quot;The type initializer for
+'Rolodex.Business.Security.RolodexIdentity' threw an exception.&quot;}<o:p></o:p></p>
+
+<p>with the inner exception:<o:p></o:p></p>
+
+<p>Message = &quot;Can not register property UserId after containing type has
+been instantiated&quot;<o:p></o:p></p>
+
+<p>&nbsp;&nbsp; at Rolodex.Business.Security.RolodexIdentity..ctor()<br>
+&nbsp;&nbsp; at ctor()<br>
+&nbsp;&nbsp; at Csla.Reflection.MethodCaller.CreateInstance(Type objectType) in
+H:\CSLA.NET\cslacs\Csla\Reflection\MethodCaller.cs:line 103<br>
+&nbsp;&nbsp; at Csla.Reflection.LateBoundObject..ctor(Type objectType) in
+H:\CSLA.NET\cslacs\Csla\Reflection\LateBoundObject.cs:line 29<br>
+&nbsp;&nbsp; at Csla.Server.SimpleDataPortal.Fetch(Type objectType, Object
+criteria, DataPortalContext context) in
+H:\CSLA.NET\cslacs\Csla\Server\SimpleDataPortal.cs:line 106<o:p></o:p></p>
+
+<p>&nbsp;<o:p></o:p></p>
+
+<p>Now, this makes me suspect that there's something wrong in the configuration
+and that it's not using the remote data portal but somehow using the local one
+and that the business object is already initialised.&nbsp;&nbsp;Or am I off
+track here.&nbsp;(When I look at the&nbsp;DataPortalContext object,&nbsp;its
+IsRemotePortal property is false.)&nbsp;<o:p></o:p></p>
+
+<p>Anyway, can somebody point me in the right direction for this please. I'm
+hoping to get this going sometime soon!<o:p></o:p></p>
+
+<p>Thanks,<o:p></o:p></p>
+
+<p>Craig<o:p></o:p></p>
+
+<p>&nbsp;<o:p></o:p></p>
+
+<p>&nbsp;<o:p></o:p></p>
+
+<p>&nbsp;<o:p></o:p></p>
+
+<p>&nbsp;<o:p></o:p></p>
+
+<p>&nbsp;<o:p></o:p></p>
+
+<p>&nbsp;<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>cds replied on Monday, February 09, 2009</h2><P>Hi Sergey</P>
+<P>Thanks, that did work. You were referring to this thread: <A HREF="/forums/thread/30823.aspx">http://forums.lhotka.net/forums/thread/30823.aspx</A></P>
+<P>In order to help others, the RolodexIdentity class needs to have the UserIdProperty static initializer code changed to read:</P><FONT color=#0000ff size=2><FONT color=#0000ff size=2>
+<P>private</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>static</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>readonly</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>PropertyInfo</FONT></FONT><FONT size=2>&lt;</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>int</FONT></FONT><FONT size=2>&gt; UserIdProperty = </P>
+<P>RegisterProperty&lt;</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>int</FONT></FONT><FONT size=2>&gt;(</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>typeof</FONT></FONT><FONT size=2> (</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>RolodexIdentity</FONT></FONT><FONT size=2>), </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>new</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>PropertyInfo</FONT></FONT><FONT size=2>&lt;</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>int</FONT></FONT><FONT size=2>&gt;(</FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>"UserId"</FONT></FONT><FONT size=2>, </FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>"User Id"</FONT></FONT><FONT size=2>, 0));</P></FONT>
+<P>And it would be good if the sample could be updated so others don't download the incorrect code.</P>
+<P>Additionally, the error message could have been more helpful if it said:</P>
+<P><EM>Can not register property UserId after containing type (<STRONG>CslaIdentity</STRONG>)&nbsp;has been instantiated</EM></P>
+<P>I.e. add the name of the type the property is being registered on to the message - that would have made the problem clearer for me.</P>
+<P>Anyway,&nbsp;thanks for the help. I did learn quite a bit along the way by delving into the CSLA code.</P>
+<P>Craig</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>chrduf replied on Wednesday, February 18, 2009</h2><P>In VB.NET the RolodexIdentity class needs to have the UserID property static initializer code changed to:</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Private Shared UserIdProperty As PropertyInfo(Of Integer) = _<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; RegisterProperty(Of Integer)(GetType(RolodexIdentity), New PropertyInfo(Of Integer)("UserId", "User Id", 0))<BR></P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

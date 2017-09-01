@@ -1,0 +1,65 @@
+<html><header><title>LoadProperty on derived child and business rules</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>LoadProperty on derived child and business rules</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9881.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>RumbleCow posted on Friday, December 17, 2010</h2><p>&nbsp;</p>
+<p>I can&#39;t get this right.&nbsp;
+If I use the LoadProperty &nbsp;in the
+DataPortalXYZ on the derived object the rules are applied but not seeing
+property values in the derived class.&nbsp; If
+I don&#39;t use LoadProperty method and instead set the property directly I see the property value but the business rules
+are not applied.&nbsp; I&#39;m guessing it has to
+do with the property registration but have tried several things without success.&nbsp; Please help.&nbsp;
+</p>
+<p>&nbsp;</p>
+<p>Where should the property registration and business rules reside
+in the abstract class?&nbsp; In the below</p>
+<p>&nbsp;</p>
+<p>&nbsp;&nbsp;&nbsp; [Serializable]</p>
+<p>&nbsp;&nbsp;&nbsp; public abstract class PurchaseOrderBase
+: BusinessBase&lt;PurchaseOrderBase&gt;</p>
+<p>&nbsp;&nbsp;&nbsp; {</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; private static int _dummy;</p>
+<p>&nbsp;</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // static field initializer</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // http://msdn.microsoft.com/en-us/library/aa645758(VS.71).aspx</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public PurchaseOrderBase()</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+_dummy = 0;</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</p>
+<p>&nbsp;</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public static readonly PropertyInfo&lt;string&gt; PurchaseOrderNumberProperty =
+RegisterProperty&lt;string&gt;(p =&gt;
+p.PurchaseOrderNumber, &quot;Purchase Order
+Number&quot;);</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public string
+PurchaseOrderNumber { get; protected set; }</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public static readonly PropertyInfo&lt;int&gt; RegionNumberProperty = RegisterProperty&lt;int&gt;(c =&gt; c.RegionNumber, &quot;Region Number&quot;);</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public int
+RegionNumber { get; protected
+set; }</p>
+<p>...</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; protected override void AddBusinessRules()</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+BusinessRules.AddRule(new
+Csla.Rules.CommonRules.Required(PurchaseOrderNumberProperty));</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+//BusinessRules.AddRule(new
+Csla.Rules.CommonRules.RegExMatch(PurchaseOrderNumberProperty,
+CommonRegExPatterns.POPatternCharFirst));</p>
+<p>&nbsp;</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+BusinessRules.AddRule(new
+Csla.Rules.CommonRules.MinValue&lt;int&gt;(RegionNumberProperty, 1));</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+BusinessRules.AddRule(new
+Csla.Rules.CommonRules.MinValue&lt;int&gt;(SourceNumberProperty, 1));</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+BusinessRules.AddRule(new
+Csla.Rules.CommonRules.MinValue&lt;int&gt;(LocationIdProperty, 1));</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Friday, December 17, 2010</h2><p>I discuss this in some detail in the <em>Using CSLA 4: Creating Business Objects</em> ebook (<a href="http://store.lhotka.net">http://store.lhotka.net</a>).</p>
+<p>LoadProperty (at least by default) doesn&#39;t run business rules or raise PropertyChanged. It is just like setting a field directly (or as close as you can get with managed backing fields).</p>
+<p>SetProperty (at least by default) runs rules and raises changed events.</p>
+<p>If you suppress rule checking (use BypassPropertyChecks or one of the other techniques), SetProperty works exactly like LoadProperty.</p>
+<p>Most DAL code either uses LoadProperty or suppresses rule checking. If rules are run, they are run with a BusinessRules.CheckRules call after the object has been loaded with data. This happens by default in DataPortal_Create, and requires an explicit call by you in DataPortal_Fetch.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RumbleCow replied on Friday, December 17, 2010</h2><p>I understand the differences between LoadProperty and SetProperty. &nbsp;I am having trouble with the property registration, business rules and abstract classes. Should I put the rules in the abstract class and register the properties there as well or should the property registration be in the derived class?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, December 17, 2010</h2><p>In the end, properties are registered to the derived class - or at least they should be. If they aren&#39;t, then things won&#39;t work :)&nbsp; The field manager ultimately creates one list of properties for each derived class, and to create that list it includes any properties registered to types higher in the inheritance hierarchy.</p>
+<p>The AddBusinessRules method is invoked once per derived class per AppDomain. It is never explicitly called (by CSLA) on a base class. So your AddBusinessRules overload needs to call base.AddBusinessRules - which it should be doing, otherwise you won&#39;t get DataAnnotations as expected.</p>
+<p>So your abstract class can register rules in AddBusinessRules - and they&#39;ll get attached to each derived class. In the end, the business rules are only registered to derived types, never to base types.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RumbleCow replied on Friday, December 17, 2010</h2><p>Thanks &nbsp;Rocky. &nbsp;I&#39;ll give that a try</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,60 @@
+<html><header><title>No Parameterless Constructors in Silverlight</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>No Parameterless Constructors in Silverlight</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11486.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>st3fanus posted on Thursday, July 19, 2012</h2><p>Hi all</p>
+<p>I have three days in looking for a solution for this problem in my development</p>
+<p>I develop Silverlight 5 app, I used CSLA 4.3.12</p>
+<p>&nbsp;</p>
+<p>I Got : No Parameterless constructors defined for this object</p>
+<p>Jonny has suggest me to add public default constructor in ALL my business object</p>
+<p>in this problem i have MenuList : ReadOnlyListBase&lt;MenuList, MenuInfo&gt;</p>
+<p>AND I have add :</p>
+<p>public MenuList() </p>
+<p>{<br />}</p>
+<p>in MenuList Class</p>
+<p>public MenuInfo()</p>
+<p>{<br />}</p>
+<p>in MenuInfo</p>
+<p>BUT I still got the same error when i display that error.</p>
+<p>&nbsp;</p>
+<p>Could anyone know what is happened here ? </p>
+<p>Could you help me to save my days :(</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>thanks a lot</p>
+<p>&nbsp;</p>
+<p>Stefanus</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>skagen00 replied on Thursday, July 19, 2012</h2><p>Are you using a criteria class to fetch the objects? Don&#39;t forget the public constructor on the criteria class if that&#39;s the case.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>st3fanus replied on Thursday, July 19, 2012</h2><p>Hi skagen..
+thanks for your quick response</p>
+<p>&nbsp;</p>
+<p>No I&#39;m not use criteria class, i just use string plain type</p>
+<p>&nbsp;</p>
+<p>But I use my Dal not follow lhotka book use Provider pattern, BUT I use Mef to load my dal implementation </p>
+<p>&nbsp;</p>
+<p>Could you have another suggestions ?</p>
+<p>&nbsp;</p>
+<p>thanks a lot</p>
+<p>&nbsp;</p>
+<p>stefanus</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>st3fanus replied on Thursday, July 19, 2012</h2><p>Wow Incredible</p>
+<p>&nbsp;</p>
+<p>I don&#39;t know what wrong is it ?</p>
+<p>I have make my ALL BUSINESS OBJECT has public default constructor parameterless</p>
+<p>&nbsp;</p>
+<p>BUT it is still got NO Parameterless Constructors defined in this object ??????</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>st3fanus replied on Thursday, July 19, 2012</h2><p>namespace AIS.Lib.Menu<br />{<br />&nbsp;&nbsp;&nbsp; [Serializable]<br />&nbsp;&nbsp;&nbsp; public class MenuList : ReadOnlyListBase&lt;MenuList, MenuInfo&gt;<br />&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public MenuList()<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br /><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br /><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public static void GetMenuList(string username, <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; EventHandler&lt;DataPortalResult&lt;MenuList&gt;&gt; callback)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var criteria = new MenuCriteria(username);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; DataPortal.BeginFetch&lt;MenuList&gt;(criteria, callback);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br /><br />#if !SILVERLIGHT<br /><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; private void DataPortal_Fetch(MenuCriteria criteria)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br /><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br />#endif<br />&nbsp;&nbsp;&nbsp; } // end of class<br />}<br /></p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>namespace AIS.Lib.Menu<br />{<br />&nbsp;&nbsp;&nbsp; [Serializable]<br />&nbsp;&nbsp;&nbsp; public class MenuInfo : ReadOnlyBase&lt;MenuInfo&gt;<br />&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public MenuInfo()<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br /><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br /><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public static readonly PropertyInfo&lt;int&gt; ClassIdProperty =<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; RegisterProperty&lt;int&gt;(t =&gt; t.ClassId);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public int ClassId<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; get { return GetProperty(ClassIdProperty); }<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; private set { LoadProperty(ClassIdProperty, value); }<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br /><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public static readonly PropertyInfo&lt;string&gt; ClassNameProperty =<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; RegisterProperty&lt;string&gt;(t =&gt; t.ClassName);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public string ClassName<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; get { return GetProperty(ClassNameProperty); }<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; private set { LoadProperty(ClassNameProperty, value); }<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br /><br />#if !SILVERLIGHT<br /><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; private void Child_Fetch(System.Data.IDataReader data)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ClassId = data.GetInt32(data.GetOrdinal(&quot;ClassId&quot;));<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ClassName = data.GetString(data.GetOrdinal(&quot;ClassName&quot;));<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br /><br />#endif<br />&nbsp;&nbsp;&nbsp; } // end of class<br />}</p>
+<p>&nbsp;</p>
+<p>What do i miss in this code ??</p>
+<p>&nbsp;</p>
+<p>thanks a lot</p>
+<p>stefanus</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Thursday, July 19, 2012</h2><p>What we do know is that <em>some </em>object that is being serialized by the data portal does not have&nbsp;a public default constructor.</p>
+<p>Clearly we don&#39;t know <em>what</em> object is missing that constructor. So a process of elimination is required.</p>
+<ol>
+<li>The data portal will serialize your object graph. That includes your root, parent, and child objects that make up the object graph. (It will also serialize any objects referenced by objects in your object graph, if those references are held in managed properties)</li>
+<li>It will also serialize your principal and identity objects.</li>
+<li>It will also serialize any objects in ApplicationContext.ClientContext and ApplicationContext.GlobalContext.</li>
+<li>It will also serialize any criteria object you pass to BeginCreate, BeginFetch, or BeginDelete.</li>
+</ol>
+<p>&nbsp;I would recommend building a small test app that avoids using as many of these types of object as possible. Start small, and keep adding more complexity until you discover the type of object you&#39;ve implemented that is missing a public default constructor.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, July 19, 2012</h2><p>Another way to help isolate the problem is to use the Clone method on your root object.</p>
+<p>The Clone method (on Silverlight) will use the MobileFormatter to serialize and deserialize the object graph. But it won&#39;t try to serialize principal, identity, criteria, or context objects. It will only serialize the object graph. That should help limit the scope of the serialization so you can easily find out if the issue is in the business object graph or somewhere else.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

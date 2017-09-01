@@ -1,0 +1,15 @@
+<html><header><title>DataPortal.Create DataPortal.Fetch &quot;Failed&quot;</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>DataPortal.Create DataPortal.Fetch &quot;Failed&quot;</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9283.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>vbbeta posted on Monday, July 26, 2010</h2><p>Hi everyone i have this strange problem when I&#39;m trying to call in the UC the new instance or to fetch a account etc I&#39;m getting this exc doesn&#39;t matter if I&#39;m calling Create or fetch, its getting more odd when changing the XYZ_DataBinding.DataSource = something else from what I&#39;m looking to get its working just fine</p>
+<p>For example if doing mAccount = Account.NewAccount then im getting the exception else if I&#39;m using mAccount = Customer.NewCustomer or whatever its working perfect i have debuged this for hours i cant find a solution to this problem &quot;can someone please help with this&quot;......</p>
+<p style="padding-left:30px;">
+<p style="padding-left:30px;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"></span></span></span><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"></span></span></span></p>
+</p>
+<p>My Code is as follow</p>
+<p>Public Shared Function Account as account</p>
+<p>If Not CanAddObjec Then....</p>
+<p>End IF </p>
+<p>Return DataPortal.Create(Of Account)()</p>
+<p>End Function</p>
+<p>&nbsp;</p>
+<p>good luck happy&nbsp; coding</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Tuesday, July 27, 2010</h2><p>You need to look at the InnerException to see what&#39;s actually going on.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>vbbeta replied on Tuesday, July 27, 2010</h2><p>I know that i have to do this. </p>
+<p>And guess what i have done this. and the exception was that i have to create a instance of a object &quot;that i have to use the &#39;new&#39; KeyWord in order to get this work&quot; but i have no idea where i have to put in this &#39;new keyword&#39;, and as i mention before is that when i change the name of my data binding&nbsp;source to another source (class(eg instead of Account i use Customer))&nbsp;everything works fine, </p>
+<p>More than&nbsp;this is that this is that this pecific&nbsp;class was used already used&nbsp;in a other project and i didn`t have any problems with it (i didn&#39;t made any changes to this when i switch it to this project only in the child fetch or save which wasn&#39;t used yet)</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

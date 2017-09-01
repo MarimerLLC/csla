@@ -1,0 +1,63 @@
+<html><header><title>TypeLoadException with BusinessListBase</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>TypeLoadException with BusinessListBase</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/1407.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>jwooley posted on Thursday, October 05, 2006</h2><P>There appears to be a problem with the VS IDE/debugger when watching new BusinessListBase objects. Simply creating a new BLB, the debugger will internally report the following value for NewProjectResources and GetProjectResources: "Count = Exception of type: '{System.TypeLoadException}' occurred. "</P>
+<P>This was previously identified in the following thread <A HREF="/forums/thread/4748.aspx">http://forums.lhotka.net/forums/thread/4748.aspx</A>. Since the thread title refered to ActiveObjects, I'm not sure if Rocky noticed the issue at that time. I have confirmed it is an issue with PTracker 2.0.3 and 2.1 at this point.</P>
+<P>To reproduce the issue, put a break point on the ProjectResources.NewProjectResources and watch what the debugger windows report. Note: If you call the .Count method on the collection, it returns the correct value and the WinTracker appears to work fine and ignores the "exception". Additionally, turning on all thrown exceptions, including TypeLoadException doesn't catch it, so I suspect the issue is something internal to the .Net framework which it is swallowing and the VS IDE is not reporting on.</P>
+<P>I would be interested in others checking and confirming the behavior.</P>
+<P>Jim Wooley<BR><A href="http://devauthority.com/blogs/jwooley">http://devauthority.com/blogs/jwooley</A></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, October 05, 2006</h2>Can you try this with a normal BindingList&lt;T&gt; to see if it happens there? That'd help establish whether it is something in CSLA or just in .NET.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jwooley replied on Friday, October 06, 2006</h2>I tried the below code and am not seeing the same behavior natively with the BindingList&lt;T&gt;. It may be something in CSLA. I'm concerned with the issue of the exception not being catchable. 
+<P><SPAN><FONT color=#000000></FONT></SPAN>&nbsp;</P><SPAN>
+<DIV>
+<P><SPAN>Public</SPAN> <SPAN>Class</SPAN> GenericClass(<SPAN>Of</SPAN> T)</P>
+<P>&nbsp;&nbsp;&nbsp; <SPAN>Protected</SPAN> <SPAN>Sub</SPAN> <SPAN>New</SPAN>()</P>
+<P>&nbsp;</P>
+<P>&nbsp;&nbsp;&nbsp; <SPAN>End</SPAN> <SPAN>Sub</SPAN></P>
+<P>&nbsp;&nbsp;&nbsp; <SPAN>Private</SPAN> _T <SPAN>As</SPAN> T</P>
+<P>&nbsp;&nbsp;&nbsp; <SPAN>Public</SPAN> <SPAN>Property</SPAN> Bar() <SPAN>As</SPAN> T</P>
+<P>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <SPAN>Get</SPAN></P>
+<P>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <SPAN>Return</SPAN> _T</P>
+<P>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <SPAN>End</SPAN> <SPAN>Get</SPAN></P>
+<P>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <SPAN>Set</SPAN>(<SPAN>ByVal</SPAN> value <SPAN>As</SPAN> T)</P>
+<P>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; _T = value</P>
+<P>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <SPAN>End</SPAN> <SPAN>Set</SPAN></P>
+<P>&nbsp;&nbsp;&nbsp; <SPAN>End</SPAN> <SPAN>Property</SPAN></P>
+<P>&nbsp;</P>
+<P><SPAN>End</SPAN> <SPAN>Class</SPAN></P>
+<P>&nbsp;</P>
+<P><SPAN>Public</SPAN> <SPAN>Class</SPAN> Class1</P>
+<P>&nbsp;&nbsp;&nbsp; <SPAN>Inherits</SPAN> GenericClass(<SPAN>Of</SPAN> <SPAN>String</SPAN>)</P>
+<P>&nbsp;</P>
+<P>&nbsp;&nbsp;&nbsp; <SPAN>Private</SPAN> _Ball <SPAN>As</SPAN> <SPAN>String</SPAN> = <SPAN>"Foo"</SPAN></P>
+<P>&nbsp;&nbsp;&nbsp; <SPAN>Private</SPAN> <SPAN>Sub</SPAN> <SPAN>New</SPAN>()</P>
+<P>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <SPAN>MyBase</SPAN>.New()</P>
+<P>&nbsp;&nbsp;&nbsp; <SPAN>End</SPAN> <SPAN>Sub</SPAN></P>
+<P>&nbsp;</P>
+<P>&nbsp;&nbsp;&nbsp; <SPAN>Public</SPAN> <SPAN>Shared</SPAN> <SPAN>Function</SPAN> GetClass() <SPAN>As</SPAN> Class1</P>
+<P>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <SPAN>Return</SPAN> <SPAN>New</SPAN> Class1</P>
+<P>&nbsp;&nbsp;&nbsp; <SPAN>End</SPAN> <SPAN>Function</SPAN></P>
+<P>&nbsp;</P>
+<P>&nbsp;&nbsp;&nbsp; <SPAN>Public</SPAN> <SPAN>Property</SPAN> Ball() <SPAN>As</SPAN> <SPAN>String</SPAN></P>
+<P>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <SPAN>Get</SPAN></P>
+<P>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <SPAN>Return</SPAN> _Ball</P>
+<P>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <SPAN>End</SPAN> <SPAN>Get</SPAN></P>
+<P>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <SPAN>Set</SPAN>(<SPAN>ByVal</SPAN> value <SPAN>As</SPAN> <SPAN>String</SPAN>)</P>
+<P>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; _Ball = value</P>
+<P>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <SPAN>End</SPAN> <SPAN>Set</SPAN></P>
+<P>&nbsp;&nbsp;&nbsp; <SPAN>End</SPAN> <SPAN>Property</SPAN></P>
+<P><SPAN>End</SPAN> <SPAN>Class</SPAN></P>
+<P>&nbsp;</P>
+<P><SPAN>Public</SPAN> <SPAN>Class</SPAN> ClassList</P>
+<P>&nbsp;&nbsp;&nbsp; <SPAN>Inherits</SPAN> System.ComponentModel.BindingList(<SPAN>Of</SPAN> Class1)</P>
+<P>&nbsp;&nbsp;&nbsp; <SPAN>Private</SPAN> <SPAN>Sub</SPAN> <SPAN>New</SPAN>()</P>
+<P>&nbsp;</P>
+<P>&nbsp;&nbsp;&nbsp; <SPAN>End</SPAN> <SPAN>Sub</SPAN></P>
+<P>&nbsp;</P>
+<P>&nbsp;&nbsp;&nbsp; <SPAN>Protected</SPAN> <SPAN>Overrides</SPAN> <SPAN>Function</SPAN> AddNewCore() <SPAN>As</SPAN> <SPAN>Object</SPAN></P>
+<P>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <SPAN>Dim</SPAN> child <SPAN>As</SPAN> Class1 = Class1.GetClass</P>
+<P>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <SPAN>Me</SPAN>.Add(child)</P>
+<P>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <SPAN>Return</SPAN> child</P>
+<P>&nbsp;&nbsp;&nbsp; <SPAN>End</SPAN> <SPAN>Function</SPAN></P>
+<P>&nbsp;</P>
+<P>&nbsp;&nbsp;&nbsp; <SPAN>Public</SPAN> <SPAN>Shared</SPAN> <SPAN>Function</SPAN> GetList() <SPAN>As</SPAN> ClassList</P>
+<P>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <SPAN>Return</SPAN> <SPAN>New</SPAN> ClassList</P>
+<P>&nbsp;&nbsp;&nbsp; <SPAN>End</SPAN> <SPAN>Function</SPAN></P>
+<P><SPAN>End</SPAN> <SPAN>Class</SPAN></P></DIV></SPAN>
+<DIV></DIV></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>swegele replied on Wednesday, February 14, 2007</h2><P>(Bumping) - While this isn't a critical issue because it just seems to be with QuickWatch and Watch ...the code actually works.</P>
+<P>But I won't say it is a non-issue because I have become quite accustomed to my QuickWatch during development and debugging :-)</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

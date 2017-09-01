@@ -1,0 +1,13 @@
+<html><header><title>Child objects and XML data update problem</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Child objects and XML data update problem</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/12099.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>j0552 posted on Wednesday, July 31, 2013</h2><p><span style="font-size:small;">
+<p>Hi</p>
+<p>I have an editable root object with a child list. The children are populated from xml data. When I hit save I need to rebuild the xml data from the children. The problem I&#39;m having is with adding back items where the children are not dirty. </p>
+<p>I can call MarkDirty in Child_Fetch but this makes the root dirty even if nothing else has changed.</p>
+<p>I could build the whole xml from the root by looping through the child list but this is not very elegant either.</p>
+<p>This seem like it could be a common problem. Can you tell me the best CSLA way to deal with this?</p>
+<p>Thanks</p>
+<p>Andrew</p>
+</span></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Wednesday, July 31, 2013</h2><p>I&acute;m not quite sure I understand what the problem is?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>skagen00 replied on Wednesday, July 31, 2013</h2><p>I had a problem similar to this.</p>
+<p>Basically a child&#39;s overall source was XML and needed to be persisted back as such.&nbsp; I wanted to manipulate aspects of the XML and it was a legacy piece of XML containing settings and such that I have to preserve and don&#39;t need to understand.</p>
+<p>What I ended up doing is to keep not just the properties that came forth from that XML as managed properties of the child but I also kept the XML string as a managed property of the child.&nbsp; It didn&#39;t add that much weight to my child objects in my case.</p>
+<p>With PropertyHasChanged I would capture changes to the various&nbsp;properties and just manipulate the appropriate aspects of the XML.&nbsp; When the business object was saved, I had the XML.</p>
+<p>Basically I kept an internal mapping of PropertyInfo to where it went in the XML.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

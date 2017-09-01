@@ -1,0 +1,23 @@
+<html><header><title>How to upgrade from CSLA 3.6.3 to the latest stable version</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>How to upgrade from CSLA 3.6.3 to the latest stable version</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10810.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>stiv posted on Tuesday, October 25, 2011</h2><p>Hello,</p>
+<p>I have an application written with CSLA 3.6.3, the application has about 200 objects.</p>
+<p>Do i have to write all the objects again (built the entire application) to upgrade to&nbsp;the latest CSLA stable version or is there any way to do it automatically?</p>
+<p>Any help will be appreciated, thank in advance,</p>
+<p>&nbsp;</p>
+<p>Stiv</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, October 25, 2011</h2><p>Getting to 3.8.4 should require relatively little effort.</p>
+<p>Getting to 4.1 is harder, because CSLA 4 introduced a new rules engine, and that requires changing business, validation, and authorization rule code. </p>
+<p>If your application is being created using code generation, it might be as simple as getting or creating new code gen templates. Otherwise these are code changes, so I don&#39;t know how you&#39;d automate them.</p>
+<p>The FAQ has links to other information about versions and upgrading:</p>
+<p><a href="http://www.lhotka.net/cslanet/faq/CslaVersions.ashx">http://www.lhotka.net/cslanet/faq/CslaVersions.ashx</a></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Thursday, October 27, 2011</h2><ul>
+<li>Do you have to write all the objects again - NO.</li>
+<li>Is there a way to do this automatically - NO.</li>
+</ul>
+<p>In addition to the resources on the FAQ page: </p>
+<p>1. I strongly recommend to use intermediate base classes. This will allow you to add f.ex RegisterProperty extensions that do not use Lambdas.<br />2. As a total you should be prepared to rewrite or change to use standard rules (and there&#39;s a nice rule library available at <a href="http://go.microsoft.com/fwlink/?linkid=84795&amp;clcid=409">http://cslagenfork.codeplex.com</a>)&nbsp; <br />3. DataAccess code and Object factories should only require a few tweaks. </p>
+<p>So - you should be able to keep the property declarations and data access code. Authz/BusinessRules should be rewritten to classes and use the new features -&nbsp; especially async rules is much easier now. </p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

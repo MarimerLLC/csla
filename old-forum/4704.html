@@ -1,0 +1,138 @@
+<html><header><title>strange validation problem</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>strange validation problem</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4704.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>pillesoft posted on Thursday, April 17, 2008</h2>Dear All,<br><br>i have a strange behavior in one of my winforms.<br>the textbox is bound to a BO property.<br>there are two validation rules for this property:<br>StringRequired, and MaxLengthRuleArgs<br>these are working well, but sometimes the errorprovider displays the&nbsp; following message:<br>"Index 0 does not have a value."<br><br>in this case i cannot loose focus from the textbox, the only chance to close the complete application.<br><br>where this message comes? how to get of rid?<br>using csla 3.0.3<br><br>thank you<br>Ivan<br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Marjon1 replied on Thursday, April 17, 2008</h2><font size="3" face="Arial">Ivan,<br><br>In your setter methods are you using the CanWriteProperty() instead of CanWriteProperty("PropertyName")?&nbsp; <br><br>This is a known issue with the CanWriteProperty() function and the reason is has been made obsolete. It's something to do with the way the stack trace works. <br><br>This behaviour wouldn't happen in a debug build, but would in a release build. <br>That was the behavior that I experienced anyway. Hopefully this helps.<br><br>Marjon<br></font></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>pillesoft replied on Thursday, April 17, 2008</h2>thank you Marjon,<br><br>hm, i thought it is related to the Validation.<br>of course i google for this, but found only DataGridView related messages.<br><br>actualy i use CanWriteProperty(true) in everywhere of my BO properties. shall i change it to CanWriteProperty(PROPERTY)?<br>&nbsp;<br>i updated to 3.0.4.<br>tried to catch in the debug without success.<br>the problem is that this message doesn't come always. i don't have a concrete scenario.<br><br>Ivan<br><br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Thursday, April 17, 2008</h2><P>Yes - definitely change the property to use the string name (plus any other parameters you may require.) Avoid the deprecated version which uses the stack trace - it is unreliable in some scenarios.</P>
+<P>Joe</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>pillesoft replied on Monday, April 21, 2008</h2>Dear All,<br><br>thank you i'll change them.<br>however, how i know which class, method is deprecated? cause the ProjectTracker in 3.0.4 is still uses CanWriteProperty(true) call.<br><br>Ivan<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Monday, April 21, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>They were deprecated in 3.5<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Senior Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> pillesoft
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Monday, April 21, 2008 8:07 AM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] strange validation problem<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Dear All,<br>
+<br>
+thank you i'll change them.<br>
+however, how i know which class, method is deprecated? cause the ProjectTracker
+in 3.0.4 is still uses CanWriteProperty(this) call.<br>
+<br>
+Ivan<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>pillesoft replied on Monday, April 21, 2008</h2>one more question:<br>shall i change the CanReadProperty(true) methods to CanReadProperty(PROPERTY) methods?<br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Monday, April 21, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>You should.&nbsp; Both CanRead and CanWrite without property name
+were deprecated in 3.5.&nbsp; Just a small note, replacement for CanReadProperty(true)
+is CanReadProperty(PropertyName, true).&nbsp; Second parameter is indicate the
+framework should throw an exception if authorization check fails.&nbsp; Same applies
+to CanWrite<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Senior Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> pillesoft
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Monday, April 21, 2008 8:09 AM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] strange validation problem<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>one more question:<br>
+shall i change the CanReadProperty(true) methods to CanReadProperty(PROPERTY)
+methods?<br>
+<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>pillesoft replied on Monday, April 21, 2008</h2>thank you <br>i'll replace everywhere<br><br>Ivan<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

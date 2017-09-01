@@ -1,0 +1,8 @@
+<html><header><title>Validate children against property of parent</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Validate children against property of parent</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11547.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>shawndewet posted on Wednesday, August 22, 2012</h2><p><span>I have a parent with a budget property set to x. This parent can have any number of child detail objects. I need to implement a validation rule on the parent that is valid only when the sum of the budget property of all the children add up the the value of the budget property defined on the parent. What is the best approach to implement this?</span></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Wednesday, August 22, 2012</h2><p>I&acute;d rather rephrase this into How to valide a parent property when child property is changed.</p>
+<p>And that would be done by:</p>
+<p>&nbsp;</p>
+<ul>
+<li>add hook into ChildChanged (actually I prefer to override OnChildChanged)</li>
+<li>and call PropertyHasChanged on BudgetProperty to retrigger validation and raise OnPropertyChanged to notify UI.</li>
+</ul>
+<p>&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

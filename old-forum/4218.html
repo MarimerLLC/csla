@@ -1,0 +1,222 @@
+<html><header><title>Really stumped with binding &amp; thread</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Really stumped with binding &amp; thread</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4218.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>jh72i posted on Wednesday, January 23, 2008</h2><P>Folks, completely stumped with a databinding issue since I moved to .net20.....</P>
+<P>Story is that I bind UI controls&nbsp;to a properties of business objects all over my UI.&nbsp; When the property is changed on the object it raises the PropertyChanged event, etc. but because when the object is changed on another thread I get a "Cross-thread operation not valid".<BR>Now, the thing is that I do no processing of the control myself - its all down to databinding.&nbsp; however, if I do hook a format event I can sucessfully change the forecolor of the control based on its value but the value itself never makes it to the control.&nbsp; The other thing is that this all worked fine in 1.1.&nbsp; The stack trace is:</P>
+<P><FONT face="Courier New" size=1>System.InvalidOperationException was unhandled by user code<BR>&nbsp; Message="Cross-thread operation not valid: Control 'lblNetTotal' accessed from a thread other than the thread it was created on."<BR>&nbsp; Source="System"<BR>&nbsp; StackTrace:<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at System.ComponentModel.ReflectPropertyDescriptor.SetValue(Object component, Object value)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at System.Windows.Forms.Binding.SetPropValue(Object value)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at System.Windows.Forms.Binding.PushData(Boolean force)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at System.Windows.Forms.BindingManagerBase.PushData(Boolean&amp; success)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at System.Windows.Forms.BindingManagerBase.PushData()<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at System.Windows.Forms.PropertyManager.OnCurrentChanged(EventArgs ea)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at System.Windows.Forms.BindToObject.PropValueChanged(Object sender, EventArgs e)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at System.EventHandler.Invoke(Object sender, EventArgs e)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at System.ComponentModel.PropertyDescriptor.OnValueChanged(Object component, EventArgs e)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at System.ComponentModel.ReflectPropertyDescriptor.OnValueChanged(Object component, EventArgs e)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at System.ComponentModel.ReflectPropertyDescriptor.OnINotifyPropertyChanged(Object component, PropertyChangedEventArgs e)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at System.ComponentModel.PropertyChangedEventHandler.Invoke(Object sender, PropertyChangedEventArgs e)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at Csla.Core.BindableBase.OnPropertyChanged(String propertyName) in C:\_LRT\src\main\myCompany.Framework\CSLA\Csla\Core\BindableBase.cs:line 101<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at Csla.Core.BindableBase.OnUnknownPropertyChanged() in C:\_LRT\src\main\myCompany.Framework\CSLA\Csla\Core\BindableBase.cs:line 84<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at myCompany.Business.xxx.FundingPosition.ReCalculateTotals() in C:\_LRT\src\main\myCompany.Business.xxx\Funding\Position\FundingPosition.cs:line 424<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at myCompany.Business.xxx.FundingPosition._fundingPositionItems_ListChanged(Object sender, ListChangedEventArgs e) in C:\_LRT\src\main\myCompany.Business.xxx\Funding\Position\FundingPosition.cs:line 449<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at System.ComponentModel.ListChangedEventHandler.Invoke(Object sender, ListChangedEventArgs e)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at CSLA.Core.BindableCollectionBase.OnListChanged(ListChangedEventArgs e) in C:\_LRT\src\main\myCompany.Framework\CSLA.Core.BindableBase\BindableCollectionBase.cs:line 102<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at myCompany.Business.BusinessCollectionBaseEx.OnListChanged(ListChangedEventArgs e) in C:\_LRT\src\main\myCompany.Business\BusinessCollectionBaseEx.cs:line 2118<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at myCompany.Business.xxx.FundingPositionItems.OnListChanged(ListChangedEventArgs e) in C:\_LRT\src\main\myCompany.Business.xxx\Funding\Position\FundingPositionItems.cs:line 75<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at CSLA.Core.BindableCollectionBase.OnSetComplete(Int32 index, Object oldValue, Object newValue) in C:\_LRT\src\main\myCompany.Framework\CSLA.Core.BindableBase\BindableCollectionBase.cs:line 144<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at myCompany.Business.BusinessCollectionBaseEx.OnSetComplete(Int32 index, Object oldValue, Object newValue) in C:\_LRT\src\main\myCompany.Business\BusinessCollectionBaseEx.cs:line 2450<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at System.Collections.CollectionBase.System.Collections.IList.set_Item(Int32 index, Object value)<BR></FONT></P><FONT size=1>
+<P></FONT><FONT color=#0000ff size=1><FONT color=#000000>From call</FONT>: if</FONT><FONT size=1> (_nonSerializableHandlers != </FONT><FONT color=#0000ff size=1>null</FONT><FONT size=1>) _nonSerializableHandlers.Invoke(</FONT><FONT color=#0000ff size=1>this</FONT><FONT size=1>, </FONT><FONT color=#0000ff size=1>new</FONT><FONT size=1> </FONT><FONT color=#008080 size=1>PropertyChangedEventArgs</FONT><FONT size=1>(propertyName));</P></FONT>
+<P>After a few days of looking I am really struggling at this, pretty early hurdle in our translation to .Net20.</P>
+<P>Any ideas at all would be welcome - i literally cannot find anyone experiencing the same problem.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Wednesday, January 23, 2008</h2>The problem is that this other thread is changing the BO, which then fires the property changed event.&nbsp;&nbsp; It looks like databinding isn't checking if InvokeRequired is true. <br><br>BO's aren't thread safe by design anyway, so I'd not update the properties of the BO on a different thread, unless you've unbound the object first.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, January 23, 2008</h2><P>So many people were doing things wrong with threading in .NET 1.x that Microsoft added this exception in .NET 2.0 to help you identify when you are doing something wrong. (rather than silently corrupting Windows Forms until your app crashed...) This is why you are seeing the change from 1.1 to 2.0 - they are helping you identify a problem you've always had.</P>
+<P>Windows Forms is not threadsafe. Interacting with UI elements from any thread but the UI thread (typically your primary thread) is not supported.</P>
+<P>Andy is right, if you are going to interact with your objects on a background thread, you must first unbind them so their change events aren't handled by data binding, because that'll cause the issue you are seeing.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jh72i replied on Wednesday, January 23, 2008</h2><P>Thanks for those replies.&nbsp; Now I truly am stumped - stunned even.&nbsp; So you are telling me that it is completely wrong to have 1 thread bind to a datasource and have another thread update it...and expect databinding to reflect the changes via listchanged/etc. events in the first thread.&nbsp; I'd have to somehow communicate to the 1st thread that it should unbind and later rebind!?!?!</P>
+<P>Why does this work in 1.1 and why does it still work with grids, etc.?&nbsp; But more importantly HOW do you suggest&nbsp;I safely have a number of threads interact with a single datasource while having&nbsp;changes reflected on screen.</P>
+<P>Surely many, many people there are in this situation?<BR></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Wednesday, January 23, 2008</h2><BLOCKQUOTE><div><img src="/Themes/basicblue/images/icon-quote.gif"> <strong>jh72i:</strong></div><div>So you are telling me that it is completely wrong to have 1 thread bind
+to a datasource and have another thread update it...and expect
+databinding to reflect the changes via listchanged/etc. events in the
+first thread.&nbsp; I'd have to somehow communicate to the 1st thread that
+it should unbind and later rebind!?!?!</div></BLOCKQUOTE><br><br>Yes,
+exactly.&nbsp; Your code is wrong because it interacts with Windows Forms
+components on different threads, and Windows Forms is NOT thread safe.&nbsp;
+As Rocky said, this was such a common mistake that was bringing
+applications down that Windows Forms components now have a thread
+affinity set, and any attempts to do anything other than InvokeRequired
+or Invoke will cause this exception.<br><br><BLOCKQUOTE><div><img src="/Themes/basicblue/images/icon-quote.gif"> <strong>jh72i:</strong></div><div>Why does this work in 1.1 and why does it still work with grids, etc.?&nbsp;
+But more importantly HOW do you suggest&nbsp;I safely have a number of
+threads interact with a single datasource while having&nbsp;changes
+reflected on screen.</div></BLOCKQUOTE><br><br>It
+worked in 1.1 because Windows Forms didn't enforce thread affinity.&nbsp; It
+seems like you'll need to pass messages between threads to the UI
+thread, which will actually update the BO.&nbsp; <br><br><BLOCKQUOTE><div><img src="/Themes/basicblue/images/icon-quote.gif"> <strong>jh72i:</strong></div><div>Surely many, many people there are in this situation?</div></BLOCKQUOTE><br><br>Well..
+yes and no.&nbsp; Many people, including myself, hit the exception you did.&nbsp;
+I corrected it by ensuring that I checked InvokeRequired before
+interacting with any Windows Forms controls.&nbsp; In your case, this isn't
+possible, so you'll need to figure a way to syncronize things so that
+only the UI thread is updating the BO, or you'll need to unbind your BO
+before letting the threads loose.<br><br>I'm curious; have you tried
+your application on framework 1.1 on a dual core machine?&nbsp; It wasn't
+until I was on a dual core machine that I started having my application
+crash.&nbsp;&nbsp; I would try it on both a single and dual (or more) core
+workstation... just setup a Csla BO, data bind it, and let your threads
+loose (keep them updating the BO randomly).&nbsp; I'm willing to bet that
+given enough time / threads, your application will crash in 1.1<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jh72i replied on Wednesday, January 23, 2008</h2><DIV>Thanks again for that.&nbsp;</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>I think everything I am doing is fine - it is just that the events need to be raised on the UI thread rather that the thread that is making the changes.&nbsp; Or&nbsp;delegate to the UI thread the work of applying the changes the other thread want to make.</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>Got to figure out how to do that is all :)&nbsp; I could walk the multicastdelegates via the invocation list or something...i have to give this some serious thought now.&nbsp; My apps aren't that complex really - they hook up to communication channels and listen out for changes to other instances of themselves - when a change occurs they get a notification (on the troublesome background thread/s) and upto now I actually update the contents of the object on that thread leaving the listchanged/etc. events to work their magic.&nbsp; If i hook to a listchanged event from the UI i always check for invocation required.&nbsp; As you point out sometimes I simply don't have any control over this.&nbsp; </DIV>
+<DIV>&nbsp;</DIV>
+<DIV>Again, thanks for the input - as i say i have to give this much thought.</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>&nbsp;</DIV></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, January 23, 2008</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>jh72i:</strong></div><div>
+<P>Why does this work in 1.1 and why does it still work with grids, etc.?&nbsp; But more importantly HOW do you suggest&nbsp;I safely have a number of threads interact with a single datasource while having&nbsp;changes reflected on screen.</P>
+<P></div></BLOCKQUOTE></P>
+<P>It didn't really work. Threading bugs are hard sometimes hard to see, and even harder to fix. There are numerous times when I've had threading bugs in WinForms and didn't know about them. </P>
+<P>Users would sometimes see erratic results (data appearing/disappearing without reason), but users often don't complain - they figure it was something they did, or gremlins in the machine or whatever.</P>
+<P>It is less common for WinForms to actually crash, though that can happen too. But more likely is just that the UI doesn't quite show the right data, and often a refresh will work because it is all about thread timing after all.</P>
+<P>Get on a dual or quad core machine though, and the issues get worse really fast!</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Wednesday, January 23, 2008</h2><BLOCKQUOTE><div><img src="/Themes/basicblue/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div>Users would sometimes see erratic results (data appearing/disappearing without reason), but users often don't complain - they figure it was something they did, or gremlins in the machine or whatever.</div></BLOCKQUOTE><br><br>Indeed.&nbsp; I have users that usually tell me about problems, but there were a few issues that were causing them major headaches for weeks, and they never said a word to me.&nbsp;&nbsp; The fix for the problem took me only a few minutes too.. <br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rlarno replied on Wednesday, January 23, 2008</h2><P>Not that this currently helps your problem, but in .NET 1.1; it did not work either, it might have appeared to work, but there might have been mysterious behaviours because of calling control properties from a different thread than the one the control was created on.</P>
+<P>In .NET 2.0 they have added some checks in all of the controls to detect these incorrect cross-thread calls. (note: you can switch this off using&nbsp;<FONT face="Courier New">Form</FONT><FONT size=2><FONT face="Courier New">.CheckForIllegalCrossThreadCalls</FONT></FONT>&nbsp;but I do <STRONG>not</STRONG> recommend this)</P>
+<P>I'm not sure if anyone has already solved something like this, however there would be 2 options (in theory):</P>
+<P>1) Before updating the properties of the BO, use a reference to the form to query the InvokeRequired property, and if required use Invoke or BeginInvoke to call the method that will update the properties on the BO. Be aware that you will be switching threads and that the method responsible for updating the BO properties is thread-aware. (i.e. during this call, you should not allow any other thread to modify the BO or read state from the BO)</P>
+<P>2) Find a way to intercept the databinding events and have these first check the Control.InvokeRequired property, then use Invoke or BeginInvoke to call the eventhandler.</P>
+<P>Rudi</P>
+<P><FONT color=#2b91af size=2>&nbsp;</P>
+<P></FONT><FONT size=2>&nbsp;</P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jh72i replied on Wednesday, January 23, 2008</h2><P>Thanks Rudi.</P>
+<P>1. surely this is an absolute no-no - having a business object hold a reference to a UI</P>
+<P>2. it looks to me that the BindToObject class does not check this property.&nbsp; Everywhere in our own UI code we check to before updating the UI but this this automatic binding it is out of our hands.</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>lawrencek replied on Thursday, January 24, 2008</h2><P>Would something like this be workable it was from the following tread <A href="http://forums.microsoft.com/MSDN/ShowPost.aspx?PostID=65024&amp;SiteID=1">http://forums.microsoft.com/MSDN/ShowPost.aspx?PostID=65024&amp;SiteID=1</A></P>
+<BLOCKQUOTE dir=ltr>
+<P><FONT face="Courier New" size=2>You can use the AsyncOperationManager to marshall the call back to the UI thread.&nbsp; The following short sample shows how to do this for a ListChanged handler, but the same applies for a PropertyChanged handler:</FONT></P>
+<P><FONT face="Courier New" size=2>private&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; AsyncOperation&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _oper = null;</FONT></P>
+<P><FONT face="Courier New" size=2>Initialize it in your constructor:<BR>&nbsp;<BR>_oper = AsyncOperationManager.CreateOperation(null);<BR>&nbsp;<BR>Implement your PropertyChanged handler (sample below shows ListChanged - but this should give you the idea):<BR>&nbsp;<BR>private void PostCallback(object state)<BR>{<BR>&nbsp;&nbsp;&nbsp; /* Make sure we fire ListChanged on the UI thread */<BR>&nbsp;&nbsp;&nbsp; ListChangedEventArgs args = (state as ListChangedEventArgs);<BR>&nbsp;&nbsp;&nbsp; base.OnListChanged(args);<BR>} </FONT></P>
+<P><FONT face="Courier New" size=2>protected override void OnListChanged(System.ComponentModel.ListChangedEventArgs e)<BR>{<BR>&nbsp;&nbsp;&nbsp; if (!_suspend)<BR>&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /* We need to marshall changes back to the UI&nbsp; */<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _oper.Post(new SendOrPostCallback(PostCallback), e);<BR>&nbsp;&nbsp;&nbsp; }<BR>}<BR></FONT>&nbsp;</P></BLOCKQUOTE>
+<P>I have also run into this issue and ended up just not threading b/c I really did not need it.&nbsp; But I saved this for a back burner idea if I ever had the time.&nbsp; I was thinking it could be added to the framework but I have not really tried it.</P>
+<P><BR>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, January 24, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Conceptually yes.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>The challenge is that you aren&#8217;t the one who handles the
+events &#8211; the bindingsource control handles the events.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>It is also important to consider that the background thread
+could still be changing the object when the UI is trying to refresh its display
+due to the event (even if you somehow make the event switch to the UI thread).
+The result would be two threads mucking around in the same object at the same
+time &#8211; and that would lead to some &#8220;interesting&#8221; results
+(read: bad).<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>What you need to do is arrive at a model where only one thread
+is talking to a given object graph (not just one object &#8211; but the whole
+graph &#8211; a root and all its child objects) at a time.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>The WPF dataprovider does this nicely. The dataprovider can be
+told to do an async data load. In this case it loads the object on a background
+thread, and notifies the UI once the entire load is complete. At that point &#8220;ownership&#8221;
+of the object transfers from that background thread to the UI thread so WPF can
+safely do its data binding.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>You can do the same thing in Windows Forms using the
+backgroundworker component. Call the BW to load the object, then in the work
+completed event handler (which is on the UI thread) bind it to the UI. For
+updates, unbind the object from the UI, then call the BW to save the object,
+and rebind it in the work completed event handler.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>But I sense that what people are trying to do are incremental
+load/save operations, where the UI does partial refreshes as the load/save
+occurs. That&#8217;s really hard! Especially in an n-tier scenario. The only
+real solution is to do a series of data portal calls, one for each chunk of
+data. Then merge the data from the resulting business objects into another set
+of objects that are owned by the UI.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>In other words, the background threads never interact with the &#8220;real&#8221;
+objects. They have their own objects. The UI thread is then responsible for two
+things: merging data from the background threads into the &#8220;real&#8221;
+objects, and data binding to the real objects.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> lawrencek
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Thursday, January 24, 2008 8:35 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] Really stumped with binding &amp; thread<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Would something like this be workable it was from the following tread <a href="http://forums.microsoft.com/MSDN/ShowPost.aspx?PostID=65024&amp;SiteID=1">http://forums.microsoft.com/MSDN/ShowPost.aspx?PostID=65024&amp;SiteID=1</a><o:p></o:p></p>
+
+<blockquote>
+
+<p><span>You can use the
+AsyncOperationManager to marshall the call back to the UI thread.&nbsp; The
+following short sample shows how to do this for a ListChanged handler, but the
+same applies for a PropertyChanged handler:</span><o:p></o:p></p>
+
+<p><span>private&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+AsyncOperation&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _oper = null;</span><o:p></o:p></p>
+
+<p><span>Initialize it in your
+constructor:<br>
+&nbsp;<br>
+_oper = AsyncOperationManager.CreateOperation(null);<br>
+&nbsp;<br>
+Implement your PropertyChanged handler (sample below shows ListChanged - but
+this should give you the idea):<br>
+&nbsp;<br>
+private void PostCallback(object state)<br>
+{<br>
+&nbsp;&nbsp;&nbsp; /* Make sure we fire ListChanged on the UI thread */<br>
+&nbsp;&nbsp;&nbsp; ListChangedEventArgs args = (state as ListChangedEventArgs);<br>
+&nbsp;&nbsp;&nbsp; base.OnListChanged(args);<br>
+} </span><o:p></o:p></p>
+
+<p><span>protected override
+void OnListChanged(System.ComponentModel.ListChangedEventArgs e)<br>
+{<br>
+&nbsp;&nbsp;&nbsp; if (!_suspend)<br>
+&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /* We need to marshall changes back
+to the UI&nbsp; */<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _oper.Post(new
+SendOrPostCallback(PostCallback), e);<br>
+&nbsp;&nbsp;&nbsp; }<br>
+}<br>
+</span>&nbsp;<o:p></o:p></p>
+
+</blockquote>
+
+<p>I have also run into this issue and ended up just not threading b/c I really
+did not need it.&nbsp; But I saved this for a back burner idea if I ever had
+the time.&nbsp; I was thinking it could be added to the framework but I have
+not really tried it.<o:p></o:p></p>
+
+<p><br>
+&nbsp;<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jh72i replied on Friday, January 25, 2008</h2>Again, thanks a million for those thoughts.&nbsp; I still have to get around to dealing with this - i have other problems right now including one new post I'm about to make here!</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jh72i replied on Friday, February 08, 2008</h2><P><FONT size=1>Folks (lawrencek in particular), I had a chance to try out that AsyncOperation technique last night and&nbsp;it worked a treat when called from the right location.&nbsp; I only did preliminary tests and now I'm dragged away to something else but just wanted to say thanks a million for the steer on that.&nbsp; My approach is to keep the same model but alway have the creating thread actually update the data source on behalf of any background threads. </FONT></P>
+<P><FONT size=1>Sorry I had asked the question and not tried out the suggestions but I am being pulled in so many directions these days I'm going crazy.</FONT></P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

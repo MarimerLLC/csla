@@ -1,0 +1,31 @@
+<html><header><title>Csla.ApplicationContext.User Always empty at MvcApplication_AuthenticateRequest</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Csla.ApplicationContext.User Always empty at MvcApplication_AuthenticateRequest</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11442.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>jpmir posted on Thursday, June 28, 2012</h2><p>Hi,</p>
+<p>I&#39;m doing some research on MVC and started by following instructions from Using CSLA 4: ASP.Net MVC E-Book...</p>
+<p>Right after login process, AuthenticateRequest event is raised on Global.asax which is fine, but the thing is that at this point, the Csla.ApplicationContext.User&nbsp;object&nbsp;is always Empty, even when login ends up right.</p>
+<p>Any idea ?</p>
+<p>&nbsp;</p>
+<p>Thanks in advance!</p>
+<p>Jean Paul&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Saturday, June 30, 2012</h2><p>You have to set Csla.ApplicationContext.User to a value in global.asax, it is not automatic.</p>
+<p>As you know, web servers don&#39;t maintain anything in memory from page request to page request (unless you use Session). So at the start of each page request, it is entirely up to you to restore values like ApplicationContext.User to a meaningful value.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jpmir replied on Monday, July 02, 2012</h2><p>Thanks Rocky,</p>
+<p>I finally got there somehow... But I&#39;m still confused about this specific section of the Ebook. (Revision: 0.2 (Draft))</p>
+<p>Chapter 3 Page 86:</p>
+<p>&nbsp;</p>
+<p><i>The Global.asax.cs file contains the following code:</i></p>
+<p><i>protected void Application_AuthenticateRequest(Object sender, EventArgs e)<br />{<br />&nbsp; &nbsp; if (Csla.ApplicationContext.User != null &amp;&amp;<br />&nbsp; &nbsp; &nbsp; &nbsp;Csla.ApplicationContext.User.Identity.IsAuthenticated &amp;&amp; <br />&nbsp; &nbsp; &nbsp; &nbsp;Csla.ApplicationContext.User.Identity is FormsIdentity)<br />&nbsp; &nbsp; &nbsp; &nbsp;{ <br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;ProjectTracker.Library.Security.PTPrincipal.Load(Csla.ApplicationContext.User.Identity.Name);<br />&nbsp; &nbsp; &nbsp; &nbsp;}<br /> }</i></p>
+<p>If Csla.ApplicationContext.USer will always be null, What&#39;s the point of this piece of code?</p>
+<p>I did this (In Visual Basic):</p>
+<p>&nbsp;</p>
+<p>Private Sub MvcApplication_AuthenticateRequest(sender As Object, e As System.EventArgs) Handles Me.AuthenticateRequest<br />&nbsp; &nbsp; &nbsp; &nbsp; Dim authCookie As HttpCookie = Request.Cookies(FormsAuthentication.FormsCookieName)<br />&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; If authCookie IsNot Nothing Then<br />&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Dim ticket As FormsAuthenticationTicket = FormsAuthentication.Decrypt(authCookie.Value)<br />&nbsp;&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; If ticket IsNot Nothing AndAlso ticket.Name &lt;&gt; String.Empty Then<br />&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; MultiCob.Infrastructure.Security.MultiCobPrincipal.Load(ticket.Name)<br />&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; End If<br />&nbsp;&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;End If<br />&nbsp;&nbsp;End Sub</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Monday, July 02, 2012</h2><p>It won&#39;t always be null. It can be a principal that points to a FormsIdentity if your web site is configured to use forms authentication.</p>
+<p>If you configure your web site to use forms authentication then ASP.NET will automatically create a super-small FormsIdentity object for your app. It will also automatically recreate this identity object on each page request by pulling the user id out of the ASP.NET authentication cookie.</p>
+<p>Of course this FormsIdentity is basically useless to you because it won&#39;t have your roles or other custom data. But it will have the username, so you can use that to recreate your own identity object.</p>
+<p>And this will only exist at all if you are using forms authentication, otherwise ASP.NET won&#39;t instantiate the object at all.</p>
+<p>Well... That&#39;s not entirely true either, because you can also configure ASP.NET to do impersonation, in which case it would be a WindowsIdentity.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jpmir replied on Monday, July 02, 2012</h2><p>
+<p>OK, but basically there&#39;s no loss in my approach... I mean, I&#39;m doing &quot;by hand&quot; what the best configuration scenario might offer me in this case.</p>
+<p>Do you agree?</p>
+</p>
+<p>Thanks for your time and cooperation!</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, July 02, 2012</h2><p>Yes, right.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

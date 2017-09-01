@@ -1,0 +1,17 @@
+<html><header><title>Generic ReadOnlyListBase method for Exporting to Excel</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Generic ReadOnlyListBase method for Exporting to Excel</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9935.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>AndrewR posted on Tuesday, January 11, 2011</h2><p>Hello,</p>
+<p>I have created an Export to Excel class that properly formats the columns based on the property data type of the list item. </p>
+<p>My problem is I would like to use the ExportToExcel as a generic method that I can call from any page, and pass a business object derived from ReadOnlyListBase. So for example, on a page called People which has a gridview bound to PeopleList, I have a button click event wired up like this:</p>
+<p><em>protected void ExportToExcel_Click(object sender, EventArgs e)</em></p>
+<p style="padding-left:30px;"><em>{</em></p>
+<p style="padding-left:60px;"><em>PeopleList list = this.GetPeopleList();</em></p>
+<p style="padding-left:60px;"><em>ExportHelper.ExportToExcel(list, fileName);</em></p>
+<p style="padding-left:30px;"><em>}</em></p>
+<p>and in my ExportHelper class I have a method like this:</p>
+<p style="padding-left:30px;"><em>public static void ExportToExcel(object list, string filename)</em></p>
+<p>problem is I would like list to be of type ReadOnlyListBase, so that when I call the method from People page or Animal page or Plant page and pass the associated &lt;xyz&gt;List, I can iterate thru the collection, get the property data type.</p>
+<p>I&#39;d greatly appreciate any help.</p>
+<p>Andrew</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Tuesday, January 11, 2011</h2><p>What you really want is probably to have the list parameter be a basic enumerable or collection type. Options include IEnumerable, IList and probably ICollection. That&#39;ll get you not only CSLA list types, but most list types in all of .NET.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>zakmani replied on Friday, February 11, 2011</h2><p>Hey Andrew</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp; Can you share your Export to Excel Class, I was looking for such an option for my CSLA lists.</p>
+<p>&nbsp;</p>
+<p>Thanks,</p>
+<p>&nbsp;&nbsp;&nbsp; Zak</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

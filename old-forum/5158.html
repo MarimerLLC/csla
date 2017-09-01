@@ -1,0 +1,124 @@
+<html><header><title>Design and Code Reuse</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Design and Code Reuse</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5158.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Wbmstrmjb posted on Friday, July 25, 2008</h2><P>I am wrestling with how to reuse code and still have a "task-centric" view of the BOs.&nbsp; In Project Tracker, code is basically not reused and the properties for a "Project" and for a "Resource" are repeated in the ResourceAssignment(Project) and the ProjectResource(Resource).&nbsp; So in order to look at the objects from a "page" or "task" POV, you have the same object made two different ways.</P>
+<P>What are some ways to design a system that still uses good CSLA practices but can reuse code?&nbsp; Traditionally before diving into CSLA, I would have almost a 1:1 table to BO relationship and then a logic layer that just used the BOs to write and read data.&nbsp; Obviously this meant only having properties in one place, but also meant that each object was unaware of the objects that related to it.</P>
+<P>Any thoughts?</P>
+<P>Thanks,</P>
+<P>Mike</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Friday, July 25, 2008</h2><P>I tend to make 1:1 BOs to tables because it is easier to code gen that way. But then I enhance them with borrowed fields in many cases in the derived class level.</P>
+<P>But my key "breakthrough" was to create a higher level BO called a USe Case Controller which coordinates all the "CRUD" level BOs for a given use case. So a particualr screen may need a root BO with a child collection and an NVL. The Use Case Controller is just a root BO which fetches all the contained BOs and presents them to the UI. Each BO is self contained in regards to rules and and CRUD but the UCC object can have higher level rules which cut across the contained BOs if necessary. It can also perform additional CRUD actions that are outside the scope of the contained BOs.</P>
+<P>In other cases, I have classes which perform the same functions for various BOs. So the code is pulled out of the various BOs and simply centralized in this one class which they all can call so it is consistent.</P>
+<P>Joe</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tmg4340 replied on Friday, July 25, 2008</h2><P><FONT face=Tahoma size=2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>Wbmstrmjb:</strong></div><div>I am wrestling with how to reuse code and still have a "task-centric" view of the BOs.&nbsp; In Project Tracker, code is basically not reused and the properties for a "Project" and for a "Resource" are repeated in the ResourceAssignment(Project) and the ProjectResource(Resource).&nbsp; So in order to look at the objects from a "page" or "task" POV, you have the same object made two different ways.</div></BLOCKQUOTE></FONT></P>
+<P><FONT face=Tahoma size=2>Rocky touches on this in&nbsp;his book, and it's been discussed a few times here as well.</FONT></P>
+<P><FONT face=Tahoma size=2>CSLA is designed to support business objects that are defined by use cases.&nbsp; Tasks are certainly an acceptable alternative as well.&nbsp;&nbsp;But the point is that code re-use is not an overarching goal.&nbsp; In fact, Rocky will stress that re-use is really only acceptable if the use cases do <EM>exactly</EM> the same thing.&nbsp; Otherwise, your objects are taking on more than one responsibility, which is only going to cause you trouble.</FONT></P>
+<P><FONT face=Tahoma size=2>This is one reason why you don't see much re-use in the ProjectTracker app.&nbsp; By the nature of how he builds his apps, there just isn't much re-use.&nbsp; It also doesn't help that PT is more of an example app, so you don't see what could be considered "best practices" in some areas either.&nbsp; But even beyond that, the concept of the single-responsibility/use-case-driven design&nbsp;goes a long way towards&nbsp;pushing re-use a ways&nbsp;down the list of&nbsp;Important&nbsp;Factors To&nbsp;Consider When Building Objects.&nbsp; It's also why you see property duplication - the object is designed to support a single use case, and as such will pull all the data it needs to complete that task.&nbsp; Use cases for a particular subsystem will often use much the same data.&nbsp; Finally, the isolation of code that this technique provides proves to be a lot easier to deal with when your use cases change.</FONT></P><FONT face=Tahoma size=2>
+<P><FONT face=Tahoma size=2>I will say that this can be a really difficult concept to come to grips with.&nbsp; After all, the whole OOP paradigm is built on code re-use through hierarchies, decoration, patterns,&nbsp;etc.&nbsp; But that's not the approach he takes, and it can be hard to shift your thinking.</FONT></P>
+<P>That's not to say that you shouldn't look for ways to re-factor your code.&nbsp; But instead of going for a class hierarchy&nbsp;(which in CSLA 3.5&nbsp;forces you to do some rather unfortunate hack-like things to get it to work), or making&nbsp;classes that serve multiple purposes,&nbsp;Rocky tends more towards creating common "modules" that classes can share.&nbsp; It kind of strikes me as a somewhat service-oriented approach, where you're creating these utility/gateway/service classes that are usually just a collection of stateless methods.</FONT></P>
+<P><FONT face=Tahoma size=2>(Of course, Rocky being primarily a VB programmer, Module is probably the literal term.&nbsp; But a static class in C# works just as well.&nbsp; <img src="/emoticons/emotion-1.gif" alt="Smile [:)]" />)</FONT></P>
+<P><FONT face=Tahoma size=2>That's also not to say that OO techniques can't be used.&nbsp; Design patterns are still very effective, and if you're in the composition-over-inheritance camp, you can still do a&nbsp;fair amount&nbsp;of that as well.&nbsp; But you won't see a ton of inheritance, and you probably won't see a ton of re-use of your objects.&nbsp; And that's OK.</FONT></P>
+<P><FONT face=Tahoma size=2>HTH</FONT></P>
+<P><FONT face=Tahoma size=2>- Scott</FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Saturday, July 26, 2008</h2><P>This has been discussed many times before - it is a common question.</P>
+<P>Here's one good post in response to a similar thread:</P>
+<P><A HREF="/forums/post/17257.aspx">http://forums.lhotka.net/forums/post/17257.aspx</A></P>
+<P>You can also search the forum for the term "coupling". You can't have reuse without coupling, they are two sides of the same coin. While reuse is desirable, coupling is the ultimate sin. So you should only reuse code if it incurs no coupling (which is impossible).</P>
+<P>So in <EM>reality</EM> you should only reuse code if you are willing to accept the resulting cost of coupling. And sometimes that is a cost worth paying, because you can carefully design your code to minimize the cost - there are various design patterns and techniques that enable reuse without too much coupling.</P>
+<P>But things like inheritance are very dangerous, because they are a tightly coupled relationship. Yes they provide reuse, but at a very high cost (in most cases).</P>
+<P>The most important thing to remember is that <STRONG>reuse is not the goal, maintainability is the goal</STRONG>. Reuse is merely one tool you can use in pursuit of that goal, but it always comes with coupling, which is in direct conflict with that goal.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Wbmstrmjb replied on Monday, July 28, 2008</h2>This helps alot.&nbsp; I still struggle with not being able to write one class for each table and put them into various combinations to achieve the goal.&nbsp; I guess I've always looked at it from the data's standpoint and not from the use cases'.&nbsp; I looked at building applications like a Lego set and all of the "blocks" were just the database tables modeled in code.&nbsp; Combine the blocks and make an app.&nbsp; I think it is still going to take some time to wrap my head completely around a use-case-centric design, but I am starting to see some benefits.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Wbmstrmjb replied on Monday, July 28, 2008</h2><P>One question I have is how is code generation effective when you're looking at it from a use case POV?&nbsp; Normally I'd code gen all the "table" classes because the generator would just pull fields from the table and the generator would create a class that&nbsp;implemented a property and all the CRUD for the fields/table.&nbsp; Now there are "partial tables" (just a&nbsp;few fields needed from a table)&nbsp;and parent/child relationships that need to be accounted for.&nbsp; What code gen solution works well for CSLA classes and this perspective of thinking?</P>
+<P>Thanks,</P>
+<P>Mike</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Tuesday, July 29, 2008</h2><P>I use Codesmith. It is a great tool.</P>
+<P>You can point Codesmith at a DB table (or View) and it will codegen the fields into a BO for you (using the CSLA template.) So this is closer to your way of thinking of a table is a BO. I tried to explain earlier that it is not 100% wrong to think this way. I like your term of using them as "building blocks" inside the the app. The use case thing comes in to play when you need extra data which is not in the same table. In that case, you can borrow fields from other tables (either by doing a JOIN in your SQL or by executing a 2nd query after the base table's fields have all been fetched.)</P>
+<P>So codegen is quite useful to:</P>
+<P>1. Get the BO built with 98% of the code needed.</P>
+<P>2. Get the BO built the same way every time.</P>
+<P>3. Have bug free BOs which compile the first time.</P>
+<P>I use Inheritance to then create a layer where I can manually add fields, properties, methods to the BO. In many cases there is little or no code in this level. In some cases there is a lot of code.</P>
+<P>CSLA templates can account for child BOs too.</P>
+<P>Joe</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Wbmstrmjb replied on Tuesday, July 29, 2008</h2><P>I think I'm more confused now.&nbsp; In most applications, one single table is not the only data needed on a given screen.&nbsp; So it seems that the "use case thing" is always applicable.&nbsp; When does the "building block" method work well for CSLA in a "real" application?&nbsp; It seems to me that could get accomplished what I need to do with building blocks, but it won't be elegant and simple to hook up the UI like it is in PT.&nbsp; It seems to go directly against the principles that CSLA directs you to employ.&nbsp; Creating an editable root for every table and "joining" them&nbsp;in a higher logic layer&nbsp;is not super smooth.&nbsp; Am I making sense?</P>
+<P>I have another question regarding the DAL that pertains to this discussion.&nbsp; Do most people prefer to use one DA class for each table and then use that from within each of their objects, or does it make more sense to create DA classes that directly mirror the data to be retrieved for a given use case?&nbsp; What I mean is that if you have Projects and Resources, is it better to have a Project DA and a Resource DA that the Project/Assignment and Resource/ProjectResource access respectively, or to create a "Project" DA that retrieves the Project and it's ProjectResources and a "Resource" DA that retrieves the Resource and&nbsp;it's Assigments?</P>
+<P>Thanks,</P>
+<P>Mike</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, July 29, 2008</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>In most applications there&#8217;s a large percentage of screens
+that are pretty much 1:1 with tables. Maintenance screens, basic edit screens
+and other stuff &#8211; usually the parts of the app that are mind-numbingly
+boring to write too.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Data-centric code generators can really help you out here, by
+creating business objects that map to tables &#8211; and that&#8217;s OK
+because the <i>use case</i> maps to the tables pretty well too.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>But most applications also have a small percentage of screens
+that are actually interesting. Screens with complex business logic, and that
+often interact with many, many tables (or at least little parts of tables).
+This is where most code-gen tools fall down, in that they struggle to create
+objects for these screens.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>In a sense, that&#8217;s OK though, because those are the
+screens (use cases) where you want to spend most of your design time, and where
+many odd and interesting things may be required.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky</span><b><span><o:p></o:p></span></b></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tmg4340 replied on Tuesday, July 29, 2008</h2><P><FONT face=Tahoma size=2>This has always been my issue with code generators - pretty much every single one out there starts with database tables and goes from there.&nbsp; Sure, many of them work off views as well, but ultimately every code generation step is tied to how your database is set up.&nbsp; Why should I have to create a view simply to create a piece of code?</FONT></P>
+<P><FONT face=Tahoma size=2>(And if anyone knows of a code generator that can build BO's off the output of a stored procedure - including one that returns multiple result sets - <STRONG><EM>please</EM></STRONG> let me know...)</FONT></P>
+<P><FONT face=Tahoma size=2>I know that Rocky has mentioned that Magenic built a code generator for their CSLA use.&nbsp; He can't share it with us, but perhaps he can shed some light on what they did concerning this issue.</FONT></P>
+<P><FONT face=Tahoma size=2>Joe is&nbsp;a big proponent of the "1 table, 1 BO" option with use-case controllers.&nbsp; It seems to work very well for him, so perhaps he can shed some light on how databinding works.&nbsp; I am also&nbsp;wondering about the "excess weight" of the objects - after all, I may not need all the data from a particular record for a particular use case...</FONT></P>
+<P><FONT face=Tahoma size=2>As for the DAL, I tend to match my DAL structure to my BO structure.&nbsp; So if I have a Project BO, I'll have a ProjectDAL object as well.&nbsp; The kicker to this concept is that you can pretty much eliminate code generation with this option if you're not careful - and a DAL is the perfect place for code generation.&nbsp; So how mine usually get structured is something similar to Joe's use-case controllers.&nbsp; I generate the DAL from my DB schema, and then I create my ProjectDAL object, which just consolidates calls from other objects as necessary.&nbsp; You do have to design your stored procedures (if you use them) to work with this style, but a lot of times those can be code-genned too -&nbsp;often times&nbsp;all you need are basic&nbsp;SELECT/INSERT/UPDATE/DELETE procedures.</FONT></P>
+<P><FONT face=Tahoma size=2>(Where this usually breaks down are the SELECT procedures, since I'm often returning multiple result sets.&nbsp; But that's not always the case, and if those are the only SP's I have to write and manually code for, then I feel like I'm ahead of the game.)</FONT></P>
+<P><FONT face=Tahoma size=2>Of course, I have yet to dive into 3.5 and LINQ, so once I get some time to do that, I might look at this whole thing differently.&nbsp; And who knows what's going to happen with the Entity Framework?</FONT></P>
+<P><FONT face=Tahoma size=2>HTH</FONT></P>
+<P><FONT face=Tahoma size=2>- Scott</FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Michael Hildner replied on Tuesday, July 29, 2008</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>tmg4340:</strong></div><div>
+<P><FONT face=Tahoma size=2>(And if anyone knows of a code generator that can build BO's off the output of a stored procedure - including one that returns multiple result sets - <STRONG><EM>please</EM></STRONG> let me know...)</FONT></P>
+<P>
+<P><FONT face=Tahoma size=2></FONT></P></div></BLOCKQUOTE></P>
+<P>CodeSmith does that. I'm using the free version (v2.6) and Ricky's (I think it's Ricky) templates.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Wbmstrmjb replied on Tuesday, July 29, 2008</h2>Where can you find CodeSmith's free version?&nbsp; I've looked around and it seems now that they're charging for it, the free one has disappeared.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Michael Hildner replied on Tuesday, July 29, 2008</h2><A href="http://www.codesmithtools.com/freeware.aspx">http://www.codesmithtools.com/freeware.aspx</A></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Wbmstrmjb replied on Tuesday, July 29, 2008</h2>I too am very interested in Joe's approach.&nbsp; I think it will help to have a starting point that is somewhat familiar to me.&nbsp; It seems that with that apporach though, you have disconnected objects that do not know about each other, only about themselves.&nbsp; Basically you have a ton of editable root objects that are standalone?&nbsp; Please ellaborate.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Wednesday, July 30, 2008</h2><P>"Basically you have a ton of editable root objects that are standalone?&nbsp;"</P>
+<P>Yes. In a way.</P>
+<P>The Use Case Controller BO is a root BO which contains all the other BOs required for the use case. So the other BOs do not know about each other (unless they are nested themselves). For example the UCC BO could contain an Order object which has a Lines collection made of many Line objects. It could also contain a couple of NVLs, an ROC and anything else you may need.</P>
+<P>So when you call DataPortal_Create on the UCC you may pass the OrderID as the criteria. The UCC then fetches the Order (and its lines) using the OrderID. It also fetches the 2 NVLs for that use case and the ROC of related data. Each BO is exposed as a ReadOnly Property in the UCC so that you can manipulate its data, but not swap out the reference itself.</P>
+<P>The UCC can have its own validation rules which can cross over the BOs contained in it. So it can be used to execute some fancy logic that is outside the scope of the contained BOs. e.g. The Order BO should not need to know about the state of some other related data which is not strictly part of the order. The UCC takes care of this.</P>
+<P>When you call IsValid on the UCC, it checks its own rules and then checks IsValid for the contained BOs.</P>
+<P>These UCC BOs are most useful on exactly the screens described by Rocky - the complex screens with lots of business logic.</P>
+<P>HTH</P>
+<P>Joe</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Wbmstrmjb replied on Wednesday, July 30, 2008</h2><P>This is exactly how I used to build apps and much easier for me to wrap my head around.</P>
+<P>How well does databinding work for this scenario?&nbsp; I normally shy away from databinding because of some of the quirkiness, but it certainly makes things more elegant when you don't have to spell out each "update" that needs to occur as a result of property change.&nbsp; I would assume that you are databinding to the UCC BO and that the internal objects like Order and OrderLines would be exposed to bind to their properties.&nbsp; How does that work out in terms of business rules that are encapsulated in the UCC BO?&nbsp; </P>
+<P>For instance,&nbsp;let's say&nbsp;the Order must have two OrderLines to be valid.&nbsp; I would assume this business rule would be in UCC BO because your Order BO has no knowledge of the OrderLines BO and vice versa.&nbsp; If you were to place a validator on the screen to make sure that there were two lines, I assume you'd bind it to the UCC BO's IsValid.&nbsp; When two lines are added to the OrderLines BO, does the UCC BO "know" that those lines were added given that they weren't added to it, but rather one of it's internal objects?</P>
+<P>I hope that example makes sense.&nbsp; Thanks.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Wednesday, July 30, 2008</h2><P>"I would assume this business rule would be in UCC BO because your Order BO has no knowledge of the OrderLines BO and vice versa.&nbsp;"</P>
+<P>Bad example. The OrderLines is a child of the Orders BO so the Orders BO *does* have knowledge of it. So the rule is in the Orders BO that there must be at least 1 (or 2 if you want) lines.</P>
+<P>I shy away from Databinding and datasources in my web app.</P>
+<P>When values are set in each BO the rules are run automatically (as is standard CSLA behavior). When the user posts the page I check IsValid of the UCC BO and if it is not then I send a message to the user which contains all the broken rules. I have a method which builds the broken&nbsp;rules for a given BO and all its contained children.</P>
+<P>Joe</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Wbmstrmjb replied on Wednesday, July 30, 2008</h2><P>You are correct.&nbsp; That is a bad example since lines don't stand on their own.&nbsp; A better example that we all know would be PT.&nbsp; </P>
+<P>Although Projects have People as children, People also have Projects as children.&nbsp; Thus there are two separate classes for each (as a parent and as a child).&nbsp; In your methodology, I assume that you would have both as Editable Roots and a UCC that has both inside it for each scenario.&nbsp; Maybe this is a misuderstanding on my part.&nbsp; If my assumptions are correct, then each know nothing of the other and if there were business rules that stated each project must have at least one Resource (Person) and each Resource must be assigned to at least one Project, then the UCCs would each have those rules respectively.&nbsp; </P>
+<P>But how does changing the property of one object inside the UCC propogate up to the UCC so that it knows whether it is valid?&nbsp; PropertyChanged would be fired on the (for example) Resource and thus Resources would get it's "validation", but the UCC doesn't know that there was a change.</P>
+<P>Is this a better example?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Thursday, July 31, 2008</h2><P>A long time ago I wrote code to recursively search through a BO and its contained BOs for IsValid and IsDirty. So I do not have to do those overrides anymore. (I have posted it here many times.)</P>
+<P>I think Rocky just added this functionality to 3.5 but I have not compared the implementations in detail yet. So a root BO can know if it IsValid and if its contained BOs are valid.</P>
+<P>In regards to your example - if there are 2 different screens which use the "opposite" cases like you describe then Yes - there would be 2 UCC BOs which have different BOs inside them. Sometimes you have a DB relationship like that but you only have 1 screen where you enforce 1 side of it - in that case you only need 1 UCC.</P>
+<P>Joe</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Tuesday, July 29, 2008</h2>Someday I'm going to look into making a Visio plugin that will generate BOs from class diagrams.&nbsp; <img src="/emoticons/emotion-1.gif" alt="Smile [:)]" /><br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

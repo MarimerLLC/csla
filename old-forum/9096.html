@@ -1,0 +1,31 @@
+<html><header><title>Root/Collection/Child Save Confusion</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Root/Collection/Child Save Confusion</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9096.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>mcalhoun posted on Wednesday, June 16, 2010</h2><p>Hi Everyone,</p>
+<p>I&#39;m working with CSLA 4 Beta 2 in a Silverlight environment and I&#39;ve run into a situation where I&#39;m unclear what the expected behavior should be.</p>
+<p>I have a Tenant object (Editable Root). The tenant has a CustomerList (Editable Child Collection) that contains Customer (Editable child). </p>
+<p>I use separate factory classes to create Tenant and Customer. Customer is marked as a child.</p>
+<p>Here are my two points of confusion...</p>
+<p>1. When I call BeginSave() on the Tenant (root) object, it is my understanding that BeginSave() should be called on each Child object as well. This doesn&#39;t appear to be happening for me. My &quot;Update&quot; method in the Customer factory is never being called.</p>
+<p>2. How do I get data from the Tenant (root) to each of the Customer objects in the collection so I can use the TenantId as a foreign key in the Customers table in the db?</p>
+<p>If anyone could provide a sample of this code working (or point me to one of Rocky&#39;s where it&#39;s working) it would be greatly appreciated!</p>
+<p>Thanks,<br />Matt </p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Marjon1 replied on Wednesday, June 16, 2010</h2><p>You need to make sure that the CustomerList is also being marked as a child.<br />Depending on if you always fetch the list or create would be done by using the&nbsp;DataPortal.FetchChild or DataPortal.CreateChild on the list itself.</p>
+<p>Then as part of your Tenant object in the Dataportal_Insert / Update methods you need to make sure you that you call FieldManager.UpdateChildren()<br />This will only work if you are not using private backing fields, but as you are using silverlight I would imagine you aren&#39;t doing this.&nbsp;</p>
+<p>You could then make the call passing in the your Tenant object, like the following FieldManager.UpdateChildren(me)</p>
+<p>Inside your Customer object your methods to do insert/updates might look like this:</p>
+<p style="padding-left:30px;"><span style="font-family:mceinline;">Private Sub Child_Insert(ByVal parent as Tenant)</span></p>
+<p style="padding-left:30px;"><span style="font-family:mceinline;">&#39;Do whatever you need and you can access the id property from the tenant&nbsp;object</span></p>
+<p style="padding-left:30px;"><span style="font-family:mceinline;">End Sub</span></p>
+<p>&nbsp;</p>
+<p style="padding-left:30px;"><span style="font-family:mceinline;">Private Sub Child_Update(ByVal parent as Tenant)</span></p>
+<p style="padding-left:30px;"><span style="font-family:mceinline;">&#39;Do whatever you need and you can access the id property from the tenant&nbsp;object</span></p>
+<p style="padding-left:30px;"><span style="font-family:mceinline;">End Sub</span></p>
+<p>This should get your customer objects being updated correctly. Children objects are <strong>never </strong><i><span style="font-style:normal;"><strong>saved</strong></span><strong><span style="font-style:normal;">&nbsp;</span></strong><span style="font-style:normal;"><strong>in the same way that a root level object is</strong>. You either need to manually call methods (old CSLA method) to do the updates and then mark the objects as old, etc or use Child_Insert/Update &amp; FieldManager.UpdateChildren() mechanism. The latter is the preferred and much easier option.</span></i></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>mcalhoun replied on Thursday, June 17, 2010</h2><p>Hi Marjon, </p>
+<p>Thanks for your reply!</p>
+<p>First, I did forget to mention in my original post that CustomerList is also being marked as a child by using the DataPortal.CreateChild&lt;CustomerList&gt;(); method. You are also correct that I am not using private backing fields.</p>
+<p>I think we have a little bit of a disconnect, as I am using separate Factory classes for Tenant and Customer. This means that I don&#39;t have access to the FieldManager in my Update method of TenantFactory as FieldManager is a protected property on the BusinessBase class.</p>
+<p>My design goal is not to have any Data Access code in my business objects, so this is why I have chosen to use separate factories. I am also using Dependency Injection to load different factories and different repositories for test purposes, so moving all of that code back into the business object is not desireable.</p>
+<p>Is there an other way to accomplish the Save on child objects and to pass the parent data down?</p>
+<p>Thanks,<br />Matt</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Marjon1 replied on Thursday, June 17, 2010</h2><p>Matt,</p>
+<p>I&#39;ve not used the object factory pattern before, and attempted to see if there was any examples of how to do this in the CSLA videos but was unable to find anything. However, you should be able to do the following instead of using the FieldManager and given what I know about the additional work required when using the object factories, I&#39;m guessing is the right way to go.&nbsp;</p>
+<p>Inside your factory class for tenant you would then need to do, essentially manually call the&nbsp;data-portal&nbsp;for each child that you have, e.g:</p>
+<p><span style="font-family:mceinline;">&nbsp;&nbsp; &nbsp; DataPortal.UpdateChild(Customers, Me)</span></p>
+<p>Based on what I understand your factory class for customer should then be called, assuming that it is dirty, etc.</p>
+<p>Anyone else please feel free to correct any mistakes that I have made.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

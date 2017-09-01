@@ -1,0 +1,26 @@
+<html><header><title>3.6.2 Cannot convert lambda expression to type 'Csla.PropertyInfo&lt;string&gt;' because it is not a delegate type</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>3.6.2 Cannot convert lambda expression to type 'Csla.PropertyInfo&lt;string&gt;' because it is not a delegate type</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6865.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>cds posted on Tuesday, April 28, 2009</h2><P>Hi all</P>
+<P>I'm converting a CslaLight Silverlight application from 3.6.1 to 3.6.2 and want to use the new property declaration syntax. </P>
+<P>So, my existing BO classes have properties like:</P><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>private</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>static</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>readonly</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>PropertyInfo</FONT></FONT><FONT size=2>&lt;</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>string</FONT></FONT><FONT size=2>&gt; SurnameProperty = RegisterProperty(</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>new</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>PropertyInfo</FONT></FONT><FONT size=2>&lt;</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>string</FONT></FONT><FONT size=2>&gt;(</FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>"Surname"</FONT></FONT><FONT size=2>));</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>public</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>string</FONT></FONT><FONT size=2> Surname</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>get</FONT></FONT><FONT size=2> { </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>return</FONT></FONT><FONT size=2> GetProperty(SurnameProperty); }</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>set</FONT></FONT><FONT size=2> { SetProperty(SurnameProperty, </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>value</FONT></FONT><FONT size=2>); }</P>
+<P>}</P></FONT>
+<P>which compiles fine. But when I change this property (and any other) to the new syntax:</P><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>private</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>static</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>PropertyInfo</FONT></FONT><FONT size=2>&lt;</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>string</FONT></FONT><FONT size=2>&gt; SurnameProperty = RegisterProperty&lt;</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>string</FONT></FONT><FONT size=2>&gt;(c =&gt; c.Surname);</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>public</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>string</FONT></FONT><FONT size=2> Surname</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>get</FONT></FONT><FONT size=2> { </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>return</FONT></FONT><FONT size=2> GetProperty(SurnameProperty); }</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>set</FONT></FONT><FONT size=2> { SetProperty(SurnameProperty, </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>value</FONT></FONT><FONT size=2>); }</P>
+<P>}</P></FONT>
+<P>I get the compiler error:</P>
+<P>Cannot convert lambda expression to type 'Csla.PropertyInfo&lt;string&gt;' because it is not a delegate type</P>
+<P>&nbsp;</P>
+<P>What am I doing wrong. I've looked at the InventoryDemo solution which uses exactly the same style and it compiles (and runs) fine.</P>
+<P>Puzzled!</P>
+<P>Thanks,</P>
+<P>Craig</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>cds replied on Wednesday, April 29, 2009</h2><P>I got this figured out - it turns out I was still referencing&nbsp;the 3.6.1 version of Csla.dll in a couple of places in my project :-)</P>
+<P>Hope this helps somebody else!</P>
+<P>Craig</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

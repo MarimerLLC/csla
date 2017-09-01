@@ -1,0 +1,201 @@
+<html><header><title>Root editable collections performance</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Root editable collections performance</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/7212.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Goran posted on Wednesday, July 01, 2009</h2>I have made a simple form that should display Article data. I load 1000 articles as a test. I created one root collection that inherits from BusinessListBase. Loading of data took approx 18 seconds. Using List&lt;Article&gt; loading same data took 0.3 seconds.<br><br>In the book it is stated that this approach isn’t recommended when there are large numbers of potential child objects, because the retrieval process can become too slow. What approach is recommended?<br><br>Thanks,<br>Goran<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, July 02, 2009</h2><P>There are so many ways to load child objects, I can't say what the issue is without understanding the specific technique you are using.</P>
+<P>Something is certainly wrong for this to take 18 seconds. I routinely load collections of several hundred items and performance is very acceptable.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Goran replied on Thursday, July 02, 2009</h2>Hello, Rockford, thanks for the response. The code is put together from the examples in your book.<br><br>I have an Customer class, which is marked as child in the contructor, It contains about 10 properties,&nbsp; there are no validation/authorization rules, no factory methods, no data access code (trying to keep it simple enough for the start).<br><br>I also have a CustomerList class, which code looks something like this:<br><br> [Serializable()]<br>public class CustomerList : BusinessListBase&lt;CustomerList, Customer&gt;<br>{<br>&nbsp;&nbsp;&nbsp; #region private constructor<br>&nbsp;&nbsp;&nbsp;&nbsp; private CustomerList() { }<br>&nbsp;&nbsp;&nbsp;&nbsp; #endregion<br><br>&nbsp;&nbsp;&nbsp;&nbsp; #region factory methods<br><br>&nbsp;&nbsp;&nbsp;&nbsp; public static CustomerList GetCustomerList()<br>&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return DataPortal.Fetch&lt;CustomerList&gt;(new Criteria());<br>&nbsp;&nbsp;&nbsp; }<br><br>&nbsp;&nbsp;&nbsp; #endregion<br><br>&nbsp;&nbsp;&nbsp; #region data access<br><br>&nbsp;&nbsp;&nbsp; [Serializable()]<br>&nbsp;&nbsp;&nbsp; private class Criteria<br>&nbsp;&nbsp;&nbsp; { /* no criteria - retrieve all projects */ }<br><br>&nbsp;&nbsp;&nbsp; private void DataPortal_Fetch(Criteria criteria)<br>&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; using (SqlConnection cn = new SqlConnection(Database.MyDbConnection))<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; cn.Open();<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; using (SqlCommand cm = cn.CreateCommand())<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; cm.CommandType = CommandType.StoredProcedure;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; cm.CommandText = "getCustomers";<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; using (SafeDataReader dr = new SafeDataReader(cm.ExecuteReader()))<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; while (dr.Read())<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Customer customer = new Customer {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; CustomerId = dr.GetInt32(0),<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; PersonalCode = dr.GetInt32(1),<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Name = dr.GetString(2),<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Address = dr.GetString(3),<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; City = dr.GetString(4),<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; PostalCode = dr.GetString(5),<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; TIN = dr.GetString(6),<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Phone = dr.GetString(7),<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Fax = dr.GetString(8),<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ContactName = dr.GetString(9),<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Note = dr.GetString(10)};<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; this.Add(customer);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>&nbsp;&nbsp;&nbsp; }<br><br>&nbsp;&nbsp;&nbsp; #endregion<br>}<br><br><br>To make it clear that there is no problem with the data access code, I use the same data access code with the List&lt;Customer&gt;..<br><br>What am I doing wrong here?<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>skagen00 replied on Thursday, July 02, 2009</h2>One thing you may want to do is have RaiseListChangedEvents set to false when your collection is being loaded (outside of your while loop)<br /><br />Also, I've not used the syntax you have above - aren't you setting properties with that logic? That would go through lots of authorization checks &amp; property has changed calls... <br /><br />Normally the practice is also to have the child objects themselves populate themselves from the datareader via an internal method. The method you are using is not the convention... </div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Goran replied on Thursday, July 02, 2009</h2>Until know I didnt pay attention to the code I wrote last night. Yes, you are correct, child class should populate itself, not the collection, which is totaly logical. :) Well, 3 A.M is time to sleep, not to learn new tehnologies, as I was doing last night. :)<br><br>After applyting the correct code, the speed is pretty similar to a List&lt;T&gt;. <br><br>Thanks for the help.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Goran replied on Wednesday, July 08, 2009</h2>Its me again. :) I am doing a performance test with loading
+collection data using csla ver 2 (that was released with the book 2005)
+and the newest framework version.<br>
+<br>
+I have corrected above code to load values from safereader into private internal fields (not setting properties directly). RaiseListChangedEvents is set to false. Loading 100,000 customers takes approx 3 seconds with the clsa.dll ver 2.0. Using the same code with csla.dll ver 3.6. the time needed to load 100,000 customers has raised to 12 seconds.<br><br>I am not saying I would ever load that many records in a production code, this is just for accurate testing results. Why exactly is the new version so slow? I am waiting for the 2008 version book to arrive (hopefully this weekend), so I cannot say what is changed in this new framework, but from the code examples, the only difference I see is that now we need to register properties, everything else is pretty much the same.<br><br>Edit: For the illustration purpose, same code using List&lt;T&gt; needs 2 seconds to load data.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, July 08, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Was it this thread or another one where someone profiled and
+discovered that raising PropertyChanged was a bottleneck?<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I suspect that PropertyChanged is slower now because of the
+ChildChanged event. Whether that&#8217;s enough to make this difference I don&#8217;t
+know, but that is the only event-related feature I can think of that&#8217;s
+been added.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky</span><b><span><o:p></o:p></span></b></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>skagen00 replied on Wednesday, July 08, 2009</h2>He does make reference to registering properties - I wonder if loading the values into the field manager isn't what is causing the extra overhead. <br /><br />I guess a profiling application (ANTS, etc) might help you uncover the biggest culprits... I don't get the sense that propertychanged/childchanged has anything to do with it since he's not raising list events and presumably using LoadProperty versus SetProperty... <br /><br />I think you mentioned a performance hit from field manager (suggesting using private backing fields is more efficient at the time these came out) but I don't recall it being 300% :)</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, July 08, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoPlainText><span>There's
+absolutely some overhead to using managed backing fields.<o:p></o:p></span></p>
+
+<p class=MsoPlainText><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoPlainText><span>It
+sounded to me like it was &quot;the same code&quot; plus registering the
+PropertyInfo&lt;T&gt; objects. When using private backing fields the property
+registration should have very little impact at all, and if that's the case it
+is probably due to whatever is going on with PropertyChanged.<o:p></o:p></span></p>
+
+<p class=MsoPlainText><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoPlainText><span>However,
+if it is not the same code - in that the properties were switched to managed
+backing fields, then that's another source of overhead.<o:p></o:p></span></p>
+
+<p class=MsoPlainText><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoPlainText><span>I
+did a lot of perf testing comparing private and managed backing fields as we implemented
+the dynamic method calling features (among others).<o:p></o:p></span></p>
+
+<p class=MsoPlainText><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoPlainText><span>Here
+are some numbers (though not fully isolated, because data portal variations are
+involved as well. These are load times for a full object graph (not just an
+object or collection, but an ERLB with 100 root objects, each root containing a
+BLB of 100 children &#8211; with the graph loaded numerous times to offset
+external perf spikes or other outside factors).<o:p></o:p></span></p>
+
+<p class=MsoPlainText><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoPlainText><span>The
+numbers I&#8217;m providing here are summary values showing the number of
+objects loaded/returned per ms on average:<o:p></o:p></span></p>
+
+<p class=MsoPlainText><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>CSLA 3.0 features (no child
+data portal, private fields)<o:p></o:p></span></b></p>
+
+<p class=MsoPlainText><span>144
+obj per ms<o:p></o:p></span></p>
+
+<p class=MsoPlainText><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>CSLA .NET 3.5 partial (child
+data portal, private fields)<o:p></o:p></span></b></p>
+
+<p class=MsoPlainText><span>84
+obj per ms<o:p></o:p></span></p>
+
+<p class=MsoPlainText><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Full CSLA .NET 3.5 features
+(child data portal and managed fields)<o:p></o:p></span></b></p>
+
+<p class=MsoPlainText><span>54
+obj per ms<o:p></o:p></span></p>
+
+<p class=MsoPlainText><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoPlainText><span>Again,
+this factors in more than just managed fields, because it brings in the child
+data portal as well as other factors like ChildChanged processing. These are
+fully loaded tests, in that they intentionally exercise as much of normal
+processing as you&#8217;d find in a real app without talking to an actual
+database.<o:p></o:p></span></p>
+
+<p class=MsoPlainText><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoPlainText><span>Obviously
+different testing scenarios will have different characteristics &#8211; we already
+see that with the straight-up BLB testing of 100k items.<o:p></o:p></span></p>
+
+<p class=MsoPlainText><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoPlainText><span>Rocky<o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>skagen00 replied on Wednesday, July 08, 2009</h2>So in reality that while managed fields may be twice as slow for loading as private fields, the difference is quite negligible - b/c database access is going to be orders above 50-100 objects of 100 children per millisecond... </div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Goran replied on Thursday, July 09, 2009</h2>You say that difference is negligible. What exactly is gained with new framework version, what benefits we will get, in order to justify 600% of performance loss, which is how much I have measured?<br><br>Is there no way to get some similar performance with the new framework version? To turn of <br><br>Just to clarify what have I used while testing on the 100k customers:<br><br>1) List&lt;Cusomter&gt;, where Customer doesn't inherit from BusinessBase, and has direct access to private fields - approx 1.5s<br><br>2) using Csla version 3.0 - Customer has direct access to private fields - approx 2s (very good preformace)<br><br>3) using Clsa 3.6 - using static properyInfo&lt;T&gt; for each property,&nbsp; fetching data is done through LoadProperty - approx 13s<br><br>3) using Clsa 3.6 - using the "okl 2005 way" with private fields and no static PropertyInfo&lt;T&gt; - fetching data is done using private fields - approx 8s<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>skagen00 replied on Thursday, July 09, 2009</h2>I haven't looked at your tests so I can't say whether or not you may be missing optimization of some sort or better handling of the loading process. <br /><br />When I said negligible, I'm referring to Rocky's numbers that he gave in populating objects without database access. <br /><br />Database access will account for the lion share, generally, of getting CSLA business objects in-memory and ready to use. The population method should be all-in-all quite the minority of processing time. <br /><br />So Rocky just gave numbers that said w/o database access if I populate 150 objects with 100 children each, I'm going to lose 2ms. I have never populated objects from memory like that and it seems absurdly fast to me, but if that's the hit, I don't see any use case that is adversely affected by that. If he meant objects in total and thus multiply that by 100 (children/root) then for every 150 objects I populate with 100 children each I'll lose 200ms. <br /><br />I can't think of any use case that I've used where I do that sort of operation to begin with... loading 15,000 objects (root &amp; child combined) at a time. <br /><br />Rocky, are those numbers you gave quoted with the right unit of measurement? :)<br /><br />Anyways, it's hard for me to make a statement about your loading process, but the benchmarks Rocky gave - to me - don't have me worrying about performance at all.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, July 09, 2009</h2>My numbers are measuring how many objects are created in a period of time.<br />Kind of the reverse of the normal approach, but better for my testing given<br />the variations in technique.<br /><br />And the tests are run by creating a bunch of mock data purely in memory,<br />including numeric values and string values of various (known) lengths.<br /><br />In other words, the algorithms used to create the mock data are consistent.<br />The resulting data sizes are consistent (and varied). And it is purely in<br />memory, so there's no variation due to hard drive speed or load or caching<br />or database optimization (or lack thereof), etc.<br /><br />The point is to isolate the object creation/loading/return process as much<br />as possible and to eliminate as many peripheral concerns as possible.<br />Otherwise you end up with iffy results because you could be encountering<br />issues with the network, the database, the hard drive, etc.<br /><br />It is bad enough that you really can't control Windows - you never know for<br />sure that Defender or your antivirus or something didn't kick in.<br /><br />So my numbers are also an average of numerous runs of each test to help<br />minimize the effects of all those other factors. And those effects are very<br />real - I had a fair amount of variation, though I don't recall throwing out<br />more than one or two result sets completely (if a result exceeds a standard<br />deviation it is probably an outlier).<br /><br />So the numbers represent creating X objects per millisecond.<br /><br />Rocky</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Goran replied on Friday, July 10, 2009</h2>I agree that removing side affects from hard disk, some windows apps, etc will bring more correct results. I did have variations which are probably caused by them, but those variations were never more than 0.5 seconds (in 90% of the cases). So I also took the average score of the "common results". I have also removed the effect of "first time opening" connection, so I made sure I open/close it before I do measuring. The database is local, so no network overheat is involved.<br><br>I come from the (mostly) procedural programming (we all use objects and patterns, although not in the pure sense of OO's behavioral approach), so I am still looking at things in a way like: do I really need this, was it worth of having these side affects? My current applications are working flawlessly, and clients are satisfied with their performance. I, on the other hand, am not happy with its scalability, and with its "applicability" (like web forms interface, mobile app interface, etc). This is why I came to the idea of using CSLA. And while I was reading 2005 book version, I embraced the ideas, and learned many things (which are still mostly on theoretical level), and all doubts I had were performance-wise. To my great surprise, the numbers were very acceptable (30-40% of performance lost, but great scalability achieved) with the csla ver3.0.<br><br>And then I decided to try the 3.6 framework while I wait for the 2008 book version to arrive. I had examples to look at, and see the difference in approach. What I did at first, was to just remove old version of csla dll from references, and add new one - nothing in the code was changed. The result were very bad (8 seconds), to my dissapointment. Then I looked at the code examples to see if there is some new apporoach, and I saw that PropertInfo&lt;T&gt; are now used for declaring/accessing properties, so I changed just it, and I also needed to change the code for fetching data, now using LoadProperty method - and this had even worse performanse (13s). Scagen00 menstioned there could be some code optimization that could be made to get better results. What are these? I have said what exactly I changed in code that was well optimized for csla ver 3.0 (loading 100k customers from database took 2s).<br><br>I still dont know what did we get from new version of csla, I will know it when I get the book. I see SilverLight support, but I dont belive that is connected with this performance loss. i hear there is also ChildChanged event, but that also should not create such overheat. Can someone explain what? I know I am repeating myself, but this is becuase I have not received answer. My opinion is that, when we sacrifice something, we expect some gain to receive from it. What is it in this case?<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, July 09, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Here&#8217;s my take on it.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I use managed backing fields by default, along with the child
+data portal and LoadProperty(). This is the simplest coding model, lets CSLA do
+the most work and it is compatible with Silverlight.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>When or if I have an object (usually a large collection) where
+the performance becomes a problem (and this is pretty rare) I&#8217;ll switch
+to private backing fields and stop using LoadProperty() to load the object
+data. I still use RegisterProperty() and the child data portal.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I have yet to hit a case where I had to quit using the child
+data portal, though that&#8217;d gain a tiny bit of performance too.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>The thing to remember is that performance is all relative to
+user satisfaction. It doesn&#8217;t matter if something is x% faster or slower
+if the users don&#8217;t notice or care.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>As an industry we constantly give up performance for
+productivity or abstraction. Look at the fascination with ORM tools, or the use
+of data binding instead of manually setting/getting data in the UI. Those are
+huge performance hits (especially data binding in some cases), but no one
+thinks twice about using them because they get such huge productivity and maintainability
+benefits.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky</span><b><span><o:p></o:p></span></b></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

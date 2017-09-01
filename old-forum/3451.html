@@ -1,0 +1,74 @@
+<html><header><title>Loading a List with LINQ</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Loading a List with LINQ</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3451.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Clayton posted on Wednesday, August 29, 2007</h2>I had a few spare minutes and was playing with LINQ to SQL. I had a BusinessListBase as my root and a Load method that would load a DataReader. It would then enumerate each row in the reader, passing the reader into a child object so the child object could load itself from the reader.<br><br>With LINQ to SQL, this doesn't look like it's going to be a feasible pattern anymore. The LINQ query returns a dynamically typed list that can't be passed into other methods. I was hoping to use LINQ to "strongly type" my database, but it's not looking good. Has anyone come up with something that would save me some effort before I put a lot of time into this?<br><br>I've put some pseudo code below to illustrate the pattern. Although not illustrated below, I like this pattern because I can have several different entry points for loading the object, but only one place where the object loads itself from the DataReader.<br><br>public class MyList: BusinessListBase&lt;MyList, ListItem&gt;<br>{<br>&nbsp;&nbsp;&nbsp; public static MyList LoadList()<br>&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;  ...<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;  SafeDataReader reader = new SafeDataReader(command.ExecuteReader());<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;  while (reader.Read())<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;  {<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;  &nbsp;&nbsp;  ListItem item = ListItem.LoadChild(reader);<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;  &nbsp;&nbsp;  Add(item);<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;  }<br><br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;  return list;<br>&nbsp;&nbsp;&nbsp; }<br>}<br><br>public class ListItem: BusinessBase&lt;ListItem&gt;<br>{<br>&nbsp;&nbsp;&nbsp; internal static ListItem LoadChild(SafeDataReader reader)<br>&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;  ListItem item = new ListItem();<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;  item.MarkAsChild();<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp; item._myId = reader.GetInt32("MyId");<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;  ...<br><br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;  return item;<br>&nbsp;&nbsp;&nbsp; }<br>}<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, August 29, 2007</h2><P>Look at the DeepData sample - it has a sub-section that uses LINQ to load the object graph.</P>
+<P>The key is to realize that LINQ returns DTOs (data transfer objects), much like you'd get from a web service or WCF service call. You <EM>still need to map that data into your business object</EM>.</P>
+<P>This is really easy in dynamic languages like VB, and somewhat harder in C# - welcome to the new world order <img src="/emoticons/emotion-5.gif" alt="Wink [;)]" />&nbsp; The same will likely be true if/when IronPython and IronRuby support LINQ too - all these dynamic languages have a big upside when dealing with LINQ projections.</P>
+<P>However, if you use the strongly-typed design tools in VS 2008 things work pretty well in C# too. This is because the tools create a set of DTO classes that look like your database. When you run the LINQ for SQL query you need to <EM>avoid using projections</EM>, and instead get back data in those DTO types.</P>
+<P>Because those types are not dynamic, C# can deal with them easily. You can pass the DTOs through like you would a DataReader from parent to child list to child.</P>
+<P>DeepData uses this technique, so it is a valuable example for C#. Just ignore the clever bits where the same code works for DTOs from LINQ or web services interchangeably thanks to the dynamic language features&nbsp;<img src="/emoticons/emotion-1.gif" alt="Smile [:)]" /></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Wednesday, August 29, 2007</h2><P>Check out the blogs for Scott Guthrie and Rick Strahl.</P>
+<P>They both discuss LINQ in detail. Scott has all of MS prepping him.</P>
+<P>Rick is just diving in and discovering stuff.</P>
+<P>I definitely recall reading that you could get LINQ to return a datareader from a query.</P>
+<P>So there will be many solutions to this problem in the near future.</P>
+<P>I would definitely like to strong type my queries if possible.</P>
+<P>Joe</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Clayton replied on Wednesday, August 29, 2007</h2>I was actually hoping that I could find a way that avoided DTOs. That feels like I'm almost writing my business objects twice. One to load the data from the database, and one to do the actual work. I know the DTO can get away with only have properties and zero business logic, but it somehow feels redundant to have them.<br><br>The DTOs created by the strongly-typed design tools are easy enough for me to justify because they're what I was wanting to use to strongly-type the database. The rub comes when I just want to query only a couple columns in one table and join with a couple of columns in a second table. It just isn't giving me the small objects I really want.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, August 29, 2007</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>This is the primary catch with LINQ in my view. If you want to
+use projections then you must accept the limitations of the dynamic types
+created as a result. Or you use tool-created or manually created DTOs. Not much
+wiggle room in between&#8230;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Clayton
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Wednesday, August 29, 2007 8:58 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] Loading a List with LINQ<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>I was actually hoping that I could find a way that avoided
+DTOs. That feels like I'm almost writing my business objects twice. One to load
+the data from the database, and one to do the actual work. I know the DTO can
+get away with only have properties and zero business logic, but it somehow
+feels redundant to have them.<br>
+<br>
+The DTOs created by the strongly-typed design tools are easy enough for me to
+justify because they're what I was wanting to use to strongly-type the
+database. The rub comes when I just want to query only a couple columns in one
+table and join with a couple of columns in a second table. It just isn't giving
+me the small objects I really want.<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

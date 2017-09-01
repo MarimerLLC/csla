@@ -1,0 +1,338 @@
+<html><header><title>ContextManager Suggestion</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>ContextManager Suggestion</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6875.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Mark5000 posted on Wednesday, April 29, 2009</h2><P>Greetings,</P>
+<P>While debugging the other day I noticed that the ContextManager doesn't use the ConnectionManager.&nbsp; By piggy-backing onto the ConnectionManager the DataContext could minimize open connections and potentially prevent .NET from needlessly promoting a transaction to the distributed transaction coordinator.&nbsp; This is especially significant if a dataportal is in the context of a transaction and contains a mix of both ADO.NET and LINQ-to-SQL.&nbsp; Here's the change I made to the ContextManager's constructor to address this issue:</P><FONT size=2>
+<P></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2>//private ContextManager(string connectionString)</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2>//{</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2>// _connectionString = connectionString;</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2>// _context = (C)(Activator.CreateInstance(typeof(C), connectionString));</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2>//}</P></FONT></FONT><FONT size=2>
+<P></FONT>
+<P><FONT color=#008000 size=2><FONT color=#008000 size=2></P></FONT></FONT><FONT size=2></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>private</FONT></FONT><FONT size=2> ContextManager(</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>string</FONT></FONT><FONT size=2> connectionString)</P>
+<P>{</P>
+<P>_connectionString = connectionString;</P>
+<P>_context = (C)(</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>Activator</FONT></FONT><FONT size=2>.CreateInstance(</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>typeof</FONT></FONT><FONT size=2>(C), </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>ConnectionManager</FONT></FONT><FONT size=2>&lt;System.Data.SqlClient.</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>SqlConnection</FONT></FONT><FONT size=2>&gt;.GetManager(connectionString, </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>false</FONT></FONT><FONT size=2>).Connection));</P>
+<P>}</P></FONT>
+<P>Does anyone see any potential issues&nbsp;with this solution?&nbsp; Does it seem a sound enough improvement to add to the Csla wishlist?&nbsp; </P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Thursday, April 30, 2009</h2>Yup, here's the problem:<br /><br />System.Data.SqlClient.SqlConnection<br /><br />You're now forcing everyone to use Sql Server.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Mark5000 replied on Thursday, April 30, 2009</h2><P>I don't think this poses a problem.</P>
+<P>The ContextManager uses generics to constrain&nbsp;itself to&nbsp;a DataContext object.&nbsp; DataContext objects are only used with LINQ-To-SQL and LINQ-To-SQL is, in turn,&nbsp;only applicable to SQL Server.&nbsp; Given this train of thought a SqlConnection&nbsp;IS the only valid&nbsp;option&nbsp;when connecting to a database via the ContextManager.</P>
+<P>Let me know&nbsp;if I'm&nbsp;mistaken.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Thursday, April 30, 2009</h2>Ha... good point.  Guess I should cut back on my caffeine in the morning.<br /><br />So I'm guessing that Linq to EF doesn't use DataContext at all, so looks like a neat trick.  The only downside is that you now have a ConnectionManager instance floating around if even if you're NOT mixing Ado.Net and Linq... but maybe that doesn't really matter.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, April 30, 2009</h2><P>For LINQ to SQL this seems reasonable. Unfortunately this is not a future-looking technology, but it is fine for the short term.</P>
+<P>For the EF ObjectContextManager I suspect an extra type parameter would be required to do the same thing, because EF can talk to other database types.</P>
+<P><EM>However</EM>, there's another wish list item that might conflict with all of this. And that is a request to add a "label" or "name" parameter to GetManager so it is possible to have more than one connection open at a time. Bascially:</P>
+<P>var ctxA&nbsp;= ConnectionManager&lt;SqlConnection&gt;.GetManager(dbName, "ConnectionA");<BR>var ctxB&nbsp;= ConnectionManager&lt;SqlConnection&gt;.GetManager(dbName, "ConnectionB");</P>
+<P>That request is fairly important, because it enables some scenarios where multiple connections are required to do simultaneous work against the database (or multiple databases).</P>
+<P>So if we assume that other wish list item comes into being, the question then becomes how <EM>this</EM> request would work. Would the name of the ContextManager be linked to the name of the underlying ConnectionManager? Is that also true for ObjectContextManager?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Mark5000 replied on Friday, May 01, 2009</h2><P>I can definitely see how being able to specify an optional "label" or "identifier"&nbsp;could be helpful when more than one connection is explicitly needed&nbsp;(eg.&nbsp;such as&nbsp;when a long running sproc is chugging away but the app still needs to do other database work).&nbsp; To accomodate this I could see the ConnectionManagerT and&nbsp;the ContextManager&nbsp;looking something&nbsp;like the code at the bottom of this post (where the "identifier" is being shared between the two objects&nbsp;-&nbsp;as&nbsp;you&nbsp;suggested).</P>
+<P>Unfortunately it appears&nbsp;to be&nbsp;rather difficult to get an ObjectContext to share&nbsp;a DbConnection.&nbsp; On top of that&nbsp;an exception gets thrown if&nbsp;the DbConnection has already been opened when it's passed to the EntityConnection. Bummer.&nbsp; This is where I'm at right now: <A href="http://social.msdn.microsoft.com/Forums/en-US/adodotnetentityframework/thread/dd7b1c41-e428-4e29-ab83-448d3f529ba4/">http://social.msdn.microsoft.com/Forums/en-US/adodotnetentityframework/thread/dd7b1c41-e428-4e29-ab83-448d3f529ba4/</A>&nbsp; </P>
+<P>Any ideas?</P>
+<P>&nbsp;<FONT size=2></P>
+<P>﻿</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>using</FONT></FONT><FONT size=2> System;</P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>
+<P>using</FONT></FONT><FONT size=2> System.Configuration;</P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>
+<P>using</FONT></FONT><FONT size=2> System.Data;</P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>
+<P>using</FONT></FONT><FONT size=2> Csla.Properties;</P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>
+<P>namespace</FONT></FONT><FONT size=2> Csla.Data</P>
+<P>{</P>
+<P></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>///</FONT></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2> </FONT></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>&lt;summary&gt;</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>///</FONT></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2> Provides an automated way to reuse open</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>///</FONT></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2> database connections within the context</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>///</FONT></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2> of a single data portal operation.</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>///</FONT></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2> </FONT></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>&lt;/summary&gt;</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>///</FONT></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2> </FONT></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>&lt;typeparam name="C"&gt;</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>///</FONT></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2> Type of database connection object to use.</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>///</FONT></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2> </FONT></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>&lt;/typeparam&gt;</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>///</FONT></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2> </FONT></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>&lt;remarks&gt;</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>///</FONT></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2> This type stores the open database connection</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>///</FONT></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2> in </FONT></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>&lt;see cref="Csla.ApplicationContext.LocalContext" /&gt;</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>///</FONT></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2> and uses reference counting through</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>///</FONT></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2> </FONT></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>&lt;see cref="IDisposable" /&gt;</FONT></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2> to keep the connection</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>///</FONT></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2> open for reuse by child objects, and to automatically</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>///</FONT></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2> dispose the connection when the last consumer</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>///</FONT></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2> has called Dispose."</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>///</FONT></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2> </FONT></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>&lt;/remarks&gt;</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>public</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>class</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>ConnectionManagerV2</FONT></FONT><FONT size=2>&lt;C&gt; : </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>IDisposable</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>where</FONT></FONT><FONT size=2> C : </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>IDbConnection</FONT></FONT><FONT size=2>, </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>new</FONT></FONT><FONT size=2>()</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>private</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>static</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>object</FONT></FONT><FONT size=2> _lock = </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>new</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>object</FONT></FONT><FONT size=2>();</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>private</FONT></FONT><FONT size=2> C _connection;</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>private</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>string</FONT></FONT><FONT size=2> _connectionString;</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>private</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>string</FONT></FONT><FONT size=2> _connectionIdentifier;</P>
+<P></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>///</FONT></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2> </FONT></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>&lt;summary&gt;</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>///</FONT></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2> Gets the default ConnectionManager object for the database.</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>///</FONT></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2> </FONT></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>&lt;/summary&gt;</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>///</FONT></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2> </FONT></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>&lt;param name="database"&gt;</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>///</FONT></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2> Database name as shown in the config file.</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>///</FONT></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2> </FONT></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>&lt;/param&gt;</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>public</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>static</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>ConnectionManagerV2</FONT></FONT><FONT size=2>&lt;C&gt; GetManager(</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>string</FONT></FONT><FONT size=2> database)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>return</FONT></FONT><FONT size=2> GetManager(database, </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>true</FONT></FONT><FONT size=2>, </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>null</FONT></FONT><FONT size=2>);</P>
+<P>}</P>
+<P></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>///</FONT></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2> </FONT></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>&lt;summary&gt;</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>///</FONT></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2> Gets the default ConnectionManager object for the database.</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>///</FONT></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2> </FONT></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>&lt;/summary&gt;</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>///</FONT></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2> </FONT></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>&lt;param name="database"&gt;</FONT></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2>Database name or connection string.</FONT></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>&lt;/param&gt;</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>///</FONT></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2> </FONT></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>&lt;param name="isDatabaseName"&gt;</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>///</FONT></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2> True to indicate that the connection string</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>///</FONT></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2> should be retrieved from the config file. If</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>///</FONT></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2> False, the database parameter is directly </P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>///</FONT></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2> used as a connection string.</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>///</FONT></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2> </FONT></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>&lt;/param&gt;</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>public</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>static</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>ConnectionManagerV2</FONT></FONT><FONT size=2>&lt;C&gt; GetManager(</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>string</FONT></FONT><FONT size=2> database, </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>bool</FONT></FONT><FONT size=2> isDatabaseName)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>return</FONT></FONT><FONT size=2> GetManager(database, isDatabaseName, </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>null</FONT></FONT><FONT size=2>);</P>
+<P>}</P>
+<P></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>///</FONT></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2> </FONT></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>&lt;summary&gt;</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>///</FONT></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2> Gets a specific ConnectionManager object for the database.</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>///</FONT></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2> </FONT></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>&lt;/summary&gt;</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>///</FONT></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2> </FONT></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>&lt;param name="database"&gt;</FONT></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2>Database name as shown in the config file.</FONT></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>&lt;/param&gt;</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>///</FONT></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2> </FONT></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>&lt;param name="connectionIdentifier"&gt;</FONT></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2>Identifier for the connection. Null, if the </P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>///</FONT></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2> default connection is to be used.</FONT></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>&lt;/param&gt;</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>public</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>static</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>ConnectionManagerV2</FONT></FONT><FONT size=2>&lt;C&gt; GetManager(</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>string</FONT></FONT><FONT size=2> database, </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>string</FONT></FONT><FONT size=2> connectionIdentifier)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>return</FONT></FONT><FONT size=2> GetManager(database, </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>true</FONT></FONT><FONT size=2>, connectionIdentifier);</P>
+<P>}</P>
+<P></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>///</FONT></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2> </FONT></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>&lt;summary&gt;</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>///</FONT></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2> Gets a specific ConnectionManager object for the database.</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>///</FONT></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2> </FONT></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>&lt;/summary&gt;</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>///</FONT></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2> </FONT></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>&lt;param name="database"&gt;</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>///</FONT></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2> The database name or connection string.</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>///</FONT></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2> </FONT></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>&lt;/param&gt;</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>///</FONT></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2> </FONT></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>&lt;param name="isDatabaseName"&gt;</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>///</FONT></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2> True to indicate that the connection string</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>///</FONT></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2> should be retrieved from the config file. If</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>///</FONT></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2> False, the database parameter is directly </P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>///</FONT></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2> used as a connection string.</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>///</FONT></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2> </FONT></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>&lt;/param&gt;</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>///</FONT></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2> </FONT></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>&lt;param name="connectionIdentifier"&gt;</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>///</FONT></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2> Identifier for the connection. Null, if the </P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>///</FONT></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2> default connection is to be used.</FONT></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>&lt;/param&gt;</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>///</FONT></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2> </FONT></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>&lt;/param&gt;</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>///</FONT></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2> </FONT></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>&lt;returns&gt;</FONT></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2>ConnectionManager object for the name.</FONT></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>&lt;/returns&gt;</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>public</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>static</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>ConnectionManagerV2</FONT></FONT><FONT size=2>&lt;C&gt; GetManager(</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>string</FONT></FONT><FONT size=2> database, </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>bool</FONT></FONT><FONT size=2> isDatabaseName, </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>string</FONT></FONT><FONT size=2> connectionIdentifier)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>if</FONT></FONT><FONT size=2> (isDatabaseName)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>var</FONT></FONT><FONT size=2> connection = </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>ConfigurationManager</FONT></FONT><FONT size=2>.ConnectionStrings[database];</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>if</FONT></FONT><FONT size=2> (connection == </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>null</FONT></FONT><FONT size=2>)</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>throw</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>new</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>ConfigurationErrorsException</FONT></FONT><FONT size=2>(</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>String</FONT></FONT><FONT size=2>.Format(Resources.DatabaseNameNotFound, database));</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>var</FONT></FONT><FONT size=2> conn = </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>ConfigurationManager</FONT></FONT><FONT size=2>.ConnectionStrings[database].ConnectionString;</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>if</FONT></FONT><FONT size=2> (</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>string</FONT></FONT><FONT size=2>.IsNullOrEmpty(conn))</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>throw</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>new</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>ConfigurationErrorsException</FONT></FONT><FONT size=2>(</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>String</FONT></FONT><FONT size=2>.Format(Resources.DatabaseNameNotFound, database));</P>
+<P>database = conn;</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>lock</FONT></FONT><FONT size=2> (_lock)</P>
+<P>{</P>
+<P></FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>ConnectionManagerV2</FONT></FONT><FONT size=2>&lt;C&gt; mgr = </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>null</FONT></FONT><FONT size=2>;</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>string</FONT></FONT><FONT size=2> databaseKey = </FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>"__db:"</FONT></FONT><FONT size=2> + database;</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>if</FONT></FONT><FONT size=2> (connectionIdentifier != </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>null</FONT></FONT><FONT size=2>)</P>
+<P>databaseKey = databaseKey + </FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>"_"</FONT></FONT><FONT size=2> + connectionIdentifier;</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>if</FONT></FONT><FONT size=2> (</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>ApplicationContext</FONT></FONT><FONT size=2>.LocalContext.Contains(databaseKey))</P>
+<P>{</P>
+<P>mgr = (</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>ConnectionManagerV2</FONT></FONT><FONT size=2>&lt;C&gt;)(</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>ApplicationContext</FONT></FONT><FONT size=2>.LocalContext[databaseKey]);</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>else</P></FONT></FONT><FONT size=2>
+<P>{</P>
+<P>mgr = </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>new</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>ConnectionManagerV2</FONT></FONT><FONT size=2>&lt;C&gt;(database, connectionIdentifier);</P>
+<P></FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>ApplicationContext</FONT></FONT><FONT size=2>.LocalContext[databaseKey] = mgr;</P>
+<P>}</P>
+<P>mgr.AddRef();</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>return</FONT></FONT><FONT size=2> mgr;</P>
+<P>}</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>private</FONT></FONT><FONT size=2> ConnectionManagerV2(</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>string</FONT></FONT><FONT size=2> connectionString, </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>string</FONT></FONT><FONT size=2> connectionIdentifier)</P>
+<P>{</P>
+<P>_connectionString = connectionString;</P>
+<P>_connectionIdentifier = connectionIdentifier;</P>
+<P></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2>// open connection</P></FONT></FONT><FONT size=2>
+<P>_connection = </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>new</FONT></FONT><FONT size=2> C();</P>
+<P>_connection.ConnectionString = connectionString;</P>
+<P>_connection.Open();</P>
+<P>}</P>
+<P></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>///</FONT></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2> </FONT></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>&lt;summary&gt;</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>///</FONT></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2> Gets the open database connection object.</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>///</FONT></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2> </FONT></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>&lt;/summary&gt;</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>public</FONT></FONT><FONT size=2> C Connection</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>get</P></FONT></FONT><FONT size=2>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>return</FONT></FONT><FONT size=2> _connection;</P>
+<P>}</P>
+<P>} </P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>
+<P>#region</FONT></FONT><FONT size=2> Reference counting</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>private</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>int</FONT></FONT><FONT size=2> mRefCount;</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>private</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>void</FONT></FONT><FONT size=2> AddRef()</P>
+<P>{</P>
+<P>mRefCount += 1;</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>private</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>void</FONT></FONT><FONT size=2> DeRef()</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>lock</FONT></FONT><FONT size=2> (_lock)</P>
+<P>{</P>
+<P>mRefCount -= 1;</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>if</FONT></FONT><FONT size=2> (mRefCount == 0)</P>
+<P>{</P>
+<P>_connection.Dispose();</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>string</FONT></FONT><FONT size=2> databaseKey = </FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>"__db:"</FONT></FONT><FONT size=2> + _connectionString;</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>if</FONT></FONT><FONT size=2> (_connectionIdentifier != </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>null</FONT></FONT><FONT size=2>)</P>
+<P>databaseKey = databaseKey + </FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>"_"</FONT></FONT><FONT size=2> + _connectionIdentifier;</P>
+<P></FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>ApplicationContext</FONT></FONT><FONT size=2>.LocalContext.Remove(databaseKey);</P>
+<P>}</P>
+<P>}</P>
+<P>}</P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>
+<P>#endregion</P>
+<P>#region</FONT></FONT><FONT size=2> IDisposable</P>
+<P></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>///</FONT></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2> </FONT></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>&lt;summary&gt;</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>///</FONT></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2> Dispose object, dereferencing or</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>///</FONT></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2> disposing the connection it is</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>///</FONT></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2> managing.</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>///</FONT></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2> </FONT></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>&lt;/summary&gt;</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>public</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>void</FONT></FONT><FONT size=2> Dispose()</P>
+<P>{</P>
+<P>DeRef();</P>
+<P>}</P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>
+<P>#endregion</P></FONT></FONT><FONT size=2>
+<P>}</P>
+<P>}</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P><FONT color=#0000ff size=2><FONT color=#0000ff size=2>
+<P>#if</FONT></FONT><FONT size=2> !CLIENTONLY</P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>
+<P>using</FONT></FONT><FONT size=2> System;</P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>
+<P>using</FONT></FONT><FONT size=2> System.Configuration;</P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>
+<P>using</FONT></FONT><FONT size=2> System.Data.Linq;</P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>
+<P>using</FONT></FONT><FONT size=2> Csla.Properties;</P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>
+<P>namespace</FONT></FONT><FONT size=2> Csla.Data</P>
+<P>{</P>
+<P></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>///</FONT></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2> </FONT></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>&lt;summary&gt;</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>///</FONT></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2> Provides an automated way to reuse </P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>///</FONT></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2> LINQ data context objects within the context</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>///</FONT></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2> of a single data portal operation.</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>///</FONT></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2> </FONT></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>&lt;/summary&gt;</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>///</FONT></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2> </FONT></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>&lt;typeparam name="C"&gt;</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>///</FONT></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2> Type of database </P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>///</FONT></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2> LINQ data context objects object to use.</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>///</FONT></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2> </FONT></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>&lt;/typeparam&gt;</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>///</FONT></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2> </FONT></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>&lt;remarks&gt;</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>///</FONT></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2> This type stores the LINQ data context object </P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>///</FONT></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2> in </FONT></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>&lt;see cref="Csla.ApplicationContext.LocalContext" /&gt;</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>///</FONT></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2> and uses reference counting through</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>///</FONT></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2> </FONT></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>&lt;see cref="IDisposable" /&gt;</FONT></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2> to keep the data context object</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>///</FONT></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2> open for reuse by child objects, and to automatically</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>///</FONT></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2> dispose the object when the last consumer</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>///</FONT></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2> has called Dispose."</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>///</FONT></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2> </FONT></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>&lt;/remarks&gt;</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>public</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>class</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>ContextManagerV2</FONT></FONT><FONT size=2>&lt;C&gt; : </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>IDisposable</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>where</FONT></FONT><FONT size=2> C : </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>DataContext</P></FONT></FONT><FONT size=2>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>private</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>static</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>object</FONT></FONT><FONT size=2> _lock = </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>new</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>object</FONT></FONT><FONT size=2>();</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>private</FONT></FONT><FONT size=2> C _context;</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>private</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>string</FONT></FONT><FONT size=2> _connectionString;</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>private</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>string</FONT></FONT><FONT size=2> _connectionIdentifier;</P>
+<P></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>///</FONT></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2> </FONT></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>&lt;summary&gt;</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>///</FONT></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2> Gets the ContextManager object for the </P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>///</FONT></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2> specified database.</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>///</FONT></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2> </FONT></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>&lt;/summary&gt;</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>///</FONT></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2> </FONT></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>&lt;param name="database"&gt;</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>///</FONT></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2> Database name as shown in the config file.</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>///</FONT></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2> </FONT></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>&lt;/param&gt;</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>public</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>static</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>ContextManagerV2</FONT></FONT><FONT size=2>&lt;C&gt; GetManager(</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>string</FONT></FONT><FONT size=2> database)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>return</FONT></FONT><FONT size=2> GetManager(database, </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>true</FONT></FONT><FONT size=2>, </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>null</FONT></FONT><FONT size=2>);</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>public</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>static</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>ContextManagerV2</FONT></FONT><FONT size=2>&lt;C&gt; GetManager(</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>string</FONT></FONT><FONT size=2> database, </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>bool</FONT></FONT><FONT size=2> isDatabaseName)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>return</FONT></FONT><FONT size=2> GetManager(database, isDatabaseName, </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>null</FONT></FONT><FONT size=2>);</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>public</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>static</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>ContextManagerV2</FONT></FONT><FONT size=2>&lt;C&gt; GetManager(</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>string</FONT></FONT><FONT size=2> database, </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>string</FONT></FONT><FONT size=2> connectionIdentifier)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>return</FONT></FONT><FONT size=2> GetManager(database, </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>true</FONT></FONT><FONT size=2>, connectionIdentifier);</P>
+<P>}</P>
+<P></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>///</FONT></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2> </FONT></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>&lt;summary&gt;</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>///</FONT></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2> Gets the ContextManager object for the </P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>///</FONT></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2> specified database.</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>///</FONT></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2> </FONT></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>&lt;/summary&gt;</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>///</FONT></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2> </FONT></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>&lt;param name="database"&gt;</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>///</FONT></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2> The database name or connection string.</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>///</FONT></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2> </FONT></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>&lt;/param&gt;</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>///</FONT></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2> </FONT></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>&lt;param name="isDatabaseName"&gt;</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>///</FONT></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2> True to indicate that the connection string</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>///</FONT></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2> should be retrieved from the config file. If</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>///</FONT></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2> False, the database parameter is directly </P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>///</FONT></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2> used as a connection string.</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>///</FONT></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2> </FONT></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>&lt;/param&gt;</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>///</FONT></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2> </FONT></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>&lt;returns&gt;</FONT></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2>ContextManager object for the name.</FONT></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>&lt;/returns&gt;</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>public</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>static</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>ContextManagerV2</FONT></FONT><FONT size=2>&lt;C&gt; GetManager(</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>string</FONT></FONT><FONT size=2> database, </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>bool</FONT></FONT><FONT size=2> isDatabaseName, </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>string</FONT></FONT><FONT size=2> connectionIdentifier)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>if</FONT></FONT><FONT size=2> (isDatabaseName)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>var</FONT></FONT><FONT size=2> connection = </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>ConfigurationManager</FONT></FONT><FONT size=2>.ConnectionStrings[database];</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>if</FONT></FONT><FONT size=2> (connection == </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>null</FONT></FONT><FONT size=2>)</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>throw</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>new</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>ConfigurationErrorsException</FONT></FONT><FONT size=2>(</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>String</FONT></FONT><FONT size=2>.Format(Resources.DatabaseNameNotFound, database));</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>var</FONT></FONT><FONT size=2> conn = </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>ConfigurationManager</FONT></FONT><FONT size=2>.ConnectionStrings[database].ConnectionString;</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>if</FONT></FONT><FONT size=2> (</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>string</FONT></FONT><FONT size=2>.IsNullOrEmpty(conn))</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>throw</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>new</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>ConfigurationErrorsException</FONT></FONT><FONT size=2>(</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>String</FONT></FONT><FONT size=2>.Format(Resources.DatabaseNameNotFound, database));</P>
+<P>database = conn;</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>lock</FONT></FONT><FONT size=2> (_lock)</P>
+<P>{</P>
+<P></FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>ContextManagerV2</FONT></FONT><FONT size=2>&lt;C&gt; mgr = </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>null</FONT></FONT><FONT size=2>;</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>string</FONT></FONT><FONT size=2> contextKey = </FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>"__ctx:"</FONT></FONT><FONT size=2> + database;</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>if</FONT></FONT><FONT size=2> (connectionIdentifier != </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>null</FONT></FONT><FONT size=2>)</P>
+<P>contextKey = contextKey + </FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>"_"</FONT></FONT><FONT size=2> + connectionIdentifier;</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>if</FONT></FONT><FONT size=2> (</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>ApplicationContext</FONT></FONT><FONT size=2>.LocalContext.Contains(contextKey))</P>
+<P>{</P>
+<P>mgr = (</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>ContextManagerV2</FONT></FONT><FONT size=2>&lt;C&gt;)(</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>ApplicationContext</FONT></FONT><FONT size=2>.LocalContext[contextKey]);</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>else</P></FONT></FONT><FONT size=2>
+<P>{</P>
+<P>mgr = </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>new</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>ContextManagerV2</FONT></FONT><FONT size=2>&lt;C&gt;(database, connectionIdentifier);</P>
+<P></FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>ApplicationContext</FONT></FONT><FONT size=2>.LocalContext[contextKey] = mgr;</P>
+<P>}</P>
+<P>mgr.AddRef();</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>return</FONT></FONT><FONT size=2> mgr;</P>
+<P>}</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>private</FONT></FONT><FONT size=2> ContextManagerV2(</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>string</FONT></FONT><FONT size=2> connectionString, </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>string</FONT></FONT><FONT size=2> connectionIdentifier)</P>
+<P>{</P>
+<P>_connectionString = connectionString;</P>
+<P>_connectionIdentifier = connectionIdentifier;</P>
+<P>_context = (C)(</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>Activator</FONT></FONT><FONT size=2>.CreateInstance(</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>typeof</FONT></FONT><FONT size=2>(C), </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>ConnectionManagerV2</FONT></FONT><FONT size=2>&lt;System.Data.SqlClient.</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>SqlConnection</FONT></FONT><FONT size=2>&gt;.GetManager(connectionString, </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>false</FONT></FONT><FONT size=2>, connectionIdentifier).Connection));</P>
+<P>}</P>
+<P></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>///</FONT></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2> </FONT></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>&lt;summary&gt;</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>///</FONT></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2> Gets the LINQ data context object.</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>///</FONT></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2> </FONT></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>&lt;/summary&gt;</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>public</FONT></FONT><FONT size=2> C DataContext</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>get</P></FONT></FONT><FONT size=2>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>return</FONT></FONT><FONT size=2> _context;</P>
+<P>}</P>
+<P>}</P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>
+<P>#region</FONT></FONT><FONT size=2> Reference counting</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>private</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>int</FONT></FONT><FONT size=2> mRefCount;</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>private</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>void</FONT></FONT><FONT size=2> AddRef()</P>
+<P>{</P>
+<P>mRefCount += 1;</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>private</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>void</FONT></FONT><FONT size=2> DeRef()</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>lock</FONT></FONT><FONT size=2> (_lock)</P>
+<P>{</P>
+<P>mRefCount -= 1;</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>if</FONT></FONT><FONT size=2> (mRefCount == 0)</P>
+<P>{</P>
+<P>_context.Dispose();</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>string</FONT></FONT><FONT size=2> contextKey = </FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>"__ctx:"</FONT></FONT><FONT size=2> + _connectionString;</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>if</FONT></FONT><FONT size=2> (_connectionIdentifier != </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>null</FONT></FONT><FONT size=2>)</P>
+<P>contextKey = contextKey + </FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>"_"</FONT></FONT><FONT size=2> + _connectionIdentifier;</P>
+<P></FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>ApplicationContext</FONT></FONT><FONT size=2>.LocalContext.Remove(contextKey);</P>
+<P>}</P>
+<P>}</P>
+<P>}</P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>
+<P>#endregion</P>
+<P>#region</FONT></FONT><FONT size=2> IDisposable</P>
+<P></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>///</FONT></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2> </FONT></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>&lt;summary&gt;</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>///</FONT></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2> Dispose object, dereferencing or</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>///</FONT></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2> disposing the context it is</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>///</FONT></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2> managing.</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>///</FONT></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2> </FONT></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>&lt;/summary&gt;</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>public</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>void</FONT></FONT><FONT size=2> Dispose()</P>
+<P>{</P>
+<P>DeRef();</P>
+<P>}</P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>
+<P>#endregion</P></FONT></FONT><FONT size=2>
+<P>}</P>
+<P>}</P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>
+<P>#endif</P></FONT></FONT></FONT></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

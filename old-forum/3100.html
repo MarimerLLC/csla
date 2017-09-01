@@ -1,0 +1,48 @@
+<html><header><title>One to One relationship - Object Design Question</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>One to One relationship - Object Design Question</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3100.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>white911 posted on Tuesday, June 26, 2007</h2><P><FONT face=Arial size=2>I have a question about how to create my objects.</FONT></P>
+<P><FONT face=Arial size=2>My scenario is as following. I have 2 types of Contacts. 1) Customer Contact 2) Vendor Contact. There is no such thing as an Contact by itself, but in order to normalize the database I created 3 tables</FONT></P>
+<P><FONT face=Arial size=2>1) Contacts</FONT></P>
+<UL>
+<LI><FONT face=Arial size=2>ContactID</FONT></LI>
+<LI><FONT face=Arial size=2>FirstName</FONT></LI>
+<LI><FONT face=Arial size=2>LastName </FONT></LI>
+<LI><FONT face=Arial size=2>Etc.</FONT></LI>
+<LI><FONT face=Arial size=2>LastUpdatedOn - Date when row was last updated</FONT></LI></UL>
+<P><FONT face=Arial size=2>2) VendorContact</FONT></P>
+<UL>
+<LI><FONT face=Arial size=2>ContactID - One To One relationship to Contacts.ContactID</FONT></LI>
+<LI><FONT face=Arial size=2>Etc.</FONT></LI>
+<LI><FONT face=Arial size=2>LastUpdatedOn - Date when row was last updated</FONT></LI></UL><FONT face=Arial size=2>
+<P><FONT face=Arial size=2>2) CustomerContact</FONT></P>
+<UL>
+<LI><FONT face=Arial size=2>ContactID - One To One relationship to Contacts.ContactID</FONT></LI>
+<LI><FONT face=Arial size=2>Etc.</FONT></LI>
+<LI><FONT face=Arial size=2>LastUpdatedOn - Date when row was last updated</FONT></LI></UL>
+<P>My use cases are</P>
+<UL>
+<LI>Add a VendorContact</LI>
+<LI>Add a CustomerContact</LI></UL>
+<P>If I set up the VendorContact object to include all the fields of the Contact Table (FirstName etc), then how can I track if the record was changed (it may be dirty only because of fields in one table, so we do not need to update both tables, but the object doesn't know to which table it belongs).</P>
+<P>Please advise me how to accomplish.</P>
+<P>Should I create a contact object and VendorContact should inherit from it? This is not a true object because it does not have a use case (we never create a contact object by itself)</P>
+<P>Should I create a Contact object as a child in VendorObject?????</P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Wednesday, June 27, 2007</h2>You could create a Contact BO which will manage the shared part of the state information.&nbsp; It would be an internal class.&nbsp; You can then create the necessary properties on Vendor or Customer; the shared properties would delgate the call to the Customer object.&nbsp; <br><br>As far as access checks go (CanRead / CanWrite), those seem to be best handled by the public class.&nbsp; If you're interested, this would be an example of the facade pattern.<br><br>You could also use inheritence if the behavior for both will always be the same, and you have cases where it doesn't matter if the contact is a vendor or customer.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>hanami279 replied on Thursday, August 09, 2007</h2><P>Hi all,</P>
+<P>I'm a newbie to CSLA so I have a question about object design (1-1 relationship).</P>
+<P>I have a Customer table and a Address table. Customer table have AddressID as it's FK. Each Customer have only one Address associate with it. So i had modeled Customer as a Root object and&nbsp;Address as an Child object. In Customer object i have a property to represent Address. I have problem with child object design. So, when i insert a customer, i have to insert a address first and retrieve AddressId to push into Customer table. But in child object model, each child object will have a parent object, and when parent object is inserted first and then the child object. In this case, what's the parent of Address ? How can i model this case clearly?</P>
+<P>Thanks!</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, August 10, 2007</h2><P>There is no problem with inserting the child object before the parent object in your DataPortal_Insert() method. </P>
+<P>If you insert your child Address object first, then the parent can get the ID:</P>
+<P>protected override void DataPortal_Insert()<BR>{<BR>&nbsp; _address.Insert();<BR>&nbsp; // ...<BR>&nbsp; cm.Parameters.AddWithValue("@addressId", _address.Id);<BR>&nbsp; // ...<BR>&nbsp; cm.ExecuteNonQuery();<BR>}</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>hanami279 replied on Saturday, August 11, 2007</h2><P>Thanks for your reply.</P>
+<P>I know that Address object can be inserted before inserting&nbsp;Order object. But in child object concept of CSLA in your book, a child object is defined as a object in a collection. In my situation, Order object have only one Address object instead of a collection of Address. I wonder that every child object has a parent object, and in my object model which is parent of Address object? Address object can not&nbsp;use child object template because it's in a collection so should i create a separate template for this object type?</P>
+<P>Regards.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Monday, August 13, 2007</h2><P>A root BO can contain a child object. Frequently this child is a collection of many items. But it can also directly contain a single copy of the child itself outside of the collection. Do not limit you thinking to just what the sample templates provide. You can certainly code things this way without a template.</P>
+<P>Joe</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ozitraveller replied on Tuesday, August 14, 2007</h2><P>Hi</P>
+<P>I had this problem recently, Contacts = Professional Contacts + Personal Contacts, and the original database had 2 tables. I didn't really want to contacts maintenance screens. So I merged the 2 tables, added a ContactTypeID ( 1, 'Personal'; 2 'Professional') column to the table and the selection list (DataGridView) sorted the data by ContactType to group the data.</P>
+<P>Hope this helps.</P>
+<P>Ozi</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jkellywilkerson replied on Thursday, August 16, 2007</h2><P>That is a perfectly&nbsp;good method.&nbsp; I do the same thing using enums and when creating a contact or other similar BO, I simply pass in ContactEnums.ContactType.Personal or ContactEnums.ContactType.Professional.&nbsp; It really helps out,&nbsp;especially later, when things change a little and I need to add some other contact type.&nbsp; All I have to do is add an enum entry and whatever associated data for&nbsp;the pick list.&nbsp; No worries about adding several&nbsp;additional BO's,&nbsp;database tables and stored procs.</P>
+<P>Kelly.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>white911 replied on Thursday, August 16, 2007</h2><P><FONT face=Arial size=2>Hi,</FONT></P>
+<P>When you have a child which is a one to one relationship with it's parent object, we could combine both into one object. However, if we need to track the IsDirty seperately for each tale, we would then need to create a business object for each table.</P>
+<P>Example: We have 2 tables 1) Customers, 2) Addresses. A customer can only have one address so we would have the customer id in the address table or opposite (no difference the db design).</P>
+<P>We could combine both tables into in BO have customerid, name, address, city etc., however we don't know when to BO is dirty if it's because of the customer data so we need to update the customers table or because of the address table so we need to update the address table or maybe because of both so need to update bothe tables.</P>
+<P>Updating a table if there is no changes dosen't make sense. So basically you have to create a seperate object for each table.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jkellywilkerson replied on Thursday, August 16, 2007</h2><P>I guess I am not following you on using a BO IsDirty to check if a DB table IsDirty.&nbsp; You have to be careful that you are modelling the behavior and not the relationship.</P>
+<P>The Parent object (Customer in this case) should have direct access to the Child object (Address in this case).&nbsp; You should be able to check&nbsp;Child.IsDirty for the Parent.</P>
+<P>Kelly.</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,25 @@
+<html><header><title>CSLA 4 with Silverlight conversion issues</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA 4 with Silverlight conversion issues</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9383.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>digigeek posted on Monday, August 16, 2010</h2><p>I&#39;m trying to convert some VB business objects, which were written for CSLA 2 and am running into various deprecation problems. Most of them are well-covered on your other web site, but this is one is stumping me.</p>
+<p>These guys were doing:</p>
+<p>
+<code>
+#Region &quot; Data Portal &quot;
+<br />
+        Private Overloads Sub Fetch(ByVal dr As Csla.Data.SafeDataReader)
+<br />&nbsp;&nbsp; &nbsp;_DbId = dr.GetInt32(&quot;UndTemplateId&quot;)
+<br />&nbsp;&nbsp; &nbsp;dr.GetBytes(&quot;LastUpdate&quot;, 0, _LastUpdate, 0, 8)
+<br />&nbsp;&nbsp; &nbsp;_ConditionId = dr.GetInt32(&quot;UndConditionId&quot;)
+<br />&nbsp;&nbsp; &nbsp;_ConditionIdAsString = _ConditionId.ToString
+<br />&nbsp;&nbsp; &nbsp;_Section = dr.GetString(&quot;Section&quot;)
+<br />&nbsp;&nbsp; &nbsp;&#39; I already fixed this deprecated class<br />&nbsp;&nbsp; &nbsp;BusinessRules.CheckRules()
+<br />&nbsp;&nbsp; &nbsp;&#39;ValidationRules.CheckRules()
+<br />&nbsp;&nbsp; &nbsp;MarkOld()
+<br />        End Sub</code></p>
+<p>Of course, Csla.Data.SafeReader does not exist any longer. What&#39;s the proper course of action?</p>
+<p>&nbsp;</p>
+<p>Thanks,</p>
+<p>James Cates</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jav replied on Monday, August 16, 2010</h2><p>James</p>
+<p>1.&nbsp; Going from Csla 2.x to 4.0 is a huge jump.<br />2.&nbsp; SafeDataReader does exist in Csla 4.0&nbsp; I am assuming that the phrase &quot;Csla.Data.SafeReader&quot; in your message is a&nbsp;typo. Your Method argument is correct.&nbsp; Also dr.GetInt32(&quot;UndTemplateId&quot;) and other lines are correct.<br />3.&nbsp; I think SafeDataReader is the least of your problems.</p>
+<p>Jav</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>digigeek replied on Tuesday, August 17, 2010</h2><p>That&#39;s really disheartening. Surely, a lot of people will want to move to the latest version of CSLA. That sort of thing should never be massively painful to accomplish. I see no Csla.Data.SafeDataReader in my v 4.0 Silverlight DLL. None at all.</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>tmg4340 replied on Tuesday, August 17, 2010</h2><p>The&nbsp;SafeDataReader doesn&#39;t exist in the Silverlight CSLA assembly because Silverlight has no concept of ADO.NET.&nbsp; SafeDataReader still exists in the full-.NET CSLA assembly, which is what you would use on the server to retrieve your Silverlight data.&nbsp; You might want to take a look at the 3.8 video series that Rocky has created - CSLA in Silverlight works much differently than you&#39;re probably used to.</p>
+<p>It&#39;s hard to make upgrading two major versions of any&nbsp;product not painful, massively or otherwise.&nbsp; Rocky has done a lot of work to make sure there&#39;s a good level of backwards compatability, but it&#39;s not 100%.&nbsp; And if you weren&#39;t using Silverlight, you could probably keep&nbsp;a fair amount&nbsp;of your existing codebase (though there are now much better ways of doing a lot of things.)&nbsp; However,&nbsp;since you&#39;re going to Silverlight, the way you create BO&#39;s is quite different, and unfortunately much of your existing codebase is simply going to have to be re-worked to comply with that.&nbsp; This is because of Silverlight&nbsp;constraints on what&#39;s possible in the SL runtime.&nbsp; Again, checking out the video series, blog posts, forum posts, etc. - as well as the 2008 book -&nbsp;should give you the information you need.</p>
+<p>HTH</p>
+<p>- Scott</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

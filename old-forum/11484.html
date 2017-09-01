@@ -1,0 +1,72 @@
+<html><header><title>DataPortal in Silverlight CSLA 4.3.12</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>DataPortal in Silverlight CSLA 4.3.12</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11484.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>st3fanus posted on Wednesday, July 18, 2012</h2><p>Hi I&#39;m stefanus..</p>
+<p>I want to ask from you all..</p>
+<p>I don&#39;t know what happened here :</p>
+<p>I use Silverlight 5, and CSLA 4.3.12 i use MVVM Light and CSLA.Xaml too..</p>
+<p>I have&nbsp; MenuList extends from ReadOnlyListBase</p>
+<p>in the factory methods i call DataPortal.BeginFetch</p>
+<p>But I tried to run break point in the Data Access Invocations</p>
+<p>private void DataPortal_Fetch BUT it shown that this code is never running!!</p>
+<p>&nbsp;</p>
+<p>Is there any something I&#39;m missing ??</p>
+<p>Hope anyone could help me..</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>Thanks a lot</p>
+<p>stefanus</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>st3fanus replied on Wednesday, July 18, 2012</h2><p>Hi...</p>
+<p>&nbsp;</p>
+<p>I have tried and get that DataPortal,BeginFetch doesn&#39;t call DataPortal_Fetch in the data access method !!!</p>
+<p>&nbsp;</p>
+<p>IS anyone could help me ?</p>
+<p>&nbsp;</p>
+<p>thanks a lot</p>
+<p>stefanus</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Thursday, July 19, 2012</h2><p>Do you use the local proxy or Aut proxy (remote)? </p>
+<p>Do you get an exeption returned to you&nbsp; callback method? </p>
+<p>Read this thread on using the DataPortal.BeginFetxch method: <a href="http://forums.lhotka.net/forums/t/11428.aspx">http://forums.lhotka.net/forums/t/11428.aspx</a>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>st3fanus replied on Thursday, July 19, 2012</h2><p>Hi jonny..</p>
+<p>Thanks for your quick response ( acctually I&#39;m waiting for someone give me something )</p>
+<p>&nbsp;</p>
+<p>I use REMOTE dataportal NOT local mode.</p>
+<p># My MenuList Class</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public static void GetMenuList(EventHandler&lt;DataPortalResult&lt;MenuList&gt;&gt; callback)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; DataPortal.BeginFetch&lt;MenuList&gt;(callback);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</p>
+<p>&nbsp;</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; private void DataPortal_Fetch()<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; using (var catalog = new DirectoryCatalog(@&quot;D:\STS\DevelopmentSource\AIS\AIS.Lib.Net\bin\Debug&quot;))<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var container = new CompositionContainer(catalog);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; container.SatisfyImportsOnce(this);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br /><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; IsReadOnly = false;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var rlce = RaiseListChangedEvents;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; RaiseListChangedEvents = false;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; using (var data = MenuDal.Fetch(&quot;teacher1&quot;))<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var item = DataPortal.FetchChild&lt;MenuInfo&gt;(data);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Add(item);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; RaiseListChangedEvents = rlce;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; IsReadOnly = true;<br /><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</p>
+<p>#. ===============================================</p>
+<p>&nbsp;</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; MenuList.GetMenuList((o, e) =&gt; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (e.Error != null)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; System.Windows.MessageBox.Show(&quot;DP ERROR : &quot; + e.Error.Message);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; else<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Model = e.Object;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; });</p>
+<p>&nbsp;</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; I Got : </p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; DP ERROR : No Parameterless constructor defined for this object </p>
+<p>&nbsp;</p>
+<p>I&#39;m sorry , I&#39;m lost for this error ?</p>
+<p>could you give me explaination or any suggestion ?</p>
+<p>&nbsp;</p>
+<p>thanks a lot jonny</p>
+<p>&nbsp;</p>
+<p>Stefanus</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Thursday, July 19, 2012</h2><p>All business objects in SL must have public default parameterless constructor (so we now typically never add the private constructor).&nbsp;</p>
+<p>You should probably also add a parameter to DataPortal_Fetch(object criteria).</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>st3fanus replied on Thursday, July 19, 2012</h2><p>Hi jonny..</p>
+<p>I&#39;ve added :</p>
+<p>&nbsp;</p>
+<p>public MenuList()<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; { }</p>
+<p>&nbsp;</p>
+<p>and changed my factory method like this :</p>
+<p>public static void GetMenuList(string username, EventHandler&lt;DataPortalResult&lt;MenuList&gt;&gt; callback)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; DataPortal.BeginFetch&lt;MenuList&gt;(username, callback);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</p>
+<p>&nbsp;</p>
+<p>private void DataPortal_Fetch(string username)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; using (var catalog = new DirectoryCatalog(@&quot;D:\STS\DevelopmentSource\AIS\AIS.Lib.Net\bin\Debug&quot;))<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var container = new CompositionContainer(catalog);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; container.SatisfyImportsOnce(this);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br /><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; IsReadOnly = false;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var rlce = RaiseListChangedEvents;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; RaiseListChangedEvents = false;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; using (var data = MenuDal.Fetch(username))<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var item = DataPortal.FetchChild&lt;MenuInfo&gt;(data);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Add(item);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; RaiseListChangedEvents = rlce;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; IsReadOnly = true;<br /><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</p>
+<p>&nbsp;</p>
+<p>BUT I still got the same error as before ??</p>
+<p>Is there something I&#39;m missing ??</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Thursday, July 19, 2012</h2><p>ALL business objects must have public default constructor.</p>
+<p>Make sure MenuInfo and all othe BO also has public default constructor.&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>st3fanus replied on Thursday, July 19, 2012</h2><p>Hi jonny..</p>
+<p>&nbsp;</p>
+<p>I have add public default constructor in my BO MenuList and MenuInfo</p>
+<p>BUT I still got the same exception / error as before</p>
+<p>&nbsp;</p>
+<p>I don&#39;t know why DataPortal.BeginFetch do not call DataPortal_Fetch(string username) ??</p>
+<p>Do you still with me jonny ?</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>thanks a lot jonny</p>
+<p>&nbsp;</p>
+<p>stefanus</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>st3fanus replied on Thursday, July 19, 2012</h2><p>Hi ..</p>
+<p>Could anyone give me a suggestions ??</p>
+<p>&nbsp;</p>
+<p>thanks a lot</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

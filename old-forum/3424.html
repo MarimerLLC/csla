@@ -1,0 +1,134 @@
+<html><header><title>Rule FriendlyName property</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Rule FriendlyName property</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3424.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>ReadOnlyChild posted on Saturday, August 25, 2007</h2><P>Hello, I see how the friendlyName can be obtained thru the static method in RuleArgs, and can be accessed on the validator method to assign the Description property on the "validator" method; </P>
+<P>I would benefit if the friendlyName property could also be obtained at the time of displaying the BrokenRuleCollection on an BO, for instance dataBind-ing this collection to a dataGridView in UI.</P>
+<P>my question is if it would be a good idea to implement the FriendlyName in the BrokenRule class and somehow pass it along from the RuleArgs class..., any suggestions are appreciated !!!</P>
+<P>saludos!</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, August 27, 2007</h2>Interesting idea - I'll add it to the <A href="http://www.lhotka.net/cslanet/wishlist.aspx">wish list</A>.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ReadOnlyChild replied on Tuesday, August 28, 2007</h2><P>thanks Rocky !!</P>
+<P><img src="/emoticons/emotion-2.gif" alt="Big Smile [:D]" /></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tiago replied on Sunday, April 29, 2012</h2><p><div style='padding-left: 50px;background-color:silver'><b>ReadOnlyChild<br></b>
+<p>Hello, I see how the friendlyName can be obtained thru the static method in RuleArgs, and can be accessed on the validator method to assign the Description property on the &quot;validator&quot; method; </p>
+<p>I would benefit if the friendlyName property could also be obtained at the time of displaying the BrokenRuleCollection on an BO, for instance dataBind-ing this collection to a dataGridView in UI.</p>
+<p>my question is if it would be a good idea to implement the FriendlyName in the BrokenRule class and somehow pass it along from the RuleArgs class..., any suggestions are appreciated !!!</p>
+<p>saludos!</p>
+<div style="CLEAR:both;"></div>
+</div></p>
+<p>Hi Rocky,</p>
+<p>Working on CslaActionExtender I have the same requisite: display the OriginPropertyFriendlyName. When I show the broken rules using ErrorWarnInfo object, I don&#39;t need to include the OriginPropertyFriendlyName as this controls shows next to the visual element and adding this friendly name would be just &quot;noise&quot;. </p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Sunday, April 29, 2012</h2><p>The broken rules collection is serialized with the object, so each broken rule object must be as small as possible. I have no problem adding a helper property the retrieves the friendly name, but I wouldn&#39;t want to store that value in the broken rule object itself.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Sunday, April 29, 2012</h2><p>Hi Tiago, </p>
+<p>No - I do not believe that you should present the OriginPropertyFriendlyName. OriginProperty is more for internal usage and how the RuleEngine runs cleanup of validation rules before executing. IE: A rule can call AddXYZResult to set reult on other properties than the PrimaryProperty. These BrokenRule will always have another PrimaryProperty to which it should be displayed - but in these circumstances the OriginProperty is the PrimaryProperty for that rule and NOT the property that the message belongs to.</p>
+<p>You should use PrimaryProperty and maybe add a Extension method to BrokenRule that gets the FriendlyName. </p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tiago replied on Sunday, April 29, 2012</h2><p>Hi Rocky and Jonny,</p>
+<p>As&nbsp;the property&#39;s FriendlyName is part of the BO, there is no point in duplicating that piece of information. My first approach was to try to get that value. When I found no method to do it, I turned to plan B and add it to the broken rule object.</p>
+<p>I suppose that adding this method to&nbsp;BusinessBase.cs&nbsp;will do it</p>
+<pre style="font-family:Consolas;background:white;color:black;font-size:13px;"><span style="color:blue;">&nbsp;&nbsp;&nbsp;&nbsp;#region</span>&nbsp;GetPropertyFriendlyName
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;summary&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;Gets&nbsp;a&nbsp;property&#39;s&nbsp;friendly&nbsp;name.</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;/summary&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;param&nbsp;name=</span><span style="color:gray;">&quot;propertyName&quot;</span><span style="color:gray;">&gt;</span><span style="color:green;">The&nbsp;name&nbsp;of&nbsp;the&nbsp;property.</span><span style="color:gray;">&lt;/param&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;returns&gt;</span><span style="color:green;">The&nbsp;property&#39;s&nbsp;friendly&nbsp;name.</span><span style="color:gray;">&lt;/returns&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">string</span>&nbsp;<span style="color:darkcyan;">GetPropertyFriendlyName</span>(<span style="color:blue;">string</span>&nbsp;propertyName)
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">var</span>&nbsp;propertyInfo&nbsp;=&nbsp;<span style="color:purple;">FieldManager</span>.<span style="color:darkcyan;">GetRegisteredProperties</span>().<span style="color:darkcyan;">Where</span>(c&nbsp;=&gt;&nbsp;c.<span style="color:purple;">Name</span>&nbsp;==&nbsp;propertyName).<span style="color:darkcyan;">FirstOrDefault</span>();
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">if</span>&nbsp;(propertyInfo&nbsp;==&nbsp;<span style="color:blue;">null</span>)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">throw</span>&nbsp;<span style="color:blue;">new</span>&nbsp;<span style="color:darkblue;">ArgumentOutOfRangeException</span>(<span style="color:#a31515;">&quot;</span><span style="color:#a31515;">propertyName</span><span style="color:#a31515;">&quot;</span>);
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">return</span>&nbsp;propertyInfo.<span style="color:purple;">FriendlyName</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+<span style="color:blue;">&nbsp;&nbsp;&nbsp;&nbsp;#endregion</span>
+</pre></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, May 08, 2012</h2><p>Due to some pressing family issues I have been unable to really look at this in depth until now.</p>
+<p>The solution should be to take the GetManagedProperties method implemented today for the IManageProperties interface, and to make that public. That would allow UI components like CslaActionExtender to gain access to the IPropertyInfo objects for all registered properties.</p>
+<p>The IPropertyInfo objects already have the friendly name as a property, along with other potentially useful information.</p>
+<p>The only risk in this, is that external code can change the Index property, and if that occurs they&#39;d introduce nasty serialization errors (and probably other errors). But the IPropertyInfo objects are normally already public and can be found using normal reflection, so I don&#39;t see this as an increased risk over today.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Tuesday, May 08, 2012</h2><p>Hmmmmm, </p>
+<p>Do we really want to make the entire IManagePoperties interface avalible publicly to external code? </p>
+<p>&nbsp; <span style="color:#0000ff;font-weight:bold;">internal</span>&nbsp;<span style="color:#ff0000;">interface</span>&nbsp;IManageProperties<br />
+&nbsp;&nbsp;{<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#ff0000;font-weight:bold;">bool</span>&nbsp;HasManagedProperties&nbsp;{&nbsp;<span style="color:#8b4513;">get</span>;&nbsp;}<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#ff0000;font-weight:bold;">bool</span>&nbsp;<span style="color:#191970;font-weight:bold;">FieldExists</span>(Csla.Core.IPropertyInfo property);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;List&lt;IPropertyInfo&gt;&nbsp;<span style="color:#191970;font-weight:bold;">GetManagedProperties</span>();<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#ff0000;">object</span>&nbsp;<span style="color:#191970;font-weight:bold;">GetProperty</span>(IPropertyInfo propertyInfo);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#ff0000;">object</span>&nbsp;<span style="color:#191970;font-weight:bold;">ReadProperty</span>(IPropertyInfo propertyInfo);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;P ReadProperty&lt;P&gt;(PropertyInfo&lt;P&gt;&nbsp;propertyInfo);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#ff0000;">void</span>&nbsp;<span style="color:#191970;font-weight:bold;">SetProperty</span>(IPropertyInfo propertyInfo,&nbsp;<span style="color:#ff0000;">object</span>&nbsp;newValue);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#ff0000;">void</span>&nbsp;<span style="color:#191970;font-weight:bold;">LoadProperty</span>(IPropertyInfo propertyInfo,&nbsp;<span style="color:#ff0000;">object</span>&nbsp;newValue);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#ff0000;">void</span>&nbsp;LoadProperty&lt;P&gt;(PropertyInfo&lt;P&gt;&nbsp;propertyInfo,&nbsp;P newValue);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;List&lt;<span style="color:#ff0000;">object</span>&gt;&nbsp;<span style="color:#191970;font-weight:bold;">GetChildren</span>();<br />
+&nbsp;&nbsp;}</p>
+<p>ReadProperty/LoadProperty/.... is at current version protected methods only and thus available to class and descendants.</p>
+<p>PropertyInfo&lt;T&gt;.Index should marked with </p>
+<p>&nbsp;&nbsp;&nbsp; [<span style="color:#191970;font-weight:bold;">EditorBrowsable</span>(EditorBrowsableState.Never)]<br />&nbsp;&nbsp;&nbsp; <span style="color:#ff0000;font-weight:bold;">int</span>&nbsp;Core.IPropertyInfo.Index</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, May 08, 2012</h2><p>No, absolutely not!</p>
+<p>I am only suggesting making the GetManagedProperties method public so it is available through the interface and directly. Probably with EditorBrowsable(Advanced) to avoid some API clutter.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tiago replied on Saturday, May 19, 2012</h2><p>Hi Rocky,</p>
+<p>Do you mean editing</p>
+<pre style="font-family:Consolas;background:white;color:black;font-size:13px;"><span style="color:darkblue;">Csla</span>.<span style="color:darkblue;">Core</span>.<span style="color:darkblue;">BusinessBase</span>
+</pre>
+<p>and replacing</p>
+<pre style="font-family:Consolas;background:white;color:black;font-size:13px;"><span style="color:darkblue;">List</span>&lt;<span style="color:darkblue;">IPropertyInfo</span>&gt;&nbsp;<span style="color:darkblue;">IManageProperties</span>.<span style="color:darkcyan;">GetManagedProperties</span>()
+</pre>
+<p>by</p>
+<pre style="font-family:Consolas;background:white;color:black;font-size:13px;">&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;summary&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;Gets&nbsp;the&nbsp;managed&nbsp;properties&nbsp;collection.</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;/summary&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;returns&gt;<span style="color:green;">The&nbsp;managed&nbsp;properties&nbsp;collection.</span>&lt;/returns&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;[<span style="color:darkblue;">EditorBrowsable</span>(<span style="color:darkblue;">EditorBrowsableState</span>.<span style="color:purple;font-weight:bold;">Advanced</span>)]
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:darkblue;">List</span>&lt;<span style="color:darkblue;">IPropertyInfo</span>&gt;&nbsp;<span style="color:darkcyan;">GetManagedProperties</span>()
+</pre>
+<p>Regards</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Saturday, May 19, 2012</h2><p>Well actually I was talking to Jason Bock on the way back from VS Live NY earlier this week and he had a good idea.</p>
+<p>What they&#39;ve done on his current project is to define a consolidated public IBusinessBase interface that exposes all the standard public methods from BusinessBase in one interface. They did this to make some mocking and testing scenarios simpler.</p>
+<p>But even outside mocking/testing, the value of implementing this consolidated interface is that a UI framework component (like CslaActionExtender) would have easy access to all these elements through the interface - and without adding more elements to the default public interface of the object.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Sunday, May 20, 2012</h2><p>Interesting idea.&nbsp;</p>
+<p>Are they allowed to submit the code to CSLA?&nbsp;</p>
+<p>Did they include ALL public methods?&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Sunday, May 20, 2012</h2><p>No, they can&#39;t contribute the code. But really, there&#39;s not much code to contribute, because all they did was define an interface against pre-existing methods/interfaces.</p>
+<p>I think the only thing that wasn&#39;t easy was getting at the broken rules collection, because that&#39;s not part of an existing public interface. I think it probably <em>should</em> be part of some existing public interface though, so fixing that doesn&#39;t seem like a bad thing to me (ICheckRules perhaps?).</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Monday, May 21, 2012</h2><p>BusinessBase has BrokenRulesCollection as a virtual property and Interface does not accept properties. </p>
+<p>But we could add a new method to ICheckRules as GetBrokenRules() and return that property.</p>
+<p>&nbsp;&nbsp;&nbsp; /// &lt;summary&gt;<br />&nbsp;&nbsp;&nbsp; /// Gets the broken rules for this object<br />&nbsp;&nbsp;&nbsp; /// &lt;/summary&gt;<br />&nbsp;&nbsp;&nbsp; BrokenRulesCollection ICheckRules.GetBrokenRules()<br />&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return BrokenRulesCollection;<br />&nbsp;&nbsp;&nbsp; }</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, May 21, 2012</h2><p>Yes, that is what I was thinking.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Monday, May 21, 2012</h2><p>Should CSLA.Core.BusinessBase.cs expose the method as </p>
+<p>&nbsp;&nbsp;&nbsp; public BrokenRulesCollection GetBrokenRules()<br />&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return BrokenRulesCollection;<br />&nbsp;&nbsp;&nbsp; }</p>
+<p>or only through interface </p>
+<p>&nbsp;&nbsp;&nbsp; BrokenRulesCollection ICheckRules.GetBrokenRules()<br />&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return BrokenRulesCollection;<br />&nbsp;&nbsp;&nbsp; }</p>
+<p>or just return an IEnumerable</p>
+<p>&nbsp;&nbsp;&nbsp; IEnumerable&lt;BrokenRule&gt; ICheckRules.GetBrokenRules()<br />&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return Enumerable.ToArray(BrokenRulesCollection);<br />&nbsp;&nbsp;&nbsp; }</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, May 21, 2012</h2><p>No, we actually want to return the real list. It is designed for this purpose, and so is read-only for external consumers.</p>
+<p>The reason for exposing the real list, is that it is a bindable list, so a UI developer can bind it to a control on the screen so the user sees the list of broken rules as they occur.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, May 21, 2012</h2><p>The method is currently a public virtual method, and that shouldn&#39;t change. I don&#39;t want to create a breaking change out of this, just add the method to the ICheckRules interface.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Monday, May 21, 2012</h2><p>Good, I&#39;ll do it in a short time. </p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Monday, May 21, 2012</h2><p>Checked in for both CSLA 4.3 and 4.5</p>
+<p><a href="http://www.lhotka.net/cslabugs/edit_bug.aspx?id=1052">http://www.lhotka.net/cslabugs/edit_bug.aspx?id=1052 </a></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tiago replied on Monday, May 21, 2012</h2><p>Hi Jonny,</p>
+<p>Got the changes.Besides adding a method GetBrokenRules() to ICheckRules&nbsp;I really fail to see the point of this change. This method duplicates the public virtual BrokenRulesCollection property (the difference is that&nbsp;you can&#39;t be override it).</p>
+<p>As it is, I&#39;m not any closer to get the property FriendlyName. I hope the &quot;consolidated public IBusinessBase interface&quot; Rocky mentions some messages back will help in that particular.</p>
+<p>Regards,</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tiago replied on Monday, May 21, 2012</h2><p>Does it conflicts with the changing of GetManagedProperties() method visibility?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, May 21, 2012</h2><p>I haven&#39;t figured out which interface should get that method yet.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Monday, May 21, 2012</h2><p>Hi Tiago,</p>
+<p>You cannot have properties in an interface - only methods, delegates and events. </p>
+<p>From MSDN:<a href="http://msdn.microsoft.com/en-us/library/87d83y5b%28v=vs.100%29.aspx">http://msdn.microsoft.com/en-us/library/87d83y5b%28v=vs.100%29.aspx</a></p>
+<p><i>An interface contains only the signatures of <a href="http://msdn.microsoft.com/en-us/library/ms173114%28v=vs.80%29.aspx">methods</a>, <a href="http://msdn.microsoft.com/en-us/library/ms173171%28v=vs.80%29.aspx">delegates</a> or <a href="http://msdn.microsoft.com/en-us/library/awbftdfh%28v=vs.80%29.aspx">events</a>. The implementation of the methods is done in the class that implements the interface, as shown in the following example:</i></p>
+<p><b>So the purpose is to create a method in an interface (in CSLA or your own Interface as previous in the discussion) that can be mocked easily</b><i><b>.</b><br /></i></p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tiago replied on Tuesday, May 22, 2012</h2><p>Hi Jonny,</p>
+<p>Something weird is hapening as my browser shows me a totally different text</p>
+<p><em>An interface contains only the signatures of </em><a href="http://msdn.microsoft.com/en-us/library/ms173114.aspx"><em>methods</em></a><em>, </em><a href="http://msdn.microsoft.com/en-us/library/x9fsa0sw.aspx"><em>properties</em></a><em>, </em><a href="http://msdn.microsoft.com/en-us/library/awbftdfh.aspx"><em>events</em></a><em> or </em><a href="http://msdn.microsoft.com/en-us/library/6x16t2tx.aspx"><em>indexers</em></a><em>. A class or struct that implements the interface must implement the members of the interface that are specified in the interface definition.</em></p>
+<p>Regards</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tiago replied on Tuesday, May 22, 2012</h2><p>Hi again,</p>
+<p>Google is my friend and searching for your text pointed me to the VS2005 page.</p>
+<p><a href="http://msdn.microsoft.com/en-us/library/87d83y5b(v=vs.80).aspx">http://msdn.microsoft.com/en-us/library/87d83y5b(v=vs.80).aspx</a></p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>Nevertheless, a few paragraphs below the same page states:</p>
+<p><em><span class="LW_CollapsibleArea_Title"><span style="text-decoration:underline;"><span style="color:#000080;">Remarks</span></span></span> </em></p>
+<div class="LW_CollapsibleArea_HrDiv"><em>
+<hr class="LW_CollapsibleArea_Hr" />
+</em></div>
+<div class="sectionblock"><a id="remarksToggle"></a>
+<p><em>An interface can be a member of a namespace or a class and can contain signatures of the following members: </em></p>
+<ul>
+<li>
+<p><a href="http://msdn.microsoft.com/en-us/library/ms173114(v=vs.80).aspx"><em>Methods</em></a><em> </em></p>
+</li>
+<li>
+<p><a href="http://msdn.microsoft.com/en-us/library/w86s7x04(v=vs.80).aspx"><em>Properties</em></a><em> </em></p>
+</li>
+<li>
+<p><a href="http://msdn.microsoft.com/en-us/library/2549tw02(v=vs.80).aspx"><em>Indexers</em></a><em> </em></p>
+</li>
+<li>
+<p><a href="http://msdn.microsoft.com/en-us/library/8627sbea(v=vs.80).aspx"><em>Events</em></a><em> </em></p>
+</li>
+</ul>
+</div></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, May 22, 2012</h2><p>Actually I have decided on a different solution to the GetRegisteredProperties issue.</p>
+<p>If you think about it, CSLA has its own &quot;type system&quot; using registered properties. This type system is managed by the PropertyInfoManager type in Csla.Core.FieldManager.</p>
+<p>That type is current internal, but could be public, with only one public member: GetRegisteredProperties.</p>
+<pre style="font-family:Consolas;background:white;color:black;font-size:13px;">&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;summary&gt;</span><br />&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;Returns&nbsp;a&nbsp;copy&nbsp;of&nbsp;the&nbsp;property&nbsp;list&nbsp;for</span><br />&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;a&nbsp;given&nbsp;business&nbsp;object&nbsp;type.&nbsp;Returns</span><br />&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;null&nbsp;if&nbsp;there&nbsp;are&nbsp;no&nbsp;properties&nbsp;registered</span><br />&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;for&nbsp;the&nbsp;type.</span><br />&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;/summary&gt;</span><br />&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;param&nbsp;name=</span><span style="color:gray;">&quot;objectType&quot;</span><span style="color:gray;">&gt;</span><br />&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;The&nbsp;business&nbsp;object&nbsp;type.</span><br />&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;/param&gt;</span><br />&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;remarks&gt;</span><br />&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;Registered&nbsp;property&nbsp;information&nbsp;is&nbsp;only&nbsp;available&nbsp;after&nbsp;at&nbsp;least&nbsp;one&nbsp;instannce</span><br />&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;of&nbsp;the&nbsp;object&nbsp;type&nbsp;has&nbsp;been&nbsp;created&nbsp;within&nbsp;the&nbsp;current&nbsp;AppDomain.</span><br />&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;/remarks&gt;</span><br />&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">static</span>&nbsp;<span style="color:#2b91af;">PropertyInfoList</span>&nbsp;GetRegisteredProperties(<span style="color:#2b91af;">Type</span>&nbsp;objectType)<br /></pre>
+<p>This change will make the type information available to any code in the application, and without the need for an instance of the business object (though at least one instance must have been created prior to invoking this method).</p>
+<p>I like this approach because it avoids cluttering the BusinessBase API, and more closely follows the model of the .NET type system.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tiago replied on Tuesday, May 22, 2012</h2><p>Hi Rocky,</p>
+<p>I can see you posted the changes. I&#39;m posting the updated code for CslaActionExtender and CslaActionExtenderTsb right away.</p>
+<p>Regards,</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

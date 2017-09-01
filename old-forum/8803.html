@@ -1,0 +1,81 @@
+<html><header><title>EditableBusinessList: Delete child object - execute business rules</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>EditableBusinessList: Delete child object - execute business rules</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/8803.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>cdkisa posted on Thursday, April 15, 2010</h2><p>I am trying to delete a child object from an editable list. I have some business logic that I want executed when a user tries to &#39;delete&#39; a record that checks whether or not the record is in use (referential integrity).</p>
+<p>However, given the code example below, my overridden methods are not being called. Am I doing something wrong? Is there a better way to do this?</p>
+<pre>Example:
+&#39;In the BLL...
+Public Class MyListClass
+	Inherits MyBaseListClass(Of MyListClass, MyChildClass)
+	
+	&#39;Overridden to get item by key value
+	Default Public Overloads ReadOnly Property Item(ByVal keyValue As Object) As MyChildClass
+		Get
+			For Each child As MyChildClass In Me
+				If child.KeyProperty.Equals(keyValue) Then
+					Return child
+				End If
+			Next
+			Return Nothing
+		End Get
+	End Property
+	
+	&#39;Overridden to implement business logic
+	Public Overloads Function Remove(ByVal child As MyChildClass) As Boolean
+		If MyChildClass.CanDeleteRecord(child.KeyProperty)
+			MyBase.Remove(child)
+		Else
+			Throw New BusinessException(ExceptionMessages.GetString(&quot;RecordCannotBeDeleted&quot;))
+		End If
+	End Function</pre>
+<pre>
+	&#39;Overridden to implement authorization logic
+	Public Overloads Function Remove(ByVal keyValue As Object) As Boolean
+		If MyChildClass.CanDeleteObject(keyValue) Then
+			Remove(Me(ageGroupNo))
+		Else
+			Throw New System.UnauthorizedAccessException(ExceptionMessages.GetString(&quot;UnauthorizedDeleteAccess&quot;, &quot;MyChildClass&quot;))
+		End If
+	End Function
+	
+	&#39;...other code
+	
+End Class</pre>
+<pre>
+&#39;In the UIL...</pre>
+<pre>
+&#39;Class for editing data grids
+Public Class UserControlListBase(Of T As MyBaseListClass(Of T, C), C As MyBaseClass(Of C))
+	Inherits UserControl
+</pre>
+<pre>	&#39;Holds the current business object 
+	Protected Property BusinessObject() As T
+		Get
+			Dim result As Object = Nothing
+			Try
+				result = CType(Session(&quot;CurrentBO&quot;), T)
+			Catch ex As Exception
+				result = Nothing
+			End Try
+			Return result
+		End Get
+		Set(ByVal value As T)
+			Session(&quot;CurrentBO&quot;) = value
+		End Set
+	End Property
+</pre>
+<pre>	&#39;Occurs when a user chooses to delete a record in the grid
+	Protected Sub dataGrid_RowDeleting(ByVal sender As Object, ByVal e As DeletingEventArgs)
+		Try
+			Dim keyValue As Object = e.Keys(Me._keyFieldName)
+			Dim child As C = Me.BusinessObject(keyValue)
+			</pre>
+<pre>                        &#39;This should throw an exception stating that the record cannot be deleted
+			Me.BusinessObject.Remove(child)
+			
+		Catch ex As Exception
+			e.Cancel = True
+			HandleException(ex)
+		End Try
+	End Sub
+	
+	&#39;...other code
+	
+End Class</pre></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

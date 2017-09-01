@@ -1,0 +1,57 @@
+<html><header><title>Dal Factory Failure</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Dal Factory Failure</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10963.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>st3fanus posted on Wednesday, December 07, 2011</h2><p>Hi all</p>
+<p>I wrote a DalFactory here, I think I have followed from ebook,</p>
+<p>But there is still an error , which is </p>
+<p> if (_dalType == null)<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; throw new ArgumentException(string.Format(&quot;Type {0} could not be found&quot;, dalTypeName));</p>
+<p>_dalType is NULL.</p>
+<p>&nbsp;</p>
+<p>public static class DalFactory<br />&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; private static Type _dalType;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public static IDalManager GetManager()<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (_dalType == null)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var dalTypeName = ConfigurationManager.AppSettings[&quot;DalManagerType&quot;];<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (!string.IsNullOrEmpty(dalTypeName))<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _dalType = Type.GetType(dalTypeName);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; else<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; throw new NullReferenceException(&quot;DalManagerType&quot;);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (_dalType == null)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; throw new ArgumentException(string.Format(&quot;Type {0} could not be found&quot;, dalTypeName));<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return (IDalManager)Activator.CreateInstance(_dalType);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br />&nbsp;&nbsp;&nbsp; }</p>
+<p>&nbsp;</p>
+<p>anyone have suggestions or anything..</p>
+<p>I&#39;m in the middle of run a prototyping my small application use CSLA.NET 4</p>
+<p>but this error arise :(</p>
+<p>thanks a lot</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>st3fanus replied on Thursday, December 08, 2011</h2><p>Hi all,</p>
+<p>&nbsp;</p>
+<p>I have look on example source, I think my code have same with example,</p>
+<p>but there is an error that :</p>
+<p>_dalType = Type.GetType(dalTypeName);</p>
+<p>_dalType always null !!!</p>
+<p>this is my config :<br />&nbsp;&nbsp;&nbsp; &lt;add key=&quot;DalManagerType&quot; value=&quot;SetiaMotor.MockDal.DalManager, SetiaMotor.MockDal&quot; /&gt;</p>
+<p>Project 1 =&gt; SetiaMotor.Dal project contain DalFactory implementation</p>
+<p>AssemblyName = SetiaMotor.Dal</p>
+<p>Namespace = SetiaMotor.Dal</p>
+<p>&nbsp;</p>
+<p>Project 2 =&gt; SetiaMotor.MockDal contain DalManager Implementation</p>
+<p>AssemblyName = SetiaMotor.MockDal</p>
+<p>Namespace = SetiaMotor.MockDal</p>
+<p>&nbsp;</p>
+<p>Is there something that I&#39;missing ?</p>
+<p>Could you give me a suggestion ??</p>
+<p>let me know if you need additional info</p>
+<p>&nbsp;</p>
+<p>thanks a lot</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Thursday, December 08, 2011</h2><p>Hi, </p>
+<p>You must make sure that SetiaMotor.MockDal.dll is in your bin-folder (or test folder).</p>
+<p>If missing then add a reference to the mock assembly or&nbsp;add a build task that will copy the assembly to the bin folder. </p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>st3fanus replied on Thursday, December 08, 2011</h2><p>Hi jonny,</p>
+<p>thanks a lot</p>
+<p>that worked :)</p>
+<p>&nbsp;</p>
+<p>Could you explain to me why it must be like that ?</p>
+<p>thanks alot</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>st3fanus replied on Thursday, December 08, 2011</h2><p>Hi jonny..</p>
+<p>I&#39;m sorry, I have forgotten about : How to do : </p>
+<p>add a build task that will copy the assembly to the bin folder as your mean ? do you have an example ?</p>
+<p>&nbsp;</p>
+<p>thanks</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Friday, December 09, 2011</h2><p>Hi, </p>
+<p>You cannot load a type from an assambly unless the .NET runtime is able to find that assembly. The default assembly resolver will look in the bin folder (actually current folder when running) or global assembly cache. You can hook into this to look other places. </p>
+<p>Build tasks can be configured on the project properties - build events. You can add pre-build and post-build command line commands (lika a command script) when building the project - such as a custom task to copy an assembly from another project without having&nbsp;reference to the actual component in your project. </p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>st3fanus replied on Saturday, December 10, 2011</h2><p>Hi jonney..</p>
+<p>&nbsp;</p>
+<p>thanks a lot jon..</p>
+<p>It&#39;s solved :) , and I learn a bit more things</p>
+<p>&nbsp;</p>
+<p>Gbu</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>kyuze replied on Tuesday, December 20, 2011</h2><p>I added a post-build command that copies TechSlice.DAL.Mock.dll (which contains DALManager) to ..\TechSlice.DAL\bin\Debug. &nbsp;TechSlice.DAL.dll contains DALFactory. The file is copied successfully but _dalType is still null. &nbsp;What am I missing?</p>
+<p>My config entry is still &lt;add key=&quot;DalManagerType&quot; value=&quot;TechSlice.DAL.Mock.DALManager,TechSlice.DAL.Mock&quot;&gt;&nbsp;</p>
+<p>Does the assembly still need to be fully qualified?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Tuesday, December 20, 2011</h2><p>Yes, the assembly must still be fully qualified. This is a requirement for System.Type.GetType to load the actual type. </p>
+<p>See: <a href="http://msdn.microsoft.com/en-us/library/w3f99sx1.aspx">http://msdn.microsoft.com/en-us/library/w3f99sx1.aspx </a></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>lazaroms replied on Friday, January 04, 2013</h2><p>13 months before: THANKS A LOT!!!!!</p>
+<p>This is what I call a &quot;very complete post&quot;.</p>
+<p>There&#39;s not place left for mistakes.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

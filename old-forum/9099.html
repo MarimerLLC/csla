@@ -1,0 +1,79 @@
+<html><header><title>Adding a Business Rule to make sure a property is unique...</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Adding a Business Rule to make sure a property is unique...</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9099.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>chris.stafford posted on Thursday, June 17, 2010</h2><p>A quick question for all the CSLA.Net users out there with more experience then me (which should be pretty much all of you...)</p>
+<p>&nbsp;</p>
+<p>I am constructing a business object for our middle tier, and I need to ensure that the Name property is unique in order ot fulfill database constraints.&nbsp; The relevant structure of the object is below:</p>
+<p><span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;"><font size="2" face="Consolas"><font size="2" face="Consolas">
+<p>&nbsp;</p>
+</font></font></span><font size="2" face="Consolas">
+<p>&nbsp;</p>
+</font></span>
+<p>&nbsp;</p>
+<p><span style="font-size:x-small;color:#0000ff;font-family:Consolas;"><span style="font-size:x-small;color:#0000ff;font-family:Consolas;"><span style="font-size:x-small;color:#0000ff;font-family:Consolas;">public</span></span></span><span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;"> </span></span><span style="font-size:x-small;color:#0000ff;font-family:Consolas;"><span style="font-size:x-small;color:#0000ff;font-family:Consolas;"><span style="font-size:x-small;color:#0000ff;font-family:Consolas;">partial</span></span></span><span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;"> </span></span><span style="font-size:x-small;color:#0000ff;font-family:Consolas;"><span style="font-size:x-small;color:#0000ff;font-family:Consolas;"><span style="font-size:x-small;color:#0000ff;font-family:Consolas;">class</span></span></span><span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;"> Object</span></span><span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;">: </span></span><span style="font-size:x-small;color:#2b91af;font-family:Consolas;"><span style="font-size:x-small;color:#2b91af;font-family:Consolas;"><span style="font-size:x-small;color:#2b91af;font-family:Consolas;">BusinessBase</span></span></span><span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;">&lt;Object</span></span><span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;">&gt;</span></span></p>
+</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p><span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;"><font size="2" face="Consolas"><font size="2" face="Consolas">
+<p>&nbsp;</p>
+</font></font></span><font size="2" face="Consolas">
+<p>&nbsp;</p>
+</font></span>
+<p>&nbsp;</p>
+<p><span style="font-size:x-small;color:#0000ff;font-family:Consolas;"><span style="font-size:x-small;color:#0000ff;font-family:Consolas;"><span style="font-size:x-small;color:#0000ff;font-family:Consolas;">public</span></span></span><span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;"> </span></span><span style="font-size:x-small;color:#0000ff;font-family:Consolas;"><span style="font-size:x-small;color:#0000ff;font-family:Consolas;"><span style="font-size:x-small;color:#0000ff;font-family:Consolas;">static</span></span></span><span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;"> </span></span><span style="font-size:x-small;color:#2b91af;font-family:Consolas;"><span style="font-size:x-small;color:#2b91af;font-family:Consolas;"><span style="font-size:x-small;color:#2b91af;font-family:Consolas;">PropertyInfo</span></span></span><span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;">&lt;</span></span><span style="font-size:x-small;color:#0000ff;font-family:Consolas;"><span style="font-size:x-small;color:#0000ff;font-family:Consolas;"><span style="font-size:x-small;color:#0000ff;font-family:Consolas;">string</span></span></span><span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;">&gt; NameProperty = RegisterProperty&lt;</span></span><span style="font-size:x-small;color:#0000ff;font-family:Consolas;"><span style="font-size:x-small;color:#0000ff;font-family:Consolas;"><span style="font-size:x-small;color:#0000ff;font-family:Consolas;">string</span></span></span><span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;">&gt; (c =&gt; c.Name);<font size="2" face="Consolas"><font size="2" face="Consolas">
+<p>&nbsp;</p>
+</font></font></span><font size="2" face="Consolas">
+<p>&nbsp;</p>
+</font></span></p>
+<p>&nbsp;</p>
+<p><span style="font-size:x-small;color:#0000ff;font-family:Consolas;"><span style="font-size:x-small;color:#0000ff;font-family:Consolas;"><span style="font-size:x-small;color:#0000ff;font-family:Consolas;">public</span></span></span><span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;"> </span></span><span style="font-size:x-small;color:#0000ff;font-family:Consolas;"><span style="font-size:x-small;color:#0000ff;font-family:Consolas;"><span style="font-size:x-small;color:#0000ff;font-family:Consolas;">string</span></span></span></p>
+<p><span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;"> Name
+<p>{</p>
+<font size="2" face="Consolas"><font size="2" face="Consolas">
+<p>&nbsp;</p>
+</font></font></span><font size="2" face="Consolas">
+<p>&nbsp;</p>
+</font></span></p>
+<p>&nbsp;</p>
+<p><span style="font-size:x-small;color:#0000ff;font-family:Consolas;"><span style="font-size:x-small;color:#0000ff;font-family:Consolas;"><span style="font-size:x-small;color:#0000ff;font-family:Consolas;">get</span></span></span><span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;"> { </span></span><span style="font-size:x-small;color:#0000ff;font-family:Consolas;"><span style="font-size:x-small;color:#0000ff;font-family:Consolas;"><span style="font-size:x-small;color:#0000ff;font-family:Consolas;">return </span></span></span><span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;">GetProperty(NameProperty); }<font size="2" face="Consolas"><font size="2" face="Consolas">
+<p>&nbsp;</p>
+</font></font></span><font size="2" face="Consolas">
+<p>&nbsp;</p>
+</font></span></p>
+<p>&nbsp;</p>
+<p><span style="font-size:x-small;color:#0000ff;font-family:Consolas;"><span style="font-size:x-small;color:#0000ff;font-family:Consolas;"><span style="font-size:x-small;color:#0000ff;font-family:Consolas;">set</span></span></span><span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;"> { SetProperty(NameProperty, </span></span><span style="font-size:x-small;color:#0000ff;font-family:Consolas;"><span style="font-size:x-small;color:#0000ff;font-family:Consolas;"><span style="font-size:x-small;color:#0000ff;font-family:Consolas;">value</span></span></span><span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;">); }</span></span></p>
+<p>}</p>
+</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>
+<p><span style="font-size:x-small;color:#0000ff;font-family:Consolas;"><span style="font-size:x-small;color:#0000ff;font-family:Consolas;"><span style="font-size:x-small;color:#0000ff;font-family:Consolas;"><font size="2" color="#0000ff" face="Consolas"><font size="2" color="#0000ff" face="Consolas"><font size="2" color="#0000ff" face="Consolas">
+<p>protected</p>
+</font></font></font></span><font size="2" color="#0000ff" face="Consolas"><font size="2" color="#0000ff" face="Consolas">
+<p>&nbsp;</p>
+</font></font></span><font size="2" color="#0000ff" face="Consolas">
+<p>&nbsp;</p>
+</font></span>
+<p>&nbsp;</p>
+<span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;"> </span></span><span style="font-size:x-small;color:#0000ff;font-family:Consolas;"><span style="font-size:x-small;color:#0000ff;font-family:Consolas;"><span style="font-size:x-small;color:#0000ff;font-family:Consolas;">override</span></span></span><span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;"> </span></span><span style="font-size:x-small;color:#0000ff;font-family:Consolas;"><span style="font-size:x-small;color:#0000ff;font-family:Consolas;"><span style="font-size:x-small;color:#0000ff;font-family:Consolas;">void</span></span></span>
+<p><span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;"> AddBusinessRules()
+<p>{</p>
+<font size="2" face="Consolas"><font size="2" face="Consolas">
+<p>BusinessRules.AddRule(</p>
+</font></font></span><font size="2" face="Consolas">
+<p>&nbsp;</p>
+</font></span></p>
+<p><span style="font-size:x-small;color:#0000ff;font-family:Consolas;"><span style="font-size:x-small;color:#0000ff;font-family:Consolas;"><span style="font-size:x-small;color:#0000ff;font-family:Consolas;">new</span></span></span><span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;"> Csla.Rules.CommonRules.</span></span><span style="font-size:x-small;color:#2b91af;font-family:Consolas;"><span style="font-size:x-small;color:#2b91af;font-family:Consolas;"><span style="font-size:x-small;color:#2b91af;font-family:Consolas;">MaxLength</span></span></span><span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;">(NameProperty, 100));
+<p>}</p>
+<p>&nbsp;</p>
+<p>The Object is contained in another CSLA Object, ObjectList.</p>
+<font size="2" face="Consolas"><font size="2" face="Consolas">
+<p>I want to handle the unique Name constraint with a BusinessRule; in looking through the CSLA.Rules.CommonRules library, I noticed that there is a Lambda rule in there.&nbsp; Any suggestions on how I can add a BusinessRule that will make sure all the objects have a unique Name?&nbsp; Or is that better handled on an Insert/Update?</p>
+</font></font></span><font size="2" face="Consolas">
+<p>&nbsp;</p>
+</font></span></p>
+<p><span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;"></span></span></p>
+</p>
+</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rxelizondo replied on Thursday, June 17, 2010</h2><p>Hi,</p>
+<p><br />You may want to take a look at the following post:</p>
+<p><br /><a href="http://forums.lhotka.net/forums/p/8282/39434.aspx">http://forums.lhotka.net/forums/p/8282/39434.aspx</a><a href="http://forums.lhotka.net/forums/p/8282/39434.aspx#39434"></a></p>
+<p><br />Is not exactly what you are looking for but it talks about how to validate a collection.</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>ajj3085 replied on Sunday, June 20, 2010</h2><p>I&#39;d make a rule (async, if you expect the check to take any significant amount of time) which checks the data currently in the database.</p>
+<p>Note though that you should still catch and retrown a DuplicateName exception in your DP_I or DP_U, as someone may have saved after your rule check fired during the properly changed.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

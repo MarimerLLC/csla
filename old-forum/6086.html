@@ -1,0 +1,92 @@
+<html><header><title>Backwards Authorization Rules</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Backwards Authorization Rules</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6086.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>bpb2221 posted on Tuesday, January 06, 2009</h2>Hi everyone, <br><br>I am having trouble with my authorization rules.&nbsp; I have a role that I am trying to deny write access to certain properties in my class.&nbsp; When I add an AuthorizationRules.AllowWrite, it denies write permissions by way of the ReadWriteAuthorization control disabling the correct controls on the form .&nbsp; When I add an AuthorizationRules.DenyWrite or no authorization rules, the ReadWriteAuthorization control does not disable these controls.&nbsp;&nbsp; The only other permission this role has is&nbsp; CanGetObject.&nbsp; It does not have CanAddObject, CanDeleteObject, Or CanEditObject permissions.&nbsp;&nbsp; If you need me to explain anything else, please ask.&nbsp; This problem is driving me crazy and I know it has to be something simple that I am missing.&nbsp; (using CSLA 2.1.4)<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>bpb2221 replied on Tuesday, January 06, 2009</h2>I think I figured out part of the problem.&nbsp; I am using ASP.NET roles in my WinForms app.&nbsp; I just need to figure out where the roles are getting authenticated so I can change the code to use the roles provider.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>bpb2221 replied on Tuesday, January 06, 2009</h2>I figured it out.&nbsp; If you are using WindowsIdentity and ASP.NET you have to change two files:&nbsp; AuthorizationRules and RolesForProperty.&nbsp; <font size="2"><br></font><br>In AuthorizationRules, this is an example of the function I changed (original code is commented out)<br><br>Public Function IsWriteDenied(ByVal propertyName As String) As Boolean<br><br>&nbsp;&nbsp;<font face="Courier New" size="2">&nbsp;&nbsp;&nbsp; Dim result As Boolean<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 'Dim user As System.Security.Principal.IPrincipal = ApplicationContext.User<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Dim user As WindowsIdentity = WindowsIdentity.GetCurrent<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; If InstanceRules.GetRolesForProperty(propertyName).IsWriteDenied(user) Then<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; result = True<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Else<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; result = TypeRules.GetRolesForProperty(propertyName).IsWriteDenied(user)<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End If<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return result<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Function</font><br><br>In RolesForProperty, this is what I changed<br>Import the following:<br>
+<br>
+<font face="Courier New" size="2">Imports System.Security.Principal<br>
+Imports System.Web.Security</font><font size="2"><br>
+</font><br><font face="Courier New" size="2">Public Function IsWriteDenied(ByVal user As WindowsIdentity) As Boolean<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 'Public Function IsWriteDenied(ByVal principal As IPrincipal) As Boolean<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Dim result As Boolean<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; For Each role As String In WriteDenied<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 'If principal.IsInRole(role) Then<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; If Roles.IsUserInRole(user.Name, role) Then<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; result = True<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Exit For<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End If<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Next<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return result<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Function</font><br><br>I do not know if it is 'correct' to do this, but it does work.&nbsp; If this method is incorrect, I would like to hear some opinions.&nbsp; Thanks<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, January 06, 2009</h2><P>This shouldn't be necessary. You should be able to set impersonation to true in web.config, and ASP.NET will put the windows identity as the HttpContext.Current.User, which is what you are getting from ApplicationContext.User.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>bpb2221 replied on Wednesday, January 07, 2009</h2>First, I want to thank you for creating this framework.&nbsp; I think it is great!<br><br>I am not using a web.config since this is a WinForms app, not a web app.&nbsp; I am using the ASP.NET roles classes (System.Web.Security) for my WinForms app because it has everything I need in roles management and saves me the trouble of having to write custom roles authentication.&nbsp; There is a big push for single sign on where I work so we don't want to 'bother' users with having to log on to <i>anything</i> once they sign into their computer.&nbsp; That is why I didn't use the PTIdentity &amp; PTPrincipal classes from the book. <br><br>Is ApplicationContext.User the same thing as WindowsIdentity? <br><br>Can HttpContext.Current.User be used in a Winforms app?<br><br>Thanks again for the response. <br><br><br><br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Wednesday, January 07, 2009</h2>Hi,<br><br>Wouldn't it be easier just to use Windows authentication?&nbsp; Just set ApplicationContext.User = new WindowsPrincipal( WindowsIdentity.GetCurrent() ).&nbsp; Roles would be Active Directory groups.&nbsp; Or you could have custom code that maps an AD group to one or more database driven role.<br><br>HttpContext.Current will always be null because you're not running your WinForms app under Asp.Net.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>bpb2221 replied on Wednesday, January 07, 2009</h2>Thank you for the answers.<br><br>You are correct Windows authentication would be easier, but I thought that WindowsIdentity is Windows authentication.&nbsp; <br><br>I like your idea of setting ApplicationContext.User = new WindowsPrincipal( WindowsIdentity.GetCurrent() )<br><b>Where is ApplicationContext.User set initially?</b>&nbsp; I see that is is being used in the AuthorizationRules class, but I don't see where it is initially set.&nbsp; <br><br>I can't use AD because we are not given access to it.&nbsp; So I settled on ASP.NET Roles, which does work,&nbsp; <i>if you change the way CSLA checks roles.</i>&nbsp; <br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Wednesday, January 07, 2009</h2>Well, you would set it as one of the first items for your program startup.&nbsp; <br><br>If you can't use AD though, I'm not sure that helps at all.&nbsp; You might look at Authorization Manager.&nbsp; It's included with the Server 2003 Admin toolset.&nbsp; I have to admit though that I haven't gone down this road myself, although it should work.&nbsp; It allows you to define an Authorization Store so you can define roles.&nbsp; One of the neat things is that a role is supposed to be pretty dynamic; so a user could be in a role only during certain times of day, for example.&nbsp; Sadly, I haven't seen much on this though..<br><br>Here's an MSDN page on it: http://msdn.microsoft.com/en-us/library/aa375774.aspx<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, January 07, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Again, you shouldn&#8217;t need to alter CSLA. While that may
+work, it really isn&#8217;t the right approach, and you&#8217;ll almost
+certainly find other unexpected problems.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>You really need to get the current principal
+(System.Threading.Thread.CurrentPrincipal) to be correct &#8211; and this is
+also the value used by Csla.ApplicationContext.User in a WinForms app.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>And yes, you can set that value directly, but really THAT isn&#8217;t
+right either, not if you want Windows identities. What you should do is set the
+appdomain&#8217;s principal policy to Windows so .NET knows that you want it to
+use Windows principal/identity objects.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>In other words, there are various hack solutions, and there&#8217;s
+really only one correct solution. In the end you can use any of them, just be
+aware of the consequences of your choice.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>bpb2221 replied on Wednesday, January 07, 2009</h2>Thanks for taking the time to explain this.&nbsp; This has been a big help.<br><br>On Page 458 it shows the <font face="Courier New" size="2">AppDomain.CurrentDomain.SetPrincipalPolicy()</font>.&nbsp; I was able to set it in my main form load.&nbsp; Then I was able to change the AuthorizationRules class back to using: <br><br><font face="Courier New" size="2">Dim user As System.Security.Principal.IPrincipal = ApplicationContext.User</font><br><br>I think I will stick with editing the IF statement in the RolesForProperty class<br><br><font face="Courier New" size="2">Public Function IsWriteDenied(ByVal principal As IPrincipal) As Boolean<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Dim result As Boolean<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; For Each role As String In WriteDenied<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; '<i>If principal.IsInRole(role) Then</i><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>If Roles.IsUserInRole(User.Identity.Name, role) Then</b><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; result = True<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Exit For<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End If<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Next<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return result<br><br>End Function</font><br><br>Since <font face="Courier New" size="2">System.Security.Principal.IPrincipal.IsInRole</font> determines whether the current principal belongs to the Windows user group and I need to figure out if it belongs to an ASP.NET role.<br>I will just have to deal with any repercussions of changing this one IF statement.&nbsp; <br><br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, January 07, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Ahh, in that case you need to set the current AppDomain to use
+the Windows identity. I describe this in the Expert 2005 Business Objects book
+in the Windows Forms chapter. <o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I don&#8217;t remember the line of code offhand, but it is
+literally one line of code you execute as the app starts up to set the AppDomain&#8217;s
+principal policy so it uses the Windows identity. After that
+ApplicationContext.User should work as expected.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>If you are using VB, this is a project setting, and you can just
+use the project properties to tell the app to use the Windows identity.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky </span><b><span><o:p></o:p></span></b></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,24 @@
+<html><header><title>Csla 4.1: &quot;Objects that are marked busy may not be saved&quot;  should be more forgiving?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Csla 4.1: &quot;Objects that are marked busy may not be saved&quot;  should be more forgiving?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10156.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>JCardina posted on Thursday, March 10, 2011</h2><p>Should the BusinessBase Save() method have some sort of forgiveness of a brief duration for saving a busy object?&nbsp; </p>
+<p>I ask because in my unit tests I often run into this exception as a result of an async business rule not quite completed yet when save is called.</p>
+<p>It&#39;s just a unit test but there are often requirements in code to programmatically work with the business object library (during an import for example) and it&#39;s trivially easy to forget to add something like this every time:</p>
+<p>&nbsp; System.Threading.SpinWait.SpinUntil(() =&gt; !NewUnit.IsBusy, 2000);</p>
+<p>Is there any value in some configurable way to pad saves with some forgiveness?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Thursday, March 10, 2011</h2><p>I wouldn&#39;t think this is something that should be built in, but I imagine you could create an extension method that does this, something like SaveWhenNotBusy.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JCardina replied on Thursday, March 10, 2011</h2><p>Just throwing it out there. :)</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>mosgath replied on Friday, March 11, 2011</h2><p>For us, we don&#39;t allow the save to be called until the objects are no longer busy.&nbsp; For the unit test, I had to use the following to delay the save:</p>
+<pre style="font-family:Consolas;background:white;color:black;font-size:13px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">if</span>&nbsp;(myobject.IsBusy)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;System.Threading.<span style="color:#2b91af;">AutoResetEvent</span>&nbsp;wait&nbsp;=&nbsp;<span style="color:blue;">new</span>&nbsp;System.Threading.<span style="color:#2b91af;">AutoResetEvent</span>(<span style="color:blue;">false</span>);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;myobject.BusyChanged&nbsp;+=&nbsp;(p,&nbsp;f)&nbsp;=&gt;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">if</span>&nbsp;(!myobject.IsBusy)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;wait.Set();
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;};
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;wait.WaitOne();
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;myobject&nbsp;=&nbsp;myobject.Save();
+</pre></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JCardina replied on Friday, March 11, 2011</h2><p>Wow Matt, the SpinWait.SpinUntil is a *lot* less code plus you get a timeout you can set, see my first post in this thread.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>g.beraudo@castsoftware.com replied on Tuesday, February 26, 2013</h2><p>Hello,</p>
+<p>I have faced the same issue with CSLA 4.5.11, I do not solve the problem with your solution .</p>
+<p>Unfortunately, my problem is not inside the test code :(</p>
+<p>I have created a distinct thread:&nbsp;http://forums.lhotka.net/forums/p/11854/54959.aspx&nbsp;</p>
+<p>as the CSLA version is distinct and I use AsyncTargettingPack on .NET4</p>
+<p>Gilles</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

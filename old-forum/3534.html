@@ -1,0 +1,21 @@
+<html><header><title>standalone combobox databinding</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>standalone combobox databinding</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3534.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>jhw posted on Thursday, September 13, 2007</h2><P>I am dealing with a single combobox instead of one that is part of a datagrid.</P>
+<P>I need to bind it to a property of my object, but need to fill the list from another binding source. The problem is getting the combobox to have the correct intial value for the selelected item instead of just the 1st item in the binding source. There are so many combinations of settings with the databinding and the datasource that finding the right combination is not working. </P>
+<P>Currently I can make it work manually by setting the index through code, but it would be good to make this type of binding work just thru design time binding.</P>
+<P>Thanks</P>
+<P>Heath</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>dean replied on Thursday, September 13, 2007</h2>Are you using NameValueListBase for your list data source or something else? If so you should not need to set the value in code and this is how it should be setup:<br><br>So you have two binding sources on your form:&nbsp; "formBindingSource" that represents your object that will be edited and contains the property for the combobox and a "ListBindingSource" that is the list inherited from NameValueListBase.<br><br>In the properties settings for the combobox when you edit the form, set the datasource property to "ListbindingSource", set the Text property to the "formBindingsource.property" value, set the Display Member and Value Member both to Value. (Yes, I have seen some developers use Key for value member but this is what I do).<br><br>Then in the form load event code, you set the datasource property of each of the binding sources to the correct objects.<br><br>That should do it.<br><br>Dean<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jhw replied on Friday, September 14, 2007</h2><P>I am using a readonly list instead of a name value list. I tried variations of what&nbsp;you said, but it is not working out. I was able to improve a bit from your advice but I still need to manually set the intial selectedIndex of the combobox.</P>
+<P>&nbsp;</P>
+<P>It is only about 6 lines of code to manually set the initial index.&nbsp;Time to move on and quit beating my head against the screen.</P>
+<P>&nbsp;</P>
+<P>Thanks</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>KKoteles replied on Friday, September 14, 2007</h2><P>jhw,</P>
+<P>Strange - I've never had an issue with this.&nbsp; </P>
+<P>I drag a BindingSource object on to my form and set its DataSource to my CSLA BusinessBase object.&nbsp; I then go to the Data Sources window - select my BusinessBase object, expand it, change the property I am concerned about to a ComboBox and drag it on to my form.&nbsp; </P>
+<P>I add another BindingSource object and set its DataSource to my CSLA ReadOnlyListBase object.</P>
+<P>Now I go back to the property ComboBox I just dragged on to the form, and change its DataSource value to be the name of the BindingSource object representing my CSLA ReadOnlyListBase object.</P>
+<P>Since the ComboBox is "bound" to the BusinessBase object, the value listed in it gets set to that value; however, the dropdown itself is now all the values of the ReadOnlyListBase object.</P>
+<P>Cheers,</P>
+<P>Ken K</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jhw replied on Friday, September 14, 2007</h2><P>Ken</P>
+<P>&nbsp;</P>
+<P>That is different than the way I have been doing it. I will give it a try.</P>
+<P>Thanx</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jhw replied on Friday, September 14, 2007</h2><P>Ken</P>
+<P>Turns out my problem was the order of setting datasources. Set the data souce for the bound object binding source last.</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

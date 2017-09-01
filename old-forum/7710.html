@@ -1,0 +1,404 @@
+<html><header><title>SilverLight Help</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>SilverLight Help</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/7710.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>SouthSpawn posted on Wednesday, September 30, 2009</h2><DIV>I am doing the following.</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;GetContentFromDOM();</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Csla.Silverlight.CslaDataProvider p;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; p = this.Resources["CompanyData"] as Csla.Silverlight.CslaDataProvider;</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Company&nbsp;c = p.Data as Company;</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;c.MyCHILDClass.Summary = _campaignContent;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; p.Save();</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>When I do this, it will save the "c.MyCHILDClass.Summary" child data.</DIV>
+<DIV>But for some reason, it will not save the "Parent" data under the "c.MyProperty".</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>If the remove the </DIV>
+<DIV>&nbsp;</DIV>
+<DIV>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Company&nbsp;c = p.Data as Company;
+<DIV>&nbsp;</DIV>
+<DIV>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;c.MyCHILDClass.Summary = _campaignContent;</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>It then will save the parent data.</DIV>
+<DIV>&nbsp;</DIV></DIV>
+<DIV>Any thoughts??</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>&nbsp;</DIV></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Thursday, October 01, 2009</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Maybe
+is it is not Dirty?&nbsp; Technically when you just change Summary object, IsSelfDirty
+for company is still false.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> SouthSpawn
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Wednesday, September 30, 2009 10:27 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> [CSLA .NET] SilverLight Help<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<div>
+
+<p class=MsoNormal>I am doing the following.<o:p></o:p></p>
+
+</div>
+
+<div>
+
+<p class=MsoNormal>&nbsp;<o:p></o:p></p>
+
+</div>
+
+<div>
+
+<p class=MsoNormal>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;GetContentFromDOM();<o:p></o:p></p>
+
+</div>
+
+<div>
+
+<p class=MsoNormal>&nbsp;<o:p></o:p></p>
+
+</div>
+
+<div>
+
+<p class=MsoNormal>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Csla.Silverlight.CslaDataProvider p;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+p = this.Resources[&quot;CompanyData&quot;] as
+Csla.Silverlight.CslaDataProvider;<o:p></o:p></p>
+
+</div>
+
+<div>
+
+<p class=MsoNormal>&nbsp;<o:p></o:p></p>
+
+</div>
+
+<div>
+
+<p class=MsoNormal>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Company&nbsp;c = p.Data as Company;<o:p></o:p></p>
+
+</div>
+
+<div>
+
+<p class=MsoNormal>&nbsp;<o:p></o:p></p>
+
+</div>
+
+<div>
+
+<p class=MsoNormal>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;c.MyClass.Summary
+= _campaignContent;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+p.Save();<o:p></o:p></p>
+
+</div>
+
+<div>
+
+<p class=MsoNormal>&nbsp;<o:p></o:p></p>
+
+</div>
+
+<div>
+
+<p class=MsoNormal>When I do this, it will save the
+&quot;c.MyClass.Summary&quot; child data.<o:p></o:p></p>
+
+</div>
+
+<div>
+
+<p class=MsoNormal>But for some reason, it will not save the &quot;Parent&quot;
+data under the &quot;c.MyProperty&quot;.<o:p></o:p></p>
+
+</div>
+
+<div>
+
+<p class=MsoNormal>&nbsp;<o:p></o:p></p>
+
+</div>
+
+<div>
+
+<p class=MsoNormal>Any thoughts??<o:p></o:p></p>
+
+</div>
+
+<div>
+
+<p class=MsoNormal>&nbsp;<o:p></o:p></p>
+
+</div>
+
+<div>
+
+<p class=MsoNormal>&nbsp;<o:p></o:p></p>
+
+</div>
+
+<div>
+
+<p class=MsoNormal>&nbsp;<o:p></o:p></p>
+
+</div>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>SouthSpawn replied on Thursday, October 01, 2009</h2><DIV>
+<DIV>Sergey, I basically have an object that looks like this.</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>=====================================</DIV>
+<DIV>a.ChildObject.AnotherChild.MyDescriptions</DIV>
+<DIV>=====================================<BR><BR>I did the following check.</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>a.IsSelfDirty = true</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>
+<DIV>a.ChildObject.IsSelfDirty = false</DIV>
+<DIV>
+<DIV>&nbsp;</DIV>
+<DIV>a.ChildObject.AnotherChild = true<BR><BR>In my DataPortal_Update method on the main parent object.</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>I am including the "FieldManager.UpdateChildren();"<BR><BR>All fields for the main parent object "a" are two way databounded to the&nbsp;XAML.<BR><BR>I have to set the a.ChildObject.AnotherChild.MyDescriptions "Manually, because the data is coming from an HTML&nbsp;WYSIWYG editior. So I use the DOM to handle this.<BR><BR>Now, when I&nbsp;"manually" set the&nbsp;a.ChildObject.AnotherChild.MyDescriptions = "MyDescription";<BR><BR>Any changes&nbsp;maid to the "Databinded" data in main parent object&nbsp;will not happen.</DIV>
+<DIV><BR>But if I comment on the code that is manually setting the "a.ChildObject.AnotherChild.MyDescriptions" property, now the main parent data will save.</DIV>
+<DIV><BR>I&nbsp;hope I explained this&nbsp;right :) :)<BR><BR><BR>&nbsp;</DIV></DIV></DIV></DIV></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Thursday, October 01, 2009</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>It
+all looks OK to me.&nbsp; I&#8217;d recommend to set a breakpoint in
+a.DataPortal_Update to see what is happening there.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> SouthSpawn [mailto:cslanet@lhotka.net]
+<br>
+<b>Sent:</b> Thursday, October 01, 2009 10:13 AM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: SilverLight Help<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<div>
+
+<div>
+
+<p class=MsoNormal>Sergey, I basically have an object that looks like this.<o:p></o:p></p>
+
+</div>
+
+<div>
+
+<p class=MsoNormal>&nbsp;<o:p></o:p></p>
+
+</div>
+
+<div>
+
+<p class=MsoNormal>=====================================<o:p></o:p></p>
+
+</div>
+
+<div>
+
+<p class=MsoNormal>a.ChildObject.AnotherChild.MyDescriptions<o:p></o:p></p>
+
+</div>
+
+<div>
+
+<p class=MsoNormal>=====================================<br>
+<br>
+I did the following check.<o:p></o:p></p>
+
+</div>
+
+<div>
+
+<p class=MsoNormal>&nbsp;<o:p></o:p></p>
+
+</div>
+
+<div>
+
+<p class=MsoNormal>a.IsSelfDirty = true<o:p></o:p></p>
+
+</div>
+
+<div>
+
+<p class=MsoNormal>&nbsp;<o:p></o:p></p>
+
+</div>
+
+<div>
+
+<div>
+
+<p class=MsoNormal>a.ChildObject.IsSelfDirty = false<o:p></o:p></p>
+
+</div>
+
+<div>
+
+<div>
+
+<p class=MsoNormal>&nbsp;<o:p></o:p></p>
+
+</div>
+
+<div>
+
+<p class=MsoNormal>a.ChildObject.AnotherChild = true<br>
+<br>
+In my DataPortal_Update method on the main parent object.<o:p></o:p></p>
+
+</div>
+
+<div>
+
+<p class=MsoNormal>&nbsp;<o:p></o:p></p>
+
+</div>
+
+<div>
+
+<p class=MsoNormal>I am including the
+&quot;FieldManager.UpdateChildren();&quot;<br>
+<br>
+All fields for the main parent object &quot;a&quot; are two way databounded to
+the&nbsp;XAML.<br>
+<br>
+I have to set the a.ChildObject.AnotherChild.MyDescriptions &quot;Manually,
+because the data is coming from an HTML&nbsp;WYSIWYG editior. So I use the DOM
+to handle this.<br>
+<br>
+Now, when I&nbsp;&quot;manually&quot; set
+the&nbsp;a.ChildObject.AnotherChild.MyDescriptions = &quot;MyDescription&quot;;<br>
+<br>
+Any changes&nbsp;maid to the &quot;Databinded&quot; data in main parent
+object&nbsp;will not happen.<o:p></o:p></p>
+
+</div>
+
+<div>
+
+<p class=MsoNormal><br>
+But if I comment on the code that is manually setting the
+&quot;a.ChildObject.AnotherChild.MyDescriptions&quot; property, now the main
+parent data will save.<o:p></o:p></p>
+
+</div>
+
+<div>
+
+<p class=MsoNormal><br>
+I&nbsp;hope I explained this&nbsp;right :) :)<br>
+<br>
+<br>
+&nbsp;<o:p></o:p></p>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

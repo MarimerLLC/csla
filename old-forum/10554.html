@@ -1,0 +1,250 @@
+<html><header><title>Async UniqueID Rule CSLA 4</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Async UniqueID Rule CSLA 4</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10554.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>FEHODGSON posted on Friday, July 22, 2011</h2><p>I am having a terrible time getting a UniqueID rule&nbsp;(which uses a command object to go to the database)&nbsp; working in CSLA 4. I created a&nbsp;uniqueId class which inherits from BusinessRule and am using&nbsp;the&nbsp;dataportal to execute my UniqueID command object.&nbsp;I know it is a threading isue but can not get my hands on it. Does any one have an example?</p>
+<p>Thanks,</p>
+<p>Frank Hodgson</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Saturday, July 23, 2011</h2><p>This is the coding style that I prefer:</p>
+<p>The key is to use async DataPortal to do asynchronous data access in the command or readonly object.</p>
+<p>Rule:</p>
+<pre style="font-family:Consolas;font-size:13px;color:white;background:none repeat scroll 0% 0% #39322d;">&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#d29d60;">public</span>&nbsp;<span style="color:#d29d60;">class</span>&nbsp;<span style="color:#85bbcc;">LookupCustomer</span>&nbsp;:&nbsp;<span style="color:#e8e8e8;">Csla</span>.<span style="color:#e8e8e8;">Rules</span>.<span style="color:#85bbcc;">LookupRule</span>
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#d29d60;">public</span>&nbsp;<span style="color:#2b91af;">IPropertyInfo</span>&nbsp;<span style="color:#e8e8e8;">NameProperty</span>&nbsp;{&nbsp;<span style="color:#d29d60;">get</span>;&nbsp;<span style="color:#d29d60;">set</span>;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#d29d60;">public</span>&nbsp;<span style="color:#e8e8e8;">LookupCustomer</span>(<span style="color:#2b91af;">IPropertyInfo</span>&nbsp;<span style="color:#e8e8e8;">primaryProperty</span>,&nbsp;<span style="color:#2b91af;">IPropertyInfo</span>&nbsp;<span style="color:#e8e8e8;">nameProperty</span>)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;<span style="color:#d29d60;">base</span>(<span style="color:#e8e8e8;">primaryProperty</span>)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#e8e8e8;">NameProperty</span>&nbsp;=&nbsp;<span style="color:#e8e8e8;">nameProperty</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#e8e8e8;">InputProperties</span>&nbsp;=&nbsp;<span style="color:#d29d60;">new</span>&nbsp;<span style="color:#85bbcc;">List</span>&lt;<span style="color:#2b91af;">IPropertyInfo</span>&gt;()&nbsp;{<span style="color:#e8e8e8;">primaryProperty</span>};
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#e8e8e8;">AffectedProperties</span>.<span style="color:#e8e8e8;">Add</span>(<span style="color:#e8e8e8;">NameProperty</span>);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#d29d60;">protected</span>&nbsp;<span style="color:#d29d60;">override</span>&nbsp;<span style="color:#d29d60;">void</span>&nbsp;<span style="color:#e8e8e8;">Execute</span>(<span style="color:#85bbcc;">RuleContext</span>&nbsp;<span style="color:#e8e8e8;">context</span>)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#d29d60;">var</span>&nbsp;<span style="color:#e8e8e8;">customerId</span>&nbsp;=&nbsp;(<span style="color:#d29d60;">int</span>)&nbsp;<span style="color:#e8e8e8;">context</span>.<span style="color:#e8e8e8;">InputPropertyValues</span>[<span style="color:#e8e8e8;">PrimaryProperty</span>];
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#85bbcc;">LookupCustomerCommand</span>.<span style="color:#e8e8e8;">BeginExecute</span>(<span style="color:#e8e8e8;">customerId</span>,&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span style="color:#e8e8e8;">o</span>,<span style="color:#e8e8e8;">e</span>)&nbsp;=&gt;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#d29d60;">if</span>&nbsp;(<span style="color:#e8e8e8;">e</span>.<span style="color:#e8e8e8;">Error</span>&nbsp;!=&nbsp;<span style="color:#d29d60;">null</span>)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#e8e8e8;">context</span>.<span style="color:#e8e8e8;">AddErrorResult</span>(<span style="color:#e8e8e8;">e</span>.<span style="color:#e8e8e8;">Error</span>.<span style="color:#e8e8e8;">Message</span>);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#d29d60;">else</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#e8e8e8;">context</span>.<span style="color:#e8e8e8;">AddOutValue</span>(<span style="color:#e8e8e8;">NameProperty</span>,&nbsp;<span style="color:#e8e8e8;">e</span>.<span style="color:#e8e8e8;">Object</span>.<span style="color:#e8e8e8;">Name</span>);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#e8e8e8;">context</span>.<span style="color:#e8e8e8;">Complete</span>();
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;});
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;}</pre>
+<p>Async command:</p>
+<pre style="font-family:Consolas;font-size:13px;color:white;background:none repeat scroll 0% 0% #39322d;">&nbsp;&nbsp;&nbsp;&nbsp;[<span style="color:#85bbcc;">Serializable</span>]
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#d29d60;">public</span>&nbsp;<span style="color:#d29d60;">class</span>&nbsp;<span style="color:#85bbcc;">LookupCustomerCommand</span>&nbsp;:&nbsp;<span style="color:#85bbcc;">CommandBase</span>&lt;<span style="color:#85bbcc;">LookupCustomerCommand</span>&gt;
+&nbsp;&nbsp;&nbsp;&nbsp;{
+<span style="color:#a06a2c;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#region</span>&nbsp;DTO&nbsp;properties&nbsp;
+&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#d29d60;">public</span>&nbsp;<span style="color:#d29d60;">static</span>&nbsp;<span style="color:#d29d60;">readonly</span>&nbsp;<span style="color:#85bbcc;">PropertyInfo</span>&lt;<span style="color:#d29d60;">int</span>&gt;&nbsp;<span style="color:#e8e8e8;">CustomerIdProperty</span>&nbsp;=&nbsp;<span style="color:#e8e8e8;">RegisterProperty</span>&lt;<span style="color:#d29d60;">int</span>&gt;(<span style="color:#e8e8e8;">c</span>&nbsp;=&gt;&nbsp;<span style="color:#e8e8e8;">c</span>.<span style="color:#e8e8e8;">CustomerId</span>);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#d29d60;">public</span>&nbsp;<span style="color:#d29d60;">int</span>&nbsp;<span style="color:#e8e8e8;">CustomerId</span>&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#d29d60;">get</span>&nbsp;{&nbsp;<span style="color:#d29d60;">return</span>&nbsp;<span style="color:#e8e8e8;">ReadProperty</span>(<span style="color:#e8e8e8;">CustomerIdProperty</span>);&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#d29d60;">private</span>&nbsp;<span style="color:#d29d60;">set</span>&nbsp;{&nbsp;<span style="color:#e8e8e8;">LoadProperty</span>(<span style="color:#e8e8e8;">CustomerIdProperty</span>,&nbsp;<span style="color:#d29d60;">value</span>);&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#d29d60;">public</span>&nbsp;<span style="color:#d29d60;">static</span>&nbsp;<span style="color:#d29d60;">readonly</span>&nbsp;<span style="color:#85bbcc;">PropertyInfo</span>&lt;<span style="color:#d29d60;">string</span>&gt;&nbsp;<span style="color:#e8e8e8;">NameProperty</span>&nbsp;=&nbsp;<span style="color:#e8e8e8;">RegisterProperty</span>&lt;<span style="color:#d29d60;">string</span>&gt;(<span style="color:#e8e8e8;">c</span>&nbsp;=&gt;&nbsp;<span style="color:#e8e8e8;">c</span>.<span style="color:#e8e8e8;">Name</span>);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#d29d60;">public</span>&nbsp;<span style="color:#d29d60;">string</span>&nbsp;<span style="color:#e8e8e8;">Name</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#d29d60;">get</span>&nbsp;{&nbsp;<span style="color:#d29d60;">return</span>&nbsp;<span style="color:#e8e8e8;">ReadProperty</span>(<span style="color:#e8e8e8;">NameProperty</span>);&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#d29d60;">private</span>&nbsp;<span style="color:#d29d60;">set</span>&nbsp;{&nbsp;<span style="color:#e8e8e8;">LoadProperty</span>(<span style="color:#e8e8e8;">NameProperty</span>,&nbsp;<span style="color:#d29d60;">value</span>);&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+<span style="color:#a06a2c;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#endregion</span>
+ 
+<span style="color:#a06a2c;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#region</span>&nbsp;Factory&nbsp;Methods
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#d29d60;">public</span>&nbsp;<span style="color:#d29d60;">static</span>&nbsp;<span style="color:#d29d60;">void</span>&nbsp;<span style="color:#e8e8e8;">BeginExecute</span>(<span style="color:#d29d60;">int</span>&nbsp;<span style="color:#e8e8e8;">customerId</span>,&nbsp;<span style="color:#85bbcc;">EventHandler</span>&lt;<span style="color:#85bbcc;">DataPortalResult</span>&lt;<span style="color:#85bbcc;">LookupCustomerCommand</span>&gt;&gt;&nbsp;<span style="color:#e8e8e8;">callback</span>)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#85bbcc;">LookupCustomerCommand</span>&nbsp;<span style="color:#e8e8e8;">cmd</span>&nbsp;=&nbsp;<span style="color:#d29d60;">new</span>&nbsp;<span style="color:#85bbcc;">LookupCustomerCommand</span>();
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#e8e8e8;">cmd</span>.<span style="color:#e8e8e8;">CustomerId</span>&nbsp;=&nbsp;<span style="color:#e8e8e8;">customerId</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#85bbcc;">DataPortal</span>.<span style="color:#e8e8e8;">BeginExecute</span>&lt;<span style="color:#85bbcc;">LookupCustomerCommand</span>&gt;(<span style="color:#e8e8e8;">cmd</span>,&nbsp;<span style="color:#e8e8e8;">callback</span>);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+<span style="color:#a06a2c;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#endregion</span>
+ 
+<span style="color:#a06a2c;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#region</span>&nbsp;Server-side&nbsp;Code
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#d29d60;">protected</span>&nbsp;<span style="color:#d29d60;">override</span>&nbsp;<span style="color:#d29d60;">void</span>&nbsp;<span style="color:#e8e8e8;">DataPortal_Execute</span>()
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#d29d60;">switch</span>&nbsp;&nbsp;(<span style="color:#e8e8e8;">CustomerId</span>)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#d29d60;">case</span>&nbsp;1:
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#e8e8e8;">Name</span>&nbsp;=&nbsp;<span style="color:#eee190;">&quot;Rocky&nbsp;Lhotka&quot;</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#d29d60;">break</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="color:#d29d60;">default</span>:
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#e8e8e8;">Name</span>&nbsp;=&nbsp;<span style="color:#d29d60;">string</span>.<span style="color:#e8e8e8;">Format</span>(<span style="color:#eee190;">&quot;Customer_</span><span style="color:mediumseagreen;">{0}</span><span style="color:#eee190;">&quot;</span>,&nbsp;<span style="color:#e8e8e8;">CustomerId</span>);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#d29d60;">break</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+<span style="color:#a06a2c;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#endregion</span>
+&nbsp;&nbsp;&nbsp;&nbsp;}</pre>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>FEHODGSON replied on Saturday, July 23, 2011</h2><p>Hi JonnyBee,</p>
+<p>Thanks for your quick response. This is almost exactly what I had with one BIG difference. I was handling the call back in the Dataportal.BeginExecute&lt;LookupCustomer&gt;(cmd, (o,e) =&gt; etc...... where I would test for an error. Once I removed that and just passed the callback it worked. I did have to include the IsAsync=True to get the csla propertyStatus to work, without the IsAsync=True the property status does not show up. What I have also noticed which I have not put a finger on yet is that after I do a rebuild solution and start a debug sesion in my local VS development server the&nbsp;changes do not show up. I have to do a publish to our external test webserver for the rules to actualy work. on my local machine. I guess some funny thing going on with VS10.</p>
+<p>Thank You.</p>
+<p>Frank</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>FEHODGSON replied on Sunday, August 21, 2011</h2><p>Hi JonnyBee,</p>
+<p>I am again having some problems with rules. I have a situation where I create an object async&nbsp;in code behind&nbsp;( sorry it is VB )<span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><font face="Consolas" size="2" color="#2b91af"><font face="Consolas" size="2" color="#2b91af"><font face="Consolas" size="2" color="#2b91af">
+<p>Tap</p>
+</font></font></font></span><font face="Consolas" size="2" color="#2b91af"><font face="Consolas" size="2" color="#2b91af">
+<p>&nbsp;</p>
+</font></font></span><font face="Consolas" size="2" color="#2b91af">
+<p>&nbsp;</p>
+</font></span></p>
+<p><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">.NewTap(</span></span><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">AddressOf</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> SetupTap)<font face="Consolas" size="2"><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></font></span><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></span></p>
+<p>&nbsp;then in the call back I set certain properties and do a beginsave.</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><font face="Consolas" size="2" color="#0000ff"><font face="Consolas" size="2" color="#0000ff"><font face="Consolas" size="2" color="#0000ff">
+<p>If</p>
+</font></font></font></span><font face="Consolas" size="2" color="#0000ff"><font face="Consolas" size="2" color="#0000ff">
+<p>&nbsp;</p>
+</font></font></span><font face="Consolas" size="2" color="#0000ff">
+<p>&nbsp;</p>
+</font></span>
+<p><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> e.Object.IsBusy </span></span><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">Then</span></span></span></p>
+<span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"><font face="Consolas" size="2"><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></font></span><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></span>
+<p>&nbsp;</p>
+<p><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">Dim</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> wait </span></span><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">As</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> </span></span><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">New</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> System.Threading.</span></span><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;">AutoResetEvent</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">(</span></span><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">False</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">)<font face="Consolas" size="2"><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></font></span><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></span></p>
+<p>&nbsp;</p>
+<p><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">AddHandler</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> e.Object.BusyChanged, </span></span><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">Sub</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">(p, f)<font face="Consolas" size="2"><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></font></span><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></span></p>
+<p>&nbsp;</p>
+<p><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">If</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> </span></span><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">Not</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> e.Object.IsBusy </span></span><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">Then</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">
+<p>wait.Set()</p>
+<font face="Consolas" size="2"><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></font></span><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></span></p>
+<p>&nbsp;</p>
+<p><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">End</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> </span></span><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">If</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"><font face="Consolas" size="2"><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></font></span><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></span></p>
+<p>&nbsp;</p>
+<p><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">End</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> </span></span><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">Sub</span></span></span></p>
+<p><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">wait.WaitOne()<font face="Consolas" size="2"><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></font></span><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></span></p>
+<p>&nbsp;</p>
+<p><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">End</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> </span></span><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">If</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"><font face="Consolas" size="2"><font face="Consolas" size="2">
+<p>e.Object.BeginSave(</p>
+</font></font></span><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></span></p>
+<p><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">AddressOf</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> TapSaved)</span></span></p>
+</p>
+<p>&nbsp;Without the rules this works, with the rules the object stays bussy and ofcourse keeps waiting. I checked my rules and I am setting the context.complete and I am also only setting the<span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"><font face="Consolas" size="2"><font face="Consolas" size="2">
+<p>IsAsync = (</p>
+</font></font></span><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></span></p>
+<p><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;">ApplicationContext</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">.ExecutionLocation &lt;&gt; </span></span><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;">ExecutionLocations</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">.Server)</span></span></p>
+<p><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">If&nbsp;I use <span style="font-family:Consolas;color:#008000;font-size:x-small;"><span style="font-family:Consolas;color:#008000;font-size:x-small;"><span style="font-family:Consolas;color:#008000;font-size:x-small;">
+<p>IsAsync = (ApplicationContext.ExecutionLocation = ExecutionLocations.Client)</p>
+</span></span></span>
+<p>Then it works but then the csla:PropertyStatus in my MVVM forms does not fire up when there is a broken rule.</p>
+<p>What has me kind of confused is that ApplicationContext has three locations, Client, silverlight and server. I was under the impression that Silverlight and the client were the same.</p>
+<font face="Consolas" size="2"><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></font></span><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></span></p>
+<p>Do you have any idea why this might be happening?</p>
+<p>&nbsp;</p>
+<p>Frank</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Monday, August 22, 2011</h2><p>Hi Frank, </p>
+<p>What seems to be the problem is somehow your new object is Busy but doesn&#39;t raise the BusyChanged event. I can&#39;t identify any problem with the code that you posted - but could you provide a small &quot;problem&quot; solution in a zip file? </p>
+<p>I&#39;m assuming that you are using Csla 4.1? </p>
+<p>I have made some updates to Csla.Xaml.PropertyStatus for Csla 4.2 (bugs where the PropertyStatus may be unable to hook into or properly show the PropertyStatus info) so you could make sure to grab the latest code for PropertyStatus in the Csla repository.</p>
+<p>Silverlight and Client are different values but in terms of rules running async or not you should be doing fine with having a test for ExecutionLocations.Server.</p>
+<p>I assume that one of the properties that you set before you save triggers the async rule?</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>FEHODGSON replied on Tuesday, August 23, 2011</h2><p>Hi JonnyBee,</p>
+<p>I stripped the whole project to 12MB zipped. Where Can I send this to?</p>
+<p>Frank</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Tuesday, August 23, 2011</h2><p>Hi Frank,</p>
+<p>You can send it to: jonny.bekkum(a)gmail.com</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Tuesday, August 23, 2011</h2><p>Hi, </p>
+<p>I&nbsp; assume you are both using Csla 4.0.* and I know we had a bug in there that culd cause to object to stay busy and was fixed for Csla 4.1.<br />If you are using 4.0.* then I&#39;d recommend you to upgrade to Csla 4.1</p>
+<p>Csla.Rules.BusinessRules.RunRules (in csla 4.0.*):</p>
+<p>Is: </p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="color:#000080;">var</span>&nbsp;context =&nbsp;<span style="color:#008b8b;font-weight:bold;">new</span>&nbsp;<span style="color:#191970;font-weight:bold;">RuleContext</span><span style="color:#006400;">((</span>r<span style="color:#006400;">)</span>&nbsp;=<span style="color:#006400;">&gt;</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#006400;">{</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#0000ff;font-weight:bold;">if</span>&nbsp;<span style="color:#006400;">(</span>rule<span style="color:#006400;">.</span>IsAsync<span style="color:#006400;">)</span></p>
+<p>Should be: </p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="color:#000080;">var</span>&nbsp;context =&nbsp;<span style="color:#008b8b;font-weight:bold;">new</span>&nbsp;<span style="color:#191970;font-weight:bold;">RuleContext</span><span style="color:#006400;">((</span>r<span style="color:#006400;">)</span>&nbsp;=<span style="color:#006400;">&gt;</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#006400;">{</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#0000ff;font-weight:bold;">if</span><b>&nbsp;<span style="color:#006400;">(</span>r<span style="color:#006400;">.</span>Rule<span style="color:#006400;">.</span>IsAsync<span style="color:#006400;">)</span></b></p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>t.kehl replied on Wednesday, August 24, 2011</h2><p>Hi JonnyBee</p>
+<p>&nbsp;</p>
+<p>Thank you very much for your answer. <br />I use CSLA 4.1.0.0 - But I have looked into RunRules and see, that there is still rule.IsAsync. When I changed this to r.Rule.IsAsync it is working perfect.</p>
+<p>Best Regards, Thomas</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Wednesday, August 24, 2011</h2><p>Hmmm, </p>
+<p>I checked Csla 4.1 download again and it is correct in the 4.1.0 release from 110818.<br /><a href="http://www.lhotka.net/files/csla40/CslaSource-4.1.0-110118.zip">http://www.lhotka.net/files/csla40/CslaSource-4.1.0-110118.zip </a></p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>FEHODGSON replied on Friday, August 26, 2011</h2><p>Hi Thomas,</p>
+<p>What did you change to get your rule working? I still can not get mine to work.</p>
+<p>Thanks,</p>
+<p>Frank</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>t.kehl replied on Friday, August 26, 2011</h2><p>Hi Frank</p>
+<p>&nbsp;</p>
+<p>I have changed this from JonnyBee:</p>
+<p>&nbsp;</p>
+<p>Hi, </p>
+<p>I&nbsp; assume you are both using Csla 4.0.* and I know we had a bug in 
+there that culd cause to object to stay busy and was fixed for Csla 4.1.<br />If you are using 4.0.* then I&#39;d recommend you to upgrade to Csla 4.1</p>
+<p>Csla.Rules.BusinessRules.RunRules (in csla 4.0.*):</p>
+<p>Is: </p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="color:#000080;">var</span>&nbsp;context =&nbsp;<span style="color:#008b8b;font-weight:bold;">new</span>&nbsp;<span style="color:#191970;font-weight:bold;">RuleContext</span><span style="color:#006400;">((</span>r<span style="color:#006400;">)</span>&nbsp;=<span style="color:#006400;">&gt;</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#006400;">{</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#0000ff;font-weight:bold;">if</span>&nbsp;<span style="color:#006400;">(</span>rule<span style="color:#006400;">.</span>IsAsync<span style="color:#006400;">)</span></p>
+<p>Should be: </p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="color:#000080;">var</span>&nbsp;context =&nbsp;<span style="color:#008b8b;font-weight:bold;">new</span>&nbsp;<span style="color:#191970;font-weight:bold;">RuleContext</span><span style="color:#006400;">((</span>r<span style="color:#006400;">)</span>&nbsp;=<span style="color:#006400;">&gt;</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#006400;">{</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#0000ff;font-weight:bold;">if</span><b>&nbsp;<span style="color:#006400;">(</span>r<span style="color:#006400;">.</span>Rule<span style="color:#006400;">.</span>IsAsync<span style="color:#006400;">)</span></b></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>FEHODGSON replied on Friday, August 26, 2011</h2><p>Hi Thomas,</p>
+<p>Do you have an example of where you changed this in your rule that you posted? I can not seem to figure out where this has to be changed.</p>
+<p>Frank</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>t.kehl replied on Friday, August 26, 2011</h2><p>Hi Frank</p>
+<p>&nbsp;</p>
+<p>This is in the Class Csla.Rules.BusinessRules</p>
+<p>&nbsp;</p>
+<p>Thomas</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>FEHODGSON replied on Friday, August 26, 2011</h2><p>Hi Thomas,</p>
+<p>Now I get it you are changing the CSLA source. Wow I never did that I just download the latest version. I have 4.2 and looked at the source and it seems fixed in that version but my object still stays bussy. So I guess my problem must be something else. Thanks anyway.</p>
+<p>Frank</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>t.kehl replied on Tuesday, August 23, 2011</h2><p>Hi Frank</p>
+<p>I have the same problem. My Businessobject is also still busy when I use Async Rule to check, if a value is unique. I use the fallowing:</p>
+<p>BusinessRule:</p>
+<p>&nbsp;&nbsp;&nbsp; public sealed class CheckUniqueAsync&lt;T&gt; : Csla.Rules.BusinessRule where T : BusinessBase&lt;T&gt;, IPrayonBusinessBase {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; private static readonly ILog log = LogManager.GetLogger(typeof(CheckUniqueAsync&lt;T&gt;));<br /><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public CheckUniqueAsync(IPropertyInfo uniqueProperty, params IPropertyInfo[] affectedProperties)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; : base(uniqueProperty) {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; this.Priority = 1;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; this.IsAsync = true;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; this.ProvideTargetWhenAsync = true;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; this.AffectedProperties.AddRange(affectedProperties);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br /><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; protected override void Execute(Csla.Rules.RuleContext context) {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var bb = context.Target as PrayonBusinessBase&lt;T&gt;;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (bb != null) {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; bb.CheckUniqueAsync((s, e) =&gt;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (e.Error != null) {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; log.Error(&quot;CheckUnique completed with Error.&quot;, e.Error);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; } else {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (!e.Object.IsUnique) {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; context.AddErrorResult(PrimaryProperty, string.Format(Resources.ObjectUniqueRule, PrimaryProperty.FriendlyName));<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; context.Complete();<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; });<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; } else {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; log.Error(&quot;No Businessobject available. Set Context completed.&quot;);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; context.Complete();<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br />&nbsp;&nbsp;&nbsp; }</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; internal void CheckUniqueAsync(EventHandler&lt;DataPortalResult&lt;CheckUniqueCommand&gt;&gt; callback) {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; CheckUniqueCommand.BeginExecute(this.CheckUniqueRepositoryCall(), callback);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</p>
+<p>&nbsp;&nbsp;&nbsp; [Serializable]<br />&nbsp;&nbsp;&nbsp; internal class CheckUniqueCommand : CommandBase&lt;CheckUniqueCommand&gt; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; private readonly Func&lt;bool&gt; checkUniqueRepositoryCall;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public bool IsUnique { get; private set; }<br /><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public static bool Execute(Func&lt;bool&gt; checkUniqueRepositoryCall) {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var cmd = new CheckUniqueCommand(checkUniqueRepositoryCall);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; cmd = DataPortal.Execute(cmd);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return cmd.IsUnique;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br /><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public static void BeginExecute(Func&lt;bool&gt; checkUniqueRepositoryCall, EventHandler&lt;DataPortalResult&lt;CheckUniqueCommand&gt;&gt; callback) {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var cmd = new CheckUniqueCommand(checkUniqueRepositoryCall);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; DataPortal.BeginExecute(cmd, callback);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br /><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; private CheckUniqueCommand(Func&lt;bool&gt; checkUniqueRepositoryCall) {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; this.checkUniqueRepositoryCall = checkUniqueRepositoryCall;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br /><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; protected override void DataPortal_Execute() {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; this.IsUnique = checkUniqueRepositoryCall();<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br />&nbsp;&nbsp;&nbsp; }</p>
+<p>Func to Check in the BussinessObject:</p>
+<p>&nbsp;</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; protected override Func&lt;bool&gt; CheckUniqueRepositoryCall() {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return () =&gt; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; using (var communicationTypeRepository = new CommunicationTypeRepository()) {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var id = this.ReadProperty(IdProperty);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return communicationTypeRepository.GetAll().Where(x =&gt; x.Id != id &amp;&amp; x.Name == this.ReadProperty(NameProperty)).FirstOrDefault() == null;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; };<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</p>
+<p>Add BusinessRule to the BusinessObject:</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; this.BusinessRules.AddRule(new CheckUniqueAsync&lt;CommunicationType&gt;(NameProperty));</p>
+<p>Did you find the reason in your code, why the BO will still be Busy?</p>
+<p>&nbsp;</p>
+<p>I hope we can find the reason together.</p>
+<p>Thanks and best regards, Thomas</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,97 @@
+<html><header><title>ApplicationContext switching in ASP.NET / Background Threads</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>ApplicationContext switching in ASP.NET / Background Threads</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10545.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>geordiepaul posted on Thursday, July 21, 2011</h2><p>After upgrading to 4.1 we&#39;ve stumbled upon a bit of an issue with ApplicationContext.&nbsp;</p>
+<p>Under normal ASP.NET circumstances ApplicationContext returns Csla.Web.ApplicationContextManager and everything works fine. However when we create a background worker thread, in the execution of that thread ApplicationContext.IsValid returns false and the ApplicationContext is switched Csla.<span>ApplicationContextManager. This is never reverted back to Csla.Web.ApplicationContextManager for after that point since the value is cached in a static field, this result in all sorts of Identity issues as HTTPContext.Current.User is no long set as part of &nbsp;setting Csla.ApplicationContext.User</span></p>
+<p>I appreciate that background threads in ASP.NET aren&#39;t ideal however this is a trivial task of managing online users.</p>
+<p>Am I missing something or this&nbsp;expected&nbsp;behaviour?&nbsp;</p>
+<p>Thanks</p>
+<pre></pre></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Thursday, July 21, 2011</h2><p>I have not put any effort into supporting the use of background threads in ASP.NET. So I suppose there is no &quot;expected behavior&quot; really.</p>
+<p>However, you might try using Csla.Threading.BackgroundWorker to manage your background tasks. This type automatically copies the primary thread&#39;s identity information into the background thread.</p>
+<p>Each thread (even outside ASP.NET) has its own identity and context - that information is always per-thread (except in WPF, where we explicitly manage the identity information differently). So it is always necessary to copy the primary thread&#39;s User property to any background thread - which is why we have our own BW component.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>geordiepaul replied on Friday, July 22, 2011</h2><p>Thanks for the reply.</p>
+<p>The BackgroundWorker doesn&#39;t not work in this instance as this make a call to ApplicationContext.ContextManager on the new thread which switches the type of ContextManager used.</p>
+<p><span style="white-space:pre;"><span>public</span>&nbsp;<span>static</span>&nbsp;<span>IContextManager</span>&nbsp;ContextManager</span></p>
+<p>&nbsp;</p>
+<pre>&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>get</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>if</span>&nbsp;(_contextManager&nbsp;==&nbsp;<span>null</span>)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>if</span>&nbsp;(_webManagerType&nbsp;==&nbsp;<span>null</span>)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_webManagerType&nbsp;=&nbsp;<span>Type</span>.GetType(<span>&quot;Csla.Web.ApplicationContextManager,&nbsp;Csla.Web&quot;</span>);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>if</span>&nbsp;(_webManagerType&nbsp;!=&nbsp;<span>null</span>)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_contextManager&nbsp;=&nbsp;(<span>IContextManager</span>)<span>Activator</span>.CreateInstance(_webManagerType);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>if</span>&nbsp;(_contextManager&nbsp;==&nbsp;<span>null</span>&nbsp;||&nbsp;!_contextManager.IsValid)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_contextManager&nbsp;=&nbsp;<span>new</span>&nbsp;<span>ApplicationContextManager</span>();
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>return</span>&nbsp;_contextManager;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>set</span>&nbsp;{&nbsp;_contextManager&nbsp;=&nbsp;<span>value</span>;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;}</pre>
+<p>
+If the ContextManager isn&#39;t valid that the WebContextManager is swtiched for a ApplicationContextManager and is never switched back. In ASP.NET this caused all sorts of problem when trying to reset the Identity in global.asax. What would be nice is if the HTTPContext became valid it reverted back to the correct ContextManager. This was never a problem in 3.8 as both contexts were set if HTTPContext.Current wasn&#39;t null.</p>
+<p>This method does seem a little illogical, as it caters for switching from Csla.Web.ApplicationContextManger to the normal ApplicationContextManger but not the other way round.</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>geordiepaul replied on Friday, July 22, 2011</h2><p>I should extend on my post above to say that BackgroundWorker does work and does what it should. However when execution returns to the main thread ApplicationContext is of the wrong type as the BackgroundWorker in it&#39;s call to Csla.ApplicationContext switched it. Since the field _contextManager maintains a cache that variable is returned on the main thread.</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>geordiepaul replied on Friday, July 22, 2011</h2><p>I&#39;ve had a quick go at rewriting the ContextManager property to cater for situations like this. This does fix our problem however I&#39;m not sure of other implications.</p>
+<p>
+<p class="MsoNormal"><span>private</span><span>&nbsp;</span><span>static</span><span>&nbsp;</span><span>IContextManager</span><span>&nbsp;_contextManager;<br /></span><span>private</span><span>&nbsp;</span><span>static</span><span>&nbsp;</span><span>IContextManager</span><span>&nbsp;_webContextManager;<br /></span><span>private</span><span>&nbsp;</span><span>static</span><span>&nbsp;</span><span>Type</span><span>&nbsp;_webManagerType;</span></p>
+<p class="MsoNormal"><span>///</span><span>&nbsp;</span><span>&lt;summary&gt;<br /></span><span>///</span><span>&nbsp;Gets&nbsp;or&nbsp;sets&nbsp;the&nbsp;context&nbsp;manager&nbsp;responsible<br /></span><span>///</span><span>&nbsp;for&nbsp;storing&nbsp;user&nbsp;and&nbsp;context&nbsp;information&nbsp;for<br /></span><span>///</span><span>&nbsp;the&nbsp;application.<br /></span><span>///</span><span>&nbsp;</span><span>&lt;/summary&gt;<br /></span><span>public</span><span>&nbsp;</span><span>static</span><span>&nbsp;</span><span>IContextManager</span><span>&nbsp;ContextManager</span></p>
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;&nbsp;{</span></p>
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span>get</span><span></span></p>
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{</span></p>
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span>if</span><span>&nbsp;(_webContextManager&nbsp;==&nbsp;</span><span>null</span><span>)</span></p>
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{</span></p>
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span>if</span><span>&nbsp;(_webManagerType&nbsp;==&nbsp;</span><span>null</span><span>)</span></p>
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_webManagerType&nbsp;=&nbsp;</span><span>Type</span><span>.GetType(</span><span>&quot;Csla.Web.ApplicationContextManager,&nbsp;Csla.Web&quot;</span><span>);</span></p>
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span>if</span><span>&nbsp;(_webManagerType&nbsp;!=&nbsp;</span><span>null</span><span>)</span></p>
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_webContextManager&nbsp;=&nbsp;(</span><span>IContextManager</span><span>)</span><span>Activator</span><span>.CreateInstance(_webManagerType);</span></p>
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</span></p>
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span>if</span><span>&nbsp;(_webContextManager&nbsp;==&nbsp;</span><span>null</span><span>&nbsp;||&nbsp;!_webContextManager.IsValid)</span></p>
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{</span></p>
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span>if</span><span>&nbsp;(_contextManager&nbsp;==&nbsp;</span><span>null</span><span>)</span></p>
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_contextManager&nbsp;=&nbsp;</span><span>new</span><span>&nbsp;</span><span>ApplicationContextManager</span><span>();</span></p>
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span>return</span><span>&nbsp;_contextManager;</span></p>
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</span></p>
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span>return</span><span>&nbsp;_webContextManager;</span></p>
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</span></p>
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span>set</span><span>&nbsp;{&nbsp;_contextManager&nbsp;=&nbsp;</span><span>value</span><span>;&nbsp;}</span></p>
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;&nbsp;}</span></p>
+</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Friday, July 22, 2011</h2><p>Hi, </p>
+<p>I see your problem now. This should be a better way then: </p>
+<pre style="font-family:Consolas;font-size:13px;color:white;background:none repeat scroll 0% 0% #39322d;">&nbsp;&nbsp;<span style="color:#d29d60;">public</span>&nbsp;<span style="color:#d29d60;">static</span>&nbsp;<span style="color:#d29d60;">class</span>&nbsp;<span style="color:#85bbcc;">ApplicationContext</span>
+&nbsp;&nbsp;{
+<span style="color:#a06a2c;">&nbsp;&nbsp;&nbsp;&nbsp;#region</span>&nbsp;Context&nbsp;Manager
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#d29d60;">private</span>&nbsp;<span style="color:#d29d60;">static</span>&nbsp;<span style="color:#2b91af;">IContextManager</span>&nbsp;<span style="color:#e8e8e8;">_webContextManager</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#d29d60;">private</span>&nbsp;<span style="color:#d29d60;">static</span>&nbsp;<span style="color:#2b91af;">IContextManager</span>&nbsp;<span style="color:#e8e8e8;">_contextManager</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#d29d60;">private</span>&nbsp;<span style="color:#d29d60;">static</span>&nbsp;<span style="color:#85bbcc;">Type</span>&nbsp;<span style="color:#e8e8e8;">_webManagerType</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#d29d60;">private</span>&nbsp;<span style="color:#d29d60;">static</span>&nbsp;<span style="color:#85bbcc;">Type</span>&nbsp;<span style="color:#e8e8e8;">_xamlManagerType</span>;
+ 
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#d29d60;">static</span>&nbsp;<span style="color:#e8e8e8;">ApplicationContext</span>()
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#e8e8e8;">_webManagerType</span>&nbsp;=&nbsp;<span style="color:#85bbcc;">Type</span>.<span style="color:#e8e8e8;">GetType</span>(<span style="color:#eee190;">&quot;Csla.Web.ApplicationContextManager,&nbsp;Csla.Web&quot;</span>);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#e8e8e8;">_xamlManagerType</span>&nbsp;=&nbsp;<span style="color:#85bbcc;">Type</span>.<span style="color:#e8e8e8;">GetType</span>(<span style="color:#eee190;">&quot;Csla.Xaml.ApplicationContextManager,&nbsp;Csla.Xaml&quot;</span>);
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#d29d60;">if</span>&nbsp;(<span style="color:#e8e8e8;">_webManagerType</span>&nbsp;!=&nbsp;<span style="color:#d29d60;">null</span>&nbsp;&amp;&amp;&nbsp;<span style="color:#e8e8e8;">_webContextManager</span>&nbsp;==&nbsp;<span style="color:#d29d60;">null</span>)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#e8e8e8;">_webContextManager</span>&nbsp;=&nbsp;(<span style="color:#2b91af;">IContextManager</span>)<span style="color:#85bbcc;">Activator</span>.<span style="color:#e8e8e8;">CreateInstance</span>(<span style="color:#e8e8e8;">_webManagerType</span>);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#d29d60;">if</span>&nbsp;(<span style="color:#e8e8e8;">_xamlManagerType</span>&nbsp;!=&nbsp;<span style="color:#d29d60;">null</span>&nbsp;&amp;&amp;&nbsp;<span style="color:#e8e8e8;">_contextManager</span>&nbsp;==&nbsp;<span style="color:#d29d60;">null</span>)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#e8e8e8;">_contextManager</span>&nbsp;=&nbsp;(<span style="color:#2b91af;">IContextManager</span>)<span style="color:#85bbcc;">Activator</span>.<span style="color:#e8e8e8;">CreateInstance</span>(<span style="color:#e8e8e8;">_xamlManagerType</span>);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#d29d60;">if</span>&nbsp;(<span style="color:#e8e8e8;">_contextManager</span>&nbsp;==&nbsp;<span style="color:#d29d60;">null</span>)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#e8e8e8;">_contextManager</span>&nbsp;=&nbsp;<span style="color:#d29d60;">new</span>&nbsp;<span style="color:#85bbcc;">ApplicationContextManager</span>();
+&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:#67c567;">&nbsp;</span><span style="color:gray;">&lt;summary&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:#67c567;">&nbsp;Gets the&nbsp;context&nbsp;manager&nbsp;responsible</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:#67c567;">&nbsp;for&nbsp;storing&nbsp;user&nbsp;and&nbsp;context&nbsp;information&nbsp;for</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:#67c567;">&nbsp;the&nbsp;application.</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:#67c567;">&nbsp;</span><span style="color:gray;">&lt;/summary&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#d29d60;">public</span>&nbsp;<span style="color:#d29d60;">static</span>&nbsp;<span style="color:#2b91af;">IContextManager</span>&nbsp;<span style="color:#e8e8e8;">ContextManager</span>
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#d29d60;">get</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#d29d60;">if</span>&nbsp;(<span style="color:#e8e8e8;">_webContextManager</span>&nbsp;!=&nbsp;<span style="color:#d29d60;">null</span>&nbsp;&amp;&amp;&nbsp;<span style="color:#e8e8e8;">_webContextManager</span>.<span style="color:#e8e8e8;">IsValid</span>)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#d29d60;">return</span>&nbsp;<span style="color:#e8e8e8;">_webContextManager</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#d29d60;">return</span>&nbsp;&nbsp;<span style="color:#e8e8e8;">_contextManager</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+<span style="color:#a06a2c;">&nbsp;&nbsp;&nbsp;&nbsp;#endregion</span></pre></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

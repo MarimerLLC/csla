@@ -1,0 +1,11 @@
+<html><header><title>Why doesn’t BindingList(Of T).Add return index</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Why doesn’t BindingList(Of T).Add return index</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/1349.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Henrik posted on Wednesday, September 27, 2006</h2><P class=MsoNormal><SPAN>Now why is it that BindingList(Of T).Add method doesn’t return the index of&nbsp;the newly added item?<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>I’m in a situation where I need a very fast lookup of readonly SystemAccount info objects.</SPAN></P>
+<P class=MsoNormal><SPAN>I’ve build a ReadOnlyList that loads the entire list of SystemAccountInfo objects on first hit (around 4000 of them).</SPAN></P>
+<P class=MsoNormal><SPAN>I need to look each SystemAccountInfo up on the sub-domain, that&nbsp;a user&nbsp;is entering the site with. To do this fast enough, I’ve implemented a lookup table, in the&nbsp;ReadOnlyList,&nbsp;as a Dictionary(Of String, Integer) where I will store the subdomain as the&nbsp;key and the index of the SystemAccountInfo in the ReadOnlyList as value.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>However, I presumed that I could get the index from the Add method, so I won’t have to call IndexOf, which I <SPAN>&nbsp;</SPAN>assume can have a complexity of O(N).<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Am I right about that and is there a fast way I can get the index of the newly added item?<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Thanks in advance<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>/Henrik<o:p></o:p></SPAN></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Henrik replied on Wednesday, September 27, 2006</h2><P>Ahh stupid me, I should just use the Insert method instead.</P>
+<P>/Henrik</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

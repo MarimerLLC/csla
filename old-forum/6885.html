@@ -1,0 +1,222 @@
+<html><header><title>Learning CSLA</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Learning CSLA</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6885.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Tom_W posted on Thursday, April 30, 2009</h2>Hi All<br><br>I'm currently working my way up the CSLA learning curve and as I've said elsewhere it is a deeply impressive body of work.&nbsp; I thought it might be worth me posting up my experiences as I go as it might be a useful resources for others looking at these forums with a view to adopting CSLA.<br><br><u>Expert Business Objects Book</u><br><br>The book is a great resource, but having read both the 2005 and 2008 versions I kind of get the feeling that there is simply so much to say about CSLA that one book simply cannot contain it any more.&nbsp; Nowhere is this more evident than in the much discussed dropping of the WinForms chapter.<br><br>My thought was that the book might be more manageable and be easier for the first timer to read if it was split into a series of books:<br><br><ul><li><u>CSLA - The Reference Guide</u>:&nbsp; dealing with how CSLA is internally programmed, effectively the master reference.</li><li><u>Quick Start CSLA:</u>&nbsp; dealing with learning by example, based around the project tracker worked example.&nbsp; It would still need the general CSLA intro and the OO design section (which is superb BTW and taught me a lot) but would lose the heavy details of CSLA's internal implementation.<br></li><li><u>More CSLA Examples:</u>&nbsp; giving further common (and less common) scenario examples implemented in CSLA - I dread to say it, but Northwind/AdventureWorks would be helpful!</li></ul><br>I think that a lot of programmers fall into the 'learn by example' and 'just hit the ground and get coding' categories, so I think that a book or books set up around this approach would be of use to a lot of people, and would probably increase the adoption of CSLA.<br><br>I know that we as a company have been looking at CSLA for years, but the highly in depth scope of the books meant we never got round to reading the book and so fully understanding CSLAs benefits.&nbsp; In the meantime, and just for good measure, we wrote an in house framework that tries to achieve almost exactly what CSLA sets out to do, but does hugely less elegantly!<br><br><br><u>CSLA Source Code</u><br><br>I made the mistake of just referencing up the CSLA.dll and never really looking at CSLA's sourcecode at the beginning.&nbsp; I would really recommend anyone starting CSLA to add the CSLA.proj to their solution and then to look at the comments/remarks in the methods of the classes being inherited.&nbsp; There is a wealth of information in that green text!<br><br><br><u>Example Code - ProjectTracker</u><br><br>I think that adding a straight parent/child/grandchild relationship element to ProjectTracker would be enormously useful as I don't think this area is as well covered by the example (and so correspondingly also not by the book).<br><br><br><br>OK, that's my experiences so far.&nbsp; I fully appreciate that Rocky has a day job, and that it isn't supporting CSLA!<br><br>Equally however, wider adoption would presumably boost the book sales which I'm sure is always welcome.&nbsp; In all seriousness, CSLA is a great tool, so making it as accessible as possible is for the greater good :-)<br><br>Hopefully none of the above causes offense, it's not meant to, just trying to give the resident experts a view from the trenches!<br><br><br><br><u>Part 2 - 29th May 2009</u><br><br>Well, I've been at it a few more weeks now and have learnt a bit more.<br><br>One thing that comes up an awful lot in CSLA discussions is the need to adopt a behaviour centric (as opposed to data centric) business object design pattern.&nbsp; this confused the heck out of me, but the following post helps a lot (in addition to reading teh Expert BOs book obviously):<br><br><a HREF="/forums/thread/17230.aspx">http://forums.lhotka.net/forums/thread/17230.aspx</a><br><br><br>The other thing that has absorbed a lot of my time is trying to get an adequate code generation solution up and running - this is still work in progress as i go up the CodeSmith learning curve..<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Thursday, April 30, 2009</h2>Tom,<br />Interesting experience. Thanks for sharing.<br />When I started 5+ years ago I knew we needed a framework. But luckily I had no idea how to build one and so I actually read the book before starting any coding. Cover to cover. And then flipping through it quite a bit after that. Your story about building an in house framework sent chills down my spine. Ouch!<br /><br />Your comments on using more standard examples is a good one. Project tracker tries to show the various ways that you *can* do things. It does *not* show the best way to do everything.<br /><br />CSLA has come a long way since version 1.x. I am so glad we chose it and that we have been able to keep up with the changes. Converting from 1.x to 2.x was very painful. But conversions since then have been easy in comparison!<br /><br />Joe<br /></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Tom_W replied on Thursday, April 30, 2009</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>JoeFallon1:</strong></div><div>Your story about building an in house framework sent chills down my spine. Ouch! </div></BLOCKQUOTE><br><br>I could cheerfully throttle the person responsible for the object binding documentation (or lack thereof).&nbsp; It's one of the most useful and fundamental parts of .NET and it is stuffed full of undocumented gotchas to trip up the unwary.&nbsp; I felt so guilty for possibly finding a bug in this area.. I owe Rocky a bottle of whatever his tipple is for making him even think about data binding again!&nbsp; (He'll have to come to Oxford to collect it though!)<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Ash002 replied on Thursday, April 30, 2009</h2>Great post!<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, April 30, 2009</h2><P>This is good feedback, and I appreciate it.</P>
+<P>As you may be aware, I'm in the process of releasing about 7 hours of video content that walks through, in detail, what you need to know and do to build a CSLA .NET for Silverlight application. The videos come with more focused code samples that cover (or will cover when I'm done) most or all of the items on your list in terms of types of object and object relationships.</P>
+<P>(I'm working on segment 5 right now, which includes illustrations of most major object relationship scenarios)</P>
+<P>This is my experiment to try and address the recurring request for content focused more on <EM>using</EM> the framework as opposed to <EM>creating</EM> the framework.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Tom_W replied on Friday, May 01, 2009</h2>Hi Rocky,<br><br>That sounds really good.&nbsp; We are currently developing with VB (sorry!) and WinForms (sorry again!) ; how different is the CSLALight framework, are the examples in the videos directly applicable to WinForms?<br><br>One other question, without stirring up the hornet's nest of the future of WinForms, in your experience are the current versions of the WPF and Silverlight development tools robust and fast enough for development of complex software solutions?&nbsp; The last time I looked at these tools I felt they weren't quite there yet and that waiting for VS2010 would be sensible, but that was back in the VS2008 pre release days.<br><br>Thanks<br><br>Tom<br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, May 01, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>CSLA .NET for Silverlight allows you to share 85-95% of your
+business object code between Windows and SL. So at the business class
+implementation level, the Windows and SL versions of CSLA are <i>very</i>
+close.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>At the UI level the story is obviously different, as XAML in SL
+is different from WPF (to some degree) and of course is quite different from
+Windows Forms or ASP.NET.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>So if you look at the videos in the series, segments 1 (intro/background),
+5 (object types) and 6 (data access) are useful to .NET as well as SL. Segment
+4 is also somewhat useful to .NET, but I&#8217;d guess over half the content is
+entirely SL specific.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>In terms of tooling for WPF/SL, I absolutely think there&#8217;s
+wisdom in waiting for VS10. Even in VS08 you really need to plan for writing
+XAML by hand. For a developer with a web background that&#8217;s probably not
+such a big deal, but for a developer with a Windows background it seems (and is
+imo) extremely primitive.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>The point of my previous post however, is that if the SL video
+series is successful (meaning enough people buy it to make it worth my time to
+have created them), then I&#8217;ll almost certainly create similar videos
+(series and/or singles) covering .NET, WPF, ASP.NET MVC and other topics of
+interest. Windows Forms would be in that list, because it is, and will be for
+some time, a widely used technology.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I can&#8217;t say that I&#8217;ll put a lot of focus on VB. It isn&#8217;t
+realistic to record and produce the videos twice, and sales of VB content is
+substantially lower than C# content, so I&#8217;m afraid the economics just
+aren&#8217;t there at this point in time.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Tom_W replied on Friday, May 01, 2009</h2>Thanks Rocky, that's great info, I will purchase the relevant videos.<br><br>I saw a Beth Massi video showing off WPF development in VS2010 and it looks like a big step forward.<br><br>Great news on the more videos front, I hope they are a success.&nbsp; I understand about the VB, thankfully I have a Java background so C syntax doesn't worry me too much!<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, May 01, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>For better or worse, the current set of videos are sold as a
+series, not as individual segments. I&#8217;m not sure I&#8217;d recommend
+buying the whole series to get just the 3 or so segments that are relevant
+outside Silverlight (though I obviously won&#8217;t complain if you do buy the
+series to get those segments! :) ).<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Tom_W replied on Friday, June 05, 2009</h2><u>What is CSLA</u><br><br>One thing I should have put right at the beginning of the OP, was that before starting down the road of learning CSLA it is vital to understand what CSLA actually is and isn't.<br><br>The book covers this in detail, but Rocky has appeared on several dnrtv shows to talk on this subject, and I think those videos are very informative.&nbsp; All of the previous dnrtv shows can be found here: <a href="http://www.dnrtv.com/archives.aspx">http://www.dnrtv.com/archives.aspx</a><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Tom_W replied on Friday, June 05, 2009</h2>I'm going to try and keep this thread updated when good beginners info is posted.&nbsp; If this is annoying anyone let me know!<br><u><br>Understanding the CSLA Stereotypes</u><br><br>After getting your head round what CSLA is for, probably the next stop is to look at the CSLA stereotypes.&nbsp; There is now a video to cover this that is discussed in this post:<br><a HREF="/forums/thread/33683.aspx">http://forums.lhotka.net/forums/thread/33683.aspx</a><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, June 05, 2009</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>That&#8217;s fine, though I&#8217;m also willing to give you the
+ability to edit the wiki if you&#8217;d like to maintain a &#8220;Getting
+Started&#8221; page there instead. That might be easier to deal with than an
+ever-growing forum thread.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Tom_W [mailto:cslanet@lhotka.net]
+<br>
+<b>Sent:</b> Friday, June 05, 2009 12:05 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] Learning CSLA<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>I'm going to try and keep this thread updated when good beginners
+info is posted.&nbsp; If this is annoying anyone let me know!<br>
+<u><br>
+Understanding the CSLA Stereotypes</u><br>
+<br>
+After getting your head round what CSLA is for, probably the next stop is to
+look at the CSLA stereotypes.&nbsp; There is now a video to cover this that is
+discussed in this post:<br>
+<a href="/forums/thread/33683.aspx">http://forums.lhotka.net/forums/thread/33683.aspx</a><br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Tom_W replied on Friday, June 05, 2009</h2>That makes a lot more sense, wiki it is.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Tom_W replied on Tuesday, June 16, 2009</h2>In the interim and before i forget...<br><br><u>Understanding the Data Access choices available in CSLA and generally more solid CSLA explanatory info</u><br><br>Segment 6 of the Silverlight video series is a great resource for anyone going up the CSLA curve and should be watched early in your quest to master CSLA.&nbsp; There is almost no Silverlight specific content, almost everything applies equally to CSLA.NET.<br><br>More details here:&nbsp; <a href="/forums/thread/33814.aspx">http://forums.lhotka.net/forums/thread/33814.aspx</a><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, June 16, 2009</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>You mean no Silverlight specific content :)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>It is true that the data access video applies to any CSLA .NET
+scenario, with very little Silverlight-specific content at all.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Tom_W
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Tuesday, June 16, 2009 12:57 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: Learning CSLA<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>In the interim and before i forget...<br>
+<br>
+<u>Understanding the Data Access choices available in CSLA and generally more
+solid CSLA explanatory info</u><br>
+<br>
+Segment 6 of the Silverlight video series is a great resource for anyone going
+up the CSLA curve and should be watched early in your quest to master
+CSLA.&nbsp; There is almost no CSLA specific content, almost everything applies
+equally to CSLA.NET.<br>
+<br>
+More details here:&nbsp; <a href="/forums/thread/33814.aspx">http://forums.lhotka.net/forums/thread/33814.aspx</a><br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Tom_W replied on Wednesday, June 17, 2009</h2>LOL, even by my standards that's a good effort!&nbsp; Duly edited.<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,40 @@
+<html><header><title>Dynamic Binding of Property to PropertyStatus Causes PropertyStatus Not to Show</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Dynamic Binding of Property to PropertyStatus Causes PropertyStatus Not to Show</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11441.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Nitronie posted on Thursday, June 28, 2012</h2><p>Hey,</p>
+<p>I&#39;m developing a <strong>form</strong> to edit the properties of one of my <strong>Business Objects</strong> in <strong>Silverlight</strong>, and since each property is displayed for editing much the same way, I was trying to make the job easier by making a<strong> custom UserControl</strong> that would display the<strong> FriendlyName in a TextBlock</strong>, the<strong> actual String in the property in a TextEdit</strong> (using DevExpress control, but I assume this is the same name for normal TextBoxes), and then a PropertyStatus for the Property next to the TextEdit.&nbsp;</p>
+<p>I got this working with TwoWay Binding on the form, but when I tried to pull it out into a seperate UserControl for DRY, only the PropertyStatus is not updating and showing the error. I know it has the error, because when I debugged it and hovered over the name of the PropertyStatus in the code-behind it showed that the object had correctly picked up the error, it just wasn&#39;t displaying it.&nbsp;</p>
+<p>I&#39;m using the following code to accomplish this:</p>
+<p>&nbsp;</p>
+<p>Since I was having problems binding the property to the different UserControls in the XAML, I pulled it into the code behind using the following method:</p>
+<p>&nbsp;</p>
+<p>public void SetupBindings(Csla.PropertyInfo&lt;String&gt; property, Object dataContext)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; this.propertyNameLabel.Text = property.FriendlyName + &quot;:&quot;;</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; //set up binding object</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Binding b = new Binding();</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; b.Path = new PropertyPath(property.Name);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; b.Mode = BindingMode.TwoWay;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; b.Source = dataContext;</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; this.propertyNamePropertyStatus.SetBinding(Csla.Xaml.PropertyStatus.PropertyProperty, b);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; this.propertyNameTextEditor.SetBinding(DevExpress.Xpf.Editors.TextEdit.TextProperty, b);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>Then the form (the parent of the custom control) calls the method like this:</p>
+<p>&nbsp;</p>
+<p>public FormView()</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; InitializeComponent(); &nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; this.DataContextChanged += new DependencyPropertyChangedEventHandler(FormView_DataContextChanged);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp;</p>
+<p>void FormView_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; this.propertyTextEditorControl.SetupBindings(</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;MyCslaLibrary.MyObject.MyPropertyProperty, this.DataContext);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>The DevExpress TextEdit will display the Validation Error just fine, but I don&#39;t like the way it does, and it doesn&#39;t display warning, information, and busy status, so I&#39;d really rather use the PropertyStatus control, but it&#39;s not working. Please help.</p>
+<p>&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

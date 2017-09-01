@@ -1,0 +1,99 @@
+<html><header><title>Is there a way to access a list of managed properties (3.5 Managed Properties)</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Is there a way to access a list of managed properties (3.5 Managed Properties)</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5279.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>bt1 posted on Thursday, August 21, 2008</h2><P>I am trying to handle DateTimeOffset? (Nullable)&nbsp;conversion from UTC to local in a custom class that is subclassing BusinessBase&lt;T&gt;.</P><FONT color=#0000ff size=1>
+<P>public</FONT><FONT size=1> </FONT><FONT color=#0000ff size=1>abstract</FONT><FONT size=1> </FONT><FONT color=#0000ff size=1>class</FONT><FONT size=1> </FONT><FONT color=#2b91af size=1>CustomBusinessBase</FONT><FONT size=1>&lt;T&gt; : Csla.</FONT><FONT color=#2b91af size=1>BusinessBase</FONT><FONT size=1>&lt;T&gt; </FONT><FONT color=#0000ff size=1>where</FONT><FONT size=1> T : </FONT><FONT color=#2b91af size=1>CustomBusinessBase</FONT><FONT size=1>&lt;T&gt;</P></FONT>
+<P>I would like to have a pair of methods that convert DateTimeOffset to and from local time.</P><FONT color=#0000ff size=1>
+<P>protected</FONT><FONT size=1> </FONT><FONT color=#2b91af size=1>TimeSpan</FONT><FONT size=1> ToUniversalTime()</FONT></P><FONT size=1><FONT color=#0000ff size=1>
+<P>protected</FONT><FONT size=1> </FONT><FONT color=#2b91af size=1>TimeSpan</FONT><FONT size=1> ToLocalTime();</FONT></P></FONT>
+<P>Each of these methods needs to loop through all properties that are of type DateTimeOffset?</P>
+<P>Dates in the database are UTC.&nbsp; On the portal fetch the properties are loaded up with dates that are UTC (offset 0)</P><FONT color=#0000ff size=1><FONT size=1><FONT size=1>
+<P></FONT><FONT color=#2b91af size=1>DateTimeOffset</FONT><FONT size=1>? dtoTemp;</P>
+<P>dtoTemp = drSafe.GetDateTimeNullable(Index);</P>
+<P></FONT><FONT color=#0000ff size=1>if</FONT><FONT size=1> (dtoTemp != </FONT><FONT color=#0000ff size=1>null</FONT><FONT size=1>)</P>
+<P>{</P>
+<P>dtoTemp = </FONT><FONT color=#0000ff size=1>new</FONT><FONT size=1> </FONT><FONT color=#2b91af size=1>DateTimeOffset</FONT><FONT size=1>(dtoTemp.Value.Ticks, </FONT><FONT color=#0000ff size=1>new</FONT><FONT size=1> </FONT><FONT color=#2b91af size=1>TimeSpan</FONT><FONT size=1>(0));</P>
+<P>}</P>
+<P>LoadProperty&lt;</FONT><FONT color=#2b91af size=1>DateTimeOffset</FONT><FONT size=1>?&gt;(DateProperty, dtoTemp);</P></FONT></FONT><FONT size=1></FONT></FONT><FONT size=1><FONT size=1></FONT></FONT>
+<P>In the factory methods&nbsp; I would like to call ToLocalTime()&nbsp; to convert the datetime to the local offset (which would be done locally on a smart client)</P>
+<P>So the ToLocalTime would need to get/loop a list of properties of type DateTimeOffset? and adjust the offset.&nbsp; I have code generated the ToLocalTime and put it into my business methods and a sample of the current code is show below.&nbsp; However, I think I should be able to move this in to a class that subclasses BusinessBase&lt;T&gt; and make ToLocalTime dynamic by getting a list of all managed properties and if the property's type is DateTimeOffset the adjust to Local.</P>
+<P><FONT size=1><FONT color=#0000ff>protected</FONT> <FONT color=#0000ff>override</FONT> <FONT color=#2b91af>TimeSpan</FONT> ToLocalTime()</FONT></P>
+<P><FONT size=1>{</FONT></P>
+<P><FONT size=1><FONT color=#2b91af>&nbsp;&nbsp;&nbsp;TimeSpan</FONT> offset = <FONT color=#0000ff>new</FONT> <FONT color=#2b91af>TimeSpan</FONT>(0);</FONT></P>
+<P><FONT size=1><FONT color=#0000ff>&nbsp;&nbsp;&nbsp;this</FONT>.ValidationRules.SuppressRuleChecking = <FONT color=#0000ff>true</FONT>;</FONT></P>
+<P><FONT size=1><FONT color=#2b91af>&nbsp;&nbsp;&nbsp;DateTimeOffset</FONT>? dtoTempDatetime = ReadProperty&lt;<FONT color=#2b91af>DateTimeOffset</FONT>?&gt;(DatetimeProperty);</FONT></P>
+<P><FONT size=1><FONT color=#0000ff>&nbsp;&nbsp;&nbsp;if</FONT> (dtoTempDatetime != <FONT color=#0000ff>null</FONT>)</FONT></P>
+<P><FONT size=1>&nbsp;&nbsp;&nbsp;{</FONT></P>
+<P><FONT size=1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;dtoTempDatetime = dtoTempDatetime.Value.ToLocalTime();</FONT></P>
+<P><FONT color=#008000><FONT size=1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//Must Clear current value because dates shifted to different offsets (timezones)</FONT></P></FONT>
+<P><FONT color=#008000><FONT size=1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//compare equal and CSLA will not update fields whos new value is equal to current value.</FONT></P></FONT>
+<P><FONT color=#008000><FONT size=1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//ex. "5/10/2007 10:33:52 AM -05:00" == "5/10/2007 3:33:52 PM +00:00"</FONT></P></FONT>
+<P><FONT size=1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;LoadProperty&lt;<FONT color=#2b91af>DateTimeOffset</FONT>?&gt;(DatetimeProperty, <FONT color=#0000ff>null</FONT>);</FONT></P>
+<P><FONT size=1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;LoadProperty&lt;<FONT color=#2b91af>DateTimeOffset</FONT>?&gt;(DatetimeProperty, dtoTempDatetime);</FONT></P>
+<P><FONT size=1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;offset = dtoTempDatetime.Value.Offset;</FONT></P>
+<P><FONT size=1>}</FONT></P>
+<P><FONT size=1><FONT color=#0000ff>this</FONT>.ValidationRules.SuppressRuleChecking = <FONT color=#0000ff>false</FONT>;</FONT></P>
+<P><FONT size=1><FONT color=#0000ff>return</FONT> offset;</FONT></P>
+<P><FONT size=1>}&nbsp;&nbsp;&nbsp;<FONT color=#008000></P></FONT></FONT>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>Private static PropertyInfo&lt;DateTimeOffset?&gt; DatetimeProperty = new PropertyInfo&lt;DateTimeOffset?&gt;("Datetime");<BR>public string Datetime<BR>{<BR>&nbsp; get { return GetProperty&lt;DateTimeOffset?&gt;(DatetimeProperty ); }<BR>&nbsp; set { SetProperty&lt;DateTimeOffset?&gt;(DatetimeProperty , value); }<BR>}</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>bt1 replied on Monday, August 25, 2008</h2><P class=MsoNormal><SPAN><SPAN>Ok, I think I found a way to do this.&nbsp; Does anyone see a problem with the use of FieldManager.GetRegisteredProperties(); in the method below?</SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN></SPAN></SPAN>&nbsp;</P>
+<P class=MsoNormal><SPAN>protected</SPAN><SPAN> <SPAN>TimeSpan</SPAN> ToLocalTime()<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>{<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN><SPAN>TimeSpan</SPAN> offset = <SPAN>new</SPAN> <SPAN>TimeSpan</SPAN>(0);<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN><SPAN>this</SPAN>.ValidationRules.SuppressRuleChecking = <SPAN>true</SPAN>;<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN><SPAN>//Get list of all Managed properties<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN><SPAN>List</SPAN>&lt;Csla.Core.<SPAN>IPropertyInfo</SPAN>&gt; l = FieldManager.GetRegisteredProperties();<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN><SPAN>if</SPAN> (l != <SPAN>null</SPAN>)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN>{<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>foreach</SPAN> (Csla.Core.<SPAN>IPropertyInfo</SPAN> item <SPAN>in</SPAN> l)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>{<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>Csla.<SPAN>PropertyInfo</SPAN>&lt;<SPAN>DateTimeOffset</SPAN>?&gt; propInfoNull;<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>Csla.<SPAN>PropertyInfo</SPAN>&lt;<SPAN>DateTimeOffset</SPAN>&gt; propInfo;<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>propInfoNull = item <SPAN>as</SPAN> Csla.<SPAN>PropertyInfo</SPAN>&lt;<SPAN>DateTimeOffset</SPAN>?&gt;;<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>propInfo = item <SPAN>as</SPAN> Csla.<SPAN>PropertyInfo</SPAN>&lt;<SPAN>DateTimeOffset</SPAN>&gt;;<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>//If the PropertyInfo type is a DateTimeOffset? (nullable)<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>if</SPAN> (propInfoNull != <SPAN>null</SPAN>)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>{<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>if</SPAN> (FieldManager.FieldExists(item))<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>&nbsp;&nbsp;</SPAN>{<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>DateTimeOffset</SPAN>? dtoNullable = <SPAN>null</SPAN>;<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>dtoNullable = ReadProperty&lt;<SPAN>DateTimeOffset</SPAN>?&gt;(propInfoNull);<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>if</SPAN> (dtoNullable.HasValue)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>{<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>dtoNullable = dtoNullable.Value.ToLocalTime();<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>//Must Clear current value because dates shifted to different timezones<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>//compare equal and CSLA will not update fields whos new value is equal to current value.<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>//ex. "5/10/2007 10:33:52 AM -05:00" == "5/10/2007 3:33:52 PM +00:00"<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>LoadProperty&lt;<SPAN>DateTimeOffset</SPAN>?&gt;(propInfoNull, <SPAN>null</SPAN>);<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>LoadProperty&lt;<SPAN>DateTimeOffset</SPAN>?&gt;(propInfoNull, dtoNullable);<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>offset = dtoNullable.Value.Offset;<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>}<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>}<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>}<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>//If the PropertyInfo type is a DateTimeOffset <o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>if</SPAN> (propInfo != <SPAN>null</SPAN>)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>{<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>if</SPAN> (FieldManager.FieldExists(item))<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>{<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>DateTimeOffset</SPAN> dto;<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>dto = ReadProperty&lt;<SPAN>DateTimeOffset</SPAN>&gt;(propInfo);<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>dto = dto.ToLocalTime();<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>//Must Clear current value because dates shifted to different timezones<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>//compare equal and CSLA will not update fields whos new value is equal to current value.<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>//ex. "5/10/2007 10:33:52 AM -05:00" == "5/10/2007 3:33:52 PM +00:00"<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>&nbsp;&nbsp;&nbsp;</SPAN>LoadProperty&lt;<SPAN>DateTimeOffset</SPAN>&gt;(propInfo, <SPAN>new</SPAN> <SPAN>DateTimeOffset</SPAN>(1970, 1, 1, 0, 0, 0, 1, <SPAN>new</SPAN> <SPAN>TimeSpan</SPAN>(0)));<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>LoadProperty&lt;<SPAN>DateTimeOffset</SPAN>&gt;(propInfo, dto);<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>offset = dto.Offset;<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>}<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>}<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>}<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN>}<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN>ValidationRules.SuppressRuleChecking = <SPAN>false</SPAN>;<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN><SPAN>return</SPAN> offset;<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>}</SPAN></P>
+<P>&nbsp;</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,144 @@
+<html><header><title>DatagridView and binding</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>DatagridView and binding</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3413.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>ravimaran posted on Wednesday, August 22, 2007</h2><span id="_ctl0_MainContent_PostFlatView"><span>Hi,&nbsp; I am running into
+this issue on binding data to the datagridview. Actually I have
+collection of objects binded to the binding source:<br><br>my Form1<br><br>Form_Load(...){<br>&nbsp;&nbsp; //bsList - binding source <br>&nbsp; //dgvList - DataGridView<br>&nbsp; // I have already attached dgvList.DataSource = bsList;<br>&nbsp; bsList.DataSource = collectionOfChildrend;<br>}<br><br>Event_AddNewChild(){<br>&nbsp; Form frm = New Form2(passing reference to the collectionList);<br>&nbsp; frm.ShowDialog(this);<br>}<br><br><br>my Form 2<br>_collectionList aList; <br><br>Form2(collectionList)<br>{<br>&nbsp; _collectionList = collectionList<br>}<br>Event_Save(){<br>&nbsp; //child object is created<br>&nbsp;_collectionList.Add(child)<br>}<br><br>Some
+cases I see the dgvList rebinds right away when there were child
+objects exsisted on the collectionList and it doesnt' rebinds when
+collectionList was empty.&nbsp; I would really like to know how I can
+control this binding without it binds atuomatically.&nbsp; I would like to
+rebinds the datasouce to gridview after I added the child object to the
+collection.&nbsp; How do I do this?&nbsp; I hope someone can help me with this!&nbsp;
+Thank you.<br>
+
+</span></span></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, August 22, 2007</h2><P>You'd have a far easier time of this if you use Windows Forms 2.0 data binding- which is to say that you should use a BindingSource control.</P>
+<P>I spent <EM>no time</EM> testing the use of 1.x style data binding in Windows Forms 2.0 for CSLA .NET, because it was fundamentally limited, and Microsoft fixed most of the issues through the BindingSource.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ravimaran replied on Wednesday, August 22, 2007</h2>actually I am using widows form 2.0.&nbsp; Also I am having this another issue when I delete child objects from the collection.<br>Like I said earlier in from1 I have a regular datagridview and I am able to select a row and click the delete button.&nbsp; I can see that the objects are being removed from the collection.&nbsp; When only one child is left in the collection and when I delete that child, I don't know what I am doing, but all the child objects marked for deletion are marked for not deletion.&nbsp; That is the objects are not being deleted and I can see all the objects are in the collection and binds to the gridview.&nbsp; <br><br>I am guessing something I am missing thats why I can't delete the single item in the list and the gridview datasource is not updated as well.&nbsp; <br>I hope I made sense. Please explain me if I am doing anything wrong.&nbsp; Thank you.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, August 22, 2007</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Yes, I understand that you are using Windows Forms 2.0. But your
+problem description makes it sound like you are binding the grid directly to
+the object, rather than binding the grid to a bindingsource and the
+bindingsource to the object.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Also, make sure you are running at least 2.1.4, or better yet
+3.0.1, because there are important collection-based bug fixes in BLB all the
+way up to 3.0.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> ravimaran
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Wednesday, August 22, 2007 6:12 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] DatagridView and binding<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>actually I am using widows form 2.0.&nbsp; Also I am having
+this another issue when I delete child objects from the collection.<br>
+Like I said earlier in from1 I have a regular datagridview and I am able to
+select a row and click the delete button.&nbsp; I can see that the objects are
+being removed from the collection.&nbsp; When only one child is left in the
+collection and when I delete that child, I don't know what I am doing, but all
+the child objects marked for deletion are marked for not deletion.&nbsp; That
+is the objects are not being deleted and I can see all the objects are in the
+collection and binds to the gridview.&nbsp; <br>
+<br>
+I am guessing something I am missing thats why I can't delete the single item
+in the list and the gridview datasource is not updated as well.&nbsp; <br>
+I hope I made sense. Please explain me if I am doing anything wrong.&nbsp;
+Thank you.<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ravimaran replied on Wednesday, August 22, 2007</h2>Thank you for the reply Rocky,&nbsp; I am really happy that you are replying realy fast.&nbsp; I am sorry I didn't say it explicitly that I am binding the gridview to binding source and binding source to the collection.&nbsp; I am able to over come the issue binding the binding source to the objects again after a child is added to the collection.&nbsp; So I guess I need get the latest version of framework for the deletion part.&nbsp; I am just curious when I delete the child objects one by one the collection length is reduced but when I delete the last item the length is back to its original value so no items get deleted.&nbsp; I hope I am not asking any inefficent question. I am really new to csla.net but I really love the frame work.&nbsp; Hope you can clear it for me.&nbsp; Thank you.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, August 23, 2007</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>It is possible that the bug fixes in 3.0 will help you. There
+were some cases where ListChanged was raised too early and data binding was
+told of a delete before the delete operation was entirely completed. I don&#8217;t
+know if that&#8217;s your issue, but it may be.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> ravimaran
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Wednesday, August 22, 2007 10:09 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: DatagridView and binding<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Thank you for the reply Rocky,&nbsp; I am really happy that
+you are replying realy fast.&nbsp; I am sorry I didn't say it explicitly that I
+am binding the gridview to binding source and binding source to the
+collection.&nbsp; I am able to over come the issue binding the binding source
+to the objects again after a child is added to the collection.&nbsp; So I guess
+I need get the latest version of framework for the deletion part.&nbsp; I am
+just curious when I delete the child objects one by one the collection length
+is reduced but when I delete the last item the length is back to its original
+value so no items get deleted.&nbsp; I hope I am not asking any inefficent
+question. I am really new to csla.net but I really love the frame work.&nbsp;
+Hope you can clear it for me.&nbsp; Thank you.<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ravimaran replied on Thursday, August 23, 2007</h2>Hi Rocky, I did check the ListchangedEvent but no help.&nbsp; This is exactly what is happening.<br>Case 1:<br>&nbsp; When only one child exsists in the gridview and When I delete the child, I see the child is removed from the gridview.&nbsp; After I pressed save and opens the gridview form again, I see the deleted child object.<br><br>Case 2:<br>&nbsp;When there are, lets say, 5 child objects exsist in the gridview and when I delete 3 objects from it, I see the deleted objects are removed from the gridview and when I click save and reopen the gridview form I do not see the deleted objects which is good.&nbsp; It actually deletes.<br><br>Case 3:<br>When I delete all the objects from gridview, I see all the objects are removed but when I reopen the gridview form I see all the objects are still there - no deletion.<br><br>I am really confused why this happening and I took several approaches in calling ApplyEdit(), CancelEdit(), BeginEdit(), and EndEdit().&nbsp; <br><br>here is my piece of code<br><br>// my list<br>_collectionList&nbsp; <br>int index;<br>On_DeleteEvent(...)<br>{<br>&nbsp;&nbsp; index = dataGridViewList.SelectedCells[0].RowIndex<br>&nbsp; _collectionList.RemoveAt(index)<br>}<br><br>On_SaveEvent(...)<br>{<br>&nbsp; _collectionList.Save();<br>}<br><br>I hope I have given you enough informtion so you can clearly see where I am standing.&nbsp; Thank you for all the replies still.<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,7 @@
+<html><header><title>Rollback and Commit control in CSLA transaction</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Rollback and Commit control in CSLA transaction</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9875.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>vijay posted on Thursday, December 16, 2010</h2><p>Visual Studio 2008/CSLA 3.5</p>
+<p>Hello</p>
+<p>We are using CSLA transaction for database operations. </p>
+<p>[Transactional(TransactionalTypes.TransactionScope)]<br />protected override void DataPortal_Update()</p>
+<p>....other code (update/insert/delete) goes here..</p>
+<p>Q. How can i control rollback or commit and not depend on CSLA. This is required where based on some conditions i need to do commit/rollback and come out of the process?</p>
+<p>Thanks</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Thursday, December 16, 2010</h2><p>Use manual transactions (don&#39;t use the Transactional attribute) and create your own TransactionScope object.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

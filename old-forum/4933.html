@@ -1,0 +1,26 @@
+<html><header><title>SmartDate enhancements (v.2)</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>SmartDate enhancements (v.2)</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4933.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>tiago posted on Tuesday, June 03, 2008</h2><P><FONT face=Arial>Hi all,</FONT></P>
+<P><FONT face=Arial>I find SmartDate quite useful. But I thought I could improve it.</FONT></P>
+<P><FONT face=Arial>Besides the standard CSLA shortcuts for dates</FONT></P>
+<UL>
+<LI><FONT face=Arial>"Yesterday" or "y" or "-" </FONT>
+<LI><FONT face=Arial>"Today" or "t" or "." (dot) </FONT>
+<LI><FONT face=Arial>"Tomorrow" or "tom" or "+"</FONT></LI></UL>
+<P><FONT face=Arial>I added the following shortcuts</FONT></P>
+<UL>
+<LI><FONT face=Arial>"&lt;" to enter the same day of last month</FONT> 
+<LI><FONT face=Arial>"&gt;" to enter the same day of next month</FONT> 
+<LI><FONT face=Arial>"-<EM>nn</EM>" to enter <EM>nn</EM> days before the current date</FONT> 
+<LI><FONT face=Arial>"+<EM>nn</EM>" to enter <EM>nn</EM> days after the current date</FONT> 
+<LI><FONT face=Arial>".<EM>nn</EM>" (dot <EM>nn</EM>) to enter <EM>nn</EM> day of the current month</FONT> 
+<LI><FONT face=Arial>"&lt;<EM>nn</EM>" to enter <EM>nn</EM> day of last month</FONT> 
+<LI><FONT face=Arial>"&gt;<EM>nn</EM>" to enter <EM>nn</EM> day of next month</FONT> 
+<LI><FONT face=Arial>"<EM>nn</EM>" to enter nearest <EM>nn</EM> day (if today is the 25th, the nearest 5th will be next month, although the nearest 15th was this same month)</FONT></LI></UL>
+<P><FONT face=Arial>I had to change SmartDate.cs. I enclose the changed file as well as the diff file. SmartDate.cs will go on the Csla folder.</FONT></P>
+<P><FONT face=Arial>Rocky, can you consider including this change on the next release?</FONT></P>
+<P><FONT face=Arial>TIA</FONT></P>
+<P><FONT face=Arial>P.S. - Yesterday right after posting, I realised there were problems changing year. Now those problems are solved. As a side effect, non existent days of short monthes (31st Feb, etc) are now converted to the last existent day of that month. Suppose you are on 10th May and input "&gt;31". As there is no 31st Jun, instead of producing an illegal date, "&gt;31" is converted to the&nbsp;30st Jun.&nbsp;</FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tiago replied on Saturday, February 26, 2011</h2><p>Hi Rocky,</p>
+<p>I have this working on Csla 4.1.0.</p>
+<p>The same question though:</p>
+<p>Rocky, can you consider including this change on the next release?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tiago replied on Saturday, February 26, 2011</h2><p>Forgot to say: the attachement includes:</p>
+<p>- replacement SmartDate.cs</p>
+<p>- diff file with just the changes</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Saturday, February 26, 2011</h2><p>I&#39;ll add this to the wish list, thanks.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,134 @@
+<html><header><title>Can you make a database call in a Validation method?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Can you make a database call in a Validation method?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/2760.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>ormico posted on Monday, April 23, 2007</h2><P>I've tried to look this up already but I can't find any reference to something similiar.</P>
+<P>I have a BusinesBase&lt;&gt; object that contains a date. There are ranges that the date can and cannot fall within depending on data already in the database.</P>
+<P>I would like to be able to write a custom validation rule that would log into the database, pass some data (an id and our date) and have it determin if out date is within an allowed range.</P>
+<P>This seems straight forward enough, but my questions are </P>
+<P>1. Do the validation rules run on the data portal? I don't want the data access call to happen in the UI</P>
+<P>I think the answer is yes, so that is fine.</P>
+<P>2. Can I keep my validation within the same transaction as my upate? </P>
+<P>I'm using SQL Server transactions. If I instantiate a data access object inside my validation method and close it, then when dataportal_update() gets called I'll have to create another data access object and another connection and another transaction.</P>
+<P>Shouldn't the validation happen in the same transaction?</P>
+<P>-Zack</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, April 23, 2007</h2><P>You can make data portal calls in a rule method, but you shouldn't directly do data access, no. The rule methods can run on either client or server - you don't know which - and so you must use the data portal to ensure you actually interact with the app server properly.</P>
+<P>That said, there's no reason at all why a rule method can't talk to the database (again, via the data portal). It is <EM>critical</EM> to remember that rule methods can run frequently however - and so performance can be an issue. This is why I added the rule priority concepts in version 2.1 - you can see how to use them in the <EM>CSLA .NET Version 2.1 Handbook</EM>.</P>
+<P>The idea though, is to run any "cheap" rule methods first, and only run the "expensive" rule methods (like ones that hit the database) if the cheap methods pass. If a cheap method fails, then you can skip the expensive rule method, because the property is already known to be in error.</P>
+<P>In terms of keeping the validation in the same transaction as the update - the answer is no. Validation occurs as properties are being set, which is entirely at a different point in the object lifecycle from when Save() is called.</P>
+<P><EM>However</EM>, you could choose to structure your objects differently - not following the structure used in the books or sample app. In this case you would not call PropertyHasChanged(), nor would you call ValidationRules.CheckRules() <EM>except</EM> at the top of the DataPortal_Insert(), DataPortal_Update() and DataPortal_DeleteSelf() methods.</P>
+<P>Obviously you'd lose any sense of user interactivity - the result would be an object that only supports block mode interaction (like mainframe stuff) - but then the rule methods would be running only as part of a call to Save() and they <EM>would</EM> run within the same transactional context.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>dg78 replied on Sunday, May 20, 2007</h2><P class=MsoNormal>Hi,</P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal><SPAN>I am in the same situation than Ormico&nbsp;: I want to access database in a Validation Rule.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Suppose a user enters an invoice. When he left the Customer control, it is necessary to find if the customer exists. Of course, I can initialize a hashtable or CustomerList and test if the customer exists inside this collection. But if there are many customers (several thousands), I think it will be better to check if he exists inside the database. Is it true ?<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;</SPAN>I want to test a customer either by his number (unique id) or by his name or the beginning of his name (unique or several chooses). I don’t want to use a comboBox to choose the customer but a textbox following by a button (…) (in fact an user control) as Matt and Mario write in <o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><A HREF="/forums/1/7380/ShowThread.aspx"><FONT color=#800080>http://forums.lhotka.net/forums/1/7380/ShowThread.aspx</FONT></A> <o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>So I think the best is to check a custom validation rule due to the binding between controls (here the textbox) and the property.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>How do you do in a such situation which happens always ?<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>So, I understand that I need to use the DataPortal, as Rocky said. <o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>How ? by calling a commandbase from the business class (invoice) and using a DataPortal_execute ? Where to put this code ?<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Have you a little sample to show how to use that ? <o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Then, instead to put this code inside each BO, is it possible to make it generic ? <o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Where to put this generic code ?<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Many questions for good advices as always in this forum.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Thanks in advance<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Dominique<o:p></o:p></SPAN></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Sunday, May 20, 2007</h2>
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>In the book I show how to build an Exists command (look at the
+Project class &#8211; and specifically at the nested Command class).<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>If you implement such a command, you can just call it in your
+rule method:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Private Shared Function MustNotExist(Of Customer)(&#8230;) As
+Boolean<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp; If Customer.Exists(target._id) Then<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp; e.Description = &#8220;Customer exists&#8221;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp; &nbsp;&nbsp;Return False<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp; Else<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp; Return True<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp; End If<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>End Sub<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I recommend using rule priorities to make this rule run after
+your cheaper rules (like field required, etc), and set it up so it only runs if
+those rules pass. The 2.1 Handbook explains how to do that.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+</div>
+
+
+
+
+<BR>
+
+<P><FONT SIZE=2>No virus found in this outgoing message.<BR>
+Checked by AVG Free Edition.<BR>
+Version: 7.5.467 / Virus Database: 269.7.5/812 - Release Date: 5/19/2007 1:52 PM<BR>
+</FONT> </P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>dg78 replied on Monday, May 21, 2007</h2><P class=MsoNormal><SPAN>Hi Rocky,<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Thanks for your answer.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>It is true, everything is explained (even well explained&nbsp;<img src="/emoticons/emotion-2.gif" alt="Big Smile [:D]" /> ) in your book.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>The most difficult thing is sometimes to find where are the explanations we need.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>You wrote : “</SPAN><SPAN>This might be something as simple as doing a quick database lookup”. It is just the case in my question.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>I read also that it is possible to have a public class instead a </SPAN><SPAN>private </SPAN><SPAN>nested class inside a business object. I think it is the road to take for a generic database lookup class.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Does anybody do that ? <o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Cheers<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Dominique</SPAN><SPAN><o:p></o:p></SPAN></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, May 21, 2007</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>dg78:</strong></div><div>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>I read also that it is possible to have a public class instead a </SPAN><SPAN>private </SPAN><SPAN>nested class inside a business object. I think it is the road to take for a generic database lookup class.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Does anybody do that ? <o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P></div></BLOCKQUOTE></P>
+<P>This is certainly possible, but isn't something I recommend. When you do your object design, every object should have one responsibility that clearly fills a role within a use case. If you have a generic database lookup object that can do many lookups, it obviously fills many responsibilities and that's bad.</P>
+<P>However, what you could maybe do is create a non-public lookup object. Your public object model would then have objects that fill specific responsibilities, but delegate the actual work to this non-public object. This is a form of normalization of behavior.</P>
+<P>But even that only makes sense if you can create your centralized lookup object in a way where it has no conditionals, Select/switch statements or other code to make the object act differently depending on how, or from where, it was called.</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

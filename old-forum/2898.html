@@ -1,0 +1,247 @@
+<html><header><title>CancelEdit does not work for BusinessListBase</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CancelEdit does not work for BusinessListBase</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/2898.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>David posted on Thursday, May 17, 2007</h2><P>I am trying to do something that I thought would be dead easy but it’s proving to be anything but that. I have a simple editable root list object that I want to edit in a data grid view. I want the user to be able to edit the data in the grid, and then click a save or cancel button to save or cancel ALL the changes. The save bit is easy, but I cannot get the cancel to work.</P>
+<P>In my simplified test example I have created the BusinessListBase object and a form with a binding source control, a data grid view and a save and cancel button. In the form load I get the list object and assign it to the binding source. In the cancel button click event I call myList.CancelEdit.</P>
+<P>I can get it to cancel the update to the last row in the grid, but if I change more than one row it will not cancel the others. I have read through quite a few other posts on this issue and I am more confused than when I started. Is there a simple and reliable way to get the cancel to work or should I give up on it now?<BR></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>david.wendelken replied on Friday, May 18, 2007</h2><P>We got this working in a web environment just yesterday.&nbsp; At first, we didn't think it worked, but we were failing to set/get the cached copy of the list at the right times.</P>
+<P>We were only going for one level of undo, because in the web environment we're only editing one record at a time (so far. :).</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>David replied on Friday, May 18, 2007</h2><P>I'm not implementing caching, just trying to do a CancelEdit on a single instance of an object. I also only want one level of undo, but once I edit more than one row in the grid I can't even get one level of undo. I would be interested to hear what you changed to get it working though.</P>
+<P>In truth, my object started out with caching (implemented just like in the book&nbsp;using a shared variable), and eventually I need to get back to that. I have removed it at this point as I need to get the Cancel working reliably.</P>
+<P>In fact if it weren't for my need to use a cached object I would simply achieve my goal by discarding the object. However, because it does use caching I need to get the Cancel working reliably.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, May 18, 2007</h2><P>I'm working on this at the moment - doing some research. It doesn't look all that good.</P>
+<P>Data binding is <EM>very</EM> aggressive about calling BeginEdit on the current row. To the point that <EM>immediately</EM> after you do bindingSource.CancelEdit/EndEdit it calls BeginEdit.</P>
+<P>This means that the current row is always one edit level above all other rows. Even unbinding the list leaves that row at an elevated edit level, because they don't do an EndEdit or CancelEdit during the unbinding process.</P>
+<P>It looks like this sort of approach may solve the issue:</P>
+<P>&nbsp;&nbsp;&nbsp; private void cancelButton_Click(object sender, EventArgs e)<BR>&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // get business object reference<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; DataList list = (DataList)this.dataListBindingSource.DataSource;</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // cancel current row<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; this.dataListBindingSource.CancelEdit();</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // unbind the UI<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; UnbindBindingSource(this.dataListBindingSource);</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // cancel the list and restart editing<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; list.CancelEdit();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; list.BeginEdit();</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // rebind the UI<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; this.dataListBindingSource.DataSource = list;<BR>&nbsp;&nbsp;&nbsp; }</P>
+<P>&nbsp;&nbsp;&nbsp; private void UnbindBindingSource(BindingSource source)<BR>&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; System.ComponentModel.IEditableObject current = this.dataListBindingSource.Current as System.ComponentModel.IEditableObject;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; this.dataListBindingSource.DataSource = null;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (current != null)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; current.EndEdit();<BR>&nbsp;&nbsp;&nbsp; }</P>
+<P>This presupposes that you've called BeginEdit() manually on the business list BEFORE binding it to the bindingSource in the first place.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>David replied on Friday, May 18, 2007</h2><P>Thanks for the post Rocky, that&nbsp;appears to work well. I've tested it with both the DevEx grid and&nbsp;the DataGridView and it's fine with both.</P>
+<P>When you say '<EM>it doesn't look good</EM>', do you mean it's not a particularly simple/clear solution, or is there something else that you are concerned about? I get very nervous about&nbsp;including somthing in&nbsp;a commercial application&nbsp;that's fragile.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, May 18, 2007</h2>
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>&#8220;Doesn&#8217;t look good&#8221; merely means that the code
+behind a cancel button is a lot more complex than I think it should be. I keep
+thinking that this is just not a complex goal, but that code is many times
+longer than I&#8217;d like to see&#8230; (2 lines seems about right to me) But
+it is what it is, and this technique does solve the issue.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>You should know that this morning&#8217;s research did uncover a
+somewhat obscure bug in CSLA itself, which is now fixed in svn &#8211; both BLB
+and BB were impacted in the solution. You could back-port the changes into
+2.1.4 though, they aren&#8217;t complex.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>The bug manifests only in the case that:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoListParagraph><span><span>1.<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span></span><span>A user selects a row<o:p></o:p></span></p>
+
+<p class=MsoListParagraph><span><span>2.<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span></span><span>The user deletes THAT row<o:p></o:p></span></p>
+
+<p class=MsoListParagraph><span><span>3.<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span></span><span>The user clicks the form-level Cancel<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>The result is that the deleted-and-now-undeleted row has an
+elevated edit level (1 higher than it should) and so you&#8217;ll get some
+unpredictable results.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>One of the things on the wish list is to catch incorrect edit
+levels like that and throw an exception. I think that may have to come higher
+in the priority list, because it would certainly help debug/diagnose this type
+of issue much more rapidly.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+</div>
+
+
+
+
+<BR>
+
+<P><FONT SIZE=2>No virus found in this outgoing message.<BR>
+Checked by AVG Free Edition.<BR>
+Version: 7.5.467 / Virus Database: 269.7.3/809 - Release Date: 5/17/2007 5:18 PM<BR>
+</FONT> </P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Patrick.Roeper replied on Friday, September 28, 2007</h2>I've just run into this issue myself... Was this fixed in CSLA 3? (I am not sure where the wish list is...)</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Friday, September 28, 2007</h2>Undo issues seem to really be fixed in 3.0.2 test 4.&nbsp; There's a bug in 3.0.1 for sure, it might be there in 3.0 as well, I'm not sure.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, September 28, 2007</h2><P>Yes, the issue is resolved in 3.0.2. Though the resolution is mostly in <EM>your code</EM>, not in CSLA itself, though I did make a couple small (but important) changes to CSLA as well.</P>
+<P>The big changes though, are in PTWin, and you need to model your UI code directly after the approach taken in the PTWin forms - which is a fair amount of code, but at least it works.</P>
+<P>Thankfully WPF is simpler, and in the long run it'll replace Windows Forms, so this complexity is (kind of) a moot point.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Patrick.Roeper replied on Friday, September 28, 2007</h2><P>When we started implementing our UI code we were not following the databinding code that you have in PTWin (unknowingly). Once I was beta'ing CSLA 3 and we were getting edit-level exceptions, we've moved all Save(), New(), and Delete() calls on the UI to generic methods that follow your PTWin examples:</P><FONT color=#0000ff size=2>
+<P>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>static</FONT><FONT size=2> T SaveRoot&lt;T&gt;(T businessObject) </FONT><FONT color=#0000ff size=2>where</FONT><FONT size=2> T : </FONT><FONT color=#2b91af size=2>BusinessBase</FONT><FONT size=2>&lt;T&gt;</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> SaveRoot(businessObject, </FONT><FONT color=#0000ff size=2>null</FONT><FONT size=2>, </FONT><FONT color=#0000ff size=2>false</FONT><FONT size=2>);</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>static</FONT><FONT size=2> T SaveRoot&lt;T&gt;(T businessObject, </FONT><FONT color=#2b91af size=2>BindingSource</FONT><FONT size=2> bindingSource, </FONT><FONT color=#0000ff size=2>bool</FONT><FONT size=2> rebindDataSource) </FONT><FONT color=#0000ff size=2>where</FONT><FONT size=2> T : </FONT><FONT color=#2b91af size=2>BusinessBase</FONT><FONT size=2>&lt;T&gt;</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (bindingSource != </FONT><FONT color=#0000ff size=2>null</FONT><FONT size=2>)</P>
+<P>{</P>
+<P>bindingSource.RaiseListChangedEvents = </FONT><FONT color=#0000ff size=2>false</FONT><FONT size=2>;</P>
+<P>}</P>
+<P>T Clone = businessObject.Clone();</P>
+<P>Clone.ApplyEdit();</P>
+<P></FONT><FONT color=#0000ff size=2>try</P></FONT><FONT size=2>
+<P>{</P>
+<P>businessObject = Clone.Save();</P>
+<P>businessObject.BeginEdit();</P>
+<P></FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (rebindDataSource)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (bindingSource != </FONT><FONT color=#0000ff size=2>null</FONT><FONT size=2>)</P>
+<P>{</P>
+<P>bindingSource.DataSource = </FONT><FONT color=#0000ff size=2>null</FONT><FONT size=2>;</P>
+<P>bindingSource.DataSource = businessObject;</P>
+<P>}</P>
+<P>}</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>catch</FONT><FONT size=2> (</FONT><FONT color=#2b91af size=2>DataPortalException</FONT><FONT size=2> ex)</P>
+<P>{</P>
+<P></FONT><FONT color=#2b91af size=2>MessageBox</FONT><FONT size=2>.Show(ex.BusinessException.ToString(), </FONT><FONT color=#a31515 size=2>"Error saving"</FONT><FONT size=2>, </FONT><FONT color=#2b91af size=2>MessageBoxButtons</FONT><FONT size=2>.OK, </FONT><FONT color=#2b91af size=2>MessageBoxIcon</FONT><FONT size=2>.Exclamation);</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>catch</FONT><FONT size=2> (</FONT><FONT color=#2b91af size=2>Exception</FONT><FONT size=2> ex)</P>
+<P>{</P>
+<P></FONT><FONT color=#2b91af size=2>MessageBox</FONT><FONT size=2>.Show(ex.ToString(), </FONT><FONT color=#a31515 size=2>"Error Saving"</FONT><FONT size=2>, </FONT><FONT color=#2b91af size=2>MessageBoxButtons</FONT><FONT size=2>.OK, </FONT><FONT color=#2b91af size=2>MessageBoxIcon</FONT><FONT size=2>.Exclamation);</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>finally</P></FONT><FONT size=2>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (bindingSource != </FONT><FONT color=#0000ff size=2>null</FONT><FONT size=2>)</P>
+<P>{</P>
+<P>bindingSource.RaiseListChangedEvents = </FONT><FONT color=#0000ff size=2>true</FONT><FONT size=2>;</P>
+<P>}</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> businessObject;</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>static</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>void</FONT><FONT size=2> UndoRoot&lt;T&gt;(T businessObject) </FONT><FONT color=#0000ff size=2>where</FONT><FONT size=2> T : </FONT><FONT color=#2b91af size=2>BusinessBase</FONT><FONT size=2>&lt;T&gt;</P>
+<P>{</P>
+<P>businessObject.CancelEdit();</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>static</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>void</FONT><FONT size=2> DeleteRoot&lt;T&gt;(T businessObject) </FONT><FONT color=#0000ff size=2>where</FONT><FONT size=2> T : </FONT><FONT color=#2b91af size=2>BusinessBase</FONT><FONT size=2>&lt;T&gt;</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>try</P></FONT><FONT size=2>
+<P>{</P>
+<P>businessObject.Delete();</P>
+<P>businessObject.ApplyEdit();</P>
+<P>businessObject.Save();</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>catch</FONT><FONT size=2> (</FONT><FONT color=#2b91af size=2>DataPortalException</FONT><FONT size=2> ex)</P>
+<P>{</P>
+<P></FONT><FONT color=#2b91af size=2>MessageBox</FONT><FONT size=2>.Show(ex.BusinessException.ToString(), </FONT><FONT color=#a31515 size=2>"Error deleting"</FONT><FONT size=2>, </FONT><FONT color=#2b91af size=2>MessageBoxButtons</FONT><FONT size=2>.OK, </FONT><FONT color=#2b91af size=2>MessageBoxIcon</FONT><FONT size=2>.Exclamation);</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>catch</FONT><FONT size=2> (</FONT><FONT color=#2b91af size=2>Exception</FONT><FONT size=2> ex)</P>
+<P>{</P>
+<P></FONT><FONT color=#2b91af size=2>MessageBox</FONT><FONT size=2>.Show(ex.ToString(), </FONT><FONT color=#a31515 size=2>"Error deleting"</FONT><FONT size=2>, </FONT><FONT color=#2b91af size=2>MessageBoxButtons</FONT><FONT size=2>.OK, </FONT><FONT color=#2b91af size=2>MessageBoxIcon</FONT><FONT size=2>.Exclamation);</P>
+<P>}</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>static</FONT><FONT size=2> T SaveRootList&lt;T, C&gt;(T businessObject)</P>
+<P></FONT><FONT color=#0000ff size=2>where</FONT><FONT size=2> T : </FONT><FONT color=#2b91af size=2>BusinessListBase</FONT><FONT size=2>&lt;T, C&gt;</P>
+<P></FONT><FONT color=#0000ff size=2>where</FONT><FONT size=2> C : </FONT><FONT color=#2b91af size=2>IEditableBusinessObject</P></FONT><FONT size=2>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> SaveRootList&lt;T, C&gt;(businessObject, </FONT><FONT color=#0000ff size=2>null</FONT><FONT size=2>, </FONT><FONT color=#0000ff size=2>false</FONT><FONT size=2>);</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>static</FONT><FONT size=2> T SaveRootList&lt;T, C&gt;(T businessObject, </FONT><FONT color=#2b91af size=2>BindingSource</FONT><FONT size=2> bindingSource, </FONT><FONT color=#0000ff size=2>bool</FONT><FONT size=2> rebindDataSource)</P>
+<P></FONT><FONT color=#0000ff size=2>where</FONT><FONT size=2> T : </FONT><FONT color=#2b91af size=2>BusinessListBase</FONT><FONT size=2>&lt;T, C&gt;</P>
+<P></FONT><FONT color=#0000ff size=2>where</FONT><FONT size=2> C : </FONT><FONT color=#2b91af size=2>IEditableBusinessObject</P></FONT><FONT size=2>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (bindingSource != </FONT><FONT color=#0000ff size=2>null</FONT><FONT size=2>)</P>
+<P>{</P>
+<P>bindingSource.RaiseListChangedEvents = </FONT><FONT color=#0000ff size=2>false</FONT><FONT size=2>;</P>
+<P>}</P>
+<P>T Clone = businessObject.Clone();</P>
+<P>Clone.ApplyEdit();</P>
+<P></FONT><FONT color=#0000ff size=2>try</P></FONT><FONT size=2>
+<P>{</P>
+<P>businessObject = Clone.Save();</P>
+<P>businessObject.BeginEdit();</P>
+<P></FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (rebindDataSource)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (bindingSource != </FONT><FONT color=#0000ff size=2>null</FONT><FONT size=2>)</P>
+<P>{</P>
+<P>bindingSource.DataSource = </FONT><FONT color=#0000ff size=2>null</FONT><FONT size=2>;</P>
+<P>bindingSource.DataSource = businessObject;</P>
+<P>}</P>
+<P>}</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>catch</FONT><FONT size=2> (</FONT><FONT color=#2b91af size=2>DataPortalException</FONT><FONT size=2> ex)</P>
+<P>{</P>
+<P></FONT><FONT color=#2b91af size=2>MessageBox</FONT><FONT size=2>.Show(ex.BusinessException.ToString(), </FONT><FONT color=#a31515 size=2>"Error saving"</FONT><FONT size=2>, </FONT><FONT color=#2b91af size=2>MessageBoxButtons</FONT><FONT size=2>.OK, </FONT><FONT color=#2b91af size=2>MessageBoxIcon</FONT><FONT size=2>.Exclamation);</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>catch</FONT><FONT size=2> (</FONT><FONT color=#2b91af size=2>Exception</FONT><FONT size=2> ex)</P>
+<P>{</P>
+<P></FONT><FONT color=#2b91af size=2>MessageBox</FONT><FONT size=2>.Show(ex.ToString(), </FONT><FONT color=#a31515 size=2>"Error Saving"</FONT><FONT size=2>, </FONT><FONT color=#2b91af size=2>MessageBoxButtons</FONT><FONT size=2>.OK, </FONT><FONT color=#2b91af size=2>MessageBoxIcon</FONT><FONT size=2>.Exclamation);</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>finally</P></FONT><FONT size=2>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (bindingSource != </FONT><FONT color=#0000ff size=2>null</FONT><FONT size=2>)</P>
+<P>{</P>
+<P>bindingSource.RaiseListChangedEvents = </FONT><FONT color=#0000ff size=2>true</FONT><FONT size=2>;</P>
+<P>}</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> businessObject;</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>static</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>void</FONT><FONT size=2> UndoRootList&lt;T, C&gt;(T businessObject)</P>
+<P></FONT><FONT color=#0000ff size=2>where</FONT><FONT size=2> T : </FONT><FONT color=#2b91af size=2>BusinessListBase</FONT><FONT size=2>&lt;T, C&gt;</P>
+<P></FONT><FONT color=#0000ff size=2>where</FONT><FONT size=2> C : </FONT><FONT color=#2b91af size=2>IEditableBusinessObject</P></FONT><FONT size=2>
+<P>{</P>
+<P>businessObject.CancelEdit();</P>
+<P>businessObject.BeginEdit();</P>
+<P>}</P>
+<P></FONT>&nbsp;</P>
+<P>I would expect that this will port over correctly to the new framework, but my generic 'UndoRootList()' method will not need the supplementary 'BeginEdit()'... Am I overlooking something?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, September 28, 2007</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I don&#8217;t have time to look through your code right now, so
+I&#8217;ll assume it is a correct abstraction of the 3.0.2 code from PTWin. But
+make sure it is 3.0.2 &#8211; because even 3.0.1 had bugs! This has been
+changing fast, and only 3.0.2 appears to be correct.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>The challenge is where you have multiple bindingsource controls,
+because the order in which they are processed is critical, and you must
+differentiate between the root and any child bindingsource controls. Unfortunately,
+I didn&#8217;t see any way to ask the control whether it is a &#8220;root&#8221;
+or &#8220;child&#8221;, and I didn&#8217;t see any way to abstract this
+process, because only the author of a given form knows the relationships
+between the different controls&#8230;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

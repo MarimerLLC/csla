@@ -1,0 +1,28 @@
+<html><header><title>Validation rules</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Validation rules</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11058.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>San posted on Friday, January 13, 2012</h2><p>Hi,</p>
+<p>There is a validation logic that should check for both conditions. if check 1 failed &nbsp;it should also check for check 2 but in this case if check 1 failed it is not executing check 2 but i need to check for both conditions though. Any idea&#39;s how to solve this problem.</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; private static bool xyzValidation&lt;T&gt;(T target, RuleArgs e) where T : classname</p>
+<p>&nbsp; &nbsp; {</p>
+<p>if (target.xyz &gt; 0)</p>
+<p>{</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; if (target.abc &nbsp;== &nbsp;0 &amp;&amp; puf..abc != 0) &nbsp;//check 1</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; e.Description = &quot;Invalid record&quot;;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>else if (target.abc == 78 &amp;&amp; puf.abc == 78) //check 2</p>
+<p>{</p>
+<p>e.Description=&quot;Can&#39;t be the same&quot;;</p>
+<p>}</p>
+<p>return false;
+</p>
+<p>}</p>
+<p>return true;</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; }</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Friday, January 13, 2012</h2><p>Hi,</p>
+<p>I may not fully understand your question but my suggestion would be to </p>
+<p>A: Create 2 separate rules and add both with priority = 0 (default). </p>
+<p>B: Concatenate the error mesages into one string and&nbsp; then set e.Description.</p>
+<p>A field may have more than one rule and my understanding from your description is that the conditions should be checked independent of each other - hens I would create and add 2 separate rules. </p>
+<p>The rule engine will run all rules at Priority lower or equal&nbsp; ValidationRules.ProcessThroughPriority (default = 0) unless a rule explicitly sets e.StopProcessing = true.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>San replied on Friday, January 20, 2012</h2><p>Thanks! that solves my problem.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

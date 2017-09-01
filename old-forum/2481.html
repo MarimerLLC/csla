@@ -1,0 +1,242 @@
+<html><header><title>Automation model or support</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Automation model or support</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/2481.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>HappyJack posted on Monday, March 05, 2007</h2><P>I currently have some business objects that are implemented using csla.&nbsp; I now have a UI requirement that my app needs to support automation or have it's own object model.&nbsp; Since this is really a UI requirement I was trying not to change my businness objects since I use them in a web service as well.&nbsp; I know activeobjects implements the observer pattern but I thought that was on the business object itself.&nbsp; Basically I've started my creating a new UI object model&nbsp;that is not csla aware.&nbsp; So far I've been wrapping my csla businness objects up with my new UI object model.&nbsp; Before I get to far with this, I was just wondering if others have done something similar or if there is a better way to accomplish the automation support my UI app requires.&nbsp; I've looked at CAB but I think at this point that is to big investment for this project.&nbsp; All ideas are welcomed in order to fullfill&nbsp;the UI automation requirement.</P>
+<P>Thanks,</P>
+<P>HappyJack</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, March 05, 2007</h2><P>Architecturally you are right to view the automation layer as a UI. Like Windows Forms or web services, automation is just another type of interface into your application - and your objects.</P>
+<P>That said, there are a couple types of automation. There's COM-style automation, where you provide a programmatic API to your application's functionality. Then there's automation where you allow scripting of your actual UI.</P>
+<P>So I should qualify my fist statement. If you are providing API-style automation, then you are best off creating a formal set of "UI" objects to implement the automation API. Those objects <EM>are</EM> a UI. You can really think of this as being similar to a web service model, though these APIs usually aren't message-based like a good service design. But they are, like web services, merely a programmatic API for calling your application.</P>
+<P>But if you are creating UI-scripting-style automation, that's a whole other story. In that case your UI already is the UI (obviously), and you are just creating a scripting scheme by which that pre-existing UI can be externally manipulated.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>HappyJack replied on Monday, March 05, 2007</h2><P>Here's a liitle bit more information one my current architecture design that I'm trying to implement.&nbsp; As a said before I already have some CSLA business objects.&nbsp; Now I'm creating a new dll library for my automation object model, so to answer your question Rocky, I'm trying to implement a COM style automation API.&nbsp; On top of the automation dll I have my winform app that is working with the automation API layer.&nbsp; The automation layer&nbsp;is where I have ended up writing wrappers around by csla business objects.&nbsp; I think this is ok but I'm trying to figure out what's the best way to wrap the csla business objects.&nbsp; Do I need to expose all the interfaces that the csla business object has from my wrapper to help with databinding (IEditableobject, INotifyPropertyChanged...).&nbsp; I'm trying not to expose the CSLA object from my wrapper because that would make the automation API layer harder to understand since you would have 2 layers to get to the object (eg : Project.ProjectBusinessObject.Name instead of just Project.Name).&nbsp; </P>
+<P>Hopefully I have explain this clearly enough but if not please ask and I will try to explain again in better detail.&nbsp; </P>
+<P>&nbsp;</P>
+<P>Thanks,</P>
+<P>HappyJack</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, March 06, 2007</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>What I&#8217;m suggesting is that you treat the Windows UI and
+the automation UI as separate things. I am not sure what you gain by building
+your Windows UI on your automation UI, but you certainly stand to LOOSE a lot,
+because that approach means you can&#8217;t use all the data binding support provided
+by CSLA.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I agree that you should not expose your business objects
+directly in your API. Doing that would cost you encapsulation and would make
+maintenance of your app difficult.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<div>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> HappyJack
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Monday, March 05, 2007 9:49 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] Automation model or support<o:p></o:p></span></p>
+
+</div>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Here's a liitle bit more informatio one my current architecture design that
+I'm trying to implement.&nbsp; As a said before I already have some CSLA business
+objects.&nbsp; Now I'm creating a new dll library for my automation object
+model, so to answer your question Rocky, I'm trying to implement a COM style
+automation API.&nbsp; On top of the automation dll I have my winform app that
+is working with the automation API layer.&nbsp; The automation layer&nbsp;is
+where I have ended up writing wrappers around by csla business objects.&nbsp; I
+think this is ok but I'm trying to figure out what's the best way to wrap the
+csla business objects.&nbsp; Do I need to expose all the interfaces that the
+csla business object has from my wrapper to help with databinding
+(IEditableobject, INotifyPropertyChanged...).&nbsp; I'm trying not to expose
+the CSLA object from my wrapper because that would make the automation API
+layer harder to understand since you would have 2 layers to get to t he object
+(eg : Project.ProjectBusinessObject.Name instead of just Project.Name).&nbsp; <o:p></o:p></p>
+
+<p>Hopefully I have explain this clearly enough but if not please ask and I
+will try to explain again in better detail.&nbsp; <o:p></o:p></p>
+
+<p>&nbsp;<o:p></o:p></p>
+
+<p>Thanks,<o:p></o:p></p>
+
+<p>HappyJack<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>HappyJack replied on Tuesday, March 06, 2007</h2><P>I'm starting to see that I will be loosing all of the databinding and other csla functionality.&nbsp; Which I'm not that happy about because all of the CSLA stuff is great and easy to work with.&nbsp;&nbsp;2 things that I would gain are</P>
+<P>1).&nbsp; Easier&nbsp;to create or update UI on top of the automation API.&nbsp; API doesn't change&nbsp;if look and feel does.&nbsp; The maybe&nbsp;the case with WPF coming.&nbsp;&nbsp; </P>
+<P>2). Testing would be easier as well since there is a common layer.&nbsp; Not really my may concern right now.</P>
+<P>Maybe if&nbsp;I step back and state what I was trying to do then&nbsp;that would help.&nbsp; I'm trying to make a winform app that under the covers as an API.&nbsp; Basically I'm trying to make something similiar to Word or Visual Studio.&nbsp; These apps have good API support that can be upgraded or extended with relative ease.&nbsp; I know this is not really a CSLA problem but since I already have CSLA objects and I love the framework I was hoping to reuse them.&nbsp; Maybe I'm just looking at this the wrong way or the seperation that I'm trying to create is just too much trouble then it's worth.</P>
+<P>Thanks Rocky for your time and comments,</P>
+<P>HappyJack</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Tuesday, March 06, 2007</h2>HappyJack,<br><br>I think that Rocky's suggestion is a good one.&nbsp; It may help to think along these lines.&nbsp; Your WinForms app is trusted code, and may use your Csla objects directly.&nbsp; You may also have an automation layer which allows untrusted applications to indirectly use your Csla objects.&nbsp; <br><br>The automation layer may serve as kind of a facade that exposes the same functionality, but shields the untrusted apps from your Csla objects (and changes to them which may occur as you move forward).&nbsp; You may also expose some UI elements through this automation layer as well if you choose.&nbsp; <br><br>HTH<br>Andy<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, March 06, 2007</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>You&#8217;ll have to decide what&#8217;s best for you in the
+long run. <o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>However, WPF has data binding similar to Windows Forms, and I&#8217;m
+already working on CSLA .NET 3.0, which will provide some extra WPF UI controls
+to make the whole thing smooth. My point is that CSLA will have good binding
+support In WPF just like it does in Windows Forms.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Also, I am reasonably skeptical about the idea that the Excel UI
+actually uses the Excel automation model.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Office, in many ways, uses the other model I talked about, where
+they expose UI elements and allow you to script them. Notice how the automation
+model tends to follow what the UI can do, reinforcing what I&#8217;m saying.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>So they do it &#8220;upside down&#8221; from what you are
+proposing. Their UI runs directly against their &#8220;business layer&#8221;,
+and their automation layer sits (to some degree) on top of the UI.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>The same is true with Visual Studio. Automation controls the VS
+IDE (UI), and the IDE interacts with the &#8220;business layer&#8221;.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<div>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> HappyJack
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Tuesday, March 06, 2007 11:03 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: Automation model or support<o:p></o:p></span></p>
+
+</div>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>I'm starting to see that I will be loosing all of the databinding and other
+csla functionality.&nbsp; Which I'm not that happy about because all of the
+CSLA stuff is great and easy to work with.&nbsp;&nbsp;2 things that I would
+gain are<o:p></o:p></p>
+
+<p>1).&nbsp; Easier&nbsp;to create or update UI on top of the automation
+API.&nbsp; API doesn't change&nbsp;if look and feel does.&nbsp; The
+maybe&nbsp;the case with WPF coming.&nbsp;&nbsp; <o:p></o:p></p>
+
+<p>2). Testing would be easier as well since there is a common layer.&nbsp; Not
+really my may concern right now.<o:p></o:p></p>
+
+<p>Maybe if&nbsp;I step back and state what I was trying to do then&nbsp;that
+would help.&nbsp; I'm trying to make a winform app that under the covers as an
+API.&nbsp; Basically I'm trying to make something similiar to Word or Visual
+Studio.&nbsp; These apps have good API support that can be upgraded or extended
+with relative ease.&nbsp; I know this is not really a CSLA problem but since I
+already have CSLA objects and I love the framework I was hoping to reuse
+them.&nbsp; Maybe I'm just looking at this the wrong way or the seperation that
+I'm trying to create is just too much trouble then it's worth.<o:p></o:p></p>
+
+<p>Thanks Rocky for your time and comments,<o:p></o:p></p>
+
+<p>HappyJack<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>HappyJack replied on Tuesday, March 06, 2007</h2><P>As usual Rocky has good points.&nbsp; I guess I just need to go back and&nbsp;rethink what I was trying to do now that I&nbsp;k now my assumptions were wrong.&nbsp; No big deal, that's software.&nbsp; I haven't given it a lot of thought but just quickly thinking about it, providing scripting for the UI sounds like a big adventure.&nbsp; </P>
+<P>I can see this topic is coming to an end.&nbsp; I was really hoping others would have something to say about this topic as&nbsp;there are a lot of really helpful people in this group.&nbsp; Thanks Rocky for your time and suggestions on this topic.</P>
+<P>HappyJack</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>SonOfPirate replied on Tuesday, March 06, 2007</h2><P>I think it is important to point out that there is a difference between a BO and other objects and there are times when one is more appropriate than the other.&nbsp; When it comes to developing a UI framework, you need to consider why you would use a BO and if it is really applicable.&nbsp; Do not use something simply because you can.</P>
+<P>I have a comprehensive UI framework based on the automation model used by Microsoft in the Office apps and in place within several production applications I've developed over the last two years - since venturing down this path.&nbsp; Recently I embarked on a new application that stretched this framework and made me reconsider a few things.</P>
+<P>First off, what you need to remember when looking at the so-called "automation model" is that there is a difference between your UI objects/components and your UI object model.&nbsp; Let me give you an example to help demonstrate this and give us a reference to discuss.</P>
+<P>Consider a web application with a page containing a drop-down menu.&nbsp; For a typical application, you would add the server control to the page, open up the designer and start adding items to the menu.&nbsp; Not in this case.&nbsp; You still put the menu server control on the page, but instead of using the designer to pre-define the menu items, you need to "bind" this to your underlying UI object model.&nbsp; So, in the code behind, you "wire-up" the menu server control to the Application.CommandBars["MainMenu"] object, let's say. I'll spare the actual code because it will vary depending on what menu control you are using, but the idea is that you will iterate through the menu's items, creating a UI control for each.</P>
+<P>Also in the web page, you will define a handler for the menu's ItemClicked (or whatever) event.&nbsp; In this method, you will pass the action onto the underlying UI object model.&nbsp; To be truly decoupled, your web page and server controls can know nothing about what that operation is because they knew nothing about the item that was clicked; afterall, it was rendered dynamically based on the contents of the Application.CommandBars["MainMenu"] object.&nbsp; We don't know if it was a Save button, Close button, Send Message, New Quote or whatever.&nbsp; Sure the user knows because they saw the text or the icon, but to your code, it has no clue.&nbsp; And it doesn't need to know.</P>
+<P>Here's a liitle example of one implementation where I used an Infragistic's UltraWebMenu:</P>
+<P><CODE>protected void UltraWebMenu_MenuItemClicked(object sender, WebMenuItemEventArgs e)<BR>{<BR>&nbsp; &nbsp; Stack&lt;System.String&gt; s = new Stack&lt;System.String&gt;();<BR>&nbsp; &nbsp; Item item = e.Item;<BR>&nbsp; &nbsp; <BR>&nbsp; &nbsp; s.Push((System.String)item.Tag);<BR>&nbsp; &nbsp; <BR>&nbsp; &nbsp; while (item.Parent != null)<BR>&nbsp; &nbsp; {<BR>&nbsp; &nbsp; &nbsp; &nbsp; item = item.Parent;<BR>&nbsp; &nbsp; &nbsp; &nbsp; s.Push((System.String)item.Tag);<BR>&nbsp; &nbsp; }<BR>&nbsp; &nbsp; <BR>&nbsp; &nbsp; MyLib.UI.CommandBarItem menuItem = MyApp.Application.CommandBars["MainMenu"].Items[s.Pop()];<BR>&nbsp; &nbsp; <BR>&nbsp; &nbsp; while (s.Count &gt; 0)<BR>&nbsp; &nbsp; &nbsp; &nbsp; menuItem = ((MyLib.UI.CommandBarPopup)menuItem).Items[s.Pop()];<BR>&nbsp; &nbsp; <BR>&nbsp; &nbsp; menuItem.Click();<BR>} </CODE></P>
+<P>It is the last statement that connects the web page to the UI object model.&nbsp; Here, without any regard for what the menu item is or what it does, we execute its Click method.</P>
+<P>Inside the UI object, the specific item that was clicked raises its Clicked event which is then handled within the object model.&nbsp; If the menu item&nbsp;corresponded to File-&gt;Exit, the handler will execute Application.Quit(); and that method will perform the necessary shutdown operations.</P>
+<P>So, you see that we have decoupled our UI controls/objects/components - our Presentation Layer - from the underlying UI object model.&nbsp; At the same time, we have enabled automation by exposing methods and events that will allow client applications or scripts to manipulate the application in the same manner as the user.</P>
+<P>In fact, think of the application in these terms.&nbsp; You have a black box that performs various operations, for instance, a word processor.&nbsp; To perform these operations you have to make calls into the API.&nbsp; These calls make things happen and drive the application.&nbsp; The only difference between having this done by script or VBA code versus a WinForm or web form is that one has a pretty face and the other doesn't.&nbsp; Under the hood, no matter what form the interface takes the application performs the same operation.</P>
+<P>By decoupling the UI in this manner, you can now have an application with multiple faces - or re-skin it as someone recently said to me.&nbsp; The same application code, business logic, data objects, etc. now support web apps, windows apps, mobile apps, web services, scripting, etc.</P>
+<P>As for the details and your questions about how to make use of Csla, it is an implementation choice.&nbsp; For instance, I don't see any need for any of the features provided by the Csla base objects when creating my CommandBar, CommandBarItem, CommandBarCollection or CommandBarItemCollection classes.&nbsp; These should be lightweight and only have the code necessary to handle their RESPONSIBILITY.</P>
+<P>However, where the line blurs is when you are working with forms.&nbsp; By that I mean, data entry forms.&nbsp; This is where we clearly DO want to have some way of interfacing our presentation components with our business objects.</P>
+<P>Take a Quote form for example.&nbsp; We obviously want to use data-binding to couple that form with the underlying Quote BO.&nbsp; And the way to do this is through the means that Rocky shows in the book (ObjectDataSource in web apps, for instance).&nbsp; Remember, the BO's that our application uses are what drives the application, not how the application appears (per se).&nbsp; And depending on your application is how complicated this relationship needs to be.</P>
+<P>You can consider the form that is displayed an "Editor" and this would be a UI component whereas the data being editted is not.&nbsp; So perhaps your Editor object has a DataSource or DataItem property that is used to set what BO is being editted.&nbsp; This is certainly easier to work out with WinForms apps where you can have this type of code in your Application class:</P>
+<P><CODE>public void Open(ItemType itemType)<BR>{<BR>&nbsp; &nbsp; switch (itemType)<BR>&nbsp; &nbsp; {<BR>&nbsp; &nbsp; &nbsp; &nbsp; case ItemType.Quote:<BR>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Documents.Add(new Document(Quote.NewQuote()));<BR>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; break;<BR>&nbsp; &nbsp; }<BR>}</CODE></P>
+<P>Here we add a new Document (from our UI object model) and pass a new Quote object as the document's data source.&nbsp; Our presentation code uses the Document object to create the appearance of the form, probably binding to the DataSource property.&nbsp; Traditionally, all the&nbsp;UI framework&nbsp;cares about is that it implements an interface that allows the framework to do what it needs to.&nbsp; For instance, Application.Save() would delegate to Application.CurrentDocument.Save() which is contained in our Document class.&nbsp; This method then delegates to its DataSource because it of the requisite type (interface) and thereby passes the operation onto the Save() method of the BO which actually performs the work.</P>
+<P>I know this is pretty long but hopefully it makes sense.&nbsp; It's pretty generic and conceptual, so feel free to ask if you'd like specifics on anything.</P>
+<P>BTW&nbsp;- the reconsideration that I mentioned above had to do with a recent app that allowed different views of listed data.&nbsp; These views were dynamically created by the user and stored in the back-end database.&nbsp; In this case, the UI framework had to be expanded to include the concept of views associated with the application BOs.&nbsp; These views are, in fact, BOs of their own because these are user-manipulated/dynamic and data-driven objects where I need the features provided by the BO base classes in order to satisfy the use-case.</P>
+<P>&nbsp;</P>
+<P>HTH</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>HappyJack replied on Tuesday, March 06, 2007</h2><P>Thanks for the reply.&nbsp; You described exactly what I'm trying to do.&nbsp; I currently have objects that represent command bars, menus, status bars and any other UI components that I need.&nbsp; All of these collections and objects raise events and others perform the work, just like you described.&nbsp; All of the UI stuff is working no problem and&nbsp;I agree that most of my problem is an implementation detail.&nbsp; Maybe an example of my problem would help .&nbsp; Let's take your quote example where I have a BO that represents&nbsp;a quote.&nbsp; This includes all of the authorization and validation logic in a single place.&nbsp;&nbsp;A sample&nbsp;validation maybe be that a quote has to have a customer.&nbsp; Now in my UI I want to be able to create a quote and save it.&nbsp; So I create a user control that implements an Interface that can create or edit a quote just like you said.&nbsp; Here comes the problem, if I use the BO directly in the user control than other parts of&nbsp;the UI don't get events that properties of the quote&nbsp;are changing or&nbsp;has been saved because the BO is a CSLA class.&nbsp; In order to get the BO to play nicely with the UI, I have to create wrappers that can work with the BO to notify the UI of events that I want to expose.&nbsp; As you said this is really an implementation detail but before I went down this road for the whole app I was just wondering if others were trying to do something similiar.&nbsp; Based on your current experience do you think creatinng UI's like this is worth the effort or should I just go the old databinding way?&nbsp; I appreciate any advice that you can give.</P>
+<P>Thanks,</P>
+<P>HappyJack</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

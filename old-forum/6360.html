@@ -1,0 +1,216 @@
+<html><header><title>Need help fixing yet another BeginEdit()/CopyState issue</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Need help fixing yet another BeginEdit()/CopyState issue</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6360.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jack posted on Friday, February 06, 2009</h2>I've managed to identify my BeginEdit()/CopyState bug but I do not know how
+to fix it without changing some design.&nbsp; Now maybe a design change is
+what will be needed but I thought I could at least get around the
+problem with the use of [NotUndoable].<br><br>My error is happening in the FieldDataManager at the <br>void Core.IUndoableObject.CopyState(int parentEditLevel, bool parentBindingEdit) function.<br><br>It is essentially a circular reference but I can't seem to short circuit it.<br><br>I have the following:<br><br>RootBO<br>&nbsp;&nbsp;&nbsp; DataFieldListBO<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; DataFieldBO<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; MissingDataBO<br>&nbsp;&nbsp;&nbsp; MissingDataFieldListBO<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; MissingDataBO<br><br>The two lists are populated directly from the database and then I make a loop to link the dataFieldBOs to a related MissingDataFieldBO (although it may not have a record).<br><br>I chose this approach for a number of reasons including how the user works on the missingData (in batch or individually) and how the data is stored.<br><br>Anyhow - I thought that I could use the [NotUndoable] attribute to solve my issues.&nbsp; My first thought was I could put it on the DataField.MissingData but that didn't work.&nbsp; So I tried it on the MissingDataFieldList but that didn't work.&nbsp; I even tried it on both but it still crashed.<br><br>I'm not even doing any databinding at this point.&nbsp; I'm just retrieving my data and calling BeginEdit on the RootBO.<br><br>The only way to avoid the CopyState EditLevel mismatch is to remove the DataField.MissingData and then I have no issue.<br><br>It is almost as if the [NotUndoable] attribute isn't even being looked at when doing the copyState of the FieldDataManager... <br><br>Confused...<br><br>Any ideas on where to look or what I can do?<br><br>thanks<br><br>jack<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Friday, February 06, 2009</h2>I think you need a NotSerializable attribute as well.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jack replied on Friday, February 06, 2009</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Makes no difference &#8211; I had tried that but thanks<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> ajj3085
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Friday, February 06, 2009 10:39 AM<br>
+<b>To:</b> jaddington@alexandergracie.com<br>
+<b>Subject:</b> Re: [CSLA .NET] Need help fixing yet another
+BeginEdit()/CopyState issue<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>I think you need a NotSerializable attribute as well.<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jack replied on Friday, February 06, 2009</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+<div class="Section1">
+
+<p class="MsoNormal"><span>The problem is within the FieldDataManager and it’s
+CopyState method.&nbsp; If I swap the field from being a Managed backing field to a private
+backing field then the NotUndoable attribute works.<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><o:p>&nbsp;</o:p></span></p>
+
+<p class="MsoNormal"><span>&nbsp;[<span>NotUndoable</span>]<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span>private</span><span> <span>MissingDataField</span>
+_missingData;<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span>//&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+private static PropertyInfo&lt;MissingDataField&gt; MissingDataProperty =
+RegisterProperty&lt;MissingDataField&gt;(typeof(DataField), new
+PropertyInfo&lt;MissingDataField&gt;("MissingData"));<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><o:p>&nbsp;</o:p></span></p>
+
+<p class="MsoNormal"><span>Is this expected?&nbsp; It seems to me that the FieldDataManager
+may not be checking if the underlying field is NotUndoable?<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><o:p>&nbsp;</o:p></span></p>
+
+<p class="MsoNormal"><span>???<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class="MsoNormal"><b><span>From:</span></b><span> ajj3085
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Friday, February 06, 2009 10:39 AM<br>
+<b>To:</b> jaddington@alexandergracie.com<br>
+<b>Subject:</b> Re: [CSLA .NET] Need help fixing yet another BeginEdit()/CopyState
+issue<o:p></o:p></span></p>
+
+</div>
+
+<p class="MsoNormal"><o:p>&nbsp;</o:p></p>
+
+<p class="MsoNormal">I think you need a NotSerializable attribute as well.<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Friday, February 06, 2009</h2>Oh, well that changes things.<br><br>Yes, you need to use unmanaged fields to mark them as NotUndoable.&nbsp; You can still do the managed property though.&nbsp; Your property setters / getters change sliglhty though.<br><br>get { return GetProperty( MissingDataProperty, _missingData ); }<br>se { SetProperty( MissingDataProperty, value, ref _missingData ); }<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rsbaker0 replied on Friday, February 06, 2009</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>Jack:</strong></div><div> 
+<DIV class=Section1>
+<P class=MsoNormal><SPAN>The problem is within the FieldDataManager and it’s CopyState method.&nbsp; If I swap the field from being a Managed backing field to a private backing field then the NotUndoable attribute works.</SPAN><BR><BR><o:p></o:p></P></DIV>
+<P></div></BLOCKQUOTE></P>
+<P>Yes, I've found that managed fields (without backing fields) are generally always serialized and pushed/popped from the state stack in Undo.</P>
+<P>I posted a request to have some way to tag such fields (e.g. properties in IPropertyInfo) so they could be not undoable or nonserialized, but I don't think it attracted much interest. </P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jack replied on Friday, February 06, 2009</h2>
+
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Well I’m on board </span><span>J</span><span>.  It seems there is one
+gotcha after another.   A slight misuse of the terminology and you waste a
+morning.  I’m sure I have type and read managed field, managed property,
+managed backed field, backed field, etc. and not really known what it means.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I think I’m going to suggest a Wiki or an online glossary to
+help make sense of all this stuff.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>jack<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> rsbaker0
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Friday, February 06, 2009 12:44 PM<br>
+<b>To:</b> jaddington@alexandergracie.com<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: Need help fixing yet another
+BeginEdit()/CopyState issue<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<blockquote>
+
+<div>
+
+<p class=MsoNormal><img id="_x0000_i1025" src="/Themes/default/images/icon-quote.gif"><strong>Jack:</strong><o:p></o:p></p>
+
+</div>
+
+<div>
+
+<div>
+
+<p class=MsoNormal>The
+problem is within the FieldDataManager and itâ€™s CopyState method.&nbsp; If I
+swap the field from being a Managed backing field to a private backing field
+then the NotUndoable attribute works.<o:p></o:p></p>
+
+</div>
+
+</div>
+
+</blockquote>
+
+<p>Yes, I've found that managed fields (without backing fields) are generally
+always serialized and pushed/popped from the state stack in Undo.<o:p></o:p></p>
+
+<p>I posted a request to have some way to tag such fields (e.g. properties in
+IPropertyInfo) so they could be not undoable or nonserialized, but I don't
+think it attracted much interest. <o:p></o:p></p>
+
+<p>&nbsp;<o:p></o:p></p>
+
+<p>&nbsp;<o:p></o:p></p>
+
+<p>&nbsp;<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

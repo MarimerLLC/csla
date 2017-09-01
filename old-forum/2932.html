@@ -1,0 +1,118 @@
+<html><header><title>Threading issue...</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Threading issue...</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/2932.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>kbcb posted on Tuesday, May 22, 2007</h2><P>I have a CSLA application&nbsp;(which is working GREAT, btw) which needs to have server to client messaging as well. The functionality inside the server to client messaging hasn't needed to be too extensive, so what I did to implement it, was create a "client handler" and "server handler" class where:</P>
+<P><EM>The client handler registers a set of objects to be remotable and sends a "Register" request to the server handler.</EM></P>
+<P><EM>The server handler takes registration requests and establishes a connection to the objects and persists them for later use - How I persisted the is a different story. The server handler is also setup with some methods that initiate sending messages to the client(s) using the persisted remoting registrations.</EM></P>
+<P>For a little further explanation to prepare for the problem: Our security is far more complex that just a call to an&nbsp;IsInRole method will suffice. So we have used custom csla authentication to handle our security requirements.</P>
+<P>What we wanted to do, was setup the system so that when a user's security has changed, the server handler would be used to send out a notification/message to the registered client (client handler) so that the client application would be aware of the security change and make an update to the locally cached security properties/objects.</P>
+<P>Now for the problem: The way this was implemented, was that when our user object gets updated, the DataPortal_Update method makes a call to ServerHandler.NotifyClient_SecurityChanged(identity) passing in a newly updated identity object. The server handler then loops through each of the clients and finds the one that the security change applies to (if any). Once a registered client is found, a method on the remotable client handler object is called from the server, passing the updated identity information. At this point (essentially), the client handler re-performs the login process and sets ApplicationContext.User to the a new principal object based on the identity passed forward by the server.</P>
+<P>ALL of this works fine EXCEPT that after the client handler's method is finished, the updates to the ApplicationContext.User property are dumped and revert back to what they were before the whole process started.</P>
+<P>At first I figured the user was one of the ApplicationContext global items that gets updated by the data portal on completion of a data portal call, but didn't find that to be the case (after looking through the CSLA framework code).</P>
+<P>Next, I figured that perhaps it was a problem with the Transaction and that the transaction was getting rolled back; But I broke into the data portal code and WATCHED it call TransactionScope.Complete(). So that (to me) says that it's not a transactional problem.</P>
+<P>Lastly, I have come to the conclusion that it must be a threading issue and that since a new thread is created from the client handler to deal with the server's messaging request, and because the ApplicationContext.User property maps to either Thread.CurrentPrincipal, I figured it must be dumping the changes because it is in a different thread. HOWEVER, even THAT seems not too likely to me though, because:</P>
+<P>1) I placed some of the code on the UI (to test) and invoked the "re-login" process from the same thread as what was used to initially set the ApplicationContext.User property.<BR>2) If the principal was truely "per thread", then how could you ever spawn off a new thread and make a data-portal call without setting the principal of the thread that the data portal call is being called on.</P>
+<P>I am running out of ideas for this problem, so if someone can help, I would <EM>really</EM> appreciate it.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>CaymanIslandsCarpediem replied on Tuesday, May 22, 2007</h2><P>I tend to suspect you are correct about this being related to threading.</P>
+<P>Usually, I've found it safest when dealing with threads on something like a "listener" like this to pass a delegate to the new thread which will then raise that event to the original thread to do anything.&nbsp; Here is roughly what I'm talking about from a similar project.</P>
+<P>private void frmClient_Load(object sender, EventArgs e)<BR>{<BR>&nbsp;&nbsp; try<BR>&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; new UDPBroadcastListener(new CommandReceived(ReceivedCommand), 5001);<BR>&nbsp;&nbsp; }<BR>&nbsp;&nbsp; catch (Exception ex)<BR>&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Application.DoEvents();<BR>&nbsp;&nbsp; }<BR>}</P>
+<P>private void ReceivedCommand(AppCommand cmd)<BR>{<BR>&nbsp;&nbsp;&nbsp; //do something<BR>}</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, May 22, 2007</h2><P>Oh yes. Any time you are handling a remote call (via Remoting or WCF anyway) your code is running on a thread from the thread pool. </P>
+<P>So when you think you are calling back to your client, you are only calling back to the client's AppDomain, not the primary thread for the client. Since the .NET security objects (and the CSLA ApplicationContext data) are all stored per-thread, you are setting the values on a thread other than the primary thread for the client app.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>kbcb replied on Tuesday, May 22, 2007</h2><P><FONT>This is some relatively new information to me, so I googled "UDPBroadcastListener" and found very little. I also googled "BroadcastListener" and "TcpBroadcastListender" and got similar results. However, I looked on MSDN Library for Listener and found that there is an HttpListener class, but the example code doesn't look very similar to what you were showing.</FONT></P>
+<P><FONT>Can you point me in the right direction as to what "listener" to use for an IIS Remoting based application?</FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>CaymanIslandsCarpediem replied on Wednesday, May 23, 2007</h2><P>Yeah, that code I posted was from an "in-house" custom app.&nbsp; UDPBroadcastListener is a custom class so I don't expect you'd find much on it ;-)&nbsp; However, after a quick search here are&nbsp;a couple simple samples of how to use threads with call-back functions to the primary thread.</P>
+<P><A href="http://www.codeproject.com/csharp/workerthread.asp">http://www.codeproject.com/csharp/workerthread.asp</A></P>
+<P><A href="http://www.codeproject.com/Purgatory/ThreadsinC_.asp">http://www.codeproject.com/Purgatory/ThreadsinC_.asp</A></P>
+<P>Hopefully, these will point you in the right direction. </P>
+<P>Cheers!</P>
+<P>Tony</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, May 23, 2007</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>You are looking at way to low a level.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Remoting is built on top of all that low-level plumbing, so you
+don&#8217;t need to worry about those details. Remoting sets up the listener,
+handles the incoming message and executes your code on a thread from the thread
+pool &#8211; all by itself.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>All you need to worry about is the fact that your code is
+running on a background thread, and that you need to transfer the call to the
+UI thread. This is a standard .NET practice &#8211; at least in Windows Forms &#8211;
+where you call Invoke() on a form or other Windows control, and that transfers
+(marshals) the call to the UI thread. Just pass all the data to the Invoke()
+call as an argument and do the real work on the UI thread.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>If you actually call back to your originating client you could
+run into some issues. Remember that your UI thread on the calling client is
+blocked, because it is waiting for the server call to complete. But if the
+server call goes back to the client it would end up waiting for the UI thread
+to become free &#8211; which won&#8217;t happen. Deadlock.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>To avoid this, you can use form.BeginInvoke(), which queues the
+argument data in a call to the UI thread, allowing the callback to complete
+immediately (even though it really hasn&#8217;t been processed yet). That would
+allow the server code to complete, freeing the UI thread,&nbsp; which would
+then execute the BeginInvoke() call. Deadlock averted.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> kbcb
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Tuesday, May 22, 2007 9:05 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] Threading issue...<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>This is some relatively new information to me, so I googled
+&quot;UDPBroadcastListener&quot; and found very little. I also googled
+&quot;BroadcastListener&quot; and &quot;TcpBroadcastListender&quot; and got
+similar results. However, I looked on MSDN Library for Listener and found that
+there is an HttpListener class, but the example code doesn't look very similar
+to what you were showing.<o:p></o:p></p>
+
+<p>Can you point me in the right direction as to what &quot;listener&quot; to
+use for an IIS Remoting based application?<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>kbcb replied on Wednesday, May 23, 2007</h2><P>OK... I realize now that what you guys are talking about is NOT too new to me.</P>
+<P>I, in fact, have already implemented an invokable method that gets run from the UI and still had no luck. As I said in my first post, one of my assumptions/tests was that it was a threading issue. So what I did, was named my UI thread (from the MainForm constructor) and watched that my login code was running on the UI thread (just to make sure that what I thought was happening was happening). Then, I did as both of you suggest, and created a delegate that I accepted the parameters that I needed to update the security/identity of the ApplicationContext.User property. I then invoked the delegate from the MainForm thread (named "UI Thread") while passing the parameters needed to the invoke method. At this point, I can clearly break into the "re-login" code and see that it is running off of my "UI Thread".</P>
+<P>Even with this being done, the data in ApplicationContext.User is still being rolled back to what it was prior to the security change as SOON as it leaves the method.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>kbcb replied on Thursday, May 24, 2007</h2><P>Hey guys... Any more ideas?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, May 24, 2007</h2><P>I don't have any ideas, sorry.</P>
+<P>Wouldn't it be far simpler to just use the callback to trigger the client app to re-login?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>kbcb replied on Thursday, May 24, 2007</h2>It would be, except how would you do that when one user changes another user's permissions. How does the "other" user's permissions get updated?</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Thursday, May 24, 2007</h2><P>Every app I have ever used does not behave that way. Your permissions are what they are when you log in. Until you logout and back in - they do not change. Most users expect this behavior so why not go with the flow?</P>
+<P>Joe</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>kbcb replied on Thursday, May 24, 2007</h2>Yah... I can agree with that. Sure would still like to know why this is happening though. Even if this particular sittuation doesn't fit, the fact that information is just getting lost without explanation is an issue for me. Yah know what I mean?</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, May 24, 2007</h2><P>The only think I can think of that is perhaps (and this seems like a long shot) the Invoke() behavior of Windows forms brings the thread context over temporarily, and then resets it once the invoke is complete.</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,28 @@
+<html><header><title>SortedBindingList DataGridView sorting with null strings</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>SortedBindingList DataGridView sorting with null strings</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/478.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>pfeds posted on Tuesday, June 27, 2006</h2><P>Some of my objects can contain null values.&nbsp;I use a SortedBindingList to bind these collections to a DataGridView.&nbsp; When clicking on the column headers of the grid the sorting will work in most cases, although if I click to sort a column that contains null values then I get an exception.</P>
+<P>Do I need to create a new IComparer, or is there a simpler solution?&nbsp; Maybe the answer is to modify all my objects so that string properties return string.empty instead of null?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>pfeds replied on Tuesday, June 27, 2006</h2>As an afterthought, I imagine this would also occur without the SortedBindingList with normal binding to a collection...</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Tuesday, June 27, 2006</h2>Don't use nulls.&nbsp; In the database, there may be a difference between an empty string an a null, but there isn't really in the UI.&nbsp; (Unless there's something you didn't mention which null vs. empty string in the business layer matters).<br><br>Andy<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>pfeds replied on Tuesday, June 27, 2006</h2><P>Fair enough. Thanks for your answer.</P>
+<P>Just out of curiosity, is it better to convert nulls to empty strings in the Fetch method, or to create the object with nulls and only do the conversion to a&nbsp;string in the property getter?&nbsp; Or does it not matter?</P>
+<P>I create the objects from calling an Active Directory wrapper which can pass back null strings, nullable bools, etc.&nbsp; The original plan was to keep the objects in sync with the information from AD although I don't think this is necessary.</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Tuesday, June 27, 2006</h2>I usually do this in the Fetch or create methods.&nbsp; Nullable bools are a bit different though, because you may not be able to choose what the null means.&nbsp; Is it false, true, or does null have a different meaning in AD?<br><br>OTOH, will you be sorting by boolean values?&nbsp; If not, you don't need to worry.<br><br>Andy<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>pfeds replied on Tuesday, June 27, 2006</h2><P>Thanks for the help <img src="/emoticons/emotion-2.gif" alt="Big Smile [:D]" /></P>
+<P>I think the wrapper that I&nbsp;use is rife with&nbsp;nullable bools just because the&nbsp;guy who developed it&nbsp;was so impressed by the new functionality that he had to use them all through his code.&nbsp; In most cases I just cast them to a bool <img src="/emoticons/emotion-4.gif" alt="Stick out tongue [:P]" /></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Tuesday, June 27, 2006</h2>Ha... Well, i've been known to do that as well.&nbsp; If your BO doesn't really allow for null bools, then you certainly shouldn't be using Nullable&lt;bool&gt; anywhere.&nbsp; Go smack that other developer.&nbsp; <img src="/emoticons/emotion-1.gif" alt="Smile [:)]" /><br><br>Andy<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>claptik replied on Friday, July 14, 2006</h2><P>I ran into a similar situation and modified the CompareTo method in the SortedBindingList code to look like this</P>
+<P>&nbsp;</P><PRE>public int CompareTo(ListItem other)
+      {
+        object target = other.Key;
+
+        // Updated to support nulls
+        if (Key == null &amp;&amp; target == null)  return 0;
+        else if (Key == null) return -1;
+        else if (target == null) return 1;
+
+        if (Key is IComparable)
+          return ((IComparable)Key).CompareTo(target);
+
+        else
+        {
+          if (Key.Equals(target))
+            return 0;
+          else
+            return Key.ToString().CompareTo(target.ToString());
+        }
+      }
+</PRE></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>xal replied on Friday, July 14, 2006</h2>I solved this and other problems with sorting in general by altering the SortedBindingList just a little bit. This is a very small change.<br><br>Here's a link to an older thread in the old forum:<br><a href="http://groups.msn.com/cslanet/general.msnw?action=get_message&amp;mview=0&amp;ID_Message=24363">LINK</a><br><br>It basically consists in providing values for the sorting to do what you expect. This is done very easily through an event. <br><br>Andrés<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,47 @@
+<html><header><title>SortedBindingList&lt;T&gt; and ListView Sorting WPF</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>SortedBindingList&lt;T&gt; and ListView Sorting WPF</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/7240.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>PitDog posted on Tuesday, July 07, 2009</h2>Hello,<br /><br />Currently we are using the SortedBindingList to bind to the ItemsSource of our list views. We used commanding to call the ApplySort method of the IBindingList interface when column headers are clicked. We would like to move the sorting to our own SortableListView control. However when the ItemsSource of a list view object is bound to a IBindingList implementation such as SortedBindingList there seems to be some issues.<br /><br />When I attempt to get the CollectionView with the code below<br /><br />ICollectionView dataView = CollectionViewSource.GetDefaultView(lv.ItemsSource); <br /><br />It seems that the SourceCollection is of type BindingListCollectionView. And even though the collection states that it is sortable with the CanSort property set to true it seems the sort never happens.<br /><br />Has anyone run into this before? Google sometimes tells me that BindingListCollectionVew does not support sorting? However the MSDN docs seem to say it does.<br /><br />Perhaps my approch is incorrect. Does CSLA have a favorite way to do sorting?<br /><br />Thanks,<br />Brette</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Tuesday, July 07, 2009</h2><P>The SortedBindingList is older code. CSLA now supports LINQ and all of its advanced methods.</P>
+<P>SBL is limited to a single column sort. LINQ can sort by multiple columns as well as filter the results.</P>
+<P>You can use the MS Dynamic Query Library to extend LINQ to sort by strings (instead of lambda expressions.) This is nice for the "click on a column heading" use case.</P>
+<P>There have been many posts about LINQ so review a few and ask questions. The result of a query on an editable collection is a type which can be cast to LinqBindingList which is a "view" over the original collection that maintains a cross reference index between the view and the original rows.</P>
+<P>HTH<BR>Joe</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>PitDog replied on Tuesday, July 07, 2009</h2>Joe,<br /><br />Thanks for the reply. I will take an look at this stuff and see if this solves the issue I am having. <br /><br />I am still a bit confused as to if people generally use the built in sorting/grouping/filtering of the ListView or just use linq exclusivly. <br /><br />B</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, July 08, 2009</h2><P>There's a long thread on the forum that ran around the end of last year on this topic.</P>
+<P>The problem/challenge is that WPF doesn't completely work with IBindingList (or BindingList&lt;T&gt;) objects. And Windows Forms doesn't work <EM>at all</EM> with&nbsp;INotifyCollectionChanged or ObservableCollection&lt;T&gt;.</P>
+<P>So CSLA .NET continues to use BindingList&lt;T&gt; as the collection base class, because the alternative is to abandon all Windows Forms support. Unfortunately this means CSLA collections don't fully work with WPF's automatic sorting, etc.</P>
+<P>CSLA is not alone in this problem. DataTable and many other types of object are based on IBindingList and don't fully work in WPF. There are blog posts out there with various workarounds, mostly that wrap your collection with an ObservableCollection&lt;T&gt; wrapper.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Brette.Net replied on Thursday, July 09, 2009</h2><P>Thanks Rocky. This is what I was wanting to hear. I am still a little confused as to why IBindinglist&lt;T&gt; is not fully supported by WPF. Even reflecting into&nbsp;BindingListCollectionView I see the call being made to the interal IBindingList&lt;T&gt; collection. See below..</P>
+<P>&nbsp;&nbsp; if (sorts.Count &gt; 0)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; this._isSorted = true;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (this._blv == null)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; this.InternalList.ApplySort(sorts[0].PropertyDescriptor, sorts[0].SortDirection);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; else<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; this._blv.ApplySort(sorts);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</P>
+<P>In any case it does not seem to work. I will hunt for the thread you speak of and do some reading.</P>
+<P>&nbsp;</P>
+<P>Brette<BR></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, July 09, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I&#8217;m confused as to why WPF doesn&#8217;t fully support it
+either, and I know a lot of people have communicated to Microsoft that this is
+a problem.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I haven&#8217;t looked at WPF 4 to see if they&#8217;ve
+addressed the issue, but it can&#8217;t be a high priority for them if they
+haven&#8217;t addressed it after 3+ years&#8230;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rfcdejong replied on Tuesday, July 21, 2009</h2>I did found a way to sort on IBindingList in WPF, haven't tested it thru.<BR><A href="http://www.wpfmentor.com/2008/12/how-to-sort-bindinglist-using.html">http://www.wpfmentor.com/2008/12/how-to-sort-bindinglist-using.html</A></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

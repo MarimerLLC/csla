@@ -1,0 +1,18 @@
+<html><header><title>AuthorizationRule with IMemberInfo == null</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>AuthorizationRule with IMemberInfo == null</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10577.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>rxelizondo posted on Monday, August 01, 2011</h2><p>Hello,</p>
+<p>I noticed that the &quot;IsInRole&quot;&nbsp;authorization&nbsp;rule does not force you to specify a property to associate the rule with, so I am able to write something like this:</p>
+<p>BusinessRules.AddRule(new IsInRole(AuthorizationActions.WriteProperty, &quot;Managers&quot;));</p>
+<p>My question what is the purpose for&nbsp;allowing something like that? At first I&nbsp;tough&nbsp;that doing that will make the rule apply to all properties on the object but this does not seem to be the case.</p>
+<p>Thank you.</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Monday, August 01, 2011</h2><p>The IsInRole rule does not check the AuthorizationActions within a context and if it is a valid combination. . </p>
+<p>This overload is only really used for AutorizationActions on &quot;object&quot;&nbsp; level,&nbsp; methods line CreateObject, GetObject, EditObject and DeleteObject. </p>
+<p>But BusinessRules.HasPermission will throw an exception if you mixup the AuthorizationActions for object level access and property/method level.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rxelizondo replied on Monday, August 01, 2011</h2><p>&nbsp;</p>
+<p>Thanks Jonny,</p>
+<p>&nbsp;</p>
+<p>Help me here... I realize that it may be a valid combination but I am having a hard time&nbsp;understanding&nbsp;how this:</p>
+<p><b><i>BusinessRules.AddRule(new IsInRole(AuthorizationActions.WriteProperty, &quot;Managers&quot;));</i></b></p>
+<p>makes any logical&nbsp;sense, I feel that the code above&nbsp;should&nbsp;throw a &quot;ThisMakesNoSense&quot; error <b><span style="text-decoration:underline;">on the spot</span></b>! Regardless if I use&nbsp;<b>WriteProperty</b>,&nbsp;<b>ReadProperty </b>or&nbsp;<b>ExecuteMethod </b>since none of this <b>AuthorizationActions </b>are really applicable to &quot;object&quot; level?</p>
+<p>&nbsp;</p>
+<p>But say for now that I do add a bussiness rule using &quot;<span><b style="font-style:italic;">AuthorizationActions.WriteProperty&quot;</b> and &quot;<b><i>IMemberInfo == null</i></b>&quot;, when would I expect the CSLA to&nbsp;automatically&nbsp;exiecute this rule for me?</span></p>
+<p><span>Thanks.</span></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Tuesday, August 02, 2011</h2><p>Csla will never execute this rule for you automatically and you will actually never get to execute this rule. </p>
+<p>Authz rules that have IMemberInfo = null can only be executed by calling the static BusinessRules.HasPermission methods and will throw an error if AthorizationActions is ReadProperty, WriteProperty or ExecuteMethod. </p>
+<p>So, yes - IsInRole and IsNotInRole could do a sanity check to prevent you from adding a &quot;non-logical&quot; rule. It could throw an ArgumentException. </p>
+<p>Maybe Rocky can add some thoughts here?</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

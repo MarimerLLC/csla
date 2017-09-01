@@ -1,0 +1,17 @@
+<html><header><title>Edit Level Mismatch in AcceptChanges</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Edit Level Mismatch in AcceptChanges</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9455.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>t.kehl posted on Monday, August 30, 2010</h2><p>Hi.</p>
+<p>I have the fallowing object-tree:</p>
+<p>Company (EditableRoot)<br />&nbsp; |--- BranchList (Childlist)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |--- Branch&nbsp; (Child)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |--- Branch&nbsp; (Child)<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |--- Branch&nbsp; (Child)</p>
+<p>The Branch-object has a Property Parentbrach which is also of the type Branch (Child)</p>
+<p> Now, when I add a new object to the Branchlist and then I set the new Branch as ParentBranch of an exisiting Branch I will get a &quot;Edit Level Mismatch&quot; Exception when I save the Company-Object. This is logical, then the same object exists in the BranchList and as a property (ParentBranch) on a Child-Element of the list. When I save the company-object, CSLA will call AcceptChanges twice on the same object (the first one in the&nbsp; BranchList and the second one on the Property ParentBranch). <br />The reason for my situation is the fallowing: <br />I have a window for editing the Company-object. On this window, there is also a Grid which show the BranchList. In the Grid it is also possible to add a new Branch and set a exisiting branch as a ParentBranch of a existing (or new) Branch. For the source to select a ParentBranch, I use the same List which will be shown in the grid. The reason for this is, that I also can select new added (and currently not saved) branches as ParentBranche. Now, I am searching a way, that CSLA will also save the Property ParentBranch of a Branch - but will not execute AcceptChanges on the objects which are set as ParentBranch. </p>
+<p>I hope my goal is clear and anybody can help me :-) - Thank you!</p>
+<p>Best Regards, Thomas&nbsp; </p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Monday, August 30, 2010</h2><p>The CSLA base classes support object graphs with a specific shape:</p>
+<ul>
+<li>One root object per graph</li>
+<li>One parent object per child</li>
+</ul>
+<p>BB and BLB provide no support for other graph shapes.</p>
+<p>Data binding (especially in Windows Forms, which I assume you are using) imposes a whole other set of requirements. CSLA 4 helps somewhat with these, by enabling multiple bindingsource objects to bind to the same object in some cases. That wasn&#39;t possible prior to CSLA 4, because the IEditableObject implementation got confused.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>t.kehl replied on Saturday, September 04, 2010</h2><p>Hi Rocky</p>
+<p>Thanks for your answer. I use WPF und MVVM. I have now solved my Problem using <a href="http://forums.lhotka.net/forums/p/8535/40584.aspx#40584">this</a></p>
+<p>Best Regards, Thomas</p>
+<p>&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

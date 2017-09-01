@@ -1,0 +1,59 @@
+<html><header><title>How to setup hierarchical BO?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>How to setup hierarchical BO?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10394.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>simon posted on Monday, May 23, 2011</h2><p>There is a tree model as below:</p>
+<p>+ItemGroup1</p>
+<p>++ItemGroup2</p>
+<p>+++Itemgroup3</p>
+<p>+++Itemguroup4</p>
+<p>+itemgroup5</p>
+<p>++Itemgroup6</p>
+<p>the sql table :</p>
+<p><span>
+</span></p>
+<pre>CREATE TABLE [MM].[ItemGroup](
+	[Id] [int] IDENTITY(1,1) NOT NULL,
+	[Name] [nvarchar](10) NOT NULL,
+	[Description] [varchar](100) NULL,
+	[ParentId] [int] NULL,
+	[LastChanged] [timestamp] NOT NULL,
+ CONSTRAINT [PK_ProductCategory_Id] PRIMARY KEY CLUSTERED 
+(
+	[Id] ASC
+)WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
+) ON [PRIMARY]
+
+GO
+
+SET ANSI_PADDING OFF
+GO
+
+ALTER TABLE [MM].[ItemGroup]  WITH CHECK ADD  CONSTRAINT [FK_ItemGroup_ItemGroup] FOREIGN KEY([ParentId])
+REFERENCES [MM].[ItemGroup] ([Id])
+GO
+
+ALTER TABLE [MM].[ItemGroup] CHECK CONSTRAINT [FK_ItemGroup_ItemGroup]
+GO</pre>
+<pre></pre>
+<pre><strong>In Using Csla4 book, don&#39;t mention to use the switchable object.  how can i do to realize the tree model?</strong></pre>
+<pre></pre>
+<pre></pre>
+<pre></pre>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>simon replied on Wednesday, May 25, 2011</h2><p><img src="http://forums.lhotka.net/emoticons/emotion-9.gif" alt="Crying" /></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, May 25, 2011</h2><p>You didn&#39;t describe your user scenario, only the data model. Although you can sometimes use CSLA to create data-centric objects, I recommend against that.</p>
+<p>In many cases, the reason for a treeview is to display a subset of data in the treeview itself, and when the user selects an item in the treeview the result is that another region of the screen is populated with content that either shows more detail, or allows editing of detail. Usually that detail isn&#39;t in the treeview itself, but is only in the other region, and only after selection occurs.</p>
+<p>I typically implement such a scenario by using read-only objects for the treeview, and then fetching an editable root when selection occurs, so that editable root can be bound to the detail region of the screen.</p>
+<p>This avoids the ugly switchable object concept, and also generally provides better performance - because only the small amount of data displayed in the treeview is loaded for the treeview.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>simon replied on Saturday, May 28, 2011</h2><p>I want to create a BOM (Bill of materials) to represent all level material item with tree model... and allow user drag item to change it&lsquo;s level &nbsp;or delete item, add item</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Saturday, May 28, 2011</h2><p>That&#39;s a little tricky with the existing object stereotypes. Primarily because the editable list stereotype assumes that removing an item from the list means you want to delete the item. In your case, removing an item from the list <em>might</em> mean deleting the item, or it might mean that it moved.</p>
+<p>So you&#39;ll need to add a method to your list class that removes an item without <em>deleting</em> the item. Basically something like this:</p>
+<pre style="font-family:Consolas;background:white;color:black;font-size:13px;">&nbsp;&nbsp;[<span style="color:#2b91af;">Serializable</span>]<br />&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">class</span>&nbsp;<span style="color:#2b91af;">Node</span>&nbsp;:&nbsp;<span style="color:#2b91af;">BusinessBase</span>&lt;<span style="color:#2b91af;">Node</span>&gt;<br />&nbsp;&nbsp;{<br />&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">static</span>&nbsp;<span style="color:blue;">readonly</span>&nbsp;<span style="color:#2b91af;">PropertyInfo</span>&lt;<span style="color:#2b91af;">NodeList</span>&gt;&nbsp;ChildNodesProperty&nbsp;=&nbsp;RegisterProperty&lt;<span style="color:#2b91af;">NodeList</span>&gt;(c&nbsp;=&gt;&nbsp;c.ChildNodes);<br />&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:#2b91af;">NodeList</span>&nbsp;ChildNodes<br />&nbsp;&nbsp;&nbsp;&nbsp;{<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">get</span>&nbsp;{&nbsp;<span style="color:blue;">return</span>&nbsp;GetProperty(ChildNodesProperty);&nbsp;}<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">private</span>&nbsp;<span style="color:blue;">set</span>&nbsp;{&nbsp;LoadProperty(ChildNodesProperty,&nbsp;<span style="color:blue;">value</span>);&nbsp;}<br />&nbsp;&nbsp;&nbsp;&nbsp;}<br />&nbsp;&nbsp;}<br /> <br />&nbsp;&nbsp;[<span style="color:#2b91af;">Serializable</span>]<br />&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">class</span>&nbsp;<span style="color:#2b91af;">NodeList</span>&nbsp;:&nbsp;<span style="color:#2b91af;">BusinessListBase</span>&lt;<span style="color:#2b91af;">NodeList</span>,&nbsp;<span style="color:#2b91af;">Node</span>&gt;<br />&nbsp;&nbsp;{<br />&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">void</span>&nbsp;MoveTo(<span style="color:#2b91af;">Node</span>&nbsp;item,&nbsp;<span style="color:#2b91af;">NodeList</span>&nbsp;target)<br />&nbsp;&nbsp;&nbsp;&nbsp;{<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">var</span>&nbsp;copy&nbsp;=&nbsp;item.Clone();<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Remove(item);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DeletedList.Remove(item);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;target.Add(copy);<br />&nbsp;&nbsp;&nbsp;&nbsp;}<br />&nbsp;&nbsp;}<br /></pre>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>simon replied on Saturday, May 28, 2011</h2><p>Thank your answer, &nbsp;the editable objects how to show tree style in WPF+MVVM? &nbsp;hope you provide a sample in your book using Csla4.0&nbsp;<span>Silverlight 4 and WPF</span></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Saturday, May 28, 2011</h2><p>The book will use the ProjectTracker sample, so it won&#39;t have a treeview, no.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>skagen00 replied on Wednesday, May 25, 2011</h2><p>What I like to do with hierarchical scenarios is to read all of the items into a collection object, and then set up non-serialized fields for parent (single) and children (list) for each object which I typically re-establish upon deserialization by running through a quick algorithm.</p>
+<p>Tends to allow me to play nice with certain databinding scenarios - this is typically something I have done with read-only collections.</p>
+<p>The fact that you mentioned switchable objects seems to say you&#39;re editing the hierarchy... in some situations I&#39;d think having a hierarchical object as a single root could make sense, and other cases where it wouldn&#39;t make sense.... depends on your use case.. </p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tiago replied on Tuesday, May 31, 2011</h2><p><div style='padding-left: 50px;background-color:silver'><b>skagen00<br></b>
+<p>What I like to do with hierarchical scenarios is to read all of the items into a collection object, and then set up non-serialized fields for parent (single) and children (list) for each object which I typically re-establish upon deserialization by running through a quick algorithm.</p>
+<p>Tends to allow me to play nice with certain databinding scenarios - this is typically something I have done with read-only collections.</p>
+<p>The fact that you mentioned switchable objects seems to say you&#39;re editing the hierarchy... in some situations I&#39;d think having a hierarchical object as a single root could make sense, and other cases where it wouldn&#39;t make sense.... depends on your use case.. </p>
+<div style="CLEAR:both;"></div>
+</div></p>
+<p>Hi skagen00,</p>
+<p>Do you have a sample you can share?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>simon replied on Friday, June 03, 2011</h2><p>&nbsp;</p>
+<div>
+<img alt="" />Is there anybody have the completed code without using switchable to represent N-Level treeview?<img src="http://forums.lhotka.net/emoticons/emotion-12.gif" alt="Angry" /></div>
+<p>&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

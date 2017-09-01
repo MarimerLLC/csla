@@ -1,0 +1,61 @@
+<html><header><title>For Those Using CodeSmith for CSLA 2.x</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>For Those Using CodeSmith for CSLA 2.x</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/1303.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>rhoeting posted on Friday, September 22, 2006</h2><P>Is it safe to assume&nbsp;that the codegen strategy for 2.0 is to put plumbing in a base clase (ie.&nbsp; CustomerBase) and hand-crafted, custom logic on the subClass (ie. Customer)?&nbsp;&nbsp; Or are people using the "partial class" separation strategy?</P>
+<P>The next question is could someone post a minimal example of what a custom class looks like?... and I'm talking the most minimal code necessary to make the class "whole", if that makes sense...</P>
+<P>TIA,</P>
+<P>Rob</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>m.harper replied on Friday, September 22, 2006</h2><P class=MsoNormal>We are using "partial class" separation strategy.&nbsp; One file is the "editable" file which contains the custom logic, the other file contains the Code Generated code and no changes can be made to this file by hand.</P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal>Michael</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>skagen00 replied on Monday, September 25, 2006</h2>Partial classes here too in terms of code generation. </div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rhoeting replied on Tuesday, September 26, 2006</h2><P>So if you folks use the partial class approach, how do you inject custom code at particular points in an object's lifecycle?&nbsp; For example, in the inheritance approach, you can create empty methods in your base class, for example:</P>
+<P>OnDataPortalCreateBegin()</P>
+<P>OnDataPortal()</P>
+<P>And simply override them in the custom class to add custom behavior...&nbsp;Who&nbsp;do do folks inject custom behavior in the partial class world?</P>
+<P>Rob</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>skagen00 replied on Tuesday, September 26, 2006</h2><P>Hey there, the answer is delegates.</P>
+<P><FONT color=#0000ff>private</FONT> <FONT color=#0000ff>void</FONT> UpdateChildren(<FONT color=#008080>SqlConnection</FONT> cn)</P>
+<P>{</P>
+<P>&nbsp;&nbsp;&nbsp;_names.Update(cn, <FONT color=#0000ff>this</FONT>);</P>
+<P>&nbsp;&nbsp;&nbsp;_contactInfo.Update(cn, <FONT color=#0000ff>this</FONT>);</P>
+<P>&nbsp;&nbsp;&nbsp;_relationships.Update(cn, <FONT color=#0000ff>this</FONT>);</P>
+<P>&nbsp;&nbsp;&nbsp;_roles.Update(cn, <FONT color=#0000ff>this</FONT>);</P>
+<P>&nbsp;&nbsp;&nbsp;onUpdateChildrenComplete(cn);</P>
+<P>}</P>
+<P>Above is some generated code. onUpdateChildrenComplete() will call any handlers attached to the delegate - so there is a place in code to hook up delegates (Initialize and Deserialize) to appropriate handlers in the&nbsp;non-generated partial. </P>
+<P>If one has a base "Entity" class inserted right beneath BusinessBase, it's certainly possible to insert logic in that manner too. But the delegate is a nice clean approach for handling the partial class issue without requiring inheritance. </P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>skagen00 replied on Tuesday, September 26, 2006</h2><P>Here's one example about hooking up the delegates:</P>
+<P><FONT color=#0000ff>protected</FONT> <FONT color=#0000ff>override</FONT> <FONT color=#0000ff>void</FONT> Initialize()</P>
+<P>{</P>
+<P><FONT color=#0000ff>&nbsp;&nbsp;&nbsp;base</FONT>.Initialize();</P>
+<P><FONT color=#0000ff>&nbsp;&nbsp;&nbsp;this</FONT>.addCustomRulesDelegate += AddCustomRules;</P>
+<P><FONT color=#0000ff>&nbsp;&nbsp;&nbsp;this</FONT>.addInsertParamatersCompleteDelegate += AddCustomParameters;</P>
+<P><FONT color=#0000ff>&nbsp;&nbsp;&nbsp;this</FONT>.addUpdateParamatersCompleteDelegate += AddCustomParameters;</P>
+<P>&nbsp;&nbsp;&nbsp;...</P>
+<P>}</P>
+<P>And then my handler&nbsp;to add "custom business rules" might look like this: </P>
+<P><FONT color=#0000ff>protected</FONT> <FONT color=#0000ff>override</FONT> <FONT color=#0000ff>void</FONT> AddCustomRules()</P>
+<P>{</P>
+<P>&nbsp;&nbsp;&nbsp;ValidationRules.AddRule&lt;<FONT color=#008080>Individual</FONT>&gt;(IsValidSocialSecurityNumber, <FONT color=#800000>"SocialSecurityNumber"</FONT>);</P>
+<P>&nbsp;&nbsp;&nbsp;...</P>
+<P>}</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Tuesday, September 26, 2006</h2>Don't forget you'll have to override OnDeserialized to hook up the events again.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>skagen00 replied on Tuesday, September 26, 2006</h2><P>Absolutely. </P>
+<P><FONT color=#0000ff>protected</FONT> <FONT color=#0000ff>override</FONT> <FONT color=#0000ff>void</FONT> OnDeserialized(System.Runtime.Serialization.<FONT color=#008080>StreamingContext</FONT> context)</P>
+<P>&nbsp;&nbsp;&nbsp;{</P>
+<P><FONT color=#0000ff>&nbsp;&nbsp;&nbsp;base</FONT>.OnDeserialized(context);</P>
+<P><FONT color=#0000ff>&nbsp;&nbsp;&nbsp;this</FONT>.addCustomRulesDelegate += AddCustomRules;</P>
+<P><FONT color=#0000ff>&nbsp;&nbsp;&nbsp;this</FONT>.addInsertParamatersCompleteDelegate += AddCustomParameters;</P>
+<P><FONT color=#0000ff>&nbsp;&nbsp;&nbsp;this</FONT><FONT size=1><FONT size=3>.addUpdateParamatersCompleteDelegate += AddCustomParameters;</FONT></FONT></P>
+<P><FONT size=1>&nbsp;&nbsp;&nbsp;<FONT size=3>...</FONT></FONT></P>
+<P><FONT size=1><FONT size=3>}</FONT></P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rhoeting replied on Tuesday, September 26, 2006</h2><P>Thanks guys,&nbsp;that's pretty slick I must say. &nbsp;I guess I should have figured that out!</P>
+<P>Are you generally happy with CSLA/CodeGen combo?&nbsp; </P>
+<P>Rob</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>skagen00 replied on Tuesday, September 26, 2006</h2><P>I use CodeSmith 2.0 C# templates (partial classes) with CSLA 2.1 right now and I'm very happy to have taken the code gen plunge. </P>
+<P>There's another option, one that Xal has (that I think is most up to date for VB).</P>
+<P>If you go with the CodeSmith 2.0 templates, I should mention that you can find CodeSmith version 2.6 out there, which is free and as of the last version of C# templates seems to work just fine. </P>
+<P>I would recommend keeping a log of the exact changes you make to the templates. I didn't do this the first time and I found myself looking line by line with a code comparison program to get myself upgraded to the newest templates. </P>
+<P>You can get 2.6 here: <A href="http://www.codesmithtools.com/freeware.aspx">http://www.codesmithtools.com/freeware.aspx</A></P>
+<P>Good luck</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rhoeting replied on Tuesday, September 26, 2006</h2><P>skagen00,</P>
+<P>Good to hear it's working for you.&nbsp; We used&nbsp;CS on a project with CSLA1.5 and it was lights out!&nbsp; We did have trouble dealing with template changes.&nbsp; So How do manage the whole "template change control" process?&nbsp; As far as I know CodeSmith doesn't integrate into source safe.</P>
+<P>Rob</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>skagen00 replied on Tuesday, September 26, 2006</h2><P>To be honest I just keep a word document documenting the deviations I've made along with a copy of the templates I've made the deviations from (the ones that one can download now). </P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Brian Criswell replied on Tuesday, September 26, 2006</h2>What aspect of SourceSafe are you having trouble working with CodeSmith?<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Tuesday, September 26, 2006</h2><P>I use Inheritance, not partial classes.</P>
+<P>So I would have a CustomerBase class with all the code generated stuff in it and then the Customer class would Inherit it. I Override any methods that need to be tweaked. I also coded the DataPortal_XYZ methods to simply call a bunch of smaller methods which are all overridable. That way most of the code stays in the gen level and I only have to Override small bits at a time to tweak functionality.</P>
+<P>I have my own set of Codesmith templates that use my DAL code so I do not use the public versions.</P>
+<P>I did check them out recently though and they are pretty good. At least as a starting point. It is always best if you don't hack them up on your own but get changes implemented (by ricky or whoever) and then just keep up. But my set diverged early on and I have been maintaining my own. I check them into VSS so source control is not an issue.</P>
+<P>Joe</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rhoeting replied on Thursday, September 28, 2006</h2><P>Brian,</P>
+<P>I would love to be able to "right-click" a template in CodeSmith Studio and do check-in and check-out of source safe.&nbsp; As far as I know, it's not integrated in that way.</P>
+<P>&nbsp;</P>
+<P>Rob</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Brian Criswell replied on Thursday, September 28, 2006</h2>No, it is not.&nbsp; I get around this at home and at work by using Subversion.&nbsp; So the templates are not read-only by default.&nbsp; This also makes versioning generated code very easy.&nbsp; SourceSafe does have a command line interface that you could try tying into, but I am not sure how far you could extend that part of CodeSmith.&nbsp; Nor does CodeSmith seem to have a plug in architecture from what I can see.<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

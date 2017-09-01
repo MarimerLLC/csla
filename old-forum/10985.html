@@ -1,0 +1,76 @@
+<html><header><title>Upgrading from CSLA 2.1 to CSLA 4.x / development path moving forward.</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Upgrading from CSLA 2.1 to CSLA 4.x / development path moving forward.</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10985.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>gajit posted on Wednesday, December 14, 2011</h2><p>Hello all,</p>
+<p>I know there are a number of discussions relating to various upgrades from one version or another, but I do have some specific questions with regards to my development path and I didn;t want to hijack those other threads.</p>
+<p>I have developed/been developing&nbsp;a CRM-type application for a client for the last 10 years, with it&#39;s foundations being set on CSLA 1.x and currently sitting at 2.1.</p>
+<p>The application is very comprehensive -&nbsp;and very stable. My gratitude to the CSLA community, and Rocky in particular, cannot be over-stated - without them I wouldn&#39;t be paying my bills <img src="http://forums.lhotka.net/emoticons/emotion-1.gif" alt="Smile" /></p>
+<p>The application is currently being developed&nbsp;using ,Net 2.0, with VS 2005, it is a desktop client sever application using Windows Forms, and has a MS-SQL&nbsp;backend - some 200+ users.</p>
+<p>But I now find myself at somewhat of a crossroads.</p>
+<p>There are two main considerations: -</p>
+<ol>
+<li>The BO&#39;s/.Net framework are obviously older technology and I need to sit down with my client to explain the options available to him. Having read some of the other threads, I&#39;m pretty certain that our choices are limited - namely a &quot;re-write&quot; - if we want to go to the latest .Net/CSLA frameworks. Is that a fair assessment? My &quot;sell&quot; to latest technology may by harder considering their backoffice application is developed (by another vendor) in VisualFoxPro... and still remains current. Are there any considerations regarding end-of-life that I should highlight?</li>
+<li>I would also like to develop some new applications using the most current technology. My VS.Net 2010 is on it&#39;s way and my assumption is that I should be using the latest CSLA releases (4.2?) Can TWO CSLA frameworks co-exist on the same machine? Will developing new applications using the latest .Net / CSLA version impact my ability to maintain my legacy .Net 2.0 / Csla 2.1 application? Or do I need to bite the bullet and buy a new development box?</li>
+</ol>
+<p>Any advice on where to (re)start, would be appreciated. Having neglected you guys for some time I&#39;m not even sure if the current framework uses the same concepts as it&#39;s descendants, so if you can point me in the direction of the latest documentation, I can&nbsp;head off to Amazon and purchase the necessary literature.</p>
+<p>I look forward to your comments and suggestions.</p>
+<p>Thanks,</p>
+<p>Graham Blandford</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Wednesday, December 14, 2011</h2><p>There is some good information here:</p>
+<p><a href="http://www.lhotka.net/cslanet/faq/CslaVersions.ashx">http://www.lhotka.net/cslanet/faq/CslaVersions.ashx</a></p>
+<p>To get from 2.x to 3.6+ is somewhat of a rewrite, that&#39;s true. The property declaration syntax is different, and the old/verbose syntax is going away over time.</p>
+<p>In a lot of cases though, that&#39;s just property declarations, and replacing the old/verbose syntax is quite mechanical - and reasonably quick given the use of snippets for the new syntax.</p>
+<p>The harder part is the reworking of business rules from the delegate syntax to the CSLA 4 rule class syntax. That is generally worth it, because the new model is substantially more powerful, but it is a bit less mechanical than swapping out the property declaration syntax.</p>
+<p>The data portal has changed too, but those changes are usually mechanical, unless you switch to using the async model - but that&#39;s really a separate choice that is independent of a CSLA upgrade.</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>gajit replied on Wednesday, December 14, 2011</h2><p>Thanks Rocky.</p>
+<p>IF,&nbsp;my client&nbsp;was reluctant to invest in the work that comes with the upgrade, what would you suggest? &nbsp;Would taking them to say 3.0.5 and providing support&nbsp;for .Net 3.0 at least be an option or not worth it in your opinion?</p>
+<p>In these tough economic times, the &quot;sell&quot; to upgrade will be harder than it has been in the past.</p>
+<p>Either way, is it possible to develop under the CSLA4.x umbrella with .Net4, etc on the same box as an earlier version of CSLA?</p>
+<p>I was going to purchase the CSLA 4. eBook to understand the new version, is that the preferred method? (I think in the past I purchased the Apress version from my boostore).</p>
+<p>&nbsp;</p>
+<p>Thanks once again,</p>
+<p>Graham.</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Wednesday, December 14, 2011</h2><p>It depends.</p>
+<p>3.0.5 contains numerous bug fixes over 2.1.x. If those bug fixes are beneficial, it is worth that update even for .NET 2.0.</p>
+<p>There&#39;s no value to .NET 3.0 itself, unless you plan to use WPF or WCF. .NET 3.0 is just 2.0 plus those new technologies.</p>
+<p>The <em>Using CSLA 4 </em>ebook is the best way to understand the new version. The Apress book was from 2008, and covered version 3.6, so from the perspective of really understanding the current framework it is a bit outdated.</p>
+<p>Finally, yes, you can use two versions of CSLA in the same app. The FAQ link I provided has links to threads that discuss how this can be done.</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>gajit replied on Thursday, December 15, 2011</h2><p>Thanks again Rocky.</p>
+<p>The application has remained stable over the years, so I probably won&#39;t upset the apple cart for the sake of the bug fixes.</p>
+<p>If I am able to use 4.x for new development&nbsp;on the same machine, I&#39;ll go ahead and do that. If I manage to incorporate&nbsp;some new technologies such as Windows Phone UI&nbsp;into those new products, even better -&nbsp;more ammunition to make that upgrade a &quot;must have&quot;.&nbsp;</p>
+<p>Off to poke around in thr FAQ&#39;s....</p>
+<p>Thanks again!</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Thursday, December 15, 2011</h2><p>Hi Graham, </p>
+<p>When you move to VS2008 or VS2010 and still need to support a .NET 2.0 application then take a look at LinqBridge, <a href="http://www.albahari.com/nutshell/linqbridge.aspx">http://www.albahari.com/nutshell/linqbridge.aspx</a> that is a reimplementation of Linq to objects and also provide Func and Action delegates for use in .Net 2.0 SP1.</p>
+<p>Essentially - you can write C# 3.0 syntax with lamdas, linq queries over objects and anonymous lambdas while targeting .NET 2.0.</p>
+<p>This is also required/indluded in CSLA 3.6 N2 - essentially a downport of CSLA 3.6 for use in .NET 2.0 <a href="http://www.lhotka.net/cslanet/N2.aspx">http://www.lhotka.net/cslanet/N2.aspx</a></p>
+<p>You can have VS 2005, VS2008 and VS2010 installed side-by-side on the same machine. I now prefer to use VS2010 even for my .NET 2.0 projects (better profiling tools, R# 6, better refactorings and more) and the only problem I&#39;ve had so far&nbsp; is no support for Report Viewer 8 file format (for NET 2.0) plus it requires .NET 2.0 with SP1 when targeting .NET 2.0 runtime.</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>gajit replied on Wednesday, January 25, 2012</h2><p>Thanks Jonny for your response - I didn&#39;t get a notification for some reason or I would have thanked you earlier.</p>
+<p>I have invested in VS2010 and currently reviewing CSLA4. A little frustrating at the moment to be honest, but tomorrow&#39;s a new day - I&#39;m sure I&#39;ll get there in the end!</p>
+<p>Graham</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Saturday, December 17, 2011</h2><p>I&#39;ll just chime in from my experience moving to Csla 4.&nbsp; Its been well worth it, the ability to directly test your business rules is valuable, so the benefit to the client is that you&#39;ll have reduced maintence in the future.&nbsp; Also, you&#39;ll be mucking with Csla based objects... but its not a full rewrite.&nbsp; Property delcarations and delegate to object rules are the main changes.&nbsp; This next point is where Csla really shines; you can do all this work without affecting your UI OR data code.&nbsp; Well, I guess the cavet is that&nbsp;nobody heavily modifed Csla itself and followed all its rules.</p>
+<p>Given that you can use two versions of Csla in one application, you also dont&#39; need to do it all at once.&nbsp; You can upgrade classes as features would require you to modify them anyway.&nbsp; That&#39;s an option your client may be more willing to swallow.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>gajit replied on Wednesday, January 25, 2012</h2><p>Thanks Andy for your response - I didn&#39;t get a notification for some reason or I would have thanked you earlier.</p>
+<p>It&#39;s early days right now. I&#39;m reviewing what&#39;s needed for CSLA4, but frankly I&#39;m a little disappointed with the documentation at this stage. It appears the approach that was taken in earlier versions to tale the user step-by-step through the build of the framework has gone - as have the sample project tracker examples - unless I&#39;m missing a huge chunk somehwere.</p>
+<p>Hopefully I&#39;ll get there in the end, but right now it&#39;s looking very daunting indeed.</p>
+<p>Thanks,</p>
+<p>Graham</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, January 25, 2012</h2><p><div style='padding-left: 50px;background-color:silver'><b>gajit<br></b>
+<p>... frankly I&#39;m a little disappointed with the documentation at this stage. It appears the approach that was taken in earlier versions to tale the user step-by-step through the build of the framework has gone - as have the sample project tracker examples - unless I&#39;m missing a huge chunk somehwere.</p>
+<p></div></p>
+<p>I am hoping you haven&#39;t yet looked at the <em>Using CSLA 4</em> ebook series, because those books provide over 900 pages of content, including step-by-step walk throughs of building ProjectTracker for ASP.NET MVC, WPF, Silverlight, and Windows Phone. </p>
+<p>The books also provide the most extensive documentation of the framework features I&#39;ve ever created. The <em>Expert Business Objects</em> books never went as deep into the ways you could use business rules, the data portal, implement data access, and other important topics that are covered in the new <em>Using CSLA 4</em> books.</p>
+</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>gajit replied on Wednesday, January 25, 2012</h2><p>My disappointment Rocky, is as I replied in a more directly related post the lack of direction on how to physically compile the CSLA 4 assemblies from the Source contents provided. I will continue to scour the documentation - and it may very well be my unfamilairity with VS 2010, but in previous implementations of CSLA, the process was either more simplified (because we only had to deal with Windows Forms) or detailed instruction was provided.</p>
+<p>Although less of an issue,&nbsp;none of the ProjectTracker builds consider the Windows Form developer - unless I am mistaken - I haven&#39;t scoured that far ahead.</p>
+<p>Thanks,</p>
+<p>Graham</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, January 26, 2012</h2><p>This is because Windows Forms hasn&#39;t changed since 2005, so all the content from the <em>Expert 2005 Business Objects</em> book, and perhaps more importantly the <em>Using CSLA .NET 3.0</em> book remain relevant.</p>
+<p>I find it hard to get excited about writing a <em>Using CSLA 4: Windows Forms</em> book at this point, when I&#39;d be talking about a UI technology that hasn&#39;t changed, and against which Microsoft isn&#39;t investing anything beyond bug fixes...</p>
+<p>Perhaps I&#39;m wrong, and there&#39;s value in creating such a book. I&#39;ll have to give that some thought.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>gajit replied on Thursday, January 26, 2012</h2><p>If the early poll results continue, I may have opened a can of worms that you may not have wished to open ;)</p>
+<p>To be honest Rocky, once I&#39;ve loaded the aseemblies, it&#39;s possible I may not even require the Windows Forms book - but IU would purchase it nonetheless. I&#39;ve had cause in recent times to get some additional help with some of my projects, and I found one of the quickest ways to get those programmers up to speed with the structures I implement is to read what their foundations are.</p>
+<p>I do appreciate all of the effort you put into this project - not to mention your staggering response time when a scrub like myself raises issues.</p>
+<p>Thanks again,</p>
+<p>Graham</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, January 26, 2012</h2><p><div style='padding-left: 50px;background-color:silver'><b>gajit<br></b>
+<p>If the early poll results continue, I may have opened a can of worms that you may not have wished to open ;)</p>
+<div style="CLEAR:both;"></div>
+</div></p>
+<p>Maybe :)</p>
+<p>To be honest, I&#39;ll need a high &quot;yes&quot; vote count to make it worthwhile - maybe 50 or 100 yes votes. Otherwise my time will be better spent on SL5 and WinRT support, and a <em>Using CSLA 4</em> video series.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

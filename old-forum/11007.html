@@ -1,0 +1,76 @@
+<html><header><title>About Data Portal </title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>About Data Portal </h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11007.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>st3fanus posted on Thursday, December 22, 2011</h2><p>Hi all..</p>
+<p>I think i have read thi on ebooks but i forgot where is it location.</p>
+<p>So I want to ask for confirmation about :&nbsp; ( I use encapsulation invocation )</p>
+<p>Is it right that DataPortal.Fetch and DataPortal.BeginFetch and other crud client side data portal will call the same </p>
+<p>DataPortal_XYZ methods ??</p>
+<p>1. What I&#39;m not sure here is : who is responsible to trigger invocation of callback method when asynchronous calling is used ?? </p>
+<p>2. Is it automatically called by dataportal client side or server side ?? If yes, so how about silverlight implementation DataPortal_XYZ where i saw on ebook that it trigger callback..? Is it intended for silverlight as edge application where Local Mode is used so we must implement DataAccessInvocation on silverlight ( client side ) ?</p>
+<p>&nbsp;</p>
+<p>if you know, the location on ebooks that explicitly tell about it is help me alot ?</p>
+<p>note :&nbsp; I still in the middle of learn about CSLA.NET 4 use ebook</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>thanks a lot</p>
+<p>stefanus</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Friday, December 23, 2011</h2><p>In a Silverlight app in local mode your DataPortal_XYZ method is responsible for making a callback to tell the data portal your data operation is complete.</p>
+<p>The DataPortal_XYZ method gets a callback parameter that must be invoked when your method is complete - including the case where an exception occurs. This callback <em>must always be invoked</em> when the operation is complete, success or failure.</p>
+<p>Look on page 6 of the <em>Data Access</em> ebook for an example.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>st3fanus replied on Friday, December 23, 2011</h2><p>Hi Rocky,</p>
+<p> thanks for your quick response.</p>
+<p>&nbsp;</p>
+<p>If you don&#39;t mind could you give me your confirmation about :</p>
+<p>If a silverlight app is not in local mode, for example : If i use asynchronous below :</p>
+<p>public static void GetPersonEdit(int id, EventHandler&lt;DataPortalResult&lt;PersonEdit&gt;&gt; callback)</p>
+<p> { </p>
+<p>DataPortal.BeginFetch&lt;PersonEdit&gt;(id, callback);</p>
+<p> }</p>
+<p>Is the above client side data portal will eventually call </p>
+<p>private void DataPortal_Fetch(int id) { ........ }&nbsp;&nbsp; ???</p>
+<p>and what I want to know for confirmation is : who is responsible to trigger callback when DataPortal_Fetch(int id) above is done ??</p>
+<p>I feel i have read about this explanation on ebook but I forgot the location :(</p>
+<p>&nbsp;</p>
+<p>thanks a lot</p>
+<p>stefanus</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Saturday, December 24, 2011</h2><p>The DataPortal_Fetch() will have TWO parameters, not just one. It accepts a callback handler parameter. See page 6 of the <em>Data Access </em>ebook for an example.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>st3fanus replied on Sunday, December 25, 2011</h2><p>Hi Rocky,</p>
+<p>I&#39;m sorry for my repeated question, this because I follow&nbsp; on ebook 5 ( UI ).</p>
+<p>And I got a confuse, I&#39;m hard to get a robust understanding about Factory Method associate with Data Invocation methods.</p>
+<p>&nbsp;</p>
+<p>[ My current understanding ]</p>
+<p># Assumption : 3 tiers and not in local mode.</p>
+<p># My Confuse : If I write two type of factory methods ( ie :&nbsp; for .NET client and for SL client )&nbsp; then Am I must define two type Data Access methods too ? ( DataPortal_XYZ )</p>
+<p>for example :</p>
+<p>1. Asychronous Call.</p>
+<p>public static void GetPersonEdit(int id, EventHandler&lt;DataPortalResult&lt;PersonEdit&gt;&gt; callback) </p>
+<p>{ DataPortal.BeginFetch&lt;PersonEdit&gt;(id, callback); }</p>
+<p>and</p>
+<p>2. Sychronous Call.</p>
+<p>public static PersonEdit GetPersonEdit(int id) </p>
+<p>{ return DataPortal.Fetch&lt;PersonEdit&gt;(id); }</p>
+<p>&nbsp;</p>
+<p># Based on my understanding now :</p>
+<p>Client side data portal will call server side data portal on server machine (Am I right ? ) , BUT which one is called ?</p>
+<p>=&gt; Is no 1 and no 2 will call different DataPortal_XYZ ? </p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; My mind here is : )</p>
+<p>&nbsp;&nbsp; <img src="http://forums.lhotka.net/emoticons/emotion-13.gif" alt="Angel" />&nbsp; no1 will call =&gt;</p>
+<p>public void DataPortal_Fetch( int id, Csla.DataPortalClient.LocalProxy&lt;PersonEdit&gt;.CompletedHandler handler)</p>
+<p>
+{ &nbsp; .......... &nbsp;&nbsp; } ???</p>
+<p>OR this is just for a local mode call, and run on client (SL) OR no 1 call will eventually call </p>
+<p>private void DataPortal_Fetch(int id)</p>
+<p>
+ { ....... &nbsp;&nbsp; } </p>
+<p>because silverlight client will call server side data portal on server ( an associated Business object created by DataPortal ) So</p>
+<p>DataPortal will run DataPortal_Fetch(int id ) only on server side ?? BUT if this is what happened , I have a question on who is responsible to trigger a complete asychronous call ?? so client side can call a callback method.</p>
+<p>&nbsp;</p>
+<p><img src="http://forums.lhotka.net/emoticons/emotion-22.gif" alt="Beer" /> &nbsp; AND no 2 will call =&gt;</p>
+<p>private void DataPortal_Fetch(int id)</p>
+<p>
+ { ....... &nbsp;&nbsp; } ???</p>
+<p>&nbsp;</p>
+<p>SO , If the answer for A and B is YES, I must define both of DataPortal_XYZ above, right ?</p>
+<p>&nbsp;</p>
+<p>I&#39;m sorry before for my repeated questions Rocky, because I can&#39;t get an example on ebook for my questions EXPLICITLY. </p>
+<p>So I hope i can get a solid understanding for this problem :)</p>
+<p>I have read your book more than once with different focus on area, because I feel I have ever read on this topic, but i look for it again, I can&#39;t found it :(</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>thanks a lot rocky</p>
+<p>&nbsp;</p>
+<p>stefanus</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

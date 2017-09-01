@@ -1,0 +1,196 @@
+<html><header><title>CSLA .NET 4.0 project</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA .NET 4.0 project</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/8162.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka posted on Monday, December 14, 2009</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal>Hi all,<o:p></o:p></p>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal><b>Who is interested in helping to work on CSLA .NET 4.0?<o:p></o:p></b></p>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>I know Sergey and Ricky are interested for sure &#8211;
+Sergey with EF stuff, and Ricky with MVC stuff.<o:p></o:p></p>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>I&#8217;m not quite ready for a lot of help just yet. I&#8217;ve
+done a bunch of structural reorg to the folder/solution/project structure. But
+before a lot of people dig in too far there is one important task that needs to
+get done:<o:p></o:p></p>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Rename all the existing *ListBase classes to
+*BindingListBase and create new *ListBase classes that inherit from
+ObservableCollection&lt;T&gt; (probably by copying the SL classes to \core
+since they already work &#8211; mostly at least)<o:p></o:p></p>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>The other relatively large-scale change is to create a
+Csla.Rules namespace (I&#8217;m still debating the name) that will contain the new
+business/validation rules subsystem &#8211; and maybe a consolidated
+authorization rules subsystem. I want to clean up the &#8220;validation&#8221;
+subsystem, because that is a poor description. Along the way I want to
+consolidate sync and async rules so they work the same, and are probably
+differentiated by an [AsyncRule] attribute on the rule method itself. If done
+right, the result should be that async rules can safely alter the object state
+(indirectly, upon completion) which would be pretty cool.<o:p></o:p></p>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Rocky<o:p></o:p></p>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal><b><span>Rockford Lhotka<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><span>Magenic</span></b> -
+Principal Technology Evangelist<o:p></o:p></p>
+
+<p class=MsoNormal><span><a href="mailto:rocky@lhotka.net"><span>Email</span></a> | <a href="http://www.lhotka.net/weblog"><span>Blog</span></a> | <a href="http://www.lhotka.net/"><span>Web</span></a> | <a href="http://www.lhotka.net/cslanet"><span>CSLA .NET for
+Windows</span></a> | <a href="http://www.lhotka.net/cslalight"><span>CSLA .NET for Silverlight</span></a><o:p></o:p></span></p>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rxelizondo replied on Tuesday, December 15, 2009</h2>Whose butt do I have to kiss to be part of this!!?? <br /><br />I want to get involved. Count me in!!<br /><br />Just a quick question, how much knowledge does one has to have regarding the framework to be useful in helping out?</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, December 15, 2009</h2><P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>rxelizondo:</strong></div><div>Just a quick question, how much knowledge does one has to have regarding the framework to be useful in helping out?</div></BLOCKQUOTE></P>
+<P>To be productive, quite a bit of knowledge is probably required. Otherwise common code doesn't get normalized, etc.</P>
+<P>There's already a little of that issue (some duplicate reflection code for example), and that needs to be minimized.</P>
+<P>For example, "renaming the *ListBase" classes isn't as easy as a simple rename (though even that is complicated due to subversion). There's some code in the existing BusinessListBase and EditableRootListBase that surely will also be in the new classes. The challenge will be to try and normalize as much of that common code as possible - keeping in mind that data binding is interface-based and we can't have a shared base class - so some code will almost certainly be duplicated.</P>
+<P>And these classes (BLB in particular) participate in n-level undo, which is notoriously complex due to its interaction with data binding. So automated testing is good, but manual testing in Windows Forms datagrid controls is also required when messing with anything that touches undo.</P>
+<P>In short, quite a bit of knowledge of the framework is required. I can provide insight into historical issues where necessary - helping (hopefully) to identify areas that require more extensive testing and caution.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Peran replied on Tuesday, December 15, 2009</h2>I'm happy to help.<br><br><br>Peran<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jtgooding replied on Tuesday, December 15, 2009</h2>I would like to be involved especially in the areas of validation, and meta data storage.  I haven't read much on the direction that you intend to go, but these are the areas that we have most heavily modified, and hence cause us the most grief when trying to merge updates into our code branch.<br /><br />I realize you will have many more volunteers than you need, so at a minimum I would like to provide insight  into the functionality that we need, my hope is not that you integrate our feature set but design the new code in such a way that the extensibility is more of a design goal, to support custom functionality without having to re-engineer much of the logic to keep versioning maintenance to a minimum.<br /><br />Thanks<br />John Gooding<br /></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>triplea replied on Tuesday, December 15, 2009</h2><P>Hi Rocky</P>
+<P>How would you delegate the work? Would you give a basic overview of what you want to achieve and expect the developer to take a lot of initiative during implementation or would you want to provide more details (e.g. a spec?). I would probably be of some assistance if you plan to do the latter so for tasks like the *ListBase renaming, I'd be glad to offer as much assistance as possible.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, December 15, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Contributors must sign a legal agreement that establishes a
+relationship between Marimer LLC (owner of the framework) and the contributor.
+The primary element of the agreement is that Marimer LLC owns the code and
+associated IP.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I can&#8217;t manage a lot of people, but some help is needed &#8211;
+especially in areas where I know I won&#8217;t have time to pay attention
+(Windows Forms may be the most notable, and also the idea of an installer, VS
+templates &#8211; that whole area).</span><b><span><o:p></o:p></span></b></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I&#8217;ll be honest about this &#8211; my expectations of
+contributors are pretty high in terms of technical competence and in terms of holding
+true to my vision for the framework. The last thing I need is to spend more
+time teaching C# than doing the work, or fighting with someone who wants the
+framework to be different than what I want it to be :)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Similarly, there are some coding standards to follow &#8211; the
+goal with team coding (in my mind) is that it should be impossible to look at a
+piece of code and tell who wrote it. Everyone on a team should code using exactly
+the same style. That&#8217;s a hard one, but important.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Yes triplea, the basic idea would be to identify tasks that can
+be implemented by a developer, spec it out via email or via LiveMeeting and to
+have the developer be reasonably autonomous. That said, code reviews and
+continual dialog are important aspects of the process.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, December 15, 2009</h2><P>It is also the case that contributors need the VS10 Beta (and the ability to upgrade as new beta/RC releases come out) and Silverlight 4 beta (and the ability to upgrade as new beta releases come out).</P>
+<P>Whether that is a virtual machine or a real machine, it is obviously a requirement that should be considered before volunteering, as it requires time and maybe money to get that going.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tiago replied on Thursday, December 17, 2009</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div> <SPAN>I can’t manage a lot of people, but some help is needed – especially in areas where I know I won’t have time to pay attention (Windows Forms may be the most notable, and also the idea of an installer, VS templates – that whole area).<FONT face="Times New Roman" color=#000000 size=3></div></BLOCKQUOTE></FONT></SPAN>
+<DIV class=Section1>
+<P class=MsoNormal><SPAN><FONT color=#000000>As you might remember I have changes to CslaActionExtender to propose. I've done some work (custom changes to Csla) around 3 areas: validation common rules (NoDuplicates), Windows Forms and Remoting (TCP channel). This aren't key areas of the framework and some of the features I'm planning can be done in satelite assemblies.</FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT color=#000000>What are you thinking about when you mention Windows Forms?</FONT></SPAN></P>
+<P class=MsoNormal><SPAN><o:p><FONT face="Times New Roman" color=#000000 size=3><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div></FONT>&nbsp;</o:p></SPAN><SPAN>Similarly, there are some coding standards to follow – the goal with team coding (in my mind) is that it should be impossible to look at a piece of code and tell who wrote it. Everyone on a team should code using exactly the same style. That’s a hard one, but important.<FONT size=3><FONT color=#000000><FONT face="Times New Roman"></div></BLOCKQUOTE><o:p></o:p></FONT></FONT></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><o:p><FONT color=#000000>&nbsp;Of course that is&nbsp;a must. Or else it isn't a framework any longer.</FONT></o:p></SPAN></P></DIV></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, December 17, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>When I talk about Windows Forms, there are a number of items in
+the backlog (wish list) dealing with Windows Forms &#8211; some with
+CslaActionExtender, and some other areas as well.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I don&#8217;t intend to spend time myself working on Windows Forms
+improvements &#8211; my only real concern is maintaining at least the current level
+of functionality. But I&#8217;m entirely happy to have a couple motivated people take
+on the backlog items around Windows Forms. Since 4.0 moves the Csla.Windows
+namespace into its own project/assembly, this should be an easier prospect than
+it would otherwise have been.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>You mention a TCP data portal channel &#8211; the only data portal
+channel I expect to leave in core CSLA is the WCF channel. The other three
+channels (Remoting, asmx and ES) will move into individual proxyhost projects
+(RemotingProxyHost, EnterpriseServicesProxyHost and WebServicesProxyHost). They&#8217;ll
+still be part of the CSLA .NET project &#8211; just in their own assemblies. I&#8217;m OK
+with other mainstream proxyhost projects being there too &#8211; though I think more
+esoteric protocols (someone once talked about a channel over IM?) are a little
+too silly for my taste :)<o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rfcdejong replied on Sunday, December 20, 2009</h2>I could help for only a couple of hours a week in private time, but that isn't much. And if understand correct u need people for windows forms which i'm glad not to work with anymore.<br /><br />Anyway i hope the help will speed up the progress supporting ObservableCollection, i'm glad too see any help is wanted.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, January 11, 2010</h2><P>I'm going to rekindle this thread. A couple people did express interest a few weeks ago, but things change :)</P>
+<P>As you are aware, there's a very early 4.0 preview online. Before accepting help I wanted to get the basic directory structure rearranged. Doing that sort of change while other people are working in the repository makes for nearly impossible merges, so it was best to get it out of the way first.</P>
+<P>But that's done, and now that the folders and projects are in place it is possible to work on specific tasks.</P>
+<P>To help, you MUST have a Visual Studio&nbsp;2010 Beta 2 machine (real or virtual). You must be able to install TortoiseSvn. You must be able to conform to the basic coding style used in the CSLA codebase. You must be good at C# and have a solid understanding of CSLA .NET. Finally, you must sign a contributor agreement providing legal protections to you and me, and clearly defining that Marimer LLC (my company) owns all code and other assets (images, etc) contributed to the effort.</P>
+<P>If you are interested, please send email to rocky at lhotka.net.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>xAvailx replied on Tuesday, December 15, 2009</h2>One suggestion is if you have worked in the past with other people like Ricky, maybe they can be "leads" for that implementation. For example Ricky knows a lot about MVC, maybe other people that don't have as much talent/time can contribute nuggets to the leads and then they can integrate to the main branch. </div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Killian35 replied on Tuesday, December 15, 2009</h2>That's quite a shake-up to the library. I take it that there isn't going to be a 4.0 pre-release to be working with for awhile?</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, December 15, 2009</h2>There'll be continual pre-releases - I need feedback and input from those<br />who can take the time to provide it.<br /><br />I plan to do a pre-release as soon as I get the *ListBase thing sorted out<br />actually - that'll be a perfect place to get some feedback on the multiple<br />assembly issue (because there are now multiple assemblies), the new build<br />model (things build to a top-level Bin directory), the consolidated<br />Csla.Xaml namespace (no more Csla.Wpf and Csla.Silverlight) and the<br />*ListBase change.<br /><br />In other words, I've already done a bunch of stuff - just one more change<br />and I'll be ready for a pre-release :)<br /><br />Rocky<br /><br /><br />-----Original Message-----<br />From: Killian35 [mailto:cslanet@lhotka.net] <br />Sent: Tuesday, December 15, 2009 11:38 PM<br />To: rocky@lhotka.net<br />Subject: Re: [CSLA .NET] CSLA .NET 4.0 project<br /><br />That's quite a shake-up to the library. I take it that there isn't going to<br />be a 4.0 pre-release to be working with for awhile?<br /><br /></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

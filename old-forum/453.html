@@ -1,0 +1,64 @@
+<html><header><title>Collections and children</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Collections and children</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/453.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Wal972 posted on Thursday, June 22, 2006</h2><P>I had an earlier post on collections and their children I am still confused by a couple of things so help would be appreciated.</P>
+<P>Situation, I have a collection of line items in a payroll pay, similiar to line items in invoices. The different types of line items have specific behavior and rules. No problems with that.&nbsp; If I need to refer to particular types ie. my SalaryLineItem or my HourlyLineItem or find out what type they are so that I can make certain calculations. </P>
+<P>How do I specific the type if I used a common interface for the them of lineitems. Do I need to create an abstract base class ?</P>
+<P>Hope this makes sense</P>
+<P>Elizabeth</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>DancesWithBamboo replied on Thursday, June 22, 2006</h2>So you have a list of objects that all implement a common interface.&nbsp; This was done so that you could treat them all the same way in the list.&nbsp; <br><br>But, now you want to call specific methods that are different on each of the concrete classes.&nbsp; So you want something like ObjectA.CalcTotal and ObjectB.CalcDifference; thus each class actually has different&nbsp; methods defined.&nbsp; If this is the case then I believe you need to typecast each of the objects to the subclass that contains the specific method you want to call.&nbsp; I usually do this in a select-case statement.<br><br>Or do you mean thay have specific behavior that goes by the same name?&nbsp; If this is the case then you should include the prototype of the method you need in your interface and then implement the type specific functionality in your subclasses.&nbsp; Then you wouldn't need to typecast to your specific types, just the interface.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Wal972 replied on Thursday, June 22, 2006</h2><P>Sort of.</P>
+<P>I need particular items for various calculations. For example if I am working out the gross pay then I need items of the class SalaryLineItem or HourlyLineItem. Deductions are the same etc. Also I need to be able to get the specific setting of some to determine if their pre or post tax deductions, whether the SalaryLineItem or HourlyLineItem are taxable or not.</P>
+<P>So I'm not sure of how to process. I can't seem to check if they are of a particular class if I set up the call as follows</P>
+<P>For Each ILineItem in LineItemsCollection</P>
+<P>Next</P>
+<P>because it only shows the stuff common to the ILineItem interface. So how do I reference itstead.</P>
+<P>Help</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Sunday, June 25, 2006</h2><P>The following is one of several possible approaches. You could also use the TypeOf operator to check for various types. The following is likely the most performant option, but you can get more readable code (imo) using TypeOf with If..ElseIf statements.</P>
+<P>For Each item As ILineItem In LineItemsCollection<BR>&nbsp; ' do interface stuff&nbsp;with item as you wish<BR>&nbsp; Dim item1 As LineItem1 = TryCast(item, LineItem1)<BR>&nbsp; If item1 IsNot Nothing Then<BR>&nbsp;&nbsp;&nbsp; '&nbsp;do LineItem1 specific stuff here<BR>&nbsp; Else<BR>&nbsp;&nbsp;&nbsp;&nbsp;Dim item2 As LineItem2 = TryCast(item, LineItem2)<BR>&nbsp;&nbsp;&nbsp; If item2&nbsp;IsNot Nothing Then<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ' do LineItem2 specific stuff here<BR>&nbsp;&nbsp;&nbsp;&nbsp;End If<BR>&nbsp; End If<BR>Next</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Wal972 replied on Sunday, June 25, 2006</h2><P>Will this still work if the New() is private. I mean can I declare as </P>
+<P>Dim item1 as LineItem1.NewLineItem = TryCast(item, LineItem1)</P>
+<P>And how do I get the class type ie. SalaryLineitem in this situation as well ?</P>
+<P>Thanks</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Wal972 replied on Monday, June 26, 2006</h2><P>OK one last question (i hope)</P>
+<P>if I want to get totals based on different types for example the salaryline items or deductions ? do I need to convert in order to get the specific information as well as the type.</P>
+<P>Thanks</P>
+<P>Elizabeth</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>malloc1024 replied on Monday, June 26, 2006</h2>You dont need to covert or cast anything if total is part of the
+LineItem interface or abstract class.&nbsp; Just use the TypeOf()
+method to check the type of the object in a case statement and then add
+up the total.&nbsp; Make sure you use TypeOf() to check against the
+concrete classes.&nbsp; If the LineItem interface or abstract class
+does not contain a total property, use TypeOf() first then cast it to
+the appropriate class.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Wal972 replied on Thursday, July 06, 2006</h2><P>I have been doing some research and it seems a Select Case using Typeof() doesn't work. Any Suggestions ?</P>
+<P>I need to Select from a group of types so I woudl prefer to use a Select Case if I can rather than nested If Statements</P>
+<P>Thanks</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tetranz replied on Thursday, July 06, 2006</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>Wal972:</strong></div><div>I have been doing some research and it seems a Select Case using Typeof() doesn't work. Any Suggestions ?</div></BLOCKQUOTE>If there is really no other way then you could always use GetType().Name to get to a string and then do a Select Case to test for string values. Of course its not strongly typed then and therefore prone to typos.<br><br>Ross<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, July 06, 2006</h2>
+
+
+
+
+<DIV align=left><SPAN class=078321901-07072006><FONT face=Arial color=#0000ff size=2>Yeah, as far as I know you can either do that or use the 
+ElseIf syntax (avoiding nested If's)</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=078321901-07072006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=078321901-07072006><FONT face=Arial color=#0000ff size=2>If blah Then</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=078321901-07072006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=078321901-07072006><FONT face=Arial color=#0000ff size=2>ElseIf foo Then</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=078321901-07072006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=078321901-07072006><FONT face=Arial color=#0000ff size=2>ElseIf bar Then</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=078321901-07072006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=078321901-07072006><FONT face=Arial color=#0000ff size=2>ElseIf blob Then</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=078321901-07072006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=078321901-07072006><FONT face=Arial color=#0000ff size=2>End If</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=078321901-07072006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=078321901-07072006><FONT face=Arial color=#0000ff size=2>Basically the same structure as a Select Case really 
+:)</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=078321901-07072006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=078321901-07072006><FONT face=Arial color=#0000ff size=2>Rocky</FONT></SPAN></DIV><BR>
+<BLOCKQUOTE>
+  <DIV class=OutlookMessageHeader align=left>
+  <HR>
+  <FONT face=Tahoma size=2><B>From:</B> tetranz [mailto:cslanet@lhotka.net] 
+  <BR><B>Sent:</B> Thursday, July 06, 2006 6:38 PM<BR><B>To:</B> 
+  rocky@lhotka.net<BR><B>Subject:</B> Re: [CSLA .NET] Collections and 
+  children<BR></FONT><BR></DIV>
+  <DIV></DIV>
+  <BLOCKQUOTE>
+    <DIV><IMG src="/Themes/default/images/icon-quote.gif"> 
+    <STRONG>Wal972:</STRONG></DIV>
+    <DIV>I have been doing some research and it seems a Select Case using 
+    Typeof() doesn't work. Any Suggestions ?</DIV></BLOCKQUOTE>If there is really 
+  no other way then you could always use GetType().Name to get to a string and 
+  then do a Select Case to test for string values. Of course its not strongly 
+  typed then and therefore prone to typos.<BR><BR>Ross<BR><BR><BR><BR></BLOCKQUOTE></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, June 26, 2006</h2>I am at a client site until June 29, with limited email until then.<br /><br />Thank you for your understanding,<br /><br />Rocky</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

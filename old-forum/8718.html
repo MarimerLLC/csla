@@ -1,0 +1,37 @@
+<html><header><title>Deploying WCF web app to WinServer 2008 - VS2010</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Deploying WCF web app to WinServer 2008 - VS2010</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/8718.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jack posted on Wednesday, March 24, 2010</h2><p>I have had troubles every since the 3.8.x introduced the System.Windows.Interactivity dll but I had managed to get everything up and deployed. I have 3.8.0 deployed on my production box and have a 3.8.2 installation ready to deploy to my test server.&nbsp; Everything of course works locally and I had deployed it with VS2008 (after a few attempts and reboots) but now I hit the publish button in 2010 and everything has gone awry.&nbsp; I am going in circles.&nbsp; I&#39;ve tried tweaking the publish options to include All Files, Only required files, etc.</p>
+<p>What am I missing?&nbsp; I am running win7 x64 locally and win2008 r2 x64 on the server.&nbsp;&nbsp;</p>
+<p>If I try to access my portal site:&nbsp; <a href="http://localhost:82/EpmWCFHost/WcfPortal.svc">http://localhost:82/EpmWCFHost/WcfPortal.svc</a>&nbsp; I get the following:</p>
+<p><span style="font-family:Arial, Helvetica, Geneva, SunSans-Regular, sans-serif;">
+<pre><span style="font-family:Arial, Helvetica, Geneva, SunSans-Regular, sans-serif;"><pre>[PolicyException: Required permissions cannot be acquired.]
+   System.Security.SecurityManager.ResolvePolicy(Evidence evidence, PermissionSet reqdPset, PermissionSet optPset, PermissionSet denyPset, PermissionSet&amp; denied, Boolean checkExecutionPermission) +10238142
+   System.Security.SecurityManager.ResolvePolicy(Evidence evidence, PermissionSet reqdPset, PermissionSet optPset, PermissionSet denyPset, PermissionSet&amp; denied, Int32&amp; securitySpecialFlags, Boolean checkExecutionPermission) +97
+
+[FileLoadException: Could not load file or assembly &#39;System.Windows.Interactivity, Version=3.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35&#39; or one of its dependencies. Failed to grant minimum permission requests. (Exception from HRESULT: 0x80131417)]
+   System.Reflection.Assembly._nLoad(AssemblyName fileName, String codeBase, Evidence assemblySecurity, Assembly locationHint, StackCrawlMark&amp; stackMark, Boolean throwOnFileNotFound, Boolean forIntrospection) +0
+   System.Reflection.Assembly.InternalLoad(AssemblyName assemblyRef, Evidence assemblySecurity, StackCrawlMark&amp; stackMark, Boolean forIntrospection) +416
+   System.Reflection.Assembly.InternalLoad(String assemblyString, Evidence assemblySecurity, StackCrawlMark&amp; stackMark, Boolean forIntrospection) +166
+   System.Reflection.Assembly.Load(String assemblyString) +35
+   System.Web.Configuration.CompilationSection.LoadAssemblyHelper(String assemblyName, Boolean starDirective) +190
+
+[ConfigurationErrorsException: Could not load file or assembly &#39;System.Windows.Interactivity, Version=3.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35&#39; or one of its dependencies. Failed to grant minimum permission requests. (Exception from HRESULT: 0x80131417)]
+   System.Web.Configuration.CompilationSection.LoadAssemblyHelper(String assemblyName, Boolean starDirective) +11207304
+   System.Web.Configuration.CompilationSection.LoadAllAssembliesFromAppDomainBinDirectory() +388
+   System.Web.Configuration.CompilationSection.LoadAssembly(AssemblyInfo ai) +232
+   System.Web.Configuration.AssemblyInfo.get_AssemblyInternal() +48
+   System.Web.Compilation.BuildManager.GetReferencedAssemblies(CompilationSection compConfig) +210
+   System.Web.Compilation.WebDirectoryBatchCompiler..ctor(VirtualDirectory vdir) +191
+   System.Web.Compilation.BuildManager.BatchCompileWebDirectoryInternal(VirtualDirectory vdir, Boolean ignoreErrors) +54
+   System.Web.Compilation.BuildManager.CompileWebFile(VirtualPath virtualPath) +295
+   System.Web.Compilation.BuildManager.GetVPathBuildResultInternal(VirtualPath virtualPath, Boolean noBuild, Boolean allowCrossApp, Boolean allowBuildInPrecompile) +476
+   System.Web.Compilation.BuildManager.GetVPathBuildResultWithNoAssert(HttpContext context, VirtualPath virtualPath, Boolean noBuild, Boolean allowCrossApp, Boolean allowBuildInPrecompile) +116
+   System.Web.Compilation.BuildManager.GetVirtualPathObjectFactory(VirtualPath virtualPath, HttpContext context, Boolean allowCrossApp, Boolean noAssert) +175
+   System.Web.Compilation.BuildManager.CreateInstanceFromVirtualPath(VirtualPath virtualPath, Type requiredBaseType, HttpContext context, Boolean allowCrossApp, Boolean noAssert) +52
+   System.Web.UI.PageHandlerFactory.GetHandlerHelper(HttpContext context, String requestType, VirtualPath virtualPath, String physicalPath) +50
+   System.Web.MaterializeHandlerExecutionStep.System.Web.HttpApplication.IExecutionStep.Execute() +425
+   System.Web.HttpApplication.ExecuteStep(IExecutionStep step, Boolean&amp; completedSynchronously) +263
+</pre>
+</span></pre>
+</span></p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>Jack replied on Wednesday, March 24, 2010</h2><p>It was a security issue (obviously) but I believe it is from VS2010 putting a &#39;Block&#39; flag on the file for security reason.&nbsp; It happened with some other 3rd party controls and I couldn&#39;t compile.&nbsp; I tried the same thing and it worked.</p>
+<ol>
+<li>To do a one time fix for the assemblies that are firing this error, find the assembly in Windows Explorer and right-click and select Properties.&nbsp;Click the&nbsp;&quot;Unblock&quot; button at the bottom right of the &quot;General&quot; tab. </li>
+</ol></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

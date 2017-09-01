@@ -1,0 +1,9 @@
+<html><header><title>ASP.NET Web Parts with CSLA Datasource IAsyncResult</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>ASP.NET Web Parts with CSLA Datasource IAsyncResult</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10778.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>porsonw posted on Monday, October 17, 2011</h2><p>I hope anyone could able to help. I have a Web Application which I am putting in some user controls as web parts. </p>
+<p>These user controls use CSLA as data source and I am trying to fetch data for my CSLA object asynchronously.</p>
+<p>Is anyone can tell me how please, I am quite new to this asynchronously fetch data!</p>
+<p>I won&#39;t be able to use sliverlight or WPF etc. Is there any thing in CSLA that return IAsyncResult object so that I can use Page.RegisterAsyncTask on page?</p>
+<p>Any help appreciated!</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Monday, October 17, 2011</h2><p>There is no support for this at present. The data portal itself is synchronous. We implemented an asynchronous wrapper that uses the evening model established by Silverlight. You could create similar techniques to build a Task wrapper.</p>
+<p>&nbsp;</p>
+<p>We plan to do this for version 4.5, but we don&#39;t have it now.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>porsonw replied on Tuesday, October 18, 2011</h2><p>Thank you very much for the quick reply! I will take a look at the CSLA 4 code for the sliverlight sample.</p>
+<p>Thanks again. :)</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

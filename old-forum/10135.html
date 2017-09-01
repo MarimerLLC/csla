@@ -1,0 +1,93 @@
+<html><header><title>AddOutValue not refreshing UI (not invoking OnPropertyChanged?)</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>AddOutValue not refreshing UI (not invoking OnPropertyChanged?)</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10135.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Ranjini posted on Saturday, March 05, 2011</h2><p class="MsoNormal" style="line-height:normal;margin:0in 0in 10pt;mso-margin-top-alt:auto;mso-margin-bottom-alt:auto;"><span style="font-family:&#39;Arial&#39;,&#39;sans-serif&#39;;color:black;font-size:9pt;mso-fareast-font-family:&#39;Times New Roman&#39;;">CSLA 4/Silverlight 4</span></p>
+<p class="MsoNormal" style="line-height:normal;margin:0in 0in 10pt;mso-margin-top-alt:auto;mso-margin-bottom-alt:auto;"><span style="font-family:&#39;Arial&#39;,&#39;sans-serif&#39;;color:black;font-size:9pt;mso-fareast-font-family:&#39;Times New Roman&#39;;">I have a business rule on a BB object. This rule changes the property values for a handful of the BB&#39;s property. Sample property declaration &ndash;</span></p>
+<p class="MsoNormal" style="line-height:normal;margin:0in 0in 0pt;"><span style="font-family:Consolas;color:blue;font-size:10pt;mso-fareast-font-family:&#39;Times New Roman&#39;;mso-bidi-font-family:Arial;">public</span><span style="font-family:Consolas;color:black;font-size:10pt;mso-fareast-font-family:&#39;Times New Roman&#39;;mso-bidi-font-family:Arial;"> </span><span style="font-family:Consolas;color:blue;font-size:10pt;mso-fareast-font-family:&#39;Times New Roman&#39;;mso-bidi-font-family:Arial;">static</span><span style="font-family:Consolas;color:black;font-size:10pt;mso-fareast-font-family:&#39;Times New Roman&#39;;mso-bidi-font-family:Arial;"> </span><span style="font-family:Consolas;color:#2b91af;font-size:10pt;mso-fareast-font-family:&#39;Times New Roman&#39;;mso-bidi-font-family:Arial;">PropertyInfo</span><span style="font-family:Consolas;color:black;font-size:10pt;mso-fareast-font-family:&#39;Times New Roman&#39;;mso-bidi-font-family:Arial;">&lt; </span><span style="font-family:Consolas;color:blue;font-size:10pt;mso-fareast-font-family:&#39;Times New Roman&#39;;mso-bidi-font-family:Arial;">double</span><span style="font-family:Consolas;color:black;font-size:10pt;mso-fareast-font-family:&#39;Times New Roman&#39;;mso-bidi-font-family:Arial;">? &gt; _latestValueInUCCProperty = RegisterProperty&lt;</span><span style="font-family:Consolas;color:blue;font-size:10pt;mso-fareast-font-family:&#39;Times New Roman&#39;;mso-bidi-font-family:Arial;">double</span><span style="font-family:Consolas;color:black;font-size:10pt;mso-fareast-font-family:&#39;Times New Roman&#39;;mso-bidi-font-family:Arial;">?&gt;(p =&gt; p.LatestValueInUCC);</span></p>
+<p class="MsoNormal" style="line-height:normal;margin:0in 0in 0pt;"><span style="font-family:Consolas;color:blue;font-size:10pt;mso-fareast-font-family:&#39;Times New Roman&#39;;mso-bidi-font-family:Arial;">public</span><span style="font-family:Consolas;color:black;font-size:10pt;mso-fareast-font-family:&#39;Times New Roman&#39;;mso-bidi-font-family:Arial;"> </span><span style="font-family:Consolas;color:blue;font-size:10pt;mso-fareast-font-family:&#39;Times New Roman&#39;;mso-bidi-font-family:Arial;">double</span><span style="font-family:Consolas;color:black;font-size:10pt;mso-fareast-font-family:&#39;Times New Roman&#39;;mso-bidi-font-family:Arial;">? LatestValueInUCC</span><span style="font-family:&#39;Arial&#39;,&#39;sans-serif&#39;;color:black;font-size:9pt;mso-fareast-font-family:&#39;Times New Roman&#39;;"></span></p>
+<p class="MsoNormal" style="line-height:normal;margin:0in 0in 0pt;"><span style="font-family:Consolas;color:black;font-size:10pt;mso-fareast-font-family:&#39;Times New Roman&#39;;mso-bidi-font-family:Arial;">{</span></p>
+<p class="MsoNormal" style="line-height:normal;margin:0in 0in 0pt;"><span style="font-family:Consolas;color:blue;font-size:10pt;mso-fareast-font-family:&#39;Times New Roman&#39;;mso-bidi-font-family:Arial;">get</span><span style="font-family:Consolas;color:black;font-size:10pt;mso-fareast-font-family:&#39;Times New Roman&#39;;mso-bidi-font-family:Arial;"> { </span><span style="font-family:Consolas;color:blue;font-size:10pt;mso-fareast-font-family:&#39;Times New Roman&#39;;mso-bidi-font-family:Arial;">return</span><span style="font-family:Consolas;color:black;font-size:10pt;mso-fareast-font-family:&#39;Times New Roman&#39;;mso-bidi-font-family:Arial;"> GetProperty(_latestValueInUCCProperty); }</span></p>
+<p class="MsoNormal" style="line-height:normal;margin:0in 0in 0pt;"><span style="font-family:Consolas;color:blue;font-size:10pt;mso-fareast-font-family:&#39;Times New Roman&#39;;mso-bidi-font-family:Arial;">set </span><span style="font-family:Consolas;color:black;font-size:10pt;mso-fareast-font-family:&#39;Times New Roman&#39;;mso-bidi-font-family:Arial;">{ LoadProperty(_latestValueInUCCProperty, </span><span style="font-family:Consolas;color:blue;font-size:10pt;mso-fareast-font-family:&#39;Times New Roman&#39;;mso-bidi-font-family:Arial;">value</span><span style="font-family:&#39;Arial&#39;,&#39;sans-serif&#39;;color:black;font-size:9pt;mso-fareast-font-family:&#39;Times New Roman&#39;;"> </span><span style="font-family:Consolas;color:black;font-size:10pt;mso-fareast-font-family:&#39;Times New Roman&#39;;mso-bidi-font-family:Arial;">);</span></p>
+<p class="MsoNormal" style="line-height:normal;margin:0in 0in 0pt;mso-layout-grid-align:none;"><span style="font-family:Consolas;font-size:9.5pt;"><span style="mso-spacerun:yes;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>OnPropertyChanged(_latestValueInUCCProperty);</span></p>
+<p class="MsoNormal" style="line-height:normal;margin:0in 0in 0pt;mso-layout-grid-align:none;"><span style="font-family:Consolas;font-size:9.5pt;"><span style="mso-spacerun:yes;">&nbsp;&nbsp;&nbsp; </span>}</span></p>
+<p class="MsoNormal" style="line-height:normal;margin:0in 0in 0pt;mso-layout-grid-align:none;"><span style="font-family:Consolas;font-size:9.5pt;">}</span></p>
+<p class="MsoNormal" style="line-height:normal;margin:0in 0in 0pt;mso-layout-grid-align:none;"><span style="font-family:&#39;Arial&#39;,&#39;sans-serif&#39;;color:black;font-size:9pt;mso-fareast-font-family:&#39;Times New Roman&#39;;">&nbsp;</span></p>
+<p class="MsoNormal" style="line-height:normal;margin:0in 0in 0pt;mso-layout-grid-align:none;"><span style="font-family:&#39;Arial&#39;,&#39;sans-serif&#39;;color:black;font-size:9pt;mso-fareast-font-family:&#39;Times New Roman&#39;;">The reason I am using LoadProperty/OnPropertyChanged instead of SetProperty, is because I do not want these properties to ever change the IsDirty of the object but I still want them to refresh the UI.</span></p>
+<p class="MsoNormal" style="line-height:normal;margin:0in 0in 10pt;mso-margin-top-alt:auto;mso-margin-bottom-alt:auto;"><span style="font-family:&#39;Arial&#39;,&#39;sans-serif&#39;;color:black;font-size:9pt;mso-fareast-font-family:&#39;Times New Roman&#39;;">&nbsp;I have added each of the properties that the rule changes to the Affected Properties</span></p>
+<p class="MsoNormal" style="line-height:normal;text-indent:0.5in;margin:0in 0in 10pt;mso-margin-top-alt:auto;mso-margin-bottom-alt:auto;"><span style="font-family:Consolas;font-size:9.5pt;">AffectedProperties.AddRange(<span style="color:blue;">new</span> <span style="color:#2b91af;">List</span>&lt;<span style="color:#2b91af;">IPropertyInfo</span>&gt; { &hellip; ,_latestValueInUCCProperty, ... });</span><span style="font-family:&#39;Arial&#39;,&#39;sans-serif&#39;;color:black;font-size:9pt;mso-fareast-font-family:&#39;Times New Roman&#39;;"></span></p>
+<p class="MsoNormal" style="line-height:normal;margin:0in 0in 0pt;mso-layout-grid-align:none;"><span style="font-family:Consolas;font-size:9.5pt;">&nbsp;</span></p>
+<p class="MsoNormal" style="line-height:normal;margin:0in 0in 0pt;"><span style="font-family:&#39;Arial&#39;,&#39;sans-serif&#39;;color:black;font-size:9pt;mso-fareast-font-family:&#39;Times New Roman&#39;;">And<span style="mso-spacerun:yes;">&nbsp; </span>in the &ldquo;Execute&rdquo; method of the rule , I change the property so..</span><span style="font-family:Consolas;font-size:9.5pt;"><span style="mso-spacerun:yes;">&nbsp;&nbsp; </span></span></p>
+<p class="MsoNormal" style="line-height:normal;margin:0in 0in 0pt 0.5in;"><span style="font-family:Consolas;font-size:9.5pt;"><span style="mso-spacerun:yes;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="mso-spacerun:yes;">&nbsp;&nbsp;</span><span style="mso-spacerun:yes;">&nbsp;&nbsp;</span>context.AddOutValue(_latestValueInUCCProperty,dLatestValue);</span></p>
+<p class="MsoNormal" style="line-height:normal;margin:0in 0in 0pt;mso-layout-grid-align:none;"><span style="font-family:Consolas;font-size:9.5pt;">&nbsp;</span></p>
+<p class="MsoNormal" style="line-height:normal;margin:0in 0in 0pt;mso-layout-grid-align:none;"><span style="font-family:&#39;Arial&#39;,&#39;sans-serif&#39;;color:black;font-size:9pt;mso-fareast-font-family:&#39;Times New Roman&#39;;">Everything executes fine and the property changes its value but the UI never gets refreshed (using TwoWay binding). I was able to achieve this by calling </span><span style="font-family:Consolas;font-size:9.5pt;">context.Target.OnUnknownPropertyChanged(); </span><span style="font-family:&#39;Arial&#39;,&#39;sans-serif&#39;;color:black;font-size:9pt;mso-fareast-font-family:&#39;Times New Roman&#39;;">but I believe that shouldn&rsquo;t be necessary. Can anyone please explain why</span><span style="font-family:Consolas;font-size:9.5pt;"> OnPropertyChanged </span><span style="font-family:&#39;Arial&#39;,&#39;sans-serif&#39;;color:black;font-size:9pt;mso-fareast-font-family:&#39;Times New Roman&#39;;">may not be being invoked automatically on</span><span style="font-family:Consolas;font-size:9.5pt;"> context.AddOutValue?</span></p>
+<p class="MsoNormal" style="line-height:normal;margin:0in 0in 0pt;mso-layout-grid-align:none;"><span style="font-family:Consolas;font-size:9.5pt;">&nbsp;</span></p>
+<p class="MsoNormal" style="line-height:normal;margin:0in 0in 0pt;mso-layout-grid-align:none;"><span style="font-family:Consolas;font-size:9.5pt;">Thanks<br />Ranjini</span></p>
+<p class="MsoNormal" style="line-height:normal;margin:0in 0in 0pt;mso-layout-grid-align:none;"><span style="font-family:Consolas;font-size:9.5pt;">&nbsp;</span></p>
+<p class="MsoNormal" style="line-height:normal;margin:0in 0in 10pt;mso-margin-top-alt:auto;mso-margin-bottom-alt:auto;"><span style="font-family:&#39;Arial&#39;,&#39;sans-serif&#39;;color:black;font-size:9pt;mso-fareast-font-family:&#39;Times New Roman&#39;;">&nbsp;</span></p>
+<p class="MsoNormal" style="margin:0in 0in 10pt;"><span style="font-family:Calibri;font-size:small;">&nbsp;</span></p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Sunday, March 06, 2011</h2><p>We have unit tests like this too, but here&#39;s a sample app that demonstrates that PropertyChanged is raised for each property in the output list from a rule:</p>
+<pre style="FONT-FAMILY:Consolas;BACKGROUND:white;COLOR:black;FONT-SIZE:13px;"><span style="COLOR:blue;">using</span> System;
+<span style="COLOR:blue;">using</span> System.Collections.Generic;
+<span style="COLOR:blue;">using</span> System.Linq;
+<span style="COLOR:blue;">using</span> System.Text;
+<span style="COLOR:blue;">using</span> Csla;
+ 
+<span style="COLOR:blue;">namespace</span> ConsoleApplication1
+{
+  <span style="COLOR:blue;">class</span> <span style="COLOR:#2b91af;">Program</span>
+  {
+    <span style="COLOR:blue;">static</span> <span style="COLOR:blue;">void</span> Main(<span style="COLOR:blue;">string</span>[] args)
+    {
+      <span style="COLOR:blue;">var</span> obj = <span style="COLOR:blue;">new</span> <span style="COLOR:#2b91af;">Test</span>();
+      obj.PropertyChanged += (o, e) =&gt;
+        {
+          <span style="COLOR:#2b91af;">Console</span>.WriteLine(<span style="COLOR:#a31515;">&quot;PropertyChanged: &quot;</span> + e.PropertyName);
+        };
+      obj.Value1 = <span style="COLOR:#a31515;">&quot;abc&quot;</span>;
+      <span style="COLOR:#2b91af;">Console</span>.WriteLine(<span style="COLOR:#a31515;">&quot;value1: &quot;</span> + obj.Value1);
+      <span style="COLOR:#2b91af;">Console</span>.WriteLine(<span style="COLOR:#a31515;">&quot;value2: &quot;</span> + obj.Value2);
+      <span style="COLOR:#2b91af;">Console</span>.ReadLine();
+    }
+  }
+ 
+  [<span style="COLOR:#2b91af;">Serializable</span>]
+  <span style="COLOR:blue;">public</span> <span style="COLOR:blue;">class</span> <span style="COLOR:#2b91af;">Test</span> : <span style="COLOR:#2b91af;">BusinessBase</span>&lt;<span style="COLOR:#2b91af;">Test</span>&gt;
+  {
+    <span style="COLOR:blue;">public</span> <span style="COLOR:blue;">static</span> <span style="COLOR:#2b91af;">PropertyInfo</span>&lt;<span style="COLOR:blue;">string</span>&gt; Value1Property = RegisterProperty&lt;<span style="COLOR:blue;">string</span>&gt;(c =&gt; c.Value1);
+    <span style="COLOR:blue;">public</span> <span style="COLOR:blue;">string</span> Value1
+    {
+      <span style="COLOR:blue;">get</span> { <span style="COLOR:blue;">return</span> GetProperty(Value1Property); }
+      <span style="COLOR:blue;">set</span> { SetProperty(Value1Property, <span style="COLOR:blue;">value</span>); }
+    }
+ 
+    <span style="COLOR:blue;">public</span> <span style="COLOR:blue;">static</span> <span style="COLOR:#2b91af;">PropertyInfo</span>&lt;<span style="COLOR:blue;">string</span>&gt; Value2Property = RegisterProperty&lt;<span style="COLOR:blue;">string</span>&gt;(c =&gt; c.Value2);
+    <span style="COLOR:blue;">public</span> <span style="COLOR:blue;">string</span> Value2
+    {
+      <span style="COLOR:blue;">get</span> { <span style="COLOR:blue;">return</span> GetProperty(Value2Property); }
+      <span style="COLOR:blue;">set</span> { SetProperty(Value2Property, <span style="COLOR:blue;">value</span>); }
+    }
+ 
+    <span style="COLOR:blue;">protected</span> <span style="COLOR:blue;">override</span> <span style="COLOR:blue;">void</span> AddBusinessRules()
+    {
+      <span style="COLOR:blue;">base</span>.AddBusinessRules();
+      BusinessRules.AddRule(<span style="COLOR:blue;">new</span> <span style="COLOR:#2b91af;">MyRule</span>());
+    }
+  }
+ 
+  <span style="COLOR:blue;">public</span> <span style="COLOR:blue;">class</span> <span style="COLOR:#2b91af;">MyRule</span> : Csla.Rules.<span style="COLOR:#2b91af;">BusinessRule</span>
+  {
+    <span style="COLOR:blue;">public</span> MyRule()
+    {
+      PrimaryProperty = <span style="COLOR:#2b91af;">Test</span>.Value1Property;
+      AffectedProperties.Add(<span style="COLOR:#2b91af;">Test</span>.Value2Property);
+    }
+ 
+    <span style="COLOR:blue;">protected</span> <span style="COLOR:blue;">override</span> <span style="COLOR:blue;">void</span> Execute(Csla.Rules.<span style="COLOR:#2b91af;">RuleContext</span> context)
+    {
+      context.AddOutValue(<span style="COLOR:#a31515;">&quot;value 1 set&quot;</span>);
+      context.AddOutValue(<span style="COLOR:#2b91af;">Test</span>.Value2Property, <span style="COLOR:#a31515;">&quot;value 2 set&quot;</span>);
+    }
+  }
+}</pre>
+<p>The result of running this code is:&nbsp;</p>
+<pre style="FONT-FAMILY:Consolas;BACKGROUND:white;COLOR:black;FONT-SIZE:13px;">PropertyChanged: Value1<br />PropertyChanged: Value2<br />value1: value 1 set<br />value2: value 2 set</pre>
+<p>This is the expected result - PropertyChanged is raised for each affected property.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Ranjini replied on Sunday, March 06, 2011</h2><p>Thanks for your response.. I still am&nbsp; unable to figure out what it is that I am doing different .. but I will keep looking for&nbsp; it....</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>mesh replied on Sunday, July 03, 2011</h2><p>I have the same problem. Anyone?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Saturday, July 09, 2011</h2><p>Which UI technology are you using?</p>
+<p>What is the setting of Csla.ApplicationContext.PropertyChangedMode?</p>
+<p>Code from Csla.Core.BusinessBase:</p>
+<p>&nbsp;&nbsp;&nbsp; protected virtual void PropertyHasChanged(Csla.Core.IPropertyInfo property)<br />&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; MarkDirty(true);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var propertyNames = BusinessRules.CheckRules(property);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (ApplicationContext.PropertyChangedMode == ApplicationContext.PropertyChangedModes.Windows)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; OnPropertyChanged(property);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; else<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; foreach (var name in propertyNames)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; OnPropertyChanged(name);<br />&nbsp;&nbsp;&nbsp; }</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

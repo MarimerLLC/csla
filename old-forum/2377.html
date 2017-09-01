@@ -1,0 +1,321 @@
+<html><header><title>Software Architecture</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Software Architecture</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/2377.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>tna55 posted on Monday, February 19, 2007</h2><P>Hi Rockford Lhotka,</P>
+<P>I am someone learning about Architectures. The architecture presented in your book is OO. Business Objects contain data, business logic and data access logic. I have two questions related to this. You have stressed on Encapsulation in your book however there is another issue of Cohesion. Do you think your Business Objects are cohesive. What I understand is that they are doing business logic and data access.</P>
+<P>Second question is about an architecture generally used. This has BO, BLL, DAL. In these architecture UI will call BLL to get BO (or array of BO). BLL in turn will call DAL. What are your thoughts on such an architecture. Is this an OOA or is it more of a procedural way of doing things.</P>
+<P>I am a student learning about Software Architectures so your help will be much appreciated.</P>
+<P>Best regards,</P>
+<P>Tahir</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, February 19, 2007</h2><P>Here are a couple answers:</P>
+<P><A href="http://www.lhotka.net/Article.aspx?area=4&amp;id=2e6468d6-9a02-4f0e-a31c-a7eecc268e1b">http://www.lhotka.net/Article.aspx?area=4&amp;id=2e6468d6-9a02-4f0e-a31c-a7eecc268e1b</A></P>
+<P><A href="http://www.lhotka.net/Article.aspx?area=3&amp;id=b99dfec2-c079-4b85-98df-ea3582c28386">http://www.lhotka.net/Article.aspx?area=3&amp;id=b99dfec2-c079-4b85-98df-ea3582c28386</A></P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tna55 replied on Monday, February 19, 2007</h2><P>Hi Rockford,</P>
+<P>In an Architecture with BE(BusinessEntity), BLL and DAL, UI calls BLL sending BE, BLL validates BE and then calls DAL to save it.</P>
+<P>People call this OOA, What is your opinion?</P>
+<P>Tahir</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, February 19, 2007</h2><P>That is certainly a valid architecture, and you'll find it used in many places.</P>
+<P>If you are builidng interactive applications, where the user experience (in terms of interactivity and responsiveness) matters however, that architecture is not a good one. Instead, that architecture is a way of using OO concepts to create something more similar to the type of applications that were created on mainframes 20 years ago.</P>
+<P>The problem is that the BE objects are merely data collectors. These days they are often called data transfer objects (DTOs). So the user enters lots of data into a form, and that data is put into a BE/DTO - entirely unvalidated. At this point the user has no idea what (if anything) is wrong with everything they've done.</P>
+<P>That BE is transmitted to the BLL, which performs all the business logic (validation, calculation, etc). The user gets back a laundry list of issues.</P>
+<P>It is a very poor user experience, but it is exactly what this architecture produces. It is also exactly what the users got on 3270 mainframe terminals and on the pre-AJAX web.</P>
+<P>These days many people are looking at that architecture and saying that the use of objects to create the BLL is overkill. There's nothing actually object-oriented about that architecture at all, and technologies like workflow and services are, perhaps, a simpler way to create a BLL that operates directly against a set of DTOs.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tna55 replied on Monday, February 19, 2007</h2><P>Hi,</P>
+<P>I totally agree with you that it is not an OOA. I am a big fan of your design since the VB6 days when I started learning programming. </P>
+<P>There is however one confusion that I have. In situations where the application is distributed. e.g. if it is a smart-client however it is light-weight and uses web services to do RPC. Let me give an example. In a payroll system calculating of payroll involve doing some Tax calculations, NIC calculations, Pension calcuations etc. Each of them is business logic and are web services. Now when designing this application our Payroll Business Object needs to call this service for calculations. The same Payroll Business Object needs to save the data which it does by accessing another Web Service. Now the problem I dont understand is how the data is moved between our Smart Business Object and these services. I dont want to use DataSets. </P>
+<P>Tahir</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, February 22, 2007</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>There&#8217;s a difference between n-tier and service-oriented.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>If your smart client is calling actual services, then you may be
+building a service-oriented system. In that case, your smart client should be
+viewed as a standalone application, and so should the services. That provides a
+lot of clarity to your architecture, because you now have two (or more)
+applications that are communicating with each other using messaging.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>On the other hand, if the &#8220;services&#8221; are part of the
+same application as the smart client, then you are building an n-tier
+application. In that case the &#8220;services&#8221; aren&#8217;t being
+designed for direct use by other callers, and your life is much simpler.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Given your use of the term &#8220;RPC&#8221; I am guessing you
+are taking this second, n-tier, approach. Technically, there is no such thing
+as RPC in the service-oriented world.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>If you are building an n-tier application, then you are, by
+definition, creating an n-layer application. Your application is organized into
+layers, and those layers are deployed on tiers. Read Chapter 1 of my book for a
+deeper explanation.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>How you choose to communicate between the layers of your application
+is entirely up to you. However, anywhere you might put a <i>tier</i> boundary
+between two layers you must make sure that your cross-layer communication is
+also designed to work well in a cross-tier deployment. This means minimizing
+the number of calls and the amount of data transferred. <o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>The data portal is an example of a very formalized layer
+boundary that also supports a tier boundary. The data portal is more than that
+though, because it also supports the concept of <i>mobile objects</i> &#8211;
+where your objects move back and forth across the network.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>So that&#8217;s one way to get your data across the network &#8211;
+just move the objects. And that works quite well in quite a number of
+scenarios, because it means you have a unified object model running on both
+your client and your app server.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>However, there are other cases too, where you want to just send
+data, and that data may be handled or treated differently on each side of the
+tier boundary. In that case the easiest thing to is often to send the data in a
+<i>data transfer object</i> (DTO). One very rich, but rather large and slow,
+DTO is the DataSet. The DataSet is nice because it requires little code to use,
+but it is big and slow. Custom DTOs require more code, but they are much
+smaller and faster.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>In .NET 1.0-2.0 you&#8217;d typically create a DTO as a simple
+class with public read-write properties and no logic. In .NET 3.0 you may
+choose to create your DTO using the DataContract/DataMember concepts added by
+WCF. The advantage of that approach is that you have more explicit control over
+the data that is transferred, and at the same time you aren&#8217;t as locked
+into XML as you were with the XmlSerializer from .NET 1.0/-2.0.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tna55 replied on Thursday, February 22, 2007</h2><P>Hi Rocky,</P>
+<P>Thank you for your reply. We will be implementing the CSLA.NET later during the process lifecycle however for the initial trial release I have designed the application as follows, which I think gives me flexibility to move onto CSLA.NET</P>
+<P>I have created smart Business Objects with clear regions as follows</P>
+<UL>
+<LI>Business Properties</LI>
+<UL>
+<LI>Get/Set for each property +&nbsp;validations</LI></UL>
+<LI>Business Methods</LI>
+<UL>
+<LI>Load, Add, Save, Remove methods</LI></UL>
+<LI>Business Methods - Shared</LI>
+<UL>
+<LI>LoadList, IsPresent, Count</LI></UL>
+<LI>Data Methods</LI>
+<UL>
+<LI>Retrieve, Insert, Update, Delete</LI></UL>
+<LI>Data Methods - Shared</LI>
+<UL>
+<LI>RetrieveList, DoesExist, GetCount</LI></UL></UL>
+<P>Now in case where the BO needs to get data from a webservice then I will get back a DTO from the WebService into the Retrieve or RetrieveList methods and will send a DTO to Web Service in Insert, Update and Delete methods. This will mean that there is a clear layering system. Business Methods like Load, LoadList, Add, Save or&nbsp;Remove will nto change whether we are getting data from a database or from a Web Service. Data Methods will change only.</P>
+<P>What is your opinion about this. I personally think that it will be easy to later on convert this to CSLA.NET. What do you think?</P>
+<P>Secondly, ObjectDataSource will not work with such an object because it works only in cases where Insert, Update and Delete methods either have parameter for each property or accepts a DTO style object. I find this extremely absurd and a way of forcing developers to design a procedural (SOA) style architecture. I am not going to compromise the Architecture though. What I have done is to create a class for each BO called XXXManager. This class contains shared/static methods Load, Add, Save and Remove which forwards calls to BO. Now these methods have parameters which are BO.&nbsp;The benifit of having BO as parameter here is that business logic in Get/Set is invoked on UI.</P>
+<P>What do you think about these concepts of mine? Am I doing something too wrong here or is this fine. However, suggest me keeping in mind that I will be converting to CSLA.NET later on so this design should be compatible enough with it.</P>
+<P>Tahir</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, February 22, 2007</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>This is similar enough to CSLA that you shouldn&#8217;t have to totally
+rethink things to switch later.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Watch out for issues with ObjectDataSource though. I tried doing
+what you propose early on &#8211; saying that the UI dev would need to create
+an object like that for each CSLA business object. But as soon as your objects
+have read-only properties or start enforcing validation rules you&#8217;ll run
+into issues. The ObjectDataSource has some very strict limits on the types of
+object it can use&#8230;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I&#8217;ll leave you with one thought though &#8211; only because
+I&#8217;ve heard this from a couple other people in the past. I know you are
+not using CSLA now to avoid a learning curve. However, it is quite likely that
+you&#8217;ll have to solve many of the same issues CSLA already solves in order
+to NOT use it. You may find, in the end, that not using CSLA now actually makes
+your project take longer and cost more.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I know that sounds like I&#8217;m selling something &#8211; though
+obviously I&#8217;m not. But I&#8217;ve had people come up at the end of their
+project and say exactly that &#8211; they spent more time recreating parts of
+CSLA to solve common issues than they would have spent just learning to use
+CSLA to start with.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<div>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> tna55
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Thursday, February 22, 2007 2:42 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: Software Architecture<o:p></o:p></span></p>
+
+</div>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Hi Rocky,<o:p></o:p></p>
+
+<p>Thank you for your reply. We will be implementing the CSLA.NET later during
+the process lifecycle however for the initial trial release I have designed the
+application as follows, which I think gives me flexibility to move onto
+CSLA.NET<o:p></o:p></p>
+
+<p>I have created smart Business Objects with clear regions as follows<o:p></o:p></p>
+
+<ul>
+ <li class=MsoNormal>Business Properties<o:p></o:p></li>
+</ul>
+
+<ul>
+ <ul>
+  <li class=MsoNormal>Get/Set for each property
+      +&nbsp;validations<o:p></o:p></li>
+ </ul>
+</ul>
+
+<ul>
+ <li class=MsoNormal>Business Methods<o:p></o:p></li>
+</ul>
+
+<ul>
+ <ul>
+  <li class=MsoNormal>Load, Add, Save, Remove methods<o:p></o:p></li>
+ </ul>
+</ul>
+
+<ul>
+ <li class=MsoNormal>Business Methods - Shared<o:p></o:p></li>
+</ul>
+
+<ul>
+ <ul>
+  <li class=MsoNormal>LoadList, IsPresent, Count<o:p></o:p></li>
+ </ul>
+</ul>
+
+<ul>
+ <li class=MsoNormal>Data Methods<o:p></o:p></li>
+</ul>
+
+<ul>
+ <ul>
+  <li class=MsoNormal>Retrieve, Insert, Update, Delete<o:p></o:p></li>
+ </ul>
+</ul>
+
+<ul>
+ <li class=MsoNormal>Data Methods - Shared<o:p></o:p></li>
+</ul>
+
+<ul>
+ <ul>
+  <li class=MsoNormal>RetrieveList, DoesExist, GetCount<o:p></o:p></li>
+ </ul>
+</ul>
+
+<p>Now in case where the BO needs to get data from a webservice then I will get
+back a DTO from the WebService into the Retrieve or RetrieveList methods and
+will send a DTO to Web Service in Insert, Update and Delete methods. This will
+mean that there is a clear layering system. Business Methods like Load,
+LoadList, Add, Save or&nbsp;Remove will nto change whether we are getting data
+from a database or from a Web Service. Data Methods will change only.<o:p></o:p></p>
+
+<p>What is your opinion about this. I personally think that it will be easy to
+later on convert this to CSLA.NET. What do you think?<o:p></o:p></p>
+
+<p>Secondly, ObjectDataSource will not work with such an object because it
+works only in cases where Insert, Update and Delete methods either have
+parameter for each property or accepts a DTO style object. I find this
+extremely absurd and a way of forcing developers to design a procedural (SOA)
+style architecture. I am not going to compromise the Architecture though. What
+I have done is to create a class for each BO called XXXManager. This class
+contains shared/static methods Load, Add, Save and Remove which forwards calls
+to BO. Now these methods have parameters which are BO.&nbsp;The benifit of
+having BO as parameter here is that business logic in Get/Set is invoked on UI.<o:p></o:p></p>
+
+<p>What do you think about these concepts of mine? Am I doing something too
+wrong here or is this fine. However, suggest me keeping in mind that I will be
+converting to CSLA.NET later on so this design should be compatible enough with
+it.<o:p></o:p></p>
+
+<p>Tahir<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tna55 replied on Thursday, February 22, 2007</h2><P>Hi Rocky,</P>
+<P>Thank you very much for the reply. I totally agree with you and I can see even now how CSLA.NET can solve a lot of common issue that I am facing now. The learning curve is not a big problem but because we need to give a 'proof of concept' soon for which we do not really have to implement a lot of features. I am learning CSLA.NET through your book and forums. I wanted to be in a position where if I do some work then it is easily portable to CSLA.NET.</P>
+<P>The issue is that not too many people like to learn new things and many of the old Gurus still like the procedural ways. That is why I believe that many people like the idea of SOA because as you right say, it is just another fancy name for procedural programming. It is no doubt useful in some situations but I prefer to design a system that is OO. </P>
+<P>I am glad that you considered my ideas to be similar enough to CSLA as I can comfortably proceed with things now. We are doing minimum of work at the moment so we wont really waste any time doing things that CSLA solve. I will be carefull though. I have just finished writing a code-generator for this style of code so that I can spend more time in learning CSLA. </P>
+<P>Thank you once again for your guidance.</P>
+<P>Tahir</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>boo replied on Monday, February 19, 2007</h2>Rocky, can I print this out in 72pt font and tape it outside of my cube?&nbsp; :)<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tna55 replied on Tuesday, February 20, 2007</h2><P>Hi boo,</P>
+<P>I am sorry I did'nt get you? What did that meant please?</P>
+<P>Tahir</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tna55 replied on Tuesday, February 20, 2007</h2><P>Hi,</P>
+<P>I got an answer to my question in one of the other threads however I just explicitly want to write what I have understood so that I can be corrected if I am wrong</P>
+<P>We in our company want to adopt CSLA.NET however the project we have at hand at the moment is schedule to start in a week and we dont have time to train the team. However, after two months when we have released the trial version of the product we can then re-engineer the product using CSLA.NET. However I would like to architect the product in a way that it is easy to re-design it late rusing CSLA.NET.</P>
+<P>What I have thought is to have BO which are smart i.e. they have data, business logic and data access logic in three different #regions. This makes it similar to the BO in CSLA.NET. However the data is on another location and has Web Service interface on top of it.&nbsp;Therefore I am planning to call these Web Services from the data access part of BO. Data is transferred via DTO and data access part of the BO calls these Web Services, retrieve DTO and fill the BO. Is this configuration correct architecture wise?</P>
+<P>Second issue is that this application exposes some Web Services that is used by another application (build by our other team). These services are not data access but are business logic that other application uses. I have thought to expose again the service on top of the BO and data again there are transferred via DTO.</P>
+<P>In short the main application we are developing is in the middle. On one side we are accessing Web services to retrieve data via DTOs. On other hand our application is exposing some web services exposing business logic in this application. What is the configuration that we can, which also helps us later to move to CSLA. </P>
+<P>I prefer a proper OOA. It is not a religion however it is something I feel is the right way to go. However I have these few confusions, which if are solved can help me a lot.</P>
+<P>Tahir</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

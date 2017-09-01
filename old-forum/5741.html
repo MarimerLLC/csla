@@ -1,0 +1,115 @@
+<html><header><title>Seeking Implementation Recommendation</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Seeking Implementation Recommendation</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5741.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jack posted on Wednesday, November 05, 2008</h2><P><FONT face=Verdana>Hi,</FONT></P>
+<P><FONT face=Verdana>Fairly new to CSLA and I'm hoping for a couple of tips for an implementation.</FONT></P>
+<P><FONT face=Verdana>I have a dynamic data entry window that uses metadata on each input field (a row and editableChildBO) to define its rules.&nbsp; Those rules are the simple min/max, length, set of values (dropdownList) but also include links to other values for calculated fields and logic to enable/disable other fields.</FONT></P>
+<P><FONT face=Verdana>Anyhow many of theses fields are based on a template (i.e. all the items in a questionanaire are to be between 1 &amp; 7 with the same text values associated with each value [1=red, 2=blue, etc]).</FONT></P>
+<P><FONT face=Verdana>My plan is that I load the template business rules from the database and set those rules as Object rules and then I load each data field and link them to the appropriate template field.&nbsp; That way I don't load the same template twice.</FONT></P>
+<P><FONT face=Verdana>My long winded question is how to best trigger the business rule check on the template for each related data entry field.</FONT></P>
+<P><FONT face=Verdana>Approach #1 seemed to tie in to the validation of the related template for each dataentry field but </FONT><FONT face=Verdana>I can't see a simple spot to override a function or an event to tie in.&nbsp; I also need to have the template almost reset for each iteration of validating the data fields.</FONT></P>
+<P><FONT face=Verdana>My other thought Approach #2, was that as I link my data entry objects to their repective templates I iterate through the rules of the template and re-create them in each data entry field.&nbsp; That creates separate encasuplated sets of rules but duplicates the rule objects.&nbsp; I can have a hundred data entry fields all with the same set of rules so that is 100x as many rules as I need.&nbsp; That seemed like a waste.</FONT></P>
+<P><FONT face=Verdana>If these were not dynamic objects I would inherit each data entry field from its respective template and have duplicated sets of rules (#2) but simple implementation.</FONT></P>
+<P><FONT face=Verdana>Before migrating this to CSLA the validation rules were part of the presentation layer.</FONT></P>
+<P><FONT face=Verdana>Any thoughts?</FONT></P>
+<P><FONT face=Verdana>thanks</FONT></P>
+<P><FONT face=Verdana>jack</FONT></P>
+<P><FONT face=Verdana></FONT>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, November 05, 2008</h2><P>The rule engine in CSLA breaks the problem into three parts:</P>
+<OL>
+<LI>object property</LI>
+<LI>rule method</LI>
+<LI>connection of rule method to object property</LI></OL>
+<P>Typically you'll have a library of rule methods, and the dynamic part of the system is connecting rule methods to object properties.</P>
+<P>Normally this connection occurs in AddBusinessRules() and is done on a per-type basis. You can do this in AddInstanceBusinessRules() on a per-instance basis, so each object has a different set of rules.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jack replied on Thursday, November 06, 2008</h2><P>Rocky,</P>
+<P>Thanks for the speedy reply - I am aware of how to 'connect' the rules and the option between per-type/per-instance.&nbsp; I'm more interested in how to combine the two or if I should even bother.</P>
+<P>So this would basically mean that my 100 child objects that share the same rules would instatiate all my dynamic rules 100x.&nbsp; </P>
+<P>Obviously the processing time has to exist, in order to check each rule 100x but should I care about the overhead of having the rules created or is it so negligable it doesn't matter.</P>
+<P>This is a simple implementation, easy to debug etc.</P>
+<P>Would I gain much by doing something along the lines of:</P>
+<BLOCKQUOTE dir=ltr>
+<P>Create TemplateBO, </P>
+<P>Create 100x dataField BO&nbsp; </P>
+<P>Link 100x dataFieldBO to TemplateBO</P>
+<P>In validate of dataFieldBO push the datavalue (int, string, date) up to the TemplateBO and call validate.&nbsp; Get BrokenRules.&nbsp; Repeat 100x.</P></BLOCKQUOTE>
+<P>&nbsp;</P>
+<P>Thanks</P>
+<P>jack</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rsbaker0 replied on Thursday, November 06, 2008</h2><P>^^^^ </P>
+<P>Why don't you run some tests to see if performance is an issue? I certainly wouldn't be concerned about it if you can go the per Type rules route, as this happens only once per Type. However, I can see how it might be an issue with per instance rules. </P>
+<P>If you go the per type route, they are static for the duration of the application and there really isn't a good way to reset them. </P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jack replied on Thursday, November 06, 2008</h2><P>I wish I was so close to that point that I could do a test :-).&nbsp; That's a ways off I think.&nbsp; I keep plugging away and if someone with lots of experience suggests one over the other I'll start that way but likely I'll end up testing both or a 3rd idea if that comes up.</P>
+<P>I think I'm also procrastinating on solving the design in lieu of just getting something done...</P>
+<P>thanks</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, November 06, 2008</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Per-type and per-instance rules can co-exist if that&#8217;s
+what you are asking?<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>There is overhead to using per-instance rules, and for a lot of
+objects it can add up. This is why per-type rules are the default.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>But if you need customized lists of rules per-instance then it
+is hard to escape that overhead.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I think when you use the word &#8220;template&#8221; you really
+mean &#8220;business class&#8221;? So you are saying you could create a
+different class for each set of rules, and therefore could use per-type rules
+for each variation? I am sure that would work &#8211; the question is whether
+it is practical from a maintainability perspective.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>You have made me think of something interesting though. CSLA
+stores the rules in a &#8220;rules set&#8221; that is indexed by object type. I
+suppose it would be possible to open that up so you could create a &#8220;rules
+set&#8221; based on an arbitrary key, and then associate an object instance
+with a specific rules set. This isn&#8217;t possible today, but is an
+interesting idea for a future version of the framework.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jack replied on Thursday, November 06, 2008</h2><P>When I say Template I do mean a business class.</P>
+<P>Just to clarify (which helps me think it out loade) in case it helps: </P>
+<P>In my database I have a field table.&nbsp; A field is really just a collection of metadata about a piece of information to be input.&nbsp; It defines all the rules (min/max,not null, precision, display text, help text, etc).&nbsp; I also have a templateFieldID which lets me link back to a master field so I can define most of the metadata once.</P>
+<BLOCKQUOTE dir=ltr>
+<P>TemplateField =&nbsp;ID=0, IsTemplate=1, TypeNumber, Min1, Max5, NotNull, dropdownvalues('a','b'...) etc</P>
+<P>TestField1 = ID=1, IsTemplate=0, TemplateID=0, &lt;ignore most metadata&gt;, Name=Score1</P>
+<P>TestField2 = ID=2, IsTemplate=0, TemplateID=0, &lt;ignore most metadata&gt;, Name=Score2</P>
+<P>Then I have a dataField tableset which contain the actual values for the data and all auditing info for each instance of data capture.</P></BLOCKQUOTE>
+<P>To do dataentry and implement my&nbsp;UI&nbsp;I have:</P>
+<BLOCKQUOTE dir=ltr>
+<P>dataFieldBO for each dataTestFieldx which contains the value and all the UI logic around it (Missing data, auditing, etc) -&gt; dataFieldxxx tables</P>
+<P>Each dataFieldBO has a corresponding FieldBO which maps to the TestFieldx.&nbsp; This has my rules.&nbsp; </P>
+<P>However the basic input rules are 90% in the TestScoreTemplate.&nbsp;So I also load from the database the distinct set of templateFields into my fieldBOList and then link all the objects together.&nbsp; When a templateBO exists for a particular FieldBO then I'm passing control up the chain to get certain attributes.</P></BLOCKQUOTE>
+<P>Essentially I have 'inheritence' in the database for metadata rules that I am trying to reflect in the business rules.</P>
+<P>I can't use perType rules as the set of TemplateFields is dynamic and the underlying dataFieldBO can all have different values to be validated by the same&nbsp;templateFieldBO.&nbsp;</P>
+<P>I did find this in the ChangeLog for 3.5 which would support the idea of having the TemplateFieldBO process some business rules and then return the brokenRulesCollection back to the FieldBO via a merge.</P>
+<BLOCKQUOTE dir=ltr>
+<P class=MsoNormal><B>BrokenRulesCollection/BrokenRule (071127-VB/C#)<o:p></o:p></B></P>
+<P class=MsoNormal>Add a <SPAN class=CodeInline><SPAN><FONT color=#008000 face="Courier New">CreateCollection()</FONT></SPAN></SPAN> factory to allow creation of an empty <SPAN class=CodeInline><SPAN><FONT color=#008000 face="Courier New">BrokenRulesCollection</FONT></SPAN></SPAN>. Add a <SPAN class=CodeInline><SPAN><FONT color=#008000 face="Courier New">Merge()</FONT></SPAN></SPAN> method to allow other <SPAN class=CodeInline><SPAN><FONT color=#008000 face="Courier New">BrokenRulesCollections</FONT></SPAN></SPAN> to be merged into this newly created list. As the <SPAN class=CodeInline><SPAN><FONT color=#008000 face="Courier New">BrokenRule</FONT></SPAN></SPAN> objects are merged into the collection, the rule names are changed to be unique based on a “source” value. So a rule like <SPAN class=CodeInline><SPAN><FONT color=#008000 face="Courier New">rule://method/property</FONT></SPAN></SPAN> becomes <SPAN class=CodeInline><SPAN><FONT color=#008000 face="Courier New">rule://source.method/property</FONT></SPAN></SPAN>. Since you supply the source value, you can provide a meaningful value for each business object’s broken rules.</P></BLOCKQUOTE>
+<P>I think this supports the idea that in my pre-validation I have to push the value up to the linked templateFieldBO and process its validate routine.&nbsp; If it is valid then I move along.&nbsp; If not then I merge the templateFieldBO brokenrules to the dataFieldBO broken rules and keep going.&nbsp; I basically have a set of rules indexed by key (templateFieldKeyID) with the overhead of a whole BO but I just need to manage setting the Property to be validated manually and make sure that validating FieldBO1 with the TemplateFieldBO doesn't impact FieldBO2 also linked to the same TemplateFieldBO.</P>
+<P>What you suggested about bykey would be perfect.&nbsp; You could have three sets of rules, Instance/Type/Unassociated and be able to link the validation logic to use the shared Unassociated rules based on a common or aliased propertyKey.&nbsp; </P>
+<P>Sorry for all the rambling... it does help my&nbsp;thought process though.&nbsp;</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

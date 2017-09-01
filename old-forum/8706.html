@@ -1,0 +1,10 @@
+<html><header><title>Cslalight 3.8.2 + SL3 + .NET4 (VS2010RC)</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Cslalight 3.8.2 + SL3 + .NET4 (VS2010RC)</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/8706.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>chrisdot posted on Tuesday, March 23, 2010</h2><p>Hi,</p>
+<p>&nbsp;</p>
+<p>It seems that I am experiencing the same problem as <a href="http://dotnetbyexample.blogspot.com/2010/03/running-cslalight-382-under-net-4-and.html">Joost van Schaik</a> but with SL3.</p>
+<p>This makes me think that the problem is not connected to SL4 but rather to .NET4. (how did WCF change since 3.5?).&nbsp; </p>
+<p>Any news about this problem ?</p>
+<p>&nbsp;</p>
+<p>Thanks,</p>
+<p>Christophe</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, March 23, 2010</h2><p>Joost blogged about his solution to the problem - you can probably find the link to his post in that thread, or from my blog (<a href="http://www.lhotka.net/weblog">www.lhotka.net/weblog</a>).</p>
+<p>When I started creating CSLA 4 I actually removed and re-added the service reference, and had to change one of the settings in the add service dialog - a setting dealing with sharing types between client and server needs to be turned off.</p>
+<p>Before I release CSLA 4 I&#39;m sure I&#39;ll have to remove and re-add the service reference&nbsp;again, because there was at least one remaining quirk in the reference&nbsp;that&nbsp;I had to work around, and I am assuming that will have been fixed by the time .NET 4 and SL 4 ship.&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

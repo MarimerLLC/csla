@@ -1,0 +1,18 @@
+<html><header><title>Is it OK to &quot;break&quot; an object during Save()?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Is it OK to &quot;break&quot; an object during Save()?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5066.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>rsbaker0 posted on Monday, July 07, 2008</h2><P>I'm just wondering if I will run into trouble if I deliberately break (e.g. via a validation rule)&nbsp;an object during the execution of Save(). </P>
+<P>In this particular care, I'm porting an ungainly legacy transaction to our new CSLA-based framework, and&nbsp;the legacy&nbsp;goes through a long series of "pre-transaction" checks before proceeding, and just sets an error message if something is found wrong. Of course,&nbsp;some of this could be moved to individual rules, but currently&nbsp;there are two many interdepencies between the items for me to safely refactor these out, so I need to leave the original logic intact for the moment. </P>
+<P>The old object had an "ErrorMessage" property that it was setting, so I just added a new validation rule on this property that basically says, if the property has a value, then the rule fails, otherwise the rules passes. </P>
+<P>All the plumbing seems to work fine -- the UI replaces the existing object with the "broken" one returned over the data portal, and I can get the error indicator to show&nbsp;fine next to a "status" type property. </P>
+<P>Am I overlooking a potential gotcha?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, July 07, 2008</h2><P>No, that is an acceptable thing to do in CSLA .NET - the brokenrules collection flows across the data portal just fine. The only thing to watch out for is that the transactional technologies (TransactionScope or EnterpriseServices) usually do a rollback because of an exception - so you'll have to manually manage your own transactions so as to not throw an exception (and thus return the broken object as a result).</P>
+<P>Fwiw, it probably won't work in CSLA Light, because the brokenrules collection won't flow across the data portal in that environment.</P>
+<P>An alternative approach (very similar to what you have) is to </P>
+<OL>
+<LI>create a custom exception class, where the exception contains the ErrorMessage value</LI>
+<LI>throw this custom exception in case of failure on the server</LI>
+<LI>override the Save() method in your object and have it catch this custom exception - remember that the Save() method runs on the client</LI>
+<LI>in the Save() method, if the custom exception is caught, do this</LI>
+<OL>
+<LI>set your object's ErrorMessage field</LI>
+<LI>call CheckRules() to run the rule you already have</LI>
+<LI>return this/Me - not the result of the data portal call</LI></OL></OL>
+<P>This technique will work in CSLA .NET and CSLA Light, because it doesn't depend on the brokenrules collection moving across the wire, and it avoids possible transaction rollback issues on the server.</P>
+<P>&nbsp;</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

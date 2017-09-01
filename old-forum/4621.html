@@ -1,0 +1,460 @@
+<html><header><title>How to use Windows Authentication with CSLA.NET?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>How to use Windows Authentication with CSLA.NET?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4621.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>tarekahf posted on Saturday, April 05, 2008</h2><P>I downloaded CSLA.NET for .NET 2.0 and everything works fine with the PT Sample Project. I am now only converned about the Web UI (PTWeb).</P>
+<P>This project is using Forms Authentication, and I need to use Windows Authentication.</P>
+<P>Can some one help me to get started ?</P>
+<P>Any documentation/sample code available ?</P>
+<P>Please note that I am preparing a sample demo for the Management to show the benefit of CSLA.NET by applying it to one of the existing small projects in our environment, and I have to do that in a relatively short period.</P>
+<P>You help will be greatly appreciated.</P>
+<P>Regards ...</P>
+<P>Tarek.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>david.wendelken replied on Saturday, April 05, 2008</h2>This is the only thing I know to do to activate active directory.<br><br>In the ApplicationContext.cs file, find this routine and make the adjustment as shown:<br><br>&nbsp;&nbsp;&nbsp; public static IPrincipal User<br>&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; get<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (HttpContext.Current == null)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; //@CUSTOM: Insert the next line for Active Directory<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; AppDomain.CurrentDomain.SetPrincipalPolicy(PrincipalPolicy.WindowsPrincipal);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return Thread.CurrentPrincipal;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; else<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return HttpContext.Current.User;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br><br><br>If you need vb, you'll have to translate. :)<br><br>This may also not be all that you need to do.&nbsp; But it's all I know to do. :(<br><br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Saturday, April 05, 2008</h2><P>You have not explained the requirements in enough detail.</P>
+<P>Do you need to use Windows Authentication only? Or do you also need to use it for Roles for Authorization?</P>
+<P>In my Web app I allow both UID/PWD or Windows Authorization. When configured for Windows, I am only intercepting the principal in order to extract the Domain and UID from it. My DB has the same username and Domain fields so I can use these 2 Windows values to do a lookup and let them in or not. If I let them in then they end up using a CSLA principal filled with roles and permissions from my DB. So my config file still reads CSLA Authorization even though I am using Windows to get the UID. This allows the client to have "single sign on". I believe that I also have code to add a Forms Cookie so that Forms Auth will let them in too.</P>
+<P>Joe</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tarekahf replied on Sunday, April 13, 2008</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>JoeFallon1:</strong></div><div><p>You have not explained the requirements in enough detail.</p>
+<p>Do you need to use Windows Authentication only? Or do you also need to use it for Roles for Authorization?</p>...</div></BLOCKQUOTE><br>I have posted more details about my requirements, did you have the chance to read it ?<br><br>I have read the details you posted, and I am sure I need exactly to do the same thing. I need to use CSLA.NET Authentication to force using Windows Authentication and get the User Name who is authenticated against Active Directory or whatever. It would be nice to privde the user with an option to select Forms Authentication on the UI Level, I think this will be a killer feature (when compared to DNN, right?).<br><br>I did step by step debug/trace for the PTracker Sample Application, and found out that after you click "Login" button, it will call the "Login(Username, Password)" method of the Membership Provider under App_Code. But it will pass both User Name and Password. I still have some doubt on how to incorporate Windows Authentication here. In all the ASP.NET Applications I have developed, I am using something like this to Authenticate users:<br><br>if Page.User.Identity.Name = "" then<br>&nbsp; response.status ="401 Unauthorized"<br>&nbsp; response.end<br>else<br>&nbsp; ...<br>&nbsp; code goes here to parse the User Name and store it in a session variable<br>&nbsp; to and if this session variable is set, it means the user is logged in.<br>end if<br>... etc...<br>(it works very well ...)<br><br>Now, I need to do it using ASP.NET/CSLA way ! It seems to me that I need to add another method (overload) to call the Login() with only User Name, which is retrieved earlier before calling Login, but not sure exactly where. I think I still need the execute the code inside "Login()" method, which is loading the roles and doing other things, not only verifying the Password.<br><br>I am working a a new simplified Project (using only Web Presentation, UI, and Business Logic: 2 Projects Only) to be used as a demo for the other team members. Tomorrow, I will make some effort to activate Windows Authentication.<br><br>If you could give me more details about what I have to do exactly, I truely apprecaite it.<br><br>Tarek.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tarekahf replied on Monday, April 14, 2008</h2><P>I found another thread discussing the same issue, and I will continue there:</P>
+<P><A HREF="/forums/22785/ShowThread.aspx#22785">http://forums.lhotka.net/forums/22785/ShowThread.aspx#22785</A></P>
+<P>Appreciate your comments and help.</P>
+<P>Tarek.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tarekahf replied on Tuesday, April 15, 2008</h2>Finally, I completed the development of a Sample Application using CSLA matching our environment, successfully. Used only 2 projects: Web Part and the Library (BOs). With minimum change to the PTracker Sample, the following features/changes were implemented:<br><br>1. Mixed Authentication: Forms + Windows. Used same config values in Web.config and same Global.asax as per the PTracker Sample Application<br><br>I simply created a Public Shared Function in the MemberShip Provider Class under App_Code folder, named"'GetWindowsWebLoginID()". The code retrieves the Session Variable LOGON_USER, and if it is blank, it will issue response.clear(), response.status = "401 Access Denied", response.end(). At this point, since the Vertual Directory under IIS, supports both Anonymous and Integrated Windows Authentication, the LOGON_USER will get the current Windwos ID of the Logged In User.<br><br>I added another public shared function "ValidateUserWindows(UserID)" under the Membership Class and LoginWindows(Userid) under the custom Pricipal class. They are basically same as the original similar function, but removed the code which is not required. I also created a Stored Procedure "LoginWindows(UserID)" to check the Username only in the Users Table, and modified the DataPorta_Fetch() accordingly. I added another property "IsWindowsAuthentication()" to the Criteria class to help decide which Stored Procedure to call in DataProta Fetch method. Also, changed the connection &amp; command types to CONNX .NET Provider Classes.<br><br>2. In the Login.aspx page, I added a Link Button to Sign in as Windows User. On ButtonClick event, I simply call "GetWindowsWebLoginID()" and call "ValidateWindowsUser()" whcih will call the LoginWindows() method of the Pricipal Object. The final step after Successful Login as Windows User, I call FormsAuthentication.RedirectFromLogin(UserID, False) or something like that, and it works very well.<br><br>3. Created a Custom Business Object StaffBasicInfo and public shared method GetStaffBasicInfo(UserID) to get Staff Name, Nationality, Gender, DOB ...etc. from Adabas. In the Login.aspx page, if the LoginWindows() is successfull, I call the GetStaffBasicInfo(UserID), store it in a session variable, and re-used in the Master Page, Page_Load event, to display information about the Logged In User using a LoginName Control and some Text Boxes, and display the Authentication Mode Used.<br><br>4. During Logout, I clear the Session Variable of StaffBasicInfo.<br><br>Any comments/feedback on this approach will be appreciated.<br>&nbsp;<br>Tarek.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tarekahf replied on Saturday, August 30, 2008</h2><P>I am posting here the details of the changes needed to implement Dual Authentication:</P>
+<P>1. Changed/confirm that&nbsp;web.config has the following tags: Add imporsonation/allow/deny rules as needed, and the other thing will be almost the same:</P><PRE><P>&lt;AUTHENTICATION mode="Forms"&gt;<BR>&nbsp;&nbsp;&nbsp;&lt;FORMS name="CSLASample" loginUrl="Login.aspx" /&gt;<BR>&nbsp;&nbsp;&lt;/AUTHENTICATION&gt;<BR>&nbsp;&nbsp;&lt;IDENTITY password="password" userName="username" impersonate="true" /&gt;<BR>&nbsp;&nbsp;&lt;AUTHORIZATION&gt;<BR>&nbsp;&nbsp;&nbsp;&lt;DENY users="?" /&gt;<BR>&nbsp;&nbsp;&nbsp;&lt;ALLOW roles="xxxx" /&gt;<BR>&nbsp;&nbsp;&nbsp;&lt;ALLOW users="*" /&gt;<BR>&nbsp;&nbsp;&lt;/AUTHORIZATION&gt;</P></PRE>
+<P>2. Add the following code to App_Code or to a Class Library Project:</P><PRE>    Public Shared Function ValidateUserWindows(ByVal username As String) As Boolean
+        If MyPrincipal.LoginWindows(username) Then
+            System.Web.HttpContext.Current.Session("CslaPrincipal") = _
+              Csla.ApplicationContext.User
+            Return True
+        Else
+            Return False
+        End If
+    End Function
+
+    Public Shared Function GetWindowsLoginIDWeb() As String
+        Dim strUserID As String
+        With System.Web.HttpContext.Current
+            strUserID = .Request.ServerVariables("LOGON_USER")
+            If strUserID = "" Then
+                .Response.StatusCode = 401
+                .Response.StatusDescription = "Unauthorized"
+                .Response.End()
+            Else
+                Dim idx As Integer
+                idx = strUserID.IndexOf("\")
+                If idx &gt;= 0 Then
+                    strUserID = strUserID.Substring(idx + 1)
+                End If
+            End If
+            Return strUserID
+        End With
+    End Function
+</PRE>
+<P>3. Add the following code to your custom Principal.vb Code:</P><PRE>        Public Shared Function LoginWindows( _
+          ByVal username As String) As Boolean
+
+            Dim identity As MyIdentity = MyIdentity.GetIdentity(username)
+            If identity.IsAuthenticated Then
+                Dim principal As New MyPrincipal(identity)
+                Csla.ApplicationContext.User = principal
+            End If
+            Return identity.IsAuthenticated
+
+        End Function</PRE>
+<P>4. Add the following code to your custom Identity.vb code:</P><PRE>        Friend Shared Function GetIdentity(ByVal username As String) As MyIdentity
+            Return DataPortal.Fetch(Of MyIdentity)(New Criteria(username))
+        End Function</PRE>
+<P>5.&nbsp;Modify the Criteria Class Definition as follows:</P><PRE><P>        &lt;Serializable()&gt; _</P></FONT>        Private Class Criteria
+            Private mUsername As String
+            Private mPassword As String
+            Private mIsWindowsLogin As Boolean
+            Public ReadOnly Property Username() As String
+                Get
+                    Return mUsername
+                End Get
+            End Property
+            Public ReadOnly Property Password() As String
+                Get
+                    Return mPassword
+                End Get
+            End Property
+            Public ReadOnly Property IsWindowsLogin() As String
+                Get
+                    Return mIsWindowsLogin
+                End Get
+            End Property
+            Public Sub New(ByVal username As String, ByVal password As String)
+                mUsername = username
+                mPassword = password
+                mIsWindowsLogin = False
+            End Sub
+            Public Sub New(ByVal username As String)
+                mUsername = username
+                mIsWindowsLogin = True
+            End Sub
+        End Class</PRE>
+<P>6. Modify the DataProtal_Fetch of the custom Identity as follows:</P><PRE>        Private Overloads Sub DataPortal_Fetch(ByVal criteria As Criteria)
+            'Using cn As New SqlConnection(Database.SecurityConnection)
+            Using cn As New OleDb.OleDbConnection(Database.AppSecurityDB)
+                cn.Open()
+                Using cm As OleDb.OleDbCommand = cn.CreateCommand
+                    If criteria.IsWindowsLogin() Then
+                        cm.CommandText = "LoginWindows"
+                        cm.Parameters.AddWithValue("prmUser", criteria.Username)
+                    Else
+                        cm.CommandText = "Login"
+                        cm.Parameters.AddWithValue("@user", criteria.Username)
+                        cm.Parameters.AddWithValue("@pw", criteria.Password)
+                    End If
+                    cm.CommandType = CommandType.StoredProcedure
+                    Using drLogin As OleDb.OleDbDataReader = cm.ExecuteReader()
+                        If drLogin.Read() Then
+                            mName = criteria.Username
+                            mIsAuthenticated = True
+                            drLogin.Close()
+                            cm.Parameters.Clear()
+                            cm.CommandText = "GetUserRoles"
+                            cm.Parameters.AddWithValue("prmUser", criteria.Username)
+                            Using drRoles As OleDb.OleDbDataReader = cm.ExecuteReader
+                                While drRoles.Read
+                                    mRoles.Add(drRoles.GetString(0))
+                                End While
+                            End Using
+                        Else
+                            mName = ""
+                            mIsAuthenticated = False
+                            mRoles.Clear()
+                        End If
+                    End Using
+                End Using
+            End Using
+        End Sub
+</PRE>
+<P>(Note: The above code was changed to connect to MS Access Database instead of SQL Server.)</P>
+<P>7. In the Login.aspx Page, add a button or Link, in addition to the User Name/Password Login Control, and add the following code to login as Windows User:</P><PRE>
+    Protected Sub lnkLoginWindows_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles lnkLoginWindows.Click
+        Dim strUserID As String = MyMembershipProvider.GetWindowsLoginIDWeb()
+        If MyMembershipProvider.ValidateUserWindows(strUserID) Then<BR>            ' Check if this user has logged in before
+            Dim LoggedInStaff As StaffBasicInfo = CType(Session("LoggedInStaff"), StaffBasicInfo)
+            If LoggedInStaff Is Nothing Then<BR>                ' If not, get his details from back-end system.
+                LoggedInStaff = StaffBasicInfo.GetStaffBasicInfo(strUserID)
+                Session("LoggedInStaff") = LoggedInStaff
+            End If
+
+            FormsAuthentication.RedirectFromLoginPage(strUserID, False)
+        Else
+            Response.Redirect("Login.aspx")
+        End If
+    End Sub
+</PRE>
+<P>Note: the code above has minor bug about redirection, in case the first page was openened is the Login Page. Need to check the Query String Parameter to find out if there is a "redirect to" page to handle this part correctly.</P>
+<P>I hope the above code will of value to you.</P>
+<P>Regards ...</P>
+<P>Tarek.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tarekahf replied on Friday, September 12, 2008</h2><p>I am posting again to <b>get your feedback/opinion </b>about improving the authentication technique introduced here.<br></p><p>Our environment is actually a bit complicated, since we have different platforms (Adabs/Unix, SQL Server, MS Access, MySQL, VB.NET, PHP...etc.), and the purpose of the web applications we are developing is to provide unified front-end to the users for certain functionality, which may spread across those platforms.<br></p>I am defining the following <b>business logic</b> for an authenticated user.<p>The user will navigate to the web application which has public part, and secured part. When the user is not logged on, he is anonymous, and he can view the public part.</p><p>When he tries to access the secured parts, he is redirected to the Login.aspx page, and he will have 2 options: Login as Public User (Forms Authentication) or Login as Integrated Windows User.<br></p><p>When the user clicks on "Login as Windows User" I am defining the user as authenticated if:</p><p>1. The user has Windows Domain Account, meaning:</p><pre>StaffID = Request.ServerVariables("LOGON_USER")</pre><p>StaffID should have a value and it will be the <b>Staff ID</b>,</p><p>And<br></p><p>2. If this StaffID is defined as Active Staff in Adabas Staff Master Table (must connect to CONNX SQL Gateway via ODBC or OLEDB),</p><p>And</p><p>3. If StaffID is not defined in Adabas, this means he could be a temporary contract Staff and he may be defined in the Attendance System Staff Table (MS Access Database).<br></p><p>And, when the user clicks on "Login as Public User" (Forms Authentication), he will be defined in the SQL Security Database which has Table for UserID, Password and other details such as First Name and Last Name. In this case, the user is a client and he is not a company employee, and he may be accessing our systems to get a statement of account or follow on the status of a project for example.</p><p>In all other cases not mentioned above, the user is anonymous. <br></p><p>I need to modify the "DataPortal_Fetch" of the custom Identity object to handle all the above cases, which to use 3 different Database connections.</p><p>If you look at the code in DataPortal_Fetch, it has "USING - END USING" block, and I am a bit lost on how to do that, since this will make code looks very confusing and complicated when it will involve connecting to 3 different Database according to the type of the login request and the user, which will require 3 command objects and 3 DataReader Objects.</p><p><u><b>The Questions:</b></u></p><p>1. What do you think about this approach ?</p><p>2. How to simplify the coding ?</p><p>3. If you think it is approach complicated, do you have other alternatives to achieve this objective ?</p><p>Tarek.<br></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tarekahf replied on Saturday, September 13, 2008</h2><P>I introduced this method for authentication to my colleagues, and one of them was not happy, because we have to add 3 connection strings in the web.config for each web application for the purpose of authentication.</P>
+<P>One way to avoid this, is to build all these connection strings in SQL Server using Linked Servers, but I am not happy with this since it may result into future problems due to issues with linked servers, as we are now facing a problem in displaying Arabic Text properly for Linked Servers from Adabas Database Tables.</P>
+<P>In general, I prefer to have a direct connection to the Database, and handle Data Access one at a time from each Database using .NET code. I feel that this method is more appropriate, more flexible and less possibility to face errors.</P>
+<P>Any help or comment will be appreciated.</P>
+<P>Tarek.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>david.wendelken replied on Sunday, September 14, 2008</h2>
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><font size=2 color=navy face=Arial><span><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 color=navy face=Arial><span>Well, you have a complicated
+infrastructure, so you are likely to have a complicated solution. ;(<o:p></o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 color=navy face=Arial><span><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 color=navy face=Arial><span>One option would be to set up a job that
+runs every 5 minutes or so (maybe every half-hour or hour depending &#8230;)
+that slurps the info about employees into your security info database.&nbsp; That
+way, only one application needs to know how to access all three databases, the
+rest of the applications get one-stop shopping.&nbsp; <o:p></o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 color=navy face=Arial><span><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 color=navy face=Arial><span>Of course, those same apps may need to
+know how to connect to multiple databases anyway, which defeats the simplicity
+advantages of the above option. ;)<o:p></o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 color=navy face=Arial><span><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 color=navy face=Arial><span>As for the scenario you outlined, you
+don't need 3 connection objects. &nbsp;You only need one.&nbsp; Just re-use it.
+</span></font><font size=2 color=navy face=Wingdings><span>J</span></font><font size=2 color=navy face=Arial><span><o:p></o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 color=navy face=Arial><span><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 color=navy face=Arial><span><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 color=navy face=Arial><span><o:p>&nbsp;</o:p></span></font></p>
+
+<div>
+
+<div class=MsoNormal align=center><font size=3 face="Times New Roman"><span>
+
+<hr align=center>
+
+</span></font></div>
+
+<p class=MsoNormal><b><font size=2 face=Tahoma><span>From:</span></font></b><font size=2 face=Tahoma><span> tarekahf
+[mailto:cslanet@lhotka.net] <br>
+<b><span>Sent:</span></b> Saturday, September 13, 2008
+5:58 AM<br>
+<b><span>To:</span></b> david_wendelken@nc.rr.com<br>
+<b><span>Subject:</span></b> Re: [CSLA .NET] How to
+use Windows Authentication with CSLA.NET?</span></font><o:p></o:p></p>
+
+</div>
+
+<p class=MsoNormal><font size=3 face="Times New Roman"><span><o:p>&nbsp;</o:p></span></font></p>
+
+<p><font size=3 face="Times New Roman"><span>I am
+posting again to <b><span>get your feedback/opinion </span></b>about
+improving the authentication technique introduced here.<o:p></o:p></span></font></p>
+
+<p><font size=3 face="Times New Roman"><span>Our
+environment is actually a bit complicated, since we have different platforms
+(Adabs/Unix, SQL Server, MS Access, MySQL, VB.NET, PHP...etc.), and the purpose
+of the web applications we are developing is to provide unified front-end to
+the users for certain functionality, which may spread across those platforms.<o:p></o:p></span></font></p>
+
+<p class=MsoNormal><font size=3 face="Times New Roman"><span>I am defining the following <b><span>business
+logic</span></b> for an authenticated user.<o:p></o:p></span></font></p>
+
+<p><font size=3 face="Times New Roman"><span>The user
+will navigate to the web application which has public part, and secured part.
+When the user is not logged on, he is anonymous, and he can view the public
+part.<o:p></o:p></span></font></p>
+
+<p><font size=3 face="Times New Roman"><span>When he
+tries to access the secured parts, he is redirected to the Login.aspx page, and
+he will have 2 options: Login as Public User (Forms Authentication) or Login as
+Integrated Windows User.<o:p></o:p></span></font></p>
+
+<p><font size=3 face="Times New Roman"><span>When the
+user clicks on &quot;Login as Windows User&quot; I am defining the user as
+authenticated if:<o:p></o:p></span></font></p>
+
+<p><font size=3 face="Times New Roman"><span>1. The
+user has Windows Domain Account, meaning:<o:p></o:p></span></font></p>
+
+<pre><font size=2 face="Courier New"><span>StaffID = Request.ServerVariables(&quot;LOGON_USER&quot;)<o:p></o:p></span></font></pre>
+
+<p><font size=3 face="Times New Roman"><span>StaffID
+should have a value and it will be the <b><span>Staff
+ID</span></b>,<o:p></o:p></span></font></p>
+
+<p><font size=3 face="Times New Roman"><span>And<o:p></o:p></span></font></p>
+
+<p><font size=3 face="Times New Roman"><span>2. If
+this StaffID is defined as Active Staff in Adabas Staff Master Table (must
+connect to CONNX SQL Gateway via ODBC or OLEDB),<o:p></o:p></span></font></p>
+
+<p><font size=3 face="Times New Roman"><span>And<o:p></o:p></span></font></p>
+
+<p><font size=3 face="Times New Roman"><span>3. If
+StaffID is not defined in Adabas, this means he could be a temporary contract
+Staff and he may be defined in the Attendance System Staff Table (MS Access
+Database).<o:p></o:p></span></font></p>
+
+<p><font size=3 face="Times New Roman"><span>And, when
+the user clicks on &quot;Login as Public User&quot; (Forms Authentication), he
+will be defined in the SQL Security Database which has Table for UserID,
+Password and other details such as First Name and Last Name. In this case, the
+user is a client and he is not a company employee, and he may be accessing our
+systems to get a statement of account or follow on the status of a project for
+example.<o:p></o:p></span></font></p>
+
+<p><font size=3 face="Times New Roman"><span>In all
+other cases not mentioned above, the user is anonymous. <o:p></o:p></span></font></p>
+
+<p><font size=3 face="Times New Roman"><span>I need to
+modify the &quot;DataPortal_Fetch&quot; of the custom Identity object to handle
+all the above cases, which to use 3 different Database connections.<o:p></o:p></span></font></p>
+
+<p><font size=3 face="Times New Roman"><span>If you
+look at the code in DataPortal_Fetch, it has &quot;USING - END USING&quot;
+block, and I am a bit lost on how to do that, since this will make code looks
+very confusing and complicated when it will involve connecting to 3 different
+Database according to the type of the login request and the user, which will
+require 3 command objects and 3 DataReader Objects.<o:p></o:p></span></font></p>
+
+<p><b><u><font size=3 face="Times New Roman"><span>The Questions:</span></font></u></b><o:p></o:p></p>
+
+<p><font size=3 face="Times New Roman"><span>1. What
+do you think about this approach ?<o:p></o:p></span></font></p>
+
+<p><font size=3 face="Times New Roman"><span>2. How to
+simplify the coding ?<o:p></o:p></span></font></p>
+
+<p><font size=3 face="Times New Roman"><span>3. If you
+think it is approach complicated, do you have other alternatives to achieve
+this objective ?<o:p></o:p></span></font></p>
+
+<p><font size=3 face="Times New Roman"><span>Tarek.<o:p></o:p></span></font></p>
+
+<p class=MsoNormal><font size=3 face="Times New Roman"><span><br>
+<br>
+<o:p></o:p></span></font></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tarekahf replied on Sunday, September 14, 2008</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>david.wendelken:</strong></div><div> 
+
+<DIV class=Section1>
+<P class=MsoNormal><FONT face=Arial color=navy size=2><SPAN><o:p></o:p></SPAN></FONT></P>
+<P class=MsoNormal><FONT face=Arial color=navy size=2><SPAN>Of course, those same apps may need to know how to connect to multiple databases anyway, which defeats the simplicity advantages of the above option. ;)<o:p></o:p></SPAN></FONT></P>
+<P class=MsoNormal><FONT face=Arial color=navy size=2><SPAN><o:p></o:p></SPAN></FONT></P>
+<P class=MsoNormal><FONT face=Arial color=navy size=2><SPAN>As for the scenario you outlined, you don't need 3 connection objects. &nbsp;You only need one.&nbsp; Just re-use it. </SPAN></FONT><FONT face=Wingdings color=navy size=2><SPAN>J</SPAN></FONT></P></DIV>
+<P></div></BLOCKQUOTE></P>
+<P>Oh, yes ! I think I can use one connection object, one command and one data reader, but the problem is that I&nbsp;have to connect to Adabas/Unix using the ConnX .NET Data Provider connection object types as System.Data.CONNX.CNXConnection, and also, same for command and data reader object under the System.Data.CONNX Namespace. As per the help, it supports .NET OLE DB and ADODB Standard Connection Objects, but&nbsp;I have never tried them.</P>
+<P>I think if I connect to all Databases via OLE DB Data Provider Objects, then this will simplify the code.</P>
+<P>Tarek.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RedShiftZ replied on Friday, May 15, 2009</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>JoeFallon1:</strong></div><div><p>You have not explained the requirements in enough detail.</p>
+<p>Do you need to use Windows Authentication only? Or do you also need to use it for Roles for Authorization?</p>
+<p>In my Web app I allow both UID/PWD or Windows Authorization. When configured for Windows, I am only intercepting the principal in order to extract the Domain and UID from it. My DB has the same username and Domain fields so I can use these 2 Windows values to do a lookup and let them in or not. If I let them in then they end up using a CSLA principal filled with roles and permissions from my DB. So my config file still reads CSLA Authorization even though I am using Windows to get the UID. This allows the client to have "single sign on". I believe that I also have code to add a Forms Cookie so that Forms Auth will let them in too.</p>
+<p>Joe</p>
+<p>&nbsp;</div></BLOCKQUOTE></p><p>Joe,</p><p>&nbsp; Might I see that implementation? This is exactly what I have to implement (tho on Winforms).</p><p>Thanks,<br></p><p>Jeff<br></p><p><br></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Friday, May 15, 2009</h2>Check out this thread:<br />http://forums.lhotka.net/forums/thread/21513.aspx<br /><br />Joe<br /></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>miguelcastro67 replied on Sunday, April 06, 2008</h2>You shouldn't alter the User object in ApplicationContext.  Simply executing the line "AppDomain.CurrentDomain.SetPrincipalPolicy(PrincipalPolicy.WindowsPrincipal);" will set the windows principal into Thread.CurrentPrincipal, which is really all ApplicationContext.User is wrapping.  you achieve the same without altering the framework code - you would simply put that line somewhere in the form_load of your startup form (or Main).  The important thing to remember is the naming for users and roles.  when using Windows auth., the naming is preceeded by the domain or the computer name.  This goes for users and roles so of course any authentication code in your business objects may need to be changed.  I recommend you place roles into constant variables or static variables for better manageability.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>david.wendelken replied on Monday, April 07, 2008</h2>Thanks!  Someone showed me how to do it that way.<br /><br />I'll pass that on to them!<br /><br />-----Original Message-----<br />From: miguelcastro67 [mailto:cslanet@lhotka.net] <br />Sent: Sunday, April 06, 2008 9:37 PM<br />To: david_wendelken@nc.rr.com<br />Subject: Re: [CSLA .NET] How to use Windows Authentication with CSLA.NET?<br /><br />You shouldn't alter the User object in ApplicationContext.  Simply executing<br />the line<br />"AppDomain.CurrentDomain.SetPrincipalPolicy(PrincipalPolicy.WindowsPrincipal<br />);" will set the windows principal into Thread.CurrentPrincipal, which is<br />really all ApplicationContext.User is wrapping.  you achieve the same<br />without altering the framework code - you would simply put that line<br />somewhere in the form_load of your startup form (or Main).  The important<br />thing to remember is the naming for users and roles.  when using Windows<br />auth., the naming is preceeded by the domain or the computer name.  This<br />goes for users and roles so of course any authentication code in your<br />business objects may need to be changed.  I recommend you place roles into<br />constant variables or static variables for better manageability.<br /><br /></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tarekahf replied on Monday, April 07, 2008</h2>Dear All,<br><br>Many thanks to all of you for your replies.<br><br>I will try to follow your recommendations once I am back in the office in about 10 hours, and I will post back the result. <br><br>In the mean time, please allow me to clarify our current practices (traditional ASP.NET Programming) and our requirements as follows:<br><br>1. All our web applications, until now, are Intranet Applications, and we use Integrated Windows Authentication, which is setup on the Level of the IIS and used from withing the ASP.NET applications.<br><br>2. Under IIS, the Web Site is set to both Anonymous and Integrated Window. Currently, in ASP.NET Project/Website, in the event "Session_Start" in Global ASAX file, I try to retrieve the Current User (from server variables or from page user identity) if not found, then I send a request to the Browser to Authenticate (response.write "401 access denied." or something like that).<br><br>3. Once the user is Authenticated, the Current User is identified, I create a session variable to store the current user, and retrieve his roles from a pre-defined table. If the session variable is not blank, this means the user is Logged In - as simple as this. This user ID (Current User) is used to retrieve the other info from the back-end database in UNIX/Adabas using CONNX Gateway.<br><br>4. The user roles are <b>not</b> used as per the standard ASP.NET method. These roles are used arbitrary in the application, meaning, they cannot be used to secure the Menus and Site Navigation, because I do not know how to do this yet.<br><br>5. Our requirement is to be able to use this Windows Authentication in CSLA, and to use the User Roles much like the Project Tracker Sample Application. Meaning, I do <b>not</b> want to use the Roles which are same as the NT Groups who the user is a member of. I would prefer to define the User Roles in a SQL Table.<br><br>6. I want to be able to use these roles to secure access to Menu Options and other functions using the built-in feature of ASP.NET Authorization.<br><br>7. We have more complex requirement to Authorization which are as follows:<br><br>- The Application objective is to display Staff Profile Info on-line for each staff who is logged in (currently live without CSLA.NET!). Following are sample authorization rules some are implemented, some are yet to be implemented.<br><br>- Each user can see his own data by default.<br><br>- The Role X can see the Data of Any other Staff.<br><br>- The Role X can see the Data of any Staff if they are in the same Department (or Section or Unit ...).<br><br>- No one can see the Private Data of other Staff by default.<br><br>- Role X can see the Private Data of Other Staff as an exception.<br><br>- Private Data is predefined and identified by Screen Name or Group of Fields which means the Private Data is Hard-Coded in the Application.<br> <br>...etc.<br><br>This is our requirements in general.<br><br>I was requested to prepare a sample application using CSLA and demonstrate how this framework can be applied to our environment.<br><br>My colleague have developed Vaccine Information System for the Clinic Unit in ASP.NET, and she has problems in Authentication. I will try to implement CSLA Integrated Windows Authentication in this application. I hope I will be able to use CSLA and integrate it in this application.<br><br>For you information, we are evaluating several Framework Architecture in addition to CSLA.NET, and the other tools are DotNetNuke, WCSF, MVP, and Umbraco.<br><br>Any comment/feedback will be greatly appreciated.<br><br>Tarek.<br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Charles Asbornsen replied on Monday, September 08, 2008</h2><P>Hi Dave!&nbsp; How's Ethipoia?&nbsp; When are you coming back?</P>
+<P>There's this big thingummy going on with the project now where they want to do everything through web services and apparantly in CSLA that's just a humungous waste of time.&nbsp; There's some rumblings going on about how insecure everything is with the clients hitting the db, so I want to come up with a good case for using CSLA to manage everything across the enterprise instead.&nbsp; </P>
+<P>But doing Windows Authentication&nbsp;in a WinForms app&nbsp;is:</P><FONT color=#0000ff size=2>
+<P>using</FONT><FONT size=2> System.Security.Principal;</P></FONT><FONT size=2>
+<P>username = </FONT><FONT color=#2b91af size=2>WindowsIdentity</FONT><FONT size=2>.GetCurrent().Name;</P></FONT>
+<P>and then just check it against your security object to get your role.&nbsp; Easy peasy.&nbsp; Windows is so much less fretful than ASP.Net.</P>
+<P>- Charlie</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>david.wendelken replied on Monday, September 08, 2008</h2>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><font size=2 color=navy face=Arial><span><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 color=navy face=Arial><span>Ethiopia</span></font><font size=2 color=navy face=Arial><span> is pretty wet at the moment, it's the tail end of the rainy
+season. &nbsp;Should dry back up in a few weeks, then back to perfect weather
+(instead of near perfect). </span></font><font size=2 color=navy face=Wingdings><span>J</span></font><font size=2 color=navy face=Arial><span><o:p></o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 color=navy face=Arial><span><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 color=navy face=Arial><span>I promised a year, so that would be
+sometime in March.&nbsp; I expect I'll stay on a few months past that, so l'm
+expecting to be back in late spring.&nbsp; I'll be back in Fayetteville Friday Dec 19<sup>th</sup>, and
+we're having a traditional christmas party the 20<sup>th</sup>. &nbsp;Daffyd and
+Kate are hosting it for me. </span></font><font size=2 color=navy face=Wingdings><span>J</span></font><font size=2 color=navy face=Arial><span>&nbsp; Hope you'll be there!<o:p></o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 color=navy face=Arial><span><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 color=navy face=Arial><span>As for web services, there is no reason
+you can't use the same csla business objects we've already got and expose them
+via a web services interface. &nbsp;&nbsp;The sample csla project shows how to
+do it, if I remember right.<o:p></o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 color=navy face=Arial><span><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 color=navy face=Arial><span>Who is &quot;they&quot;?&nbsp; users or
+other technical people?<o:p></o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 color=navy face=Arial><span><o:p>&nbsp;</o:p></span></font></p>
+
+<div>
+
+<div class=MsoNormal align=center><font size=3 face="Times New Roman"><span>
+
+<hr align=center>
+
+</span></font></div>
+
+<p class=MsoNormal><b><font size=2 face=Tahoma><span>From:</span></font></b><font size=2 face=Tahoma><span> Charles
+Asbornsen [mailto:cslanet@lhotka.net] <br>
+<b><span>Sent:</span></b> Monday, September 08, 2008
+9:33 PM<br>
+<b><span>To:</span></b> david_wendelken@nc.rr.com<br>
+<b><span>Subject:</span></b> Re: [CSLA .NET] How to
+use Windows Authentication with CSLA.NET?</span></font><o:p></o:p></p>
+
+</div>
+
+<p class=MsoNormal><font size=3 face="Times New Roman"><span><o:p>&nbsp;</o:p></span></font></p>
+
+<p><font size=3 face="Times New Roman"><span>Hi
+Dave!&nbsp; How's Ethipoia?&nbsp; When are you coming back?<o:p></o:p></span></font></p>
+
+<p><font size=3 face="Times New Roman"><span>There's
+this big thingummy going on with the project now where they want to do
+everything through web services and apparantly in CSLA that's just a humungous
+waste of time.&nbsp; There's some rumblings going on about how insecure
+everything is with the clients hitting the db, so I want to come up with a good
+case for using CSLA to manage everything across the enterprise instead.&nbsp; <o:p></o:p></span></font></p>
+
+<p><font size=3 face="Times New Roman"><span>But doing
+Windows Authentication&nbsp;in a WinForms app&nbsp;is:<o:p></o:p></span></font></p>
+
+<p><font size=2 color=blue face="Times New Roman"><span>using</span></font><font size=2><span>
+System.Security.Principal;<o:p></o:p></span></font></p>
+
+<p><font size=2 face="Times New Roman"><span>username
+= <font color="#2b91af"><span>WindowsIdentity</span></font>.GetCurrent().Name;<o:p></o:p></span></font></p>
+
+<p><font size=3 face="Times New Roman"><span>and then
+just check it against your security object to get your role.&nbsp; Easy
+peasy.&nbsp; Windows is so much less fretful than ASP.Net.<o:p></o:p></span></font></p>
+
+<p><font size=3 face="Times New Roman"><span>- Charlie<o:p></o:p></span></font></p>
+
+<p class=MsoNormal><font size=3 face="Times New Roman"><span><br>
+<br>
+<o:p></o:p></span></font></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tiago replied on Friday, May 15, 2009</h2><P>Hi Tarek</P>
+<P>I made some changes to PTracker authentication in order to have Windows Authentication. In fact you just need to change CslaAuthentication attribute. The nicest thing about it is that you can have both at the same time.</P>
+<P>If the users that is authenticated under Windows exists in the <FONT face="Courier New" color=#800080 size=2>users</FONT> table, it gets logged on with no further questions. Otherwise (the windows user name doesn't exist in the <FONT face="Courier New" color=#800080 size=2>users</FONT> table) the login window will ask for username/password. This is quite useful when you have an application on a client but your laptop is not in the client's domain. You can still use your laptop and login in the application using the application admin username.</P>
+<P><SPAN id=ctl00_ctl01_bcr_SinglePostView___ForumName><FONT face="Courier New" color=#800080 size=2>FAQ: How to use Windows authentication in PTracker (PTWin) (C#)</FONT></SPAN></P>
+<P><A HREF="/forums/post/28161.aspx"><FONT color=#99aa99>http://forums.lhotka.net/forums/post/28161.aspx</FONT></A></P>
+<P>&nbsp;</P>
+<P>Cheers</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tarekahf replied on Friday, May 15, 2009</h2><P>Hi tiago,</P>
+<P>Thank you for the info.</P>
+<P>I have already implemented mixed Authentication Mode, and in case of Integrated Windows Authentication, the application will not ask the user for his User Name/Password if he is already logged in to the Domain, and will get the User Name from the LOGON_SERVER Variable.</P>
+<P>I think there are some differences between my approach and yours, but this is really interesting.</P>
+<P>Check the details here:</P>
+<P><A HREF="/forums/22855/ShowThread.aspx#22855">http://forums.lhotka.net/forums/22855/ShowThread.aspx#22855</A></P>
+<P>Of course, that was last year, now the module has been updated several times, and it is much more advanced, but the details mentioned in the above link will give a clear idea about the requirements and how to implement it.</P>
+<P>Thank you agian for the update.</P>
+<P>Tarek.</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,23 @@
+<html><header><title>Transactions - In the SP or BO?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Transactions - In the SP or BO?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/418.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>djjlewis posted on Tuesday, June 20, 2006</h2>Hi all,<br>
+<br>
+I know CSLA.NET 2.0 adds some good functionality for transaction handling
+(manual, TransactionScope, ES etc), but what are people thoughts on making
+transactions the responsibility of the business object and not at the database
+level in a stored procedure?<br>
+<br>
+My own thought is how you think of each logical layer of the app as being indepenant from each other i.e. if you
+know the database will only be accessed by the business objects, then it
+is fine for the transactions to be managed at the BO level, but if later down the line
+another system reuses the same SPs, then the transaction code may never
+run. <br>Should we place transactions in the 'lowest common denominator' layer in the same way business logic 'could' be in the UI layer but also needs to be in the BO layer?<br><br>Any thoughts on this?<br>
+<br>
+Regards,<br>
+<br>
+Dan<p></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Dawn replied on Tuesday, June 20, 2006</h2>I think some times you can't just put transaction handling in a stored
+procedure, like a root object with a collection of child, how could you
+pass this to one stored procedure, BO is defined by behavior, and it's
+data may come or save to different table, different database or other
+data storge. So using TranscatoinScope, ES etc, we can focus on
+business logical, let them care the low level data acess.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Tuesday, June 20, 2006</h2>I think your BO should handle the transactions; that way you can have different BOs calling some of the exact same procedures.&nbsp; <br><br>The grouping of data which must commit as a single unit is a business rule, and can change.<br><br>HTH<br>Andy<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>chriss replied on Tuesday, June 20, 2006</h2><P>In "principle" the SP's shouldn't be used by any other application as you would be bypassing the BO rules/validation. </P>
+<P>However&nbsp;I can think when transactions should be used in SP's; when your BO sits accross more than one DB table (i.e. updates more than one DB table).&nbsp;Then that would make sense.&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Tuesday, June 20, 2006</h2><BLOCKQUOTE><div><img src="/Themes/basicblue/images/icon-quote.gif"> <strong>chriss:</strong></div><div>However&nbsp;I can think when transactions should be used in SP's; when your BO sits accross more than one DB table (i.e. updates more than one DB table).&nbsp;Then that would make sense.&nbsp;</div></BLOCKQUOTE><br><br>Actually I would argue this is where you'd have the BO control the transaction.&nbsp; The reason all those tables must commit changes as a unit is because they are all touched by your BO.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>chriss replied on Tuesday, June 20, 2006</h2><P>I may be missing the somthing still, but I mean when you want to delegate responsibility to update more than one DB table via a single stored proc called by&nbsp; the BO's <FONT size=2><FONT size=3>DataPortals Update/Delete methods. When/why one might need to do this is another question.</FONT></P></FONT>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>djjlewis replied on Tuesday, June 20, 2006</h2>I think I just needed a reality check... you're right that the BOs should considered the only safe access to an application and therefore would contain all data access/transactions/rule checking logic etc. It is possible that someone could bypass the transactions and use the SPs directly but I guess that should be treated as violation of the application design and would be no different than updating data directly in the table...something we hope won't happen very often! <br><br>The only exception to this would be things like reporting tools accessing the SPs directly, but of course this would predominately be 'select' queries and therefore transactions would not be an issue.<br><br>Thanks for the input,<br><br>Dan.<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

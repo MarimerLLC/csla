@@ -1,0 +1,154 @@
+<html><header><title>SortedBindingList Delete Bug</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>SortedBindingList Delete Bug</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/1801.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>xal posted on Monday, November 20, 2006</h2>Hey everyone, I've bumped into an issue with the sorted binding list. I've tested it in 2.1 and 2.1.1 and I get the same results.<br><br>If you want to avoid the explanation, I've attached a very simple test case of which only the Form_Load code is relevant (6 lines of code).<br><br>The problem goes like this:<br><br><ol><li>Create a new sorted binding list that points to an editable collection.</li><li>Add a new item to the list (whether you do it through the sorted binding list or the actual list is irrelevant).</li><li>Sort the list in <span>descending</span> order.</li><li>Remove the newly added item from the sorted list using it's index by using RemoveAt().</li></ol>Passing the actual object to remove() works correctly. The problem is that the new object's index is stored as if it were the count of the list instead of the count -1. I'll see if I can find where the problem is.<br><br><br>Andrés<br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>xal replied on Monday, November 20, 2006</h2>Ok, I've found the problem.<br><br>Inside RemoveAt() there's this line:<br>mSortIndex.RemoveAt(index)<br><br>It should be changed for this:<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; If mSortOrder = ListSortDirection.Ascending Then<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; mSortIndex.RemoveAt(index)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Else<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; mSortIndex.RemoveAt(mSortIndex.Count - 1 - index)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End If<br><br>Rocky, can you take a look at this?<br><br>Andrés<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, November 21, 2006</h2>I have fixed it in cvs, thanks for finding this.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>oshokodk replied on Thursday, December 07, 2006</h2><P class=MsoNormal>I found one more problem with RemoveAt(int index) method. </P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal>If any ListChange event is generated during item deletion then by the time _list.RemoveAt(baseIndex) returns, DoSort() has been executed and _sortIndex list is up to date. Any further adjustment to this list make it invalid. When grid refreshes itself, exception occurs. In a hurry I fixed this problem by changing two functions:</P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>public</SPAN><SPAN> <SPAN>void</SPAN> RemoveAt(<SPAN>int</SPAN> index)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>{<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>if</SPAN> (_sorted)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>{<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>_initiatedLocally = <SPAN>true</SPAN>;<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>int</SPAN> baseIndex = OriginalIndex(index);<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>// remove the item from the source list<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>_list.RemoveAt(baseIndex);<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>//if equal, DoSort has happened in reponse to event fired in //_list.RemoveAt. Aadjust sorted index only if needed.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>if (_list.Count != _sortIndex.Count)<SPAN>&nbsp;&nbsp;&nbsp; </SPAN><o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>{<SPAN>&nbsp;&nbsp; </SPAN><o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>// delete the corresponding value in the sort index<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>if</SPAN> (_sortOrder == <SPAN>ListSortDirection</SPAN>.Ascending)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>_sortIndex.RemoveAt(index);<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>else<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>_sortIndex.RemoveAt(_sortIndex.Count - 1 - index);<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>// now fix up all index pointers in the sort index<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>foreach</SPAN> (<SPAN>ListItem</SPAN> item <SPAN>in</SPAN> _sortIndex)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>if</SPAN> (item.BaseIndex &gt; baseIndex)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>item.BaseIndex -= 1;<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>}<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>OnListChanged(<SPAN>new</SPAN> <SPAN>ListChangedEventArgs</SPAN>(<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>ListChangedType</SPAN>.ItemDeleted, index));<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>_initiatedLocally = <SPAN>false</SPAN>;<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>}<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp; </SPAN><SPAN>&nbsp;&nbsp;&nbsp;</SPAN><SPAN>else<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>_list.RemoveAt(index);<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>}<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>private</SPAN><SPAN> <SPAN>void</SPAN> SourceChanged(<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>{<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>...<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>default</SPAN>:<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>// for anything other than add, delete or change<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>// just re-sort the list<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>if (!_initiatedLocally)<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>DoSort();<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>break</SPAN>;<o:p></o:p></SPAN></P>
+<P class=MsoNormal>}</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, January 10, 2007</h2>
+
+
+
+
+<DIV align=left><SPAN class=900482204-11012007><FONT face=Arial color=#0000ff size=2>Thanks for pointing this out, it will be fixed in 
+2.1.2.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=900482204-11012007><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=900482204-11012007><FONT face=Arial color=#0000ff size=2>Rocky</FONT></SPAN></DIV><BR>
+<BLOCKQUOTE>
+  <DIV class=OutlookMessageHeader align=left>
+  <HR>
+  <FONT face=Tahoma size=2><B>From:</B> oshokodk [mailto:cslanet@lhotka.net] 
+  <BR><B>Sent:</B> Thursday, December 07, 2006 4:27 PM<BR><B>To:</B> 
+  rocky@lhotka.net<BR><B>Subject:</B> Re: [CSLA .NET] SortedBindingList Delete 
+  Bug<BR></FONT><BR></DIV>
+  <DIV></DIV>
+  <P class=MsoNormal>I found one more problem with RemoveAt(int index) method. 
+  </P>
+  <P class=MsoNormal><O:P></O:P></P>
+  <P class=MsoNormal>If any ListChange event is generated during item deletion 
+  then by the time _list.RemoveAt(baseIndex) returns, DoSort() has been executed 
+  and _sortIndex list is up to date. Any further adjustment to this list make it 
+  invalid. When grid refreshes itself, exception occurs. In a hurry I fixed this 
+  problem by changing two functions:</P>
+  <P class=MsoNormal><SPAN><O:P></O:P></SPAN></P>
+  <P class=MsoNormal><SPAN>public</SPAN><SPAN> <SPAN>void</SPAN> 
+  RemoveAt(<SPAN>int</SPAN> index)<O:P></O:P></SPAN></P>
+  <P class=MsoNormal><SPAN>{<O:P></O:P></SPAN></P>
+  <P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+  </SPAN><SPAN>if</SPAN> (_sorted)<O:P></O:P></SPAN></P>
+  <P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+  </SPAN>{<O:P></O:P></SPAN></P>
+  <P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+  </SPAN>_initiatedLocally = <SPAN>true</SPAN>;<O:P></O:P></SPAN></P>
+  <P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+  </SPAN><SPAN>int</SPAN> baseIndex = 
+OriginalIndex(index);<O:P></O:P></SPAN></P>
+  <P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+  </SPAN><SPAN>// remove the item from the source 
+  list<O:P></O:P></SPAN></SPAN></P>
+  <P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+  </SPAN>_list.RemoveAt(baseIndex);<O:P></O:P></SPAN></P>
+  <P class=MsoNormal><SPAN><O:P></O:P></SPAN></P>
+  <P class=MsoNormal><SPAN>//if equal, DoSort has happened in reponse to event 
+  fired in //_list.RemoveAt. Aadjust sorted index only if 
+  needed.<O:P></O:P></SPAN></P>
+  <P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+  </SPAN>if (_list.Count != _sortIndex.Count)<SPAN>&nbsp;&nbsp;&nbsp; 
+  </SPAN><O:P></O:P></SPAN></P>
+  <P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+  </SPAN>{<SPAN>&nbsp;&nbsp; </SPAN><O:P></O:P></SPAN></P>
+  <P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+  </SPAN><SPAN>// delete the corresponding value in the sort 
+  index<O:P></O:P></SPAN></SPAN></P>
+  <P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+  </SPAN><SPAN>if</SPAN> (_sortOrder == 
+  <SPAN>ListSortDirection</SPAN>.Ascending)<O:P></O:P></SPAN></P>
+  <P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+  </SPAN>_sortIndex.RemoveAt(index);<O:P></O:P></SPAN></P>
+  <P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+  </SPAN><SPAN>else<O:P></O:P></SPAN></SPAN></P>
+  <P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+  </SPAN>_sortIndex.RemoveAt(_sortIndex.Count - 1 - 
+index);<O:P></O:P></SPAN></P>
+  <P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+  </SPAN><SPAN>// now fix up all index pointers in the sort 
+  index<O:P></O:P></SPAN></SPAN></P>
+  <P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+  </SPAN><SPAN>foreach</SPAN> (<SPAN>ListItem</SPAN> item <SPAN>in</SPAN> 
+  _sortIndex)<O:P></O:P></SPAN></P>
+  <P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+  </SPAN><SPAN>if</SPAN> (item.BaseIndex &gt; baseIndex)<O:P></O:P></SPAN></P>
+  <P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+  </SPAN>item.BaseIndex -= 1;<O:P></O:P></SPAN></P>
+  <P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+  </SPAN>}<O:P></O:P></SPAN></P>
+  <P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+  </SPAN>OnListChanged(<SPAN>new</SPAN> 
+  <SPAN>ListChangedEventArgs</SPAN>(<O:P></O:P></SPAN></P>
+  <P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+  </SPAN><SPAN>ListChangedType</SPAN>.ItemDeleted, 
+index));<O:P></O:P></SPAN></P>
+  <P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+  </SPAN>_initiatedLocally = <SPAN>false</SPAN>;<O:P></O:P></SPAN></P>
+  <P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+  </SPAN>}<O:P></O:P></SPAN></P>
+  <P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp; 
+  </SPAN><SPAN>&nbsp;&nbsp;&nbsp;</SPAN><SPAN>else<O:P></O:P></SPAN></SPAN></P>
+  <P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+  </SPAN>_list.RemoveAt(index);<O:P></O:P></SPAN></P>
+  <P class=MsoNormal><SPAN>}<O:P></O:P></SPAN></P>
+  <P class=MsoNormal><SPAN><O:P></O:P></SPAN></P>
+  <P class=MsoNormal><SPAN>private</SPAN><SPAN> <SPAN>void</SPAN> 
+  SourceChanged(<O:P></O:P></SPAN></P>
+  <P class=MsoNormal><SPAN>{<O:P></O:P></SPAN></P>
+  <P class=MsoNormal><SPAN>...<O:P></O:P></SPAN></P>
+  <P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+  </SPAN><SPAN>default</SPAN>:<O:P></O:P></SPAN></P>
+  <P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+  </SPAN><SPAN>// for anything other than add, delete or 
+  change<O:P></O:P></SPAN></SPAN></P>
+  <P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+  </SPAN><SPAN>// just re-sort the list<O:P></O:P></SPAN></SPAN></P>
+  <P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+  </SPAN><SPAN>if (!_initiatedLocally)<O:P></O:P></SPAN></SPAN></P>
+  <P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+  </SPAN>DoSort();<O:P></O:P></SPAN></P>
+  <P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+  </SPAN><SPAN>break</SPAN>;<O:P></O:P></SPAN></P>
+  <P class=MsoNormal>}</P><BR><BR><BR></BLOCKQUOTE></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

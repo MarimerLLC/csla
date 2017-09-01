@@ -1,0 +1,50 @@
+<html><header><title>Edit level mismatch in CopyState CSLA.net 4 ViewModel</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Edit level mismatch in CopyState CSLA.net 4 ViewModel</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9440.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>JJLoubser posted on Friday, August 27, 2010</h2><p>We use a RadContextMenu where the user can right click to do actions like ViewModels methods like:</p>
+<p>((CompanyGroupItemViewModel)treeViewListItem.ViewModel).EditItem();</p>
+<p>it takes you to:</p>
+<p>&nbsp;public void EditItem()<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; //Model.BeginEdit();</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Bxf.Shell.Instance.ShowView(&quot;StaffSense.Views.OrgStructure.CompanyGroupEdit, StaffSense&quot;,<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &quot;companyGroupViewModelViewSource&quot;,<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; new CompanyGroupViewModel(Model),<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &quot;MainContent&quot;);</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; //Model.CancelEdit();</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</p>
+<p>&nbsp;</p>
+<p>this take you to a new screen to change data of companyGroup... this works fine, but if you do it 3 times or next time the parent or child companygroup then it throws this error:</p>
+<p>Edit level mismatch in CopyState</p>
+<p>why?</p>
+<p>like you see in the code I tried BeginEdit and CancelEdit, but it do nothing for I do not know any case how to implement the XXXEdit&#39;s because like i understand there is no need to, is this a bug in viewmodel model?</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JJLoubser replied on Friday, August 27, 2010</h2><p>More details on when we get this error.</p>
+<p>We use the example from the MVVM video series as basis. Our structure is a bit more complex with grand children.</p>
+<p>our structure:</p>
+<p>ER (OrgStructure)</p>
+<p>&nbsp;EC (Company)</p>
+<p>&nbsp;&nbsp; ECL (CompanyGroup List)</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp; ER&nbsp; (Company Group)</p>
+<p>bind to/from:</p>
+<p>ViewModel (OrgStructureViewModel) //Model is ER (OrgStructure)</p>
+<p>&nbsp; Dependency Object (CompanyItemViewModel): In order to bind to EditItem method</p>
+<p>&nbsp;&nbsp; &nbsp;ViewModel (CompanyViewModel) //Model is EC (Company): In order to bind to Model. The model is passed from the CompanyItemViewModel</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Dependency Objects (CompanyGroupItemViewModels)</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Viewmodels (CompanyGroupViewModel) // Model is ER&nbsp; (Company Group)</p>
+<p>&nbsp;</p>
+<p>We also build an observable collection from this structure for the tree where a property of the treeitem is the specific ItemViewModel</p>
+<p>You can goto company group and edit the company group. As soon as you goto company to edit the company it throws an &#39;Edit level mismatch in CopyState&#39; as soon as the model is assigned:</p>
+<p>public CompanyGroupViewModel(CompanyGroupEC CompanyGroup)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Model = CompanyGroup; // throws error here<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</p>
+<p>Not sure why it gives this error. </p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JJLoubser replied on Friday, August 27, 2010</h2><p>you press button test and then test 2 then throw error on test 2:</p>
+<p>&nbsp;public void Test()<br />&nbsp;&nbsp;&nbsp; {</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Presenter.ShowStatus(new Status { IsBusy = true, Text = &quot;Change child...&quot; });<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; CompanyGroupViewModel companyGroupViewModel = new CompanyGroupViewModel(((CompanyGroupItemViewModel)_treeViewList[0].Children[0].ViewModel).Model);</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; companyGroupViewModel.Model.Name = &quot;Test&quot;;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; OnPropertyChanged(&quot;OrgStructList&quot;);</p>
+<p><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Presenter.ShowStatus(new Status());</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </p>
+<p>&nbsp;&nbsp;&nbsp; }</p>
+<p>&nbsp;&nbsp;&nbsp; public void Test2()<br />&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Presenter.ShowStatus(new Status { IsBusy = true, Text = &quot;change parent...&quot; });</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; CompanyViewModel companyViewModel = new CompanyViewModel(((CompanyItemViewModel)_treeViewList[0].ViewModel).Model); // throw error here</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; companyViewModel.Model.CompanyName = &quot;Test&quot;;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; OnPropertyChanged(&quot;OrgStructList&quot;);</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Presenter.ShowStatus(new Status());</p>
+<p>&nbsp;&nbsp;&nbsp; }</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JJLoubser replied on Friday, August 27, 2010</h2><p>this fix the error:</p>
+<p>&nbsp;</p>
+<p>&nbsp;public CompanyGroupViewModel(CompanyGroupEC CompanyGroup)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ManageObjectLifetime = false; // must be false for all child objects, only want this in parent<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Model = CompanyGroup;&nbsp;&nbsp;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</p>
+<p>&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

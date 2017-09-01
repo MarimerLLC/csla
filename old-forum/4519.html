@@ -1,0 +1,164 @@
+<html><header><title>Unit Test for Concurrency Check...?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Unit Test for Concurrency Check...?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4519.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>reagan123 posted on Wednesday, March 19, 2008</h2><P>Hello everyone.</P>
+<P>I'm using a datetime field&nbsp;for my concurrency checks.&nbsp; In my save stored procedure I use RAISERROR to throw an error if the record has been changed by someone else.</P>
+<P>This works great, but i'm trying to figure out what the best way to write a test to check this behavior.&nbsp; Currently I do the following which works, but I think the way I'm handling the catch is very poor.&nbsp; I basically want to catch the error I throw and handle it so the test passes, but I want any other failures to cause the test to fail.</P>
+<P>Any suggestions?<BR>Thanks!</P>
+<P><FONT size=2>&lt;Test()&gt; _<BR></FONT><FONT color=#0000ff size=2>Public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Sub</FONT><FONT size=2> ConcurrencyCheck_Person()</P>
+<P></FONT><FONT color=#0000ff size=2>Try</FONT></P>
+<P><FONT color=#0000ff size=2><FONT color=#008000>' create and save person</FONT><BR></FONT><FONT color=#0000ff size=2>Dim <FONT color=#000000>myGuid </FONT>as <FONT color=#000000>guid</FONT><BR></FONT><FONT color=#0000ff size=2>Dim</FONT><FONT size=2> myPerson </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> Person<BR>myPerson = Person.NewPerson<BR>myGuid = Person.Guid<BR></FONT><FONT size=2>myPerson.FName = </FONT><FONT color=#a31515 size=2>"John"<BR><FONT color=#000000>myPerson.LName = </FONT><FONT color=#a31515 size=2>"Doe"<BR></FONT></FONT><FONT size=2>myPerson.Save()<BR></FONT><FONT size=2><BR><FONT color=#008000>' get the person... this will have the dateTimeStamp that was set in the database on the save</FONT><BR>myPerson= Person.GetPerson(myGuid )</P>
+<P></FONT><FONT color=#008000 size=2>' print the original DateTimeStamp from the database<BR></FONT><FONT size=2>Debug.WriteLine(</FONT><FONT color=#a31515 size=2>"Old DTS = "</FONT><FONT size=2> &amp; myPerson.DateTimeStamp)</P>
+<P></FONT><FONT color=#008000 size=2>' make change and save.. This save should work fine<BR></FONT><FONT size=2>myPerson.FName = </FONT><FONT color=#a31515 size=2>"Jane"<BR></FONT><FONT size=2>myPerson.Save()</P>
+<P></FONT><FONT color=#008000 size=2>' print the updated DateTimeStamp after the object has been saved<BR></FONT><FONT size=2>Debug.WriteLine(</FONT><FONT color=#a31515 size=2>"New DTS = "</FONT><FONT size=2> &amp; myPerson.DateTimeStamp)</P>
+<P></FONT><FONT color=#008000 size=2>' change the datetimestamp so it doesn't match the Database<BR></FONT><FONT size=2>myPerson.DateTimeStamp = DateTime.Now.ToString</P>
+<P></FONT><FONT color=#008000 size=2>' this save should throw an exception because the DateTimeStamps will not match<BR></FONT><FONT size=2>wuc.Save()</P>
+<P></FONT><FONT color=#0000ff size=2>Catch</FONT><FONT size=2> ex </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> Foundation.Data.DataPortalException<BR>&nbsp;&nbsp;&nbsp;</FONT><FONT color=#0000ff size=2>If</FONT><FONT size=2> ex.InnerException.InnerException.Message.ToString = </FONT><FONT color=#a31515 size=2>"Concurrency check failed"</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Then<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</FONT><FONT size=2>Err.Clear()<BR>&nbsp;&nbsp;&nbsp;</FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>If</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Try</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Sub</P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Wednesday, March 19, 2008</h2>Are you using Nunit or the MS testing?<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>nermin replied on Wednesday, March 19, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Based on attribute above test method being &lt;Test()&gt; and
+not &lt;TestMethod()&gt; I presume that it is NUnit.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Reagan123 &#8211; couldn&#8217;t you just use ExpectedException attribute
+and then set it to the exception that you want to ignore?<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Nermin<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> ajj3085
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Wednesday, March 19, 2008 2:26 PM<br>
+<b>To:</b> Nermin Dibek<br>
+<b>Subject:</b> Re: [CSLA .NET] Unit Test for Concurrency Check...?<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Are you using Nunit or the MS testing?<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>reagan123 replied on Wednesday, March 19, 2008</h2><P>Thanks for the replies... Yes, I am using Nunit.</P>
+<P>"couldn’t you just use ExpectedException"<BR>Never heard of this before so I'll go do some researching... Thanks so far!</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>reagan123 replied on Wednesday, March 19, 2008</h2><P>Hmm... ExpectedException looks like exactly what I need, but now I have another issue.&nbsp; I believe the exception being raised now is a "DataPortalException"... The problem with this is that it may not be my concurrency issue that caused it... maybe something else happened.</P>
+<P>Any ideas on an approach to get around this?</P>
+<P>Thanks for the suggestion... I never knew about that attribute.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>nermin replied on Wednesday, March 19, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Let me re-phrase the question to make sure I understand exactly
+what you are asking:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I believe that your problem is that there are 2 different types
+of exceptions being thrown: One for the concurrency issue, and another
+unexpected one.&nbsp; <o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>However booth of these are wrapped into DataPortalException (as
+InnerException), and therefore it is hard for you to determine which one is it?
+And if you cannot determine that you cannot determine whether test passes or
+fails, right?<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>This seems like a question for Rocky, perhaps.&nbsp; Maybe what
+we need is a &#8220;configurable policy&#8221; in Csla itself that determines
+how exceptions are handled and passed to the client &#8211; in other words
+whether Original exception wrapped in DataPortalException is passed or the
+original exception is re-thrown on the client.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Another solution is to use this type of catch:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Catch(DataPortalException ex)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>{<o:p></o:p></span></p>
+
+<pre><span>&nbsp;&nbsp;&nbsp; </span>Assert.AreEqual (typeof (ExceptionTypeILookFor), ex.GetType());<span><o:p></o:p></span></pre>
+
+<p class=MsoNormal><span>}<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Hope that helps,<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Nermin<o:p></o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> reagan123
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Wednesday, March 19, 2008 3:46 PM<br>
+<b>To:</b> Nermin Dibek<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: Unit Test for Concurrency Check...?<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Hmm... ExpectedException looks like exactly what I need, but now I have
+another issue.&nbsp; I believe the exception being raised now is a
+&quot;DataPortalException&quot;... The problem with this is that it may not be
+my concurrency issue that caused it... maybe something else happened.<o:p></o:p></p>
+
+<p>Any ideas on an approach to get around this?<o:p></o:p></p>
+
+<p>Thanks for the suggestion... I never knew about that attribute.<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>stanc replied on Wednesday, March 19, 2008</h2>Your actual exception will be wrapped up in the DataPortalException. You should be able to drill down to get the actual exception that occured within the dataportal.</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

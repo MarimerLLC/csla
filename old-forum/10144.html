@@ -1,0 +1,20 @@
+<html><header><title>how Read Validation Message from Resource file</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>how Read Validation Message from Resource file</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10144.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>wasiuddin.786 posted on Wednesday, March 09, 2011</h2><p>i have two two project fro business model</p>
+<p>&nbsp;</p>
+<p>1)Model.Client</p>
+<p>2)Model.Server</p>
+<p>&nbsp;</p>
+<p>so how to add the resource file to server and how to add the link to client side</p>
+<p>please give me steps so i can read the validation massage from resource file</p>
+<p>&nbsp;</p>
+<p>it will should work client and serverside validation</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Wednesday, March 09, 2011</h2><p>Resource files are not so easily shared between assemblies by linking so I&#39;d suggest to add resources in a common location. </p>
+<p>1. Add a Model.Common assembly<br />2. Add resource strings to this assembly resource file. <br />3. Change AccessModifier on the resources in Model.Common from <b>Internal </b>to <b>Public </b></p>
+<p>Your resources will then be places into one assembly, will only need to be translated once and can be used in assemblies that reference Model.Common. </p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>wasiuddin.786 replied on Thursday, March 10, 2011</h2><p>but i saw in csla and csla.silverlight they using reource file from property addlink to csla.silverlight</p>
+<p>&nbsp;</p>
+<p>can we do like that</p>
+<p>please tell me the steps for</p>
+<p> model.client</p>
+<p>model.server</p>
+<p>&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

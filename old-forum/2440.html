@@ -1,0 +1,198 @@
+<html><header><title>WCF Error: Invalid token for impersonation - it cannot be duplicated.</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>WCF Error: Invalid token for impersonation - it cannot be duplicated.</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/2440.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>billa1972 posted on Tuesday, February 27, 2007</h2><P>Hi, </P>
+<P>Any one else get this error?&nbsp; </P>
+<P>I just downloaded latest from SVN trunk to play with WCF integration and I am getting the above error in the Dataportal.Client.WcfProxy.Fetch method.&nbsp; I've tried all sort of configurations in the app.config and can't find much on google about this error. The host is IIS and the Service.svc file looks like:</P><FONT size=2>
+<P>&lt;% @ServiceHost Language=VB Debug="true" Service="Csla.Server.Hosts.WcfPortal" %&gt;</P></FONT>
+<P>I'm using&nbsp;the following&nbsp;in my app.config &amp; web.config,&nbsp;and I get the same error without any bindingConfiguration&nbsp;(by the way, this was&nbsp;generated from the svcutil in win sdk.)</P><FONT color=#0000ff size=2>
+<P>App.Config<BR>&lt;</FONT><FONT color=#a31515 size=2>system.serviceModel</FONT><FONT color=#0000ff size=2>&gt;<BR>&lt;</FONT><FONT color=#a31515 size=2>bindings</FONT><FONT color=#0000ff size=2>&gt;<BR>&lt;</FONT><FONT color=#a31515 size=2>wsHttpBinding</FONT><FONT color=#0000ff size=2>&gt;<BR>&lt;</FONT><FONT color=#a31515 size=2>binding</FONT><FONT color=#0000ff size=2> </FONT><FONT color=#ff0000 size=2>name</FONT><FONT color=#0000ff size=2>=</FONT><FONT size=2>"</FONT><FONT color=#0000ff size=2>WSHttpBinding_IWcfPortal</FONT><FONT size=2>"</FONT><FONT color=#0000ff size=2> </FONT><FONT color=#ff0000 size=2>closeTimeout</FONT><FONT color=#0000ff size=2>=</FONT><FONT size=2>"</FONT><FONT color=#0000ff size=2>00:01:00</FONT><FONT size=2>"<BR></FONT><FONT color=#ff0000 size=2>openTimeout</FONT><FONT color=#0000ff size=2>=</FONT><FONT size=2>"</FONT><FONT color=#0000ff size=2>00:01:00</FONT><FONT size=2>"</FONT><FONT color=#0000ff size=2> </FONT><FONT color=#ff0000 size=2>receiveTimeout</FONT><FONT color=#0000ff size=2>=</FONT><FONT size=2>"</FONT><FONT color=#0000ff size=2>00:10:00</FONT><FONT size=2>"</FONT><FONT color=#0000ff size=2> </FONT><FONT color=#ff0000 size=2>sendTimeout</FONT><FONT color=#0000ff size=2>=</FONT><FONT size=2>"</FONT><FONT color=#0000ff size=2>00:01:00</FONT><FONT size=2>"<BR></FONT><FONT color=#ff0000 size=2>bypassProxyOnLocal</FONT><FONT color=#0000ff size=2>=</FONT><FONT size=2>"</FONT><FONT color=#0000ff size=2>false</FONT><FONT size=2>"</FONT><FONT color=#0000ff size=2> </FONT><FONT color=#ff0000 size=2>transactionFlow</FONT><FONT color=#0000ff size=2>=</FONT><FONT size=2>"</FONT><FONT color=#0000ff size=2>false</FONT><FONT size=2>"</FONT><FONT color=#0000ff size=2> </FONT><FONT color=#ff0000 size=2>hostNameComparisonMode</FONT><FONT color=#0000ff size=2>=</FONT><FONT size=2>"</FONT><FONT color=#0000ff size=2>StrongWildcard</FONT><FONT size=2>"<BR></FONT><FONT color=#ff0000 size=2>maxBufferPoolSize</FONT><FONT color=#0000ff size=2>=</FONT><FONT size=2>"</FONT><FONT color=#0000ff size=2>524288</FONT><FONT size=2>"</FONT><FONT color=#0000ff size=2> </FONT><FONT color=#ff0000 size=2>maxReceivedMessageSize</FONT><FONT color=#0000ff size=2>=</FONT><FONT size=2>"</FONT><FONT color=#0000ff size=2>65536</FONT><FONT size=2>"<BR></FONT><FONT color=#ff0000 size=2>messageEncoding</FONT><FONT color=#0000ff size=2>=</FONT><FONT size=2>"</FONT><FONT color=#0000ff size=2>Text</FONT><FONT size=2>"</FONT><FONT color=#0000ff size=2> </FONT><FONT color=#ff0000 size=2>textEncoding</FONT><FONT color=#0000ff size=2>=</FONT><FONT size=2>"</FONT><FONT color=#0000ff size=2>utf-8</FONT><FONT size=2>"</FONT><FONT color=#0000ff size=2> </FONT><FONT color=#ff0000 size=2>useDefaultWebProxy</FONT><FONT color=#0000ff size=2>=</FONT><FONT size=2>"</FONT><FONT color=#0000ff size=2>true</FONT><FONT size=2>"<BR></FONT><FONT color=#ff0000 size=2>allowCookies</FONT><FONT color=#0000ff size=2>=</FONT><FONT size=2>"</FONT><FONT color=#0000ff size=2>false</FONT><FONT size=2>"</FONT><FONT color=#0000ff size=2>&gt;<BR>&lt;</FONT><FONT color=#a31515 size=2>readerQuotas</FONT><FONT color=#0000ff size=2> </FONT><FONT color=#ff0000 size=2>maxDepth</FONT><FONT color=#0000ff size=2>=</FONT><FONT size=2>"</FONT><FONT color=#0000ff size=2>32</FONT><FONT size=2>"</FONT><FONT color=#0000ff size=2> </FONT><FONT color=#ff0000 size=2>maxStringContentLength</FONT><FONT color=#0000ff size=2>=</FONT><FONT size=2>"</FONT><FONT color=#0000ff size=2>8192</FONT><FONT size=2>"</FONT><FONT color=#0000ff size=2> </FONT><FONT color=#ff0000 size=2>maxArrayLength</FONT><FONT color=#0000ff size=2>=</FONT><FONT size=2>"</FONT><FONT color=#0000ff size=2>16384</FONT><FONT size=2>"<BR></FONT><FONT color=#ff0000 size=2>maxBytesPerRead</FONT><FONT color=#0000ff size=2>=</FONT><FONT size=2>"</FONT><FONT color=#0000ff size=2>4096</FONT><FONT size=2>"</FONT><FONT color=#0000ff size=2> </FONT><FONT color=#ff0000 size=2>maxNameTableCharCount</FONT><FONT color=#0000ff size=2>=</FONT><FONT size=2>"</FONT><FONT color=#0000ff size=2>16384</FONT><FONT size=2>"</FONT><FONT color=#0000ff size=2> /&gt;<BR>&lt;</FONT><FONT color=#a31515 size=2>reliableSession</FONT><FONT color=#0000ff size=2> </FONT><FONT color=#ff0000 size=2>ordered</FONT><FONT color=#0000ff size=2>=</FONT><FONT size=2>"</FONT><FONT color=#0000ff size=2>true</FONT><FONT size=2>"</FONT><FONT color=#0000ff size=2> </FONT><FONT color=#ff0000 size=2>inactivityTimeout</FONT><FONT color=#0000ff size=2>=</FONT><FONT size=2>"</FONT><FONT color=#0000ff size=2>00:10:00</FONT><FONT size=2>"<BR></FONT><FONT color=#ff0000 size=2>enabled</FONT><FONT color=#0000ff size=2>=</FONT><FONT size=2>"</FONT><FONT color=#0000ff size=2>false</FONT><FONT size=2>"</FONT><FONT color=#0000ff size=2> /&gt;<BR>&lt;</FONT><FONT color=#a31515 size=2>security</FONT><FONT color=#0000ff size=2> </FONT><FONT color=#ff0000 size=2>mode</FONT><FONT color=#0000ff size=2>=</FONT><FONT size=2>"</FONT><FONT color=#0000ff size=2>Message</FONT><FONT size=2>"</FONT><FONT color=#0000ff size=2>&gt;<BR>&lt;</FONT><FONT color=#a31515 size=2>transport</FONT><FONT color=#0000ff size=2> </FONT><FONT color=#ff0000 size=2>clientCredentialType</FONT><FONT color=#0000ff size=2>=</FONT><FONT size=2>"</FONT><FONT color=#0000ff size=2>Windows</FONT><FONT size=2>"</FONT><FONT color=#0000ff size=2> </FONT><FONT color=#ff0000 size=2>proxyCredentialType</FONT><FONT color=#0000ff size=2>=</FONT><FONT size=2>"</FONT><FONT color=#0000ff size=2>None</FONT><FONT size=2>" </FONT><FONT color=#ff0000 size=2>realm</FONT><FONT color=#0000ff size=2>=</FONT><FONT size=2>""</FONT><FONT color=#0000ff size=2> /&gt;<BR>&lt;</FONT><FONT color=#a31515 size=2>message</FONT><FONT color=#0000ff size=2> </FONT><FONT color=#ff0000 size=2>clientCredentialType</FONT><FONT color=#0000ff size=2>=</FONT><FONT size=2>"</FONT><FONT color=#0000ff size=2>Windows</FONT><FONT size=2>"</FONT><FONT color=#0000ff size=2> </FONT><FONT color=#ff0000 size=2>negotiateServiceCredential</FONT><FONT color=#0000ff size=2>=</FONT><FONT size=2>"</FONT><FONT color=#0000ff size=2>true</FONT><FONT size=2>"<BR></FONT><FONT color=#ff0000 size=2>algorithmSuite</FONT><FONT color=#0000ff size=2>=</FONT><FONT size=2>"</FONT><FONT color=#0000ff size=2>Default</FONT><FONT size=2>"</FONT><FONT color=#0000ff size=2> </FONT><FONT color=#ff0000 size=2>establishSecurityContext</FONT><FONT color=#0000ff size=2>=</FONT><FONT size=2>"</FONT><FONT color=#0000ff size=2>true</FONT><FONT size=2>"</FONT><FONT color=#0000ff size=2> /&gt;<BR>&lt;/</FONT><FONT color=#a31515 size=2>security</FONT><FONT color=#0000ff size=2>&gt;<BR>&lt;/</FONT><FONT color=#a31515 size=2>binding</FONT><FONT color=#0000ff size=2>&gt;<BR>&lt;/</FONT><FONT color=#a31515 size=2>wsHttpBinding</FONT><FONT color=#0000ff size=2>&gt;<BR>&lt;/</FONT><FONT color=#a31515 size=2>bindings</FONT><FONT color=#0000ff size=2>&gt;</P>
+<P>&lt;</FONT><FONT color=#a31515 size=2>client</FONT><FONT color=#0000ff size=2>&gt;<BR>&lt;</FONT><FONT color=#a31515 size=2>endpoint</FONT><FONT color=#0000ff size=2> </FONT><FONT color=#ff0000 size=2>address</FONT><FONT color=#0000ff size=2>=</FONT><FONT size=2>"</FONT><FONT color=#0000ff size=2>http://localhost/eFileServices/Service.svc</FONT><FONT size=2>"<BR></FONT><FONT color=#ff0000 size=2>binding</FONT><FONT color=#0000ff size=2>=</FONT><FONT size=2>"</FONT><FONT color=#0000ff size=2>wsHttpBinding</FONT><FONT size=2>"</FONT><FONT color=#0000ff size=2> </FONT><FONT color=#ff0000 size=2>bindingConfiguration</FONT><FONT color=#0000ff size=2>=</FONT><FONT size=2>"</FONT><FONT color=#0000ff size=2>WSHttpBinding_IWcfPortal</FONT><FONT size=2>"<BR></FONT><FONT color=#ff0000 size=2>contract</FONT><FONT color=#0000ff size=2>=</FONT><FONT size=2>"</FONT><FONT color=#0000ff size=2>Csla.Server.Hosts.IWcfPortal</FONT><FONT size=2>"</FONT><FONT color=#0000ff size=2> </FONT><FONT color=#ff0000 size=2>name</FONT><FONT color=#0000ff size=2>=</FONT><FONT size=2>"</FONT><FONT color=#0000ff size=2>WcfDataPortal</FONT><FONT size=2>"</FONT><FONT color=#0000ff size=2>&gt;<BR>&lt;</FONT><FONT color=#a31515 size=2>identity</FONT><FONT color=#0000ff size=2>&gt;<BR>&lt;</FONT><FONT color=#a31515 size=2>userPrincipalName</FONT><FONT color=#0000ff size=2> </FONT><FONT color=#ff0000 size=2>value</FONT><FONT color=#0000ff size=2>=</FONT><FONT size=2>"</FONT><FONT color=#0000ff size=2>MyMachineName\ASPNET</FONT><FONT size=2>"</FONT><FONT color=#0000ff size=2> /&gt;<BR>&lt;/</FONT><FONT color=#a31515 size=2>identity</FONT><FONT color=#0000ff size=2>&gt;<BR>&lt;/</FONT><FONT color=#a31515 size=2>endpoint</FONT><FONT color=#0000ff size=2>&gt;<BR>&lt;/<FONT color=#a31515>client</FONT><FONT color=#0000ff size=2>&gt;</FONT></FONT><FONT color=#0000ff size=2><BR>&lt;/<FONT color=#a31515 size=2>system.serviceModel</FONT><FONT color=#0000ff size=2>&gt;</FONT></FONT></P>
+<P><FONT color=#0000ff size=2>Web.config looks like (generated from the Service Config Editor from sdk):</FONT></P><FONT color=#0000ff size=2><FONT color=#0000ff size=2>
+<P>&lt;</FONT><FONT color=#a31515 size=2>system.serviceModel</FONT><FONT color=#0000ff size=2>&gt;<BR>&lt;</FONT><FONT color=#a31515 size=2>diagnostics</FONT><FONT color=#0000ff size=2>&gt;<BR>&lt;</FONT><FONT color=#a31515 size=2>messageLogging</FONT><FONT color=#0000ff size=2> </FONT><FONT color=#ff0000 size=2>logEntireMessage</FONT><FONT color=#0000ff size=2>=</FONT><FONT color=#000000 size=2>"</FONT><FONT color=#0000ff size=2>true</FONT><FONT color=#000000 size=2>"</FONT><FONT color=#0000ff size=2> </FONT><FONT color=#ff0000 size=2>logMalformedMessages</FONT><FONT color=#0000ff size=2>=</FONT><FONT color=#000000 size=2>"</FONT><FONT color=#0000ff size=2>true</FONT><FONT size=2><FONT color=#000000>"<BR></FONT></FONT><FONT color=#ff0000 size=2>logMessagesAtServiceLevel</FONT><FONT color=#0000ff size=2>=</FONT><FONT color=#000000 size=2>"</FONT><FONT color=#0000ff size=2>true</FONT><FONT color=#000000 size=2>"</FONT><FONT color=#0000ff size=2> </FONT><FONT color=#ff0000 size=2>logMessagesAtTransportLevel</FONT><FONT color=#0000ff size=2>=</FONT><FONT color=#000000 size=2>"</FONT><FONT color=#0000ff size=2>true</FONT><FONT color=#000000 size=2>"</FONT><FONT color=#0000ff size=2> /&gt;<BR>&lt;/</FONT><FONT color=#a31515 size=2>diagnostics</FONT><FONT color=#0000ff size=2>&gt;<BR>&lt;</FONT><FONT color=#a31515 size=2>behaviors</FONT><FONT color=#0000ff size=2>&gt;<BR>&lt;</FONT><FONT color=#a31515 size=2>serviceBehaviors</FONT><FONT color=#0000ff size=2>&gt;<BR>&lt;</FONT><FONT color=#a31515 size=2>behavior</FONT><FONT color=#0000ff size=2> </FONT><FONT color=#ff0000 size=2>name</FONT><FONT color=#0000ff size=2>=</FONT><FONT color=#000000 size=2>"</FONT><FONT color=#0000ff size=2>MetadataBehavior</FONT><FONT color=#000000 size=2>"</FONT><FONT color=#0000ff size=2>&gt;<BR>&lt;</FONT><FONT color=#a31515 size=2>serviceMetadata</FONT><FONT color=#0000ff size=2> </FONT><FONT color=#ff0000 size=2>httpGetEnabled</FONT><FONT color=#0000ff size=2>=</FONT><FONT color=#000000 size=2>"</FONT><FONT color=#0000ff size=2>true</FONT><FONT color=#000000 size=2>"</FONT><FONT color=#0000ff size=2> /&gt;<BR>&lt;</FONT><FONT color=#a31515 size=2>serviceDebug</FONT><FONT color=#0000ff size=2> </FONT><FONT color=#ff0000 size=2>includeExceptionDetailInFaults</FONT><FONT color=#0000ff size=2>=</FONT><FONT color=#000000 size=2>"</FONT><FONT color=#0000ff size=2>true</FONT><FONT color=#000000 size=2>"</FONT><FONT color=#0000ff size=2> /&gt;<BR>&lt;/</FONT><FONT color=#a31515 size=2>behavior</FONT><FONT color=#0000ff size=2>&gt;<BR>&lt;/</FONT><FONT color=#a31515 size=2>serviceBehaviors</FONT><FONT color=#0000ff size=2>&gt;<BR>&lt;/</FONT><FONT color=#a31515 size=2>behaviors</FONT><FONT color=#0000ff size=2>&gt;<BR>&lt;</FONT><FONT color=#a31515 size=2>services</FONT><FONT color=#0000ff size=2>&gt;<BR>&lt;</FONT><FONT color=#a31515 size=2>service</FONT><FONT color=#0000ff size=2> </FONT><FONT color=#ff0000 size=2>behaviorConfiguration</FONT><FONT color=#0000ff size=2>=</FONT><FONT color=#000000 size=2>"</FONT><FONT color=#0000ff size=2>MetadataBehavior</FONT><FONT color=#000000 size=2>"</FONT><FONT color=#0000ff size=2> </FONT><FONT color=#ff0000 size=2>name</FONT><FONT color=#0000ff size=2>=</FONT><FONT color=#000000 size=2>"</FONT><FONT color=#0000ff size=2>Csla.Server.Hosts.WcfPortal</FONT><FONT color=#000000 size=2>"</FONT><FONT color=#0000ff size=2>&gt;<BR>&lt;</FONT><FONT color=#a31515 size=2>endpoint</FONT><FONT color=#0000ff size=2> </FONT><FONT color=#ff0000 size=2>address</FONT><FONT color=#0000ff size=2>=</FONT><FONT color=#000000 size=2>"</FONT><FONT color=#0000ff size=2>http://localhost/eFileServices/Service.svc</FONT><FONT size=2><FONT color=#000000>"<BR></FONT></FONT><FONT color=#ff0000 size=2>binding</FONT><FONT color=#0000ff size=2>=</FONT><FONT color=#000000 size=2>"</FONT><FONT color=#0000ff size=2>wsHttpBinding</FONT><FONT color=#000000 size=2>"</FONT><FONT color=#0000ff size=2> </FONT><FONT color=#ff0000 size=2>contract</FONT><FONT color=#0000ff size=2>=</FONT><FONT color=#000000 size=2>"</FONT><FONT color=#0000ff size=2>Csla.Server.Hosts.IWcfPortal</FONT><FONT color=#000000 size=2>"</FONT><FONT color=#0000ff size=2> /&gt;<BR>&lt;/</FONT><FONT color=#a31515 size=2>service</FONT><FONT color=#0000ff size=2>&gt;<BR>&lt;/</FONT><FONT color=#a31515 size=2>services</FONT><FONT color=#0000ff size=2>&gt;<BR>&lt;/</FONT><FONT color=#a31515 size=2>system.serviceModel</FONT><FONT color=#0000ff size=2>&gt;</P></FONT></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Wednesday, February 28, 2007</h2>This is the old double hop issue, but I can't be sure because I've not dived into Wcf.&nbsp; <br><br>I hit this myself using .Net remoting..<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, February 28, 2007</h2><P>Why are you specifying the userPrincipalName on the client?</P>
+<P>I think Andy is right - by doing that, you are causing the client to start with that token and pass it to the app server, which probably works. But if the app server then tries to use SSPI to talk to the database you'll blow up because an impersonated token can't be re-impersonated.</P>
+<P>If you can use different credentials to get from the client to the app server (either the user's crednetials or allow anonymous access to the vroot) that should resolve the issue.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sacarro replied on Wednesday, September 10, 2008</h2>Has anybody found a solution for this yet? I have a standalone application server running my wcf services and IIS running a web application that hosts my CSLA objecst. When I make the dataportal call from the webserver, it gives the invalid token error. The web.config has the following security set up:<br>&lt;authentication mode="Windows"/&gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br>....<br>&nbsp;&lt;security mode="Transport"&gt;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;transport clientCredentialType="Windows" protectionLevel="EncryptAndSign" /&gt;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;message clientCredentialType="Windows" /&gt;<br>&lt;/security&gt; <br><br>which is what I want. Does anybody have a solution? Or should I just set up a wcf client call in my CSLA dataportal and run them all dataportal operation locally in order to keep security?<br><br>Thanks,<br>~Sam<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, September 10, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>What would you do differently in your config, or setting up the
+proxy, to get your manual WCF calls to work?<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>In other words, the data portal is just using WCF. Why do you
+think using a &#8220;direct&#8221; service call will work any differently?<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Or to put it yet another way, if you can get a &#8220;direct&#8221;
+call to work, what did you do in the config or proxy initialization that is
+different from what the data portal does? That should shed some light on what
+needs to be done with the data portal (config or WcfProxy code) to make it
+work.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> sacarro
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Wednesday, September 10, 2008 7:59 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] WCF Error: Invalid token for impersonation - it
+cannot be duplicated.<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Has anybody found a solution for this yet? I have a
+standalone application server running my wcf services and IIS running a web
+application that hosts my CSLA objecst. When I make the dataportal call from
+the webserver, it gives the invalid token error. The web.config has the
+following security set up:<br>
+&lt;authentication mode=&quot;Windows&quot;/&gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br>
+....<br>
+&nbsp;&lt;security mode=&quot;Transport&quot;&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&lt;transport clientCredentialType=&quot;Windows&quot;
+protectionLevel=&quot;EncryptAndSign&quot; /&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;message
+clientCredentialType=&quot;Windows&quot; /&gt;<br>
+&lt;/security&gt; <br>
+<br>
+which is what I want. Does anybody have a solution? Or should I just set up a
+wcf client call in my CSLA dataportal and run them all dataportal operation
+locally in order to keep security?<br>
+<br>
+Thanks,<br>
+~Sam<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sacarro replied on Wednesday, September 10, 2008</h2>I think this is what you were asking for This the web code to get the service calls:<br><br>// Works<br>&nbsp; using (ServiceClient client = new ServiceClient())<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ClientNameLiteral.Text =&nbsp; client.GetName();<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>// Impersonation Issue<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; CslaClient wcfCslaClient = CslaClient .GetName();<br><br><br>The config:<br><br>&nbsp;&lt;endpoint address="net.tcp://localhost:8765/Service/ServiceClient"<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; binding="netTcpBinding" bindingConfiguration="ServiceClientBinding"<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; contract="Service.ServiceClient"<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; name="ServiceClient"&gt;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/endpoint&gt;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;endpoint name="WcfDataPortal"<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; address=""net.tcp://localhost:8765/Service/CslaDataPortal/"<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; binding="netTcpBinding"<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; bindingConfiguration="ServiceClientBinding"<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; contract="Csla.Server.Hosts.IWcfPortal"&gt;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/endpoint&gt;<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, September 15, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>So basically you need some way to alter or customize the proxy
+object before it is used?<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>That makes sense. I was recently talking to Miguel Castro about
+a similar scenario, and I think the answer is to alter WcfProxy so the proxy is
+a protected member. That way you can subclass WcfProxy and alter the actual WCF
+proxy object as needed based on various security configurations.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>You can already subclass WcfProxy to change the endpoint name
+used from the config file &#8211; this would just be one extra feature in that
+same vein.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> sacarro
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Wednesday, September 10, 2008 9:20 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: WCF Error: Invalid token for impersonation
+- it cannot be duplicated.<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>I think this is what you were asking for This the web code
+to get the service calls:<br>
+<br>
+// Works<br>
+&nbsp; using (ServiceClient client = new ServiceClient())<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+ClientNameLiteral.Text =&nbsp; client.GetName();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+// Impersonation Issue<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; CslaClient
+wcfCslaClient = CslaClient .GetName();<br>
+<br>
+<br>
+The config:<br>
+<br>
+&nbsp;&lt;endpoint
+address=&quot;net.tcp://localhost:8765/Service/ServiceClient&quot;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+binding=&quot;netTcpBinding&quot;
+bindingConfiguration=&quot;ServiceClientBinding&quot;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; contract=&quot;Service.ServiceClient&quot;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; name=&quot;ServiceC
+lient&quot;&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/endpoint&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;endpoint name=&quot;WcfDataPortal&quot;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+address=&quot;&quot;net.tcp://localhost:8765/Service/CslaDataPortal/&quot;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+binding=&quot;netTcpBinding&quot;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+bindingConfiguration=&quot;ServiceClientBinding&quot;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+contract=&quot;Csla.Server.Hosts.IWcfPortal&quot;&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/endpoint&gt;<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, September 15, 2008</h2><P>I put a test release of 3.5.2 online just now, and it includes a couple virtual methods in WcfProxy that you should be able to use to alter the channel factory and proxy objects.</P>
+<P>You can override GetChannelFactory() to initialize (or even create your own) ChannelFactory&lt;IWcfPortal&gt;. The base implementation simply creates the channel factory, so you could do this:</P>
+<BLOCKQUOTE dir=ltr>
+<P>protected override ChannelFactory&lt;IWcfPortal&gt; GetChannelFactory()<BR>{<BR>&nbsp; var f = base.GetChannelFactory();<BR>&nbsp; // set properties of f here<BR>&nbsp; return f;<BR>}</P></BLOCKQUOTE>
+<P>You can do the same thing with GetProxy(), which is responsible for creating the proxy based on the channel factory.</P>
+<P>I think you can use these methods to set nearly any security-related (or other) properties or values necessary to customize how the objects are created.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sacarro replied on Monday, September 15, 2008</h2>Great I will test that out. Thanks for the quick response and solution. Also good to hear Miguel is still actively giving you suggestions. :)<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

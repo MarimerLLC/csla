@@ -1,0 +1,13 @@
+<html><header><title>DataPortal_Fetch not implemented</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>DataPortal_Fetch not implemented</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/12450.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>un7lg posted on Thursday, March 06, 2014</h2><p>I try ProjectTracker with SL with CSLA 4.3.14.0</p>
+<p>I got this message &quot;DataPortal_Fetch not implemented&quot; on LogIn procedure:</p>
+<p>&nbsp;public static void GetPTIdentity(string username, string password, EventHandler&lt;DataPortalResult&lt;PTIdentity&gt;&gt; callback)</p>
+<p>&nbsp; &nbsp; {</p>
+<p>DataPortal.BeginFetch&lt;PTIdentity&gt;(new UsernameCriteria(username, password), callback);</p>
+<p>&nbsp; &nbsp; }</p>
+<p>In my App.xaml Start_Up I have</p>
+<p>&nbsp; Csla.DataPortal.ProxyTypeName = &quot;Local&quot;;</p>
+<p>&nbsp;</p>
+<p>What could be the reason?</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Saturday, March 08, 2014</h2><p>Most likely caused by PTIdentity.DataPortal_Fetch not implemented in the SL business assembly.&nbsp;</p>
+<p>SL has no direct database access so I assume this sample will not work with &quot;local&quot; &nbsp;DataPortal proxt.&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

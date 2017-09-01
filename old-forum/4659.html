@@ -1,0 +1,197 @@
+<html><header><title>Using CommandBase</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Using CommandBase</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4659.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>dtabako posted on Thursday, April 10, 2008</h2><P>OK, I've scanned over a lot of threads in this forum about the use of CommandBase and I want to see if I'm clear on some things. It looks like, if I need to run a simple SQL statement (or a SP)&nbsp;on the server I have a few options:</P>
+<P>1. Use a command object and pass my criteria data into the Execute() method. Execute() will also, obviously, execute the command.</P>
+<P>2. Use a read-only BO and create properties for the criteria data. I'm not entirely sure which method executes the command in this case.</P>
+<P>3. Use an editable BO, create properties for the criteria data, and use the Save() method to execute the command.</P>
+<P>From what I gathered, I concluded:</P>
+<P>1. Using a CommandBase or&nbsp; a read-only BO&nbsp;object works well if you have few or no criteria and the criteria you do have does not need to be validated in any way.</P>
+<P>2. Using an editable BO works well where you have a lot of criteria or where that&nbsp;criteria that needs to be validated.</P>
+<P>Have I concluded correctly? If not, where am I off? If I am correct, what would differentiate where I would want to use a command object from where I want to use a read-only object? Also, how exactly would I use a read-only object?&nbsp;Sorry if I'm rehashing tired old questions. I'm pretty new to this framework and I just want to make sure I understand things before I go rattling off dozens of objects.</P>
+<P>Thanks, Dennis</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Thursday, April 10, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>If you want to simply update something in the database based on
+parameters, you need to use command base (AKA ExecuteNonQuery).&nbsp; If you
+want to get some data you use any of the three (AKA execute reader or
+ExecuteNonQuery and get values from parameters).&nbsp; All three do support parameters.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Senior Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> dtabako
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Thursday, April 10, 2008 11:46 AM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> [CSLA .NET] Using CommandBase<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>OK, I've scanned over a lot of threads in this forum about the use of
+CommandBase and I want to see if I'm clear on some things. It looks like, if I
+need to run a simple SQL statement (or a SP)&nbsp;on the server I have a few
+options:<o:p></o:p></p>
+
+<p>1. Use a command object and pass my criteria data into the Execute() method.
+Execute() will also, obviously, execute the command.<o:p></o:p></p>
+
+<p>2. Use a read-only BO and create properties for the criteria data. I'm not
+entirely sure which method executes the command in this case.<o:p></o:p></p>
+
+<p>3. Use an editable BO, create properties for the criteria data, and use the
+Save() method to execute the command.<o:p></o:p></p>
+
+<p>From what I gathered, I concluded:<o:p></o:p></p>
+
+<p>1. Using a CommandBase or&nbsp; a read-only BO&nbsp;object works well if you
+have few or no criteria and the criteria you do have does not need to be
+validated in any way.<o:p></o:p></p>
+
+<p>2. Using an editable BO works well where you have a lot of criteria or where
+that&nbsp;criteria that needs to be validated.<o:p></o:p></p>
+
+<p>Have I concluded correctly? If not, where am I off? If I am correct, what
+would differentiate where I would want to use a command object from where I
+want to use a read-only object? Also, how exactly would I use a read-only
+object?&nbsp;Sorry if I'm rehashing tired old questions. I'm pretty new to this
+framework and I just want to make sure I understand things before I go rattling
+off dozens of objects.<o:p></o:p></p>
+
+<p>Thanks, Dennis<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>dtabako replied on Saturday, April 12, 2008</h2><P>Thanks for the reply Sergey. For most instances, I'm just kicking off some routine to be processed on the server. Some functions require very few input parameters and some require a lot. For CommandBase and ReadOnly-based objects, the only way I see to set parameters is in the Execute/Factory method respectively. Meaning that if I had to pass, say, 15 input parameters I would have to have 15 parameters to the Execute/Factory method. If I want to avoid that, I could use a BusinessBase object, use properties for the input parameters, and use the Insert or Save method to execute the command. Is there something I'm missing or do i have that right?</P>
+<P>Thanks,</P>
+<P>Dennis</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Saturday, April 12, 2008</h2><P>You are correct, you can use a BusinessBase object to store the 15 values, then have the Command object keep a reference to the BB as a private field so it is available to the DP_Execute() method. </P>
+<P>This is a particularly powerful technique for cases where the user needs to enter those 15 values, because you can simply bind the BB object to a UI for the user to do the entry.</P>
+<P>One note is that the BB object will probably have no DataPortal_XYZ methods at all, because it has no persistance - and that's fine.</P>
+<P>This technique is also really useful for scenarios where you allow the user to enter various criteria values and then use them to populate a read-only list. Just have the criteria object contain the BB so the properties are available to the list object's DataPortal_Fetch() method on the server.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>dtabako replied on Monday, April 14, 2008</h2><P>Thanks Rocky! I was thinking more along the lines of having the BB object store the data and kick off the process - but I like the idea of having it as a backing object for a CommandBase better! As you mentioned I was&nbsp;planning to use&nbsp;a BB&nbsp;for the more complex user entry because of the databinding and validation capabilities. So I think the way I'll go is for functions with more rudimentary input needs - few input items with no validation necessary - I'll go with a straight CommandBase object. And for functions with complex input needs I'll back a CommandBase object with a BusinessBase object that I can use for databinding and validating.</P>
+<P>One other thing I'm not quite clear on: In the old app I'm rewriting (an older non-relational, proprietary system) a lot of processing is done in the following manner:</P>
+<P>Read&nbsp;a record from a file</P>
+<P>Do the necessary processing with it (possibly multiple actions, like posting various totals to various G/L accounts, moving the record from an open order file to an invoice file, etc.)</P>
+<P>Go back to step 1 and repeat until you've gone through the whole file</P>
+<P>What I'm wondering is, how is the best way to handle something like that? From a workflow perspective it seems to make more sense to handle each entity (not necessarily each record, but perhaps an entire sales order at a time) individually - similar to the current processing model. But from a performance perspective it seems like it would be more efficient to try to write complex SQL to handle things in batches. Are there any guidelines or best practices that can help me out here?</P>
+<P>Thanks, Dennis</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Tuesday, April 15, 2008</h2><P>I have written a few things like what you are describing.</P>
+<P>Here is my approach.</P>
+<P>I have a single Winform which is essentially invisible. The app is run on a scheduled basis and checks for the existence of the file. If it finds it, then it imports it into an in memory structure - probably a DataTable. Then the input file is moved to an Archive using yyyymmddOrigName.OrigExt as the new name.</P>
+<P>The code in the program then processes the data in the data table by creating a CSLA BO and then populating it with the current row of data. Then I call BO.IsValid and if everything checks out I try to save it in a Try Catch block. If the Save succeeds I continue processing. If the save fails, I log the failure and list of broken rules and increment the count of failures by 1. Then I continue processing. Each success increments the count of successes. At the end I log the number of records that were in the file and the number successfully processed and the number that failed. Obviously corrective action needs to be taken for the failures. (Re-submit a corrected file with only the&nbsp;records that failed previously.)</P>
+<P>I have followed this pattern 3-4 times and it works quite well. I especially like the fact that I can re-use the BOs from my Web app for this purpose with no code changes at all. They contain all of the properties and validation code already and I just load them up and check to see if they are valid. I have a&nbsp;few helper methods to extract data from the data table - mostly to deal with the Null value issues.</P>
+<P>HTH</P>
+<P>Joe</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Saturday, April 12, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Nope, you got it right.&nbsp; Although, I would personally use
+command base and pass in 15 parameters if necessary.&nbsp; Just seems cleaner
+to me.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Senior Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> dtabako
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Saturday, April 12, 2008 12:19 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: Using CommandBase<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Thanks for the reply Sergey. For most instances, I'm just kicking off some
+routine to be processed on the server. Some functions require very few input
+parameters and some require a lot. For CommandBase and ReadOnly-based objects,
+the only way I see to set parameters is in the Execute/Factory method
+respectively. Meaning that if I had to pass, say, 15 input parameters I would
+have to have 15 parameters to the Execute/Factory method. If I want to avoid
+that, I could use a BusinessBase object, use properties for the input
+parameters, and use the Insert or Save method to execute the command. Is there
+something I'm missing or do i have that right?<o:p></o:p></p>
+
+<p>Thanks,<o:p></o:p></p>
+
+<p>Dennis<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

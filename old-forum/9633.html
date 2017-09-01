@@ -1,0 +1,12 @@
+<html><header><title>Marking Property as invalid Serverside</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Marking Property as invalid Serverside</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9633.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Adalton4 posted on Wednesday, October 13, 2010</h2><p>Hi,</p>
+<p>&nbsp;</p>
+<p>I have the following case.</p>
+<p>&nbsp;</p>
+<p>The user edits an editable object, with a property who is checked serverside via an asynchronous rule in Silverlight (eg a reservation of a hotel room). Obviously, when the object is persisted, this property has to be checked again in the serverside transaction, because it can be updated by another user while the original user was completing its reservation. This is something to check again for in the dataportal update, this works like it should be, I can throw an exception that a businessrule is broken. But how do i associate the serverside exception with a specific property and how do i notify the UI that this specific peroperty is serverside invalid? From what i have seen now, this seems to be impossible, but is there a way to it, or has somebody else tacklled this situation?</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>TIA</p>
+<p>&nbsp;</p>
+<p>D</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Wednesday, October 13, 2010</h2><p>When you throw an exception serverside you will also get access to the BO in DataPortalException (with the broken rule). </p>
+<p>Then it is up to you if you want to use the BO as it was on the server when the exception was thrown or do some &quot;magic&quot; update of the existing object. </p>
+<p>&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

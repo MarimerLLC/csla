@@ -1,0 +1,340 @@
+<html><header><title>Wrapping not related BO's in a Transaction</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Wrapping not related BO's in a Transaction</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3093.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Sarosh posted on Tuesday, June 26, 2007</h2><P>Hi!</P>
+<P>I have a case where I need to save changes to three unrelated (no Parent-Child relation defined) BO's and would like to wrap these within a Transaction. i.e. Changes to all three should be saved or nothing should be saved.</P>
+<P>How should I go about this?</P>
+<P>&nbsp;I am visualizing&nbsp;something like this:</P>
+<P>Begin Transaction //Not sure how to do this</P>
+<P>try</P>
+<P>{</P>
+<P>CategoryListBO.Save()</P>
+<P>ScheduleListBO.Save()</P>
+<P>RevisionListBO.Save()</P>
+<P>Commit() //Not sure how to do this</P>
+<P>}</P>
+<P>catch (DbException ex)</P>
+<P>{</P>
+<P>Rollback() //Not sure how to do this</P>
+<P>}</P>
+<P>1] Not sure how I would create a Transaction Object</P>
+<P>2] Not sure how I can point all the BO's to that transaction object.</P>
+<P>Thanks</P>
+<P>Sarosh</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Tuesday, June 26, 2007</h2><P>Here is one way:</P>
+<P>&nbsp;</P>
+<P><A HREF="/forums/thread/9066.aspx">http://forums.lhotka.net/forums/thread/9066.aspx</A></P>
+<P>&nbsp;</P>
+<P>Joe</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, June 26, 2007</h2><P>On your client you have three root objects. These objects have been changed by the user or whatever. You need to save all three, but within the context of a transaction.</P>
+<P>The solution is to use a Command object, somewhat like this:</P>
+<P>&lt;Serializable()&gt; _<BR>Public Class OrderPlacer<BR>&nbsp; Inherits CommandBase</P>
+<P>&nbsp; Private _order As Order<BR>&nbsp; Private _customer As Customer<BR>&nbsp; Private _location As Location<BR>&nbsp; Private _transactionId As Integer</P>
+<P>&nbsp; Public ReadOnly Property Order() As Order<BR>&nbsp;&nbsp;&nbsp; Get<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return _order<BR>&nbsp;&nbsp;&nbsp; End Get<BR>&nbsp; End Property</P>
+<P>&nbsp; Public ReadOnly Property Customer() As Customer<BR>&nbsp;&nbsp;&nbsp; Get<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return _customer<BR>&nbsp;&nbsp;&nbsp; End Get<BR>&nbsp; End Property</P>
+<P>&nbsp; Public ReadOnly Property Location() As Location<BR>&nbsp;&nbsp;&nbsp; Get<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return _location<BR>&nbsp;&nbsp;&nbsp; End Get<BR>&nbsp; End Property</P>
+<P>&nbsp; Public ReadOnly Property TransactionId() As Integer<BR>&nbsp;&nbsp;&nbsp; Get<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return _transactionId<BR>&nbsp;&nbsp;&nbsp; End Get<BR>&nbsp; End Property<BR>&nbsp; <BR>&nbsp; Public Shared Function PlaceOrder(order As Order, customer As Customer, location As Location) As OrderPlacer<BR>&nbsp;&nbsp;&nbsp; <BR>&nbsp;&nbsp;&nbsp; Dim cmd As New OrderPlacer(order, customer, location)<BR>&nbsp;&nbsp;&nbsp; ' execute clone of object<BR>&nbsp;&nbsp;&nbsp; cmd = DataPortal.Execute(cmd.Clone)</P>
+<P>&nbsp;&nbsp;&nbsp; Return cmd</P>
+<P>&nbsp; End Function</P>
+<P>&nbsp; Private Sub New()<BR>&nbsp;&nbsp;&nbsp; ' require use of factory method<BR>&nbsp; End Sub</P>
+<P>&nbsp; Private Sub New(order As Order, customer As Customer, location As Location)<BR>&nbsp;&nbsp;&nbsp; <BR>&nbsp;&nbsp;&nbsp; _order = order<BR>&nbsp;&nbsp;&nbsp; _customer = customer<BR>&nbsp;&nbsp;&nbsp; _location = location</P>
+<P>&nbsp; End Sub</P>
+<P>&nbsp; &lt;Transaction(TransactionScope)&gt; _<BR>&nbsp; Protected Overrides Sub DataPortal_Execute()</P>
+<P>&nbsp;&nbsp;&nbsp; ' save objects<BR>&nbsp;&nbsp;&nbsp; _order = _order.Save()<BR>&nbsp;&nbsp;&nbsp; _customer = _customer.Save()<BR>&nbsp;&nbsp;&nbsp; _location = _location.Save()</P>
+<P>&nbsp;&nbsp;&nbsp; ' generate transaction id<BR>&nbsp;&nbsp;&nbsp; _transactionId = &lt;something meangingful&gt;</P>
+<P>&nbsp; End Sub</P>
+<P>End Class</P>
+<P>As with any insert/update/delete/execute operation, you only need to clone the object when using a local data portal. If you <EM>know</EM> you'll only use a remote data portal you can skip the clone call in the factory method.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Sarosh replied on Tuesday, June 26, 2007</h2><P>Hi!</P>
+<P>That was exactly what I was looking for!</P>
+<P>The only part I am not clear about is:</P>
+<P>&nbsp;' generate transaction id<BR>&nbsp;&nbsp;&nbsp; _transactionId = &lt;something meangingful&gt;</P>
+<P>what does &lt;something meangingful&gt; mean ?</P>
+<P>Is it just some unique int ID or something else?</P>
+<P>Thanks.</P>
+<P>Sarosh</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, June 26, 2007</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>You can just ignore that if you&#8217;d like. The point is that
+you can return other information beyond the 3 objects. Or not. As you choose.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>There&#8217;s no inherent value in that transactionId example &#8211;
+it is just an example.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Sarosh replied on Tuesday, June 26, 2007</h2><P>Hi!</P>
+<P>I have created my new wrapper class and everything looks good except for two things.</P>
+<P>1] <FONT color=#008000 size=2><FONT color=#ff0000>cmd = DataPortal.Execute(cmd.Clone);</FONT> // Error 7 'BusinessObjects.OrderPlacer' does not contain a definition for 'Clone'</FONT></P>
+<P><FONT color=#008000 size=2><FONT color=#000000 size=3>2] <FONT color=#008000 size=2><FONT color=#ff0000>[Transaction(TransactionScope)]</FONT> //Error 7 Attribute 'Transaction' is not valid on this declaration type. It is valid on 'class' declarations only.</FONT></FONT></FONT></P>
+<P><FONT color=#008000 size=2><FONT color=#000000 size=3><FONT color=#008000 size=2><FONT color=#000000 size=3>What should I do here?</FONT></FONT></FONT></FONT></P>
+<P>Thanks</P>
+<P>Sarosh</P>
+<P><FONT color=#008000 size=2><FONT color=#000000 size=3><FONT color=#008000 size=2><FONT color=#000000 size=3>Here is the code for my new class.</FONT></FONT></FONT></FONT></P><FONT color=#008000 size=2><FONT color=#000000 size=3><FONT color=#008000 size=2><FONT color=#0000ff size=2>
+<P>using</FONT><FONT size=2><FONT color=#000000> System;</FONT></P></FONT><FONT color=#0000ff size=2>
+<P>using</FONT><FONT size=2><FONT color=#000000> System.Data;</FONT></P></FONT><FONT color=#0000ff size=2>
+<P>using</FONT><FONT size=2><FONT color=#000000> System.Data.SqlClient;</FONT></P></FONT><FONT color=#0000ff size=2>
+<P>using</FONT><FONT size=2><FONT color=#000000> System.Data.Common;</FONT></P></FONT><FONT color=#0000ff size=2>
+<P>using</FONT><FONT size=2><FONT color=#000000> System.Collections.Generic;</FONT></P></FONT><FONT color=#0000ff size=2>
+<P>using</FONT><FONT size=2><FONT color=#000000> System.Text;</FONT></P></FONT><FONT color=#0000ff size=2>
+<P>using</FONT><FONT size=2><FONT color=#000000> Csla;</FONT></P></FONT><FONT color=#0000ff size=2>
+<P>using</FONT><FONT size=2><FONT color=#000000> Csla.Data;</FONT></P></FONT><FONT color=#0000ff size=2>
+<P>using</FONT><FONT size=2><FONT color=#000000> Csla.Validation;</FONT></P></FONT><FONT color=#008000 size=2><FONT color=#0000ff size=2>
+<P>using</FONT><FONT size=2><FONT color=#000000> System.EnterpriseServices;</FONT></P></FONT></FONT><FONT color=#0000ff size=2>
+<P>namespace</FONT><FONT size=2><FONT color=#000000> BusinessObjects</FONT></P>
+<P>{</P>
+<P>[</FONT><FONT color=#2b91af size=2>Serializable</FONT><FONT size=2>()]</P>
+<P></FONT><FONT color=#0000ff size=2>class</FONT><FONT size=2> </FONT><FONT color=#2b91af size=2>OrderPlacer</FONT><FONT size=2> : </FONT><FONT color=#2b91af size=2>CommandBase</P></FONT><FONT size=2>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>private</FONT><FONT size=2> </FONT><FONT color=#2b91af size=2>ScheduleList</FONT><FONT size=2> _ScheduleList;</P>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>readonly</FONT><FONT size=2> </FONT><FONT color=#2b91af size=2>ScheduleList</FONT><FONT size=2> ScheduleList;</P>
+<P></FONT><FONT color=#0000ff size=2>private</FONT><FONT size=2> </FONT><FONT color=#2b91af size=2>LoadCategoryList</FONT><FONT size=2> _LoadCategoryList;</P>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>readonly</FONT><FONT size=2> </FONT><FONT color=#2b91af size=2>LoadCategoryList</FONT><FONT size=2> LoadCategoryList;</P>
+<P></FONT><FONT color=#0000ff size=2>private</FONT><FONT size=2> </FONT><FONT color=#2b91af size=2>DutyList</FONT><FONT size=2> _DutyList;</P>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>readonly</FONT><FONT size=2> </FONT><FONT color=#2b91af size=2>DutyList</FONT><FONT size=2> DutyList;</P>
+<P></FONT><FONT color=#0000ff size=2>private</FONT><FONT size=2> OrderPlacer()</P>
+<P>{</P>
+<P></FONT><FONT color=#008000 size=2>//require use of factory method</P></FONT><FONT size=2>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>private</FONT><FONT size=2> OrderPlacer(</FONT><FONT color=#2b91af size=2>ScheduleList</FONT><FONT size=2> scheduleList, </FONT><FONT color=#2b91af size=2>LoadCategoryList</FONT><FONT size=2> loadCategoryList, </FONT><FONT color=#2b91af size=2>DutyList</FONT><FONT size=2> dutyList)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>._ScheduleList = scheduleList;</P>
+<P></FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>._LoadCategoryList = loadCategoryList;</P>
+<P></FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>._DutyList = dutyList;</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>static</FONT><FONT size=2> </FONT><FONT color=#2b91af size=2>OrderPlacer</FONT><FONT size=2> PlaceOrder(</FONT><FONT color=#2b91af size=2>ScheduleList</FONT><FONT size=2> scheduleList, </FONT><FONT color=#2b91af size=2>LoadCategoryList</FONT><FONT size=2> loadCategoryList, </FONT><FONT color=#2b91af size=2>DutyList</FONT><FONT size=2> dutyList)</P>
+<P>{</P>
+<P></FONT><FONT color=#2b91af size=2>OrderPlacer</FONT><FONT size=2> cmd = </FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> </FONT><FONT color=#2b91af size=2>OrderPlacer</FONT><FONT size=2>();</P>
+<P></FONT><FONT color=#008000 size=2>//execute clone of object</P></FONT><FONT size=2>
+<P></FONT><FONT color=#008000 size=2><FONT color=#ff0000>cmd = DataPortal.Execute(cmd.Clone);</FONT> // Error 7 'BusinessObjects.OrderPlacer' does not contain a definition for 'Clone'</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> cmd;</P>
+<P>}</P>
+<P></FONT><FONT color=#008000 size=2><FONT color=#ff0000>[Transaction(TransactionScope)]</FONT> //Error 7 Attribute 'Transaction' is not valid on this declaration type. It is valid on 'class' declarations only.</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>protected</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>override</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>void</FONT><FONT size=2> DataPortal_Execute()</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>._ScheduleList = </FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>._ScheduleList.Save();</P>
+<P></FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>._LoadCategoryList = </FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>._LoadCategoryList.Save();</P>
+<P></FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>._DutyList = </FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>._DutyList.Save();</P>
+<P>}</P>
+<P>}</P>
+<P>}</P></FONT></FONT></FONT></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, June 26, 2007</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Yeah, good point on the clone. CommandBase doesn&#8217;t
+implement IClonable, but you&#8217;ll need to in your class to make this work.
+Fortunately CSLA already implements the cloning functionality, so you can just
+copy about half a dozen lines of code from BusinessBase into your class (or
+better yet create a new base class that subclasses CommandBase) to implement
+IClonable.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Regarding issue 2, I probably just mistyped the attribute name &#8211;
+it might be Transactional? In the middle of travel and can&#8217;t check for
+you right now.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Sarosh
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Tuesday, June 26, 2007 3:05 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: Wrapping not related BO's in a Transaction<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Hi!<o:p></o:p></p>
+
+<p>I have created my new wrapper class and everything looks good except for two
+things.<o:p></o:p></p>
+
+<p>1] <span>cmd =
+DataPortal.Execute(cmd.Clone);</span><span>
+// Error 7 'BusinessObjects.OrderPlacer' does not contain a definition for
+'Clone'</span><o:p></o:p></p>
+
+<p><span>2] </span><span>[Transaction(TransactionScope)]</span><span> //Error 7 Attribute 'Transaction' is not valid on this
+declaration type. It is valid on 'class' declarations only.</span><o:p></o:p></p>
+
+<p><span>What should I do here?</span><o:p></o:p></p>
+
+<p>Thanks<o:p></o:p></p>
+
+<p>Sarosh<o:p></o:p></p>
+
+<p><span>Here is the code for my new class.</span><o:p></o:p></p>
+
+<p><span>using</span><span> System;</span><span><o:p></o:p></span></p>
+
+<p><span>using</span><span> System.Data;</span><span><o:p></o:p></span></p>
+
+<p><span>using</span><span> System.Data.SqlClient;</span><span><o:p></o:p></span></p>
+
+<p><span>using</span><span> System.Data.Common;</span><span><o:p></o:p></span></p>
+
+<p><span>using</span><span> System.Collections.Generic;</span><span><o:p></o:p></span></p>
+
+<p><span>using</span><span> System.Text;</span><span><o:p></o:p></span></p>
+
+<p><span>using</span><span> Csla;</span><span><o:p></o:p></span></p>
+
+<p><span>using</span><span> Csla.Data;</span><span><o:p></o:p></span></p>
+
+<p><span>using</span><span> Csla.Validation;</span><span><o:p></o:p></span></p>
+
+<p><span>using</span><span> System.EnterpriseServices;</span><span><o:p></o:p></span></p>
+
+<p><span>namespace</span><span> BusinessObjects</span><span><o:p></o:p></span></p>
+
+<p><span>{<o:p></o:p></span></p>
+
+<p><span>[</span><span>Serializable</span><span>()]<o:p></o:p></span></p>
+
+<p><span>class</span><span> </span><span>OrderPlacer</span><span> : </span><span>CommandBase<o:p></o:p></span></p>
+
+<p><span>{<o:p></o:p></span></p>
+
+<p><span>private</span><span> </span><span>ScheduleList</span><span>
+_ScheduleList;<o:p></o:p></span></p>
+
+<p><span>public</span><span> </span><span>readonly</span><span> </span><span>ScheduleList</span><span> ScheduleList;<o:p></o:p></span></p>
+
+<p><span>private</span><span> </span><span>LoadCategoryList</span><span>
+_LoadCategoryList;<o:p></o:p></span></p>
+
+<p><span>public</span><span> </span><span>readonly</span><span> </span><span>LoadCategoryList</span><span> LoadCategoryList;<o:p></o:p></span></p>
+
+<p><span>private</span><span> </span><span>DutyList</span><span>
+_DutyList;<o:p></o:p></span></p>
+
+<p><span>public</span><span> </span><span>readonly</span><span> </span><span>DutyList</span><span> DutyList;<o:p></o:p></span></p>
+
+<p><span>private</span><span> OrderPlacer()<o:p></o:p></span></p>
+
+<p><span>{<o:p></o:p></span></p>
+
+<p><span>//require use of factory method<o:p></o:p></span></p>
+
+<p><span>}<o:p></o:p></span></p>
+
+<p><span>private</span><span> OrderPlacer(</span><span>ScheduleList</span><span> scheduleList, </span><span>LoadCategoryList</span><span> loadCategoryList, </span><span>DutyList</span><span> dutyList)<o:p></o:p></span></p>
+
+<p><span>{<o:p></o:p></span></p>
+
+<p><span>this</span><span>._ScheduleList = scheduleList;<o:p></o:p></span></p>
+
+<p><span>this</span><span>._LoadCategoryList = loadCategoryList;<o:p></o:p></span></p>
+
+<p><span>this</span><span>._DutyList = dutyList;<o:p></o:p></span></p>
+
+<p><span>}<o:p></o:p></span></p>
+
+<p><span>public</span><span> </span><span>static</span><span> </span><span>OrderPlacer</span><span> PlaceOrder(</span><span>ScheduleList</span><span> scheduleList, </span><span>LoadCategoryList</span><span> loadCategoryList, </span><span>DutyList</span><span> dutyList)<o:p></o:p></span></p>
+
+<p><span>{<o:p></o:p></span></p>
+
+<p><span>OrderPlacer</span><span> cmd = </span><span>new</span><span> </span><span>OrderPlacer</span><span>();<o:p></o:p></span></p>
+
+<p><span>//execute clone of object<o:p></o:p></span></p>
+
+<p><span>cmd =
+DataPortal.Execute(cmd.Clone);</span><span>
+// Error 7 'BusinessObjects.OrderPlacer' does not contain a definition for
+'Clone'<o:p></o:p></span></p>
+
+<p><span>return</span><span> cmd;<o:p></o:p></span></p>
+
+<p><span>}<o:p></o:p></span></p>
+
+<p><span>[Transaction(TransactionScope)]</span><span> //Error 7 Attribute 'Transaction' is not
+valid on this declaration type. It is valid on 'class' declarations only.<o:p></o:p></span></p>
+
+<p><span>protected</span><span> </span><span>override</span><span> </span><span>void</span><span> DataPortal_Execute()<o:p></o:p></span></p>
+
+<p><span>{<o:p></o:p></span></p>
+
+<p><span>this</span><span>._ScheduleList = </span><span>this</span><span>._ScheduleList.Save();<o:p></o:p></span></p>
+
+<p><span>this</span><span>._LoadCategoryList = </span><span>this</span><span>._LoadCategoryList.Save();<o:p></o:p></span></p>
+
+<p><span>this</span><span>._DutyList = </span><span>this</span><span>._DutyList.Save();<o:p></o:p></span></p>
+
+<p><span>}<o:p></o:p></span></p>
+
+<p><span>}<o:p></o:p></span></p>
+
+<p><span>}<o:p></o:p></span></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>McManus replied on Wednesday, June 27, 2007</h2><P>Hi,</P>
+<P>Regarding issue 2, the attribute is called Transactional.</P>
+<P>Cheers,<BR>Herman</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Sarosh replied on Wednesday, June 27, 2007</h2><P>Hi!</P>
+<P>I could not find that one but this one is picked up by intellisense.<FONT color=#008000 size=2></P>
+<P>[Transaction(TransactionalTypes.TransactionScope)]</P>
+<P><FONT color=#000000><FONT size=3>but I still get&nbsp;compile time error </FONT></FONT></P>
+<P>//Error 7 Attribute 'Transaction' is not valid on this declaration type. It is valid on 'class' declarations only.</P>
+<P><FONT color=#000000 size=3>Sarosh</FONT></P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Wednesday, June 27, 2007</h2>[<font color="#008000">Transactional</font><font color="#000000">(</font> <font color="#008000">TransactionalTypes</font>.TransactionScope )] is what you're looking for.<br><br>You likely need to import the namespace if intellisense can't find that attribute.&nbsp; <br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Sarosh replied on Wednesday, June 27, 2007</h2><P>Hi!</P>
+<P>[Transaction(TransactionalTypes.TransactionScope)]</P>
+<P><FONT color=#000000><FONT size=3>As I mentioned in my eariler post intellisense does find it but I still get&nbsp;compile time error </FONT></FONT></P>
+<P>//Error 7 Attribute 'Transaction' is not valid on this declaration type. It is valid on 'class' declarations only.</P>
+<P>So I am not sure what to do here.</P>
+<P>Sarosh</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Wednesday, June 27, 2007</h2>Transaction<i><b>al </b></i>is what you need.&nbsp; Also, besure to having a using Csla; statement.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>cultofluna replied on Tuesday, July 03, 2007</h2>Hello,<br><br>An older, but very interesting post. I have the same situation and trying to get it working. Normally I use ADO transactions, and that's what's my question is about.<br><br>When using System.Transactions are ADO transaction obsolete? I'm trying to call the Save function for two objects that are ADO transaction based, but do they disturb the System Transaction?<br><br>I get the following error:<br><br>DataPortal.Update mislukt (Csla.DataPortalException: DataPortal.Update mislukt (System.Transactions.TransactionException: The transaction has already been implicitly or explicitly committed or aborted.<br><br>Any thoughts?<br><br>Regards,<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>cultofluna replied on Tuesday, July 03, 2007</h2>Hello,<br><br>I've solved the above problem. I was sloppy on replacing the ADO transactions and try catch structures. <br><br>But than I got a new problem :) I'm trying to create a CommandBase object that calls the Save for two BO's. <br><br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; [Transactional(TransactionalTypes.TransactionScope)]<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; protected override void DataPortal_Execute()<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; _inslag.Status = WmsMutationStatusses.Afgedrukt;<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; _inslag.Save();<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; _locatie.IntakeId = (int)_inslag.SysId;<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; _locatie.Save();<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; }<br><br>Two questions about this structur:<br><br>1. Rollback<br>The first save is no problem. The second BO however has an invalid Stored Procedure name and runs into an error. I now this is an user error, however shouldn't this do a rollback for the first BO as well?<br><br>2. Multiple connections<br>Both BO's open the same connection during the Save. In the forum I read that this means DTC starts a distributed transaction. Is this a problem and perhaps the problem for my first question? I can't pass the connection for two separate BO's can I?<br><br>Any thoughts?<br><br>Regards,<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Thursday, July 05, 2007</h2>I would think that TS would have promoted the transaction to a distributed one.&nbsp; Does the error on the second BO cause an exception to be thrown?&nbsp; If it doesn't, then TS will commit the transaction.&nbsp; You'll have to check for errors and manually throw an exception in that case for the entire transaction to rollback.<br><br>DTC isn't a problem as long as you don't mind the performance hit.&nbsp; DTC transactions are much more expensive than a simple Transaction Scope transaction.&nbsp; You could modify each BO to look in LocalContext for a connection and use that if it exists.&nbsp; You'll then need to open the transaction in your DP_Execute for the command and make sure to close it when the commands complete (errors or not).<br><br>HTH<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>dlutz52 replied on Thursday, March 19, 2009</h2><P>Rocky --</P>
+<P>Will the use of a&nbsp;Commandbase'd object like this work when using the WCFDataPortal?</P>
+<P>Do we have to do any modification of the bindings/endpoints to support these transactions?</P>
+<P>Thanks,</P>
+<P>David Lutz</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, March 19, 2009</h2><P>You do not need to modify the bindings, endpoints or the data portal. This is normal behavior.</P>
+<P>What will happen, is that the command object will hold a reference to all the root objects. When you tell the command object to execute, it will serialize to the server, along with any objects it references (so it brings the root objects along for the ride).</P>
+<P>On the server, the command object's DataPortal_Execute() would be marked with the Transactional attribute, so it is running in a transaction. This method invokes the Save() methods of the root objects, and of course they run in that same transaction.</P>
+<P>The command object is then serialized back to the client, and it brings the updated root objects back with it. You must then replace the client-side references to the old root objects with these new root objects - just like you would replace the old references with the result of a Save() method call.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>dlutz52 replied on Sunday, March 22, 2009</h2><P>Rocky --</P>
+<P>&nbsp;&nbsp;&nbsp;I love it when you write things like this. ;-)</P>
+<P>&nbsp;&nbsp;&nbsp;I can see it now. One is basically wrapping one more CSLA objects into a single CommandBase object. When the Data_Portal.Execute method is called on the CommandBase the whole bundle of objects gets serialized to the remote data portal (WCF in this case) and the transactions, if any, then get fired on the server. The transaction never travels throught the WCF data portal directly.</P>
+<P>&nbsp;&nbsp;&nbsp;Thanks for the answer. Thanks for CSLA in general and all your hard work on it. I hope all that read this forum understand our good fortune.</P>
+<P>Best regards --</P>
+<P>David Lutz</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

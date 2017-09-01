@@ -1,0 +1,16 @@
+<html><header><title>Child Collection Data Access</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Child Collection Data Access</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3895.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>maheshm posted on Wednesday, November 14, 2007</h2><P>I have a "Role" BusinessBase Object. Users is a child collection of "Role" Object.</P>
+<P>What my client is saying is </P>
+<P>After a quick review of the object model, we noticed some things that are not correct...<BR><BR>1) We are using the class-in-charge design pattern and all access to data needs to be done on the singular object. Collections are just containers for strongly-typed objects and should not have methods such as GetRoleUsers(int roleID) on the Users object. Instead, all of methods for retreiving objects should be contained on the individual object not the collection object. So in our previous example, the GetRoleUsers should be on the User object and should be named a little more accurately such as User.GetUsersForARole(int roleID) . All child collections should be lazy loaded.</P>
+<P>I want to know what my client is saying is correct ot not.</P>
+<P>As per the Project Tracker example we do have GetProjectResources in ProjectResources child collection class for retreiving the collection objects and hence I am a bit confused.</P>
+<P>Please let me know which is the right approach.</P>
+<P>Thanks </P>
+<P>Mahesh Mahangare<BR></P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>richardb replied on Wednesday, November 14, 2007</h2><P>Well I think you are correct - the collection class would be in charge here of loading up a list of User objects for a specified Role.&nbsp; It mioght be an editable collection or a readonly one just to let the UI pick the User object that needs editing.&nbsp; The User object would still be responsible for saving itself and doing all the insert/update/delete/select database work.</P>
+<P>The User object represents one user so User.GetUsersForARole(int RoleID) does not make sense (to me at least).</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Wednesday, November 14, 2007</h2><P>I think the description is not clear.</P>
+<P>There are 3 objects here: Role, child collection of Users and inside the collection is the User BO.</P>
+<P>If the client really said that you need to fill the collection from a method on the User BO - then it does not make any sense. Perhaps they said, the method should be in the Role BO instead of the collection itself? That makes sense as the Role BO is then capable of fetching a child collection.</P>
+<P>I put the methods on the collection itself though.</P>
+<P>Joe</P>
+<P>&nbsp;</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

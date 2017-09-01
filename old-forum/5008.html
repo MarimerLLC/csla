@@ -1,0 +1,864 @@
+<html><header><title>OnUpdateObject EventHandler not called</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>OnUpdateObject EventHandler not called</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5008.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>uwillmore posted on Sunday, June 22, 2008</h2><P>Hello again,</P>
+<P>I have run into another problem, this time one that seems to be pure CSLA related, so maybe you can help me out with this one.</P>
+<P>I am still working on a Gridview that is using a CSLADataSource. I have the Edit Button Auto-generated, but I define the columns myself and have turned of Autogenerate Columns. When I click on the Edit button the selected row of the grid goes into Edit mode as expected and I can change the fields I have enabled. So far so good, but then things go wrong.</P>
+<P>When I click the update button after I am done editing, the OnUpdate handler never gets called. I have stepped thru the code using the debugger to make sure the Update handler does not get called and indeed it does not. Instead the Onselect handler is called and the page goes make to "none edit" mode, displaying the old data in the row I just changed so my chaanges are lost. When I click Update the execution sequence goes like this:</P>
+<P>The PageLoad event handler is called, but it does nothing because I wrote the code to initialize the form only when IsPostBack is false. Since IsPostBack is true when I click the Update button, the page load event handler just returns. The next method to be called is the OnSelect Event handler and that method loads the data to the grid, from a session object if that exists or from the database. I do this, so that I can load the grid when the page is displayed for the first time. When IsPostBack is true, I call DataBind on the GridView which in turn calls the OnSelect event Handler and I load the data in that handler. I am following the ProjectTracker example code, so most of this should sound very familiar to you. </P>
+<P>Anyway, back to the update stuff. So I click Update Page_Load is called and does nothing, and then the Onselect handler is called which load data from the session object and returns. That's it. I am back in my form and the grid has been reloaded with the original data. My changes are lost and since the update handler was never called, nothing was saved either. </P>
+<P>Can you explain to my why this is happening? Why is the Onselect Handler called when I clicked Update? It seems to me that the onselect handler not only&nbsp;wipes out my changes on the screen but it also clears the update event, though I don't understand why. Shouldn't the update handler becalled BEFORE the select handler is called? Do I need to test someplace to see if changes where made and prevent the OnSelect handler from updating the grid with data from the session? I don't see anything like that in the project tracker example code, but I am willing to try almost anything at this point.</P>
+<P>I use a BusinessListBase object for my data. The List contains the data I need for the form and a childobject that is also a BusinessListBase that contains the data for the grid. I assign the child list to the CSLA dataSource ID which is assigned to the gridview's dataSource Id, thus binding the child list to the GridView. As far as I can see there is no functional difference&nbsp;between my code and the ProjectTracker example when it comes to how the data is loaded to the page initially, what the OnSelect handler does, and what the update handler does, yet my code does not work as expected.</P>
+<P>&nbsp;I can post code if need be, but it would take considerable effort to cut that down to the bare necessities. </P>
+<P>Any help would be greatly appreciated. TIA.</P>
+<P>URW.</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, June 23, 2008</h2><P>I don't know - this is a very common scenario and is known to work just fine, so there's something different about what you are doing somewhere.</P>
+<P>You set the grid control's key value property so the grid knows the key value to pass through?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>uwillmore replied on Tuesday, June 24, 2008</h2>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><font size=3 color=black face="Times New Roman"><span>Yes I do. My list is set to dirty as well,
+and yet the Select handler is called but not the update handler. In my search
+for the problem, I have discovered my RowDataBound handler is called right
+after the Select handler and it is the RowDataBound handler that my changes are
+lost, which sort of makes sense since that is when the CSLA Object is bound to
+the GridView. I also discovered that the Select handler is getting the data
+from Session, so I am not calling the Data_fetch routine more than once. Finally,
+once I click update I am stuck in Update mode. I have to click Cancel or Edit
+on another row to get out of Update mode. <o:p></o:p></span></font></p>
+
+<p class=MsoNormal><font size=3 color=black face="Times New Roman"><span><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=MsoNormal><font size=3 color=black face="Times New Roman"><span>I have another person more familiar with
+CSLA DataSource and editable GridViews looking at the code and he can&#8217;t
+find what I am doing wrong either. My supervisor, who has been helping me with
+this, has found some issues in my CSLA Business objects, but even after I made
+those changes the problem continues. To be honest, I am not convinced it is in
+the CSLA object. After all the debugging I have done, I am actually more
+suspicious of .NET and right now I am rebuilding the form to see if that will
+fix it. It would not be the first time that I, and others around here, have had
+a form &#8220;misbehaving&#8221; for no reason and the way to fix it was to
+rebuild the form. <o:p></o:p></span></font></p>
+
+<p class=MsoNormal><font size=3 color=black face="Times New Roman"><span><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=MsoNormal><font size=3 color=black face="Times New Roman"><span>I am not sure if any of this helps and I
+appreciate your email and effort to help me out. If you have any suggestions, I
+would like to hear them. Meantime, I will rebuild the form and see what that
+does for me. If I find the problem, I will let you know if you like.<o:p></o:p></span></font></p>
+
+<p class=MsoNormal><font size=3 color=black face="Times New Roman"><span><o:p>&nbsp;</o:p></span></font></p>
+
+<div>
+
+<p class=MsoNormal><font size=2 color=black face=Arial><span>Thanks</span></font><font color=black><span><o:p></o:p></span></font></p>
+
+<p class=MsoNormal><font size=3 color=black face="Times New Roman"><span>&nbsp;<o:p></o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 color=black face=Arial><span>Ute R. Willmore</span></font><font color=black><span><o:p></o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 color=black face=Arial><span>ext. 4128</span></font><o:p></o:p></p>
+
+</div>
+
+<div>
+
+<div>
+
+<div class=MsoNormal align=center><font size=3 face="Times New Roman"><span>
+
+<hr align=center>
+
+</span></font></div>
+
+<p class=MsoNormal><b><font size=2 face=Tahoma><span>From:</span></font></b><font size=2 face=Tahoma><span> RockfordLhotka
+[mailto:cslanet@lhotka.net] <br>
+<b><span>Sent:</span></b> Tuesday, June 24, 2008 12:09
+AM<br>
+<b><span>To:</span></b> Willmore, Ute<br>
+<b><span>Subject:</span></b> Re: [CSLA .NET]
+OnUpdateObject EventHandler not called</span></font><o:p></o:p></p>
+
+</div>
+
+<p class=MsoNormal><font size=3 face="Times New Roman"><span><o:p>&nbsp;</o:p></span></font></p>
+
+<p><font size=3 face="Times New Roman"><span>I don't
+know - this is a very common scenario and is known to work just fine, so
+there's something different about what you are doing somewhere.<o:p></o:p></span></font></p>
+
+<p><font size=3 face="Times New Roman"><span>You set
+the grid control's key value property so the grid knows the key value to pass
+through?<o:p></o:p></span></font></p>
+
+<p class=MsoNormal><font size=3 face="Times New Roman"><span><br>
+<br>
+<o:p></o:p></span></font></p>
+
+</div>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>uwillmore replied on Wednesday, June 25, 2008</h2>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><font size=3 color=black face="Times New Roman"><span>I am now finished with the re-creation of
+my form but I am right back to square one. The OnUpdateObject handler is still
+not getting called no matter how many times I make changes and click Update.
+Instead the OnSelectHandler gets called, which gets the old data from session
+and assigns it to the grid overwriting the data on the screen. <o:p></o:p></span></font></p>
+
+<p class=MsoNormal><font size=3 color=black face="Times New Roman"><span>I tried assigning RowUpdating and
+RowUpdated handlers to the grid rows thinking I could maybe use them to work
+around this, but those are not getting called either. I am not sure, but
+perhaps that is a function of the CSLA DataSource. At least it would make sense
+in a way if using the CSLA DataSource would prevent the Grid Row Update
+handlers from firing. Then again, maybe it is just another symptom.<o:p></o:p></span></font></p>
+
+<p class=MsoNormal><font size=3 color=black face="Times New Roman"><span><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=MsoNormal><font size=3 color=black face="Times New Roman"><span>At this point I am under instruction to
+find a different way to get the page working. I have been stuck on this for 4 days
+now, and my supervisor needs me to move on. Perfectly understandable since
+neither he nor I are making any kind of headway with this.<o:p></o:p></span></font></p>
+
+<p class=MsoNormal><font size=3 color=black face="Times New Roman"><span><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=MsoNormal><font size=3 color=black face="Times New Roman"><span>But I thought I&#8217;d post my grid and
+CSLA DataSource definition, just in case someone sees something that is wrong
+and I can still get it fixed. Even if I can&#8217;t fix this one I am still
+curious to know where I screwed up, so I can avoid the same mistake in the
+future. So here are the definitions:<o:p></o:p></span></font></p>
+
+<p class=MsoNormal><font size=3 color=black face="Times New Roman"><span><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 face="Courier New"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <o:p></o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 face="Courier New"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <font color=blue><span>&lt;</span></font><font color="#a31515"><span>asp</span></font><font color=blue><span>:</span></font><font color="#a31515"><span>GridView</span></font>
+<font color=red><span>ID</span></font><font color=blue><span>=&quot;EnrollmentOrderProductGridview&quot;</span></font> <font color=red><span>runat</span></font><font color=blue><span>=&quot;server&quot;</span></font> <font color=red><span>AutoGenerateColumns</span></font><font color=blue><span>=&quot;False&quot;<o:p></o:p></span></font></span></font></p>
+
+<p class=MsoNormal><font size=2 color=red face="Courier New"><span>AutoGenerateEditButton</span></font><font size=2 color=blue face="Courier New"><span>=&quot;True&quot;</span></font><font size=2 face="Courier New"><span> <font color=red><span>DataKeyNames</span></font><font color=blue><span>=&quot;EnrollmentID,ItemNumber&quot;</span></font> <font color=red><span>DataSourceID</span></font><font color=blue><span>=&quot;EnrollmentOrderProductDataSource&quot;</span></font> <o:p></o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 color=red face="Courier New"><span>OnRowUpdated</span></font><font size=2 color=blue face="Courier New"><span>=&quot;EnrollmentOrderProductGridView_RowUpdated&quot;</span></font><font size=2 face="Courier New"><span>
+<font color=red><span>OnRowUpdating</span></font><font color=blue><span>=&quot;EnrollmentOrderProductGridview_RowUpdating&quot;</span></font>
+<font color=red><span>OnRowDataBound</span></font><font color=blue><span>=&quot;EnrollmentOrderProductGridview_RowDataBound&quot;&gt;<o:p></o:p></span></font></span></font></p>
+
+<p class=MsoNormal><font size=2 face="Courier New"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <font color=blue><span>&lt;</span></font><font color="#a31515"><span>Columns</span></font><font color=blue><span>&gt;</span></font></span></font><font color=black><span><o:p></o:p></span></font></p>
+
+<p class=MsoNormal><font size=3 color=black face="Times New Roman"><span>.<o:p></o:p></span></font></p>
+
+<p class=MsoNormal><font size=3 color=black face="Times New Roman"><span>.<o:p></o:p></span></font></p>
+
+<p class=MsoNormal><font size=3 color=black face="Times New Roman"><span>.<o:p></o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 face="Courier New"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <font color=blue><span>&lt;/</span></font><font color="#a31515"><span>Columns</span></font><font color=blue><span>&gt;<o:p></o:p></span></font></span></font></p>
+
+<p class=MsoNormal><font size=2 face="Courier New"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <font color=blue><span>&lt;/</span></font><font color="#a31515"><span>asp</span></font><font color=blue><span>:</span></font><font color="#a31515"><span>GridView</span></font><font color=blue><span>&gt;<o:p></o:p></span></font></span></font></p>
+
+<p class=MsoNormal><font size=2 color=blue face="Courier New"><span><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 face="Courier New"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <font color=blue><span>&lt;</span></font><font color="#a31515"><span>csla</span></font><font color=blue><span>:</span></font><font color="#a31515"><span>CslaDataSource</span></font> <font color=red><span>ID</span></font><font color=blue><span>=&quot;EnrollmentOrderProductDataSource&quot;</span></font>
+<font color=red><span>runat</span></font><font color=blue><span>=&quot;server&quot;</span></font> <o:p></o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 face="Courier New"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <font color=red><span>TypeName</span></font><font color=blue><span>=&quot;My.Library.Customer.RepeatingOrders.EnrollmentOrderProductList&quot;</span></font>
+<o:p></o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 color=red face="Courier New"><span>TypeAssemblyName</span></font><font size=2 color=blue face="Courier New"><span>=&quot;My.Library&quot;</span></font><font size=2 face="Courier New"><span> <o:p></o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 face="Courier New"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <font color=red><span>TypeSupportsPaging</span></font><font color=blue><span>=&quot;False&quot;</span></font> <font color=red><span>TypeSupportsSorting</span></font><font color=blue><span>=&quot;False&quot;</span></font> <o:p></o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 face="Courier New"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <font color=red><span>OnUpdateObject</span></font><font color=blue><span>=&quot;EnrollmentOrderProductDataSource_UpdateOrderProduct&quot;</span></font>
+<o:p></o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 face="Courier New"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <font color=red><span>OnSelectObject</span></font><font color=blue><span>=&quot;EnrollmentOrderProductDataSource_SelectOrderProduct&quot;&gt;<o:p></o:p></span></font></span></font></p>
+
+<p class=MsoNormal><font size=2 face="Courier New"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <font color=blue><span>&lt;/</span></font><font color="#a31515"><span>csla</span></font><font color=blue><span>:</span></font><font color="#a31515"><span>cslaDataSource</span></font><font color=blue><span>&gt;<o:p></o:p></span></font></span></font></p>
+
+<p class=MsoNormal><font size=2 color=blue face="Courier New"><span><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=MsoNormal><font size=3 face="Times New Roman"><span>I left out the column definitions for the grid since I did not think
+they were critical. They do include definitions for the Key data items EnrollmentID
+and ItemNumber though. </span><o:p></o:p></font></p>
+
+<p class=MsoNormal><font size=3 color=black face="Times New Roman"><span><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=MsoNormal><font size=3 color=black face="Times New Roman"><span>If you notice anything that is incorrect
+please let me know.<o:p></o:p></span></font></p>
+
+<p class=MsoNormal><font size=3 color=black face="Times New Roman"><span><o:p>&nbsp;</o:p></span></font></p>
+
+<div>
+
+<p class=MsoNormal><font size=3 color=black face="Times New Roman"><span>Thanks<o:p></o:p></span></font></p>
+
+<p class=MsoNormal><font size=3 color=black face="Times New Roman"><span>&nbsp;<o:p></o:p></span></font></p>
+
+<p class=MsoNormal><font size=3 color=black face="Times New Roman"><span>URW</span></font><o:p></o:p></p>
+
+</div>
+
+<div>
+
+<div>
+
+<div class=MsoNormal align=center><font size=3 face="Times New Roman"><span>
+
+<hr align=center>
+
+</span></font></div>
+
+<p class=MsoNormal><b><font size=2 face=Tahoma><span>From:</span></font></b><font size=2 face=Tahoma><span> RockfordLhotka
+[mailto:cslanet@lhotka.net] <br>
+<b><span>Sent:</span></b> Tuesday, June 24, 2008 12:09
+AM<br>
+<b><span>To:</span></b> Willmore, Ute<br>
+<b><span>Subject:</span></b> Re: [CSLA .NET]
+OnUpdateObject EventHandler not called</span></font><o:p></o:p></p>
+
+</div>
+
+<p class=MsoNormal><font size=3 face="Times New Roman"><span><o:p>&nbsp;</o:p></span></font></p>
+
+<p><font size=3 face="Times New Roman"><span>I don't
+know - this is a very common scenario and is known to work just fine, so
+there's something different about what you are doing somewhere.<o:p></o:p></span></font></p>
+
+<p><font size=3 face="Times New Roman"><span>You set
+the grid control's key value property so the grid knows the key value to pass
+through?<o:p></o:p></span></font></p>
+
+<p class=MsoNormal><font size=3 face="Times New Roman"><span><br>
+<br>
+<o:p></o:p></span></font></p>
+
+</div>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, June 25, 2008</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>&gt;</span><span> I am not sure, but perhaps
+that is a function of the CSLA DataSource.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I won&#8217;t discount this
+possibility. However, the CslaDataSource doesn&#8217;t actually _<i>do</i>_
+very much if you look at it. It relies on the data binding infrastructure to
+call the right operation.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>In other words, while I can&#8217;t
+say it won&#8217;t fail &#8211; you can look at the code yourself and see that
+there are few (if any) possible points of failure in the runtime part of the
+code&#8230;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Odds are far better that the data
+binding infrastructure just isn&#8217;t calling the method in the control.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Here&#8217;s the code from the
+control:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp; protected
+override int ExecuteUpdate(IDictionary keys, IDictionary values, IDictionary
+oldValues)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp; {<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; //
+tell the page to update the object<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+UpdateObjectArgs args = new UpdateObjectArgs(keys, values, oldValues);<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+_owner.OnUpdateObject(args);<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+return args.RowsAffected;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp; }<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>It just raises the event &#8211;
+so it is most likely the case that the data binding infrastructure isn&#8217;t
+calling ExecuteUpdate()&#8230;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>The only other possibility I can
+think of is that CanUpdate() is somehow returning false. That might prevent
+data binding from trying to do the update, because the control would be saying
+it isn&#8217;t possible. That is unlikely, but I suppose could be the case. You
+can test that by putting some code in your UI to display the CanUpdate value
+from the control.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>uwillmore replied on Thursday, June 26, 2008</h2><P>Rocky,</P>
+<P>I found the code for the ExecuteUpdate method, and put a break point in it. Sure enough, it never gets called, which tells us what we suspected already: The updateObject handler is not getting called because the handler is not assigned. </P>
+<P>I tried to check the value of CanUpdate but I could not find it. None of the objects show that property when I stopped execution in the OnSelectObject Handler, which initialized my business list object and assigned it to e.BusinessObject in the handler. I checked the GridView object, and my business objects but I don't see that propert anywhere except in your code. I put a break point in the CanUpdate&nbsp; Get but it never gets called as far as I can tell. Can you perhaps help me out and give me a hint on where to find CanUpdate? I am using VS2005 and CSLA 214.</P>
+<P>I also got to thinking about the CanUpdate property. So where is CanUpdate set? Would that be in the Authorization code? I am wondering if the whole issue could be caused by my not using the Authorization stuff at all. I control who can gets to the application by network login and Active Directory group, so I don't have to worry about someone trying to update who is not allowed to do so. Anyone who can access the app is allowed to update and those who can't update can't access the app.&nbsp;Every example I see for the CSLA DataSource uses Authorization rules though, except for my application.</P>
+<P>So what do you think, is it possible that I am causing this problem by not applying authorization rules? </P>
+<P>Thanks for the help.</P>
+<P>Ute</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, June 26, 2008</h2><P>Maybe you can't get to CanUpdate - I've never really tried. It isn't intended for use by a page developer, just by data binding.</P>
+<P>But if you put a breakpoint there and it didn't get hit, that seems to imply that data binding never even tries to do the update - it never checks to even see if it is possible, so it must not have gotten that far...</P>
+<P>Can you create a small test app that replicates the problem?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>uwillmore replied on Thursday, June 26, 2008</h2>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><font size=2 color=navy face=Arial><span>I am not sure if I can reduce the code to
+a manageable size for emailing. But I will try. I have been meaning to write a
+test app just to make sure the business object works as it should anyway. It
+will take some time though, so don&#8217;t be surprised if I don&#8217;t get
+back to you until tomorrow.<o:p></o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 color=navy face=Arial><span><o:p>&nbsp;</o:p></span></font></p>
+
+<div>
+
+<p class=MsoNormal><font size=2 color=navy face=Arial><span>Thanks</span></font><font color=navy><span><o:p></o:p></span></font></p>
+
+<p class=MsoNormal><font size=3 color=navy face="Times New Roman"><span>&nbsp;<o:p></o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 color=navy face=Arial><span>Ute </span></font><font color=navy><span><o:p></o:p></span></font></p>
+
+</div>
+
+<div>
+
+<div>
+
+<div class=MsoNormal align=center><font size=3 face="Times New Roman"><span>
+
+<hr align=center>
+
+</span></font></div>
+
+<p class=MsoNormal><b><font size=2 face=Tahoma><span>From:</span></font></b><font size=2 face=Tahoma><span> RockfordLhotka
+[mailto:cslanet@lhotka.net] <br>
+<b><span>Sent:</span></b> Thursday, June 26, 2008
+10:39 AM<br>
+<b><span>To:</span></b> Willmore, Ute<br>
+<b><span>Subject:</span></b> Re: [CSLA .NET] RE:
+OnUpdateObject EventHandler not called</span></font><o:p></o:p></p>
+
+</div>
+
+<p class=MsoNormal><font size=3 face="Times New Roman"><span><o:p>&nbsp;</o:p></span></font></p>
+
+<p><font size=3 face="Times New Roman"><span>Maybe you
+can't get to CanUpdate - I've never really tried. It isn't intended for use by
+a page developer, just by data binding.<o:p></o:p></span></font></p>
+
+<p><font size=3 face="Times New Roman"><span>But if
+you put a breakpoint there and it didn't get hit, that seems to imply that data
+binding never even tries to do the update - it never checks to even see if it
+is possible, so it must not have gotten that far...<o:p></o:p></span></font></p>
+
+<p><font size=3 face="Times New Roman"><span>Can you
+create a small test app that replicates the problem?<o:p></o:p></span></font></p>
+
+<p class=MsoNormal><font size=3 face="Times New Roman"><span><br>
+<br>
+<o:p></o:p></span></font></p>
+
+</div>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, June 26, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Sorry, didn&#8217;t necessarily mean to imply something you
+could email &#8211; I am so buried I can&#8217;t research it.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>But my approach with all complex issues like this is to try and
+start with a new web project, add an object and a grid and see if I can
+replicate the problem. Often this is quite revealing :)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Willmore, Ute
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Thursday, June 26, 2008 11:47 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> RE: [CSLA .NET] RE: OnUpdateObject EventHandler not called<o:p></o:p></span></p>
+
+</div>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal><span>I am not sure if I can reduce the code to a manageable size for
+emailing. But I will try. I have been meaning to write a test app just to make
+sure the business object works as it should anyway. It will take some time
+though, so don&#8217;t be surprised if I don&#8217;t get back to you until tomorrow.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><span>Thanks</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>Ute </span><span><o:p></o:p></span></p>
+
+</div>
+
+<div>
+
+<div>
+
+<div class=MsoNormal align=center>
+
+<hr align=center>
+
+</div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> RockfordLhotka
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Thursday, June 26, 2008 10:39 AM<br>
+<b>To:</b> Willmore, Ute<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: OnUpdateObject EventHandler not called</span><o:p></o:p></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Maybe you can't get to CanUpdate - I've never really tried. It isn't
+intended for use by a page developer, just by data binding.<o:p></o:p></p>
+
+<p>But if you put a breakpoint there and it didn't get hit, that seems to imply
+that data binding never even tries to do the update - it never checks to even
+see if it is possible, so it must not have gotten that far...<o:p></o:p></p>
+
+<p>Can you create a small test app that replicates the problem?<o:p></o:p></p>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+</div>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>uwillmore replied on Thursday, June 26, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><font size=2 color=navy face=Arial><span>I understand and I will still try to
+create a small project to see if the object can actually update. I should have
+done that several days ago. <o:p></o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 color=navy face=Arial><span><o:p>&nbsp;</o:p></span></font></p>
+
+<div>
+
+<p class=MsoNormal><font size=2 color=navy face=Arial><span>Thanks</span></font><font color=navy><span><o:p></o:p></span></font></p>
+
+<p class=MsoNormal><font size=3 color=navy face="Times New Roman"><span>&nbsp;<o:p></o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 color=navy face=Arial><span>Ute </span></font><o:p></o:p></p>
+
+</div>
+
+<div>
+
+<div>
+
+<div class=MsoNormal align=center><font size=3 face="Times New Roman"><span>
+
+<hr align=center>
+
+</span></font></div>
+
+<p class=MsoNormal><b><font size=2 face=Tahoma><span>From:</span></font></b><font size=2 face=Tahoma><span> Rockford Lhotka
+[mailto:cslanet@lhotka.net] <br>
+<b><span>Sent:</span></b> Thursday, June 26, 2008
+10:54 AM<br>
+<b><span>To:</span></b> Willmore, Ute<br>
+<b><span>Subject:</span></b> RE: [CSLA .NET] RE:
+OnUpdateObject EventHandler not called</span></font><o:p></o:p></p>
+
+</div>
+
+<p class=MsoNormal><font size=3 face="Times New Roman"><span><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=MsoNormal><font size=3 face="Times New Roman"><span>Sorry, didn&#8217;t necessarily mean to imply something you could email
+&#8211; I am so buried I can&#8217;t research it.<o:p></o:p></span></font></p>
+
+<p class=MsoNormal><font size=3 face="Times New Roman"><span><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=MsoNormal><font size=3 face="Times New Roman"><span>But my approach with all complex issues like this is to try and start
+with a new web project, add an object and a grid and see if I can replicate the
+problem. Often this is quite revealing :)<o:p></o:p></span></font></p>
+
+<p class=MsoNormal><font size=3 face="Times New Roman"><span><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=MsoNormal><font size=3 face="Times New Roman"><span>Rocky<o:p></o:p></span></font></p>
+
+<p class=MsoNormal><font size=3 face="Times New Roman"><span><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=MsoNormal><font size=3 face="Times New Roman"><span><o:p>&nbsp;</o:p></span></font></p>
+
+<div>
+
+<div>
+
+<p class=MsoNormal><b><font size=3 face="Times New Roman"><span>From:</span></font></b> Willmore, Ute
+[mailto:cslanet@lhotka.net] <br>
+<b><span>Sent:</span></b> Thursday, June 26, 2008
+11:47 AM<br>
+<b><span>To:</span></b> rocky@lhotka.net<br>
+<b><span>Subject:</span></b> RE: [CSLA .NET] RE:
+OnUpdateObject EventHandler not called<o:p></o:p></p>
+
+</div>
+
+</div>
+
+<p class=MsoNormal><font size=3 face="Times New Roman"><span><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=MsoNormal><font size=3 face="Times New Roman"><span>I am not sure if I can reduce the code to a manageable size for
+emailing. But I will try. I have been meaning to write a test app just to make
+sure the business object works as it should anyway. It will take some time
+though, so don&#8217;t be surprised if I don&#8217;t get back to you until
+tomorrow.<o:p></o:p></span></font></p>
+
+<p class=MsoNormal><font size=3 face="Times New Roman"><span><o:p>&nbsp;</o:p></span></font></p>
+
+<div>
+
+<p class=MsoNormal><font size=3 face="Times New Roman"><span>Thanks<font color=navy><span><o:p></o:p></span></font></span></font></p>
+
+<p class=MsoNormal><font size=3 color=navy face="Times New Roman"><span>&nbsp;<o:p></o:p></span></font></p>
+
+<p class=MsoNormal><font size=3 face="Times New Roman"><span>Ute <font color=navy><span><o:p></o:p></span></font></span></font></p>
+
+</div>
+
+<div>
+
+<div>
+
+<div class=MsoNormal align=center><font size=3 face="Times New Roman"><span>
+
+<hr align=center>
+
+</span></font></div>
+
+<p class=MsoNormal><b><font size=3 face="Times New Roman"><span>From:</span></font></b>
+RockfordLhotka [mailto:cslanet@lhotka.net] <br>
+<b><span>Sent:</span></b> Thursday, June 26, 2008
+10:39 AM<br>
+<b><span>To:</span></b> Willmore, Ute<br>
+<b><span>Subject:</span></b> Re: [CSLA .NET] RE:
+OnUpdateObject EventHandler not called<o:p></o:p></p>
+
+</div>
+
+<p class=MsoNormal><font size=3 face="Times New Roman"><span><o:p>&nbsp;</o:p></span></font></p>
+
+<p><font size=3 face="Times New Roman"><span>Maybe you
+can't get to CanUpdate - I've never really tried. It isn't intended for use by
+a page developer, just by data binding.<o:p></o:p></span></font></p>
+
+<p><font size=3 face="Times New Roman"><span>But if
+you put a breakpoint there and it didn't get hit, that seems to imply that data
+binding never even tries to do the update - it never checks to even see if it
+is possible, so it must not have gotten that far...<o:p></o:p></span></font></p>
+
+<p><font size=3 face="Times New Roman"><span>Can you
+create a small test app that replicates the problem?<o:p></o:p></span></font></p>
+
+<p class=MsoNormal><font size=3 face="Times New Roman"><span><o:p>&nbsp;</o:p></span></font></p>
+
+</div>
+
+<p class=MsoNormal><font size=3 face="Times New Roman"><span><o:p>&nbsp;</o:p></span></font></p>
+
+</div>
+
+</div>
+
+
+
+
+<br><br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>uwillmore replied on Tuesday, July 15, 2008</h2>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><font size=2 color=navy face=Arial><span>Rocky,<o:p></o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 color=navy face=Arial><span>I finally found the problem with that
+update event in my project this past Wednesday and I have been meaning to post
+and tell you about it, because I think it may impact others as well. <o:p></o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 color=navy face=Arial><span><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 color=navy face=Arial><span>It turns out that the problem was not in
+my code for the page or the csla objects after all. The problem was in the
+master page. We use the same base master page in all our applications, so we
+maintain the same look and feel in all our web applications. The master page
+was originally written for a specific application and we had hoped we could use
+that master page as a global master page, so that all applications would look
+at the same file. That turned out to be impossible and we ended up copying the
+master page to each application directory. As a result of this original plan there
+is some code behind the master page, but we just comment what we don&#8217;t need
+or what interferes with the current application. So far that has not been a
+problem, but it was a problem this time. <o:p></o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 color=navy face=Arial><span><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 color=navy face=Arial><span>I commented one line of code after another
+until I found the line that caused the problem for me. The offending line turned
+out to look like this:<o:p></o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 color=navy face=Arial><span><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 color=navy face=Arial><span>This.ID = &#8220;MP&#8221;<o:p></o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 color=navy face=Arial><span><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 color=navy face=Arial><span>The code sets the ID of the current page
+to &#8220;MP&#8221; (for Master Page). I am not sure why this is done, and the
+programmer who wrote the master page does not recall the reason for it either,
+but he thinks it had something to do with Ajax
+and JavaScript. <o:p></o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 color=navy face=Arial><span><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 color=navy face=Arial><span>Obviously we need to take a closer look at
+our master page(s) and make sure we remove unused code and reduce the code
+behind the master page to the minimum required. Since my application does not
+use page IDs, my master page should not be resetting it. <o:p></o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 color=navy face=Arial><span><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 color=navy face=Arial><span>We also need to do a better job at
+commenting code so we don&#8217;t end up with code that no one remembers why it
+was written. It is always possible to determine what the code does, but sometimes
+it is hard to figure out why, and we need to document the why not the what. <o:p></o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 color=navy face=Arial><span><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 color=navy face=Arial><span>Be that as it may though, I am curious to
+find out why resetting the ID of the master page would mess up the event
+handlers for the csla DataSource? I think I told you that my OnUpdateObject
+handler was never called and that my OnSelectObject handler was always called,
+even when I had clicked update and the Update handler should have been called.
+I don&#8217;t understand why the update handler should be affected by the page
+ID of the master page. Can you explain this to me? Did you expect this behavior
+or did I stumble across something that is a problem for all users of the CSLA DataSource?<o:p></o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 color=navy face=Arial><span><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 color=navy face=Arial><span>I hope you can take the time to answer my
+questions and I want to thank you for helping me as much as you did while I was
+trying to fix my code. I apologize for not responding to your last post, but I got
+really into this problem I was dealing with and then had knee surgery and was
+laid up for a couple of days. I am back at work now and I hope to hear from you
+soon.<o:p></o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 color=navy face=Arial><span><o:p>&nbsp;</o:p></span></font></p>
+
+<div>
+
+<p class=MsoNormal><font size=2 color=navy face=Arial><span>Thanks<o:p></o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 color=navy face=Arial><span>URW</span></font><font color=navy><span><o:p></o:p></span></font></p>
+
+<p class=MsoNormal><font size=3 color=navy face="Times New Roman"><span><o:p>&nbsp;</o:p></span></font></p>
+
+</div>
+
+</div>
+
+
+
+
+<br><br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, July 15, 2008</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>uwillmore:</strong></div><div>
+<P>Can you explain to my why this is happening? Why is the Onselect Handler called when I clicked Update? It seems to me that the onselect handler not only&nbsp;wipes out my changes on the screen but it also clears the update event, though I don't understand why. Shouldn't the update handler becalled BEFORE the select handler is called? Do I need to test someplace to see if changes where made and prevent the OnSelect handler from updating the grid with data from the session? I don't see anything like that in the project tracker example code, but I am willing to try almost anything at this point.</P>
+<P></div></BLOCKQUOTE></P>
+<P>Thank you for the complete description of the problem/solution - that's great!</P>
+<P>I can't explain what is happening here. As I said earlier, I don't think it is an issue with CslaDataSource as much as with Web Forms data binding itself. Perhaps you've found a bug with data binding?</P>
+<P>It certainly seems, from your description, that setting the id value somehow confused data binding so it was no longer delivering events from the UI controls to the data control. I think you clearly established that data binding was not invoking the CslaDataSource control, which is why I think you confused data binding itself, not the datasource control.</P>
+<P>You may want to check in the ASP.NET forums on MSDN to see if this is just a known issue with Web Forms data binding?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>uwillmore replied on Tuesday, July 15, 2008</h2>
+
+
+
+
+
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><font size=2 color=navy face=Arial><span>So you think it is in the data binding not
+in the CslaDataSource? Well, that is certainly what I am leaning towards
+myself, and maybe I will try to recreate the problem one day using an object
+data source to see if it shows up when I am not using a CslaDataSource. <o:p></o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 color=navy face=Arial><span><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 color=navy face=Arial><span>I will check on this being a known issue
+too, but until I established that the problem occurs when I am not using a CSLA
+DataSource I doubt I will get much help from any of the Microsoft sponsored
+forums. Still I may check with the ASP .NET forum when I have some spare time.
+For now I have to skip any further investigation. This problem cost me a week
+and I have to make up for lost time somehow.<o:p></o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 color=navy face=Arial><span><o:p>&nbsp;</o:p></span></font></p>
+
+<div>
+
+<p class=MsoNormal><font size=2 color=navy face=Arial><span>Thanks again for the help<o:p></o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 color=navy face=Arial><span>URW</span></font><font color=navy><span><o:p></o:p></span></font></p>
+
+<p class=MsoNormal><font size=3 color=navy face="Times New Roman"><span>&nbsp;<o:p></o:p></span></font></p>
+
+</div>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,21 @@
+<html><header><title>Refresh Lists and BOs</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Refresh Lists and BOs</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6290.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>kyle.l.watson@gmail.com posted on Thursday, January 29, 2009</h2><P>Using the project tracker example, what is the best pattern for refreshing lookup&nbsp;Values in the ResourceProject / ProjectResource BO's when a user changes values in a Project / Resource. </P>
+<P>I noticed in the application you can edit a project, then edit a Resource, change the resource's First and Last Name&nbsp;name and save the resource. The edit project should still be opened and would now show a name that isn't correctly refreshed. </P>
+<P>My thoughts are:</P>
+<P>Add a refresh method that can be called by the UI. </P>
+<P>The refresh would have two ways to refresh.</P>
+<P>&nbsp;1. Refresh from the database using a command object. In this scenario would you mark the BO as clean using the markclean method?</P>
+<P>2. Perhaps the Refresh method accepts an overload like 'Refresh(Resource resource)'. Basically taking in a resource object and setting its readonly first and last name to the resource. For example:</P>
+<P><BLOCKQUOTE><div></P>
+<P>Project Class<BR>{</P>
+<P>public void Refresh(Resource aresource)</P>
+<P>{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if ( this.Resource.Contains(aresource.Id)</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ProjectResource aprojres = this.Resources.GetItem(ares.Id);</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; aprojres.Refresh( aresource );<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<BR>}<BR>}</P>
+<P>ProjectResource<BR>{</P>
+<P>internal void Refresh( Resource aresource )<BR>{<BR>&nbsp; LoadProperty(LastNameProperty, aresource.LastName);<BR>&nbsp; LoadProperty(FirstNameProperty, aresource.FirstName);<BR>}</P>
+<P>}</P>
+<P></div></BLOCKQUOTE></P>
+<P>Of course, you could get a completely new list like in the project tracker example each time but this could be inefficent if you have a medium or large list. </P>
+<P>Is there a better pattern to implement refreshing on&nbsp;your BO's? I can certainly see having a list of a thousand read only items and wanting to update some of them as you modify your BOs. </P>
+<P>&nbsp;</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

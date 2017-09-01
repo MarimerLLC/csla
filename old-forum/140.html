@@ -1,0 +1,56 @@
+<html><header><title>1.5x Collections for multiple Parent Object relations</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>1.5x Collections for multiple Parent Object relations</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/140.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>esteban404 posted on Thursday, May 18, 2006</h2><P>I don't know exactly how to explain this, so here is the first round:</P>
+<P>I have a project that joins together at least two&nbsp;object types ObjA and ObjB. Each one needs a collection of hyperlinks to internal resources. I'm trying to make the collection as generic as possible, but as children, they need to know their parents. I definitely want to load the collection with the project without another db call.</P>
+<P>Right now I have a root and collection class&nbsp;for each of the starting points. They store the Guid (from ObjA, ObjB...), DocumentID, Document Description, Created Date, CreatorID and&nbsp;CategoryID. The Guid is the id for the projects, everything else is pretty standard for all links.</P>
+<P>Problem: the&nbsp;are initialized independantly of eachother for workflow reasons, so I can't say ObjB uses ObjA always or vice versa. No "build on this" scenario would fit.</P>
+<P>What would be a mechnism to use to create the link so the lusers won't resent using the app?</P>
+<P>_E</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Q Johnson replied on Thursday, May 18, 2006</h2>
+
+
+
+
+<DIV align=left><FONT face=Arial color=#0000ff size=2><SPAN class=078132119-18052006>&gt;&gt; <FONT face="Times New Roman" color=#000000 size=3>but as children, they need to know their parents 
+&lt;&lt;</FONT></SPAN></FONT></DIV>
+<DIV align=left><FONT face="Times New Roman" color=#000000 size=3><SPAN class=078132119-18052006></SPAN></FONT>&nbsp;</DIV>
+<DIV align=left><FONT><SPAN class=078132119-18052006>Perhaps this is an 
+unnecessary restriction?&nbsp; The parent isn't going to be making any changes 
+to these hyperlinks are they?&nbsp; They might as well be a read-only list, 
+right?&nbsp; </SPAN></FONT></DIV>
+<DIV align=left><FONT><SPAN class=078132119-18052006></SPAN></FONT>&nbsp;</DIV>
+<DIV align=left><FONT><SPAN class=078132119-18052006>If so, you could 
+consider making the hyperlinks a <STRONG>Public</STRONG> ROOT Collection 
+object.&nbsp; You can make it filterable, of course, and when an object of 
+ClassA uses it, they could just build a <STRONG>Private</STRONG> Clone of it 
+(shouldn't be another db call, right?) and filter by the projecct guid of ObjA - 
+same for Obj B.&nbsp; Then the list is always initialized and ready for whoever 
+needs it.</SPAN></FONT></DIV>
+<DIV align=left><FONT><SPAN class=078132119-18052006></SPAN></FONT>&nbsp;</DIV>
+<DIV align=left><FONT><SPAN class=078132119-18052006>If there really is 
+a need for the "parent" object to make changes to these children, this won't be 
+a useful idea, of course.</SPAN></FONT></DIV><BR>
+<DIV class=OutlookMessageHeader align=left>
+<HR>
+<FONT face=Tahoma size=2><B>From:</B> esteban404 [mailto:cslanet@lhotka.net] 
+<BR><B>Sent:</B> Thursday, May 18, 2006 2:07 PM<BR><B>To:</B> 
+QJohnson@TeamNFP.com<BR><B>Subject:</B> [CSLA .NET] 1.5x Collections for 
+multiple Parent Object relations<BR></FONT><BR></DIV>
+<DIV></DIV>
+<P>I don't know exactly how to explain this, so here is the first round:</P>
+<P>I have a project that joins together at least two&nbsp;object types ObjA and 
+ObjB. Each one needs a collection of hyperlinks to internal resources. I'm 
+trying to make the collection as generic as possible, but as children, they need 
+to know their parents. I definitely want to load the collection with the project 
+without another db call.</P>
+<P>Right now I have a root and collection class&nbsp;for each of the starting 
+points. They store the Guid (from ObjA, ObjB...), DocumentID, Document 
+Description, Created Date, CreatorID and&nbsp;CategoryID. The Guid is the id for 
+the projects, everything else is pretty standard for all links.</P>
+<P>Problem: the&nbsp;are initialized independantly of eachother for workflow 
+reasons, so I can't say ObjB uses ObjA always or vice versa. No "build on this" 
+scenario would fit.</P>
+<P>What would be a mechnism to use to create the link so the lusers won't resent 
+using the app?</P>
+<P>_E</P><BR><BR><BR></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>esteban404 replied on Thursday, May 18, 2006</h2><P>I think there is need for the parent to make the changes as the links directly relate to it. I think I may need to create a constructor internal to them all so I can pass the parent identity when it exists. That would work in a couple places, but not all.</P>
+<P>A situation is a Setup Project can be initiated, but then the Designers get involved. How to get the design project to use the same links? What I've done thus far is use a "new Design" event inside the SetupProject editor (I've discovered my&nbsp;users love clicking things and pop up stuff). That's the only way I could think of using it. I've asked the designers if that's OK, but they balked. It's a coder/user issue I'm sure. I'll put together a demo and get their feedback. I think it could work fine.</P>
+<P>I'll just&nbsp;give it a couple of days while working on GUI&nbsp;skutt work and i'll I'll get it if I have to take a couple of users down with me! :-]</P>
+<P>Thanks for the reply, Q</P>
+<P>_Sn</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

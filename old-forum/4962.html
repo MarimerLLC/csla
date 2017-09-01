@@ -1,0 +1,10 @@
+<html><header><title>Transaction Isolation</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Transaction Isolation</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4962.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>renegrin posted on Tuesday, June 10, 2008</h2><P>When using CSLA.NET 3.0x&nbsp;set the&nbsp;the&nbsp; DataPortal_Fetch, DataPortal_Update and DataPortal_Insert to set the transaction&nbsp;isolation methods to ReadUncommitted? <BR><BR>At the connection level?<BR><BR><FONT face="Courier New" color=#000080>Set cn = New ADODB.Connection<BR>cn.IsolationLevel = adXactReadUncommitted <BR>cn.open()</FONT></P>
+<P>Or should I begin a transaction explicitly?</P>
+<P><FONT face="Courier New" color=#000080>cn.Open()<BR>&nbsp;&nbsp; SqlTransaction tr = cn.BeginTransaction(IsolationLevel.ReadUncommitted);</FONT></P>
+<P>I can just set it at the database level as well by&nbsp;turning on READ_COMMITED_SNAPSHOT database option.</P>
+<P><FONT face="Courier New" color=#000080>use master;<BR>go<BR>ALTER DATABASE pubs<BR>SET READ_COMMITTED_SNAPSHOT ON</FONT></P>
+<P>So many choices, which is best?</P>
+<P>Renegrin</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Wednesday, June 11, 2008</h2><P>There is no "best" solution.</P>
+<P>I happen to use your middle case. I use manual transactions and manage them by passing them around using the LocalContext. See this thread for sample code:</P>
+<P><A HREF="/forums/24090/ShowThread.aspx#24090">http://forums.lhotka.net/forums/24090/ShowThread.aspx#24090</A></P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

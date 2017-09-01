@@ -1,0 +1,24 @@
+<html><header><title>Process tasks</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Process tasks</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11020.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Joentje posted on Tuesday, December 27, 2011</h2><p>Hello,</p>
+<p>CSLA supports an easy way to develop business objects. But how do I implement use cases? That is, where do I put the code that goes beyond the responsibility of individual business objects? We use Task classes to accomplish that. But does CSLA prescribe a ready-for-use solution for this common problem?</p>
+<p>Thank you very much in advance for your answer!</p>
+<p>Kind greetings,<br />Jeroen</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Tuesday, December 27, 2011</h2><p>Hi, </p>
+<p>We often call this a UnitOfWork (UOW) model and it translates into a</p>
+<ul>
+<li>readonly root object (use case data master) to fetch
+<ul>
+<li>editable root (and structure)</li>
+<li>name/value lists for combobox&#39;es</li>
+<li>readonly lists (if required)</li>
+</ul>
+</li>
+</ul>
+<p>For non-CRUD operations on a database we use CommandObject (from CommandBase).</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ColourHaze replied on Monday, May 27, 2013</h2><p>Hi jeroen,</p>
+<p>&nbsp;</p>
+<p>i understand the idea of task objects, or as johnny adviced, uow, but how do you &quot;glue&quot; them together?</p>
+<p>&nbsp;</p>
+<p>point 5 of rocky&#39;s post&nbsp;<span>http://www.lhotka.net/Article.aspx?id=40048e03-6f9e-44a4-8322-80cb5de8303a describes the process object consisting from command objects, but this does not seem to be a &quot;standard&quot; pattern.&nbsp;</span></p>
+<p>Also found a post on orchestration pattern idea&nbsp;<span>http://codereview.stackexchange.com/questions/25435/sequential-execution-orchestrator-pattern. Looks quite clever as well.</span></p>
+<p>I dont exactly know how to approach this. Curious on your ideas!</p>
+<p>Best regards,</p>
+<p>Peter</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

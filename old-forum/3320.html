@@ -1,0 +1,55 @@
+<html><header><title>Caching Search Results, ASP.NET, and GC</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Caching Search Results, ASP.NET, and GC</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3320.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>dagware posted on Friday, August 03, 2007</h2>I did some searches but couldn't find answers to my specific question, which is: Let's say I have an ASP.NET web application that, among other things, allows a user to do a search that can potentially return hundreds, if not thousands of records. I obviously want to page the results.<br><br>1) Should I load all the results in some kind of CSLA read-only list, and then cache them using Session? I know there could potentially be problems with load-balancing, but that's not going to ever happen with this application (famous last words). This is the only way I can really imagine doing it, but I'm sure there are other ways. I know that "best" is an ambiguous term, but what's the best way to do this?<br><br>2) If I do cache the results, can there be an issue with GC? Yes, I'm still new to the idea of managed code, and this is going to bother me until, well, until I don't know when. So, should I do anything to make sure the cache gets cleaned up or garbage collected? Or does it really automagically happen for me? Probably, this web app won't get enough users to matter. But still, if a handfull of users do enough searches... It just makes me wonder.<br><br>TIA.<br><br>Dan<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Saturday, August 04, 2007</h2><P>Typically what you'd want to do in this case is page at the database level: only retrieve the requested page of data from the db.</P>
+<P>CSLA 2.1+ supports this pretty nicely, see the <EM>CSLA .NET 2.1 Handbook</EM> for a walkthrough of the options involved.</P>
+<P>And one option, still using the 2.1 paging ability, is to store a "master list" in Session and return the requested page from that master list. </P>
+<P>If it really is a read-only list though, you might consider storing it in System.Web.Caching instead, so it is shared across all users. That'd be more efficient than storing a copy for each active user.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>dagware replied on Saturday, August 04, 2007</h2>Thanks for the reply. I'll go ahead and get the Handbook, since it sounds like it will help nicely. Is a 3.0 version coming out in the near future?<br><br>Dan<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>dagware replied on Saturday, August 04, 2007</h2>I got the handbook. Took me a while to figure out where to buy it, because I couldn't find a link to your store. Perhaps I'm just blind (my wife would verify this). I finally managed to find it by doing a search, and one of your posts had a link to it. Also, once I bought it, it took me a while to figure out how to download it (yes, I did click the "back to vendor" button or whatever it was called). But I eventually figured it out, and now I have it. Thanks!<br><br>I have a suggestion for the next time you create one of these hadbooks. My printer has the ability to print a booklet -- that is, 2 pages on one side of the paper and 2 pages on the other, and the entire thing can be folded over to form a booklet. The problem is, if I try to print your handbook this way, everything prints too small. This is because your PDF has large margins defined. If it didn't have any margins, or had small ones, it would print large enough to read.<br><br>So if you have the option in the future, you might want to take this into account. Just a thought, and it wouldn't surprise me if there's reasons not do do what I'm suggesting. But it never (or rarely) hurts to ask!<br><br>Thanks again for the great stuff!<br><br>Dan<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Sunday, August 05, 2007</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>The 3.0 ebook should be out around the end of September.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> dagware
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Saturday, August 04, 2007 3:43 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] Caching Search Results, ASP.NET, and GC<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Thanks for the reply. I'll go ahead and get the Handbook,
+since it sounds like it will help nicely. Is a 3.0 version coming out in the
+near future?<br>
+<br>
+Dan<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

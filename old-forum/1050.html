@@ -1,0 +1,21 @@
+<html><header><title>Strange Exceptions can be thrown -- new user help!</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Strange Exceptions can be thrown -- new user help!</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/1050.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>figuerres posted on Monday, August 28, 2006</h2><P>Hi, all perhaps this is covered somewhere - if not:</P>
+<P>&nbsp;</P>
+<P>the WinPart UC and any control based on it need some other code added before use.</P>
+<P>in learning the framework I new I needed to do stuff but was trying to get to a first visible thing on a form and....</P>
+<P>so I make a UC based on WinPart,</P>
+<P>toss on a BO with grid binding, ok looks good.</P>
+<P>add that to a form and no errors.</P>
+<P>compile no errors.</P>
+<P>run:</P>
+<P>Exception !</P>
+<P>"Child" control is not a child control of .....</P>
+<P>Ok look at some of the vaiables and the parent control's collection of child controls</P>
+<P>HAS MY CONTROL!</P>
+<P>so I am going "WTF?" spend some time trying things and finally see that unless I </P>
+<P>took care of new,ToString and GetIDValue</P>
+<P>then they and Equals and GetHashCode are hosed and the runtime gets all confused.</P>
+<P>I gess when .Net adds a control it does a check to try and validate it with the hashcode or other functions and is unable to match the item to the list and blows chunks.</P>
+<P>I know this now.... but for a bit I was lost as to why it was broke.</P>
+<P>perhaps a note / warning that this will happen if you are in a rush might help save others some time when they first try and get started.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, August 28, 2006</h2>It should be very clear that I made no real attempt to create a UI framework, or even meaningful approximation thereof, with the whole WinPart thing in Chapter 9. I took some basic concepts and put them together to show the beginnings of a path, but I surely didn't want to get sidetracked into building and describing a Windows Forms UI framework. That'd be a project/book all by itself!! <img src="/emoticons/emotion-1.gif" alt="Smile [:)]" /><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>figuerres replied on Monday, August 28, 2006</h2><P>Yeah :-)&nbsp; I just did not see the cliff at first :-)</P>
+<P>you do have some good stuff to help get started ... even there where you stoped :-)</P>
+<P>Just figured I'd share the adventure so that some other new&nbsp; user might be warned about that.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>cash_pat replied on Monday, August 28, 2006</h2>I was getting this error once.<br><br>Your form or Control is missing the WinPart Code especially the GetIdValue<br><br><br>&nbsp;Protected Overrides Function GetIdValue() As Object<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return myBusinessObject<br><br>&nbsp;&nbsp;&nbsp; End Function<br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ChristianPena replied on Monday, October 02, 2006</h2><P>Please ignore.</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,61 @@
+<html><header><title>Examples of a .Net Encapsulated Invoke, Custom Auth project.</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Examples of a .Net Encapsulated Invoke, Custom Auth project.</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11165.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>gajit posted on Thursday, February 16, 2012</h2><p>Can anyone help with this?</p>
+<p>I am still struggling to make significant progress with implementing CSLA 4 - in a VB.Net Forms environment and can&#39;t help but feel that I - and this section of the community has been left to out own devises, without a paddle, etc.</p>
+<p>The CSLA eBooks and source examples in my opinion don&#39;t provide enough information for me to get this new project off the ground&nbsp;- and&nbsp;I can&#39;t believe I&#39;m the only person who is &nbsp;struggling with this. I appreciate it may not make commerical sense to provide a VB/Windows Forms eBook - but some more significant libraries/source code packagaes for each platform would have, in my opinion, been helpful. In CSLA2 we had the luxury of a &#39;complete&#39; ProjectTracker library and WindowsForms/WebForms solutions - in 4, we have nothing of the sort, and that&#39;s making it VERY frustrating to build something from scratch - with no concrete examples.</p>
+<p>All I am trying to do at this point is create a simple form, implementing a custom (CSLA) authenticated login/logoff - on a simple 2-tier platform.</p>
+<p>I find myself looking at the &#39;EncapsulatedInvoke&#39; solution which I was hoping to use to get an idea of how the various DAL components should be structured, and also the &#39;Custom&#39; Authentication project from codeplex that should give have given me plenty og clues to how to implement that - but I&#39;m not even sure what data access model it is using??!!</p>
+<p>I now find myself using an online c# to vb.net code translator, trying to build the classes in vb and creating a new project. But frankly, I&#39;m getting no closer to figuring this out.&nbsp;Paths are not being resolved correctly - specifically in the CustomIdentity and CustomPrincipal classes.</p>
+<p>Namespaces don&#39;t appear to be referencing correctly, and I&#39;m getting errors that make ZERO sense. E.g. In&nbsp; my AuthorizeDataPortal class</p>
+<p>&nbsp;</p>
+<p>
+<p><span style="font-family:Courier New;"><font face="Courier New">
+<p>&nbsp;</p>
+</font></span>
+<p>&nbsp;</p>
+<span style="font-family:Courier New;color:#0000ff;"><span style="font-family:Courier New;color:#0000ff;">Implements</span></span><span style="font-family:Courier New;"> </span><span style="font-family:Courier New;color:#2b91af;"><span style="font-family:Courier New;color:#2b91af;">IAuthorizeDataPortal</span></span><span style="font-family:Courier New;"><font face="Courier New">
+<p>&nbsp;</p>
+</font></span>
+<p>&nbsp;</p>
+<span style="font-family:Courier New;color:#0000ff;"><span style="font-family:Courier New;color:#0000ff;">Public</span></span><span style="font-family:Courier New;"> </span><span style="font-family:Courier New;color:#0000ff;"><span style="font-family:Courier New;color:#0000ff;">Sub</span></span><span style="font-family:Courier New;"> Authorize(clientRequest </span><span style="font-family:Courier New;color:#0000ff;"><span style="font-family:Courier New;color:#0000ff;">As</span></span><span style="font-family:Courier New;"> </span><span style="font-family:Courier New;color:#2b91af;"><span style="font-family:Courier New;color:#2b91af;">AuthorizeRequest</span></span><span style="font-family:Courier New;">)</span>
+<p><span style="font-family:Courier New;">...</span></p>
+<p><span style="font-family:Courier New;">The &quot;Implements IAuthorizeDataPortal&quot; errors with &quot;Class &#39;AuthorizeDataPortal&#39; must implement &#39;Sub Authorize(clientRequest As AuthorizeRequest)&#39; for interface &#39;Csla.Server.IAuthorizeDataPortal&#39;.</span></p>
+<p>What the...? </p>
+<p>If anyone has a little time - and patience to help, it would be greatly appreciated - or even some pointers in a direction where I could find relevant code. It doesn&#39;t have to be VB - but a .Net encapsulated invoke model with custom authentication would help.</p>
+<p>Thanks,</p>
+<p>Graham</p>
+<p>&nbsp;</p>
+</p>
+</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Thursday, February 16, 2012</h2><p><div style='padding-left: 50px;background-color:silver'><b>gajit<br></b></p>
+<p>All I am trying to do at this point is create a simple form, implementing a custom (CSLA) authenticated login/logoff - on a simple 2-tier platform.</p>
+<p></div></p>
+<p><b>Well, then you have absolutely no need to dig into IAuthorizeDataPortal!!!</b></p>
+<p>You only need to create your own custom CslaPrincipal and CslaIdentity (both serializable) and configure the data portal to not use Windows Authentication. </p>
+<p>Then add AuthorizationRules for the &quot;root&quot; data portal methods (CanCreate, CanGet, CanEdit, CanSave, CanDelete).</p>
+<p>Have a look at the:</p>
+<ul>
+<li> ProjectTracker sample (WfUI = Windows Forms sample).&nbsp;</li>
+<li>MembershipIdentityTestcs</li>
+<li>BackgroundWorkerDemo</li>
+<li>CslaMVC</li>
+<li>ExtendableWcfPortalForDotNet</li>
+</ul>
+<p>all use CustomPrincipal and is included in the CSLA Samples download.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>gajit replied on Thursday, February 16, 2012</h2><p>Jonny</p>
+<p>You must be mistaken. I&#39;ve just downloaded the latest samples - to be absolutely sure. But there isn&#39;t a WfUI for project tracker.</p>
+<p>Can you pinpoint exactly where you are seeing it?</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Friday, February 17, 2012</h2><p>Hi,</p>
+<p>It is the CSLA trunk and is recently added so it does not exist in the Samples download.&nbsp; </p>
+<p>You will need to download the latest source from trunk - instructions is here:<a href="http://www.lhotka.net/cslanet/Repository.aspx"> http://www.lhotka.net/cslanet/Repository.aspx</a></p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>gajit replied on Friday, February 17, 2012</h2><p>ahhh...&nbsp; Thanks Jonny. I&#39;ll take a look.</p>
+<p>Graham</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, February 17, 2012</h2><p>Yes - although I&#39;m not convinced that I can justify writing a Windows Forms book at this point, I have decided to add a Windows Forms UI project to the ProjectTracker sample for 4.3.</p>
+<p>To this end, I took the 3.0.5 Windows Forms project and updated it for CSLA 4 and .NET 4. It will be in the 4.3 samples download when 4.3 releases in a couple weeks, and as Jonny pointed out, it is in svn now.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>gajit replied on Sunday, February 19, 2012</h2><p>Thank you Rocky.</p>
+<p>&nbsp;</p>
+<p>I think that is the correct decision.</p>
+<p>I can understand the reluctance to write an eBook. But this will help immensely - with this being the only &#39;real-life&#39; reference for us &#39;Forms&#39; developers.</p>
+<p>I should be able to use this to move forward.</p>
+<p>Thanks again.</p>
+<p>Graham</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>gajit replied on Sunday, February 19, 2012</h2><p>Hmmm, trying to grab the latest version on svn.</p>
+<p>Do I need different credentials? Seems that the credentials I use for Lhotka.net don&#39;t work when connecting using TortoiseSvn...</p>
+<p>?</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>gajit replied on Sunday, February 19, 2012</h2><p>never mind. </p>
+<p>figured it out.</p>
+<p>figured it out</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

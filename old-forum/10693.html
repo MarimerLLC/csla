@@ -1,0 +1,20 @@
+<html><header><title>Need of WcfAppServer</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Need of WcfAppServer</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10693.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>msrs_it posted on Friday, September 16, 2011</h2><p>Hi,</p>
+<p>Can anybody explain me about the use of WcfAppServer provided in the samples. No other project in PTracker sample has referenced this one.</p>
+<p>Thanks &amp; Regards,</p>
+<p>SreeRam</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Friday, September 16, 2011</h2><p>The projects don&#39;t <em>reference</em> the app server. But they do use it via a URL.</p>
+<p>The app server is&nbsp;a data portal host that exposes the data portal through .NET and Silverlight WCF endpoints.</p>
+<p>The UI projects call the app server through WCF.</p>
+<p>The <em>Using CSLA 4: Data Portal Configuration</em> ebook covers this, and several other possible configurations.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>msrs_it replied on Saturday, September 17, 2011</h2><p>Thanks Rocky,</p>
+<p>As I understood that&nbsp;Silverlight&nbsp;requires 4-tier architecture, with a web server and an application server. By default at the time of creating Silverlight application the New project wizard automatically creates another web project.</p>
+<p>Here my doubt is, currently i&#39;m building (not started yet) an ASP.NET MVC 3 application using CSLA.NET. In later development phases the application has to support Moblie UI.Can I use the MVC 3 app as a web server in the 4-tier architecture to support silverlight and wp7 apps?</p>
+<p>Thanks &amp; Regards,</p>
+<p>SreeRam.</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>msrs_it replied on Saturday, September 17, 2011</h2><p>I&#39;ve gone through the book CSLA 4 : WPF and Silverlight. My doubt was cleared. In the same create silverlight application wizard .net allows us to choose the project type for web. There we can get the ASP.NET MVC3 project (if MVC3 installed and available).</p>
+<p>Thanks &amp; Regards,</p>
+<p>SreeRam</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Saturday, September 17, 2011</h2><p><div style='padding-left: 50px;background-color:silver'><b>msrs_it<br></b>
+<p>As I understood that&nbsp;Silverlight&nbsp;requires 4-tier architecture, with a web server and an application server. By default at the time of creating Silverlight application the New project wizard automatically creates another web project.</p>
+<div style="CLEAR:both;"></div>
+</div></p>
+<p>Silverlight supports 3- or 4-tier deployments. There is no <em>requirement</em> to do 4-tier, but it is supported.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>msrs_it replied on Sunday, September 18, 2011</h2><p>Thanks Rocky,</p>
+<p>I&#39;ll go through the books and will come back if I have any doubts.</p>
+<p>Thanks &amp; Regards,</p>
+<p>SreeRam.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

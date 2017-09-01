@@ -1,0 +1,31 @@
+<html><header><title>Should saving 1 child object cause a MSDTC transaction?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Should saving 1 child object cause a MSDTC transaction?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6931.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>cmay posted on Monday, May 11, 2009</h2><P>I have collection of switchable objects.&nbsp; This collection&nbsp;inherits from&nbsp;BusinessListBase.</P>
+<P>I have this code for saving changes to the collection:</P><FONT size=2>
+<P>&lt;Transactional(TransactionalTypes.TransactionScope)&gt; _</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Protected</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Overridable</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Overloads</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Sub</FONT></FONT><FONT size=2> DataPortal_Update()</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Me</FONT></FONT><FONT size=2>.Child_Update(</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Me</FONT></FONT><FONT size=2>)</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>End</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Sub</P></FONT></FONT>
+<P>Now, when I run this and make only 1 change to a single child object, an MSDTC transaction is created.&nbsp; If I stop the MSDTC service on my laptop, this action will fail with the error:</P>
+<P><EM>DataPortal.Update failed (Csla.DataPortalException: ChildDataPortal.Update failed on the server ---&gt; Csla.Reflection.CallMethodException: Child_Update method call failed ---&gt; System.Data.SqlClient.SqlException: MSDTC on server 'mylaptop' is unavailable.</EM></P>
+<P>&nbsp;</P>
+<P>I had thought that CSLA would not involve the transaction unless it was needed (i.e. more than 1 BO was changed in the list).&nbsp; Did I remember that wrong?</P>
+<P>&nbsp;</P>
+<P>By using the Transactional attribute, am I forcing a transaction even though none is really required?&nbsp; I tried running my code w/o that attribute and transactions are never invoked even if I have many changes that are being saved.</P>
+<P>Any help would be appreciated.</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Marjon1 replied on Tuesday, May 12, 2009</h2>The reason you would be getting this message is because you are opening a second connection within your child_update methods, instead of using the connection manager to re-use the existing connection. <br /><br />The transaction is created once you go into the method and if a second connection is opened anytime while the transaction is outstanding, you will get the MSDTC issue.<br /><br />Hopefully this clears things up for you.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>cmay replied on Tuesday, May 12, 2009</h2><P>I'm afraid I still am not quite sure.&nbsp; </P>
+<P>From what I can tell, there is only 1 time when I open a connection.... when I save the 1 child object that has changes.&nbsp; The first child object who's dataportal is called starts the transaction, so if that is the 2nd connection when is the first connection opened?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Marjon1 replied on Wednesday, May 13, 2009</h2>Normally, for the child object to be saved it should be being called within the DataPortal_Insert/Update method of the root object that this child belongs to. That insert/update would normally have an open connection associated with it. <br /><br />If you can past some code here it might make it a bit easier to explain.<br /><br />Is this child object a single object or a child list?</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>cmay replied on Thursday, May 14, 2009</h2><P>Thanks for sticking with me.&nbsp; I'll post some code below.</P>
+<P>Also, I should note, it's possible that I have been using the wrong terms when calling these objects Child objects.&nbsp; Really, they are just switchable items that belong to a Collection/list.</P>
+<P>So, lets say I have PlayersList, inherits BusinessListBase, containing a bunch of Player objects.</P>
+<P>...............</P>
+<P>I had put a bunch of code here, but I think in going over the code to copy, I found the issue.</P>
+<P>Inside my function that does the "Save",&nbsp; I am using the MS data access blocks.&nbsp; </P>
+<P>One of their lines is:</P><FONT size=2>
+<P>storedParams = SqlHelperParameterCache.GetSpParameterCollection(ConnectionString, </FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>"Players_Search"</FONT></FONT><FONT size=2>)</P></FONT>
+<P>I think that is hitting the database, thus, that is the first connection.</P>
+<P>Later the actual save takes place... the 2nd connection.</P>
+<P>I am going to test and report back.</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P><FONT size=2></FONT></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

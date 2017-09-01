@@ -1,0 +1,83 @@
+<html><header><title>enhancement idea: IEnumerable validation rules</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>enhancement idea: IEnumerable validation rules</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/7352.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>mongo posted on Tuesday, July 28, 2009</h2>I would love to see a different model for declaring business rules as perhaps an override of returning IEnumerable. I understand looking at .AddRule that there would be more to that structure.<br /><br />Is that already being/been considered?  I would like it from a testability perspective.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, July 28, 2009</h2>I don't quite follow what you are suggesting?</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>mongo replied on Tuesday, July 28, 2009</h2>In the current model of adding business rules, we override protected AddBusinessRules and then make a call into the object with ValidationRules.AddRule.<br /><br />Changing that model, one could provide an override on a method that returns an IEnumerable list of Rules. The key difference is only yielding a list of Rule objects that are internally added by the CSLA object to the ValidationRules collection. This way you can set up a test to verify that  an enumerated list of validation rules are being created without having to interrogate the internal state of the csla object (directly or indirectly) after the test is complete. <br /></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, July 28, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoPlainText><span>So
+you are suggesting making Csla.Validation.RuleMethod a public class so people
+can create rule objects and provide them as a list to ValidationRules? Somewhat
+like this:<o:p></o:p></span></p>
+
+<p class=MsoPlainText><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoPlainText><span>protected
+override void AddBusinessRules()<o:p></o:p></span></p>
+
+<p class=MsoPlainText><span>{<o:p></o:p></span></p>
+
+<p class=MsoPlainText><span>&nbsp;
+var rules = new List&lt;RuleMethod&gt;();<o:p></o:p></span></p>
+
+<p class=MsoPlainText><span>&nbsp;
+rules.Add(new RuleMethod(Csla.Validation.CommonRules.StringRequired, new
+RuleArgs(&#8230;));<o:p></o:p></span></p>
+
+<p class=MsoPlainText><span>&nbsp;
+rules.Add(new RuleMethod(Csla.Validation.CommonRules.StringMaxLength, new MaxLengthRuleArgs(&#8230;));<o:p></o:p></span></p>
+
+<p class=MsoPlainText><span>&nbsp;
+ValidationRules.AddRules(rules);<o:p></o:p></span></p>
+
+<p class=MsoPlainText><span>}<o:p></o:p></span></p>
+
+<p class=MsoPlainText><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoPlainText><span>There
+are two RuleMethod classes &#8211; one generic, one not, so both would need to
+be public. And the AsyncRuleMethod types would probably be affected as well.<o:p></o:p></span></p>
+
+<p class=MsoPlainText><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoPlainText><span>The
+RuleMethod.Invoke() method would need to become internal, as that shouldn&#8217;t
+be invoked by arbitrary callers.<o:p></o:p></span></p>
+
+<p class=MsoPlainText><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoPlainText><span>On
+the surface this doesn&#8217;t seem too hard to do, though I can see where
+RuleMethod might need another ctor overload that accepts an IPropertyInfo as
+second parameter to keep the calling code simpler.<o:p></o:p></span></p>
+
+<p class=MsoPlainText><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoPlainText><span>Is
+that what you have in mind?<o:p></o:p></span></p>
+
+<p class=MsoPlainText><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoPlainText><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoPlainText><span><o:p>&nbsp;</o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>mongo replied on Tuesday, July 28, 2009</h2>slightly different but that gives a thought on a potentially? clean way to implement for existing users -<br /><br />client implements:<br />public override IEnumerable EnumerateBusinessRules()<br />{<br />   yield return new RuleMethod(...);<br />   yield return new RuleMethod(...);<br />}<br /><br /><br />the framework implements:<br /><br />protected override void AddBusinessRule()<br />{<br />  foreach(RuleMethod rulein EnumerateBusinessRules())<br />    ValidationRules.Add(rule);<br />}<br /><br />The user can now test that the necessary csla implementation (reduced to the EnumerateRules method) is returning details as needed.  The proposed csla internal override would allow current customers to continue coding unimpeded.<br /><br />Thanks again,<br />-Steve</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>mongo replied on Tuesday, July 28, 2009</h2>Not sure that public would be necessary - perhaps protected or internal?</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>mongo replied on Tuesday, July 28, 2009</h2>My apologies - burning through a set of businessbase/lsitbase implementations along with configuring invariant tests for the various types and a bit distracted.<br /><br />I meant to say:<br /><br />public override IEnumerable EnumerateBusinessRules() <br />{...}</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>mongo replied on Tuesday, July 28, 2009</h2>I think it should also reduce cyclomatic complexity in that function.<br /><br />Thank you Rocky,<br />-Steve<br /></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, July 28, 2009</h2><P>This is a good discussion, I really appreciate your input!</P>
+<P>I don't think I'd name the method quite like that, because it implies enumerating over an existing list. When in reality it is creating the list. It is a personal naming convention I tend to use, where methods that construct things have names that provide an indication of their expense. I'd probably call it something like GetBusinessRules().</P>
+<P>I also wouldn't make the method public. I realize you want it for testing, but encapsulation is at least as important as testability (for long term maintainability and readability). Outside of testing, it is hard to imagine a scenario where anyone would or should get the class to generate a rule list.</P>
+<P>For all that we're discussing an instance method here, the reality is that CSLA will use it as a static method&nbsp;- it will be called exactly once per AppDomain to construct the static rule list. I agree that it needs to be a virtual instance method.</P>
+<P>I also think having ValidationRules.AddRules() is a nice idea. The reason being that you could externalize the generation of the rule list. It would not strictly need to be contained inside your business class (and some people do externalize this today).</P>
+<P>Not to say that the base implementation couldn't do as you suggest by calling AddRules(), but having an AddRules() method may open up other scenarios for aggregation of rule lists into an object.</P>
+<P>fyi, I have added this to the wish list, tagging this thread with the item so what we're discussing here will inform what I do if/when I make this change.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>mongo replied on Tuesday, July 28, 2009</h2>That sounds great - thanks for taking a look at this Rocky.<br /><br />-Steve</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

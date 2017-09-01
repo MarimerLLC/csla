@@ -1,0 +1,12 @@
+<html><header><title>CSLA 4.5, Async Targeting Pack, Shared Components</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA 4.5, Async Targeting Pack, Shared Components</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11716.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>BGrojer posted on Wednesday, November 21, 2012</h2><p>Hi,<br /><br />we have the following setup:<br /><br />Client: .NET 4.0 (with async tageting pack)<br />Server: .NET 4.5&nbsp; (no targeting pack, native async await support)<br />Shared Components: .NET 4.0</p>
+<p>Is this a problem? I think we should reference the .NET 4 Version everywhere. (not the .net 4.5 Version) to avoid assembly load errors.<br />I also think that we have to reference the async targeting pack in the Shared Components as well.<br /><br /><br />Thank you</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tiago replied on Wednesday, November 21, 2012</h2><p>Hi Berhard,</p>
+<p>If you use NuGet, the packages are supposed to handle all those dependencies for you.</p>
+<p>For Csla 4.5.x</p>
+<ul>
+<li>target .NET 4.0 needs AsyncTargetingPack</li>
+<li>target .NET 4.5 does async/await natively</li>
+</ul>
+<p>&nbsp;Note that if you are targeting .NET 4.0 you can use Csla 4.5.x on VS2010.</p>
+<p>&lt;edit&gt;</p>
+<p>That is, as long as you need to write any async/await constructs...</p>
+<p>&lt;/edit&gt;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,72 @@
+<html><header><title>Just wondering about v1.5 compatibility with .Net 3.5</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Just wondering about v1.5 compatibility with .Net 3.5</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/7817.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>CoryT posted on Monday, October 19, 2009</h2>I am working on a project that is currently using CSLA 1.5 w/DotNet 2.0 and we are looking to migrate to .Net 3.5. Are there any known issues when using .Net 3.5 with CSLA 1.5? <br /><br />Do we need to migrate to a more recent version of CSLA prior to moving to .Net 3.5?<br /><br />I've read in a few forums/blogs that they are not compatible and we must upgrade to CSLA 3.0.5 before moving to .Net 3.5.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, October 19, 2009</h2><P>In many cases it is possible to take older versions of CSLA .NET and get them (with some effort) working on newer versions of the .NET framework.</P>
+<P>I know some people were able to modify CSLA 1.5.3 to work on .NET 2.0, so it is likely that you could do the same thing to get it working on .NET 3.5.</P>
+<P>The thing to keep in mind is that 1.5.3 is around six years old, and only takes advantage of the .NET features that existed back then. CSLA .NET has evolved rather substantially over the past six years, both to keep up with new .NET features and to answer requests from the broad CSLA .NET user community.</P>
+<P>That's a double-edged sword for you. </P>
+<P>Updating to CSLA .NET 3.7.1 would get you to the version of CSLA designed for .NET 3.5, and would allow you to take advantage of all the new .NET features and capabilities that have been introduced since 2004. And if you use the new features of CSLA .NET itself you should be able to radically reduce and simplify your business object code, while also gaining a lot of powerful new capabilities.</P>
+<P>However, updating to 3.7.1 will almost certainly require major changes to your business object code. That probably goes without saying, since 3.7.1 typically requires just 40% of the lines of code you had to write in versions 3.0 and older. </P>
+<P>So there's a very real cost to such an update - with the potential for some great benefit as a result.</P>
+<P>But to your original question, I can say that I've never tried to get 1.5.3 to build on any current platform, but maybe someone else has tried and can provide some insight.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>CoryT replied on Monday, October 19, 2009</h2>Thanks for the reply, exactly what I was looking for.
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Monday, October 19, 2009</h2>Hi, <br><br>And also - why are you moving to .Net 3.5. If you want to take advantage of the new features of .Net 3.5 then you should definitely upgrade your application to Csla 3.7.1 and that is going to require some effort. <br><br>If you want your app to run as-is you should have no problem - because .Net 3.0 and 3.5 are just addons to .Net 2.0 that you are already using. Just search for the term "red bits and green bits" as described in Somasegars blogpost: <a href="http://blogs.msdn.com/somasegar/archive/2006/05/18/601354.aspx">http://blogs.msdn.com/somasegar/archive/2006/05/18/601354.aspx </a><br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, October 19, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>&gt;</span> If you want your app to run as-is you should have no
+problem<o:p></o:p></p>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal><span>That&#8217;s mostly true, but iirc there were some issues getting the
+code from .NET 1.x to 2.0. I never did this, I just remember some forum posts
+around 2005 when someone did make this shift. Again, from memory it seems like
+they succeeded, but had to tweak a few things &#8211; probably around Remoting since
+Remoting did change from .NET 1.x to 2.0.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Once you get to .NET 2.0 it should be smooth sailing up to 3.5,
+because Jonny is absolutely correct about everything just building on the .NET
+2.0 base up through 3.5 SP1.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Monday, October 19, 2009</h2>Hi, <br><br>In the first post he already stated that they are using Csla 1.5.3 with .Net 2.0 so I expected their solution already passed the migration from .Net 1.x to .Net 2.0. <br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, October 20, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Ahh, missed that they were already on .NET 2.0 &#8211; in which case
+it should be pretty smooth sailing.</span><b><span><o:p></o:p></span></b></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

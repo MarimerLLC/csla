@@ -1,0 +1,14 @@
+<html><header><title>How do i retrive data of xml column using SafeDataReader</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>How do i retrive data of xml column using SafeDataReader</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4703.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>C#Master posted on Thursday, April 17, 2008</h2><P>We are using MSSql server 2005 and&nbsp;we have a column in database table with xml data type.&nbsp; We want to read this xml column data using CSLA .Net framework's SafeDataReader. But there is not any method to get xml data from reader like GetString(), GetInt32()..</P>
+<P>In this xml column we do have xml data just like this</P>
+<P>&lt;Lang&gt;</P>
+<P>&nbsp;&nbsp;&nbsp;&lt;DE&gt;</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;Description&gt; Some German text &lt;/Description&gt;</P>
+<P>&nbsp;&nbsp;&nbsp;&lt;/DE&gt;</P>
+<P>&nbsp;&nbsp;&nbsp;&lt;EN&gt;</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;Description&gt; Some English text &lt;/Description&gt;</P>
+<P>&nbsp;&nbsp;&nbsp;&lt;/EN&gt;</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;......</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.....</P>
+<P>&lt;/Lang&gt;</P>
+<P>Does&nbsp;CSLA.Net provides method to retrive xml data? or&nbsp; Can we use GetString() or GetBytes() of SafeDataReader? If there is any&nbsp;another way to&nbsp;solve&nbsp;above problem then please suggest.</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Patrick.Roeper replied on Thursday, April 17, 2008</h2>I use GetString(). <br><br>Here is an example where you can load the xml data and feed it into an XDocument (.NET 3.5)... <br><br>string _xmlDataString;<br>XDocument _xmlData;<br><br>_xmlDataString = dr.GetString("OverrideData");<br><br>if(string.IsNullOrEmpty(_xmlDataString) == false)<br>&nbsp;&nbsp;&nbsp; _xmlData = XDocument.Parse(_xmlDataString);<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

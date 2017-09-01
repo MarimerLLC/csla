@@ -1,0 +1,29 @@
+<html><header><title>Pattern for Delete child BLB.Remove(BB)</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Pattern for Delete child BLB.Remove(BB)</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/8692.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Imker posted on Friday, March 19, 2010</h2><p>I have a Customer which is a BusinessBase (BB) Object.</p>
+<p>The Customer contains a BusinessListBase (BLB) Orders, made from BB Order objects.</p>
+<p>Then I want to remove/delete one order from this list.</p>
+<p>customerx.Orders.Remove(one_Order);</p>
+<p>then I save the customer to persist the change to the database.</p>
+<p>customerx = customerx.Save();</p>
+<p>As it&#39;s an existing customer, the&nbsp;DataPortal_Update() in BB Customer gets called.</p>
+<p>After updating the Customer, &nbsp;I do a FieldManager.UpdateChildren(this);</p>
+<p>But the result is a call to&nbsp;Child_DeleteSelf(Customer parent)</p>
+<p>When I use FieldManager.UpdateChildren() &nbsp;Child_DeleteSelf(Order x) gets called</p>
+<p>but the Order x is null.</p>
+<p>&nbsp;</p>
+<p>Question: So, how do I persist the delete to the database without knowing the delete Order?</p>
+<p>Must I code something in the BLB, or from where do I get the deleted order to properly</p>
+<p>delete the order from the database?</p>
+<p>&nbsp;</p>
+<p>I browsed different sections about parent / child behaviour in &quot;Expert C# 2008&nbsp;<span style="font-size:11.8056px;">Business Objects&quot;,</span></p>
+<p><span style="font-size:11.8056px;">but it seems that I&#39;m somehow missing the point.</span></p>
+<p>&nbsp;</p>
+<p>Sorry for the basic question.</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>ajj3085 replied on Friday, March 19, 2010</h2><p>I think something is off on your design.&nbsp; I would think that Orders can be edited outside the scope of any customer edit, so any Orders off your customer should represent a LINK to an order, not an actual order.&nbsp;&nbsp; Is the only way to edit an order really to open the customer for editing?&nbsp; If it is, your Order object should have enough information (except maybe the Customer Id, which it could get for the first call where you pass Customer to UpdateChildren.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Imker replied on Friday, March 19, 2010</h2><p>thanks, that was eye opening. made my day, and now, weekend.</p>
+<p><span style="font-size:11.6667px;">The design is a bit off, but it is correct, the order can only be deleted from inside the customer.</span></p>
+<p><span style="font-size:11.6667px;">I was concentrating on the parameter that comes into&nbsp;Child_DeleteSelf.</span></p>
+<p>But as the&nbsp;Child_DeleteSelf is a method of the child Order, the Order already has it&#39;s ID, so YES, the Order has enough information</p>
+<p>to delete itself. shame on me.&nbsp;</p>
+<p><span style="font-size:11.6667px;">Thanks for your patient and inspiring answer.</span></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Friday, March 19, 2010</h2><p>If the order can ONLY deleted by opening the customer information for editing, then your design is fine.&nbsp; You design reflects your business requirements, so you&#39;re good to go.&nbsp; Its not my place to say your requirements are wrong.&nbsp; <img src="http://forums.lhotka.net/emoticons/emotion-1.gif" alt="Smile" /></p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

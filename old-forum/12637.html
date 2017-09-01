@@ -1,0 +1,20 @@
+<html><header><title>Universal Apps</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Universal Apps</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/12637.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka posted on Wednesday, May 21, 2014</h2><p>I know a number of people are interested in universal apps and how/if CSLA supports them.</p>
+<p>First, I&#39;m working on adding Windows Phone WinRT 8.1 support and that should be available in a couple weeks. We already support WinRT on Windows 8.1.</p>
+<p>I&#39;ve done some testing with universal apps, and with the broader concept of the shared code project tooling Microsoft added to support universal apps.</p>
+<p>In terms of actual universal apps (WinRT on Win8.1 and WP8.1) that&#39;ll work exactly as expected once the WP8.1 support for CSLA is in nuget. You&#39;ll create your universal project (solution actually) and reference CSLA via nuget in both UI projects. Then you&#39;ll write your common code in the shared code project and everything will work just like it does with every other nuget package that supports both platforms.</p>
+<p>(the only caveat is that WinRT on WP8.1 doesn&#39;t support WCF, so you&#39;ll need to use the new HttpProxy data portal channel I&#39;ve created to overcome this limitation)</p>
+<p>In terms of broader use of shared code projects, this is pretty cool (to say the least).</p>
+<p>It turns out that what Microsoft has done with these shared code projects is to create a really easy way to link code files from one project into other projects. This is _exactly_ what we&#39;ve all been doing with manual file linking over the past many years, but automated.</p>
+<p>This works with any type of project.</p>
+<p>As a result, you can use a shared code project and reference it from UI projects such as Windows Forms, WPF, WinRT, Android, iOS, etc.</p>
+<p>What this means is that you can use the same file linking technique I&#39;ve been talking about and using for all these years, but in a much simpler way - the result being that you can create one set of business class code and reuse that same code easily in numerous client projects, such as:</p>
+<ul>
+<li>Windows Forms or WPF</li>
+<li>WinRT for Windows 8</li>
+<li>WinRT for Windows Phone</li>
+<li>Android</li>
+<li>iOS</li>
+</ul>
+<p>I put Windows Forms/WPF in there in particular, because most people are currently using those technologies. If all you do is shift your business classes into a shared code project you can keep your app working as it is today - no actual code changes.</p>
+<p>BUT when you want to create an Android or iOS client using Xamarin you&#39;ll be all ready to link in your existing class files as you build the new client apps.</p>
+<p>And if you want to support WinRT the same thing is true - just reference the shared code project from your WinRT project(s) and you are all set.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

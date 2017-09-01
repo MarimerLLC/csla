@@ -1,0 +1,74 @@
+<html><header><title>TriggerAction : How to bind event of DataTemplate with MVVM in devexpress gridcontrol </title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>TriggerAction : How to bind event of DataTemplate with MVVM in devexpress gridcontrol </h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9814.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>simon posted on Tuesday, November 30, 2010</h2><p>
+<p>below is my code , &nbsp;the method &quot;EditItem&quot; can be executed, but the &nbsp;e.methodparameter is null.</p>
+<p>how to get the current row ?&nbsp;</p>
+<p>&nbsp;</p>
+<p>
+<p>&nbsp;&nbsp;public void EditItem(object sender, ExecuteEventArgs e)</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;{</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;try</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;{</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;this.Model.</p>
+<p>&nbsp;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Shell.Instance.ShowView(typeof(View.ProductCategoryView).AssemblyQualifiedName,</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&quot;productCategorySource&quot;, new ViewModel.MM.ProductCategoryViewModel(),&quot;Content&quot;);</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;}</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;catch { }</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;}</p>
+<p>&nbsp;</p>
+</p>
+<p>
+<p>&lt;UserControl x:Class=&quot;MES.UI.View.MM.ProductCategorysView&quot;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; xmlns=&quot;http://schemas.microsoft.com/winfx/2006/xaml/presentation&quot;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; xmlns:x=&quot;http://schemas.microsoft.com/winfx/2006/xaml&quot;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; xmlns:mc=&quot;http://schemas.openxmlformats.org/markup-compatibility/2006&quot;&nbsp;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; xmlns:d=&quot;http://schemas.microsoft.com/expression/blend/2008&quot;&nbsp;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; mc:Ignorable=&quot;d&quot;&nbsp;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; d:DesignHeight=&quot;305&quot; d:DesignWidth=&quot;441&quot;&nbsp;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; xmlns:my=&quot;clr-namespace:MES.UI.ViewModel.MM&quot; Loaded=&quot;UserControl_Loaded&quot;&nbsp;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; xmlns:dxg=&quot;http://schemas.devexpress.com/winfx/2008/xaml/grid&quot;&nbsp;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; xmlns:dxe=&quot;http://schemas.devexpress.com/winfx/2008/xaml/editors&quot;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; xmlns:my1=&quot;clr-namespace:Csla.Xaml;assembly=Csla.Xaml&quot;&gt;</p>
+<p>&nbsp;&nbsp; &nbsp;&lt;UserControl.Resources&gt;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;&lt;CollectionViewSource x:Key=&quot;productCategorysViewModelViewSource&quot; &nbsp;/&gt;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;&lt;CollectionViewSource x:Key=&quot;productCategorysViewModelModelViewSource&quot; Source=&quot;{Binding Path=Model, Source={StaticResource productCategorysViewModelViewSource}}&quot; /&gt;</p>
+<p>&nbsp;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;&lt;DataTemplate x:Key=&quot;IdTemplate&quot;&gt;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&lt;StackPanel Orientation=&quot;Horizontal&quot; &gt;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&lt;StackPanel &gt;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&lt;Button Name=&quot;EditItemButton&quot; Content=&quot;{Binding Path=Value}&quot; &nbsp;Margin=&quot;3&quot; Width=&quot;100&quot; &gt;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&lt;/Button&gt;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;/StackPanel&gt;</p>
+<p>&nbsp;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&lt;StackPanel Grid.Row=&quot;1&quot; DataContext=&quot;{Binding Path=CurrentItem,Source={StaticResource productCategorysViewModelViewSource}}&quot;&gt;</p>
+<p>&nbsp;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&lt;my1:TriggerAction Name=&quot;EditItemTrigger1&quot; TargetControl=&quot;{Binding ElementName=EditItemButton}&quot; MethodName=&quot;EditItem&quot; MethodParameter=&quot;{Binding Path=View.FocusedRow, ElementName=gridControl1}&quot; /&gt;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&lt;/StackPanel&gt;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&lt;/StackPanel&gt;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;&lt;/DataTemplate&gt;</p>
+<p>&nbsp;</p>
+<p>&nbsp;&nbsp; &nbsp;&lt;/UserControl.Resources&gt;</p>
+<p>&nbsp;&nbsp; &nbsp;&lt;Grid DataContext=&quot;{Binding Source={StaticResource productCategorysViewModelViewSource}}&quot;&gt;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;&lt;Grid.RowDefinitions&gt;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&lt;RowDefinition Height=&quot;*&quot; /&gt;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&lt;RowDefinition Height=&quot;Auto&quot; /&gt;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;&lt;/Grid.RowDefinitions&gt;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;&lt;dxg:GridControl Name=&quot;gridControl1&quot; DataSource=&quot;{Binding Path=Model}&quot; &gt;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&lt;dxg:GridControl.Columns&gt;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&lt;dxg:GridColumn FieldName=&quot;Id&quot; CellTemplate=&quot;{DynamicResource IdTemplate}&quot; Header=&quot;Id&quot; SortIndex=&quot;0&quot; SortOrder=&quot;Ascending&quot;/&gt;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&lt;dxg:GridColumn FieldName=&quot;Name&quot; Header=&quot;名称&quot; /&gt;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&lt;dxg:GridColumn FieldName=&quot;Description&quot; Header=&quot;描述&quot; /&gt;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&lt;/dxg:GridControl.Columns&gt;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&lt;dxg:GridControl.View &gt;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&lt;dxg:TableView Name=&quot;View&quot; &nbsp;AllowEditing=&quot;False&quot; &nbsp;AutoWidth=&quot;True&quot; /&gt;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&lt;/dxg:GridControl.View&gt;</p>
+<p>&nbsp;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;&lt;/dxg:GridControl&gt;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;&lt;StackPanel Grid.Row=&quot;1&quot; DataContext=&quot;{Binding Path=CurrentItem,Source={StaticResource productCategorysViewModelViewSource}}&quot;&gt;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&lt;Button Content=&quot;Remove&quot; Height=&quot;23&quot; Name=&quot;Edit1&quot; Width=&quot;75&quot; Margin=&quot;5&quot; Padding=&quot;3&quot; /&gt;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&lt;my1:TriggerAction Name=&quot;EditItemTrigger&quot; TargetControl=&quot;{Binding ElementName=Edit1}&quot; MethodName=&quot;EditItem&quot; MethodParameter=&quot;{Binding Path=View.FocusedRow, ElementName=gridControl1}&quot; &nbsp;/&gt;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;&lt;/StackPanel&gt;</p>
+<p>&nbsp;&nbsp; &nbsp;&lt;/Grid&gt;</p>
+<p>&lt;/UserControl&gt;</p>
+<div></div>
+</p>
+</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

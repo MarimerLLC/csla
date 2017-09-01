@@ -1,0 +1,92 @@
+<html><header><title>Factory Fetch methods and missing data - how do you handle it?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Factory Fetch methods and missing data - how do you handle it?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/351.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>hurcane posted on Monday, June 12, 2006</h2>I'm looking for advice on how others might handle missing (i.e. bad) data. I have a situation where the user can define product records in multiple warehouse locations. They can specify that an item is "sourced" from another location. The application does not enforce up-front that the sourced location have an existing record because that is an inconvenience to the users.<br><br>I am struggling with deciding how to handle the exception when there is bad data. What complicates matters is that I have over a hundred use cases that use this particular record in a read-only object that provides on-hand and cost information. About 3/4 of the cases fail when the data is missing. The other 1/4 have a defined alternative behavior when the data is missing. <br><br>Using Alistair Cockburn's terminology from "Writing Effective Use Cases", most of the failing use cases are "sea-level". Most of the fallback cases are "underwater" cases.<br><br>I can think of several ways to deal with this, but I'm not sure if I'm considering all the pros and cons.<br><br>I've considered throwing an exception in the DataPortal_Fetch method which includes the contextual information (product ID and warehouse ID) that the user would like to know. This makes it easy to handle the failing cases. The exception bubbles up to the UI where it is displayed to the user. For the fallback cases, they need to catch the exception and examine if it is the type that they can handle. This implies I'll have to create a custom exception class (e.g. MissingDataException) to aid in the scenario. I've also read that exceptions can be slow.<br><br>Another option I've considered is returning a Null/Nothing object when the data is missing. The downside to this is that the all the use cases should check the return value. If code does not check the return value, it is likely to get a null reference exception, which is not always helpful to the UI. This does simplify the fallback cases as they don't have to analyze the exception. It should be faster, too.<br><br>Another option is to have different objects. One raises an error, the other returns nothing. Is a new object justified when this would be the only difference? This could also be achieved by having separate factory methods or having an additional parameter for the Criteria object.<br><br>One last option I've considered is returning a concrete object, but exposing a property (e.g. IsMissing). I could fill all the private variables with "empty" values. This is really just an alternative to the approach of returning Nothing. It eliminates the null reference exception, but replaces it with a "blank" data scenario. I suppose blank data in an inquiry form is better than a hard error.<br><br>Another thought I just had as I've been typing... I could add code to every property that raises a specific error if the object is missing it's data.<br><br>Does anybody else have to deal with missing data? Are you using one of these approaches, or doing something even better?<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, June 12, 2006</h2><P>While it is true that exceptions are slow in a relative sense, they are not likely to be slow when compared to an operation like database access. In other words, they are slow relative to returning a method's result, or raising an event (and even then they are only slow to <EM>catch</EM>, not to throw), but they are not slow relative to many other operations like crossing a process or network boundary, doing file IO or talking to a database.</P>
+<P>So my first instinct in cases like this is to define one or more custom exceptions that I can use to return detailed and meaningful information about the issue.</P>
+<P>Another option is to wrap the creation of your object within a command object. So your business object's factory sends a command object to the server to retrieve the real object. If there's a failure to get valid data on the server, the command object can return (successfully - no exception) with information about why the operation failed. The client-side factory method can then examine the command object and decide what to do (throw an exception, return Nothing, return some other status object or whatever).</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>hurcane replied on Tuesday, June 13, 2006</h2>Arrgggh! I had typed a lengthy reply, had to leave the computer for a spell, and lost the text when I tried to post the message. This second draft will be a lot shorter.<br><br>Thanks, Rocky, for the advice on exceptions. I will not allow performance to be a concern when raising exceptions during a data portal call.<br><br>I'm not sure I completely understand your explanation of a Command Object. When you said the client-side factory object can decide what to do, do you mean that in one case it can throw an exception and in another case it can return nothing? Or do you mean that the command object can be examined, determine that the data was missing, and take the same consistent action?<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, June 19, 2006</h2>
+
+
+
+
+<DIV align=left><FONT face=Arial color=#0000ff size=2><SPAN class=046342217-14062006>The idea is that you use a command object to do the 
+fetch rather than fetching your object directly.</SPAN></FONT></DIV>
+<DIV align=left><FONT face=Arial color=#0000ff size=2><SPAN class=046342217-14062006></SPAN></FONT>&nbsp;</DIV>
+<DIV align=left><FONT face=Arial color=#0000ff size=2><SPAN class=046342217-14062006>In other words, your actual business object contains a 
+private, nested command object kind of like this 
+pseudo-code:</SPAN></FONT></DIV>
+<DIV align=left><FONT face=Arial color=#0000ff size=2><SPAN class=046342217-14062006></SPAN></FONT>&nbsp;</DIV>
+<DIV align=left><FONT face=Arial color=#0000ff size=2><SPAN class=046342217-14062006>Public Class MyRealList</SPAN></FONT></DIV>
+<DIV align=left><FONT face=Arial color=#0000ff size=2><SPAN class=046342217-14062006></SPAN></FONT>&nbsp;</DIV>
+<DIV align=left><FONT face=Arial color=#0000ff size=2><SPAN class=046342217-14062006>&nbsp; Private Class MyListGetter</SPAN></FONT></DIV>
+<DIV align=left><FONT face=Arial color=#0000ff size=2><SPAN class=046342217-14062006>&nbsp;&nbsp;&nbsp; Public filter As String ' or 
+whatever criteria you are using</SPAN></FONT></DIV>
+<DIV align=left><FONT face=Arial color=#0000ff size=2><SPAN class=046342217-14062006>&nbsp;&nbsp;&nbsp; Public result As 
+String</SPAN></FONT></DIV>
+<DIV align=left><FONT face=Arial color=#0000ff size=2><SPAN class=046342217-14062006>
+<DIV align=left><FONT face=Arial color=#0000ff size=2><SPAN class=046342217-14062006>&nbsp;&nbsp;&nbsp; Public&nbsp;list&nbsp;As 
+MyRealList</SPAN></FONT></DIV>
+<DIV align=left><FONT face=Arial color=#0000ff size=2><SPAN class=046342217-14062006></SPAN></FONT>&nbsp;</DIV>
+<DIV align=left><FONT face=Arial color=#0000ff size=2><SPAN class=046342217-14062006>&nbsp;&nbsp;&nbsp; Protected Overrides Sub 
+DataPortal_Execute()</SPAN></FONT></DIV>
+<DIV align=left><FONT face=Arial color=#0000ff size=2><SPAN class=046342217-14062006>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ' try to load MyRealList 
+here by calling</SPAN></FONT></DIV>
+<DIV align=left><FONT face=Arial color=#0000ff size=2><SPAN class=046342217-14062006>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' a private 
+factory</SPAN></FONT></DIV>
+<DIV align=left><FONT face=Arial color=#0000ff size=2><SPAN class=046342217-14062006>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; list = 
+MyRealList.LoadList(filter)</SPAN></FONT></DIV>
+<DIV align=left><FONT face=Arial color=#0000ff size=2><SPAN class=046342217-14062006>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ' if success, set 
+list=new data and result="OK"</SPAN></FONT></DIV>
+<DIV align=left><FONT face=Arial color=#0000ff size=2><SPAN class=046342217-14062006>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ' if fail, set 
+result=reason for failure</SPAN></FONT></DIV>
+<DIV align=left><FONT face=Arial color=#0000ff size=2><SPAN class=046342217-14062006>&nbsp;&nbsp;&nbsp; End Sub</SPAN></FONT></DIV>
+<DIV align=left><FONT face=Arial color=#0000ff size=2><SPAN class=046342217-14062006></SPAN></FONT>&nbsp;</DIV>&nbsp; End 
+Class</SPAN></FONT></DIV>
+<DIV align=left><FONT face=Arial color=#0000ff size=2><SPAN class=046342217-14062006></SPAN></FONT>&nbsp;</DIV>
+<DIV align=left><FONT face=Arial color=#0000ff size=2><SPAN class=046342217-14062006>&nbsp; Public Shared Function GetList(filter As String) 
+As MyRealList</SPAN></FONT></DIV>
+<DIV align=left><FONT face=Arial color=#0000ff size=2><SPAN class=046342217-14062006>&nbsp;&nbsp;&nbsp; Dim cmd As New 
+MyListGetter</SPAN></FONT></DIV>
+<DIV align=left><FONT face=Arial color=#0000ff size=2><SPAN class=046342217-14062006>&nbsp;&nbsp;&nbsp; cmd = DataPortal.Execute(Of 
+MyListGetter)(cmd)</SPAN></FONT></DIV>
+<DIV align=left><FONT face=Arial color=#0000ff size=2><SPAN class=046342217-14062006>&nbsp;&nbsp;&nbsp; If cmd.result = "OK" 
+Then</SPAN></FONT></DIV>
+<DIV align=left><FONT face=Arial color=#0000ff size=2><SPAN class=046342217-14062006>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return 
+cmd.list</SPAN></FONT></DIV>
+<DIV align=left><FONT face=Arial color=#0000ff size=2><SPAN class=046342217-14062006></SPAN></FONT>&nbsp;</DIV>
+<DIV align=left><FONT face=Arial color=#0000ff size=2><SPAN class=046342217-14062006>&nbsp;&nbsp;&nbsp; Else</SPAN></FONT></DIV>
+<DIV align=left><FONT face=Arial color=#0000ff size=2><SPAN class=046342217-14062006>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ' handle failure as 
+desired</SPAN></FONT></DIV>
+<DIV align=left><FONT face=Arial color=#0000ff size=2><SPAN class=046342217-14062006>&nbsp;&nbsp;&nbsp; End If</SPAN></FONT></DIV>
+<DIV align=left><FONT face=Arial color=#0000ff size=2><SPAN class=046342217-14062006>&nbsp; End Function</SPAN></FONT></DIV>
+<DIV align=left><FONT face=Arial color=#0000ff size=2><SPAN class=046342217-14062006></SPAN></FONT>&nbsp;</DIV>
+<DIV align=left><FONT face=Arial color=#0000ff size=2><SPAN class=046342217-14062006>&nbsp; Private Shared Function LoadList(filter As 
+String) As MyRealList</SPAN></FONT></DIV>
+<DIV align=left><FONT face=Arial color=#0000ff size=2><SPAN class=046342217-14062006>&nbsp;&nbsp;&nbsp;&nbsp;Dim obj As New 
+MyRealList</SPAN></FONT></DIV>
+<DIV align=left><FONT face=Arial color=#0000ff size=2><SPAN class=046342217-14062006>&nbsp;&nbsp;&nbsp; obj.DataPortal_Fetch(new 
+Criteria(filter))</SPAN></FONT></DIV>
+<DIV align=left><FONT face=Arial color=#0000ff size=2><SPAN class=046342217-14062006>&nbsp;&nbsp;&nbsp; Return obj</SPAN></FONT></DIV>
+<DIV align=left><FONT face=Arial color=#0000ff size=2><SPAN class=046342217-14062006></SPAN></FONT><FONT face=Arial color=#0000ff size=2><SPAN class=046342217-14062006>&nbsp; End&nbsp;Function&nbsp; 
+</SPAN></FONT></DIV>
+<DIV align=left><FONT face=Arial color=#0000ff size=2><SPAN class=046342217-14062006></SPAN></FONT>&nbsp;</DIV>
+<DIV align=left><FONT face=Arial color=#0000ff size=2><SPAN class=046342217-14062006>&nbsp; Private Overloads Sub DataPortal_Fetch(criteria 
+As Criteria)</SPAN></FONT></DIV>
+<DIV align=left><FONT face=Arial color=#0000ff size=2><SPAN class=046342217-14062006>&nbsp;&nbsp;&nbsp; ' load object 
+here</SPAN></FONT></DIV>
+<DIV align=left><FONT face=Arial color=#0000ff size=2><SPAN class=046342217-14062006>&nbsp; End Sub</SPAN></FONT></DIV>
+<DIV align=left><FONT face=Arial color=#0000ff size=2><SPAN class=046342217-14062006></SPAN></FONT>&nbsp;</DIV>
+<DIV align=left><FONT face=Arial color=#0000ff size=2><SPAN class=046342217-14062006>End Class</SPAN></FONT></DIV>
+<DIV align=left><FONT face=Arial color=#0000ff size=2><SPAN class=046342217-14062006></SPAN></FONT>&nbsp;</DIV><FONT face=Arial color=#0000ff size=2></FONT><FONT face=Arial color=#0000ff size=2></FONT><BR>
+<BLOCKQUOTE><STRONG><FONT face=Tahoma size=2></FONT></STRONG><STRONG><FONT face=Tahoma size=2></FONT></STRONG><BR>I'm not sure I completely understand your 
+  explanation of a Command Object. When you sayd the client-side factory object 
+  can decide what to do, do you mean that in one case it can throw an exception 
+  and in another case it can return nothing? Or do you mean that the command 
+  object can be examined, determine that the data was missing, and take the same 
+  consistent action?<BR></BLOCKQUOTE></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>hurcane replied on Thursday, June 22, 2006</h2>I follow Rocky's example, but I think I didn't define my scenario properly enough. Let me use the MyRealList object that Rocky defined. Rocky has the missing data being handled inside of MyRealList. My problem is that the handling of the missing data is defined not by the list, but by the objects that collaborate with the list.<br><br>I have two other business classes that use MyRealList. One class must collaborate with MyRealList. If MyRealList can't be successfully instantiated with the data, the use case says an exception must be thrown. In another use case, the class uses the information provided by MyRealList, but only if it can be loaded. If it can't be loaded, this second case can continue to work.<br><br>Perhaps I can have two versions of RealList (e.g. MyRealListRequired and MyRealListOptional). The command object can be externalized and shared betweent he two classes. The use cases collaborate with the appropriate object.<br><br>However, on further reflection, I think the nullable object (or a variation of it) sounds like the best scenario for me. I can have a separate nullable version of my object. Or I can handle the missing data internally and provide a property on the object to make available its "null" state. In any case, there must be a way for the two different business objects to confirm whether they are working with missing data.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>pelinville replied on Monday, June 19, 2006</h2><DIV>One option for the "not found" sql error, which I&nbsp;discovered just recently, is the null object. If the data you are looking for is not there you don't return null you return a "Null Object".&nbsp; </DIV>
+<DIV>&nbsp;</DIV>
+<DIV>This is single instance object that implements the interface of the object you are trying to retrieve, and is actually created within the interface.</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>This is a pattern that is explained in <FONT size=2>Robert C. <B>Martin's book "Agile Software Development" book.&nbsp; </B></FONT></DIV>
+<DIV><STRONG><FONT size=2></FONT></STRONG>&nbsp;</DIV>
+<DIV><STRONG><FONT size=2>Doesn't solve all problems but is useful in it's place.</FONT></STRONG></DIV></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>malloc1024 replied on Tuesday, June 20, 2006</h2>The null object pattern is well known and very useful.&nbsp; It is used
+in situations where you want to avoid null checks.&nbsp; This sounds
+like your situation.&nbsp; I have used the null object pattern many
+times with great success.&nbsp; I agree with pelinville that you should
+check it out.<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

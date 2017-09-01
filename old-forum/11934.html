@@ -1,0 +1,21 @@
+<html><header><title>CSLA 3.6 : One or More properties are not registered for this type</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA 3.6 : One or More properties are not registered for this type</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11934.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Aravinda posted on Friday, April 12, 2013</h2><p>Hi,</p>
+<p>&nbsp;We have some of our applications running wih CSLA 3.6 framework. Now and then system throws this following error: </p>
+<p><strong>One or More properties are not registered for this type. </strong></p>
+<p>This error is not conistent and appears once over a period of several months. The class representing this type is derived (inherits) from another class which inherts <span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;">BusinessBase.</span></span></span><span style="font-family:Consolas;color:#2b91af;font-size:x-small;">&nbsp;</span><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Arial;color:#000000;">&nbsp;All properties are defined in base class.&nbsp;</span></span></p>
+<p><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Arial;color:#000000;">&nbsp;I &nbsp;read somewhere that inheritance among user defined defined is not encouraged in CSLA framework. </span></span></p>
+<p><span style="font-size:x-small;">&nbsp;How do we consistently reproduce this error? And how to fix it?</span></p>
+<p><span style="font-size:x-small;">Thanks in advance,</span></p>
+<p><span style="font-size:x-small;">-Aravinda</span></p>
+<p><span style="font-size:x-small;"></span></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>skagen00 replied on Friday, April 12, 2013</h2><p>Are your intermediate&nbsp;base classes concrete or abstract?</p>
+<p>I think inheritance is very valuable in terms of providing behavior... after all, that&#39;s what we&#39;re doing from CSLA&#39;s base classes.</p>
+<p>If your intermediate class is concrete, you&#39;ll generally have problems (I&#39;ve found).&nbsp; If it&#39;s abstract you should be good.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Saturday, April 13, 2013</h2><p>What type of application is this?&nbsp;</p>
+<p>If it is a web app it might be a treading related issue when AppPool is recycled.&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Aravinda replied on Tuesday, April 23, 2013</h2><p>Jonny,</p>
+<p>&nbsp; It is web app. Could this problem be caused because the base class and derived classes are in two different threads?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Aravinda replied on Tuesday, April 23, 2013</h2><p>Hi,</p>
+<p>&nbsp; The intermediate base classes are concrete classes. If I create an abtract class and use that as source of inheritance in derived class, will it solve the problem?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>skagen00 replied on Tuesday, April 23, 2013</h2><p>All classes except the final one, I believe, need to be abstract.&nbsp; (At least that is my experience).</p>
+<p>I&#39;m guessing your reluctance to making your base classes abstract is that you use them for polymorphic behavior.</p>
+<p>If that&#39;s correct, what I would suggest is -</p>
+<p>* make your base class abstract AND generic (I&#39;m assuming maybe it&#39;s not?)</p>
+<p>* create an interface to represent the public members of your base class, have your abstract base class implement it</p>
+<p>* where using polymorphic behavior, have a reference of the interface rather than the previously concrete base class</p>
+<p>If not, is there another reason why you can&#39;t just make your base classes abstract?</p>
+<p>&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

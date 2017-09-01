@@ -1,0 +1,16 @@
+<html><header><title>LINQ To SQL in PTracker</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>LINQ To SQL in PTracker</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4860.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>ForteUnited posted on Sunday, May 18, 2008</h2><P>Rocky,</P>
+<P>I've noticed that there are stored procedures writen and availalbe in the PTRACKER database but&nbsp;in&nbsp;the business objects, instead of calling the stored procedure method in the DataContext, LINQ to SQL is used.</P>
+<P>For example: In the DataPortal_Fetch method of the Project business object the code could use the following to call the stored proc available</P><FONT size=1><FONT size=1>
+<P><FONT size=3>ctx.DataContext.getProject(criteria).Single();</FONT></P>
+<P><FONT size=3><STRONG>Instead of</STRONG></FONT></P>
+<P><FONT size=3><FONT color=#0000ff>var</FONT> data = (<FONT color=#0000ff>from</FONT> p <FONT color=#0000ff>in</FONT> ctx.DataContext.Projects<BR><FONT color=#0000ff>where</FONT> p.Id == criteria.Value<BR><FONT color=#0000ff>select</FONT> p).Single();</FONT></P>
+<P><FONT size=3></FONT>&nbsp;</P>
+<P><FONT size=3>Why have the stored procs if you're not going to use them? Maybe I'm missing something here...</FONT></P>
+<P><FONT size=3></FONT>&nbsp;</P>
+<P><FONT size=3>Thanks,</FONT></P>
+<P><FONT size=3>CKA</FONT></P>
+<P><FONT size=3></FONT>&nbsp;</P>
+<P><FONT size=3></FONT><FONT size=1>&nbsp;</P></FONT></FONT></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Philip replied on Monday, May 19, 2008</h2><P><FONT face=Verdana>Rocky does use the stored procedures in the insert, update and delete operations. I guess he just wanted to illustrate how to use both in LINQ.</FONT></P>
+<P><FONT face=Verdana>Philip</FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, May 19, 2008</h2><P>That is true, I did want to show different techniques.</P>
+<P>However, it is also the case that using the existing sprocs to <EM>get</EM> data is problematic. This is because the pre-existing getXYZ sprocs often return multiple result sets.</P>
+<P>L2S can handle multiple result sets - but the designer in Visual Studio 2008 can't. In other words, you have to either use the external sqlmetal tool or hand-craft your L2S code to get multiple result sets from a sproc. I wanted to stick with the built-in VS designer, and that imposes the limitation.</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

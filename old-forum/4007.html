@@ -1,0 +1,11 @@
+<html><header><title>CSLA 2.0 List of Parent Objects?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA 2.0 List of Parent Objects?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4007.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>reagan123 posted on Friday, December 07, 2007</h2><P>Hello everyone.<BR>I'm trying to build a RootList of parent objects and can't seem to wrap my head around it.&nbsp; Right now i'm assuming my parent object needs to be of type BusinessBase and my RootList needs to be of BusinessListBase.</P>
+<P>I have a feeling this is wrong because the RootList example in the book uses an editable child... What is the best way to get a list of ParentObjects.</P>
+<P>Hope this makes some sort of sense...<BR><BR>Thanks!</P>
+<P><FONT size=2>&nbsp;</P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Michael Hildner replied on Friday, December 07, 2007</h2><P>Hi, </P>
+<P>If i get you right, you'll need an EditableRootList, which contains EditableChild objects. Poached this from the book</P><B><FONT face=TheSansMonoCondensed-Bold size=1>
+<P align=left>[Serializable()]</P>
+<P align=left>class EditableRootList :BusinessListBase&lt;EditableRootList, EditableChild&gt;</P></B></FONT>
+<P>Your editable child objects can contain collections of other objects, if that's what you mean by parent.</P>
+<P>Regards,</P>
+<P>Mike</P>
+<P><B><FONT face=TheSansMonoCondensed-Bold size=1>&nbsp;</P></B></FONT></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

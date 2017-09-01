@@ -1,0 +1,22 @@
+<html><header><title>BypassPropertyChecks undoing changes?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>BypassPropertyChecks undoing changes?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11610.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>joemorin73 posted on Monday, October 01, 2012</h2><p>This is a bit of a puzzler.&nbsp; I have the following code:</p>
+<pre style="font-family:Consolas;background:white;color:black;font-size:13px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">protected</span>&nbsp;<span style="color:blue;">override</span>&nbsp;<span style="color:blue;">void</span>&nbsp;Child_Create()
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">using</span>&nbsp;(BypassPropertyChecks)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;LoadProperty(OrderGuidProperty,&nbsp;<span style="color:#2b91af;">Guid</span>.NewGuid());
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;LoadProperty(OrderDateProperty,&nbsp;<span style="color:#2b91af;">DateTime</span>.Now);
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:green;">//&nbsp;Must&nbsp;create&nbsp;to&nbsp;a&nbsp;valid&nbsp;OfficeID</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">if</span>&nbsp;(<span style="color:#2b91af;">HCSecurity</span>.ApplicationID&nbsp;==&nbsp;<span style="color:#2b91af;">HCSecurity</span>.APPID_HCR)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;LoadProperty(OfficeIDProperty,&nbsp;<span style="color:#2b91af;">AccessROList</span>.GetAccessROListCurrentUser().Where(e&nbsp;=&gt;&nbsp;e.Role&nbsp;==&nbsp;<span style="color:#2b91af;">HCRRoles</span>.ORDER_UPDATE).FirstOrDefault().OfficeID);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">base</span>.Child_Create();
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CheckObjectRules();
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</pre>
+<pre style="font-family:Consolas;background:white;color:black;font-size:13px;"></pre>
+<pre style="font-family:Consolas;background:white;color:black;font-size:13px;">At the end of execution, all the values that were loaded in the LoadProperties are restored to the defaults.  Is there anything in the BypassProperties that will rollback values?</pre></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>joemorin73 replied on Monday, October 01, 2012</h2><p>Soooooooooooo, it seems I found something else that caused an authorizaion rule to trip.&nbsp; In the above create statement, I forgot to set another property.&nbsp; I solved the problem when I added the missing property.</p>
+<p>I apologize!</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

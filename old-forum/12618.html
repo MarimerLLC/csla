@@ -1,0 +1,22 @@
+<html><header><title>Remove Methods on Editable Root Collection not getting fired</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Remove Methods on Editable Root Collection not getting fired</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/12618.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>AbbasMalik posted on Saturday, May 10, 2014</h2><p>Hi</p>
+<p>I have generated an Editable Root Collection through cslagenfork. In windows forms, binding source&#39;s Remove() or RemoveCurrent() method </p>
+<p>is called to delete the current object. But some how the remove methods of the root collection (BusinessBindingListBase) are not getting fired. I have put some logic in the remove methods to check referential integrity.</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; public new bool Remove(ColorEC item) &nbsp; &nbsp; &nbsp; &nbsp;{&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; if (!CanDeleteObject())</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; throw new System.Security.SecurityException(&quot;User not authorized to remove a ColorEC.&quot;);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; ColorRIExistsCommand cmd = new ColorRIExistsCommand(item.NKey);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; cmd = Csla.DataPortal.Execute&lt;ColorRIExistsCommand&gt;(cmd);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; if (cmd.ColorExists)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; throw new System.Exception(&quot;Related records exist. Can&#39;t delete record&quot;);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; return base.Remove(item);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; }&nbsp;</p>
+<p>&nbsp;</p>
+<p><b>Edit</b>:</p>
+<p>When I delete a record using binding source, RemoveItem(int index) gets called.Overriding this method and putting RI logic into it works. Is it right way to do it something else needs to be done?</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>ajj3085 replied on Sunday, May 11, 2014</h2><p>I think your problem is your use of shadowing via the new keyword.&nbsp; Your method would only be called if the caller is using a reference to your class.&nbsp; if the reference is to the base of your class the normal Remove method is called.&nbsp; This is why use of new is discouraged, because it breaks inheritance.</p>
+<p>&nbsp;</p>
+<p><a href="http://joel.inpointform.net/software-development/polymorphism-in-c-new-vs-override-as-function-modifiers/">http://joel.inpointform.net/software-development/polymorphism-in-c-new-vs-override-as-function-modifiers/</a></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>AbbasMalik replied on Wednesday, May 14, 2014</h2><p>Hi Andy,&nbsp;</p>
+<p>new keyword is not used anywhere. Overriding RemoveItem in the derived collection class works good with the windows forms binding source.</p>
+<p>Best regards</p>
+<p>Abbas</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>ajj3085 replied on Wednesday, May 14, 2014</h2><p>This is&nbsp;from your OP:&nbsp;&nbsp; public <strong>new</strong> bool Remove(ColorEC item) at the start of the thread.</p>
+<p>Is that not what your code actually looks like?&nbsp; If not, can you post the actual code?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>AbbasMalik replied on Thursday, May 15, 2014</h2><p>Thanks Andy, you pointed me out to the right direction and now I have understood it. Right now I have overridden RemoveItem(ColorEC item) and it is working fine. Is it ok to override only this method or should I override all the base class remove&nbsp;methods to enforce the referential integrity logic?</p>
+<p>Thanks again.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Thursday, May 15, 2014</h2><p>I believe that the other remove methods end up calling the overridden one, but id check the code to be sure.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

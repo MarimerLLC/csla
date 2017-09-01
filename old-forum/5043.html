@@ -1,0 +1,79 @@
+<html><header><title>Validating that a generic list contains at least one item</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Validating that a generic list contains at least one item</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5043.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>adamnationx posted on Tuesday, July 01, 2008</h2>Hey guys,<br><br>Just started working with CSLA recently on a DB management app. It's definitely making my life easier in many ways, but I ran into a problem this morning when I started implementing some custom validation rules. Hopefully somebody has some advice for me!<br><br>I want to implement a rule that ensures that a generic list object contains at least one item (list.Count &gt; 0). I am implementing this rule as part of an "Order" object which has a member "OrderItems" collection, but I'd like the business rule to accept generic lists. I was playing around with passing the type to the rule, but I'm not super well-versed in generics and certainly not with CSLA business rules. Any help would be greatly appreciated!<br><br>Thanks,<br>Adam<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Tuesday, July 01, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>You can try to use in ICollection.&nbsp; This should work with
+both ReadOnlyBLB and BLB.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Senior Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899<o:p></o:p></span></p>
+
+<p class=MsoNormal><b><i><span>Magenic</span></i></b><span> </span><span>&reg;</span><b><i><span><o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> adamnationx
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Tuesday, July 01, 2008 2:41 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> [CSLA .NET] Validating that a generic list contains at least
+one item<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Hey guys,<br>
+<br>
+Just started working with CSLA recently on a DB management app. It's definitely
+making my life easier in many ways, but I ran into a problem this morning when
+I started implementing some custom validation rules. Hopefully somebody has
+some advice for me!<br>
+<br>
+I want to implement a rule that ensures that a generic list object contains at
+least one item (list.Count &gt; 0). I am implementing this rule as part of an
+&quot;Order&quot; object which has a member &quot;OrderItems&quot; collection,
+but I'd like the business rule to accept generic lists. I was playing around
+with passing the type to the rule, but I'm not super well-versed in generics
+and certainly not with CSLA business rules. Any help would be greatly
+appreciated!<br>
+<br>
+Thanks,<br>
+Adam<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>adamnationx replied on Tuesday, July 01, 2008</h2>Don't I need to get the type of the collection objects? I'm passing to the validation rule the name of the field that contains the list. When I receive it in the validation rule, I want to use CSLA's Utilities.CallByName() method with the property name to get the list, then cast it as an ICollection? I can't declare an ICollection variable without a type argument. Not sure if I'm just missing the mark here completely or what. Thanks for the quick response, though!<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Wednesday, July 02, 2008</h2><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Dim</FONT><FONT size=2> mLines </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> SomeColl = SomeColl .NewSomeColl ()<BR></FONT><FONT color=#0000ff size=2>Dim</FONT><FONT size=2> coll </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> ICollection = </FONT><FONT color=#0000ff size=2>TryCast</FONT><FONT size=2>(mLines, ICollection)<BR></FONT><FONT color=#0000ff size=2>If</FONT><FONT size=2> coll.Count &gt; 0 </FONT><FONT color=#0000ff size=2>Then<BR></FONT><FONT color=#0000ff size=2><BR>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>If</P></FONT></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

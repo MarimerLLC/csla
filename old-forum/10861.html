@@ -1,0 +1,210 @@
+<html><header><title>ViewModel and Entity Property Change event not getting handled.</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>ViewModel and Entity Property Change event not getting handled.</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10861.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>jamie.clayton posted on Wednesday, November 09, 2011</h2><p>G&#39;day,</p>
+<p>I&#39;m using csla 3.8.4.&nbsp;What have I done wrong for the BusinessBase(of MyBusObj) not to fire the PropertyChanged event when I use the Csla.WPF.ViewModel.&nbsp; I&#39;ve run out of ideas on how to resolve this.</p>
+<h2>Scenario</h2>
+<p>&nbsp;I&#39;ve create a custom ViewModel in VB to handle a customer requirement to prompt users if they make changes to a Business Object, but don&#39;t click on the save button.</p>
+<pre style="font-family:Consolas;background:white;color:black;font-size:13px;"><span style="color:blue;">Public</span>&nbsp;<span style="color:blue;">Class</span>&nbsp;<span style="color:#2b91af;">PromptToSaveChangesViewModel</span>(<span style="color:blue;">Of</span>&nbsp;T&nbsp;<span style="color:blue;">As</span>&nbsp;Csla.Core.<span style="color:#2b91af;">BusinessBase</span>)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">Inherits</span>&nbsp;Csla.Wpf.<span style="color:#2b91af;">ViewModel</span>(<span style="color:blue;">Of</span>&nbsp;<span style="color:#2b91af;">T</span>)</pre>
+<p>I created a simple WPF screen which uses this Csla.WPF.ViewModel to show a single business object. The WPF screen displays all the information and buttons are configured etc.</p>
+<p>In the Business Object I&#39;ve got a simple PropertyChanged handler that automatically sets 2 fields in the business object to the Date the records was changed and the name of the user who changed it.</p>
+<pre style="font-family:Consolas;background:white;color:black;font-size:13px;"><span style="color:blue;">Private</span>&nbsp;<span style="color:blue;">Sub</span>&nbsp;BO_PropertyChanged(<span style="color:blue;">ByVal</span>&nbsp;sender&nbsp;<span style="color:blue;">As</span>&nbsp;<span style="color:blue;">Object</span>,&nbsp;<span style="color:blue;">ByVal</span>&nbsp;e&nbsp;<span style="color:blue;">As</span>&nbsp;System.ComponentModel.<span style="color:#2b91af;">PropertyChangedEventArgs</span>)&nbsp;<span style="color:blue;">Handles</span>&nbsp;<span style="color:blue;">Me</span>.PropertyChanged
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">If</span>&nbsp;<span style="color:blue;">Me</span>.IsDirty&nbsp;<span style="color:blue;">Then</span></pre>
+<pre style="font-family:Consolas;background:white;color:black;font-size:13px;"><span style="color:blue;"></span>
+<pre style="font-family:Consolas;background:white;color:black;font-size:13px;">               logger.Info(<span style="color:blue;">String</span>.Format(<span style="color:#a31515;">&quot;BusinessBase(Of&nbsp;MyBusObj)&nbsp;-&nbsp;<br />PropertyChanged&nbsp;Event&nbsp;fired&nbsp;for&nbsp;{0}&quot;</span>,&nbsp;e.PropertyName.ToString))
+</pre>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">If</span>&nbsp;e.PropertyName&nbsp;&lt;&gt;&nbsp;<span style="color:blue;">String</span>.Empty&nbsp;<span style="color:blue;">Then</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">Using</span>&nbsp;(BypassPropertyChecks)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;SetTheLastUpdatedUserAndDateValues()
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">End</span>&nbsp;<span style="color:blue;">Using</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">End</span>&nbsp;<span style="color:blue;">If</span></pre>
+<pre style="font-family:Consolas;background:white;color:black;font-size:13px;"><span style="color:blue;">             <span style="color:blue;">End</span><span style="color:#000000;"> </span><span style="color:blue;">If</span></span></pre>
+<pre style="font-family:Consolas;background:white;color:black;font-size:13px;"><span style="color:blue;"><span style="color:blue;"><span style="color:blue;">End</span><span style="color:#000000;"> Sub</span></span></span></pre>
+<p>The problem is the underlying Entity Property Change event is not firing. See a simple logger I&#39;ve added to all the _PropertyChanged events across all these layers.&nbsp; It looks like the property is getting changed but at the entity level, there is a problem with the propertychanged event handler under the CSLA 3.8.4 ViewModelBase(of T) codebase.&nbsp; I suspect its OnModelChanged or Model_PropertyChanged that&#39;s causing some sort of disconnect of event handlers, because the actual property is getting saved, but my custom BO_PropertyChanged event handler is not executing. </p>
+<p>Here is a log of PropertyChanged events for a simple task to edit the &quot;Company&quot; field. What is missing is entries for when the code is ment to fire and change the two fields &quot;BusinessBase(Of MyBusObj) - PropertyChanged Event fired for {Company}&quot;.</p>
+<p>
+<table width="749" cellpadding="0" cellspacing="0" border="0" style="width:562pt;border-collapse:collapse;">
+<colgroup></colgroup><span style="font-size:xx-small;"></span><colgroup><col width="749" style="width:562pt;mso-width-source:userset;mso-width-alt:27392;"></col></colgroup><span style="color:#808080;"></span>
+<tbody>
+<tr style="height:15pt;">
+<td width="749" height="20" style="background-color:transparent;width:562pt;height:15pt;border:#f0f0f0;"><span style="font-size:xx-small;"><span style="color:#808080;">PromptToSaveChangesViewModel - MyBase.Model.PropertyChanged Event fired for CanCreate</span></span></td>
+</tr>
+<tr style="height:15pt;">
+<td height="20" style="background-color:transparent;height:15pt;border:#f0f0f0;"><span style="font-size:xx-small;"><span style="color:#808080;">PromptToSaveChangesViewModel - PropertyChanged Event fired for CanCreate</span></span></td>
+</tr>
+<tr style="height:15pt;">
+<td height="20" style="background-color:transparent;height:15pt;border:#f0f0f0;"><span style="font-size:xx-small;"><span style="color:#808080;">PromptToSaveChangesViewModel - MyBase.Model.PropertyChanged Event fired for CanDelete</span></span></td>
+</tr>
+<tr style="height:15pt;">
+<td height="20" style="background-color:transparent;height:15pt;border:#f0f0f0;"><span style="font-size:xx-small;"><span style="color:#808080;">PromptToSaveChangesViewModel - PropertyChanged Event fired for CanDelete</span></span></td>
+</tr>
+<tr style="height:15pt;">
+<td height="20" style="background-color:transparent;height:15pt;border:#f0f0f0;"><span style="font-size:xx-small;"><span style="color:#808080;">PromptToSaveChangesViewModel - MyBase.Model.PropertyChanged Event fired for CanFetch</span></span></td>
+</tr>
+<tr style="height:15pt;">
+<td height="20" style="background-color:transparent;height:15pt;border:#f0f0f0;"><span style="font-size:xx-small;"><span style="color:#808080;">PromptToSaveChangesViewModel - PropertyChanged Event fired for CanFetch</span></span></td>
+</tr>
+<tr style="height:15pt;">
+<td height="20" style="background-color:transparent;height:15pt;border:#f0f0f0;"><span style="font-size:xx-small;"><span style="color:#808080;">WPF Window Contructor has loaded a BO passed into it by cloning and existing BO from a list.</span></span></td>
+</tr>
+<tr style="height:15pt;">
+<td height="20" style="background-color:transparent;height:15pt;border:#f0f0f0;"><span style="font-size:xx-small;"><span style="color:#808080;">PromptToSaveChangesViewModel - MyBase.Model.PropertyChanged Event fired for CanSave</span></span></td>
+</tr>
+<tr style="height:15pt;">
+<td height="20" style="background-color:transparent;height:15pt;border:#f0f0f0;"><span style="font-size:xx-small;"><span style="color:#808080;">PromptToSaveChangesViewModel - PropertyChanged Event fired for CanSave</span></span></td>
+</tr>
+<tr style="height:15pt;">
+<td height="20" style="background-color:transparent;height:15pt;border:#f0f0f0;"><span style="font-size:xx-small;"><span style="color:#808080;">ViewModel(of T) - PropertyChanged Event fired for CanSave</span></span></td>
+</tr>
+<tr style="height:15pt;">
+<td height="20" style="background-color:transparent;height:15pt;border:#f0f0f0;"><span style="font-size:xx-small;"><span style="color:#808080;">WPF Window private withevents _ViewModel.PropertyChanged Event fired for CanSave</span></span></td>
+</tr>
+<tr style="height:15pt;">
+<td height="20" style="background-color:transparent;height:15pt;border:#f0f0f0;"><span style="font-size:xx-small;"><span style="color:#808080;">PromptToSaveChangesViewModel - MyBase.Model.PropertyChanged Event fired for CanCancel</span></span></td>
+</tr>
+<tr style="height:15pt;">
+<td height="20" style="background-color:transparent;height:15pt;border:#f0f0f0;"><span style="font-size:xx-small;"><span style="color:#808080;">PromptToSaveChangesViewModel - PropertyChanged Event fired for CanCancel</span></span></td>
+</tr>
+<tr style="height:15pt;">
+<td height="20" style="background-color:transparent;height:15pt;border:#f0f0f0;"><span style="font-size:xx-small;"><span style="color:#808080;">ViewModel(of T) - PropertyChanged Event fired for CanCancel</span></span></td>
+</tr>
+<tr style="height:15pt;">
+<td height="20" style="background-color:transparent;height:15pt;border:#f0f0f0;"><span style="font-size:xx-small;"><span style="color:#808080;">WPF Window private withevents _ViewModel.PropertyChanged Event fired for CanCancel</span></span></td>
+</tr>
+<tr style="height:15pt;">
+<td height="20" style="background-color:transparent;height:15pt;border:#f0f0f0;"><span style="font-size:xx-small;"><span style="color:#808080;">PromptToSaveChangesViewModel - MyBase.Model.PropertyChanged Event fired for CanCreate</span></span></td>
+</tr>
+<tr style="height:15pt;">
+<td height="20" style="background-color:transparent;height:15pt;border:#f0f0f0;"><span style="font-size:xx-small;"><span style="color:#808080;">PromptToSaveChangesViewModel - PropertyChanged Event fired for CanCreate</span></span></td>
+</tr>
+<tr style="height:15pt;">
+<td height="20" style="background-color:transparent;height:15pt;border:#f0f0f0;"><span style="font-size:xx-small;"><span style="color:#808080;">ViewModel(of T) - PropertyChanged Event fired for CanCreate</span></span></td>
+</tr>
+<tr style="height:15pt;">
+<td height="20" style="background-color:transparent;height:15pt;border:#f0f0f0;"><span style="font-size:xx-small;"><span style="color:#808080;">WPF Window private withevents _ViewModel.PropertyChanged Event fired for CanCreate</span></span></td>
+</tr>
+<tr style="height:15pt;">
+<td height="20" style="background-color:transparent;height:15pt;border:#f0f0f0;"><span style="font-size:xx-small;"><span style="color:#808080;">PromptToSaveChangesViewModel - MyBase.Model.PropertyChanged Event fired for CanFetch</span></span></td>
+</tr>
+<tr style="height:15pt;">
+<td height="20" style="background-color:transparent;height:15pt;border:#f0f0f0;"><span style="font-size:xx-small;"><span style="color:#808080;">PromptToSaveChangesViewModel - PropertyChanged Event fired for CanFetch</span></span></td>
+</tr>
+<tr style="height:15pt;">
+<td height="20" style="background-color:transparent;height:15pt;border:#f0f0f0;"><span style="font-size:xx-small;"><span style="color:#808080;">ViewModel(of T) - PropertyChanged Event fired for CanFetch</span></span></td>
+</tr>
+<tr style="height:15pt;">
+<td height="20" style="background-color:transparent;height:15pt;border:#f0f0f0;"><span style="font-size:xx-small;"><span style="color:#808080;">WPF Window private withevents _ViewModel.PropertyChanged Event fired for CanFetch</span></span></td>
+</tr>
+<tr style="height:15pt;">
+<td height="20" style="background-color:transparent;height:15pt;border:#f0f0f0;"><span style="font-size:xx-small;"><span style="color:#808080;">PromptToSaveChangesViewModel - MyBase.Model.PropertyChanged Event fired for Company</span></span></td>
+</tr>
+<tr style="height:15pt;">
+<td height="20" style="background-color:transparent;height:15pt;border:#f0f0f0;"><span style="font-size:xx-small;"><span style="color:#808080;">PromptToSaveChangesViewModel - MyBase.Model.PropertyChanged Event fired for Company</span></span></td>
+</tr>
+<tr style="height:15pt;">
+<td height="20" style="background-color:transparent;height:15pt;border:#f0f0f0;"><span style="font-size:xx-small;"><span style="color:#808080;">PromptToSaveChangesViewModel - MyBase.Model.PropertyChanged Event fired for Company</span></span></td>
+</tr>
+<tr style="height:15pt;">
+<td height="20" style="background-color:transparent;height:15pt;border:#f0f0f0;"><span style="font-size:xx-small;"><span style="color:#808080;">PromptToSaveChangesViewModel - MyBase.Model.PropertyChanged Event fired for Company</span></span></td>
+</tr>
+<tr style="height:15pt;">
+<td height="20" style="background-color:transparent;height:15pt;border:#f0f0f0;"><span style="font-size:xx-small;"><span style="color:#808080;">PromptToSaveChangesViewModel - MyBase.Model.PropertyChanged Event fired for Company</span></span></td>
+</tr>
+<tr style="height:15pt;">
+<td height="20" style="background-color:transparent;height:15pt;border:#f0f0f0;"><span style="font-size:xx-small;"><span style="color:#808080;">PromptToSaveChangesViewModel - MyBase.Model.PropertyChanged Event fired for Company</span></span></td>
+</tr>
+<tr style="height:15pt;">
+<td height="20" style="background-color:transparent;height:15pt;border:#f0f0f0;"><span style="font-size:xx-small;"><span style="color:#808080;">PromptToSaveChangesViewModel - MyBase.Model.PropertyChanged Event fired for Company</span></span></td>
+</tr>
+<tr style="height:15pt;">
+<td height="20" style="background-color:transparent;height:15pt;border:#f0f0f0;"><span style="font-size:xx-small;"><span style="color:#808080;">PromptToSaveChangesViewModel Save(ByVal sender As Object, ByVal e As Csla.Wpf.ExecuteEventArgs) event fired.</span></span></td>
+</tr>
+<tr style="height:15pt;">
+<td height="20" style="background-color:transparent;height:15pt;border:#f0f0f0;"><span style="font-size:xx-small;"><span style="color:#808080;">PromptToSaveChangesViewModel - MyBase.Model.PropertyChanged Event fired for IsBusy</span></span></td>
+</tr>
+<tr style="height:15pt;">
+<td height="20" style="background-color:transparent;height:15pt;border:#f0f0f0;"><span style="font-size:xx-small;"><span style="color:#808080;">PromptToSaveChangesViewModel - PropertyChanged Event fired for IsBusy</span></span></td>
+</tr>
+<tr style="height:15pt;">
+<td height="20" style="background-color:transparent;height:15pt;border:#f0f0f0;"><span style="font-size:xx-small;"><span style="color:#808080;">ViewModel(of T) - PropertyChanged Event fired for IsBusy</span></span></td>
+</tr>
+<tr style="height:15pt;">
+<td height="20" style="background-color:transparent;height:15pt;border:#f0f0f0;"><span style="font-size:xx-small;"><span style="color:#808080;">WPF Window private withevents _ViewModel.PropertyChanged Event fired for IsBusy</span></span></td>
+</tr>
+<tr style="height:15pt;">
+<td height="20" style="background-color:transparent;height:15pt;border:#f0f0f0;"><span style="font-size:xx-small;"><span style="color:#808080;">PromptToSaveChangesViewModel - MyBase.Model.PropertyChanged Event fired for IsBusy</span></span></td>
+</tr>
+<tr style="height:15pt;">
+<td height="20" style="background-color:transparent;height:15pt;border:#f0f0f0;"><span style="font-size:xx-small;"><span style="color:#808080;">PromptToSaveChangesViewModel - PropertyChanged Event fired for IsBusy</span></span></td>
+</tr>
+<tr style="height:15pt;">
+<td height="20" style="background-color:transparent;height:15pt;border:#f0f0f0;"><span style="font-size:xx-small;"><span style="color:#808080;">ViewModel(of T) - PropertyChanged Event fired for IsBusy</span></span></td>
+</tr>
+<tr style="height:15pt;">
+<td height="20" style="background-color:transparent;height:15pt;border:#f0f0f0;"><span style="font-size:xx-small;"><span style="color:#808080;">WPF Window private withevents _ViewModel.PropertyChanged Event fired for IsBusy</span></span></td>
+</tr>
+<tr style="height:15pt;">
+<td height="20" style="background-color:transparent;height:15pt;border:#f0f0f0;"><span style="font-size:xx-small;"><span style="color:#808080;">PromptToSaveChangesViewModel - MyBase.Model.PropertyChanged Event fired for CanSave</span></span></td>
+</tr>
+<tr style="height:15pt;">
+<td height="20" style="background-color:transparent;height:15pt;border:#f0f0f0;"><span style="font-size:xx-small;"><span style="color:#808080;">PromptToSaveChangesViewModel - PropertyChanged Event fired for CanSave</span></span></td>
+</tr>
+<tr style="height:15pt;">
+<td height="20" style="background-color:transparent;height:15pt;border:#f0f0f0;"><span style="font-size:xx-small;"><span style="color:#808080;">ViewModel(of T) - PropertyChanged Event fired for CanSave</span></span></td>
+</tr>
+<tr style="height:15pt;">
+<td height="20" style="background-color:transparent;height:15pt;border:#f0f0f0;"><span style="font-size:xx-small;"><span style="color:#808080;">WPF Window private withevents _ViewModel.PropertyChanged Event fired for CanSave</span></span></td>
+</tr>
+<tr style="height:15pt;">
+<td height="20" style="background-color:transparent;height:15pt;border:#f0f0f0;"><span style="font-size:xx-small;"><span style="color:#808080;">PromptToSaveChangesViewModel - MyBase.Model.PropertyChanged Event fired for CanCancel</span></span></td>
+</tr>
+<tr style="height:15pt;">
+<td height="20" style="background-color:transparent;height:15pt;border:#f0f0f0;"><span style="font-size:xx-small;"><span style="color:#808080;">PromptToSaveChangesViewModel - PropertyChanged Event fired for CanCancel</span></span></td>
+</tr>
+<tr style="height:15pt;">
+<td height="20" style="background-color:transparent;height:15pt;border:#f0f0f0;"><span style="font-size:xx-small;"><span style="color:#808080;">ViewModel(of T) - PropertyChanged Event fired for CanCancel</span></span></td>
+</tr>
+<tr style="height:15pt;">
+<td height="20" style="background-color:transparent;height:15pt;border:#f0f0f0;"><span style="font-size:xx-small;"><span style="color:#808080;">WPF Window private withevents _ViewModel.PropertyChanged Event fired for CanCancel</span></span></td>
+</tr>
+<tr style="height:15pt;">
+<td height="20" style="background-color:transparent;height:15pt;border:#f0f0f0;"><span style="font-size:xx-small;"><span style="color:#808080;">PromptToSaveChangesViewModel - MyBase.Model.PropertyChanged Event fired for CanCreate</span></span></td>
+</tr>
+<tr style="height:15pt;">
+<td height="20" style="background-color:transparent;height:15pt;border:#f0f0f0;"><span style="font-size:xx-small;"><span style="color:#808080;">PromptToSaveChangesViewModel - PropertyChanged Event fired for CanCreate</span></span></td>
+</tr>
+<tr style="height:15pt;">
+<td height="20" style="background-color:transparent;height:15pt;border:#f0f0f0;"><span style="font-size:xx-small;"><span style="color:#808080;">ViewModel(of T) - PropertyChanged Event fired for CanCreate</span></span></td>
+</tr>
+<tr style="height:15pt;">
+<td height="20" style="background-color:transparent;height:15pt;border:#f0f0f0;"><span style="font-size:xx-small;"><span style="color:#808080;">WPF Window private withevents _ViewModel.PropertyChanged Event fired for CanCreate</span></span></td>
+</tr>
+<tr style="height:15pt;">
+<td height="20" style="background-color:transparent;height:15pt;border:#f0f0f0;"><span style="font-size:xx-small;"><span style="color:#808080;">PromptToSaveChangesViewModel - MyBase.Model.PropertyChanged Event fired for CanFetch</span></span></td>
+</tr>
+<tr style="height:15pt;">
+<td height="20" style="background-color:transparent;height:15pt;border:#f0f0f0;"><span style="font-size:xx-small;"><span style="color:#808080;">PromptToSaveChangesViewModel - PropertyChanged Event fired for CanFetch</span></span></td>
+</tr>
+<tr style="height:15pt;">
+<td height="20" style="background-color:transparent;height:15pt;border:#f0f0f0;"><span style="font-size:xx-small;"><span style="color:#808080;">ViewModel(of T) - PropertyChanged Event fired for CanFetch</span></span></td>
+</tr>
+<tr style="height:15pt;">
+<td height="20" style="background-color:transparent;height:15pt;border:#f0f0f0;"><span style="font-size:xx-small;"><span style="color:#808080;">WPF Window private withevents _ViewModel.PropertyChanged Event fired for CanFetch</span></span></td>
+</tr>
+<tr style="height:15pt;">
+<td height="20" style="background-color:transparent;height:15pt;border:#f0f0f0;"><span style="font-size:xx-small;"><span style="color:#808080;">WPF Window Closed</span></span></td>
+</tr>
+</tbody>
+</table>
+</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Thursday, November 10, 2011</h2><p><div style='padding-left: 50px;background-color:silver'><b>jamie.clayton<br></b></p>
+<p><span style="color:blue;">Using</span>&nbsp;(BypassPropertyChecks)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br />&nbsp;&nbsp;&nbsp;&nbsp; SetTheLastUpdatedUserAndDateValues()
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br /><span style="color:blue;">End</span>&nbsp;<span style="color:blue;">Using</span></div></p>
+<p>When you use BypassPropertyChecks the properties inside the using will not raise PropertyChanged event.</p>
+<p>I would suggest to move this part of the code into the PropertyHasChanged method - you should not set properties in OnPropertyChanged event and expect to get PropertyChangedEvent for those properties as well. </p>
+<p>(Here in C#)</p>
+<pre style="font-family:Consolas;font-size:13px;color:black;background:none repeat scroll 0% 0% #fafafa;">&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">protected</span>&nbsp;<span style="color:blue;">override</span>&nbsp;<span style="color:blue;">void</span>&nbsp;PropertyHasChanged(string propertyName)
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">base</span>.PropertyHasChanged(property);
+      <br />      // set additional properties here if you like - <br />      // may raise OnPropertyChanged manually for additional properties too. <br /><br />      LoadProperty(LastChangedUser, Thread.CurrentPrincipal.Identity.Name);<br />      LoadProperty(LastChanged, DateTime.Now);<br />      <br />      OnPropertyChanged(LastChangedUser.Name);<br />      OnPropertyChanged(LastChanged.Name);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp; }</pre></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jamie.clayton replied on Thursday, November 10, 2011</h2><p>Jonny,</p>
+<p>Thanks for that coding style example.&nbsp; It is a very elegant solution to a problem I hadn&#39;t resolved through my CSLA based solutions since I started in the 2.0 days.&nbsp; I&#39;ll be refactoring a stack of code based on this! </p>
+<p>Interestingly all the code I&#39;ve been creating to override the ViewModel uses that exact&nbsp;style. Kicking myself :) for missing this.&nbsp; If your ever in Australia, I would be&nbsp;happy to buy you a&nbsp;drink or 5.&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

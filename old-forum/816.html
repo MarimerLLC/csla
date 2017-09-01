@@ -1,0 +1,59 @@
+<html><header><title>Polymorphic object fetching with code gen</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Polymorphic object fetching with code gen</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/816.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>skagen00 posted on Friday, August 04, 2006</h2><P><FONT face=Arial size=2>I am loading a collection of varying types. </FONT></P>
+<P><FONT face=Arial size=2>My collection isn't code generated, but I want to keep its contained objects code generated as those will have varying properties. </FONT></P>
+<P><FONT face=Arial size=2>Here's my approach right now. </FONT></P>
+<P><FONT face=Arial size=2>My fetch in the collection looks like this:</FONT></P>
+<P><FONT face=Arial><FONT size=2><FONT color=#0000ff>private</FONT> <FONT color=#0000ff>void</FONT> Fetch(<FONT color=#008080>SafeDataReader</FONT> dr)</FONT></FONT></P>
+<P><FONT face=Arial size=2>{</FONT></P>
+<P><FONT face=Arial size=2>&nbsp;&nbsp;&nbsp;RaiseListChangedEvents = <FONT color=#0000ff>false</FONT>;</FONT></P>
+<P><FONT face=Arial><FONT size=2><FONT color=#0000ff>&nbsp;&nbsp;&nbsp;while</FONT> (dr.Read())</FONT></FONT></P>
+<P><FONT face=Arial><FONT size=2><FONT color=#0000ff>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;this</FONT>.Add(<FONT color=#008080>ProfileRoleFactory</FONT>.GetProfileRole(dr));</FONT></FONT></P>
+<P><FONT face=Arial size=2>&nbsp;&nbsp;&nbsp;RaiseListChangedEvents = <FONT color=#0000ff>true</FONT>;</FONT></P>
+<P><FONT face=Arial size=2>}</FONT></P>
+<P><FONT face=Arial size=2>ProfileRoleFactory instantiates the proper object as such:</FONT></P>
+<P><FONT size=2><FONT face=Arial><FONT color=#0000ff>internal</FONT> <FONT color=#0000ff>static</FONT> <FONT color=#008080>IProfileRole</FONT> GetProfileRole(<FONT color=#008080>SafeDataReader</FONT></FONT><FONT face=Arial> dr)</FONT></FONT></P>
+<P><FONT face=Arial size=2>{</FONT></P>
+<P><FONT size=2><FONT face=Arial color=#008080>&nbsp;&nbsp;&nbsp;IProfileRole</FONT><FONT face=Arial> fetchedRole; </FONT></FONT></P>
+<P><FONT size=2><FONT face=Arial><FONT color=#0000ff>&nbsp;&nbsp;&nbsp;switch</FONT> (dr.GetGuid(<FONT color=#800000>"ProfileRoleType"</FONT></FONT><FONT face=Arial>)) </FONT></FONT></P>
+<P><FONT face=Arial size=2>&nbsp;&nbsp;&nbsp;{</FONT></P>
+<P><FONT size=2><FONT face=Arial><FONT color=#0000ff>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;case</FONT> <FONT color=#008080>ProfileRoleType</FONT></FONT><FONT face=Arial>.GranteeRole:</FONT></FONT></P>
+<P><FONT size=2><FONT face=Arial>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;fetchedRole = (</FONT><FONT face=Arial><FONT color=#008080>IProfileRole</FONT>)<FONT color=#008080>ProfileRoleGrantee</FONT></FONT><FONT face=Arial>.GetProfileRoleGrantee(dr);</FONT></FONT></P>
+<P><FONT size=2><FONT face=Arial color=#0000ff>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;break</FONT><FONT face=Arial>;</FONT></FONT></P>
+<P><FONT size=2><FONT face=Arial><FONT color=#0000ff>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;case</FONT> <FONT color=#008080>ProfileRoleType</FONT></FONT><FONT face=Arial>.VendorRole:</FONT></FONT></P>
+<P><FONT size=2><FONT face=Arial>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;fetchedRole = (</FONT><FONT face=Arial><FONT color=#008080>IProfileRole</FONT>)<FONT color=#008080>ProfileRoleVendor</FONT></FONT><FONT face=Arial>.GetProfileRoleVendor(dr);</FONT></FONT></P>
+<P><FONT size=2><FONT face=Arial color=#0000ff>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;break</FONT><FONT face=Arial>;</FONT></FONT></P>
+<P><FONT size=2><FONT face=Arial><FONT color=#0000ff>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;case</FONT> <FONT color=#008080>ProfileRoleType</FONT></FONT><FONT face=Arial>.StandardRole:</FONT></FONT></P>
+<P><FONT size=2><FONT face=Arial>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;fetchedRole = (</FONT><FONT face=Arial><FONT color=#008080>IProfileRole</FONT>)<FONT color=#008080>ProfileRoleStandard</FONT>.GetProfileRoleStandard(dr); </FONT></FONT></P>
+<P><FONT face=Arial size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;break;</FONT></P>
+<P><FONT size=2><FONT face=Arial color=#0000ff>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;default</FONT><FONT face=Arial>:</FONT></FONT></P>
+<P><FONT size=2><FONT face=Arial>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;fetchedRole = </FONT><FONT face=Arial><FONT color=#0000ff>null</FONT>; <FONT color=#008000>// Throw exception.</P></FONT></FONT></FONT>
+<P><FONT size=2><FONT face=Arial color=#0000ff>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;break</FONT><FONT face=Arial>;</FONT></FONT></P>
+<P><FONT face=Arial size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</FONT></P>
+<P><FONT size=2><FONT face=Arial color=#0000ff>&nbsp;&nbsp;&nbsp;return</FONT><FONT face=Arial> fetchedRole;</FONT></FONT></P>
+<P><FONT face=Arial size=2>}</FONT></P>
+<P><FONT face=Arial size=2>Now under this scenario, I would need to do a wide selection in my stored procedure, essentially joining my main profilerole table with all of the "custom" types (there will probably be about 5), selecting all columns. The factory method of each of my types would be selecting from the datareader the values that they need. </FONT></P>
+<P><FONT face=Arial size=2>My worry here is about performance. A profile has profile roles, typically no more than three, but each select (since it is so wide) might have about 100 columns (of which each profile role might use 20 or so). </FONT></P>
+<P><FONT face=Arial size=2>Perhaps with only three rows (and 80% of the values in each row being null) shouldn't be a concern. Is there a better means? (Keep in mind I'm using code generation, so my fetches are generated and waiting for me - the challenge is just getting the appropriate datareader passed to the factory methods of each type of profilerole). </FONT></P>
+<P><FONT face=Arial size=2></FONT>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>skagen00 replied on Friday, August 04, 2006</h2><P><FONT face=Arial size=2>I have thought of one option, and that's to have a separate select for each of the robust system ProfileRoles.</FONT></P>
+<P><FONT face=Arial size=2>SELECT ProfileRole.SystemId, ProfileRole.IsActive, ProfileRoleGrantee.* (brevity)</FONT></P>
+<P><FONT face=Arial size=2>FROM ProfileRole, ProfileRoleGrantee WHERE ...get profile's grantee role...</FONT></P>
+<P><FONT face=Arial size=2>SELECT ProfileRole.SystemId, ProfileRole.IsActive, ProfileRoleVendor.* (brevity)</FONT></P>
+<P><FONT face=Arial size=2>FROM ProfileRole, ProfileRoleVendor WHERE ...get profile's vendor role...</FONT></P>
+<P><FONT face=Arial size=2>SELECT ProfileRole.SystemId, ProfileRole.IsActive</FONT></P>
+<P><FONT face=Arial size=2>FROM ProfileRole WHERE ...get profile's other profileroles (standard)...</FONT></P>
+<P><FONT face=Arial size=2>In my collection's fetch, I would handle each of the "special types" first. (There will likely grow to be about 5 or 6 of these over the course of the system's development).</FONT></P>
+<P><FONT size=2><FONT face=Arial><FONT color=#0000ff>private</FONT> <FONT color=#0000ff>void</FONT> Fetch(<FONT color=#008080>SafeDataReader</FONT> dr)</FONT></FONT></P>
+<P><FONT face=Arial size=2>{</FONT></P>
+<P><FONT face=Arial size=2>&nbsp;&nbsp;&nbsp;RaiseListChangedEvents = <FONT color=#0000ff>false</FONT>;</FONT></P>
+<P><FONT size=2><FONT face=Arial><FONT color=#0000ff>&nbsp;&nbsp;&nbsp;while</FONT> (dr.Read()) <FONT color=#008000>// Grantee Result Set</P></FONT></FONT></FONT>
+<P><FONT size=2><FONT face=Arial><FONT color=#0000ff>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;this</FONT>.Add(<FONT color=#008080>ProfileRoleFactory</FONT>.GetProfileRole(dr)); <FONT color=#008000>// Could bypass the factory I guess. </P></FONT></FONT></FONT>
+<P><FONT face=Arial size=2>&nbsp;&nbsp;&nbsp;dr.NextResult();</FONT></P>
+<P><FONT size=2><FONT face=Arial><FONT color=#0000ff>&nbsp;&nbsp;&nbsp;while</FONT> (dr.Read()) <FONT color=#008000>// Vendor Result Set </P></FONT></FONT></FONT>
+<P><FONT size=2><FONT face=Arial><FONT color=#0000ff>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;this</FONT>.Add(<FONT color=#008080>ProfileRoleFactory</FONT>.GetProfileRole(dr)); <FONT color=#008000>// Could bypass the factory I guess. </P></FONT></FONT></FONT>
+<P><FONT face=Arial size=2>&nbsp;&nbsp;&nbsp;dr.NextResult();</FONT></P>
+<P><FONT size=2><FONT face=Arial><FONT color=#0000ff>&nbsp;&nbsp;&nbsp;while</FONT> (dr.Read()) <FONT color=#008000>// Standard (Other Roles) Result Set </P></FONT></FONT></FONT>
+<P><FONT size=2><FONT face=Arial><FONT color=#0000ff>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;this</FONT>.Add(<FONT color=#008080>ProfileRoleFactory</FONT>.GetProfileRole(dr)); <FONT color=#008000>// Could bypass the factory I guess. </P></FONT></FONT></FONT>
+<P><FONT face=Arial size=2>&nbsp;&nbsp;&nbsp;RaiseListChangedEvents = <FONT color=#0000ff>true</FONT>;</FONT></P>
+<P><FONT face=Arial size=2>}</FONT></P>
+<P><FONT face=Arial size=2>This would introduce one additional place where I am "adding a case for each type" but with the limited number of cases long term (5-6) it seems like this would be a nice way to handle the performance issue. Thoughts? </FONT></P>
+<P><FONT face=Arial size=2>Thanks! </FONT></P>
+<P><FONT face=Arial size=2></FONT>&nbsp;</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

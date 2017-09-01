@@ -1,0 +1,66 @@
+<html><header><title>some advice</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>some advice</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/12769.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>uwefms posted on Saturday, October 11, 2014</h2><p>Hi everybody,</p>
+<p>&nbsp; maybe somebody can give me some advice ...</p>
+<p>I wrote apps in Winforms and Silverlight for school administration and schools to be able to manipulate data of pupils, statistics etc. The common data pool is in SQL Server and school administration is working in a LAN and schools access data by a Silverlight client via internet.&nbsp;</p>
+<p>After a lot of reading and thinking we decided to rewrite the Silverlight client in MVC (5). Win 8.1 and the followers are not an option as many communities are on Win XP still and will stay with Win 7 as long as they can. So there will be no XAML and all the benefits of Silverlight in the new client. I never before had to do with Asp.Net (except the Silverlight part) and so a lot of learning is to come .....&nbsp;</p>
+<p>Fortunately there is no hurry (until now) and I can take time to learn everything from the scratch. So here are some of my questions:</p>
+<p>&nbsp;- Is there a better option than going into MVC (HTML 5 / JS ) for our scenario ?</p>
+<p>&nbsp;- Do I have to use the built in Membership / Role providers in MVC or can I go on to use our built in security?Clients using the MVC app only are allowed to change their passwords - all other security management (create new users etc, ) is done by a perfectly working Winforms app. So if this was possible, I only had to write a login screen. This is working well in our Silverlight and Winform apps. There is a library creating the needed Csla Identity and Principal objects and handling the other login stuff.</p>
+<p>- Are there any working - up to date (MVC 5 ) - CSLA samples (maybe even) using the http proxy with async data access. If you are new to this stuff, it is really hard to get the information you need out of the samples. </p>
+<p>Of course I have the CSLA 4 books and videos.</p>
+<p>&nbsp; &nbsp;Hopefully someone can enlighten me</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp;TIA</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;regards</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Uwe</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Sunday, October 12, 2014</h2><p>h5/js is a completely different platform from .NET. At this time all your CSLA code must remain on the server, and you need to write an entirely separate h5/js client application that calls services to interact with your server code and data.</p>
+<p>You might also consider using Xamarin (<a href="http://www.xamarin.com">www.xamarin.com</a>) to leverage your .NET code on mobile clients by creating a smart client for iOS and Android very much like your existing Windows smart client.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>uwefms replied on Sunday, October 12, 2014</h2><p>Hi Rocky,</p>
+<p>&nbsp; thanks for your thoughts. </p>
+<p>My main concern are not iOS or Android clients, but what will be, when Silverlight is gone one day and all browsers will refuse to install the plugin. I know that h5/js is completely different and everything happens on the server with little or no option to persist data with the client. This kind of frightens me, when I think of all the comboboxes we use in some of our data input forms. This works well with Silverlight and the performance is very good - even with a slow internet connection. This program is used by public service and in Germany this means 99,9 % Microsoft environment. Mobile devices are not an option - you need a desktop computer with a keyboard to be able to handle the amount of data which has to be entered or changed.</p>
+<p>Unfortunately I am not so familiar with the new options Win 8.1 has to offer.</p>
+<p>So is there an alternative (except MVC), if we want to transfer our Silverlight (business app) client to a newer technology and stay with windows.</p>
+<p>&nbsp; regards</p>
+<p>&nbsp; &nbsp; &nbsp; Uwe</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Sunday, October 12, 2014</h2><p>I brought up Xamarin because if you want a cross-platform way to use .NET this is the answer.</p>
+<p>If you only care about Windows clients then switch from Silverlight to WPF and use ClickOnce for deployment.</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>wilfreds replied on Monday, October 13, 2014</h2><p>You could try http://visualwebgui.com/&nbsp; Feels like WindowsForms, but runs in your browser.</p>
+<p>They recently changed from paid to free license. There is concern about the business plan and its core component is not open source.</p>
+<p>On the other side. You will find it very easy to convert your WinForms application(in most cases). And it is working very good with CSLA and databinding. Except a Combo box <img src="http://forums.lhotka.net/emoticons/emotion-6.gif" alt="Sad" /> bug so I handle that with a some codebehind.</p>
+<p>Thanks to CSLAcontrib http://cslacontrib.codeplex.com/ for making this possible.</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, October 13, 2014</h2><p>There&#39;s also this promising tool:</p>
+<p><a href="http://cshtml5.com">http://cshtml5.com</a></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tiago replied on Saturday, October 18, 2014</h2><p><div style='padding-left: 50px;background-color:silver'><b>wilfreds<br></b></p>
+<p>You could try http://visualwebgui.com/&nbsp; Feels like WindowsForms, but runs in your browser.</p>
+<p>They recently changed from paid to free license. There is concern about the business plan and its core component is not open source.</p>
+<p>On the other side. You will find it very easy to convert your WinForms application(in most cases). And it is working very good with CSLA and databinding. Except a Combo box <img src="http://forums.lhotka.net/emoticons/emotion-6.gif" alt="Sad" /> bug so I handle that with a some codebehind.</p>
+<p>Thanks to CSLAcontrib http://cslacontrib.codeplex.com/ for making this possible.</p>
+<div style="clear:both;"></div>
+<p></div></p>
+<p>Hi Wilfreds,</p>
+<p>In order to take the most out of CSLA.NET, you need boud controls. A lot of standard Windows Forms miss that feature. Strange enough, their WebGUI equivalents support data binding.</p>
+<p>I&#39;m wrtting some bound controls like TreeView (for Windows Forms and WebGUI) and other standard Windows Forms controls.</p>
+<p>I won&#39;t add these conrols to CSLA.NET Contrib because they are general interest controls. Thus I will release them under&nbsp;<a href="https://mvvmfx.codeplex.com/">MVVM FX for Windows Forms and Visual WebGUI</a>&nbsp;another library I&#39;m coordinating.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tiago replied on Tuesday, October 14, 2014</h2><p>Hi Uwe,</p>
+<p>If you have a running Windows Froms application, it&#39;s quite easy to port it to a web client.</p>
+<p><a href="http://visualwebgui.com/">Visual WebGUI</a> is now completely free. Provided you used only standard controls, the application will be easy to port.</p>
+<p>&nbsp;</p>
+<p>PS - There are some CSLA utilities and controls available for Windows Forms. They are ported to Visual WebGUI on the <a href="http://cslacontrib.codeplex.com/">CSLA .NET Contrib</a>&nbsp;project.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>uwefms replied on Friday, October 17, 2014</h2><p>Hi Tiago,</p>
+<p>&nbsp; thanks for your answer. I downloaded Visual Web GUI and will take a look at it. We use quite a lot of Infragistics stuff, so Rocky&#39;s advice to look at WPF is our first option at the moment. As you are involved in CslaContrib ...</p>
+<p>Will there be a CaliburnMicro 2.0 version in the near future ?</p>
+<p>&nbsp; &nbsp; &nbsp;regards</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Uwe</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, October 17, 2014</h2><p>I wonder about the future of Caliburn going forward. The original creator has moved on to do other things. My understanding is that there are still some other people maintaining the code though.</p>
+<p>At the same time, MvvmLite has been updated to support Xamarin as well as WPF/WinRT, and there&#39;s another active project called MvvmCross that started on Xamarin and (I think) now supports Windows.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tiago replied on Saturday, October 18, 2014</h2><p><div style='padding-left: 50px;background-color:silver'><b>RockfordLhotka<br></b></p>
+<p>I wonder about the future of Caliburn going forward. The original creator has moved on to do other things. My understanding is that there are still some other people maintaining the code though.</p>
+<p>At the same time, MvvmLite has been updated to support Xamarin as well as WPF/WinRT, and there&#39;s another active project called MvvmCross that started on Xamarin and (I think) now supports Windows.</p>
+<div style="clear:both;"></div>
+<p></div></p>
+<p>Hi Rocky,</p>
+<p>Caliburn.Micro isn&#39;t just an MVVM library. It includes some interesting features like Conductor. None of these are available on other MVVM libraries. I find Conductor so interesting, I&#39;m planning to port it to Windows Forms/WebGUI.</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tiago replied on Friday, October 17, 2014</h2><p>Hi Uwe,</p>
+<p>There is a very recent (as in today) ticket&nbsp;Update to Caliburn Micro 2.0.x&nbsp;https://cslacontrib.codeplex.com/workitem/35629</p>
+<p>This task is assigned to&nbsp;Matthew Copeland.</p>
+<p>So the answer is yes, there will be a port to CaliburnMicro 2.0.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>pecen replied on Friday, October 17, 2014</h2><p>Hi Uwe,</p>
+<p>You are mentioning using either&nbsp;Membership&nbsp;or your built in security. </p>
+<p>Regarding Membership, Microsoft have actually put Membership on the obsolete stack. Have you considered&nbsp;using MS Identity instead, where you for instance can use Claims-based authorization? Claims are interesting for two reasons. The first&nbsp;is that an application can obtain claims (security information about users)&nbsp;from multiple sources, rather that just relying on a local database for information about the user. The second is that you can use Claims to manage user access to your application more flexibly than with standard roles. Imo Claims can be a flexible way to use together with your built in Security. </p>
+<p>Regards</p>
+<p>Peter Centellini</p>
+<p>&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

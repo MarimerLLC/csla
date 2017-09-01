@@ -1,0 +1,180 @@
+<html><header><title>CSLA Data Source - Could not load type &quot;[type name] &quot;  from assembly &quot;[assembly]&quot;</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA Data Source - Could not load type &quot;[type name] &quot;  from assembly &quot;[assembly]&quot;</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/2325.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>blp4383 posted on Monday, February 12, 2007</h2><P>Anyone know why I keep getting this error when I try to bind a gridview or details view control to a csla data source on my web form?&nbsp; I am currently using the 2.1.3 Framework.&nbsp; </P>
+<P>Could not load type "[type name] "&nbsp; from assembly "[assembly]" ... public key token = null</P>
+<P>I've searched online and seen similar errors in the past but with older versions of the framework.&nbsp; </P>
+<P>I add the csla data source first, set the TypeAssemblyName and TypeName properties, then drag the gridview control onto my form and attempt to set datasourceID to my cslaDataSource.&nbsp; </P>
+<P>I must be missing a step?&nbsp; Or not setting a property somewhere?&nbsp; </P>
+<P>Thanks for any suggestions.&nbsp; </P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, February 12, 2007</h2><P>If you would like, you can try the test version 2.1.4 from <A href="http://www.lhotka.net/cslanet/download.aspx">www.lhotka.net/cslanet/download.aspx</A>, which may address your issue.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>blp4383 replied on Monday, February 12, 2007</h2><P>Thanks Rocky, I tried it, but didn't see an improvement.&nbsp; The message did change a bit.&nbsp; Instead of saying it can't my [type] from my [assemblyName], it says it can't load my [type] from Microsoft.VisualStudio.Web,...</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>xal replied on Monday, February 12, 2007</h2>What are you using for assembly name and type name??<br>Are you on VS2005 sp1?<br>Did you go through the "Close all open designers, Clean solution, Close VS, Open VS, Rebuild solution" process?<br>It is very common for vs to keep old versions of assemblies running around. This is specially true if you added CslaDataSource 2.1.3 to your toolbox and then rebuilt with 2.1.4. Visual studio will still hold the 2.1.3 assembly somewhere...<br><br>Andrés<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>IraD replied on Monday, February 12, 2007</h2><P>Thanks, yes I did "Close all open designers, Clean solution, Close VS, Open VS, Rebuild solution" process, several times.&nbsp; My&nbsp;assembly name is the name of my class project and the type name is the name of the class inside the project.&nbsp; </P>
+<P>project name:&nbsp; TimeCard.Business<BR>class name:&nbsp; TimeCardCollection</P>
+<P>Type Assembly Name:&nbsp; TimeCard.Business<BR>Type Name:&nbsp; TimeCard.Business.TimeCardCollection</P>
+<P>VS2005, no SP1.&nbsp; </P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, February 12, 2007</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Hmm, I am at a loss then. <o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I did JUST put a new 2.1.4 (C# only) online for download. This
+one has a configuration window (you can click a configure link on the control&#8217;s
+quick access menu) that might help resolve the issue. This configuration window
+lists all the available business classes referenced by your web site, which
+helps avoid some issues (like case sensitive type names, etc).<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Can you try this new version please?<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<div>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> IraD
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Monday, February 12, 2007 2:36 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] CSLA Data Source - Could not load type
+&quot;[type name] &quot; from assembly &quot;[assembly]&quot;<o:p></o:p></span></p>
+
+</div>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Thanks, yes I did &quot;Close all open designers, Clean solution, Close VS,
+Open VS, Rebuild solution&quot; process, several times.&nbsp; My&nbsp;assembly
+name is the name of my class project and the type name is the name of the class
+inside the project.&nbsp; <o:p></o:p></p>
+
+<p>project name:&nbsp; TimeCard.Business<br>
+class name:&nbsp; TimeCardCollection<o:p></o:p></p>
+
+<p>Type Assembly Name:&nbsp; TimeCard.Business<br>
+Type Name:&nbsp; TimeCard.Business.TimeCardCollection<o:p></o:p></p>
+
+<p>VS2005, no SP1.&nbsp; <o:p></o:p></p>
+
+<p>&nbsp;<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, February 12, 2007</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>You have referenced your assembly in your web project right?<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>And you are specifying the full type name (including namespace)
+for the TypeName property? Like<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>MyCompany.MyApplication.Customer<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Or whatever is equivalent for you?<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>When you say [type] in your post, is the control showing your
+actual type name?<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<div>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> blp4383
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Monday, February 12, 2007 1:56 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] CSLA Data Source - Could not load type
+&quot;[type name] &quot; from assembly &quot;[assembly]&quot;<o:p></o:p></span></p>
+
+</div>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Thanks Rocky, I tried it, but didn't see an improvement.&nbsp; The message
+did change a bit.&nbsp; Instead of saying it can't my [type] from my
+[assemblyName], it says it can't load my [type] from
+Microsoft.VisualStudio.Web,...<o:p></o:p></p>
+
+<p>&nbsp;<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>IraD replied on Monday, February 12, 2007</h2><P>Yes, the reference appears to be correct. The control is showing the actual type name.</P>
+<P>I should add this - When we add to our project a class module that we wrote in CSLA class, we get the same problem. </P>
+<P>When we add our new class module to the project that we build in CSLA class, then it works. Or at least it did before we rebuilt, redownloaded, etc.</P>
+<P>The two projects had different versions of CSLA, I think the one built in class was 2.0.x and the new ones have been 2.1.x.</P>
+<P>This makes us think that there is some simple specification somewhere that we did make in class,&nbsp;but have failed to make in our&nbsp;later project.</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>blp4383 replied on Tuesday, February 13, 2007</h2><P>Turned out to be&nbsp;root name space /assembly name confusion.&nbsp; Sorry to trouble you!&nbsp; </P>
+<P>~ Newbie...&nbsp; </P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,205 @@
+<html><header><title>Constructing a Silverlight app based on Rolodex</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Constructing a Silverlight app based on Rolodex</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5723.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>triplea posted on Monday, November 03, 2008</h2><P>So I am on this epic quest to port an existing CSLA app of mine from using a Windows Forms front end over to Silverlight. I have setup the solution structure in the same way that the Rolodex sample app is build. Everything compiles and appears to be running fine (no runtime errors) but when validating&nbsp;the credentials on the login screen, it appears that DataPortal_Fetch&nbsp;in xxxIdentity never gets executed. <BR>By never executed I mean that within DataPortal_Fetch I am throwing and exception and even trying to output some text to the console but none of the 2 happen, I just get a message back on my UI that logon was invalid. I tried to set a breakpoint in the Rolodex example to see how you get into the DataPortal_Fetch method but it appears that because of the directives that point would never be hit (is there any way of switching this while debugging?)<BR>The ServiceReferences.ClientConfig (in the Silverlight project) and Web.config (in WcfHostWeb) seem set up correctly as is the port used for WcfHostWeb.</P>
+<P>Any ideas?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Monday, November 03, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>The first step would be to figure out if WCF call gets to the portal.&nbsp;
+The easiest way probably is to use the following debugging configuration.&nbsp;
+Run yor app, then look at c:\traces.svclog.&nbsp; If it is empty, your call
+never gets to the server.&nbsp; At that point you probably want to step through
+client call code to see where it fails.&nbsp; Setting break on all exceptions
+would also help.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Add
+the following to web.config file to web site that hosts WCF service. <o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&lt;system.diagnostics&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;sources&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;source
+name=&quot;System.ServiceModel&quot;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+switchValue=&quot;Information, ActivityTracing&quot;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+propagateActivity=&quot;true&quot;&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&lt;listeners&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&lt;add name=&quot;traceListener&quot;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+type=&quot;System.Diagnostics.XmlWriterTraceListener&quot;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+initializeData= &quot;c:\Traces.svclog&quot; /&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&lt;/listeners&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&lt;/source&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/sources&gt;<br>
+&nbsp;&nbsp;&nbsp; &lt;/system.diagnostics&gt;</span><span> <o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> triplea
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Monday, November 03, 2008 8:09 AM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> [CSLA .NET] Constructing a Silverlight app based on Rolodex<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>So I am on this epic quest to port an existing CSLA app of mine from using a
+Windows Forms front end over to Silverlight. I have setup the solution
+structure in the same way that the Rolodex sample app is build. Everything
+compiles and appears to be running fine (no runtime errors) but when
+validating&nbsp;the credentials on the login screen, it appears that
+DataPortal_Fetch&nbsp;in xxxIdentity never gets executed. <br>
+By never executed I mean that within DataPortal_Fetch I am throwing and
+exception and even trying to output some text to the console but none of the 2
+happen, I just get a message back on my UI that logon was invalid. I tried to
+set a breakpoint in the Rolodex example to see how you get into the
+DataPortal_Fetch method but it appears that because of the directives that
+point would never be hit (is there any way of switching this while debugging?)<br>
+The ServiceReferences.ClientConfig (in the Silverlight project) and Web.config
+(in WcfHostWeb) seem set up correctly as is the port used for WcfHostWeb.<o:p></o:p></p>
+
+<p>Any ideas?<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>triplea replied on Monday, November 03, 2008</h2><P>Thanks</P>
+<P>The trace file gets created and actually has got content so it appears that it does go to the server... Looking at the content of the file I cannot really make out if any errors occured but that does not appear to be the case (the file is attached if you want to take a look).</P>
+<P>Stepping through the code is being a bit of a challenge too. As I am stepping through it I never encounter an error (even though in my CustomerIdentity.DataPortal_Fetch() I only have 1 line of code that throws an exception) and anyway it seems that hitting a breakpoint when outside of silverlight (in this case the CustomerIdentity.DataPortal_Fetch() method) is not possible unless you change some settings (not sure how to do that...)</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>triplea replied on Tuesday, November 04, 2008</h2><P>This was stopping me from progressing so I took the Rolodex app itself and started modifying it bit by bit to see where the error would reappear (if it did).</P>
+<P>After a lot of tampering it finally worked (the DataPortal_Fetch() was called wherein I was hard-coding the authentication). But then I implemented the check (query to database) and I started getting the same problem, which is I just got a message that logon was unsuccesful...</P>
+<P>The problem here is that I cannot step into the code of my DataPortal_Fetch() method as the breakpoint is never hit. I am new to Silverlight so am not sure if:</P>
+<OL>
+<LI>It is possible to debug server side code</LI>
+<LI>If it is, what settings I need to change.</LI></OL>
+<P>Could someone kindly answer?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Tuesday, November 04, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Yes, you can debug server side code.&nbsp; It is easier if WCF
+is hosted in the same web site as SL application.&nbsp; If not, you can start another
+instance of VS and attach debugger to Cassini base on port number that WCF host
+web site is running on.&nbsp; At that point you should be able to hit your &nbsp;server
+side breakpoints.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> triplea
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Tuesday, November 04, 2008 11:41 AM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: Constructing a Silverlight app based on
+Rolodex<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>This was stopping me from progressing so I took the Rolodex app itself and
+started modifying it bit by bit to see where the error would reappear (if it
+did).<o:p></o:p></p>
+
+<p>After a lot of tampering it finally worked (the DataPortal_Fetch() was
+called wherein I was hard-coding the authentication). But then I implemented
+the check (query to database) and I started getting the same problem, which is
+I just got a message that logon was unsuccesful...<o:p></o:p></p>
+
+<p>The problem here is that I cannot step into the code of my
+DataPortal_Fetch() method as the breakpoint is never hit. I am new to
+Silverlight so am not sure if:<o:p></o:p></p>
+
+<ol>
+ <li class=MsoNormal>It is possible to debug server side code<o:p></o:p></li>
+ <li class=MsoNormal>If it is, what settings I need to change.<o:p></o:p></li>
+</ol>
+
+<p>Could someone kindly answer?<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>triplea replied on Tuesday, November 04, 2008</h2>Thanks thats great things are getting a lot clearer now.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>skagen00 replied on Friday, December 26, 2008</h2>Did you discover what your problem was? I have the exact same scenario - started writing a very very simple application and can't seem to hit any break points, etc. I think the service isn't getting hit but I'm not entirely sure why at this point. </div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

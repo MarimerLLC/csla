@@ -1,0 +1,13 @@
+<html><header><title>SaveAsync() am I missing something?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>SaveAsync() am I missing something?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/12689.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>geordiepaul posted on Thursday, July 03, 2014</h2><p>So I&#39;ve been trying to implement the new SaveAsync() methods in 4.5.6. There is not much info or guidance on how these should be used, or not that I can find anyway.</p>
+<p>I always get an error &quot;<span>DataPortal.Update failed (TemplateEdit.IsBusy == true)&quot;</span></p>
+<p>On debugging the DataPortal Update is marking the object as busy and then bailing before it ends.</p>
+<pre><span>public</span>&nbsp;<span>async</span>&nbsp;<span>Task</span>&lt;<span>Model</span>&gt;&nbsp;Post(Modelmodel)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{</pre>
+<pre>            // do something to create and populate an object
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;...
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;obj =&nbsp;<span>await</span>&nbsp;obj.SaveAsync();
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>return</span>&nbsp;<span>new</span>&nbsp;<span>Model</span>(obj);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</pre>
+<pre></pre>
+<pre>Its as simple as that. DataPortal_XYZ are the regular ol&#39; voids etc. Is this correct?</pre>
+<pre>There are no business rules so I&#39;ve ruled (pardon the pun) them out.</pre></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, July 09, 2014</h2><p>This is in an ASP.NET service implementation?</p>
+<p>Do you have Csla.Web.dll referenced in your web project? That is required as it contains some ASP.NET specific implementations of low-level CSLA types.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

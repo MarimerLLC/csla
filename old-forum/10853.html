@@ -1,0 +1,16 @@
+<html><header><title>iPhone/Android ebooks for CSLA 4 series.</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>iPhone/Android ebooks for CSLA 4 series.</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10853.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>pkb8 posted on Tuesday, November 08, 2011</h2><p>Hi </p>
+<p>Just starting learning Monotouch and managed to successfully compile and create a business object using CSLA using the 4.2beta.</p>
+<p>Recently purchased a couple of the ebooks covering asp.net mvc and silverlight/wpf. </p>
+<p>Had the following thoughts:</p>
+<ol>
+<li>Are there any plans to publish ebooks for iPhone/Android?</li>
+<li>Will CSLA 4.2 for iOS and Android support remote application server mode. I noticed in the beta code that code had been commented out so that it only runs in local mode, as the iPhone doesn&#39;t support the use of a central application configuration file (ie app.config/web.config). </li>
+<li>Do you have any plans to promote CSLA cross platform ability with Xamarin as they have overviews of what other companies have written using MonoTouch on their website?</li>
+</ol>
+<p>Cheers<br />pkb8</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Tuesday, November 08, 2011</h2><p>Quick answers:</p>
+<ol>
+<li>Not at this time. Writing these books takes a lot of time and energy, and I need to know that there&#39;s a broad enough level of interest that I&#39;ll sell enough books to make it worth all that time/effort. Hopefully enough people will get excited about CSLA support for mono that I&#39;ll have some confidence that a few hundred people (at least) will buy the ebooks, but I don&#39;t have that confidence at this point in time.</li>
+<li>In version 4.2 the support for iOS and Android will include the local data portal only. That allows apps to be written that make service calls from the device to SOAP or REST services using whatever network protocols are supported on the device. As monotouch and mono for Android get more stable WCF client stacks, and as we have more time to do deeper testing of the remote data portal, we&#39;ll hopefully add remote data portal support. This may happen in 4.3 or 4.5. This also ties in with some serialization work that&#39;s being done (by Sergey) on Silverlight - and that work will translate to all platforms, probably in version 4.3.</li>
+<li>I was in communication with Miguel prior to the Attachmate/Novell/Xamarin thing earlier this year. That interaction slowed dramatically as they focused on starting the new company and getting things &quot;rebooted&quot;. Once 4.2 is released I&#39;ll work with Miguel (or someone at Xamarin) around cross-promotion of the products.</li>
+</ol>
+<p>&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

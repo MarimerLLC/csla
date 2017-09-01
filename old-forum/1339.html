@@ -1,0 +1,61 @@
+<html><header><title>Help! SQL Deadlock - what's the best approach? Help!</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Help! SQL Deadlock - what's the best approach? Help!</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/1339.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>GaltSalt posted on Wednesday, September 27, 2006</h2><P><FONT>Hi!</FONT></P>
+<P><SPAN><FONT>In our system we tested 10 users hitting a function at exactly the same time. This function updates many tables, over many business objects,&nbsp;over a single transaction.<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><FONT><SPAN><o:p>&nbsp;</o:p></SPAN><SPAN>The sql exception says to re-run the transaction.<o:p></o:p></SPAN></FONT></P>
+<P class=MsoNormal><SPAN><o:p><FONT>&nbsp;</FONT></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><FONT>So why not do this? </FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT>But! </FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT></FONT></SPAN>&nbsp;</P>
+<P class=MsoNormal><FONT><SPAN>Should this be done in each of the business objects’ DataPortal_Update call – or in the CSLA library CSLA.Server.DataPortal project’s DataPortal.vb </SPAN><SPAN>Update shared function?<o:p></o:p></SPAN></FONT></P>
+<P class=MsoNormal><SPAN><o:p><FONT>&nbsp;</FONT></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p><FONT>Or did I miss something - should there be a retry parameter on the SQL DataAdapter?</FONT></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p></o:p></SPAN><FONT>&nbsp;</FONT></P>
+<P class=MsoNormal><SPAN><FONT>Any ideas?</FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT>Hasn't anyone come across deadlocks before? I see no discussion anywhere on it actually dealing with deadlocks. I see some people saying that they're worried about them - but no real discussion.</FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT></FONT></SPAN>&nbsp;</P>
+<P class=MsoNormal><SPAN><FONT>Help!</FONT></SPAN></P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Wednesday, September 27, 2006</h2>Yikes.&nbsp; There are ways to handle this, but you'll have to search outside this group I think.<br><br>I'm suprised though; for the dead lock to occur, the function must lock a table by doing somethign with it, but the second call must be locking a second table before the first...<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>GaltSalt replied on Wednesday, September 27, 2006</h2><P>It's not that - it's all ten users trying to update table A at the same time. I've used row locks on the stored procedure (which made it much better because it used to be 6/10 users hitting deadlock). Now I only get one user chosen as deadlock victim. The calls are all identical. there is no different order of operation between users. But I will investigate any subquery updates because there is a large tree of data being updated in one transaction. My quandry is - why am I getting a deadlock at all??? Each user has their own set of records and their own unique key (guid) to access their data in the updates - all with rowlock attributes....</P>
+<P>arg!</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>figuerres replied on Wednesday, September 27, 2006</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>GaltSalt:</strong></div><div>
+<P>It's not that - it's all ten users trying to update table A at the same time. I've used row locks on the stored procedure (which made it much better because it used to be 6/10 users hitting deadlock). Now I only get one user chosen as deadlock victim. The calls are all identical. there is no different order of operation between users. But I will investigate any subquery updates because there is a large tree of data being updated in one transaction. My quandry is - why am I getting a deadlock at all??? Each user has their own set of records and their own unique key (guid) to access their data in the updates - all with rowlock attributes....</P>
+<P>arg!</P>
+<P></div></BLOCKQUOTE></P>
+<P>Update or Insert ?</P>
+<P>how is the table indexed / keyed ?</P>
+<P>one possible thing that may help is this:<BR><BR>I have a system with a lot of users adding new rows that had locking problems.</P>
+<P>we saw failed transactions and timeouts from web service calls and huge amounts of ram in use on the server.</P>
+<P>I chnaged a few sql server settings but what I think really did the most was to put a clusted index onthe key tables that was not in "row insert order"</P>
+<P>each table in MS SQL can have an index with clustering. by default it will often be the PK of the table.</P>
+<P>if you locate other data in the table that you can use to build an index that "Scatters" the data around it will (if clusted) force the server to move the data blocks around to match the b-tree of the index.</P>
+<P>in my case I used a user ID int plus several other items to move the data and index pages around.</P>
+<P>this plus a job that re-builds the index each night. </P>
+<P>has made it so that around 50-60 users can all insert rows at one time and never lock each other out of the system. no more failed inserts.</P>
+<P>this does grow the table and index a bit, it does use more sql ram then a nice ID key would do.</P>
+<P>but it was amazing, the boss was asking if we needed to buy ram, a new server etc...</P>
+<P>I had him give me a few hours to look at the problem and BAM! when he saw the server at the next peak load his jaw dropped and he was stunned.</P>
+<P>before it was like CPU pegged at 99% and ram maxed out to after was CPU at 10% and ram less than 1 gig. (3 gig server ram and dual core ht cpu)</P>
+<P>we are still running the same db / server and it's amlost a year later.&nbsp; works great.</P>
+<P>I think I also set the SQL 2005 option READ_COMMITED_SNAPSHOT on</P>
+<P>this reduces locks by using a memory chain and using row versioning in the SQL engine.</P>
+<P>&nbsp;</P>
+<P>all this said, 10 users should not really lock up a transaction. you may first want to look good and hard at your layout and logic.</P>
+<P>I would suspect that a good review may find a way to move that to more like 50 - 100 users before a lockup.&nbsp; we did not have our problem till we had at least 40-60 users on line at one time all processing orders. when we tested with 1-10 users the problem was not seen.</P>
+<P>use sql tools to get a total time for 1 transaction, get some info on estimated sql execution plans.</P>
+<P>how long does it take to do the update or insert?</P>
+<P>do you submit them all in one sql batch / stored proc or one at a time with system.transactions ??</P>
+<P>I'd make one sql proc with all the update/insert logic in one proc with one transaction if at all possible.</P>
+<P>or gather up all the data and have a class that runs them all in one method inside one block / try /using constuct.</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>GaltSalt replied on Wednesday, September 27, 2006</h2><P>Thanks so much - you've given me much to chew on...so it will take me a bit to respond.</P>
+<P>This transaction is very large - I have to get an idea how long it takes sql to complete this task. That's just one of the steps I have have to do to understand what is really wrong. The SQL Server (both a clustered and non-clustered SQL environment) is still sleeping throughout all of this at 5% utilization.</P>
+<P>I believe this to be an insert issue - but even so - I have to break this down to see what's up. It could be a combination of inserts and updates - we have a very large object and children saving - some components of the object may already exist when writing a new base object as it's a 'mash-up', if you will, of many data components.</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Lakusha replied on Wednesday, September 27, 2006</h2><P>You can't have a deadlock only on inserts (unless its a ressource deadlock, but that can't be your case).</P>
+<P>Short tips:</P>
+<P>1) transactions must be SHORT. i.e. milliseconds. </P>
+<P>2) prepare your data, open the tran, write and commit. Don't start mixing reads &amp; writes in the same transaction</P>
+<P>3) always write in the same order (T1 -&gt; T2, etc.)</P>
+<P>4) Make sure all your tables have a clustered index. Usually, a clustered PK is a good rule.</P>
+<P>5) make sure all your important queries are making use of your indexes. If you read inside of a transaction and it causes a table scan, the of course you will deadlock.</P>
+<P>&nbsp;</P>
+<P>hope it helps</P>
+<P>&nbsp;</P>
+<P>L</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Lakusha replied on Wednesday, September 27, 2006</h2>PS: if your are running SQL 2005, just use Profiler. It will catch the deadlock chain and even display a nice graph of the 2 colliding statements (and exactly with object is at the center of it all: index, etc.)</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

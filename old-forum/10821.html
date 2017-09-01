@@ -1,0 +1,411 @@
+<html><header><title>Loading a collection in resources to use as a ConverterParameter</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Loading a collection in resources to use as a ConverterParameter</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10821.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>gautamh posted on Friday, October 28, 2011</h2><p>
+ 
+  Normal
+  0
+  
+  
+  
+  
+  false
+  false
+  false
+  
+  EN-GB
+  X-NONE
+  X-NONE
+  
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+  
+  MicrosoftInternetExplorer4
+  
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+  
+
+ 
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+ 
+
+
+
+</p>
+<p class="MsoNormal">Hi,</p>
+<p class="MsoNormal">I&#39;m strugging with this issue and would appreciate any help.</p>
+<p class="MsoNormal">My issues is that&nbsp; I need to load a collection to use it as a ConverterParameter. I have this in my view.</p>
+<p class="MsoNormal"><span style="font-size:9.5pt;font-family:Consolas;color:blue;">&lt;</span><span style="font-size:9.5pt;font-family:Consolas;color:#a31515;">UserControl.Resources</span><span style="font-size:9.5pt;font-family:Consolas;color:blue;">&gt;</span><span style="font-size:9.5pt;font-family:Consolas;"></span></p>
+<p class="MsoNormal"><span style="font-size:9.5pt;font-family:Consolas;color:#a31515;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="font-size:9.5pt;font-family:Consolas;color:blue;">&lt;</span><span style="font-size:9.5pt;font-family:Consolas;color:#a31515;">localviewmodels</span><span style="font-size:9.5pt;font-family:Consolas;color:blue;">:</span><span style="font-size:9.5pt;font-family:Consolas;color:#a31515;">DealsViewModel</span><span style="font-size:9.5pt;font-family:Consolas;color:red;"> x</span><span style="font-size:9.5pt;font-family:Consolas;color:blue;">:</span><span style="font-size:9.5pt;font-family:Consolas;color:red;">Key</span><span style="font-size:9.5pt;font-family:Consolas;color:blue;">=&quot;mdeals&quot;
+/&gt;</span><span style="font-size:9.5pt;font-family:Consolas;"></span></p>
+<p class="MsoNormal"><span style="font-size:9.5pt;font-family:Consolas;color:blue;">&lt;/</span><span style="font-size:9.5pt;font-family:Consolas;color:#a31515;">UserControl.Resources</span><span style="font-size:9.5pt;font-family:Consolas;color:blue;">&gt;</span></p>
+<p class="MsoNormal">where <span style="font-size:9.5pt;font-family:Consolas;color:blue;"></span><span style="font-size:9.5pt;font-family:Consolas;color:#a31515;">DealsViewModel</span><span style="font-size:9.5pt;font-family:Consolas;color:red;"> </span>is the collection I need to load. Now this will be done asynchronously.</p>
+<p>My problem is that the constructor of the of the <span style="font-size:9.5pt;font-family:Consolas;color:#a31515;">DealsViewModel</span><span style="font-size:9.5pt;font-family:Consolas;color:red;"></span> gets called as soon the InitializeComponent() on the containing view is called.</p>
+<p>How do I prevent the view from displaying untill the <span style="font-size:9.5pt;font-family:Consolas;color:#a31515;">DealsViewModel</span><span style="font-size:9.5pt;font-family:Consolas;color:red;"></span> collection has completed loading?&nbsp;</p>
+<p>I suspect this could be an issue for scenarios where you have an edit item template that contains a ComboBox that needs to be loaded with a collection.</p>
+<p>Is this the correct approach or has anyone used any other approach?</p>
+<p>Any help will be hugely appreciated.</p>
+<p>Regards,</p>
+<p>Gautam</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>paul_rockerdale replied on Friday, October 28, 2011</h2><p>How about using&nbsp;a busy control to block out the UI whilst the Deals are loading... If you using csla.xaml you can bind the IsBusy property... I use the WPFToolKit&#39;s Busy Control.<span style="font-family:Consolas;color:#a31515;font-size:x-small;"><span style="font-family:Consolas;color:#a31515;font-size:x-small;"><span style="font-family:Consolas;color:#a31515;font-size:x-small;"><span style="font-family:Consolas;color:#a31515;font-size:x-small;"><span style="font-family:Consolas;color:#a31515;font-size:x-small;"><span style="font-family:Consolas;color:#a31515;font-size:x-small;"> <span style="font-family:Consolas;color:#a31515;font-size:x-small;"><span style="font-family:Consolas;color:#a31515;font-size:x-small;"><span style="font-family:Consolas;color:#a31515;font-size:x-small;"><font face="Consolas" size="2" color="#a31515"><font face="Consolas" size="2" color="#a31515"><font face="Consolas" size="2" color="#a31515">
+<p>&nbsp;</p>
+</font></font></font></span></span></span></span><span style="font-family:Consolas;color:#a31515;font-size:x-small;"><span style="font-family:Consolas;color:#a31515;font-size:x-small;"><span style="font-family:Consolas;color:#a31515;font-size:x-small;"><font face="Consolas" size="2" color="#a31515"><font face="Consolas" size="2" color="#a31515">
+<p>&nbsp;</p>
+</font></font></span></span></span></span><span style="font-family:Consolas;color:#a31515;font-size:x-small;"><span style="font-family:Consolas;color:#a31515;font-size:x-small;"><span style="font-family:Consolas;color:#a31515;font-size:x-small;"><font face="Consolas" size="2" color="#a31515">
+<p>&nbsp;</p>
+</font></span></span></span></span>
+<p>&nbsp;</p>
+</span></span></span><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">&lt;</span></span></span><span style="font-family:Consolas;color:#a31515;font-size:x-small;"><span style="font-family:Consolas;color:#a31515;font-size:x-small;"><span style="font-family:Consolas;color:#a31515;font-size:x-small;">extToolkit</span></span></span><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">:</span></span></span><span style="font-family:Consolas;color:#a31515;font-size:x-small;"><span style="font-family:Consolas;color:#a31515;font-size:x-small;"><span style="font-family:Consolas;color:#a31515;font-size:x-small;">BusyIndicator</span></span></span><span style="font-family:Consolas;color:#ff0000;font-size:x-small;"><span style="font-family:Consolas;color:#ff0000;font-size:x-small;"><span style="font-family:Consolas;color:#ff0000;font-size:x-small;"> IsBusy</span></span></span><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">=&quot;{</span></span></span><span style="font-family:Consolas;color:#a31515;font-size:x-small;"><span style="font-family:Consolas;color:#a31515;font-size:x-small;"><span style="font-family:Consolas;color:#a31515;font-size:x-small;">Binding</span></span></span><span style="font-family:Consolas;color:#ff0000;font-size:x-small;"><span style="font-family:Consolas;color:#ff0000;font-size:x-small;"><span style="font-family:Consolas;color:#ff0000;font-size:x-small;"> Path</span></span></span><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">=IsBusy}&quot;</span></span></span><span style="font-family:Consolas;color:#ff0000;font-size:x-small;"><span style="font-family:Consolas;color:#ff0000;font-size:x-small;"><span style="font-family:Consolas;color:#ff0000;font-size:x-small;"> BusyContent</span></span></span><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">=&quot;Please Wait...&quot; &gt;</span></span></span></p>
+<p>
+<p><span style="font-family:Consolas;color:#a31515;font-size:x-small;"><span style="font-family:Consolas;color:#a31515;font-size:x-small;"><span style="font-family:Consolas;color:#a31515;font-size:x-small;"><span style="font-family:Consolas;color:#a31515;font-size:x-small;"><span style="font-family:Consolas;color:#a31515;font-size:x-small;"><span style="font-family:Consolas;color:#a31515;font-size:x-small;"><span style="font-family:Consolas;color:#a31515;font-size:x-small;"><span style="font-family:Consolas;color:#a31515;font-size:x-small;"><span style="font-family:Consolas;color:#a31515;font-size:x-small;"><font face="Consolas" size="2" color="#a31515"><font face="Consolas" size="2" color="#a31515"><font face="Consolas" size="2" color="#a31515">
+<p>&nbsp;</p>
+</font></font></font></span></span></span></span><span style="font-family:Consolas;color:#a31515;font-size:x-small;"><span style="font-family:Consolas;color:#a31515;font-size:x-small;"><span style="font-family:Consolas;color:#a31515;font-size:x-small;"><font face="Consolas" size="2" color="#a31515"><font face="Consolas" size="2" color="#a31515">
+<p>&nbsp;</p>
+</font></font></span></span></span></span><span style="font-family:Consolas;color:#a31515;font-size:x-small;"><span style="font-family:Consolas;color:#a31515;font-size:x-small;"><span style="font-family:Consolas;color:#a31515;font-size:x-small;"><font face="Consolas" size="2" color="#a31515">
+<p>&nbsp;</p>
+</font></span></span></span></span>
+<p>&nbsp;</p>
+</span></span></span><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">&lt;/</span></span></span><span style="font-family:Consolas;color:#a31515;font-size:x-small;"><span style="font-family:Consolas;color:#a31515;font-size:x-small;"><span style="font-family:Consolas;color:#a31515;font-size:x-small;">extToolkit</span></span></span><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">:</span></span></span><span style="font-family:Consolas;color:#a31515;font-size:x-small;"><span style="font-family:Consolas;color:#a31515;font-size:x-small;"><span style="font-family:Consolas;color:#a31515;font-size:x-small;">BusyIndicator</span></span></span><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">&gt;</span></span></span></p>
+</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>gautamh replied on Friday, October 28, 2011</h2><p>Thanks Paul.</p>
+<p>I will use the IsBusy property to provide some indication that stuff is loading in the background.</p>
+<p>However, after some (a lot) digging around, I realised my problem is that of loading look up lists for the view to populate some dropdowns, lookup etc and this is done by using the Unit of work pattern.</p>
+<p>This thread illustrates this.</p>
+<p><a href="http://forums.lhotka.net/forums/p/10293/48257.aspx#48257">http://forums.lhotka.net/forums/p/10293/48257.aspx#48257</a></p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>
+ 
+  Normal
+  0
+  
+  
+  
+  
+  false
+  false
+  false
+  
+  EN-GB
+  X-NONE
+  X-NONE
+  
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+  
+  MicrosoftInternetExplorer4
+  
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+  
+
+ 
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+ 
+
+
+</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

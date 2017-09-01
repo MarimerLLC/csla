@@ -1,0 +1,99 @@
+<html><header><title>Utilities.CallByName to invoke method?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Utilities.CallByName to invoke method?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/2759.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>david.wendelken posted on Monday, April 23, 2007</h2><P>C#</P>
+<P>I've gotten the Utilities.CallByName to work for calling properties on an object, but I haven't been able to get it to work <STRONG><EM>as expected</EM></STRONG> for invoking methods.</P>
+<P>This works like a charm to get a property out of an object:</P><FONT size=2>
+<P></FONT><FONT color=#008080 size=2>Object</FONT><FONT size=2> o = </FONT><FONT color=#008080 size=2>Utilities</FONT><FONT size=2>.CallByName(target, ee.PropertyList<img src="/emoticons/emotion-55.gif" alt="Idea [I]" />.ToString(), </FONT><FONT color=#008080 size=2>CallType</FONT><FONT size=2>.Get);</FONT></P>
+<P>So, I tried a similar approach to invoke a method that was defined in my Business Object:</P>
+<P><FONT size=2><FONT color=#008080 size=2>Object</FONT><FONT size=2> o = </FONT><FONT color=#008080 size=2>Utilities</FONT><FONT size=2>.CallByName(businessObjectType, </FONT><FONT color=#800000 size=2>"MyMethod"</FONT><FONT size=2>, </FONT><FONT color=#008080 size=2>CallType</FONT><FONT size=2>.Method, </FONT><FONT color=#800000 size=2>"MyParamValue"</FONT><FONT size=2>);</FONT></P>
+<P><FONT size=3>Worked fine.&nbsp; So, since every business object needs the same routine, I moved it to my copy of BusinessBase, which is what my business object subclasses.&nbsp; </FONT></P>
+<P><FONT size=3>Surprise!&nbsp; It does not find the method!</FONT></P>
+<P><FONT size=2><FONT size=3>What gives?</FONT></P></FONT></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, April 23, 2007</h2><P>If you look at the code you'll see a very simplistic implementation of calling a method.</P>
+<P>If you then look at the MethodCaller class used by the data portal you'll see what <EM>really</EM> has to be done to call a method - handling parameter overloads, virtual methods, generics, etc.</P>
+<P>It gives one great appreciation for the work the VB team did in writing the real CallByName() method for the VB runtime...</P>
+<P>What I'm getting at, is that you'll need to replicate code more like MethodCaller than like Utilities.CallByMethod to get the results I imagine you are looking for.</P>
+<P>Alternately you could do what I personally think more people should do, and just use the VB runtime. It is this really cool library of highly tested functionality, just sitting there waiting to be used. It is the kind of thing people pay hundreds of dollars for when they buy that sort of thing from a 3rd party vendor, just free for the taking.</P>
+<P>I didn't (couldn't) use the runtime in the C# CSLA project, because there are too many purists out there who'd have cried foul - even though the resulting code would have been more complete and far better tested than my partial ports... Just like with religion, "purity" often trumps any sort of rationality when it comes to these sorts of things.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>david.wendelken replied on Monday, April 23, 2007</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div>
+<P>...Alternately you could do what I personally think more people should do, and just use the VB runtime. It is this really cool library of highly tested functionality, just sitting there waiting to be used. It is the kind of thing people pay hundreds of dollars for when they buy that sort of thing from a 3rd party vendor, just free for the taking.</P>
+<P>I didn't (couldn't) use the runtime in the C# CSLA project, because there are too many purists out there who'd have cried foul - even though the resulting code would have been more complete and far better tested than my partial ports... Just like with religion, "purity" often trumps any sort of rationality when it comes to these sorts of things.</P>
+<P></div></BLOCKQUOTE></P>
+<P>I'm a pragmatist.&nbsp;&nbsp;:)&nbsp; &nbsp;Thanks for the tip!</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>david.wendelken replied on Tuesday, April 24, 2007</h2><P>Well, darn.</P>
+<P>The Microsoft.VisualBasic.Interaction.CallByName executed correctly (it found the base class method), but it produced <STRONG><EM>unwanted</EM></STRONG> results. :(</P>
+<P>I was hoping that a method in a base class would use the Resources file that belongs to the sub-class assembly, not the base class assembly.&nbsp; No such luck.</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, April 24, 2007</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>If you make that method abstract so it must be overridden by the
+subclass then you&#8217;d get the result you want, because the executing code
+would be from the subclass.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<div>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> david.wendelken
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Tuesday, April 24, 2007 8:59 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] Utilities.CallByName to invoke method?<o:p></o:p></span></p>
+
+</div>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Well, darn.<o:p></o:p></p>
+
+<p>The Microsoft.VisualBasic.Interaction.CallByName executed correctly (it
+found the base class method), but it produced <em><b>unwanted</b></em> results.
+:(<o:p></o:p></p>
+
+<p>I was hoping that a method in a base class would use the Resources file that
+belongs to the sub-class assembly, not the base class assembly.&nbsp; No such
+luck.<o:p></o:p></p>
+
+<p>&nbsp;<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>david.wendelken replied on Tuesday, April 24, 2007</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div> 
+
+<DIV class=Section1>
+<P class=MsoNormal><SPAN>If you make that method abstract so it must be overridden by the subclass then you’d get the result you want, because the executing code would be from the subclass.<o:p></o:p></SPAN></P>
+<P class=MsoNormal></div></BLOCKQUOTE></P>
+<P class=MsoNormal>Right now, the method is a static one, and I can't do that with static methods.&nbsp; </P>
+<P class=MsoNormal>I'm looking into making the method non-static.</P>
+<P class=MsoNormal>Who ever said that one can't put static methods in an interface or override them in sub-classes was being silly.&nbsp; More religion, I suspect.</P>
+<P class=MsoNormal>&nbsp;</P></DIV></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

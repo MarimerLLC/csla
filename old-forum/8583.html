@@ -1,0 +1,27 @@
+<html><header><title>SmartDateConverter bug</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>SmartDateConverter bug</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/8583.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>RRorije posted on Friday, February 26, 2010</h2><p>Hi, </p>
+<p>I am not completely sure whether I need to post this here, or in a bug database which I can not find.I notice that there is a difference in converting a smartdate. </p>
+<p>1. TypeDescriptor.GetConverter(typeof(Csla.SmartDate)).ConvertTo(new SmartDate(), typeof(DateTime?))<br />2. (DateTime?) new SmartDate() </p>
+<p>1.&nbsp;returns DateTime.MinValue<br />2. returns null.</p>
+<p>My&nbsp;proposed&nbsp;solution is to change the SmartDateConverter class line 97 to <br />return (DateTime?)&nbsp;sd;</p>
+<p>Please correct me, if there is some flaw in my reasoning.</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Friday, February 26, 2010</h2><p>Thanks, added to the bug list</p>
+<p><a href="http://www.lhotka.net/cslabugs/edit_bug.aspx?id=710">http://www.lhotka.net/cslabugs/edit_bug.aspx?id=710</a></p>
+<p>(The bug list used to have a public interface - but in less than 10 days after making it public, spammers automated an attack and flooded the database with spam. There should really be a way to deal with spammers, something involving substantial physical discomfort and exile from any contact with their fellow humans.)</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Thursday, September 09, 2010</h2><p>Hi,</p>
+<p>I have looked into ths issue and it is not a problem/bug with the SmartDateConverter 
+class. <br /><br />The code for:<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; DateTime? dt1 = (DateTime?) new SmartDate();<br />or <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+Debug.Print(((DateTime?)new SmartDate()).ToString());<br />
+<br />doesn&#39;t hit the SmartDateConverter class but executes the static 
+implicit operator in SmartDate:<br /><br />&nbsp;&nbsp;<i>&nbsp; /// &lt;summary&gt;<br />&nbsp;&nbsp;&nbsp; 
+/// Convert a SmartDate to a nullable DateTime.<br />&nbsp;&nbsp;&nbsp; /// 
+&lt;/summary&gt;<br />
+&nbsp;&nbsp;&nbsp; /// &lt;param name=&quot;obj1&quot;&gt;SmartDate value.&lt;/param&gt;<br />&nbsp;&nbsp;&nbsp; 
+public static implicit operator System.DateTime?(SmartDate obj1)<br />&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+ return obj1.ToNullableDate();<br />&nbsp;&nbsp;&nbsp; }</i><br /><br />&nbsp;&nbsp;&nbsp;<i> /// &lt;summary&gt;<br />
+&nbsp;&nbsp;&nbsp; /// Gets the value as a DateTime?.<br />&nbsp;&nbsp;&nbsp; /// &lt;/summary&gt;<br />&nbsp;&nbsp;&nbsp;
+ public DateTime? ToNullableDate()<br />&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (this.IsEmpty)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+ return new DateTime?();<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; else<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return new 
+DateTime?(this.Date);<br />
+&nbsp;&nbsp;&nbsp; }</i><br /><br />So the rule SmartDate implements is that an Empty SmartDate converts to a
+ DataTime that is <b>null</b>.</p>
+<p>I have discussed this with Rocky and concluded that we do not want to change this code for now.</p>
+<p>&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,22 @@
+<html><header><title>BL DAL Design Issue (using DTOs)</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>BL DAL Design Issue (using DTOs)</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/744.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>vicky_iit posted on Thursday, July 27, 2006</h2><P>Hi Rocky,</P>
+<P>I decided to put it as a new thread.</P>
+<P>Yr recent posts forced me to ask you one more query, slightly more granular. Sometime back i was wrking on a project whose BL layer used to talk with DAL using DAL DTOs. </P>
+<P>There I noticed that the BL objects never had&nbsp;any private members but used the DTO itself.</P>
+<P>Eg.: there is a Customer class with 3 attributes.</P>
+<P>now, when thinking of using DTOs, my approach is like:</P>
+<P><FONT color=#006400>class Customer<BR>{ private string _name;<BR>private int _age;<BR>private int _id;</FONT></P>
+<P><FONT color=#006400>public Customer() {} //public constructor<BR>internal Customer(customerDTO data)<BR>{<BR>&nbsp; _name = data.Name;<BR>&nbsp; _age&nbsp; = data.Age;<BR>&nbsp; _id&nbsp;&nbsp; = data.Id;<BR>}</FONT></P>
+<P><FONT color=#006400>public string Name<BR>{<BR>//return this._name;<BR>}</FONT></P>
+<P><FONT color=#006400>//similary properties for each private attribute that needs to be exposed.<BR>}</FONT></P>
+<P>Now, in CustomerList class i will have some method FindCustomers(criteria) which will return a list of CustomerDTOs. I will then instantiate a new Customer object passing that DTO in the constructor.</P>
+<P>But in that project,&nbsp;I noticed different behaviour. The DTO was passed in the Customer objects constructor but the code was like:</P>
+<P><FONT color=#006400>class Customer<BR>{<BR>&nbsp; private CustomerDTO _data;&nbsp; //no other private attributes<BR>&nbsp;<BR>&nbsp; internal Customer(CustomerDTo data)<BR>&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; this._data = data; <BR>&nbsp;&nbsp; }</FONT></P>
+<P><FONT color=#006400>&nbsp;&nbsp; public string Name<BR>&nbsp;{<BR>&nbsp; return _data.Name;<BR>&nbsp; }</FONT></P>
+<P><FONT color=#006400>//similarly other properties<BR>}</FONT></P>
+<P>Now, i think that this approach isnt right as BL is now more tightly coupled with the </P>
+<P>DAL DTOs. Its like intead of the BL defining the attributes, the job is upto the DTO.&nbsp;&nbsp;Am i right?</P>
+<P>wud luv to hear u on this.</P>
+<P>vivek</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>vicky_iit replied on Sunday, July 30, 2006</h2><P>No comments ..<img src="/emoticons/emotion-6.gif" alt="Sad [:(]" /><img src="/emoticons/emotion-6.gif" alt="Sad [:(]" /></P>
+<P>some one please enlighten me!!</P>
+<P>&nbsp;</P>
+<P>Vivek</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

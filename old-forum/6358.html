@@ -1,0 +1,16 @@
+<html><header><title>Custom Security</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Custom Security</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6358.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>brannos posted on Friday, February 06, 2009</h2><P>I know we all have seen questions like this one come up on several occasions and I have read them but I am still having some problems.</P>
+<P>I have build my <FONT color=#000000>custom security but I can't access it so I can utilize it in my application. I think it has something to do with the need to directcast it. So in the SetPrincipal in my custom principal I have the following:</FONT></P>
+<P><FONT color=#000000>&nbsp;&nbsp;&nbsp;If identity.IsAuthenticated Then</FONT></P>
+<P><FONT color=#000000>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Dim principal As CMIPrincipal = DirectCast(Csla.ApplicationContext.User, CMIPrincipal)</FONT></P>
+<P><FONT color=#000000>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;principal = New CMIPrincipal(identity)</FONT></P>
+<P><FONT color=#000000>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Csla.ApplicationContext.User = Principal</FONT></P>
+<P><FONT color=#000000>&nbsp;&nbsp;&nbsp;End If</FONT></P>
+<P><FONT color=#000000>&nbsp;&nbsp;&nbsp;Return identity.IsAuthenticated</FONT></P>
+<P><FONT color=#000000>I know this is not correct</FONT> but it was my last ditch effort to have intellisence and the framework see my code and not .net or csla security code. Any Ideas how to accomplish this, could not find an answer.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Saturday, February 07, 2009</h2><P>If you are using a custom principal and/or identity type that has extra properties or methods you can't escape the need to cast the .NET IPrincipal/IIdentity objects to your specific type.</P>
+<P>What most people do is create a Module or static class that does the work:</P>
+<P>Public Module Security<BR>&nbsp; Public ReadOnly Property Name() As String<BR>&nbsp;&nbsp;&nbsp; Get<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return&nbsp;DirectCast(Csla.ApplicationContext.User, CMIPrincipal).Name<BR>&nbsp;&nbsp;&nbsp; End Get<BR>&nbsp; End Property<BR>End Module</P>
+<P>Just add all the properties/methods from your principal and identity to this Security type, then throughout your code you just use Security:</P>
+<P>If Security.IsInRole("blah") Then</P>
+<P>Console.WriteLine(Security.Name)</P>
+<P>MessageBox.Show("User " &amp; Security.Name &amp; " is in " &amp; Security.Department)</P>
+<P>It doesn't change the need to cast the value - but it abstracts the work into a central location.</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

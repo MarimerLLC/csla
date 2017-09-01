@@ -1,0 +1,9 @@
+<html><header><title>Filter ReadOnlyList</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Filter ReadOnlyList</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9310.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>t.kehl posted on Sunday, August 01, 2010</h2><p>Hi.</p>
+<p>I have a ReadOnlyList called CommunicationTypeList.</p>
+<p>Now, when I do </p>
+<p>this.CommunicationTypeList.Where(x =&gt; x.SystemType == (short)CommunicationSystemType.Mail)</p>
+<p>How can I get the result of this as a filtered CommunicationTypeList?</p>
+<p>Thanks for your help.</p>
+<p>Best Regards, Thomas</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Sunday, August 01, 2010</h2>there is no easy way, this is not how linq works. linq returns an ienumerable of t, that&#39;s it.
+
+you can use the csla .ToSynclist extension method to essentially wrap the linq result in a more powerful collection type. if you are unable to get good data binding to the linq result the synclist might work better.</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

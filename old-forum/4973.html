@@ -1,0 +1,26 @@
+<html><header><title>Get Original/Old Value For a Property</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Get Original/Old Value For a Property</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4973.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>handaajay15 posted on Friday, June 13, 2008</h2><P>In ADO DataRow world, We have the mechanism to get Original Value for any Column of the Row. </P>
+<P>This is required in day-to-day business problems. We have to&nbsp;frequently&nbsp;compare&nbsp;before&nbsp;doing some processing&nbsp;the current value of the property&nbsp;&nbsp;with Original Value of the property ( the value that was fetched from the database ). </P>
+<P>This requirement is at both Server and Client Side. </P>
+<P>Que: How Do I get the Original value of the property that was fetched from the database and compare that with current value of the property??</P>
+<P>Any help / suggestion is highly appreciated.</P>
+<P>Thanks</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Friday, June 13, 2008</h2><P>You have 2 basic options.</P>
+<P>Simply create some extra fields with ReadOnly Properties and when you set the value of Field1 during Fetch you also set the value of orig_Field1. This way you carry around the extra information and have access to it at any time. I do this for selected BOs and selected properties in those BOs. But not for all fields for all BOs.</P>
+<P>As I recall the new managed properties can be extended to allow additional information to be carried around. This would include an Original Value. (And IsDirty for the the property itself which returns currVal &lt;&gt; OrigVal - which allows a value to be changed and then changed back to the orig inal value and thus state the Property itslef is not dirty even though the BO IsDirty.)</P>
+<P>There is a huge thread on this topic - it was when Rocky first proposed it. I believe he concluded that he would not provide this type of information as a built-in part of CSLA but that he would allow CSLA to be extended for those developers who want this sort of thing. You'd have to find and review that thread ofr more details - unless some else can explain it more fully in this thread.</P>
+<P>Joe</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>handaajay15 replied on Friday, June 13, 2008</h2><P>Thanks for your reply Joe,</P>
+<P>Keeping the old value with the property is an overhead as it doubles the size of the entity. You are right it should be done for specific required properties only. But some of the core tables we have like sales order or production order have more than 300 fields/properties each. and we need old values for a lot of them. So in WCF mode it becomes a huge overhead for serialization.</P>
+<P><STRONG>Theoratically Thinking:)</STRONG></P>
+<P>Client Side:</P>
+<P>Can I create non-serializable client-side only dictionary or something more appropriate container, After fetch of the entity I can fill this dictionary and anytime when we need old value we can get the value from this dictionary.</P>
+<P>Server Side:</P>
+<P>I can compromise by re-fetching the entity from the database, fill my non-serializable server side only dictionary and provide the standard mechanism of getting the old value.</P>
+<P>If the above theory is practically efficient to do, then Could you please provide me an example on how to do this.</P>
+<P>Thanks.</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Friday, June 13, 2008</h2>Sounds like it could be workable.. but it also sounds like pre-mature optimization, which is a design anti-pattern.&nbsp; Personally I'd check Wcf to see if there's a way to compress the stream instead of adding more code to the problem.<br><br>Also, if you implement old values using the managed propety method, you should be able to use nullable types, and only store the value if it has actually changed.&nbsp; That may reduce the size of the stream as well, and you could find out of the value ever changed since the BO was loaded.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>handaajay15 replied on Friday, June 13, 2008</h2><P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>ajj3085:</strong></div><div><BR>Also, if you implement old values using the managed propety method, you should be able to use nullable types, and only store the value if it has actually changed.&nbsp; That may reduce the size of the stream as well, and you could find out of the value ever changed since the BO was loaded.<BR></div></BLOCKQUOTE></P>
+<P>Sounds good. Pardon my ignorance, Could you please provide one simple example for managed property method?</P>
+<P>&nbsp;</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

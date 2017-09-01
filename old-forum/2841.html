@@ -1,0 +1,93 @@
+<html><header><title>BusinessListBase validation - only one child with property == 'xyz'</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>BusinessListBase validation - only one child with property == 'xyz'</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/2841.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>FreeAsInBeer posted on Wednesday, May 09, 2007</h2>Hi all,<br><br>just a quick question, if you don't mind. <br><br>I've got a BusinessListBase, and its children have a property (string) called Location. (this is abstract/made up, so bare with me please)<br><br>I need to ensure that there are no duplicate Locations in the collection. <br><br>I know I can access the parent from within the children, and when the Location property changes I can do a test... but... if I do find a duplicate (ie a child in the list already with that Location) how can I add a validation error/broken rule to the child that has just had its Location changed?<br><br>My other thought was to have the BusinessListBase contain the validation error, but, can/does a BusinessListBase have its own BrokenRulesCollection, or does it just 'get' them from the children?<br><br>thanks in advance<br>FaiB<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jason2000 replied on Wednesday, May 09, 2007</h2><P>there is a similar use case in ProjectTracker:there are no more 5 resouces in a project.</P>
+<P><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; private static bool No5Resources&lt;T&gt;(<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; T target, Csla.Validation.RuleArgs e) where T : Project<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (target.Resources.Count&gt;5)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; e.Description = "Already 5 resources in the project!!";<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return false;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return true;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; void Resources_ListChanged(object sender, System.ComponentModel.ListChangedEventArgs e)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp; //bind the validation to Name Property&nbsp;&nbsp;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; PropertyHasChanged("Name");<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</P>
+<P><BR>&nbsp;//if the project object is retrieved from database<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; protected override void OnDeserialized(System.Runtime.Serialization.StreamingContext context)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; this.Resources.ListChanged -= new System.ComponentModel.ListChangedEventHandler(Resources_ListChanged);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; this.Resources.ListChanged += new System.ComponentModel.ListChangedEventHandler(Resources_ListChanged);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; base.OnDeserialized(context);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</P>
+<P>&nbsp;&nbsp;&nbsp; //if the project object is newly created&nbsp;<BR>&nbsp;&nbsp;&nbsp; protected override void DataPortal_Create()<BR>&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _id = Guid.NewGuid();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _started.Date = DateTime.Today;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; this.Resources.ListChanged += new System.ComponentModel.ListChangedEventHandler(Resources_ListChanged);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ValidationRules.CheckRules();<BR>&nbsp;&nbsp;&nbsp; }</P>
+<P>all these code in project calss.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Thursday, May 10, 2007</h2><P>I often put those kind of&nbsp;rules in the Root BO that contains the collection. Then the root BO can ask the collection questions like "How many resources do you have?" Or "what are your locations and are any of them duplicates". The root BO&nbsp;can keep track of which child object broke the rules and expose a broiken rule accordingly. </P>
+<P>I will usually call these extra rules in IsValid just before getting the real value for IsValid - this gives them a chance to become broken or not one last time. I may sometimes write a lengthy procedure to figure this out and pass in stringbuilder and then append each problem to it so the full message is returned to the calling method.</P>
+<P>Joe</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>FreeAsInBeer replied on Thursday, May 10, 2007</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>JoeFallon1:</strong></div><div><p>I often put those kind of&nbsp;rules in the Root BO that contains the collection. Then the root BO can ask the collection questions like "How many resources do you have?" Or "what are your locations and are any of them duplicates". The root BO&nbsp;can keep track of which child object broke the rules and expose a broiken rule accordingly.</p></div></BLOCKQUOTE><br><br>The problem is i dont have a root BO, just a standalone BusinessListBase. Can a BLB have its own BrokenRulesCollection?<br><br>thanks jason2000, I'll have a play with that and see if it does what I need. <br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, May 10, 2007</h2>Your child objects have a protected Parent property, through which you can access the root list. Using this, you can implement a rule method to check for duplication. Typically you'd attach this rule to your primary identity property in the child class.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jtgooding replied on Wednesday, May 30, 2007</h2><P>In my BusinessListBase I have added a AddConstraintCheck virtual method that gets called on any add/set, and a DeleteConstraintCheck that gets called on any delete/remove. This could easily be expanded to use delegates to have multiple reusable checks but in all my cases this simpler aproach works.</P>
+<P>Note that&nbsp;I don't throw an exception, I leave that to the AddConstraintCheck method, that way if duplicates are expected and to be ignored the developer can choose to not throw an exception.</P><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>void</FONT><FONT size=2> Add(C item)<BR>{<BR>&nbsp;&nbsp;&nbsp;&nbsp;item.MarkAsChild();<BR>&nbsp;&nbsp;&nbsp;&nbsp;C OldItem = FindDeleted(item);<BR></FONT><FONT color=#0000ff size=2><FONT color=#000000>&nbsp;&nbsp;&nbsp;&nbsp;</FONT>if</FONT><FONT size=2> (OldItem == </FONT><FONT color=#0000ff size=2>null</FONT><FONT size=2>)<BR>&nbsp;&nbsp;&nbsp;&nbsp;{<BR></FONT><FONT color=#0000ff size=2><FONT color=#000000>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</FONT>if</FONT><FONT size=2> (AddConstraintCheck(item))<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<BR></FONT><FONT color=#0000ff size=2><FONT color=#000000>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</FONT>base</FONT><FONT size=2>.Add(item);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR></FONT><FONT color=#0000ff size=2><FONT color=#000000>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</FONT>else<BR></FONT><FONT size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<BR></FONT><FONT color=#0000ff size=2><FONT color=#000000>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</FONT>if</FONT><FONT size=2> (AddConstraintCheck(OldItem))<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;UnDeleteChild(OldItem);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>&nbsp;&nbsp;&nbsp;&nbsp;}<BR>&nbsp;&nbsp;&nbsp;&nbsp;item.IsDirtyChanged += </FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> </FONT><FONT color=#2b91af size=2>EventHandler</FONT><FONT size=2>(item_IsDirtyChanged);<BR>&nbsp;&nbsp;&nbsp;&nbsp;OnIsDirtyChanged();<BR>}</FONT></P><FONT size=2><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>protected</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>virtual</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>bool</FONT><FONT size=2> AddConstraintCheck(C item)<BR>{<BR></FONT><FONT color=#0000ff size=2><FONT color=#000000>&nbsp;&nbsp;&nbsp;&nbsp;</FONT>return</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>true</FONT><FONT size=2>;<BR>}</P></FONT></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, May 30, 2007</h2><P>Unfortunately that solution isn't safe, because there are several other ways to get items into a collection beyond the Add() method. And in any case, shadowing a method is something that should be avoided if at all possible.</P>
+<P>The better solution is to override the InsertItem() and SetItem() methods. These are invoked by the base collection class when an item is inserted (in any way) or replaced within your collection.</P>
+<P>These methods are invoked during the add process - before the item has been added. If you do not call base.InsertItem() or base.SetItem() the add won't occur, and if you do cascade the call then the add will complete.</P>
+<P>But these methods are the location where you should invoke your validation method, because then you are sure to have your code run in all cases.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jtgooding replied on Thursday, May 31, 2007</h2><P>Yeah I realized after I posted that what I posted was incomplete, my BusinessListBase has a lot of additional functionality and seperating the other stuff out I overload AddNewCore to provide polymorphic core creation when polulating a list from a database and a whole bunch of other stuff.</P>
+<P>In my code I handle InsertItem and SetItem, I've just been knocking my head against the wall trying to figure out what broke with 3.0 in BusinessListBase and the EditLevel, since I have so many updates its difficult to tell if it's me or the beta, my 2.0 based BusinessListBase works perfectly.</P>
+<P>I should start a different thread, but when a BusinessListBase class is a child of a BusinessBase, when AcceptChanges is called on the BusinessBase class the AcceptChanges of the child BusinessListBase class always throws an exception that it is not at the same edit level (it always appears to be zero at the acceptchanges call).&nbsp; The other nested BusinessBase objects all are at the right EditLevel, so trying to hunt this down to see if its me or not.</P>
+<P>John</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, May 31, 2007</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>What changed in 3.0 is that I added this new exception that you
+are seeing. The reason for adding the exception is to help troubleshoot bugs
+around edit level handling, because if you don&#8217;t find them then they mess
+up data binding in very-hard-to-diagnose ways.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>If you got the code from svn then it should be working. My tests
+(unit and otherwise) include using a BLB as a child of a BB, and my tests all
+pass.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> jtgooding
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Thursday, May 31, 2007 7:43 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] BusinessListBase validation - only one child
+with property == 'xyz'<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Yeah I realized after I posted that what I posted was incomplete, my
+BusinessListBase has a lot of additional functionality and seperating the other
+stuff out I overload AddNewCore to provide polymorphic core creation when
+polulating a list from a database and a whole bunch of other stuff.<o:p></o:p></p>
+
+<p>In my code I handle InsertItem and SetItem, I've just been knocking my head
+against the wall trying to figure out what broke with 3.0 in BusinessListBase
+and the EditLevel, since I have so many updates its difficult to tell if it's
+me or the beta, my 2.0 based BusinessListBase works perfectly.<o:p></o:p></p>
+
+<p>I should start a different thread, but when a BusinessListBase class is a
+child of a BusinessBase, when AcceptChanges is called on the BusinessBase class
+the AcceptChanges of the child BusinessListBase class always throws an
+exception that it is not at the same edit level (it always appears to be zero
+at the acceptchanges call).&nbsp; The other nested BusinessBase objects all are
+at the right EditLevel, so trying to hunt this down to see if its me or not.<o:p></o:p></p>
+
+<p>John<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

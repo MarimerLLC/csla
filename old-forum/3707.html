@@ -1,0 +1,144 @@
+<html><header><title>Architecture Issue</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Architecture Issue</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3707.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>tna55 posted on Saturday, October 13, 2007</h2><P>Hi,</P>
+<P>I am someone learning about various architectures so that I can implement one in my next project.</P>
+<P>I would like to have a comment on an architecture used very commonly for web applications. In this architecture every business object is split into three classes i.e. BO, BLL and DAL. BLL and DAL having static (shared) methods with BO being passed as parameter. e.g. in order to load an item it would be something like this:</P>
+<P>Public Shared Function GetItem(Id As Integer) As CustomerBO</P>
+<P>Return CustomerDAL.GetItem(Id)</P>
+<P>End Function</P>
+<P>Public Shared Function Insert(Customer As CustomerBO) As Boolean</P>
+<P>Return CustomerDAL.Insert(Customer)</P>
+<P>End Function</P>
+<P>These are two sample methods from the BLL and as we can see the Shared methods pass BO into DAL (in case of Insert, Update, Delete)&nbsp;and get BO from DAL (in case of GetItem, GetList etc). BO is just properties i.e. a DTO.</P>
+<P>My question really is: Is this an OOA? What are the shortcommings of this? </P>
+<P>Second question is regarding the Business Objects that Rocky recommends: In a responsibility-driven design should the methods in a "true"&nbsp;Business Object be static (shared) or instance? What is the difference? </P>
+<P>I would really appreciate Rocky's help however comments of other people are good as well.</P>
+<P>Tahir</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Sunday, October 14, 2007</h2><P>For clarity, I'll rename what you are calling a "business object" to "entity object" as that is more properly what you are describing.</P>
+<P>Yes, the use of an EO, BLL and DAL together is an OOA. This model was (and perhaps still is) pretty common in the Java world.</P>
+<P>This is a different architecture from the one CSLA supports, because I generally disagree with the idea of splitting the entity and business concepts into separate objects. Splitting out the DAL is fine, though I think it should still be encapsulated behind the combined EO/BLL (which is what I call a business object in my books).</P>
+<P>But it does depend on what you are trying to do. The EO/BLL split is often a good one for non-interactive batch processing. It is not very good for interactive scenarios where the user's UI is directly interacting with the object model, because there's too much overhead and complexity to get the levels of interactivity provided by the CSLA BO model.</P>
+<P>Conversely, the CSLA BO model can work for non-interactive scenarios, but it isn't necessarily optimal. A lot of the features of the CSLA stereotypes are very UI-focused (data binding, n-level undo, etc) and those aren't useful in a non-interactive scenario.</P>
+<P>Other CSLA features, such as authorization and validation, are valuable in all cases, but the way they are used in my books is geared toward interactive scenarios. You should use them differently if you are in a non-interactive scenario, because there are more efficient ways to use them if you don't care about interactivity or user responsiveness.</P>
+<P>To answer your final question, it is critical to remember that there's a big difference between object oriented <EM>design</EM> and object oriented <EM>programming</EM>. At the design level, many things are "objects" that later turn out to be static methods, or static instances, or full instances, etc.</P>
+<P>For example, validation rules are considered "objects" during OOD. A higher level business object, like CustomerEdit, will collaborate with validation rule objects like MaximumCreditLimit. But at <EM>implementation time</EM> MaximumCreditLimit is almost certainly just a static method - not an object at all.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tna55 replied on Sunday, October 14, 2007</h2><P>Rocky,</P>
+<P>Many thanks for your reply.</P>
+<P>I am trying to understand the responsibility driven design and there are not many books around to discuss this topic. </P>
+<P>So basically what we are saying is that a 'true' BO will have one responsibility and like the Assignment object ProjectTracker project, a BO can only be methods i.e. no properties. Is that correct?</P>
+<P>In Applying UML and Patterns Craig Larman mentioned that we assign responsibilities to an object that has the data to fulfil that responsibility. This pattern is called Information Expert in his book. Is that a data-driven way of thinking rather than responsibility-driven design. He also has pattern like Pure Fabrication which basically says that if Information Expert is breaking coupling and/or cohesion then we should create another object and assign the responsibility to it. I think you both are saying same thing but in a different way. Am I right in thiking this?</P>
+<P>Tahir</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Sunday, October 14, 2007</h2><P>Single responsibility design merely says that an object (at design time) has exactly one responsibility. </P>
+<P>Any behaviors that object has, are in service of fulfilling that responsibility.</P>
+<P>If an object becomes overly complex (you can't summarize what it does in a non-compound sentence fragment) then that complexity must be broken into other objects with which it collaborates.</P>
+<P>So an entity object is responsibility driven - its responsibilty is to contain shaped data.</P>
+<P>A business logic layer object can be responsibility driven - its responsibility is to implement a set of cohesive behaviors around some concept. Though honestly this one gets pretty tough, because it typically turns out that each <EM>method</EM> has a responsibility and is logically an object. This, by the way, leads to service-oriented and/or workflow (activity) based designs. The end result is typically that you end up abandoning OO and instead use procedural design techniques.</P>
+<P>The problem though, either way, is that entity objects aren't defined by <EM>business responsibility</EM>, but instead literally by "contain shaped data" - which is an <EM>implementation responsibility</EM>. And at that point even entity objects no longer conform to the goal of responsibility driven object-oriented design.</P>
+<P>This, then, is the core. Do your responsibilities flow from business requirements (use cases), or from technology requirements? </P>
+<P>If the former, then your objects will all have a responsibilty within a use case, and almost always your business analyst/user can understand the objects' responsibilities.</P>
+<P>If the latter, then your objects will have responsibilities defined by technology. By programmers. And your business analysists/users will struggle to understand the responsibilties or relate them to the actual business problem.</P>
+<P>This isn't to say that the latter is <EM>wrong</EM>, because it is, in fact, a really powerful tool for software design. But it <EM>is not</EM> a powerful tool for mapping business problems into software - and to me that's the real problem we need to solve using OO.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tna55 replied on Monday, October 15, 2007</h2><P>Rocky,</P>
+<P>Many thanks once again.</P>
+<P>If an object is responsible for more than one thing then we seperate that responsibility into another object, which is fine. I am trying to understand the communication of this new object with the others really. How do we pass data into this object and then get data back? Let me give an example.</P>
+<P>If I had an orignal object BO1 having properties and methods, however it had two responsibilities and I seperated those methods into BO2. Now in order to perform the responsibility the BO2 will require data (properties) from BO1. BO2 does not do any database handling, it is pure business logic. </P>
+<P>There are two ways I think I can implement BO2. 1) By having a Shared function that takes *Info object and give back another *info object. 2) By having properties in the BO2 that its user will fill and then some other properties that the user will get after the processing. Some code for these are</P>
+<P>1)</P>
+<P>Public Shared Function DoSomething(Param as xyzInfo) As abcInfo</P>
+<P>The user will fill xyzInfo and will get back abcInfo. </P>
+<P>2)</P>
+<P>Public Function DoSomething()</P>
+<P>The user will fill&nbsp;some properties and will get back some others</P>
+<P>BO2.A= "A"</P>
+<P>BO2.B="B"</P>
+<P>BO2.DoSomething()</P>
+<P>C = BO2.C</P>
+<P>D = BO2.D</P>
+<P>&nbsp;</P>
+<P>I am trying to understand that which one is the correct approach really.</P>
+<P>Your help will be much appreciated.</P>
+<P>Tahir</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, October 15, 2007</h2><P>There's a concept called "coupling" that comes into play at the implementation level. When an object implements a behavior that requires information from outside the object itself, you want to provide that information in a way that keeps everything decoupled.</P>
+<P>What that means, is that you want to minimize the knowledge that any one object has about any other object. The less they know about each other, the more flexible and maintainable your code.</P>
+<P>If BO2 is an implementation of a single atomic behavior then it is probably best implemented as a Shared function. The only reason to force a consumer to create an instance is if there's some value in BO2 having properties that maintain state - like you are going to call the behavior over and over again and BO2 would need to track state between those calls.</P>
+<P>But for most atomic behaviors that isn't the case.</P>
+<P>So then you need to ask whether to do this:</P>
+<BLOCKQUOTE dir=ltr>
+<P>DoSomething(Me)</P></BLOCKQUOTE>
+<P>or</P>
+<BLOCKQUOTE dir=ltr>
+<P>DoSomething(A, B, C)</P></BLOCKQUOTE>
+<P>or</P>
+<BLOCKQUOTE dir=ltr>
+<P>Dim tmp As New RequestData<BR>tmp.A = A<BR>tmp.B = B<BR>tmp.C = C<BR>DoSomething(tmp)</P></BLOCKQUOTE>
+<P>or even less coupled would be to define an IRequestData interface that can be implemented either by BO1 or the RequestData class, so DoSomething() can accept an IRequestData parameter.</P>
+<P>All of these are valid by the way - you just need to evaluate complexity vs decoupling. The goal, after all, is maintainability, not decoupling and not reuse. And complexity is just as much an enemy of maintainability as coupling...</P>
+<P>So if BO2 is for use only in this one use case and you don't anticipate reuse, then there's no sense in using an interface-based scheme, and I'd probably just have it accept BO1 as a parameter:</P>
+<BLOCKQUOTE dir=ltr>
+<P>DoSomething(Me)</P></BLOCKQUOTE>
+<P>But if BO2 is normalized behavior that will likely be used by other objects in this use case then it might be worth creating some RequestData class.</P>
+<P>And if BO2 is normalized behavior that will likely be used by other&nbsp;objects <EM>in other use cases too</EM>,&nbsp;then it is probably worth defining an interface to provide the higher level of decoupling.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tna55 replied on Monday, October 15, 2007</h2><P>Excellent, that makes a lot of sense now. I am beginning to understand what is wrong with what I am doing.</P>
+<P>I would really appreciate if you can help me resolve an issue. This would give me an idea of how to allocate responsibilities.</P>
+<P>I have a License BO with Cd-Key and ActivationCode as two properties. I have implemented&nbsp;a CreateNew Method in it that takes two parameters NoOfBuildings and ModuleCode. A New License BO is created based on these parameters. Let me write the code bits from the License BO</P>
+<P>Public Shared Function CreateNew(NoOfBuildings As Integer, ModuleCode as String) As LicenseBO</P>
+<P>&nbsp;&nbsp;&nbsp;Dim sCdKey As String = ""</P>
+<P>&nbsp;&nbsp;&nbsp;Dim sActivationCode As String = ""</P>
+<P>&nbsp;&nbsp;&nbsp;sCdKey = CreateCdKey()</P>
+<P>&nbsp;&nbsp;&nbsp;sActivationCode = CreateActivationCode(sCdKey, NoOfBuildings, ModuleCode)</P>
+<P>&nbsp;&nbsp;&nbsp;Dim License As New License</P>
+<P>&nbsp;&nbsp;&nbsp;License.CdKey = sCdKey</P>
+<P>&nbsp;&nbsp;&nbsp;License.ActivationCode = sActivationCode</P>
+<P>&nbsp;&nbsp;&nbsp;Return License</P>
+<P>End Function</P>
+<P>&nbsp;</P>
+<P>This Shared method is in License BO itself. License BO also saves and deletes itself from database. It is is like CSLA BO (more or less). Now the questions I asked in previous posts were to see whether I should remove this method into another class of its own? As you can see there as two Private methods (CreateCdKey and CreateActivationCode) as well. Will keeping this within License BO make License BO do more than one thing?</P>
+<P>If we say that splitting responsibilities is essential&nbsp;then we will probably have many classes with couple of methods and most of them will not have properties. Does that lead to a procedural approach? May be I am missing the key difference between procedural and object-oriented approach, could you please explain me the difference?</P>
+<P>Another question: The Architecture I have is such that there is a LicenseBO and LicenseBOList however they both use same LicenseDAL class. My concept is to make one DAL object per table with a DTO to transfer data between BO and DAL. However, there can be various BO's using that DAL. This way DAL and DTO are like data-centric objects whereas all Business Logic is kept in the 'real' Business Objects. I would like your opinion on such an approach and what can be the possible drawbacks for such an approach.</P>
+<P>Help will be much appreciated.</P>
+<P>Tahir</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, October 16, 2007</h2><P>In the CSLA model your factory method would call the data portal, and the initialization code would be in DataPortal_Create(). That way the code could run on the app server in an n-tier deployment without requiring changes to your object code.</P>
+<P>The creation of a key and activation code probably should be in separate objects (from a design perspective), though I can surely see where they would likely be Shared methods at implementation time (though I'd put those Shared methods in their own classes to maintain better organization of code). Those classes would probably be Friend in scope though, as they'd only be used inside your business layer.</P>
+<P>The difference between "OO" and "procedural" at implementation time can sometimes seem small. In my view, the big value of OO is at the design level, and the differences between OOD and procedural design are big, even though some of the "objects" defined by OOD are ultimately implemented as single methods.</P>
+<P>Regarding your last question. I look at a DAL as a logical database. From my perspective as a business object author, the DAL is just how I get and store my data, nothing more.</P>
+<P>So if I can reuse some parts of the DAL from different objects, that's no different from calling a common stored procedure from different objects. As long as I get the data I need, and <EM>only</EM> the data I need, then I'm happy.</P>
+<P>But you <EM>must</EM> realize that this is a form of coupling. Any time you reuse code, the result is coupling. And coupling is a bad thing. So you need to balance the cost of coupling against the benefit of reuse and decide (on a case by case basis) whether the benefit outweights the cost.</P>
+<P>If objects A and B both use DAL object D to get their data, what happens when A needs an extra 5 fields? Do you change D to provide those 5 fields? Did that break B? Or make B less efficient?</P>
+<P>I personally suggest that when that happens (and it always happens!) that you need to create Da and Db. A uses Da and gets the extra 5 fields. B uses Db, which is the original D. At this point you've lost reuse, but avoided the high cost of coupling.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tna55 replied on Tuesday, October 16, 2007</h2><P>Hi Rocky,</P>
+<P>I will let you&nbsp;reply to&nbsp;my questions in previous post however just a quick note. We were always taught that an object contain data (properties) and methods and in OOA/D 'finding attributes' came always before 'assigning responsibilities'. May be that is why my approach like so many other people has been data-centric.</P>
+<P>However, thinking about it, .NET Framework itself is an example infront of us where most of the objects are responsibility driven e.g. StreamReader is not there to store some data and perform operations on it, it is there for a reason (responsibility) and in order to do that it needs some data (e.g. filename).</P>
+<P>Just a thought really.&nbsp;I am really enjoying my work even more now because thinking in terms of responsibility seems very 'natural'. It is hard 'only' because how we have been taught for years really.</P>
+<P>If you do get time, do write a book on responsibility driven design. I am sure people will love it.</P>
+<P>Tahir</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>webjedi replied on Tuesday, October 16, 2007</h2><P>I'm not sure if this is helpful but I've found the following exercise&nbsp;very helpful in assisting me in thinking responsibility wise vs. data wise.</P>
+<P>The code is JAVA based but the design principals are sound I believe.</P>
+<P><A href="http://www.math-cs.gordon.edu/courses/cs211/ATMExample/">http://www.math-cs.gordon.edu/courses/cs211/ATMExample/</A></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, October 16, 2007</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>tna55:</strong></div><div>
+<P>I will let you&nbsp;reply to&nbsp;my questions in previous post however just a quick note. We were always taught that an object contain data (properties) and methods and in OOA/D 'finding attributes' came always before 'assigning responsibilities'. May be that is why my approach like so many other people has been data-centric.</P>
+<P></div></BLOCKQUOTE></P>
+<P>Most people, including myself, were taught this data-centric way of thinking about object design. I learned the hard way, over years of fighting the same problems over and over again, that the responsibility-driven approach is better.</P>
+<P>Other people, like Ward Cunningham, David West and others, have been pushing domain/behavioral/responsibility-driven OO design for years and years. If only I'd listened to them earlier, I'd have avoided a lot of pain <img src="/emoticons/emotion-1.gif" alt="Smile [:)]" /></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tna55 replied on Tuesday, October 16, 2007</h2><P>Many thanks,</P>
+<P>Two follow up questions really.</P>
+<P>1) Can you explain the difference between OOD and Procedural design?</P>
+<P>2) I have read on various post that you learnt the hard way and after a lot of pain. Can you share with us the problems that you and/or anyone might have with data-centric approach?. The problem that I have (which I think is because of data-centric thinking) is that my objects 'were' just representing database tables and I use to assign responsibilities to this object thinking that 'it should do this because it contains the data to do this'. This lead to an object doing to many things and after few weeks into the project the code became un-managable. </P>
+<P>Some people have mentioned that with RDD the properties/data is replicated in various BO's. To me it sounded 'bad' at first but then I thought of it in such a way: I am responsible for doing configuration management in my company and another person is responsible for doing testing. We both use same data i.e. source code however responsibilities are different.</P>
+<P>Could you please advise me some books to read about RDD.</P>
+<P>Many thanks once again. </P>
+<P>Tahir</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tna55 replied on Wednesday, October 17, 2007</h2><P>Many thanks,</P>
+<P>Two follow up questions really.</P>
+<P>1) Can you explain the difference between OOD and Procedural design?</P>
+<P>2) I have read on various post that you learnt the hard way and after a lot of pain. Can you share with us the problems that you and/or anyone might have with data-centric approach?. The problem that I have (which I think is because of data-centric thinking) is that my objects 'were' just representing database tables and I use to assign responsibilities to this object thinking that 'it should do this because it contains the data to do this'. This lead to an object doing to many things and after few weeks into the project the code became un-managable. </P>
+<P>Some people have mentioned that with RDD the properties/data is replicated in various BO's. To me it sounded 'bad' at first but then I thought of it in such a way: I am responsible for doing configuration management in my company and another person is responsible for doing testing. We both use same data i.e. source code however responsibilities are different.</P>
+<P>Could you please advise me some books to read about RDD.</P>
+<P>Many thanks once again. </P>
+<P>Tahir</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tna55 replied on Wednesday, October 24, 2007</h2><P>I would really appreciate some help with my last questions.</P>
+<P>Many thanks</P>
+<P>Tahir</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, October 24, 2007</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>tna55:</strong></div><div>
+<P>I would really appreciate some help with my last questions.</P>
+<P></div></BLOCKQUOTE></P>
+<P>Those are big questions. I answer them in bits and pieces as I have time - and across many threads. To pull it all together into some formal answer would be a lot of work. Ultimately it would be, at least, a series of lengthy articles or, at most, a book. I simply don't have the time for that level of formalization at this point, sorry.</P>
+<P>I have been covering this in about 90 minutes during my <A href="http://www.vslive.com">VS Live</A> all-day workshops. Hopefully I'll be able to do some of these workshops (updated for 3.5, etc) during the 2008 shows. It is somewhat easier to deliver a lot of experience and thoughts through speaking than through writing <img src="/emoticons/emotion-1.gif" alt="Smile [:)]" /></P>
+<P>In terms of books, I recommend these:</P>
+<UL>
+<LI>
+<DIV class=MsoNormal><SPAN>David West: Object Thinking<O:P></O:P></SPAN></DIV></LI>
+<LI>
+<DIV class=MsoNormal><SPAN>Eric Evans: Domain-Driven Design<O:P></O:P></SPAN></DIV></LI>
+<LI>
+<DIV class=MsoNormal><SPAN>David Taylor: Object-Oriented Technology: A Manager’s Guide<O:P></O:P></SPAN></DIV></LI>
+<LI>
+<DIV class=MsoNormal><SPAN>GoF: Design Patterns<O:P></O:P></SPAN></DIV></LI>
+<LI>
+<DIV class=MsoNormal><SPAN>Martin Fowler: Patterns of Enterprise Application Architecture<O:P></O:P></SPAN></DIV></LI>
+<LI>
+<DIV class=MsoNormal><SPAN>Hohpe/Woolf: Enterprise Integration Patterns</SPAN></DIV></LI></UL>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Plowking replied on Thursday, October 25, 2007</h2>Hi<br><br>This post is very interesting reading, I never really got the single responsibility per object thing until now. Cheers for spending the time answering those questions Rocky.<br><br>That design time objects can become, for example, implementation time static methods, clears up for me how CSLA objects can be considered single responsibility.<br><br>It also fits in my mind at least with CRC cards, and role playing to see which Entity objects (in CSLA "BOs") then host the static methods, if appropriate.<br><br>Ian<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Nicholas Trevatt replied on Sunday, February 24, 2008</h2><font face="Verdana" size="2">I just wanted to add a thank you to Rocky for the time he puts into this forum.&nbsp; I find it great informative reading!&nbsp; <br><br>Also, I would like to second the vote for you to write a book on the OOD subject.&nbsp; Having read both Object Thinking and OO Technology I have no doubt that your ebook would hit the mark with me so much more effectively particularly if you had real world examples.&nbsp; Don't get me wrong, those books are great but I just enjoy David West's comand of the English language too much and the subject matter gets lost in my awe <img src="/emoticons/emotion-1.gif" alt="Smile [:)]" /><br><br>I was also wondering if you could make the 90" VS-Live workshops available online in a .avi format or just make your own?&nbsp; I'd pay money for that!<br><br>I have no doubt that your way to busy to do either of these projects but no harm in asking ay <img src="/emoticons/emotion-1.gif" alt="Smile [:)]" /><br><br>Thanks,<br>Nicholas<br><br><br></font></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

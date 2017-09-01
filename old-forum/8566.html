@@ -1,0 +1,28 @@
+<html><header><title>Updating items in a list</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Updating items in a list</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/8566.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>greengumby posted on Tuesday, February 23, 2010</h2><p>Hi,</p>
+<p>I have the business case where I have a List(Grid) of BusinessBase with a bool Property of isMaster. (checkbox)</p>
+<p>What I would like to happen is when they tick a checkbox it would loop through all the other items in the list and set them unticked. &nbsp;(Should not persist this)</p>
+<p>Now I know I could create a ValidationRule and make sure that only one is ticked to enforce them to untick any others but the first way was the preferred option.&nbsp;</p>
+<p>Does an event in CSLA help me achieve this?</p>
+<p>Thanks</p>
+<p>Jeremy</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, February 23, 2010</h2><p>This behavior should be in the business layer only if this concept is not specific to your particular UI. In other words, if you took this object model and used it in an entirely different UI style, would you still want the same behavior? Or to put it another way, is this a business rule, or a UI thing?</p>
+<p>If it is a business rule, then that&#39;s fine. You can put the rule implementation in the parent object, triggered by the ChildChanged event. The args for that event will give you a reference to the object that was just changed, so you can easily loop through the list and uncheck all other objects.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>greengumby replied on Tuesday, February 23, 2010</h2><p>Hi Rocky,</p>
+<p>Yes this situation is a business rule and would happen throughout the system. If I use the ChildChanged event and look through all the other children changing values wont this create a circular loop?</p>
+<p>Thanks</p>
+<p>Jeremy</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>rsbaker0 replied on Wednesday, February 24, 2010</h2><p>A common technique to handle the looping is to have a private variable of some sort that indicates that the change handling code should be locked out or suspended. Using a numeric counter for this will solve re-entrancy problems:</p>
+<pre>        void ApplyChange()
+        {
+            if (_lockout == 0)
+            {
+                try 
+                {
+                    _lockout++;
+                    // Apply change here
+                }
+                finally 
+                {
+                    _lockout--;
+                }
+        }
+</pre>
+<p>I&#39;m not sure you&#39;ll necessarily have a loop in this particular case, because presumably you would apply the &quot;uncheck all the others&quot; logic only when the new &quot;IsMaster&quot; property value of the object being changed is true. If you are turning off the IsMaster of the other items, presumably your test would bypass the unchecking logic. </p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Wednesday, February 24, 2010</h2><p>And that lockout code can be entirely in the parent object. Sure, when the child is changed it will run its rules (which you want), including triggering the ChildChanged event (which you want), which would trigger your parent&#39;s implementation (which you don&#39;t want).</p>
+<p>But go ahead and let that happen - just at the top of the parent method check to see if you are already running this rule, and if so just exit - thus avoiding the infinite loop problem.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

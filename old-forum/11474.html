@@ -1,0 +1,14 @@
+<html><header><title>Object graph databinding example needed</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Object graph databinding example needed</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11474.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>andrewrajcoomar posted on Saturday, July 14, 2012</h2><p>Hi All,</p>
+<p>Does anyone have or know of a good example you can share&nbsp;of two way&nbsp;data binding with an object graph. Let&#39;s say I have a root with a child and the child has a collection. I want to bind the root to a form view, the child to a detailsview and the grandchild to a gridview all at design time.</p>
+<p>It is possible at all to have two way binding on nested objects done at design time?</p>
+<p>Are there any CSLA books with such an example? I have BO 2005 and 2008 and 2.1 handbook&nbsp;and have looked at the PT sample, but seem to be missing any examples if they are in there.</p>
+<p>Thanks for&nbsp;your help.</p>
+<p>Andrew</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>skagen00 replied on Saturday, July 14, 2012</h2><p>It&#39;s not clear what UI technology you&#39;re talking about.</p>
+<p>If you&#39;re talking MVVM with Silverlight/WPF...</p>
+<p>If say you have one grid with an itemsource of the parent items, one can have a VM property bound to the selected item of that parent items grid.&nbsp; The second grid (the children of the parents) can then be bound to that VM property &quot;dot&quot; the child collection property&nbsp;for its item source, and navigating through the parent items will cause the second grid (the details of the parent) to refresh.&nbsp; (You need to make sure your VM property for selected item is a dependency property or raises OnPropertyChanged to deal with the databinding notification).</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>andrewrajcoomar replied on Sunday, July 15, 2012</h2><p>Thanks for your response.</p>
+<p>I am using ASP.Net 3.5 framework, ASP.Net web application (UI) with AJAX, VS 2008 and CSLA 3.5. On the page I have a .net gridview control, detailsview and formview. I also have a CSLADatasource.</p>
+<p>There&#39;s no Silverlight or any of the newer MS stuff like MVC or MVVM. I am using all data aware controls for the presentation and want to take advantage of two way binding at design time so that I do not have to get/set properties at run time.</p>
+<p>I do have a&nbsp;fair idea of the implementation using the &quot;dot&quot; referencing and have been able to get a part of it to work. I am hoping to see a more concrete example of an implementation, if possible.</p>
+<p>Thanks.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

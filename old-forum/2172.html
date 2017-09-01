@@ -1,0 +1,96 @@
+<html><header><title>PTracker example with NHibernate - is David Dilworth still posting?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>PTracker example with NHibernate - is David Dilworth still posting?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/2172.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>JustinThirkell posted on Thursday, January 18, 2007</h2><P>Hi,</P>
+<P>I've read through all the forum messages about using NHibernate with CSLA and it looks as though David Dilworth was planning to&nbsp;set up a version of PTracker which used NHibernate for persistance.&nbsp;&nbsp;Is there such a thing available at all?&nbsp; </P>
+<P>I've had a look on CSLAContrib but nothing there and I'm not sure&nbsp;if David is still&nbsp;active in this space.&nbsp; A reference implementation would be really helpful if there's one around...</P>
+<P>Cheers</P>
+<P>Justin&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>DavidDilworth replied on Tuesday, January 23, 2007</h2><P>Hi Justin,</P>
+<P>Yes I am still around - mainly as a reader at the moment, rather than as a contributor.</P>
+<P>You know the story though - changing project requirements, project deadlines to meet and all that...</P>
+<P>Anyway, that's why we haven't been able to get an NHibernate version of the ProjectTracker example up - we've been too busy doing project work instead.</P>
+<P>However, we are still using a combination of CSLA and NHibernate&nbsp;and will continue to do so for the foreseeable future.</P>
+<P>I still believe that we can (one day) re-work the Project Tracker example in an NHibernate style - it's just not going to be today !</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>chiefy81 replied on Saturday, March 10, 2007</h2>For what its worth, I would love to see this when it is complete.&nbsp; I think this would be valuable to many CSLAer to see the synergy between nhibernate and csla.&nbsp; Keep us updated, thanks!<br><br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>DavidDilworth replied on Monday, March 12, 2007</h2><P>Thank you for your interest and I have some good news.</P>
+<P>We have completed an NHibernate version of the ProjectTracker example project.</P>
+<P>I am currently corresponding with Rocky to see if I can get it released as part of the CSLAContrib project on CodePlex.</P>
+<P>Watch this space!</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JustinThirkell replied on Monday, March 12, 2007</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Hey, wow, that&#8217;s great news!&nbsp;&nbsp;&nbsp; Thanks for
+that.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I&#8217;ve been working on few things myself &#8211;
+particularly around the testability of CSLA business objects.&nbsp; I&#8217;ve abstracted
+out all the persistence and using Windsor for IoC so I can inject the persistence
+mechanism (Mock, ADO.NET, Nhibernate, etc) at runtime.&nbsp; Works really
+nicely &#8211; you can run unit tests against business objects which don&#8217;t
+have to hit the db layer so you can test property setters/getters/biz logic without
+the distraction and performance overhead of actual db connections.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Anyway, excellent news.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Cheers<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>justin<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> DavidDilworth [mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Tuesday, 13 March 2007 1:06 a.m.<br>
+<b>To:</b> Justin Thirkell<br>
+<b>Subject:</b> Re: [CSLA .NET] PTracker example with NHibernate - is David
+Dilworth still posting?<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Thank you for your interest and I have some good news.<o:p></o:p></p>
+
+<p>We have completed an NHibernate version of the ProjectTracker example
+project.<o:p></o:p></p>
+
+<p>I am currently corresponding with Rocky to see if I can get it released as
+part of the CSLAContrib project on CodePlex.<o:p></o:p></p>
+
+<p>Watch this space!<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RichardETVS replied on Tuesday, March 13, 2007</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>JustinThirkell:</strong></div><div> <SPAN>I’ve been working on few things myself – particularly around the testability of CSLA business objects.&nbsp; I’ve abstracted out all the persistence and using Windsor for IoC so I can inject the persistence mechanism (Mock, ADO.NET, Nhibernate, etc) at runtime.&nbsp; Works really nicely – you can run unit tests against business objects which don’t have to hit the db layer so you can test property setters/getters/biz logic without the distraction and performance overhead of actual db connections.<o:p></o:p></SPAN>
+<DIV class=Section1>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></div></BLOCKQUOTE></P>
+<P class=MsoNormal>That seems really interesting! If you have an example to post, it would be great ;) !</P></DIV></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jason2000 replied on Saturday, March 17, 2007</h2><DIV class=ForumPostContentText id=ctl00_ctl01_bcr_ctl00___PostRepeater_ctl01_PostViewWrapper>
+<P>I've read some code snippets about using NHibernate with CSLA&nbsp;in&nbsp;this forum&nbsp;and&nbsp; I believe&nbsp;David has really set up a great example for it.&nbsp;&nbsp;I've had a look on CSLAContrib but nothing there and I'm expecting the example very much.</P>
+<P>Jason&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</P></DIV></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>DavidDilworth replied on Thursday, May 03, 2007</h2><P>I can (at last) announce that there is now a ProjectTracker.NHibernate example solution on the CSLAcontrib site on CodePlex.</P>
+<P>Can I suggest that all future CSLA / NHibernate questions (especially those related to the ProjectTracker.NHibernate solution) are posted on the CslaContrib forum.</P>
+<P>Thank you all for your patience&nbsp;and support.</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

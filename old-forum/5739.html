@@ -1,0 +1,82 @@
+<html><header><title>Parent / Child Undo</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Parent / Child Undo</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5739.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>k2so posted on Wednesday, November 05, 2008</h2>Hi,<br><br>using 3.5 and Winform for UI.<br><br>I passed in a Root object to the UI at the constructor. Then the Root.ChildCollections are bound to a bindingsource _<i>objectInFocusBindingSource</i>, ie.<br><br>ChildObject _objectInFocus = root.ChildCollections[id];<br>_objectInFocus.DataSource = _objectInFocus;<br><br>Controls are set to bind with the binding source.<br><br>But in RebindUI(), the call to _objectInFocus.CancelEdit() does not revert any changes made (not that I didn't bind it back to the UI; I actually set a Watch on the property I changed and the value did not revert after the call). And, I did all the RaiseListChangedEvents=false and unbinding before calling CancelEdit().<br><br>Any1 knows what may cause this?<br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, November 05, 2008</h2><P>It is critical to understand how windows forms data binding works here.</P>
+<P>The bindingsource itself will call BeginEdit() on the current object in the list. And if you change currency to another object, it calls EndEdit() on the current object, then BeginEdit() on the <EM>new current object</EM>. If you cause a cancel operation (user presses ESC in a grid, or you call CancelEdit() on the bindingsource) then the bindingsource will call CancelEdit() on the object, and will immediately call BeginEdit() on the object.</P>
+<P>When you unbind the list from the bindingsource, your code needs to get a reference to the current item (item with currency in the bindingsource), set the bindingsource's DataSource to null, then call CancelEdit() (or ApplyEdit()) on the <EM>was just current</EM> object by using the IEditableObject interface.</P>
+<P>None of this gets you to form-level undo btw. It only affects whatever object has currency in the bindingsource.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>k2so replied on Friday, November 07, 2008</h2>Thanks, Rocky!<br><br>But I have further checked on the object itself, by just the following code in the constructor <br><br>ChildObject _objectInFocus = root.ChildCollections[id];<br>_objectInFocus.Begin();<br>_objectInFocus.Name = "undo_this"; <br>_objectInFocus.CancelEdit(); <br><br><br>It is in fact, that <br>_objectInFocus.CancelEdit(); <br>does not even cancel any changes without any bindings .<br><br>Seems like smth wrong with the object... i am investigating now...<br>Any idea why that might be the case; something I might have missed when declaring the object???<br><br><br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, November 07, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I don&#8217;t know. I have unit tests that specifically test all
+the various n-level undo operations, as it is a sensitive area of the
+framework. So that is one area where (assuming the object is coded right) it
+really should work very reliably.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>And it is relatively difficult to do something wrong in the
+object itself &#8211; unless you mark the field as NotUndoable the BeginEdit()
+call should take a snapshot just fine.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> k2so
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Friday, November 07, 2008 11:51 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] Parent / Child Undo<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Thanks, Rocky!<br>
+<br>
+But I have further checked on the object itself, by just the following code in
+the constructor <br>
+<br>
+ChildObject _objectInFocus = root.ChildCollections[id];<br>
+_objectInFocus.Begin();<br>
+_objectInFocus.Name = &quot;undo_this&quot;; <br>
+_objectInFocus.CancelEdit(); <br>
+<br>
+<br>
+It is in fact, that <br>
+_objectInFocus.CancelEdit(); <br>
+does not even cancel any changes without any bindings .<br>
+<br>
+Seems like smth wrong with the object... i am investigating now...<br>
+Any idea why that might be the case; something I might have missed when
+declaring the object???<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>k2so replied on Friday, November 07, 2008</h2>Thanks. =]<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

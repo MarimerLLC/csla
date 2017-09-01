@@ -1,0 +1,31 @@
+<html><header><title>Why my DataAccess Class need to be marked as serializable?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Why my DataAccess Class need to be marked as serializable?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10117.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>ddredstar posted on Monday, February 28, 2011</h2><p>I seperate my data access in an Assemble( just ADO.NET things)</p>
+<p>when i call BeginSave like bellow</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p><span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;">
+<p>Client.BeginSave((s,o) =&gt; {</p>
+<font size="2" face="Consolas"><font size="2" face="Consolas">
+<p>&nbsp;</p>
+</font></font></span><font size="2" face="Consolas">
+<p>&nbsp;</p>
+</font></span></p>
+<p>&nbsp;</p>
+<p><span style="font-size:x-small;color:#0000ff;font-family:Consolas;"><span style="font-size:x-small;color:#0000ff;font-family:Consolas;"><span style="font-size:x-small;color:#0000ff;font-family:Consolas;">if</span></span></span><span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;">(o.Error==</span></span><span style="font-size:x-small;color:#0000ff;font-family:Consolas;"><span style="font-size:x-small;color:#0000ff;font-family:Consolas;"><span style="font-size:x-small;color:#0000ff;font-family:Consolas;">null</span></span></span></p>
+<p><span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;">)<font size="2" face="Consolas"><font size="2" face="Consolas">
+<p>Client = o.NewObject </p>
+</font></font></span><font size="2" face="Consolas">
+<p>&nbsp;</p>
+</font></span>
+<p>&nbsp;</p>
+</p>
+<p>&nbsp;</p>
+<p><span style="font-size:x-small;color:#0000ff;font-family:Consolas;"><span style="font-size:x-small;color:#0000ff;font-family:Consolas;"><span style="font-size:x-small;color:#0000ff;font-family:Consolas;">as</span></span></span><span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;"> MyProj.Business.Client.</span></span><span style="font-size:x-small;color:#2b91af;font-family:Consolas;"><span style="font-size:x-small;color:#2b91af;font-family:Consolas;"><span style="font-size:x-small;color:#2b91af;font-family:Consolas;">Client</span></span></span></p>
+<p><span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;">;</span></span></p>
+<p>&nbsp;</p>
+<p>there is an error happening says:</p>
+<p><strong>Type &#39;MyProj.DataAccess.Client.ClientDAO&#39; in Assembly &#39;MyProj.DataAccess, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null&#39; is not marked as serializable.</strong></p>
+<p>please help me, Thanks</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>ajj3085 replied on Monday, February 28, 2011</h2><p>Probably because your BO has a field where it is holding a reference to your ClientDAO object.&nbsp; I&#39;d remove the field, you normally wouldn&#39;t need to keep the DAOs around outside of the DP_xyz methods (those should also be the only places your code uses the ClientDAO object).</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ddredstar replied on Monday, February 28, 2011</h2><p>Yes, you are right, i have a field of ClientDAO in my BusinessObject.</p>
+<p>What if there are other reasons that i must keep my DataAccess in a seperate assemble, how to resolve it? Thanks!</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ddredstar replied on Monday, February 28, 2011</h2><p>I create the DataAccess instance in DP_xxx to resolve this. but i &#39;m not clear if this is the correct way.</p>
+<p>Thanks!</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Tuesday, March 01, 2011</h2><p>Sorry, I&#39;m not sure I understand what you&#39;re asking.&nbsp; Are you asking what if you had to have a reference to your DAO outside of the data portal methods? Or something else?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Wednesday, March 02, 2011</h2><p>The DAO object fields should have the NonSeralilaized and NotUndoable attributes so that it will not be part of serialization or undo operations. </p>
+<p>You may also look at the MEF samples for Repository and ObjectFactory data access in <a href="http://forums.lhotka.net/forums/AddPost.aspx/http:\\cslacontrib.codeplex.com">http:\\cslacontrib.codeplex.com</a> to show a possible way of injecting the data access classes into BO&#39;s.</p>
+<p>&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

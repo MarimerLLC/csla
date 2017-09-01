@@ -1,0 +1,18 @@
+<html><header><title>Question about Csla.ApplicationContext.User and WPF</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Question about Csla.ApplicationContext.User and WPF</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3982.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Peter Vervaet posted on Tuesday, December 04, 2007</h2><P class=MsoNormal><FONT face=Arial size=2><SPAN>Hi,<o:p></o:p></SPAN></FONT></P>
+<P class=MsoNormal><FONT face=Arial size=2><SPAN><o:p>&nbsp;</o:p></SPAN></FONT></P>
+<P class=MsoNormal><FONT face=Arial size=2><SPAN>I’m currently working on a WPF application where we use the CSLA (2.1.3) framework.<o:p></o:p></SPAN></FONT></P>
+<P class=MsoNormal><FONT face=Arial size=2><SPAN>I stumbled on a frustrating issue. From time to time our Csla.ApplicationContext.User object loses its information. (f.e. when we open a new window)<o:p></o:p></SPAN></FONT></P>
+<P class=MsoNormal><FONT face=Arial size=2><SPAN><o:p>&nbsp;</o:p></SPAN></FONT></P>
+<P class=MsoNormal><FONT face=Arial size=2><SPAN>I searched on the web and came across these pages:<o:p></o:p></SPAN></FONT></P>
+<P class=MsoNormal><FONT face=Arial size=2><SPAN><A title=http://forums.lhotka.net/forums/thread/19319.aspx HREF="/forums/thread/19319.aspx"><FONT color=#800080>http://forums.lhotka.net/forums/thread/19319.aspx</FONT></A><o:p></o:p></SPAN></FONT></P>
+<P class=MsoNormal><FONT face=Arial size=2><SPAN><A title=http://forums.lhotka.net/forums/thread/908.aspx HREF="/forums/thread/908.aspx"><FONT color=#800080>http://forums.lhotka.net/forums/thread/908.aspx</FONT></A><o:p></o:p></SPAN></FONT></P>
+<P class=MsoNormal><FONT face=Arial size=2><SPAN><o:p>&nbsp;</o:p></SPAN></FONT></P>
+<P class=MsoNormal><FONT face=Arial size=2><SPAN>It’s not very clear to me though. Is it possible to make sure we always set/get the User in the same thread?<o:p></o:p></SPAN></FONT></P>
+<P class=MsoNormal><FONT face=Arial size=2><SPAN>Does it require changes to the csla, or only to our custom code? And can we store our object in the clientContext?<o:p></o:p></SPAN></FONT></P>
+<P class=MsoNormal><FONT face=Arial size=2><SPAN><o:p>&nbsp;</o:p></SPAN></FONT></P>
+<P class=MsoNormal><FONT face=Arial size=2><SPAN>Does the new CSLA 3.0 support these issues in WPF?<o:p></o:p></SPAN></FONT></P>
+<P class=MsoNormal><FONT face=Arial size=2><SPAN><o:p>&nbsp;</o:p></SPAN></FONT></P>
+<P class=MsoNormal><FONT face=Arial size=2><SPAN>Thanks for your time!<o:p></o:p></SPAN></FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, December 04, 2007</h2><P>The solution (that I've come up with) requires a bit of code in the UI. You can look at the <EM>Using CSLA .NET 3.0</EM> ebook for details, and/or look at the code in MainForm in PTWpf (from 3.0.3) to see the technique.</P>
+<P><EM>However</EM>, this did require a change to CSLA .NET itself so the data portal raises an event so you can set the thread's principal at the right time. That change is in 3.0.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Tuesday, December 04, 2007</h2><P>CSLA 3.0 adds support for WPF. It recognizes that WPF runs multiple threads and stores the Prinicipal in a cache so it is always available to any thread. Check out the eBook for a lot of details.</P>
+<P>Joe</P>
+<P>&nbsp;</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

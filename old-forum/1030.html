@@ -1,0 +1,14 @@
+<html><header><title>What entity is responsilbe for an action?  A Design Question.</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>What entity is responsilbe for an action?  A Design Question.</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/1030.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>slabanum posted on Friday, August 25, 2006</h2><P>Hi,</P>
+<P>I have a project where I have a ValidationCase object which contains ExceptionEntries collection of ExceptionEntry.&nbsp; I start off with a ValiationCase being populated already and presented on a GUI and the client user works on it:</P>
+<OL>
+<LI>The client user does some manual checking on the ExceptionEntries, decides that they are okay and flags the ExceptionEntries&nbsp;as a Valid state.&nbsp; 
+<LI>The client user then does a ValidationCase.Save().&nbsp; This call goes to the RemotingHost and executes a DataPortal_Update.&nbsp; It is determined that all ExceptionEntries at this point are Valid so the ValidationCase is flagged as a "Valid" state.&nbsp; 
+<LI>Due to the ValidationCase being flagged into a Valid state, there is a side effect where another process is kicked-off, like when the ValidationCase's State is Valid then run the Batch Calculation Process.</LI></OL>
+<P>My question is since the&nbsp;saving of the ValidationCase to a Valid State has a side-effect of running another process, should this behavior of determining when another process is kicked-off the responsibility of the ValidationCase?</P>
+<P>I am kind of feeling that this is the ValidationCase's responsibility since it knows it's own state.&nbsp; But then again, this kicking-off of a new process is something like a workflow that can be orchestrated outside the ValidationCase, hence another object should be the one responsible for this workflow processing.</P>
+<P>If it is indeed another objects responsibility and not the ValidationCase, how then can I tie a client user clicking a save on the ValidationCase to this workflow process manager.&nbsp; Any patterns you can suggest?</P>
+<P>Please provide some thoughts.</P>
+<P>Thank you.</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

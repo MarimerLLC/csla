@@ -1,0 +1,76 @@
+<html><header><title>CSLA performance numbers</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA performance numbers</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/2564.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>CaymanIslandsCarpediem posted on Tuesday, March 20, 2007</h2><P>I've been using CSLA for a few years now and have been VERY happy with it.&nbsp; Recently we have decided to merge with another company which is in love with Nhibernate (I like it as well for apps that need cross DB support, otherwise I prefer just CSLA).&nbsp; Anyway, our soon to be joined companies are now planning a new app so I decided to look at performance in a number of different scenerios.&nbsp; I created a simple table with 16 columns and inserted a few hundred thousand rows into it.&nbsp; Below are my results.&nbsp; For the test, I timed how long it took to return 50,000 rows and bind that data to a grid.&nbsp; All of these tests are simple client/server scenerios (local data portal).&nbsp; Just thought I'd share the results in case anyone was interested.&nbsp; I looped through each method of access three times.&nbsp; Also, my CSLA objects were generated with the CodeSmith templates on CodePlex.</P>
+<P>One thing that really jumped out at me was the difference between the Read-Only CSLA test (Csla.ReadOnlyBase&lt;&gt;) and the Editable CSLA test (Csla.BusinessBase&lt;&gt;).&nbsp; Noticing that difference I then created another test called Editable No Rules CSLA which is exactly like the Editable CSLA test except I commented out the rules in AddBusinessRules (I'll&nbsp;include all the rules below so you can see they aren't much just 4 pretty simple rules).&nbsp;&nbsp;Anyway, the difference by just removing the rules was a bit suprising and will be the topic&nbsp;of another post I plan soon, but for now&nbsp;here are my results if anyone is interested.&nbsp;</P>
+<P>Duration listed below is in milliseconds.</P>
+<P>Dataset&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Duration:3171.9968<BR>Dataset&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Duration:3203.248<BR>Dataset&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Duration:3203.248<BR>Typed Dataset&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Duration:4062.656<BR>Typed Dataset&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Duration:3968.9024<BR>Typed Dataset&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Duration:3953.2768<BR>Read-Only CSLA&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Duration:656.2752<BR>Read-Only CSLA&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Duration:609.3984<BR>Read-Only CSLA&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Duration:625.024<BR>Editable CSLA&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Duration:1796.944<BR>Editable CSLA&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Duration:1765.6928<BR>Editable CSLA&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Duration:1796.944<BR>Editable No Rules CSLA&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Duration:703.152<BR>Editable No Rules CSLA&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Duration:640.6496<BR>Editable No Rules CSLA&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Duration:687.5264<BR>nHibernate&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Duration:22407.1104<BR>nHibernate&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Duration:21266.4416<BR>nHibernate&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Duration:19563.2512<BR>CSLA &amp; nHibernate&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Duration:23875.9168<BR>CSLA &amp; nHibernate&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Duration:22172.7264<BR>CSLA &amp; nHibernate&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Duration:21578.9536</P>
+<P>The Rules:</P>
+<P>ValidationRules.AddRule(CommonRules.StringMaxLength, new CommonRules.MaxLengthRuleArgs("Name", 200));<BR>ValidationRules.AddRule(CommonRules.StringMaxLength, new CommonRules.MaxLengthRuleArgs("Mic", 4));<BR>ValidationRules.AddRule(CommonRules.StringMaxLength, new CommonRules.MaxLengthRuleArgs("Opol", 4));<BR>ValidationRules.AddRule(CommonRules.StringRequired, "CreateDateString");</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, March 20, 2007</h2><P>What version of CSLA .NET? I'd expect 2.1+ to be <EM>substantially</EM> better than 2.0 for example, because AddBusinessRules() is called per-instance in 2.0, and only once per appdomain per type in 2.1+.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>CaymanIslandsCarpediem replied on Tuesday, March 20, 2007</h2>This test was done with CSLA 2.1.1 (C# version).</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, March 20, 2007</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>That&#8217;s interesting. So then I wonder where the overhead is
+occurring.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Do you interact with the properties of those objects, or just
+load them? And when you load them, is it by field, or by property? In other
+words, are you somehow causing the rules to be checked during the load process?
+Or perhaps calling ValidationRules.CheckRules() in the DP_Fetch() method?<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<div>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span>
+CaymanIslandsCarpediem [mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Tuesday, March 20, 2007 8:45 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] CSLA performance numbers<o:p></o:p></span></p>
+
+</div>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>This test was done with CSLA 2.1.1 (C# version).<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>CaymanIslandsCarpediem replied on Tuesday, March 20, 2007</h2>I don't interact with them, its loaded by field, but I think I do call ValidationRules.CheckRules() after the fetch ;-)&nbsp; The code is in the office so I'll verify tomorrow.&nbsp; I'm sure thats it though.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>CaymanIslandsCarpediem replied on Wednesday, March 21, 2007</h2>Just to verify, I was in fact calling ValidationRules.CheckRules on each item during the fetch.&nbsp; Once removing that call, editable CSLA and read-only CSLA numbers in the test were basically identical.&nbsp; So now I'm considering how I want to handle CheckRules ;-) (<A HREF="/forums/thread/13345.aspx">http://forums.lhotka.net/forums/thread/13345.aspx</A>)</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>DesNolan replied on Tuesday, March 20, 2007</h2>Wonderful, wonderful information. I've always wanted to have such
+figures. It was also great to note that even with the Rules in place
+CSLA was faster then any of the other methods. (Besides, how often do
+you need to load 50,000 editable objects, hey.)<br>
+<br>
+Thanks,<br>
+<br>
+Des Nolan<br>
+<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

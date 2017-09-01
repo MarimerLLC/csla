@@ -1,0 +1,15 @@
+<html><header><title>EditableRootLisBase, Infragistics Grid, and Canceling a New Row with the ESC key, Windows Forms</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>EditableRootLisBase, Infragistics Grid, and Canceling a New Row with the ESC key, Windows Forms</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5227.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>JimStone posted on Monday, August 11, 2008</h2><P>An interesting problem!</P>
+<P>I have a ERLB Class (CSLA 3.5.1) bound to an Infragistics grid (v 7.3) on a Windows Form.</P>
+<P>Canceling a new row (editable root in the ERLB)&nbsp;by pressing&nbsp;the ESC key twice removes all data added but does not remove the row from the grid&nbsp; (the root item from the ERLB).&nbsp; The row was added by entering data on the Add New row of the grid.</P>
+<P>I have no explicit calls to BeginEdit, EndEdit, or CancelEdit anywhere - all is left to binding to handle.</P>
+<P>To investigate, I did two things quickly.</P>
+<P>1) I replaced the Infragistics grid with a MS DataGridView --- it worked fine.</P>
+<P>2) I kept the Infragistics grid and replaced the RRLB object with a simple class inherited directly from System.ComponentModel.BindingList(of T) -- it worked fine.</P>
+<P>So ERLB object worked fine with the MS grid, but not the Infragistics grid; but the Infragistics grid worked fine with a simple BindingList object.</P>
+<P>Digging a little deeper, I found that the ERLB's CancelNew method (inherited from BindingList)&nbsp;WAS&nbsp;NOT firing when the ESC key was pressed twice on the Infragictics grid.&nbsp; But it was from the MS grid.</P>
+<P>But the Infragictics grid WAS firing the CancelNew method for the simple BindingList Object.</P>
+<P>As a workaround, I&nbsp;"manually" invoked&nbsp; ERLB.CancelNew(index) from the grid's AfterRowCancelUpdate event handler.&nbsp; This causes the new row to be removed properly, but does not answer the basic question of WHY.&nbsp; </P>
+<P>Time permitting later, I may step through the Infragistics source code for a root cause.</P>
+<P>If anyone has already experienced this and knows the real reason WHY, I would appreciate that info.</P>
+<P>Also, if you know of a problem with the workaround I chose, I would appreciate that input also.</P>
+<P>&nbsp;</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

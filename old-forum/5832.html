@@ -1,0 +1,74 @@
+<html><header><title>DataPortal.Delete = Instances of abstract classes cannot be created</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>DataPortal.Delete = Instances of abstract classes cannot be created</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5832.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>ScottFortner posted on Wednesday, November 19, 2008</h2><P>I'm getting this odd error message, and not sure how to handle.&nbsp; I've got the following class:</P>
+<P><FONT size=2>&lt;Serializable()&gt; _<BR></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Public</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>MustInherit</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Class</FONT></FONT><FONT size=2> RequirementBase<BR></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>&nbsp; &nbsp;Inherits</FONT></FONT><FONT size=2> BusinessBase(</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Of</FONT></FONT><FONT size=2> RequirementBase)<BR></FONT><FONT size=2>...<BR></FONT><FONT size=2><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Public</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Shared</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Sub</FONT></FONT><FONT size=2> DeleteRequirement(</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>ByVal</FONT></FONT><FONT size=2> Id </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>As</FONT></FONT><FONT size=2> System.Int32)<BR>&nbsp; </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>If</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Not</FONT></FONT><FONT size=2> CanDeleteRequirement() </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Then<BR></FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp; Throw</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>New</FONT></FONT><FONT size=2> System.Security.SecurityException(</FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>"User not authorized to delete Requirement"</FONT></FONT><FONT size=2>)<BR></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>&nbsp; End</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>If<BR></FONT></FONT><FONT size=2>&nbsp; DataPortal.Delete(</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>New</FONT></FONT><FONT size=2> Criteria(Id))<BR></FONT></FONT><FONT size=2><FONT color=#0000ff size=2><FONT color=#0000ff size=2>End</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Sub<BR>...<BR><FONT size=2>&lt;Transactional(TransactionalTypes.TransactionScope)&gt; _<BR></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Private</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Overloads</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Sub</FONT></FONT><FONT size=2> DataPortal_Delete(</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>ByVal</FONT></FONT><FONT size=2> p_oCriteria </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>As</FONT></FONT><FONT size=2> Criteria)<BR>&nbsp; DL_Requirement.DeleteById(p_oCriteria.Id)<BR></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>End</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Sub</FONT></FONT></FONT></FONT></FONT></P>
+<P><FONT size=2><FONT color=#0000ff size=2><FONT color=#0000ff size=2><FONT color=#0000ff size=2><FONT color=#0000ff size=2><FONT color=#000000>In code, when trying to call the following (Requirement inherits RequirementBase):</FONT></FONT></FONT></FONT></FONT></FONT></P><FONT size=2><FONT color=#0000ff size=2><FONT color=#0000ff size=2><FONT color=#0000ff size=2><FONT color=#0000ff size=2><FONT size=2>
+<P>Requirement.DeleteRequirement(</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>2</FONT></FONT><FONT size=2>)</FONT></P>
+<P><FONT size=2><FONT color=#000000>I get the following asp.net message:</FONT></FONT></P>
+<P><FONT size=2><EM>Instances of abstract classes cannot be created.</EM></FONT></P>
+<P><FONT size=2>on <FONT color=#ff0000>DataPortal.Delete(New Criteria(Id)) <FONT color=#000000>in the DeleteRequirement Shared Sub</FONT></FONT></FONT></P>
+<P><FONT size=2><FONT color=#ff0000><FONT color=#000000>Any ideas on why?&nbsp; I'm just trying to delete an object from the db, without loading the object first.&nbsp; Thanks</FONT><BR></P></FONT></FONT></FONT></FONT></FONT></FONT></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, November 19, 2008</h2><P>Notice that DataPortal_Delete() is an instance method, so the data portal must create an instance of your class before it can invoke that method. Since your class is abstract, it fails to create the instance.</P>
+<P>You need to either change the class to not be abstract, or change your Criteria class to specify a non-abstract subclass that can be created.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ScottFortner replied on Monday, November 24, 2008</h2><P>I've changed my DataPortal call to:</P><FONT size=2><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2></FONT></FONT>&nbsp;</P>
+<P><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Public</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Shared</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Sub</FONT></FONT><FONT size=2> DeleteCode(</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>ByVal</FONT></FONT><FONT size=2> p_iId </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>As</FONT></FONT><FONT size=2> Int64)</P></FONT>
+<P>&nbsp;&nbsp; DataPortal.Delete(</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>New</FONT></FONT><FONT size=2> SingleCriteria(</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Of</FONT></FONT><FONT size=2> Code, Int64)(p_iId))</FONT></P>
+<P><FONT size=2></FONT>&nbsp;</P>
+<P><FONT size=2>However,&nbsp; now I get:</FONT></P>
+<P><FONT size=2>"<FONT face=Arial>Invalid operation - delete not allowed"</FONT></FONT></P>
+<P><FONT size=2><FONT face=Arial>Is that for the same reason?&nbsp; Because it is using abstract classes? Thanks.</FONT></P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, November 24, 2008</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>That exception indicates that you don&#8217;t have a correct
+overload of the method for the data portal to call.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>The data portal will attempt to invoke<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Sub DataPortal_Delete(ByVal criteria As SingleCriteria(Of Code,
+Int64))<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>If it can&#8217;t find one of those, it falls back to <o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Sub DataPortal_Delete(ByVal criteria As Object)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>And BusinessBase provides a default of this second overload that
+throws an invalid operation exception. You must either implement a
+strongly-typed match for the method, or override the one that takes an Object
+parameter.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky</span><b><span><o:p></o:p></span></b></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Thursday, November 20, 2008</h2><P>I think you have your inheritance set up incorrectly.</P>
+<P>I'm getting this odd error message, and not sure how to handle.&nbsp; I've got the following class:</P>
+<P><FONT size=2>&lt;Serializable()&gt; _<BR></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Public</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>MustInherit</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Class</FONT></FONT><FONT size=2> RequirementBase<BR></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>&nbsp; &nbsp;Inherits</FONT></FONT><FONT size=2> BusinessBase(</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Of</FONT></FONT><FONT size=2> RequirementBase)<BR></FONT><FONT size=2>...<BR></FONT><FONT size=2><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Public</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Shared</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Sub</FONT></FONT><FONT size=2> DeleteRequirement(</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>ByVal</FONT></FONT><FONT size=2> Id </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>As</FONT></FONT><FONT size=2> System.Int32)<BR></FONT></FONT></P>
+<P><FONT size=2><FONT color=#0000ff size=2><FONT color=#0000ff size=2><FONT color=#0000ff size=2><FONT color=#0000ff size=2><FONT color=#000000>In code, when trying to call the following (Requirement inherits RequirementBase):</FONT></FONT></FONT></FONT></FONT></FONT></P><FONT size=2><FONT color=#0000ff size=2><FONT color=#0000ff size=2><FONT color=#0000ff size=2><FONT color=#0000ff size=2><FONT size=2>
+<P><FONT color=#000000>You should declare it like this: (note the use of the final Type in the Inherits.)</FONT></FONT></P></FONT></FONT></FONT></FONT></FONT>
+<P><FONT size=2>&lt;Serializable()&gt; _<BR><FONT color=#0000ff><FONT color=#0000ff>Public</FONT></FONT> <FONT color=#0000ff><FONT color=#0000ff>MustInherit</FONT></FONT> <FONT color=#0000ff><FONT color=#0000ff>Class</FONT></FONT> RequirementBase<BR><FONT color=#0000ff><FONT color=#0000ff>&nbsp; &nbsp;Inherits</FONT></FONT> BusinessBase(<FONT color=#0000ff><FONT color=#0000ff>Of</FONT></FONT> Requirement)<BR></FONT></P>
+<P>Joe</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

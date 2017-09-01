@@ -1,0 +1,23 @@
+<html><header><title>Unable to cast object of type 'System.Security.Principal.GenericIdentity'  ...</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Unable to cast object of type 'System.Security.Principal.GenericIdentity'  ...</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11256.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>tiago posted on Sunday, March 25, 2012</h2><p>On my Web project I get this message when I&#39;m not logged on.</p>
+<p>System.InvalidCastException: Unable to cast object of type &#39;System.Security.Principal.GenericIdentity&#39; to type &#39;Project.Business.Security.CustomIdentity&#39;.</p>
+<p>This won&#39;t happen in production as users can&#39;t do anything at all until they login.</p>
+<p>Strange enough, this doesn&#39;t happen when I fetch data, only when I try to update data.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>BruderKotlett replied on Tuesday, November 27, 2012</h2><p>Hi,</p>
+<p>is there any solution for this problem? I have the same problem.</p>
+<p>EDIT:</p>
+<p> I have a CustomIdentity where I set the&nbsp;AuthenticationType to Custom. In my App.config (Client) I&#39;ll have this&nbsp;&lt;add key=&quot;CslaAuthentication&quot; value=&quot;Custom&quot;/&gt; and in my server config I&#39;ll have this&nbsp;&lt;add key=&quot;CslaAuthentication&quot; value=&quot;Custom&quot;/&gt;.</p>
+<p>I use a CustomProxy which is also in the AppSettings section. Fetching data works, but no update. I saw in my CustomProxy, the DataPortalContext Principal is null. That&#39;s not right, or?</p>
+<p>My CustomPrincipal und my CustomIdentity are both serializable.</p>
+<p>[Serializable]</p>
+<p>public class CustomPrincipal : Csla.Security.CslaPrincipal</p>
+<p>-------</p>
+<p>
+<p>[Serializable]</p>
+<p>public class CustomIdentity : CslaIdentityBase&lt;CustomIdentity&gt;</p>
+</p>
+<p>Kind regards</p>
+<p>Kevin</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, November 27, 2012</h2><p>Are you using the ASP.NET Development Web Server? That server (code-named Cassini) has well-known limitations that block the use of custom principal types.</p>
+<p>Use IIS Express instead, as it is more robust overall, and doesn&#39;t have the same limitations as Cassini.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>BruderKotlett replied on Thursday, November 29, 2012</h2><p>I&#39;m using a WPF Application and WCF Services (with the DataPortalHost approach). </p>
+<p>In my custom Proxy class I figured out, that the IsServerRemote property was false during GetProxy call from CSLA. So I set it to true in the GetProxy Method (_isServerRemote = true;) and than I&#39;will have a valid Principal in the DataPortalContext. But in my ApplicationContext after logging in to my application, the Csla.ApplicationContext user was not authorized. So at least I changed the CustomProxy Update Method to this:</p>
+<p>return GetProxy(obj.GetType()).Update(obj, new Csla.Server.DataPortalContext(Csla.ApplicationContext.User, true));</p>
+<p>I&#39;m using the CustomProxy for 3 different things: Local usage (return LocalProxy), WCF Server A and WCF Server B, because some business objects need another wcf service url (Server B) to store data.</p>
+<p>This will work, but I don&#39;t know if this is the best way to do that.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

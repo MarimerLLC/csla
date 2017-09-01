@@ -1,0 +1,51 @@
+<html><header><title>CanWriteProperty and AuthorizationActions.EditObject</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CanWriteProperty and AuthorizationActions.EditObject</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10611.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>mdbzntcd posted on Friday, August 12, 2011</h2><p>I&#39;m trying to enable/disable fields in a data grid in WPF using the PropertyInfo control.&nbsp; A user may be able to edit some objects (parts or whole) in a list and not others depending on security groups and the status of the object.&nbsp; There are per-type rules for the security groups for control editing of the object as a whole.&nbsp; There per property methods to control editing depending upon the status.&nbsp; The problem is that the PropertyInfo.CanWrite property, and the CanWriteProperty method in general, do not check the per-type authorization rule first.&nbsp; Is there a reason for this?&nbsp; It seems like if the user doesn&#39;t have permission to edit the object, CanWriteProperty should be false for all properties as well.</p>
+<p>I&#39;m just starting to dig into the authorization rules, so I may some concepts confused.&nbsp; I have read most of the Using CSLA 4 Objects draft ebook about business rules, but I may need to go over it again.&nbsp; I&#39;m coding against CSLA 4.1 right now.</p>
+<p>Thanks for any help.</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Tuesday, August 16, 2011</h2><p>For performance reasons, exactly one authorization rule is allowed per type/property and per action.</p>
+<p>But rules can be arbitrarily complex. If you feel the need for your per-property rules to check the per-type rules before doing any more detailed authorization logic, then you can absolutely write a rule that does such a thing.</p>
+<p>Creating authorization rules isn&#39;t difficult. Just subclass AuthorizationRule and overrride the Execute method.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>mdbzntcd replied on Tuesday, August 16, 2011</h2><p>Thanks Rocky.</p>
+<p>I ended up creating an aggregate authorization rule that I can stuff any number of sub rules into.&nbsp; I also created a CanEditObject rule that I put in each aggregate rule for each property in addition to the other rule(s) for each property.&nbsp; We&#39;ll wait and see what kind of performance issues we have, but I&#39;m not sure of any other way around it with these checks being the requirements for the app.</p>
+<p>It still seems like CanWriteProperty should return false if the user doesn&#39;t have permission edit the object.&nbsp; That would at least save me from wiring it up to every property on every object in my library.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Tuesday, August 16, 2011</h2><p>You could even create a intermediate base class for BusinessBase that overrides CanWritePropery and checks for Authz on EditObject first and also add an overload to AddBusinessRules that adds a StopIfNotCanWrite rule to all properties that are not Child objects. </p>
+<p>That would short circuit (stop) rule processing on all properties when user is not allowed to change the property values and will even work with DataAnnotation rules that are always added with priority 0.</p>
+<pre style="font-family:Consolas;font-size:13px;color:black;background:none repeat scroll 0% 0% #fafafa;">&nbsp; <span style="color:blue;">public</span>&nbsp;<span style="color:blue;">class</span>&nbsp;<span style="color:#2b91af;">StopIfNotCanWrite</span>&nbsp;:&nbsp;<span style="color:#2b91af;">BusinessRule</span>
+&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp; <span style="color:blue;">public</span>&nbsp;StopIfNotCanWrite(<span style="color:#2baaaf;">IPropertyInfo</span>&nbsp;property) :&nbsp;<span style="color:blue;">base</span>(property) { }
+ 
+&nbsp;&nbsp;&nbsp; <span style="color:blue;">protected</span>&nbsp;<span style="color:blue;">override</span>&nbsp;<span style="color:blue;">void</span>&nbsp;Execute(<span style="color:#2b91af;">RuleContext</span>&nbsp;context)
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">var</span>&nbsp;business&nbsp;=&nbsp;context.Target&nbsp;<span style="color:blue;">as</span>&nbsp;<span style="color:#2b91af;">BusinessBase</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">if</span>&nbsp;(business&nbsp;==&nbsp;<span style="color:blue;">null</span>)&nbsp;<span style="color:blue;">return</span>;
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">if</span>&nbsp;(!business.CanWriteProperty(context.Rule.PrimaryProperty))
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;context.AddSuccessResult(<span style="color:blue;">true</span>);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;}<br />
+</pre>
+<p>Base class: </p>
+<pre style="font-family:Consolas;font-size:13px;color:black;background:none repeat scroll 0% 0% #fafafa;">&nbsp;&nbsp;[<span style="color:#2b91af;">Serializable</span>]
+&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">class</span>&nbsp;<span style="color:#2b91af;">MyBusinessBase</span>&lt;T&gt;&nbsp;:&nbsp;Csla.<span style="color:#2b91af;">BusinessBase</span>&lt;T&gt;&nbsp;<span style="color:blue;">where</span>&nbsp;T&nbsp;:&nbsp;<span style="color:#2b91af;">MyBusinessBase</span>&lt;T&gt;
+&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">override</span>&nbsp;<span style="color:blue;">bool</span>&nbsp;CanWriteProperty(<span style="color:#2baaaf;">IPropertyInfo</span>&nbsp;propertyName)
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">if</span>&nbsp;(!Csla.Rules.<span style="color:#2b91af;">BusinessRules</span>.HasPermission(<span style="color:#2baf9a;">AuthorizationActions</span>.EditObject,&nbsp;<span style="color:blue;">this</span>))
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">return</span>&nbsp;<span style="color:blue;">false</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">return</span>&nbsp;<span style="color:blue;">base</span>.CanWriteProperty(propertyName);
+&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">protected</span>&nbsp;<span style="color:blue;">override</span>&nbsp;<span style="color:blue;">void</span>&nbsp;AddBusinessRules()
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">base</span>.AddBusinessRules();
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">var</span>&nbsp;props&nbsp;=&nbsp;FieldManager.GetRegisteredProperties().
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Where((p&nbsp;=&gt;&nbsp;(p.RelationshipType&nbsp;&amp;&nbsp;<span style="color:#2baf9a;">RelationshipTypes</span>.Child)&nbsp;==&nbsp;0));
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">foreach</span>&nbsp;(<span style="color:blue;">var</span>&nbsp;propertyInfo&nbsp;<span style="color:blue;">in</span>&nbsp;props)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;BusinessRules.AddRule(<span style="color:blue;">new</span>&nbsp;<span style="color:#2b91af;">StopIfNotCanWrite</span>(propertyInfo)&nbsp;{&nbsp;Priority&nbsp;=&nbsp;-1});
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;}</pre>
+<p>And all you have to do in your app is make your business objects inherit from MyBusinessBase.</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>mdbzntcd replied on Wednesday, January 18, 2012</h2><p>Thanks Johnny.&nbsp; I did overwrite CanWriteProperty in our base class which allowed me to skip adding the rule for every property.</p>
+<p>I did still have a need for the aggregate authorization rule as well.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

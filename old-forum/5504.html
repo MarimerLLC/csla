@@ -1,0 +1,61 @@
+<html><header><title>Best UI component for CSLA?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Best UI component for CSLA?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5504.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>pandelaras posted on Wednesday, October 01, 2008</h2>Which UI component do you think, according to your experience, works best with CSLA objects? i took a quick look in this forum and found that devexpress seems to have some databinding problems (or used to have). I am currently evaluating Netadvantage, Devexpress and Telerik. I am interested in winforms and asp.net development.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tetranz replied on Wednesday, October 01, 2008</h2>I don't want to start a big discussion on grids but, for what it's worth, I'm happy with the Janus Grid for WinForms bound to CSLA collections. I'm using direct editing on the grid and it works very nicely. I'm also happily using the Telerik web grid but read-only so it's not much of a test.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Fintanv replied on Wednesday, October 01, 2008</h2><P>I have in the past, and am currently, happily using the Infragistics suite of controls.&nbsp; </P>
+<P>They have a lot of functionality, and hence a lot of complexity to navigate, but that is always the trade-off.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Wednesday, October 01, 2008</h2>I was happy with Winforms infragistics, never really needing their support.&nbsp; But I did for their asp.net controls, and basically was told that they don't support their controls if you use a third party data source (such as the CslaDataSource).&nbsp; So as long as you don't need support, they are fine.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rsbaker0 replied on Wednesday, October 01, 2008</h2><P>Another vote for DevExpress. </P>
+<P>Overall, the package has built-it (almost free in fact) support for things I haven't seen in other suites, especially the ability (optional) to allow end-user customization of screen layouts and toolbars.</P>
+<P>Another thing I like is that most of their container controls (grid, tree, toolbars, etc) can use any of the same editor controls you can use on a form for in place editing. So grids can contain drop-downs, check-boxes, radio buttons, calendar controls, etc. </P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>nermin replied on Wednesday, October 01, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Can I vote for the worst &#8211; Infragistics.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>The one I had luck with and worked great was Janus.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> rsbaker0
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Wednesday, October 01, 2008 1:40 PM<br>
+<b>To:</b> Nermin Dibek<br>
+<b>Subject:</b> Re: [CSLA .NET] Best UI component for CSLA?<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Another vote for DevExpress. <o:p></o:p></p>
+
+<p>Overall, the package has built-it (almost free in fact) support for things I
+haven't seen in other suites, especially the ability (optional) to allow
+end-user customization of screen layouts and toolbars.<o:p></o:p></p>
+
+<p>Another thing I like is that most of their container controls (grid, tree,
+toolbars, etc) can use any of the same editor controls you can use on a form
+for in place editing. So grids can contain drop-downs, check-boxes, radio
+buttons, calendar controls, etc. <o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>meierk replied on Wednesday, October 01, 2008</h2>Used DevExpress for Delphi and for .NET.&nbsp; Bit of a learning curve and sometimes asking for help can result in humiliation instead of a straight answer, but I still have to put my vote in for DevEx.&nbsp; I actually try all the others in your list every year or two just to see if there have been any life changing improvements.&nbsp; Been using DevEx componennts in production apps for approx. 9 years without issues.<br><br>Kevin<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>detritus replied on Wednesday, October 01, 2008</h2>I just started to use CSLA so don't know which one is best for it but used DevExpress for my previous project without any problem and they look great. Support was very fast and helpful (they usually provide sample code with the answer). The only problem I have with their components was the visual performance, the loading of the forms was much slower (compared to standart controls). Moreover, if I remember correctly, their edit controls (not the grid) supports deep binding (like binding textedit to Order.Customer.Name) without using any intermediate bindingsource.<br><br>Sinan<br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>pandelaras replied on Tuesday, October 07, 2008</h2>I decided to go with Devexpress, in the end. Their winforms grid is indeed nice and on average people seem happy using it.<br><br>I tested it on 2 simple cases so far. One ROL with 100.000 records and it worked fine with grouping and sorting being quite fast.That would probably would work more or less the same on all UI components.<br><br>Also databing to an Editable List was equally straightforward and the code worked the same as with the Projectracker sample.<br><br>I am interested in finding out how master detail grids will work (probably with different bindingsource)<br><br>If any1 wishes to share their exprerience with any other UI component and CSLA objects please do so. That would give CSLA users a more complete picture and probably help them take the best decision.<br><br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

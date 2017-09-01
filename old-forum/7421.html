@@ -1,0 +1,206 @@
+<html><header><title>Using a custom role provider with CSLA 3.6.2</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Using a custom role provider with CSLA 3.6.2</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/7421.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>GregJ posted on Friday, August 07, 2009</h2><P>I would like to use a custom InRoleProvider with CSLA. Specifically, I would like to use the static 'IsUserInRole()' method of the 'System.Web.Security.Roles' class, located in the 'System.Web.dll' assembly. </P>
+<P>In the latest documentation (bottom of page 363) it states that "If the application’s config file contains an entry for an IsInRoleProvider() method, that method is used instead of the default."</P>
+<P>The example given is:</P>
+<P><FONT face="Courier New" size=2>&lt;add key="CslaIsInRoleProvider" value="Namespace.Class.Method,Assembly" /&gt;</FONT></P>
+<P>This example doesn't seem to provide the correct format for the 'value' attribute. I tried the following and it didn't work.</P>
+<P><FONT face="Courier New" size=2>&lt;add key="CslaIsInRoleProvider" value="System.Web.Security.Roles.IsUserInRole,System.Web" /&gt;</FONT></P>
+<P>The above configuration produces the exception:</P>
+<P><FONT face="Courier New" size=2>System.IndexOutOfRangeException : Index was outside the bounds of the array.</FONT></P>
+<P>When I step through the code I find that there is a call to the static 'IsInRole()' method of 'AuthorizationRulesManager'. Within that method my configured provider value "System.Web.Security.Roles.IsUserInRole,System.Web" gets converted to an array by splitting on the comma, producing an array with a length of 2. On the following line the two array elements are joined back together with a call to <FONT face="Courier New" size=2>MethodCaller.GetType()</FONT>, which in turn delegates to <FONT face="Courier New" size=2>Type.GetType()</FONT>:</P>
+<P><FONT face="Courier New" size=2>string[] items = provider.Split(',');<BR>Type containingType = Csla.Reflection.MethodCaller.GetType(items[0] + "," + items[1]);<BR>mIsInRoleProvider = (IsInRoleProvider)(Delegate.CreateDelegate(typeof(IsInRoleProvider), containingType, items[2]));</FONT></P>
+<P>Two things seem to be wrong:</P>
+<P>First, the .NET Framework method <FONT face="Courier New" size=2>Type.GetType(typeName)</FONT> requires an assembly-qualified name for the <FONT face="Courier New" size=2>typeName</FONT> argument. An assembly-qualified name evidently has to be of the format:</P>
+<P><FONT face="Courier New" size=2>"System.Web.Security.Roles, System.Web, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"</FONT></P>
+<P>I wrote the following test code and found that only the first statement resulted in an object, the rest returned null:</P>
+<P><FONT face="Courier New" size=2>Type theType1 = Type.GetType("System.Web.Security.Roles, System.Web, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a");<BR>Type theType2 = Type.GetType("System.Web.Security.Roles, System.Web, Version=2.0.0.0, Culture=neutral");<BR>Type theType3 = Type.GetType("System.Web.Security.Roles, System.Web, Version=2.0.0.0");<BR>Type theType4 = Type.GetType("System.Web.Security.Roles, System.Web");</FONT></P>
+<P>Second, notice that in the previous code sample the call to <FONT face="Courier New" size=2>CreateDelegate()</FONT> expects a third element in the array created from the provider string. How can there be a third element if there is only one comma?</P>
+<P>Has anyone else tried this?</P>
+<P>Thanks,<BR>Greg</P>
+<P><BR>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Saturday, August 08, 2009</h2><P>Type.GetType() doesn't always require a fully qualified assembly name - it depends on the assembly you are trying to reference and where it is found.</P>
+<P>This feature was designed for you to create the method in your assembly. And if you don't sign you assembly, it can be found simply by name as long as it is in the assembly search path.</P>
+<P>However, System.Web is signed, and it is in the GAC, two things that make you use the longer assembly name.</P>
+<P>You could be right about the 3 parameters. I'm in the middle of in installing Win7 though, so I don't have easy access to the code. If it really is 3 parameters, it is probably something like:</P>
+<P>type, assembly, method</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>GregJ replied on Tuesday, August 18, 2009</h2><P>Okay. Well, then the next question would be how to specify a fully qualified assembly name (with its embedded commas)&nbsp;in the configuration file and have it "split" properly when read by the code. If that's not possible I guess the next tactic would be to write a custom&nbsp;un-strongnamed assembly as a wrapper that delegates to the method in the Framework assembly so it will be compatible with the configuration design.</P>
+<P>Actually, the whole reason I'm wanting to use the <FONT face="Courier New" size=2>System.Web.Security.Roles</FONT> class is that I ultimately want to use AzMan (Windows Authorization Manager) as my role management provider. Since CSLA doesn't provide direct support for AzMan I want to use ASP.NET role management with its role manager provider configured as AzMan.</P>
+<P>Like this:</P><FONT color=#0000ff><FONT color=#0000ff>
+<P><FONT face="Courier New" size=2>&lt;</FONT></FONT></FONT><FONT color=#a31515><FONT face="Courier New" color=#a31515 size=2>connectionStrings</FONT></FONT><FONT face="Courier New"><FONT size=2><FONT color=#0000ff><FONT color=#0000ff>&gt;<BR>&nbsp; &lt;</FONT></FONT><FONT color=#a31515><FONT color=#a31515>clear</FONT></FONT></FONT></FONT><FONT face="Courier New"><FONT size=2><FONT color=#0000ff><FONT color=#0000ff>/&gt;<BR>&nbsp; &lt;</FONT></FONT><FONT color=#a31515><FONT color=#a31515>add</FONT></FONT><FONT color=#0000ff><FONT color=#0000ff> </FONT></FONT><FONT color=#ff0000><FONT color=#ff0000>name</FONT></FONT><FONT color=#0000ff><FONT color=#0000ff>=</FONT></FONT>"<FONT color=#0000ff><FONT color=#0000ff>AzManPolicyStores</FONT></FONT>"<FONT color=#0000ff><FONT color=#0000ff> </FONT></FONT><FONT color=#ff0000><FONT color=#ff0000>connectionString</FONT></FONT><FONT color=#0000ff><FONT color=#0000ff>=</FONT></FONT>"<FONT color=#0000ff><FONT color=#0000ff>msxml://path/to/AzManPolicyStores.xml</FONT></FONT>"<FONT color=#0000ff><FONT color=#0000ff> </FONT></FONT><FONT color=#ff0000><FONT color=#ff0000>providerName</FONT></FONT><FONT color=#0000ff><FONT color=#0000ff>=</FONT></FONT>""</FONT></FONT><FONT face="Courier New"><FONT size=2><FONT color=#0000ff><FONT color=#0000ff> /&gt;<BR>&lt;/</FONT></FONT><FONT color=#a31515><FONT color=#a31515>connectionStrings</FONT></FONT></FONT></FONT><FONT face="Courier New"><FONT size=2><FONT color=#0000ff><FONT color=#0000ff>&gt;<BR><BR></FONT></FONT></FONT></FONT><FONT face="Courier New"><FONT size=2><FONT color=#0000ff><FONT color=#0000ff>&lt;</FONT></FONT><FONT color=#a31515><FONT color=#a31515>system.web</FONT></FONT></FONT></FONT><FONT face="Courier New"><FONT size=2><FONT color=#0000ff><FONT color=#0000ff>&gt;<BR>&nbsp; &lt;</FONT></FONT><FONT color=#a31515><FONT color=#a31515>roleManager</FONT></FONT><FONT color=#0000ff><FONT color=#0000ff> </FONT></FONT><FONT color=#ff0000><FONT color=#ff0000>enabled</FONT></FONT><FONT color=#0000ff><FONT color=#0000ff>=</FONT></FONT>"<FONT color=#0000ff><FONT color=#0000ff>true</FONT></FONT>"<FONT color=#0000ff><FONT color=#0000ff> </FONT></FONT><FONT color=#ff0000><FONT color=#ff0000>defaultProvider</FONT></FONT><FONT color=#0000ff><FONT color=#0000ff>=</FONT></FONT>"<FONT color=#0000ff><FONT color=#0000ff>AzManRoleProvider</FONT></FONT>"</FONT></FONT><FONT face="Courier New"><FONT size=2><FONT color=#0000ff><FONT color=#0000ff>&gt;<BR>&nbsp;&nbsp;&nbsp; &lt;</FONT></FONT><FONT color=#a31515><FONT color=#a31515>providers</FONT></FONT></FONT></FONT><FONT face="Courier New"><FONT size=2><FONT color=#0000ff><FONT color=#0000ff>&gt;<BR>&nbsp;&nbsp;&nbsp; &lt;</FONT></FONT><FONT color=#a31515><FONT color=#a31515>clear</FONT></FONT></FONT></FONT><FONT face="Courier New"><FONT size=2><FONT color=#0000ff><FONT color=#0000ff> /&gt;<BR>&nbsp;&nbsp;&nbsp; &lt;</FONT></FONT><FONT color=#a31515><FONT color=#a31515>add </FONT></FONT><FONT color=#ff0000><FONT color=#ff0000>name</FONT></FONT><FONT color=#0000ff><FONT color=#0000ff>=</FONT></FONT>"<FONT color=#0000ff><FONT color=#0000ff>AzManRoleProvider</FONT></FONT>"<FONT color=#0000ff><FONT color=#0000ff> </FONT></FONT><FONT color=#ff0000><FONT color=#ff0000>type</FONT></FONT><FONT color=#0000ff><FONT color=#0000ff>=</FONT></FONT>"<FONT color=#0000ff><FONT color=#0000ff>System.Web.Security.AuthorizationStoreRoleProvider, System.Web, Version=2.0.0.0, Culture=neutral, publicKeyToken=b03f5f7f11d50a3a</FONT></FONT>" <FONT color=#ff0000><FONT color=#ff0000>connectionStringName</FONT></FONT><FONT color=#0000ff><FONT color=#0000ff>=</FONT></FONT>"<FONT color=#0000ff><FONT color=#0000ff>AzManPolicyStores</FONT></FONT>"<FONT color=#0000ff><FONT color=#0000ff> </FONT></FONT><FONT color=#ff0000><FONT color=#ff0000>applicationName</FONT></FONT><FONT color=#0000ff><FONT color=#0000ff>=</FONT></FONT>"<FONT color=#0000ff><FONT color=#0000ff>MyApplication</FONT></FONT>"</FONT></FONT><FONT face="Courier New"><FONT size=2><FONT color=#0000ff><FONT color=#0000ff> /&gt;<BR>&nbsp;&nbsp;&nbsp; &lt;/</FONT></FONT><FONT color=#a31515><FONT color=#a31515>providers</FONT></FONT></FONT></FONT><FONT face="Courier New"><FONT size=2><FONT color=#0000ff><FONT color=#0000ff>&gt;<BR>&nbsp; &lt;/</FONT></FONT><FONT color=#a31515><FONT color=#a31515>roleManager</FONT></FONT></FONT></FONT><FONT size=2><FONT color=#0000ff><FONT color=#0000ff><FONT face="Courier New">&gt;<BR>&lt;/</FONT></FONT></FONT><FONT color=#a31515><FONT face="Courier New" color=#a31515>system.web</FONT></FONT></FONT><FONT color=#0000ff><FONT color=#0000ff><FONT face="Courier New" size=2>&gt;</FONT><FONT size=1><BR></P></FONT></FONT><FONT color=#0000ff><FONT color=#0000ff></FONT></FONT></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, August 31, 2009</h2><P>I see what you are saying, and that's an oversight.</P>
+<P>I made up this scheme for identifying a static method - there is no standard for this. In retrospect I probably should have forced you to add two elements to appSettings, one to identify the type, the other to identify the method name...</P>
+<P>I'll add this to the bug list, but I'm busy so it won't happen soon (and maybe not in the version of CSLA you are using depending on how old it is), so you might want to change the code in ApplicationSettings (or whereever) that parses this value to make it work in the meantime.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tiago replied on Sunday, November 08, 2009</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div>
+<P>I see what you are saying, and that's an oversight.</P>
+<P>I made up this scheme for identifying a static method - there is no standard for this. In retrospect I probably should have forced you to add two elements to appSettings, one to identify the type, the other to identify the method name...</P>
+<P>I'll add this to the bug list, but I'm busy so it won't happen soon (and maybe not in the version of CSLA you are using depending on how old it is), so you might want to change the code in ApplicationSettings (or whereever) that parses this value to make it work in the meantime.</P>
+<P></div></BLOCKQUOTE></P>
+<P>Hi Rocky,</P>
+<P>Is this issue solved?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>GregJ replied on Sunday, November 08, 2009</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>As far as I know, it is not resolved. However, I elected to implement
+a different solution rather than wait for a fix.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Thanks,<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>Greg<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> tiago
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Sunday, November 08, 2009 6:58 PM<br>
+<b>To:</b> Greg@GregsPad.com<br>
+<b>Subject:</b> Re: [CSLA .NET] Using a custom role provider with CSLA 3.6.2<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<blockquote>
+
+<div>
+
+<p class=MsoNormal><img id="_x0000_i1025" src="/Themes/default/images/icon-quote.gif"><strong>RockfordLhotka:</strong><o:p></o:p></p>
+
+</div>
+
+<div>
+
+<p>I see what you are saying, and that's an oversight.<o:p></o:p></p>
+
+<p>I made up this scheme for identifying a static method - there is no standard
+for this. In retrospect I probably should have forced you to add two elements
+to appSettings, one to identify the type, the other to identify the method
+name...<o:p></o:p></p>
+
+<p>I'll add this to the bug list, but I'm busy so it won't happen soon (and
+maybe not in the version of CSLA you are using depending on how old it is), so
+you might want to change the code in ApplicationSettings (or whereever) that
+parses this value to make it work in the meantime.<o:p></o:p></p>
+
+</div>
+
+</blockquote>
+
+<p>Hi Rocky,<o:p></o:p></p>
+
+<p>Is this issue solved?<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Sunday, November 08, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>This item is still in the backlog.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>You can fix it yourself btw &#8211; there&#8217;s just one method that does
+the parsing of the config string &#8211; change that to meet your needs and you are
+on your way.</span><o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>GregJ replied on Monday, November 09, 2009</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Thanks!<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Greg<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Rockford Lhotka
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Sunday, November 08, 2009 10:25 PM<br>
+<b>To:</b> Greg@GregsPad.com<br>
+<b>Subject:</b> RE: [CSLA .NET] Using a custom role provider with CSLA 3.6.2<o:p></o:p></span></p>
+
+</div>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal><span>This item is still in the backlog.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>You can fix it yourself btw &#8211; there&#8217;s just one method that does the
+parsing of the config string &#8211; change that to meet your needs and you are on
+your way.</span><o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

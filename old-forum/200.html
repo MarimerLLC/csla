@@ -1,0 +1,48 @@
+<html><header><title>validating textbox problems</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>validating textbox problems</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/200.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>gmclean posted on Thursday, May 25, 2006</h2>Hello,<br>
+<br>
+I have what I hope is a simple problem but I can not seem to get it figured out. <br>
+<br>
+I have a windows form bound to a business object. When I change data in
+a field then hit TAB or click out nothing happens unitl I TAB or click
+again. I created a validating event handler to see what was happening
+and the first time through the validating event fires but the SET of
+the property tied to the control does not fire. When I TAB the second
+time, validating fires, property SET fires and all proceeds as
+expected. This happens on all the controls in the form.<br>
+<br>
+I checked the value of e.Cancel in the validating event handler and it
+was false. I also created some controls that were not bound to the
+business object and they did not require two TABs to move out. This
+makes think the business object is the problem but since I never get to
+the SET of the property until the second TAB, I am not sure what is
+happening.<br>
+<br>
+Any suggestion?<br>
+<br>
+Thanks<br>
+<br>
+George<br>
+<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>phowatt replied on Thursday, May 25, 2006</h2>I usually suspect some event handler somewhere.&nbsp; We override the ProcessCmdKey method in our forms much to our disadvantage and often times we find our culprit there.&nbsp; On occasion it can be corruption.&nbsp; But when all else fails I start building a test form and try to add one control at a time from the bad form to isolate where the problem starts.&nbsp; I doubt that it is the business object but if you have a form with just one control bound to the business object property and nothing else is going on in your form and you still have the problem then it might be the business object.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Thursday, May 25, 2006</h2>It sounds to me like there is an exception occurring somewhere in the property setting for the BO.&nbsp; <br><br>For some reason, data binding swallows all exceptions and then seems to 'shut down'&nbsp; I've noticed this behavior in .Net 1.1, but not in .Net 2.0 (yet).<br><br>I'm not sure a good way to handle this; I ended up not using the databinding in .Net 1.1 because it was quicker listen for the Textchanged event and manually stick the data into the object.<br><br>Andy<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>gmclean replied on Wednesday, May 31, 2006</h2>I found my problem by disecting the form and BO as suggested.<br>
+<br>
+I was not declaring my private child objects correctly in the BO. <br>
+<br>
+I was declaring like this:<br>
+Private mUnits As UnitCollection<br>
+<br>
+instead of this:<br>
+Private mUnits As UnitCollection = UnitCollection.NewUnits()<br>
+<br>
+I guess some sort of exception was firing but I never saw it as you suggested.<br>
+<br>
+I suppose I should pay closer attention to the examples in the CSLA book!<br>
+<br>
+Thanks for the suggestions<br>
+<br>
+George<br>
+<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>fzamora replied on Wednesday, July 12, 2006</h2><P>I have been battling with the same problem for a few days now.&nbsp; It appears that the event will cause this problem only when I try to access the rules for the property for my business object in the event.&nbsp; Whenever I perform some other logic in my Validated event, it does not happen.&nbsp; I was initially handling the validating event so that I could stop navigation but I started using validated instead because I thought validating was causing the problem.&nbsp; If anyone solves this issue can you please post the fix.</P>
+<P>&nbsp;</P><FONT size=3><FONT size=3>
+<P></FONT><FONT color=#0000ff size=3>private</FONT><FONT size=3> </FONT><FONT color=#0000ff size=3>void</FONT><FONT size=3> txtFName_Validated(</FONT><FONT color=#0000ff size=3>object</FONT><FONT size=3> sender, System.EventArgs e){</P>
+<P>&nbsp;</P></FONT>
+<P>MAT.CSLA.BrokenRules.RulesCollection rules = _Employee.BrokenRulesCollection.RulesForProperty("FirstName");</P>
+<P>...</P></FONT>
+<P>}</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

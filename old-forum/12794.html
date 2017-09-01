@@ -1,0 +1,75 @@
+<html><header><title>SilverlightPortal and Https</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>SilverlightPortal and Https</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/12794.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>cjherasmus posted on Wednesday, November 05, 2014</h2><p>I need to run my existing SL csla application over https. I&#39;ve setup the configuration in the files attached but still getting &quot;The provided uri scheme &#39;https&#39; is invalid; expected &#39;http&#39;.</p>
+<p>Server is windows 2003 with IIS 6.0 which is configured correct for ssl.</p>
+<p>I&#39;ve gone through all related posts here but I think I need a pair of fresh eyes on this one please.</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Wednesday, November 05, 2014</h2><p>Hi,</p>
+<p>Have you tried to declare binding in code?</p>
+<pre style="font-family:Consolas;font-size:13;color:black;background:white;">Csla.<span style="color:#2b91af;">ApplicationContext</span>.DataPortalProxy&nbsp;=&nbsp;<span style="color:blue;">typeof</span>(Csla.DataPortalClient.<span style="color:#2b91af;">WcfProxy</span>).AssemblyQualifiedName;
+Csla.<span style="color:#2b91af;">ApplicationContext</span>.DataPortalUrlString&nbsp;=&nbsp;<span style="color:#a31515;">&quot;http://localhost:1993/WcfPortal.svc&quot;</span>;&nbsp;<span style="color:green;">//&nbsp;Set&nbsp;to&nbsp;your&nbsp;URL&nbsp;</span>
+Csla.DataPortalClient.<span style="color:#2b91af;">WcfProxy</span>.DefaultBinding&nbsp;=&nbsp;<span style="color:blue;">new</span>&nbsp;<span style="color:#2b91af;">BasicHttpBinding</span>(<span style="color:#2b91af;">BasicHttpSecurityMode</span>.Transport)
+{
+&nbsp;&nbsp;&nbsp;&nbsp;MaxBufferSize&nbsp;=&nbsp;<span style="color:blue;">int</span>.MaxValue,
+&nbsp;&nbsp;&nbsp;&nbsp;MaxReceivedMessageSize&nbsp;=&nbsp;<span style="color:blue;">int</span>.MaxValue,
+&nbsp;&nbsp;&nbsp;&nbsp;ReceiveTimeout&nbsp;=&nbsp;<span style="color:#2b91af;">TimeSpan</span>.FromMinutes(2),
+&nbsp;&nbsp;&nbsp;&nbsp;SendTimeout&nbsp;=&nbsp;<span style="color:#2b91af;">TimeSpan</span>.FromMinutes(2),
+&nbsp;&nbsp;&nbsp;&nbsp;OpenTimeout&nbsp;=&nbsp;<span style="color:#2b91af;">TimeSpan</span>.FromMinutes(2),
+};</pre></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>cjherasmus replied on Thursday, November 06, 2014</h2><p>Hi,</p>
+<p>I thought you couldn&#39;t assign to the Csla.ApplicationContext.DataPortalProxy, but I&#39;ll have a look at it.</p>
+<p>Thanks</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>cjherasmus replied on Thursday, November 06, 2014</h2><p>Yes, as expected, I can&#39;t assign a value to Csla.ApplicationContext.DataPortalProxy, it can only return a value.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>skagen00 replied on Thursday, November 06, 2014</h2><p>So please understand I think we have some extra redundancy here / I just am not entirely versed in this and once we got it fully working nicely, I was happy with it.&nbsp; Good luck. </p>
+<p>We use pretty close to the latest... in our app startup of the SL app:</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Csla.DataPortal.ProxyTypeName = typeof([ourprojectnamespace].Compression.CompressedProxy).AssemblyQualifiedName;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Thread.CurrentThread.CurrentUICulture = Thread.CurrentThread.CurrentCulture;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Csla.DataPortalClient.WcfProxy.DefaultEndPoint = WcfPortalEndPointName;</p>
+<p>WcfPortalEndPointName:</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /// &lt;summary&gt;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /// Gets the configuration name of the endpoint to use for the WCF portal.<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /// &lt;/summary&gt;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /// &lt;remarks&gt;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /// The name is a function of the host URL scheme (e.g. either http or https).<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /// &lt;/remarks&gt;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public static string WcfPortalEndPointName<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; get<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return (Application.Current.Host.Source.Scheme.Equals(&quot;http&quot;, StringComparison.InvariantCultureIgnoreCase) ? &quot;DefaultWcfPortalEndpoint&quot; : &quot;SecureWcfPortalEndpoint&quot;);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</p>
+<p>In our ServiceReferences.ClientConfig we have, within the serviceModel/bindings/basichttpbinding node:</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;binding name=&quot;DefaultWcfPortalBinding&quot; maxBufferSize=&quot;2147483647&quot;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; closeTimeout=&quot;00:05:00&quot;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; openTimeout=&quot;00:05:00&quot;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; receiveTimeout=&quot;00:10:00&quot;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; sendTimeout=&quot;00:05:00&quot;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; maxReceivedMessageSize=&quot;2147483647&quot;&gt;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;security mode=&quot;None&quot; /&gt;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/binding&gt;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;binding name=&quot;SecureWcfPortalBinding&quot; maxBufferSize=&quot;2147483647&quot;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; closeTimeout=&quot;00:05:00&quot;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; openTimeout=&quot;00:05:00&quot;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; receiveTimeout=&quot;00:10:00&quot;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; sendTimeout=&quot;00:05:00&quot;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; maxReceivedMessageSize=&quot;2147483647&quot;&gt;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;security mode=&quot;Transport&quot; /&gt;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/binding&gt;&nbsp;</p>
+<p>...and within the client node:</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;endpoint address=&quot;<a href="http://OURSITENAME/SL/CompressedWcfPortal.svc">http://OURSITENAME/SL/CompressedWcfPortal.svc</a>&quot;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; binding=&quot;basicHttpBinding&quot; bindingConfiguration=&quot;DefaultWcfPortalBinding&quot;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; contract=&quot;WcfPortal.IWcfPortal&quot; name=&quot;DefaultWcfPortalEndpoint&quot; /&gt;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;endpoint address=&quot;<a href="https://OURSITENAME/SL/CompressedWcfPortal.svc">https://OURSITENAME/SL/CompressedWcfPortal.svc</a>&quot;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; binding=&quot;basicHttpBinding&quot; bindingConfiguration=&quot;SecureWcfPortalBinding&quot;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; contract=&quot;WcfPortal.IWcfPortal&quot; name=&quot;SecureWcfPortalEndpoint&quot; /&gt;</p>
+<p>We do have in our override for GetProxy (we used a compressed proxy)&nbsp;the following:</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; protected override Csla.WcfPortal.WcfPortalClient GetProxy()<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (!String.IsNullOrEmpty(EndPoint))<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var serviceAddress = string.Format(&quot;{0}://{1}/sl/compressedwcfportal.svc&quot;, Application.Current.Host.Source.Scheme, Application.Current.Host.Source.Host);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var client = new Csla.WcfPortal.WcfPortalClient(EndPoint, serviceAddress);</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return client;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return base.GetProxy();<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>cjherasmus replied on Friday, November 07, 2014</h2><p>May I ask, what is the purpose/reason for including timeouts in the binding, either in the ClientConfig or in code as Jonny suggested?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Friday, November 07, 2014</h2><p>Hi,</p>
+<p>The default timeouts are:&nbsp;</p>
+<table>
+<tbody>
+<tr>
+<th>
+<p>Timeout Property</p>
+</th><th>
+<p>Default Value</p>
+</th>
+</tr>
+<tr>
+<td>
+<p><a href="http://msdn.microsoft.com/en-us/library/system.servicemodel.channels.binding.opentimeout(v=vs.110).aspx">OpenTimeout</a></p>
+</td>
+<td>
+<p>1 minute</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><a href="http://msdn.microsoft.com/en-us/library/system.servicemodel.channels.binding.closetimeout(v=vs.110).aspx">CloseTimeout</a></p>
+</td>
+<td>
+<p>1 minute</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><a href="http://msdn.microsoft.com/en-us/library/system.servicemodel.channels.binding.sendtimeout(v=vs.110).aspx">SendTimeout</a></p>
+</td>
+<td>
+<p>1 minute</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><a href="http://msdn.microsoft.com/en-us/library/system.servicemodel.channels.binding.receivetimeout(v=vs.110).aspx">ReceiveTimeout</a></p>
+</td>
+<td>
+<p>10 minutes</p>
+</td>
+</tr>
+</tbody>
+</table>
+<p>se: <a href="http://msdn.microsoft.com/en-us/library/system.servicemodel.channels.binding(v=vs.110).aspx">http://msdn.microsoft.com/en-us/library/system.servicemodel.channels.binding(v=vs.110).aspx </a>&nbsp;</p>
+<p>So you either accept that or you specify your preferred setting.&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>cjherasmus replied on Wednesday, November 12, 2014</h2><p>Everything working now - solution was a combination of JonnyBee&#39;s and Skagen00&#39;s suggestions. Have a look at https://www.dwa.gov.za/chart with username &quot;person&quot; and password &quot;Password?&quot; When opened click or double-click on &quot;Monitoring Programmes&quot;. Could be a bit slowish in IE.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

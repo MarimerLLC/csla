@@ -1,0 +1,218 @@
+<html><header><title>Simple case but a whole lot of overhead?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Simple case but a whole lot of overhead?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/7170.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>adamtuliper posted on Thursday, June 25, 2009</h2><P>I'll describe a simple case and see if people think its correct:&nbsp; I have a business object I want to know when its dirty and call into a DAL to update itself. In addition I'd like it to support collections. </P>
+<P>So.. I have two classes.. much like the LineItem and LineItems samples.</P><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>public</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>class</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>BillingProgram</FONT></FONT><FONT size=2> : </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>BusinessBase</FONT></FONT><FONT size=2>&lt;</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>BillingProgram</FONT></FONT><FONT size=2>&gt;&nbsp; </FONT></P>
+<P><FONT size=2>and</FONT></P><FONT size=2><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>public</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>class</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>BillingPrograms</FONT></FONT><FONT size=2> : </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>BusinessListBase</FONT></FONT><FONT size=2>&lt;</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>BillingPrograms</FONT></FONT><FONT size=2>, </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>BillingProgram</FONT></FONT><FONT size=2>&gt;</FONT></P>
+<P><FONT size=2>&nbsp;</P></FONT></FONT>
+<P>Properties are declared as such:</P><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>private</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>static</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>readonly</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>PropertyInfo</FONT></FONT><FONT size=2>&lt;</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>int</FONT></FONT><FONT size=2>&gt; _billingProgramIDProperty = RegisterProperty&lt;</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>int</FONT></FONT><FONT size=2>&gt;(p =&gt; p.BillingProgramID);</FONT></P>
+<P><FONT color=#0000ff size=2><FONT color=#0000ff size=2>public</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>int</FONT></FONT><FONT size=2> BillingProgramID {</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>get</FONT></FONT><FONT size=2> { </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>return</FONT></FONT><FONT size=2> ReadProperty(_billingProgramIDProperty); }}</P></FONT>
+<P>and set during loading in a similiar way:</P><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>private</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>void</FONT></FONT><FONT size=2> Fetch(</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>SafeDataReader</FONT></FONT><FONT size=2> dataReader)</P>
+<P>{</P></FONT><FONT size=2>
+<P>LoadProperty(_billingProgramIDProperty, dataReader.GetInt32(</FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>"BillingProgramID"</FONT></FONT><FONT size=2>));</P></FONT><FONT size=2><FONT size=2>
+<P>MarkOld();</P>
+<P>}</P></FONT></FONT>
+<P>Im using my own Fetch since a parent object is passing in a data reader and DataPortal_Fetch() just takes an object criteria.. this didn't seem to fit. Id be happy to hear a different recommendation though.</P>
+<P>Now from some top level method Im calling BillingProgram.Save();</P>
+<P>It literally takes a full second to do a simple db update with all the behind the scenes calls to DataPortal_Update.</P>
+<P>If I call the _exact_ same update code in another method and dont go through the portal - IE call it directly, it takes .02 seconds.</P>
+<P>I cant imagine there is this much 'stuff' going on behind the scenes that makes would make it usable for anyone with this sort of performance tradeoff, so I must assume Im doing something improperly.</P>
+<P>When I look at the SimpleNTier\BusinessLibrary sample though Im doing things in a similiar manner.</P>
+<P>So can you point me to a good example where the performance wouldn't be so dismal for a simple case as I mentioned above? IE An object loads itself from the db. An object Saves itself. An object is not required to be cloned upon every save in this case. Upon save simply call into a data access layer that uses a stored proc to update a record.</P>
+<P>Would the argument be "dont use the dataportal" then and write in our own marknew markold, etc and call our own update/delete/etc directly? If the argument is still use DataPortal,&nbsp;what should be 'disabled' for simple cases?</P>
+<P>When I look at the samples, and codesmith templates I see the same type usage that would see these&nbsp;performance hits at least that I can tell.</P>
+<P>//call my update directly results in a .02 second call</P><FONT size=2>
+<P>updateTimer.Start();</P>
+<P>billingProgram.Update();</P>
+<P>updateTimer.Stop();</P>
+<P>//call using DataPortal_Update results in full one second call using the exact same method as my Update() call.</P></FONT><FONT size=2>
+<P>saveTimer.Start();</P>
+<P>billingProgram.Save();</P>
+<P>saveTimer.Stop();</P></FONT>
+<P>&nbsp;</P>
+<P>Thoughts?</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, June 25, 2009</h2><P>BusinessListBase can't contain root objects. Unless you are somehow calling MarkAsChild() when creating the BusinessBase subclass you are going to have trouble.</P>
+<P>In current versions of CSLA .NET, you might consider using the child data portal concept to create the child objects (the BusinessBase subclass instances), because it will do the housekeeping for you.</P>
+<P>You can avoid the child data portal if you'd like - but in that case you must ensure that you do everything the child data portal would have done - calling MarkOld() and MarkAsChild().</P>
+<P>If you are calling DataPortal_XYZ methods on the <EM>items in the collection</EM> then you are absolutely doing something wrong. You are probably somehow calling the data portal directly from your parent object's DataPortal_Update(), which is entirely incorrect. Again, you should either do direct calls (replacing the normal behavior of BusinessListBase.Child_Update()) or you should use the child data portal, or better yet just use base.Child_Update() and let CSLA do the right thing.</P>
+<P>&nbsp;</P>
+<P>I recommend using the data portal in all cases. If you bypass the data portal, you lock yourself into a 1- or 2-tier deployment model with no hope of ever being 3- or 4-tier. However, if that is an acceptable price to pay, you certainly could bypass the data portal and do your own thing. In such a case, your data portal replacement will need to manage the metastate of all business objects exactly as the data portal does for you today, or the rest of the framework will become problematic.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>adamtuliper replied on Thursday, June 25, 2009</h2><P>hmm when I call Save on my item (BusinessBase) object it looks for the dataportal_update method automatically when I step through the code. </P>
+<P>So:</P>
+<P>1. I have two classses here. The collection and the item. These are or are not defined correctly as per above?</P>
+<P>I am calling save on the root invididual object individually because I have performed a LINQ operation on the BillingPrograms class to get certain BillingProgram items. Then I save each one after doing some work on it, since at that point I know I have to save it. This saves having to enumerate over the large collection again to determine what is/is not dirty. Yes it would be pretty quick to enumerate and call save on the collection, but its not necessary in this case since Im working with the object directly and transactional support is not required.</P>
+<P>2. I just profiled the method and the majority of the time (even including database updates) occur inside of SetProperty, is there a way to speed this up or is this incorrect:</P>
+<P>private static PropertyInfo&lt;ProcessingStatusType&gt; _processingStatusProperty = RegisterProperty(new PropertyInfo&lt;ProcessingStatusType&gt;("ProcessingStatus"));</P>
+<P><BR>public ProcessingStatusType ProcessingStatus<BR>{<BR>&nbsp;&nbsp;&nbsp; get{&nbsp;&nbsp;return ReadProperty(_processingStatusProperty);}</P>
+<P>&nbsp;&nbsp;&nbsp; set{&nbsp;&nbsp;SetProperty(_processingStatusProperty, value);}<BR>}</P>
+<P>&nbsp;</P>
+<P>Thanks!</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>adamtuliper replied on Thursday, June 25, 2009</h2><P>to be more specific in setproperty - </P>
+<P>the profiler says 99% of the time is here:</P>
+<P>&nbsp;</P><FONT face="Courier New" size=2><FONT face="Courier New" size=2>
+<P>[EditorBrowsable(EditorBrowsableState.Advanced)]</P>
+<P></FONT></FONT><FONT face="Courier New" color=#0000ff size=2><FONT face="Courier New" color=#0000ff size=2><FONT face="Courier New" color=#0000ff size=2>protected</FONT></FONT></FONT><FONT face="Courier New" size=2><FONT face="Courier New" size=2> </FONT></FONT><FONT face="Courier New" color=#0000ff size=2><FONT face="Courier New" color=#0000ff size=2><FONT face="Courier New" color=#0000ff size=2>virtual</FONT></FONT></FONT><FONT face="Courier New" size=2><FONT face="Courier New" size=2> </FONT></FONT><FONT face="Courier New" color=#0000ff size=2><FONT face="Courier New" color=#0000ff size=2><FONT face="Courier New" color=#0000ff size=2>void</FONT></FONT></FONT><FONT face="Courier New" size=2><FONT face="Courier New" size=2> OnPropertyChanged(</FONT></FONT><FONT face="Courier New" color=#0000ff size=2><FONT face="Courier New" color=#0000ff size=2><FONT face="Courier New" color=#0000ff size=2>string</FONT></FONT></FONT><FONT face="Courier New" size=2><FONT face="Courier New" size=2> propertyName)</P>
+<P>{</P>
+<P></FONT></FONT><FONT face="Courier New" color=#0000ff size=2><FONT face="Courier New" color=#0000ff size=2><FONT face="Courier New" color=#0000ff size=2>if</FONT></FONT></FONT><FONT face="Courier New" size=2><FONT face="Courier New" size=2> (_nonSerializableChangedHandlers != </FONT></FONT><FONT face="Courier New" color=#0000ff size=2><FONT face="Courier New" color=#0000ff size=2><FONT face="Courier New" color=#0000ff size=2>null</FONT></FONT></FONT><FONT face="Courier New" size=2><FONT face="Courier New" size=2>)</P>
+<P>_nonSerializableChangedHandlers.Invoke(</FONT></FONT><FONT face="Courier New" color=#0000ff size=2><FONT face="Courier New" color=#0000ff size=2><FONT face="Courier New" color=#0000ff size=2>this</FONT></FONT></FONT><FONT face="Courier New" size=2><FONT face="Courier New" size=2>,<FONT face="Courier New" size=2><FONT face="Courier New" size=2></P>
+<P></FONT></FONT><FONT face="Courier New" color=#0000ff size=2><FONT face="Courier New" color=#0000ff size=2><FONT face="Courier New" color=#0000ff size=2>new</FONT></FONT></FONT><FONT face="Courier New" size=2><FONT face="Courier New" size=2> PropertyChangedEventArgs(propertyName));</P></FONT></FONT></FONT></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, June 25, 2009</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>adamtuliper:</strong></div><div>
+<P>to be more specific in setproperty - </P>
+<P>the profiler says 99% of the time is here:</P>
+<P>&nbsp;</P><FONT size=2 face="Courier New"><FONT size=2 face="Courier New">
+<P></FONT></FONT><FONT color=#0000ff size=2 face="Courier New"><FONT color=#0000ff size=2 face="Courier New"><FONT color=#0000ff size=2 face="Courier New">protected</FONT></FONT></FONT><FONT size=2 face="Courier New"><FONT size=2 face="Courier New"> </FONT></FONT><FONT color=#0000ff size=2 face="Courier New"><FONT color=#0000ff size=2 face="Courier New"><FONT color=#0000ff size=2 face="Courier New">virtual</FONT></FONT></FONT><FONT size=2 face="Courier New"><FONT size=2 face="Courier New"> </FONT></FONT><FONT color=#0000ff size=2 face="Courier New"><FONT color=#0000ff size=2 face="Courier New"><FONT color=#0000ff size=2 face="Courier New">void</FONT></FONT></FONT><FONT size=2 face="Courier New"><FONT size=2 face="Courier New"> OnPropertyChanged(</FONT></FONT><FONT color=#0000ff size=2 face="Courier New"><FONT color=#0000ff size=2 face="Courier New"><FONT color=#0000ff size=2 face="Courier New">string</FONT></FONT></FONT><FONT size=2 face="Courier New"><FONT size=2 face="Courier New"> propertyName)</P>
+<P></FONT></FONT></div></BLOCKQUOTE></P>
+<P>There's not a lot we can do about this - that's .NET data binding plumbing. Take this away and your objects will quit working with any data binding infrastructure out there...</P>
+<P>You don't somehow have your objects bound to the UI when you are doing your save? That's one positive side-effect of the clone/serialization btw, because the clone is what's saved, it can't be accidentally left bound to the UI.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>adamtuliper replied on Thursday, June 25, 2009</h2><P>In this case Im doing no data binding, its a backend service.&nbsp; So I have an issue then with performance.. so I dont mind taking OnPropertyChanged away - the overhead is huge. Is there an easy way to disable this, or is it a case of just create separate 'pereformance optimized' code generation templates to do something like:</P>
+<P><FONT color=#0000ff size=2><FONT color=#0000ff size=2>set</FONT></FONT><FONT size=2> { LoadProperty(ValueProperty, </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>value</FONT></FONT><FONT size=2>); MarkDirty(); }</P></FONT>
+<P>oh wow. I just set </P><FONT color=#0000ff size=2><FONT color=#0000ff size=2>
+<P>&lt;</FONT></FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>add</FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2> </FONT></FONT><FONT color=#ff0000 size=2><FONT color=#ff0000 size=2>key</FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>=</FONT></FONT><FONT size=2>"</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>CslaAutoCloneOnUpdate</FONT></FONT><FONT size=2>"</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2> </FONT></FONT><FONT color=#ff0000 size=2><FONT color=#ff0000 size=2>value</FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>=</FONT></FONT><FONT size=2>"</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>false</FONT></FONT><FONT size=2>"</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>/&gt;</FONT></FONT></P>
+<P><FONT color=#0000ff size=2><FONT color=#0000ff size=2></FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2><FONT color=#000000>on the sample code you sent and it sped up by a factor of 300.</FONT></P></FONT></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, June 25, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I don&#8217;t know of any easy way to disable PropertyChanged notification.
+It is such an integral part of most applications this hasn&#8217;t come up.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I am left wondering, though, why it is so slow if you have no
+data binding involved. <i>Something</i> must be occurring when the event is
+raised or it would be much faster.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, June 25, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>One question I guess I have though.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>If this is a backend service, do you really need BusinessBase?
+Are you using the business/validation/authorization rules infrastructure?<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>CSLA gives you three main things (and lots of smaller things):<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoListParagraph><span><span>1.<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span></span><span>Mobile objects via the data portal (n-tier independence)<o:p></o:p></span></p>
+
+<p class=MsoListParagraph><span><span>2.<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span></span><span>Data binding support<o:p></o:p></span></p>
+
+<p class=MsoListParagraph><span><span>3.<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span></span><span>Business/validation/authorization rules engines<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>You can use the data portal without using the other two. What
+the BusinessListBase and BusinessBase classes provide are features 2 and 3, and
+a little integration with the data portal.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>But if you are doing some back-office processing engine, you
+might be better off using a subset of CSLA, or creating your own base classes
+for your stereotypes.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>If you read chapters 3-5 in the book you&#8217;ll see that I talk
+about stereotypes quite a lot. The CSLA base classes exist to support the
+existing set of stereotypes, and those stereotypes exist primarily to support
+the creation of interactive applications (applications with a UI).<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>If your application is primarily non-interactive batch
+processing, then you clearly have objects with other stereotypes, and it may
+make sense to consider creating your own base classes to efficiently support
+those stereotypes.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, June 26, 2009</h2><P>OK, there is a workable answer - at least to make the load process much faster.</P>
+<P>If you don't need the business/validation/authorization processing provided by BusinessBase when a property is changed, you can disable it by using BypassPropertyChecks. This is protected, but you can express it as a public member by adding this to your child class</P>
+<P>&nbsp;&nbsp;&nbsp; public new IDisposable BypassPropertyChecks<BR>&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; get<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return base.BypassPropertyChecks;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<BR>&nbsp;&nbsp;&nbsp; }</P>
+<P>Then in the loop where you update every value, do this</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Console.WriteLine("Change data loop");<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; start = DateTime.Now;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; foreach (var item in obj)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<BR><STRONG>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; using (item.BypassPropertyChecks)<BR></STRONG>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; item.Value = 1;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; end = DateTime.Now;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Console.WriteLine("Time elapsed {0}", end - start);</P>
+<P>This switches the behavior of SetProperty() to be that of LoadProperty(), so nearly all the functionality of BusinessBase is disabled.</P>
+<P>I still think that if your usage scenario/use case is some sort of batch processing, that BusinessBase may not be the correct base class, because it supports a stereotype of editing an object with the primary goal of making it easy to create a rich, interactive UI. If you have no UI, then it does a lot of things (and so does BusinessListBase) that are entirely unnecessary.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>adamtuliper replied on Wednesday, July 01, 2009</h2>thanks for the info. What recommendations might you have then rather than BusinessListBase in the case of service type applications?</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tmg4340 replied on Wednesday, July 01, 2009</h2><P><FONT size=2 face=Tahoma>I think Rocky's question centers more around why you're using CSLA classes in a batch-style back-end service at all.&nbsp; CSLA is primarily designed around providing objects that support user interaction in UI's.&nbsp; If you don't have any user interaction with your objects, then&nbsp;what's in CSLA that you do need?</FONT></P>
+<P><FONT size=2 face=Tahoma>If there&nbsp;is something in CSLA that is useful to you, then I think&nbsp;Rocky's other comment about creating your own base classes is potentially worth&nbsp;some investigation.&nbsp; Depending on what in CSLA you want to leverage, you may be able to implement some interfaces/inherit from some core base classes and create your own "BusinessBase".&nbsp; However, doing so may be a non-trivial exercise, so you'll need to have a good understanding of the inner workings of the framework, to know (a) whether you can build your own base classes, and (b) how long that will take.&nbsp; That should help to clarify a decision about whether CSLA is the right tool in this situation.</FONT></P>
+<P><FONT size=2 face=Tahoma>FWIW, don't let the sections that talk about utilizing CSLA as the "back end" to a web service&nbsp;fool you.&nbsp; It's a perfectly valid technique, but there are a limited number of situations where that really works effectively, and&nbsp;there's a fair amount of work involved in setting that up.</FONT></P>
+<P><FONT size=2 face=Tahoma>HTH</FONT></P>
+<P><FONT size=2 face=Tahoma>- Scott</FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, June 25, 2009</h2><P>Fwiw, here's a parent-child test console app useful for basic timings. Notice that it doesn't use a database, because that introduces uncertainty into the test because you end up timing ADO.NET, the database and various other elements that have nothing to do with CSLA.</P>
+<P>(there's enough uncertainy on a normal computer anyway - with anti-virus, Outlook, VS or other apps running you never know what's going to spike your CPU at any given time)</P>
+<P>You can change the collection's DataPortal_Fetch() method to use either the child data portal or a direct call, but there's very little performance difference between those options. Thank's to Ricky Supit's help a while back, the child data portal uses dynamic method invocation and so is nearly as fast as normal method calling.</P>
+<P>The foreach loop through all items is important, because it illustrates how long it takes .NET to do the iteration&nbsp;- it is a baseline test for comparison, and you can basically subtract this time from the other times to understand real timings for the fetch/save operations.</P>
+<P>Also note that none of the child objects are modified, so the save operation reveals the cost of looping through all child objects checking their IsDirty/IsNew/IsDeleted values to determine that no work should be done. So the difference in time between this and the baseline loop is mostly the cost of serialization.</P>
+<P>I picked 75,000 child items because (on my machine) that comes close to taking 2 seconds to fetch.</P>
+<P>using System;<BR>using System.Collections.Generic;<BR>using System.Linq;<BR>using System.Text;<BR>using Csla;</P>
+<P>namespace ConsoleApplication1<BR>{<BR>&nbsp; class Program<BR>&nbsp; {<BR>&nbsp;&nbsp;&nbsp; static void Main(string[] args)<BR>&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Console.WriteLine("Loading");<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var start = DateTime.Now;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var obj = DataPortal.Fetch&lt;ParentList&gt;();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var end = DateTime.Now;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Console.WriteLine("Time elapsed {0}", end - start);</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Console.WriteLine("Baseline loop");<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; start = DateTime.Now;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; foreach (var item in obj)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; int x = item.Value;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; end = DateTime.Now;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Console.WriteLine("Time elapsed {0}", end - start);</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Console.WriteLine("Saving");<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; start = DateTime.Now;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; obj = obj.Save();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; end = DateTime.Now;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Console.WriteLine("Time elapsed {0}", end - start);</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Console.ReadLine();<BR>&nbsp;&nbsp;&nbsp; }<BR>&nbsp; }</P>
+<P>&nbsp; [Serializable]<BR>&nbsp; public class ParentList : BusinessListBase&lt;ParentList, ChildItem&gt;<BR>&nbsp; {<BR>&nbsp;&nbsp;&nbsp; private void DataPortal_Fetch()<BR>&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var rlce = RaiseListChangedEvents;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; RaiseListChangedEvents = false;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; for (int i = 0; i &lt; 75000; i++)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // use child data portal<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Add(DataPortal.FetchChild&lt;ChildItem&gt;(i));</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // don't use child data portal<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; //Add(ChildItem.GetChildItem(i));<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; RaiseListChangedEvents = rlce;<BR>&nbsp;&nbsp;&nbsp; }</P>
+<P>&nbsp;&nbsp;&nbsp; protected override void DataPortal_Update()<BR>&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var rlce = RaiseListChangedEvents;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; RaiseListChangedEvents = false;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; base.Child_Update();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; RaiseListChangedEvents = rlce;<BR>&nbsp;&nbsp;&nbsp; }<BR>&nbsp; }</P>
+<P>&nbsp; [Serializable]<BR>&nbsp; public class ChildItem : BusinessBase&lt;ChildItem&gt;<BR>&nbsp; {<BR>&nbsp;&nbsp;&nbsp; private static PropertyInfo&lt;int&gt; ValueProperty = RegisterProperty&lt;int&gt;(c =&gt; c.Value);<BR>&nbsp;&nbsp;&nbsp; public int Value<BR>&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; get { return GetProperty(ValueProperty); }<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; set { SetProperty(ValueProperty, value); }<BR>&nbsp;&nbsp;&nbsp; }</P>
+<P>&nbsp;&nbsp;&nbsp; /// &lt;summary&gt;<BR>&nbsp;&nbsp;&nbsp; /// Factory that doesn't use child data portal<BR>&nbsp;&nbsp;&nbsp; /// &lt;/summary&gt;<BR>&nbsp;&nbsp;&nbsp; public static ChildItem GetChildItem(int value)<BR>&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var item = new ChildItem();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; item.LoadProperty(ValueProperty, value);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; item.MarkOld();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; item.MarkAsChild();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return item;<BR>&nbsp;&nbsp;&nbsp; }</P>
+<P>&nbsp;&nbsp;&nbsp; private void Child_Fetch(int value)<BR>&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; LoadProperty(ValueProperty, value);<BR>&nbsp;&nbsp;&nbsp; }</P>
+<P>&nbsp;&nbsp;&nbsp; private void Child_Insert()<BR>&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp; }</P>
+<P>&nbsp;&nbsp;&nbsp; private void Child_Update()<BR>&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp; }</P>
+<P>&nbsp;&nbsp;&nbsp; private void Child_DeleteSelf()<BR>&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp; }<BR>&nbsp; }<BR>}<BR>&nbsp; </P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>adamtuliper replied on Thursday, June 25, 2009</h2><P>The timing I did was over a bunch of records and I did both with including/excluding db call (Ie profiling over and over into the method call to reduce "other garbage time" to near zero.)</P>
+<P>&nbsp;</P>
+<P>Your example is good.. it shows exactly what I want to ask : )</P>
+<P>lets modify it slightly and change all the values and then save it.</P>
+<P>Add this to the bottom of your method and it will come to a screeching halt. It took my machine 41 seconds for the save as opposed to &lt;1 second in your cases. So whats wrong with this? </P>
+<P>If I change the call to SetProperty to LoadProperty I get .12 seconds instead of 41 seconds. So there is a definite performance issue in doing it this way. So how can one speed this up and still know 'its dirty' since LoadProperty doesnt do that.</P><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>foreach</FONT></FONT><FONT size=2> (</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>var</FONT></FONT><FONT size=2> item </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>in</FONT></FONT><FONT size=2> obj)</P>
+<P>{</P>
+<P>item.Value += 1;</P>
+<P>}</P>
+<P></FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>Console</FONT></FONT><FONT size=2>.WriteLine(</FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>"Saving"</FONT></FONT><FONT size=2>);</P>
+<P>start = </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>DateTime</FONT></FONT><FONT size=2>.Now;</P>
+<P>obj = obj.Save();</P>
+<P>end = </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>DateTime</FONT></FONT><FONT size=2>.Now;</P>
+<P>&nbsp;</P>
+<P></FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>Console</FONT></FONT><FONT size=2>.WriteLine(</FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>"Time elapsed {0}"</FONT></FONT><FONT size=2>, end - start);</P></FONT>
+<P>&nbsp;</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

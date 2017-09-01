@@ -1,0 +1,8 @@
+<html><header><title>How to securen a Connection String?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>How to securen a Connection String?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6485.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Raghav posted on Monday, February 23, 2009</h2>Dear friends,
+
+I am using VS 2008 (VB.NET) and CSLA.NET 3.6, at runtime i am changing my connection string and its working fine. My connection string is storing in app.config file so anybody can open and see my connection string. so I would like to secure my connection string which contains user name and password of SQL Server. Would anyone help me out!!!
+
+Thanks
+
+Raghav</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rsbaker0 replied on Monday, February 23, 2009</h2><P>The connection strings section of the app.config file supports encryption. </P>
+<P>You call the ProtectSection() method on the SectionInformation member of the settings section.</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

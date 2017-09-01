@@ -1,0 +1,17 @@
+<html><header><title>Could not load Identity Object</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Could not load Identity Object</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11420.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>st3fanus posted on Thursday, June 21, 2012</h2><p>Hi all.. </p>
+<p>I&#39;m creating silverlight app, i used Silverlight 5 and Csla 4.3.12</p>
+<p>I defined : 4 project </p>
+<p>1. Solasoft.Lib.Net </p>
+<p>2. Solasoft.Lib.Sl</p>
+<p>3. Solasoft.Sl</p>
+<p>4. Solaosft.WebHost</p>
+<p>I have an Error , Like :</p>
+<p><br />Object type or assembly could not be loaded<br />Stefanus Cipto: (Solasoft.Lib.Net.UserAccount.SolasoftIdentity, Solasoft.Lib, Version=1.0.0.0, Culture=neutral, PublicKeyToke=null)</p>
+<p>Is there any something I&#39;m missing ??</p>
+<p>Thanks a lot</p>
+<p>&nbsp;</p>
+<p>Stefanus</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Thursday, June 21, 2012</h2><p>Hi,</p>
+<p>SolaSoft.Lib.XYZ &nbsp; (whether NET or SL)&nbsp; must have the same assembly name and namespace definition. </p>
+<p>IE: <br />SolaSoft.Lib.Net&nbsp;&nbsp;&nbsp; ==&gt; solasoft.lib.dll&nbsp;&nbsp;&nbsp; (for .NET)<br />SolaSoft.Lib.Sl&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ==&gt; solasoft.lib.dll&nbsp;&nbsp;&nbsp;(for SL)</p>
+<p>I would also recommend to use SolaSoft.Lib as the &quot;Default namespace&quot; for both projects. </p>
+<p>This is required in order to make cross-platform serialization work. </p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

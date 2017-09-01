@@ -1,0 +1,104 @@
+<html><header><title>DataPortal calls fail when Logged into Silverlight Application</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>DataPortal calls fail when Logged into Silverlight Application</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9774.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>ksirmons posted on Tuesday, November 16, 2010</h2><p>Howdy,</p>
+<p>We are building a Silverlight 4 application and are using WCF for the dataportal. &nbsp;It is configured to use SSL with Transport security on a basicHttpBinding endpoint.</p>
+<p>After launching the application, the client contacts the server through the DP to pull a list of values to populate a drop down list. &nbsp;The user selects an item and then provides their username / password to logon.</p>
+<p>The credentials are passed through the DP again and validated against the database, passing back a CslaIdentity that is assigned to the CslaPrincipal. &nbsp;</p>
+<p>After this, the Csla.ApplicationContext.User is correct inside Silverlight.</p>
+<p>If I then perform another DP fetch, the request fails.</p>
+<p>Here is the e.ErrorInfo:</p>
+<p>
+<p style="padding-left:30px;"><span>		</span>-<span>		</span>e.Error<span>	</span>{System.MissingMethodException: No parameterless constructor defined for this object.</p>
+<p style="padding-left:30px;">&nbsp;&nbsp; at System.RuntimeTypeHandle.CreateInstance(RuntimeType type, Boolean publicOnly, Boolean noCheck, Boolean&amp; canBeCached, RuntimeMethodHandleInternal&amp; ctor, Boolean&amp; bNeedSecurityCheck)</p>
+<p style="padding-left:30px;">&nbsp;&nbsp; at System.RuntimeType.CreateInstanceSlow(Boolean publicOnly, Boolean skipCheckThis, Boolean fillCache)</p>
+<p style="padding-left:30px;">&nbsp;&nbsp; at System.RuntimeType.CreateInstanceDefaultCtor(Boolean publicOnly, Boolean skipVisibilityChecks, Boolean skipCheckThis, Boolean fillCache)</p>
+<p style="padding-left:30px;">&nbsp;&nbsp; at System.Activator.CreateInstance(Type type, Boolean nonPublic)</p>
+<p style="padding-left:30px;">&nbsp;&nbsp; at Csla.Serialization.Mobile.MobileFormatter.DeserializeAsDTO(List`1 deserialized)</p>
+<p style="padding-left:30px;">&nbsp;&nbsp; at Csla.Serialization.Mobile.MobileFormatter.Deserialize(List`1 data)</p>
+<p style="padding-left:30px;">&nbsp;&nbsp; at Csla.Serialization.Mobile.MobileFormatter.Deserialize(XmlReader reader)</p>
+<p style="padding-left:30px;">&nbsp;&nbsp; at Csla.Serialization.Mobile.MobileFormatter.Deserialize(Stream serializationStream)</p>
+<p style="padding-left:30px;">&nbsp;&nbsp; at Csla.Serialization.Mobile.MobileFormatter.Deserialize(Byte[] data)</p>
+<p style="padding-left:30px;">&nbsp;&nbsp; at Csla.Server.Hosts.Silverlight.WcfPortal.Fetch(CriteriaRequest request)</p>
+<p style="padding-left:30px;">}<span>	</span>System.Exception {Csla.DataPortalException}</p>
+<p style="padding-left:30px;">-<span>		</span>[Csla.DataPortalException]<span>	</span>{System.MissingMethodException: No parameterless constructor defined for this object.</p>
+<p style="padding-left:30px;">&nbsp;&nbsp; at System.RuntimeTypeHandle.CreateInstance(RuntimeType type, Boolean publicOnly, Boolean noCheck, Boolean&amp; canBeCached, RuntimeMethodHandleInternal&amp; ctor, Boolean&amp; bNeedSecurityCheck)</p>
+<p style="padding-left:30px;">&nbsp;&nbsp; at System.RuntimeType.CreateInstanceSlow(Boolean publicOnly, Boolean skipCheckThis, Boolean fillCache)</p>
+<p style="padding-left:30px;">&nbsp;&nbsp; at System.RuntimeType.CreateInstanceDefaultCtor(Boolean publicOnly, Boolean skipVisibilityChecks, Boolean skipCheckThis, Boolean fillCache)</p>
+<p style="padding-left:30px;">&nbsp;&nbsp; at System.Activator.CreateInstance(Type type, Boolean nonPublic)</p>
+<p style="padding-left:30px;">&nbsp;&nbsp; at Csla.Serialization.Mobile.MobileFormatter.DeserializeAsDTO(List`1 deserialized)</p>
+<p style="padding-left:30px;">&nbsp;&nbsp; at Csla.Serialization.Mobile.MobileFormatter.Deserialize(List`1 data)</p>
+<p style="padding-left:30px;">&nbsp;&nbsp; at Csla.Serialization.Mobile.MobileFormatter.Deserialize(XmlReader reader)</p>
+<p style="padding-left:30px;">&nbsp;&nbsp; at Csla.Serialization.Mobile.MobileFormatter.Deserialize(Stream serializationStream)</p>
+<p style="padding-left:30px;">&nbsp;&nbsp; at Csla.Serialization.Mobile.MobileFormatter.Deserialize(Byte[] data)</p>
+<p style="padding-left:30px;">&nbsp;&nbsp; at Csla.Server.Hosts.Silverlight.WcfPortal.Fetch(CriteriaRequest request)</p>
+<p style="padding-left:30px;">}<span>	</span>Csla.DataPortalException</p>
+<p style="padding-left:30px;">-<span>		</span>base<span>	</span>{System.MissingMethodException: No parameterless constructor defined for this object.</p>
+<p style="padding-left:30px;">&nbsp;&nbsp; at System.RuntimeTypeHandle.CreateInstance(RuntimeType type, Boolean publicOnly, Boolean noCheck, Boolean&amp; canBeCached, RuntimeMethodHandleInternal&amp; ctor, Boolean&amp; bNeedSecurityCheck)</p>
+<p style="padding-left:30px;">&nbsp;&nbsp; at System.RuntimeType.CreateInstanceSlow(Boolean publicOnly, Boolean skipCheckThis, Boolean fillCache)</p>
+<p style="padding-left:30px;">&nbsp;&nbsp; at System.RuntimeType.CreateInstanceDefaultCtor(Boolean publicOnly, Boolean skipVisibilityChecks, Boolean skipCheckThis, Boolean fillCache)</p>
+<p style="padding-left:30px;">&nbsp;&nbsp; at System.Activator.CreateInstance(Type type, Boolean nonPublic)</p>
+<p style="padding-left:30px;">&nbsp;&nbsp; at Csla.Serialization.Mobile.MobileFormatter.DeserializeAsDTO(List`1 deserialized)</p>
+<p style="padding-left:30px;">&nbsp;&nbsp; at Csla.Serialization.Mobile.MobileFormatter.Deserialize(List`1 data)</p>
+<p style="padding-left:30px;">&nbsp;&nbsp; at Csla.Serialization.Mobile.MobileFormatter.Deserialize(XmlReader reader)</p>
+<p style="padding-left:30px;">&nbsp;&nbsp; at Csla.Serialization.Mobile.MobileFormatter.Deserialize(Stream serializationStream)</p>
+<p style="padding-left:30px;">&nbsp;&nbsp; at Csla.Serialization.Mobile.MobileFormatter.Deserialize(Byte[] data)</p>
+<p style="padding-left:30px;">&nbsp;&nbsp; at Csla.Server.Hosts.Silverlight.WcfPortal.Fetch(CriteriaRequest request)</p>
+<p style="padding-left:30px;">}<span>	</span>System.Exception {Csla.DataPortalException}</p>
+<p style="padding-left:30px;">+<span>		</span>Data<span>	</span>{System.Collections.ListDictionaryInternal}<span>	</span>System.Collections.IDictionary {System.Collections.ListDictionaryInternal}</p>
+<p style="padding-left:30px;">+<span>		</span>InnerException<span>	</span>null<span>	</span>System.Exception</p>
+<p style="padding-left:30px;"><span>		</span>Message<span>	</span>&quot;No parameterless constructor defined for this object.&quot;<span>	</span>string</p>
+<p style="padding-left:30px;"><span>		</span>StackTrace<span>	</span>null<span>	</span>string</p>
+<p style="padding-left:30px;">+<span>		</span>Static members<span>		</span></p>
+<p style="padding-left:30px;">+<span>		</span>Non-Public members<span>		</span></p>
+<p style="padding-left:30px;">-<span>		</span>ErrorInfo<span>	</span>{Csla.WcfPortal.WcfErrorInfo}<span>	</span>Csla.WcfPortal.WcfErrorInfo</p>
+<p style="padding-left:30px;"><span>		</span>ExceptionTypeName<span>	</span>&quot;System.MissingMethodException&quot;<span>	</span>string</p>
+<p style="padding-left:30px;"><span>		</span>InnerError<span>	</span>null<span>	</span>Csla.WcfPortal.WcfErrorInfo</p>
+<p style="padding-left:30px;"><span>		</span>Message<span>	</span>&quot;No parameterless constructor defined for this object.&quot;<span>	</span>string</p>
+<p style="padding-left:30px;"><span>		</span>Source<span>	</span>&quot;mscorlib&quot;<span>	</span>string</p>
+<p style="padding-left:30px;"><span>		</span>StackTrace<span>	</span>&quot; &nbsp; at System.RuntimeTypeHandle.CreateInstance(RuntimeType type, Boolean publicOnly, Boolean noCheck, Boolean&amp; canBeCached, RuntimeMethodHandleInternal&amp; ctor, Boolean&amp; bNeedSecurityCheck)\r\n &nbsp; at System.RuntimeType.CreateInstanceSlow(Boolean publicOnly, Boolean skipCheckThis, Boolean fillCache)\r\n &nbsp; at System.RuntimeType.CreateInstanceDefaultCtor(Boolean publicOnly, Boolean skipVisibilityChecks, Boolean skipCheckThis, Boolean fillCache)\r\n &nbsp; at System.Activator.CreateInstance(Type type, Boolean nonPublic)\r\n &nbsp; at Csla.Serialization.Mobile.MobileFormatter.DeserializeAsDTO(List`1 deserialized)\r\n &nbsp; at Csla.Serialization.Mobile.MobileFormatter.Deserialize(List`1 data)\r\n &nbsp; at Csla.Serialization.Mobile.MobileFormatter.Deserialize(XmlReader reader)\r\n &nbsp; at Csla.Serialization.Mobile.MobileFormatter.Deserialize(Stream serializationStream)\r\n &nbsp; at Csla.Serialization.Mobile.MobileFormatter.Deserialize(Byte[] data)\r\n &nbsp; at Csla.Server.Hosts.Silverlight.WcfPortal.Fetch(CriteriaRequest request)&quot;<span>	</span>string</p>
+<p style="padding-left:30px;"><span>		</span>TargetSiteName<span>	</span>&quot;CreateInstance&quot;<span>	</span>string</p>
+<p style="padding-left:30px;">+<span>		</span>Non-Public members<span>		</span></p>
+<p style="padding-left:30px;">+<span>		</span>Data<span>	</span>{System.Collections.ListDictionaryInternal}<span>	</span>System.Collections.IDictionary {System.Collections.ListDictionaryInternal}</p>
+<p style="padding-left:30px;">+<span>		</span>InnerException<span>	</span>null<span>	</span>System.Exception</p>
+<p style="padding-left:30px;"><span>		</span>Message<span>	</span>&quot;No parameterless constructor defined for this object.&quot;<span>	</span>string</p>
+<p style="padding-left:30px;"><span>		</span>StackTrace<span>	</span>null<span>	</span>string</p>
+<p style="padding-left:30px;">+<span>		</span>Static members<span>		</span></p>
+<p style="padding-left:30px;">+<span>		</span>Non-Public members<span>		</span></p>
+</p>
+<p>&nbsp;</p>
+<p>If I do not login to the Application and stick with Silverlight&#39;s default Csla.Security.UnauthenticatedPrincipal, all of the calls work correctly.</p>
+<p>My web.config:</p>
+<p>
+<pre style="color:#000000;font-family:Arial, Helvetica, sans-serif;font-size:12px;padding-left:30px;margin:8px;"><span>&nbsp;&lt;</span><span>appSettings</span><span>&gt;</span><br /><span>&nbsp;&nbsp;&nbsp;&nbsp;&lt;</span><span>add</span><span>&nbsp;</span><span>key</span><span>=</span>&quot;<span>CslaAuthentication</span>&quot;<span>&nbsp;</span><span>value</span><span>=</span>&quot;<span>Csla</span>&quot;<span>&nbsp;/&gt;</span><br /><span>&nbsp;&nbsp;&lt;/</span><span>appSettings</span><span>&gt;</span></pre>
+<pre style="color:#000000;font-family:Arial, Helvetica, sans-serif;font-size:12px;padding-left:30px;margin:8px;"><span><pre><span>&nbsp;&nbsp;&lt;</span><span>system.serviceModel</span><span>&gt;</span><br /><span>&nbsp;&nbsp;&nbsp;&nbsp;&lt;</span><span>protocolMapping</span><span>&gt;</span><br /><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;</span><span>add</span><span>&nbsp;</span><span>scheme</span><span>=</span>&quot;<span>https</span>&quot;<span>&nbsp;</span><span>binding</span><span>=</span>&quot;<span>basicHttpBinding</span>&quot;<span>&nbsp;</span><span>bindingConfiguration</span><span>=</span>&quot;<span>https</span>&quot;<span>&nbsp;/&gt;</span><br /><span>&nbsp;&nbsp;&nbsp;&nbsp;&lt;/</span><span>protocolMapping</span><span>&gt;</span><br /><span>&nbsp;&nbsp;&nbsp;&nbsp;</span><br /><span>&nbsp;&nbsp;&nbsp;&nbsp;&lt;</span><span>bindings&gt;</span><br /><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;</span><span>basicHttpBinding</span><span>&gt;</span><br /><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;</span><span>binding</span><span>&nbsp;</span><span>name</span><span>=</span>&quot;<span>https</span>&quot;<span>&gt;</span><br /><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;</span><span>security</span><span>&nbsp;</span><span>mode</span><span>=</span>&quot;<span>Transport</span>&quot;<span>&gt;</span><br /><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;</span><span>transport</span><span>&nbsp;</span><span>clientCredentialType</span><span>=</span>&quot;<span>None</span>&quot;<span>&nbsp;/&gt;</span><br /><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/</span><span>security</span><span>&gt;</span><br /><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/</span><span>binding</span><span>&gt;</span><br /><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/</span><span>basicHttpBinding</span><span>&gt;</span><br /><span>&nbsp;&nbsp;&nbsp;&nbsp;&lt;/</span><span>bindings</span><span>&gt;</span><br /><span>&nbsp;&nbsp;&nbsp;&nbsp;&lt;</span><span>serviceHostingEnvironment</span><span>&nbsp;</span><span>aspNetCompatibilityEnabled</span><span>=</span>&quot;<span>true</span>&quot;<br /><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span>multipleSiteBindingsEnabled</span><span>=</span>&quot;<span>true</span>&quot;<span>&nbsp;/&gt;</span><br /><span>&nbsp;&nbsp;&nbsp;&nbsp;&lt;</span><span>behaviors</span><span>&gt;</span><br /><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;</span><span>serviceBehaviors</span><span>&gt;</span><br /><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;</span><span>behavior</span><span>&gt;</span><br /><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;</span><span>serviceMetadata</span><span>&nbsp;</span><span>httpsGetEnabled</span><span>=</span>&quot;<span>True</span>&quot;<span>/&gt;</span><br /><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;</span><span>serviceDebug</span><span>&nbsp;</span><span>includeExceptionDetailInFaults</span><span>=</span>&quot;<span>true</span>&quot;<span>&nbsp;/&gt;</span><br /><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/</span><span>behavior&gt;</span><br /><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/</span><span>serviceBehaviors</span><span>&gt;</span><br /><span>&nbsp;&nbsp;&nbsp;&nbsp;&lt;/</span><span>behaviors&gt;</span><br /><span>&nbsp;&nbsp;&lt;/</span><span>system.serviceModel</span><span>&gt;</span></pre>
+</span></pre>
+</p>
+<p>My ServiceReferences.ClientConfig:</p>
+<p style="padding-left:30px;">
+<pre><span>&nbsp;&lt;</span><span>appSettings</span><span>&gt;</span><br /><span>&nbsp;&nbsp;&nbsp;&nbsp;&lt;</span><span>add</span><span>&nbsp;</span><span>key</span><span>=</span>&quot;<span>CslaAuthentication</span>&quot;<span>&nbsp;</span><span>value</span><span>=</span>&quot;<span>Csla</span>&quot;<span>&nbsp;/&gt;</span><br /><span>&nbsp;&nbsp;&lt;/</span><span>appSettings</span><span>&gt;</span><br /><span>&nbsp;&nbsp;&lt;</span><span>system.serviceModel</span><span>&gt;</span><br /><span>&nbsp;&nbsp;&nbsp;&nbsp;&lt;</span><span>client</span><span>&gt;</span><br /><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;</span><span>endpoint</span><span>&nbsp;</span><span>address</span><span>=</span>&quot;<span>https://localhost:1406/WcfPortal.svc</span>&quot;<br /><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span>binding</span><span>=</span>&quot;<span>basicHttpBinding</span>&quot;<br /><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span>bindingConfiguration</span><span>=</span>&quot;<span>BasicHttpBinding_IWcfPortal</span>&quot;<br /><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span>contract</span><span>=</span>&quot;<span>WcfPortal.IWcfPortal</span>&quot;<br /><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span>name</span><span>=</span>&quot;<span>BasicHttpBinding_IWcfPortal</span>&quot;<span>/&gt;</span><br /><span>&nbsp;&nbsp;&nbsp;</span><span>&nbsp;&nbsp;&nbsp;&nbsp;&lt;/</span><span>client</span><span>&gt;</span><br /><span>&nbsp;&nbsp;&nbsp;&nbsp;</span><br /><span>&nbsp;&nbsp;&nbsp;&nbsp;&lt;</span><span>bindings</span><span>&gt;</span><br /><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;</span><span>basicHttpBinding</span><span>&gt;</span><br /><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;</span><span>binding</span><span>&nbsp;</span><span>name</span><span>=</span>&quot;<span>BasicHttpBinding_IWcfPortal</span>&quot;<br /><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span>maxBufferSize</span><span>=</span>&quot;<span>65536</span>&quot;<br /><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span>maxReceivedMessageSize</span><span>=</span>&quot;<span>65536</span>&quot;<br /><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span>receiveTimeout</span><span>=</span>&quot;<span>10</span>&quot;<br /><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span>sendTimeout</span><span>=</span>&quot;<span>10</span>&quot;<span>&gt;</span><br /><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;</span><span>security</span><span>&nbsp;</span><span>mode</span><span>=</span>&quot;<span>Transport</span>&quot;<span>&gt;</span><br /><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/</span><span>security</span><span>&gt;</span><br /><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/</span><span>binding</span><span>&gt;</span><br /><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/</span><span>basicHttpBinding&gt;</span><br /><span>&nbsp;&nbsp;&nbsp;&nbsp;&lt;/</span><span>bindings</span><span>&gt;</span><br /><span>&nbsp;&nbsp;&nbsp;</span><br /><span>&nbsp;&nbsp;&lt;/</span><span>system.serviceModel</span><span>&gt;</span></pre>
+</p>
+<p>&nbsp;</p>
+<p>I can see breakpoints are being hit in the Global.asax.cs class as the DataPortal requests are sent to the server, but I do not see the Csla.ApplicationContext.User being changed from System.Security.Principal.GenericPrincipal at either&nbsp;Application_BeginRequest or&nbsp;Application_AuthenticateRequest.</p>
+<p>IIS 7 (Windows 7) is configured to require SSL, and the binding for the port is https.</p>
+<p>Am I missing something in the security model that is causing the block of my dataportal requests?</p>
+<p>&nbsp;</p>
+<p>Thank you,</p>
+<p>Keith</p>
+<p>&nbsp;</p>
+<p style="padding-left:30px;">
+<pre><span>&nbsp;</span></pre>
+</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Tuesday, November 16, 2010</h2><p><div style='padding-left: 50px;background-color:silver'><b>Keith Sirmons<br></b>
+<p><span></span>-<span> </span>e.Error<span> </span>{System.MissingMethodException: No parameterless constructor defined for this object.</p>
+<div style="CLEAR:both;"></div>
+</div></p>
+<p>This is the key&nbsp;- you have some object flowing through the data portal that doesn&#39;t have a public default constructor. Possibilities include</p>
+<ol>
+<li>Your criteria object</li>
+<li>Your business object</li>
+<li>Your principal object</li>
+<li>Your identity object</li>
+<li>Any object you&#39;ve put into ApplicationContext.ClientContext or .GlobalContext</li>
+</ol>
+<p>Given that your initial request works, my bet is on the principal class.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ksirmons replied on Wednesday, November 17, 2010</h2><p>Perfect. &nbsp;</p>
+<p>I checked the BOs several times for this requirement, just missed the Principal object. &nbsp;I had used CSLA at the 2.0 version a few years ago and it was just habit to make all constructors private.</p>
+<p>&nbsp;</p>
+<p>Thank you,</p>
+<p>Keith</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

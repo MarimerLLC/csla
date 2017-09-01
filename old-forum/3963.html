@@ -1,0 +1,53 @@
+<html><header><title>Problem displaying datetime column in DataGridView using SmartDate </title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Problem displaying datetime column in DataGridView using SmartDate </h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3963.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>yimiqi posted on Thursday, November 29, 2007</h2><P>I have a read only list BO "AList" that contains a list of read only BO "A".&nbsp; </P>
+<P>A DataGridView DGV is binded to AList via databindingsource.</P>
+<P>In object A, there is a property prop is SmartDate.&nbsp; Its value is set by a datetime field in the database.</P>
+<P>My problem is when AList is displayed in the DGV, the smartdate column only displays the date, but no time even if the datetime field in the database contains both date and time, and the SmartDate property in object A also has time in its date, DBValue fields, but not in its Text filed.</P>
+<P>The datetime column in the DGV is a DataGridViewTextColumn, how can I display both date and time for a SmartDate in a DataGridViewTextColumn?</P>
+<P>Thank you in advance.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, November 29, 2007</h2><P>Is the property itself a SmartDate? SmartDate is designed to be the backing field type for a property, and the property itself should be of type string.</P>
+<P>In that case you can control the format string used to convert the SmartDate value to a text representation - there's a property on SmartDate that let's you set the .NET format string.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>yimiqi replied on Friday, November 30, 2007</h2><P>Thanks for your reply Rocky.&nbsp; You brought up another&nbsp;question about usage of SamrtDate I was going to ask here.</P>
+<P>To answer your question first, I have the property itself a SmartDate now, but it was a type of string (SmartDate.text).&nbsp; I changed the property type from a string to a SmartDate.&nbsp; The reason being was to be able to sort on the datetime column in the DataGridView correctly, meaning sort the date column&nbsp;as date not as string.&nbsp; </P>
+<P>e.g. Sort as String:&nbsp; 1/2/07,11/2/07,2/3/06</P>
+<P>vs. Sort as date:&nbsp; 2/3/06, 1/2/07,11/2/07</P>
+<P>My another question would be how you handle the sorting on the date column if it is treated as a string?</P>
+<P>I solved that sorting problem by changing the property from type of string to a SmartDate.&nbsp; In either case though, I'm only able to display the date, not the time.</P>
+<P>Back to my original time not showing up in the DataGridView problem. What I don't understand is my BO's property is a type of SmartDate, and&nbsp;the SmartDate&nbsp;has its Date, DBValue property with both date and time value, only the text property of the SmartDate only contains the date part, why the time just doesn't show in the DataGridView for the column that is binded to my BO's SmartDate property?&nbsp;</P>
+<P>I hope I stated the problem clear.</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, November 30, 2007</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>The Text property of a SmartDate is formatted according to the
+FormatString property value. The default format string is &#8220;d&#8221;,
+which is date-only. As I said in my previous post, you need to change the
+format string in the SmartDate to a different format to get the time too.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>If you need to sort on the column, you may choose to expose both
+the SmartDate and a string property. Display the string property, and sort on
+the SmartDate property.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>yimiqi replied on Friday, November 30, 2007</h2><P>Got it, even though I'm a bit slow...</P>
+<P>Rocky, thank you so much for your helps!</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

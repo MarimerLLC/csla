@@ -1,0 +1,42 @@
+<html><header><title>Database name not found in config file...strange</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Database name not found in config file...strange</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11156.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Pavel posted on Tuesday, February 14, 2012</h2><p>I got this message(&quot;Database name not found in config file&quot;)...but not for all objects.</p>
+<p>As soon as I use code locally from VS there is no problem.</p>
+<p>I start my ServerHost on IIS and start receiving this message...but not for all objects.</p>
+<p>Of course, this line </p>
+<p>&nbsp;Using ctx = ConnectionManager(Of SqlConnection).GetManager(&quot;MyConnectionString&quot;)</p>
+<p>is exactly the same for every object.</p>
+<p>What could be the reason for such a behaviour?</p>
+<p>Thanks,</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, February 14, 2012</h2><p>That is strange behavior, I have no idea.</p>
+<p>The GetManager method just uses the standard System.Configuration types to get the connection string - the code in GetManager isn&#39;t fancy by any means.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Tuesday, February 14, 2012</h2><p>Are you using N-Tier (remote DataPortal)? <br />What is the UI?  </p>
+<p>If NTier - it could be that some code is executing on the client (without connection string in app.config) by using [RunLocal] attribute on DataPortal XYZ methods.</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>Pavel replied on Tuesday, February 14, 2012</h2><p>It&#39;s 3 tier setup with remote DataPortal on IIS, as described in the last books. Connecting string is only on remote host in web config file.</p>
+<p>UI is WinForms.....I can see that it happened with a new added classes only.</p>
+<p>Any cashe problems on IIS?///but I did not changed the name of the ConnectionString.</p>
+<p>...I am testing it on the same computer using localhost.</p>
+<p>It happened on Update/Add methods of a new added object.</p>
+<p>&nbsp;</p>
+<p>[RunLocal]...Should I remove it and run it on server side?</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Tuesday, February 14, 2012</h2><p>Hi,</p>
+<p>If your new classes has [RunLocal] attribute on DataPortal_XYZ then they will be called on the <b>client </b>- not sent to the server and that would explain why your code is not able to get the ConnectionString. </p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Pavel replied on Tuesday, February 14, 2012</h2><p>I just remove [RunLocal] attribute and still got the message.</p>
+<p>I added ConnectionString </p>
+<p>&lt;connectionStrings&gt;<br />&nbsp;&nbsp;&nbsp; &lt;add name=&quot;ConnectionString&quot;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; connectionString=&quot;Data Source=EES-SQL-02;Initial Catalog=EER_Testing;User ID=***;Password=*******&quot;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; providerName=&quot;System.Data.SqlClient&quot; /&gt;<br />&nbsp; &lt;/connectionStrings&gt;</p>
+<p>into config file together with </p>
+<p>&nbsp; &lt;appSettings&gt;<br />&nbsp;&nbsp;&nbsp; &lt;add key=&quot;CslaDataPortalProxy&quot; value=&quot;Csla.DataPortalClient.WcfProxy, Csla&quot; /&gt;<br />&nbsp;&nbsp;&nbsp; &lt;add key=&quot;ClientSettingsProvider.ServiceUri&quot; value=&quot;&quot; /&gt;<br />&nbsp; &lt;/appSettings&gt;<br />&nbsp; &lt;system.serviceModel&gt;<br />&nbsp;&nbsp;&nbsp; &lt;client&gt;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;endpoint name=&quot;WcfDataPortal&quot; address=&quot;http://localhost:1179/WcfPortal.svc&quot; binding=&quot;wsHttpBinding&quot; bindingConfiguration=&quot;wsHttpBinding_IWcfPortal&quot; contract=&quot;Csla.Server.Hosts.IWcfPortal&quot; /&gt;<br />&nbsp;&nbsp;&nbsp; &lt;/client&gt;<br />&nbsp;&nbsp;&nbsp; &lt;bindings&gt;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;wsHttpBinding&gt;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;binding name=&quot;wsHttpBinding_IWcfPortal&quot; maxReceivedMessageSize=&quot;2147483647&quot; receiveTimeout=&quot;10&quot; sendTimeout=&quot;10&quot;&gt;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;readerQuotas maxBytesPerRead=&quot;2147483647&quot; maxArrayLength=&quot;2147483647&quot; maxStringContentLength=&quot;2147483647&quot; maxNameTableCharCount=&quot;2147483647&quot; maxDepth=&quot;2147483647&quot; /&gt;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/binding&gt;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/wsHttpBinding&gt;<br />&nbsp;&nbsp;&nbsp; &lt;/bindings&gt;<br />&nbsp; &lt;/system.serviceModel&gt;</p>
+<p>It fixed the problem but I am not sure if I run it remotely with both parts in my config on client.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Tuesday, February 14, 2012</h2><p>I would remove the connection string from the client app.config. </p>
+<p>Recompile and redistribute the client and server assemblies. </p>
+<p>Do NOT use RunLocal attribute on methods that must connect to the database. </p>
+<p>It&#39;s OK to use RunLocal attribute on DataPortal_Create methods that do not require data access (or connect to the database).</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Pavel replied on Tuesday, February 14, 2012</h2><p>I tried all of those.</p>
+<p>RunLocal only on DataPortal_Create methods.</p>
+<p>Recompile both parts(client and server), update all references....and still have this message.</p>
+<p>Could IsDatabaseName parameter in GetManager function be critical for this issue?</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Pavel replied on Tuesday, February 14, 2012</h2><p>Unbelievable !!!!</p>
+<p>I have tried everything and still have this error message. I have no idea what else should I try to check to solve the problem.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, February 14, 2012</h2><p>Try directly calling the System. Configuration API to get the connection string yourself and see what you get.</p>
+<p>Or try using the API to get a made-up entry so you can put this made-up entry on the client AND server with different values. That might help you figure out which config file is being used.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Tuesday, February 14, 2012</h2><p>Hi,</p>
+<p>My best guess is that some of the new code is not using DataPortal as it should and tries to do data access locally on the client. </p>
+<p>Make sure to setup a n-tier development environment and inspect the error message and call stack - this should give a clear indication of how that method is called. </p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Pavel replied on Wednesday, February 15, 2012</h2><p>Thanks,</p>
+<p>Obviously, that my client is trying to go to database locally without calling remote Data Portal.</p>
+<p>Morning is always the better time to think over the yesterday&#39;s problems<img src="http://forums.lhotka.net/emoticons/emotion-1.gif" alt="Smile" /></p>
+<p>I think that problem solved. At least I know where to go.</p>
+<p>Thanks again for your help,</p>
+<p>&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

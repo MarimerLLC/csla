@@ -1,0 +1,40 @@
+<html><header><title>Windows Authentication Issue</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Windows Authentication Issue</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9453.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Smith866 posted on Monday, August 30, 2010</h2><p>Hi,</p>
+<p>I am currently experiencing a problem getting windows authentication working with my CSLA 4 SL application. &nbsp;I have setup windows authentication the same way as the samples from the Silverlight videos. &nbsp;When I run the application from my development workstation, everything works fine. &nbsp;I then setup my development and test web servers using IIS 7.5. &nbsp;I worked through many issues getting impersonation to work (starting with just ASP.NET, then adding CSLA and SL). &nbsp;It all seems to work fine. &nbsp;I can open a browser on my development machine (or any other machine on that domain), go to the development or test web server and the authentication all works. &nbsp;Now here is where I encounter an issue: &nbsp;My testers log in to another domain. &nbsp;There is no trust relationship whatsoever between their domain and the domain where I host my CSLA SL app. &nbsp;I have given them all accounts on this new domain, and I let their browser prompt them for credentials to log in to the domain where they do their testing. &nbsp;In the ASP.NET world, everything works fine - ie. a call to&nbsp;System.Security.Principal.WindowsIdentity.GetCurrent() works - it shows their logged in user and groups. &nbsp;My next step was to add CSLA / SL to the mix. &nbsp;When I did this, I got some interesting results. &nbsp;The authentication wasn&#39;t working, so I started troubleshooting to see where the problem was. &nbsp;I ended up setting up remote debugging on my development web server so I could see what was going on. &nbsp;I found that everything on the server-side seems to be working just fine. &nbsp;I stepped through WindowsIdentity.PopulateWindowsIdentity() and I can see everything working fine. &nbsp;The server knows who they logged in as, what groups they are in, etc. &nbsp;The server seems to be doing the exact same thing in the success scenario (same domain) and the fail scenario (coming from another domain)</p>
+<p>As it turns out, I am actually getting an exception on the client side. &nbsp;Here are the exception messages and stack traces that the client is throwing:</p>
+<p>
+<p>---------------------------</p>
+<p>[TypeInitialization_Type]</p>
+<p>&nbsp;</p>
+<p>Arguments: Csla.Silverlight.Security.WindowsIdentity</p>
+<p>&nbsp;</p>
+<p>Debugging resource strings are unavailable. Often the key and arguments provide sufficient information to diagnose the problem. See http://go.microsoft.com/fwlink/?linkid=106663&amp;Version=4.0.50524.0&amp;File=mscorlib.dll&amp;Key=TypeInitialization_Type &nbsp; at Csla.Silverlight.Security.WindowsIdentity.get_Name()</p>
+<p>&nbsp;</p>
+<p>&nbsp;&nbsp; at Business.AppPrincipal.&lt;&gt;c__DisplayClass3.&lt;Login&gt;b__2(Object o, DataPortalResult`1 e)</p>
+<p>&nbsp;</p>
+<p>&nbsp;&nbsp; at Csla.DataPortal`1.OnFetchCompleted(DataPortalResult`1 e)</p>
+<p>&nbsp;</p>
+<p>&nbsp;&nbsp; at Csla.DataPortal`1.proxy_FetchCompleted(Object sender, DataPortalResult`1 e)</p>
+<p>&nbsp;</p>
+<p>&nbsp;&nbsp; at Csla.DataPortalClient.WcfProxy`1.OnFetchCompleted(DataPortalResult`1 e)</p>
+<p>&nbsp;</p>
+<p>&nbsp;&nbsp; at Csla.DataPortalClient.WcfProxy`1.proxy_FetchCompleted(Object sender, FetchCompletedEventArgs e)</p>
+<p>---------------------------</p>
+</p>
+<p>&nbsp;</p>
+<p>There is also an InnerException of the following:</p>
+<p>
+<p>---------------------------</p>
+<p>Can not register property Roles after containing type (WindowsIdentity) has been instantiated &nbsp; at Csla.Core.FieldManager.PropertyInfoManager.RegisterProperty[T](Type objectType, PropertyInfo`1 info)</p>
+<p>&nbsp;</p>
+<p>&nbsp;&nbsp; at Csla.ReadOnlyBase`1.RegisterProperty[P](PropertyInfo`1 info)</p>
+<p>&nbsp;</p>
+<p>&nbsp;&nbsp; at Csla.Silverlight.Security.WindowsIdentity..cctor()</p>
+<p>---------------------------</p>
+</p>
+<p>&nbsp;</p>
+<p>Does anybody know what the issue here might be? &nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Monday, August 30, 2010</h2><p>I think this is a bug in the WindowsIdentity class.</p>
+<p>The old _forceInit trick doesn&#39;t work in SL4 in release mode, because the compiler is now smart enough to realize that the _forceInit field isn&#39;t used for anything meaningful - so they optimize it away (which is pretty impressive - but inconvenient).</p>
+<p>The answer is that the PropertyInfo&lt;T&gt; fields need to be public. But in WindowsIdentity they aren&#39;t.</p>
+<p>Can you try making them public and see if that helps. If so, I&#39;ll fix it in the core code for 4.0.2.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Smith866 replied on Monday, August 30, 2010</h2><p>Ok, I was wondering what the _forceInit was for. &nbsp;</p>
+<p>I made those PropertyInfo fields public and it now works. &nbsp;Thanks!</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, August 30, 2010</h2><p>Good, thanks for the help!</p>
+<p>I&#39;ve put a bug into the tracker, so this fix should be in 4.0.2.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

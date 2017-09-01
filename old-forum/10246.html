@@ -1,0 +1,42 @@
+<html><header><title>CSLA .NET MVVM Silverlight</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA .NET MVVM Silverlight</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10246.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Ziad posted on Thursday, April 07, 2011</h2><p>Hello,</p>
+<p>I&#39;m facing a problem with CSLA .NET MVVM. Any help is appreciated.</p>
+<p>My Model is as the following:</p>
+<p>Forecast : BusinessBase&lt;Forecast&gt;&nbsp;&nbsp;&nbsp; </p>
+<p>Forecasts : DynamicListBase&lt;Forecast&gt;</p>
+<p>Sales : BusinessBase&lt;Sales&gt;</p>
+<p>SalesList :&nbsp;DynamicListBase&lt;Sales&gt;&nbsp;</p>
+<p>My ViewModel is as the following:</p>
+<p>ForecastsVM : ViewModel&lt;Forecasts&gt;</p>
+<p>ForecastVM : ViewModel&lt;Forecast&gt;</p>
+<p>SalesListVM : ViewModel&lt;SalesList&gt;</p>
+<p>SalesVM : ViewModel&lt;Sales&gt;</p>
+<p>I have an additional file in the ViewModel which contains the following:</p>
+<p>public class Elements</p>
+<p>{</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; private SalesVM;</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; private ForecastsVM;</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ...&nbsp;</p>
+<p>}</p>
+<p>and then in SalesListVM, I have the following method:</p>
+<p>public ObservableCollection&lt;Elements&gt; Elems</p>
+<p>{</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; get</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ObservableCollection&lt;Elements&gt; elems = new ObservableCollection&lt;Elements&gt;();</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;foreach(Sales item in Model) elems.Add(new Elements (new SalesVM(item)));</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return elems;</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</p>
+<p>}</p>
+<p>I&#39;m binding this collection to a GridView in the xaml file, but the problem is that when the user modifies a SalesVM&nbsp;element in this Grid, it doesn&#39;t call the DataPortal_Update method that is found in Sales ....Why?</p>
+<p>Thanks</p>
+<p>Ziad</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, April 07, 2011</h2><p>Is this Silverlight or WPF?</p>
+<p>The WPF datagrid control is broken, and doesn&#39;t perform the correct data binding behaviors like other datagrid controls. Because DynamicListBase is designed to react to standard data binding behaviors, this means it doesn&#39;t work with the Microsoft datagrid control in WPF...</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Ziad replied on Thursday, April 07, 2011</h2><p>Its Silverlight ! but its really wierd because in SalesVM the constructor is as the following</p>
+<p>public SalesVM (Sales s)</p>
+<p>{</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Model = s;</p>
+<p>}</p>
+<p>Thx</p>
+<p>Ziad</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Thursday, April 07, 2011</h2><p>Does the datagrid bind to the DLB, or to a list of viewmodel objects?</p>
+<p>The DLB will only act properly if it is the direct target of the binding. In other words, the datagrid must bind directly to the DynamicListBase object, or the list won&#39;t get the data binding events it uses to trigger its behaviors.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Ziad replied on Thursday, April 07, 2011</h2><p>Thanks for your reply!</p>
+<p>Now, I understand much better the DynamicListBase ! </p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, April 07, 2011</h2><p>The <em>Using CSLA 4: Creating Business Objects</em> and <em>Using CSLA 4: Data Access</em> ebooks have extensive information on DLB (<a href="http://store.lhotka.net">http://store.lhotka.net</a>). </p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,70 @@
+<html><header><title>How to check business validation rules in the child objects of a parent object</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>How to check business validation rules in the child objects of a parent object</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9819.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>tikluganguly posted on Wednesday, December 01, 2010</h2><p>Hi All,</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; I have written a function to check the validation in the children of a parent business object like this</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;public List&lt;string&gt; CheckRules()</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;{</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;//check rule for all its childs</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;foreach (var child in this.FieldManager.GetChildren())</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;{</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;//first check if the child is modelbase</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;var po = child as IPhoenixModelBase;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;if (po != null)</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;{</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;po.CheckRules();</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;}</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;else</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;{</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;//check if it is a list</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;var list = child as IList;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;foreach (var itm in list)</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;{</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;//if the item in list is model base then run the rules</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;var po1 = itm as IPhoenixModelBase;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;if (po1 != null)</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;{</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;po1.CheckRules();</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;}</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;}</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;}</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;}</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;this.BusinessRules.CheckRules();</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;this.OnUnknownPropertyChanged(); &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;List&lt;string&gt; msgs = new List&lt;string&gt;();</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;foreach (var rule in this.BrokenRulesCollection)</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;{</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;msgs.Add(rule.Description);</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;}</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;return msgs;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;}</p>
+<p>What this function is doing is taking a business object, then taking all of its childs and then recursively calling the checkrules method in them. This function is actually behaving a bit peculearly and for evry checkrules it is returning a validation completed in the viewmodel. But what I want is to get only one validation completed when all the businessrules are being checked.&nbsp;</p>
+<p>&nbsp;&nbsp; I am sure I must be doing something wrong in here. So can you please do let me know what exactly I am doing wrong?</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>Regards</p>
+<p>TIklu</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tikluganguly replied on Friday, December 10, 2010</h2><p>Hi All,</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; It seems like I was not been too clear about my requirement. I just need to know how can i at the same time validate both the parent business object and all its child business object.&nbsp;</p>
+<p>Regards</p>
+<p>Tiklu</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, December 10, 2010</h2><p>You need to decide which object(s) will become invalid if the rule breaks. That&#39;s where you need to put the rule.</p>
+<p>So if the broken rule should appear in the UI on some parent object property, then the rule needs to go in the parent object. If the rule should appear in the UI on some child object property then the rule needs to go in the child object.</p>
+<p>Once you&#39;ve decided that, then it is a matter of technique.</p>
+<p>If the rule should run in the parent object, trigger the rule by overriding OnChildChanged (that&#39;s how you know a child has changed).</p>
+<p>If the rule should run in the child object, then trigger the rule on the child property like normal, and use the Parent property to interact with the parent.</p>
+<p>Using the Parent property is much easier in CSLA 4 than earlier versions. In 3.8 and earlier you may need to implement your own internal or public Parent properties, because the CSLA property is protected. In CSLA 4 the Parent properties are public.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tikluganguly replied on Monday, December 13, 2010</h2><p>Hi Rocky,</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;The idea is, I have a form with master details. Now the user can click pressing the add button and a new row will be added in the grid. As you can assume the grid is basically holding the CSLA child business objects of the parent object bound to the master view. Now when the user without making any changes to any of the forms hits the save button I want to display a validation error on the grid as well as the master view.</p>
+<p>I hope I was been able to tell you about my requirement</p>
+<p>Regards</p>
+<p>Tiklu</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, December 13, 2010</h2><p>This is for a web application then? Smart client applications would tell the user about the error immediately, only&nbsp; a web app would make the user click Save to find out they did something wrong.</p>
+<p>There are a whole set of things you can do for web apps, especially if you know you&#39;ll never use your business layer for anything except a web UI. </p>
+<p>But in summary, what you&#39;ll probably want to do is put the rule in the parent - attach it to the Children property. Then override Save:</p>
+<p>public override Parent Save()<br />{<br />&nbsp; ValidationRules.CheckRules(); // or BusinessRules.CheckRules() in CSLA 4<br />&nbsp; return base.Save();<br />}</p>
+<p>This will force all rules to run before the Save, and will result in an exception if any rules are broken. You can handle the exception and render the appropriate UI.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tikluganguly replied on Wednesday, December 15, 2010</h2><p>Hi Rocky,</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;First of all thank you for your reply. And sorry for replying you back so late. My app is a silverlight 4 application. And I am using CSLA 4. Actually in my case the user is allowed to add as many rows to the grid as he wants. And if the user just keeps adding the rows and then hits the save button. I am getting able to only validate the parent object and not the child object.</p>
+<p>Hope I was been able to make your understand my issue.</p>
+<p>Regards</p>
+<p>TIklu</p>
+<p>&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

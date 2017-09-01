@@ -1,0 +1,128 @@
+<html><header><title>Child collection PropertyChanged() notification on parent.</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Child collection PropertyChanged() notification on parent.</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6679.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>gajit posted on Thursday, March 26, 2009</h2><P>Hi guys (long time, no annoy),</P>
+<P>This is an oldie - but looking through the forum I can't see a CSLA 2.1 VB.Net documented response for this.</P>
+<P>I have a parent BO with a child collection - customer and customer contacts, my issue is that when i change a value in one of the child rows, the propertychanged event gets fired - but nothing then passes that back to the parent. As my UI enables/disables buttons, etc based on the mCUSTOMER_PropertyChanged event, nothing 'fires' the correct enabled states, etc.</P>
+<P>I'm assuming I have to override the PropertyChanged on my child collection and in there do something to update the PropertyChanged on the parent - but I'm a little vague on how to implement that - I see from other posts that there is also an&nbsp;OnDeserialized event that needs overriding... </P>
+<P>My apologies for posting what is clearly an older and probably often-asked issue, but I've been developing with CSLA happily now for a number of years, pretty much problem free. Seems strange that I wouldn't have encountered this problem before - but I do tend to avoid the single parent - child UI form where possible (I usually drill down and open individual BO's for the children).&nbsp;But in this case I need to show both.</P>
+<P>If anyone can point me in the right direction maybe with a snippet, that would be very much appreciated.</P>
+<P>Thanks,</P>
+<P>Graham</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>gajit replied on Thursday, March 26, 2009</h2><P>OK.. I'm getting a wee bit frustrated with this....</P>
+<P>I've sifted through the forums... and although I can't find a good VB example I took a crack at it...</P>
+<P>Here's what I have...</P>
+<P>Parent BO is Customer</P>
+<P>I&nbsp;have created a Property;</P><FONT size=3>
+<BLOCKQUOTE dir=ltr>
+<P></FONT><FONT color=#0000ff size=3><FONT color=#0000ff size=3>Public</FONT></FONT><FONT size=3> </FONT><FONT color=#0000ff size=3><FONT color=#0000ff size=3>Property</FONT></FONT><FONT size=3> ChildHasChanged() </FONT><FONT color=#0000ff size=3><FONT color=#0000ff size=3>As</FONT></FONT><FONT size=3> </FONT><FONT color=#0000ff size=3><FONT color=#0000ff size=3>Boolean</P></FONT></FONT><FONT size=3>
+<P></FONT><FONT color=#0000ff size=3><FONT color=#0000ff size=3>Get</P></FONT></FONT><FONT size=3>
+<P>CanReadProperty(</FONT><FONT color=#0000ff size=3><FONT color=#0000ff size=3>True</FONT></FONT><FONT size=3>)</P>
+<P></FONT><FONT color=#0000ff size=3><FONT color=#0000ff size=3>Return</FONT></FONT><FONT size=3> mChildHasChanged</P>
+<P></FONT><FONT color=#0000ff size=3><FONT color=#0000ff size=3>End</FONT></FONT><FONT size=3> </FONT><FONT color=#0000ff size=3><FONT color=#0000ff size=3>Get</P></FONT></FONT><FONT size=3>
+<P></FONT><FONT color=#0000ff size=3><FONT color=#0000ff size=3>Set</FONT></FONT><FONT size=3>(</FONT><FONT color=#0000ff size=3><FONT color=#0000ff size=3>ByVal</FONT></FONT><FONT size=3> Value </FONT><FONT color=#0000ff size=3><FONT color=#0000ff size=3>As</FONT></FONT><FONT size=3> </FONT><FONT color=#0000ff size=3><FONT color=#0000ff size=3>Boolean</FONT></FONT><FONT size=3>)</P>
+<P>CanWriteProperty(</FONT><FONT color=#0000ff size=3><FONT color=#0000ff size=3>True</FONT></FONT><FONT size=3>)</P>
+<P></FONT><FONT color=#0000ff size=3><FONT color=#0000ff size=3>If</FONT></FONT><FONT size=3> mChildHasChanged &lt;&gt; Value </FONT><FONT color=#0000ff size=3><FONT color=#0000ff size=3>Then</P></FONT></FONT><FONT size=3>
+<P>mChildHasChanged = Value</P>
+<P>PropertyHasChanged()</P>
+<P></FONT><FONT color=#0000ff size=3><FONT color=#0000ff size=3>End</FONT></FONT><FONT size=3> </FONT><FONT color=#0000ff size=3><FONT color=#0000ff size=3>If</P></FONT></FONT><FONT size=3>
+<P></FONT><FONT color=#0000ff size=3><FONT color=#0000ff size=3>End</FONT></FONT><FONT size=3> </FONT><FONT color=#0000ff size=3><FONT color=#0000ff size=3>Set</P></FONT></FONT><FONT size=3>
+<P></FONT><FONT color=#0000ff size=3><FONT color=#0000ff size=3>End</FONT></FONT><FONT size=3> </FONT><FONT color=#0000ff size=3><FONT color=#0000ff size=3>Property</P></BLOCKQUOTE></FONT></FONT>
+<P>The children are defined;</P><FONT size=3>
+<BLOCKQUOTE dir=ltr>
+<P></FONT><FONT color=#0000ff size=3><FONT color=#0000ff size=3>Private</FONT></FONT><FONT size=3> mCONTACTS </FONT><FONT color=#0000ff size=3><FONT color=#0000ff size=3>As</FONT></FONT><FONT size=3> CustomerContacts = _</P>
+<P>CustomerContacts.NewCustomerContacts()</P>
+<P>&nbsp;</P></FONT><FONT size=3>
+<P></FONT><FONT color=#0000ff size=3><FONT color=#0000ff size=3>Public</FONT></FONT><FONT size=3> </FONT><FONT color=#0000ff size=3><FONT color=#0000ff size=3>ReadOnly</FONT></FONT><FONT size=3> </FONT><FONT color=#0000ff size=3><FONT color=#0000ff size=3>Property</FONT></FONT><FONT size=3> CONTACTS() </FONT><FONT color=#0000ff size=3><FONT color=#0000ff size=3>As</FONT></FONT><FONT size=3> CustomerContacts</P>
+<P></FONT><FONT color=#0000ff size=3><FONT color=#0000ff size=3>Get</P></FONT></FONT><FONT size=3>
+<P></FONT><FONT color=#0000ff size=3><FONT color=#0000ff size=3>Return</FONT></FONT><FONT size=3> mCONTACTS</P>
+<P></FONT><FONT color=#0000ff size=3><FONT color=#0000ff size=3>End</FONT></FONT><FONT size=3> </FONT><FONT color=#0000ff size=3><FONT color=#0000ff size=3>Get</P></FONT></FONT><FONT size=3>
+<P></FONT><FONT color=#0000ff size=3><FONT color=#0000ff size=3>End</FONT></FONT><FONT size=3> </FONT><FONT color=#0000ff size=3><FONT color=#0000ff size=3>Property</P></BLOCKQUOTE></FONT></FONT>
+<P>&nbsp;</P>
+<P>I added a handler in an over-ridden event in the Customer BO;</P><FONT size=3>
+<BLOCKQUOTE dir=ltr>
+<P></FONT><FONT color=#0000ff size=3><FONT color=#0000ff size=3>Protected</FONT></FONT><FONT size=3> </FONT><FONT color=#0000ff size=3><FONT color=#0000ff size=3>Overrides</FONT></FONT><FONT size=3> </FONT><FONT color=#0000ff size=3><FONT color=#0000ff size=3>Sub</FONT></FONT><FONT size=3> OnDeserialized(</FONT><FONT color=#0000ff size=3><FONT color=#0000ff size=3>ByVal</FONT></FONT><FONT size=3> context </FONT><FONT color=#0000ff size=3><FONT color=#0000ff size=3>As</FONT></FONT><FONT size=3> System.Runtime.Serialization.StreamingContext)</P>
+<P></FONT><FONT color=#0000ff size=3><FONT color=#0000ff size=3>MyBase</FONT></FONT><FONT size=3>.OnDeserialized(context)</P>
+<P></FONT><FONT color=#0000ff size=3><FONT color=#0000ff size=3>AddHandler</FONT></FONT><FONT size=3> CONTACTS.ListChanged, </FONT><FONT color=#0000ff size=3><FONT color=#0000ff size=3>AddressOf</FONT></FONT><FONT size=3> CustomerContacts_ListChanged</P>
+<P></FONT><FONT color=#0000ff size=3><FONT color=#0000ff size=3>End</FONT></FONT><FONT size=3> </FONT><FONT color=#0000ff size=3><FONT color=#0000ff size=3>Sub</P></FONT></FONT><FONT size=3></BLOCKQUOTE>
+<P dir=ltr>and</FONT><FONT color=#0000ff size=3><FONT color=#0000ff size=3></FONT></FONT></P>
+<BLOCKQUOTE dir=ltr>
+<P><FONT color=#0000ff size=3><FONT color=#0000ff size=3>Private</FONT></FONT><FONT size=3> </FONT><FONT color=#0000ff size=3><FONT color=#0000ff size=3>Sub</FONT></FONT><FONT size=3> CustomerContacts_ListChanged(</FONT><FONT color=#0000ff size=3><FONT color=#0000ff size=3>ByVal</FONT></FONT><FONT size=3> sender </FONT><FONT color=#0000ff size=3><FONT color=#0000ff size=3>As</FONT></FONT><FONT size=3> </FONT><FONT color=#0000ff size=3><FONT color=#0000ff size=3>Object</FONT></FONT><FONT size=3>, </FONT><FONT color=#0000ff size=3><FONT color=#0000ff size=3>ByVal</FONT></FONT><FONT size=3> e </FONT><FONT color=#0000ff size=3><FONT color=#0000ff size=3>As</FONT></FONT><FONT size=3> System.ComponentModel.ListChangedEventArgs)</P>
+<P>PropertyHasChanged(</FONT><FONT color=#a31515 size=3><FONT color=#a31515 size=3>"ChildHasChanged"</FONT></FONT><FONT size=3>)</P>
+<P></FONT><FONT color=#0000ff size=3><FONT color=#0000ff size=3>End</FONT></FONT><FONT size=3> </FONT><FONT color=#0000ff size=3><FONT color=#0000ff size=3>Sub</P></BLOCKQUOTE></FONT></FONT>
+<P>I haven't changed anything in the child collection class.</P>
+<P>&nbsp;</P>
+<P>The "important" pieces of my UI are;</P><FONT size=3>
+<BLOCKQUOTE dir=ltr>
+<P></FONT><FONT color=#0000ff size=3><FONT color=#0000ff size=3>Public</FONT></FONT><FONT size=3> </FONT><FONT color=#0000ff size=3><FONT color=#0000ff size=3>Sub</FONT></FONT><FONT size=3> </FONT><FONT color=#0000ff size=3><FONT color=#0000ff size=3>New</FONT></FONT><FONT size=3>(</FONT><FONT color=#0000ff size=3><FONT color=#0000ff size=3>ByVal</FONT></FONT><FONT size=3> customer </FONT><FONT color=#0000ff size=3><FONT color=#0000ff size=3>As</FONT></FONT><FONT size=3> Customer)</P>
+<P>InitializeComponent()</P>
+<P>mCUSTOMER = customer</P>
+<P>mCUSTOMER.BeginEdit()</P>
+<P></FONT><FONT color=#0000ff size=3><FONT color=#0000ff size=3>Me</FONT></FONT><FONT size=3>.CustomerBindingSource.DataSource = mCUSTOMER</P>
+<P>ApplyAuthorizationRules()</P>
+<P></FONT><FONT color=#0000ff size=3><FONT color=#0000ff size=3>End</FONT></FONT><FONT size=3> </FONT><FONT color=#0000ff size=3><FONT color=#0000ff size=3>Sub</P></FONT></FONT><FONT size=3>
+<P></FONT><FONT color=#0000ff size=3><FONT color=#0000ff size=3></FONT></FONT>&nbsp;</P>
+<P><FONT color=#0000ff size=3><FONT color=#0000ff size=3>Private</FONT></FONT><FONT size=3> </FONT><FONT color=#0000ff size=3><FONT color=#0000ff size=3>Sub</FONT></FONT><FONT size=3> mCustomer_PropertyChanged(</FONT><FONT color=#0000ff size=3><FONT color=#0000ff size=3>ByVal</FONT></FONT><FONT size=3> sender </FONT><FONT color=#0000ff size=3><FONT color=#0000ff size=3>As</FONT></FONT><FONT size=3> </FONT><FONT color=#0000ff size=3><FONT color=#0000ff size=3>Object</FONT></FONT><FONT size=3>, </FONT><FONT color=#0000ff size=3><FONT color=#0000ff size=3>ByVal</FONT></FONT><FONT size=3> e </FONT><FONT color=#0000ff size=3><FONT color=#0000ff size=3>As</FONT></FONT><FONT size=3> System.ComponentModel.PropertyChangedEventArgs) </FONT><FONT color=#0000ff size=3><FONT color=#0000ff size=3>Handles</FONT></FONT><FONT size=3> mCUSTOMER.PropertyChanged</P>
+<P>ApplyAuthorizationRules()</P>
+<P></FONT><FONT color=#0000ff size=3><FONT color=#0000ff size=3>End</FONT></FONT><FONT size=3> </FONT><FONT color=#0000ff size=3><FONT color=#0000ff size=3>Sub</P></BLOCKQUOTE></FONT></FONT>
+<P>and</P><FONT color=#0000ff size=3><FONT color=#0000ff size=3>
+<BLOCKQUOTE dir=ltr>
+<P>Private</FONT></FONT><FONT size=3> </FONT><FONT color=#0000ff size=3><FONT color=#0000ff size=3>Sub</FONT></FONT><FONT size=3> SaveCustomer(</FONT><FONT color=#0000ff size=3><FONT color=#0000ff size=3>ByVal</FONT></FONT><FONT size=3> rebind </FONT><FONT color=#0000ff size=3><FONT color=#0000ff size=3>As</FONT></FONT><FONT size=3> </FONT><FONT color=#0000ff size=3><FONT color=#0000ff size=3>Boolean</FONT></FONT><FONT size=3>)</P>
+<P></FONT><FONT color=#0000ff size=3><FONT color=#0000ff size=3>Using</FONT></FONT><FONT size=3> busy </FONT><FONT color=#0000ff size=3><FONT color=#0000ff size=3>As</FONT></FONT><FONT size=3> </FONT><FONT color=#0000ff size=3><FONT color=#0000ff size=3>New</FONT></FONT><FONT size=3> StatusBusy(</FONT><FONT color=#a31515 size=3><FONT color=#a31515 size=3>"Saving..."</FONT></FONT><FONT size=3>)</P>
+<P></FONT><FONT color=#008000 size=3><FONT color=#008000 size=3>' stop the flow of events</P></FONT></FONT><FONT size=3>
+<P></FONT><FONT color=#0000ff size=3><FONT color=#0000ff size=3>Me</FONT></FONT><FONT size=3>.CustomerBindingSource.RaiseListChangedEvents = </FONT><FONT color=#0000ff size=3><FONT color=#0000ff size=3>False</P></FONT></FONT><FONT size=3>
+<P></FONT><FONT color=#008000 size=3><FONT color=#008000 size=3>' do the save</P></FONT></FONT><FONT size=3>
+<P></FONT><FONT color=#0000ff size=3><FONT color=#0000ff size=3>Dim</FONT></FONT><FONT size=3> temp </FONT><FONT color=#0000ff size=3><FONT color=#0000ff size=3>As</FONT></FONT><FONT size=3> Customer = mCUSTOMER.Clone</P>
+<P>temp.ApplyEdit()</P>
+<P></FONT><FONT color=#0000ff size=3><FONT color=#0000ff size=3>Try</P></FONT></FONT><FONT size=3>
+<P>mCUSTOMER = temp.Save</P>
+<P>mCUSTOMER.BeginEdit()</P>
+<P></FONT><FONT color=#0000ff size=3><FONT color=#0000ff size=3>If</FONT></FONT><FONT size=3> rebind </FONT><FONT color=#0000ff size=3><FONT color=#0000ff size=3>Then</P></FONT></FONT><FONT size=3>
+<P></FONT><FONT color=#008000 size=3><FONT color=#008000 size=3>' rebind the UI</P></FONT></FONT><FONT size=3>
+<P></FONT><FONT color=#0000ff size=3><FONT color=#0000ff size=3>Me</FONT></FONT><FONT size=3>.CustomerBindingSource.DataSource = </FONT><FONT color=#0000ff size=3><FONT color=#0000ff size=3>Nothing</P></FONT></FONT><FONT size=3>
+<P></FONT><FONT color=#0000ff size=3><FONT color=#0000ff size=3>Me</FONT></FONT><FONT size=3>.CustomerBindingSource.RaiseListChangedEvents = </FONT><FONT color=#0000ff size=3><FONT color=#0000ff size=3>True</FONT></FONT><FONT size=3> </FONT><FONT color=#008000 size=3><FONT color=#008000 size=3></P></FONT></FONT><FONT size=3>
+<P></FONT><FONT color=#0000ff size=3><FONT color=#0000ff size=3>Me</FONT></FONT><FONT size=3>.CustomerBindingSource.DataSource = mCUSTOMER</P>
+<P>ApplyAuthorizationRules()</P>
+<P></FONT><FONT color=#0000ff size=3><FONT color=#0000ff size=3>End</FONT></FONT><FONT size=3> </FONT><FONT color=#0000ff size=3><FONT color=#0000ff size=3>If</P></FONT></FONT><FONT size=3>
+<P></FONT><FONT color=#0000ff size=3><FONT color=#0000ff size=3>Catch</FONT></FONT><FONT size=3> ex </FONT><FONT color=#0000ff size=3><FONT color=#0000ff size=3>As</FONT></FONT><FONT size=3> Csla.DataPortalException</P>
+<P>MessageBox.Show(ex.BusinessException.ToString, _</P>
+<P></FONT><FONT color=#a31515 size=3><FONT color=#a31515 size=3>"Error saving"</FONT></FONT><FONT size=3>, MessageBoxButtons.OK, _</P>
+<P>MessageBoxIcon.Exclamation)</P>
+<P></FONT><FONT color=#0000ff size=3><FONT color=#0000ff size=3>Catch</FONT></FONT><FONT size=3> ex </FONT><FONT color=#0000ff size=3><FONT color=#0000ff size=3>As</FONT></FONT><FONT size=3> Exception</P>
+<P>MessageBox.Show(ex.ToString, _</P>
+<P></FONT><FONT color=#a31515 size=3><FONT color=#a31515 size=3>"Error saving"</FONT></FONT><FONT size=3>, MessageBoxButtons.OK, _</P>
+<P>MessageBoxIcon.Exclamation)</P>
+<P></FONT><FONT color=#0000ff size=3><FONT color=#0000ff size=3>Finally</P></FONT></FONT><FONT size=3>
+<P></FONT><FONT color=#0000ff size=3><FONT color=#0000ff size=3>Me</FONT></FONT><FONT size=3>.CustomerBindingSource.RaiseListChangedEvents = </FONT><FONT color=#0000ff size=3><FONT color=#0000ff size=3>True</P></FONT></FONT><FONT size=3>
+<P></FONT><FONT color=#0000ff size=3><FONT color=#0000ff size=3>End</FONT></FONT><FONT size=3> </FONT><FONT color=#0000ff size=3><FONT color=#0000ff size=3>Try</P></FONT></FONT><FONT size=3>
+<P></FONT><FONT color=#0000ff size=3><FONT color=#0000ff size=3>End</FONT></FONT><FONT size=3> </FONT><FONT color=#0000ff size=3><FONT color=#0000ff size=3>Using</P></FONT></FONT><FONT size=3>
+<P></FONT><FONT color=#0000ff size=3><FONT color=#0000ff size=3>End</FONT></FONT><FONT size=3> </FONT><FONT color=#0000ff size=3><FONT color=#0000ff size=3>Sub</P></BLOCKQUOTE></FONT></FONT>
+<P>BUT, when I open my form, and make a change to some data in one of the CHILD rows, NOTHING happens. In fact, I set breakpoints in the Customer BO, where I added the handler in the deserialize - and NOTHING gets triggered.&nbsp; Am I missing something???</P>
+<P>Any help wuld be appreciated - getting very frustrated here...</P>
+<P>Graham</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>gajit replied on Thursday, March 26, 2009</h2><P>OK, I think I have it figured out.</P>
+<P>&nbsp;</P>
+<P>I placed the AddHandler in the DataPortal_Fetch of my parent BO, AND in the overriden OnDeserialized</P><FONT size=3>
+<BLOCKQUOTE dir=ltr>
+<P></FONT><FONT color=#0000ff size=3><FONT color=#0000ff size=3>AddHandler</FONT></FONT><FONT size=3> CONTACTS.ListChanged, </FONT><FONT color=#0000ff size=3><FONT color=#0000ff size=3>AddressOf</FONT></FONT><FONT size=3> CustomerContacts_ListChanged</FONT></P></BLOCKQUOTE>
+<P dir=ltr>The CustomerContacts_ListChanged subroutine resides in the same object;</P><FONT size=3>
+<BLOCKQUOTE dir=ltr>
+<P></FONT><FONT color=#0000ff size=3><FONT color=#0000ff size=3>Private</FONT></FONT><FONT size=3> </FONT><FONT color=#0000ff size=3><FONT color=#0000ff size=3>Sub</FONT></FONT><FONT size=3> CustomerContacts_ListChanged(</FONT><FONT color=#0000ff size=3><FONT color=#0000ff size=3>ByVal</FONT></FONT><FONT size=3> sender </FONT><FONT color=#0000ff size=3><FONT color=#0000ff size=3>As</FONT></FONT><FONT size=3> </FONT><FONT color=#0000ff size=3><FONT color=#0000ff size=3>Object</FONT></FONT><FONT size=3>, </FONT><FONT color=#0000ff size=3><FONT color=#0000ff size=3>ByVal</FONT></FONT><FONT size=3> e </FONT><FONT color=#0000ff size=3><FONT color=#0000ff size=3>As</FONT></FONT><FONT size=3> System.ComponentModel.ListChangedEventArgs)</P>
+<P>PropertyHasChanged(</FONT><FONT color=#a31515 size=3><FONT color=#a31515 size=3>"ChildHasChanged"</FONT></FONT><FONT size=3>)</P>
+<P></FONT><FONT color=#0000ff size=3><FONT color=#0000ff size=3>End</FONT></FONT><FONT size=3> </FONT><FONT color=#0000ff size=3><FONT color=#0000ff size=3>Sub</P></BLOCKQUOTE></FONT></FONT>
+<P dir=ltr><FONT size=3>And all seems to be working as required. Got there in the end.</FONT></P>
+<P dir=ltr>Gajit.</P>
+<P dir=ltr><FONT size=3></FONT>&nbsp;</P>
+<P dir=ltr><FONT size=3>&nbsp;</P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>shawndewet replied on Saturday, March 28, 2009</h2>How 'bout upgrading to v3.6 and overriding the OnChildChanged in your parent class?&nbsp; Very nice mechanism!</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>dg78 replied on Saturday, March 28, 2009</h2><P><SPAN>It is strange.<o:p></o:p></SPAN></P>
+<P><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P><SPAN>Your children are ReadOnly :<o:p></o:p></SPAN></P>
+<P><SPAN>Public ReadOnly Property CONTACTS() As CustomerContacts<o:p></o:p></SPAN></P>
+<P><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P><SPAN>How can you change a value in one of the child rows ?<o:p></o:p></SPAN></P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

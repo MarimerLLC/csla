@@ -1,0 +1,26 @@
+<html><header><title>Specified argument was out of the range of valid values. </title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Specified argument was out of the range of valid values. </h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11967.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>griff posted on Saturday, May 04, 2013</h2><p>Csla 4.3.10.0 &nbsp;Silverlight app</p>
+<p>I am getting the following error.</p>
+<p>&quot;Specified argument was out of the range of valid values. Parameter name: Unhandled CSLA Known type was found&quot;</p>
+<p>This occurs at this point</p>
+<p>&nbsp;</p>
+<p>&nbsp;public static void GetAuthorNVL(EventHandler&lt;DataPortalResult&lt;AuthorNVL&gt;&gt; callback)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; if (_list == null)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <strong>DataPortal.BeginFetch&lt;AuthorNVL&gt;((o, e) =&gt;</strong></p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; _list = e.Object;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; callback(o, e);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; });</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; else</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; callback(null, new DataPortalResult&lt;AuthorNVL&gt;(_list, null, null));</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>on the Beginfetch - it does not get to the dataportal. &nbsp;The error bubbles up to my ViewModel.</p>
+<p>It occurs for all objects - background is I have created a new SL &nbsp;project and added in existing &nbsp;libraries from another working project (so I know the libraries/code works).. &nbsp;I&#39;m sure it is something to do with the way the project has been set up (rather than specific code). &nbsp;</p>
+<p>Can anyone help please.</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, May 07, 2013</h2><p>This sounds like a serialization issue, probably where some non-supported type is being used for a property value.</p>
+<p>The MobileFormatter serializer knows how to serialize the primitive types in .NET, plus String and Guid and DateTime, and it knows how to serialize custom types that implement IMobileObject (which includes any type that subclasses the standard CSLA base types).</p>
+<p>Anything else won&#39;t serialize and would result in a known type exception.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>griff replied on Friday, May 10, 2013</h2><p>Yes I had a look at the source code to see where it was coming from - I guess this is one of those spurious error messages (the error was occurring on all bo&#39;s) - I recreated the project from scratch and after hitting a few issues along &nbsp;the way it was &nbsp;resolved - I think it issues lay with some sort of incorrect referencing when the project was set up.</p>
+<p>Thanks for you time.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

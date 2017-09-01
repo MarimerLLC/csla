@@ -1,0 +1,173 @@
+<html><header><title>LoadProperty --&gt; BypassPropertyChecks() --&gt; etc..</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>LoadProperty --&gt; BypassPropertyChecks() --&gt; etc..</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5942.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>rfcdejong posted on Friday, December 05, 2008</h2><P>Im a bit confused in what is best to use while constructing an business object.<BR>With an BusinessObject derived from BusinessBase the following seems the best way, with the new BypassPropertyChecks()</P><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>class</FONT><FONT size=2> </FONT><FONT color=#2b91af size=2>CampagneFactory</FONT><FONT size=2> : </FONT><FONT color=#2b91af size=2>ObjectFactory<BR></FONT><FONT size=2>{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> Dias.Business.CampagneBO.</FONT><FONT color=#2b91af size=2>Campagne</FONT><FONT size=2> Fetch(</FONT><FONT color=#2b91af size=2>CriteriaBase</FONT><FONT size=2> criteria)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Dias.Business.CampagneBO.</FONT><FONT color=#2b91af size=2>Campagne</FONT><FONT size=2> result = (Dias.Business.CampagneBO.</FONT><FONT color=#2b91af size=2>Campagne</FONT><FONT size=2>)</FONT><FONT color=#2b91af size=2>Activator</FONT><FONT size=2>.CreateInstance(</FONT><FONT color=#0000ff size=2>typeof</FONT><FONT size=2>(Dias.Business.CampagneBO.</FONT><FONT color=#2b91af size=2>Campagne</FONT><FONT size=2>), </FONT><FONT color=#0000ff size=2>true</FONT><FONT size=2>);<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</FONT><FONT color=#0000ff size=2>using</FONT><FONT size=2> (</FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>.BypassPropertyChecks(result))<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</FONT><FONT size=2>result.Campagnenummer = 1;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;result.Omschrijving = </FONT><FONT color=#a31515 size=2>"foo"</FONT><FONT size=2>;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;result.CampagneStatus = </FONT><FONT color=#a31515 size=2>"bar"</FONT><FONT size=2>;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> result;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>}</FONT></P>
+<P><FONT size=2><FONT size=3>But when it comes to Info objects there is ofcourse not always a setter needed.<BR>I can't find a good way using the object factory to LoadProperty's</FONT></FONT></P>
+<P>Using the Datamapper with a Datamap definition feels like an ugly way of doing it.</P>
+<P><FONT size=2>&nbsp;</P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, December 05, 2008</h2><P>I totally agree. I am open to suggestions on ways to make this better.</P>
+<P>There is a non-generic LoadProperty() method internal to CSLA - it is for use by DataMapper. I could expose a protected non-generic LoadProperty() from the ObjectFactory base class. If your business object is using managed backing fields, this would solve the problem. However, the non-generic LoadProperty() method does type coercion because it doesn't know that the input value matches the field type - and that has a perf cost.</P>
+<P>The thing is, if you are using private backing fields, you'd still be on your own...</P>
+<P>Right now though, that is my only obvious answer. As I say, I'm open to suggestions.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rfcdejong replied on Monday, December 08, 2008</h2><P>hmm internal setters or internal constructor<BR>not such nice as well, but fast..<BR>using InternalsVisibleTo("factoryassembly")</P>
+<P>Or "set once" setters.. once an property is set it will throw an exception</P>
+<P>PS: I don't even know if using the Activator.Create is smart to use :)</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, December 08, 2008</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>The thing to remember is that I created the ObjectFactory
+feature primarily to support possible future features of ADO.NET Entity
+Framework. I am reluctant to do any more than I have to in order to make it
+work now, because I can&#8217;t predict exactly what EF will require when/if
+those features exist.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>In other words, if I do too much now, I may end up undoing it
+(and thus breaking you) later when I finish the support for EF. Supporting EF
+is the primary purpose, and I&#8217;ll implement breaking changes within the
+ObjectFactory space to make it work when the time comes.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rfcdejong replied on Monday, December 08, 2008</h2><P>I&nbsp;though the ObjectFactory is implimented for:</P>
+<P>1) To let the businessobject be less heavy when working for example: with Silverlight. <BR>2) For people who don't like DataAccess in the businessobjects<BR>3) To allow unit testing a bit more, but not in a TDD fashion way thru ;)</P>
+<P>Or am i wrong?</P>
+<P>Guess í'll just make a internal constructor for the info objects.<BR>And then "assembly: InternalsVisibleTo()"</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, December 08, 2008</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>You have a list of great side-effects :)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>My primary purpose in creating ObjectFactory is to prepare for a
+future where EF can be used to directly load CSLA objects. Hopefully that
+future happens.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Secondary benefits include the items you list.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>But I have no way of predicting how people are going to want to
+load their objects with data. No matter what you do, you are breaking
+encapsulation by directly setting field values from a factory object &#8211;
+and while I agree that this is necessary, it is also a cardinal sin in OOP<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Some people may choose to hand a DTO to their objects rather
+than setting fields from the factory. This avoids breaking encapsulation, but
+is a bit more complex.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I don&#8217;t yet know for sure what EF will support, and so can&#8217;t
+entirely predict what I&#8217;ll need to do to make EF work.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>So there are at least 3 object loading models I know of today:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoListParagraph><span><span>1.<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span></span><span>Load fields directly from factory<o:p></o:p></span></p>
+
+<p class=MsoListParagraph><span><span>2.<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span></span><span>Pass DTO/entity to business object so it can load its fields<o:p></o:p></span></p>
+
+<p class=MsoListParagraph><span><span>3.<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span></span><span>Whatever EF needs<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>My guess is that there are others. Well, I <i>know</i> there are
+others &#8211; they&#8217;ve been discussed in other threads (custom
+interfaces, friend assemblies, etc).<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>If I make ObjectFactory support all these options the result, I suspect,
+will be an unusable mess. AND I run the risk of breaking a lot of people when I
+make EF work when EF matures.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>At the moment I&#8217;ve opted for caution. I&#8217;m doing as
+little as necessary to enable the scenario, so people (like you) can explore
+the various options to see what works best/worst/etc.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>If it turns out that some scenario is <i>really compelling</i>, I
+may support that scenario directly &#8211; while still trying to not block all
+the other options.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky <o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, December 08, 2008</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>To be clear, I don&#8217;t disagree with the LoadProperty() idea
+necessarily &#8211; I&#8217;m just trying to balance a number of competing
+concerns.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I have added this to the wish list (<a href="http://www.lhotka.net/cslabugs/edit_bug.aspx?id=258">http://www.lhotka.net/cslabugs/edit_bug.aspx?id=258</a>).<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky </span><o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, January 23, 2009</h2>In the next drop of 3.6.1 there'll be a LoadProperty&lt;T&gt;(object, PropertyInfo&lt;T&gt;, value) method in the ObjectFactory base class.<br><br>While the syntax is obviously not <i>exactly</i> like what you'd find in a DataPortal_XYZ method, it is quite comparable, and works like the MarkOld() and other methods exposed by ObjectFactory.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rfcdejong replied on Saturday, January 24, 2009</h2>Thanks, i'll update the source when i'm back at work. We didn't write too many objectfactory's yet.<br /><br />I wonder if they work with readonlybase objects as well. This might remove the friendassembly requirement and the need of using internal setters c.q. internal constructers.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Saturday, January 24, 2009</h2>It should work with ROB as well as BB, though I didn't test that. But both<br />ROB and BB implement the interface necessary for the function to work.<br /><br />Rocky<br /><br /><br />-----Original Message-----<br />From: rfcdejong [mailto:cslanet@lhotka.net] <br />Sent: Saturday, January 24, 2009 7:08 AM<br />To: rocky@lhotka.net<br />Subject: Re: [CSLA .NET] RE: RE: LoadProperty --> BypassPropertyChecks() --><br />etc..<br /><br />Thanks, i'll update the source when i'm back at work. We didn't write too<br />many objectfactory's yet.<br /><br />I wonder if they work with readonlybase objects as well. This might remove<br />the friendassembly requirement and the need of using internal setters c.q.<br />internal constructers.<br /><br /></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>bniemyjski replied on Thursday, January 07, 2010</h2>Hello,<br /><br />I am about 95% done implementing object factory support in the new CodeSmith templates. I came across a shocking issue and that is you can't update a read only property via the Object Factory unless you add an internal setter and set the InternalsVisibleTo Assebmly attribute. I find that I am in a bit of a dilemma because I don't want to make the setter internal and I 100% don't want to expose other assembly's to my BO's via the InternalsVisibleTo attribute. <br /><br />Is there a work around for this. Is there any method in the CSLA framework that I could set this property via the RegisterProperty / PropertyInfo.<br /><br />Thanks<br />-Blake Niemyjski</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, January 07, 2010</h2>The ObjectFactory base class has a LoadProperty() method you can use to load<br />any managed property without calling the setter at all.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jamie.clayton replied on Thursday, January 07, 2010</h2>Blake,<br /><br />I'm also concerned about this code exposure.  It looks like the MSDN documentation for the assembly attribute allows you to specify public keys of assemblies that would be "approved".<br /> http://msdn.microsoft.com/en-us/library/system.runtime.compilerservices.internalsvisibletoattribute.internalsvisibletoattribute.aspx.<br /><br />Apparently you can also chain multiple different signed assemblies into this approval configuration via http://msdn.microsoft.com/en-us/library/system.runtime.compilerservices.internalsvisibletoattribute.aspx<br /><br />This creates a dilema for code generation as you will not know about strong name keys during generation and it might create and strong naming key management issue limit the exposure of the internals to other parts of your application.<br /><br />I wonder if you should just add a TODO: Monika to the generated code with a note about populating assemblies and public keys and the implication of the application SN signing issues that this will generate.<br /><br />Rockies examples seems to gloss over this issue.  I wonder how many people must be actually using this in production code.  I would think that readonly SQL Server identity and timestamp fields would be fairly common practice these days.<br /><br />I wondered about FXcops opinion. The new code analysis feature in VS2010 (Beta2) produced no warnings about using Assembly: InternalsVisibleTo("MyCslaDal") attribute based on a simple two tier test.<br /><br />Most of the online (google) discussion seems to indicate this was Unit testing feature added to the .net framework, rather than general software assemblies.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jamie.clayton replied on Thursday, January 07, 2010</h2>Or you could use the loadproperty feature that Rocky recomended...DOH!</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>bniemyjski replied on Friday, January 08, 2010</h2>My PropertyInfo is a private member and not exposed in the ObjectFactory.<br /><br />private static readonly PropertyInfo _cartIdProperty = RegisterProperty(p => p.CartId);<br />[System.ComponentModel.DataObjectField(true, true)]<br />public int CartId<br />{<br />     get { return GetProperty(_cartIdProperty); }                <br />}<br /></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, January 08, 2010</h2><P>LoadProperty() still works in this case. As long as it is a managed backing field, LoadProperty() will work.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>bniemyjski replied on Friday, January 08, 2010</h2>The scope is private thus I can't use it in LoadProperty(). This is something I really wouldn't want to make public either.<br /><br />private static readonly PropertyInfo _cartIdProperty = RegisterProperty(p => p.CartId); <br />[System.ComponentModel.DataObjectField(true, true)] <br />public int CartId <br />{ <br />get { return GetProperty(_cartIdProperty); } <br />} </div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, January 08, 2010</h2>That's what I'm saying though - I've switched to making all the<br />PropertyInfo fields public as a general rule. They contain metadata that<br />is valuable not only to the object, but also to the UI and DAL.<br /><br />And frankly making them public better matches the<br />DependencyObject/DependencyProperty usage, which is the basis for my design<br />anyway.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rxelizondo replied on Friday, January 08, 2010</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div><br />I've switched to making all the PropertyInfo fields public as a general rule. They contain metadata that is valuable not only to the object, but also to the UI and DAL.<br /></div></BLOCKQUOTE><br /><br />Its kind of scary to expose a class such as PropertyInfo to the public when you are making a property such as "Index" also available to the public.<br /><br />Its could also be kind of confusing to a user to see methods like "NewFieldData" exposed to them since methods like that are of no use to them (even if ti takes them to do an explicit cast to IPropertyInfo to see them)<br /><br />Could we at the very least make the "Index" property and explicit declaration such as:<br /><br />int Core.IPropertyInfo.Index<br />{<br />    get<br />    {<br />        return _index;<br />    }<br />    set<br />    {<br />        _index = value;<br />    }<br />}<br /></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>bniemyjski replied on Friday, January 08, 2010</h2>Hello,<br /><br />I'm still searching for a better approach, I'm not happy with exposing information like this. I can see its uses in this one case but the more information I can keep hidden and out of scope the better.<br /><br />@rxelizondo, that could be an interesting idea.<br /><br />Thanks<br />-Blake Niemyjski</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, January 08, 2010</h2><P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>rxelizondo:</strong></div><div>Its kind of scary to expose a class such as PropertyInfo to the public when you are making a property such as "Index" also available to the public.</div></BLOCKQUOTE></P>
+<P>That is a good point and is a change that should be made.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>bniemyjski replied on Monday, January 11, 2010</h2>Hello, <br /><br />So I looked into this some more and it looks like the only approach is to make an internal setter :\.<br /><br />Thanks <br />-Blake Niemyjski</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rfcdejong replied on Monday, December 08, 2008</h2><P>Btw, exposing the protected non-generic LoadProperty to the ObjectFactory base class sounds fine by me. But must it be the non-generic LoadProperty? <BR><BR>I would like to see that both the normal and the info objects can be constructed the same way.<BR><BR></P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

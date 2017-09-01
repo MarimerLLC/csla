@@ -1,0 +1,35 @@
+<html><header><title>Inserting 100000 records</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Inserting 100000 records</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11684.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>neo_u posted on Thursday, November 08, 2012</h2><p>Hello,</p>
+<p>I&#39;m trying to make transactional insert with Csla.</p>
+<p>To get 100000 it doesn&#39;t take a long time, but when I&#39;m trying to insert them - it takes a long long time, while I can do it by transactional insert in a 10 seconds.</p>
+<p>I found out that some part of time is stolen by Clone() methods, so I disabled cloning on save. However it doesn&#39;t solve the problem. Still to insert 100k records I need to wait long time.</p>
+<p>Also I used TransactionalTypes.TransactionScope on DataPortal_Update method of my list of objects.</p>
+<p>&nbsp;</p>
+<p>I thought that sending DalManager to method Child_Update will solve my problem, but still no luck, at all :(</p>
+<p>&nbsp;</p>
+<p>Can someone help?</p>
+<p>&nbsp;</p>
+<p>Thanks in advance.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Thursday, November 08, 2012</h2><p>You can comment out the attribute, and just create transaction scope in code so that you can set desired timeout. &nbsp;However, I think you need to change the app so that you do not have to insert that much data from the client. &nbsp;You would be better off using SP to create the data on the server. &nbsp;Calling insert 1000000 repeatedly will never be fast. &nbsp;My 2 cents</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>skagen00 replied on Thursday, November 08, 2012</h2><p>Why are you mass-inserting 100,000 records? Are you stress-testing or is this an actual use case?</p>
+<p>Clone() is super-expensive, totally agree.&nbsp; We had a complex process in our application and 80% of the CPU time accoding to ANTS was Clone() calls!</p>
+<p>And I agree with Sergey - it&#39;s going to take a long time to save 100,000 BO&#39;s... </p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>neo_u replied on Thursday, November 08, 2012</h2><p>Yes. It&#39;s a test application.</p>
+<p>The main idea that&#39;s inserting about 100k records will be done only once. On first launch.</p>
+<p>On second and other launches it will insert/update about 1000-3000 records.</p>
+<p>StoredProcedure - is not way out.</p>
+<p>It&#39;s a research app. I&#39;m trying to find out it is possible to use Csla with WCF service to synchronize to databases or it&#39;s better to write db-to-db synchornization service without Csla, but with custom validation of data.</p>
+<p>&nbsp;</p>
+<p>PS: I forgot to tell you, that I&#39;m using SQLite database.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Thursday, November 08, 2012</h2><p>On general terms I favor BulkInsert for data loading. SQLite has no bulk insert to my knowledge but some good tips here:</p>
+<p><span>http://www.mostlydevelopers.com/blog/post/2012/02/19/SQLite-Bulk-Insert.aspx</span></p>
+<p><span>Could you post a sample project here for us to play with/test?&nbsp;</span></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Troncho replied on Thursday, November 08, 2012</h2><p>Hi Jonny, Hi everybody.</p>
+<p>The project I&#39;m working on demands a real use case which involves&nbsp;a monthly&nbsp;upload of about&nbsp;2,800,000 (<em>yes, almost&nbsp;3 million</em>) of contibutor tax related records. The source is a&nbsp;delimited ASCII text file.</p>
+<p>I&#39;ve come up with a very fast working solution, implementing a mix between Sql BulkCopy and a special implementation of the IDataReader (for the Sql BulkCopy) that works with IEnumerables obtained by reading the ASCII file via Linq 2 Files.</p>
+<p>I am not using any kind of transaction related control, as I can always delete the imported records and start over.</p>
+<p>I&#39;m also using&nbsp;a Background worker to do the upload and free the UI (which checks progress via async events).</p>
+<p>The only catch is that, for now, it only works with a WinForms UI which&nbsp;uses&nbsp;a derived CSLA Business Class for some initial property validation rules. This derived class, declares 3 public methods (<em>Upload, Delete, Cancel</em>). This methods can be called directly from the UI and they open direct connections to the database:</p>
+<pre style="font-family:Consolas;background:white;color:black;font-size:15px;"><span style="color:blue;">using</span>&nbsp;(<span style="color:blue;">var</span>&nbsp;conn&nbsp;=&nbsp;<span style="color:#2b91af;">ConnectionManager</span>&lt;System.Data.SqlClient.<span style="color:#2b91af;">SqlConnection</span>&gt;.GetManager(</pre>
+<pre style="padding-left:30px;font-family:Consolas;background:white;color:black;font-size:15px;">NrgNet.DalLinq.<span style="color:#2b91af;">Database</span>.NrgNet))
+</pre>
+<p>I&#39;m not using any DataPortal operations, so far.</p>
+<p>One way&nbsp;it could fit with CSLA is by using some special intermediate operation which places (uploads)&nbsp;the source file IN the server (DB server or App server with a very fast connection to the DB server), and then, via a CommandBase class, I could call the BulkCopy. I&#39;ll leave this design for&nbsp;next year&#39;s second half,&nbsp;when I upgrade to CSLA 4 and MVC UI.</p>
+<p>BTW, this solution is working just fine. Running tests with the UI working directly on the DB server,&nbsp;uploading 2.8 million records to a table with 2 indexes&nbsp;takes about&nbsp;1:30 minutes...</p>
+<p>If my solution can prove useful for anybody, please tell me how do you suggest I upload this part of the project so I can share my results with you.</p>
+<p>Troncho</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

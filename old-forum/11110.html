@@ -1,0 +1,67 @@
+<html><header><title>Determing which object should be the root object in a graph.  Any guidleines?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Determing which object should be the root object in a graph.  Any guidleines?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11110.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>pbusch posted on Monday, January 30, 2012</h2><p>I frequently struggle with determing which object should be the root object in a group of related objects.&nbsp; As a result, I feel my object graphs and relationships end up&nbsp;being too large and complex and consequently not very performant.&nbsp; By the end of setting the class realtionships up in an application, I am usually left with 2 or 3 large graphs in a single application.</p>
+<p>Maybe my approach is wrong, but given the object hiearchy defined below, I&nbsp;have made&nbsp;Organization the Root object.&nbsp;&nbsp;This seems like a lot of work though when, frequenlty, I just need to&nbsp;gain access to the features and behavior supplied by the&nbsp;User object.&nbsp; This creates&nbsp;the added overhead of building the entire graph every time&nbsp;I want to edit a single user and it cannot be the&nbsp;right way of doing this.&nbsp;&nbsp;Nonetheless,&nbsp;I have not made User&nbsp;a Root object because User cannot exist without an Organization.&nbsp; So a user does not&nbsp;<em>use&nbsp;</em>an Organization it is <em>contained</em> within them (containment vs using relationships).&nbsp; Right?</p>
+<ul>
+<li>Organization 
+<ul>
+<li>UsersList 
+<ul>
+<li>User 
+<ul>
+<li>RolesList 
+<ul>
+<li>Role</li>
+<li>...</li>
+<li>Role</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>User 
+<ul>
+<li>RolesList 
+<ul>
+<li>Role</li>
+<li>...</li>
+<li>Role</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>Am I looking at this the right way?&nbsp;&nbsp;Is there extra reading or guidleines that I could refer to when struggling with this?</p>
+<p>&nbsp;</p>
+<p>Thanks,</p>
+<p>Pat</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Marjon1 replied on Tuesday, January 31, 2012</h2><p>Some of the most difficult challenges that my team experienced when first starting to work with CSLA is that it is a very much use-case &amp;&nbsp;behavior&nbsp;oriented platform. This can result in what is perceived by many to be a duplication of code or objects, however, once you get your head around that it makes building your objects much easier.</p>
+<p>Given the examples that you&#39;ve given above, when you maintain a user does it need access to the organization object or does it just require maybe an organizationID to be stored as part of the database structure? The idea of having only 2 or 3 root objects I would not think is the correct design unless you have very complicated process that requires saving as a single object and even then a Unit Of Work object could handle that better. I know that the Rocky books for 3.x series had a number of good concepts on where to use root level objects, etc.&nbsp;</p>
+<p>Our class model for users for our objects are as follows:&nbsp;</p>
+<ul>
+<li>UserInfoList (used to display a list of users within a grid, which is then double-clicked on)&nbsp;</li>
+<li>Users
+<ul>
+<li>UserRoleList (used to assign a role to a user, all verification if the role is active,etc is done either via command objects or RoleInfo objects)&nbsp;</li>
+</ul>
+</li>
+<li>RolesInfoList (used to display a list of roles within a grid, which is then double-clicked on)&nbsp;
+</li>
+<li>Roles
+<ul>
+<li>RolesUserList (similar to above UserRoleList but is for users)&nbsp;</li>
+</ul>
+</li>
+</ul>
+<p>If you need to access roles directly from users, this may make your objects a bit more complex. However, where possible I try and design each UI screen around a single root level object, with assistance from other classes / helpers where it makes sense. If all I need is a single piece of information about a related object (e.g customers having a group) then I set this up as a field (GUID or INT depending on DB) not a child relationship.</p>
+<p>Hopefully this helps a bit and I&#39;m sure you&#39;ll get other feedback from the great community we have here.</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>pbusch replied on Tuesday, January 31, 2012</h2><p>Thank you for your feedback.&nbsp; I like your recommendation of designing UI Screens around Root level objects.&nbsp; Do you happen to know of the top of your head which eBook contained information on this subject.&nbsp; I am still struggling with this conept a bit and am in search of further information.&nbsp; </p>
+<p>Thanks,</p>
+<p>Pat</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, January 31, 2012</h2><p>Books 5, 6, and 7 in the <em>Using CSLA 4</em> series all include discussion of behavioral object design and designing the objects around user scenarios.</p>
+<p>I don&#39;t really design the objects around the UI, as much as that the UI and objects are both designed around user scenarios or tasks. As a result they work well together because they are designed to work together to solve the same problem.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>stefan replied on Wednesday, February 01, 2012</h2><p>Reading your question again, I get the suspicion that you have not yet looked at the Project Tracker demo application, at least not as close as you should have!</p>
+<p>The hierarchical structure that you present typically comes from&nbsp;anticipations that we often have about the UI that we want to come up with in the end... Besides displaying the relationship between different &quot;entities&quot;, that structure is providing the user a means of navigating to the data he wants to work with. Displaying and navigation are UI features. You would use readonly objects for these purposes.</p>
+<p>Editable object hierarchies should be restricted to data/children that MUST be persisted together. And that does not apply to all the players in your problem domain (organization, user, roles).</p>
+<p>I suspect that the relationship between user and roles is pretty much the same as the project-resource relationship in the Project Tracker app. You have to identify the right kind of relationship that you are dealing with each time. Here it is an m:n relationship.</p>
+<p>In the case of the organization:user relationship you might have options... If a single user can only be assigned to a single organization (1:n), then the User object would just get a required property &quot;OrganizationId&quot;... and the UserRoles would result in an editable child collection, just like ProjectResources in the Project Tracker app.</p>
+<p>Looking at the Project Tracker app should get you on your way!</p>
+<p>P.S.: You should have a closer look at the ProjectTracker.Library project, which contains the business objetcs.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

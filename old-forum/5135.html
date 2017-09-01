@@ -1,0 +1,74 @@
+<html><header><title>Object confusion</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Object confusion</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5135.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>whelzer posted on Tuesday, July 22, 2008</h2>I'm putting together a User Admin UI for my app.<br><br>In terms of objects I've got:<br><br>User - inherits from BusinessBase, has usual properties (user full name, user name, etc) and a collection of Roles.<br><br>So far so good...for the Roles collection I was thinking of: <br><br>RoleInfo -&nbsp; inherits from ReadOnlyBase (RoleId, Role, Role Description)<br><br>and RoleList - inherits from BusinessListBase and manages a collection of RoleInfo objects which needs to be editable.<br><br>It seems I can't do this?&nbsp; Neither BusinessListBase and EditableListBase can have Read Only object as their collection object.&nbsp; Am I reading this correctly?&nbsp; Does this make any sense??<br><br>Any help much appreciated.<br><br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, July 22, 2008</h2><P>You don't have quite enough objects to meet (what I think is) your use case.</P>
+<P>You need this to edit the user and their roles:</P>
+<UL>
+<LI>User &lt;- BusinessBase</LI>
+<UL>
+<LI>UserRoles &lt;- BusinessListBase</LI>
+<UL>
+<LI>UserRole &lt;- BusinessBase</LI></UL></UL></UL>
+<P>And to show the list of available roles:</P>
+<UL>
+<LI>RoleList &lt;- ReadOnlyListBase</LI>
+<UL>
+<LI>RoleInfo &lt;- ReadOnlyBase</LI></UL></UL>
+<P>And to admin the list of roles itself:</P>
+<UL>
+<LI>Roles &lt;- BusinessListBase</LI>
+<UL>
+<LI>RoleEdit &lt;- BusinessBase</LI></UL></UL>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>whelzer replied on Wednesday, July 23, 2008</h2>Rocky,<br>
+<br>
+Many thanks for the reply, I only mentioned "block 1" in my first post to keep things simple.<br><br>Why would UserRole inherit from BusinessBase?&nbsp; In my mind it is merely a 3 attribute object - RoleId, RoleName &amp; RoleDesc.&nbsp; <br><br>It can not be changed at this level - I was thinking a ReadOnlyBase object would be more appropriate, in fact that is was I had built, I then discovered that this can not serve in a writable collection...<br><br>I need to move on so I'll make it BusinessBase but am still very interested in your thoughts.<br><br><br><br><br><br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>triplea replied on Wednesday, July 23, 2008</h2><P>I had a similar scenario recently where it would appear that the most logical structure would be (translating it into the current scenario):</P>
+<UL>
+<LI>User &lt;- BusinessBase </LI>
+<UL>
+<LI>UserRoles &lt;- BusinessListBase </LI>
+<UL>
+<LI>UserRole &lt;- ReadOnlyBase</LI></UL></UL></UL>
+<P>Of course this is not possible thats why I had to restructure the hierarchy like Rocky suggested. It would be a nice shortcut but then again it would probably muddle up object responsibilities... Just make sure all your properties in UserRole (BusinessBase) are read only and that you keep your read-only list in sync and you should be fine.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, July 23, 2008</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>It is all about object responsibilities.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>UserRole may be simple, but its responsibility is to represent
+the connection between a user and a role. It is an active participant in the
+use case, and is an editable object because it needs to save its data (the
+relationship) to the database when the User object is saved.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Read-only objects only have read-only properties, but also they <i>can
+not be saved to the database</i>. They have no support for
+DataPortal_Insert/Update/Delete. Why would they? They are read-only.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>But you actually need to save this data (simple though it might
+be), and so you need an editable object (even if that object&#8217;s properties
+are read-only).<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky</span><b><span><o:p></o:p></span></b></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Wednesday, July 23, 2008</h2>Nothing wrong with having a BusinessBase object that has only readonly properties.&nbsp; You use it because you pretty much have to.. and it makes sense.&nbsp; Anything that can write to the database should be a BO.. it's not readonly otherwise, even if the user can't directly change the instance properties.<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

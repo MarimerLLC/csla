@@ -1,0 +1,81 @@
+<html><header><title>Different behaviour using CslaDataPortalProxy vs Direct DB Connection</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Different behaviour using CslaDataPortalProxy vs Direct DB Connection</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/7316.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>DazedAndConfused posted on Wednesday, July 22, 2009</h2><P>I am running a csla business dll on a windows service. We then connect to this service using the CSLA Data Portal Proxy.</P>
+<P>Worryingly I have noticed that it works differently if I connect directly to the same business dll via a direct db connection or via the web service.</P>
+<P>I have a BusinessListBase collection which I populated using the get list. This is kept locally on the client. I then add a BusinessBase object to this collection and call the BusinessListBase.Save and the object is inserted. If I call the save again, it is inserted agian, with no changes. </P>
+<P>If I connect directly to the database from the client and do the same operation I get an Insert, then an update.</P>
+<P>What is going on?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, July 22, 2009</h2><P>Save() returns a value. That value is the new object generated as a result of the Save(). You must use that result:</P>
+<P>_object = _object.Save();</P>
+<P>In older versions of CSLA you could cheat and not use the result when using a local data portal, but in all current versions you must use the result with local or remote data portal configurations.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>DazedAndConfused replied on Wednesday, July 22, 2009</h2><P>Thats great Rocky, and fixes one issue, next question:</P>
+<P>I have this method</P>
+<P>Private static BusinessCollection _CollectionOfObjects;</P>
+<P>Public static void (BusinessObject_Add(BusinessObject myObject)</P>
+<P>{</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_CollectionOfObjects.add(myobject);</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _ CollectionOfObjects = _CollectionOfObjects.Save();</P>
+<P>}</P>
+<P>My collection is now correct, but how do I ensure that the object I passed in is&nbsp;updated from the object that has been&nbsp;inserted within the collection. </P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, July 22, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>After you do a Save() you need to ensure that anything
+referencing the collection gets the new reference (any forms, etc).<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky</span><b><span><o:p></o:p></span></b></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>DazedAndConfused replied on Wednesday, July 22, 2009</h2>At the moment I no just return the last object in the collection after the save, can you think of any better way?</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, July 22, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>You really can&#8217;t do what you are doing &#8211; you need to
+return the new collection reference so the caller can update their reference.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>If you want to save individual objects as you add them to a
+collection, you might find that EditableRootListBase is the simpler base class,
+instead of BusinessListBase, which is designed to save a batch of object
+changes at once.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky</span><b><span><o:p></o:p></span></b></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>DazedAndConfused replied on Wednesday, July 22, 2009</h2><P>I understand what you are saying, but I need to save the object to the db to get its key (indentity), as this is needed by other objects. So there is no way for me to reference the object from the collection after the save, other than using the original object as I won't know which one it was in the collection. </P>
+<P>I will have a look at the use of EditableRootListBase. What I have is now working, just looks like a major hack. </P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,13 @@
+<html><header><title>DataGridView deletes new row</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>DataGridView deletes new row</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/422.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Crestline posted on Tuesday, June 20, 2006</h2>We have a EditiableRootList bound to a DataGridView.&nbsp; A new row is
+added and when we hit TAB to go to the next new row, the one we just
+entered disappears.&nbsp; If we enter an new row and then click on an
+existing row above it (i.e. Don't hit tab to go to the new next row)
+then it stays.<br>
+<br>
+Any ideas?<br>
+<br>
+Thanks,<br>
+BR<br>
+<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, June 27, 2006</h2><P>Assuming you are using 2.0, it is possible that your GetIdValue() method isn't returning a unique value for each object as discussed here</P>
+<P><A href="http://www.lhotka.net/Articles.aspx?id=252e4f20-f202-4ba5-b6ff-4d629a2b7dcc">http://www.lhotka.net/Articles.aspx?id=252e4f20-f202-4ba5-b6ff-4d629a2b7dcc</A></P>
+<P>Another possibility is that your AddNewCore() override isn't properly adding the new child. Make sure your approach matches the one in the book from Chapter 7.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Crestline replied on Tuesday, June 27, 2006</h2>Thanks, I'll take a look.<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

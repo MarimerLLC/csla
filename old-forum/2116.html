@@ -1,0 +1,30 @@
+<html><header><title>Doing away with stored procedures.</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Doing away with stored procedures.</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/2116.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>rxelizondo posted on Thursday, January 11, 2007</h2><P class=MsoNormal>For some time now, I have been contemplating the idea of getting rid of the stored procedures and do all the data modification by accessing the tables directly.</P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal>I do realize that stored procedures have some major advantages, the biggest advantage that I can think of is that with stored procedures, a database administrator is able to control what can be done by each stored procedure call and this can prevent mistakes or abuse from happening. If the database administrator gave direct table access permission very bad things could occur.</P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal>But is there really a point of creating stored procedures for this purpose when the same person that is creating the database is the same as the one creating the code that modifies the data? Wouldn’t it be just a lot easier to make the table calls directly?</P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal>I do realize that the performance of the query will be better if the query was compiled in a stored procedure but assuming that the speed issue is not a critical thing, wouldn’t it just make more since to make direct data table calls?</P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal>You feedback is greatly appreciated.</P>
+<P class=MsoNormal>Thanks. </P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Skafa replied on Thursday, January 11, 2007</h2>you can find a lot of comments in this topic: http://forums.lhotka.net/forums/thread/10564.aspx<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>DansDreams replied on Thursday, January 11, 2007</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>rxelizondo:</strong></div><div>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal>I do realize that the performance of the query will be better if the query was compiled in a stored procedure but assuming that the speed issue is not a critical thing, wouldn’t it just make more since to make direct data table calls?</P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal>You feedback is greatly appreciated.</P>
+<P class=MsoNormal>Thanks. </P>
+<P></div></BLOCKQUOTE></P>
+<P>See the other thread.&nbsp; The compiling performance thing is purely mythical, but over there we're discussing the very point you raise.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Bowman74 replied on Thursday, January 11, 2007</h2><P>Since about 90% of my BO code code and associated stored procs&nbsp;are generated it really&nbsp;wouldn't be much easier for&nbsp;me from a development standpoint so I always generate stored procs.&nbsp; For me personally it is easier to see the clean SQL in a stored proc on the rare occasion when I need to write/debug&nbsp;SQL&nbsp;than looking at a bunch of concatenated strings in a dataportal method.&nbsp; I sometimes find the need to do complicated joins in&nbsp;non-generated SQL&nbsp;and I prefer to do that in Enterprise Manager.</P>
+<P>Your preferences may vary of course.&nbsp; But most of the setting up of BOs and data access is pure drudgery and very simple;&nbsp;a prime target for generation.&nbsp; If you are not generating now I'd look into it.&nbsp; Once your generating it is no harder to generate stored procs than it is to generate dynamic SQL.</P>
+<P>Thanks,</P>
+<P>Kevin</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ward0093 replied on Thursday, January 11, 2007</h2><P>I have to agree with Kevin... I think maintanance of your SPs is just a little bit more... but it make for much cleaner code than a bunch of strings... if for no other reason than that...&nbsp; </P>
+<P>I only use SPs in all my apps</P>
+<P>ward0093</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Thursday, January 11, 2007</h2>Personally I think its a bad idea.&nbsp; You not only have to think about developers making mistakes, but also your users.&nbsp; Its not very far fetched that an end user can link to a table through Access, for example, and screw up the data.<br><br>Also, one good thing about procs is that having and using them means you can easily add row level auditing, without changing your code.&nbsp; Row level auditing is one of those things I think are best done via these kinds of procs.&nbsp; <br><br>I'm not sure what kind of maintance problems you're having; my procs and views are generated by a tool I have, and outside of tweaking permissions now and then, I don't ever really have to touch them..<br><br>Andy<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>pelinville replied on Thursday, January 11, 2007</h2><DIV>This turns out to be more a religious decision in many cases.</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>As long as you are aware of the pros and cons of each method then I suggest doing a project with the method you are curious about and see how it goes.&nbsp; Create some test cases where db schemas have to changed and see how easy/hard each method is for you.</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>Then just do what works best for <STRONG>you</STRONG>.</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>Personally I do not allow any SQL strings, even stored procedure names, anywhere in my BO's. And personally I avoid creating stored procedures until I have to.</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>But that is just me.&nbsp;&nbsp;(Some think I am either crazy or&nbsp;incompetent or both.)</DIV></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

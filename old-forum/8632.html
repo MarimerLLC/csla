@@ -1,0 +1,25 @@
+<html><header><title>Authorization issue.</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Authorization issue.</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/8632.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>eldospk posted on Monday, March 08, 2010</h2><p>Hi,</p>
+<p>We are using csla version 3.8 in our wpf application and currently in the process of doing the security implementation.</p>
+<p>When the user is authenticated, we are adding the user&#39;s privileges to the CSLAIdentity.Roles</p>
+<p>Then we are reading the authorization rules from the database and adding them dynamically. These include object authorization rules as well as property authorization rules. Our understanding was, at this point if the user doesn&#39;t have the right privilege, he/she wouldn&#39;t be able to do the corresponding action. But nothing happens and the application continues without looking at the user&#39;s privileges. Do we need to bind the controls in the xaml based on the authorization for each property?</p>
+<p>&nbsp;</p>
+<p>When we do&nbsp;</p>
+<p><span>&lt;</span><span>Button</span><span> 
+MinWidth</span><span>=&quot;95&quot;</span><span> 
+Width</span><span>=&quot;auto&quot;</span><span> 
+Height</span><span>=&quot;25&quot;</span><span> 
+Style</span><span>=&quot;{</span><span>DynamicResource</span><span> 
+RoundedButton</span><span>}&quot;</span><span> 
+Background</span><span>=&quot;#FF7F90FC&quot;</span><span> 
+BorderBrush</span><span>=&quot;#95FFFFFF&quot;</span><span> 
+csla</span><span>:</span><span>InvokeMethod.TriggerEvent</span><span>=&quot;Click&quot;</span><span> 
+csla</span><span>:</span><span>InvokeMethod.MethodName</span><span>=&quot;Save&quot;</span><span> 
+csla</span><span>:</span><span>InvokeMethod.MethodParameter</span><span>=&quot;{</span><span>Binding</span><span> 
+Model</span><span>}&quot;</span><span><b> 
+IsEnabled</b></span><span><b>=&quot;{</b></span><span><b>Binding</b></span><span><b> 
+CanEditObject</b></span><span><b>}&quot;</b></span><span>&gt;</span><span>OK</span><span>&lt;/</span><span>Button</span><span>&gt;</span></p>
+<p><span>the button gets disabled based on the users privileges. Should we need to do this in the xaml?&nbsp;</span></p>
+<p>&nbsp;</p>
+<p><span>Many Thanks.</span></p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Monday, March 08, 2010</h2><p>Yes, you need to bind your UI to the authz properties exposed by the CslaDataProvider, ViewModelBase, ObjectStatus and/or PropertyStatus controls.</p>
+<p>There&#39;s no way for CSLA or me to know all the cool things people might do in their UI based on authz rules, so especially in the Xaml world I&#39;m just exposing the metadata and allowing the UI designer to do whatever interesting things they might want to do based on that information.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

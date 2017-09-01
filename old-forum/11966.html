@@ -1,0 +1,71 @@
+<html><header><title>SmartDate Question: Appears to be truncating time portion.</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>SmartDate Question: Appears to be truncating time portion.</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11966.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>skeeler posted on Friday, May 03, 2013</h2><p>I have a ReadOnlyList and a&nbsp;BusinessBase class that contains Event information something like this.</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; public static readonly PropertyInfo&lt;SmartDate&gt; StartProperty = RegisterProperty&lt;SmartDate&gt;(p =&gt; p.Start, &quot;Start&quot;);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; public string Start</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; get { return GetPropertyConvert&lt;SmartDate, String&gt;(StartProperty); }</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; set { SetPropertyConvert&lt;SmartDate, String&gt;(StartProperty, value); }</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; public static readonly PropertyInfo&lt;SmartDate&gt; EndProperty = RegisterProperty&lt;SmartDate&gt;(p =&gt; p.End, &quot;End&quot;);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; public string End</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; get { return GetPropertyConvert&lt;SmartDate, String&gt;(EndProperty); }</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; set { SetPropertyConvert&lt;SmartDate, String&gt;(EndProperty, value); }</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<div>When the entity is Created with a value that contains both a date and time via the BusinessBase object the time is stored correctly in the database.</div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div>When the application retrieves the objects &amp; values via SafeDataReader and into my&nbsp;ReadOnlyList into the Mvc4 application it seems to have truncated the time portion of the date.</div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div>What am I doing wrong? Any suggestions?</div>
+<div></div>
+<div></div>
+<div></div>
+<div>Thanks.</div>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tiago replied on Friday, May 03, 2013</h2><p>Hi skeeler,</p>
+<p>I also noticed SmartDate just shows the date. After all it&#39;s SmartDate and not SmartDateTime</p>
+<p>For simple auditing purposes - i.e. CreatedOn / ChangedOn - I use DateTime and set the same value on both properties when the object is created. As these properties can never be null&nbsp;I don&#39;t need any &quot;smartness&quot; here.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>skeeler replied on Friday, May 03, 2013</h2><p>They are going to be a nullable datetime. I guess I&#39;ll have to just do the ladder.</p>
+<p>Thanks for the help.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Saturday, May 04, 2013</h2><p>Hi,</p>
+<p>SmartDate supports format strings and the default format is&quot;d&quot;.<br />Se also <a href="http://msdn.microsoft.com/en-us/library/az4se3k1.aspx">Standard Date and Time Format strings</a></p>
+<p>Try&nbsp; this code:</p>
+<pre style="font-family:Consolas;font-size:13;color:black;background:white;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="color:blue;">var</span>&nbsp;sd&nbsp;=&nbsp;<span style="color:blue;">new</span>&nbsp;SmartDate();
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#2b91af;">Debug</span>.Print(<span style="color:#a31515;">&quot;default&nbsp;format:&nbsp;</span><span style="color:mediumseagreen;">{0}</span><span style="color:#a31515;">&quot;</span>,&nbsp;sd.FormatString);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;sd.FormatString&nbsp;=&nbsp;<span style="color:#a31515;">&quot;g&quot;</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#2b91af;">Debug</span>.Print(<span style="color:#a31515;">&quot;new&nbsp;format:&nbsp;</span><span style="color:mediumseagreen;">{0}</span><span style="color:#a31515;">&quot;</span>,&nbsp;sd.FormatString);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;sd.Text&nbsp;=&nbsp;DateTime.Now.ToString(<span style="color:#a31515;">&quot;g&quot;</span>);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#2b91af;">Debug</span>.Print(sd.Date.ToString(<span style="color:#a31515;">&quot;g&quot;</span>));
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#2b91af;">Debug</span>.Print(sd.Text);</pre>
+<p>Gives this result on my culture:</p>
+<p>default format: d<br />new format: g<br />04.05.2013 12:08<br />04.05.2013 12:08</p>
+<p>when the datetime format is changed to &quot;g&quot; = <span style="color:#2a2a2a;font-family:&#39;Segoe UI&#39;, &#39;Lucida Grande&#39;, Verdana, Arial, Helvetica, sans-serif;font-size:13px;font-style:normal;font-variant:normal;font-weight:normal;letter-spacing:normal;line-height:18px;orphans:auto;text-align:start;text-indent:0px;text-transform:none;white-space:normal;widows:auto;word-spacing:0px;-webkit-text-size-adjust:auto;-webkit-text-stroke-width:0px;float:none;">General date/time pattern (short time).</span></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Troncho replied on Tuesday, June 09, 2015</h2><p>Hi Jonny. I have this special case where I need to select Date + Time as a property for user input.</p>
+<p>On my BusinessBase constructed class, I declare the property like this:</p>
+<pre style="font-size:15px;font-family:Consolas;background:white;color:black;"><span style="color:blue;"><pre style="font-size:15px;font-family:Consolas;background:white;color:black;"><span style="color:blue;">private</span>&nbsp;<span style="color:blue;">static</span>&nbsp;<span style="color:#2b91af;">PropertyInfo</span>&lt;<span style="color:#2b91af;">SmartDate</span>&gt;&nbsp;StartDateTimeProperty&nbsp;=&nbsp;RegisterProperty&lt;<span style="color:#2b91af;">SmartDate</span>&gt;(c&nbsp;=&gt;&nbsp;c.StartDateTime,&nbsp;<span style="color:#a31515;">&quot;Start&nbsp;Date&nbsp;&amp;&nbsp;Time&quot;</span>,&nbsp;<span style="color:blue;">new</span>&nbsp;<span style="color:#2b91af;">SmartDate</span>(<span style="color:#2b91af;">DateTime</span>.Now));
+<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">string</span>&nbsp;StartDateTime
+{
+	<span style="color:blue;">get</span>&nbsp;
+	{
+		<span style="color:blue;">var</span>&nbsp;tempSD&nbsp;=&nbsp;GetProperty(StartDateTimeProperty);
+		tempSD.FormatString&nbsp;=&nbsp;<span style="color:#a31515;">&quot;G&quot;</span>;
+		<span style="color:blue;">string</span>&nbsp;retValue&nbsp;=&nbsp;tempSD.Text;
+		<span style="color:blue;">return</span>&nbsp;retValue;
+ 
+		<span style="color:green;">//return&nbsp;GetPropertyConvert&lt;SmartDate,&nbsp;string&gt;(StartDateTimeProperty);&nbsp;</span>
+	}
+ 
+	<span style="color:blue;">set</span>&nbsp;{&nbsp;SetPropertyConvert&lt;<span style="color:#2b91af;">SmartDate</span>,&nbsp;<span style="color:blue;">string</span>&gt;(StartDateTimeProperty,&nbsp;<span style="color:blue;">value</span>);&nbsp;}
+}</pre>
+</span>
+</pre>
+<p>This is working fine but I think there may be a better way consisting of somehow being able to assign [<strong>StartDateTimeProperty.FormatString</strong>] without deriving a new [struct] from SmartDate. It would be more elegant. Is there any way of doing this?</p>
+<p>Thanks,</p>
+<p>Troncho</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Wednesday, June 10, 2015</h2><p>Hi, </p>
+<p>You can specify the custom format in RegisterProperty:</p>
+<pre style="font-family:Consolas;font-size:13;color:black;background:white;"><span style="color:blue;">private</span>&nbsp;<span style="color:blue;">static</span>&nbsp;<span style="color:#2b91af;">PropertyInfo</span>&lt;<span style="color:#2b91af;">SmartDate</span>&gt;&nbsp;StartDateTimeProperty&nbsp;= <br />    RegisterProperty(c&nbsp;=&gt;&nbsp;c.StartDateTime,&nbsp;<span style="color:#a31515;">&quot;Start&nbsp;Date&nbsp;&amp;&nbsp;Time&quot;</span>,&nbsp;<span style="color:blue;"><br />           new</span>&nbsp;<span style="color:#2b91af;">SmartDate</span>(<span style="color:#2b91af;">DateTime</span>.Now)&nbsp;{FormatString&nbsp;=&nbsp;<span style="color:#a31515;">&quot;G&quot;</span>});<br />&nbsp;</pre></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Troncho replied on Wednesday, June 10, 2015</h2><p>Nice! I knew there had to be a better way <img src="http://forums.lhotka.net/emoticons/emotion-1.gif" alt="Smile" /></p>
+<p>Once again, thanks Jonny!</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

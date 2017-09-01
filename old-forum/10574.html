@@ -1,0 +1,62 @@
+<html><header><title>How to get additional standalone property from viewmodel or model?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>How to get additional standalone property from viewmodel or model?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10574.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>simon posted on Monday, August 01, 2011</h2><p>I have a textbox in a view with MaskBehavior</p>
+<p>&lt;Usercontrol &gt;</p>
+<p>&lt;TextBox Grid.Row=&quot;1&quot; Grid.Column=&quot;1&quot; Margin=&quot;3&quot; Height=&quot; 23&quot; Text=&quot;{Binding Model.No,UpdateSourceTrigger=PropertyChanged}&quot; inf:MaskBehavior.Mask=&quot;{Binding Path= NameMask}&quot; /&gt;</p>
+<p>&lt;/Usercontrol&gt;</p>
+<p>code behind:</p>
+<p>
+<p>[Export(typeof(MaterialCompositeView))]</p>
+<p>&nbsp; &nbsp; [PartCreationPolicy(CreationPolicy.NonShared)]</p>
+<p>&nbsp; &nbsp; public partial class MaterialCompositeView : DocumentContent</p>
+<p>&nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; public MaterialCompositeView()</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; InitializeComponent();</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; [Import]</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; MaterialCompositeViewModel ViewModel</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; set</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; this.DataContext = value;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp; &nbsp; }</p>
+</p>
+<p>in my model, no exist MameMask property. &nbsp;I add the NameMask Property into my ViewModel.</p>
+<p>ViewModel:</p>
+<p>
+<p>[Export(typeof(MaterialCompositeViewModel))]</p>
+<p>&nbsp; &nbsp; [PartCreationPolicy(CreationPolicy.NonShared)]</p>
+<p>&nbsp; &nbsp; public class MaterialCompositeViewModel:ViewModel&lt;Materials&gt;</p>
+<p>&nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Public string NameMask{get;set;}</p>
+<p>&nbsp; &nbsp; }</p>
+</p>
+<p>&nbsp;</p>
+<p>I expect the user can define the mask at runtime. &nbsp;how can i get the value from the database?</p>
+<p>Add a commandbase into the &nbsp;model to get the value or another solution? pls advise.</p>
+<p>Thank you</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Monday, August 01, 2011</h2><p><div style='padding-left: 50px;background-color:silver'><b>simon<br></b>
+<p>I expect the user can define the mask at runtime. &nbsp;how can i get the value from the database?</p>
+<p>Add a commandbase into the &nbsp;model to get the value or another solution? pls advise.</p>
+<div style="CLEAR:both;"></div>
+</div></p>
+<p>I typically use simple read only objects to load metadata like that from the database. You&#39;ll probably want to use a UOW to load the data and metadata with a single call to the server (especially in Silverlight, where you need both sets of information at the same time, and you need to overcome the async nature of SL).</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>simon replied on Tuesday, August 02, 2011</h2><p>I read the UOW of Using Csla. &nbsp;And how to realize the ViewModel? &nbsp;below is right?</p>
+<p>public class MaterialCompositeViewModel:ViewModel&lt;MaterialComposieViewModel&gt;</p>
+<p>{</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; Public string NameMask</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp;{</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;get{return NameMaskList..DefultValue;}</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; public MaterialCompositeViewModel()</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp;{</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;InitData();</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp;}</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp;&nbsp;private void InitData()</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; {&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; BeginRefresh(&quot;GetMaterialRetriever&quot;);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp;}</p>
+<p>}&nbsp;</p>
+<p>pls advies.</p>
+<p>&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

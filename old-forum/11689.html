@@ -1,0 +1,40 @@
+<html><header><title>Code Generation for business objects</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Code Generation for business objects</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11689.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>es org se posted on Friday, November 09, 2012</h2><p>Hi, there.</p>
+<p>I want to generate csla business classes based on a) my database b) on my entity frameworkmodel.</p>
+<p>a) base:&nbsp; database/ technology: Raw Ado DotNet&nbsp;= Codesmith code generator</p>
+<p>Codesmith&#39;s code generator looks ok.&nbsp; What you do think about this generator? Is there a better one?</p>
+<p>&nbsp;</p>
+<p>b) base: Entity Framework model/ technologie&nbsp;EF= Codegenerator-&gt;CslaExtension 1.0.1&nbsp; (<a href="http://t4csla.codeplex.com/">http://t4csla.codeplex.com/</a>&nbsp;)</p>
+<p>This code generator looks ok as well.&nbsp; What you do think about this generator? Is there a better one? This project doesn&#39;t look very busy as their latest version is two years old.&nbsp; Is it save to use it or is it a death end?</p>
+<p>Please share your valuable opinions with me. Thank you for your help.</p>
+<p>&nbsp;</p>
+<p>ciu</p>
+<p>Manfred</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tiago replied on Friday, November 09, 2012</h2><p>Hi Manfred,</p>
+<p>You can have a look at <a href="http://cslagenfork.codeplex.com/">CslaGenFork</a> - an Open Source project that is under active development. Although in RC status, in fact it&#39;s a stable release.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>es org se replied on Monday, November 12, 2012</h2><p>Thank you very much. I will have a look.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>es org se replied on Monday, November 12, 2012</h2><p>Hi, Tiago</p>
+<p>I looked through <a href="http://cslagenfork.codeplex.com/"><span style="color:#003399;">CslaGenFork</span></a>. It looks very good. Is using stored procedures a must? I want to use plain old sql statements. Do I have this option?</p>
+<p>&nbsp;</p>
+<p>Thank you for your effords.</p>
+<p>ciu</p>
+<p>Manfred</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tiago replied on Monday, November 12, 2012</h2><p>Hi Manfred,</p>
+<p>Presently CslaGenFork only generates stored procedures and genertates the code that calls those stored procedures. Generating inline SQL queries is on the road map.</p>
+<p>If you can&#39;t use stored procedures, there is a workaround but you loose something. First of all the workaround.</p>
+<p>Let&#39;s suppose your data model (what&#39;s in the database) doesn&#39;t change.</p>
+<p>1) Generate for CSLA40 using a DAL - the code that calls the database is isolated on the DAL</p>
+<p>2) Edit the DAL code as fit</p>
+<p>You might need to rerun the code generation in order to add or change business or authorization rules. These changes only affect the business layer so it&#39;s all right to keep the DAL unchanged.</p>
+<p>3) On subsequent runs of the generator, disable DAL generation so you don&#39;t overwrite your changed DAL.</p>
+<p>What you loose is the ability to fully re-generate the whole project - DAL included, in case your data model changes. Re-generation is perhaps the most important feature of code generation. So this workaround is something you <strong>should not do</strong>, unless you are 120% (!!!) sure your data model won&#39;t change. This may happen when you are porting an existing application to CSLA .NET. If you are coding some new features for some existing application this may or may not happen.</p>
+<p>If you are writing a new application I don&#39;&#39;t believe this will happen - customer requisites will change too much and these changes will also affect the&nbsp;data model. If using inline SQL queries is a requisite, use stored procedures during the development phase until the customer is happy and stops asking for new features.&nbsp;At that point&nbsp;go for inline SQL.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>es org se replied on Tuesday, November 13, 2012</h2><p>Hi, Tiago </p>
+<p>Thank you for your very kind answer. Your editor looks very powerfull! Saidly I dont want to use stored procedures. How far SQL Statements in DAL&nbsp;are away?</p>
+<p>ciu</p>
+<p>Manfred</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tiago replied on Tuesday, November 13, 2012</h2><p>Hi Manfred,</p>
+<p>This feature isn&#39;t planned for the the near release. The plans are likely to change as CSLA 4.5 needs some special attention. I won&#39;t have time to re-evaluate the plans for the next weeks. So I can&#39;t make any promises.</p>
+<p>Regards</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>es org se replied on Wednesday, November 14, 2012</h2><p>Hi, Tiago</p>
+<p>No worries. I am impressed by your editor. Do as you please. Thank you for your answer and your work. </p>
+<p>ciu</p>
+<p>Manfred</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ozitraveller replied on Wednesday, January 02, 2013</h2><p>Hi</p>
+<p>I&#39;m using ClsaGenFork a ReadOnlyCollection, but the it doesn&#39;t generate all the properties for the columns in the table. Is there a limit?</p>
+<p>Thanks</p>
+<p>&nbsp;</p>
+<p>Sorry found what the problem was.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tiago replied on Thursday, January 03, 2013</h2><p>Hi ozitraveller,</p>
+<p>I&#39;m glad you found the problem. In the future, please use CslaGenFork <a href="http://cslagenfork.codeplex.com/discussions">Discussions</a>&nbsp;area.</p>
+<p>Regards</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

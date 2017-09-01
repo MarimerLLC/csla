@@ -1,0 +1,25 @@
+<html><header><title>Display Name Localization</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Display Name Localization</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10344.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>BruderKotlett posted on Thursday, May 05, 2011</h2><p>Hi,</p>
+<p>I&#39;m trying to localize my buiness object properties, with the Display Attribute.</p>
+<p>Like this:</p>
+<p>[Display(ResourceType = typeof(Business.BusinessResources), Name = &quot;Text1&quot;)]</p>
+<p>My Business.BusinessResources is in my Buisness Library. So I got a Business.dll, and a subfolder called &quot;en&quot; with my Business.resources.dll.</p>
+<p>- BusinessResources.resx (Public modifier, embeddet resource, PublicResXFileCodeGenerator)</p>
+<p>- BusinessResources.en.resx (Public modifier, embeddet resource, PublicResXFileCodeGenerator)</p>
+<p>My problem is, that the english translation would&#39;t get called, when I set the CurrentCulture an CurrentUICulture to &quot;en&quot;. I always get back my german translation.</p>
+<p>Can anyone help me with this problem? What I&#39;m doing wrong? Do you need mor information?</p>
+<p>Thanks</p>
+<p>Kevin</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, May 05, 2011</h2><p>I am not sure, as I haven&#39;t tried to do this. However, the Display attribute is a standard DataAnnotations attribute, so I suspect there might be an MSDN article on the topic?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>BruderKotlett replied on Friday, May 06, 2011</h2><p>Thank you for your fast reply.</p>
+<p>I googled it a long time. But can&#39;t find a capable topic or post. </p>
+<p>But do you think that I&#39;m on the right way? Have an supfolder called &quot;en&quot; which includes my Business.resources.dll.</p>
+<p>Kevin</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, May 06, 2011</h2><p>Usually when creating resource translations, you create all the language-specific resx files in the Resources folder of your project. Visual Studio will create subfolders with resource assemblies automatically when you build the project. You don&#39;t create those assemblies yourself - it is a result of the build process.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Sunday, May 08, 2011</h2><p>I&#39;d just like to add a reference to <a href="http://resex.codeplex.com/%20">http://resex.codeplex.com/&nbsp;</a> . </p>
+<p><i>ResEx is the composite, translation friendly .NET Resource editor.</i></p>
+<p>You&#39;d still need to include the various language resources in your project but Resex makes it a lot easier to translate or find non-translated resources <i><br /></i></p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>BruderKotlett replied on Monday, May 09, 2011</h2><p>Thank you guys. I tried to put my resx-Files into my project and the problem is still the same.</p>
+<p>I also used the ResEx Editor, and it says that all my resx-Files are translated correctly.</p>
+<p>If I have any further informations on this topic I will let u know.</p>
+<p>&nbsp;</p>
+<p>Kevin</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Monday, May 09, 2011</h2><p>Is this rich client, or Asp.Net, WebForms or MVC?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>BruderKotlett replied on Tuesday, May 10, 2011</h2><p>I&#39;m using WPF with .NET 4.</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>BruderKotlett replied on Wednesday, May 11, 2011</h2><p>Found the problem...</p>
+<p>It&#39;s because we load our modules (*.dll), which includes the XAML views and everything else, in a shell (the main exe). And the shell standard culture was set to de-DE. So if I set these culture to en, everything works fine.</p>
+<p>Kind regards</p>
+<p>Kevin</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

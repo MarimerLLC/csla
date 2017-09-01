@@ -1,0 +1,14 @@
+<html><header><title>Query regarding WCF endpoint contract in the client</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Query regarding WCF endpoint contract in the client</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/12713.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>andrew123 posted on Wednesday, August 06, 2014</h2><p>In a number of the examples in the CSLA e-books (i.e. UsingCsla4-04-DataPortal.pdf page 44) and in the sample WindowsUI client on github (<a target="_blank" title="https://github.com/MarimerLLC/csla/blob/master/Samples/NET/cs/SimpleNTier/WindowsUI/App.config" href="https://github.com/MarimerLLC/csla/blob/master/Samples/NET/cs/SimpleNTier/WindowsUI/App.config">https://github.com/MarimerLLC/csla/blob/master/Samples/NET/cs/SimpleNTier/WindowsUI/App.config</a>) the client config is shown to be:</p>
+<p>&lt;endpoint .... contract=&quot;Csla.Server.Hosts.IWcfPortal&quot;/&gt;</p>
+<p>However, if I put this into my client config, I get an InvalidOperationException:</p>
+<p>Could not find endpoint element with name &#39;WcfDataPortal&#39; and contract &#39;WcfPortal.IWcfPortal&#39; in the ServiceModel client configuration section. This might be because no configuration file was found for your application, or because no endpoint element matching this name could be found in the client element.</p>
+<p>If I then change if to the following, it works (but I am skeptical I have everything set up correctly!)</p>
+<p>&lt;endpoint .... contract=&quot;WcfPortal.IWcfPortal&quot;/&gt;</p>
+<p><strong>Are the examples incorrect, or am I missing something regarding different ways to set the client up?</strong></p>
+<p>FYI, I have the proxy set to:</p>
+<p>&lt;add key=&quot;CslaDataPortalProxy&quot; value=&quot;Csla.DataPortalClient.WcfProxy, Csla&quot;/&gt;</p>
+<p>&nbsp;</p>
+<div></div></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Wednesday, August 06, 2014</h2><p>Current versions of CSLA generally ignore the client-side system.ServiceModel configuration in the config file. </p>
+<p>99.999% of the time people use the same configuration (or should), and were more often than not getting the configuration wrong. To avoid that recurring problem, the current WcfProxy sets up the WCF proxy in a known-to-be-correct manner.</p>
+<p>As a result, you just need to add the CslaDataPortalUrl key in appSettings to point to your server URL and the data portal should do the rest.</p>
+<p>If you need to customize the protocol/settings there are a number of options, which are described in the &#39;Using CSLA 4&#39; book.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,51 @@
+<html><header><title>Rules on affected properties</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Rules on affected properties</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/12012.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>g.beraudo@castsoftware.com posted on Thursday, June 06, 2013</h2><p>Dear all,</p>
+<p>I&#39;m using CSLA 4.5.10. I&#39;m facing trouble with some trivial rules computation:</p>
+<p>SubTotal1 = Property1 * Property2</p>
+<p>SubTotal2 = Property3 * Property4</p>
+<p>Total = SubTotal1 + SubTotal2</p>
+<p>&nbsp;</p>
+<p>I&#39;m adding to my business object the following rules (the first parameter is the primary property, the 1st and 2nd parameters are input properties, the third parameter is an affected property):</p>
+<p>ProdRule(Property1, Property2, SubTotal1),</p>
+<p>ProdRule(Property3, Property3, SubTotal2),</p>
+<p>SumRule(SubTotal1, SubTotal2, SubTotal)</p>
+<p>&nbsp;</p>
+<p>I did understand that (if not overidden) rule only cascade 1 level. Thus that the above scenario was supported.</p>
+<p class="MsoNormal"><span lang="FR">However, concretely this only works if &#39;SubTotal1&#39; (the primary property) is affected.</span></p>
+<p class="MsoNormal"><span lang="FR">This does not work when &#39;SubTotal2&#39; is affected (ie. when either Property3 or Property4 were updated).</span></p>
+<p class="MsoNormal"><span lang="FR"><br /></span></p>
+<p>I was surprised to see that only PrimaryProperty is taken into account (instead of all InputProperties), to define which rules should run, cf. businessrules.cs ln 568:</p>
+<p class="MsoNormal"><span>&nbsp; &nbsp; &nbsp;&nbsp;</span><span>var</span><span> rules = </span><span>from</span><span> r </span><span>in</span><span> TypeRules.Rules</span></p>
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span>where</span><span>
+ReferenceEquals(r.PrimaryProperty, property) &nbsp; //I was not expecting that</span></p>
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&amp;&amp; CanRunRule(r, executionContext)</span></p>
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span>orderby</span><span>
+r.Priority</span></p>
+<p>&nbsp;</p>
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span lang="FR">select</span><span lang="FR"> r;</span></p>
+<p class="MsoNormal">&nbsp;</p>
+<p class="MsoNormal"><span lang="FR">Am I wrongly assuming that CSLA engine should be designed to have my &#39;Total&#39; computed (ie. the rule run) if either &#39;SubTotal1&#39; or &#39;SubTotal2&#39; are modified.</span></p>
+<p class="MsoNormal">&nbsp;</p>
+<p class="MsoNormal"><span lang="FR">Thanks for your light,</span></p>
+<p class="MsoNormal"><span lang="FR">Regards,</span></p>
+<p class="MsoNormal"><span lang="FR">Gilles</span></p>
+<p class="MsoNormal"><span lang="FR">Note: I would have expected to see something like,&nbsp;</span></p>
+<p class="MsoNormal">&nbsp;&nbsp;var&nbsp;rules =&nbsp;from&nbsp;r&nbsp;in&nbsp;TypeRules.Rules</p>
+<p class="MsoNormal">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;where&nbsp;((ReferenceEquals(r.PrimaryProperty, property)</p>
+<p class="MsoNormal">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; || &nbsp;(r.InputProperties !=&nbsp;null <span lang="FR">&amp;&amp; r.InputProperties.Contains(property))) //I was expecting that instead</span></p>
+<p class="MsoNormal">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &amp;&amp; CanRunRule(r, executionContext)</p>
+<p class="MsoNormal">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;orderby&nbsp;r.Priority</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;<span lang="FR">select</span><span lang="FR">&nbsp;r;</span></p>
+<p class="MsoNormal">&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Thursday, June 06, 2013</h2><p>Hi,</p>
+<p>In these cases I prefer to draw an analogy to Excel / Spreadsheets.</p>
+<p>1. You put the Sum rule on the propety to be calculated</p>
+<p>&nbsp; &nbsp; &nbsp;IE: The SubTotal1, SubTotal2 and Total should be the primary property of CalcSum/ProdRule rule with the properties to sum as InputPropertiies&nbsp;</p>
+<p>2. To have them cascade down make sure to set&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp;BusinessRules.CascadeOnDirtyProperties to true on that business object (in DataPortal_Create and DatePortal_Fetch)</p>
+<p>This will make the rules cascade so long as context.AddOutValue makes a property dirty.&nbsp;</p>
+<p>Look at the CalcSum rule in the Samples/Net/cs/RuleTotorial sample for a readymade CalcSum rule.&nbsp;</p>
+<p>AsIs: when Property1 is changed the rule for SubTotal1 (where SunTotal1 is primary property) will be run as level 1. No further level rules will be run.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Friday, June 07, 2013</h2><p>Hi,</p>
+<p>You should also read the <a href="http://jonnybekkum.wordpress.com/2012/11/07/csla-4-5-ruleengine-update/">Csla 4.5 RuleEngine Update </a>blog post on my blog.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

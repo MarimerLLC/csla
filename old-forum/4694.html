@@ -1,0 +1,230 @@
+<html><header><title>CriteriaBase &amp; Generics</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CriteriaBase &amp; Generics</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4694.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>jh72i posted on Tuesday, April 15, 2008</h2>Just wondering why we don't have a generic'd Criteria. Don't <EM>really </EM>know what i'm talking about but just observing that we still need to pass Type info into the constructors of our Criterias that inherit from CriteriaBase.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tmg4340 replied on Tuesday, April 15, 2008</h2><P><FONT face=Tahoma size=2>Well... from one perspective, it's a "six of one, half-a-dozen of the other" concept.&nbsp; Would you rather pass in a type&nbsp;as a constructor parameter, or as a generic parameter?&nbsp; It's the same thing.&nbsp; CSLA needs the type to know what kind of business object to create in the DataPortal, so it doesn't have any actual bearing on CriteriaBase.&nbsp; Plus, to use it in the DataPortal,&nbsp;you'd end up having to take the generic parameter and go the "typeof(T)" route to get what you wanted anyway.</FONT></P>
+<P><FONT face=Tahoma size=2>There are backward-compatibility concerns as well.&nbsp; I'm pretty sure that a generic-based CriteriaBase would have to be a separate class.&nbsp; You certainly could do that, but again, that doesn't buy you a whole lot.</FONT></P>
+<P><FONT face=Tahoma size=2>Just MHO...</FONT></P>
+<P><FONT face=Tahoma size=2>- Scott</FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jh72i replied on Thursday, April 17, 2008</h2><P>Thanks for that reply Scott.&nbsp;I 'get' what you're saying.</P>
+<P>Kind of off but still on topic......I'm starting to wonder now whether criterias need to be tied to a specific object type at design time.&nbsp;Haven't put any real thought into this but it suddenly strikes me (after many years using clsa!!) that perhaps criteria needn't "belong" to the business classes..........like, say, most of my objects will have a criteria that allows retrieval by Id. I could simply provide one&nbsp;shared criteria class that would be passed into the factory methods (figuring the type of object to create then will have to be sorted out).</P>
+<P>I'm also <STRONG>really</STRONG> starting to wonder if the criterias shouldn't be public and be passed into the factory methods themselves rather than have a parameter list that often need to be duplicated in the criteria constructor....example:</P>
+<P><FONT face="Courier New" size=1>User me = User.LoadObject(myId);</FONT><BR>so:<BR><FONT face="Courier New" size=1>class User{<BR>&nbsp; public User LoadObject(int id)<BR>&nbsp;&nbsp;{<BR>&nbsp;&nbsp;&nbsp; return DataPortal.Fetch&lt;User&gt;(new Criteria(id));<BR>&nbsp;&nbsp;}</FONT><BR>has to have:&nbsp;<BR><FONT size=1><FONT face="Courier New" color=#000000>&nbsp; public class Criteria{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;public Criteria(int id){....}</FONT></FONT></P>
+<P>Now, I decide I want to provide a mechanism of searching by username...</P>
+<P><FONT><FONT face="Courier New" size=1>User me = User.LoadObject(myUsername);</FONT><BR></FONT>so:<BR><FONT face="Courier New" size=1>class User{<BR>&nbsp; public User LoadObject(int id)<BR>&nbsp;&nbsp;{<BR>&nbsp;&nbsp;&nbsp; return DataPortal.Fetch&lt;User&gt;(new Criteria(id));<BR>&nbsp;&nbsp;}<BR></FONT><FONT face="Courier New"><FONT size=1><FONT>&nbsp; public User LoadObject(string username)<BR>&nbsp;&nbsp;{<BR>&nbsp;&nbsp;&nbsp; return DataPortal.Fetch&lt;User&gt;(new Criteria(username));<BR>&nbsp;&nbsp;}</FONT><BR>has to have:&nbsp;<BR>&nbsp; public class Criteria{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;public Criteria(int id){....}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<BR><FONT>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;public Criteria(string&nbsp; username){....}</FONT></FONT></FONT></P>
+<P>Basically, i have to add to both places. Now, we have many overloads in some of our classes to this gets ugly fast. So, I wondering if I shouldn't get rid of the User.LoadObject(...) overloads and replace with a single User.LoadObject(Criteria) and have the calls like:</P>
+<P><FONT face="Courier New" size=1>User me = User.LoadObject(new Criteria(myId));<BR>User meAgain = User.LoadObject(new Criteria(myUsername));<BR></FONT><BR>I'm thinking that this would also allow me to use a single static LoadObject method for all classes:</P>
+<P><FONT size=1><FONT face="Courier New">&nbsp;&nbsp;public class BusinessBaseEx&lt;T&gt;: BusinessBase&lt;T&gt;...<BR>&nbsp;&nbsp;&nbsp;</FONT><FONT face="Courier New">{</FONT><BR></FONT><FONT size=1><FONT face="Courier New">&nbsp;&nbsp;&nbsp;&nbsp; public&nbsp;T LoadObject(CriteriaBase criteria)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return DataPortal.Fetch&lt;T&gt;(criteria);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>&nbsp;&nbsp;&nbsp;}</FONT><BR></FONT><FONT face="Courier New" size=1>&nbsp; public class User: BusinessBaseEx&lt;User&gt;<BR>&nbsp;&nbsp;&nbsp;<FONT face="Courier New">{</FONT><BR><FONT face="Courier New">&nbsp;&nbsp;&nbsp;}</FONT><BR></FONT><BR>Am I losing my mind for the sake of cleaner/less code or is there merit in this approach!? <BR><BR>Of course, inheritance from User gets complicated because T is now stuck as a User but this is a problem regardless - incidentally one that i'd love to know how people are dealing with.</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tmg4340 replied on Thursday, April 17, 2008</h2><P><FONT face=Tahoma size=2>Well... there's nothing that says you have to create specific criteria objects for every business object.&nbsp; One of the side benefits of the "CriteriaBase" solution is that you can create one criteria object that is "ID based" and use it for every business object that follows the ID pattern.&nbsp; Your factory method can instantiate the criteria class, providing the type to create there.&nbsp; I've done that several times.&nbsp; In fact, since I stopped directly tying a criteria object to a business object, I tend to put all my criteria objects into their own namespace now.</FONT></P>
+<P><FONT face=Tahoma size=2>As for the parameter list of your factory methods, how you manage that is largely a matter of style IMO.&nbsp; Under the system I outlined above, you can't directly pass in a criteria object - or, more appropriately, you shouldn't.&nbsp; That forces the UI to provide the business object's factory method with the type of the business object to create - something the factory method should already know.&nbsp; If your factory methods weren't tied directly to your business objects, then that's just fine (and, in fact, required).&nbsp; But since the CSLA pattern is to place the factory methods on the object they create...</FONT></P>
+<P><FONT face=Tahoma size=2>There is certainly nothing stopping you from creating UI-specific parameter objects that you pass into your factory methods.&nbsp; I have done this for generic Find methods, where the user can pass in several criteria.&nbsp; They do allow for parameter expansion, though I wouldn't go&nbsp;so far as to make every method take one.&nbsp;&nbsp;After all, what's the point of creating a parameter object with one property, especially if you know that method signature is never going to change?</FONT></P>
+<P><FONT face=Tahoma size=2>Regardless of the method chosen,&nbsp;I still have to map values to&nbsp;my criteria objects, either through a constructor or through properties.&nbsp; But I think of criteria objects as an internal CSLA construct, and as such I don't expose them to the UI.&nbsp; All my criteria objects are internal.&nbsp; So it doesn't bother me.&nbsp; And&nbsp;the DataMapper can help here.</FONT></P>
+<P><FONT face=Tahoma size=2>As for your generic load method - you can certainly do that.&nbsp; Again, I wouldn't, because I don't expose criteria objects directly to the UI.&nbsp; You could still make it work with the UI-specific parameter objects, though that's a little more complicated to do in a generic sense.&nbsp; Again, the DataMapper concepts can help there.&nbsp; The one downside I see is that all your Fetch routines will have to cast the criteria object passed in.&nbsp; That's not a huge deal, but part of the reason Rocky went to so much trouble upgrading the DataPortal's method invocation routines is so that we didn't have to do that anymore.&nbsp; Adding another generic parameter to handle the criteria object type would solve that, but then you're back to exposing the criteria internals to the UI.&nbsp; You can create a graph of UI-based parameter objects, but only if they have enough similarities.&nbsp; It quickly can become work for the pattern's sake, rather than actually helping you out.</FONT></P>
+<P><FONT face=Tahoma size=2>And you are correct - your generic methodolody breaks down in subclasses.&nbsp; There isn't any solution/workaround&nbsp;that I know of&nbsp;- "T" has to be defined somewhere, and once it is defined, there's no way to break it.&nbsp; Subclasses have to end up defining their own factory methods, which tends to get messy pretty quickly.&nbsp; You have to replace the base ones in your subclass and throw exceptions (to keep the UI from calling the wrong one), but you also would want to use the base factory routines in your subclass factory routines&nbsp;to get the base-class data - otherwise, what's the point?&nbsp; So you can end up writing a lot of code.&nbsp; You can certainly factor out&nbsp;some code so it's still usable in subclasses.</FONT></P>
+<P><FONT face=Tahoma size=2>HTH</FONT></P>
+<P><FONT face=Tahoma size=2>- Scott</FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Thursday, April 17, 2008</h2><P>I moved all of my criteria classes to their own namespace years ago when I had the same AHA! moment you just had. &lt;g&gt;.</P>
+<P>I have posted about it many times in the past and it has served me well over the years. By inheriting from CriteriaBase you have to pass in the Type of the BO the Criteria class will be associated with so it knows which instance to create.</P>
+<P>At first I wanted to make some generalized Criteria classes that would work for "anything". But it wasn't always clear what Code1 and Code2 stood for so I created a few more where they make more sense. Like Criteria for Id values or soe common string values in my app.</P>
+<P>Moving the Criteria classes out of the containing bOs and into their own namespace has been a great help and reduces a lot of duplicate code.</P>
+<P>Joe</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Thursday, April 17, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>This is just my opinion, but I like having criteria classes
+inside BO because I believe it promotes loose coupling and avoids accidental
+breaking of code when you modify a criteria class that is shared amongst business
+objects.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Senior Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> JoeFallon1
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Thursday, April 17, 2008 11:05 AM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] CriteriaBase &amp; Generics<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>I moved all of my criteria classes to their own namespace years ago when I
+had the same AHA moment you jst had. &lt;g&gt;.<o:p></o:p></p>
+
+<p>I have posted about it many times in the past and it has served me well over
+the years. By inheriting from CriteriaBase you have to pass in the Type of the BO
+the Criteria class will be associated with so it knows which instance to
+create.<o:p></o:p></p>
+
+<p>At first I wanted to make some generalized Criteria classes that would work
+for &quot;anything&quot;. But it wasn't always clear what Code1 and Code2 stood
+for so I created a few more where they make more sense. Like Criteria for Id
+values or soe common string values in my app.<o:p></o:p></p>
+
+<p>Moving the Criteria classes out of the containing bOs and into their own
+namespace has been a great help and reduces a lot of duplicate code.<o:p></o:p></p>
+
+<p>Joe<o:p></o:p></p>
+
+<p>&nbsp;<o:p></o:p></p>
+
+<p>&nbsp;<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Thursday, April 17, 2008</h2><P>Sergey, </P>
+<P>I&nbsp;get your point. But here is the thing - I do not modify my generalized Criteria classes. If I need a 2nd parameter or something I create a new criteria class. The general classes handle 90% of my needs. And I have 10-20 specialized ones which are more specific. Some are so specific that they could be inside the BO, but that is a rare case and it is easier just to have them all in one place. </P>
+<P>Joe</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tmg4340 replied on Thursday, April 17, 2008</h2><P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>sergeyb:</strong></div><div> <SPAN>This is just my opinion, but I like having criteria classes inside BO because I believe it promotes loose coupling and avoids accidental breaking of code when you modify a criteria class that is shared amongst business objects.</SPAN></div></BLOCKQUOTE></P>
+<P><FONT face=Tahoma size=2>I can certainly understand that as well.&nbsp; But I am in a similar situation as Joe - my "generic" criteria classes are used in 90%-95% of my code, and they never change.&nbsp; If they did, and it caused a problem, that problem would very likely be ferreted out fairly quickly during testing.&nbsp; Having a bunch of nested criteria classes that are all basically the same isn't really a big deal, but it's a <EM>ton</EM> of code to&nbsp;cut-and-paste, and&nbsp;I don't&nbsp;use code generation (which would essentially eliminate that issue) nearly as much as I probably should.</FONT></P>
+<P><FONT face=Tahoma size=2>I haven't had a chance to look at it, but I know that CSLA 3.5 provides a number of "generic" criteria classes.&nbsp; As I understand it, the idea was that&nbsp;we end up writing a bunch of criteria classes that all look the same except for data types.&nbsp; So instead of doing that, Rocky provided a set of classes (built on generics!) that allow you to create criteria classes "on the fly".&nbsp; It's certainly another avenue to explore.</FONT></P>
+<P><FONT face=Tahoma size=2>HTH</FONT></P>
+<P><FONT face=Tahoma size=2>- Scott</FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jh72i replied on Thursday, April 17, 2008</h2><P><B><SPAN>1. Using Criteria Constructor overloads rather than BO Factory overloads<o:p></o:p></SPAN></B></P>
+<P><SPAN>I definitely wasn’t considering having the client/UI need to tell the BO's factory anything about type. <o:p></o:p></SPAN></P>
+<P><SPAN>UI call would change only from:<o:p></o:p></SPAN></P>
+<P><SPAN>&nbsp;&nbsp;<SPAN>User</SPAN> u = <SPAN>User</SPAN>.LoadObject(132);<BR>&nbsp;&nbsp;<SPAN>User</SPAN> u = <SPAN>User</SPAN>.LoadObject(first, last, middle, age, …);<o:p></o:p></SPAN></P>
+<P><SPAN>To:<BR><SPAN>&nbsp;&nbsp; </SPAN><SPAN>User</SPAN><SPAN> u = <SPAN>User</SPAN>.LoadObject(<SPAN>new</SPAN> <SPAN>User</SPAN>.<SPAN>Criteria</SPAN>(123));</SPAN><BR><SPAN>&nbsp;&nbsp; </SPAN><SPAN>User</SPAN><SPAN> u = <SPAN>User</SPAN>.LoadObject(<SPAN>new</SPAN> <SPAN>User</SPAN>.<SPAN>Criteria</SPAN>(</SPAN>first, last, middle, age, …<SPAN>));</SPAN><o:p></o:p></SPAN></P>
+<P><SPAN>The criteria in this case still being an embedded class of the User. Just that this would then become the common pattern - rather than overloading the LoadObject method I’d only overload the Criteria constructor.<BR>If the criteria needed to be protected in terms of, say, requiring that only certain combinations of properties be set via a constructor I’d simply make the properties readonly and only settable via the constructor:<o:p></o:p></SPAN></P>
+<P><SPAN><SPAN>&nbsp;&nbsp; </SPAN><SPAN>User</SPAN><SPAN> u = <SPAN>User</SPAN>.LoadObject(<SPAN>new</SPAN> <SPAN>User</SPAN>.<SPAN>Criteria</SPAN>(firstname, lastname, domain));<o:p></o:p></SPAN></SPAN></P>
+<P><SPAN>Rather than allowing:<o:p></o:p></SPAN></P>
+<P><SPAN><SPAN>&nbsp;&nbsp; </SPAN>User</SPAN><SPAN>.<SPAN>Criteria</SPAN><SPAN> </SPAN>c = <SPAN>new</SPAN> <SPAN>User</SPAN>.<SPAN>Criteria</SPAN>();<BR><SPAN>&nbsp;&nbsp; </SPAN>c.FirstName = “xxxx”; <SPAN>-- not allowed</SPAN><BR></SPAN><SPAN><SPAN>&nbsp;&nbsp; </SPAN><SPAN>User</SPAN><SPAN> u = <SPAN>User</SPAN>.LoadObject(<SPAN>c</SPAN>);<o:p></o:p></SPAN></SPAN></P>
+<P><SPAN>And could reserve some constructors for </SPAN><SPAN>internal</SPAN><SPAN> use. As for storing the criterias completely outside of the objects I’m not sure of a good pattern with this approach.</SPAN><SPAN><o:p></o:p></SPAN></P>
+<P><B><SPAN>2. Using base Factory overloads instead of duplicating functionality<o:p></o:p></SPAN></B></P>
+<P><SPAN>But…………what I’d really like to achieve is have a base class accept a criteria and do the work without having to duplicate essentially the same factory methods on each object. So taking the code from above I’d be saying the User inherits from BOBase&lt;T&gt; but only BOBase implements the LoadObject method. This is easily achieved because BOBase&lt;T&gt; knows all about the type of the object….<o:p></o:p></SPAN></P>
+<P><B><SPAN>UI/Client:<o:p></o:p></SPAN></B></P>
+<P class=MsoNormal><SPAN>User</SPAN><SPAN> u = <SPAN>User</SPAN>.LoadObject(<SPAN>new</SPAN> <SPAN>User</SPAN>.<SPAN>Criteria</SPAN>(123));<o:p></o:p></SPAN></P>
+<P><B><SPAN>User:<o:p></o:p></SPAN></B></P>
+<P class=MsoNormal><SPAN>---- no LoadObject implementation but does have criteria so type is correct</SPAN><SPAN><o:p></o:p></SPAN></P>
+<P><B><SPAN>BOBase:<o:p></o:p></SPAN></B></P>
+<P class=MsoNormal><SPAN>public</SPAN><SPAN> <SPAN>static</SPAN> T LoadObject(<SPAN>CriteriaBaseEx</SPAN> criteria)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>{<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp; </SPAN>return </SPAN><SPAN>(T)<SPAN>DataPortal</SPAN>.Fetch(criteria);<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>}<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>protected</SPAN><SPAN> <SPAN>static</SPAN> T Fetch(<SPAN>CriteriaBaseEx</SPAN> criteria)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>{<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>T obj = (T)<SPAN>DataPortal</SPAN>.Fetch(criteria);<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>// example of common task when creating all objects<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>obj._criteria = criteria;<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>…<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>return</SPAN> obj;<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>}<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P><SPAN>Now, this is a simplistic effort but in my world I want to do a lot more general object management stuff whenever any object is created - avoiding duplicating in each class being my main motivation. And, just for you extra clever folks much of what I want to do is <B>after</B> the object has been created and populated.<o:p></o:p></SPAN></P>
+<P><B><SPAN>3. Reusable Criteria objects<o:p></o:p></SPAN></B></P>
+<P><SPAN>Another point I mentioned that you all picked up on was the reusability of certain <I>well known</I> criterias. For me who uses identities on 99% of all records fetching by id is a common action for my objects. So the idea is to create a FetchById criteria and just use it in every object. <BR>As pointed out by you the <B>type</B> of this criteria becomes a problem in the dataportal code. If I deviate from the pattern for a second and create a </SPAN><SPAN>CriteriaFilteredById</SPAN><SPAN> criteria that has a factory of its own (called Build – as in <I>building</I> a criteria rather than <I>loading </I>or <I>creating</I> it) rather than constructor and implement a BOBase factory that accepts an Id (mmm, I know from about I said I want only Criterias but…)…<o:p></o:p></SPAN></P>
+<P><B><SPAN>UI/Client:<o:p></o:p></SPAN></B></P>
+<P class=MsoNormal><SPAN>User</SPAN><SPAN> u = <SPAN>User</SPAN>.LoadObject(123);<o:p></o:p></SPAN></P>
+<P><B><SPAN>User:<o:p></o:p></SPAN></B></P>
+<P class=MsoNormal><SPAN>---- no LoadObject implementation and no criteria of its own<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>---- *** back later ***</SPAN><SPAN><o:p></o:p></SPAN></P>
+<P><B><SPAN>BOBase:<o:p></o:p></SPAN></B></P>
+<P class=MsoNormal><SPAN>public</SPAN><SPAN> <SPAN>static</SPAN> T LoadObject(<SPAN>int</SPAN> id)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>{<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>return</SPAN> LoadObject(<SPAN>CriteriaFilteredById</SPAN>.Build&lt;T&gt;(id));<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>}<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P><B><SPAN>CriteriaFilterById:<o:p></o:p></SPAN></B></P>
+<P class=MsoNormal><SPAN>[<SPAN>Serializable</SPAN>()]<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>public</SPAN><SPAN> <SPAN>class</SPAN> <SPAN>CriteriaFilteredById</SPAN> : <SPAN>CriteriaBaseEx<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN>{<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>private</SPAN> <SPAN>int</SPAN> _id;<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><BR><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>public</SPAN> <SPAN>static</SPAN> <SPAN>CriteriaFilteredById</SPAN> Build&lt;T&gt;(<SPAN>int</SPAN> id)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>{<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>return</SPAN> <SPAN>new</SPAN> <SPAN>CriteriaFilteredById</SPAN>(<SPAN>typeof</SPAN>(T), id);<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>}<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>public</SPAN> CriteriaFilteredById(<SPAN>Type</SPAN> type, <SPAN>int</SPAN> id)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>: <SPAN>base</SPAN>(type)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>{<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>_id = id;<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>}<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>}<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P><B><SPAN>*** back to User:<o:p></o:p></SPAN></B></P>
+<P class=MsoNormal><SPAN>protected</SPAN><SPAN> <SPAN>override</SPAN> <SPAN>void</SPAN> DataPortal_OnFetch(<SPAN>AdoHelper</SPAN> dataHelper, <SPAN>object</SPAN> criteria)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>{<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>// get the values we need to query the data<SPAN>&nbsp; </SPAN></SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>CriteriaFilteredById</SPAN> crit = (<SPAN>CriteriaFilteredById</SPAN>)criteria;<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>…<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>…dataHelper.GetIntParameter(<SPAN>"pUserID"</SPAN>, <SPAN>crit.Id</SPAN>, <SPAN>false</SPAN>));<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>…<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>}<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P><B><SPAN>4. What about inheritance?<o:p></o:p></SPAN></B></P>
+<P><SPAN>So now I want to inherit from User and extend it to create a SuperUser. How flexible is my code? Not very is the answer but then this is a general problem faced by any class inheriting from a concrete type.<SPAN>&nbsp; </SPAN>But, all is not lost – I think this approach still provides enough to make it useful.<o:p></o:p></SPAN></P>
+<P><B><SPAN>UI/Client:<o:p></o:p></SPAN></B></P>
+<P class=MsoNormal><SPAN>SuperUser</SPAN><SPAN> u = <SPAN>SuperUser</SPAN>.LoadObject(123);<o:p></o:p></SPAN></P>
+<P><B><SPAN>SuperUser:<o:p></o:p></SPAN></B></P>
+<P><SPAN>Cannot go straight to the BOBase unfortunately without having the UI/client involved in the <I>typing</I> and cannot cast User to SuperUser so…(but this is a problem anyway regardless).<B><o:p></o:p></B></SPAN></P>
+<P class=MsoNormal><SPAN>public</SPAN><SPAN> <SPAN>static</SPAN> <SPAN>new</SPAN> <SPAN>SuperUser</SPAN> LoadObject(<SPAN>int</SPAN> userId) <o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>{<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>return</SPAN> <SPAN>SuperUser</SPAN>.LoadObject&lt;<SPAN>SuperUser</SPAN>&gt;(userId);<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>}<o:p></o:p></SPAN></P>
+<P><B><SPAN>BOBase:<o:p></o:p></SPAN></B></P>
+<P class=MsoNormal><SPAN>I implement another LoadObject and another Fetch and actually refactor the original Fetch to ensure no code duplication…<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>protected</SPAN><SPAN> <SPAN>static</SPAN> TT LoadObject&lt;TT&gt;(<SPAN>int</SPAN> id)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>{<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>if</SPAN> (!<SPAN>typeof</SPAN>(T).IsAssignableFrom(<SPAN>typeof</SPAN>(TT)))<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>throw</SPAN> <SPAN>new</SPAN> <SPAN>ArgumentException</SPAN>(<SPAN>string</SPAN>.Format(<SPAN>"{0} must be derived from type {1}"</SPAN>, <SPAN>typeof</SPAN>(TT), <SPAN>typeof</SPAN>(T)));<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>return</SPAN> (TT)Fetch&lt;TT&gt;(<SPAN>CriteriaFilteredById</SPAN>.Build&lt;TT&gt;(id));<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>}<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>protected</SPAN><SPAN> <SPAN>static</SPAN> TT Fetch&lt;TT&gt;(<SPAN>CriteriaBaseEx</SPAN> criteria)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>{<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>TT obj = <SPAN>DataPortal</SPAN>.Fetch&lt;TT&gt;(criteria);<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>// example of common task when creating all objects<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>(obj <SPAN>as</SPAN> T)._criteria = criteria;<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>…<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>return</SPAN> obj;<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>}<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>protected</SPAN><SPAN> <SPAN>static</SPAN> T Fetch(<SPAN>CriteriaBaseEx</SPAN> criteria)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>{<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>return</SPAN> Fetch&lt;T&gt;(criteria);<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>}<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>So there are 4 ideas here – not all directly related but all depending on eachother. I’m not a major fan of generics so far but I’m pretty new to them. I think it’s because the hype was so much that I didn’t think I’d be so stuck with my old object inheritance graphs that I was very happy with. I’d love to hear any thought on all these rantings.</SPAN><B><SPAN><o:p></o:p></SPAN></B></P>
+<P>&nbsp;</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

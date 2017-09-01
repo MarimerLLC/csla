@@ -1,0 +1,83 @@
+<html><header><title>CSLA .NET 3.8 Beta 1 is available</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA .NET 3.8 Beta 1 is available</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/7732.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka posted on Tuesday, October 06, 2009</h2><P>CSLA .NET version 3.8 Beta 1 is now available for download.</P>
+<UL>
+<LI><A href="http://www.lhotka.net/cslanet/download.aspx"><STRONG>Download for Windows</STRONG></A> 
+<LI><A href="http://www.lhotka.net/cslalight/download.aspx"><STRONG>Download for Silverlight</STRONG></A> </LI></UL>
+<P>Beta 1 brings the WPF PropertyStatus in line with the Silverlight version.</P>
+<P>And Beta 1 adds support for the System.ComponentModel.DataAnnotations attributes. Data annotation attributes applied to properties are automatically added as rules using the CSLA .NET validation rules subsystem when ValidationRules.AddAnnotations() is called in your AddBusinessRules() override. If you don’t override AddBusinessRules() the base implementation calls AddAnnotations() on your behalf.</P>
+<P>The C# ProjectTracker has been updated to work with 3.8.</P>
+<P>I am pretty happy with the changes I've made to the various XAML controls - even though there are some breaking changes with PropertyStatus and InvokeMethod. </P>
+<P>The result is good support for MVVM in WPF and Silverlight, with consistency between the two (I've even been able to copy-paste XAML between WPF and SL projects). </P>
+<P>The MVVMexample projects in samples (for .NET and SL) show the basic capabilities added in 3.8, and ProjectTracker (C#) and InventoryDemo (SL) have been updated without incorporating MVVM. I may change InventoryDemo to use MVVM though, as it would simplify the application I think.</P>
+<P>In any case, this is a beta release because I think I'm about done. I'll let Beta 1 float for a couple weeks to see if you find any issues with the design or implementation of the new features. Then I'll do a Beta 2 for stabilization and then release.</P>
+<P>So I expect 3.8 to release in early November. If you use WPF or Silverlight, please take the time to look at 3.8 and give me feedback now. Feedback is always welcome, but is obviously far, far more useful right now than 4 weeks from now :)</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jack replied on Wednesday, October 07, 2009</h2>Rocky,<br><br>I am having some issue with deploying 3.8b1 and the System.ComponentModel.DataAnnotations.dll.&nbsp; I'm not sure if CSLA is bundled with an older version or where I need to be referencing it so it is deployed correctly.<br><br>What is interesting is I am seeing different behavior and errors depending on the server / browser.&nbsp; For example in SilverlightSpy (which I thought piggybagged on IE) I get lots of errors but at the same site using IE I have no issues.<br><br>I had a comment from another user who saw the error once but never again. (looks like this one: <br><br>http://www.screencast.com/users/JackAddington/folders/Snagit/media/71af61aa-dacc-4860-953d-0a5e25afa4b3<br><br>The big ugly exception is here:<br>http://screencast.com/t/BSxkpXy6E<br><br><br><img alt=""><img alt=""><br>thanks<br><br>jack<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jack replied on Wednesday, October 07, 2009</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I think I found the issue - This webserver only had the .net 3.5
+not 3.5SP1.&nbsp; I'm removing the references from my app and that should fix
+the problem.&nbsp; I'll post again if I have any issues.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Jack [mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> October-07-09 9:03 PM<br>
+<b>To:</b> jaddington@alexandergracie.com<br>
+<b>Subject:</b> Re: [CSLA .NET] CSLA .NET 3.8 Beta 1 is available<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Rocky,<br>
+<br>
+I am having some issue with deploying 3.8b1 and the
+System.ComponentModel.DataAnnotations.dll.&nbsp; I'm not sure if CSLA is
+bundled with an older version or where I need to be referencing it so it is
+deployed correctly.<br>
+<br>
+What is interesting is I am seeing different behavior and errors depending on
+the server / browser.&nbsp; For example in SilverlightSpy (which I thought
+piggybagged on IE) I get lots of errors but at the same site using IE I have no
+issues.<br>
+<br>
+I had a comment from another user who saw the error once but never again.
+(looks like this one: <br>
+<br>
+http://www.screencast.com/users/JackAddington/folders/Snagit/media/71af61aa-dacc-4860-953d-0a5e25afa4b3<br>
+<br>
+The big ugly exception is here:<br>
+http://screencast.com/t/BSxkpXy6E<br>
+<br>
+<br>
+<b><span>Error! Filename not specified.</span></b><b><span>Error! Filename not specified.</span></b><br>
+thanks<br>
+<br>
+jack<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JimStone replied on Tuesday, October 13, 2009</h2><P>An issue with the DataAnnotations attributes in Silverlight.</P>
+<P>It believe that I should be able to apply multiple of these.&nbsp;(I can&nbsp;when using a DataForm)&nbsp;For example&nbsp; &lt;Required&gt; and &lt;RegularExpression&gt; together on one property to ensure a valid entry is made.&nbsp;&nbsp;</P>
+<P>However, while CSLA will add two, and check two, if the second one passes, then the first one is deleted from the brokenrules list.&nbsp;&nbsp; (Because they both have the same name?)</P>
+<P>This ability to have two is quite necessary since, as documented on msdn, an empty test string will always pass validation based on the RegularExpressionAttribute.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, October 13, 2009</h2>Good catch, thanks!</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,20 @@
+<html><header><title>Re: MVVM with Winforms</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Re: MVVM with Winforms</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11475.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>tiago posted on Sunday, July 15, 2012</h2><p>The version 2..0.0.0 of <a href="http://mvvmfx.codeplex.com/">MVVM FX base framework for Windows Forms and Visual WebGUI</a>&nbsp;includes:</p>
+<li>Data binding for any CLR object (released under Ms-PL license)</li>
+<li>Command binding to any input event on UI objects (released under Ms-PL license)</li>
+<li>use WeakReference to avoid memory leaks</li>
+<li>DependencyObject and DependencyProperty for CLR objects (released under the MIT license</li>
+<h4>Data Binding</h4>
+<ul>
+<li>Bindings <i>&agrave; la</i> WPF, with Converters, one way, two way, etc.</li>
+<li>Can bind to about anything using one of the binder systems below: 
+<ul>
+<li>INotifyPropertyChanged</li>
+<li>&lt;property&gt;Changed event (used by WindowsForms and Visual WebGUI)</li>
+<li>WPF DependencyProperty</li>
+<li>MvvmFx own DependencyProperty</li>
+</ul>
+</li>
+</ul>
+<h4>DependencyObject and DependencyProperty</h4>
+<p>The requsite of this module is to make it easier to port MVVM libraries (like MVVM Light or Caliburn.Micro) and use them under WindowsForms or Visual WebGUI. The implemention isn&#39;t complete as it stops where the referred goal is achieved.</p>
+<p>The next step is to (re)&nbsp;build some MVVM frameworks for use under Windows Forms and Visual WebGUI. Caliburn.Micro is a strong candidate for porting, including CSLA ModelView support.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

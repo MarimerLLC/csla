@@ -1,0 +1,116 @@
+<html><header><title>SmartDate.MinValue</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>SmartDate.MinValue</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5367.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>tkhan posted on Tuesday, September 09, 2008</h2><P>Csla dudes!</P>
+<P>One of the columns in our tables in our db is modifyDate. This is a nullable type in the database. I am using a SmartDate type in my BO and trying to insert a record and sqlserver does not like it. Digging through the code and doing some research, I realized that the SmartDate type uses the MinValue property of the DateTime type that equates to 00:00:00.0000000, January 1, 0001 - which sqlserver does not support. </P>
+<P>I know that System.Data.SqlTypes.SqlDateTime.MinValue.Value equates to 01/01/1753 00:00 - the min value allowed in a sqlDateTime type. We could possibly set the MinValue of the SmartDate to be this, however, this does not really appear to be a good solution and is rather a hack.</P>
+<P>Does the community have a better suggestion? Thanks a mil!</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Tuesday, September 09, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>When pushing SmartDate into DB, you should use DBValue property
+as in parameter.Value = smartDate.Value.&nbsp; Min value in SmartDate typically
+stands for empty date which will translate to DBNull as part of DBValue
+property.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> tkhan
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Tuesday, September 09, 2008 11:32 AM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> [CSLA .NET] SmartDate.MinValue<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Csla dudes!<o:p></o:p></p>
+
+<p>One of the columns in our tables in our db is modifyDate. This is a nullable
+type in the database. I am using a SmartDate type in my BO and trying to insert
+a record and sqlserver does not like it. Digging through the code and doing
+some research, I realized that the SmartDate type uses the MinValue property of
+the DateTime type that equates to 00:00:00.0000000, January 1, 0001 - which
+sqlserver does not support. <o:p></o:p></p>
+
+<p>I know that System.Data.SqlTypes.SqlDateTime.MinValue.Value equates to
+01/01/1753 00:00 - the min value allowed in a sqlDateTime type. We could
+possibly set the MinValue of the SmartDate to be this, however, this does not
+really appear to be a good solution and is rather a hack.<o:p></o:p></p>
+
+<p>Does the community have a better suggestion? Thanks a mil!<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>triplea replied on Tuesday, September 09, 2008</h2>Not sure if this answers your question but did you make sure that when you pass the date value as a parameter to your SP/sql statement that you used the modifyDate.DBValue property? Also you might need to play with a different constructor for your SmartDate...</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Tuesday, September 09, 2008</h2>Another poster already gave the answer.&nbsp; My suggestion though is to always have values for Modifieddate / user.&nbsp; It simplifies a lot of code (no need to check if there's a value).&nbsp; I had started off having a nullable value, and am glad I got rid of it.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tkhan replied on Tuesday, September 09, 2008</h2><P>Hi,</P>
+<P>I have made the modifyDate non-nullable in the BOL and I am now managing the nullable types in the BOL. I am assigning DateTime.Now to the modifyDate property of the DAL on an insert like</P><FONT color=#0000ff size=2><FONT color=#0000ff size=2><FONT color=#0000ff size=2><FONT color=#0000ff size=2>
+<P>using</FONT></FONT><FONT color=#000000 size=2> (</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>var</FONT></FONT><FONT color=#000000 size=2> mgr = Csla.Data.</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>ContextManager</FONT></FONT><FONT color=#000000 size=2>&lt;</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>CrmDatabaseDataContext</FONT></FONT><FONT size=2><FONT color=#000000>&gt;</FONT></P>
+<P>.GetManager(</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>Database</FONT></FONT><FONT size=2>.CrmDEV))</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>var</FONT></FONT><FONT size=2> data = </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>new</FONT></FONT><FONT size=2> CodeReady.CRM.DAL.</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>Email</FONT></FONT><FONT size=2>();</P>
+<P>OnEmailMemberReading(data);</P>
+<P>data.EmailAddress = ReadProperty&lt;</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>string</FONT></FONT><FONT size=2>&gt;(EmailAddressProperty);</P>
+<P>data.StatusId = ReadProperty&lt;</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>int</FONT></FONT><FONT size=2>?&gt;(StatusIdProperty);</P>
+<P>data.CreateUser = 482101;</P>
+<P></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2>//data.CreateUser = CodeReady.CRM.Framework.Application.CurrentContactID;</P></FONT></FONT><FONT size=2>
+<P>data.CreateDate = </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>DateTime</FONT></FONT><FONT size=2>.Now;</FONT><FONT color=#008000 size=2><FONT color=#008000 size=2>//ReadProperty&lt;SmartDate&gt;(CreateDateProperty);</P></FONT></FONT><FONT size=2>
+<P>data.ModifyUser = ReadProperty&lt;</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>int</FONT></FONT><FONT size=2>?&gt;(ModifyUserProperty);</P>
+<P>data.ModifyDate = </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>DateTime</FONT></FONT><FONT size=2>.Now;</FONT><FONT color=#008000 size=2><FONT color=#008000 size=2>// ReadProperty&lt;SmartDate&gt;(CreateDateProperty);</P></FONT></FONT><FONT size=2>
+<P>OnEmailMemberRead();</P>
+<P>mgr.DataContext.Emails.InsertOnSubmit(data);</P>
+<P>mgr.DataContext.SubmitChanges();</P>
+<P>LoadProperty&lt;</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>int</FONT></FONT><FONT size=2>&gt;(EmailIdProperty, data.EmailId);</P>
+<P>_sysTime = data.SysTime.ToArray();</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>base</FONT></FONT><FONT size=2>.PopulateOriginalValues(</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>this</FONT></FONT><FONT size=2>);</P>
+<P>}</FONT><FONT color=#008000 size=2><FONT color=#008000 size=2>//using</P></FONT></FONT></FONT></FONT>
+<P><FONT color=#008000 size=2><FONT color=#008000 size=2></FONT></FONT>&nbsp;</P>
+<P><FONT color=#008000 size=2><FONT color=#008000 size=2>The app blows up with a System.SqlOverflowExcpetion saying that the value must be between 1753 and 9999. I just dont know what I am doing wrong and where. Thanks!!</P></FONT></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Tuesday, September 09, 2008</h2><P>I made this change to SmartDate to support SQL Server dates. In my app I only expect dates like Today. It is a transactional app so there isn't any historical or future date stuff happening.</P>
+<P>'Change to SmartDate class:&nbsp; </P>
+<P>&nbsp; ''' &lt;summary&gt;<BR>&nbsp; ''' Converts a text date representation into a Date value.<BR>&nbsp; ''' &lt;/summary&gt;<BR>&nbsp; ''' &lt;remarks&gt;<BR>&nbsp; ''' An empty string is assumed to represent an empty date. An empty date<BR>&nbsp; ''' is returned as the MinValue or MaxValue of the Date datatype depending<BR>&nbsp; ''' on the EmptyIsMin parameter.<BR>&nbsp; ''' &lt;/remarks&gt;<BR>&nbsp; ''' &lt;param name="value"&gt;The text representation of the date.&lt;/param&gt;<BR>&nbsp; ''' &lt;param name="emptyValue"&gt;Indicates whether an empty date is the min or max date value.&lt;/param&gt;<BR>&nbsp; ''' &lt;returns&gt;A Date value.&lt;/returns&gt;<BR>&nbsp; Public Shared Function StringToDate( _<BR>&nbsp;&nbsp;&nbsp; ByVal value As String, ByVal emptyValue As EmptyValue) As Date</P>
+<P>&nbsp;&nbsp;&nbsp; If Len(value) = 0 Then<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; If emptyValue = SmartDate.EmptyValue.MinDate Then<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return Date.MinValue</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Else<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return Date.MaxValue<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End If</P>
+<P>&nbsp;&nbsp;&nbsp; ElseIf IsDate(value) Then<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 'This is the change:<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; If CDate(value) &gt;= CDate("1/1/1900") AndAlso CDate(value) &lt;= CDate("6/6/2079 11:59 PM") Then<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return CDate(value)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Else<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return Date.MinValue<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End If</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 'This is the original code:<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 'Return CDate(value)</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'The SmartDate Structure cannot be inherited so we need to change CSLA itself.<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 'If Value is not a date then set it to Date.MinValue so that "" will be returned. <BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 'Effectively this blanks out invalid values in the UI. <BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 'Also, ensure that Value is in the range 1/1/1900 to 6/6/2079 else SQL Server smalldatetime value is violated.</P>
+<P>&nbsp;&nbsp;&nbsp; Else<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Select Case LCase(Trim(value))<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Case My.Resources.SmartDateT, My.Resources.SmartDateToday, "."<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return Now</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Case My.Resources.SmartDateY, My.Resources.SmartDateYesterday, "-"<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return DateAdd(DateInterval.Day, -1, Now)</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Case My.Resources.SmartDateTom, My.Resources.SmartDateTomorrow, "+"<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return DateAdd(DateInterval.Day, 1, Now)</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Case Else<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Throw New ArgumentException(My.Resources.StringToDateException)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Select<BR>&nbsp;&nbsp;&nbsp; End If</P>
+<P>&nbsp; End Function</P>
+<P>Joe</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,76 @@
+<html><header><title>Silverlight TreeView not updating when LinqObservableCollection changes</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Silverlight TreeView not updating when LinqObservableCollection changes</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10635.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>richardp posted on Wednesday, August 24, 2011</h2><p>
+<p>Hi, we are developing a silverlight 3 tier app using CSLA 4.1.0.&nbsp;We have been working on it for about 3 months now and have found CSLA to be a great help.</p>
+<p>I have a problem with LinqObservableCollection.</p>
+<p>I have a business object class that inherits BusinessBase, called MetadataGroupTreeNode.</p>
+<p>I have a list of these objects in a class that inherits BusinessListBase, called MetadataGroupTreeNodeList.</p>
+<p>Now each MetadataGroupTreeNode object has a child property, (called Children) of type MetadataItemTreeNodeList, which inherits from BusinessListBase.</p>
+<p>This list consists of MetadataItemTreeNodeItem, which inherits from BusinessBase.</p>
+<p>We want the list of MetadataItemTreeNodeList to be sorted on an int property of MetadataItemTreeNodeItem, called Sequence.</p>
+<p>To achieve this we use a wrapper property called SortedChildren wich returns a&nbsp;LinqObservableCollection.</p>
+<p>This is all displayed in a TreeView control in Silverlight, via data binding, and is working well.</p>
+<p>&nbsp;</p>
+<p>/// &lt;summary&gt;</p>
+<p><span>	</span>/// class for displaying a metadata node a tree</p>
+<p><span>	</span>/// &lt;/summary&gt;</p>
+<p><span>	</span>[Serializable]</p>
+<p><span>	</span>public partial class MetadataGroupTreeNode : BusinessBase&lt;MetadataGroupTreeNode&gt;</p>
+<p><span>	</span>{</p>
+<p><span>	</span></p>
+<p>&nbsp;</p>
+<p><span>		</span>private static PropertyInfo&lt;MetadataItemTreeNodeList&gt; ChildrenProperty = RegisterProperty&lt;MetadataItemTreeNodeList&gt;(mtn =&gt; mtn.Children);</p>
+<p><span>		</span>private MetadataItemTreeNodeList Children</p>
+<p><span>		</span>{</p>
+<p><span>			</span>get { return GetProperty(ChildrenProperty); }</p>
+<p><span>			</span>private set { SetProperty(ChildrenProperty, value); }</p>
+<p><span>		</span>}</p>
+<p>&nbsp;</p>
+<p><span>		</span>public LinqObservableCollection&lt;MetadataItemTreeNode&gt; SortedChildren</p>
+<p><span>		</span>{</p>
+<p><span>			</span>get</p>
+<p><span>			</span>{&nbsp;</p>
+<p><span>				</span>LinqObservableCollection&lt;MetadataItemTreeNode&gt; sortedChildren= Children.ToSyncList(from child in Children orderby child.Sequence select child);</p>
+<p><span>				</span>return sortedChildren;</p>
+<p><span>			</span>}</p>
+<p><span>		</span>}</p>
+<p>}</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>The Silverlight TreeView HeirarchicalDataTemplate binds to the SortedChildrenProperty.</p>
+<p>The parent tree nodes and child nodes are all displayed correctly.</p>
+<p>The problem is, we want the user to be able to change to display order of the SortedChildren by modifying the Sequence property on the MetadataItemTreeNodeItem object.</p>
+<p>The Sequence property is modified via a context menu in the tree (Move Up, Move Down).</p>
+<p>The Sequence property is modified, and the SortedChildren property seems to return the children in the new required order.</p>
+<p>However the Silverlight TreeView doesn&#39;t update.</p>
+<p>&nbsp;</p>
+<p>Should I modify the Sequence property on the items in the Children collection, or the items in the SortedChildrem collection, or doesn&#39;t it matter?</p>
+<p>How to I get the Silverlight TreeView databinding to notice that the order of items in the SortedChildren list has changed?</p>
+<p>&nbsp;</p>
+<p>Any help greatly appreciated.</p>
+<p>&nbsp;</p>
+<p>Regards Richard.</p>
+</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Thursday, August 25, 2011</h2><p>The TreeView should be listening for the CollectionChanged event from its binding source (the LinqObservableCollection (LOC)).</p>
+<p>The LOC usually raises this event because the real list (the BLB) raises the event, but it can raise it when changes are made to the LOC too.</p>
+<p>My guess though, is that this event isn&#39;t being raised when the Sequence property is changed on the child objects. Just changing a property of a child object in a collection doesn&#39;t trigger CollectionChanged - because the collection didn&#39;t really change, only the child object changed.</p>
+<p>In your BLB, you might handle ChildChanged so you are notified when a child has been changed. If the change was to the Sequence number, you could then raise CollectionChanged (call OnCollectionChanged), and that should echo through the LOC to&nbsp;data binding.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>richardp replied on Saturday, August 27, 2011</h2><p>
+<p>Thanks heaps Rocky.</p>
+<p>That fixed it.</p>
+<p>I included the code change below.&nbsp;</p>
+<p>&nbsp;</p>
+<p>protected override void OnDeserialized()</p>
+<p><span>		</span>{</p>
+<p><span>			</span>base.OnDeserialized();</p>
+<p><span>			</span>this.ChildChanged +=MetadataGroupTreeNodeList_ChildChanged;</p>
+<p><span>		</span>}</p>
+<p>&nbsp;</p>
+<p><span>		</span>private void MetadataGroupTreeNodeList_ChildChanged(object sender, ChildChangedEventArgs e)</p>
+<p><span>		</span>{</p>
+<p><span>			</span>var child = e.ChildObject as MetadataItemTreeNode;</p>
+<p><span>			</span>if (child != null)</p>
+<p><span>			</span>{</p>
+<p><span>				</span>if (e.PropertyChangedArgs.PropertyName == &quot;Sequence&quot;)</p>
+<p><span>				</span>{</p>
+<p><span>					</span>this.OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));</p>
+<p><span>				</span>}</p>
+<p><span>			</span>}</p>
+<p><span>		</span>}</p>
+</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

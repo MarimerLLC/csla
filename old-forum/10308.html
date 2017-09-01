@@ -1,0 +1,46 @@
+<html><header><title>BusinessRule AddOutValue method</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>BusinessRule AddOutValue method</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10308.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>RaulLozano posted on Wednesday, April 27, 2011</h2><p>Hello.</p>
+<p>Why is it that if I call the AddOutValue method&nbsp;on a business rule with the PropertyInfo argument set to a property that is *not* the PrimaryProperty or that was *not* added to the AffectedProperties collection the call fails?</p>
+<p>Looking at the implementation of the AddOutValue you can see that is raises an error if the property is not part of the AffectedProperties collection.</p>
+<p>public void AddOutValue(Csla.Core.IPropertyInfo property, object value)<br />{<br />&nbsp;&nbsp;&nbsp; if (!Rule.AffectedProperties.Contains(property))<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; throw new ArgumentOutOfRangeException(property.Name);<br />&hellip;<br />}</p>
+<p>So my question is what is the reason for this restriction?</p>
+<p>Thank you.</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Wednesday, April 27, 2011</h2><p>You can (and must) add that property to the affected properties list yourself. For better or worse, the intent is to make you be explicit about the properties affected by your rule.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rxelizondo replied on Wednesday, April 27, 2011</h2><p>&nbsp;</p>
+<p>Hi Rocky,</p>
+<p>So I am guessing that behind the scenes the AddOutValue() method ends up triggering the rules for the property passed as its argument and so the CSLA forces the developer to add the property to the AffectedProperties collection so that the developer is not surprised the other rules are being triggered?</p>
+<p>&nbsp;So just for fun, I delete the following code:</p>
+<p>&nbsp;&nbsp; &nbsp;if (!Rule.AffectedProperties.Contains(property))</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;throw new ArgumentOutOfRangeException(property.Name);</p>
+<p>and everything should work just fine?</p>
+<p>Thanks.</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, April 27, 2011</h2><p>I doubt that Rene. If the property isn&#39;t in the affected properties list, I don&#39;t think CSLA will update the property value or do other normal processing.</p>
+<p>What you maybe could do, is if the property isn&#39;t in the affected properties list, you could automatically add it to the list.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Thursday, April 28, 2011</h2><p>Oh, no......</p>
+<p>Remember - this rule instance is registered for ALL instances of this object type and the rule properties should NOT be changed in&nbsp;execution of a rule (wether sync or async rule is used). </p>
+<p>AffectedProperties is also used for :</p>
+<ul>
+<li>MarkBusy on properties</li>
+<li>rerun rules for properties (in async rules)</li>
+</ul>
+<p>So - you may end up with AddOutValue changing the values of properties and the rules not being run and field value is out of sync with validation rules (ie not validated). </p>
+<p><b>So&nbsp;as the codebase is now - it is not safe to use OutputValues that do not exist in AffectedProperties in async rules. </b></p>
+<p>Quote from &quot;Using Csla4-02-Objects&quot;:</p>
+<p><span style="font-size:small;">
+</span></p>
+<p><i>&quot;It is critical that you understand that instance properties or fields in a rule object can not be changed after the rule object has been created. </i></p>
+<p><i><b>You must initialize instance properties and fields as the object is created, and never change them from that point forward. </b></i></p>
+<p><i>This restriction exists because each rule object is shared by all instances of the business type with which the rule is associated. If you did change a property or field in a rule, you&rsquo;d instantly affect all business objects using that rule, and the result would <span style="font-size:small;">almost certainly be inconsistent behavior that would be difficult to identify, debug and fix. &quot;</span></i></p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, April 28, 2011</h2><p>Thank you Jonny - my head is so deep in authentication right now I guess I totally missed this very obvious point!</p>
+<p>You&#39;ve saved us all a lot of heartache!</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Monday, October 17, 2011</h2><p>Sorry for resurrecting an old thread, but I just found this while starting to work with Csla 4.1.</p>
+<p>I thought there was a bug in Csla, so I replaced this:</p>
+<p>context.AddOutValue(SecondaryProperty, value);</p>
+<p>with this:</p>
+<p>LoadProperty(context.Target, SecondaryProperty, value);</p>
+<p>to work around it and things seem to work fine.&nbsp; If this is in fact a problem, shouldn&#39;t LoadProperty also throw an exception?</p>
+<p>Also, I don&#39;t quite understand the logic.&nbsp; If you call AddOutValue, its pretty clear you&#39;re intending to modify a value.&nbsp; Forcing a developer to list everything in AffectedProperties seems to be extra busy work.&nbsp; Any reason AddOutValue can&#39;t do that for you?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Tuesday, October 18, 2011</h2><p>Hi Andy, </p>
+<p>Remember the Dependency rule from Csla3.x? The equivalent in Csla 4.0/4.1 is AffectedProperties. </p>
+<p>Meaning that the rule engine will rerun rules for AffectesProperties in a consistent way - no matter if AddOutValue was called or not. That is simply what the Dependency rules in Csla 4.x dows. This is important when you start to create asyncronous lookup rules that update fields in your BO.&nbsp; Affected properties will be marked as Busy when the rule starts to execute and cannot be set for as long as the async rule is running.</p>
+<p><b>LoadProperty is for &quot;border&quot; conditions where Affected Properties (and a rerun of rules) is NOT desired or for updating properties on other objects than RuleContext.Target.&nbsp; You could for example create a recursive loop with two asyncronous rules that update each others fields and finally run into a StackOwerflow exception that would only be avoided by using LoadProperty.&nbsp; (For Csla 4.2 this can be avoided by not allowing the async rule to be triggered as AffectedProperty). <br /></b></p>
+<p><b>Any rule instance should be considered a singelton and NO property must be changed after that instance is registered for a given BO type. Meaning that the single rule instance will be used for ALL instances of the given BO type and you cannot update AffectedProperties based on whatever is called by RuleContext.AddOutValue . </b></p>
+<p>Another challenge with your code is - how to rerun rules for the properties that you update in LoadProperty - and especially in asyncronous lookup rules? </p>
+<p>If you use AffectedProperties/AddOutValue it will work consistently in both sync and async rules without additional code.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Tuesday, October 18, 2011</h2><p>In my case there are no rules for the other properties.&nbsp; They&#39;re not even public.&nbsp; I finally realized what I needed to do to get it working, it just didn&#39;t work as easily as I expected.&nbsp; </p>
+<p>I guess its a small price to pay for the ability to easily make async rules.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

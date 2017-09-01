@@ -1,0 +1,33 @@
+<html><header><title>Id or reference to another root object?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Id or reference to another root object?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6341.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>alef posted on Thursday, February 05, 2009</h2>Suppose we have two root objects.<br>
+Employee (FirstName, LastName,Country)<br>
+Country (Id,Description) ==&gt; Id which is an autonumber<br>
+<br>
+On the UI the user can add a new country while editing/adding an employee.<br>
+The employee has a reference to country object (not to the id).<br>
+<br>
+Now when saving the objects, we first save the root object country. In
+case it is a new country the autonumber id is generated in the database
+and will be retreived in the object country.<br>
+Then we save the employee object.<br>
+As the employee has a reference to the country object everything will
+work when saving to the database. When the country object is inserted
+in the database, the id of country will be retrieved. Because the
+employee has an reference to the country object, we can add/modify the
+employee record in the database because we have access to the countryid
+via the reference to the object country.<br>
+<br>
+If employee should not have a reference to country, but instead has a
+property countryid then I don't know how this could work? In the book
+of Lhotka I see that he is always using Id's. Why?<br>
+<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>SonOfPirate replied on Thursday, February 05, 2009</h2><P>It goes to the use case for the class.&nbsp; In the cases described in the book and sample application, all that is needed is the identifier so that the object can be retrieved by id.&nbsp; By maintaining an object reference, you make your object graph more rigid and deeper.&nbsp; So, for instance, any time you serialize an Employee object, you also serialize the referenced Country object.</P>
+<P>Your use case is not all that unusual, however, nor is it all that different.</P>
+<P>I look at it like you have a master-child relationship in your UI with the Employee record displayed in the master view and the Country displayed in the child view.&nbsp; You didn't mention if this was a WinForms, WPF, ASP.NET or other interface, so I'll run with ASP.NET (cuz I can explain it the quickest that way!).</P>
+<P>I would setup my UI with two datasources: one for the Employee and one for the Country.&nbsp; In the code-behind, my datasource knows to retrieve the Employee record based on the identifier passed to the page/form.&nbsp; The second datasource is dependant upon the first and uses the Employee.CountryId value as the key to lookup the appropriate Country.&nbsp; If the CountryId is Guid.Empty (for instance), your code would instantiate a new Country and bind the UI to that instance.</P>
+<P>When saving, your code would save the Country object (thereby updating or inserting the record), update the Employee.CountryId property for new objects then save the Employee record.</P>
+<P>Where the separation of objects becomes more intuitive is if we&nbsp;displayed a drop-down list of available countries for the user to select.&nbsp; You would bind the drop-down control to a CountryList object with the key set to the Id value.&nbsp; The selected item/value property of the drop-down list would be bound to the Employee.CountryId property.</P>
+<P>I typically use the latter approach with a button adjacent to the drop-down or a special list item that the user can click to open a dialog for creating the new item (Country).&nbsp; When the dialog is closed, the Country is saved and the list's datasource is refreshed, updating it with the new item thereby making it available for the user to select.</P>
+<P>Hope that helps...</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, February 05, 2009</h2><P>There's a specific coding difference between the containment and using relationships.</P>
+<P>With containment, the parent maintains a direct, serializable and undoable reference to the child. This allows the .NET serialization mechanism, the CSLA undo mechanism and other features to work properly.</P>
+<P>With a using relationship, one object may maintain a reference to another object, but that reference must not be serializable or undoable. Otherwise it is a containment relationship. Since it won't be serializable, your code must assume the value could be null, and so must have a way of recreating the reference. Normally you'd create the reference by calling the other object's factory method, and that typically requires an id value.</P>
+<P>So no matter what, you need to maintain the id value so you can load/reload the other object. You can hold a reference, but the field holding that reference must be NonSerialized and NotUndoable.</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,21 @@
+<html><header><title>Multiple Parameters for Filtered List in WPF</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Multiple Parameters for Filtered List in WPF</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6708.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>thaehn posted on Tuesday, March 31, 2009</h2><P>Hi,</P>
+<P>I am writing my first "real" application in CSLA and have been following the Project Tracker as an example.&nbsp; I am trying to create a WPF edit form to do a search for items matching criteria and am using the ProjectList as an example.&nbsp; My form, however, has three parameters.&nbsp; One is a foreign key for which I have a ComboBox and the other two are a date range for which I am using the DatePicker control from the toolkit.&nbsp; The results are to populate a toolkit grid.&nbsp; I couldn't figure out how to bind the ComboBox to the List business object (ReadOnlyListBase), so I instad hooked up an event call to the DropDownClosed of the ComboBox and the LostFocus event of the Dates.&nbsp;&nbsp;I check for valid values and then set the parameters:</P><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>using</FONT></FONT><FONT size=2> (dp.DeferRefresh())</P>
+<P>{</P>
+<P>&nbsp;&nbsp;&nbsp;dp.FactoryParameters.Clear();</P>
+<P>&nbsp;&nbsp;&nbsp;dp.FactoryParameters.Add(System.</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>Int32</FONT></FONT><FONT size=2>.Parse(LocationComboBox.SelectedValue.ToString()));</P>
+<P>&nbsp;&nbsp;&nbsp;dp.FactoryParameters.Add(Csla.</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>SmartDate</FONT></FONT><FONT size=2>.Parse(RangeStart.Text));</P>
+<P>&nbsp;&nbsp;&nbsp;dp.FactoryParameters.Add(Csla.</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>SmartDate</FONT></FONT><FONT size=2>.Parse(RangeEnd.Text));</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;if</FONT></FONT><FONT size=2> (dp.Data != </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>null</FONT></FONT><FONT size=2>)</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{</P>
+<P></FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;AlertList</FONT></FONT><FONT size=2> SearchList = (</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>AlertList</FONT></FONT><FONT size=2>)dp.Data;</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if</FONT></FONT><FONT size=2> (SearchList.Count &gt; 0)</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;AlertDataGrid.SelectedIndex = 0;</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;AlertDataGrid.Visibility = </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>Visibility</FONT></FONT><FONT size=2>.Visible;</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</P>
+<P>&nbsp;&nbsp;&nbsp;}</P>
+<P>}</P></FONT><FONT size=2>
+<P></FONT>Once I have valid values that return data, I get an exception:&nbsp; DataPortal.Fetch failed (Nullable object must have a value).</P>
+<P>Any Idea what I am doing&nbsp;wrong?</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>thaehn replied on Wednesday, April 01, 2009</h2>I found the issue.&nbsp; The stored procedure was changed and the column names did't match what LINQ had, so it made them null (which wasn't allowed by item because the type wasn'n nullable).&nbsp; </div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

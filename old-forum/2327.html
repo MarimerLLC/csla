@@ -1,0 +1,203 @@
+<html><header><title>Problem porting PTracker to production server</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Problem porting PTracker to production server</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/2327.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>DanEssin posted on Monday, February 12, 2007</h2>I have PTServiceClient working on my development machine. I have set up corresponding virtual directories on my production server for PTWebService and WebServicesHost. On the production server I can browse the WSDL and click invoke but then all I get is a 500 error.<br><br>I was trying to include log4net in an attempt to get some information about exactly what isn't right. The logging calls that I put in PTWebService generate output but the ones that I included in the PtrackerLibrary do not.<br><br>I would be happy to solve the first problem and skip the second and would appreciate some input about what to do next, either to get the web service working or to get logging working.<br><br>Thanks,<br>Dan Essin<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, February 12, 2007</h2><P>You are almost certainly running into some sort of security issue on your production server. Either at the virtual root or file system level.</P>
+<P>Regarding log4net - I love log4net, but it is a serious pain in the @@$ to get it working on a web server. Mostly, again, due to security issues...</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>DanEssin replied on Monday, February 12, 2007</h2>Following your suggestion I have narrowed down the server-side problem. <br />I just don't know how to fix it.<br />The problem is that if I set the db connection strings for integrated <br />security, access to the db fails. If I hard code a user id and password, <br />then the web service works as expected.<br /><br />For the production server I have created a domain user called IUSR_WS. I <br />have made this user the user for anonymous access to the web service and <br />have given this user permission on all of the stored procedures. None of <br />this has any beneficial effect.<br /><br />On the development machine everything works because the database knows <br />that I am logged on and have permission. It lets me in for no reason <br />having anything to do with the web service's request.<br /><br />If you have any pointers for how to resolve this I would appreciate them.<br /><br />Dan<br /><br />RockfordLhotka wrote:<br />><br />> You are almost certainly running into some sort of security issue on <br />> your production server. Either at the virtual root or file system level.<br />><br />> Regarding log4net - I love log4net, but it is a serious pain in the <br />> @@$ to get it working on a web server. Mostly, again, due to security <br />> issues...<br />><br />><br />><br />> </div><div style='padding:0 15 3 15;background-color:powderblue'><h2>DanEssin replied on Tuesday, February 13, 2007</h2>
+
+
+  
+
+
+<font size="+1">The latest version of this problem is as follows:<br>
+<br>
+IF the machine on which the PTServiceClient is running has a proxy
+server enabled in IE<br>
+THEN the calls to the web service on the remote server fail with an
+HTTP 417 - Expectation Failed<br>
+<br>
+Of course, everything always works if the client app and the web
+service are on the same box.<br>
+<br>
+Any ideas?<br>
+<br>
+Dan<br>
+</font><br>
+RockfordLhotka wrote:
+<blockquote>
+  <p>You are almost certainly running into some sort of security issue
+on your production server. Either at the virtual root or file system
+level.</p>
+  <p>Regarding log4net - I love log4net, but it is a serious pain in
+the @@$ to get it working on a web server. Mostly, again, due to
+security issues...</p>
+  <br>
+  <br>
+<br>
+</blockquote>
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, February 13, 2007</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Eliminate complexity: try creating a basic, trivial web service &#8211;
+like something returning Hello World &#8211; and a client that talks to it. Get
+the basic IIS/ASP.NET/web service security out of the way, then move on.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Daniel Essin
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Tuesday, February 13, 2007 5:21 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] Problem porting PTracker to production server<o:p></o:p></span></p>
+
+</div>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal><span>The latest version of
+this problem is as follows:</span><span><br>
+<br>
+IF the machine on which the PTServiceClient is running has a proxy server
+enabled in IE<br>
+THEN the calls to the web service on the remote server fail with an HTTP
+417 - Expectation Failed<br>
+<br>
+Of course, everything always works if the client app and the web service
+are on the same box.<br>
+<br>
+Any ideas?<br>
+<br>
+Dan<br>
+</span><br>
+RockfordLhotka wrote: <o:p></o:p></p>
+
+<p>You are almost certainly running into some sort of security issue on your
+production server. Either at the virtual root or file system level.<o:p></o:p></p>
+
+<p>Regarding log4net - I love log4net, but it is a serious pain in the @@$ to
+get it working on a web server. Mostly, again, due to security issues...<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+<p class=MsoNormal><span><br>
+<br>
+<o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>DanEssin replied on Tuesday, February 13, 2007</h2>
+
+
+  
+
+
+<font size="+1">Thank you.<br>
+<br>
+It turns out that the answer is to add the following to the App.config
+file:<br>
+&nbsp;&nbsp;&nbsp; &lt;system.net&gt;<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &lt;defaultProxy&gt;<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &lt;bypasslist&gt;<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &lt;add address="IP Address of my Web Server"/&gt;<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &lt;/bypasslist&gt;<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &lt;/defaultProxy&gt;<br>
+&nbsp;&nbsp;&nbsp; &lt;/system.net&gt;<br>
+<br>
+</font><br>
+Rockford Lhotka wrote:
+<blockquote>
+  
+  
+  
+
+ 
+
+ 
+  
+ 
+  <div class="Section1">
+  <p class="MsoNormal"><span>Eliminate
+complexity: try creating a basic, trivial web service &#8211;
+like something returning Hello World &#8211; and a client that talks to it.
+Get
+the basic IIS/ASP.NET/web service security out of the way, then move on.<o:p></o:p></span></p>
+  <p class="MsoNormal"><span><o:p>&nbsp;</o:p></span></p>
+  <p class="MsoNormal"><span>Rocky<o:p></o:p></span></p>
+  <p class="MsoNormal"><span><o:p>&nbsp;</o:p></span></p>
+  <div>
+  <div>
+  <p class="MsoNormal"><b><span>From:</span></b><span>
+Daniel Essin
+[<a class="moz-txt-link-freetext" href="mailto:cslanet@lhotka.net">mailto:cslanet@lhotka.net</a>] <br>
+  <b>Sent:</b> Tuesday, February 13, 2007 5:21 PM<br>
+  <b>To:</b> <a class="moz-txt-link-abbreviated" href="mailto:rocky@lhotka.net">rocky@lhotka.net</a><br>
+  <b>Subject:</b> Re: [CSLA .NET] Problem porting PTracker to
+production server<o:p></o:p></span></p>
+  </div>
+  </div>
+  <p class="MsoNormal"><o:p>&nbsp;</o:p></p>
+  <p class="MsoNormal"><span>The latest
+version of
+this problem is as follows:</span><span><br>
+  <br>
+  IF the machine on which the PTServiceClient is running has a
+proxy server
+enabled in IE<br>
+  THEN the calls to the web service on the remote server fail with
+an HTTP
+417 - Expectation Failed<br>
+  <br>
+  Of course, everything always works if the client app and the web
+service
+are on the same box.<br>
+  <br>
+  Any ideas?<br>
+  <br>
+  Dan<br>
+  </span><br>
+RockfordLhotka wrote: <o:p></o:p></p>
+  <p>You are almost certainly running into some sort of security issue
+on your
+production server. Either at the virtual root or file system level.<o:p></o:p></p>
+  <p>Regarding log4net - I love log4net, but it is a serious pain in
+the @@$ to
+get it working on a web server. Mostly, again, due to security issues...<o:p></o:p></p>
+  <p class="MsoNormal"><br>
+  <br>
+  <o:p></o:p></p>
+  <p class="MsoNormal"><span><br>
+  <br>
+  <o:p></o:p></span></p>
+  </div>
+  <br>
+  <br>
+<br>
+</blockquote>
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

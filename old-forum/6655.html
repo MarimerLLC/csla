@@ -1,0 +1,93 @@
+<html><header><title>ObjectFactory - MarkOld(obj) on BusinessListBase object</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>ObjectFactory - MarkOld(obj) on BusinessListBase object</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6655.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Kevin Fairclough posted on Monday, March 23, 2009</h2>Hi All,<br><br>If I call MarkOld(blbObj) in my ObjectFactory Update which has just saved the contents of a BusinessListBase do I need call MarkOld(foreach_content_bb) or will MarkOld scan the object graph and do it for me.&nbsp; From what I have seen I need to manually cascade the MarkOld(..)<br><br>Csla 3.6.1<br><br>TIA<br>Kevin<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, March 23, 2009</h2>You have to manually cascade things like MarkOld(), MarkNew(), etc.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Kevin Fairclough replied on Tuesday, March 24, 2009</h2>Thanks</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Kevin Fairclough replied on Tuesday, March 24, 2009</h2>I also have to manually clear DeletedList, is this correct?<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, March 24, 2009</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Yes &#8211; you must manually do everything.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>In 3.6.2 there are more methods on the ObjectFactory base class,
+and so it should be possible to load/save all object stereotypes now.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Kevin Fairclough
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Tuesday, March 24, 2009 7:14 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] ObjectFactory - MarkOld(obj) on
+BusinessListBase object<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>I also have to manually clear DeletedList, is this correct?<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Kevin Fairclough replied on Tuesday, March 24, 2009</h2>Cheers Rocky.<br><br>When you're new to this you don't appreciate what "everything" is until you get to it!<br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, March 24, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>It is definitely a choice.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>The DataPortal_XYZ approach is more automated and so is simpler.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>The ObjectFactory approach is more flexible, but isn&#8217;t
+quite as simple, and requires that you understand more about the object
+lifecycle.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

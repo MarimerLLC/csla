@@ -1,0 +1,35 @@
+<html><header><title>Help with accessing identity information in dataportal_fetch</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Help with accessing identity information in dataportal_fetch</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/1978.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>MikeHamilton posted on Thursday, December 14, 2006</h2><P>I am having some weird issues with accessing the UserID for the user logged in.</P>
+<P>During testing I am getting an error using the following line in a DataPortal_Fetch method.</P><FONT color=#008000 size=2>
+<P>.Parameters.AddWithValue("@UserID", CType(Csla.User.Identity, Security.SecurityIdentity).ID)</P>
+<P></FONT>The error is ...<BR>Unable to cast object of type 'System.Security.Principal.GenericIdentity' to type 'BlakeIS.FastTrack.BusinessLibrary.Security.SecurityIdentity'</P>
+<P>...Security.SecurityIdentity inherits from ReadOnlyBase and implements iIdentity</P>
+<P>The weird part is this line works fine in another BusinessObject. Both of them inherit from BusinessBase. the one difference is the failure happens in the DataPortal_Fetch but in the class where it works is the DataPortal_Insert. Is this the issue? (it is not valid in fetch methods)</P>
+<P>Anyone got some ideas? or what code you need to see to help me out.</P>
+<P>Thanks,</P>
+<P>Mike</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>MikeHamilton replied on Thursday, December 14, 2006</h2><P>Just wanted to add some more information... I was looking through my PDF of the book and can't find any use of Csla.User so I tried the following line...<BR><FONT color=#008000 size=2></P>
+<P>.Parameters.AddWithValue("@UserID", CType(Csla.ApplicationContext.User.Identity, Security.SecurityIdentity).ID)</P>
+<P><FONT color=#000000 size=3>and that didn't work either. The same error gets thrown. And I am logged in (oops looks like maybe I am not... will do more testing on this... seems <FONT size=2>Csla.User.Identity.IsAuthenticated </FONT><FONT size=3>is False right before the line it fails on)</FONT></FONT></P>
+<P><FONT color=#000000 size=3>Mike</FONT></P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>MikeHamilton replied on Thursday, December 14, 2006</h2><P>OK so I am fairly sure I have figured out what the probelm is. It is the fact that this call is in an event that gets raised by a control that does it processing asynchronsly (sp?) so the event is being raised by different threads. Can someone verify this is the issue?</P>
+<P>So what is the best way to handle this? Should I store a reference to the user on the main form and use that reference (if I can.. kinda of new on delaing with multiple threads)? Or is there some other way to do it?</P>
+<P>Thanks,</P>
+<P>Mike</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, December 14, 2006</h2><P>CSLA .NET includes Csla.ApplicationContext.User - that's the only User property in the framework, and is the one I would think you'd be using. If you do have a Csla.User property, it is a customization you or someone on your team must have made.</P>
+<P>If you are using custom authentication, which it sounds like you are, you must make sure that the principal object (Csla.ApplicationContext.User) is restored on each page request. Typically this is done in global.asax as shown in Chapter 10 in the book. After that point, Csla.ApplicationContext.User should provide access to the pricipal object in all your code.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>MikeHamilton replied on Thursday, December 14, 2006</h2><P>Thanks for the reply.</P>
+<P>We (me as I am the lone developer using the framework so far) have not modified the CSLA code at all. I think maybe I might have screwed something up with importing the namespace or something?</P>
+<P>This is a WinForms app, not webforms.</P>
+<P>Mike</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, December 14, 2006</h2>
+
+
+
+
+<DIV align=left><SPAN class=750330023-14122006><FONT face=Arial color=#0000ff size=2>That's odd then - there shouldn't be anything called 
+Csla.User...</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=750330023-14122006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=750330023-14122006><FONT face=Arial color=#0000ff size=2>I assume you are using a remote data portal configuration? 
+If not, then the DataPortal_XYZ methods are running in the same AppDomain as all 
+the rest of your code and would be using the exact same principal object. If you 
+are using a remote data portal then you need to make sure both the client's 
+app.config and server's web.config files have the same CSLA .NET authorization 
+setting, otherwise the data portal won't properly impersonate the 
+user&nbsp;across the network.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=750330023-14122006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=750330023-14122006><FONT face=Arial color=#0000ff size=2>Rocky</FONT></SPAN></DIV></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

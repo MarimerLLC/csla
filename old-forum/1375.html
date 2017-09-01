@@ -1,0 +1,52 @@
+<html><header><title>AddDependantProperty doesn't appear to work on Instance Rules.</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>AddDependantProperty doesn't appear to work on Instance Rules.</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/1375.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>tpancoast posted on Tuesday, October 03, 2006</h2><DIV>FYI: The new AddDependantProperty doesn't appear to work when you have a combination of Instance and Type (ie static) Rules.&nbsp; In my first pass at converting my objects to 2.1, I was being lazy and just changed it to use AddInstanceRule, since my rules were not static.&nbsp; I was also using some CommonRules, so this created a mix of Instance and Type rules.&nbsp; When ValidationRules.CheckRules(string propertyName) goes to check the dependencies (GetDependancyList(false), it returns a null dependency list.</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>I think the problem is that ValidationRulesManager.RulesToCheck consolidates the Instance and Type rules into a new list, but it doesn't create a consolidated dependency list.</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>This just convinced me to do the right thing and convert my rules to static, so I didn't actually verify that this would fix it.</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>P.S.&nbsp; Sorry if this is the wrong way to report this.</DIV></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, October 03, 2006</h2><P>This does appear to be a bug - thanks for pointing it out.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, October 04, 2006</h2><P>I have changed ValidationRules to merge the dependancy list along with the rules, which should fix this issue.</P>
+<P>Can you do me a favor and test the change in your setting? If you to to <A href="http://www.lhotka.net/cslacvs">www.lhotka.net/cslacvs</A> you can go get the updated ValidationRules source file and replace your current file with this one. </P>
+<P>Thanks!</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tpancoast replied on Wednesday, October 04, 2006</h2><DIV>Not every RuleList has a Dependancy List, so the current change gets NullReferenceExceptions.&nbsp; In RulesToCheck, Change:</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>
+<DIV>rules.GetDependancyList(false).AddRange(de.Value.GetDependancyList(false));</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>to:</DIV>
+<DIV>&nbsp;</DIV></DIV>
+<DIV>if (de.Value.GetDependancyList(false) != null)</DIV>
+<DIV>&nbsp; rules.GetDependancyList(true).AddRange(de.Value.GetDependancyList(false));</DIV></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, October 04, 2006</h2>OK, try the current code - I think that should do it.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tpancoast replied on Wednesday, October 04, 2006</h2><DIV>Still gets a NullReferenceException.&nbsp; Try this instead:</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; List&lt;string&gt; dependancy = de.Value.GetDependancyList(false);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (dependancy != null)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; rules.GetDependancyList(true).AddRange(dependancy);<BR></DIV></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, October 04, 2006</h2><P>Ahh, I should have seen that... I'm running from one thing to the next today, and I should just hold off making changes until I can sit down and do it right...</P>
+<P>In any case, I put the change into cvs.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tpancoast replied on Wednesday, October 04, 2006</h2>O.K.&nbsp; Works now.&nbsp; Thanks.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>SimonL replied on Thursday, November 16, 2006</h2><P>Is this in a version that is downloadable. We're using 2.1 and need this feature. If its in the cvs&nbsp;where do I find the cvs.</P>
+<P>Regards,</P>
+<P>Simon</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, November 16, 2006</h2>
+
+
+
+
+<DIV align=left><SPAN class=206521116-16112006><FONT face=Arial color=#0000ff size=2>Dependant properties apply to both per-type and 
+per-instance rules. It is important to realize that once the object has been 
+instantiated in memory, its per-type and per-instance rule lists are merged into 
+a single list, sorted by priority. This is required to make short-circuiting 
+work.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=206521116-16112006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=206521116-16112006><FONT face=Arial color=#0000ff size=2>As such, the concept of dependant properties is really 
+independent from per-type or per-instance.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=206521116-16112006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=206521116-16112006><FONT face=Arial color=#0000ff size=2>So you set the dependencies in AddBusinessRules(), and they 
+apply to all rules, per-type and per-instance.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=206521116-16112006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=206521116-16112006><FONT face=Arial color=#0000ff size=2>Rocky</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=206521116-16112006></SPAN>&nbsp;</DIV><BR>
+<BLOCKQUOTE>
+  <DIV class=OutlookMessageHeader align=left>
+  <HR>
+  <FONT face=Tahoma size=2><B>From:</B> SimonL [mailto:cslanet@lhotka.net] 
+  <BR><B>Sent:</B> Thursday, November 16, 2006 5:38 AM<BR><B>To:</B> 
+  rocky@lhotka.net<BR><B>Subject:</B> Re: [CSLA .NET] AddDependantProperty 
+  doesn't appear to work on Instance Rules.<BR></FONT><BR></DIV>
+  <DIV></DIV>
+  <P>Is this in a version that is downloadable. We're using 2.1 and need this 
+  feature. If its in the cvs&nbsp;where do I find the cvs.</P>
+  <P>Regards,</P>
+  <P>Simon</P><BR><BR><BR></BLOCKQUOTE></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

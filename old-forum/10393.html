@@ -1,0 +1,45 @@
+<html><header><title>Business Rule Chaining &amp; context.AddOutValue()</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Business Rule Chaining &amp; context.AddOutValue()</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10393.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Peran posted on Monday, May 23, 2011</h2><p>I have a &#39;selector&#39; type business rule which chooses which one of 2 inner rules to run dependant on the object state.</p>
+<p>&nbsp;</p>
+<p>The inner rules change the values of multiple properties in the Execute Method e.g.</p>
+<p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; context.AddOutValue(this.Amount1Property, newAmount1);</p>
+<p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; context.AddOutValue(this.Amount2Property, newAmount2);</p>
+<div>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; context.AddOutValue(this.Amount3Property, newAmount3);</p>
+<div></div>
+</div>
+</p>
+<div></div>
+<div>The problem is the new values set in the inner rule do not get applied to the business object; I&#39;m not sure if I am trying to do something that is not possible or if my implementation is wrong?</div>
+<div></div>
+<div>The inner rules I am using work fine if they are not part of a chain. &nbsp;I have also tried ensuring the &#39;selector&#39; rule AffectedProperties contains all the AffectedProperties of the inner rules, but this made no difference.</div>
+<div></div>
+<div></div>
+<div>Cheers</div>
+<div></div>
+<div>Peran</div>
+</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Monday, May 23, 2011</h2><p>Workaround now&nbsp; - your inner rule must call </p>
+<p><i>context.Complete(); </i></p>
+<p>after it has set the output value or your selector rule must call Complete on the chained context.&nbsp; </p>
+<p>OutputPropertyValues is not propagated down into chained RuleContext so your code must call complete in the innermost context. </p>
+<p>This may be regarded as a bug - but for optimized memory consumption the OuputPropertyValues dictionary is not created until the first AddOutvalue is called and so the dictionary is not passed on to chained contexts.&nbsp;</p>
+<p>If we change the GetChainedContext to </p>
+<p>&nbsp;&nbsp;&nbsp; <span style="color:#0000ff;font-weight:bold;">public</span>&nbsp;RuleContext&nbsp;<span style="color:#191970;font-weight:bold;">GetChainedContext</span><span style="color:#006400;">(</span>IBusinessRule rule<span style="color:#006400;">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#006400;">{</span><br />
+<i><b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="color:#0000ff;font-weight:bold;">if</span>&nbsp;<span style="color:#006400;">(</span>OutputPropertyValues ==&nbsp;<span style="font-weight:bold;">null</span><span style="color:#006400;">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;OutputPropertyValues =&nbsp;<span style="color:#008b8b;font-weight:bold;">new</span>&nbsp;Dictionary<span style="color:#006400;">&lt;</span>Core<span style="color:#006400;">.</span>IPropertyInfo<span style="color:#006400;">,</span>&nbsp;<span style="color:#ff0000;">object</span><span style="color:#006400;">&gt;();</span></b></i><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#000080;">var</span>&nbsp;result =&nbsp;<span style="color:#008b8b;font-weight:bold;">new</span>&nbsp;<span style="color:#191970;font-weight:bold;">RuleContext</span><span style="color:#006400;">(</span>_completeHandler<span style="color:#006400;">);</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;result<span style="color:#006400;">.</span>Rule = rule<span style="color:#006400;">;</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#0000ff;font-weight:bold;">if</span>&nbsp;<span style="color:#006400;">(!</span>rule<span style="color:#006400;">.</span>IsAsync&nbsp;<span style="color:#006400;">||</span>&nbsp;rule<span style="color:#006400;">.</span>ProvideTargetWhenAsync<span style="color:#006400;">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;result<span style="color:#006400;">.</span>Target = Target<span style="color:#006400;">;</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;result<span style="color:#006400;">.</span>InputPropertyValues = InputPropertyValues<span style="color:#006400;">;</span><br />
+<i><b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;result<span style="color:#006400;">.</span>OutputPropertyValues = OutputPropertyValues</b></i><span style="color:#006400;">;</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;result<span style="color:#006400;">.</span>Results = Results<span style="color:#006400;">;</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#000080;">return</span>&nbsp;result<span style="color:#006400;">;</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#006400;">}</span></p>
+<p><span style="color:#006400;">The rules will work as expected out of the box. </span></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Peran replied on Monday, May 23, 2011</h2><p>Thanks, calling context.Complete() on the inner most rule solved the issue. &nbsp;In fact I added it to a base class of mine so it is called&nbsp;automatically&nbsp;when Execute() competes on a synchronous rule.</p>
+<p>&nbsp;</p>
+<p>[Edit] for anyone else reading this, you also need to make sure the &#39;selector&#39; rule AffectedProperties contains the inner rule&nbsp;AffectedProperties.</p>
+<p>&nbsp;</p>
+<p>Peran&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

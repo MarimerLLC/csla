@@ -1,0 +1,69 @@
+<html><header><title>Timesheet, CSLA and OOP</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Timesheet, CSLA and OOP</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3171.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>un7lg posted on Wednesday, July 11, 2007</h2><div><font face="Arial" size="2"><span class="890540715-11072007"><br></span></font></div>
+
+<div><font face="Arial" size="2"><span class="890540715-11072007">This is my first 
+project using&nbsp; CSLA as a framework. My learning curve is slower that I would 
+like to see it and I need some help from CSLA community.</span></font></div>
+<div><font face="Arial" size="2"><span class="890540715-11072007"></span></font>&nbsp;</div>
+<div><font face="Arial" size="2"><span class="890540715-11072007">The project is a 
+Project Cost Control application.</span></font></div>
+<div><font face="Arial" size="2"><span class="890540715-11072007">The timesheet is a 
+main point of keying&nbsp;data into system.</span></font></div>
+<div><font face="Arial" size="2"><span class="890540715-11072007">As it is a 
+construction industry, the timesheet is more complicated than a "regular" 
+one.</span></font></div>
+<div><font face="Arial" size="2"><span class="890540715-11072007"></span></font>&nbsp;</div>
+<div><font face="Arial" size="2"><span class="890540715-11072007">Moreover, 
+construction sites&nbsp;are located in&nbsp;a remote area and a dialup internet is only a 
+choice.</span></font></div>
+<div><font face="Arial" size="2"><span class="890540715-11072007"></span></font>&nbsp;</div>
+<div><font face="Arial" size="2"><span class="890540715-11072007">So here we 
+go:</span></font></div>
+<div><font face="Arial" size="2"><span class="890540715-11072007"></span></font>&nbsp;</div>
+<div><font face="Arial" size="2"><span class="890540715-11072007">TIMESHEET (It could be a few different types of 
+timesheets - labour, expense)</span></font></div>
+<div><font face="Arial" size="2"><span class="890540715-11072007"></span></font>&nbsp;</div>
+<div><font face="Arial" size="2"><span class="890540715-11072007">WA - work 
+authorization (usually only ONE WA per timesheet, but could be 
+more)</span></font></div>
+<div><font face="Arial" size="2"><span class="890540715-11072007"></span></font>&nbsp;</div>
+<div><font face="Arial" size="2"><span class="890540715-11072007">WO -&nbsp;workorder 
+(&nbsp;under each WA it could be many of them)</span></font></div>
+<div><font face="Arial" size="2"><span class="890540715-11072007"></span></font>&nbsp;</div>
+<div><font face="Arial" size="2"><span class="890540715-11072007">RESOURCE - labour, 
+equipment, material, expenses (we&nbsp;have to&nbsp;assign resources to every WO, and 
+labour might be organized into&nbsp;teams to easily create timesheet on a daily 
+basis)</span></font></div>
+<div><font face="Arial" size="2"><span class="890540715-11072007"></span></font>&nbsp;</div>
+<div><font face="Arial" size="2"><span class="890540715-11072007">TIMECODE - ( for 
+every resource it can be many timecodes. For example, Labour -&nbsp;REG, OT, DT are 
+always used, but many others (7-12 of them) used 
+occasionally)</span></font></div>
+<div><font face="Arial" size="2"><span class="890540715-11072007"></span></font>&nbsp;</div>
+<div><font face="Arial" size="2"><span class="890540715-11072007">CODE UNIT - (with 
+every&nbsp;TIMECODE has to be associated some units, such as hours, amount or&nbsp;qty of 
+something.)</span></font></div>
+<div><font face="Arial" size="2"><span class="890540715-11072007"></span></font>&nbsp;</div>
+<div><font face="Arial" size="2"><span class="890540715-11072007">As a Document&nbsp; 
+TIMESHEET has header of general information about&nbsp;project, timesheet itself ( #, 
+Date,,,)&nbsp;and sub headers of information about WA ( WO, Cost Center, 
+Desc).</span></font></div>
+<div><font face="Arial" size="2"><span class="890540715-11072007"></span></font>&nbsp;</div>
+<div><font face="Arial" size="2"><span class="890540715-11072007">All data created in 
+TIMESHEET&nbsp;I want to save in one Details table with foreign keys to all other 
+tables, including timesheet table.</span></font></div>
+<div><font face="Arial" size="2"><span class="890540715-11072007"></span></font>&nbsp;</div>
+<div><font face="Arial" size="2"><span class="890540715-11072007">What would be the 
+best CSLA object structure to handle it?</span></font></div>
+<div><font face="Arial" size="2"><span class="890540715-11072007">As I mention, 
+internet is not good, and I do not want to hit database every time if my objects 
+required data.</span></font></div>
+<div><font face="Arial" size="2"><span class="890540715-11072007"></span></font>&nbsp;</div>
+<div><font face="Arial" size="2"><span class="890540715-11072007">Perhaps, I should 
+keep connection open during the time a timesheet created.... but timekeepers can 
+leave it open over night easily.</span></font></div>
+<div><font face="Arial" size="2"><span class="890540715-11072007"></span></font> <br></div>
+<div><font face="Arial" size="2"><span class="890540715-11072007">Thanks,</span></font></div>
+<div><font face="Arial" size="2"><span class="890540715-11072007"></span></font>&nbsp;</div>
+<div><font face="Arial" size="2"><span class="890540715-11072007">Pavel</span></font></div></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>hurcane replied on Wednesday, July 11, 2007</h2>I think you have already figured out your object structure.<br><br>TimeSheet = EditableRoot, which contains a child list of work authorizations (because there could be more than 1, even there isn't usually more than 1)<br>WorkAuthorization = EditableChild, which contains a child list of work orders<br>WorkOrder = EditableChild, which contains a child list resources<br>Resource = EditableChild, which contains a list of time entries<br>TimeEntry = EditableChild, which has properties for time code and code unit<br><br>That's the easy part, although loading great-great-grandchild data (i.e. TimeEntry) will be fun to design. <br><br>The hard part will be designing for performance over a dialup line. There are no general guidelines for that beyond avoiding a "chatty" design and cache where possible.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>un7lg replied on Thursday, July 12, 2007</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>hurcane:</strong></div><div><br>The hard part will be designing for performance over a dialup line.
+There are no general guidelines for that beyond avoiding a "chatty"
+design and cache where possible.<br></div></BLOCKQUOTE><br><br>I do not like it too and what I am thinking about is to install local MS SQL Express and replicate databases on some schedule.<br>It would give a better user experience, but I have to alarm remote timekeeper database on some changes made in a main database in the main office<br>Theoretically it's possible and could be the best solution for me.<br>In practice, in the very beginning of the project there are a lot entries done, such as Employees, new codes....but then it just a few master table changes would be made, except Employees are still hired and fired.<br>Or just cache all master tables on every connection as they are not big, but only Labour table is concern that could be up to 750 names for a project.<br>Any opinion ?.<br><br><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>hurcane:</strong></div><div><br>That's the easy part, although loading great-great-grandchild data (i.e. TimeEntry) will be fun to design. </div></BLOCKQUOTE><br><br>As I mention it would be just one table and I have to save only foreign keys mostly. I have to test it any way with CSLA .<br><br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>hurcane replied on Thursday, July 12, 2007</h2>How are you going to store 5 levels of 1-many relationships in a single table? If I understand your design correctly, a timesheet can have multiple work authorizations on it, each work authorization could have multiple work orders, each work order can have multiple resources, and each resource can have multiple time entries..<br><br>I'd have five tables for this data entry scenario. Or maybe I am misunderstanding your use case.<br><br>I think replication between SQL Express at the client and SQL 2005 in the office is a good idea. Don't replicate any more data than you absolutely need when the client is disconnected.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>un7lg replied on Friday, July 13, 2007</h2>Sorry for misleading you.<br>I have all tables required, such as WO,Employee,WA and so on.<br>What I talked about is a transactional table where I save all Timesheet data with FK to all other tables.<br><br>Thanks for you advices,<br><br>Pavel <br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Pavel replied on Sunday, January 10, 2010</h2>I am back to this thread as the complexity of a timesheet is a good example of how difficult could be an OOP.<br><br>So, I need some advice how to deal with such a scenario:<br><br>-on timesheet I have up to 3 Workorders.<br>-Employee can be assigned to all of them the same time, or only to one.<br>-Paycodes(reg time, subsistence, meal....)&nbsp; assigned to Empolyee.<br><br>The problem I see here that if I have 12 Paycodes I have to create 12 Paycode objects to be added to PaycodeList.<br><br>So, simple calculation would give me:<br>12 Employee per Timesheet and 3 Workorders and 12 Paycodes per Employee-Workorder would give at maximum 432 PayCode objects to be created.<br><br>I see that if I would create PayCode object when user actually enters it into a Timesheet would be a slow as I have to do steps like:<br>-create a Paycode object<br>-assign Paycode to PaycodeList(if not there yet)<br>-assign PaycodeList to Employee<br>-assign Employee to EmployeeList (if not there yet)<br>-assign EmployeeList to Workorder (if not there yet)<br>-assign Workorder to WorkorderList (if not there yet)<br>-assign WorkorderList to Timesheet (if not there yet)<br><br>Probably, I am going to a wrong direction and there is a more elegant way to do it.<br><br>Thanks for any idea,<br><br>Pavel<br><br><br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Monday, January 11, 2010</h2>Keep in mind that you may have more than one object graph for timesheets (for example), if editing a timesheet can be done through different use cases.&nbsp; I think you're trying to jump into the class design too quickly.&nbsp; Step back, and solidify your use cases.&nbsp; Then design an object graph that supports each use case.&nbsp; Only then would you consider the object behaviors across use cases and determine which ones overlap, and simplify your model.&nbsp; But initially take it one use case at a time.</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

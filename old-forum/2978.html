@@ -1,0 +1,80 @@
+<html><header><title>.NET 2.0 solution to serialization of objects that raise events</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>.NET 2.0 solution to serialization of objects that raise events</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/2978.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Mike.Smith posted on Saturday, June 02, 2007</h2><P>I have been stung by the problem of my object raising an event that my form is handling. As a result of the reference my object has to my form, serialization is attempted on the form itself. The problem and one solution is described by Rocky here: <A href="http://www.lhotka.net/WeBlog/PermaLink.aspx?guid=776f44e8-aaec-4845-b649-e0d840e6de2c">http://www.lhotka.net/WeBlog/PermaLink.aspx?guid=776f44e8-aaec-4845-b649-e0d840e6de2c</A></P>
+<P>A better implementation of the solution was posted a couple of weeks later: <A href="http://www.lhotka.net/weblog/BetterVersionOfTheNET20EventserializationSolution.aspx">http://www.lhotka.net/weblog/BetterVersionOfTheNET20EventserializationSolution.aspx</A></P>
+<P>This is great but I can't seem to get either of these solutions to work correctly. These custom event declarations work for raising the events and the form can handle those events just fine but they don't seem to help with the core problem because I get an error indicating serialization is still attempted on the form!</P>
+<P>In the first article, Rocky says: <STRONG>"...we can declare our backing field to be NonSerialized if we so desire. Better yet, we can have two backing fields – one for targets that can be serialized, and another for targets that can’t be serialized."</STRONG></P>
+<P>I have looked at the code and although there are two backing fields declared, they are both handled exactly the same. Also, neither of them have the NonSerialized attribute. Adding the attribute does not seem to help the problem either.&nbsp;I am puzzled how this is even supposed to help. Am I supposed to add and remove the handlers myself somewhere in the code? This seems to defeat the purpose of the solution.</P>
+<P>Has anyone else been able to get these examples to work? I am about to give up and go to Observer Events instead but I'd like to get this to work if possible.</P>
+<P>Any insight would be much appreciated.</P>
+<P>Mike</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Mike.Smith replied on Saturday, June 02, 2007</h2><P>I have found a solution. Looks like I blew it pretty major.&nbsp;I actually have more than one object that my form is handling events for! I only tested the solutions on one of the objects and the other object retained the reference to the form. Duh!</P>
+<P>Once I updated both objects, it works fine. Sorry for the false alarm.</P>
+<P>Mike</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>PStanev replied on Monday, August 04, 2008</h2><P>I have the same problem: (<FONT color=#003300 size=2>serializing objects that raise events when those events are handled by a non-serializable object (like a Windows Form). </FONT>)The only diffence im my code is thet I dont use the standard EventHandler Because I have input parameteres. Here is my code: </P>
+<P>&lt;NonSerialized()&gt; _</P>
+<P><FONT color=#0000ff>Private</FONT> mNonSerializableSM <FONT color=#0000ff>As</FONT> SMHandler</P>
+<P><FONT color=#0000ff>Private</FONT> mSerializableSM <FONT color=#0000ff>As</FONT> SMHandler</P>
+<P><FONT color=#0000ff>Delegate</FONT> <FONT color=#0000ff>Sub</FONT> SMHandler(<FONT color=#0000ff>ByVal</FONT> Message <FONT color=#0000ff>As</FONT> <FONT color=#0000ff>String</FONT>, <FONT color=#0000ff>ByVal</FONT> MessageType <FONT color=#0000ff>As</FONT> MsgBoxStyle)</P>
+<P><FONT color=#0000ff>Public</FONT> <FONT color=#0000ff>Custom</FONT> <FONT color=#0000ff>Event</FONT> SimpleMessageEvent <FONT color=#0000ff>As</FONT> SMHandler</P>
+<P><FONT color=#0000ff>AddHandler</FONT>(<FONT color=#0000ff>ByVal</FONT> value <FONT color=#0000ff>As</FONT> SMHandler)</P>
+<P><FONT color=#0000ff>If</FONT> value.Target.GetType.IsSerializable <FONT color=#0000ff>Then</P></FONT>
+<P>mSerializableSM = <FONT color=#0000ff>CType</FONT>([Delegate].Combine(mSerializableSM, value), SMHandler)</P>
+<P><FONT color=#0000ff>Else</P></FONT>
+<P>mNonSerializableSM = <FONT color=#0000ff>CType</FONT>([Delegate].Combine(mNonSerializableSM, value), SMHandler)</P>
+<P><FONT color=#0000ff>End</FONT> <FONT color=#0000ff>If</P></FONT>
+<P><FONT color=#0000ff>End</FONT> <FONT color=#0000ff>AddHandler</P></FONT>
+<P><FONT color=#0000ff>RemoveHandler</FONT>(<FONT color=#0000ff>ByVal</FONT> value <FONT color=#0000ff>As</FONT> SMHandler)</P>
+<P><FONT color=#0000ff>If</FONT> value.Target.GetType.IsSerializable <FONT color=#0000ff>Then</P></FONT>
+<P>mSerializableSM = <FONT color=#0000ff>CType</FONT>([Delegate].Remove(mSerializableSM, value), SMHandler)</P>
+<P><FONT color=#0000ff>Else</P></FONT>
+<P>mNonSerializableSM = <FONT color=#0000ff>CType</FONT>([Delegate].Remove(mNonSerializableSM, value), SMHandler)</P>
+<P><FONT color=#0000ff>End</FONT> <FONT color=#0000ff>If</P></FONT>
+<P><FONT color=#0000ff>End</FONT> <FONT color=#0000ff>RemoveHandler</P></FONT>
+<P><FONT color=#0000ff>RaiseEvent</FONT>(<FONT color=#0000ff>ByVal</FONT> Message <FONT color=#0000ff>As</FONT> <FONT color=#0000ff>String</FONT>, <FONT color=#0000ff>ByVal</FONT> MessageType <FONT color=#0000ff>As</FONT> MsgBoxStyle)</P>
+<P><FONT color=#0000ff>If</FONT> mNonSerializableSM <FONT color=#0000ff>IsNot</FONT> <FONT color=#0000ff>Nothing</FONT> <FONT color=#0000ff>Then</FONT> mNonSerializableSM(Message, MessageType)</P>
+<P><FONT color=#0000ff>If</FONT> mSerializableSM <FONT color=#0000ff>IsNot</FONT> <FONT color=#0000ff>Nothing</FONT> <FONT color=#0000ff>Then</FONT> mSerializableSM(Message, MessageType)</P>
+<P><FONT color=#0000ff>End</FONT> <FONT color=#0000ff>RaiseEvent</P></FONT>
+<P><FONT color=#0000ff>End</FONT> <FONT color=#0000ff>Event</FONT></P>
+<P><FONT color=#0000ff><FONT color=#000000>Everithing look right , but I still get the runtime error.</FONT></FONT></P>
+<P><FONT color=#0000ff><FONT color=#000000>Please Help.</FONT></FONT></P>
+<P><FONT color=#0000ff><FONT color=#000000>Thank You.</FONT></P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>nj609eagle replied on Tuesday, November 23, 2010</h2><p>I&#39;ve read and re-read all of this thread and many others but it&#39;s still not working for me:</p>
+<p><blockquote style="overflow-x: scroll;"><pre style="margin: 0px;">&nbsp;</p>
+<p><span style="font-size:x-small;">
+<p>&lt;NonSerialized()&gt; _<br />Private _NonSerializableHandlers As New Generic.List(Of EventHandler)<br />Private _SerializableHandlers As New Generic.List(Of EventHandler)</p>
+<p>Public Custom Event DuesRefreshed As System.EventHandler<br />&nbsp;&nbsp;&nbsp;&nbsp; AddHandler(ByVal value As EventHandler)<br />&nbsp;&nbsp;&nbsp;&nbsp; </p>
+<p>&#39;If value.Target.GetType.IsSerializable Then</p>
+<p>&#39; _SerializableHandlers = CType([Delegate].Combine(_SerializableHandlers, value), EventHandler)</p>
+<p>&#39;Else</p>
+<p>&#39; _NonSerializableHandlers = CType([Delegate].Combine(_NonSerializableHandlers, value), EventHandler)</p>
+<p>&#39;End If</p>
+<p>If value.Target.GetType.IsSerializable Then</p>
+<p>_SerializableHandlers.Add(value)</p>
+<p>Else</p>
+<p>If _NonSerializableHandlers Is Nothing Then</p>
+<p>_NonSerializableHandlers = New Generic.List(Of EventHandler)()</p>
+<p>End If</p>
+<p>_NonSerializableHandlers.Add(value)</p>
+<p>End If</p>
+<p>End AddHandler</p>
+<p>RemoveHandler(ByVal value As EventHandler)</p>
+<p>&#39;If value.Target.GetType.IsSerializable Then</p>
+<p>&#39; _SerializableHandlers = CType([Delegate].Remove(_SerializableHandlers, value), EventHandler)</p>
+<p>&#39;Else</p>
+<p>&#39; _NonSerializableHandlers = CType([Delegate].Remove(_NonSerializableHandlers, value), EventHandler)</p>
+<p>&#39;End If</p>
+<p>If value.Target.GetType.IsSerializable Then</p>
+<p>_SerializableHandlers.Remove(value)</p>
+<p>Else</p>
+<p>_NonSerializableHandlers.Remove(value)</p>
+<p>End If</p>
+<p>End RemoveHandler</p>
+<p>RaiseEvent(ByVal sender As Object, ByVal e As System.EventArgs)</p>
+<p>&#39;If _NonSerializableHandlers IsNot Nothing Then _NonSerializableHandlers(sender, e)</p>
+<p>&#39;If _SerializableHandlers IsNot Nothing Then _SerializableHandlers(sender, e)</p>
+<p>For Each item As EventHandler In _NonSerializableHandlers</p>
+<p>item.Invoke(sender, e)</p>
+<p>Next</p>
+<p>For Each item As EventHandler In _SerializableHandlers</p>
+<p>item.Invoke(sender, e)</p>
+<p>Next</p>
+<p>End RaiseEvent</p>
+<p>End Event</p>
+</span></p>
+<p></pre></blockquote></p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

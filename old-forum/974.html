@@ -1,0 +1,16 @@
+<html><header><title>DataBinding Object and v2.1 update</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>DataBinding Object and v2.1 update</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/974.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>mtamarit posted on Tuesday, August 22, 2006</h2><P>When I upgrade my project to 2.1 CSLA version , the UI project don't let me edit the forms that have a DataBindingSource object referenced from&nbsp;the Bussines layer.</P>
+<P>I have DataBindingSource objects linked to datagrids in the UI but the designer throws me an error when I open the from in design time.</P>
+<P>I use this method because i want to edit and reorder the columns in the grid.</P>
+<P>Someone has any idea.</P>
+<P>I'm a bit lost.</P>
+<P>thanks in advance.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, August 22, 2006</h2>Windows or Web? Oh, and VB or C#?<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>mtamarit replied on Tuesday, August 22, 2006</h2><P>The error ocurrs using windows forms and the vb version.</P>
+<P>I drag the databinding object over the datagrid for creating the datasource. This link was created when the project reference the CSLA 2.0.3 version.</P>
+<P>After I change the reference in the bussiness layer to the CSLA VB 2.1 version. And then the error happens.</P>
+<P>The designer can't show me the form in design time. The error tell me that can't find the databindingsource object.</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>david.wendelken replied on Tuesday, August 22, 2006</h2><P>This is my guess:</P>
+<P>You may have to recompile the csla project and then (maybe also) update its reference in your own project libraries.</P>
+<P>Recompile those libraries and (maybe also) update the references to them.</P>
+<P>Also, exiting and re-entering vs studio between steps may make a difference.</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>mtamarit replied on Wednesday, August 23, 2006</h2><P>Thanks David. Your solution was great. I recompile all the projects in order and now the designer let me edit the forms correctly.</P>
+<P>Thanks for all.</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,237 @@
+<html><header><title>ReadOnly Parent - Writable Child; EditForm. Best plan of attack?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>ReadOnly Parent - Writable Child; EditForm. Best plan of attack?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/1610.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>gajit posted on Friday, October 27, 2006</h2><P>Hi guys,</P>
+<P>I've come across another scenario that&nbsp;has&nbsp;my thinking cap on - and causing a lot of smoke...</P>
+<P>I have a BO that contains a parent class of read-only summary information, that basically reflects totals of what is in my editable child rows.</P>
+<P>I have constructed my business classes as I normally would, but in the&nbsp;&nbsp;&nbsp;Dataportal_Update method of my parent, I omit any call to update the parent record (as it is readonly data) and move directly onto updating the children;</P><FONT size=2><FONT size=2>
+<P></FONT><FONT color=#008000 size=2>' Update Children;</P></FONT><FONT size=2>
+<P>mCUSTOMERS.Update(cn, </FONT><FONT color=#0000ff size=2>Me</FONT><FONT size=2>)</P></FONT></FONT><FONT size=2></FONT>
+<P>What I essentially have is a dialog form that allows the user to select customers . The data from the parent simply presents them with a summary of what they have selected.</P>
+<P>My problem as you can might have already figured out is that I need to return the 'refreshed' parent data back to the UI, when they select/deselect a child - essentially doing a childrows update and then refreshing the parent and children.</P>
+<P>What&nbsp;would be my best approach here?&nbsp; I've tried calling my Fetch() class immediately after the child update. But the UI doesn't appear to rebind correctly.</P>
+<P>The UI SaveSelection Code is per examples;</P><FONT color=#0000ff size=2>
+<P>Using</FONT><FONT size=2> busy </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>New</FONT><FONT size=2> StatusBusy(</FONT><FONT color=#800000 size=2>"Saving..."</FONT><FONT size=2>)</P>
+<P></FONT><FONT color=#008000 size=2>' stop the flow of events</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Me</FONT><FONT size=2>.ProposalBindingSource.RaiseListChangedEvents = </FONT><FONT color=#0000ff size=2>False</P></FONT><FONT size=2>
+<P></FONT><FONT color=#008000 size=2>' do the save</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Dim</FONT><FONT size=2> temp </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> Proposal = mProposal.Clone</P>
+<P>temp.ApplyEdit()</P>
+<P></FONT><FONT color=#0000ff size=2>Try</P></FONT><FONT size=2>
+<P>mProposal = temp.Save</P>
+<P>mProposal.BeginEdit()</P>
+<P></FONT><FONT color=#0000ff size=2>If</FONT><FONT size=2> rebind </FONT><FONT color=#0000ff size=2>Then</P></FONT><FONT size=2>
+<P></FONT><FONT color=#008000 size=2>' rebind the UI</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Me</FONT><FONT size=2>.ProposalBindingSource.DataSource = </FONT><FONT color=#0000ff size=2>Nothing</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Me</FONT><FONT size=2>.ProposalBindingSource.DataSource = mProposal</P>
+<P>ApplyAuthorizationRules()</P>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>If</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Catch</FONT><FONT size=2> ex </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> Csla.DataPortalException</P>
+<P>MessageBox.Show(ex.BusinessException.ToString, _</P>
+<P></FONT><FONT color=#800000 size=2>"Error saving"</FONT><FONT size=2>, MessageBoxButtons.OK, _</P>
+<P>MessageBoxIcon.Exclamation)</P>
+<P></FONT><FONT color=#0000ff size=2>Catch</FONT><FONT size=2> ex </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> Exception</P>
+<P>MessageBox.Show(ex.ToString, _</P>
+<P></FONT><FONT color=#800000 size=2>"Error saving"</FONT><FONT size=2>, MessageBoxButtons.OK, _</P>
+<P>MessageBoxIcon.Exclamation)</P>
+<P></FONT><FONT color=#0000ff size=2>Finally</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Me</FONT><FONT size=2>.ProposalBindingSource.RaiseListChangedEvents = </FONT><FONT color=#0000ff size=2>True</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Try</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Using</P></FONT>
+<P>Should I be reinitiating my mProposal class in the rebind by doing something like;</P>
+<P><FONT size=2>mProposalBindingSource.DataSource = mylib.Proposal.GetProposal(sls)</FONT></P>
+<P>I suspect that's neither an OO approach and/or would cause all sorts of&nbsp;issues.</P>
+<P>Or is it a problem because I'm nt updating my parent class? Should I create a 'dummy' parent update?</P>
+<P>Kind of lost on this one....&nbsp; if you guys have any pointers...</P>
+<P>&nbsp;</P>
+<P>Many thanks,</P>
+<P>Gaj.</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Friday, October 27, 2006</h2>First, please, not so many returns at the end of a post.<br><br>Second, after you turn on raiselistchangedevents, call ResetBindings( false) on the bindingsource.<br><br>This will cause the updates to occur.&nbsp; Remember, you turn off listening for the events, they fire and are ignored.. they are not queued up until RaiseListChangedEvents is set back to true.<br><br>HTH<br>Andy<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>gajit replied on Friday, October 27, 2006</h2>My apologies for the returns - I did try to remove them after posting, but there appears to be a problem...<br><br>Ok, this is what I have done.<br><br>In my business class, I update my children - then do what is for all intents and purposes, a Fetch. (At this point, I'm unsure how I can call the Fetch/GetProposal method without duplicating code).<br><br>Here's the Dataportal_Insert :<br><br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Using cn As New SqlConnection(Database.crm2k6Connection)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; cn.Open()<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Using cm As SqlCommand = cn.CreateCommand<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; cm.CommandText = "UpdateProposal"<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; DoInsertUpdate(cm)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Using<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; mCUSTOMERS.Update(cn, Me)<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Using cm As SqlCommand = cn.CreateCommand<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; cm.CommandType = CommandType.StoredProcedure<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; cm.CommandText = "GetProposal"<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; cm.Parameters.AddWithValue("@SALESREP", Me.SALESREP)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; cm.Parameters.AddWithValue("@USERNAME", Csla.ApplicationContext.User.Identity.Name)<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Using dr As New SafeDataReader(cm.ExecuteReader)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; dr.Read()<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; With dr<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; mSALESREP = .GetString("SALESREP")<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; mTOSALESREP = .GetString("TOSALESREP")<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; mACCOUNTS = .GetInt32("ACCOUNTS")<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; mORDERVALUE = .GetDecimal("ORDERVALUE")<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; mUNITS = .GetInt32("UNITS")<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; mUNITVALUE = .GetDecimal("UNITVALUE")<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ' load CUSTOMERS<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; .NextResult()<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; mCUSTOMERS = Proposal_Customers.GetProposal_Customers(dr)<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End With<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Using<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Using<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Using<br><br><br>And I also have implemented the RaiseListChangedEvents in the UI code:<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Using busy As New StatusBusy("Saving...")<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ' stop the flow of events<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Me.ProposalBindingSource.RaiseListChangedEvents = False<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ' do the save<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Dim temp As Proposal = mProposal.Clone<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; temp.ApplyEdit()<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Try<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; mProposal = temp.Save<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; mProposal.BeginEdit()<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; If rebind Then<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ' rebind the UI<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Me.ProposalBindingSource.DataSource = Nothing<br><b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Me.ProposalBindingSource.RaiseListChangedEvents = True<br></b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Me.ProposalBindingSource.DataSource = mCardMoves_Proposal<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ApplyAuthorizationRules()<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End If<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Catch ex As Csla.DataPortalException<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; MessageBox.Show(ex.BusinessException.ToString, _<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; "Error saving", MessageBoxButtons.OK, _<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; MessageBoxIcon.Exclamation)<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Catch ex As Exception<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; MessageBox.Show(ex.ToString, _<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; "Error saving", MessageBoxButtons.OK, _<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; MessageBoxIcon.Exclamation)<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Finally<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Me.ProposalBindingSource.RaiseListChangedEvents = True<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Try<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Using<br><br>Now, the results ARE saved, and the UI refreshed.... but only on the first update. For some strange reason, if I make any subsequent changes to the children, no update is fired. In fact IsDirty=false.<br><br>I guess I have 2 questions - most importantly, why are the subsequent updates not marking the bo as dirty, - am I missing something?&nbsp; <br><br><br>The second being, is it acceptable to update my BO by executing a fetch() inside my update() and (ok, 3 questions) is there a "better" way of doing it?<br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>gajit replied on Friday, October 27, 2006</h2>Ok, this may shed a little more light on the problem;<br><br>I added a line, which effectively marks the Parent as dirty (which would never normally happen as it is not updated), just before the save.<br><br>Using busy As New StatusBusy("Saving...")<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ' stop the flow of events<br><br><b>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;  &nbsp;&nbsp;&nbsp;&nbsp; mProposal.ACCOUNTS = 0<br></b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Me.ProposalBindingSource.RaiseListChangedEvents = False<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ' do the save<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Dim temp As Proposal = mProposal.Clone<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; temp.ApplyEdit()<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; ...<br><br>This now works... but it's messy... and I dont understand why...<br>The UI gets a refresh and the correct data (parent and child) is displayed.<br><br>Any ideas?<br>Thanks,<br>Gaj.<br><br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Friday, October 27, 2006</h2>Are your property setter's calling PropertyHasChanged?<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>gajit replied on Friday, October 27, 2006</h2>If this was missing theobject would never be marked dirty would it?<br><br>There is only one 'editable' column in my child object; "selected"<br>and it is readwrite;<br><br>&nbsp;&nbsp;&nbsp; Public Property SELECTED() As Boolean<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Get<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; CanReadProperty(True)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return mSELECTED<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Get<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Set(ByVal Value As Boolean)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; CanWriteProperty(True)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; If mSELECTED &lt;&gt; Value Then<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; mSELECTED = Value<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; PropertyHasChanged()<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End If<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Set<br>&nbsp;&nbsp;&nbsp; End Property<br><br>All of the others are read only properties - e.g;<br><br>Public ReadOnly Property CUSTOMERNO() As String<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Get<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; CanReadProperty(True)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return mCUSTOMERNO<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Get<br>&nbsp;&nbsp;&nbsp; End Property<br><br>Is very strange....<br><br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>gajit replied on Friday, October 27, 2006</h2>I just had a thought.. (which usually means others head for cover...)...<br><br>There is a lot of rebinding going on to the form's binding sources in the UI code. There is no explicit update to the child bindingsource (i am using a datagridview to update the "selected" column).<br><br>Does the rebind of the parent bindingsource do the job of rebinding the children? If not, that COULD be the problem. the child objects I see on the form are indeed not my current object, and subsequently changes are never passed back to the the bo..<br><br>Should I have something LIKE this?&nbsp; (incidentally - this DOESN'T fix the problem..):-<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Using busy As New StatusBusy("Saving...")<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ' stop the flow of events<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Me.ProposalBindingSource.RaiseListChangedEvents = False<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Me.CUSTOMERSBindingSource.RaiseListChangedEvents = False<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ' do the save<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Dim temp As Proposal = mProposal.Clone<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; temp.ApplyEdit()<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Try<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; mProposal = temp.Save<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; mProposal.BeginEdit()<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; If rebind Then<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ' rebind the UI<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Me.ProposalBindingSource.DataSource = Nothing<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Me.CUSTOMERSBindingSource.DataSource = Nothing<br>
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Me.ProposalBindingSource.RaiseListChangedEvents = True<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Me.CUSTOMERSBindingSource.RaiseListChangedEvents = True<br>
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Me.ProposalBindingSource.DataSource = mProposal<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Me.CUSTOMERSBindingSource.DataSource = mProposal.CUSTOMERS<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ApplyAuthorizationRules()<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End If<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Catch ex As Csla.DataPortalException<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; MessageBox.Show(ex.BusinessException.ToString, _<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; "Error saving", MessageBoxButtons.OK, _<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; MessageBoxIcon.Exclamation)<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Catch ex As Exception<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; MessageBox.Show(ex.ToString, _<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; "Error saving", MessageBoxButtons.OK, _<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; MessageBoxIcon.Exclamation)<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Finally<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Me.ProposalBindingSource.RaiseListChangedEvents = True<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Me.CUSTOMERSBindingSource.RaiseListChangedEvents = True<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Try<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Using<br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Friday, October 27, 2006</h2>Wait a minute.. Think I have an idea.<br><br>Is the problem that the root object is not being marked dirty?&nbsp; If that's the case, you're forgetting to override IsDirty to OR in the isDirty of the collection.<br><br>Could that be the solution?<br><br>HTH<br>Andy<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>gajit replied on Friday, October 27, 2006</h2>This is what I have in the Business Method section of my root object... looks correct to me...<br><br>&nbsp;Public Overrides ReadOnly Property IsDirty() As Boolean<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Get<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return MyBase.IsDirty OrElse mCUSTOMERS.IsDirty<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Get<br>&nbsp;End Property<br><br>I'm beginning to wonder if this isn't a generic problem with csla. I've put together a number of parent-child scenarios in the last few days and have had no problems - but none of them need to persist the data after the initial save. I'm wondering if something becomes disconnected once the initial isDirty is handled and the updates are perfomed.<br><br>I wonder if Rocky might have any input on this....<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Monday, October 30, 2006</h2>Does this happen only one release builds?&nbsp; If so, you might want to use the PropertyHasChanged which takes a string parameter (the name of the property).<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>gajit replied on Monday, October 30, 2006</h2>Thanks for the reply ajj,<br><br>Nope - on all builds, by default I build to debug....<br><br>It's not crucial right now, as I have the workaround in place - by 'changing' a value in the root object (which is read-only in nature - although using BusinessBase) but I'd sure like to find out if this is systemic and whether I need to look out for this in the future.<br><br>Thanks,<br>gaj.<br><br><br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>gajit replied on Monday, January 08, 2007</h2><P>This is an old thread, but I have JUST discovered the problem - and indeed, programmer error ;)</P>
+<P>But I thought it might be useful to post what I had done, in case anyone else does the same thing.</P>
+<P>My child BO's were not updating unless I changed the Parent BO.</P>
+<P>Reason being, I was checking Mybase.IsDirty in my DP_Update method instead of the Me.IsDirty...</P>
+<P>I must have inherited that from someone... not sure where..</P>
+<P>Now to check all my other classes...</P>
+<P>&nbsp;</P>
+<P>Thanks,</P>
+<P>Gaj.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>BVeenstra replied on Thursday, September 27, 2007</h2>gajit,<br><br>I wouldn't recommend checking "Me.IsDirty" as that is an override just pointing back to itself yes?&nbsp; You probably need to do something like this (AllocationDetailList is my BusinessListBase of AllocationDetail child objects) in your Parent BO:<br><br>
+
+<div>
+<p>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <span>public</span> <span>override</span> <span>bool</span> <span>IsValid</span></p>
+<p>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; {</p>
+<p>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <span>get</span></p>
+<p>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; {</p><p>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <span>return</span> <span>base</span>.<span>IsValid</span> &amp;&amp; <span>_AllocationDetailList</span>.<span>IsValid</span>;</p>
+<p>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; }</p>
+<p>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; }</p>
+<p>&nbsp;</p>
+<p>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <span>public</span> <span>override</span> <span>bool</span> <span>IsDirty</span></p>
+<p>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; {</p>
+<p>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <span>get</span></p>
+<p>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; {</p><p>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <span>return</span> <span>base</span>.<span>IsDirty</span> || <span>_AllocationDetailList</span>.<span>IsDirty</span>;</p>
+<p>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; }</p>
+<p>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; }</p>
+<p>&nbsp;</p>
+</div>
+
+<br><br><br><br>As for having to "change" the Parent BO, I believe you are missing an easier solution...<br><br>You need to hook the ListChanged event of your Child BO's (BusinessListBase) like the following:<br><br><div>
+<p>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <span>//...</span></p><p>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <span>private</span> <span>AllocationDetailList</span> <span>_AllocationDetailList</span> = <span>null</span>;</p><p>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <span>//...</span></p></div><br>
+
+<div>
+<p>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <span>private</span> <span>void</span> <span>Fetch</span>(<span>SafeDataReader</span> <span>dr</span>)</p>
+<p>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; {</p>
+<p>&nbsp;</p><p>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <span>//...</span></p>
+<p><br></p><p>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <span>_AllocationDetailList</span>.<span>ListChanged</span> += <span>new</span> <span>ListChangedEventHandler</span>(<span>AllocationDetailList_ListChanged</span>);</p>
+<p>&nbsp;</p>
+<p>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <span>MarkOld</span>();</p>
+<p>&nbsp;</p>
+<p>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; }</p>
+<p><br></p></div><div><p>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <span>//...</span></p>
+<p><br></p><p>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <span>void</span> <span>AllocationDetailList_ListChanged</span>(<span>object</span> <span>sender</span>, <span>ListChangedEventArgs</span> <span>e</span>)</p>
+<p>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; {</p>
+<p>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <span>PropertyHasChanged</span>(<span>"--some parent property--"</span>);</p>
+<p>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; }</p><br><p>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <span>//...</span></p><br></div>
+
+<br><br>You need to also rehook your List's ListChanged in your OnDeserialized method so that when you call the Clone method (recommended WinForm way to Save) in the object graph that your events will all work with DataBinding (this again in your Paent BO):<br><br>
+
+
+<div>
+<p>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <span>protected</span> <span>override</span> <span>void</span> <span>OnDeserialized</span>(<span>System</span>.<span>Runtime</span>.<span>Serialization</span>.<span>StreamingContext</span> <span>context</span>)</p>
+<p>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; {</p>
+<p>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <span>base</span>.<span>OnDeserialized</span>(<span>context</span>);</p>
+<p>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <span>//REQUIED to rehook us up to DataBinding after SAVE!</span></p>
+<p>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <span>_AllocationDetailList</span>.<span>ListChanged</span> += <span>new</span> <span>ListChangedEventHandler</span>(<span>AllocationDetailList_ListChanged</span>);</p>
+<p>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; }</p>
+</div>
+
+
+
+<div>
+<p><br></p><p>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <span>//...</span></p><p><span><br></span></p><p>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <span>void</span> <span>AllocationDetailList_ListChanged</span>(<span>object</span> <span>sender</span>, <span>ListChangedEventArgs</span> <span>e</span>)</p>
+<p>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; {</p>
+<p>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <span>PropertyHasChanged</span>(<span>"--property name in your Parent BO here--"</span>);</p>
+<p>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; }</p>
+<p>&nbsp;</p>
+</div>
+
+<br><br><br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>gajit replied on Thursday, March 26, 2009</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>BVeenstra:</strong></div><div>gajit,<BR><BR>I wouldn't recommend checking "Me.IsDirty" as that is an override just pointing back to itself yes?&nbsp; You probably need to do something like this (AllocationDetailList is my BusinessListBase of AllocationDetail child objects) in your Parent BO:<BR><BR>
+<DIV>
+<P>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <SPAN>public</SPAN> <SPAN>override</SPAN> <SPAN>bool</SPAN> <SPAN>IsValid</SPAN></P>
+<P>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; {</P>
+<P>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <SPAN>get</SPAN></P>
+<P>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; {</P>
+<P>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <SPAN>return</SPAN> <SPAN>base</SPAN>.<SPAN>IsValid</SPAN> &amp;&amp; <SPAN>_AllocationDetailList</SPAN>.<SPAN>IsValid</SPAN>;</P>
+<P>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; }</P>
+<P>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; }</P>
+<P>&nbsp;</P>
+<P>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <SPAN>public</SPAN> <SPAN>override</SPAN> <SPAN>bool</SPAN> <SPAN>IsDirty</SPAN></P>
+<P>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; {</P>
+<P>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <SPAN>get</SPAN></P>
+<P>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; {</P>
+<P>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <SPAN>return</SPAN> <SPAN>base</SPAN>.<SPAN>IsDirty</SPAN> || <SPAN>_AllocationDetailList</SPAN>.<SPAN>IsDirty</SPAN>;</P>
+<P>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; }</P>
+<P>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; }</P>
+<P>&nbsp;</P></DIV><BR><BR><BR><BR>As for having to "change" the Parent BO, I believe you are missing an easier solution...<BR><BR>You need to hook the ListChanged event of your Child BO's (BusinessListBase) like the following:<BR><BR>
+<DIV>
+<P>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <SPAN>//...</SPAN></P>
+<P>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <SPAN>private</SPAN> <SPAN>AllocationDetailList</SPAN> <SPAN>_AllocationDetailList</SPAN> = <SPAN>null</SPAN>;</P>
+<P>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <SPAN>//...</SPAN></P></DIV><BR>
+<DIV>
+<P>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <SPAN>private</SPAN> <SPAN>void</SPAN> <SPAN>Fetch</SPAN>(<SPAN>SafeDataReader</SPAN> <SPAN>dr</SPAN>)</P>
+<P>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; {</P>
+<P>&nbsp;</P>
+<P>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <SPAN>//...</SPAN></P>
+<P><BR></P>
+<P>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <SPAN>_AllocationDetailList</SPAN>.<SPAN>ListChanged</SPAN> += <SPAN>new</SPAN> <SPAN>ListChangedEventHandler</SPAN>(<SPAN>AllocationDetailList_ListChanged</SPAN>);</P>
+<P>&nbsp;</P>
+<P>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <SPAN>MarkOld</SPAN>();</P>
+<P>&nbsp;</P>
+<P>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; }</P>
+<P><BR></P></DIV>
+<DIV>
+<P>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <SPAN>//...</SPAN></P>
+<P><BR></P>
+<P>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <SPAN>void</SPAN> <SPAN>AllocationDetailList_ListChanged</SPAN>(<SPAN>object</SPAN> <SPAN>sender</SPAN>, <SPAN>ListChangedEventArgs</SPAN> <SPAN>e</SPAN>)</P>
+<P>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; {</P>
+<P>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <SPAN>PropertyHasChanged</SPAN>(<SPAN>"--some parent property--"</SPAN>);</P>
+<P>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; }</P><BR>
+<P>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <SPAN>//...</SPAN></P><BR></DIV><BR><BR>You need to also rehook your List's ListChanged in your OnDeserialized method so that when you call the Clone method (recommended WinForm way to Save) in the object graph that your events will all work with DataBinding (this again in your Paent BO):<BR><BR>
+<DIV>
+<P>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <SPAN>protected</SPAN> <SPAN>override</SPAN> <SPAN>void</SPAN> <SPAN>OnDeserialized</SPAN>(<SPAN>System</SPAN>.<SPAN>Runtime</SPAN>.<SPAN>Serialization</SPAN>.<SPAN>StreamingContext</SPAN> <SPAN>context</SPAN>)</P>
+<P>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; {</P>
+<P>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <SPAN>base</SPAN>.<SPAN>OnDeserialized</SPAN>(<SPAN>context</SPAN>);</P>
+<P>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <SPAN>//REQUIED to rehook us up to DataBinding after SAVE!</SPAN></P>
+<P>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <SPAN>_AllocationDetailList</SPAN>.<SPAN>ListChanged</SPAN> += <SPAN>new</SPAN> <SPAN>ListChangedEventHandler</SPAN>(<SPAN>AllocationDetailList_ListChanged</SPAN>);</P>
+<P>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; }</P></DIV>
+<DIV>
+<P><BR></P>
+<P>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <SPAN>//...</SPAN></P>
+<P><SPAN><BR></SPAN></P>
+<P>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <SPAN>void</SPAN> <SPAN>AllocationDetailList_ListChanged</SPAN>(<SPAN>object</SPAN> <SPAN>sender</SPAN>, <SPAN>ListChangedEventArgs</SPAN> <SPAN>e</SPAN>)</P>
+<P>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; {</P>
+<P>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <SPAN>PropertyHasChanged</SPAN>(<SPAN>"--property name in your Parent BO here--"</SPAN>);</P>
+<P>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; }</P>
+<P>&nbsp;</P></DIV>
+<P><BR></div></BLOCKQUOTE></P>
+<P>Revisiting this post as it appears to be the answer I'm lookig for....&nbsp; but...</P>
+<P>I'm trying to implement this - and am having issues.... probably because the example(s) provided are VC.Net....</P>
+<P>I am basically having issues understanding WHERE the pieces go...</P>
+<P>&nbsp;</P>
+<P>E.g.</P>
+<P>The hookup handler - is placed WHERE??... in the&nbsp;parent BO? (businessbase)...&nbsp;or in the childcollection (businesslistbase)&nbsp; - or in the child objects themselves? (businessbase).</P>
+<P>The code;</P>
+<BLOCKQUOTE dir=ltr>
+<BLOCKQUOTE dir=ltr>
+<P><SPAN>private</SPAN> <SPAN>void</SPAN> <SPAN>Fetch</SPAN>(<SPAN>SafeDataReader</SPAN> <SPAN>dr</SPAN>)</P>
+<P>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; {</P>
+<P>&nbsp;</P>
+<P>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <SPAN>//...</SPAN></P>
+<P><BR></P>
+<P>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <SPAN>_AllocationDetailList</SPAN>.<SPAN>ListChanged</SPAN> += <SPAN>new</SPAN> <SPAN>ListChangedEventHandler</SPAN>(<SPAN>AllocationDetailList_ListChanged</SPAN>);</P>
+<P>&nbsp;</P>
+<P>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <SPAN>MarkOld</SPAN>();</P>
+<P>&nbsp;</P>
+<P>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; }</P></BLOCKQUOTE></BLOCKQUOTE>
+<P>looks like the Businessbase object for the child. But there is no ListChanged event on BusinessBase.</P>
+<P>Similarly, if it were in BusinessListBase, the event that the handler is pointing to;</P>
+<P>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <SPAN>void</SPAN> <SPAN>AllocationDetailList_ListChanged</SPAN>(<SPAN>object</SPAN> <SPAN>sender</SPAN>, <SPAN>ListChangedEventArgs</SPAN> <SPAN>e</SPAN>)</P>
+<P>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; {</P>
+<P>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <SPAN>PropertyHasChanged</SPAN>(<SPAN>"--some parent property--"</SPAN>);</P>
+<P>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; }</P>
+<P>Has no PropertyHasChanged event in BusinessListBase????!</P>
+<P>I am totally confused, having seen this solution cited in numerous posts, but have explicit instructions as to where the code should be placed.</P>
+<P>I do consider myself a fairly experienced developer, and think this should be kids play. But the snippets all seem to be vague ...</P>
+<P>Thanks,</P>
+<P>gajit.</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>gajit replied on Thursday, March 26, 2009</h2><P>Never mind.</P>
+<P>Further experimentation gave me the answer.</P>
+<P>I posted the resolution (in VB) here;</P>
+<P><A HREF="/forums/32156/ShowThread.aspx#32156">http://forums.lhotka.net/forums/32156/ShowThread.aspx#32156</A></P>
+<P>&nbsp;</P>
+<P>Thanks.</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Friday, March 27, 2009</h2>Well, if at all possible, upgrading to Csla 3.6.1 will be a huge help, if you convert all your child BO properties to the new Managed Properties supported by Csla.<br><br>The advantage is that most of the plumbing code (overriding IsDirty, hooking event handlers, etc) will be handled for you automatically.&nbsp; The code reduction and elimination of the need for this code should be of great help to you.&nbsp; I think Managed Properties are possibly the best new feature of Csla.net.<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

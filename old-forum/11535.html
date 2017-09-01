@@ -1,0 +1,12 @@
+<html><header><title>Is BusinessListBase replaced by DynamicListBase?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Is BusinessListBase replaced by DynamicListBase?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11535.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>TF Zheng posted on Saturday, August 18, 2012</h2><p>Folks,</p>
+<p>I need some clarification:</p>
+<p>Somebody posted:</p>
+<p>DynamicListBase in CSLA4 is the new name of what BusinessListBase was in CSLA3.x</p>
+<p>Is true? If is: why? and&nbsp; in which version?</p>
+<p>Thank,</p>
+<p>&nbsp;</p>
+<p>TF</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Saturday, August 18, 2012</h2><p>Nope, </p>
+<p>BusinessBindingListBase is the BusinessListBase from Csla 3.x. </p>
+<p>Same goes for ReadOnlyBindingListBase and DynamicBindingListBase. </p>
+<p>The list classes in 4.x inherits from ObserableCollection and works better wit Xaml (WPF/SL) whereas the &quot;old&quot; classes that inherit from BindingList is the only ones that work well in WindowsForms.</p>
+<p>This change was done in CSLA 4.0</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

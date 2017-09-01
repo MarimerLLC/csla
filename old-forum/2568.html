@@ -1,0 +1,23 @@
+<html><header><title>Bug in ObjectAdapter</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Bug in ObjectAdapter</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/2568.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>cash_pat posted on Wednesday, March 21, 2007</h2>Hi,<br><br>Object Adapter gives a error when i try to pass a EditableRootListBase to it.<br><br>regards<br><br>Cash<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jimbo replied on Saturday, April 21, 2007</h2>Can't imagine why you would want to pass EditableRootListBase rather
+than the derived List object; however, one would imagine that the
+ObjectAdaptor is sending you a definite no no. <br>
+<br>
+On the subject of DataAdapter bugs:&nbsp; I am having exceptions with
+Nullable(of DateTime) properties. Can't provide much detail at this
+time - as I have not yet had time to persue the issue.<br>
+<br>
+Jimbo<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Saturday, April 21, 2007</h2>There are known issues with nullable&lt;T&gt; with strongly typed datasets for any type other than string. I don't know if that's your issue, but perhaps it is a clue?</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jimbo replied on Saturday, April 21, 2007</h2>Basically, DataAdapter needs to be able to convert Nullable(of T) to DBNull.Value when creating the datatable rows.<br>
+When I pass a datagridview data source list its not a problem as the
+Null date (and or minValue) is preprocessed and expressed as an empty
+string; but passing the root BO (csla) list is when the exception will
+occur. <br>
+Again, until I have analysed the issue in more detail there is little more to contribute at this time.<br>
+Jimbo<br>
+<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

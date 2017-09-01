@@ -1,0 +1,33 @@
+<html><header><title>CSLA 4.0 Authorization - Reset rules</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA 4.0 Authorization - Reset rules</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9536.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Turntwo posted on Tuesday, September 14, 2010</h2><p>I&#39;m loading Authorization rules from the database, but my application allows for switching databases, at which time the rules need to be reset.&nbsp; I can&#39;t see any way to Reset the AuthorizationRules, clear the cache or anything.&nbsp; I did this in CSLA 3.8.x by clearing the cached rules using reflection, which then reloaded them per object as needed.&nbsp; However, the rules are spread out a little more in CSLA 4.0, so this technique doesn&#39;t look like it will work as well.&nbsp; I thought RuleSets might be the answer, but I&#39;m encountering issues with them as well, and what appears to be some bugs in their implementation.&nbsp; Any assistance would be greatly appreciated.</p>
+<p>Here is the problem I&#39;ve encountered with RuleSets and 
+Authorization Rules.&nbsp; You can set Authorization Rules with a RuleSet 
+specified, however when the Rules are evaluated the RuleSet is ignored 
+(HasPermission bypasses the TypeAuthRules property and uses 
+AuthorizationRulesManager directly, without including the RuleSet).&nbsp; </p>
+<p>I was trying to use RuleSets because I store authorization 
+information in the database, but my application allows the user to 
+switch databases (at which point the rules may change) - I thought 
+RuleSets could maybe be the answer (each RuleSet corresponding to the 
+database connection).&nbsp; However, I&#39;m getting no rules being processed 
+because the RuleSets are ignored. </p>
+<p>I updated the HasPermission methods to use the 
+TypeAuthRules property and verified that using TypeAuthRules works for Property/Method access 
+checks, as long as I load them in AddObjectAuthorizationRules - I don&#39;t 
+load the rules for the new database until that database is accessed, and
+ AddBusinessRules doesn&#39;t get re-run when the RuleSet changes - whereas 
+AddObjectAuthorizationRules gets rerun if the RuleSet rules aren&#39;t 
+already loaded.&nbsp; </p>
+<p>However, The Object Rules don&#39;t respect the RuleSet - HasPermission 
+method for Type rules (Create, Get, Edit, Delete) is static, so 
+BusinessRules can&#39;t access the RuleSet property.&nbsp; I could possibly pull 
+the BusinessRules object and corresponding RuleSet off the object 
+passed, but at least for Create this will be null. So even though you 
+can set a RuleSet on these rules, any RuleSet rules will be ignored.&nbsp; Am
+ I missing a way to set the current RuleSet globally?</p>
+<p>This makes the 4th paragraph actually seem to be backwards - rules 
+that don&#39;t respect the RuleSet get loaded on demand per RuleSet, and the
+ rules that will respect the RuleSet are supposed to be loaded in 
+AddBusinessRules - which would require loading all the rules for all 
+rulesets at once - even though those are the instance rules?&nbsp; (or maybe 
+I&#39;m just backwards - since I may not be using the RuleSet as it was 
+intended).&nbsp; </p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, September 14, 2010</h2><p>RuleSets should work for you, and clearly there are bugs blocking their use. Somehow that got missed and needs to be addressed.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

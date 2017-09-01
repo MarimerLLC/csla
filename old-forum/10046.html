@@ -1,0 +1,19 @@
+<html><header><title>Example of ListFactory Update Method</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Example of ListFactory Update Method</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10046.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>csmith1 posted on Tuesday, February 08, 2011</h2><p>I have a working ListFactory&nbsp;Update method but I like to look at an example if there is one out there. My solution required me to make some protected methods public in the list (like the deleted list). This makes me think there may be a better solution.</p>
+<p>I looked in the 2008 Business Objects and new Using CSLA 4.0 objects. I may be missing something but I can not find an example or outline. I also have the latest video series.</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Tuesday, February 08, 2011</h2><p>This is covered in the upcoming <em>Using CSLA 4: Data Access</em> ebook I&#39;m writing right now.</p>
+<p>You are looking for the ObjectFactory base class in Csla.Server. Inherit from this and use the protected methods it exposes to break encapsulation and modify the private state and metastate of your business objects.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>csmith1 replied on Tuesday, February 08, 2011</h2><p><span style="font-family:&#39;Arial&#39;,&#39;sans-serif&#39;;color:black;font-size:9pt;">Thanks</span></p>
+<p><span style="font-family:&#39;Arial&#39;,&#39;sans-serif&#39;;color:black;font-size:9pt;">I found the GetDeletedList function.</span></p>
+<p><span style="font-family:&#39;Arial&#39;,&#39;sans-serif&#39;;color:black;font-size:9pt;">The steps I am taking are:</span></p>
+<p><span style="font-family:&#39;Arial&#39;,&#39;sans-serif&#39;;color:black;font-size:9pt;">Create a new List</span></p>
+<p><span style="font-family:&#39;Arial&#39;,&#39;sans-serif&#39;;color:black;font-size:9pt;">Get the Deleted List</span></p>
+<p><span style="font-family:&#39;Arial&#39;,&#39;sans-serif&#39;;color:black;font-size:9pt;">Iterate through the Deleted list, calling Update on each item in the list to delete the item from the database.</span></p>
+<p><span style="font-family:&#39;Arial&#39;,&#39;sans-serif&#39;;color:black;font-size:9pt;">Then I iterate through the passed in list.</span></p>
+<p><span style="font-family:&#39;Arial&#39;,&#39;sans-serif&#39;;color:black;font-size:9pt;">If the item IsDirty == true then I call update and it to the new list.</span></p>
+<p><span style="font-family:&#39;Arial&#39;,&#39;sans-serif&#39;;color:black;font-size:9pt;">If the item IsDirty == false then I clone it and add it to the new list.</span></p>
+<p><span style="font-family:&#39;Arial&#39;,&#39;sans-serif&#39;;color:black;font-size:9pt;">Is there something I am missing?</span></p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Tuesday, February 08, 2011</h2><p>I wouldn&#39;t create a new list.&nbsp;I do this:</p>
+<ol>
+<li>Iterate through DeletedList calling Update on each item</li>
+<li>Call DeletedList.Clear()</li>
+<li>Iterate through the business list calling Update on each item</li>
+<li>Return the business list as a result</li>
+</ol></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>csmith1 replied on Wednesday, February 09, 2011</h2><p>Thanks again for the great support.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

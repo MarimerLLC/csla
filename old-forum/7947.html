@@ -1,0 +1,116 @@
+<html><header><title>Csla Security in Silverlight</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Csla Security in Silverlight</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/7947.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>decius posted on Wednesday, November 04, 2009</h2><P>Just curious about others thoughts on this: but it seems to me that the only way to obtain true security that is built <EM>into</EM> an SL application is to obfuscate the assembly, otherwise wouldn't there be a rather easy to manipulate security hole?&nbsp;</P>
+<P>Here's what's making me think that:</P>
+<P>A malicious user could easily get ahold of the .xap package (even though&nbsp;they don't get&nbsp;authenticated).&nbsp; They could then easily decomile the .dll containing logic for Principal and Identity classes and modify the code to allow all users to be authenticated. They could then recompile and hit the exposed endpoints in the ClientConfig and voila, they have access to the dataportal, ne?... Am i crazy for thinking this?</P>
+<P>With an apps security assembly that isn't obfuscated, this could take all about 15-20 minutes to do.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, November 04, 2009</h2><P>There are only two architectures in all the world: n-tier and SOA.</P>
+<P>(ok, maybe I'm simplifying a bit - but bear with me).</P>
+<P>n-tier architectures assume it is reasonably safe to run code on the client workstation, and so the code running on the client is considered a tier - part of the application.</P>
+<P>SOA architectures assume it is not safe to run code on the client workstation, and so the application is entirely server-based. <EM>Except</EM> that leaves the user with a crappy experience, so it is permissible to write <EM>a separate application</EM> that runs on the client. While that application may be hacked, the <EM>real</EM> application is on the server, and it never trusts anything it gets/sends to the client, so everybody is happy. Everybody that is, except the person paying for the system - because they've now funded two apps, often with much duplicate behavior...</P>
+<P>CSLA .NET for Silverlight attempts to offer a middle path. You can build your app using n-tier techniques, and then use a MobileFactory attribute to run extra code at the entry point of the web server - so you handle each client request before anything else - so you can re-run business/validation/authentication logic <EM>on the server</EM> before allowing normal data portal processing.</P>
+<P>The idea is to reuse your code on the client, but to not trust the client overmuch. And to do this without radically increasing the cost of the overall system in terms of development and maintenance.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>decius replied on Thursday, November 05, 2009</h2><P>Thanks for the reply Rocky, your explanation found here also helped me understand more about the mobilefactory</P>
+<P><A HREF="/forums/thread/34573.aspx">http://forums.lhotka.net/forums/thread/34573.aspx</A></P>
+<P>So when using the MobileFactory, you would re-execute authorization rules to provide this added&nbsp;security? </P>
+<P>One thing I'm confused about: If the above is true, what's stopping a hacked xap from making a request that contains a hacked principal, then when authorization rules are executed on the server(with CslaAuthentication) isn't the trust still relying on the request sent throught the dataportal?</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, November 05, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Again, if you don&#8217;t trust the client, you don&#8217;t trust the
+client. And there&#8217;s nothing you can really do to avoid not trusting the client.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>If you are actually worried about a hacker cracking the xap file
+or the Silverlight runtime, then your only option is to go with an SOA
+architecture where the real app only runs on the server, and the client app is
+there as a convenience to the user.</span><b><span><o:p></o:p></span></b></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>decius replied on Thursday, November 05, 2009</h2><P>Well around here we have a DMZ where our SOAP servers sit. </P>
+<P>With our Csla webforms, we would use windows authentication between the web client and the SOAP server. </P>
+<P>If for Csla silverlight, if&nbsp;we used CslaAuthentication between the SL app and WebClient endpoint, and then used WindowsAuthentication between the WebClient and the SOAP endpoint, wouldn't that solve the problem?</P>
+<P>EDIT: Well, i guess not, because ultimately you're still relying on that inital client request for authentication.&nbsp; :(</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, November 05, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Let&#8217;s take a step back.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Security is about threat analysis and mitigation. You need to
+decide what threats exist, their likelihood, the cost of the threat occurring
+and the cost of mitigation. Most people put these in a grid, and score each row
+based on the likelihood, cost of occurrence and cost of mitigation.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Then a business decision is made as to which threats are worth
+addressing. <o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>The likelihood of someone hacking your xap is probably extremely
+low. But I don&#8217;t know your application or organization. If you are
+government the odds might be higher. If you are financial the odds might be
+higher. If you are a widget manufacturer the odds are going to be very low. The
+cost of mitigation is quite high, because really not trusting the client is an
+expensive proposition.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>So you need to decide if it is worth mitigating.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>You can absolutely use Windows or ASP.NET forms security to
+require that the user log into the web site before they can even get your xap
+file. In other words, you can easily prevent random people from getting access
+to your web pages, xap file and data portal endpoint.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>What you can&#8217;t easily stop is an <i>authorized user</i>
+from getting the xap file, and then potentially doing as you suggest by hacking
+it. One way to mitigate that risk is to not hire hackers as employees :) Or to
+use legal remedies to make such hacking distasteful enough that a sane employee
+would never do it. That might be a lot cheaper than a technical solution.<o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>decius replied on Thursday, November 05, 2009</h2><P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>Rocky:</strong></div><div></P>
+<P>One way to mitigate that risk is to not hire hackers as employees :)</P>
+<P></div></BLOCKQUOTE></P>
+<P>LOL. Well put. Thank you very much for your insightful input. </P>
+<P>Yes, I'm government, and the information exposed is often very sensitive, hence me being anal. Our users are not necessarily people we hire, but ARE scrutinized for registration.</P>
+<P>yea, I've considered the webforms approach. What I fear about that is exposing complete access to the dataportal if the web form authentication gets hacked. </P>
+<P>...With some of the sloppy developers around my workplace, the security of our login is only as good as the worst developer we have on staff =/</P>
+<P>Perhaps using the MobileFactoryAttribute as well as obfuscation could help alleviate some of my fears... Sure it's not bulletproof, but it would certainly deter even an experienced programmer from bothering. And I if I put the Authorization role logic only on the server, the hacker would further have to determine the string of the role for each authorization. That alongside denying access to the xap through webforms will eliminate most users from even getting the xap. Sounds good to me. Thanks for your help.</P>
+<P>I am a <EM>little</EM> disappointed though that I can't keep <EM>everything</EM> in the SL app,&nbsp;but c'est la vie I suppose.&nbsp;</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

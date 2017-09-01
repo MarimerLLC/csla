@@ -1,0 +1,7 @@
+<html><header><title>Porting the latest CSLA framework</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Porting the latest CSLA framework</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9548.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>SalSack posted on Friday, September 17, 2010</h2><p>Good Afternoon,</p>
+<p>&nbsp;</p>
+<p>We are currently porting the latest framework into a new structure so we can add modifications. This was simple to setup the CSLA.dll. We are running or i am running into an issue with the silverlight dll. I&#39;m very new to your framework and silverlight and was wondering in your framework, you have a reference to WCFPortal and was wondering how to recretae this or is there a svc file i&#39;m missing... Any help would be greatly appreciated..</p>
+<p>This is for internal use only and all copyrights have been left in place.</p>
+<p>Thanks</p>
+<p>Sal</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Friday, September 17, 2010</h2><p>Basically you need to create a temporary app server that exposes the .NET host part of the data portal. Then add a service reference to that service in your Silverlight project to create all the proxy objects. Then you can discard that temporary service app.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

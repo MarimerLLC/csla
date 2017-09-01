@@ -1,0 +1,66 @@
+<html><header><title>Business operation/state aware rules</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Business operation/state aware rules</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11402.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Miroslav Galajda posted on Friday, June 08, 2012</h2><p>
+<p>
+<p>Hi,</p>
+<p>I would like &nbsp;to solve the following problem. As stated in subject, I want to define business rules with the ability to take in mind the context or condition by which they behave once as error and once as warning.</p>
+<p>The context/condition may represent business state or business operation which I would like to set or execute.</p>
+<p>But the problem is that I would like to proactively check the rules before the operation or the state would change so that I could display the reason why he cannot do some business operation.</p>
+<p>What would you propose to do? How would you solve such thing?</p>
+<p>I have some ideas but I&#39;m not satisfied with them.</p>
+<p>1. Use undo mechanism</p>
+<p>- Take the snapshot of the root object.</p>
+<p>- Change the object to desired state or execute business operation which could involve changing the state of object at different levels (child objects).</p>
+<p>- Execute the rules and check if the object is valid or not</p>
+<p>- if not, display the reason to the user from the BrokenRules collection</p>
+<p>- undo the state of object</p>
+<p>2. Use rule sets</p>
+<p>- Create the rule set for each business operation you need to be able preventively check if it will break the rules or not.</p>
+<p>- set the current ruleset for current business operation you want to check if there are business rules met for executing the business operationn</p>
+<p>- if not, display the reason to the user from the BrokenRules collection</p>
+<p>- set the current ruleset to &#39;default&#39;</p>
+<p>&nbsp;</p>
+<p>The first option is too robust and gives some performance penalty and when bound to Windows Forms controls, unbound operation is needed to be performed before taking snapshot, which is slow UI operation.</p>
+<p>&nbsp;</p>
+<p>So I would rather go with the 2nd option, but this gives me some questions to ask.</p>
+<p>&nbsp;</p>
+<p>1. Does setting the RuleSet on root object, &quot;sets&quot; the RuleSet also for all child objects in object graph?</p>
+<p>&nbsp; &nbsp;If not, how to deal with it?</p>
+<p>2. Is this the right approach to conditionaly evaluate business rules on the state which hasn&#39;t been set yet?</p>
+<p>Or do you have any other idea to achieve this?</p>
+<p>&nbsp;</p>
+<p>Thank you</p>
+<p>&nbsp;</p>
+<p>Yours sincerely</p>
+<p>Miroslav Galajda</p>
+</p>
+</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Friday, June 08, 2012</h2><p>Hi,</p>
+<p>If you want to check this <b><i>before </i></b>the value/state is actually changed then you should probably not use the rule engine for this.</p>
+<p>On the other hand you could call </p>
+<ul>
+<li>BeginEdit </li>
+<li>Change state</li>
+<li>change RuleSet (if applicable)</li>
+<li>CheckRules </li>
+<li>If broken then extract message to user </li>
+<li>and finally call CancelEdit or BeginEdit (and Save).</li>
+</ul>
+<p>My preference is to NOT use RuleSets but you could accomplish this by creating separate RuleSets. Just be aware that each rulesetmust be a &quot;complete&quot; ruleset. </p>
+<p>So to your questions:</p>
+<ol>
+<li>NO, ruleset is per object and does not automatically propagate down to child/grandchild. Your code must make sure to do this - if/when applicable. </li>
+<li>I would rather recommend the above sequence - and check rules based on the state in the object. </li>
+</ol></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Miroslav Galajda replied on Sunday, June 10, 2012</h2><p>Hi,</p>
+<p>thank you for your opinion. I was hoping that there exists something much simpler or more elegant solution than that sequence.</p>
+<p>That sequence is very similar to my proposed idea except yours has combined the rulesets which I was trying to use separately.</p>
+<p>But even though this method when using Windows Forms, isn&#39;t very suitable, because you have to unbind the object from UI, perform that sequence and finaly bind UI back. Unfortunately this leads to unwanted flickering and quite a big overhead in performance and delay which I&#39;m trying to avoid.</p>
+<p>Don&#39;t you have better idea? There must be something in Csla core that I could use.&nbsp;Or you might be plan some feature that would allow to do this.</p>
+<p>&nbsp;</p>
+<p>Yours sincerely</p>
+<p>Miroslav Galajda</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>nschonni replied on Friday, June 08, 2012</h2><p>Maybe use a Gate rule. See here for an example http://forums.lhotka.net/forums/p/9427/44686.aspx</p>
+<p>The gate rule could look for the exiting error, and change the error type if it matches.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Miroslav Galajda replied on Sunday, June 10, 2012</h2><p>Hi, </p>
+<p>I&#39;m&nbsp;currently&nbsp;using the gateway rules to achieve warning results when the object is in the state A and error results when the object is in the state B.</p>
+<p>But this doesn&#39;t help me to ask whether the object in the state A will be in error if I switch it to state B.</p>
+<p>Probably there aren&#39;t any other good options to choose from than those I&#39;ve proposed and JonnyBee confirmed them to me.</p>
+<p>&nbsp;</p>
+<p>Thanks for your time.</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>nschonni replied on Monday, June 11, 2012</h2><p>If you&#39;re looking to see if the object would have errors if it is in the other state, you could clone the object and then mark it as in the other state. After that you just check the rules on the clone, but it probably won&#39;t be that performant either.</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>Miroslav Galajda replied on Monday, August 20, 2012</h2><p>The final solution I&#39;ve used, was to create pair methods Can&lt;DoSomething&gt; and &lt;DoSomething&gt; method with registering it with RegisterMethod in Csla.</p>
+<p>Then in Can&lt;DoSomething&gt; I use Clone method on and modify the cloned object to desired state. After that I can use business rules (as they were designed for business object without knowing anything about operation that I&#39;m trying to perform) to see if something went wrong or not a display the information to the user.</p>
+<p>This is working just fine.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

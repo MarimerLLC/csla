@@ -1,0 +1,107 @@
+<html><header><title>Transactional attribute with Oracle connection</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Transactional attribute with Oracle connection</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4604.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>mike7 posted on Wednesday, April 02, 2008</h2><P>Hello,</P>
+<P>I am trying to use transactional attribute (TransactionalTypes.TransactionScope) with an oracle connection. I tried to open an oracle connection and got the following error:</P>
+<P>"Unable to load DLL 'oramts.dll': The specified module could not be found. (Exception from HRESULT: 0x8007007E)"</P>
+<P>Here is my code:</P>
+<P><EM><FONT color=#000000>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;Transactional(TransactionalTypes.TransactionScope)&gt; _<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Protected Overrides Sub DataPortal_Update()</FONT></EM></P>
+<P><EM><FONT color=#000000>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Using cn As New OracleConnection(Database.AMSConnection)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; cn.Open()<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 'Update child objects<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _suiteRanges.Update(Me, cn)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Using</FONT></EM></P>
+<P><EM><FONT color=#000000>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Sub</FONT></EM></P>
+<P><EM>(this code is partt of a parent object and _suiteRanges is an editable child collection object)</EM></P>
+<P>I found that if I remove the transactional attribute, the code is working.</P>
+<P>Is anybody aware of that and should I use a different type of transaction with oracle connection ?</P>
+<P>Thank you</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>nermin replied on Wednesday, April 02, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>That probably means that the Oracle Services for MTS component
+probably is not installed/configured on the box you run your Csla Server side
+code:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><a href="http://www.oracle.com/technology/tech/windows/ora_mts/index.html">http://www.oracle.com/technology/tech/windows/ora_mts/index.html</a><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Nermin<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> mike7
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Wednesday, April 02, 2008 10:12 AM<br>
+<b>To:</b> Nermin Dibek<br>
+<b>Subject:</b> [CSLA .NET] Transactional attribute with Oracle connection<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Hello,<o:p></o:p></p>
+
+<p>I am trying to use transactional attribute
+(TransactionalTypes.TransactionScope) with an oracle connection. I tried to
+open an oracle connection and got the following error:<o:p></o:p></p>
+
+<p>&quot;Unable to load DLL 'oramts.dll': The specified module could not be
+found. (Exception from HRESULT: 0x8007007E)&quot;<o:p></o:p></p>
+
+<p>Here is my code:<o:p></o:p></p>
+
+<p><em><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&lt;Transactional(TransactionalTypes.TransactionScope)&gt; _</span></em><i><span><br>
+<em>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Protected Overrides Sub
+DataPortal_Update()</em></span></i><o:p></o:p></p>
+
+<p><em><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Using cn As New OracleConnection(Database.AMSConnection)</span></em><i><span><br>
+<em>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+cn.Open()</em><br>
+<em>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+'Update child objects</em><br>
+<em>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+_suiteRanges.Update(Me, cn)</em><br>
+<em>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End
+Using</em></span></i><o:p></o:p></p>
+
+<p><em><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End
+Sub</span></em><o:p></o:p></p>
+
+<p><em>(this code is partt of a parent object and _suiteRanges is an editable
+child collection object)</em><o:p></o:p></p>
+
+<p>I found that if I remove the transactional attribute, the code is working.<o:p></o:p></p>
+
+<p>Is anybody aware of that and should I use a different type of transaction
+with oracle connection ?<o:p></o:p></p>
+
+<p>Thank you<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>mike7 replied on Thursday, April 03, 2008</h2>Thank you for your help. I will take a look at this.</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

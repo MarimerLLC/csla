@@ -1,0 +1,54 @@
+<html><header><title>Rev. 5219 - An appendix to the rules manual is needed :)</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Rev. 5219 - An appendix to the rules manual is needed :)</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10584.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>tiago posted on Tuesday, August 02, 2011</h2><p>Hi Jonny,</p>
+<p><div style='padding-left: 50px;background-color:silver'><b>[quote]</b></p>
+<p>Updated rules to consider InputProperties as Dependency for PropertyRules<br />Updated BusinessRules.RuleSet property to clear broken rules collection when set. <br />Updated business rule - PrimaryProperty to virtual <br />Added base classes for rules:<br /><strong>PropertyRule</strong> - for property rule to run with no restrictions<br /><strong>PropertyEditRule</strong> - only when property is changed or CheckRules on client<br /><strong>LookupRule</strong> - async lookup rule only when a property is changed<br /><strong>ObjectRule</strong> - for object rule - will always return null on PrimaryProperty and throw exception when PrimaryProperty is set to a non null value.</p>
+<p>CommonRules.CommonBusinessRule - inherits from PropertyRule (and moved Severity property to PropertyRule).</p>
+<p></div></p>
+<p>The new base classes will need some more documentation on how/when to use, etc.</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Tuesday, August 02, 2011</h2><p>Hi Tiago,</p>
+<p>We&#39;ve had som discussions on the base classes and have decided to just go with</p>
+<ul>
+<li>PropertyRule&nbsp;&nbsp;&nbsp;&nbsp; - for a rule <br />
+<ul>
+<li><span style="text-decoration:line-through;">PropertyEditRule&nbsp; (removed)<br /></span></li>
+<li><span style="text-decoration:line-through;">LookupRule&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (removed)</span></li>
+</ul>
+</li>
+<li>ObjectRule</li>
+</ul>
+<p>You can create your own subclasses as you like in your own code. </p>
+<p>I&#39;m also working a new sample - RuleTutorial - to give more detailed info on how to write rules and use the base classes.</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tiago replied on Wednesday, August 03, 2011</h2><p>Hi Jonny,</p>
+<p>I was exactly adding BusinessRule support to CslaGenFork - read them from a DLL/EXE and fill out the form for the user type the intended values. Than you changed some of it and I reflected the changes CGF side right away. Now it changed again. Maybe I&#39;ll wait until it gets stable.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tiago replied on Friday, August 05, 2011</h2><p>Hi Jonny,</p>
+<p>Concerning PropertyRule documentation, there are two things that need to be corrected:</p>
+<ul>
+<li><strong>MessageText</strong> is a public read/write property but the documentation says &quot;<strong>Gets the error message</strong>.&quot; (forgot&nbsp;the &quot;<strong>and sets</strong>&quot; part)</li>
+<li><strong>CanRunInCheckRules</strong> has the wrong description - it repeats the one from CanRunOnServer</li>
+</ul>
+<p>Regards</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Saturday, August 06, 2011</h2><p>Thx Tiago,</p>
+<p>Updated and committed to repository.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tiago replied on Saturday, August 13, 2011</h2><p><div style='padding-left: 50px;background-color:silver'><b>JonnyBee<br></b> </p>
+<p>I&#39;m also working a new sample - RuleTutorial - to give more detailed info on how to write rules and use the base classes.&nbsp;</p>
+<div style="CLEAR:both;"></div>
+<p></div></p>
+<p>&nbsp;</p>
+<p>Hi Jonny,</p>
+<p>The sample has some building problems since it&#39;s using Csla 4.1 DLL that are in the <strong>Dependencies</strong> folder.</p>
+<p>Another note to say I was&#39;nt aware of the following</p>
+<p>[quote]</p>
+<p style="margin:0cm 0cm 10pt 36pt;mso-pagination:none;mso-layout-grid-align:none;" class="MsoNormal"><span style="font-family:&#39;Times New Roman&#39;,&#39;serif&#39;;mso-ansi-language:#0014;" lang="no"><span style="font-size:small;">Csla DataPortal will enforce authorization rules for &quot;root&quot; objects. Please be aware that the Child DataPortal methods down NOT enforce authorization rules so to check for authorization on child merthods you MUST add this into your own code. </span></span></p>
+<p></div></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tiago replied on Saturday, August 13, 2011</h2><p>Hi Jonny,</p>
+<p>In the Range.cs rule</p>
+<p>where it reads</p>
+<pre style="font-size:13px;background:white;color:black;font-family:Consolas;">&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:darkblue;">Range</span>(<span style="color:darkblue;">IPropertyInfo</span>&nbsp;primaryProperty,&nbsp;<span style="color:darkblue;">IComparable</span>&nbsp;min,&nbsp;<span style="color:darkblue;">IComparable</span>&nbsp;max,&nbsp;<span style="color:blue;">string</span>&nbsp;message)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;<span style="color:darkblue;">this</span>(primaryProperty,&nbsp;min,&nbsp;max)
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;message&nbsp;=&nbsp;message;
+&nbsp;&nbsp;&nbsp;&nbsp;}</pre>
+<p>it should read</p>
+<pre style="font-size:13px;background:white;color:black;font-family:Consolas;">&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:darkblue;">Range</span>(<span style="color:darkblue;">IPropertyInfo</span>&nbsp;primaryProperty,&nbsp;<span style="color:darkblue;">IComparable</span>&nbsp;min,&nbsp;<span style="color:darkblue;">IComparable</span>&nbsp;max,&nbsp;<span style="color:blue;">string</span>&nbsp;message)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;<span style="color:darkblue;">this</span>(primaryProperty,&nbsp;min,&nbsp;max)
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:purple;">MessageText</span>&nbsp;=&nbsp;message;
+&nbsp;&nbsp;&nbsp;&nbsp;}</pre>
+<p>Regards</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Monday, August 15, 2011</h2><p>Hi Tiago,</p>
+<p>Thx again, Range rule and more is updated. The Samples\Dependencies folder is only updated when a release is made as these are binary files and we do not want to check in new version whenever a change is made in Csla.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tiago replied on Tuesday, August 16, 2011</h2><p>removed</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

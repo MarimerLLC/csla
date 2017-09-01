@@ -1,0 +1,17 @@
+<html><header><title>ReadOnlyList fetch with lock</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>ReadOnlyList fetch with lock</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/12725.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>MichelRenaud posted on Tuesday, August 19, 2014</h2><p>Hi,</p>
+<p>This morning I was upgrading CSLA 4.3 to 4.5 and when I ran our application, anything using a ReadOnlyList failed in the DataPortal_Fetch. &nbsp;I finally found the answer in this thread:&nbsp;http://forums.lhotka.net/forums/p/12449/56992.aspx</p>
+<p>OK, easy fix alright. &nbsp;Except than I ran into some slightly different fetch code. &nbsp;My boss had been working on making a data loader use threads to speed up the process. &nbsp;But on occasion, it would fail because a thread could be trying to read a list while one was writing to it (can&#39;t remember the exact details, as I wasn&#39;t directly working on this). &nbsp;So we have a number of lists where the&nbsp;DataPortal_Fetch does this:</p>
+<pre><span>while</span>&nbsp;(dataReader.Read())
+{
+&nbsp;&nbsp;&nbsp;&nbsp;currentObject&nbsp;=&nbsp;<span>Word</span>.GetWord(dataReader);
+&nbsp;&nbsp;&nbsp;&nbsp;<span>lock</span>&nbsp;(loadingLock)
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>this</span>.Add(currentObject);
+&nbsp;&nbsp;&nbsp;&nbsp;}
+}</pre>
+<p>I&#39;m trying to figure out whether I should put the &quot;this.ReadOnly = false&quot; and &quot;... =  true&quot; code inside the lock, outside the lock but inside the while, or before/after the while.</p>
+<p>Or is the above a big no-no to begin with?</p>
+<p>Thanks,<br />Michel&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Tuesday, August 19, 2014</h2><p>Hi,</p>
+<p>Do you run asynchronous code in the DataPortal_Fetch method?&nbsp;</p>
+<p>If you do not run async code then you only need to ReadOnly = false on the first line in DataPortal_Fetch and reset to True before you leave the method.&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>MichelRenaud replied on Wednesday, August 20, 2014</h2><p>Nothing async started in DataPortal_Fetch, no. &nbsp;It simply calls a stored procedure and adds the results to the list.</p>
+<p>Thanks!<br />Michel&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

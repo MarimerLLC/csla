@@ -1,0 +1,97 @@
+<html><header><title>How to install the Templates in VS?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>How to install the Templates in VS?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/2727.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>josh.kodroff posted on Wednesday, April 18, 2007</h2>I'm completely new to templates in VS 2k5 or otherwise, but it looks like they'll be tremendously useful.&nbsp; My only problem is that I can't figure out how to install them.<br><br>I found the template install wizard, but I can't select more than one file at once, which is particularly annoying.&nbsp; There must be a better way to get the CSLA.NET templats into VS2k5.<br><br>Can anyone help?<br><br>Thanks.<br>JK<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, April 18, 2007</h2><P>The "templates" provided in the CSLA .NET download are <EM>not</EM> VS templates. They are templates in the broader sense of being illustrations of the basic structure of the classes.</P>
+<P>There is a CodePlex project to build actual VS templates, and you might check that out. Go to CslaContrib and there's a link to the other project from there.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tiago replied on Wednesday, April 18, 2007</h2>Hi Josh,<br /> <br />I guess you found it.<br />File -> Export Template -> Item Template -> etc, etc<br /> <br />It's annoying all right.After you export all 12 templates, you can find them at "D:\Documents and Settings\USER\My Documents\Visual Studio 2005\Templates\ItemTemplates". In that folder, I made a CSLA folder and put them there.<br /> <br />Back in VS2005, click the project (not the solution) and Add -> Classe; under "Visual C# Project Items" you have a CSLA folder with all your templates.<br /> <br />Regards<br />Tiago<br /><br />________________________________<br /><br />De: josh.kodroff [mailto:cslanet@lhotka.net]<br />Enviada: qua 18-04-2007 17:09<br />Para: tfl<br />Assunto: [CSLA .NET] How to install the Templates in VS?<br /><br /><br />I'm completely new to templates in VS 2k5 or otherwise, but it looks like they'll be tremendously useful.  My only problem is that I can't figure out how to install them.<br /><br />I found the template install wizard, but I can't select more than one file at once, which is particularly annoying.  There must be a better way to get the CSLA.NET templats into VS2k5.<br /><br />Can anyone help?<br /><br />Thanks.<br />JK<br /><br /><br /></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, April 18, 2007</h2><P>It is true you can do that - but even so, the files in the zip file <EM>are not VS templates</EM>.</P>
+<P><EM>Real</EM> VS templates have placeholders and other special characteristics that allow them to work properly when used as an actual template for adding a class. I <EM>did not do that</EM> in the files in the zip archive.</P>
+<P>If you want real VS template behaviors, the CodePlex project is the place to look.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tiago replied on Thursday, April 19, 2007</h2><P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div><EM>Real</EM> VS templates have placeholders and other special characteristics that allow them to work properly when used as an actual template for adding a class. I <EM>did not do that</EM> in the files in the zip archive.</div></BLOCKQUOTE></P>
+<P>Hi Rocky,</P>
+<P>Since there are proper Templates.sln and Templates.csproj files and since all templates refer the "Templates" namespace, the File -&gt; Export Template, etc.&nbsp;takes care of the namespace placeholder.</P>
+<P>When you insert a template with Add -&gt; Class, etc. VS automatically fills in the correct namespace.</P>
+<P>Regards,<BR>Tiago</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, April 19, 2007</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>It does the class names too? Well that&#8217;s very cool </span><span>J</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<div>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> tiago
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Thursday, April 19, 2007 8:06 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: How to install the Templates in VS?<o:p></o:p></span></p>
+
+</div>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<blockquote>
+
+<div>
+
+<p class=MsoNormal><img id="_x0000_i1025" src="/Themes/default/images/icon-quote.gif"><strong>RockfordLhotka:</strong><o:p></o:p></p>
+
+</div>
+
+<div>
+
+<p class=MsoNormal><em>Real</em> VS templates have placeholders and other
+special characteristics that allow them to work properly when used as an actual
+template for adding a class. I <em>did not do that</em> in the files in the zip
+archive.<o:p></o:p></p>
+
+</div>
+
+</blockquote>
+
+<p>Hi Rocky,<o:p></o:p></p>
+
+<p>Since there are proper Templates.sln and Templates.csproj files and since
+all templates refer the &quot;Templates&quot; namespace, the File -&gt; Export
+Template, etc.&nbsp;takes care of the namespace placeholder.<o:p></o:p></p>
+
+<p>When you insert a template with Add -&gt; Class, etc. VS automatically fills
+in the correct namespace.<o:p></o:p></p>
+
+<p>Regards,<br>
+Tiago<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tiago replied on Friday, April 20, 2007</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div> 
+
+<DIV class=Section1>
+<P class=MsoNormal><SPAN>It does the class names too? Well that’s very cool </SPAN><SPAN>J</SPAN><SPAN><o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></div></BLOCKQUOTE></P>
+<P class=MsoNormal>Yes,&nbsp;it does&nbsp;the class names too.</P></DIV></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

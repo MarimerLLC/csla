@@ -1,0 +1,10 @@
+<html><header><title>Dynamic Endpoint question</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Dynamic Endpoint question</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/8831.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>tuan nguyen posted on Thursday, April 22, 2010</h2><p>Hello,</p>
+<p>we have an environement where we&#39;re running csla client through wcf web service defined in app.config file. &nbsp;my question is , is there anything i can pass in address to the endpoint through code instead? i am trying to have the endpoint retrieved from a web service everytime the application start , that way we can dynamically switch client from 1 server to another (a back up server while the main one is down for maintenance for example). &nbsp;and possibly add some load balancing logic running multiple server.</p>
+<p>thanks</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Thursday, April 22, 2010</h2><p>See the</p>
+<h3 class="separator">How can I have multiple configurations or servers 
+for the data portal?</h3>
+<p>topic in the <a href="http://www.lhotka.net/cslanet/faq/DataPortalFaq.ashx">data portal FAQ</a>.</p>
+<p>Though if you really want load balancing you&#39;ll be better off putting a router appliance in front of your web/app servers - that&#39;ll work far better and more reliably than trying to roll some half-baked thing in your own code (been there, done that, got the t-shirt...)</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tuan nguyen replied on Friday, April 23, 2010</h2><p>thank you , i&#39;ll take a look into that</p>
+<p>&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

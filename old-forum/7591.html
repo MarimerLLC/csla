@@ -1,0 +1,68 @@
+<html><header><title>FieldManager.IsDirty Not Responding to MarkClean</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>FieldManager.IsDirty Not Responding to MarkClean</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/7591.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>BigPines2 posted on Wednesday, September 09, 2009</h2>After moving to CSLA 3.5.3, I am starting to use the FieldManager to let CSLA manage my child objects. However, one serious annoyance is that the FieldManager is always dirty. After calling MarkClean on the parent object the FieldManager is still dirty. Even calling MarkClean on the FieldManager itself will not work - it still says it is dirty. How can this be? Unfortunately, my UI implementation depends on knowing if an object is dirty or not so this is throwing everything off for me.<br><br>I could work around this by this by using IsSelfDirty of the parent object but I found that IsSavable is also affected by the problem and there is no IsSelfSavable.<br><br>Any ideas on how to resolve this are welcome.<br><br>Mike<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, September 09, 2009</h2><P>There's something going on in your code. We have unit tests and sample apps that work fine - calling MarkClean() on the object causes the expected behavior.</P>
+<P>Is this occurring when you call Save()? Are you properly using the result of Save()?</P>
+<P>_customer = _customer.Save();</P>
+<P>In older code people would often just call Save() like a void method, not a function, and that is a common cause for confusion - in 3.5+ you really need to call Save() correctly - as a function.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>BigPines2 replied on Wednesday, September 09, 2009</h2>This is even happening before I ever call save. In fact, as soon as I fetch the object from the DB, if I call MarkClean the parent object reports not dirty but the FieldManager still reports dirty. It is always dirty no matter what. Even after saving the object, the new object that comes back from the save has a FieldManager that is dirty. BTW, I am saving the correct way as in your example above. I always set the object instance to the result of the object coming back from the save.<br><br>If I don't use the FieldManager, I don't have this problem on my objects. I am setting up the child object property like this:<br><br><font size="2">Private Shared CredentialEventsProperty As PropertyInfo(Of EntityCredentialParent) = RegisterProperty(New PropertyInfo(Of EntityCredentialParent)("CredentialEvents"))<br><br>Public ReadOnly Property CredentialEvents() As EntityCredentialParent<br>&nbsp;&nbsp;&nbsp;&nbsp; Get<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; If Not FieldManager.FieldExists(CredentialEventsProperty) Then<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; LoadProperty(Of EntityCredentialParent)(CredentialEventsProperty, EntityCredentialParent.NewObject(Me))<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End If<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return GetProperty(CredentialEventsProperty)<br>&nbsp;&nbsp;&nbsp;&nbsp; End Get<br>End Property</font><br><br>I then load the child from the database like this:<br><br><font size="2">LoadProperty(Of EntityCredentialParent)(CredentialEventsProperty, EntityCredentialParent.GetObject(dr, cn, Me))</font><br><br>From the moment I load the object as outlined above, the FiledManager becomes dirty and cannot be cleaned by calling MarkClean. I have dug into this a bit and found that the child object is basically not getting "managed" correctly. When I call the parent object's MarkClean, my understanding is that should trigger the FieldManager to call MarkClean on the child objects right? This does not appear to be happening. I just found if I call MarkClean directly on the child object it works correctly but if I call MarkClean on the FieldManager or the Parent BO, it does not affect the child BO.<br><br>Any ideas? :(<br><br>Mike<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, September 09, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>There&#8217;s some mismatch then, because the BusinessBase IsDirty
+implementation delegates to the field manager. So if the field manager is
+dirty, the object will report dirty too.<o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>BigPines2 replied on Wednesday, September 09, 2009</h2>Right. That is exactly what I am seeing. The FieldManager is dirty and the object is also therefore dirty. The FieldManager is dirty because the child it is managing is dirty but it should not be.<br><br>The problem is, the child cannot be marked clean through the normal process. When you mark an object as clean, it should trigger the FieldManager to mark all children as clean but the children are never getting marked clean. Likewise, if you call FieldManager.MarkClean directly, the children do not get marked clean. The ONLY way to get the children marked clean is to call MarkClean directly on the child. This makes the FieldManager return clean and therefore the object is clean.<br><br>I would just manually call Child.MarkClean but the method is protected. Ahhhhhhhh!!!<br><br>I'll keep digging. I guess I will just have to step through every line of code after MarkClean is called on the parent to figure out why it is not working.<br><br>Mike<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, September 09, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Ahh, that&#8217;s the misunderstanding then.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>When you mark an object as clean, that&#8217;ll mark its <i>fields</i>
+as clean, but not its child objects.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>To preserve encapsulation every object manages its own state. A parent
+object can&#8217;t arbitrarily say &#8220;child you are clean&#8221;, because that breaks encapsulation.
+MarkClean() has never cascaded down through to child objects.<o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>BigPines2 replied on Wednesday, September 09, 2009</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div><span>Ahh, that’s the misunderstanding then.<br><br><o:p></o:p></span><div class="Section1">
+
+<p class="MsoNormal"><span><o:p>&nbsp;</o:p>When you mark an object as clean, that’ll mark its <i>fields</i>
+as clean, but not its child objects.</span></p><p class="MsoNormal"><br></p>
+
+
+
+<p class="MsoNormal"><span><o:p>&nbsp;</o:p>To preserve encapsulation every object manages its own state. A parent
+object can’t arbitrarily say “child you are clean”, because that breaks encapsulation.
+MarkClean() has never cascaded down through to child objects.</span></div></BLOCKQUOTE></p><p class="MsoNormal">Well that makes sense. I'll go look at why my child is dirty. I guess I just never had to care before.</p><p class="MsoNormal"><br></p><p class="MsoNormal">Mike<br></p></div></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>BigPines2 replied on Wednesday, September 09, 2009</h2>Yeah you were right Rocky. Sorry, I am getting a little rusty on the fundamentals. <img src="/emoticons/emotion-10.gif" alt="Embarrassed [:$]" /><br><br>Mike<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Wednesday, September 09, 2009</h2>Are you using the DataPortal.Childxyz methods?  If so, it should be handling the Markxyz calls for you... unless your code is doing something to make the object dirty again.  Also, be sure you're using BypassPropertyChecks when loading your child object, because I think the MarkClean occurs BEFORE your Child_Fetch.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>BigPines2 replied on Wednesday, September 09, 2009</h2>OK, here is what I am seeing:<br><br>1) ParentObject.MarkClean called by my code<br>2) ParentObject.FieldManager.MarkClean gets successfully called which looks like this:<br><br><font size="2">Friend Sub MarkClean()<br>&nbsp;&nbsp;&nbsp;&nbsp; For Each item In _fieldData<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; If item IsNot Nothing AndAlso item.IsDirty Then<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#0000ff"> item.MarkClean()</font><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End If<br>&nbsp;&nbsp;&nbsp;&nbsp; Next item<br>End Sub</font><br><br>3) item.MarkClean gets successfully called on the only child in my test. This call goes to FieldData.MarkClean which looks like this:<br><br><font size="2">Public Sub MarkClean() Implements IFieldData.MarkClean<br><br>&nbsp;&nbsp;&nbsp;&nbsp; _isDirty = False<br><br>End Sub</font><br><br>4) _isDirty is already False before this call but it gets set to False again.<br><br>That is it. That is all I can see happening. How is the Child getting cleaned here?<br><br>Mike<br><br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

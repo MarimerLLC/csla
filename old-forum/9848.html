@@ -1,0 +1,30 @@
+<html><header><title>converting to c# from vb - stuck with something</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>converting to c# from vb - stuck with something</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9848.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>griff posted on Thursday, December 09, 2010</h2><p><i>Hi</i></p>
+<p><i>got a brain block...what am I missing&nbsp;</i></p>
+<p>Get an error on this line &lt;<i>
+<p>Abraca.Business.School.GetBySchoolIDAsync(&quot;SLS01&quot;, &nbsp;GetSchool_Completed);&gt;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+</i></p>
+<p><i>
+<p>&nbsp;private void button1_Click(object sender, RoutedEventArgs e)</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;{</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Abraca.Business.School.GetBySchoolIDAsync(&quot;SLS01&quot;, &nbsp;GetSchool_Completed);</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;}</p>
+<p>&nbsp;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;private void GetSchool_Completed(object sender, Csla.DataPortalResult&lt;SchoolDetails&gt; e)</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;{</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;if (e != null)</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;{</p>
+<p>&nbsp;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;}</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;}</p>
+<p>&nbsp;</p>
+<p>Thanks</p>
+</i></p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Thursday, December 09, 2010</h2><p>I think you missed on the objecttype. </p>
+<p><i><i>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Abraca.Business.School.GetBySchoolIDAsync(&quot;SLS01&quot;, 
+&nbsp;GetSchool_Completed);&gt;</i></i></p>
+<p>If you BO is type School then that should also be the generic type of DataPortalResult<i><i><br /></i></i></p>
+<p><b><i><i>&nbsp;&nbsp; &nbsp; &nbsp;&nbsp; private void GetSchool_Completed(object sender, 
+Csla.DataPortalResult&lt;<span style="text-decoration:underline;">School&gt;</span> e)</i></i></b></p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>griff replied on Thursday, December 09, 2010</h2><p>Thanks, been a long day!</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

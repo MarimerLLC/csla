@@ -1,0 +1,273 @@
+<html><header><title>Export to CSV</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Export to CSV</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3418.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>juddaman posted on Thursday, August 23, 2007</h2>Hi<br><p class="MsoNormal"><span>I'm about to add an export to CSV option to
+my app. I'm not using the CSV file for persistence or anything, that’s all
+handled by a RDB. It will just be one off calls (as required), kind of a report
+generation. Anybody got any suggestion of a good “OO” place to put this. I suppose
+if my use-case is "generate CSV output" it kind of deserves its own
+BO maybe? So something like DailyProjectReport : ReadOnlyBase&lt;DailyProjectReport&gt;.
+With a </span></p>
+
+
+
+<p class="MsoNormal"><span>string MakeReport(DateTime weekBeginning) </span></p>
+
+
+
+<p class="MsoNormal"><span>method returning the CSV format of the data
+ready to put into a file. Sound okay? Has anybody else done something similar?<o:p></o:p></span><br></p>Regards<br><br>George<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, August 24, 2007</h2>That seems like a perfectly reasonable solution to me. Reporting should be done as close to the database as possible (in the database if practical), and the results returned to the user through whatever means. I believe that's what you are describing in your use of a RO object to return the results.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>juddaman replied on Friday, August 24, 2007</h2>
+
+<p class="MsoNormal"><span>Hi Rocky <br>
+<br>
+Thanks for the reply and reassurance. I ended up creating a BO to do the fetch and get the data
+for the report as described before. However I made a new project "Reporting" to deal with
+exporting the data to different types such CSV, XML, HTML etc, I didn’t want to
+bung all that in the BO. Also it gives me a layer of indirection, so I could
+"talk" directly to the DB and not through the BO if ever a situation
+arose that required this.</span></p>
+
+<p class="MsoNormal"><span><o:p>&nbsp;</o:p></span></p>
+
+<p class="MsoNormal"><span>Regards</span></p>
+
+<p class="MsoNormal"><span><o:p>&nbsp;</o:p></span></p>
+
+<p class="MsoNormal"><span>George</span></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>yimiqi replied on Wednesday, September 19, 2007</h2><P>George</P>
+<P>How did you achieve converting the data from BO to CSV?&nbsp; I'm currently working on this similar requirement that you seem already easily implemented,&nbsp;do you mind posting some code examples here?&nbsp;Did you use reflections?&nbsp; </P>
+<P>I'm not familiar with reflection implementation, so struggling with the reflection code that is not giving me back the desired results.</P>
+<P>Thanks in advance.&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>juddaman replied on Wednesday, September 19, 2007</h2>
+
+<p class="MsoNormal"><span>Hi <br>
+<br>
+My requirement was to produce a report in the format of CSV file. I created a
+new RO object say MyReportLineInfo this had all the properties for the report
+lines. Then I created a list of these, say MyReportList. Then I created another
+class ReportCSV which took the data from the report (foreach line get
+properties (no clever reflection or anything)) and basically stuck commas
+between the properties. It then exported the resulting string to a given file.
+Worked for me! I'm presuming you have a slightly different requirement. Is your
+resulting CSV a report that you will distribute in some way? I’m not really
+sure why you want to use reflection are you planning on extending CSLA so all
+object can expose their properties as a CSV or something?<br>
+<br>
+George</span></p>
+
+<br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>yimiqi replied on Wednesday, September 19, 2007</h2><P>George</P>
+<P>Thanks for the quick reply.&nbsp; My requirement is much like yours - produce a CSV format file.&nbsp; There isn't any distribution requirement associated.&nbsp; I already have RO and ROC object created and loaded with data.&nbsp; The part I'm stuck is to take the data from the ROC business object (say MyReportList), including column names (which are properties defined in the RO business object., say MyReportLineInfo), to a comma separated value string , and then export the resulting string to a given file.</P>
+<P>How did you get all the properties from your BO dynamically without using reflection? </P>
+<P>If we are dealing the data in dataset, it would be a completely different approach.</P>
+<P>I'm using reflection is because people on this forum suggested me.&nbsp; see my another post seeking ideas</P>
+<P>on what you've complished.</P>
+<P><A HREF="/forums/thread/17634.aspx">http://forums.lhotka.net/forums/thread/17634.aspx</A></P>
+<P>And I searched the forum on the similar topic, all the answers indicated that I should use reflection to do what i'm trying to do.&nbsp; I'm curious then, how did you do it? </P>
+<P>I feel a little comfort now knowing at least somebody has done it and works!</P>
+<P>Thanks for any inputs</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>juddaman replied on Wednesday, September 19, 2007</h2>Hi<br><br>My object dealing with making the CSV knows what information it is putting in it. It knows the name of the properties and compile time. <br><i><b><br>How did you get all the properties from your BO dynamically without using reflection?<br></b></i>I didn't. :-D I hard-coded. I see no reason not to hard code, I only want certain properties in my report and I have to define that somewhere.<i><br></i><br>I'm just doing something like this (not working code, just off top of my head, but should give you an idea)<br><br>string csv = string.Empty;<br>foreach (MyReportLineInfo info in MyReportList)<br>{<br>string line = info.FirstName;<br>line&nbsp; += ",";<br>line&nbsp; += info.Surname<br>csv += line;<br>}<br><br>So yeah what I'm doing is really basic, I'm still not sure if your are trying to do the same thing. I'm not sure how reflection comes into this either, unless you had a lots of properties or you wanted every single BO you create to be able to expose its self in CSV form, in that case reflection may be neat. I just needed one report (BO) to be able to be exported to a file. Hope that helps.<br><br>George<br><br><br><br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ozitraveller replied on Wednesday, September 19, 2007</h2><P>Sorry to stick my nose in here, but I had a quick look at the other thread. And I think the origianal idea was to be able to do the same thing with a BO as can be done the a datatabe and loop through the fields collection concatenating as you go. And the suggestion was to use reflection to somehow get a list of BO properties to loop through.</P>
+<P>&nbsp;</P>
+<P>Try this is hsould be quicker.</P>
+<P>StringBuilder csv = new StringBuilder();<BR>foreach (MyReportLineInfo info in MyReportList)<BR>{<BR>&nbsp;csv.Append(string.Format("{0},{1}", info.FirstName, info.Surname));<BR>}<BR>csv.ToString();<BR></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ozitraveller replied on Wednesday, September 19, 2007</h2><P>Sorry to stick my nose in here, but I had a quick look at the other thread. And I think the origianal idea was to be able to do the same thing with a BO as can be done the a datatabe and loop through the fields collection concatenating as you go. And the suggestion was to use reflection to somehow get a list of BO properties to loop through.</P>
+<P>&nbsp;</P>
+<P>Try this is should be quicker.</P>
+<P>StringBuilder csv = new StringBuilder();<BR>foreach (MyReportLineInfo info in MyReportList)<BR>{<BR>&nbsp;csv.Append(string.Format("{0},{1}\r\n", info.FirstName, info.Surname));<BR>}<BR>csv.ToString();<BR></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>yimiqi replied on Wednesday, September 19, 2007</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>ozitraveller:</strong></div><div> 
+<P>Sorry to stick my nose in here, but I had a quick look at the other thread. And I think the origianal idea was to be able to do the same thing with a BO as can be done the a datatabe and loop through the fields collection concatenating as you go. And the suggestion was to use reflection to somehow get a list of BO properties to loop through.</P>
+<P></div></BLOCKQUOTE></P>
+<P>Your summary is&nbsp;exactly right.&nbsp; </P>
+<P>&nbsp;My use case is the same is George's when dealing with one BO, but mine extends to many reports from different BOs while his is only one report in the entire application.</P>
+<P>By the way, welcome to stick your nose in here and thanks a lot for the sample code. I'm trying to avoid hard coding BO properties though.</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ozitraveller replied on Thursday, September 20, 2007</h2><TABLE class=CAPageContent id=ctl00_ctl01_bcr_PostForm___ComposePage cellSpacing=0 cellPadding=0>
+
+<TR>
+<TD>
+<DIV id=ctl00_ctl01_bcr_PostForm___Reply>Thanks&nbsp; yimiqi</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>The sample code was really only to get more speed, concatenation is quite slow.</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>It might be useful to have alook in Rocky's code, in the csla source. There might be something useful in there to get the BO property names using reflection.</DIV></TD></TR></TABLE></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, September 20, 2007</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Yes, you can look at ObjectAdapter or DataMapper for some ideas.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> ozitraveller
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Thursday, September 20, 2007 9:06 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] Export to CSV<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<table class=MsoNormalTable cellspacing=0 cellpadding=0>
+ <tr>
+  <td>
+  <div id="ctl00_ctl01_bcr_PostForm___Reply">
+  <p class=MsoNormal>Thanks&nbsp; yimiqi<o:p></o:p></p>
+  </div>
+  <div>
+  <p class=MsoNormal>&nbsp;<o:p></o:p></p>
+  </div>
+  <div>
+  <p class=MsoNormal>The sample code was really only to get more speed,
+  concatenation is quite slow.<o:p></o:p></p>
+  </div>
+  <div>
+  <p class=MsoNormal>&nbsp;<o:p></o:p></p>
+  </div>
+  <div>
+  <p class=MsoNormal>It might be useful to have alook in Rocky's code, in the
+  csla source. There might be something useful in there to get the BO property
+  names using reflection.<o:p></o:p></p>
+  </div>
+  </td>
+ </tr>
+</table>
+
+<p class=MsoNormal><span><br>
+<br>
+<o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>yimiqi replied on Thursday, September 20, 2007</h2><P>ozitraveller, I use StringBuilder to do the string work too.&nbsp; Thanks for pointing it out.</P>
+<P>Rocky, is ObjectAdapter or DataMapper in your csla project (sorry if this question seems too fundamental to ask)?&nbsp; I'm stuck in the PropertyInfo.GetValue() part, don't know what parameters should be sent.&nbsp; I'm getting TargetTypeException unhandled error no matter what parameters I pass to the GetValue() <img src="/emoticons/emotion-9.gif" alt="Crying [:'(]" /></P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, September 20, 2007</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Yes, both are in CSLA .NET. I think both are discussed in
+Chapter 5 if I remember correctly.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> yimiqi
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Thursday, September 20, 2007 10:02 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: Export to CSV<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>ozitraveller, I use StringBuilder to do the string work too.&nbsp; Thanks
+for pointing it out.<o:p></o:p></p>
+
+<p>Rocky, is ObjectAdapter or DataMapper in your csla project (sorry if this
+question seems too fundamental to ask)?&nbsp; I'm stuck in the
+PropertyInfo.GetValue() part, don't know what parameters should be sent.&nbsp;
+I'm getting TargetTypeException unhandled error no matter what parameters I
+pass to the GetValue() <img id="_x0000_i1025" src="/emoticons/emotion-5.gif" alt="Wink <img src=" />"><o:p></o:p></p>
+
+<p>&nbsp;<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>yimiqi replied on Friday, September 21, 2007</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div> 
+
+<DIV class=Section1>
+<P class=MsoNormal><SPAN>Yes, both are in CSLA .NET. I think both are discussed in Chapter 5 if I remember correctly.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Rocky<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN><BR><o:p></o:p></P></DIV>
+<P></div></BLOCKQUOTE></P>
+<P>&nbsp;</P>
+<P>Thank you Rocky.&nbsp; I'll be reading up on the ObjectAdaptor tonight.<BR></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ozitraveller replied on Tuesday, October 02, 2007</h2><P>Just thought I'd add this, just in case anyone is interested.</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; //Util.Export(@"d:\test.txt", salesEnquiryInfoList);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public static void Export(bool addColumnHeaders, string filename, object source)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; DataSet ds = new DataSet();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Csla.Data.ObjectAdapter oa = new Csla.Data.ObjectAdapter();</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; try<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; oa.Fill(ds, source);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; string[] strItems = new string[ds.Tables[0].Columns.Count];</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; using (StreamWriter sw = new StreamWriter(filename, true))<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; //Column headings<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (addColumnHeaders)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; foreach (DataColumn column in ds.Tables[0].Columns)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; strItems[column.Ordinal] = column.ColumnName;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; sw.WriteLine(string.Join(",", strItems));<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; foreach (DataRow drRow in ds.Tables[0].Rows)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; drRow.ItemArray.CopyTo(strItems, 0);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; sw.WriteLine(string.Join(",", strItems));<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; sw.Close();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; catch (Exception ex)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; MessageBox.Show(ex.Message);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<BR></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>umar replied on Wednesday, June 22, 2011</h2><p>Thank you for posting this code it does exactly what I needed and I was able to add it to my common module and use it across all my modules <img src="http://forums.lhotka.net/emoticons/emotion-2.gif" alt="Big Smile" /></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Curelom replied on Wednesday, June 22, 2011</h2><p>This is perhaps slightly off-topic, but if anybody needs a really good .net csv parser they can find it here.</p>
+<p><a href="http://www.codeproject.com/KB/database/CsvReader.aspx">http://www.codeproject.com/KB/database/CsvReader.aspx</a></p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>yimiqi replied on Wednesday, September 19, 2007</h2><P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>juddaman:</strong></div><div>Hi<BR><BR><I><B>How did you get all the properties from your BO dynamically without using reflection?<BR></B></I>I didn't. :-D I hard-coded. I see no reason not to hard code, I only want certain properties in my report and I have to define that somewhere.<I><BR></I></P>
+<P>George<BR><BR><BR><BR><BR></div></BLOCKQUOTE></P>
+<P>George</P>
+<P>Thank you for clarifying the use case.&nbsp; Yeah, hard code would work if only deal with one BO.&nbsp; In my case, I will need to be able to build the function in a dynamic manner so that any BO that needs a report can call it.</P>
+<P>Thank you for your top of head code too.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ozitraveller replied on Sunday, June 26, 2011</h2><p>I&#39;ve started doing csv like this lately.</p>
+<p>Hope this helps.</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>Create TABLE _vTable &nbsp; (id INT, val VARCHAR(100))</p>
+<p>INSERT INTO _vTable</p>
+<p>SELECT 1,&#39;test 1&#39; UNION ALL</p>
+<p>SELECT 2,&#39;test 2&#39; UNION ALL</p>
+<p>SELECT 3,&#39;test 3&#39; UNION ALL</p>
+<p>SELECT 4,&#39;test 4&#39; UNION ALL</p>
+<p>SELECT 5,&#39;test 5&#39;&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>declare @csv varchar(max)</p>
+<p>&nbsp;</p>
+<p>SELECT @csv =</p>
+<p>&nbsp; STUFF(</p>
+<p>&nbsp; &nbsp; ( select &#39;,#&#39; + x + &#39;|&#39; AS [text()] from</p>
+<p>&nbsp; &nbsp; (</p>
+<p>select x from (</p>
+<p>&nbsp; &nbsp;select convert(varchar(20), id) + &#39;,&#39; + val &nbsp;x from _vTable</p>
+<p>) a</p>
+<p>&nbsp; &nbsp; &nbsp; ) b</p>
+<p>&nbsp; &nbsp; &nbsp; FOR XML PATH(&#39;&#39;)</p>
+<p>&nbsp; &nbsp; ), 1, 1, &#39;&#39;)</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>select @csv = replace(@csv, &#39;,#&#39;, &#39;&#39;)</p>
+<p>select @csv = replace(@csv, &#39;#&#39;, &#39;&#39;)</p>
+<p>select @csv = stuff(@csv, CHARINDEX(&#39;|&#39;, @csv, LEN(@csv)), 1, &#39;&#39;)</p>
+<p>select @csv = replace(@csv, &#39;|&#39;, CHAR(13)+ CHAR(10))</p>
+<p>print @csv</p>
+<p>select @csv</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

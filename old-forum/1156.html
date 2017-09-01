@@ -1,0 +1,37 @@
+<html><header><title>Enums &amp; Attributes (Looking for opinions)</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Enums &amp; Attributes (Looking for opinions)</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/1156.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>RangerGuy posted on Thursday, September 07, 2006</h2>I am using some custom attributes to describe some of our system enums. They are basically used to inforce some validation rules.
+
+I read somewhere that it's not proper OOP to do this. That it's better to make a read only static collection/class structure and not use the enum and custom attributes.
+
+What's everybody think?</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>SonOfPirate replied on Friday, September 08, 2006</h2><P>Enums are best used for fixed "values".&nbsp; If your values have "behavior", which may be why you are attaching attributes, then the recommended practice is to use a structure or class (the former being more lightweight).</P>
+<P>Unfortunately, the use of meta-data (which is what attributes provide) is a rather new concept to most OO programmers so it is not well-documented, discussed or even standardized how to handle them with respect to proper OOP practices.&nbsp; The best approach is to simply look at what you are trying to accomplish with the attributes.&nbsp; Are they simply "decorating" the value or are they providing functional information.</P>
+<P>A good example is the System.SerializableAttribute.&nbsp; This attribute, while appearing to provide behavior, really does nothing more that describe the class it is attached to.&nbsp; The attribute doesn't provide functionality nor does it impose logic.&nbsp; The serializer handles those aspects making use of the meta-data associated with the class to determine if it can be serialized or not.&nbsp; The actual work and logic reside elsewhere.&nbsp; Same applies to attributes like System.Xml.Serialization.XmlAttributeAttribute where you indicate to the serializer that the property should be treated like an attribute for the parent node and even possibly change the name of the attribute when it appears in XML.&nbsp; These are all "decorative" things that don't affect how the entity behaves in and of itself.</P>
+<P>If you'd like to provide an example of an enumeration you are using, I can certainly address the specifics of your case.&nbsp; But, if you can apply the above litmus tests and say that your attributes are simply decoration, then you are fine.&nbsp; I am struggling to think of an example where an attribute would be inappropriate.&nbsp; I guess the best I can come up with would be an IsValidAttribute that you'd apply to enumeration values to indicate if the parent object should be invalidated when set to the specific value - and that's not a very good example.&nbsp; In this case, the validity test should be in the object itself based on the value and not determined by an attribute.&nbsp; But, my guess is that this is not reflective of what you are trying to accomplish.&nbsp; So, please post an example if you could.</P>
+<P>Hope that helps.</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Friday, September 08, 2006</h2>I believe attributes enable what is more commonly being called Aspect Oriented Programming.<br><br>The idea is that many times in OO, you have code which isn't directly related to solving the problem at hand.&nbsp; For example, serialization or security.&nbsp; Instead of 'polluting' your class with this serialization code (which technically isn't the class' responsibility anyway), you mark it with the attribute.&nbsp; Another class then is responsible for serializing ANY object.&nbsp; <br><br>At least this is what my friend said when we were discussing Java (which he knows well) and .Net.&nbsp; I trust his opinion though because he did take a few courses on AOP.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RangerGuy replied on Saturday, September 09, 2006</h2>Thanks ajj3085 & SonOfPirate,<br>
+<br>
+Maybe this will help more. We have some status that tell that define the status of an order like: Process,Payment Pending, Refunded etc.<br>
+
+We use the enum like so:<br>
+
+if(Order.Status == enumOrderStatus.Processed)<br>
+{<br>
+  //Send Email<br>
+}<br>
+
+That works great and makes the code very readable. My problem is when setting the status. We have many more statuses and all statuses<br> are grouped in a category. The statuses are stored in a Database as well for reporting purposes. So we've made a standard<br> process if one needs to be added it's policy that it needs to be added in the code. The idea is we decide on the statuses<br> and they don't change except for a very rare case.
+
+So I figured I could use a custom attribute on the Enum Items to mark which category they belong to like so.<br><br>
+
+public enum enumOrderStatus<br>
+{<br>
+[StatusCategoryAttribute(1)]<br>
+Process = 1,<br>
+[StatusCategoryAttribute(2)]<br>
+Payment Pending = 2,<br>
+[StatusCategoryAttribute(2)]<br>
+ Refunded =3<br>
+}<br>
+
+The order contains a StatusCategory child with contains statuses. With a simple IF statement I can check and make sure a status being<br><br> assigned to a category is valid for that category.
+<br><br>
+Hope that helps</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

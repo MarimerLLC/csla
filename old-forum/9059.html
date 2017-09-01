@@ -1,0 +1,27 @@
+<html><header><title>Integer Criteria</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Integer Criteria</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9059.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>aporter posted on Thursday, June 10, 2010</h2><p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p><span style="font-size:x-small;"><font size="2">
+<p>&nbsp;</p>
+</font></span>
+<p>&nbsp;</p>
+</p>
+<p><span style="font-size:x-small;">I am sure there must be a valid reason for the below code found in the <span style="font-size:x-small;">Csla.Server.</span>SimpleDataPortal class&nbsp;specifically in the&nbsp;Fetch and Create methods. </span></p>
+<p><span style="font-size:x-small;">There is this explicit condition for the criteria of int type as the code below indicates. If an int is passed as a parameter it is calling the parameterless data portal Fetch method.</span></p>
+<p>
+<p><span style="font-size:x-small;">&nbsp;// tell the business object to fetch its data<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (criteria is int)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; obj.CallMethod(&quot;DataPortal_Fetch&quot;);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; else<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; obj.CallMethod(&quot;DataPortal_Fetch&quot;, criteria);</span></p>
+</p>
+<p><span style="font-size:x-small;">What are the reasons for this? We are using the 3.7.1 version.</span></p>
+<p>
+<p><span style="font-size:x-small;">Regards</span></p>
+</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jav replied on Thursday, June 10, 2010</h2><p>I haven&#39;t looked at the code of SimpleDataPortal, but from your perspective, here is how the Criteria thing works.</p>
+<p>When calling DataPortal.Fetch : (This is for Synchronous calls - since you did not mention Silverlight in your post)</p>
+<p>1. If you have no parameters to pass for your query you simply do this:<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; DataPortal.Fetch&lt;YourObjectType&gt;();</p>
+<p>2. If you a single parameter, like an Id (whatever type it may be):<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; DataPortal.Fetch&lt;YourObjectType&gt;(new SingleCriteria&lt;YourObjectType, YourParameterType&gt;(YourParameterName));</p>
+<p>3. If you have more than one parameter to pass, you create your own Criteria class and use that instead of the &quot;built-in&quot; SingleCriteria.</p>
+<p>Of course, that is in your Factory methods.&nbsp; In your DataAccess code, then you have to provide the DataPortal_Fetch() method(s) that match the call(s) you are making. You can have more than one, as long as number and/or type of parameters make the Method Signatures different.</p>
+<p>Jav</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Thursday, June 10, 2010</h2><p>This is explained in the Expert 2008 Business Objects book, and there&#39;s some history to the code.</p>
+<p>Originally (years ago) CSLA required a criteria value. Around 2004 I enhanced the data portal to make the criteria value optional - but didn&#39;t want to break a set of low-level provider code for backward compatibility reasons. To avoid breaking that code, CSLA still does pass a criteria value - just a value that is otherwise invalid (an int), because a criteria value must implement ICriteria to be valid.</p>
+<p>So the check for an int is really a check for a specific invalid value, that is used as a flag that is a placeholder for &quot;no criteria&quot;.</p>
+<p>All this changes in CSLA 4. CSLA 4 removes the requirement for ICriteria, and allows any single primitive or serializable value to be used as a criteria value. This means an int becomes a valid criteria value in CSLA 4.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>aporter replied on Friday, June 11, 2010</h2><p>Thanks Rocky. That explained it.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

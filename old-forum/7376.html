@@ -1,0 +1,211 @@
+<html><header><title>OT: Detecting if client is idle in SL</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>OT: Detecting if client is idle in SL</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/7376.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jack posted on Friday, July 31, 2009</h2>Any ideas on how to easily do that?&nbsp; I can't find any reference/sample to this on google etc.<br><br>I want to do a couple of things:<br><br>1) Refresh the UI to show background loaded data<br><br>2) Force a re-login if idle for too long (like a screen saver).<br><br>The users' just realized that my application can site open overnight and pick up right where it left off :-)<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Friday, July 31, 2009</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I
+have been thinking about the whole idle time.&nbsp; Here is my
+suggestion.&nbsp; If your client is fine with saying that lack of server
+interaction constitutes idle time and you have custom compressed proxy, you can
+probably add a field to LocalContext, and have your proxy stamp that field
+every time it hits the server.&nbsp; You can also have a time running on your
+main form (root visual) that can monitor this field and log the person out at
+the appropriate time.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Jack
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Friday, July 31, 2009 1:51 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> [CSLA .NET] OT: Detecting if client is idle in SL<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Any ideas on how to easily do that?&nbsp; I can't find any
+reference/sample to this on google etc.<br>
+<br>
+I want to do a couple of things:<br>
+<br>
+1) Refresh the UI to show background loaded data<br>
+<br>
+2) Force a re-login if idle for too long (like a screen saver).<br>
+<br>
+The users' just realized that my application can site open overnight and pick
+up right where it left off :-)<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jack replied on Friday, July 31, 2009</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Sergey,<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Thank you for the suggestion.&nbsp; I will certainly take your
+idea under consideration - my first thought is that the users can do a lot on
+long running tasks (entering data) before committing the change to the database
+and I'm really trying to limit the server hits from some sites due to their
+lousy bandwidth.&nbsp; I'm loading data in the background and caching as much
+data client side as I can.&nbsp; It would likely be a fine solution for some
+users but not others but it would work with a long timeout (1hr plus).<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>The client that is most concerned however has a current implementation
+with I believe 15min timeout.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I do plan to implement some auto-saving at some point but right
+now the complexity to restore it and deal with it doesn't fit into my timeframe.&nbsp;
+I could probably stick some 'fake server' calls in to various spots like
+navigation or page changes that updates the proxy stamp locally.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I'm a little surprised there isn't a SL solution out of the box.&nbsp;
+Maybe there is some way to tie into the UI thread to reset the timer everytime
+some UI action kicks off and then monitor that timer from a background thread or
+something.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>thanks<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>jack<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Sergey Barskiy [mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> July-31-09 3:38 PM<br>
+<b>To:</b> jaddington@alexandergracie.com<br>
+<b>Subject:</b> RE: [CSLA .NET] OT: Detecting if client is idle in SL<o:p></o:p></span></p>
+
+</div>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal><span>I have been thinking about the whole idle time.&nbsp; Here is my
+suggestion.&nbsp; If your client is fine with saying that lack of server
+interaction constitutes idle time and you have custom compressed proxy, you can
+probably add a field to LocalContext, and have your proxy stamp that field
+every time it hits the server.&nbsp; You can also have a time running on your
+main form (root visual) that can monitor this field and log the person out at
+the appropriate time.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office:
+678.405.0687 | mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom Development Solutions, Technical
+Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Jack [mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Friday, July 31, 2009 1:51 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> [CSLA .NET] OT: Detecting if client is idle in SL<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Any ideas on
+how to easily do that?&nbsp; I can't find any reference/sample to this on
+google etc.<br>
+<br>
+I want to do a couple of things:<br>
+<br>
+1) Refresh the UI to show background loaded data<br>
+<br>
+2) Force a re-login if idle for too long (like a screen saver).<br>
+<br>
+The users' just realized that my application can site open overnight and pick
+up right where it left off :-)<br>
+<br>
+<o:p></o:p></span></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

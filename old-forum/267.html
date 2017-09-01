@@ -1,0 +1,79 @@
+<html><header><title>Accessing Parent object from Child</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Accessing Parent object from Child</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/267.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Pradeep posted on Sunday, June 04, 2006</h2><DIV>Hi,</DIV>
+<DIV>I have a Company Parent Object and this has a Contact List, which is a collection of Contact objects.</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>Company and Contact are root level objects (similar to project and resource in the book sample)&nbsp; and&nbsp;Contact object has&nbsp;a company name property. &nbsp;When I try to add a contact to a company, I want to have a validation rule, making sure that the contact's company name is same as the Company's name property.</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>To keep it short. I want to get the Parent of Contact object (ContactList)&nbsp;and then get to its parent (Company) and check for the Name property. But BusinessCollectionBase does not have a parent property. </DIV>
+<DIV>&nbsp;</DIV>
+<DIV>Could any one tell me, how to get to the parent object (in this case, Company).</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>Thank You</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>&nbsp;</DIV></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>xal replied on Sunday, June 04, 2006</h2>Declare a parent field inside your collection like this:<br><br>&lt;NonSerialized(), NotUndoable()&gt; Private mParent as Company<br><br>Now, you can have a method like: <br>SetParent(parent as Company)<br>You should call that method when you make an instance of the collection and when your root object is desserialized.<br><br>You can expose mParent through a readonly property.<br><br>Andrés</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>xal replied on Sunday, June 04, 2006</h2>You could also just have a string field (that would use the same technique for setting / reading) inside your collection that you can assign from the parent whenever the company name changes. This would of course be much simpler.<br><br><br>Andrés</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Pradeep replied on Monday, June 05, 2006</h2><DIV>Thanks for your suggestion. I tried the first one. But I didn't set the parent before adding the child to the collection. So it was throwing error. Now, I am just using one more property and comparing with it (as your second sugg.).</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>I posted this here, just to make sure that I didn't miss any obvious method and doing it in a round about way. Also in VB6.0 version of CSLA it had parent object.</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>Thanks again.</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>&nbsp;</DIV></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>guyroch replied on Wednesday, June 07, 2006</h2><P>Take a look at this thread in the old forum.</P>
+<P><A href="http://www.searchcsla.com/Details.aspx?msn_id=22214">http://www.searchcsla.com/Details.aspx?msn_id=22214</A></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Crestline replied on Tuesday, June 20, 2006</h2>In our scenario we need access to the parent's ID so that when the
+child's data is saved out, one of the values needed to store in the
+Child's table is the related ID of the parent.<br>
+<br>
+How should we go about getting the parent's ID?<br>
+<br>
+Outline:<br>
+Categories&nbsp;&nbsp; EditableRootList<br>
+Category&nbsp;&nbsp;&nbsp;&nbsp; EditableRoot<br>
+SubCategories&nbsp;&nbsp; EditableChildList<br>
+SubCategory&nbsp;&nbsp;&nbsp;  EditableChild<br>
+<br>
+UI<br>
+We have a form containing 2 datagrids.&nbsp; The Category grid and the
+related SubCategory grid.&nbsp; Both Categories and SubCategories are
+editable on this form.&nbsp; In the underlying data tables on the
+server, there is an CategoryID field in the SubCategory table so that
+we can see the given subcategories for any particular category.&nbsp;
+This is pretty straight forward stuff, nothing out of the ordinary.<br>
+<br>
+Question<br>
+When save is clicked on the form, the Categories.Save() method is
+called which of course saves both Categories and SubCategories.&nbsp;
+How do we set the CategoryID value of the SubCategories if we can't get
+to the parent object to find it?<br>
+<br>
+Maybe our model is wrong but we are definately looking for some suggestions.&nbsp; Any thoughts?<br>
+<br>
+Thanks,<br>
+BR<br>
+<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Tuesday, June 20, 2006</h2><P>In my collections I use:</P>
+<P>Protected Friend Overridable Sub Update(ByVal tr As IDbTransaction, ByVal&nbsp;parent As MyParent)</P>
+<P>....</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp; For Each child In List<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; child.Update(tr, parent)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Next</P>
+<P>&nbsp; ....</P>
+<P>&nbsp;</P>
+<P>Then in the child BO I use:</P>
+<P>The only method that requires the Parent is the Insert.</P>
+<P>Protected Friend Overridable Sub Update(ByVal tr As IDbTransaction, ByVal parent As MyParent)<BR>...</P>
+<P>&nbsp; (I call a method like InsertData rather than write all the code in one large Update section.)</P>
+<P>Protected Overridable Sub InsertData(ByVal tr As IDbTransaction, ByVal parent As MyParent)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; DAL.ExecuteNonQuery(tr, CommandType.Text, SQL.Insert(parent.key,... ))</P>
+<P>I use Codesmith templates to generate all this for me.</P>
+<P>HTH</P>
+<P>Joe</P>
+<P>&nbsp;</P>
+<P><BR>&nbsp;&nbsp;&nbsp; </P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Crestline replied on Wednesday, June 21, 2006</h2>Thanks Joe,<br>
+<br>
+We implelemented something before I read your reply.&nbsp; I'll take a look at your suggestion.<br>
+<br>
+BR<br>
+<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

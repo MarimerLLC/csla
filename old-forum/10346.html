@@ -1,0 +1,59 @@
+<html><header><title>Dataportal error not sent to Silverlight client</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Dataportal error not sent to Silverlight client</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10346.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>wilfreds posted on Thursday, May 05, 2011</h2><p>Hi have a Sliverlight mvvm project. And everything seems to be working. I can retrieve and update so the dataportal must be working.</p>
+<p>But when I insert this line in the fetch method, just for testing purposes, the program stops in the debugger with the message: &quot;Exception was unhandled by user code&quot;.</p>
+<pre style="font-family:Consolas;font-size:13px;color:black;background:none repeat scroll 0% 0% white;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">private</span>&nbsp;<span style="color:blue;">void</span>&nbsp;DataPortal_Fetch()
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">throw</span>&nbsp;<span style="color:blue;">new</span>&nbsp;<span style="color:#2b91af;">Exception</span>(<span style="color:#a31515;">&quot;My&nbsp;error&quot;</span>);
+<br /></pre>
+<p>The error does not get to the OnError. Any suggestions?</p>
+<p>&nbsp;</p>
+<p>This is the class:</p>
+<pre style="font-family:Consolas;font-size:13px;color:black;background:none repeat scroll 0% 0% white;">&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">class</span>&nbsp;<span style="color:#2b91af;">ButOrderHeadListViewModel</span>&nbsp;:&nbsp;<span style="color:#2b91af;">ViewModel</span>&lt;Library.<span style="color:#2b91af;">ButOrderHeadList</span>&gt;
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;ButOrderHeadListViewModel()
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#2b91af;">Shell</span>.Instance.ShowStatus(<span style="color:blue;">new</span>&nbsp;<span style="color:#2b91af;">Status</span>&nbsp;{&nbsp;Text&nbsp;=&nbsp;<span style="color:#a31515;">&quot;Loading&nbsp;list&quot;</span>,&nbsp;IsBusy&nbsp;=&nbsp;<span style="color:blue;">true</span>&nbsp;});
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;BeginRefresh(<span style="color:#a31515;">&quot;GetButOrderHeadList&quot;</span>);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="color:#2b91af;">ButOrderHeadInfo</span>&nbsp;_SelectedItem;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:#2b91af;">ButOrderHeadInfo</span>&nbsp;SelectedItem
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">get</span>&nbsp;{&nbsp;<span style="color:blue;">return</span>&nbsp;_SelectedItem;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">set</span>&nbsp;{&nbsp;_SelectedItem&nbsp;=&nbsp;<span style="color:blue;">value</span>;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">protected</span>&nbsp;<span style="color:blue;">override</span>&nbsp;<span style="color:blue;">void</span>&nbsp;OnError(<span style="color:#2b91af;">Exception</span>&nbsp;error)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#2b91af;">Shell</span>.Instance.ShowError(error.Message,&nbsp;<span style="color:#a31515;">&quot;Error&quot;</span>);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">base</span>.OnError(error);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">protected</span>&nbsp;<span style="color:blue;">override</span>&nbsp;<span style="color:blue;">void</span>&nbsp;OnRefreshed()
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#2b91af;">Shell</span>.Instance.ShowStatus(<span style="color:blue;">new</span>&nbsp;<span style="color:#2b91af;">Status</span>());
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">base</span>.OnRefreshed();
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">override</span>&nbsp;<span style="color:blue;">void</span>&nbsp;Save(<span style="color:blue;">object</span>&nbsp;sender,&nbsp;Csla.Xaml.<span style="color:#2b91af;">ExecuteEventArgs</span>&nbsp;e)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#2b91af;">Shell</span>.Instance.ShowStatus(<span style="color:blue;">new</span>&nbsp;<span style="color:#2b91af;">Status</span>&nbsp;{&nbsp;Text&nbsp;=&nbsp;<span style="color:#a31515;">&quot;Saving&quot;</span>,&nbsp;IsBusy&nbsp;=&nbsp;<span style="color:blue;">true</span>&nbsp;});
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">base</span>.Save(sender,&nbsp;e);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">protected</span>&nbsp;<span style="color:blue;">override</span>&nbsp;<span style="color:blue;">void</span>&nbsp;OnSaved()
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#2b91af;">Shell</span>.Instance.ShowStatus(<span style="color:blue;">new</span>&nbsp;<span style="color:#2b91af;">Status</span>&nbsp;{&nbsp;Text&nbsp;=&nbsp;<span style="color:#a31515;">&quot;Saved&quot;</span>&nbsp;});
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">base</span>.OnSaved();
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;}
+</pre></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Thursday, May 05, 2011</h2><p>You may need a try..catch around the BeginRefresh call. There are some WCF exceptions that can occur before the call is handed off to the async processing, and those can&#39;t be returned via OnError because they happen before any of that plumbing is wired up.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>wilfreds replied on Thursday, May 05, 2011</h2><p>Tried that. But didn&#39;t help.</p>
+<p>I tried to set a beakpoint on:</p>
+<pre style="font-family:Consolas;font-size:13px;color:black;background:none repeat scroll 0% 0% white;">BeginRefresh(<span style="color:#a31515;">&quot;GetButOrderHeadList&quot;</span>);
+</pre>
+<p>But the debugger did not stop there even if the line is executed. Must be something wrong with my project configuration/settings.</p>
+<pre style="font-family:Consolas;font-size:13px;color:black;background:none repeat scroll 0% 0% white;"><span style="color:#a31515;"></span></pre></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, May 05, 2011</h2><p>Then it sounds like the issue has nothing to do with the throwing of an exception on the server - it probably isn&#39;t even getting there.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>wilfreds replied on Friday, May 06, 2011</h2><p>On my WebServer project properties, at the web tab sheet. Checking debuggers-&gt;Silverlight took care of the problem not hitting my breakpoints. And now everything is working. OnError is executing.</p>
+<p>Strangely I am now unable to get back to the state where it was not working. So if you have this problem, fiddeling around in the web properties may solve it <img src="http://forums.lhotka.net/emoticons/emotion-5.gif" alt="Wink" /></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, May 06, 2011</h2><p>That is strange, but it happens to me all the time...</p>
+<p>A true unhandled exception like that almost always indicates a very basic problem with the network communications - such that the call never actually makes it to the server. But they are really hard to debug, and (like you) I find that random messing around with the server config/properties often solves the issue.</p>
+<p>Otherwise you have to fall back to fiddler, or enabling diagnostic trace logging in web.config, etc.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

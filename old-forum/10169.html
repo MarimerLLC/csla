@@ -1,0 +1,56 @@
+<html><header><title>using reflection in CSLA 2.0</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>using reflection in CSLA 2.0</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10169.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>prosarfraz posted on Wednesday, March 16, 2011</h2><p>hi everyone.</p>
+<p>i am using following&nbsp; code with CSLA 2.0</p>
+<p>[ Serializable ()]</p>
+<p>public class WebLeadFilter : BusinessBase&lt;WebLeadFilter&gt;</p>
+<p>{// Declare variables here to contain object state</p>
+<p>private WebLeadFilters _webLeadFilter = WebLeadFilters.MyWebLeads;</p>
+<p><strong>private static ResourceManager _manager = new ResourceManager(&quot;IDS.G2.BusinessObjects.CRM.Enums.WebLeadFilter&quot;, System.Reflection.Assembly.GetExecutingAssembly());</strong></p>
+<p>#region Business Properties and Methods</p>
+<p>// Implement properties and methods here so the UI or</p>
+<p>// other client code can interact with the object</p>
+<p>public int &nbsp;ID</p>
+<p>{ get {return (int)_webLeadFilter;}</p>
+<p>&nbsp;&nbsp; set{_webLeadFilter = (WebLeadFilters)value;}</p>
+<p>}</p>
+<p>public string Name</p>
+<p>{</p>
+<p>get{return _manager.GetString(&quot;WebLeadFilter-&quot; + (int)_webLeadFilter);}</p>
+<p>}</p>
+<p>internal void SetName(string newValue)</p>
+<p>{ for (int i = 0; i &lt; 7; i++)</p>
+<p>{ </p>
+<p>if (_manager.GetString(&quot;WebLeadFilter-&quot; + i) == newValue)</p>
+<p>{ID = i; break;}</p>
+<p>}</p>
+<p>}</p>
+<p>protected override object GetIdValue()</p>
+<p>{return ID;}</p>
+<p>#endregion</p>
+<p>#region Enum</p>
+<p>public enum WebLeadFilters</p>
+<p>{</p>
+<p>[Description(&quot;All Web Leads&quot;)] AllWebLeads = 0,</p>
+<p>[Description(&quot;My Web Leads&quot;)] MyWebLeads = 1</p>
+<p>}</p>
+<p>#endregion</p>
+<p>#region Static Methods</p>
+<p>public static WebLeadFilter NewWebLeadFilter()</p>
+<p>{return new WebLeadFilter();}</p>
+<p>#endregion</p>
+<p>#region Constructors</p>
+<p>private WebLeadFilter()</p>
+<p>{// Prevent direct creation}</p>
+<p>#endregion</p>
+<p>}</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>while in the form code behind i use following code to retrieve enumeration values</p>
+<p>WebLeadFilter lead = WebLeadFilter.NewWebLeadFilter();</p>
+<p>Array enumValues = System.Enum.GetValues(typeof(WebLeadFilter.WebLeadFilters)); ;</p>
+<p>foreach (object item in enumValues)</p>
+<p>{&nbsp;lead.ID = (int)item;</p>
+<p>&nbsp;cboView.Items.Add(lead));</p>
+<p>}</p>
+<p>but getting the&nbsp;the _manager object is NULL in the <strong>BOLD </strong>line of code, i dont know why. any clues?</p>
+<p>&nbsp;</p>
+<p><span style="font-size:x-small;"><span style="color:#008000;font-size:x-small;"><span style="color:#008000;font-size:x-small;"></span></span></span></p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

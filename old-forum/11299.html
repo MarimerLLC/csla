@@ -1,0 +1,38 @@
+<html><header><title>CSLA 4.x ReadOnlyListBase sorting after populating from two different sources in list object</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA 4.x ReadOnlyListBase sorting after populating from two different sources in list object</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11299.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>JCardina posted on Thursday, April 12, 2012</h2><p>I have a scenario where I need to populate a read only list object from two different data sources.&nbsp; That&#39;s not a problem, I&#39;m using encapsulated implementation and just issue two queries sequentially and populate the list first from the first query then secondly from the second query.</p>
+<p>The heart of the issue is that the results returned need to be integrated alphabetically by name.&nbsp; Right now all of query 1&#39;s items come first in the list and query 2&#39;s items come second.</p>
+<p>I can think of all sorts of Rube Goldbergian ways of doing it but I&#39;m wondering if there isn&#39;t a simpler way using LINQ or some other aspect of ROLB I&#39;m unaware of to order the resulting list in place at the business object level before returning it to the UI level.</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Thursday, April 12, 2012</h2><p>I often view this kind of sorting as a UI technology requirement - not necessarily the Business Object.</p>
+<p>IE: For WindowsForms use SortedBindingList wrapper class.</p>
+<p>For other UI technologies use LINQ and ToSyncList() extension method to get a sorted list that maps to the underlying list. </p>
+<p>Example: </p>
+<pre>      var source = TestList.GetList(criteria);
+      var synced = source.ToSyncList(from r in source
+                                     orderby r.Name
+                                     select r);<br /><br />and then use synced as the source list in the UI. </pre>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JCardina replied on Thursday, April 12, 2012</h2><p>Interesting and I&#39;ll certainly find that useful for any UI work I do but this object is part of a business object API used by 3rd party people who would expect the list to be in alpha order.&nbsp; </p>
+<p>Perhaps the ToSyncList method might be the answer if there is no way to re-order the existing ReadOnlyBase list.&nbsp; However I&#39;m not sure where ToSyncList comes from.&nbsp; For example if I try your sample code in a unit test ToSyncList is unrecognized so it&#39;s not a method of ReadOnlyBase, where do I find that?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Thursday, April 12, 2012</h2><p>ToSyncList() is an extension method in LinqObservableCollection.cs (Csla 4.x). </p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, April 12, 2012</h2><p>To use extension methods you must have a using or Imports statement to bring the namespace into scope, then the extension methods should be available on any instance of a type that has been extended.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JCardina replied on Friday, April 13, 2012</h2><p><div style='padding-left: 50px;background-color:silver'><b>RockfordLhotka<br></b></p>
+<p>To use extension methods you must have a using or Imports statement to bring the namespace into scope, then the extension methods should be available on any instance of a type that has been extended.</p>
+<div style="clear:both;"></div>
+<p></div></p>
+<p>Thanks Rocky, just for future reference the extension methods are in the CSLA namespace so a using reference to CSLA needs to be included. &nbsp;I didn&#39;t pick it up automatically because I&#39;m doing this in a unit test which doesn&#39;t normally reference CSLA namespace.</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>tiago replied on Thursday, April 12, 2012</h2><pre style="font-family:Consolas;background:white;color:black;font-size:13px;"><span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;summary&gt;</span>
+<span style="color:gray;">///</span><span style="color:green;">&nbsp;Sorts&nbsp;a&nbsp;FolderList&nbsp;ready&nbsp;for&nbsp;TreeView.</span>
+<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;/summary&gt;</span>
+<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;returns&gt;&lt;/returns&gt;</span>
+<span style="color:blue;">public</span>&nbsp;<span style="color:darkblue;">IOrderedEnumerable</span>&lt;<span style="color:darkblue;">FolderInfo</span>&gt;&nbsp;<span style="color:darkcyan;">Sorted</span>()
+{
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">return</span>&nbsp;<span style="color:blue;">this</span>.<span style="color:darkcyan;">OrderBy</span>(n&nbsp;=&gt;&nbsp;n.<span style="color:purple;">FolderName</span>).<span style="color:darkcyan;">OrderBy</span>(p&nbsp;=&gt;&nbsp;p.<span style="color:purple;">ParentFolderID</span>).<span style="color:darkcyan;">OrderBy</span>(l&nbsp;=&gt;&nbsp;l.<span style="color:purple;">FolderLevel</span>);
+}</pre></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JCardina replied on Friday, April 13, 2012</h2><p>Tiago, I tried that but could not get it to work, the other method worked though. &nbsp;Thank you though for posting.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JCardina replied on Friday, April 13, 2012</h2><p>Ok, this works very well and just to be explicit for future readers here is how I implemented this in my quick test:</p>
+<p>In my&nbsp;ReadOnlyListBase list object I&#39;ve added a property:</p>
+<p>
+<p><i>&nbsp;public LinqObservableCollection&lt;PartListInfo&gt; IntegratedSortedList</i></p>
+<p><i>&nbsp; &nbsp; &nbsp; &nbsp; {&nbsp;get&nbsp;{&nbsp; return this.ToSyncList(from r in this orderby r.DisplayName select r);&nbsp; }&nbsp;}</i></p>
+<p>And confirmed it works (visually) &nbsp;at the unit test level:</p>
+<p>
+<p><i>var v= c.IntegratedSortedList;</i></p>
+<p><i></i><i>&nbsp;StringBuilder sb = new StringBuilder();</i></p>
+<p><i>foreach(PartListInfo i in v.QueryResult) &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;</i></p>
+<p><i>&nbsp; sb.AppendLine(i.DisplayName);</i></p>
+<p>I realize the UI would normally be responsible for how the list is sorted in many cases but this is being called by third parties at the business object level who expect it to be sorted in advance so in this circumstance this is a useful technique. &nbsp;Thanks everyone!</p>
+</p>
+</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

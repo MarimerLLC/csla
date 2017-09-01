@@ -1,0 +1,89 @@
+<html><header><title>RE: Strange Error in Authorization Rules</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>RE: Strange Error in Authorization Rules</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6623.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb posted on Tuesday, March 17, 2009</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I
+believe this is a bug in Cassini<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> rob.polak
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Tuesday, March 17, 2009 1:56 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> [CSLA .NET] Strange Error in Authorization Rules<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal><b><span>Error</span></b><span>: &quot;Unable to find an entry point
+named 'nonexistent_dummy' in DLL 'MSVCR80.dll'.&quot;<br>
+<b>Class</b>: AuthorizationRules<br>
+<b>Detailed Error Image</b> : http://img18.imageshack.us/img18/4884/errc.jpg<br>
+<b>CSLA Version</b>: 3.6.1<br>
+<br>
+&nbsp;&nbsp;&nbsp; public static bool CanGetObject(Type objectType)<br>
+&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; bool result = true;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b><i> <span>var principal =
+ApplicationContext.User; &lt;- Errors out here</span></i></b><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var allow =
+Csla.Security.AuthorizationRules.GetAllowGetRoles(objectType);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (allow != null)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if
+(!Csla.Security.AuthorizationRulesManager.PrincipalRoleInList(principal,
+allow))<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; result = false;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+<br>
+The error occurs on the bolded line.&nbsp; The strange part is that I am not
+using any of the authorization rules.&nbsp;&nbsp; <br>
+<br>
+Any clue what would cause this error?<br>
+<br>
+Thanks!<br>
+</span><br>
+<br>
+--<br>
+View this message online at: <a href="http://forums.lhotka.net/forums/thread/31871.aspx">http://forums.lhotka.net/forums/thread/31871.aspx</a><br>
+--<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>chr15t1an replied on Friday, March 27, 2009</h2>I too am getting the same error message.  I am not using Cassini, but instead direct connection.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>adamtuliper replied on Wednesday, July 29, 2009</h2>I realize this is an old thread.. but to add my $.02, this occurred once I set a symbol server in visual studio and pulled down some symbols, only then did this start happening.<br><br>If you make sure "Just My Code" is set for debugging under Debugging/General/Enable Just My Code (Managed Only) the problem should resolve itself (at least for me it did)<br><br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

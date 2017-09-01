@@ -1,0 +1,29 @@
+<html><header><title>How to get at the object instance used by a CslaDataSource</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>How to get at the object instance used by a CslaDataSource</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/714.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>SteveChadbourne posted on Monday, July 24, 2006</h2><P>Hi All</P>
+<P>I have a project that is very&nbsp;similar to the Project Tracker in the book. </P>
+<P>On a web page I have&nbsp;GridView bound to a CslaDataSource. My problem is that when I add a new item to the grid or edit an existing one, I do it on a separate web page and when I return to the web page with the grid it defaults to the first page which may not be the one containing my new/edited item.</P>
+<P>I have added a GetPageNumber method to my business class so I can find out which page to display in the grid. What I can't find out is how go get at the object instance. I have cached the object in the session like the project tracker example and the CslaDataSource grabs this in its SelectObject method. How do I get at the object instance that the CslaDataSource is using so I can call its GetPageNumber method?</P>
+<P>I am trying to do this in a base page class so I can use it in all my web pages so I can't just grab the cached business object. I pass the base page class method the grid, it gets the bound CslaDataSource but then I'm stuck. How do I go from the CslaDataSource to the CslaBusinessObject instance?</P>
+<P>Cheers</P>
+<P>Steve</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, July 25, 2006</h2><P>If you are using the Session caching scheme from PTWeb you'd run into issues. That scheme only allows one object in Session at a time. When you are on the grid page that object would be your collection, but when you switch to the detail page the object would be replaced with the specific business object you are adding. When you return to the grid page Session would contain the newly added object, not the collection, and that would cause a reload of the collection.</P>
+<P>Since you are using Session anway, why not use another Session variable to keep the last displayed grid page, so when you return to the grid form you can just use that value?</P>
+<P>Things like tracking which page is displayed, or even which page contains a given item in a collection, are not the job of your business layer. Such behaviors would have no meaning at all in a web service or Windows Forms UI and so don't belong in your objects. They are purely UI artifacts, and so should be managed by the UI itself.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>SteveChadbourne replied on Tuesday, July 25, 2006</h2><P>Good advice about moving the page display calc out of the BL. I'll do that.</P>
+<P>I guess what I'm asking is the best way of determining what page a given item is on. The minimum I need to do is find out the position of the item in the collection and unless I can get that info from somewhere else I need to get it from the business object. The grid only contains the items being displayed. I can't see anything in the csladatasource that can help. I could have added a new item and returned to the grid page and need to find out which page the new item is on. I would have thought this was a common scenario for paging grid web pages and I'm still hoping to stumble on a magic property/method!</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, July 25, 2006</h2>
+
+
+
+
+<DIV align=left><SPAN class=325494120-25072006><FONT face=Arial color=#0000ff size=2>You can ask the collection for the IndexOf() any given 
+item. Divide that by your page size and you'd have the page 
+right?</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=325494120-25072006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=325494120-25072006><FONT face=Arial color=#0000ff size=2>All this requires is that you come up with a mechanism by 
+which you either keep the new item in Session, or pass its Id value back to the 
+grid page.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=325494120-25072006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=325494120-25072006><FONT face=Arial color=#0000ff size=2>If you go for the latter (passing Id back) then you'll need 
+to add an overload for IndexOf() to your particular collection so it can return 
+the index based on the Id.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=325494120-25072006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=325494120-25072006><FONT face=Arial color=#0000ff size=2>Rocky</FONT></SPAN></DIV></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>SteveChadbourne replied on Tuesday, July 25, 2006</h2><P>Thanks - just what I needed.</P>
+<P>Steve</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

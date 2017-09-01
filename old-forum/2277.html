@@ -1,0 +1,12 @@
+<html><header><title>SQL Server Reporting Services and Resource Files.</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>SQL Server Reporting Services and Resource Files.</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/2277.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Inquistive_Mind posted on Monday, February 05, 2007</h2><P>Hello, </P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Eventhough this is not a question related to CSLA BO's I was tempted to post it here hoping that someone might have come across or have done somthing like this.</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;I am using resource files (.resx) to design&nbsp;the UI Label Text&nbsp;and controls and I want to use these resource files for the Reports as well.For reporting we are planning to use SQL Server Reporting Services.The report option is built into the apllication itself (web app), so the webform has a link to run a particular report.Upon invoking the report the report lables(column names etc)&nbsp;should follow from the WebForm whihc has been defined by the resource file.Any info regarding this would be helpful. </P>
+<P>&nbsp;</P>
+<P>Thanks in Advance,</P>
+<P>V</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>SonOfPirate replied on Tuesday, February 06, 2007</h2><P>You have three options:</P>
+<P>1. Duplicate the resource file contents in the database.</P>
+<P>2. Replace the resource file with a database lookup table that can be used by your BO and reports.</P>
+<P>3. Base your reports on your BO.&nbsp; This is a new feature in SQL Server 2005 Reporting Services.</P>
+<P>&nbsp;</P>
+<P>HTH</P>
+<P>&nbsp;</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

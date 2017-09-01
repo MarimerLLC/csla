@@ -1,0 +1,11 @@
+<html><header><title>FormView Question</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>FormView Question</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6650.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>SouthSpawn posted on Monday, March 23, 2009</h2><DIV>Ok, I am databinding to a FormView control no problem.</DIV>
+<DIV>No matter which mode I am in, "Edit" or "Insert" mode.</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>When a broken business rule is triggered, on the post back I am losing all data.</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>Why is this happening?<BR><BR>Also, is there a way I could do a Ajax to update the objects data so I can avoid the postback issue?<BR><BR>If so, how do I get access to the "e.values("MyField")" in Ajax?<BR><BR>What are my options here?<BR><BR>Thanks,<BR>Mark</DIV></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>SouthSpawn replied on Monday, March 23, 2009</h2>Anyone?</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>SouthSpawn replied on Monday, March 23, 2009</h2>Never mind, I figured it out.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rfcdejong replied on Monday, March 23, 2009</h2>Nice that u figured it out. <br /><br />Did u forget to use sessions or cookies?<br />I remember ajax's updatepanel to only update a small part of the website, works nice.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>SouthSpawn replied on Monday, March 23, 2009</h2><DIV>There is an "ModeChanging" event on the FormView control.</DIV>
+<DIV>If the BO has an invalid business rule.</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>Just do a e.cancel = true in the event.</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>That should do the trick.</DIV></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

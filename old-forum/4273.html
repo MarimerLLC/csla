@@ -1,0 +1,71 @@
+<html><header><title>Using partial classes with code generator...best practice?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Using partial classes with code generator...best practice?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4273.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>GlennA posted on Friday, February 01, 2008</h2><P>Hi all,</P>
+<P>Been doing some prototyping with CSLA for the last couple of weeks with pretty good success.&nbsp; Now branching a bit more into code generation where applicable to eliminate some of the coding time.&nbsp; I've been using CodeSmith and the associated CSLA templates.</P>
+<P>I'm looking for the best way to seperate the portion of the class that is generated from the part that is likely to be customized, the thought being that in many cases one can regenerate the class without&nbsp;losing customizations.&nbsp; I know that in some cases the domain object might have to be more hand-crafted if it doesn't jive well with a table, but I'm talking about cases where the domain object is reasonably close to the table structure (which is where a code generator would be useful anyhow).</P>
+<P>I'm guessing the parts that are most likely to be customized and therefore split into their own class would be:</P>
+<P>* Addition of properties, like an aggregate not stored directly in the database or some string catting (FirstName + LastName = FullName).</P>
+<P>* Additional validation / business rules, both 'Common' and 'Custom'.</P>
+<P>* Authorization Rules.</P>
+<P>Before actually trying it, I was considering modifying the codegen methods to create a call to 'extension' methods in a partial class that would provide for additions to what is generated.&nbsp; Not sure if this would die because of the way reflection is used, but seems like it might work.&nbsp; The custom class would have to implement an interface to make sure these methods actually exist.&nbsp; </P>
+<P>It seems like others have expressed similar desires, but I was unable to find the answer I was looking for from searching the forum.&nbsp; The codegen looks to be a big timesaver, but would like to be able to run it more than once without worry of losing customizations.</P>
+<P>Any methods of doing this that someone would like to share would be greatly appreciated.&nbsp; Or if this has been discussed before (I'm new here), kindly point me to the thread.</P>
+<P>Regards,</P>
+<P>Glenn</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tmg4340 replied on Friday, February 01, 2008</h2><P><FONT face=Tahoma size=2>There are generally two methods of handling this issue: partial classes and inheritance.</FONT></P>
+<P><FONT face=Tahoma size=2>I haven't looked at CodeSmith in a while, but most of the current code generators seem to favor partial classes in their design.&nbsp; Usually, the reason supplied is that it keeps the object hierarchy smaller, especially when you consider that the inheritance solution strongly suggests that you create subclasses of every code-genned class for consistency.&nbsp; If you plan on adding custom code to most of the genned classes, that's fine.&nbsp; But if a lot of them are usable "as-is", then you've potentially created a&nbsp;lot of subclasses for nothing.</FONT></P>
+<P><FONT face=Tahoma size=2>The advantage to using the inheritance option is that&nbsp;CSLA&nbsp;was built for inheritance, so you can always override methods in your code-genned classes for additional validation/authorization/etc.&nbsp; Partial classes can override base-class members, but you can't override the same method in both files, and I don't think you can override methods from one partial class file in another either.</FONT></P>
+<P><FONT face=Tahoma size=2>(You might be able to&nbsp;do this&nbsp;using VS2008 and partial methods, but I haven't delved into that yet, so I can't say for sure.)</FONT></P>
+<P><FONT face=Tahoma size=2>Of course, there's a strong recommendation that you should create subclasses of the CSLA base classes that you use on your own anyway - something like this:</FONT></P>
+<P><FONT face=Tahoma size=2>BusinessBase -&gt; YourBusinessBase -&gt; YourBusinessObject</FONT></P>
+<P><FONT face=Tahoma size=2>This is suggested so that you have a place to put&nbsp;business-specific shared code, but it also helps with this issue as well, because you can mix both ideas.&nbsp; You build in your extension method hooks into YourBusinessBase, code-gen YourBusinessObject (to inherit from YourBusinessBase) to handle the basics, and use&nbsp;a partial class to override the extension methods.</FONT></P>
+<P><FONT face=Tahoma size=2>I realize this flies somewhat in the face of the argument against inheritance I made above.&nbsp; I'm not saying inheritance is bad - but you have to know how best to use it.&nbsp; IMO,&nbsp;you are much more likely to&nbsp;modify the CSLA-based subclasses to include standard functionality for your business than add custom code to every business object.&nbsp; Those subclasses also provide you with a level of insulation against framework changes - doing it the other way means your code-genned objects all inherit directly from a CSLA object, so a change there ripples through the entire object space.</FONT></P>
+<P><FONT face=Tahoma size=2>HTH</FONT></P>
+<P><FONT face=Tahoma size=2>- Scott</FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Monday, February 04, 2008</h2><P>Scott presents a lot of excellent points. I recommend most of them. I happen to fall into the inheritance camp though. I have been using CSLA for 4 years and partial classes were not an option when I first started. As Scott mentioned, partial classes have their own issues to overcome so I never bothered to try and switch to that paradigm.</P>
+<P>I have a Base class which inherits from CSLA and then all my BOs inherit from that. This is a highly recommended practice.</P>
+<P>Then I codegen the BO which inherits from my Base class. Then I make an empty final type which inherits from the code gen class. What I have learned is that the final type does NOT stay empty very long. In fact I don't think I have a single class which is still empty. You quickly learn that you need other fields from other tables or you have to override methods to fetch the correct data.</P>
+<P>I have previously posted that I turned DataPortal_Fetch into a main method which then calls many overridable sub methods. </P>
+<P>e.g. <BR><FONT size=2>FetchData(criteria, cn)<BR>PostFetchData(criteria, cn)<BR>FetchChildren(criteria, cn)</P></FONT>
+<P>This way when you need to fetch an extra field you can override FetchData and call MyBase.Fetch to do your "standard" work and then grab your one extra field.</P>
+<P>The same applies to Validation Rules. Override it and call MyBase to get the "standard" rules. Tip: when code generating rules be sure that they always apply to the type and its subclasses because you cannot override them. So I have lots of common rules which are always part of a String type (Max Length, ValidCharacters, etc.) But I hand write a lot of rules in the next level.</P>
+<P>Joe</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>GlennA replied on Monday, February 04, 2008</h2><P>Thanks Joe and Scott...valuable feedback.</P>
+<P>I guess time will tell whether using partial classes or inheritance is the way to go.&nbsp; If I find myself most often wanting to add behavior to the autogen methods, I'll use inheritance, and if I'm looking to add methods to the class, partial may be the way to go.</P>
+<P>Think we'll end up using inheritance based on what we've seen in our initial prototyping.&nbsp; So you'd modify the code generator to create an abstract BO class with virtual methods, and then add to the instantiable subclass as needed?</P>
+<P>Joe, what do you find yourself putting into the base class that inherits from CSLA and is the BO parent?&nbsp; Hadn't thought of doing that, wondering what would be put in there.</P>
+<P>Thanks again fellas!</P>
+<P>Glenn</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>david.wendelken replied on Monday, February 04, 2008</h2><P>I really think the question: "Should I use partial classes or inheritance?" is the wrong question, and therefore will always result in a wrong answer!</P>
+<P>The correct questions are more like: "When should I use partial classes and when should I use inheritance?&nbsp; What are the guidelines for deciding?"</P>
+<P>To me, inheritance is great when I most sub-classes will do the same thing - and when overriding that behavior is easy.</P>
+<P>I use partial classes when I generate my business objects.&nbsp; I use C#, so if my business object's "root name" was employee, I generate the following class files:</P>
+<UL>
+<LI>Employee.generated.cs</LI>
+<LI>EmployeeInfo.generated.cs</LI>
+<LI>EmployeeList.generated.cs</LI>
+<LI>EmployeeInfoList.generated.cs</LI>
+<LI>EmployeeNVList.generated.cs</LI>
+<LI>EmployeeCriteria.generated.cs</LI></UL>
+<P>If I need to do customization, I create a new file.&nbsp; For example, let's say I wanted to add a new, computed property, "EmployeeAge", which compares the BirthDate property with the system date/time.&nbsp; So, I would create EmployeeInfo.cs and Employee.cs and add the EmployeeAge property to both of them.</P>
+<P>If I re-run my generators, I will never lose the custom code I just added, because they mess with the .generated.cs files.</P>
+<P>Let's say that I want to add a read-only property, DepartmentName, to EmployeeInfo.&nbsp; However, in this case, I want to load the DepartmentName property from the Department table that goes with the employee's DepartmentId value when the EmployeeInfo object is initialized.</P>
+<P>I'll need an EmployeeInfo.cs and an EmployeeInfoList.cs file for this.</P>
+<P>EmployeeInfo.cs gets the read-only DepartmentName property along with its corresponding private variable.&nbsp; I then cut the internal constructor that accepts the SafeDataReader argument out of EmployeeInfo.generated.cs and paste it into EmployeeInfo.cs.</P>
+<P>I use the same process for the EmployeeInfoList DataPortal_Fetch method because it needs to be modified to include the department name in the query.</P>
+<P>If I re-run my generators, the compiler will complain because there will be duplicate constructor and DataPortalFetch methods.&nbsp;&nbsp;I will never lose code by having it overwritten by the generator.&nbsp; I will have to remove the duplicate methods from the .generated.cs files.&nbsp; If I don't know exactly what changes were made, I may want to reconcile both method versions to make sure I include other new properties that might be due to new columns in the business object's underlying main&nbsp;data table or remove obsolete ones.</P>
+<P>This has been a safe and simple method for me so far.&nbsp; I'm sure there's a better way, and if someone explains it, I might even use it. :)</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Monday, February 04, 2008</h2>I agree; partial classes were created to facilite code-gen,&nbsp; inhertience has nothing to do with code generation though and is a design decision.&nbsp; You inherit to get behavior, not to use code gen..<br><br>Use partial classes if you're code genning; usually you're generating the properties and maybe fields and constructors.&nbsp; The rest (the business rules, overidding AddBusinessRules, etc) should probably be in the file that's not generated.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Monday, February 04, 2008</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>GlennA:</strong></div><div> 
+<P>#1. So you'd modify the code generator to create an abstract BO class with virtual methods, and then add to the instantiable subclass as needed?</P>
+<P>#2. Joe, what do you find yourself putting into the base class that inherits from CSLA and is the BO parent?&nbsp; Hadn't thought of doing that, wondering what would be put in there.</P>
+<P></div></BLOCKQUOTE></P>
+<P>#1. Yes. Exactly.</P>
+<P>#2. I have tons of great stuff in my Base class which inherits from CSLA. Rocky just built some things in 3.5 which may cause me to remove some of them though. </P>
+<P>a. I have Transaction code to Begin, End and Rollback transactions. The root BO which starts the tr puts it in the LocalContext and then other BOs will use the existing tr in LocalContext rather than create their own. This allows the BOs to be coded the same way and the only one that commits the tr is the one that started it. The others call commit but nothing happens unless they started it. There is also clean up code to flush the tr from LocalContext.</P>
+<P>b. I override Save (3 times - giving me lots of flexibility in what gets checked or not)</P>
+<P>c. I override IsDirty and IsValid. I use code to see which BOs and collections&nbsp;are contained by the root BO and then base class takes care of checking them when IsValid is called on the root. I no longer have to do it for each BO I create.</P>
+<P>d. I have a GetAllBrokenRulesString function which returns the list of rules.</P>
+<P>e. I implement my own Interface which inherits from IEditableBusinessObject. This allows me to treat each BO polymorphically by casting to the interface. It allows me to use some slick code in lots of tight spots. I added 9 methods and properties to it. </P>
+<P>My BusinessListBase has its own set of neat code which I pulled out of each collection and moved here. I was code generating a lot of this stuff but it is not needed if it is in tthe Base class. </P>
+<P>e.g. I have Add and Remove methods which optionally Test for Existence first. I have an Interface so I have access to common properties of my collections (Count, IsDirty, etc.)</P>
+<P>Joe</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

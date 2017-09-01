@@ -1,0 +1,58 @@
+<html><header><title>DataGridView Sorting</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>DataGridView Sorting</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/2927.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonM posted on Tuesday, May 22, 2007</h2><P>Most of my CSLA experience was with CSLA 1.52 in .NET 2.0.&nbsp; I was able to sort data from my business collections in the datagridview without any problem.&nbsp; How do I do that with CSLA 2.0?&nbsp; Basically the grids don't allow me to click on the column header, it makes me think there is something else I need to do.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Tuesday, May 22, 2007</h2>Are you wrappnig the list in a SortedBindingList?</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>david.wendelken replied on Wednesday, May 23, 2007</h2>I've been really happy using the ObjectListView class that's part of the CslaContrib project.&nbsp; </div><div style='padding:0 15 3 15;background-color:powderblue'><h2>dcleven replied on Wednesday, May 23, 2007</h2><P>2 steps are required.</P>
+<P>1. Enable sorting on the grid.&nbsp;right click / Edit Columns on the grid, pick the column and change SortMode to "Automatic".</P>
+<P>2. Provide a sorted binding source. Like this:</P>
+<P>MyBusinessObjectList list&nbsp;= MyBusinessObjectList.GetList();</P>
+<P dir=ltr>Csla.SortedBindingList&lt;BusinessObjectInList&gt; sortedList = new&nbsp;Csla.SortedBindingList&lt;BusinessObjectInList&gt;(list);</P>
+<P>sortedList.ApplySort("PropertyToSortOn", &nbsp;listSortDirection.Ascending);</P>
+<P>myBindingSource.DataSource = sortedList;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonM replied on Thursday, May 24, 2007</h2>Ah hah!&nbsp; I needed to set the column's sortmode to automatic.&nbsp; Now it works just like I want.&nbsp; Thanks!</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>av_harris replied on Saturday, June 09, 2007</h2><P>Hi,</P>
+<P>I also have problems sorting. I looked for the SortMode property but it isn'y available in the GUI nor in code. Is this a property for WinForm only? I have my grid on a web form and the sort isn't getting applied correctly. </P><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Dim</FONT><FONT size=2> list </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> ContactList = ContactList.GetContactList<BR></FONT><FONT color=#0000ff size=2>Dim</FONT><FONT size=2> sorted </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>New</FONT><FONT size=2> SortedBindingList(</FONT><FONT color=#0000ff size=2>Of</FONT><FONT size=2> ContactInfo)(list)</P>
+<P>sorted.ApplySort(</FONT><FONT color=#a31515 size=2>"fname"</FONT><FONT size=2>, ListSortDirection.Ascending)<BR></FONT><FONT color=#008000 size=2>' return sorted result</P></FONT><FONT size=2>
+<P>e.BusinessObject = sorted</P>
+<P>Am I missing something here?</P>
+<P>6/13/06 - revelation</P>
+<P>FYI, column names are case sensitive AS DEFINED in the BO, not in the table. Should have known this but learned the hard way.</P>
+<P>Once implemented, I also learned that since I really need to sort on 2 columns, this isn't going to be the best method!</P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Brian Criswell replied on Sunday, June 10, 2007</h2>It will not solve any UI issues, but the ObjectListView allows you to sort on two properties.<br>Dim sorted as new ObjectListView(list, "FName, LName")<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>mangesh replied on Thursday, January 10, 2008</h2><P>hi,</P>
+<P>I am trying to bind a namevalue pair from a namevaluelist base to gridview and binding event is calling rowdatabound event but unable to find the name value class there please help.</P>
+<P>&nbsp;</P>
+<P><SPAN> </P>
+<H1>Server Error in '/' Application. 
+<HR>
+</H1>
+<H2><I>Unable to cast object of type 'NameValuePair[System.Guid,System.String]' to type 'Csla.NameValueListBase`2[System.Guid,System.String]'.</I> </H2>
+<P></SPAN><FONT face="Arial, Helvetica, Geneva, SunSans-Regular, sans-serif "><B>Description: </B>An unhandled exception occurred during the execution of the current web request. Please review the stack trace for more information about the error and where it originated in the code. <BR><BR><B>Exception Details: </B>System.InvalidCastException: Unable to cast object of type 'NameValuePair[System.Guid,System.String]' to type 'Csla.NameValueListBase`2[System.Guid,System.String]'.<BR><BR><B>Source Error:</B> <BR><BR>
+<TABLE bgColor=#ffffcc>
+
+<TR>
+<TD><CODE><PRE>Line 75:             if (e.Row.RowType == DataControlRowType.DataRow)
+Line 76:             {
+<FONT color=red>Line 77:                 NameValueListBase&lt;Guid, string&gt; drview = (NameValueListBase&lt;Guid,  string&gt;)e.Row.DataItem;
+</FONT>Line 78:                 //NameValueConfigurationCollection drview = (NameValueConfigurationCollection)e.Row.DataItem;
+Line 79:                 CheckBox chkSelected = new CheckBox();</PRE></CODE></TD></TR></TABLE><BR><B><FONT face=Verdana>Source File: </FONT></B>D:\UTCWebApp\UTCWebApp\Default.aspx.cs<B><FONT face=Verdana> &nbsp;&nbsp; Line: </FONT></B>77 <BR><BR><B><FONT face=Verdana>Stack Trace:</FONT></B> <BR><BR>
+<TABLE bgColor=#ffffcc>
+
+<TR>
+<TD><CODE><PRE>[InvalidCastException: Unable to cast object of type 'NameValuePair[System.Guid,System.String]' to type 'Csla.NameValueListBase`2[System.Guid,System.String]'.]
+   UTCWebApp._Default.gvPrivilegeList_RowDataBound(Object sender, GridViewRowEventArgs e) in D:\UTCWebApp\UTCWebApp\Default.aspx.cs:77
+   System.Web.UI.WebControls.GridView.OnRowDataBound(GridViewRowEventArgs e) +96
+   System.Web.UI.WebControls.GridView.CreateRow(Int32 rowIndex, Int32 dataSourceIndex, DataControlRowType rowType, DataControlRowState rowState, Boolean dataBind, Object dataItem, DataControlField[] fields, TableRowCollection rows, PagedDataSource pagedDataSource) +211
+   System.Web.UI.WebControls.GridView.CreateChildControls(IEnumerable dataSource, Boolean dataBinding) +4310
+   System.Web.UI.WebControls.CompositeDataBoundControl.PerformDataBinding(IEnumerable data) +89
+   System.Web.UI.WebControls.GridView.PerformDataBinding(IEnumerable data) +38
+   System.Web.UI.WebControls.DataBoundControl.OnDataSourceViewSelectCallback(IEnumerable data) +126
+   System.Web.UI.DataSourceView.Select(DataSourceSelectArguments arguments, DataSourceViewSelectCallback callback) +98
+   System.Web.UI.WebControls.DataBoundControl.PerformSelect() +153
+   System.Web.UI.WebControls.BaseDataBoundControl.DataBind() +99
+   System.Web.UI.WebControls.GridView.DataBind() +23
+   UTCWebApp._Default.FillRoleList() in D:\UTCWebApp\UTCWebApp\Default.aspx.cs:56
+   UTCWebApp._Default.Page_Load(Object sender, EventArgs e) in D:\UTCWebApp\UTCWebApp\Default.aspx.cs:24
+   System.Web.Util.CalliHelper.EventArgFunctionCaller(IntPtr fp, Object o, Object t, EventArgs e) +31
+   System.Web.Util.CalliEventHandlerDelegateProxy.Callback(Object sender, EventArgs e) +68
+   System.Web.UI.Control.OnLoad(EventArgs e) +88
+   System.Web.UI.Control.LoadRecursive() +74
+   System.Web.UI.Page.ProcessRequestMain(Boolean includeStagesBeforeAsyncPoint, Boolean includeStagesAfterAsyncPoint) +3036
+</PRE></CODE></TD></TR></TABLE><BR></P>
+<HR>
+
+<P><B><FONT face=Verdana>Version Information:</FONT></B>&nbsp;Microsoft .NET Framework Version:2.0.50727.832; ASP.NET Version:2.0.50727.832 </FONT></P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Thursday, January 10, 2008</h2>Well, your problem is right here:<br><br><font face="Arial, Helvetica, Geneva, SunSans-Regular, sans-serif "><pre><font color="red">NameValueListBase&lt;Guid, string&gt; drview = (NameValueListBase&lt;Guid,  string&gt;)e.Row.DataItem;</font><br><br>The row's DataItem will be of NameValuePair[System.Guid,System.String], not NameValueListBase.<br><br>HTH<br>Andy<br></pre></font><br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

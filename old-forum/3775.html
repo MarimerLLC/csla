@@ -1,0 +1,173 @@
+<html><header><title>Authorization and scopes</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Authorization and scopes</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3775.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>MtyNLMex posted on Wednesday, October 24, 2007</h2><P><SPAN>For our project we are required to handle authorizations based on a Role/Data Scope basis. This means a user can be assigned to more than 1 role and reach a different Data Scope for each User/Role combination.<o:p></o:p></SPAN></P>
+<P><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P><SPAN>For example:</SPAN><SPAN><o:p></o:p></SPAN></P>
+<P><SPAN>Suppose we have 3 different classes: Orders, Customers and Products</SPAN><SPAN><o:p></o:p></SPAN></P>
+<P><SPAN>Role 1 has these permissions<o:p></o:p></SPAN></P>
+<TABLE class=MsoNormalTable cellSpacing=0 cellPadding=0>
+
+<TR>
+<TD>
+<P class=MsoNormal><SPAN>Class<o:p></o:p></SPAN></P></TD>
+<TD>
+<P class=MsoNormal align=center><SPAN>View<o:p></o:p></SPAN></P></TD>
+<TD>
+<P class=MsoNormal align=center><SPAN>Add<o:p></o:p></SPAN></P></TD>
+<TD>
+<P class=MsoNormal align=center><SPAN>Update<o:p></o:p></SPAN></P></TD>
+<TD>
+<P class=MsoNormal align=center><SPAN>Delete<o:p></o:p></SPAN></P></TD></TR>
+<TR>
+<TD>
+<P class=MsoNormal><SPAN>Products<o:p></o:p></SPAN></P></TD>
+<TD>
+<P class=MsoNormal align=center><SPAN>Allow</SPAN><SPAN><o:p></o:p></SPAN></P></TD>
+<TD>
+<P class=MsoNormal align=center><SPAN>None</SPAN><SPAN><o:p></o:p></SPAN></P></TD>
+<TD>
+<P class=MsoNormal align=center><SPAN>None</SPAN><SPAN><o:p></o:p></SPAN></P></TD>
+<TD>
+<P class=MsoNormal align=center><SPAN>None</SPAN><SPAN><o:p></o:p></SPAN></P></TD></TR>
+<TR>
+<TD>
+<P class=MsoNormal><SPAN>Customers<o:p></o:p></SPAN></P></TD>
+<TD>
+<P class=MsoNormal align=center><SPAN>Allow</SPAN><SPAN><o:p></o:p></SPAN></P></TD>
+<TD>
+<P class=MsoNormal align=center><SPAN>None</SPAN><SPAN><o:p></o:p></SPAN></P></TD>
+<TD>
+<P class=MsoNormal align=center><SPAN>None</SPAN><SPAN><o:p></o:p></SPAN></P></TD>
+<TD>
+<P class=MsoNormal align=center><SPAN>None</SPAN><SPAN><o:p></o:p></SPAN></P></TD></TR>
+<TR>
+<TD>
+<P class=MsoNormal><SPAN>Orders<o:p></o:p></SPAN></P></TD>
+<TD>
+<P class=MsoNormal align=center><SPAN>None</SPAN><SPAN><o:p></o:p></SPAN></P></TD>
+<TD>
+<P class=MsoNormal align=center><SPAN>None</SPAN><SPAN><o:p></o:p></SPAN></P></TD>
+<TD>
+<P class=MsoNormal align=center><SPAN>None</SPAN><SPAN><o:p></o:p></SPAN></P></TD>
+<TD>
+<P class=MsoNormal align=center><SPAN>None</SPAN><SPAN><o:p></o:p></SPAN></P></TD></TR></TABLE>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P><SPAN>Role 2 has these permissions<o:p></o:p></SPAN></P>
+<TABLE class=MsoNormalTable cellSpacing=0 cellPadding=0>
+
+<TR>
+<TD>
+<P class=MsoNormal><SPAN>Class<o:p></o:p></SPAN></P></TD>
+<TD>
+<P class=MsoNormal align=center><SPAN>View<o:p></o:p></SPAN></P></TD>
+<TD>
+<P class=MsoNormal align=center><SPAN>Add<o:p></o:p></SPAN></P></TD>
+<TD>
+<P class=MsoNormal align=center><SPAN>Update<o:p></o:p></SPAN></P></TD>
+<TD>
+<P class=MsoNormal align=center><SPAN>Delete<o:p></o:p></SPAN></P></TD></TR>
+<TR>
+<TD>
+<P class=MsoNormal><SPAN>Products<o:p></o:p></SPAN></P></TD>
+<TD>
+<P class=MsoNormal align=center><SPAN>Allow</SPAN><SPAN><o:p></o:p></SPAN></P></TD>
+<TD>
+<P class=MsoNormal align=center><SPAN>None</SPAN><SPAN><o:p></o:p></SPAN></P></TD>
+<TD>
+<P class=MsoNormal align=center><SPAN>Allow</SPAN><SPAN><o:p></o:p></SPAN></P></TD>
+<TD>
+<P class=MsoNormal align=center><SPAN>None</SPAN><SPAN><o:p></o:p></SPAN></P></TD></TR>
+<TR>
+<TD>
+<P class=MsoNormal><SPAN>Customers<o:p></o:p></SPAN></P></TD>
+<TD>
+<P class=MsoNormal align=center><SPAN>Allow</SPAN><SPAN><o:p></o:p></SPAN></P></TD>
+<TD>
+<P class=MsoNormal align=center><SPAN>None</SPAN><SPAN><o:p></o:p></SPAN></P></TD>
+<TD>
+<P class=MsoNormal align=center><SPAN>None</SPAN><SPAN><o:p></o:p></SPAN></P></TD>
+<TD>
+<P class=MsoNormal align=center><SPAN>None</SPAN><SPAN><o:p></o:p></SPAN></P></TD></TR>
+<TR>
+<TD>
+<P class=MsoNormal><SPAN>Orders<o:p></o:p></SPAN></P></TD>
+<TD>
+<P class=MsoNormal align=center><SPAN>Allow</SPAN><SPAN><o:p></o:p></SPAN></P></TD>
+<TD>
+<P class=MsoNormal align=center><SPAN>Allow</SPAN><SPAN><o:p></o:p></SPAN></P></TD>
+<TD>
+<P class=MsoNormal align=center><SPAN>Allow</SPAN><SPAN><o:p></o:p></SPAN></P></TD>
+<TD>
+<P class=MsoNormal align=center><SPAN>Allow</SPAN><SPAN><o:p></o:p></SPAN></P></TD></TR></TABLE>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P><SPAN>User 1 is assigned to Role 1 with a scope of: Company 1, Company 2 and Company 3<o:p></o:p></SPAN></P>
+<P><SPAN>He is also assigned to Role 2 with a scope of: Company 1<o:p></o:p></SPAN></P>
+<P><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P><SPAN>This means she can view products and customers for the 3 companies but can only update products and create orders for company 1.<o:p></o:p></SPAN></P>
+<P><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P><SPAN>To handle this, we built a class library that includes a custom principal allowing us to do something like this:<o:p></o:p></SPAN></P>
+<P><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Dim</SPAN><SPAN> _principal <SPAN>As</SPAN> MyCustomPrincipal = Csla.ApplicationContext.User<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>CanAdd = _principal.BusinessClasses(<SPAN>“Products”</SPAN>).PermissionsForScopes( _<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><I><SPAN>mCompanyKey</SPAN></I>).HasPermission(enmPermissionIndex.epmx_Add)<o:p></o:p></SPAN></P>
+<P><SPAN>Where </SPAN><I><SPAN>mCompanyKey</SPAN></I><SPAN> is the key of the company a product belongs to.<o:p></o:p></SPAN></P>
+<P><SPAN>Or even handle more than one scope, let’s say company and department:<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>CanAdd = _principal.BusinessClasses(<SPAN>“Products”</SPAN>).PermissionsForScopes( _<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><I><SPAN>mCompanyKey, mDepartmentKey</SPAN></I>).HasPermission(enmPermissionIndex.epmx_Add)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P><SPAN>The problem is I can’t figure it out how to add this to the Product class authorization rules. Maybe have something like the Shared functions CanAddObject, CanGetObject, etc. But because they’re shared I must refer to instance members.<o:p></o:p></SPAN></P>
+<P><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P><SPAN>Any help would be greatly appreciated.<o:p></o:p></SPAN></P>
+<P><SPAN><o:p>&nbsp;</o:p></SPAN></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, October 24, 2007</h2><P>I think you can use some decoupling here. </P>
+<P>Perhaps an interface like IDataScope that business objects can implement to return their scope (companykey, departmentkey) in a standard manner.</P>
+<P>Then you can create a centralized helper method to check the role/company/dept triplets.</P>
+<P>Then you can override CanReadProperty() and CanWriteProperty() in a custom base class (which would also implement IDataScope to force subclasses to provide that data!) so the triplet is used to call this helper method.</P>
+<P>Finally, your Shared CanXyzObject() methods can accept an IDataScope if appropriate. Though I'm not sure that makes a lot of sense. Remember that the 4 Shared methods exist primarily to allow the UI to enable/disable various menu items or links. If the answer is "maybe" then the UI really must leave the options enabled and so the questions have no value. If they have no value, then don't implement them.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>MtyNLMex replied on Thursday, October 25, 2007</h2><P class=MsoNormal><SPAN>Rocky,<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Following your suggestion, we created the IDataScope interface and implemented it in our business classes. <o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>We also modified our Shared CanXyzObject methods to accept an IDataScope object or an array of Guids as follows:<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Public</SPAN><SPAN> <SPAN>Shared</SPAN> <SPAN>Function</SPAN> CanAddObject(<SPAN>ByVal</SPAN> <SPAN>ParamArray</SPAN> scopeKeys() <SPAN>As</SPAN> System.Guid) <SPAN>As</SPAN> <SPAN>Boolean<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN><SPAN>Dim _principal As MyCustomPrincipal = Csla.ApplicationContext.User</SPAN><o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN><SPAN>Return</SPAN> _principal.Identity.IsAuthenticated <SPAN>AndAlso </SPAN>_principal.BusinessClasses(“Product”).PermissionsForScopes(scopeKeys).HasPermission(EnmPermissionIndex.epmx_Add)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>End</SPAN><SPAN> <SPAN>Function<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN>Public</SPAN><SPAN> <SPAN>Shared</SPAN> <SPAN>Function</SPAN> CanGetObject(<SPAN>ByVal</SPAN> <SPAN>ParamArray</SPAN> scopeKeys() <SPAN>As</SPAN> System.Guid) <SPAN>As</SPAN> <SPAN>Boolean<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN><SPAN>Dim _principal As MyCustomPrincipal = Csla.ApplicationContext.User</SPAN><o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN><SPAN>Return</SPAN> _principal.Identity.IsAuthenticated <SPAN>AndAlso</SPAN> _principal.BusinessClasses(“Product”).PermissionsForScopes(scopeKeys).HasPermission(EnmPermissionIndex.epmx_View)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>End</SPAN><SPAN> <SPAN>Function<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN>Public</SPAN><SPAN> <SPAN>Overloads</SPAN> <SPAN>Shared</SPAN> <SPAN>Function</SPAN> CanEditObject(<SPAN>ByVal</SPAN> product as IDataScope) <SPAN>As</SPAN> <SPAN>Boolean<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN><SPAN>If</SPAN> IsNothing(employee) <SPAN>Then<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>Return</SPAN> <SPAN>False<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN><SPAN>Else<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>Dim _principal As MyCustomPrincipal = Csla.ApplicationContext.User</SPAN><o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>Return</SPAN> _principal.Identity.IsAuthenticated <SPAN>AndAlso</SPAN> _principal.BusinessClasses(“Product”).PermissionsForScopes(product.ScopeKeys).HasPermission(EnmPermissionIndex.epmx_Update)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN><SPAN>End</SPAN> <SPAN>If<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN>End</SPAN><SPAN> <SPAN>Function<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN>Public</SPAN><SPAN> <SPAN>Overloads</SPAN> <SPAN>Shared</SPAN> <SPAN>Function</SPAN> CanEditObject(<SPAN>ByVal</SPAN> <SPAN>ParamArray</SPAN> scopeKeys() <SPAN>As</SPAN> System.Guid) <SPAN>As</SPAN> <SPAN>Boolean<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN><SPAN>Dim _principal As MyCustomPrincipal = Csla.ApplicationContext.User</SPAN><o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN><SPAN>Return</SPAN> _principal.Identity.IsAuthenticated <SPAN>AndAlso</SPAN> _principal.BusinessClasses(“Product”).PermissionsForScopes(scopeKeys).HasPermission(EnmPermissionIndex.epmx_Update)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>End</SPAN><SPAN> <SPAN>Function<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN>Public</SPAN><SPAN> <SPAN>Shared</SPAN> <SPAN>Function</SPAN> CanDeleteObject(<SPAN>ByVal</SPAN> product as IDataScope) <SPAN>As</SPAN> <SPAN>Boolean<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN><SPAN>If</SPAN> IsNothing(employee) <SPAN>Then<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>Return</SPAN> <SPAN>False<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN><SPAN>Else<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>Dim _principal As MyCustomPrincipal = Csla.ApplicationContext.User</SPAN><o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>Return</SPAN> _principal.Identity.IsAuthenticated <SPAN>AndAlso</SPAN> _principal.BusinessClasses(anObject).PermissionsForScopes(product.ScopeKeys).HasPermission(EnmPermissionIndex.epmx_Delete)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN><SPAN>End</SPAN> <SPAN>If<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN>End</SPAN><SPAN> <SPAN>Function<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Maybe we should use reflection and instead of specifying the name of the object we could do something like</SPAN><SPAN> <o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Public</SPAN><SPAN> <SPAN>Shared</SPAN> <SPAN>Function</SPAN> CanDeleteObject(<SPAN>ByVal</SPAN> <U>anObject as object</U>) <SPAN>As</SPAN> <SPAN>Boolean<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN><SPAN>If</SPAN> IsNothing(employee) <SPAN>Then<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>Return</SPAN> <SPAN>False<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN><SPAN>Else<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>Dim _principal As MyCustomPrincipal = Csla.ApplicationContext.User</SPAN><o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>Return</SPAN> _principal.Identity.IsAuthenticated <SPAN>AndAlso</SPAN> _principal.BusinessClasses(<U>anObject.GetType.Name</U>).PermissionsForScopes(product.ScopeKeys).HasPermission(EnmPermissionIndex.epmx_Delete)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN><SPAN>End</SPAN> <SPAN>If<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN>End</SPAN><SPAN> <SPAN>Function<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>I don’t know if it’s possible to get the type for the functions that don’t receive an instance as parameter.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>We’ll need to do some research before trying overriding CanReadProperty and CanWriteProperty in a new base class, but we can live with the above approach for now.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Thanks a lot for your help!<o:p></o:p></SPAN></P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

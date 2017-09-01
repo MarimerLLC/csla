@@ -1,0 +1,18 @@
+<html><header><title>Design Question - Repository Pattern</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Design Question - Repository Pattern</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6866.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>tna55 posted on Wednesday, April 29, 2009</h2><P class=MsoNormal><FONT face=Calibri>All,</FONT></P>
+<P class=MsoNormal><FONT face=Calibri>I have a design question and would appreciate any help by fellow developers.</FONT></P>
+<P class=MsoNormal><FONT face=Calibri>Use Case: Get employee data for payroll processing</FONT></P>
+<P class=MsoNormal><FONT face=Calibri>Objects &amp; Responsibilities:</FONT></P>
+<P class=MsoNormal><FONT face=Calibri>EmployeeList – Contain a list of employees to process payroll for.<SPAN>&nbsp; </SPAN>Contain list of Employee object.</FONT></P>
+<P class=MsoNormal><FONT face=Calibri>Employee – An employee for which payroll processing is required. Contain other objects:</FONT></P>
+<P class=MsoNormal><FONT face=Calibri>BalanceList – A list of balances for the employee. Contain list of Balance object</FONT></P>
+<P class=MsoNormal><FONT face=Calibri>Balance – A balance item.</FONT></P>
+<P class=MsoNormal><FONT face=Calibri>So on...</FONT></P>
+<P class=MsoNormal><FONT face=Calibri>It is a hierarchy of objects for a specific use case. </FONT></P>
+<P class=MsoNormal><FONT face=Calibri>Now the question is that to fill this with data from database I have two options. One is to use something like deep data example. In which case EmployeeList (top level object) gets all data and passes the data to child objects which fill themselves.</FONT></P>
+<P class=MsoNormal><FONT face=Calibri>The second option I came across recently is to use Repository type pattern where there is a set of classes that retrieve data and fill the object graph. E.g.</FONT></P>
+<P class=MsoNormal><FONT face=Calibri>EmployeeList Employees = EmployeeListRepository.GetList();</FONT></P>
+<P class=MsoNormal><FONT face=Calibri>The advantage I see in repository approach is that it seperates data access from business logic in BOs. I am just trying to understand which option is better in terms of design. Any thoughts and suggestions will help.</FONT></P>
+<P class=MsoNormal><FONT face=Calibri>Regards,</FONT></P>
+<P class=MsoNormal><FONT face=Calibri>Tahir</FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tna55 replied on Thursday, April 30, 2009</h2>Any suggestions!</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, April 30, 2009</h2>You might want to look at the ObjectFactory concept added in version 3.6. Also, read chapter 18 of the <EM>Expert 2008 Business Objects</EM> book where I discuss a range of data access techniques you can use with CSLA.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tna55 replied on Thursday, April 30, 2009</h2><P>Rocky,</P>
+<P>Thanks for the reply, I have read the suggested chapters now and yes they were useful in clarifying my concerns. Chapter 18 answers a lot of questions asked on these forums as well so anyone not clear about CSLA and Data Access or in general Business Objects and DAL should read that carefully.</P>
+<P>Tahir</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

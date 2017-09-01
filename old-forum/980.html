@@ -1,0 +1,117 @@
+<html><header><title>Use Command object to manage transaction across root objects</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Use Command object to manage transaction across root objects</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/980.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>albator posted on Tuesday, August 22, 2006</h2><P><FONT size=2>Hi,<o:p></o:p></FONT></P>
+<P><FONT size=2>We are using CSLA Command object to save multiple root objects in a same ADO.Net transaction.<o:p></o:p></FONT></P>
+<P><FONT size=2>We can't use System transaction because we are dialing with Oracle...<o:p></o:p></FONT></P>
+<P><FONT size=2>We made our&nbsp;transaction traveling&nbsp;by using LocalContext variable to store&nbsp;the current&nbsp;connection/transaction.<o:p></o:p></FONT></P>
+<P><FONT size=2>This work fine, the only difficulty is to pass PK&nbsp;to child objects.<o:p></o:p></FONT></P>
+<P><FONT size=2>We are planning to develop a CodeSmith template that will help us generate this kind of command object.</FONT></P>
+<P><STRONG>This is a sample code of a command object managing transaction:</STRONG></P><FONT size=2>
+<P>[</FONT><FONT color=#008080 size=2>Serializable</FONT><FONT size=2>]</P>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>class</FONT><FONT size=2> </FONT><FONT color=#008080 size=2>TransactionCommand</FONT><FONT size=2>: </FONT><FONT color=#008080 size=2>CommandBase</FONT><FONT size=2>,</FONT><FONT color=#008080 size=2>ICloneable</FONT><FONT size=2> </P>
+<P>{</P></FONT><FONT color=#0000ff size=2>
+<P>#region</FONT><FONT size=2> Authorization Methods</P>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>static</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>bool</FONT><FONT size=2> CanExecuteCommand()</P>
+<P>{</P>
+<P></FONT><FONT color=#008000 size=2>// TODO: customize to check user role</P></FONT><FONT size=2>
+<P></FONT><FONT color=#008000 size=2>//return ApplicationContext.User.IsInRole("");</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>true</FONT><FONT size=2>;</P>
+<P>}</P></FONT><FONT color=#0000ff size=2>
+<P>#endregion</P>
+<P>#region</FONT><FONT size=2> Client-side Code</P>
+<P></P>
+<P></FONT><FONT color=#0000ff size=2>private</FONT><FONT size=2> </FONT><FONT color=#008080 size=2>PublicationCollection</FONT><FONT size=2> _pubs;</P>
+<P></FONT><FONT color=#0000ff size=2>private</FONT><FONT size=2> </FONT><FONT color=#008080 size=2>Order</FONT><FONT size=2> _currentOrder;</P>
+<P></P>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#008080 size=2>PublicationCollection</FONT><FONT size=2> Pubs </FONT><FONT color=#008000 size=2>//PublicationCollection Pubs</P></FONT><FONT size=2>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>get</P></FONT><FONT size=2>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> _pubs;</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>set</P></FONT><FONT size=2>
+<P>{</P>
+<P>_pubs = </FONT><FONT color=#0000ff size=2>value</FONT><FONT size=2>;</P>
+<P>}</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#008080 size=2>Order</FONT><FONT size=2> CurrentOrder</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>get</P></FONT><FONT size=2>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> _currentOrder;</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>set</P></FONT><FONT size=2>
+<P>{</P>
+<P>_currentOrder = </FONT><FONT color=#0000ff size=2>value</FONT><FONT size=2>;</P>
+<P>}</P>
+<P>}</P>
+<P></P></FONT><FONT color=#0000ff size=2>
+<P>#endregion</P>
+<P>#region</FONT><FONT size=2> Factory Methods</P>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>static</FONT><FONT size=2> </FONT><FONT color=#008080 size=2>TransactionCommand</FONT><FONT size=2> NewTransactionCommand()</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> </FONT><FONT color=#008080 size=2>TransactionCommand</FONT><FONT size=2>();</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#008080 size=2>TransactionCommand</FONT><FONT size=2> Execute()</P>
+<P>{</P>
+<P></FONT><FONT color=#008000 size=2>//if (Pubs != null)</P></FONT><FONT size=2>
+<P></FONT><FONT color=#008000 size=2>// Pubs[0].Shown += new EventHandler&lt;EventArgs&gt;(TransactionCommand_Shown);</P></FONT><FONT size=2>
+<P></FONT><FONT color=#008080 size=2>TransactionCommand</FONT><FONT size=2> lClonedCommand = ((</FONT><FONT color=#008080 size=2>ICloneable</FONT><FONT size=2>)</FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>).Clone() </FONT><FONT color=#0000ff size=2>as</FONT><FONT size=2> </FONT><FONT color=#008080 size=2>TransactionCommand</FONT><FONT size=2>;</P>
+<P></P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> </FONT><FONT color=#008080 size=2>DataPortal</FONT><FONT size=2>.Execute&lt;</FONT><FONT color=#008080 size=2>TransactionCommand</FONT><FONT size=2>&gt;(lClonedCommand);</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>void</FONT><FONT size=2> TransactionCommand_Shown(</FONT><FONT color=#0000ff size=2>object</FONT><FONT size=2> sender, </FONT><FONT color=#008080 size=2>EventArgs</FONT><FONT size=2> e)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>throw</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> </FONT><FONT color=#008080 size=2>Exception</FONT><FONT size=2>(</FONT><FONT color=#800000 size=2>"The method or operation is not implemented."</FONT><FONT size=2>);</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>private</FONT><FONT size=2> TransactionCommand()</P>
+<P>{ </FONT><FONT color=#008000 size=2>/* require use of factory methods */</FONT><FONT size=2> }</P></FONT><FONT color=#0000ff size=2>
+<P>#endregion</P>
+<P>#region</FONT><FONT size=2> Server-side Code</P>
+<P></FONT><FONT color=#0000ff size=2>protected</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>override</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>void</FONT><FONT size=2> DataPortal_Execute()</P>
+<P>{</P>
+<P></FONT><FONT color=#008080 size=2>Database</FONT><FONT size=2> lDb = </FONT><FONT color=#008080 size=2>DatabaseFactory</FONT><FONT size=2>.CreateDatabase();</P>
+<P></FONT><FONT color=#008080 size=2>DbConnection</FONT><FONT size=2> lConnection = lDb.CreateConnection();</P>
+<P>lConnection.Open();</P>
+<P></FONT><FONT color=#0000ff size=2>using</FONT><FONT size=2> (</FONT><FONT color=#008080 size=2>DBConnectionScope</FONT><FONT size=2> ldbScope = </FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> </FONT><FONT color=#008080 size=2>DBConnectionScope</FONT><FONT size=2>(</FONT><FONT color=#800000 size=2>"default"</FONT><FONT size=2>, lConnection))</P>
+<P>{</P>
+<P>ldbScope.BeginTransaction(</FONT><FONT color=#800000 size=2>"default"</FONT><FONT size=2>);</P>
+<P></FONT><FONT color=#0000ff size=2>try</P></FONT><FONT size=2>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2>(_currentOrder != </FONT><FONT color=#0000ff size=2>null</FONT><FONT size=2>)</P>
+<P>_currentOrder = _currentOrder.Save();</P>
+<P></FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (_pubs != </FONT><FONT color=#0000ff size=2>null</FONT><FONT size=2>)</P>
+<P>_pubs = _pubs.Save();</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>catch</P></FONT><FONT size=2>
+<P>{</P>
+<P>ldbScope.RollBack();</P>
+<P></FONT><FONT color=#0000ff size=2>throw</FONT><FONT size=2>;</P>
+<P>}</P>
+<P>ldbScope.Commit();</P>
+<P>}</P>
+<P>}</P></FONT><FONT color=#0000ff size=2>
+<P>#endregion</P>
+<P>#region</FONT><FONT size=2> ICloneable</P>
+<P></FONT><FONT color=#0000ff size=2>object</FONT><FONT size=2> </FONT><FONT color=#008080 size=2>ICloneable</FONT><FONT size=2>.Clone()</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>using</FONT><FONT size=2> (</FONT><FONT color=#008080 size=2>MemoryStream</FONT><FONT size=2> buffer = </FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> </FONT><FONT color=#008080 size=2>MemoryStream</FONT><FONT size=2>())</P>
+<P>{</P>
+<P></FONT><FONT color=#008080 size=2>BinaryFormatter</FONT><FONT size=2> formatter = </FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> </FONT><FONT color=#008080 size=2>BinaryFormatter</FONT><FONT size=2>();</P>
+<P>formatter.Serialize(buffer, </FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>);</P>
+<P>buffer.Position = 0;</P>
+<P></FONT><FONT color=#0000ff size=2>object</FONT><FONT size=2> temp = formatter.Deserialize(buffer);</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> temp;</P>
+<P>} </P>
+<P>}</P></FONT><FONT color=#0000ff size=2>
+<P>#endregion</P></FONT>
+<P><FONT size=2>}</FONT></P>
+<P><FONT size=2>Do you have suggestion of how make this more easier for complexe related business objects?</FONT></P>
+<P><FONT size=2>Is there somebody that has already worked on that king of object?</FONT></P>
+<P><FONT size=2>Somebody has already written a codesmith template?</FONT></P>
+<P><FONT size=2>Is there something in CSLA 2.1 that can make this easier?<o:p></o:p></FONT></P>
+<P><o:p><FONT size=2>Thanks</FONT></o:p></P>
+<P><o:p>Alain Martineau</o:p></P>
+<P>
+<P>&nbsp;</P></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Brian Criswell replied on Tuesday, August 22, 2006</h2>Unfortunately, I do not have any ideas for what you are attempting, but I have tried to solve this issue before CSLA.NET 2.0 came out.&nbsp; I had an static class that would allow my objects to share a connection and transaction.&nbsp; I have developed this idea further, but have not had a chance to code it.&nbsp; My idea was to create a own wrapper class for a connection similarly to how SafeDataReader wraps and delegates operations to a DataReader.&nbsp; The class would have a static connection and a static reference count.&nbsp; Whenever, you created a new instance of the class it would check to see if the internal static connection was null or disposed (checked by seeing if the connection string was empty) and create a new static connection if necessary and increase the reference count by one.&nbsp; Disposing of a SafeConnection would decrease the reference count by one.&nbsp; When the reference count reached zero again, it would dispose the internal connection.&nbsp; Calling SafeConnection.BeginTransaction() would begin a transaction on the internal connection and optionally attach the transaction to all created command objects.&nbsp; Anyway, you probably get the idea.&nbsp; The upside is that you can use it the same way you use a regular connection object, but you get automatic sharing of the connection and transactions without having to jump through hoops.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JZuerlein replied on Tuesday, August 22, 2006</h2><P>I found an interesting Transaction Manager class in a book by James Newkirk.&nbsp; "Test-Driven Development in Microsoft.Net"&nbsp; It associates the transaction with the current thread, which might be a problem for you, but it's very straight forward.&nbsp; It was great for wrapping a bunch&nbsp;of&nbsp;unit tests around a transaction.</P>
+<P>The source code is at...</P>
+<P><A href="http://workspaces.gotdotnet.com/tdd">http://workspaces.gotdotnet.com/tdd</A></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, August 22, 2006</h2>Along this same line, in version 2.1 I am adding ApplicationContext.LocalContext - which is a collection of arbitrary values that is not moved between client and app server. It is also thread-specific, like the rest of ApplicationContext - and the goal behind it is to allow you (on the app server) to put your Transaction or Connection object (or other context data) into LocalContext so it is available to all other objects as they run on the app server.<br><br>You could, therefore, use your command object idea. The first thing DataPortal_Execute() would do on the server is set things into LocalContext - like your open Connection, perhaps your parent object or just the PK value - whatever makes sense. Those values automatically then become global to all subsequent code on the app server.<br><br>If you do this right, you can use a using statement for your connection:<br><br>protected override void DataPortal_Execute()<br>{<br>&nbsp; // create/open connection and transaction<br>&nbsp; ApplicationContext.LocalContext["cn"] = cn;<br>&nbsp; ApplicationContext.LocalContext["cn"] = tr;<br>
+&nbsp; using (cn)<br>&nbsp; {<br>&nbsp;&nbsp;&nbsp; try<br>&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp; &nbsp;&nbsp; // call your other objects here<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; tr.Commit();<br>&nbsp;&nbsp;&nbsp; }<br>&nbsp;&nbsp;&nbsp; catch (Execption ex)<br>&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; tr.Rollback();<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; throw;<br>&nbsp;&nbsp;&nbsp; }<br>&nbsp; }<br>}<br><br>Or something like that anyway. Hopefully you get the idea.<br><br>Even if you are using 2.0 you can do this - just use ClientContext. It only flows from client to server, and so isn't brought back from the server. In fact, the data portal clears it when your call to the server is complete, so it is auto-cleaning. In essense it does what LocalContext will do for you already.<br><br>Keep in mind that this auto-cleaning only occurs with a remote data portal. If you are using a local data portal you MUST make sure to remove your connection/transaction references from LocalContext or ClientContext in a finally block!!<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

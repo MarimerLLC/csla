@@ -1,0 +1,110 @@
+<html><header><title>Nullable types in CSLA.NET 3.6</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Nullable types in CSLA.NET 3.6</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6240.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>DCottle posted on Thursday, January 22, 2009</h2><P>If we have a need to use nullable types (which we do), are they pretty safe to use with the framework?&nbsp; For example, I know that the Validation.CommonRules.MaxValue&lt;T&gt; will break on the type of the parameter being a nullable type...such as CommonRules.maxValue&lt;Int32?&gt;&nbsp; because this is not an IComparable I get a compile error.&nbsp; Now, this makes perfect sense to me but I need to know if there are other locations within the framework where it would not be such a trivial matter to add my own code and use that instead to handle the nullable type.</P>
+<P>I hope I was clear enough, any questions just ask.</P>
+<P>Thanks in advance,</P>
+<P>David</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Marjon1 replied on Thursday, January 22, 2009</h2>If you are using the SafeDataReader then you need to be aware, that the friendly methods such as GetString, GetInt32 return default values if the dbvalue is null. The only method that returns null is GetValue.<br /></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, January 23, 2009</h2>In general, nullable types should work just fine in the core of the framework. As noted, there are some peripheral areas, like common rules and safedatereader, where nullable types won't work.<br><br>Also, nullable string properties won't work, because CSLA converts null strings to string.Empty. This makes data binding work properly, and is typically a non-issue because few, if any, apps differentiate between null and empty string values. You'd know if you did, because you'd probably have a checkbox next to each textbox so the user could click the checkbox to make the value null (as opposed to just leaving the field empty).<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Eric replied on Friday, January 23, 2009</h2><P>I am new to using the framework (and the book) so forgive me if I am doing something incorrectly.&nbsp; That said I believe that&nbsp;I have encountered a very significant&nbsp;issue with using nullable types.&nbsp; Specifically, in a property that utlizes a nullable backing field and property the wrong overload of both GetProperty and SetProperty gets called and the data is lost.&nbsp; </P>
+<P>For example: I have a nullable stateID backing field and a nullable property.&nbsp; When calling&nbsp;GetProperty(StateIDProperty, _stateID)<FONT size=2>&nbsp;</FONT>I always get 0, even when _stateID &lt;&gt; 0.&nbsp; Stepping into the code reveals that I am stepping into the wrong overload.&nbsp; It is calling GetProperty&lt;P&gt;(PropertyInfo&lt;P&gt; propertyInfo, Security.NoAccessBehavior noAccess) and passing the value into the enum instead which causes the data loss.</P>
+<P>Further, similar issues are occurring with SetProperty(StateIDProperty, _StateID, value), causing data loss.&nbsp; I am now calling the SetProperty&lt;P&gt;(string propertyName, ref P field, P newValue, Security.NoAccessBehavior noAccess) overload as a workaround.</P>
+<P>I verified that this is specific to nullable types and also that it is not just Integer? types.</P>
+<P>Needless to say, if I am correct this is a very significant issue for my company.&nbsp; Any information would be appreciated.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, January 23, 2009</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Interesting. And unfortunate.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>You may be able to resolve this with a cast &#8211; force the
+null to a specific type:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>SetProperty(MyProperty, (P)_stateId);<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Otherwise the answer is probably to do what you are doing and
+call the non-ambiguous overloads of GetProperty() and SetProperty().<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>The only broader alternative would be for me to eliminate most
+of the short-cut overloads and make EVERYONE use the long-form version, which
+is clearly not a good idea.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>As you can imagine, the .NET runtime is unable to infer a type
+for null, and so the overload rules just map it to an arbitrary overload that
+has the correct number of parameters. You need to somehow constrain the value
+so the runtime knows that the null value is actually of a specific type. I
+suspect the forced cast above will do that for you.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Eric
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Friday, January 23, 2009 2:43 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] Nullable types in CSLA.NET 3.6<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>I am new to using the framework (and the book) so forgive me if I am doing
+something incorrectly.&nbsp; That said I believe that&nbsp;I have encountered a
+very significant&nbsp;issue with using nullable types.&nbsp; Specifically, in a
+property that utlizes a nullable backing field and property the wrong overload
+of both GetProperty and SetProperty gets called and the data is lost.&nbsp; <o:p></o:p></p>
+
+<p>For example: I have a nullable stateID backing field and a nullable
+property.&nbsp; When calling&nbsp;GetProperty(StateIDProperty, _stateID)<span>&nbsp;</span>I always get 0, even when _stateID
+&lt;&gt; 0.&nbsp; Stepping into the code reveals that I am stepping into the
+wrong overload.&nbsp; It is calling GetProperty&lt;P&gt;(PropertyInfo&lt;P&gt;
+propertyInfo, Security.NoAccessBehavior noAccess) and passing the value into
+the enum instead which causes the data loss.<o:p></o:p></p>
+
+<p>Further, similar issues are occurring with SetProperty(StateIDProperty,
+_StateID, value), causing data loss.&nbsp; I am now calling the
+SetProperty&lt;P&gt;(string propertyName, ref P field, P newValue,
+Security.NoAccessBehavior noAccess) overload as a workaround.<o:p></o:p></p>
+
+<p>I verified that this is specific to nullable types and also that it is not
+just Integer? types.<o:p></o:p></p>
+
+<p>Needless to say, if I am correct this is a very significant issue for my
+company.&nbsp; Any information would be appreciated.<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

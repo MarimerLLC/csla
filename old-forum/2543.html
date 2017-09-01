@@ -1,0 +1,11 @@
+<html><header><title>Subclassing Examples in C#</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Subclassing Examples in C#</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/2543.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>JabbaTheNut posted on Saturday, March 17, 2007</h2><P>I was searching for quite a long time to find examples of subclassing each of the 7 CSLA base classes.&nbsp; I finally found the following post:</P>
+<P><A HREF="/forums/thread/9544.aspx">http://forums.lhotka.net/forums/thread/9544.aspx</A></P>
+<P>I thought I would&nbsp;consolidate the C# examples from that post under a different subject header that&nbsp;might make them easier to find.&nbsp; </P>
+<P>It would be nice if these examples were posted in the FAQ for newbies like myself.&nbsp; Anyway, here they are:</P>
+<P>[Serializable()]<BR>public abstract class MyBusinessBase&lt;T&gt; : Csla.BusinessBase&lt;T&gt; where T : MyBusinessBase&lt;T&gt;<BR>{<BR>}</P>
+<P>[Serializable()]<BR>public abstract class MyBusinessListBase&lt;T, C&gt; : Csla.BusinessListBase&lt;T, C&gt; where T : MyBusinessListBase&lt;T, C&gt; where C : Csla.Core.IEditableBusinessObject<BR>{<BR>}</P>
+<P>[Serializable()]<BR>public abstract class MyCommandBase : Csla.CommandBase<BR>{<BR>}</P>
+<P>[Serializable()]<BR>public abstract class MyNameValueListBase&lt;K, V&gt; : Csla.NameValueListBase&lt;K, V&gt;<BR>{<BR>}</P>
+<P>[Serializable()]<BR>public abstract class MyReadOnlyBase&lt;T&gt; : Csla.ReadOnlyBase&lt;T&gt; where T : MyReadOnlyBase&lt;T&gt;<BR>{<BR>}</P>
+<P>[Serializable()]<BR>public abstract class MyReadOnlyListBase&lt;T, C&gt; : Csla.ReadOnlyListBase&lt;T, C&gt; where T : MyReadOnlyListBase&lt;T, C&gt; where C : Csla.Core.IReadOnlyObject<BR>{<BR>}</P>
+<P>[Serializable()]<BR>public abstract class MyEditableRootListBase&lt;T&gt; : Csla.EditableRootListBase&lt;T&gt;&nbsp; where T : Csla.Core.IEditableBusinessObject, Csla.Core.ISavable<BR>{<BR>}</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

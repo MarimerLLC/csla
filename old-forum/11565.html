@@ -1,0 +1,12 @@
+<html><header><title>Error On Reading Dal Assembly in My Command Object</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Error On Reading Dal Assembly in My Command Object</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11565.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>st3fanus posted on Wednesday, September 05, 2012</h2><p>Hi all , I&#39;m developing silverlight 5 app use CSLA 4.13</p>
+<p>and currently i have an error said :</p>
+<p>Unable to find assembly &#39;AIS.EfDal, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null&#39;.</p>
+<p>&nbsp;</p>
+<p>BUT I have that file on the requested folder</p>
+<p>This error raise when I tried to create a command object to run on server which is on execute method</p>
+<p>I use BO to do my algorithm </p>
+<p>&nbsp;</p>
+<p>Is there any suggestions or guess ?</p>
+<p>&nbsp;</p>
+<p>thanks a lot</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Wednesday, September 05, 2012</h2><p>Clearly, your app is not able to load the given assembly. </p>
+<p>Use <b>Filemon </b>or <b>Procmon </b>from <a href="http://www.sysinternals.com">Sysinternals </a>to trace file system activity and see where your app is actually running and trying to load the assembly from.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

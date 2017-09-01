@@ -1,0 +1,70 @@
+<html><header><title>CslaDataSource to supply Friendly / Display name to GridView when Refresh Schema is performed</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CslaDataSource to supply Friendly / Display name to GridView when Refresh Schema is performed</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6599.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jaans posted on Thursday, March 12, 2009</h2><P><FONT face=Verdana size=2>This is one for the wishlist.</FONT></P>
+<P><FONT face=Verdana size=2>I'm aware of the difficulty in having the new Csla PropertyInfo object provide the same functionality as the System.ComponentModel.DisplayNameAttribute does. </FONT></P>
+<P><FONT face=Verdana size=2>We generate our properties, so for us we&nbsp;workaround the issue by&nbsp;repeating the Friendly Name&nbsp;value&nbsp;for the DisplayName attribute. It does the job as needed in Windows Forms application binding.</FONT></P>
+<P><FONT face=Verdana size=2>Is it possible for&nbsp;the CslaDataSource web control be enhanced to take the either the FriendlyName DisplayName information and provide it to the binding target? It would further reduce developer effort and UI customization that would be duplicately defined in the BO.</FONT></P>
+<P><FONT face=Verdana size=2>Put differently I would like to see the following:</FONT></P>
+<OL>
+<LI><FONT face=Verdana size=2>Csla Business Object with managed properties using the PropertyInfo technique. Specify the Friendly Name for each.<BR><BR>OR<BR><BR>Adorn properties with with the DisplayName attribute.<BR></FONT></LI>
+<LI><FONT face=Verdana size=2>Drop a CslaDataSource web control on a web page and hook it up to the above business object.<BR></FONT></LI>
+<LI><FONT face=Verdana size=2>Drop a GridView control and hook it up to the above CslaDataSource web control, upon which Schema Information is provided by the CslaDataSource control to the GridView to define column names, etc.<BR><BR><FONT color=#006400>Part of this process I would like to see the Friendly Name / Display Name be used for the columns' Header Text.</FONT></FONT></LI></OL>
+<P><FONT face=Verdana size=2>This would save the developer from needing to know and specify what friendly name to use for the column.</FONT></P>
+<P><FONT face=Verdana size=2>Many thanks,</FONT></P>
+<P><FONT face=Verdana size=2>Jaans</FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, March 12, 2009</h2><P>Does the GridView control pick up the DisplayName attribute value automatically?</P>
+<P>Certainly the new lambda expression scheme for RegisterProperty() in 3.6.2 makes it much more realistic to think about grabbing the DisplayName attribute value to use as the CSLA friendly name.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jaans replied on Tuesday, March 17, 2009</h2><P><FONT face=Verdana size=2>Hi Rocky</FONT></P>
+<P><FONT face=Verdana size=2>Well that's the question really. The CslaDataSource control sits between the GridView and the business object and I'm not sure whether there is any "infrastructure"&nbsp;in the web design environment for a GridView control to read such schema / metadata information for each property.</FONT></P>
+<P><FONT face=Verdana size=2>I can confirm that it currently doesn't automatically flow extra metadata through the CslaDataSource. I have placed a DisplayName attribute onto a business object property and subsequently connected a CslaDataSource control followed by a GridView and the HeaderText for a column was unnaffected. </FONT></P>
+<P><FONT face=Verdana size=2>This is exactly what I would like to see. Specify either a FriendlyName/DisplayName for a business object property and then (when bound on the web through a CslaDataSource property at design time), it automatically sets the HeaderText for GridView/DetailsView/etc. controls. Very much in the same way a Grid control does in the Windows Forms environment.</FONT></P>
+<P><FONT face=Verdana size=2>Is that possible?</FONT></P>
+<P><FONT face=Verdana size=2>Regarding the lambda expression - Yes indeed, using the 3.6.2 lambda expression would indeed be the preferred way to set the DisplayName attribute value</FONT></P>
+<P><FONT face=Verdana size=2>Again, many thanks</FONT></P>
+<P><FONT face=Verdana size=2>J</FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, March 17, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I suspected it wouldn&#8217;t be automatic, but didn&#8217;t
+know for sure.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Certainly at design time it wouldn&#8217;t be automatic &#8211;
+the gridview (and other controls) get their design time information from the
+CslaDataSource design time behaviors, which is a whole subsystem beneath the data
+source control itself. It may be possible to enhance those behaviors to look
+for the DisplayName attribute and/or to use the friendly name value &#8211;
+though it depends on whether the data binding infrastructure has a placeholder
+for a friendly name value.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I can&#8217;t say off the top of my head, as I haven&#8217;t
+looked at the data source code for a couple years. If there&#8217;s a data
+binding placeholder for a friendly name it would be easy enough to do &#8211;
+but if there is such a placeholder, then I&#8217;m a little surprised that I didn&#8217;t
+use it properly in the first place&#8230;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I&#8217;ve added a wish list item for this<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><a href="http://www.lhotka.net/cslabugs/edit_bug.aspx?id=371">http://www.lhotka.net/cslabugs/edit_bug.aspx?id=371</a><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

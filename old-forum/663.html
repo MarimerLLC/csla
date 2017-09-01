@@ -1,0 +1,45 @@
+<html><header><title>How can I stop &quot;Error Creating Control&quot;?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>How can I stop &quot;Error Creating Control&quot;?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/663.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>jas_nhs posted on Tuesday, July 18, 2006</h2><img alt=""><img alt="">Whilst I have successfully populated a table (etc) with the cslaDataSource, I frequently get the above error with text like "MyType could not be set on property TypeName". <br><br>This error can suddenly appear after switching from html to design mode on a page, and seems to happen readily when more than one cslaDataSource is in a project (still only one on a page). Usually, the site builds and runs regardless, but something must be wrong...?<br><br>Any ideas how this can be prevented?<br><br>What are the rules about having &gt;1 cslaDataSource in a project or page?<br><br>Many thanks for any advice,<br><br>James.<br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, July 18, 2006</h2>Are you using version 2.0.3?</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jas_nhs replied on Wednesday, July 19, 2006</h2>Rocky:<br>
+<br>
+I'm not certain how to unambiguously ascertain the version number, but
+the zip file was named csla20cs-2.0.1-060531.zip, so I'm a bit behind.<br>
+<br>
+If I use the latest 2.0.3 should I expect an improvement&nbsp; ref my
+error?&nbsp; (aside from the general wisdom of using the latest
+version...)<br>
+<br>
+Many thanks<br>
+<br>
+James.<br>
+<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, July 19, 2006</h2>
+
+
+
+
+<DIV align=left><SPAN class=750180813-19072006><FONT face=Arial color=#0000ff size=2>The best way to identify the version number is to look at 
+the project's properties - I always update the version number there as time goes 
+forward. But the version 2.0.1 from the zip file is good 
+too.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=750180813-19072006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=750180813-19072006><FONT face=Arial color=#0000ff size=2>In this particular case 2.0.3 is important, because it 
+specifically addresses some issues with assembly resolution in 
+CslaDataSource.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=750180813-19072006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=750180813-19072006><FONT face=Arial color=#0000ff size=2>Please do be aware that there was one potential breaking 
+change in 2.0.2 - read the change log for that release to see the details. If 
+your DataPortal_Create() methods start acting odd this is why - but the fix is 
+straightforward.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=750180813-19072006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=750180813-19072006><FONT face=Arial color=#0000ff size=2>Rocky</FONT></SPAN></DIV><BR>
+<BLOCKQUOTE>
+  <DIV class=OutlookMessageHeader align=left>
+  <HR>
+  <FONT face=Tahoma size=2><B>From:</B> jas_nhs [mailto:cslanet@lhotka.net] 
+  <BR><B>Sent:</B> Wednesday, July 19, 2006 6:03 AM<BR><B>To:</B> 
+  rocky@lhotka.net<BR><B>Subject:</B> Re: [CSLA .NET] How can I stop "Error 
+  Creating Control"?<BR></FONT><BR></DIV>
+  <DIV></DIV>Rocky:<BR><BR>I'm not certain how to unambiguously ascertain the 
+  version number, but the zip file was named csla20cs-2.0.1-060531.zip, so I'm a 
+  bit behind.<BR><BR>If I use the latest 2.0.3 should I expect an 
+  improvement&nbsp; ref my error?&nbsp; (aside from the general wisdom of using 
+  the latest version...)<BR><BR>Many 
+  thanks<BR><BR>James.<BR><BR><BR><BR><BR></BLOCKQUOTE></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

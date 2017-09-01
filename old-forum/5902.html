@@ -1,0 +1,29 @@
+<html><header><title>Trying to Use One DataSource for ReadOnly List with Details Page Update</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Trying to Use One DataSource for ReadOnly List with Details Page Update</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5902.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>andrewrajcoomar posted on Sunday, November 30, 2008</h2><P><FONT size=2>I am a brand new user of this framework (excellent, excellent work Rocky). In addition, am writing my first Windows app having worked exclusively on web before.</FONT></P>
+<P><FONT size=2>Hoping someone can point me here. This is my situation:</FONT></P>
+<P><FONT size=2>I have some reference data tables that are very small (&lt; 100 rows) and have a requirement to load all the records when the form load. My UI consists of TabControl control with two pages. Page1 contains a grid and Page2 is the Details page. The Grid is readonly. When a row selection is made from the grid, Page2 receives focus and data should be updatable. No deletes are allowed. Also, Page2 should allow for new data to be added.</FONT></P>
+<P><FONT size=2>I am binding the grid like this:</FONT></P><FONT color=#0000ff>
+<P><EM>Me</EM></FONT><EM><FONT size=2>.ChartFieldOverrideListBindingSource.DataSource = <FONT color=#0000ff>New</FONT> SortedBindingList(<FONT color=#0000ff>Of</FONT> ChartFieldOverrideInfo)(chartFieldOverrideList)</FONT></EM></P>
+<P><FONT size=2><STRONG>ChartFieldOverrideList inherits from ReadOnlyListBase</STRONG><FONT size=2></P>
+<P>Is this the correct approach for such an implementation? Ideally, when the user interacts with the data on Page2, just one record should be affected at a time. Going this way, it seems I will have to call Save manually, and handle a single row update. I am having crazy thoughts of using the row to populate my <STRONG>ChartFieldOverride</STRONG> object, and then call my methods from within that class to insert/update the row. Another thought I have it to bind Page2 to the single object class ChartFieldOverride and then call Fetch each time a selection is made from Page1. But then I'd have to Fetch on Page1 also, to refresh,&nbsp;when a new record is added via Page2. This all seems like a lot of traffic.</P>
+<P>It appears, the whole workup looks like the Edit Project task in Project Tracker, except that I have the two forms combined into one.</P>
+<P>Please, any advise. </P>
+<P>Thanks, Andrew:</FONT></FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, December 01, 2008</h2><P>You have perhaps three options (with various sub-options).</P>
+<OL>
+<LI>Make ChartFieldOverrideList an editable list, so you can edit its items and call Save() on the whole list.</LI>
+<LI>Make ChartFieldOverrideList a dynamic list (inherit from EditableRootListBase), so you can edit its items an save each one individually (by calling SaveItem() on the list).</LI>
+<LI>Make ChartFieldOverrideList a read-only list, then use an editable root to edit each item as the user selects it</LI>
+<OL>
+<LI>After the editable root has been saved</LI>
+<OL>
+<LI>reload the ChartFieldOverrideList entirely - which will get not only your edit, but other user's edits too</LI>
+<LI>call a method on ChartFieldOverrideList to merge in the new data from the editable root (assuming the editable root contains all data required to populate an item in the list) (this won't catch changes from other users)</LI>
+<LI>call a method on ChartFieldOverrideList to have it use a Command object to reload the new data for the one item that you know has changed (this won't catch changes from other users)</LI></OL></OL></OL>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>andrewrajcoomar replied on Monday, December 08, 2008</h2><P>Thanks Rocky.</P>
+<P>I went with a combination of 2; readonlylist from which the user can select/delete, and then I use the selection to return a businessbase object.</P>
+<P>However, I now have another issue, which I have posted here:</P>
+<P><A HREF="/forums/post/28983.aspx">http://forums.lhotka.net/forums/post/28983.aspx</A></P>
+<P>When I am adding new data I bind to a new basebusiness object thru a click event. The issue is, any textbox that I enter a value into requires a double-tab for me to exit it. This behaviour is not the same for edits, for which I am again binding to the same base business object, except that the GetMyData method was called, instead of NewData.</P>
+<P>Really appreciate your help, sir.</P>
+<P>Thanks,</P>
+<P>Andrew</P>
+<P>&nbsp;</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

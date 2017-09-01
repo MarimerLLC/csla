@@ -1,0 +1,51 @@
+<html><header><title>CSLA 2.0 - Create OR Fetch</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA 2.0 - Create OR Fetch</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/67.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Smeat posted on Thursday, May 11, 2006</h2><P>Hi</P>
+<P>I'm developing a small app using CSLA 2.0 where the use case is as follows:</P>
+<P><EM>The user selects a date from the calendar, the system then loads the existing record (can only be 1) &nbsp;for that date. If no record exists then a new one is created.</EM></P>
+<P>In this scenario, my business object must first check if a record exists and if so, load it (DataPortal_Fetch). If no record exists then a new record is created (DataPortal_Create). Note that when no record exists, I cannot physically create that record until the user has entered the required data.</P>
+<P>My question is <FONT color=#0000ff>how</FONT> do I cater for this scenario within my business objects?</P>
+<P>I was thinking of placing the logic within my factory method as follows:</P>
+<P><FONT color=#0000ff>public static MyObj CreateOrLoadObj(DateTime dt)</FONT></P>
+<P><FONT color=#0000ff>{</FONT></P>
+<P><FONT color=#0000ff>&nbsp;&nbsp;&nbsp;MyObj o = new MyObj();</FONT></P>
+<P><FONT color=#0000ff>&nbsp;&nbsp;&nbsp;o.DataPortal.Fetch(new Criteria(dt));</FONT></P>
+<P><FONT color=#0000ff>&nbsp;&nbsp;&nbsp;if(o.ID &gt; 0)</FONT></P>
+<P><FONT color=#0000ff>&nbsp;&nbsp;&nbsp;{</FONT></P>
+<P><FONT color=#0000ff>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//We have an existing record</FONT></P>
+<P><FONT color=#0000ff>&nbsp;&nbsp;&nbsp;}</FONT></P>
+<P><FONT color=#0000ff>&nbsp;&nbsp;&nbsp;else</FONT></P>
+<P><FONT color=#0000ff>&nbsp;&nbsp;&nbsp;{</FONT></P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT color=#0000ff>//No existing record so create new one.</FONT></P>
+<P><FONT color=#0000ff>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;o = new MyObj();</FONT></P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT color=#0000ff>o.Create(new Criteria(dt));</FONT></P>
+<P><FONT color=#0000ff>&nbsp;&nbsp;&nbsp;}</FONT></P>
+<P>&nbsp;&nbsp;&nbsp;<FONT color=#0000ff>return o;</FONT></P>
+<P><FONT color=#0000ff>}</FONT></P>
+<P><FONT color=#000000>Does this look like the write approach? I think my main concern is that on calling the factory method, the object is remoted over then network to load the existing object and then returned to the client. If no existing record exists, then the object is again remoted over the network and a new MyObj is created before sending the object back over the network to the client.</FONT></P>
+<P>Is there a better way of doing this?</P>
+<P>TIA</P>
+<P>Smeat</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>glenntoy replied on Thursday, May 11, 2006</h2><P>Hmm.. I hope I'm right with my idea in my mind... <img src="/emoticons/emotion-2.gif" alt="Big Smile [:D]" /></P>
+<P>A suggestion you might use the &lt;RunLocal()&gt; attribute in DataPortal_Create() if you are sure that all creates are to be run in the&nbsp;client.</P>
+<P>So it will be something like this<BR><PRE>&lt;RunLocal()&gt; _
+Private Overloads Sub DataPortal_Create(ByVal criteria As Criteria)
+    ' your implementation here
+End Sub
+</PRE>
+<P>I think RunLocal() will force you to run in your client..</P>
+<P>P.S. I'll be late in checking your replies because we are in different timezones.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>DavidDilworth replied on Thursday, May 11, 2006</h2><P><FONT face=Arial size=2>Are you actually doing anything inside your DataPortal_Create()?&nbsp; If not then all you might need is a single call to DataPortal_Fetch().</FONT></P>
+<P><FONT face=Arial size=2>Surely the criteria passed to the DataPortal_Fetch() will not return any data if there is nothing to get (i.e. there isn't already an item).</FONT></P>
+<P><FONT face=Arial size=2>If this is the case, then what you have is an object that has already been instantiated (by the DataPortal) with all the default settings for your BO.</FONT></P>
+<P><FONT face=Arial size=2>You will only need to set the fields within your BO if you actually get data back from the DB.</FONT></P>
+<P><FONT face=Arial size=2>It's not a "purist' usage of the DataPortal_Fetch(), but there doesn't seem to be any reason why you shouldn't be able to take advantage of this "feature" of a DataPortal_Fetch() when the criteria returns an empty record set.</FONT></P>
+<P><FONT face=Arial size=2>Perhaps you can try it to see if it works?</FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Bayu replied on Thursday, May 11, 2006</h2>Hi all,<br><br>Let me throw another suggestion into the mix, just for the fun of comparing possible solutions. <img src="/emoticons/emotion-1.gif" alt="Smile [:)]" /><br><br>- purist thinking: is this actually business logic? Isn't it actually a use case with two scenario's .... more like a UI responsibility to check for existence (using a shared Exists() member on the particular BO ...). <br><br>Ok, this was just crap, this is possibly 'pure' from an OO point of view but will result in 2 DB hits (Exists + Fetch or Exists + Create).<br><br>- practical thinking: I am a great fan of (ab)using stored procs, they weren't invented for nothing, right? So, assuming you want to load some defaults from the DB for your dp_create, you can design a stored proc that always returns the item that was requested for by the date-key AND the default values.&nbsp; This would result in two SELECT statements in one stored proc which returns two tables in your result set. The pro is that this will reduce your DB hits to 1, while the con is that you will transfer some (very small amount though) extra data (those defaults) with every single call. <br><br>- That was assuming you need to load defaults from the DB, otherwise you can just do as previously mentioned: mark your dp_create with the runlocal attribute. This would leave only 1 DB hit which may or may not return data for a particular date-key.<br><br><br><br>Plenty of options I guess, none of it are 'pure' but all of them are practical. So which one to choose?&nbsp;<img src="/emoticons/emotion-4.gif" alt="Stick out tongue [:P]" /><br><br>Bayu<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>glenntoy replied on Friday, May 12, 2006</h2><P>Smeat, if your new object doesn't have to retrieve any values from DB proceed to RunLocal() attribute. As what you said if there is an existing record it will return only 1 row. Combining the comments of Bayu and David, you can do it like this </P><PRE>Public Shared Function GetBusBaseName(ByVal id As Integer) As BusBaseName
+  Dim o as BusBaseName = DataPortal.Fetch(Of BusBaseName)(New Criteria(id))
+  
+  'Exists is a readonly property name whos value will be set in the DataPortal.Fetch .... mExists = dr.Read()
+  If o.Exists Then
+    Return o
+  Else
+    Return DataPortal.Create(Of BusBaseName)(New Criteria(id))
+  End If
+
+End Function
+</PRE></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,48 @@
+<html><header><title>When/how to check for brokenrules?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>When/how to check for brokenrules?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/1350.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>jas_nhs posted on Thursday, September 28, 2006</h2>I have a grid (Telerik) with an edit template, all of which is bound to
+a csla data source. A common requirement is to check user input when in
+edit mode (a grid row expands to an edit form with update/cancel
+options).&nbsp; The idea of course would be to ntercept the update
+event and display an error message and force correction of the
+error.&nbsp; I want to use the broken-rules collection to do this, and
+have set up custom rules etc.<br>
+<br>
+To enable checking of broken rules (br), I create a 'trial' object and
+look at the br collection and if all is ok, proceed with the update.
+The br have to be checked here as this is the only place where I have
+access to the editing controls, and I need to keep the edit form in
+view etc.&nbsp; If I leave it to 'commit time' (update event on csla
+data source) the edit form is closed and it is inappropriate to display
+an error msg then.<br>
+<br>
+Problem is, I can create a new trial object with 'wrong' values yet the
+br count is still zero and IsValid is true - I 'm obviously not
+understanding just when the rules are checked (if I save and then
+re-open for editing, the rule violations are detected).&nbsp; I can't
+call ValidationRules.CheckRules() at this level, and the object does
+not have a CheckRules method... Is there a way to invoke the
+rule-checking explicitly on an in-memory object? What event causes the
+rules to be checked? <br>
+<br>
+The object in question is an editable child.<br>
+<br>
+Thanks<br>
+<br>
+James.<br>
+<br>
+<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Fabio replied on Thursday, September 28, 2006</h2>Hi.<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; [Csla.RunLocal()]<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; protected override void DataPortal_Create()<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; ValidationRules.CheckRules();<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; }<br>Bye.<br>Fabio.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jas_nhs replied on Thursday, September 28, 2006</h2>Thanks - Yes, simple as that, except that DatePortal_Create is part of
+generated code and I would need to check the implications of adding
+this call. Also, I did not make totally clear that the problem also
+arises when updating existing data.<br>
+<br>
+I have worked round this by hand-editing the generated code with a call
+to CheckRules when you set the contentious properties. I wondered if
+PropertyHasChanged might have called CheckRules but it doesn't seem to,
+leaving the general issue of how to force a rule check when you want to
+e.g. you have an object and are modifying a property with some value
+from an external source. <br>
+<br>
+Perhaps the best (?) thing is to call CheckRules each time you set a property...?<br>
+<br>
+jas<br>
+<br>
+<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Thursday, September 28, 2006</h2>Jas,<br><br>Rules should be getting checked as each property changes values, but this only happens if you remember to call PropertyHasChanged( <font color="#ff0000">"MyProperty"</font> ).&nbsp; Of course if you forget that in your property setters, databinding won't work properly either.<br><br>HTH<br>Andy<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Fabio replied on Thursday, September 28, 2006</h2>For me, absolutly not.<br>CheckRules() without parameter check all rules and i need to do that, sometimes, only after creation.<br>Obviuslly you can do that when you want but you must pay that with performance.<br><br><br>CheckRules("PropertyName") is called by PropertyHasChanged("PropertyName") in the set of a property only when the property changed..... bah?!? depend on how you had implemented the set of the property...<br><br>Bye.<br>Fabio.<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

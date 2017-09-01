@@ -1,0 +1,12 @@
+<html><header><title>ASP.NET MVC Model Binder and postback BusinessListBase</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>ASP.NET MVC Model Binder and postback BusinessListBase</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11333.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>wilfreds posted on Friday, April 27, 2012</h2><p>Is there a problem with populating a model that contains a list?</p>
+<p>How to reproduce:</p>
+<p>In the ProjectTracker(4.3.10) sample I have added the rule: </p>
+<p>BusinessRules.AddRule(new Csla.Rules.CommonRules.MaxLength(DescriptionProperty, 3));</p>
+<p>to the ProjectEdit class.</p>
+<p>&nbsp;</p>
+<p>When you edit a project you have &quot;Project name&quot; and &quot;Description&quot;. An under the Save button you have a list of resources.</p>
+<p>When you click Save it will not save and you get an error because of the broken rule. That is correct.</p>
+<p>But, the list of resources that is connected to the project is now empty.</p>
+<p>&nbsp;</p>
+<p>Regards,</p>
+<p>Wilfred</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

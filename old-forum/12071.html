@@ -1,0 +1,32 @@
+<html><header><title>Disabling Version Tolerant Serialization</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Disabling Version Tolerant Serialization</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/12071.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>comp1mp posted on Friday, July 12, 2013</h2><p>I was surprised to find that I could compile a new version of a business assembly 1.0.0.1 (the only change being the assembly version), host it in WCFDataPortal and run a client compiled against the previous version 1.0.0.0 with no problems.</p>
+<p>I say this because I thought that the default value of BinaryFormatter.AssemblyFormat was FormatterAssemblyStyle.Full which should cause an exception when attempting to deserialize the 1.0.0.0 type into the 1.0.0.1 type.</p>
+<p>After some research, I believe this behavior is because my business assembly is not strongly named</p>
+<p>Is there an easy way to force CSLA to throw a serialization exception in this case without using a strong name?</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Sunday, July 14, 2013</h2><p>For the most part if you are using wcf you are using netdatacontractserializer. It is a near clone of binaryformatter in terms of behavior, but there are differences.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>comp1mp replied on Wednesday, July 17, 2013</h2><p><div style='padding-left: 50px;background-color:silver'><b>RockfordLhotka<br></b></p>
+<p>For the most part if you are using wcf you are using netdatacontractserializer. It is a near clone of binaryformatter in terms of behavior, but there are differences.</p>
+<div style="clear:both;"></div>
+<p></div></p>
+<p>&nbsp;</p>
+<p>My OP applies equally to the NetDataContractSerializer. By default its AssemblyFormat property is set to FormatterAssemblyStyle.Full. This should cause a serialization/deserialization exception if there is a version mismatch between type instances.</p>
+<p>I looked through the 3.8.3 source code and it does not appear that this property is being changed to FormatterAssemblyStyle.Simple which would allow types with different versions to be serialized/deserialized interchangeably. Am I missing something?</p>
+<p>Again, I believe the behavior being observed is because the business assembly is not strongly named.</p>
+<p>&quot;<i>By default, the formatters comply with the version-binding and 
+assembly-resolving policies of the common language runtime (CLR). If the
+ serialized type&#39;s assembly does not have a strong name, the formatters 
+try to load a private assembly and completely ignore any version 
+incompatibility between the version captured during serialization and 
+the version of the assembly found.</i>&quot;</p>
+<p><a href="http://msdn.microsoft.com/en-us/magazine/cc163902.aspx">http://msdn.microsoft.com/en-us/magazine/cc163902.aspx</a>&nbsp; (This article is aboput .Net 2.0 so things may have changed).</p>
+<p>I was hoping that someone had experienced this and had a&nbsp; configuration solution without the processing overhead of Jonny&#39;s solution.</p>
+<p>It seems ridiculous that I cannot easily configure a formatter to throw a serialization exception in this situation. <span style="text-decoration:underline;"><b>Requiring </b></span>that old clients be compatible with newer type versions is easily dangerous, and poor design in my opinion. To be clear this is a jab at .Net, not CSLA :).</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Monday, July 15, 2013</h2><p>Hi,</p>
+<p>A simple solution may be to set the version number into ClientContext and add a custom check in IAuthorizeDataPortal with the &quot;current&quot; version.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>comp1mp replied on Sunday, July 21, 2013</h2><p><div style='padding-left: 50px;background-color:silver'><b>JonnyBee<br></b></p>
+<p>Hi,</p>
+<p>A simple solution may be to set the version number into ClientContext and add a custom check in IAuthorizeDataPortal with the &quot;current&quot; version.</p>
+<div style="clear:both;"></div>
+<p></div></p>
+<p>Thanks Jonny. This would work but it does have two issues. </p>
+<p>It adds overhead processing for every call, whereas the CLR throwing an exception only adds overhead in the instance someone makes a call with a client compiled against the older version.</p>
+<p>As I stated in my answer, it is not truly secure as someone can manipulate the client&#39;s assembly version.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>comp1mp replied on Sunday, July 21, 2013</h2><p>Strongly naming your business assembly appears to be the only answer. I have had little experience with strong names and have had colleagues talk of &#39;nightmares&#39;. After a little research I am no longer afraid to do this. If Rocky isn&#39;t afraid to strongly name CSLA, why should I be afraid? <img src="http://forums.lhotka.net/emoticons/emotion-1.gif" alt="Smile" /></p>
+<p>&nbsp;If you cannot strongly name your business assembly, you are SOL. I received no answer on <a href="http://social.msdn.microsoft.com/Forums/vstudio/en-US/2e1409c2-e0a9-48a0-ae48-16c91cd8b11f/disabling-version-tolerant-serialization-for-netdatacontractserializer">MSDN forums </a>or <a href="http://stackoverflow.com/questions/17727663/disabling-version-tolerant-serialization-for-netdatacontractserializer">stack overflow</a>&nbsp;on how to do it without a strong name. After further thought this made sense. I realized one cannot securely enforce zero tolerance (de)serialization without a strong name due to the fact the version can easily manipulated within the client assembly. &nbsp;</p>
+<p>&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

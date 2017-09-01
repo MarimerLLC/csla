@@ -1,0 +1,107 @@
+<html><header><title>Rebinding of Child Collection</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Rebinding of Child Collection</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3525.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>culprit posted on Wednesday, September 12, 2007</h2><P>Dear List:</P>
+<P>Another poser. I am implementing an invoice form with child details. Everything works great until I save and rebind then the child seems to lose connection because it doesnt fire validation checking and no longer fires the PropertyChanged event on the parent Invoice object. I have a parent object, CurrentInvoice, which is assigned to InvoiceBindingSource and InvoiceDetails property assigned to InvoiceDetailsBindingSource. I am following the code in the new 3.0 projecttracker but am having difficulty after clicking an Apply button. Here is the code in the applicable areas:</P><FONT color=#0000ff size=2>
+<P>Public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Sub</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>New</FONT><FONT size=2>(</FONT><FONT color=#0000ff size=2>ByVal</FONT><FONT size=2> Invoice </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> Invoice)</P>
+<P></FONT><FONT color=#008000 size=2>' This call is required by the Windows Form Designer.</P></FONT><FONT size=2>
+<P>InitializeComponent()</P>
+<P></FONT><FONT color=#008000 size=2>' Add any initialization after the InitializeComponent() call.</P></FONT><FONT size=2>
+<P>CurrentInvoice = Invoice</P>
+<P></FONT><FONT color=#008000 size=2>'_patientID = CurrentInvoice.PatientID</P></FONT><FONT size=2>
+<P>BindUI()</P>
+<P>ApplyAuthorizationRules()</P>
+<P></FONT><FONT color=#0000ff size=2>Me</FONT><FONT size=2>.btnSave.Enabled = </FONT><FONT color=#0000ff size=2>False</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Me</FONT><FONT size=2>.btnApply.Enabled = </FONT><FONT color=#0000ff size=2>False</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Sub</FONT></P><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Sub</FONT><FONT size=2> ApplyAuthorizationRules() </FONT><FONT color=#0000ff size=2>Implements</FONT><FONT size=2> RSSoftware.ScriptAssist.ObjectEdit.ApplyAuthorizationRules</P>
+<P></FONT><FONT color=#008000 size=2>' have the controls enable/disable/etc</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Me</FONT><FONT size=2>.ReadWriteAuthorization1.ResetControlAuthorization()</P>
+<P></FONT><FONT color=#0000ff size=2>Dim</FONT><FONT size=2> canEdit </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Boolean</FONT><FONT size=2> = ScriptAssist.Invoice.CanEditObject</P>
+<P>btnApply.Enabled = canEdit</P>
+<P></FONT><FONT color=#0000ff size=2>Me</FONT><FONT size=2>.btnSave.Enabled = canEdit</P>
+<P></FONT><FONT color=#0000ff size=2>Me</FONT><FONT size=2>.GridView1.OptionsBehavior.Editable = canEdit</P>
+<P></FONT><FONT color=#008000 size=2>' enable/disable appropriate buttons</P></FONT><FONT size=2>
+<P></FONT><FONT color=#008000 size=2>' enable/disable role column in grid</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Sub</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Sub</FONT><FONT size=2> BindUI() </FONT><FONT color=#0000ff size=2>Implements</FONT><FONT size=2> RSSoftware.ScriptAssist.ObjectEdit.BindUI</P>
+<P>CurrentInvoice.BeginEdit()</P>
+<P></FONT><FONT color=#0000ff size=2>Me</FONT><FONT size=2>.InvoiceBindingSource.DataSource = CurrentInvoice</P>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Sub</P></FONT><FONT color=#0000ff size=2><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Function</FONT><FONT size=2> RebindUI(</FONT><FONT color=#0000ff size=2>ByVal</FONT><FONT size=2> Save </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Boolean</FONT><FONT size=2>, </FONT><FONT color=#0000ff size=2>ByVal</FONT><FONT size=2> Rebind </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Boolean</FONT><FONT size=2>) </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Boolean</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Implements</FONT><FONT size=2> RSSoftware.ScriptAssist.ObjectEdit.RebindUI</P></FONT><FONT size=2>
+<P></FONT><FONT color=#008000 size=2>' disable events</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Me</FONT><FONT size=2>.InvoiceBindingSource.RaiseListChangedEvents = </FONT><FONT color=#0000ff size=2>False</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Me</FONT><FONT size=2>.InvoiceDetailsBindingSource.RaiseListChangedEvents = </FONT><FONT color=#0000ff size=2>False</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Try</P></FONT><FONT size=2>
+<P></FONT><FONT color=#008000 size=2>' unbind the UI</P></FONT><FONT size=2>
+<P>ScriptAssist.Utilities.UnbindBindingSource(</FONT><FONT color=#0000ff size=2>Me</FONT><FONT size=2>.InvoiceDetailsBindingSource, Save, </FONT><FONT color=#0000ff size=2>False</FONT><FONT size=2>)</P>
+<P>ScriptAssist.Utilities.UnbindBindingSource(</FONT><FONT color=#0000ff size=2>Me</FONT><FONT size=2>.InvoiceBindingSource, Save, </FONT><FONT color=#0000ff size=2>True</FONT><FONT size=2>)</P>
+<P></FONT><FONT color=#0000ff size=2>Me</FONT><FONT size=2>.InvoiceDetailsBindingSource.DataSource = </FONT><FONT color=#0000ff size=2>Me</FONT><FONT size=2>.InvoiceBindingSource</P>
+<P></FONT><FONT color=#008000 size=2>' save or cancel changes</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>If</FONT><FONT size=2> Save </FONT><FONT color=#0000ff size=2>Then</P></FONT><FONT size=2>
+<P>CurrentInvoice.ApplyEdit()</P>
+<P></FONT><FONT color=#0000ff size=2>Try</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Dim</FONT><FONT size=2> temp </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> ScriptAssist.Invoice = CurrentInvoice.Clone()</P>
+<P>CurrentInvoice = temp.Save()</P>
+<P></FONT><FONT color=#0000ff size=2>Catch</FONT><FONT size=2> ex </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> Csla.DataPortalException </FONT><FONT color=#0000ff size=2>When</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>TypeOf</FONT><FONT size=2> ex.BusinessException </FONT><FONT color=#0000ff size=2>Is</FONT><FONT size=2> SqlClient.SqlException</P>
+<P></FONT><FONT color=#0000ff size=2>If</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>CType</FONT><FONT size=2>(ex.BusinessException, SqlClient.SqlException).Class = 16 </FONT><FONT color=#0000ff size=2>Then</P></FONT><FONT size=2>
+<P></FONT><FONT color=#008000 size=2>'Most likely due to concurrency error - recommend closing drug and reopening</P></FONT><FONT size=2>
+<P>MessageBox.Show(</FONT><FONT color=#a31515 size=2>"This record has been changed in another window either on this machine or "</FONT><FONT size=2> _</P>
+<P>&amp; Microsoft.VisualBasic.ControlChars.CrLf &amp; </FONT><FONT color=#a31515 size=2>"on another client machine while this record was open. Click OK, make a note"</FONT><FONT size=2> _</P>
+<P>&amp; Microsoft.VisualBasic.ControlChars.CrLf &amp; </FONT><FONT color=#a31515 size=2>"of any changes you have made here you wish saved for this record, close this"</FONT><FONT size=2> _</P>
+<P>&amp; Microsoft.VisualBasic.ControlChars.CrLf &amp; </FONT><FONT color=#a31515 size=2>"window, the reopen this record in a new window and make the desired changes "</FONT><FONT size=2> _</P>
+<P>&amp; Microsoft.VisualBasic.ControlChars.CrLf &amp; </FONT><FONT color=#a31515 size=2>"finally saving the record."</FONT><FONT size=2>, </FONT><FONT color=#a31515 size=2>"CONCURRENCY ERROR"</FONT><FONT size=2>, MessageBoxButtons.OK, MessageBoxIcon.Stop)</P>
+<P></FONT><FONT color=#0000ff size=2>Else</P></FONT><FONT size=2>
+<P>MessageBox.Show(ex.BusinessException.ToString, _</P>
+<P></FONT><FONT color=#a31515 size=2>"Error saving"</FONT><FONT size=2>, MessageBoxButtons.OK, _</P>
+<P>MessageBoxIcon.Exclamation)</P>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>If</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Catch</FONT><FONT size=2> ex </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> Csla.DataPortalException</P>
+<P>MessageBox.Show(ex.BusinessException.ToString, _</P>
+<P></FONT><FONT color=#a31515 size=2>"Error saving"</FONT><FONT size=2>, MessageBoxButtons.OK, _</P>
+<P>MessageBoxIcon.Exclamation)</P>
+<P></FONT><FONT color=#0000ff size=2>Catch</FONT><FONT size=2> ex </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> Csla.Validation.ValidationException</P>
+<P></FONT><FONT color=#0000ff size=2>Dim</FONT><FONT size=2> sMsg </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>New</FONT><FONT size=2> System.Text.StringBuilder(</FONT><FONT color=#a31515 size=2>"One or more fields have failed validation. Refer to any errors"</FONT><FONT size=2>)</P>
+<P>sMsg.AppendLine(</FONT><FONT color=#a31515 size=2>" on this form and the following list: "</FONT><FONT size=2>)</P>
+<P>sMsg.AppendLine()</P>
+<P></FONT><FONT color=#0000ff size=2>For</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Each</FONT><FONT size=2> BrokenRule </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> Csla.Validation.BrokenRule </FONT><FONT color=#0000ff size=2>In</FONT><FONT size=2> CurrentInvoice.BrokenRulesCollection</P>
+<P>sMsg.AppendLine(</FONT><FONT color=#a31515 size=2>" "</FONT><FONT size=2> &amp; BrokenRule.Description)</P>
+<P></FONT><FONT color=#0000ff size=2>Next</P></FONT><FONT size=2>
+<P>MessageBox.Show(sMsg.ToString, </FONT><FONT color=#a31515 size=2>"VALIDATION ERROR"</FONT><FONT size=2>, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)</P>
+<P></FONT><FONT color=#0000ff size=2>Catch</FONT><FONT size=2> ex </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> Exception</P>
+<P>MessageBox.Show(ex.ToString, _</P>
+<P></FONT><FONT color=#a31515 size=2>"Error saving"</FONT><FONT size=2>, MessageBoxButtons.OK, _</P>
+<P>MessageBoxIcon.Exclamation)</P>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Try</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Else</P></FONT><FONT size=2>
+<P>CurrentInvoice.CancelEdit()</P>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>If</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Finally</P></FONT><FONT size=2>
+<P></FONT><FONT color=#008000 size=2>' rebind UI if requested</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>If</FONT><FONT size=2> Rebind </FONT><FONT color=#0000ff size=2>Then</P></FONT><FONT size=2>
+<P>BindUI()</P>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>If</P></FONT><FONT size=2>
+<P></FONT><FONT color=#008000 size=2>' restore events</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Me</FONT><FONT size=2>.InvoiceBindingSource.RaiseListChangedEvents = </FONT><FONT color=#0000ff size=2>True</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Me</FONT><FONT size=2>.InvoiceDetailsBindingSource.RaiseListChangedEvents = </FONT><FONT color=#0000ff size=2>True</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>If</FONT><FONT size=2> Rebind </FONT><FONT color=#0000ff size=2>Then</P></FONT><FONT size=2>
+<P></FONT><FONT color=#008000 size=2>' refresh the UI if rebinding</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Me</FONT><FONT size=2>.InvoiceBindingSource.ResetBindings(</FONT><FONT color=#0000ff size=2>False</FONT><FONT size=2>)</P>
+<P></FONT><FONT color=#0000ff size=2>Me</FONT><FONT size=2>.InvoiceDetailsBindingSource.ResetBindings(</FONT><FONT color=#0000ff size=2>False</FONT><FONT size=2>)</P>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>If</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Try</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>If</FONT><FONT size=2> CurrentInvoice.IsDirty = </FONT><FONT color=#0000ff size=2>False</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>And</FONT><FONT size=2> CurrentInvoice.IsValid = </FONT><FONT color=#0000ff size=2>True</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Then</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Return</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>True</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Else</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Return</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>False</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>If</P>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Function</FONT></P>
+<P><FONT color=#0000ff size=2>Your help and guidance is greatly appreciated.</FONT></P>
+<P><FONT color=#0000ff size=2>Rob</P></FONT></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, September 12, 2007</h2><P>CSLA automatically rehooks the PropertyChanged event so your list gets the event and raises a ListChanged event. It can do this because BusinessListBase manages the ownership of those child objects - it controls the references.</P>
+<P>BusinessBase does not manage the reference from your root object to its children. You declare that field in your code, and so you are responsible for its management. This includes handling the ListChanged event so you know to raise the root's PropertyChanged event.</P>
+<P>ProjectTracker doesn't do that, because the root object has no properties that derive from the state of its children. At some point I should probably add some data like that, so I can illustrate the concept.</P>
+<P>However, you clearly have code to hook the event right? All you need to do is call that code when the root gets deserialized - which means overriding the OnDeserialized method that is declared by BusinessBase and rehooking the ListChanged event at that point.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>culprit replied on Wednesday, September 12, 2007</h2><P>Sweet, thanks Rocky. </P>
+<P>Here is that overridden sub:</P><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Protected</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Overrides</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Sub</FONT><FONT size=2> OnDeserialized(</FONT><FONT color=#0000ff size=2>ByVal</FONT><FONT size=2> context </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> System.Runtime.Serialization.StreamingContext)</P>
+<P></FONT><FONT color=#0000ff size=2>MyBase</FONT><FONT size=2>.OnDeserialized(context)</P>
+<P></FONT><FONT color=#0000ff size=2>AddHandler</FONT><FONT size=2> _invoiceDetails.ListChanged, </FONT><FONT color=#0000ff size=2>AddressOf</FONT><FONT size=2> _invoiceDetails_ListChanged</P>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Sub</P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>xal replied on Wednesday, September 12, 2007</h2>Looking at that long code listing, there's one thing that called my attention:<br><br><p><font color="#0000ff" size="2"><font size="2">ScriptAssist.Utilities.UnbindBindingSource(</font><font color="#0000ff" size="2">Me</font><font size="2">.InvoiceDetailsBindingSource, Save, </font><font color="#0000ff" size="2">False</font><font size="2">)</font></font></p>
+<p><font color="#0000ff" size="2"><font size="2">ScriptAssist.Utilities.UnbindBindingSource(</font><font color="#0000ff" size="2">Me</font><font size="2">.InvoiceBindingSource, Save, </font><font color="#0000ff" size="2">True</font><font size="2">)</font></font></p>
+<p><font color="#0000ff" size="2"><font color="#0000ff" size="2">Me</font><font size="2">.InvoiceDetailsBindingSource.DataSource = </font><font color="#0000ff" size="2">Me</font><font size="2">.InvoiceBindingSource</font></font></p><br>What do those methods do?<br>In general you want to unbind just the root binding source, since the rest of them are bound to that one.<br>The binding source &amp; bound controls don't play nice if you pass "Nothing" as the datasource to a binding source, but instead of doing whatever your UnbindBindingSource is doing, try calling the appropriate EndEdit (s) and then do:<br>InvoiceBindingSource.DataSource = GetType(Invoice)<br><br>That effectively clears the current datasource from the "root" binding source and nothing crashes.<br>Then you only have to rewire the root binding source when you're done saving with one simple line:<br>InvoiceBindingSource.DataSource = CurrentInvoice.<br><br>I hope that helps.<br><br>Andrés<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

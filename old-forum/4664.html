@@ -1,0 +1,179 @@
+<html><header><title>3.5 Changes</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>3.5 Changes</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4664.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>SouthSpawn posted on Friday, April 11, 2008</h2><DIV>It is saying that the "PropertyChanged" and&nbsp;"CanReadProperty" methods&nbsp;are now obsolete.</DIV>
+<DIV>What should I use instead?</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>Or should I just get rid of them all together.</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>Thanks,<BR>Mark</DIV></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Friday, April 11, 2008</h2><P>I am pretty sure that only the parameterless versions of those methods were deprecated.</P>
+<P>They relied on a Stack walk that proved to be unreliable.</P>
+<P>Since I use Codesmith I always used the version where you passed in the property name as a String. That is the recommended step to take if you want to keep the upgrade simple.</P>
+<P>Alternatively, you can use the new Property constructs that Rocky is providing that use 30% less code and are automatically managed by CSLA. I have not had time to dig into them yet and they have not been proven to work in all scenarios yet. I'm not saying they don't work - it is just that there is no historical data from their use in production applications yet. So I think that when I upgrade I will use the older style properties until there is more feedback.</P>
+<P>Joe</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>MrPogo replied on Friday, April 11, 2008</h2><P>So the way it should look is:</P>
+<P class=MsoNormal><FONT face=Calibri>private int _id;<o:p></o:p></FONT></P>
+<P class=MsoNormal><FONT face=Calibri>public int Id<o:p></o:p></FONT></P>
+<P class=MsoNormal><FONT face=Calibri>{<o:p></o:p></FONT></P>
+<P class=MsoNormal><FONT face=Calibri>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get<o:p></o:p></FONT></P>
+<P class=MsoNormal><FONT face=Calibri>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<o:p></o:p></FONT></P>
+<P class=MsoNormal><FONT face=Calibri>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CanReadProperty("Id");&nbsp;</FONT></P>
+<P class=MsoNormal><FONT face=Calibri>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return _id;<o:p></o:p></FONT></P>
+<P class=MsoNormal><FONT face=Calibri>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<o:p></o:p></FONT></P>
+<P class=MsoNormal><FONT face=Calibri>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set<o:p></o:p></FONT></P>
+<P class=MsoNormal><FONT face=Calibri>&nbsp;&nbsp;&nbsp;{<o:p></o:p></FONT></P>
+<P class=MsoNormal><FONT face=Calibri>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CanWriteProperty("Id");<o:p></o:p></FONT></P>
+<P class=MsoNormal><FONT face=Calibri>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if(....<o:p></o:p></FONT></P>
+<P class=MsoNormal><FONT face=Calibri>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<o:p></o:p></FONT></P>
+<P class=MsoNormal><FONT face=Calibri>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_id = value;<o:p></o:p></FONT></P>
+<P class=MsoNormal><FONT face=Calibri>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;PropertyChanged("Id");<o:p></o:p></FONT></P>
+<P class=MsoNormal><FONT face=Calibri>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<o:p></o:p></FONT></P>
+<P class=MsoNormal><FONT face=Calibri>&nbsp;&nbsp;&nbsp;}<o:p></o:p></FONT></P>
+<P class=MsoNormal><FONT face=Calibri>}<o:p></o:p></FONT></P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Friday, April 11, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Not quite.&nbsp; You need another parameter to throw an
+exception if rights check fails.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>private int _id;</span><o:p></o:p></p>
+
+<p class=MsoNormal><span>public int Id</span><o:p></o:p></p>
+
+<p class=MsoNormal><span>{</span><o:p></o:p></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get</span><o:p></o:p></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{</span><o:p></o:p></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CanReadProperty(&quot;Id&quot;,
+true);&nbsp;</span><o:p></o:p></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return
+_id;</span><o:p></o:p></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</span><o:p></o:p></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set</span><o:p></o:p></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;{</span><o:p></o:p></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CanWriteProperty(&quot;Id&quot;,
+true);</span><o:p></o:p></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if(....</span><o:p></o:p></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{</span><o:p></o:p></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_id
+= value;</span><o:p></o:p></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;PropertyChanged(&quot;Id&quot;);</span><o:p></o:p></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</span><o:p></o:p></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;}</span><o:p></o:p></p>
+
+<p class=MsoNormal><span>}</span><o:p></o:p></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Senior Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> MrPogo
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Friday, April 11, 2008 11:18 AM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] 3.5 Changes<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>So the way it should look is:<o:p></o:p></p>
+
+<p class=MsoNormal><span>private int _id;</span><o:p></o:p></p>
+
+<p class=MsoNormal><span>public int Id</span><o:p></o:p></p>
+
+<p class=MsoNormal><span>{</span><o:p></o:p></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get</span><o:p></o:p></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{</span><o:p></o:p></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CanReadProperty(&quot;Id&quot;);&nbsp;</span><o:p></o:p></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return
+_id;</span><o:p></o:p></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</span><o:p></o:p></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set</span><o:p></o:p></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;{</span><o:p></o:p></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CanWriteProperty(&quot;Id&quot;);</span><o:p></o:p></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if(....</span><o:p></o:p></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{</span><o:p></o:p></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_id
+= value;</span><o:p></o:p></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;PropertyChanged(&quot;Id&quot;);</span><o:p></o:p></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</span><o:p></o:p></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;}</span><o:p></o:p></p>
+
+<p class=MsoNormal><span>}</span><o:p></o:p></p>
+
+<p>&nbsp;<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>SouthSpawn replied on Saturday, April 12, 2008</h2><DIV>I changed my code to the following below.</DIV>
+<DIV><FONT color=#0000ff size=2><BR>Public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Property</FONT><FONT size=2> State() </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> CountriesStates.State </FONT><FONT color=#0000ff size=2>Implements</FONT><FONT size=2> Interfaces.IAddress.State<BR></FONT><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;Get<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</FONT><FONT size=2>&nbsp;&nbsp;&nbsp;CanReadProperty(</FONT><FONT color=#a31515 size=2>"State"</FONT><FONT size=2>)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</FONT><FONT color=#0000ff size=2>Return</FONT><FONT size=2> _state<BR></FONT><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Get</DIV>
+<DIV></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;Set</FONT><FONT size=2>(</FONT><FONT color=#0000ff size=2>ByVal</FONT><FONT size=2> value </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> CountriesStates.State)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;PropertyHasChanged(</FONT><FONT color=#a31515 size=2>"State"</FONT><FONT size=2>)</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_state = value<BR>&nbsp;&nbsp;&nbsp;</FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Set<BR></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Property</P></FONT></DIV></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Monday, April 14, 2008</h2>You should NOT call PropertyHasChanged before you set the actual value. <br><br>That would cause your validation rules to run before the new value is entered in your BO. <br><br>Correct sequence: <br>- set the new property value <br>- call PropertyHasChanged <br><br>/jonny <br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

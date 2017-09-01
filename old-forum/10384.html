@@ -1,0 +1,38 @@
+<html><header><title>String value can not be converted to a date. SmartDate Culture?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>String value can not be converted to a date. SmartDate Culture?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10384.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>ddredstar posted on Wednesday, May 18, 2011</h2><p>private static PropertyInfo&lt;SmartDate&gt; CreatedOnProperty = RegisterProperty&lt;SmartDate&gt;(p =&gt; p.CreatedOn);<br />
+&nbsp;&nbsp;&nbsp; public string CreatedOn<br />
+&nbsp;&nbsp;&nbsp; {<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; get { return GetPropertyConvert&lt;SmartDate, string&gt;(CreatedOnProperty); }<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>set { SetPropertyConvert&lt;SmartDate, string&gt;(CreatedOnProperty, value); }</b><br />
+&nbsp;&nbsp;&nbsp; }</p>
+<p>&nbsp;</p>
+<p>The value is&nbsp;&nbsp; <b>5/18/2011 12:00:00 AM</b></p>
+<p>&nbsp;</p>
+<p>Error happens:</p>
+<p>Property load or set failed for property CreatedOn (String value can not be converted to a date)</p>
+<p>&nbsp;</p>
+<p>How to resolve this?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ddredstar replied on Wednesday, May 18, 2011</h2><p>After change my computer&#39;s Region Option from English(United Kingdom) to English(United English), it&#39;s works well.</p>
+<p>&nbsp;</p>
+<p>I think the SmartDate has some inprove space, look forward you advices !!!</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Wednesday, May 18, 2011</h2><p>SmartDate uses the default DateTime.TryParse method to convert from string to datetime value. </p>
+<p>Are you using non-default format string on your SmartDate properties? </p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ddredstar replied on Wednesday, May 18, 2011</h2><p>The string is&nbsp;&nbsp; <b>5/18/2011 12:00:00 AM</b></p>
+<p>is this a wrong format ?</p>
+<p>&nbsp;</p>
+<p>if the Region Option of my computer is English(United States) it works fine, if i change my Region Option to English(United Kingdom) , the error occurs!!!</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, May 18, 2011</h2><p>Wouldn&#39;t the UK date be 18/5/2011?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ddredstar replied on Wednesday, May 18, 2011</h2><p>a user in UK, whose date format is 18/5/2011, encountered this error, but we didn&#39;t .</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, May 19, 2011</h2><p>I recommend creating a simpler test that uses DateTime.TryParse and/or SmartDate.TryParse to see if you can isolate the issue.</p>
+<p>The SmartDate parse function uses the DateTime parse function to do the actual parsing, so the real question is whether DateTime.TryParse can parse the input given the configuration on your computer.</p>
+<p>You should absolutely expect that &quot;5/18/2011&quot; will not parse if the UK culture is set, because that&#39;s not a valid UK date.</p>
+<p>The thing is, Windows and .NET both have several culture settings. I don&#39;t know which one(s) affect date parsing. I suspect a machine in the UK has all of them set to the UK culture. But your machine or my machine (not in the UK) would only have some of the culture settings changed.</p>
+<p>In .NET alone there are at least 2 culture settings&nbsp;- one for the thread, and one for the UI - and those can be independent of the Windows OS setting(s).</p>
+<p>I&#39;m not an expert in this area, so I don&#39;t know what they all do to be honest. Jonny knows more about it than I do, so maybe he can help make suggestions.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Thursday, May 19, 2011</h2><p>Users tend to do strange things!!!. </p>
+<p>DateTime.TryParse will use the System.Threading.CurrentCulture to get the formatting info.</p>
+<p>The default values for the &quot;default culture&quot; may however be overridden by the user in &quot;Regional and language settings&quot; .</p>
+<p>So from my own experience - a user running norwegian OS and norwegian default culture may change the regional settings to use specific formats like UK (english).<br />This will change DateTime.ToString and DateTime.Parse/TryParse to use the specific formats. </p>
+<p>Using LinqPad&nbsp; (available from <a href="http://www.linqpad.net">www.linqpad.net</a>) to execute the following C# Statements:</p>
+<p><i>var date = DateTime.Now;&nbsp; <br />date.ToString(&quot;d&quot;).Dump();&nbsp;&nbsp; // using the default culture<br />Thread.CurrentThread.CurrentCulture = <br />&nbsp;&nbsp; System.Globalization.CultureInfo.GetCultureInfo(&quot;nb-NO&quot;);<br />date.ToString(&quot;d&quot;).Dump();<br />Thread.CurrentThread.CurrentCulture = <br />&nbsp; System.Globalization.CultureInfo.GetCultureInfo(&quot;en-US&quot;);<br />date.ToString(&quot;d&quot;).Dump();<br />Thread.CurrentThread.CurrentCulture = <br />&nbsp; System.Globalization.CultureInfo.GetCultureInfo(&quot;en-GB&quot;);<br />date.ToString(&quot;d&quot;).Dump();</i></p>
+<p>will give the following output:</p>
+<div><span><i>19.05.2011</i></span></div>
+<div><span><i></i></span><span><i>19.05.2011<br />5/19/2011<br />19/05/2011</i></span></div>
+<div><br /></div>
+<div><span>And when I change the settings in &quot;Regional and Language settings&quot;, customize &quot;short date format&quot; to &quot;yyyy-MM-dd&quot; and restart LinqPad the output is: </span></div>
+<div><i><span>2011-05-19<br />19.05.2011<br />5/19/2011<br />19/05/2011</span></i></div></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

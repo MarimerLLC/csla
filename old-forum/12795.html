@@ -1,0 +1,162 @@
+<html><header><title>constructor on type not found</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>constructor on type not found</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/12795.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>ashishsinha24 posted on Friday, November 07, 2014</h2><p>Hi friends,</p>
+<p>Can anybody help me with this error.</p>
+<p>&nbsp;</p>
+<p>Result Message:</p>
+<p>Test method OrderTracker.Test.Library.OrderEditTest.GetOrder threw exception:&nbsp;</p>
+<p>Csla.DataPortalException: DataPortal.Fetch failed (Exception has been thrown by the target of an invocation.) ---&gt; Csla.Reflection.CallMethodException: OrderEdit.DataPortal_Fetch method call failed ---&gt; System.Reflection.TargetInvocationException: Exception has been thrown by the target of an invocation. ---&gt; System.MissingMethodException: Constructor on type &#39;Endoscopy.DalEf.EndoscopyEntities&#39; not found.</p>
+<p>Result StackTrace:<span>	</span></p>
+<p>at System.RuntimeType.CreateInstanceImpl(BindingFlags bindingAttr, Binder binder, Object[] args, CultureInfo culture, Object[] activationAttributes, StackCrawlMark&amp; stackMark)</p>
+<p>&nbsp; &nbsp;at System.Activator.CreateInstance(Type type, BindingFlags bindingAttr, Binder binder, Object[] args, CultureInfo culture, Object[] activationAttributes)</p>
+<p>&nbsp; &nbsp;at System.Activator.CreateInstance(Type type, Object[] args)</p>
+<p>&nbsp; &nbsp;at Csla.Data.EF6.DbContextManager`1..ctor(String database, String label, DbCompiledModel model, ObjectContext context)</p>
+<p>&nbsp; &nbsp;at Csla.Data.EF6.DbContextManager`1.GetManager(String database, String label, DbCompiledModel model)</p>
+<p>&nbsp; &nbsp;at Csla.Data.EF6.DbContextManager`1.GetManager(String database)</p>
+<p>&nbsp; &nbsp;at Endoscopy.DalEf.DalManager..ctor() in d:\InProcess\Endoscopy.Net\Endoscopy.Net\Endoscopy.DalEf\DalManager.cs:line 30</p>
+<p>&nbsp;--- End of inner exception stack trace ---</p>
+<p>&nbsp; &nbsp; at System.RuntimeTypeHandle.CreateInstance(RuntimeType type, Boolean publicOnly, Boolean noCheck, Boolean&amp; canBeCached, RuntimeMethodHandleInternal&amp; ctor, Boolean&amp; bNeedSecurityCheck)</p>
+<p>&nbsp; &nbsp;at System.RuntimeType.CreateInstanceSlow(Boolean publicOnly, Boolean skipCheckThis, Boolean fillCache, StackCrawlMark&amp; stackMark)</p>
+<p>&nbsp; &nbsp;at System.RuntimeType.CreateInstanceDefaultCtor(Boolean publicOnly, Boolean skipCheckThis, Boolean fillCache, StackCrawlMark&amp; stackMark)</p>
+<p>&nbsp; &nbsp;at System.Activator.CreateInstance(Type type, Boolean nonPublic)</p>
+<p>&nbsp; &nbsp;at System.Activator.CreateInstance(Type type)</p>
+<p>&nbsp; &nbsp;at Endoscopy.Dal.DalFactory.GetManager() in d:\InProcess\Endoscopy.Net\Endoscopy.Net\Endoscopy.Dal\System\DalFactory.cs:line 22</p>
+<p>&nbsp; &nbsp;at Endoscopy.Lib.Order.OrderEdit.DataPortal_Fetch(Int32 ordermasterid) in d:\InProcess\Endoscopy.Net\Endoscopy.Net\Endoscopy.Lib\Order\Edit\OrderEdit.cs:line 243</p>
+<p>&nbsp; &nbsp;at lambda_method(Closure , Object , Object[] )</p>
+<p>&nbsp; &nbsp;at Csla.Reflection.MethodCaller.CallMethod(Object obj, DynamicMethodHandle methodHandle, Boolean hasParameters, Object[] parameters)</p>
+<p>&nbsp;--- End of inner exception stack trace ---</p>
+<p>&nbsp; &nbsp; at System.RuntimeTypeHandle.CreateInstance(RuntimeType type, Boolean publicOnly, Boolean noCheck, Boolean&amp; canBeCached, RuntimeMethodHandleInternal&amp; ctor, Boolean&amp; bNeedSecurityCheck)</p>
+<p>&nbsp; &nbsp;at System.RuntimeType.CreateInstanceSlow(Boolean publicOnly, Boolean skipCheckThis, Boolean fillCache, StackCrawlMark&amp; stackMark)</p>
+<p>&nbsp; &nbsp;at System.RuntimeType.CreateInstanceDefaultCtor(Boolean publicOnly, Boolean skipCheckThis, Boolean fillCache, StackCrawlMark&amp; stackMark)</p>
+<p>&nbsp; &nbsp;at System.Activator.CreateInstance(Type type, Boolean nonPublic)</p>
+<p>&nbsp; &nbsp;at System.Activator.CreateInstance(Type type)</p>
+<p>&nbsp; &nbsp;at Endoscopy.Dal.DalFactory.GetManager() in d:\InProcess\Endoscopy.Net\Endoscopy.Net\Endoscopy.Dal\System\DalFactory.cs:line 22</p>
+<p>&nbsp; &nbsp;at Endoscopy.Lib.Order.OrderEdit.DataPortal_Fetch(Int32 ordermasterid) in d:\InProcess\Endoscopy.Net\Endoscopy.Net\Endoscopy.Lib\Order\Edit\OrderEdit.cs:line 243</p>
+<p>&nbsp; &nbsp;at lambda_method(Closure , Object , Object[] )</p>
+<p>&nbsp; &nbsp;at Csla.Reflection.MethodCaller.CallMethod(Object obj, DynamicMethodHandle methodHandle, Boolean hasParameters, Object[] parameters)</p>
+<p>&nbsp; &nbsp;at Csla.Reflection.MethodCaller.CallMethod(Object obj, DynamicMethodHandle methodHandle, Boolean hasParameters, Object[] parameters)</p>
+<p>&nbsp; &nbsp;at Csla.Reflection.MethodCaller.&lt;CallMethodTryAsync&gt;d__b.MoveNext()</p>
+<p>--- End of stack trace from previous location where exception was thrown ---</p>
+<p>&nbsp; &nbsp;at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)</p>
+<p>&nbsp; &nbsp;at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)</p>
+<p>&nbsp; &nbsp;at Csla.Reflection.MethodCaller.&lt;CallMethodTryAsync&gt;d__5.MoveNext()</p>
+<p>--- End of stack trace from previous location where exception was thrown ---</p>
+<p>&nbsp; &nbsp;at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)</p>
+<p>&nbsp; &nbsp;at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)</p>
+<p>&nbsp; &nbsp;at Csla.Reflection.LateBoundObject.&lt;CallMethodTryAsync&gt;d__3.MoveNext()</p>
+<p>--- End of stack trace from previous location where exception was thrown ---</p>
+<p>&nbsp; &nbsp;at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)</p>
+<p>&nbsp; &nbsp;at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)</p>
+<p>&nbsp; &nbsp;at Csla.Server.SimpleDataPortal.&lt;Fetch&gt;d__7.MoveNext()</p>
+<p>&nbsp;--- End of inner exception stack trace ---</p>
+<p>&nbsp; &nbsp; at System.RuntimeTypeHandle.CreateInstance(RuntimeType type, Boolean publicOnly, Boolean noCheck, Boolean&amp; canBeCached, RuntimeMethodHandleInternal&amp; ctor, Boolean&amp; bNeedSecurityCheck)</p>
+<p>&nbsp; &nbsp;at System.RuntimeType.CreateInstanceSlow(Boolean publicOnly, Boolean skipCheckThis, Boolean fillCache, StackCrawlMark&amp; stackMark)</p>
+<p>&nbsp; &nbsp;at System.RuntimeType.CreateInstanceDefaultCtor(Boolean publicOnly, Boolean skipCheckThis, Boolean fillCache, StackCrawlMark&amp; stackMark)</p>
+<p>&nbsp; &nbsp;at System.Activator.CreateInstance(Type type, Boolean nonPublic)</p>
+<p>&nbsp; &nbsp;at System.Activator.CreateInstance(Type type)</p>
+<p>&nbsp; &nbsp;at Endoscopy.Dal.DalFactory.GetManager() in d:\InProcess\Endoscopy.Net\Endoscopy.Net\Endoscopy.Dal\System\DalFactory.cs:line 22</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Friday, November 07, 2014</h2><p>Hi, </p>
+<p>Start by verifying that the assembly Endoscopy.DalEf is present in the folder that the UnitTest runner i loading assemblies from. </p>
+<p>You proable have no direct references to this assembly so it is likely that this assembly (and it&#39;s types) are unavailable.</p>
+<p>You can f.ex. use ProcMon from Sysinternals to trace this.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ashishsinha24 replied on Friday, November 07, 2014</h2><p>Hi&nbsp;<strong>JonnyBee ,</strong></p>
+<p>&nbsp;</p>
+<p><strong>The DalEf is referenced by my test project. I am attaching my project . See if u can point me in the right direction</strong></p>
+<p>&nbsp;</p>
+<p><strong>regards</strong></p>
+<p>&nbsp;</p>
+<p><strong>ashish</strong></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Saturday, November 08, 2014</h2><p>Some parameters such as &quot;ConnectionName&quot; and &quot;CompiledModel&quot; must be supplied as parameters to the constructor of your EF context.</p>
+<p>And in your case you are supplying the &quot;connectionName&quot; and hence the DbContextManager is looking for that constructor.&nbsp;</p>
+<p>The entire issue is caused by YOU explicitly having a specified default constructor in your context and in your call to DbContextManager you specify a connectionName that requires another constructor to be found.</p>
+<pre style="font-family:Consolas;font-size:13;color:black;background:white;"><span style="color:blue;">public</span>&nbsp;EndoscopyEntities()
+&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;<span style="color:blue;">base</span>(<span style="color:#a31515;">&quot;name=EndoscopyEntities&quot;</span>)
+{
+}</pre>
+<p>So how do you exepect this line to be able to call the contructor on your context that allows code to specify connectionName?</p>
+<pre style="font-family:Consolas;font-size:13;color:black;background:white;">ConnectionManager&nbsp;=&nbsp;<span style="color:#2b91af;">DbContextManager</span>&lt;<span style="color:#2b91af;">EndoscopyEntities</span>&gt;.GetManager(<span style="color:#a31515;">&quot;Endoscopy&quot;</span>); <br /></pre>
+<p><b>My recommended solution is to add a new constructor to your context class:</b></p>
+<pre style="font-family:Consolas;font-size:13;color:black;background:white;"><span style="color:blue;">public</span>&nbsp;EndoscopyEntities(<span style="color:blue;">string</span>&nbsp;connectionName)&nbsp;:&nbsp;<span style="color:blue;">base</span>(connectionName)
+{
+}</pre>
+<p>Antoher possible solution is to NOT specify a connectionName to DbContextManager.GetManager as this will use the default contructor on the DbContext.</p>
+<p>So this will also work:</p>
+<pre style="font-family:Consolas;font-size:13;color:black;background:white;"><span style="color:blue;">public</span>&nbsp;DalManager()
+{
+&nbsp;&nbsp;&nbsp;&nbsp;ConnectionManager&nbsp;=&nbsp;<span style="color:#2b91af;">DbContextManager</span>&lt;<span style="color:#2b91af;">EndoscopyEntities</span>&gt;.GetManager();
+}</pre>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Saturday, November 08, 2014</h2><p>And just for reference, this is the actual code and the possible contructor being called:</p>
+<pre style="font-family:Consolas;font-size:13;color:black;background:white;"><span style="color:blue;">private</span>&nbsp;DbContextManager(<span style="color:blue;">string</span>&nbsp;database,&nbsp;<span style="color:blue;">string</span>&nbsp;label,&nbsp;DbCompiledModel&nbsp;model,&nbsp;ObjectContext&nbsp;context)
+{
+&nbsp;&nbsp;_label&nbsp;=&nbsp;label;
+ 
+&nbsp;&nbsp;<span style="color:blue;">if</span>&nbsp;(model&nbsp;!=&nbsp;<span style="color:blue;">null</span>)
+&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">if</span>&nbsp;(!<span style="color:blue;">string</span>.IsNullOrEmpty(database))
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_context&nbsp;=&nbsp;(C)(<span style="color:#2b91af;">Activator</span>.CreateInstance(<span style="color:blue;">typeof</span>(C),&nbsp;database,&nbsp;model));
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">else</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_context&nbsp;=&nbsp;(C)&nbsp;(<span style="color:#2b91af;">Activator</span>.CreateInstance(<span style="color:blue;">typeof</span>&nbsp;(C),&nbsp;model));
+&nbsp;&nbsp;}
+&nbsp;&nbsp;<span style="color:blue;">else</span>&nbsp;<span style="color:blue;">if</span>&nbsp;(context&nbsp;!=&nbsp;<span style="color:blue;">null</span>)
+&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;_context&nbsp;=&nbsp;(C)&nbsp;(<span style="color:#2b91af;">Activator</span>.CreateInstance(<span style="color:blue;">typeof</span>&nbsp;(C),&nbsp;context,&nbsp;<span style="color:blue;">true</span>));
+&nbsp;&nbsp;}
+&nbsp;&nbsp;<span style="color:blue;">else</span>&nbsp;<span style="color:blue;">if</span>&nbsp;(<span style="color:blue;">string</span>.IsNullOrEmpty(database))
+&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;_context&nbsp;=&nbsp;(C)&nbsp;(<span style="color:#2b91af;">Activator</span>.CreateInstance(<span style="color:blue;">typeof</span>&nbsp;(C)));
+&nbsp;&nbsp;}
+&nbsp;&nbsp;<span style="color:blue;">else</span>
+&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;_context&nbsp;=&nbsp;(C)(<span style="color:#2b91af;">Activator</span>.CreateInstance(<span style="color:blue;">typeof</span>(C),&nbsp;database));
+&nbsp;&nbsp;}
+}</pre></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ashishsinha24 replied on Saturday, November 08, 2014</h2><p>Thanks for the reply. But I still don&#39;t get it. I am new to CSLA 4.5</p>
+<p>What I did was :</p>
+<p>1) Made &nbsp;a copy of &nbsp;the sample ProjectTracker application which runs successfully.</p>
+<p>2) Update the EF with my database and changed the DalManager.cs respectively with my database name.&nbsp;</p>
+<p>3) I didn&#39;t write a line of code elsewhere.</p>
+<p>So, it should work without a glitch. Now, It has been a week since I have been trying this.&nbsp;</p>
+<p>Also, I tried your suggestion but the Test Failed with the following error.</p>
+<p>&nbsp;</p>
+<p>Test Name:<span>	</span>GetDoctors</p>
+<p>Test FullName:<span>	</span>Endoscopy.Test.Library.DoctorListTest.GetDoctors</p>
+<p>Test Source:<span>	</span>d:\InProcess\Endoscopy.Net\ProjectTracker.Test.Library\DoctorListTest.cs : line 49</p>
+<p>Test Outcome:<span>	</span>Failed</p>
+<p>Test Duration:<span>	</span>0:00:00.8892848</p>
+<p>&nbsp;</p>
+<p>Result Message:<span>	</span></p>
+<p>Test method Endoscopy.Test.Library.DoctorListTest.GetDoctors threw exception:&nbsp;</p>
+<p>Csla.DataPortalException: DataPortal.Fetch failed (The context is being used in Code First mode with code that was generated from an EDMX file for either Database First or Model First development. &nbsp;This will not work correctly. To fix this problem do not remove the line of code that throws this exception. If you wish to use Database First or Model First, then make sure that the Entity Framework connection string is included in the app.config or web.config of the start-up project. If you are creating your own DbConnection, then make sure that it is an EntityConnection and not some other type of DbConnection, and that you pass it to one of the base DbContext constructors that take a DbConnection. To learn more about Code First, Database First, and Model First see the Entity Framework documentation here: http://go.microsoft.com/fwlink/?LinkId=394715) ---&gt; Csla.Reflection.CallMethodException: DoctorList.DataPortal_Fetch method call failed ---&gt; System.Data.Entity.Infrastructure.UnintentionalCodeFirstException: The context is being used in Code First mode with code that was generated from an EDMX file for either Database First or Model First development. &nbsp;This will not work correctly. To fix this problem do not remove the line of code that throws this exception. If you wish to use Database First or Model First, then make sure that the Entity Framework connection string is included in the app.config or web.config of the start-up project. If you are creating your own DbConnection, then make sure that it is an EntityConnection and not some other type of DbConnection, and that you pass it to one of the base DbContext constructors that take a DbConnection. To learn more about Code First, Database First, and Model First see the Entity Framework documentation here: http://go.microsoft.com/fwlink/?LinkId=394715</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>regards and thanks for your time,</p>
+<p>&nbsp;</p>
+<p>Ashish</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Saturday, November 08, 2014</h2><p>EntityFramework has 2 ways of defining the model:</p>
+<p>&nbsp;</p>
+<ul>
+<li>Database First&nbsp;</li>
+<li>Code First</li>
+</ul>
+<p>&nbsp;</p>
+<p>(albeit bad names - see&nbsp;<a href="http://blogs.msdn.com/b/adonet/archive/2014/10/21/ef7-what-does-code-first-only-really-mean.aspx">http://blogs.msdn.com/b/adonet/archive/2014/10/21/ef7-what-does-code-first-only-really-mean.aspx</a>)</p>
+<p>And there is NO DbContext in ProjectTracker.&nbsp;<br />ProjectTracker uses the EDMX (and DatabaseFirst) where the context inherits from ObjectContext (and NOT DbContext) and use the Csla.Data.ObjectContextManager. </p>
+<p>The Exception you get is caused by the model being generated from and EDMX and you try to use these classes in a DbContext (Code-First). </p>
+<p>So you must make sure that to use the correct variant. EDMX will be retired from EF7 so you should probably look into using Code-First. &nbsp;</p>
+<p>This is the actual line of code that causes the exception:</p>
+<pre><span style="color:blue;">public</span>&nbsp;<span style="color:blue;">partial</span>&nbsp;<span style="color:blue;">class</span>&nbsp;<span style="color:#2b91af;">EndoscopyEntities</span>&nbsp;:&nbsp;<span style="color:#2b91af;">DbContext</span>
+{
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;EndoscopyEntities()
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;<span style="color:blue;">base</span>(<span style="color:#a31515;">&quot;name=EndoscopyEntities&quot;</span>)
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">protected</span>&nbsp;<span style="color:blue;">override</span>&nbsp;<span style="color:blue;">void</span>&nbsp;OnModelCreating(<span style="color:#2b91af;">DbModelBuilder</span>&nbsp;modelBuilder)
+&nbsp;&nbsp;&nbsp;&nbsp;{
+===&gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="color:blue;">throw</span>&nbsp;<span style="color:blue;">new</span>&nbsp;<span style="color:#2b91af;">UnintentionalCodeFirstException</span>();
+&nbsp;&nbsp;&nbsp;&nbsp;}</pre></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ashishsinha24 replied on Saturday, November 08, 2014</h2><p>Cant we have a more simpler DalEf ? I am going nuts</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Saturday, November 08, 2014</h2><p>It seems like you&#39;re trying to mix a few ways of doing EF together; EF supports Code First and Database First (and I think Model First).&nbsp; You need to pick one way as you can&#39;t use a combination.&nbsp; Your original problem though is simply a missing ctor that had the expected parameters.&nbsp; The complexity here though is mostly EF; Csla just provides a way to share an existing EF context if there is one.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

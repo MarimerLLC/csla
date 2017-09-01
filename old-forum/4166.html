@@ -1,0 +1,44 @@
+<html><header><title>Id after DataPortal_Insert</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Id after DataPortal_Insert</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4166.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>SimonSheehy posted on Sunday, January 13, 2008</h2><P>Hi,</P>
+<P>First of all, sorry for my english!</P>
+<P>I have a bug with Insert BuisinessBase object. When i insert object,&nbsp;I read the Id with the OUTPUT parameter and assign the value to local variable _Id. Every think is ok...</P>
+<P>---&nbsp;There is my DataPortal_Insert...<FONT size=2></P>
+<P>[</FONT><FONT color=#2b91af size=2>Transactional</FONT><FONT size=2>(</FONT><FONT color=#2b91af size=2>TransactionalTypes</FONT><FONT size=2>.TransactionScope)]</P>
+<P></FONT><FONT color=#0000ff size=2>protected</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>override</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>void</FONT><FONT size=2> DataPortal_Insert()</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>using</FONT><FONT size=2> (</FONT><FONT color=#2b91af size=2>SqlConnection</FONT><FONT size=2> cn = </FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> </FONT><FONT color=#2b91af size=2>SqlConnection</FONT><FONT size=2>(</FONT><FONT color=#2b91af size=2>Database</FONT><FONT size=2>.GetConnection))</P>
+<P>{</P>
+<P>cn.Open();</P>
+<P></FONT><FONT color=#0000ff size=2>using</FONT><FONT size=2> (</FONT><FONT color=#2b91af size=2>SqlCommand</FONT><FONT size=2> cm = cn.CreateCommand())</P>
+<P>{</P>
+<P>cm.CommandText = </FONT><FONT color=#a31515 size=2>"UsersInsert"</FONT><FONT size=2>;</P>
+<P>cm.CommandType = </FONT><FONT color=#2b91af size=2>CommandType</FONT><FONT size=2>.StoredProcedure;</P>
+<P>cm.Parameters.AddWithValue(</FONT><FONT color=#a31515 size=2>"@Username"</FONT><FONT size=2>, _Username);</P>
+<P>cm.Parameters.AddWithValue(</FONT><FONT color=#a31515 size=2>"@Password"</FONT><FONT size=2>, _Password);</P>
+<P>cm.Parameters.AddWithValue(</FONT><FONT color=#a31515 size=2>"@FirstName"</FONT><FONT size=2>, _FirstName);</P>
+<P>cm.Parameters.AddWithValue(</FONT><FONT color=#a31515 size=2>"@LastName"</FONT><FONT size=2>, _LastName);</FONT></P>
+<P><FONT size=2></FONT><FONT color=#2b91af size=2>SqlParameter</FONT><FONT size=2> param = </FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> </FONT><FONT color=#2b91af size=2>SqlParameter</FONT><FONT size=2>(</FONT><FONT color=#a31515 size=2>"@Id"</FONT><FONT size=2>, </FONT><FONT color=#2b91af size=2>SqlDbType</FONT><FONT size=2>.Int);</P>
+<P>param.Direction = </FONT><FONT color=#2b91af size=2>ParameterDirection</FONT><FONT size=2>.Output;</P>
+<P>cm.Parameters.Add(param);</P>
+<P>cm.ExecuteNonQuery();</P>
+<P>_Id = (</FONT><FONT color=#0000ff size=2>int</FONT><FONT size=2>)cm.Parameters[</FONT><FONT color=#a31515 size=2>"@Id"</FONT><FONT size=2>].Value;</P>
+<P>}</P>
+<P>}</P>
+<P>}</P></FONT><FONT color=#000000 size=2>
+<P>The Problem is when i'm using this class, i do something like :</P>
+<P>User = User.NewUser();</P>
+<P>User.Firstname = "...."</P>
+<P>User.Save();</P>
+<P>After the Save(), the Id of the object is ALWAYS 0, i try to put the _Id to a other variable but i do the same think!</P>
+<P>&nbsp;</P>
+<P>Thanks a lot for you help!</P>
+<P>Simon</P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Sunday, January 13, 2008</h2><P>User = User.NewUser();</P>
+<P>User.Firstname = "...."</P>
+<P>//This line of code is wrong:<BR>User.Save();</P>
+<P>//It should be:<BR>User = User.Save();</P>
+<P>Remember, the DataPortal returns a new instance of the object to the UI which includes the new ID value you just created.</P>
+<P>Joe</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>SimonSheehy replied on Sunday, January 13, 2008</h2><P>Ho!</P>
+<P>Thanks a LOT, that the solution ;)</P>
+<P>Thanks</P>
+<P>Simon</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

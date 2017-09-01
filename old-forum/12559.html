@@ -1,0 +1,27 @@
+<html><header><title>Simple ObjectContextManager Question</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Simple ObjectContextManager Question</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/12559.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>ashishsinha24 posted on Friday, March 28, 2014</h2><p>Hi,</p>
+<p>&nbsp;</p>
+<p>I am new to CSLA. And got stuck up.</p>
+<p>&nbsp;</p>
+<p>i am getting the following error when using the Entity frameework.</p>
+<p>&nbsp;</p>
+<p>Error<span>	</span>1<span>	</span>The type &#39;ShasPatho.DalEf.ShasPathoEntities&#39; cannot be used as type parameter &#39;C&#39; in the generic type or method &#39;Csla.Data.ObjectContextManager&lt;C&gt;&#39;. There is no implicit reference conversion from &#39;ShasPatho.DalEf.ShasPathoEntities&#39; to &#39;System.Data.Objects.ObjectContext&#39;.</p>
+<p>&nbsp;</p>
+<p>any help would be great.</p>
+<p>&nbsp;</p>
+<p>regards</p>
+<p>&nbsp;</p>
+<p>ashish</p>
+<div></div></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>msrs_it replied on Saturday, April 05, 2014</h2><p>I&#39;m also having the same issue. Did you found solution for this?</p>
+<p>&nbsp;</p>
+<p>Please let me know if you have any solution</p>
+<p>&nbsp;</p>
+<p>Thanks &amp; Regards</p>
+<p>SreeRam</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Saturday, April 05, 2014</h2><p>Hi,</p>
+<p>Seems like your EFContext is of type DbContext and not ObjectContext. For more information see:<br /><a href="http://www.entityframeworktutorial.net/EntityFramework4.3/dbcontext-vs-objectcontext.aspx">http://www.entityframeworktutorial.net/EntityFramework4.3/dbcontext-vs-objectcontext.aspx</a> &nbsp;</p>
+<p>The DbContext is not part of .NET Framework and exists in the EF X assemblies. So you need to add a NuGet reference to the <b>Csla .NET ADO.NET EF X </b>package and use the DbContextManager class instead.&nbsp;</p>
+<p>This is done so that CSLA is not limited to a specific version of EF.&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ashishsinha24 replied on Sunday, April 06, 2014</h2><p>Hi,</p>
+<p>Still the sample problem. Added CSLA.Net ADO.NET EF 6.0 package.&nbsp; see attached file.</p>
+<p>&nbsp;</p>
+<p>regards </p>
+<p>ashish<img src="http://s30.postimg.org/fv7soxoip/Untitled.png" style="max-width:550px;" border="0" alt="" /></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>kreid replied on Tuesday, January 13, 2015</h2><p>@ashish Same here. I have referenced Csla.Data.EF6, but I still get the error, because ObjectContextManager is in the Csla.Data namespace.</p>
+<p>Csla.Data.EF6 only seems to contain the DbContextManager. Did you ever figure out this one? Does CSLA force us to use DbContext with EF6?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>msrs_it replied on Wednesday, January 14, 2015</h2><p>See the latest reply of JonnyBee in <a target="_blank" title="this" href="http://forums.lhotka.net/forums/p/12812/57955.aspx#57955">this</a> post</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>msrs_it replied on Saturday, April 12, 2014</h2><p>Thank you jonny, issue was resolved.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

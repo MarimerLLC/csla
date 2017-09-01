@@ -1,0 +1,68 @@
+<html><header><title>Invalidating FieldManager Data</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Invalidating FieldManager Data</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9256.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>bniemyjski posted on Thursday, July 22, 2010</h2><p>Hello,</p>
+<p>I have a situation where I would like to remove or invalidate objects from the FieldManager. I&#39;m not aware how people handle this but I am open to the best solution :).</p>
+<p><a href="http://code.google.com/p/codesmith/issues/detail?id=364">I</a>&#39;m referring to a sample thats located <a href="http://code.google.com/p/codesmith/issues/detail?id=364">here </a>that will reproduce this issue. There is a case where you will have a child property that is loaded via LoadProperty:</p>
+<p>
+<p>public Diagnosi DiagnosiMemberByPrincipalDiagnosisID</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;{</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;get</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;{</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;if(!PrincipalDiagnosisID.HasValue)&nbsp;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;return null;</p>
+<p>&nbsp;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;if(!FieldManager.FieldExists(_diagnosiMemberByPrincipalDiagnosisIDProperty))</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;{</p>
+<p>....</p>
+</p>
+<p>The user may change the&nbsp;PrincipalDiagnosisID to point to a different record. In this case, the FieldManager Object needs to be marked as dirty so it can be reloaded. I&#39;m thinking the best place for this would be in the Child_Update.</p>
+<p>&nbsp;</p>
+<p>
+<p>// Update foreign keys values. This code will update the values passed in from the parent only if no errors occurred after executing the query.</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;if (patient != null &amp;&amp; patient.PatientID != this.PatientID)</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;{</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;LoadProperty(_patientIDProperty, patient.PatientID);</p>
+<p>&nbsp;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;//Mark DiagnosiMemberByPrincipalDiagnosisID As Dirty via FieldManager....</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;}</p>
+</p>
+<p>Thanks</p>
+<p>-Blake</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>elber73 replied on Friday, August 20, 2010</h2><p>Hello.</p>
+<p>I am interested too in how people&nbsp;refresh the child member collection,&nbsp;or how to&nbsp;invalidate the member.</p>
+<p>Thanks in advance.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Saturday, August 21, 2010</h2><p>At this time CSLA can do a rollback (CancelEdit) to a null value. It doesn&#39;t track other object reference changes for single child objects.</p>
+<p>The simplest solution is to use a BLB child, because BLB does track reference changes (moving older ones to DeletedList for deletion), and restoring those objects in the case of a CancelEdit.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>bniemyjski replied on Sunday, August 29, 2010</h2><p>
+<p>Hello,</p>
+<p>Do you have an example of this for both a BLB child and a BB Child?</p>
+<p>Thanks</p>
+<p>-Blake Niemyjski</p>
+</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Sunday, August 29, 2010</h2><p>Example of what Blake?</p>
+<p>A BLB does what it does - it is a self-tracking entity.</p>
+<p>If your parent object has a child property (BLB or BB) and you change the reference it holds, that isn&#39;t subject to rollback - there&#39;s no list maintained of previous values - with the exception of null.</p>
+<p>The behavior is very consistent.</p>
+<p>If you want more complex undo tracking, store your child objects <i>inside a BLB</i> and keep the parent&#39;s reference to that BLB consistent.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rfcdejong replied on Monday, August 30, 2010</h2><p>Hi Blake,</p>
+<p>I think u want the same as i want. There is already an issue for this, but it&#39;s not in progress yet.<br />See my post: <a href="http://forums.lhotka.net/forums/p/7505/35738.aspx#35738">http://forums.lhotka.net/forums/p/7505/35738.aspx#35738</a></p>
+<p>or the issue directly: <a href="http://www.lhotka.net/cslabugs/edit_bug.aspx?id=540">http://www.lhotka.net/cslabugs/edit_bug.aspx?id=540</a></p>
+<p>Greetings,<br />Raymond de Jong</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Monday, August 30, 2010</h2><p>Hi all,</p>
+<p>I looked into this issue for CSLA4 this spring but eventually gave up. I got some weird exceptions in the Undo mechanism when a field had been reset (ie null) and I was not able to debug/fix it within the timeframe I could use on this issue.</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>bniemyjski replied on Monday, August 30, 2010</h2><p>&nbsp;</p>
+<p>Hello,</p>
+<p>Thanks guys, that is exactly what I am trying to do. @JonnyBee, I spent 2-3 hours trying to figure this out and its a real pita... Any ETA on this feature or who wants to work on it?</p>
+<p>Thanks</p>
+<p>-Blake Niemyjski</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, August 30, 2010</h2><p>That&#39;s true, this is non-trivial.</p>
+<p>Consider what we&#39;re talking about.</p>
+<p>A FieldData subclass that does everything BLB does. So when a reference changes, the old value is marked for deletion and put into a DeletedList.</p>
+<p>This means inventing a few new things:</p>
+<ol>
+<li>Since a BLB can be a child, we need a way for a BLB to be &quot;deleted&quot; - and I&#39;m not entirely sure what that means - but probably that all child objects in the BLB are marked as deleted.</li>
+<li>BLB will need to support &quot;undelete&quot; - again I&#39;m not sure what this means - somehow it will need to undelete all the child objects it deleted when the BLB was &quot;deleted&quot; - this might be easy (the existing undo behaviors may just work), or it could be quite hard.</li>
+<li>A FieldData has to participate in the data portal process in a way that doesn&#39;t happen now. Somehow when a child property of an object is saved, this needs to result in child data portal calls against the current property value, and all the non-current ones in its DeletedList. So the child data portal needs to become aware of all this.</li>
+<li>A FieldData has to be accessible to an object factory - because in that data portal model, <i>you</i> will need to write code to loop through the details of any child property and do the right thing. So object factory code for child references will become a lot more complex than today.</li>
+<li>This new FieldData subclass will need to track its own edit level and participate in the EditLevelAdded type behaviors of BLB</li>
+<li>BLB will need to be enhanced to have an EditLevelAdded of its own, like BB has today</li>
+</ol>
+<p>I&#39;d hoped to get this into CSLA 4, but we ran out of time.</p>
+<p>I sure won&#39;t do this in a point release (like 4.0.x) because the changes here are major, and the odds of them having some effect on existing behaviors is quite high. So the earliest this could happen is 4.1.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>bniemyjski replied on Tuesday, August 31, 2010</h2><p>
+<p>Hello,</p>
+<p>I have a test case for this that I would be willing to help test this in the future.</p>
+<p>Thanks</p>
+<p>-Blake Niemyjski</p>
+</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

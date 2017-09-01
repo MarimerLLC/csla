@@ -1,0 +1,9 @@
+<html><header><title>BusinessListBase - Accessing Item</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>BusinessListBase - Accessing Item</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4028.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>HarryU posted on Wednesday, December 12, 2007</h2><P>&nbsp;</P>
+<P>Hi</P>
+<P>I have a class that inherits BusinessListBase and I have sucessfully bound that to a list on a form.&nbsp; What I am trying to do is double click an item on a list, open a new form and bind all textboxes to that item from the list, when I close the form update the list.</P>
+<P>What is the best way to achieve this, I am just learning CSLA so please bear with me.&nbsp; </P>
+<P>Thanks</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>KKoteles replied on Friday, December 21, 2007</h2><P>Harry,</P>
+<P>I hate to say it, but take a look at Rocky's ProjectTracker application.&nbsp; He actually&nbsp;covers double-clicking a list bound to a BusinessListBase (ProjectResources) object as well as&nbsp;a list bound to a ReadOnlyListBase object.&nbsp; In the C# book start reading at page 494 to 497 to see how to handle what to do in the double-click event (in the book's case the OK button)&nbsp;of the list form.&nbsp; Pages 497 to 505 cover the "Edit" form which in your case covers the new form opening and binding the textboxes to the single selected object.</P>
+<P>It is hard to explain it any better than Rocky.</P>
+<P>Ken</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

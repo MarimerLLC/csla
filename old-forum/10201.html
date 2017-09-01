@@ -1,0 +1,14 @@
+<html><header><title>CSLA 4, Property value is changing but not savable or dirty</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA 4, Property value is changing but not savable or dirty</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10201.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Raghav posted on Friday, March 25, 2011</h2><p>Dear All</p>
+<p>I have developed a windows application where i have created a form its looks similar to ProjectTrackers Role Edit form. i have copied the code from project trackers role edit form and i am using grid to create and edit data.</p>
+<p>actually i have added few more properties</p>
+<p>Id Byte</p>
+<p>Code Byte</p>
+<p>Name string</p>
+<p>In single object i can change &#39;name&#39; property and even i can save but not Id and Code properties</p>
+<p>when i change code property, it changes the value of code property but its remains unsavable or not dirty.</p>
+<p>when i change name property it changes property and also savable and its dirty.</p>
+<p>ex: when i make code from 1 to 2 when i check the property value it&nbsp; shows as 2, but its not savable or dirty.</p>
+<p>but when i change name from ABC to XYZ then it is savable and dirty.</p>
+<p>Could&nbsp;anyone please suggest.</p>
+<p>Thanks in advance</p>
+<p>Raghav</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>Charleh replied on Friday, March 25, 2011</h2><p>Can you post your code (your property accessor get/set) for your business object? It sounds like you might have got some of the the&nbsp;get/set accessors&nbsp;and the actual set/getproperty calls mixed up and certain properties are being set incorrrectly</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

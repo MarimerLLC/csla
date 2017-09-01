@@ -1,0 +1,33 @@
+<html><header><title>Csla.Xaml.ViewModelBase misunderstanding ??</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Csla.Xaml.ViewModelBase misunderstanding ??</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11498.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>st3fanus posted on Monday, July 23, 2012</h2><p>Hi all</p>
+<p>I have made a test app follow ebooks series part UI</p>
+<p>My test app is Silverlight 5</p>
+<p>I want to display a child window which is contain a ListBox that I want to display a list of menu on it.</p>
+<p>BUT The First Temptation is NOT WORKED !</p>
+<p>[ First Temptation ]</p>
+<p>This is My Caller Code OR Initial Code :</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; View.Sample dlg = new View.Sample();<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; dlg.DataContext = new Menu.MenuVM(Csla.ApplicationContext.User.Identity.Name);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; dlg.Show();</p>
+<p>And this is My View Model</p>
+<p>public MenuVM(string username)<br />{</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; BeginRefresh(callback=&gt;MenuList.GetMenuList(username, callback);<br />}</p>
+<p>protected override void OnModelChanged(MenuList oldValue, MenuList newValue)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; base.OnModelChanged(oldValue, newValue);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (newValue != null)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; newValue.CollectionChanged += (sender, args) =&gt; OnPropertyChanged(&quot;MenuItemList&quot;);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; OnPropertyChanged(&quot;MenuItemList&quot;);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</p>
+<p>And this is my property i bounded to ListBox</p>
+<p>public ObservableCollection&lt;MenuItemVM&gt; MenuItemList<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; get<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (Model == null)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return null;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; else<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return new ObservableCollection&lt;MenuItemVM&gt;(<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Model.Select(t =&gt; new MenuItemVM(t, this)));<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</p>
+<p>BUT The result is display nothing</p>
+<p>[ Second Temptation]</p>
+<p>I Display list of menu in the ListBox that is located in SAME View as Initial Caller</p>
+<p>in the My Caller View Model I have a property :</p>
+<p>public Menu.MenuVM MenuVM<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; { get; private set; }</p>
+<p>My Caller Code :</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; MenuVM = new Menu.MenuVM(Csla.ApplicationContext.User.Identity.Name);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; RaisePropertyChanged(&quot;MenuVM&quot;);</p>
+<p>&nbsp;</p>
+<p>AND THAT WORK </p>
+<p>&nbsp;</p>
+<p>Could anyone help me to rxplain me ?</p>
+<p>&nbsp;</p>
+<p>thanks a lot</p>
+<p>&nbsp;</p>
+<p>Stefanus</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

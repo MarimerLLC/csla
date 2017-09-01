@@ -1,0 +1,138 @@
+<html><header><title>Help me understand why ObjectFactory is a good idea?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Help me understand why ObjectFactory is a good idea?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/7924.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Mr.Underhill posted on Sunday, November 01, 2009</h2>Let me put some context to this discussion before I begin...<br /><br />I been using CSLA.NET for at least 3 years now, however I stopped following the latest and greatest versions/features because I was working in a large project.<br /><br />So here I'm learning the new stuff, I'm following the SL training videos, I'm currently in Video # 3 and Rocky is talking about the new (new for me at least) ObjectFactory and how this helps separate the DataAccess layer to a different class and he admits this breaks encapsulation....<br /><br />I'm litterally watching this video right now, I have it open in paused in my other screen and switched here to post this message...<br /><br />I might get to know better by the end of the video, but I just don't get why bother splitting your object and breaking encapsulation by providing this new class.. what is the advantage or when is good idea to do this...<br /><br />Thanks in advance for clarifying this fundamental concept</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Sunday, November 01, 2009</h2>Hi, <br><br>Some like the encapsulation and others prefer to decouple the layers. I like ObjectFactory because it gives me a imo cleaner separation of layers and "opens up" code to make it easier to write unit tests. <br><br>BO don't know anything about data access code - just the business logic (Validation, Authorization) and static factory methods (calling DataPortal). <br><br>DataPortal is configured for which FactoryLoader to use at runtime and uses the factory loader to get an instance of factory and routes the call. When writing/executing Unit Tests you can plug in a "mock" ObjectFactory that allows you to test the bits you need. No change needed in BOs.<br><br>When writing code for SL and using encapsulation you will either have to put DAL code in a separate class or use complier directives to exclude DAL code from compiler in order to share the same classes in both Csla.NET and CslaLight projects. <br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Sunday, November 01, 2009</h2><P>ObjectFactory was created originally in preparation for future ADO.NET EF features I hope come to exist.</P>
+<P>But it turns out to be pretty nice for some other DAL scenarios - especially if you write a little of your own framework code to extend the ObjectFactory base class for your particular data access model.</P>
+<P>Honestly though, I still really like the DataPortal_XYZ model, especially when coupled with a repository pattern or some other abstraction scheme for the DAL code itself. The advantage of the DP_XYZ model is that the data portal does a lot more work for you automatically, which is something I really like.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rfcdejong replied on Monday, November 02, 2009</h2><P>I&nbsp;choosed CSLA because it has the ability to use an ObjectFactory, if it didn't exist&nbsp;i wouldn't be using CSLA, that's for sure. I also&nbsp;don't use the FieldManager.UpdateChildren()<BR><BR>The main reason is that our projects need to have data seperated from business, the "smart busines objects" should not be so smart to contain any data code. <BR>Another reason is that&nbsp;i don't want client code to reference any data assembly.<BR><BR>Thru i need to say that i created an own abstraction layer over every single 3rd party component / framework. 3 frameworks in use:&nbsp;OPF3 +&nbsp;CSLA + CAG <BR><BR>(PS: When i say I then i mean my company and the teams we have)<BR><BR></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, November 02, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I think the ObjectFactory approach is a fine one, as long as you
+create some abstractions of your own. CSLA merely provides the basic toolkit (the
+ObjectFactory base class), but not (in my view) enough abstraction to provide
+for consistency or productivity when building a DAL.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>The trick of course, is that the way you&#8217;d create abstraction
+is different for different types of data access technologies.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>But ultimately, I wouldn&#8217;t want to lose the automation
+provided by the data portal in terms of correctly managing the metastate of my
+objects (IsNew, IsDirty, IsChild, etc).<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I put a lot of work into creating the child data portal concept
+because one of the biggest pain points with using older versions of CSLA was
+that people didn&#8217;t manage the metastate correctly &#8211; they simply
+forgot to call MarkAsChild(), MarkNew() and so forth. The child data portal eliminates
+that source of pain.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>If you use code-gen, or if you create richer ObjectFactory
+subclasses for building your DAL, you can automatically and correctly manage
+the metastate too. But if all you do is build a DAL using the basic
+ObjectFactory base class, you are left managing all this yourself &#8211; in which
+case you are back in that scenario where it is easy to forget to do the right
+thing because it is all manual.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Additionally, you can easily get the separation between DAL and business
+layer, including not having the business layer reference the DAL, by using a DI
+or repository model.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>The last couple large projects Magenic has done with CSLA have
+used the DataPortal_XYZ model where those methods invoke an abstract DAL using
+the repository pattern and a DI container. That enables the use of mock data,
+unit testing of the DAL and efficient testing of the business layer (against
+the mock data). All without anyone having to manually deal with the metastate
+stuff.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>But I fully understand and appreciate the &#8220;purity&#8221;
+of using ObjectFactory instead, and won&#8217;t argue with people who suggest it
+is their preferred approach. I honestly don&#8217;t think it is as &#8220;pure&#8221;
+in most cases, because most people use it in a way that breaks encapsulation
+(their DAL uses ReadProperty() and LoadProperty() to directly manipulate the
+internal state of the business object &#8211; which is easy, but inelegant).<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>In the real world though, we often sacrifice purity and elegance
+in the name of productivity, performance and pragmatism. And I&#8217;m totally
+fine with that.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>All I&#8217;m saying is that both models are, in my view,
+equally good if done right &#8211; it just depends on how much framework creation
+you want to do on your own to get up and running.<o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>mbblum replied on Monday, November 02, 2009</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div><br />The last couple large projects Magenic has done with CSLA have<br />used the DataPortal_XYZ model where those methods invoke an abstract DAL using<br />the repository pattern and a DI container. That enables the use of mock data,<br />unit testing of the DAL and efficient testing of the business layer (against<br />the mock data). All without anyone having to manually deal with the metastate<br />stuff.<br /></div></BLOCKQUOTE><br /><br />Is there a good example of the Dependency Injection (DI) with DP_XYZ in the samples? Or the CSLA video series? <br /><br />Seeing an example will help my understanding and, hopefully, have a "best practices" approach.<br /><br />Thanks, mbb</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, November 02, 2009</h2><P>The upcoming CSLA .NET video series will have a data access segment that will illustrate a lightweight (not DI, just basic factory-repository) approach to accessing a DAL from the DataPortal_XYZ methods.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Mr.Underhill replied on Monday, November 02, 2009</h2>Rocky, when are you planning to release the CSLA.NET training videos?<br /><br />Thank you all for the comments, it's more clear now.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, November 02, 2009</h2>As soon as I can get them done :)<br /><br />-----Original Message-----<br />From: Mr.Underhill [mailto:cslanet@lhotka.net] <br />Sent: Monday, November 02, 2009 2:44 PM<br />To: rocky@lhotka.net<br />Subject: Re: [CSLA .NET] RE: Help me understand why ObjectFactory is a good<br />idea?<br /><br />Rocky, when are you planning to release the CSLA.NET training videos?<br /><br />Thank you all for the comments, it's more clear now.<br /><br /></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>fussion_am replied on Monday, November 02, 2009</h2><P>Has anyone run any performance testing to see if using a DI container has any significant performance hit?&nbsp; 'When I have time' I intend to do so...but it doesn't look like I will have time for a while...</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Monday, November 02, 2009</h2><strong></strong><span>Hi, <br><br></span><i><span>"But I fully understand and appreciate the “purity”
+of using ObjectFactory instead, and won’t argue with people who suggest it
+is their preferred approach. I honestly don’t think it is as “pure”
+in most cases, because most people use it in a way that breaks encapsulation
+(their DAL uses ReadProperty() and LoadProperty() to directly manipulate the
+internal state of the business object – which is easy, but inelegant).</span>"</i><br><br>Yes, developers should use BypassPropertyChecks and set properties. However that also implies that all variables are exposed as public properties. This may not be true (example: timestamp properties in ProjectTracker that are only for "internal" use in BO/DAL)&nbsp; will require LoadProperty and ReadProperty for access. The same is also true for SmartDate properties when exposed as string or datetime property through GetPropertyConvert/SetPropertyConvert in BO. <br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, November 02, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Actually I think the <i>most pure</i> solution is for the
+ObjectFactory to populate a DTO and call a well-known method on the business object
+to provide it with the DTO. The object will then load itself with data from the
+DTO.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>This keeps the business object decoupled from the object
+factory, and minimizes the coupling of the object factory to the business
+object. Most importantly it preserves encapsulation.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>As I said earlier though, that level of purity requires more
+work and increases overhead &#8211; but it avoids nasty coupling. But most people accept
+that level of coupling to avoid the complexity/perf consequences.<o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Tuesday, November 03, 2009</h2>That would then translate into <br>1. well defined business object <br>2. well defined DTO contract objects for fetch/save <br>3. object factory operates on DTO objects and maps these to DAL code (that may be separate Entity/ActiveRecord/Repository objects that goes to the DB).<br><br>Seems to me that this introduces a new DTO layer (2) that must know all the properties and the state of the objecy (dirty, new, savable, deleted) for Saving/Deleting data. <br><br>The Business Objects define a contract to be used in UI Interface.&nbsp; I'd like to see a way of using the same contract from a DAL and make the object factory do a "mapping" between BO and DAL objects. This will of course incur coupling but that seems like to happen anyway from my experience. <br><br>As an example: ProjectTracker uses a TimeStamp marking on Fetch/Save/Insert. In L2EF you will not get to the updated value until after ObjectContext.SaveChanges() has been called (all changes are submitted to DB). To get the updated value from an Update the DAL code must setup a callback on OnPropertyChanged on the EF object and then update the timestamp value in BO. And on Insert you will also need to send the new Id (db generated value) back to the BO.&nbsp; Should the BO define a separate DTO for this and a separate update function for Save/Insert that are specifically designed for usage in one DAL? <br><br>I'd love to see a "smarter" ObjectFactory that would help manage state - but it's hard to envision all the needs for a DAL to set values in the BO as new DAL technology is introduced. <br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jav replied on Tuesday, November 03, 2009</h2>Talking about the DTOs:<br />Some of my object hierarchies are > 5 levels deep, making the use of DataReader quite cumbersome.  <br />5-6 years ago when I started using Csla, I found that the easiest way to populate those hierarchies was to get the data from the database using a dataset. With proper DataRealations set up, my code can walk through the dataset populating every object. This takes place withing each object, exactly like the dataReaders.  There is no breach of encapsulation.  The reverse process takes place when it comes to saving the data.  All code is generated.<br /><br />I have a separate DataAccess assembly which fetches the data from the database and returns it to the DatPortal_Fetch of the Root object as a DataSet.<br /><br />I know, I know - it is old fashioned and may be kinda 'country', but why can we not rename the DataSet as DTO, and make our life a little easier.<br /><br />Javed</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, November 03, 2009</h2><P>I think the DataSet is a <EM>great</EM> DTO. Well, more like an entity object, but still. Microsoft did a beautiful job building an in-memory tabular data store with the DataSet, and they should be commended for it.</P>
+<P>For better or worse however, the DataSet is clearly a legacy technology, and the focus is now on ADO.NET EF and similar technologies.</P>
+<P>Fortunately for your scenario, something like EF will almost certainly provide you with the same general architecture and benefits you are getting from the DataSet. You can generate an EF query that returns an entity object graph that is &gt;5 levels deep, and map that data into your business objects much like you do today.</P>
+<P>Then again, "legacy" is all relative. Microsoft has not said they are going to sunset the DataSet, and even if they do say that at some point, they'll continue to support it for years. So if your solution works for you there's probably no reason to move off it any time soon.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Mr.Underhill replied on Tuesday, November 03, 2009</h2>Wouldn't you agree that a most pure solution will be to use your previous suggestion of a repository pattern so that your DataPortal_XYZ interact with?<br /><br />This still removes the coupling to the actual DAL implementation and gives the control to the BO as to when interact with the DAL.<br /><br />This repository should return generic DTO's that the BO will act on to obtain the data and populate itself in the case of a Fetch for example.<br /><br />What I don't like about the ObjectFactory/DTO approach is that you still have to have this well-known method you mentioned as private to avoid misuse of your business object API and in addition it seems that your ObjectFactory is some how in "control" of the object and not the other way around.<br /><br />Any thoughts on this!</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, November 03, 2009</h2><P>I think you've summed up why I have two models.</P>
+<P>You can make very compelling arguments for the BO invoking the DAL via various decoupling design patterns such as repository.</P>
+<P>You can make very compelling arguments for the DAL assuming responsibility for creating/using the BO using many patterns employed by ORM tools.</P>
+<P>I've always chosen to make CSLA as data access agnostic or neutral as possible. I believe this (and the UI neutrality) is one of the biggest strengths of CSLA. Supporting two of the most dominant data access architectures just extends that data access neutrality to another level, which I think is a fine thing.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jav replied on Thursday, November 05, 2009</h2>I haven't read up on EF yet, but if it is somewhat like a Dataset, would it not be possible for the DataPortal_Fetch method to call the DataAccess layer only to have the EF entity sent back.  Once the entity is in-house, so to speak, the object can load its own properties.<br /><br />This way the DataAccess layer is still separate, it can be unit tested by itself and there will be no breach of encapsulation.<br /><br />Javed</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, November 05, 2009</h2>Jav, this is exactly how I use ADO.NET EF.<br /><br />If you look at the data access video from the Silverlight video series<br />(shameless plug: http://store.lhotka.net) you can see how the code uses EF<br />to persist the data, almost exactly in the way many people have used a<br />DataSet in the past.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jav replied on Thursday, November 05, 2009</h2>Fantastic.  <br />I will be sure to watch the Data Access video (today actually) right to the end instead of saying "Aah! EF, well that's not for me, click!" <br /><br />I am glad I asked the question.  Thanks<br /><br />Javed</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

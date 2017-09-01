@@ -1,0 +1,190 @@
+<html><header><title>A simple pattern for complex filter criteria</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>A simple pattern for complex filter criteria</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3422.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>RobKraft posted on Friday, August 24, 2007</h2><P><FONT face=Arial>I am hoping to create a pattern that I can use in all my business objects for passing criteria through the data portal.&nbsp; Many of my classes need to allow data to be retrieved using different where clauses.&nbsp; I am submitting the idea I came up with because I hope someone can point out any major flaws with it before I implement it in hundreds of classes.</FONT></P>
+<P><FONT face=Arial>First, I am creating 2 common criteria classes that can be used by all my business classes.&nbsp; Doing so means that I don't have to define any criteria classes in any of my business objects.&nbsp; The first class inherits from HashTable, and the second looks similar to many example CSLA criteria classes.</FONT></P><PRE class=csharpcode><SPAN class=kwrd>using</SPAN> System;
+<SPAN class=kwrd>using</SPAN> System.Collections.Generic;
+<SPAN class=kwrd>using</SPAN> System.Text;
+
+<SPAN class=kwrd>namespace</SPAN> MyCompany
+{
+    [Serializable()]
+    <SPAN class=kwrd>public</SPAN> <SPAN class=kwrd>class</SPAN> CriteriaHash : System.Collections.Hashtable
+    {
+        <SPAN class=kwrd>public</SPAN> CriteriaHash()
+        {
+        }
+        <SPAN class=kwrd>public</SPAN> CriteriaHash(CriteriaItems[] filters)
+        {
+            <SPAN class=kwrd>foreach</SPAN> (CriteriaItems f <SPAN class=kwrd>in</SPAN> filters)
+            {
+                <SPAN class=kwrd>this</SPAN>.Add(f.ParmName, f.<SPAN class=kwrd>value</SPAN>);
+            }
+        }
+    }
+    [Serializable()]
+    <SPAN class=kwrd>public</SPAN> <SPAN class=kwrd>class</SPAN> CriteriaItems
+    {
+        <SPAN class=kwrd>private</SPAN> <SPAN class=kwrd>object</SPAN> _value = <SPAN class=kwrd>null</SPAN>;
+        <SPAN class=kwrd>private</SPAN> <SPAN class=kwrd>string</SPAN> _parmName = <SPAN class=kwrd>null</SPAN>;
+        <SPAN class=kwrd>public</SPAN> <SPAN class=kwrd>object</SPAN> <SPAN class=kwrd>value</SPAN> { get { <SPAN class=kwrd>return</SPAN> _value; } }
+        <SPAN class=kwrd>public</SPAN> <SPAN class=kwrd>string</SPAN> ParmName { get { <SPAN class=kwrd>return</SPAN> _parmName; } }
+        <SPAN class=kwrd>public</SPAN> CriteriaItems(<SPAN class=kwrd>string</SPAN> parmName, <SPAN class=kwrd>object</SPAN> <SPAN class=kwrd>value</SPAN>)
+        {
+            _parmName = parmName;
+            _value = <SPAN class=kwrd>value</SPAN>;
+        }
+    }
+}
+</PRE><FONT face=Arial>And here is an example of the usage:</FONT><PRE></PRE><PRE class=csharpcode><SPAN class=kwrd>using</SPAN> System;
+<SPAN class=kwrd>using</SPAN> System.Data;
+<SPAN class=kwrd>using</SPAN> System.Data.SqlClient;
+<SPAN class=kwrd>using</SPAN> Csla;
+<SPAN class=kwrd>using</SPAN> Csla.Data;
+
+<SPAN class=kwrd>namespace</SPAN> MyNamespace
+{
+    [Serializable()]
+    <SPAN class=kwrd>public</SPAN> <SPAN class=kwrd>class</SPAN> ProductLookupList : ReadOnlyListBase&lt;ProductLookupList, ProductLookup&gt;
+    {
+        <SPAN class=kwrd>public</SPAN> <SPAN class=kwrd>static</SPAN> ProductLookupList GetProductsAll()
+        {
+            <SPAN class=kwrd>return</SPAN> DataPortal.Fetch&lt;SupervisorLookupList&gt;(<SPAN class=kwrd>new</SPAN> CriteriaHash());
+        }
+        <SPAN class=kwrd>public</SPAN> <SPAN class=kwrd>static</SPAN> ProductLookupList GetProductsByDept(<SPAN class=kwrd>string</SPAN> Dept)
+        {
+            <SPAN class=kwrd>return</SPAN> DataPortal.Fetch&lt;ProductLookupList&gt;(<SPAN class=kwrd>new</SPAN> CriteriaHash(<SPAN class=kwrd>new</SPAN> CriteriaItems[1] { <SPAN class=kwrd>new</SPAN> CriteriaItems(<SPAN class=str>"DEPT"</SPAN>, Dept) }));
+        }
+        <SPAN class=kwrd>public</SPAN> <SPAN class=kwrd>static</SPAN> ProductLookupList GetProductsByVendor(<SPAN class=kwrd>string</SPAN> Vendor)
+        {
+            <SPAN class=kwrd>return</SPAN> DataPortal.Fetch&lt;ProductLookupList&gt;(<SPAN class=kwrd>new</SPAN> CriteriaHash(<SPAN class=kwrd>new</SPAN> CriteriaItems[1] { <SPAN class=kwrd>new</SPAN> CriteriaItems(<SPAN class=str>"VENDOR"</SPAN>, Vendor) }));
+        }
+        <SPAN class=kwrd>public</SPAN> <SPAN class=kwrd>static</SPAN> ProductLookupList GetProductsByVendorAndDept(<SPAN class=kwrd>string</SPAN> Vendor, <SPAN class=kwrd>string</SPAN> Dept)
+        {
+            <SPAN class=kwrd>return</SPAN> DataPortal.Fetch&lt;ProductLookupList&gt;(<SPAN class=kwrd>new</SPAN> CriteriaHash(<SPAN class=kwrd>new</SPAN> CriteriaItems[2] { <SPAN class=kwrd>new</SPAN> CriteriaItems(<SPAN class=str>"VENDOR"</SPAN>, Vendor), <SPAN class=kwrd>new</SPAN> CriteriaItems(<SPAN class=str>"DEPT"</SPAN>, Dept) }));
+        }
+
+        <SPAN class=kwrd>internal</SPAN> ProductLookupList(){}
+
+        <SPAN class=kwrd>private</SPAN> <SPAN class=kwrd>void</SPAN> DataPortal_Fetch(CriteriaHash criteria)
+        {
+            <SPAN class=kwrd>string</SPAN> spName = <SPAN class=str>"sp_GetAll"</SPAN>;
+            <SPAN class=kwrd>if</SPAN> (criteria[<SPAN class=str>"DEPT"</SPAN>] != <SPAN class=kwrd>null</SPAN>)
+            {
+                spName = <SPAN class=str>"sp_GetByDept"</SPAN>;
+            }
+            <SPAN class=kwrd>if</SPAN> (criteria[<SPAN class=str>"VENDOR"</SPAN>] != <SPAN class=kwrd>null</SPAN>)
+            {
+                spName = <SPAN class=str>"sp_GetByVend"</SPAN>;
+                <SPAN class=kwrd>if</SPAN> (criteria[<SPAN class=str>"DEPT"</SPAN>] != <SPAN class=kwrd>null</SPAN>)
+                {
+                    spName = <SPAN class=str>"sp_GetByVendAndDept"</SPAN>;
+                }
+            }
+            db.CreateCommand(spName);
+            ...
+        }
+    }
+}</PRE><PRE class=csharpcode></PRE>
+<P><FONT face=Arial>The benefits of this approach is that I don't need to write</br> the Criteria or FilteredCriteria classes in each business class</br> (and it is a simpler pattern for code generation).</br> The call to DataPortal.Fetch is a little bit uglier than most CSLA examples,</br> and the size of the serialized object is about 150 bytes larger;</br> but I think the tradeoff looks worth it to me in order to have the simplified pattern.</br> What do you think? </br>Thanks in advance for your feedback!</FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, August 24, 2007</h2><P>Conceptually that sort of thing should be fine - but you can't inherit from Hashtable. You need to inherit from CriteriaBase to make a reusable criteria.</P>
+<P>Remember that the criteria object must provide two types of information to the server-side data portal:</P>
+<OL>
+<LI>The type of the business object you are looking for</LI>
+<LI>The criteria data needed for that object to load itself with data</LI></OL>
+<P>The first bit of information comes either because the criteria class is directly nested within the business class (as shown in the book), or because it inherits from CriteriaBase and you explicitly provide the Type object in the constructor - which is what you need to do to create a reusable criteria class.</P>
+<P>The second bit of information could be strongly typed (as shown in the book), or could be a Dictionary&lt;string, object&gt; or Hashtable or any other data structure that is serializable. Remember that some data structures serialize to be larger or smaller than others, and complex collections can be on the larger side (more metadata). Typically that's not an issue, but it is something of which you should be aware.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RobKraft replied on Friday, August 24, 2007</h2><P><FONT face=Arial>Thanks for the quick feedback and for steering me in the right direction!</FONT></P>
+<P><FONT face=Arial>Based on that, I will inherit from CriteriaBase like this:</FONT></P><PRE class=csharpcode>    [Serializable()]
+    <SPAN class=kwrd>public</SPAN> <SPAN class=kwrd>class</SPAN> CriteriaHash : Csla.CriteriaBase
+    {
+        <SPAN class=kwrd>private</SPAN> System.Collections.Hashtable _hashTable = <SPAN class=kwrd>new</SPAN> System.Collections.Hashtable();
+        <SPAN class=kwrd>public</SPAN> System.Collections.Hashtable HashTable
+        {
+            get { <SPAN class=kwrd>return</SPAN> _hashTable; } 
+        }
+        <SPAN class=kwrd>public</SPAN> CriteriaHash(Type type): <SPAN class=kwrd>base</SPAN>(type)
+        {
+        }
+        <SPAN class=kwrd>public</SPAN> CriteriaHash(Type type, CriteriaItems[] filters) : <SPAN class=kwrd>base</SPAN>(type)
+        {
+            <SPAN class=kwrd>foreach</SPAN> (CriteriaItems f <SPAN class=kwrd>in</SPAN> filters)
+            {
+                _hashTable.Add(f.ParmName, f.<SPAN class=kwrd>value</SPAN>);
+            }
+        }
+    }
+</PRE>
+<P><FONT face=Arial>And then I will do the following in the businesss classes:</FONT></P><PRE class=csharpcode>        <SPAN class=kwrd>public</SPAN> <SPAN class=kwrd>static</SPAN> ProductLookupList GetProductsAll()
+        {
+            <SPAN class=kwrd>return</SPAN> DataPortal.Fetch&lt;ProductLookupList&gt;(<SPAN class=kwrd>new</SPAN> CriteriaHash(Type.GetType(<SPAN class=str>"MyCompany.ProductLookupList"</SPAN>)));
+        }
+        <SPAN class=kwrd>public</SPAN> <SPAN class=kwrd>static</SPAN> ProductLookupList GetProductsByDept(<SPAN class=kwrd>string</SPAN> Dept)
+        {
+            <SPAN class=kwrd>return</SPAN> DataPortal.Fetch&lt;ProductLookupList&gt;(<SPAN class=kwrd>new</SPAN> CriteriaHash(Type.GetType(<SPAN class=str>"MyCompany.ProductLookupList"</SPAN>), <SPAN class=kwrd>new</SPAN> CriteriaItems[1] { <SPAN class=kwrd>new</SPAN> CriteriaItems(<SPAN class=str>"DEPT"</SPAN>, Dept) }));
+        }
+</PRE>
+<P><FONT face=Arial>
+<P>This appears to function as I desire; but I have yet to test it with .Net Remoting.</P>
+<P>&nbsp;</P></FONT>&nbsp; 
+<P></P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>juddaman replied on Friday, August 24, 2007</h2>Just a thought on helping to tidy up the IF statement section. Maybe
+you could just pass the SP name as part of the CriteriaHash object i.e.
+a property in the CriteriaHash. Would change this section of code to
+something like:<br>
+<pre class="csharpcode"><span class="kwrd">	</span><br><span class="kwrd">public</span> <span class="kwrd">static</span> ProductLookupList GetProductsAll()<br>{<br>	<span class="kwrd">return</span> DataPortal.Fetch&lt;ProductLookupList&gt;(<span class="kwrd">new</span> CriteriaHash(Type.GetType(<span class="str">"MyCompany.ProductLookupList"</span>)), "<span class="str">sp_GetAll</span>");<br>}<br><br><span class="kwrd">internal</span> ProductLookupList(){}<br><br><span class="kwrd">private</span> <span class="kwrd">void</span> DataPortal_Fetch(CriteriaHash criteria)<br>{<br>	db.CreateCommand(criteria.SPName);<br>        ....	<br>}<br><br>OK it's a small change :-) but if you had loads of different filter types it might be worth it?<br><br>Regards<br><br>George<br></pre></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, August 24, 2007</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Putting on my &#8220;architectural purity&#8221; hat now :)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>The problem with passing in the sproc name is that this forces
+the UI, or at least the business layer, to know about sprocs and their names.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>The knowledge of the very _<i>existence</i>_ of sprocs belongs
+at the data access layer and below. Business layer and UI layer code should, at
+most, hear about these &#8220;sproc things&#8221; as scary myths. As the
+boogeyman that should be avoided.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>OK, been reading too much Harry Potter and got overly dramatic,
+sorry&#8230;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>But from a purity standpoint, you really don&#8217;t want to
+pass the sproc name.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>However, you are OK if you abstract the concept. In other words,
+it is OK for the business layer to pass in a &#8220;query name&#8221; parameter
+that is used to index into the right sproc or DAL component.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>And the pragmatist in me says that _<i>usually</i>_ the query
+name might actually _<i>be</i>_ the sproc name. But it might _<i>not</i>_ too &#8211;
+and that&#8217;s the important thing to remember from an architectural
+perspective.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky</span><o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>juddaman replied on Friday, August 24, 2007</h2>Hehe I thought this may be raised, and I totally agree from a purity point it is a bit naff. However, it would make the code more readable and maintainble (less IF statements!!). You wouldn't need to change the code in the dataportal method if you added a new filter requirement, which is pretty neat. (Here I'm thinking a 'for loop' cycling through the keys in the hash and adding an in param to the db command.) Suppose you could just call them 'query name' and 'param name' and wack a "@" before all the param names (in the DAL) and keep both your hats happy hehe. I guess it depends if more filters will be needed and how many. Maybe the bogeyman will come out to play?<br><br>George<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

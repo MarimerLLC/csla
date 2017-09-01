@@ -1,0 +1,41 @@
+<html><header><title>WCF Timeout problem</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>WCF Timeout problem</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10741.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Mark Sutton posted on Thursday, October 06, 2011</h2><p>From my Silverlight client I&#39;m asynchronously calling a long-running stored procedure on the server (~25 mins). The problem I&#39;m getting is a timeout exception at the client after 10 minutes. &nbsp;</p>
+<p>I&#39;ve tried increasing the WCF client and server timeouts (receive, send, open, close) to 2 hours, but with no effect. &nbsp;I&#39;m also aware that the default inactivityTimeout for reliable sessions is 10 minutes, but I&#39;m using BasicHttpBinding which doesn&#39;t allow reliable sessions.</p>
+<p>I&#39;m using CSLA 4.0.1</p>
+<p>Can anyone shed some light on this?</p>
+<p>&nbsp;</p>
+<h4>Error:</h4>
+<p>&nbsp;</p>
+<p>System.Exception: Error Executing Calculation ---&gt; System.Exception: Error Executing Calculation ---&gt; Csla.DataPortalException: The HTTP request to &#39;http://applicationname/WcfPortal.svc&#39; has exceeded the allotted timeout. The time allotted to this operation may have been a portion of a longer timeout.</p>
+<p>&nbsp; &nbsp;--- End of inner exception stack trace ---</p>
+<p>&nbsp; &nbsp;at Business.Processing.Models.ExecuteCalculation.&lt;ExcecuteCalculation&gt;b__1(Object o, DataPortalResult`1 e)</p>
+<p>&nbsp; &nbsp;at Csla.DataPortal`1.OnExecuteCompleted(DataPortalResult`1 e)</p>
+<p>&nbsp; &nbsp;at Csla.DataPortal`1.proxy_ExecuteCompleted(Object sender, DataPortalResult`1 e)</p>
+<p>&nbsp; &nbsp;at Csla.DataPortalClient.WcfProxy`1.OnExecuteCompleted(DataPortalResult`1 e)</p>
+<p>&nbsp; &nbsp;at Csla.DataPortalClient.WcfProxy`1.proxy_ExecuteCompleted(Object sender, UpdateCompletedEventArgs e)</p>
+<p>&nbsp; &nbsp;--- End of inner exception stack trace ---</p>
+<p>&nbsp; &nbsp;at Business.Processing.Models.ExecuteCalculation.&lt;ExcecuteCalculation&gt;b__1(Object o, DataPortalResult`1 e)</p>
+<p>&nbsp; &nbsp;at Csla.DataPortal`1.OnExecuteCompleted(DataPortalResult`1 e)</p>
+<p>&nbsp; &nbsp;at Csla.DataPortal`1.proxy_ExecuteCompleted(Object sender, DataPortalResult`1 e)</p>
+<p>&nbsp; &nbsp;at Csla.DataPortalClient.WcfProxy`1.OnExecuteCompleted(DataPortalResult`1 e)</p>
+<p>&nbsp; &nbsp;at Csla.DataPortalClient.WcfProxy`1.proxy_ExecuteCompleted(Object sender, UpdateCompletedEventArgs e)</p>
+<p>&nbsp; &nbsp;at Csla.WcfPortal.WcfPortalClient.OnUpdateCompleted(Object state)</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<h4>Client calling code</h4>
+<p>&nbsp;</p>
+<p style="padding-left:30px;">&nbsp; &nbsp; &nbsp; var dp = new DataPortal&lt;ExecuteCalculationCommand&gt;();</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; dp.ExecuteCompleted += (o, e) =&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; if (e.Error != null)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; throw new Exception(&quot;Error Executing Calculation&quot;, e.Error);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; else</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; var result = e.Object;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; RunName = result.RunName;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; };</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; dp.BeginExecute(command);</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>Mark Sutton replied on Thursday, October 06, 2011</h2><p>I&#39;ve found the answer. &nbsp;The CSLA class&nbsp;Csla.DataPortalClient.WcfProxy has a DefaultBinding property with default timeouts of 10 minutes. &nbsp;</p>
+<p>These values can be re-set in the Silverlight client.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

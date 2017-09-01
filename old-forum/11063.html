@@ -1,0 +1,19 @@
+<html><header><title>Delete parent (root) when last child deleted.</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Delete parent (root) when last child deleted.</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11063.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Phil S posted on Monday, January 16, 2012</h2><p>Hello,</p>
+<p>Using CSLA 3.8.1 here.</p>
+<p>I&#39;m trying to work out how to accomplish the following. &nbsp;I think I&#39;ve just been looking at it too long, maybe someone here can point me in the right direction.</p>
+<p>I have an editable root object, with a child collection, populated with child objects.. nothing special so far.</p>
+<p>When the last child object is deleted, the root object should also be deleted.</p>
+<p>So...when a developer uses my classes they end up with code like this:</p>
+<p>(assume that there is only 1 item in the Details collection here)</p>
+<p>Dim obj as TheRoot = TheRoot.Fetch(keyValue)<br />obj.Details.Remove(obj.Details(0))&nbsp;<br />obj.Save()<br />obj = TheRoot.Fetch(keyValue) &nbsp;&lt;-- should return nothing (or blow up with &quot;not found&quot; exception)&nbsp;because the root has been deleted.</p>
+<p>Thanks</p>
+<p>Phil</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Monday, January 16, 2012</h2><p>Hi,</p>
+<p>I&#39;d argue that this should be handled by your Save logic.</p>
+<p>Ie: override the Save method on obj and if</p>
+<p>- obj.Detalis.Count == 0 and ((Core.IEditableCollection)obj.Details).GetDeletedList().Count &gt; 0 <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; then call obj.MarkDeleted() <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; before calling&nbsp; base.Save()</p>
+<p>You could also add code in an override of OnChildChanged but what if the user deletes all children and then add 1 or more new child objects. <br />Would it be OK if the object has already been marked as Deleted?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Phil S replied on Monday, January 16, 2012</h2><p>Overriding Save looks like the ticket. &nbsp;&nbsp;Thanks, this&#39;ll work nicely</p>
+<p>I was trying to work out how to this in the dataportal_xyz methods of the root but it seemed like i was going down the wrong path.</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Phil S replied on Tuesday, January 17, 2012</h2><p>Just in case anyone needs this in VB.Net</p>
+<p>
+<p>Public Overrides Function Save() As rootClass<br />&nbsp; If Me.Details.Count = 0 Then<br />&nbsp; &nbsp; &#39;if no details left<br />&nbsp; &nbsp; If DirectCast(DirectCast(Me.Details, Csla.Core.IEditableCollection).GetDeletedList, Csla.Core.MobileList(Of MyChildClass)).Count &gt; 0 Then<br />&nbsp; &nbsp; &nbsp; &#39;and we deleted at least one of the detail items...<br />&nbsp; &nbsp; &nbsp;&#39;make sure the root object is tagged for deletion.<br />&nbsp; &nbsp; &nbsp; Me.MarkDeleted()<br />&nbsp; &nbsp; End If<br />&nbsp;End If<br />Return MyBase.Save()<br />End Function</p>
+</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

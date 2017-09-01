@@ -1,0 +1,32 @@
+<html><header><title>BrokenRulesCollection </title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>BrokenRulesCollection </h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/2391.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>isharko posted on Tuesday, February 20, 2007</h2><P>Hi,</P>
+<P>In my BO object I have a business rule&nbsp;that don't depend on any business property in my object.</P>
+<P>If this rule is broken I still need to make my object Invalid.</P>
+<P>What is the proper way, if any, to add the broken rule that would set IsValid = false and that is not dependant on any property in the object.</P>
+<P>Or may be I am missing something here.</P>
+<P>Thank you,</P>
+<P>Igor.</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>hurcane replied on Tuesday, February 20, 2007</h2>Something seems wrong with this design. Nevertheless...<br><br>Business rules are associated with properties to automatically invoke the business rule logic when the property changes. Presumably, the change in the property could affect the business rule. This is why our Property setters need a PropertyHasChanged call.<br><br>When you add a business rule, I don't think that CSLA.NET validates the property name you assigned. You could make up a property name, such as "ExternalValidator".<br><br>The one problem that will need to be addressed is how does your business object know when the rule should be reevaluated? If the rule is not dependent on any internal properties, it must be dependent on properties from other objects. How do you know when the the state outside of your object has changed, so you can reevaluate the rule?<br><br>If you have such events/triggers available, you can call Validation.CheckRules("ExternalValidator") when the external state changes and your business rule might be affected.<br><br>But I still think this design has a bad "smell.". Without knowing more details, I can only guess why you are taking this approach. <br><br>It seems like the business rule belongs in a different object. Your main object should probably check the state of the external object in an override of the IsValid method.<br><br>Perhaps you're having an issue with exposing the business rule to the UI when the business rule is contained in an internal object? This can be solved with an override of the BrokenRulesCollection property, where you build and return a collection with rules from your primary business object as well as external objects that need to be exposed. Did I make a good guess?<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>xal replied on Wednesday, February 21, 2007</h2>You can either add the rule and then call AddDependentProperty for each of the properties, or you can override OnPropertyChanged and call ValidationRules.CheckRules("MyRule").<br><br>Andrés<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>isharko replied on Wednesday, February 21, 2007</h2><P>Hurcane and xal:</P>
+<P>Thank you very much for your responses.</P>
+<P>I am developing rating engine for generating insurance quotes.</P>
+<P>BOs set up is as follows:</P>
+<P>WorkSheet (contains CalcSheet object below as business property)</P>
+<P>CalcSheet </P>
+<P>FactorGroup list ---&gt; FactorGroup</P>
+<P>Factor List ---&gt; Factor</P>
+<P>Factor Option list --&gt; Factor Option</P>
+<P>As you can see there are several levels of parent-child relationships.</P>
+<P>In CalcSheet object I have a function "CalculatePremium" that uses its property BasePremium and </P>
+<P>multiply all the factors to calculate Premium.&nbsp; Each time factorvalue is changed the premium is recalculated. </P>
+<P>Each factor_value have to be within its range&nbsp;ex.&nbsp;0.75-1.25&nbsp;</P>
+<P>WorkSheet has a function("Apply700rule") that have to modify the factor value of one factor&nbsp;(withing its range) in one percent increments until The Premium reaches $700.If the factor max range is reached before&nbsp;we get to 700 I have to&nbsp;create a broken rule and make worksheet invalid.&nbsp;</P>
+<P>What is the proper broken rules handling in this scenario.</P>
+<P>I appreciate your help.</P>
+<P>Igor.</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>xal replied on Thursday, February 22, 2007</h2>Assuming I understood correctly what you're trying to do, you could have a "_currentFactor" variable and have the rule check up on that at the end of the process.<br><br>Like, (very pseudo codey) ;)<br><br>Private Sub Apply700rule()<br>_currentFactor += .1<br>....&lt;Recalculate what you need here&gt;<br>ValidationRules.CheckRules("ValidateFactor")<br>End Sub<br><br>Inside the rule you'd do:<br><br>If target._currentFactor &gt; 1.25 Then<br>&nbsp;&nbsp;&nbsp; e.Description = "Factor too high"<br>&nbsp;&nbsp;&nbsp; Return False<br>Else<br>&nbsp;&nbsp;&nbsp; Return True<br>End If<br><br><br><br>Andrés</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>isharko replied on Thursday, February 22, 2007</h2><P>Makes sense.</P>
+<P>Thank you for your help, Andrés.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>isharko replied on Thursday, February 22, 2007</h2><img src="/emoticons/emotion-18.gif" alt="Huh? [:^)]" /></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,27 @@
+<html><header><title>Strange Problem with Binding Navigator</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Strange Problem with Binding Navigator</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3502.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Vinodonly posted on Monday, September 10, 2007</h2><P>I'm using a subclass of binding navigator in my data entry form, everything is working fine but there is one&nbsp;very strange problem.</P>
+<P>When I retrieve a po and without saving it when i try to add a new record then it is showing 2 records in the binding navigator. If I try to navigate on the previous record then it is not showing any values.</P>
+<P>This is the code in my AddPo method</P><FONT size=2>
+<P>_PoMain = </FONT><FONT color=#2b91af size=2>PoMain</FONT><FONT size=2>.NewPoMain(</FONT><FONT size=2>); </FONT><FONT color=#008000 size=2>//Creates a new&nbsp;Po Object</P></FONT><FONT size=2>
+<P></P>
+<P>e.NewObject = (</FONT><FONT color=#0000ff size=2>object</FONT><FONT size=2>) _PoMain; </FONT><FONT color=#008000 size=2>// setting new object to Newly created BO</P></FONT><FONT size=2>
+<P></P></FONT>
+<P><FONT color=#008000 size=2>// Then I set the binding source </FONT></P>
+<P>This is the code in my GetPo method.</P><FONT size=2>
+<P>_PoMain = </FONT><FONT color=#2b91af size=2>PoMain</FONT><FONT size=2>.GetPoMain(PoNo); </FONT><FONT color=#008000 size=2>// Gets specified Record from Database </FONT></P>
+<P><FONT color=#008000 size=2>// Then I set the binding source </FONT></P>
+<P><FONT color=#008000 size=2><FONT color=#000000 size=3>_PoMain variable is main variable defined at the class level and it is only having one record at a time. I'm not able to understand how two records are being added in Binding Source.</FONT></P>
+<P>&nbsp;</P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, September 10, 2007</h2>What version of CSLA are you using? There were some collection-based bugs fixed in BLB in version 3.0.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Vinodonly replied on Tuesday, September 11, 2007</h2><P>Dear Rocky,</P>
+<P>Thanks for your reply.</P>
+<P>Kindly note that I'm using version 2.14. </P>
+<P>I will try and download the newer version (3.0) and test it out. Kindly note that for this application I'm not using WPF and all of the forms are WinForms 2.0. </P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Vinodonly replied on Tuesday, September 11, 2007</h2><P>Kindly note that I downloaded version 3.01 and tested the program.</P>
+<P>The Po form which I reported before&nbsp;is using SafeDataRowReader as child and grandchildren objects are involved. That is showing the same&nbsp;problem like before.</P>
+<P>But in my other form i.e. Order Entry, it is throwing following exception</P>
+<P>"Edit Level mismatch in CopyState"</P>
+<P>I'm using the same code to populate order object also and I'm also not using the Undo mechanism provided by CSLA. Instead I'm calling BindingSource.CancelEdit when the cancel button is clicked.</P>
+<P>Kindly advise your comments.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, September 11, 2007</h2><P>Make sure to read this thread</P>
+<P><A HREF="/forums/thread/16971.aspx">http://forums.lhotka.net/forums/thread/16971.aspx</A></P>
+<P>While 3.0.2 (this is the version for you)&nbsp;addresses some CSLA bugs around eventing and data binding in Windows Forms, it is up to you to make sure your UI code is correct.</P>
+<P>Please note that (to my knowledge) <EM>only</EM> the UI code in PTWin 3.0.2 works entirely as expected. The data binding code in the UI must be done just right, or you will get undesired results.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Vinodonly replied on Tuesday, September 11, 2007</h2><P>I switched to the 3.02 test version and now the error ""Edit Level mismatch in CopyState" is gone but the problem remain as it is.</P>
+<P>I also noticed that when I click on the Add Button continuosly without saving the object then for the first 2 records, it is adding 2 records in binding source but after that it remains on 2 records only. </P>
+<P>I'm using the Int Primary Key and using the LastID static field to generate a temp key and I can see that it goes on changing ID field on each click of Add button without adding any more records after 2.</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,81 @@
+<html><header><title>Error when updating with stored procedure</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Error when updating with stored procedure</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/1367.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>SQueek posted on Monday, October 02, 2006</h2><P>Could someone please point me to the right direction. I was able to use a root Business Object to save data sucessfully but ain't getting it to update it's data in the database. I get following exception</P><SPAN>
+<P class=MsoNormal>TargetInvocationException</P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>e.InnerException.Message<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Incorrect syntax near 'updateKunde'.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>e.InnerException.StackTrace:<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp; </SPAN>bei System.Data.SqlClient.SqlConnection.OnError(SqlException exception, Boolean breakConnection)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp; </SPAN>bei System.Data.SqlClient.SqlInternalConnection.OnError(SqlException exception, Boolean breakConnection)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp; </SPAN>bei System.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject stateObj)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp; </SPAN>bei System.Data.SqlClient.TdsParser.Run(RunBehavior runBehavior, SqlCommand cmdHandler, SqlDataReader dataStream, BulkCopySimpleResultSet bulkCopyHandler, TdsParserStateObject stateObj)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp; </SPAN>bei System.Data.SqlClient.SqlCommand.FinishExecuteReader(SqlDataReader ds, RunBehavior runBehavior, String resetOptionsString)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp; </SPAN>bei System.Data.SqlClient.SqlCommand.RunExecuteReaderTds(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, Boolean async)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp; </SPAN>bei System.Data.SqlClient.SqlCommand.RunExecuteReader(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, String method, DbAsyncResult result)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp; </SPAN>bei System.Data.SqlClient.SqlCommand.InternalExecuteNonQuery(DbAsyncResult result, String methodName, Boolean sendToPipe)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp; </SPAN>bei System.Data.SqlClient.SqlCommand.ExecuteNonQuery()<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp; </SPAN>bei PassureBLL.Kunde.DoUpdate(SqlCommand cm) in C:\Eigene Dateien\Visual Studio 2005\Projects\PassureSQL\PassureBLL\Kunde.cs:Zeile 789.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp; </SPAN>bei PassureBLL.Kunde.DataPortal_Update() in C:\Eigene Dateien\Visual Studio 2005\Projects\PassureSQL\PassureBLL\Kunde.cs:Zeile 804.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><o:p></o:p>&nbsp;</P>
+<P class=MsoNormal><o:p>when I call the stored procedure directly it updates fine?</o:p></P>
+<P class=MsoNormal><o:p></o:p>&nbsp;</P>
+<P class=MsoNormal>////////////////////////////////////////////////////////////</P>
+<P class=MsoNormal>&nbsp;</P><FONT color=#0000ff size=2>
+<P>ALTER PROCEDURE </FONT><FONT size=2>dbo.updateKunde </P>
+<P>(</P>
+<P>@Nachname </FONT><FONT color=#0000ff size=2>nvarchar</FONT><FONT size=2>,</P>
+<P>@Vorname </FONT><FONT color=#0000ff size=2>nvarchar</FONT><FONT size=2>,</P>
+<P>@Geburtsdatum </FONT><FONT color=#0000ff size=2>varchar</FONT><FONT size=2>,</P>
+<P>@EmailAdresse </FONT><FONT color=#0000ff size=2>nvarchar</FONT><FONT size=2>,</P>
+<P>@id </FONT><FONT color=#0000ff size=2>int</P></FONT><FONT size=2>
+<P>)</P></FONT><FONT color=#0000ff size=2>
+<P>AS</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>UPDATE </FONT><FONT size=2>Kunde</P>
+<P></FONT><FONT color=#0000ff size=2>SET </FONT><FONT size=2>Nachname = @Nachname, Vorname = @Vorname, Geburtsdatum = @Geburtsdatum, EmailAdresse = @EmailAdresse</P>
+<P></FONT><FONT color=#0000ff size=2>WHERE </FONT><FONT size=2>(KundeID = @id)</P>
+<P></FONT><FONT color=#0000ff size=2>RETURN</P></FONT>
+<P class=MsoNormal><o:p>////////////////////////////////////////////////////////////</o:p></P>
+<P class=MsoNormal><o:p></o:p>&nbsp;</P><o:p><FONT size=2>
+<P>[</FONT><FONT color=#008080 size=2>Transactional</FONT><FONT size=2>(Csla.</FONT><FONT color=#008080 size=2>TransactionalTypes</FONT><FONT size=2>.TransactionScope)]</P>
+<P></FONT><FONT color=#0000ff size=2>protected</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>override</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>void</FONT><FONT size=2> DataPortal_Update()</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (</FONT><FONT color=#0000ff size=2>base</FONT><FONT size=2>.IsDirty)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>using</FONT><FONT size=2> (</FONT><FONT color=#008080 size=2>SqlConnection</FONT><FONT size=2> cn = </FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> </FONT><FONT color=#008080 size=2>SqlConnection</FONT><FONT size=2>(</FONT><FONT color=#008080 size=2>Database</FONT><FONT size=2>.PassureSQLConnection))</P>
+<P>{</P>
+<P>cn.Open();</P>
+<P></FONT><FONT color=#0000ff size=2>using</FONT><FONT size=2> (</FONT><FONT color=#008080 size=2>SqlCommand</FONT><FONT size=2> cm = cn.CreateCommand())</P>
+<P>{</P>
+<P>cm.CommandText = </FONT><FONT color=#800000 size=2>"updateKunde"</FONT><FONT size=2>;</P>
+<P>DoUpdate(cm);</P>
+<P>}</P>
+<P>}</P>
+<P>}</P>
+<P></FONT><FONT color=#008000 size=2>// update child objects</P></FONT><FONT size=2>
+<P>_kundeAdresse.Update(</FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>._kundeAdresse);</P>
+<P>_kundeArbeistvorbereitungsTermin.Update(</FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>._kundeArbeistvorbereitungsTermin);</P>
+<P>_kundeKundenTermin.Update(</FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>._kundeKundenTermin);</P>
+<P>_kundeVerwaltungTermin.Update(</FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>._kundeVerwaltungTermin);</P>
+<P>}</P>
+<P>&nbsp;</P><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>private</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>void</FONT><FONT size=2> DoUpdate(</FONT><FONT color=#008080 size=2>SqlCommand</FONT><FONT size=2> cm)</P>
+<P>{</P>
+<P></FONT><FONT color=#008000 size=2>//cm.Parameters.AddWithValue("@Beruf", _Beruf);</P></FONT><FONT size=2>
+<P>cm.Parameters.AddWithValue(</FONT><FONT color=#800000 size=2>"@EmailAdresse"</FONT><FONT size=2>, _EmailAdressePrivat);</P>
+<P>cm.Parameters.AddWithValue(</FONT><FONT color=#800000 size=2>"@Geburtsdatum"</FONT><FONT size=2>, _Geburtsdatum.Text);</P>
+<P>cm.Parameters.AddWithValue(</FONT><FONT color=#800000 size=2>"@Vorname"</FONT><FONT size=2>, _Vorname);</P>
+<P>cm.Parameters.AddWithValue(</FONT><FONT color=#800000 size=2>"@Nachname"</FONT><FONT size=2>, _Name);</P>
+<P>cm.Parameters.AddWithValue(</FONT><FONT color=#800000 size=2>"@id"</FONT><FONT size=2>, _KundeID);</P>
+<P>cm.ExecuteNonQuery();</P>
+<P>}</P></FONT>
+<P>&nbsp;</P></FONT></o:p>
+<P class=MsoNormal><o:p>I hope you&nbsp;can help me, since I am lost right now..</o:p></P>
+<P class=MsoNormal><o:p></o:p>&nbsp;</P>
+<P class=MsoNormal><o:p>Best Greetings</o:p></P>
+<P class=MsoNormal><o:p></o:p>&nbsp;</P>
+<P class=MsoNormal><o:p>Mario Allegro</o:p></P></SPAN></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Brian Criswell replied on Monday, October 02, 2006</h2>You are forgetting to set cm.CommandType = CommandType.StoredProcedure;.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>SQueek replied on Monday, October 02, 2006</h2><P>Thanks a lot for having made my day shine again. I looked several times overe the code and every time I missed this point. Thanks!!!! </P>
+<P>&nbsp;</P>
+<P><img src="/emoticons/emotion-2.gif" alt="Big Smile [:D]" /></P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

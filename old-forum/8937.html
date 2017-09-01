@@ -1,0 +1,9 @@
+<html><header><title>CSLA.NET 4 - missing Initialize and OnDeserialized</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA.NET 4 - missing Initialize and OnDeserialized</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/8937.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>tiago posted on Saturday, May 15, 2010</h2><p>Hi Rocky,</p>
+<p>I&#39;d had a look at CSLA.NET 4 and found a few standing issues.</p>
+<p>1) Regarding BTnet issue</p>
+<p>366 - Add Initialize() method to ERLB</p>
+<p>Some another base classes that are missing Initialize:</p>
+<p>BusinessListBase&lt;EditableRootList, EditableChild&gt;</p>
+<p>2) There was also an issue regarding OnDeserialized (<a href="http://forums.lhotka.net/forums/p/7953/38033.aspx">http://forums.lhotka.net/forums/p/7953/38033.aspx</a>) that affects:</p>
+<p>BusinessListBase&lt;EditableRootList, EditableChild&gt;<br />ReadOnlyListBase&lt;ReadOnlyList, ReadOnly&gt;<br />EditableRootListBase&lt;EditableRoot&gt;<br />NameValueListBase&lt;int, string&gt;<br />BusinessBindingListBase&lt;EditableRootBindingList, EditableChild&gt;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, May 17, 2010</h2><p>Thanks, I&#39;ll double-check these issues.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

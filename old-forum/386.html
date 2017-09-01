@@ -1,0 +1,11 @@
+<html><header><title>Object Model question</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Object Model question</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/386.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>bnair posted on Thursday, June 15, 2006</h2><P><FONT face=Verdana size=2>Hi All,</FONT></P>
+<P><FONT face=Verdana size=2>I am working on CSLA 2.0 and I am running into object model design issues.</FONT></P>
+<P><FONT face=Verdana size=2>I am building an address book module..</FONT></P>
+<P><FONT face=Verdana size=2>I have the following classes</FONT></P>
+<P><FONT face=Verdana size=2>AddressBookContact&nbsp;- Editable Root<BR>AddressBookContactList&nbsp;- Editable Root Collection</FONT></P>
+<P><FONT face=Verdana size=2>AddressBookGroup - Editable Root<BR>AddressBookGroupList - Editable Root Collection</FONT></P>
+<P><FONT face=Verdana size=2>When I&nbsp;fetch the AddressBookContact object I need all the groups that the contact belongs.Do I need to make AddressBookGroup and AddressBookGroupList as switchable objects</FONT></P>
+<P><FONT face=Verdana size=2>ALso ,when I&nbsp;fetch the AddressBookGroup object I need all the contacts that are in the group.In that case I need the ContactList collection..</FONT></P>
+<P><FONT face=Verdana size=2>How would I model this efficiently without ending up creating a lot of redundant root and child classes?</FONT></P>
+<P><FONT face=Verdana size=2>--bnair<BR></FONT><BR><BR></P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>hurcane replied on Thursday, June 29, 2006</h2>Your model sounds exactly like Rocky's example in the Project Tracker.<br><br>AddressBookContact = Resource<br>AddressBookContactList = ResourceList<br><br>AddressBookGroup = Project<br>AddressBookGroupList = ProjectList<br><br>Read pages 330-339 for a very good answer on how to handle this scenario.<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

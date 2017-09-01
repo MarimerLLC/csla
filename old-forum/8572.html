@@ -1,0 +1,32 @@
+<html><header><title>InvokeMethod to open new window or tab?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>InvokeMethod to open new window or tab?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/8572.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 posted on Wednesday, February 24, 2010</h2><p>Ok still trying to get a handle on this MVVM stuff.&nbsp; The View is a user control, the window will display user controls in Tabs, for a TDI interface.&nbsp; I have an OpenDocument method in my view model, which should of course open the document for editing.&nbsp; My question is how?&nbsp; </p>
+<p>I assume the VM should not know about the view, or its containing window.&nbsp; Also, the Xaml only MVVM.. should that apply to the main window as well, which is just the shell more or less?</p>
+<p>Thanks</p>
+<p>Andy</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>triplea replied on Wednesday, February 24, 2010</h2><p>Hi Andy</p>
+<p>I think the answer to the above is a matter of preference and it can be done in many different ways... If I understand correctly, you have a list of Documents (presumably&nbsp;the main tab in you tab control) which when you double click (or whatever equivalent) a row in you want a new tab to be added which will allow editing of a Document object.</p>
+<p>I use Composite WPF but the principle is the same. The setup I would have is:</p>
+<ul>
+<li>Document controller. Knows of your tab control and is responsible to listen to events to add/remove tabs and do so.</li>
+<li>DocumentList (View and VM): Displays a list of Documents which the user can select to open for editing</li>
+<li>DocumentEdit (View and VM): Responsible for displaying individual documents for editing/saving etc</li>
+</ul>
+<p>The sequence of events would be something like:</p>
+<ul>
+<li>Document controller populates fist tab page with the DocumentList view</li>
+<li>DocumentList view allows double clicking of a row/clicking of edit button which raises an event its associated VM would handle</li>
+<li>DocumentList VM publishes event to controller passing the document ID</li>
+<li>Controller creates a new DocumentEdit View/VM passing the document ID to the OpenDocument method</li>
+</ul>
+<p>Hope this is of some help.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Wednesday, February 24, 2010</h2><p>Ok... I&#39;m not sure I follow, but your post got me thinking.</p>
+<p>Create an OpenDocument RoutedEvent delegate, which the main window can handle.&nbsp; The UserControl can listen to this event, which would be raised by the VM.</p>
+<p>Does that sound about right?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Fintanv replied on Wednesday, February 24, 2010</h2><p>Check out <a target="_blank" href="http://karlshifflett.wordpress.com/2010/02/07/bbq-shack-ocean-v2-for-visual-studio-2008/">Karl Shifflets</a> blog. &nbsp;He has a full app developed with MVVM that has alot of nice info/ideas on how to handle the UI.</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Wednesday, February 24, 2010</h2><p><div style='padding-left: 50px;background-color:silver'><b>Andy<br></b></p>
+<p>I assume the VM should not know about the view, or its containing window.&nbsp; Also, the Xaml only MVVM.. should that apply to the main window as well, which is just the shell more or less?</p>
+<p></div></p>
+<p>I think that&#39;s a very valid assumption. The whole point of MVVM is that you can unit test the VM. If the VM has any knowledge of, or makes use of, any XAML types (including the View types) then you can&#39;t execute the VM in a unit test harness - thus defeating the primary point of using MVVM.</p>
+<p>There are various technical solutions to that problem - but the basic concept is that <i>something</i> needs to be an abstraction layer so the VM can request that a window be displayed - but the thing it is talking to will be different at runtime and at test time.</p>
+<p>I&#39;m doing this right now - I have an IPresenter interface with methods like ShowView(), ShowError(), ShowStatus(), etc. At runtime my actual presenter really does render those things. At test time I have a test presenter that doesn&#39;t even try to create the view (because it can&#39;t of course), and instead just records the fact that a request was made to show a view - thus allowing my unit test to establish that the right ShowView() call was made, without actually trying to show the view.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Friday, February 26, 2010</h2><p>i&#39;m wondering then where my VM is at currently.</p>
+<p>I had created a property, backed by a DependencyProperty, so allow a selection change in the View to automatically record the selection in the VM (its&nbsp; a SelectedItem property, much like the MVVMExpermiment sample).</p>
+<p>Is this violating the seperation, since DependencyProperties come from System.Windows?&nbsp; Whats the alternative then?&nbsp; </p>
+<p>Andy</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, February 26, 2010</h2><p>DependencyObject and dependency properties are fine. They are used by Windows Workflow too - basically a purely non-interactive server-side technology.</p>
+<p>My language was perhaps a little strong - but the point is that you can&#39;t use any type that won&#39;t work in a non-interactive unit test scenerio. So most XAML types (things like controls, windows, dialogs, pages, usercontrols) should be considered off limits.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Monday, March 01, 2010</h2><p>Ok, thanks for that info.&nbsp; My mistake was thinking that System.Windows was the Wpf namespace, but I guess its more of a platform assembly.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

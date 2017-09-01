@@ -1,0 +1,88 @@
+<html><header><title>CSLA/Silverlight Binding not responding to keypress.</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA/Silverlight Binding not responding to keypress.</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5875.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>dts posted on Tuesday, November 25, 2008</h2>Hi <br><br>I first noticed this in a CSLA Silverlight app I have been experimenting with and have just downloaded the lastest Rolodex sample and get the same behaviour.<br><br>If for instance I edit the AT&amp;T company record by adding an extra character at the end of the company name textbox  I sometimes find that the save button is not enabled when I tab off the textbox control. Even if I shift tab back or change the focused control using the mouse nothing happens until I enter another character. <br><br>On a CSLA Silverlight app that I have been experimenting with I can enter a single character into a sequence of textboxes after tabbing between each of them and get the same behaviour. I added some code and discovered that the text changed event is being invoked but none of the csla silverlight code is run. <br><br>Also if I do enter more than one character into a textbox and then click save the previous textboxes which did not cause a change in the save button lose their change.<br><br>Is this possibly a silverlight bug?<br><br>Regards<br>DTS<br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Tuesday, November 25, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Indeed, you discovered an SL bug.&nbsp; One character change is
+not pushed by binding infrastructure to underlying object.&nbsp; At least two
+character change is required.&nbsp; I think this has been logged in
+Silverlight.net, but I am not 100% positive.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> dts
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Tuesday, November 25, 2008 9:52 AM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> [CSLA .NET] CSLA/Silverlight Binding not responding to
+keypress.<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Hi <br>
+<br>
+I first noticed this in a CSLA Silverlight app I have been experimenting with
+and have just downloaded the lastest Rolodex sample and get the same behaviour.<br>
+<br>
+If for instance I edit the AT&amp;T company record by adding an extra character
+at the end of the company name textbox I sometimes find that the save button is
+not enabled when I tab off the textbox control. Even if I shift tab back or
+change the focused control using the mouse nothing happens until I enter
+another character. <br>
+<br>
+On a CSLA Silverlight app that I have been experimenting with I can enter a
+single character into a sequence of textboxes after tabbing between each of
+them and get the same behaviour. I added some code and discovered that the text
+changed event is being invoked but none of the csla silverlight code is run. <br>
+<br>
+Also if I do enter more than one character into a textbox and then click save
+the previous textboxes which did not cause a change in the save button lose
+their change.<br>
+<br>
+Is this possibly a silverlight bug?<br>
+<br>
+Regards<br>
+DTS<br>
+<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>dts replied on Tuesday, November 25, 2008</h2>Thanks for the reply&nbsp; Sergey<br><br>Just did a google and there are several sites commenting on it<br><br>http://karlshifflett.wordpress.com/2008/04/12/silverlight-2-lostfocus-and-data-binding-bugs/<br><br>Cheers<br>DTS<br><br><br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

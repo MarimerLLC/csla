@@ -1,0 +1,175 @@
+<html><header><title>CSLA 3.8 Beta 2 - PropertyStatus not working with MVVM Model</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA 3.8 Beta 2 - PropertyStatus not working with MVVM Model</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/7949.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>MAN-U posted on Thursday, November 05, 2009</h2><P class=MsoNormal><SPAN>Our team has gone through the sample codes&nbsp;for property status [PropertyStatus project] provided <SPAN>&nbsp;</SPAN>@ <A href="http://www.lhotka.net/cslanet/download.aspx%20and%20it">http://www.lhotka.net/cslanet/download.aspx and it</A> <SPAN>&nbsp;</SPAN>is working as expected but the Property Status in MVVM sample [MVVMexperiment project] is failing <SPAN>&nbsp;</SPAN><o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>In one of our applications, we are using MVVM model, ViewModels are inherited from ViewModel Base Class and corresponding business objects are tied to the Model.<SPAN>&nbsp; </SPAN><o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Whenever&nbsp;we are&nbsp;using PropertyStatus for the rule validation, we are&nbsp;getting the appropriate </SPAN><SPAN>BrokenRulesCollection.<SPAN>&nbsp; </SPAN>But&nbsp;we were not successful in populating the validation messages in the UI as shown in the non MVVM sample application </SPAN><SPAN>[PropertyStatus Project]</SPAN><SPAN>. <SPAN>&nbsp;</SPAN><o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN><SPAN>While debugging the difference&nbsp;we could figure out from the non MVVM sample application </SPAN><SPAN>with&nbsp;our application is,&nbsp;our code is not getting the handler for the below mentioned method in PropertyStatus.cs<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>private void source_PropertyChanged(object sender, PropertyChangedEventArgs e)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Instead of the above method,&nbsp;our code is navigating to the method in ExtendedBindingList.cs<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>protected</SPAN><SPAN> <SPAN>virtual</SPAN> <SPAN>void</SPAN> Child_PropertyChanged(<SPAN>object</SPAN> sender, <SPAN>PropertyChangedEventArgs</SPAN> e)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Please help&nbsp;us in inplementing PropertyStatus in our MVVM application. Let&nbsp;us know if more information is required to understand the issue better.&nbsp; Thanks<o:p></o:p></SPAN></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, November 05, 2009</h2>Please try Beta 3 to see if the problem still exists.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>MAN-U replied on Friday, November 06, 2009</h2><P>Tried with the latest version samples and the MVVM Experiment sample is not working.&nbsp; It is giving a Null reference exception in the line Line: <FONT color=#0000ff size=2><FONT color=#0000ff size=2>var</FONT></FONT><FONT size=2> targetMethod = target.GetType().GetMethod(methodName);&nbsp;&nbsp; M</FONT>ethod: <FONT color=#0000ff size=2><FONT color=#0000ff size=2>private</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>void</FONT></FONT><FONT size=2> CallMethod(</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>object</FONT></FONT><FONT size=2> sender, </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>EventArgs</FONT></FONT><FONT size=2> e)</FONT>&nbsp;&nbsp;and the&nbsp;File is: InvokeMethod.cs. <FONT size=2></P></FONT>
+<P>Debgging shows the error is triggering from the line<SPAN></P>
+<P>csla:InvokeMethod.TriggerEvent="Loaded" in Window1.xaml </P>
+<P></SPAN>StackTrace for the error is also&nbsp;provided below.&nbsp; Please help </P>
+<P>System.NullReferenceException was unhandled<BR>&nbsp; Message="Object reference not set to an instance of an object."<BR>&nbsp; Source="Csla"<BR>&nbsp; StackTrace:<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at Csla.Wpf.InvokeMethod.CallMethod(Object sender, EventArgs e) in C:\User Created Folder\Cambridge Soft\Inventory\CAG\3.8\cslacs\Csla\Wpf\InvokeMethod.cs:line 230<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at System.Windows.RoutedEventHandlerInfo.InvokeHandler(Object target, RoutedEventArgs routedEventArgs)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at System.Windows.EventRoute.InvokeHandlersImpl(Object source, RoutedEventArgs args, Boolean reRaised)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at System.Windows.UIElement.RaiseEventImpl(DependencyObject sender, RoutedEventArgs args)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at System.Windows.UIElement.RaiseEvent(RoutedEventArgs e)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at System.Windows.BroadcastEventHelper.BroadcastEvent(DependencyObject root, RoutedEvent routedEvent)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at System.Windows.BroadcastEventHelper.BroadcastLoadedEvent(Object root)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at MS.Internal.LoadedOrUnloadedOperation.DoWork()<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at System.Windows.Media.MediaContext.FireLoadedPendingCallbacks()<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at System.Windows.Media.MediaContext.FireInvokeOnRenderCallbacks()<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at System.Windows.Media.MediaContext.RenderMessageHandlerCore(Object resizedCompositionTarget)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at System.Windows.Media.MediaContext.RenderMessageHandler(Object resizedCompositionTarget)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at System.Windows.Media.MediaContext.Resize(ICompositionTarget resizedCompositionTarget)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at System.Windows.Interop.HwndTarget.OnResize()<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at System.Windows.Interop.HwndTarget.HandleMessage(Int32 msg, IntPtr wparam, IntPtr lparam)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at System.Windows.Interop.HwndSource.HwndTargetFilterMessage(IntPtr hwnd, Int32 msg, IntPtr wParam, IntPtr lParam, Boolean&amp; handled)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at MS.Win32.HwndWrapper.WndProc(IntPtr hwnd, Int32 msg, IntPtr wParam, IntPtr lParam, Boolean&amp; handled)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at MS.Win32.HwndSubclass.DispatcherCallbackOperation(Object o)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at System.Windows.Threading.ExceptionWrapper.InternalRealCall(Delegate callback, Object args, Boolean isSingleParameter)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at System.Windows.Threading.ExceptionWrapper.TryCatchWhen(Object source, Delegate callback, Object args, Boolean isSingleParameter, Delegate catchHandler)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at System.Windows.Threading.Dispatcher.WrappedInvoke(Delegate callback, Object args, Boolean isSingleParameter, Delegate catchHandler)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at System.Windows.Threading.Dispatcher.InvokeImpl(DispatcherPriority priority, TimeSpan timeout, Delegate method, Object args, Boolean isSingleParameter)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at System.Windows.Threading.Dispatcher.Invoke(DispatcherPriority priority, Delegate method, Object arg)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at MS.Win32.HwndSubclass.SubclassWndProc(IntPtr hwnd, Int32 msg, IntPtr wParam, IntPtr lParam)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at MS.Win32.UnsafeNativeMethods.ShowWindow(HandleRef hWnd, Int32 nCmdShow)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at System.Windows.Window.ShowHelper(Object booleanBox)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at System.Windows.Threading.ExceptionWrapper.InternalRealCall(Delegate callback, Object args, Boolean isSingleParameter)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at System.Windows.Threading.ExceptionWrapper.TryCatchWhen(Object source, Delegate callback, Object args, Boolean isSingleParameter, Delegate catchHandler)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at System.Windows.Threading.Dispatcher.WrappedInvoke(Delegate callback, Object args, Boolean isSingleParameter, Delegate catchHandler)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at System.Windows.Threading.DispatcherOperation.InvokeImpl()<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at System.Windows.Threading.DispatcherOperation.InvokeInSecurityContext(Object state)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at System.Threading.ExecutionContext.runTryCode(Object userData)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at System.Runtime.CompilerServices.RuntimeHelpers.ExecuteCodeWithGuaranteedCleanup(TryCode code, CleanupCode backoutCode, Object userData)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at System.Threading.ExecutionContext.RunInternal(ExecutionContext executionContext, ContextCallback callback, Object state)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at System.Threading.ExecutionContext.Run(ExecutionContext executionContext, ContextCallback callback, Object state)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at System.Windows.Threading.DispatcherOperation.Invoke()<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at System.Windows.Threading.Dispatcher.ProcessQueue()<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at System.Windows.Threading.Dispatcher.WndProcHook(IntPtr hwnd, Int32 msg, IntPtr wParam, IntPtr lParam, Boolean&amp; handled)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at MS.Win32.HwndWrapper.WndProc(IntPtr hwnd, Int32 msg, IntPtr wParam, IntPtr lParam, Boolean&amp; handled)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at MS.Win32.HwndSubclass.DispatcherCallbackOperation(Object o)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at System.Windows.Threading.ExceptionWrapper.InternalRealCall(Delegate callback, Object args, Boolean isSingleParameter)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at System.Windows.Threading.ExceptionWrapper.TryCatchWhen(Object source, Delegate callback, Object args, Boolean isSingleParameter, Delegate catchHandler)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at System.Windows.Threading.Dispatcher.WrappedInvoke(Delegate callback, Object args, Boolean isSingleParameter, Delegate catchHandler)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at System.Windows.Threading.Dispatcher.InvokeImpl(DispatcherPriority priority, TimeSpan timeout, Delegate method, Object args, Boolean isSingleParameter)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at System.Windows.Threading.Dispatcher.Invoke(DispatcherPriority priority, Delegate method, Object arg)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at MS.Win32.HwndSubclass.SubclassWndProc(IntPtr hwnd, Int32 msg, IntPtr wParam, IntPtr lParam)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at MS.Win32.UnsafeNativeMethods.DispatchMessage(MSG&amp; msg)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at System.Windows.Threading.Dispatcher.PushFrameImpl(DispatcherFrame frame)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at System.Windows.Threading.Dispatcher.PushFrame(DispatcherFrame frame)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at System.Windows.Threading.Dispatcher.Run()<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at System.Windows.Application.RunDispatcher(Object ignore)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at System.Windows.Application.RunInternal(Window window)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at System.Windows.Application.Run(Window window)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at System.Windows.Application.Run()<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at MVVMexperiment.App.Main() in C:\User Created Folder\Cambridge Soft\Inventory\CSLA 3.8 Samples downloaded from Lhotka's site\CslaNet\cs\MVVMexperimentWpf\MVVMexperiment\obj\Debug\App.g.cs:line 0<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at System.AppDomain._nExecuteAssembly(Assembly assembly, String[] args)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at System.AppDomain.ExecuteAssembly(String assemblyFile, Evidence assemblySecurity, String[] args)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at Microsoft.VisualStudio.HostingProcess.HostProc.RunUsersAssembly()<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at System.Threading.ThreadHelper.ThreadStart_Context(Object state)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at System.Threading.ExecutionContext.Run(ExecutionContext executionContext, ContextCallback callback, Object state)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at System.Threading.ThreadHelper.ThreadStart()<BR>&nbsp; InnerException: <BR></P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, November 06, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>This is the WPF sample right?<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>You are correct, there should not be a call to InvokeMethod in
+the Window1 form declaration in the XAML. The XAML should read:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>&lt;Window x:Class=&quot;MVVMexperiment.Window1&quot;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+xmlns=&quot;http://schemas.microsoft.com/winfx/2006/xaml/presentation&quot;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+xmlns:x=&quot;http://schemas.microsoft.com/winfx/2006/xaml&quot;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; xmlns:this=&quot;clr-namespace:MVVMexperiment&quot;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; xmlns:csla=&quot;clr-namespace:Csla.Wpf;assembly=Csla&quot;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Title=&quot;Window1&quot; Height=&quot;480&quot;
+Width=&quot;640&quot;&gt;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>What is strange is that this doesn&#8217;t fail on my machine, but
+does on yours. In any case, just remove that invalid line from the XAML and it
+should be fine.<o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>MAN-U replied on Monday, November 09, 2009</h2><P>Dear Rocky,</P>
+<P>We have downloaded the CSLA framework 3.8 as well as the new samples, specifically the MVVMExperimentWpf sample. Also we made sure that the following line was removed from Windows1.xaml<FONT color=#ff0000 size=2><FONT color=#ff0000 size=2></P>
+<P>csla</FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>:</FONT></FONT><FONT color=#ff0000 size=2><FONT color=#ff0000 size=2>InvokeMethod.TriggerEvent</FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>="Loaded"</FONT></FONT></P>
+<P>&nbsp;When we enter an ID greater than 10 to break the corresponding business rule and click Process Item, it looks like validation is not being performed. Debugging shows that the BrokenRulesCollection is always empty. CheckRules methods in ValidationRules.cs&nbsp;are never been called.</P>
+<P>Really appreciate it if you could take a look at it and let us know if we are missing something. </P>
+<P>Thanks.</P>
+<P><FONT color=#0000ff size=2><FONT color=#0000ff size=2>&nbsp;</P></FONT></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, November 09, 2009</h2>I just ran the 3.8 release code and the range check works just fine. I entered 12 for an Id, tabbed off that control and the PropertyStatus control shows me that the value is in error.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sg11 replied on Monday, November 09, 2009</h2>Rocky<br /><br />When running this sample, the only way I could get rid of the follwing error in the designer for ListPage.xaml "Object reference not set to an instance of an object", was by changing <br /><br />csla:PropertyStatus Margin="5" Property="{Binding Path=Model.Id}"<br />to<br />csla:PropertyStatus Margin="5" Property="{Binding Path=Id}"<br /><br />in effect changing Model.Id to Id.<br /><br />And either way, running the sample did not trigger a validation error. I was wondering if you might have a different set of goods on your machine.<br /><br />Thanks.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, November 09, 2009</h2><P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>sg11:</strong></div><div>Rocky When running this sample, the only way I could get rid of the follwing error in the designer for ListPage.xaml "Object reference not set to an instance of an object", was by changing csla:PropertyStatus Margin="5" Property="{Binding Path=Model.Id}" to csla:PropertyStatus Margin="5" Property="{Binding Path=Id}" in effect changing Model.Id to Id. And either way, running the sample did not trigger a validation error. I was wondering if you might have a different set of goods on your machine. Thanks.</div></BLOCKQUOTE></P>
+<P>I just compared the code I'm using to the code in the release and it is the same. Here's the release code from my repository:</P>
+<P><A href="http://www.lhotka.net/cslacvs/viewvc.cgi/samples/tags/V3-8-0/CslaNet/cs/MVVMexperimentWpf/MVVMexperiment/ListPage.xaml?revision=4413&amp;view=markup">http://www.lhotka.net/cslacvs/viewvc.cgi/samples/tags/V3-8-0/CslaNet/cs/MVVMexperimentWpf/MVVMexperiment/ListPage.xaml?revision=4413&amp;view=markup</A></P>
+<P>The controls are in a StackPanel, which has a DataContext pointing to the viewmodel object. Therefore the binding expressions on the individual controls must be Model.Id and Model.Name.</P>
+<P>Please make sure you are using the release version of 3.8, not an earlier release. This project (in particular) was changing almost daily during the development process because (as you can guess from the name) this was my experimentation project for these features.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sg11 replied on Monday, November 09, 2009</h2>Rocky<br /><br />Thanks for the prompt reply. I'm dumbfounded by what the issue here is. I took in a shot in the dark by trying to figure out what might be different on your machine, and since I didn't have anything Silverlight related on my machine, I thought I'd install the following, which I did to no avail:<br /><br />KB958017 - Rollup Hotfix for several issues in WPF designer Visual Studio 2008 <br /><br />Silverlight 3 Tools for VS 2008 <br /><br />Silverlight 3.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Kevin Fairclough replied on Tuesday, November 10, 2009</h2>Works for me, Visual Studio 2008 (3.5 SP1)<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>MAN-U replied on Tuesday, November 10, 2009</h2>Yes, Propertystatus&nbsp; works for me in the MVVMExperimentWPF sample application.&nbsp;&nbsp; Initially I entered values greater than 10 in the ID text box and no error messages displayed for me.&nbsp; It took a while for me to figure out, first I have to select an item from the listbox and then change the value to a digit which is greater than 10.&nbsp; In that case it is showing the error icon and the message as tooltip.<br><br>I have applied the same implementation in my application, and the issue I'm facing is - when the control comes to first time (before loading the page) to the SetSource Method of PropertyStatus.cs,&nbsp; I'm getting the value of&nbsp; Binding as {System.Windows.Data.BindingExpression} but 'Binding.DataItem' is null.&nbsp; So it is throwing an error [ Null reference exception ].<br><br>I have added one more condition to the 'IF' statement in the SetSource method as shown below. <br><br>if ((binding != null) &amp;&amp; (binding.DataItem != null))<br><br>and the PropertyStatus works as expected in the application.&nbsp; <br><br>In my scenario, it is a popup window for a new dataentry screen <br><br>Is it advisible to add the condition  (binding.DataItem != null) to the SetSource method of PropertyStatus?&nbsp; <br><br>Is it a global scenario in a MVVM application that the Binding.DataItem is null when Binding has some value?&nbsp; If yes, is that condition can be safely added to SetSource method?&nbsp; Thanks<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, November 10, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I certainly hope you don&#8217;t try to use MVVMexperiment as an
+example of any good way to build an application!!<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>The title of the sample includes the word <i>experiment</i>.
+This sample is nothing more than a way to experiment with some of the basic
+ideas around MVVM and the use of InvokeMethod, Execute and ViewModel&lt;T&gt;. <o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>It is absolutely not a complete app, and it certainly doesn&#8217;t
+illustrate how you should really build an app!<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>The most you should try to get out of MVVMexperiment is the
+basic usage of the new MVVM capabilities in 3.8.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Personally I never have regions of my forms enabled or visible
+if there&#8217;s no underlying datacontext. Why would you do that in a real app?<o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>MAN-U replied on Wednesday, November 11, 2009</h2>In my code, I'm assigning ViewModel for a View in one of my ViewModel.cs page<br><br>&lt;&lt; start --- portion of the code from my application&gt;&gt;<br><br>&nbsp;public ILocationView View { get; set; }<br><br>&nbsp;public void ApplyView(ILocationView view)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; View = view;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; View.ViewModel = this;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br><br>&lt;&lt; end --- portion of the code from my application&gt;&gt;<br><br>And the ViewModel is defined as a property in the code behind of xaml page <br><br>&lt;&lt; start --- portion of the code from my application&gt;&gt;<br><br>public ILocationActionViewModel ViewModel<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; get<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return this.DataContext as ILocationActionViewModel;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; set<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; this.DataContext = value;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br><br>&lt;&lt; end --- portion of the code from my application&gt;&gt;<br><br>So from the line 'View.ViewModel = this'; control goes to the 'Set' portion of the ViewModel Property.&nbsp; And that triggers the event 'DataContextChanged'&nbsp; in the constructor of Propertystatus.cs and calls the SetSource method.&nbsp; <br><br>&nbsp;public PropertyStatus()<br>&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; DefaultStyleKey = typeof(PropertyStatus);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; BrokenRules = new ObservableCollection&lt;BrokenRule&gt;();<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; DataContextChanged += (o, e) =&gt;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; SetSource();<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; //SetSource(e.OldValue, e.NewValue);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; };<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Loaded += (o, e) =&gt; { UpdateState(); };<br>&nbsp;&nbsp;&nbsp; }<br><br>And in the SetSource method while finding the binding using the below line<br><br>var binding = GetBindingExpression(PropertyProperty)<br><br>I'm getting 'binding' as notnull and binding.dataitem as null.&nbsp; This happens only while loading the page. &nbsp; <br><br>The issue identified was, while executing the line -&nbsp; View.ViewModel = this;<br><br>'this.View' has value but 'this.View.ViewModel' is null.&nbsp; <br><br>'this.View.ViewModel' has assigned the value only after triggering the 'DataContextChanged' event in PropertyStatus.cs and that calls the SetSource method.<br><br>DataContextChanged += (o, e) =&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; SetSource();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; //SetSource(e.OldValue, e.NewValue);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; };<br><br>If I add the condition&nbsp;&nbsp; 'if ((binding != null) &amp;&amp; (binding.DataItem != null))' in the SetSource Method of PropertyStatus.cs [ instead of&nbsp; 'if ((binding != null)' ], it works fine.&nbsp; <br><br>
+ 
+  Normal
+  0
+  
+  
+  false
+  false
+  false
+  
+   
+   
+   
+   
+   
+  
+  MicrosoftInternetExplorer4
+ 
+
+ 
+ 
+
+
+
+
+ /* Style Definitions */
+ table.MsoNormalTable
+	{mso-style-name:"Table Normal";
+	mso-tstyle-rowband-size:0;
+	mso-tstyle-colband-size:0;
+	mso-style-noshow:yes;
+	mso-style-parent:"";
+	mso-padding-alt:0in 5.4pt 0in 5.4pt;
+	mso-para-margin:0in;
+	mso-para-margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	font-size:10.0pt;
+	font-family:"Times New Roman";
+	mso-ansi-language:#0400;
+	mso-fareast-language:#0400;
+	mso-bidi-language:#0400;}
+
+
+
+<p class="MsoNormal">Due to obvious reasons, I don’t want to change the code in
+PropertyStatus.cs.&nbsp; It would be helpful if you can provide some
+suggestions to overcome the issue?&nbsp; Or is it advisible to use the condition
+'if ((binding != null) &amp;&amp; (binding.DataItem != null))' in the SetSource
+method. <span>&nbsp;&nbsp;</span>Thanks.</p>
+
+<br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Fintanv replied on Friday, December 18, 2009</h2>For what it's worth I am using Prism with my MVVM approach and also had to make this same change when upgrading to 3.8.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>admin replied on Friday, December 18, 2009</h2>Please try 3.8.2, as I believe the issue is resolved.</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

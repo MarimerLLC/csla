@@ -1,0 +1,8 @@
+<html><header><title>Wpf lookup combobox trigger edit?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Wpf lookup combobox trigger edit?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5691.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>RickR posted on Wednesday, October 29, 2008</h2><P>I see in this post the way to connect up a lookup combobox in Wpf: </P>
+<P><A href="http://www.lhotka.net/weblog/BindingAWPFComboBoxToADisplaySourceAndABindingSource.aspx">http://www.lhotka.net/weblog/BindingAWPFComboBoxToADisplaySourceAndABindingSource.aspx</A></P>
+<P>but it seems like this will cause the BusinessObjectList to go into edit state.</P>
+<P>The senario might be like this:&nbsp; Create UI, in load event create BusinessObjectList and associated lookup BusinessObjectList, connect like above.&nbsp; When the combo box loads its ItemSource doesn't it change the SelectedValue in the BusinessObject&nbsp;and thereby edit it?</P>
+<P>Regards,</P>
+<P>Rick</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RickR replied on Wednesday, October 29, 2008</h2><P>Never mind, I see now that checking in the Set property if the value is different prevents this from happening.</P>
+<P>&nbsp;</P>
+<P>Rick</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

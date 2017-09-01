@@ -1,0 +1,50 @@
+<html><header><title>OT : Infragistics UltraWebTab / web app state issues</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>OT : Infragistics UltraWebTab / web app state issues</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/1972.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>SonOfPirate posted on Wednesday, December 13, 2006</h2><P>I am using the Infragistics UltraWebTab control in a simple application where a new tab is dynamically added at run-time with a custom server control for the content.&nbsp; The tab is created as follows:</P>
+<P><CODE>void myEvent(object sender, EventArgs e)<BR>{<BR>&nbsp; &nbsp; UltraWebTab.Tab tab = new UltraWebTab.Tab("NewTab");<BR>&nbsp; <BR>&nbsp; &nbsp; tab.Key = tab.Text;<BR>&nbsp; &nbsp; tab.ContentPane.Controls.Add(ApplicationContext.Editor);<BR>&nbsp; <BR>&nbsp; &nbsp; UltraWebTab1.Tabs.Add(tab);<BR>}</CODE></P>
+<P>"myEvent" is raised by an underlying framework based on a change made in the page's LoadComplete event handler when the page is first loaded (i.e. !Page.IsPostBack). The "ApplicationContext" is an object persisted in session between posts. The "Editor" property returns a pre-instantiated server control.</P>
+<P>Everything works great when the page is first loaded. The Page and UltraWebTab Load events occur as expected, the Page.LoadComplete event is handled, triggering the "myEvent" to occur. The new tab is added, control added to the ContentPane, etc. until the page is finally rendered exactly as expected.</P>
+<P>Some data is changed in the server control's fields and the page is posted back.&nbsp; When this happens the server control hosted in the ContentPane is no longer present.&nbsp; It doesn't show up anywhere in the control heirarchy of the page let alone where it should be in the UltraWebTab control.</P>
+<P>My guess is that the control needed to be added back into the control hierarchy just as is the case within the server controls. So, I worked forward from the Page.Init event through the Page.InitComplete event until I was finally able to locate the Tab object that the control belonged to in the Page.Load event handler.&nbsp; There I added the code to add the control back into the tab's ContentPane. However...</P>
+<P>When I ran the site again I received an error indicating that an "Item has already been added...".&nbsp; The error was a result of the LoadViewStateRecursive method being attempted on the server control when added back into the tab's ContentPane.&nbsp; The error message correctly identified one of the fields in the server control's form fields.&nbsp; According to the stack trace, the error resulted because after adding the control into the tab's ContentPane, the System.Web.UI.Control.AddedControl() method is called followed by System.Web.UI.Control.LoadViewStateRecursive() which ultimately leads to the exception.</P>
+<P>I am at a loss what I am doing wrong and/or what is causing this behavior.&nbsp; Any guidance that will help me get this running as expected is greatly appreciated.&nbsp; I am under a tremendous time constraint and this is killing our progress, so whatever help you can provide is appreciated.</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>SonOfPirate replied on Thursday, December 14, 2006</h2><P>Okay, I originally thought this had something to do with the Infragistics UltraWebTab control, but I have been able to get the problem to recur without the control.&nbsp; Let me explain what I've found&nbsp; by working backwards.</P>
+<P>I have a user control that contains a FormView control and CslaDataSource wired-up in exactly the same way that Rocky shows for the DetailsView in the ProjectEdit.aspx file.&nbsp; This user control is referenced by url as one of the tabs in an UltraWebTab.&nbsp; Right now I have everything working with the UltraWebTab defined directly in my web page.</P>
+<P>The FormView defaults to Insert mode and, when a button is clicked, properly triggers the InsertObject event in the CslaDataSource so I can create the record in the database.&nbsp; I then switch the FormView to Edit mode (in lieu of the default ReadOnly mode).&nbsp; I make changes, click the button again and the FormView.UpdateItem() method is called triggering the UpdateObject event in the CslaDataSource and life is good.</P>
+<P>However!</P>
+<P>This is not how the application works.&nbsp; In reality, the UltraWebTab that "owns" the user control containing the FormView and CslaDataSource is also contained in a user control.&nbsp; That is because this whole setup is contained within a parent UltraWebTab (thus my original finger-pointing at the Infragistics control).&nbsp; Before I go on, let me describe the page heirarchy for reference - so no one gets lost!</P>
+<P>
+<UL>
+<LI>Page 
+<UL>
+<LI>UltraWebTab (1) 
+<UL>
+<LI>Tab 
+<UL>
+<LI>ContentPane 
+<UL>
+<LI>UserControl (1)&nbsp; 
+<UL>
+<LI>UltraWebTab (2)&nbsp; 
+<UL>
+<LI>Tab 
+<UL>
+<LI>ContentPane 
+<UL>
+<LI>UserControl (2)&nbsp; 
+<UL>
+<LI>FormView 
+<LI>CslaDataSource</LI></UL></LI></UL></LI></UL>
+<LI>Other tabs...</LI></UL></LI></UL></LI></UL></LI></UL>
+<LI>Other tabs...</LI></UL></LI></UL></LI></UL>
+<P></P>
+<P>The outer UltraWebTab (indicated with a 1 in the list above) has tabs added and removed dynamically as the application executes.&nbsp; A pseudo-MDI interface, if you will.&nbsp; The user control that contains the inner UltraWebTab (also indicated with a 1) is one of the dynamically-created tabs.&nbsp; The inner user control (marked with a 2) contains the FormView and CslaDataSource.</P>
+<P>I have used this structure with the tabs within tabs before and not had a problem.&nbsp; But, it was not with Csla and not with ASP.NET 2.0 and the FormView control.&nbsp; I don't know which is causing the problem at this point.</P>
+<P>In my effort to troubleshoot my problem, I created an interrum approach where I eliminated the outer UltraWebTab and used a PlaceHolder control on my page to load the outer UserControl (containing the inner UltraWebTab).&nbsp; When I did, I started running into the problem I reported previously.</P>
+<P>When the page first loads (i.e. Page.IsPostBack == false), the outer user control (1) is created using the LoadControl() method to simulate how the application does it.&nbsp; The control is then added to the PlaceHolder's ControlCollection.&nbsp; The page comes up correctly, I am able to enter data and post it back to the server where the new record is correctly created.</P>
+<P>The first problem I notice is that the SelectObject handler in the FormView's user control (2) is triggered three times before the page reloads.&nbsp; Not sure why this is.</P>
+<P>When the page reloads, the FormView reflects our new object and is now in Edit mode as expected.&nbsp; When I change some field values and post the page back again, I get the ViewState error described above when I attempt to load the user control into the PlaceHolder again.&nbsp; Without this step, the user control disappears.&nbsp; So, my assumption is that&nbsp;I have to manually add it back into the page's hierarchy so that it will be there to receive post back data and events.&nbsp; However, this exception is making me believe that the page still holds a reference to the user control somewhere and has already restored its state.&nbsp; But, when I break the code on the following statement:</P>
+<P>PlaceHolder1.Controls.Add(editor);&nbsp; // where editor&nbsp;= LoadControl("path to the user control")</P>
+<P>and check the Control.Count value, it shows zero.&nbsp; I hit F5 to resume execution and it immediately breaks with the exception.</P>
+<P>So, I've eliminated the outer UltraWebTab and in doing so eliminated it as a suspect.&nbsp; The inner UltraWebTab is not under suspicion because my subsequent test where I removed the outer user control and work directly with the inner UltraWebTab in the page works fine.</P>
+<P>This obviously has something to do with loading and restoring controls dynamically during the page's lifecycle.&nbsp; But, I added a quick recursive routine&nbsp;to output the type and ID values of every control in the Page's heirarchy at specific points in the page's lifecycle (such as Page_Load and Page_PreRender) and on the second post-back (the update) the user control is NOT anywhere oto be found in the heirarchy.&nbsp; So, why is the call to LoadViewStateRecursive failing when I try to add it into the heirarchy?</P>
+<P>Any ideas what else to look at, try or explanation why and what is happening are termendously appreciated.</P>
+<P>&nbsp;</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

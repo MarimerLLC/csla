@@ -1,0 +1,7 @@
+<html><header><title>_dalType is null always</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>_dalType is null always</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11863.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>hi2bapi posted on Saturday, March 02, 2013</h2><p>In my webconfig it has</p>
+<p>&lt;add key=&quot;DalManagerType&quot; value=&quot;EyeFramesCatalog.DalEF.DalManager,EyeFramesCatalog.DalEF&quot; /&gt;</p>
+<p>&nbsp;</p>
+<p>The Type.GetType not able to find exact type and returns null.</p>
+<p>How to solve this issue?</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Saturday, March 02, 2013</h2><p>First make sure that the assembly&nbsp;<span><b>EyeFramesCatalog.DalEF.dll </b>exists in your bin folder.&nbsp;</span></p>
+<p>If it is present then verify that the namespace and name is correct. </p>
+<p>If in doubt use ILSpy (or any other decompiler) to inspect the assembly in your bin-folder to make sure the actual class is inside the assembly.&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

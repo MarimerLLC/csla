@@ -1,0 +1,96 @@
+<html><header><title>Design Question on validation</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Design Question on validation</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5289.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Joffies posted on Friday, August 22, 2008</h2><P>I have the following classes:</P>
+<P>Award (BusinessBase) - Parent<BR>AwardVesting (BusinessBase) - Child<BR>AwardVestings (BusinessListbase) - ChildCollection</P>
+<P>My child object has a property/field called Percentage. Within the collection the sum of all percentages may never exceed 100%. </P>
+<P>I currently have validation method within the AwardVestings which checks that new entries added values never exceed 100%. This works fine when adding new children to the children collection. </P>
+<P>The childcollection however is bound to a grid and the will be allowed to change the Percentage and therefore validation needs to take place when the childcollection has changed.</P>
+<P>How can I enfore validation on a property of a collection for existing items within the collection incase the values (percentage) change?</P>
+<P>Thanks for any pointers</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>richardb replied on Friday, August 22, 2008</h2>There may be an event that's raised back to the gride as a child is changed, and you might then be able to respond to that event and force a revalidation on the parent object at that point.&nbsp; I'm a bit rusty here on that but HTH.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Friday, August 22, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Here is one suggestion.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>If you want the Award to be aware of the percentage rule
+violation, I would create a property for an award, like TotalPercentage (public
+get) and put a rule on it.&nbsp; Then when child.Percentage changes, call Award
+to re-calc and validate the TotalPercentage property, as in ((AwardVerstings)this.Parent).ParentAward.SetAndValidateTotalPercentage().&nbsp;
+Public get of TotalPercentage would return the sum of children&#8217;s
+percentages.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>This way the user can easily see total percentage as well.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899<o:p></o:p></span></p>
+
+<p class=MsoNormal><b><i><span>Magenic</span></i></b><span> </span><span>&reg;</span><b><i><span><o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Joffies
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Friday, August 22, 2008 9:41 AM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> [CSLA .NET] Design Question on validation<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>I have the following classes:<o:p></o:p></p>
+
+<p>Award (BusinessBase) - Parent<br>
+AwardVesting (BusinessBase) - Child<br>
+AwardVestings (BusinessListbase) - ChildCollection<o:p></o:p></p>
+
+<p>My child object has a property/field called Percentage. Within the
+collection the sum of all percentages may never exceed 100%. <o:p></o:p></p>
+
+<p>I currently have validation method within the AwardVestings which checks
+that new entries added values never exceed 100%. This works fine when adding
+new children to the children collection. <o:p></o:p></p>
+
+<p>The childcollection however is bound to a grid and the will be allowed to
+change the Percentage and therefore validation needs to take place when the
+childcollection has changed.<o:p></o:p></p>
+
+<p>How can I enfore validation on a property of a collection for existing items
+within the collection incase the values (percentage) change?<o:p></o:p></p>
+
+<p>Thanks for any pointers<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

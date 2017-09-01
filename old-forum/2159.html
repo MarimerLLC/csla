@@ -1,0 +1,28 @@
+<html><header><title>SmartDate and SafeDataReader explanation</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>SmartDate and SafeDataReader explanation</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/2159.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>gderoeck posted on Wednesday, January 17, 2007</h2><P>I've read the book pretty thoroughly and am still a little fuzzy as to the functionality and benefits of these two things.&nbsp; Can anyone expand on what the benefits are for both?&nbsp; I apologize for my lack of understanding...........&nbsp; Thank you in advance!</P>
+<P>-Greg</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, January 17, 2007</h2><P>SmartDate is a date type that has two primary purposes:</P>
+<OL>
+<LI>Support binding to a TextBox or equivalent, while still acting like DateTime</LI>
+<LI>Support the concept of an "empty" date, which is different from a null date in that a null date is, by definition, an undefined value, while an empty date is defined as being specifically empty (and thus can be compared to a real date)</LI></OL>
+<P>SafeDataReader is a wrapper for any data reader object, and it exists to remove null values. If your database allows nulls in some columns where you really don't need them, then SafeDataReader is an easy way to read from those tables without having to manually de-null all the values.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>gderoeck replied on Wednesday, January 17, 2007</h2><P>Rocky, thank you - that helps a lot.</P>
+<P>I look forward to meeting you in Denver this coming Monday!&nbsp; I'll be at the meeting you'll be speaking at.</P>
+<P>Thanks again!</P>
+<P>-Greg</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jimbo replied on Thursday, January 18, 2007</h2>if you are not using a DataReader but instead processing a generic
+datatable/datarow result set,&nbsp; for example,&nbsp; then the same
+principles as SafeDataReader can be applied with inline shared
+functions that convert null fields to empty strings or integer defaults
+or nullable(of) etc and vica versa.<br>
+<br>
+<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>mroiter replied on Tuesday, January 23, 2007</h2><P>I use SafeDataReader very often in my Business Object Layer.</P>
+<P>It is convinient for me to log Column Name and Position when InvalidCastException&nbsp;occures in any of its Getxxx(int) methods. So I created derived&nbsp;class SafeDataReader2 and overrided methods that incapsulate additional info into my custom exception:</P><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Overrides</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Function</FONT><FONT size=2> GetInt32(</FONT><FONT color=#0000ff size=2>ByVal</FONT><FONT size=2> i </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Integer</FONT><FONT size=2>) </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Integer</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Try</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Return</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>MyBase</FONT><FONT size=2>.GetInt32(i)</P>
+<P></FONT><FONT color=#0000ff size=2>Catch</FONT><FONT size=2> invCastException </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> InvalidCastException</P>
+<P></FONT><FONT color=#0000ff size=2>Throw</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>New</FONT><FONT size=2> DataReaderInvalidCastException(</FONT><FONT color=#a31515 size=2>"InvalidCastException"</FONT><FONT size=2>, invCastException, i,GetName(i))</P>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Try</FONT></P>
+<P>I found that Getxxx(string) methods of SafeDataReader are not overridable. Is there some particular reason that prevents these methods from being overridable?</P>
+<P>Thanks a lot in advance,</P>
+<P>Michael</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>david.wendelken replied on Tuesday, January 23, 2007</h2><P>If you like using SmartDate after you use it a bit, check out the CSLA Contrib project, there are other Smart... classes to use also.</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

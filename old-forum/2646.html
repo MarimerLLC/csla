@@ -1,0 +1,14 @@
+<html><header><title>EditableRootListBase with Janus Schedule</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>EditableRootListBase with Janus Schedule</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/2646.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>CrazyLegz posted on Monday, April 02, 2007</h2><P>Hi all,</P>
+<P>I'm using an EditableRootListBase bound to a Janus Schedule component. It's the same sort of schedule you see in Outlook.</P>
+<P>Inserting and updating works fine trough EditableRootListBase except deleting. It deletes the selected object and then instantly after that it tries to delete it again. </P><FONT color=#0000ff size=2>
+<P>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>void</FONT><FONT size=2> SaveItem(T item)</P>
+<P>{</P>
+<P>&nbsp;&nbsp;&nbsp;SaveItem(IndexOf(item));</P>
+<P>}</P>
+<P>The IndexOf(item) returns -1 because it's already deleted and so <FONT color=#0000ff size=2></P>
+<P>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>virtual</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>void</FONT><FONT size=2> SaveItem(</FONT><FONT color=#0000ff size=2>int</FONT><FONT size=2> index)</FONT></P>
+<P><FONT size=2>throws an exception.</FONT></P>
+<P><FONT size=2></FONT>&nbsp;</P>
+<P><FONT size=2>I believe this is a problem in EditableRootListBase and not in the Schedule component.</FONT></P>
+<P><FONT size=2>Or am I just doing something wrong?</FONT></P>
+<P><FONT size=2>Thnkx in advance.</P></FONT></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>CrazyLegz replied on Monday, April 02, 2007</h2>Could it be that it is trying to delete a parent or child?</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,26 @@
+<html><header><title>How would you use a struct inside a BusinessBase object?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>How would you use a struct inside a BusinessBase object?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9906.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>ksirmons posted on Wednesday, December 29, 2010</h2><p>Howdy, </p>
+<p>(using csla 4.0.1 w/ silverlight)</p>
+<p>I am creating a helper struct (DomainUserName) to keep a value for a Domain\Username. I want to have the ability to get and set the&nbsp;individual&nbsp;parts (DomainName and UserName) as well as get and set the fully composed value;</p>
+<p><b>What should be implemented on this struct to allow for tight&nbsp;integration&nbsp;into the CSLA framework?</b></p>
+<p>I have implemented&nbsp;IMobileObject, ISmartField, and IComparable&nbsp;similar&nbsp;to the SmartDate struct as a starting point.</p>
+<p>I am binding the DomainName to a combo box and the UserName to a text box in silverlight.</p>
+<p>If I change the DomainUserName&#39;s values, the BusinessBase object does not&nbsp;recognize&nbsp;and update its Dirty status.</p>
+<p>The struct is registered in the BusinessBase object:</p>
+<p>
+<pre>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>public</span>&nbsp;<span>static</span>&nbsp;<span>PropertyInfo</span>&lt;<span>DomainUserName</span>&gt;&nbsp;domainUserNameProperty&nbsp;=&nbsp;RegisterProperty&lt;<span>DomainUserName</span>&gt;(c&nbsp;=&gt;&nbsp;c.DomainUserName);</pre>
+</p>
+<p>How would you&nbsp;implement&nbsp;business rules to verify the DomainUserName is valid (contains both parts) and coordinate it with the main BusinessBase object.</p>
+<p>&nbsp;</p>
+<p>A secondary question.... Is a struct the correct / best design implementation for this requirement?&nbsp;</p>
+<p>I was also thinking of making it a BusinessBase object (child) &nbsp;itsself so it could implement its own business rules, but it would never be saving its self to a database, just providing the full domainname to the parent object during its save. &nbsp;Would I then need to coordinate its own internal isdirty / isnew properties manually?</p>
+<p>&nbsp;</p>
+<p>Thank you,</p>
+<p>Keith</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Wednesday, December 29, 2010</h2><p>You can&#39;t really use a struct. Also, why would you want to? To get value type semantics? Or because you have a massive number of these things and you want to try and get a different memory model than heap storage?</p>
+<p>But in any case, you really can&#39;t. The MobileFormatter has no way to serialize things without their participation, and there&#39;s no way to have a base class for a struct.</p>
+<p>All that said, there is one way, and maybe another.</p>
+<p>The one way is to use a private backing field for your struct, and to override OnGetState/OnSetState and to put the elements of the struct into and out of the serialization stream by hand.</p>
+<p>Another is maybe to have the struct implement IMobileObject (can they do that?) directly in the struct.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ksirmons replied on Thursday, December 30, 2010</h2><p>I have already changed this from a struct to a BusinessBase child object. &nbsp;I am now getting a better&nbsp;DataBinding&nbsp;experience with the Validation pieces being directly associated to the object and shown on screen.</p>
+<p>While it was a struct, I had it implement IMobileFormater (I followed SmartDate as an example) and it was moving across the WCF channel correctly. &nbsp;The only thing I could not get it to do as a struct was coordinate with the parent object when its internal properties were modified to update the parent&#39;s IsDirty bit. &nbsp;</p>
+<p>Thank you,</p>
+<p>Keith</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

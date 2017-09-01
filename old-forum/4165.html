@@ -1,0 +1,85 @@
+<html><header><title>Deep Data pattern - Inserts/Updates</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Deep Data pattern - Inserts/Updates</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4165.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>juddaman posted on Sunday, January 13, 2008</h2>Hi <br><br>I want to implement my data access code in a seperate assembly. I've copied the DeepData example for Fetches but am a little unsure how to do the Inserts/Updates. This is what I have done (using the terms in DeepData):<br><br>In DeepData.DAL, DeepData.DAL.Direct and DeepData.DAL.DTO  I've added a OrderDAL class.<br><br>They have a method, InsertOrder(object data);<br><br>In the DAL.Direct InsertOrder method I check data is of type Order.<br>In the DAL.DTO InsertOrder method I check data is of type OrderDAL.<br><br>In each case I throw an ArgumentException if data is not of the correct type.<br><br>In DeepData.DAL.DataFactory I've added a method  InsertOrder(object data). This creates the correct type of OrderDAL and calls the InsertOrder method on it passing it the argument.<br><br>Is this how others have dealt with Inserts?<br><br>Thanks George<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>juddaman replied on Monday, January 14, 2008</h2>Okay. Let me ask this question in another way.<br><br>When porting DeepData example to C# how should one handle the change from dynamic typing? <br><br>Is it the case of adding seperate FetchDto() methods.. i,e, FetchMyDto(), FetchLinqDto() etc? Then alter FetchDto() so it calls the correct FetchxxxDto depending on the type returned. <br><br>Or maybe use an adaptor to convert all returned to MyDto types. Then just have a FetchDto()?<br><br>Any help is much appreciated.<br><br>Thanks, George<br><br><br><br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, January 14, 2008</h2><P>I only used VB's dynamic language features in the sample because the sample transparently switches between LINQ, web services or straight DTOs. I didn't want messy code to deal with three types with the same shape but different types.</P>
+<P>In a "normal" app you'd almost certainly just pick one of those techniques. The result is that you'd have one set of types and so you can just use strong-typing directly against those types. For example, the business assembly can reference the LINQ DAL assembly and just use the LINQ DTO types.</P>
+<P>For update/insert/delete operations, I recommend having the DAL implement methods that accept strongly typed parameters for those operations. This is what the DAAB does, and what you'll get with LINQ to SQL automatically. Many other DAL tools work that same way.</P>
+<P>You can get an idea of what I'm talking about by looking at the Data Access region of the new Resources class</P>
+<P><A href="http://www.lhotka.net/cslacvs/viewvc.cgi/trunk/ProjectTrackervb/ProjectTracker.Library/Resource.vb">http://www.lhotka.net/cslacvs/viewvc.cgi/trunk/ProjectTrackervb/ProjectTracker.Library/Resource.vb</A></P>
+<P>I know it is VB, sorry, I'm still porting the new property declaration code to C# before I can convert ProjectTracker... But you can see how the LINQ DTOs are used in DP_Fetch/Insert/Update/Delete. All that comes from a totally separate project (ProjectTracker.DalLinq) that is only deployed on the app server.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>juddaman replied on Tuesday, January 15, 2008</h2>Hi Rocky<br><br>Many thanks for your reply. Yes in a normal app I guess only one method would be needed. I was just trying to see if there was an elegent way of implementing the dynamic typing in C#. Also for speed comparisions etc.<br><br>I've had a look through the new Resources class and the PTrackerDataContext class. Is the PTrackerDataContext generated code? Would you always recommend passing each data element as a parameter of a data method i.e. (ctx.DataContext.addResource(mLastName, mFirstName, newId, newLastChanged))?. The reason I ask is if a class has many fields it could get a little messy. Would it not be better to pass a dto to the DAL?<br><br>Thanks<br>George<br><br>EDIT: P.S. Could you please tell me why you chose to name the concrete implementations (of DAL classes) with the same names as their superclass? For example OrderData : OrderData rather then DTOOrderData : OrderData. I'm just curious :-)<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, January 15, 2008</h2><P>No, there's no elegant way to do dynamic calls in C#. It is reflection or nothing. You can wrap the reflection in an elegant API I suppose <img src="/emoticons/emotion-1.gif" alt="Smile [:)]" />&nbsp;&nbsp; (and you'd want to, because to get it right like VB or Ruby or whatever requires a lot of code - a lot of type checking, dealing with edge conditions, type coercion, etc).</P>
+<P>PTrackerDataContext and SecurityDataContext are created by the LINQ to SQL (L2S) support in Visual Studio 2008. In fact the entire ProjectTracker.DalLinq assembly was created using drag-and-drop in VS 2008 - I did no coding or modifications to anything there.</P>
+<P>This also means I didn't create the DTOs. They were created automatically as part of the dbml file. Their naming is entirely as decided by Visual Studio, I just did drag-and-drop.</P>
+<P>My original intent was to see how far I could get before needing to do manual work around LINQ. But in the end I was pretty happy with the default code and did no extra work!</P>
+<P>The only issue I encountered was the L2S code doesn't like stored procedures that return multiple result sets (like getProject and getResource). I was unable to use those two stored procedures, and had to do direct LINQ statements in Project and Resource. Not a big deal, but it took me a while to understand why I wasn't getting the right child data from my queries when I was using the sprocs.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>alef replied on Friday, November 07, 2008</h2><font size="3">For the multiple results I've found the following article (LINQ to SQL: returning multiple result sets):<br>
+http://blogs.msdn.com/swiss_dpe_team/archive/2008/02/04/linq-to-sql-returning-multiple-result-sets.aspx</font><br>
+<br>
+So it is possible to reuse the SP's getProject and getResource.<br>
+<br>
+<br>
+<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, November 07, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Yes, it is absolutely possible for L2S to handle multiple result
+sets. But not if you use the VS designer to create your L2S entities.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>When I built the ProjectTracker stuff I consciously chose to use
+the VS designer, because I expected that&#8217;s what most people would want to
+do.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>As it turns out (not to my surprise), L2S is now effectively
+obsolete so it doesn&#8217;t really matter a lot. Though personally I prefer
+L2S at the moment, but I&#8217;m sure EF 2.0 will be much more usable than 1.0.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> alef
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Friday, November 07, 2008 7:07 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] Deep Data pattern - Inserts/Updates<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>For the multiple results I've found the following article
+(LINQ to SQL: returning multiple result sets):<br>
+http://blogs.msdn.com/swiss_dpe_team/archive/2008/02/04/linq-to-sql-returning-multiple-result-sets.aspx<br>
+<br>
+So it is possible to reuse the SP's getProject and getResource.<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

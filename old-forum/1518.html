@@ -1,0 +1,36 @@
+<html><header><title>Newbie - DataPortal_Fetch(ByVal Criteria As Object)</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Newbie - DataPortal_Fetch(ByVal Criteria As Object)</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/1518.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>griff posted on Tuesday, October 17, 2006</h2><P>Hi</P>
+<P>A newbie using Using 1.53</P>
+<P>Is this the correct implementation??</P>
+<P>To retreive the BO using different criteria (e.g by PK or DateCreated etc) I would do something like this in DataPortal_Fetch(ByVal Criteria As Object)</P><FONT color=#0000ff size=2>
+<P><FONT size=3>If</FONT></FONT> <FONT color=#0000ff>TypeOf</FONT> Criteria <FONT color=#0000ff>Is</FONT>&nbsp;GetByPK then</P>
+<P>&nbsp;&nbsp;&nbsp;GetbyPK&nbsp; 'code/stored proc to get by PK</P>
+<P>elseif&nbsp;<FONT color=#0000ff>&nbsp;</FONT> <FONT color=#0000ff>TypeOf</FONT> Criteria <FONT color=#0000ff>Is</FONT>&nbsp;GetByDateCreated then</P>
+<P>&nbsp;&nbsp;&nbsp;GoGetbyPK&nbsp;&nbsp;&nbsp;&nbsp;' 'code/stored proc to get by DateCreated</P>
+<P>elseif&nbsp; <FONT color=#0000ff>TypeOf</FONT> Criteria <FONT color=#0000ff>Is</FONT>&nbsp;GetByOtherCriteris then&nbsp;&nbsp;</P>
+<P>&nbsp;GoGet</P>
+<P>else</P>
+<P>endif</P>
+<P>Thanks</P>
+<P>Richard</P>
+<P><FONT size=2>&nbsp;</P></FONT>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Tuesday, October 17, 2006</h2><P>Yes. That is exactly how I tend to code these things.<BR>One other thought - if you ever need to use the same Criteria type for 2 different Shared Methods then you are "stuck" because you won't know how to branch.</P>
+<P>I added a MethodName As String Parameter to my criteria Base class to allow branching in just that case.</P>
+<P>If TypeOf Criteria Is GetByPK then</P>
+<P>&nbsp;&nbsp; If MethodName="1" Then </P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 'do method 1 stuff</P>
+<P>&nbsp; ElseIf MethodName="2" Then </P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 'do method 2 stuff</P>
+<P>&nbsp; End If</P>
+<P>End If</P>
+<P>Note: There is nothing that says criteria classes HAVE to be embedded in the BOs that use them.<BR>I split mine out to a separate file and tried to make them as re-useable as possible. This way I define them once and use them in many places. They have to Inherit from CriteriaBase and pass the Type of the BO to create though. </P>
+<P>Also - in 2.x you can overload the DP methods using Criteria As Type1, Criteria As Type2, Criteria As Type3 etc. Then the DP framework calls the correct overload based on type. (Same idea as you wrote but Rocky gets to write the branching code instead of you.)</P>
+<P>Joe</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>griff replied on Tuesday, October 24, 2006</h2><P>Thanks Joe</P>
+<P>(I've been away a few days)</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,50 @@
+<html><header><title>ListChanged and calculatinig totals</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>ListChanged and calculatinig totals</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/1647.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Wal972 posted on Tuesday, October 31, 2006</h2><P>I have added the following code&nbsp;yet&nbsp;my Calculating Code is not being called WHY ? I need the calculation to occur when the amount in the child is changed, as well as when items are added or deleted. Plus&nbsp;I need to move this to the Pay parent as well&nbsp;because it need properties from it. Specific code required for&nbsp;the parent object. &nbsp;HELP :) Thanks</P>
+<P><FONT color=#0000ff size=2>Protected</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Overrides</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Sub</FONT><FONT size=2> OnListChanged(</FONT><FONT color=#0000ff size=2>ByVal</FONT><FONT size=2> e </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> System.ComponentModel.ListChangedEventArgs)</P>
+<P></FONT><FONT color=#0000ff size=2>If</FONT><FONT size=2> e.ListChangedType = ComponentModel.ListChangedType.ItemAdded </FONT><FONT color=#0000ff size=2>Then</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>AddHandler</FONT><FONT size=2> Item(e.NewIndex).PropertyChanged, </FONT><FONT color=#0000ff size=2>AddressOf</FONT><FONT size=2> OnPayChanged</FONT></P><FONT size=2><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>ElseIf</FONT><FONT size=2> e.ListChangedType = ComponentModel.ListChangedType.ItemChanged </FONT><FONT color=#0000ff size=2>Then</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>AddHandler</FONT><FONT size=2> Item(e.NewIndex).PropertyChanged, </FONT><FONT color=#0000ff size=2>AddressOf</FONT><FONT size=2> OnPayChanged</P></FONT>
+<P></FONT><FONT color=#0000ff size=2>ElseIf</FONT><FONT size=2> e.ListChangedType = ComponentModel.ListChangedType.ItemDeleted </FONT><FONT color=#0000ff size=2>Then</P></FONT><FONT size=2>
+<P>OnPayChanged(</FONT><FONT color=#0000ff size=2>Me</FONT><FONT size=2>, </FONT><FONT color=#0000ff size=2>New</FONT><FONT size=2> System.ComponentModel.PropertyChangedEventArgs(</FONT><FONT color=#800000 size=2>"PayDetails-ListChanged"</FONT><FONT size=2>))</P>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>If</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>MyBase</FONT><FONT size=2>.OnListChanged(e)</P>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Sub</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Protected</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Sub</FONT><FONT size=2> OnPayChanged(</FONT><FONT color=#0000ff size=2>ByVal</FONT><FONT size=2> sender </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Object</FONT><FONT size=2>, </FONT><FONT color=#0000ff size=2>ByVal</FONT><FONT size=2> e </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> System.ComponentModel.PropertyChangedEventArgs)</FONT></P>
+<P><FONT size=2>Calculating code</FONT></P>
+<P><FONT size=2><FONT color=#0000ff>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Sub</FONT></FONT></P><FONT size=2><FONT color=#000000 size=3>
+<P>Not sure if this is correct please advise</P></FONT></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Bayu replied on Tuesday, October 31, 2006</h2>Starting a new thread on the same subject is close to bashing, and usually does not help much.<br><br>I just read your original thread (<a HREF="/forums/thread/8349.aspx">http://forums.lhotka.net/forums/thread/8349.aspx</a>). It seems like several people already offered advice, but you need more specific code-level help in order to be able to make it work. <br><br>In your snippet you add event handlers every time objects are added, changed and removed. This does not make sense to me, I'd say you would add event handlers when the object is added and remove them again when the object is deleted. In your code you keep adding event handlers at infinity, are you aware of what exactly you programmed here? Are you aware that you are just registering an event handler, not actually invoking it?<br><br>I can't tell you why your OnPayChanged routine never hits, perhaps your PropertyChanged event is never raised. <br><br>In order to know what went wrong, you should first know what you are trying to do.<br><br>Bayu<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Wal972 replied on Tuesday, October 31, 2006</h2><P>I added a new thread because the old one was getting long and I needed help, if you think its bashing that was not the intent.</P>
+<P>If you can offer actual suggestions I would greatly appreciate it. I am simply following previous&nbsp; suggestions. This is not an area I have had experience with, so please be patient.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Brian Criswell replied on Tuesday, October 31, 2006</h2>You need to do some research into when you are supposed to add handlers.&nbsp; Now if I understood correctly, you need a total in the root object to update whenever the amount of an item changes.&nbsp; This should do that.&nbsp; You will need to change variable names and such to match your variable names.<br><br>In your root object, which has the list as a child:<br><br>DataPortal_Create<br>&nbsp;&nbsp;&nbsp; 'Create root object and child list<br>&nbsp;&nbsp;&nbsp; AddHandler _list, AddressOf _list_ListChanged<br>End Function<br><br>DataPortal_Fetch<br>&nbsp;&nbsp;&nbsp; 'Load root object and child list<br>
+&nbsp;&nbsp;&nbsp; AddHandler _list, AddressOf _list_ListChanged<br>End Function<br><br>Private Sub _list_ListChanged(ByVal sender As Object, ByVal e As ListChangedEventArgs)<br>&nbsp;&nbsp;&nbsp; If e.ListChangedType = ListChangedType.ItemChanged Then<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;  If e.Property.Name = "Amount" Then<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;  &nbsp;&nbsp;  'Calculating code<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;  End If<br>&nbsp;&nbsp;&nbsp; End If<br>End Sub<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>malloc1024 replied on Tuesday, October 31, 2006</h2><p class="MsoNormal">Keep it simple.<span>&nbsp; </span>Just
+loop through the line-items and calculate the total.<span>&nbsp; </span>The time spent calculating the total is insignificant
+in most situations.<span>&nbsp; </span></p>
+
+
+<p class="MsoNormal"><o:p>&nbsp;</o:p></p>
+
+
+<p class="MsoNormal">I would also suggest reading up on events.<span>&nbsp; </span>There are many websites that are very
+helpful.<span>&nbsp; </span>You wouldn’t learn as much if
+someone gave you the exact code you need.<span>&nbsp;
+</span>Most people in this forum are very helpful and are willing to point you
+in the right direction but you need to take some responsibility and take it
+from there.<br>
+</p>
+<p class="MsoNormal">
+
+</p>
+<p class="MsoNormal"><br>
+BTW, Bayu was trying to help you.<span>&nbsp; </span>It
+is
+somewhat disrespectful to suggest that
+his response wasn’t an actual suggestion.&nbsp; You shouldn’t open
+another thread with the same
+question because it casues confusion.&nbsp; You are also less likely to
+get the help you need if you create two threads with the same question.<br>
+</p>
+
+<p class="MsoNormal">
+</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Wal972 replied on Tuesday, October 31, 2006</h2><P>Thanks Guys, the reason I need exact code was I had done research and was unable to find samples from which to learn. I had done quite a few google searchs using the keywords of the suggestions but unable to find anything. And if I was disrespectful it was unintentional. I had been getting a little frustrated with this problem over the last week and may have taken it out on you guys, so apologies. This forum is great because of the help. My lack of understanding came out the wrong way.</P>
+<P>A person can tell to use the flint to start a fire, but sometimes you need to see how its used. That was my situation.</P>
+<P>All the references I had found had said to used the listchanged etc, but not the how.</P>
+<P>So thanks guys for the help</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Wal972 replied on Wednesday, November 01, 2006</h2><P>THANKS HEAPS EVERYONE</P>
+<P>Through your hard work and extreme patience, my code is working exactly how i need it to, and my understanding has increase a hundredfold.</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

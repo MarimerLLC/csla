@@ -1,0 +1,349 @@
+<html><header><title>Many CSLA assemblies?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Many CSLA assemblies?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/7971.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka posted on Tuesday, November 10, 2009</h2><P>This has come up in a couple threads over the past 2-3 weeks, so I thought I'd elevate it to a top-level discussion topic.</P>
+<P>CSLA .NET 1.x was composed of around 5 assemblies. I recieved a lot of negative feedback about this, because people had to reference numerous assemblies to use the framework.</P>
+<P>CSLA .NET 2.0-3.7 was composed of 1 assembly. I recieved some kudos for this when I did it, and in the past month I've received a bunch of negative feedback about this. </P>
+<P>It is possible that a small number of vocal new CSLA users are voicing these objections and that the majority likes one assembly. Or it is possible that the majority has been silently living with one assembly, while really wishing for many assemblies. I don't know, and that's the purpose of this thread.</P>
+<P>CSLA .NET 3.8.1 now has two assemblies: Csla.dll and Csla.Web.Mvc.dll. This could be a temporary anomoly, since MVC is included in .NET 4.0. Or it could be the model on which CSLA .NET 4.0 is based.</P>
+<P>Right now CSLA .NET 4.0 consists of three projects:</P>
+<UL>
+<LI>Core/server - the full framework like today</LI>
+<LI>Client - a subset of the full framework for the 4.0 client profile</LI>
+<LI>Silverlight - a subset of the full framework for Silverlight 3</LI></UL>
+<P>It could consist of a whole family of projects. For an extreme example:</P>
+<UL>
+<LI>Core client</LI>
+<LI>Core server</LI>
+<LI>Core Silverlight</LI>
+<LI>Data portal client</LI>
+<LI>Data portal server</LI>
+<LI>Data portal Silverlight</LI>
+<LI>WCF data portal channel</LI>
+<LI>Silverlight WCF data portal channel</LI>
+<LI>Remoting data portal channel</LI>
+<LI>asmx data portal channel</LI>
+<LI>Enterprise Services data portal channel</LI>
+<LI>Xaml (WPF)</LI>
+<LI>Xaml (Silverlight)</LI>
+<LI>Web Forms</LI>
+<LI>ASP.NET MVC</LI>
+<LI>Windows</LI>
+<LI>WCF </LI>
+<LI>Workflow</LI>
+<LI>Data client</LI>
+<LI>Data server</LI>
+<LI>Reflection .NET</LI>
+<LI>Reflection Silverlight</LI></UL>
+<P>Most projects would need to reference 2-4 assemblies on the client, and probably 3-5 on the server.</P>
+<P>A more realistic example:</P>
+<UL>
+<LI>Core server</LI>
+<LI>Core client</LI>
+<LI>Core Silverlight</LI>
+<LI>WCF data portal channel</LI>
+<LI>Silverlight WCF data portal channel</LI>
+<LI>Remoting data portal channel</LI>
+<LI>asmx data portal channel</LI>
+<LI>Enterprise Services data portal channel</LI>
+<LI>Xaml (WPF)</LI>
+<LI>Xaml (Silverlight)</LI>
+<LI>Web Forms</LI>
+<LI>ASP.NET MVC</LI>
+<LI>Windows</LI>
+<LI>WCF </LI>
+<LI>Workflow</LI></UL>
+<P>In this case a typical client would need 3 references, and a typical server would need 2-3 references. A web server (Web Forms or MVC) would need 2-4.</P>
+<P>Some of this I'd planned on doing regardless - specifically pulling the "legacy" data portal channels out into their own project(s), and leaving only the WCF channel in the core framework.</P>
+<P>I hadn't planned to break all the different interface technologies (WPF, WCF, Web Forms, etc) into their own assemblies.</P>
+<P>So I think the real question for this thread is whether I should break the interface technologies into separate projects/assemblies - thus pretty much requiring that you always reference 2+ assemblies to build a project using CSLA .NET, instead of the 1 assembly you reference today.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Tuesday, November 10, 2009</h2><P>I cast a strong vote for a single assembly!</P>
+<P>Joe</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Wednesday, November 11, 2009</h2><P>I would&nbsp;like to&nbsp;keep a single assembly.</P>
+<P>I think the logic that 3rd party products come in more than one assembly is a bit misleading; the ones I use which do come with (dozens) of assemblies also have other tools that add the appropriate references, but thats not the case with Csla.&nbsp; I'm not convinced the tools to manage references have improved that much either, as I still hit problems with two referencing wanting a different version each of a&nbsp;3rd reference..</P>
+<P>I was using Csla.Net in the 1.x days, and remember that it was an incredible PITA having multiples.&nbsp; </P>
+<P>For those that want the split, what advantages do you see?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tmg4340 replied on Wednesday, November 11, 2009</h2><FONT face=Tahoma size=2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>ajj3085:</strong></div><div></FONT>
+<P><FONT face=Tahoma size=2>For those that want the split, what advantages do you see?</FONT></P>
+<P><FONT face=Tahoma size=2></div></BLOCKQUOTE></FONT></P>
+<P><FONT face=Tahoma size=2>I think, for those of us who see multiple assemblies as a benefit (of which I am one) is that it allows Rocky to more easily continue to support the multiple UI technologies that Microsoft keeps spewing out.&nbsp; There are already ongoing struggles with WinForms vs. XAML, and I believe Rocky has&nbsp;stated that CSLA 4.0 will likely switch to an ObservableCollection-based collection class rather than a BindingList-based class.&nbsp; That pretty much kicks WinForms binding right where it hurts.&nbsp; However, since he doesn't want to abandon the entirety of all Winforms apps using CSLA, there is likely going to have to be a separate inheritance tree for the base classes.&nbsp; That seems like a perfect situation for split assemblies.</FONT></P>
+<P><FONT face=Tahoma size=2>While you certainly can maintain all of that within one assembly, doing so tends to clutter the environment, as you have access to namespaces you're never&nbsp;going to need, depending on your situation.&nbsp; While it certainly doesn't hurt anything to have it all lumped together, having multiple assemblies allows for a cleaner separation of the different technologies, as well as locations (in my warped mind, I see a set of server-only assemblies as well.)&nbsp; It would also force people to consider more carefully what they're pushing down to their clients.</FONT></P>
+<P><FONT face=Tahoma size=2>Also, like it or not, it's my opinion that MS is driving us towards this whether we want it or not.&nbsp; The "client profile" feature streamlines the .NET assemblies that get pushed to the client.&nbsp;&nbsp;The five different UI technologies are separated into different assemblies.&nbsp; Microsoft's application blocks have long required multiple assembly references to work correctly.&nbsp; I know&nbsp;the headaches of multiple assembly references, but I think in the long run it will make life easier for Rocky to maintain - or potentially pass off maintenance of some pieces&nbsp;to someone else.</FONT></P>
+<P><FONT face=Tahoma size=2>HTH</FONT></P>
+<P><FONT face=Tahoma size=2>- Scott</FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Wednesday, November 11, 2009</h2>I'd like to see a Csla move into several assemblies. <br><br>We import the code into TFS and use ILMerge anyway to merge our framework and Csla into a few assemblies (on release build and then branch from deploy folder into the actual projects). This provides a "clean" branching strategy for us. <br><br>We all know that UI technologies come in newer versions (ex Silverlight 1, 2, 3 and who knows when 4.0 is out), ASP.NET MVC 1.0 and soon 2.0 in .Net 4.0.&nbsp; If we can successfully split UI / DataAccess helper code it should provide better support for .Net 4.0 (full/client profil) and may also allow keeping more "backward" compatibility on UI and base classes. Maybe even open for more Community driven development so Rocky can focus on core and new development.<br><br>How to split up the assemblies on the other hand could turn into a long discussion. I would like to see a structure similar to: <br><ul><li><font size="2">Csla &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (FieldManager, Core, base classes, dataportal, wcf host/client portal, all resources, commonrules, objectfactory)<br></font></li><li><font size="2">Csla.Data &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; (Data access helper classes for ADO.NET, EF, L2S)<br></font></li><li><font size="2">Csla.Linq&nbsp;&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (Linq base classes/indexing/C5)</font></li><li><font size="2">Csla.DataPortal &nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (legacy DataPortal hosts and dataportal client)</font></li><li><font size="2">Csla.Windows&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (</font><font size="2">legacy BindingList base classes, sortedbindinglist/filteredbindinglist) </font></li><li><font size="2">Csla.WF&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</font></li><li><font size="2">Csla.Silverlight&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (Silverlight dataportal wcf host)<br></font></li></ul><ul><li><font size="2">Csla.Web.Asp &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (ASP.NET)<br></font></li><li><font size="2">Csla.Web.Mvc&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (ASP.NET MVC)<br></font></li><li><font size="2">Csla.Client.Wpf&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <br></font></li><li><font size="2">Csla.Client.Silverlight (UI Helpers + client dataportal/wcf)<br></font></li><li><font size="2">Csla.Client.Windows&nbsp; (Windows controls/extenders ) <br></font></li></ul>A "typical" Csla BusinessObject project would need Csla + Csla.DataAccess + possibly Csla.Linq. <br>A typical UI project would need same BO references above +&nbsp; the actual client technology assembly.<br><br>And I would prefer to keep all resources in one assembly and have just one set of translated resources. <br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RedShiftZ replied on Friday, November 20, 2009</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>JonnyBee:</strong></div><div><br><font size="2"><br>Csla &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (FieldManager, Core, base classes, dataportal, wcf host/client portal, all resources, commonrules, objectfactory)<br></font><ul><li><font size="2">Csla.Data &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; (Data access helper classes for ADO.NET, EF, L2S)<br></font></li><li><font size="2">Csla.Linq&nbsp;&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (Linq base classes/indexing/C5)</font></li><li><font size="2">Csla.DataPortal &nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (legacy DataPortal hosts and dataportal client)</font></li><li><font size="2">Csla.Windows&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (</font><font size="2">legacy BindingList base classes, sortedbindinglist/filteredbindinglist) </font></li><li><font size="2">Csla.WF&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</font></li><li><font size="2">Csla.Silverlight&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (Silverlight dataportal wcf host)<br></font></li></ul><ul><li><font size="2">Csla.Web.Asp &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (ASP.NET)<br></font></li><li><font size="2">Csla.Web.Mvc&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (ASP.NET MVC)<br></font></li><li><font size="2">Csla.Client.Wpf&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <br></font></li><li><font size="2">Csla.Client.Silverlight (UI Helpers + client dataportal/wcf)<br></font></li><li><font size="2">Csla.Client.Windows&nbsp; (Windows controls/extenders ) <br></font></li></ul>A "typical" Csla BusinessObject project would need Csla + Csla.DataAccess + possibly Csla.Linq. <br>A typical UI project would need same BO references above +&nbsp; the actual client technology assembly.<br><br>And I would prefer to keep all resources in one assembly and have just one set of translated resources. <br><br></div></BLOCKQUOTE><br><br>+1 to JohnnyBee's Idea<br>I dislike the single assembly myself.<br><br>Jeff<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>mbblum replied on Tuesday, November 10, 2009</h2>Rocky,<br />One of the historical reasons for wanting a single assembly was to reduce/avoid "DLL hell". In that environment, I also wanted only one! With MS improvements in the dotNet era, thank goodness those problems have mostly disappeared.<br /><br />Given the variety of choices for application models, not everything is needed in any specific implementation. The overhead can be reduced by removing large sections that will never be used in a given scenario.<br /><br />Most of us are now very comfortable referencing the specific sub-assemblies needed for the current project. Also, Visual Studio has become more helpful in locating the needed assemblies for objects being instantiated. <br /><br />With that reasoning, I feel comfortable with multiple assemblies in the upcoming 4.0 release. <br /><br />Thx, mbb<br /><br /></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Curelom replied on Tuesday, November 10, 2009</h2>I would agree with mbb.<br />Most often when you buy third party controls, they will come in several assemblies and it isn't too difficult to add them to your library.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rasupit replied on Tuesday, November 10, 2009</h2>I prefer 1 assembly or at most 2 or 3.<br><br>Rocky, perhaps we can make everyone happy by using <a href="http://www.microsoft.com/downloads/details.aspx?FamilyID=22914587-b4ad-4eae-87cf-b14ae6a939b0&amp;displaylang=en">ILMerge</a>&nbsp; Quite a few open source libraries use ILMerge to combine their library into single assembly.&nbsp; I'm aware of <a href="http://www.clariusconsulting.net/blogs/kzu/archive/2009/02/23/LeveragingILMergetosimplifydeploymentandyourusersexperience.aspx">Moq</a>, <a href="http://www.lostechies.com/blogs/jimmy_bogard/archive/2009/04/04/adventures-with-il-merge.aspx">Automapper</a>, NServiceBus uses ILMerge.<br><br>Ricky<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, November 10, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>ILMerge is an interesting idea &#8211; but what really brought
+this to a head was that I recently took dependencies on two <i>Microsoft</i>
+assemblies that aren&#8217;t installed automatically with .NET 3.5 SP1. That
+threw enough people for a big enough loop that I addressed both issues in
+different ways.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>The Interactivity assembly is now in my Dependencies folder &#8211;
+which is a pretty lame solution since users lose localization and XML help
+unless they change the reference to point to the real install location
+(assuming they install the Blend SDK).<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>The Mvc assembly is now referenced only by the Csla.Web.Mvc
+project. Which is arguably a better solution, but radically reduces the
+discoverability of the CslaModelBinder class, which is very important for
+ASP.NET MVC development.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Taking a dependency on ILMerge would be even worse I suspect,
+because it isn&#8217;t even a Microsoft tool. I shudder to think about the emails
+I&#8217;d get for forcing developers&nbsp; in locked down dev environments to
+argue with their managers to let them install this (relatively random) tool.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Interestingly enough, a large percentage of CSLA users are not
+open source nuts, and can&#8217;t or won&#8217;t install numerous open source
+tools just to get CSLA to build. Heck, a fair number won&#8217;t install <i>supported
+Microsoft SDKs</i> to get CSLA to build.</span><b><span><o:p></o:p></span></b></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rasupit replied on Wednesday, November 11, 2009</h2>Rocky, I agree these portion (ex: Csla.Web.Mvc) should be on a separate assembly at least until MVC comes together in .NET package and not a separate install.<br><blockquote><i><span>Taking a dependency on ILMerge would be even worse I suspect,
+because it isn’t even a Microsoft tool.</span></i><br></blockquote>ILMerge is actually come from MS, I think is from MS Research group.&nbsp; This is just a tool to merge multiple assembly into one which can be used when you're packaging a version build or can be added as a step to your build script.&nbsp; This would not need a reference to a project which would take dependency and force developer to download another install.<br><br>This tool will give you freedom to divide CSLA to as many project as _you_ think would make sense (and to shut up the opinionated bunch like us here <img src="/emoticons/emotion-1.gif" alt="Smile [:)]" />, because we all can have our cake and eat it too)<br><br>This will also you go further with existing provider model for data portal and make it pluggable.&nbsp; I heard MEF is included in .NET 4.0 <img src="/emoticons/emotion-5.gif" alt="Wink [;)]" /><br><br>Ricky.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, November 11, 2009</h2><P>There are some things to keep in mind in this discussion.</P>
+<P>Perhaps most importantly, the mobile object concept requires that the base classes and their supporting infrastructure be in a consistent assembly across platforms - server, client and Silverlight. In short, anything that is [Serializable] fits this requirement.</P>
+<P>Since that (to me) core set of types will already have to be replicated into 3 projects (minimum), there's a mulitplier effect. If I break anything out of 'core' into a separate part of 'core' then I have 6 instead of 3. Then 9, etc.</P>
+<P>So there's no sense considering breaking out anything directly tied to the base classes. This includes validation, authorization, business rule processing, field manager, the various collection base classes, data binding support and at least part of LINQ to CSLA. These are all directly connected to the base class type structures and therefore must be in 'core' - because I only want one 'core' per platform.</P>
+<P>The things that are relatively easy to break out are the interface support types for WPF, Silverlight, Windows Forms, Web Forms, MVC, WCF, asmx, Workflow, etc.</P>
+<P>Other things could be teased apart, like the data portal, but with some serious effort, and at a cost - mostly in terms of either optimization or by making a lot more things public than I'd like.</P>
+<P>Still other things could be separated, like Csla.Reflection, but I'm not sure to what end. This is because none of the other assemblies could work without it, so you'd always have to reference it no matter what, so then why make it a seperate assembly? All that would do is add complexity for me and anyone using CSLA - which makes no sense to me at all.</P>
+<P>I can see arguments for breaking out the various interface technologies. And there are strong advantages to this, as should be clear from the Interactivity and Mvc dependencies I've recently encountered. Imposing the Interactivity (Blend SDK) requirement on WPF/Silverlight developers seems reasonable to me - why <EM>wouldn't</EM> you want those features?? But imposing that requirement on everyone else doesn't make sense.</P>
+<P>I don't see the value in arguing that breaking it apart reduces complexity. I use namespaces to organize the types, and I find it hard to imagine web developers are confused by the types in Csla.Windows - what sane web developer would look there in the first place???</P>
+<P>Conversely, there's a clear increase in complexity here, in that developers will need a deeper understanding (in this new world) about what types are in which assemblies - and which assemblies must be referenced on the client vs the server, etc. For some people this is a non-issue, and that's fine, but I am 100% confident that some confusion and FAQ entries would come out of this :)</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>krs replied on Wednesday, November 11, 2009</h2>I vote in favor of as few assemblies as possible.
+
+<br><br>I find separating various technologies into their own assemblies to be aesthetically pleasing and seasoned developers that are focusing on using CSLA in their daily work will not have problems with that approach and will reap some benefits that have been discussed in this thread.
+<br><br>But the original audience for CSLA is (still) programmers that are learning their way around some of the basic OO concepts and they are the ones that would find many assemblies and subprojects confusing. Some will probably trace their way through the demo and framework source code and keeping the complexity as low as possible and making it easier to discover the features of CSLA as your knowledge grows, should be a primary aim.
+
+<br><br>I have had some experience introducing CSLA to developers and found that even small hurdles can be quite a challenge for new developers building their first CSLA.NET application. One of those hurdles back in the day was when we had numerous CSLA assemblies and used ActiveObjects on top of that. Even now, things like the separation between CSLA for Windows and Silverlight takes time to explain to reasonably experienced developers.
+
+<br><br>That said, one assembly is not practical and the deciding factor that I like is the separation that Rocky describes in CSLA 4.0, to support the client profile and keep the core separate. Also separating the "legacy" parts of the framework should be considered, to indicate what will probably not be as actively maintained, something that will in the long run be necessary to keep CSLA improvements focused. But separating based on interface technologies runs the risk of confusing newcomers, while veteran CSLA users will probably not stumble over having those technologies stay in the main libraries.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Peran replied on Thursday, November 12, 2009</h2>I would echo the comments from krs; the less dll's the better, more dlls is great from a purist's point of view but is less practical. Rocky is the best person to decide what is easiest for him to
+maintain, what will reduce his time spent on support questions and what willl allow him to move forward with new technologies/features.<br><br>I vote for less time spent on maintinence and support in favour of adding new features :-)<br><br><br>Peran<br><br><br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>chrduf replied on Thursday, November 12, 2009</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Breaking out the different interfaces makes a lot of sense to
+me. In our organization adding a requirement like a dependency for MVC / Blend
+could cause us not to be able to take advantage of newer releases of the
+framework. Our development, build and testing environments are not easily modified.
+<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>One of the core ideas behind CSLA is that it&#8217;s focus is on
+the business logic layer and not the UI. As you have indicated the UI
+components could easily be separated into their own assemblies. <o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I don&#8217;t see any benefit of splitting the &#8216;core&#8217;
+platform up<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Thanks<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> RockfordLhotka
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Wednesday, November 11, 2009 3:18 PM<br>
+<b>To:</b> chris.dufour@wigets.net<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: Many CSLA assemblies?<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>There are some things to keep in mind in this discussion.<o:p></o:p></p>
+
+<p>Perhaps most importantly, the mobile object concept requires that the base
+classes and their supporting infrastructure be in a consistent assembly across
+platforms - server, client and Silverlight. In short, anything that is
+[Serializable] fits this requirement.<o:p></o:p></p>
+
+<p>Since that (to me) core set of types will already have to be replicated into
+3 projects (minimum), there's a mulitplier effect. If I break anything out of
+'core' into a separate part of 'core' then I have 6 instead of 3. Then 9, etc.<o:p></o:p></p>
+
+<p>So there's no sense considering breaking out anything directly tied to the
+base classes. This includes validation, authorization, business rule
+processing, field manager, the various collection base classes, data binding
+support and at least part of LINQ to CSLA. These are all directly connected to
+the base class type structures and therefore must be in 'core' - because I only
+want one 'core' per platform.<o:p></o:p></p>
+
+<p>The things that are relatively easy to break out are the interface support
+types for WPF, Silverlight, Windows Forms, Web Forms, MVC, WCF, asmx, Workflow,
+etc.<o:p></o:p></p>
+
+<p>Other things could be teased apart, like the data portal, but with some
+serious effort, and at a cost - mostly in terms of either optimization or by
+making a lot more things public than I'd like.<o:p></o:p></p>
+
+<p>Still other things could be separated, like Csla.Reflection, but I'm not
+sure to what end. This is because none of the other assemblies could work
+without it, so you'd always have to reference it no matter what, so then why
+make it a seperate assembly? All that would do is add complexity for me and
+anyone using CSLA - which makes no sense to me at all.<o:p></o:p></p>
+
+<p>I can see arguments for breaking out the various interface technologies. And
+there are strong advantages to this, as should be clear from the Interactivity
+and Mvc dependencies I've recently encountered. Imposing the Interactivity
+(Blend SDK) requirement on WPF/Silverlight developers seems reasonable to me -
+why <em>wouldn't</em> you want those features?? But imposing that requirement
+on everyone else doesn't make sense.<o:p></o:p></p>
+
+<p>I don't see the value in arguing that breaking it apart reduces complexity.
+I use namespaces to organize the types, and I find it hard to imagine web
+developers are confused by the types in Csla.Windows - what sane web developer
+would look there in the first place???<o:p></o:p></p>
+
+<p>Conversely, there's a clear increase in complexity here, in that developers
+will need a deeper understanding (in this new world) about what types are in
+which assemblies - and which assemblies must be referenced on the client vs the
+server, etc. For some people this is a non-issue, and that's fine, but I am
+100% confident that some confusion and FAQ entries would come out of this :)<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>skagen00 replied on Thursday, November 12, 2009</h2>I'd vote for a single assembly as well. <br /><br />I think the point that Rocky makes about the namespaces organizing respective aspects of the functionality is what I agree with most. Having a MVC namespace hanging out there won't impact me at all -- it'll make the main Csla.dll a little bit larger but I don't see the size or number of main namespaces of the Csla.dll being a problem (for me).<br /><br />When it boils down to it, I'm sure all of us can work in either mode - it's really just the initial configuration of solution structure &amp; establishing the necessary references for each project where this is going to come into play. So if Rocky decided to split them, no real skin off my back. <br /><br />In the end I'd echo what I've seen a few times in this thread - "whatever is easier for Rocky". <br /><br />My preference, one Csla dll.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jsimas replied on Friday, November 13, 2009</h2>I like Justin’s suggestion that results in four assemblies. Another option would be to align the number of assemblies to Visual Studio’s targets. In this case it would be divided into Server and Client only.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, November 13, 2009</h2><P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>jsimas:</strong></div><div>I like Justin’s suggestion that results in four assemblies. Another option would be to align the number of assemblies to Visual Studio’s targets. In this case it would be divided into Server and Client only.</div></BLOCKQUOTE></P>
+<P>The server/client/Silverlight split is a given. There's no way around having at least three different Csla.dll builds for the different platform targets.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Regent replied on Wednesday, November 18, 2009</h2>>> Other things could be teased apart, like the data portal, but with some serious effort, and at a cost - mostly in terms of either optimization or by making a lot more things public than I'd like.<br /><br />I think that you can use <font face="Lucida Console" size="2">InternalsVisibleTo</font> attribute (<a href="http://msdn.microsoft.com/en-us/library/system.runtime.compilerservices.internalsvisibletoattribute.aspx" target="_blank" title="http://msdn.microsoft.com/en-us/library/system.runtime.compilerservices.internalsvisibletoattribute.aspx">http://msdn.microsoft.com/en-us/library/system.runtime.compilerservices.internalsvisibletoattribute.aspx</a>) to make internal classes/members visible to assemblies of your choice.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>cdkisa replied on Wednesday, November 18, 2009</h2>I vote single assembly and targetted builds.<br /><br />The single assembly is small (less than 1mb) and splitting it will only result in more time spent answering questions.<br /><br />However, I am not the project owner/developer and would respect that if splitting into different assemblies made it easier for them, then do it.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Curelom replied on Wednesday, November 18, 2009</h2>Splitting out the assembly would be a very low priority in my book.  I'd rather have other features implemented long before splitting out the assembly.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Wednesday, November 18, 2009</h2>I've gone that route, and regretted it.&nbsp;At that point, its simplier just to leave it all in one project.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>justncase80 replied on Tuesday, November 10, 2009</h2>What I think is that it would be great to keep one core assembly then break the rest up by corresponding UI technologies. Of course this would imply that the base classes might need to have some custom replacement interfaces for state changes so that every UI technology could hook into it and translate to the right interfaces.<br /><br />It might be a lot of work to do that type of extraction but I think the end result would be "cleaner" base classes in the core, lower complexity, increased maintainability. Plus you could be more flexible as newer UI technologies come out, not being bound to supporting only one or the other. In fact you could imagine a sort of community sprouting up to make such components for various UI technologies for you.<br /><br />The trick seems like it would be that your actual Types might be different from on the server and on the client, assuming you have multiple clients. I'm sure theres a solution there but it would take some thinking, especially for Remoting dataportals. You could of course do a View specific wrapper around the more general core class but writing all those properties and methods twice would get real old real fast. <br /><br />Anyway, I guess I'm thinking:<br />Csla.dll<br />Csla.Silverlight.dll<br />Csla.Wpf.dll<br />Csla.Web.dll<br /><br />etc.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>paupdb replied on Tuesday, November 10, 2009</h2>My vote goes to Justin's solution - this way one can pick and choose the assemblies as needed.<br>However the maintenance overhead on this may prove to be a headache for you Rocky.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Wokket replied on Tuesday, November 10, 2009</h2>I'm inclined to agree with Justin.<br /><br />The fewer assemblies the easier it is to manage, but if a top-level part of the framework takes an external dependency that people are either unable or unwilling to target, that shouldn't preclude you from using the other portions.<br /><br />Adding a Csla.Legacy.dll to the above list would match pretty neatly in my mind.  <br /><br />Actually making the split and managing it is the hard bit obviously.<br /><br />Edit: btw it's good to see the community still going strong!  After being away from CSLA for a few years I'm hoping to get back into it in a big way shortly.  It's great to see everything still evolving down a path that matches how my brain's wired to build software :)</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rfcdejong replied on Wednesday, November 11, 2009</h2><P>Personaly i would like a small subset of assembly's, the ASP.NET MVC assembly is a perfect example to deploy seperately.<BR>Not using LINQ to CSLA would also mean that the C5 stuff can be put into a assembly.<BR><BR>It's almost the same as u explained, so i vote for:</P>
+<UL>
+<LI>Csla.Core.Server</LI>
+<LI>Csla.Core.Client&nbsp;&nbsp;&nbsp; ---&gt; optional split into core &amp; Xaml (WPF)</LI>
+<LI><STRONG>Csla.Core.Client.Linq !</STRONG></LI>
+<LI>Csla.Core.Silverlight&nbsp; ---&gt; optional split into&nbsp;core &amp;&nbsp;Xaml (Silverlight)</LI>
+<LI>Csla.Dataportals; (Legacy)</LI>
+<LI>Csla.Web.Forms</LI>
+<LI>Csla.Web.Mvc</LI>
+<LI>Csla.Windows</LI>
+<LI>Csla.WCF</LI>
+<LI>Csla.WF</LI></UL>
+<P><BR><BR>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Kevin Fairclough replied on Wednesday, November 11, 2009</h2>I would vote to split.&nbsp; Mainly for removing client-side technologies I don't need, and also server technologies I may not need on the client.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Marjon1 replied on Wednesday, November 11, 2009</h2>While I like the simplicity of a single dll, I understand the desire to start splitting it up. If it means that certain UI concepts (e.g WinForms) are available for longer the that is a compelling reason to split for me.<br /><br />The most important thing is what is actually easier for you to maintain &amp; support Rocky? </div><div style='padding:0 15 3 15;background-color:powderblue'><h2>dlambert replied on Wednesday, November 11, 2009</h2>I expect that you'll see a bias toward a single assembly from people already experienced with the framework, but I have a feeling that multiple assemblies might feel more familiar to developers who are familiar with other frameworks.  Most of the people on this forum have already drunk the kool-aid.  Once you step through a CSLA project and get the hang of how objects are transported across layers, etc., the single-assembly approach makes sense, and it's easy to set up and deploy.<br /><br />For developers who are used to a "traditional" stack, though, I have a feeling that they'd probably feel more comfortable if they could see that they're referencing data access stuff in the service project and UI stuff in the UI project, etc.  I know I've also seen a few "how do I turn off 'X'" questions in the forums, suggesting that people believe the current implementation isn't as efficient as it would be if they could just remove the stuff they're not using.  Multiple assemblies would help that perception, as well.<br /><br />Again, my feelings here come mainly from a desire to make CSLA appeal to a bunch of developers who aren't using it now.  I want to be able to use CSLA in as many projects as possible, and wider adoption (and familiarity) will make that easier.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>William replied on Wednesday, November 18, 2009</h2>I vote for single assembly.<br>Splitting the target by different platforms (server/client/Silverlight) makes more sense to me.<br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, December 04, 2009</h2><P>I put the start of the 4.0 change log online</P>
+<P><A href="http://www.lhotka.net/Article.aspx?id=3852b8d8-e2f7-4277-b77e-bf375125b6c9">http://www.lhotka.net/Article.aspx?id=3852b8d8-e2f7-4277-b77e-bf375125b6c9</A></P>
+<P>This includes a brief description of the new folder/project structure, specifically designed to make sure no one is happy ;)</P>
+<P>\Bin\...<BR>\Samples\CslaNet\...<BR>\Samples\CslaLight\...<BR>\Source\Csla.client\...<BR>\Source\Csla.core\...<BR>\Source\Csla.Silverlight\...<BR>\Source\Csla.Silverlight.test\...<BR>\Source\Csla.test\...<BR>\Source\Csla.Web\...<BR>\Source\Csla.Web.Mvc\...<BR>\Source\Csla.Windows\...<BR>\Source\Csla.Xaml\...<BR>\Source\Dependencies\...</P>
+<P>You can also see the structure in svn if you'd like</P>
+<P><A href="http://www.lhotka.net/cslacvs/viewvc.cgi/core/trunk/Source/">http://www.lhotka.net/cslacvs/viewvc.cgi/core/trunk/Source/</A></P>
+<P>The changes actually go deeper than it might first appear, as I'm taking this opportunity to clean and organize a number of things. Generally speaking this should only affect you if you have CSLA in your build process - in which case it will probably be a big deal.</P>
+<P>On the other hand, I do plan to release binaries with 4.0, so if you don't build (or want to build) CSLA you won't have to.</P>
+<P>The output assemblies now are:</P>
+<UL>
+<LI>Csla.dll (client profile)</LI>
+<LI>Csla.dll (server/core)</LI>
+<LI>Csla.dll (Silverlight 4)</LI>
+<LI>Csla.Web.dll</LI>
+<LI>Csla.Web.Mvc.dll</LI>
+<LI>Csla.Windows.dll</LI>
+<LI>Csla.Xaml.dll (WPF only)</LI></UL>
+<P>I do think I'll stick with this model, as it moves UX-specific dependencies like the Interactivity and Mvc assemblies out of the core so they only affect people using a specific UX technology.</P>
+<P>For example, if you are using Web Forms you only need core, and it has no external dependencies. But if you are doing WPF you'll need the Interactivity assembly. Or if you are using ASP.NET MVC you'll obviously have the required Mvc assembly from Microsoft.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>raz0rf1sh replied on Wednesday, November 18, 2009</h2>I wouldn't mind one assembly for the Core, and then different assemblies for the UI related DLLs.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rxelizondo replied on Wednesday, November 18, 2009</h2>I think that splitting the CSLA is the most *appropriate* thing to do while keeping the whole CSLA as a single assembly is the most *convenient* thing to do. <br /><br />We are already experiencing the problems by trying to cramp everything into one assembly, we know it’s not a good idea why keep doing it?<br /><br />I think that splitting the CSLA will encourage a better CSLA architecture from the point of view of extensibility…. Note that I am not saying it bad as it is right now, but I think that splitting the CSLA may allow extensibility related issues to surface.<br /><br />Also, I would be delighted to have the core CSLA in a separate assembly because that would make it a lot easier for developers that are just getting into the CSLA to understand the framework. I would love to see the book concentrating on the CSLA core using small “Console” type projects while using complementary eBooks online for the different UI technologies.<br /><br />By the way, namespace separation (vs separated dlls) is not good enough to many people (in my opinion). The core CSLA should be appealing to developers and not a turn off with bloats of unnecessary classes. The psychological effects of looking at so much code *DOES* matter. Developers are humans and like to see the light at the end of the tunnel.<br /><br />My only fear is version control. As long as all assemblies are published in a single package I think we should be fine. In other words, if the WPF related dll is changed, then all dlls are published and synchronized with the same version number regardless if other dlls were changed or not. So if we are on version 4.01, then all dlls are version 4.01…. or perhaps use the “AssemblyInformationalVersion” attribute for that?<br /><br />For those that don’t care about having all that code reference, then I see no big difference between doing a copy/replace for one dll or doing a copy/replace for 10 dlls. Not sure what is the big deal, perhaps I am missing something here.<br /></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>robert_m replied on Wednesday, November 18, 2009</h2>I vote for single assembly (or a small number of assemblies - moving legacy stuff out of the main assembly seems ok to me). <br />Why not keep it simple if we can ? <br /></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rxelizondo replied on Tuesday, November 24, 2009</h2>Perhaps another benefit of splitting the CSLA would be that you could potentially feel more at easy with the idea of farming out the development of UI code.<br /><br />By farming out, I mean having contributors develop and maintain the UI dlls while keeping the core CSLA locked down. If this works, this should free up some of your time.<br /><br />Also, this way, user that are still using old UI technology such as WinForms could maintain and enhance that code without you having to worry about it at all because that functionality is in a totally different dll.<br /><br />Of course, I am not sure if the CSLA is open at this time for anyone to make changes to it, if that is the case then these points are moot, but I would assume this is not the case.<br /><br />By the way, I just looked into the Spring.Net framework project and they have the Spring.Core.dll and then a bunch of other dlls and all seems to be well.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>xal replied on Friday, November 27, 2009</h2>I'd like to cast a vote for single assembly. There's little real benefit in splitting it. It adds complexity in understanding how everything is distributed for new developers and makes deployment harder.<br><br>I think for the most part if you don't want, say, the WindowsForms or WPF pieces, you can just exclude that folder from the project when compiling.<br><br>Telerik used to have a bunch of assemblies for their asp.net suite and now has a single assembly for all controls. I think that was a great move and I thought the same when csla became a single assembly in 2.0.<br><br>Cheers!<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Saturday, November 28, 2009</h2><P>I'm experimenting currently with this configuration:</P>
+<P>Core:</P>
+<UL>
+<LI>csla.core</LI>
+<LI>csla.client</LI>
+<LI>csla.silverlight</LI></UL>
+<P>UX:</P>
+<UL>
+<LI>csla.windows</LI>
+<LI>csla.xaml (wpf only - csla.silverlight has the silverlight UX stuff built-in)</LI>
+<LI>csla.web</LI>
+<LI>csla.web.mvc</LI>
+<LI>csla.workflow</LI></UL>
+<P>So far the only snag I've run into is that the WPF CslaDataProvider uses an internal property, otherwise the UX code already used only public members or interfaces. And that's how it should work, so this caught (in my mind) a bug with the WPF CslaDataProvider control.</P>
+<P>I'm going to work with this for a while and see if I like it - maybe even do an alpha release to see what you all think when working with real bits.</P>
+<P>The drawbacks are clear - more assemblies is more complexity and I fully appreciate those arguments (and tend to side with them).</P>
+<P>But the one single benefit that (to me) favors this change is that it would enable sub-teams to work on specific UX support with minimal risk to the core. Specifically I'm thinking Windows Forms and Web Forms as being areas where I will spend little to no time, but where there are people who are heavily invested in those technologies that may want to contribute their time to improve support in those areas.</P>
+<P>OK, there's also the external reference benefit - where csla.web.mvc can reference ASP.NET MVC, and where the Silverlight and Xaml projects can directly reference the Blend 3 SDK (because to me that's a required install for doing WPF/Silverlight anyway).</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Monday, November 30, 2009</h2><P>I realize I'm probably in a small minority here, but I don't think I'd even be able to attempt to try the multiple assemblies.&nbsp; I don't just toss a binary Csla into my source control, I actually have the source built just like other projects from source.&nbsp; This has allowed me to a keep a few small changes to core csla which I need or find useful, and I can easily spot all the code changes from version to version.&nbsp; So right off the bat, I'm faced with more ccnet integration projects to manage, and multiple places to update code (I actually have a WinForms app with embedded Wpf controls, and web forms apps), or, more likely, I'll spend time recombining to a single assembly because overall that will be easier to manage.&nbsp; With my own project, I'd like to combine multipe assemblies into one, but I think that ship has sailed.</P>
+<P><BLOCKQUOTE><div><img src="/Themes/basicblue/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div>But the one single benefit that (to me) favors this change is that it would enable sub-teams to work on specific UX support with minimal risk to the core. Specifically I'm thinking Windows Forms and Web Forms as being areas where I will spend little to no time, but where there are people who are heavily invested in those technologies that may want to contribute their time to improve support in those areas.</div></BLOCKQUOTE></P>
+<P>This is actually one of my main concerns, and maybe more clarity will help.&nbsp; Improvements to old UI technology is one thing, but if something in Csla core breaks something in Csla WinForms (an interface change, for example), is the expectation that the community will maintain those changes, or will the UI assemblies at least be updated to continue working as they currently are with Csla?&nbsp; </P>
+<P><BLOCKQUOTE><div><img src="/Themes/basicblue/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div>OK, there's also the external reference benefit - where csla.web.mvc can reference ASP.NET MVC, and where the Silverlight and Xaml projects can directly reference the Blend 3 SDK (because to me that's a required install for doing WPF/Silverlight anyway).</div></BLOCKQUOTE></P>
+<P>I can see why this would be a small benefit, so this is just a question because I'm curious,&nbsp;but&nbsp;I know there may not be a reason anyone knows;&nbsp;with the Blend reference, why is there an assembly which seems required to do development, but isn't included with the framework itself?&nbsp; Unless this is one of those things were like MVC it will be in the next VS anyway, it just seems really odd to me to require developers to redistribute an assembly which will always be required.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, November 30, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>It is no longer clear to me that ASP.NET MVC 2 will be in the
+.NET 4 release. I think it will be, but I&#8217;m not 100% sure, since MVC seems to
+be working like EF &#8211; where they do out-of-band releases.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I have no idea why the Interactivity dll isn&#8217;t in the framework.
+The behavior and trigger action concepts in that assembly are really important
+for XAML work on SL or WPF. Sure, you can live without them, but then you need
+some complex code or third-party code to do the same thing. Very strange&#8230;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tmg4340 replied on Monday, November 30, 2009</h2><FONT face=Tahoma size=2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>ajj3085:</strong></div><div></FONT>
+<P><FONT face=Tahoma size=2>I realize I'm probably in a small minority here, but I don't think I'd even be able to attempt to try the multiple assemblies.&nbsp; I don't just toss a binary Csla into my source control, I actually have the source built just like other projects from source.&nbsp; This has allowed me to a keep a few small changes to core csla which I need or find useful, and I can easily spot all the code changes from version to version.</FONT></P>
+<P><FONT face=Tahoma size=2></div></BLOCKQUOTE></FONT></P>
+<P><FONT face=Tahoma size=2>This (to me, at least) introduces a slightly-different question for Rocky.</FONT></P>
+<P><FONT face=Tahoma size=2>I know that CSLA is essentially an open-source framework.&nbsp; But have you ever considered just deploying the CSLA binaries?&nbsp; For those folks who use the framework "as is", not having to download the code and re-compile for every version could save a step.</FONT></P>
+<P><FONT face=Tahoma size=2>I'm not saying that the source code should no longer be available - I'm just wondering if there will be an additional download of just the binary DLL's.</FONT></P>
+<P><FONT face=Tahoma size=2>- Scott</FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, November 30, 2009</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>tmg4340:</strong></div><div> 
+<P><FONT size=2 face=Tahoma>I know that CSLA is essentially an open-source framework.&nbsp; But have you ever considered just deploying the CSLA binaries?&nbsp; For those folks who use the framework "as is", not having to download the code and re-compile for every version could save a step.</FONT></P>
+<P>
+<P><FONT size=2 face=Tahoma></FONT></P></div></BLOCKQUOTE>
+<P></P>
+<P>Yes, with the 4.0 version I do plan to provide binaries as well as source.</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

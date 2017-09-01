@@ -1,0 +1,28 @@
+<html><header><title>FilteredBindingList &amp; GridView</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>FilteredBindingList &amp; GridView</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3295.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>dantruj posted on Monday, July 30, 2007</h2><P>I downloaded the csla 2.1 handbook and read about the filtered list and sorting list classes and know how to use them.&nbsp; The problem I'm having is figuring how to use the filtered binding list with a gridview.&nbsp; In the clsaDataSource.SelectObject event I can create a sortedbindinglist and sort easily, but how do I get filtering to work.&nbsp; I know I can use the same sortedlist to plug into the filteredbindng list and vice-versa but what I'm really after is implementation. </P>
+<P>So here's my problem:</P>
+<P>I have a webform with a gridview displaying contacts from contactsList (read-only collection).&nbsp; The gridview is setup for sorting via the cslaDataSource.SelectObject event.&nbsp; I have a text box that accepts a contacts lastname and a button that is suppose to execute the filter.&nbsp; I am wondering how does the gridview get bound to the filtered list?&nbsp; In the cslaDataSource.SelectObject event there is a e.business object that I can set but how do I get the filter working?</P>
+<P>The code below:&nbsp; notice for the sorting e.business object is used to populate the grid, but how do I do the same in the lnkBtnFilter_Click event?&nbsp; I got it to work by doing the binding myself, but I know there has to be a better practices way.</P><FONT color=#0000ff size=2>
+<P>protected</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>void</FONT><FONT size=2> lnkBtnFilter_Click(</FONT><FONT color=#0000ff size=2>object</FONT><FONT size=2> sender, </FONT><FONT color=#2b91af size=2>EventArgs</FONT><FONT size=2> e)</P>
+<P>{</P>
+<P></FONT><FONT color=#2b91af size=2>&nbsp;&nbsp;&nbsp;ContactList</FONT><FONT size=2> contactsList = GetContactsList(</FONT><FONT color=#0000ff size=2>false</FONT><FONT size=2>);</P>
+<P></FONT><FONT color=#2b91af size=2>&nbsp;&nbsp;&nbsp;FilteredBindingList</FONT><FONT size=2>&lt;</FONT><FONT color=#2b91af size=2>ContactInfo</FONT><FONT size=2>&gt; contactsFilteredList = </FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> </FONT><FONT color=#2b91af size=2>FilteredBindingList</FONT><FONT size=2>&lt;</FONT><FONT color=#2b91af size=2>ContactInfo</FONT><FONT size=2>&gt;(contactsList);</P>
+<P>&nbsp;&nbsp;&nbsp;contactsFilteredList.ApplyFilter(</FONT><FONT color=#a31515 size=2>"Name"</FONT><FONT size=2>, txtFilterLN.Text.Trim());</P>
+<P>&nbsp;&nbsp;&nbsp;ContactsDataGrid.DataSource = </FONT><FONT color=#0000ff size=2>null</FONT><FONT size=2>;</P>
+<P>&nbsp;&nbsp;&nbsp;ContactsDataGrid.DataSourceID = </FONT><FONT color=#0000ff size=2>null</FONT><FONT size=2>;</P>
+<P>&nbsp;&nbsp;&nbsp;ContactsDataGrid.DataSource = contactsFilteredList;</P>
+<P>&nbsp;&nbsp;&nbsp;ContactsDataGrid.DataBind();</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>protected</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>void</FONT><FONT size=2> ContactsListDataSource_SelectObject(</FONT><FONT color=#0000ff size=2>object</FONT><FONT size=2> sender, Csla.Web.</FONT><FONT color=#2b91af size=2>SelectObjectArgs</FONT><FONT size=2> e)</P>
+<P>{</FONT><FONT size=2></P>
+<P></FONT><FONT color=#2b91af size=2>&nbsp;&nbsp;&nbsp;ContactList</FONT><FONT size=2> contactsList = GetContactsList(</FONT><FONT color=#0000ff size=2>false</FONT><FONT size=2>);</P>
+<P></FONT><FONT color=#2b91af size=2>&nbsp;&nbsp;&nbsp;SortedBindingList</FONT><FONT size=2>&lt;</FONT><FONT color=#2b91af size=2>ContactInfo</FONT><FONT size=2>&gt; contactsSortedList = </FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> </FONT><FONT color=#2b91af size=2>SortedBindingList</FONT><FONT size=2>&lt;</FONT><FONT color=#2b91af size=2>ContactInfo</FONT><FONT size=2>&gt;(contactsList);</P>
+<P>&nbsp;&nbsp;&nbsp;contactsSortedList.ApplySort(GridSortExpression, ListDirection);</P>
+<P>&nbsp;&nbsp;&nbsp;e.BusinessObject = contactsSortedList;</FONT><FONT size=2></P>
+<P>}</P></FONT>
+<P>&nbsp;</P>
+<P>Thanks for the help in advance.</P>
+<P>DT</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, July 31, 2007</h2><P>FilteredBindingList works just like SortedBindingList, except that it applies a filter instead of a sort.</P>
+<P>This means that you'd use FilteredBindingList in the SelectObject event handler in place of (or in addition to) SortedBindingList, and you'd set e.BusinessObject equal to the filtered list.</P>
+<P>The DataBind() call in your button click handler triggers the data binding refresh, which ultimately raises the SelectObject event. So it is up to you to figure out how to provide your filter parameter to the SelectObject event handler, but in your example a form-level field would work for this purpose.</P>
+<P>If you look in the <EM>2.1 Handbook</EM> you'll also see how you can use information automatically provided by the SelectObjectArgs parameter, and that may be helpful too.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>dantruj replied on Tuesday, July 31, 2007</h2>Thank you! that's what I needed, I feel so dumb now.&nbsp; I didn't think about just calling databind() </div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,52 @@
+<html><header><title>Adding Items to BusinessListBase </title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Adding Items to BusinessListBase </h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4746.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>CyclingFoodmanPA posted on Thursday, April 24, 2008</h2><P>&nbsp;&nbsp;&nbsp; I am developing an application utilizing VS2008 and CSLA 3.5 and have a question.&nbsp; I found a way around this in VS2005 and CSLA 3.0.4, but switched to the latest and greatest a couple of weeks ago before I got too far into the project.</P>
+<P>&nbsp;&nbsp;&nbsp; When I am adding an item utilizing windows forms, for example a Role in PTracker, the Id is automatically created when adding a new item.&nbsp; It utilizes the GetMax function and I like it creating the Id based on all the previous Id's.&nbsp; However, when you are in an ASP.NET web application, if you don't enter an Id when you are adding the name, the Id defaults to 0.&nbsp; Does anyone know how to get the same results for a web application as the Windows?&nbsp; I am utilizing this method for all my lookup tables and some lookup tables span 5 or 6 pages of the grid and I really don't want a user entering what they think is the next available number.&nbsp; Yes, it will give them an error if they enter a similar Id to another item, but you don't know my users!&nbsp; They will be calling asking what this error message means.&nbsp; They usually just see the error message but don't read it.&nbsp; Yea, they know something went wrong, but call me and have me check on the error because they cannot understand it.</P>
+<P>&nbsp;&nbsp;&nbsp; Anyway, I figured out a way around it in the previous version, but things are a lot different in CSLA 3.5 and I am utilizing LINQ heavily.&nbsp; I am lovin' LINQ!</P>
+<P>Thank you in advance for your help.</P>
+<P>Keith</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>CyclingFoodmanPA replied on Thursday, April 24, 2008</h2><P>Ok,</P>
+<P>On my private void Child_Insert() method, I found how to get the next highest Id inserted into the db, but it is not showing on the web form.&nbsp; Here is what I did:</P><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>private</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>void</FONT><FONT size=2> Child_Insert()<BR>{<BR></FONT><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp; using</FONT><FONT size=2> (</FONT><FONT color=#0000ff size=2>var</FONT><FONT size=2> mgr =&nbsp;<BR></FONT><FONT color=#2b91af size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ContextManager</FONT><FONT size=2>&lt;BAS.DalLinq.</FONT><FONT color=#2b91af size=2>BAS2005DataContext</FONT><FONT size=2>&gt;.GetManager(<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; BAS.DalLinq.</FONT><FONT color=#2b91af size=2>Database</FONT><FONT size=2>.BAS2005))<BR>&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; System.Data.Linq.</FONT><FONT color=#2b91af size=2>Binary</FONT><FONT size=2> lastChanged = _timestamp;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _lastChangedBy = Csla.</FONT><FONT color=#2b91af size=2>ApplicationContext</FONT><FONT size=2>.User.Identity.Name;<BR></FONT><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; short</FONT><FONT size=2> newId = GetMax();<BR></FONT><FONT size=2><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; mgr.DataContext.usp_csla_InsertInventoryIndicator(<BR></FONT><FONT size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; newId, <BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ReadProperty&lt;</FONT><FONT color=#0000ff size=2>string</FONT><FONT size=2>&gt;(InventoryIndicatorNameProperty),<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _lastChangedBy, <BR></FONT><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;ref</FONT><FONT size=2> lastChanged);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _timestamp = lastChanged.ToArray();</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; mgr.DataContext.SubmitChanges();<BR>&nbsp;&nbsp;&nbsp; }<BR>}</P>
+<P>When reselect the web form after insert, the item comes up with the Id.&nbsp; But if I just hit Insert, the item comes back with an Id of 0, but the correct Id was inserted into the db.&nbsp; I know it has something to do with&nbsp;LINQ and not refreshing the collection, but not sure how to get around it.&nbsp; I thought the SubmitChanges would fix that, but it didn't.</P>
+<P>Keith</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, April 24, 2008</h2><P>Your stored procedure must be returning the generated id value?</P>
+<P>But your newId parameter isn't declared with 'ref' so the value won't come back from the call.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>CyclingFoodmanPA replied on Friday, April 25, 2008</h2><P>No, the GetMax() get's the Id as it is set up like the Role and Roles in PTracker.&nbsp; If I don't do the GetMax before&nbsp;the Insert, a 0 gets inserted into the DB for the Id.&nbsp; With the GetMax, the next highest Id gets inserted into the DB, however, with the web form, the Id that shows is still 0, but the next highest Id is in the DB.&nbsp; If I go to another web page and come back to this one, the next highest Id shows because the page has been refreshed.&nbsp; If I enter the next highest Id when I enter the new Inventory Indicator, all works fine, but I don't want the user to have to enter the next highest Id.</P>
+<P>Anyway, I hope I will figure it out as it is bugging me.</P>
+<P>Keith</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, April 25, 2008</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Oh, in that case I think the problem is that you are setting the
+GetMax() value into newId, but you are never copying newId into your object&#8217;s
+actual _id field.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky</span><b><span><o:p></o:p></span></b></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>CyclingFoodmanPA replied on Tuesday, April 29, 2008</h2><P>Ok, I figured how to fix things in web forms, however, it messes things up for Windows Forms.&nbsp; Here is what I do:</P><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>private</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>void</FONT><FONT size=2> Child_Insert()<BR>{<BR></FONT><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp; using</FONT><FONT size=2> (</FONT><FONT color=#0000ff size=2>var</FONT><FONT size=2> mgr = <BR></FONT><FONT color=#2b91af size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ContextManager</FONT><FONT size=2>&lt;BAS.DalLinq.</FONT><FONT color=#2b91af size=2>BAS2005DataContext</FONT><FONT size=2>&gt;.GetManager(<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; BAS.DalLinq.</FONT><FONT color=#2b91af size=2>Database</FONT><FONT size=2>.BAS2005))<BR>&nbsp;&nbsp;&nbsp; </FONT><FONT size=2>{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; System.Data.Linq.</FONT><FONT color=#2b91af size=2>Binary</FONT><FONT size=2> lastChanged = _timestamp;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _lastChangedBy = Csla.</FONT><FONT color=#2b91af size=2>ApplicationContext</FONT><FONT size=2>.User.Identity.Name;<BR><BR></FONT><FONT color=#ff0000><FONT size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;InventoryIndicatorId = </FONT><FONT size=2>this</FONT></FONT><FONT size=2><FONT color=#ff0000>.GetMax();</FONT><BR></FONT><FONT size=2><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; mgr.DataContext.usp_csla_InsertInventoryIndicator( <BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ReadProperty&lt;</FONT><FONT color=#0000ff size=2>short</FONT><FONT size=2>&gt;(InventoryIndicatorIdProperty), <BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ReadProperty&lt;</FONT><FONT color=#0000ff size=2>string</FONT><FONT size=2>&gt;(InventoryIndicatorNameProperty),<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _lastChangedBy, <BR></FONT><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ref</FONT><FONT size=2> lastChanged); <BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _timestamp = lastChanged.ToArray();<BR></FONT><FONT size=2>&nbsp;&nbsp;&nbsp; }<BR>}</FONT></P>
+<P><FONT size=2>Now, that fixes my web forms issue.&nbsp; However, when&nbsp; run this code through Windows forms, it adds 1 to the Id so if I have 3 items and add 1, the Id of the next one is 5 because the GetMax is executed when you add the new item, then 1 is added before the Insert.&nbsp; The Id is 4 if added through web forms though which is what I want.&nbsp; If you are only using Windows Forms or Web forms, no problem, but if you are to use both, then there is an issue of you are anal (like me) and like all your Id's in succession.</FONT></P>
+<P><FONT size=2>Keith</FONT></P>
+<P><FONT size=2></FONT>&nbsp;</P>
+<P><FONT size=2></FONT>&nbsp;</P>
+<P><FONT size=2>&nbsp;</P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Tuesday, April 29, 2008</h2>Why aren't you using the db function scope_identity() to get the row id immediately after insert?&nbsp; If you want a sequencial number id, the column should be an Identity column and you ask the db for the value.&nbsp; For temporary values to use prior to inserting into the database, I would use a static integer that goes from -1 and continues to be decremented.<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

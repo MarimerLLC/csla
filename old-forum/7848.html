@@ -1,0 +1,26 @@
+<html><header><title>I can't delete child - error in BindingList</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>I can't delete child - error in BindingList</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/7848.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Fele posted on Thursday, October 22, 2009</h2>Hi!<br>In my application I've implemented parent/child scenario.I can remove children from list. However, from time to time, I'm getting error in BindingList.cs when csla try to raise CollectionChanged event. Error message: "NullReferenceException was unhandled by user code" ( Object reference not set to an instance of an object).<br><br>Any suggestion why I'm getting this error?<br><br>Thanks<br>Fele<br><br>Csla 3.6.2<br>Silverlight<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, October 22, 2009</h2><P>Getting an exception while raising an event typically means that some code that handled the event threw the exception.</P>
+<P>In other words, somewhere in the app there's an event handler hooked up to that CollectionChanged event, and in that event handler there's a bug where the code gets a NullReferenceException.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, October 22, 2009</h2><P>Oh, and are you using Silverlight 2 or 3?</P>
+<P>There was a change from SL 2 to 3 that broke collections, and the fix is in CSLA .NET 3.7 - so perhaps that's the issue?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Fele replied on Thursday, October 22, 2009</h2>Thanks for fast response.<br><br>I've upgraded my project with 3.7.1 dll's. I tried it, without changing anything and I got "CommunicationException was unhandled by user code" (The remote server returned an error: NotFound)<br><br>Any suggestion?<br><br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Fele replied on Thursday, October 22, 2009</h2>I put back dll's for ver 3.6.2. It works fine. No errors<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, October 22, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>it sounds like you may not have rebuilt and redeployed both
+client and server assemblies? So you don&#8217;t have the same versions of everything
+on the server after you try 3.7.</span><o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Fele replied on Friday, October 23, 2009</h2>I rebuild and redeployed both client and server assembly. It works fine. No WCF error. <br>However, I still have original error. <br>When I deleting group of records, data is grouped in the DataGrid, or last record in group, I'm getting "NullReferenceExcepition was unhandled by user code" () error message in OnCollectionChanged method of BindingList.cs.<br>When I deleting one by one recrods in group with exception of last one, I'm not getting&nbsp; error messages.<br><br><br>Any suggestion?<br><br>Thanks<br>Fele<br><br>Silverlight<br>Csla 3.7.1<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

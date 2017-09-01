@@ -1,0 +1,17 @@
+<html><header><title>Parent child Listchanged problem</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Parent child Listchanged problem</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4985.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Wal972 posted on Tuesday, June 17, 2008</h2><P>Hi</P>
+<P>Using Csla 3.0.4 VS 2005</P>
+<P>I have the following code added to my create and fetch Data portal code</P><FONT color=#0000ff size=2>
+<P>AddHandler</FONT><FONT size=2> mLineItems.ListChanged, </FONT><FONT color=#0000ff size=2>AddressOf</FONT><FONT size=2> LineItemsChanged</FONT></P>
+<P><FONT size=2>which activates the code below</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Private</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Sub</FONT><FONT size=2> LineItemsChanged(</FONT><FONT color=#0000ff size=2>ByVal</FONT><FONT size=2> sender </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Object</FONT><FONT size=2>, </FONT><FONT color=#0000ff size=2>ByVal</FONT><FONT size=2> e </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> System.ComponentModel.ListChangedEventArgs)</P>
+<P></FONT><FONT color=#0000ff size=2>If</FONT><FONT size=2> e.ListChangedType = ComponentModel.ListChangedType.ItemChanged </FONT><FONT color=#0000ff size=2>Then</FONT></P>
+<P><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;If</FONT><FONT size=2> e.PropertyDescriptor.Name = </FONT><FONT color=#800000 size=2>"Amount"</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Or</FONT><FONT size=2> e.PropertyDescriptor.Name = </FONT><FONT color=#800000 size=2>"Duration"</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Then</P></FONT><FONT size=2>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;PayRecalculated()</P>
+<P></FONT><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>If</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>If</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Sub</P></FONT>
+<P>but&nbsp;when it runs it get the following error / problem ?</P>
+<P>&nbsp;&nbsp;ListChangedType&nbsp;Name 'ListChangedType' is not declared.&nbsp;<BR></P>
+<P>What does it mean and how do I fix/resolve it as it has worked for quite some time prior to this occurring</P>
+<P>Thanks in advance</P>
+<P>Ellie</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

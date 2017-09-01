@@ -1,0 +1,16 @@
+<html><header><title>All Csla derived objects properties must have at least one validation rule?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>All Csla derived objects properties must have at least one validation rule?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/1015.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Lnk posted on Friday, August 25, 2006</h2><P><FONT face=Tahoma size=2>Hi all...</FONT></P>
+<P><FONT face=Tahoma size=2>We are using CSLA 2.1 Beta.</FONT></P>
+<P><FONT face=Tahoma size=2>Our problem is that we have a boolean property in a business object that doesn't need to have any validation rule. It's only possible values are true or false and the value is false by default so no validation rule is required.</FONT></P>
+<P><FONT face=Tahoma size=2>When the PropertyChanged Method is called for this property we receive a System.NullReferenceException exception that is caused by the following line of code:</FONT></P>
+<P><FONT face=Tahoma><FONT size=2><FONT color=#0000ff>Dim</FONT> list <FONT color=#0000ff>As</FONT> List(<FONT color=#0000ff>Of</FONT> IRuleMethod) = rules.GetRulesForProperty(propertyName, <FONT color=#0000ff>False</FONT>).GetList(<FONT color=#0000ff>True</FONT>)</FONT></P></FONT>
+<P><FONT face=Tahoma size=2>in the ChechRules procedure of the ValidationRules Class.</FONT></P>
+<P><FONT face=Tahoma size=2>That line of code shouldn't be processed because there is no rules for that property.</FONT></P>
+<P><FONT face=Tahoma size=2>The thing is that in RulesToCheck property of ValidationRules class the variable instancerules is not nothing when it should. </FONT></P>
+<P><FONT face=Tahoma size=2>So the question is?</FONT></P>
+<P><FONT face=Tahoma size=2>Do we need to add validation rules for all the properties of our Csla derived objects?</FONT></P>
+<P><FONT face=Tahoma size=2>or</FONT></P>
+<P><FONT face=Tahoma size=2>Is this a bug?</FONT></P>
+<P><FONT face=Tahoma size=2>Thanks in advance.</FONT></P>
+<P><FONT face=Tahoma size=2>Emilio.</FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Brian Criswell replied on Friday, August 25, 2006</h2>Try again with the newest version of the 2.1 beta.&nbsp; I think Rocky posted a bug fix refresh today or yesterday.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>xal replied on Friday, August 25, 2006</h2>Hi Emilio,<br>Yes, that was a problem with the original prerelease of 2.1. The latest one fixes that issue.<br><br>Andrés<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Lnk replied on Thursday, August 31, 2006</h2><P><FONT face=Tahoma size=2>Thanks guys...</FONT></P>
+<P><FONT face=Tahoma size=2>Everything is working now.</FONT></P>
+<P><FONT face=Tahoma size=2>Emilio.</FONT></P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

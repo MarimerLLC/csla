@@ -1,0 +1,26 @@
+<html><header><title>DataAnnotation and BrokenRules collection...</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>DataAnnotation and BrokenRules collection...</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/8120.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>ballistic posted on Wednesday, December 09, 2009</h2>How does the DataAnnotation fit in with the BrokenRules collection?<br><br>If I have an object where I decorate some of my properties with DataAnnotation validation and then also have my own business rules which feed into the BrokenRules collection would I have two separate lists that have the with information about the property that failed the validation? Or is there something that combines them into one list?<br><br>Thank you,<br><br>&nbsp;- Andres<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, December 09, 2009</h2>The validation attributes work (inside CSLA) exactly the same as a rule method. The attribute is invoked like a rule method, and its result is added to the broken rules collection like a rule method. In short, they are just another way to implement rule methods.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, December 09, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Keep in mind, though, that you need to call
+base.AddBusinessRules() in your override in order to auto-register the
+attributes as rules.</span><b><span><o:p></o:p></span></b></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

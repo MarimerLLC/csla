@@ -1,0 +1,22 @@
+<html><header><title>reading and writing app configs to the database and defining if ther are editable or not?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>reading and writing app configs to the database and defining if ther are editable or not?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/12583.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>ftaran posted on Friday, April 11, 2014</h2><p>Hi&nbsp;</p>
+<p>we have recently decided to transfer all our app configs to the database.</p>
+<p>right now we consider all these configs to be both readable and writeable.</p>
+<p>but we want to future proof it so that if a certain client decides to make a certain category of configs to be only readable we could manage it.</p>
+<p>at the moment a single business object reads all the configs from the database and stores them.&nbsp;</p>
+<p>the following is a simple schema representing our table.</p>
+<pre><code>CREATE TABLE GlobalSettings
+(
+    SectionName VARCHAR(50),
+    SettingName VARCHAR(50),
+    SettingValue VARCHAR(1000),
+    SettingType TINYINT
+);</code></pre>
+<p>my question is that how should we design our class so that we can achieve this?</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Saturday, April 19, 2014</h2><p>The client can arbitrarily change some configuration values to read only?&nbsp; Or would this be a one time change and the category would be read only forever?&nbsp; it sounds like you should create a permission for each category and the have auth rules to ensure the logged on user can edit those settings.&nbsp; of course you&#39;d need a more privileged user permission that can grant or deny these permissions, probably a system administrator role.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Sunday, April 20, 2014</h2><p>Or maybe you should replicate the &quot;storage&quot; part of appsettings - &quot;Application&quot; and &quot;User&quot;.&nbsp;</p>
+<p>We have done pretty much the same in some applications and provide values from a webservice.&nbsp;<br />We decided to male a &quot;global&quot; - read-only - settings service and a editable service for &quot;user settings&quot;.&nbsp;</p>
+<p>Where is the &quot;client&quot; entity in the settings part? Would it be application or is client another type of entity?&nbsp;</p>
+<p>We have Application as part of the settings table to provide settings to multiple applications.</p>
+<p>There is also an accompanying ASP.NET MVC application for editing values - and there we have the option&nbsp;of specifying users/roles for each application that are allowed to edit the read-only settings.</p>
+<p>(we also cache the output from the webservice so that it is more efficient - and do not want to do frequent&nbsp;changes in production).&nbsp;</p>
+<p>One more thing you might want to add is valid_from/valid_to datetime fields if you want to have some settings only become effective from a given date/release. &nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

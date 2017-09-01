@@ -1,0 +1,64 @@
+<html><header><title>MVC3 Update Children</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>MVC3 Update Children</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11145.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>xequence posted on Friday, February 10, 2012</h2><p>Edit.</p>
+<p>
+<p>public ActionResult Edit(int id)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; //var model = PressReleaseEdit.GetEditableRoot();</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; //var model = PressReleaseEdit.AdminGetPressReleaseById(id);</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; ViewData.Model = PressReleaseEdit.AdminGetPressReleaseById(id);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; // bind dropdownlist</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; ViewBag.BoilerPlateList = new SelectList(BoilerPlateList.GetReadOnlyList(), &quot;BoilerPlateId&quot;, &quot;Name&quot;);</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; return View();</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; }</p>
+</p>
+<p>&nbsp;</p>
+<p>then the post</p>
+<p>
+<p>&nbsp; public ActionResult Edit(PressReleaseEdit obj, int id, IEnumerable&lt;HttpPostedFileBase&gt; fileUpload, int? radioValue)</p>
+<p>&nbsp; &nbsp; &nbsp; {// do work}</p>
+</p>
+<p>&nbsp;</p>
+<p>The problem is, my OBJ is dirty even though I change no values. All of my children with this object are null except for the model values that exist on the form. How can I get it so my OBJ retains all the child objects?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, February 10, 2012</h2><p>I assume you&#39;ve read the&nbsp;<em>Using CSLA 4: ASP.NET</em> ebook?</p>
+<p>When doing an update of an existing object you need to decide whether to get the object from Session, reload it from the database, or create an empty object.</p>
+<p>You or the CslaModelBinder then loads the properties with values from the postback.</p>
+<p>If you got the object from Session or the database you can then save it normally.</p>
+<p>If you created an empty object, you need to use the forceUpdate parameter on the Save method to force it to save. It is also the case that you have no way to know if the object actually needs to be saved or not - it is assumed to be dirty, because the original values aren&#39;t known in this case (you didn&#39;t retrieve them for comparison).</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>xequence replied on Friday, February 10, 2012</h2><p>Yes, I have the books and I even asked you a question at the conference in vegas about thresholds!&nbsp;</p>
+<p>&nbsp;</p>
+<p>As for the task at hand, you would say it is easier to put the object in TempData and perform the typical save like this?</p>
+<p>
+<p>if (SaveObject(obj, true))</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; var item = ViewData.Model;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; obj = (PressReleaseEdit)item;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; return RedirectToAction(&quot;Success&quot;, new { id = obj.PressReleaseId });</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</p>
+</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, February 10, 2012</h2><p>I&#39;m not sure I follow your question?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>xequence replied on Friday, February 10, 2012</h2><p>I am editing child data in the same form as the parent. So an example would be this...</p>
+<p>@Html.EditorFor(model =&gt; model.Highlight.EndDate)</p>
+<p>&nbsp;</p>
+<p>My child object is Highlight.</p>
+<p>When I change the highlight start date, I want to update this record.</p>
+<p>I am using a TempData object to persist my object like this...</p>
+<p>&nbsp;</p>
+<p>public ActionResult Edit(int id, IEnumerable&lt;HttpPostedFileBase&gt; fileUpload, int? radioValue)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; PressReleaseEdit obj = (PressReleaseEdit)TempData[&quot;obj&quot;];</p>
+<p>// etc</p>
+<p>}</p>
+<p>The problem, is that my childObject is not dirty even though I changed a value.&nbsp;</p>
+<p>&nbsp;</p>
+<p>Here is my child object.</p>
+<p>
+<p>public readonly static PropertyInfo&lt;HighlightAssignmentEdit&gt; HighlightProperty = RegisterProperty&lt;HighlightAssignmentEdit&gt;(p =&gt; p.Highlight);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; public HighlightAssignmentEdit Highlight</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; get</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; if (!(FieldManager.FieldExists(HighlightProperty)))</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; LoadProperty(HighlightProperty, DataPortal.CreateChild&lt;HighlightAssignmentEdit&gt;());</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; return GetProperty(HighlightProperty);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; set { SetProperty(HighlightProperty, value); }</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; }</p>
+</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

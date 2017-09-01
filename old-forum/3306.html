@@ -1,0 +1,9 @@
+<html><header><title>Unit testing and templates</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Unit testing and templates</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3306.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>triplea posted on Wednesday, August 01, 2007</h2><P>Having&nbsp;releases my first app using CSLA in production recently (hurray!) I decided that my unit tests were very basic (mainly because of time constraints - I know that's not an excuse but...). In any case I started planning how to write unit&nbsp;tests for my objects to test things that matter most to me. These&nbsp;I decided to be:</P>
+<UL>
+<LI>Validation rules (simple e.g. string lengths, and custom rules)</LI>
+<LI>Authorization (on CanAdd(), CanEdit() etc as well as on AddAuthorizationRules())</LI>
+<LI>1 CRUD test</LI></UL>
+<P>Now my question is twofold:</P>
+<OL>
+<LI>The above work fine for BusinessBase objects (or EditableRoot if you like). But how do you go about writing a CRUD test for EditableChild objects? The main issue is FK constraints, the fact that an existing connection (and transaction) need to exist etc... By the way I don't want to use mocks and am happy to hit the database for these operations (even if running time is longer).</LI>
+<LI>Writing basic unit tests is boring :-). Has anonye got any templates (CodeSmith or other) for at least the basic of tests (such as for simple validation rules).</LI></OL></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

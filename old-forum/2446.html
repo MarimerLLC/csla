@@ -1,0 +1,29 @@
+<html><header><title>A change to Csla.ApplicationContext.User that could fix the &quot;Type is not resolved for member&quot; Principal problem?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>A change to Csla.ApplicationContext.User that could fix the &quot;Type is not resolved for member&quot; Principal problem?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/2446.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>RobKraft posted on Wednesday, February 28, 2007</h2><P>I've created a custom Principal and Identity modeled after PTTracker.&nbsp; We get the errors that Rocky described in his article (<A href="http://www.lhotka.net/weblog/CommentView,guid,cfcaf6c4-63cf-4cf1-8361-ed3db07496a4.aspx">http://www.lhotka.net/weblog/CommentView,guid,cfcaf6c4-63cf-4cf1-8361-ed3db07496a4.aspx</A>).&nbsp; (Very helpful article).&nbsp; But I noticed a way to apparently fix this problem (at least for our web apps) with just a minor code change.&nbsp; From the C# book on page 232:</P><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>static</FONT><FONT size=2> </FONT><FONT color=#2b91af size=2>IPrincipal</FONT><FONT size=2> User</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;get</P></FONT><FONT size=2>
+<P>&nbsp;&nbsp;&nbsp;{</P>
+<P></FONT><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if</FONT><FONT size=2> (</FONT><FONT color=#2b91af size=2>HttpContext</FONT><FONT size=2>.Current == </FONT><FONT color=#0000ff size=2>null</FONT><FONT size=2>)</P>
+<P></FONT><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return</FONT><FONT size=2> </FONT><FONT color=#2b91af size=2>Thread</FONT><FONT size=2>.CurrentPrincipal;</P>
+<P></FONT><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;else</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return</FONT><FONT size=2> </FONT><FONT color=#2b91af size=2>HttpContext</FONT><FONT size=2>.Current.User;</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</P>
+<P></FONT><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;set</P></FONT><FONT size=2>
+<P>&nbsp;&nbsp;&nbsp;{</P>
+<P></FONT><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if</FONT><FONT size=2> (</FONT><FONT color=#2b91af size=2>HttpContext</FONT><FONT size=2>.Current != </FONT><FONT color=#0000ff size=2>null</FONT><FONT size=2>)</P>
+<P></FONT><FONT color=#2b91af size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;HttpContext</FONT><FONT size=2>.Current.User = </FONT><FONT color=#0000ff size=2>value</FONT><FONT size=2>;</P>
+<P></FONT><FONT color=#2b91af size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Thread</FONT><FONT size=2>.CurrentPrincipal = </FONT><FONT color=#0000ff size=2>value</FONT><FONT size=2>;</P>
+<P>&nbsp;&nbsp;&nbsp;}</P>
+<P>}</P>
+<P>&nbsp;</P>
+<P>I think the above set function is missing an ELSE.&nbsp; If I add this ELSE clause, the problem appears to be fixed.</P>
+<P><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;set</P></FONT><FONT size=2>
+<P>&nbsp;&nbsp;&nbsp;{</P>
+<P></FONT><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if</FONT><FONT size=2> (</FONT><FONT color=#2b91af size=2>HttpContext</FONT><FONT size=2>.Current != </FONT><FONT color=#0000ff size=2>null</FONT><FONT size=2>)</P>
+<P></FONT><FONT color=#2b91af size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;HttpContext</FONT><FONT size=2>.Current.User = </FONT><FONT color=#0000ff size=2>value</FONT><FONT size=2>;</FONT></P>
+<P><FONT size=2>&nbsp;&nbsp;<STRONG>&nbsp;&nbsp;&nbsp;<FONT color=#ff0000>&nbsp;<FONT size=3>else</FONT></FONT></STRONG></P>
+<P></FONT><FONT color=#2b91af size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Thread</FONT><FONT size=2>.CurrentPrincipal = </FONT><FONT color=#0000ff size=2>value</FONT><FONT size=2>;</P>
+<P>&nbsp;&nbsp;&nbsp;}</P></FONT>
+<P>&nbsp; Is this a fix everyone can use; or am I unaware of other problems this will cause?</P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, February 28, 2007</h2><P>The problem would be that Thread.CurrentPrincipal <EM>should be the same</EM> as HttpContext. Most environment-neutral code uses Thread.CurrentPrincipal, because that's the recommended (and correct) approach.</P>
+<P>So if you ever wanted to use a non-CSLA component of any sort, and that component cared about the current principal, it would fail because the thread wouldn't be set right.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RobKraft replied on Wednesday, February 28, 2007</h2><P>Thanks for pointing out what I had missed.</P>
+<P>I think I will proceed with my little change for a few weeks, at least until we get our custom Principal and Identity objects fairly stable.&nbsp; Then I will undo my change to Csla.ApplicationContext.User and put our Principal and Identity objects in the GAC.</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,36 @@
+<html><header><title>unit tests, TransactionScope and threads</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>unit tests, TransactionScope and threads</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10342.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>richardp posted on Wednesday, May 04, 2011</h2><p>
+<p>Hi,</p>
+<p>I am trying to unit test our CRUD code for our CSLA project.</p>
+<p>I am using NUnit.</p>
+<p>I was hoping to use TransactionScope to clean up the database after each test.</p>
+<p>E.g. something like this..</p>
+<p>[SetUp]</p>
+<p><span>		</span>public void SU()</p>
+<p><span>		</span>{</p>
+<p><span>		</span></p>
+<p><span>			</span>_transactionScope = new TransactionScope();</p>
+<p><span>		</span>}</p>
+<p>[TearDown]</p>
+<p><span>		</span>public void TD()</p>
+<p><span>		</span>{</p>
+<p><span>			</span>_transactionScope.Dispose();</p>
+<p><span>		</span>}</p>
+<p>[Test]</p>
+<p>public void TestUpdate()</p>
+<p>{</p>
+<p>// update or insert stuff, check it worked</p>
+<p>}</p>
+<p>I have come up against 2 issues.</p>
+<p>1) If I use asynchronous updates e.g. Object.BeginSave() the unit tests pass but the test data is left in the database.</p>
+<p>I think this is because the update is done on a different thread, and TransactionScope does not work across threads.</p>
+<p>I read in MSDN you need to use DependentTransaction for that.&nbsp;</p>
+<p>My workaround is to use only synchronous updates e.g. Object.Save(). &nbsp;- then the transaction scope seems to rollback the changes on Dispose().</p>
+<p>2) Some fields in our objects use asynchronous rules, which go to the database and check if the field is unique.</p>
+<p>In the unit test, if we are inside a TransactionScope, and something in the dbase is modified, and one of these rules is run, it results in deadlock.</p>
+<p>I have stepped thru it again and again but can&#39;t seem to get a handle on it.</p>
+<p>I think the async rule thread has to wait for the current transaction to complete before it is allowed to access the dbase??</p>
+<p>The async rules are read-only and do not modify any data.</p>
+<p>Anyone got any ideas on how to work around this?</p>
+<p>Cheers.</p>
+<div></div>
+</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

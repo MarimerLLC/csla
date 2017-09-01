@@ -1,0 +1,67 @@
+<html><header><title>Can't save an Editable Root List</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Can't save an Editable Root List</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6398.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>dculler posted on Tuesday, February 10, 2009</h2>I've created a simple Editable Root List called UserList to&nbsp; hold a collection of child User objects.<br>I created both of these using the EditableRootList VS object template that came w/ CSLA 3.6.1.<br>I've really only created the properties I need for the User class, and wrote the data access code for both UserList &amp; User classes, and didn't really do anything else.<br><br>As there are no records currently in this table, I get an empty UserList as expected.&nbsp; When I try to add a new User object, set it's name and attempt to save the UserList like this:<br><br>UserList userList = UserList.GetUserList();<br>userList.Add(User.NewUser());<br>userList[0].Name = "Test User";<br>userList = userList.Save();<br><br>the following Csla.DataPortalException is thrown: DataPortal.Update failed (System.NotSupportedException: Invalid operation - update not allowed\r\n&nbsp;&nbsp; at Csla.BusinessListBase`2.DataPortal_Update()\r\n&nbsp;&nbsp; at dm(Object , Object[] )\r\n&nbsp;&nbsp; at Csla.Reflection.MethodCaller.CallMethod(Object obj, DynamicMethodHandle methodHandle, Object[] parameters))"<br><br>From what I've read, I should be saving the list, as it's the root object, and it should be saving it's children.&nbsp; I've been looking through the book, and the Project Tracker example, and can't figure out what I'm doing wrong.&nbsp; Thanks in advance to anyone who can tell me what I'm missing.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rsbaker0 replied on Wednesday, February 11, 2009</h2><P>Editable Root List Base (ERLB) derived classes are mainly intended for supporting editing a list in a grid, and the interaction with the grid will automatically cause the object associated with the current grid row to be saved when you leave the row for another row.</P>
+<P>I'm not sure exactly what you are trying to do, but a BusinessListBase class is probably more appropriate. </P>
+<P>You can save the items in an ERLB, but you essentially will have to loop through the list yourself and call SaveItem() on each item in the list. </P>
+<P>I've found ERLB useful for some interesting scenarios, but usually it is the case that I explicitly DO NOT want the entire list to be atomicly saved and need some additional control over the saving (or failure to save) individual items in the list. </P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, February 11, 2009</h2><P>You do need to override DataPortal_Update() in a BusinessListBase subclass. This is discussed in Chapters 3-4, and is necessary because CSLA has no idea how to open your database (via ADO.NET, L2S, EF, NHibernate or whatever - there's no way to know what you are using).</P>
+<P>So you need to override the DataPortal_Update() method, open the database (or whatever), and call this.Child_Update() to trigger the children to save, and then close the database (or whatever).</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>dculler replied on Wednesday, February 11, 2009</h2>Thanks for the help.&nbsp; I left out that this is a BusinessListBase derived class earlier.&nbsp; I was able to save when overriding DataPortal_Update()<br><br>Where I'm confused is that on page 190 of the book for 2008, third paragraph from the bottom it says that BusinessListBase provides a default implementation and that you should only need to override DataPortal_Update() for unusual scenarios.<br><br>Is it always necessary to override DataPortal_Update in BusinessListBase derived classes, or are there cases where you can use the default implementation?<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, February 11, 2009</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>That&#8217;s a typo and is covered in the errata. That paragraph
+refers to Child_Update(), which you should only have to override for unusual
+scenarios.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> dculler
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Wednesday, February 11, 2009 9:44 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] Can't save an Editable Root List<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Thanks for the help.&nbsp; I left out that this is a
+BusinessListBase derived class earlier.&nbsp; I was able to save when
+overriding DataPortal_Update()<br>
+<br>
+Where I'm confused is that on page 190 of the book for 2008, third paragraph
+from the bottom it says that BusinessListBase provides a default implementation
+and that you should only need to override DataPortal_Update() for unusual
+scenarios.<br>
+<br>
+Is it always necessary to override DataPortal_Update in BusinessListBase
+derived classes, or are there cases where you can use the default
+implementation?<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Vinodonly replied on Thursday, July 16, 2009</h2>I'm getting a similar error and i checked on below site but was not able to find this error<br /><br />http://www.apress.com/book/errata/1017<br /><br />Can you pls guide me to the corrrect link and which pttracker object i should see which implements this correctly..</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,186 @@
+<html><header><title>CSLA .NET 3.0 Beta 2 available for download</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA .NET 3.0 Beta 2 available for download</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3077.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka posted on Friday, June 22, 2007</h2><DIV class=itemBodyStyle>
+<P class=MsoNormal><FONT face=Calibri color=#000000 size=3>CSLA .NET Version 3.0 Beta 2 is now available for </FONT><A href="http://www.lhotka.net/cslanet/download.aspx"><FONT face=Calibri color=#800080 size=3><STRONG>download</STRONG></FONT></A><FONT face=Calibri color=#000000 size=3>.</FONT></P>
+<P class=MsoNormal><FONT face=Calibri color=#000000 size=3>This is the final test release of version 3.0. Any changes between now and release will be bug fixes.</FONT></P>
+<P class=MsoNormal><FONT face=Calibri color=#000000 size=3>If you plan to upgrade please consider helping yourself and the community at large by downloading this version and testing it <I>before July 5</I>. Let me know about any issues through the </FONT><A HREF="/forums/5/ShowForum.aspx"><FONT face=Calibri color=#800080 size=3><STRONG>forum</STRONG></FONT></A><FONT face=Calibri color=#000000 size=3>.</FONT></P>
+<P class=MsoNormal><FONT face=Calibri color=#000000 size=3>CSLA .NET 3.0 provides support for Microsoft .NET 2.0 and 3.0.</FONT></P>
+<P class=MsoNormal><FONT face=Calibri color=#000000 size=3>If you want to build CSLA .NET 3.0 <I>without .NET 3.0</I>, you must define the NET20 symbol in the project properties.</FONT></P>
+<P class=MsoNormal><FONT face=Calibri color=#000000 size=3>CSLA .NET 3.0 includes enhancements useful to all 2.1.4 users, including these highlights:</FONT></P>
+<P class=MsoNormal><B><FONT size=3><FONT color=#000000><FONT face=Calibri>Validation rules<o:p></o:p></FONT></FONT></FONT></B></P>
+<P class=MsoListParagraphCxSpFirst><FONT color=#000000><SPAN><SPAN><FONT size=3>·</FONT><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN></SPAN></SPAN><FONT face=Calibri size=3>PropertyFriendlyName – specify a friendly name to use when displaying broken rule text</FONT></FONT></P>
+<P class=MsoListParagraphCxSpMiddle><FONT color=#000000><SPAN><SPAN><FONT size=3>·</FONT><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN></SPAN></SPAN><FONT face=Calibri size=3>Format – specify a format mask to use when displaying broken rule numeric values</FONT></FONT></P>
+<P class=MsoListParagraphCxSpMiddle><FONT color=#000000><SPAN><SPAN><FONT size=3>·</FONT><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN></SPAN></SPAN><FONT face=Calibri size=3>StringMinLength – new validation rule method</FONT></FONT></P>
+<P class=MsoListParagraphCxSpMiddle><FONT color=#000000><SPAN><SPAN><FONT size=3>·</FONT><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN></SPAN></SPAN><FONT face=Calibri size=3>DecoratedRuleArgs – useful for code generation of AddBusinessRules() methods</FONT></FONT></P>
+<P class=MsoListParagraphCxSpMiddle><FONT color=#000000><SPAN><SPAN><FONT size=3>·</FONT><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN></SPAN></SPAN><FONT face=Calibri size=3>Fix bug with stopProcessing and rule priorities</FONT></FONT></P>
+<P class=MsoListParagraphCxSpLast><FONT color=#000000><SPAN><SPAN><FONT size=3>·</FONT><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN></SPAN></SPAN><FONT face=Calibri size=3>RegEx – rule method now supports options for dealing with null values</FONT></FONT></P>
+<P class=MsoNormal><B><FONT size=3><FONT color=#000000><FONT face=Calibri>Authorization<o:p></o:p></FONT></FONT></FONT></B></P>
+<P class=MsoListParagraph><FONT color=#000000><SPAN><SPAN><FONT size=3>·</FONT><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN></SPAN></SPAN><FONT face=Calibri size=3>New CanExecuteMethod() functionality, similar to CanReadProperty() and CanWriteProperty()</FONT></FONT></P>
+<P class=MsoNormal><B><FONT size=3><FONT color=#000000><FONT face=Calibri>Undo and Data binding<o:p></o:p></FONT></FONT></FONT></B></P>
+<P class=MsoListParagraph><FONT color=#000000><SPAN><SPAN><FONT size=3>·</FONT><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN></SPAN></SPAN><FONT face=Calibri size=3>If edit levels get out of sync an exception is thrown, making debugging of Windows Forms data binding much easier</FONT></FONT></P>
+<P class=MsoNormal><B><FONT size=3><FONT color=#000000><FONT face=Calibri>Interfaces<o:p></o:p></FONT></FONT></FONT></B></P>
+<P class=MsoListParagraph><FONT color=#000000><SPAN><SPAN><FONT size=3>·</FONT><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN></SPAN></SPAN><FONT face=Calibri size=3>Cleaned up and rearranged interfaces to provide more consistency – making it easier to create UI frameworks on top of CSLA business layers</FONT></FONT></P>
+<P class=MsoNormal><B><FONT size=3><FONT color=#000000><FONT face=Calibri>SmartDate<o:p></o:p></FONT></FONT></FONT></B></P>
+<P class=MsoListParagraphCxSpFirst><FONT color=#000000><SPAN><SPAN><FONT size=3>·</FONT><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN></SPAN></SPAN><FONT face=Calibri size=3>Added TryParse() method</FONT></FONT></P>
+<P class=MsoListParagraphCxSpLast><FONT color=#000000><SPAN><SPAN><FONT size=3>·</FONT><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN></SPAN></SPAN><FONT face=Calibri size=3>Fix bug with CompareTo() method</FONT></FONT></P>
+<P class=MsoNormal><B><FONT size=3><FONT color=#000000><FONT face=Calibri>SortedBindingList and FilteredBindingList<o:p></o:p></FONT></FONT></FONT></B></P>
+<P class=MsoListParagraph><FONT color=#000000><SPAN><SPAN><FONT size=3>·</FONT><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN></SPAN></SPAN><FONT face=Calibri size=3>Allow access to underlying source list</FONT></FONT></P>
+<P class=MsoNormal><B><FONT size=3><FONT color=#000000><FONT face=Calibri>ProjectTracker\PTWin<o:p></o:p></FONT></FONT></FONT></B></P>
+<P class=MsoListParagraph><FONT color=#000000><SPAN><SPAN><FONT size=3>·</FONT><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN></SPAN></SPAN><FONT face=Calibri size=3>Reworked data binding code to address all known issues</FONT></FONT></P>
+<P class=MsoNormal><FONT face=Calibri color=#000000 size=3>See the </FONT><A href="http://www.lhotka.net/Article.aspx?area=4&amp;id=0c94aa82-b975-455b-a0c5-f4f7196a2408"><FONT face=Calibri color=#800080 size=3><STRONG>change log</STRONG></FONT></A><FONT face=Calibri color=#000000 size=3> for a complete list of changes.</FONT></P>
+<P class=MsoNormal><FONT face=Calibri color=#000000 size=3>Of course the <I>primary</I> focus of CSLA .NET 3.0 is support for Microsoft .NET 3.0. Highlights include:</FONT></P>
+<P class=MsoListParagraphCxSpFirst><FONT color=#000000><SPAN><SPAN><FONT size=3>·</FONT><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN></SPAN></SPAN><FONT face=Calibri><FONT size=3><B>WcfProxy</B> – a data portal channel that uses WCF. You can <I>transparently</I></FONT><FONT size=3> move from any existing data portal channel to WCF by using this new proxy.</FONT></FONT></FONT></P>
+<P class=MsoListParagraphCxSpMiddle><FONT color=#000000><SPAN><SPAN><FONT size=3>·</FONT><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN></SPAN></SPAN><FONT face=Calibri><B><FONT size=3>DataContract</FONT></B><FONT size=3> – support for using the WCF DataContract and DataMember attributes in your business classes</FONT></FONT></FONT></P>
+<P class=MsoListParagraphCxSpMiddle><FONT color=#000000><SPAN><SPAN><FONT size=3>·</FONT><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN></SPAN></SPAN><B><FONT size=3><FONT face=Calibri>WPF<o:p></o:p></FONT></FONT></B></FONT></P>
+<P class=MsoListParagraphCxSpMiddle><FONT color=#000000><SPAN><SPAN><FONT size=3>o</FONT><SPAN>&nbsp;&nbsp; </SPAN></SPAN></SPAN><FONT face=Calibri size=3>CslaDataProvider – a data provider control that can create, fetch, save and cancel edits on a CSLA .NET business object. In some cases this can lead to code-less data entry forms!</FONT></FONT></P>
+<P class=MsoListParagraphCxSpMiddle><FONT color=#000000><SPAN><SPAN><FONT size=3>o</FONT><SPAN>&nbsp;&nbsp; </SPAN></SPAN></SPAN><FONT face=Calibri size=3>Validator – a control that provides Windows Forms ErrorProvider-like behavior to WPF forms that are data bound to CSLA .NET objects.</FONT></FONT></P>
+<P class=MsoListParagraphCxSpMiddle><FONT color=#000000><SPAN><SPAN><FONT size=3>o</FONT><SPAN>&nbsp;&nbsp; </SPAN></SPAN></SPAN><FONT face=Calibri size=3>Authorizer – a control that provides Windows Forms AuthorizeReadWrite-like behaviors to WPF forms that are data bound to CSLA .NET objects.</FONT></FONT></P>
+<P class=MsoListParagraphCxSpMiddle><FONT color=#000000><SPAN><SPAN><FONT size=3>o</FONT><SPAN>&nbsp;&nbsp; </SPAN></SPAN></SPAN><FONT face=Calibri size=3>ObjectStatus – a control that exposes IsValid, IsSavable and other properties from a CSLA .NET business object so they can be used by XAML data binding.</FONT></FONT></P>
+<P class=MsoListParagraphCxSpLast><FONT color=#000000><SPAN><SPAN><FONT size=3>o</FONT><SPAN>&nbsp;&nbsp; </SPAN></SPAN></SPAN><FONT face=Calibri size=3>IdentityConverter – a value converter that can be used to work around an issue with data binding and refreshing the UI.</FONT></FONT></P>
+<P class=MsoNormal><FONT face=Calibri color=#000000 size=3>ProjectTracker\PTWpf</FONT></P>
+<P class=MsoListParagraph><FONT color=#000000><SPAN><SPAN><FONT size=3>·</FONT><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN></SPAN></SPAN><FONT face=Calibri size=3>Added new WPF UI with equivalent functionality to PTWin.</FONT></FONT></P>
+<P class=MsoNormal><FONT face=Calibri color=#000000 size=3>ProjectTracker\PTWorkflow</FONT></P>
+<P class=MsoListParagraph><FONT color=#000000><SPAN><SPAN><FONT size=3>·</FONT><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN></SPAN></SPAN><FONT face=Calibri size=3>Added new Workflow UI to illustrate how a workflow can use CSLA .NET business objects</FONT></FONT></P>
+<P class=MsoNormal><FONT face=Calibri color=#000000 size=3>ProjectTracker\PTWcfClient and PTWcfService</FONT></P>
+<P class=MsoListParagraphCxSpFirst><FONT color=#000000><SPAN><SPAN><FONT size=3>·</FONT><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN></SPAN></SPAN><FONT face=Calibri size=3>Added a WCF service illustrating how to expose CSLA .NET objects through WCF/SOA</FONT></FONT></P>
+<P class=MsoListParagraphCxSpLast><FONT color=#000000><SPAN><SPAN><FONT size=3>·</FONT><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN></SPAN></SPAN><FONT face=Calibri size=3>Added a WCF client app illustrating how to call a WCF service</FONT></FONT></P>
+<P class=MsoNormal><FONT face=Calibri color=#000000 size=3>ProjectTracker\WcfHost</FONT></P>
+<P class=MsoListParagraph><FONT color=#000000><SPAN><SPAN><FONT size=3>·</FONT><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN></SPAN></SPAN><FONT face=Calibri size=3>Added a WCF host for the data portal</FONT></FONT></P></DIV></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, June 22, 2007</h2><P>Well copying and pasting from Word didn't work so well, sorry about that.</P>
+<P>You can go to my blog to get a version that's easier to read:</P>
+<P><A href="http://www.lhotka.net/weblog/CSLANET30Beta2AvailableForDownload.aspx">http://www.lhotka.net/weblog/CSLANET30Beta2AvailableForDownload.aspx</A></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>claptik replied on Tuesday, June 26, 2007</h2>Rocky,<br><br>I like how you added the PropertyFriendlyName to ruleargs.&nbsp; Would it also make sense to also do this for the common rule args (MaxLengthRuleArgs, etc.)? <br><br>Thanks.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, June 26, 2007</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>All rule args classes like MaxLengthRuleArgs inherit from
+RuleArgs, so all custom rule args (yours, mine, everyone&#8217;s) just got
+PropertyFriendlyName, along with the Shared/static GetPropertyName() helper
+method that can be used to get the property name (friendly first, and if it
+doesn&#8217;t exist then normal property name).<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Look at CommonRules for examples.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> claptik
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Tuesday, June 26, 2007 12:40 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] CSLA .NET 3.0 Beta 2 available for download<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Rocky,<br>
+<br>
+I like how you added the PropertyFriendlyName to ruleargs.&nbsp; Would it also
+make sense to also do this for the common rule args (MaxLengthRuleArgs, etc.)? <br>
+<br>
+Thanks.<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>claptik replied on Wednesday, June 27, 2007</h2>Thanks Rocky,<br><br>I do now see the PropertyFriendlyName property on MaxLengthRuleArgs.&nbsp; I think what I was getting at was asking whether there was a constructor overload that accepted a PropertyFriendlyName parameter so I could do this (similar to how the ruleargs constructor works):<br><br>ValidationRules.AddRule(CommonRules.StringMaxLength, new CommonRules.MaxLengthRuleArgs("PropertyName", "FriendlyName", 50));<br><br>instead of having to do this:<br><br>CommonRules.MaxLengthRuleArgs args = new CommonRules.MaxLengthRuleArgs("ProperyName", 50));<br>args.PropertyFriendlyName = "FriendlyName";<br>ValidationRules.AddRule(CommonRules.StringMaxLength, args);<br><br>when defining each rule.&nbsp; It works fine now doing it the latter way but maybe I'm missing something as I couldn't figure out how to do it in one line of code.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>petervdm replied on Wednesday, June 27, 2007</h2>All I did was to extract those lines into a new method:<br><br>&nbsp;public static CommonRules.MaxLengthRuleArgs GetMaxRuleArgs(string propertyFriendlyName, string propertyName, int maxLength)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; CommonRules.MaxLengthRuleArgs maxLengthRuleArgs = new CommonRules.MaxLengthRuleArgs(propertyName, maxLength);<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; maxLengthRuleArgs.PropertyFriendlyName = propertyFriendlyName;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return maxLengthRuleArgs;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br><br><br>and then calling them like this:<br><br>ValidationRules.AddRule(CommonRules.StringMaxLength, CommonValidationRules.GetMaxRuleArgs("Details", "Sought", 4000));<br><br>Peter<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>pirithoos replied on Monday, June 25, 2007</h2><font color="#000000" face="Calibri" size="3">...<br><br>If you want to build CSLA .NET 3.0 <i>without .NET 3.0</i>, you must define the NET20 symbol in the project properties.<br><br>...<br><br>Hmmm, can you please explain how to define the NET20 symbol? I cannot find that option in the project properties.<br><br>Best Regards<br><br>Frank<br></font></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>petervdm replied on Monday, June 25, 2007</h2>Hi Frank,<br><br>Not sure if you are using VB or C# but the instructions should be similar:<br><br>1. For C#, Open up the Project Properties (Right -Click on the project in Solution Explorer and click Properties)<br>2. Click on the Build tab<br>3. In the Conditional compilation symbols text box enter NET20<br>4. Compile<br><br>That should sort it out.<br><br>Peter<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Matthew Sorvaag replied on Tuesday, July 03, 2007</h2>Hi Rocky,<br><br>I am testing out the beta and have a question to ask...<br><br>I am skinning my controls so when there is a validation error, I am giving it a red border with rounded corners similar to the way CSLA does it.<br><br>How would I go about modifying/overriding the CSLA validator styles? I am doing this on textboxes at the moment.<br><br>Thanks,<br><br>Matt<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Thursday, July 05, 2007</h2>hey Matt,<br><br>I'd think you'd create an ExtenderControl, similar to the ErrorProvider component that Rocky build for Csla.&nbsp;&nbsp; Check out the code for that, you shouldn't need to modify&nbsp; your BOs or Csla.net at all. <br><br>HTH<br>Andy<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, July 06, 2007</h2><P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>Matthew Sorvaag:</strong></div><div><BR>I am testing out the beta and have a question to ask...<BR><BR>I am skinning my controls so when there is a validation error, I am giving it a red border with rounded corners similar to the way CSLA does it.<BR><BR>How would I go about modifying/overriding the CSLA validator styles? I am doing this on textboxes at the moment.<BR><BR></div></BLOCKQUOTE></P>
+<P>This is in WPF I assume? You do this using normal styling and a trigger. The technique is exactly the same as you'd use for changing the style of a control based on an exception or other error. Paul Stovell has a good article on the concepts:</P>
+<P><A href="http://www.codeproject.com/WPF/wpfvalidation.asp">http://www.codeproject.com/WPF/wpfvalidation.asp</A></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>GlennMiller replied on Monday, July 09, 2007</h2>We are using Beta 2 for a WPF app. <br><br>For the most part everything is working great!<br><br>We did find one issue. Don't use reserved words for property names!<br><br>We had a property called Value. We had an instance rule for Value.<br><br>What would happen is when it hit the Validator.ErrorScan() things would go very wrong. Not only did our textbox "Value" become flagged with an error (correctly), but all our combo boxes had a small red box directly around the text (not the entire combo).<br><br>I don't know if I would categorize this as a bug. But maybe a developer assumtion? Our solution was to rename the property to something else. Just incase anyone else runs into this we thought we should post this.<br><br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, July 09, 2007</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Did the combobox contain items of that same type that had a
+Value property? <o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Or more specifically, can you provide more detail here? Or even
+better some sample code or a repro?<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>If it is a bug I&#8217;d like to find/fix it.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> GlennMiller
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Monday, July 09, 2007 12:44 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] CSLA .NET 3.0 Beta 2 available for download<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>We are using Beta 2 for a WPF app. <br>
+<br>
+For the most part everything is working great!<br>
+<br>
+We did find one issue. Don't use reserved words for property names!<br>
+<br>
+We had a property called Value. We had an instance rule for Value.<br>
+<br>
+What would happen is when it hit the Validator.ErrorScan() things would go very
+wrong. Not only did our textbox &quot;Value&quot; become flagged with an error
+(correctly), but all our combo boxes had a small red box directly around the
+text (not the entire combo).<br>
+<br>
+I don't know if I would categorize this as a bug. But maybe a developer
+assumtion? Our solution was to rename the property to something else. Just
+incase anyone else runs into this we thought we should post this.<br>
+<br>
+<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

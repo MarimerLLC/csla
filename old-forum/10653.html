@@ -1,0 +1,67 @@
+<html><header><title>PropertyStatus can't update status </title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>PropertyStatus can't update status </h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10653.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>simon posted on Tuesday, August 30, 2011</h2><p>I have a&nbsp;BusinessListBase&lt;MaterialCategorys, MaterialCategory&gt;, in which &nbsp;i add a method &nbsp;as below:</p>
+<p>
+<p>&nbsp; public MaterialCategory &nbsp;AddRootNode()</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; MaterialCategory item= MaterialCategory.NewMaterialCategory();</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; this.Add(item);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; return item;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>in the child BO, I add the&nbsp;OnUnknownPropertyChanged()&nbsp;</p>
+<p>
+<p>&nbsp;[Csla.RunLocal]</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; protected override void Child_Create()</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; LoadProperty(IdProperty, System.Threading.Interlocked.Decrement(ref _lastID));</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; LoadProperty(DescriptionProperty, &quot;Test&quot;);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; BusinessRules.CheckRules();</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; OnUnknownPropertyChanged();</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; base.Child_Create();</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp;BusinessRules.AddRule(new Csla.Rules.CommonRules.Required(NameProperty));</p>
+<p>&nbsp;</p>
+<p>but I invoke the method AddRootNode, the UI work well except the propertystatus.</p>
+<p>I use ViewModel&lt;MaterialCategory&gt;. in which i invoke the method:</p>
+<p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; private &nbsp;void AddRootNode()</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;var SelectedItem= Model.AddRootNode();</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; }</p>
+</p>
+<p>the csla version is 4.2.</p>
+</p>
+</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Tuesday, August 30, 2011</h2><p>How do you bind PropertyStatus to the BO? </p>
+<p>You should define DataContext either on each PropertyStatus or the Xaml container.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>simon replied on Tuesday, August 30, 2011</h2><p><b>In my view:</b></p>
+<p>&nbsp;</p>
+<p>&nbsp; &lt;TabControl Grid.Row=&quot;1&quot; &nbsp;Name=&quot;tabControl1&quot; &nbsp;&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;TabItem Header=&quot;Overview&quot; Name=&quot;tabItem1&quot;&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;!--local:MaterialCategoryListView DataContext=&quot;{Binding}&quot;/--&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;TreeView Name=&quot;CategoryTreeView&quot; ItemsSource=&quot;{Binding Path=Model}&quot; &nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;ItemTemplate =&quot;{StaticResource NavigationTemplate }&quot; &gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;TreeView.ItemContainerStyle&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;!-- This Style binds a TreeViewItem to a PersonViewModel. &nbsp;--&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;Style TargetType=&quot;{x:Type TreeViewItem}&quot;&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;Setter Property=&quot;IsExpanded&quot; Value=&quot;{Binding IsExpanded, Mode=TwoWay}&quot; /&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;Setter Property=&quot;IsSelected&quot; Value=&quot;{Binding IsSelected, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}&quot; /&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;Setter Property=&quot;FontWeight&quot; Value=&quot;Normal&quot; /&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;Style.Triggers&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;Trigger Property=&quot;IsSelected&quot; Value=&quot;True&quot;&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;Setter Property=&quot;FontWeight&quot; Value=&quot;Bold&quot; /&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;/Trigger&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;/Style.Triggers&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;/Style&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;/TreeView.ItemContainerStyle&gt;</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;/TreeView&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;/TabItem&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;TabItem Header=&quot;Base&quot; &gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;local:MaterialCategoryBaseView DataContext=&quot;{Binding ElementName=CategoryTreeView, Path=SelectedItem}&quot;/&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;/TabItem&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &lt;/TabControl&gt;</p>
+<p><b>in the&nbsp;MaterialCategoryBaseView :</b></p>
+<p><i>&lt;csla:PropertyStatus Grid.Column=&quot;2&quot; Margin=&quot;11,11,86,3&quot; Name=&quot;propertyStatus1&quot; Width=&quot;20&quot; Height=&quot;20&quot; Property=&quot;{Binding Path=Name }&quot; /&gt;</i></p>
+<p>&nbsp;</p>
+<p>When I add the new item, i first click the row, and shift to the tab &quot;Base&quot;, &nbsp;the error doesn&#39;t appear.&nbsp;</p>
+<p>if i move &nbsp;the focus to &nbsp;another row and then back to the new row, the error will present&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Tuesday, August 30, 2011</h2><p>If&nbsp; you are using the Csla 4.2 Alpha then you should update to the latest Csla.Xaml.PropertyStatus from trunk. </p>
+<p>PropertyStatus would miss updating UI if a control is not visible when page is shown (ie non visible tab page).</p>
+<p>&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,92 @@
+<html><header><title>Silverlight Object is still being edited and cannot be saved</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Silverlight Object is still being edited and cannot be saved</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/8652.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Eblanchette posted on Friday, March 12, 2010</h2><p>
+<p>Hello,</p>
+<p>I have a EditableRootList bound to a datagrid. &nbsp;When I try to save the list, I get the error &quot;Object is still being edited and cannot be saved&quot;. &nbsp;I tried calling datagrid.CommitEdit(), and List.ApplyEdit(), but nothing seems to work. &nbsp;I would like some advice on that.</p>
+<p>currentTrips.BeginSave((o, z) =&gt;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;{</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;if (z.Error == null)</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;{</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;currentTrips = (TripERList)z.NewObject;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;CreateLoadTrips();</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;}</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;else</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;{</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;throw z.Error;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;}</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;});</p>
+</p>
+<p>&nbsp;</p>
+<p>Thank you!</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>Eblanchette replied on Friday, March 12, 2010</h2><p>
+<p>I found this in the BeginSave method of the framework:</p>
+<p> &nbsp; &nbsp; &nbsp;else if (EditLevel &gt; 0)</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp;{</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;Validation.ValidationException error = new Validation.ValidationException(Resources.NoSaveEditingException);</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;if (handler != null)</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;handler(this, new SavedEventArgs(null, error, userState));</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;OnSaved(null, error, userState);</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp;}</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp;else if (!IsValid)</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp;{</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;Validation.ValidationException error = new Validation.ValidationException(Resources.NoSaveEditingException); <span style="text-decoration:underline;">&nbsp;Should&#39;nt this be &quot;NoSaveInvalidException&quot; ??</span></p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;if (handler != null)</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;handler(this, new SavedEventArgs(null, error, userState));</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;OnSaved(null, error, userState);</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp;}</p>
+</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, March 12, 2010</h2><p>Every BeginEdit() call needs to have a matching ApplyEdit() call <i>on that specific object</i>.</p>
+<p>When using in-place editing in a datagrid control, the datagrid is responsible for using the IEditableObject interface to call begin/end/cancel edit on each row as the user enters and leaves that row.</p>
+<p>I know there are issues with the WPF datagrid not working correctly - hopefully they&#39;ll get up to speed for WPF 4.</p>
+<p>But the SL datagrid has been working well since SL3. Actually there was a fixed datagrid for SL2 too, but the original one didn&#39;t work quite right.</p>
+<p>However, it could be an issue where the user is in a row of the datagrid, and then clicks a button elsewhere on the form, thus technically shifting the focus out of the datagrid - but in that case perhaps the datagrid isn&#39;t detecting that the user left the row, and so isn&#39;t committing that row with an IEditableObject.EndEdit() call?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Eblanchette replied on Saturday, March 13, 2010</h2><p>Thank you for the information,</p>
+<p>I found out that when my object had validationExceptions, it fires the &quot;object is still being edited&quot; message.&nbsp; Maybe it&#39;s a mistake in the csla code as my previous post mentioned?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Saturday, March 13, 2010</h2><p>Yes, that was a bug - you must not be running current code, as I believe that bug was found and fixed some time ago.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Eblanchette replied on Monday, March 15, 2010</h2><p>I am currently running csla 3.8.3, but I will double-check my project just to be sure the bug is not in this version. &nbsp;Thank you!</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JasonBJones replied on Thursday, May 13, 2010</h2><p>I am also running csla 3.8.3 and ran into this issue.&nbsp; I tracked it down to one value being put into a dataset. When I commented that one line out, I no longer received the object is busy error. The below is an copy of my code.</p>
+<p>&nbsp;_Cov.BeginEdit()<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _Cov.CarrierID = opt.CarrierId<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _Cov.CoverageTypeID = opt.CoverageTypeId</p>
+<p>&#39;_Cov.Covereage = opt.Coverage<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _Cov.CarrierName = opt.Carrier<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _Cov.UpdatePlanUponSaving = True<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _Cov.ApplyEdit()</p>
+<p>&nbsp;</p>
+<p>The _cov object&nbsp; Inherits BusinessBase(Of T)</p>
+<p>&nbsp;</p>
+<p>P.S. I am new to Silverlight and CSLA and would like to add that I have found your videos and this forum very&nbsp; helpful.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ninoarena replied on Thursday, May 13, 2010</h2><p>I noticed this behaviour too whenever I get a validation error on my telerik RadGridView control.&nbsp; This error actually motivated me to find out why the error message I put into my business object validation rule is not showing up instead of this &#39;Object is still being edited and cannot be saved&#39; message.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ninoarena replied on Thursday, May 13, 2010</h2><p>I forgot to mention that I am still in the process of trying to resolve this issue I am encountering, wherein I can&#39;t get my error message to show up when the validation failed.&nbsp; I&#39;ll post my findings when I find the answer.</p>
+<p>Thanks.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JasonBJones replied on Thursday, May 13, 2010</h2><p>I do remember reading a post made by Rockford, don&#39;t recall which one, that stated this was a bug and he had fixed it in the C# version and was going to bring it to the VB version.&nbsp; I am using VB.&nbsp; Maybe the fix never made it to the VB side?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ninoarena replied on Thursday, May 13, 2010</h2><p>I am using C#.&nbsp; I am thinking this is not a bug but me not knowing how to use this business rule/PropertyStatus control.&nbsp; I was just hoping there will be an example out there for CSLA 4, Silverlight 4, MVVM, simple CRUD application.</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Thursday, May 13, 2010</h2><p>Busy and being edited are two different things. I&#39;ll assume we&#39;re talking about the object being edited?</p>
+<p>This exception occurs because of a mismatch between calls to BeginEdit and either CancelEdit or ApplyEdit. Every BeginEdit call must have a matching Cancel/Apply call.</p>
+<p>Some complex controls (usually datagrid controls) don&#39;t follow the rules at all times, and don&#39;t always call the cancel/apply method like they are supposed to. That&#39;s a bug in the control. Sometimes you can overcome it by handling events at the UI layer, sometimes you need to get the control vendor to fix the control.</p>
+<p>Almost always, they are invoking the methods through the IEditableObject interface - that&#39;s what they should be doing anyway. And there too, there should be symmetry between the begin and cancel/end edit calls.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JasonBJones replied on Friday, May 14, 2010</h2><p>OK I believe I have found the issue here.&nbsp; For starters I do have the proper levels of beginedit and applyedits.&nbsp; This issue was in my validation.&nbsp; I had one rule that was not returning an error value. Notice the code below the last line has return true. This was not orginally there.&nbsp; my brokenrules validation had an error with this field with severity of ERROR and no description.&nbsp; After adding the return true it now works fine.&nbsp; So the error is my fault for not having proper error handling but CSLA is also returning a odd error.&nbsp; Just my two cents.</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>
+<p><span style="font-size:x-small;"><font size="2">
+<p>&nbsp;</p>
+</font></span>
+<p>&nbsp;</p>
+<span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">Private</span></span><span style="font-size:x-small;"> </span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">Shared</span></span><span style="font-size:x-small;"> </span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">Function</span></span><span style="font-size:x-small;"> IsPlanName(</span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">ByVal</span></span><span style="font-size:x-small;"> target </span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">As</span></span><span style="font-size:x-small;"> SubscriberCoverage, </span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">ByVal</span></span><span style="font-size:x-small;"> e </span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">As</span></span><span style="font-size:x-small;"> RuleArgs) </span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">As</span></span><span style="font-size:x-small;"> </span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">Boolean</span></span><span style="font-size:x-small;"><font size="2">
+<p>&nbsp;</p>
+</font></span>
+<p>&nbsp;</p>
+<span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">If</span></span><span style="font-size:x-small;"> target.GetProperty(CoverageTypeProperty) = </span><span style="color:#a31515;font-size:x-small;"><span style="color:#a31515;font-size:x-small;">&quot;PPO&quot;</span></span><span style="font-size:x-small;"> </span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">Then</span></span><span style="font-size:x-small;"><font size="2">
+<p>e.Description = </p>
+</font></span>
+<p><span style="color:#a31515;font-size:x-small;"><span style="color:#a31515;font-size:x-small;">&quot;PCP - Primary Care Physician.&quot;</span></span></p>
+<span style="font-size:x-small;">
+<p>e.Severity = RuleSeverity.Information</p>
+<font size="2">
+<p>&nbsp;</p>
+</font></span>
+<p>&nbsp;</p>
+<span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">Return</span></span><span style="font-size:x-small;"> </span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">False</span></span><span style="font-size:x-small;"><font size="2">
+<p>&nbsp;</p>
+</font></span>
+<p>&nbsp;</p>
+<span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">End</span></span><span style="font-size:x-small;"> </span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">If</span></span><span style="font-size:x-small;"><font size="2">
+<p>&nbsp;</p>
+</font></span>
+<p>&nbsp;</p>
+<span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">Return</span></span><span style="font-size:x-small;"> </span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">True</span></span><span style="font-size:x-small;"><font size="2">
+<p>&nbsp;</p>
+</font></span>
+<p>&nbsp;</p>
+<span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">End</span></span><span style="font-size:x-small;"> </span>
+<p><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">Function</span></span></p>
+</p>
+</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, May 14, 2010</h2><p>The compiler should have at least warned you (but I think the default is error?) about not explicitly returning a value from the function. Oh, I think VB is only a warning though, so it would compile. You can configure the compiler to make that an error so VB won&#39;t compile functions that don&#39;t return a value on all paths.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JasonBJones replied on Friday, May 14, 2010</h2><p>One more note on this is that this only seems to happen when I am adding a record. If the record already existed the save would happen just fine.&nbsp; I hope this helps you out.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, May 14, 2010</h2><p>What version of CSLA are you using Jason? There was a bug in some older versions where the wrong exception text was returned for an invalid object - I wonder if you are hitting that problem.</p>
+<p>To be savable, an object must be not in edit mode, valid, not busy and the user authorized. The IsValid check threw an exception, but with the wrong text description.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JasonBJones replied on Friday, May 14, 2010</h2><p class="MsoNormal" style="margin:0in 0in 0pt;"><span style="font-family:&#39;Calibri&#39;,&#39;sans-serif&#39;;color:#1f497d;font-size:11pt;">I have version 3.8.2.&nbsp; I have made one change to the code but it was only to make the edit level public.&nbsp; This was done in an attempt to isolate this problem.&nbsp; Thanks again for you quick and helpful responses, I have only been using Silverlight and CSLA now for 3 months but you have made this transition much easier, I came from a primarily desktop background and largely VB 6. So you can imagine the struggle I am having.</span></p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

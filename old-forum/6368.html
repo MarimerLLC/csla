@@ -1,0 +1,64 @@
+<html><header><title>Bug in DataPortal.IsInDesignMode</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Bug in DataPortal.IsInDesignMode</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6368.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>josh.wagoner posted on Friday, February 06, 2009</h2>I am currently working on a WPF app that is using CSLA and I believe there is a bug in IsInDesignMode that causes it to throw an exception if the first time it is called is from within a layout pass.  The call to Dispatcher.Invoke is the problem.  Invoke results in a frame being pushed onto the dispatcher which cannot be done during layout because dispatcher processing is disabled during layout passes.<br /><br />I think you can eliminate this call by simply changing the implementation of IsInDesignMode to something like this:<br /><br />return DesignerProperties.GetIsInDesignMode(new DependencyObject());<br /><br />The designers (at least Blend and VS) set the IsInDesignMode by overriding the default value of the DesignerProperties.IsInDesignMode property using OverrideMetadata.  So, I believe this should work even if it is not executed on the Dispatcher thread and doesn't require the call to Invoke. <br /><br />Josh</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, February 06, 2009</h2><P>Can you try your suggestion and see if it both works, and solves your issue?</P>
+<P>Thanks!</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>josh.wagoner replied on Monday, February 09, 2009</h2>Yeah, it works and solves our issue, but the team doesn't want to make any changes to the csla code itself.  We ended up making a small change to the wpf code so that the first call to IsInDesignMode doesn't happen from within a layout pass.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, February 09, 2009</h2>Ok. I was rather hoping you could make the recommended change in a copy of<br />the csla code to see if it solves your issue (without causing side-effects).<br />If so, I can more rapidly consider putting it into 3.6.2.<br /><br />If I have to create a test scenario and run through the work to replicate<br />your problem that'll take me more time. I'll do it at some point - just<br />don't know exactly when.<br /><br />Rocky<br /><br /><br />-----Original Message-----<br />From: josh.wagoner [mailto:cslanet@lhotka.net] <br />Sent: Monday, February 09, 2009 12:50 PM<br />To: rocky@lhotka.net<br />Subject: Re: [CSLA .NET] Bug in DataPortal.IsInDesignMode<br /><br />Yeah, it works and solves our issue, but the team doesn't want to make any<br />changes to the csla code itself.  We ended up making a small change to the<br />wpf code so that the first call to IsInDesignMode doesn't happen from within<br />a layout pass.<br /><br /></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Turntwo replied on Friday, March 20, 2009</h2>I ran into a similar problem with DataPortal.IsInDesignMode, but for me it doesn't throw an exception.&nbsp; It hangs the program ( I'm assuming some kind of deadlock ).&nbsp; I'm not sure exactly what is happening, but it hangs on the Dispatcher.Invoke call.&nbsp; The Main thread seems to be waiting on a lock(_managers) statement in GetRoles.&nbsp; I don't know if that is relevant or a coincidence (although it always is stuck on that spot).&nbsp; This only occurs when I open WPF forms with multiple CslaDataProviders.&nbsp; Again not sure if that is the issue.&nbsp; <br><br>So, I realize I don't have much information to help, but if an alternate implementation of IsInDesignMode works, I'd be interested.&nbsp; For I used the same fix mentioned above - I call IsInDesignMode when the app loads, so I avoid the deadlock later.&nbsp; <br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, March 20, 2009</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I believe 3.6.2 now uses a simpler implementation that avoids
+the dispatcher.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Turntwo
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Friday, March 20, 2009 5:49 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: Bug in DataPortal.IsInDesignMode<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>I ran into a similar problem with DataPortal.IsInDesignMode,
+but for me it doesn't throw an exception.&nbsp; It hangs the program ( I'm
+assuming some kind of deadlock ).&nbsp; I'm not sure exactly what is happening,
+but it hangs on the Dispatcher.Invoke call.&nbsp; The Main thread seems to be
+waiting on a lock(_managers) statement in GetRoles.&nbsp; I don't know if that
+is relevant or a coincidence (although it always is stuck on that spot).&nbsp;
+This only occurs when I open WPF forms with multiple CslaDataProviders.&nbsp;
+Again not sure if that is the issue.&nbsp; <br>
+<br>
+So, I realize I don't have much information to help, but if an alternate
+implementation of IsInDesignMode works, I'd be interested.&nbsp; For I used the
+same fix mentioned above - I call IsInDesignMode when the app loads, so I avoid
+the deadlock later.&nbsp; <br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

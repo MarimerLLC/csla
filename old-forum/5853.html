@@ -1,0 +1,235 @@
+<html><header><title>Business Base Authorization Question</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Business Base Authorization Question</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5853.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>jfreeman posted on Friday, November 21, 2008</h2><P>I have a&nbsp;Business Base object that I want to allow users to edit if they are in a certain AD group.&nbsp; However, if they are not in the group I would&nbsp;like to prevent them from making changes to the fields (basically mark all the fields read-only).&nbsp; I&nbsp;don't want them trying to make changes and then realize after they hit the Save button that they do not have&nbsp;the correct authorization.&nbsp; Is there a way to&nbsp;do this.&nbsp; Thanks.</P>
+<P>Jonathan&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Friday, November 21, 2008</h2>Yes, usually you override AddAuthorizationRules in you BB subclass, and call AuthorizationRules.AllowWrite( property, roles ).&nbsp; Then you can use the ReadWriteAuthoriztion component if you're in Windows Forms or PropertyStatus will handle it in Wpf.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jfreeman replied on Friday, November 21, 2008</h2><P>So I would need to call AuthorizationRules.AllowWrite for each field on the object.&nbsp; I have about 75 fields on this object.&nbsp; Is that the only way to handle this?&nbsp; Thanks for you help.</P>
+<P>Jonathan</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Friday, November 21, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Something like this is what I use:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>protected</span><span> <span>override</span> <span>void</span> AddAuthorizationRules()<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span>string</span>[] writeRoles = <span>new</span>
+<span>string</span>[] { <span>SecurityRole</span>.UberAdmin.ToString()
+};<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span>foreach</span> (<span>var</span>
+item <span>in</span> <span>this</span>.FieldManager.GetRegisteredProperties())<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+{<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+AuthorizationRules.AllowWrite(item, writeRoles);<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+}<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+}</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Saves a lot of typing.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> jfreeman
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Friday, November 21, 2008 4:46 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] Business Base Authorization Question<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>So I would need to call AuthorizationRules.AllowWrite for each field on the
+object.&nbsp; I have about 75 fields on this object.&nbsp; Is that the only way
+to handle this?&nbsp; Thanks for you help.<o:p></o:p></p>
+
+<p>Jonathan<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jfreeman replied on Friday, November 21, 2008</h2><P>Thank you Sergey.&nbsp; You rock!</P>
+<P>Jonathan</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jfreeman replied on Monday, November 24, 2008</h2><P>I was able to use the code from Sergey and it works perfectly.&nbsp; However, by turning on Authorization for every control on the form, the screen now takes 30 seconds to load.&nbsp; Before I made the changes it took about 3 seconds.&nbsp; The screen has about 100 fields on it.&nbsp; Is there any way to decrease the load time?&nbsp; I don't think the users are going to like waiting 30 seconds to open this screen.&nbsp; Thanks.</P>
+<P>Jonathan</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Monday, November 24, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>By authorization control do you mean PropertyStatus (WPF) or
+AuthorizeReadWrite (WinForms)?<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> jfreeman
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Monday, November 24, 2008 12:49 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: Business Base Authorization Question<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>I was able to use the code from Sergey and it works perfectly.&nbsp;
+However, by turning on Authorization for every control on the form, the screen
+now takes 30 seconds to load.&nbsp; Before I made the changes it took about 3
+seconds.&nbsp; The screen has about 100 fields on it.&nbsp; Is there any way to
+decrease the load time?&nbsp; I don't think the users are going to like waiting
+30 seconds to open this screen.&nbsp; Thanks.<o:p></o:p></p>
+
+<p>Jonathan<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jfreeman replied on Monday, November 24, 2008</h2><P>Sorry.&nbsp; I should have clarified.&nbsp; WinForms AuthorizeReadWrite.&nbsp; Thanks.</P>
+<P>Jonathan</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Monday, November 24, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I just looked at the class, and it does have a fair amount of
+reflection, but I cannot imagine that it would take anywhere near 30 seconds
+for 100 fields.&nbsp; Something else I causing the issue, I think.&nbsp; Could
+it be that there is something else going on that causes this component to fire
+too many times?<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> jfreeman
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Monday, November 24, 2008 1:54 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: RE: Business Base Authorization Question<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Sorry.&nbsp; I should have clarified.&nbsp; WinForms
+AuthorizeReadWrite.&nbsp; Thanks.<o:p></o:p></p>
+
+<p>Jonathan<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jfreeman replied on Monday, December 01, 2008</h2><P>I've stepped through my code a few times to make sure and it only calls <FONT color=#eee8aa size=3><FONT color=#000000 size=3>ResetControlAuthorization one time.&nbsp; I stumped.&nbsp; Any other ideas?</FONT></FONT></P>
+<P>Jonathan</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

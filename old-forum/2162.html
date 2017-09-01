@@ -1,0 +1,89 @@
+<html><header><title>Descendent Grandchild (Generic) and BackgroundWorker Component</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Descendent Grandchild (Generic) and BackgroundWorker Component</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/2162.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>tsaltd posted on Wednesday, January 17, 2007</h2><P>I have long running processes ( Aggregation SQL Queries) in the following Hirearchy</P>
+<UL>
+<LI>EditableRoot (Pet Store Company)</LI>
+<UL>
+<LI>Business List Base of EditableChildren (PetShopStores)</LI>
+<UL>
+<LI>EditableChild1 (Store)</LI>
+<UL>
+<LI>EditableChild&lt;T&gt;.Child1&nbsp; (Animal.Dogs)</LI>
+<LI>EditableChild&lt;T&gt;.Child2&nbsp; (Animal.Cats)</LI></UL></UL></UL></UL>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</P>
+<P>There are multiple&nbsp;long running queries that need to be run to calculate properties of all Animals in each store&nbsp;--&nbsp; IE: -&nbsp;Count of All Animals.Dogs, Average Age of All Animals.Dogs, Cost of All Animals.Dogs</P>
+<P>I've started by calling the long running process from the process that iterates through the AnimalCollection in a store</P>
+<P>holdID = dr.GetInt32("id");<BR>foreach (Store item in this)<BR>&nbsp;&nbsp;&nbsp;&nbsp; (item.AnimalCollectionID == dr.GetInt32("AID"))<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (item.ID == holdHistID)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; isFound = true;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; item.Cats = Cats.NewAnimal();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; item.Cats.id = dr.GetInt32("dataset_id");<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; item.Cats.getMetrics(item.dsDatFile.id);</P>
+<P>The above iterates through the Stores collection and:</P>
+<UL>
+<LI>&nbsp;gets the ID of all Cats in that store</LI>
+<LI>Instantiates the&nbsp;Cats&nbsp;property (&nbsp;Cats.NewAnimal()) in the Store</LI>
+<LI>Sets the ID of the Cats object in the store </LI>
+<LI>Then calls the long running query -- Cats.getMetrics&nbsp; -- this will also be called for Dogs and Birds</LI></UL>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;That method -- In the Animal&lt;T&gt; class -- calls <FONT color=#0000ff size=2></P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; this</FONT><FONT size=2>.getMetrics(</FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>.myDataWorker, id);</FONT></P>
+<P><FONT size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Both those methods are Instance ( not static ) methods in Animal&lt;T&gt;</FONT></P>
+<P><FONT size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;and</FONT></P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT size=2>myDataWorker is declared as a Public field in the Animal&lt;T&gt; class</FONT></P>
+<P><FONT size=2>the <STRONG><EM>DataPortalCreate() in Animal instantiates the BackgroundWorker</EM></STRONG> <EM><STRONG>and&nbsp;its events&nbsp;</STRONG></EM></FONT></P><FONT size=2>
+<BLOCKQUOTE dir=ltr>
+<P></FONT><FONT color=#0000ff size=2>protected</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>override</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>void</FONT><FONT size=2> DataPortal_Create()</P>
+<P>{</P>
+<P>myDataWorker = </FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> </FONT><FONT color=#008080 size=2>BackgroundWorker</FONT><FONT size=2>();</P>
+<P>myDataWorker.DoWork += </FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> System.ComponentModel.</FONT><FONT color=#008080 size=2>DoWorkEventHandler</FONT><FONT size=2>(</FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>.myDataWorker_DoWork);</P>
+<P>myDataWorker.RunWorkerCompleted += </FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> System.ComponentModel.</FONT><FONT color=#008080 size=2>RunWorkerCompletedEventHandler</FONT><FONT size=2>(</FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>.myDataWorker_RunWorkerCompleted);</P></FONT><FONT size=2>
+<P>}</P></BLOCKQUOTE></FONT>
+<P><FONT size=2>The DoWorkEventHandler fires OK and completes and sets a return value</FONT></P>
+<P><FONT size=2>&nbsp;... but the RunWorkerCompleted never seems to fire </FONT></P><FONT size=2><FONT color=#0000ff size=2>
+<P>private</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>void</FONT><FONT size=2> myDataWorker_RunWorkerCompleted(</FONT><FONT color=#0000ff size=2>object</FONT><FONT size=2> sender, </FONT><FONT color=#008080 size=2>RunWorkerCompletedEventArgs</FONT><FONT size=2> e)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>._animal_count &nbsp;= (</FONT><FONT color=#0000ff size=2>int</FONT><FONT size=2>)e.Result;</P>
+<P>}</P></FONT></FONT>
+<P><FONT size=2>And the&nbsp;Count&nbsp;field in Animal never gets set</FONT></P>
+<P><FONT size=2>Am I putting the calls and instatiation in the right place ?</FONT></P>
+<P><FONT size=2>any clue why RunWorkerCompleted is not firing or why field/property is not being set ???</FONT></P>
+<P><FONT size=2>Is there another pattern I might follow.&nbsp; I've never used a CommandObject before ... should I do it here</FONT></P>
+<P><FONT size=2>Any issues with not using the BackgroundWorker on a Form ... I'm putting it in the Generic EditableChild ( and the Animal.Cat is a grandchild (Child of Store) ) and calling it from the StoreList</FONT></P>
+<P><FONT size=2>TIA ..</FONT></P>
+<P><FONT size=2>Steve</FONT></P><FONT size=2>
+<P></FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, January 17, 2007</h2><P>CSLA .NET, and therefore your objects, are NOT threadsafe. This simply means that you can never allow more than one thread to talk to one of your objects (really an entire object graph) at a time.</P>
+<P>The UI runs on one thread, your backgroundworker task runs on another thread. You must ensure that only one thread or the other uses your objects. If your objects are connected to the UI through data binding then you can NOT use a backgroundworker (or any other non-UI thread) to interact with your objects while they are data bound.</P>
+<P>Also, remember that per-thread data, like the user's principal and all the context data in Csla.ApplicationContext, are really per-thread. If you need any of that information on your background thread, you must somehow get it there.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tsaltd replied on Wednesday, January 17, 2007</h2><P>Thanks Rocky, but ....</P>
+<P>I'm not sure whether I'm in that "un-thread-safe" situation ....</P>
+<P>Object tree is populated from button click on form</P>
+<P>If it's OK to instatiate and wire&nbsp; the BackgroundWorker from the DataPortalCreate of the Generic &lt;Animal&gt;&nbsp;parent of Subclass Animal.Cat and invoke it from the StoreList class then I should be "safe", no ... it is not data-bound.</P>
+<P>So if I can get this working ... what I understand is that I cannot kick-off &gt; the next long running query until the first BackgroundWorker thread ends ... I was hoping to launch 3 or 4 queries Asynchronously .... but that's a No No ??</P>
+<P>What if I do it from a Web Service ?? -- create the object -- shut down all the threads and return object to client where it will&nbsp; then be data-bound.</P>
+<P>The only time I plan to do thes Asynch calls using Background Worker is when I am "hydrating" a new instance.</P>
+<P>Or are you saying that my code is not running correctly now because I'm violating thread safety and there is no pattern or architecture&nbsp;( WebService ? ) that I can use to implement this process.</P>
+<P>Steve&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, January 17, 2007</h2><P>My comments were more general in nature - I'm still not sure what your exact issue is.</P>
+<P>But ADO.NET isn't threadsafe either. You can't, for instance, share a connection or any other ADO.NET objects across threads.</P>
+<P>I guess I read into what you were saying that you want to load several parts of your object graph on different threads. Which isn't supported, because you'd end up with multiple threads at least interacting with the collections and parent objects. Not that you maybe can't make it work - but you'll hit threading issues with standard CSLA (due to the interaction between parent-child objects within CSLA itself).</P>
+<P>I also now think I know why your BGW isn't raising events back to the UI correctly. To do this, the BGW needs a reference to&nbsp;a Windows Forms object so it can find that object's thread (the UI thread). That is required so it can marshal its events back onto the UI thread.</P>
+<P>But you are creating the BGW within your DP_Create() method, and I imagine you aren't giving it a reference to a UI control or component when it is created/initialized. Without that, it can't safely raise events back to the UI thread.</P>
+<P>Were it up to me, I'd use the BGW from the UI and have the background task call the factory method of the object. That'd spin the loading of the object into a background thread quite nicely, and all the BGW eventing would work automatically because it would be a UI component (which is what it is really designed for).</P>
+<P>The only thing you'd lose there is any sort of progress notification. But that's hard to do in the disconnected architecture of CSLA, because it would require callbacks from DP_Fetch(), and you can't reliably do that if your data portal server is ever remote. You can do it if you know your data portal "server" will always be called via LocalChannel, so it is in the same AppDomain. Then you could pass a back-reference through your Criteria object to allow the callbacks. Just remember that you could <EM>never</EM> move to a phyiscal n-tier deployment then!</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tsaltd replied on Thursday, January 18, 2007</h2><P>Thanks again R.L. ... let me see if I can clarify ..&nbsp; </P>
+<P>(<FONT size=2>I have&nbsp;considered running the BGW from the form, and passing those values to the BO ... but I'd prefer to encapsulate all of that behavior in the Business Object)</FONT></P>
+<P>Background Worker Component has no hooks to the form ... and I am under the impression that BWG can exist in a class library ...</P>
+<P>Fom my previous&nbsp;posts:&nbsp;</P>
+<BLOCKQUOTE dir=ltr>
+<P><FONT size=2>If it's OK to <FONT>(1) instatiate and wire&nbsp; the BackgroundWorker from the DataPortalCreate of the Generic &lt;Animal&gt;&nbsp;parent of Subclass Animal.Cat</FONT> and <FONT color=#ffffff>(2) invoke it from the StoreList class <FONT color=#000000>then I should be "safe", no ... it is not data-bound.</FONT></FONT></FONT></P></BLOCKQUOTE>
+<UL>
+<LI>EditableRoot (Pet Store Company) </LI>
+<UL>
+<LI>Business List Base of EditableChildren (PetShopStores)&nbsp;&nbsp;&nbsp;B<FONT size=2>&nbsp; <FONT color=#ffffff>&lt;&lt;invoked here&gt;&gt;</FONT></FONT></LI>
+<UL>
+<LI>EditableChild1 (Store)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </LI>
+<UL>
+<LI>EditableChild&lt;T&gt;.Child1&nbsp; (Animal.Dogs)&nbsp;&nbsp; A <FONT size=2><FONT>&lt;&lt;instantiated and wired here &gt;</FONT></FONT>
+<LI>EditableChild&lt;T&gt;.Child2&nbsp; (Animal.Cats)</LI></UL></UL></UL></UL>
+<P>&nbsp;&nbsp;getMetrics(ID) -- In the Animal&lt;T&gt; class -- calls <FONT color=#0000ff size=2></P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; this</FONT><FONT size=2>.getMetrics(</FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>.myDataWorker, id);</FONT></P>
+<P><FONT size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Both those methods are Instance ( not static ) methods in Animal&lt;T&gt;</FONT></P>
+<P><FONT size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;and</FONT></P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT size=2>myDataWorker is declared as a Public field in the Animal&lt;T&gt; class</FONT></P>
+<P>&nbsp;</P>
+<P>It compiles and runs <FONT size=2>... but the RunWorkerCompleted (in the ListBase of&nbsp; Stores) never seems to fire </FONT><FONT color=#0000ff></P>
+<P><FONT size=2>private</FONT></FONT><FONT size=2> <FONT color=#0000ff>void</FONT> myDataWorker_RunWorkerCompleted(<FONT color=#0000ff>object</FONT> sender, <FONT color=#008080>RunWorkerCompletedEventArgs</FONT> e)</FONT></P>
+<P><FONT size=2>{</FONT></P>
+<P><FONT size=2><FONT color=#0000ff>this</FONT>._animal_count &nbsp;= (<FONT color=#0000ff>int</FONT>)e.Result;</FONT></P>
+<P><FONT size=2>}</FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Thursday, January 18, 2007</h2><BLOCKQUOTE><div><img src="/Themes/basicblue/images/icon-quote.gif"> <strong>tsaltd:</strong></div><div>(I have&nbsp;considered running the BGW from the form, and passing those values to the BO ... but I'd prefer to encapsulate all of that behavior in the Business Object)</div></BLOCKQUOTE><br><br>I think that is your best bet.&nbsp; Your objects should not have to worry about loading and threading, just loading.&nbsp; What if you run into a situation where for some reason you don't want to run the load on another thread?&nbsp; <br><br>I think your BO should just worry about the business aspects, not threading issues.&nbsp; <br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

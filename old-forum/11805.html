@@ -1,0 +1,278 @@
+<html><header><title>RunLocal with Factory pattern</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>RunLocal with Factory pattern</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11805.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>aheuze posted on Tuesday, January 29, 2013</h2><p>Hi,</p>
+<p>My question is related to an older post (<a href="http://forums.lhotka.net/forums/p/7260/43634.aspx#43634">http://forums.lhotka.net/forums/p/7260/43634.aspx#43634</a>) about using RunLocal attribute and the factory pattern.</p>
+<p>We use Csla 4.3.13</p>
+<p>We are trying to have 2 factory assemblies, one for the Client (with simple Create method with RunLocal attribute) and one for the server with database calls etc...<br />As proposed in the older post, we have a custom ObjectFactoryAttribute and a custom ObjectFactoryLoader. In our ObjectFactoryLoader&nbsp;we basically try to add a suffix (&quot;Client&quot;) on the type proposed by the attribute and try to return this Type when running on the client. It seems to work fine at first, the type is created on the client and the method (with RunLocal attribute) is found, then a local proxy is created, but when doing the proxy.Create() call, then the call is directly forwarded to the Server, without trying to call the method that was just found on the client. It is as if the RunLocal attribute was of no use, though it appears&nbsp;that Csla is aware the method has to be run locally...</p>
+<p>I suspect&nbsp;the DataportalClient calls the DataPortalServer, but still&nbsp;on the client. So maybe I shouldn&#39;t use the <span style="color:#2b91af;">ApplicationContext</span>.LogicalExecutionLocation as I am using now to check if i am running on the Client or on Server, especially if everything is running on one machine during the tests...</p>
+<p>What we are trying to achieve is to be able to call a method &quot;New&quot; in the library or a method &quot;NewLocal&quot; and to have the method &quot;NewLocal&quot; create the object locally and the method &quot;New&quot; create the object on the server. But&nbsp;with the factory pattern, maybe it is just not possible,&nbsp;without the factoryLoader knowing&nbsp;how the call was made. The RunLocal attribute is for the factory, not the library...</p>
+<p>Thanks for your inputs.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Tuesday, January 29, 2013</h2><p>You should NOT make different methodnames. This will not work .</p>
+<p>You are fine to have 2 separate assemblies - and even use different class names to be returned from the ObjectFactoryLoader - <strong>but not different method names. </strong></p>
+<p>In general terms - the recommendation is to have separate assemblies that contain&nbsp;identical&nbsp;class / method names (and only the method that are applicable to the client in the client assembly) - just be aware of how you distribute the assemblies with your app. </p>
+<p>So my recommendation is rather to have </p>
+<ul>
+<li>mydal.dll&nbsp; and</li>
+<li>mydalClient.dll</li>
+</ul>
+<p>and make &nbsp;sure that <em>mydalclient.dll </em>only contain factory classes and methods that have &quot;RunLocal&quot; attribute. </p>
+<p>It is also important to implement both methods in ObjectFactory correctly. Remember - the ObjectFactoryLoader has 2 methods that return:</p>
+<ul>
+<li>the Type of the ObjectFactoryClass to invoke (<em>and this type is used to check for RunLocal !!</em>) </li>
+<li>an instance of the class to invoke</li>
+</ul>
+<p>but NOT the method to invoke - the method to invoke is defined in the ObjectFactoryAttribute on the Business Object. </p>
+<p>This is OK: </p>
+<pre style="FONT-FAMILY:Consolas;BACKGROUND:white;COLOR:black;FONT-SIZE:13px;">&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:blue;">public</span>&nbsp;<span style="COLOR:blue;">class</span>&nbsp;<span style="COLOR:#2b91af;">KundeInfoListFactoryClient</span>&nbsp;:&nbsp;<span style="COLOR:#2b91af;">ObjectFactory</span>
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[<span style="COLOR:#2b91af;">RunLocal</span>]
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:blue;">public</span>&nbsp;<span style="COLOR:#2b91af;">KundeInfoList</span>&nbsp;Create()
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:blue;">var</span>&nbsp;list&nbsp;=&nbsp;(<span style="COLOR:#2b91af;">KundeInfoList</span>)<span style="COLOR:#2b91af;">Activator</span>.CreateInstance(<span style="COLOR:blue;">typeof</span>(<span style="COLOR:#2b91af;">KundeInfoList</span>),&nbsp;<span style="COLOR:blue;">true</span>);
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:blue;">return</span>&nbsp;list;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</pre>
+<pre style="FONT-FAMILY:Consolas;BACKGROUND:white;COLOR:black;FONT-SIZE:13px;">&nbsp;</pre>
+<pre style="FONT-FAMILY:Consolas;BACKGROUND:white;COLOR:black;FONT-SIZE:13px;">&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:blue;">public</span>&nbsp;<span style="COLOR:blue;">class</span>&nbsp;<span style="COLOR:#2b91af;">KundeInfoListFactory</span>&nbsp;:&nbsp;<span style="COLOR:#2b91af;">ObjectFactory</span>
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:blue;">public</span>&nbsp;<span style="COLOR:#2b91af;">KundeInfoList</span>&nbsp;Create()
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:blue;">var</span>&nbsp;list&nbsp;=&nbsp;(<span style="COLOR:#2b91af;">KundeInfoList</span>)<span style="COLOR:#2b91af;">Activator</span>.CreateInstance(<span style="COLOR:blue;">typeof</span>(<span style="COLOR:#2b91af;">KundeInfoList</span>),&nbsp;<span style="COLOR:blue;">true</span>);
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:blue;">return</span>&nbsp;list;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+</pre>
+<p>But - you cannot have <strong>diffent mehod names</strong> and both calls to the ObjectFactoryLoader MUST return the <br />type and instance of the XYZClient class for CSLA DataPortal to find the RunLocal attribute. You should also note&nbsp;<br />that this is not &quot;switchable&quot; witin the running app&nbsp;as the DataPortalMethod is cached internaly for performance. </p>
+<p><strong>My recommendation is however to make the class names and method names the same - and only differ on the assembly name. <br /></strong><strong>This will also make it easier to use an IoC container in your ObjectFactoryLoader and only differ on which assemblies to load. </strong></p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>aheuze replied on Tuesday, January 29, 2013</h2><p>Thank you,</p>
+<p>I&#39;m actually doing exactly what you are describing with 2 assemblies myDal.dll and myDalClient.dll and myDalClient.dll only contains factories with methods tagged with RunLocal attribute. The name of the classes are the same, the name of the methods are the same. Just the dll name&nbsp;(and namespace names) are different. And we also&nbsp;are using an IoC (MEF) for factories loading.<br />So I think my problem is in the implementation of the ObjectFactoryLoader.</p>
+<p>I&nbsp;didn&#39;t find a good way to make my FactoryLoader return the type I wanted. this is what I do in GetFactoryType:</p>
+<pre style="font-family:Consolas;background:white;color:black;font-size:13px;">            <span style="color:blue;">if</span> (<span style="color:#2b91af;">ApplicationContext</span>.ExecutionLocation.Equals(<span style="color:#2b91af;">ApplicationContext</span>.<span style="color:#2b91af;">ExecutionLocations</span>.Client))
+                assembly = <span style="color:blue;">string</span>.Concat(assembly, <span style="color:#a31515;">&quot;Client&quot;</span>);
+            factoryClass = <span style="color:blue;">string</span>.Concat(assembly, <span style="color:#a31515;">&quot;.&quot;</span>, factoryClass);
+            <span style="color:#2b91af;">Type</span> factoryType = <span style="color:#2b91af;">Type</span>.GetType(<span style="color:blue;">string</span>.Concat(factoryClass, <span style="color:#a31515;">&quot;,&quot;</span>, assembly));
+<pre style="font-family:Consolas;background:white;color:black;font-size:13px;">           <span style="color:blue;">return</span> factoryType;</pre>
+</pre>
+<p>And I tried things like this in GetFactory :</p>
+<pre style="font-family:Consolas;background:white;color:black;font-size:13px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">object</span>&nbsp;result&nbsp;=&nbsp;<span style="color:blue;">null</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">if</span>&nbsp;(<span style="color:#2b91af;">ApplicationContext</span>.ExecutionLocation.Equals(<span style="color:#2b91af;">ApplicationContext</span>.<span style="color:#2b91af;">ExecutionLocations</span>.Client))
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">try</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;result&nbsp;=&nbsp;<span style="color:#2b91af;">Activator</span>.CreateInstance(<span style="color:blue;">this</span>.GetFactoryType(interfaceFactoryName));
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">catch</span>&nbsp;{&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">if</span>&nbsp;(result&nbsp;==&nbsp;<span style="color:blue;">null</span>)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;result&nbsp;=&nbsp;<span style="color:#2b91af;">MefServices</span>&lt;<span style="color:#2b91af;">IFactoryBase</span>&gt;.GetObjectFactory(interfaceFactoryName);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">return</span>&nbsp;result;
+</pre>
+<p>But obviously, this is not the way it should be implemented. I actually don&#39;t know when I should return my call to Activator or my call to MefServices (i.e. based on what should I return the client factory or the server factory). When I manage to return the client factory in myDalClient.dll, other calls to Fetch methods for example that are not implemented in the client factory will fail.&nbsp;If I implement everything on the server, it works fine, but then I create objects on the server...</p>
+<p>Is there a way to know it is a &quot;RunLocal&quot; call in the FactoryLoader ? My tests with <span style="color:#2b91af;">ApplicationContext</span>.ExecutionLocation and <span style="color:#2b91af;">ApplicationContext</span>.LogicalExecutionLocation tell me this is not the right way to do it.</p>
+<p>Thanks for your help.</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Tuesday, January 29, 2013</h2><p>You might want to look at my MEF samples in <a href="http://cslacontrib.codeplex.com/">http://CslaContrib.codeplex.com</a> </p>
+<p>Basically - I would move&nbsp;the initialization app/web.config</p>
+<p>IoC class: </p>
+<pre style="font-family:Consolas;background:white;color:black;font-size:13px;">&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;summary&gt;</span>
+&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;Provides&nbsp;access&nbsp;to&nbsp;the&nbsp;IOC&nbsp;Container&nbsp;shared&nbsp;by&nbsp;all&nbsp;applications.</span>
+&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;/summary&gt;</span>
+&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">static</span>&nbsp;<span style="color:blue;">class</span>&nbsp;<span style="color:#2b91af;">Ioc</span>
+&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">private</span>&nbsp;<span style="color:blue;">static</span>&nbsp;<span style="color:blue;">readonly</span>&nbsp;<span style="color:blue;">object</span>&nbsp;_syncRoot&nbsp;=&nbsp;<span style="color:blue;">new</span>&nbsp;<span style="color:blue;">object</span>();
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:green;">//Container</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">private</span>&nbsp;<span style="color:blue;">static</span>&nbsp;<span style="color:blue;">volatile</span>&nbsp;<span style="color:#2b91af;">CompositionContainer</span>&nbsp;_container;
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;summary&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;Gets&nbsp;the&nbsp;container.</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;/summary&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">static</span>&nbsp;<span style="color:#2b91af;">CompositionContainer</span>&nbsp;Container
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">get</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:green;">//create&nbsp;and&nbsp;configure&nbsp;container&nbsp;if&nbsp;one&nbsp;does&nbsp;not&nbsp;yet&nbsp;exist</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">if</span>&nbsp;(_container&nbsp;==&nbsp;<span style="color:blue;">null</span>)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">lock</span>&nbsp;(_syncRoot)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">if</span>&nbsp;(_container&nbsp;==&nbsp;<span style="color:blue;">null</span>)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#2b91af;">Debug</span>.Write(<span style="color:#a31515;">&quot;Start&nbsp;configuring&nbsp;MEF&nbsp;Container&quot;</span>);
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:green;">//create&nbsp;container</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">var</span>&nbsp;catalog&nbsp;=&nbsp;<span style="color:blue;">new</span>&nbsp;<span style="color:#2b91af;">AggregateCatalog</span>();
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">var</span>&nbsp;parts&nbsp;=&nbsp;<span style="color:#2b91af;">ConfigurationManager</span>.AppSettings.AllKeys.Where(p&nbsp;=&gt;&nbsp;p.StartsWith(<span style="color:#a31515;">&quot;CslaContrib.Mef.DirectoryCatalog&quot;</span>,&nbsp;<span style="color:blue;">true</span>,&nbsp;<span style="color:#2b91af;">CultureInfo</span>.InvariantCulture));
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">if</span>&nbsp;(parts.Any())
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">foreach</span>&nbsp;(<span style="color:blue;">var</span>&nbsp;values&nbsp;<span style="color:blue;">in</span>&nbsp;parts.Select(part&nbsp;=&gt;&nbsp;<span style="color:#2b91af;">ConfigurationManager</span>.AppSettings[part].Split(<span style="color:#a31515;">&#39;;&#39;</span>)))
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;catalog.Catalogs.Add(values.Count()&nbsp;&gt;&nbsp;1
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;?&nbsp;<span style="color:blue;">new</span>&nbsp;<span style="color:#2b91af;">DirectoryCatalog</span>(values[0],&nbsp;values[1])
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;<span style="color:blue;">new</span>&nbsp;<span style="color:#2b91af;">DirectoryCatalog</span>(values[0]));
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">else</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;catalog.Catalogs.Add(<span style="color:blue;">new</span>&nbsp;<span style="color:#2b91af;">DirectoryCatalog</span>(<span style="color:#a31515;">&quot;.&quot;</span>));
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;catalog.Catalogs.Add(<span style="color:blue;">new</span>&nbsp;<span style="color:#2b91af;">AssemblyCatalog</span>(<span style="color:#2b91af;">Assembly</span>.GetExecutingAssembly()));
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">var</span>&nbsp;container&nbsp;=&nbsp;<span style="color:blue;">new</span>&nbsp;<span style="color:#2b91af;">CompositionContainer</span>(catalog,&nbsp;<span style="color:blue;">true</span>);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;container.ComposeParts();
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_container&nbsp;=&nbsp;container;
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#2b91af;">Debug</span>.Write(<span style="color:#a31515;">&quot;End&nbsp;configuring&nbsp;MEF&nbsp;Container&quot;</span>);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">return</span>&nbsp;_container;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;summary&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;Injects&nbsp;the&nbsp;container.&nbsp;Use&nbsp;this&nbsp;for&nbsp;unit&nbsp;testing&nbsp;where&nbsp;you&nbsp;want&nbsp;to&nbsp;control&nbsp;the&nbsp;type&nbsp;reasolving.</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;/summary&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;param&nbsp;name=</span><span style="color:gray;">&quot;container&quot;</span><span style="color:gray;">&gt;</span><span style="color:green;">The&nbsp;container.</span><span style="color:gray;">&lt;/param&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">static</span>&nbsp;<span style="color:blue;">void</span>&nbsp;InjectContainer(<span style="color:#2b91af;">CompositionContainer</span>&nbsp;container)
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">lock</span>&nbsp;(_syncRoot)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_container&nbsp;=&nbsp;container;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;}</pre>
+<pre style="font-family:Consolas;background:white;color:black;font-size:13px;">&nbsp;</pre>
+<pre style="font-family:Consolas;background:white;color:black;font-size:13px;">Config:</pre>
+<pre style="font-family:Consolas;background:white;color:black;font-size:13px;"><pre style="font-family:Consolas;background:white;color:black;font-size:13px;"><pre style="font-family:Consolas;background:white;color:black;font-size:13px;"><span style="color:blue;">&nbsp;&nbsp;&lt;</span><span style="color:#a31515;">appSettings</span><span style="color:blue;">&gt;</span>
+<span style="color:blue;">&nbsp;&nbsp;&nbsp;&nbsp;&lt;</span><span style="color:#a31515;">add</span><span style="color:blue;">&nbsp;</span><span style="color:red;">key</span><span style="color:blue;">=</span>&quot;<span style="color:blue;">CslaObjectFactoryLoader</span>&quot;<span style="color:blue;">&nbsp;</span><span style="color:red;">value</span><span style="color:blue;">=</span>&quot;<span style="color:blue;">CslaContrib.MEF.Server.CslaFactoryLoader,&nbsp;CslaContrib.MEF</span>&quot;<span style="color:blue;">/&gt;</span>
+<span style="color:blue;">&nbsp;&nbsp;&nbsp;&nbsp;&lt;</span><span style="color:#a31515;">add</span><span style="color:blue;">&nbsp;</span><span style="color:red;">key</span><span style="color:blue;">=</span>&quot;<span style="color:blue;">CslaContrib.Mef.DirectoryCatalog1</span>&quot;<span style="color:blue;">&nbsp;</span><span style="color:red;">value</span><span style="color:blue;">=</span>&quot;<span style="color:blue;">.;*FactoryClient.dll</span>&quot;<span style="color:blue;">/&gt;</span>
+<span style="color:blue;">&nbsp;&nbsp;&nbsp;&nbsp;&lt;!--</span><span style="color:green;">&nbsp;&nbsp;Use&nbsp;this&nbsp;for&nbsp;Service&nbsp;-&nbsp;NTier&nbsp;deployment&nbsp;to&nbsp;load&nbsp;factories&nbsp;</span><span style="color:blue;">--&gt;</span>
+<span style="color:blue;">&nbsp;&nbsp;&nbsp;&nbsp;&lt;!--</span><span style="color:green;">&lt;add&nbsp;key&nbsp;=&quot;CslaContrib.Mef.DirectoryCatalog2&quot;&nbsp;value=&quot;bin\.;*Factory*.dll&quot;/&gt;</span><span style="color:blue;">--&gt;</span>
+<span style="color:blue;">&nbsp;&nbsp;&lt;/</span><span style="color:#a31515;">appSettings</span><span style="color:blue;">&gt;</span></pre>
+</pre>
+</pre>
+<pre style="font-family:Consolas;background:white;color:black;font-size:13px;">ObjectFactoryLoader: </pre>
+<pre style="font-family:Consolas;background:white;color:black;font-size:13px;"><pre style="font-family:Consolas;background:white;color:black;font-size:13px;">&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">class</span>&nbsp;<span style="color:#2b91af;">CslaFactoryLoader</span>&nbsp;:&nbsp;<span style="color:#2b91af;">IObjectFactoryLoader</span>
+&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">private</span>&nbsp;<span style="color:blue;">static</span>&nbsp;<span style="color:blue;">object</span>&nbsp;_syncRoot&nbsp;=&nbsp;<span style="color:blue;">new</span>&nbsp;<span style="color:blue;">object</span>();
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;summary&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;Gets&nbsp;the&nbsp;type&nbsp;name&nbsp;from&nbsp;the&nbsp;factory&nbsp;name.</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;/summary&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;param&nbsp;name=</span><span style="color:gray;">&quot;factoryName&quot;</span><span style="color:gray;">&gt;</span><span style="color:green;">Name&nbsp;of&nbsp;the&nbsp;factory.</span><span style="color:gray;">&lt;/param&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;returns&gt;&lt;/returns&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">private</span>&nbsp;<span style="color:blue;">string</span>&nbsp;GetTypeName(<span style="color:blue;">string</span>&nbsp;factoryName)
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">if</span>&nbsp;(<span style="color:blue;">string</span>.IsNullOrEmpty(factoryName))&nbsp;<span style="color:blue;">return</span>&nbsp;<span style="color:blue;">string</span>.Empty;
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">var</span>&nbsp;values&nbsp;=&nbsp;factoryName.Split(<span style="color:#a31515;">&#39;,&#39;</span>);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">return</span>&nbsp;values[0];
+&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;summary&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;Gets&nbsp;the&nbsp;factory&nbsp;object&nbsp;instance.</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;/summary&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;param&nbsp;name=</span><span style="color:gray;">&quot;factoryName&quot;</span><span style="color:gray;">&gt;</span><span style="color:green;">Name&nbsp;of&nbsp;the&nbsp;factory.</span><span style="color:gray;">&lt;/param&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;returns&gt;&lt;/returns&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">object</span>&nbsp;GetFactory(<span style="color:blue;">string</span>&nbsp;factoryName)
+&nbsp;&nbsp;&nbsp;&nbsp;{
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">var</span>&nbsp;typename&nbsp;=&nbsp;GetTypeName(factoryName);
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">lock</span>&nbsp;(_syncRoot)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">var</span>&nbsp;parts&nbsp;=
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#2b91af;">Ioc</span>.Container.Catalog.Parts.Where(part&nbsp;=&gt;&nbsp;part.ExportDefinitions.Any(item&nbsp;=&gt;&nbsp;item.ContractName&nbsp;==&nbsp;typename)).
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Select(p&nbsp;=&gt;&nbsp;p).ToArray();
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">if</span>&nbsp;(parts.Count()&nbsp;==&nbsp;1)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">var</span>&nbsp;part&nbsp;=&nbsp;parts[0].CreatePart();
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#2b91af;">Ioc</span>.Container.SatisfyImportsOnce(part);&nbsp;&nbsp;<span style="color:green;">//&nbsp;compose&nbsp;the&nbsp;object</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">object</span>&nbsp;obj&nbsp;=&nbsp;part.GetExportedValue(part.ExportDefinitions.First(item&nbsp;=&gt;&nbsp;item.ContractName&nbsp;==&nbsp;typename));
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">return</span>&nbsp;obj;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">if</span>&nbsp;(parts.Count()&nbsp;&gt;&nbsp;1)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">throw</span>&nbsp;<span style="color:blue;">new</span>&nbsp;<span style="color:#2b91af;">InvalidOperationException</span>(<span style="color:blue;">string</span>.Format(<span style="color:#2b91af;">Resources</span>.MoreThanOneFactoryTypeDefinedException,
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;factoryName));
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">throw</span>&nbsp;<span style="color:blue;">new</span>&nbsp;<span style="color:#2b91af;">InvalidOperationException</span>(
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">string</span>.Format(Csla.Properties.<span style="color:#2b91af;">Resources</span>.FactoryTypeNotFoundException,&nbsp;factoryName));
+&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;summary&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;Gets&nbsp;the&nbsp;type&nbsp;of&nbsp;the&nbsp;factory.</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;/summary&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;param&nbsp;name=</span><span style="color:gray;">&quot;factoryName&quot;</span><span style="color:gray;">&gt;</span><span style="color:green;">Name&nbsp;of&nbsp;the&nbsp;factory.</span><span style="color:gray;">&lt;/param&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;returns&gt;&lt;/returns&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:#2b91af;">Type</span>&nbsp;GetFactoryType(<span style="color:blue;">string</span>&nbsp;factoryName)
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:green;">//&nbsp;return&nbsp;an&nbsp;instance&nbsp;of&nbsp;the&nbsp;Interface&nbsp;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:green;">//&nbsp;use&nbsp;RunLocal&nbsp;on&nbsp;the&nbsp;interface&nbsp;definition&nbsp;-&nbsp;rather&nbsp;than&nbsp;the&nbsp;actual&nbsp;class.&nbsp;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">return</span>&nbsp;<span style="color:#2b91af;">Type</span>.GetType(factoryName,&nbsp;<span style="color:blue;">false</span>);
+&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;}</pre>
+<pre style="font-family:Consolas;background:white;color:black;font-size:13px;"></pre>
+<pre style="font-family:Consolas;background:white;color:black;font-size:13px;"></pre>
+<pre style="font-family:Consolas;background:white;color:black;font-size:13px;">My preferred solution is to add RunLocal to the interface definition of my ROOT Factories like this: </pre>
+<pre style="font-family:Consolas;background:white;color:black;font-size:13px;"></pre>
+<pre style="font-family:Consolas;background:white;color:black;font-size:13px;">&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">interface</span>&nbsp;<span style="color:#2b91af;">IMyRootFactory</span>
+&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;[<span style="color:#2b91af;">RunLocal</span>]
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">object</span>&nbsp;Create();
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">object</span>&nbsp;Fetch(<span style="color:blue;">object</span>&nbsp;criteria);
+&nbsp;&nbsp;}</pre>
+<pre style="font-family:Consolas;background:white;color:black;font-size:13px;"></pre>
+<pre style="font-family:Consolas;background:white;color:black;font-size:13px;">Usage: </pre>
+<pre style="font-family:Consolas;background:white;color:black;font-size:13px;">&nbsp;&nbsp;[<span style="color:#2b91af;">Serializable</span>]
+&nbsp;&nbsp;[<span style="color:#2b91af;">ObjectFactory</span>(<span style="color:blue;">typeof</span>(<span style="color:#2b91af;">IMyRootFactory</span>))]
+&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">class</span>&nbsp;<span style="color:#2b91af;">MyRoot</span>&nbsp;:&nbsp;<span style="color:#2b91af;">BusinessBase</span>&lt;<span style="color:#2b91af;">MyRoot</span>&gt;</pre>
+<pre style="font-family:Consolas;background:white;color:black;font-size:13px;"></pre>
+<pre style="font-family:Consolas;background:white;color:black;font-size:13px;"></pre>
+<pre style="font-family:Consolas;background:white;color:black;font-size:13px;">Again - my preferences: </pre>
+<pre style="font-family:Consolas;background:white;color:black;font-size:13px;"><ul><li><pre style="font-family:Consolas;background:white;color:black;font-size:13px;">[RunLocal] on the interface as part of the Contract <br />(will not have any effect on the server side as everything is run locally and simplifies<br />the GetFactoryType method) </pre>
+</li>
+<li>
+<pre style="font-family:Consolas;background:white;color:black;font-size:13px;">Then only a matter of which assembly is loaded into the IoC container and resolved in GetFactory. </pre>
+</li>
+</ul>
+</pre>
+</pre></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ngm replied on Tuesday, January 29, 2013</h2><p>This is interesting problem, which should&nbsp;be solvabe without IoC.</p>
+<p>Essentially, the issue you&#39;ve got is that for client Data Portal to know whether to use local or remote proxy it has to get ObjectFactory through ObjectFactoryLoader. But for ObjectFactoryLoader to return proper ObjectFactory it needs to know whether the request will be executed through local or remote proxy.</p>
+<p>Pretty much, you&#39;ve got chicken and egg problem here&nbsp;;)</p>
+<p>If I recall correctly, there are two major points where CSLA interacts with ObjectFactoryLoader / ObjectFactory on the Data Portal. The first one is on the client Data Portal which has to retrieve appropriate method from ObjectFactory in order to distinguish between local or remote proxy. The second one is on the server Data Portal which has to retrieve the actual ObjectFactory instance in order to execute the data access.</p>
+<p>Latter wll set both ExecutionLocation (if proxy is remote)&nbsp;and LogicalExecutionLocation of ApplicationContext and former will not. That&#39;s the very same reason you cannot use that context in ObjectFactoryLoader to return proper ObjectFactory type - the context is not established yet.</p>
+<p>As long as I see there are several solutions. </p>
+<p>You could use different ObjectFactoryLoader types on client and server, where client&#39;s loader should return factory&nbsp;that has&nbsp;only implementation for create which is marked as RunLocal and the rest of data access methods should not have an implementation at all. The server&#39;s loader should return factory that has no implementation for create but only for the rest of data access methods.</p>
+<p>The other option should be to discover and invoke client and server data access components from within ObjectFactory. On that way you would have single ObjectFactoryLoader / ObjectFactory but&nbsp;where actual data access methods of the factory would create proper instances of client or server data access components. Within factory&#39;s data access methods you should have LogicalExecutionLocation established.</p>
+<p>Also as Jonny pointed out, the full MEF approach should be very robust solution and it&#39;s variation on first option.</p>
+<p>- ngm</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>aheuze replied on Tuesday, January 29, 2013</h2><p>Hi! Thank you all for your inputs.</p>
+<p>I think that my problem was the chicken and egg problem as pointed out by ngm. I found the 2 calls, the first one for the Type, to find the [RunLocal] attribute, the second to get the actual objectFactory and I couldn&#39;t understand how it was possible to do it as simply as it was described in the original post.</p>
+<p>I think the 2 solutions for this problem, having 2 different objectfactoryLoader (so 2 different app.config) between client and server isn&#39;t really a nice option, it might be a good choice however for Mono. The other option makes the objectFactory responsible for too many things I think.</p>
+<p>Though it is maybe possible to implement this functionnality without IoC, I believe that letting the container handle the choice is nicer.</p>
+<p>The problem with IoC is when it has to be deployed on Mono or iOS. I believe we&#39;ll figure it out then.</p>
+<p>Thanks again.</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Wednesday, January 30, 2013</h2><p>Hi,</p>
+<p>You should also remember that Silverlight, Windows Phone and Windows Store (Metro) has do database connectivity and are separate runtimes as to what the server side is running (preferrably .NET). So for many applications you MUST have separate assemblies.&nbsp;</p>
+<p>My preferred solution is to have [RunLocal] attribute on the Interface as I view this as part of the contract.. This approach also lets me use the SAME objectfactory assembly on the client and the server when the client is .NET and the DataPortal Config is the only setting that needs to change between local only or make the non-RunLoacl methods execute on the server. This could also be done by using the same assembly and add RunLocal on the methods that always run on the client.</p>
+<p>MEF is available in MONO starting from MONO 2.8.&nbsp;<a href="http://www.mono-project.com/Release_Notes_Mono_2.8">http://www.mono-project.com/Release_Notes_Mono_2.8</a></p>
+<p>There is no reason why only the &quot;client&quot; side class should have the [RunLocal] atribute and not the server side. &nbsp;In an N-tier configuration you configure whether the DataAccess happends locally or on another serverC/machine - and the [RunLocal] atribute is checked by the DataPortal as an override to force the method to run locally (and not need any data access to initialize a Create method).&nbsp;</p>
+<p>So from my point of view - there is NO reason why the ObjectFactoryLoader should have any reponsibility beyond resolving which class / type to return.</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>aheuze replied on Wednesday, January 30, 2013</h2><p>Yes, I like the idea of putting the [RunLocal] attribute on the interface. It simplifies everything and makes the code easier when using Factory interfaces and MEF.</p>
+<p>Having a CslaContrib.Mef.DirectoryCatalog.Client or Server setting is also ok. I just feel that it could be simplified one step further, because we only need to add &quot;Client&quot; when we are on the client, so ideally, only one setting is actually required for the app. But it seems to be difficult to implement the server/client logic in the FactoryLoader as pointed out by ngm.</p>
+<p>I&#39;m happy to see that MEF is also available in MONO. That will make things (hopefully)&nbsp;easier !</p>
+<p>Cheers,</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Wednesday, January 30, 2013</h2><p>Hi,</p>
+<p>That setting in app.config is to support:</p>
+<p>&nbsp;</p>
+<ul>
+<li>serverside you must specify &quot;<strong>bin\.;assemblyname.dll&quot;</strong></li>
+<li>clientside you only require &quot;<strong>assemblyname*.dll&quot;</strong></li>
+<li>for unit testing purposes you can choose another &quot;fake&quot; object factory</li>
+<li>default if none specified is to init IoC container from current folder with all assemblies.&nbsp;</li>
+</ul>
+<p>&nbsp;</p>
+<p>So in a web/server app you MUST specify that assemblies is to be loaded from the &quot;<strong>bin</strong>&quot; folder.</p>
+<p>In my simplified world there is no requirement for a specific client assembly (different assembly &nbsp;name/class name/method name) &nbsp;in a .NET application.</p>
+<p> I either use the same assembly as on the server side or a client specific assembly with the same name to keep the app.config the same.&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

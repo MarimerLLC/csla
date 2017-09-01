@@ -1,0 +1,191 @@
+<html><header><title>Undo mischief in CSLA 3.5? GetFieldData() returning a FieldData&lt;Boolean&gt; instead of FieldData&lt;ChildType&gt;?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Undo mischief in CSLA 3.5? GetFieldData() returning a FieldData&lt;Boolean&gt; instead of FieldData&lt;ChildType&gt;?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6256.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>rsbaker0 posted on Monday, January 26, 2009</h2><P>I'm finding that the FieldDataManager (FieldManager property) seems to be returning the wrong type of data in certain undo scenarios. </P>
+<P>Basically, I have&nbsp;a managed child object (lazy loaded)&nbsp;associated with a particular PropertyInfo. It was probably null when I called BeginEdit() on the object, but was loaded soon afterwards as soon a data binding requested data from an associated property.&nbsp;(Basically it's a child object in a 1:1 relationship versus a collection). </P>
+<P>I then took an action in the user interface that cleared it. The UI responds correctly -- the object key and description disappear, just what I want. </P>
+<P>Now I call UndoChanges. My FieldData slot is now occupied by a Boolean value rather than either null or a value of the correct type, and I get an invalid cast exception when I try to call GetFieldData() in my property getter. This happens after UndoChangesComplete() is fired, and the EditLevel is 0 at this point, so where once was null, now appears to be a FieldData&lt;Boolean&gt;.</P>
+<P>Unable to cast object of type 'Csla.Core.FieldManager.FieldData`1[System.Boolean]' to type 'Csla.WORMapper.DependencyPropertyData`2[Company.Application.Data.ChildType,System.Nullable`1[System.Int32]]'.</P>
+<P>This is a custom PropertyInfo&lt;T&gt;/FieldData&lt;T&gt; situation, so maybe I overlooked a step. But I think you&nbsp;might have been&nbsp;storing booleans in the state stack to indicate the presence/absence of a value and this is being left behind somehow?</P>
+<P>EDIT: OK, I see from your use GetFieldData() that this may be by design, as you are using "fieldData as&nbsp;<EM>ChildType</EM>"&nbsp; rather than forcibly casting&nbsp;the return value to the property info type -- e.g. (<EM>ChildType</EM>)fieldData. I think I&nbsp;can work around this. </P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, January 26, 2009</h2>This is in 3.5.1?<br><br>It sounds like a bug. You are right, the bool is there to indicate that there used to be a value but isn't now. That's probably not being handled correctly the way it sounds.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rsbaker0 replied on Monday, January 26, 2009</h2><P>I had edited my original post with some additional information, but your code appears to dynamically tests the type of the returned value versus my forced cast, so it may not be a bug after all. </P>
+<P>I definitely need to be aware of it, though... :)</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rsbaker0 replied on Monday, January 26, 2009</h2><P>Hmmmm. I think there may be a bug after all. </P>
+<P>I solved my original problem, but in continued editing, I can't seem to set the property to a new value once this has happened.</P>
+<P>It's trying to stuff the new child object into the FieldData&lt;Boolean&gt; placeholder that is left behind. </P>
+<P>EDIT: I have found where it is doing it, but not sure what the best fix would be. </P>
+<P>In FieldDataManager.UndoChanges, you have these two lines of code:</P><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>var</FONT></FONT><FONT size=2> oldItem = state[index];</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>var</FONT></FONT><FONT size=2> item = _fieldData[index];</P>
+<P></FONT>The oldItem&nbsp;value from the state stack&nbsp;is the boolean, indicating there wasn't a value. The current item value is the correct FieldData&lt;T&gt; type, but it's value is null, which causes the code following <FONT size=2><FONT color=#0000ff>if</FONT> (undoable != <FONT color=#0000ff><FONT color=#0000ff>null</FONT></FONT>)</FONT>&nbsp;to be bypassed, and then it just puts the boolean in as the state:</P><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>if</FONT></FONT><FONT size=2> (item != </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>null</FONT></FONT><FONT size=2>)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>var</FONT></FONT><FONT size=2> undoable = item.Value </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>as</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>IUndoableObject</FONT></FONT><FONT size=2>;</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>if</FONT></FONT><FONT size=2> (undoable != </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>null</FONT></FONT><FONT size=2>)</P>
+<P>{</P>
+<P></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2>// current value is undoable</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>if</FONT></FONT><FONT size=2> (oldItem != </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>null</FONT></FONT><FONT size=2>)</P>
+<P>undoable.UndoChanges(parentEditLevel, parentBindingEdit);</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>else</P></FONT></FONT><FONT size=2>
+<P>_fieldData[index] = </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>null</FONT></FONT><FONT size=2>;</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>continue</FONT></FONT><FONT size=2>;</P>
+<P>}</P>
+<P>}</P>
+<P></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2>// restore IFieldData object into field collection</P></FONT></FONT><FONT size=2>
+<P>_fieldData[index] = oldItem;&nbsp; &lt;---------HERE IS WHERE IT HAPPENS</P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Tuesday, January 27, 2009</h2><BLOCKQUOTE><div><img src="/Themes/basicblue/images/icon-quote.gif"> <strong>rsbaker0:</strong></div><div>Basically, I have&nbsp;a managed child object (lazy loaded)&nbsp;associated with a particular PropertyInfo. It was probably null when I called BeginEdit() on the object, but was loaded soon afterwards as soon a data binding requested data from an associated property.&nbsp;(Basically it's a child object in a 1:1 relationship versus a collection).</div></BLOCKQUOTE><br><br>Ok, I can't comment on whether or not you've found a bug, but this seems odd to me.&nbsp; If you have a lazy loaded child, but databinding always ends up loading almost immediately... that seems like a poor choice to implement the child as lazy loaded.&nbsp; Only if you take steps to prevent databinding from doing this (so you really really don't load the child until needed), you should probably just load the child right away. <br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rsbaker0 replied on Tuesday, January 27, 2009</h2><P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>ajj3085:</strong></div><div>Ok, I can't comment on whether or not you've found a bug, but this seems odd to me.&nbsp; If you have a lazy loaded child, but databinding always ends up loading almost immediately... that seems like a poor choice to implement the child as lazy loaded.</div></BLOCKQUOTE></P>
+<P>Quick on this -- the UI consists&nbsp;of a multi-tabbed interface and the&nbsp;property where I first an into this is only shown on an seldom used &nbsp;"Advanced" tab. </P>
+<P>I've researched further, and it turns out it has nothing to do with lazy loading or my custom field implementation. The undo implementation seems to be incapable of restoring a managed child property set to null after BeginEdit() is called back to its previous non-null value:</P>
+<P>This simple but albeit constrived&nbsp;sequence will break: (STATION.Employee is a completely standard managed property implementation, no lazy loading, CSLA 3.5.1)</P><FONT size=2>
+<P></FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>EMPLOYEE</FONT></FONT><FONT size=2> emp = </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>EMPLOYEE</FONT></FONT><FONT size=2>.CreateChild();</P>
+<P></FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>STATION</FONT></FONT><FONT size=2> s = </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>STATION</FONT></FONT><FONT size=2>.GetFirst(</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>string</FONT></FONT><FONT size=2>.Empty);</P>
+<P>s.Employee = emp;</P>
+<P>s.BeginEdit();</P>
+<P>s.Employee = </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>null</FONT></FONT><FONT size=2>;</P>
+<P>s.CancelEdit();</P>
+<P>s.Employee = emp; </FONT><FONT color=#008000 size=2><FONT color=#008000 size=2>//&nbsp;Exception occurs here since FieldData is now FieldData&lt;Boolean&gt;</FONT></FONT></P>
+<P><FONT color=#008000 size=2><FONT color=#008000 size=2>Unable to cast object of type 'System.Boolean' to type 'Company.Application.Data.EMPLOYEE'.</FONT></FONT></P>
+<P><FONT color=#008000 size=2><FONT color=#008000 size=2>&nbsp;</P></FONT></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, January 27, 2009</h2>OK, now I understand the issue. This has never worked in any version of CSLA, and isn't currently supported in 3.6 either. There's a <a href="http://www.lhotka.net/cslabugs/edit_bug.aspx?id=49">wish list item</a> to add this capability, and the field manager should make such a change possible, but I haven't had time to really dig in and make it happen as of yet.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rsbaker0 replied on Tuesday, January 27, 2009</h2><P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div>OK, now I understand the issue. This has never worked in any version of CSLA, and isn't currently supported in 3.6 either. There's a <A href="http://www.lhotka.net/cslabugs/edit_bug.aspx?id=49">wish list item</A> to add this capability, and the field manager should make such a change possible, but I haven't had time to really dig in and make it happen as of yet.<BR></div></BLOCKQUOTE></P>
+<P>Ah, I see. </P>
+<P>In the meantime, &nbsp;I'd argue that the code sequence I have provided silently breaks the object in an unfixable way. </P>
+<P>If the behavior isn't supported, then I should either get an exception when I try to do an in-place replacement like this, or perhaps less onerously&nbsp;Undo should just leave the object null rather than putting a value of the incorrect type in it's place. </P>
+<P>Why not just put the object itself on the state stack instead of FieldData&lt;bool&gt; -- maybe only if it's not a collection.&nbsp; That way, you could put the original&nbsp;value back if&nbsp; Undo was called and the current reference was null (or perhaps even if the reference has changed, although that seems trickier).&nbsp; I may even have to implement it as a workaround unless you tell me I shouldn't&nbsp;;)</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, January 27, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>As I say, this is something that the field manager allows to be
+addressed, but it is relatively complex.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Child objects can never be put on the state stack, as they are
+independent entities that manage their own state. So what has to happen is that
+the FieldData object for child objects needs to maintain a list (stack) of
+child object references, and it must coordinate all the begin/cancel/apply
+operations on the parent so they cascade down to the child objects
+appropriately.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>You are looking at it from the perspective of one child and one
+null. But the general case is one where numerous child references could be used
+at different edit levels, and those references must be restored or discarded as
+stacked apply/cancel methods are called. And at the same time the list of
+non-active child objects can&#8217;t get out of sync with the overall edit
+level of the object graph, because they could become active based on the
+parent.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>This is absolutely solvable, but it isn&#8217;t a 30 minute
+thing to do. N-level undo is the second most complex part of CSLA (following
+data binding), and the burden of testing is very high due to the numerous
+permutations.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I don&#8217;t disagree that a better exception might make sense &#8211;
+but I do plan to enable the scenario and so I didn&#8217;t put energy into
+smoothing over a &#8220;temporary&#8221; problem.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rsbaker0 replied on Tuesday, January 27, 2009</h2><P>Thanks for the more detailed insight.</P>
+<P>Correct me if I'm wrong, but if this were a field that wasn't managed, the code snippet I supplied would just silently leave the field null, right?&nbsp;Changes to the child object contents&nbsp;are undoable, but setting the actual field holding the child object to null isn't?</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, January 27, 2009</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Non-managed fields that reference non-CSLA objects are directly serialized
+onto the parent&#8217;s state stack, and so they will be subject to undo at all
+levels. But you&#8217;ll get a new object instance on any CancelEdit() call,
+because the stacked state (byte stream) is deserialized.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Any field referencing a CSLA object (one that implements
+IUndoableObject) is never serialized, and the undo call is cascaded to that child.
+But (outside BLB) there&#8217;s no tracking of previous reference values other
+than null.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>In other words, if the value starts as null, then becomes a
+reference, a cancel will restore the null. But the reverse is not true. The
+field manager design includes the ability to solve this &#8211; I just ran out
+of time to address the issue in 3.6.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>3.6.1 is primarily a bug-fix release, with some low-hanging
+fruit as a bonus. Hopefully I&#8217;ll be able to address more complex issues (like
+this one) in 3.6.2 or .3.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> rsbaker0
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Tuesday, January 27, 2009 10:02 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: Undo mischief in CSLA 3.5? GetFieldData()
+returning a FieldData&lt;Boolean&gt; instead of FieldData&lt;ChildType&gt;?<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Thanks for the more detailed insight.<o:p></o:p></p>
+
+<p>Correct me if I'm wrong, but if this were a field that wasn't managed, the
+code snippet I supplied would just silently leave the field null,
+right?&nbsp;Changes to the child object are undoable, but setting the actual
+field holding the child object to null isn't?<o:p></o:p></p>
+
+<p>&nbsp;<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rsbaker0 replied on Tuesday, January 27, 2009</h2><P>Thanks for your patience. </P>
+<P>Here is a simple two line "fix" to FieldDataManager.UndoChanges() that will at least leave the value null rather leaving the FieldData&lt;bool&gt; around to cause trouble. There may be a better way to do this, but it seemed safe to me -- it only does something different if the FieldData types don't match. I'm leaving the current FieldData with correct type but null value in place rather than setting the whole thing to null (not sure which would be preferable in this case, but it works either way for me). </P>
+<P>&nbsp;&nbsp;&nbsp; void Core.IUndoableObject.UndoChanges(int parentEditLevel, bool parentBindingEdit)<BR>&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (EditLevel &gt; 0)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (this.EditLevel - 1 &lt; parentEditLevel)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; throw new UndoException(string.Format(Properties.Resources.EditLevelMismatchException, "UndoChanges"));</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; IFieldData[] state = null;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; using (MemoryStream buffer = new MemoryStream(_stateStack.Pop()))<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; buffer.Position = 0;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var formatter = SerializationFormatterFactory.GetFormatter();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; state = (IFieldData[])(formatter.Deserialize(buffer));<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; for (var index = 0; index &lt; _fieldData.Length; index++)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var oldItem = state[index];<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var item = _fieldData[index];<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (item != null)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var undoable = item.Value as IUndoableObject;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (undoable != null)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // current value is undoable<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (oldItem != null)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; undoable.UndoChanges(parentEditLevel, parentBindingEdit);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; else<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _fieldData[index] = null;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; continue;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; else<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // CHANGE TO CSLA HERE<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // Workaround for previously existing child object being set to NULL<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // NOTE: This does not make change to null undoable, but avoids leaving mismatching FieldData <BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // type in the slot formerly occupied by an object<BR><STRONG>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (item.Value == null &amp;&amp; (oldItem != null &amp;&amp; oldItem.GetType() != item.GetType()))<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; continue; // Leave existing FieldData with null value for now<BR></STRONG>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // restore IFieldData object into field collection<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _fieldData[index] = oldItem;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<BR>&nbsp;&nbsp;&nbsp; }</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Tuesday, January 27, 2009</h2><BLOCKQUOTE><div><img src="/Themes/basicblue/images/icon-quote.gif"> <strong>rsbaker0:</strong></div><div>Quick on this -- the UI consists&nbsp;of a multi-tabbed interface and the&nbsp;property where I first an into this is only shown on an seldom used &nbsp;"Advanced" tab.</div></BLOCKQUOTE><br><br>Oh, that makes sense.<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

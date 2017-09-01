@@ -1,0 +1,34 @@
+<html><header><title>IIS, service or console?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>IIS, service or console?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3061.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>RichardETVS posted on Thursday, June 21, 2007</h2><P class=MsoNormal><SPAN>I speak about the server side. The suggested implementation is IIS. But as I am not familiar with it, I would like to know, it you have some thoughts about it, what are the upsides and downsides of each solution, IIS, service and console application.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Our application will work on an intern network, with high security. The application itself will not have security check, so maybe all the security side of IIS is not important for us. In fact, the performance and reliability will be the majors concerns.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Any thoughts?<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Thanks a lot<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Richard<o:p></o:p></SPAN></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, June 21, 2007</h2><P>When you think about a host, you expect certain services:</P>
+<UL>
+<LI>process management</LI>
+<LI>appdomain management</LI>
+<LI>thread management</LI>
+<LI>deadlock monitoring</LI>
+<LI>runaway process monitoring</LI>
+<LI>security</LI>
+<LI>automatic restarts</LI>
+<LI>assembly shadowing</LI>
+<LI>management tools</LI>
+<LI>configuration tools</LI></UL>
+<P>IIS/ASP.NET provide answers to all these. COM+ provides some of them, but in a different way. </P>
+<P>A console app (or Windows Service) only provides basic process management, and relies on the stock .NET thread pool for thread management. Beyond that you have to write your own code to do the rest.</P>
+<P>To me a Windows Service is an option of&nbsp;last resort. Writing, debugging and supporting all that plumbing code isn't a productive way to spend time, especially when IIS/ASP.NET already does it for you.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RichardETVS replied on Friday, June 22, 2007</h2><P class=MsoNormal><SPAN>Thanks for the answer, Rocky. I understand it is not directly related to CSLA, so thanks to you and any other who cans help.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>My knowledge about IIS is weak, so I do not see what do you mean by “</SPAN><SPAN>thread management”. </SPAN><SPAN>It seems to me, but maybe I am wrong, that if we have to provide some thread safe operations in the server, we have to code them thread safe, in console app or in a library on IIS. So, could you point to me the difference? Maybe, if it is too lengthy, by giving a reference to me.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>In fact, probably, if someone could give a good reference (links, pdf, tutorials or books), I would be grateful. I would like to know hows IIS handles “runaway process monitoring”, “deadlock monitoring”, and “assembly shadowing”. What is that, by the way :) ?<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Thanks again to all<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Richard<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

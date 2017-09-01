@@ -1,0 +1,6 @@
+<html><header><title>DataGridViewComboBoxCell value is not valid</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>DataGridViewComboBoxCell value is not valid</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/1310.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Sarosh posted on Saturday, September 23, 2006</h2><P>Hi!</P>
+<P>Have a DataGridView with one of its columns (FK) defined as a DataGridViewComboBoxColumn. Its DataSource is set to a BindingSource whose DataSource is set to my BO which is based on Csla.NamedValueListBase.</P>
+<P>When the form loads all the existing rows show up properly (including the ComboBox Column) &nbsp;but as soon as I add a new row (BO.AddNew()) I get an error "DataGridViewComboBoxCell value is not valid".</P>
+<P>If in my BO I set the default value of that FK column from 0 (which is the default) to some int which exists in that FK's base table then it works.</P>
+<P>It looks like the ComboBox Column needs an int which&nbsp;already exists in the ComboBox's List if not it throws an error.</P>
+<P>Sarosh</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

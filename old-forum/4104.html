@@ -1,0 +1,42 @@
+<html><header><title>ObjectListView and Filtering Dates???</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>ObjectListView and Filtering Dates???</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4104.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>david.wendelken posted on Wednesday, January 02, 2008</h2><P>Per Rocky's advice, my business objects have public string properties for EffDate and ObsDate (EffectiveDate and ObsoleteDate) although the private variables are SmartDates.</P>
+<P>I'm trying to filter on these values using ObjectListView and having a bit of trouble.</P>
+<P>My Filter expression is:</P>
+<BLOCKQUOTE dir=ltr>
+<P>EffDate &gt;= #1/1/2002# AND EffDate &lt;= #12/31/2004#</P></BLOCKQUOTE>
+<P>I get this error message:</P>
+<BLOCKQUOTE dir=ltr>
+<P>Cannot perform '&gt;=' operation on System.String and System.DateTime.</P></BLOCKQUOTE>
+<P>How are other folks handling this?&nbsp; I'm looking for best practice here.&nbsp; :)</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>david.wendelken replied on Wednesday, January 02, 2008</h2><P>Now I'm having a problem when the date is null (which means the string representation = String.Empty).</P>
+<P>As soon as the filter runs into an empty date it barfs with this message:</P>
+<BLOCKQUOTE>
+<P>An exception of type 'System.FormatException' occurred in mscorlib.dll but was not handled in user code</P>
+<P>Additional information: String was not recognized as a valid DateTime.</P></BLOCKQUOTE>
+<P>I'll just mention that the programmer responsible for that message in DataView&nbsp;should have supplied the offending value as part of the error message... :(</P>
+<P>I've tried testing for null, but it doesn't seem to short-circuit the exception processing to do so. :(</P>
+<P>Here's my expression:</P><FONT color=#800000 size=2>
+<P>IIF(ISNULL(OBSDATE,'Y') = 'Y',#01/01/1901#,CONVERT(ObsDate,System.DateTime)) &gt;= #"</FONT><FONT size=2> + filterObsDtSt + </FONT><FONT color=#800000 size=2>"#"</P></FONT>
+<P>filterObsDtSt has a value of "1/1/1901"</P>
+<P>ObsDate has a value of "".</P>
+<P>Any ideas?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tmg4340 replied on Wednesday, January 02, 2008</h2><P><FONT face=Tahoma size=2>I don't want to be the guy to go against Rocky's advice - especially with his own framework! - but why are you working with your dates as strings?&nbsp; Why not just use the DateTime value?&nbsp; Then your empty date will either be DateTime.MinValue or DateTime.MaxValue, which you should be able to work with without all the string futzing.</FONT></P>
+<P><FONT face=Tahoma size=2>- Scott</FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Wednesday, January 02, 2008</h2><P>The old IIF function evaluates both parts! It will always crash. It does not do what you think it does.</P>
+<P>I believe a new IIF function was added in VB9 that should do what you want. You are better off writing the 3 lines of code to do it the right way anyway.</P>
+<P>You can expose your properties as Dates too. Sometimes you want to display the string for binding but sort on the real underlying date.</P>
+<P>Joe</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>david.wendelken replied on Wednesday, January 02, 2008</h2><P>There are several reasons I'm exposing my date properties as strings instead of SmartDates or DateTimes.</P>
+<P>Reasons against using DateTime:</P>
+<OL>
+<LI>Does not support null dates.</LI>
+<LI>I hate to show bogus dates to a user because of the above limitation.&nbsp; It's unprofessional in appearance.&nbsp; Telling a user that "January 1, 1753"&nbsp;<STRONG><EM>really</EM></STRONG> means "I don't know" is dorky.</LI>
+<LI>In a list of records, most of which will have null dates, bogus dates "visually hide" the known dates.&nbsp; When unknown dates are shown as blank values, the known dates are very visible in the list.</LI></OL>
+<P>Reasons against SmartDate:</P>
+<OL>
+<LI>ReadOnly classes: none.</LI>
+<LI>Editable classes:&nbsp; You can't assign a new Text property to a SmartDate property.&nbsp; You have to create a new SmartDate variable&nbsp;and assign it to the SmartDate property.&nbsp; (Oddly enough, you can assign a new Text property to a SmartDate variable, however.)&nbsp; The extra object instantiation is slower,&nbsp;&nbsp;requires more code to be written, and is less intuitive.</LI></OL>
+<P>Reasons against String:</P>
+<OL>
+<LI>Built-in capabilities don't know the "real" datatype underlying the property.&nbsp; </LI>
+<LI>For the same reason, this&nbsp;makes writing generic code that properly responds to the property's datatype&nbsp;harder to do.&nbsp; It also makes writing code generators that work off the object harder to do because you have to supply the metadata about the datatype somewhere else.</LI></OL>
+<P>So far, to me, it's seemed like a Monty Hall gameshow where all three doors had glasses of hemlock as the prize. :(</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>david.wendelken replied on Thursday, January 03, 2008</h2><FONT color=#800000 size=2>
+<P>I finally got it to work.&nbsp; Had to turn the IIF and CONVERT functions inside out.&nbsp;&nbsp; Here's the first part of the test:</P>
+<P>CONVERT(IIF(LEN(ObsDate) = 0,'01/01/1901',ObsDate),'System.DateTime') &gt;= #"</FONT><FONT size=2> + filterObsDtSt + </FONT><FONT color=#800000 size=2>"#"</P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Brian Criswell replied on Thursday, January 03, 2008</h2>The ObjectListView implementation has a supporting interface and event that come with it.&nbsp; IExtendSort and ExtendSortEventArgs are used by the ObjectListView to decide how to override the default values for sorting.&nbsp; The primary purpose for this is dates exposed as strings.&nbsp; Your object in the list can implement the interface and replace the value that would be used to determine sorting with another value.&nbsp; So, the interface's method body would see that you are trying to sort by the date value which is normally exposed as a string.&nbsp; Instead the method would return the SmartDate.Date value, which automatically puts null dates as the max or min date for sorting purposes.&nbsp; The event args are used when you cannot modify the object directly or want different custom behavior for a particular sort.<br><br>I know this does not solve all of the problems with exposing strings, but it does help the sorting issue.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>david.wendelken replied on Thursday, January 03, 2008</h2><P>I solved the sorting problem some time ago, thanks to an earlier post of yours.&nbsp; :)</P>
+<P><FONT color=#0000ff size=2>&nbsp;</P></FONT></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

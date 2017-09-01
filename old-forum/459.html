@@ -1,0 +1,29 @@
+<html><header><title>Web Login - Remember Me and it's effect on the Session(&quot;CSLAPrincipal&quot;)</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Web Login - Remember Me and it's effect on the Session(&quot;CSLAPrincipal&quot;)</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/459.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>kdubious posted on Saturday, June 24, 2006</h2><P>I'm stuck...</P>
+<P>If the user checked the 'Remember Me' box in Login Control in my web app, when they come back the MembershipProvider seems to authenticate them just fine.&nbsp; BUT, the user doesn't have the appropriate CustomIdentity that I wrote.</P>
+<P>I'm using &lt;deny users="?"&gt;, so the site doesn;t allow anonymous access.</P>
+<P>I need a seuugestion for how and when to reload my session("CSLAPrincipal") when the user returns having clicked the Remember Me box.</P>
+<P>Any ideas?&nbsp; Am I missing something obvious?</P>
+<P>&nbsp;</P>
+<P>Kevin</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Saturday, June 24, 2006</h2>Some event must fire in global.asax, or from the login control, so you can detect that this has occurred.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>William replied on Monday, June 26, 2006</h2><P>I think I will look into BeginRequest event in global.asax, where the server code attempts to retrieve an encrypted security token from in-memory session or client's cookie. If the security token is found, the server code can decrypt it to retrieve the corresponding BusinessPrincipal from the db.</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>kdubious replied on Tuesday, June 27, 2006</h2><BLOCKQUOTE><div><img src="/Themes/alternate1/images/icon-quote.gif"> <strong>William:</strong></div><div>
+<P>I think I will look into BeginRequest event in global.asax, where the server code attempts to retrieve an encrypted security token from in-memory session or client's cookie. If the security token is found, the server code can decrypt it to retrieve the corresponding BusinessPrincipal from the db.</P>
+<P>&nbsp;</P>
+<P></div></BLOCKQUOTE></P>
+<P>William, if I do this, how do I get the password to re-login the user?&nbsp; I guess I could create a Username only version of Login, or store the pass in the cookie, but both sound like bad security.&nbsp; </P>
+<P>Am I missing something?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, June 28, 2006</h2>
+
+
+
+
+<DIV align=left><SPAN class=390294306-28062006><FONT face=Arial color=#0000ff size=2>I would create a Login method that only takes a username - 
+I've done this numerous times. In this context, CSLA isn't providing the 
+security anyway - that is coming from ASP.NET. You are merely loading a 
+pre-authenticated principal for the purpose of authorization, which is something 
+quite different.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=390294306-28062006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=390294306-28062006><FONT face=Arial color=#0000ff size=2>Rocky</FONT></SPAN></DIV></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>kdubious replied on Saturday, July 01, 2006</h2><P>This is what I ended up doing.&nbsp; </P>
+<P>Something seems strange about this entire mechanism....&nbsp; I just can't find any way for the MembershipProvided to manage this.&nbsp; </P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>William replied on Sunday, July 02, 2006</h2><P>In the "security token" being created, you can choose to embed both the user name and password, then encrypt them with some secured key on the server. The end users would not be able to decrypt this encrypted data you stored on the client.</P>
+<P>Alternatively, you can&nbsp;choose to create an overloaded Login method, which takes only the user name as parameter.</P>
+<P>&nbsp;</P>
+<P>Regards,<BR>William</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, June 26, 2006</h2>I am at a client site until June 29, with limited email until then.<br /><br />Thank you for your understanding,<br /><br />Rocky</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, June 26, 2006</h2>I am at a client site until June 29, with limited email until then.<br /><br />Thank you for your understanding,<br /><br />Rocky</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

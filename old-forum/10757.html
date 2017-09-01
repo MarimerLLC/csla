@@ -1,0 +1,35 @@
+<html><header><title>Asp.Net MVC Custom Principal losing information</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Asp.Net MVC Custom Principal losing information</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10757.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>RandyH posted on Monday, October 10, 2011</h2><p>If I have a user &quot;A&quot;&nbsp;logged in, then when user &quot;B&quot; pulls up the site (without logging in), then user &quot;A&quot; custom identitiy properties are lost. This also occurs if both users are logged in and one of the users logs out.</p>
+<p>The custom pricipal object is being stored in session. Session is being maintained by Asp.Net Session State Service. </p>
+<pre style="FONT-FAMILY:Consolas;BACKGROUND:white;COLOR:black;FONT-SIZE:15px;">&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:blue;">Private</span>&nbsp;<span style="COLOR:blue;">Sub</span>&nbsp;ShellApplication_AcquireRequestState(<span style="COLOR:blue;">ByVal</span>&nbsp;sender&nbsp;<span style="COLOR:blue;">As</span>&nbsp;<span style="COLOR:blue;">Object</span>,&nbsp;<span style="COLOR:blue;">ByVal</span>&nbsp;e&nbsp;<span style="COLOR:blue;">As</span>&nbsp;System.<span style="COLOR:#2b91af;">EventArgs</span>)&nbsp;<span style="COLOR:blue;">Handles</span>&nbsp;<span style="COLOR:blue;">Me</span>.AcquireRequestState
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:blue;">If</span>&nbsp;(<span style="COLOR:blue;">TypeOf</span>&nbsp;<span style="COLOR:#2b91af;">HttpContext</span>.Current.Handler&nbsp;<span style="COLOR:blue;">Is</span>&nbsp;<span style="COLOR:#2b91af;">IRequiresSessionState</span>)&nbsp;<span style="COLOR:blue;">Then</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:blue;">If</span>&nbsp;(Csla.<span style="COLOR:#2b91af;">ApplicationContext</span>.AuthenticationType&nbsp;=&nbsp;<span style="COLOR:#a31515;">&quot;Windows&quot;</span>)&nbsp;<span style="COLOR:blue;">Then</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:blue;">Exit&nbsp;Sub</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:blue;">End</span>&nbsp;<span style="COLOR:blue;">If</span>
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:blue;">Dim</span>&nbsp;principal&nbsp;<span style="COLOR:blue;">As</span>&nbsp;System.Security.Principal.<span style="COLOR:#2b91af;">IPrincipal</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:blue;">Try</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;principal&nbsp;=&nbsp;<span style="COLOR:blue;">CType</span>(Session(<span style="COLOR:#2b91af;">SessionKey</span>.CslaPrincipal),&nbsp;System.Security.Principal.<span style="COLOR:#2b91af;">IPrincipal</span>)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:blue;">Catch</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;principal&nbsp;=&nbsp;<span style="COLOR:blue;">Nothing</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:blue;">End</span>&nbsp;<span style="COLOR:blue;">Try</span>
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:blue;">If</span>&nbsp;(principal&nbsp;<span style="COLOR:blue;">Is</span>&nbsp;<span style="COLOR:blue;">Nothing</span>)&nbsp;<span style="COLOR:blue;">Then</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:blue;">If</span>&nbsp;User.Identity.IsAuthenticated&nbsp;<span style="COLOR:blue;">AndAlso</span>&nbsp;<span style="COLOR:blue;">TypeOf</span>&nbsp;User.Identity&nbsp;<span style="COLOR:blue;">Is</span>&nbsp;<span style="COLOR:#2b91af;">FormsIdentity</span>&nbsp;<span style="COLOR:blue;">Then</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;formsAuth.SignOut()
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:blue;">End</span>&nbsp;<span style="COLOR:blue;">If</span>
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:#2b91af;">PHGTPrincipal</span>.Logout()
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:blue;">Else</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:green;">&#39;&nbsp;use&nbsp;the&nbsp;principal&nbsp;from&nbsp;Session</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Csla.<span style="COLOR:#2b91af;">ApplicationContext</span>.User&nbsp;=&nbsp;principal
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:blue;">End</span>&nbsp;<span style="COLOR:blue;">If</span>
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:blue;">End</span>&nbsp;<span style="COLOR:blue;">If</span>
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:blue;">End</span>&nbsp;<span style="COLOR:blue;">Sub</span></pre>
+<pre style="FONT-FAMILY:Consolas;BACKGROUND:white;COLOR:black;FONT-SIZE:15px;"><span style="COLOR:blue;"></span></pre>
+<pre style="FONT-FAMILY:Consolas;BACKGROUND:white;COLOR:black;FONT-SIZE:15px;"><span style="COLOR:blue;"><span style="color:#000000;">I am using CSLA 4.1. I have csla.dll, csla.web.dll, and csla.web.mvc.dll referenced in my projects.</span></span></pre>
+<pre style="FONT-FAMILY:Consolas;BACKGROUND:white;COLOR:black;FONT-SIZE:15px;"><span style="COLOR:blue;"><span style="color:#000000;">Any help would be GREATLY appreciated!</span></span></pre>
+<pre style="FONT-FAMILY:Consolas;BACKGROUND:white;COLOR:black;FONT-SIZE:15px;"><span style="COLOR:blue;"></span></pre></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, October 10, 2011</h2><p>Maybe this thread would help:</p>
+<p><a href="http://forums.lhotka.net/forums/t/10673.aspx">http://forums.lhotka.net/forums/t/10673.aspx</a></p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

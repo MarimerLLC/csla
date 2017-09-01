@@ -1,0 +1,56 @@
+<html><header><title>WCF and IIS7 - How do you get sample apps to run?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>WCF and IIS7 - How do you get sample apps to run?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6089.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>tbim92 posted on Tuesday, January 06, 2009</h2>Is there a document that gives detailed instructions on how to get the CSLA sample application WCF projects hosted in IIS7 and get them running? If not, can someone post one?<br><br>I have searched for answers on this forum and tried a couple of the recommended things. I have the CSLA Business Objects 3.6 book and have read broad sections (I have been using CSLA for years and completely read previous books), including Chapter 21 on WCF. However, it does not include instructions for IIS7/Vista. I've tried running the projects using virtual roots pointing to the code's recommended installation folder, and tried putting the web files directly in the inetpub/wwwroot folder (in their respective folders, of course) and then setting them up in IIS7. No luck. The book (p 705) says "The PTWcfService website will only run within IIS, not within ASP.NET Development Server (commonly known as Cassini or VS Host)." which I took to mean that it couldn't be run from VS2008. Maybe I'm wrong.<br><br>I know I'm missing something - port, security, installed IIS7 options, etc. It would be awesome to have a step-by-step instruction sheet. I've been doing WinForms stuff for years, so I am very, very green when it comes to IIS7 and web stuff!<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, January 06, 2009</h2><P>Have you looked at the instruction PDF?</P>
+<P><A href="http://www.lhotka.net/files/csla36/cslabuild.pdf">http://www.lhotka.net/files/csla36/cslabuild.pdf</A></P>
+<P>Though it doesn't include detailed instructions on configuring IIS, because I assume that info can be found in any decent ASP.NET book. Perhaps that's not a good assumption :)</P>
+<P>The biggest thing people overlook, is that ASP.NET virtual roots must be an "Application" to work properly. This is typically an extra step in the process when configuring the virtual root, but without this step ASP.NET just doesn't work.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tbim92 replied on Tuesday, January 06, 2009</h2>Yes on both counts. I did download and follow the pdf instructions the best I could. And I also ran the option to convert the "folder" to an "application". As I said, I have programed for years in WinForms and CSLA, but web stuff is completely new to me. I know I have to get my arms around IIS and ASP.Net, but I'm also being pressured to get a sample WCF app running/hosted in IIS7. I'm sure that someone with a little experience in this area can solve my problem in minutes, where as I don't even know what questions to ask. Unfortunately I don't know anyone who does ASP.Net programming or that uses IIS. I can certainly start slogging through books and the Internet - which is what I've been doing for four full days now before posting this question. But like I said, I don't even really know what I'm looking for. The MSDN article entitled "How to: Host a WCF Service in IIS" is completely useless - someone even commented that it should be renamed. Thanks for you suggestions.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tbim92 replied on Tuesday, January 06, 2009</h2>If I go into IIS Manager, drill down to the PTWcfService and then click the Browse link in the Actions sidebar, a web browser page opens saying:<br><br>HTTP Error 500.24 - Internal Server Error<br>An ASP.NET setting has been detected that does not apply in Integrated managed pipeline mode.<br><br>Most likely causes: system.web/identity@impersonate is set to true.<br><br>I don't really know what any of this means. <br><br>I can create a very generic text-based website to navigate between pages - hardly any configuration settings in web.config. But the samples in CSLA 3.6 are quite a bit more sophisticated! Back to the books...<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Tuesday, January 06, 2009</h2>Goto IIS Manager and look in the application pools.&nbsp; Find the one your virtual directory is using, and set it to Classic pipeline.&nbsp; <br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, January 06, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Here are some troubleshooting steps then:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoListParagraph><span><span>1.<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span></span><span>Set up the virtual root<o:p></o:p></span></p>
+
+<p class=MsoListParagraph><span><span>2.<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span></span><span>Make it an application<o:p></o:p></span></p>
+
+<p class=MsoListParagraph><span><span>3.<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span></span><span>Put an aspx page in the root (that runs a bit of server code)<o:p></o:p></span></p>
+
+<p class=MsoListParagraph><span><span>4.<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span></span><span>Navigate to that aspx page and make sure that works &#8211; that&#8217;ll
+test ASP.NET<o:p></o:p></span></p>
+
+<p class=MsoListParagraph><span><span>5.<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span></span><span>Navigate to the svc file &#8211; you should see text similar to
+that shown in the book &#8211; a WCF test page<o:p></o:p></span></p>
+
+<p class=MsoListParagraph><span><span>6.<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span></span><span>Navigate to the WSDL page &#8211; you should see lots of XML<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Typically one of those steps will reveal the issue &#8211;
+either configuration or security are the likely causes.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

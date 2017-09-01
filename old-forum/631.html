@@ -1,0 +1,30 @@
+<html><header><title>cslaDataSource, not returning all modified rows(BO's)</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>cslaDataSource, not returning all modified rows(BO's)</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/631.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jurjen posted on Saturday, July 15, 2006</h2><P>I'm using a (BulkEdit)GridView in wich all rows are editable. I am using a CslaDataSource (v2.0.2) as the datasource for the GridView.</P>
+<P>Upon save, I only get values of the first row back in my Csla.Web.UpdateObjectArgs or so it would seem</P>
+<P>Am I doing something wrong here, or is the cslaDS not equipped (yet) for this.</P>
+<P><BR>Regards,<BR>Jurjen.<BR><FONT size=2><BR>P.S. for those interested in BulkEditGridView : <A href="http://blogs.msdn.com/mattdotson/articles/490868.aspx">http://blogs.msdn.com/mattdotson/articles/490868.aspx</A></FONT></P>
+<P><FONT size=2>&nbsp;</P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, July 17, 2006</h2><P>I just looked at the code for CslaDataSource, and it doesn't support this. Beyond that, I don't see how it <EM>could</EM> support the concept, since the Microsoft data source base class doesn't provide this kind of information. In other words, I don't see how the ASP.NET data binding infrastructure supports the concept at all.</P>
+<P>You can look at Chapter 5 to see how I implement the control, and how it gets the updated data from data binding and then relays it to your page. If you can see where it would get multiple edited rows from data binding I'll happily consider enhancing the control to support the concept at some point.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jurjen replied on Monday, July 17, 2006</h2><P>Rocky,</P>
+<P>You just beat me to it. It IS possible it seems,&nbsp;the UpdateObject event is raised/fired for every changed record in the grid. I found this out this afternoon, but hadn't had the time yet to post it here.</P>
+<P>Jurjen.<FONT size=2></P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, July 17, 2006</h2>
+
+
+
+
+<DIV align=left><SPAN class=500404722-17072006><FONT face=Arial color=#0000ff size=2>Oh really?!? That is very cool!</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=500404722-17072006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=500404722-17072006><FONT face=Arial color=#0000ff size=2>Thanks for letting me know,</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=500404722-17072006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=500404722-17072006><FONT face=Arial color=#0000ff size=2>Rocky</FONT></SPAN></DIV><BR>
+<BLOCKQUOTE>
+  <DIV class=OutlookMessageHeader align=left>
+  <HR>
+  <FONT face=Tahoma size=2><B>From:</B> Jurjen [mailto:cslanet@lhotka.net] 
+  <BR><B>Sent:</B> Monday, July 17, 2006 5:38 PM<BR><B>To:</B> 
+  rocky@lhotka.net<BR><B>Subject:</B> Re: [CSLA .NET] cslaDataSource, not 
+  returning all modified rows(BO's)<BR></FONT><BR></DIV>
+  <DIV></DIV>
+  <P>Rocky,</P>
+  <P>You just beat me to it. It IS possible it seems,&nbsp;the UpdateObject 
+  event is raised/fired for every changed record in the grid. I found this out 
+  this afternoon, but hadn't had the time yet to post it here.</P>
+  <P>Jurjen.<FONT size=2></P></FONT><BR><BR><BR></BLOCKQUOTE></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

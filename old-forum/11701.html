@@ -1,0 +1,26 @@
+<html><header><title>Business rules questions</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Business rules questions</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11701.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>griff posted on Wednesday, November 14, 2012</h2><p>Just started using business rules(and I can see the great power they have) and need some&nbsp;clarification&nbsp;on best practices.</p>
+<p>1) Views on when to use a&nbsp;read-only&nbsp; property or business rule to derive a readonly (non-db) property e.g. &nbsp;Fullname.</p>
+<p>2) I have some complicated calculations e.g. calculation charges on a timesheet.</p>
+<p>Should my rules be quite specific or more general?</p>
+<p>For instance TotalTravelTime is made up of&nbsp;TotalTravelTimeOutward and&nbsp;TotalTravelTimeReturning.&nbsp;</p>
+<p>TotalTravelTimeOutward is the result of&nbsp;TimeStartToVenue-TimeArriveToVenue and&nbsp;TotalTravelTimeReturning&nbsp;s the result of&nbsp;TimeStartBackFromVenue-TimeEndBackFromVenue. &nbsp;(there are other rules/calc to calculate charges etc).</p>
+<p>So should I have 1 business rule to calculate&nbsp;TotalTravelTime&nbsp;- if I change any one of the four properties that affect the grand total</p>
+<p>or</p>
+<p>So should I have 2 business rules to calculate&nbsp;TotalTravelTime&nbsp;- depending on&nbsp;whether outward or return journey.</p>
+<p>[I would also have to calculate&nbsp;TotalTravelTimeCharge and other calcs] - so several business rules which are fired when <b>specific</b> <b>properties </b>are changed or <b>one big one</b> that&nbsp;recalculates&nbsp;everything when any one of the properties change.</p>
+<p>3) My&nbsp;TotalTravelTimeOutward&nbsp; is updated via a business rule and not stored in database (as above) - however when I load my page/screen the value is not populated - do I need to call business rule&nbsp;explicitly&nbsp;to get this value?</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Wednesday, November 14, 2012</h2><p>I&#39;d like to clarify the requirements for the RuleEngine:</p>
+<ul>
+<li>Any field to participate in a Rule and Input/Affected/Output property must have a PropertyInfo </li>
+</ul>
+<p>My preferred solution: </p>
+<ol>
+<li>Create ManagedProperties for all values </li>
+<li>Create BusinessRules that have just the actual required input properties for each calculated field.&nbsp;<br />(similar to how you would define calculations&nbsp;in a spreadsheet)</li>
+<li>Use the advanced setting<em> </em><strong><em>CascadeOnDirtyProperties</em> </strong>to cascade rule checks. Read more here on my blog:<br /><a href="http://jonnybekkum.wordpress.com/2012/11/07/csla-4-5-ruleengine-update/">http://jonnybekkum.wordpress.com/2012/11/07/csla-4-5-ruleengine-update/</a>&nbsp;<br />The effect is - rerun rules with cascade so long as the property value is updated from context.AddOutValue. </li>
+<li>Use<em> CanRunAsAffectedProperty/CanRunOnServer/CanRunInCheckRules</em> to limit when a rule is allowed to run <br />(when all is flase =&gt; only when user edits the property value - not as result of another property was an affected property). <br />In you case maybe set CanRunOnServer/CanRunInCheckRules = false =&gt; only when a property is changed on the client. </li>
+<li>I do prefer to set the proper values (even into into non-db fields) in the Create/Fetch method <br />(or else the object will get dirty when you call BusinessRules.CheckRules() to run calculations)<br />You may call BusinessRules.CheckRules() but should expect the object to be Dirty afterwards as result of calculations. </li>
+</ol>
+<p>The <em><strong>CascadeOnDirtyProperties</strong></em> is new in <strong>Csla 4.5.10</strong> and must be set in DataPortal_Fetch/DataPortal_Create. <br />IE: It is an instance flag,&nbsp;<em>&lt;bo&gt;.BusinessRules.CascadeOnDirtyProperties</em>, default is <em>false</em>. </p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>griff replied on Wednesday, November 14, 2012</h2><p>Thank for prompt reply - I will digest and get back</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

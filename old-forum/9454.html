@@ -1,0 +1,10 @@
+<html><header><title>?? ReadOnlyList is Child of EditableRoot</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>?? ReadOnlyList is Child of EditableRoot</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9454.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>SDM10012 posted on Monday, August 30, 2010</h2><p>Since I am pulling my BO&#39;s from a legacy application where most of the CRUD functions operate, one of my business objects does not have responsibility for creating its children ( which are read-only).</p>
+<p>However some of the attributes of the parent are editable ... so it is an Editable Root with a read only child collection ....</p>
+<p>In trying to follow the published pattern ... the one I&#39;m referencing now ( from the &quot;code reduction with child objects&quot;) requires that the child collection&nbsp;inherit from BusinessListBase&nbsp;.... Have a NewList() method.</p>
+<p>That&#39;s not the case here.</p>
+<p>Any documentation / suggestions&nbsp;on how I might make this work using ReadOnlyListBase ??</p>
+<p>Thanks,</p>
+<p>Steve</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Monday, August 30, 2010</h2><p>I&#39;d suggest that this isn&#39;t really a parent-child containment relationship. If the parent doesn&#39;t have responsibility for creating/saving the children, they aren&#39;t children.</p>
+<p>You are probably better off using a <i>unit of work</i> object (<a href="http://www.lhotka.net/cslanet/faq/CslaObjectFaq.ashx">http://www.lhotka.net/cslanet/faq/CslaObjectFaq.ashx</a>).</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

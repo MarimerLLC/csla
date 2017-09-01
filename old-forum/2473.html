@@ -1,0 +1,12 @@
+<html><header><title>Newbie Question:Create Of New Object. DataPortal Fetch</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Newbie Question:Create Of New Object. DataPortal Fetch</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/2473.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Maccurt posted on Saturday, March 03, 2007</h2><P>using 2.1.0.0,I am looking at page #422 in&nbsp; VB2005 Objects</P>
+<P>If I am creating a NewProject I notice it says to do this in NewProject</P>
+<P>&nbsp;&nbsp;&nbsp;Return DataPortal.Create(of project)()</P>
+<P>When I look&nbsp;in the DataAccess I see (page #425)...</P>
+<P>&nbsp;&nbsp;&nbsp;Overloads of DataPortal_Create(byval criteria as criteria)</P>
+<P>I am confused because, I am never passing a criteria object. In my real example I simply want to create a new Project, at most I want to give the project an ID. Am I missing something simple?</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Sunday, March 04, 2007</h2><P>The DataPortal methods are allowed to be Overrloaded.</P>
+<P>So page 422 has no parameters. And page 425 has 1 parameter. You can create whatever set of parameters you need. But typically you would create various criteria objects. All of mine are in an external resource so I only create them once and use them across many BOs - they inherit from the CSLA CriteriaBase class.</P>
+<P>Rocky recently change the way the framework works to line up the calls correctly and consistently. You can read about the changes in his blog and new eBook.</P>
+<P>Joe</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Maccurt replied on Monday, March 05, 2007</h2>Thanks, I simply passed a criteria object. I will have to get the lastest greatest CSLA version and the eBook. Thanks for responding!</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

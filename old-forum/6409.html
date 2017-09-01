@@ -1,0 +1,178 @@
+<html><header><title>XAML PowerToys is not working with CSLA</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>XAML PowerToys is not working with CSLA</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6409.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>mhnyborg posted on Thursday, February 12, 2009</h2><P><FONT size=2 face=Arial>I&nbsp;get this error that stops me from using XAML PowerToys</FONT></P>
+<DIV><FONT size=2 face=Arial>"Unable to create secondary AppDomain Worker</FONT></DIV>
+<DIV><FONT size=2 face=Arial>Could not load file or assembly Csla or one of its dependencies. The system can not find the file specified."</FONT></DIV>
+<DIV><FONT size=2 face=Arial></FONT>&nbsp;</DIV>
+<DIV><FONT size=2 face=Arial>Hope someone can help me out. It's a great tool</FONT></DIV></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, February 12, 2009</h2><P>You may need to put Csla.dll, and probably your business assemblies, into the GAC.</P>
+<P>It sounds like the tool is spinning up a secondary AppDomain - and take it from me, that is a really bad idea in general. It is nearly impossible for such an AppDomain to find and load assemblies from the primary development environment, and they probably didn't figure out how to do it.</P>
+<P>Ha! I say that, but I never figured out how to do it <EM>reliably</EM> either, so my solution only worked around 90% of the time...</P>
+<P>The typical answer is to put the assemblies into the GAC, because then the type loader can resolve them from that location.</P>
+<P>Everything I'm saying here is assuming you are encountering the failure in Visual Studio.</P>
+<P>If you are encountering the failure at runtime the GAC may still help - but in that case there is a very well known solution that they should implement in their tool, because any dynamically loaded assembly will fail without this workaround.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jack replied on Friday, February 13, 2009</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I just installed the newly released XAML 4.0 power toys
+yesterday afternoon and I haven&#8217;t seen a problem yet.&nbsp; I haven&#8217;t done much but
+so far out of the box it seems to be okay.&nbsp; Are you using 4.0?<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> RockfordLhotka
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Thursday, February 12, 2009 8:20 PM<br>
+<b>To:</b> jaddington@alexandergracie.com<br>
+<b>Subject:</b> Re: [CSLA .NET] XAML PowerToys is not working with CSLA<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>You may need to put Csla.dll, and probably your business assemblies, into
+the GAC.<o:p></o:p></p>
+
+<p>It sounds like the tool is spinning up a secondary AppDomain - and take it
+from me, that is a really bad idea in general. It is nearly impossible for such
+an AppDomain to find and load assemblies from the primary development
+environment, and they probably didn't figure out how to do it.<o:p></o:p></p>
+
+<p>Ha! I say that, but I never figured out how to do it <em>reliably</em>
+either, so my solution only worked around 90% of the time...<o:p></o:p></p>
+
+<p>The typical answer is to put the assemblies into the GAC, because then the
+type loader can resolve them from that location.<o:p></o:p></p>
+
+<p>Everything I'm saying here is assuming you are encountering the failure in
+Visual Studio.<o:p></o:p></p>
+
+<p>If you are encountering the failure at runtime the GAC may still help - but
+in that case there is a very well known solution that they should implement in
+their tool, because any dynamically loaded assembly will fail without this
+workaround.<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>mhnyborg replied on Saturday, February 14, 2009</h2><P>Yes I am using ver. 4.0</P>
+<P>I guess that it must be something with the project I am working on because all the developers on the project get the same problem.</P>
+<P>Try to see if you can run the menu "Create form, ListView or Grid ..." and let me know. If you are having the same problem then I will contact Karl.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jack replied on Saturday, February 14, 2009</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>What is your BO like that you are trying to build from?&nbsp; I&#8217;ll
+try the same sort of thing<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>jack<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> mhnyborg [mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> February-14-09 6:23 AM<br>
+<b>To:</b> jaddington@alexandergracie.com<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: XAML PowerToys is not working with CSLA<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Yes I am using ver. 4.0<o:p></o:p></p>
+
+<p>I guess that it must be something with the project I am working on because
+all the developers on the project get the same problem.<o:p></o:p></p>
+
+<p>Try to see if you can run the menu &quot;Create form, ListView or Grid
+...&quot; and let me know. If you are having the same problem then I will
+contact Karl.<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>mhnyborg replied on Saturday, February 14, 2009</h2>Silverlight with linked files and objectfactory</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jack replied on Tuesday, February 17, 2009</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I found that I can right click and generate the BusinessForm if
+I click on the original version of the class I want to use.&nbsp; If I click on
+the linked version I get a reflection error &#8211; but not the one you are
+getting.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> mhnyborg
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Saturday, February 14, 2009 3:35 PM<br>
+<b>To:</b> jaddington@alexandergracie.com<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: RE: XAML PowerToys is not working with CSLA<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Silverlight with linked files and objectfactory<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jack replied on Thursday, February 19, 2009</h2>I am actually having no problems at all.&nbsp; Earlier I had not linked my Generated partial class to the silverlight version of the library.<br><br>Now if I right click on the class in the Silverlight library I get the BusinessForms / Silverlight datagrid option and haven't had a problem yet generating code.<br><br><br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

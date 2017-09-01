@@ -1,0 +1,37 @@
+<html><header><title>CSLA 4 version 4.2 alpha release</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA 4 version 4.2 alpha release</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10208.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka posted on Saturday, March 26, 2011</h2><p>There is now an alpha release of CSLA 4 version 4.2 available for download:</p>
+<ul>
+<li><a href="http://www.lhotka.net/cslanet/download.aspx"><strong><span style="color:#0000ff;">Download CSLA 4 version 4.2.0</span></strong></a></li>
+</ul>
+<p>The big initiative for version 4.2 is to add support for the following platforms:</p>
+<ul>
+<li>Mono</li>
+<li>MonoDroid</li>
+<li>MonoTouch</li>
+</ul>
+<p>This alpha release does not include binaries for these platforms, but does include code and sln files (for Visual Studio and/or MonoDevelop) you can use to build the source on each of the platforms.</p>
+<p>At this point in time we have the following:</p>
+<ol>
+<li>CSLA 4 builds and runs on mono in Windows and Linux.<ol>
+<li>Core CSLA 4 functionality (Csla.dll) should be the same as on .NET 4.</li>
+<li>ASP.NET code using CSLA objects should work using Csla.Web.dll</li>
+<li>The Windows Forms support with Csla.Windows.dll is limited due to incompatibilities in data binding between real Windows Forms and the mono implementation of Windows Forms.</li>
+</ol></li>
+<li>CSLA 4 builds and runs on Android. Use the MonoDroid tools in Visual Studio to build Csla.dll.<ol>
+<li>You should find behaviors and features for Android identical to that provided for WP7.</li>
+<li>There is not currently an equivalent to Csla.Xaml.dll for Android.</li>
+<li>No testing has been done around the use of any remote data portal channel &ndash; only the local data portal has had any testing.</li>
+</ol></li>
+<li>CSLA 4 builds and runs on iOS (iPhone/iPad). Use MonoDevelop on OS X to build Csla.dll.<ol>
+<li>You should find behaviors and features for iOS identical to that provided for WP7.</li>
+<li>There is not currently an equivalent to Csla.Xaml.dll for iOS.</li>
+<li>No testing has been done around the use of any remote data portal channel &ndash; only the local data portal has had any testing.</li>
+</ol></li>
+</ol>
+<p>Please remember, this is an alpha release, in the early stages of testing and stabilization. Any help you can provide in terms of testing and resolving issues is appreciated! Direct inquiries to <a href="http://forums.lhotka.net/"><strong><span style="color:#0000ff;">http://forums.lhotka.net</span></strong></a>.</p>
+<p>Other changes of note to existing .NET, SL, or WP7 users include:</p>
+<ul>
+<li>When an async rule completes, rules for affected properties are now also run</li>
+<li>BackgroundWorker from Csla.Threading is now available in WP7</li>
+<li>Some cleanup work was done around CslaIdentity &ndash; this shouldn&rsquo;t be a breaking change, but the internals are now quite different</li>
+<li>Fix a bug in non-generic GetProperty where field wasn&rsquo;t always set to the correct default value</li>
+</ul></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

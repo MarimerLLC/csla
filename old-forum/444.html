@@ -1,0 +1,102 @@
+<html><header><title>Generic BusinessBase.Save() problem</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Generic BusinessBase.Save() problem</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/444.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Massong posted on Thursday, June 22, 2006</h2><P class=MsoNormal><SPAN>Hi all,<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>I have written a BackgroundSaver component for my CSLA 1.x project that accepts any kind of Business Object, puts it into a FIFO, and saves it in a background thread by just calling its .Save() method. Now I try to upgrade this component to CSLA 2.0.2 and have a problem with the generic type of BusinessBase...<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>My old code looks like this:<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>While</SPAN><SPAN> mList.Count &gt; 0<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp; </SPAN><SPAN>Dim</SPAN> obj <SPAN>As</SPAN> BusinessBase = <SPAN>Nothing<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp; </SPAN><SPAN>Try<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN>obj = <SPAN>CType</SPAN>(mList(0), BusinessBase)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN>obj = obj.Save<SPAN>&nbsp; </SPAN><o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp; </SPAN><SPAN>Catch</SPAN> ex <SPAN>As</SPAN> Exception<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN>' (Error handling)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp; </SPAN><SPAN>Finally<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>mList.RemoveAt(0)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp; </SPAN><SPAN>End</SPAN> <SPAN>Try<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN>End</SPAN><SPAN> <SPAN>While<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><o:p><FONT face="Times New Roman">&nbsp;</FONT></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>How can I write this in CSLA 2.x? My problem is that I can’t cast the list entries to <EM>Csla.BuisnessBase</EM> because the compiler wants to see a <EM>(of T)</EM> and I don’t know the exact type. Also I can’t cast them to <EM>Core.BuisenessBase</EM> because <EM>Core.BusinessBase</EM> doesn’t implement the Save-method...<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Must I really use reflection to solve this problem?<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Thanks,<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Christian<o:p></o:p></SPAN></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, June 22, 2006</h2><P>You don't need to use reflection, no.</P>
+<P>What you can do is define an ISavable interface:</P>
+<P>Public Interface ISavable<BR>&nbsp; Function Save() As Object<BR>End Interface</P>
+<P>And have all your business objects implement this interface. Of course a better approach is to create custom base classes of your own to abstract BusinessBase&lt;T&gt; and BusinessListBase&lt;T&gt;, which implement this interface. Kind of like this:</P>
+<P>&lt;Serializable()&gt; _<BR>Public Class MyBase(Of T As MyBase(Of T))<BR>&nbsp; Inherits Csla.BusinessBase(Of T)<BR><BR>&nbsp; Implements ISavable<BR><BR>&nbsp; Private Function ISavable_Save() As Object Implements ISavable.Save<BR>&nbsp;&nbsp;&nbsp; Return Me.Save()<BR>&nbsp; End Function<BR><BR>End Class</P>
+<P>You lose the strong typing of the normal Save(), but you gain the ability to write the component you are after.</P>
+<P>I am considering adding this concept directly into version 2.1, because it is a common request and there's no harm in adding this idea (it doesn't break existing code, etc.)</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Massong replied on Thursday, June 22, 2006</h2><P class=MsoNormal><SPAN>Hi Rocky,<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>thanks for your fast reply.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>I have just upgraded nearly all of my hundreds of classes to CSLA 2.x and I inherit them from BuisenessBase(Of T). I’m a little bit horrified by editing all this classes again. At the moment I use this BackgroundSaver only to save orders and tours. So maybe I should create an OrderBackgroundSaver and a TourBackgroundSaver component instead...<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Greetings,<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Christian<o:p></o:p></SPAN></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Massong replied on Thursday, June 22, 2006</h2><P class=MsoNormal><SPAN>Hi Rocky,<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>couldn’t you move the save-method to Core.BusinessBase like this<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Class Core.BusinessBase<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp; </SPAN>Public Overridable Function SaveItem() As Core.BusinessBase<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN>…<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp; </SPAN>End Function<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>End Class<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>and call it in the Csla.BuisnessBase like this<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Class BusinessBase(Of T As BusinessBase(Of T))<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;</SPAN><SPAN>&nbsp;</SPAN>Public Overridable Function Save() As T<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;</SPAN><SPAN>&nbsp;</SPAN><SPAN>&nbsp;</SPAN><SPAN>&nbsp;</SPAN>Return CType(Me.SaveItem, T)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;</SPAN><SPAN>&nbsp;</SPAN>End Function<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>End Class<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>so that it is possible to call SaveItem without strong typing or Save with strong typing as necessary?<o:p></o:p></SPAN></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, June 22, 2006</h2><P>Yes, but remember that BusinessListBase can also be a root object. In the general case, you need to be able to save both BusinessBase-derived and BusinessListBase-derived editable root objects.</P>
+<P>While you might not have that case, it is at least something I need to consider to incorporate this idea into the framework itself.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Massong replied on Friday, June 23, 2006</h2><P class=MsoNormal><FONT face="Times New Roman"><SPAN>I see – that wouldn’t work because of BusinessListBase inherits directly from System.ComponentModel.BindingList. I thought it would work the same way. There would be a Core.BusinessListBase necessary...</SPAN></FONT></P>
+<P class=MsoNormal><FONT face="Times New Roman"><SPAN></SPAN></FONT>&nbsp;</P>
+<P class=MsoNormal><FONT face="Times New Roman"><SPAN>Greetings,</SPAN></FONT></P>
+<P class=MsoNormal><FONT face="Times New Roman"><SPAN>Christian</SPAN></FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Saturday, June 24, 2006</h2><P>I think a few posts were lost due to the system crash and subsequent restore of the backup.</P>
+<P>I'd replied here that I am putting ISavable into version 2.1, so both BusinessBase&lt;T&gt; and BusinessListBase&lt;T&gt; will implement this interface and you can use its loosely typed Save() method.</P>
+<P>This enables other base form class and UI framework scenarios, as well as allowing me to write a new EditableRootListBase class for 2.1.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ray replied on Monday, February 18, 2008</h2>*bump*<br><br>Found this post and it completely complies with what I need to do.<br><br>So, I have something that works and want to make sure this would be the recommended save operation:<br><font color="#0000ff">//To Apply Edit:<br>Csla.Core.BusinessBase bb = (Csla.Core.BusinessBase) myCslaObject;<br>bb.ApplyEdit();<br>//To Save:<br>Csla.Core.ISavable ISav = (Csla.Core.ISavable)bb;<br>ISav.Save();</font><br><br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, February 19, 2008</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>It is probably better to use interfaces throughout:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>// unbind object from UI<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>((Csla.Core.ISupportUndo)myObject).ApplyEdit();<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>object result = ((Csla.Core.ISavable)myObject).Save();<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>// rebind UI to &#8216;result&#8217;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky</span><o:p></o:p></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

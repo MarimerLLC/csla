@@ -1,0 +1,14 @@
+<html><header><title>Session Variables and Business rules</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Session Variables and Business rules</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3408.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Ashraf Ali posted on Tuesday, August 21, 2007</h2>I am working&nbsp;on a CSLA 1.1 application , It was using in-process session variables I changed it to out of process (SQL Server) session and businessrules&nbsp;is no longer working in the sense that business rules are satisfied but its still showing me those business rules as broken.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>xAvailx replied on Wednesday, August 22, 2007</h2>I found the same issue, what I did to solve was added the IDeserializationCallback interface to business base and then re-added the business rules. That solved my issue when storing objects in out of process state. <br><br>HTH, BZ<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Ashraf Ali replied on Tuesday, September 04, 2007</h2><P>Thanks for the reply, but can you please elaborate on this a&nbsp; litte more :) </P>
+<P>you implemented the IDeserializationCallback like</P><FONT size=2>
+<P>&lt;Serializable()&gt; _</P></FONT><FONT color=#0000ff size=2>
+<P>Public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>MustInherit</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Class</FONT><FONT size=2> BusinessBase</P>
+<P></FONT><FONT color=#0000ff size=2>Inherits</FONT><FONT size=2> Core.UndoableBase</FONT></P>
+<P><FONT size=2>Implements IDeserializationCallBack</FONT></P>
+<P><FONT size=2></FONT>&nbsp;</P>
+<P><FONT size=2>where do you re-add the business rules?</FONT></P>
+<P><FONT size=2></FONT>&nbsp;</P>
+<P><FONT size=2>Thanks</FONT></P>
+<P><FONT size=2>Ash</P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Soumya replied on Saturday, April 05, 2008</h2><P>Hi Ashraf Ali,</P>
+<P>I too have similar problem with version 2.1.4.0. How did you resolve this problem? Did you implement IDeserialzationCallBack. Can you set me sample?</P>
+<P>Regards,</P>
+<P>Soumya</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,16 @@
+<html><header><title>ObjectListView Problem</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>ObjectListView Problem</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3211.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>gdk9am posted on Monday, July 16, 2007</h2><P>I am having trouble with the ObjectListView with a DynamicRootList (EditableRootListBase) </P>
+<P>My source list is list of editable root objects.</P>
+<P>Filtering and sorting works properly.</P>
+<P>However New or updated records are not saved to the database eventhough they are updated in the list on screen.</P>
+<P>Can anyone give me a solution to this problem ?</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Tuesday, July 17, 2007</h2><P>The ObjectListView acts differently than Rocky's SortedBindingList.</P>
+<P>If you bind to the SortedBindingList then any changes made to it are really made to the underlying list.</P>
+<P>When you bind to the ObjectListView you have to locate the correct object and take action on it. I do not think that databinding can do this for you but I am not sure.</P>
+<P>Joe</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>gdk9am replied on Tuesday, July 17, 2007</h2><P>Hi </P>
+<P>Thanks for your answer</P>
+<P>Can you provide some sample code which uses ObjectListView to persist records to the database ?</P>
+<P>Graeme</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Brian Criswell replied on Wednesday, July 18, 2007</h2>The ObjectListView was developed before the EditableRootList came into being and so did not take it into account.&nbsp; It does not pass a method call (most likely something in IEditableObject) to the underlying object because it handles undo on a row to row basis.&nbsp; If you do not do this, then the object raises the PropertyChanged event when the properties are changed (even when in an edit) and the row is sorted or filtered immediately instead of when you move off of that row.&nbsp; As an interim solution, I would recommend that you handle the event (I assume there is one) on the DataGridView that says the current row's values were kept and then save the object that corresponds to that row.<br><br>((MyClass)view[ i ].Object).Save();<br><br>Should save row i's object when you move off of row i.<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

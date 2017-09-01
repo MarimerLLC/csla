@@ -1,0 +1,128 @@
+<html><header><title>Newbie question Validating SmartDate entry in DataGridView.</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Newbie question Validating SmartDate entry in DataGridView.</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4883.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>AlexTTNET posted on Thursday, May 22, 2008</h2><P class=MsoNormal>I have DataGridView and one column is binding to SmartDate property, sure that is a string. </P>
+<P class=MsoNormal>If user input is DateTime all validations work, but if user entered string like that is not DateTime (like “aaaa”), then DataGrid throwing formatting exception.</P>
+<P class=MsoNormal>In Set property I use standard routine:</P>
+<P class=MsoNormal><SPAN>set</SPAN><SPAN> <o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>{<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>CanWriteProperty(<SPAN>true</SPAN>);<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>if</SPAN> (_startDate.Text != <SPAN>value</SPAN>)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>{<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>_startDate.Text = <SPAN>value</SPAN>;<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>PropertyHasChanged();<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>}<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>}</SPAN> <SPAN>&nbsp;</SPAN></P>
+<P class=MsoNormal><SPAN></SPAN>&nbsp;</P>
+<P class=MsoNormal>How do I prevent user to enter not DateTime string in DataGridView?</P>
+<P class=MsoNormal>If I use IsDate before set text property, than user will never know what happened.</P>
+<P class=MsoNormal>If I catch exception on DataGrid_Erorr level, Validation rules will not work. </P>
+<P class=MsoNormal>Thank you.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>dtabako replied on Friday, May 23, 2008</h2>You could try exposing the property as a SmartDate instead of a string. I don't know if that will work - I haven't used any date properties with in-place grid editing. But it did work for the issue I had with sorting SmartDates within the grid by clicking the column header. When I exposed the property as a string it sorted as a string (i.e. 1/1/08 &lt; 12/22/05). After exposing the property as a SmartDate, it sorted properly.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Friday, May 23, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I used the following code (VB version)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Set</span><span>(<span>ByVal</span>
+value <span>As</span> <span>String</span>)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+CanWriteProperty(<span>&quot;EffectiveDate&quot;</span>, <span>True</span>)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span>If</span> <span>Not</span>
+_effectiveDate.Text.Equals(value) <span>Then<o:p></o:p></span></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span>Dim</span> testDate <span>As</span>
+SmartDate = <span>New</span> SmartDate()<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span>If</span> SmartDate.TryParse(value, testDate) <span>Then<o:p></o:p></span></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+_effectiveDate.Text = value<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span>End</span> <span>If<o:p></o:p></span></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+PropertyHasChanged(<span>&quot;EffectiveDate&quot;</span>)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span>End</span> <span>If<o:p></o:p></span></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span>End</span> <span>Set</span></span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Senior Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> dtabako
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Friday, May 23, 2008 11:51 AM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] Newbie question Validating SmartDate entry in
+DataGridView.<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>You could try exposing the property as a SmartDate instead
+of a string. I don't know if that will work - I haven't used any date
+properties with in-place grid editing. But it did work for the issue I had with
+sorting SmartDates within the grid by clicking the column header. When I
+exposed the property as a string it sorted as a string (i.e. 1/1/08 &lt;
+12/22/05). After exposing the property as a SmartDate, it sorted properly.<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>AlexTTNET replied on Friday, May 23, 2008</h2><P class=MsoNormal><FONT face=Calibri>Thank you.</FONT></P>
+<P class=MsoNormal><FONT face=Calibri>SmartDate will race an error before property change, because binding trying to convert not date string to date and throw DataBinding error, sure we can catch that error on front end, but in general, idea was to keep validation encapsulated in BO.</FONT></P>
+<P class=MsoNormal><FONT face=Calibri>TryParse work for string and that is what I did for today, but in that case Validation rules will be not use, because property not changed and an empty string will be displayed</FONT></P>
+<P class=MsoNormal><FONT face=Calibri>My guess was we can use BrokenRules collection and display error provider icon, as for all other cases.</FONT></P>
+<P class=MsoNormal><FONT face=Calibri>TryParse work good enough for numeric, because we can display some default value 0D for example if TryParse fails, but what is default value for date?</FONT></P>
+<P class=MsoNormal><FONT face=Calibri>Did somebody try to use </FONT><SPAN>Nullable</SPAN><SPAN>&lt;<SPAN>DateTime</SPAN>&gt;</SPAN><FONT face=Calibri> instead of SmartDate? </FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>dtabako replied on Thursday, May 29, 2008</h2>What about changing the grid column to a masked text box column (can that be done?&nbsp;- again never tried it, I'm just kind of brainstorming here) and providing a date-format mask?</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>AlexTTNET replied on Thursday, May 29, 2008</h2><P class=MsoNormal>That is good idea and I working on it right now.</P>
+<P class=MsoNormal>But question about <SPAN>MaskedTextBoxColumn seems to be out of scope of CSLA discusion.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>I try to use MS Implementation in<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;</SPAN><A href="http://msdn2.microsoft.com/en-us/library/ms180996.aspx"><SPAN>http://msdn2.microsoft.com/en-us/library/ms180996.aspx</SPAN></A> of MaskedTextBoxColumn, but any time I run code and try to set mask, null refernce exeption trowing.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>I hope if anyone has proved vorking implementation of MaskedTextBoxColumn for Data Grid and cpould share, because seems to me almost all Csla users early or later faced that problem.<o:p></o:p></SPAN></P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

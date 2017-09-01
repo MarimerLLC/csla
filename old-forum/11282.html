@@ -1,0 +1,214 @@
+<html><header><title>CSLA 4 MVC using Session Variable the rules and child changed event doesn't trigger</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA 4 MVC using Session Variable the rules and child changed event doesn't trigger</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11282.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>divsalar posted on Thursday, April 05, 2012</h2><p>I am using the latest CSLA.Net 4 and MVC 3. I save BOs in the session and when user enter information, I get hold of the BOs from session and update the object using TryUpdateModel in the controller.</p>
+<p>The problem I have is the broken rules doesn&#39;t trigger when I read back the BO from session. I mean, when I change the property (in child object) the rule for that property doesn&#39;t trigger in SetProperty&lt;&gt;() meathod. I also found that the OnChildChanged event doesn&#39;t trigger in the parent object. </p>
+<p>Here is my model:</p>
+<p>BB (root) with BB (child) </p>
+<p>I have overriden OnChildChanged in BB(root) and also have rules in BB(child)</p>
+<p>When any property in BB(child) changes by SetProperty&lt;&gt;(), it doesn&#39;t break in Rule in BB(child) and also it doesn&#39;t break in OnChildChanged of BB(root) while it&#39;s in SetProperty. This is the case only when I read back the BB(child) object from Session (HttpContext.Current.Session). When I test this in UnitTest, it&#39;s fine and it triggers the events as expected.</p>
+<p>I have put [Serializable()] attribute in the Rule class and change the sessionState to InProc in web.config with no luck. </p>
+<p>Please could you let me know how I can fix this.</p>
+<p>Regards</p>
+<p>Behnam</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>divsalar replied on Thursday, April 05, 2012</h2><p>Following my question, I have actually bought the CSLA.Net&nbsp; MVC eBook and I undrestand it&#39;s suggested to be stateless and not use Session, but my application has very rich UI and I really need to send Ajax request to bind the model and display the broken rules to the user as they enter information.</p>
+<p>Again, the issue I have is the OnChildChanged doesn&#39;t triggers in BB(root) when BB(child) property changes by the following ajax request when the BB(child) is read back from session. Also the business rules doesn&#39;t trigger in SetProperty like it does when I test the same object in Unit Tests.</p>
+<p>Please let me have your suggestion to fix this issue.</p>
+<p>Many thanks</p>
+<p>Behnam</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>divsalar replied on Tuesday, April 10, 2012</h2>
+ 
+  
+ 
+
+ 
+  Normal
+  0
+  
+  
+  
+  
+  false
+  false
+  false
+  
+  EN-GB
+  X-NONE
+  X-NONE
+  
+   
+   
+   
+   
+   
+   
+   
+   
+   
+  
+  
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+  
+
+ 
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+ 
+
+
+
+<p>I think I found why this is happening. CSLA model binder suspend the
+validation rule at the beginning of binding and at the end it runs the
+validation only. I think there is a same reason for OnChildChanged event that
+is not triggered in the middle of binding. Please let me know if this is
+correct. </p>
+<p>The reason I hooked to OnChildChanged event is just to call
+BusinessRules.CheckRules() in the BB(parent). Is there any other way to
+validate the parent BO when the child is changed using CslaModelBinder? I can
+see the rules is called for BB(child) because the model binder is binding this
+object however there is dependent rule in the BB(parent) where needs to be
+called when child is changed.</p>
+<p>Please help.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Tuesday, April 10, 2012</h2><p>An alternate hook would be the ValidationCompleted event on the child object. </p>
+<p>Do you really want to rerun ALL rules in the parent? </p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

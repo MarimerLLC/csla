@@ -1,0 +1,38 @@
+<html><header><title>Transactional BatchQueue?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Transactional BatchQueue?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/566.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>DavidG posted on Friday, July 07, 2006</h2>Hello,<br><br>I understand that the BatchQueue has not been brought forward into CSLA 2.0, but I'm wondering if I can still get some help with it?<br><br>Basically, I am combining some database updates with adding jobs to the queue and would like to know if (or how to make) the queue transactional. Or am I just going to have to talk to MSMQ directly?<br><br>My (pseudo)code is something like this:<br><br>[Transactional()]<br>protected override void DataPortal_Update()<br>{<br>&nbsp;&nbsp;&nbsp; foreach(Child item in BusinessCollectionBase)<br>&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;  &nbsp;&nbsp; item.property = value;<br><br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;  &nbsp;&nbsp;  BatchQueue.Submit(BatchJob);<br>&nbsp;&nbsp;&nbsp; }<br><br>&nbsp;&nbsp;&nbsp; BusinessCollectionBase.Save();<br>}<br><br>Therefore if the BusinessCollectionBase.Save() fails for some reason, I want the BatchJobs to be rolled back as well. I know that MSMQ is transactional, but it doesn't look like the BatchQueue would support that, or does it? If not, does anybody have an idea how to implement it?<br><br>Thanks,<br><br>David<br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, July 07, 2006</h2><P>To do this you'll have to alter the batchqueue code itself so it starts the transaction before reading the work item from the queue. In general, this should work, as long as the transaction type you use when reading from the queue is the same as what your object uses - and that has to be EnterpriseServices, because that's the only transaction monitor that supports MSMQ.</P>
+<P>The deeper problem is what to do in the case of failure? Just putting the item back in the queue almost certainly means it will be retried immediately, and will fail - blocking your queue processor into an infinite loop. Ugly.</P>
+<P>So what you need to do instead, is what COM+ does with Queued Messaging; which means that in the case of failure you move the queued item to <EM>another queue</EM> that has a different retry schedule. Look at Microsoft's docs for Queued Messaging for more details on what they do.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>DavidG replied on Friday, July 07, 2006</h2>Thanks for the quick reply Rocky!<br><br>I agree with the points you make in the reply, however they seem to be in the context of processing (receiving) the items from the queue. What my question really is though it how to rollback the submitting of items to the queue. I'm thinking it's not possible using the BatchQueue and will need talk to MSMQ directly. If I understand how it works correctly, the messages won't be sent to the queue until my distributed transaction commits, which is exactly what I want.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, July 07, 2006</h2>
+
+
+
+
+<DIV align=left><SPAN class=140223019-07072006><FONT face=Arial color=#0000ff size=2>Ahh, I see.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=140223019-07072006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=140223019-07072006><FONT face=Arial color=#0000ff size=2>You'll still need to do some work. The queue has to be 
+transactional for this to work - and the code currently creates simple queues. 
+You'll have to change the code to create a transactional queue instead (I don't 
+know how much work that is, sorry...)</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=140223019-07072006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=140223019-07072006><FONT face=Arial color=#0000ff size=2>Once the queue is transactional, then it should be the case 
+that, as long as your code that submits the job is in a COM+ transaction, the 
+submission will be done transactionally. In other words, the _client_ can't 
+submit the job - the job has to be submitted on the app server within a 
+DataPortal_XYZ method that is transactional. That way your code is running in a 
+COM+ transaction, and the submission will get rolled into that same 
+transaction.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=140223019-07072006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=140223019-07072006><FONT face=Arial color=#0000ff size=2>Rocky</FONT></SPAN></DIV><BR>
+<BLOCKQUOTE>
+  <DIV class=OutlookMessageHeader align=left>
+  <HR>
+  <FONT face=Tahoma size=2><B>From:</B> DavidG [mailto:cslanet@lhotka.net] 
+  <BR><B>Sent:</B> Friday, July 07, 2006 1:19 PM<BR><B>To:</B> 
+  rocky@lhotka.net<BR><B>Subject:</B> Re: [CSLA .NET] Transactional 
+  BatchQueue?<BR></FONT><BR></DIV>
+  <DIV></DIV>Thanks for the quick reply Rocky!<BR><BR>I agree with the points 
+  you make in the reply, however they seem to be in the context of processing 
+  (receiving) the items from the queue. What my question really is though it how 
+  to rollback the submitting of items to the queue. I'm thinking it's not 
+  possible using the BatchQueue and will need talk to MSMQ directly. If I 
+  understand how it works correctly, the messages won't be sent to the queue 
+  until my distributed transaction commits, which is exactly what I 
+  want.<BR><BR><BR><BR></BLOCKQUOTE></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

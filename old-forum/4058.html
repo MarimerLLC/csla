@@ -1,0 +1,84 @@
+<html><header><title>Forms &amp; WPF integration</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Forms &amp; WPF integration</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4058.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 posted on Tuesday, December 18, 2007</h2>Hi,<br><br>I'm trying to get some WPF into my project, which right now is a forms project.&nbsp; To do so, I'm creating a WPF user control which will be hosted on one of my forms.&nbsp; I'd like to know if there will be any problems mixing the two.&nbsp; <br><br>Has anyone attempted doing this?&nbsp; Will Csla handle this scenario?<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, December 18, 2007</h2>Beats me, sorry... I look forward to hearing how this works out <img src="/emoticons/emotion-1.gif" alt="Smile [:)]" /></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Massong replied on Wednesday, December 19, 2007</h2><P>Hi Andy,</P>
+<P>I’m very interested in your experiences. Sooner or later I want to upgrade our existing Windows Forms application, too. Does WPF mean that we have to rewrite our complete GUI or will be a migration tool available? If not, we can do the upgrade only step by step.</P>
+<P>I’m waiting for some forthcoming books about VS 2008, especially Matthew MacDonald’s book about WPF. And I’m waiting for our third party controls developer and their WPF grid control.</P>
+<P>Greetings,<BR>Christian</P>
+<P>PS: Can you recommend any books that are already available?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, December 19, 2007</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Andy was specifically asking about using “Crossbow” to mix WPF
+and Windows Forms in a single app.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>If you are looking at creating a WPF interface, that’s certainly
+approachable. The answers to your questions though, are Yes and No. Yes you’ll
+need to rewrite your GUI, and no there are not migration tools. I doubt there
+will be migration tools, because the architecture of WPF is so different from
+Windows Forms or Web Forms that I can’t see how you could automate the process…<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Right now the best books appear to be Chris Anderson’s “Essential
+Windows Presentation Foundation” and Adam Nathan’s “Windows Presentation
+Foundation Unleashed”.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Massong
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Wednesday, December 19, 2007 7:07 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] Forms &amp; WPF integration<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Hi Andy,<o:p></o:p></p>
+
+<p>Iâ€™m very interested in your experiences. Sooner or later I want to upgrade
+our existing Windows Forms application, too. Does WPF mean that we have to
+rewrite our complete GUI or will be a migration tool available? If not, we can
+do the upgrade only step by step.<o:p></o:p></p>
+
+<p>Iâ€™m waiting for some forthcoming books about VS 2008, especially Matthew
+MacDonaldâ€™s book about WPF. And Iâ€™m waiting for our third party controls
+developer and their WPF grid control.<o:p></o:p></p>
+
+<p>Greetings,<br>
+Christian<o:p></o:p></p>
+
+<p>PS: Can you recommend any books that are already available?<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Wednesday, December 19, 2007</h2>Basically, what Rocky said.&nbsp; I have a control I want to create because it would allow a better user experience, so I'm creating a WPF user control within a windows forms application.&nbsp; If it does well, I may in fact create more and more controls, until I basically have WinForms hosting an entire page.&nbsp; At that point, there's some manual tweaking you can do in the project file to make the project offically a WPF application.<br><br>That's my plan.&nbsp; It will take a while though.&nbsp; I haven't gotten any books yet, but I'm going to look at the ones Rocky suggests.<br><br>I'm starting off very small though; I won't be doing direct data-binding per-say.&nbsp; I'll be passing the control a BusinessListBase subclass of objects, which will render in a ComboBox.&nbsp; When one is selected, the control will raise an event and pass the selected object as part of the event arguments.&nbsp; <br><br>Why am I doing it like this?&nbsp; Well, its similar to how another WinForms control I built works, where the user must select an address from a list of existing addresses, OR pick the "empty" address to type in an address which doesn't exist.&nbsp; I'm doing something similar for phone and fax numbers (pick an existing one, or type in a new one), and so far WPF is easier than the controls I had to build to make the address selector work.<br><br>I do hope to do more though, as I want to do new development in WPF, using Crossbow to embed WPF into a form host.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Massong replied on Wednesday, December 19, 2007</h2><P>Thanks Rocky and Andy for your reply.</P>
+<P>I think I saw a presentation of WindowsFormsHost to use Windows Forms controls in WPF a year ago. "Crossbow" would be the other direction, using WPF in a Windows Forms application? Thank you for this hint. I could start with upgrading selected User Controls and use them in my forms (Like Andy says). Upgrading the forms themselves would be the last step, because I inherited all my dialog forms from a extended base class.</P>
+<P>At Andy: Why is WPF easier to use than Windows Forms? I saw some presentations of WPF that focused on the better layout, 3D, Vista, and user experience. But I've never thought it would be easier to use...</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Massong replied on Wednesday, December 19, 2007</h2>Sorry, my misunderstanding: You mean that the&nbsp;control is not easier to build but it has got a better usability...?</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>csanchez replied on Wednesday, December 19, 2007</h2>Hi:<br><br>I think is the other way around. WindowsFormsHost is for hosting a form's control in WPF. You might be reffering to a ElementHost which you use to host a WPF control in a Windows Form enviroment.<br><br>I haven't tried the last one, but the WindowsFormsHost is working great in my project.<br><br>Christian.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Wednesday, December 19, 2007</h2>Well, Crossbow is mostly hidden I think.&nbsp; There's a control in the toolbox which is System.Windows.Forms.Integration.ElementHost, which acts as the host for the control.&nbsp; So far, very simple.<br><br>WPF is easier because, well, I don't need to write a ton of code to put a couple of text boxes on each ComboBoxItem.&nbsp; With WinForms, I'd probably have to code almost from scratch.&nbsp; Wpf lets controls contain other controls.. so no need to do this.<br><br>Of course not knowing much about WPF is slowing me down a bit, but that's just because I haven't learned it yet.<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

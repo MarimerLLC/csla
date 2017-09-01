@@ -1,0 +1,19 @@
+<html><header><title>Memory Leak from ChildChanged Event Handler</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Memory Leak from ChildChanged Event Handler</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9434.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>snakebyteme posted on Thursday, August 26, 2010</h2><p>I am iterating through 2000 business objects using CSLA 3.8.1.</p>
+<p>I instantiate them one at a time, call a processing function, and then advance the loop.</p>
+<p>The memory usage just keeps incrementing.</p>
+<p>When I run ANTS memory profiler, it gives me this:</p>
+<p>&nbsp;</p>
+<p>ObjUser(this as BusinessBase)._childChangedHandlers</p>
+<p>System.EventHandler&lt;Core.ChildChangedEventArgs&gt; (this as MultiCastDelegate)._invocationList </p>
+<p>System.Object[] </p>
+<p>System.EventHandler&lt;Core.ChildChangedEventArgs&gt; (this as Delegate)._target</p>
+<p>ObjUserDetail(this as BusinessBase)._fieldmanager</p>
+<p>&nbsp;</p>
+<p>These objects have not subscribed to the ChildChanged event.</p>
+<p>Can anyone shed some light on what I should be looking for to eliminate these event handlers from preventing garbage collection?</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Thursday, August 26, 2010</h2><p>First, you should check the change logs for 3.8.2, 3.8.3 and 3.8.4 to see if there&#39;ve been any bug fixes around parent-child relationship management over that time.</p>
+<p>Second, you should realize that within an object graph the objects handle each other&#39;s events. In particular, a parent always handles events from its children. But that doesn&#39;t matter from a memory perspective, since that is all contained within the object graph.</p>
+<p>What isn&#39;t clear to me from your post is whether something <i>outside</i> the object graph is somehow handling the events? </p>
+<p>Third, and this is perhaps the issue, you can only use a managed backing field to reference <i>a child object</i>. People sometimes use a managed backing field to implement a &quot;using&quot; relationship - to hold a reference to a non-child object. That&#39;s bad. That&#39;ll cause all sorts of issues - including n-level undo confusion, serialization nastiness and quite possibly memory leaks due to event handlers.</p>
+<p>But if that&#39;s the issue, that&#39;s just a bug in the business code.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>snakebyteme replied on Monday, August 30, 2010</h2><p>We put a business object (User) in the Custom Identity and were assigning it to each object&#39;s &quot;User&quot; property before we wrote it to the database.</p>
+<p>That reference (User--&gt;CustomIdentity--&gt;CustomPrincipal) was preventing the object from being garbage collected.</p>
+<p>Thanks for the direction Rocky. There is nothing more frustrating than a memory leak.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, August 30, 2010</h2><p>I&#39;m glad you found the issue. Memory leaks really are frustrating...</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

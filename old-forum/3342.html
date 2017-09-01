@@ -1,0 +1,223 @@
+<html><header><title>Xml based business rules</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Xml based business rules</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3342.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>ChristianPena posted on Tuesday, August 07, 2007</h2>Good afternoon. <br><br>I searched on the forum and found some discussion on the topic of externalized business rules. I got the general feeling that people were wary of employing this type of mechanism, but I would like to explore the idea some more before giving up entirely. <br><br>I have a class library that I am exposing through a SOA interface through the use of DTOs. The library will be used by two different interfaces, our internal representation and our external representation. The workflow is different when using one interface or the other so here the dichotomy is justified. The other consideration is that our logic is updated fairly frequently as our business rules are fairly volatile. We certainly can code and recompile each time, but we are starting to see a maintenance overhead that might well be avoided if our rules are extracted out.<br><br>I am considering serializing the DTOs to XML and using XPath queries to validate the document created (by identifying invalid nodes, given the criteria provided). The logistics are a little sketchy at the moment, but the idea is that since these objects are being called through the web interface, they do not need to validate in real-time, as each property is set, so no calls to PropertyChanged would be made. The object properties would be validated only once all properties have been set and presumably, as I try to save the objects. <br><br>Has anyone taken this sort of approach? Any advice on going down this route?<br><br>Thank you,<br><br>Christian<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, August 07, 2007</h2><P>Why not leave the data in the DTOs and pump them through a rules engine like the ones in Biztalk Server or Windows Workflow Foundation or any number of third party rules engines? </P>
+<P>No sense writing your own batch processing engine when you can use something that's a commercially supported product.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ChristianPena replied on Tuesday, August 07, 2007</h2>Rocky, <br><br>Thanks for the response. <br><br>This process needs to be near real-time in the sense that we will need to supply a response to our users as quickly as possible. They click the submit button and we validate the input immediately. I've not done any work with either of those two technologies (we do not have BizTalk here), but from what I have read on the forum, I gathered that WWF is not appropriate for activities such as this that are not batch processes. I've been doing a lot of reading lately instead of doing, but that was what I came away with. <br><br>I just POC'ed a little "validation engine" and that aspect of the puzzle works well. It creates a business rules collection from an XML document. Each rule is executed against a serialized (Non-CSLA) class and the engine raises an event for each query that returns a node, which signals a broken rule.<br><br>Am I heading down the path to even more maintenance headaches?<br><br>Thanks,<br><br>Christian<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>dlambert replied on Wednesday, August 08, 2007</h2>As Rocky indicated, there are lots of open-source and commercial business rules engines available.&nbsp; A quick investigation might turn up a winner for you, and it might also reveal some features that you're not thinking about right now that may turn out to be important later.<br><br>In addition to your concern about maintenance, I'd keep a watchful eye on performance, especially as the complexity of the rules increases.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>david.wendelken replied on Wednesday, August 08, 2007</h2><P>I guess I'm missing something!</P>
+<P>Internal, hard-wired&nbsp;example:</P>
+<P>ValidationRules.AddRule(CommonRules.StringRequired,"LastName");</P>
+<P>External, data-driven example:</P>
+<P>(I'm guessing on the syntax here - especially the TypeOf code - I haven't done this, and I'm assuming that we've done a business object and business object collection to make the list of rules available in a c# environment:</P>
+<P>// Load the rule data collection<BR>RuleDataList ruleDataList = RuleDataList.GetList(TypeOf(this));</P>
+<P>foreach (RuleData ruleData in ruleDataList)<BR>{<BR>&nbsp;&nbsp;&nbsp; ValidationRules.AddRule(SomeConversionFunction(ruleData.RuleMethod),ruleDataArguments);<BR>}</P>
+<P>SomeConversionFunction would take the string representation of the rule method and turn it into the technical equivalent of CommonRules.StringRequired in the first example.</P>
+<P>Is that what you are talking about?&nbsp; The data source for RuleDataList could be an xml file or a database table, whichever was more convenient.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>david.wendelken replied on Wednesday, August 08, 2007</h2>and if someone has a working code sample of the second example, posting it here would be helpful! :)</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ChristianPena replied on Friday, August 10, 2007</h2><P>David,</P>
+<P>What I picture is something like this:</P>
+<P>So given a class Customer with properties Name and Account, I would expect to get a serialized version similar to: </P>
+<P>&lt;Customer&gt;<BR>&lt;Name&gt;David&lt;/Name&gt;<BR>&lt;Account&gt;123&lt;/Account&gt;<BR>&lt;/Customer&gt;</P>
+<P>The&nbsp;business rules say that your name is required and your account must be 4 characters in length and must be numeric. Your business rules XML would look like (though not exactly since you could be as granular as you wanted):</P>
+<P>&lt;?xml version="1.0" encoding="utf-8" ?&gt;<BR>&lt;Rules&gt;<BR>&nbsp; &lt;RuleGroup RuleGroupID="CustomerRules" Context="/Customer"&gt;<BR>&nbsp;&nbsp;&nbsp; &lt;Rule RuleID="NameLength" IsEnabled="True" Property="Name" <BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; RuleText="//Customer[string-length(Name) = 0]/Name"<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Message="Your name is required." /&gt;<BR>&nbsp;&nbsp;&nbsp; &lt;Rule RuleID="AccountValue" IsEnabled="True" Property="Account"<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; RuleText="//Customer[string-length(Account) != 4 or string(number(Account)) = 'NaN']/Account"<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Message="The account number specified is not valid. Please check the account number." /&gt;<BR>&nbsp; &lt;/RuleGroup&gt;<BR>&lt;/Rules&gt;</P>
+<P>The code I wrote will load this xml file into an object hierarchy. It goes through and executes the Context XPath query to see if their is any need to run the following rules. The rule group "CustomerRules" will identify any Customer nodes that are the root nodes of a document. If any are found, then you can run the other rules. As I execute them, I raise an event if they return a node and give detailed informaton about the error including the friendly Message to display.</P>
+<P>Our system is not performance critical, but it is a web application that must respond to a user in a somewhat timely fashion. My initial tests show this as being quick enough that I do not have to worry so much about performance, and that is without having applied any optimizations.</P>
+<P>This idea came about after seeing business rules scattered around two similar interfaces, many of the rules out of date. It may not be viable at all for building a scalable flexible application, but I wanted to get some feedback from others before buying into or dismissing the idea altogether. </P>
+<P>Thanks in advance.</P>
+<P>Christian</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, August 10, 2007</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>This sort of thing is why CSLA 3.0 has the DecoratedRulesArgs
+class btw.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>The idea is that you can use reflection to do the work, rather
+than coding anything beyond the rule methods themselves.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>&lt;Rule type=&#8221;Csla.Validation.CommonRules, Csla&#8221; method=&#8221;StringRequired&#8221;
+/&gt;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&lt;Rule type=&#8221;Csla.Validation.CommonRules, Csla&#8221; method=&#8221;StringMaxLength&#8221;&gt;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp; &lt;Parameter name=&#8221;MaxLength&#8221; type=&#8221;Int32&#8221;
+value=&#8221;20&#8221; /&gt;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&lt;/Rule&gt;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&lt;Rule type=&#8221;MyApp.Rules, MyApp.Library&#8221; method=&#8221;AwesomeRule&#8221;&gt;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp; &lt;Parameter name=&#8221;MinValue&#8221; type=&#8221;Int32&#8221;
+value=&#8221;20&#8221; /&gt;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp; &lt;Parameter name=&#8221;MaxValue&#8221; type=&#8221;Int32&#8221;
+value=&#8221;100&#8221; /&gt;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp; &lt;Parameter name=&#8221;Randomize&#8221; type=&#8221;Boolean&#8221;
+value=&#8221;True&#8221; /&gt;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&lt;/Rule&gt;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Or variations along that line. The point being that you can
+easily write a single bit of code that can parse a &lt;Rule&gt; node and create
+everything you need to call AddRule() &#8211; specifically a delegate pointer
+and a DecoratedRuleArgs object.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>david.wendelken replied on Friday, August 10, 2007</h2><P>I've been building a webcontrol that reads the list of rules and automagically adds the validators necessary to enforce them.</P>
+<P>That's why I'm particularly interested in learning how to assign the rules from a database, it allows me to add all non-custom rules without coding or re-deploying the application, and to disable any already coded rule in the same way.&nbsp; In combination with my new webcontrol, I'm hoping to reduce the coding/testing/deployment/maintenance effort of business rules to about 5% of what it currently is.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>un7lg replied on Friday, August 10, 2007</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div>
+
+
+
+
+
+
+ 
+
+
+
+<div class="Section1"><br><p class="MsoNormal"><span>&nbsp;The point being that you can
+easily write a single bit of code that can parse a &lt;Rule&gt; node and create
+everything you need to call AddRule() – specifically a delegate pointer
+and a DecoratedRuleArgs object.<o:p></o:p></span></p>
+
+
+
+<p class="MsoNormal"><span>Rocky<o:p></o:p></span></p>
+
+
+
+</div>
+
+</div></BLOCKQUOTE><br><br>Rocky,<br><br>Could you give a piece of code how to handle this issue with DecoratedRuleArgs?<br>Thanks<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, August 10, 2007</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Full details are coming in the <i>Using CSLA .NET 3.0</i> ebook,
+but this is how you use it in AddBusinessRules():<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>      Csla.Validation.<span>DecoratedRuleArgs</span>
+args = <o:p></o:p></span></p>
+
+<p class=MsoNormal><span>        <span>new</span> Csla.Validation.<span>DecoratedRuleArgs</span>(<span>&quot;Name&quot;</span>,
+<span>&quot;Project name&quot;</span>);<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>      args[<span>&quot;MaxLength&quot;</span>]
+= 50;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>      ValidationRules.AddRule(<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>        Csla.Validation.<span>CommonRules</span>.StringMaxLength,
+<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>        args);<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>And you can look at the 3.0 CommonRules class to see how to
+implement a rule that accepts DecoratedRuleArgs (or a subclass of it anyway – I
+had to do some fancier than normal work to preserve backward compatibility)
+rather than RuleArgs.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>The important thing is that the rule method MUST accept a
+DecoratedRuleArgs parameter for this to work.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> un7lg
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Friday, August 10, 2007 3:47 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: Xml based business rules<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<blockquote>
+
+<div>
+
+<p class=MsoNormal><img id="_x0000_i1029" src="/Themes/default/images/icon-quote.gif"><strong>RockfordLhotka:</strong><o:p></o:p></p>
+
+</div>
+
+<div>
+
+<div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>&nbsp;The
+point being that you can easily write a single bit of code that can parse a
+&lt;Rule&gt; node and create everything you need to call AddRule() â€“
+specifically a delegate pointer and a DecoratedRuleArgs object.<o:p></o:p></p>
+
+<p class=MsoNormal>Rocky<o:p></o:p></p>
+
+</div>
+
+</div>
+
+</blockquote>
+
+<p class=MsoNormal><br>
+<br>
+Rocky,<br>
+<br>
+Could you give a piece of code how to handle this issue with DecoratedRuleArgs?<br>
+Thanks<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>david.wendelken replied on Sunday, August 12, 2007</h2><span>Let's assume I have the name of the rule type in a string variable, like so:<br><br>String&nbsp; ruleName = "</span><span>Csla.Validation.<span>CommonRules</span>.StringMaxLength";<br><br>And that the rule arguments have been set up correctly in the args variable.<br><br>How would I write this line so it would work?<br><br></span><span>ValidationRules.AddRule(ruleName, args);<br><o:p></o:p></span></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,70 @@
+<html><header><title>Editable root collection saving?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Editable root collection saving?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/8794.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>saeedsamie posted on Monday, April 12, 2010</h2><p>Hi</p>
+<p>I have a BusinessListBase collection containing BusinessBase children. I am using the template mentioned in the book under the title of &quot;Editable Root Collection&quot;. Using windows form I bind the object to a datagrid and everything works well up to the point I want to save the root. An encounter an error with the following message:</p>
+<p>&nbsp;</p>
+<p>DataPortal.Update failed (System.NotSupportedException: Invalid operation - update not allowed<br />&nbsp;&nbsp; at Csla.BusinessListBase`2.DataPortal_Update() in C:\Visual Studio Projects\cslacs\Csla\BusinessListBase.cs:line 1155<br />&nbsp;&nbsp; at dm(Object , Object[] )<br />&nbsp;&nbsp; at Csla.Reflection.MethodCaller.CallMethod(Object obj, DynamicMethodHandle methodHandle, Object[] parameters) in C:\Visual Studio Projects\cslacs\Csla\Reflection\MethodCaller.cs:line 357)</p>
+<p>&nbsp;</p>
+<p>Does anybody know what the problem is?</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Monday, April 12, 2010</h2><p>You must override the DataPortal_Update() method. Look at Chapter 17 or 18 for an example.</p>
+<p>CSLA has no idea what kind of database you are using (or if you even have a database), so you need to open the database before trying to save the child objects - and this is the reason for overriding that method.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>saeedsamie replied on Wednesday, April 14, 2010</h2><p>Thanks</p>
+<p>I did what you said and it worked.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>bniemyjski replied on Wednesday, April 14, 2010</h2><p>
+<p>Hello,</p>
+<p>Is this a valid save scenario for ERL?</p>
+<p>
+<p>protected override void DataPortal_Update()</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;{</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;RaiseListChangedEvents = false;</p>
+<p>&nbsp;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;for (int index = 0; index &lt; DeletedList.Count; index++)</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;{</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;DeletedList[index] = DeletedList[index].Save();</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;}</p>
+<p>&nbsp;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp;<b> &nbsp; &nbsp; &nbsp;// Clearing the list... Is this okay for nlevel undo?</b></p>
+<p><b>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;DeletedList.Clear();</b></p>
+<p>&nbsp;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;for (int index = 0; index &lt; Items.Count; index++)</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;{</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Items[index] = Items[index].Save();</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;}</p>
+<p>&nbsp;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;RaiseListChangedEvents = true;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;}</p>
+</p>
+<p>And this for an ECL?</p>
+<p>
+<p>protected override void Child_Update(params object[] parameters)</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;{</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;RaiseListChangedEvents = false;</p>
+<p>&nbsp;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;foreach (Member item in Items)</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;{</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;DataPortal.UpdateChild(item, parameters);</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;}</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;foreach (Member item in DeletedList)</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;{</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;DataPortal.UpdateChild(item, parameters[1]);</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;}</p>
+<p><b>// Clear deleted list?</b></p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;RaiseListChangedEvents = true;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;}</p>
+</p>
+<p>Thanks</p>
+<p>-Blake Niemyjski</p>
+</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, April 14, 2010</h2><p>No, you can&#39;t call Save() on a child object. If the ERL is constructed correctly, it will contain child objects that will throw an exception when you try to save them.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Thursday, April 15, 2010</h2><p>Hi, </p>
+<p>EditableRootList is a collection of Root Editable objects and the list will automatically call Save if a row (&quot;root&quot;) is dirty  and you move to another row in the list or immediate Deletion if you remove a row. </p>
+<p>Alternatively you may call the SaveItem(int index) method on the list. This method will save the root object and replace the entry in list with the new object returned from save.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>bniemyjski replied on Thursday, April 15, 2010</h2><p>
+<p>
+<p>Hello,</p>
+<p>In this case the List is an ERL and the&nbsp;children&nbsp;are ER&#39;s and so you can call Save(). It would be the same thing as calling Save normally (ER = ER.Save()). I don&#39;t remember why exactly I had to override this behavior, but there was a couple of things that didn&#39;t work until I implemented this.</p>
+<p>@JonnyBee</p>
+<p>Are you thinking of a DynamicRootList, This isn&#39;t the default Save behavior of ERL or an ER.</p>
+<p>Thanks</p>
+<p>-Blake Niemyjski</p>
+</p>
+</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, April 15, 2010</h2><p>Putting root objects in a BLB is not supported.</p>
+<p>The only supported list of root objects is ERLB, or a simple type like a serializabe List&lt;T&gt; or something like that (MobileList&lt;T&gt; for Silverlight).</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>bniemyjski replied on Friday, April 16, 2010</h2><p>
+<p>Hello,</p>
+<p>This seems really backwards to me. Your are saying that you can&#39;t put an <b>EditableRoot </b>in an <b>EditableRoot</b>List?</p>
+<p>Thanks</p>
+<p>-Blake Niemyjski</p>
+</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, April 16, 2010</h2><p>That&#39;s what I&#39;m saying, yes. Language is tricky sh*t <img src="http://forums.lhotka.net/emoticons/emotion-2.gif" alt="Big Smile" /></p>
+<p><a href="http://www.lhotka.net/article.aspx?id=4484d01a-faa9-4220-a5c9-065e7b43b0af">http://www.lhotka.net/article.aspx?id=4484d01a-faa9-4220-a5c9-065e7b43b0af</a></p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

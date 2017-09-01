@@ -1,0 +1,8 @@
+<html><header><title>a change i made to RemotingProxy</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>a change i made to RemotingProxy</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/16.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>ryancammer posted on Friday, May 05, 2006</h2><P><FONT size=2>i changed RemotingProxy's Portal property by commenting out the following on line 64:</FONT></P><FONT size=2>
+<P></FONT><FONT color=#008000 size=2>//if (_portal == null)</P></FONT><FONT size=2>
+<P>_portal = (Server.</FONT><FONT color=#008080 size=2>IDataPortalServer</FONT><FONT size=2>)</FONT><FONT color=#008080 size=2>Activator</FONT><FONT size=2>.GetObject(</P>
+<P></FONT><FONT color=#0000ff size=2>typeof</FONT><FONT size=2>(Server.Hosts.</FONT><FONT color=#008080 size=2>RemotingPortal</FONT><FONT size=2>),</P>
+<P></FONT><FONT color=#008080 size=2>ApplicationContext</FONT><FONT size=2>.DataPortalUrl.ToString());</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> _portal;</FONT></P>
+<P><FONT size=2>the reason i did this is because i push content to a large number of servers using a class extending CommandBase. i found that when i switched out the CslaDataPortalUrl value in appSettings using a custom config section that i wrote. i found that if i didn't reset the portal every time, it would cling onto the last server that i touched</FONT></P>
+<P><FONT size=2>there may be a better method of doing this, but this is what i used.</FONT></P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

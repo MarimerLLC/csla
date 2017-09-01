@@ -1,0 +1,26 @@
+<html><header><title>CSLA 4.1 &amp; Prism4.0</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA 4.1 &amp; Prism4.0</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10271.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Hamchuck posted on Sunday, April 17, 2011</h2><p>I&#39;m trying to use CSLA with Prism and I&#39;m running into an odd problem. Everything seems to work, I can retrieve entities ok and display them without problem, however if I link a button&#39;s is enabled property to CanSave or CanCancel, the button is never enabled.&nbsp; </p>
+<p>I&#39;m guessing that for some reason when a user makes a change to a field, the change event never makes back to the viewmodel ??</p>
+<p>Does anybody have CSLA 4.1 working with Prism 4.0 ?</p>
+<p>Can anybody give me some suggestions as to what might be going on with any of the CanXXX methods ?</p>
+<p>Any help would be appreciated</p>
+<p>Thanks </p>
+<p>Terry</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Monday, April 18, 2011</h2><p>Hi,</p>
+<p>CanSave, CanCancel properties do not raise PropertyHasChanged event and will not work properly with databinding. </p>
+<p>You should create a ViewModel and wrap these Properties in your VM as properties with PropertyChangedEvent. <br />You may be able to use the default Csla.Xaml.ViewModel&lt;T&gt; or Csla.Xaml.ViewModelBase&lt;T&gt; or create your own class that inherits from ViewModelBase&lt;T&gt;. </p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Peran replied on Monday, April 18, 2011</h2><p>I think Jonny&#39;s answer may&nbsp;cause&nbsp;confusion, Jonny will correct me if I&#39;m wrong...</p>
+<p>CanSave, CanCancel are properties of the ViewModel&lt;T&gt; and they *do* raise the&nbsp;PropertyHasChanged event of the *ViewModel* when the Model is a Csla editable object.</p>
+<p>It is the meta properties of the Csla Model (IsSavable, IsValid etc) that do not raise the&nbsp;PropertyHasChanged event.</p>
+<p>&nbsp;</p>
+<p>It looks to me like you are already using ViewModel&lt;T&gt; are you refer to the CanXXX methods. &nbsp;The only obvious thing I can think of is to check the datacontext of your command buttons is the&nbsp;ViewModel, as opposed to the datcontext of your edit controls which will be the ViewModel.Model</p>
+<p>I don&#39;t think this issue is related to your use of Prism.</p>
+<p>&nbsp;</p>
+<p>Peran</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Hamchuck replied on Monday, April 18, 2011</h2><p>Peran</p>
+<p>You are correct I&#39;m already using ViewModel&lt;T&gt; and the datacontext of the command buttons are already bound to the ViewModel.</p>
+<p>Does anybody have an example of a view that uses a ViewModel&lt;T&gt;&nbsp; viewmodel ?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Peran replied on Tuesday, April 19, 2011</h2><p>Try putting a breakpoint in ViewModelBase&lt;T&gt;.SetProperties(). &nbsp;This should give you an indication of why your CanXXX methods are being set to false.</p>
+<p>&nbsp;</p>
+<p>Peran</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Tuesday, April 19, 2011</h2><p>Hi Peran,</p>
+<p>Yes, you are correct and I totally mixed up the Is... and Can... methods. Sorry folks.&nbsp; </p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Tuesday, April 19, 2011</h2><p>Keep in mind that Csla.Xaml includes ViewModelBase&lt;T&gt; and ViewModel&lt;T&gt;.</p>
+<p>ViewModel&lt;T&gt; is intended only for use with the other types in Csla.Xaml. If you use a UI framework like Prism, you should create <em>your own ViewModel&lt;T&gt;</em> based on ViewModelBase&lt;T&gt; - and your ViewModel&lt;T&gt; should expose public members designed to work with your UI framework.</p>
+<p>The Csla.Xaml.ViewModel&lt;T&gt; has public members designed to work with TriggerAction. They won&#39;t work with commanding or other technologies, and so become noise if you don&#39;t use TriggerAction.</p>
+<p>The few public members of ViewModelBase&lt;T&gt; should be universally valuable. By creating your own custom ViewModel&lt;T&gt; you can implement your own public members that conform to the requirements of your UI framework (whether that be based on commanding, Blend event triggers, or whatever).</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

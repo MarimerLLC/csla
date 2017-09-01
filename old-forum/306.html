@@ -1,0 +1,51 @@
+<html><header><title>Remote Data Portal Security</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Remote Data Portal Security</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/306.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>seth posted on Wednesday, June 07, 2006</h2>
+
+<p class="MsoNormal"><font face="Verdana" size="2">I'm trying to determine the best way to set up an IIS
+virtual directory that will host a remote data portal.&nbsp; I have no need for
+the user's identity in the DataPortal_XYZ methods so I'm leaning toward
+enabling anonymous access to the virtual directory and restricting access to
+the IP addresses of our web servers.<br><br>
+I assume this is secure because the application performs authorization checks
+before calling any of the DataPortal_XYZ() methods.<br><br>
+Is this a valid assumption?&nbsp; Does anyone have an opinion on this setup
+from a security standpoint?</font>
+
+</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, June 07, 2006</h2><P>If you need true security then the only answer is SSL. That's the only way to protect the data on the wire with Remoting over HTTP.</P>
+<P>If all you need is authentication then you can use either Windows or custom authentication. The primary difference between them is that with custom authentication the user's credentials are passed over the wire in cleartext. This is an obvious security hole and the answer is to use SSL to protect the data on the wire.</P>
+<P>An alternative, if you are using CSLA .NET 2.0, is to use the Enterprise Services channel and configure your COM+ application to use a secure connection, or to adapt the Web Services channel to use WSE 3.0, which provides support for a secure connection.</P>
+<P>Ultimately you need to decide if you are worried about someone sniffing the data on the wire or not. If not, then custom authentication will be fine. If are are worried about someone sniffing the data on the wire then you need to take steps.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>seth replied on Wednesday, June 07, 2006</h2>
+
+<p class="MsoNormal">I'm primarily concerned with authentication.&nbsp; My hang-up
+is caused by the environment that I have to work with. The web server is in a
+DMZ and the website uses windows authentication with local user accounts. The application
+server is in a separate domain.<br>
+<br>
+What do you think about enabling anonymous access to the virtual directory that
+hosts the remote data portal and depending on the business objects to prevent
+unauthorized users from calling the DataPortalXYX() methods?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, June 07, 2006</h2>
+
+
+
+
+<DIV align=left><SPAN class=218245500-08062006><FONT face=Arial color=#0000ff size=2>This is a pretty common scenario, no doubts there. The app 
+server is separate due to security right? So the web server doesn't have the 
+database credentials? Very common.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=218245500-08062006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=218245500-08062006><FONT face=Arial color=#0000ff size=2>In that sort of environment I am typically quite 
+comfortable using the Windows groups and enforcing the authentication on the web 
+server based on those groups - much like you'll see in the ProjectTracker app. 
+Notice that the DataPortal_XYZ methods don't have any authentication - by the 
+time they are running it is assumed that the object has cleared the behavior 
+already.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=218245500-08062006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=218245500-08062006><FONT face=Arial color=#0000ff size=2>The one thing you do lose is the _option_ to apply any 
+authorization on the app server, because the Windows identities can't leave the 
+web server. In most cases this is a non-issue, but if it is an issue for you, 
+you can consider creating your own custom principal that loads itself based on 
+the WindowsIdentity object on the web server, but is actually a custom 
+principal. That would allow the custom principal to move to the app server so 
+you could apply authorization rules there as well (not Windows integrated of 
+course, but still you'd have the user's name and could have their 
+roles/groups).</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=218245500-08062006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=218245500-08062006><FONT face=Arial color=#0000ff size=2>Rocky</FONT></SPAN></DIV></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

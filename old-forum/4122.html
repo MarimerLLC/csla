@@ -1,0 +1,288 @@
+<html><header><title>CSLA .NET 3.5 enhancement - child persistance</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA .NET 3.5 enhancement - child persistance</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4122.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka posted on Friday, January 04, 2008</h2><P>I just posted a new preview version of 3.5 for download. The VB code includes a new concept around simplifying how child objects are persisted - create/fetch/insert/update/delete. The goal is to save code in root objects and list objects, and to standardize the coding model for all objects.</P>
+<P>The code in the download is not completely tested, but basic tests all pass and so I think it is worth putting out for people to kick the tires. Regardless of whether you use C# or VB, if you get a chance to build some business classes against the VB framework your feedback would be invaluable!</P>
+<P>I want to be very clear that <EM>this is all entirely optional</EM>. If you don't like it (because it does use reflection just like the data portal always has) then you can continue to use the model from 3.0 and earlier. Nothing compels you to use this new model (except for radical simplification of code <img src="/emoticons/emotion-5.gif" alt="Wink [;)]" />), and if you don't use it then you incur no extra overhead or cost.</P>
+<P><STRONG>The new child object pattern is this:</STRONG></P>
+<P>[Serializable]<BR>public class Child : BusinessBase&lt;Child&gt;<BR>{<BR>&nbsp; internal static Child NewChild()<BR>&nbsp; {<BR>&nbsp;&nbsp;&nbsp; return DataPortal.CreateChild&lt;Child&gt;();<BR>&nbsp; }</P>
+<P>&nbsp; internal static Child GetChild()<BR>&nbsp; {<BR>&nbsp;&nbsp;&nbsp; return DataPortal.FetchChild&lt;Child&gt;();<BR>&nbsp; }<BR><BR>&nbsp; private Child()<BR>&nbsp; { <BR>&nbsp;&nbsp;&nbsp; MarkAsChild();<BR>&nbsp; }<BR><BR>&nbsp; private void Child_Create()<BR>&nbsp; {<BR>&nbsp;&nbsp;&nbsp; // initialize new child here<BR>&nbsp; }</P>
+<P>&nbsp; private void Child_Fetch()<BR>&nbsp; {<BR>&nbsp;&nbsp;&nbsp; // load child data here<BR>&nbsp; }</P>
+<P>&nbsp; private void Child_Insert()<BR>&nbsp; {<BR>&nbsp;&nbsp;&nbsp; // insert child data here<BR>&nbsp; }</P>
+<P>&nbsp; private void Child_Update()<BR>&nbsp; {<BR>&nbsp;&nbsp;&nbsp; // update child data here<BR>&nbsp; }</P>
+<P>&nbsp; private void Child_DeleteSelf()<BR>&nbsp; {<BR>&nbsp;&nbsp;&nbsp; // delete child data here<BR>&nbsp; }<BR>}</P>
+<P>Please note that no calls to MarkNew() or MarkOld() are required, they are all handled by the data portal just like they are for root objects.</P>
+<P><STRONG>The new editable root (parent) pattern is this:</STRONG></P>
+<P>[Serializable]<BR>public class RootParent : BusinessBase&lt;RootParent&gt;<BR>{<BR>&nbsp; // other class code here ...</P>
+<P>&nbsp; protected override void DataPortal_Insert()<BR>&nbsp; {<BR>&nbsp;&nbsp;&nbsp; using (SqlConnection cn = new SqlConnection(...))<BR>&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // insert parent data here</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; FieldManager.UpdateChildren();<BR>&nbsp;&nbsp;&nbsp; }<BR>&nbsp; }</P>
+<P>&nbsp; protected override void DataPortal_Update()<BR>&nbsp; {<BR>&nbsp;&nbsp;&nbsp; using (SqlConnection cn = new SqlConnection(...))<BR>&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // update parent data here</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; FieldManager.UpdateChildren();<BR>&nbsp;&nbsp;&nbsp; }<BR>&nbsp; }<BR>}</P>
+<P>The call to UpdateChildren() automatically cascades appropriate insert/update/delete calls to all child objects (including collections).</P>
+<P><STRONG>The new editable root list pattern is this:</STRONG></P>
+<P>[Serializable]<BR>public class ChildList : BusinessListBase&lt;ChildList, Child&gt;<BR>{<BR>&nbsp; // other class code here ...</P>
+<P>&nbsp; protected override void DataPortal_Update()<BR>&nbsp; {<BR>&nbsp;&nbsp;&nbsp; using (SqlConnection cn = new SqlConnection(...))<BR>&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Child_Update();<BR>&nbsp;&nbsp;&nbsp; }<BR>&nbsp; }<BR>}</P>
+<P>The only reason you still need to override DP_Update() is so you can manage the connection details (or LINQ context, or whatever).</P>
+<P><STRONG>The new editable child list pattern is this:</STRONG></P>
+<P>[Serializable]<BR>public class ChildList : BusinessListBase&lt;ChildList, Child&gt;<BR>{<BR>&nbsp; internal ChildList()<BR>&nbsp; {<BR>&nbsp;&nbsp;&nbsp; MarkAsChild();<BR>&nbsp; }</P>
+<P>&nbsp; // other class code here ...<BR>}</P>
+<P>Notice that there is <EM>no data access code here</EM>, because child updates are now handled entirely by the base class.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>bmmathe replied on Friday, April 18, 2008</h2><P>Rocky,</P>
+<P>I noticed in ProjectResources you are passing in an array of Assignment to populate the ProjectResource list.&nbsp; The GetProjectResources method is executed in the DataPortal_FetchChild method of Project.&nbsp; The ProjectResources static factory Get method then calls return DataPortal.FetchChild... which in turn calls Child_Fetch...&nbsp; GetProjectResource which is called in ProjectResources.DataProtal_ChildFetch also uses the same DataPortal.FetchChild pattern.</P>
+<P>The question is, why do we keep going back to the DataPortal when we are already in the data portal context?&nbsp; How come you don't call use the "deep data" pattern where the child collection and child are populated by passing the data (reader) into the constructor?</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, April 23, 2008</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>One major enhancement in CSLA 3.5 is that the data portal now
+supports the concept of child objects.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Notice that the call is to FetchChild(), not Fetch(). The data
+portal includes special treatment of child objects &#8211; very lightweight,
+but with the same coding structure as a root object.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>One of the biggest training issues with CSLA has always been
+that root objects and child objects are coded differently. The very structure
+of the code (which methods you write and how they are called) are different.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>The new child support in the data portal means that the coding
+structure for a root and child are the same. The method names are slightly
+different &#8211; Child_XYZ instead of DataPortal_XYZ &#8211; but that&#8217;s
+good (imo) because it clarifies whether the object is a root or child. But the <i>structure</i>
+is the same, so every object has the same &#8220;look and feel&#8221;.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>If you don&#8217;t like the new model, and prefer the old
+1.0-3.0 coding style, you are free to use that approach. Nothing in 3.5 blocks
+you from using the older coding technique.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>But I like the new approach because the code is much more consistent
+across all the objects &#8211; making training easier, and even simplifying
+code-gen or the use of snippets.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky</span><o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Philip replied on Wednesday, April 23, 2008</h2><P>I agree with Rocky. It is one of the issues when I was trying to code the Code Complete templates. I am sure it will simplify my job dramatically and it comes on time as I am in the process of re-writing the templates for version 3.5 and LINQ.</P>
+<P>Thanks</P>
+<P>Philip</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>selim51 replied on Monday, May 05, 2008</h2><P>Hi Rocky!</P>
+<P>Is there really a need for calling MarkAsChild() in the constructor of the child? I don't call MarkAsChild(), it is called automatically by DataPortal.CreateChild&lt;Child&gt; and DataPortal.FetchChild&lt;Child&gt; like MarkOld() and MarkNew().</P>
+<P>Yavuz</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, May 05, 2008</h2>No, in the release bits for 3.5 if you use the new child data portal features you do not need to manually call MarkAsChild.<br /><br />Rocky (sent from my phone)<br /><br />-----Original Message-----<br />From: "selim51" <br />To: "rocky@lhotka.net" <br />Sent: 5/5/2008 2:23 PM<br />Subject: Re: [CSLA .NET] CSLA .NET 3.5 enhancement - child persistance<br /><br />Hi Rocky!<br /><br />Is there really a need for calling MarkAsChild() in the constructor of the child? I don't call MarkAsChild(), it is called automatically by DataPortalCreateChild and DataPortal.FetchChild like MarkOld() and MarkNew().<br /><br />Yavuz<br /><br /></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rsargent replied on Friday, August 22, 2008</h2><font face="Arial">If my child object contains children do I need to change the Child_Insert and Child_Update methods to look like the following:<br></font><br><p><font size="2" face="Courier New">&nbsp; private void Child_Insert()<br>&nbsp; {<br>&nbsp;&nbsp;&nbsp; // insert child data here<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; FieldManager.UpdateChildren();</font></p><p><font size="2" face="Courier New">&nbsp; }</font></p>
+<p><font size="2" face="Courier New">&nbsp; private void Child_Update()<br>&nbsp; {<br>&nbsp;&nbsp;&nbsp; // update child data here<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; FieldManager.UpdateChildren();</font>
+</p><p><font size="2" face="Courier New">&nbsp; }</font></p><font face="Arial">Is there a reason the DataPortal objects do not call FieldManager.UpdateChildren() in the Update method?</font><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Friday, August 22, 2008</h2>I haven't had a lot of experience with Managed properties yet, but I haven't found a need to use FieldManager at all.&nbsp; All I do in my Child_Update / Insert is the data access code.. if the child has children, then I call DataPortal.UpdateChild.&nbsp; For example:<br><br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; DataPortal.UpdateChild(<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; ReadProperty( SerialNumbersProperty ),<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; item<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; );<br><br>Where SerialNumbersProperty is a BusinessListBase subclass property.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, August 22, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>If you have more than one child, or just want to simplify your
+code, you can just call <o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>FieldManager.UpdateChildren()<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>And let the field manager do the work for you.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> ajj3085
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Friday, August 22, 2008 8:12 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] CSLA .NET 3.5 enhancement - child persistance<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>I haven't had a lot of experience with Managed properties
+yet, but I haven't found a need to use FieldManager at all.&nbsp; All I do in
+my Child_Update / Insert is the data access code.. if the child has children,
+then I call DataPortal.UpdateChild.&nbsp; For example:<br>
+<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
+DataPortal.UpdateChild(<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp; ReadProperty( SerialNumbersProperty ),<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp; item<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; );<br>
+<br>
+Where SerialNumbersProperty is a BusinessListBase subclass property.<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Friday, August 22, 2008</h2>Thanks for the tip... is the book still on schedule? &nbsp;<img src="/emoticons/emotion-1.gif" alt="Smile [:)]" />&nbsp; Amazon lists 9/5/2008 as the ship date.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, August 25, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>The book is on a &#8220;revised&#8221; schedule, which is to say
+we&#8217;re shooting for a December release &#8211; which is putting a strain
+on everyone (me, publisher, reviewers) but we&#8217;re working toward that end.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> ajj3085
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Friday, August 22, 2008 11:46 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: CSLA .NET 3.5 enhancement - child
+persistance<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Thanks for the tip... is the book still on schedule? &nbsp;<span><img width=100 height=100 id="_x0000_i1025" alt="Image removed by sender. Smile <img src=" />"></span>&nbsp; Amazon lists 9/5/2008
+as the ship date.<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, August 22, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>That&#8217;s a good question &#8211; worth considering!!<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> rsargent
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Friday, August 22, 2008 7:09 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] CSLA .NET 3.5 enhancement - child persistance<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal><span>If
+my child object contains children do I need to change the Child_Insert and
+Child_Update methods to look like the following:</span><o:p></o:p></p>
+
+<p><span>&nbsp; private void
+Child_Insert()<br>
+&nbsp; {<br>
+&nbsp;&nbsp;&nbsp; // insert child data here<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; FieldManager.UpdateChildren();</span><o:p></o:p></p>
+
+<p><span>&nbsp; }</span><o:p></o:p></p>
+
+<p><span>&nbsp; private void
+Child_Update()<br>
+&nbsp; {<br>
+&nbsp;&nbsp;&nbsp; // update child data here<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; FieldManager.UpdateChildren();</span> <o:p></o:p></p>
+
+<p><span>&nbsp; }</span><o:p></o:p></p>
+
+<p class=MsoNormal><span>Is there a
+reason the DataPortal objects do not call FieldManager.UpdateChildren() in the
+Update method?</span><br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

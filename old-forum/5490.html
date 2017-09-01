@@ -1,0 +1,228 @@
+<html><header><title>Databound checkbox serialization error.</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Databound checkbox serialization error.</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5490.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>jwhook posted on Monday, September 29, 2008</h2>We're attempting to improve the user-behavior on checkboxes by changing databinding to the OnPropertyChanged event, instead of the default.<br><br>Doing so, we now get a serialization error when the user actually checks the checkbox. It starts:<br><br>System.Runtime.Serialization.SerializationException: Type 'System.Windows.Forms.BindToObject' in Assembly 'System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089' is not marked as serializable.<br><br>We're still on version 1.53 of CSLA, which has been recompiled under .NET 2.0. All else is working very well.<br><br>Thanks for any input.<br><br>- jim<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jwhook replied on Tuesday, October 07, 2008</h2>Additional information. Hoping someone can point out if I can serialize, and where to do it.<br><br>The offending code producing the quoted error is:<br><br>Global.BindField(chkOverwriteTotal, "Checked", m_FixtureCountCollection["6-B"], "NumberOfFixtures", b_Format, b_Parse);<br><br>chkOverwriteTotal.DataBindings["Checked"].DataSourceUpdateMode = DataSourceUpdateMode.OnPropertyChanged;<br><br>The first line uses some general code of ours for binding controls adapted from Rocky's book. When I added the next line to get instant response on the check box, the serialization error occurs. Note that it occurs at runtime when the user actually clicks on the checkbox.<br><br>Once more, a plea for help.<br><br>Thanks.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Tuesday, October 07, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Are you subscribing to any events for this checkbox on your form,
+such as CheckedChanged?<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> jwhook
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Tuesday, October 07, 2008 7:02 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] Databound checkbox serialization error.<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Additional information. Hoping someone can point out if I
+can serialize, and where to do it.<br>
+<br>
+The offending code producing the quoted error is:<br>
+<br>
+Global.BindField(chkOverwriteTotal, &quot;Checked&quot;,
+m_FixtureCountCollection[&quot;6-B&quot;], &quot;NumberOfFixtures&quot;,
+b_Format, b_Parse);<br>
+<br>
+chkOverwriteTotal.DataBindings[&quot;Checked&quot;].DataSourceUpdateMode =
+DataSourceUpdateMode.OnPropertyChanged;<br>
+<br>
+The first line uses some general code of ours for binding controls adapted from
+Rocky's book. When I added the next line to get instant response on the check
+box, the serialization error occurs. Note that it occurs at runtime when the
+user actually clicks on the checkbox.<br>
+<br>
+Once more, a plea for help.<br>
+<br>
+Thanks.<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jwhook replied on Wednesday, October 08, 2008</h2>Yes. But I've tested without subscribing to any events. Same problem.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Wednesday, October 08, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Hmmm.&nbsp; I am afraid I do not have a good idea of why this
+occurs.&nbsp; Could there be an issue with custom code you guys have?&nbsp; Could
+you try to bind the checkbox manually just to test this theory? <o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> jwhook
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Wednesday, October 08, 2008 12:51 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: Databound checkbox serialization error.<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Yes. But I've tested without subscribing to any events. Same
+problem.<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jwhook replied on Wednesday, October 08, 2008</h2>Hi Sergey.<br><br>I'll try to create a simplified version of what we're doing, but from your response, I guess you're saying that, in theory, I should be able to do this kind of thing:<br><br>chkOverwriteTotal.DataBindings["Checked"].DataSourceUpdateMode = DataSourceUpdateMode.OnPropertyChanged;<br><br>without any problems, if I can get my code right.<br><br>As an alternative, I tried forcing the datasource to be updated during the CheckedChange event using the DataBindings[indx].WriteValue() method, but it triggers the same kind of serialization error.<br><br>- jim<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Wednesday, October 08, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>You should be able to do something like just to test the
+theory.&nbsp;&nbsp; I would recommend disabling CHeckedChanged event for
+testing as well just to eliminate as many moving parts from test as possible.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal>chkOverwriteTotal.DataBindins.Add(&#8220;Checked&#8221;,
+objectOrDataSource, &#8220;MyProperty&#8221;, null, DataSourceUpdateMode.OnPropertyChanged);<span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Serialization error typically occurs if you are attaching a non-serializable
+object to your object graph, most commonly via an event.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> jwhook
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Wednesday, October 08, 2008 2:07 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: RE: Databound checkbox serialization error.<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Hi Sergey.<br>
+<br>
+I'll try to create a simplified version of what we're doing, but from your
+response, I guess you're saying that, in theory, I should be able to do this
+kind of thing:<br>
+<br>
+chkOverwriteTotal.DataBindings[&quot;Checked&quot;].DataSourceUpdateMode =
+DataSourceUpdateMode.OnPropertyChanged;<br>
+<br>
+without any problems, if I can get my code right.<br>
+<br>
+As an alternative, I tried forcing the datasource to be updated during the
+CheckedChange event using the DataBindings[indx].WriteValue() method, but it
+triggers the same kind of serialization error.<br>
+<br>
+- jim<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jwhook replied on Wednesday, October 08, 2008</h2>Sergey.<br><br>Thanks for pointing me in the right direction. Turns out that our object (not UI controls) had an event handler for the property that the control was bound to.<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

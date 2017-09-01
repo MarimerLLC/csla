@@ -1,0 +1,100 @@
+<html><header><title>OK to use Csla.ApplicationContext.User for other info?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>OK to use Csla.ApplicationContext.User for other info?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3325.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>dagware posted on Saturday, August 04, 2007</h2>I love Csla.ApplicationContext.User. It provides a convenient place to store information about the current user, regardless of whether the code is in a Windows app or a Web app. Thanks to suggestions I received in another thread, I'm now using Csla.ApplicationContext.User in by BOs to update my "Updated By" fields before saving to the database. Works great.<br><br>My question is, I'd like to put some other fields in my Identity class, and I wanted to know if there are any gotchas in doing this. Specifically, when the user starts up my application -- either the Windows version or the Web version -- they have to make a couple of selections before they can do anything else. That's the business requirements for this project. So it would seem to me that I could put these selections in my Identity class, and have them available to all BOs just like the ID of current user is now.<br><br>I guess the reason I'm asking for opinions is, a class called "Identity" perhaps shouldn't be the place to store non-Identity information. Yet it's so convenient...<br><br>Thoughts?<br><br>Dan<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Saturday, August 04, 2007</h2><P>I have created extended Identity objects for several projects. As long as the new properties are providing information about the current user, it is a natural fit.</P>
+<P>If you want to store <EM>other data</EM> that isn't about the user, then I'd suggest Csla.ApplicationContext.ClientContext.</P>
+<P>The only issue you'll encounter when creating a custom Identity object, is that you need to cast it to your specific type to get at your custom properties. This can become a PITA over time. So what I typically do is create a Security static class/Module that delegates all calls down:</P>
+<P>Public Module Security<BR>&nbsp; Public Function IsInRole(role As String) As Boolean<BR>&nbsp;&nbsp;&nbsp; Return Csla.ApplicationContext.User.IsInRole(role)<BR>&nbsp; End Function<BR><BR>&nbsp; Public ReadOnly Property Name() As String<BR>&nbsp;&nbsp;&nbsp; Get<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return Csla.ApplicationContext.User.Identity.Name<BR>&nbsp;&nbsp;&nbsp; End Get<BR>&nbsp; End Property<BR><BR>&nbsp; Public ReadOnly Property Department() As String<BR>&nbsp;&nbsp;&nbsp; Get<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return CType(Csla.ApplicationContext.User.Identity, CustomIdentity).Department<BR>&nbsp;&nbsp;&nbsp; End Get<BR>&nbsp; End Property<BR><BR>&nbsp; ' ...<BR>End Module</P>
+<P>This way your app code can just always use the Security class:</P>
+<P>&nbsp; x = Security.Name<BR>&nbsp; y = Security.Department</P>
+<P>Sometimes I call it "Security", other times "CurrentUser" - but you get the idea.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>dagware replied on Saturday, August 04, 2007</h2>Thanks for the reply!<br><br>So does Csla.ApplicationContext.ClientContext persist in basically the same manner as the User object does? In other words, Web apps get it restored during every trip back to the server, assuming the user is logged in? If so, it makes more sense to me to use this for the selections the user makes, since they aren't really part of the user's identity.<br><br>As for the helper static class -- I'm right there with you. I already wrote one &lt;g&gt;.<br><br>Dan<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>dagware replied on Saturday, August 04, 2007</h2>For anyone following along, I discovered that all the properties in ApplicationContext are explained in a nice table in the 2.1 Handbook. Thanks again, Rocky!<br><br>Dan<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Sunday, August 05, 2007</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I see you bought the <i>2.1 Handbook</i>, and that explains
+ApplicationContext and the various context options you can use.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>ClientContext flows from client to server, but not back. So it
+is often a good option for ambient, global and generally unchanging values.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Keep in mind, however, that ClientContext and GlobalContext DO
+flow across the network if you have a remote app server, and so you MUST be
+careful how much stuff you put in them or performance could really suffer!<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> dagware
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Saturday, August 04, 2007 3:35 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] OK to use Csla.ApplicationContext.User for
+other info?<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Thanks for the reply!<br>
+<br>
+So does Csla.ApplicationContext.ClientContext persist in basically the same
+manner as the User object does? In other words, Web apps get it restored during
+every trip back to the server, assuming the user is logged in? If so, it makes
+more sense to me to use this for the selections the user makes, since they
+aren't really part of the user's identity.<br>
+<br>
+As for the helper static class -- I'm right there with you. I already wrote one
+&lt;g&gt;.<br>
+<br>
+Dan<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>dagware replied on Monday, August 06, 2007</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+<div class="Section1"><p class="MsoNormal"><span>Keep in mind, however, that ClientContext and GlobalContext DO
+flow across the network if you have a remote app server, and so you MUST be
+careful how much stuff you put in them or performance could really suffer!<o:p></o:p></span></p>
+
+</div>
+
+</div></BLOCKQUOTE><br>Excellent point. Thanks!<br><br>Dan<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,54 @@
+<html><header><title>Rules with affected properties calling rules with affected properties</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Rules with affected properties calling rules with affected properties</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11169.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>decius posted on Thursday, February 16, 2012</h2><p>I noticed today that if I have a rule that contains affectedproperties, that then runs the affected rule, if the &quot;parent&quot; rule here does not contain all the affected properties of the &quot;child&quot; rule, then the NotifyProperty changed event never occurs for the &quot;child&quot; affected property. Is this by design? Or do I just have to remember to add the affected property to the parent rule? Seems like that would be easy to forget in complex logic situations.</p>
+<p>To illustrate, take the following code. I&#39;ve found that if MainProperty is changed, it will call the affected property rule as expected, and even though that rule contains the SomeOtherProperty as an affected property it will not notify the UI of a property changed event.&nbsp;</p>
+<p>The AddOutValue does not throw an exception and runs fine though. And if I add the affected SomeOtherProperty to the AffectsRule, everything works fine.</p>
+<p>&nbsp;</p>
+<pre>protected override void AddBusinessRules()
+		{
+			BusinessRules.AddRule(new AffectsRule(MainProperty, AffectedProperty));
+			BusinessRules.AddRule(new AffectedRule(AffectedProperty, SomeOtherProperty));
+		}
+
+		private class AffectsRule : Csla.Rules.BusinessRule
+		{
+			public AffectsRule(IPropertyInfo primaryProperty, IPropertyInfo affectedProperty)
+				: base(primaryProperty)
+			{
+				AffectedProperties.Add(affectedProperty);
+			}
+		}
+
+		private class AffectedRule : Csla.Rules.BusinessRule
+		{
+			IPropertyInfo SomeOtherProperty {get;set;}
+
+			public DependsOnAmountRule(IPropertyInfo primaryProperty, IPropertyInfo someOtherProperty)
+				: base(primaryProperty)
+			{
+				AffectedProperties.Add(someOtherProperty);
+				SomeOtherProperty = someOtherProperty;
+			}
+			
+			protected override void Execute(RuleContext context)
+			{
+				context.AddOutValue(SomeOtherProperty, &quot;no exception, but won&#39;t notify UI of change&quot;);
+			}
+		}
+</pre></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Thursday, February 16, 2012</h2><p>Hi,</p>
+<p>By design - the rule engine will only rerun (cascade) rules for the next level of affected properties. This is to avoid circular references and eternal loops. </p>
+<p>BTW: Your AffectsRule is identical to the Dependency rule in CSLA.&nbsp;</p>
+<p>What type of UI are you using and what is the setting of CslaPropertyChangedMode in your config file? </p>
+<p>I would expect the RuleEngine to include the affected properties of AffectedProperty when MainProperty has been changed and notify ui by raising OnPropertyChanged event.</p>
+<p>With the latest code (4.3.2) I get PropertyChanged for all 3 properties when I change Main. </p>
+<p><i>Code ( a&nbsp; root object with 3 properties and your rules): </i></p>
+<p><i>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var root = Root.NewEditableRoot();<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; root.PropertyChanged += (o, e) =&gt;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Debug.Print(&quot;Property changed: {0}&quot;, e.PropertyName);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; };<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; root.Main = 23;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Debug.Print(&quot;Rules completed&quot;);</i></p>
+<p>Gives this output:</p>
+<p><i>Property changed: Main<br />Property changed: Affected<br />Property changed: SomeOther</i></p>
+<p>using the default value for CslaPropertyChangedMode.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>decius replied on Friday, February 17, 2012</h2><p>Thanks, I&#39;m just using WPF4, though I am on an older CSLA 4.1, which I don&#39;t see opportunity any time soon to upgrade that for my project.</p>
+<p>Still, I&#39;m just a little confused by your response; you say this is by design, but also that OnPropertyChanged happens for you for all 3 properties when changing main. So do I have to add SomeOtherProperty to the affected properties of AffectsRule or not? I think if I understand you correctly from the &quot;cascaded rules&quot; comment, I&#39;ll have to add SomeOtherProperty to the affected Properties of the AffectsRule correct?</p>
+<p>Yeah, I certainly understand the circular execution paths that the new sub system is trying to avoid. I&#39;ve got myself pretty confused with the past system at times. Though, the new system is just taking some getting used to; dependency logic has been a little struggle to get my brain to work this way.</p>
+<p>For me, if SomeOtherProperty is not added to the AffectsRule&#39;s AffectedProperties, OnPropertyChanged does not get called for SomeOtherProperty when changes are made to MainProperty.</p>
+<p>Thanks for pointing out the Dependency class. After the CSLA 3.8-4 transition, that wasn&#39;t clear to me so I&#39;ve just been making my own.&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Friday, February 17, 2012</h2><p><i>Yes, then it is a bug that has been fixed since 4.1.</i></p>
+<p>The rule engine should raise OnPropertyChanged for all affected properties. </p>
+<p>Here is the source:</p>
+<p>&nbsp;&nbsp;&nbsp; private List&lt;string&gt; CheckRulesForProperty(Csla.Core.IPropertyInfo property, bool cascade)<br />&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var rules = from r in TypeRules.Rules<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; where ReferenceEquals(r.PrimaryProperty, property)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; orderby r.Priority<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; select r;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var affectedProperties = new List&lt;string&gt; { property.Name };<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; BrokenRules.ClearRules(property);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; affectedProperties.AddRange(RunRules(rules));<br /><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (cascade)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // get properties affected by all rules<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var propertiesToRun = new List&lt;Csla.Core.IPropertyInfo&gt;();<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; foreach (var item in rules)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; foreach (var p in item.AffectedProperties)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (!ReferenceEquals(property, p))<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; propertiesToRun.Add(p);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // run rules for affected properties<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; foreach (var item in propertiesToRun.Distinct())<br /><i><b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; affectedProperties.AddRange(CheckRulesForProperty(item, false));</b></i>&nbsp;<b> // this is the only changed required for this fix</b><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br /><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return affectedProperties.Distinct().ToList();<br />&nbsp;&nbsp;&nbsp; }</p>
+<p>I would recommend an upgrade tho&#39;. There&#39;s several important bugfixes that you should consider for your project, especially when CSLA 4.3 is released soon.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

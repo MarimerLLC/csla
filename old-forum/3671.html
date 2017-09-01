@@ -1,0 +1,14 @@
+<html><header><title>Debugging on the remote side</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Debugging on the remote side</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3671.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>JohnB posted on Monday, October 08, 2007</h2>This past weekend I upgraded to the 3.0.2 of the framework from 3.0.1 and now I can no longer debug when making data portal calls. Any ideas? I'm sure its a configuration issue and I recall having this issue when I first started using the framework but don't remember what I did to make it work.<br><br>I am using the default web server on my local PC with a static port number. I've tried many many things and I can't seem to remember what the fix was.<br><br><br>Thanks,</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Monday, October 08, 2007</h2><P>These are the steps I follow when I want to debug through the remote data portal.</P>
+<P>Steps to configure debugging:</P>
+<P>1. In VS open your Solution.</P>
+<P>2. Right click on the Solution in the Solution Explorer and choose: <BR>Add<BR>Existing Web Site…<BR>(Check out the solution)</P>
+<P>3. In the dialog box click Local IIS on the left side and then click the virtual Directory named DP in the center.<BR>Click Open button.</P>
+<P>4. A new project is added to the solution under&nbsp;named:&nbsp; <A href="http://localhost/DP/">http://localhost/DP/</A></P>
+<P>5. Delete all of the files in the bin folder.</P>
+<P>6. Right click the bin folder and Add Reference…<BR>Click the Project Tab<BR>Choose you BO .dll file.</P>
+<P>7. Now when you Build the solution, the Remote DataPortal bin folder is updated with the most recent copies of the .dll files.</P>
+<P>8. Now you should be able to set breakpoints on both sides of the Data Portal and step through the code.<BR>e.g.<BR>In a Shared method:<BR>Return DataPortal.Fetch(Of Acct)(New Criteria(acctcode))</P>
+<P>And then in the DataPortal_Fetch you can set another breakpoint.</P>
+<P>You should be able to step through the Csla framework too.</P>
+<P>9. Note: since the code is the exact same thing when you do not use remoting, the “bug” you are looking for is most likely NOT in the code itself – if it was you could run without a remote DataPortal, step through it normally and fix it. You only need this technique if the bug is somewhere else (like the configuration file.)</P>
+<P>&nbsp;Joe</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JohnB replied on Monday, October 08, 2007</h2>It's all good, thanks!<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

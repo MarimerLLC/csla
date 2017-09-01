@@ -1,0 +1,51 @@
+<html><header><title>Object reference not set to an instance of an object (Server Error in '/PTWeb' Application)</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Object reference not set to an instance of an object (Server Error in '/PTWeb' Application)</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/2668.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>leonidas posted on Monday, April 09, 2007</h2><P><FONT face=Verdana size=2>Hi there, I'm new to csla and I'm struggling. Yeah, I really am! I'm dutch and have a lot of experience on Office-development (Access, Excel), BI (SQL2005) and a little on dotnet.&nbsp;I read the csla 2.0 book for the better part and didn't grasp it all but got the concepts, I think. The technical dotnet-stuff (=hard for me)&nbsp;is what I try to learn by examining the PTracker-project.</FONT></P>
+<P><FONT face=Verdana size=2>My configuration is SQL2005 Developer (no Express!) and Windows XP Dutch. I tried to follow the instructions in&nbsp;<A href="http://www.lhotka.net/files/csla20/BuildCsla.pdf">http://www.lhotka.net/files/csla20/BuildCsla.pdf</A>&nbsp;but the PTWeb-project is giving me a hard time. I got the PTWin-project running after some time but with the PTWeb-project I don't now where to look. The error message I get is down here. Can anyone give me a clou? I think it has to do with 6a of the instruction...</FONT></P>
+<P><FONT face=Verdana size=2>thanks in advance, </FONT><FONT face=Verdana size=2>Leon</FONT></P>
+<H2><I>Object reference not set to an instance of an object.</I> </H2>
+<P><FONT face="Arial, Helvetica, Geneva, SunSans-Regular, sans-serif "><B>Description: </B>An unhandled exception occurred during the execution of the current web request. Please review the stack trace for more information about the error and where it originated in the code. <BR><BR><B>Exception Details: </B>System.NullReferenceException: Object reference not set to an instance of an object.<BR><BR><B>Source Error:</B> <BR><BR>
+<TABLE bgColor=#ffffcc>
+
+<TR>
+<TD><CODE><PRE>Line 190:        if (proxy.IsServerRemote)
+Line 191:          ApplicationContext.SetGlobalContext(result.GlobalContext);
+<FONT color=red>Line 192:        throw new DataPortalException(
+</FONT>Line 193:          String.Format("DataPortal.Fetch {0} ({1})", Resources.Failed, ex.InnerException.InnerException), 
+Line 194:          ex.InnerException, result.ReturnObject);</PRE></CODE></TD></TR></TABLE><BR><B><FONT face=Verdana>Source File: </FONT></B>C:\CSLA\csla20cs\Csla\DataPortal\Client\DataPortal.cs<B><FONT face=Verdana> &nbsp;&nbsp; Line: </FONT></B>192 <BR><BR><B><FONT face=Verdana>Stack Trace:</FONT></B> <BR><BR>
+<TABLE bgColor=#ffffcc>
+
+<TR>
+<TD><CODE><PRE>[NullReferenceException: Object reference not set to an instance of an object.]
+
+[CallMethodException: DataPortal_Fetch methode aanroepen mislukt]
+
+[DataPortalException: DataPortal.Fetch mislukt (System.NullReferenceException: Object reference not set to an instance of an object.
+   at ProjectTracker.Library.Database.get_PTrackerConnection() in C:\CSLA\ProjectTracker20cs\ProjectTracker.Library\Database.cs:line 14
+   at ProjectTracker.Library.ResourceList.DataPortal_Fetch(Criteria criteria) in C:\CSLA\ProjectTracker20cs\ProjectTracker.Library\ResourceList.cs:line 34)]
+   Csla.DataPortal.Fetch(Type objectType, Object criteria) in C:\CSLA\csla20cs\Csla\DataPortal\Client\DataPortal.cs:192
+   Csla.DataPortal.Fetch(Object criteria) in C:\CSLA\csla20cs\Csla\DataPortal\Client\DataPortal.cs:140
+   ProjectTracker.Library.ResourceList.GetResourceList() in C:\CSLA\ProjectTracker20cs\ProjectTracker.Library\ResourceList.cs:17
+   ResourceList.GetResourceList() in c:\CSLA\ProjectTracker20cs\www\PTWeb\ResourceList.aspx.cs:81
+   ResourceList.ResourceListDataSource_SelectObject(Object sender, SelectObjectArgs e) in c:\CSLA\ProjectTracker20cs\www\PTWeb\ResourceList.aspx.cs:70
+   Csla.Web.CslaDataSource.OnSelectObject(SelectObjectArgs e) in C:\CSLA\csla20cs\Csla\Web\CslaDataSource.cs:180
+   Csla.Web.CslaDataSourceView.ExecuteSelect(DataSourceSelectArguments arguments) in C:\CSLA\csla20cs\Csla\Web\CslaDataSourceView.cs:93
+   System.Web.UI.DataSourceView.Select(DataSourceSelectArguments arguments, DataSourceViewSelectCallback callback) +17
+   System.Web.UI.WebControls.DataBoundControl.PerformSelect() +149
+   System.Web.UI.WebControls.BaseDataBoundControl.DataBind() +70
+   System.Web.UI.WebControls.GridView.DataBind() +4
+   System.Web.UI.WebControls.BaseDataBoundControl.EnsureDataBound() +82
+   System.Web.UI.WebControls.CompositeDataBoundControl.CreateChildControls() +69
+   System.Web.UI.Control.EnsureChildControls() +87
+   System.Web.UI.Control.PreRenderRecursiveInternal() +41
+   System.Web.UI.Control.PreRenderRecursiveInternal() +161
+   System.Web.UI.Control.PreRenderRecursiveInternal() +161
+   System.Web.UI.Control.PreRenderRecursiveInternal() +161
+   System.Web.UI.Control.PreRenderRecursiveInternal() +161
+   System.Web.UI.Page.ProcessRequestMain(Boolean includeStagesBeforeAsyncPoint, Boolean includeStagesAfterAsyncPoint) +1360
+</PRE></CODE></TD></TR></TABLE><BR>
+<HR>
+
+<P></P>
+<P><B><FONT face=Verdana>Version Information:</FONT></B>&nbsp;Microsoft .NET Framework Version:2.0.50727.42; ASP.NET Version:2.0.50727.210 </FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>leonidas replied on Wednesday, April 11, 2007</h2><P><FONT face=Verdana size=2>Nobody has a clue???</FONT></P>
+<P><FONT face=Verdana size=2>gr Leon</FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>av_harris replied on Friday, May 11, 2007</h2><P>I've got the same error message.</P>
+<P>There is more discussion on the same topic here: <A HREF="/forums/thread/13015.aspx">http://forums.lhotka.net/forums/thread/13015.aspx</A></P>
+<P>Unfortunately, there is no resolution.</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

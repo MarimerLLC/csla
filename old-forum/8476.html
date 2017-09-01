@@ -1,0 +1,107 @@
+<html><header><title>ChildDataPortal.Update failed on the server</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>ChildDataPortal.Update failed on the server</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/8476.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Niamh posted on Thursday, February 04, 2010</h2><P><FONT face=Arial size=2>Hi, </FONT></P>
+<P><FONT face=Arial size=2>Recently we started experiencing the above error on our live system. It has been in production since August but only started appearing since last Monday even though there were no code changes. I have not been able to reproduce it in test or dev and most of the time it works correctly in production.</FONT></P>
+<P><FONT face=Arial size=2>There is no error&nbsp;the application log in the event viewer.</FONT></P>
+<P><FONT face=Arial size=2>Once it appears once it seems to happen for all users for around 20 minutes regardless if they restart the app or we recycle IIS. Then for no apparent reason it can just stop happening and be fine again.</FONT></P>
+<P><FONT face=Arial size=2>We thought it may have been related to the transaction timing out but the users have informed us it takes only seconds from when the button is clicked to when the error is displayed. </FONT></P>
+<P><FONT face=Arial size=2>Any ideas would be greatly appreciated. <img src="/emoticons/emotion-1.gif" alt="Smile [:)]" /></FONT></P>
+<P><FONT face=Arial size=2>Thanks in advance, </FONT></P>
+<P><FONT face=Arial size=2>Niamh</FONT></P>
+<P><FONT face=Arial size=2></FONT>&nbsp;</P>
+<P><FONT face=Arial size=2>The code is called here </FONT></P><FONT size=2>
+<P></FONT><FONT face=Arial><FONT color=#2b91af size=2><FONT color=#2b91af size=2>DataPortal</FONT></FONT><FONT size=2>.UpdateChild(ReadProperty&lt;</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>PackTrackings</FONT></FONT><FONT size=2>&gt;(PackTrackingsProperty), </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>this</FONT></FONT><FONT size=2>);</FONT></FONT></P>
+<P><FONT face=Arial><FONT color=#2b91af size=2><FONT color=#2b91af size=2>DataPortal</FONT></FONT><FONT size=2>.UpdateChild(ReadProperty&lt;</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>DeedGridRefs</FONT></FONT><FONT size=2>&gt;(DeedGridRefsProperty), </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>this</FONT></FONT><FONT size=2>);</FONT></FONT></P>
+<P><FONT face=Arial size=2></FONT>&nbsp;</P><FONT size=2><FONT size=2>
+<P></FONT><FONT face=Arial><FONT color=#0000ff size=2><FONT color=#0000ff size=2>private</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>void</FONT></FONT><FONT size=2> Child_Update(</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>Account</FONT></FONT></FONT><FONT size=2><FONT face=Arial> parent)</FONT></P>
+<P><FONT face=Arial>{</FONT></P>
+<P></FONT><FONT face=Arial><FONT color=#0000ff size=2><FONT color=#0000ff size=2>bool</FONT></FONT><FONT size=2> cancel = </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>false</FONT></FONT></FONT><FONT size=2><FONT face=Arial>;</FONT></P>
+<P><FONT face=Arial>OnPackTrackingUpdating(parent, </FONT></FONT><FONT color=#0000ff size=2><FONT face=Arial color=#0000ff size=2>ref</FONT></FONT><FONT size=2><FONT face=Arial> cancel);</FONT></P>
+<P></FONT><FONT face=Arial><FONT color=#0000ff size=2><FONT color=#0000ff size=2>if</FONT></FONT><FONT size=2> (cancel) </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>return</FONT></FONT></FONT><FONT size=2><FONT face=Arial>;</FONT></P>
+<P><FONT face=Arial>ExecuteUpsert(parent);</FONT></P>
+<P><FONT face=Arial>OnPackTrackingUpdated();</FONT></P>
+<P><FONT face=Arial>}</FONT></P></FONT></FONT><FONT face=Arial><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>protected</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>virtual</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>void</FONT></FONT><FONT size=2> ExecuteUpsert(</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>Account</FONT></FONT><FONT size=2> parent)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>using</FONT></FONT><FONT size=2> (</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>var</FONT></FONT><FONT size=2> mgr = </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>ContextManager</FONT></FONT><FONT size=2>&lt;InDeed.DalLinq.</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>InDeedDBDataContext</FONT></FONT><FONT size=2>&gt;</P>
+<P>.GetManager(InDeed.DalLinq.</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>Database</FONT></FONT><FONT size=2>.InDeedDB))</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>int</FONT></FONT><FONT size=2>? id = _id;</P>
+<P>System.Data.Linq.</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>Binary</FONT></FONT><FONT size=2> _tempTimestamp;</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>if</FONT></FONT><FONT size=2> (_audTimestamp == </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>null</FONT></FONT><FONT size=2>)</P>
+<P>_tempTimestamp = </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>new</FONT></FONT><FONT size=2> System.Data.Linq.</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>Binary</FONT></FONT><FONT size=2>(</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>new</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>byte</FONT></FONT><FONT size=2>[] { });</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>else</P></FONT></FONT><FONT size=2>
+<P>_tempTimestamp = </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>new</FONT></FONT><FONT size=2> System.Data.Linq.</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>Binary</FONT></FONT><FONT size=2>(_audTimestamp);</P>
+<P>_accountID = parent.Id;</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>if</FONT></FONT><FONT size=2> (IsSelfDirty) _audUserID = parent.AudUserID;</P>
+<P>mgr.DataContext.PackTrackingUpsert</P>
+<P>(</P>
+<P>_accountID,</P>
+<P>_packTypeID,</P>
+<P>_statusDate,</P>
+<P>_statusID,</P>
+<P></FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>ArgumentHelper</FONT></FONT><FONT size=2>.NullableValue(_outLocationID),</P>
+<P></FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>ArgumentHelper</FONT></FONT><FONT size=2>.NullableValue(_trackingStatusID),</P>
+<P></FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>ArgumentHelper</FONT></FONT><FONT size=2>.NullableValue(_outTypeID),</P>
+<P></FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>ArgumentHelper</FONT></FONT><FONT size=2>.NullableValue(_requestID),</P>
+<P></FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>ArgumentHelper</FONT></FONT><FONT size=2>.NullableValue(_receiptDate),</P>
+<P></FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>ArgumentHelper</FONT></FONT><FONT size=2>.NullableValue(_retrievalDate),</P>
+<P></FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>ArgumentHelper</FONT></FONT><FONT size=2>.NullableValue(_dueDate),</P>
+<P></FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>ArgumentHelper</FONT></FONT><FONT size=2>.NullableValue(_comment),</P>
+<P></FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>ArgumentHelper</FONT></FONT><FONT size=2>.NullableValue(_assignedTo),</P>
+<P>_active,</P>
+<P>_audUserID,</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>ref</FONT></FONT><FONT size=2> _tempTimestamp,</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>ref</FONT></FONT><FONT size=2> id</P>
+<P>);</P>
+<P>_id = System.</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>Convert</FONT></FONT><FONT size=2>.ToInt32(id);</P>
+<P>_audTimestamp = _tempTimestamp.ToArray();</FONT><FONT color=#008000 size=2><FONT color=#008000 size=2></P></FONT></FONT><FONT size=2>
+<P>}</P>
+<P>}</P>
+<P>&nbsp;</P><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>private</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>void</FONT></FONT><FONT size=2> Child_Update(</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>Account</FONT></FONT><FONT size=2> parent)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>bool</FONT></FONT><FONT size=2> cancel = </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>false</FONT></FONT><FONT size=2>;</P>
+<P>OnDeedGridRefUpdating(parent, </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>ref</FONT></FONT><FONT size=2> cancel);</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>if</FONT></FONT><FONT size=2> (cancel) </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>return</FONT></FONT><FONT size=2>;</P>
+<P>ExecuteUpsert(parent);</P>
+<P>OnDeedGridRefUpdated();</P>
+<P>}</P>
+<P>&nbsp;</P><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>protected</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>virtual</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>void</FONT></FONT><FONT size=2> ExecuteUpsert(</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>Account</FONT></FONT><FONT size=2> parent)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>using</FONT></FONT><FONT size=2> (</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>var</FONT></FONT><FONT size=2> mgr = </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>ContextManager</FONT></FONT><FONT size=2>&lt;InDeed.DalLinq.</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>InDeedDBDataContext</FONT></FONT><FONT size=2>&gt;</P>
+<P>.GetManager(InDeed.DalLinq.</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>Database</FONT></FONT><FONT size=2>.InDeedDB))</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>int</FONT></FONT><FONT size=2>? id = _id;</P>
+<P>System.Data.Linq.</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>Binary</FONT></FONT><FONT size=2> _tempTimestamp;</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>if</FONT></FONT><FONT size=2> (_audTimestamp == </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>null</FONT></FONT><FONT size=2>)</P>
+<P>_tempTimestamp = </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>new</FONT></FONT><FONT size=2> System.Data.Linq.</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>Binary</FONT></FONT><FONT size=2>(</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>new</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>byte</FONT></FONT><FONT size=2>[] { });</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>else</P></FONT></FONT><FONT size=2>
+<P>_tempTimestamp = </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>new</FONT></FONT><FONT size=2> System.Data.Linq.</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>Binary</FONT></FONT><FONT size=2>(_audTimestamp);</P>
+<P>_accountID = parent.Id;</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>if</FONT></FONT><FONT size=2> (IsSelfDirty) _audUserID = parent.AudUserID;</P>
+<P></FONT>
+<P><FONT color=#008000 size=2><FONT color=#008000 size=2></P></FONT></FONT><FONT size=2>mgr.DataContext.DeedGridRefUpsert</P>
+<P>(</P>
+<P>_accountID,</P>
+<P></FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>ArgumentHelper</FONT></FONT><FONT size=2>.NullableValue(_bay),</P>
+<P></FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>ArgumentHelper</FONT></FONT><FONT size=2>.NullableValue(_columnID),</P>
+<P></FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>ArgumentHelper</FONT></FONT><FONT size=2>.NullableValue(_shelf),</P>
+<P></FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>ArgumentHelper</FONT></FONT><FONT size=2>.NullableValue(_position),</P>
+<P>_active,</P>
+<P>_audUserID,</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>ref</FONT></FONT><FONT size=2> _tempTimestamp,</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>ref</FONT></FONT><FONT size=2> id</P>
+<P>);</P>
+<P>_id = System.</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>Convert</FONT></FONT><FONT size=2>.ToInt32(id);</P>
+<P>_audTimestamp = _tempTimestamp.ToArray();</FONT><FONT color=#008000 size=2><FONT color=#008000 size=2></P></FONT></FONT><FONT size=2>
+<P>}</P>
+<P>}</P></FONT></FONT></FONT></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, February 04, 2010</h2>Do you have the actual exception and stack trace? It is hard to even know where to start without knowing the nature of the problem.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Niamh replied on Thursday, February 04, 2010</h2><P><FONT face=Arial size=2>Thanks for your swift reply, </FONT></P>
+<P><FONT face=Arial size=2>We dont have a stacktrace for the error that is experienced in production. Normally errors are logged to the database along with the stacktrace but for some reason these errors arent getting logged. </FONT></P>
+<P><FONT face=Arial size=2>I can reproduce the same error message in dev by stopping the code (in the same&nbsp;place as the live error)&nbsp;for longer than a minute and then continuing (i.e. allowing the transaction to timeout), but this doesnt appear to be the same issue as the users see it throwing the error within seconds of clicking the button. </FONT></P>
+<P><FONT face=Arial size=2>The intermittent nature of the error is making it very difficult to narrow down. I downloaded the CSLA source and referenced that in my solution. </FONT></P>
+<P><FONT face=Arial size=2></FONT>&nbsp;</P>
+<P><FONT face=Arial size=2>The call stack from when I try and reproduce the error by allowing the transaction to timeout is below if it is of any use.</FONT> </P>
+<P>&nbsp;</P>
+<P>&gt; Csla.DLL!Csla.Server.SimpleDataPortal.Update(object obj = {11936}, Csla.Server.DataPortalContext context = {Csla.Server.DataPortalContext}) Line 247 C#<BR>&nbsp; Csla.DLL!Csla.Server.TransactionalDataPortal.Update(object obj = {11936}, Csla.Server.DataPortalContext context = {Csla.Server.DataPortalContext}) Line 90 + 0x10 bytes C#<BR>&nbsp; Csla.DLL!Csla.Server.DataPortal.Update(object obj = {11936}, Csla.Server.DataPortalContext context = {Csla.Server.DataPortalContext}) Line 194 + 0xf bytes C#<BR>&nbsp; Csla.DLL!Csla.DataPortalClient.LocalProxy.Update(object obj = {11936}, Csla.Server.DataPortalContext context = {Csla.Server.DataPortalContext}) Line 55 + 0x18 bytes C#<BR>&nbsp; Csla.DLL!Csla.DataPortal.Update(object obj = {11936}) Line 415 + 0x18 bytes C#<BR>&nbsp; Csla.DLL!Csla.DataPortal.Update&lt;Csla.BusinessBase&lt;PTSB.InDeed.BusinessEntities.Account&gt;&gt;(Csla.BusinessBase&lt;PTSB.InDeed.BusinessEntities.Account&gt; obj = {11936}) Line 322 + 0x9 bytes C#<BR>&nbsp; Csla.DLL!Csla.BusinessBase&lt;PTSB.InDeed.BusinessEntities.Account&gt;.Save() Line 119 + 0x46 bytes C#<BR>&nbsp; PTSB.InDeed.BusinessEntities.DLL!PTSB.InDeed.BusinessEntities.Account.Save() Line 1405 + 0x8 bytes C#<BR>&nbsp; CSF.DLL!CSF.Common.Functions.Save&lt;PTSB.InDeed.BusinessEntities.Account&gt;(PTSB.InDeed.BusinessEntities.Account t, CSF.Common.BusinessParameters parameters, bool forceUpdate) + 0x62 bytes <BR>&nbsp; PTSB.InDeed.Services.DLL!PTSB.InDeed.Services.AccountService.SaveAccount(PTSB.InDeed.BusinessEntities.Account account = {11936}) Line 115 + 0x76 bytes C#<BR>&nbsp; PTSB.InDeed.Services.DLL!PTSB.InDeed.Services.WorkflowService.CheckInDeedCommit(PTSB.InDeed.BusinessEntities.DataTransferObjects.WorkflowDeedInformation info = {PTSB.InDeed.BusinessEntities.DataTransferObjects.WorkflowDeedInformation}) Line 1200 + 0x40 bytes C#<BR>&nbsp; PTSB.InDeed.Modules.Deeds.DLL!PTSB.InDeed.Modules.Deeds.Views.CheckInPresenter.OnSave() Line 189 + 0xf bytes Basic<BR>&nbsp; App_Web_2dyvekge.dll!PTSB.InDeed.Modules.Deeds.Views.CheckIn.CheckOutWizard_FinishButtonClick(Object sender = {System.Web.UI.WebControls.Wizard}, System.Web.UI.WebControls.WizardNavigationEventArgs e = {System.Web.UI.WebControls.WizardNavigationEventArgs}) Line 136 + 0x11 bytes Basic<BR>&nbsp; System.Web.dll!System.Web.UI.WebControls.Wizard.OnFinishButtonClick(System.Web.UI.WebControls.WizardNavigationEventArgs e) + 0x6d bytes <BR>&nbsp; System.Web.dll!System.Web.UI.WebControls.Wizard.OnBubbleEvent(object source, System.EventArgs e) + 0x282 bytes <BR>&nbsp; System.Web.dll!System.Web.UI.WebControls.Wizard.WizardChildTable.OnBubbleEvent(object source, System.EventArgs args) + 0x14 bytes <BR>&nbsp; System.Web.dll!System.Web.UI.Control.RaiseBubbleEvent(object source = {Text = "Complete Check In"}, System.EventArgs args = {System.Web.UI.WebControls.CommandEventArgs}) + 0x26 bytes <BR>&nbsp; System.Web.dll!System.Web.UI.WebControls.Button.OnCommand(System.Web.UI.WebControls.CommandEventArgs e) + 0x77 bytes <BR>&nbsp; System.Web.dll!System.Web.UI.WebControls.Button.RaisePostBackEvent(string eventArgument) + 0xa7 bytes <BR>&nbsp; System.Web.dll!System.Web.UI.WebControls.Button.System.Web.UI.IPostBackEventHandler.RaisePostBackEvent(string eventArgument) + 0xb bytes <BR>&nbsp; System.Web.dll!System.Web.UI.Page.RaisePostBackEvent(System.Web.UI.IPostBackEventHandler sourceControl, string eventArgument) + 0xe bytes <BR>&nbsp; System.Web.dll!System.Web.UI.Page.RaisePostBackEvent(System.Collections.Specialized.NameValueCollection postData) + 0x25 bytes <BR>&nbsp; System.Web.dll!System.Web.UI.Page.ProcessRequestMain(bool includeStagesBeforeAsyncPoint = true, bool includeStagesAfterAsyncPoint = true) + 0x61e bytes <BR>&nbsp; System.Web.dll!System.Web.UI.Page.ProcessRequest(bool includeStagesBeforeAsyncPoint, bool includeStagesAfterAsyncPoint = true) + 0x84 bytes <BR>&nbsp; System.Web.dll!System.Web.UI.Page.ProcessRequest() + 0x51 bytes <BR>&nbsp; System.Web.dll!System.Web.UI.Page.ProcessRequestWithNoAssert(System.Web.HttpContext context) + 0x16 bytes <BR>&nbsp; System.Web.dll!System.Web.UI.Page.ProcessRequest(System.Web.HttpContext context) + 0x32 bytes <BR>&nbsp; App_Web_2dyvekge.dll!ASP.deeds_checkin_checkin_aspx.ProcessRequest(System.Web.HttpContext context = {System.Web.HttpContext}) + 0x26 bytes <BR>&nbsp; System.Web.dll!System.Web.HttpApplication.CallHandlerExecutionStep.System.Web.HttpApplication.IExecutionStep.Execute() + 0xb6 bytes <BR>&nbsp; System.Web.dll!System.Web.HttpApplication.ExecuteStep(System.Web.HttpApplication.IExecutionStep step = {System.Web.HttpApplication.CallHandlerExecutionStep}, ref bool completedSynchronously = true) + 0x4c bytes <BR>&nbsp; System.Web.dll!System.Web.HttpApplication.ApplicationStepManager.ResumeSteps(System.Exception error) + 0x133 bytes <BR>&nbsp; System.Web.dll!System.Web.HttpApplication.System.Web.IHttpAsyncHandler.BeginProcessRequest(System.Web.HttpContext context, System.AsyncCallback cb, object extraData) + 0x7c bytes <BR>&nbsp; System.Web.dll!System.Web.HttpRuntime.ProcessRequestInternal(System.Web.HttpWorkerRequest wr = {System.Web.Hosting.ISAPIWorkerRequestOutOfProc}) + 0x17c bytes <BR>&nbsp; System.Web.dll!System.Web.HttpRuntime.ProcessRequestNoDemand(System.Web.HttpWorkerRequest wr) + 0x63 bytes <BR>&nbsp; System.Web.dll!System.Web.Hosting.ISAPIRuntime.ProcessRequest(System.IntPtr ecb, int iWRType) + 0x11c bytes <BR>&nbsp; [Appdomain Transition] <BR>&nbsp; [Native to Managed Transition] <BR></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Niamh replied on Friday, February 05, 2010</h2><P><FONT face=Arial color=#000000 size=2>We managed to track down and fix this error.&nbsp;The&nbsp;root cause turned out to be&nbsp;a data integrity issue.</FONT></P>
+<P><FONT face=Arial size=2>The difficulty in solving it was that the stacktrace&nbsp;with the error was hidden as it was caught first by a dll written by a 3rd party which we dont have access to and&nbsp;by the time it got to our application the specific error was lost.</FONT></P>
+<P><FONT face=Arial size=2></FONT>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, February 05, 2010</h2>I'm glad you were able to resolve the issue!</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

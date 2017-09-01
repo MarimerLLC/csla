@@ -1,0 +1,26 @@
+<html><header><title>CSLA 4 - Business Rules: Affecting Child properties</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA 4 - Business Rules: Affecting Child properties</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9927.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jaans posted on Sunday, January 09, 2011</h2><p>Hi All</p>
+<p>We&#39;re still converting over to CSLA 4 and have a couple of questions regarding implementing the new Business Rules.</p>
+<p><span style="text-decoration:underline;">Scenario 1 - Change to property, should have rule affect properties on children.</span></p>
+<p>The BO structure is an editable root&nbsp;with an&nbsp;editable child list - or in our inhouse shorthand expressed as ER&nbsp;-&gt; ECL(EC) : Staff -&gt; TaskList&lt;Task&gt;</p>
+<p>So I have a rule class in the root Staff class and I have set the input property to the &quot;triggering&quot; property. When the rule executes it will be affecting the Task objects in the Tasks collection (pointed to by the TasksProperty on the Staff BO).</p>
+<p>Where I&#39;m unsure is:</p>
+<ul>
+<li>What&nbsp;to specify for AffectedProperties? (Perhaps just the TasksProperty of the staff BO?) </li>
+<li>Inside the Execute method, I&#39;m not sure what to provide the context.AddOutValue method?</li>
+</ul>
+<p><span style="text-decoration:underline;">Scenario 2 - Change to property, should have rule affect other properties without triggering property change notification</span></p>
+<p>Before CSLA 4, I could simply just call LoadProperty( ... ) for the property I wanted to change without causing it to fire it&#39;s PropertyChanged notification. </p>
+<p>How do I achieve the same in CSLA 4? It would appear that specifying the property in context.AddOutValue results in property being &quot;SET&quot; thus triggering the PropertyChanged notification.</p>
+<p>Please indicate if anything above is unclear and needs more elaboration.</p>
+<p>Jaans</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Sunday, January 09, 2011</h2><p>Hi Jaans, </p>
+<p>Look at the Net\BusinessRulesDemo sample in the samples download. </p>
+<p>In short:<br />AffectedProperties = properties that you will change a value in the rule or properties that should have their rules rerun (like Dependency) after this rule has run (and this property has changed).</p>
+<p>I&#39;m not convinced about 2: You do need to raise OnPropertyChanged when a property is changed - especially in WPF/SL/WP and using AddOutValues will help you make this code more generic.</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jaans replied on Sunday, January 09, 2011</h2><p>Hi Jonny - thanks for you reply.<br /><br />The sample you suggest unfortunately doesn&#39;t have an root object with a child collection where a rule in the root affects items in the child collection.</p>
+<p>Scenario 1 - Are you saying I don&#39;t need to call &quot;context.AddOutValue( TasksProperty,&nbsp;tasks );&quot; when I&#39;m chaging the items contained in the tasks collection?<br /><br />Scenario 2 - The issue here is that I need to change a property in the rule execute event, without that change triggering the rules associated with that property. That&#39;s what LoadProperty allowed me to do. Any suggestions?</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Monday, January 10, 2011</h2><p>Hi,</p>
+<p>1. If you are changing the child items you shouldn&#39;t use context.AddOutValue (as that would replace the entire child list). If you are going to change some of the items then you must use the context.Target. </p>
+<p>2. BusinessRules has a LoadProperty and ReadProperty&nbsp; (similar to ObjectFactory) that allows you to call like this: <br />&nbsp;&nbsp;&nbsp; LoadProperty(context.Target, propertyInfo, newValue). <br />&nbsp;&nbsp;&nbsp; This will set the property of the given object to the newValue without raising OnPropertyChanged or rerun rules </p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jaans replied on Monday, January 10, 2011</h2><p>Aaa.. brilliant!</p>
+<p>2. I didn&#39;t notice the LoadProperty on the BusinessRule base class - just what I need.</p>
+<p>1. OK... I&#39;ll use context.Target then. </p>
+<p>Thanks again Jonny!</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,864 @@
+<html><header><title>CLSADataProvider in Silverlight - Design Time Data</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CLSADataProvider in Silverlight - Design Time Data</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6415.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jack posted on Friday, February 13, 2009</h2>Rocky,<br><br>I was looking at this blog and was curious if his second option would work with the CSLA DataProvider in Silverlight?&nbsp; If you had a minute I would be interested in your off the top of your head thoughts before I added it to my list of things to try.<br><br>http://karlshifflett.wordpress.com/2008/10/11/viewing-design-time-data-in-visual-studio-2008-cider-designer-in-wpf-and-silverlight-projects/<br><br>Thanks<br><br>jack<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, February 13, 2009</h2><P>We enable design time data generation in both WPF and Silverlight. The model is the same either way - you implement a DesignTime_Create() method in your business class that generates this data. </P>
+<P>The data portal detects that it is running in design time and invokes that method instead of doing normal data portal processing.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jack replied on Friday, February 13, 2009</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>You guys never cease to impress me &#8211; I&#8217;ll give that
+a whirl today.&nbsp; <o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>How does it work with filtering down to child objects?<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Do I need to call the children myself of will that happen if I
+just create 5 new child objects and add them to a list?<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Or can I put the DesignTime_Create in my listBO and add them
+there? <o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Ie) ParentBO /w ChildListBO<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> RockfordLhotka
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Friday, February 13, 2009 7:57 AM<br>
+<b>To:</b> jaddington@alexandergracie.com<br>
+<b>Subject:</b> Re: [CSLA .NET] CLSADataProvider in Silverlight - Design Time
+Data<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>We enable design time data generation in both WPF and Silverlight. The model
+is the same either way - you implement a DesignTime_Create() method in your
+business class that generates this data. <o:p></o:p></p>
+
+<p>The data portal detects that it is running in design time and invokes that
+method instead of doing normal data portal processing.<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, February 13, 2009</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>The data portal only invokes the root object. It is your
+responsibility to create a mock-up of the object graph as you wish.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I should point out that I&#8217;m not real happy with the method
+signature right now, as it returns a value. I think it should be a static void
+method like the other data portal methods, and that&#8217;ll probably change in
+3.6.2.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Jack Addington
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Friday, February 13, 2009 9:20 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> RE: [CSLA .NET] CLSADataProvider in Silverlight - Design Time
+Data<o:p></o:p></span></p>
+
+</div>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal><span>You guys never cease to impress me &#8211; I&#8217;ll give that
+a whirl today.&nbsp; <o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>How does it work with filtering down to child objects?<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Do I need to call the children myself of will that happen if I
+just create 5 new child objects and add them to a list?<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Or can I put the DesignTime_Create in my listBO and add them
+there? <o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Ie) ParentBO /w ChildListBO<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> RockfordLhotka
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Friday, February 13, 2009 7:57 AM<br>
+<b>To:</b> jaddington@alexandergracie.com<br>
+<b>Subject:</b> Re: [CSLA .NET] CLSADataProvider in Silverlight - Design Time
+Data<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>We enable design time data generation in both WPF and Silverlight. The model
+is the same either way - you implement a DesignTime_Create() method in your
+business class that generates this data. <o:p></o:p></p>
+
+<p>The data portal detects that it is running in design time and invokes that
+method instead of doing normal data portal processing.<o:p></o:p></p>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jack replied on Friday, February 13, 2009</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>If you let me know when you modify it, I&#8217;ll be happy to try the
+implementation.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Rockford Lhotka
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Friday, February 13, 2009 8:31 AM<br>
+<b>To:</b> jaddington@alexandergracie.com<br>
+<b>Subject:</b> RE: [CSLA .NET] CLSADataProvider in Silverlight - Design Time
+Data<o:p></o:p></span></p>
+
+</div>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal><span>The data portal only invokes the root object. It is your
+responsibility to create a mock-up of the object graph as you wish.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I should point out that I&#8217;m not real happy with the method signature
+right now, as it returns a value. I think it should be a static void method
+like the other data portal methods, and that&#8217;ll probably change in 3.6.2.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Jack Addington
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Friday, February 13, 2009 9:20 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> RE: [CSLA .NET] CLSADataProvider in Silverlight - Design Time
+Data<o:p></o:p></span></p>
+
+</div>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal><span>You guys never cease to impress me &#8211; I&#8217;ll give that a whirl
+today.&nbsp; <o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>How does it work with filtering down to child objects?<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Do I need to call the children myself of will that happen if I
+just create 5 new child objects and add them to a list?<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Or can I put the DesignTime_Create in my listBO and add them
+there? <o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Ie) ParentBO /w ChildListBO<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> RockfordLhotka
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Friday, February 13, 2009 7:57 AM<br>
+<b>To:</b> jaddington@alexandergracie.com<br>
+<b>Subject:</b> Re: [CSLA .NET] CLSADataProvider in Silverlight - Design Time
+Data<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>We enable design time data generation in both WPF and Silverlight. The model
+is the same either way - you implement a DesignTime_Create() method in your
+business class that generates this data. <o:p></o:p></p>
+
+<p>The data portal detects that it is running in design time and invokes that
+method instead of doing normal data portal processing.<o:p></o:p></p>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jack replied on Wednesday, February 25, 2009</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Rocky,<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I couldn&#8217;t get this to work in Silverlight.&nbsp; I had to
+add a public constructor because the designtime didn&#8217;t pick up anything
+in the #if !SILVERLIGHT &#8230; #endif directives.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>But that didn&#8217;t seem to help.&nbsp; Is there a way to deb<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Jack Addington
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Friday, February 13, 2009 9:46 AM<br>
+<b>To:</b> jaddington@alexandergracie.com<br>
+<b>Subject:</b> RE: [CSLA .NET] CLSADataProvider in Silverlight - Design Time
+Data<o:p></o:p></span></p>
+
+</div>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal><span>If you let me know when you modify it, I&#8217;ll be happy to
+try the implementation.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Rockford Lhotka
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Friday, February 13, 2009 8:31 AM<br>
+<b>To:</b> jaddington@alexandergracie.com<br>
+<b>Subject:</b> RE: [CSLA .NET] CLSADataProvider in Silverlight - Design Time
+Data<o:p></o:p></span></p>
+
+</div>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal><span>The data portal only invokes the root object. It is your
+responsibility to create a mock-up of the object graph as you wish.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I should point out that I&#8217;m not real happy with the method
+signature right now, as it returns a value. I think it should be a static void
+method like the other data portal methods, and that&#8217;ll probably change in
+3.6.2.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Jack Addington
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Friday, February 13, 2009 9:20 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> RE: [CSLA .NET] CLSADataProvider in Silverlight - Design Time
+Data<o:p></o:p></span></p>
+
+</div>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal><span>You guys never cease to impress me &#8211; I&#8217;ll give that
+a whirl today.&nbsp; <o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>How does it work with filtering down to child objects?<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Do I need to call the children myself of will that happen if I
+just create 5 new child objects and add them to a list?<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Or can I put the DesignTime_Create in my listBO and add them
+there? <o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Ie) ParentBO /w ChildListBO<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> RockfordLhotka
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Friday, February 13, 2009 7:57 AM<br>
+<b>To:</b> jaddington@alexandergracie.com<br>
+<b>Subject:</b> Re: [CSLA .NET] CLSADataProvider in Silverlight - Design Time
+Data<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>We enable design time data generation in both WPF and Silverlight. The model
+is the same either way - you implement a DesignTime_Create() method in your
+business class that generates this data. <o:p></o:p></p>
+
+<p>The data portal detects that it is running in design time and invokes that
+method instead of doing normal data portal processing.<o:p></o:p></p>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, February 27, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Silverlight does require a public constructor on all business
+objects.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Also, Silverlight requires that the DesignTime_Create() method
+be public.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Finally, to my knowledge, Visual Studio doesn&#8217;t invoke the
+data binding infrastructure when working with a Silverlight form in the
+designer. Blend does though. So in VS you&#8217;ll only get design time data
+for WPF forms, not Silverlight. But in Blend you should get design time data in
+both environments.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jack replied on Friday, April 24, 2009</h2><font face="Courier New">Does anybody have a working example of DesignTimeData working in Silverlight for 3.6.2?&nbsp; I'm not getting anything at all.&nbsp; I have a very similar example to the WpfDesignTime example with a ROLB.<br><br>I have the runtime working but I cannot for the life of me get any data for design time.<br><br>The WPF example doesn't use a DataTemplate but I've tried also not doing that and overriding ToString() in my BO.&nbsp; I tried to debug Blend DesignTime but I'm not having any success there trapping anything.<br><br>Any ideas?&nbsp; Thanks<br><br>jack<br><br><br>My Control:<br></font><blockquote><font face="Courier New">&lt;UserControl.Resources&gt;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;csla:CslaDataProvider x:Key="ObjectInfoListDataProvider"<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp; ManageObjectLifetime="True"<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp; IsInitialLoadEnabled="False"<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp; ObjectType="Epm.Library.ProgramObject.ObjectInfoList, Epm.Library"<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp; FactoryMethod="GetObjectInfoList" /&gt;<br>&nbsp;&nbsp;&nbsp; &lt;/UserControl.Resources&gt;<br>&nbsp;&nbsp;&nbsp; &lt;Border BorderThickness="1,1,1,1"<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; CornerRadius="10,10,10,10"<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; Padding="2"<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; BorderBrush="AliceBlue"&gt;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;Grid x:Name="LayoutRoot" <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; DataContext="{Binding Source={StaticResource ObjectInfoListDataProvider}, NotifyOnValidationError=true, ValidatesOnExceptions=true}" <br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &lt;ListBox x:Name="ObjectList" ItemsSource="{Binding Mode=OneWay}" &nbsp;&nbsp;&nbsp; VerticalAlignment="Stretch" &gt;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &lt;ListBox.ItemTemplate&gt;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &lt;DataTemplate&gt;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;StackPanel Orientation="Vertical" HorizontalAlignment="Stretch"&gt;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;TextBlock Text="{Binding Mode=OneWay, Path=CalcObjectName}" VerticalAlignment="Top" HorizontalAlignment="Stretch"&nbsp; /&gt;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;TextBlock Text="{Binding Mode=OneWay, Path=CalcSourceName}" Foreground="#FFBF2D2D" VerticalAlignment="Top" HorizontalAlignment="Stretch" Height="20"/&gt;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;TextBlock Text="{Binding Mode=OneWay, Path=CalcObjectSortedName}" VerticalAlignment="Top" HorizontalAlignment="Stretch"&nbsp; /&gt;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;TextBlock Text="{Binding Mode=OneWay, Path=ObjectType}" VerticalAlignment="Top" HorizontalAlignment="Stretch"&nbsp; /&gt;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;TextBlock Text="{Binding Mode=OneWay, Path=ObjectStatus}" VerticalAlignment="Top" HorizontalAlignment="Stretch"&nbsp; /&gt;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;TextBlock Text="{Binding Mode=OneWay, Path=LastRefreshDateString}" VerticalAlignment="Top" HorizontalAlignment="Stretch" /&gt;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;TextBlock Text="{Binding Mode=OneWay, Path=NextScheduledPeriodText}" VerticalAlignment="Top" HorizontalAlignment="Stretch"&nbsp; /&gt;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;TextBlock Text="{Binding Mode=OneWay, Path=CalcObjectName}" VerticalAlignment="Top" HorizontalAlignment="Stretch"/&gt;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/StackPanel&gt;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/DataTemplate&gt;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &lt;/ListBox.ItemTemplate&gt;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/ListBox&gt;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/Grid&gt;<br>&nbsp;&nbsp;&nbsp; &lt;/Border&gt;<br>&lt;/UserControl&gt;<br></font></blockquote><font face="Courier New"><br>My BOL:<br><br></font><div><font face="Courier New">&nbsp;public static ObjectInfoList GetObjectInfoList()<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return new ObjectInfoList();<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br><br>public void DesignTime_Create()</font><br><font face="Courier New">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {</font><br><br><font face="Courier New">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; IsReadOnly = false;</font><br><font face="Courier New">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </font><br><font face="Courier New">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var r1 = ObjectInfo.GetDesignTimeObjectInfo(100);</font><br><font face="Courier New">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var r2 = ObjectInfo.GetDesignTimeObjectInfo(101);</font><br><font face="Courier New">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var r3 = ObjectInfo.GetDesignTimeObjectInfo(142);</font><br><font face="Courier New">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; this.Add(r1);</font><br><font face="Courier New">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; this.Add(r2);</font><br><font face="Courier New">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; this.Add(r3);</font><br><font face="Courier New">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; IsReadOnly = true;</font><br><font face="Courier New">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</font><br></div><font face="Courier New"><br>My BO:<br><br></font><div><font face="Courier New">&nbsp;&nbsp; public static ObjectInfo GetDesignTimeObjectInfo(int objectId)</font><br><font face="Courier New">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {</font><br><br><font face="Courier New">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ObjectInfo objectInfo = new ObjectInfo();</font><br><br><font face="Courier New">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; objectInfo.LoadProperty&lt;int&gt;(ObjectIdProperty, objectId);</font><br><font face="Courier New">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; objectInfo.LoadProperty&lt;int&gt;(ObjectSiteIdProperty, 47);</font><br><font face="Courier New">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; objectInfo.LoadProperty&lt;int&gt;(ProgramIdProperty, 400);</font><br><font face="Courier New">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; objectInfo.LoadProperty&lt;int&gt;(ObjectSourceIdProperty, objectId);</font><br><font face="Courier New">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; objectInfo.LoadProperty&lt;int&gt;(ObjectNumberProperty, objectId*103);</font><br><font face="Courier New">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </font><br><font face="Courier New">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; objectInfo.LoadProperty&lt;string&gt;(ObjectStatusCodeProperty, "ACTIVE");</font><br><font face="Courier New">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; objectInfo.LoadProperty&lt;string&gt;(ObjectTypeCodeProperty, "PARTICIPANT");</font><br><font face="Courier New">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; objectInfo.LoadProperty&lt;string&gt;(ObjectStatusProperty, "Active");</font><br><font face="Courier New">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; objectInfo.LoadProperty&lt;string&gt;(ObjectTypeProperty, "Participant");</font><br><br><font face="Courier New">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; objectInfo.LoadProperty&lt;string&gt;(CalcObjectNameProperty, "NAPLS-07-00" + objectId.ToString());</font><br><font face="Courier New">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; objectInfo.LoadProperty&lt;string&gt;(CalcObjectSortedNameProperty, objectId.ToString());</font><br><br><font face="Courier New">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; objectInfo.LoadProperty&lt;string&gt;(CalcSourceNameProperty, "Jack Addington" + objectId.ToString());</font><br><font face="Courier New">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; objectInfo.LoadProperty&lt;string&gt;(CalcSourceSortedNameProperty, "Addington, Jack" + objectId.ToString());</font><br><font face="Courier New">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </font><br><font face="Courier New">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; objectInfo.LoadProperty&lt;SmartDate&gt;(LastRefreshDateProperty, DateTime.Now);</font><br><font face="Courier New">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </font><br><font face="Courier New">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; objectInfo.LoadProperty&lt;string&gt;(ResourcingIssueIndProperty, "1");</font><br><font face="Courier New">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; objectInfo.LoadProperty&lt;string&gt;(SchedulingConflictIndProperty, "1");</font><br><font face="Courier New">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; objectInfo.LoadProperty&lt;decimal&gt;(NextScheduleIdProperty, 324332);</font><br><font face="Courier New">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; objectInfo.LoadProperty&lt;SmartDate&gt;(NextScheduledPeriodDateProperty, DateTime.Today.AddMonths(6));</font><br><font face="Courier New">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; objectInfo.LoadProperty&lt;string&gt;(NextScheduledPeriodTextProperty, "Visit #3: Six Month Followup");</font><br><font face="Courier New">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; objectInfo.LoadProperty&lt;string&gt;(HasOverdueTaskIndProperty, "1");</font><br><font face="Courier New">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; objectInfo.LoadProperty&lt;string&gt;(ReadyForDataEntryIndProperty, "1");</font><br><font face="Courier New">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; objectInfo.LoadProperty&lt;string&gt;(ReadyForDoubleEntryIndProperty, objectId.ToString().Substring(objectId.ToString().Length -1,1));</font><br><font face="Courier New">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; objectInfo.LoadProperty&lt;string&gt;(HasMissingDataIndProperty, "1");</font><br><font face="Courier New">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; objectInfo.LoadProperty&lt;string&gt;(HasDataIssueIndProperty, "1");</font><br><font face="Courier New">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; objectInfo.LoadProperty&lt;string&gt;(HasDoubleEntryIssueIndProperty, "1");</font><br><br><font face="Courier New">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return objectInfo;</font><br><font face="Courier New">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</font><br><br></div><font face="Courier New"><br><br><br></font></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, April 24, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Silverlight design time data only works in Blend from what I can
+tell. It doesn&#8217;t appear that the VS designer creates instances of
+Silverlight resources, and so there&#8217;s nothing to trigger the creation of
+any design time data.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Not that I&#8217;m ruling out there being a bug in how CslaDataProvider
+does this &#8211; the whole thing is largely guesswork on our part, because
+there is no formal concept of design time data for XAML at all &#8211; we&#8217;re
+literally making this stuff up as we go until Microsoft formalizes the concept
+(hopefully in VS 2010 and Blend 3).<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>In other words, we noticed that the Blend designer actually
+creates instances of types defined as resources. We used this knowledge to
+trigger creation of design time data.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>And the WPF designer in VS does the same thing.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>But it doesn&#8217;t appear (from my testing) that the
+Silverlight designer in VS creates instances of the objects. And if VS doesn&#8217;t
+create an instance, then there&#8217;s really nothing CSLA can do &#8211;
+because I&#8217;m surely not going to write my own designer :)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky</span><b><span><o:p></o:p></span></b></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jack replied on Friday, April 24, 2009</h2>It is in blend that I am *trying* to get some data to see.&nbsp; I have noticed with playing with the WPF example that I have to open/close Blend to pick up changes to the underlying BO.&nbsp; If I make certain changes then the DesignTime data just disappears until I reload Blend.<br><br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, April 24, 2009</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>.NET can only load an assembly into an appdomain once &#8211;
+and there&#8217;s no way to unload an assembly. It may be that Blend is loading
+the DLL and then it is stuck in memory even if a newer version comes along.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Microsoft really needs to get a more comprehensive story in
+place around this. But then the whole designer issue needs major improvement &#8211;
+I&#8217;m hoping for VS 10 and B3 to address a lot of these things.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Jack
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Friday, April 24, 2009 4:46 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: RE: CLSADataProvider in Silverlight -
+Design Time Data<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>It is in blend that I am *trying* to get some data to
+see.&nbsp; I have noticed with playing with the WPF example that I have to
+open/close Blend to pick up changes to the underlying BO.&nbsp; If I make
+certain changes then the DesignTime data just disappears until I reload Blend.<br>
+<br>
+<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jack replied on Friday, April 24, 2009</h2>Thanks - I'll guess I'll try another approach that doesn't use the CSLADataProvider or something.&nbsp; I've seen a few examples online. <br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jack replied on Friday, April 24, 2009</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Rocky,<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I'm trying to emulate this example:&nbsp; http://www.silverlightshow.net/items/First-Look-at-Using-Expression-Blend-with-Silverlight-2.aspx
+<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I can get to the part where I create a object (ROLB) in the Data
+tray but if I try to then drag it over to create/bind to a list then I get an
+exception.&nbsp; If I create/bind to a grid then I get no error (you binding as
+dataContext) but if I choose list and bind to ItemsSource I get an
+exception.&nbsp; It tells me that it &quot;Cannot find type Csla.Wpf.PropertyStatus
+... The assembly used when compiling might be different than that used when
+loading and the type is missing...&quot;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Any thoughts?<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Thanks<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>jack<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Rockford Lhotka [mailto:cslanet@lhotka.net]
+<br>
+<b>Sent:</b> April-24-09 4:09 PM<br>
+<b>To:</b> jaddington@alexandergracie.com<br>
+<b>Subject:</b> RE: [CSLA .NET] RE: RE: CLSADataProvider in Silverlight -
+Design Time Data<o:p></o:p></span></p>
+
+</div>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal><span>.NET can only load an assembly into an appdomain once &#8211;
+and there&#8217;s no way to unload an assembly. It may be that Blend is loading
+the DLL and then it is stuck in memory even if a newer version comes along.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Microsoft really needs to get a more comprehensive story in
+place around this. But then the whole designer issue needs major improvement
+&#8211; I&#8217;m hoping for VS 10 and B3 to address a lot of these things.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Jack [mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Friday, April 24, 2009 4:46 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: RE: CLSADataProvider in Silverlight -
+Design Time Data<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>It is in blend
+that I am *trying* to get some data to see.&nbsp; I have noticed with playing
+with the WPF example that I have to open/close Blend to pick up changes to the
+underlying BO.&nbsp; If I make certain changes then the DesignTime data just
+disappears until I reload Blend.<br>
+<br>
+<br>
+<br>
+<o:p></o:p></span></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, April 24, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>To get full designer support in Blend it is my understanding
+that you must put Csla.dll into the GAC. This is because, as I mentioned in a
+previous post, a DLL can be loaded into an appdomain only once &#8211; but it
+actually goes beyond that. If a DLL is loaded into two appdomains, it is
+treated as a <i>different DLL in each appdomain</i>, with the exception of the
+DLL being loaded from the GAC.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>This is a limitation of .NET, and the way Blend uses different
+appdomains to load/unload assemblies in the designer.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>So in short, install Csla.dll into the GAC and that should help.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>davido_xml replied on Friday, February 13, 2009</h2><P>I don't have expression blend nor am I working with a designer so this reply may not be helpful to you....</P>
+<P>I have been working with CSLALight for about a month and&nbsp;the productivity tip below outweighs any benefit of design time data (at the moment).</P>
+<P><A href="http://weblogs.asp.net/fmarguerie/archive/2009/01/29/life-changer-xaml-tip-for-visual-studio.aspx">http://weblogs.asp.net/fmarguerie/archive/2009/01/29/life-changer-xaml-tip-for-visual-studio.aspx</A></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, February 13, 2009</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Yeah, that is really amazing &#8211; I echo-blogged it when the
+post came out &#8211; totally revolutionizes my view on working with XAML in VS.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> davido_xml
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Friday, February 13, 2009 10:34 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] CLSADataProvider in Silverlight - Design Time
+Data<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>I don't have expression blend nor am I working with a designer so this reply
+may not be helpful to you....<o:p></o:p></p>
+
+<p>I have been working with CSLALight for about a month and&nbsp;the
+productivity tip below outweighs any benefit of design time data (at the
+moment).<o:p></o:p></p>
+
+<p><a href="http://weblogs.asp.net/fmarguerie/archive/2009/01/29/life-changer-xaml-tip-for-visual-studio.aspx">http://weblogs.asp.net/fmarguerie/archive/2009/01/29/life-changer-xaml-tip-for-visual-studio.aspx</a><o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

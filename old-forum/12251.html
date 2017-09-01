@@ -1,0 +1,14 @@
+<html><header><title>How do you get CSLA 3.02 BusinessListBase ListChanged event to identify the child object whose OnPropertyChanged triggered the event?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>How do you get CSLA 3.02 BusinessListBase ListChanged event to identify the child object whose OnPropertyChanged triggered the event?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/12251.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>SethSpearman posted on Wednesday, December 04, 2013</h2><p>Hello,</p>
+<p>I have a project that is using CSLA 3.02.</p>
+<p>I have a BLB object that has child items that have an IsDefault property.&nbsp; </p>
+<p>When a child object has its IsDefault property set to true, I want to set the other child members IsDefault property to false.</p>
+<p>I am calling the OnPropertyChanged(&quot;IsDefault&quot;) in the setter and I have that raising the Collections ListChanged event.&nbsp; However, the sender of the event is the Collection object, not the child object that raised the event.&nbsp; Nor is the child item in the ListChangedEventArgs (e).</p>
+<p>How do I get a reference to the specific child instance that raised the event?</p>
+<p>Or should I be doing this some other way?</p>
+<p>Any help is appreciated.</p>
+<p>Seth</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Saturday, December 07, 2013</h2><p>The ListChanged event is a Microsoft .NET event from the standard list base class, it isn&#39;t a CSLA thing.</p>
+<p>In later versions of CSLA we implemented ChildChanged events to provide richer information about changes to child objects/collections.</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Sunday, December 08, 2013</h2><p>Hi,&nbsp;</p>
+<p>I would implement this type of logic in an override of the OnListChanged method in the list or attach an event handler to the list.</p>
+<p>ListChangedEventArgs provide a property NewIndex which is the index to the item that was changed (or added) in the list. <br />So you can use this index to get the actual child item that was changed.&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

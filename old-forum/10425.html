@@ -1,0 +1,30 @@
+<html><header><title>Using CSLA.NET without DataPortal?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Using CSLA.NET without DataPortal?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10425.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>GhoSe posted on Wednesday, June 08, 2011</h2><p>Hello,</p>
+<p>I already successfully used CSLA in one project and it saved me a lot of time. So thanks again for this great framework!</p>
+<p>On another project I also would like to benefit from CSLA and make use of the nice binding, serialization, &nbsp;validation and authorization stuff. The problem is that I need a completely different way how changes are persisted. Actually there is no database or any kind of file store on the server side, the changes made on the client should just be transferend to the matching object instances on the server. Beside that I already have other WCF services running for realtime data push&amp;pull and other things. Therefore it could also easily host the &quot;configuration service&quot;. </p>
+<p>I already designed the mechanism how this could work, but I somehow need to completly disable the DataPortal and replace it with my own implementation.</p>
+<p>I had a look at the CSLA sources and my first thought was to just override the BeginSave and Save methods of the base classes that I need (BusinessBase and BusinessListBase). Unfortunately I don&#39;t have enough overview to be sure that this are all&nbsp;important places where&nbsp;DataPortal calls are made, that I need to replace/override.</p>
+<p>Best regards,</p>
+<p>Patrick</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Wednesday, June 08, 2011</h2><p>The data portal can run in &quot;local mode&quot;, where the &quot;server-side&quot; code runs on the client. The reason for this capability, is to support your scenario.</p>
+<p>Instead of throwing out the value and consistency provided by the data portal, use it to manage your client-side object lifetimes, and implement your DataPortal_XYZ methods to call your existing WCF services.</p>
+<p>This is technically called an &quot;edge application&quot;, where your client application is on the &quot;edge&quot; of a service-oriented system. This is a supported scenario, that is quite frequently used, especially in enterprises where SOA has been widely adopted.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>GhoSe replied on Thursday, June 09, 2011</h2><p>Thanks for your quick response.</p>
+<p>I thought the same in first instance, but in my case I really don&#39;t see any benefit in using the DataPortal (even though I generally like it really much).</p>
+<p>Actually it isn&#39;t really an &quot;edge application&quot;, it&#39;s more the center ;) It&#39;s an service that steers different kind of hardware devices and streams it&#39;s data. It&#39;s network comminication stuff is more or less hidden from the &quot;normal&quot; developer. Much like in CSLA.NET. The important part is that it has to work a bit different in some points than most other common applications.</p>
+<p>The problem is that I really don&#39;t get more consistency when I use the DataPortal, because I have to implement my own version of it anyway,&nbsp;which has additional features (atm it&#39;s just called Mediator) . For performances reasons I can&#39;t always serialize whole object or object trees. Therefore one thing what my Mediator does is to just forward calls to the matching remote object on the server (if it is a remote object) without creating any new object instances and without any serialization (except possible function returns/parameters).</p>
+<p>Of course you are right I could theoretical call my Mediator inside the DataPortal_XYZ methods, but in this specific application it would be more confusing than consistent. Already the availability of a &quot;Save&quot; method is somehow odd, because nothing gets saved really. At least it just applies settings to hardware devices, which are gone as soon as you turn it off.</p>
+<p>I looked a little bit deeper into the CSLA sources and&nbsp;I think I actually would need&nbsp;something like&nbsp;the following:</p>
+<ul>
+<li><strong>UndoableBase</strong> + IEditableObject +&nbsp;Validation Rules (+ possibly&nbsp;later Authorization Rules)</li>
+<li><strong>ObservableBindingList</strong> + ISupportUndo + IUndoableObject</li>
+</ul>
+<p>For my feeling there could be one more base class in the object hierarchy of the main CSLA base classes.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Thursday, June 09, 2011</h2><p>Hi, </p>
+<p>I just want to add: </p>
+<p>1. When using LocalPortal you get your <b>objects by reference</b> down to the DAL layer.</p>
+<p>2. Set <span style="color:#0000ff;">CslaAutoCloneOnUpdate = &quot;False&quot;&nbsp; in &lt;app&gt;.config </span><span style="color:#0000ff;"></span></p>
+<p>With 1 and 2 the only serialization to occur is N-Level undo.<br />And Save will no longer clone your object and rather send the Root object directly to the DAL layer in process and by reference. </p>
+<p>Remember - the DataPortal inb LocalProxy mode is a &quot;logical&quot; boundry between the BO and DAL code and with every layer running in process on your client. </p>
+<p>DataPortal combined with ObjectFactory and Factory classes may give a 
+&quot;kind of IoC&quot; functionality (or you can even use an IoC container by implementing your
+ own custom ObjectFactoryLoader).</p>
+<p>So what happens in this scenari when you call Save is:</p>
+<p>a. No clone of the BO<br />b. The &quot;root&quot; object is sent to DataPortal_XYZ or ObjectFactory.Update method by reference. <br />c. How you implement fetch/create/update/delete is all up to you. </p>
+<p>&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

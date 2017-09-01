@@ -1,0 +1,7 @@
+<html><header><title>Event Wire Ups After Save (3.7.0)</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Event Wire Ups After Save (3.7.0)</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/7440.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Brette.Net posted on Tuesday, August 11, 2009</h2><P>Quick Question</P>
+<P>I have a root and a child collection. </P>
+<P>The root attaches to the ListChanged event of the child collection so it can run business rules upon the child list changing. This works great until I save the object. It seems that after the save the newly returned instance from the data portal does not 'rewire' the events.</P>
+<P>Is this expected behavior? If so what is the best way to ensure the events get rewired? </P>
+<P>Thanks,</P>
+<P>Brette</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, August 11, 2009</h2><P>You do need to rehook any events after the object graph runs through the data portal. This is because event references aren't preserved by the .NET serializers.</P>
+<P>Override OnDeserialized() in the root object to rehook the event(s).</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Brette.Net replied on Tuesday, August 11, 2009</h2>Much Appreciated Rocky!</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

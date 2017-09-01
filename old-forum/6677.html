@@ -1,0 +1,29 @@
+<html><header><title>Validation rule broken and focus control</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Validation rule broken and focus control</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6677.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>dg78 posted on Thursday, March 26, 2009</h2><P class=MsoNormal><SPAN>Hi,<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>In Windows with Csla 3.5, I wish for some controls, for which a validation rule is broken, to display a message to the user and mostly to stay on the control, it is to say do not change the focus on an another control as it is now by default.</SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>The control is bound to a datasource and I use an ErrorProvider (the small red icon). That is OK.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>These controls derived from windows controls (myTextBox from Textbox) or there are include inside user controls (for example, user control = label + textbox + button).<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>To stay on the invalidate control, I saw that I can use the validating event and if the validation is not good to put e.cancel.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>I saw also the AutoValidate property on a form or a user control and its value EnablePreventFocusChange.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>But the problem is the code go first on Validating event and after on the binding code, so the property is not changed when it is&nbsp;in the Validating event.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Is it possible to invalidate the change of the focus in another place than Validating event, after the binding is finished ?<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>A thought :</SPAN></P>
+<P class=MsoNormal><SPAN>Now the rule severity in Csla has three levels : Error, Warning and Information. The two last are not Error and Information is less severe than Warning.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Perhaps it will be useful to have also two levels for Error : great error for which the focus stay on the control and "small" error for which the focus changes to go on another control.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Thanks in advance for your answers.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Dominique<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, March 26, 2009</h2><P>CSLA has nothing to do with focus or how any UI technology manages the user experience. CSLA simply implements the data binding interfaces that are consumed by Windows Forms, WPF, etc.</P>
+<P>When the user tabs off a field in the UI, it is Windows Forms or WPF that moves the focus. Your business object only knows that data binding set the property value, nothing more. </P>
+<P>Because the property changed, your object raises the PropertyChanged event, which tells data binding to check and see if the property is valid. In Windows Forms this is done by the ErrorProvider control, and in WPF it is either data binding itself, or the CSLA PropertyStatus control. In any case, the validation status of the property is used to determine whether to show something to the user to indicate that the property is valid/invalid.</P>
+<P>If you want to override the way Windows Forms or WPF manage focus, that is something you'll need to figure out in your UI layer.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>dg78 replied on Thursday, March 26, 2009</h2><P class=MsoNormal><SPAN>It is sure, to manage the focus is the responsibility of the UI and not of Csla.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>It is so easy to stop the change of the focus with e.cancel in Validating event but with bound controls, the databinding change the property after the code go on Validating event. <o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>I don't know how to stop the change of the focus in another place than validating event. Perhaps to move again on the invalidated control but in this case I am afraid there is a new binding. <o:p></o:p></SPAN></P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,55 @@
+<html><header><title>Large Data with Silverlight</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Large Data with Silverlight</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10027.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>hanspret posted on Thursday, February 03, 2011</h2><p>Hi</p>
+<p>I have a Fetch Method that fetches 5000 rows. The Query took 2 seconds to execute (using SQL Server profiler) but the Silverlight application took about 1 minute 30 seconds to display the results in a datagrid(the datagrid only display 20 items at a time). I used the performance analyzer to see where the problem was. The method that took all the time was
+
+</p>
+<div class="content">
+<table cellpadding="2" cellspacing="0">
+<thead>
+<tr>
+<th>Function Name</th><th>Inclusive Samples</th><th>Exclusive Samples</th><th>Inclusive Samples %</th><th>Exclusive Samples %</th><th>Module Name</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<table cellpadding="0" cellspacing="0" class="expansion" style="margin-left:0px;">
+<tbody>
+<tr>
+<td class="expansion">+</td>
+<td>Csla.Serialization.Mobile.MobileFormatter.Serialize(object)</td>
+</tr>
+</tbody>
+</table>
+</td>
+<td>8&nbsp;368</td>
+<td>0</td>
+<td>69.73</td>
+<td>0.00</td>
+<td>Csla.DLL</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Is this normal or am I doing something wrong and if this is normal, what strategies can I use to improve the performance?</p>
+<p>I am using compression as explained in the Silverlight videos</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Thursday, February 03, 2011</h2><p>Serializing that much data can take some time, no doubt about it. While this isn&#39;t ideal, it is probably &quot;normal&quot;.</p>
+<p>There are a couple strategies you might consider.</p>
+<ol>
+<li>Background loading of the data</li>
+<li>Using a direct service call from the local data portal</li>
+</ol>
+<p>No matter what you do, the data will be serialized from server to client. The first option simply breaks this into chunks and does the work in the background so the user sees at least the initial data almost instantly. Look at the Samples\Silverlight\cs\PagedList sample to see how this is done.</p>
+<p>The second option might help, in that the data would be serialized by a less complex serializer. You&#39;d expose the data from the server via a standard asmx or WCF service, and then run the business object&#39;s data portal locally on the client. Your client-side data portal method would call the service to get the data. This still might not be real fast, because no matter what you do the serialization must occur. But directly using the DataContractSerializer via WCF might be enough faster than the MobileFormatter to help.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jack replied on Friday, February 11, 2011</h2><p>Just throwing out an idea here without looking into the code but would it be possible to enhance the serialize so that it was a bit smarter and chunked up the serialized data and almost did lazy unserializing on the client end.&nbsp; I know you serialize the whole object graph but would something be possible so that on the client end you can unserialize the bare minimum, return the data to the client, and do the rest in the background?</p>
+<p>// enhanced attribute to prioritize the first 20 records and then lazyload 20 records at a time</p>
+<p>//[Serializable(PriorityCountSize, LazyLoadChunkSize)]<br />[Serializable(20,20)]<br />MyDataList&lt;MyData&gt;</p>
+<p>The server serialize process creates &#39;chunks&#39;<br />&lt;MyDataList&gt;<br />&lt;MyData1..20&gt;<br />&lt;MyData21..x&gt;</p>
+<p>or <br />&lt;MyDataListPriority[1.20]&gt;<br />&lt;MyDataListLazyLoad[20..x]&gt;</p>
+<p><br />The ClientSide deserialize()</p>
+<p>MyDataList<br />MyDataRecords1..20</p>
+<p>MyDataList.AddRange(MyDataRecords1..20)</p>
+<p>MyDataList.BackGroundDeserializeAddAppend(SerializedChunk[MyDataRecords21.x], pageSize)</p>
+<p>Where pageSize is the number of items to background serialized and add to the collection before raising collectionChanged.&nbsp; </p>
+<p><br />It would be up to the developer to ensure there was a proper sort on the collection before serializing it.</p>
+<p>Just a thought.. I know the whole process is complicated but it is definately a bottleneck especially when client&#39;s have slow PC&#39;s.</p>
+<p>Jack</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, February 11, 2011</h2><p>This isn&#39;t really something the data portal or MobileFormatter can do, because there&#39;s no way to predict which parts of the object graph the application might use at any given point in time.</p>
+<p>But look at the PagedList sample in Samples\Silverlight\cs to see how to do background loading of a large collection using async page loading. This works great when the developer has a reasonable expectation that the user won&#39;t move off the first 1-2 pages of data until the async load has had time to complete.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

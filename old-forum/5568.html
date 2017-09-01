@@ -1,0 +1,15 @@
+<html><header><title>Transaction Problem</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Transaction Problem</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5568.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>ErikJL posted on Friday, October 10, 2008</h2><P>We're using CSLA objects for database access, mostly for reading but one also for read-write. I'm having an issue with an Inset statement in that it seems the transaction never gets completed, yet the code produces no errors as I step through it. After creating a child object, placing it in the list,&nbsp; performing&nbsp;the .Save() method on the list, and exiting the button-click event, no row is placed into the database and I also see this error when trying to truncate the table:</P>
+<P>ORA-00054: resource busy and acquire with NOWAIT specified</P>
+<P>When I exit the debugger, the SQL error goes away but there still isn't a row in the table. The really odd thing is that we have a simple tester form that binds this CSLA listobject to a datagridview and it works just fine. However, this problem arises when&nbsp;the list object is&nbsp;embedded in some other objects we've created. Here is how we're using the objects:</P><FONT color=#008080 size=2>
+<P>TCTInpQList</FONT><FONT size=2> inpqList = </FONT><FONT color=#008080 size=2>TCTInpQList</FONT><FONT size=2>.NewTCTInpQList();</FONT></P><FONT size=2><FONT color=#0000ff size=2>
+<P>foreach</FONT><FONT size=2> (</FONT><FONT color=#008080 size=2>TWACSPath</FONT><FONT size=2> path </FONT><FONT color=#0000ff size=2>in</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>.pathList.Values)</P>
+<P>{</P></FONT></FONT><FONT color=#008080 size=2>
+<P>TCTInpQ</FONT><FONT size=2> TCTInpQitem = </FONT><FONT color=#008080 size=2>TCTInpQ</FONT><FONT size=2>.NewTCTInpQ();</P>
+<P>(then we hydrate the properties of&nbsp; TCTInpQitem )</P><FONT size=2>
+<P>inpqList.Add(TCTInpQitem);</P>
+<P>}</P><FONT color=#008080 size=2>
+<P>TCTInpQList</FONT><FONT size=2> cloneList = inpqList.Clone();</P>
+<P>cloneList.ApplyEdit();</P>
+<P>inpqList = cloneList.Save();&nbsp; //this is where the ORA error appears until the debugger is stopped</P>
+<P>&nbsp;</P>
+<P>I'm using VS2005 on WINXP, CSLA version</P></FONT></FONT></FONT></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

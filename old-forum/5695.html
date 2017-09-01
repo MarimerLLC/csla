@@ -1,0 +1,10 @@
+<html><header><title>Sharing BindingSource</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Sharing BindingSource</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5695.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>AndyW posted on Wednesday, October 29, 2008</h2><P>&nbsp;</P>
+<P>Hi,</P>
+<P>I have a form with two usercontrols, lets say one for company details (parent) and the other Contacts (children).</P>
+<P>I have created my Business Classes and have successfully managed to databind on the form between text boxes (company details) and grid (contacts), everything works fine.</P>
+<P>I have now decided to split the controls up into user controls, as I will be reusing both controls elsewhere in the application.</P>
+<P>This is where my problem arises, how can I shares the BindingSource of usercontrol Company with usercontrol Contacts.</P>
+<P>I hope I have made sense, any help would be appreciated.</P>
+<P>Many Thanks</P>
+<P>Andy</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>eulerthegrape replied on Wednesday, October 29, 2008</h2>I could be way off base here and this may not apply if you're writing a web app...<br><br>I think you create a binding source in the containing form which holds these two controls and don't confine the controls to to a specific bindingsource beforehand.&nbsp; Then set the datasource for the controls once you place them on the form.<br><br>-Euler<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>AndyW replied on Thursday, October 30, 2008</h2><br />Thanks for the reply.<br /><br />I worked very well, thanks.</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

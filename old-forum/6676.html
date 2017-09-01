@@ -1,0 +1,51 @@
+<html><header><title>TransactionScope does not seem to work :(</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>TransactionScope does not seem to work :(</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6676.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>djdewet posted on Thursday, March 26, 2009</h2><P>Good day all,</P>
+<P>&nbsp;</P>
+<P>I'm still fairly new to CSLA.NET, and OO for that matter, so please bear with me.&nbsp; I have a BO that when used in most situations work exactly a I expect it to.&nbsp; I have the Transactional Attribute set to TransactionScope on my DataPortal delete, insert&nbsp;and update functions.&nbsp; However, when I start a TtransactionScope in my application, and make multiple calls to the BO to insert rows, it does not seem to become part of the existing transaction.</P>
+<P>&nbsp;</P>
+<P>I am using the Wcf Remote Data Portal, and I though maybe the transaction is somehow not being taken along to the server from the client, but I'm not sure how to check that.</P>
+<P>&nbsp;</P>
+<P>Am I missing something obvious, or is there a trick to this.</P>
+<P>&nbsp;</P>
+<P>David</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Kevin Fairclough replied on Thursday, March 26, 2009</h2>Hi,<br><br>I don't know a lot about this, but I think you shouldn't be manually starting the transaction (if you are).&nbsp; I think it is meant to be automatic but how it does it I don't know.&nbsp; <br><br>Regards<br>Kevin <br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>djdewet replied on Thursday, March 26, 2009</h2><P>Hi Kevin,</P>
+<P>Maybe I'm not explaining myself very well.&nbsp; I need to have the BO updates/inserts happen as part of&nbsp;a bigger transaction which involves other resources.&nbsp; Therefore I have to start and end the Transaction, but the way I understood it, was that with TransactionScope, anything that can join transaction will do so if their is an ambient (read active)&nbsp;transaction.</P>
+<P>&nbsp;</P>
+<P>Hope this makes it a bit clearer.</P>
+<P>&nbsp;</P>
+<P>David</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Kevin Fairclough replied on Thursday, March 26, 2009</h2>Yeah looking at System.Transactions it should join using the default TransactionScopeOption.Required.<br><br>Maybe your code that starts the transaction is not starting on the server, are you using a CommandBase derived object to execute the code?<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, March 26, 2009</h2><P>The data portal does not enlist transactions between client and server, at least not by default. If it is possible, it would be by configuring WCF appropriately.</P>
+<P>WCF doesn't enlist transactions between client and server by default either. There is the WS-Transaction spec, and if WCF supports that (and it may) then you might be able to configure WCF to enlist the transaction across the connection.</P>
+<P>I don't know how that works, as I've never done it. Somehow you'd need to link the thing into the DTC or some other transaction coordinator, so you'd probably have to enable the DTC on all clients and servers involved. There's a pretty major performance/scalability impact to doing something like this, but if you have relatively few users and they aren't in a hurry it might work.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>djdewet replied on Thursday, March 26, 2009</h2><P>Thanx Rocky,</P>
+<P>I suspected as much.&nbsp; I defnitely know that it is possible to propagate transactions across WCF, I probably just misunderstood your discussions about transactions, and transactionscope in your book, to mean across client and server, and not just the current scope of the update/insert, etc on the server.</P>
+<P>That means some more reading for me, and looking in some more detail as to what exactly is required.&nbsp; Or maybe I should relook at my design, and see if I really need the transaction to be as wide as it is.</P>
+<P>Will post my findings back here.</P>
+<P>&nbsp;</P>
+<P>Regards</P>
+<P>David</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, March 26, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>As a general rule it is a terrible idea to allow transactions to
+span a client-server connection, or even a server-server connection (beyond app
+server to db server). The performance ramifications are usually very high, and the
+fragility of the overall system also goes up radically (transaction timeouts,
+cascading locking, etc).<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

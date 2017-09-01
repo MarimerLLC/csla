@@ -1,0 +1,94 @@
+<html><header><title>ValidationRule not firing up when calling SetProperty (xxxxxProperty )  in CSLA 3.8</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>ValidationRule not firing up when calling SetProperty (xxxxxProperty )  in CSLA 3.8</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11598.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Lord02 posted on Tuesday, September 25, 2012</h2><p>Hi Lhotka,</p>
+<p>Could you please explain something to me ...</p>
+<p>A rule I created is NOT firing up when I change the property which the rule is set on,</p>
+<p>the problem is that calling this: &nbsp;&nbsp;SetProperty(userEntryProperty,&nbsp;value);<br />does NOT fire up the rule ???!&nbsp;</p>
+<p>Example:</p>
+<p>This is the class declaration ( the&nbsp;LogOnCredentials then inherits from&nbsp;<span>BusinessBase</span>&lt;T&gt; )<br />[Serializable]<br />&nbsp; &nbsp;&nbsp;public&nbsp;class&nbsp;UserVerificationCredentials&nbsp;:&nbsp;LogOnCredentials&lt;UserVerificationCredentials&gt;</p>
+<p>&nbsp;</p>
+<p>The csla-variable &amp; Property look like this:</p>
+<p>
+<pre><pre><span>private</span>&nbsp;<span>static</span>&nbsp;<span>PropertyInfo</span>&lt;<span>string</span>&gt;&nbsp;userEntryProperty&nbsp;=&nbsp;RegisterProperty&lt;<span>string</span>&gt;(c&nbsp;=&gt;&nbsp;c.UserEntry);
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>public</span>&nbsp;<span>string</span>&nbsp;UserEntry
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>get</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>return</span>&nbsp;GetProperty(userEntryProperty);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>set</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;SetProperty(userEntryProperty,&nbsp;<span>value</span>);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</pre>
+<pre></pre>
+</pre>
+<pre>And it&#39;s wired up like this ( and this runs when the object is created in the static constructor ):</pre>
+<pre><pre><span>internal</span>&nbsp;<span>static</span>&nbsp;<span>UserVerificationCredentials</span>&nbsp;NewUserVerificationCredentials()
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>return</span>&nbsp;<span>DataPortal</span>.Create&lt;<span>UserVerificationCredentials</span>&gt;();
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#endregion</span>
+<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#region</span>&nbsp;&nbsp;Data&nbsp;Access
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>///</span><span>&nbsp;</span><span>&lt;summary&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>///</span><span>&nbsp;Called&nbsp;by&nbsp;the&nbsp;dataportal&nbsp;for&nbsp;Create&nbsp;operations.</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>///</span><span>&nbsp;</span><span>&lt;/summary&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>///</span><span>&nbsp;</span><span>&lt;remarks&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>///</span><span>&nbsp;Runs&nbsp;on&nbsp;the&nbsp;dataportal&nbsp;layer&nbsp;if&nbsp;available.</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>///</span><span>&nbsp;</span><span>&lt;/remarks&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[<span>RunLocal</span>]
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>protected</span>&nbsp;<span>override</span>&nbsp;<span>void</span>&nbsp;DataPortal_Create()
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>using</span>&nbsp;(BypassPropertyChecks)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>//&nbsp;Set&nbsp;properties&nbsp;tat</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>//&nbsp;</span><span>TODO:&nbsp;Evaluate&nbsp;fetching&nbsp;from&nbsp;HTTP&nbsp;context</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ValidationRules.CheckRules();
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<span><br /></span></pre>
+<pre><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#endregion</span></pre>
+<pre><span><br /></span></pre>
+<pre><pre>&nbsp;<span>///</span><span>&nbsp;</span><span>&lt;summary&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>///</span><span>&nbsp;Adds&nbsp;the&nbsp;business&nbsp;rules.</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>///</span><span>&nbsp;</span><span>&lt;/summary&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>protected</span>&nbsp;<span>override</span>&nbsp;<span>void</span>&nbsp;AddBusinessRules()
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ValidationRules.AddDataAnnotations();
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>base</span>.AddBusinessRules();
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ValidationRules.AddRule&lt;<span>UserVerificationCredentials</span>&gt;(UserEntryRule,&nbsp;userEntryProperty,&nbsp;0);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+</pre>
+</pre>
+<pre><span><br /></span></pre>
+<pre><span><br /></span></pre>
+<pre><span><br /></span></pre>
+<pre><span>And this is the actual rule:</span></pre>
+<pre><pre><span>private</span>&nbsp;<span>static</span>&nbsp;<span>bool</span>&nbsp;UserEntryRule&lt;T&gt;(T&nbsp;target,&nbsp;<span>RuleArgs</span>&nbsp;e)&nbsp;<span>where</span>&nbsp;T&nbsp;:&nbsp;<span>UserVerificationCredentials</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>bool</span>&nbsp;result&nbsp;=&nbsp;<span>true</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>if</span>&nbsp;(<span>string</span>.IsNullOrEmpty(target.ReadProperty(userEntryProperty))&nbsp;==&nbsp;<span>false</span>)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>//&nbsp;It&nbsp;should&nbsp;only&nbsp;be&nbsp;valid&nbsp;to&nbsp;enter&nbsp;a&nbsp;user&nbsp;entry&nbsp;when&nbsp;the&nbsp;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>//&nbsp;control&nbsp;has&nbsp;already&nbsp;been&nbsp;activated.</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;result&nbsp;=&nbsp;target.HasBeenActivatedByUser;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;e.Description&nbsp;=&nbsp;Resources.<span>BusinessResources</span>.SmsCodeRequired;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;e.Severity&nbsp;=&nbsp;<span>RuleSeverity</span>.Error;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>return</span>&nbsp;result;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</pre>
+<pre></pre>
+<pre>Do you have any idea why the rule is NOT being fired up when calling the:
+<pre>SetProperty(userEntryProperty,&nbsp;value);    ???</pre>
+<pre></pre>
+<pre>Kind regards,</pre>
+<pre>EE.</pre>
+&nbsp;</pre>
+</pre>
+</pre>
+</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>Lord02 replied on Tuesday, September 25, 2012</h2><p>Nevermind ... I found out what the problem was.</p>
+<p>The value was the same as before, hence the rule doesn&#39;t fire up! ;-)</p>
+<p>rgd,</p>
+<p>EE.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,40 @@
+<html><header><title>Design Question for Depandant Properties</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Design Question for Depandant Properties</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4899.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>czuvich posted on Tuesday, May 27, 2008</h2><P><FONT face=Arial>Hello all,</FONT></P>
+<P><FONT face=Arial>I have a question about how to best construct my class. I have a class with 3 different private flags that signify the state of the object. These flags aren't set until a Command (CommandBase) is run. I also have a public readonly property (which is a enum) that gives the user the state of the object based on those flags (property name is CurrentState).</FONT></P>
+<P><FONT face=Arial>Depending on the CurrentState, certain fields are required. How can I create this sort of dependency so that when the CommandBase tries to run, it fires off validation for the properties that are affected by it? The easiest solution I thought of was to fire off validation for each property I'm concerned with for each command; however, I have to believe there is a way to fire off validation for "CurrentState" and that property would have dependencies to the other corresponding properties.. or perhaps there is a better way. I have tried adding a dependency to the property and CurrentState, but the validation never occurs. Here is a small code snippet.</FONT></P><FONT size=2><FONT size=2>
+<P>ValidationRules.AddRule&lt;</FONT><FONT color=#2b91af size=2>NowaBO</FONT><FONT size=2>&gt;(</FONT><FONT color=#2b91af size=2>CustomRules</FONT><FONT size=2>.IsDOIValid, </FONT><FONT color=#a31515 size=2>"BpoGwi"</FONT><FONT size=2>);</P></FONT></FONT><FONT size=2><FONT size=2>
+<P>ValidationRules.AddDependantProperty(</FONT><FONT color=#a31515 size=2>"BpoGwi"</FONT><FONT size=2>, </FONT><FONT color=#a31515 size=2>"TotalBpoGwi"</FONT><FONT size=2>);</FONT></P><FONT size=2><FONT size=2>
+<P>ValidationRules.AddDependantProperty(</FONT><FONT color=#a31515 size=2>"TotalBpoGwi"</FONT><FONT size=2>, </FONT><FONT color=#a31515 size=2>"CurrentState"</FONT><FONT size=2>);</FONT></P><FONT size=2><FONT size=2>
+<P>ValidationRules.AddRule&lt;</FONT><FONT color=#2b91af size=2>NowaBO</FONT><FONT size=2>&gt;(</FONT><FONT color=#2b91af size=2>NowaBO</FONT><FONT size=2>.IsBpoGwiTotalValid&lt;</FONT><FONT color=#2b91af size=2>NowaBO</FONT><FONT size=2>&gt;, </FONT><FONT color=#a31515 size=2>"TotalBpoGwi"</FONT><FONT size=2>);</P></FONT></FONT></FONT></FONT><FONT size=2></FONT><FONT size=2><FONT color=#0000ff size=2>
+<P>private</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>static</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>bool</FONT><FONT size=2> IsBpoGwiTotalValid&lt;T&gt;(T sender, </FONT><FONT color=#2b91af size=2>RuleArgs</FONT><FONT size=2> e)</FONT></P></FONT>
+<P><FONT size=2><FONT color=#0000ff size=2>where</FONT><FONT size=2> T : </FONT><FONT color=#2b91af size=2>NowaBO</P></FONT><FONT size=2>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>switch</FONT><FONT size=2> (sender.CurrentState)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>case</FONT><FONT size=2> </FONT><FONT color=#2b91af size=2>NowaState</FONT><FONT size=2>.New:</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>true</FONT><FONT size=2>;</P>
+<P></FONT><FONT color=#0000ff size=2>default</FONT><FONT size=2>:</P>
+<P></FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (sender.TotalBpoGwi != 1)</P>
+<P>{</P>
+<P>e.Description = </FONT><FONT color=#0000ff size=2>string</FONT><FONT size=2>.Format(</FONT><FONT color=#2b91af size=2>Resources</FONT><FONT size=2>.DoiTotalInvalid,</P>
+<P></FONT><FONT color=#a31515 size=2>"Bpo Gwi"</FONT><FONT size=2>);</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>false</FONT><FONT size=2>;</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>else</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>true</FONT><FONT size=2>;</P>
+<P>}</P>
+<P>}</P></FONT></FONT>
+<P><FONT face=Arial></FONT>&nbsp;</P>
+<P><FONT face=Arial>Any guidance would be great. Thank you.</FONT></P>
+<P><FONT face=Arial></FONT>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>czuvich replied on Tuesday, May 27, 2008</h2><FONT color=#0000ff size=2>
+<P>public</FONT><FONT size=2> </FONT><FONT color=#2b91af size=2>NowaState</FONT><FONT size=2> CurrentState</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>get</P></FONT><FONT size=2>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (!</FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>._isDistributed &amp;&amp; !</FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>._pendingApproval)</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> </FONT><FONT color=#2b91af size=2>NowaState</FONT><FONT size=2>.New;</P>
+<P></FONT><FONT color=#0000ff size=2>else</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (</FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>._pendingApproval)</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> </FONT><FONT color=#2b91af size=2>NowaState</FONT><FONT size=2>.Pending;</P>
+<P></FONT><FONT color=#0000ff size=2>else</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> </FONT><FONT color=#2b91af size=2>NowaState</FONT><FONT size=2>.Distributed;</P>
+<P>}</P>
+<P>} </P></FONT></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,505 @@
+<html><header><title>How to build a Business Object using CSLA.NET to access data from 2 different Databases.</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>How to build a Business Object using CSLA.NET to access data from 2 different Databases.</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4620.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>tarekahf posted on Saturday, April 05, 2008</h2><P>Requirement:</P>
+<P>The Data required is split among 2 different Database Engines, say, Adabas on UNIX and SQL Server on Windows 2003 Server.</P>
+<P>We are using CONNX 10.5 to have ODBC or OLEDB Access to the Adabas Database Tables, and it works successfully.</P>
+<P>On the UI, sometimes we need to access the data only from Adabas, and some other times, from both, Adabas and&nbsp;SQL Server, for example, to get a list of Staff Info in one list to be attached to the GridView DataSource.</P>
+<P>In the normal situation, the data is supposed to be stored in one Database say only from Adabas. So, the SQL String looks like the following:</P>
+<P>"select StaffID, StaffName, StaffAge, Salary&nbsp;from AdabasTable;"<BR>(Note: This is a simplistic example, of course, the actual case is more complicated).</P>
+<P>But the above cannot be done because the "Salary" is stored in different Database, in SQL Server, which requires another connection string, and he SQL String for accessing the data from Adabas say:<BR><BR>"select StaffID, StaffName, StaffAge from AdabasTable"<BR><BR>...and the SQL String for access the data from SQL Server say:<BR><BR>"select staffid, Salary from SQLServerTable"</P>
+<P>Of course, StaffID is the primary key and same in both tables.</P>
+<P>Each SQL String must be executed against the appropriate Connection String, which is stored in the web.config file. So, we have 2 different Connection Strings.<BR><BR>How I can design a Business Object (class) that can retrieve the list of staff, from Adabas only, then another class which is reusing the first one to retrieve the same list which has both data from Adabas and SQL Server, and combine the result in one list ?</P>
+<P>One way to solve this problem, is to define a Linked Server in SQL Server, use OpenQuery() function to open the&nbsp;Adabas Table&nbsp;in SQL Server,&nbsp;and use one SQL String to join the tables between Adabas and SQL Server. As a mater of fact, this is what I&nbsp;am doing right&nbsp;now, but this method defeats the&nbsp;concepts of OOP, as you may have already built a class to retrieve the first part, and all what you need to do is to get second part of the data from the other Database Table. The ideal way is to define another class and re-use the functionality of the first class (bu inheritance), but I cannot figure out how to do that exactly.</P>
+<P>Say the class/methods look something like the following:</P>
+<P>(Note: The syntax my not be 100% correct, this is just for clarification purposes)</P>
+<P>public class clsStaff1<BR>private _StaffID as String<BR>private _StaffName as String<BR>private _StaffAge as Integer<BR>private Salary as double<BR>public propert ReadOnly&nbsp;StaffID() as String<BR>&nbsp; get <BR>&nbsp;&nbsp;&nbsp; return _StaffID<BR>&nbsp; end get<BR>end property<BR>...bla bla bla ...<BR>... bla bla...<BR>... same for StaffName, StaffAge, and Salaray ... read only is needed...<BR>... bla bla...<BR>public shared function getStaffList() as DataTable<BR>&nbsp; con = open connection to Adabas Table<BR>&nbsp; SQLStr = "select StaffID, StaffName, StaffAge from AdabasTable"<BR>&nbsp; Execute the SQL String and return the DataTable using Adaptor for example !<BR>&nbsp; return the resultant DataTable (for use with the DataSourceContorl/GridView for example)<BR>end function<BR>end class</P>
+<P>The question is: How to define another class "clsStaff2" the re-uses the first class "clsStaff1" (by inheritance) and just add the the "Salary" from SQL Server Table ?</P>
+<P>I think one way to do that is to do the Join between the 2 DataTables in the VB Code, is this possible ?</P>
+<P>Is this approach practical in the first place ?</P>
+<P>I hope I was able to clarify my requirement and appreciate your help.<BR><BR>Tarek.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>david.wendelken replied on Saturday, April 05, 2008</h2>Don't confuse the fact that you have two database vendors with business object design.<br><br>The first is an unfortunate situation, the second an opportunity.<br><br>Design your business objects the way they should be. <br>I would not define two business objects just because I had two databases.&nbsp; <br><br>Inside your data access methods in your business objects, you have several options:<br><br><ol><li>open database one and get that data.&nbsp; open database two and get that data.&nbsp; merge into the appropriate business object data structures.&nbsp; from the outside world's point of view, there is only one business object.&nbsp; Ditto on insert/update/deletes.&nbsp;&nbsp; The sample business objects are pretty clear on where the selects, inserts, updates, etc. go.<br></li><li>make the database-to-database links you described.&nbsp; open one database and issue the queries from both.&nbsp; again, from the outside world's point of view, there is only one database object.</li></ol><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tarekahf replied on Saturday, April 05, 2008</h2><P>Thanks a lot ... I agree with you 100%&nbsp;...!</P>
+<P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>david.wendelken:</strong></div><div><BR>Inside your data access methods in your business objects, you have several options:<BR><BR></P>
+<OL>
+<LI>open database one and get that data.&nbsp; open database two and get that data.&nbsp; merge into the appropriate business object data structures.&nbsp; from the outside world's point of view, there is only one business object.&nbsp; Ditto on insert/update/deletes.&nbsp;&nbsp; The sample business objects are pretty clear on where the selects, inserts, updates, etc. go.</LI></OL>
+<P></div></BLOCKQUOTE></P>
+<P>Should I do the merger one record at a time ? Remeber that the requirement is to return a LIST of records which has data fields from 2 different Databases ... I am just wondering how would that be possible in VB Code ? Meaning:</P>
+<P>Open First Connection / SQL</P>
+<P>Open Second Connection / SQL</P>
+<P>Loop over first SQL String</P>
+<P>&nbsp; Get Next Record from first SQL</P>
+<P>&nbsp;&nbsp;Get Field Data from first SQL&nbsp;</P>
+<P>&nbsp; Lookup the Second SQL against the StaffID</P>
+<P>&nbsp; Get Field Data from the Second SQL</P>
+<P>&nbsp; How to merge the fields here, in ArrayList? , DataTable ? Is it good approach ?</P>
+<P>End Loop until end of file of first SQL.</P>
+<P>Return the Merged Data in one list.</P>
+<P><BLOCKQUOTE><div></P>
+<P>make the database-to-database links you described.&nbsp; open one database and issue the queries from both.&nbsp; again, from the outside world's point of view, there is only one database object.</P>
+<P></div></BLOCKQUOTE></P>
+<P>Yes, this is the method I am following now, and it is working successfully. But the only problem is that, sometimes, you already developed the Business Object that represents the First Part. After some time, you need additional parts, so you Create the Database and I was thinking now, how I can re-use the First Business Object ? This is my problem.</P>
+<P>Regards ...</P>
+<P>Tarek.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Saturday, April 05, 2008</h2><P>I would probably get 2 lists (with 1 SQL statement each) and close all connections.</P>
+<P>Then in code you can figure out how to merge them based on the same PK value. Use loops here - not while executing SQL commands.</P>
+<P>Joe</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tarekahf replied on Thursday, April 10, 2008</h2><br>
+(NOTE: I am not receiving notification with each reply. I could not
+find an option to enable notification with each replyonly to my post in
+these forums. Please help.)<br>
+<br><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>JoeFallon1:</strong></div><div><p>I would probably get 2 lists (with 1 SQL statement each) and close all connections.</p>
+<p>Then in code you can figure out how to merge them based on the same PK value. Use loops here - not while executing SQL commands.</p>
+
+<p>Joe <br></p></div></BLOCKQUOTE><br><br>I though that it would e better to follow OO recommendations for code reusability.<br><br>I mean, since that I already developed the first BO to fetch the list of Staff Info, then I would develop another BO that inhirits the first one, prepare and execute the other SQL Statement to get the second list (from the other Database), and then merge the 2 lists togther using code and depending on the PK. Finally, return the merged list as the result.<br><br>My question here, would be is: what Object Type you will use for the list ?<br><br>- Array list of objects,<br><br>- Data Table<br><br>- Data Set<br><br>...etc ?<br><br>I have not used CSLA.NET yet... I am still doing some reading and playing with the PT Sample application. But I could not figure out how it is done there?<br><br>I am interested to know how you would implement such requirement in CSLA.NET ?<br><br>Currently, I am using Array List of Objects to return the list to the Datasource Control in the UI side. This methd works fine with me as of now.<br><br>In general, I think this is a common issue not only related to such specific case I mentioned in this thread ? So what do you do ?<br><br>Do you execute the SQL Statement, and return the result AS IS (using say Data Adaptor Fill method to populate a Data Table), or do you have to loop through the result (using say command ExecuteReader method)&nbsp; to do some processing for each record from the Data Reader before adding the record to the result list ?<br><br>In CSLA.NET, in case you need to write a Business Object that will return a List of Data (say Staff Info), then you many have to wirte a loop that will read each and every record, one at a time, do some processing, calculation, validation, authorization, and based on the final resutl, add the required record and/or data fields to the resultant list... correct ?<br><br>Although you can do some of the processing in Stored Procedures, or even on the Query Select Statement (say concat First+Middle+Last Name to get Staff Name, and Convert it to Proper Case) , but in think it is more appropriate to keep such processing inside the code, and in some cases, you may prefer to do it inside the Query.<br><br>Any feedback will be appreciated.<br><br>Tarek.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>david.wendelken replied on Thursday, April 10, 2008</h2>
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><font size=2 color=navy face=Arial><span>Good oo design is based upon what the
+Business definition of the object should be.<o:p></o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 color=navy face=Arial><span><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 color=navy face=Arial><span>Whether that object&#8217;s comes from 0,
+1 or 5 tables is irrelevant.<o:p></o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 color=navy face=Arial><span><o:p>&nbsp;</o:p></span></font></p>
+
+<div>
+
+<div class=MsoNormal align=center><font size=3 face="Times New Roman"><span>
+
+<hr align=center>
+
+</span></font></div>
+
+<p class=MsoNormal><b><font size=2 face=Tahoma><span>From:</span></font></b><font size=2 face=Tahoma><span> tarekahf
+[mailto:cslanet@lhotka.net] <br>
+<b><span>Sent:</span></b> Thursday, April 10, 2008
+7:45 PM<br>
+<b><span>To:</span></b> david_wendelken@nc.rr.com<br>
+<b><span>Subject:</span></b> Re: [CSLA .NET] How to
+build a Business Object using CSLA.NET to access data from 2 different
+Databases.</span></font><o:p></o:p></p>
+
+</div>
+
+<p class=MsoNormal><font size=3 face="Times New Roman"><span><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=MsoNormal><font size=3 face="Times New Roman"><span><br>
+(NOTE: I am not receiving notification with each reply. I could not find an
+option to enable notification with each replyonly to my post in these forums.
+Please help.)<o:p></o:p></span></font></p>
+
+<div>
+
+<p class=MsoNormal><font size=3 face="Times New Roman"><span><img width=32 height=32 id="_x0000_i1025" src="/Themes/default/images/icon-quote.gif"><strong><b><font face="Times New Roman">JoeFallon1:</font></b></strong><o:p></o:p></span></font></p>
+
+</div>
+
+<div>
+
+<p><font size=3 face="Times New Roman"><span>I would
+probably get 2 lists (with 1 SQL statement each) and close all connections.<o:p></o:p></span></font></p>
+
+<p><font size=3 face="Times New Roman"><span>Then in
+code you can figure out how to merge them based on the same PK value. Use loops
+here - not while executing SQL commands.<o:p></o:p></span></font></p>
+
+<p><font size=3 face="Times New Roman"><span>Joe <o:p></o:p></span></font></p>
+
+</div>
+
+<p class=MsoNormal><font size=3 face="Times New Roman"><span><br>
+<br>
+I though that it would e better to follow OO recommendations for code
+reusability.<br>
+<br>
+I mean, since that I already developed the first BO to fetch the list of Staff
+Info, then I would develop another BO that inhirits the first one, prepare and
+execute the other SQL Statement to get the second list (from the other
+Database), and then merge the 2 lists togther using code and depending on the
+PK. Finally, return the merged list as the result.<br>
+<br>
+My question here, would be is: what Object Type you will use for the list ?<br>
+<br>
+- Array list of objects,<br>
+<br>
+- Data Table<br>
+<br>
+- Data Set<br>
+<br>
+...etc ?<br>
+<br>
+I have not used CSLA.NET yet... I am still doing some reading and playing with
+the PT Sample application. But I could not figure out how it is done there?<br>
+<br>
+I am interested to know how you would implement such requirement in CSLA.NET ?<br>
+<br>
+Currently, I am using Array List of Objects to return the list to the
+Datasource Control in the UI side. This methd works fine with me as of now.<br>
+<br>
+In general, I think this is a common issue not only related to such specific
+case I mentioned in this thread ? So what do you do ?<br>
+<br>
+Do you execute the SQL Statement, and return the result AS IS (using say Data
+Adaptor Fill method to populate a Data Table), or do you have to loop through
+the result (using say command ExecuteReader method)&nbsp; to do some processing
+for each record from the Data Reader before adding the record to the result
+list ?<br>
+<br>
+In CSLA.NET, in case you need to write a Business Object that will return a
+List of Data (say Staff Info), then you many have to wirte a loop that will
+read each and every record, one at a time, do some processing, calculation,
+validation, authorization, and based on the final resutl, add the required
+record and/or data fields to the resultant list... correct ?<br>
+<br>
+Although you can do some of the processing in Stored Procedures, or even on the
+Query Select Statement (say concat First+Middle+Last Name to get Staff Name,
+and Convert it to Proper Case) , but in think it is more appropriate to keep
+such processing inside the code, and in some cases, you may prefer to do it
+inside the Query.<br>
+<br>
+Any feedback will be appreciated.<br>
+<br>
+Tarek.<br>
+<br>
+<br>
+<o:p></o:p></span></font></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tarekahf replied on Saturday, April 12, 2008</h2>I did some research on this issue and found this useful link:<br><br><a href="http://msdn2.microsoft.com/en-us/library/8bw9ksd6%28VS.80%29.aspx">
+    http://msdn2.microsoft.com/en-us/library/8bw9ksd6(VS.80).aspx</a><br><br><br>I can use Typed or Untyped Datasets, Data Tables and perform merging with the help of DataRelation Object.<br><br>As per my initial understanding of CSLA framework, CSLA uses untyped Data Sets and uses Data Adapters to populate Data Sets, and binds the result to the UI Controls.<br><br>Instead of using Fill method of the Data Adapter, I can populate the Data Set/Data Table record by record and perform the required merging/join, calculation, processing before adding the result to the Data Row Collection of the Data Table.<br><br>I hope that my understanding is correct, if yes, do you think this is a good approach ? Any other suggestions ?<br><br>Tarek.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Saturday, April 12, 2008</h2><P>CSLA doesn't do the data access for you at all. So it doesn't use DataSets or TableAdapters.</P>
+<P>But you can use DataSets and TableAdapters to write your data access code if you want to. Or you can use raw ADO.NET connection/command/datareader objects (they are faster, but may require more coding).</P>
+<P>Either way, you will need to write code to talk to each database and get the results. Then you copy the resulting values into the fields of your CSLA business object. Then you use data binding to bind the business object to the UI controls.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tarekahf replied on Sunday, April 13, 2008</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div> 
+<P>CSLA doesn't do the data access for you at all. So it doesn't use DataSets or TableAdapters.</P>
+<P>But you can use DataSets and TableAdapters to write your data access code if you want to. Or you can use raw ADO.NET connection/command/datareader objects (they are faster, but may require more coding).</P>
+<P>Either way, you will need to write code to talk to each database and get the results. Then you copy the resulting values into the fields of your CSLA business object. Then you use data binding to bind the business object to the UI controls.</P>
+<P></div></BLOCKQUOTE></P>
+<P>Rocky, thanks a lot !</P>
+<P>Please allow me to clarify some points which are not clear to me.</P>
+<P>For the time being, I am interested in finding out what is the Data Type used to return a list of objects to be bound on say a GridView, and how this is done ?</P>
+<P>Ref. to PTracker Sample Application (PTWeb), I checked the code for "<FONT size=2>ProjectList</FONT>" class and found the following:</P><FONT size=2><FONT size=2>
+<P>&lt;Serializable()&gt; _<BR></FONT><FONT color=#0000ff size=2>Public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Class</FONT><FONT size=2> ProjectList<BR></FONT><FONT color=#0000ff size=2>Inherits</FONT><FONT size=2> ReadOnlyListBase(</FONT><FONT color=#0000ff size=2>Of</FONT><FONT size=2> ProjectList, ProjectInfo)<BR></FONT></FONT><FONT color=#0000ff size=2>Public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Shared</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Function</FONT><FONT size=2> GetProjectList() </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> ProjectList<BR></FONT><FONT color=#0000ff size=2>&nbsp; Return</FONT><FONT size=2> DataPortal.Fetch(</FONT><FONT color=#0000ff size=2>Of</FONT><FONT size=2> ProjectList)(</FONT><FONT color=#0000ff size=2>New</FONT><FONT size=2> Criteria)<BR></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Function<BR>...<BR>...<BR><FONT color=#0000ff size=2>Private</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Sub</FONT><FONT size=2> Fetch(</FONT><FONT color=#0000ff size=2>ByVal</FONT><FONT size=2> nameFilter </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>String</FONT><FONT size=2>)<BR>&nbsp; RaiseListChangedEvents = </FONT><FONT color=#0000ff size=2>False<BR></FONT><FONT color=#0000ff size=2>&nbsp; Using</FONT><FONT size=2> cn </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>New</FONT><FONT size=2> SqlConnection(Database.PTrackerConnection)<BR>&nbsp; cn.Open()<BR></FONT><FONT color=#0000ff size=2>&nbsp; Using</FONT><FONT size=2> cm </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> SqlCommand = cn.CreateCommand&nbsp; <BR></FONT><FONT color=#0000ff size=2>&nbsp; With</FONT><FONT size=2> cm<BR>&nbsp; .CommandType = CommandType.StoredProcedure<BR>...<BR>...<BR>...<BR>...<BR></FONT><FONT size=2></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Sub</P></FONT></FONT>
+<P>I understand that this might be out of the scope of this forum, but we have already submitted a request to purchase 3 books&nbsp;about CSLA (from your website)&nbsp;and it might take some time to arrive. Also, it will take some time to read and understand. The code above is using some kind of advanced ASP.NET Concepts which I am not familiar with. </P>
+<P>The management requested from our team members to do a research to select a Framework&nbsp;for developing .NET Applications (Windows and Web) to&nbsp;help streamline, standardized&nbsp;and reduce the development efforts.&nbsp;I must prepare a demo/presentation with a Sample Project as per our applications, and of course I must explain such concepts and be ready for questions.</P>
+<P>I appreciate your help and understanding. I have the following questions:</P>
+<P>1.&nbsp;In a High-Level Language&nbsp;, what is the code above doing ? I am very much confused with this notation: ... Inherits ReadOnlyBase (Of ProjectList, ProjectInfo...) .</P>
+<P>2. Usually, DataSources for Lists are returnd as DataTables, DataSets or DataReader Objects, or even as ArrayList (which I usually use). How does this compare with the List returned by the "ProjectList" class ?</P>
+<P>3. We usually use "Integrated Windows Authentication" to authenticate users, but this project is using Forms Authenticaiton. Do you have a sample project with Windows Authentication. For Roles and Authorization, I am very happy with the way it is implemented in the PTracker Application. Any advise how to quickly convert this application to use Windows Interated Authentication.</P>
+<P>4. Do you have any adivse or recommendation or some material I can use for my presentation/demonistration about CSLA.NET.</P>
+<P>(Note: We are evaluating CSLA.NET, NHibernate, DNN, WCSF, DataObjects.NET, Genome)</P>
+<P>Tarek.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tarekahf replied on Sunday, April 13, 2008</h2><P>One thing will be of a great help to me, if there is some effort spent before to implement the Application of the sample Northwind DB using CSLA.NET, with a some documentation.</P>
+<P>I am sorry if I am asking for too much.</P>
+<P>Tarek.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>david.wendelken replied on Sunday, April 13, 2008</h2>
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><font size=2 color=navy face=Arial><span>From a &#8220;sample application&#8221;
+point of view, you wouldn&#8217;t learn anything more from looking at a sample
+application based on Northwind instead of ProjectTracker.<o:p></o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 color=navy face=Arial><span><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 color=navy face=Arial><span>There would just be more pages to look
+at.&nbsp; The coding techniques would be the same.<o:p></o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 color=navy face=Arial><span><o:p>&nbsp;</o:p></span></font></p>
+
+<div>
+
+<div class=MsoNormal align=center><font size=3 face="Times New Roman"><span>
+
+<hr align=center>
+
+</span></font></div>
+
+<p class=MsoNormal><b><font size=2 face=Tahoma><span>From:</span></font></b><font size=2 face=Tahoma><span> tarekahf
+[mailto:cslanet@lhotka.net] <br>
+<b><span>Sent:</span></b> Sunday, April 13, 2008 4:19
+AM<br>
+<b><span>To:</span></b> david_wendelken@nc.rr.com<br>
+<b><span>Subject:</span></b> Re: [CSLA .NET] RE: How
+to build a Business Object using CSLA.NET to access data from 2 different
+Databases.</span></font><o:p></o:p></p>
+
+</div>
+
+<p class=MsoNormal><font size=3 face="Times New Roman"><span><o:p>&nbsp;</o:p></span></font></p>
+
+<p><font size=3 face="Times New Roman"><span>One thing
+will be of a great help to me, if there is some effort spent before to
+implement the Application of the sample Northwind DB using CSLA.NET, with a
+some documentation.<o:p></o:p></span></font></p>
+
+<p><font size=3 face="Times New Roman"><span>I am
+sorry if I am asking for too much.<o:p></o:p></span></font></p>
+
+<p><font size=3 face="Times New Roman"><span>Tarek.<o:p></o:p></span></font></p>
+
+<p class=MsoNormal><font size=3 face="Times New Roman"><span><br>
+<br>
+<o:p></o:p></span></font></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>david.wendelken replied on Sunday, April 13, 2008</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>tarekahf:</strong></div><div><p>For the time being, I am interested in finding out what is the Data Type used to return a list of objects to be bound on say a GridView, and how this is done ?</p>
+<p></div></BLOCKQUOTE></p><p>You are returning a strongly typed collection that will only hold ProjectInfo objects.</p><p><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>tarekahf:</strong></div><div></p><p>I understand that this might be out of the scope of this forum, but we have already submitted a request to purchase 3 books&nbsp;about CSLA (from your website)&nbsp;and it might take some time to arrive. Also, it will take some time to read and understand. The code above is using some kind of advanced ASP.NET Concepts which I am not familiar with.</p><p></div></BLOCKQUOTE></p><p>Neither was I when I started working with CSLA! :)</p><p>I'm not sure what part of the world you are in and what the salary structure is there.&nbsp; I'm working in Africa right now and a good technical book is a BIG chunk of a local programmer's monthly salary.&nbsp; If where you are working has a similar wage structure, I understand waiting.&nbsp; But, if you are working for North American/Western European wages, get off your duff and order a copy of the books for yourself.&nbsp; Consider it an investment in yourself.&nbsp; If you master the material in the CSLA framework, you can qualify for a job anywhere in the world, and they'll be darn glad to have you! :)&nbsp; Even if you never use CSLA, the concepts that Rocky explains in his books will serve you very well.<br></p><p><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>tarekahf:</strong></div><div></p>
+<p>The management requested from our team members to do a research to select a Framework&nbsp;for developing .NET Applications (Windows and Web) to&nbsp;help streamline, standardized&nbsp;and reduce the development efforts.&nbsp;I must prepare a demo/presentation with a Sample Project as per our applications, and of course I must explain such concepts and be ready for questions.</p><p></div></BLOCKQUOTE></p><p>I am pretty familiar with DNN.&nbsp; It's a nice product.&nbsp; <br></p><p>If I needed a free portal product, I would very much consider it.&nbsp;&nbsp; For building in house applications, I prefer CSLA.&nbsp;&nbsp; I have't used the other frameworks, so no comment there.</p><p><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>tarekahf:</strong></div><div></p>
+
+<p>1.&nbsp;In a High-Level Language&nbsp;, what is the code above doing ? I am very much confused with this notation: ... Inherits ReadOnlyBase (Of ProjectList, ProjectInfo...) .</p>
+<p></div></BLOCKQUOTE></p>
+<p>As for "inheriting" code, that is making use of a .Net concept
+called Generics.&nbsp; Have you ever written a method that accepted integer
+arguments, then needed to write the same basic code to handle floating
+points and strings?&nbsp; That's what generics are for.&nbsp; You write some
+standardized code and put some "compiler placeholders" in it.&nbsp; When you
+inherit from a generic class, you have to tell it what object types are
+to be substituted for the compiler placeholders.&nbsp; The compiler does a
+quick find and replace operation and builds a custom class tied to the
+object types you provided.&nbsp; There are lots of web articles on how to
+use generics.&nbsp; (I'm on a very slow network connection, it took 5
+minutes just to wait on the reply button, so you'll have to look for
+one yourself.)<br>
+ </p>
+
+<p><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>tarekahf:</strong></div><div></p>
+
+<p>2. Usually, DataSources for Lists are returnd as DataTables, DataSets or DataReader Objects, or even as ArrayList (which I usually use). How does this compare with the List returned by the "ProjectList" class ?</p>
+<p></div></BLOCKQUOTE></p>
+<p>A strongly typed collection is a better basis for business objects.&nbsp;&nbsp; I think they are much easier to use than the built-in objects.<br></p><p><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>tarekahf:</strong></div><div></p>
+
+<p>3. We usually use "Integrated Windows Authentication" to authenticate users, but this project is using Forms Authenticaiton. Do you have a sample project with Windows Authentication. For Roles and Authorization, I am very happy with the way it is implemented in the PTracker Application. Any advise how to quickly convert this application to use Windows Interated Authentication.</p>
+<p></div></BLOCKQUOTE></p>
+<p>There are several threads covering Windows Authentication and CSLA.&nbsp; It works great with Windows Authentication.&nbsp; The sample project doesn't include it because it is a sample product, and has to work for people who aren't using Windows Authentication.&nbsp;&nbsp; The CSLA business objects integrate VERY WELL with this technology.<br></p><p><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>tarekahf:</strong></div><div></p>
+
+<p>4. Do you have any adivse or recommendation or some material I can use for my presentation/demonistration about CSLA.NET.</p>
+<p></div></BLOCKQUOTE></p>Send me a private email and I'll email you a powerpoint presentation covering csla basics.&nbsp; It's meant to work with the sample Project Tracker application.<br><br>Or maybe Rocky can post it on his website and save me getting a bunch of emails? :)<br><br>CSLA makes very good use of inheritance, interfaces, and generics.&nbsp;&nbsp; If you aren't well versed in those topics, you will want to study up.&nbsp; You will be glad you did!<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tarekahf replied on Sunday, April 13, 2008</h2><P>Dear david.wendelken,</P>
+<P>Just a quick note about the books. I checked a while ago, and I was told that they have been ordered (3 books). It is not a problem of cost or salary (as&nbsp;the books are&nbsp;very affordable). It is a problem of availability. I can order them on-line, but I why do I have to bather, if&nbsp;the management&nbsp;is very keen to provide us all the books we need ?! As of now, I have more than&nbsp;6 books on ASP.NET, so this is not a problem.</P>
+<P>Actually, even if I have the CSLA.NET books today, I still need at least a week to update my knowledge, and the time limit that was given to me is not enough (in addition to the other assignments I have). One of my colleagues have already submitted a very nice proposal for the COMPLETE requirements using DNN and Codesmith, and he provided a complete step-by-step document showing how to build a Sample Northwind Application using such approach. If I do not give something similar to describe&nbsp;the concept,&nbsp;there will be&nbsp;little chance to have CSLA.NET Adopted.</P>
+<P>Tarek.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Sunday, April 13, 2008</h2><P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>tarekahf:</strong></div><div></P>
+<P>I understand that this might be out of the scope of this forum, but we have already submitted a request to purchase 3 books about CSLA (from your website) and it might take some time to arrive. Also, it will take some time to read and understand. The code above is using some kind of advanced ASP.NET Concepts which I am not familiar with. </P>
+<P></div></BLOCKQUOTE></P>
+<P>There are three books. The Expert 2005 Business Objects book is paper and must be ordered through a regular bookstore or online book store. It would take time to arrive.</P>
+<P>The two ebooks on <A href="http://store.lhotka.net">http://store.lhotka.net</A> are ebooks, PDF, and so need to be downloaded directly from the store web site once the purchase is complete. They take no time to arrive, so if you don't have them then you should return to the web site and download them.</P>
+<P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>tarekahf:</strong></div><div><BR>1. In a High-Level Language , what is the code above doing ? I am very much confused with this notation: ... Inherits ReadOnlyBase (Of ProjectList, ProjectInfo...) .<BR></div></BLOCKQUOTE></P>
+<P>CSLA .NET provides a set of base classes, like ReadOnlyBase, which provide features that are useful when building an object-oriented business layer. The key is that CSLA helps build an <EM>object-oriented business layer</EM>, and so if you are looking for something more like a DataSet model then CSLA may be&nbsp;a bad fit.</P>
+<P>CSLA helps you build a business layer composed of objects, where the objects encapsulate validation, authorization, implement data binding, n-level undo and several other very useful features. It provides a standard approach you can use to implement these behaviors, and helps you reduce code and complexity within this environment.</P>
+<P>ReadOnlyBase is a base class that is used to create read-only objects. BusinessBase is a similar base class that is used to create editable objects.</P>
+<P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>tarekahf:</strong></div><div><BR>2. Usually, DataSources for Lists are returnd as DataTables, DataSets or DataReader Objects, or even as ArrayList (which I usually use). How does this compare with the List returned by the "ProjectList" class ?<BR></div></BLOCKQUOTE></P>
+<P>If you create an object-oriented business layer then your UI should only interact with business objects. Never with data access technologies like the DataSet or ADO.NET. ProjectList inherits from ReadOnlyListBase, which provides support for read-only lists of read-only objects, including rich support for data binding (WPF, Windows Forms and Web Forms), authorization and abstract data access.</P>
+<P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>tarekahf:</strong></div><div><BR>3. We usually use "Integrated Windows Authentication" to authenticate users, but this project is using Forms Authenticaiton. Do you have a sample project with Windows Authentication. For Roles and Authorization, I am very happy with the way it is implemented in the PTracker Application. Any advise how to quickly convert this application to use Windows Interated Authentication.<BR></div></BLOCKQUOTE></P>
+<P>Yes, the PTWeb application in ProjectTracker uses forms authentication. And Chapter 10 in the <EM>Expert 2005 Business Objects</EM> book also discusses the use of the MembershipProvider (and people have discussed it on this forum too) if you want to use that feature of ASP.NET.</P>
+<P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>tarekahf:</strong></div><div><BR>4. Do you have any adivse or recommendation or some material I can use for my presentation/demonistration about CSLA.NET.<BR></div></BLOCKQUOTE></P>
+<P>The primary sources of information about CSLA .NET are the three books, <A href="http://www.lhotka.net/cslanet">www.lhotka.net/cslanet</A> and this forum.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tarekahf replied on Sunday, April 13, 2008</h2>Many thanks to Rocky and David for the valuable replies. I am in a much better position now.<br><br>I have create a new project from scratch to develop a sample application based on CSLA.NET which is relevant to our environment. Initially, I will focus on bulding the Web Presentation, UI, and Business Logic. It will be about Country List and Staff Info (the BOs), and the relationship between both entities. I will try to connect such BOs to 2 different Databases (Adabas on UNIX accessed via CONNX Gateway, and SQL Server). I am copying the relevant bits and parts from the PTracker Application to the new application, and will try to enable Windows Authentication. I have found several threads and one article discussing this topic, and I have created a special thread for this subject, and received several replies.<br><br>I inquired about the eBooks we ordered (for CSLA 2.x and 3.x), and I was told that they are waiting for some confirmation number from PayPal or something like that for several days, it is taking longer than expected !!!. The other book (Business Objects for CSLA.NET 2.x) has been order from Amazon.com today (regular book).<br><br>Tarek.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Sunday, April 13, 2008</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>If you or your purchasing agent is having trouble with the
+ebooks, they should email admin at Lhotka.net for help.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky</span><b><span><o:p></o:p></span></b></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tarekahf replied on Monday, April 14, 2008</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div> 
+
+<DIV class=Section1>
+<P class=MsoNormal><SPAN>If you or your purchasing agent is having trouble with the ebooks, they should email admin at Lhotka.net for help.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Rocky</SPAN><B><SPAN><o:p></o:p></SPAN></B></P>
+<P class=MsoNormal></div></BLOCKQUOTE></P>
+<P class=MsoNormal>Yes, it seems that there is a problem. I asked the person in charge to send email to the address you gave me.</P>
+<P class=MsoNormal>In the mean time, could you please tell me if there is a way to purchase such books as Normal Books (not eBooks) from some other webstore ?</P>
+<P class=MsoNormal>It seems that not all&nbsp;Books of CSLA&nbsp;are available in Amazon webstore.</P>
+<P class=MsoNormal>The order of the book "Expert VB Business Objects" is submitted from Amazon.com and expexted to arrive soon.</P>
+<P class=MsoNormal>Tarek.</P></DIV></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, April 14, 2008</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>The ebooks are available in PDF form only, and only from <a href="http://store.lhotka.net">http://store.lhotka.net</a>.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky</span><b><span><o:p></o:p></span></b></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tarekahf replied on Monday, April 14, 2008</h2><P>Ok, will take care of the books.</P>
+<P>I have started making some effort on Windows Authenticaiton with CSLA.</P>
+<P>If you have some time, please check the details here:</P>
+<P><A HREF="/forums/22785/ShowThread.aspx#22785"><FONT color=#667766>http://forums.lhotka.net/forums/22785/ShowThread.aspx#22785</FONT></A></P>
+<P>I appreciate your comments.</P>
+<P>Tarek.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tarekahf replied on Tuesday, April 15, 2008</h2>I managed to implement Mixed Authentication successfully in addition to developing a simple new BO. Check details here:<br><br><a>http://forums.lhotka.net/forums/22855/ShowThread.aspx#22855</a><br><br>I appreciate your comments if there is something wrong in my approach.<br><br>I have the following very important questions, and appreciate your reply:<br><br>1. In the PTracker Sample Application, and in the new Sample Application I developed, I had some doubt about how to set a reference to CSLA DLLs. In the instructions for installing the application, it was mentioned to deploy the DLL to the GAC. But, I did not do that, because I do not know how, so I just simply set a reference to CSLA DLLs by Browsing to the csla.dll file from the csla project bin folder, after building it. Is this correct ? Is it absolutely necessary to deploy csla dll to CAG and use Strong Key or something like that ?<br><br>- When I set a reference to the csla dll from the Web Project, several DLLs showed in the references for different languages. But, in the Library Project, after setting the reference to csla dll, only one reference appeared ? Can you&nbsp; please explain this ?<br><br>2. Suppose I have several applications using CSLA Framework. Each application is developed locally on a separate PC, and eventually they must be deployed to one Server Machine. What is the best way to reference the DLL ? All must reference the same file, or they must have a separate copy of the file in the BIN folder ? Will be there any problems for threading conflicts ? My colleague told me that referencing the different copies of the DLL will cause some kind of threading conflict (same code being executed in 2 copies of the same DLL) which will cause problem in updates. How does this apply to CSLA ? (I am sorry if I did not use the correct terms here, and I hope the point is clear)<br><br>3. Over time, we will be developing several Reusable Objects in Library Projects like that of the PTracker, which will be eventually a DLL File, right ? And as they are growing, we then have to group related BOs in separate DLLs to make it easier to manage and track. When there are so many DLLs and different versions for each, I think it cause something called DLL Hell !! Since there will be different versions of each DLL, complex project dependencies, and there will be a possibility that some projects will break due to deploying a new DLL version, which may require a recompile of the affected projects. I know this has nothing to do with CSLA, but I appreciate your input on how to avoid such problems.<br><br>4. In general, is it correct to say that we must use Web Services to expose the BO functionality to the consumers of the web services, and that we must avoid using direct reference to DLLs to avoid the threading problems and version contorl issue ? <br><br>I am not very much comfortable with the idea of Using Web Services instead of DLL References. I think we should use Web Services only when there is a real value for such approach.<br> <br>Your feedback will be greatly appreciated.<br><br>Regards ...<br><br>Tarek.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tarekahf replied on Monday, April 21, 2008</h2>Ok, I will try to be more focused now. I am preparing for a presentation tomorrow about CSLA.NET and appreciate your help.<br><br>I have already developed several Business Objects, for proof of concept, in DLLs using CSLA.NET Framework and used them in
+several other applications, and enabled both Integrated Windows Authentication and Forms Authentication.<br><br>I have some doubt about the
+multi-threading issue and the relationship with Web Services, DLLs and CSLA.NET.&nbsp;<p>I have the following questions in that regards:</p><p>1.
+By default, when you develop a Web Service, are they Thread Safe ? Or
+do you still have to worry about Multi-threading problems due to the
+nature of the web server allowing requests to run in parallel in
+different threads ? So that, also, when writing a Web Service, you need
+to worry about Multi-Threading Issue ?<br></p><p>2. With regards to
+Developing Business Objects in DLLs and deploying them to a Web Server
+for use by other applications with direct reference, when do you have
+to worry about making the DLL Thread Safe ? Is it necessary to write
+your DLLs to be Thread Safe ? Do you have always to reference to Thread Safe
+DLLs in your web applications ?</p><p>3. Is CSLA.NET DLL Thread Safe ?<br></p><p>Tarek.<br></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, April 21, 2008</h2><P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>tarekahf:</strong></div><div></P>
+<P>1. By default, when you develop a Web Service, are they Thread Safe ? Or do you still have to worry about Multi-threading problems due to the nature of the web server allowing requests to run in parallel in different threads ? So that, also, when writing a Web Service, you need to worry about Multi-Threading Issue ?<BR></P>
+<P></div></BLOCKQUOTE></P>
+<P>Generally yes. By the time your service code is running, ASP.NET has assigned you a thread for the duration of that service invocation and you'll remain on that thread unless you explicitly do something to create your own threads (or use the thread pool) - but that's no different than in any .NET code, and you'd know it if you created a thread.</P>
+<P>Obviously many service requests may be running at the same time, but each one is on its own thread.</P>
+<P>The only places you can get into trouble here is when using object instances that are shared across the AppDomain, because those objects could be used by multiple threads at once. And when calling static/Shared methods because those are global to the AppDomain.</P>
+<P>Unless you go out of your way to do this, no object instances are typically accessible across the AppDomain, so this is a non-issue.</P>
+<P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>tarekahf:</strong></div><div></P>
+<P>2. With regards to Developing Business Objects in DLLs and deploying them to a Web Server for use by other applications with direct reference, when do you have to worry about making the DLL Thread Safe ? Is it necessary to write your DLLs to be Thread Safe ? Do you have always to reference to Thread Safe DLLs in your web applications ?</P>
+<P></div></BLOCKQUOTE></P>
+<P>Typically you do not need to make your assemblies thread-safe - other than your static/Shared methods (because they are global to the AppDomain).</P>
+<P>The exception would be if you intend to put any objects in a position where they'd be global to the AppDomain - then you'd have to devise a locking scheme for those objects. That is quite rare and should be avoided.</P>
+<P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>tarekahf:</strong></div><div></P>
+<P>3. Is CSLA.NET DLL Thread Safe ?<BR></P>
+<P>Tarek.<BR></P>
+<P></div></BLOCKQUOTE></P>
+<P>The static/Shared methods in CSLA .NET are&nbsp;thread-safe. Otherwise no. Like 99.9% of the .NET framework, CSLA .NET is not thread-safe.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tarekahf replied on Monday, April 21, 2008</h2>So, the bottom line, is that even when you are developing Web Services, if the logic of the Web Services is using object instances that are shared across the AppDomain, then you still need to implement some kind of locking mechanism to avoid Data Corruption during update due to Multi-threading ?<br><br><br>Also, this means that there is no difference in terms of Multi-threading worries between using Web Service and direct reference to DLLs in your Web Application. I mean, that if the process is using object instances that are shared across the AppDomain then using the Web Service to implement such process will not solve this problem automatically, correct ?<br><br>Tarek.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, April 21, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Correct, if you share an object instance across multiple threads
+then you must implement some sort of locking protocol.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Fortunately that is a pretty rare thing, except perhaps for
+cached read-only objects. In that case you only really need to worry if you are
+using property-level authorization (CanReadProperty()) because that bit of
+behavior is obviously per-user.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> tarekahf
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Monday, April 21, 2008 6:05 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: RE: RE: How to build a Business Object
+using CSLA.NET to access data from 2 different Databases.<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>So, the bottom line, is that even when you are developing
+Web Services, if the logic of the Web Services is using object instances that
+are shared across the AppDomain, then you still need to implement some kind of
+locking mechanism to avoid Data Corruption during update due to Multi-threading
+?<br>
+<br>
+<br>
+Also, this means that there is no difference in terms of Multi-threading
+worries between using Web Service and direct reference to DLLs in your Web
+Application. I mean, that if the process is using object instances that are
+shared across the AppDomain then using the Web Service to implement such
+process will not solve this problem automatically, correct ?<br>
+<br>
+Tarek.<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tarekahf replied on Monday, May 05, 2008</h2><P>OK, good news. I received the book last week, and did more work with CSLA.</P>
+<P>I have some issue raised by my colleague about using/re-using connections.</P>
+<P>In order to be more clear and efficient, I have created a new thread here:</P>
+<P><A HREF="/forums/23322/ShowThread.aspx#23322">http://forums.lhotka.net/forums/23322/ShowThread.aspx#23322</A></P>
+<P>I hope I can get your feedback on this matter.</P>
+<P>Tarek.</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

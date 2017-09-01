@@ -1,0 +1,133 @@
+<html><header><title>Updating references OnDeserialized</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Updating references OnDeserialized</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4436.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>tetranz posted on Thursday, February 28, 2008</h2>I should be clear on this by now but unfortunately I'm not. It involves what I need to do with "contained" objects when the root is deserialized.<br><br>I have an object called Order. It has three addresses, Shipping, Billing and Contact. Each has the usual properties such as Name, Address1, Address2, City, State Zip etc. All these properties are directly bound to controls on the "Order" form of my WinForms app. The Order class has standard CSLA properties for ShippingName, ShippingAddress1, ShippingAddress2 ..., BillingName, BillingAddress1, BillingAddress2 ..., ContactName ... etc. i.e, the address properties are "flat" for anyone looking into Order from the outside.<br><br>Inside the Order class I have a private class called Address. It's a very simple class with public String fields. There are three instances of Address referenced with private variables within Order, _shipAddress, _billAddress and _contactAddress. Properties of these instances are used as the instance variables in the properties of Order described above. i.e, the instance "variable" for ShippingName is _shipAddress.Name rather than a direct string called_shipAddressName. The main reason for using the Address objects is so that I can put them in a Dictionary. That lets me easily grab an address by type i.e, _addresses[addressType]. Without that I'd need some ugly switch statements.<br><br>Most of those details might be irrelevant to my main question.<br><br>What do I need to do in OnDeserialized in my Order object? This will happen after I save because of the Clone. I'm confused about the references I have to the Address objects. Will _shipAddress still be a valid reference?&nbsp; I think I need to connect _shipAddress, _billAddress and _contactAddress to what are now new instances of Address but I'm not sure how to do that.<br><br>Thanks for any help<br>Ross<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tetranz replied on Thursday, February 28, 2008</h2>I probably should have mentioned that I'm running CSLA 3.0.4 </div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, February 28, 2008</h2><P>All references should remain intact unless you've marked the field with the NonSerialized attribute.</P>
+<P>Events should be broken and must be re-hooked. </P>
+<P>Typically that's all you need to do in OnDeserialized is rehook any events and re-establish any NonSerialized references.</P>
+<P>Circular references should be broken by using NonSerialized. Technically they work, but people have found that they cause radical expansion of the serialized byte stream - this is why CSLA marks the parent references as NonSerialized.</P>
+<P>Multiple references (non-circular) to a single object are not a problem - those references should automatically remain intact.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JohnB replied on Thursday, February 28, 2008</h2>This may be a bit off topic but I was curious to get feedback regarding OnDeserialized and the number of times this method gets called during a Save. I've read in the forum where Rocky mentioned that it was three (3) times during normal operation but I was trying to learn more about this behavior.<br><br>In my case, I know that OnDeserialized gets called three times during every save operation. I am a little concerned that my process for reattaching the events is also happening every time. As far as I can tell there are no issues and I do know that I am removing handlers for every add handler. So the questions is, is there a better way?<br><br>My standard override as such:<br><br>Protected Overrides Sub OnDeserialized(ByVal context As System.Runtime.Serialization.StreamingContext)<br>&nbsp;&nbsp;&nbsp; MyBase.OnDeserialized(context)<br>&nbsp;&nbsp; &nbsp;<br>&nbsp;&nbsp;&nbsp; '-- Reattach events etc.&nbsp; &nbsp;<br>End Sub<br><br>Thanks,<br>John<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, February 28, 2008</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Three?<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Well let&#8217;s see.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>If the data portal is running in local mode:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoListParagraph><span><span>1.<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span></span><span>The object is cloned (1)<o:p></o:p></span></p>
+
+<p class=MsoListParagraph><span><span>2.<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span></span><span>The clone is saved to the database<o:p></o:p></span></p>
+
+<p class=MsoListParagraph><span><span>3.<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span></span><span>The clone replaces the original object<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>If the data portal is running in remote mode:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoListParagraph><span><span>1.<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span></span><span>The object is effectively cloned to the app server (1)<o:p></o:p></span></p>
+
+<p class=MsoListParagraph><span><span>2.<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span></span><span>The clone is saved to the database<o:p></o:p></span></p>
+
+<p class=MsoListParagraph><span><span>3.<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span></span><span>The clone is effectively cloned back to the client (2)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>The only case where, maybe, you wouldn&#8217;t need the events
+re-hooked is step 1 in the remote data portal scenario &#8211; because maybe
+you don&#8217;t use or care about the events on the app server. But you might care
+about them too, because more can happen on the app server than simply saving
+data to the database &#8211; especially these days when you might run a
+workflow there or something.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>But step 1 in the local data portal and step 3 in the remote
+data portal scenario are what keeps the events working on the client for databinding,
+so they are unavoidable.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JohnB replied on Thursday, February 28, 2008</h2>I guess I should have included that I am working in remote mode and we subclassed BusinessBase.<br><br>So if I understand what you've said, I should see 2, not 3?<br><br>Here is a partial dump of my log file from the moment I hit save:<br>2008-02-28 23:47:04 INFO&nbsp; [barMgr_SaveItemClick]<br>2008-02-28 23:47:04 INFO&nbsp; BusinessBase [OnSerialized]<br>2008-02-28 23:47:04 INFO&nbsp; BusinessBase [OnDeserialized]<br>2008-02-28 23:47:04 INFO&nbsp; BusinessBase [OnSerialized]<br>2008-02-28 23:47:04 INFO&nbsp; BusinessBase [OnDeserialized]<br>2008-02-28 23:47:04 INFO&nbsp; BusinessBase [OnSerialized]<br>2008-02-28 23:47:18 INFO&nbsp; BusinessBase [OnDeserialized]<br><br>Someting else, how can I verify for certain where the object is during this event? Client or Server?<br><br>Thanks,<br>John </div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Friday, February 29, 2008</h2>John,<br><br>You can determine the objects location by using the applicationContext.ExecutionLocation.&nbsp; If you're running a local data portal though, this will always be client.<br><br>Also, you may want to write the stack trace so you can see what is causing the serialization.&nbsp; system.diagnostics.stacktrace.<br><br>HTH<br>andy<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rsbaker0 replied on Friday, February 29, 2008</h2><P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>ajj3085:</strong></div><div>John,<BR>You can determine the objects location by using the applicationContext.ExecutionLocation.&nbsp; If you're running a local data portal though, this will always be client.<BR>...<BR></div></BLOCKQUOTE></P>
+<P>Since you mentioned this, what is the "correct" way to know if you are on the "server" side of the data portal, even when using the local data portal? </P>
+<P>(I mainly want to know so I can put some debug asserts in that will flag things that&nbsp;shouldn't be called client side that would break with a remote data portal but work with the local data portal)</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Friday, February 29, 2008</h2>I'm not sure there is a way short of creating your own flag.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, February 29, 2008</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I was referring to 3.0 with autoclone on, or 3.5 by default &#8211;
+and assuming you aren&#8217;t manually calling Clone.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>If you follow the pre-3.0 model (like shown in the book) and do
+a manual clone, then you&#8217;d get 3 &#8211; yours, and the two from the data
+portal.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>This is why I added autoclone, to keep it to 1 for local and 2
+for remote &#8211; and to eliminate the need for you to call Clone yourself.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky</span><o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JohnB replied on Friday, February 29, 2008</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div><span>I was referring to 3.0 with autoclone on, or 3.5 by default –
+and assuming you aren’t manually calling Clone.</span><br><br><span>If you follow the pre-3.0 model (like shown in the book) and do
+a manual clone, then you’d get 3 – yours, and the two from the data
+portal.</span><br><br><span>This is why I added autoclone, to keep it to 1 for local and 2
+for remote – and to eliminate the need for you to call Clone yourself.</span></div></BLOCKQUOTE><br>Ok, since I keep leaving out some details that may be important. I am using ver 3.0.3 and I am calling Clone in my override of SaveItem for ERLB.<br><br>This is what happens during the save operation:<br>(Using Csla.ApplicationContext.ExecutionLocation to determine location as suggested)<br>OnSerialized: Client<br>
+OnDeserialized: Client<br>
+OnSerialized: Client<br>
+OnDeserialized: Client<br>
+OnSerialized: Client<br>
+OnDeserialized: Server<br>
+OnSerialized: Server<br>
+OnDeserialized: Client<br>
+<br><br>Here is what I am doing in my ERLB:<br><br>Public Sub SaveMyItem(ByVal objectToSave As MyBO)<br>&nbsp;&nbsp;&nbsp; '-- Capture the objects index value within the collection which we will use to later save the object<br>&nbsp;&nbsp;&nbsp; Dim pItemIndex As Int32 = Me.IndexOf(objectToSave)<br><br>&nbsp;&nbsp;&nbsp; '-- We need to clone the object before applying any edits so that we can recover the original object should the save fail for<br>&nbsp;&nbsp;&nbsp; '-- any reason. General exception, validation or data portal exception.<br>&nbsp;&nbsp;&nbsp; Dim pMyBOClone As MyBO = objectToSave.Clone<br><br>&nbsp;&nbsp;&nbsp; objectToSave.ApplyEdit()<br><br>&nbsp;&nbsp;&nbsp; '-- Attempt to save the object<br>&nbsp;&nbsp;&nbsp; Try<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; MyBase.SaveItem(pItemIndex)<br><br>&nbsp;&nbsp;&nbsp; Catch ex As DSCsla.Validation.ValidationException<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; '-- Most likey a server side validation exception.<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; '-- Set the object in the list back to the non-saved business object.<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; '-- This object will contain the broken rules describing the reason for<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; '-- the validation exception.<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Me.Item(pItemIndex) = DirectCast(ex.BusinessObject, MyBO)<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Throw ex<br><br>&nbsp;&nbsp;&nbsp; Catch ex As Exception<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; '-- Saved failed for some reason. Set the object back to the original close and bubble up the exception<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Me.Item(pItemIndex) = pMyBOClone<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Throw ex<br>&nbsp;&nbsp;&nbsp; End Try<br><br>End Sub<br><br>Public Overrides Sub SaveItem(ByVal index As Integer)<br>&nbsp;&nbsp;&nbsp; '-- Do nothing<br>End Sub<br><br>So, is it possible that Clone is happening twice on the client? Once by me and the other by the framework(autoclone)?<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JohnB replied on Friday, February 29, 2008</h2>Just wanted to add another note to this. It appears that the extra OnSerialized &amp; OnDeserialized calls on the Client are do to the fact that I am calling Clone as well as the framework performing an auto clone.<br><br>So I can live with the extra call because I need to Clone so I can recover my object after ApplyEdit was called. This way I can allow the user to undo the changes they made. I don't believe that I can retrieve the auto cloned object given the code I have listed above.<br><br>Thanks, <br>John<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jh72i replied on Friday, February 29, 2008</h2><P>might be little off topic but i was just going to post to ask a related question.......say i have a collection of objects.....now each object be auto hooked to Child_PropertyChanged just but default.....now say i want to copy one of those objects to a new (to make the question easier) non-csla list......how can i get a copy of the object WITHOUT its <FONT size=1>_serializableChangedHandlers </FONT><FONT size=3>and&nbsp;<FONT size=1>_nonSerializableChangedHandlers</FONT> being populated with the old collection event sink?<BR></FONT></P>
+<P>&nbsp;</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

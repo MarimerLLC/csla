@@ -1,0 +1,16 @@
+<html><header><title>Serializing and Persisting Hierarchy</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Serializing and Persisting Hierarchy</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5898.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Neil Millar posted on Friday, November 28, 2008</h2><P>Hi,</P>
+<P>Has anyone come across this issuse or even have an answer? Thanks</P>
+<P>I have a hierarchy of business objects that is bound to my UI across many screens. If a user changes just one item within a screen, lets say they enter some text in a textbox and click Save, I then need to persist&nbsp;that entered text vai my portal - and to do this I must call "TopLevelObject.Save()", this means that I must serialize many objects just to commit one small change from a low level child object in the hierarchy.</P>
+<P>Is there any way that we can save just the child objects that are marked as dirty without sending the entire hierachy to the Portal?</P>
+<P>Thanks</P>
+<P>Neil</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Saturday, November 29, 2008</h2><P>This may be one of the most frequently asked questions. It has been answered many times. Try searching for "Datagram". Also check Rocky's blog.</P>
+<P>The bottom line is that CSLA is designed "this way".</P>
+<P>The way you are asking about is completely different - and kills the use of mobile objects. So you can do it - just don't expect CSLA to help you do it - it wasn't built for that purpose.</P>
+<P>Depending on your use case, if you have a large object graph and want to do a simple update in the database of 1 field deep in the hierarcy, then you can always write a CommandObject to handle this for you. Instead of calling Save on your hierarchy, you can pass the data to the command object and call Execute on it. At this point there is no reason to call Save on the top level BO. But what if the user changes something else? How are you going to keep track of these small changes? Also, you should test the performance of just calling .Save on the top level BO - it may be just fine. Some people try to pre-maturely optimize their application design and end up hurting themselves and adding complexity for no real benefit. CSLA performance is usually fine - you would have to have a massive graph to even notice the issue. In which case you have a different problem anyway - a poorly designed graph.</P>
+<P>Joe</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Neil Millar replied on Tuesday, December 02, 2008</h2><P>hey Joe,</P>
+<P>thanks for your reply. I think I had come to the same solution - but I wanted to make sure that I wasnt missing anything. I dont yet see any performance issues with the top level save and I dont fancy trying to write command objects and trying to programatically keep the server and client in sync.</P>
+<P>Thanks again</P>
+<P>Neil</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

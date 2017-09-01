@@ -1,0 +1,43 @@
+<html><header><title>Any design ideas or advice for using xml files as data store</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Any design ideas or advice for using xml files as data store</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5714.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>DancesWithBamboo posted on Friday, October 31, 2008</h2>Can anyone give some insight or pointers on designing a framework to use xml files for persistance?&nbsp; I am going to be starting on a new desktop
+app in the next month that will be required to use files for
+persistance instead of a db.&nbsp; I forgot how for granted that I take
+having a db to just randomly access whenever I need data!&nbsp; <br>
+<br>
+Issues I'm thinking about:<br>
+<ol><li>File locking, what if 2 objects need to write data to the same
+file.&nbsp; How do they get a write lock on it without stepping on each
+other.</li><li>How to build a file persistance layer.</li><li>Once opened, how long to keep the files open.&nbsp; For the duration
+of the application session or something else.&nbsp; How much memory will
+this take up if I keep them open.</li><li>Do I represent files in memory as some sort of FileObjects for consumption by
+the BO just like I do with say a DataSet where the BO can loop through
+the FileObject without having to know anything about storage?<br>
+  </li><li>Crash-proofness, if I have a file access layer, does it
+immediately commit to the disk or does it cache up changes--thinking MS
+word temp files here.</li><li>How do the BOs interact with the file layer?&nbsp; <br>
+  </li></ol>
+Thanks!<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tmg4340 replied on Friday, October 31, 2008</h2><P><FONT face=Tahoma size=2>You don't talk much about your data structure, but why don't you consider SQL Server Compact Edition?&nbsp; It's a completely file-based DB, with no server installation - just a DLL reference in your app.</FONT></P>
+<P><FONT face=Tahoma size=2>What's the rationale for not using a DB?</FONT></P>
+<P><FONT face=Tahoma size=2>- Scott</FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>DancesWithBamboo replied on Friday, October 31, 2008</h2>It is a requirement that the files be stored in pfxEngagement (a doc storage/etc solution for Tax/Accounting).&nbsp; It in turn actually stores the files in SQL Server.&nbsp;&nbsp; Thus, xml it is.<br><br>I don't have any particular data structure in mind yet because we haven't written up any stories yet.&nbsp; I only have a vague idea of what will need to be stored based on the current word/excel docs the firm uses.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tmg4340 replied on Friday, October 31, 2008</h2><P><FONT face=Tahoma size=2>I think you may need to give us a bit more information...</FONT></P>
+<P><FONT face=Tahoma size=2>If you're storing the documents in pfxEngagement, then what is the app you're writing supposed to do?&nbsp; Are you directly interacting with the documents (i.e. outside of the normal pfcEngagement methods)?&nbsp; Or are you developing an application that allows the users to do what they're doing in their Office docs, and the results of your app are going to be fed into pfxEngagement?&nbsp; Or is pfxEngagement going to exist as the "backend" to your app, and you're going to interact through some sort of API?</FONT></P>
+<P><FONT face=Tahoma size=2>What I'm getting at is that if you choose to use XML files directly as your "back end", you are pretty much going to have to handle the concurrency/caching/persistence issues all on your own.&nbsp; Developing a robust, multi-user, file-based persistence mechanism is a fairly non-trivial exercise.&nbsp; There's a reason all those ACID-based systems aren't cheap... <img src="/emoticons/emotion-1.gif" alt="Smile [:)]" /></FONT></P>
+<P><FONT face=Tahoma size=2>Depending on the methodology you use to manage your XML, .NET will do some caching for you by the nature of how file streams are implemented.&nbsp; Using an XmlDocument-based method gives you control over that at the cost of having to load the entire XML document into memory - possibly something you can't, or don't want to, do.&nbsp; Heck, depending on how the XML is structured, you could use a Dataset...</FONT></P>
+<P><FONT face=Tahoma size=2>But again, I'd take a look at what you really need to do with your XML output, and whether you can use a more traditional DB-based backend coupled with some automated processes to generate your XML.</FONT></P>
+<P><FONT face=Tahoma size=2>HTH</FONT></P>
+<P><FONT face=Tahoma size=2>- Scott</FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rsbaker0 replied on Monday, November 03, 2008</h2><P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>DancesWithBamboo:</strong></div><div>It is a requirement that the files be stored in pfxEngagement (a doc storage/etc solution for Tax/Accounting).&nbsp; It in turn actually stores the files in SQL Server.&nbsp;&nbsp; Thus, xml it is.<BR><BR>I don't have any particular data structure in mind yet because we haven't written up any stories yet.&nbsp; I only have a vague idea of what will need to be stored based on the current word/excel docs the firm uses.<BR></div></BLOCKQUOTE></P>
+<P>Any chance that the data in the document is in a format&nbsp;that would let you turn this around? You could (in theory)&nbsp;let the application manipulate the database, and when the client wants the XML document, you export the data into an appropriately formatted document?</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rsbaker0 replied on Monday, November 03, 2008</h2><P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>DancesWithBamboo:</strong></div><div>It is a requirement that the files be stored in pfxEngagement (a doc storage/etc solution for Tax/Accounting).&nbsp; It in turn actually stores the files in SQL Server.&nbsp;&nbsp; Thus, xml it is.<BR><BR>I don't have any particular data structure in mind yet because we haven't written up any stories yet.&nbsp; I only have a vague idea of what will need to be stored based on the current word/excel docs the firm uses.<BR></div></BLOCKQUOTE></P>
+<P>Any chance that the data in the document is in a format&nbsp;that would let you turn this around? You could (in theory)&nbsp;let the application manipulate the database, and when the client wants the XML document, you export the data into an appropriately formatted document?</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Sunday, November 02, 2008</h2><P>Let's make one important assumption here - that this is a single-user system. If this is multi-user you are in for a rough time, so assume only one user edits one file during the lifetime of the app instance.</P>
+<P>In that case you are creating something like Notepad or Word or Excel or Outlook. All of these are written for the one-user/one-file scenario.</P>
+<P>There are two main models apps use for this:</P>
+<OL>
+<LI>Open/close file for each read/write operation</LI>
+<LI>Keep file open as long as app is open</LI>
+<OL>
+<LI>Write all changes directly</LI>
+<LI>Write changes to a secondary temp file, only alter real file on explicit save</LI></OL></OL>
+<P>So really I suppose this is three models total.</P>
+<P>An example of 1 is Notepad, and 2.1 is Outlook. Word uses 2.2 - it only alters the real file when you save, but changes are written to a temp file for recovery if there's a crash.</P>
+<P>The thing is, you can forget about "XML". You are just dealing with a text file, nothing more. The fact that your text file might contain XML is really beside the point and has nothing to do with the way you handle IO to the file.</P>
+<P>In other words, XML is a fine data organization format, but XML doesn't help you when it comes to manipulating the text file containing that XML.</P>
+<P>When it comes to interacting with the file, your options are pretty limited, and you can look at almost any document-based application (again, Notepad, Word, Photoshop, etc) to see how they handle file storage.</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

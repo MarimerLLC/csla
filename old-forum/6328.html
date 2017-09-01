@@ -1,0 +1,65 @@
+<html><header><title>Decimal received in Int Property - breaks rules?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Decimal received in Int Property - breaks rules?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6328.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>davido posted on Wednesday, February 04, 2009</h2><P>Hi,</P>
+<P>I am using CSLA light and have the following scenario. If i enter -9 on the screen and tab away I see the red exclamation and the correct message. If I now overwrite -9 with 12 and tab away&nbsp;the red exclamation goes away. However if I overwrite the -9 with 12.5 and tab away&nbsp;the red exclamation stays. The property is Int so does entering a decimal give it a problem?</P>
+<P>I put a breakpoint on the setter but it doesn't get there when I enter 12.5, it gets there when I enter an integer.</P><FONT color=#0000ff size=2><FONT color=#0000ff size=2>
+<P>private</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>static</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>PropertyInfo</FONT></FONT><FONT size=2>&lt;</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>int</FONT></FONT><FONT size=2>&gt; MileageProperty = RegisterProperty&lt;</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>int</FONT></FONT><FONT size=2>&gt;(</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>new</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>PropertyInfo</FONT></FONT><FONT size=2>&lt;</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>int</FONT></FONT><FONT size=2>&gt;(</FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>"Mileage"</FONT></FONT><FONT size=2>, </FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>"Mileage"</FONT></FONT><FONT size=2>, 0));</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>public</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>int</FONT></FONT><FONT size=2> Mileage</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>get</FONT></FONT><FONT size=2> { </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>return</FONT></FONT><FONT size=2> GetProperty(MileageProperty); }</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>set</FONT></FONT><FONT size=2> { SetProperty(MileageProperty, </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>value</FONT></FONT><FONT size=2>); }</P>
+<P>}</P><FONT size=2>
+<P>ValidationRules.AddRule(Csla.Validation.</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>CommonRules</FONT></FONT><FONT size=2>.IntegerMinValue,</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>new</FONT></FONT><FONT size=2> Csla.Validation.</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>CommonRules</FONT></FONT><FONT size=2>.</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>IntegerMinValueRuleArgs</FONT></FONT><FONT size=2>(MileageProperty, 0));</P></FONT></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>davido replied on Wednesday, February 04, 2009</h2>I should have mentioned I am using the CslaDataProvider</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>davido replied on Wednesday, February 04, 2009</h2><P>I have noticed the following in the output window:</P>
+<P>System.Windows.Data Error: ConvertBack cannot convert value 'sadasd' (type 'System.String'). BindingExpression: Path='Data.Mileage' DataItem='Csla.Silverlight.CslaDataProvider' (HashCode=27451669); target element is 'System.Windows.Controls.TextBox' (Name='MileageTextBox'); target property is 'Text' (type 'System.String').. System.FormatException: Input string was not in a correct format.</P>
+<P>I'm off to investiagte how to capture a ConvertBack exception from a default ValueConverter</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Wednesday, February 04, 2009</h2>You might be better off trying to limit the input to only digit characters.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>davido replied on Wednesday, February 04, 2009</h2><P>By adding the following event handler and settings in the binding I am getting an error raised, which is good, one step at a time. I'll see how I can work with this</P><FONT color=#0000ff size=2><FONT color=#0000ff size=2>
+<P>public</FONT></FONT><FONT size=2> ExpenseUpdatePage()</P>
+<P>{</P>
+<P>InitializeComponent();</P>
+<P><STRONG><U>BindingValidationError += </U></STRONG></FONT><STRONG><U><FONT color=#0000ff size=2><FONT color=#0000ff size=2>new</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>EventHandler</FONT></FONT><FONT size=2>&lt;</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>ValidationErrorEventArgs</FONT></FONT></U></STRONG><FONT size=2><STRONG><U>&gt;(ExpenseUpdatePage_BindingValidationError);</U></STRONG></P>
+<P></P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>void</FONT></FONT><FONT size=2> ExpenseUpdatePage_BindingValidationError(</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>object</FONT></FONT><FONT size=2> sender, </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>ValidationErrorEventArgs</FONT></FONT><FONT size=2> e)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>throw</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>new</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>NotImplementedException</FONT></FONT><FONT size=2>();</P>
+<P>}</P></FONT>
+<P>&nbsp;</P><FONT color=#0000ff size=2><FONT color=#0000ff size=2>
+<P>&lt;</FONT></FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>TextBox</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#ff0000 size=2><FONT color=#ff0000 size=2>x</FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>:</FONT></FONT><FONT color=#ff0000 size=2><FONT color=#ff0000 size=2>Name</FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>="MileageTextBox"</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#ff0000 size=2><FONT color=#ff0000 size=2>Style</FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>="{</FONT></FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>StaticResource</FONT></FONT><FONT color=#ff0000 size=2><FONT color=#ff0000 size=2> TextBoxStyle</FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>}"</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#ff0000 size=2><FONT color=#ff0000 size=2>Grid.Row</FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>="9"</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#ff0000 size=2><FONT color=#ff0000 size=2>Grid.Column</FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>="1"&gt;</P></FONT></FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>
+<P></FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>&lt;</FONT></FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>TextBox.Text</FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>&gt;</P></FONT></FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>
+<P></FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>&lt;</FONT></FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>Binding</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#ff0000 size=2><FONT color=#ff0000 size=2>Path</FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>="Data.Mileage"</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#ff0000 size=2><FONT color=#ff0000 size=2>Mode</FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>="TwoWay"</P></FONT></FONT><FONT size=2>
+<P></FONT><STRONG><U><FONT color=#ff0000 size=2><FONT color=#ff0000 size=2>NotifyOnValidationError</FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>="True"</P></FONT></FONT></U></STRONG><FONT size=2>
+<P></FONT><FONT color=#ff0000 size=2><FONT color=#ff0000 size=2><STRONG><U>ValidatesOnExceptions</U></STRONG></FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2><STRONG><U>="True"</U></STRONG> /&gt;</P></FONT></FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>
+<P></FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>&lt;/</FONT></FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>TextBox.Text</FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>&gt;</P></FONT></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>davido replied on Wednesday, February 04, 2009</h2><P>This seems to work but I'd appreciate any comments:</P><FONT size=2><FONT color=#0000ff size=2><FONT color=#0000ff size=2>
+<P>void</FONT></FONT><FONT size=2> ExpenseUpdatePage_BindingValidationError(</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>object</FONT></FONT><FONT size=2> sender, </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>ValidationErrorEventArgs</FONT></FONT><FONT size=2> e)</P>
+<P>{</P>
+<P></FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>CslaDataProvider</FONT></FONT><FONT size=2> provider = ((</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>CslaDataProvider</FONT></FONT><FONT size=2>)</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>this</FONT></FONT><FONT size=2>.Resources[</FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>"ExpenseData"</FONT></FONT><FONT size=2>]);</P>
+<P></FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>TextBox</FONT></FONT><FONT size=2> textBox = e.OriginalSource </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>as</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>TextBox</FONT></FONT><FONT size=2>;</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>if</FONT></FONT><FONT size=2> (textBox != </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>null</FONT></FONT><FONT size=2>)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>switch</FONT></FONT><FONT size=2> (e.Action)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>case</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>ValidationErrorEventAction</FONT></FONT><FONT size=2>.Added:</P>
+<P>textBox.SelectionStart = 0;</P>
+<P>textBox.SelectionLength = textBox.Text.Length;</P>
+<P>textBox.FontStyle = </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>FontStyles</FONT></FONT><FONT size=2>.Italic;</P>
+<P></P>
+<P></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2>//this effectivly removes the binding</P></FONT></FONT><FONT size=2>
+<P>SaveButton.IsEnabled = </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>false</FONT></FONT><FONT size=2>;</P>
+<P>textBox.Focus();</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>break</FONT></FONT><FONT size=2>;</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>case</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>ValidationErrorEventAction</FONT></FONT><FONT size=2>.Removed:</P>
+<P></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2>//todo reset style</P></FONT></FONT><FONT size=2>
+<P>System.Windows.Data.</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>Binding</FONT></FONT><FONT size=2> binding = </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>new</FONT></FONT><FONT size=2> System.Windows.Data.</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>Binding</FONT></FONT><FONT size=2>();</P>
+<P>binding.Source = provider.CanSave;</P>
+<P>binding.Mode = System.Windows.Data.</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>BindingMode</FONT></FONT><FONT size=2>.OneWay;</P>
+<P>SaveButton.SetBinding(</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>Button</FONT></FONT><FONT size=2>.IsEnabledProperty, binding);</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>break</FONT></FONT><FONT size=2>;</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>default</FONT></FONT><FONT size=2>:</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>break</FONT></FONT><FONT size=2>;</P>
+<P>}</P>
+<P>}</P>
+<P>}</P></FONT></FONT></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

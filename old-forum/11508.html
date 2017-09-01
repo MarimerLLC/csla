@@ -1,0 +1,23 @@
+<html><header><title>Adjustible Authorisation rules</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Adjustible Authorisation rules</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11508.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Tobique posted on Monday, July 30, 2012</h2><p>Hi, </p>
+<p>&nbsp;</p>
+<p>sorry to bother you with probably a silly question but i have a problem,</p>
+<p>I have to create a rule in witch the validation action is variable the property info is variable and the role is variable so they can be uploaded from a database any suggestions?</p>
+<p>&nbsp;</p>
+<p>thx</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>Tobique replied on Monday, July 30, 2012</h2><p>a small example,</p>
+<p>BusinessRules.AddRule(new Csla.Rules.CommonRules.IsInRole(action, property,competence))</p>
+<p>&nbsp;</p>
+<p>how can i implement this?</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Monday, July 30, 2012</h2><p>Do these &quot;compentencies&quot; vary between the objects? Is these rules for property or object level authorization.</p>
+<p>You must remember that you can only have 1 rule for each <i>Property </i>and <i>AuthorizationAction</i> and these are defined at the &quot;type&quot; level. </p>
+<p>So - in order to use the AuthzRules you must either have</p>
+<ul>
+<li>all rules with action and competence defined &quot;globally&quot; when the first object of this type is created</li>
+<li>or add all rules with knowlegde of how to get cached values (competencies) from the database.&nbsp;</li>
+</ul>
+<p>A third option for property authorization is to implement your own overrides on </p>
+<ul>
+<li>CanReadProperty</li>
+<li>CanWriteProperty</li>
+<li>CanExecuteMethod </li>
+</ul>
+<p>and make these check against cached values from the database. </p>
+<p>You must also remember to set CacheResult = false on the property level rules if you choose to implement as AuthorizationRules and the result may vary from the first execution of the rule.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

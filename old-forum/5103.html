@@ -1,0 +1,99 @@
+<html><header><title>Managed child BO property - DataPortal update failing</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Managed child BO property - DataPortal update failing</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5103.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 posted on Wednesday, July 16, 2008</h2>Hi,<br><br>I have a managed property, which is a child BO instance.&nbsp; I register it like this in the parent object:<br><font color="#0000ff">private static readonly</font> <font color="#008000">PropertyInfo</font>&lt;<font color="#008000">DepartmentPhoneNumber</font>&gt; PhoneNumberProperty =<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; RegisterProperty&lt;<font color="#008000">DepartmentPhoneNumber</font>&gt;( <font color="#0000ff">new</font> <font color="#008000">PropertyInfo</font>&lt;<font color="#008000">DepartmentPhoneNumber</font>&gt;( <font color="#ff0000">"PhoneNumber"</font> ) );<br><br>In the parent's DataPortal_Insert, I try to update the child via this call:<br><font color="#008000">DataPortal</font>.UpdateChild( PhoneNumberProperty, dept );<br><br>In the child BO, I have the method:<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <font color="#0000ff">private void</font> Child_Update( Data.Contacts.<font color="#008000">Department </font>dept ) {<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; Data.Shared.<font color="#008000">Phone </font>result;<br><br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; result = <font color="#008000">PhoneData</font>.Update( <font color="#0000ff">this </font>);<br><br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <font color="#0000ff">if </font>( ReadProperty( TypeProperty ) == <font color="#ff0000">"Office"</font> ) {<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; dept.Phone = result;<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; }<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <font color="#0000ff">else </font>{<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; dept.Fax = result;<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; }<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; }<br><br>The problem is that on the DataPortal.UpdateChild call it complains that Child_Update is not implemented.&nbsp; Any ideas?<br><br>Thanks<br>Andy<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Wednesday, July 16, 2008</h2>Opps... I found it:<br><br>It should be:<br><font color="#008000">DataPortal</font>.UpdateChild( <br>&nbsp;&nbsp;&nbsp;&nbsp; ReadProperty( PhoneNumberProperty ), <br>&nbsp; &nbsp;&nbsp; dept <br>);<br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Wednesday, July 16, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Not sure if this is correct, but your signatures do not
+match.&nbsp; .UpdateChild call takes two paramenters, Update_Child only takes
+one&#8230;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Senior Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899<o:p></o:p></span></p>
+
+<p class=MsoNormal><b><i><span>Magenic</span></i></b><span> </span><span>&reg;</span><b><i><span><o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> ajj3085
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Wednesday, July 16, 2008 9:43 AM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> [CSLA .NET] Managed child BO property - DataPortal update
+failing<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Hi,<br>
+<br>
+I have a managed property, which is a child BO instance.&nbsp; I register it
+like this in the parent object:<br>
+<span>private static readonly</span> <span>PropertyInfo</span>&lt;<span>DepartmentPhoneNumber</span>&gt;
+PhoneNumberProperty =<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; RegisterProperty&lt;<span>DepartmentPhoneNumber</span>&gt;( <span>new</span>
+<span>PropertyInfo</span>&lt;<span>DepartmentPhoneNumber</span>&gt;(
+<span>&quot;PhoneNumber&quot;</span> ) );<br>
+<br>
+In the parent's DataPortal_Insert, I try to update the child via this call:<br>
+<span>DataPortal</span>.UpdateChild( PhoneNumberProperty,
+dept );<br>
+<br>
+In the child BO, I have the method:<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <span>private void</span>
+Child_Update( Data.Contacts.<span>Department </span>dept )
+{<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; Data.Shared.<span>Phone </span>result;<br>
+<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; result = <span>PhoneData</span>.Update( <span>this </span>);<br>
+<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <span>if </span>( ReadProperty( TypeProperty ) == <span>&quot;Office&quot;</span> ) {<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
+dept.Phone = result;<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; }<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <span>else </span>{<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
+dept.Fax = result;<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; }<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; }<br>
+<br>
+The problem is that on the DataPortal.UpdateChild call it complains that
+Child_Update is not implemented.&nbsp; Any ideas?<br>
+<br>
+Thanks<br>
+Andy<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Wednesday, July 16, 2008</h2>That's the way the project tracker sample is done as well.&nbsp; It works now.. I forgot the ReadProperty call, and was passing the PropertyInfo instance, not the DepartmentPhoneNumber instance.<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

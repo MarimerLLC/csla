@@ -1,0 +1,48 @@
+<html><header><title>SilverLight Video Examples</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>SilverLight Video Examples</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6910.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Mick_G posted on Wednesday, May 06, 2009</h2><P>I am not yet very familiar with Lambda expressions and all of the examples fail in the business.server "TestObject.CS" source file on the line:</P><FONT color=#0000ff size=2><FONT color=#0000ff size=2>
+<P>public</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>static</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>PropertyInfo</FONT></FONT><FONT size=2>&lt;</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>int</FONT></FONT><FONT size=2>&gt; IdProperty = RegisterProperty&lt;</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>int</FONT></FONT><FONT size=2>&gt;(c =&gt; c.Id);</FONT></P>
+<P><FONT size=2>with the following error:</FONT></P>
+<P><FONT size=2>Error&nbsp;1&nbsp;Cannot convert lambda expression to type 'Csla.PropertyInfo&lt;int&gt;' because it is not a delegate type&nbsp;<BR>Y:\CSLA Video Series SilverLight\N-Tier\SL04\Demo004\Business.Server\TestObject.cs<BR>&nbsp;12&nbsp;72&nbsp;Business.Server<BR></FONT></P>
+<P><FONT size=2>I just know I am doing something dumb, like the wrong build order, Help!</FONT></P>
+<P><FONT size=2>Mick</P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, May 06, 2009</h2><P>You need:</P>
+<OL>
+<LI>.NET 3.5 SP1</LI>
+<LI>Visual Studio 2008 SP1</LI>
+<LI>CSLA .NET 3.6.2 or higher</LI></OL>
+<P>There's very little that can go wrong opening the solution and building it, so if that fails it is probably the case that you are missing one of these pre-requisites.</P>
+<P>Oh, one other thing is to check and make sure the Csla.dll references in the projects are correct. It it quite likely that the relative path from where you unpacked the zip file to where your Csla.dll files are located is different than on my machine, in which case VS won't find the DLLs.</P>
+<P>Or make sure you use relative folder structures like this:</P>
+<P>..\Source\cslacs<BR>..\Source\cslalightcs<BR>..\CslaClass\CslaLight\Demo001<BR>..\CslaClass\CslaLight\Demo002</P>
+<P>The more I think about it, the more I think this second idea is the most likely culprit.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Mick_G replied on Thursday, May 07, 2009</h2><P>Thanks Rocky but looks like it turned out to be the 3.6.1 version for some reason. I went back in and checked noticed that I did not have the demoes in the right place moved them, still didn't compile same error. Then I happened to notice another post along a similar line and looked and noticed the 3.6.2 version was stable, so downloaded it copied the directories over to where I had the 3.6.1 version and everything was fine. Humm interesting, to complicated for this amature! </P>
+<P>Just also wanted to add, if you want the best information on how to program SilverLight with CSLA the new Video series is the best! I am amazed, I have seen Rocky twice now once in person and now on the Videoes, he is just an excellent teacher!</P>
+<P>Mick</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, May 07, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Yes, it is absolutely true that the videos target 3.6.2.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I appreciate the kind words regarding the videos &#8211; I&#8217;m
+very glad that you are enjoying them!<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,153 @@
+<html><header><title>Could not load file or Assembly issue</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Could not load file or Assembly issue</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/8600.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>ninoarena posted on Tuesday, March 02, 2010</h2><p>I am getting this error on InitializeComponent of my XAML code behind that has the CslaDataProvider.&nbsp;&nbsp; I think I check everything and can&#39;t seem to figure out what could be causing this issue.</p>
+<p>Environment:&nbsp;&nbsp; CSLA 3.8.2.0 (Both light and Core),&nbsp; Windows 7 Ultimate, VS 2010 Beta version,&nbsp; .NET 3.5, Silverlight 3</p>
+<p>Thanks.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>bniemyjski replied on Wednesday, March 03, 2010</h2><p>
+<p>Hello,</p>
+<p>Can you please provide a full stack trace for this error, also if you could attach a screen shot of your project references that would be great.</p>
+<p>Thanks</p>
+<p>-Blake Niemyjski</p>
+</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ninoarena replied on Wednesday, March 03, 2010</h2><p>Thanks for the prompt reply.</p>
+<p>I&#39;ll&nbsp;provide the stack and the screen&nbsp;shot&nbsp;as soon as I find how to post a screen shot in this forum.&nbsp; I have the simplest one table and one column that I am trying to retrieve and show in a Silverlight screen using CSLA.&nbsp;&nbsp; Our company is moving to use Silverlight and convincing them to use CSLA.&nbsp; However, I find that nothing seems to work for me.&nbsp; I followed the video and the Rolodex sample.&nbsp; What I did basically is build a Silverlight Navigation Application then created my business objects, one inherited from &lsquo;ReadOnlyListBase&rsquo; and the child from &lsquo;ReadOnlyBase&rsquo;.<span style="mso-spacerun:yes;">&nbsp; </span>Proceeded to create the client side of the business objects using the Add link under a Silverlight Class library.<span style="mso-spacerun:yes;">&nbsp; Then on my XAML, use the csladataprovider.&nbsp; When I was debugging it, the reflection gettype is failing to load the assembly.&nbsp; </span></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>cogaivotchong replied on Wednesday, March 03, 2010</h2><p>Our company is moving to use Silverlight and convincing them to use CSLA.  However, I find that nothing seems to work for me.</p>
+<p><br /><a href="http://www.fullserviceit.com" target="_blank" title="http://www.fullserviceit.com">epabx system</a><br /><a href="http://www.fullserviceit.com" target="_blank" title="http://www.fullserviceit.com">commercial telephone systems</a><br /><a href="http://www.fullserviceit.com" target="_blank" title="http://www.fullserviceit.com">telephone system installation</a><br /></p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>bniemyjski replied on Wednesday, March 03, 2010</h2><p>
+<p>Hello,</p>
+<p>If you can provide a sample solution that isn&#39;t working for you that works the best. Then we can debug it on our end and get it resolved for you guys. The quickest fix without taking a look at the references or stack trace would be to make sure that the CSLA assembly or the assembly in question is in the GAC (Gacutil -i csla.dll) as well as bin folder of your application. If you are still having issues, one of the quick fixes would be to tie into the <a href="http://msdn.microsoft.com/en-us/library/system.appdomain.assemblyresolve.aspx">AppDomain.AssemblyResolve</a> event.</p>
+<p>Thanks</p>
+<p>-Blake Niemyjski</p>
+<div></div>
+</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ninoarena replied on Thursday, March 04, 2010</h2><p>Hi,</p>
+<p>Thanks for the offer.&nbsp; How can I can send a sample solution?&nbsp;&nbsp; </p>
+<p>Let me know.</p>
+<p>Thanks again.</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Wednesday, March 03, 2010</h2><p><div style='padding-left: 50px;background-color:silver'><b>ninoarena<br></b></p>
+<p><span>When I was debugging it, the reflection gettype is failing to load the assembly.&nbsp; </span></p>
+<div style="clear:both;"></div>
+<p></div></p>
+<p>What is the type name you are providing to the CslaDataProvider? It must be in the form &quot;Namespace.Class, Assembly&quot; or it won&#39;t work. The most common issues are missing the assembly name or mis-typing the namespace.</p>
+<p>Of course the Silverlight application must reference the business project so the business DLL is included in the xap file - otherwise the type won&#39;t exist on the client at all.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ninoarena replied on Thursday, March 04, 2010</h2><p>The type name I am providing is correct.&nbsp; However I noticed that the version number in the error message is 0.0.0.0 not the 1.0.0.0&nbsp;I was expecting.&nbsp;&nbsp; Could that be a clue to the issue?</p>
+<p>Thanks.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>bniemyjski replied on Thursday, March 04, 2010</h2><p>
+<p>Hello,</p>
+<p>That could be the issue, can you please paste the type name you are passing in. You can attach a solution by logging into the forum and selecting add a file attachment in the options tab when you are writing a message.</p>
+<p>Thanks</p>
+<p>-Blake Niemyjski</p>
+</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, March 04, 2010</h2><p><div style='padding-left: 50px;background-color:silver'><b>ninoarena<br></b>
+<p>The type name I am providing is correct.&nbsp; However I noticed that the version number in the error message is 0.0.0.0 not the 1.0.0.0&nbsp;I was expecting.&nbsp;&nbsp; Could that be a clue to the issue?</p>
+<div style="CLEAR:both;"></div>
+</div></p>
+<p>The Silverlight Type.GetType() method doesn&#39;t work the same as the .NET one - in particular it can&#39;t actually handle type names like &quot;Namespace.Type, Assembly&quot;. It specifically requires the version, culture and other long-form parts of the type name - again, unlike .NET.</p>
+<p>So CSLA .NET for Silverlight helps solve the simple case, by detecting the short-form name and appending the most common (neutral) version/culture/etc. If you aren&#39;t explicitly signing or versioning your assemblies this works great.</p>
+<p>Of course if you sign or version your assemblies then you need to provide the full type name with all the explicit information, because Silverlight doesn&#39;t offer any way to auto-detect that information.</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>ninoarena replied on Friday, March 05, 2010</h2><p>Hi, </p>
+<p>I finally got it to work on my MS Sql Server and the reason for the&nbsp;initial failure&nbsp;is my failure to reference&nbsp;the Silverlight&nbsp;business class library&nbsp;in the Silverlight Client as pointed out by Rocky.&nbsp; </p>
+<p>Thank you so much as this brought back confidence on our pursuit to have our first CSLA and Silverlight project.</p>
+<p>However, now that it I have proven that it works on my personal laptop using&nbsp;MS SQL Server, &nbsp;I now have to move it to our Sybase database environment at work.&nbsp; When I did this and made all the necessary changes for the database connection.&nbsp; I start getting the following error.&nbsp; </p>
+<p>I wish I can get the this to work too.&nbsp; </p>
+<p>Thanks again to both Rocky and Blake.</p>
+<p>&quot;An exception occured during the operation, making the result invalid. Check InnerException for exception details. &quot;</p>
+<p>When I tried to view my svc file in the browser to test,&nbsp; I get the following error instead of the usual message.</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<h1>Server Error in &#39;/&#39; Application. </h1>
+<p>&nbsp;</p>
+<hr />
+<p>&nbsp;</p>
+<h2></h2>
+<p><span style="font-family:Arial, Helvetica;">
+<p>
+<p><i>
+<h2>Could not load file or assembly &#39;CQLA&#39; or one of its dependencies. The located assembly&#39;s manifest definition does not match the assembly reference. (Exception from HRESULT: 0x80131040)</h2>
+<b><span style="font-family:Arial, Helvetica;"><b>
+<p>Description: </p>
+</b></span></b>An unhandled exception occurred during the execution of the current web request. Please review the stack trace for more information about the error and where it originated in the code. <br /><br /><b>Exception Details: </b>System.IO.FileLoadException: Could not load file or assembly &#39;CQLA&#39; or one of its dependencies. The located assembly&#39;s manifest definition does not match the assembly reference. (Exception from HRESULT: 0x80131040)<br /><br /><b>Source Error:</b> <br /></i></p>
+</p>
+<font face="Arial, Helvetica">
+<p>&nbsp;</p>
+</font></span>
+<p>&nbsp;</p>
+</p>
+<p>
+<table width="624" cellspacing="0" border="0" dir="ltr">
+<tbody>
+<tr>
+<td valign="middle" bgcolor="#ffff00"><code>
+<p dir="ltr">An unhandled exception was generated during the execution of the current web request. Information regarding the origin and location of the exception can be identified using the exception stack trace below.</p>
+</code><span style="font-family:Arial, Helvetica;"> </span></td>
+</tr>
+</tbody>
+</table>
+<p>
+<p><span style="font-family:Arial, Helvetica;"></span></p>
+</p>
+</p>
+<p>
+<table width="624" cellspacing="0" border="0" dir="ltr">
+<tbody>
+<tr>
+<td valign="middle" bgcolor="#ffff00"><code>
+<pre dir="ltr">WRN: Assembly binding logging is turned OFF.
+To enable assembly bind failure logging, set the registry value [HKLM\Software\Microsoft\Fusion!EnableLog] (DWORD) to 1.
+Note: There is some performance penalty associated with assembly bind failure logging.
+To turn this feature off, remove the registry value [HKLM\Software\Microsoft\Fusion!EnableLog].</pre>
+</code></td>
+</tr>
+</tbody>
+</table>
+<p>
+<p><span style="font-family:Arial, Helvetica;"></span></p>
+</p>
+</p>
+<p>
+<table width="624" cellspacing="0" border="0" dir="ltr">
+<tbody>
+<tr>
+<td valign="middle" bgcolor="#ffff00"><code>
+<pre dir="ltr">[FileLoadException: Could not load file or assembly &#39;CQLA&#39; or one of its dependencies. The located assembly&#39;s manifest definition does not match the assembly reference. (Exception from HRESULT: 0x80131040)]
+   System.Reflection.Assembly._nLoad(AssemblyName fileName, String codeBase, Evidence assemblySecurity, Assembly locationHint, StackCrawlMark&amp; stackMark, Boolean throwOnFileNotFound, Boolean forIntrospection) +0
+   System.Reflection.Assembly.nLoad(AssemblyName fileName, String codeBase, Evidence assemblySecurity, Assembly locationHint, StackCrawlMark&amp; stackMark, Boolean throwOnFileNotFound, Boolean forIntrospection) +43
+   System.Reflection.Assembly.InternalLoad(AssemblyName assemblyRef, Evidence assemblySecurity, StackCrawlMark&amp; stackMark, Boolean forIntrospection) +127
+   System.Reflection.Assembly.InternalLoad(String assemblyString, Evidence assemblySecurity, StackCrawlMark&amp; stackMark, Boolean forIntrospection) +142
+   System.Reflection.Assembly.Load(String assemblyString) +28
+   System.Web.Configuration.CompilationSection.LoadAssemblyHelper(String assemblyName, Boolean starDirective) +46
+
+[ConfigurationErrorsException: Could not load file or assembly &#39;CQLA&#39; or one of its dependencies. The located assembly&#39;s manifest definition does not match the assembly reference. (Exception from HRESULT: 0x80131040)]
+   System.Web.Configuration.CompilationSection.LoadAssemblyHelper(String assemblyName, Boolean starDirective) +613
+   System.Web.Configuration.CompilationSection.LoadAllAssembliesFromAppDomainBinDirectory() +203
+   System.Web.Configuration.CompilationSection.LoadAssembly(AssemblyInfo ai) +105
+   System.Web.Compilation.BuildManager.GetReferencedAssemblies(CompilationSection compConfig) +178
+   System.Web.Compilation.WebDirectoryBatchCompiler..ctor(VirtualDirectory vdir) +163
+   System.Web.Compilation.BuildManager.BatchCompileWebDirectoryInternal(VirtualDirectory vdir, Boolean ignoreErrors) +53
+   System.Web.Compilation.BuildManager.BatchCompileWebDirectory(VirtualDirectory vdir, VirtualPath virtualDir, Boolean ignoreErrors) +175
+   System.Web.Compilation.BuildManager.CompileWebFile(VirtualPath virtualPath) +83
+   System.Web.Compilation.BuildManager.GetVPathBuildResultInternal(VirtualPath virtualPath, Boolean noBuild, Boolean allowCrossApp, Boolean allowBuildInPrecompile) +261
+   System.Web.Compilation.BuildManager.GetVPathBuildResultWithNoAssert(HttpContext context, VirtualPath virtualPath, Boolean noBuild, Boolean allowCrossApp, Boolean allowBuildInPrecompile) +101
+   System.Web.Compilation.BuildManager.GetVPathBuildResult(HttpContext context, VirtualPath virtualPath, Boolean noBuild, Boolean allowCrossApp, Boolean allowBuildInPrecompile) +83
+   System.Web.Compilation.BuildManager.GetCompiledCustomString(String virtualPath) +27
+   System.ServiceModel.HostingManager.GetCompiledCustomString(String normalizedVirtualPath) +134
+   System.ServiceModel.HostingManager.CreateService(String normalizedVirtualPath) +23
+   System.ServiceModel.HostingManager.ActivateService(String normalizedVirtualPath) +42
+   System.ServiceModel.HostingManager.EnsureServiceAvailable(String normalizedVirtualPath) +479
+
+[ServiceActivationException: The service &#39;/WcfPortal.svc&#39; cannot be activated due to an exception during compilation.  The exception message is: Could not load file or assembly &#39;CQLA&#39; or one of its dependencies. The located assembly&#39;s manifest definition does not match the assembly reference. (Exception from HRESULT: 0x80131040).]
+   System.ServiceModel.AsyncResult.End(IAsyncResult result) +11527290
+   System.ServiceModel.Activation.HostedHttpRequestAsyncResult.End(IAsyncResult result) +194
+   System.ServiceModel.Activation.HostedHttpRequestAsyncResult.ExecuteSynchronous(HttpApplication context, Boolean flowContext) +176
+   System.ServiceModel.Activation.HttpModule.ProcessRequest(Object sender, EventArgs e) +278
+   System.Web.SyncEventExecutionStep.System.Web.HttpApplication.IExecutionStep.Execute() +68
+   System.Web.HttpApplication.ExecuteStep(IExecutionStep step, Boolean&amp; completedSynchronously) +75</pre>
+</code></td>
+</tr>
+</tbody>
+</table>
+</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>ajj3085 replied on Friday, March 05, 2010</h2><p>What is C<strong><em>q</em></strong>la?&nbsp; Looks like a typo...</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ninoarena replied on Friday, March 05, 2010</h2><p>I searched everywhere and can&#39;t find that CQLA word either.&nbsp; My first thought exactly that at first, that it&#39;s a typo but it doesn&#39;t seems to be.</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Friday, March 05, 2010</h2><ol>
+<li>Open your solution</li>
+<li>Do a Ctrl-Shift-F to bring up the global file search dialog</li>
+<li>Type cqla into the search term box</li>
+<li>Make sure the Entire Solution is selected for search scope</li>
+<li>Do the search</li>
+</ol>
+<p>From the exception, it looks like the typo is in your WCF svc file or web.config, but the global file search will find it for you.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ninoarena replied on Friday, March 05, 2010</h2><p>Hi Rocky,</p>
+<p>I did a global file search as you suggested and the search did not find anything that has the word cqla.&nbsp;&nbsp; This application works in MS Sql Server which makes me think that the WCF svc file or web.config&nbsp;is unchanged besides the connection string.&nbsp; The error I encounter when running the application is </p>
+<p>&quot;An exception occured during the operation, making the result invalid. Check InnerException for exception details. &quot;&nbsp;&nbsp; </p>
+<p>In debugging this, the application does NOT reach the business object server side DataPortal_Fetch().&nbsp; I&#39;ll try to step in deeper into the debugger but appreciate any tip or suggestions.</p>
+<p>Thanks,</p>
+<p>Nino</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>ninoarena replied on Saturday, March 06, 2010</h2><p>Hi,</p>
+<p>I finally got this thing working.&nbsp; Appreciate all the replies.&nbsp; Those replies showed me places to look at which resulted well.</p>
+<p>In short, the solution I found on my Sybase environment is to remove the wcf host and move the svc file in the web host.&nbsp; I think the cross domain is what&#39;s causing all the issue.&nbsp; I am guessing of course but at this point, all I wanted is to have some success to convince my group to move forward on our CSLA and Silverlight project.</p>
+<p>Thank you so much!!!</p>
+<p>Nino</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Wednesday, March 03, 2010</h2><p>Besides giving the detail Blake requested, I think the recommendation is to no longer use CslaDataProvider but instead go the MVVM route.&nbsp; That component will be removed I believe just after Csla 4.0.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

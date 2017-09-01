@@ -1,0 +1,8 @@
+<html><header><title>Business and Bindable base</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Business and Bindable base</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3990.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>stephenpatten posted on Wednesday, December 05, 2007</h2><P>Hello,</P>
+<P>I have just started maintaining code that uses parts of CSLA, having lost my copy of the book , I'm trying to understand the proper implemetaion details of marking a business oject as dirty though the dadbinding process. I would think that the default behavor of the binding mechinsim would handle setting the dirty flag to true, but as far as I can tell when I edit an object the flag is never being set.</P>
+<P>&nbsp;</P>
+<P>Thank you,</P>
+<P>Stephen</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Thursday, December 06, 2007</h2><P>In the Property Set you have to call PropertyHasChanged("myPropertyName").</P>
+<P>This calls into the framework and sets IsDirty=True (among other things.)</P>
+<P>In older versions of CSLA it was a different style - but same idea.</P>
+<P>Joe</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

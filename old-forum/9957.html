@@ -1,0 +1,17 @@
+<html><header><title>GetIdValue and Composite Keys.</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>GetIdValue and Composite Keys.</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9957.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>bniemyjski posted on Wednesday, January 19, 2011</h2><p>&nbsp;</p>
+<p>Hello,</p>
+<p>In the Business Object e-book there is text on page 8 saying don&#39;t use or&nbsp;override&nbsp;GetIdValue as it is deprecated. With this said, what do you recommend when your entity has composite keys (in the database model)? In previous versions we did something like this:</p>
+<p>&nbsp;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;#region Protected Overriden Method(s)</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;// NOTE: This is needed for Composite Keys.&nbsp;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;private readonly Guid _guidID = Guid.NewGuid();</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;protected override object GetIdValue()</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;{</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;return _guidID;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;}</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;#endregion</p>
+<p>I also think that this is related to <a href="http://code.google.com/p/codesmith/issues/detail?id=508">this </a>and <a href="http://forums.lhotka.net/forums/p/9540/45243.aspx">this</a>.</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Wednesday, January 19, 2011</h2><p>I&#39;m not saying there&#39;s anything wrong with inventing your own &quot;id&quot; concept for objects. </p>
+<p>I&#39;m just saying that GetIdValue existed prior to CSLA .NET 3.0 for the purpose of implementing logical equality. WPF came along and changed how .NET uses Equals, so logical equality hasn&#39;t been a valid concept for years, and I&#39;ve just forgotten to remove the virtual GetIdValue method over the past few versions - but it hasn&#39;t been used by CSLA since 2006 or something like that.</p>
+<p>In all reality, a composite key will also be your criteria in most cases. So my recommendation is to create a criteria class that defines the composite key, and to make that a private property of your business object&nbsp;- possibly with read-only public properties to expose the elements of the key if they need to be displayed in the UI.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

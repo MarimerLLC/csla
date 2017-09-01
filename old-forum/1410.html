@@ -1,0 +1,17 @@
+<html><header><title>multiple update methods</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>multiple update methods</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/1410.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Skafa posted on Friday, October 06, 2006</h2>In some cases i need to update a class partially. how would i do that? because there's only one dataportal_update method? or can you define multiple with different 'criteria' classes?&nbsp;&nbsp;  <br><br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Q Johnson replied on Friday, October 06, 2006</h2>
+
+
+
+
+<DIV align=left><SPAN class=125053913-06102006><FONT face=Arial color=#0000ff size=2>Can't you just populate each instance of the criteria class 
+with different values depending on the update context?</FONT></SPAN></DIV><BR>
+<DIV class=OutlookMessageHeader align=left>
+<HR>
+<FONT face=Tahoma size=2><B>From:</B> Skafa [mailto:cslanet@lhotka.net] 
+<BR><B>Sent:</B> Friday, October 06, 2006 8:36 AM<BR><B>To:</B> 
+QJohnson@TeamNFP.com<BR><B>Subject:</B> [CSLA .NET] multiple update 
+methods<BR></FONT><BR></DIV>
+<DIV></DIV>In some cases i need to update a class partially. how would i do 
+that? because there's only one dataportal_update method? or can you define 
+multiple with different 'criteria' classes?&nbsp;&nbsp; 
+<BR><BR><BR><BR><BR><BR></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Friday, October 06, 2006</h2>Yes, you can have as many Update methods as you want, as long as they are distinguished by different Criteria classes.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>xal replied on Friday, October 06, 2006</h2>No, I don't think that's right. Correct me if I'm wrong, but while this is true for fetch, create and delete scenarios, there's only one DataPortal_Update() and one DataPortal_Insert(). The dp will choose which one to call according to IsNew.<br><br>So insert and update have no criteria, they are called right after you call Save().<br>What you can do is have different methods that you can call from DataPortal_Update() depending on data that the object contains, like:<br><br>Protected Overrides Sub DataPortal_Update()<br>If mValue = 1 Then<br>&nbsp;&nbsp;&nbsp; UpdateV1()<br>Else<br>&nbsp;&nbsp;&nbsp; UpdateV2()<br>End If <br>End Sub<br><br><br><br>Andrés</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Friday, October 06, 2006</h2>right... was typing faster than I was thinking.<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

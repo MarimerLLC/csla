@@ -1,0 +1,9 @@
+<html><header><title>FormView Insert Mode: e.Values not filled except when it is. </title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>FormView Insert Mode: e.Values not filled except when it is. </h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11081.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>nicomp posted on Tuesday, January 24, 2012</h2><p>Hi,</p>
+<p>&nbsp;The same web project behaves differently under Framework 2.0 and Framework 4.0. When the ItemInserting event fires, e.Values is empty when the site runs on IIS with Framework 2.0. </p>
+<p>When the ItemInserting event fires with the site hosted in VS 2010 using Framework 4, then e.Values is perfect. </p>
+<p>Any thoughts?</p>
+<p>Bill</p>
+<p>Cincinnati, OH</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>richardb replied on Tuesday, January 24, 2012</h2><p>Ha ha this sounds sort of familiar as I&#39;ve just battled with this too.</p>
+<p>There used to be a bug in the InsertItemTemplate for the ListView control and as I read somewhere it couldn&#39;t be fixed for &quot;performance issues&quot; but would be addressed in the future.&nbsp; This bug existed in ASP.Net 3.5 too I think.</p>
+<p>If this is the same issue you are seeing, then it&#39;s a known problem.&nbsp; I guess Microsoft finally fixed it in ASP.Net 4.0 hence its now working.</p>
+<p>&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

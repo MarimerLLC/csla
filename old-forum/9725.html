@@ -1,0 +1,30 @@
+<html><header><title>Setting up CSLA data portal with IIS 7.5 on Win 7</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Setting up CSLA data portal with IIS 7.5 on Win 7</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9725.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>alancaster posted on Monday, November 08, 2010</h2><p>I am running a CSLA 3.x project with a WCF data portal on my Windows XP Pro box running IIS 5.0 and everything works fine.</p>
+<p>On my new Windows 7 box running IIS 7.5 I cannot run the data portal and am running into numerous errors - which I believe are all related to configuration/permission issues.&nbsp; Here is an example of one of the errors I have seen:</p>
+<p>
+<table cellpadding="0" cellspacing="0" border="0">
+<tbody>
+<tr>
+<th>Error Code</th>
+<td>0x800700b7</td>
+</tr>
+<tr class="alt">
+<th>Config Error</th>
+<td>There is a duplicate &#39;system.web.extensions/scripting/scriptResourceHandler&#39; section defined </td>
+</tr>
+</tbody>
+</table>
+</p>
+<p><strong><span style="font-size:x-small;">7:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;sectionGroup name=&quot;scripting&quot; type=&quot;System.Web.Configuration.ScriptingSectionGroup, System.Web.Extensions, Version=3.5.0.0, Culture=neutral, PublicKeyToken=31BF3856AD364E35&quot;&gt;<br /><span class="highlight-code"><em><span style="color:#cc0000;">&nbsp;&nbsp;&nbsp; 8:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;section name=&quot;scriptResourceHandler&quot; type=&quot;System.Web.Configuration.ScriptingScriptResourceHandlerSection, System.Web.Extensions, Version=3.5.0.0, Culture=neutral, PublicKeyToken=31BF3856AD364E35&quot; requirePermission=&quot;false&quot; allowDefinition=&quot;MachineToApplication&quot;/&gt;</span></em></span><br />&nbsp;&nbsp;&nbsp; 9:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;sectionGroup name=&quot;webServices&quot; type=&quot;System.Web.Configuration.ScriptingWebServicesSectionGroup, System.Web.Extensions, Version=3.5.0.0, Culture=neutral, PublicKeyToken=31BF3856AD364E35&quot;&gt;<br /></span></strong></p>
+<p>Apparently when I run the data portal code on IIS 5.0 in Windows XP this config key is fine, but on IIS 7.5 it says this key is a duplicate.</p>
+<p>Are&nbsp;there&nbsp;step-by-step instructions anywhere for configuring the CSLA WCF data portal on IIS 7.5?</p>
+<p>Thanks.</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Monday, November 08, 2010</h2><p>I often find it easier to just create a new empty web project that targets the current IIS version, lettting Visual Studio do the right thing...</p>
+<p>Remember that the data portal has very, very few requirements.</p>
+<ul>
+<li>Reference Csla.dll (or otherwise get it into the bin directory)</li>
+<li>Reference Csla.Web.dll (or otherwise get it into the bin directory)</li>
+<li>Reference your business libraries (or otherwise get them into the bin directory)</li>
+<li>Add a svc file</li>
+<li>Add the system.serviceModel elements to web.config</li>
+<li>Add any appSettings config entries for CSLA</li>
+</ul>
+<p>At least with ASP.NET 4 your web.config can be pretty much empty beyond the data portal endpoint configuration.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

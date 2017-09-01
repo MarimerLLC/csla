@@ -1,0 +1,12 @@
+<html><header><title>&quot;No overload for method 'GetValue' takes 2 arguments&quot; error when building Csla 4.0</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>&quot;No overload for method 'GetValue' takes 2 arguments&quot; error when building Csla 4.0</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/8698.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>raz0rf1sh posted on Saturday, March 20, 2010</h2><p>I&#39;m getting the following error when trying to build the latest CSLA 4.0.0 framework ...</p>
+<p>No overload for method &#39;GetValue&#39; takes 2 arguments</p>
+<p>It&#39;s happening in the&nbsp;CslaModelBinder.cs class in the following line of code...&nbsp;</p>
+<p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;bindingContext.ModelState.SetModelValue(item.Property, bindingContext.ValueProvider.GetValue(controllerContext, item.Property));</p>
+<div>If I remove the controllerContext parameter ... as it doesn&#39;t look like GetValue supports it ... I am able to build.</div>
+<div></div>
+<div>Am I doing something wrong here?</div>
+</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Saturday, March 20, 2010</h2><p>This is in the Csla.Web.Mvc project, and occurs because you don&#39;t have the same version of ASP.NET MVC 2 we&#39;re currently using (or that we were using when that particular code was created).</p>
+<p>The problem is that ASP.NET MVC 2 is changing rapidly, and it is not in sync with VS10 or .NET 4 - nor will it be in sync, it is not being released as part of .NET 4.</p>
+<p>This is why we split the MVC support into its own assembly/project - so you can use the rest of CSLA 4 even if you don&#39;t have or want MVC.</p>
+<p>If you do want to use MVC, you&#39;ll have to fix the code. Or maybe grab the most current code from my svn repository, because that might match the MVC version you are using.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

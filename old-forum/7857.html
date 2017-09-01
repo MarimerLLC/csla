@@ -1,0 +1,48 @@
+<html><header><title>Business object implementation</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Business object implementation</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/7857.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>brannos posted on Friday, October 23, 2009</h2><P>I need some advice on structuring some business objects. I have a table in the database called EmployeeEvents, this table hold the common information for three type of events (drug testing, alcohol testing and physical). When we enter a physical event I only deal with the EmployeeEvent table. But when entering a drug or alcohol test then the employeeevent table links to one of two other tables, one for drug and one for alcohol.</P>
+<P>The problem is this, I can't decide what the best way to structure the business objects to handle the three type of events. I thought about creating an object for each type. The issue with this is when we send a drug test for retesting. The retest is entered into the drug table as a child record of the original drug test, it is also linked to the record in the employeeevent table.</P>
+<P>Any advice would be greatly appreciated.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>richardb replied on Friday, October 23, 2009</h2><P>It could be as simple as a "EmployeeTest" object which has a type property on it (i.e. Physical, Drug, Alchohol), and then you could dertermine which tables to update based on the type.</P>
+<P>Or.... you might have a base class "EmployeeTest" that defines all the common properties and behavious for all 3 types of test, and then create a PhysicalTest, DrugTest, AlchoholTest objects inheriting from EmployeeTest.</P>
+<P>Really depends on your Use Cases - are you likely to need to do different things which each type of test?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>brannos replied on Friday, October 23, 2009</h2>The general functionality is the same but each type of event has diffrent rules and proceedures.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, October 23, 2009</h2><P>Objects should be defined by behavior, not data.</P>
+<P>So if your objects have different rules and procedures, then they have different behaviors and should be different types.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>brannos replied on Monday, October 26, 2009</h2><P>I think I have thrown things off by mentioning the tables. I do understand that objects should be definded by behavior and not by data.</P>
+<P>My question resolves around how do I set-up a base class for the common code and then inherit from that for each object that I need to create. A class can only inherit from from one base so will I be able to inherit the features from csla.businessbase in the base class into my bo that inherits from my base class? Or am I missing something and making this too complicated?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, October 26, 2009</h2><P>It is a best practice in OOP to favor composition over inheritance. Inheritance <EM>seems</EM> like such a good idea, but in most cases it triggers a level of coupling that is counterproductive.</P>
+<P>You might find this post interesting:</P>
+<P><A HREF="/forums/permalink/37508/37508/ShowThread.aspx#37508">http://forums.lhotka.net/forums/permalink/37508/37508/ShowThread.aspx#37508</A></P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>brannos replied on Monday, October 26, 2009</h2>If I was to use IEditableBusinessObject to create an interface for the common elements for all three types what benifit would that have over typing the common elements manually into each bo?</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, October 26, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>BusinessListBase&lt;T,C&gt; requires that the C type implement
+IEditableBusinessObject, which you get from BusinessBase&lt;T&gt;.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>But if you want your collection to contain more than one type of
+object, then you need a way for BLB to be happy. Since BusinessBase&lt;T&gt;
+isn&#8217;t polymorphic, you need C to be some non-generic type &#8211; like your common
+interface.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>This is all about polymorphism in the end. Can BLB, and your
+code, treat all items in the collection the same, even if they are of different
+types? And the answer is yes, as long as they all share a common non-generic
+interface.</span><b><span><o:p></o:p></span></b></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>brannos replied on Monday, October 26, 2009</h2><P>Okay I am going to create the IEmployeeEvent to hold the common elements. Then implement that into by BOs (Physical, DrugTest and AlcoholTest). </P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,168 @@
+<html><header><title>Version 2.1 (VB only) available for testing</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Version 2.1 (VB only) available for testing</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/776.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka posted on Monday, July 31, 2006</h2><P>I have put a <EM>very</EM> early version of 2.1 on the <A href="http://www.lhotka.net/cslanet/download.aspx">downloads page</A>. While many of the changes exist in both the VB and C# code bases, I've been doing all the experimental stuff around validation rules in only the VB code base, so that's all I'm putting up there at the moment.</P>
+<P>(If there's demand, I can put the C# code up there too - but it is missing the validation/authorization rules changes - they are so extensive that I want to make sure they are good before going through the work of porting them over. FWIW, I wrote several other features in C# first, but they are stable enough that I just ported them back to VB already - things like FilteredBindingList and EditableRootListBase for instance.)</P>
+<P>At the moment there's no real documentation beyond the change log. My plan is to write a new "chapter" describing the changes and how to use them. That content will be available for purchase on my web site when it is complete, and can be viewed as an add-on to the existing book. As always, the version 2.1 code will be freely downloadable just like 2.0. Basically I'm planning to follow the same model as I've been doing for years now - charge for the book (and now additional content) and provide the code freely.</P>
+<P>If you want to experiment with, and help me test, the rather extensive changes to the validation rules I really appreciate it. These changes include:</P>
+<OL>
+<LI>Per-type rules (call AddSharedRule() from the AddSharedBusinessRules() virtual method)</LI>
+<LI>Severities (set e.Severity in your rule method, retrieve Warning and Information items from BrokenRules)</LI>
+<LI>Priorities (set rule priorities in AddRule() and AddSharedRule() - 0 is high, bigger numbers are lower)</LI>
+<LI>Short-circuting (set ValidationRules.ProcessThroughPriority to indicate at which priority rules will no longer be processed if a previous rule (for the current property) is broken (Error severity). The default is 0, meaning all 0 priority rules are always processed, but priority 1+ are only processed if no previous rules are broken)</LI>
+<LI>Forced short-circuit (set e.StopProcessing to True in your rule method to prevent any subsequent rules from being processed for this property)</LI></OL>
+<P>The per-type rules also applies to AuthorizationRules, where there's a new virtual AddSharedAuthorizationRules() method in which you can call the new SharedAllowRead(), etc. methods.</P>
+<P>The per-type rules offer substantial performance and memory consumption benefits over the original per-instance approach, and I recommend migrating to this new approach unless you have a very specific need to customize your rules per instance. You can use both, but there's a performance impact to doing so, and so I recommend using only one or the other (preferably per-type).</P>
+<P>The priority/short-circuiting also allows you to get major performance gains. For instance, you could do all your trivial rule checking (like string required, mas length, min value, etc.) and only do expensive rules (that might require database access, etc.) if the easy ones succeed. Also, with e.StopProcessing, you can have some rule decide that its failure was so important that no other rules should be checked, which offers a lot of flexibility.</P>
+<P>The Warning and Information severities reflect a long-requested feature. I'm not sure I'm done here, as I still may add a new interface to Csla.Core.BusinessBase to expose these in a way more similar to IDataErrorInfo. However, I might not do that either, because it is just as easy to create an extender control to run off BrokenRules as off some new custom interface...</P>
+<P>The real point though, is that only Error severity items will appear in an ErrorProvider control. If you want to display Warning or Information items you'll need to create your own UI mechanism to do that, and the information you need should be available from BrokenRules on each business object.</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Q Johnson replied on Monday, July 31, 2006</h2>
+
+
+
+
+<DIV align=left><SPAN class=187255122-31072006><FONT face=Arial color=#0000ff size=2>I love the idea of you charging for the extra chapter for 
+2.1.&nbsp; I wish you had started that in 1.x because there were some 
+significant differences even between 1.3 and 1.0, never mind 1.5 and 1.3.&nbsp; 
+It wasn't always easy to "get it" from the change logs.&nbsp;Your own words 
+about those changes and how to bring value to our projects by taking advantage 
+of them will be <STRONG>extrememly</STRONG> valuable.&nbsp; So you can bet we'll 
+be happy to pay.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=187255122-31072006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=187255122-31072006><FONT face=Arial color=#0000ff size=2>And you get some compensation for these great efforts for 
+us.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=187255122-31072006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=187255122-31072006><FONT face=Arial color=#0000ff size=2>Talk about win-win!!</FONT></SPAN></DIV></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>skagen00 replied on Monday, July 31, 2006</h2><P>I want to include my support for the prospect of charging for the documentation of 2.1.</P>
+<P>I think there are a lot of us that recognize the value in what you give to us and would rather see a vendor (that'd be you in some ways, Rocky) feeling that it is worth their while to continue on this process of continual development. While some of that is just&nbsp;your love for Csla, I'm sure some compensation for your hard work is icing on the cake. </P>
+<P>Thanks again.</P>
+<P>(Oh, and once ported to C# I'll be immediately bringing 2.1 into the code base since we're quite&nbsp;a ways from&nbsp;production, yet.)</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, July 31, 2006</h2>
+
+
+
+
+<DIV align=left><SPAN class=140260001-01082006><FONT face=Arial color=#0000ff size=2>Even if you normally use the C# version, you might try 
+binding your code temporarily against the VB version to try the new features. 
+They should be interchangeable at that level - my nunit test suite is the same 
+for both VB and C#.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=140260001-01082006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=140260001-01082006><FONT face=Arial color=#0000ff size=2>The reason I suggest this, is that by the time I port the 
+changes to C# they'll be pretty well set in stone, so the opportunity for 
+feedback is over the next week to 10 days. (but no pressure 
+&lt;g&gt;)</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=140260001-01082006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=140260001-01082006><FONT face=Arial color=#0000ff size=2>Rocky</FONT></SPAN></DIV></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>kids_pro replied on Monday, July 31, 2006</h2>I love the idea of charging for 2.1 extra chapter.<br>I am looking forward to purchase your excellent works.<br>______________________________<br>Kids.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Fabio replied on Tuesday, August 01, 2006</h2>Can you merge HEAD C# CVS prj with 2.1 branch ?<br>Thanks.<br>Fabio.<br><br>P.D. I know the warning: <span id="ctl00_ContentPlaceHolder1_BodyLabel"><strong><font size="4">As always, be aware that this is a <em>live</em> repository, so there is no guarantee that the current code is tested or works in any way!!!</font></strong></span></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, August 01, 2006</h2>
+
+
+
+
+<DIV align=left><SPAN class=453442614-01082006><FONT face=Arial color=#0000ff size=2>Why would I do that? I've merged the 2.0.3 changes into 2.1 
+as I've made them, so 2.1 is 2.0.3 plus the new stuff.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=453442614-01082006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=453442614-01082006><FONT face=Arial color=#0000ff size=2>Or are you suggesting merging the 2.1 changes back into 
+HEAD? I will do that when 2.1 is complete, but there is still the possibility 
+that I will need to create a 2.0.4 if someone discovers a bug that needs 
+immediate fixing.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=453442614-01082006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=453442614-01082006><FONT face=Arial color=#0000ff size=2>Rocky</FONT></SPAN></DIV><BR>
+<BLOCKQUOTE>
+  <DIV class=OutlookMessageHeader align=left>
+  <HR>
+  <FONT face=Tahoma size=2><B>From:</B> Fabio [mailto:cslanet@lhotka.net] 
+  <BR><B>Sent:</B> Tuesday, August 01, 2006 12:09 AM<BR><B>To:</B> 
+  rocky@lhotka.net<BR><B>Subject:</B> Re: [CSLA .NET] Version 2.1 (VB only) 
+  available for testing<BR></FONT><BR></DIV>
+  <DIV></DIV>Can you merge HEAD C# CVS prj with 2.1 branch 
+  ?<BR>Thanks.<BR>Fabio.<BR><BR>P.D. I know the warning: <SPAN id=ctl00_ContentPlaceHolder1_BodyLabel><STRONG><FONT size=4>As always, be 
+  aware that this is a <EM>live</EM> repository, so there is no guarantee that 
+  the current code is tested or works in any 
+  way!!!</FONT></STRONG></SPAN><BR><BR><BR></BLOCKQUOTE></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Ben303 replied on Tuesday, August 01, 2006</h2><P>Rocky, could you please extend the RuleArgs to contain a PropertyText property? </P>
+<P>With the current structure it is difficult to localize user oriented texts within the rules framework. For example you might have a property called TargetDelivery that is labeled "Target delivery date" or "Gezielte Lieferdatum" throughout your application. A PropertyText property would return a localized or user friendly text (if set). If the value is not set (PropertyText=String.Empty), the property returns the PropertyName. You use the PropertyText value (as opposed to PropertyName) for the description returned after evaluating rules.</P>
+<P>Thus, in RuleArgs you have:</P>
+<P>&nbsp; Private mPropertyText as String</P>
+<P>&nbsp; ''' &lt;summary&gt;<BR>&nbsp; ''' The human readable, localized name of the property.<BR>&nbsp; ''' &lt;/summary&gt;<BR>&nbsp; Public Property PropertyText() As String<BR>&nbsp;&nbsp; Get<BR>&nbsp;&nbsp;&nbsp; If mPropertyText Is Nothing OrElse mPropertyText = String.Empty Then<BR>&nbsp;&nbsp;&nbsp;&nbsp; Return mPropertyName<BR>&nbsp;&nbsp;&nbsp; Else<BR>&nbsp;&nbsp;&nbsp;&nbsp; Return mPropertyText<BR>&nbsp;&nbsp;&nbsp; End If<BR>&nbsp;&nbsp; End Get<BR>&nbsp;&nbsp; Set(ByVal Value As String)<BR>&nbsp;&nbsp;&nbsp; mPropertyText = Value<BR>&nbsp;&nbsp; End Set<BR>&nbsp; End Property</P>
+<P>And add a constructor<BR>&nbsp; ''' &lt;summary&gt;<BR>&nbsp; ''' Creates an instance of RuleArgs.<BR>&nbsp; ''' &lt;/summary&gt;<BR>&nbsp; ''' &lt;param name="propertyName"&gt;The name of the property to be validated.&lt;/param&gt;<BR>&nbsp; ''' &lt;param name="propertyText"&gt;The human readable, localized name the property to be validated.&lt;/param&gt;<BR>&nbsp; Public Sub New(ByVal propertyName As String, ByVal propertyText As String)<BR>&nbsp;&nbsp; mPropertyName = propertyName<BR>&nbsp;&nbsp; mPropertyText = propertyText<BR>&nbsp; End Sub</P>
+<P>You would change the CommonRules to use PropertyText instead of PropertyName. </P>
+<P>For example in CommonRules you would change <BR>&nbsp;<BR>&nbsp;&nbsp;&nbsp; Public Function StringRequired( _<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ByVal target As Object, ByVal e As RuleArgs) As Boolean</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Dim value As String = _<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; CStr(CallByName(target, e.PropertyName, CallType.Get))<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; If Len(value) = 0 Then<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; e.Description = _<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; String.Format(My.Resources.StringRequiredRule, <FONT color=#ff0000>e.PropertyText</FONT>)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return False<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Else<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return True<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End If</P>
+<P>&nbsp;&nbsp;&nbsp; End Function</P>
+<P>You would change the Functions and the constructors for the other CommonRules as well.</P>
+<P>I still need to think about e.StopProcessing. I have a feeling yet another method is necessary. The ability to completely defer the evaluation of a rule until either requested or before saving. I'll see if I can work up some code for what I mean.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>xal replied on Tuesday, August 01, 2006</h2>Ben, <br>I agree with you that a way for specifying a friendly name for the property would be nice!!<br><br>About your request to validate on demand or before save, you can currently do that.<br>Add a rule that is not linked to any property name. For the example well use "MyValidationProp"<br><br>You can make a method like:<br><br>Public Sub ValidateThatThing() 'on demand validation<br>&nbsp;&nbsp;&nbsp; ValidationRules.CheckRules("MyValidationProp")<br>End Sub<br><br>Public Overrides Function Save() As MyBO 'validate before save<br>&nbsp;&nbsp;&nbsp; ValidationRules.CheckRules("MyValidationProp")<br>&nbsp;&nbsp;&nbsp; Return MyBase.Save<br>End Function<br><br><br><br>Andrés</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, August 01, 2006</h2>
+
+
+
+
+<DIV align=left><SPAN class=875503614-01082006><FONT face=Arial color=#0000ff size=2>That is an interesting idea, but I think you can address 
+this in a broader and more encapsulated manner. It is not the responsibility of 
+RuleArgs to do property name translation, so adding this code (simple though it 
+seems) is outside the scope of RuleArgs job.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=875503614-01082006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=875503614-01082006><FONT face=Arial color=#0000ff size=2>What is needed is a PropertyNameTranslator or 
+PropertyNameMapper, that has&nbsp;the ability to take a fully qualified property 
+name and translate it into some other text. The rule methods could then directly 
+use this PropertyNameTranslator - and any other code that interacts with 
+property names could do the same thing.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=875503614-01082006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=875503614-01082006><FONT face=Arial color=#0000ff size=2>On the surface this PNT seems easy enough - but I fear the 
+devil is in the details. Ideally it would use a resource file, but it obviously 
+can't use the Csla.dll resources, so it would need to access some specific 
+resource file name. Or get the values from a database, because some people would 
+want that.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=875503614-01082006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=875503614-01082006><FONT face=Arial color=#0000ff size=2>So really it needs to rely on a pluggable provider. So PNT 
+would merely delegate the work to some provider, allowing you to write one that 
+goes to a database, to a resource file, to a hard-coded list or whatever makes 
+you happy.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=875503614-01082006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=875503614-01082006><FONT face=Arial color=#0000ff size=2>I don't know that I'll have time to build and test such a 
+thing in time for 2.1, but it is certainly an interesting 
+idea.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=875503614-01082006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=875503614-01082006><FONT face=Arial color=#0000ff size=2>Rocky</FONT></SPAN></DIV><BR>
+<BLOCKQUOTE>
+  <DIV class=OutlookMessageHeader align=left>
+  <HR>
+  <FONT face=Tahoma size=2><B>From:</B> Ben303 [mailto:cslanet@lhotka.net] 
+  <BR><B>Sent:</B> Tuesday, August 01, 2006 8:38 AM<BR><B>To:</B> 
+  rocky@lhotka.net<BR><B>Subject:</B> Re: [CSLA .NET] Version 2.1 (VB only) 
+  available for testing<BR></FONT><BR></DIV>
+  <DIV></DIV>
+  <P>Rocky, could you please extend the RuleArgs to contain a PropertyText 
+  property? </P>
+  <P>With the current structure it is difficult to localize user oriented texts 
+  within the rules framework. For example you might have a property called 
+  TargetDelivery that is labeled "Target delivery date" or "Gezielte 
+  Lieferdatum" throughout your application. A PropertyText property would return 
+  a localized or user friendly text (if set). If the value is not set 
+  (PropertyText=String.Empty), the property returns the PropertyName. You use 
+  the PropertyText value (as opposed to PropertyName) for the description 
+  returned after evaluating rules.</P></BLOCKQUOTE></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>xal replied on Thursday, August 03, 2006</h2>Hey Rocky, I found an issue...<br><br>&nbsp;&nbsp;&nbsp; Public Sub CheckRules(ByVal propertyName As String)<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Dim rules As ValidationRulesManager = RulesToCheck<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; If rules IsNot Nothing Then<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Dim list As List(Of IRuleMethod) = <b>rules.GetRulesForProperty(propertyName, False)</b>.GetList(True)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; If list IsNot Nothing Then<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; CheckRules(list)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End If<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End If<br><br>&nbsp;&nbsp;&nbsp; End Sub<br><br>The bold code fragment could return null if you call rules for a property that doesn't have any... That's what the "If list IsNot Nothing" is for,,, but at the end of that bold fragment you do a .GetList(True) and that throws a null reference exception.<br>Maybe you can call a SortList() method call inside the If and before CheckRules(list)...<br><br>Andrés<br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, August 03, 2006</h2>I checked in a fix,thx.<BR><BR>
+<BLOCKQUOTE>----- Original Message -----<BR>From: xal <BR>To: "rocky@lhotka.net" <BR>Subject: Re: [CSLA .NET] RE: Version 2.1 (VB only) available for testing<BR>Date: Thu, 03 Aug 2006 13:54:18 -0500<BR><BR>Hey Rocky, I found an issue...<BR><BR>&nbsp;&nbsp;&nbsp; Public Sub CheckRules(ByVal propertyName As String)<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Dim rules As ValidationRulesManager = RulesToCheck<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; If rules IsNot Nothing Then<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Dim list As List(Of IRuleMethod) = <B>rules.GetRulesForProperty(propertyName, False)</B>.GetList(True)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; If list IsNot Nothing Then<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; CheckRules(list)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End If<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End If<BR><BR>&nbsp;&nbsp;&nbsp; End Sub<BR><BR>The bold code fragment could return null if you call rules for a property that doesn't have any... That's what the "If list IsNot Nothing" is for,,, but at the end of that bold fragment you do a .GetList(True) and that throws a null reference exception.<BR>Maybe you can call a SortList() method ca ll inside the If and before CheckRules(list)...<BR><BR>AndrÃ©s<BR><BR><BR><BR><BR></BLOCKQUOTE><BR></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Brian Criswell replied on Saturday, August 05, 2006</h2>Would it be possible to turn on the XML comments by default in the C# project?&nbsp; I do not know if it is on by default in the VB project.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Saturday, August 05, 2006</h2>
+
+
+
+
+<DIV align=left><SPAN class=615224519-05082006><FONT face=Arial color=#0000ff size=2>It is the way the VS project templates work. The C# 
+template does a couple very odd things - like turning CLS compliance off (wtf?) 
+and turning XML comments off. Both defaults seem backward to me, and the VB 
+templates (imo) are more correct...</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=615224519-05082006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=615224519-05082006><FONT face=Arial color=#0000ff size=2>The comments will be turned on in 2.1, though I don't know 
+for sure that I'll have time to go through and fix all the warnings that 
+presently exist... It is amazing how rapidly time flies by, and how much work 
+there is to put together a release.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=615224519-05082006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=615224519-05082006><FONT face=Arial color=#0000ff size=2>I am still hoping to have a beta out at the end of August, 
+but that may have to slip (at least in terms of fit-and-finish and any sort of 
+templates/ProjectTracker being ready by then).</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=615224519-05082006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=615224519-05082006><FONT face=Arial color=#0000ff size=2>Rocky</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=615224519-05082006></SPAN>&nbsp;</DIV><BR>
+<BLOCKQUOTE>
+  <DIV class=OutlookMessageHeader align=left>
+  <HR>
+  <FONT face=Tahoma size=2><B>From:</B> Brian Criswell 
+  [mailto:cslanet@lhotka.net] <BR><B>Sent:</B> Saturday, August 05, 2006 2:10 
+  PM<BR><B>To:</B> rocky@lhotka.net<BR><B>Subject:</B> Re: [CSLA .NET] RE: 
+  Version 2.1 (VB only) available for testing<BR></FONT><BR></DIV>
+  <DIV></DIV>Would it be possible to turn on the XML comments by default in the 
+  C# project?&nbsp; I do not know if it is on by default in the VB 
+  project.<BR><BR><BR><BR></BLOCKQUOTE></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Brian Criswell replied on Monday, August 07, 2006</h2>Would it be possible to change the behaviour of BusinessListBase&lt;T&gt;.IsDirty?&nbsp; If a list has had items that have been subsequently deleted, is it really dirty?&nbsp; For instance, someone could add an item to a DataGridView and then hit escape.&nbsp; The item has been added and removed, and the list has stayed the same.&nbsp; I propose that IsDirty be modified slightly.<br><br>public bool IsDirty<br>{<br>&nbsp;&nbsp;&nbsp; get<br>&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; // Deleting items that exist in the data source make us dirty<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;  for (int i = 0; i &lt; DeletedList.Count; i++)<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;  &nbsp;&nbsp;  if (!DeletedList[ i].IsNew)<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;  &nbsp;&nbsp;  &nbsp;&nbsp;  return true;<br><br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; // run through all the child objects<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; // and if any are dirty then then<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; // collection is dirty<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; foreach (C child in this)<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; if (child.IsDirty)<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; return true;<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; return false;<br>&nbsp;&nbsp;&nbsp; }<br>}<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, August 07, 2006</h2>That's an interesting idea Brian. My only concern here is whether there's an issue with edit levels. I'd need to run through some models to make sure just checking IsNew is enough (specifically that a check for EditLevelAdded isn't required).<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Brian Criswell replied on Friday, August 11, 2006</h2>I realise that it may be getting ridiculously late for suggestions, but...<br><br>I was thinking about the shared authorisation rules.&nbsp; Would it make sense to make a SecurityManager object that handled whether a user was allowed to Create, Fetch, Update or Delete a type of object?&nbsp; It would allow the BO developer to write code in the static constructors of business objects (or a rule list on application load) similar to the SharedAuthorizationRules.AllowRead().<br><br>public class ObjectAuthorizationManager<br>{<br>&nbsp;&nbsp;&nbsp; // Create<br>&nbsp;&nbsp;&nbsp; AllowCreate(string propertyName, Type objectType, params string[] roles);<br>
+&nbsp;&nbsp;&nbsp; DenyCreate(string propertyName, Type objectType, params string[] roles);<br>&nbsp;&nbsp;&nbsp; CanCreateObject (Type objectType);<br><br>&nbsp;&nbsp;&nbsp; // Fetch...<br><br>&nbsp;&nbsp;&nbsp; // Update...<br><br>&nbsp;&nbsp;&nbsp; // Delete...<br>}<br><br>This would allow the security checks that normally have to be made by overriding methods such as Save() to be built into the framework.&nbsp; Save(), Delete, a base implementation of AddNewCore that just checked the security might all be possible.<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,25 @@
+<html><header><title>Exception in RuleUri constructor because of cyrillic type name.</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Exception in RuleUri constructor because of cyrillic type name.</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/12049.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>sash_kr posted on Sunday, June 30, 2013</h2><p>My application crashes with &quot;DataPortal.Create failed (Invalid URI: The hostname could not be parsed.)&quot; error.</p>
+<p>After little debugging &nbsp;I&#39;ve found the source of the exception. Exception occurs in &quot;public RuleUri(string typeName, string propertyName)&quot; constructor. My typeName has non-latin name. It has cyrillic name. And encoded &quot;uriString&quot; looks like this:</p>
+<p>&quot;rule://CslaTest.Documents.-D0-94-D0-BE-D0-BA-D1-83-D0-BC-D0</p>
+<p>&nbsp;Uri is failed if char like &#39;-&#39; goes right after &#39;.&#39; (dot). If I will change above to this:</p>
+<p>&nbsp;&quot;rule://CslaTest.Documents.D0-94-D0-BE-D0-BA-D1-83-D0-BC-D0</p>
+<p>everythings is fine!</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sash_kr replied on Thursday, July 04, 2013</h2><p>Why no one react on this bug? Do you need a sample of namespace?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Thursday, July 04, 2013</h2><p>Hi,</p>
+<p>Well, the question is, &nbsp;is it a bug in .NET or in CSLA?</p>
+<p>And are there other parts affected as well?&nbsp;</p>
+<p>For now - I have registered the issue in repository:<br /><a href="https://github.com/MarimerLLC/csla/issues/182">https://github.com/MarimerLLC/csla/issues/182</a>&nbsp;&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sash_kr replied on Friday, July 05, 2013</h2><p>&nbsp;Well, I don&#39;t think that&#39;s a bug in Uri class. Uri has some format and that format don&#39;t like when char like &#39;-&#39; goes right after &#39;.&#39;.</p>
+<p>For know I fix it like this:</p>
+<p>instead:</p>
+<p>&nbsp; &nbsp; var uriString = &quot;rule://&quot; + hostName + &quot;/&quot; + EncodeString(propertyName);</p>
+<p>use this:</p>
+<p>&nbsp; &nbsp; var uriString = &quot;rule://&quot; + hostName.Replace(&quot;.-&quot;, &quot;.&quot;) + &quot;/&quot; + EncodeString(propertyName).Replace(&quot;.-&quot;, &quot;.&quot;);</p>
+<p>&nbsp;</p>
+<p>&nbsp;But I would like, CSLA could handle this situation by itself.</p>
+<p>&nbsp;</p>
+<p>P.S.</p>
+<p>My class:</p>
+<p>namespace CslaTest.Documents</p>
+<p>{</p>
+<p>&nbsp; &nbsp; public abstract class Документ : BusinessBase&lt;Документ&gt;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Friday, July 05, 2013</h2><p>I&#39;m quite sure this also applies to query parameters to the URI like additional fields or maybe even values added to the RuleName. </p>
+<p>But I am suspection there may be other areas affected as well. </p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sash_kr replied on Friday, July 05, 2013</h2><p>I&#39;m new to CSLA. So, I don&#39;t fully understand what are you talking about. For now, my test project goes fine.</p>
+<p>If you need some &nbsp;cyrillic words for reproducing problem you can use this site for example:</p>
+<p><a href="http://learningrussian.net/vocabulary/russian-words/russian-months-and-seasons.php">http://learningrussian.net/vocabulary/russian-words/russian-months-and-seasons.php</a></p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

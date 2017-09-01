@@ -1,0 +1,36 @@
+<html><header><title>Remote DataPortal as Cache?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Remote DataPortal as Cache?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/427.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>burmajam posted on Wednesday, June 21, 2006</h2>Hi there.<br>
+<br>
+I was thinking how to cache some collections. Imagine Project Tracker
+example but with huge number of projects and resources. I guess that
+you don't want to fetch all projects from ProjectList every time
+project select form is opened? That would be huge and potentialy very
+frequent traffic. So ... we could cache that list both in application
+server (remote dataPortal or remoteSomehingElseAnchored object) and
+maybe in client cache. Also, when sometghing is changed (Some project
+is updated, deleted or inserted), remote cache and local cache should
+be notified that they are old and they should refetch ONLY changes, not
+refetch all list. Also, remote data portal should be singleton in that
+case. Anyway, what's the use of remote data portal if it doesn't cache
+and support distributed and concurrent approach (except traffic on port
+80 rather than on some database port)?<br>
+<br>
+That's just my theory and very first thoughts. I'm very new in CSLA.
+Did enyone did somehing like this or maybe it is solved by framework
+itself (which is great and I want to thank Rocky for great job and the
+best book I've ever read).<br>
+<br>
+Any ideas, examples, tips, guidelines, experiences would be very wellcome.<br>
+<br>
+Burmaja</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>devbanana replied on Wednesday, June 21, 2006</h2><P>hi,</P>
+<P>&nbsp;</P>
+<P>In my opinion, it's the job of the client side, I mean on the side calling the data portal, to do the caching. In the web interface presented in the book, there was some rudimentary caching which could easily be improved.</P>
+<P>&nbsp;</P>
+<P>I was thinking it'd be nice to have an SQL dependency cache, but I think the web server (if we're talking about a web application) would need access to the database then.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>burmajam replied on Wednesday, June 21, 2006</h2>Hi<br><br>I was thinking of smart client winform applications. I agree that client should cache it's list but imagine the following common situation: <br><br>Client 1 asks app server for whole list of projects. App server didn't cache it already, so it retrieves the list from the database, caches it and returns that list to the client 1. <br><br>Then Client 2 asks the same app server for the same whole list of projects. App server has it cached so it returns cached list (without connecting to database) to Client 2. <br><br>Client 1 makes some changes (inserts, updates or deletes) in that list and asks app server to commit changes in the database. If it succeeds, app server updates its cache and notifies both client 1 and client 2 about changes, so that they can update their own caches (just with changes. not retrieveing the whole list again) and all controls that are bound to it.<br><br><br>Burmaja<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>burmajam replied on Wednesday, June 21, 2006</h2>In the meantime I've found recent thread Use ActiveCache to minimize transfered data. That's exactly what I want to achieve. So my question is for SonOfPirate and others involved in that discussion did you make it? I'll read again few times everything in that thread becouse this is quite new to me but I'm interested did you make RemotingDataPortal as singleton? As far as I understand, single call wouldn't do the job of caching.<br><br>Bu®majaM<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>burmajam replied on Tuesday, June 27, 2006</h2>Hi there!
+
+I want to thank You a lot SonOfPirate for your detailed answer. I hope it 
+will be very usefull in a near future becouse I don't have time now to do 
+all that stuff (and examine MSDN Enterprise Library). Anyway, it helped me 
+to decide to fetch just filtered data directly from database for every 
+request untill I do the caching stuff.
+
+<br><br>Thanks again<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

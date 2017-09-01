@@ -1,0 +1,81 @@
+<html><header><title>Deleting children - how!?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Deleting children - how!?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3033.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>jas_nhs posted on Wednesday, June 13, 2007</h2>I can't believe that I have got this far in CSLA before coming across
+this problem - simply, I get the normal FK exception when deleting an
+editable root object without deleting the child collection first.<br>
+<br>
+One option is to use cascade deletion in the database, but this is not
+straightforward as the design does not allow direct deletion of
+records, rather, a trigger does the deleting and so to delete a record,
+you set a deletion flag to true (in the trigger recs are copied to an
+audit table etc, so this design is fixed). So I assume this rules out
+simple cascade deletion.<br>
+<br>
+The other option is to Clear() the collection or loop through and
+remove the children. The problem here is that the deletion does not
+actually take place - rather, the child is marked for deletion. Fine,
+except that the delete function, DataPortal_Delete, for the root object
+DOES perform the deletion directly (via a call to ExecuteDelete) -
+leaving the children unattached, hence FK exception.<br>
+<br>
+Now, I imagine that my code is wrong to be deleting the root object so
+directly under its Delete() method, if so, what should I do
+instead?&nbsp; Mark the object for deletion with actual deletion taking
+place upon the call to Save() (how?) - but then how and when is the
+deletion physically done (i.e. when is ExecuteDelete called)?<br>
+<br>
+<br>
+<br>
+Hope someone can help, for the general good!<br>
+<br>
+James.<br>
+BTW - using V2.0.3 (I think)<br>
+<br>
+<br>
+<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Bowman74 replied on Wednesday, June 13, 2007</h2><P>What I personally do for direct deletion&nbsp;is that my delete stored procs also delete all children (and all their children, etc) first.&nbsp; That way only one call to the database is made for a direct delete.&nbsp; While this may seem like a maintenance PITA for the stored procs (they need to know about all data in objects below them), all mine are generated anyway so I don't even notice.&nbsp;</P>
+<P>For deletion through the Save method my stored procs do the same thing though they take a timestamp as a parameter for concurrency (concurrency is ignored for any children/grandchildren).&nbsp; Then the update/Insert/Delete dataportal calls are not cascaded into any of the deleted object's children because it is not necessary, as everything has been deleted and no child of a deleted parent is valid to save.</P>
+<P>I'm sure you will hear other ways to handle this, but this is my method.&nbsp; It works and it performs well.</P>
+<P>Thanks,</P>
+<P>Kevin</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Wednesday, June 13, 2007</h2><P>Typically when you delete a Root with children you are given the PK of the Root.<BR>Based on this, I code gen DP_Delete like this:</P><FONT color=#0000ff size=2>
+<P>Protected</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Overrides</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Sub</FONT><FONT size=2> DataPortal_Delete(</FONT><FONT color=#0000ff size=2>ByVal</FONT><FONT size=2> criteria </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Object</FONT><FONT size=2>)<BR>&nbsp; 'determine criteria here</FONT><FONT size=2><BR>&nbsp; </FONT><FONT color=#0000ff size=2>Dim</FONT><FONT size=2> strSQL </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>String<BR>&nbsp; </FONT><FONT size=2>strSQL = DAO.Delete(crit.Key)</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>&nbsp; Dim</FONT><FONT size=2> tr </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> IDbTransaction = </FONT><FONT color=#0000ff size=2>Nothing</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>&nbsp; Try<BR>&nbsp;&nbsp;&nbsp; </FONT><FONT size=2>tr = </FONT><FONT color=#0000ff size=2>Me</FONT><FONT size=2>.BeginTransaction()<BR>&nbsp;&nbsp;&nbsp; <BR>&nbsp;&nbsp;&nbsp; </FONT><FONT color=#008000 size=2>'Delete child objects before deleting the parent. <BR>&nbsp;&nbsp;&nbsp; </FONT><FONT size=2>DeleteChildren(tr, criteria)</P>
+<P></FONT><FONT color=#008000 size=2>&nbsp;&nbsp;&nbsp; 'delete the parent<BR>&nbsp;&nbsp;&nbsp; </FONT><FONT size=2>DAL.ExecuteNonQuery(tr, CommandType.Text, strSQL)</P>
+<P>&nbsp;&nbsp;&nbsp; PostDeleteData(tr)</P>
+<P></FONT><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp; Me</FONT><FONT size=2>.EndTransaction(tr)</P>
+<P></FONT><FONT color=#0000ff size=2>&nbsp; Catch</FONT><FONT size=2> ex </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> Exception<BR>&nbsp;&nbsp;&nbsp; </FONT><FONT color=#0000ff size=2>Me</FONT><FONT size=2>.RollbackTransaction(tr)<BR>&nbsp;&nbsp;&nbsp; </FONT><FONT color=#0000ff size=2>Throw<BR>&nbsp; </FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Try<BR></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Sub</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Protected</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Overridable</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Sub</FONT><FONT size=2> DeleteChildren(</FONT><FONT color=#0000ff size=2>ByVal</FONT><FONT size=2> tr </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> IDbTransaction, </FONT><FONT color=#0000ff size=2>ByVal</FONT><FONT size=2> criteria </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Object</FONT><FONT size=2>)<BR>&nbsp; </FONT><FONT color=#008000 size=2>'marker method that can be overridden in child class<BR></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Sub</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Protected</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Overridable</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Sub</FONT><FONT size=2> PostDeleteData(</FONT><FONT color=#0000ff size=2>ByVal</FONT><FONT size=2> tr </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> IDbTransaction</FONT><FONT size=2>)<BR>&nbsp; </FONT><FONT color=#008000 size=2>'marker method that can be overridden in child class<BR></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Sub</FONT></P>
+<P><FONT color=#0000ff size=2><FONT color=#000000>Then in my hand written classes I can override DeleteChildren and use the Root PK value to help with the coding.</FONT></FONT></P>
+<P><FONT size=2>I also have the option of overriding PostDeleteData to take action once the delete has occurred.</FONT></P>
+<P><FONT color=#0000ff size=2><FONT color=#000000>Joe</FONT></P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jas_nhs replied on Wednesday, June 13, 2007</h2>Both replies much appreciated!<br>
+<br>
+To keep things going for now, I just loop through all children (there
+are 5 levels of descendents from the root) and do .Clear() at each
+level, then MyRootObject.Save() and then do MyRootObject.Delete() and
+MyRootObject.Save(). A stop-gap measure.<br>
+<br>
+Kevin: I am disinclined to implicate the object heirarchy in the SP code, but still, the single db call has advantages.<br>
+<br>
+Joe: in which class is your code, above?&nbsp; presumably you do the
+physical deletion in DeleteChildren,&nbsp; rather than via
+MyRootObject.Save() ?<br>
+<br>
+Thanks<br>
+<br>
+James.<br>
+<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Bowman74 replied on Wednesday, June 13, 2007</h2><P>James,</P>
+<P>I understand.&nbsp; I too was disinclined to do the same thing&nbsp;for a long time due to:</P>
+<P>1) Complexity of the delete and fetch procs knowing about their children/grandchildren/great grandchildren, etc.&nbsp; Hard to read, hard to maintain.<BR>2) What if I want to reuse a class in a different hierarchy?</P>
+<P>What I noticed over time is:</P>
+<P>1)&nbsp; That I generated my classes and stored procs almost exclusively.&nbsp; Mostly any overrides were made to business logic.&nbsp; Very rarely did I ever override a stored proc.&nbsp; In addition, once I had the generator stabilized,&nbsp;I almost never&nbsp;looked at the darn things; they just worked.<BR>2) I never took a class and moved it around from one hierarchy to another.&nbsp; Outside of issues around it being a&nbsp;questionable design practice, I just never had a need to do it.<BR>3) On a complex object hierarchy I could find myself easily making 100 calls to the DB to do a fetch or delete operation.&nbsp; It just seemed so unneeded and wasteful.</P>
+<P>In the end I converted the generator to make centralized fetch and delete procs.&nbsp; You're not really coding the object hierarchy into the stored procs, just recognizing the data key relationships that you are probably already enforcing due to referential integrity anyway.&nbsp; If I could figure out a simple and understandable method to send all the data for an object hierarchy to the insert and update procs, I would do those the same way too.&nbsp; But alas, not yet.&nbsp; </P>
+<P>No, I have no place to serialize it all into XML to tear it apart on the other side or storing it as XML in SQL Server 2005's XML data type so I can do single update/insert procs.&nbsp; Not yet anyway.</P>
+<P>Your mileage may vary.</P>
+<P>Thanks,</P>
+<P>Kevin</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Wednesday, June 13, 2007</h2><P>Joe: in which class is your code, above?&nbsp; presumably you do the physical deletion in DeleteChildren,&nbsp; rather than via MyRootObject.Save() ?<BR><BR>Thanks<BR><BR>James.<BR><BR>====================================================================</P>
+<P>The code is in the Root BO.</P>
+<P>DeleteChildren method runs code like:</P><FONT size=2>
+<P>Dim parentkey </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Integer</FONT><FONT size=2> = crit.Key</P></FONT><FONT size=2>
+<P>ExecuteNonQuery(tr, CommandType.Text, MyChildSQL.DeleteByParentKey(parentkey ))</P>
+<P>Joe</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></FONT></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

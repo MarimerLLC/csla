@@ -1,0 +1,408 @@
+<html><header><title>XtraGrid not having a correct reference to Child list after calling Save.</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>XtraGrid not having a correct reference to Child list after calling Save.</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/2516.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Plum posted on Tuesday, March 13, 2007</h2><P class=MsoNormal><SPAN>Hi<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>I am using Developer Express Xtragrid and I am experiencing a problem where the Child Business list objects do not get updated in the database after I call my save routine the <B>second time</B>.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>I have a parent BusinessListBase with two ChildrenBusinessListBase. <SPAN>&nbsp;</SPAN><o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>CarManufactures -&gt; CarManufacture<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>CarManufacture -&gt; Models -&gt;Model<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>CarManufacture -&gt; Regions -&gt; Region<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Everythings works well when my form pops up and the XtraGrid is loaded. Data is entered and modified and I am able to add and update Models and Regions. I then Call the SaveCarManufactureList with rebind set to try. Data is saved to the database. I can update a Carmanufacture and that will save to the database. If I update or add records to region or model, no update happens to the database. It seems like the Xtragrid is not referencing the correct Child list after the Clone process.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>I am able to overcome this by setting the grid control datasource to null and then rebind the grid control the the binding source ( I have this code commented out.) but of all the documentation I have seen, I do not think this is the right approach. Besides when a user is updating Model or region and hits the save button, the region and Model will collapse and the Grid control will reload the data from the binding source ( annoying to the user). <o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>I was wondering if anyone encountered this problem with a grid and how did they get around this.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>I am using CSLA version 2.14<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Thank You</SPAN></P>
+<P class=MsoNormal><SPAN></SPAN>&nbsp;</P>
+<P class=MsoNormal><SPAN></SPAN>&nbsp;</P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp; </SPAN><o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;</SPAN>-- Code *********************************************************<SPAN>&nbsp;&nbsp; </SPAN><o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>public</SPAN> <SPAN>override</SPAN> <SPAN>bool</SPAN> isDirty()<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>{<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>this</SPAN>.gvCarManufacture.CloseEditor();<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>this</SPAN>.gvRegion.CloseEditor();<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>this</SPAN>.cvModel.CloseEditor();<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>return</SPAN> _ CarManufactureList.IsDirty;<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>}<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;</SPAN><SPAN>private</SPAN> <SPAN>void</SPAN> SaveCarManufactureList(<SPAN>bool</SPAN> rebind)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>{<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>if</SPAN> (isDirty())<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>{<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>this</SPAN>.bsCarManufactureList.RaiseListChangedEvents = <SPAN>false</SPAN>;<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>this</SPAN>.bsCarManufactureList.EndEdit();<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>try<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>{<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>CarManufactureList</SPAN> temp = _CarManufactureList.Clone();<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>_CarManufactureList = temp.Save();<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>if</SPAN> (rebind)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>{<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>//<SPAN>&nbsp;&nbsp;&nbsp; </SPAN>this.gcCarManufactureList.DataSource = null;<SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>this</SPAN>.bsCarManufactureList.DataSource = <SPAN>null</SPAN>;<SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>this</SPAN>.bsCarManufactureList.DataSource = _CarManufactureList;<SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>//<SPAN>&nbsp;&nbsp; </SPAN>this.gcCarManufactureList.DataSource = this.bsCarManufactureList;<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>}<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>}<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>catch</SPAN> (Csla.<SPAN>DataPortalException</SPAN> ex)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>{<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>MessageBox</SPAN>.Show(ex.BusinessException.ToString(), <SPAN>"error Saving"</SPAN>, <SPAN>MessageBoxButtons</SPAN>.OK, <SPAN>MessageBoxIcon</SPAN>.Exclamation);<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>}<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>finally<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>{<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>this</SPAN>._CarManufactureList.RaiseListChangedEvents = <SPAN>true</SPAN>;<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>this</SPAN>.bsCarManufactureList.ResetBindings(<SPAN>false</SPAN>);<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>}<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>}<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>}<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P><SPAN>-- Code __________________</SPAN></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>karasko replied on Sunday, August 05, 2007</h2>Hi Plum,<br><br>I have the exact same problem. Did you found solution for this problem?<br><br>Could anyone else help me, please?<br><br>Thanks<br><br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Sunday, August 05, 2007</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>Plum:</strong></div><div>
+<P class=MsoNormal><SPAN>I am able to overcome this by setting the grid control datasource to null and then rebind the grid control the the binding source ( I have this code commented out.) but of all the documentation I have seen, I do not think this is the right approach. Besides when a user is updating Model or region and hits the save button, the region and Model will collapse and the Grid control will reload the data from the binding source ( annoying to the user). <o:p></o:p></SPAN></P>
+<P></div></BLOCKQUOTE></P>
+<P>You <EM>always</EM> need to rebind the UI after you save a CSLA business object. The result of Save() is a <EM>new object</EM>. This is not unique to any particular grid or control, it is the way Save() works.</P>
+<P>So if you don't rebind your bindingSource to the result of Save(), your user is still editing the old object - the one that wasn't saved, doesn't have any database-assigned primary keys or timestamps for concurrency or anything.</P>
+<P>That, by the way, is why Save() returns a new object - a lot of things can change during the Save() call...</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>karasko replied on Tuesday, August 07, 2007</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div><p>You <em>always</em> need to rebind the UI after you save a CSLA business object. The result of Save() is a <em>new object</em>. This is not unique to any particular grid or control, it is the way Save() works.</p></div></BLOCKQUOTE><br><br>This is exactly what I'm doing. I understand how the Save() works, or at least I hope that I understand. <br>But the problem is that after rebinding the BindingSource to the newly returned object the grid stop propagating the changes to the parent's collection. <br>I have found that when the values in the grid has been changed after the first Save(), the setter of the business object has been fired, but if I call the Save() method of the parent object again, it's child collection is unchanged?! <br>I have made some further investigation and found that the actual problem is that the BindingSource itself is perfectly correct, but XtraGrid doesn't update its child view to reflect the changes. However, if I manually collapse and expand again the master row, everything comes back in sync as expected. This is exactly what fooled me in the first place, because I have tested the similar scenario with Infragistics and their behavior is almost the same. Actually the Infragistics UltraGrid is even worst because the only way to sync the Grid's view with the actual BindingSource is to set the UltraGrid.DataSource to null and then rebind it again to the BindingSource. Collapsing and expanding the master row doesn't help at all.<br>This is the "solution" that Plum and I discussing here.<br><br>I hope that this time I am explaining the issue much better.<br><br>From my point of view, this is obviously a problem of DevExpress / Infragistics and is not caused by any means form the CSLA framework, but I really hope that someone with more experience with these products will suggest something helpful.<br><br>So, if anyone has any suggestions please share them with us.<br><br>Best regards<br>Krasimir Evtimov<br>http://www.linkedin.com/in/KrasimirEvtimov<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, August 07, 2007</h2><P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>karasko:</strong></div><div></P>
+<P>I have found that when the values in the grid has been changed after the first Save(), the setter of the business object has been fired, but if I call the Save() method of the parent object again, it's child collection is unchanged?! <BR></div></BLOCKQUOTE></P>
+<P>Two things comes to mind.</P>
+<P>First, are you making sure to unbind/rebind all bindingSource objects in the hierarchy? You can't just rebind the root, you must unbind/rebind the child bindingSource objects too - look at ProjectTracker\PTWin for an example.</P>
+<P>Second, are you rehooking any event handling in your object model? In particular, your parent/root must rehook the ListChanged of the child collection on deserialization, otherwise events quit flowing up. BLB rehooks <EM>its child objects</EM>, but BB has no way to automatically rehook events of child objects or collections, so you must do it in OnDeserialized().</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>karasko replied on Tuesday, August 07, 2007</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div><p>First, are you making sure to unbind/rebind all bindingSource objects in the hierarchy? You can't just rebind the root, you must unbind/rebind the child bindingSource objects too - look at ProjectTracker\PTWin for an example.</p>
+</div></BLOCKQUOTE><br><br>The sad thing is that there is only one BindingSource which is assigned to XtraGrid / UltraGrid DataSource property. The grid internally get the structure of the data source and create child views, but there is no any public API to access those binding sources.<br><br>This is the biggest problem!<br><br>In your project, you've used the DataGridView which support only one level and for this reason you have separate BindingSource for all your collection. But DevExpress / Infragistics has only one Binding source for the master collection. This is the one and only reason to use this control: because it supports hierarchical data source in only one grid, very similar to the MS Access behavior.<br><br>If I had access to the child's view it would be so much easier than now..<br><br>I'm not quite sure if this problem has something to do with the events, because as I've said before, when I collapse and re-expand the master row everything comes back in sync. In my point of view this means that the problem is really with refreshing the views, but all the events are hooked already. In the DevExpress case I don't even need to set the Gris.DataSource property to null and reset it to the BindingSource again. Which leads me to conclusion that everything is OK with the BindingSource, but the XtraGrid itself doesn't refresh itself and actually refresh itself only after collapsing and expanding the master row of the child view.<br><br>I have tried to come up with some different hierarchical collection of objects which I want to bind it to the XtraGrid to eliminate any suspicions out of the CSLA, but sadly enough nothing have came to my mind..<br><br>If you have idea for such collections with some editable property it would be the best approach.<br>Obviously, the collection should implement the IBindingList interface.<br><br>Best regards,<br>Krasimir Evtimov<br><br>P.S. Thanks for your amazingly fast answers. I really appreciate them.<br><br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>alef replied on Tuesday, August 07, 2007</h2><P><SPAN>Hello,</SPAN></P>
+<P><SPAN>I have discussed this problem already with&nbsp;the developers of DevExpress&nbsp;and&nbsp;this issue cannot be easily resolved. They feel sorry for that. The problem lies within the binding mechanism used by the XtraGrid. To provide the ability to display several detail views at once, the grid creates separate related DataViews for each detail GridView. In this situation, when a master row is updated, the detail view doesn't receive any notification, which can be used to refresh data. The only solution I can suggest here is to manually collapse and then re-expand the master row:</SPAN></P><SPAN><PRE>[C#]
+
+ 
+      gridView1.CollapseMasterRow(gridView1.FocusedRowHandle); &lt;------- <SPAN class=cr-cs-keyword>new</SPAN> line
+      MasterDetailBL bl = <SPAN class=cr-cs-keyword>new</SPAN> MasterDetailBL();
+      bl.SaveMasterDetailDataSet((MasterDetailDataSet) bindingSource1.DataSource);
+      gridView1.ExpandMasterRow(gridView1.FocusedRowHandle); &lt;------- <SPAN class=cr-cs-keyword>new</SPAN> line
+</PRE><PRE>Regards</PRE><PRE>Alef</PRE></SPAN></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, August 07, 2007</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Oh, but this is probably _<i>good</i>_ news </span><span>J</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I think then, that raising the ListChanged events for each child
+list will probably be sufficient to fix the problem &#8211; because they must
+be honoring those events (I hope).<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> alef
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Tuesday, August 07, 2007 3:34 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] XtraGrid not having a correct reference to
+Child list after calling Save.<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Hello,<o:p></o:p></p>
+
+<p>I have discussed this problem already with&nbsp;the developers of
+DevExpress&nbsp;and&nbsp;this issue cannot be easily resolved. They feel sorry
+for that. The problem lies within the binding mechanism used by the XtraGrid.
+To provide the ability to display several detail views at once, the grid
+creates separate related DataViews for each detail GridView. In this situation,
+when a master row is updated, the detail view doesn't receive any notification,
+which can be used to refresh data. The only solution I can suggest here is to
+manually collapse and then re-expand the master row:<o:p></o:p></p>
+
+<pre>[C#]<o:p></o:p></pre><pre><o:p>&nbsp;</o:p></pre><pre> <o:p></o:p></pre><pre>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;gridView1.CollapseMasterRow(gridView1.FocusedRowHandle); &lt;------- <span class=cr-cs-keyword>new</span> line<o:p></o:p></pre><pre>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; MasterDetailBL bl = <span class=cr-cs-keyword>new</span> MasterDetailBL();<o:p></o:p></pre><pre>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; bl.SaveMasterDetailDataSet((MasterDetailDataSet) bindingSource1.DataSource);<o:p></o:p></pre><pre>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; gridView1.ExpandMasterRow(gridView1.FocusedRowHandle); &lt;------- <span class=cr-cs-keyword>new</span> line<o:p></o:p></pre><pre>Regards<o:p></o:p></pre><pre>Alef<o:p></o:p></pre>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, August 07, 2007</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Huh.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I wonder if you could do something clever, like implement a
+method that forces every object (or every collection at least) in the object
+graph to raise its changed event?<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>The grid control must honor those events, and what I suspect is that
+the grid simply doesn&#8217;t know that the data has changed out from under it.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>It would be easy enough to try. In the root:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Public Sub CascadeEvents()<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp; _children.CascadeEvents()<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp; OnUnknownPropertyChanged()<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>End Sub<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>In the child list:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Friend Sub CascadeEvents()<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp; For Each child As Child in Me<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp; child.CascadeEvents()<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp; Next<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp; OnListChanged(&#8230;Reset)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>End Sub<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>And in the child:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Public Sub CascadeEvents()<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp; OnUnknownPropertyChanged()<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>End Sub<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>It might be expensive to raise all those events and have the UI
+do all that refreshing, but at least you could try this as an experiment to see
+if it helps. If so, you could try trimming back to just the OnListChanged(&#8230;Reset)
+calls to see if that&#8217;s enough.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky</span><o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jh72i replied on Thursday, October 11, 2007</h2><P>Hi Rocky et al.<BR>I've just been reading this thread and wonder if you'd comment on my idea from <A HREF="/forums/thread/17610.aspx">http://forums.lhotka.net/forums/thread/17610.aspx</A>.&nbsp; Basically, I'd see some similarities between the save problem and the replace problem and I suppose the approach I'm suggesting is simply to copy the event sinks from the old object to the new.</P>
+<P>I'm wondering if this is too crazy an idea and if so exactly why?&nbsp; It'd be a neat solution because the the business layer doing its thing wouldn't affect the UI.</P>
+<P>Sending a reset, of course, should work also but that has (certainly in my 'replace' scenario) very negative user impact.</P>
+<P>I'm wondering whether to press ahead with this approach and would love to hear the negatives now rather than later.</P>
+<P>Thanks for all input.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, October 11, 2007</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>My guess is that the problem goes deeper than events. Any
+reference the control is holding to the old object is also incorrect, and you
+probably have no way of getting the control to talk to the new object.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>So even if you get the events to work, the control would still
+call properties/methods on the OLD object I would think &#8211; thus causing
+all sorts of problems.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> jh72i
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Thursday, October 11, 2007 7:47 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] XtraGrid not having a correct reference to
+Child list after calling Save.<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Hi Rocky et al.<br>
+I've just been reading this thread and wonder if you'd comment on my idea from <a href="/forums/thread/17610.aspx">http://forums.lhotka.net/forums/thread/17610.aspx</a>.&nbsp;
+Basically, I'd see some similarities between the save problem and the replace
+problem and I suppose the approach I'm suggesting is simply to copy the event
+sinks from the old object to the new.<o:p></o:p></p>
+
+<p>I'm wondering if this is too crazy an idea and if so exactly why?&nbsp; It'd
+be a neat solution because the the business layer doing its thing wouldn't
+affect the UI.<o:p></o:p></p>
+
+<p>Sending a reset, of course, should work also but that has (certainly in my
+'replace' scenario) very negative user impact.<o:p></o:p></p>
+
+<p>I'm wondering whether to press ahead with this approach and would love to
+hear the negatives now rather than later.<o:p></o:p></p>
+
+<p>Thanks for all input.<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jh72i replied on Thursday, October 11, 2007</h2><P>Certainly would seem to make sense Rocky.&nbsp; In my 'replace' case I always raise the ItemChanged event to which listeners must be aware that an existing&nbsp;item has been replaced with a new and take appropriate action.</P>
+<P>But like I mentioned in my post with the Band object of an Infragistics grid I can see that it still holds a ref to the old object whereas all the other 'hookers' hold a ref to the new.</P>
+<P>Also, if the listeners do take appropriate action should that not include hooking up its old events to the new object!?</P>
+<P>Anyway, thanks for the feedback. Seems a real dodgy way to go right now given that I simply do not know the consequences.&nbsp; But it is a serious UI issue for me I'm afraid - real-time updates to a hierachical clsa-based datasource.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, October 11, 2007</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>A more complex, but perhaps necessary, solution here could be to
+implement a &#8220;view&#8221; against your objects.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>If you had a collection of objects with the same shape as the
+real objects, but in reality just held a reference to those real objects, then
+the grid would reference this view.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>And the view could change which underlying objects IT points to,
+without the grid being any wiser.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Such a view would be a bit of code &#8211; same shape, but
+delegating all calls down to the real objects, and relaying all the real object
+events back through the view.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I don&#8217;t know if it would work, but it seems reasonable.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> jh72i
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Thursday, October 11, 2007 8:54 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: XtraGrid not having a correct reference to
+Child list after calling Save.<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Certainly would seem to make sense Rocky.&nbsp; In my 'replace' case I
+always raise the ItemChanged event to which listeners must be aware than an
+existing&nbsp;item has been replaced with a new and take appropriate action.<o:p></o:p></p>
+
+<p>But like I mentioned in my post with the Band object of an Infragistics grid
+I can see that it still holds a ref to the old object whereas all the other
+'hookers' hold a ref to the new.<o:p></o:p></p>
+
+<p>Also, if the listeners do take appropriate action should that not include
+hooking up its old events to the new object!?<o:p></o:p></p>
+
+<p>Anyway, thanks for the feedback. Seems a real dodgy way to go right now
+given that I simply do not know the consequences.&nbsp; But it is a serious UI
+issue for me I'm afraid - real-time updates to a hierachical clsa-based
+datasource.<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

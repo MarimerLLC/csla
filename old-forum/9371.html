@@ -1,0 +1,26 @@
+<html><header><title>CSLA, Silverlight, &amp; XML Serialization</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA, Silverlight, &amp; XML Serialization</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9371.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>AaronH posted on Friday, August 13, 2010</h2><p>Just writing about a requirement I had at work recently and I how went about implementing a solution for it utilizing CSLA and XML Serialization.&nbsp; I&#39;m sharing this because I&#39;m sure that others have come across a need to implement a solution comparable to this, and would like to share how I went about implementing it.</p>
+<p>The project that I am involved with entails the automation of file processing.&nbsp; These files are sent to us in the form of .txt, .mdb, and .xls formats, and contain transaction information from companies such as UPS, Enterprise, Chase, etc.</p>
+<p>For the most part, these files have much in common, such as transaction detail (transaction amount, transaction date, etc.).&nbsp; And for this information, I developed a class that really encompasses what a transaction is and the data that it contains.&nbsp; The class (Transaction : BusinessBase) is then populated by the parsing engine.&nbsp; When the Transaction object is saved, it is persisted to a Transaction table, containing all the columns.</p>
+<p>But each source contains data unique to each company as well.&nbsp; For example, UPS files contain shipper and receiver information.&nbsp; Within our system, we don&#39;t really do much with this information (we&#39;re mostly concerned with the transaction data), but it&#39;s certainly data that we need for reference on occasion.</p>
+<p>So because we deal with so many file sources, we decided to create a class abstraction called TransactionDetail, which is exposed by the Transaction class.&nbsp; Then for each file source, we create a concrete TransactionDetail class that exposes properties unique to the company data.</p>
+<p>So, for example, UPSTransactionDetail -&gt; TransactionDetail, and contains information about the sender, their address information, the receiver and their address information, etc.</p>
+<p>To create a table to support each one of these concrete types would be absurd, and a solution that entailed one table that housed ALL fields relevant to ALL company file sources would be a querying nightmare.</p>
+<p>So I thought I would take advantage of XML Serialization and SQL Server XPath support for querying.&nbsp; This is actually old hat, I&#39;ve been serializing/deserializing objects to and from databases (both in binary and xml format)&nbsp;and have also seen others doing this for ages.</p>
+<p>The way I went about this was to create one concrete detail class for each source, which was a POCO object, exposing public setters and getters for all properties.</p>
+<p>Here is an example of how a concrete class is used:</p>
+<p>UPSTransactionDetail detail = new UPSTransactionDetail();</p>
+<p>detail.Address.Street1 = &quot;123 Mill St.&quot;;</p>
+<p>Transaction.TransactionDetail = detail;</p>
+<p>Transaction.Amount = 45.45;</p>
+<p>Transaction.Save();</p>
+<p>On DataPortal Insert/Update, the transaction saves its members to the Transaction table, and for the TransactionDetail member, it is serialized as XML to a field in the Transaction table.</p>
+<p>This works great, and on the Fetch() of a Transaction, the TransactionDetail XML is reinflated as the concrete instance and can be used.&nbsp; Until....&nbsp; You pass the Transaction object to a Silverlight client.&nbsp; When attempting to do this, you will receive an exception requesting you use the KnownType attribute.</p>
+<p>So to get around this problem, I attempted to have each concrete type (and its subtypes, such as Address (which is another class)) to inherit from MobileObject.&nbsp; But between fighting with more KnownType exceptions and just having classes that weren&#39;t being populated on the Silverlight side, I went for another approach.</p>
+<p>What I tried next was to have each concrete detail class inherit from BusinessBase and use propertyInfos.&nbsp; However, XML serialization failed outright because of something to do with the Rules stuff.</p>
+<p>So finally, I decided to try having the concrete detail classes inherit from ReadOnlyBase, and using LoadProperty to set its properties.</p>
+<p>While not a perfect solution, I was able to achieve what I was after, which was:</p>
+<p>1.) Avoiding the creation and maintenance of numerous tables specific to sources.</p>
+<p>2.) Serialize TransactionDetail as XML, and use SQL Server functionality to query the objects in the Detail column of the Transaction table.</p>
+<p>3.) Deflate the XML as objects to use within a .NET application.</p>
+<p>4.) Pass the deflated objects (and their deflated subtypes) back to a Silverlight client.</p>
+<p>Hope this helps someone out there experiencing a similar need!</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

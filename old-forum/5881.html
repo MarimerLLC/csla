@@ -1,0 +1,269 @@
+<html><header><title>XamDataGrid and PropertyStatus</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>XamDataGrid and PropertyStatus</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5881.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Fintanv posted on Tuesday, November 25, 2008</h2>Has anyone managed to get the PropertyStatus control to work with the XamDataGrid?<br>If so would you mind sharing your implementation?<br><br>TIA<br>Fintan<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Tuesday, November 25, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I never worked with Xam grid, I&#8217;d imagine it should be similar
+to SL grid though.&nbsp; Check Rolodex project &#8211; company editor screen
+and look for custom column.&nbsp; Hopefully, this is what you are looking for.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Fintanv
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Tuesday, November 25, 2008 3:59 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> [CSLA .NET] XamDataGrid and PropertyStatus<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Has anyone managed to get the PropertyStatus control to work
+with the XamDataGrid?<br>
+If so would you mind sharing your implementation?<br>
+<br>
+TIA<br>
+Fintan<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Fintanv replied on Tuesday, November 25, 2008</h2>Ah if only that were true.&nbsp; I had things working with the MS DataGrid, but needed the extra functionality found in the Infragistics grid which is a wee bit more complex.&nbsp; Now why didn't they build in support for the IDataErrorInfo interface.&nbsp; I had to hassle them for the same functionality in their WinForms grid some years back. <img src="/emoticons/emotion-4.gif" alt="Stick out tongue [:P]" /><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Tuesday, November 25, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Sorry to hear that.&nbsp; I worked with infragistics grid for
+about 3 years, and it seems like a decent product for WinForms, although
+learning curve is pretty steep.&nbsp; I personally think that in WPF there is
+much less reason to go with third party grids because you can do anything you
+want with templates in WPF.&nbsp; I am surporises that their WPF grid does not
+support template columns &#8211; seems like such a basic feature.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Fintanv
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Tuesday, November 25, 2008 6:20 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: XamDataGrid and PropertyStatus<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Ah if only that were true.&nbsp; I had things working with
+the MS DataGrid, but needed the extra functionality found in the Infragistics
+grid which is a wee bit more complex.&nbsp; Now why didn't they build in
+support for the IDataErrorInfo interface.&nbsp; I had to hassle them for the
+same functionality in their WinForms grid some years back. <img id="_x0000_i1025" src="/emoticons/emotion-4.gif" alt="Stick out tongue <img src=" />"><br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Fintanv replied on Friday, December 05, 2008</h2><P>I finally figured out a way to display the PropertyStatus control within a cell of the XamDataGrid by&nbsp; hi-jacking&nbsp;the XAML for the CellValuePresenter template.&nbsp; Here is a style that can be applied to a column to display the CSLA PropertyStatus control.</P>
+<P>Enjoy.</P>
+<P>-- Fintan</P>
+<P>&nbsp;</P><FONT color=#a31515 size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;</FONT><FONT color=#a31515 size=2>Style</FONT><FONT color=#ff0000 size=2> x</FONT><FONT color=#0000ff size=2>:</FONT><FONT color=#ff0000 size=2>Key</FONT><FONT color=#0000ff size=2>="CustomCellValuePresenter"</FONT><FONT color=#ff0000 size=2> TargetType</FONT><FONT color=#0000ff size=2>="igDP:CellValuePresenter"&gt;</P></FONT><FONT color=#a31515 size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;</FONT><FONT color=#a31515 size=2>Setter</FONT><FONT color=#ff0000 size=2> Property</FONT><FONT color=#0000ff size=2>="Template"&gt;</P></FONT><FONT color=#a31515 size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;</FONT><FONT color=#a31515 size=2>Setter.Value</FONT><FONT color=#0000ff size=2>&gt;</P></FONT><FONT color=#a31515 size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;</FONT><FONT color=#a31515 size=2>ControlTemplate</FONT><FONT color=#ff0000 size=2> TargetType</FONT><FONT color=#0000ff size=2>="igDP:CellValuePresenter"</FONT><FONT color=#ff0000 size=2> xmlns</FONT><FONT color=#0000ff size=2>="http://schemas.microsoft.com/winfx/2006/xaml/presentation"</FONT><FONT color=#ff0000 size=2> xmlns</FONT><FONT color=#0000ff size=2>:</FONT><FONT color=#ff0000 size=2>igDP</FONT><FONT color=#0000ff size=2>="http://infragistics.com/DataPresenter"</FONT><FONT color=#ff0000 size=2> xmlns</FONT><FONT color=#0000ff size=2>:</FONT><FONT color=#ff0000 size=2>s</FONT><FONT color=#0000ff size=2>="clr-namespace:System;assembly=mscorlib"</FONT><FONT color=#ff0000 size=2> xmlns</FONT><FONT color=#0000ff size=2>:</FONT><FONT color=#ff0000 size=2>x</FONT><FONT color=#0000ff size=2>="http://schemas.microsoft.com/winfx/2006/xaml"</FONT><FONT color=#ff0000 size=2> xmlns</FONT><FONT color=#0000ff size=2>:</FONT><FONT color=#ff0000 size=2>igWindows</FONT><FONT color=#0000ff size=2>="http://infragistics.com/Windows"&gt;</P></FONT><FONT color=#a31515 size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;</FONT><FONT color=#a31515 size=2>igWindows</FONT><FONT color=#0000ff size=2>:</FONT><FONT color=#a31515 size=2>CardPanel</FONT><FONT color=#ff0000 size=2> Width</FONT><FONT color=#0000ff size=2>="{</FONT><FONT color=#a31515 size=2>TemplateBinding</FONT><FONT color=#ff0000 size=2> FrameworkElement</FONT><FONT color=#0000ff size=2>.</FONT><FONT color=#ff0000 size=2>Width</FONT><FONT color=#0000ff size=2>}"</FONT><FONT color=#ff0000 size=2> Height</FONT><FONT color=#0000ff size=2>="{</FONT><FONT color=#a31515 size=2>TemplateBinding</FONT><FONT color=#ff0000 size=2> FrameworkElement</FONT><FONT color=#0000ff size=2>.</FONT><FONT color=#ff0000 size=2>Height</FONT><FONT color=#0000ff size=2>}"&gt;</P></FONT><FONT color=#a31515 size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;</FONT><FONT color=#a31515 size=2>Border</FONT><FONT color=#ff0000 size=2> BorderThickness</FONT><FONT color=#0000ff size=2>="{</FONT><FONT color=#a31515 size=2>TemplateBinding</FONT><FONT color=#ff0000 size=2> Border</FONT><FONT color=#0000ff size=2>.</FONT><FONT color=#ff0000 size=2>BorderThickness</FONT><FONT color=#0000ff size=2>}"</FONT><FONT color=#ff0000 size=2> CornerRadius</FONT><FONT color=#0000ff size=2>="{</FONT><FONT color=#a31515 size=2>TemplateBinding</FONT><FONT color=#ff0000 size=2> igDP</FONT><FONT color=#0000ff size=2>:</FONT><FONT color=#ff0000 size=2>CellValuePresenter</FONT><FONT color=#0000ff size=2>.CornerRadius}"</FONT><FONT color=#ff0000 size=2> BorderBrush</FONT><FONT color=#0000ff size=2>="{</FONT><FONT color=#a31515 size=2>TemplateBinding</FONT><FONT color=#ff0000 size=2> Border</FONT><FONT color=#0000ff size=2>.</FONT><FONT color=#ff0000 size=2>BorderBrush</FONT><FONT color=#0000ff size=2>}"</FONT><FONT color=#ff0000 size=2> Background</FONT><FONT color=#0000ff size=2>="{</FONT><FONT color=#a31515 size=2>TemplateBinding</FONT><FONT color=#ff0000 size=2> Panel</FONT><FONT color=#0000ff size=2>.</FONT><FONT color=#ff0000 size=2>Background</FONT><FONT color=#0000ff size=2>}"</FONT><FONT color=#ff0000 size=2> Name</FONT><FONT color=#0000ff size=2>="MainBorder" /&gt;</P></FONT><FONT color=#a31515 size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;</FONT><FONT color=#a31515 size=2>Rectangle</FONT><FONT color=#ff0000 size=2> Fill</FONT><FONT color=#0000ff size=2>="{</FONT><FONT color=#a31515 size=2>TemplateBinding</FONT><FONT color=#ff0000 size=2> igDP</FONT><FONT color=#0000ff size=2>:</FONT><FONT color=#ff0000 size=2>CellValuePresenter</FONT><FONT color=#0000ff size=2>.BackgroundActive}"</FONT><FONT color=#ff0000 size=2> Stroke</FONT><FONT color=#0000ff size=2>="{</FONT><FONT color=#a31515 size=2>TemplateBinding</FONT><FONT color=#ff0000 size=2> igDP</FONT><FONT color=#0000ff size=2>:</FONT><FONT color=#ff0000 size=2>CellValuePresenter</FONT><FONT color=#0000ff size=2>.BorderActiveBrush}"</FONT><FONT color=#ff0000 size=2> StrokeThickness</FONT><FONT color=#0000ff size=2>="1"</FONT><FONT color=#ff0000 size=2> Name</FONT><FONT color=#0000ff size=2>="Active"</FONT><FONT color=#ff0000 size=2> Width</FONT><FONT color=#0000ff size=2>="Auto"</FONT><FONT color=#ff0000 size=2> Height</FONT><FONT color=#0000ff size=2>="Auto"</FONT><FONT color=#ff0000 size=2> HorizontalAlignment</FONT><FONT color=#0000ff size=2>="Stretch"</FONT><FONT color=#ff0000 size=2> VerticalAlignment</FONT><FONT color=#0000ff size=2>="Stretch"</FONT><FONT color=#ff0000 size=2> Opacity</FONT><FONT color=#0000ff size=2>="1"</FONT><FONT color=#ff0000 size=2> Visibility</FONT><FONT color=#0000ff size=2>="Collapsed"</FONT><FONT color=#ff0000 size=2> SnapsToDevicePixels</FONT><FONT color=#0000ff size=2>="True" /&gt;</P></FONT><FONT color=#a31515 size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;</FONT><FONT color=#a31515 size=2>Grid</FONT><FONT color=#0000ff size=2>&gt;</P></FONT><FONT color=#a31515 size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;</FONT><FONT color=#a31515 size=2>Grid.ColumnDefinitions</FONT><FONT color=#0000ff size=2>&gt;</P></FONT><FONT color=#a31515 size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;</FONT><FONT color=#a31515 size=2>ColumnDefinition</FONT><FONT color=#ff0000 size=2> Width</FONT><FONT color=#0000ff size=2>="Auto"/&gt;</P></FONT><FONT color=#a31515 size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;</FONT><FONT color=#a31515 size=2>ColumnDefinition</FONT><FONT color=#ff0000 size=2> Width</FONT><FONT color=#0000ff size=2>="*"/&gt;</P></FONT><FONT color=#a31515 size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;/</FONT><FONT color=#a31515 size=2>Grid.ColumnDefinitions</FONT><FONT color=#0000ff size=2>&gt;</FONT><FONT color=#a31515 size=2> </P>
+<P></FONT><FONT color=#0000ff size=2>&lt;</FONT><FONT color=#a31515 size=2>csla</FONT><FONT color=#0000ff size=2>:</FONT><FONT color=#a31515 size=2>PropertyStatus</FONT><FONT color=#ff0000 size=2> Grid.Column</FONT><FONT color=#0000ff size=2>="0"</FONT><FONT color=#ff0000 size=2> Source</FONT><FONT color=#0000ff size=2>="{</FONT><FONT color=#a31515 size=2>Binding</FONT><FONT color=#ff0000 size=2> Path</FONT><FONT color=#0000ff size=2>=Record.DataItem,</FONT><FONT color=#ff0000 size=2> RelativeSource</FONT><FONT color=#0000ff size=2>={</FONT><FONT color=#a31515 size=2>RelativeSource</FONT><FONT color=#ff0000 size=2> Mode</FONT><FONT color=#0000ff size=2>=TemplatedParent}}"</FONT><FONT color=#ff0000 size=2> Property</FONT><FONT color=#0000ff size=2>="{</FONT><FONT color=#a31515 size=2>Binding</FONT><FONT color=#ff0000 size=2> Path</FONT><FONT color=#0000ff size=2>=Field.Name,</FONT><FONT color=#ff0000 size=2> RelativeSource</FONT><FONT color=#0000ff size=2>={</FONT><FONT color=#a31515 size=2>RelativeSource</FONT><FONT color=#ff0000 size=2> Mode</FONT><FONT color=#0000ff size=2>=TemplatedParent}}" /&gt;</P></FONT><FONT color=#a31515 size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;</FONT><FONT color=#a31515 size=2>ContentPresenter</FONT><FONT color=#ff0000 size=2> Grid.Column</FONT><FONT color=#0000ff size=2>="1"</FONT><FONT color=#ff0000 size=2> Content</FONT><FONT color=#0000ff size=2>="{</FONT><FONT color=#a31515 size=2>TemplateBinding</FONT><FONT color=#ff0000 size=2> ContentControl</FONT><FONT color=#0000ff size=2>.</FONT><FONT color=#ff0000 size=2>Content</FONT><FONT color=#0000ff size=2>}"</FONT><FONT color=#ff0000 size=2> ContentTemplate</FONT><FONT color=#0000ff size=2>="{</FONT><FONT color=#a31515 size=2>TemplateBinding</FONT><FONT color=#ff0000 size=2> ContentControl</FONT><FONT color=#0000ff size=2>.</FONT><FONT color=#ff0000 size=2>ContentTemplate</FONT><FONT color=#0000ff size=2>}"</FONT><FONT color=#ff0000 size=2> ContentStringFormat</FONT><FONT color=#0000ff size=2>="{</FONT><FONT color=#a31515 size=2>TemplateBinding</FONT><FONT color=#ff0000 size=2> ContentControl</FONT><FONT color=#0000ff size=2>.</FONT><FONT color=#ff0000 size=2>ContentStringFormat</FONT><FONT color=#0000ff size=2>}"</FONT><FONT color=#ff0000 size=2> Style</FONT><FONT color=#0000ff size=2>="{</FONT><FONT color=#a31515 size=2>TemplateBinding</FONT><FONT color=#ff0000 size=2> igDP</FONT><FONT color=#0000ff size=2>:</FONT><FONT color=#ff0000 size=2>CellValuePresenter</FONT><FONT color=#0000ff size=2>.ForegroundStyle}"</FONT><FONT color=#ff0000 size=2> Name</FONT><FONT color=#0000ff size=2>="PART_EditorSite"</FONT><FONT color=#ff0000 size=2> Margin</FONT><FONT color=#0000ff size=2>="{</FONT><FONT color=#a31515 size=2>TemplateBinding</FONT><FONT color=#ff0000 size=2> Control</FONT><FONT color=#0000ff size=2>.</FONT><FONT color=#ff0000 size=2>Padding</FONT><FONT color=#0000ff size=2>}"</FONT><FONT color=#ff0000 size=2> HorizontalAlignment</FONT><FONT color=#0000ff size=2>="{</FONT><FONT color=#a31515 size=2>TemplateBinding</FONT><FONT color=#ff0000 size=2> Control</FONT><FONT color=#0000ff size=2>.</FONT><FONT color=#ff0000 size=2>HorizontalContentAlignment</FONT><FONT color=#0000ff size=2>}"</FONT><FONT color=#ff0000 size=2> VerticalAlignment</FONT><FONT color=#0000ff size=2>="{</FONT><FONT color=#a31515 size=2>TemplateBinding</FONT><FONT color=#ff0000 size=2> Control</FONT><FONT color=#0000ff size=2>.</FONT><FONT color=#ff0000 size=2>VerticalContentAlignment</FONT><FONT color=#0000ff size=2>}" /&gt;</FONT><FONT color=#a31515 size=2> </P>
+<P></FONT><FONT color=#0000ff size=2>&lt;/</FONT><FONT color=#a31515 size=2>Grid</FONT><FONT color=#0000ff size=2>&gt;</P></FONT><FONT color=#a31515 size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;/</FONT><FONT color=#a31515 size=2>igWindows</FONT><FONT color=#0000ff size=2>:</FONT><FONT color=#a31515 size=2>CardPanel</FONT><FONT color=#0000ff size=2>&gt;</P></FONT><FONT color=#a31515 size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;</FONT><FONT color=#a31515 size=2>ControlTemplate.Triggers</FONT><FONT color=#0000ff size=2>&gt;</P></FONT><FONT color=#a31515 size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;</FONT><FONT color=#a31515 size=2>Trigger</FONT><FONT color=#ff0000 size=2> Property</FONT><FONT color=#0000ff size=2>="igDP:DataItemPresenter.HighlightAsPrimary"&gt;</P></FONT><FONT color=#a31515 size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;</FONT><FONT color=#a31515 size=2>Setter</FONT><FONT color=#ff0000 size=2> Property</FONT><FONT color=#0000ff size=2>="Panel.Background"</FONT><FONT color=#ff0000 size=2> TargetName</FONT><FONT color=#0000ff size=2>="MainBorder"&gt;</P></FONT><FONT color=#a31515 size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;</FONT><FONT color=#a31515 size=2>Setter.Value</FONT><FONT color=#0000ff size=2>&gt;</P></FONT><FONT color=#a31515 size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;</FONT><FONT color=#a31515 size=2>Binding</FONT><FONT color=#ff0000 size=2> Path</FONT><FONT color=#0000ff size=2>="BackgroundPrimary"</FONT><FONT color=#ff0000 size=2> RelativeSource</FONT><FONT color=#0000ff size=2>="{</FONT><FONT color=#a31515 size=2>RelativeSource</FONT><FONT color=#ff0000 size=2> Mode</FONT><FONT color=#0000ff size=2>=TemplatedParent}" /&gt;</P></FONT><FONT color=#a31515 size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;/</FONT><FONT color=#a31515 size=2>Setter.Value</FONT><FONT color=#0000ff size=2>&gt;</P></FONT><FONT color=#a31515 size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;/</FONT><FONT color=#a31515 size=2>Setter</FONT><FONT color=#0000ff size=2>&gt;</P></FONT><FONT color=#a31515 size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;</FONT><FONT color=#a31515 size=2>Setter</FONT><FONT color=#ff0000 size=2> Property</FONT><FONT color=#0000ff size=2>="Border.BorderBrush"</FONT><FONT color=#ff0000 size=2> TargetName</FONT><FONT color=#0000ff size=2>="MainBorder"&gt;</P></FONT><FONT color=#a31515 size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;</FONT><FONT color=#a31515 size=2>Setter.Value</FONT><FONT color=#0000ff size=2>&gt;</P></FONT><FONT color=#a31515 size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;</FONT><FONT color=#a31515 size=2>Binding</FONT><FONT color=#ff0000 size=2> Path</FONT><FONT color=#0000ff size=2>="BorderPrimaryBrush"</FONT><FONT color=#ff0000 size=2> RelativeSource</FONT><FONT color=#0000ff size=2>="{</FONT><FONT color=#a31515 size=2>RelativeSource</FONT><FONT color=#ff0000 size=2> Mode</FONT><FONT color=#0000ff size=2>=TemplatedParent}" /&gt;</P></FONT><FONT color=#a31515 size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;/</FONT><FONT color=#a31515 size=2>Setter.Value</FONT><FONT color=#0000ff size=2>&gt;</P></FONT><FONT color=#a31515 size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;/</FONT><FONT color=#a31515 size=2>Setter</FONT><FONT color=#0000ff size=2>&gt;</P></FONT><FONT color=#a31515 size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;</FONT><FONT color=#a31515 size=2>Setter</FONT><FONT color=#ff0000 size=2> Property</FONT><FONT color=#0000ff size=2>="FrameworkElement.Style"</FONT><FONT color=#ff0000 size=2> TargetName</FONT><FONT color=#0000ff size=2>="PART_EditorSite"&gt;</P></FONT><FONT color=#a31515 size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;</FONT><FONT color=#a31515 size=2>Setter.Value</FONT><FONT color=#0000ff size=2>&gt;</P></FONT><FONT color=#a31515 size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;</FONT><FONT color=#a31515 size=2>Binding</FONT><FONT color=#ff0000 size=2> Path</FONT><FONT color=#0000ff size=2>="ForegroundPrimaryStyle"</FONT><FONT color=#ff0000 size=2> RelativeSource</FONT><FONT color=#0000ff size=2>="{</FONT><FONT color=#a31515 size=2>RelativeSource</FONT><FONT color=#ff0000 size=2> Mode</FONT><FONT color=#0000ff size=2>=TemplatedParent}" /&gt;</P></FONT><FONT color=#a31515 size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;/</FONT><FONT color=#a31515 size=2>Setter.Value</FONT><FONT color=#0000ff size=2>&gt;</P></FONT><FONT color=#a31515 size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;/</FONT><FONT color=#a31515 size=2>Setter</FONT><FONT color=#0000ff size=2>&gt;</P></FONT><FONT color=#a31515 size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;</FONT><FONT color=#a31515 size=2>Trigger.Value</FONT><FONT color=#0000ff size=2>&gt;</P></FONT><FONT color=#a31515 size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;</FONT><FONT color=#a31515 size=2>s</FONT><FONT color=#0000ff size=2>:</FONT><FONT color=#a31515 size=2>Boolean</FONT><FONT color=#0000ff size=2>&gt;</FONT><FONT color=#a31515 size=2>True</FONT><FONT color=#0000ff size=2>&lt;/</FONT><FONT color=#a31515 size=2>s</FONT><FONT color=#0000ff size=2>:</FONT><FONT color=#a31515 size=2>Boolean</FONT><FONT color=#0000ff size=2>&gt;</P></FONT><FONT color=#a31515 size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;/</FONT><FONT color=#a31515 size=2>Trigger.Value</FONT><FONT color=#0000ff size=2>&gt;</P></FONT><FONT color=#a31515 size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;/</FONT><FONT color=#a31515 size=2>Trigger</FONT><FONT color=#0000ff size=2>&gt;</P></FONT><FONT color=#a31515 size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;</FONT><FONT color=#a31515 size=2>Trigger</FONT><FONT color=#ff0000 size=2> Property</FONT><FONT color=#0000ff size=2>="igDP:CellValuePresenter.IsFieldSelected"&gt;</P></FONT><FONT color=#a31515 size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;</FONT><FONT color=#a31515 size=2>Setter</FONT><FONT color=#ff0000 size=2> Property</FONT><FONT color=#0000ff size=2>="Panel.Background"</FONT><FONT color=#ff0000 size=2> TargetName</FONT><FONT color=#0000ff size=2>="MainBorder"&gt;</P></FONT><FONT color=#a31515 size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;</FONT><FONT color=#a31515 size=2>Setter.Value</FONT><FONT color=#0000ff size=2>&gt;</P></FONT><FONT color=#a31515 size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;</FONT><FONT color=#a31515 size=2>Binding</FONT><FONT color=#ff0000 size=2> Path</FONT><FONT color=#0000ff size=2>="BackgroundFieldSelected"</FONT><FONT color=#ff0000 size=2> RelativeSource</FONT><FONT color=#0000ff size=2>="{</FONT><FONT color=#a31515 size=2>RelativeSource</FONT><FONT color=#ff0000 size=2> Mode</FONT><FONT color=#0000ff size=2>=TemplatedParent}" /&gt;</P></FONT><FONT color=#a31515 size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;/</FONT><FONT color=#a31515 size=2>Setter.Value</FONT><FONT color=#0000ff size=2>&gt;</P></FONT><FONT color=#a31515 size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;/</FONT><FONT color=#a31515 size=2>Setter</FONT><FONT color=#0000ff size=2>&gt;</P></FONT><FONT color=#a31515 size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;</FONT><FONT color=#a31515 size=2>Setter</FONT><FONT color=#ff0000 size=2> Property</FONT><FONT color=#0000ff size=2>="Border.BorderBrush"</FONT><FONT color=#ff0000 size=2> TargetName</FONT><FONT color=#0000ff size=2>="MainBorder"&gt;</P></FONT><FONT color=#a31515 size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;</FONT><FONT color=#a31515 size=2>Setter.Value</FONT><FONT color=#0000ff size=2>&gt;</P></FONT><FONT color=#a31515 size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;</FONT><FONT color=#a31515 size=2>Binding</FONT><FONT color=#ff0000 size=2> Path</FONT><FONT color=#0000ff size=2>="BorderFieldSelectedBrush"</FONT><FONT color=#ff0000 size=2> RelativeSource</FONT><FONT color=#0000ff size=2>="{</FONT><FONT color=#a31515 size=2>RelativeSource</FONT><FONT color=#ff0000 size=2> Mode</FONT><FONT color=#0000ff size=2>=TemplatedParent}" /&gt;</P></FONT><FONT color=#a31515 size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;/</FONT><FONT color=#a31515 size=2>Setter.Value</FONT><FONT color=#0000ff size=2>&gt;</P></FONT><FONT color=#a31515 size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;/</FONT><FONT color=#a31515 size=2>Setter</FONT><FONT color=#0000ff size=2>&gt;</P></FONT><FONT color=#a31515 size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;</FONT><FONT color=#a31515 size=2>Setter</FONT><FONT color=#ff0000 size=2> Property</FONT><FONT color=#0000ff size=2>="FrameworkElement.Style"</FONT><FONT color=#ff0000 size=2> TargetName</FONT><FONT color=#0000ff size=2>="PART_EditorSite"&gt;</P></FONT><FONT color=#a31515 size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;</FONT><FONT color=#a31515 size=2>Setter.Value</FONT><FONT color=#0000ff size=2>&gt;</P></FONT><FONT color=#a31515 size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;</FONT><FONT color=#a31515 size=2>Binding</FONT><FONT color=#ff0000 size=2> Path</FONT><FONT color=#0000ff size=2>="ForegroundFieldSelectedStyle"</FONT><FONT color=#ff0000 size=2> RelativeSource</FONT><FONT color=#0000ff size=2>="{</FONT><FONT color=#a31515 size=2>RelativeSource</FONT><FONT color=#ff0000 size=2> Mode</FONT><FONT color=#0000ff size=2>=TemplatedParent}" /&gt;</P></FONT><FONT color=#a31515 size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;/</FONT><FONT color=#a31515 size=2>Setter.Value</FONT><FONT color=#0000ff size=2>&gt;</P></FONT><FONT color=#a31515 size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;/</FONT><FONT color=#a31515 size=2>Setter</FONT><FONT color=#0000ff size=2>&gt;</P></FONT><FONT color=#a31515 size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;</FONT><FONT color=#a31515 size=2>Trigger.Value</FONT><FONT color=#0000ff size=2>&gt;</P></FONT><FONT color=#a31515 size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;</FONT><FONT color=#a31515 size=2>s</FONT><FONT color=#0000ff size=2>:</FONT><FONT color=#a31515 size=2>Boolean</FONT><FONT color=#0000ff size=2>&gt;</FONT><FONT color=#a31515 size=2>True</FONT><FONT color=#0000ff size=2>&lt;/</FONT><FONT color=#a31515 size=2>s</FONT><FONT color=#0000ff size=2>:</FONT><FONT color=#a31515 size=2>Boolean</FONT><FONT color=#0000ff size=2>&gt;</P></FONT><FONT color=#a31515 size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;/</FONT><FONT color=#a31515 size=2>Trigger.Value</FONT><FONT color=#0000ff size=2>&gt;</P></FONT><FONT color=#a31515 size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;/</FONT><FONT color=#a31515 size=2>Trigger</FONT><FONT color=#0000ff size=2>&gt;</P></FONT><FONT color=#a31515 size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;</FONT><FONT color=#a31515 size=2>Trigger</FONT><FONT color=#ff0000 size=2> Property</FONT><FONT color=#0000ff size=2>="igDP:CellValuePresenter.IsSelected"&gt;</P></FONT><FONT color=#a31515 size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;</FONT><FONT color=#a31515 size=2>Setter</FONT><FONT color=#ff0000 size=2> Property</FONT><FONT color=#0000ff size=2>="Panel.Background"</FONT><FONT color=#ff0000 size=2> TargetName</FONT><FONT color=#0000ff size=2>="MainBorder"&gt;</P></FONT><FONT color=#a31515 size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;</FONT><FONT color=#a31515 size=2>Setter.Value</FONT><FONT color=#0000ff size=2>&gt;</P></FONT><FONT color=#a31515 size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;</FONT><FONT color=#a31515 size=2>Binding</FONT><FONT color=#ff0000 size=2> Path</FONT><FONT color=#0000ff size=2>="BackgroundSelected"</FONT><FONT color=#ff0000 size=2> RelativeSource</FONT><FONT color=#0000ff size=2>="{</FONT><FONT color=#a31515 size=2>RelativeSource</FONT><FONT color=#ff0000 size=2> Mode</FONT><FONT color=#0000ff size=2>=TemplatedParent}" /&gt;</P></FONT><FONT color=#a31515 size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;/</FONT><FONT color=#a31515 size=2>Setter.Value</FONT><FONT color=#0000ff size=2>&gt;</P></FONT><FONT color=#a31515 size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;/</FONT><FONT color=#a31515 size=2>Setter</FONT><FONT color=#0000ff size=2>&gt;</P></FONT><FONT color=#a31515 size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;</FONT><FONT color=#a31515 size=2>Setter</FONT><FONT color=#ff0000 size=2> Property</FONT><FONT color=#0000ff size=2>="Border.BorderBrush"</FONT><FONT color=#ff0000 size=2> TargetName</FONT><FONT color=#0000ff size=2>="MainBorder"&gt;</P></FONT><FONT color=#a31515 size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;</FONT><FONT color=#a31515 size=2>Setter.Value</FONT><FONT color=#0000ff size=2>&gt;</P></FONT><FONT color=#a31515 size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;</FONT><FONT color=#a31515 size=2>Binding</FONT><FONT color=#ff0000 size=2> Path</FONT><FONT color=#0000ff size=2>="BorderSelectedBrush"</FONT><FONT color=#ff0000 size=2> RelativeSource</FONT><FONT color=#0000ff size=2>="{</FONT><FONT color=#a31515 size=2>RelativeSource</FONT><FONT color=#ff0000 size=2> Mode</FONT><FONT color=#0000ff size=2>=TemplatedParent}" /&gt;</P></FONT><FONT color=#a31515 size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;/</FONT><FONT color=#a31515 size=2>Setter.Value</FONT><FONT color=#0000ff size=2>&gt;</P></FONT><FONT color=#a31515 size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;/</FONT><FONT color=#a31515 size=2>Setter</FONT><FONT color=#0000ff size=2>&gt;</P></FONT><FONT color=#a31515 size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;</FONT><FONT color=#a31515 size=2>Setter</FONT><FONT color=#ff0000 size=2> Property</FONT><FONT color=#0000ff size=2>="FrameworkElement.Style"</FONT><FONT color=#ff0000 size=2> TargetName</FONT><FONT color=#0000ff size=2>="PART_EditorSite"&gt;</P></FONT><FONT color=#a31515 size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;</FONT><FONT color=#a31515 size=2>Setter.Value</FONT><FONT color=#0000ff size=2>&gt;</P></FONT><FONT color=#a31515 size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;</FONT><FONT color=#a31515 size=2>Binding</FONT><FONT color=#ff0000 size=2> Path</FONT><FONT color=#0000ff size=2>="ForegroundSelectedStyle"</FONT><FONT color=#ff0000 size=2> RelativeSource</FONT><FONT color=#0000ff size=2>="{</FONT><FONT color=#a31515 size=2>RelativeSource</FONT><FONT color=#ff0000 size=2> Mode</FONT><FONT color=#0000ff size=2>=TemplatedParent}" /&gt;</P></FONT><FONT color=#a31515 size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;/</FONT><FONT color=#a31515 size=2>Setter.Value</FONT><FONT color=#0000ff size=2>&gt;</P></FONT><FONT color=#a31515 size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;/</FONT><FONT color=#a31515 size=2>Setter</FONT><FONT color=#0000ff size=2>&gt;</P></FONT><FONT color=#a31515 size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;</FONT><FONT color=#a31515 size=2>Trigger.Value</FONT><FONT color=#0000ff size=2>&gt;</P></FONT><FONT color=#a31515 size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;</FONT><FONT color=#a31515 size=2>s</FONT><FONT color=#0000ff size=2>:</FONT><FONT color=#a31515 size=2>Boolean</FONT><FONT color=#0000ff size=2>&gt;</FONT><FONT color=#a31515 size=2>True</FONT><FONT color=#0000ff size=2>&lt;/</FONT><FONT color=#a31515 size=2>s</FONT><FONT color=#0000ff size=2>:</FONT><FONT color=#a31515 size=2>Boolean</FONT><FONT color=#0000ff size=2>&gt;</P></FONT><FONT color=#a31515 size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;/</FONT><FONT color=#a31515 size=2>Trigger.Value</FONT><FONT color=#0000ff size=2>&gt;</P></FONT><FONT color=#a31515 size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;/</FONT><FONT color=#a31515 size=2>Trigger</FONT><FONT color=#0000ff size=2>&gt;</P></FONT><FONT color=#a31515 size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;</FONT><FONT color=#a31515 size=2>Trigger</FONT><FONT color=#ff0000 size=2> Property</FONT><FONT color=#0000ff size=2>="igDP:CellValuePresenter.IsActive"&gt;</P></FONT><FONT color=#a31515 size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;</FONT><FONT color=#a31515 size=2>Setter</FONT><FONT color=#ff0000 size=2> Property</FONT><FONT color=#0000ff size=2>="FrameworkElement.Style"</FONT><FONT color=#ff0000 size=2> TargetName</FONT><FONT color=#0000ff size=2>="PART_EditorSite"&gt;</P></FONT><FONT color=#a31515 size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;</FONT><FONT color=#a31515 size=2>Setter.Value</FONT><FONT color=#0000ff size=2>&gt;</P></FONT><FONT color=#a31515 size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;</FONT><FONT color=#a31515 size=2>Binding</FONT><FONT color=#ff0000 size=2> Path</FONT><FONT color=#0000ff size=2>="ForegroundActiveStyle"</FONT><FONT color=#ff0000 size=2> RelativeSource</FONT><FONT color=#0000ff size=2>="{</FONT><FONT color=#a31515 size=2>RelativeSource</FONT><FONT color=#ff0000 size=2> Mode</FONT><FONT color=#0000ff size=2>=TemplatedParent}" /&gt;</P></FONT><FONT color=#a31515 size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;/</FONT><FONT color=#a31515 size=2>Setter.Value</FONT><FONT color=#0000ff size=2>&gt;</P></FONT><FONT color=#a31515 size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;/</FONT><FONT color=#a31515 size=2>Setter</FONT><FONT color=#0000ff size=2>&gt;</P></FONT><FONT color=#a31515 size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;</FONT><FONT color=#a31515 size=2>Setter</FONT><FONT color=#ff0000 size=2> Property</FONT><FONT color=#0000ff size=2>="UIElement.Visibility"</FONT><FONT color=#ff0000 size=2> TargetName</FONT><FONT color=#0000ff size=2>="Active"&gt;</P></FONT><FONT color=#a31515 size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;</FONT><FONT color=#a31515 size=2>Setter.Value</FONT><FONT color=#0000ff size=2>&gt;</P></FONT><FONT color=#a31515 size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;</FONT><FONT color=#a31515 size=2>x</FONT><FONT color=#0000ff size=2>:</FONT><FONT color=#a31515 size=2>Static</FONT><FONT color=#ff0000 size=2> Member</FONT><FONT color=#0000ff size=2>="Visibility.Visible" /&gt;</P></FONT><FONT color=#a31515 size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;/</FONT><FONT color=#a31515 size=2>Setter.Value</FONT><FONT color=#0000ff size=2>&gt;</P></FONT><FONT color=#a31515 size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;/</FONT><FONT color=#a31515 size=2>Setter</FONT><FONT color=#0000ff size=2>&gt;</P></FONT><FONT color=#a31515 size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;</FONT><FONT color=#a31515 size=2>Trigger.Value</FONT><FONT color=#0000ff size=2>&gt;</P></FONT><FONT color=#a31515 size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;</FONT><FONT color=#a31515 size=2>s</FONT><FONT color=#0000ff size=2>:</FONT><FONT color=#a31515 size=2>Boolean</FONT><FONT color=#0000ff size=2>&gt;</FONT><FONT color=#a31515 size=2>True</FONT><FONT color=#0000ff size=2>&lt;/</FONT><FONT color=#a31515 size=2>s</FONT><FONT color=#0000ff size=2>:</FONT><FONT color=#a31515 size=2>Boolean</FONT><FONT color=#0000ff size=2>&gt;</P></FONT><FONT color=#a31515 size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;/</FONT><FONT color=#a31515 size=2>Trigger.Value</FONT><FONT color=#0000ff size=2>&gt;</P></FONT><FONT color=#a31515 size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;/</FONT><FONT color=#a31515 size=2>Trigger</FONT><FONT color=#0000ff size=2>&gt;</P></FONT><FONT color=#a31515 size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;</FONT><FONT color=#a31515 size=2>MultiTrigger</FONT><FONT color=#0000ff size=2>&gt;</P></FONT><FONT color=#a31515 size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;</FONT><FONT color=#a31515 size=2>MultiTrigger.Conditions</FONT><FONT color=#0000ff size=2>&gt;</P></FONT><FONT color=#a31515 size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;</FONT><FONT color=#a31515 size=2>Condition</FONT><FONT color=#ff0000 size=2> Property</FONT><FONT color=#0000ff size=2>="UIElement.IsMouseOver"&gt;</P></FONT><FONT color=#a31515 size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;</FONT><FONT color=#a31515 size=2>Condition.Value</FONT><FONT color=#0000ff size=2>&gt;</P></FONT><FONT color=#a31515 size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;</FONT><FONT color=#a31515 size=2>s</FONT><FONT color=#0000ff size=2>:</FONT><FONT color=#a31515 size=2>Boolean</FONT><FONT color=#0000ff size=2>&gt;</FONT><FONT color=#a31515 size=2>True</FONT><FONT color=#0000ff size=2>&lt;/</FONT><FONT color=#a31515 size=2>s</FONT><FONT color=#0000ff size=2>:</FONT><FONT color=#a31515 size=2>Boolean</FONT><FONT color=#0000ff size=2>&gt;</P></FONT><FONT color=#a31515 size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;/</FONT><FONT color=#a31515 size=2>Condition.Value</FONT><FONT color=#0000ff size=2>&gt;</P></FONT><FONT color=#a31515 size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;/</FONT><FONT color=#a31515 size=2>Condition</FONT><FONT color=#0000ff size=2>&gt;</P></FONT><FONT color=#a31515 size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;</FONT><FONT color=#a31515 size=2>Condition</FONT><FONT color=#ff0000 size=2> Property</FONT><FONT color=#0000ff size=2>="igDP:CellValuePresenter.IsSelected"&gt;</P></FONT><FONT color=#a31515 size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;</FONT><FONT color=#a31515 size=2>Condition.Value</FONT><FONT color=#0000ff size=2>&gt;</P></FONT><FONT color=#a31515 size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;</FONT><FONT color=#a31515 size=2>s</FONT><FONT color=#0000ff size=2>:</FONT><FONT color=#a31515 size=2>Boolean</FONT><FONT color=#0000ff size=2>&gt;</FONT><FONT color=#a31515 size=2>False</FONT><FONT color=#0000ff size=2>&lt;/</FONT><FONT color=#a31515 size=2>s</FONT><FONT color=#0000ff size=2>:</FONT><FONT color=#a31515 size=2>Boolean</FONT><FONT color=#0000ff size=2>&gt;</P></FONT><FONT color=#a31515 size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;/</FONT><FONT color=#a31515 size=2>Condition.Value</FONT><FONT color=#0000ff size=2>&gt;</P></FONT><FONT color=#a31515 size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;/</FONT><FONT color=#a31515 size=2>Condition</FONT><FONT color=#0000ff size=2>&gt;</P></FONT><FONT color=#a31515 size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;</FONT><FONT color=#a31515 size=2>Condition</FONT><FONT color=#ff0000 size=2> Property</FONT><FONT color=#0000ff size=2>="igDP:CellValuePresenter.IsFieldSelected"&gt;</P></FONT><FONT color=#a31515 size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;</FONT><FONT color=#a31515 size=2>Condition.Value</FONT><FONT color=#0000ff size=2>&gt;</P></FONT><FONT color=#a31515 size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;</FONT><FONT color=#a31515 size=2>s</FONT><FONT color=#0000ff size=2>:</FONT><FONT color=#a31515 size=2>Boolean</FONT><FONT color=#0000ff size=2>&gt;</FONT><FONT color=#a31515 size=2>False</FONT><FONT color=#0000ff size=2>&lt;/</FONT><FONT color=#a31515 size=2>s</FONT><FONT color=#0000ff size=2>:</FONT><FONT color=#a31515 size=2>Boolean</FONT><FONT color=#0000ff size=2>&gt;</P></FONT><FONT color=#a31515 size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;/</FONT><FONT color=#a31515 size=2>Condition.Value</FONT><FONT color=#0000ff size=2>&gt;</P></FONT><FONT color=#a31515 size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;/</FONT><FONT color=#a31515 size=2>Condition</FONT><FONT color=#0000ff size=2>&gt;</P></FONT><FONT color=#a31515 size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;/</FONT><FONT color=#a31515 size=2>MultiTrigger.Conditions</FONT><FONT color=#0000ff size=2>&gt;</P></FONT><FONT color=#a31515 size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;</FONT><FONT color=#a31515 size=2>Setter</FONT><FONT color=#ff0000 size=2> Property</FONT><FONT color=#0000ff size=2>="Panel.Background"</FONT><FONT color=#ff0000 size=2> TargetName</FONT><FONT color=#0000ff size=2>="MainBorder"&gt;</P></FONT><FONT color=#a31515 size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;</FONT><FONT color=#a31515 size=2>Setter.Value</FONT><FONT color=#0000ff size=2>&gt;</P></FONT><FONT color=#a31515 size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;</FONT><FONT color=#a31515 size=2>Binding</FONT><FONT color=#ff0000 size=2> Path</FONT><FONT color=#0000ff size=2>="BackgroundHover"</FONT><FONT color=#ff0000 size=2> RelativeSource</FONT><FONT color=#0000ff size=2>="{</FONT><FONT color=#a31515 size=2>RelativeSource</FONT><FONT color=#ff0000 size=2> Mode</FONT><FONT color=#0000ff size=2>=TemplatedParent}" /&gt;</P></FONT><FONT color=#a31515 size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;/</FONT><FONT color=#a31515 size=2>Setter.Value</FONT><FONT color=#0000ff size=2>&gt;</P></FONT><FONT color=#a31515 size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;/</FONT><FONT color=#a31515 size=2>Setter</FONT><FONT color=#0000ff size=2>&gt;</P></FONT><FONT color=#a31515 size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;</FONT><FONT color=#a31515 size=2>Setter</FONT><FONT color=#ff0000 size=2> Property</FONT><FONT color=#0000ff size=2>="Border.BorderBrush"</FONT><FONT color=#ff0000 size=2> TargetName</FONT><FONT color=#0000ff size=2>="MainBorder"&gt;</P></FONT><FONT color=#a31515 size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;</FONT><FONT color=#a31515 size=2>Setter.Value</FONT><FONT color=#0000ff size=2>&gt;</P></FONT><FONT color=#a31515 size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;</FONT><FONT color=#a31515 size=2>Binding</FONT><FONT color=#ff0000 size=2> Path</FONT><FONT color=#0000ff size=2>="BorderHoverBrush"</FONT><FONT color=#ff0000 size=2> RelativeSource</FONT><FONT color=#0000ff size=2>="{</FONT><FONT color=#a31515 size=2>RelativeSource</FONT><FONT color=#ff0000 size=2> Mode</FONT><FONT color=#0000ff size=2>=TemplatedParent}" /&gt;</P></FONT><FONT color=#a31515 size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;/</FONT><FONT color=#a31515 size=2>Setter.Value</FONT><FONT color=#0000ff size=2>&gt;</P></FONT><FONT color=#a31515 size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;/</FONT><FONT color=#a31515 size=2>Setter</FONT><FONT color=#0000ff size=2>&gt;</P></FONT><FONT color=#a31515 size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;</FONT><FONT color=#a31515 size=2>Setter</FONT><FONT color=#ff0000 size=2> Property</FONT><FONT color=#0000ff size=2>="FrameworkElement.Style"</FONT><FONT color=#ff0000 size=2> TargetName</FONT><FONT color=#0000ff size=2>="PART_EditorSite"&gt;</P></FONT><FONT color=#a31515 size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;</FONT><FONT color=#a31515 size=2>Setter.Value</FONT><FONT color=#0000ff size=2>&gt;</P></FONT><FONT color=#a31515 size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;</FONT><FONT color=#a31515 size=2>Binding</FONT><FONT color=#ff0000 size=2> Path</FONT><FONT color=#0000ff size=2>="ForegroundHoverStyle"</FONT><FONT color=#ff0000 size=2> RelativeSource</FONT><FONT color=#0000ff size=2>="{</FONT><FONT color=#a31515 size=2>RelativeSource</FONT><FONT color=#ff0000 size=2> Mode</FONT><FONT color=#0000ff size=2>=TemplatedParent}" /&gt;</P></FONT><FONT color=#a31515 size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;/</FONT><FONT color=#a31515 size=2>Setter.Value</FONT><FONT color=#0000ff size=2>&gt;</P></FONT><FONT color=#a31515 size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;/</FONT><FONT color=#a31515 size=2>Setter</FONT><FONT color=#0000ff size=2>&gt;</P></FONT><FONT color=#a31515 size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;/</FONT><FONT color=#a31515 size=2>MultiTrigger</FONT><FONT color=#0000ff size=2>&gt;</P></FONT><FONT color=#a31515 size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;/</FONT><FONT color=#a31515 size=2>ControlTemplate.Triggers</FONT><FONT color=#0000ff size=2>&gt;</P></FONT><FONT color=#a31515 size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;/</FONT><FONT color=#a31515 size=2>ControlTemplate</FONT><FONT color=#0000ff size=2>&gt;</P></FONT><FONT color=#a31515 size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;/</FONT><FONT color=#a31515 size=2>Setter.Value</FONT><FONT color=#0000ff size=2>&gt;</P></FONT><FONT color=#a31515 size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;/</FONT><FONT color=#a31515 size=2>Setter</FONT><FONT color=#0000ff size=2>&gt;</P></FONT><FONT color=#a31515 size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;/</FONT><FONT color=#a31515 size=2>Style</FONT><FONT color=#0000ff size=2>&gt;</P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Friday, December 05, 2008</h2>Great!&nbsp; I'm going to try this out... thanks for posting!<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Fintanv replied on Thursday, December 17, 2009</h2>Sooooo....anyone manage to get the new (3.8) property status control working with the infragistics grid?</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,34 @@
+<html><header><title>Best practice for notifying parent objects of modification/validation changes in nested child objects?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Best practice for notifying parent objects of modification/validation changes in nested child objects?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/7306.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>nomadic posted on Monday, July 20, 2009</h2><div>Hello <br>
+<br>
+What best practices or patterns have people arrived at for bubbling child modification and validation changes up an object graph to its parents?<br>
+<br>
+So for example, suppose I have a page that is editing a Person object
+and its child sub-objects: (this is a contrived and simplified example,
+not my actual scenario), and I have the following object hierarchy:<br>
+<br>
+Person<br>
+&nbsp;&nbsp; |<br>
+&nbsp;&nbsp; |---- ContactDetails<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |---- Address<br>
+<br>
+<br>
+I have some buttons on the page that are databound to Person properties like IsValid and IsModified..&nbsp; <br>
+<br>
+How do you bubble up changes to the modification and validation status of the child objects to the root parent?<br>
+<br>
+So basically, if a user opens the page and just changes one of the
+properties on the Address child object, giving it an invalid value, I
+need the IsValid and IsModified property of the parent Person object to
+change and notify its databound observers.<br>
+<br>
+Ideally, I am looking at doing this automatically - so creating some
+mechanism to automatically bubble up changes to these properties up the
+object graph. Either using reflection, or something like the
+RoutedEvent system in WPF.<br>
+<br>
+How do you do it?<br>
+<br>
+Thanks<br>
+<br>
+<br></div></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, July 20, 2009</h2>Look at the ChildChanged event, it is designed to address the issue where you want to have an event on the root (Person) object that reflects that any sub-object has changed.</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

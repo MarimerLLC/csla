@@ -1,0 +1,43 @@
+<html><header><title>Rocky: Need RuleArgs.ToString() Standard for multiple arguments</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Rocky: Need RuleArgs.ToString() Standard for multiple arguments</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/1733.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>david.wendelken posted on Thursday, November 09, 2006</h2><P>Version 2.1</P>
+<P>I'm working with adding a public list of rule descriptions suitable for end-users in my own subclasses of BusinessBase, ReadOnlyBase, etc.&nbsp;&nbsp; When done, I'm going to add them to CSLA Contrib.</P>
+<P>As the input for the user rule descriptions I'm using the ValidationRules.GetRuleDescriptions() routine.</P>
+<P>As a reminder, the output for each rule is like this:</P><FONT size=2>
+<P>_ruleName = </FONT><FONT color=#800000 size=2>"rule://"</FONT><FONT size=2> + _handler.Method.Name + </FONT><FONT color=#800000 size=2>"/"</FONT><FONT size=2> + _args.ToString();</FONT></P>
+<P>_args is a RuleArgs class.</P>
+<P>The sample RuleArgs-based class's ToString() method outputs in this style:</P><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>propertyname +</FONT><FONT size=2> </FONT><FONT color=#800000 size=2>"?parameterName="</FONT><FONT size=2> + parameterValue.ToString();</P></FONT>
+<P><STRONG>So, here's my Question:</STRONG></P>
+<P><STRONG>If a custom RuleArgs class has more than one parameter value, what delimiter is everyone supposede to use between parameter name/value pairs?</STRONG></P>
+<P><STRONG>I'm guessing one of two options:</STRONG></P>
+<P><STRONG>? or </STRONG><STRONG>&amp;</STRONG></P>
+<P>The latter choice would be similar to the way URL parameters are passed, where the first one is denoted by a ? and the rest start with &amp;.</P>
+<P>What's your choice?</P>
+<P>Thanks!</P>
+<P><STRONG></STRONG>&nbsp;</P>
+<P><STRONG></STRONG>&nbsp;</P>
+<P><STRONG></STRONG>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, November 09, 2006</h2>You should use &amp;. <br><br>The reason I went with this URI style format is because you can use System.Uri to parse the text. For this to work, the combined ToString() value must return a properly formatted URI.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Friday, November 10, 2006</h2><P>Good question.</P>
+<P>Thanks for the response.</P>
+<P>Fixed a couple of small bugs with that one.</P>
+<P>Joe</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>david.wendelken replied on Friday, November 10, 2006</h2><P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div>You should use &amp;. <BR><BR>The reason I went with this URI style format is because you can use System.Uri to parse the text. For this to work, the combined ToString() value must return a properly formatted URI.<BR></div></BLOCKQUOTE></P>
+<P>Thanks for the response!</P>
+<P>I tried out System.Uri but it has unpleasant side effects.&nbsp; It turns some of the information into all lowercase strings.&nbsp; It would make my parsing easier but maintenance of the resource files that contain the rule messages harder to maintain.&nbsp; (ruleIntegerMaxValue would become ruleintegermaxvalue, which is a distinctly less pleasant phrase to visually parse correctly.)&nbsp; Bummer.</P>
+<P>Anyone know of a nifty routine that doesn't have that side effect?</P>
+<P>And an easy, elegant way to parse out the parameter name/value pairs?&nbsp; </P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>david.wendelken replied on Friday, November 10, 2006</h2><P>Success! </P>
+<P>Here's some sample output showing the list of rules on the object.&nbsp; My routine has automatically substituted the values from the Property name and the parameter values.</P>
+<P><SPAN id=ctl00_ContentPlaceHolder1_GridView1_ctl02_lblRules>Id can not exceed 5.<BR></SPAN><SPAN>Id must be unique. <BR>Name can not exceed 10 characters. <BR>Name is required.</SPAN></P>
+<P><SPAN>Here is the way I'm storing the rule message strings in the resource file:</SPAN></P>
+<P><SPAN>ruleIntegerMaxValue<BR>{ruleProperty} can not exceed {maxValue}.&nbsp;</SPAN></P>
+<P><SPAN>ruleIntegerMinValue&nbsp;<BR>{ruleProperty} can not be less than {minValue}.&nbsp;</SPAN></P>
+<P><SPAN>ruleNoDuplicates&nbsp;<BR>{ruleProperty} must be unique.&nbsp;</SPAN></P>
+<P><SPAN>ruleStringMaxLength&nbsp;<BR>{ruleProperty} can not exceed {maxLength} characters.&nbsp;</SPAN></P>
+<P><SPAN>ruleStringRequired&nbsp;<BR>{ruleProperty} is required.&nbsp;</SPAN></P>
+<P><SPAN></SPAN>&nbsp;</P>
+<P><SPAN>I'm starting all the rule message description entries with "rule" so that they will sort together in the resources file.&nbsp; The rest of the resource key is an exact match for the rule handler name.&nbsp; Note: the existing Csla resource keys for the CommonRules are NOT the same as their rule handler names. :(</SPAN></P>
+<P><SPAN>I'm putting on my medieval armour tomorrow and buffeting my friends about (and vice-versa), so I'll put together a&nbsp; test script and post this to CSLA Contrib in the next few days.</SPAN></P>
+<P><SPAN>Given that it's an extension, the rule message description entries for common rules have been duplicated in my own resource file.&nbsp; I don't know enough about resource files to make my routine smart-enough to automagically look in the "right"&nbsp;resource file that the rule came from.&nbsp; That's a bit of a problem for long-term maintenance.&nbsp; Would love some pointers in the right direction... :)&nbsp;&nbsp;</SPAN></P>
+<P><SPAN></SPAN>&nbsp;</P>
+<P><SPAN>&nbsp;</P></SPAN>
+<P><SPAN></SPAN>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>david.wendelken replied on Sunday, November 12, 2006</h2>I've put the first cut of my rule extensions into the CSLA Contrib project.</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

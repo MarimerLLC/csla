@@ -1,0 +1,37 @@
+<html><header><title>Validation on children controls</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Validation on children controls</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3307.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>justinPlaianul posted on Wednesday, August 01, 2007</h2><P>Hi,</P>
+<P>&nbsp;</P>
+<P>I have the following scenario:</P>
+<P>&nbsp;</P>
+<P><o:p>&nbsp;</o:p></P>
+<P>There are two WPF user controls named, for example, PersonalInformationUserControl and AddressDetailsUserControl. The first one contains the second.</P>
+<P>In the business layer there are 2 classes, PersonalInformation and AddressDetails. Both of them derive from BusinessBase. PersonalInformation class has an AddressDetails member type.</P>
+<P>PersonalInformationUserControl has a CslaDataProvider that points to a PersonalInformation object. AddressDetailsUserControl uses the same CslaDataProvider as PersonalInformationUserControls but its fields are bound to the AddressDetails member of PersonalInformation object.</P>
+<P>Furthermore, PersonalInformationUserControl has a Save button that is declared like this:</P>
+<P class=MsoNormal><SPAN>&lt;</SPAN><SPAN>Button</SPAN><SPAN> x</SPAN><SPAN>:</SPAN><SPAN>Name</SPAN><SPAN>="btnSave"</SPAN><SPAN> Content</SPAN><SPAN>="Save"</SPAN><SPAN> Grid.Row</SPAN><SPAN>="5"</SPAN><SPAN> IsDefault</SPAN><SPAN>="True"<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>Command</SPAN><SPAN>="ApplicationCommands.Save"<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>CommandTarget</SPAN><SPAN>="{</SPAN><SPAN>Binding</SPAN><SPAN> Source</SPAN><SPAN>={</SPAN><SPAN>StaticResource</SPAN><SPAN> MyPerson</SPAN><SPAN>},</SPAN><SPAN> Path</SPAN><SPAN>=CommandManager,</SPAN><SPAN> BindsDirectlyToSource</SPAN><SPAN>=True}"/&gt;</SPAN></SPAN><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><o:p></o:p></SPAN></P>
+<P><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN></SPAN><SPAN>&nbsp;</SPAN></P>
+<P>In the same time, the two user controls derive from EditForm class.</P>
+<P>The two business classes have some business rules. For example, PersonalInformation applies Csla.Validation.CommonRules.StringRequired rule on FirstName property and AddressDetails applies <SPAN>Csla.Validation.CommonRules.StringMaxLength on BuildingName Property. <o:p></o:p></SPAN></P>
+<P><o:p>&nbsp;</o:p></P>
+<P>Back to UI.</P>
+<P>At runtime, the invalid fields from PersonalInformationUserControl are marked with a red border. This won’t happen for AddressDetailsUserControl invalid fields. </P>
+<P>Also, if AddressDetails business object become valid after PersonalInformation business object become valid, the UI won’t be updated. On the other hand, at the business layer level everything works perfectly. <SPAN>&nbsp;</SPAN></P>
+<P><o:p>&nbsp;</o:p></P>
+<P>Questions</P>
+<P><o:p>&nbsp;</o:p></P>
+<P><SPAN>1.<SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN></SPAN>What is the EditForm class purpose?</P>
+<P><SPAN>2.<SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN></SPAN>Why AddressDetailsUserControl invalid fields don’t have a red border?</P>
+<P><SPAN>3.<SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN></SPAN>Why the UI isn’t updated if the business objects change their status?</P>
+<P><o:p>&nbsp;</o:p></P>
+<P>Please find more details in the attached project.</P>
+<P><o:p>&nbsp;</o:p></P>
+<P>Thanks in advance,</P>
+<P><o:p>&nbsp;</o:p></P>
+<P>Costin</P>
+<P class=MsoNormal><o:p><FONT face=Calibri>&nbsp;</FONT></o:p></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, August 01, 2007</h2><P>This is why I'm writing the <EM>Using CSLA .NET 3.0</EM> ebook <img src="/emoticons/emotion-1.gif" alt="Smile [:)]" /></P>
+<OL>
+<LI>EditForm is a subclass of UserControl that provides some common functionality used by all the edit forms in PTWpf. </LI>
+<LI>The Validator control works against exactly one object: the current DataContext. To get your child objects validated, you need to use a Validator in the list template - in addition to the Validator you use at a higher level to validate the parent object. </LI>
+<LI>I don't understand this question. Are you asking if your button should enable/disable automatically? The answer is yes, but it drives off the business object's IsSavable property, so make sure that's working properly. If you have child objects, remember to override IsValid and IsDirty in the parent.</LI></OL>
+<P>&nbsp;</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

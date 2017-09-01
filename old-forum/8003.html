@@ -1,0 +1,107 @@
+<html><header><title>Attaching extra information to PropertyInfo objects</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Attaching extra information to PropertyInfo objects</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/8003.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Pawz.777 posted on Tuesday, November 17, 2009</h2>Hi,<br><br>I'm wondering what the best way of attaching additional information to PropertyInfo&lt;T&gt; objects is. I've got a situation where I'd like to eliminate a lot of plumbing code by attaching database information to the field declaration.<br><br>Eg. Replace this:<br><font face="Courier New"><font size="2">&nbsp;&nbsp; DM.AddParameter("@AssemblyTeamID", _assemblyTeamID);<br>&nbsp;&nbsp; DM.AddParameter("@AssignedProgrammer", _assignedProgrammer);</font></font><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; .... x 30 <br><br><br>with <br><br><font face="Courier New" size="2">foreach (var field in FieldManager.GetRegisteredProperties())<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (FieldManager.IsFieldDirty(field))<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; DM.AddParameter("@" + field.Name, GetProperty(field));<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</font><br><br>This actually works really well, but I'd like to cover cases where the field isn't a database field, is readonly, and so on - I was thinking it would be ideal to declare the properties like:<br><br><font face="Courier New" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; private static readonly PropertyInfo&lt;Guid&gt; FieldNameProperty =<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; RegisterProperty(new CustomPropertyInfo&lt;Guid&gt;("FieldName", "Friendly Name", "DatabaseFieldName"));</font><br><br>How would I go about doing this? It's sort of similar to the custom FieldData concept, and I suppose I could go in and tweak the PropertyInfo class directly, but surely there's a better way?<br><br>Thanks for any help :)<br><br><br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Tuesday, November 17, 2009</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>You
+can just inherit from PropertyInfo class.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Pawz.777
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Tuesday, November 17, 2009 8:06 AM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> [CSLA .NET] Attaching extra information to PropertyInfo objects<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Hi,<br>
+<br>
+I'm wondering what the best way of attaching additional information to
+PropertyInfo&lt;T&gt; objects is. I've got a situation where I'd like to eliminate
+a lot of plumbing code by attaching database information to the field
+declaration.<br>
+<br>
+Eg. Replace this:<br>
+<span>&nbsp;&nbsp;
+DM.AddParameter(&quot;@AssemblyTeamID&quot;, _assemblyTeamID);<br>
+&nbsp;&nbsp; DM.AddParameter(&quot;@AssignedProgrammer&quot;,
+_assignedProgrammer);</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; .... x 30 <br>
+<br>
+<br>
+with <br>
+<br>
+<span>foreach (var field in
+FieldManager.GetRegisteredProperties())<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+if (FieldManager.IsFieldDirty(field))<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+DM.AddParameter(&quot;@&quot; + field.Name, GetProperty(field));<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</span><br>
+<br>
+This actually works really well, but I'd like to cover cases where the field
+isn't a database field, is readonly, and so on - I was thinking it would be
+ideal to declare the properties like:<br>
+<br>
+<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+private static readonly PropertyInfo&lt;Guid&gt; FieldNameProperty =<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+RegisterProperty(new CustomPropertyInfo&lt;Guid&gt;(&quot;FieldName&quot;,
+&quot;Friendly Name&quot;, &quot;DatabaseFieldName&quot;));</span><br>
+<br>
+How would I go about doing this? It's sort of similar to the custom FieldData
+concept, and I suppose I could go in and tweak the PropertyInfo class directly,
+but surely there's a better way?<br>
+<br>
+Thanks for any help :)<b><br>
+<br>
+<br>
+<br>
+<br>
+</b><o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jjhartma replied on Tuesday, November 17, 2009</h2><br>http://forums.lhotka.net/forums/thread/36467.aspx<br><br>That thread links a blog post talking about replacing the PropertyInfoFactory and therefore allowing you to use your own PropertyInfo based class.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Pawz.777 replied on Tuesday, November 17, 2009</h2>jjhartma - I took a closer look at the sample from Jasonbock.net, but it doesn't quite handle the scenario I'm talking about here. It changes the internal FieldData structure without changing the signature of the PropertyInfo, whereas I'm looking for a way to insert data into the PropertyInfo in its declaration.<br><br>sergeyb - After fiddling for a while trying to convert from object to PropertyInfo&lt;T&gt; I finally figured out I needed to create a new interface to convert the PropertyInfo&lt;T&gt; object (from FieldManager.GetRegisteredProperties()) to my new interface type. I also had to modify the RegisterProperty function slightly: <br><br><font size="2">private static readonly PropertyInfo&lt;string&gt; AssignedProgrammerProperty =<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; RegisterProperty(new CsPropertyInfo&lt;string&gt;("AssignedProgrammer", "AssignedProgrammer"));</font><br><br><br>And now I've got it working! <br><br>Thanks for pointing me down the right track :)<br><br><br><br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

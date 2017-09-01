@@ -1,0 +1,99 @@
+<html><header><title>Object is still being edited and can not be saved</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Object is still being edited and can not be saved</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/249.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>gmclean posted on Thursday, June 01, 2006</h2>I am obviously missing something simple.<br>
+<br>
+I have a windows form tied to an Editable Root business object. The
+business object had a number of child objects and all was working well.
+Some of the child objects were just lookup lists so I took them out of
+the BO and created separate objects in the form load event. When I did
+this the save stopped working (when I make data changes) and I get the
+message "Object is still being edited and can not be saved". EditLevel
+is 1 when I get this error.<br>
+<br>
+I have tried to set everything back so the BO has no children and the
+form only is tied to the BO, no lookup lists. I still get the error. <br>
+<br>
+Any suggestions on where to start looking?<br>
+<br>
+Thanks<br>
+<br>
+George<br>
+<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>xal replied on Thursday, June 01, 2006</h2>George,<br>you need to call yourBo.ApplyEdit()<br>This is because of the nlevel undo feature. You need to call ApplyEdit as many times as you called BeginEdit. It sounds as if you did not call BeginEdit yourself, which is probably because the binding manager calls BeginEdit automatically.<br><br><br>Andrés<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, June 01, 2006</h2>The lookup lists shouldn't be child objects of an editable root. At least in every case I've encountered lookup lists are a form of <i>using</i> relationship and the business object merely contains them as a convenience (well, that and so the object properties associated with the lookup key values can be validated within the object - that's quite important!).<br><br>Are you calling <i>EditableRoot</i>BindingSource.EndEdit to end the editing of the object before calling Save? You must do that, or call ApplyEdit, to get the edit level down to 0. Data binding will automatically call BeginEdit once, so you must end the edit session - the EndEdit call is the best approach.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>gmclean replied on Friday, June 02, 2006</h2>Thanks for suggestions.<br>
+<br>
+I added the BO.ApplyEdit before calling save and now I can save
+changes. What puzzles me is that I was able to update data without
+ApplyEdit at one point before adding all the child objects (I am not
+sure at what point it stopped working).<br>
+<br>
+I think I understand the concept of not making the lookup lists
+children of the editable root but including then in the BO. However, I
+am not sure I am coding correctly to acheive this. <br>
+<br>
+In my editable root BO if I declare a private member for a list like:<br>
+<br>
+Private mTypeList As LookupList = LookupList.GetList()<br>
+<br>
+where LookupList is a ReadonlyCollectionBase object and then I declare a public member as<br>
+<br>
+&nbsp;&nbsp;&nbsp; Public ReadOnly Property TypeList() As LookupList<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Get<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return mTypeList<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Get<br>
+&nbsp;&nbsp;&nbsp; End Property<br>
+<br>
+Am I creating this as a child of the editable root? I get strange
+behavior with this where I need to tab twice to get out of any field
+where the data changes. The Set of the bound property of the field that
+is changed does not fire unitl the second tab so I am not sure what is
+happening on the first tab since I can not trace any code. <br>
+<br>
+If I create a separate lookup list in the form instead of the BO class
+then I do not see this behavior and all appears to work. I would
+continue with this method except for Rocky's comments above about
+validating the lookup list against the objects properties associated
+with the list. It appears to me that the validation is occuring even
+when the lookup list is not part of the BO.<br>
+<br>
+Any suggestions in understanding this would be appreciated!<br>
+<br>
+Thanks<br>
+<br>
+George<br>
+<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, June 02, 2006</h2>
+
+
+
+
+<DIV align=left><SPAN class=982424315-02062006><FONT face=Arial color=#0000ff size=2>If you implement LookupList.GetList() to cache the results 
+then you can simplify your BO code a lot - to just this:</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=982424315-02062006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=982424315-02062006><FONT face=Arial color=#0000ff size=2>Public ReadOnly PropertyTypeList() As 
+LookupList</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=982424315-02062006><FONT face=Arial color=#0000ff size=2>&nbsp; Get</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=982424315-02062006><FONT face=Arial color=#0000ff size=2>&nbsp;&nbsp;&nbsp; Return 
+LookupList.GetList()</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=982424315-02062006><FONT face=Arial color=#0000ff size=2>&nbsp; End Get</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=982424315-02062006><FONT face=Arial color=#0000ff size=2>End Property</FONT></SPAN></DIV>
+<DIV align=left><FONT face=Arial color=#0000ff size=2></FONT>&nbsp;</DIV>
+<DIV align=left><SPAN class=982424315-02062006><FONT face=Arial color=#0000ff size=2>This will trigger retrieval of the lookup data just once, 
+assuming GetList() is implemented along this line:</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=982424315-02062006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=982424315-02062006><FONT face=Arial color=#0000ff size=2>Private Shared mList As LookupList</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=982424315-02062006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=982424315-02062006><FONT face=Arial color=#0000ff size=2>Public Shared Function GetList() As 
+LookupList</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=982424315-02062006><FONT face=Arial color=#0000ff size=2>&nbsp; If mList Is Nothing Then</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=982424315-02062006><FONT face=Arial color=#0000ff size=2>&nbsp;&nbsp;&nbsp; mList = DataPortal.Fetch(Of 
+LookupList)(New Criteria(GetType(LookupList))</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=982424315-02062006><FONT face=Arial color=#0000ff size=2>&nbsp; End If</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=982424315-02062006><FONT face=Arial color=#0000ff size=2>&nbsp; Return mList</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=982424315-02062006><FONT face=Arial color=#0000ff size=2>End Function</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=982424315-02062006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=982424315-02062006><FONT face=Arial color=#0000ff size=2>This technique avoids any extra serialization of the lookup 
+list data back and forth through the data portal, and centralizes the caching in 
+one place.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=982424315-02062006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=982424315-02062006><FONT face=Arial color=#0000ff size=2>Rocky</FONT></SPAN></DIV></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>gmclean replied on Friday, June 02, 2006</h2>Rocky,<br>
+<br>
+Your suggestion for simplifying the lookup lists seems to have solved the problem. I really appreciate the help!<br>
+<br>
+George<br>
+<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,107 @@
+<html><header><title>question about WCF Security and CslaAuthentication</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>question about WCF Security and CslaAuthentication</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6662.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>bt1 posted on Tuesday, March 24, 2009</h2><P>I have a question about WCF Security.&nbsp; I have read ch21 in the C# 2008 book.</P>
+<P>Environment: WinForms,VS2008, Framework 3.5, CSLA 3.6.1, WcfProxy (for remote server), I want to use custom security in CSLA (our users credentials are in DB tables.</P>
+<P>I have created&nbsp;the following classs, one that inherits from UserNamePasswordValidator, one that implements IAuthorizationPolicy, one that implements IIdentity, and one that inherits Csla.Security.BusinessPrincipalBase</P>
+<P>But what I don't get is how WCF gets the user name and pwd in the Validate method of the UserNamePasswordValidator class.&nbsp; I have looked at the Create, Fetch, Update, Delete methods of the Csla.DataPortalClient.WcfProxy&nbsp;class and never see it set the Credentials on the ChannelFactory.</P>
+<P>I expected to see something like:</P>
+<P>cf.Credentials.UserName.UserName = context.Principal.Identity.Name;</P>
+<P>cf.Credentials.UserName.Password = context.Principal.Identity.Password;</P>
+<P>How is uid/pwd passed to WCF in the validate method of the UserNamePasswordValidator?</P>
+<P>So, Is Ch21 incomplete or am I missing something.&nbsp; Do I need to create my own WcfProxy and add the setting of the credentials?&nbsp; Help, WCF is hard to configure but it is even harder when you aren't sure what to do.</P><FONT size=1><FONT size=1><FONT size=1><FONT size=1><FONT size=1>
+<P>&nbsp;</P></FONT></FONT></FONT></FONT></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, March 24, 2009</h2><P>Chapter 21 isn't about configuring the data portal, it is about using WCF to create a&nbsp;service-oriented interface on top of your business objects.</P>
+<P>However, if you are using the WcfProxy in the data portal, it is true that some of the same concepts and techniques from Chapter 21 can come in handy if you want to customize the way the data portal uses WCF. That's a whole other topic though, and is outside the scope of the book.</P>
+<P>If you want to do your own channel-level impersonation through the data portal, the general steps are these:</P>
+<OL>
+<LI>Subclass WcfProxy and override the appropriate methods so you can create your own WCF channel factory and/or proxy objects, so you can set the client credentials as needed.</LI>
+<LI>Make sure you use "Windows" authentication on both client and server, otherwise the data portal will attempt to do custom principal impersonation, which will fight with your channel level impersonation. "Windows" actually tells the data portal to do nothing, trusting the underlying network infrastructure to do the impersonation.</LI>
+<LI>Implement and configure the two server-side classes as covered in Chapter 21.</LI></OL>
+<P>I haven't actually <EM>done</EM> this, so I might be missing some details, but I suspect this covers the basic requirements for getting the data portal to do channel level impersonation instead of its normal impersonation behavior.</P>
+<P>Though I should point out that if you allow the data portal to do normal impersonation of the client's custom principal, then you may want to provide an implementation of IAuthorizeDataPortal so you can verify the inbound principal on each request.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>bt1 replied on Tuesday, March 24, 2009</h2><P>I am not sure I asked this correctly.&nbsp; </P>
+<P>I am developing a WinForms client and want to use CSLA for my business objects.&nbsp; I want to use CSLA&nbsp;with a remote CSLA application server (WCFProxy).&nbsp; Our users credentials are in database tables.&nbsp; So I need to be able to use custom security Csla.Security.BusinessPrincipalBase/IIdentity.&nbsp; But the WCF service that CSLA (WCFProxy)&nbsp;exposes also needs to be secure so that not just anyone can access it.&nbsp;&nbsp;How do you configure the WCF/WCFProxy so that users of the service are authenticated/authorized and use CSLA Authenticateion (&lt;add key="CslaAuthentication" value="Csla" /&gt;).&nbsp; I was under the impression that in order to secure WCF/WCFProxy I needed to use a&nbsp;UserNamePasswordValidator but I didn't see where/how WcfProxy provided the custom user credentials to the validate method of the UserNamePasswordValidator.</P>
+<P>How do I set up WCF to use CSLA Authentication to secure the WCF service that is exposed by WCFProxy/Csla.Server.Hosts.IWcfPortal service (so that not anyone that knows how to create a WCF request&nbsp;can use it)?&nbsp; </P>
+<P>Or more simply how do I secure the WCFPortal service?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, March 24, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>The data portal makes this relatively easy &#8211; though security
+gets harder as your requirements get more stringent, and performance is
+typically impacted more and more.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>At a basic level, your business objects should authorize
+themselves based on the principal/identity. So in general terms you are
+securing the objects more than the network transport.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>With a custom principal, the data portal passes the principal
+from client to server on every data portal call. This is how it does
+impersonation.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>For many apps (most?) this impersonation model is all that is
+necessary. No objects allow unauthenticated users to do anything
+(create/get/edit/delete), so a user must log in before the objects will
+respond.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>To avoid transport level attacks, you can use SSL or otherwise
+encrypt the transport or WCF messages (all of which are standard WCF features)
+the pre-existing impersonation support from the data portal may be sufficient.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>However, if you are worried about someone hacking the principal
+object on the client, then you enter the realm of more complexity. But it still
+isn&#8217;t terribly bad, because the principal always comes from the server
+first (that&#8217;s where it is originally created). And so it is possible for
+the server to create an encrypted token that is included in the principal &#8211;
+effectively signing the principal object. The server can, on each data portal
+request, re-check that signature before allowing the request to be processed at
+all.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>This, btw, is exactly what ASP.NET does with the authentication
+cookie &#8211; it is just a token encrypted by the server and rechecked on every
+page request. I&#8217;d recommend modeling your token on theirs, as they did a
+nice job (it is small &#8211; pretty much just the username and an expiration).<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>The easiest way to do this is to implement IAuthorizeDataPortal
+and configure the data portal (on the server) to use your implementation. This
+interface requires that you implement an Authorize() method that gets called
+before anything else happens on the server. This method gets to approve or deny
+each request. The default implementation approves all requests.<o:p></o:p></span></p>
+
+<p class=MsoNormal><b><span><o:p>&nbsp;</o:p></span></b></p>
+
+<p class=MsoNormal><span>Your Authorize() method can just check the token in the
+principal, make sure the principal hasn&#8217;t been altered, and allow the
+pre-existing role-based authorization in CSLA to do its job like normal.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,56 @@
+<html><header><title>Help understanding CSLA 4 business rules subsystem </title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Help understanding CSLA 4 business rules subsystem </h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9597.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>TerryH posted on Monday, October 04, 2010</h2><p><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">Can someone please explain how&nbsp;&quot;dependency&quot; and the business rules&nbsp;works within the following example. On a form there are two fields that a user must enter a value,&nbsp; Quantity and Price. Total is the calculated field on the form. When either Quantity or Price changes, Total should be calculated.</span></span></p>
+<p>I have been studying the example called &quot;BusinessRuleDemo&quot;, in the file &quot;Root.cs&quot; there is this method&nbsp;AddBusinessRules method there is this </p>
+<p>&nbsp;</p>
+<p><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<font face="Consolas" size="2"><font face="Consolas" size="2">
+<p>
+<p><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"><font face="Consolas" size="2"><font face="Consolas" size="2">
+<p>BusinessRules.AddRule(</p>
+</font></font></span><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></span>
+<p><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">new</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> </span></span><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;">Dependency</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">(Num1Property, SumProperty));</span></span></p>
+<p><em><strong>Is this saying that SumProperty is dependent on Num1Property?</strong></em></p>
+<p><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">BusinessRules.AddRule(</span></span><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">new</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> </span></span><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;">Dependency</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">(Num2Property, SumProperty));<font face="Consolas" size="2"><font face="Consolas" size="2">
+<p>BusinessRules.AddRule(</p>
+</font></font></span><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></span></p>
+<p><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">new</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> </span></span><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;">Dependency</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">(Num2Property, Num1Property));</span></span></p>
+<p><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"><strong><em>How should this rule be understood ?</em></strong></span></span></p>
+</p>
+</p>
+</font></font></span><font face="Consolas" size="2">
+<p>
+<p>
+<p>&nbsp;</p>
+</p>
+</p>
+</font></span></p>
+<p>
+<p>
+<p>&nbsp;</p>
+</p>
+</p>
+<p><span style="font-family:Consolas;font-size:x-small;">Thanks</span></p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Monday, October 04, 2010</h2><p>A BusinessRule can have <i>affected properties</i>. If a rule has affected properties, then the rules for those properties will be run after the current property&#39;s rules complete. This is true for any rule.</p>
+<p>To make this easier to understand, we created the rule named Dependency, which doesn&#39;t actually do anything as a rule - it doesn&#39;t enforce any actual rule. But what it does, is act as a vehicle through which you can attach affected properties to the current property.</p>
+<p>So something like</p>
+<p>new Dependency(Num1Property, Num2Property)</p>
+<p>means Num1Property is the <i>primary property</i> and Num2Property is an <i>affected property</i>. So after the rules for Num1Property run, CSLA will run the rules for Num2Property.</p>
+<p>Hopefully that makes sense.</p>
+<p>Given that though, you can have some fun, since <i>any rule</i> can have affected properties. So you don&#39;t necessarily need the Dependency rule to get dependent rules to run.</p>
+<p>For example, consider a TwoFieldsRequired rule</p>
+<p>new TwoFieldsRequired(Field1Property, Field2Property)</p>
+<p>if your rule adds Field2Property to its AffectedProperties list, then after the Field1 rules run, the Field2 rules will also be run.</p>
+<p>Of course I would assume TwoFieldsRequired would also add Field1Property and Field2Property to its InputProperties list so it gets those values and can use them to make sure they both exist (or whatever the rule is checking).</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Tuesday, October 05, 2010</h2><p>Hi,</p>
+<p>You must be aware that there is 2 different dependencies in root.cs:</p>
+<p><i>1. SumProperty must be calculated and validated (in proper sequence) whenever Num1Property or Num2Property are changed). Hence:</i></p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; BusinessRules.AddRule(new Dependency(Num1Property, SumProperty));<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; BusinessRules.AddRule(new Dependency(Num2Property, SumProperty));</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; BusinessRules.AddRule(new CalcSum(SumProperty, Num1Property, Num2Property) { <b>Priority = -1 </b>});<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; BusinessRules.AddRule(new MinValue&lt;int&gt;(SumProperty, <b>1)</b>);</p>
+<p><i>2. Num1Property must be less than Num2Property so whenever Num2Changes rules for Num1Property must also be checked:</i></p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; BusinessRules.AddRule(new Dependency(Num2Property, Num1Property));&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // when Num2 is changed also check rules for Num1<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; BusinessRules.AddRule(new LessThanProperty(Num1Property, Num2Property));&nbsp;&nbsp; // rule is caled whenever Num1 is changed</p>
+<p>Unless you specify a priority&nbsp; rules are assigned Priority = 0. So setting <b>Priority = -1</b> will make that rule run before all rules with default priority.</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

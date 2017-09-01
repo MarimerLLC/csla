@@ -1,0 +1,54 @@
+<html><header><title>Access is denied ... Could not load file or assembly 'PresentationFramework ... </title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Access is denied ... Could not load file or assembly 'PresentationFramework ... </h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/8561.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>raz0rf1sh posted on Sunday, February 21, 2010</h2><p><span>
+<p><span style="font-weight:normal;">I&#39;m getting the following error ... I thought it might have something to do with MVC, but looks like it something CSLA references. Any idea how to get around this?</span></p>
+<h2><i>Access is denied. (Exception from HRESULT: 0x80070005 
+(E_ACCESSDENIED))</i> </h2>
+</span><span style="font-family:Arial, Helvetica, Geneva, SunSans-Regular, sans-serif;"><b>Description: 
+</b>An unhandled exception occurred during the execution of the current web 
+request. Please review the stack trace for more information about the error and 
+where it originated in the code. <br /><br /><b>Exception Details: 
+</b>System.UnauthorizedAccessException: Access is denied. (Exception from 
+HRESULT: 0x80070005 (E_ACCESSDENIED)) <br /><br />ASP.NET is not authorized to 
+access the requested resource. Consider granting access rights to the resource 
+to the ASP.NET request identity. ASP.NET has a base process identity (typically 
+{MACHINE}\ASPNET on IIS 5 or Network Service on IIS 6) that is used if the 
+application is not impersonating. If the application is impersonating via 
+&lt;identity impersonate=&quot;true&quot;/&gt;, the identity will be the anonymous user 
+(typically IUSR_MACHINENAME) or the authenticated request user. <br /><br />To grant 
+ASP.NET access to a file, right-click the file in Explorer, choose &quot;Properties&quot; 
+and select the Security tab. Click &quot;Add&quot; to add the appropriate user or group. 
+Highlight the ASP.NET account, and check the boxes for the desired 
+access.<br /><br /><b>Source Error:</b> <br /><br />
+<table bgcolor="#ffffcc" width="100%">
+<tbody>
+<tr>
+<td><code>An unhandled exception was generated during the execution of the 
+current web request. Information regarding the origin and location of the 
+exception can be identified using the exception stack trace below.</code> 
+</td>
+</tr>
+</tbody>
+</table>
+<br /><b>Stack Trace:</b> <br /><br />
+<table bgcolor="#ffffcc" width="100%">
+<tbody>
+<tr>
+<td><code>
+<pre>[UnauthorizedAccessException: Access is denied. (Exception from HRESULT: 0x80070005 (E_ACCESSDENIED))]
+
+[FileLoadException: Could not load file or assembly &#39;PresentationFramework, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35&#39; or one of its dependencies. Access is denied.]
+   Csla.ApplicationContext.set_User(IPrincipal value) +0
+   Startup.Carthage.Security.BusinessPrincipal.Logout() in C:\Users\matt.ruma\Documents\Code\StartupSoftwareSolutions\Carthage\Source\Logic\Security\BusinessPrincipal.cs:41
+   Startup.Carthage.WebMvc.MvcApplication.Application_AcquireRequestState(Object sender, EventArgs e) in C:\Users\matt.ruma\Documents\Code\StartupSoftwareSolutions\Carthage\Source\WebMvc\Global.asax.cs:71
+   System.Web.SyncEventExecutionStep.System.Web.HttpApplication.IExecutionStep.Execute() +68
+   System.Web.HttpApplication.ExecuteStep(IExecutionStep step, Boolean&amp; completedSynchronously) +75
+</pre>
+</code></td>
+</tr>
+</tbody>
+</table>
+</span></p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Sunday, February 21, 2010</h2><p>I haven&#39;t quite seen that before. The assembly in question is a WPF assembly, referenced by CSLA. It would load as CSLA determines whether you are running in WPF - so really just one method is loaded out of that assembly, so it can return a null to indicate WPF isn&#39;t active.</p>
+<p>Is your app running with FullTrust? And on a server where .NET 3.5 is installed?</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>raz0rf1sh replied on Monday, February 22, 2010</h2><p>Hi Rocky,</p>
+<p>Thanks for the quick response! </p>
+<p>Yes ... it&#39;s running in IIS 7 with the trust at Full (Internal) and the .NET Framework 3.5 SP1 is installed. It only happens with my CSLA projects. I think I figured it out ... I am using the PLESK Panel for managing the websites on the server. I noticed that it had setup it&#39;s only application pool using a different account, one setup by the software. I switch the application/website to run in the DefaultPool under the Network Service account and everything seems to be working now.</p>
+<p>Does this make sense?&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, February 22, 2010</h2><p>If it solved the problem then it makes sense <img src="http://forums.lhotka.net/emoticons/emotion-2.gif" alt="Big Smile" /></p>
+<p>&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

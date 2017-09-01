@@ -1,0 +1,26 @@
+<html><header><title>One or more properties are not registered for this type</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>One or more properties are not registered for this type</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/8603.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>FrazerS posted on Wednesday, March 03, 2010</h2><p>I have read all the posts I can find on this error, but I still cannot see why I am getting this exception.&nbsp; I have a property which is a ECC.&nbsp;&nbsp;&nbsp; Here is my property declaration:</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>
+<p><span style="font-size:x-small;">
+<p>private static PropertyInfo&lt;MailboxList&gt; MailboxesProperty = <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; RegisterProperty(typeof(MailboxList), new PropertyInfo&lt;MailboxList&gt;(&quot;Mailboxes&quot;, &quot;Mailboxes&quot;));<br />public MailboxList Mailboxes<br />&nbsp;{<br />&nbsp;&nbsp;&nbsp; get <br />&nbsp;&nbsp;&nbsp; {&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (!FieldManager.FieldExists(MailboxesProperty))<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; LoadProperty(MailboxesProperty, MailboxList.NewMailboxList());<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return GetProperty(MailboxesProperty);&nbsp; <br />&nbsp;&nbsp;&nbsp; }<br />&nbsp;&nbsp;&nbsp; set { SetProperty(MailboxesProperty, value); }<br />&nbsp; }</p>
+<p>This property is declared in a concrete class, derived directly from BusinessBase&lt;T&gt; :</p>
+<p>&nbsp; [Serializable]<br />&nbsp; public class Employee : BusinessBase&lt;Employee&gt;, IObjectMapper</p>
+<p>(IObjectMapper is just an empty interface through which I apply some extension methods for mapping to and from the data layer.)</p>
+<p>When I try to reference this property either directly or through ReadProperty, it throws an InvalidOperationException with the message: &quot;One or more properties are not registered for this type.&quot;</p>
+<p>The MailboxList class is declared:</p>
+<p>&nbsp;&nbsp;&nbsp; [Serializable()]<br />&nbsp;&nbsp;&nbsp; public class MailboxList : Csla.BusinessListBase&lt;MailboxList, Mailbox&gt;</p>
+<p>Can anyone see what I am missing here?&nbsp; My other (non-list) properties register just fine in this class - so what&#39;s wrong wth the one which is an ECC?</p>
+<font size="2">
+<p>Frazer</p>
+</font></span>
+<p>&nbsp;</p>
+</p>
+</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Wednesday, March 03, 2010</h2><p>The first argument of RegisterProperty is the type which OWNS the property... not the type the property will contain.&nbsp; The T in PropertyInfo&lt;T&gt; describes what type the property holds.&nbsp; Just remove that parameter completely, so your call is RegisterProperty(new PropertyInfo&lt;MailboxList&gt;(&quot;Mailboxes&quot;, &quot;Mailboxes&quot;));</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>FrazerS replied on Wednesday, March 03, 2010</h2><p>Sheesh.</p>
+<p>Thanks, Andy.</p>
+<p>cheers,</p>
+<p>Frazer</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Wednesday, March 03, 2010</h2><p>Hope I didn&#39;t come off as harsh or anything, because you&#39;re certainly not the first person to have some confusion around this.&nbsp; I appologize if I did.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

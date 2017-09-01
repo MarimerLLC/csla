@@ -1,0 +1,342 @@
+<html><header><title>Silverlight: Correct method to create a child with default values from the db and a Criteria object.</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Silverlight: Correct method to create a child with default values from the db and a Criteria object.</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9843.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>pgroenenstein posted on Wednesday, December 08, 2010</h2><p>Hi </p>
+<p>Currently creating a SL app in CSLA 3.8.4 and I need some help please.</p>
+<p>What is the correct method to add a child to a &quot;BusinessListBase &quot; Type of object when that child needs certain &quot;criteria&quot; info from the UI and based upon that loads certain default values from the DB on creation.</p>
+<p>I have a &quot;AddNewItemFromMenu&quot; Method on the list object which I call from the UI with certain info Like:</p>
+<p>&nbsp;</p>
+<p><i>&nbsp;&nbsp; Public Sub AddNewItemFromMenu(ByVal MenuID As Integer, ByVal MenuItemID As Integer, ByVal EntryTypeID As Enum_LineEntryTypes)<br /><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Dim objCriteria As New OrderItem.Criteria<br /><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &#39; Set item information<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; With objCriteria<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; .AddFromMenu = True<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; .EntryTypeID = CType(EntryTypeID, Short)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; .MenuID = MenuID<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; .MenuItemID = MenuItemID<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End With<br /><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Dim vntItem As OrderItem = OrderItem.NewItem(objCriteria)<br /><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &#39; Assigns item to the collection<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Add(vntItem)<br /></i></p>
+<p><i>&nbsp;End Sub</i></p>
+<p>&nbsp;</p>
+<p>My Child object Named &quot;OrderItem&quot;&nbsp; &quot;NewItem&quot; function looks like this:</p>
+<p><i>&nbsp;&nbsp;&nbsp; Friend Shared Function NewItem(ByVal Criteria As Criteria) As OrderItem<br /><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return DataPortal.CreateChild(Of OrderItem)(Criteria)<br /><br />&nbsp;&nbsp;&nbsp; End Function</i></p>
+<p><i>&nbsp;&nbsp; Private Overloads Sub Child_Create(ByVal Criteria As Criteria)<br /><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &#39; Do&nbsp; DB stuff here</i></p>
+<p><i>End sub<br /></i></p>
+<p>The above obviously work in a &quot;Normal&quot; windows app, but i&#39;m in the dark as how to make it work in a SL app. </p>
+<p>In a SL app it throws an exception &quot;ChildDataPortal.Create failed on the server&quot;</p>
+<p>Here is the stack trace if it may help:</p>
+<p><i>Csla.DataPortalException was unhandled by user code<br />&nbsp; Message=&quot;ChildDataPortal.Create failed on the server&quot;<br />&nbsp; StackTrace:<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at Csla.DataPortalClient.ChildDataPortal`1.Create(Object[] parameters)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at Csla.DataPortal.CreateChild[T](Object[] parameters)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at SmtSelfOrder.Business.BusinessClasses.OrderItem.NewItem(Criteria Criteria)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at SmtSelfOrder.Business.BusinessClasses.OrderItems.AddNewItemFromMenu(Int32 MenuID, Int32 MenuItemID, Enum_LineEntryTypes EntryTypeID)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at SmtSelfOrder.MenuList.AddItemToOrder(Enum_LineEntryTypes LineEntryType, Int32 MenuItemID)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at SmtSelfOrder.MenuList.btnMenuProd_Click(Object sender, EventArgs e)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at System.Windows.Controls.Primitives.ButtonBase.OnClick()<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at System.Windows.Controls.Button.OnClick()<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at System.Windows.Controls.Primitives.ButtonBase.OnMouseLeftButtonUp(MouseButtonEventArgs e)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at System.Windows.Controls.Control.OnMouseLeftButtonUp(Control ctrl, EventArgs e)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at MS.Internal.JoltHelper.FireEvent(IntPtr unmanagedObj, IntPtr unmanagedObjArgs, Int32 argsTypeIndex, Int32 actualArgsTypeIndex, String eventName)<br />&nbsp; InnerException: <br /></i></p>
+<p>What I&#39;m lacking to find is a good sample on how to implement adding a child to a collection that MUST get certain info from the DB based upon some info in the criteria object.</p>
+<p>I know for a fact I&#39;m making a ridiculous stupid mistake here, but alas I just can&#39;t see it!</p>
+<p>Thanks in advance for helping me out.</p>
+<p>&nbsp;</p>
+<p>Kind Regards </p>
+<p>Phillip</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>pgroenenstein replied on Wednesday, December 08, 2010</h2><p>OK this is how far I got:</p>
+<p>&nbsp;</p>
+<p><b>My&nbsp; &quot;AddNewItemFromMenu&quot; Method on the &quot;BusinessBaselist&quot; object looks like this now:</b></p>
+<p><i>&nbsp;Public Sub AddNewItemFromMenu(ByVal MenuID As Integer, ByVal MenuItemID As Integer, ByVal EntryTypeID As Enum_LineEntryTypes)</i></p>
+<p><i>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Dim objCriteria As New OrderItem.Criteria<br /><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &#39; Get item information<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; With objCriteria<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; .AddFromMenu = True<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; .EntryTypeID = CType(EntryTypeID, Short)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; .MenuID = MenuID<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; .MenuItemID = MenuItemID<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End With<br /><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; OrderItem.NewItem(objCriteria, AddressOf Me.ItemFinCreated)&nbsp; <br /></i></p>
+<p><i>End Sub</i></p>
+<p>&nbsp;</p>
+<p><b>My&quot;NewItem&quot; Method on my child looks like this:</b></p>
+<p><i>&nbsp;&nbsp;&nbsp; Friend Shared Sub NewItem(ByVal Criteria As Criteria, ByVal handler As EventHandler(Of DataPortalResult(Of OrderItem)))<br /><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Dim dp As DataPortal(Of OrderItem) = New DataPortal(Of OrderItem)()<br /><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; AddHandler dp.FetchCompleted, handler<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; dp.BeginFetch(Criteria)<br /><br />&nbsp;&nbsp;&nbsp; End Sub<br /></i></p>
+<p><b>My Data Acces method looks like this on the Child:</b></p>
+<p><br />&nbsp;&nbsp;&nbsp; Private Overloads Sub Child_Create(ByVal Criteria As Criteria)</p>
+<p><i>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &#39; Do&nbsp; DB stuff here</i></p>
+<p>&nbsp;End Sub</p>
+<p>&nbsp;</p>
+<p><b>Now I need to figure out how to work my &quot;Callback&quot; Method on the &quot;BusinessListBase&quot; object</b></p>
+<p><b>Currently like this:</b></p>
+<p>&nbsp;&nbsp;&nbsp;<i> Friend Sub ItemFinCreated(ByVal sender As Object, ByVal e As EventArgs)<br /><br />&nbsp; &nbsp; &nbsp; &nbsp; &#39; Figure out what to do here!!!!<br /><br />&nbsp;&nbsp;&nbsp; End Sub</i><br /><br /><b>Am I on the right track or not?</b></p>
+<p><b>Thanks!</b></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, December 08, 2010</h2><p>I&#39;m assuming the new child has to be initialized on the server with its new values.</p>
+<p>In that case you have a couple options.</p>
+<p>One is that you can implement an actual DataPortal_Create on the child and use the data portal to create the child - and at the bottom of the DataPortal_Create you&#39;ll need to call MarkAsChild, because that won&#39;t be automatic. You can&#39;t use Child_Create, because you actually need the data portal to go across the network.</p>
+<p>Perhaps the more &quot;pure&quot; way to do this is with a command object. Build a command object that creates the child object with DataPortal.CreateChild - so your child class really has a Child_Create method that runs on the server. Then have your list class invoke the command to get the child.</p>
+<p>In any case the call to get the child will be async, so you&#39;re list class will need to handle the callback and add the newly created child to the list when the result comes back from the server.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>pgroenenstein replied on Wednesday, December 08, 2010</h2><p>Hi Rocky Thanks for the reply.</p>
+<p>Yes the child has to be initialize on the server. I took the DataPortal_create as shown in my 2nd post, But I have problems in my Callback in my list object. <br />It crashes on the &quot;<i>Add(CType(sender, OrderItem))&quot;</i> line<i>. What is the correct syntax suppose to be like?<br /></i></p>
+<p><b>Here is what my call back looks like:</b></p>
+<p>&nbsp; <i>Friend Sub ItemFinCreated(ByVal sender As Object, ByVal e As EventArgs)<br /><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &#39; Assigns a item to the collection<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Add(CType(sender, OrderItem))<br /><br />&nbsp;&nbsp;&nbsp; End Sub</i></p>
+<p>Obviously I must be doing something wrong here, but for the life of me I can&#39;t seem to see what. </p>
+<p><b>This is the Error Stack it returns:</b></p>
+<p><i>System.InvalidCastException was unhandled by user code<br />&nbsp; Message=&quot;Unable to cast object of type &#39;Csla.DataPortal`1[SmtSelfOrder.Business.BusinessClasses.OrderItem]&#39; to type &#39;SmtSelfOrder.Business.BusinessClasses.OrderItem&#39;.&quot;<br />&nbsp; StackTrace:<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at SmtSelfOrder.Business.BusinessClasses.OrderItems.ItemFinCreated(Object sender, EventArgs e)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at Csla.DataPortal`1.OnFetchCompleted(DataPortalResult`1 e)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at Csla.DataPortal`1.proxy_FetchCompleted(Object sender, DataPortalResult`1 e)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at Csla.DataPortalClient.SynchronizedWcfProxy`1.OnCompleted(Object sender, DataPortalResult`1 e, EventHandler`1 method)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at Csla.DataPortalClient.SynchronizedWcfProxy`1.OnFetchCompleted(Object sender, DataPortalResult`1 e)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at Csla.DataPortalClient.SynchronizedWcfProxy`1.&lt;.ctor&gt;b__2(Object o, DataPortalResult`1 e)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at Csla.DataPortalClient.WcfProxy`1.OnFetchCompleted(DataPortalResult`1 e)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at Csla.DataPortalClient.WcfProxy`1.proxy_FetchCompleted(Object sender, FetchCompletedEventArgs e)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at Csla.WcfPortal.WcfPortalClient.OnFetchCompleted(Object state)<br />&nbsp; InnerException: <br /></i></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>pgroenenstein replied on Wednesday, December 08, 2010</h2><p>P.S. I did do the MarkAsChild thing to. I think everything is ok in the DB side of things. The problems seems to be where I assign the newly created to the list in the callback method of the list.</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, December 08, 2010</h2>You shouldn&#39;t use sender, you need e.Object, and only after you check e.Error to find out if any exception occurred during the asynchronous operation.
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>pgroenenstein replied on Thursday, December 09, 2010</h2><p>Sorry i&#39;m still stupid, but what should the Callback method in the list object declaration then look like?</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>pgroenenstein replied on Thursday, December 09, 2010</h2><p>Am I not looking in the right places or what? But I cannot find ONE example of this in ANY of the sample projects.</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>pgroenenstein replied on Thursday, December 09, 2010</h2><p><b>OK My declaration for my Callback Method looks like this now:</b></p>
+<p>&nbsp;<i>&nbsp;&nbsp; Friend Sub ItemFinCreated(ByVal sender As Object, ByVal e As Csla.DataPortalResult(Of SmtSelfOrder.Business.BusinessClasses.OrderItem))<br /><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &#39; Assign the Item to the collection<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; If e.Error Is Nothing Then<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Add(CType(e.Object, OrderItem))<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Else<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &#39; Handle error here.<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Throw New System.Security.SecurityException(e.Error.Message)&nbsp;&nbsp; &#39; Temp for now<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End If<br /></i><br />&nbsp;&nbsp;&nbsp; End Sub</p>
+<p>&nbsp;</p>
+<p>The Callback works now but I get an error: </p>
+<p>&quot;DataPortal.Fetch failed (Invalid operation - fetch not allowed)&quot;</p>
+<p>I suspect that has to do with my &quot;User Rules&quot;...will look into that next.</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, December 09, 2010</h2><p>I thought we were talking about create, not fetch?</p>
+<p>If you call DataPortal.Create you need DataPortal_Create, if you call DataPortal.Fetch you need DataPortal_Fetch.</p>
+<p>It sounds like you are calling DataPortal.Fetch, but have implemented DataPortal_Create.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>pgroenenstein replied on Thursday, December 09, 2010</h2><p>
+ 
+  Normal
+  0
+  
+  
+  
+  
+  false
+  false
+  false
+  
+  EN-US
+  X-NONE
+  X-NONE
+  
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+  
+  MicrosoftInternetExplorer4
+  
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+  
+
+ 
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+ 
+
+
+
+</p>
+<p class="MsoNormal">Hi Rocky</p>
+<p class="MsoNormal">YES we are talking about &quot;create&quot;(sorry!) ...my code got mixed up a lot with all the fiddling. But I think I have it sorted now.</p>
+<p class="MsoNormal">I posting my solution here for the sake of other CSLA programmers
+that might battle with this problem. </p>
+<p class="MsoNormal"><b>First things first: </b></p>
+<p class="MsoNormal">Currently creating a SL 3 app in CSLA 3.8.4. (Will migrate
+later on but it works for me now.)</p>
+<p class="MsoNormal">I&#39;m not sure if this is the &quot;Rocky Approved&quot; <span>&nbsp;</span>method but it works. Even though I have the a
+grid bound to the object in the SL App I do not make use of the
+&quot;standard&quot; way of adding child&#39;s to the collection i.e. by means of
+the user being presented with an &quot;empty&quot; line (read child) on the
+grid which he then populates as he goes. My approach is that a user click&#39;s on
+a &quot;Menu Button (e.g. &quot;Grilled Stake&quot;) &quot; thereby triggering
+the process that leads to me adding a item (read child) to the order (read collection,&nbsp;
+<span></span>i.e. add a line to the clients order).
+Therefore in my implementation, I have no need for the &quot;AddNewCore&quot;
+option. What I&#39;m trying to say is that if you need that kind of behavior you
+need to make some adjustments to my code, but I&#39;m not sure exactly what. Maybe
+someone else can shed some light here.</p>
+<p class="MsoNormal">Ok I have a &quot;Order&quot; object (Inherits from
+BusinessBase) which contains a collection object (Name &quot;OrderItems&quot;
+and Inherits from BusinessListBase) which in turn contains child objects (Named
+&quot;OrderItem&quot; which Inherits from BusinessBase). Thats the back ground.</p>
+<p class="MsoNormal"><b>Here is my code:</b></p>
+<p class="MsoNormal">In OrderItems object. (The collection Object):</p>
+<p><b>My&nbsp; &quot;AddNewItemFromMenu&quot; Method on the
+&quot;BusinessBaselist&quot; object looks like this now ( This is the method
+the UI will call with certain parameters):</b></p>
+<p class="MsoNormal"><i>&nbsp;<span>&nbsp;&nbsp;&nbsp; </span>Public Sub
+AddNewItemFromMenu(ByVal MenuID As Integer, ByVal MenuItemID As Integer, ByVal
+EntryTypeID As Enum_LineEntryTypes)</i></p>
+<p class="MsoNormal"><i><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>Dim objCriteria
+As New OrderItem.Criteria</i></p>
+<p class="MsoNormal"><i><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>&#39; Get item
+information</i></p>
+<p class="MsoNormal"><i><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>With objCriteria</i></p>
+<p class="MsoNormal"><i><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>.AddFromMenu =
+True</i></p>
+<p class="MsoNormal"><i><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>.EntryTypeID =
+CType(EntryTypeID, Short)</i></p>
+<p class="MsoNormal"><i><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>.MenuID =
+MenuID</i></p>
+<p class="MsoNormal"><i><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>.MenuItemID =
+MenuItemID</i></p>
+<p class="MsoNormal"><i><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>End With</i></p>
+<p class="MsoNormal"><i>&nbsp;<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>OrderItem.NewItem(objCriteria, AddressOf Me.ChildCreated_CallBck)<span> &nbsp; &nbsp; &nbsp;&nbsp; </span>&#39; Callback sub located the collection object</i></p>
+<p class="MsoNormal"><i>End Sub </i></p>
+<p class="MsoNormal"><i><br /></i></p>
+<p class="MsoNormal">&nbsp;<b>My Callback Sub, named &quot; ChildCreated_CallBck&quot;
+located in the collection object looks like this:</b></p>
+<p class="MsoNormal"><i><span>&nbsp;&nbsp;&nbsp; </span>Friend Sub
+ChildCreated_CallBck(ByVal sender As Object, ByVal e As
+Csla.DataPortalResult(Of SmtSelfOrder.Business.BusinessClasses.OrderItem))</i></p>
+<p class="MsoNormal"><i>&nbsp;<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>&#39; Assign the
+Item to the collection</i></p>
+<p class="MsoNormal"><i><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>If e.Error Is
+Nothing Then</i></p>
+<p class="MsoNormal"><i><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>Add(CType(e.Object, OrderItem))</i></p>
+<p class="MsoNormal"><i><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>Else</i></p>
+<p class="MsoNormal"><i><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>&#39; Handle error
+here.</i></p>
+<p class="MsoNormal"><i><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>Throw New
+System.Security.SecurityException(e.Error.Message)<span>&nbsp;&nbsp; </span>&#39; Temp for now replace with what ever you
+want to do when encountering an error.</i></p>
+<p class="MsoNormal"><i><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>End If</i></p>
+<p class="MsoNormal"><i><span>&nbsp;&nbsp;&nbsp; </span>End Sub</i></p>
+<p class="MsoNormal">&nbsp;</p>
+<p class="MsoNormal"><b>My &quot;NewItem&quot; Method on my child looks like this:</b></p>
+<p class="MsoNormal">&nbsp;<i><span>&nbsp;&nbsp;&nbsp; </span>Friend Shared Sub
+NewItem(ByVal Criteria As Criteria, ByVal handler As EventHandler(Of
+DataPortalResult(Of OrderItem)))</i></p>
+<p class="MsoNormal"><i>&nbsp;<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>Dim dp As
+DataPortal(Of OrderItem) = New DataPortal(Of OrderItem)()</i></p>
+<p class="MsoNormal"><i>&nbsp;<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>AddHandler
+dp.CreateCompleted, handler</i></p>
+<p class="MsoNormal"><i><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>dp.BeginCreate(Criteria)</i></p>
+<p class="MsoNormal"><i>&nbsp;<span>&nbsp;&nbsp;&nbsp; </span>End Sub</i></p>
+<p class="MsoNormal"><i>&nbsp;</i></p>
+<p class="MsoNormal"><b>My Data Acces method looks like this on the Child:</b></p>
+<p class="MsoNormal"><i><span>&nbsp;&nbsp;&nbsp; </span>Private Overloads
+Sub DataPortal_Create(ByVal Criteria As Criteria)</i></p>
+<p class="MsoNormal"><i><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>&#39; Remember to
+mark as child.</i></p>
+<p class="MsoNormal"><i><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>MarkAsChild()</i></p>
+<p class="MsoNormal"><i><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>&#39; Open
+Connection here and do your DB thing.</i></p>
+<p class="MsoNormal"><i><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>&#39;</i></p>
+<p class="MsoNormal"><i><span></span></i></p>
+<p class="MsoNormal"><i><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>&#39;<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></i></p>
+<p class="MsoNormal"><i><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>&#39; Force Rules </i></p>
+<p class="MsoNormal"><i><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>ValidationRules.CheckRules()</i></p>
+<p class="MsoNormal"><i>&nbsp;<span>&nbsp;&nbsp;&nbsp; </span>End Sub</i></p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

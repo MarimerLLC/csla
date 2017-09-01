@@ -1,0 +1,35 @@
+<html><header><title>Show a Modal Dialog</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Show a Modal Dialog</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10934.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>st3fanus posted on Wednesday, November 30, 2011</h2><p>Hi Rocky..</p>
+<p>I&#39;m sorry before that I post on this forum, because I&#39;m fell happy with this community.</p>
+<p>First I&#39;m quoted your statement from :</p>
+<p>http://bxf.codeplex.com/discussions/239182</p>
+<p>/////////</p>
+<p>The basic design of Bxf places responsibility for creating the view 
+in the view factory, and for displaying the view within a &quot;container&quot; in
+ the code that handles the IPresenter events (i.e. your shell).</p>
+<p>For a modal dialog, or any other dialog, your shell code (the 
+IPresenter handlers) needs to supply the &quot;container&quot; that displays the 
+view. In WPF this container is typically a Window that contains a 
+ContentControl, and that is displayed modally. Literally,
+ you should create a &quot;ModalDialog&quot; window .xaml file, and your 
+OnShowView code will modally display an instance of ModalDialog.</p>
+<p>The view is no different than any view. All views are UserControl 
+objects that can be hosted in a container. It doesn&#39;t matter if the view
+ will be in a modal window or in a region of an existing window - the 
+view shouldn&#39;t care how/where it is displayed.</p>
+<p>This means that the code in OnShowView will do the following:</p>
+<ol>
+<li>Create an instance of the ModalDialog container window </li>
+<li>Set 
+the ModalDialog object&#39;s Content property (or whatever you call the 
+property used to set the content of the container&#39;s 
+ContentControl.Content property) to the view.ViewInstance
+</li>
+<li>Modally display/show the ModalDialog container window </li>
+</ol>
+<p>///////////</p>
+<p>I&#39;m confuse with point no 1 until 3 =&gt; Why Presenter Display a view /&nbsp; concrete window ?? </p>
+<p>and How do if us want to test it ? ( It will stop automatic unit test&nbsp; ? )</p>
+<p>why viewmodel has a responsibilty to display a concrete window ( view ) ??</p>
+<p>&nbsp;</p>
+<p>thanks a lot</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, December 01, 2011</h2><p>As this is a pure bxf question, it should go in the bxf forum on codeplex.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

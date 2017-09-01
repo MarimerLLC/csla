@@ -1,0 +1,146 @@
+<html><header><title>Someone want to make some money?  I need CSLA help bad</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Someone want to make some money?  I need CSLA help bad</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4092.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>ataylorm posted on Wednesday, December 26, 2007</h2><P>Good Evening,</P>
+<P>Anyone feel like making a little extra dough?&nbsp; I am faced with an object model that doesn't fit CSLA, no time, no resources, and no past experinenc with CSLA.&nbsp; If you have some time tonight and could help me out with a seriously messy class I would be greatful.&nbsp; It's about 1400 lines of code.</P>
+<P>Basically here is the problem...</P>
+<P>I have a user...&nbsp; User works GREAT, but user has several subsets of data like UserAccount, UserProfile, UserDemographics, etc.&nbsp; These are all currently subclasses so like User.UserAccount, User.UserProfile, etc.&nbsp; Each contains different user data from different tables.</P>
+<P>Where I seem to be stuck is getting CSLA to understand that UserAccount is a sub-set of User and it needs to be based on the userid and validate it's own properies and such.</P>
+<P>UserAccount, UserProfile, and UserDemographics should not load any data until they are specifically initialized.</P>
+<P>If I can send you a zip and you can help me out, I would GREATLY appreciate it and can paypal you some funds ASAP (or rentacoder them if you prefer).</P>
+<P>Thanks,</P>
+<P>Andrew</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ataylorm replied on Wednesday, December 26, 2007</h2><P>It might actually be better for me to just have someone start this sucker from scratch because I imagine it will take more time to sort through all my code than it will to just frame it out from scratch.&nbsp; So let me lay out what we have, and that way maybe someone can shoot me over a price and a time frame (hopefully tonight).</P>
+<P>Tables:</P>
+<P>User<BR>&nbsp;&nbsp; - UserGUID&nbsp;(Read Only)<BR>&nbsp;&nbsp; - UserName<BR>&nbsp;&nbsp; - Password<BR>&nbsp;&nbsp; -&nbsp;FirstName<BR>&nbsp;&nbsp; - LastName<BR>&nbsp;&nbsp; - EmailAddress<BR>&nbsp;&nbsp; - isActive (Read Only)</P>
+<P><BR>UserAccount<BR>&nbsp;&nbsp; - UserGUID<BR>&nbsp;&nbsp; - PhoneNumber<BR>&nbsp;&nbsp; - MobileNumber</P>
+<P><BR>UserAddresses<BR>&nbsp;&nbsp; - UserGUID<BR>&nbsp;&nbsp; - Address1<BR>&nbsp;&nbsp; - Address2<BR>&nbsp;&nbsp; - City<BR>&nbsp;&nbsp; - State<BR>&nbsp;&nbsp; - ZipCode<BR>&nbsp;&nbsp; - Country</P>
+<P><BR>UserProfile<BR>UserDemographics<BR>UserPreferences<BR>UserPaymentMethods</P>
+<P>Basically the way the boss wants this, is that User is the main record, and each of the subsets of data isn't loaded until/if the user accesses a function that needs that data.&nbsp; (Planning for millions of users)</P>
+<P>So the way it's envisioned is that I will load a user, then if I need a useraccount or userprofile I will instantiate that data off the User object I have already created.</P>
+<P>User tmpUser = User.GetUserByUserName("afksldfjlsa");</P>
+<P>UserAccount tmpAccount = User.UserAccount;</P>
+<P>Now it's entirely possible to save a User record with no Account, Profile, etc.&nbsp; However you can only save UserAccount if you have a valid User created.</P>
+<P>To through in another twist, Addresses are a collection in UserAccount, so it would be like:</P>
+<P>string strAddress1 = tmpUser.UserAccount.Addresses[0].Address1;</P>
+<P>Which I of course need to be able to add to and remove from.</P>
+<P>I won't even worry about the other sub-classes because they can all be based off the same framework.</P>
+<P>&nbsp;</P>
+<P>Look forward to finding someone that can help me figure out this tangled mess.</P>
+<P>Thanks,</P>
+<P>Andrew</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Marjon1 replied on Wednesday, December 26, 2007</h2><font face="Arial"><font size="1">Andrew,<br><br>I'm happy to investigate this further with you, please see the email that I sent.<br><br>Regards,<br><br>John<br></font></font></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Brent Dunham replied on Thursday, December 27, 2007</h2><FONT size=2>
+<P>Take a look at the classes below:</FONT></P>
+<P><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>class</FONT><FONT size=2> </FONT><FONT color=#008080 size=2>User</P></FONT><FONT size=2>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>private</FONT><FONT size=2> </FONT><FONT color=#008080 size=2>Guid</FONT><FONT size=2> _Id;</P>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#008080 size=2>Guid</FONT><FONT size=2> Id</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>get</FONT><FONT size=2> { </FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> _Id; }</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>private</FONT><FONT size=2> </FONT><FONT color=#008080 size=2>UserDemographics</FONT><FONT size=2> _Demographics;</P>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#008080 size=2>UserDemographics</FONT><FONT size=2> Demographics</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>get</P></FONT><FONT size=2>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (_Demographics == </FONT><FONT color=#0000ff size=2>null</FONT><FONT size=2>)</P>
+<P>{</P>
+<P>_Demographics = </FONT><FONT color=#008080 size=2>UserDemographics</FONT><FONT size=2>.GetUserDemographics(_Id);</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> _Demographics;</P>
+<P>}</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>private</FONT><FONT size=2> </FONT><FONT color=#008080 size=2>UserAccount</FONT><FONT size=2> _Account;</P>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#008080 size=2>UserAccount</FONT><FONT size=2> Account</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>get</P></FONT><FONT size=2>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (_Account == </FONT><FONT color=#0000ff size=2>null</FONT><FONT size=2>)</P>
+<P>{</P>
+<P>_Account = </FONT><FONT color=#008080 size=2>UserAccount</FONT><FONT size=2>.GetUserAccount(_Id);</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> _Account;</P>
+<P>}</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>private</FONT><FONT size=2> </FONT><FONT color=#008080 size=2>UserAddressList</FONT><FONT size=2> _Addresses;</P>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#008080 size=2>UserAddressList</FONT><FONT size=2> Addresses</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>get</P></FONT><FONT size=2>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (_Addresses == </FONT><FONT color=#0000ff size=2>null</FONT><FONT size=2>)</P>
+<P>{</P>
+<P>_Addresses = </FONT><FONT color=#008080 size=2>UserAddressList</FONT><FONT size=2>.GetUserAddressList(_Id);</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> _Addresses;</P>
+<P>}</P>
+<P>}</P>
+<P></P>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>static</FONT><FONT size=2> </FONT><FONT color=#008080 size=2>User</FONT><FONT size=2> GetByUserName(</FONT><FONT color=#0000ff size=2>string</FONT><FONT size=2> userName)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>throw</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> </FONT><FONT color=#008080 size=2>NotImplementedException</FONT><FONT size=2>();</P>
+<P>}</P>
+<P>}</P>
+<P></P>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>class</FONT><FONT size=2> </FONT><FONT color=#008080 size=2>UserDemographics</P></FONT><FONT size=2>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>internal</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>static</FONT><FONT size=2> </FONT><FONT color=#008080 size=2>UserDemographics</FONT><FONT size=2> GetUserDemographics(</FONT><FONT color=#008080 size=2>Guid</FONT><FONT size=2> guid)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>throw</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> </FONT><FONT color=#008080 size=2>NotImplementedException</FONT><FONT size=2>();</P>
+<P>}</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>class</FONT><FONT size=2> </FONT><FONT color=#008080 size=2>UserAccount</P></FONT><FONT size=2>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>internal</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>static</FONT><FONT size=2> </FONT><FONT color=#008080 size=2>UserAccount</FONT><FONT size=2> GetUserAccount(</FONT><FONT color=#008080 size=2>Guid</FONT><FONT size=2> guid)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>throw</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> </FONT><FONT color=#008080 size=2>NotImplementedException</FONT><FONT size=2>();</P>
+<P>}</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>class</FONT><FONT size=2> </FONT><FONT color=#008080 size=2>UserAddress</P></FONT><FONT size=2>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>internal</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>static</FONT><FONT size=2> </FONT><FONT color=#008080 size=2>UserAddress</FONT><FONT size=2> GetUserAddress(SafeDataReader reader)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>throw</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> </FONT><FONT color=#008080 size=2>NotImplementedException</FONT><FONT size=2>();</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>static</FONT><FONT size=2> </FONT><FONT color=#008080 size=2>UserAddress</FONT><FONT size=2> NewUserAddress()</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>throw</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> </FONT><FONT color=#008080 size=2>NotImplementedException</FONT><FONT size=2>();</P>
+<P>}</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>class</FONT><FONT size=2> </FONT><FONT color=#008080 size=2>UserAddressList</P></FONT><FONT size=2>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>internal</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>static</FONT><FONT size=2> </FONT><FONT color=#008080 size=2>UserAddressList</FONT><FONT size=2> GetUserAddressList(</FONT><FONT color=#008080 size=2>Guid</FONT><FONT size=2> guid)</P>
+<P>{</P>
+<P></FONT><FONT color=#008000 size=2>// Here you would (if using CSLA) call dataportal_fetch.</P></FONT><FONT size=2>
+<P></FONT><FONT color=#008000 size=2>// Inside dataportal_fetch (or here if not using CSLA)</P></FONT><FONT size=2>
+<P></FONT><FONT color=#008000 size=2>// Do something like this:</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>using</FONT><FONT size=2> (</FONT><FONT color=#008080 size=2>SqlConnection</FONT><FONT size=2> cn = </FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> </FONT><FONT color=#008080 size=2>SqlConnection</FONT><FONT size=2>())</P>
+<P>{</P>
+<P>cn.Open();</P>
+<P></FONT><FONT color=#0000ff size=2>using</FONT><FONT size=2> (</FONT><FONT color=#008080 size=2>SqlCommand</FONT><FONT size=2> cmd = cn.CreateCommand())</P>
+<P>{</P>
+<P>cmd.CommandText = </FONT><FONT color=#800000 size=2>""</FONT><FONT size=2>; </FONT><FONT color=#008000 size=2>// fecth all addresses for the user</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>using</FONT><FONT size=2>(SafeDataReader reader = </FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> SafeDataReader(cmd.ExecuteReader()))</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>.Add(</FONT><FONT color=#008080 size=2>UserAddress</FONT><FONT size=2>.GetUserAddress(reader));</P>
+<P>}</P>
+<P>}</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>throw</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> </FONT><FONT color=#008080 size=2>NotImplementedException</FONT><FONT size=2>();</P>
+<P>}</P>
+<P>}</P>
+<P>&nbsp;</P>
+<P>Formatting didn't copy well but...</P>
+<P>First thing to note is I don't see a reason for sub-classes. Just because a User contains a UserDemographics object doesn't infer sub-classing.</P>
+<P>What I'm trying to demonstrate with the property being exposed for User.DemoGraphics is that the property is not loaded until accessed. This is often refered to as deferred loading or lazy loading. This enables a lighter-weight object initially, but allows retrieval in a intuitive way. Notice the factory method for UserDemographics is internal to not confuse users of the OM. The UserAddressList is a collection of UserAddress instances. It is also lazy loaded. What I'm trying to demostrate here is that the UserAddressList actually does the data access and passes a reader to the UserAddress factory method. I also exposed a public factory method for UserAddress called NewUserAddress. This would pass a new UserAddress back that is mark New (.IsNew = true) that can be added to the UserAddressList class. I did not address anything related to CSLA other than the SafeDataReader. If you do not have experience with CSLA, then that's likely to be a slightly different topic. </P>
+<P>You would likely need to implement the following:</P>
+<P>Normal fields / Properties</P>
+<P>IsDirty / IsValid / IsNew / IsChild</P>
+<P>DataPortal_Fetch / DataPortal_Insert / DataPortal_Update (data access)</P>
+<P>There are quite a few other thing depending on how complete / rich you would like the objects.</P>
+<P>As a note on the Save:</P>
+<P>If the Controller calls User.Save, you might want to check if each of the child objects in the User object have been instanciated before calling IsDirty / IsValid etc. What I've done in the past is something like this:</P><FONT color=#0000ff size=2>
+<P>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>bool</FONT><FONT size=2> IsDirty</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>get</P></FONT><FONT size=2>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>base</FONT><FONT size=2>.IsDirty || (_Demographics==</FONT><FONT color=#0000ff size=2>null</FONT><FONT size=2> ? </FONT><FONT color=#0000ff size=2>false</FONT><FONT size=2> : _Demographics.IsDirty) || ...</P>
+<P>}</P>
+<P>}</P></FONT>
+<P>Hope that helps,</P>
+<P>Brent</P>
+<P>&nbsp;</P></FONT></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

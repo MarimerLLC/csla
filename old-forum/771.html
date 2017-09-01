@@ -1,0 +1,28 @@
+<html><header><title>Calculated field question</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Calculated field question</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/771.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>NelsonF posted on Monday, July 31, 2006</h2><DIV>I have a need to enter data for a record that contains a field calculated on the SQL server.</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>For example I have two fields ([apprvalue], [adjustment]) that calculate like this on the SQL server:</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>([apprvalue] + [adjustment])</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>The sum is then stored in the calculated field (not via trigger) named [adjustedvalue].</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>When a new CSLA object is created and I populate the [apprvalue] and [adjustment] fields, the [adjustedvalue] remains null since I havent commited&nbsp;my changes&nbsp;to the database. I understand this.</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>I need to get the adjusted value to use for further calculations in the parent CSLA object and this is where I am stuck. I can do the calculations myself but then I have to keep the calculation logic in two places, (the SQL server and the codebase). I could also commit the changes but then I have to commit all other changes to the parent and siblings as well and this might introduce problems because then I lose undo-ability (since I have to reload the data to get the new calc'ed values).</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>Has anyone run into these issues and/or have suggestions?</DIV></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rkelley replied on Monday, July 31, 2006</h2><P>From what I have found in my business objects is that it is typically much faster to store the logic in two places. It will take much less time to calculate the value in your business object than to save the data or call SQL to calculate the value. </P>
+<P>What I am trying to do is very similar, reduce database calls and redundant logic. However, sometimes this is just not possible. What I have also done in the past is store variables for the calculation in the app.config so that the entire program does not have to recompile just for a value change. Or you could store the data in a table and load it into the app when it starts and just keep it in memory if it small amounts of data.</P>
+<P>Hope this helps a little,</P>
+<P>rkelley</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Q Johnson replied on Monday, July 31, 2006</h2>
+
+
+
+
+<DIV align=left><SPAN class=171484819-31072006><FONT face=Arial color=#0000ff size=2>Perhaps ignoring the database version of 
+the&nbsp;AdjustedValue&nbsp;is best.&nbsp; You can just populate the property 
+with a value in the Setter logic for its constituent parts (ApprValue and 
+Adjustment).&nbsp; If one of them changes, so does the calculation.&nbsp; When 
+one is undone, so is the other.&nbsp; </FONT></SPAN></DIV>
+<DIV align=left><SPAN class=171484819-31072006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=171484819-31072006><FONT face=Arial color=#0000ff size=2>You certainly don't need to write it to the database, why 
+even read it?</FONT></SPAN></DIV><BR></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,166 @@
+<html><header><title>The remote server returned an error: NotFound</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>The remote server returned an error: NotFound</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6863.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>CampbellCM posted on Tuesday, April 28, 2009</h2>I'm getting this error when I try and save a BO.  The BO is an editable root.  I've looked at several other postings for this error but I couldn't find anything relating to what I'm seeing.<br /><br />Here is the stack trace:<br /><br />System.ServiceModel.CommunicationException was unhandled by user code<br />  Message="The remote server returned an error: NotFound"<br />  StackTrace:<br />       at System.ServiceModel.AsyncResult.End[TAsyncResult](IAsyncResult result)<br />       at System.ServiceModel.Channels.ServiceChannel.SendAsyncResult.End(SendAsyncResult result)<br />       at System.ServiceModel.Channels.ServiceChannel.EndCall(String action, Object[] outs, IAsyncResult result)<br />       at System.ServiceModel.ClientBase`1.ChannelBase`1.EndInvoke(String methodName, Object[] args, IAsyncResult result)<br />       at Csla.WcfPortal.WcfPortalClient.WcfPortalClientChannel.EndUpdate(IAsyncResult result)<br />       at Csla.WcfPortal.WcfPortalClient.Csla.WcfPortal.IWcfPortal.EndUpdate(IAsyncResult result)<br />       at Csla.WcfPortal.WcfPortalClient.OnEndUpdate(IAsyncResult result)<br />       at System.ServiceModel.ClientBase`1.OnAsyncCallCompleted(IAsyncResult result)<br />  InnerException: System.Net.WebException<br />       Message="The remote server returned an error: NotFound"<br />       StackTrace:<br />            at System.Net.AsyncHelper.BeginOnUI(SendOrPostCallback beginMethod, Object state)<br />            at System.Net.BrowserHttpWebRequest.EndGetResponse(IAsyncResult asyncResult)<br />            at System.ServiceModel.Channels.HttpChannelFactory.HttpRequestChannel.HttpChannelAsyncRequest.CompleteGetResponse(IAsyncResult result)<br />       InnerException: System.Net.WebException<br />            Message="The remote server returned an error: NotFound"<br />            StackTrace:<br />                 at System.Net.BrowserHttpWebRequest.InternalEndGetResponse(IAsyncResult asyncResult)<br />                 at System.Net.BrowserHttpWebRequest.<>c__DisplayClass5.b__4(Object sendState)<br />                 at System.Net.AsyncHelper.<>c__DisplayClass2.b__0(Object sendState)<br />            InnerException: <br /><br />Here is how I'm saving the BO:<br /><br />public void Save()<br />{<br />    if (_user != null)<br />        _user.BeginSave(SaveComplete);<br />}<br /><br />private void SaveComplete(object sender, Csla.Core.SavedEventArgs e)<br />{<br />    if (e.Error != null)<br />        MessageBox.Show(e.Error.Message);<br />}<br /><br />I have breakpoints set on the DataPortal_Insert and DataPortal_Update overrides and they are not being hit.<br /><br />Any ideas on what the problem is or how to troubleshoot it?</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, April 28, 2009</h2><P>Do other data portal operations work?</P>
+<P>Are you using ObjectFactory?</P>
+<P>I usually hit this when the .NET type loader can't find the assembly or class - due to a typo in a config file or an ObjectFactory attribute parameter.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>PeteH replied on Tuesday, April 28, 2009</h2>I do get this message myself intermittently. To fix it, I usually have to clean the solution, delete the temporary ASP.NET files, exit Visual Studio, and rebuild everything (including the Csla dlls). Thankfully it doesn't happen too often, and it might be related to our network rather than anything in the framework, but it's hard to tell..<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>CampbellCM replied on Tuesday, April 28, 2009</h2>DataPortal_Fetch works fine.  The Insert, Update, and Delete operations are all executed via the Save...right?
+
+I'm not using ObjectFactory, just straight up CSLA with LINQ To SQL for the CRUD.
+
+When I look at the http for the fetch I can see a cost of about 140K.  I would imagine that the cost of a save would be about the same.  The http error I see is 400 and there are zero bytes to go with it.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>CampbellCM replied on Tuesday, April 28, 2009</h2>Where are the temporary ASP.NET files?</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>CampbellCM replied on Tuesday, April 28, 2009</h2>Okay, I found the temporary ASP.NET files.
+
+I did what PeteH suggested but I still have the same problem.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, April 28, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Are you using compression? If not, you should.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Have you upped the max size limits on the WCF config? That is
+required for pretty much any app.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>CampbellCM replied on Wednesday, April 29, 2009</h2>My ServiceReferences.ClientConfig has this:<br /><br />name="BasicHttpBinding_IWcfPortal" maxBufferSize="2147483647" maxReceivedMessageSize="2147483647" receiveTimeout="00:10:00" sendTimeout="00:10:00" openTimeout="00:10:00" closeTimeout="00:10:00"<br /><br />The system.serviceModel section of my Web.Config has this:<br /><br />binding name="BasicHttpBinding_IWcfPortal" maxBufferSize="2147483647" maxReceivedMessageSize="2147483647" receiveTimeout="00:10:00" sendTimeout="00:10:00" openTimeout="00:10:00" closeTimeout="00:10:00"<br /><br />And this:<br /><br />readerQuotas maxBytesPerRead="2147483647" maxArrayLength="2147483647" maxStringContentLength="2147483647"<br /><br />I'm still having the same problem.  I will go ahead and add compression after I get through this issue, but I don't want to further muddy the waters at this point.  Since I'm trying to save just one BO even the numbers currently in the configuration files would be gross overkill.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>CampbellCM replied on Wednesday, April 29, 2009</h2>Okay, I feel like an ass.  I added compression and it works.
+
+Rule 1: Never doubt Rocky.
+Rule 2: If you ever get the urge to doubt Rocky please refer to rule number 1.
+
+Thanks Rocky!</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, April 29, 2009</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I&#8217;m just glad it works :)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Odds are though, that you were hitting some size limit &#8211;
+and you could hit it even with compression, and in that case you&#8217;ll have
+to figure out which value needs to be upped in the client and/or server config
+files.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> CampbellCM
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Wednesday, April 29, 2009 9:33 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: The remote server returned an error:
+NotFound<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Okay, I feel like an ass. I added compression and it works.
+Rule 1: Never doubt Rocky. Rule 2: If you ever get the urge to doubt Rocky
+please refer to rule number 1. Thanks Rocky!<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>decius replied on Thursday, June 11, 2009</h2><P>I'm hitting this problem too, I added compression, and maxed out the bindings on the client and the server.&nbsp;</P>
+<P>Is there an easy way to test for hitting a max size limit, so that I could verify that that is indeed my problem?&nbsp; I don't know what else to do at this point.&nbsp; thanks for any help.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>zhengokusa replied on Thursday, June 11, 2009</h2><P>Please forget me, how to use compression ?&nbsp; </P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>decius replied on Thursday, June 11, 2009</h2><P>I found my problem, it was just a webconfig that was misconfigured.&nbsp; 0_o&nbsp; In my case, the WcfService was literally "Not Found" lol.</P>
+<P><STRONG>zhengokusa, </STRONG>there's a sample project that does this in the Samples that Rocky gives you alongside the Silverlight for CSLA download called "RemotePortalWithCompressedProxy".&nbsp; It's pretty simple, you basically just need to copy the Compression classes from this project and bring the ICSharpCode reference along with it.&nbsp; Plus, don't forget to change your webconfig's to point to the new .svc that you'll also have to make.&nbsp; It's all in that solution.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>zhengokusa replied on Thursday, June 11, 2009</h2>Thanks dude</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, June 11, 2009</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>This is in the FAQ<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><a href="http://www.lhotka.net/cslanet/faq">www.lhotka.net/cslanet/faq</a><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>under the Silverlight FAQ.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> zhengokusa
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Thursday, June 11, 2009 1:16 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: The remote server returned an error:
+NotFound<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Please forget me, how to use compression ?&nbsp; <o:p></o:p></p>
+
+<p>&nbsp;<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonM replied on Wednesday, March 07, 2012</h2><p>I&#39;m also running into this issue with a big object.&nbsp; Not sure how to do compression on the SL portal.&nbsp; I checked the FAQ link for silverlight but I don&#39;t don&#39;t see anything in there about compression.&nbsp; Any ideas where to start?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, March 07, 2012</h2><p>The data portal configuration information is on the data portal page in the FAQ:</p>
+<p><a href="http://www.lhotka.net/cslanet/faq/DataPortalFaq.ashx">http://www.lhotka.net/cslanet/faq/DataPortalFaq.ashx</a></p>
+<p>I also walk through implementing compression in the Silverlight video series and in the <em>Using CSLA 4: Data Portal Configuration</em> book.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

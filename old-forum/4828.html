@@ -1,0 +1,96 @@
+<html><header><title>EditableRootListBase or BusinessListBase</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>EditableRootListBase or BusinessListBase</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4828.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Valentin_Valve posted on Friday, May 09, 2008</h2>I've been using CSLA and like it very much.<br>The community here is one of the best as well which is really great.<br>&nbsp;Please advice scenarios when to use EditableRootListBase over BusinessListBase and vice versa. I have been using only the latter and can't figure out when to use ERLB.<br><br>~ Valentin.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Friday, May 09, 2008</h2>The only use for ERLB is in a rich application (WinForms or WPF) where you want each row to save itself to the database as the user leaves the row, because each row can be modified independant of every other row (that is, each row is a Root object).<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Valentin_Valve replied on Saturday, May 10, 2008</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>ajj3085:</strong></div><div>The only use for ERLB is in a rich application (WinForms or WPF) where you want each row to save itself to the database as the user leaves the row, because each row can be modified independant of every other row (that is, each row is a Root object).<br></div></BLOCKQUOTE><br><br>Thanks for quick response. <br>I think I get the idea. I'm currently working on a form (WinForms app) where I have two panes (upper is master, lower is detail, standard approach). I'm using BLBs for both panes, because I want everything to be saved upon form closing in one transaction. Is this ok to NOT use ERLB in upper (master) pane here?<br><br>Thank you<br>~Valentin<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Saturday, May 10, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Yes, you are fine to use BLB for both objects.&nbsp; As a matter
+of fact, I have never used ERLB because I always use single save button for
+entire set of data on a single form/control.&nbsp; ERLB does not work for this.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Senior Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Valentin_Valve
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Saturday, May 10, 2008 1:53 AM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] EditableRootListBase or BusinessListBase<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<blockquote>
+
+<div>
+
+<p class=MsoNormal><img id="_x0000_i1025" src="/Themes/default/images/icon-quote.gif"><strong>ajj3085:</strong><o:p></o:p></p>
+
+</div>
+
+<div>
+
+<p class=MsoNormal>The only use for ERLB is in a rich application (WinForms or
+WPF) where you want each row to save itself to the database as the user leaves
+the row, because each row can be modified independant of every other row (that
+is, each row is a Root object).<o:p></o:p></p>
+
+</div>
+
+</blockquote>
+
+<p class=MsoNormal><br>
+<br>
+Thanks for quick response. <br>
+I think I get the idea. I'm currently working on a form (WinForms app) where I
+have two panes (upper is master, lower is detail, standard approach). I'm using
+BLBs for both panes, because I want everything to be saved upon form closing in
+one transaction. Is this ok to NOT use ERLB in upper (master) pane here?<br>
+<br>
+Thank you<br>
+~Valentin<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>maxal replied on Tuesday, May 13, 2008</h2><P>Excellent. Reading this post I realized that while I was using BusinesBaseList what I really need is EditableRootListBase since this is exactly what I am doing.</P>
+<P>So, I tried to switch to EditableRootListBase and found two things. One is good and another is not so good.</P>
+<P>1. Good thing. In my approach I had to call ISavable.Save manually, and not it's called automatically when ApplyEdit is called</P>
+<P>2. Bad thing. We are working with local database, and our <FONT size=2><FONT color=#2b91af>ApplicationContext</FONT>.AutoCloneOnUpdate </FONT><FONT size=3>method property is set to fase, so no cloning. Now, I cannot avoid that cloning since that what EditableRootListBase does.</FONT></P>
+<P>So, the question is why would I need to clone with local database? Can I avoid it somehow?</P>
+<P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>ajj3085:</strong></div><div>The only use for ERLB is in a rich application (WinForms or WPF) where you want each row to save itself to the database as the user leaves the row, because each row can be modified independant of every other row (that is, each row is a Root object).<BR></div></BLOCKQUOTE></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Tuesday, May 13, 2008</h2>Well, it shouldn't really matter that your object is being cloned.&nbsp; The ERLB should be handling that for you.&nbsp; The reason it's probably a good idea for the clone to happen (and why it is now the defaut in 3.5) is because it will help you find right away problems that would pop up should you choose to use a remote data portal.&nbsp; So, it gives you clues as to what you're doing wrong.&nbsp; <br><br>Is there a reason you don't want the clone to happen?<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>maxal replied on Tuesday, May 13, 2008</h2><P>The only reason is performance. Serializing is comparably heavy operation to be used just to know what can be&nbsp;wrong should I decide to switch to remote data portal. I will think about that, but now I am inclined to remove cloning from EditableRootListBase.</P>
+<P>BTW, if I really decide to move remote data portal, the cloning will still be there, right. Which will be absolutely useless since remote data portal will serialize the object late anyway.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Tuesday, May 13, 2008</h2>Well, specfically in ERLB the reason for the clone is so the user isnt' left with an invalid object displayed in the row.&nbsp; I should have mentioned that before.&nbsp; Imagine what happens if the save fails half way though; you no longer have a valid object for the user to edit.&nbsp; The clone at least gives you the object in the state before the save was attempted.<br><br>If you move to remoting, the clone occurs because the instance is serialized and sent over the wire.&nbsp; It's not cloned and then serialized; that would be useless, because when the call returns you are going to get a new object, no way around it.<br><br>So the cloning done in local mode is there so that the objects behave consistently no matter what data portal is used.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>maxal replied on Tuesday, May 13, 2008</h2>OK, I see the point. Thanks for reply.</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

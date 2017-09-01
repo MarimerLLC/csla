@@ -1,0 +1,27 @@
+<html><header><title>Edit Level Mismatch in BussinesObject Child</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Edit Level Mismatch in BussinesObject Child</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6758.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Antonio Sandoval posted on Tuesday, April 07, 2009</h2>I have something like this:<br><br>
+DepartmentsList (ERLB )<br>
+...|----RolesList          (ERLB )<br>
+...|----ObjectsList      (ERLB )<br>
+............|---ObjectMap  (BussinesBase, MarkAsChild)<br><br>And the binding:<br><br>DepartmentsList _departments = DepartmentsList.GetDepartmentsList();<br>
+departmentsListBindingSource.DataSource = _deparments;<br>
+rolesListBindingSource.DataSource = departmentsListBindingSource;<br>
+rolesListBindingSource.DataMember = "RolesList";<br>
+objectsListBindingSource.DataSource = departmentsListBindingSource;<br>
+objectsListBindingSource.DataMember = "ObjectsList";<br>
+objectMapBindingSource.DataSource = objectsListBindingSource;<br>
+objectMaptBindingSource.DataMember = "ObjectMap";<br><br>BindUI(){<br>_departments.BeginEdit();<br>departmentsListBindingSource.DataSource = _deparments;<br>}<br><br>Save(){<br>&nbsp; UnbindbindingSource(objectMapBindingSource,false);<br>&nbsp; UnbindbindingSource(objectsListBindingSource,false);<br>&nbsp; UnbindbindingSource(rolesListBindingSource,false);<br>&nbsp; UnbindbindingSource(departmentsListBindingSource,true);<br>&nbsp; .....<br>&nbsp; _departments.ApplyEdit()<br>&nbsp; DepartmentsList tmp = _departments.Clone();<br>&nbsp; _departments =tmp.Save();<br>}<br><br>When I add a new item to ObectsList into a datagrid the EditLevel comes back to 1 and the new item begins with EditLevel = 1. I'm using XtraGrid of devexpress. I don't know if it can be a bug of XtraGrid, or if I binding my controls in a wrong way.<br><br>Thanks in advance<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, April 07, 2009</h2><P>What version of CSLA are you using?</P>
+<P>The current item in each bindingSource will have EditLevel of 1, because that item is current.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Antonio Sandoval replied on Tuesday, April 07, 2009</h2>Hi rocky, thank you for your reply. I´m sorry for my mistake, I´m using 3.0.5 and the problem is because I´m doing this:<br><br>public ObjectsList ObjectsList{<br>&nbsp;
+get{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if(_objectsList == null){<br>
+&nbsp;&nbsp;&nbsp;&nbsp; &nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _ObjectsList = ObjectsList.GetObjectsListAsChild(this);<br>
+&nbsp;&nbsp;&nbsp; &nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _ObjectsList.ListChanged +=...<br>
+&nbsp;&nbsp; &nbsp;&nbsp; }<br>
+&nbsp; &nbsp; &nbsp; return _ObjectsList;<br>&nbsp;
+}<br>
+}<br>
+<br>So the editLevel of the existing childrens are never equals to the root. <br><br>When I do this before BeginEdit it saves correctly:<br>&nbsp;foreach (Departments d in _departments)<br>&nbsp;{<br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; foreach (Objects o in d.ObjectsList) { ObjectMap om = o.ObjectMap; }<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; foreach (Roles r in d.RolesList)&nbsp; { }<br>&nbsp;}<br><br>But after save the EL are 0 to every object except for the first and the new child ObjectMap of the ObjectsList collection:<br><br>_departments<img src="/emoticons/emotion-45.gif" alt="No [N]" />.ObjectsList[0].ObjectMap EL = 1<br>_departments<img src="/emoticons/emotion-45.gif" alt="No [N]" />.ObjectsList[m].ObjectMap EL = 1<br><br>Where n is the current record and m is the new record.<br><br>Do you have any idea of what can be happening?<br><br>Thanks in advance.<br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, April 08, 2009</h2><P>Yes, in 3.0, when implementing lazy loading, you need to manually bring the lazy loaded child's edit level up (or down) to match the parent object.</P>
+<P>You can look at the 3.5 or higher code to see how this is done - but it is really just a couple while loops, somewhat like:</P>
+<P>while (_objectsList.EditLevel &gt; this.EditLevel) _objectsList.ApplyEdit();<BR>while (_objectsList.EditLevel&nbsp;&lt; this.EditLevel) _objectsList.BeginEdit();</P>
+<P>If I remember correctly, you might have to cast _objectsList to be an ISupportUndo type (though that type might not exist until 3.5 either).</P>
+<P>Anyway, that's the basic requirement. </P>
+<P>In 3.5 and higher, when using managed backing fields, this is automatically done for you.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Antonio Sandoval replied on Wednesday, April 08, 2009</h2>Ok, thank you rocky, I begun to migrate to 3.6.2. <br>I will to make some tests with the new version to see what happend.<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

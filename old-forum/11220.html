@@ -1,0 +1,51 @@
+<html><header><title>Datagridview binding issues with BusinessListBase Child (Windows forms)</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Datagridview binding issues with BusinessListBase Child (Windows forms)</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11220.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>gajit posted on Friday, March 09, 2012</h2><p><span style="font-family:Tahoma;font-size:small;"><span style="font-family:Tahoma;font-size:small;">Hi all,</span></span></p>
+<p><span style="font-family:Tahoma;font-size:small;">I wonder if anyone can help.</span></p>
+<p><span style="font-family:Tahoma;font-size:small;">I&#39;m having some issues with my databinding on a child collection - businesslistbase.</span></p>
+<p><span style="font-family:Tahoma;font-size:small;">The form is a userprofile-&gt;userroles entry, that mimics closely say the project-&gt; projectresources relationship in the project tracker project.</span></p>
+<p><span style="font-family:Tahoma;font-size:small;">The business objects fetches correctly, and the datagridview contains roles currently assigned to a user. </span></p>
+<p><span style="font-family:Tahoma;font-size:small;">If&nbsp;I then add a role, using this code:</span></p>
+<p><span style="font-family:Tahoma;font-size:small;"></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; If cboRoles.Text &lt;&gt; &quot;&quot; Then</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Try<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; mUSERPROFILEEDIT.UserRoles.Assign(cboRoles.Text)</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Catch ex As InvalidOperationException<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; MessageBox.Show(ex.ToString, _<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &quot;Error assigning&quot;, MessageBoxButtons.OK, _<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; MessageBoxIcon.Information)</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Catch ex As Exception<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; MessageBox.Show(ex.ToString, _<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &quot;Error assigning&quot;, MessageBoxButtons.OK, _<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; MessageBoxIcon.Exclamation)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Try<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ApplyAuthorizationRules()</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End If</p>
+<p><span style="font-family:Tahoma;font-size:small;">The role is indeed added to the collection, and I am able to save the object. What doesn&#39;t happen before I apply the save, is the role does not appear in my datagridview - unless I change a&nbsp;value on the parent object.</span></p>
+<p><span style="font-family:Tahoma;font-size:small;">But that&#39;s not the most critical problem...</span></p>
+<p><span style="font-family:Tahoma;font-size:small;"></span></p>
+<p><span style="font-family:Tahoma;font-size:small;">When I remove a role from the collection, by executing this code:</span></p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; If Me.ROLESDataGridView.SelectedRows.Count &gt; 0 Then</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Dim row As Integer = ROLESDataGridView.CurrentCell.RowIndex<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Dim role As String = ROLESDataGridView.Item(0, row).Value</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; mUSERPROFILEEDIT.UserRoles.Remove(role)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ApplyAuthorizationRules()</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End If</p>
+<p><span style="font-family:Tahoma;font-size:small;">I believe the role gets removed, but then I get an exception:</span></p>
+<p><span style="font-family:Tahoma;font-size:small;">&quot;DataGridView Default Exception&quot;</span></p>
+<p>System.IndexOutOfRangeException: Index n does not have a value. at System.Windows.Forms.CurrencyManager.get_Item(Int32 index)</p>
+<p><span style="font-family:Tahoma;font-size:small;">Clearly the binding isn&#39;t working correctly.</span></p>
+<p><span style="font-family:Tahoma;font-size:small;">I have checked the properties of my datagridview against those in the ProjectTracker sample solution (and also against what I had in my CSLA2 version of this project) and everything seems correct. I also checked the binding sources in the project and they seem fine also.</span></p>
+<p><span style="font-family:Tahoma;font-size:small;">Any ideas on what the problem could be?</span></p>
+<p><span style="font-family:Tahoma;font-size:small;">Thanks,</span></p>
+<p><span style="font-family:Tahoma;font-size:small;">Graham</span></p>
+<p>&nbsp;</p>
+<p><span style="font-family:Tahoma;font-size:small;"></span></p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>gajit replied on Friday, March 09, 2012</h2><p><span style="font-size:small;">This resolves the problem(s):</span></p>
+<p>&nbsp;</p>
+<p><span style="font-family:Tahoma;font-size:small;"><span style="font-family:Tahoma;font-size:small;"><font face="Tahoma" size="3"><font face="Tahoma" size="3">
+<p>&nbsp;</p>
+</font></font></span><font face="Tahoma" size="3">
+<p>&nbsp;</p>
+</font></span></p>
+<p>&nbsp;</p>
+<p style="padding-left:30px;"><span style="font-family:Tahoma;color:#0000ff;font-size:small;"><span style="font-family:Tahoma;color:#0000ff;font-size:small;"><span style="font-family:Tahoma;color:#0000ff;font-size:small;">Me</span></span></span><span style="font-family:Tahoma;font-size:small;"><span style="font-family:Tahoma;font-size:small;">.UserRolesBindingSource.ResetBindings(</span></span><span style="font-family:Tahoma;color:#0000ff;font-size:small;"><span style="font-family:Tahoma;color:#0000ff;font-size:small;"><span style="font-family:Tahoma;color:#0000ff;font-size:small;">False<span style="font-family:Arial;color:#000000;">)</span></span></span></span></p>
+<p><span style="font-size:small;">I can live with this, but I&#39;m curious as to why we now need to rebind manually instead of it automatically rebinding? Is this a result of a .Net change or a CSLA change?</span></p>
+<p><span style="font-size:small;">The windows forms projecttracker solution doesn&#39;t reset the binding. but I suspect that project doesn&#39;t actually run...</span></p>
+<p><span style="font-size:small;">Any insight would be helpful.</span></p>
+<p><span style="font-size:small;">Thanks,</span></p>
+<p><span style="font-size:small;">Graham</span></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Friday, March 09, 2012</h2><p>Only BusinessBindingListBase, DynamicBindingListBase and ReadOnlyBindingListBase works properly with Windows Forms.&nbsp;</p>
+<p>BusinessListBase and ReadOnlyListBase classes inherit from ObservableCollection and they do NOT work properly with Windows Forms databinding - these classes are for&nbsp; WPF/SL/WP and Web. </p>
+<p>This is described in <b><i>Using Csla 4 - Creating Business Objects</i></b> - Chapter 3 - Windows Forms Types.</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>gajit replied on Friday, March 09, 2012</h2><p>Excellent - that did the trick - I wa able to remove the ResetBinding call and binding worked as expected.</p>
+<p>So when was the distinction made between BLB and BBLB? Obviously after CSLA2.1. Just curious...</p>
+<p>Thanks again,</p>
+<p>G.</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Friday, March 09, 2012</h2><p>Changed in 4.0.&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,11 @@
+<html><header><title>Refresh of webpage creates additional objects.</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Refresh of webpage creates additional objects.</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/1465.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>MadGerbil posted on Thursday, October 12, 2006</h2><P>I'm using a formview control that displays a gridview on a page that shows all of the logs currently in the system.&nbsp; If a user wants to create a new log, the formview shows a version of the page that allows that - upon clicking add the formveiw switches back to the item view and shows the gridview with the newly added item.</P>
+<P>If I 'refresh' the page at that point, I get another copy of the last item added.&nbsp; I can make hundreds of copies this way.</P>
+<P>The page causes the insert object event on the datasource to keep firing.</P>
+<P>How do I prevent this?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>MadGerbil replied on Thursday, October 12, 2006</h2><P>I found a fix&nbsp;- it's a bit of a hack.</P>
+<P>After doing the insertobject I do a response.redirect to the same page and that clears out the postback data.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Thursday, October 12, 2006</h2><P>For a small app that is fine.</P>
+<P>For a larger app that can afford a framework level soultion you can implement an HttpModule named RefreshTrapper (by Dino Esposito?) which does a lot of work to find out if it is a page refresh or not and then sets IsPostback=False in:  </P>
+<P>Protected Overrides Function DeterminePostBackMode() As System.Collections.Specialized.NameValueCollection<BR>&nbsp;</P>
+<P>There is a lot of code to implement something like this, so your workaround is fine.</P>
+<P>Joe</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

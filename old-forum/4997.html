@@ -1,0 +1,43 @@
+<html><header><title>data bind isValid property in WPF.</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>data bind isValid property in WPF.</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4997.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>longbridge posted on Friday, June 20, 2008</h2>My program has a treeview for navigation. The tag property of each node
+(TreeViewItem) is set to a instance of business class. The business
+class has a boolean "IsValid" property to indicate if the data in the
+business class is valid or not. <br>
+<br>
+We want to have a warning icon for each node to indicate the validity
+status of the data. So when the validity of data changes, the warning
+icon will show/hide.<br>
+<br>
+What I did is to bind the Tag property to the Visibility of Warning
+image, and use a converter to read isValid attribute, convert it to&nbsp;
+correct Visibility Type and return. <br>
+<br>
+&nbsp;The porblem is that when IsValid property of business class changes,
+the tag (instance of business class) doesn't change as well. So the
+warningIcon will not be udpated. <br>
+<br>
+Any ideas to make this work? Is it possible to bind to the isValid property directly? Thanks. <br>
+<br>
+Following are the databinding and converter codes I wrote: <br>
+<br>
+&lt;Image Name="WarningIcon" Visibility="{Binding Path=Tag,
+RelativeSource={RelativeSource TemplatedParent},
+Converter={StaticResource ValidityConverter}}"&nbsp; Width="16" Height="16"
+Margin="3,0,0,0"
+Source="/Test;component/Resources/imges/warning.png"/&gt;<br>
+<br>
+&nbsp;public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; BusinessBase bo = value as BusinessBase;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (bo != null)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (!bo.IsValid)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return Visibility.Visible;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return Visibility.Collapsed;<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+<br>
+&nbsp;&nbsp; <br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, June 20, 2008</h2>The Csla.Wpf.ObjectStatus control exists to elevate the Is___ properties to be bindable within XAML.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>longbridge replied on Saturday, June 21, 2008</h2>Thanks. That works.<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

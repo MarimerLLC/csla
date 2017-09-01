@@ -1,0 +1,16 @@
+<html><header><title>CSLA 4.5 Silverlight FetchAsync not returning</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA 4.5 Silverlight FetchAsync not returning</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11694.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jaans posted on Monday, November 12, 2012</h2><p>Hi guys</p>
+<p>I&#39;m having a strange problem. I have upgraded a Silverlight 5 project to use latest CSLA 4.5. This project uses the old style factories with the&nbsp;EventHandler&lt;DataPortalResult&lt;T&gt;&gt; callback signature.</p>
+<p>These work just fine before and after the 4.5 upgrade.&nbsp;</p>
+<p>However, if I create a factory using async / await with the FetchAsync dataportal method, it doesn&#39;t return the client. Using breakpoints I can confirm that the data portal finished it&#39;s work, only it&#39;s just as if the response/result that is returned by the data portal doesn&#39;t reach back to the client.</p>
+<p>The factory that uses the old Silverlight singature still works, it&#39;s only the FetchAsync call that doesn&#39;t? What could it be?</p>
+<p style="padding-left:30px;">&nbsp;</p>
+<p style="padding-left:30px;">public static async Task&lt;AssessmentInfoList&gt; GetAsync()<br />{<br />&nbsp; &nbsp; return await DataPortal.FetchAsync&lt;AssessmentInfoList&gt;( new Criteria( &nbsp;) );<br />}</p>
+<p>&nbsp;</p>
+<p>Thanks,<br />Jaans</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Tuesday, November 13, 2012</h2><p>Are you awaiting the call to the new async factory?</p>
+<p>The way the WCF infrastructure works in Silverlight, is that the callback from the server is marshalled onto the UI thread by WCF. If the UI thread is blocked, this can&#39;t happen and the app basically locks up.</p>
+<p>As a result, you _must_ ensure that the call to your factory method is non-blocking. In the case of an async factory method, the calling code _must_ await that call.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jaans replied on Friday, November 16, 2012</h2><p>Many thanks, Rocky.</p>
+<p>My initial attempts at using the async style is somewhat flawed.&nbsp;</p>
+<p>As you suspected, my event handler / Caliburn Micro Action had called the factory method without await tried to extract the result of the Factory call, effectively blocking.</p>
+<p>By marking that event handler / CM action method as &quot;Async&quot; and awaiting the Factory call, the block was removed and it now works as expected.</p>
+<p>J</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

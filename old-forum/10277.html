@@ -1,0 +1,14 @@
+<html><header><title>Strange behaviour of datagridview binded to sortedbindinglist</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Strange behaviour of datagridview binded to sortedbindinglist</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10277.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Niemand posted on Tuesday, April 19, 2011</h2><p>I encountered strange behavior of datagridview:</p>
+<p>&nbsp;</p>
+<p>In the parent object &nbsp;(invoice) I have a childlist (invoiceitemlist) that I expose through a property like this:</p>
+<p>Public ReadOnly Property InvoiceItemList() As Csla.SortedBindingList(Of InvoiceItem)<br />&nbsp;        &nbsp;Get<br />&nbsp;               &nbsp; &nbsp; &nbsp; &nbsp;Return _InvoiceItemList.GetSortedList<br />&nbsp;           &nbsp;End Get<br />        End Property</p>
+<p>Adequate method in childlist is:</p>
+<p><br />&lt;NonSerialized()&gt; _<br />        Private _SortedList As Csla.SortedBindingList(Of InvoiceItem) = Nothing</p>
+<p>Public Function GetSortedList() As Csla.SortedBindingList(Of InvoiceItem)<br />&nbsp;           &nbsp; &nbsp;If _SortedList Is Nothing Then _SortedList = New Csla.SortedBindingList(Of InvoiceItem)(Me)<br />&nbsp;           &nbsp; &nbsp;Return _SortedList<br />        End Function</p>
+<p>&nbsp;</p>
+<p>Binding is implemented by VS GUI (draging form datasources).</p>
+<p>&nbsp;</p>
+<p>I also have the same implementation (with private field) of exposing SBL in parentrootlist.</p>
+<p>&nbsp;</p>
+<p>But in the first case databinding cancelnew method &nbsp;wouldn&#39;t work and in the second case it works perfectly. What could be a reason for that?</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>ajj3085 replied on Wednesday, April 20, 2011</h2><p>Don&#39;t expose the SBL as a property from your BO.&nbsp; Instead, wrap the property in a SBL before you bind it to the BindingSource.&nbsp; You&#39;ll have to write a bit of code to do this, but it should resolve your issue.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Niemand replied on Thursday, April 21, 2011</h2><p>I implemented printing of BO by passing the object to the printing method. In order to support transfer of the sorting state (also filtering in some cases) of the object to the printing method the object itself should contain a reference to the actual sorted/filtered list. So wrapping the object on GUI side is not an option.</p>
+<p>Besides I can&#39;t quite understand why can&#39;t &nbsp;I do it inside a property? What&#39;s the difference when doing the same thing on GUI side or BO side?</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

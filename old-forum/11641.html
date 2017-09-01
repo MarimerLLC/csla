@@ -1,0 +1,27 @@
+<html><header><title>Guidance on filtered lists in Silverlight</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Guidance on filtered lists in Silverlight</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11641.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>griff posted on Tuesday, October 16, 2012</h2><p>I am looking &nbsp;to filter a ReadOnlyListBase (or other csla object). &nbsp;Originally&nbsp;I had a list-box&nbsp;binded to this rolb but now that I want to filter (via the UI) &nbsp;I am right in thinking that I need to bind a LinqObservableCollection and then retrieve my rolb then convert to LinqObservableCollection</p>
+<p>
+<pre><b>XAML   </b>ItemsSource=&quot;{Binding&nbsp;Path=<b>GridList</b>,&nbsp;Mode=TwoWay}&quot;&nbsp;
+</pre>
+<pre></pre>
+<pre><b>MVVM</b>:</pre>
+<pre><pre>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>private</span>&nbsp;<span>void</span>&nbsp;GetJobsGridSimpleListCompleted(<span>object</span>&nbsp;sender,&nbsp;Csla.<span>DataPortalResult</span>&lt;<span>JobsGridSimpleList</span>&gt;&nbsp;e)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>if</span>&nbsp;(e.Object&nbsp;!=&nbsp;<span>null</span>&nbsp;&amp;&amp;&nbsp;e.Error&nbsp;==&nbsp;<span>null</span>)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;JobsGridSimpleList&nbsp;=&nbsp;e.Object;  // <b>my ROLB</b>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>&nbsp;GridList&nbsp;=&nbsp;(<span>from</span>&nbsp;r&nbsp;<span>in</span>&nbsp;_JobsGridSimpleList&nbsp;&nbsp;<span>select</span>&nbsp;r).ToSyncList(_JobsGridSimpleList);</b>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>else</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>MessageBoxServiceProvider</span>.ShowError(<span>string</span>.Format(<span>&quot;There&nbsp;was&nbsp;an&nbsp;error&nbsp;(details&nbsp;below){0}{1}&quot;</span>,&nbsp;System.<span>Environment</span>.NewLine,&nbsp;e.Error.Message),&nbsp;<span>string</span>.Format(<span>&quot;Error:&nbsp;in&nbsp;{0}&nbsp;-&nbsp;{1}Completed&nbsp;&quot;</span>,&nbsp;VMName,&nbsp;<span>&quot;GetJobsGridSimpleList&quot;</span>));
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+</pre>
+</pre>
+<pre></pre>
+<pre>Is this the best (or acceptable) way of achieving this using Csla.</pre>
+<pre>Thanks,.</pre>
+<pre></pre>
+<pre></pre>
+</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Tuesday, October 16, 2012</h2><p>Yes, you should use the ToSyncList extension method to create a syncronized list based on the ROLB. We created ToSyncList specifically for this purpose.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

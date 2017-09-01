@@ -1,0 +1,33 @@
+<html><header><title>Refreshing a grid when contents are changed in a different window</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Refreshing a grid when contents are changed in a different window</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3628.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>lektira posted on Monday, October 01, 2007</h2><P>Hello,</P>
+<P>I am quite new to CSLA, and I might be stuck with a basic question.</P>
+<P>Namely, I have a grid containing a number of objects created from a class called ProductsInfo, which is a readonlylistbase. They contain only four fields that are displayed in the grid.<BR>When any of the items is double clicked, a full Product object(businessbase) is created where users can modify the object itself in a new window. At the same time, the grid stays in the background.&nbsp;When fields are modified in the new window, <STRONG>I need to make sure that the fields in the grid are automatically&nbsp;refreshed/refetched accordingly when the&nbsp;Product object is saved.</STRONG> They are both different types of objects but deal with the same fields of the same database tables.</P>
+<P>Is this possible, and if it is, how can it be achieved?</P>
+<P>Thank you in&nbsp; advance,<BR>lektira</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>KKoteles replied on Monday, October 01, 2007</h2><P>lektira,</P>
+<P>Assuming you are following Rocky's examples, your Product object should call the ProductList (which should be the ReadOnlyListBase object containing the collection of ProductInfo objects)&nbsp;object's InvalidateCache() method in both the object's Save() and DataPortal_OnDataPortalInvokeComplete() methods.&nbsp; This would ensure the caching of the ProductList gets invalidated; however, it does nothing to "signal" to your background grid form that it needs to refresh itself.&nbsp; You would need to add an event from your Product object related form back to your ProductList related form - such that when it was fired the ProductList related form would know to "refresh" itself by calling the Get() method of the ProductList once again to get the latest information.&nbsp; You might need to save the ID value of the object selected in the grid in order to reposition back to it when the grid is re-bound / refreshed.</P>
+<P>All your object's are working just fine, but you need to work on your UI a little more.</P>
+<P>Cheers,</P>
+<P>Ken</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Monday, October 01, 2007</h2><P>I believe many people use the Observer pattern for this.</P>
+<P>Active Objects uses it extensively. Many devs use it.</P>
+<P>Search the forum for more info on Active Objects.</P>
+<P>Joe</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>KKoteles replied on Tuesday, October 02, 2007</h2><P>lektira,</P>
+<P>OK, I found this on Rocky's site and it may be just what you are looking for:</P>
+<P><A href="http://www.lhotka.net/weblog/IAmWorkingOnMyUsingCSLANET30EbookAndWroteSomeContentThatIDontThinkImGoingToUseInTheBook.aspx">http://www.lhotka.net/weblog/IAmWorkingOnMyUsingCSLANET30EbookAndWroteSomeContentThatIDontThinkImGoingToUseInTheBook.aspx</A></P>
+<P>Ken</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>lektira replied on Wednesday, October 03, 2007</h2><P>Hi,</P>
+<P>I'm sorry I haven't replied for couple of days. In any case, thanks to both of you for being a great help. I&nbsp;could use both of the suggestions you made, but with the deadline approaching, Rocky's solution seemed the quickest. I wonder why he doesn't put it in the book.</P>
+<P>Thanks again!</P>
+<P>Cheers,<BR>lektira</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>lektira replied on Wednesday, October 03, 2007</h2><P>Hi,</P>
+<P>I'm sorry I haven't replied for couple of days. In any case, thanks to both of you for being a great help. I&nbsp;could use both of the suggestions you made, but with the deadline approaching, Rocky's solution seemed the quickest. I wonder why he doesn't put it in the book.</P>
+<P>Thanks again!</P>
+<P>Cheers,<BR>lektira</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>dmccrory replied on Thursday, October 04, 2007</h2><P>I am having 2 issues when implementing the code that is listed in the link.</P>
+<OL>
+<LI>When the code below is called, this.IsNew property is false&nbsp;so the if(old.IsNew) statement in the Customer_Saved method always fails. Did I miss something?</LI></OL>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT face="Courier New">protected override Customer Save()</FONT></P>
+<P class=Code><FONT color=#000000><FONT face="Courier New"><SPAN>&nbsp;&nbsp;&nbsp; </SPAN>{</FONT></FONT></P>
+<P class=Code><FONT color=#000000><FONT face="Courier New"><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>Customer result = base.Save();</FONT></FONT></P>
+<P class=CodeBold><STRONG><FONT color=#000000><FONT><FONT face="Courier New"><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>OnCustomerSaved(this, new Csla.Core.SavedEventArgs(result));</FONT></FONT></FONT></STRONG></P>
+<P class=Code><FONT color=#000000><FONT face="Courier New"><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>return result;</FONT></FONT></P>
+<P class=Code><FONT color=#000000><FONT face="Courier New"><SPAN>&nbsp;&nbsp;&nbsp; </SPAN>}</FONT></FONT></P>
+<DIV>
+<P class=CodeLast><FONT color=#000000><FONT face="Courier New"><SPAN>&nbsp; </SPAN>}</FONT></FONT></P>Deleting an object. Should I include a Remove() function in the CustomerList object that deletes the current object and removes it from the list? Or is there a better way to do this?</DIV></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

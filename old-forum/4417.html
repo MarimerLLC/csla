@@ -1,0 +1,42 @@
+<html><header><title>Design Question</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Design Question</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4417.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>tna55 posted on Tuesday, February 26, 2008</h2><P>I have a form with comboboxes filled with NVL objects. When user selects a value I want to bring some value from database and fill a textbox. A common scenario I guess.</P>
+<P>I am wondering how something like this is done with terms of responsibility driven design? Will there be an object like xyzController that would have such behavior? </P>
+<P>Also a related scenario is where one combobox filters another? What is the best design for such scenarios?</P>
+<P>Help much appreciated.</P>
+<P>Tahir</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, February 26, 2008</h2><P>My first question with this sort of thing is whether these behaviors are purely for the user experience, or whether they have business meaning?</P>
+<P>In other words, are they occurring to give the user a good experience, but the app could function without them (albiet not as nicely for the user)? Or would the app be unable to perform its work without these behaviors?</P>
+<P>If you had a service-oriented interface (an API) would you need these same behaviors for a consuming application to interact with your objects?</P>
+<P>This questioning allows you to determine who "owns" the behaviors. If they are purely for the UX, then you would likely have a controller in the UI layer that handles these details (by calling business objects of course).</P>
+<P>But if they are required by the actual business layer, then these behaviors should be a natural part of your business objects. </P>
+<P>Much like the discussion last week about NVL objects that cause filtering of other NVL objects. That certainly impacts the UX, but more importantly impacts the underlying business object because it uses the NVL objects to validate other properties. So the filtering of the NVL objects must be part of the business layer regardless of the type of interface (Windows, Web, service, etc).</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tna55 replied on Tuesday, February 26, 2008</h2><P>Rocky,</P>
+<P>Thanks for your reply.</P>
+<P>The filtering is part of the business logic and not for rich UI experience. </P>
+<P>What I understood is that, the business object should contain such logic. Let me give an example to make things a bit clearer.</P>
+<P>Suppose we have a business object JobFee for Add/Edit use case. One of the properties is FeeCodeID (which in UI would be filled from a dropdown i.e. NVL). One other property of JobFee is Amount which depends on FeeCodeID. When user selects a Fee Code from dropdown list, the system needs to go and bring from database the Amount corresponding to that. How should I structure my JobFee business object? Should there be a method in JobFee to get the Amount? How is this amount then showed to user? </P>
+<P>The way I do these scenaros is that there is a UI controller that takes FeeCodeID and gets the Amount which is showed in the textbox on UI. When the user clicks Save these values are put into business object and then are saved in database. What you have suggested is that this should be in business object itself. Could you give some help based on the scenario I mentioned above, any code example would be great.</P>
+<P>Tahir</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, February 26, 2008</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>You should find that other thread from last week &#8211; I gave
+an example there with a set of three NVL objects.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky</span><o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tna55 replied on Wednesday, February 27, 2008</h2>Thanks, I found the thread and it was very helpful.</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,40 @@
+<html><header><title>Set Property Value used for validation</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Set Property Value used for validation</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/2658.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>mikeclimbs posted on Wednesday, April 04, 2007</h2><P>I have a Contacts Editable Root Object that has a Property DisplayName that is Properties Suffix + First Name + Last Name.</P>
+<P>DisplayName is&nbsp;saved to the database and shown on lists and is also used to validate uniqueness.</P>
+<P>I was thinking of updating the field by overriding&nbsp;Save, but since I need the value set for validation that doesn't work.</P>
+<P>Any suggestions?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>William replied on Wednesday, April 04, 2007</h2><DIV>See if this helps.</DIV>
+<DIV>&nbsp;</DIV>
+<DIV><FONT face="Courier New" size=2>public string DisplayName</FONT></DIV>
+<DIV><FONT face="Courier New" size=2>{</FONT></DIV>
+<DIV><FONT face="Courier New" size=2>&nbsp; get { return _displayName; }</FONT></DIV>
+<DIV><FONT face="Courier New" size=2>&nbsp;&nbsp;protected set</FONT></DIV>
+<DIV><FONT face="Courier New" size=2>&nbsp; {</FONT></DIV>
+<DIV><FONT face="Courier New" size=2>&nbsp;&nbsp;&nbsp; _displayName = value;</FONT></DIV>
+<DIV><FONT face="Courier New" size=2>&nbsp;&nbsp;&nbsp; PropertyHasChanged();</FONT></DIV>
+<DIV><FONT face="Courier New" size=2>&nbsp; }</FONT></DIV>
+<DIV><FONT face="Courier New" size=2>}</FONT></DIV>
+<DIV><FONT face="Courier New" size=2></FONT>&nbsp;</DIV>
+<DIV><FONT face="Courier New" size=2>public string FirstName</FONT></DIV>
+<DIV><FONT face="Courier New" size=2>{</FONT></DIV>
+<DIV><FONT face="Courier New" size=2>&nbsp; get { return _firstName; }</FONT></DIV>
+<DIV><FONT face="Courier New" size=2>&nbsp; set</FONT></DIV>
+<DIV><FONT face="Courier New" size=2>&nbsp; {</FONT></DIV>
+<DIV><FONT face="Courier New" size=2>&nbsp;&nbsp;&nbsp; if (value != _firstName)</FONT></DIV>
+<DIV><FONT face="Courier New" size=2>&nbsp;&nbsp;&nbsp; {</FONT></DIV>
+<DIV><FONT face="Courier New" size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _firstName = value;</FONT></DIV>
+<DIV><FONT face="Courier New" size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; PropertyHasChanged();</FONT></DIV>
+<DIV>
+<DIV><FONT face="Courier New" size=2></FONT>&nbsp;</DIV>
+<DIV><FONT face="Courier New" size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; UpdateDisplayName();</FONT></DIV><FONT face="Courier New" size=2>&nbsp;&nbsp;&nbsp; }</FONT></DIV>
+<DIV><FONT face="Courier New" size=2>&nbsp; }</FONT></DIV>
+<DIV><FONT face="Courier New" size=2>}</FONT></DIV>
+<DIV><FONT face="Courier New" size=2></FONT>&nbsp;</DIV>
+<DIV><FONT face="Courier New" size=2>private void UpdateDisplayName()</FONT></DIV>
+<DIV><FONT face="Courier New" size=2>{</FONT></DIV>
+<DIV><FONT face="Courier New" size=2>&nbsp; this.DisplayName = _prefix + _firstName + " " + _lastName;</FONT></DIV>
+<DIV><FONT face="Courier New" size=2>}</FONT></DIV>
+<DIV>&nbsp;</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>Regards,</DIV>
+<DIV>William</DIV>
+<DIV>&nbsp;</DIV></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>mikeclimbs replied on Thursday, April 05, 2007</h2><P>Thanks for the info.&nbsp;&nbsp;&nbsp;I'll give it a try.</P>
+<P>Mike</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

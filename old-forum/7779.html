@@ -1,0 +1,64 @@
+<html><header><title>CSLA.DATAPORTALEXCEPTION System.OutOfMemoryException</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA.DATAPORTALEXCEPTION System.OutOfMemoryException</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/7779.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>LDSK posted on Tuesday, October 13, 2009</h2><P>Hi there,</P>
+<P>I get a csla.dataportalal exception On save of one of my Businessobjects.</P>
+<P>I read the posts for the same exception. It was useful. </P>
+<P>1.I checked that my classes dont have a circular reference.</P>
+<P>2.I am wondering if this is because of the volumne of data. I do not have any bulky data, long strings or images or files. What i observed was i am able to do this operation when i list object has about 300 objects in it. When i exceute the same operation with about 7000 rows of data, it fails wiht a system.outOfMemoryException. </P>
+<P>I do not have an option to rewrite my code. </P>
+<P>Is there a limit on what the number of objects CSLA can handle?&nbsp;I do not have any complex objects, so it must be the sheer volumne.</P>
+<P>&nbsp;</P>
+<P>Does any one else have any other information on the same?</P>
+<P>Thanks in advance for all the replies</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, October 13, 2009</h2><P>The data portal needs to use the BinaryFormatter or NDCS to serialize the object graph. The serializers do have limits on the size of the object graph they can serialize. Can you look at the stack trace and try to get an idea what component was active when the exception occurred?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>LDSK replied on Wednesday, October 14, 2009</h2><P>thanks for the reply.</P>
+<P>This is a snippet of the stack trace. This is the only part that was of any interest. The rest of the stack trace is full of references to my business objects. I also dont see&nbsp;anything related to a serializer in the exception.&nbsp;</P>
+<P class=MsoNormal><FONT face=Calibri>Csla.Server.CallMethodException: DataPortal_Fetch method call failed ---&gt; System.OutOfMemoryException: Exception of type 'System.OutOfMemoryException' was thrown.</FONT></P>
+<P class=MsoNormal><FONT face=Calibri><SPAN>&nbsp;&nbsp; </SPAN>at System.Data.SqlClient.TdsParser.ReadTwoBinaryFields(SqlEnvChange env, TdsParserStateObject stateObj)</FONT></P>
+<P class=MsoNormal><FONT face=Calibri><SPAN>&nbsp;&nbsp; </SPAN>at System.Data.SqlClient.TdsParser.ProcessEnvChange(Int32 tokenLength, TdsParserStateObject stateObj)</FONT></P>
+<P class=MsoNormal><FONT face=Calibri><SPAN>&nbsp;&nbsp; </SPAN>at System.Data.SqlClient.TdsParser.Run(RunBehavior runBehavior, SqlCommand cmdHandler, SqlDataReader dataStream, BulkCopySimpleResultSet bulkCopyHandler, TdsParserStateObject stateObj)</FONT></P>
+<P class=MsoNormal><FONT face=Calibri><SPAN>&nbsp;&nbsp; </SPAN>at System.Data.SqlClient.SqlDataReader.ConsumeMetaData()</FONT></P>
+<P class=MsoNormal><FONT face=Calibri><SPAN>&nbsp;&nbsp; </SPAN>at System.Data.SqlClient.SqlDataReader.get_MetaData()</FONT></P>
+<P class=MsoNormal><FONT face=Calibri><SPAN>&nbsp;&nbsp; </SPAN>at System.Data.SqlClient.SqlCommand.FinishExecuteReader(SqlDataReader ds, RunBehavior runBehavior, String resetOptionsString)</FONT></P>
+<P class=MsoNormal><FONT face=Calibri><SPAN>&nbsp;&nbsp; </SPAN>at System.Data.SqlClient.SqlCommand.RunExecuteReaderTds(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, Boolean async)</FONT></P>
+<P class=MsoNormal><FONT face=Calibri><SPAN>&nbsp;&nbsp; </SPAN>at System.Data.SqlClient.SqlCommand.RunExecuteReader(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, String method, DbAsyncResult result)</FONT></P>
+<P class=MsoNormal><FONT face=Calibri><SPAN>&nbsp;&nbsp; </SPAN>at System.Data.SqlClient.SqlCommand.RunExecuteReader(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, String method)</FONT></P>
+<P class=MsoNormal><FONT face=Calibri><SPAN>&nbsp;&nbsp; </SPAN>at System.Data.SqlClient.SqlCommand.ExecuteReader(CommandBehavior behavior, String method)</FONT></P>
+<P class=MsoNormal><FONT face=Calibri><SPAN>&nbsp;&nbsp; </SPAN>at System.Data.SqlClient.SqlCommand.ExecuteReader()</FONT></P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, October 14, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>You are right, this is the part that is of interest. The
+exception is coming from SqlClient &#8211; so the issue has something to do with your
+database access or the data or something.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>In short, the issue has nothing to do with the data portal, CSLA
+.NET, serialization or any of the things discussed thus far. The issue has to
+do with your SQL Server data access.<o:p></o:p></span></p>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>LDSK replied on Wednesday, October 14, 2009</h2><P>Thanks again. </P>
+<P>It just became harder to debug.</P>
+<P>Any general pointers on how to debug further will&nbsp;help.</P>
+<P>If SQl timed-out it will return a time out.</P>
+<P>This happens on a new server we put in recently (SQL 2008) and a old Server, exiting (SQL 2000).</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

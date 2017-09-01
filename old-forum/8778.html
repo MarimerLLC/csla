@@ -1,0 +1,16 @@
+<html><header><title>Understanding the nuance between ObjectFactory &amp; MobileFactory</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Understanding the nuance between ObjectFactory &amp; MobileFactory</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/8778.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>chrisdot posted on Wednesday, April 07, 2010</h2><p>Hi,</p>
+<p>I&#39;m quite new to CSLA, but I&#39;m apprciating more and more the features provided. Thanks to the team!</p>
+<p>Anywayn I&#39;m having a question: I was just trying to find out the difference between the following attributes:</p>
+<ul>
+<li>Csla.Silverlight.MobileFactory</li>
+<li>Csla.Server.ObjectFactory</li>
+</ul>
+<p>As I understood, the MobileFactory is dedicated for silverlight to check additionnal rules on server side before accepting to go further?</p>
+<p>I can&#39;t see the difference with ObjectFactory ! Can&#39;t we do the same? The samples provided in cslalight package make no difference in terms of usage (RemotePortalWithMobileFactory sample vs RemotePortalWithObjectFactory).</p>
+<p>I&#39;ve red this <a href="http://www.lhotka.net/weblog/CSLALightDataPortalOptions.aspx">post</a>, but this doesn&#39;t make it clear to me.</p>
+<p>(I&#39;m using version 3.8.2)</p>
+<p>&nbsp;</p>
+<p>Thank you </p>
+<p>Christophe</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Wednesday, April 07, 2010</h2><p>ObjectFactory is one way to implement data access code on an application server. The other way is using DataPortal_XYZ methods.</p>
+<p>MobileFactory is a way to implement an observer on an external facing web server when deploying a Silverlight application in a 4-tier configuration. The idea is that the client request arrives at the external facing web server (in your DMZ), and you can write an observer to examine the request to see if you want to allow further processing. If you do want further processing, you&#39;d delegate the call back to the data portal, which will relay the request to your app server (inside your real network) where your server-side code can run (DataPortal_XYZ or object factory).</p>
+<p>This is covered in the <a href="http://store.lhotka.net">CSLA .NET for Silverlight video series</a>.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>chrisdot replied on Wednesday, April 07, 2010</h2><p>Ok, thank you Rockford. It is not that way I first undertsood it.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

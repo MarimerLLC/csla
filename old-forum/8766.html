@@ -1,0 +1,23 @@
+<html><header><title>ObjectFactory and Child Objects.</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>ObjectFactory and Child Objects.</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/8766.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>admin posted on Monday, April 05, 2010</h2><p>
+<p>
+<p>Hello,</p>
+<p>How should one treat Child Fetch calls when using the ObjectFactory? I have an EditableChild or a ReadOnlyChild and my code looks like this:</p>
+<p>
+<p>&nbsp;&nbsp;internal static SettingGroupList GetByApplicationID(System.Int32 applicationID)</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;{</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;return DataPortal.<strong>FetchChild</strong>&lt; SettingGroupList &gt;(</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;new SettingGroupCriteria{ApplicationID = applicationID});</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;}</p>
+<p>It doesn&#39;t work because ChildPortal methods are never invoked but I need to call the ObjectFactory Implementation. Should I always just have them call the Regular Fetch? Is there a best practice for this?</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;internal static SettingGroupList GetByApplicationID(System.Int32 applicationID)</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;{</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;return DataPortal.<strong>Fetch</strong>&lt; SettingGroupList &gt;(</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;new SettingGroupCriteria{ApplicationID = applicationID});</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;}</p>
+</p>
+<p>Thanks</p>
+<p>-Blake Niemyjski</p>
+</p>
+</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Monday, April 05, 2010</h2><p>The child data portal is not compatible with the object factory.</p>
+<p>When using the object factory model, the factory is responsible for creating and initializing child objects as well as root objects.</p>
+<p>You might consider having the root object factory create and invoke other &quot;child&quot; object factories - but this isn&#39;t something the data portal will do for you. When you are in object factory land, you are on your own.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

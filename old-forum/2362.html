@@ -1,0 +1,31 @@
+<html><header><title>Building BOs of CSLA to support dynamic amount of fields, field names and field types - help!?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Building BOs of CSLA to support dynamic amount of fields, field names and field types - help!?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/2362.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>ianinspain posted on Friday, February 16, 2007</h2>Hi there,<br><br>I am currently trying to implement a business object using csla but with a twist, i really am lost and would appreciate any input. If anyone can jump please feel free and would love to hear Rocky's view on this<br><br>Basically 1 BO's is going to be editableBase for a holding information about a House / Property.. But i took it 1 step further and decided to allow the clients/admin of the system to create dynamic fields with dynamic types... ermmm let me explain..<br><br>standard set of fields = Plot size, Build Size, No. of Beds, No. of Baths etc<br><br>Then if the admin needs to be able to add more fields to the app (which will use the business object) then he/she could say:<br><br>Field name : Has Garage<br>Field Type: Boolean<br>Default : false<br><br>and<br><br>Field Name: Mobile Telehone Number<br>Field Type: string<br>Field Size : 15<br><br>In theory its a great idea ( in my opinion!) and its just want i want but i am lost to how i would create the BO's because they are not static... I would need to store these in a db which the BO would need to retrieve and give the developer access to each field...<br><br>I suppose i could have a method to say RetrieveFields and a property to say Count (amount of fields).. the retrieve fields would return a collection class that would have the properties of the field i.e. name, size, type etc etc<br><br>Then i suppose to get information into and out the the field i could use an indexer on the BO although i think this is pretty lame... any additional ideas?<br><br>The other problem i am having is that i would have to store this information into the db, i wouldn't want to create additional fields in the db for each dynamic field so what would be the best way of doing this, i was think of storing the information into a BLOB or something as its binary so technically supports all types of info or failing that (although i haven't looked into yet) into a XML field type of a SQL Server as i suppose i can store properties along with the details..<br><br>As you can see i have a vision but really need some input from people to get it off the ground..<br><br>I hope someone can help!<br><br>Thnaks<br><br>ian<br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>mr_lasseter replied on Friday, February 16, 2007</h2>For the database, one solution is to create 2 tables for your
+objects.&nbsp; The first table will be your main table which will have
+your common attributes. Something along the lines of::<br>
+<br>
+T_LISTINGS<br>
+listing_id&nbsp; (PK)<br>
+plot_size<br>
+no_beds<br>
+no_baths<br>
+...<br>
+<br>
+Then create another table like so <br>
+T_LISTINGS_EXTRA_INFO<br>
+listing_id (PK)<br>
+property_name (PK)<br>
+value<br>
+<br>
+Now you can add as many addtional properties to the Extra Info table as
+you would like for each listing.&nbsp; You could add an another table
+that keeps track of the valid properties so users can't go crazy with
+this but that is up to you.&nbsp; <br>
+<br>
+As for your BO, I think you are on the right track.&nbsp; The only
+thing with this solution is you lose the databinding and the validtion
+rules for the additional properties.&nbsp; Although, I am sure you
+could modify the validation rules to work with the additional
+properties if you needed to.<br>
+<br>
+Hope this helps.<br>
+Mike<br>
+<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

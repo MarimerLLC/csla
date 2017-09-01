@@ -1,0 +1,15 @@
+<html><header><title>Does CSLA 4.2 Allow For XML Data Stores?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Does CSLA 4.2 Allow For XML Data Stores?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10880.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>MadGerbil posted on Tuesday, November 15, 2011</h2><p>I&#39;ve a small, emergency backup system I&#39;m writing.&nbsp;&nbsp; I may not have a database available.&nbsp;&nbsp; Can Csla 4.2 objects be serialized out at XML files and if so, how?</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Tuesday, November 15, 2011</h2><p>Absolutely yes. CSLA doesn&#39;t care at all about where or how you store your data.</p>
+<p>Given that, the real question is how should you create/consume the XML?</p>
+<p>There are various techniques and technologies.</p>
+<p>The one thing you <em>do not want to do</em> is directly serialize/deserialize the business objects into XML. That path leads to disaster due to versioning issues, changes to serialization formats over time, etc.</p>
+<p>What you want to do is pick a scheme you control, or a scheme that doesn&#39;t change over time. Some technologies to consider:</p>
+<ul>
+<li>DataSet</li>
+<li>XmlDocument</li>
+<li>XElement</li>
+<li>XmlSerializer (with DTOs)</li>
+<li>DataContractSerializer (with DTOs)</li>
+</ul>
+<p>&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

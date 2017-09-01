@@ -1,0 +1,313 @@
+<html><header><title>Child object structure question</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Child object structure question</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4865.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>dtabako posted on Monday, May 19, 2008</h2><P>I have an implementation question on setting up a parent-child structure. My use case goes like this:</P>
+<P>The user needs to maintain information about a Job. One of the things a user needs to do for a Job is to assign a Customer, and along with that Customer, a specific Customer Address. Each Customer contains a list of one or more Addresses. In the Job&nbsp;entry/edit screen, the user will need to enter the Customer's Id - which will then be validated to make sure it's a valid customer #. The Customer's name will then appear in a label next to the&nbsp;customer&nbsp;id text&nbsp;box. The user should then be able to pick a valid location from a list in a dropdown box. So when the Customer Id value is validated, it will also need to load the appropriate values into the dropdown box. The the user will select one Customer Address to be associated with the job.</P>
+<P>My question then is how do I best implement that scenario in my objects? I obviously have an editable root for the Job object. But what do I do with Customer and Customer Address? I seem to think I need a Customer child object on the Job parent object but I'm not sure exactly how to set it up. And what of the address as well? I need a collection of valid addresses for the specified Customer in order to load the comboBox, but I really just need to store the Id for the chosen address.</P>
+<P>There doesn't seem to be any direct correlation in PTracker and I've searched the forum here (unsuccessfully) for answers as well. I feel like there's an easy way to do this that's right in front of my face and I'm missing it. I keep having "I got it...I got it.........I don't got it......" moments trying to figure this out. If anyone can help me here it would be GREATLY appreciated.</P>
+<P>Thanks,</P>
+<P>Dennis</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Monday, May 19, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>When I had to deal with this situation, my Job object only has
+CustomerID and LocationID fields, but no child objects for those.&nbsp; I typically
+setup two drop downs on the screen &#8211; one for customer, one for
+location.&nbsp; When customer ID changes (via new value from drop down), I
+reset LocationID to zero/blank inside the property setter for customer inside
+Job object to keep it valid.&nbsp; As far as both drop downs go, I&#8217;d have
+single source of data (read only list of customers, where each customer
+contains read only list of locations).&nbsp; I use this object to populate both
+dropdowns.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Senior Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899<o:p></o:p></span></p>
+
+<p class=MsoNormal><b><i><span>Magenic</span></i></b><span> </span><span>&reg;</span><b><i><span><o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> dtabako
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Monday, May 19, 2008 2:28 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> [CSLA .NET] Child object structure question<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>I have an implementation question on setting up a parent-child structure. My
+use case goes like this:<o:p></o:p></p>
+
+<p>The user needs to maintain information about a Job. One of the things a user
+needs to do for a Job is to assign a Customer, and along with that Customer, a
+specific Customer Address. Each Customer contains a list of one or more
+Addresses. In the Job&nbsp;entry/edit screen, the user will need to enter the
+Customer's Id - which will then be validated to make sure it's a valid customer
+#. The Customer's name will then appear in a label next to
+the&nbsp;customer&nbsp;id text&nbsp;box. The user should then be able to pick a
+valid location from a list in a dropdown box. So when the Customer Id value is
+validated, it will also need to load the appropriate values into the dropdown
+box. The the user will select one Customer Address to be associated with the
+job.<o:p></o:p></p>
+
+<p>My question then is how do I best implement that scenario in my objects? I
+obviously have an editable root for the Job object. But what do I do with
+Customer and Customer Address? I seem to think I need a Customer child object
+on the Job parent object but I'm not sure exactly how to set it up. And what of
+the address as well? I need a collection of valid addresses for the specified
+Customer in order to load the comboBox, but I really just need to store the Id
+for the chosen address.<o:p></o:p></p>
+
+<p>There doesn't seem to be any direct correlation in PTracker and I've
+searched the forum here (unsuccessfully) for answers as well. I feel like
+there's an easy way to do this that's right in front of my face and I'm missing
+it. I keep having &quot;I got it...I got it.........I don't got it......&quot;
+moments trying to figure this out. If anyone can help me here it would be
+GREATLY appreciated.<o:p></o:p></p>
+
+<p>Thanks,<o:p></o:p></p>
+
+<p>Dennis<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>dtabako replied on Monday, May 19, 2008</h2><P>Thanks Sergey,</P>
+<P>That was something I certainly considered - and in fact that would be the way I'd love to handle it. The problem is that carrying my list of customers could be a performance drain. Some users have 10,000 or more customers. And each customer may have&nbsp;many locations (rather than just a simple billing and shipping location). For instance, let's say the user is a building materials supplier with, say 10,000 customers. And perhaps some of those customers are home builders that have many locations (e.g. one for each home they are currently building). And they may wish to set up a Job for each of those locations. The numbers get big quickly as far as loading and maintaining collections for dropdown boxes. That's why part of the use case is that the user enters the Customer Id manually (rather than picking from a list - although manual entry is aided by a separate search dialog which I've already developed).&nbsp;</P>
+<P>I also thought about going the route of having the Customer Id and Address Id as simple fields in the Job object (and if that's the way to go, so be it). I guess the only problems I can think of with that approach are (a) how do I easily maintain the label with the customer name and (b) how do I easily maintain the address list?</P>
+<P>Thanks,</P>
+<P>Dennis</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Monday, May 19, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I totally agree with your search dialog approach.&nbsp; As a
+matter of fact, I used the same approach on large lists as well.&nbsp; As far
+as your questions go:<o:p></o:p></span></p>
+
+<p class=MsoListParagraph><span><span>1.<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span></span><span>Customer name I would retrieve as past of the same SP by joining
+with customers ( or via a correlated sub-query, whichever is faster).&nbsp; As
+far as setting of it goes, I would return it from your search dialog along with
+ID and populate UI based on that object.<o:p></o:p></span></p>
+
+<p class=MsoListParagraph><span><span>2.<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span></span><span>Address list if a bit trickier, I think.&nbsp; I do not see any
+super easy way of doing it.&nbsp; If a customer cannot have but a handful of
+locations, I would still go drop down route.&nbsp; If you can have thousands of
+locations we well, then I would use the same approach as a customer search
+dialog, but filter it based on selected customer.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Would this work for your?&nbsp; I am sure that there are many
+other ways to do the same as well&#8230;<o:p></o:p></span></p>
+
+<p class=MsoListParagraph><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Senior Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899<o:p></o:p></span></p>
+
+<p class=MsoNormal><b><i><span>Magenic</span></i></b><span> </span><span>&reg;</span><b><i><span><o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> dtabako
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Monday, May 19, 2008 3:52 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: Child object structure question<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Thanks Sergey,<o:p></o:p></p>
+
+<p>That was something I certainly considered - and in fact that would be the
+way I'd love to handle it. The problem is that carrying my list of customers
+could be a performance drain. Some users have 10,000 or more customers. And
+each customer may have&nbsp;many locations (rather than just a simple billing
+and shipping location). For instance, let's say the user is a building
+materials supplier with, say 10,000 customers. And perhaps some of those
+customers are home builders that have many locations (e.g. one for each home
+they are currently building). And they may wish to set up a Job for each of
+those locations. The numbers get big quickly as far as loading and maintaining
+collections for dropdown boxes. That's why part of the use case is that the
+user enters the Customer Id manually (rather than picking from a list -
+although manual entry is aided by a separate search dialog which I've already
+developed).&nbsp;<o:p></o:p></p>
+
+<p>I also thought about going the route of having the Customer Id and Address
+Id as simple fields in the Job object (and if that's the way to go, so be it).
+I guess the only problems I can think of with that approach are (a) how do I
+easily maintain the label with the customer name and (b) how do I easily
+maintain the address list?<o:p></o:p></p>
+
+<p>Thanks,<o:p></o:p></p>
+
+<p>Dennis<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>dtabako replied on Monday, May 19, 2008</h2><P>True, I could have the search dialog expose the name as well as the Id. Although, that still leaves manual entry - the user doesn't HAVE to use the search dialog. If he happens to know the customer Id, he can simply enter it manually. Then, of course, I'm not really calling the DB at all other than maybe doing a Customer.Exists(id) within the validation rules for the Customer Id field. Unless I make some specific call to get the customer name. </P>
+<P>And furthermore, what if I wanted to setup validation rules so that the the customer number is required; but it must also exist; but there is no real meaningful default customer? How would I be able to set this up so that it works for a new Job? Yeesh, I'm creating more questions now ;^)</P>
+<P>As for the customer addresses, I do still plan on using the dropdown. And I assume what would happen is that when the customer changes, I'll have to grab a new list of addresses to use as the BindingSources's DataSource. The tricky part for me is how do I know when to do that? Is the "PropertyChanged" event for CustomerId (within the Job object) exposed to the UI code? I didn't think it was, but I could certainly could be mistaken. If it's not, do I fire my own event from within the property setter? Or is there a better way?</P>
+<P>This kind of illustrates the way this has gone for me as far as getting part or most of the way to a solution and then tripping on snags and not quite getting all the way there.</P>
+<P>Thanks,</P>
+<P>Dennis</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Monday, May 19, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I think you can use PropertyChanged event in the UI to get list
+of addresses.&nbsp;&nbsp; I think you can also use custom rule to populate name
+when customer ID is set.&nbsp; You just have to get fancy with your Exists rule
+and retrieve the name as part of the same exists call.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Senior Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899<o:p></o:p></span></p>
+
+<p class=MsoNormal><b><i><span>Magenic</span></i></b><span> </span><span>&reg;</span><b><i><span><o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> dtabako
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Monday, May 19, 2008 4:33 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] Child object structure question<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>True, I could have the search dialog expose the name as well as the Id.
+Although, that still leaves manual entry - the user doesn't HAVE to use the
+search dialog. If he happens to know the customer Id, he can simply enter it
+manually. Then, of course, I'm not really calling the DB at all other than
+maybe doing a Customer.Exists(id) within the validation rules for the Customer
+Id field. Unless I make some specific call to get the customer name. <o:p></o:p></p>
+
+<p>And furthermore, what if I wanted to setup validation rules so that the the
+customer number is required; but it must also exist; but there is no real
+meaningful default customer? How would I be able to set this up so that it
+works for a new Job? Yeesh, I'm creating more questions now ;^)<o:p></o:p></p>
+
+<p>As for the customer addresses, I do still plan on using the dropdown. And I
+assume what would happen is that when the customer changes, I'll have to grab a
+new list of addresses to use as the BindingSources's DataSource. The tricky
+part for me is how do I know when to do that? Is the
+&quot;PropertyChanged&quot; event for CustomerId (within the Job object)
+exposed to the UI code? I didn't think it was, but I could certainly could be
+mistaken. If it's not, do I fire my own event from within the property setter?
+Or is there a better way?<o:p></o:p></p>
+
+<p>This kind of illustrates the way this has gone for me as far as getting part
+or most of the way to a solution and then tripping on snags and not quite
+getting all the way there.<o:p></o:p></p>
+
+<p>Thanks,<o:p></o:p></p>
+
+<p>Dennis<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Lalit replied on Tuesday, May 20, 2008</h2><P>You can add a readonly list of addresses in your object, a readonly flag to check if customer is validated and a property to hold customer name. In property setter of customer id you can call another method, which in turn can validate customer id, fetch customer name and&nbsp;all the addresses of that customer and set the flag for customer's validity. In that way you need not to worry about anything on UI. You will just check the validation flag on UI and bind the addresses to drop down.</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

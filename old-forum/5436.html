@@ -1,0 +1,189 @@
+<html><header><title>CSLA .NET 3.6 (Windows and Silverlight) pre-release</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA .NET 3.6 (Windows and Silverlight) pre-release</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5436.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka posted on Friday, September 19, 2008</h2><P>I've put a new pre-release of 3.6 online. This is pretty complete, and pretty stable.</P>
+<P><A href="http://www.lhotka.net/weblog/CSLANET36SilverlightAndWindowsPrerelease080919.aspx">http://www.lhotka.net/weblog/CSLANET36SilverlightAndWindowsPrerelease080919.aspx</A></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>andy replied on Sunday, September 21, 2008</h2>Rocky,<br>I ran into x-domain exception for your databinding-test project.<br><br>For datagrid-test project I got null excpetion in proxyfactory.cs<br>Type proxyType = Type.GetType(Csla.DataPortal.ProxyTypeName);<br><br>Any suggestion?<br><br>Andy<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Sunday, September 21, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Test projects under Csla/clslighttest are mostly used for
+internal development work, and not intended to be used as demos.&nbsp; Please
+look at the sample projects inside the zip file listed under Samples column in
+the main link : <a href="http://www.lhotka.net/cslalight/download.aspx">http://www.lhotka.net/cslalight/download.aspx</a>
+instead.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Thank you.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img border=0 width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> andy
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Sunday, September 21, 2008 8:11 AM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] CSLA .NET 3.6 (Windows and Silverlight)
+pre-release<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Rocky,<br>
+I ran into x-domain exception for your databinding-test project.<br>
+<br>
+For datagrid-test project I got null excpetion in proxyfactory.cs<br>
+Type proxyType = Type.GetType(Csla.DataPortal.ProxyTypeName);<br>
+<br>
+Any suggestion?<br>
+<br>
+Andy<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Sunday, September 21, 2008</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>It is also important to understand some limitations around Silverlight
+solutions. At least the following get me regularly:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoListParagraph><span><span>1.<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span></span><span>Make sure the web app is the default start app &#8211; somehow VS
+seems to want to run the Silverlight app directly, which works, but isn&#8217;t
+right<o:p></o:p></span></p>
+
+<p class=MsoListParagraph><span><span>2.<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span></span><span>Make sure the web app references System.Web.Silverlight.dll &#8211;
+somehow VS keeps losing that reference<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky</span><b><span><o:p></o:p></span></b></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>andy replied on Monday, September 22, 2008</h2><P>I was able to compiled and ran fine.<BR>I got the exception when I hit the "success login" button to retrieve data to display in the UI.<BR>I will poke around to see I can resolve the issue.</P>
+<P>Andy</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Monday, September 22, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>If you are referring to sample project, try to check connection
+string in .config file and make sure you have .\SQLEPXRESS instance running. <o:p></o:p></span></p>
+
+<p class=MsoNormal><span>Thanks.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> andy
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Monday, September 22, 2008 8:26 AM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: CSLA .NET 3.6 (Windows and Silverlight)
+pre-release<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>I was able to compiled and ran fine.<br>
+I got the exception when I hit the &quot;success login&quot; button to retrieve
+data to display in the UI.<br>
+I will poke around to see I can resolve the issue.<o:p></o:p></p>
+
+<p>Andy<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

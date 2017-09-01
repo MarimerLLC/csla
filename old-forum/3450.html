@@ -1,0 +1,27 @@
+<html><header><title>Object Design</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Object Design</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3450.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>MrPogo posted on Wednesday, August 29, 2007</h2><P>I have a very complicated scenerio that maybe some one can help me clear the fog in my head.</P>
+<P>Im making a system that will track revenue and items (tickets, etc.) given out.</P>
+<P>I have a contact that can place an order.&nbsp; On the order money is assigned to account which is assigned to a program.&nbsp; The account can also assign tickets or other items.&nbsp;</P>
+<P>Well each program that an account is assigned to can have a matrix which assigns additional items(such as free parking, etc..)&nbsp;based of all the order a contact has placed and there program account value total. </P>
+<P>The items would then be assigned through a transmittal across all orders so a contact could have 2 Program B orders and each order had 25 Item C totalling 50 Item C which would all be pulled together as 50 Item C on the Transmittal.&nbsp; And due to both orders totaling x they also get 25 parking from the Matrix.</P>
+<P>If you edit the order you cant remove items assigned.&nbsp; Items can be removed from the transmittals though.</P>
+<P>So I was thinking of a parent ContactDetail </P>
+<P>with children Orders,Items,Matrixs, Transmittals</P>
+<P>with Orders having Accounts,Items,Payments</P>
+<P>I don't know if this would work though.&nbsp; Am I over thinking this?</P>
+<P>Thanks in advance,</P>
+<P>John</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, August 29, 2007</h2><P>I got a bit lost in the domain-specific jargon. But it sure sounds like you have at least two use cases:</P>
+<OL>
+<LI>Enter an order</LI>
+<LI>Send a transmittal</LI></OL>
+<P>Each use case should have its own object model - and that may help clear things up all by itself.</P>
+<P>Even so, it does sound like "Enter an order" has some complexity. When you assign the order to an account and program (1:1:1, or 1:1:n?) the program inserts some line items into the order that can't be removed. </P>
+<P>But can they be removed if the program is changed? On the account? Or in some "Edit a program" use case?</P>
+<P>There are too many unknowns to say for sure. But the core of your "Edit an order" model sounds like</P>
+<P>Order contains Items<BR>Order has Account</P>
+<P>A sub-use case "Assign account to order" would probably trigger adding the mandatory line items to the order based on the program(s) behind that account.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>MrPogo replied on Wednesday, August 29, 2007</h2><P>Thanks for the reply! </P>
+<P>I know this is the core and most complex part of the program.&nbsp; I want to try to keep it as clean as possable but there are lots of rules and things tied together. The main goal is to be able to place orders through Accounts (Internal) or Items(Online).&nbsp; But then&nbsp;they get additional things based on total of all accounts per program for all orders(Matrix).&nbsp; An order&nbsp;and an account can house more than one program which means there can also be more than one matrix on the account(One per program).&nbsp; The trickey part comes when one needs to edit an account that contains an item.&nbsp; It can only remove value if an item has unassigned items in the Account list.&nbsp; So the order has to be aware of the Account Item List.&nbsp; </P>
+<P>I will work more on the Use Case and maybe that will get me somewhere faster.&nbsp; It's hard cause I understand all the functions but its hard to put into objects.</P>
+<P>Thanks again,</P>
+<P>John Wahlen </P>
+<P><A href="http://www.summerfest.com">www.summerfest.com</A></P>
+<P>&nbsp;</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

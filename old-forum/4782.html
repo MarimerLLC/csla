@@ -1,0 +1,77 @@
+<html><header><title>Windows Form Application Updater</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Windows Form Application Updater</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4782.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>SouthSpawn posted on Thursday, May 01, 2008</h2>Does anyone know of good Application Auto Updater Component out there for my windows form applications?<BR><BR>Thanks,<BR>Mark</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Thursday, May 01, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Did you look into ClickOnce?<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Senior Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> SouthSpawn
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Thursday, May 01, 2008 12:12 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> [CSLA .NET] Windows Form Application Updater<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Does anyone know of good Application Auto Updater Component
+out there for my windows form applications?<br>
+<br>
+Thanks,<br>
+Mark<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>chrisghardwick replied on Thursday, May 01, 2008</h2><P>This is the link to ClickOnce on MSDN:</P>
+<P><A href="http://msdn.microsoft.com/en-us/library/t71a733d(VS.80).aspx">http://msdn.microsoft.com/en-us/library/t71a733d(VS.80).aspx</A></P>
+<P>I've used ClickOnce with Csla, and it worked great for me. Check out the overview section and see if it meets your needs.</P>
+<P>Chris</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>SouthSpawn replied on Thursday, May 01, 2008</h2><DIV>I have used ClickOnce before, but IMO it's not good for "Commerical" applications.</DIV>
+<DIV>If you were going to create an "Internal" application for a company within a controlled environment, than Click Once is good for that.</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>I am talking about creating a program where anyone could run it.</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>I am missing something about Click Once that I don't know?</DIV></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Thursday, May 01, 2008</h2>Um, anyone could run it.&nbsp; You can deploy ClickOnce applications from CDs and such, just as you would normally.&nbsp; You can configure how it will update, when it will check, etc.<br><br>Why exactly do you think ClickOnce isn't good for a commercial application?<br><br>The other alternative is the Application Update Block, or something like that, which is part of Microsoft's Enterprise Library.&nbsp; That I believe is much more powerful, but also much more complex and may require much more effort on your part.&nbsp; <br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>SouthSpawn replied on Thursday, May 01, 2008</h2><DIV><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>ajj3085:</strong></div><div>Um, anyone could run it.&nbsp; You can deploy ClickOnce applications from CDs and such, just as you would normally.&nbsp; You can configure how it will update, when it will check, etc.<BR><BR>Why exactly do you think ClickOnce isn't good for a commercial application?<BR><BR>The other alternative is the Application Update Block, or something like that, which is part of Microsoft's Enterprise Library.&nbsp; That I believe is much more powerful, but also much more complex and may require much more effort on your part.&nbsp; <BR></div></BLOCKQUOTE></DIV>
+<DIV>&nbsp;</DIV>
+<DIV>ajj3085, check out this article.</DIV>
+<DIV>&nbsp;</DIV>
+<DIV><A href="http://blog.wharton.com.au/2006/12/smart-client-deployment-with-clickonce.html">http://blog.wharton.com.au/2006/12/smart-client-deployment-with-clickonce.html</A></DIV></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tiago replied on Monday, June 09, 2008</h2><P>Check <A href="http://www.codeproject.com/KB/vb/Auto_Update_Revisited.aspx">http://www.codeproject.com/KB/vb/Auto_Update_Revisited.aspx</A></P>
+<P>On the message pat at the bottom there is <A id=DynMessLink href="http://www.codeproject.com/KB/vb/Auto_Update_Revisited.aspx?fid=360177&amp;df=90&amp;mpp=25&amp;noise=3&amp;sort=Position&amp;view=Quick&amp;select=2419636#xx2419636xx" name=2419636>C# v.2.1.1 (with some improvements and an example of use)</A></P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

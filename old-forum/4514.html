@@ -1,0 +1,471 @@
+<html><header><title>Dependency Injection vs. DataPortal and Service Locators vs. Static Factory Methods</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Dependency Injection vs. DataPortal and Service Locators vs. Static Factory Methods</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4514.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Bob Matthew posted on Tuesday, March 18, 2008</h2><P><FONT face=Arial size=2>I’ve been doing a lot of reading lately regarding Inversion of Control (IoC), but more specifically, the Dependency Inversion Principle which essentially states that even though your object depends upon my object for help, it shouldn’t depend on my object directly, only the interface or abstraction of my class.&nbsp; This allows my object to be swapped out easily without your object either knowing or caring.&nbsp; The bottom line in all of this is to create loosely-coupled, easily-maintained software.</FONT></P>
+<P><FONT face=Arial size=2>The crux of loose coupling is: How does your object get an instance of my object?&nbsp; As I see it, we’ve got 3 possible solutions.</FONT></P><FONT face=Arial size=2>
+<OL>
+<LI>Call my object’s static factory-create method, but this tightly couples your object to mine and we’re right back where we started.</LI>
+<LI>Create some sort of service locator that resolves a type/interface into an instance of my object, but that would completely bypass my static, factory-create method and the DataPortal_Create.</LI>
+<LI>Instantiate your object directly by calling the new constructor (which would normally be private) and having Windsor Castle or some other IoC framework inject the dependencies (either through the constructor or property setters), but how would this work when using the DataPortal?&nbsp; The DataPortal just calls your object’s default, parameter-less constructor and doesn’t perform IoC injection.&nbsp; The IoC framework would also call my object’s default, parameter-less constructor rather than my factory-create method.&nbsp; </FONT></LI></OL>
+<P><FONT face=Arial size=2>What about static methods at all?&nbsp; It would appear that static methods, by their very nature at somewhat at odds with OOP.&nbsp; With loosely-coupled designs, as many interactions as possible become purely interface-based.&nbsp; Currently I abstract functionality shared by multiple classes to another class and often times I don’t have to make it an instance class to get the work done that I need, which introduces a nice, tightly-coupled dependency.</FONT></P>
+<P><FONT face=Arial size=2>In the end, I’m having some difficulty reconciling some of these practices to a CSLA-centric view of the world.&nbsp; Any advice or experience you guys having implementing any dependency injection or even service locator functionality would be greatly appreciated.</FONT></P>
+<P><FONT face=Arial size=2>Rocky – anything new on the DataPortal_XYZ factory methods as per this post: </FONT><A HREF="/forums/post/13044.aspx"><FONT face=Arial size=2>http://forums.lhotka.net/forums/post/13044.aspx</FONT></A></P>
+<P><FONT face=Arial size=2>Thanks</FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>nermin replied on Tuesday, March 18, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Hi Bob,<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Most IoC frameworks support constructing objects through calling
+Factory Method, instead of calling a constructor ( which in csla case is generally
+private).<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Check David Hayde&#8217;s post where he gives examples for
+Windsor and Spring.&nbsp; StructureMap also supports it as well as MS Unity (I
+can get you examples for those frameworks as well):<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><a href="http://codebetter.com/blogs/david.hayden/archive/2007/12/13/factory-method-support-in-castle-windsor-and-spring-net.aspx">http://codebetter.com/blogs/david.hayden/archive/2007/12/13/factory-method-support-in-castle-windsor-and-spring-net.aspx</a><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Bob Matthew
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Tuesday, March 18, 2008 4:02 PM<br>
+<b>To:</b> Nermin Dibek<br>
+<b>Subject:</b> [CSLA .NET] Dependency Injection vs. DataPortal and Service
+Locators vs. Static Factory Methods<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p><span>I???ve been
+doing a lot of reading lately regarding Inversion of Control (IoC), but more
+specifically, the Dependency Inversion Principle which essentially states that
+even though your object depends upon my object for help, it shouldn???t depend
+on my object directly, only the interface or abstraction of my class.&nbsp;
+This allows my object to be swapped out easily without your object either knowing
+or caring.&nbsp; The bottom line in all of this is to create loosely-coupled,
+easily-maintained software.</span><o:p></o:p></p>
+
+<p><span>The crux of
+loose coupling is: How does your object get an instance of my object?&nbsp; As
+I see it, we???ve got 3 possible solutions.</span><o:p></o:p></p>
+
+<ol>
+ <li class=MsoNormal><span>Call
+     my object???s static factory-create method, but this tightly couples your
+     object to mine and we???re right back where we started.<o:p></o:p></span></li>
+ <li class=MsoNormal><span>Create
+     some sort of service locator that resolves a type/interface into an
+     instance of my object, but that would completely bypass my static,
+     factory-create method and the DataPortal_Create.<o:p></o:p></span></li>
+ <li class=MsoNormal><span>Instantiate
+     your object directly by calling the new constructor (which would normally
+     be private) and having Windsor Castle or some other IoC framework inject
+     the dependencies (either through the constructor or property setters), but
+     how would this work when using the DataPortal?&nbsp; The DataPortal just
+     calls your object???s default, parameter-less constructor and doesn???t
+     perform IoC injection.&nbsp; The IoC framework would also call my object???s
+     default, parameter-less constructor rather than my factory-create
+     method.&nbsp; </span><o:p></o:p></li>
+</ol>
+
+<p><span>What about
+static methods at all?&nbsp; It would appear that static methods, by their very
+nature at somewhat at odds with OOP.&nbsp; With loosely-coupled designs, as
+many interactions as possible become purely interface-based.&nbsp; Currently I
+abstract functionality shared by multiple classes to another class and often
+times I don???t have to make it an instance class to get the work done that I
+need, which introduces a nice, tightly-coupled dependency.</span><o:p></o:p></p>
+
+<p><span>In the end,
+I???m having some difficulty reconciling some of these practices to a
+CSLA-centric view of the world.&nbsp; Any advice or experience you guys having
+implementing any dependency injection or even service locator functionality
+would be greatly appreciated.</span><o:p></o:p></p>
+
+<p><span>Rocky ???
+anything new on the DataPortal_XYZ factory methods as per this post: </span><a href="/forums/post/13044.aspx"><span>http://forums.lhotka.net/forums/post/13044.aspx</span></a><o:p></o:p></p>
+
+<p><span>Thanks</span><o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Bob Matthew replied on Tuesday, March 18, 2008</h2><P><FONT face=Arial size=2>I would love to see any links you can get me for examples relating to StructureMap and Unity.</FONT></P>
+<P><FONT face=Arial size=2>Thanks!</FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>nermin replied on Thursday, March 20, 2008</h2><BLOCKQUOTE><div><img src="/Themes/alternate1/images/icon-quote.gif"> <strong>Bob Matthew:</strong></div><div> 
+<P><FONT face=Arial size=2>I would love to see any links you can get me for examples relating to StructureMap and Unity.</FONT></P>
+<P><FONT face=Arial size=2>Thanks!</FONT></P>
+<P></div></BLOCKQUOTE></P>
+<P><FONT face=Arial size=2>Sorry it took me a while to digg this out.&nbsp; From Jeremy himself, this is the Factory Method example for upcomming StructureMap 2.5.&nbsp; Lets say you have a csla object Project that has&nbsp;a&nbsp;static factory method Project.CreateProject().&nbsp; Then&nbsp;to register it with the StructureMap you would do following:&nbsp;</FONT></P>
+<P><SPAN><SPAN>StructureMapConfiguration.BuildInstancesOf&lt;Project&gt;.TheDefaultIs(</SPAN><BR></P><PRE>	ConstructedBy&lt;Project&gt;(<SPAN> () =&gt; </SPAN><SPAN>Project.CreateNew()</SPAN> )</PRE>
+<P><SPAN>);</SPAN></P>
+<P><SPAN><FONT face=Arial size=2>Obviosly if you are not using .Net 3.5 you can simply replace the labmbda expression with an anonymous delegate that calls&nbsp; the factory method.</FONT></SPAN></P>
+<P><SPAN><FONT face=Arial size=2>Since this is not officially released yet you would have to get the latest StructureMap code from subversion repository.</FONT></SPAN></P>
+<P><SPAN><A href="http://structuremap.sourceforge.net/Default.htm">http://structuremap.sourceforge.net/Default.htm</A></SPAN></P>
+<P><SPAN><FONT face=Arial size=2>Nermin</FONT></SPAN></SPAN></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>nermin replied on Thursday, March 20, 2008</h2><P>By the way Jeremy already has a blog post about this:</P>
+<P><A href="http://codebetter.com/blogs/jeremy.miller/archive/2008/03/20/if-you-need-something-in-structuremap-but-you-can-t-build-it-with-new.aspx">http://codebetter.com/blogs/jeremy.miller/archive/2008/03/20/if-you-need-something-in-structuremap-but-you-can-t-build-it-with-new.aspx</A></P>
+<P>Things happen fast in Open Source world!</P>
+<P><BLOCKQUOTE><div><img src="/Themes/alternate1/images/icon-quote.gif"> <strong>nermin:</strong></div><div></P>
+<P><FONT face=Arial size=2>Sorry it took me a while to digg this out.&nbsp; From Jeremy himself, this is the Factory Method example for upcomming StructureMap 2.5.&nbsp; Lets say you have a csla object Project that has&nbsp;a&nbsp;static factory method Project.CreateProject().&nbsp; Then&nbsp;to register it with the StructureMap you would do following:&nbsp;</FONT></P>
+<P><SPAN><SPAN>StructureMapConfiguration.BuildInstancesOf&lt;Project&gt;.TheDefaultIs(</SPAN><BR></P><PRE>	ConstructedBy&lt;Project&gt;(<SPAN> () =&gt; </SPAN><SPAN>Project.CreateNew()</SPAN> )</PRE>
+<P><SPAN>);</SPAN></P>
+<P><SPAN><FONT face=Arial size=2>Obviosly if you are not using .Net 3.5 you can simply replace the labmbda expression with an anonymous delegate that calls&nbsp; the factory method.</FONT></SPAN></P>
+<P><SPAN><FONT face=Arial size=2>Since this is not officially released yet you would have to get the latest StructureMap code from subversion repository.</FONT></SPAN></P>
+<P><SPAN><A href="http://structuremap.sourceforge.net/Default.htm">http://structuremap.sourceforge.net/Default.htm</A></SPAN></P>
+<P><SPAN><FONT face=Arial size=2>Nermin</FONT></SPAN></SPAN></P>
+<P></div></BLOCKQUOTE></P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Boris replied on Wednesday, March 26, 2008</h2>Got the latest StructureMap bits from SourceForge (should be 2.5) and tried it...<br>All I'm getting is: "The name 'ConstructedBy' does not exist in the current context" &nbsp;  <br><br>Something is still fishy with the Factory Methods.<br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>nermin replied on Wednesday, March 26, 2008</h2><P>Would you mind&nbsp;posting the code for the registration of the object being constructed by the StructurMap?</P>
+<P>&nbsp;</P>
+<P>Nermin</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Boris replied on Wednesday, March 26, 2008</h2>
+
+<p class="MsoNormal">No problem...<br>
+<br></p>
+
+<p class="MsoNormal">I. For a class with a default Ctor everything is kosher:</p>
+
+<p class="MsoNormal"><o:p><br></o:p></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp; </span><span>public</span> <span>class</span> <span>Patient </span>{}<span><o:p></o:p></span></span></p>
+
+<p class="MsoNormal"><o:p>&nbsp;</o:p></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp; </span>[<span>TestMethod</span>]<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp; </span><span>public</span> <span>void</span> PatientTest()<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp; </span>{<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span>// I don't
+want to use the StructureMap.config file<o:p></o:p></span></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span>StructureMapConfiguration</span>.UseDefaultStructureMapConfigFile
+= <span>false</span>;<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><o:p>&nbsp;</o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span>StructureMapConfiguration</span>.BuildInstancesOf&lt;<span>Patient</span>&gt;()<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>.TheDefaultIsConcreteType&lt;<span>Patient</span>&gt;();<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><o:p>&nbsp;</o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span>Patient</span>
+patient = <span>ObjectFactory</span>.GetInstance&lt;<span>Patient</span>&gt;();<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp; </span>}<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><o:p>&nbsp;</o:p></span></p>
+
+<p class="MsoNormal">2. For a class with no default Ctor, (CSLA BO) all I’m
+getting is: “That CunstructorBy does not exist in the current context”</p>
+
+<p class="MsoNormal"><o:p>&nbsp;</o:p></p>
+
+<p class="MsoNormal"><span>public</span><span> <span>class</span> <span>CslaPatient</span><o:p></o:p></span></p>
+
+<p class="MsoNormal"><span>{<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp; </span><span>// private ctor<o:p></o:p></span></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp; </span><span>private</span>
+CslaPatient() { }<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><o:p>&nbsp;</o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;</span><span>&nbsp;&nbsp; </span><span>public</span> <span>static</span> <span>CslaPatient</span> NewCslaPatient()<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp; </span>{<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span>return</span> <span>new</span> <span>CslaPatient</span>();<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp; </span>}<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span>}<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><o:p>&nbsp;</o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp; </span>[<span>TestMethod</span>]<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp; </span><span>public</span> <span>void</span> CslaPatientTest()<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp; </span>{<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>StructureMapConfiguration.UseDefaultStructureMapConfigFile = <span>false</span>;<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><o:p>&nbsp;</o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>StructureMapConfiguration.BuildInstancesOf&lt;CslaPatient&gt;<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>.TheDefaultIs(ConstructedBy&lt;CslaPatient&gt;(() =&gt;
+CslaPatient.NewCslaPatient()));<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp; </span>}<o:p></o:p></span></p>
+
+
+
+<p class="MsoNormal"><o:p>&nbsp;</o:p><br>I’ve tried specifying the PluginType and the PluggedType in the
+StrucureMap.config and included that – didn’t help either…</p>
+
+
+
+<p class="MsoNormal"><o:p>&nbsp;</o:p>I guess, I’m missing something or have to do some more
+reading…</p>
+
+
+
+<p class="MsoNormal"><o:p>&nbsp;</o:p>I have to say though, StructureMap + Rhino is really
+something good!</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>nermin replied on Wednesday, March 26, 2008</h2><P>Borris,</P>
+<P>I have built a quick test around ProjectTracker's Project object.&nbsp; Following works:</P>
+<P><FONT face="Courier New">[TestMethod]<BR>public void TestMethod1()<BR>{<BR>&nbsp;StructureMapConfiguration.UseDefaultStructureMapConfigFile = false;</FONT></P>
+<P><BR><FONT face="Courier New">&nbsp;StructureMapConfiguration.BuildInstancesOf&lt;Project&gt;().TheDefaultIs(<BR>&nbsp;&nbsp;new ConstructorExpression&lt;Project&gt;(delegate { return Project.NewProject();})<BR>&nbsp;);</FONT></P>
+<P><FONT face="Courier New">&nbsp;Project project = ObjectFactory.GetInstance&lt;Project&gt;();<BR>&nbsp;Assert.IsNotNull(project);<BR>}</FONT></P>
+<P>You will notice I am not using ConstructBy, but rather just build the new ConstructorExpression.&nbsp; Little bit less fluent but works.&nbsp; I think that there is work in progress on this feature, and untill Jeremy stamps 2.5 for release, we will still have a little issue here and there.</P>
+<P>I must say that my test above was originally failing:</P>
+<P>Test method TestProjectTracker.UnitTest1.TestMethod1 threw exception:&nbsp; System.Security.SecurityException: User not authorized to add a project.</P>
+<P>After commenting out the authorization rule in CanAddProject() and just setting it to return true test passed.&nbsp; (I can not set my domain account to a "ProjectManager" role, which is what the auth rule was about).&nbsp; Therefore it appears to me that DI in this case works.</P>
+<P>Please let me know if you have any questions.</P>
+<P>&nbsp;</P>
+<P>Nermin</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Boris replied on Wednesday, March 26, 2008</h2>Nermin,<br>
+<br>
+I was just going to try something very similar.<br>I figured Jeremy is probably still working on that, and the API is not finalized...<br><br>All I can say is: Thank you very much!!<br>It works, and we have the best of both worlds ;)<br><br>It's nice to be here...<br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, March 19, 2008</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>Bob Matthew:</strong></div><div>
+<P><FONT face=Arial size=2>Rocky – anything new on the DataPortal_XYZ factory methods as per this post: </FONT><A href="/forums/post/13044.aspx"><FONT face=Arial size=2>http://forums.lhotka.net/forums/post/13044.aspx</FONT></A></P>
+<P></div></BLOCKQUOTE></P>
+<P>That turned out to be a lot harder than I'd hoped, and the result (to me) wasn't compelling - especially given the complexity introduced by the change.</P>
+<P>The last thing I want is to have CSLA end up as complex as many pattern-happy frameworks seem to do. That flies in the face of my <EM>primary</EM> goal, which is to make it easier to write OO business layers. Patterns are great, but not if their negative consequences outweigh their positive consequences.</P>
+<P>I may yet introduce some extra extensibility points in the data portal (on the server it is just a chain of responsibility after all). But my original thought of allowing wholesale replacement of parts of the process was just not a good idea. Mostly because I'd end up supporting cases where people didn't understand the various dependencies in the chain and thus created a mess. Not useful to anyone.</P>
+<P>What is more interesting to me is the use of a separate DAL, and the use of a factory model (or locator or whatever you want) to load/invoke that DAL. And that works with the existing data portal model just fine.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Saturday, April 12, 2008</h2><P>I think it is important to only use a design pattern where the pattern provides more value than it does cost. Patterns always have a "consequences" section in their description, where good <EM>and bad</EM> consequences are listed. A pattern should only be used if the goodness outweights the badness.</P>
+<P>Dependency injection is powerful and enables some goodness. It is also often complex and thus introduces a lot of badness.</P>
+<P>The data portal is designed for simplicity. It is designed to provide a very abstract technique for moving objects between client and server (if there is a server).</P>
+<P>I find it hard to envision a scenario where someone would want to replace the data portal itself - especially for testing, when most bugs occur because people do something that violates one of the data portal's rules. You <EM>want to go through the data portal</EM> or you'll miss the most important bugs in your tests!</P>
+<P>What people <EM>really</EM> want to do for testing is to transparently replace their DAL.</P>
+<P>Months ago I ripped the data portal apart and started to rewrite it to open it up. The further into that process I got, the more I realized what a nightmare I was creating. If people can do wholesale replacement of the data portal they can totally break most/all of CSLA's features. And (in theory) I'd have to support people who did such a silly thing. Not gonna happen!</P>
+<P>Even a simpler scenario, like allowing replacement of SimpleDataPortal and ChildDataPortal seems iffy to me. Easy for me to do, but the consequences are huge!</P>
+<P>Those two objects implement a sequence of events that MUST HAPPEN for CSLA to work. If you look through the (really quite simple) code in SimpleDataPortal you see a sequence of steps. Every one of those steps MUST HAPPEN. Failure to perform a step, or performing a step out of sequence, introduces a bug that cascades through the entire framework's operation.</P>
+<P>Take Create():</P>
+<OL>
+<LI>Create the object</LI>
+<LI>Tell the object the data portal is about to invoke it</LI>
+<LI>Mark it as new</LI>
+<LI>Invoke the object's DP_Create()</LI>
+<LI>Tell the object the data portal is done with it</LI>
+<LI>Put the resulting object into a DataPortalResult response message</LI>
+<LI>Return the DataPortalResult to the caller</LI></OL>
+<P>This is the simplest of the operations (and I'm ignoring exception handling, which must be done in a very specific manner). </P>
+<P>If I allowed replacement of SimpleDataPortal (and ChildDataPortal of course), you could alter the overall flow somewhat, but you MUST end up having done steps 1, 3, 4, 6 and 7. Only 2 and 5 are really negotiable - and skipping them could easily break existing business object code.</P>
+<P>It gets worse with Fetch() and very nasty with Update().</P>
+<P>But, if I did this, I suppose you could decide to entirely ignore the current data portal model and devise a completely different scheme for creating/loading your object with data - as long as the result is marked new, and you do steps 6-7.</P>
+<P>Maybe something like:</P>
+<OL>
+<LI>Use a DI framework to create an instance of the object and provide it with the DAL reference (and criteria) so it can load itself</LI>
+<LI>Mark the object as new (though this may be too late - the reason I mark as new where I do is because of user feedback that it needed to be early in the process)</LI>
+<LI>Put the resulting object into a DataPortalResult response message</LI>
+<LI>Return the DataPortalResult to the caller</LI></OL>
+<P>The pre- and post-processing events would be up to the DI framework or something, as would any error handling event. You'd still need to wrap this whole thing in the same error handling code from SimpleDataPortal of course.</P>
+<P>As I said, I went down this whole road. And then it occurred to me that I could get the same flexibility by using a provider model to get at my DAL - and that approach is <EM>a lot simpler</EM>, so I abandoned this idea.</P>
+<P>I have yet to be convinced that the DI pattern provides a better, simpler or cleaner result here than using a provider model for the DAL. If someone establishes how that would be the case then I would consider making this change to the data portal. In the meantime, my recommendation is to use a provider model to load your DAL - which allows mocking the DAL in a very simple and clean manner.</P>
+<P>And interestingly enough, your DAL itself needs to be designed pretty much the same to support DI or the provider model, because your data access methods (either way) need to be able to interact interchaneably with the real or mock DAL. Remember that your DAL can't load your object's <EM>properties</EM>, it must load your object's <EM>fields</EM> - and to avoid breaking encapsulation this means your <EM>object must load its own fields</EM>. This is true regardless of what other patterns we apply around this process.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Bob Matthew replied on Saturday, April 12, 2008</h2><P><FONT face=Arial size=2>Rocky,</FONT></P>
+<P><FONT face=Arial size=2>We seem to be “missing” each other on the main focus of our posts.&nbsp; Perhaps I should better explain my intentions and motivations behind my most posts on the subject of dependency injection.&nbsp; In addition, I shall attempt to more fully define my understanding of each concept such that any confusion may be avoided.</FONT></P>
+<P><FONT face=Arial size=2>One of my primary goals is to minimize coupling (references to concrete types) between components in my code.&nbsp; I fully understand that some degree of coupling is necessary, for example, I’m tightly coupled to the System.String class whenever I work with a string.&nbsp; In many ways this type of coupling may not be undesirable, provided that I’m comfortable being bound to any changes that could be made to the System.String class.</FONT></P>
+<P><FONT face=Arial size=2>The “issue” of coupling to the CSLA is really a non-issue.&nbsp; Just as I am comfortable being coupled to System.String and many other .NET base classes, I am also comfortable doing so with the CSLA and more particularly the DataPortal.&nbsp; I’m not interested in re-writing the DataPortal. Rocky, you’ve done a tremendous job with the framework.&nbsp; It’s very well documented, well supported and the advantages it brings to increasing object maintainability and portability are indispensable.</FONT></P>
+<P><FONT face=Arial size=2>Now, with all of that addressed I would like to elaborate upon what I see as a limitation of, not the CSLA, but mobile objects in general because of their very nature as mobile objects; in short, a caveat of working in a client/server environment.</FONT></P>
+<P><FONT face=Arial size=2>Two of the most common methods for avoiding tight coupling to concrete types and instead relying on contract definitions (interfaces) are known as “service locators” and “dependency injection”.</FONT></P>
+<P><FONT face=Arial size=2>The service locator pattern, commonly and perhaps mistakenly referred to as an object broker, is where a single static, global object provides access to new objects.&nbsp; Whenever we need a new object, we go to the broker and ask for a new object that implements the desired interface.&nbsp; Any object is free to go to the broker/locater to ask for a concrete instance of any interface.</FONT></P>
+<P><FONT face=Arial size=2>Dependency injection on the other hand, while it may share similarities with a service locator, namely having a single global, static “broker” object, has one significant difference: Each component or group of classes organized for a single purpose does not reference the broker or even know of the broker’s existence.&nbsp; The component, in order to receive references to its dependencies (such as a logger, database connection, etc.), has to have them injected during construction.</FONT></P>
+<P><FONT face=Arial size=2>For further review of some of the advantages of dependency injection over service locators, please refer to the following article: </FONT><A href="http://ubik.com.au/article/named/service_locator_vs_dependency_injection"><FONT face=Arial size=2>http://ubik.com.au/article/named/service_locator_vs_dependency_injection</FONT></A></P>
+<P><FONT face=Arial size=2>The “gotcha” that I’ve come across when attempting to reconcile dependency injection and mobile objects is that many types of dependencies a CSLA-derived class (a BusinessBase object) may need are not serializable and thus cannot be injected and shuttled back and forth across the wire during roundtrips to the DataPortal.</FONT></P>
+<P><FONT face=Arial size=2>This means, as far as I can determine, that the only other possibility which can be used to obtain dependent references, other than direct coupling with a concrete type, is to use a service locator. </FONT></P>
+<P><FONT face=Arial size=2>In conclusion, I just wanted others to be aware of this “issue” when attempting to implement a dependency injection pattern with a mobile object – you must ensure that any and all dependencies are fully serializable and you must also be aware of the additional payload those dependencies carry when transferring them back and forth across the wire.&nbsp; These complications can be avoided when using a service locator, meaning a direct reference to the global, static broker object from within the component, and not serializing the dependencies in question.</FONT></P>
+<P><FONT face=Arial size=2>As for our approach used by my team, we have gone with a hybrid model.&nbsp; We use dependency injection for our non-BusinessBase objects which frees them of any knowledge of the broker, whereas the BusinessBase-based classes are free to access the object broker to obtain their dependencies.<BR></FONT></P>
+<P><FONT face=Arial size=2></FONT>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Boris replied on Saturday, April 12, 2008</h2>
+
+<p class="MsoNormal">Rocky, <br>
+<br>
+I appreciate your time and effort on this. <br>
+I'm always able to learn something new from you -- Thank you!</p>
+
+<p class="MsoNormal"><o:p>&nbsp;</o:p></p>
+
+<p class="MsoNormal">We are building a pretty complicated medical system using
+CSLA.</p>
+
+<p class="MsoNormal">The expectation is we will have at least couple of thousands
+unit tests…<br>
+&nbsp;<br>
+* So far in my case the existence of DI is mostly affecting how I write my unit
+tests.<br>
+<br>
+</p>
+
+<p class="MsoNormal">BTW: I was thought to distinguish between unit and integrating
+tests. </p>
+
+<p class="MsoNormal"><span>-<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span>Unit tests shall be atomic and shall not cross layers; </p>
+
+<p class="MsoNormal"><span>-<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span>Integration tests usually exercise the whole vertical
+slice UI to Database</p>
+
+<p class="MsoNormal"><o:p>&nbsp;</o:p></p>
+
+<p class="MsoNormal">My goal was/is to cover my public methods with atomic unit
+tests! </p>
+
+<p class="MsoNormal">In general, the more atomic the tests are the better; the fewer
+tests will break if a bug is introduced. </p>
+
+<p class="MsoNormal">I understand that going through the Data Portal is very important
+and it should be tested! (And it this in our integration tests, actually there are
+cases where integration tests are the only option)</p>
+
+<p class="MsoNormal"><o:p>&nbsp;</o:p></p>
+
+<p class="MsoNormal">So, using DI + Some Mocking Framework to mock the DAL in
+order to stay atomic and for speed purposes (Unit tests are way faster than
+Integration and they are executed more often) was perceived to be a good thing
+in our team…</p>
+
+<p class="MsoNormal"><o:p>&nbsp;</o:p></p>
+
+<p class="MsoNormal">** </p>
+
+<p class="MsoNormal"><o:p>&nbsp;</o:p></p>
+
+<p class="MsoNormal">The second thing with DI is: It can be used to introduce new
+behavior on the Client or in the Server. All I have to do is update a config
+file and put e new functionality in newly added assembly…</p>
+
+<p class="MsoNormal"><o:p>&nbsp;</o:p></p>
+
+<p class="MsoNormal">***</p>
+
+<p class="MsoNormal"><o:p>&nbsp;</o:p></p>
+
+<p class="MsoNormal">I never thought a change in the Data Portal is needed to
+support DI in CSLA. </p>
+
+<p class="MsoNormal">CSLA is just fine.</p>
+
+<p class="MsoNormal">I can use DI on the server or in the client, why would I
+want to break the Data Portal?</p>
+
+<p class="MsoNormal"><o:p>&nbsp;</o:p></p>
+
+<p class="MsoNormal"><br>
+<br>
+</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Boris replied on Sunday, April 13, 2008</h2>
+
+<p class="MsoNormal">Here is one approach…</p>
+
+<p class="MsoNormal"><o:p>&nbsp;</o:p></p>
+
+<ol><li class="MsoNormal">Create
+     a container/root BO class.</li></ol>
+
+<p class="MsoNormal"><o:p>&nbsp;</o:p></p>
+
+<ol><li class="MsoNormal">Create
+     a child object IMyChildObject, for which you want to use DI</li></ol>
+
+<p class="MsoNormal">(It would be cool if the
+implementations of the IMyChildObject are also BOs)</p>
+
+<p class="MsoNormal"><o:p>&nbsp;</o:p></p>
+
+<ol><li class="MsoNormal">Use
+     StructureMap to inject into that IMyChildObject ref whatever you want, as
+     long as it is IMyChildObject (the implementations may come from a different
+     assemblies)</li></ol>
+
+<p class="MsoNormal"><o:p>&nbsp;</o:p></p>
+
+<p class="MsoNormal">The injection could take place in
+the <span>DataPortal_Create
+or in the Properties..<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><o:p>&nbsp;</o:p></span></p>
+
+<p class="MsoNormal"><span>Something like:<o:p></o:p></span></p>
+
+<p class="MsoNormal">//In the properties <span>_myChildObject
+is declared as IMyChildObject </span></p>
+
+<p class="MsoNormal"><o:p>&nbsp;</o:p></p>
+
+<p class="MsoNormal"><span><o:p>&nbsp;</o:p></span></p>
+
+<p class="MsoNormal"><span>[<span>RunLocal</span>()]<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span>protected</span><span> <span>override</span> <span>void</span>
+DataPortal_Create()<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span>{<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp; </span>_myChildObject =
+StructureMap.ObjectFactory.GetInstance&lt;IMyChildObject&gt;();<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp; </span><span>//OR use the
+NamedInstance:<o:p></o:p></span></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp; </span><span>//_myChildObject =
+StructureMap.ObjectFactory.GetNamedInstance&lt;IMyChildObject&gt;("Implementaion1");<o:p></o:p></span></span></p>
+
+<p class="MsoNormal"><span>}<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><o:p>&nbsp;</o:p></span></p>
+
+<p class="MsoNormal"><span>(In 3.5 LoadProperty
+will be used…)<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><o:p>&nbsp;</o:p></span></p>
+
+<p class="MsoNormal"><span>(You need to be familiar with StructureMap and create an
+appropriate StructureMap.config file)<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><o:p>&nbsp;</o:p></span></p>
+
+<p class="MsoNormal"><span>Here is a goog start with StructureMap:<o:p></o:p></span></p>
+
+<p class="MsoNormal"><a href="http://frickinsweet.com/ryanlanciaux.com/post/Very-Quick-and-Simple-Dependency-Injection-with-StructureMap.aspx">http://frickinsweet.com/ryanlanciaux.com/post/Very-Quick-and-Simple-Dependency-Injection-with-StructureMap.aspx</a></p>
+
+<p class="MsoNormal"><o:p>&nbsp;</o:p></p>
+
+<p class="MsoNormal"><a href="http://monkeys.codebetter.com/blogs/karlseguin/archive/2007/12/10/foundations-of-programming-pt-4-dependency-injection.aspx">http://monkeys.codebetter.com/blogs/karlseguin/archive/2007/12/10/foundations-of-programming-pt-4-dependency-injection.aspx</a></p>
+
+<p class="MsoNormal"><o:p>&nbsp;</o:p></p>
+
+<p class="MsoNormal">In theory the DI could take place on both sides: Client
+&amp; Server…or on either of those.</p>
+
+<p class="MsoNormal">It all depends on what is it exactly we want to accomplish…</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

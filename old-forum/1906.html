@@ -1,0 +1,25 @@
+<html><header><title>Optomization suggestion for System.ComponentModel.IEditableObject.CancelEdit()</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Optomization suggestion for System.ComponentModel.IEditableObject.CancelEdit()</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/1906.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>delphiace posted on Tuesday, December 05, 2006</h2><P>I hope that I am not overlooking something but CSLA.net&nbsp;calls the CancelEdit() even if the object is new or never committed and editlevel &lt;= editleveladded. </P>
+<P>The call is in BusinessBase here: <FONT size=2></P>
+<P></FONT><FONT color=#0000ff size=2>void</FONT><FONT size=2> System.ComponentModel.</FONT><FONT color=#008080 size=2>IEditableObject</FONT><FONT size=2>.CancelEdit()</FONT></P>
+<P><FONT size=2>&nbsp;</P></FONT>
+<P>Why not call CancelEdit() after the check for&nbsp;IsNew etc..: since new objects.&nbsp;Is&nbsp;there a &nbsp;need to attempt to undo something that basically&nbsp;has a chance to be removed from the collection?&nbsp; </P>
+<P>Based on this, is there a scenario (reason) as to&nbsp;why the CancelEdit is always called? I know reflection for no reason slows down the application unecessarily?</P>
+<P><FONT color=#ff0000><STRONG>Suggest&nbsp;putting CancelEdit() in a else clause when the if clause is false:</STRONG></FONT></P><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>void</FONT><FONT size=2> System.ComponentModel.</FONT><FONT color=#008080 size=2>IEdita</FONT><FONT color=#008080 size=2>bleObject</FONT><FONT size=2>.CancelEdit()</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if</FONT><FONT size=2> (_bindingEdit)</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </P>
+<P></FONT><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if</FONT><FONT size=2> (IsNew &amp;&amp; _neverCommitted &amp;&amp; EditLevel &lt;= EditLevelAdded)</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{</P>
+<P></FONT><FONT color=#008000 size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// we're new and no EndEdit or ApplyEdit has ever been</P></FONT><FONT size=2>
+<P></FONT><FONT color=#008000 size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// called on us, and now we've been cancelled back to</P></FONT><FONT size=2>
+<P></FONT><FONT color=#008000 size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// where we were added so we should have ourselves</P></FONT><FONT size=2>
+<P></FONT><FONT color=#008000 size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// removed from the parent collection</FONT></P>
+<P><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if</FONT><FONT size=2> (Parent != </FONT><FONT color=#0000ff size=2>null</FONT><FONT size=2>)</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Parent.RemoveChild(</FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>);</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;else </P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT color=#ff0000><STRONG>CancelEdit();</STRONG></FONT></P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</P></FONT></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

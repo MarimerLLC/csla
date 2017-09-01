@@ -1,0 +1,40 @@
+<html><header><title>Passing Connection String to Server</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Passing Connection String to Server</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/376.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Pradeep posted on Wednesday, June 14, 2006</h2><DIV>Hi all,</DIV>
+<DIV>I like to know how the connection string info is passed from client to server when I am using a remote server configuration. Will the app.config get automatically passed to the server? </DIV>
+<DIV>&nbsp;</DIV>
+<DIV>I understand that when we call a fetch method, it moves the whole object to the server and executes the fetch method inside the object. But inside my fetch method I have the line like</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>using(SqlConnection cn = new SqlConnection(DB("PTracker"))). </DIV>
+<DIV>&nbsp;</DIV>
+<DIV>How does my DB method get the configuration from the app.config file which is on the client ?</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>The whole reason for asking this question is this. I do not want to have my connection string in the config file for security reasons. So what I am thinking of doing is,&nbsp;&nbsp;create a custom&nbsp;Identity object (deriving from IIdentity)&nbsp;and my Identity object will have a parameter&nbsp;called ConnectionString. When ever I want the ConnectionString, I get it from this object. </DIV>
+<DIV>&nbsp;</DIV>
+<DIV>My assumption is that .Net automatically passes the Principal object from client to server. So if I want to get the connection string in the server, it would be available in the Identity object. </DIV>
+<DIV>&nbsp;</DIV>
+<DIV>Please let me know if this will work in distributed architecture. The main thing I am trying to accomplish is to pass in a set of data to the server, that would be used by all my objects.</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>Thank You ...</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>&nbsp;</DIV></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>kdubious replied on Wednesday, June 14, 2006</h2>You would need to add the connection string to the web.config in the DataPortal.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>DavidDilworth replied on Thursday, June 15, 2006</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>Pradeep:</strong></div><div>
+<DIV>How does my DB method get the configuration from the app.config file which is on the client ?<BR></div></BLOCKQUOTE></DIV>
+<P>To put it bluntly, it doesn't.</P>
+<P>In a remoting situation you will have the following:</P>
+<P>(1) Client (or web server)<BR>(2) Application server<BR>(3) Database server</P>
+<P>The configuration file on the client (or web server) should only have the remoting details for getting to the app server and nothing else.&nbsp; The client (or web server) cannot communicate with the database server directly, so does not need the connection details!</P>
+<P>The configuration file on the app server is the only place where you need the connection details for the database, since&nbsp;the app server is the only box that can communicate with the database server.</P>
+<P>HTH</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Pradeep replied on Thursday, June 15, 2006</h2><DIV>Thanks David.</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>One more question, will the IPrincipal object be passed to the server?</DIV></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Pradeep replied on Thursday, June 15, 2006</h2><DIV>What I mean in above questions is that, if I want to pass in some parameters to the server, can I put that in my IPrincipal derived object and send it to the server.</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>Please let me know.</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>Thank You</DIV>
+<DIV>Pradeep</DIV></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>guyroch replied on Thursday, June 15, 2006</h2>The IPrincipal is always available on both the client and app server
+(including when using remoting) when using Csla.ApplicationContext...<br>
+<br>
+However, if you are using the IPrincipal as a mean to transport
+parameters from the client to the app server and back, then I think you
+are abusing the fundamental purpose of IPrincipal.<br>
+<br>
+Why aren't you using the Criteria object to do this?<br>
+<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tymberwyld replied on Monday, August 07, 2006</h2>I am working on similar functionality.&nbsp; In our application we may have users logging into one Database and our QA or Development team logging into a completely different database.&nbsp; Yet, I want to use the same DataPortal because all it really is doing is relaying the data access.<br><br>So, I think I've decided to override the "DataPortalContext" to include Properties: Database, Server, DatabaseType (SqlServer, Oracle, etc.).&nbsp; The DataPortal or Business Object can then build the connection string dynamically.<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,92 @@
+<html><header><title>Support of NULL</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Support of NULL</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/2858.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Mahmud posted on Saturday, May 12, 2007</h2><P>In our database we want to support NULL values instead of default 0 or MinValue. As we have to initialize every property with a default value - numeric fields are shown as 0. But as we showed the initial version to our client, they are not willing to accept it. Lets say, we have a value of 'Quoted Amount' and 'Shipment Date'. But due to business rule, users can leave the fields blank initially... As we have shown 0 and Min. Date in the fields - its not accepted. But incorporating Nullable&lt;T&gt; types using current CSLA framework seems difficult for a small team like us.</P>
+<P>Can anyone shed some more light...how we can implement NULLable types easily without incurring much overhead?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, May 14, 2007</h2><P>I'm afraid that Nullable&lt;T&gt; is the technology Microsoft created to solve your issue.</P>
+<P>The only alternative is to use the <EM>older</EM> technique of having all your properties be of type Object.</P>
+<P>Either way you need to write code to translate an empty textbox to be a null, and a null to be an empty textbox. The simplest technique is to subclass TextBox and create your own control. Another technique is to handle the Format and Parse events from the binding object for each textbox control.</P>
+<P>Other people may have further insights - but the point is that Nullable&lt;T&gt; is <EM>designed</EM> to solve this issue, so it is the right answer.</P>
+<P>(Oh, and don't use SafeDataReader obviously! The whole purpose of that type is to <EM>get rid of nulls</EM>, and so it is useless for you!)</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Mahmud replied on Monday, May 14, 2007</h2><P>Its too much involvement, right? I have to make the private variables in the class&nbsp;as Nullable&lt;T&gt;, then make the property as Nullable&lt;T&gt;, read from DataReader and handle Null cases. Also while saving check whether its Null.</P>
+<P>Keeping everything same using CSLA - can I have the same effect by handling parse and bind? I am curious to know what others are doing...</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, May 15, 2007</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Since you are discussing Nullable&lt;T&gt; in C# syntax, you
+could consider using int? and the other C# types that provide syntactic sugar
+over Nullable&lt;T&gt;.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>You could also consider creating something like SafeDataReader
+that would have methods like GetInt32N(): returning an int? instead of int.
+That&#8217;d keep your object code simple.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>You still have the UI issue though, because many controls don&#8217;t
+know what to do with a null, so you may still have to handle format/parse in
+some cases (in other cases you can set a property on the control to tell it how
+to handle null values).<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<div>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Mahmud
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Monday, May 14, 2007 10:47 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] Support of NULL<o:p></o:p></span></p>
+
+</div>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Its too much involvement, right? I have to make the private variables in the
+class&nbsp;as Nullable&lt;T&gt;, then make the property as Nullable&lt;T&gt;, read
+from DataReader and handle Null cases. Also while saving check whether its
+Null.<o:p></o:p></p>
+
+<p>Keeping everything same using CSLA - can I have the same effect by handling
+parse and bind? I am curious to know what others are doing...<o:p></o:p></p>
+
+<p>&nbsp;<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+<p><span>No virus found in this incoming message.<br>
+Checked by AVG Free Edition.<br>
+Version: 7.5.467 / Virus Database: 269.7.0/803 - Release Date: 5/13/2007 12:17
+PM</span><o:p></o:p></p>
+
+</div>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

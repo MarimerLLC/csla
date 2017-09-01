@@ -1,0 +1,83 @@
+<html><header><title>Configuration for using a Web Service to an Application Server</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Configuration for using a Web Service to an Application Server</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/1357.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>ktweedy posted on Friday, September 29, 2006</h2><P>I am looking into how to implement a 4 phystical teir architecture&nbsp;with CSLA.</P>
+<P>In my applcation we will have web form call&nbsp;a web service which will need to call&nbsp;an application server which will talk to the database server.</P>
+<P>After the objects go through the web service and are deserialized they will have their DataPortal function called.&nbsp; Typically I would just talk to the database at that time and be done but in this situation I need to make an addition jump with the business object to the application server and perform my database access their and then return to the web server, which will then return to the client.</P>
+<P>To make it more interesting I would also like to have control over when we jump to the application server and when we can stay and perform the&nbsp;command on the the web server.&nbsp; For instance a fetch command could be performed on the web server, but a create, insert or update command we would like to have done on the application server to reduce the load on the web server.</P>
+<P>I see a couple options but would appreciate some thoughts or ideas.</P>
+<P>1. Develop and Application Server DataPortal<BR>Implement a version of the DataPortal on the web server that doesn't make the DataPortal_function call there but instead turns around an makes a remoting call to the application server and passes the business object there to have its DataPortal function call.&nbsp; I could implement an attribute that I could use to decide to make the jump to the application server or to run on the Web Server.&nbsp; This seems to me to be the most power solution and would have the least impact on my application design.</P>
+<P>2. A Deferred Save call<BR>My next thought is on the client&nbsp;I never call the Save function directly on my objects&nbsp;but instead implement a command like object and pass in the criteria class my business object.&nbsp; So on the server I could get my business object from the criteria&nbsp;and called its Save() function there.&nbsp; I beleive I can then have the dataportal configuration pointing to my application server so it will serialize my object and send it off to the application server to call its DataPortal_function.&nbsp; The my business object will return to the client as a child object of the command object where I could get it to get the new copy of the business object.</P>
+<P>3. Create command objects on the Web Server<BR>Let the client call the business object's save function then on the web server when the code gets to the DataPortal_function&nbsp;create an command like object and sets its criteria to the business object that has been deserialized there and then call the command object's Save() function so that the DataPort on the web server will serialize the business object again and send it off the the application server to have the DataPort_functional called which will in turn retrieve the business object from the criteria and call the Save() function on it again there.&nbsp; Not sure this will work though since when it is done it will return an object to the Web Server which somehow needs to be returned or copied onto intelf to be returned to the client.</P>
+<P>Any thoughts would be appreciated.&nbsp; I did a search and didn't see any other topics on this so sorry if this has been discussed before.</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, September 29, 2006</h2>I'm not sure I follow.<br><br>You are passing the object from a WEB Forms UI to the web server? And then from the web server to an app server?<br><br>I could see this working with a Windows Forms UI, using the web service data portal channel to a web server, which then needs to shift the call to an app server - but without some really nasty hacking (which is possible - I've done it) it is really hard to get business objects actually running in the browser.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>pliekhus replied on Friday, September 29, 2006</h2><P>I find this post interesting as I am trying to do something similar (if I understand it correctly) on the same day and cannot figure it out.&nbsp; Here is my scenario (from the database out).&nbsp; </P>
+<P>1.&nbsp; Application Server behind DMZ that has access to the database.&nbsp; Other layers get here through the RemotingPortal.</P>
+<P>2.&nbsp; Web site talking to the Application Server.&nbsp; Everything here works fine and I am happy.</P>
+<P>3.&nbsp; Web Service exposed to accept other connections.&nbsp; This is exposed through another firewall.&nbsp; If I connect this layer directly to the database it works fine.&nbsp; However, I set the CslaDataPortalProxy and CslaDataPortalUrl to talk to the RemotingPortal configured above.</P>
+<P>4.&nbsp; Other website that talks to my business objects through the web service layer.</P>
+<P>5.&nbsp; Smart Client front end that talks to my business objects through the web service layer.</P>
+<P>Basically&nbsp;the issue that I am having is that none of my business objects will fill successfully once I bounce through the Web Service to the Remoting Service layer.&nbsp; Is there something that I am missing?</P>
+<P>The issue that I have is outlined below</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|F|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Public Website -------\&nbsp;&nbsp;&nbsp;&nbsp; |D|<BR>Other Website&nbsp;--\&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|I|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&gt;--|M| Remoting Portal -------&gt; Database<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &gt;--|R|----Web Service ---------/&nbsp;&nbsp;&nbsp;&nbsp; |Z|<BR>Smart Client ----/&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |E|<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |W|<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |A|<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |L|<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |L|</P>
+<P>Thanks for your assistance.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Saturday, September 30, 2006</h2>The data portal is a "one hop" technology. You can't "chain" data portal calls like you are attempting to do.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ktweedy replied on Tuesday, October 03, 2006</h2><P>Hi, thanks for the feedback.&nbsp; Was out of work for a few days so just now getting back to this.</P>
+<P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div>The data portal is a "one hop" technology. You can't "chain" data portal calls like you are attempting to do.<BR></div></BLOCKQUOTE></P>
+<P>I am curious why you say this can't be done.&nbsp; Is there a technical issue or a design issue related to CSLA that prevents this.&nbsp; I understand CSLA out of the box may not be able to do this.</P>
+<P>Conceptually it seems with the channel adapter/message router patter that the output of the message router can be another channel adapter which would send the message off into another channel.&nbsp; This second channel would be the application server.</P>
+<P>Any thoughts?</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, October 03, 2006</h2>
+
+
+
+
+<DIV align=left><SPAN class=921242921-03102006><FONT face=Arial color=#0000ff size=2>Oh sure, you could write a router component to run on your 
+web server. It just isn't something you get "out of the box" so to 
+speak.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=921242921-03102006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=921242921-03102006><FONT face=Arial color=#0000ff size=2>This router component would basically implement the 
+WebServiceHost interface like the one in Csla.dll, except that it wouldn't 
+delegate to Server.DataPortal. Instead, it would delegate to a proxy that would, 
+in turn, call the real data portal server on the app server.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=921242921-03102006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=921242921-03102006><FONT face=Arial color=#0000ff size=2>I wouldn't think it would be terribly hard to write such a 
+router component - other than the Web Service interface, everything in the data 
+portal's message router implementation is interface-based and so could be 
+transparently augmented without altering CSLA itself.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=921242921-03102006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=921242921-03102006><FONT face=Arial color=#0000ff size=2>You'd need to create a new client-side proxy, a host for 
+your router, and a proxy for your router that relays the call to the real host 
+from Csla.dll.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=921242921-03102006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=921242921-03102006><FONT face=Arial color=#0000ff size=2>While your router could, perhaps, use the existing data 
+portal to invoke the server, I don't think you want to do that, because that 
+would force you to deserialize the message on the web server, just to 
+reserialize it again. Since the web server would be nothing more than a 
+pass-through, you are (I think) better off not deserializing the message if you 
+can avoid it.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=921242921-03102006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=921242921-03102006><FONT face=Arial color=#0000ff size=2>Rocky</FONT></SPAN></DIV><BR>
+<BLOCKQUOTE>
+  <DIV class=OutlookMessageHeader align=left>
+  <HR>
+  <FONT face=Tahoma size=2><B>From:</B> ktweedy [mailto:cslanet@lhotka.net] 
+  <BR><B>Sent:</B> Tuesday, October 03, 2006 10:51 AM<BR><B>To:</B> 
+  rocky@lhotka.net<BR><B>Subject:</B> Re: [CSLA .NET] Configuration for using a 
+  Web Service to an Application Server<BR></FONT><BR></DIV>
+  <DIV></DIV>
+  <P>Hi, thanks for the feedback.&nbsp; Was out of work for a few days so just 
+  now getting back to this.</P>
+  <P>
+  <BLOCKQUOTE>
+    <DIV><IMG src="/Themes/default/images/icon-quote.gif"> 
+    <STRONG>RockfordLhotka:</STRONG></DIV>
+    <DIV>The data portal is a "one hop" technology. You can't "chain" data 
+    portal calls like you are attempting to do.<BR></DIV></BLOCKQUOTE>
+  <P></P>
+  <P>I am curious why you say this can't be done.&nbsp; Is there a technical 
+  issue or a design issue related to CSLA that prevents this.&nbsp; I understand 
+  CSLA out of the box may not be able to do this.</P>
+  <P>Conceptually it seems with the channel adapter/message router patter that 
+  the output of the message router can be another channel adapter which would 
+  send the message off into another channel.&nbsp; This second channel would be 
+  the application server.</P>
+  <P>Any thoughts?</P>
+  <P>&nbsp;</P>
+  <P>&nbsp;</P><BR><BR><BR></BLOCKQUOTE></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ktweedy replied on Wednesday, October 04, 2006</h2><P>Thanks, that is what I was hoping to hear.</P>
+<P>Thanks again.</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,114 @@
+<html><header><title>silverlight cache NameValueList in IsolatedStorage</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>silverlight cache NameValueList in IsolatedStorage</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6334.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>davido posted on Wednesday, February 04, 2009</h2>Has anyone got any thoughts on where would be a good place to introduce some code to write out a NameValueList/check for it's existence in a CSLA business object? I'm not concerned with the cache going stale at the moment.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, February 05, 2009</h2>You can use the MobileFormatter to do this. <br /><br />It has some of the same restrictions as the BinaryFormatter though - in that a radical change to the structure of the business object (the class, in terms of fields and properties) may mean you can't recover the data later.<br /><br />But for short-term data storage, and with an object that isn't likely to change its name, type or structure often (like a name/value list), and for a cache that you could re-create anyway, this is not a bad option.<br /><br />Look at the ObjectCloner class in the CSLA SL code to see how the MobileFormatter is invoked. In the middle of the clone process, there's a MemoryStream that contains a byte array of the object's serialized state.<br /><br />If you put that byte array into a file in IS, you could later retrieve that byte array, put it into a MemoryStream and then deserialize the data into the object.<br /><br />Just make sure you carefully trap exceptions in the deserialization process. If you get an exception, just re-retrieve the data from the server and no one is the wiser that the cache didn't work.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>davido replied on Thursday, February 05, 2009</h2>Excellent I'll give that go. Thanks</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>skagen00 replied on Thursday, February 05, 2009</h2><P>Because this subject came up (IsolatedStorage) I wanted to ask a followup question. </P>
+<P>In the case of caching a list I initially thought - well, this is what IsolatedStorage can handle, super. The slight downside is that in the unlikely scenario you have a robust enough business app where you use tons of IsolatedStorage for caching things (some might say there's a design issue in this case), you're limited to 10MB (right? and you're prompted after only 1MB? -- I think I remember those #s)</P>
+<P>What of using a static values for caching? In my tests they seem to work just fine and may be a little more natural to get to&nbsp;than using Isolated Storage keys. </P>
+<P>One thing I have not had the chance to test (I'm still relatively new to Silverlight) is whether or not static variables count against memory limits of IsolatedStorage / Silverlight. Perhaps this is a novice question, but well, I'm novice at Silverlight. </P>
+<P>Any insight into this? </P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, February 05, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>You are right about the limits on IS size.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>The question is cache duration. <o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Using static fields for caching works great, and will last as
+long as the Silverlight app is running, but no longer.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Using IS will last across execution of the app. So the user can
+shut down, come back tomorrow or next week, and as long as your class hasn&#8217;t
+changed substantially in the meantime, the cache will reload from IS.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>davido replied on Tuesday, April 21, 2009</h2><P>Thanks for the advice Rocky.&nbsp;I finally got back to this project and I have it working. </P>
+<P>I found this thread useful <A HREF="/forums/thread/31260.aspx">http://forums.lhotka.net/forums/thread/31260.aspx</A></P>
+<P>and this link was also useful <A href="http://www.eggheadcafe.com/tutorials/aspnet/d566463d-83bd-486a-8633-53aa54f405bf/silverlight-2-beta-2-doi.aspx">http://www.eggheadcafe.com/tutorials/aspnet/d566463d-83bd-486a-8633-53aa54f405bf/silverlight-2-beta-2-doi.aspx</A></P>
+<P>I had to create a module level variable to hold the client callback so I could call it in dp_FetchCompleted after I had serialised the data to disk. I think this is ok.</P>
+<P>When the file exists in IsoStorage I invoke the client call back with null i.e. handler.Invoke(<FONT color=#0000ff><FONT color=#0000ff>null</FONT></FONT>, dp);</P>
+<P>I don't think there is a way for me to provide something other than null here because it is a static. <U>What are the implications of sending a null here</U>?</P>
+<P>&nbsp;</P><FONT size=2>
+<P>[</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>Serializable</FONT></FONT><FONT size=2>]</P>
+<P>[</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>MobileFactory</FONT></FONT><FONT size=2>(</FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>"XXX.Business.BusinessClasses.ClassificationsFactory, XXX.Business"</FONT></FONT><FONT size=2>, </FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>"FetchClassifications"</FONT></FONT><FONT size=2>)]</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>public</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>class</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>ClassificationsLookup</FONT></FONT><FONT size=2> : </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>NameValueListBase</FONT></FONT><FONT size=2>&lt;</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>int</FONT></FONT><FONT size=2>, </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>string</FONT></FONT><FONT size=2>&gt;</P>
+<P>{</P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>
+<P>#if</FONT></FONT><FONT size=2> SILVERLIGHT</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>public</FONT></FONT><FONT size=2> ClassificationsLookup(){}</P>
+<P></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2>//to allow the client handler to be called back</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2>//I have intercepted the call back to facilitate isoStorage</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>public</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>static</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>EventHandler</FONT></FONT><FONT size=2>&lt;</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>DataPortalResult</FONT></FONT><FONT size=2>&lt;</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>ClassificationsLookup</FONT></FONT><FONT size=2>&gt;&gt; _handler;</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>public</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>static</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>void</FONT></FONT><FONT size=2> GetClassifications(</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>EventHandler</FONT></FONT><FONT size=2>&lt;</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>DataPortalResult</FONT></FONT><FONT size=2>&lt;</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>ClassificationsLookup</FONT></FONT><FONT size=2>&gt;&gt; handler)</P>
+<P>{</P>
+<P></FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>ClassificationsLookup</FONT></FONT><FONT size=2> classifications;</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>if</FONT></FONT><FONT size=2> (</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>IsolatedStorageFile</FONT></FONT><FONT size=2>.GetUserStoreForSite().FileExists(</FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>"classifications.dat"</FONT></FONT><FONT size=2>))</P>
+<P>{.......populate a byte[] called b</P></FONT><FONT size=2>
+<P>&nbsp;&nbsp;&nbsp;classifications = (</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>ClassificationsLookup</FONT></FONT><FONT size=2>)wrapper.DecompressAndDeserialize(b);</P>
+<P>}</P>
+<P></FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>DataPortalResult</FONT></FONT><FONT size=2>&lt;</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>ClassificationsLookup</FONT></FONT><FONT size=2>&gt; dp = </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>new</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>DataPortalResult</FONT></FONT><FONT size=2>&lt;</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>ClassificationsLookup</FONT></FONT><FONT size=2>&gt;(classifications, </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>null</FONT></FONT><FONT size=2>, </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>null</FONT></FONT><FONT size=2>);</P>
+<P>handler.Invoke(</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>null</FONT></FONT><FONT size=2>, dp);</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>else</P></FONT></FONT><FONT size=2>
+<P>{</P>
+<P>_handler = handler;</P>
+<P></FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>DataPortal</FONT></FONT><FONT size=2>&lt;</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>ClassificationsLookup</FONT></FONT><FONT size=2>&gt; dp = </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>new</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>DataPortal</FONT></FONT><FONT size=2>&lt;</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>ClassificationsLookup</FONT></FONT><FONT size=2>&gt;();</P>
+<P>dp.FetchCompleted += </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>new</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>EventHandler</FONT></FONT><FONT size=2>&lt;</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>DataPortalResult</FONT></FONT><FONT size=2>&lt;</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>ClassificationsLookup</FONT></FONT><FONT size=2>&gt;&gt;(dp_FetchCompleted);</P>
+<P>dp.BeginFetch();</P>
+<P>}</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>static</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>void</FONT></FONT><FONT size=2> dp_FetchCompleted(</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>object</FONT></FONT><FONT size=2> sender, </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>DataPortalResult</FONT></FONT><FONT size=2>&lt;</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>ClassificationsLookup</FONT></FONT><FONT size=2>&gt; e)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>var</FONT></FONT><FONT size=2> w = </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>new</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>Wrapper</FONT></FONT><FONT size=2>();</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>byte</FONT></FONT><FONT size=2>[] b = w.SerializeAndCompress(e.Object);</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>using</FONT></FONT><FONT size=2> (</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>IsolatedStorageFile</FONT></FONT><FONT size=2> isoStore = </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>IsolatedStorageFile</FONT></FONT><FONT size=2>.GetUserStoreForSite())</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>using</FONT></FONT><FONT size=2> (</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>var</FONT></FONT><FONT size=2> isoStream = </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>new</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>IsolatedStorageFileStream</FONT></FONT><FONT size=2>(</FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>"classifications.dat"</FONT></FONT><FONT size=2>, </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>FileMode</FONT></FONT><FONT size=2>.Create, isoStore))</P>
+<P>{</P>
+<P>isoStream.Write(b, 0, b.Length);</P>
+<P>}</P>
+<P>}</P>
+<P>_handler.Invoke(</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>sender</FONT></FONT><FONT size=2>, e);</P>
+<P>}</P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>elizas replied on Friday, June 11, 2010</h2><p>
+<table width="100%" border="0">
+<tbody>
+<tr>
+<td>
+<div class="about">
+<div class="about"><span><span style="font-family:verdana, geneva;font-size:x-small;">We can use Isolated Storage as a virtual </span><span style="font-family:verdana, geneva;font-size:x-small;"><a target="_self" href="http://www.mindfiresolutions.com/Isolated-storage-in-Silverlight-application-557.php">file</a></span><span style="font-family:verdana, geneva;font-size:x-small;"> system to store data in a hidden folder on our machine in silverlight application. Silverlight application is allocated the storage of 1 MB per application but we can increase the amount of storage.</span></span></div>
+</div>
+</td>
+</tr>
+<tr>
+<td>
+<div class="about">
+<div><span><span><span><span style="font-family:verdana, geneva;">This is the function to get the data in the isolated storage</span></span></span></span></div>
+<div><span>&nbsp;</span></div>
+<div><span><span style="font-size:x-small;">
+<div>&nbsp;&nbsp;<span style="font-family:&#39;courier new&#39;, courier;color:#0000ff;">Private Function LoadData(ByVal fileName As String) As String<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Dim data As String = String.Empty<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Dim isfstream As New IsolatedStorageFileStream(fileName, FileMode.Open, IsolateStorageFileObj)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Dim sr As New StreamReader(isfstream)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; data = sr.ReadLine()<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return data<br />&nbsp; End Function</span></div>
+</span></span></div>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

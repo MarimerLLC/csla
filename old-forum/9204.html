@@ -1,0 +1,56 @@
+<html><header><title>Child business object reference to parent/grandparent business object</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Child business object reference to parent/grandparent business object</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9204.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>bniemyjski posted on Wednesday, July 14, 2010</h2><p>
+<pre>Hello,
+
+I spent about two hours looking into this, and I couldn&#39;t find a decent solution. I did come across these three posts:
+
+<a href="http://forums.lhotka.net/forums/p/6210/43595.aspx">http://forums.lhotka.net/forums/p/6210/43595.aspx</a>
+<a href="http://forums.lhotka.net/forums/t/5131.aspx">http://forums.lhotka.net/forums/t/5131.aspx</a>
+<a href="http://forums.lhotka.net/forums/p/2672/13793.aspx">http://forums.lhotka.net/forums/p/2672/13793.aspx</a>
+
+There seems to be a lot of work you need to do to enable this. And it seems like it should be simple and handled by CSLA.
+
+I took a look and I think the best spot to handle setting this would be in the Lists AddNewCore.
+
+ protected override object AddNewCore()
+        {
+            Admission item = CSLATest.Business.Admission.NewAdmission();
+
+            bool cancel = false;
+            OnAddNewCore(ref item, ref cancel);
+            if (!cancel)
+            {
+                // Check to see if someone set the item to null in the OnAddNewCore.
+                if(item == null)
+                    item = CSLATest.Business.Admission.NewAdmission();
+
+                // Pass the parent value down to the child.
+                Patient patient = this.Parent as Patient;
+                if (patient != null)
+                    item.PatientMember = patient;
+
+                Add(item);
+            }
+
+            return item;
+        }
+
+You would also need to think about what happens if you are not using a List... In the scenario above, I had set a setter on the collection like so:
+
+            internal set
+            {
+                PatientID = value.PatientID;
+                LoadProperty(_patientMemberProperty, value);
+            }
+
+I really don&#39;t like this setup and I&#39;m not happy with it. Apart from this, it leads you into a StackOverflow when you try to call Save(). If someone can look into this and supply a working sample in code that handles serialization, children and children collections. I would have no problem opening this back up and implementing.
+
+For more information with a test solution and database, please take a look at the Google code issue <a href="http://code.google.com/p/codesmith/issues/detail?id=368">here</a>.
+
+Thanks
+-Blake Niemyjski</pre>
+</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, July 14, 2010</h2><p>In CSLA 4 the Parent properties are public on the base types, so a child shouldn&#39;t need to maintain a reference to objects higher in the graph - it can just walk up the graph with this.Parent.Parent.Parent or whatever.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>bniemyjski replied on Wednesday, July 14, 2010</h2><p>
+<p>Hello,</p>
+<p>Yeah, I looked into this, the problem we are having is that we have a child object (parent -&gt; list -&gt; grand child -&gt; Child property or Parent -&gt; child -&gt; child property that could be pointing back to the parent via a fk relationship etc... We want to set this to have a reference back to the parent.</p>
+<p>Thanks</p>
+<p>-Blake Niemyjski</p>
+</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

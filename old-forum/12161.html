@@ -1,0 +1,22 @@
+<html><header><title>DynamicListBase saveitem problem in a WebAPI controller action</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>DynamicListBase saveitem problem in a WebAPI controller action</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/12161.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>j0552 posted on Wednesday, September 25, 2013</h2><p>Hi</p>
+<p>Not sure what I need to do here. I have a&nbsp; DynamicListBase object. When I send an HTTP POST request and call dyn.Saveitem(item), if the DataPortal throws an exception, I get this exception in the response:</p>
+<p>System.InvalidOperationException: An asynchronous module or handler completed while an asynchronous operation was still pending.</p>
+<p>&nbsp;// POST api/values</p>
+<p>public void Post([FromBody] string value)<br />{<br />&nbsp;DynamicRootList dyn = DynamicRootList.NewDynamicRootList();<br />&nbsp;DynamicRoot item = dyn.AddNew();<br />&nbsp;item.Name = value;<br />&nbsp;dyn.SaveItem(item);<br />}</p>
+<p>I have found that this hides the error:</p>
+<p>&nbsp;public void Post([FromBody] string value)<br />{<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Task.Run(() =&gt;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; DynamicRootList dyn = DynamicRootList.NewDynamicRootList();<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; DynamicRoot item = dyn.AddNew();<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; item.Name = value;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; dyn.SaveItem(item);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; });<br />}</p>
+<p>My question is: Is this really the best way to get around the problem?</p>
+<p>Thanks<br />Andrew</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Wednesday, September 25, 2013</h2><p>Hi,</p>
+<p>I suspect that SaveItem actually does an async save based on the exception you get.&nbsp;</p>
+<p>Have you tried to call:</p>
+<p><strong>await dyn.SaveItemAsync(item);</strong></p>
+<p>Added issue in CSLA:&nbsp;<a href="https://github.com/MarimerLLC/csla/issues/204">https://github.com/MarimerLLC/csla/issues/204</a></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>j0552 replied on Wednesday, September 25, 2013</h2><p>Still using v4.3.13 so no SaveItemAsync. Can&#39;t upgrade just yet. We are using the .NET v4.5. I think the save is done on a BackGroundWorker isn&#39;t it?</p>
+<p>Is my workaround reasonable in the circumstances? I&#39;m using another thread&nbsp;and also lose the security context.&nbsp;</p>
+<p>Maybe I can do this sort of fire and forget:</p>
+<p><span style="font-size:x-small;font-family:Consolas;color:#2b91af;"><span style="font-size:x-small;font-family:Consolas;color:#2b91af;"><span style="font-size:x-small;font-family:Consolas;color:#2b91af;">Task</span></span></span><span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;">.Run(() =&gt; dyn.SaveItem(item));</span></span></p>
+<p><span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;">I also need to add a handler to the &#39;Saved&#39; event to catch an errors for later reporting. This would be done on the request thread. Could that be a problem?</span></span></p>
+<p><span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;">Just looking for a bit of guidance for a temp fix&nbsp;before we can upgrade to CSLA&nbsp;v4.5.</span></span></p>
+<p>
+<p>&nbsp;</p>
+</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

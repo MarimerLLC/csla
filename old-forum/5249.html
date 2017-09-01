@@ -1,0 +1,139 @@
+<html><header><title>CSLA 3.5: Bug in MarkClean method with child collections?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA 3.5: Bug in MarkClean method with child collections?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5249.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Patrick posted on Friday, August 15, 2008</h2>Hi,<br><br>I have a root object with child collections.<br>Order<br>OrderItems<br><br>And I call MarkClean on Order it doesn't actually mark the child objects as clean.<br>Or to be more accurate it sets OrderItems._isDirty = false but the actual order items themselves stay untouched and might still be dirty... <br>This in turn means that after calling Order.MarkClean() Order.IsDirty can still be true.<br><br>Thanks,<br>Patrick<br><br>It's implemented like this:<br><br>// FieldManager.cs<br>
+&nbsp;&nbsp;&nbsp; internal void MarkClean()<br>&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; foreach (var item in _fieldData)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (item != null &amp;&amp; item.IsDirty)<br>// It seems like we would need recursion here so that each FieldData inside the FieldData would set IsDirty to false as well.<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; item.MarkClean();<br>&nbsp;&nbsp;&nbsp; }<br><br><br>// FieldData.cs<br>&nbsp;&nbsp;&nbsp; public void MarkClean()<br>&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _isDirty = false;<br>&nbsp;&nbsp;&nbsp; }<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Friday, August 15, 2008</h2>Don't think that's a bug.&nbsp; If you're doing the old-school style of unmanaged properties, it was always your responsibility to mark child objects as clean after they saved themselves.<br><br>If you're using Managed properties, I would think that the call to DataPortal.UpdateChild will handle marking the child object as clean.&nbsp;&nbsp; If it's not, that could be a bug, but it seems to be working for me.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Patrick replied on Friday, August 15, 2008</h2><BLOCKQUOTE><div><img src="/Themes/basicblue/images/icon-quote.gif"> <strong>ajj3085:</strong></div><div>If you're using Managed properties, I would think that the call to DataPortal.UpdateChild will handle marking the child object as clean.&nbsp;&nbsp; </div></BLOCKQUOTE><br>Yes I'm using managed properties.<br><br>The very fact though that I can call MarkClean() on an object and afterwards IsDirty == true makes it seem to me that:<br>* either the name is not clear. If that's the case MarkSelfClean() might be more correct<br>* that there is a bug by not going recursive through the object fields<br>* or that I'm misunderstanding the methods purpose <img src="/emoticons/emotion-1.gif" alt="Smile [:)]" /><br><br>Thanks,<br>Patrick<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, August 15, 2008</h2><P>This seems like a potential bug.</P>
+<P>MarkClean() never has, and still wouldn't, affect child objects.</P>
+<P>But it has, and should, make the current object's state non-dirty. Which means, as you point out, that it should loop through the field manager and set all non-child fields as unchanged. That would preserve the same behavior as with non-managed fields.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Monday, August 18, 2008</h2>Ok, I see that there could be a problem... I just don't get why a FieldData would contain other FieldData objects. Is that normal?&nbsp; I haven't looked too much at the code (I did check out this part now)... I guess I'll have to read very carefully the new book when it's out.&nbsp; Fortunately, I have it on pre-order on Amazon.&nbsp; <img src="/emoticons/emotion-1.gif" alt="Smile [:)]" /><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, August 18, 2008</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>The field manager concept is designed to allow CSLA to manage
+backing field values for properties. That includes references to child objects,
+and values like a number or string or date.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>The default FieldData&lt;T&gt; implementation understands the
+difference between child objects and any other value, as does the field
+manager. These two types of value are stored in a single list internally,
+because that was the best solution overall, but they are really quite different
+in many ways.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>And YOU can create your own IFieldData implementation, in which
+case you might define entirely different behaviors for whether a field is dirty
+or not, etc. The specific target scenario is where you want to maintain the
+original value for each field so you can do per-field concurrency checking and
+more sophisticated dirty checking.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>The book doesn&#8217;t really cover that scenario &#8211; I&#8217;m
+having a hard enough time keeping the book at the page number target as it is. I
+think two other books are needed<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoListParagraph><span><span>a.<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span></span><span>Using CSLA .NET<o:p></o:p></span></p>
+
+<p class=MsoListParagraph><span><span>b.<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span></span><span>Extending CSLA .NET<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I just need a couple clones to write those :)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky</span><b><span><o:p></o:p></span></b></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Monday, August 18, 2008</h2>Ok, I think I get it.&nbsp; I see now why I don't think I've hit this issue. <br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>markell replied on Wednesday, April 01, 2009</h2>Hi folks.<br>Maybe I misunderstand something, but I hit the same issue not with child collections, but with simple parent-child relationship. And I am staring right now at this piece of code inside the FieldData.cs file:<br><br><font face="Courier New">&nbsp;&nbsp;&nbsp; public virtual bool IsDirty<br>&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; get<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ITrackStatus child = _data as ITrackStatus;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (child != null)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return child.IsDirty;<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; else<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return _isDirty;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>&nbsp;&nbsp;&nbsp; }<br><br>&nbsp;&nbsp;&nbsp; /// &lt;summary&gt;<br>&nbsp;&nbsp;&nbsp; /// Marks the field as unchanged.<br>&nbsp;&nbsp;&nbsp; /// &lt;/summary&gt;<br>&nbsp;&nbsp;&nbsp; public void MarkClean()<br>&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _isDirty = false;<br>&nbsp;&nbsp;&nbsp; }<br></font><br>How come MarkClean is not synchronized with IsDirty? Shouldn't we have the following assertion:<br><br><font face="Courier New">if (obj.IsDirty)<br>{<br>&nbsp;&nbsp; obj.MarkClean();<br>&nbsp;&nbsp; Assert(!obj.IsDirty);<br>}<br></font><br>
+Because right now this assertion fails for the simple parent-child pair, when the child field is changed.<br>Or am I missing something?<br>Thanks.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, April 01, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>The IsSelfDirty property is probably what you are looking for.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Please remember that CSLA .NET has been around for over 9 years
+now, and it has evolved (and continues to evolve) over that time. While it
+evolves, I try as much as possible to preserve backward compatibility by not
+changing the names or semantic meaning of existing properties and methods.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>The end result are some inconsistencies. For the most part, I feel
+the cost of living with a few minor inconsistencies is lower than the cost of
+breaking every application that uses CSLA by renaming methods, and so I leave
+the names alone as much as possible.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>markell replied on Thursday, April 02, 2009</h2>Hi Rocky.<br>Thanks for the prompt reply.<br>I do not understand why IsSelfDirty?<br>Shouldn't MarkClean mark the whole object tree as clean?<br>If not than which method does so?<br><br>As far as I can see ITrackStatus is a read-only interface. It allows one to write deep IsDirty, but provides no means for deep MarkClean.<br><br>In my copy of csla I changed FieldData&lt;T&gt;.MarkClean to:<br><pre><font face="Courier New">    public void MarkClean()<br>    {<br>      _isDirty = false;<br>      BusinessBase bb = _data as BusinessBase;<br>      if (bb != null)<br>      {<br>        bb.MarkClean();<br>      }<br>    }<br></font><br>Of course, I had to change the scope of <font><font face="Courier New">BusinessBase</font></font>.MarkClean from protected<br>to protected internal.<br><br>I realize that this workaround is problematic because BusinessBase does not <br>correspond to ITrackStatus, but it suits my immediate needs. I just do not<br>want to change the ITrackStatus interface.<br><br>I would like very much to get your advise on how to do it correctly.<br>Thanks.<br></pre></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, April 02, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>There is no method to mark the entire graph as clean, or new, or
+deleted.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Generally speaking, marking an individual object as dirty or
+clean is handled by the data portal, or by n-level undo. CSLA is designed with
+that approach in mind.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>markell replied on Saturday, April 04, 2009</h2>Your reply made me review my data portal code and I think I have found a bug there, which is a relief, since now I can revert my csla changes and fix it where it should be - in my code.<br>Thanks.<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

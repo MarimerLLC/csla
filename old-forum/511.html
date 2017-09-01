@@ -1,0 +1,186 @@
+<html><header><title>What does Rocky use for code generation?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>What does Rocky use for code generation?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/511.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>zythra posted on Thursday, June 29, 2006</h2>Code generation is a common topic in the forum with many people using many different generators, from CodeSmith, CSLAGen, to personally rolled generators.&nbsp; I'm curious, what does Rocky use?&nbsp; I find it hard to believe that Rocky (Magenic) would code everything by hand, especially being a fairly sizable consulting company, not to mention the fact that the book mentions generating code as well as there being portions of the framework that cater to generators.<br><br>I've assumed (maybe I shouldn't) that Rocky/Magenic uses a proprietary, in-house generator.<br><br>Anyway, just a curiosity a friend of mine and I have wondered about.<br><br>:-)<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Brian Criswell replied on Thursday, June 29, 2006</h2>Rocky has mentioned in the past that Magenic has a purpose-built code generator.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>zythra replied on Thursday, June 29, 2006</h2>What is "purpose-built"?<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Brian Criswell replied on Thursday, June 29, 2006</h2>Built for the purpose of generating applications that use CSLA.&nbsp; At least that is how I understood it.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>zythra replied on Thursday, June 29, 2006</h2>Gotcha.&nbsp; I think that's probably what most people are after in the forums; a generator that generates applications that use CSLA.&nbsp; If he uses something properietary I assume Magenic probably keeps it close to their heart to give them an edge, if not, I'd be interested in it.&nbsp; :-)<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>skagen00 replied on Thursday, June 29, 2006</h2><P>It's called FBOA - Foundation Business Object Accelerator - you're able to leverage it if you co-develop with Magenic if I understand correctly. (You can find it on Magenic's site - the mention of it that is)</P>
+<P>I do wonder if it actually utilizes one of the code gen options out there. </P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Thursday, June 29, 2006</h2>Just out of curiosity, what do you generate your BOs from?&nbsp; I have a generator for my DAL which examines the tables in the database, but for business objects?<br><br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>skagen00 replied on Thursday, June 29, 2006</h2><P>Me? I don't code gen, myself. Not yet anyways.</P>
+<P>(Call me crazy but I don't really know how much I'd benefit - the stuff that's easily replicatable via code generators takes very little time to type and snippets kick butt anyways. Though I can see how something for the DAL could be definitely useful) </P>
+<P>I <EM>highly</EM> recommend using snippets for anyone not already doing so. </P>
+<P>Here is an article about creating&nbsp;your own snippets:</P>
+<P><SPAN><A title=http://aspnet.4guysfromrolla.com/articles/122105-1.aspx#postadlink href="http://aspnet.4guysfromrolla.com/articles/122105-1.aspx#postadlink">http://aspnet.4guysfromrolla.com/articles/122105-1.aspx#postadlink</A>&nbsp;</SPAN></P>
+<P><SPAN>And Rocky has some in the Csla code - csla20cs\Snippets </SPAN></P>
+<P><SPAN></SPAN>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Brian Criswell replied on Thursday, June 29, 2006</h2>To me, snippets are like one-off generation, they give you a tremendous boost, but you are then stuck with whatever you made.&nbsp; One thing I have realised over the last year is how powerful regeneration is.&nbsp; The ability to fix all occurrences of a bug or adding a piece of functionality to all the objects in a few seconds was fairly shocking the first few times I did it.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, June 29, 2006</h2><P>Yes, Magenic has a code generator called FBOG. Actually two of them, neither based on a custom generation engine. The first one was for CSLA 1.x and uses the code DOM, the second is for 2.0 and uses straight text output to escape the limitations of the code DOM.</P>
+<P>These generators are built with the intent of augmenting Magenic's consultants as they work on projects, and the generator stays behind with the client when our consultants leave. But my point is that they aren't designed for "casual use" like CodeSmith; meaning no docs, a UI that lacks polish, etc. The tools aren't designed to compete with other code-generators, but rather to allow Magenic to compete with lower-cost consulting firms.</P>
+<P>Which is a really long-winded way of heading off the next question, which is whether I can make FBOG available. I can't. Magenic owns it, not me, and they provide it as part of their consulting services only.</P>
+<P>What I've been working on, off and on, is trying to come up with a new language for describing objects. Perhaps I'm on a fool's errand, but I look at the amount of code required to write an object, even with CSLA, and I think it is ridiculous. If you go through your code and identify only the lines of code that perform actual business functions - that have actual business value - you'll find that it is perhaps 4%. The rest of the lines of code are mandated by C# or VB or ADO.NET or Windows Forms or Web Forms or whatever. All "plumbing", and none of it valuable to the business need.</P>
+<P>How does this tie into code-gen? A compiler is merely a fancy code generator. If I can come up with a more concise language to describe business objects (at least CSLA business objects), then I can code-gen CIL directly by creating a compiler for my language.</P>
+<P>Thus far though, I have not been happy with any results <img src="/emoticons/emotion-6.gif" alt="Sad [:(]" /></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>zythra replied on Thursday, June 29, 2006</h2>Thanks for the reply Rocky.<br><br>This has been an interesting thread, if anything it has given me a little more insight as to what others are attempting to do.<br><br>Currently all of my code is generated, well, obviously not all, but everything that is redundant and can be reasonably generated&nbsp; The company I work for uses their own proprietary framework along with their own proprietary generator.&nbsp; It all works very well and I really like it, but I can't use it outside of projects for them, sort of like FBOG and Magenic.<br><br>All of my side work has been NHibernate using a generator I wrote that is entirely table driven (which I hate doing).&nbsp; It uses NVelocity templates.<br><br>Another gentleman and I have been working on a generator for CSLA and as soon as we feel it is ready, then I will be doing all of my contract work with generated CSLA code.&nbsp; Our new generator uses XSLT templates and is coming along quite well.&nbsp; My friend has done all of the work so far and he's done a great job.<br><br>Anyway, it's good to hear other ideas and to hear what you are using Rocky.<br><br>Dustin :-)<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Friday, June 30, 2006</h2>It would seem that a code generator would could raise, say a Visio document, and is aware of Csla would be a good way to generate code.&nbsp; Has anyone gone down this path?<br><br>Andy<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Brian Criswell replied on Friday, June 30, 2006</h2>From my experience a couple years ago, the Visio object model seemed to be a mess, and it was difficult to get information out of it.&nbsp; Maybe that has changed in recent releases though.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Friday, June 30, 2006</h2>It didn't have to necessarly be Visio, although I think newer releases include some kind of built in code generator.&nbsp; I haven't played with it though..<br><br>Andy<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Tom Cooley replied on Friday, June 30, 2006</h2>I've always thought that a UML-driven approach makes the most sense. Something like a Visio model or some other tool. I've not used Rational or any of the other high-end suites but I would imagine that some form of code-gen exists in these tools. So far, I have not found anything within my price range.<br><br>So, I have been using CodeSmith. My company has not yet switched to .Net 2 (coming soon) so I'm using the templates originally created by Matt Altadonna but then ported to C# by Ricky Supit. I've made a lot of changes to these templates to help reduce the amount of code changes needed, but I still feel they fall considerably short. One of primary issues for me is that they are only driven by tables. We all use (or should use) stored procedures to interact with a database and the result sets these stored procedures often do not structurally match the root table with which they interact. There are often joins to replace/augment foreign key values and multiple result sets and such and this is where table-driven code gen just falls apart.<br><br>When Ricky recently released his templates for CSLA 2, this feature was still not there. However, because he had completely rewritten the templates, he made it much, much easier to add this support than would have been possible with templates for CSLA 1. I offered to add that support and it is now available.<br><br>For business objects whose responsibility it is to maintain data (and many of them fall into this category), code gen makes sense. For me anyway, now that I can do this from stored procedures, my work load is getting a little easier. In fact, I am generating much of the code for my CSLA 1 business objects using the CSLA 2 templates. It's by no means a perfect system as I generate the same class from both sets of templates and then mash them together through cut/paste. But it still beats the alternative of hand-coding all the repetative portions of a class.<br><br>Tom<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, June 30, 2006</h2>
+
+
+
+
+<DIV align=left><SPAN class=728155214-30062006><FONT face=Arial color=#0000ff size=2>Not to be overly contrary, but I very much dislike the UML 
+approach :)</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=728155214-30062006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=728155214-30062006><FONT face=Arial color=#0000ff size=2>The reason is that UML tends to lead people down a 
+data-centric design. The UML class diagram is terribly close, in concept, to a 
+database ER diagram, and so most people tend to treat UML class diagrams like ER 
+diagrams - normalizing data, etc. Very bad.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=728155214-30062006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=728155214-30062006><FONT face=Arial color=#0000ff size=2>Of course, UML doesn't _force_ this to happen. You can 
+fight against it with strong personal discipline and lots of experience doing 
+behavioral/responsibility driven design. But it requires effort and experience, 
+and the vast majority of OO designers end up falling into the data-centric 
+pit.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=728155214-30062006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=728155214-30062006><FONT face=Arial color=#0000ff size=2>Additionally, UML class diagrams don't convey behavior. 
+There's no semantic meaning there. So to do real code generation with UML you 
+must do at least two diagrams for every class (class, activity) and usually 
+others as well. UML does have 11 diagrams, and to completely describe a system 
+you need to do all of them...</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=728155214-30062006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=728155214-30062006><FONT face=Arial color=#0000ff size=2>Remember that the "L" stands for language. And it is a very 
+complex language, because it is allowing you to express very complex concepts. 
+To do a real code generator based on UML, you are effectively agreeing to build 
+a compiler that merges all 11 diagrams into a single set of 
+output.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=728155214-30062006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=728155214-30062006><FONT face=Arial color=#0000ff size=2>Obviously you can gain benefit by just generating output 
+from a class diagram - but that is, I think, woefully inadequate in the bigger 
+picture. That doesn't even get you as far as most of the other CSLA gen tools, 
+because they include all that database metadata, that a class diagram doesn't 
+have.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=728155214-30062006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=728155214-30062006><FONT face=Arial color=#0000ff size=2>Rocky</FONT></SPAN></DIV><BR>
+<BLOCKQUOTE>
+  <DIV class=OutlookMessageHeader align=left>
+  <HR>
+  <FONT face=Tahoma size=2><B>From:</B> Tom Cooley [mailto:cslanet@lhotka.net] 
+  <BR><B>Sent:</B> Friday, June 30, 2006 8:53 AM<BR><B>To:</B> 
+  rocky@lhotka.net<BR><B>Subject:</B> Re: [CSLA .NET] What does Rocky use for 
+  code generation?<BR></FONT><BR></DIV>
+  <DIV></DIV>I've always thought that a UML-driven approach makes the most 
+  sense. Something like a Visio model or some other tool. I've not used Rational 
+  or any of the other high-end suites but I would imagine that some form of 
+  code-gen exists in these tools. So far, I have not found anything within my 
+  price range.<BR><BR></BLOCKQUOTE></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>david.wendelken replied on Friday, June 30, 2006</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div> 
+
+<DIV align=left><SPAN class=728155214-30062006><FONT face=Arial color=#0000ff size=2>...&nbsp;the vast majority of OO designers end up falling into the data-centric pit.&nbsp; ...</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=728155214-30062006></SPAN></div></BLOCKQUOTE></DIV>
+<DIV align=left>&nbsp;</DIV>
+<DIV align=left>No offense meant, but that statement had me falling out of my chair laughing!</DIV>
+<DIV align=left>&nbsp;</DIV>
+<DIV align=left>Why?</DIV>
+<DIV align=left>&nbsp;</DIV>
+<DIV align=left>Because for the last 20 years, it's been my experience that the vast majority of Entity-Relationship designers end up falling into the behavior modeling pit!</DIV>
+<DIV align=left>&nbsp;</DIV>
+<DIV align=left>Maybe they should all exchange job responsibilities and we could all be happier with the designs we get saddled with.</DIV>
+<DIV align=left>&nbsp;</DIV>
+<DIV align=left>&nbsp;</DIV></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, June 30, 2006</h2>
+
+
+
+
+<DIV align=left><SPAN class=447250617-30062006><FONT face=Arial color=#0000ff size=2>Hehe :)</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=447250617-30062006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=447250617-30062006><FONT face=Arial color=#0000ff size=2>Perhaps the reality is that everyone ends up in a "neither 
+here nor there" no man's land in the middle. Where entities reflect too much 
+behavior, but still reflect data. And where objects reflect too little behavior, 
+and too much data...</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=447250617-30062006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=447250617-30062006><FONT face=Arial color=#0000ff size=2>But if I caused laughter then I am glad - when ever 
+possible all this should be fun :)</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=447250617-30062006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=447250617-30062006><FONT face=Arial color=#0000ff size=2>Rocky</FONT></SPAN></DIV><BR>
+<BLOCKQUOTE>
+  <DIV class=OutlookMessageHeader align=left>
+  <HR>
+  <FONT face=Tahoma size=2><B>From:</B> david.wendelken 
+  [mailto:cslanet@lhotka.net] <BR><B>Sent:</B> Friday, June 30, 2006 11:55 
+  AM<BR><B>To:</B> rocky@lhotka.net<BR><B>Subject:</B> Re: [CSLA .NET] RE: What 
+  does Rocky use for code generation?<BR></FONT><BR></DIV>
+  <DIV></DIV>
+  <BLOCKQUOTE>
+    <DIV><IMG src="/Themes/default/images/icon-quote.gif"> 
+    <STRONG>RockfordLhotka:</STRONG></DIV>
+    <DIV>
+    <DIV align=left><SPAN class=728155214-30062006><FONT face=Arial color=#0000ff size=2>...&nbsp;the vast majority of OO designers end up 
+    falling into the data-centric pit.&nbsp; ...</FONT></SPAN></DIV>
+    <DIV align=left><SPAN class=728155214-30062006></SPAN></DIV></DIV></BLOCKQUOTE>
+  <DIV></DIV>
+  <DIV align=left>&nbsp;</DIV>
+  <DIV align=left>No offense meant, but that statement had me falling out of my 
+  chair laughing!</DIV>
+  <DIV align=left>&nbsp;</DIV>
+  <DIV align=left>Why?</DIV>
+  <DIV align=left>&nbsp;</DIV>
+  <DIV align=left>Because for the last 20 years, it's been my experience that 
+  the vast majority of Entity-Relationship designers end up falling into the 
+  behavior modeling pit!</DIV>
+  <DIV align=left>&nbsp;</DIV>
+  <DIV align=left>Maybe they should all exchange job responsibilities and we 
+  could all be happier with the designs we get saddled with.</DIV>
+  <DIV align=left><FONT face=Arial color=#0000ff size=2></FONT>&nbsp;</DIV></BLOCKQUOTE></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>HarvDotNet replied on Saturday, July 01, 2006</h2>I have been using Code Generation for some time.<br>
+This has always been a home grown method<br>
+I started by generating for CSLA for VB6 and then moved to CSLA 1.x<br>
+<br>
+Right now, I am generating pretty much all of the classes, (parent,
+child collection, and child), name value lists, etc. I also generate
+all the stored procedures and a basic MDI child form and dialogs with
+all the fields on the forms.<br>
+<br>
+The stored procedures that I generate also include corporate standards for generating audit information etc.<br>
+<br>
+So the home grown code generation approach works very well, BUT....<br>
+<br>
+My concern is that code generation seems to be missing the behaviour
+aspect of OO and I am wondering how you can get that from meta data or
+ER diagrams.<br>
+<br>
+<br>
+<br>
+Harvey Sather<br>
+<br>
+<br>
+<br>
+<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>david.wendelken replied on Monday, July 03, 2006</h2><P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>HarvDotNet:</strong></div><div><BR><BR>So the home grown code generation approach works very well, BUT....<BR><BR>My concern is that code generation seems to be missing the behaviour aspect of OO and I am wondering how you can get that from meta data or ER diagrams.<BR><BR></div></BLOCKQUOTE></P>
+<P>You can only take automated code generation from an ERD a certain distance, and then that's it.</P>
+<P>(It's farther than many people think,&nbsp;particularly if you supplement it with a behaviour-oriented meta-model that contains keywords or phrases to watch out for in the entity, attribute or relationship names.)</P>
+<P>For example, I once wrote a program that would deduce candidate business rules from a data model.&nbsp; Example: rules like start&lt;something&gt; or begin&lt;something&gt; needs to be less than or equal to end&lt;something&gt;.&nbsp;&nbsp; I identified quite a few commonly recurring business rule patterns and would load the candidate rules into a meta-structure (where I could approve/disapprove them).&nbsp; Other candidate rules would include a no-overlapping records rule: identified by&nbsp;a table that contained a multi-column primary or unique key, where the leading portion of the key was an foreign key&nbsp;to the parent table and the trailing columns contained a start&lt;something&gt; or begin&lt;something&gt; kind of column name.&nbsp;&nbsp; Basically, the rule finder&nbsp;was a specification generator.&nbsp; From there, a code generator build the data access layer with its associated validation logic.&nbsp; (No complaints about where the code was - I wasn't using OO languages then. :)</P>
+<P>With a little extra data stored about the relationships and a meta-data keyword repository, it's fairly straightforward to deduce which entities need to be maintained from the same screen.&nbsp; For example, Invoice Header and Invoice Line Item will often be maintained together, whereas Invoice Header and Invoice Type will not.&nbsp; That can be deduced because although all three entities share the same root word (Invoice) and would be connected via&nbsp;a chain of one-to-many relationships - Invoice Type contains a word that denotes a category or&nbsp;grouping of meta-data about Invoices, whereas Invoice Header does not.&nbsp; (It could be tuned by placing a &lt;put them together&gt; or &lt;split them apart&gt; code in the relationship meta-data.) I would pull these candidate maintenance screen data elements out of a data model via a utility program and put them into a meta-model that defined the screens' purpose and data usages.&nbsp;&nbsp;&nbsp; From there, further automated transformations (supplemented with manual enhancements and special hand-coded business logic) would turn them into code.</P>
+<P>Now that I'm in the .Net world instead of the Oracle Forms world, I'm having to re-build my repository and code generation infrastructure.&nbsp;&nbsp; I'm looking for some good xml or relational meta-models that are already in use for holding object specifications - or I'll roll my own if need be.</P>
+<P>(Feel free to point me in the right direction!)</P>
+<P>&nbsp;I'm planning on adapting the techniques I used to mine an ERD to build candidate OO business object and maintenance/review screen specifications.&nbsp; From there, I'll supplement the meta-model by hand and by utility, then generate the code.&nbsp; CodeSmith looks to be an affordable way to short-circuit some of that work. :)</P>
+<P>The key for me is to find my sea-legs with OO-based design.&nbsp; The CSLA book and forum have really helped me get a better grip on good OO design, and that will help guide me in building my new specification generators.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JCardina replied on Friday, June 24, 2011</h2><p>Rocky is dead on in his reply in my experience.</p>
+<p>In my opinion if you rely heavily on code generation you are either ignorant of any usability or user experience concerns or are just too lazy to care.</p>
+<p>Light use to automate repetitive areas of code that don&#39;t face the user is a different story but no great, modern, task oriented app was ever or ever will be generated entirely from a database schema.</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Ashraf Ali replied on Friday, June 24, 2011</h2><p>In my opinion your answer shows a lot more ignorance than my question did. It&#39;s public forum not a &#39;court&quot; to decide who is lazy or igonrant.</p>
+<p>if you dont have a professional answer you dont have to reply to my questions, you can keep your &#39;high&#39; opinions to yourself. I can start using all kinds of words too&nbsp;but I won&#39;t, its just not mature.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JCardina replied on Friday, June 24, 2011</h2><p>Sorry Ashraf, I did not in any way intend an insult.&nbsp; I used the word ignorant in the dictionary sense.&nbsp; I apologize if you were offended and stick by my remarks.&nbsp; </p>
+<p>I do not mind being called ignorant, I readily admit I&#39;m ignorant on many things and that there is nothing wrong with being ignorant, it&#39;s when you think you know it all that you are in trouble. :)</p>
+<p>If you knew my background and the long complicated route I came to that point of view and the direct correlation between the roof over my head and how easy my software is to use to my end users you would perhaps respect my opinion a little more but I won&#39;t waste time trying to convince any one, time will do that inevitably for those that care about the end user and correct task oriented user interface design.</p>
+<p>Again I apologize if you felt insulted, I did not mean to direct an insult at you, I do freely admit to directing any insult to the concept of code generation in general, unless it&#39;s used extremely sparingly in the correct situation.</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Ashraf Ali replied on Friday, June 24, 2011</h2><p>No hard feelings, although this is an old thread but I got interested in it because of Rocky&#39;s reply (given below)</p>
+<div class="ForumPostTitle">
+<div class="ForumPostTitleInner">
+<div class="ForumPostButtons"><a href="http://forums.lhotka.net/forums/AddPost.aspx?ReplyToPostID=2573&amp;Quote=False" class="ReplyButton"><span><span style="color:#003399;">Reply</span></span></a></div>
+<a href="http://forums.lhotka.net/forums/p/511/2573.aspx#2573"><img src="http://forums.lhotka.net/Themes/hawaii/images/icon_post_show.gif" style="float:left;margin-right:10px;border-width:0px;" alt="" /></a> <strong><a href="http://forums.lhotka.net/members/RockfordLhotka/default.aspx"><span style="color:#3366cc;">RockfordLhotka</span></a></strong> <span class="ForumPostTitleDate"><a href="http://forums.lhotka.net/forums/p/511/2566.aspx#2566"><span style="color:#3366cc;">replied on</span></a> Thu, Jun 29 2006 7:47 PM </span>
+<div style="clear:both;"></div>
+<div><a href="http://forums.lhotka.net/login.aspx?ReturnUrl=%2fforums%2fp%2f511%2f2554.aspx"><img src="http://forums.lhotka.net/Themes/hawaii/images/common/5star-rating.png" align="absMiddle" border="0" style="border-width:0px;" alt="" /><span style="color:#3366cc;"> rated by 0 users </span></a></div>
+</div>
+</div>
+<div style="clear:both;"><span style="color:#3366cc;"></span></div>
+<p>Yes, Magenic has a code generator called FBOG. Actually two of them, neither based on a custom generation engine. The first one was for CSLA 1.x and uses the code DOM, the second is for 2.0 and uses straight text output to escape the limitations of the code DOM.</p>
+<p>These generators are built with the intent of augmenting Magenic&#39;s consultants as they work on projects, and the generator stays behind with the client when our consultants leave. But my point is that they aren&#39;t designed for &quot;casual use&quot; like CodeSmith; meaning no docs, a UI that lacks polish, etc. The tools aren&#39;t designed to compete with other code-generators, but rather to allow Magenic to compete with lower-cost consulting firms.</p>
+<p>Which is a really long-winded way of heading off the next question, which is whether I can make FBOG available. I can&#39;t. Magenic owns it, not me, and they provide it as part of their consulting services only.</p>
+<p>What I&#39;ve been working on, off and on, is trying to come up with a new language for describing objects. Perhaps I&#39;m on a fool&#39;s errand, but I look at the amount of code required to write an object, even with CSLA, and I think it is ridiculous. If you go through your code and identify only the lines of code that perform actual business functions - that have actual business value - you&#39;ll find that it is perhaps 4%. The rest of the lines of code are mandated by C# or VB or ADO.NET or Windows Forms or Web Forms or whatever. All &quot;plumbing&quot;, and none of it valuable to the business need.</p>
+<p>How does this tie into code-gen? A compiler is merely a fancy code generator. If I can come up with a more concise language to describe business objects (at least CSLA business objects), then I can code-gen CIL directly by creating a compiler for my language.</p>
+<p>Thus far though, I have not been happy with any results <img src="http://forums.lhotka.net/emoticons/emotion-6.gif" alt="Sad <img src="http://forums.lhotka.net/emoticons/emotion-6.gif" alt="Sad" />" /></p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>JCardina, In my opinion CRUD code generation is not helpful but like Rocky mentioned above there may be some oppurtunities for code generation.</p>
+<p>have a good weekend!</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tiago replied on Friday, June 24, 2011</h2><p><div style='padding-left: 50px;background-color:silver'><b>Ashraf Ali<br></b>
+<p>JCardina, In my opinion CRUD code generation is not helpful but like Rocky mentioned above there may be some oppurtunities for code generation.</p>
+<p>have a good weekend!</p>
+<div style="CLEAR:both;"></div>
+</div></p>
+<p>Why don&#39;t you give a try to CslaGenFork? There is a fresh <a href="http://cslagenfork.codeplex.com/releases/view/68854">Nightly Build 2011.06.23</a></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Ashraf Ali replied on Thursday, June 23, 2011</h2><p>Ok , I am really interested in knowin what happend to the code generation tool Rocky was trying to build <img src="http://forums.lhotka.net/emoticons/emotion-1.gif" alt="Smile" /></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, June 23, 2011</h2><p>I didn&#39;t pursue that option. There are some really good code generators out there, several of which include templates for (or directly target) CSLA .NET.</p>
+<p>I&#39;d much rather foster a code generation ecosystem around CSLA than attempt to become a competitor to those generators. I think that&#39;s better for CSLA and for the community as a whole.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Ashraf Ali replied on Friday, June 24, 2011</h2><p>I am sorry I don&#39;t follow&nbsp;what does a&nbsp;&quot;code generation ecosystem&quot; mean? <img src="http://forums.lhotka.net/emoticons/emotion-2.gif" alt="Big Smile" />, I do like the sound of it.</p>
+<p>No offense meant please, I think I just like the term.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Brian Criswell replied on Thursday, June 29, 2006</h2>For the past year I have been developing a metadata creation application that uses CSLA business objects at its core.&nbsp; You can define your business objects with their properties, authorization rules, lookups, and child objects and define how they map onto a data source.<br><br>CodeSmith is used as the actual generator because it allows me to drop the business objects assembly in the Addins directory.&nbsp; Rather than having to use the CodeSmith database object model, my templates can then load the same source file that the application uses and use my business objects to generate the classes, stored procedures, tables, etc.<br><br>Recently though, I have wondered about the various DAL generators and how I could incorporate them.&nbsp; Does anyone have any suggestions for DAL generators as well as giving an idea of how they work and what they give you?&nbsp; Currently, my generator can load all children, grandchildren, etc. of an object in a single stored procedure hit, and I wonder how I could get similar concepts out of a property DAL.<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

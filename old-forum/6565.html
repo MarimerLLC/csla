@@ -1,0 +1,70 @@
+<html><header><title>The COMMIT TRANSACTION request has no corresponding BEGIN TRANSACTION</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>The COMMIT TRANSACTION request has no corresponding BEGIN TRANSACTION</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6565.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>kenb posted on Thursday, March 05, 2009</h2><P>I'm hoping someone can help me troubleshoot this.&nbsp; I am occasionally getting this exception thrown:</P><PRE>Type : System.Data.SqlClient.SqlException, System.Data, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+Message : The COMMIT TRANSACTION request has no corresponding BEGIN TRANSACTION.</PRE>
+<P>The code which causes this exception to be thrown is:</P><PRE>    Protected Overrides Sub DataPortal_Insert()
+
+        Using transaction As New TransactionScope
+            Dim db As Database = DatabaseFactory.CreateDatabase()
+            Dim sql As String
+            sql = "excluded for brevity" &amp; _
+                ";select @@identity from Employees"
+            Using cmd As DbCommand = db.GetSqlStringCommand(sql)
+                AddInsertUpdateParameters(db, cmd)
+                mId = db.ExecuteScalar(cmd)
+            End Using
+            mTestResults.Update(Me)
+            transaction.Complete() ' &lt;-- EXCEPTION IS THROWN HERE
+        End Using
+
+    End Sub
+</PRE>
+<P>The call to <CODE>mTestResults.Update(Me)</CODE> does not initiate another transaction.</P>
+<P>This is an asp.net application. The customer, who isn't very tech savy, seems to think this has something to do with different users simultaneously executing this <CODE>DataPortal_Insert</CODE> code.</P>
+<P>I am at a loss as to how this exception could ever be thrown. My google searches haven't produced a fix/understanding of the problem. Can anyone help?</P>
+<P>EDIT: Should I be passing a parameter to the TransactionScope constructor since I'm operating in an asp.net environment?</P>
+<P>EDIT #2: I am including the code in <code>mTestResults.Update(Me)</code>.  As you can see there is no secondary transaction being explicitly created.
+<pre>
+    Friend Sub Insert(ByVal parent As Employee)
+
+        Dim db As Database = DatabaseFactory.CreateDatabase()
+        Dim sql As String
+        sql = "excluded for brevity" & _
+            ";select @@identity from TestResults"
+        Using cmd As DbCommand = db.GetSqlStringCommand(sql)
+            AddInsertUpdateParameters(db, cmd, parent)
+            mId = db.ExecuteScalar(cmd)
+        End Using
+        MarkOld()
+
+    End Sub
+</pre></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tlong replied on Thursday, March 05, 2009</h2><P>Is mTestResults a child?</P>
+<P>We solved a problem like this with a child, solved it by using&nbsp;the ConnectionManager so the child runs on the same connection as the parent.</P>
+<P>We're running 3.5.1 with a web app.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Antonio Sandoval replied on Thursday, March 05, 2009</h2>I'm not sure about how works nested transactions (http://msdn.microsoft.com/en-us/library/ms172152.aspx) and if your are trying that, but CSLA begins and commits the transaction when you specify TransactionScope, and is not necessary that you create your own TransactionScope, that is one of their goals. Take a look at the source code of CSLA TransactionalDataPortal.cs. <br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Friday, March 06, 2009</h2><P>Why aren't you passing the tr to mTestResults.Update? That is the standard behavior if you are not using ConnectionManager.</P>
+<P>You might want to post the code inside mTestResults.Update too. Maybe you really are initiating another tr but do not realize it.</P>
+<P>Joe</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>kenb replied on Friday, March 06, 2009</h2><P>Joe --</P>
+<P>I've edited my original post to include the <CODE>mTestResult.Update</CODE> code.</P>
+<P>When you say that the standard behavior is to pass around the instance of the transaction do you mean TransactionScope or only DbTransaction instances? I was under the impression that TransactionScope instances don't need to be passed around. Perhaps I misunderstood.</P>
+<P>I also believe that the Data Access Application Block which I'm using has the same functionality as ConnectionManager.</P>
+<BLOCKQUOTE>We now have support for System.Transactions and TransactionScope. The DAAB looks to see if a transaction is happening and caches open connections for re-use with other commands so a Distributed Transaction won't occur if using the same connection. Hence the following is now possible in Enterprise Library 3.0 without causing a Distributed Transaction: <PRE>using (TransactionScope scope = new TransactionScope(...))
+{
+    database.ExecuteNonQuery(...);
+    database.ExecuteNonQuery(...);
+
+    // ....
+
+    scope.Complete();
+}
+</PRE><A href="http://codebetter.com/blogs/david.hayden/archive/2007/02/02/Enterprise-Library-3.0-DAAB-Improvements-To-Date.aspx">source</A></BLOCKQUOTE>
+<p>I appreciate all your help.</p>
+<p>-- Ken</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Monday, March 09, 2009</h2><P>If you read the new book on Page 495 it shows the simplest possible example:</P>
+<P>And the key line is:</P>
+<P>tr.Commit</P>
+<P>You wrote tr.Complete.</P>
+<P>Also, for child object the code is:</P>
+<P>FieldManager.UpdateChildren(Me)</P>
+<P>You are calling&nbsp;update directly on the child which is OK as long as you pass the tr into the child like the old style code.</P>
+<P>I also do not believe that the DAAB is doing what Rocky is doing. And you should not rely on it that way (since it does not work in your code anyway.)</P>
+<P>Joe</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>kenb replied on Monday, March 09, 2009</h2><P>Thanks again for your input Joe.&nbsp; I changed from using TransactionScope instances (which btw uses .Complete() and not .Commit()) to using instances of DbTransaction.</P>
+<P>I'll see if this change fixes the problem.</P>
+<P>I appreciate your help.</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

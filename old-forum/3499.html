@@ -1,0 +1,105 @@
+<html><header><title>Large hierarchy of objects - Root or child?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Large hierarchy of objects - Root or child?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3499.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>mikemir8 posted on Sunday, September 09, 2007</h2><P>Ok, so I'm still struggling a little bit with the concepts, but I guess that's just the normal learning curve. I'm working on my first system using CSLA, and I have a hierarchy of objects which I believe it's not uncommon. Basically, I have the following (each one being a class):</P>
+<UL>
+<LI>Family of products</LI>
+<UL>
+<LI>High level model</LI>
+<UL>
+<LI>Specific model </LI>
+<UL>
+<LI>Process (These are tests that need to be applied during manufacturing to that model)</LI></UL></UL></UL></UL>
+<P>Using a DELL&nbsp;laptop analogy, you could think of the family as being "Latitude", the high level model as D420, the specific model as D420R21, and process would be the list of all the quality tests that need to be performed in the laptop as it is being manufactured.</P>
+<P>At first sight, you might think that Family is a root editable object, and all the objects below would be child objects. This makes a lot of sense on the Create, where a family can be created by itself, but the high level model can only be created by a family and so forth. My issue is that my UI needs to be able to fetch and update a "High level model" or even a "Specific model" withouth needing to load first the family of products.</P>
+<P>On the other hand, if I make "High level model" and "Specific model" root objects, I don't&nbsp;want the UI to&nbsp;be able to create them, but I want the "Family of products" to be the only that can create a "High level model". I guess this could work if I make the factory Create method friend instead of public. Would that be the best bet? Or do I need a complete new approach for this?</P>
+<P>Thanks,</P>
+<P>- Miguel</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jhw replied on Sunday, September 09, 2007</h2><P>I haven't been around csla much longer than you, but I would do exactly what you just described. It will be good to see what more experienced csla people think.</P>
+<P>&nbsp;</P>
+<P>Heath</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Sunday, September 09, 2007</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>mikemir8:</strong></div><div>
+<P>At first sight, you might think that Family is a root editable object, and all the objects below would be child objects. This makes a lot of sense on the Create, where a family can be created by itself, but the high level model can only be created by a family and so forth. My issue is that my UI needs to be able to fetch and update a "High level model" or even a "Specific model" withouth needing to load first the family of products.</P>
+<P>On the other hand, if I make "High level model" and "Specific model" root objects, I don't&nbsp;want the UI to&nbsp;be able to create them, but I want the "Family of products" to be the only that can create a "High level model". I guess this could work if I make the factory Create method friend instead of public. Would that be the best bet? Or do I need a complete new approach for this?</P>
+<P></div></BLOCKQUOTE></P>
+<P>This is excellent! You have a decent start on a set of use cases here. The next step, and the one I think you aren't taking, is to realize that each use case should have its own set of objects. The goal is not to try and reuse objects across use cases (if that happens naturally, fine, but it isn't a goal).</P>
+<P>So you have some "create a family of products" use case where the user defines a family and its high level model.</P>
+<P>Then you have some "edit high level model" use case where the user can manipulate the models associated with a high level model. These objects wouldn't allow delete or add of the high level model - just editing the model and its components.</P>
+<P>And so forth.</P>
+<P>There are numerous threads on the forum discussing signle responsibility, design driven design. Lots of people ask questions just like this one, and if you do a little searching you'll almost certainly find some very interesting threads and discussions that may be valuable to you.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Sunday, September 09, 2007</h2><P>In particular, this recent thread is interesting:</P>
+<P><A HREF="/forums/thread/17257.aspx">http://forums.lhotka.net/forums/thread/17257.aspx</A></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonStonecash replied on Sunday, September 09, 2007</h2>Rocky has already given the answer that I would have given (actually I stold the idea from him).<br><br>I would also add that the mulitple classes per database table (based upon the use cases) is one reason to look at code generation.&nbsp; <br><br>Jon Stonecash<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>juddaman replied on Sunday, September 09, 2007</h2>Hi Miguel<br><br>Just a few more points specific to your scenario.<br><br><b><i>This makes a lot of sense on the Create, where a family can be created
+by itself, but the high level model can only be created by a family and
+so forth.<br></i></b><i><br></i>If you take a step back away from the actual implementation, is this rule really - "all high level models must belong to a family"?<br><br>So if the use case is "Add high level product". If so you could just implement this as a root high level product BO no need for it to be a child of family. You'd have a FamilyId property and have a rule to check it was valid. You could help ensure the value for family id was provided by passing the id as part of the factory create method . So like:<br><br>public static HighLevelProduct NewHighLevelProduct(Family family)<br>{<br>&nbsp; HighLevelProduct product = new HighLevelProduct();<br>&nbsp;&nbsp;&nbsp; product._FamilyId =  family.FamilyId;<br>&nbsp;&nbsp;&nbsp; return product;<br>}<br><br>You could also have an instance method in your family BO to aid the UI developer if you wanted like:<br><br>public static HighLevelProduct NewHighLevelProduct()<br>{<br>&nbsp;&nbsp;&nbsp; return HighLevelProduct.NewHighLevelProduct(this.FamilyId);<br>}<br><br>This also means there is no need to retrive all the high level products in a family to create a new one.<br><br>Hope that helps.<br><br>George<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>mikemir8 replied on Monday, September 10, 2007</h2><P>Thanks for all the replies! Actually, I had already read the thread Rocky mentions and that's what convinced me not to follow the inheritance route&nbsp;and use composition instead.</P>
+<P>I completely agree on the argument on that these are different use cases that might justify the use of two classes. However (and this might be my old paradigms talking), it still seems&nbsp;to me&nbsp;like these two&nbsp;use cases&nbsp;can also be merged in one single "class can persist&nbsp;data" use case. So, my question would be, what would be an argument not to follow the approach I mentioned in my first post about having the Create factory method scoped as friend? </P>
+<P>I guess, in the end, I'm still trying to understand what other fundamental differences exist between child and root objects other than the way the factory methods work. I mean, what other benefits can I get from making the first use case of this problem a child object?</P>
+<P>On the other hand, the method <STRONG>juddaman </STRONG>suggests sounds also quite reasonable. What do others think about this method?</P>
+<P>Thanks,</P>
+<P>- Miguel</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, September 10, 2007</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>mikemir8:</strong></div><div>
+<P>[...] it still seems&nbsp;to me&nbsp;like these two&nbsp;use cases&nbsp;can also be merged in one single "class can persist&nbsp;data" use case. So, my question would be, what would be an argument not to follow the approach I mentioned in my first post about having the Create factory method scoped as friend? </P>
+<P></div></BLOCKQUOTE></P>
+<P>A "use case" is business driven, not implementation driven. So technically it isn't possible to have a "class can persist data" use case, because that isn't expressed in business terms and doesn't reflect a user experience.</P>
+<P>I say this to try and help, because I think you are focusing too much on the technical details and not enough on the business use cases themselves.</P>
+<P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>mikemir8:</strong></div><div></P>
+<P>On the other hand, the method <STRONG>juddaman </STRONG>suggests sounds also quite reasonable. What do others think about this method?</P>
+<P></div></BLOCKQUOTE></P>
+<P>Those are good suggestions. If they fit your use cases, and don't make you retrieve unneeded objects just to create other objects, then that's an excellent model.</P>
+<P>For example, instead of using Family (presumably an editable root) to pass into the factory method, you might find that what you have in your use case is a FamilyInfo (read-only child of FamilyList) that you'd be passing into the factory method - after the user selected the appropriate family from the list.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>juddaman replied on Tuesday, September 11, 2007</h2>Hi<br><b><br>For example, instead of using Family (presumably an editable root) to
+pass into the factory method, you might find that what you have in your
+use case is a FamilyInfo (read-only child of FamilyList) that you'd be
+passing into the factory method - after the user selected the
+appropriate family from the list.<br><br></b>Further to this I'd actually implement this using an interface, so IFamily. Having FamilyInfo implement IFamily and Family implement IFamily. Then use IFamily in the static for the new product. This gives you more options in the UI and allows you to fill more use-cases (presuming they exist). What do other poeple think about using interfaces this way? <br><br>George<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>mikemir8 replied on Tuesday, September 11, 2007</h2>Having given a thought to all this, I believe what best suits my case scenario is juddaman suggestion.<br><br>However, I know I'll still end up having several objects pointing to one table in my database (which, as I pointed out, is not a bad thing). What is a good approach to normalize the data behavior, specially for fetch operations? I know the Assignment class does just that for editing in the ProjectTracker application. In the case of getting information from the database, I guess you can have a separate class fillout a datareader and then pass it to the objects for them fill out their variables. Is that a common practice? Is that recommended, considering the coupling it might generate?<br><br>- Miguel<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, September 11, 2007</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Look at the DeepData sample from <a href="http://www.lhotka.net/cslanet">www.lhotka.net/cslanet</a> (in the nav
+area on the left) for some ideas on creating a formal DAL that works with CSLA.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> mikemir8
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Tuesday, September 11, 2007 2:55 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] Large hierarchy of objects - Root or child?<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Having given a thought to all this, I believe what best
+suits my case scenario is juddaman suggestion.<br>
+<br>
+However, I know I'll still end up having several objects pointing to one table
+in my database (which, as I pointed out, is not a bad thing). What is a good
+approach to normalize the data behavior, specially for fetch operations? I know
+the Assignment class does just that for editing in the ProjectTracker
+application. In the case of getting information from the database, I guess you
+can have a separate class fillout a datareader and then pass it to the objects
+for them fill out their variables. Is that a common practice? Is that
+recommended, considering the coupling it might generate?<br>
+<br>
+- Miguel<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>mikemir8 replied on Wednesday, September 12, 2007</h2>Thanks Rocky, I'll check that out.<br><br>- Miguel<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

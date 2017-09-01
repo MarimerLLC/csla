@@ -1,0 +1,34 @@
+<html><header><title>Implementing abstract properties in c#</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Implementing abstract properties in c#</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9874.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>RumbleCow posted on Thursday, December 16, 2010</h2><p>New to c# and new to CSLA 4.0 (came from cslavb2.014).</p>
+<p>How do I implement properties from inherited base class?</p>
+<p>PurchaseOrderBase.cs inherited by PurchaseOrder.cs and DockAppointmentPO for two different use cases.</p>
+<p><span>
+</span></p>
+<p><span>&nbsp;&nbsp; &nbsp;public abstract class PurchaseOrderBase : BusinessBase&lt;PurchaseOrderBase&gt;</span></p>
+<p><span>&nbsp;&nbsp; &nbsp;{</span></p>
+<p><span>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;private static readonly PropertyInfo&lt;string&gt; PurchaseOrderNumberProperty = RegisterProperty&lt;string&gt;(p =&gt; p.PurchaseOrderNumber);</span></p>
+<p><span>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;public string PurchaseOrderNumber { get; protected set; }</span></p>
+<div></div>
+<p>&nbsp;</p>
+<p><span>&nbsp;&nbsp; &nbsp;[Serializable]</span></p>
+<p><span>&nbsp;&nbsp; &nbsp;public class PurchaseOrder : PurchaseOrderBase</span></p>
+<p><span>&nbsp;&nbsp; &nbsp;{</span></p>
+<p><span>
+</span></p>
+<p>&nbsp;&nbsp; &nbsp;[Serializable]</p>
+<p>&nbsp;&nbsp; &nbsp;public class DockAppointmentPO : BusinessBase&lt;PurchaseOrderBase&gt;</p>
+<p>&nbsp;&nbsp; &nbsp;{</p>
+<div></div>
+<p><strong>&nbsp;I expected to be able to access PurchaseOrder.PurchaseOrderNumber</strong></p>
+<p><strong>
+<p>&nbsp;</p>
+</strong></p>
+<p><strong>Sorry for such a basic question.&nbsp;</strong></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Thursday, December 16, 2010</h2><p>Well, you actually want to create an intermediate base class with common properties - not necessarily abstract properties. So your intermediate class must also be generic, like:</p>
+<p><span>public class PurchaseOrderBase&lt;T&gt; : BusinessBase&lt;T&gt; where T: BusinessBase&lt;T&gt;<br />{</span></p>
+<p><span>&nbsp;&nbsp; ......</span></p>
+<p>AND </p>
+<p><span>public class PurchaseOrder : PurchaseOrderBase&lt;PurchaseOrder&gt;<br />{</span></p>
+<p><span>&nbsp;&nbsp; ......</span></p>
+<p>&nbsp;</p>
+<p><span>And I would strongly suggest that you use the CSLA Snippets and create managed properties - automatic properties do not work so well as managed properties ......<br /></span></p>
+<p>You will find several examples of intermediate classes in the form and in the MyCsla samples at <a title="http://cslacontrib.codeplex.com " href="http://cslacontrib.codeplex.com%20">http://cslacontrib.codeplex.com </a></p>
+<p>You may also look into these introduction articles on generics:<br /><a title="http://msdn.microsoft.com/en-us/magazine/cc163683.aspx" href="http://msdn.microsoft.com/en-us/magazine/cc163683.aspx">http://msdn.microsoft.com/en-us/magazine/cc163683.aspx</a><br /><a href="http://msdn.microsoft.com/en-us/library/ms379564%28v=vs.80%29.aspx">http://msdn.microsoft.com/en-us/library/ms379564%28v=vs.80%29.aspx</a></p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RumbleCow replied on Thursday, December 16, 2010</h2><p>Thanks all. &nbsp;That did it.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

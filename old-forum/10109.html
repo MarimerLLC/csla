@@ -1,0 +1,39 @@
+<html><header><title>ChildChanged Event Not Firing</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>ChildChanged Event Not Firing</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10109.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>NickTaylor posted on Saturday, February 26, 2011</h2><p>Hi,</p>
+<p>I wonder if someone can tell me where I am going wrong please...&nbsp;?</p>
+<p>I have a simple scenario, i.e. a parent business object based on BusinessBase which in turn contains a child collection based on BusinessListBase which in turn contains a collection&nbsp;of business objects again based on BusinessBase. Think of it as a sales order header object containing a bunch of child sales order lines.</p>
+<p>I am using Windows Forms&nbsp;for the UI, and obviously when the user edits a line quantity or unit price, or adds and deletes child lines, I want the new sales order value to be reflected in the parent objects properties. Naturally I want this to be done within the business logic and not have to do any of this in the UI.</p>
+<p>Therefore I need to pick up when&nbsp;there is a change in the child collection, and re-calculate the order total in the parent object. This&nbsp;should be really easy.</p>
+<p>I assume&nbsp;I should be able to hook into the ChildChanged event of the child collection and that should be it.</p>
+<p>I am creating the child collection via the&nbsp;lazy load approach as detailed in Rocky&#39;s book. I then hook into the ChildChanged event and write an event handler to recalculate the order total.</p>
+<p>For some reason the event is not firing when the child collection is changed.</p>
+<p>Any&nbsp;ideas as to where I am going wrong ?</p>
+<p>Thanks,</p>
+<p>Nick&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Saturday, February 26, 2011</h2><p>What version of CSLA .NET? There were some bugs in earlier versions, but if you are running 3.8.4 or 4.1 this should work.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>NickTaylor replied on Saturday, February 26, 2011</h2><p>Hi Rocky,</p>
+<p>I am currently running 3.8.1</p>
+<p>I&#39;ll download the current version and see if that fixes it...</p>
+<p>Thank,</p>
+<p>Nick</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>NickTaylor replied on Saturday, February 26, 2011</h2><p>Hi Rocky,</p>
+<p>I have downloaded and installed &nbsp;the 3.8.4 version of CSLA.</p>
+<p>4.1.0 looks to&nbsp;be a more significant&nbsp;release and this is perhaps a step too far for now.</p>
+<p>I&#39;m still not having any luck I&#39;m afraid.</p>
+<p>If I&#39;m reading this right, I should be able to hook into the lists ChildChanged event which is triggered by the framework automatically when any of the child object properties are changed. Naturally the child properties will be changed via databinding from the UI.</p>
+<p>Am I reading this correctly ?</p>
+<p>Thanks,</p>
+<p>Nick</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Saturday, February 26, 2011</h2><p>Hey Nick,</p>
+<p>Regardless of whether you&#39;re propery on the parent does the calculate automatically, or it&#39;s done in the change event and stored in a field, you will need to ensure you raise a PropertyChanged event for the property.&nbsp; Although you changed the value, databinding won&#39;t pick up on this automatically, it will only requery the property value on a PropertyChanged event.</p>
+<p>If you have multiple properties, you can raise an event for each, or raise a single event with the property name set to String.Empty.&nbsp; That will trigger ALL of the parent properties to be re-read (which may or may not be what you want).</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>NickTaylor replied on Saturday, February 26, 2011</h2><p>Hi Andy,</p>
+<p>You might have to help me along a bit more here...</p>
+<p>All my BO properties are set up using&nbsp;managed backing fields ( as described on p247 of Rocky&#39;s C# 2008 business objects book ).</p>
+<p>I presume this&nbsp;will call the PropertyChanged event automatically via the SetProperty() method won&#39;t it ?</p>
+<p>Where I am struggling is that I can&#39;t seem to capture the ChildChanged event when one of the child objects has a property changed.</p>
+<p>If I can capture this, I can then perform the recalculation via a simple helper method.</p>
+<p>Thanks for your response...</p>
+<p>Nick</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>ajj3085 replied on Saturday, February 26, 2011</h2><p>If you&#39;re finding the ChildChanged isn&#39;t firing at all, it could be that you&#39;re event hanlder got lost.&nbsp; When you&#39;re object is serialized (which it always will be as it goes back and forth through the data portal), non-serializable fields and events will be lost, so you need to hook into the OnDeserialized to reattach your event handler.</p>
+<p>Also, something else to consider...&nbsp; why not just override the OnChildChanged method?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>NickTaylor replied on Saturday, February 26, 2011</h2><p>Perfect Andy, overriding the OnChildChanged method seems to work perfectly...</p>
+<p>I had not spotted this method previously...</p>
+<p>Many thanks for your help!</p>
+<p>Nick</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Saturday, February 26, 2011</h2><p>Nick,</p>
+<p>Glad the issue was resolved.&nbsp; Given that overriding that method seems to work without any problem, I suspect you were losing the event handler when the object was serialized.&nbsp; Even in local data portal mode, Csla serializes your object to create a clone which it works with.&nbsp; </p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

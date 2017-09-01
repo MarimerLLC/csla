@@ -1,0 +1,126 @@
+<html><header><title>General logic placement - Calling Dataportal directly</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>General logic placement - Calling Dataportal directly</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5399.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>vdhant posted on Monday, September 15, 2008</h2>Hi guys<br>
+I have a quick question about general logic placement and I coming to the wisdom
+of the ether.<br>
+<br>
+This has come about via an example that I have recently seen which calls
+dataportal methods directly without going via the actual business objects factory
+methods. So the example went something like the following
+"DataPortal.Create&lt;T&gt;();", as you can see, if one was to call
+this directly you are cutting the business object right out of the picture.<br>
+<br>
+Now when i saw this, the alarm bells went off in the back of my mind as there
+could be scenarios where by calling the dataportal directly you could be
+bypassing logic that is on the client side of the dataportal which is
+implemented by the business object.<br>
+<br>
+I can't really think off the top of my head what this logic may be - because validation
+and security are handled data manipulation would go on the server side of the
+portal, you would use a command object for command operations, calculations
+would be performed via properties of maybe a command/normal object - but I
+always had in the back of my mind that if I needed to place logic on the client
+side of the portal I would do so by doing something like the following:<br>
+<br>
+&nbsp;&nbsp;&nbsp; public static Resource GetResource(int id)<br>
+&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Resource resource = DataPortal.Fetch&lt;Resource&gt;(new
+SingleCriteria&lt;Resource, int&gt;(id));<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; resource.SomeRandomClientSideLogic();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return resource;<br>
+&nbsp;&nbsp;&nbsp; }<br>
+<br>
+&nbsp;&nbsp;&nbsp; public void SomeRandomClientSideLogic()<br>
+&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ...<br>
+&nbsp;&nbsp;&nbsp; }<br>
+<br>
+So what I was wondering is where people put logic that they want to execute on
+the client side and falls outside the scope of the areas mentioned above (i.e.
+validation, etc). Because if it becomes more common place that people call the
+dataportal directly this could become an issue... or maybe I have just missed something
+about where to place this sort of logic which makes calling the dataportal
+directly ok.<br>
+<br>
+Cheers<br>
+Anthony</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>triplea replied on Monday, September 15, 2008</h2>If you implement your busines rules as usual then you can call&nbsp;<FONT color=#0000ff><FONT size=2>ValidationRules</FONT><FONT size=2>.</FONT><FONT size=2>CheckRules</FONT><FONT size=2>();</FONT></FONT> when Fetch or Create is completed (done automatically since CSLA 3.5 I believe). Not sure that's what you are asking but it might help.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Monday, September 15, 2008</h2><P>I would never call DataPortal.Fetch directly.</P>
+<P>I always use the factory methods.</P>
+<P>Joe</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>vdhant replied on Monday, September 15, 2008</h2>@triplea<br>No this is not really what i was talking about... "I can't really think off the top of my head what this logic may be - because <b>validation
+</b>and security are handled data manipulation would go on the server side of the
+portal, you would use a command object for command operations, calculations
+would be performed via properties of maybe a command/normal object - but I
+always had in the back of my mind that if I needed to place logic on the client
+side of the portal I would do so by doing something like the following:"<br><br>@Joe<br>This was my thoughts but it is something that I seem to be seeing a bit more of these days particularly around csla and tdd. Specifically where I have seen it is in the ProjectTracker sample that nermin from magenic is working on. It would seem (and note this is a work in progress so he may be changing this) that in an effort to make the business object more testable. The way he is doing it is that you create an instance of the ReadOnlyListFactory which then calls the dataportal directly... <br><br>using Csla;<br><br>namespace ExtJsCslaDemo.Web.Factories<br>{<br>&nbsp;&nbsp;&nbsp; public class ReadOnlyListFactory&lt;T, C&gt; : AbstractBusinessFactory&lt;T&gt;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; where T : ReadOnlyListBase&lt;T, C&gt;<br>&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public override T CreateNew()<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return <b>DataPortal</b>.Create&lt;T&gt;();<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public override T RetreiveAll()<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return <b>DataPortal</b>.Fetch&lt;T&gt;();<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public override T RetreiveBy(CriteriaBase criteria)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return <b>DataPortal</b>.Fetch&lt;T&gt;(criteria);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>&nbsp;&nbsp;&nbsp; }<br>}<br><br><br><br>namespace ExtJsCslaDemo.Web.Controllers<br>{<br>&nbsp;&nbsp;&nbsp; public class OrderController : Controller<br>&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; private readonly AbstractBusinessFactory&lt;OrderList&gt; orderListFactory;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; private readonly AbstractBusinessFactory&lt;OrderDetailList&gt; orderDetailListFactory;<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; //Called by MVC<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public OrderController() :<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; this(new <b>ReadOnlyListFactory</b>&lt;OrderList, OrderInfo&gt;(), new <b>ReadOnlyListFactory</b>&lt;OrderDetailList, OrderDetailInfo&gt;())<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; //Used for testing<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public OrderController(AbstractBusinessFactory&lt;OrderList&gt; orderListFactory, AbstractBusinessFactory&lt;OrderDetailList&gt; orderDetailListFactory)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; this.orderListFactory = orderListFactory;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; this.orderDetailListFactory = orderDetailListFactory;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public ExtJsJsonReaderResult List(string customerId)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var orders = orderListFactory.RetreiveBy(new OrderList.CustomerFKCriteria(customerId));<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return new ExtJsJsonReaderResult("orders", orders);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public ExtJsJsonReaderResult ListOrderDetails(int orderId)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var orderDetails = orderDetailListFactory.RetreiveBy(new OrderDetailList.OrderFKCriteria(orderId));<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return new ExtJsJsonReaderResult("orderDetails", orderDetails);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>&nbsp;&nbsp;&nbsp; }<br>}<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Tuesday, September 16, 2008</h2><P>Oh - I see what you mean now.</P>
+<P>A factory class is a different animal. It is OK there.</P>
+<P>I thought you wee talking about arbitrary calls in other locations of the BO or the UI.</P>
+<P>Joe</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, September 16, 2008</h2><P>There are really three ways to call the data portal</P>
+<OL>
+<LI>From a static/Shared factory method like I show in the book. I like this model because I think it makes the factory methods easy to find (they are right on the business type).</LI>
+<LI>From a separate factory object (typically instance methods of that object). I find this model to be awkward and less discoverable, but it works just fine. The only thing to remember is that your criteria classes must implement ICriteria or subclass CriteriaBase - you can't use nested criteria classes in this case.</LI>
+<LI>Directly from the UI - there is nothing stopping UI code from directly using the data portal to create/get an object. I think this is a bad approach, because it puts too much knowledge into the UI, and removes control from the object, so I really recommend against it.</LI></OL>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>vdhant replied on Tuesday, September 16, 2008</h2>Hi Rocky<br>Thanks for the reply. But i am still wondering about my original question - where to place client side logic:<br><br>"as there could be scenarios where by calling the dataportal directly you could be<u> bypassing logic that is on the client side</u> of the dataportal which is implemented by the business object."<br><br>"I can't really think off the top of my head what this logic may be - because validation and security are handled data manipulation would go on the server side of the portal, you would use a command object for command operations, calculations would be performed via properties of maybe a command/normal object - but I always had in the back of my mind that if I needed to <u>place logic on the client side of the portal</u> I would do so by doing something like the following:"<br><br>If you end up bypassing the actual object and going to the data portal (with either method 2 or 3 that you described) you lose the ability to encapsulate this logic...<br><br><br><br>Also whilst we are on the topic of logic placement if I have a scenario where would the logic go. When the user saves a given record, if the system detects that the value of a given property has changed, where would I place the logic if I need to trigger an update to a different entity or insert a series of series of related record. Note these objects aren't properties of the root object being saved.<br><br>Cheers<br>Anthony <br><br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, September 16, 2008</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>It isn&#8217;t complex, assuming you call the data portal
+normally.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>All code outside the DataPortal_XYZ and Child_XYZ methods is
+client code.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>All code inside the DataPortal_XYZ and Child_XYZ methods is
+server code.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>The only exception to this, is that the server code can call &#8220;client
+code&#8221;, in which case that code will run on the server. This is the whole
+point of mobile objects!<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>So a better way to phrase this might be:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>All code outside the DataPortal_XYZ and Child_XYZ methods is mobile
+code (available to client and server).<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>All code inside the DataPortal_XYZ and Child_XYZ methods is
+server code (only available to the server).<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>If you REALLY want some bit of code to only run on the client,
+you can use Csla.ApplicationContext.ExecutionLocation to prevent that code from
+running if the location is Server. It is hard to imagine such a scenario
+though.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky</span><b><span><o:p></o:p></span></b></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

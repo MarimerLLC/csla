@@ -1,0 +1,13 @@
+<html><header><title>DevExpress XtraGrid</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>DevExpress XtraGrid</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4627.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>craigh posted on Monday, April 07, 2008</h2><P><FONT face=Arial size=2>Is anyone using DevExpress controls in conjunction with CSLA.NET? </FONT></P>
+<P><FONT face=Arial size=2>I'm interested to know in particular if anyone has had any success with their "server-mode" additions especially now that they have added LINQ support in the v2008 vol1 release.</FONT></P>
+<P><FONT face=Arial size=2>This would really improve the performance of applications if the fetching of CSLA business objects could be achieved on demand&nbsp;in this way.</FONT></P>
+<P><FONT face=Arial size=2>Does anyone have any thoughts on this?</FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>maxal replied on Monday, April 14, 2008</h2><P>I implemented Server Mode but it wasn't simple, took me few days.</P>
+<P>The approach I took was.</P>
+<P>1. Created interface ILazyLoading</P>
+<P>2. Added support of this interface&nbsp;right into CSLA code, into ExtendedBindingList. </P>
+<P>3. Created my own object (similar to BindingSource) that supports DevExpress IListServer using ILazyLoading.</P>
+<P>I could add IListServer int CSLA, but didn't want to add reference to DevExpress into CSLA.</P>
+<P>I could support ILazyLoading in my "base" object, but didn't want to duplicate code for BaseList and ReadOnlyList.</P>
+<P>At this moment we use client/server access, so the place when I load more data is using this, avoiding using DataPortal proxy for better performance. But it can be easily changed by getting new list using DataPortal and then moving objects from it into main list.</P>
+<P>The way it works I load primary keys for all records when list is created without creating objects and it works much (many times) faster. Then when objects are requested they are loaded in groups (currently 100 at once). Wanted to support background loading (separate thread) but couldn't do it fast (there were complications), so it is postponed.</P>
+<P>All this for CSLA 3.0</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

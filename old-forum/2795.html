@@ -1,0 +1,30 @@
+<html><header><title>OT Design Question</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>OT Design Question</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/2795.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>mr_lasseter posted on Friday, April 27, 2007</h2>I have a process that imports invoices of various formats off a a CD
+and saves the information into a database.&nbsp; The process allows the
+user to select the CD that what to import into the system.&nbsp; After
+the selection is made the process spawns another thread to while
+loading the files into a CSLA object and then calls the save method of
+the CSLA object to persist the invoice to the database.&nbsp; Currently
+all of the CD contain one or many invoices which works great.&nbsp; The
+problem is we have a new invoice that spans over mulitple CDs.&nbsp; So
+I am going to have prompt the user to enter the next CD into the
+drive.&nbsp; <br>
+<br>
+What I haven't figured out is how I can pause thread importing the file
+to wait for user action.&nbsp; Am I going to have to split this up and
+run each CD as a new thread or is there a way to pause the importing
+thread and have it continue when the next CD has been entered into the
+cd drive?&nbsp; I would really like to have the UI invloved as little
+as possible.&nbsp; <br>
+<br>
+Mike<br>
+<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, April 27, 2007</h2><P>At the risk of throwing complexity into the mix: this is the sort of thing Windows Workflow Foundation (WF) is designed for.</P>
+<P>I'm not a huge fan of WF, but one of the places where it <EM>does</EM> have value is where you have a "long running" operation that needs to be paused/resumed. I think that's what you are describing, and so it may be helpful.</P>
+<P>Then again, it may be overkill :)</P>
+<P>If you really just want to pause a thread, you'd typically use an AutoResetEvent or ManualResetEvent. The background thread would do its work, and then call WaitOne() on the event object. That blocks the background thread.</P>
+<P>The foreground thread, meanwhile, is working away, and when it wants the background thread to resume it calls _event.Set() - which allows the background thread to continue.</P>
+<P>What you'd probably do is use a synchronized queue. Have the foreground thread write the CD data into the queue and launch the background thread.</P>
+<P>The background thread reads the items off the queue until they are gone, then does its _event.WaitOne().</P>
+<P>The foreground thread, meanwhile, finds out if more CDs are forthcoming. If so, it gets the CD, writes the data to the queue and calls _event.Set().</P>
+<P>This causes the background thread to again process all items in the queue and call _event.WaitOne().</P>
+<P>If there are no more CDs, the foreground thread either writes a dummy "termination" item into the queue, or writes nothing into the queue (so the queue is empty). It then calls _event.Set().</P>
+<P>The background thread, at this point, resumes and finds either the "termination" dummy, or an empty queue. Whichever technique you use - this is the trigger that tells the background thread that it is done, so it can close out the work and end gracefully.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>mr_lasseter replied on Friday, April 27, 2007</h2>Thanks and I am glad to see you are feeling better.</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

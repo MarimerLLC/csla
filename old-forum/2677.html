@@ -1,0 +1,125 @@
+<html><header><title>Design: Create a child object or no?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Design: Create a child object or no?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/2677.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>MarkHildreth posted on Wednesday, April 11, 2007</h2>Hi.<p>
+
+First of all, thanks for this framework and the community build upon it. Without having even made a post I've already learned a good amount about CSLA.NET, as well as .NET in general, C#, and object-oriented design. I have chosen to start using CSLA.NET as a branch in my low-traffic company, with plans to perhaps in the future replace the existing intranet site to contain all ASP.NET and CSLA.NET.<p>
+
+Second, please bear with me as I go through my teething phase. I hope to in the future be able to give back to the community :P<p>
+
+I guess I'm having trouble getting away from "coding for reuse", as has constantly been talked about. Hopefully you can provide me with some insight on the correct implementation.<p>
+
+I am writing a Bug-tracking program (to use to build up my CSLA.NET skills first, nothing for the company yet). Each "Bug" has the following attributes:<p>
+
+<ul>
+<li>ID</li>
+<li>Title</li>
+<li>Description</li>
+<li>Resolution Notes</li>
+<li>Status</li>
+<li>Severity</li>
+</ul>
+<p>
+
+Most of the fields are self-explanatory (I've used a "NameValueList" for severity), but Status is not simply Open/Close boolean. Instead, it's a series of different values, and each value is then either open or closed. I've placed whether it's considered open or closed in parenthesis.<p>
+
+<ul>
+<li>New (Open)</li>
+<li>Started (Open)</li>
+<li>Fixed (Open)</li>
+<li>Fixed and Verified (Closed)</li>
+<li>Rejected (Closed)</li>
+</ul>
+<p>
+
+While going through the process of making a list of bugs (or doing any other class for a use case) my initial reaction was to use the NameValueList for the status. That meant, however, that whether the status is open or closed means it would be simply a string/int pair. Next idea was to make a new object that encapsulated all the Status info into a class as a ReadOnly business object, and have any Bug class use an object of that class as a member. I believe that that, too, is incorrect.<p>
+
+Now I'm going on having the Bug business object I'm working on have it's own Status value which uses a NameValueList. The actual boolean value of _open will be determined through the SQL statement in the data access area of the Bug class. The sql will do a simple join of the tables so that the _open member variable is actually read from the database in the Bug class.<p>
+
+I guess my first question is: Am I on the right track with this thought process? The problem I see is when I change my status. Right now, I would have two members of the Bug class: <p>
+
+<ul>
+<li>1.) _status (The integer representing which status this bug is).</li>
+<li>2.) _open (The boolean representing if the Bug is considered open) </li>
+</ul>
+<p>
+Since I'm tying the idea of status and open together, it would seem to me that I've done something wrong, as since the status would change I would have to do a lookup on the database to determine what I should change _open to. Although I don't think that would be that big of a deal, I'd like to avoid it.<p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, April 11, 2007</h2><P>NVLB exists to simplify the common case where you have name/value pairs. In your case, it sounds like you have a name/value/value scenario, and so NVLB isn't so useful.</P>
+<P>But that's OK. NVLB is merely a ReadOnlyListBase that contains a list of ReadOnlyBase objects, where the ROB objects are pre-designed to contain only a name and value.</P>
+<P>You can create your own ROLB/ROB where your ROB child objects contain name, description value and open/closed value.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>MarkHildreth replied on Wednesday, April 11, 2007</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div><p>NVLB exists to simplify the common case where you have name/value pairs. In your case, it sounds like you have a name/value/value scenario, and so NVLB isn't so useful.</p>
+<p>But that's OK. NVLB is merely a ReadOnlyListBase that contains a list of ReadOnlyBase objects, where the ROB objects are pre-designed to contain only a name and value.</p>
+<p>You can create your own ROLB/ROB where your ROB child objects contain name, description value and open/closed value.</p></div></BLOCKQUOTE><br><br>Thanks for the quick response.<br><br>But would I want to make it a child object to the Bug class? I probably should have mentioned this, but the statuses are One Status -&gt; Many Bugs, so while i want to be able to have a bug change what status it is, I don't want it to be able to change what available Statuses there are, which I believe is what a child object would do. To dip into the database, I have a table of bugs, and each one has an id that is a key to a record in the Status table. If I implement the Status as a child object, and want to change the status of a bug, I would have to change something in status object, which is read-only.<br><br>In this case, I'm thinking I would still use a NVLB, but create a StatusInfo object in replace of the typical string, and I could use a property in Bug such as...<br><br>Bug.cs:<br><br>[Serializable()]<br>&nbsp;&nbsp;&nbsp; public class Bug : BusinessBase&lt;Bug&gt;,<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; IHoldsSeverity,<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; IHoldsStatus<br>&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; #region Business Methods<br><br>...<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; private int _status = StatusList.DefaultStatus();<br><br>...<br><br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;  public bool IsOpen<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; get<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; CanReadProperty(true);<br><b>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;  &nbsp;&nbsp;  &nbsp;&nbsp;  &nbsp;&nbsp; return StatusList.GetList().Value(_status).IsOpen;<br></b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>...<br>}<br><br>Would this make sense?<br><br><br><b>Note: </b>I originally had "return StatusList.GetStatus(_status).IsOpen;" for the emboldened line, but I've fixed it. I then proceeded to "fix" it about three more times :P<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, April 11, 2007</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>For things like name/value lists the &#8220;whether to make it a
+child&#8221; rule goes like this:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>If the list of options does not vary object-to-object then it
+should be global (probably cached), not a child of each object.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>If the list of options varies based on the state of each object,
+then it should be a child of each object. In this case you&#8217;ll typically expose
+the list of options as an instance property of the object so the UI can get the
+properly-filtered list from the current object. Also, the object can then use
+that property-filtered list for validation or other internal uses. Finally, the
+object can encapsulate the process of refreshing the list based on changes to
+the object&#8217;s state that would invalidate the current list of values.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky</span><o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>MarkHildreth replied on Thursday, April 12, 2007</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div>
+
+
+
+
+
+
+ 
+
+
+
+<div class="Section1">
+
+<p class="MsoNormal"><span>For things like name/value lists the “whether to make it a
+child” rule goes like this:<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><o:p>&nbsp;</o:p></span></p>
+
+<p class="MsoNormal"><span>If the list of options does not vary object-to-object then it
+should be global (probably cached), not a child of each object.<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><o:p>&nbsp;</o:p></span></p>
+
+<p class="MsoNormal"><span>If the list of options varies based on the state of each object,
+then it should be a child of each object. In this case you’ll typically expose
+the list of options as an instance property of the object so the UI can get the
+properly-filtered list from the current object. Also, the object can then use
+that property-filtered list for validation or other internal uses. Finally, the
+object can encapsulate the process of refreshing the list based on changes to
+the object’s state that would invalidate the current list of values.<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><o:p>&nbsp;</o:p></span></p>
+
+<p class="MsoNormal"><span>Rocky</span><o:p></o:p></p>
+
+</div>
+
+</div></BLOCKQUOTE><br><br>Makes sense. Thanks!<br><br><b>Edit:</b><br><br>For posterity, in the end I made the list as a global NameValueList, but with my own Status class that inherited from ReadOnlyBase as the value instead of the typical string. This was fine until I tried binding the list to the dropdown box, where I had to make sure to override the ToString() function in the status class. This would return the description so that the combo box values would fill up correctly.<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,110 @@
+<html><header><title>CSLA and WPF XBAP applications</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA and WPF XBAP applications</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/2808.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>albator posted on Tuesday, May 01, 2007</h2><P>Hi,</P>
+<P>We are planning to move our Winform application to an XBAP (WPF) application.&nbsp;&nbsp; Our application must&nbsp;be an inline application publiched on a IIS&nbsp;web server.&nbsp; I know that&nbsp;XBAP&nbsp;run in internet zone security&nbsp;sandbox in this case.&nbsp; </P>
+<P>I need to know how this can impact CSLA business object.&nbsp; We use business objects in 2 and 3 tiers, XBAP application&nbsp;are restricted for accessing WCF webservice , can we also have problem with remoting?&nbsp;&nbsp; </P>
+<P>Is there other problems that we should be aware of (ado.net, serialization....)?</P>
+<P>Thanks</P>
+<P>Alain Martineau</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, May 01, 2007</h2><P>CSLA .NET requires FullTrust, and so it can't run in a restricted sandbox. This is because CSLA .NET makes use of FullTrust technologies like Remoting, WCF, Reflection and more.</P>
+<P>Even without CSLA .NET you'll find that you can't use private reflection, Remoting, WCF,&nbsp;BinaryFormatter, ADO.NET, etc.&nbsp;because they all require elevated permissions. Sandboxes are pretty restrictive...</P>
+<P>For local storage look at IsolatedStorage, and maybe (just maybe) SQLce (though I think that requires elevated permissions at the moment as well).</P>
+<P>Due to <A href="http://www.microsoft.com/silverlight">Silverlight</A>, I am researching the possibility of creating a CSLA Light which <EM>would</EM> run in an Internet zone sandbox, and in the even more restrictive Silverlight environment. The Silverlight alpha available today doesn't have enough functionality to even come close to hosting something like CSLA, but Microsoft's plan for Silverlight should provide enough functionality to create a stripped down, client only version of CSLA.</P>
+<P>That means no data portal, no Clone() method, and the requirement to implement GetState() and SetState() methods to support n-level undo (thanks to no private reflection). But it does mean that I should be able to provide the full validation, authorization, data binding and n-level undo capabilities of CSLA .NET in the CSLA Light version. I also plan to provide the data portal <EM>interface</EM> so factory methods can remain consistent, but the back-end implementation will be quite different. (I can't do mobile objects due to no serialization, and I can't do the strongly-typed DP_XYZ calls due to no private reflection).</P>
+<P>I anticipate that around 80% of the code you'd write in a business object today will be the same in CSLA Light, perhaps even more.</P>
+<P>Of course CSLA Light would most likely end up working in an XBAP setting as well, or for a Windows Forms app deployed using ClickOnce with restricted permissions. The lack of a real data portal is pretty hard to take, but I haven't figured out a way to do it, so it is probably unavoidable...</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>albator replied on Wednesday, May 02, 2007</h2><P>Thanks for the quick response.<o:p></o:p></P>
+<P>We have requirements&nbsp;asking for XBAP; browser base, ASP hosting etc.... </P>
+<P>We will look for elevating permission by installing an trusted publisher certificate.&nbsp; I don't think&nbsp;XBAP can manage the certificate installation in the application startup process.&nbsp; We should deploy certificate by using group policies (GPO) or by running some kind of preinstall requirement msi in the startup process.<o:p></o:p></P>
+<P>Thanks a lot<o:p></o:p></P>
+<P>Alain<o:p></o:p></P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>MBonner replied on Sunday, June 17, 2007</h2><P>Hey Alain,</P>
+<P>Any progress on using XBAP with CSLA?&nbsp; This is something that would be useful for an upcoming project I may be working on.</P>
+<P>Please keep us posted on any discoveries you make.</P>
+<P>Thanks...</P>
+<P>-- Mike :-)</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Darren replied on Friday, May 02, 2008</h2><P>The XBAP project has a "This is a full trust application" setting in the security tab of the project.&nbsp; Will this allow us to use the current framework?&nbsp; We have been trying to prototype this and seem to have ran into some serialization issues with the ApplicationContext.User property, centered on the Thread.CurrentPrincipal.<BR>I'm new to the CSLA framework so I was wondering if I'm wasting my time. <BR><BR></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, May 02, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I don&#8217;t know an answer to this issue.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>The issue is that you have a custom principal on the thread, and
+the XBAP framework appears to create a new AppDomain for each frame content
+object &#8211; which means that the thread&#8217;s principal must be
+serialized/deserialized into that new AppDomain.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>There&#8217;s a well-known &#8220;feature&#8221; of .NET that
+causes serialization issues when .NET is hosted in various environments &#8211;
+including IE. There&#8217;s also a workaround to this issue, but the workaround
+requires a bit of code be run when the appdomain is created &#8211; which you
+can&#8217;t do in this case because you aren&#8217;t creating the appdomain.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>What I&#8217;m getting at, is that this isn&#8217;t an issue
+with CSLA, or that is unique to CSLA. It is an issue with the use of a custom
+principal on the thread.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>So the solution is to not use a custom principal on the thread. Either
+use the Windows principal, or re-load the principal on every transition (and
+make sure to clear it before the next transition).<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>It seems to me that the XBAP framework is pretty broken on
+several levels &#8211; this just being one example. Personally I expect XBAP
+will become the next Active Document once Silverlight comes out. Why deal with
+this complex and quirky model when Silverlight offers a cleaner setup.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Darren [mailto:cslanet@lhotka.net]
+<br>
+<b>Sent:</b> Friday, May 02, 2008 6:03 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] CSLA and WPF XBAP applications<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>The XBAP project has a &quot;This is a full
+trust application&quot; setting in the security tab of the project.&nbsp; Will
+this allow us to use the current framework?&nbsp; We have been trying to
+prototype this and seem to have ran into some serialization issues with the
+ApplicationContext.User property, centered on the Thread.CurrentPrincipal.<br>
+I'm new to the CSLA framework so I was wondering if I'm wasting my time. <o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

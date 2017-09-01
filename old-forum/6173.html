@@ -1,0 +1,94 @@
+<html><header><title>PropertyStatus &amp; Silverlight - what might I be missing?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>PropertyStatus &amp; Silverlight - what might I be missing?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6173.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>skagen00 posted on Thursday, January 15, 2009</h2><P><FONT size=2><STRONG>My Csla Data Source Looks like:</STRONG></FONT></P>
+<P><FONT size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;csla:CslaDataProvider x:Key="StaffData"<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ManageObjectLifetime="True"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; DataChanged="CslaDataProvider_DataChanged"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ObjectType="&lt;company&gt;.&lt;application&gt;.Business.Staff, &lt;company&gt;.&lt;application&gt;.Business, Version=..., Culture=neutral, PublicKeyToken=null"<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; FactoryMethod="GetStaff" /&gt; </FONT></P>
+<P><FONT size=2><STRONG>The relevant Xaml is:</STRONG></FONT></P>
+<P><FONT size=2>&lt;Grid x:Name="LayoutRoot" DataContext="{StaticResource StaffData}"&gt;&nbsp;&nbsp; <BR>&nbsp;&nbsp;...&lt;snip&gt;...<BR>&nbsp;&lt;TextBlock Grid.Column="0" Grid.Row="1" HorizontalAlignment="Right" <BR>&nbsp;&nbsp;Margin="0,0,3,0" VerticalAlignment="Center" Text="First Name"/&gt;<BR>&nbsp;&lt;TextBox Grid.Column="1" Grid.Row="1" x:Name="FirstNameTextBox" <BR>&nbsp;&nbsp;Text="{Binding Mode=TwoWay, Path=FirstName}"&nbsp;BorderThickness="0,0,0,0" Margin="2,3,2,3"&nbsp;<BR>&nbsp;&nbsp;VerticalAlignment="Center" MaxLength="25"/&gt;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;csla:PropertyStatus Grid.Column="2" Grid.Row="1" &nbsp;RelativeTargetName="FirstNameTextBox" Property="FirstName" <BR>&nbsp;&nbsp;Source="{Binding Path=Data}" /&gt;</FONT></P>
+<P><FONT size=2>...&lt;snip&gt;...<BR>&lt;/Grid&gt;</FONT></P>
+<P><FONT size=2>My code behind looks like:</FONT></P>
+<P><FONT size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public void LoadStaffData(string staffId)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; CslaDataProvider provider = this.Resources["StaffData"] as CslaDataProvider;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; provider.FactoryParameters.Clear();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; provider.FactoryParameters.Add(staffId);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; provider.Refresh();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</FONT></P>
+<P><FONT size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; private void CslaDataProvider_DataChanged(object sender, EventArgs e)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; CslaDataProvider provider = ((CslaDataProvider)this.Resources["StaffData"]);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; LayoutRoot.DataContext = provider.Data;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (provider.Error != null)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; System.Windows.Browser.HtmlPage.Window.Alert(((Csla.Silverlight.CslaDataProvider)sender).Error.Message);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</FONT></P>
+<P><FONT size=2>Here's what works:</FONT></P>
+<UL>
+<LI><FONT size=2>Data binds to the controls (i.e. I see a first name in FirstNameTextBox, among others)</FONT></LI>
+<LI><FONT size=2>Clearing out the first name disables Save &amp; enables Cancel (first name is required)</FONT></LI></UL>
+<P><FONT size=2>Here's what doesn't work:</FONT></P>
+<UL>
+<LI><FONT size=2>I'm not seeing the validation error icon next to my first name when I clear out the name. </FONT></LI></UL>
+<P><FONT size=2>Any ideas?</FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, January 15, 2009</h2><P>Your binding is kind of messed up.</P>
+<P>In your XAML you set the binding of LayoutRoot to the data provider, which isn't quite right - you should set it to the Data property:</P>
+<P>DataContext="{Binding Source={StaticResource StaffData}, Path=Data}"</P>
+<P>You probably discovered this problem though, because in the data changed event handler you set the DataContext in code to the Data property. That's why your normal controls are working.</P>
+<P>But then you set the PropertyStatus.Source property to the Data property of the current DataContext. So really you are binding the PropertyStatus to a non-existant Data property of your business object. You need the binding expression to just be {Binding}.</P>
+<P>Also, you don't want to set the DataContext in the data changed event - that's probably going to cause you trouble long into the future. What you really want to do is my first suggestion - set the DataContext of LayoutRoot correctly in the XAML.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>skagen00 replied on Thursday, January 15, 2009</h2><P>I was pretty sure I shouldn't have had to set the DataContext there but setting it was the only thing getting me anywhere :). Just before reading your post I was able to get it to work by having the source on the PropertyStatus to be {Binding}, indeed.</P>
+<P>So, I'm good to go now. Works great. </P>
+<P>Thanks for taking the time, I'm fresh to WPF/Silverlight databinding and was trying to mimic CompanyEditor.xaml in the Rolodex app. </P>
+<P>Chris</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, January 15, 2009</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>The problem, of course, is that there are numerous ways to set
+the data context and/or binding expressions &#8211; several of which work. The
+trick is to pick one model and be consistent, because mixing models causes
+problems.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> skagen00
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Thursday, January 15, 2009 2:45 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] PropertyStatus &amp; Silverlight - what might I
+be missing?<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>I was pretty sure I shouldn't have had to set the DataContext there but
+setting it was the only thing getting me anywhere :). Just before reading your
+post I was able to get it to work by having the source on the PropertyStatus to
+be {Binding}, indeed.<o:p></o:p></p>
+
+<p>So, I'm good to go now. Works great. <o:p></o:p></p>
+
+<p>Thanks for taking the time, I'm fresh to WPF/Silverlight databinding and was
+trying to mimic CompanyEditor.xaml in the Rolodex app. <o:p></o:p></p>
+
+<p>Chris<o:p></o:p></p>
+
+<p>&nbsp;<o:p></o:p></p>
+
+<p>&nbsp;<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

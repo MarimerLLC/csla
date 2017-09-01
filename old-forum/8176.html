@@ -1,0 +1,19 @@
+<html><header><title>Test</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Test</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/8176.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>rxelizondo posted on Wednesday, December 16, 2009</h2>protected P ReadProperty&lt;P&gt;(PropertyInfo&lt;P&gt; propertyInfo)
+<br>        {
+<br>            if (((propertyInfo.RelationshipType & RelationshipTypes.LazyLoad) != 0) && !FieldManager.FieldExists(propertyInfo))
+<br>                throw new InvalidOperationException(Resources.PropertyGetNotAllowed);
+<br>
+<br>            P result;
+<br>            var info = (FieldManager.FieldData&lt;P&gt;)FieldManager.GetFieldData(propertyInfo);
+<br>            if (info != null)
+<br>            {
+<br>                result = info.Value;
+<br>            }
+<br>            else
+<br>            {
+<br>                result = propertyInfo.DefaultValue;
+<br>                FieldManager.LoadFieldData&lt;P&gt;(propertyInfo, result);
+<br>            }
+<br>
+<br>            return result;
+<br>        }</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

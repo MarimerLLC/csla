@@ -1,0 +1,23 @@
+<html><header><title>Problem with ViewModel visability in Expression Blend</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Problem with ViewModel visability in Expression Blend</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9595.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>cds posted on Saturday, October 02, 2010</h2><p>Hi Rocky</p>
+<p>I&#39;m using 4.0.1 and have a problem getting my ViewModel to show up correctly in Expression Blend (4).</p>
+<p>I&#39;ve also reproduced my problem with the MVVM videos demo source and it relates to subclassing BusinessBase&lt;T&gt; - i.e. inserting my own class into the CSLA class hierarchy.</p>
+<p>In the MVVM video demo there&#39;s the EmployeeEdit class, which is a subclass of BusinessBase&lt;EmployeeEdit&gt;.</p>
+<p>The EmployeeViewModel is defined as:</p>
+<p><strong>public class EmployeeViewModel : ViewModel&lt;EmployeeEdit&gt;</strong></p>
+<p>When I open EditEimployee.xaml in Expression Blend it all works fine. In the Data pane, I see the Data Context as being List_ExmployeeViewModel with all the properties and methods (e.g. AddNew, CanAddNew) and the Model property and all its properties.</p>
+<p>However, when I insert a custom base class: </p>
+<p><strong>[Serializable]</strong></p>
+<p><strong>public class MyBusinessBase&lt;T&gt; : BusinessBase&lt;T&gt; where T: BusinessBase&lt;T&gt; { }</strong></p>
+<p>then change the EmployeeEdit to:</p>
+<p><strong>[Serializable]</strong></p>
+<p><strong>public class EmployeeEdit : MyBusinessBase&lt;EmployeeEdit&gt;</strong></p>
+<p>Then rebuild the solution and then open up EmployeeEdit.xaml in Expression Blend, the Data Context in the Data pane doesn&#39;t show the ViewModel properly. All I see it List_EmployeeViewModel, then 5 methods - AddNew, Cancel, Delete, Remove, and Save.</p>
+<p>Can you reproduce this and figure out what is going wrong? Initially this happened on my own project, then I tried it out on the SLDemo.sln and got the same result. It&#39;s a bit of a pain not being able to access the ViewModel properties in Blend!</p>
+<p>Thanks,</p>
+<p>Craig</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>cds replied on Wednesday, October 06, 2010</h2><p>Bump!</p>
+<p>Does anybody else see this, or is it just me?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>cds replied on Friday, October 08, 2010</h2><p>Talking to myself...</p>
+<p>But,&nbsp;I did some more experimentation and discovered that it seems to be related to the CollectionViewSource. If I remove this, and have my ViewModel directly as a resource, and then connect my DataContext to that it all works fine. </p>
+<p>So, I&#39;m thinking that the automatically created CollectionViewSource in the VS2010 designer is maybe a bit flakey, and maybe manually adding the ViewModel as a resource is the better way to go. From what I&#39;ve found, building a complex view, i.e. with lots of fields and binding is much more productive in Expression Blend than in the VS2010 designer.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, October 08, 2010</h2><p>VS10 and Blend don&#39;t use the same approach when creating XAML for binding, that&#39;s true.</p>
+<p>I would expect the CVS to work though, because they are decorated with a d: element that should tell Blend what data type to use.</p>
+<p>However, it is possible that Blend is trying to directly create an instance of that type - of your viewmodel - at design time. If that&#39;s true, there could be something blocking Blend from successfully creating the type.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

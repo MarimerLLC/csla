@@ -1,0 +1,196 @@
+<html><header><title>Filtered NVL</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Filtered NVL</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/2347.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>TerryHolland posted on Thursday, February 15, 2007</h2><P>I have a dropdown on one of my webforms that needs to display a list of CostCentres filtered by UserID (the logged on user id).&nbsp; Could/should I modify my clsCostCentre_NVL_ByUser to pass in a UserID, which in turn will be passed as a parameter to my stored procedure?</P>
+<P>Or should I create a readonlyroot list for this purpose?</P>
+<P>While on the subject,&nbsp;the app requires a number of dropdown lists to display data that is filtered by previous selections.&nbsp; NVL or ReadOnlyRootList?</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, February 15, 2007</h2><P>NVL is merely a specialized version of ROL, designed to help reduce the amount of code needed to create a name/value list.</P>
+<P>The decision on whether to use NVL or ROL should be, I think, driven primarily by which approach allows you to write the least code. I'm guessing, in your scenarios, that NVL will still require less code, even after you create/use your custom criteria classes.</P>
+<P>One thing about context-sensitive lists like this. They should flow from your object model. It isn't the UI's job to know what list should be filtered this way or that. That's business logic, and belongs in the business layer.</P>
+<P>Global, unfiltered, lists can be created directly, like the roles are in ProjectTracker.</P>
+<P>Other lists are filtered based on the state of an object. For instance, consider a Customer object. Once you pick the Region value (from a global list) the possible options for District are filtered. To implement this, the DistrictList object should NOT be available for direct creation. It is not a global, unfiltered list.</P>
+<P>Instead, DistrictList should come from the Customer itself, because what you need is the list of districts <EM>for this customer</EM>. </P>
+<P>Additionally, the Customer object needs the filtered list too. Otherwise, how can it validate that the District property has been set to a valid value? It must validate the input - that's business logic - and to do that it already needs the filtered list.</P>
+<P>The result is like this:</P>
+<P>RegionList regions = RegionList.GetList();</P>
+<P>DistrictList districts&nbsp;= _customer.GetDistrictList();</P>
+<P>If you want to have the UI automatically respond, you can handle the PropertyChanged event from _customer, and when the Region property changes you should rebind the UI to _customer.GetDistrictList().</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>TerryHolland replied on Thursday, February 15, 2007</h2><P>Thanks for response.</P>
+<P>So I understand that the filtered list should be a property of my business object.&nbsp; </P>
+<P>In my scenario, I have a list (NVL) called clsCostCentre_NVL which, at present return the entire list of cost-centres (I need this as well as a filtered list)</P>
+<P>My User class will require a CostCentres property which will return a filtered list of CostCentres based in UserID ie</P>
+<P>public class clsUser</P>
+<P>&nbsp;Public ReadOnly Property ID() As Integer<BR>&nbsp;&nbsp;Get<BR>&nbsp;&nbsp;&nbsp;CanReadProperty("ID", True)<BR>&nbsp;&nbsp;&nbsp;Return m_intID<BR>&nbsp;&nbsp;End Get<BR>&nbsp;End Property</P>
+<P>&nbsp;&nbsp;&nbsp; Public ReadOnly Property CostCentres() As clsCostCentre_NVL<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Get<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return clsCostCentre_NVL_ByUser.GetCostCentre_NVL(m_intID)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Get<BR>&nbsp;&nbsp;&nbsp; End Property</P>
+<P>End Class</P>
+<P>What Im not sure how to do is modify the criteria class in the NVL class to accept a parameter.&nbsp; When I try to add a Partial Class Criteria in my NVL class I get a message stating that I should declare it as shadows.&nbsp; Advice appreciated</P>
+<P>&nbsp;</P>
+<P>Terry</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, February 15, 2007</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>You need to give the criteria class a different name. NVL
+already declares a class called Criteria, so you can&#8217;t use that name.
+Partial classes have no place in this model at all (unless you are using a code
+generator that uses Partial classes &#8211; in which case you&#8217;ll have to
+resolve any differences there).<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>TerryHolland replied on Thursday, February 15, 2007</h2><P>Ive got my class to work using the code pasted below.&nbsp; What I have now are two distinct classes</P>
+<P>1) clsCostCentre_NVL which is used throughout the application and is a non filtered list of CostCentres</P>
+<P>2) clsCostCentre_NVL_ByUser which will be used by my clsUser class, which will pass in a UserID parameter to filter the list</P>
+<P>Im a little cocerned because Im not fully sure I fully understand the call to the DataPortal.Fetch.&nbsp; In the clsCostCentre_NVL the factory method is:</P><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Shared</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Function</FONT><FONT size=2> GetCostCentre_NVL() </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> clsCostCentre_NVL</P>
+<P></FONT><FONT color=#0000ff size=2>If</FONT><FONT size=2> _list </FONT><FONT color=#0000ff size=2>Is</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Nothing</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Then</P></FONT><FONT size=2>
+<P>_list = DataPortal.Fetch(</FONT><FONT color=#0000ff size=2>Of</FONT><FONT size=2> clsCostCentre_NVL)(</FONT><FONT color=#0000ff size=2>New</FONT><FONT size=2> Criteria(</FONT><FONT color=#0000ff size=2>GetType</FONT><FONT size=2>(clsCostCentre_NVL)))</P>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>If</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Return</FONT><FONT size=2> _list</P>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Function</P></FONT>
+<P>In my adapted class Ive replaced this with:</P><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Shared</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Function</FONT><FONT size=2> GetCostCentre_NVL_ByUser(</FONT><FONT color=#0000ff size=2>ByVal</FONT><FONT size=2> intUserID </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Integer</FONT><FONT size=2>) </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> clsCostCentre_NVL_ByUser</P>
+<P></FONT><FONT color=#0000ff size=2>If</FONT><FONT size=2> _list </FONT><FONT color=#0000ff size=2>Is</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Nothing</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Then</P></FONT><FONT size=2>
+<P>_list = DataPortal.Fetch(</FONT><FONT color=#0000ff size=2>Of</FONT><FONT size=2> clsCostCentre_NVL_ByUser)(</FONT><FONT color=#0000ff size=2>New</FONT><FONT size=2> Filter(intUserID))</P>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>If</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Return</FONT><FONT size=2> _list</P>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Function</P>
+<P></FONT>&nbsp;Can you foresee any problems doing things the way I have?</P>
+<P>Also, you mentioned in previous post that "Partial classes have no place in this model at all ".</P>
+<P>Im a little concerened at this as Im using Partial classes throughout.&nbsp; I have one partial class for template generated code and another for custom code.&nbsp; Is there likely to be any problems with this?</P>
+<P>Thanks again.</P>
+<P>&nbsp;</P>
+<P>My Adapted NVL class</P>
+<P>=================</P>
+<P><FONT color=#008000 size=2>''------------------------------------------------------------------------------</P>
+<P>'' &lt;autogenerated&gt;</P>
+<P>'' This code was generated using CSLA 2.0 CodeSmith Template Collection.</P>
+<P>'' Changes to this file may be lost if the code is regenerated.</P>
+<P>'' Modify user class CostCentre_NVL_ByUser.vb to extend this generated code. </P>
+<P>''</P>
+<P>'' Code was generated at 15/02/2007 15:12:39 by tholland</P>
+<P>'' Template path: D:\_Development\CodeSmith\3.2\3.2 Templates\SGB CSLA.Net 2.0\NameValueList.cst</P>
+<P>'' Template website: http://www.codeplex.com/Wiki/View.aspx?ProjectName=CSLAcontrib</P>
+<P>'' &lt;/autogenerated&gt;</P>
+<P>''------------------------------------------------------------------------------</P></FONT><FONT color=#0000ff size=2>
+<P>Imports</FONT><FONT size=2> System</P></FONT><FONT color=#0000ff size=2>
+<P>Imports</FONT><FONT size=2> System.Data</P></FONT><FONT color=#0000ff size=2>
+<P>Imports</FONT><FONT size=2> System.Data.SqlClient</P></FONT><FONT color=#0000ff size=2>
+<P>Imports</FONT><FONT size=2> Csla</P></FONT><FONT color=#0000ff size=2>
+<P>Imports</FONT><FONT size=2> Csla.Data</P>
+<P>&lt;Serializable()&gt; _</P>
+<P></FONT><FONT color=#0000ff size=2>Public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Class</FONT><FONT size=2> clsCostCentre_NVL_ByUser</P>
+<P></FONT><FONT color=#0000ff size=2>Inherits</FONT><FONT size=2> Csla.NameValueListBase(</FONT><FONT color=#0000ff size=2>Of</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Integer</FONT><FONT size=2>, </FONT><FONT color=#0000ff size=2>String</FONT><FONT size=2>)</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>#</FONT><FONT color=#0000ff size=2>Region</FONT><FONT size=2> </FONT><FONT color=#800000 size=2>" Factory Methods "</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Class</FONT><FONT size=2> Filter</P>
+<P></FONT><FONT color=#0000ff size=2>Public</FONT><FONT size=2> UserID </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Integer</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Sub</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>New</FONT><FONT size=2>(</FONT><FONT color=#0000ff size=2>ByVal</FONT><FONT size=2> intUserID </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Integer</FONT><FONT size=2>)</P>
+<P>UserID = intUserID</P>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Sub</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Class</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Private</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Sub</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>New</FONT><FONT size=2>()</P>
+<P></FONT><FONT color=#008000 size=2>' require use of factory method </P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Sub</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Private</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Shared</FONT><FONT size=2> _list </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> clsCostCentre_NVL_ByUser</P>
+<P></FONT><FONT color=#0000ff size=2>Public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Shared</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Function</FONT><FONT size=2> GetCostCentre_NVL_ByUser(</FONT><FONT color=#0000ff size=2>ByVal</FONT><FONT size=2> intUserID </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Integer</FONT><FONT size=2>) </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> clsCostCentre_NVL_ByUser</P>
+<P></FONT><FONT color=#0000ff size=2>If</FONT><FONT size=2> _list </FONT><FONT color=#0000ff size=2>Is</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Nothing</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Then</P></FONT><FONT size=2>
+<P>_list = DataPortal.Fetch(</FONT><FONT color=#0000ff size=2>Of</FONT><FONT size=2> clsCostCentre_NVL_ByUser)(</FONT><FONT color=#0000ff size=2>New</FONT><FONT size=2> Filter(intUserID))</P>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>If</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Return</FONT><FONT size=2> _list</P>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Function</P>
+<P>&nbsp;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Shared</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Sub</FONT><FONT size=2> InvalidateCache()</P>
+<P>_list = </FONT><FONT color=#0000ff size=2>Nothing</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Sub</P></FONT><FONT size=2>
+<P>#</FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Region</P></FONT><FONT size=2>
+<P>#</FONT><FONT color=#0000ff size=2>Region</FONT><FONT size=2> </FONT><FONT color=#800000 size=2>" Data Access "</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Protected</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Overrides</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Sub</FONT><FONT size=2> DataPortal_Fetch(</FONT><FONT color=#0000ff size=2>ByVal</FONT><FONT size=2> criteria </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Object</FONT><FONT size=2>)</P>
+<P>RaiseListChangedEvents = </FONT><FONT color=#0000ff size=2>False</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Dim</FONT><FONT size=2> objFilter </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> Filter = </FONT><FONT color=#0000ff size=2>CType</FONT><FONT size=2>(criteria, Filter)</P>
+<P></FONT><FONT color=#0000ff size=2>Using</FONT><FONT size=2> cn </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> SqlConnection = </FONT><FONT color=#0000ff size=2>New</FONT><FONT size=2> SqlConnection(Database.Contest03UKConnection)</P>
+<P></FONT><FONT color=#0000ff size=2>Using</FONT><FONT size=2> cm </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> SqlCommand = cn.CreateCommand()</P>
+<P>cn.Open()</P>
+<P>cm.CommandType = CommandType.StoredProcedure</P>
+<P>cm.CommandText = </FONT><FONT color=#800000 size=2>"sprCostCentre_NVL_ByUser_Select_CSLA"</P></FONT><FONT size=2>
+<P>cm.Parameters.AddWithValue(</FONT><FONT color=#800000 size=2>"@intUserID"</FONT><FONT size=2>, objFilter.UserID)</P>
+<P>&nbsp;</P>
+<P></FONT><FONT color=#0000ff size=2>Using</FONT><FONT size=2> dr </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> SafeDataReader = </FONT><FONT color=#0000ff size=2>New</FONT><FONT size=2> SafeDataReader(cm.ExecuteReader())</P>
+<P>IsReadOnly = </FONT><FONT color=#0000ff size=2>False</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>While</FONT><FONT size=2> (dr.Read())</P>
+<P></FONT><FONT color=#0000ff size=2>Me</FONT><FONT size=2>.Add(</FONT><FONT color=#0000ff size=2>New</FONT><FONT size=2> NameValuePair(dr.GetInt32(</FONT><FONT color=#800000 size=2>"coce_int_ID"</FONT><FONT size=2>), dr.GetInt16(</FONT><FONT color=#800000 size=2>"coce_sin_Number"</FONT><FONT size=2>)))</P>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>While</P></FONT><FONT size=2>
+<P>IsReadOnly = </FONT><FONT color=#0000ff size=2>True</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Using</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Using</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Using</P></FONT><FONT size=2>
+<P>RaiseListChangedEvents = </FONT><FONT color=#0000ff size=2>True</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Sub</P></FONT><FONT size=2>
+<P>#</FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Region</P>
+<P>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Class</P></FONT>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, February 15, 2007</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Your code looks fine to me.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>If you want, you may consider collapsing your two NVL classes
+into one class, and just having two factory methods, with two overloads for
+DP_Fetch(). That might keep your code simpler overall.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>There&#8217;s nothing wrong with using partial classes along
+with code generation &#8211; I didn&#8217;t mean to imply otherwise. My point
+was that Criteria isn&#8217;t a partial class, at least in CSLA .NET itself. If
+your code-gen tool is creating partial classes then that&#8217;s fine.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky</span><o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>TerryHolland replied on Thursday, February 15, 2007</h2>Thanks for your help </div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jkellywilkerson replied on Friday, February 16, 2007</h2><P>Hey Rocky,</P>
+<P>I have a similar situation where I have a combo that uses a NVL and the user can click a checkbox that will basically change the sort from "Sort By Number" to Sort By Name".&nbsp; The attached code works perfectly when using the Local DataPortal, but does not work when switching to the Remote DataPortal.&nbsp; Can you see anywhere in the code that may cause that?&nbsp; I am a bit baffled as to why it would matter which DataPortal is used.</P>
+<P>Thanks in advance for your time.</P>
+<P>Kelly.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, February 16, 2007</h2><P>What does "does not work" mean?</P>
+<P>No data? An exception? If so, what kind of exception? If a DataPortalException, what's the BusinessException? Do other objects work through the remote data portal?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jkellywilkerson replied on Friday, February 16, 2007</h2><P>Hey Rocky,</P>
+<P>Sorry I did not clarify how it did not work in the previous message.&nbsp; When the checkbox value is changed, the combobox blinks then appears with the previous sort order - always by number.&nbsp; Is it a problem with the _sortbyname member variable declared as static?&nbsp; If I leave the static off, I get a compile error of course.&nbsp; Just not sure what else to try, short of having two different BOs.</P>
+<P>Kelly.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, February 16, 2007</h2><P>The problem is that you are effectively using a global variable for your sort flag. When you call the data portal, the data portal calls your DataPortal_Fetch() method IN A NEW INSTANCE OF YOUR OBJECT.</P>
+<P>So any instance fields are obviously brand new, and empty so you can load them in DP_Fetch(). Only the criteria parameter has values from the caller.</P>
+<P>When you use a local data portal everything runs in one AppDomain, so any static fields are available to all your code - they are global variables (and thus are basically evil btw <img src="/emoticons/emotion-5.gif" alt="Wink [;)]" /> ).</P>
+<P>When you use a remote data portal the server code actually runs on the server - obviously then in a different AppDomain. Your static field is back on the client, and you didn't pass it to the server.</P>
+<P>The correct answer to your problem is to create a custom Criteria class (call it SortedCriteria or something) and include the bool flag value in the criteria. Your DP_F() code should then use the value from the criteria parameter, not from a global field.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jkellywilkerson replied on Friday, February 16, 2007</h2><P>Thanks Rocky,</P>
+<P>It worked beautifully!&nbsp; I knew I was missing something that was happening with the static bool member variable; I just could not figure it out - my appreciation for you and this community runs deep.&nbsp; Attached is what the new object code looks like, if others have experienced similar heart/headaches.</P>
+<P>Thanks again,</P>
+<P>Kelly.</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

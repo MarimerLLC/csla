@@ -1,0 +1,273 @@
+<html><header><title>Short-circuiting rule processing</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Short-circuiting rule processing</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/735.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka posted on Wednesday, July 26, 2006</h2><P>I continue to work on validation rules 2.1 - lots of changes here - all for the better I hope, and all preserving backward compat as well.</P>
+<P>I still haven't decided on the error/warning/info thing yet, but I think I'll enhance BrokenRulesCollection to do the work here. And yes Xal, I did decide to add Information as a severity type - so all three will be there.</P>
+<P>However, another new feature is short-circuiting, and I'd like some API input on this.</P>
+<P>Short-circuiting is the idea that when CheckRules() hits a broken rule for a given property, no remaining rule methods for that property are invoked. Coupled with another new feature, priorities, this means you can prioritize expensive rules to run later, and short-circuit on earlier (low cost) rules.</P>
+<P>When you call AddRule() or the new AddSharedRule(), you can optionally specify a priority for the rule. Larger numbers are processed after smaller numbers, with the default being 0 (the highest priority).</P>
+<P>I have three questions on this one, for general input.</P>
+<P>First, should it be as simple as I just described (simple is good), or a bit more complex? Specifically, I could allow you to specify a maxPriority value, so all rules up to that priority would be invoked, but if any of those rules were broken then processing would stop at maxPriority. This would allow ALL the low cost rules to run, but none of the high cost if you set it up that way.</P>
+<P>My current boolean approach means the first broken rule terminates all rule processing.</P>
+<P>Second, what about Warning and Information rules? If they are broken, do they stop processing? I think no - I think only Error severity rules stop processing - but I'd value thoughts here.</P>
+<P>Third, there's an API question. Right now I altered CheckRules() to accept an optional boolean where you can specify to do a short-circuit. This is OK, but means I'll have to add a overloads to PropertyHasChanged() as well, because CheckRules(propertyName) is normally not called directly. That seems somewhat ugly, but might be the right answer.</P>
+<P>The other alternative is to require that you set ValidationRules.EnableShortCircuting to true if you want short-circuiting. But that'd be a global setting, and I can envision cases where you'd only want to short-circuit specific properties.</P>
+<P>Of course along that line, my current scheme of CheckRules(true) is global across all properties too. So maybe the answer is to have you set a property per property in AddBusinessRules():</P>
+<P>ValidationRules.AddRule(...)<BR>ValidationRules.EnableShortCircuting(propertyName)</P>
+<P>So then you'd define once which properties should short-circuit their rule processing, and you wouldn't need to specify short-circuiting on each CheckRules() or PropertyHasChanged() call.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RangerGuy replied on Wednesday, July 26, 2006</h2><P>This sounds really interesting :)</P>
+<P>&nbsp;I think I could really use the short circuit functionality in our system. Especially the priority thing that would be awesome!</P>
+<P>I don't think that I'm experienced enough to offer any suggestions on how to implement this into the framework but it sure sounds like a really cool idea!</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>vargasbo replied on Wednesday, July 26, 2006</h2>
+
+<p class="MsoNormal">I like the idea of max priority; you’re solving both issues
+I currently have.</p>
+
+<p class="MsoNormal"><o:p>&nbsp;</o:p></p>
+
+<p class="MsoNormal">I would use low level rules to check that the object meet db
+constraints, i.e. field lengths, etc. and can be persisted to the database. High
+level rules would be used to check more complex business rules; example would
+be to make sure that a certain sales discount is still valid. If the object can’t
+meet the low level rules, then there is no point of running high level rules. </p>
+
+<p class="MsoNormal"><o:p>&nbsp;</o:p></p>
+
+<p class="MsoNormal">Warning and Information, I can’t think of why I would have
+Information rules. I’m treating warning as, I have met the low level rules, but
+the object hasn’t been validated against higher level rules. This would inform
+the user that I can save the object, but I should come back here at soon as
+possible. I guess you could put the information message when the object is
+loaded again. Something like, this object was saved with warnings, but I don’t
+know if you would want to take the processing time upfront again. </p>
+
+<p class="MsoNormal"><o:p>&nbsp;</o:p></p>
+
+<p class="MsoNormal">I agree, I wouldn’t stop the save process unless they don’t meet
+the low level rules…aka, can’t persist the object to the database.</p>
+
+<p class="MsoNormal"><o:p>&nbsp;</o:p></p>
+
+<p class="MsoNormal">On the issue of short circuiting, If a developers short
+circuits a object and the object breaks at rule check priority 10 (going from
+0-100, 60 start of high level rules), then the developers doesn’t get a results
+of all the low level items that are broken. Meaning that the developer would
+display to the end-user in a grid, forms, whatever all the items that are
+broken before the object can be persisted, but say the object breaks again at
+priority 50. I wouldn’t want to display multiple forms to my end-user saying,
+oops broke here, oh, and here, etc. So as long as the Short circuit flag doesn’t
+short circuit all low level items, I’m fine with it.</p>
+
+<p class="MsoNormal"><o:p>&nbsp;</o:p></p>
+
+<p class="MsoNormal">Thoughts/Ideas?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Fabio replied on Thursday, July 27, 2006</h2>First: simple is good!! the broken rules cheking can stop at <u>first or last</u> maxPriority rule broken. If we stop at last maxPriorityToCheck we can have all "important" rules marked on the UI (if we use errorprovider) without the "hunts the joker" effect.<br><br>Second: Warning and Information don't stop processing, even if&nbsp; i think that rules of these kinds normally have an low-priority (high value).<br><br>Third: I think that CheckRules(propertyName) don't need any change because mean that we need to check a specific rule. I think we need short-circuiting only for CheckRules().<br><br>So:<br>ValidationRules.AddRule(...., int priority);<br>CheckRules(int maxPriorityToCheck, boolean stopAtLast);<br>CheckRules(int maxPriorityToCheck); // stopAtLast = false<br>
+<br><font face="Lucida Console" size="2"><br />void CheckRules()<br />{CheckRules(int.MaxValue);}<br />[de]<br /><br />-ValidationRules.AddRule(...., int priority); is an overloaded method and the actual method mean ValidationRules.AddRule(...., 0); so all work like now (all rules have the same high-priority)<br />-CheckRules() check all rules but stop at the first rule broken<br />-with maxPriorityToCheck we can define how many short is the circuit<br />-PropertyHasChanged() don't need any change (the circuit is short like the property need)<br /><br />Fabio.<br /><br /></font></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>xal replied on Thursday, July 27, 2006</h2>How about having a per type "Short circuit level" inside ValidationRules ?<br><br>That way if you need rules for certain properties to process always, you could put them in lower levels and set that short circuit level in a value that allows those to validate. The expensive ones, for whatever property, will have a larger level and thus will be validated when there are no other broken rules...<br><br>The question is: what happens when I hit a rule which is, say, level 3 and my short circuit level is level 3, but I have other rules in level three? I believe from that point, it should look for other rules in the same level and validate those too and ignore higher level rules.<br><br>&lt;rant&gt;<br>That way if you set short circuit level to 3 and you have 2 rules in level 3 and 2 in 4 and 2 in 5:<br>---If the first rule in level 3 is broke, the second is validated and levels 4 and 5 are ignored.<br>---If level 3 rules aren't broken and the first rule in level 4 is broken, the second in level 4 is validated too and level 5 is ignored, and so on and so forth....<br>&lt;/rant&gt;<br><br>Andrés<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>xal replied on Thursday, July 27, 2006</h2>Sorry, the point being: That way you don't need a "per property level" and the <span class="hw">accompanying PropertyHasChanged overloads (which btw would make code generation more complex).</span><br><br>Andrés<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Tom Cooley replied on Thursday, July 27, 2006</h2>What you're calling maxPriority sounds to me like a Threshold in which short-circuiting kicks in. It's just semantics but at least to me the term threshold seems more descriptive. So, all rules with a priority below that threshold always run. Then, per property rules stop processing once an error (and for question number two, only an error) above the threshold occurs. If you define this threshold as an int, you're giving us 2,147,483,647 possible choices for us to define that threshold which should suit most of us. ;-} So, to that end, I would disagree with Andre's request to have all rules within the short-circuit level run regardless of an error. Instead, if you want all of the level three rules to run regardless of a broken rule, set your threshold above level three.<br><br>This too eliminates the need for enabling/disabling short-circuiting. In AddBusinessRules(), call something like ValidationRules.ShortCircuitThreshold = 40; <br>Then, assign appropriate priorities to your validation rules so the important or inexpensive rules are not short-circuited and at your descretion, some others may be.<br><br>By default the ShortCircuitThreshold = 0 effectively meaning that short-circuiting is disabled.<br><br>&lt;Recap&gt;<br>1. Implement ShortCircuitThreshold<br>2. Only Error severity stops processing<br>3. No need to change CheckRules method signature. Instead use, ShortCircuitThreshold to enable/disable short-circuiting.<br>&lt;/Recap&gt;<br><br>To me, this is simple and this is good. Not to mention that your efforts in eeking out better still performance from your framework is very much appreciated. So, thank you.<br><br>Tom<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>david.wendelken replied on Thursday, July 27, 2006</h2><P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div></P>
+<P>However, another new feature is short-circuiting, and I'd like some API input on this.</P>
+<P>Short-circuiting is the idea that when CheckRules() hits a broken rule for a given property, no remaining rule methods for that property are invoked. Coupled with another new feature, priorities, this means you can prioritize expensive rules to run later, and short-circuit on earlier (low cost) rules.</P>
+<P>When you call AddRule() or the new AddSharedRule(), you can optionally specify a priority for the rule. Larger numbers are processed after smaller numbers, with the default being 0 (the highest priority).</P>
+<P>I have three questions on this one, for general input.</P>
+<P>First, should it be as simple as I just described (simple is good), or a bit more complex? Specifically, I could allow you to specify a maxPriority value, so all rules up to that priority would be invoked, but if any of those rules were broken then processing would stop at maxPriority. This would allow ALL the low cost rules to run, but none of the high cost if you set it up that way.</P>
+<P></div></BLOCKQUOTE></P>
+<P>I prefer the term "shortCircuitThreshold" to "maxPriority".</P>
+<P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div></P>
+<P>My current boolean approach means the first broken rule terminates all rule processing.</P>
+<P></div></BLOCKQUOTE></P>
+<P>Yuck!&nbsp;&nbsp; I hate playing 20 questions over a network connection!&nbsp; </P>
+<P>Oops, got 1 error, fix and resubmit.&nbsp; <BR>Oops, get 1 more error, fix and resubmit. <BR>Oops, get 1 more error, fix and resubmit.&nbsp; <BR>Oops, got another 1 error, kick the programmer in their ...</P>
+<P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div></P>
+<P>Second, what about Warning and Information rules? If they are broken, do they stop processing? I think no - I think only Error severity rules stop processing - but I'd value thoughts here.</P>
+<P></div></BLOCKQUOTE></P>
+<P>I suggest the ability to allow/disallow processing to continue when a warning is reached.&nbsp; From a user perspective, they submit a save and get a warning - so processing is rolled back.&nbsp; They resubmit with a "yeah, I know, do it anyway" indicator and the warning doesn't stop processing - that time only.</P>
+<P>Otherwise, the difference between Warning and Information is just "text" and could be handled in the message text.</P>
+<P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div></P>
+<P>Third, there's an API question. ...</P>
+<P></div></BLOCKQUOTE></P>
+<P>Sorry, too new to the framework.&nbsp; Just now connecting my read-only business objects to my pages.&nbsp; Haven't gotten to the editable ones yet.<BR><BR>Flexible is nice, but so is the ability to do very little typing to get reasonable levels of rule validation processing... :)&nbsp;&nbsp; Just too new with your framework to have a good feel for exactly where that sweet-spot is.</P>
+<P>Thanks for this set of features!</P>
+<P>ps.&nbsp; Please <STRONG>seriously</STRONG> consider adding the ability to ask&nbsp;the object&nbsp;for a list of rules.&nbsp; (Not broken rules, just the rules.)&nbsp;&nbsp; What's needed is a unique RuleId, a&nbsp;RuleLabel (which would default to the error message specified for the rule).&nbsp;&nbsp; Any thing else we can easily store in tables, but being able to programmatically access the actual list of rules coded in the object is just too valuable a quality control and user-interface enabler to pass up... :)</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Fabio replied on Thursday, July 27, 2006</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>david.wendelken:</strong></div><div><br>Yuck!&nbsp;&nbsp; I hate playing 20 questions over a network connection!&nbsp; 
+<p>Oops, got 1 error, fix and resubmit.&nbsp; <br>Oops, get 1 more error, fix and resubmit. <br>Oops, get 1 more error, fix and resubmit.&nbsp; <br>Oops, got another 1 error, kick the programmer in their ...</p><p></div></BLOCKQUOTE></p><p>That is the <b>"hunts the joker" effect</b> i spoke in my previous post.</p><p>Fabio.<br></p><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Fabio replied on Friday, July 28, 2006</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>david.wendelken:</strong></div><div><p>I suggest the ability to allow/disallow processing to continue when a warning is reached.&nbsp; From a user perspective, they submit a save and get a warning - so processing is rolled back.&nbsp; They resubmit with a "yeah, I know, do it anyway" indicator and the warning doesn't stop processing - that time only.</p>
+<p>Otherwise, the difference between Warning and Information is just "text" and could be handled in the message text.</p><p></div></BLOCKQUOTE></p><br>Warning and Information rules mean we need to change our sw behaviour. I think we need a new ErrorProvider implementation to work with BoRuleCollection. The new ErrorProvider need three icons.<br>Fabio.<br><br>P.S. After the publication of new future we can work about new errorprovider.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rasupit replied on Thursday, July 27, 2006</h2><P>Rocky,</P>
+<P>Adding short-circuiting on rule execution process along with non-instance validation rules would improve performance of CheckRules.</P>
+<P>I would vote for processing stop at maxPriority when&nbsp;broken rule&nbsp;occurs.&nbsp; I also like the idea of using property instead of adding new overload to CheckRules method when enabling short circuit.&nbsp; I see this to be easier with code generation.&nbsp; Initially code will be generated with short circuit turned off (of course) where only commonly used validations (which are low cost) are generated.&nbsp; User might add some validation rules, and when the rule is expensive, user may turn on short-circuiting by setting a property in Initialize method.</P>
+<P>I would like to ask you to also consider adding&nbsp;rule-dependency feature.&nbsp; Many times I have use case where rule B need <EM>NOT</EM> be tested when rule A is broken; and rule C need <EM>NOT</EM> be tested when rule B is broken.&nbsp; </P>
+<P>While this is pretty easy to implement with BrokenRules.Assert, I have not found a way to implement this with Rule Manager.</P>
+<P>Ideally, I would like to have our Rule Manager handle dependency just like DTS package define the workflow process.&nbsp; I would settle on having single dependency feature in rule manager. Example: you may define dependency in AddBusinessRules:</P>
+<P>ValidationRules.AddRule(...,"PropertyName!RuleName")&nbsp; where PropertyName!RuleName is the dependent rule name.</P>
+<P>And also use the following in custom rule method to short-circuit or aboard the validation method:</P>
+<P>if(BrokenRulesCollection.Contains("PropertyName!RuleName")) return true;</P>
+<P>Ricky</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Fabio replied on Friday, July 28, 2006</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>rasupit:</strong></div><div><p>I would vote for processing stop at maxPriority when&nbsp;broken rule&nbsp;occurs.&nbsp; I also like the idea of using property instead of adding new overload to CheckRules method when enabling short circuit.&nbsp; I see this to be easier with code generation.</p></div></BLOCKQUOTE><br><br>I don't understand the problematic with a code generator...<br>A code generator can have predefined levels; for example: <i>all DB contraints have level=0</i>.<br>When we need to invoke CheckRules() or CheckRules(maxPriorityToCheck) ? i think only one time in the creation of a new instance of BO or... when you retrive an instance (i prefer the old approach: a saved BO is right).<br><br>With "warning" and "information", may be, we need some other special checkRules.... something like CheckNoSevereRules to check only warning and information rules when we retrive an editable BO.<br><br><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>rasupit:</strong></div><div><br>I would like to ask you to also consider adding&nbsp;rule-dependency
+feature.&nbsp; Many times I have use case where rule B need be tested when
+rule A is broken; and rule C need be tested when rule B is broken.<br></div></BLOCKQUOTE><br>Can you post an example?<br>I need an example because i have dependency between properties and not between rules.<br><br>Fabio.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rasupit replied on Friday, July 28, 2006</h2><P>Fabio, </P>
+<P>I said&nbsp;using property is&nbsp;easier does not necessary mean the overload approach is problematic.&nbsp; The overload can be implemented as follow:</P>
+<P>add member level variable:</P>
+<P>int _maxPriority = 0;</P>
+<P>then change create/fetch method in generated class to CheckRules(_maxPriority).&nbsp; When user decided to use short-circuiting, they will initialize _maxPriority to the level they choose. </P>
+<P>Because of these changes, any existing or on going application that would like to take advantage of this feature will need to regenerate their generated/base class; Not so using property.</P>
+<P>I meant to say "Many times I have use case where rule B need <STRONG>NOT</STRONG> be tested when rule A is broken; and rule C need <STRONG>NOT</STRONG> be tested when rule B is broken."</P>
+<P>This is an example how you'd implement rule-dependency in v1.x using BrokenRules.Assert:</P>
+<P>bool ruleAIsBroken = .... check for rule a here</P>
+<P>BrokenRules.Assert("RuleA", "Rule A is broken", ruleAIsBroken);</P>
+<P>if(!ruleAIsBroken)&nbsp; {</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp; bool ruleBIsBroken = .... check for rule b here</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp; BrokenRules.Assert("RuleB", "Rule B is broken", ruleBIsBroken);</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp; if(!ruleBIsBroken)</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; BrokenRules.Assert("RuleC", "Rule C is broken", .... check for rule c here);</P>
+<P>}</P>
+<P>Ricky</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Fabio replied on Friday, July 28, 2006</h2>Rocky i would like to know the opinion of the community about this schema:<br><br>Two kind of BR:
+<br>1) System (like an invoice must have a customer, CUSTOMERID is not nullable)
+<br>2) Customizable (like minimal import of an invoice is 2$)
+<br>
+<br>All customizables BRs have a Type:
+<br>1) Business (work like the kind system)
+<br>2) Forceble (role can force the rule to right when the rule 
+is broken)
+<br>3) Warning (one of my customer 
+would have a warning message when the invoice is 2$)
+<br>4) Information (for example a 
+customer have a payment set to chek but if the invoice have a total of 
+&gt;= 2$ the paiment of the invoice is automatically changed to cash)<br><br>The BO have a ValidationState:<br>1) Right<br>2) Broken<br>3) Forced right<br>4) Waring<br>5) Information<br>In the BO can be saved when .... IsValid return ValidationState!=Broken.<br>In the UI we can represent the state of the BO with a specific incon in a button and, clicking the button the user can read the list of broken rules of each type and, if needed, can force right the forceble rules.<br><br>Opinion?<br><br>Fabio.<br>P.S. I'm ready for hard-fire.. ;)<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>xal replied on Friday, July 28, 2006</h2>Just in case, I'm going to ask, because I see that we all make different assumptions on how this is meant to work...<br><br>I believe Severity and ShortCircuiting are two different features that have nothing to do with each other...<br>Is my assumption right Rocky? I believe that was the intention, but after seeing some of these posts I'm getting doubts...<br><br><br>Andrés<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Friday, July 28, 2006</h2>Ya, its getting confusing..<br><br>My take is that Severity is Error, Warning, or Info.. while Priority is 'this rule is to be checked first.'&nbsp; The short circuting is tied to the Priority.&nbsp; At least I think so.. <img src="/emoticons/emotion-42.gif" alt="Confused [*-)]" /><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, July 31, 2006</h2><P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>xal:</strong></div><div>Just in case, I'm going to ask, because I see that we all make different assumptions on how this is meant to work...<BR><BR>I believe Severity and ShortCircuiting are two different features that have nothing to do with each other...<BR>Is my assumption right Rocky? I believe that was the intention, but after seeing some of these posts I'm getting doubts...<BR><BR><BR>Andrés<BR></div></BLOCKQUOTE></P>
+<P>Yes, Severity and short-circuit/priority are two different things. They only intersect at one point, and that is whether a non-Error broken rule should cause short-circuiting to occur (i.e. a Warning is enough to short-circuit). At present I plan to only have Error severity short-circuit processing.</P>
+<P>Priority and short-circuting are directly linked. Without priority short-circuiting obviously can't work. While some edge cases may exist for priority alone, I'm really adding it to support short-circuiting.</P>
+<P>I like the threshold term and the simplicity (both in terms of use/documentation and implementation) of setting the threshold on ValidationRules. I think that should provide enough flexibility to solve the vast majority of scenarios.</P>
+<P>Another idea that did come to me while reading the comments (or maybe someone posted this and I sublimated the idea?) is to allow a rule to specifically request a short-circuit by setting e.StopProcessing to true. I think this would be orthogonal to normal short-circuiting by priorty threshold. In other words, setting e.StopProcessing=true would have an absolute and immediate effect - regardless of the Severity or Priority or any other factor.</P>
+<P>Then there's the concept of dependencies between rules. I do not intend to build this into the current rule method scheme, at least for 2.1. Partially this is because you can do this yourself with the infrastructure CSLA provides. Remember, rule methods are just methods. If you have a complex set of dependencies based on state, then you can have your rule methods work together to form a state machine or interact to establish a sort of rule-flow or whatever you choose.</P>
+<P>Given that the broken rules collection is public, you can have rules check to see if other rules are broken and change their behavor accordingly. Coupled with priorites, you can ensure that dependent rules run after the rules they depend on, so I think the pieces are there to do some pretty complex stuff.</P>
+<P>Yet another issue is whether to expose the object's rules through a public method or interface. As I've said before, I'm not adverse to this idea, but it is not clear to me how to expose these in a meaningful way. Yes, I could easily expose the rule names, but that may not capture the details embedded in the custom RuleArgs parameter, which is also important. All that said, I may still consider doing this because the ToString() rendering for RuleMethod and RuleArgs should result in something you could parse in some manner.</P>
+<P>What I'll toss out in this regard is this: I could change the way ToString() works in RuleMethod and RuleArgs to generate a "uri" for rules - like </P>
+<P>rule://method/property?param=blah</P>
+<P>or</P>
+<P>rule://method?property=blah&amp;param=blah</P>
+<P>The value to this is that (maybe) the System.Uri class could be used to parse such a thing rather than requiring a custom parser for the current method!property!param scheme.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>david.wendelken replied on Tuesday, August 01, 2006</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div>
+<P>Yet another issue is whether to expose the object's rules through a public method or interface. As I've said before, I'm not adverse to this idea, but it is not clear to me how to expose these in a meaningful way. Yes, I could easily expose the rule names, but that may not capture the details embedded in the custom RuleArgs parameter, which is also important. All that said, I may still consider doing this because the ToString() rendering for RuleMethod and RuleArgs should result in something you could parse in some manner.</P>
+<P>What I'll toss out in this regard is this: I could change the way ToString() works in RuleMethod and RuleArgs to generate a "uri" for rules - like </P>
+<P>rule://method/property?param=blah</P>
+<P>or</P>
+<P>rule://method?property=blah&amp;param=blah</P>
+<P>The value to this is that (maybe) the System.Uri class could be used to parse such a thing rather than requiring a custom parser for the current method!property!param scheme.</P>
+<P></div></BLOCKQUOTE></P>
+<P>That might work pretty well!&nbsp;&nbsp; Feels right, anyway.</P>
+<P>Or, for a simpler solution on your part,&nbsp;you could just expose a "ruleHelpText" property that the programmer who wrote the rule was expected to fill in with useful text.&nbsp; That changes the problem of "How do I deduce what the heck I should tell a user in human-understandable terms?" to "Let me show the ruleHelpText property in the list of rules."</P>
+<P>Not that I want to discourage you from giving us a programmatically accessible way to know what the rule parameters are... :)</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, August 01, 2006</h2>
+
+
+
+
+<DIV align=left><SPAN class=906063214-01082006><FONT face=Arial color=#0000ff size=2>Well right now you must override ToString() when you create 
+a custom RuleArgs class, and it is that ToString() value that gets merged into 
+the ToString() of the RuleMethod. In the existing code and book I just used "!" 
+as a separator, so the rule "name" ends up like</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=906063214-01082006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=906063214-01082006><FONT face=Arial color=#0000ff size=2>method!property!param!param!param</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=906063214-01082006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=906063214-01082006><FONT face=Arial color=#0000ff size=2>That is what you'd get now if I expose the 
+rules.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=906063214-01082006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=906063214-01082006><FONT face=Arial color=#0000ff size=2>Why would you show these to a human? I understand exposing 
+them for the purposes of testing/QA, but I fail to see what value this would 
+have to an end user?</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=906063214-01082006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=906063214-01082006><FONT face=Arial color=#0000ff size=2>Rocky</FONT></SPAN></DIV><BR>
+<BLOCKQUOTE>
+  <P>Or, for a simpler solution on your part,&nbsp;you could just expose a 
+  "ruleHelpText" property that the programmer who wrote the rule was expected to 
+  fill in with useful text.&nbsp; That changes the problem of "How do I deduce 
+  what the heck I should tell a user in human-understandable terms?" to "Let me 
+  show the ruleHelpText property in the list of 
+rules."</P></BLOCKQUOTE></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>xal replied on Tuesday, August 01, 2006</h2>Documentation perhaps?<br>We could just use something standard like the DescriptionAttribute() for that purpose.<br>It could help you to add a "Why is this error coming up?" link in an extended error provider... You could show what the rule is doing there, like:<br><br>Actual Error: "Invalid date"<br>Error description: "This validates that the end date is ten or more years after the start date, but only if the propertyx has a value on 'zzz'".<br><br>Andrés<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, August 01, 2006</h2><P>Yes, I think that was my point. Showing this stuff to an actual human could have value as you describe, but then you need to have some way to incorporate arbitrary and unknown RuleArgs parameters into the description text. </P>
+<P>Your example, for instance, is only good if the 10+ years is hard-coded. But a good rule method would get that value from a custom RuleArgs so it wouldn't be fixed at 10. To generate that description you'd need to somehow merge the args value into your text.</P>
+<P>I don't want to get involved in that game. I went down that road with the rule description attribute in version 1.3 and it was a mistake.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>david.wendelken replied on Wednesday, August 02, 2006</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div>
+<P>Yes, I think that was my point. Showing this stuff to an actual human could have value as you describe, but then you need to have some way to incorporate arbitrary and unknown RuleArgs parameters into the description text. </div></BLOCKQUOTE></P>
+<P>Um, not exactly.&nbsp; Not to get a list of business rules enforced by the object!&nbsp; </P>
+<P>Complex RuleArgs parameterization of the rule explanation text&nbsp;is&nbsp;not necessary.&nbsp;&nbsp; In fact, it's probably a bad idea.&nbsp; I've been doing rule-based architecture for quite a few years, and the overwhelming number of rules in my experience can be explained with a simple, non-parameterized description.&nbsp; Often, it only takes a simple declarative sentence.&nbsp; </P>
+<P>For documentation/ quality-assurance purposes it isn't essential either.&nbsp; </P>
+<P>I would be perfectly happy to supply the explanatory sentence when I write the rule.&nbsp; Since I proposed an optional rule definition parameter, other people could be equally happy not&nbsp;supplying one. :)&nbsp;</P>
+<P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div>Your example, for instance, is only good if the 10+ years is hard-coded. But a good rule method would get that value from a custom RuleArgs so it wouldn't be fixed at 10. To generate that description you'd need to somehow merge the args value into your text.<BR></div></BLOCKQUOTE></P>
+<P>I disagree.&nbsp; The rule explanatory text could simply be written as:</P>
+<P>Actual Error: 'Invalid date'<BR>Error description: "If Z-Type has a non-blank value, the End Date must be after Start Date by at least as many years as defined in Policy 135. (Menu option: Policies-&gt;List Business Policies)."</P>
+<P>Or, even spiffier: </P>
+<P>If Z-Type has a non-blank value, the End Date must be after Start Date by at least as many years as defined in &lt;a href="<A href="http://PolicyManual?Id=135">http://PolicyManual?Id=135</A>" target="_policy"&gt;Policy 135&lt;/a&gt;.</P>
+<P>With web services, I might even be able to get it to supply the value at run time.&nbsp; </P>
+<P>(But that's for me to learn later this year!&nbsp; Csla, C#, VB, ASP, regular expressions and javascript are keeping me pretty busy at the moment. :))</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, August 11, 2006</h2>
+
+
+
+
+<DIV align=left><FONT face=Arial color=#0000ff size=2><SPAN class=921021617-11082006>I did decide to add a method to ValidationRules to 
+generate and return a string array of rule descriptions. I also changed the way 
+rule descriptions are portrayed to follow a URI scheme</SPAN></FONT></DIV>
+<DIV align=left><FONT face=Arial color=#0000ff size=2><SPAN class=921021617-11082006></SPAN></FONT>&nbsp;</DIV>
+<DIV align=left><FONT face=Arial color=#0000ff size=2><SPAN class=921021617-11082006>rule://method/property</SPAN></FONT></DIV>
+<DIV align=left><FONT face=Arial color=#0000ff size=2><SPAN class=921021617-11082006></SPAN></FONT>&nbsp;</DIV>
+<DIV align=left><FONT face=Arial color=#0000ff size=2><SPAN class=921021617-11082006>rule://method/property?param=val</SPAN></FONT></DIV>
+<DIV align=left><FONT face=Arial color=#0000ff size=2><SPAN class=921021617-11082006></SPAN></FONT>&nbsp;</DIV>
+<DIV align=left><FONT face=Arial color=#0000ff size=2><SPAN class=921021617-11082006>Assuming you create your custom RuleArgs classes with a 
+ToString() like the new commonrules implementations, your rules will fit nicely 
+into this scheme as well.</SPAN></FONT></DIV>
+<DIV align=left><FONT face=Arial color=#0000ff size=2><SPAN class=921021617-11082006></SPAN></FONT>&nbsp;</DIV>
+<DIV align=left><FONT face=Arial color=#0000ff size=2><SPAN class=921021617-11082006>Note that I did not expose this method from 
+BusinessBase, only from ValidationRules. I'm leaving it up to you to decide how, 
+or if, you want to use this information in your business objects and/or 
+application. One approach, to accomplish your human-readable sentence scheme, 
+would be to use the rule string as a key to get the human-readable text from a 
+resource file or table.</SPAN></FONT></DIV>
+<DIV align=left><FONT face=Arial color=#0000ff size=2><SPAN class=921021617-11082006></SPAN></FONT>&nbsp;</DIV>
+<DIV align=left><FONT face=Arial color=#0000ff size=2><SPAN class=921021617-11082006>Rocky</SPAN></FONT></DIV><BR>
+<BLOCKQUOTE>
+  <P></P>
+  <P>Um, not exactly.&nbsp; Not to get a list of business rules enforced by the 
+  object!&nbsp; </P>
+  <P>Complex RuleArgs parameterization of the rule explanation 
+  text&nbsp;is&nbsp;not necessary.&nbsp;&nbsp; In fact, it's probably a bad 
+  idea.&nbsp; I've been doing rule-based architecture for quite a few years, and 
+  the overwhelming number of rules in my experience can be explained with a 
+  simple, non-parameterized description.&nbsp; Often, it only takes a simple 
+  declarative sentence.&nbsp; </P>
+  <P>For documentation/ quality-assurance purposes it isn't essential 
+  either.&nbsp; </P>
+  <P>I would be perfectly happy to supply the explanatory sentence when I write 
+  the rule.&nbsp; Since I proposed an optional rule definition parameter, other 
+  people could be equally happy not&nbsp;supplying one. :)&nbsp;</P>
+  <P>
+  <BLOCKQUOTE><STRONG></STRONG>&nbsp;</BLOCKQUOTE></BLOCKQUOTE></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>david.wendelken replied on Friday, August 11, 2006</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div> 
+
+<DIV align=left><FONT face=Arial color=#0000ff size=2><SPAN class=921021617-11082006>I did decide to add a method to ValidationRules to generate and return a string array of rule descriptions...</SPAN></FONT></div></BLOCKQUOTE></DIV>
+<DIV align=left>&nbsp;</DIV>
+<DIV align=left>Happy!&nbsp; Happy!&nbsp; Joy!&nbsp; Joy!&nbsp; :)</DIV>
+<DIV align=left>&nbsp;</DIV>
+<DIV align=left>On another note, I thought you would like to hear how well your framework is working out on my project.&nbsp;&nbsp; While I worked on the data processing algorithms for loading in data from other systems, my colleague started to work building the business objects I had specified.</DIV>
+<DIV align=left>&nbsp;</DIV>
+<DIV align=left>Here were the obstacles to success:</DIV>
+<UL>
+<LI>
+<DIV align=left>I'm brand new at OO design.</DIV></LI>
+<LI>
+<DIV align=left>She hadn't programmed in 4 months because she had been on maternity leave.</DIV></LI>
+<LI>
+<DIV align=left>She was suffering from sleep deprivation from her new baby.</DIV></LI>
+<LI>
+<DIV align=left>She hadn't read your book, and had no experience with this kind of framework either.</DIV></LI>
+<LI>
+<DIV align=left>I only had a couple of hours to go over the highlights of the framework for her, plus spot-time for occasional questions.</DIV></LI>
+<LI>
+<DIV align=left>I had only done about a dozen <STRONG>simple</STRONG> Csla objects myself (at home).</DIV></LI>
+<LI>
+<DIV align=left>We didn't have Visual Studio 2005 installed yet, and we're not allowed to install executables on our developer machines, so she couldn't compile anything she wrote.&nbsp; No intellisense either.</DIV></LI>
+<LI>
+<DIV align=left>Neither of us have a lot of ASP.Net or C# programming experience to begin with, and even less ASP.Net 2.0.</DIV></LI></UL>
+<P align=left>Basically, short of hitting her over the head and giving her amnesia, or breaking her fingers so she couldn't type, I can't think of a way to have made it harder.</P>
+<P align=left>She had about 50 objects coded in a week and a half, and it took another 2 days to tidy them up once the compiler got installed.&nbsp; Would have taken half that time if we had been able to correct misunderstandings with compiling/testing the first object in a series rather than replicating the same mistake in each follow-on object!&nbsp; </P>
+<P align=left>Two weeks after that, I've got about a dozen screens up and running, sweet as you please.&nbsp;&nbsp; If I had already known how the ASP.Net 2.0 controls worked, I could have easily done them in a week.&nbsp;&nbsp; I think after I've built another dozen pages, I could have done 2-4 pages a day, which would have&nbsp;cut the time in half.&nbsp; </P>
+<P align=left>The Csla portion was a dream to use!&nbsp; </P>
+<P align=left>I saw the&nbsp;PayPal donation button&nbsp;on your site and sent you a $25 thank you.&nbsp; If your publisher is like mine, that's about 8-12 book royalties. :)&nbsp;</P>
+<P align=left>Thanks for such a great job, and for sharing it with all of us!</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>HarvDotNet replied on Friday, July 28, 2006</h2><P>I love the new stuff being discussed for 2.1</P>
+<P>For my part I would like to see error/warning/info settings for rules. Errors prevent saving the data whereas warnings and info do not. It would be nice if you could require a supervisor override for warnings, but not for info. (If a clerk is entering data and they get a warning, they could call a supervisor to override by entering a password or something)</P>
+<P>I am not too concerned about short-circuiting. </P>
+<P>It seems that the order of processing is only important if you also implement short-circuiting. If you are always going to process all of the rules, maybe the order doesn't matter. Whereas if you use short circuiting then you might want to process some sooner than others. But, do you process the most critical ones first, or the ones that the user can most easily fix first? If you process the lowest cost rules first, you may find that there is another rule that the user cannot fix, but will not know about it until they have corrected more trivial conditions, only to find out that they still cannot finish processing the data.</P>
+<P>Is there a way to put rules into a table so that rules can be added or changed without re-compiling and distributing the application?</P>
+<P>Harvey Sather<BR>Saskatoon, Canada</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, July 31, 2006</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>HarvDotNet:</strong></div><div>
+<P>Is there a way to put rules into a table so that rules can be added or changed without re-compiling and distributing the application?</P>
+<P></div></BLOCKQUOTE></P>
+<P>Yes, you can do this. It does require a bit of reflection, because your table or config file needs to contain the assembly name, class name and method name of the rule method. Using that information you can create the appropriate delegate reference to associate with your property.</P>
+<P>The tricky part turns out to be dealing with custom RuleArgs objects, because you need to come up with a mechanism by which you can provide appropriate parameter data to your custom args parameter in a meta-data driven manner.</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

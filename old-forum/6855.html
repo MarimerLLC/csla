@@ -1,0 +1,72 @@
+<html><header><title>Refactoring with CSLA</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Refactoring with CSLA</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6855.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>OscarLauroba posted on Monday, April 27, 2009</h2><P>Here it's another one taking my first steps in CSLA world.<BR>The properties of&nbsp;businesses class are not only strings, integers or booleans and I want to do a little practice to learn how to abstract common code.<BR>I would like to consider some refactoring in the projectTracker, following the wise advices of Martin Fawler's book "Refactoring: Improving the Desing of Existing Code". <BR>Let's assume we want to extract the two <EM>Started</EM> and <EM>Ended </EM>properties of the <EM>Project</EM> class into a new one <EM>Period class</EM>. <BR>And also we want to extract the validation code of these two dates properties. If <EM>Ended</EM> has a value, this has to be later than <EM>Started</EM>. And <EM>Started</EM> is requiered.<BR>This would allow me to reuse the <EM>Period</EM> class in any other object.<BR>For example, <EM>Resource</EM> class could have a <EM>ContractPeriod</EM> property of <EM>Period </EM>Type.</P>
+<P>How can I do this?<BR>&nbsp;<BR>What I'm pretending is something like this:</P>
+<P><FONT face="Courier New" size=2>Class Period</FONT></P>
+<P><FONT face="Courier New" size=2>&nbsp;Private Shared StartedProperty As PropertyInfo(Of SmartDate) = RegisterProperty(New PropertyInfo(Of SmartDate)("Started"))<BR>&nbsp; Public Property Started() As String<BR>&nbsp;&nbsp;&nbsp; Get<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return GetProperty(Of SmartDate, String)(StartedProperty)<BR>&nbsp;&nbsp;&nbsp; End Get<BR>&nbsp;&nbsp;&nbsp; Set(ByVal value As String)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; SetProperty(Of SmartDate, String)(StartedProperty, value)<BR>&nbsp;&nbsp;&nbsp; End Set<BR>&nbsp; End Property</FONT></P>
+<P><FONT face="Courier New" size=2>&nbsp; Private Shared EndedProperty As PropertyInfo(Of SmartDate) = RegisterProperty(New PropertyInfo(Of SmartDate)("Ended", New SmartDate(SmartDate.EmptyValue.MaxDate)))<BR>&nbsp; Public Property Ended() As String<BR>&nbsp;&nbsp;&nbsp; Get<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return GetProperty(Of SmartDate, String)(EndedProperty)<BR>&nbsp;&nbsp;&nbsp; End Get<BR>&nbsp;&nbsp;&nbsp; Set(ByVal value As String)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; SetProperty(Of SmartDate, String)(EndedProperty, value)<BR>&nbsp;&nbsp;&nbsp; End Set<BR>&nbsp; End Property</FONT></P>
+<P><FONT face="Courier New" size=2>' ... Validation Code</FONT></P>
+<P><FONT face="Courier New" size=2>End Class</FONT></P>
+<P>And then, to replace the two properties in the Project Class by a reference to this new class:</P>
+<P><FONT face="Courier New" size=2>Private Shared ProjectPeriodProperty As PropertyInfo(Of Period) = RegisterProperty(New PropertyInfo(Of Period)("ProjectPeriod"))</FONT></P>
+<P><FONT face="Courier New" size=2>Public Readonly Property ProjectPeriod() As Period</FONT></P>
+<P><FONT face="Courier New" size=2>Get</FONT></P>
+<P><FONT face="Courier New" size=2>Return GetProperty(Of Period)(ProjectPeriodProperty)</FONT></P>
+<P><FONT face="Courier New" size=2>End Get</FONT></P>
+<P><FONT face="Courier New" size=2>End Property</FONT></P>
+<P>Now, if the UI developer wanted to access the project's dates would be able to write :</P>
+<P><FONT face="Courier New" size=2>Dim _project as Project.GetProject(idProject)<BR>Dim _startedDate as string = myProject.Period.Started<BR>Dim _endedDate as string = myProject.Period.Ended</FONT></P>
+<P>instead of </P>
+<P><FONT face="Courier New" size=2>Dim _startedDate as string = myProject.Started<BR>Dim _endedDate as string = myProject.Ended</FONT></P>
+<P>I have the same question about objects that have a key of several fields.<BR>If Resource object requiered compound keys (i.e. CompanyId and ResourceId )fields, Would it be unadvisable to extract the properties in a new Key Class and reuse it for the Criteria class?<BR>Fields in the criteria class are sometimes already defined in the business class. </P>
+<P>&nbsp;<FONT face="Courier New" size=2>&nbsp; _resource.Key.CompanyId=dataReader.GetString("CompanyId")<BR>&nbsp;&nbsp; _resource.Key.EmployeeId = dataReader.GetInteger("EmployeeId")</FONT></P>
+<P>Can I DataBind a property that's not a build-in type, like would be Period Class? <BR>Should these little components be child-objects? Validation for Started and Ended properties would have to be in the child-object?<BR></P>
+<P>Any sample that uses some property referring to another class will be welcome.<BR>Could I reuse the same Period Class in a ResourceInfo class to show the contract dates of the Resource to the user or Should I write a ReadOnlyBase PeriodInfo?</P>
+<P>Thank you very much for spending your time reading this. </P>
+<P>Oscar.</P>
+<P>PS: Excuse me for my poor English.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, April 27, 2009</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>OscarLauroba:</strong></div><div>
+<P>Let's assume we want to extract the two <EM>Started</EM> and <EM>Ended </EM>properties of the <EM>Project</EM> class into a new one <EM>Period class</EM>. <BR></div></BLOCKQUOTE></P>
+<P>The OO design philosophy supported by CSLA .NET is that objects are defined by behavior (reponsibility), not data.</P>
+<P>So the only reason you would do what you are describing is that your use case had some business requirement that defined a responsibility this Period class would fulfil. In other words, the job of the Period class must be substantially different from the job of the Project class or this doesn't make sense to start with.</P>
+<P>Beyond that, you have to consider that you are living in the .NET world, so you probably want your objects to be available for data binding. Otherwise you'll have to invent your own UI data binding infrastructure like people do on other platforms. That would be unpleasant!</P>
+<P>Not all data binding technologies support dot notation - which means that you really want to keep your object properties flat if you want to work with all UI types.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>OscarLauroba replied on Wednesday, April 29, 2009</h2><P>Thank you, Rocky, for your quick reply.</P>
+<P>Well, it seems that I'm not the only one worried about how to nesting editable child objects. I've been searching&nbsp;this forum and could find several subjects such as Nested B.O., Nested Properties, etc. (Sometimes it's hard to match what you're looking for.)</P>
+<P>I have a property that is an editable child object (not an editable child list). This child object has two properties and its validation rules (data and behaviour <img src="/emoticons/emotion-1.gif" alt="Smile [:)]" />). All seems working fine but the errorProvider of the winform. It&nbsp;doesn't show the error message if the validation of the child properties object fails.</P>
+<P>Rocky, Have you written any article talking about this? Do you think&nbsp;it's worth the effort? Is this a problem caused by not keeping my object properties flat?</P>
+<P>Thanks once more.</P>
+<P>Oscar.</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, April 29, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>The problem is that I don&#8217;t know of a good solution, so I&#8217;m
+not sure what an article would say :)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>In WPF/SL the issue is a little easier to deal with, because you
+can control the binding at a more granular level. But in Windows Forms it is
+really quite hard, because the binding is at the parent object level, and they
+really don&#8217;t seem to support the concept of binding to a child that isn&#8217;t
+in a collection.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,13 @@
+<html><header><title>best practice question - foreign key safe?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>best practice question - foreign key safe?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9836.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>DaveMon posted on Monday, December 06, 2010</h2><p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>I have a question about best practices -&nbsp; We have a CSLA based web app,&nbsp; that stores information in a session while the user works, through multiple pages, before saving to db.</p>
+<p>I have corrected a bug in the system,&nbsp; but have a question on what CSLA experts recommend as a best practice.</p>
+<p>**Background<br />my app works with surety bonds, each Bond has a Broker, and each Broker has a BrokerId (and many other fields also)</p>
+<p>So we end up with code like this-</p>
+<p>**example code*****</p>
+<p>&nbsp;&nbsp; if (SessionValue.CurrentADUser.IsAdmin)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;SessionValue.CurrentRequest.Bond.BrokerId = 1; <br />&nbsp;&nbsp;&nbsp;&nbsp; }</p>
+<p>**example code*****</p>
+<p>Other sections of the code refer to these brokerId a different way, by not using a foreign key i.e&nbsp; &quot;CurrentRequest.Bond.Broker.BrokerId&quot;&nbsp; instead of&nbsp; &quot;CurrentRequest.Bond.BrokerId&quot;</p>
+<p><br />I have been tasked with finding out if using foreign keys in this manner is: A. Safe and B.&nbsp; recommended by CSLA as a best practice.?</p>
+<p>Can someone please shed some light if this technique is a big no-no/ not recommended?&nbsp; Thanks in advance!</p>
+<p>Dave</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

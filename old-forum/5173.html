@@ -1,0 +1,86 @@
+<html><header><title>CSLA Light Sample code?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA Light Sample code?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5173.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonM posted on Wednesday, July 30, 2008</h2><P>I see the preview of CSLA 3.6 and CSLA Light are up.&nbsp; I can download and complile both of them.&nbsp; I really want to play with CSLA and Silverlight but I'm not sure where to start.&nbsp;&nbsp; I know there are books coming from Rocky.&nbsp; Does anyone have a sample business object/collection for CSLA Light??</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Wednesday, July 30, 2008</h2>I suspect you'll probably have to be the pioneer on this forum when playing with those versions... let me know how it goes!<br><br>I'm still trying to get my BOs updated to use Managed fields..<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, July 30, 2008</h2><P>I'm doing a series of how-to posts on my blog at <A href="http://www.lhotka.net/weblog">www.lhotka.net/weblog</A></P>
+<P>They cover the <EM>next</EM> pre-release of the code, which will be very soon, but much of what I've covered thus far would work (or be very close) to the last pre-release.</P>
+<P>Of course none of these pre-releases are even beta. I'm not even calling them alpha - just pre-releases so you can see what's coming (more or less).</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonM replied on Thursday, July 31, 2008</h2>Awsome.&nbsp; Thanks Rocky!</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>paupdb replied on Thursday, July 31, 2008</h2>I've been working with the Subversion copies for a few weeks already.<br><br>I used the test harnesses to figure out some of the implementation - look at trunk/cslalighttest in particular.<br>You'll need trunk/cslalight, trunk/Dependencies, as well as cslacs36 and cslatest36 from the branches directory too in order to compile and run the test harness.&nbsp; <br><br>To compile, what I did is checked out the above folders to my local machine, then exported the folders to a common root folder, removing the "36" from the branch directories.&nbsp; <br><br>So I end up with the following structure:<br><br>root folder:<br>|-- cslacs<br>|-- cslatest<br>|-- cslalight<br>|-- cslalighttest<br>|-- Dependencies<br><br>Then run the solution in cslalighttest\Unit Test, making sure to set the startup project to be Web.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>acheema replied on Thursday, July 31, 2008</h2>Hi,<br>I setup the project as you stated in your post. All projects got compiled, except one SecuritTests.cs is giving following error:<br><br>Error&nbsp;&nbsp;&nbsp; 1&nbsp;&nbsp;&nbsp; The type or namespace name 'TestBase' could not be found (are you missing a using directive or an assembly reference?)&nbsp;&nbsp;&nbsp; J:\My Downloads\CSLA\CSLA 3.6 Preview\cslatest\Csla.Test\Silverlight\Security\SecurityTests.cs&nbsp;&nbsp;&nbsp; 23&nbsp;&nbsp;&nbsp; 32&nbsp;&nbsp;&nbsp; Cslacs.Test<br><br>I am using CSLA 2.1 for quite some time, but this is first time to interact with CSLA 3.6, and with UnitTest projects.<br><br>Thanks.<br><br>Asad.<br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, July 31, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Did you get and install all the prerequisites listed on the
+download page and/or in the readme files?<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>It sounds like you might be missing nunit or UnitDriven or something?<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Then again, if you are pulling the code directly from svn you
+could have caught it at a moment when the checked in code won&#8217;t build &#8211;
+that happens from time to time, as we have 5-6 people working on the code base
+at once&#8230;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>This 3.6 and CSLA Light stuff is <i>very much in a state of
+change</i>, and is what most people would consider &#8220;bleeding edge&#8221;
+right now.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> acheema
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Thursday, July 31, 2008 7:53 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] CSLA Light Sample code?<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Hi,<br>
+I setup the project as you stated in your post. All projects got compiled,
+except one SecuritTests.cs is giving following error:<br>
+<br>
+Error&nbsp;&nbsp;&nbsp; 1&nbsp;&nbsp;&nbsp; The type or namespace name
+'TestBase' could not be found (are you missing a using directive or an assembly
+reference?)&nbsp;&nbsp;&nbsp; J:\My Downloads\CSLA\CSLA 3.6
+Preview\cslatest\Csla.Test\Silverlight\Security\SecurityTests.cs&nbsp;&nbsp;&nbsp;
+23&nbsp;&nbsp;&nbsp; 32&nbsp;&nbsp;&nbsp; Cslacs.Test<br>
+<br>
+I am using CSLA 2.1 for quite some time, but this is first time to interact
+with CSLA 3.6, and with UnitTest projects.<br>
+<br>
+Thanks.<br>
+<br>
+Asad.<br>
+<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>acheema replied on Friday, August 01, 2008</h2>Rocky, thanks for quick response. I went through the all the Readme.txt file, and check all configurations. That seems to me ok. I also download NUnit framewok, cuz. nunit.framework.dll was missing from Dependencies/ folder too. The 'TestBase' error was occuering, cuz refrence to UnitDriven namespace was missing from SecurityTests.cs file.<br>Know I came across another namespace 'Csla.Test.Silverlight.Engine' error is missing, and I was unable to find where this namespace exists. By commenting is out, finally, the project got compliled successfully.<br><br>Is 'Csla.Test.Silverlight.Engine' namespace is mandatory for testing?<br><br>Thnaks for the help.<br><br>Asad. &nbsp; <br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

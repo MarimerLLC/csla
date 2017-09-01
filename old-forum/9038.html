@@ -1,0 +1,15 @@
+<html><header><title>How to configure IIS 7 on 64-bit Windows 7 to run 32-bit .NET 4 C# code</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>How to configure IIS 7 on 64-bit Windows 7 to run 32-bit .NET 4 C# code</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9038.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonStonecash posted on Friday, June 04, 2010</h2><p>I am getting the error &quot;Could not load file or assembly &#39;CN.NET.Authorization&#39; or one of its dependencies. An attempt was made to load a program with an incorrect format.&quot; when I attempt to access my CSLA assemblies via WCF.&nbsp; I have marked all of my code as X86.&nbsp; I am using the ASP.NET V4.0 application pools; I have also tried the ASP.NET V4.0 Classic as well. I am using VS2010.</p>
+<p>Everything works just fine when IIS is not involved.&nbsp; </p>
+<p>What do I do to get IIS to &quot;play nice&quot; with my code?&nbsp; </p>
+<p>Jon Stonecash</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonStonecash replied on Friday, June 04, 2010</h2><p>I figured this out with some help from my co-workers.&nbsp; You have to configure the IIS application pools to allow 32 bit code.&nbsp; here is how to do it:</p>
+<ol>
+<li>Bring up IIS Manager.</li>
+<li>Open up the tree on the left to the point where you can see the Application Pools.</li>
+<li>Click on the Application Pools.&nbsp; You will see a grid of the available application pools.</li>
+<li>Click on the application pool that you want to allow 32-bit code for.</li>
+<li>Select the &quot;Advanced Setting...&quot; link on the right-hand side of the display.</li>
+<li>Flip the &quot;Enable 32-bit Applications&quot; value to true.</li>
+<li>Say OK to everything.</li>
+<li>Repeat for any other app pools.</li>
+</ol>
+<p>Jon Stonecash</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

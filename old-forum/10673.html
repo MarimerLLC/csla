@@ -1,0 +1,54 @@
+<html><header><title>Session state is not available in this context - AcquireRequestState in Global.asax</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Session state is not available in this context - AcquireRequestState in Global.asax</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10673.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>tarekahf posted on Sunday, September 11, 2011</h2><p>Since implemetning CSLA .NET for VS 2005, I was getting occasional problems in &quot;<span>Application_AcquireRequestState&quot; in Global.asax. The causes were due server session lost before the Forms Authentication Ticket has expired. This causes the application to be logged-in from the client, but not logged in on the server. Actually, such cases were conflicting in other parts inside my application, where some ASPX pages are protected, and others are not protected. In some&nbsp;pages, authentication need to take place inside the page, in order to avoid redirection, and to avoid loosing the &quot;Request.InputStream&quot;.</span></p>
+<p>Also, in some cases, I was getting this error inside &quot;<span>Application_AcquireRequestState&quot;:</span></p>
+<p>Session state is not available in this context<br />Error Code: <span>-2147467259</span></p>
+<p><span>I found out later the code was update in CSLA .NET for VS 2008. I used it, and I found that such problems have been resolved. Eventually I had to udpate the code to be as follows in order to make it work for all cases:</span></p>
+<p><span></span></p>
+<pre>    Protected Sub Application_AcquireRequestState( _
+      ByVal sender As Object, ByVal e As System.EventArgs)
+        Dim DoSkip As Boolean = False
+        Dim theAnnonymousPrincipal As System.Security.Principal.GenericPrincipal = Nothing
+        Dim theUrlAccessForAnnonymousPrincipal As Boolean = False
+  
+        Dim principal As System.Security.Principal.IPrincipal = nothing
+        Try
+            principal = _
+              CType(Session(&quot;CslaPrincipal&quot;), System.Security.Principal.IPrincipal)
+        catch ex as System.Web.HttpException
+            if ex.ErrorCode = -2147467259 then
+                DoSkip = True
+            end if
+        Catch ex as Exception
+            principal = Nothing
+        End Try
+        If Not DoSkip Then
+            If principal Is Nothing Then
+                theAnnonymousPrincipal = New System.Security.Principal.GenericPrincipal(New System.Security.Principal.GenericIdentity(&quot;&quot;), Nothing)
+                theUrlAccessForAnnonymousPrincipal = UrlAuthorizationModule.CheckUrlAccessForPrincipal(Request.Url.LocalPath, theAnnonymousPrincipal, &quot;POST&quot;)
+                &#39; if the requested page is public, then no need to re-authenticate.
+                If Not theUrlAccessForAnnonymousPrincipal Then
+                    If User.Identity.IsAuthenticated AndAlso _
+                        TypeOf User.Identity Is FormsIdentity Then
+                        FormsAuthentication.SignOut()
+                        Response.Redirect(Request.Url.PathAndQuery)
+                    End If
+                    &#39; didn&#39;t get a principal from Session, so
+                    &#39; set it to an unauthenticted PTPrincipal
+                    CSLAIDB.Library.Security.IDBPrincipal.Logout()
+                End If
+            Else
+                &#39; use the principal from Session
+                Csla.ApplicationContext.User = principal
+            End If
+        End If
+    End Sub
+</pre>
+<p><span></span></p>
+<p><span>The above code has solved the following problems (after testing it for a few days):</span></p>
+<p><span>1. When the Server Session has expired, and need to re-authenticate inside a public page.</span></p>
+<p><span>2. Need to maintain the Submitted stream using &quot;Reques.InputStream&quot;</span></p>
+<p><span>3. Avoid occasional error &quot;Session state is not available in this contect&quot;.</span></p>
+<p><span>I posted this in case someone else find it useful.</span></p>
+<p><span>Tarek.</span></p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>tarekahf replied on Monday, October 10, 2011</h2><p>Just to confirm that the above code is working very well since it was deployed live.</p>
+<p>Also, I want to add that you need to make sure that the TimeOut Period of the authentication Cokie is longer than the TimeOut of the Server Side Session.</p>
+<p>Hope this will be helpful to others.</p>
+<p>Tarek.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

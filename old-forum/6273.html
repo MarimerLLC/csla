@@ -1,0 +1,16 @@
+<html><header><title>Updating opened list (winpart)</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Updating opened list (winpart)</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6273.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Ton Smeets posted on Wednesday, January 28, 2009</h2><P>Hi,</P>
+<P>I added a virtual method to WinPart like:</P>
+<P>Public Virtual void UpdateDataSource()</P>
+<P>{</P>
+<P>&nbsp;&nbsp;&nbsp;// Override this method to update the datasource of a read-only listing-winpart</P>
+<P>}</P>
+<P>This metod is called in ShowWinPart(Winpart part) in my MainForm before the part.BringToFront() method is called.</P>
+<P>In my listing-winparts I override this method with&nbsp;for example the&nbsp;following code:</P><FONT size=2><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>override</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>void</FONT><FONT size=2> UpdateDataSource()</P>
+<P>{</P>
+<P></FONT>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_list = </FONT><FONT color=#2b91af size=2>CustomerList</FONT><FONT size=2>.GetList();</P>
+<P></FONT><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;this</FONT><FONT size=2>.CustomerListBindingSource.DataSource = _list;</FONT></P><FONT size=2><FONT size=2>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ApplyAuthorizationRules</FONT>();</P>
+<P>}</P>
+<P>Is this the normal way to update a datagrid, or do I get in trouble in the future. Is there a better way to update my WinPart.</P>
+<P>Thank's</P></FONT></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

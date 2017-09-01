@@ -1,0 +1,50 @@
+<html><header><title>CSLA 2.0 Event Serialization w/ Windows Form and Remoting</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA 2.0 Event Serialization w/ Windows Form and Remoting</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3391.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>jchau posted on Thursday, August 16, 2007</h2><P>I am creating a clickonce windows application that uses remoting to perform operations on the server.&nbsp; I have a simple DataHandler class that inherits CommandBase.&nbsp; The DataPortal_Execute function performs a series of time consuming tasks and I want to notify the caller of some progress via an event called ProgressUpdate().&nbsp; In my windows form, I attach an event handler to ProgressUpdate but that event never gets called.</P>
+<P>Here's the code for my DataHandler class:</P><FONT size=2>
+<P>&lt;Serializable()&gt; _</P></FONT><FONT color=#0000ff size=2>
+<P>Public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Class</FONT><FONT size=2> DataHandler</FONT></P>
+<BLOCKQUOTE dir=ltr>
+<P><FONT color=#0000ff size=2>Inherits</FONT><FONT size=2> CommandBase</P></BLOCKQUOTE>
+<BLOCKQUOTE dir=ltr>
+<P></FONT><FONT color=#0000ff size=2>Public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Delegate</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Sub</FONT><FONT size=2> ProgressDelegate(</FONT><FONT color=#0000ff size=2>ByVal</FONT><FONT size=2> aMessage </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>String</FONT><FONT size=2>)</P>
+<P>&lt;NonSerialized()&gt; _</P>
+<P></FONT><FONT color=#0000ff size=2>Private</FONT><FONT size=2> mNonSerializable </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> ProgressDelegate</P>
+<P></FONT><FONT color=#0000ff size=2>Public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Custom</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Event</FONT><FONT size=2> ProgressUpdate </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> ProgressDelegate</P>
+<BLOCKQUOTE dir=ltr>
+<P></FONT><FONT color=#0000ff size=2>AddHandler</FONT><FONT size=2>(</FONT><FONT color=#0000ff size=2>ByVal</FONT><FONT size=2> value </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> ProgressDelegate)</P>
+<BLOCKQUOTE dir=ltr>
+<P>mNonSerializable = </FONT><FONT color=#0000ff size=2>CType</FONT><FONT size=2>([Delegate].Combine(mNonSerializable, value), ProgressDelegate)</P></BLOCKQUOTE>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>AddHandler</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>RemoveHandler</FONT><FONT size=2>(</FONT><FONT color=#0000ff size=2>ByVal</FONT><FONT size=2> value </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> ProgressDelegate)</P>
+<BLOCKQUOTE dir=ltr>
+<P>mNonSerializable = </FONT><FONT color=#0000ff size=2>CType</FONT><FONT size=2>([Delegate].Remove(mNonSerializable, value), ProgressDelegate)</P></BLOCKQUOTE>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>RemoveHandler</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>RaiseEvent</FONT><FONT size=2>(</FONT><FONT color=#0000ff size=2>ByVal</FONT><FONT size=2> aMessage </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>String</FONT><FONT size=2>)</P>
+<BLOCKQUOTE dir=ltr>
+<P></FONT><FONT color=#0000ff size=2>If</FONT><FONT size=2> mNonSerializable </FONT><FONT color=#0000ff size=2>IsNot</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Nothing</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Then</FONT><FONT size=2> mNonSerializable(aMessage)</P></BLOCKQUOTE>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>RaiseEvent</P></BLOCKQUOTE></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Event</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Protected</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Overrides</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Sub</FONT><FONT size=2> DataPortal_Execute()</P>
+<BLOCKQUOTE dir=ltr>
+<P></FONT><FONT color=#0000ff size=2>RaiseEvent</FONT><FONT size=2> ProgressUpdate(</FONT><FONT color=#a31515 size=2>"Starting..."</FONT><FONT size=2>)</P>
+<P></FONT><FONT color=#008000 size=2>'do some task</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>RaiseEvent</FONT><FONT size=2> ProgressUpdate(</FONT><FONT color=#a31515 size=2>"Task1 finished."</FONT><FONT size=2>)</P>
+<P></FONT><FONT color=#008000 size=2>'do some task</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>RaiseEvent</FONT><FONT size=2> ProgressUpdate(</FONT><FONT color=#a31515 size=2>"Task2 finished."</FONT><FONT size=2>)</P>
+<P></FONT><FONT color=#008000 size=2>'cleanup</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>RaiseEvent</FONT><FONT size=2> ProgressUpdate(</FONT><FONT color=#a31515 size=2>"Finished successfully."</FONT><FONT size=2>)</P></BLOCKQUOTE>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Sub</P></BLOCKQUOTE></FONT><FONT size=2></FONT>
+<P><FONT color=#0000ff size=2></P>
+<P>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Class</FONT></P>
+<P><FONT color=#000000>If I remove the 'NonSerialized()' attribute from the event, I get an error with dataportal trying to reference my windows form dll.&nbsp; </FONT></P>
+<P><FONT color=#0000ff size=2><FONT color=#000000></FONT>&nbsp;</P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, August 21, 2007</h2><P>You need to do extra work to get callbacks to flow through remoting. An event is merely a method callback, so it has the same issue.</P>
+<P>You should read Ingo Rammer's Remoting book for background, and you should be aware that there is no good solution here for complex networking environments. I believe I've answered&nbsp;questions about this on the forum in the past, so you may try doing some searches.</P>
+<P>But...</P>
+<OL>
+<LI>Your client must have a routable IP address - that is to say that the server MUST be able to "ping" the client</LI>
+<LI>You must configure your client as a remoting listener.</LI>
+<LI>You must create a MarshalByRefObject (MBRO) on the client</LI>
+<LI>You must pass a reference to your MBRO to the server along with your call - in your case probably as a field within the command object</LI>
+<LI>Calls on the MBRO on the server will then be routed to the actual object instance running on your client</LI>
+<LI>Keep in mind that the server calls will be on a background thread, so you MUST marshal the call from that background thread to your UI thread before trying to manipulate the UI in any way!</LI></OL>
+<P>There are variations on this theme, but this is the basic structure of what needs to be done to do callbacks through remoting. </P>
+<P>The killer is #1, because many client workstations aren't reachable from a server due to NAT or firewall issues. If that's the case, you are finished before you start; with one exception: there used to be some third-party remoting channels that did bi-directional TCP socket connections. If you can find one of them you can avoid most NAT/firewall routing issues.</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

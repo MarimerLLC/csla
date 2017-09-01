@@ -1,0 +1,42 @@
+<html><header><title>WCF SmartDate override ToString</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>WCF SmartDate override ToString</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3094.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>dob_xml posted on Tuesday, June 26, 2007</h2><P>&nbsp;Hi,</P>
+<P>This might be a bit premature but here goes anyway....</P>
+<P>I am passing a SmartDate in WCF</P><FONT size=2>
+<P>[</FONT><FONT color=#2b91af size=2>DataContract</FONT><FONT size=2>]</P>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>class</FONT><FONT size=2> </FONT><FONT color=#2b91af size=2>RegulatedEntity</P></FONT><FONT size=2>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>void</FONT><FONT size=2> AddDate(</FONT><FONT color=#2b91af size=2>SmartDate</FONT><FONT size=2> date)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (_dates == </FONT><FONT color=#0000ff size=2>null</FONT><FONT size=2>)</P>
+<P>{</P>
+<P>_dates = </FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> </FONT><FONT color=#2b91af size=2>List</FONT><FONT size=2>&lt;</FONT><FONT color=#2b91af size=2>SmartDate</FONT><FONT size=2>&gt;();</P>
+<P>}</P>
+<P>_dates.Add(date);</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>private</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>string</FONT><FONT size=2> _name;</P>
+<P>[</FONT><FONT color=#2b91af size=2>DataMember</FONT><FONT size=2>]</P>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>string</FONT><FONT size=2> Name</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>get</FONT><FONT size=2> { </FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> _name; }</P>
+<P></FONT><FONT color=#0000ff size=2>set</FONT><FONT size=2> { _name = </FONT><FONT color=#0000ff size=2>value</FONT><FONT size=2>; }</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>private</FONT><FONT size=2> </FONT><FONT color=#2b91af size=2>List</FONT><FONT size=2>&lt;</FONT><FONT color=#2b91af size=2>SmartDate</FONT><FONT size=2>&gt; _dates;</P>
+<P>[</FONT><FONT color=#2b91af size=2>DataMember</FONT><FONT size=2>]</P>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#2b91af size=2>List</FONT><FONT size=2>&lt;</FONT><FONT color=#2b91af size=2>SmartDate</FONT><FONT size=2>&gt; Dates</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>get</FONT><FONT size=2> { </FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> _dates; }</P>
+<P></FONT><FONT color=#0000ff size=2>set</FONT><FONT size=2> { _dates = </FONT><FONT color=#0000ff size=2>value</FONT><FONT size=2>; }</P>
+<P>}</P>
+<P>}</P>
+<P>On the client side I bind with </P><FONT size=2>
+<P>cmbCOBDate.DisplayMember = </FONT><FONT color=#a31515 size=2>"Text"</FONT><FONT size=2>;</P>
+<P>cmbCOBDate.DataSource = regEnt.Dates;</P>
+<P>Where regEnt is an instance of <FONT color=#2b91af>RegulatedEntity. It appears that SmartDate.ToString is not been overridden and I get WinFormsClient.RegGAEService.SmartDate in stead of the formated date.&nbsp; _format is coming through fine.</FONT></P>
+<P><FONT color=#2b91af></FONT>&nbsp;</P>
+<P><FONT color=#2b91af>Any ideas?</FONT></P>
+<P><FONT color=#2b91af>Thanks in advance<FONT size=1></P></FONT></FONT></FONT></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, June 26, 2007</h2><P>It is important to realize that on the client you <EM>do not have a SmartDate</EM>!!</P>
+<P>WCF works just like web services: when you add a service reference, VS creates for you a whole set of types that have the same <EM>shape</EM> as the server types, but not the same <EM>behavior</EM>.</P>
+<P>So no, ToString() is not overridden in the VS-generated proxy class being used by the client.</P>
+<P>However, I think (am not sure) that those proxy classes are partial classes. So I think you can extend them, and so you could add a ToString() override in your partial class code.</P>
+<P>But don't expect the client to have any of the other SmartDate behaviors either - date-to-text or text-to-date or empty value support or ...&nbsp;&nbsp;&nbsp; On the client you just have a data transfer object (DTO) that looks like, but doesn't act like, a SmartDate.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>dob_xml replied on Tuesday, June 26, 2007</h2><P>Thanks for that. </P>
+<P>&nbsp;</P>
+<P>This leads me on to ask how does CSLA work with WCF when it only sends the data?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, June 26, 2007</h2>The WCF data portal channel uses some deeper features&nbsp;of WCF (most notably the NetDataContractSerializer)&nbsp;that <EM>can</EM> clone objects just like the BinaryFormatter. But the default behavior is to act more like web services by using the DataContractSerializer.</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

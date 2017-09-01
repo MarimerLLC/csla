@@ -1,0 +1,166 @@
+<html><header><title>Default Implementation of BusinessListBase.DataPortal_Update() - doesn't coorespond with book.</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Default Implementation of BusinessListBase.DataPortal_Update() - doesn't coorespond with book.</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6265.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>DCottle posted on Tuesday, January 27, 2009</h2><P>In Chapter 5 of your C# 2008 Business Objects book, you state that "The BusinessListBase class includes a default implementation of the DataPortal_Update() method, which loops through all child objects (and deleted child objects) to ensure the appropriate Child_XYZ method is called on each when the collection is being saved."</P>
+<P>Yet, when i look at the code in the BusinessListBase class, all I see is a NotSupportedException being thrown in DataPortal_Update.</P>
+<P>Furthermore, you implemented within your Roles class in ProjectTracker similiar code that simply turns around and fires the Child_Update() method.</P>
+<P>This omission means that we need to implement in each of our own BusinessListBase objects the desired behavior of calling the Child_Update method manually, correct?&nbsp; This assumes that we actually want to allow edits on the BusinessListBase children to be saved.</P>
+<P>Please tell me if I am missing something here...</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, January 27, 2009</h2>That's an error - the sentence is referring to the Child_Update() implementation that loops through the child objects. <br><br>You do need to implement DataPortal_Update(), because it is your responsibility to open the appropriate database connection (or whatever) so the child objects can be updated.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>DCottle replied on Tuesday, January 27, 2009</h2><P>Thanks Rocky! </P>
+<P>One quick question though, with the connection pooling that you provide using your ConnectionManager, wouldn't we be able to delegate the connection string down into the Child_Update portion, thuse allowing the DataPortal_Update method to have a default implementation that calls the Child_Update?</P>
+<P>I do not know if this makes sense at all...just thinking.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, January 27, 2009</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>If the BLB is a root object, then there&#8217;s no pre-existing
+connection. It is always the root object&#8217;s job to open/close the
+connection &#8211; and that&#8217;s something CSLA can&#8217;t do for you.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>If the BLB is a child object (so it is owned by some other root
+object), then you have to implement nothing in the collection, because its
+parent will have triggered the Child_Update() method by calling either the
+FieldManager or DataPortal methods to trigger child updates. Of course in this
+case that other root object has the responsibility to open/close the
+connection.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> DCottle
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Tuesday, January 27, 2009 10:53 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] Default Implementation of
+BusinessListBase.DataPortal_Update() - doesn't coorespond with book.<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Thanks Rocky! <o:p></o:p></p>
+
+<p>One quick question though, with the connection pooling that you provide
+using your ConnectionManager, wouldn't we be able to delegate the connection
+string down into the Child_Update portion, thuse allowing the DataPortal_Update
+method to have a default implementation that calls the Child_Update?<o:p></o:p></p>
+
+<p>I do not know if this makes sense at all...just thinking.<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Monday, February 02, 2009</h2><BLOCKQUOTE><div><img src="/Themes/basicblue/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div>You do need to implement DataPortal_Update(), because it is your responsibility to open the appropriate database connection (or whatever) so the child objects can be updated.</div></BLOCKQUOTE><br><br>I have a question regarding this.&nbsp; In BB, you can call FieldManager.UpdateChildren( params[] ) to update the children.&nbsp; For a root BLB, there's no FieldManager property.&nbsp; Do you have to manually loop through and call DataPortal.UpdateChild for each instance in the list?<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rsbaker0 replied on Monday, February 02, 2009</h2>There is a Child_Update() method on BLB that will do this. The child data portal appears to call it via reflection, but I suspect you can also use it directly in a BLB derived class. </div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Monday, February 02, 2009</h2>Ok, I'll check that out and see if I can just call base.Child_Update.<br><br>Thanks!<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, February 02, 2009</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>In a root BLB you should be able to call Child_Update() to
+trigger the updates:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>protected override void DataPortal_Update()<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>{<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp; // open db connection<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp; Child_Update();<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp; // close db connection<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>}<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> ajj3085
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Monday, February 02, 2009 10:22 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] Default Implementation of
+BusinessListBase.DataPortal_Update() - doesn't coorespond with book.<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<blockquote>
+
+<div>
+
+<p class=MsoNormal><span><img width=100 height=100 id="_x0000_i1025" alt="Image removed by sender."></span><strong>RockfordLhotka:</strong><o:p></o:p></p>
+
+</div>
+
+<div>
+
+<p class=MsoNormal>You do need to implement DataPortal_Update(), because it is
+your responsibility to open the appropriate database connection (or whatever)
+so the child objects can be updated.<o:p></o:p></p>
+
+</div>
+
+</blockquote>
+
+<p class=MsoNormal><br>
+<br>
+I have a question regarding this.&nbsp; In BB, you can call
+FieldManager.UpdateChildren( params[] ) to update the children.&nbsp; For a
+root BLB, there's no FieldManager property.&nbsp; Do you have to manually loop
+through and call DataPortal.UpdateChild for each instance in the list?<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Monday, February 02, 2009</h2>That does the trick, thanks!<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RobertSmith replied on Sunday, December 13, 2009</h2>Am I correct in thinking that the db connection is opened in order to prevent distributed transactions from being used?</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>CyclingFoodmanPA replied on Sunday, December 13, 2009</h2><P>The Csla.Data "manager" types exist to help you reuse the same connection for all your objects. This is a technique you can use with System.Transactions.TransactionScope transactions to avoid having TransactionScope use the DTC.</P>
+<P>So yes, the idea is to avoid unnecessary use of an expensive distributed transaction.</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

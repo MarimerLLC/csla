@@ -1,0 +1,12 @@
+<html><header><title>Question on Object Structure</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Question on Object Structure</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/795.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Bonio posted on Thursday, August 03, 2006</h2><P>Hi All</P>
+<P>I have a question about filling an object. The object in question handles Customers and it is made up as follows:</P>
+<P>Customer (EO)</P>
+<P>&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;CustomerContactList(ECL)</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- CustomerContact(EC)</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- PhoneList (ECL)</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-PhoneContact(EC)</P>
+<P>&nbsp;</P>
+<P>It is a bit complicated, but is required. I can load the Customer, CustomerContactList and associated CustomerContacts from one stored proc, however, I am unable to get the PhoneContacts from the sp.</P>
+<P>What I do for the PhoneList is to load them individually from a separate sp as each CustomerContact is filled. The problem I have found is that because the PhoneList does not use the same connection as the rest of the fetch, I get a 'DTC is not installed on the server' error. Question is: do I need to use TransactionScope for fetch operations and is there a more logically way for producing what I am trying to do???</P>
+<P>TIA</P>
+<P>-Bonio-</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>xal replied on Thursday, August 03, 2006</h2>No, you definitely don't need transactions for fetching data...<br>You can also pass the connection around as you would when you save data.<br>Another viable option is to create a strongly typed dataset with relations, and fill that with just one sproc.<br>And then, you pass around datarows, and grand children would be loaded by navigating the datarow relations....<br><br>Andrés<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

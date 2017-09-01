@@ -1,0 +1,86 @@
+<html><header><title>System.MissingMethodException: Method not found: System.Object System.Windows.Threading.Dispatcher.Invoke</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>System.MissingMethodException: Method not found: System.Object System.Windows.Threading.Dispatcher.Invoke</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6716.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>davido_xml posted on Wednesday, April 01, 2009</h2><P>Hi,</P>
+<P>I deployed my&nbsp;CSLALight app to IIS5 with no problem but when I deployed to IIS6 I am gettiung the following exception. I don't *think* I did anything wildly different for the deployments.</P>
+<P>&nbsp;</P>
+<P>Does anyone have an idea what may cause this error?</P>
+<P>System.MissingMethodException: Method not found: 'System.Object System.Windows.Threading.Dispatcher.Invoke(System.Delegate, System.Object[])'.<BR>&nbsp;&nbsp; at Csla.DataPortal.get_IsInDesignMode()<BR>&nbsp;&nbsp; at Csla.DataPortal.GetDataPortalProxy(Boolean forceLocal)<BR>&nbsp;&nbsp; at Csla.DataPortal.Fetch(Type objectType, Object criteria)<BR>&nbsp;&nbsp; at Csla.Server.Hosts.Silverlight.WcfPortal.Fetch(CriteriaRequest request)</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Wednesday, April 01, 2009</h2>Sounds like you don't have at least .Net 3.0 installed.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Wednesday, April 01, 2009</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>You
+need .NET 3.5 SP 1.&nbsp; It is a requirement for CSLA 3.6.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> davido_xml
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Wednesday, April 01, 2009 9:27 AM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> [CSLA .NET] System.MissingMethodException: Method not found:
+System.Object System.Windows.Threading.Dispatcher.Invoke<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Hi,<o:p></o:p></p>
+
+<p>I deployed my&nbsp;CSLALight app to IIS5 with no problem but when I deployed
+to IIS6 I am gettiung the following exception. I don't *think* I did anything
+wildly different for the deployments.<o:p></o:p></p>
+
+<p>&nbsp;<o:p></o:p></p>
+
+<p>Does anyone have an idea what may cause this error?<o:p></o:p></p>
+
+<p>System.MissingMethodException: Method not found: 'System.Object
+System.Windows.Threading.Dispatcher.Invoke(System.Delegate, System.Object[])'.<br>
+&nbsp;&nbsp; at Csla.DataPortal.get_IsInDesignMode()<br>
+&nbsp;&nbsp; at Csla.DataPortal.GetDataPortalProxy(Boolean forceLocal)<br>
+&nbsp;&nbsp; at Csla.DataPortal.Fetch(Type objectType, Object criteria)<br>
+&nbsp;&nbsp; at Csla.Server.Hosts.Silverlight.WcfPortal.Fetch(CriteriaRequest
+request)<o:p></o:p></p>
+
+<p>&nbsp;<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>davido_xml replied on Wednesday, April 01, 2009</h2>Thanks guys, spot on.</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

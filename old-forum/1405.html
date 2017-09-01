@@ -1,0 +1,14 @@
+<html><header><title>CSLA 2.1 Templates - Hardcoded StoredProcedure names</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA 2.1 Templates - Hardcoded StoredProcedure names</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/1405.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>jorgembravo posted on Thursday, October 05, 2006</h2><P class=MsoNormal><SPAN>I’m new to CSLA and CodeSmith, but I want to suggest that the CSLA 2.1 templates provide some way to override the standard StoreProcedure names generated.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Maybe this could be done generating the standard names and storing them in variables in the ‘Generated Split Partial Class’ and provide a way to override them in the ‘User Split Partial Class’.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>This way we could use existing databases.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Thanks<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Jorge<o:p></o:p></SPAN></P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>mikeclimbs replied on Thursday, October 05, 2006</h2><P>You can accomplish this by changing templatebase.</P>
+<P>Search for <SPAN>FetchCommandFormat and just change this area to the desired names.</SPAN></P>
+<P><SPAN>Mike</SPAN></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>david.wendelken replied on Wednesday, October 11, 2006</h2><P>I'm new to using CodeSmith.&nbsp;&nbsp; I just made a change to TemplateBase.cs.</P>
+<P>But the fixed text I changed didn't show up when I executed the template.</P>
+<P>Is there something special I need to do to get it to recognize the change to TemplateBase?</P>
+<P>I'm slogging thru the CodeSmith&nbsp;help text online but haven't unlocked the secret yet.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Crestline replied on Friday, October 13, 2006</h2>You may already know this but I thought I would throw it out there just in case.&nbsp; We thought we were having the same problem, couldn't see any of our changes but what it turned out to be was that when generating the files, it wouldn't overwrite them by default.&nbsp; We were deleting the files manually before generating until we figured out where to turn the overwrite to true setting.&nbsp; I don't have the templates on hand at the moment but it was either in the CSLA.cst or templatebase.cs file.<br><br><br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,93 @@
+<html><header><title>CSLA 4.5.10 - Xaml.ViewModelBase under Silverlight</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA 4.5.10 - Xaml.ViewModelBase under Silverlight</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11789.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jaans posted on Wednesday, January 16, 2013</h2><p>Hi Rocky</p>
+<p>Since moving over from 4.3 to 4.5 I&#39;m experiencing a strange issue with the Xaml ViewModelBase when calling BeginSave() and the DataPortal throws an exception.</p>
+<p>BeginSave works just fine when there is no exception on the server side data portal, however what I&#39;m observing is that if the server side data portal throws an exception the exception is never received. Also, IsBusy stays stuck on true and OnError is never called.</p>
+<p>I have a suspicion that the ViewModelBase class was initially a great help to work with the DataPortalResult callback pattern that was used pre-Async pattern.</p>
+<p>I&#39;m not sure which is now the preferred way of saving the business object under Silverlight when using the ViewModel and CSLA 4.5 with the Async pattern available. </p>
+<p>Do we still call BeginSave() - doesn&#39;t this still employ the Callback pattern?</p>
+<p>I see there is a new method on the ViewModel called SaveAsync() - this would typically be awaited upon, but then I&#39;m curious what the exception handling strategy with that is, because I&#39;m assuming that the SaveAsync on the ViewModel still sets the Error property and still calls OnError. Would an (aggregate task) exception ever be &quot;returned&quot; then when you call SaveAsync()?</p>
+<p>Hopefully this makes some sense - love to get your input.</p>
+<p>On a related note, I&#39;m thinking that the following method is &quot;missing&quot; from CSLA ViewModel class:</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp;&nbsp;protected virtual async Task RefreshAsync( Func&lt;Task&lt;T&gt;&gt; factoryMethod )</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Error = null;</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; try</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; IsBusy = true;</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var model = await factoryMethod();</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; OnRefreshing( model );</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Model = model;</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; IsBusy = false;</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; catch ( Exception ex )</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;{</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; IsBusy = false;</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Error = ex;</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; OnRefreshed();</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jaans replied on Wednesday, January 16, 2013</h2><p>In addition to the above, it looks like the issue has to do with the <strong>ISupportUndo.Saved</strong> event not being raised on the Silverlight client side in the event of an exception being thrown on the server side data portal.</p>
+<p>This event is key to the current implementations of the <strong>BeginSave</strong>() and <strong>SaveAsync</strong>() methods on the Xaml.<strong>ViewModelBase </strong>class.</p>
+<p>If I override the SaveAsync implementation with an awaited implementation (and not use the Saved event) then the exception reaches back to the Silverlight client. So it might be that the Saved event isn&#39;t being called correctly by the DataPortalClient implementation or that the event isn&#39;t being serialised correctly.</p>
+<p>Here&#39;s the override implementation of ViewModelBase.SaveAsync() that fixes the above bug and works quite well. Perhaps this should be the replacement implementation?</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; protected override async Task&lt;T&gt; <strong>SaveAsync</strong>()</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; try</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; var savable = Model as Csla.Core.ISavable;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; if ( ManageObjectLifetime )</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; // clone the object if possible</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; var clonable = Model as Csla.ICloneable;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; if ( clonable != null )</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; savable = (Csla.Core.ISavable)clonable.Clone();</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; //apply changes</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; var undoable = savable as Csla.Core.ISupportUndo;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; if ( undoable != null )</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; undoable.ApplyEdit();</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Error = null;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; IsBusy = true;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <strong>var model = await savable.SaveAsync();</strong></p>
+<p><strong>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; OnSaving( model as T );</strong></p>
+<p><strong>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Model = (T)model;</strong></p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; IsBusy = false;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; OnSaved();</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; return Model;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; catch ( Exception ex )</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; IsBusy = false;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Error = ex;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; OnSaved();</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; return null;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; }&nbsp;</p>
+<p>&nbsp;</p>
+<p>As an aside: Is there a specific reason the SaveAsync implementation needs to use the saved event?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, January 21, 2013</h2><p>Thanks for the research on this, I appreciate it, and will file a bug.</p>
+<p>When I rewrote the data portal for 4.5 I tried to consolidate all the functionality into two workflows - sync and async. Ultimately the BeginXYZ methods will go away, because they aren&#39;t necessary with async/await. I didn&#39;t want to maintain a whole workflow for that now-legacy model, though my choice is causing some pain in the meantime :(</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ngm replied on Monday, February 11, 2013</h2><p><div style='padding-left: 50px;background-color:silver'><b>RockfordLhotka<br></b></p>
+<p>I believe that the first issue is resolved with the changes I&#39;ve made to the data portal. Hopefully you can test and confirm once I get the prerelease online.</p>
+<p>
+<div style="CLEAR:both;"></div>
+</div></p>
+<p>Isn&#39;t the issue here that ViewModelBase invokes BeginSave of the BO to implement both SaveAsync and its own BeginSave and still wires up for BO&#39;s Saved event?</p>
+<p>BO&#39;s BeginSave only invokes provided callback and never Saved event.</p>
+<p>I don&#39;t see that Data Portal has anything to do with this.</p>
+<p>- ngm</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jack replied on Saturday, February 16, 2013</h2><p>I&#39;ve been experiencing this issue as well but hadn&#39;t had time to dive in and figure out the issue.&nbsp; I&#39;m pretty late in my release cycle and was just wondering for a pure Silverlight release how safe should the preview version be or would I be better off modifying the existing 4.5.10 source with the suggestion above?&nbsp; I only found out about the issue by accident when I broke a database package.</p>
+<p>Thanks</p>
+<p>jack</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jaans replied on Saturday, February 16, 2013</h2><p>Hi Jack</p>
+<p>We found that there are a few useful bits of functionality that we wanted on our view model over the years, and have for a long time now, instead used our own custom base class for our view models. This custom base class does however inherits from the CSLA ViewModel base class, and so allows us to override the functionality that doesn&#39;t work right for us (like the discussion above and also our preference for an RefreshAsync method) and add some others we feel are missing.<br /><br />Bottom line, I guess, is that our needs might not always be the needs of the greater CSLA community so it makes sense to keep this custom ViewModel base class around as a default.</p>
+<p>As for CSLA 4.5.10 stability under&nbsp;Silverlight, we&#39;ve now released two large and CSLA intensive projects to product, with good success and stability. There are caveats though, like the issues from this discussion. There are a few others like the Silverlight factory not calling into a data portal if that data portal signature doesn&#39;t also exist on the client, despite the data portal always calling the method at the remote data portal. I think this happens mostly with DataPortal_Create scenarios, so we now need to place a &quot;stub&quot; for the same signature in the Silverlight code, in order to have the server side remote one get called. I think there is another discussion on the forum about that here somewhere. Not sure if this is addressed as a bug though?</p>
+<p>Other than that, I&#39;m pretty happy with this preview version (though the next version is due very soon if I&#39;m not mistaken). The ability to apply the async/await behaviours are brilliant and simplifies the client side code quite a bit, even just for readability&#39;s sake.</p>
+<p>Just be warned that if you&#39;re new to async/await pattern that there are some gotchas if you don&#39;t fully understand what it&#39;s going to do, but there are quite a few blog posts around to help if your not getting the behaviour you thought you&#39;d get.<br /><br />Hope that helps,<br />Jaans&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Saturday, February 16, 2013</h2><p>The next prerelease should be out the week of 18 Feb. The only real thing I&#39;m still planning to do is this particular issue :)</p>
+<p><a href="https://github.com/MarimerLLC/csla/issues/28">https://github.com/MarimerLLC/csla/issues/28</a></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jack replied on Sunday, February 17, 2013</h2><p style="margin:0cm 0cm 0pt;" class="MsoNormal"><span style="font-size:11pt;font-family:&#39;Calibri&#39;,&#39;sans-serif&#39;;color:#1f497d;mso-fareast-language:EN-US;">That sounds great&hellip; I&rsquo;m glad to hear it wasn&rsquo;t my code (I updated to the preview version) and I still had issues both with the old Save and calling the SaveAsync.&nbsp; My app is a terrible hodgepodge of inconsistencies so jumping from 3.6x to 4.3x and 4.5x has been fun to say the least.</span></p>
+<p style="margin:0cm 0cm 0pt;" class="MsoNormal"><span style="font-size:11pt;font-family:&#39;Calibri&#39;,&#39;sans-serif&#39;;color:#1f497d;mso-fareast-language:EN-US;">&nbsp;</span></p>
+<p style="margin:0cm 0cm 0pt;" class="MsoNormal"><span style="font-size:11pt;font-family:&#39;Calibri&#39;,&#39;sans-serif&#39;;color:#1f497d;mso-fareast-language:EN-US;">It will be nice to step back and make another pass.</span></p>
+<p style="margin:0cm 0cm 0pt;" class="MsoNormal"><span style="font-size:11pt;font-family:&#39;Calibri&#39;,&#39;sans-serif&#39;;color:#1f497d;mso-fareast-language:EN-US;"></span></p>
+<p style="margin:0cm 0cm 0pt;" class="MsoNormal"><span style="font-size:11pt;font-family:&#39;Calibri&#39;,&#39;sans-serif&#39;;color:#1f497d;mso-fareast-language:EN-US;">As soon as you release something I will give it a whirl.&nbsp; I&#39;ve still got a short window left for testing.</span></p>
+<p>Jack</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, February 20, 2013</h2><p>Version 4.5.12 is now online at <a href="http://www.cslanet.com">www.cslanet.com</a> and nuget, and should fix this issue. Please let me know if you have issues.</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jaans replied on Wednesday, February 20, 2013</h2><p>Thanks Rocky!</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

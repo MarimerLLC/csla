@@ -1,0 +1,40 @@
+<html><header><title>Csla.ApplicationContext.User unexpected side effect</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Csla.ApplicationContext.User unexpected side effect</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/8469.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Calin posted on Wednesday, February 03, 2010</h2><p>Hi,
+ I found a very interesting issue that I managed to extract in 2 tests:
+[TestMethod]
+        public void CanUserLogin()
+        {
+            using (var context = GetContext())
+            {
+                OncarePrincipal.Login(
+                    (sender, args) =&gt;
+                    {
+                        OncarePrincipal oncarePrincipal = new OncarePrincipal(args.Object);
+                        Csla.ApplicationContext.User = oncarePrincipal;
+                        context.Assert.IsNotNull(args.Object);
+                        context.Assert.Success();
+                    },
+                    new UsernameCriteria(&quot;testrandomname&quot;, &quot;randomname&quot;));
+            }
+        }
+This first test does a user login
+[TestMethod]
+        public void Simple()
+        {
+            using (var context = GetContext())
+            {
+                UserList.GetList((sender, args) =&gt;
+                {
+                    context.Assert.IsNull(args.Error);
+                    context.Assert.Success();
+                });
+            }
+        }
+This one gets a list of users.
+No for some weird reason if I run the login first and the the list getter I get a error &quot;No parameterless constructor defined .... &quot;
+And not it get really interesting. If I pull out this line:
+Csla.ApplicationContext.User = oncarePrincipal;
+It all works perfect.
+I might add I am usign CSLA 3.8.2, and Csla.ApplicationContext.User is used only on the line I have here. Everything else is a 3 tier application.
+Any help with this one will be greatly appreciated !
+Thank you,</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, February 03, 2010</h2><p>This is CSLA .NET for Silverlight?</p>
+<p>Your custom principal must have a public default constructor for MobileFormatter to serialize it. And it will be serialized when the data portal is used, because the data portal sends the principal to the server so the server-side code runs in the same security context as the client.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Calin replied on Wednesday, February 03, 2010</h2>I bet you get this a lot, but I am going to say it anyway<br /><br />Rocky your a genius :)<br /><br />It works perfect.</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

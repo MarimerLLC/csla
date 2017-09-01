@@ -1,0 +1,178 @@
+<html><header><title>Bug in OnChildChangedInternal?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Bug in OnChildChangedInternal?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5833.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>wleary posted on Wednesday, November 19, 2008</h2><P>I am working on an application that we wrote using CSLA 3.0.2. We are working on new functionality, and decided to try out 3.6.0 Beta2a at the same time.&nbsp;We have been unable to get property changes in child objects to propagate to the parent when working with remote data portals.</P>
+<P>I have stepped through the code, and believe there&nbsp;may be&nbsp;a bug in BusinessListBase.OnChildChangedInternal. If you look at line 866, it has the following:</P><FONT color=#d6d694 size=2><FONT color=#d6d694 size=2>
+<P><FONT color=#000000>if</FONT></FONT></FONT><FONT color=#000000><FONT size=2><FONT size=2> (</FONT></FONT><FONT size=2><FONT size=2>ReferenceEquals</FONT></FONT><FONT size=2><FONT size=2>(</FONT></FONT><FONT size=2><FONT size=2>this</FONT></FONT><FONT size=2><FONT size=2>[</FONT></FONT><FONT size=2><FONT size=2>index</FONT></FONT><FONT size=2><FONT size=2>], </FONT></FONT><FONT size=2><FONT size=2>sender</FONT></FONT><FONT size=2><FONT size=2>))</FONT></FONT></FONT></P>
+<P><FONT color=#808080><FONT color=#000000><FONT color=#000000><FONT color=#a79a86 size=2><FONT color=#a79a86 size=2><FONT color=#000000>In the debugger, I see that the "sender" parameter in this case is the child collection object. The "this" in the context is also the child collection object. This will never evaluate correctly. I believe the sender object should be the object that was changed. In that case, this code would evaluate correctly.</FONT></FONT></FONT></FONT></FONT></FONT></P>
+<P><FONT color=#808080><FONT color=#000000><FONT color=#000000><FONT color=#a79a86 size=2><FONT color=#a79a86 size=2><FONT color=#000000>This code is only hit when we are dealing with a remote data portal. Everything works fine when we are using a local data portal.</FONT></FONT></FONT></FONT></FONT></FONT></P>
+<P><FONT color=#808080><FONT color=#000000><FONT color=#000000><FONT color=#a79a86 size=2><FONT color=#a79a86 size=2><FONT color=#000000></FONT>&nbsp;</P></FONT></FONT></FONT></FONT></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>wleary replied on Wednesday, November 19, 2008</h2><P>As a follow up, we also modified all of the 3.0.2-ish code to mimic the ProjectTracker.Library sample in the 3.6 drop. i.e. No longer setup ListChanged handlers in the parent like we were doing. (I am assuming that 3.6 is supposed to take care of this event notification for child changes automatically...since not in the samples anymore.)</P>
+<P>Anyway, after doing this, now the events aren't being fired either when using either a remote data portal or a local one. I setup a PropertyChanged handler on the business object, modified one of the properties on a child, and that didn't fire the PropertyChanged. I even added a new child, and that also didn't fire the PropertyChanged of the parent object.</P>
+<P>I must be missing something very obvious here. Is the ProjectTracker.Library sample supposed to support notification of changes to child collection, with no explicit handlers that the parent creates?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, November 19, 2008</h2><P>There was a bug fix change in 3.5.x where a parent object doesn't raise PropertyChanged when it gets a ListChanged from its child list. Is this what you are talking about?</P>
+<P>Raising a PropertyChanged event from a parent due to a ListChanged in its child was a bug, because it broke Windows Forms data binding. It turns out that data binding doesn't support that concept, and so CSLA was changed to conform to the data binding requirement.</P>
+<P>However, a ChildChanged event has been added that <EM>does</EM> cascade. In fact it cascades all the way up to your root object, regardless of how deep the original child was in the object graph.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>wleary replied on Thursday, November 20, 2008</h2><P>In our case we are using a WPF application. 3.5 SP1. I discovered the problem in a page that uses an ObjectStatus control. We do not have a CslaDataProvider on the screen, as the business object is passed in to it. Previously, in the 3.0.* style of detecting property changes in children, the ObjectStatus control did detect when the business object raised a property change, as we explicitly had a event listener for ListChanged in the parent object, and called PropertyHasChanged when it did change.</P>
+<P>I used the ProjectTracker.Library code (Project.cs, ProjectResources.cs, and ProjectResource.cs) as a starting point to learn he 3.6 way. I see no code there for change notification when the Resources property is modified, so assumed it was somehow "built-in" now. I have set breakpoints in the ObjectStatusControl and DecoratorBase, and see that no events are ever raised to it when I modify our child collection.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, November 20, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Got it, thank you!<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>This is a bug in ObjectStatus (or DecoratorBase really), in that
+it should use the ChildChanged event rather than relying on PropertyChanged.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I obviously can&#8217;t redefine how PropertyChanged works &#8211;
+that&#8217;s under Microsoft&#8217;s control and we have to live with what they
+decide. Which is the reason for ChildChanged existing at all &#8211; to get
+around their choices.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>But we overlooked that ObjectStatus should use ChildChanged if
+possible.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> wleary
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Thursday, November 20, 2008 8:59 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] Bug in OnChildChangedInternal?<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>In our case we are using a WPF application. 3.5 SP1. I discovered the
+problem in a page that uses an ObjectStatus control. We do not have a
+CslaDataProvider on the screen, as the business object is passed in to it.
+Previously, in the 3.0.* style of detecting property changes in children, the
+ObjectStatus control did detect when the business object raised a property
+change, as we explicitly had a event listener for ListChanged in the parent
+object, and called PropertyHasChanged when it did change.<o:p></o:p></p>
+
+<p>I used the ProjectTracker.Library code (Project.cs, ProjectResources.cs, and
+ProjectResource.cs) as a starting point to learn he 3.6 way. I see no code
+there for change notification when the Resources property is modified, so
+assumed it was somehow &quot;built-in&quot; now. I have set breakpoints in the
+ObjectStatusControl and DecoratorBase, and see that no events are ever raised
+to it when I modify our child collection.<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>wleary replied on Thursday, November 20, 2008</h2><P>Thank you Rocky! Your answer helped one of our developers do an interim fix to DecoratorBase and ObjectStatus to fix it for us. Looking forward to the next version with the fix. (We're hoping we didn't accidentally break something else...)</P>
+<P>Also, I still think there is a bug in BusinessListBase.OnChildChangedInternal. It only manifests itself in using a remote data portal. This is in code dealing with parent's detecting changes to child collections, using the older style of listening to ListChanged events explicitly.</P>
+<P>I looked at the call stack, and saw that the child object that was changed is set and passed in the ChildChangedEventArgs. So I changed this line:</P>
+<P>if (ReferenceEquals(this[index], sender))</P>
+<P>to...</P>
+<P>if (ReferenceEquals(this[index], e.ChildObject))</P>
+<P>and that seemed to do the trick.</P>
+<P>Not sure if my understanding of something is wrong, or if it indeed is a bug. It appears to be.</P>
+<P>Thanks!</P>
+<P>William</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, November 20, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Sounds like a bug to me. This cascading of events is tricky
+stuff &#8211; trying to avoid duplicate events, etc.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> wleary
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Thursday, November 20, 2008 11:19 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: Bug in OnChildChangedInternal?<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Thank you Rocky! Your answer helped one of our developers do an interim fix
+to DecoratorBase and ObjectStatus to fix it for us. Looking forward to the next
+version with the fix. (We're hoping we didn't accidentally break something
+else...)<o:p></o:p></p>
+
+<p>Also, I still think there is a bug in
+BusinessListBase.OnChildChangedInternal. It only manifests itself in using a
+remote data portal. This is in code dealing with parent's detecting changes to
+child collections, using the older style of listening to ListChanged events
+explicitly.<o:p></o:p></p>
+
+<p>I looked at the call stack, and saw that the child object that was changed
+is set and passed in the ChildChangedEventArgs. So I changed this line:<o:p></o:p></p>
+
+<p>if (ReferenceEquals(this[index], sender))<o:p></o:p></p>
+
+<p>to...<o:p></o:p></p>
+
+<p>if (ReferenceEquals(this[index], e.ChildObject))<o:p></o:p></p>
+
+<p>and that seemed to do the trick.<o:p></o:p></p>
+
+<p>Not sure if my understanding of something is wrong, or if it indeed is a
+bug. It appears to be.<o:p></o:p></p>
+
+<p>Thanks!<o:p></o:p></p>
+
+<p>William<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>wleary replied on Thursday, November 20, 2008</h2>One final note on this: Our last "fix" actually broke another one, so wanted to make you aware of it. Not sure if it's by design. There is a "return" statement inside the for loop in OnChildChangedInternal. So, after my fix that triggered the ListChanged getting detected, the modification we made that only picked up ChildChanged was no longer working. We removed the return statement, which allowed our older entities that have not been convereted to the ChildChanged model to work as well. </div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

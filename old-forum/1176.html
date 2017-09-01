@@ -1,0 +1,31 @@
+<html><header><title>Question about Principal Objects (Need some advice )</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Question about Principal Objects (Need some advice )</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/1176.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>RangerGuy posted on Sunday, September 10, 2006</h2>I found a post regarding a custom principal today but now I don't seem to be able to track it down. I need to implement IsInRole that <br>excepts an int not string as a parameter. Also, I need a method that will check for a specific right. I did the following in BusinessPrincipalBase<br><br>
+
+ public virtual bool RoleHasPermission(int roleid, int permissionid)<br>
+        {<br>
+            return false;<br>
+        }<br>
+
+public virtual bool IsInRole(int role)<br>
+        {<br>
+            return false;<br>
+        }<br>
+
+<br><br>
+
+Then I implemented the above methods in my PTPrincipal object. I found the only way I can see them is by casting the User to <br>MyCustomPrincipal is that correct? <br><br>
+
+((MyCustomPrincipal)Csla.ApplicationContext.User).IsInRole(1)</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>guyroch replied on Sunday, September 10, 2006</h2><P>Yep, you have to cast it!&nbsp; The reason is that the current IsInRole(string role) method come directly from the IPrincipal interface.&nbsp; Csla.ApplicationContext.User is an instance of IPrincipal and not your BusinessPrincipalBase which contains your addtional methods.</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RangerGuy replied on Sunday, September 10, 2006</h2>Thank you sir :) 
+
+I take it this is common practice if you need added functionality?
+
+It seems silly that MS would make that method only except a string. They gotta know that alot of applications especially web apps have their security model database driven. 
+
+Anyways it works great! :) 
+
+Thanks for the help!</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>figuerres replied on Monday, September 11, 2006</h2><P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>RangerGuy:</strong></div><div>Thank you sir :) I take it this is common practice if you need added functionality? It seems silly that MS would make that method only except a string. They gotta know that alot of applications especially web apps have their security model database driven. Anyways it works great! :) Thanks for the help!</div></BLOCKQUOTE></P>
+<P>well think of it like this:&nbsp; </P>
+<P>.Net is a framework, they gave us one set of interfaces and base classes.</P>
+<P>they work for many apps, and we can extend them with our own derived classes as we see fit.</P>
+<P>how many versions could MSFT have made&nbsp; ? Guid, LongInt,ShortInt,Double, and who knows ?</P>
+<P>they did the quick and simple one and left the others for us to play with. <img src="/emoticons/emotion-1.gif" alt="Smile [:)]" /></P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

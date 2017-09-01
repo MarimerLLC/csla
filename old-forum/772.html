@@ -1,0 +1,35 @@
+<html><header><title>Combobox Databinding</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Combobox Databinding</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/772.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>rkelley posted on Monday, July 31, 2006</h2><P>I have several comboboxes and they are all databound to their appropriate property, and they get their list from a namevaluelist collection.</P>
+<P>Is there anyway to update the Business Objects data without tabbing from the control?</P>
+<P>I have implemented OnSelectedValueChange for several of them and when you pick a new item in the list I call code like this:</P>
+<P>&nbsp;&nbsp;&nbsp;Object.Propert = cboCombo.Value.ToString();</P>
+<P>This works fine except for a few things. It calls the method twice while loading the form, when you change the value, and if you are in the control when you close then it calls it there too. It also sets the property value again when you tab out of the control.</P>
+<P>In version 1 of CSLA I was using ActiveControlBinder which handled all of this. I was/still am very excited about the drag and drop databinding which is what I am using but am a little leary of this now, because what if a user opens a form, changes one textbox and then clicks save and it does not update the value. (What I mean by clicking save is that I was hoping to do away with the actual save buttons on forms and integrate a common set of save/cancel buttons in the toolbar)</P>
+<P>I hope I have not bored everyone to sleep with this but would really appreciate in input and comments.</P>
+<P>Thanks</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, July 31, 2006</h2>There's a property you can set in the Advanced data binding properties dialog to tell data binding to be more agressive on when it grabs the new value from the control and puts it into the object. I don't recall the name of the property - but it has been discussed on the forum a few times now in regards to keystroke-level binding for textbox controls.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonM replied on Monday, July 31, 2006</h2>with cboObject<BR>.DataSource = Object.GetNVLlist()<BR>.DisplayMember = "Name"<BR>.ValueMember = "Value"<BR>.DataBindings.Add ("SelectedValue",Object, "myObjectID")<BR><FONT color=#0000ff>.DataBindings(0).DatasourceUpdateMode=OnPropertyChanged</FONT><BR>end with<BR></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rkelley replied on Monday, July 31, 2006</h2>Thank you so much, you guys are a godsend!</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>cmay replied on Tuesday, August 01, 2006</h2><P>Is there anything simliar to this for databinding with a BindingSource against a GridView?</P>
+<P>When I have a datagridview with textboxes, I have to hit "enter" after I change the text before I hit "Save" or my changes to the textbox will not be saved.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, August 01, 2006</h2>
+
+
+
+
+<DIV align=left><SPAN class=484085114-01082006><FONT face=Arial color=#0000ff size=2>Are you calling EndEdit on the bindingsource 
+control?</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=484085114-01082006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=484085114-01082006><FONT face=Arial color=#0000ff size=2>While there could be other factors involved here, given 
+that you are using embedded controls, normally calling EndEdit on the 
+bindingsource is sufficient to cause data binding to get the value from the last 
+control/cell that was being edited.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=484085114-01082006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=484085114-01082006><FONT face=Arial color=#0000ff size=2>Rocky</FONT></SPAN></DIV><BR>
+<BLOCKQUOTE>
+  <DIV class=OutlookMessageHeader align=left>
+  <HR>
+  <FONT face=Tahoma size=2><B>From:</B> cmay [mailto:cslanet@lhotka.net] 
+  <BR><B>Sent:</B> Tuesday, August 01, 2006 9:30 AM<BR><B>To:</B> 
+  rocky@lhotka.net<BR><B>Subject:</B> Re: [CSLA .NET] Combobox 
+  Databinding<BR></FONT><BR></DIV>
+  <DIV></DIV>
+  <P>Is there anything simliar to this for databinding with a BindingSource 
+  against a GridView?</P>
+  <P>When I have a datagridview with textboxes, I have to hit "enter" after I 
+  change the text before I hit "Save" or my changes to the textbox will not be 
+  saved.</P><BR><BR><BR></BLOCKQUOTE></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

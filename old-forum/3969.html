@@ -1,0 +1,11 @@
+<html><header><title>Start date after Ending date</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Start date after Ending date</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3969.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Wal972 posted on Friday, November 30, 2007</h2><P>Hi</P>
+<P>I have&nbsp;a date checker which is the same as the one from Project Tracker. </P>
+<P>A.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Starting:&nbsp;&nbsp;&nbsp;1-Nov-07&nbsp;&nbsp;&nbsp;Ending:&nbsp;&nbsp;&nbsp;&nbsp;30-Nov-07&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Result:&nbsp;&nbsp;&nbsp;Valid&nbsp;&nbsp;&nbsp;(Correct)</P>
+<P>B.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Starting:&nbsp;&nbsp;&nbsp;30-Nov-07&nbsp;&nbsp;&nbsp;Ending:&nbsp;&nbsp;&nbsp;1-Nov-07&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Result:&nbsp;&nbsp;&nbsp;InValid (Correct)</P>
+<P>C.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Starting:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;30-Nov-07&nbsp;&nbsp;&nbsp;Ending:&nbsp;&nbsp;&nbsp;1-Dec-07&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Result:&nbsp;&nbsp;&nbsp;<FONT color=#ff0000>INVALID&nbsp;&nbsp;&nbsp;&nbsp;(WRONG)</FONT></P>
+<P>Why ?</P>
+<P>Any assistance / explanation would be creatly appreciated</P>
+<P>Thanks</P>
+<P>Ellie</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, December 03, 2007</h2>Are you sure it is the same code? I only ask because I just tried those dates in ProjectTracker and they worked as expected.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>richardb replied on Thursday, December 06, 2007</h2><P>Is it the U.S. / U.K. date switching gotcha?</P>
+<P>Test C might think that&nbsp;01-Dec-07 date is in fact 12-Jan-07 and hence the comparision&nbsp;is invalid.</P>
+<P>Richard B.</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

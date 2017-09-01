@@ -1,0 +1,26 @@
+<html><header><title>Synchronizing ReadOnlyList with EditableBusinessObject</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Synchronizing ReadOnlyList with EditableBusinessObject</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11226.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>alex.enjoy posted on Monday, March 12, 2012</h2><p>Hello,</p>
+<p>given the following business and UI layer:<br /><span style="font-family:&#39;Courier New&#39;,Courier,sansserif;"><span>PersonInfo : ReadOnlyBase&lt;PersonInfo&gt;<br /></span></span><span style="font-family:&#39;Courier New&#39;, Courier, sansserif;">PersonInfoList : ReadOnlyListBase&lt;PersonInfoList, PersonInfo&gt;<br />PersonEdit : BusinessBase&lt;PersonEdit&gt;</span></p>
+<p><span style="font-family:&#39;Courier New&#39;, Courier, sansserif;">PeopleListViewModel : ViewModel&lt;PersonInfoList&gt;<br />PersonEditViewModel : ViewModel&lt;PersonEdit&gt;</span></p>
+<p>PersonInfo is a small object only containing some header fields.<br />PersonEdit is the full featured object containing all properties.&nbsp;</p>
+<p>and the following use case within a MVVM WPF application:</p>
+<p>
+<ul>
+<li>a query based PersonInfoList is retrieved and displayed within a list</li>
+<li>selecting a PersonInfo from the list triggers the creation of a PersonEditView</li>
+<li>Saving a modified PersonEdit from this view should update the belonging PersonInfo from the list</li>
+</ul>
+</p>
+<p>I do not want the complete list to be reloaded from the database, (or should I?).<br />Could this be done by instancing a new PersonInfo from the updated PersonEdit object,<br />and replacing the old PersonInfo from the PersonInfoList with the new PersonInfo?<br />Should I define a method void Refresh(PersonInfo newPersonInfo) on the PeopleListViewModel to do such an approach?</p>
+<p><span>thanks in advance,<br />Alexander.&nbsp;</span></p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Monday, March 12, 2012</h2><p>The challenge here is to implement a solution that doesn&#39;t cause a memory leak.</p>
+<p>In <em>concept</em>, you can have some global reference to the PersonInfoList, and in the Saved event handler of the PersonEdit object you can just update the PersonInfo object with the new data. Or variations on that theme.</p>
+<p>The trick is that it is really easy to end up with circular or static references that create a memory leak.</p>
+<p>So the <em>best</em> solution is to use a UI framework that has a weak reference based event notification system (preferably publish/subscribe) so your Saved event handler on the PersonEdit object can publish a notification that a person has changed, and the PersonInfoList object can subscribe to that type of notification so it knows to update itself when the change has occurred.</p>
+<p>Does any of that make sense.</p>
+<p>In short, all you need to do is figure out a safe way to notify the PersonInfoList when&nbsp;a PersonEdit object has been saved. Preferably you&#39;d pass a reference to the PersonEdit object as part of the notification.</p>
+<p>The PersonInfoList object can then find the PersonInfo matching the PersonEdit object, and can tell that PersonInfo object to update itself based on the PersonEdit object.</p>
+<p>The only additional thing to keep in mind is that you&#39;ll need to manually call OnPropertyChanged for each updated property in the PersonInfo object, because read-only objects don&#39;t automatically raise PropertyChanged events.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>alex.enjoy replied on Tuesday, March 13, 2012</h2><p>Hello Rocky,</p>
+<p>just started work (6am) and found your fresh and detailed answer, thank you! <img src="http://forums.lhotka.net/emoticons/emotion-2.gif" alt="Big Smile" /></p>
+<p>I plan to use the Prism framework for the software.<br />What I&#39;ve read about this so far, it provides a solution for notifications like you suggested.</p>
+<p>One thing confuses me a bit.<br />You write to notify the PersonInfoList (model) about the saved PersonEdit object.<br />To do that, the business layer has to subscribe to the notification system, but am I wrong this belongs to the UI layer only?<br />Or do you mean the&nbsp;<span>PeopleListViewModel gets informed by the notification and passes the update request to the PersonInfoList (model)</span></p>
+<p>I like the idea to update the PersonInfo instead of replacing it with a new instance.</p>
+<p>have a good night (just googled your timezone...),<br />Alex.&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, March 13, 2012</h2><p>You can manage this entirely at the viewmodel level, and that&#39;s probably best, as it does keep any dependency on the event aggregator out of the business layer.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

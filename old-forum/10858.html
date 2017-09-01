@@ -1,0 +1,17 @@
+<html><header><title>Problem with MethodInfo</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Problem with MethodInfo</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10858.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>uwefms posted on Wednesday, November 09, 2011</h2><p>Hi everybody,</p>
+<p>in a SL4 Project using CSLA 4.1 I have a BusinessBase class containing 2 Methods:</p>
+<p>public void doWork(EventHandler&lt;DataPortalResult&lt;doWorkCommand&gt;&gt; callback)&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; </p>
+<p>public static void doWork(int Id, EventHandler&lt;DataPortalResult&lt;doWorkCommand&gt;&gt; callback)</p>
+<p>I would like to create a AuthorizationActions.ExecuteMethod rule like</p>
+<p>BusinessRules.AddRule(new Csla.Rules.CommonRules.IsInRole(Csla.Rules.AuthorizationActions.ExecuteMethod, doWorkMethod&nbsp;&nbsp;&nbsp; , new List&lt;string&gt; {&quot;MayDoWork&quot;&nbsp;&nbsp;&nbsp; } ));&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; </p>
+<p>but</p>
+<p>public static MethodInfo doWorkMethod&nbsp; = RegisterMethod(typeof(MyBusinessBase), &quot;doWork&quot;);</p>
+<p>fails because of the different method signatures of doWork.</p>
+<p>Is there any way for creating this rule in this class without renaming one of the doWork Methods.</p>
+<p>TIA</p>
+<p>&nbsp; regards</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Uwe</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Wednesday, November 09, 2011</h2><p>No, this is a limitation of the way methods are registered. You will need to rename one of the methods.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

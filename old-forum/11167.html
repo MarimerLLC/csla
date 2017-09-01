@@ -1,0 +1,146 @@
+<html><header><title>DataAccess, DataAccess.Mock - what am missing/am I doing wrong?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>DataAccess, DataAccess.Mock - what am missing/am I doing wrong?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11167.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>gajit posted on Thursday, February 16, 2012</h2><p>OK, so I&#39;m trying to re-engineer things into VB and creating my DALs from scratch using some of the examples I have seen.</p>
+<p>I created my first class library, DataAccess, with 3 classes;</p>
+<p>DalFactory, DataNotFoundException &amp; IDalManager.</p>
+<p>I compiled the class library project and the DataAccess.dll exists as I would expect in Bin/Debug</p>
+<p>I then created a DataAccess.Mock class library and added a reference to the above DLL.</p>
+<p>Yet when I create the first class in the mock library;</p>
+<p>Imports System.Collections.Generic<br />Imports System.Linq<br />Imports System.Text</p>
+<p>Namespace DataAccess.Mock</p>
+<p>&nbsp;&nbsp;&nbsp; Public Class DalManager</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Implements DataAccess.IDalManager</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Private Shared _typeMask As String = GetType(DalManager).FullName.Replace(&quot;DalManager&quot;, &quot;{0}&quot;)</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Public Function GetProvider(Of T As Class)() As T<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Dim typeName = String.Format(_typeMask, GetType(T).Name.Substring(1))<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Dim type__1 = Type.[GetType](typeName)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; If type__1 IsNot Nothing Then<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return TryCast(Activator.CreateInstance(type__1), T)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Else<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Throw New NotImplementedException(typeName)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End If<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Function</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Public Sub Dispose()<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Sub</p>
+<p>&nbsp;&nbsp;&nbsp; End Class</p>
+<p>End Namespace</p>
+<p>I get an error on the Implements &quot;DataAccess.IDalManager&quot; - type is not defined??</p>
+<p>What am I missing? </p>
+<p>Thanks,</p>
+<p>Graham</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, February 16, 2012</h2><p>What you describe seems correct. I usually use project references instead of file references when working within one solution, otherwise you are describing what I do as a matter of course.</p>
+<p>I suspect you have some basic issue with the assembly reference - that is sure what it sounds like anyway.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>gajit replied on Thursday, February 16, 2012</h2><p>I tried using the project reference - no difference.</p>
+<p>What I did notice, and I&#39;m not sure it&#39;s&nbsp;_the_ &nbsp;issue but when I translate the C# static class DalFactory to VB.Net, it becomes a &quot;NonInheritable&quot; class;</p>
+<p>&nbsp;</p>
+<p>Imports System.Configuration</p>
+<p>Namespace DataAccess</p>
+<p>&nbsp;&nbsp;&nbsp; Public NotInheritable Class DalFactory</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Private Sub New()<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Sub</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Private Shared _dalType As Type</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Public Shared Function GetManager() As IDalManager</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; If _dalType Is Nothing Then</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Dim dalTypeName = ConfigurationManager.AppSettings(&quot;DalManagerType&quot;)</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; If Not String.IsNullOrEmpty(dalTypeName) Then<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _dalType = Type.[GetType](dalTypeName)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Else<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Throw New NullReferenceException(&quot;DalManagerType&quot;)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End If</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; If _dalType Is Nothing Then<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Throw New ArgumentException(String.Format(&quot;Type {0} could not be found&quot;, dalTypeName))<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End If</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End If<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return DirectCast(Activator.CreateInstance(_dalType), IDalManager)</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Function</p>
+<p>&nbsp;&nbsp;&nbsp; End Class</p>
+<p>End Namespace</p>
+<p>Could that have anything to do with it?</p>
+<p>This is very frustrating, it seems that no matter how I try to move down this CSLA4 path, I hit something that prevents me from moving forward....</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tmg4340 replied on Thursday, February 16, 2012</h2><p>The &quot;NotInheritable&quot; shouldn&#39;t matter.</p>
+<p>Let&#39;s start with the basics: how is your IDalManager interface defined?&nbsp; Is it Public?</p>
+<p>- Scott</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>gajit replied on Thursday, February 16, 2012</h2><p>Here&#39;s what I have in the DataAccess Library:</p>
+<p>The DalFactory.cb class:</p>
+<p>Imports System.Configuration</p>
+<p>Namespace DataAccess</p>
+<p>&nbsp;&nbsp;&nbsp; Public NotInheritable Class DalFactory</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Private Sub New()<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Sub</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Private Shared _dalType As Type</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Public Shared Function GetManager() As IDalManager</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; If _dalType Is Nothing Then</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Dim dalTypeName = ConfigurationManager.AppSettings(&quot;DalManagerType&quot;)</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; If Not String.IsNullOrEmpty(dalTypeName) Then<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _dalType = Type.[GetType](dalTypeName)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Else<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Throw New NullReferenceException(&quot;DalManagerType&quot;)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End If</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; If _dalType Is Nothing Then<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Throw New ArgumentException(String.Format(&quot;Type {0} could not be found&quot;, dalTypeName))<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End If</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End If<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return DirectCast(Activator.CreateInstance(_dalType), IDalManager)</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Function</p>
+<p>&nbsp;&nbsp;&nbsp; End Class</p>
+<p>End Namespace</p>
+<p>The IDalManager.vb class:</p>
+<p>Namespace DataAccess</p>
+<p>&nbsp;&nbsp;&nbsp; Public Interface IDalManager</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Inherits IDisposable</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Function GetProvider(Of T As Class)() As T</p>
+<p>&nbsp;&nbsp;&nbsp; End Interface</p>
+<p>End Namespace</p>
+<p>And finally the DataNotFoundException.vb class:</p>
+<p>Imports System.Collections.Generic<br />Imports System.Linq<br />Imports System.Text<br />Imports Csla.Serialization<br />Imports System.Security.Permissions</p>
+<p>Namespace DataAccess</p>
+<p>&nbsp;&nbsp;&nbsp; &lt;Serializable()&gt; _<br />&nbsp;&nbsp;&nbsp; Public Class DataNotFoundException</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Inherits Exception</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Public Sub New(message As String)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; MyBase.New(message)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Sub</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Public Sub New(message As String, innerException As Exception)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; MyBase.New(message, innerException)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Sub</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Protected Sub New(info As System.Runtime.Serialization.SerializationInfo, context As System.Runtime.Serialization.StreamingContext)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; MyBase.New(info, context)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Sub</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;SecurityPermission(SecurityAction.LinkDemand, Flags:=SecurityPermissionFlag.SerializationFormatter)&gt; _<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;SecurityPermission(SecurityAction.Demand, Flags:=SecurityPermissionFlag.SerializationFormatter)&gt; _<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Public Overrides Sub GetObjectData(info As System.Runtime.Serialization.SerializationInfo, context As System.Runtime.Serialization.StreamingContext)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; MyBase.GetObjectData(info, context)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Sub</p>
+<p>&nbsp;&nbsp;&nbsp; End Class</p>
+<p>End Namespace</p>
+<p>The DataAccess project references CSLA. It&#39;s assembly name and root namespace are both set to DataAccess.</p>
+<p>It builds with no problems on its own and the DataAccess.dll builds to the Bin/Debug folder as I would expect.</p>
+<p>My DataAccess.Mock Class library project has a project dependency to DataAccess. I set a reference to the DataAccess project also ( I had previously added the .Net reference to the DataAccess.dll). The project also references CSLA.</p>
+<p>It&#39;s assembly name and root namespace are both set to DataAccess.Mock</p>
+<p>I really don&#39;t see where the problem is. </p>
+<p>Your help is much appreciated.</p>
+<p>Thanks,</p>
+<p>Graham</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>gajit replied on Thursday, February 16, 2012</h2><p>Hmmm, just got home and reloaded my Mock project and something else interesting happened. The reference to the DataAccess project said file not found. So I removed it, and added it back via the file.</p>
+<p>When I did that the IDE&#39;s error correction suggested I change &quot;Implements DataAccess.IDalManager:&quot; to &quot;Implements <strong>Global</strong>.DataAccess.IDalManager:&quot; </p>
+<p>What&#39;s THAT all about? When I did do that, it then further errored out by stating:</p>
+<p>Class &#39;DalManager&#39; must implement &#39;Function GetProvider(Of T As Class)() As T&#39; for interface &#39;DataAccess.IDalManager&#39;</p>
+<p>Class &#39;DalManager&#39; must implement &#39;Sub Dispose()&#39; for interface &#39;System.IDisposable&#39;</p>
+<p>So, I removed the reference AGAIN. Re-added it as a Project reference, and NOW the Intellisense wants Global.DataAccess.DataAccess.IDalManager ...</p>
+<p>This is unbelievable...</p>
+<p>I&#39;m not THAT dense. Things haven&#39;t changed that much from VS2005 to VS2010 ... it&#39;s a simple bloody reference....</p>
+<p>&nbsp;</p>
+<p>Any ideas anyone?</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>gajit replied on Thursday, February 16, 2012</h2><p>And yest more info.</p>
+<p>It looks like the DataAccess Assembly is sound.</p>
+<p>I removed my &quot;Mock&quot; project from the solution, added in the DataAccess.Mock (C#) project that exists in the Encapsulated Invoke - changed the reference to my new VB.Net assembly and it&#39;s fine.</p>
+<p>So, it looks like the little amount of code in my VB DataAccess.Mock is somehow not working. Did it translate incorrectly? Or is there some underlying issue with the way my Mock project has been created?</p>
+<p>I&#39;m losing hope here, that this is going to port to VB....</p>
+<p>If someone can prove me wrong I&#39;d appreciate it....</p>
+<p>Thanks.</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>gajit replied on Thursday, February 16, 2012</h2><p>No takers eh?</p>
+<p>Well, it appears CSLA4 using VB.Net is a no go, unless someone can prove otherwise.</p>
+<p>There is either an assembly referencing issue with VB.Net projects that doesn&#39;t exist in the C# world, or the inheritance of the interface in the VB.Net DalManager is incorrect.</p>
+<p>To verify, I created 2 completely new C# projects for DataAccess and DataAccess.Mock, and they reference correctly and compile.</p>
+<p>The issue clearly lies in the VB arena.</p>
+<p>Off to bed, frustrated - as yet another day passes with so many questions and few answers.</p>
+<p>Graham</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tmg4340 replied on Thursday, February 16, 2012</h2><p>I think this post may help:</p>
+<p><a href="http://spiderinnet1.typepad.com/blog/2011/12/vbnet-root-namespace-vs-c-default-namespace.html">http://spiderinnet1.typepad.com/blog/2011/12/vbnet-root-namespace-vs-c-default-namespace.html</a></p>
+<p>VB.NET deals with &quot;Root Namespace&quot; differently than C# deals with &quot;Default Namespace&quot;.&nbsp; Essentially, VB.NET takes your &quot;Root Namespace&quot; value and prepends it to all your namespace declarations in your code files.&nbsp; Given that, and how you have your namespaces defined, I&#39;m not surprised VS is getting confused.</p>
+<p>It&#39;s been a&nbsp;REALLY long time since I did VB.NET development - I forgot all about this...</p>
+<p>HTH</p>
+<p>- Scott</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>gajit replied on Friday, February 17, 2012</h2><p>Thanks Scott!</p>
+<p>That looks almost certainly to be the issue. I have to play around now and see what the resolution is.</p>
+<p>I&#39;m tormented by the fact that I may have to shift my development to C# ..( errrghh )... and become a *real* developer ;)</p>
+<p>I appreciate your input and will let you know how I make out.</p>
+<p>Thanks again,</p>
+<p>Graham</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>gajit replied on Friday, February 17, 2012</h2><p>Well, it looks like we&#39;re all good.</p>
+<p>I can&#39;t thank you enough Scott.</p>
+<p>I removed the intrinsic Namespace = .... from my classes and that certainly fixed the referencing problem.</p>
+<p>I was left with errors that I was not implementing the GetProvider and Dispose methods of the interface. I let the IDE create a couple for me to see what they looked like, and lo and behold - it looks like the translated code doesn&#39;t define the methods correctly:</p>
+<p>This is what the vb.Net DalManager class SHOULD look like:</p>
+<p>Imports System<br />Imports System.Collections.Generic<br />Imports System.Linq<br />Imports System.Text</p>
+<p>Public Class DalManager</p>
+<p>&nbsp;&nbsp;&nbsp; Implements DataAccess.IDalManager</p>
+<p>&nbsp;&nbsp;&nbsp; Private Shared _typeMask As String = GetType(DalManager).FullName.Replace(&quot;DalManager&quot;, &quot;{0}&quot;)</p>
+<p>&nbsp;&nbsp;&nbsp; Public Function GetProvider(Of T As Class)() As T <strong>Implements IDalManager.GetProvider</strong></p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Dim typeName = String.Format(_typeMask, GetType(T).Name.Substring(1))<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Dim type__1 = Type.[GetType](typeName)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; If type__1 IsNot Nothing Then<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return TryCast(Activator.CreateInstance(type__1), T)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Else<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Throw New NotImplementedException(typeName)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End If</p>
+<p>&nbsp;&nbsp;&nbsp; End Function</p>
+<p>&nbsp;&nbsp;&nbsp; Public Sub Dispose()<strong> Implements IDisposable.Dispose<br /></strong>&nbsp;&nbsp;&nbsp; End Sub</p>
+<p>End Class</p>
+<p>So, no need to become a *real* developer just yet.... I&#39;ll now push on.</p>
+<p>Thanks again,</p>
+<p>Graham</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,63 @@
+<html><header><title>Can't cancel changes with failed validation rules</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Can't cancel changes with failed validation rules</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3446.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>frankhoffy posted on Tuesday, August 28, 2007</h2>I've been having an odd problem with one of my business objects.<br><br>I am using Windows Forms and version 3.0.1 of CSLA.&nbsp; I have a form with some fields on it that let you edit information about a person.<br><br>My Person class is an editable root, and I am using binding.&nbsp; I call EndEdit on the binding source to save the data on the form.&nbsp; Under normal circumstances, this works fine.<br><br>If, however, one of my validation rules fails when I call EndEdit, I can't seem to cancel out the changes.&nbsp; Calling CancelEdit on the binding source does nothing, and neither does calling CancelEdit on the object itself.<br><br>It almost looks like my state stack is getting messed up somehow.&nbsp; Has anybody else run across this?&nbsp; If so, how did you get around it?<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, August 28, 2007</h2><P>I've been working on the (hopefully) complete solution to this, and if you look at the C# code in svn for ProjectEdit in PTWin you should see the right answer. It does require a change in 3.0.2 of CSLA itself though too.</P>
+<P>So I'm working on it, and hopefully will have a firm solution within the next week or so.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, August 28, 2007</h2><P>OK, I got a refresh of 3.0.2 up - both VB and C# - with the (I believe) working PTWin code.</P>
+<P><A href="http://www.lhotka.net/cslanet/download.aspx">www.lhotka.net/cslanet/download.aspx</A></P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>phucphlq replied on Tuesday, August 28, 2007</h2>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><font size=2 color=navy face=Arial><span>Thanks Rocky!<o:p></o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 color=navy face=Arial><span><o:p>&nbsp;</o:p></span></font></p>
+
+<div>
+
+<div class=MsoNormal align=center><font size=3 face="Times New Roman"><span>
+
+<hr align=center>
+
+</span></font></div>
+
+<p class=MsoNormal><b><font size=2 face=Tahoma><span>From:</span></font></b><font size=2 face=Tahoma><span> RockfordLhotka
+[mailto:cslanet@lhotka.net] <br>
+<b><span>Sent:</span></b> Wednesday, August 29, 2007
+11:18<br>
+<b><span>To:</span></b> phucphlq@dsp.com.vn<br>
+<b><span>Subject:</span></b> Re: [CSLA .NET] Can't
+cancel changes with failed validation rules</span></font><o:p></o:p></p>
+
+</div>
+
+<p class=MsoNormal><font size=3 face="Times New Roman"><span><o:p>&nbsp;</o:p></span></font></p>
+
+<p><font size=3 face="Times New Roman"><span>OK, I got
+a refresh of 3.0.2 up - both VB and C# - with the (I believe) working PTWin
+code.<o:p></o:p></span></font></p>
+
+<p><font size=3 face="Times New Roman"><span><a href="http://www.lhotka.net/cslanet/download.aspx">www.lhotka.net/cslanet/download.aspx</a><o:p></o:p></span></font></p>
+
+<p><font size=3 face="Times New Roman"><span>&nbsp;<o:p></o:p></span></font></p>
+
+<p class=MsoNormal><font size=3 face="Times New Roman"><span><br>
+<br>
+<o:p></o:p></span></font></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

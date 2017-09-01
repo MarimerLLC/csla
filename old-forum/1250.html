@@ -1,0 +1,108 @@
+<html><header><title>Subclassing</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Subclassing</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/1250.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>DeHaynes posted on Monday, September 18, 2006</h2><P>&nbsp;&nbsp;&nbsp;As I am looking to subclass the CSLA framework, I have the concept down, but I have never actually done it.&nbsp; Does anyone know of a place that I could go to in order to help point out the pitfalls and standard way of doing things?</P>
+<P>&nbsp;</P>
+<P>Thanks</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, September 18, 2006</h2>This active thread is covering the same topic and may be of interest<br><br><a HREF="/forums/thread/6349.aspx">http://forums.lhotka.net/forums/thread/6349.aspx</a><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>DeHaynes replied on Monday, September 18, 2006</h2>THANKS!&nbsp; :)</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Michael Hildner replied on Monday, September 18, 2006</h2><P>Hey Tim,</P>
+<P>I just finished doing this against the 2.0.3 version. Was pretty easy, but I did get a little confused with the generics business. I can send to you if you'd like, or we can compare.</P>
+<P>Regards,</P>
+<P>Mike</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>DeHaynes replied on Monday, September 18, 2006</h2><P>Generics is what is messing me up too.&nbsp; Can you reply to this and attach a zipped copy of just BusinessBase&lt;T&gt;?&nbsp; I want to figure it out as much as I can so it sticks.&nbsp; </P>
+<P>&nbsp;</P>
+<P>Thanks a ton.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>mr_lasseter replied on Tuesday, September 19, 2006</h2>I am stuggling with this as well.&nbsp; Would it be possible for you to post your BusinessBase(of T)?</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Michael Hildner replied on Tuesday, September 19, 2006</h2><P>Apologies Tim, I missed your post last night.</P>
+<P>Keep in mind I'm not really sure what I'm doing either, any comments appreciated. I'm sure you'll want to change the namespace and class name.</P><FONT color=#0000ff size=2>
+<P>using</FONT><FONT size=2> System;</P></FONT><FONT color=#0000ff size=2>
+<P>using</FONT><FONT size=2> System.Collections.Generic;</P></FONT><FONT color=#0000ff size=2>
+<P>using</FONT><FONT size=2> System.Text;</P></FONT><FONT color=#0000ff size=2>
+<P>using</FONT><FONT size=2> Csla;</P></FONT><FONT color=#0000ff size=2>
+<P>namespace</FONT><FONT size=2> Buoy.BusinessObjects203</P>
+<P>{</P>
+<P>[</FONT><FONT color=#008080 size=2>Serializable</FONT><FONT size=2>()]</P>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>abstract</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>class</FONT><FONT size=2> </FONT><FONT color=#008080 size=2>BuoyBusinessBase</FONT><FONT size=2>&lt;T&gt; :</P>
+<P></FONT><FONT color=#008080 size=2>BusinessBase</FONT><FONT size=2>&lt;T&gt;</P>
+<P></FONT><FONT color=#0000ff size=2>where</FONT><FONT size=2> T : </FONT><FONT color=#008080 size=2>BuoyBusinessBase</FONT><FONT size=2>&lt;T&gt;</P>
+<P>{</P>
+<P></FONT><FONT color=#008000 size=2>// We may want to mark a new object as clean, so that way</P></FONT><FONT size=2>
+<P></FONT><FONT color=#008000 size=2>// it won't get saved if the user hasn't modified any</P></FONT><FONT size=2>
+<P></FONT><FONT color=#008000 size=2>// properties.</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>virtual</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>void</FONT><FONT size=2> MarkAsClean()</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>.MarkClean();</P>
+<P>}</P>
+<P>}</P>
+<P>}</P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Tuesday, September 19, 2006</h2>I don't think that MarkAsClean should be public in scope.<br><br>The reason is that the object should be managing its own state, and the client should not be deciding if the object is dirty or clean.&nbsp; Exposing this method is breaking encapsulation.<br><br>You should note that the default Save method of BusinessBase will NOT call save if the object is 'clean.'&nbsp; I don't know what reason you have for marking the object clean to prevent saving, but I'm sure there's a better way.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Michael Hildner replied on Tuesday, September 19, 2006</h2><P>Hey Andy,</P>
+<P>Thanks, just the type of comments I'm looking for.</P>
+<P>The reason I want to mark a new object as clean came from this thread <A HREF="/forums/thread/2477.aspx">http://forums.lhotka.net/forums/thread/2477.aspx</A></P>
+<P>Basically, I don't want to prompt the user with "Do you want to save changes" if it's a new object and the user hasn't modified anything. In that case the object should not be saved at all.</P>
+<P>I'm not sure if this should be done by the bo itself or the UI, as it seems like it's a UI function, but I'm not sure.</P>
+<P>Thanks,</P>
+<P>Mike</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Tuesday, September 19, 2006</h2>Ahh.&nbsp;&nbsp; I think a better, but slightly more complex solution, would be to override various items in BusinessBase.<br><br><font color="#0000ff">private bool</font> propertyChanged = <font color="#0000ff">false</font>;<br><br><font color="#0000ff">public override</font> IsDirty {<br>&nbsp;&nbsp;&nbsp;&nbsp; <font color="#0000ff">return </font>propertyChanged &amp;&amp; <font color="#0000ff">base</font>.IsDirty;<br>}<br><br><font color="#0000ff">protected override</font> PropertyHasChanged(<font color="#0000ff"> string</font> propName ) {<br>&nbsp;&nbsp; propertyChanged = <font color="#0000ff">true</font>;<br>&nbsp;&nbsp;<font color="#0000ff"> base</font>.PropertyHasChanged( propName );<br>}<br><br>You could encapsulate this in your BouyBusinessBase.&nbsp; <br><br>This is just off the top of my head though, so take it with a grain of salt.<br><br>HTH<br>Andy<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>DeHaynes replied on Tuesday, September 19, 2006</h2><P>Ok, I am confused. </P>
+<P><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>abstract</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>class</FONT><FONT size=2> </FONT><FONT color=#008080 size=2>BuoyBusinessBase</FONT><FONT size=2>&lt;T&gt; : </FONT><FONT color=#008080 size=2>BusinessBase</FONT><FONT size=2>&lt;T&gt; </FONT><FONT color=#0000ff size=2>where</FONT><FONT size=2> T : </FONT><FONT color=#008080 size=2>BuoyBusinessBase</FONT><FONT size=2>&lt;T&gt;</FONT></P>
+<P><FONT size=2><FONT size=3>I thought this says </FONT><FONT size=2><FONT color=#008080>BuoyBusinessBase</FONT>&lt;T&gt; inherits from <FONT color=#008080>BusinessBase</FONT><FONT size=2>&lt;T&gt; Where T is type <FONT color=#008080>BuoyBusinessBase</FONT><FONT size=2>&lt;T&gt;?</FONT></FONT></FONT></FONT></P>
+<P><FONT size=2>If that is true, it seems like a circular reference.</P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Michael Hildner replied on Tuesday, September 19, 2006</h2><P>Tim,</P>
+<P>I'm no expert in generics, honestly I'm not really sure how that works - maybe someone can explain?</P>
+<P>When I tried to subclass the CSLA classes, it took me a while to even compile it :) - I could very well be doing something wrong.</P>
+<P>But, if you look at BusinessBase&lt;T&gt;, it's just about the same:</P><FONT color=#0000ff size=2>
+<P>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>abstract</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>class</FONT><FONT size=2> </FONT><FONT color=#008080 size=2>BusinessBase</FONT><FONT size=2>&lt;T&gt; : </FONT><FONT color=#008080 size=2>BusinessBase</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>where</FONT><FONT size=2> T : Csla.</FONT><FONT color=#008080 size=2>BusinessBase</FONT><FONT size=2>&lt;T&gt;</FONT></P>
+<P><FONT size=2>I'd love to get a good explanation on this.</FONT></P>
+<P><FONT size=2>Mike</P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>DeHaynes replied on Tuesday, September 19, 2006</h2><P>What I have read so far is that when you inherit from a generic class, you have to repeat any constraints.&nbsp; So If you are inheriting from:</P><FONT size=2>
+<P>[</FONT><FONT color=#008080 size=2>Serializable</FONT><FONT size=2>()]<BR></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>abstract</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>class</FONT><FONT size=2> </FONT><FONT color=#008080 size=2>BusinessBase</FONT><FONT size=2>&lt;T&gt; : Core.</FONT><FONT color=#008080 size=2>BusinessBase</FONT><FONT size=2>, Core.</FONT><FONT color=#008080 size=2>ISavable</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>where</FONT><FONT size=2> T : </FONT><FONT color=#008080 size=2>BusinessBase</FONT><FONT size=2>&lt;T&gt;</FONT></P>
+<P><FONT size=2><FONT size=3>The constraint here is&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</FONT><FONT size=2><FONT color=#0000ff>where</FONT> T : <FONT color=#008080>BusinessBase</FONT>&lt;T&gt;</FONT></FONT></P>
+<P><FONT size=2><FONT size=3>So when I inherit from it, I need to do the following</FONT></FONT></P><FONT size=2><FONT size=3><FONT size=2>
+<P>[</FONT><FONT color=#008080 size=2>Serializable</FONT><FONT size=2>()]<BR></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>abstract</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>class</FONT><FONT size=2> </FONT><FONT color=#008080 size=2>ANBOBusinessBase</FONT><FONT size=2>&lt;T&gt; : </FONT><FONT color=#008080 size=2>BusinessBase</FONT><FONT size=2>&lt;T&gt; </FONT><FONT color=#0000ff size=2>where</FONT><FONT size=2> T : </FONT><FONT color=#008080 size=2>BusinessBase</FONT><FONT size=2>&lt;T&gt;</P></FONT></FONT></FONT>
+<P><FONT size=2><FONT size=3>So that explains how to do it, but I still want to know what the </FONT></FONT></P>
+<P><FONT size=2>&nbsp;<FONT color=#0000ff size=2>where</FONT><FONT size=2> T : </FONT><FONT color=#008080 size=2>BusinessBase</FONT><FONT size=2>&lt;T&gt;</FONT></P>
+<P>in the first declaration means.</FONT></P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, September 19, 2006</h2>I do use a "recursive" generic when defining BusinessBase(Of T) - see Chapter 4 for some discussion of this as well. I also use a constraint to ensure that someone can't just instantiate a BusinessBase&lt;T&gt;, but rather that they must subclass it first.<br><br>If you want to create your own base classes, you need to do the same thing - both in terms of the recursive generic, and the constraint - which also, then, satisfies my constraint in CSLA itself.<br><br>[Serializable]<br>public abstract class MyNewBase&lt;T&gt; : BusinessBase&lt;T&gt; where T : MyNewBase&lt;T&gt;<br><br>Since MyNewBase inherits from BusinessBase&lt;T&gt;, the CSLA constraint is satisfied. And the new constraint on this class does the same thing as mine: ensuring that MyNewBase can only be used as a base class for a T. So a subclass is:<br><br>[Serializable]<br>public class Customer : MyNewBase&lt;Customer&gt;<br><br>While it will work for you to constraint T to BusinessBase&lt;T&gt;, that's not really the intent. The intent of the constraint is to force a subclass to pass itself as T - to force T to inherit from MyNewBase.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>DansDreams replied on Tuesday, September 19, 2006</h2><P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div>The intent of the constraint is to force a subclass to pass itself as T - to force T to inherit from MyNewBase.<BR></div></BLOCKQUOTE></P>
+<P>I think I can see how that would only sound more confusing.</P>
+<P>You <EM>could</EM> interpret what you said as simply "to force a subclass of MyNewBase to inherit from MyNewBase."&nbsp; Sounds kinds of silly expressed that way, and that would lead to confusion because we know this really <EM>isn't</EM> silliness.</P>
+<P>If I'm understanding this correctly (and I am NO generics expert) I think the two significant points are:</P>
+<OL>
+<LI>You need/want to use a constraint to control how the class is used.</LI>
+<LI>Since the constraint you want to use is the class itself in this case, you have to use the generic signature of the class which includes the &lt;T&gt;</LI></OL>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>skagen00 replied on Tuesday, September 19, 2006</h2><P><FONT size=1><FONT size=3>It means that T needs to be a decendent of BusinessBase&lt;T&gt;. </FONT></FONT></P>
+<P>Thus I couldn't do this: </P>
+<P>public class Individual : BusinessBase&lt;string&gt;</P>
+<P>&nbsp;</P>
+<P><FONT size=1>&nbsp;</P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Tuesday, September 19, 2006</h2><P>The VB version of a company level Base class&nbsp;looks like this:</P>
+<P>===================================================</P><FONT size=2>
+<P>&lt;Serializable()&gt; _</P>
+<P></FONT><FONT color=#0000ff size=2>Public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>MustInherit</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Class</FONT><FONT size=2> MyBusinessBase(</FONT><FONT color=#0000ff size=2>Of</FONT><FONT size=2> T </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> MyBusinessBase(</FONT><FONT color=#0000ff size=2>Of</FONT><FONT size=2> T))</P>
+<P></FONT><FONT color=#0000ff size=2>&nbsp; Inherits</FONT><FONT size=2> BusinessBase(</FONT><FONT color=#0000ff size=2>Of</FONT><FONT size=2> T)</P></FONT>
+<P>===================================================</P>
+<P>Then a regular Root Bo would look like this:</P><FONT size=2>
+<P>&lt;Serializable()&gt; _</P>
+<P></FONT><FONT color=#0000ff size=2>Public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Class</FONT><FONT size=2> Acct</P>
+<P></FONT><FONT color=#0000ff size=2>&nbsp; Inherits</FONT><FONT size=2> MyBusinessBase(</FONT><FONT color=#0000ff size=2>Of</FONT><FONT size=2> Acct)</P></FONT>
+<P>===================================================</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>DeHaynes replied on Tuesday, September 19, 2006</h2><P>Thanks you two.&nbsp; :)</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>DeHaynes replied on Tuesday, September 19, 2006</h2><P>Ok I think I got generic inheritance down.&nbsp; I have a new question.</P>
+<P>Do I need to override all non-public members of BusinessBase&lt;T&gt;?&nbsp; This way I expose them at the level that I will actually be using them?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>skagen00 replied on Tuesday, September 19, 2006</h2><P>That would kind of defeat the purpose of inheritance, wouldn't it? ;)</P>
+<P>I'm not sure what you mean by your question, perhaps you could rephrase it? </P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>DeHaynes replied on Tuesday, September 19, 2006</h2><P>&nbsp;&nbsp;&nbsp;Yea, I thought about it after I typed it.&nbsp; It didn't make sense.&nbsp; </P>
+<P>I guess what I am asking, is after I abstract&nbsp;<FONT color=#008080 size=2>BusinessBase</FONT><FONT size=2>&lt;T&gt;&nbsp;</FONT>&nbsp;to my class, </P>
+<P><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>abstract</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>class</FONT><FONT size=2> </FONT><FONT color=#008080 size=2>ANBOBusinessBase</FONT><FONT size=2>&lt;T&gt; : Csla.</FONT><FONT color=#008080 size=2>BusinessBase</FONT><FONT size=2>&lt;T&gt; </FONT><FONT color=#0000ff size=2>where</FONT><FONT size=2> T : </FONT><FONT color=#008080 size=2>ANBOBusinessBase</FONT><FONT size=2>&lt;T&gt;</P></FONT>
+<P>is there any code in it that I need to bring up to my class level to expose it?&nbsp; There is some custom stuff I want to do but if there wasn't and my only objective was to abstract the CSLA framework into my own namespace and thus allow my code to be upgraded with future versions of the CSLA framework, then&nbsp;my subclass could basically consist of</P><FONT size=2>
+<P>[</FONT><FONT color=#008080 size=2>Serializable</FONT><FONT size=2>()]<BR></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>abstract</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>class</FONT><FONT size=2> </FONT><FONT color=#008080 size=2>ANBOBusinessBase</FONT><FONT size=2>&lt;T&gt; : Csla.</FONT><FONT color=#008080 size=2>BusinessBase</FONT><FONT size=2>&lt;T&gt; </FONT><FONT color=#0000ff size=2>where</FONT><FONT size=2> T : </FONT><FONT color=#008080 size=2>ANBOBusinessBase</FONT><FONT size=2>&lt;T&gt;<BR>{ }</FONT></P>
+<P><FONT size=2>Is that right?</P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>skagen00 replied on Tuesday, September 19, 2006</h2><P>That's pretty much it, yep! </P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, September 19, 2006</h2>
+
+
+
+
+<DIV align=left><SPAN class=218043215-19092006><FONT face=Arial color=#0000ff size=2>You should only override methods you want to 
+change/enhance/replace. So yes, in the most basic sense you'd simply create an 
+empty class - thus enabling future changes.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=218043215-19092006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=218043215-19092006><FONT face=Arial color=#0000ff size=2>Rocky</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=218043215-19092006></SPAN>&nbsp;</DIV><BR>
+<BLOCKQUOTE>
+  <P>is there any code in it that I need to bring up to my class level to expose 
+  it?&nbsp; There is some custom stuff I want to do but if there wasn't and my 
+  only objective was to abstract the CSLA framework into my own namespace and 
+  thus allow my code to be upgraded with future versions of the CSLA framework, 
+  then&nbsp;my subclass could basically consist of</P><FONT size=2>
+  <P>[</FONT><FONT color=#008080 size=2>Serializable</FONT><FONT size=2>()]<BR></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> 
+  </FONT><FONT color=#0000ff size=2>abstract</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>class</FONT><FONT size=2> </FONT><FONT color=#008080 size=2>ANBOBusinessBase</FONT><FONT size=2>&lt;T&gt; : Csla.</FONT><FONT color=#008080 size=2>BusinessBase</FONT><FONT size=2>&lt;T&gt; </FONT><FONT color=#0000ff size=2>where</FONT><FONT size=2> T : </FONT><FONT color=#008080 size=2>ANBOBusinessBase</FONT><FONT size=2>&lt;T&gt;<BR>{ }</FONT></P>
+  <P><FONT size=2>Is that right?</P></FONT></BLOCKQUOTE></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>DeHaynes replied on Tuesday, September 19, 2006</h2>Thanks skagen and Rocky.&nbsp; I know that teaching generics isn't part of your responsibilities, so I wanted to say that I really appreciate all the help.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>DeHaynes replied on Tuesday, September 19, 2006</h2><P>I saw in another post where Rocky said that you should only subclass the following classes.</P>
+<P>&nbsp;&nbsp;BusinessBase&lt;T&gt;<BR>&nbsp;&nbsp;BusinessListBase&lt;T,C&gt;<BR>&nbsp;&nbsp;CommandBase<BR>&nbsp;&nbsp;ReadOnlyBase&lt;T&gt;<BR>&nbsp;&nbsp;ReadOnlyListBase&lt;T,C&gt;<BR>&nbsp;&nbsp;NameValueListBase&lt;K,V&gt;</P>
+<P>&nbsp;</P>
+<P>What about </P><FONT color=#008080 size=2>
+<P>EditableRootListBase</FONT><FONT size=2>&lt;T&gt;<BR></FONT><FONT color=#008080 size=2>SortedBindingList</FONT><FONT size=2>&lt;T&gt;<BR></FONT><FONT color=#008080 size=2>SmartDate</FONT><BR><FONT color=#008080 size=2>FilteredBindingList</FONT><FONT size=2>&lt;T&gt;</P></FONT>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, September 19, 2006</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>DeHaynes:</strong></div><div><p>What about </p><font color="#008080" size="2">
+</font><p><font color="#008080" size="2">EditableRootListBase</font><font size="2">&lt;T&gt;<br></font><font color="#008080" size="2">SortedBindingList</font><font size="2">&lt;T&gt;<br></font><font color="#008080" size="2">SmartDate</font><br><font color="#008080" size="2">FilteredBindingList</font><font size="2">&lt;T&gt;</font></p>
+</div></BLOCKQUOTE><br><br>In version 2.1 you should also subclass EditableRootListBase, yes.<br><br>The others are not base classes. You don't typically subclass them to do anything in a normal application, so creating a subclassed version of them has less value. It would be somewhat like subclassing String in case you wanted to enhance it someday.<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

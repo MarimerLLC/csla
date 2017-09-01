@@ -1,0 +1,257 @@
+<html><header><title>CSLA.NET 3.6: ByPassPropertyChecks (suggestion)</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA.NET 3.6: ByPassPropertyChecks (suggestion)</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5220.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Patrick posted on Saturday, August 09, 2008</h2>Hi,<br><br>here a suggestion which might be of benefit for CSLA.NET 3.6.<br><br>Currently CSLA.NET 3.5 implements properties in this way:<br><br>&nbsp; private static PropertyInfo&lt;string&gt; NameProperty = RegisterProperty(new PropertyInfo&lt;string&gt;("Name"));<br>&nbsp;&nbsp;&nbsp; public string Name<br>&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; get { return GetProperty&lt;string&gt;(NameProperty); }<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; set { SetProperty&lt;string&gt;(NameProperty, value); }<br>&nbsp;&nbsp;&nbsp; }<br><br>When I need to get or set the properties from within the business object and like to bypass security checks for performance and other reasons I need to call one of these methods:<br>&nbsp; LoadProperty&lt;string&gt;(NameProperty, data.Name);<br>&nbsp; ReadProperty&lt;string&gt;(NameProperty),<br><br>This is fine especially when the code is code generated. When it's done by hand it's sometimes rather a lot of code to write....<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; LoadProperty&lt;string&gt;(NameProperty, "TestName");<br>vs<br>&nbsp;&nbsp;&nbsp;&nbsp; Name = "TestName";<br><br>So I was wondering if it would be a good idea to implement in business base:<br>protected bool _byPassPropertyChecks {get;set;}<br><br>When _byPassPropertyChecks is set to true (default false)<br>* GetProperty&lt;string&gt;(NameProperty) would just call ReadProperty&lt;string&gt;(NameProperty) internally.<br>* SetProperty..... would just call LoadProperty...... internally.<br><br>Considering that business objects are not thread safe anyway there doesn't seem to be much danger and this code to load a project in the ProjectTracker:<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // get project data<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var data = (from p in ctx.DataContext.Projects<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; where p.Id == criteria.Value<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; select p).Single();<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; LoadProperty&lt;Guid&gt;(IdProperty, data.Id);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; LoadProperty&lt;string&gt;(NameProperty, data.Name);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; LoadProperty&lt;SmartDate, System.DateTime?&gt;(StartedProperty, data.Started);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; LoadProperty&lt;SmartDate, System.DateTime?&gt;(EndedProperty, data.Ended);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; LoadProperty&lt;string&gt;(DescriptionProperty, data.Description);<br><br>Could become:<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // get project data<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var data = (from p in ctx.DataContext.Projects<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; where p.Id == criteria.Value<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; select p).Single();<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; byPassPropertyChecks =true;&nbsp;&nbsp;&nbsp; &nbsp;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Id = data.Id;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Name = data.Name;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Started = data.Started;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Ended = data.Ended;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Description = data.Description;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; byPassPropertyChecks =false;<br><br>Which is easier to read, quicker to write, and simpler to maintain <img src="/emoticons/emotion-1.gif" alt="Smile [:)]" /><br><br>Thanks for considering it,<br>Patrick</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Sunday, August 10, 2008</h2><P>I'll be interested to hear what others think of this idea.</P>
+<P>My first reaction is that this is a really good idea.</P>
+<P>Here's a broader (and maybe more dangerous) alternative that also seems interesting:</P>
+<BLOCKQUOTE dir=ltr>
+<P>using (new DirectAccess(_project))<BR>{<BR>&nbsp; _project.Id = dto.Id;<BR>&nbsp; _project.Name = dto.Name;<BR>&nbsp; _project.Started = dto.Started;<BR>&nbsp; // ...<BR>}</P></BLOCKQUOTE>
+<P>The using block seems cleaner than setting the property manually.</P>
+<P>The drawback to this approach is (at least as I'm showing it) that external code could use it to cheat, and that could be bad.</P>
+<P>But it could be protected only like this:</P>
+<BLOCKQUOTE dir=ltr>
+<P>using (this.BypassPropertyChecks)<BR>{<BR>&nbsp; Id = dto.Id;<BR>&nbsp; Name = dto.Name;<BR>&nbsp; Started = dto.Started;<BR>&nbsp; // ...<BR>}</P></BLOCKQUOTE>
+<P>Same idea, but using a protected BypassPropertyChecks property so it is only available inside the object.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Patrick replied on Sunday, August 10, 2008</h2><BLOCKQUOTE><div><img src="/Themes/basicblue/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div>My first reaction is that this is a really good idea.
+</div></BLOCKQUOTE><br>Thanks for being so open to suggestions with CSLA.NET <img src="/emoticons/emotion-1.gif" alt="Smile [:)]" /><br><p><BLOCKQUOTE><div><img src="/Themes/basicblue/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div>The using block seems cleaner than setting the property manually.
+</div></BLOCKQUOTE></p><p>Yes it is a lot cleaner and also makes sure that the object is never left in "Bypass" mode should an exception occur during set or get of the property.<br></p>
+<p><BLOCKQUOTE><div><img src="/Themes/basicblue/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div>The drawback to this approach is (at least as I'm showing it) that external code could use it to cheat, and that could be bad.</div></BLOCKQUOTE></p><p>Hm if "DirectAccess" was internal instead of public the harm might be limited... In the case below the Id still couldn't be set from the outside.</p><p>&nbsp; private static PropertyInfo&lt;Int32&gt; IdProperty = RegisterProperty(new PropertyInfo&lt;Int32&gt;("Id"));<br>&nbsp;&nbsp;&nbsp; public string Id<br>&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; get { return GetProperty&lt;string&gt;(IdProperty); }<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; private set { SetProperty&lt;string&gt;(IdProperty, value); }<br>&nbsp;&nbsp;&nbsp; }</p>One benefit would be that it would make it possible to fill a business object from the outside during fetch scenarios. For example LLBLGen supports projection of an open DataReader onto custom business classes which might bean easy way to fill the business objects. The danger seems to be limited as IsValid would still report correctly on the state of the object.<br><br>But filling it form the inside works fine too so I'm not sure how much benefit it would bring overall. <br><br>Thanks,<br>Patrick<br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>stefan replied on Monday, August 11, 2008</h2>You probably meant 'protected' instead of 'internal'...<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Annesh replied on Monday, August 11, 2008</h2>I like the idea of the 'using' clause, it prevents the developer from forgetting to set the ByPassPropertyChecks to false at the end. Just another simple idea could be to use protected operator overloads methods in the base classes perhaps (.=) or (&lt;-), in&nbsp;which then the&nbsp;usage of this could be Id .= dto.Id. </div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Fintanv replied on Monday, August 11, 2008</h2><P>My vote is for the "using" syntax.&nbsp; It is clean and provides nicely structured, easy to read, code.</P>
+<P>-- Fintan</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rasupit replied on Monday, August 11, 2008</h2>I like the idea of using "using block".&nbsp; The second signature looks very clean, however this make the property must return IDisposable object instead of boolean value.<br><br>Other option is to call a method to create new "token" object that implement IDisposable similar to ASP.NET MVC's Form helper.<br><br>Here's the sample that might work:<br><br>&nbsp;&nbsp;&nbsp; public class MyBusinessObject : Csla.BusinessBase&lt;MyBusinessObject&gt;<br>&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public void Fetch()<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; using (GetByPassPropertyToken())<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; System.Threading.Thread.Sleep(2000);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; private bool ByPassPropertyCheck = false;<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; private IDisposable GetByPassPropertyToken()<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return new ByPassToken(this);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; private class ByPassToken : IDisposable<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; private MyBusinessObject B;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public ByPassToken(MyBusinessObject b)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; B = b;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; B.ByPassPropertyCheck = true;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Console.WriteLine("Property Check By Passed..");<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public void Dispose()<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Dispose(true);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; GC.SuppressFinalize(this);<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public void Dispose(bool dispose)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; B.ByPassPropertyCheck = false;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Console.WriteLine("Property Check Back On..");<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>Note: this would be the same implementation as the first option except the class would be local to BusinessBase.<br>Ricky.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, August 11, 2008</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Thanks Ricky &#8211; my idea was that the property would return
+an IDisposable token object &#8211; much the way the WPF data provider
+infrastructure works, and pretty much exactly what you have in your example.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky</span><o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rasupit replied on Monday, August 11, 2008</h2>I see.. that would work as well.<br>Ricky<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Patrick replied on Monday, September 08, 2008</h2><div class="Section1"><p class="MsoNormal">Hi,</p><p class="MsoNormal">is there any plan to implement this in CSLA.NET 3.6?</p><p class="MsoNormal">Thanks,</p><p class="MsoNormal">Patrick<br></p><p class="MsoNormal"><br></p><p class="MsoNormal"></p></div></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Patrick replied on Wednesday, September 24, 2008</h2>It seems like this would also help with the DataMapper as mapping data from one object to a business object that is in ByPass mode would allow the DataMapper to also bypass the security checks which would give a performance benefit....<br>During an internal mapping operation security isn't needed in most case anyway..<br><br>Thanks,<br>Patrick<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Patrick replied on Wednesday, October 22, 2008</h2>Hi,<br><br>I saw you implemented it in cslalight in the trunk in revision 3190:<br>http://www.lhotka.net/cslacvs/viewvc.cgi?view=rev&amp;revision=3190<br><br><i>Implement feature: "Implement scheme by which GetProperty/SetProperty can act like ReadProperty/LoadProperty, bypassing authorization and property changed events"&nbsp; Implement this in BusinessBase and ObjectFactory.<br>bugid: 70<br></i><br>are there any plans to port it to CSLA.NET 3.6 for windows?<br><br>Thanks,<br>Patrick<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, October 22, 2008</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>This is in the Windows version too. You can see the file
+revisions if you click the &#8220;svn revisions&#8221; link from the bugtracker
+summary page:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><a href="http://www.lhotka.net/cslabugs/edit_bug.aspx?id=70">http://www.lhotka.net/cslabugs/edit_bug.aspx?id=70</a><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Patrick replied on Tuesday, October 28, 2008</h2><BLOCKQUOTE><div><img src="/Themes/basicblue/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div>
+
+
+
+
+
+
+ 
+
+
+
+<div class="Section1">
+
+<p class="MsoNormal"><span>This is in the Windows version too. You can see the file
+revisions if you click the “svn revisions” link from the bugtracker
+summary page:<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><a href="http://www.lhotka.net/cslabugs/edit_bug.aspx?id=70">http://www.lhotka.net/cslabugs/edit_bug.aspx?id=70</a></span></div></BLOCKQUOTE></p><p class="MsoNormal">Hi Rocky,</p><p class="MsoNormal">thanks for your answer. I can see that it's in the windows version but it seems to be missing from 3.6 Beta 2 <a href="http://www.lhotka.net/cslacvs/viewvc.cgi/tags/V3/V3-6-0-b2/cslacs/Csla/BusinessBase.cs?view=markup">http://www.lhotka.net/cslacvs/viewvc.cgi/tags/V3/V3-6-0-b2/cslacs/Csla/BusinessBase.cs?view=markup</a></p><p class="MsoNormal">Thanks,</p><p class="MsoNormal">Patrick<br></p><p class="MsoNormal"></p></div></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>FrankM replied on Tuesday, October 28, 2008</h2>It's in cslacs-3.6.0-081021.zip. <br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jack replied on Tuesday, December 02, 2008</h2><P>This feature only works one level deep right?&nbsp; I have an object&nbsp;property that returns one of three different ManagedProperties depending on the valueTypeCode stored in a 4th Property.</P>
+<P><FONT size=2 face="Courier New">in pseudo code to make readalbe</FONT></P>
+<BLOCKQUOTE dir=ltr>
+<P><FONT size=2 face="Courier New">Object DataValue = <BR>&nbsp;Switch(Field.FieldTypeValue)<BR>&nbsp;&nbsp;case "Number" : return DataProperty.ValueNumber;<BR>&nbsp;&nbsp;case "Date"&nbsp;&nbsp; : return DataProperty.ValueDate;<BR>&nbsp;&nbsp;case "String" : return DataProperty.ValueText;</FONT></P></BLOCKQUOTE><FONT size=2 face="Courier New">
+<P><BR>If I use the ReadProperty then this starts to look like</P>
+<BLOCKQUOTE dir=ltr>
+<P>Object DataValue = <BR>&nbsp;Switch(ReadProperty&lt;xxx&gt;(Field).ReadProperty&lt;yyy&gt;(FieldTypeValue))<BR>&nbsp;&nbsp;case "Number" : return ReadProperty(DataProperty).ReadProperty(ValueNumber);</P></BLOCKQUOTE>
+<P>&nbsp;&nbsp;<BR>etc.</P>
+<P>The code looks horrible and is hard to read.</P>
+<P>Is there a syntax that will basically use the ByPassPropertyCheck on nested managed properties?</P>
+<P>Thanks</P>
+<P>jack</FONT></P>
+<P><FONT size=2 face="Courier New"></FONT>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, December 02, 2008</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>How can you even do that? ReadProperty() is a protected member,
+so you can&#8217;t write code in one object to call it in another object &#8211;
+even a child object.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky </span><b><span><o:p></o:p></span></b></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jack replied on Tuesday, December 02, 2008</h2><P>That is the problem... I can't :-).&nbsp; </P>
+<P>I'm looking for help/direction in how to handle this.&nbsp; I'm starting to think I have to go back to the child and change all my codeGen Public abc properties to internal property and ReadProperty vs. GetProperty As its only used by the Parent.</P>
+<P>Am I making sense or babbling uselessly?</P>
+<P>thx</P>
+<P>jack</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, December 02, 2008</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>In general, one object shouldn&#8217;t be mucking around with
+the fields of another object. That breaks encapsulation and is a major anti-pattern
+for OO programming.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Instead, one object should ask other objects to do things, or
+ask other objects questions to get data.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>If this child property is only used by the parent, then it
+should probably be internal/Friend in scope, and can just use ReadProperty() so
+you never worry about authorization checks. Though why it would ever have an
+authz rule if it is only for internal use I&#8217;m not sure&#8230;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jack replied on Tuesday, December 02, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>The child property is only used by the parent and creating an
+internal version is what I am doing. &nbsp;I guess maybe I am getting too excited
+about the overhead of the Read vs. Get with no authorization checks.&nbsp; There is
+a lot of extra things going on but all the checks will process nothing.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>So bottom-line is there any real overhead if there are no
+rules?&nbsp; I have to do a bunch of these property checks each time the user tabs through
+a field so limiting the overhead is very important to me.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Thx<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>jack<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Rockford Lhotka [mailto:cslanet@lhotka.net]
+<br>
+<b>Sent:</b> December-02-08 4:38 PM<br>
+<b>To:</b> jaddington@shaw.ca<br>
+<b>Subject:</b> RE: [CSLA .NET] RE: CSLA.NET 3.6: ByPassPropertyChecks<o:p></o:p></span></p>
+
+</div>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal><span>In general, one object shouldn&#8217;t be mucking around with the
+fields of another object. That breaks encapsulation and is a major anti-pattern
+for OO programming.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Instead, one object should ask other objects to do things, or
+ask other objects questions to get data.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>If this child property is only used by the parent, then it
+should probably be internal/Friend in scope, and can just use ReadProperty() so
+you never worry about authorization checks. Though why it would ever have an
+authz rule if it is only for internal use I&#8217;m not sure&#8230;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jack replied on Tuesday, December 02, 2008</h2><P>Actually I guess I can improve on my design.&nbsp; I don't need to the switch/case in the parent - it should do it in the child which eliminates one level and makes more sense with the ReadProperty in the child.</P>
+<P>jack</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>FrankM replied on Tuesday, October 28, 2008</h2>There is another BusinessBase.cs under Core folder. The one Patrick provided is under Csla root  defining BusinessBase, which is inherited from Csla.Core.BusinessBase.<br><br>The BypassPropertyChecksObject is created in Csla.Core.BusinessBase.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Patrick replied on Tuesday, October 28, 2008</h2><BLOCKQUOTE><div><img src="/Themes/basicblue/images/icon-quote.gif"> <strong>FrankM:</strong></div><div>There is another BusinessBase.cs under Core folder. The one Patrick provided is under Csla root  defining BusinessBase, which is inherited from Csla.Core.BusinessBase.<br><br>The BypassPropertyChecksObject is created in Csla.Core.BusinessBase.</div></BLOCKQUOTE><br>You are right it's in Core.BusinessBase...of the download.<br>It's still not in the Beta 2 tag for CSLA 3.6 though:<br><a href="http://www.lhotka.net/cslacvs/viewvc.cgi/tags/V3/V3-6-0-b2/cslacs/Csla/Core/BusinessBase.cs?view=markup">http://www.lhotka.net/cslacvs/viewvc.cgi/tags/V3/V3-6-0-b2/cslacs/Csla/Core/BusinessBase.cs?view=markup</a><br><br>I guess I shouldn't use the repository to get my version but rather download them :)<br><br>Thanks,<br>Patrick<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, October 28, 2008</h2><P>I don't know why the tag is wrong...</P>
+<P>If you want the current stuff though, use /trunk - it includes a couple bug fixes and lots of new comments (that's my primary focus now, bug fixing and commenting).</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

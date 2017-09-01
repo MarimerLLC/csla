@@ -1,0 +1,79 @@
+<html><header><title>Csla CommandBase Question</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Csla CommandBase Question</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/2691.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>glenntoy posted on Friday, April 13, 2007</h2>Would it be possible to know when to use/implement these methods private methods BeforeServer() and AfterSever()? Is there anybody here using these methods?<br><br>Thanks.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>LiamGrossmann replied on Thursday, August 23, 2007</h2><P>I'm using CommandBase to call a DTS (i.e. SSIS package). I pass in the jobname to the Execute method and take it from there ...</P>
+<P>&nbsp;</P><FONT color=#0000ff size=2>
+<P>using</FONT><FONT size=2> System;</P></FONT><FONT color=#0000ff size=2>
+<P>using</FONT><FONT size=2> System.Collections.Generic;</P></FONT><FONT color=#0000ff size=2>
+<P>using</FONT><FONT size=2> System.Text;</P></FONT><FONT color=#0000ff size=2>
+<P>using</FONT><FONT size=2> Csla;</P></FONT><FONT color=#0000ff size=2>
+<P>using</FONT><FONT size=2> Csla.Data;</P></FONT><FONT color=#0000ff size=2>
+<P>using</FONT><FONT size=2> Microsoft.SqlServer.Dts.Runtime;</P></FONT><FONT color=#0000ff size=2>
+<P>namespace</FONT><FONT size=2> BarclaysCapital.ADF.Batch</P>
+<P>{</P>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;/summary&gt;</P></FONT><FONT size=2>
+<P>[</FONT><FONT color=#008080 size=2>Serializable</FONT><FONT size=2>()]</P>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>class</FONT><FONT size=2> </FONT><FONT color=#008080 size=2>SystemJobCommand</FONT><FONT size=2> : </FONT><FONT color=#008080 size=2>CommandBase</P></FONT><FONT size=2>
+<P>{</P></FONT><FONT color=#0000ff size=2>
+<P>#region</FONT><FONT size=2> Authorization</P>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>static</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>bool</FONT><FONT size=2> CanExecuteCommand()</P>
+<P>{</P>
+<P></FONT><FONT color=#008000 size=2>// TODO: Customize to check user roles</P></FONT><FONT size=2>
+<P></FONT><FONT color=#008000 size=2>// return ApplicationContext.User.IsInRole("Intranet\\Group1");</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>true</FONT><FONT size=2>;</P>
+<P>}</P></FONT><FONT color=#0000ff size=2>
+<P>#endregion</P>
+<P>#region</FONT><FONT size=2> Client-side code</P>
+<P></FONT><FONT color=#0000ff size=2>bool</FONT><FONT size=2> _Result = </FONT><FONT color=#0000ff size=2>false</FONT><FONT size=2>;</P>
+<P></FONT><FONT color=#0000ff size=2>string</FONT><FONT size=2> _JobName = </FONT><FONT color=#008080 size=2>String</FONT><FONT size=2>.Empty;</P>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>bool</FONT><FONT size=2> Result</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>get</FONT><FONT size=2> { </FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> _Result; }</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>string</FONT><FONT size=2> JobName</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>get</FONT><FONT size=2> { </FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> _JobName; }</P>
+<P></FONT><FONT color=#0000ff size=2>set</FONT><FONT size=2> { _JobName = </FONT><FONT color=#0000ff size=2>value</FONT><FONT size=2>; }</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>private</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>void</FONT><FONT size=2> BeforeServer(</FONT><FONT color=#0000ff size=2>string</FONT><FONT size=2> jobName)</P>
+<P>{</P>
+<P></FONT><FONT color=#008000 size=2>//_JobName = jobName;</P></FONT><FONT size=2>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>private</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>void</FONT><FONT size=2> AfterServer()</P>
+<P>{</P>
+<P></FONT><FONT color=#008000 size=2>// TODO: Implement code to run on client after server is called</P></FONT><FONT size=2>
+<P>}</P></FONT><FONT color=#0000ff size=2>
+<P>#endregion</P>
+<P>#region</FONT><FONT size=2> Factory Methods</P>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>static</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>bool</FONT><FONT size=2> Execute(</FONT><FONT color=#0000ff size=2>string</FONT><FONT size=2> jobName)</P>
+<P>{</P>
+<P></FONT><FONT color=#008080 size=2>SystemJobCommand</FONT><FONT size=2> cmd = </FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> </FONT><FONT color=#008080 size=2>SystemJobCommand</FONT><FONT size=2>();</P>
+<P>cmd.BeforeServer(jobName);</P>
+<P>cmd = </FONT><FONT color=#008080 size=2>DataPortal</FONT><FONT size=2>.Execute&lt;</FONT><FONT color=#008080 size=2>SystemJobCommand</FONT><FONT size=2>&gt;(cmd);</P>
+<P>cmd.AfterServer();</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> cmd.Result; </P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>private</FONT><FONT size=2> SystemJobCommand()</P>
+<P>{ </FONT><FONT color=#008000 size=2>/* require use of factory methods */</FONT><FONT size=2> }</P></FONT><FONT color=#0000ff size=2>
+<P>#endregion</P>
+<P>#region</FONT><FONT size=2> Server-side code</P>
+<P></FONT><FONT color=#0000ff size=2>protected</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>override</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>void</FONT><FONT size=2> DataPortal_Execute()</P>
+<P>{</P>
+<P>Microsoft.SqlServer.Dts.Runtime.</FONT><FONT color=#008080 size=2>Application</FONT><FONT size=2> application = </FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> Microsoft.SqlServer.Dts.Runtime.</FONT><FONT color=#008080 size=2>Application</FONT><FONT size=2>();</P>
+<P></FONT><FONT color=#008080 size=2>Package</FONT><FONT size=2> package = application.LoadPackage(</FONT><FONT color=#800000 size=2>@"C:\Perforce\CreditRiskReporting\depot\CreditRiskIT\CreditRiskReporting\_main.br\IntegrationServices\CRRETL\"</FONT><FONT size=2> + _JobName, </FONT><FONT color=#0000ff size=2>null</FONT><FONT size=2>);</P>
+<P>package.ImportConfigurationFile(</FONT><FONT color=#800000 size=2>@"C:\Perforce\CreditRiskReporting\depot\CreditRiskIT\CreditRiskReporting\_main.br\IntegrationServices\CRRETL\CRRETL.dtsConfig"</FONT><FONT size=2>);</P>
+<P></FONT><FONT color=#008000 size=2>//Variables vars = package.Variables;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#008000 size=2>//vars["XYZ"].Value = "hELLO";</P></FONT><FONT size=2>
+<P></FONT><FONT color=#008080 size=2>DTSExecResult</FONT><FONT size=2> rc = package.Execute();</P>
+<P>}</P></FONT><FONT color=#0000ff size=2>
+<P>#endregion</P></FONT><FONT size=2>
+<P>}</P>
+<P>}</P></FONT>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, August 23, 2007</h2><P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>glenntoy:</strong></div><div>Would it be possible to know when to use/implement these methods private methods BeforeServer() and AfterSever()? Is there anybody here using these methods?<BR><BR>Thanks.<BR></div></BLOCKQUOTE></P>
+<P>The idea is that a command object can run code at three points in its lifecycle:</P>
+<OL>
+<LI>On the client before the execute</LI>
+<LI>During the execute on the app server (logically at least)</LI>
+<LI>On the client after the execute</LI></OL>
+<P>In many cases step 1 is just to initialize some fields so step 2 can run, and there is no step 3.</P>
+<P>But it really depends on what your command needs to do. If you need to do something in any of those steps then you can do it, otherwise you don't.</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

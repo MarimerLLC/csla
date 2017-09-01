@@ -1,0 +1,194 @@
+<html><header><title>Validation of collection</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Validation of collection</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/299.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>chris_7t posted on Wednesday, June 07, 2006</h2>Hi,<br><br>I'm just starting to use CSLA .NET 2.0&nbsp; using C#.<br><br>I have a collection derived from ReadOnlyListBase where I store some FormatInfo items.<br><br>In a creation dialog I want to make sure that the user does not add an item with a name that already exists. I don't add anything to the list I just store existing formatInfo items.<br><br>How do I validate the name?<br><br>Do I make a validation rule on the formatInfo class (read only class)?<br><br>As I understand it, CSLA does not support validation of collections.<br><br>Regards,<br><br>Chris<br><br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Wednesday, June 07, 2006</h2>This is something on my wishlist personally.&nbsp; You could have the root object which contains the collection as a property and have the root responds to ListChanged events raised by the collection.&nbsp; <br><br>I'd put the actual check logic in the collection though as an internal method.&nbsp; When the root catches the ListChanged, it calls the internal method.&nbsp; The method returns if the rule is broken and the root passes this along.<br><br>That's how I'd handle it... but i'm not sure a good way if the collection is actually a root object.&nbsp; <br><br>Any other ideas?<br>Andy<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, June 07, 2006</h2><P>Certainly there's no concept of doing validation on a read-only list or object. Since they are read-only they can't be changed, so there's nothing to validate.</P>
+<P>In your scenario there must be some other, editable, object that you are using to add the new item. It is in that object that the validation must occur.</P>
+<P>If you are allowing the user to atomically add a new item (like Format?) outside the context of a parent collection, then the only way to avoid collisions is during the save operation itself. The only way to know for sure that there's not a duplicate is by checking the other data in your database. While you could implement a helper validation rule that scans your read-only list for duplicates, that is just a best-guess and isn't the final word (at least in any multi-user setting).</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Wednesday, June 07, 2006</h2>Of course the wishlist is to add validation to editable collections. :-)<br><br>No more posting when I'm not fully awake..<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jwooley replied on Wednesday, June 07, 2006</h2><P>Brian's solution requires that the parent hold the business rule. If you would prefer that the collection object hold the rule, then the collection would monitor Add and Remove to set the rule. The parent object would need to override IsValid to return MyBase.IsValid AndAlso _ChildCollection.IsValid. Using the later method allows you to have the parent object look all the way up it's tree with each branch being responsible for reporting it's validity level. In that regard, the collection would iterate it's children to see if they are valid and also impose the custom rule in the collection. The child can then handle valid for itself and any child objects. On and on all the way up the tree.</P>
+<P>Jim Wooley<BR><A href="http://devauthority.com/blogs/jwooley/default.aspx">http://devauthority.com/blogs/jwooley/default.aspx</A></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, June 07, 2006</h2><P>This is why IsValid is Overridable/virtual in BusinessListBase - so you can override it to implement collection-wide rules if needed (must make sure to call the base implementation too!!). Jim's suggestion of checking the rules in Add/Remove is wise - but should also include Set and in a ListChanged event handler.</P>
+<P>ajj, I haven't added validation to editable collections because I'm not really sure what form that would take. In other words, what would you expect such validation logic to look like within your collection class? I think the concept is a great one, I just haven't thought of a clear solution in terms of design/usage.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jav replied on Wednesday, June 07, 2006</h2><P>I faced that problem in CSLA1.0.&nbsp; I did finally eek out a solution which has been working, but I sooooo wished there was some validation mechanism in Editable Collections.&nbsp; Here is the scenario that I faced.</P>
+<P>All Persons and Organizations can have 0...many addresses.&nbsp; All addresses are in a single DB table.&nbsp; If the entity has more than one address, one of the addresses must be marked as a Default so that in situations where the UI etc only wants a <EM><STRONG>single</STRONG></EM> address for a given entity, the DB will know which one to serve up.</P>
+<P>Problem is further complicated because a given Person (or organization) can wear many hats, and the "Default" address of given entity may depend on the hat placed on the entity by the UI (or DB)&nbsp;etc. at that given moment.</P>
+<P>When I bring up a Person, along with the collection of addresses, I need to evaluate if One and Only One address is marked as Default - and if not a rule must be broken.&nbsp; The way I handled it was to insert another object (Entity)&nbsp;in the hierarchy between a Person (or organization) and its Addresses (or Phones, or Emails), and create a rule for that Entity Object.&nbsp; </P>
+<P>Hence&nbsp;Entity.IsValid meant, among other things, that each of its collections that have &gt; 1 item, had one of the items marked as Default.&nbsp; </P>
+<P>Thus, there are situations in which, each member of a collection may be Valid, but the collection itself may not be valid at a given moment. It may help to have a simpler mechanism to evaluate that.</P>
+<P>Jav</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Wednesday, June 07, 2006</h2>Jav,<br><br>Sounds like a good workaround.&nbsp; I have similar rules for for phone numbers (you can list as many cell phones for the contact as you want, but you may only select one as a default).<br><br>Rocky,<br><br>I would think that almost always you'd be looping over the collection, to enforce concepts such as Jav has discussed.&nbsp; I would think that the collection would be able to check its rules (similar to how rules are checked for an individual property, but for collections rules on properties don't make sense) before the ListChanged event is raised.<br><br>Currently I handle the situtation by overriding the collections IsValid and running through the collection.&nbsp; The parent listens for the collections ListChanged event and raises PropertyHasChanged for the parents IsValid property.&nbsp; This correctly disables the save button.<br><br>Ideally though, you might do something like raise a property changed event for the collection property, and then you should be able to use an ErrorProvider.&nbsp; In my case, the collection is tied to a DataGridView, so I'd think the error provider would appear next to it (since its bound to the property).&nbsp; The problem is though that error providers show up for my root's invalid properties, and error icons show for missing data within the grid (a list of phone numbers, and you must enter a number).&nbsp; But if the user selects more than one primary cell phone, I don't have a good way to tell them whats wrong.&nbsp; I could loop through the collection, find that all the children really are valid, and than assume its this rule that's broken, but that falls apart if I need to add another rule (for example, Home phone number is required).&nbsp; Also, IsValid would get pretty intense, as its looping through the collection multiple times to check for broken rules.<br><br>I admit I haven't thought through all the details, but off the top of my head it sounds like it would work.<br><br>Andy<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>DCottle replied on Friday, June 22, 2007</h2><P>Has anyone come up with a good solution or this?</P>
+<P>&nbsp;</P>
+<P>my scenerio is simple.&nbsp; I have an editable collection of Product objects.&nbsp; Each product has a ProductName property.&nbsp; No two products can have the same ProductName.</P>
+<P>I am displaying the objects in a grid that supports the System.ComponentModel.IDataErrorInfo interface and I would REALLY like it if the invalid condition could somehow mark the individual objects as invalid since that would make the grid display each row as invalid when the same name was entered 2 times.</P>
+<P>Waiting for someone smarter than me...</P>
+<P>David</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>malloc1024 replied on Friday, June 22, 2007</h2>
+
+<p class="MsoNormal"><span>Raise an
+event to the collection when the ProductName property changes on a product object.<span>&nbsp; </span>Pass a reference of the product object when
+the event is raised.<span>&nbsp; </span>The Collection
+should loop through the product objects to check if there are duplicate product
+names.<span>&nbsp; </span>If there are, call a method on
+the product object to set the “duplicate product name” rule to true.<span>&nbsp; </span>If there isn’t a duplicate product name, call
+a method on the product object to set the “duplicate product name” rule to
+false.<span>&nbsp; </span>I did this on CSLA 1.0 and it
+worked.</span><b><o:p></o:p></b></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, June 22, 2007</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>You want both rows to go into error, or just the new one?<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>The new one is easy: put a rule on your Name property that
+simply loops through the Parent collection (a child has reference to its
+parent) looking for a match of the value. If you find one, return false. The Admin.Roles
+class in ProjectTracker does this.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>If you want both to go into error it is a little harder, because
+you&#8217;ll need to put a Friend/internal method on your child class so the
+new object, when it finds a match (using the same algorithm I just described)
+can tell the matching object to invoke its own rule check for the Name
+property. To avoid duplicate work and/or a recursive issue, you&#8217;ll need
+to do some extra work: an extra rule method that just goes false at priority 0,
+and the Parent-scan rule at priority 1.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> DCottle
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Friday, June 22, 2007 12:50 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] Validation of collection<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Has anyone come up with a good solution or this?<o:p></o:p></p>
+
+<p>&nbsp;<o:p></o:p></p>
+
+<p>my scenerio is simple.&nbsp; I have an editable collection of Product
+objects.&nbsp; Each product has a ProductName property.&nbsp; No two products
+can have the same ProductName.<o:p></o:p></p>
+
+<p>I am displaying the objects in a grid that supports the
+System.ComponentModel.IDataErrorInfo interface and I would REALLY like it if
+the invalid condition could somehow mark the individual objects as invalid
+since that would make the grid display each row as invalid when the same name
+was entered 2 times.<o:p></o:p></p>
+
+<p>Waiting for someone smarter than me...<o:p></o:p></p>
+
+<p>David<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>DCottle replied on Friday, June 22, 2007</h2><P>Brilliant!&nbsp; The new row in error was sufficient, and very simple thanks to malloc1024 suggestion above.</P>
+<P>&nbsp;</P>
+<P>I may have bastardized my objects, because I do not seem to be able to get to the Parent collection from my object.&nbsp; What is this reference supposed to be called so I can track down what I screwed up?</P>
+<P>Thanks again Rocky and malloc...</P>
+<P>&nbsp;</P>
+<P>David</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, June 22, 2007</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>If your collection is a BusinessListBase then Parent should be a
+protected property of your child object.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>If the parent is an EditableRootListBase then the Parent
+property is null/Nothing because the object isn&#8217;t a &#8220;child&#8221;.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>It could be that the Parent property is marked as hidden to
+Intellisense, but it is there.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> DCottle
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Friday, June 22, 2007 3:13 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: Validation of collection<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Brilliant!&nbsp; The new row in error was sufficient, and very simple thanks
+to malloc1024 suggestion above.<o:p></o:p></p>
+
+<p>&nbsp;<o:p></o:p></p>
+
+<p>I may have bastardized my objects, because I do not seem to be able to get
+to the Parent collection from my object.&nbsp; What is this reference supposed
+to be called so I can track down what I screwed up?<o:p></o:p></p>
+
+<p>Thanks again Rocky and malloc...<o:p></o:p></p>
+
+<p>&nbsp;<o:p></o:p></p>
+
+<p>David<o:p></o:p></p>
+
+<p>&nbsp;<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Vinodonly replied on Monday, January 28, 2008</h2><P>I'm facing this same issue. I have a collection which is having a Percentage field. The total of this percentage field should be&nbsp;100. But suppose if I have 2 records with percentage of 60 &amp; 40 then a error is thrown as soon as the record is loaded from database or a new record is added.</P>
+<P>&nbsp;</P>
+<P>How I can disable that error, can somebody pls help.</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

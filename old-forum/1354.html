@@ -1,0 +1,35 @@
+<html><header><title>Bug in databinding?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Bug in databinding?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/1354.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonM posted on Thursday, September 28, 2006</h2><P>I am databinding to standard textboxes (using CSLA 1.5x and VB.net 2.0).&nbsp; Depending on the rules inside of the object some properties will not actually be changed (like if the user does not have permission).&nbsp; Normally, what happens is as they type, their changes are ignored and the old value is put back in the textbox.&nbsp; However, if I use formatting in my databinding this does not happen!&nbsp; While the value is still read-only and does not get changed in the business object, the UI continues to show whatever the user typed in.&nbsp; Below is&nbsp;the code I'm using to databind.</P>
+<P>As you can see I'm binding to a field and setting the formatstring to 'c' so that it formats as currency.&nbsp; If a turn off the formatting everything works great (expect that the decimal value is not formatted like money).&nbsp; Any ideas on this?&nbsp; Surely someone else has seen this??</P><FONT size=2>
+<P>txtQtyPrice.DataBindings.Add(</FONT><FONT color=#a31515 size=2>"Text"</FONT><FONT size=2>, _po.LineItems(polineitemID), </FONT><FONT color=#a31515 size=2>"QtyPrice"</FONT><FONT size=2>, </FONT><FONT color=#0000ff size=2>True</FONT><FONT size=2>)</P>
+<P>txtQtyPrice.DataBindings(0).FormatString = </FONT><FONT color=#a31515 size=2>"c"</P></FONT><FONT size=2>
+<P>txtQtyPrice.DataBindings(0).DataSourceUpdateMode = DataSourceUpdateMode.OnPropertyChanged</P>
+<P>&nbsp;</P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Thursday, September 28, 2006</h2>You may want to move to Csla 2, since it supports the 'new' databinding, and .Net 2 databinding is much improved over the way Csla 1.5 forces you to go.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonM replied on Thursday, September 28, 2006</h2><P>Well there is a small problem with that.&nbsp; This project was more than 80% complete when CSLA.net 2.0 was released.&nbsp; It's a little bit difficult to justify moving over to an unknown platform when we were&nbsp;nearly complete.&nbsp; Also, we implemented our system using the examples from the original book with the CheckRules("") business rule pattern.&nbsp; Moving to CSLA.net 2.0 would mean rewriting and testing the validation rules for 150+ objects.&nbsp; This is something a little hard to cost justify when the existing codebase works very well (expect for a few minor issues, like the one I've described).&nbsp;&nbsp; However, we do look forward to testing the new CSLA on a smaller project and then eventually converting this&nbsp;one to it.&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, September 29, 2006</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>JonM:</strong></div><div><p>Normally, what happens is as they type, their changes are ignored and the old value is put back in the textbox.</p></div></BLOCKQUOTE><br><br>How do you implement this behavior? In the object or in the UI?<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonM replied on Friday, September 29, 2006</h2>It is done in object.&nbsp; Basically the object checks to see if the user has permission before it changes the internal value for the property.&nbsp; If they do not, nothing happens.&nbsp; When I do not format the value the value is instantly changed back to the original value if the user does not have permission.&nbsp; However, if I use formatting, then whatever they type in stays in the control even though the value is not being changed in the underlying object.&nbsp; It is very odd.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, September 29, 2006</h2>
+
+
+
+
+<DIV align=left><SPAN class=324085323-29092006><FONT face=Arial color=#0000ff size=2>Are you using the bindingsource extender control I created 
+in Chapter 5? Without that, you wouldn't get a refresh of the data value for the 
+property just edited - data binding has that "optimization" that gets in the way 
+of normal PropertyChanged event processing.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=324085323-29092006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=324085323-29092006><FONT face=Arial color=#0000ff size=2>Well, also, are you raising PropertyChanged in the property 
+set even though you are blocking the change? If you don't raise PropertyChanged, 
+then data binding wouldn't be triggered to refresh the value at all - it just 
+assumes that the value on the form is correct.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=324085323-29092006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=324085323-29092006><FONT face=Arial color=#0000ff size=2>Rocky</FONT></SPAN></DIV><BR>
+<BLOCKQUOTE>
+  <DIV class=OutlookMessageHeader align=left>
+  <HR>
+  <FONT face=Tahoma size=2><B>From:</B> JonM [mailto:cslanet@lhotka.net] 
+  <BR><B>Sent:</B> Friday, September 29, 2006 5:49 PM<BR><B>To:</B> 
+  rocky@lhotka.net<BR><B>Subject:</B> Re: [CSLA .NET] Bug in 
+  databinding?<BR></FONT><BR></DIV>
+  <DIV></DIV>It is done in object.&nbsp; Basically the object checks to see if 
+  the user has permission before it changes the internal value for the 
+  property.&nbsp; If they do not, nothing happens.&nbsp; When I do not format 
+  the value the value is instantly changed back to the original value if the 
+  user does not have permission.&nbsp; However, if I use formatting, then 
+  whatever they type in stays in the control even though the value is not being 
+  changed in the underlying object.&nbsp; It is very odd.<BR><BR><BR></BLOCKQUOTE></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

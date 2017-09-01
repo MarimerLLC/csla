@@ -1,0 +1,22 @@
+<html><header><title>How to: create a new Editable Child Object and add it as property of Editable Root Object</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>How to: create a new Editable Child Object and add it as property of Editable Root Object</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9794.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>superkuton posted on Tuesday, November 23, 2010</h2><p>I am still learning to use the framework.</p>
+<p>I have created an editable child object which is a property of an Editable Root Object.</p>
+<p>In the <i>Candidate</i> ERO, I declared the ECO <i>CandidateEmail </i>as follows:</p>
+<p>Private Shared CandidateEmailProperty As PropertyInfo(Of CandidateEmail) = RegisterProperty(New PropertyInfo(Of CandidateEmail)(&quot;CandidateEmaill&quot;))<br />&nbsp;&nbsp;&nbsp; Public ReadOnly Property CandidateEmail() As CandidateEmail<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Get<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; If Not FieldManager.FieldExists(CandidateEmailProperty) Then<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; LoadProperty(Of CandidateEmail)(CandidateEmailProperty, CandidateEmail.NewCandidateEmail())<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End If<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return GetProperty(Of CandidateEmail)(CandidateEmailProperty)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Get<br />&nbsp;&nbsp;&nbsp; End Property</p>
+<p>&nbsp;</p>
+<p>In the ECO, I included the following function:</p>
+<p>&nbsp;</p>
+<p>&nbsp;&lt;RunLocal()&gt; _<br />&nbsp;&nbsp;&nbsp; Protected Overrides Sub Child_Create()<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; LoadProperty(Of Integer)(IDProperty, -1)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; LoadProperty(Of Integer)(ContactIDProperty, 1)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; LoadProperty(Of Integer)(TypeIDProperty, 1)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; BusinessRules.CheckRules()<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; MyBase.Child_Create()<br />&nbsp;&nbsp;&nbsp; End Sub</p>
+<p>&nbsp;</p>
+<p>Using a breakpoint, I saw that the ERO is not entering the &nbsp; If Not FieldManager.FieldExists... when there is not ECO.</p>
+<p>Please help. thank you.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Tuesday, November 23, 2010</h2><p>Hi,</p>
+<p>You are using LazyLoading - ie the ECO is not instantiated until you try to get the property in the ERO in the UI or another object.</p>
+<p>BTW: Windows Forms databinding does not understand the concept of 1 : 1 relationship between objects.&nbsp; So I refer to &quot;flatten&quot; the hierarchy in my BOs to not inckude 1:1 relationships.&nbsp; </p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>superkuton replied on Tuesday, November 23, 2010</h2><p>Thanks JonnyBee.</p>
+<p>&nbsp;</p>
+<p>Yeah, you&#39;ve hit my problem. I am implementing a 1:1 relationship in my BO.</p>
+<p>What are my options then, aside from your preference to &quot;flatten&quot; the hierarchy?</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Tuesday, November 23, 2010</h2><p>Well, you _can_ consider the objects as separate objects with separate BindingSources but you cannot use the &quot;nested&quot; BindingSources and must be careful on how you define the bindings in your Forms.</p>
+<p>So, I prefer to flatten the hierarchy in my own BOs. </p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

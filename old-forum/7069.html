@@ -1,0 +1,55 @@
+<html><header><title>CommandBase in silverlight</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CommandBase in silverlight</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/7069.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>zhengokusa posted on Wednesday, June 10, 2009</h2><P>In the pass, I have learned how to use CommandBase in BusinessBase as a Business rule. </P>
+<P>My question here is How can I use it in my silverlight application directly, just like use any other BusinessBase classes.&nbsp;</P>
+<P>The task is that, in silverlight app I have a button, when user click the button, it need to fire a database store procedure call and this procedure just move some rows from one table to another. The user just need to know if the store procedure finished or not. That's it. </P>
+<P>I was trying to avoid to create an simple ReadOnly BusinessBase Object just for firing such call&nbsp;to the database. </P>
+<P>Can anyone point me to the right direction,&nbsp;an example maybe&nbsp;? </P>
+<P>Thanks,</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, June 10, 2009</h2><P>CommandBase works almost the same in SL as in .NET.</P>
+<P>I do walk through an example of using a CommandBase in my <A href="http://store.lhotka.net">CSLA .NET for Silverlight video series</A>, including demo code.</P>
+<P>There are two main differences from .NET:</P>
+<OL>
+<LI>The data portal call is async in SL, due to the nature of SL, and this means your command will run asynchronously - and this usually impacts your factory method and UI code</LI>
+<LI>You have to use managed properties (or override the serialization methods) in your command object or your property values won't serialize to/from the server</LI></OL>
+<P>So a command object looks (more or less) like this in SL:</P>
+<P>using Csla;<BR>using Csla.Serialization;</P>
+<P>[Serializable]<BR>public class MyCommand : CommandBase<BR>{<BR>&nbsp; public MyCommand()<BR>&nbsp; { }</P>
+<P>&nbsp; public MyCommand(string someValue)<BR>&nbsp; {<BR>&nbsp;&nbsp;&nbsp; this.SomeValue = someValue;<BR>&nbsp; }</P>
+<P>&nbsp; private static PropertyInfo&lt;string&gt; SomevalueProperty =<BR>&nbsp;&nbsp;&nbsp; RegisterProperty&lt;string&gt;(typeof(MyCommand), new PropertyInfo&lt;string&gt;("SomeValue"));<BR>&nbsp; public string SomeValue<BR>&nbsp; {<BR>&nbsp;&nbsp;&nbsp; get { return ReadProperty(SomeValueProperty); }<BR>&nbsp;&nbsp;&nbsp; set { LoadProperty(SomeValueProperty, value); }<BR>&nbsp; }</P>
+<P>&nbsp; public static void DoWork(<BR>&nbsp;&nbsp;&nbsp; EventHandler&lt;DataPortalResult&lt;MyCommand&gt;&gt; callback,<BR>&nbsp;&nbsp;&nbsp; string someValue)<BR>&nbsp; {<BR>&nbsp;&nbsp;&nbsp; var dp = new DataPortal&lt;MyCommand();<BR>&nbsp;&nbsp;&nbsp; dp.ExecuteComplete += callback;<BR>&nbsp;&nbsp;&nbsp; dp.BeginExecute(new MyCommand(someValue));<BR>&nbsp; }</P>
+<P>&nbsp; protected override void DataPortal_Execute()<BR>&nbsp; {<BR>&nbsp;&nbsp;&nbsp; // do server-side stuff here<BR>&nbsp; }<BR>}</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>zhengokusa replied on Wednesday, June 10, 2009</h2><P>Thank you Rock </P>
+<P>It works perfectly. except in the "DoWork" factory function, your custom parameter must put before EventHandler.</P>
+<P>In my code, I create three properties</P>
+<P>Can I bind those command properties to my UI&nbsp;elements just like I bind BB object? </P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, June 10, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>CommandBase doesn&#8217;t fully support data binding like BusinessBase,
+no. It doesn&#8217;t support data binding on the Windows side either.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky</span><o:p></o:p></p>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

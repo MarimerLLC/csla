@@ -1,0 +1,25 @@
+<html><header><title>Stored Procedure is executed but no update done.</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Stored Procedure is executed but no update done.</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/2754.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>redgoblin83 posted on Monday, April 23, 2007</h2><P>I do an update of an item and its update method is called, and also the execute non query.</P>
+<P>But the database is not updated! Is it possible it has someting to do with the transaction state that csla uses? I thought that in a project that I did a year ago I changed a setting of csla so there was no pending transactions if&nbsp;this is&nbsp;what is hapening here.</P>
+<P>I checked the Stored Procedure and the parameters so there is no problem at that poitn.</P>
+<P>What can I do ?</P>
+<P>Thank you all,</P>
+<P>red,</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>William replied on Monday, April 23, 2007</h2>If you are using TransactionTypes.TransactionScope (CSLA 2.x) for your DataPortal_Update method, then any exception thrown and caused the method to exit votes "Abort" to the entire transaction scope. Thus, TransactionScope will automatically rollback the entire transaction.<br><br>Regards,<br>William<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>redgoblin83 replied on Monday, April 23, 2007</h2><P>Willam you mean in the object where the DataPortal_Update is called ? If so there is no TransactionTypes.TransactionScope defined.&nbsp; Or do you mean in the csla source code itself ?</P>
+<P>That's mine update for my object:</P><FONT color=#0000ff size=2>
+<P>private</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>void</FONT><FONT size=2> ExecuteUpdate(</FONT><FONT color=#008080 size=2>SqlConnection</FONT><FONT size=2> cn, </FONT><FONT color=#008080 size=2>Services_RW</FONT><FONT size=2> parent)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>using</FONT><FONT size=2> (</FONT><FONT color=#008080 size=2>SqlCommand</FONT><FONT size=2> cm = cn.CreateCommand())</P>
+<P>{</P>
+<P>cm.CommandType = </FONT><FONT color=#008080 size=2>CommandType</FONT><FONT size=2>.StoredProcedure;</P>
+<P>cm.CommandText = </FONT><FONT color=#800000 size=2>"DLG_UpdateService_RW"</FONT><FONT size=2>;</P>
+<P>AddUpdateParameters(cm, parent);</P>
+<P>cm.ExecuteNonQuery();</P>
+<P>MarkOld();</P>
+<P>}</FONT><FONT color=#008000 size=2>//using</P></FONT><FONT size=2>
+<P>}</P>
+<P>&nbsp;</P>
+<P>Thanks,</P>
+<P>Red</P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>William replied on Monday, April 23, 2007</h2>When no TransactionTypes attribute is applied to DataPortal_Update, CSLA assumes manual transaction type. I assume you have an active database transaction when your ExecuteUpdate method executes. Thus, instead of passing in SqlConnection object, you should pass in SqlTransaction object. Then your code needs to explicitly make SqlCommand participates in the same transaction.<br><br><font face="Courier New" size="2">private void ExecuteUpdate(SqlTransaction tx, Services_RW parent)<br>{<br>&nbsp;&nbsp; &nbsp;using (SqlCommand cm = tx.Connection.CreateCommand())<br>&nbsp;&nbsp; &nbsp;{<br>&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;cm.Transaction = tx;<br>&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;cm.CommandType = CommandType.StoredProcedure;<br>&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;cm.CommandText = "DLG_UpdateService_RW";<br><br>&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;AddUpdateParameters(cm, parent);<br><br>&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;cm.ExecuteNonQuery();<br><br>&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;MarkOld();<br>&nbsp;&nbsp; &nbsp;}//using<br>}</font><br><br><br>Regards,<br>William<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Bayu replied on Monday, April 23, 2007</h2>You said that you checked to stored proc and params. How did you verify it is correct? Visually? Have you actually tried calling the proc manually, from some admin interface? <br><br>The thing is that this discussion has veered into transactions right from the start, while perhaps your proc is just not doing an update at all. <br><br>Just making sure we aren't searching for a solution to a non-existent problem. ;-)<br><br>Bayu<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>redgoblin83 replied on Tuesday, April 24, 2007</h2><P>Good point,</P>
+<P>Changed the code and then I got some nice message, the current user didn't had the rights to write to the tables, d'ont know why my sql server 2005 is secured for the moment. My fautl perhaps while installing the sql server. </P>
+<P>Now it seems it is working with the two code samples.</P>
+<P>Thank you all,</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

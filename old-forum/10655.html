@@ -1,0 +1,12 @@
+<html><header><title>Use ViewModel&lt;T&gt; Save Method, the Model Rebind.</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Use ViewModel&lt;T&gt; Save Method, the Model Rebind.</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10655.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>simon posted on Tuesday, August 30, 2011</h2><p>If invoke the method save of ViewMode&lt;T&gt;, the UI will rebind to the BO. &nbsp;if the T is BLB , &nbsp;i don&#39;t want the user to find the new or just edited row &nbsp;after click the save button.&nbsp;</p>
+<p>but i override the method Save as below:</p>
+<p>
+<p>&nbsp; &nbsp;public override void Save(object sender, ExecuteEventArgs e)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Model.ApplyEdit();</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Model.Save();&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>but the UI can&#39;t refresh. and continue to add new row and click save, will popup a error:Edit level mismatch in AcceptChanges</p>
+<p>how can i do?</p>
+</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Tuesday, August 30, 2011</h2><p>You must remember that the save operation <em>returns a new object</em>. This is why the rebind occurs - because there&#39;s a whole new object to which the UI must bind.</p>
+<p>There are a couple options. One is to use a dynamic list, so each individual row is saved as the user leaves the row. Another is to use a diffgram technique to save the changed data, without moving the object graph to the app server and back (theres a sample in the Samples download that demonstrates this).</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

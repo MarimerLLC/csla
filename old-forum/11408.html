@@ -1,0 +1,69 @@
+<html><header><title>Upgrade from 3.0.2 to 4.5</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Upgrade from 3.0.2 to 4.5</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11408.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Mar72Vin posted on Monday, June 11, 2012</h2><p>Hi Guys,</p>
+<p>I have a long standing project running on CSLA 3.0.2. Are there any guides available to walk through the process of upgrading to the latest framework?</p>
+<p>I understand that there have been many changes since version 3. The current project is a winform project originally built in VS2005 but&nbsp;upgraded to VS2008.&nbsp;I would like to explore options of an MVC UI.</p>
+<p>Any tips or gotchas I should look out for? Any suggestions on where I should start?</p>
+<p>Cheers,</p>
+<p>Tim</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>superkuton replied on Tuesday, June 12, 2012</h2><p>Hi Tim,</p>
+<p>I am also in the process of moving from 3.8 to 4.3, and there is a lot to cover.</p>
+<p>I have a three-year old project (3.8) that I tried to upgrade to 4.3, and based on my experience, the following are the biggest changes:</p>
+<ol>
+<li><b>Business Rules, which now inludes the authorization rules</b></li>
+<li><b>Abstraction of the Data Access Layer to enable pluggable DALs</b></li>
+</ol>
+<p>I started by reading the <b>CSLA 4 ebooks</b>, then created a<b> sample project based on PTracker</b>. I am upgrading to Silverlight using the MVVM pattern, so I am studying a lot on SL and MVVM.</p>
+<p>I suggest you find <b>a sample project which matches the most common requirement of your application.</b> For me, moving along the CSLA path could have been easier if there is a sample project that uses the technology similar to my project (MSSQL Db, ADO.NET sprocs, MVVM, SL and WinForm) with a Read-only list and a Master-Detail sample. What I am doing now is cherry-picking from several sample projects, which is a long and arduous process.</p>
+<p>Right now, I still have a lot to work on, but I am enjoying the process of learning and coding.</p>
+<p>Yeah, cheers!</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Mar72Vin replied on Tuesday, June 12, 2012</h2><p>Hi SuperKuton,</p>
+<p>Thanks for your insight to the upgrade process. It sounds like you are creating a new project based on one of the samples and then cutting and pasting any code that will fit from your existing project?</p>
+<p>I would really like to avoid creating an entirely new project, but I guess it is an option. Perhaps maintaining two versions of the business objects.</p>
+<p>1) existing legacy winform project</p>
+<p>2) new ASP.NET MVC project. Build all new features in this version and slowly migrate old features when time permits.</p>
+<p>This will become complex when changes need to be made to both versions of a business object (existing 3.0 object and upgraded 4.5 object)</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Tuesday, June 12, 2012</h2><p>Hi, </p>
+<p>For an intermediate period&nbsp; - it is possible to extend CSLA (actually modify CSLA) to support</p>
+<ul>
+<li>old style RegisterProperty (with string propertyname) </li>
+<li>&quot;most&quot; of the&nbsp;old validation rule engine, wrapped as lamda rules (no instance/async rules)</li>
+</ul>
+<p>So that your code will run with a minimum of changes for an intermediate period&nbsp; and provide for a &quot;team&quot; to do the migration on code that actully builds and run. (this is based on my own experiences from migration of&nbsp; large WinForm apps)</p>
+<p>Look also at CslaGenFork.codeplex.com or the RuleTutorial sample for a load of addon generic rules. </p>
+<p>In CSLA 4 you&nbsp; can override all messages og standard rules (and the above mentioned rules) so you will not need to create a new rule to modify the message. </p>
+<p>I have been writing on a blog post/code for this but it is not published yet. </p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Mar72Vin replied on Tuesday, June 12, 2012</h2><p>Thanks Jonny. </p>
+<p>My project is a large winform project developed over a 4-5 year period. I originally started with CSLA with the Expert c# 2005 book. I am contemplating sticking with csla 3.0.2 and using WebForms rather than MVC for simplicity and a shorter learning curve. WebForms is actually outlined in the book.</p>
+<p>I will look at the codeplex example and see if this will help me in my 
+upgrade quest. It sounds like validation rules is the biggest breaking 
+change between the versions. If it looks straight forward enough to extend CSLA in my application I will attempt an upgrade and purchase the new eBooks for reference.</p>
+<p>As far as I can tell csla3 will support WebForms but not mvc. It sounds like the webform technology is not dead yet but I don&#39;t really want to position myself with a dying web standard. </p>
+<p> I have always been a winform developer and never had much to do with web development. Does anyone have any experience of where WebForms has brought them unstuck, and wished they were using MVC/SL/WPF? (WPF is limited to windows machines though?).</p>
+<p>&nbsp;</p>
+<p>SuperKuton: Thanks for your in depth response. I would love to follow your lead and develop with every technology; unfortunately I can&#39;t spare enough time to do everything. I really do need to select one path and go with it.</p>
+<p>I do agree that winforms are quickly becoming legacy applications especially with macs/tablets/ipads/smartphones becoming more and more mainstream.</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Tuesday, June 12, 2012</h2><p>Hi, </p>
+<p>Have you looked at VisualWebGui, <a href="http://www.visualwebgui.com/">http://www.visualwebgui.com/</a> ? </p>
+<p>Red more here: <a href="http://www.visualwebgui.com/tabid/665/Default.aspx">http://www.visualwebgui.com/tabid/665/Default.aspx</a></p>
+<p>I have code to be published on CodePlex from Tiago to make CSLA work nicely with VisualWebGui . <br />Will publish the code later today. </p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tiago replied on Friday, June 22, 2012</h2><p>Hi Jonny;</p>
+<p>I finaly manage to port <em>ErrorWarnInfoProvider</em> to WebGUI.</p>
+<p>Concerning the <em>BindingSourceRefresh</em> control extender I wonder if there some test around as I suspect webGUI doesn&#39;t have this problem. While you are discussing <em>BindingSourceRefresh</em> I wonder whether Framework 4 still shows this problem...</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>superkuton replied on Tuesday, June 12, 2012</h2><p>Yes, I am creating new projects (24 modules in 6 VS solutions) due to some reasons, such as to advance my skillset to add new technologies (SL, MVVM, WCF, Testing, TFS, etc.), and to widen the reach of my project for a larger audience. </p>
+<p>My project started as a winform for a single-user, then grew to be distributed via LAN, then I am now hosting it in a website. The back-end is a MSSQL, CSLA at the middle, and I am now working on three(3) front-ends - Windows Forms, WPF and Silverlight. Why the 3? To really sharpen my skills using the different technologies involved, and to look at the advantages and disadvantages of the different technologies, such as:</p>
+<ol>
+<li>the comfort of developing in windows forms in its matured development environment. However, this is already a &quot;legacy&quot; tech so I need to move on to new ones. I already label my projects in it as WLF, as in Windows Legacy Forms <img src="http://forums.lhotka.net/emoticons/emotion-1.gif" alt="Smile" />.</li>
+<li>the power and beauty of creating Silverlight user experience. However, I am yet to find a reporting solution in this technology. My focus in this area now (while waiting for the MS reportviewer for SL) is developing dashboards for a different set of users.</li>
+<li>the &quot;bridge&quot; between SL and WLF is WPF. I get to leverage the same XAML skillset from SL to WPF, and get the same reporting capabilities of the WLF reportviewer through winform host. Though it seems to me that Rocky prefers SL, I am just picking up some skills in this area and added some twist into it, such as adopting the Metro Apps UI design and implement it using WPF so that when I got to program in Metro style, at least I already have the UI principles/concepts.</li>
+</ol>
+<p>The three are my learning tools and also serve different purposes for my different set of users (such as ubiquitous reach through SL, intensive data entry in WPF and WLF). I am not able upgrade all of my application at once, but I am lucky what when I developed in WLF, I divided it into different VS solutions, that&#39;s why I get to upgrade them one by one.</p>
+<p> You might guess I am just writing lots of code, but no.</p>
+<p>I wrote a &quot;model&quot; project based on PTracker and different samples that I have referred to. I do not &quot;copy and paste&quot; codes from the model project. I use it as a template for a code generator that I also have written. Thus, when I design an entity in the generator, I get the codes for the different layers (Factory, DAL, BL) and UIs (WLF, WPF &amp; SL).</p>
+<p>I don&#39;t know if you might pick some tip or lessons from these, but this is what I am doing. I don&#39;t know what steps to suggest to you, but I am sure, </p>
+<ul>
+<li>reading the CSLA 4 ebboks and</li>
+<li>creating a model project based on samples</li>
+</ul>
+<p>are definitely needed.</p>
+<p>&nbsp;</p>
+<p>(Optional to read)</p>
+<p>(I have no formal training in computer programming, but by reading Rocky&#39;s books and blogs and other online resources, I reach a level that I was once called to teach programming instructors in our province.Thus, I really encourage you to read Rocky&#39;s books and blogs. It greatly kept me from pulling my hairs and brought me back to sanity before I get a good sleep at night. hehehhe.)</p>
+<p>Thanks for reading and God bless.</p>
+<p>&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,50 @@
+<html><header><title>Using CSLA 4: Data Portal Configuration pre-release online</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Using CSLA 4: Data Portal Configuration pre-release online</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10184.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka posted on Monday, March 21, 2011</h2><p>I have put the first pre-release of the <em>Using CSLA 4: Data Portal Configuration</em> ebook online. This includes the first of several sample apps for the book.</p>
+<p>This pre-release is available to owners of the <em>Using CSLA 4</em> ebook series. The individual ebook will be available for purchase when the draft is complete.</p>
+<p>This pre-release is at most 50% complete. It is 48 pages in length and covers the following:</p>
+<ul>
+<li>n-tier deployment options</li>
+<li>data portal channel (proxy/host) concepts</li>
+<li>use of the data portal in local mode</li>
+<li>a good start on covering the WCF data portal channel</li>
+<li>data portal configuration options reference</li>
+<li>serialization with the MobileFormatter</li>
+</ul>
+<p>Topics yet to be written:</p>
+<ul>
+<li>the rest of the WCF data portal channel hosting options (AppFabric, Azure, etc)</li>
+<li>creating custom data portal proxies and complete channels (proxy/host pairs)</li>
+<li>authentication options (custom, MemberShipProvider, Windows integrated)</li>
+</ul>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tiago replied on Monday, March 21, 2011</h2><p>Hi Rocky,</p>
+<p>Thanks for the fast delivery. I suppose you will explain how to use WCF to publish web services that can be consumed by other applications.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, March 22, 2011</h2><p>No, this book is focused on the data portal, not on creating a public service interface.</p>
+<p>That does seem to be a source of confusion though :)</p>
+<p>The data portal is an n-tier client/server technology that allows CSLA .NET client components to talk to CSLA .NET server components using various network technologies, including WCF. It is purely for CSLA .NET communication between your client and your server.</p>
+<p>Creating a service interface is a completely different thing. That is much more similar to creating a web interface, except you use&nbsp;XML or JSON instead of HTML. This is the topic of Chapter 21 in the <em>Expert 2008 Business Objects</em> book, for example. The <em>Using CSLA 4</em> ebook series does not include a book covering the creation of a service interface. It includes books covering WPF/Silverlight, ASP.NET MVC, and WP7 interfaces.</p>
+<p>That means the best current documentation for creating a service interface is Chapter 21 of <em>Expert 2008 Business Objects</em>. And that&#39;s OK, because there&#39;s nothing new in that technology space in terms of creating SOAP interfaces.</p>
+<p>At some point, when Microsoft finishes their current work to support REST services, I&#39;ll look at doing a standalone ebook covering service interfaces - taking the Chapter 21 content for SOAP, and adding new content for the upcoming REST tooling they are building.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tiago replied on Tuesday, March 22, 2011</h2><p>Thanks for this clarification.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tiago replied on Tuesday, March 22, 2011</h2><p>Nice to know PTracker is updated to match the ebook as per SVN log</p>
+<p><span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;">
+<p>2011-03-21 01:12:54 - Start switching data access code to match the Data Access ebook.</p>
+<font size="2" face="Consolas"><font size="2" face="Consolas">
+<p>
+<p>bugid: 912</p>
+</p>
+</font></font></span><font size="2" face="Consolas">
+<p>&nbsp;</p>
+</font></span>
+<p>&nbsp;</p>
+</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, March 22, 2011</h2><p>It is getting there slowly - it is just one of several things I&#39;m doing concurrently...</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rxelizondo replied on Wednesday, March 23, 2011</h2><p>
+<p class="MsoNormal">Rocky, are you planning on consolidating the content of all pdf
+into one pdf? </p>
+<p class="MsoNormal">Hopefully that is an easy thing to do. It will make things
+easier for all of us that purchased the complete book series.</p>
+<p class="MsoNormal">Thank you.&nbsp;</p>
+<p class="MsoNormal"></p>
+</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, March 23, 2011</h2><p>I&#39;ll consider that Rene - along with trying to get a Kindle version - but all that will have to wait until the series is complete.</p>
+<p>fwiw, after 10 years at <a href="http://www.magenic.com">Magenic</a> employees get a pretty big perk - a 3 month sabbatical. Mine is this summer (right before my 11th anniversary) - so I&#39;m trying very hard to get the book series done by the end of May, so I&#39;m not spending my sabbatical time finishing the books :)</p>
+<p>In any case, I&#39;ll consider your suggestion.</p>
+<p>I&#39;m also considering having the entire series bound into a single physical book - that&#39;d be a totally separate product, with a complete different cost structure due to the physical printing/shipping/etc - and if I do it I&#39;ll probably go through some publishing firm.</p>
+<p>But I suspect that I&#39;d need to provide the publisher with a consolidated work - so you might get your suggestion as a side-effect of that other idea :)</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, March 24, 2011</h2><p>I just put revision 0.2 of the <em>Data Portal Configuration</em> ebook on the download web site. It is now at 80 pages, and chapters 1-3 are essentially complete.</p>
+<p>Next on my schedule is chapter 4, demonstrating how to create custom data portal proxy types and data portal channels (proxy/host pairs).</p>
+<p>I&#39;m traveling&nbsp;three days early next week though, so I don&#39;t expect Chapter 4 to be done until around next Friday or so.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, April 26, 2011</h2><p><span class="messageBody">I put an updated draft of &quot;Using CSLA 4: Data Portal Configuration&quot; online, along with a lot more sample code. This is revision 0.3.<br /><br />The book should be done this week, as I&#39;m now working on Chapter 5 (the last chapter). Just have to cover how to implement custom, Membership, and Windows authentication in .NET and Silverlight, then the book is complete.</span></p>
+<p><span class="messageBody"><a href="http://download.lhotka.net/Default.aspx?t=UsingCsla4">http://download.lhotka.net/Default.aspx?t=UsingCsla4</a></span></p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

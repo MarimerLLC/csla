@@ -1,0 +1,36 @@
+<html><header><title>Web UI and ApplyAuthorizationRules</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Web UI and ApplyAuthorizationRules</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5935.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>greengumby posted on Wednesday, December 03, 2008</h2><P>Hi,</P>
+<P>I understand that a web form can limit functionality based on functions such </P>
+<P>CanEditObject() etc.</P>
+<P>&nbsp;</P>
+<P>However I am at a loss as to how I am supposed to restrict a gridview's fields based off roles.</P>
+<P>For instance if I have an employer list in a gridview like below</P>
+<P>FirstName&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Surname&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;PhoneExtension&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Department&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Salary</P>
+<P>I would only want roles (such as accounts) to be able to see the Salary Field.</P>
+<P>Now I can easily use the ApplyAuthorizationRules() method and do something like</P>
+<P>If&nbsp; !IsInRole(accounts)</P>
+<P>&nbsp;&nbsp;&nbsp; gridview1.columns[4].visible = false;</P>
+<P>but I am unsure if this is the correct way as to me it seems that the UI now has to know about business functionality?</P>
+<P>Is there a better way?</P>
+<P>Many Thanks</P>
+<P>Jeremy</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>SonOfPirate replied on Thursday, December 04, 2008</h2><P>You can use CanReadProperty("Salary") instead of checking the role directly.&nbsp; Then your code can be simply:</P>
+<P><CODE>gridview1.columns[4].visible = myObj.CanReadProperty("Salary");</CODE></P>
+<P>This allows your business object to control which roles are authorized to do what and makes it so your UI code is actually asking the question you want the answer to.</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>greengumby replied on Thursday, December 04, 2008</h2><P>Thanks SonofPirate,</P>
+<P>I guess my main gripe is the amount of UI code required to make a GridView work. Especially with all the inserts/edits/read rules</P>
+<P>Ideally if I could Create a custom CSLAGridView that for every databinding it would ask the question&nbsp; CanReadProperty then turn its self off/on it would be good.</P>
+<P>Not sure if thats possible in a web environment</P>
+<P>Cheers</P>
+<P>Jeremy</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>SonOfPirate replied on Friday, December 05, 2008</h2><P>Not sure how much work would be required, but it is certainly possible.</P>
+<P>The way I would approach it is to iterate through the grid's columns, using the HeaderText property as the value to query on your BO.&nbsp; For example, using a GridView as the base, I would handle the RowDataBound event (or override OnRowDataBound) and do the following:</P>
+<P><CODE>if (!_authorized)<BR>{<BR>&nbsp;&nbsp;&nbsp; IAuthorizeReadWrite dataItem = e.Row.DataItem as IAuthorizeReadWrite;<BR><BR>&nbsp;&nbsp;&nbsp; if (dataItem != null)<BR>&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp; &nbsp; &nbsp; foreach col in myGrid.Columns<BR>&nbsp; &nbsp; &nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; col.visible = dataItem.CanReadProperty(col.HeaderText);<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _authorized = true;<BR>&nbsp;&nbsp;&nbsp; }<BR>}</CODE></P>
+<P>I am using the RowDataBound because it gives me quick access to the individual list element that is being bound.&nbsp; However, I don't want to repeat this for every item so I use a boolean flag to test if the routine has already executed.</P>
+<P>The first part makes sure that the bound object implements IAuthorizeReadWrite so that you know it supports the CanReadProperty method.&nbsp; If it does, I iteratate over the grid columns and check to see if the property corresponding to the column's header text is authorized and set the column's visible property accordingly.</P>
+<P>The only drawback I see here, and I suppose with a little more time I could work it out, is that it requires the HeaderText property and your BO property names to match.&nbsp; If you localize or make the header text user-friendly, by putting spaces between words, for instance, then this wouldn't work.&nbsp; I'm thinking the SortExpression property on the GridView could be used instead of HeaderText, but I'm just thinking out loud...</P>
+<P>This may not be the best solution, just a first pass.&nbsp; But, hopefully it helps get you started.</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>greengumby replied on Wednesday, December 10, 2008</h2><P>Thanks&nbsp; SonofPirate,</P>
+<P>That definately looks like a good solution to the problem.</P>
+<P>I will give that a go :)</P>
+<P>Thanks</P>
+<P>Jeremy</P>
+<P>&nbsp;</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

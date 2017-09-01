@@ -1,0 +1,77 @@
+<html><header><title>How do YOU use the Entity Framework with CSLA?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>How do YOU use the Entity Framework with CSLA?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6094.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Gravy posted on Wednesday, January 07, 2009</h2><P>Hi guys,</P>
+<P>Just wondering how different people envisage using the Entity Framework with CSLA.</P>
+<P>All our database design so far uses StoredProcs for all data access so there is already have a degree of seperation between database schema and code. My initial thought on the EF when used in CSLA is that it only seems to provide a convenient way access the database. For example, create some sort of database context to your model and then access the Entity using methods and properties in code. Where as now, I use the DAAB so I have to get a connection, create a command, add the parameters then execute it.</P>
+<P>Does anyone have a more insightful opinion or idea on how the EF could be used?</P>
+<P>Regards</P>
+<P>Graham</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>AndrewBurns replied on Wednesday, January 07, 2009</h2>Gravy,<br><br>I am currently battling EF as the DAL on a very small project.&nbsp; Just as I get one issue resolved another pops up.&nbsp; The reason I chose EF as the DAL is because the LINQ queries are nice and tidy and easy to maintain.&nbsp; However if I do not resolve my current issue it is back to ADO.NET for me.<br><br>Currently I am getting an EntryPointNotFoundException when I am attempting to find the EF backing item on a Child_DeleteSelf call.&nbsp; Infuriating!!!<br><br>My next from scratch project I think will be NHibernate DAL with some sort of custom query passing&nbsp; unless they have LINQ support up and running by that time.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Wednesday, January 07, 2009</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>What does you DeleteSelf look like?<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> AndrewBurns
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Wednesday, January 07, 2009 6:07 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] How do YOU use the Entity Framework with CSLA?<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Gravy,<br>
+<br>
+I am currently battling EF as the DAL on a very small project.&nbsp; Just as I get
+one issue resolved another pops up.&nbsp; The reason I chose EF as the DAL is
+because the LINQ queries are nice and tidy and easy to maintain.&nbsp; However
+if I do not resolve my current issue it is back to ADO.NET for me.<br>
+<br>
+Currently I am getting an EntryPointNotFoundException when I am attempting to
+find the EF backing item on a Child_DeleteSelf call.&nbsp; Infuriating!!!<br>
+<br>
+My next from scratch project I think will be NHibernate DAL with some sort of
+custom query passing&nbsp; unless they have LINQ support up and running by that
+time.<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

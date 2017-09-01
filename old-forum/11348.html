@@ -1,0 +1,34 @@
+<html><header><title>Setting up CSLA .NET under Visual Studio 2008 for Interview Practical Test.</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Setting up CSLA .NET under Visual Studio 2008 for Interview Practical Test.</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11348.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>tarekahf posted on Tuesday, May 08, 2012</h2><p>We are planning to Interview candidates for .NET/C# Project Leader Positions, and we will use CSLA .NET Sample Project as the basis for the Interview Practical Test, to evaluate the technical skills of the candidates.</p>
+<p>Our target is Web Application Development under Visual Studio 2008 (Express Edition) and SQL Server 2005 (Express Edition). </p>
+<p>Questions:</p>
+<p>1. What is the recommended/matching CSLA .NET Framework with a Sample Project which can be compiled and run using VS 2008? </p>
+<p>2. Can we run the Sample Project of CSLA .NET (for VS 2008) using VS Express Edition and SQL Server&nbsp;2005 Express Edition?</p>
+<p>3. We are planning to setup the complete environment for the practical test using Microsoft Web Platform Installer, for 3 separate laptops. Do you think MS Web PI will do?</p>
+<p>Appreciate your feedback.</p>
+<p>Note: We will ask the candidates to:</p>
+<p>1. Compile and run the framework and the sample project, </p>
+<p>2.&nbsp;Request them to make modifications by adding new screen/table/view with Data Binding,</p>
+<p>3. Speciiy how they will distribute/streamline the development work among the team members using CSLA Approach.</p>
+<p>Of course, we have to give them an idea about the practical test requirements.</p>
+<p>Tarek.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tarekahf replied on Tuesday, May 08, 2012</h2><p>Appreciate your help ... we are now preparing the Laptops, and we have to be ready by the end of tomorrow so any feedback or recommendation to help me save time to avoid trial and error, will be greatly appreciated.</p>
+<p>Note: This is the first time&nbsp;I will try using VS 2008 Express Edition and CSLA .NET. I am using CSLA for .NET 2.0 and VS 2005 Prof. Edition.</p>
+<p>Tarek.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, May 08, 2012</h2><p>I know you can&#39;t <em>build</em> CSLA using Express. I am sure you can <em>use</em> CSLA to build certain types of apps - but Express has some limitations around the types of apps it can create doesn&#39;t it?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tarekahf replied on Wednesday, May 09, 2012</h2><p>Thaks Rocky,</p>
+<p>I managed to compile the Framework (for .NET 3.5 and VS 2008 Prof. Ed. using VB Sample Code) and run the Sample Applicaiton.</p>
+<p>I am using Windows 7 64 bit and the related IIS server.</p>
+<p>I had to comment this line from web.config :<br /><blockquote style="overflow-x: scroll;"><pre style="margin: 0px;"><br />&lt;add key=&quot;CslaDataPortalProxy&quot; value=&quot;Csla.DataPortalClient.WcfProxy, Csla&quot;/&gt;<br /></pre></blockquote></p>
+<p>so that the sample application ProjectTracker worked successfully.</p>
+<p>I also setup &quot;Use custom server&quot; in Startup options.</p>
+<p>But, when I try to run and debug using F5, I get this error:</p>
+<p>Unable to start debugging on the web server. You do not have permissions to debug the web server process. You need to either be running as the same user account as the wbe server, or have administrative privilege.</p>
+<p>Can you help me to resolve this error?</p>
+<p>When I start the application without debugging, it works fine.</p>
+<p>Thanks.</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Wednesday, May 09, 2012</h2><p>The web exception you are seeing is normal. Visual Studio must run as Administrator to do cross-process debugging.</p>
+<p>To resolve this, run Visual Studio as Administrator.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tarekahf replied on Tuesday, May 15, 2012</h2><p>thanks Rocky .... all went well. I setup 6 virtual machines ob 3 laptops (Windows 7) and CSLA with the ProjectTracker sample app were such an excellent idea to be the basis for evaluation.</p>
+<p>Tarek</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tarekahf replied on Wednesday, May 16, 2012</h2><p>I have setup 7 virtual machines (one on my work Laptop and 6 on 3 Laptops for the Candidates).</p>
+<p>When I tried to debug the PTWeb Application Project, I use the get the error which I reported earlier. I got this error on 4 VMs, and 3 VMs worked well without any error.</p>
+<p>The error will be resolved when I run VS as Admin and then debug will work fine.</p>
+<p>Honestly, I don&#39;t know why it works some times, and in other times&nbsp;it does not.</p>
+<p>Tarek.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tarekahf replied on Wednesday, May 16, 2012</h2><p>Hi Rocky,</p>
+<p>Just wanted to say that I started learning CSLA since 4 year, and&nbsp;just now I could see the value of what I learned. I have based the entire evaluation approach of the Candidates and designed the practical exam based on CSLA concepts and Sample Application (only the Web Project). It was a great success, as it helped me identify the&nbsp;correct candidates with the required skills. I did this based on a special&nbsp;request of our sister company (asking for my help) and the concerned managers were very happy with this idea for evaluation.</p>
+<p>Mind you that I am still on CSLA for .NET 2.0, and just used about 30% of what is provided by CSLA. But for evaluation, I used CSLA .NET 3.8.4 (only scratching the surface).</p>
+<p>Tarek.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

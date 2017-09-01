@@ -1,0 +1,348 @@
+<html><header><title>SetProperty&lt;bool&gt; problem</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>SetProperty&lt;bool&gt; problem</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4487.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Boris posted on Tuesday, March 11, 2008</h2>This is my first post here. I've been using the CSLA
+framework for quite some time now.<br>Thank you Rocky,&nbsp;for putting in so much time and effort into developing
+this masterpiece! All your hard work is greatly appreciated!
+
+
+
+<p class="MsoNormal">I’m using 3.5 Beta 2 (3.5.0.080222) in my current project
+and I’m pretty happy with it.</p>
+
+
+
+<p class="MsoNormal"><o:p></o:p>Here is one unexpected (at least for me) behavior:</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<p class="MsoNormal">
+
+</p>
+
+
+
+
+
+
+
+<p class="MsoNormal"><span><font color="#008000">// Here comes the test</font><br><font color="#000000">Patient patient = Patient.NewPatient();<br>Assert.AreEqual(patient.BoolField, false);<br>patient.BoolField = true;<br>Assert.AreEqual(patient.BoolField, true);</font></span><span><o:p></o:p></span></p>
+
+
+
+
+
+<p class="MsoNormal"><span><font color="#000000"><font color="#008000"><br>// This code will pass the test</font><br>private static PropertyInfo&lt;bool&gt; BoolFieldProperty = <br>&nbsp;&nbsp;&nbsp; RegisterProperty&lt;Boolean&gt;(typeof(Patient),<br>&nbsp;&nbsp;&nbsp; new PropertyInfo&lt;bool&gt;("BoolField", "Bool Field", false));<br><br>public bool BoolField<br>{<br>&nbsp;&nbsp;&nbsp; get { return GetProperty&lt;bool&gt;(BoolFieldProperty); }<br>&nbsp;&nbsp;&nbsp; set { SetProperty&lt;bool&gt;(BoolFieldProperty, value); }<br>}<br></font><br></span></p><span><font color="#000000"><font color="#008000">// This code fails the test<br><font color="#000000">private static PropertyInfo&lt;bool&gt; BoolFieldProperty = <br>&nbsp;&nbsp;&nbsp; RegisterProperty&lt;bool&gt;(typeof(Patient),<br>&nbsp;&nbsp;&nbsp; new PropertyInfo&lt;bool&gt;("BoolField", "Bool Field", false));<br><br>private bool _boolField = BoolFieldProperty.DefaultValue;<br>public bool BoolField<br>{<br>&nbsp;&nbsp;&nbsp; get { return GetProperty&lt;bool&gt;(BoolFieldProperty, _boolField); }<br>&nbsp;&nbsp;&nbsp; set { SetProperty&lt;bool&gt;(BoolFieldProperty, ref _boolField, value); }<br>}<br><br></font></font></font></span><p class="MsoNormal">
+
+</p><p class="MsoNormal"><span>I was kind of favoring the second approach, and according to the latest posts it should
+work...For child objects I do understand that the CSLA has to manage the fields,
+but this is not a child object.</span><span><o:p></o:p></span></p>
+
+<p class="MsoNormal"><span>So far I have
+encountered this behavior only for the Boolean type...<br>
+Let me know what you think and if it is a CSLA issue, or I got too much to
+drink last night ;)</span><span><o:p></o:p></span></p>
+
+<span><font color="#000000"><font color="#008000"><font color="#000000"><br><br></font></font></font></span></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>xal replied on Tuesday, March 11, 2008</h2>Something that caught my eye whas that in the code that DOES pass the test you have this (note the bold parts):<br><br><span><font color="#000000">private static PropertyInfo<b>&lt;bool&gt;</b> BoolFieldProperty = <br>&nbsp;&nbsp;&nbsp; RegisterProperty<b>&lt;Boolean&gt;</b>(typeof(Patient),<br>&nbsp;&nbsp;&nbsp; new PropertyInfo<b>&lt;bool&gt;</b>("BoolField", "Bool Field", false));</font></span><br><br>
+I don't use C# as much as VB, but i believe both (bool and Boolean) are interchangeable, right?<br><br>Not that it's necessarily related to your problem, but just curious...<br><br>Andrés<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, March 12, 2008</h2><P>Which Assert fails the test, the first or second?</P>
+<P>In other words, is it that the default isn't being set, or the changed value isn't being recorded?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Boris replied on Wednesday, March 12, 2008</h2>Thank you xal and Rocky for responding!<br>Using Boolean vs bool is not the problem, I've tried both...<br><br>Rocky,<br><br>The very last Assert fails!<br><span><font color="#000000">Assert.AreEqual(patient.BoolField, true);<br><br>What is interesting is that the previous line:<br></font></span><span><font color="#000000">patient.BoolField = true;<br>will not thow an exception, but it will also Not change the value....<br><br>Thanks again, and have a nice day!!<br></font></span></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Bob Matthew replied on Wednesday, March 12, 2008</h2><P><FONT face=Arial size=2>I ran into this one too.&nbsp; Specifically if the user code has it's own private backing field instead of a the CSLA-managed field, you're going to run into problems with the boolean values.</FONT></P>
+<P><FONT face=Arial size=2>The following overload is the culprit:<BR>protected P GetProperty&lt;P&gt;(PropertyInfo&lt;P&gt; propertyInfo, bool throwOnNoAccess)</FONT></P>
+<P><FONT face=Arial size=2>It conflicts with the GetProperty you think that you're using:<BR>protected P GetProperty&lt;P&gt;(PropertyInfo&lt;P&gt; propertyInfo, P field)</FONT></P>
+<P><FONT face=Arial size=2>Normally when you're working with strings or integers or decimals or whatever, you'll say:<BR>return GetProperty&lt;DateTime&gt;(CreatedDateProperty, _createdDate)</FONT></P>
+<P><FONT face=Arial size=2>and it will call the "P Field" overload.&nbsp; But when you say:<BR>return GetProperty&lt;bool&gt;(IsWhateverProperty, _isWhatever);</FONT></P>
+<P><FONT face=Arial size=2>It's calling the "throwOnNoAccess" overload.&nbsp; There are several ways around this problem.&nbsp; One way is to create another method. let's call is "GetPropertyEx" and it would look like this:</FONT></P>
+<P><FONT face=Arial size=2>protected P GetPropertyEx&lt;P&gt;(PropertyInfo&lt;P&gt; propertyInfo, P field)<BR>{<BR>&nbsp;&nbsp; return GetProperty&lt;P&gt;(propertyInfo, field);<BR>}</FONT></P>
+<P><FONT face=Arial size=2>Effectively what this does is binds itself to the private-backing field overload rather that trying to determine which overload to use when a boolean value is present.</FONT></P>
+<P><FONT face=Arial size=2>Another approach that I've seen is to "simulate" private backing fields through managed backing fields:<BR>public DateTime CreatedDate<BR>{<BR>&nbsp;get { return GetProperty&lt;DateTime&gt;(CreatedDateProperty); }<BR>&nbsp;set { SetProperty&lt;DateTime&gt;(CreatedDateProperty, value); }<BR>}<BR>private DateTime _createdDate<BR>{<BR>&nbsp;get { return ReadProperty&lt;DateTime&gt;(CreatedDateProperty); }<BR>&nbsp;set { LoadProperty&lt;DateTime&gt;(CreatedDateProperty, value; }<BR>}</FONT></P>
+<P><FONT face=Arial size=2>In this manner, you're always working with CSLA-managed fields but you can access them in a way that is identical to private backing fields.&nbsp; You could even compress the "private DateTime _createdDate" getter and setter to a single line.</FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Boris replied on Wednesday, March 12, 2008</h2>Thank you Bob!<br>I went with the first approach - added the code below to the BusinessBase.cs:<br><br>&nbsp;&nbsp;&nbsp; protected P GetBooleanProperty&lt;P&gt;(PropertyInfo&lt;P&gt; propertyInfo, P field)<br>&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return GetProperty&lt;P&gt;(propertyInfo, field);<br>&nbsp;&nbsp;&nbsp; }<br><font face="Arial" size="2"></font><br>And used that version for every bool field...It worked!!<br>Maybe for the next release I don't need to that...<br><br>Cheers!!<br><br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Bob Matthew replied on Wednesday, March 12, 2008</h2><FONT face=Arial size=2>Technically, you may want to have every property go through the "GetPropertyEx" method I suggested because then your code generation is&nbsp;the same for every property.</FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Boris replied on Thursday, March 13, 2008</h2>O-o yes, you are right!<br>Thank you so much...<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Saturday, March 15, 2008</h2><P>I just checked in a fix for this problem. The fix is to use an enum to specify whether to throw an exception when the user isn't authorized - thus avoiding any overload conflict with the bool type.</P>
+<P>This fix will break beta 1&amp;2 users that explicitly pass in the throwOnNoAccess parameter value. Sorry about that, but this was an important issue - the framework can't simply not work with properties of the bool data type!!</P>
+<P>I did <EM>not</EM> change the old code for version 2.0-3.0 syntax, so all existing 3.0 code should continue to upgrade to 3.5 just fine in this regard.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Bob Matthew replied on Monday, March 17, 2008</h2><P><FONT face=Arial size=2>You've got the bool issue fixed and it's working&nbsp;great&nbsp;in BusinessBase.cs, but throwOnNoAccess still occurs in the ReadOnlyBase.cs, line 653.</FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, March 17, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Oh, missed that one, oops!<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Thanks!<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Bob Matthew
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Monday, March 17, 2008 1:07 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] SetProperty&lt;bool&gt; problem<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p><span>You've got
+the bool issue fixed and it's working&nbsp;great&nbsp;in BusinessBase.cs, but
+throwOnNoAccess still occurs in the ReadOnlyBase.cs, line 653.</span><o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, March 13, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Well that is a good point &#8211; and an unexpected/unplanned
+side-effect. Grumble..<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I need to think about this a bit &#8211; I may be willing to
+break older code to ensure the new syntax works properly &#8211; just gotta
+think it through.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Bob Matthew
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Wednesday, March 12, 2008 11:07 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] SetProperty&lt;bool&gt; problem<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p><span>I ran into
+this one too.&nbsp; Specifically if the user code has it's own private backing
+field instead of a the CSLA-managed field, you're going to run into problems
+with the boolean values.</span><o:p></o:p></p>
+
+<p><span>The
+following overload is the culprit:<br>
+protected P GetProperty&lt;P&gt;(PropertyInfo&lt;P&gt; propertyInfo, bool
+throwOnNoAccess)</span><o:p></o:p></p>
+
+<p><span>It conflicts
+with the GetProperty you think that you're using:<br>
+protected P GetProperty&lt;P&gt;(PropertyInfo&lt;P&gt; propertyInfo, P field)</span><o:p></o:p></p>
+
+<p><span>Normally
+when you're working with strings or integers or decimals or whatever, you'll
+say:<br>
+return GetProperty&lt;DateTime&gt;(CreatedDateProperty, _createdDate)</span><o:p></o:p></p>
+
+<p><span>and it will
+call the &quot;P Field&quot; overload.&nbsp; But when you say:<br>
+return GetProperty&lt;bool&gt;(IsWhateverProperty, _isWhatever);</span><o:p></o:p></p>
+
+<p><span>It's calling
+the &quot;throwOnNoAccess&quot; overload.&nbsp; There are several ways around
+this problem.&nbsp; One way is to create another method. let's call is
+&quot;GetPropertyEx&quot; and it would look like this:</span><o:p></o:p></p>
+
+<p><span>protected P
+GetPropertyEx&lt;P&gt;(PropertyInfo&lt;P&gt; propertyInfo, P field)<br>
+{<br>
+&nbsp;&nbsp; return GetProperty&lt;P&gt;(propertyInfo, field);<br>
+}</span><o:p></o:p></p>
+
+<p><span>Effectively
+what this does is binds itself to the private-backing field overload rather
+that trying to determine which overload to use when a boolean value is present.</span><o:p></o:p></p>
+
+<p><span>Another
+approach that I've seen is to &quot;simulate&quot; private backing fields
+through managed backing fields:<br>
+public DateTime CreatedDate<br>
+{<br>
+&nbsp;get { return GetProperty&lt;DateTime&gt;(CreatedDateProperty); }<br>
+&nbsp;set { SetProperty&lt;DateTime&gt;(CreatedDateProperty, value); }<br>
+}<br>
+private DateTime _createdDate<br>
+{<br>
+&nbsp;get { return ReadProperty&lt;DateTime&gt;(CreatedDateProperty); }<br>
+&nbsp;set { LoadProperty&lt;DateTime&gt;(CreatedDateProperty, value; }<br>
+}</span><o:p></o:p></p>
+
+<p><span>In this
+manner, you're always working with CSLA-managed fields but you can access them
+in a way that is identical to private backing fields.&nbsp; You could even
+compress the &quot;private DateTime _createdDate&quot; getter and setter to a
+single line.</span><o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, March 13, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Well that is a good point &#8211; and an unexpected/unplanned
+side-effect. Grumble..<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I need to think about this a bit &#8211; I may be willing to
+break older code to ensure the new syntax works properly &#8211; just gotta
+think it through.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Bob Matthew
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Wednesday, March 12, 2008 11:07 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] SetProperty&lt;bool&gt; problem<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p><span>I ran into
+this one too.&nbsp; Specifically if the user code has it's own private backing
+field instead of a the CSLA-managed field, you're going to run into problems
+with the boolean values.</span><o:p></o:p></p>
+
+<p><span>The
+following overload is the culprit:<br>
+protected P GetProperty&lt;P&gt;(PropertyInfo&lt;P&gt; propertyInfo, bool
+throwOnNoAccess)</span><o:p></o:p></p>
+
+<p><span>It conflicts
+with the GetProperty you think that you're using:<br>
+protected P GetProperty&lt;P&gt;(PropertyInfo&lt;P&gt; propertyInfo, P field)</span><o:p></o:p></p>
+
+<p><span>Normally
+when you're working with strings or integers or decimals or whatever, you'll
+say:<br>
+return GetProperty&lt;DateTime&gt;(CreatedDateProperty, _createdDate)</span><o:p></o:p></p>
+
+<p><span>and it will
+call the &quot;P Field&quot; overload.&nbsp; But when you say:<br>
+return GetProperty&lt;bool&gt;(IsWhateverProperty, _isWhatever);</span><o:p></o:p></p>
+
+<p><span>It's calling
+the &quot;throwOnNoAccess&quot; overload.&nbsp; There are several ways around
+this problem.&nbsp; One way is to create another method. let's call is
+&quot;GetPropertyEx&quot; and it would look like this:</span><o:p></o:p></p>
+
+<p><span>protected P
+GetPropertyEx&lt;P&gt;(PropertyInfo&lt;P&gt; propertyInfo, P field)<br>
+{<br>
+&nbsp;&nbsp; return GetProperty&lt;P&gt;(propertyInfo, field);<br>
+}</span><o:p></o:p></p>
+
+<p><span>Effectively
+what this does is binds itself to the private-backing field overload rather
+that trying to determine which overload to use when a boolean value is present.</span><o:p></o:p></p>
+
+<p><span>Another
+approach that I've seen is to &quot;simulate&quot; private backing fields
+through managed backing fields:<br>
+public DateTime CreatedDate<br>
+{<br>
+&nbsp;get { return GetProperty&lt;DateTime&gt;(CreatedDateProperty); }<br>
+&nbsp;set { SetProperty&lt;DateTime&gt;(CreatedDateProperty, value); }<br>
+}<br>
+private DateTime _createdDate<br>
+{<br>
+&nbsp;get { return ReadProperty&lt;DateTime&gt;(CreatedDateProperty); }<br>
+&nbsp;set { LoadProperty&lt;DateTime&gt;(CreatedDateProperty, value; }<br>
+}</span><o:p></o:p></p>
+
+<p><span>In this
+manner, you're always working with CSLA-managed fields but you can access them
+in a way that is identical to private backing fields.&nbsp; You could even
+compress the &quot;private DateTime _createdDate&quot; getter and setter to a
+single line.</span><o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

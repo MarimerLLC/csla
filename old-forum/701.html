@@ -1,0 +1,63 @@
+<html><header><title>DeleteSelf() vs. DataPortal_DeleteSelf() ??</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>DeleteSelf() vs. DataPortal_DeleteSelf() ??</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/701.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>david.wendelken posted on Friday, July 21, 2006</h2><P>v2.0.2</P>
+<P>The template EditableRootList makes reference to <EM>item.DeleteSelf().</EM></P>
+<P>The template EditableRoot has no such method in it.&nbsp; That's a bummer, to say the least.&nbsp; It does have a <EM>DataPortal_DeleteSelf()</EM> routine which obviously is intended to serve a similar purpose.&nbsp; </P>
+<P>However, it makes me a bit concerned to have another class call a Data Access Layer (DAL) method in my business object.</P>
+<P>So, should the EditableRootList template have called <EM>DataPortal_DeleteSelf()</EM> instead, or should the EditableRoot template have included a <EM>DeleteSelf()</EM> method that just calls the DAL method, or am I missing something?</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, July 21, 2006</h2>The reason for this is that EditableRootList must contain <EM>child</EM> objects. A child BusinessBase-derived object would come from the EditableChild template, which defines a Friend/internal DeleteSelf() method specifically to be called by the parent object.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>david.wendelken replied on Friday, July 21, 2006</h2><P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div>The reason for this is that EditableRootList must contain <EM>child</EM> objects. A child BusinessBase-derived object would come from the EditableChild template, which defines a Friend/internal DeleteSelf() method specifically to be called by the parent object.</div></BLOCKQUOTE></P>
+<P>Um...&nbsp; That confusalates me to no end!<BR>(Confusalate is a highly technical term in my part of the world.)</P>
+<P>I just assumed that Editable<STRONG>Child</STRONG>List contained <STRONG>child</STRONG> objects and Editable<STRONG>Root</STRONG>List contained <STRONG>root</STRONG>/parent objects.</P>
+<P>So, if Editable<STRONG>Root</STRONG>List contains <STRONG>child</STRONG> objects, what does Editable<STRONG>Child</STRONG>List contain?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, July 21, 2006</h2><P>Child objects <img src="/emoticons/emotion-2.gif" alt="Big Smile [:D]" /></P>
+<P>I think I was pretty clear in chapters 6 and 7 (and I think chapter 2) that you can only have one root object, and everything else must be a child. A root object forms the top of a conceptual "transaction" in memory, and a root has a <EM>containment</EM> relationship with all the other objects in the graph.</P>
+<P>You can have a root object, or a root collection, but only one per object graph.</P>
+<P>Then you can have as many child objects as you choose - some of which might be <EM>parent</EM> objects that have their own children. But if that parent object isn't the root object, then it is also a child.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>david.wendelken replied on Monday, July 24, 2006</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div>
+<P>Child objects <img src="/emoticons/emotion-2.gif" alt="Big Smile [:D]" /></P>
+<P>I think I was pretty clear in chapters 6 and 7 (and I think chapter 2) that you can only have one root object, and everything else must be a child. A root object forms the top of a conceptual "transaction" in memory, and a root has a <EM>containment</EM> relationship with all the other objects in the graph.</P>
+<P>You can have a root object, or a root collection, but only one per object graph.</P>
+<P>Then you can have as many child objects as you choose - some of which might be <EM>parent</EM> objects that have their own children. But if that parent object isn't the root object, then it is also a child.</P>
+<P></div></BLOCKQUOTE></P>
+<P>You'll have to admit that your book - well written as it is! - is a lot to bite off and chew.&nbsp; I'll look thru those chapters again.&nbsp; It won't be the first time, either!</P>
+<P>What I understood you to just say is the only time I would use an editable root template is if I was never going to put it into a csla collection class?&nbsp; That would make that template pretty rare to use?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>david.wendelken replied on Monday, July 24, 2006</h2><P>And that's why "switchable" objects are useful?&nbsp; Because they could be a root when you need one, or a child when you need one?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, July 24, 2006</h2>
+
+
+
+
+<DIV align=left><SPAN class=247005914-24072006><FONT face=Arial color=#0000ff size=2>That is what switchable objects do, 
+yes.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=247005914-24072006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=247005914-24072006><FONT face=Arial color=#0000ff size=2>However, the use of switchable objects almost always means 
+your object model is flawed. Yes, there are a few cases where switchable objects 
+really can make sense, but 9 times out of 10 they are a symptom of data-centric 
+object design.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=247005914-24072006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=247005914-24072006><FONT face=Arial color=#0000ff size=2>Rocky</FONT></SPAN></DIV><BR>
+<BLOCKQUOTE>
+  <P>And that's why "switchable" objects are useful?&nbsp; Because they could be 
+  a root when you need one, or a child when you need 
+one?</P></BLOCKQUOTE></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rrahlf replied on Wednesday, March 14, 2007</h2><P>This is an interesting discussion, and it comes down to English grammar usage.&nbsp; The name EditableRootList is ambiguous in it's adjective use.&nbsp; It&nbsp;could mean either a List of Roots which is editable, or a List which is a Root and is Editable - "Root" being a noun or an adjective, repectively.&nbsp; Somewhat less ambiguous is "RootEditableList" which more clearly places "Root" as an adjective describing the list - a List which is both Root and Editable - but that doesn't fit well into the CSLA naming conventions which places the emphasis on whether or not the object is Editable over whether or not the object is Root or Child.&nbsp; Although it may cause some confusion, it's a&nbsp;completely academic argument and doesn't affect how much the CSLA kicks ass.&nbsp; [gramatical error intentional]</P>
+<P>What I'm more interested in, is why the SwitchableObject template doesn't have a DeleteSelf()...but that's in another thread.&nbsp; ;-)</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, July 24, 2006</h2>
+
+
+
+
+<DIV align=left><SPAN class=606105614-24072006><FONT face=Arial color=#0000ff size=2>Editable root objects are very common: Customer, Product, 
+etc.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=606105614-24072006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=606105614-24072006><FONT face=Arial color=#0000ff size=2>Any time you go to the database to retrieve a specific, 
+singular, item by primary key, then that is likely an editable 
+root.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=606105614-24072006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=606105614-24072006><FONT face=Arial color=#0000ff size=2>What is far less common is an editable root collection. It 
+is very rare (outside admin screens) to need to directly get an editable 
+collection. Where I mostly use this template is when creating admin screens 
+(look at the Admin\Roles class in ProjectTracker), because then the user really 
+does need to interact with a collection as the top-level 
+construct.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=606105614-24072006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=606105614-24072006><FONT face=Arial color=#0000ff size=2>Rocky</FONT></SPAN></DIV><BR>
+<BLOCKQUOTE>
+  <P>What I understood you to just say is the only time I would use an editable 
+  root template is if I was never going to put it into a csla collection 
+  class?&nbsp; That would make that template pretty rare to 
+use?</P></BLOCKQUOTE></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Michael Hildner replied on Friday, July 21, 2006</h2><P>You're not the only one to assume first off that an EditableChildList contains EditableChild objects and and EditableRootList should contain EditableRoot objects.</P>
+<P>I asked something very similar just yesterday on the CodeSmith for CSLA gotdotnet site. Was going to post a link, but it looks like gotdotnet is having troubles right now.</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

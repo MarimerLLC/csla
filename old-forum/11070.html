@@ -1,0 +1,57 @@
+<html><header><title>SL error - Object type or assembly could not be loaded</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>SL error - Object type or assembly could not be loaded</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11070.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>griff posted on Thursday, January 19, 2012</h2><p>Hi</p>
+<p>using latest csla (4.2.2) and cslagen templates have just created a new solution (vs2010, SL4). &nbsp;Project tree looks good and have added one BO for testing.</p>
+<p>I get this error in the call back (after fetching an object)</p>
+<p>&nbsp;</p>
+<p><b>{System.InvalidOperationException: Object type or assembly could not be loaded (ITAS.Business.Venue, ITAS.Business, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null)</b></p>
+<p><b>&nbsp; &nbsp;at Csla.Server.Hosts.Silverlight.SilverlightRequestProcessor.Fetch(SilverlightCriteriaRequest request)</b></p>
+<p><b></b><b>}</b></p>
+<p><b>&nbsp; &nbsp; [Csla.DataPortalException]: {System.InvalidOperationException: Object type or assembly could not be loaded (ITAS.Business.Venue, ITAS.Business, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null)</b></p>
+<p><b>&nbsp; &nbsp;at Csla.Server.Hosts.Silverlight.SilverlightRequestProcessor.Fetch(SilverlightCriteriaRequest request)</b></p>
+<p><b>}</b></p>
+<p><b>&nbsp; &nbsp; Data: {System.Collections.ListDictionaryInternal}</b></p>
+<p><b>&nbsp; &nbsp; InnerException: null</b></p>
+<p><b>&nbsp; &nbsp; Message: &quot;Object type or assembly could not be loaded (ITAS.Business.Venue, ITAS.Business, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null)&quot;</b></p>
+<p><b>&nbsp; &nbsp; StackTrace: null</b></p>
+<p>&nbsp;</p>
+<p>I have created a win forms test app and this works okay i.e. it returns the BO. &nbsp;Therefore the error lies somewhere in the SL area I guess.</p>
+<p>The above error occurs after execution of:</p>
+<p>
+<pre>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>public</span>&nbsp;<span>static</span>&nbsp;<span>void</span>&nbsp;GetVenue(<span>Guid</span>&nbsp;venueID,&nbsp;<span>EventHandler</span>&lt;<span>DataPortalResult</span>&lt;<span>Venue</span>&gt;&gt;&nbsp;callback)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b><span>DataPortal</span>.BeginFetch&lt;<span>Venue</span>&gt;(venueID,&nbsp;callback);</b>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</pre>
+<pre></pre>
+<pre>and appears in <b>GetVenueCompleted</b>:</pre>
+<pre><pre>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>private</span>&nbsp;<span>void</span>&nbsp;button1_Click(<span>object</span>&nbsp;sender,&nbsp;System.Windows.<span>RoutedEventArgs</span>&nbsp;e)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>Guid</span>&nbsp;ID&nbsp;=&nbsp;<span>new</span>&nbsp;<span>Guid</span>(txtID.Text);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>Venue</span>.GetVenue(ID,GetVenueCompleted);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>private</span>&nbsp;<span>void</span>&nbsp;<b>GetVenueCompleted</b>(<span>object</span>&nbsp;sender,&nbsp;<span>DataPortalResult</span>&lt;<span>Venue</span>&gt;&nbsp;e)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>if</span>&nbsp;(e.Object&nbsp;!=&nbsp;<span>null</span>&nbsp;&amp;&amp;&nbsp;e.Error&nbsp;==&nbsp;<span>null</span>)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;txtVenueName.Text&nbsp;=&nbsp;e.Object.VenueName;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>else</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;txtVenueName.Text&nbsp;=&nbsp;e.Error.Message;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</pre>
+<pre>Can anyone please advise?&nbsp;</pre>
+<pre>Thanks</pre>
+<pre>Richard</pre>
+<pre></pre>
+</pre>
+<pre></pre>
+<pre></pre>
+<pre></pre>
+</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, January 19, 2012</h2><p>Did your WinForm test call the data portal server?</p>
+<p>It looks like the issue is on the data portal server. The exception comes from Csla.Server.Hosts - and that is purely server-side code.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>griff replied on Thursday, January 19, 2012</h2><p>Hi Rocky</p>
+<p>I am running on my local\development pc. &nbsp;I assumed the win form app was calling data portal. Irrespective of this, any clues as to where to look for the solution</p>
+<p>Thanks</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, January 19, 2012</h2><p>I&#39;m suggesting you look at the app server project and make sure it references Csla.dll and your business assemblies <em>all built for .NET</em>.</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>griff replied on Sunday, January 22, 2012</h2><p>Hi</p>
+<p>Have rebuilt some of the projects and re-added references and all appear okay now, thanks</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>mayurimalgave replied on Friday, March 08, 2013</h2><p>hii..</p>
+<p>I also did the same &amp; it works fine now.</p>
+<p>Thanks..</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>mayurimalgave replied on Friday, March 08, 2013</h2><p>I deleted&nbsp;Bin folders &amp; re-compiled all the projects.Then i&nbsp;re-added the refferences &amp; project referrences.It worked fine&nbsp;for me.</p>
+<p>Thanks...</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

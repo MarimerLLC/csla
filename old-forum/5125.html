@@ -1,0 +1,96 @@
+<html><header><title>General strategy for reporting broken rules from child object via root?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>General strategy for reporting broken rules from child object via root?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5125.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>rsbaker0 posted on Friday, July 18, 2008</h2><P>What is the recommended approach to allow for the consumer of a root object to know what is broken when the broken rule is in a child? </P>
+<P>It's easy enough to implement IsValid() so that this validity is properly handled, but if the consumer of the root object decides to test IsValid() first, the BrokenRulesCollection of the root object will be empty, so there isn't anything useful to display except "Sorry, it's broken". </P>
+<P>Similarly, if the root object is throwing an exception because you called Save() and it isn't valid, the root doesn't know at that time which child is at fault. </P>
+<P>Are we supposed to reimplement some sort of traversal of the object hierarchy to locate the offending child, or is there something in the framework that will help?&nbsp; (CSLA 3.0.x)</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Saturday, July 19, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I posted a generic class code to do this here: <a href="http://forums.lhotka.net/forums/post/23717.aspx">http://forums.lhotka.net/forums/post/23717.aspx</a><o:p></o:p></span></p>
+
+<p class=MsoNormal><span>Feel free to use / modify it as you see fit.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Senior Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img border=0 width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> rsbaker0
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Friday, July 18, 2008 6:04 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> [CSLA .NET] General strategy for reporting broken rules from
+child object via root?<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>What is the recommended approach to allow for the consumer of a root object
+to know what is broken when the broken rule is in a child? <o:p></o:p></p>
+
+<p>It's easy enough to implement IsValid() so that this validity is properly
+handled, but if the consumer of the root object decides to test IsValid()
+first, the BrokenRulesCollection of the root object will be empty, so there isn't
+anything useful to display except &quot;Sorry, it's broken&quot;. <o:p></o:p></p>
+
+<p>Similary, if the root object is throwing an exception because you called
+Save() and it isn't valid, the root doesn't know at that time which child is at
+fault. <o:p></o:p></p>
+
+<p>Are we supposed to reimplement some sort of traversal of the object
+hierarchy to locate the offending child, or is there something in the framework
+that will help?&nbsp; (CSLA 3.0.x)<o:p></o:p></p>
+
+<p>&nbsp;<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rsbaker0 replied on Sunday, July 20, 2008</h2><P>Thanks!&nbsp;This certainly will help me get what I need.</P>
+<P>I think what I'll do is use your logic to implement a "BrokenObjectsCollection". That allows the consumer to have a little more control over how the error is handled. </P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rsbaker0 replied on Monday, July 21, 2008</h2><P>Ouch!</P>
+<P>It turns out that if you traverse the hierarchy using Properties, then lazy-loaded collections get loaded when the the property value is accessed. </P>
+<P>I could access the backing fields themselves instead which would avoid this problem, but I'd be concerned about partial trust issues since these fields are private. </P>
+<P>Can&nbsp;a member function of a class reflect on it's own private members without trust issues?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JohnB replied on Monday, July 21, 2008</h2>rsBaker,<br><br>Not exactly sure if this is something you're looking for but I <a HREF="/forums/thread/21880.aspx">posted an example</a> of working with broken rules for nested child objects. I do not handle the lazy loading case but check it out and hopefully it helps.<br><br>John<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rsbaker0 replied on Tuesday, July 22, 2008</h2><P>Thanks! I think this will be very helpful. </P>
+<P>I solved the lazy loading dilemma using a new attribute that indicates if the property lazy-loads the collection. Unless the attribute is present and explicitly set to false, I don't recurse into that property when enumerating broken rules. I'd prefer a more general solution, but I can make this work. </P>
+<P>Randy</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Wednesday, July 23, 2008</h2><P>I posted some code for how I do this a long time ago.</P>
+<P>The key is that the list of&nbsp;"owned objects" (and collections) is filled by traversing the Fields not the Properties. This effectively bypasses any lazy loaded properties.</P>
+<P>Joe</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rsbaker0 replied on Wednesday, July 23, 2008</h2><P>I can certainly do this, but I didn't know if there were trust issues since the fields were private. Of course, .NET could be smart enough to let an object reflect on its own private fields, but&nbsp;I would think private fields of child objects could present a trust issue. </P>
+<P>(I'm a newbie at trust issues, though, so this is speculation and it would be nice if someone new definitively whether this was a problem)</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

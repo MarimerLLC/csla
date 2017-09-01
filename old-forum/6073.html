@@ -1,0 +1,76 @@
+<html><header><title>Bug In CommonRules Overwrites Custom Rule Broken Description</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Bug In CommonRules Overwrites Custom Rule Broken Description</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6073.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>msk posted on Thursday, January 01, 2009</h2><P>I had a quick scan around and couldn't find anywhere else to report bugs so hopefully doing it won't offend anyone (and hopefully it is a bug and I haven't missed something obvious).</P>
+<P>I am trying to provide feedback to users about why rules are broken (why it's wrong, why they should fix it,&nbsp;what they should do to fix it, ...)&nbsp;and believe I have discovered a bug in the common rules implementations.&nbsp; </P>
+<P>The&nbsp;code for a rule such as CommonRules.StringRequired is: </P>
+<P><EM>public static bool StringRequired(object target, RuleArgs e)<BR>&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; string value = (string)Utilities.CallByName(<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; target, e.PropertyName, CallType.Get);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (string.IsNullOrEmpty(value))<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<BR><FONT>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </FONT></EM><EM><STRONG><FONT>e.Description = string.Format(Resources.StringRequiredRule, RuleArgs.GetPropertyName(e));</FONT><BR></STRONG>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return false;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return true;<BR>&nbsp;&nbsp;&nbsp; }</EM></P>
+<P><FONT size=2><FONT size=3>The highlighted code provides very helpful default behaviour such as "PropertyXYZ required".&nbsp; </FONT></FONT></P>
+<P><FONT size=2><FONT size=3>Problem is that I wanted to pass in my own&nbsp;custom e.Description: </FONT></FONT></P>
+<P><EM>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Dim args As New Csla.Validation.RuleArgs("PropertyXYZ")<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; args.Description = "Property XYZ required for ..."<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ValidationRules.AddRule(AddressOf Csla.Validation.CommonRules.StringRequired, args)<BR></EM></P>
+<P>It's overwritten by the 'helpful' default behaviour.</P>
+<P>I believe the following change in the all of the common rules should help.&nbsp; </P>
+<P><EM>&nbsp;&nbsp;&nbsp; public static bool StringRequired(object target, RuleArgs e)<BR>&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; string value = (string)Utilities.CallByName(<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; target, e.PropertyName, CallType.Get);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (string.IsNullOrEmpty(value))<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<BR></EM><EM><FONT color=#000000>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // Provide a default Description if none was provided in the RuleArgs e<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (e.Description == string.Empty)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; e.Description = string.Format(Resources.StringRequiredRule, RuleArgs.GetPropertyName</EM><EM><FONT><FONT>(e));</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<BR></FONT>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return false;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return true;<BR>&nbsp;&nbsp;&nbsp; }</EM><BR></P>
+<P><FONT size=2><FONT size=3></FONT>&nbsp;</P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rsbaker0 replied on Friday, January 02, 2009</h2><P>I understand your point, but I don't think it was intended to work this way. </P>
+<P>If you look at the description of RuleArgs.Description, it says "<FONT color=#008000><FONT color=#008000>Set by the rule handler method to describe the broken</FONT></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2><FONT size=3> rule.</FONT>"</FONT></FONT></P>
+<P><FONT color=#000000>So, I think the intent is that the Description is provided during the processing of the rule handler and not before. </FONT></P>
+<P>If you want it to work the way you are describing, then you can implement your own rule handler (which I see you have more or less done above)</P>
+<P><FONT color=#008000 size=2><FONT color=#008000 size=2>&nbsp;</P></FONT></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>msk replied on Saturday, January 03, 2009</h2><P>Thanks.&nbsp; Looks like you&nbsp;may be&nbsp;correct.&nbsp; That smells a little to me though.&nbsp; With a class called RuleArgs you would expect it to be passing arguments to the rule.&nbsp; This is what all its other other properties are used for.&nbsp; </P>
+<P>I still believe the original intent&nbsp;may have been&nbsp;to allow people to pass in their description.You wouldn't expect to pass in a max length of 50 and then have the rule handler overwrite it with a default value of 10!</P>
+<P>Having said that, my implementation doesn't quite work properly.&nbsp; The ErrorProvider fails to flash with the BrokenRule description.&nbsp; </P>
+<P>I've fixed it by replacing all the "<EM>e.Description == string.Empty" with "string.IsNullOrEmpty(e.Description).&nbsp; </EM></P>
+<P>The class was called "RuleArgs" - for passing arguments to rules?&nbsp; That's what I am doing.&nbsp; </P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, January 05, 2009</h2><P>I view the current behavior as intentional. You may disagree with my common rule implementations, and that's OK, because you can replace them with your own library of rules. That's really the whole point of the rule system - to allow you to do what you need.</P>
+<P>The common rule implementations provided by CSLA could never satisfy everyone, so I made them relatively simple, and powerful enough that they satisfy a lot of people. For everyone else, it is pretty darn easy to create your own library of rules that do whatever you require.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>msk replied on Monday, January 05, 2009</h2><P>Well the rebuttals don't come much more authoratative than that.&nbsp; Perhaps I should have titled my post "Suggested enhancement to CommonRules..." rather than "Bug in...".&nbsp; They don't always get any replies though. :)&nbsp;&nbsp; </P>
+<P>I'm wondering from your reply if you are viewing the CommonRules as a good deed that has not gone unpunished?</P>
+<P>It still seems to me that with a minor change, the common rules implementation would satisfy even more cases.&nbsp; In many cases Description, just like the other properties of RuleArgs, is specific to the business context within which the rule is used.&nbsp; I don't view my requirement as esoteric in any way and can't see why it wouldn't be of potential use to any consumer of CommonRules.&nbsp; To re-implement a rule that already works is&nbsp;extra code, even if I am just copy and pasting it.</P>
+<P>I am quite happy to go on using my own slightly different implementation of CommonRules but thought the community might benefit from the changes.&nbsp; </P>
+<P>Your stance is fair enough though.&nbsp; It was a little inflamatory of me to call it a bug and I understand that you have to draw the line somewhere with the CommonRules implementation.&nbsp; </P>
+<P>Martin.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Monday, January 05, 2009</h2>The behavior of using RuleArgs to pass data OUT of the rule method is consistent with the naming of classes in the .net framework too.&nbsp; Consider CancelEventArgs.&nbsp;&nbsp;&nbsp; The event handler ("rule method") passes data back to the object which raised the event via the CancelEventArgs.Cancel property.&nbsp; So this behavior does has precident.<br><br>Just wanted to throw that out.. maybe it clears some of the "smell" away.&nbsp; <img src="/emoticons/emotion-1.gif" alt="Smile [:)]" /><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, January 05, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>They are a bit of a punished good deed :)&nbsp; The RegEx rule
+got a lot of attention for a while &#8211; it turns out that there is no
+universally accepted expression for email validation, and I should have never put
+any expressions in by default. That was perhaps the biggest mistake. But if you
+look back through the forum history you&#8217;ll find a lot of comments and
+wishes for differences in the way the rules work.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>One trick with description that would have to be sorted out is
+localization. The existing rule descriptions are localized into numerous
+languages, and so the default behavior would have to be to use the existing
+descriptions from the resource file.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Also, they are dynamic strings, and so any description text
+would be constrained by the format used currently so the string built
+correctly. Or they&#8217;d have to use entirely static description text
+provided by you as input.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky</span><o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tiago.santos replied on Friday, February 12, 2010</h2><p>I was tring the exactly the same thing </p>
+<p>ValidationRules.AddRule(CommonRules.IntegerMinValue, new CommonRules.IntegerMinValueRuleArgs(ContactIdProperty, 1) { Description = &quot;Choose a Contact Type.&quot; });</p>
+<p>In that instance the Validation Rule is correct, since I checked in Debug.</p>
+<p>But when I make a .Save() in the UI, the ValidationRule is of type &quot;mobile....&quot; and has the default Description ... This is not very intuitive.</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, February 12, 2010</h2><p>This is because, for performance reasons, there&#39;s only one RuleArgs object created per rule, and it is reused constantly - obviously thereby wiping out previous values.</p>
+<p>Remember that AddRule() is called <i>once per type</i>&nbsp;- so that RuleArgs object you are creating is <i>static and global in scope</i>.</p>
+<p>To address this, CSLA 4 is going to be quite different. AddRule() will take values that are used as defaults, and each rule invocation will get a RuleContext object that is unique to that invocation. </p>
+<p>There&#39;s a whole other thread about the design of the CSLA 4 business rules subsystem, and I won&#39;t rehash that here other than to say that the behavior you are observing has been there since 2004, and is about to undergo some big changes.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

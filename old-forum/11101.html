@@ -1,0 +1,60 @@
+<html><header><title>Is CSLA 4 relevant to Windows Forms Vb.Net Developer?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Is CSLA 4 relevant to Windows Forms Vb.Net Developer?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11101.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>gajit posted on Friday, January 27, 2012</h2><p>I&#39;m posting once again in frustration, having made a so far unsuccessful attempt at getting to grips with CSLA 4.</p>
+<p>I&#39;m a VB.Net developer - I make no excuses for that - I&#39;ve plied my trade well over the last 12 years or so, from VB6 and up. My niche has always been solid Windows Forms database applications with strong UIs.</p>
+<p>I&#39;m trying to remain current, but having stepped into the CSLA 4 fold - I&#39;m wondering, is CSLA 4 for me?</p>
+<p>Having purchased the &quot;Using CSLA4&quot; ebook series, I was expecting to at least get some iota of reference to VB, or even Windows forms - but I am struggling to find somewhere to start.</p>
+<p>Not having had to revisit the forums since CSLA 2.1 days - which has served me well, I now find myself lost in a world of WPF, Silverlight and C# with a distinct absence of pages, samples, or source code for Windows, VB developers.</p>
+<p>Have I missed something? is there documentation out there that is pre-requisite reading betweem 2.1 and 4.2?</p>
+<p>I thought I could tackle this by importing some of my old business classes, and address the breaking changes - but it&#39;s clearly evident that the implementation of them has changed signifiantly. It looks like data access - once handled in the business class - is now in it&#39;s own library&nbsp;(dal). That&#39;s fair enough, but where does a VB.Net developer find examples of this? (C# to VB.Net code translators can only do so much)....there are no examples and is no source code to speak of.</p>
+<p>I appreciate it probably isn&#39;t commerically viable to document the entire framework implementation from a Windows Forms perspective, but I&#39;m a little baffled that there are no code samples, and example business class&nbsp;or two or even a current ProjectTracker solution for this platform.</p>
+<p>I&#39;m lost here and any advice or&nbsp;suggestions would be appreciated.</p>
+<p>Thanks,</p>
+<p>Graham</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Friday, January 27, 2012</h2><p>Hi Graham, </p>
+<p>A LOT of changes were done in CSLA 3.x and CSLA 4.x and I understand that you are frustrated on all the development/changes that has happened since 2.1. </p>
+<p>I DO believe that CSLA 4 is a good platform for both C# and VB.NET developers. Even if there is not so many samples included for VB.NET there is a full set of class templates and snippets (in the Support folder)&nbsp; that will ease your programming experience for both C# and VB.&nbsp;</p>
+<p>And it is a learning curve to get up and comfortable with CSLA 4 but you will find that you write less code for properties, have an improved rule system that is easier to unit test and support for more platforms.</p>
+<p><a href="http://www.lhotka.net/files/csla40/CSLA4CheatSheet.pdf">http://www.lhotka.net/files/csla40/CSLA4CheatSheet.pdf</a>&nbsp; </p>
+<p>You can still have the Data Access Code inside your business objects (DataPortal_XYZ/Child_XYZ) or use ObjectFactory classes.Most of the samples however show data access either in Repository or ObjectFactory style with Linq2SQL or EntityFramwork as Data Access. But, you can still use raw ADO.NET, SafedataReader and have all data access inside the business objects.</p>
+<p><i>The main differences you will see is:</i></p>
+<ul>
+<li>Property declarations is simplified and managed properties is the preferred style. </li>
+<li>Business rules is now classes and require <b>IPropertyInfo</b></li>
+<li>DataAccess use <b>LoadProperty </b>or <b>using(BypassPropertyChecks) </b>style to set properties. </li>
+<li>CommandBase now makes a clone of the object (like Save on Business objects)</li>
+</ul>
+<p><i>Mostly unchanged:</i></p>
+<ul>
+<li>Business classes (must use BisinessBindingListBase and ReadOnlyBindingLiust base for Windows Forms)</li>
+<li>Factory methods</li>
+<li>DataPortal&nbsp;</li>
+<li>DataAccess can be nearly unchanged but should use LoadProperty or using(BypassPropertyChecks) insted of private member fields. </li>
+<li>UI Helper clases in Csla.Windows has a number of bugfixes. </li>
+</ul>
+<p>In terms of Windows Forms and DataBinding there is really no changes since .NET 2.0 so all your knowledge of Forms and databinding is still applicable. </p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>gajit replied on Saturday, January 28, 2012</h2><p>Thanks Jonny, I will chek out the snippets.</p>
+<p>I like the look of the property handling in CSLA4 - it certainly seems like a lot less work, and I have no issues with the changes around the rules, as it seems to streamline what was already there.</p>
+<p>I do however need to get a better handle on the data access code. Yes, I currently have this in my business classes, btu one of the principal reasons for me to move onto CSLA, is so that I can develop richer interfaces for say, the web and even phone - both of which play a part in my development path.</p>
+<p>I don&#39;t want to build business classes that closely resemble my CSLA 2 ones if that is going to be prohibitive to using them for Silverlight or WP7 also - the whole point being that my data access layer should be common - or at least very close across platforms. With that said, what is your recommendation? Should I be using this repository or &quot;ObjectFactory&quot; model for all of my business classes going forward? If so, where should I be looking in the documentation to see examples of this implementation?</p>
+<p>Also, is there any point in me purchasing the Using CSLA 3 e-Book? Woiuld it help the transition from 2 to 4? or does it also focus on non-VB-non-Forms development?</p>
+<p>I&#39;ll take another stab at things this weekend and see if i can;t progress further.</p>
+<p>Thanks again,</p>
+<p>Graham</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Saturday, January 28, 2012</h2><p>Hi,</p>
+<p>The Using CSLA 3 is available for both VB.NET and C# so in that sense it should provide some nice information. If my memory serves me correct (I haven&#39;t looked at these books for a long time) they mostly focus on other platforms than Windows Forms (ie WPF, WCF, WF) but has some info on databinding and bind/unbind.&nbsp;</p>
+<p><b>My own personal preference is for Object Factories. </b>Having said that I know others that favor the repository pattern.<b> Both works -&nbsp; no doubt!!</b> So I would suggest that you look into these and make your own decision. </p>
+<p>You could look at the samples\MEFSamples in <a href="http://cslacontrib.codeplex.com">http://cslacontrib.codeplex.com</a>&nbsp; -&nbsp; goto source tab and download the latest source. These samples in C# show how to use MEF for a pluggable data access layer with either ObjectFactory or Repository. pattern. </p>
+<p>When you use ObjectFactories you have absolutely no data access code in your business objects but you&#39;re also responsible for state management, no help from the DataPortal for state management as you get when using Repository pattern.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

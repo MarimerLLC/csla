@@ -1,0 +1,6 @@
+<html><header><title>How to maintain Db Connection between Parent and Children?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>How to maintain Db Connection between Parent and Children?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10171.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>ddredstar posted on Wednesday, March 16, 2011</h2><p>I have my own DataAccess class library, and created&nbsp;ParentDao class and ChildDao class for Parent and Children Object, my question is&nbsp;when Parent Object&nbsp; UpdateChildren, how to share connection between Parent and Children? Or, let Parent and Children open their own connection(i think this is bad idea)?&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Thursday, March 17, 2011</h2><p>You will find helper classes in the Csla.Data namespace for handling connections:</p>
+<ul>
+<li>ConnectionManager&nbsp; for pure ADO</li>
+<li>ContextManager for LINQ2SQL</li>
+<li>ObjectContextManager for Entitiy Framework</li>
+</ul></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

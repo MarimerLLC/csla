@@ -1,0 +1,22 @@
+<html><header><title>Single Table/Multiple Object Hierarchy</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Single Table/Multiple Object Hierarchy</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4934.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Phlar posted on Wednesday, June 04, 2008</h2><P>I am sure that I'm not the first individual to be in this situation.&nbsp; We have a single table Employees which contains the following:</P>
+<P>Employee_Id&nbsp;&nbsp;&nbsp;&nbsp; uniqueidentifier (integer)</P>
+<P>First_Name&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; varchar(50)</P>
+<P>Last_Name&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; varchar(50)</P>
+<P>Supervisor_Id&nbsp;&nbsp;&nbsp;integer</P>
+<P>We have two criteria's we need to fulfill.&nbsp; The first is to produce an Org structure starting from the CEO (Supervisor_id = NULL)&nbsp;all the way down.&nbsp; The second is retrieve a particular Employee and his/her supervisor.</P>
+<P>Is there a simple way to reduce continuous round trips to the server in order to build the object model?&nbsp; Originally I was contemplating utilizing CTE as:</P>
+<P>with usertree(id, first, last, supervisor)</P>
+<P>as (Select Employee_Id, First_Name, Last_Name, Supervisor_Id</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp; From Employee</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp; Where Supervisor_id is NULL</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp; Union All</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp; Select e.Employee_id, e.First_Name, e.Last_Name, e.Supervisor_Id</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp; From Employee e</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Inner Join usertree ut on ut.Id = e.Employee_Id)</P>
+<P>Select id, first, last, supervisor</P>
+<P>From usertree</P>
+<P>Order by superviosr</P>
+<P>&nbsp;</P>
+<P>this does return all the rows but doesn't exactly produce the object model I was hoping for since we are only return one dataset and not multiple which eliminates the ability to use Empl : BusinessBase&lt;Empl&gt; and EmplList : BusinesBaseList &lt;EmplList&gt;</P>
+<P>Any ideas?</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Wednesday, June 04, 2008</h2>Why can't you still have Empl and EmplList?&nbsp; The root Empl would execute your CTE, and since it knows what employee you're examing, can filter out the proper record for it to populate itself.&nbsp; You can give the remaining rows to the EmplList to populate itself.<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

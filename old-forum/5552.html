@@ -1,0 +1,256 @@
+<html><header><title>Object</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Object</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5552.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>KJosh posted on Tuesday, October 07, 2008</h2><P>Hi,</P>
+<P>I have define one class</P>
+<P>Class A : BusinessBase&lt;A&gt;</P>
+<P>{</P>
+<P>//Properties</P>
+<P>}</P>
+<P>I have another class B which is also inheriting from BusinessBase.</P>
+<P>Now In my Class C, I am including the objects A, B as the properties.&nbsp;In the classes A and B, I want to put the Insert/Select/Delete/Update methods. From the user interface, I am calling Save like the below:</P>
+<P>C objc; </P>
+<P>objc.Save() -&gt; calls the DataPortal_Insert, Dataportal_Update in the class C. Now In these methods, I want to call the Insert/ update methods defined in A and B. <STRONG>How to do this</STRONG>?&nbsp; I need this type of functionality because, in my User interface A and B functionality is the part of C. </P>
+<P>Thanks in advance</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Tuesday, October 07, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Project tracker has this exact scenario.&nbsp; Look at Project
+class -&gt; DataPortal_Update() method.&nbsp; You will see call to UpdateChild.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> KJosh
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Tuesday, October 07, 2008 8:43 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> [CSLA .NET] Object<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Hi,<o:p></o:p></p>
+
+<p>I have define one class<o:p></o:p></p>
+
+<p>Class A : BusinessBase&lt;A&gt;<o:p></o:p></p>
+
+<p>{<o:p></o:p></p>
+
+<p>//Properties<o:p></o:p></p>
+
+<p>}<o:p></o:p></p>
+
+<p>I have another class B which is also inheriting from BusinessBase.<o:p></o:p></p>
+
+<p>Now In my Class C, I am including the objects A, B as the
+properties.&nbsp;In the classes A and B, I want to put the
+Insert/Select/Delete/Update methods. From the user interface, I am calling Save
+like the below:<o:p></o:p></p>
+
+<p>C objc; <o:p></o:p></p>
+
+<p>objc.Save() -&gt; calls the DataPortal_Insert, Dataportal_Update in the
+class C. Now In these methods, I want to call the Insert/ update methods
+defined in A and B. <strong>How to do this</strong>?&nbsp; I need this type of
+functionality because, in my User interface A and B functionality is the part
+of C. <o:p></o:p></p>
+
+<p>Thanks in advance<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>KJosh replied on Tuesday, October 07, 2008</h2><P>Hi,</P>
+<P>I found this line in the Project's DataPortal_Update:</P><FONT color=#2b91af size=2><FONT color=#2b91af size=2>
+<P>DataPortal</FONT></FONT><FONT size=2>.UpdateChild(ReadProperty&lt;</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>ProjectResources</FONT></FONT><FONT size=2>&gt;(ResourcesProperty), </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>this</FONT></FONT><FONT size=2>);</FONT></P>
+<P><FONT size=2>But the ProjectResources does not have any DataPortal Update/insert methods. </FONT></P>
+<P><FONT size=2>a) Here which method the above line is actually executing? ProjectResources is the collection of ProjectResource objects, which contain update/insert methods. </FONT></P>
+<P><FONT size=2>b) The Project class contains the&nbsp; <FONT color=#2b91af size=2><FONT color=#2b91af size=2>ProjectResources resources <FONT color=#000000>as one property which is having only Get method with no set method, then how it is updating the resource data?</FONT></FONT></FONT></FONT></P>
+<P><FONT size=2><FONT color=#2b91af size=2><FONT color=#2b91af size=2><FONT color=#000000>Thanks for your time.</FONT></P></FONT></FONT></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Wednesday, October 08, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>UpdateChild is smart enough to figure out that it needs to update
+the list, so it runs through each item in the list, executing Child_XXX on each
+one.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> KJosh
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Tuesday, October 07, 2008 10:57 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: Object<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Hi,<o:p></o:p></p>
+
+<p>I found this line in the Project's DataPortal_Update:<o:p></o:p></p>
+
+<p><span>DataPortal</span><span>.UpdateChild(ReadProperty&lt;<span>ProjectResources</span>&gt;(ResourcesProperty),
+<span>this</span>);</span><o:p></o:p></p>
+
+<p><span>But the ProjectResources does not have any
+DataPortal Update/insert methods. </span><o:p></o:p></p>
+
+<p><span>a) Here which method the above line is
+actually executing? ProjectResources is the collection of ProjectResource
+objects, which contain update/insert methods. </span><o:p></o:p></p>
+
+<p><span>b) The Project class contains the&nbsp; <span>ProjectResources resources </span><span>as one property which is having only Get method with no set method, then
+how it is updating the resource data?</span></span><o:p></o:p></p>
+
+<p><span>Thanks for your time.</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>KJosh replied on Tuesday, October 07, 2008</h2><P>Hi Sergey,</P>
+<P>If you have a chance, could you give your opinion on this qustion: </P>
+<P><A HREF="/forums/thread/26925.aspx">http://forums.lhotka.net/forums/thread/26925.aspx</A>. which is also similar to this one.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Wednesday, October 08, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I like a) approach better but only from usability
+perspective.&nbsp; If I were a user working on a single employee, I would
+expect to save changes to employee&#8217;s data by clicking on single Save
+button regardless of what tab they were made at as part of a single
+transaction.&nbsp; And yes, you can share transaction between unrelated objects,
+it just not as clean (IMHO) as approach a).<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> KJosh
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Tuesday, October 07, 2008 11:00 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: Object<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Hi Sergey,<o:p></o:p></p>
+
+<p>If you have a chance, could you give your opinion on this qustion: <o:p></o:p></p>
+
+<p><a href="/forums/thread/26925.aspx">http://forums.lhotka.net/forums/thread/26925.aspx</a>.
+which is also similar to this one.<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

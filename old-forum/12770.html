@@ -1,0 +1,26 @@
+<html><header><title>CSLA .NET Contrib - Caliburn.Micro.WPF</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA .NET Contrib - Caliburn.Micro.WPF</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/12770.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>comp1mp posted on Tuesday, October 14, 2014</h2><p>Hi,</p>
+<p>In the nuget documentation it states:&nbsp;</p>
+<p>&quot;<span>Note - Although not dependant on any specific version of Caliburn.Micro, the ViewModel adapter uses code from v.1.5.1.&quot;</span></p>
+<p>I understand the library is done by Tiago Freitas Leal. After searching this forum there are no recent posts concerning this.</p>
+<p>Is it possible to use CM 2.0 with this library?</p>
+<p>If so, does ScreenWithModel&lt;T&gt; replace ViewModel&lt;T&gt; used in the books and MVVM video series?</p>
+<p>When would I use ScreenWithModelBase&lt;T&gt;?</p>
+<p>When would I use ScreenWithSubject&lt;T&gt;?</p>
+<p>After extensive Googling I was unable to find documentation for this. Does it exist?</p>
+<p>Thanks,</p>
+<p>Matthew</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>comp1mp replied on Tuesday, October 14, 2014</h2><p>The CslaContrib Caliburn.Micro.WPF nuget package is not compatible with CM 2.0+</p>
+<p>CM 2.0 split into two separate assemblies.</p>
+<p>A portable class library which keeps the assembly name Caliburn.Micro</p>
+<p>A new assembly called Caliburn.Micro.Platform. This assembly now contains many classes (like View) which used to be a part of the Caliburn.Micro assembly.</p>
+<p>Tiago or Jonny, how can i contribute a version which is CM 2.0 compatible?</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>tiago replied on Tuesday, October 14, 2014</h2><p>Hi Matthew,</p>
+<p>I guess all it takes is to be a project member. Jonny can take care of that part.</p>
+<p>&nbsp;</p>
+<p>NuGetting CM 2.0.1 results to a total of 7 compile errors. The simplest one is to delete the</p>
+<p><b>#if !SILVERLIGHT</b></p>
+<p>compiler directive that surrounds the</p>
+<p><b>public virtual void TryClose(bool? dialogResult)</b></p>
+<p>method,</p>
+<p>There is also an issue concerning View.DefaultContext as this property no longer exists on View. You are welcome to port the code and I can explain how I did it.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

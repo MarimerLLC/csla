@@ -1,0 +1,73 @@
+<html><header><title>When the desired behavior doesn't mimic CSLA...Validating Objects Upon Entry Into a Collection</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>When the desired behavior doesn't mimic CSLA...Validating Objects Upon Entry Into a Collection</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9044.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>NightOwl888 posted on Monday, June 07, 2010</h2><p>I am trying to design a somewhat&nbsp;standard &quot;coupon code&quot; for a shopping cart. So far, I have a discount object for data entry of the discount data and child data. Now I am working on&nbsp;the use case for&nbsp;the shopping cart. I am thinking about adding a collection of Coupon objects which will contain the complex rules for calculating a discount based on what is in the items collection and the subtotal of the cart (or order).</p>
+<p>However, I am struggling because I don&#39;t want to hold up from saving the&nbsp;parent&nbsp;if&nbsp;the collection is &quot;invalid&quot;. Any invalid coupon should simply calculate a value of 0 discount. Additionally, there should be a message indicating that the coupon is invalid (and why)&nbsp;on each invalid coupon. In this case, the coupon would have been valid upon entering it into the collection, but became invalid since then.</p>
+<p>More importantly, I don&#39;t want an &quot;invalid&quot; object to be added to the the collection at all - I just want to display a message showing how it is invalid:</p>
+<ol>
+<li>Used too many times</li>
+<li>Expired</li>
+<li>Doesn&#39;t exist in DB</li>
+<li>Cannot be combined with other offers</li>
+</ol>
+<p>So, this all looks good on paper, but how can I build this functionality with CSLA? In the project tracker sample, there is an exception thrown when a &quot;rule&quot; such as one of the above is broken - when a resource is assigned to a project twice. This is fine, but technically speaking being invalid is not an exceptional case and raising an exception is an expensive way to get the message to the UI.</p>
+<p>I am thinking about making this into an &quot;Editable Switchable&quot; collection. Then&nbsp;my UI&nbsp;can get an instance of the coupon object before it is added to the collection, check whether it is valid, if not display the invalid message to the user, and if so add it to the collection. This unfortunately is a lot of work for my UI to do, but still seems more elegant than throwing an exception in each of these scenarios; for one, I can show more than one reason why the coupon is invalid. On the other hand, I can&#39;t do the &quot;can&#39;t be combined&quot; rule without access to the collection - in this one case throwing the exeption seems better.</p>
+<p>In addition, I am thinking that going with the built-in rules management&nbsp;in CSLA is the wrong approach in my scenario since I don&#39;t want to prevent the user from being able to continue just because they have a coupon that has expired or been used too many times after they had entered it into the collection (for example, they return a month later to buy what is in their shopping cart). I am still using CSLA 1.51 and there is no provision for rule severity I can tap into, which would of course be the best way.</p>
+<p>Any ideas about how to handle this scenario better&nbsp;would be appreciated.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Fintanv replied on Monday, June 07, 2010</h2><p>The typical way to handle this is to have your list as a child of a business object. &nbsp;The business object will handle the rules that need to be applied at a collection/list level. &nbsp;It could also provide you with the final discount (factoring in all valid coupon items).</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>NightOwl888 replied on Tuesday, June 08, 2010</h2><p>Thanks.</p>
+<p>Ironically that was the part that was&nbsp;straightfoward - the root object will manage the communication between the two collections, one collection will store the items and the other will store the coupons and will contain the coupon logic.</p>
+<p>What I am trying to work around is raising exceptions when adding a coupon code to the coupon collection (because the coupon deosn&#39;t exist in the DB, for example). While exceptions can be used for sending messages to the UI, they are not the preferred way because they are expensive resources. Rocky designed his framework so &quot;broken&quot; rules can be displayed on the UI without raising exceptions on the business objects. Unfortunately, this one scenario - adding a new item to a collection - doesn&#39;t fit that paradigm.</p>
+<p>According to the MSDN documentation, exceptions should be reserved for unexpected scenarios and should be used sparingly because they cost CPU cycles and memory. In my case, &quot;invalid&quot; coupons can occur fairly frequently and therefore are not best suited to use the exception model - they are technically part of the business logic.</p>
+<p>However, after considering other possibilities the exception is starting to look like the most straightforward way because it will prevent me from having to make the coupon objects into &quot;switchable&quot; objects so the &quot;invalid&quot; states can be read outside of the collection. The fact of the matter is, some of the &quot;invalid&quot; states depend on the rest of the collection to be determined so creating the object inside of the collection to validate it against the rest of the collection seems to be the path of least resistance. Unfortunately, my UI will need to anticipate a specific type of exception thrown from the collection when a new object is added so the message can be shown on the UI.</p>
+<p>If you have any other approaches to this problem, I would appreciate hearing them.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>NightOwl888 replied on Tuesday, June 08, 2010</h2><p>Ok, so I have implemented much of the coupon collection on my order object (but not the shopping cart yet). Technically, this collection manages a many-to-many relationship. Following the ProjectTracker&#39;s lead, I put the validation in the DoAssignment method. Here is what it looks like:</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>
+<p><span style="font-size:x-small;"><font size="2">
+<p>&nbsp;</p>
+</font></span>
+<p>&nbsp;</p>
+<span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">Private</span></span><span style="font-size:x-small;"> </span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">Sub</span></span><span style="font-size:x-small;"> DoAssignment(</span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">ByVal</span></span><span style="font-size:x-small;"> OrderCoupon </span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">As</span></span>
+<p><span style="font-size:x-small;"> OrderCoupon)<font size="2">
+<p>&nbsp;</p>
+</font></span></p>
+<p>&nbsp;</p>
+<span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">If</span></span><span style="font-size:x-small;"> List.Count = 1 </span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">AndAlso</span></span><span style="font-size:x-small;"> </span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">CType</span></span><span style="font-size:x-small;">(List.Item(0), OrderCoupon).CantBeCombined </span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">Then</span></span><span style="font-size:x-small;"> </span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">Throw</span></span><span style="font-size:x-small;"> </span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">New</span></span><span style="font-size:x-small;"> CouponInvalidException(</span><span style="font-size:x-small;color:#a31515;"><span style="font-size:x-small;color:#a31515;">&quot;The promotional code already in the order cannot be combined with others&quot;</span></span>
+<p><span style="font-size:x-small;">)<font size="2">
+<p>&nbsp;</p>
+</font></span></p>
+<p>&nbsp;</p>
+<span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">If</span></span><span style="font-size:x-small;"> List.Count &gt; 0 </span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">AndAlso</span></span><span style="font-size:x-small;"> OrderCoupon.CantBeCombined </span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">Then</span></span><span style="font-size:x-small;"> </span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">Throw</span></span><span style="font-size:x-small;"> </span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">New</span></span><span style="font-size:x-small;"> CouponInvalidException(</span><span style="font-size:x-small;color:#a31515;"><span style="font-size:x-small;color:#a31515;">&quot;The promotional code cannot be combined with other promotions&quot;</span></span>
+<p><span style="font-size:x-small;">)<font size="2">
+<p>&nbsp;</p>
+</font></span></p>
+<p>&nbsp;</p>
+<span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">If</span></span><span style="font-size:x-small;"> Contains(OrderCoupon) </span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">Then</span></span><span style="font-size:x-small;"> </span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">Throw</span></span><span style="font-size:x-small;"> </span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">New</span></span><span style="font-size:x-small;"> CouponInvalidException(</span><span style="font-size:x-small;color:#a31515;"><span style="font-size:x-small;color:#a31515;">&quot;The promotional code has already been applied to this order&quot;</span></span>
+<p><span style="font-size:x-small;">)<font size="2">
+<p>&nbsp;</p>
+</font></span></p>
+<p>&nbsp;</p>
+<span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">If</span></span><span style="font-size:x-small;"> </span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">Not</span></span><span style="font-size:x-small;"> OrderCoupon.Exists </span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">Then</span></span><span style="font-size:x-small;"> </span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">Throw</span></span><span style="font-size:x-small;"> </span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">New</span></span><span style="font-size:x-small;"> CouponInvalidException(</span><span style="font-size:x-small;color:#a31515;"><span style="font-size:x-small;color:#a31515;">&quot;The promotional code appears to be invalid&quot;</span></span>
+<p><span style="font-size:x-small;">)<font size="2">
+<p>&nbsp;</p>
+</font></span></p>
+<p>&nbsp;</p>
+<span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">If</span></span><span style="font-size:x-small;"> OrderCoupon.IsExpired </span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">Then</span></span><span style="font-size:x-small;"> </span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">Throw</span></span><span style="font-size:x-small;"> </span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">New</span></span><span style="font-size:x-small;"> CouponInvalidException(</span><span style="font-size:x-small;color:#a31515;"><span style="font-size:x-small;color:#a31515;">&quot;The promotional code has already expired&quot;</span></span>
+<p><span style="font-size:x-small;">)<font size="2">
+<p>&nbsp;</p>
+</font></span></p>
+<p>&nbsp;</p>
+<span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">If</span></span><span style="font-size:x-small;"> OrderCoupon.IsUsed </span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">Then</span></span><span style="font-size:x-small;"> </span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">Throw</span></span><span style="font-size:x-small;"> </span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">New</span></span><span style="font-size:x-small;"> CouponInvalidException(</span><span style="font-size:x-small;color:#a31515;"><span style="font-size:x-small;color:#a31515;">&quot;The promotional code has been used too many times&quot;</span></span>
+<p><span style="font-size:x-small;">)
+<p>List.Add(OrderCoupon)</p>
+<font size="2">
+<p>&nbsp;</p>
+</font></span></p>
+<p>&nbsp;</p>
+<span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">End</span></span><span style="font-size:x-small;"> </span>
+<p><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">Sub</span></span></p>
+</p>
+</p>
+<p>I constructed it similar to &quot;rules&quot; code because technically that is what it is. As you can see, the first 2 rules would be impossible to do without a reference to the collection. Each of these rules prevents the collection from ever being contaminated with rules that conflict with each other. Only the last 2 rules will need to be duplicated in the coupon object because they are the only ones that can change after the collection has been populated.</p>
+<p>My UI code will just need to catch a CouponInvalidException and show the error that is thrown. I would prefer to do it without the exceptions, but haven&#39;t discovered a reasonable way to create the desired behavior that doesn&#39;t include them.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

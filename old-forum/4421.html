@@ -1,0 +1,127 @@
+<html><header><title>Help with ERLB split screen binding with child collection?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Help with ERLB split screen binding with child collection?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4421.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>rsbaker0 posted on Tuesday, February 26, 2008</h2><P>I'm looking for a "best practice" on a particular binding model.</P>
+<P>You have a split screen display with an ERLB on the left, and a child collection of the current ERLB object on the right. As the selection on the left changes, the current child collection is displayed on the right. If you click on another ERLB object, changes made to the previous one are saved. </P>
+<P>The "problem" I am having is that when you click on a child, the grid control&nbsp; for the ERLB does an ApplyEdit (and hence Save) on the current object, and the child collection shown on the right is "orphaned" before you ever make any changes to it. </P>
+<P>I can bludgeon my way through this -- the CSLA objects tolerate BeginEdit() calls almost arbitrarily, but I was wondering what the recommended approach was. What I have been doing in similar situations is to do rebind on the Enter event for the control used for editing the child object or collection, but I'm not sure if that is the right thing to do. </P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, February 26, 2008</h2><P>Do your bindingsource controls have a parent-child relationship? I'm guessing not, which would be why the parent bindingsource thinks it needs to do an EndEdit when you switch focus to the other bindingsource (though I'm guessing on this).</P>
+<P>Certainly though, if you have a parent-child relationship with two grids, you can click in the child grid without triggering a currency change in the parent grid - but I assume that's because the bindingsource controls understand the relationship?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rsbaker0 replied on Wednesday, February 27, 2008</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div>
+<P>Do your bindingsource controls have a parent-child relationship? I'm guessing not, which would be why the parent bindingsource thinks it needs to do an EndEdit when you switch focus to the other bindingsource (though I'm guessing on this).</P>
+<P>Certainly though, if you have a parent-child relationship with two grids, you can click in the child grid without triggering a currency change in the parent grid - but I assume that's because the bindingsource controls understand the relationship?</P>
+<P></div></BLOCKQUOTE></P>
+<P>No, the controls are two grids side by side separated by a splitter. Each as its own bindingsource. </P>
+<P>However, now that you mention it, we found that the grid control we are using (DevExpress)&nbsp;calls EndEdit() on the parent when you click on a child detail grid that it is managing (e.g. the parents have a "+" icon next to them and when you expand them, a child grid of the child collection appears). Ugh - I'm not even sure what to do about this, but that's a side issue. </P>
+<P>We have some other interfaces with the same grid (double-click on grid row,&nbsp;screen with property sheet and tabs appears next to it) that work automagically just by the IEditableObject calls being made by the grid and binding without any BeginEdit/ApplyEdit calls on our part. </P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, February 27, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>One solution might be to override the default save behavior of
+ERLB &#8211; making it do nothing. And then add your own save method to do an
+explicit save. You can do this by overriding a method in the ERLB base class,
+so it isn&#8217;t too hard. That would allow your UI to control exactly when
+the root object is saved. I don&#8217;t know if that&#8217;s a good solution,
+but it may be worth exploring.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> rsbaker0
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Wednesday, February 27, 2008 9:51 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] Help with ERLB split screen binding with child
+collection?<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<blockquote>
+
+<div>
+
+<p class=MsoNormal><img id="_x0000_i1025" src="/Themes/default/images/icon-quote.gif"><strong>RockfordLhotka:</strong><o:p></o:p></p>
+
+</div>
+
+<div>
+
+<p>Do your bindingsource controls have a parent-child relationship? I'm guessing
+not, which would be why the parent bindingsource thinks it needs to do an
+EndEdit when you switch focus to the other bindingsource (though I'm guessing
+on this).<o:p></o:p></p>
+
+<p>Certainly though, if you have a parent-child relationship with two grids,
+you can click in the child grid without triggering a currency change in the
+parent grid - but I assume that's because the bindingsource controls understand
+the relationship?<o:p></o:p></p>
+
+</div>
+
+</blockquote>
+
+<p>No, the controls are two grids side by side separated by a splitter. Each as
+its own bindingsource. <o:p></o:p></p>
+
+<p>However, now that you mention it, we found that the grid control we are
+using (DevExpress)&nbsp;calls EndEdit() on the parent when you click on a child
+detail grid that it is managing (e.g. the parents have a &quot;+&quot; icon
+next to them and when you expand them, a child grid of the child collection
+appears). Ugh - I'm not even sure what to do about this, but that's a side
+issue. <o:p></o:p></p>
+
+<p>We have some other interfaces with the same grid (double-click on grid
+row,&nbsp;screen with property sheet and tabs appears next to it) that work
+automagically just by the IEditableObject calls being made by the grid and
+binding without any BeginEdit/ApplyEdit calls on our part. <o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JohnB replied on Wednesday, February 27, 2008</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div><span>One solution might be to override the default save behavior of
+ERLB – making it do nothing. And then add your own save method to do an
+explicit save. You can do this by overriding a method in the ERLB base class,
+so it isn’t too hard. That would allow your UI to control exactly when
+the root object is saved. I don’t know if that’s a good solution,
+but it may be worth exploring.</span></div></BLOCKQUOTE><br><br>rsbaker,<br><br>We did this without any issues. Works great.<br><br>Check out <a HREF="/forums/thread/20974.aspx">this</a> post for more information.<br><br>John</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JohnB replied on Wednesday, February 27, 2008</h2>rsbaker,<br><br>We're using the DevExpress grid too and I was wondering if you had any issues with it besides what you've posted here so far?<br><br>I can tell you that regarding the edit levels we actually "turned off" N-LevelUndo by setting DisableIEditableObject to True.<br><br>Thanks,<br>John<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rsbaker0 replied on Wednesday, February 27, 2008</h2><P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>JohnB:</strong></div><div>rsbaker,<BR><BR>We're using the DevExpress grid too and I was wondering if you had any issues with it besides what you've posted here so far?<BR><BR>I can tell you that regarding the edit levels we actually "turned off" N-LevelUndo by setting DisableIEditableObject to True.<BR><BR>Thanks,<BR>John<BR></div></BLOCKQUOTE></P>
+<P>Other than getting used to the unusual programming model, it's been fine. </P>
+<P>(Incidentally, if you have any experience doing paging&nbsp; of large result sets with this grid I would be very interested)</P>
+<P>The grid actually works well with a similar model to this one except&nbsp;that the other control has real bindings to properties of the parent in addition to child collection grids.&nbsp; When the binding&nbsp;tries to set&nbsp;a value, it automatically puts the&nbsp;ERLB object in the grid back into Edit mode. &nbsp;The child collection grids have similar issues to this one (which I have worked around with a "pseudo" binding), so I'm trying to get educated. </P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Wednesday, February 27, 2008</h2>DisableIEditableObject does not "turn off" n-level undo, it mearly tells the BO to ignore calls from databinding.&nbsp; You can still use n-level undo though.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JohnB replied on Wednesday, February 27, 2008</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>ajj3085:</strong></div><div>DisableIEditableObject does not "turn off" n-level undo, it mearly tells the BO to ignore calls from databinding.&nbsp; You can still use n-level undo though.<br></div></BLOCKQUOTE><br><br>Ok, so "turn-off" was probably the wrong term to explain what I meant. I am referring to a <a HREF="/forums/thread/16652.aspx">post</a> regarding "Disabling n-level undo" and the comments from Rocky:<br><br>&lt;Rocky&gt;<br>The ability to disable IEditableObject (prevent data binding from
+invoking n-level undo) is new in CSLA 3.0. Some people have implemented
+this change themselves, but this is the first time it is directly in
+the framework.
+<p>I'll be fully documenting the change, and its ramifications,&nbsp;in the 3.0 ebook, but the property you are looking for is <font size="2">DisableIEditableObject</font>, which is a protected property of BusinessBase. Set that to True and call calls to IEditableObject methods are totally ignored.</p>
+<p>Be aware that <em>n-level undo itself</em> is "disabled" unless someone calls BeginEdit(). That could be data binding through IEditableObject, or directly by you.</p>
+<p>So disabling IEditableObject does effectively "disable" n-level undo as long as you don't call BeginEdit() yourself.<br>&lt;/Rocky&gt;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Wednesday, February 27, 2008</h2>John, I figured that's what you meant, but I didn't want someone coming across the post and thinking you can totally disable n-level undo using that configuration flag.&nbsp; <img src="/emoticons/emotion-1.gif" alt="Smile [:)]" /><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rsbaker0 replied on Wednesday, February 27, 2008</h2><P>Sigh. </P>
+<P>DisableIEditableObject works fine, with me just doing ApplyEdit on the "previous" current and BeginEdit on the "new" current parent object in the CurrentChanged event, but this seems like throwing the baby out with the bath water. Maybe it's just necessary sometimes...</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rsbaker0 replied on Wednesday, February 27, 2008</h2><P>Thanks for&nbsp;your&nbsp;patience&nbsp;the suggestions -- I'll certainly explore the save override route if I reach an impasse but I'm trying to understand the "correct" use of classes out of the box. </P>
+<P>Here is what is happening now:</P>
+<P>When I click on the child grid on the right, the grid on the left does an EndEdit(), so technically I'm not editing anything and all edit levels are at 0. </P>
+<P>If I make any changes to a child on the right,&nbsp; I see an "AcceptChangesComplete" call in my edit level tracing for the child, by I never saw a CopyState call for it (which seems wrong), but is marked as dirty and I know the data is in the object because... </P>
+<P>If I click back on the parent grid, the parent with the changed child isn't saved unless I visit the row again after visiting any other row. </P>
+<P>Is there a detailed explanation of how the CSLA BeginEdit/ApplyEdit calls are supposed to interact with the IEditableObject calls being made "under the covers" somewhere? </P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,30 @@
+<html><header><title>Increase performance of CSLA.Net using XML Web Services</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Increase performance of CSLA.Net using XML Web Services</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/8694.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Arno1978 posted on Friday, March 19, 2010</h2><p>Hi</p>
+<p>I am rather new to CSLA.Net , but would like some pointers on how to speed up the processing of a CSLA.Net Business Object when sending it over HTTP using a XML Web Service.</p>
+<p>We are sending these Business Objects to a Windows Mobile 5 platform running a compact framework 3.5 &nbsp;platform. The time it takes to get from and to the server is very long, between 15 - 25 seconds for each call, which we cannot accep.</p>
+<p>We are running CSLA.Net for Windows version 3.7.1</p>
+<p>Thanks</p>
+<p>Arno Janse van Rensubrg</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Friday, March 19, 2010</h2><p>Have you done basic profiling so you know where the time is being consumed? Options include:</p>
+<ol>
+<li>Database interaction</li>
+<li>Loading the business objects with data</li>
+<li>Moving the business objects from the app server to the web server (if you are using a 3-tier deployment with a remote data portal)</li>
+<li>Copying the business object properties into your data contract objects</li>
+<li>Serialization of the data contract objects by asmx or WCF</li>
+<li>Transport of the XML over the network to the device</li>
+<li>Deserialization of the XML on the device</li>
+<li>Copying of the data from the client-side data contract objects into your client-side business objects or UI</li>
+<li>Loading the UI with the data</li>
+</ol>
+<p>The most likely candidate is number 6. XML can make even a small amount of data into a very large byte stream, and if this is going over something like a GPRS cell network it could be quite slow.</p>
+<p>The next most likely candidate is 8 or 9. Most devices have relatively slow processing, and loading any substantial amount of data into the UI can be slow.</p>
+<p>The next most likely candidate is 7 - again due to the processing on the device, and the fact that string manipulation (deserialization of XML is all string manipulation) is one of the slowest computational operations you can perform.</p>
+<p>Of course it is possible that you have a bug in steps 2-4 that is causing an issue, or that your database is overloaded which would make step 1 slow. But these are generally less likely that the other options.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Arno1978 replied on Monday, March 22, 2010</h2><p>Good morning,</p>
+<p>I indeed proved that the slow performance is caused by number 5,6, 7 and 8. The process of serialization up to the time when I populate the UI with the data takes between 14&nbsp;-&nbsp;25 seconds.</p>
+<p>I tried to apply compression for the web service methods, but I am loosing data as soon as I try to compress the data.</p>
+<p>Do you perhaps know of any other way to speed up the serialization / serialization process?</p>
+<p>Regards,</p>
+<p>Arno</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, March 23, 2010</h2><p>It is good that you&#39;ve narrowed the problem so you know where to focus, ruling out data access and CSLA.</p>
+<p>Unfortunately I personally know essentially nothing about Windows Mobile and what kind of support it has for making service calls and optimizing the data on the wire. Other people on the forum may have done more with WinMo.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Arno1978 replied on Tuesday, March 23, 2010</h2><p>Thanks for the feedback.</p>
+<p>Anybody else got some ideas to maybe successfully compress these web service methods without loosing data?</p>
+<p>Please...<img src="http://forums.lhotka.net/emoticons/emotion-2.gif" alt="Big Smile" /></p>
+<p>&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

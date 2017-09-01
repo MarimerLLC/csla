@@ -1,0 +1,77 @@
+<html><header><title>Csla 3.6.1 - SmartDate ValidationRule</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Csla 3.6.1 - SmartDate ValidationRule</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/8412.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>xAvailx posted on Tuesday, January 26, 2010</h2>Hi,
+
+I am trying (for the first time) to use smart date. I am trying to use the MaxRule common rule. Specifically, I am trying to validate my property is not greater than say today. However I am getting a type conversion error. This the code I have so far, hopefully someone can help me spot the problem...
+<br />
+<br />
+
+	private static PropertyInfo&lt;SmartDate&gt; AMaxDateProperty = RegisterProperty&lt;SmartDate&gt;(c =&gt; c.AMaxDate);<br />		public string AMaxDate {<br />			get { return GetPropertyConvert&lt;SmartDate, string&gt;(AMaxDateProperty); }<br />			set { SetPropertyConvert&lt;SmartDate, string&gt;(AMaxDateProperty, value); }<br />		}<br /><br /><br />		#endregion<br /><br />		#region Validation Rules<br /><br />		protected override void AddBusinessRules() {<br />			ValidationRules.AddRule(CommonRules.MaxValue&lt;SmartDate&gt;, new CommonRules.MaxValueRuleArgs&lt;SmartDate&gt;(AMaxDateProperty, DateTime.Now));<br />		}<br />
+
+
+When I step through the code it breaks on this line:
+
+T value = (T)pi.GetValue(target, null);
+
+T is SmartDate. 
+pi is {System.String AMaxDate}.
+
+I receive a specified cast is not valid exception.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rxelizondo replied on Tuesday, January 26, 2010</h2><br />Its kind of hard to follow the code if its not formatted correctly. For example, I think you are missing all the stuff between the lower and greater symbols (the generics info).<br /><br />I recommend looking at the following post:<br /><br />http://forums.lhotka.net/forums/thread/39018.aspx<br /><br />Go to the last post and follow the instructions and repost the code.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>xAvailx replied on Wednesday, January 27, 2010</h2>that was incredibly painful (formatting) ...but I think I got it now. Thanks</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Wednesday, January 27, 2010</h2>Hi, <br><br>This is a case where the csla generic rules really do not work straight out of the box as there is no default TypeConverter between SmartDate and object and so you get a "specified cast not valid" exception.<br><br>The simplest solution is to create a custom validation rule:<br><i><font size="2"><span>public</span> <span>static</span> <span>bool</span> MyMaxValue&lt;T&gt;(<span>object</span> target, <span>RuleArgs</span> e) <span>where</span> T : <span>IComparable</span><br>{<br>&nbsp; <span>var</span> args = (<span>DecoratedRuleArgs</span>)e;<br>&nbsp; <span>var</span> fi = <span>MethodCaller</span><span>.CallMethodIfImplemented(target, </span><span>"GetPropertyInfo"</span>, args.PropertyName);<br>&nbsp; <span>var</span> pi = target.GetType().GetProperty(e.PropertyName);</font></i>
+
+
+
+<p><i><font size="2"><span></span>&nbsp; T max = (T)args[<span>"MaxValue"</span>];<br><span></span>&nbsp; T value;</font></i></p>
+<p><i><font size="2">&nbsp; <span>if</span> (fi != <span>null</span>)<br>&nbsp;{<br>&nbsp;&nbsp;&nbsp; value = (T)<span>MethodCaller</span><span>.CallMethod(target, </span><span>"ReadProperty"</span>, fi);<br>&nbsp; }<br>&nbsp; <span>else</span><br>&nbsp; {<br>&nbsp;&nbsp;&nbsp; <span>var</span> tmpval = pi.GetValue(target, <span>null</span>);<br> &nbsp;&nbsp;&nbsp; value = Csla.<span>Utilities</span><span>.CoerceValue&lt;T&gt;(</span><span>typeof</span>(T), <span>null</span>, tmpval);<br>&nbsp; }<br></font></i></p><i><font size="2">&nbsp; <span>var</span> result = value.CompareTo(max);<span><br>&nbsp; </span><span>if</span> (result &lt; <span>0</span>)<span><br>&nbsp; </span>{<span><br>&nbsp;&nbsp;</span>&nbsp; e.Description = <span>string</span><span>.Format(</span><span>"{0} must be less than {1}"</span>, e.PropertyFriendlyName, max);<span><br>&nbsp;&nbsp;</span>&nbsp; <span>return</span> <span>false</span>;<span><br>&nbsp; </span>}<span><br>&nbsp; </span><span>return</span> <span>true</span>;<br>}</font></i><br>&nbsp;<br>Usage:<span><br></span><font size="2"><i>ValidationRules.AddRule(<span>MyCommonRules</span><span>.MyMaxValue&lt;</span><span>SmartDate</span><span>&gt;, </span><span>new</span><span>CommonRules</span><span>.</span><span>MaxValueRuleArgs</span><span>&lt;</span><span>SmartDate</span><span>&gt;(FoundedProperty, </span><span>DateTime</span><span>.Now));</span></i></font> <div>
+</div>
+
+<br>The custom rule is generic and can accept most value types so long as they implement IComparable.&nbsp; Property here may be f.ex. a public string property and a internal SmartDate property.<br>
+<div>
+<p><span></span> </p></div><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>xAvailx replied on Wednesday, January 27, 2010</h2>Thanks, I will give it a shot.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>xAvailx replied on Wednesday, January 27, 2010</h2>That didn't work either...but I know see what the problem is. The rule is getting called from the DataPortal_Create. At that point my date doesn't have a value, it is an empty string.
+
+So when this line runs, it throws the exception since "tmpval" is an empty string.
+
+<br><br>
+value = Csla.Utilities.CoerceValue(typeof(T), null, tmpval);
+
+<br><br>
+So I think I will need a custom rule that checks if the value is empty since in this case, my date is nullable and is the reason I am using SmartDate. Thanks for the help, it made it easier to find out what the problem was!</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>xAvailx replied on Wednesday, January 27, 2010</h2>I made some changes, and I am still receiving an error on that line, even if tmpval is a date ("11/11/2001"). Does CoerceValue not work with SmartDate?</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rxelizondo replied on Wednesday, January 27, 2010</h2>First, lets understand the problem.<br /><br />Here is the thing, "pi.GetValue(target, null)" is returning a String (casted as an *Object*). An although there is and explicit conversion from String to SmartDate, there is no explicit or implicit conversion from Object to SmartDate. <br /><br />Although the object reference is really a string and you would think that the casting should work, operator overloading is not polymorphic so you are out of luck.<br /><br />So that is why its crashing</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>xAvailx replied on Wednesday, January 27, 2010</h2>I am not sure that is the behavior I am seeing.
+
+When I inspect:
+
+<pre>
+var tmpval = pi.GetValue(target, null);
+</pre>
+
+It is a string.
+
+<pre>
+?tmpval.GetType()
+{Name = "String" FullName = "System.String"}
+    [System.RuntimeType]: {Name = "String" FullName = "System.String"}
+</pre>
+
+From the code you posted, I changed the following line, and it works now:
+
+<pre>
+value = Csla.Utilities.CoerceValue(tmpval.GetType(), null, tmpval);
+</pre>
+
+vs
+
+<pre>
+value = Csla.Utilities.CoerceValue(typeof(T), null, tmpval);
+</pre>
+
+Now, it is trying to Coerce a string (tmpval) to a SmartDate (T).
+
+I've added some unit tests and tried another datatype > DateTime, and it seems to be working correctly.
+
+I've also changed how the rule is registered to this:
+
+<pre>
+ValidationRules.AddRule(BaseCommonRules.MaxValue&lt;SmartDate&gt;, new CommonRules.MaxValueRuleArgs&lt;SmartDate&gt;(ASmartDateProperty, new SmartDate(&quot;01/01/2050&quot;)), 1);
+</pre>
+
+and for reference my property is declared like this:
+
+<pre>
+private static PropertyInfo&lt;SmartDate&gt; ASmartDateProperty = RegisterProperty&lt;SmartDate&gt;(c =&gt; c.ASmartDate);<br />		public string ASmartDate {<br />			get { return GetPropertyConvert&lt;SmartDate, string&gt;(ASmartDateProperty); }<br />			set { SetPropertyConvert&lt;SmartDate, string&gt;(ASmartDateProperty, value); }<br />		}
+</pre></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

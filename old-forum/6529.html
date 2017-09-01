@@ -1,0 +1,26 @@
+<html><header><title>RecordID not set after insert object</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>RecordID not set after insert object</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6529.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>BuckeyeJeff posted on Friday, February 27, 2009</h2><P>I have a webpage that is used for inserting data.&nbsp; User saves and the objects are build and then .added into the clsa business list base.&nbsp; I then call save on that business list base and it calls data layer and insert into database.&nbsp; Each insert returns the new records id and assign it to record id property.&nbsp; once back to webpage, i want to grab the new id's for just inserted records and use for something else. but they all say 0</P>
+<P>&nbsp;</P>
+<P>I am doing</P>
+<P>objects.add(new object)</P>
+<P>objects.add(new object)</P>
+<P>objects.add(new object).......</P>
+<P>objects.save()</P>
+<P>for each item as object in objects</P>
+<P>response.write(item.NewRecordID) 'it comes back as 0, rather than the new id</P>
+<P>next</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JohnB replied on Friday, February 27, 2009</h2>Are you capturing the new id when your "object" is being inserted?<br><br>Dim p0 As New SqlParameter("@NewRecordID", SqlDbType.Int)<br>p0.Direction = ParameterDirection.Output<br>cmd.Parameters.Add(p0)<br><br>DoInsertUpdate(cmd)<br><br>'-- Retrieve the new id from the stored procedure<br>_newRecordID = DirectCast(cmd.Parameters("@NewRecordID").Value, Int32)<br><br>Hope this helps,<br>John<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tmg4340 replied on Friday, February 27, 2009</h2><P><FONT face=Tahoma size=2>You don't say which version of the framework you're using, but the first thing I'd try is to change "objects.Save()" to "objects = objects.Save()".&nbsp; <FONT face=Tahoma size=2>In general, "objects.Save()" is always incorrect code in CSLA.</FONT>&nbsp; Remember that the DP_ routines return an <EM>updated copy</EM> of the object - they don't update the object in-place.</FONT></P>
+<P><FONT face=Tahoma size=2>HTH</FONT></P>
+<P><FONT face=Tahoma size=2>- Scott</FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>BuckeyeJeff replied on Friday, February 27, 2009</h2><P>I am doing</P><FONT size=2>
+<P>m_LineItems = </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>New</FONT></FONT><FONT size=2> LineItems</FONT></P>
+<P><FONT size=2></FONT>&nbsp;</P>
+<P><FONT size=2>loop</FONT></P>
+<P><FONT size=2>LineItem item = new lineitem</FONT></P>
+<P><FONT size=2>...update values</FONT></P>
+<P><FONT size=2>m_LineItems.add(item)</FONT></P>
+<P><FONT size=2>end loop</FONT></P>
+<P><FONT size=2>m_lineitems.save()</FONT></P>
+<P><FONT size=2>investigate LineItemId for each item so as to do whatever</FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Friday, February 27, 2009</h2><P>As Scott stated earlier the bug is in your code.</P>
+<P><FONT size=2>m_lineitems.save()&nbsp; is wrong.</FONT></P>
+<P><FONT size=2>It needs to be:</FONT></P>
+<P><FONT size=2>m_lineitems = <FONT size=2>m_lineitems.save()</FONT></FONT></P>
+<P><FONT size=2>Joe</FONT></P>
+<P><FONT size=2>&nbsp;</P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>bignick replied on Tuesday, March 17, 2009</h2>So how would you access the new instance returned when you are using the CslaActionExtender control in win forms?<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Mordy replied on Friday, September 11, 2009</h2>"DP_ routines return an updated copy of the object - they don't update the object in-place."<br /><br />Thanks Bignick - I'd been staring at a similar problem and just not seeing the woods for the trees!</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

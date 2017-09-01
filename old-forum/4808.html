@@ -1,0 +1,13 @@
+<html><header><title>Checking IsDirty at the property level in a business rule</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Checking IsDirty at the property level in a business rule</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4808.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>RedmondScorpio posted on Tuesday, May 06, 2008</h2><P>Hello,</P>
+<P>I would like to be able to get property metadata like IsDirty in a business rule to validate someone has changed it prior to running the rule logic.&nbsp; I am using CSLA 3.5.&nbsp;&nbsp; </P>
+<P>At one point I was using </P>
+<P><FONT color=#0000ff>Csla.Core.FieldManager.IFieldData dataPointValue = target.FieldManager.GetFieldData(DataPointValueProperty);</FONT></P>
+<P><FONT color=#0000ff>if (dataPointValueIsDirty)</FONT></P>
+<P><FONT color=#0000ff>...</FONT></P>
+<P>But that seems to have been removed in the latest version of 3.5.&nbsp;&nbsp; Is this something the business rule already knows and doesn't fire if the property hasn't been changed?</P>
+<P>A scenario would be someone unchecks a checkbox in the UI, the business rule checks to see if you can set that property to false based on business logic related to other fields in the DB.</P>
+<P>Thanks!</P>
+<P>Mike</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, May 07, 2008</h2><P>This is a known problem and is on the wish list.</P>
+<P>Exposing the FieldData object like I did in the beta was a problem because it allowed outside code to change the FieldData object's values - and that would have been a mess.</P>
+<P>But in restricting access to the object I missed the fact that the IsDirty value needs to be available <img src="/emoticons/emotion-6.gif" alt="Sad [:(]" /></P>
+<P>Once I get done with my current bit of non-stop travel I'll address this, probably in a 3.5.2 version.</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

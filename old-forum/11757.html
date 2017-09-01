@@ -1,0 +1,79 @@
+<html><header><title>CancelEdit fails for property with Manual Backing Field</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CancelEdit fails for property with Manual Backing Field</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11757.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>smumcounty posted on Tuesday, December 18, 2012</h2><p>I have an Editable Root class with a property which is an Editable Child which uses a manual backing field. If I set the Child property to a valid value, call BeginEdit on the parent, null out the Child property, and then call CancelEdit on the parent, the child property is not set to the value it had before the BeginEdit call.</p>
+<p>For example, if my parent and child objects look like this:</p>
+<pre style="font-family:Consolas;font-size:13;color:black;background:white;">	<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">class</span>&nbsp;<span style="color:#2b91af;">Test</span>&nbsp;:&nbsp;<span style="color:#2b91af;">BusinessBase</span>&lt;<span style="color:#2b91af;">Test</span>&gt;
+	{
+		<span style="color:blue;">private</span>&nbsp;Test()
+		{&nbsp;}
+ 
+		<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">static</span>&nbsp;<span style="color:blue;">readonly</span>&nbsp;<span style="color:#2b91af;">PropertyInfo</span>&lt;<span style="color:#2b91af;">TestChild</span>&gt;&nbsp;ChildProperty&nbsp;=&nbsp;RegisterProperty&lt;<span style="color:#2b91af;">TestChild</span>&gt;(c&nbsp;=&gt;&nbsp;c.Child,&nbsp;<span style="color:#2b91af;">RelationshipTypes</span>.PrivateField&nbsp;|&nbsp;<span style="color:#2b91af;">RelationshipTypes</span>.Child);
+		<span style="color:blue;">private</span>&nbsp;<span style="color:#2b91af;">TestChild</span>&nbsp;_child&nbsp;=&nbsp;<span style="color:blue;">null</span>;
+		<span style="color:blue;">public</span>&nbsp;<span style="color:#2b91af;">TestChild</span>&nbsp;Child&nbsp;
+		{&nbsp;
+			<span style="color:blue;">get</span>&nbsp;{&nbsp;<span style="color:blue;">return</span>&nbsp;GetProperty(ChildProperty,&nbsp;_child);&nbsp;}&nbsp;
+			<span style="color:blue;">set</span>&nbsp;{&nbsp;SetProperty(ChildProperty,&nbsp;<span style="color:blue;">ref</span>&nbsp;_child,&nbsp;<span style="color:blue;">value</span>);&nbsp;}&nbsp;
+		}
+ 
+		<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">static</span>&nbsp;<span style="color:#2b91af;">Test</span>&nbsp;NewTest()
+		{
+			<span style="color:blue;">return</span>&nbsp;<span style="color:#2b91af;">DataPortal</span>.Create&lt;<span style="color:#2b91af;">Test</span>&gt;();
+		}
+ 
+		<span style="color:blue;">protected</span>&nbsp;<span style="color:blue;">override</span>&nbsp;<span style="color:blue;">void</span>&nbsp;DataPortal_Create()
+		{
+			Child&nbsp;=&nbsp;Csla.<span style="color:#2b91af;">DataPortal</span>.CreateChild&lt;<span style="color:#2b91af;">TestChild</span>&gt;();
+		}
+	}
+ 
+	<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">class</span>&nbsp;<span style="color:#2b91af;">TestChild</span>&nbsp;:&nbsp;<span style="color:#2b91af;">BusinessBase</span>&lt;<span style="color:#2b91af;">TestChild</span>&gt;
+	{
+		<span style="color:blue;">private</span>&nbsp;TestChild()
+		{&nbsp;}
+ 	}
+</pre>
+<p>&nbsp;</p>
+<p>This test will fail because test.Child remains null:</p>
+<pre style="font-family:Consolas;font-size:13;color:black;background:white;">			<span style="color:#2b91af;">Test</span>&nbsp;test&nbsp;=&nbsp;<span style="color:#2b91af;">Test</span>.NewTest();
+			<span style="color:#2b91af;">Assert</span>.IsNotNull(test.Child);
+			test.BeginEdit();
+			test.Child&nbsp;=&nbsp;<span style="color:blue;">null</span>;
+			<span style="color:#2b91af;">Assert</span>.IsNull(test.Child);
+			test.CancelEdit();
+			<span style="color:#2b91af;">Assert</span>.IsNotNull(test.Child);
+</pre>
+<p>Am I doing something wrong or is this a limitation of manual backing fields? </p>
+<p>If I don&#39;t use a manual backing field, then trying to read test.Child after the CancelEdit throws this InvalidCastException:</p>
+<p>Unable to cast object of type &#39;System.Boolean&#39; to type &#39;TestChild&#39;.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Wednesday, December 19, 2012</h2><p>This is not a supported case. </p>
+<p> <b>You cannot set an object that implements IUndoableObject to null and get it restored on CancelEdit.</b></p>
+<p>This is because the Undo mechanism MUST have an instance of the object to rollback the properties to original values.</p>
+<p>When using ManagedBackingFields you will get the exception <i>&quot;Unable to cast object of type &#39;System.Boolean&#39; to type &#39;TestChild&#39;&quot; </i>as a result of how IUnduableObjects is handled internally in N-Level undo snapshot. </p>
+<p>This is supported: </p>
+<pre style="font-family:Consolas;font-size:13;color:black;background:white;">&nbsp;&nbsp;[<span style="color:#2b91af;">Serializable</span>]
+&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">class</span>&nbsp;<span style="color:#2b91af;">TestChild</span>&nbsp;:&nbsp;<span style="color:#2b91af;">BusinessBase</span>&lt;<span style="color:#2b91af;">TestChild</span>&gt;
+&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">static</span>&nbsp;<span style="color:blue;">readonly</span>&nbsp;<span style="color:#2b91af;">PropertyInfo</span>&lt;<span style="color:blue;">string</span>&gt;&nbsp;Prop1Property&nbsp;=&nbsp;RegisterProperty&lt;<span style="color:blue;">string</span>&gt;(c&nbsp;=&gt;&nbsp;c.Prop1,&nbsp;<span style="color:#2b91af;">RelationshipTypes</span>.Child);
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">string</span>&nbsp;Prop1
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">get</span>&nbsp;{&nbsp;<span style="color:blue;">return</span>&nbsp;GetProperty(Prop1Property);&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">set</span>&nbsp;{&nbsp;SetProperty(Prop1Property,&nbsp;<span style="color:blue;">value</span>);&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">private</span>&nbsp;TestChild()
+&nbsp;&nbsp;&nbsp;&nbsp;{&nbsp;}
+&nbsp;&nbsp;}
+ 
+&nbsp;&nbsp;[<span style="color:#2b91af;">TestClass</span>]
+&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">class</span>&nbsp;<span style="color:#2b91af;">TestTest</span>
+&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;[<span style="color:#2b91af;">TestMethod</span>]
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">void</span>&nbsp;TestEditing()
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#2b91af;">Test</span>&nbsp;test&nbsp;=&nbsp;<span style="color:#2b91af;">Test</span>.NewTest();
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;test.Child.Prop1&nbsp;=&nbsp;<span style="color:#a31515;">&quot;TEST&quot;</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#2b91af;">Assert</span>.AreEqual(<span style="color:#a31515;">&quot;TEST&quot;</span>,&nbsp;test.Child.Prop1);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;test.BeginEdit();
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;test.Child.Prop1&nbsp;=&nbsp;<span style="color:blue;">string</span>.Empty;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#2b91af;">Assert</span>.AreEqual(<span style="color:blue;">string</span>.Empty,&nbsp;test.Child.Prop1);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;test.CancelEdit();
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#2b91af;">Assert</span>.AreEqual(<span style="color:#a31515;">&quot;TEST&quot;</span>,&nbsp;test.Child.Prop1);
+&nbsp;&nbsp;&nbsp;&nbsp;}
+  }</pre></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,235 @@
+<html><header><title>Mixed authentication</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Mixed authentication</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11857.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>mparsin posted on Wednesday, February 27, 2013</h2><p>
+ 
+  
+ 
+</p>
+<p>
+ 
+  Normal
+  0
+  
+  
+  
+  
+  false
+  false
+  false
+  
+  EN-US
+  X-NONE
+  X-NONE
+  
+   
+   
+   
+   
+   
+   
+   
+   
+   
+  
+  
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+  
+
+ 
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+ 
+
+
+
+<p class="MsoNormal">Hi,</p>
+<p class="MsoNormal">&nbsp;We need some expert advice.</p>
+<p class="MsoNormal">Currently our product successfully implements CSLA using
+Silverlight for the client, but we want to expand our product by implementing
+other clients.<span style="mso-spacerun:yes;">&nbsp; </span>In particular we want to
+create a Service Layer using the MVC Web API as well as have some HTML pages
+that will be called from the Silverlight client.<span style="mso-spacerun:yes;">&nbsp; </span>Both the WebAPI client and HTML pages would
+use the same set of CSLA Business objects and the same Authentication mechanism
+(CustomIdentity and CustomPrincipal) we have already built. We are using Custom
+and Windows Authentication models.</p>
+<p class="MsoNormal">&nbsp;In summary, this is what we would like to achieve&hellip;</p>
+</p>
+<ol>
+<li><span style="mso-bidi-font-family:Calibri;mso-bidi-theme-font:minor-latin;"><span style="mso-list:Ignore;"><span style="font:7.0pt &#39;Times New Roman&#39;;"></span></span></span>Be able to open Asp.Net (html) pages from the
+Silverlight application without re-authorization. <span style="mso-spacerun:yes;">&nbsp;</span>But if the user saves the link to the page and
+tries to open it from other machine, prompt them for authorization.</li>
+<li><span style="mso-bidi-font-family:Calibri;mso-bidi-theme-font:minor-latin;"><span style="mso-list:Ignore;"><span style="font:7.0pt &#39;Times New Roman&#39;;"></span></span></span>Be able to reuse our security objects when
+implementing REST services with the WebAPI client.</li>
+</ol>
+<p>
+<p class="MsoNormal">Our question is which of the following would be the best
+option.</p>
+</p>
+<ol>
+<li><span style="mso-bidi-font-family:Calibri;mso-bidi-theme-font:minor-latin;"><span style="mso-list:Ignore;"><span style="font:7.0pt &#39;Times New Roman&#39;;"></span></span></span>Extend our Web host application? <span style="mso-spacerun:yes;">&nbsp;</span>(a very simple MVC web project)</li>
+<li>Add additional web project(s) and set up
+different server-side authentication types.</li>
+</ol>
+<p>
+<p class="MsoNormal">We would prefer first approach, but we are not sure if mixed
+authentication configurations are at all possible.<span style="mso-spacerun:yes;">&nbsp; </span>Even if they are, would they work smoothly together?</p>
+<p class="MsoNormal">The plan:</p>
+</p>
+<ul>
+<li><span style="font-family:Symbol;mso-fareast-font-family:Symbol;mso-bidi-font-family:Symbol;"><span style="mso-list:Ignore;"><span style="font:7.0pt &#39;Times New Roman&#39;;"></span></span></span>Set server-side authentication mode to &ldquo;Forms&rdquo;</li>
+<li><span style="font-family:Symbol;mso-fareast-font-family:Symbol;mso-bidi-font-family:Symbol;"><span style="mso-list:Ignore;"><span style="font:7.0pt &#39;Times New Roman&#39;;"></span></span></span>When a user logs in, apps create a temporary
+cookie</li>
+<li><span style="font-family:Symbol;mso-fareast-font-family:Symbol;mso-bidi-font-family:Symbol;"><span style="mso-list:Ignore;"><span style="font:7.0pt &#39;Times New Roman&#39;;"></span></span></span>When a user requests an html page from the
+Silverlight application &ldquo;IsAuthenticated&rdquo; should be &ldquo;true&rdquo;. Therefore no login
+will be required and the Principal will be re-created for each request.</li>
+</ul>
+<p>
+<p class="MsoNormal" style="margin-left:.25in;">&nbsp;</p>
+<p class="MsoNormal">Are we on the right track or are we missing something?</p>
+<p class="MsoNormal">&nbsp;</p>
+<p class="MsoNormal">Thanks in advance,</p>
+<p class="MsoNormal">Maxim</p>
+</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

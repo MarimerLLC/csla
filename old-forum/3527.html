@@ -1,0 +1,178 @@
+<html><header><title>msdtc not available</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>msdtc not available</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3527.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>jhw posted on Thursday, September 13, 2007</h2><P>I am using the <FONT size=2>&lt;Transactional(TransactionalTypes.TransactionScope)&gt; for a parent object. As I understand it, this will allow system to automatically see if distributed transactions are required(which I don't have).</FONT></P>
+<P><FONT size=2>My parent object saves ok, but when I try to update the child editable collection, I get an error saying the msdtc is not available.<EM>&nbsp;</EM>&nbsp;I assume that it is looking for a distributed transaction server. I don't see why.</FONT></P>
+<P><FONT size=2>I call my child collection update after the end of the using block in the parent, as per the Project example in the book. Is this example dependant on having dtc. Is there a different way I have to create my child updates, perhaps passing in a transaction or connection.</FONT></P>
+<P><FONT size=2></FONT>&nbsp;</P>
+<P><FONT size=2>Heath</P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jhw replied on Thursday, September 13, 2007</h2><P>So I passed in the connection from the parent to the children and called the child collection update within the using block, and it worked. No more error and I am still protected by the transaction as I was able to get it to roll back.</P>
+<P>Is this the standard way of doing it.</P>
+<P>&nbsp;</P>
+<P>Heath</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, September 13, 2007</h2>This is a known issue with TransactionScope. In fact, CSLA 2.1 has a new LocalContext concept to help you share the connection object - see the <EM>CSLA .NET Version 2.1 Handbook</EM> for details.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jhw replied on Thursday, September 13, 2007</h2><P>Ok, I found it in the handbook. Sounds good.</P>
+<P>Thanx</P>
+<P>&nbsp;</P>
+<P>Heath</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Cslah replied on Thursday, November 01, 2007</h2><P>I'm running into this also every now and then&nbsp;when I&nbsp;forget.&nbsp;I guess it makes sense that we can pass this through when LocalContext is valid, like when we're not using the remote dataportal.</P>
+<P>I've got objects that are sometimes used on their own and sometimes they're called within the DataPortal of another object. Seems to be my command objects are this way? So, for simplicity, wouldn't it make sense to set the connection to use the LocalContext all the time, like at application startup (assuming that it's not going to change). Then in the DataPortal methods, check to see if it's null. If it's null (remote dataportal) then grab it like normal, otherwise use it from the LocalContext.</P>
+<P>It would seem to be cleaner and more consistent this way? Opinions?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, November 01, 2007</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>There&#8217;s a Microsoft guy who blogged about a connection
+manager a few months ago. Unfortunately I don&#8217;t remember who it was.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>But he created an IDisposable object to contain a connection.
+Each new &#8220;user&#8221; of the object (each using block) just incremented a
+counter within the class. Each time a using block exits it calls Dispose(), and
+that decremented the counter. When the counter hit zero the real connection was
+disposed.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>His implementation of this stored the connection itself in TLS.
+However, you could easily do the same thing but store the connection in
+LocalContext (which would be safer, because that works in both normal and
+ASP.NET environments).<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I actually posted something along this line in an earlier thread<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><a href="http://forums.lhotka.net/forums/thread/15902.aspx">http://forums.lhotka.net/forums/thread/15902.aspx</a><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>(found via <a href="http://www.lhotka.net/search.aspx">www.lhotka.net/search.aspx</a>
+- google is your friend!!)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Cslah
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Thursday, November 01, 2007 5:10 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] msdtc not available<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>I'm running into this also every now and then&nbsp;when
+I&nbsp;forget.&nbsp;I guess it makes sense that we can pass this through when
+LocalContext is valid, like when we're not using the remote dataportal.<o:p></o:p></p>
+
+<p>For simplicity, wouldn't it make sense to set the connection to use the
+LocalContext all the time, like at application startup (assuming that it's not
+going to change). Then in the DataPortal methods, check to see if it's null. If
+it's null (remote dataportal) then grab it like normal, otherwise use it from
+the LocalContext.<o:p></o:p></p>
+
+<p>It would seem to be cleaner and more consistent this way? Opinions?<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Cslah replied on Monday, November 26, 2007</h2><P>Revisiting this again...</P>
+<P>I can't use the ConnectionManager in post 15902 because I'm using datareaders in my child objects&nbsp;and&nbsp;it seems that a&nbsp;single connection can only have a single open datareader (I'm using Csla 3.0 and I'm not using ASP.Net either).<BR><BR>There isn't any particular reason why I'm using nested datareaders, other than it seems to be what the eBooks encourage. Should I not be using them? I would think that parent-child relationships are very common and that people use datareaders within the child objects, so I'm a bit perplexed why this isn't a very common topic on the groups. This leads me to believe that I'm doing something out of the norm (which isn't intentional).</P>
+<P>So, I guess passing the connection down to the child object using LocalContext is the way to go? Not sure why it works when passing it using LocalContext but doesn't using&nbsp;the ConnectionManager. Maybe it gets closed and re-opened? Any ideas?</P>
+<P>Thanks,<BR>Brian</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, November 26, 2007</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>ADO.NET 2.0 introduced this concept called MARS &#8211; multiple
+asynchronous result sets. My understanding is that MARS does allow you to open
+multiple datareaders on a single connection. I haven&#8217;t explored it, but
+you may want to look into this idea.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Cslah
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Monday, November 26, 2007 7:07 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: msdtc not available<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Revisiting this again...<o:p></o:p></p>
+
+<p>I can't use the ConnectionManager in post 15902 because I'm using
+datareaders in my child objects&nbsp;and&nbsp;it seems that a&nbsp;single
+connection can only have a single open datareader (I'm using Csla 3.0 and I'm
+not using ASP.Net either).<br>
+<br>
+There isn't any particular reason why I'm using nested datareaders, other than
+it seems to be what the eBooks encourage. Should I not be using them? I would
+think that parent-child relationships are very common and that people use
+datareaders within the child objects, so I'm a bit perplexed why this isn't a
+very common topic on the groups. This leads me to believe that I'm doing
+something out of the norm (which isn't intentional).<o:p></o:p></p>
+
+<p>So, I guess passing the connection down to the child object using
+LocalContext is the way to go? Not sure why it works when passing it using
+LocalContext but doesn't using&nbsp;the ConnectionManager. Maybe it gets closed
+and re-opened? Any ideas?<o:p></o:p></p>
+
+<p>Thanks,<br>
+Brian<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

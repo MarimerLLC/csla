@@ -1,0 +1,64 @@
+<html><header><title>Inside the Firewall Web Service - DTOs, BOs ???</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Inside the Firewall Web Service - DTOs, BOs ???</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3170.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>anon3141 posted on Wednesday, July 11, 2007</h2>
+
+<p class="MsoNormal">Hi All,<br>
+<br>
+I'm relatively new to CSLA (4 months), and have a new project with a very short
+time frame.&nbsp; Any help would be greatly appreciated.&nbsp; My previous CSLA
+project persisted to XML, and was a straight forward win forms client.&nbsp;
+From what I've read this isn't the best use of a web service, but it wasn't my
+decision to make.&nbsp; This is a little different since the consumer won't be
+web forms, ASP, etc.<br>
+<br>
+I've looked at some samples and gone over Ch10 &amp; 11 in the C# 2005 BO book,
+and basically gotten myself more confused.&nbsp; I could really use some
+guidance to get me unstuck.&nbsp; <br>
+<br>
+<br>
+This is what needs to happen:<br>
+Our client wants a web service to access our database.<br>
+It will run totally inside their firewall for internal IT use only - no UDDI
+etc.<br>
+They want a simple mapping of one BO per table to insulate themselves from our
+DB schema.<br>
+The consumer of the web service, which the client will develop in C#, will most
+probably be a Windows Service which will push and pull data to our DB periodically
+throughout the day.<br>
+They will not be data binding to controls on a form.<br>
+The data will persist in a SQL Server DB.<br>
+The BOs will live on our application server.<br>
+And as best as I understand the web service will live on their IIS server.<br>
+The web service needs to return to the consumer a CSLA BO or list of BOs
+depending on the call.<br>
+For example, what they would like is:<br>
+WebService.Products[ID].ProductName, WebService.Products[ID].ProductName<br>
+<br>
+<br>
+Questions:<br>
+In this case does it make sense to simply return BOs?&nbsp; What do the Web
+Methods look like?<br>
+When our client writes the consumer do they need a reference to the BOs?&nbsp;
+How do they get it?<br>
+Are DTOs the best way to go?&nbsp; What do the Web Methods need to look like?<br>
+What will they have to do to use whatever is returned by the web service?<br>
+<br>
+I really need to know everything :), but any help to get me started in the
+right direction would help.<br>
+Sorry for such a long post, but I wanted to try and explain the situation.<br>
+</p><br><p class="MsoNormal">Thanks!<br></p><p class="MsoNormal"><br></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, July 11, 2007</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>anon3141:</strong></div><div> 
+<P class=MsoNormal>They want a simple mapping of one BO per table to insulate themselves from our DB schema.<BR></div></BLOCKQUOTE></P>
+<P class=MsoNormal>That's funny! <img src="/emoticons/emotion-1.gif" alt="Smile [:)]" /> I know I'm taking this wrong, but it brought a smile to my face to think about a bunch of entity objects, in lock-step with the shape of the database, insulating an app from the database. So when a table changes does the object not change? Hehe!</P>
+<P class=MsoNormal><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>anon3141:</strong></div><div></P>
+<P class=MsoNormal>In this case does it make sense to simply return BOs?&nbsp; What do the Web Methods look like?<BR></div></BLOCKQUOTE></P>
+<P class=MsoNormal>Web services <EM>can't</EM> return business objects. They return data transfer objects, or at best entity objects. </P>
+<P class=MsoNormal>The CSLA data portal uses some clever techniques to return actual BOs through a web service call, but honestly that doesn't fall anywhere within the spirit of web services...</P>
+<P class=MsoNormal><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>anon3141:</strong></div><div></P>
+<P class=MsoNormal>When our client writes the consumer do they need a reference to the BOs?&nbsp; How do they get it?<BR>Are DTOs the best way to go?&nbsp; What do the Web Methods need to look like?<BR>What will they have to do to use whatever is returned by the web service?<BR></div></BLOCKQUOTE></P>
+<P class=MsoNormal>You really have two choices: use the data portal to return real BOs, or use web services to return DTOs.</P>
+<P class=MsoNormal>&nbsp;</P>
+<P class=MsoNormal>If you use the data portal, you can use the web service channel - thus living up to the "letter of the law" in that you are using "web services". But what you are <EM>really</EM> doing is returning actual BOs over a binary channel that is tunnelling through the web service. In this case both the client and server, by definition, would use CSLA objects exactly as discussed in the book (not chapter 11&nbsp;- but chapters 6-10).</P>
+<P class=MsoNormal>&nbsp;</P>
+<P class=MsoNormal>If you use raw web services, you will get back DTOs. In this case you can <EM>choose</EM> to implement either the client and/or the service using CSLA.</P>
+<P class=MsoNormal>&nbsp;</P>
+<P class=MsoNormal>If you choose to implement the <EM>service</EM> using CSLA, then you should look at chapter 11. That's the purpose of that chapter: to show various ways you can use CSLA objects to construct the business layer behind your service "UI".</P>
+<P class=MsoNormal>&nbsp;</P>
+<P class=MsoNormal>If you choose to implement the <EM>client</EM> using CSLA, then all you are doing is calling web services instead of stored procedures. I am serious: in this model, a web service is architecturally <EM>identical</EM> to a stored procedure. You'd just write your DataPortal_XZY methods to make web service calls rather than ADO.NET calls, and you'd run the data portal in local mode - and that's all there is to it.</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

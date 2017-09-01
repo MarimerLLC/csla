@@ -1,0 +1,17 @@
+<html><header><title>HierarchicalObject doesn't delete children..</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>HierarchicalObject doesn't delete children..</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9630.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>idroesse posted on Wednesday, October 13, 2010</h2><p>Hi guys, I have a&nbsp;strange&nbsp;behaviour.&nbsp; I have a child object (let me call it &quot;MyObject&quot;) derived from BusinessObject and, within this object, i have a BusinessListBase object of &quot;MyObject&quot; (a tipical Tree structure).&nbsp;</p>
+<p>When i delete an element from the BusinessListBase within MyObject, Child_DeleteSelf is only executed in this object and not into the children, even if I call &quot;FieldManager.UpdateChildren(<span style="color:blue;">this</span>)&quot;.</p>
+<p>This is an example:</p>
+<p>MyObject a = new MyObject();</p>
+<p>MyObject a1 = new MyObject();</p>
+<p>MyObject a11 = new MyObject();</p>
+<p>MyObject a111 = new MyObject();</p>
+<p>a11.Children.Add(a111)</p>
+<p>a1.Children.Add(a11)</p>
+<p>a.Children.Add(a1);</p>
+<p><br />If I delete &quot;a1&quot; from &quot;a&quot; Child_DeleteSelf is called only for &quot;a1&quot;, but i need to remove even &quot;a11&quot; and &quot;a111&quot;. &quot;a&quot;, &quot;a1&quot;, &quot;a11&quot; and &quot;a111&quot; come from the same SQL Table, so I can&#39;t use the cascade delete on SQL, I need to delete every row manually.. The only solution I found to solve this problem is overriding RemoveItem method&nbsp;within BusinessListBase&nbsp;and Clear the BusinessListBase object of the deleted object.</p>
+<p>Is this behaviour right or is there something wrong in my code?</p>
+<p>Best regard, </p>
+<p>Enrico</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>tiago replied on Wednesday, October 13, 2010</h2><p>This is standard and there are 3 solutions. You mentioned 2 and the 3rd replaces cascade delete: solve the problem in the stored procedure. In your case, as you can&#39;t cascade delete, there is only the solution you are using.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>idroesse replied on Thursday, October 14, 2010</h2><p><span>It was my suspicion. Thank you for your reply</span></p>
+<p><span>Best regard</span></p>
+<p><span>Enrico</span></p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

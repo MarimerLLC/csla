@@ -1,0 +1,30 @@
+<html><header><title>ERLB not saving children</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>ERLB not saving children</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9764.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Munish Sehgal posted on Monday, November 15, 2010</h2><p>hi...i have two tables: 1.Root 2. Child</p>
+<p>the code templates used are:</p>
+<p><strong>RootList:</strong> DynamicList</p>
+<p><strong>Root:</strong> EditableRoot</p>
+<p><strong>ChildList:</strong> EditableChildList</p>
+<p><strong>Child:</strong>EditableChild</p>
+<p>i have binded these objects to Datagridviews. When i change the RootList Selected item it save itsef. but when i change the child properties it dont save until i dont change the RootList SelectedItem in datagridView.. </p>
+<p>i don&#39;t know ... Is it because of my wrong selection for business object templates Or ERLB doesn&#39;t support.</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Monday, November 15, 2010</h2><p>Any root object that has children and want to do an &quot;autmatic&quot; save on the child list should call</p>
+<p>1. FieldManager.UpdateChildren()&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; (will update all child lists)</p>
+<p>2. DataPortal.UpdateChild(ChildObject)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (will update the specified child list)</p>
+<p>In the DataPortal_Insert/DataPortal_Update methods.</p>
+<p>A child list should not have their own Save method - calling Save on an object marked as child will throw an Exception.</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Munish Sehgal replied on Tuesday, November 16, 2010</h2><p>hi jonney, thanks for your reply. Actually i want to make my Root object to save its children automatically.</p>
+<p>The problem is : when i change the property of root in gridview it performs an Dataportal_update/insert for that root object but when i change the property of the children the Root don&#39;t calls dataportal methods until i change current&nbsp;row in Root Grid.</p>
+<p>Every time i want to save children i changes the selection in the root grid.</p>
+<p>My RootListObject is a DynamicRootList and RootObject is EditableRoot.</p>
+<p>ChildListobject is EditableChildList and Childobject is EditableChild.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Tuesday, November 16, 2010</h2><p>Then your object structure is nearly impossible. </p>
+<p>An object structure can only be saved by calling Save on the root node - not on the children. </p>
+<p>DynamicRootList is specifically made for &quot;Access&quot; like tables where the List automatically calles Save on the item.<br />IE: DynamicRootList is a list of Root objects for a very specific purpose.&nbsp; </p>
+<p>You _may_ use 2 DynamicRootLists and have a filter/fetch method on the child list but I&#39;m not sure about the performance tho&#39;.</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Munish Sehgal replied on Tuesday, November 16, 2010</h2><p>ok. So&nbsp;What should be the&nbsp;object structure for a parent-child Tables to be used as Auto update datgridview.....</p>
+<p>the tables are : Trigger and TriggerDet</p>
+<p>I am sure about Trigger table that i should use DynamicRootList for TriggerList(parent datagridview) and EditableRoot for&nbsp;Trigger.</p>
+<p>But confused which templates&nbsp;should be used for TriggerDetList and TriggerDet.</p>
+<p>I hope i am able to describe the problem and you are getting me in right path.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Tuesday, November 16, 2010</h2><p>The point is that you must have 2 separate DynamicRootList and handle the parent/child relationship in your form.No relationship in code only in logic.</p>
+<p>When a new &quot;parent&quot; is selected you must fetch a new Root list of &quot;child&quot; and display in child grid. </p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

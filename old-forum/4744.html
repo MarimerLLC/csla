@@ -1,0 +1,28 @@
+<html><header><title>Data Portal: How do we acheive batch update or delete using CLSA business objects and Oralce stored procs which take Oralce Array as Input Parameter?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Data Portal: How do we acheive batch update or delete using CLSA business objects and Oralce stored procs which take Oralce Array as Input Parameter?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4744.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Vadiraja posted on Wednesday, April 23, 2008</h2><P><FONT face=Tahoma size=2>I am working on a an application which uses Oralce as database. There are quite a few PL/SQL stored procedures which take Oracle Array as Input parameter.</FONT></P>
+<P><FONT face=Tahoma size=2>Example:</FONT></P>
+<P><FONT face=Tahoma size=2>The user needs to&nbsp;update more than 1 role for an user from UI. The stored proc is written such that it accepts User Id and User Roles as Input Parameters. The parameter - User Roles is an array of VARCHAR2.</FONT></P>
+<P><FONT face=Tahoma size=2><FONT color=#000000>I have used&nbsp;&nbsp;</FONT><FONT color=#2b91af size=2><FONT color=#000000>BusinessListBase&lt;UserRoles, UserRole&gt;. The&nbsp;&nbsp;&nbsp;&nbsp;DataPortal_Update in my UserRole.cs loops through each User Role and checks if the User Role being updated is IsNew or not. If it is not IsNew it calls Update method on UserRole.cs which in turn has Database calls.</FONT></FONT></FONT></P>
+<P><FONT face=Tahoma size=2><FONT color=#2b91af size=2><FONT color=#000000>The problem in the above approach is I can pass only one User Role Code to Oracle stored proc at a time. But in my case the stored proc takes User Role Code as an Olacle Array.</FONT></FONT></FONT></P>
+<P><FONT face=Tahoma size=2>How do we acheive such batch updates or delete using CLSA business objects and Oralce stored procs which take Oralce Array as Input Parameter?</FONT></P>
+<P>&nbsp;</P>
+<P><FONT face=Tahoma size=2><FONT color=#2b91af size=2><FONT color=#000000></FONT>&nbsp;</P></FONT></FONT>
+<P><FONT face=Tahoma size=2></FONT>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RikGarner replied on Thursday, April 24, 2008</h2><P>I can't quite find the reference quickly but I think you can do something like </P>
+<P>param1.CollectionType = OracleCollectionType.PLSQLArray </P>
+<P>where param1 is of type OracleParameter</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RikGarner replied on Thursday, April 24, 2008</h2><P>Sorry - that wasn't correct</P>
+<P>Here's a bit of sample code from Oracle documentation:</P><FONT face=Courier size=1>
+<P align=left>int[] myArrayDeptNo = new int[3] { 10, 20, 30 };</P>
+<P align=left>OracleCommand cmd = new OracleCommand();</P>
+<P align=left>// Set the command text on an OracleCommand object</P>
+<P align=left>cmd.CommandText = "insert into dept(deptno) values (:deptno)";</P>
+<P align=left>cmd.Connection = con;</P>
+<P align=left>// Set the ArrayBindCount to indicate the number of values</P>
+<P align=left>cmd.ArrayBindCount = 3;</P>
+<P align=left>// Create a parameter for the array operations</P>
+<P align=left>OracleParameter prm = new OracleParameter("deptno", OracleDbType.Int32);</P>
+<P align=left>prm.Direction = ParameterDirection.Input;</P>
+<P align=left>prm.Value = myArrayDeptNo;</P>
+<P align=left>// Add the parameter to the parameter collection</P>
+<P align=left>cmd.Parameters.Add(prm);</P>
+<P align=left>// Execute the command</P>
+<P align=left>cmd.ExecuteNonQuery();</P>
+<P>Console.WriteLine("Insert Completed Successfully");</P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Marjon1 replied on Friday, April 25, 2008</h2><font size="1" face="Arial">I've not used Oracle for many years, so can't advise as to how this can be done with Oracle,<br>but from a CSLA perspective I see it like this: <br></font><ul><li><font size="1" face="Arial">Loop through all items to determine which records are not IsNew, the update method will then pass through a parameter or command object so that the individual UserRole can add it's self to the relevant values to the appropriate parameter array's. <i>No calls to the database are done here.</i><br><br></font></li><li><font size="1" face="Arial">Once you've looped through, execute your command within the UserRoles DataPortal_Update method using the parameter(s) that you've been updating. Therefore, you only would need a single call to the database to update all the roles using the oracle array. If you had output parameters, I'm not sure how you would handle that.<br></font></li></ul><font size="1" face="Arial">If this is correct for your circumstances, given my zero Oracle knowledge. But it's how I would approach something like this.<br></font></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

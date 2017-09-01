@@ -1,0 +1,16 @@
+<html><header><title>Remote dataportal business object dependecy</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Remote dataportal business object dependecy</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/12017.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>btardif posted on Tuesday, June 11, 2013</h2><p>Good day to all,</p>
+<p>I can&#39;t seem to find an answer to this question so I decided to ask it here.</p>
+<p>We currently are happily using CSLA with a couple of our web sites and are using a couple of data portals to fit our different needs.</p>
+<p>The main problem (well, inconvenient might be a better word) is that every time we change the version of our web site, we change the version of everything in the solution (so the version of the data portal as well) meaning that we have to redeploy the web site but every data portal as well even if the code that is being serviced by the data portal has not change.</p>
+<p>Is there a way of circumventing this? Aside from the obvious solution which would be to stop managing the version numbers at the solution level and manage them on a project by project basis.</p>
+<p>Thank you in advance.</p>
+<p>Ben</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Tuesday, June 11, 2013</h2><p>Hmm,&nbsp;</p>
+<p>In terms of serialization the version number is part of the contract.&nbsp;</p>
+<p>So the options that I know of would involve either:</p>
+<p>
+<ul>
+<li>add assembly redirect in your web.config or</li>
+<li>add custom assembly resolver&nbsp;</li>
+</ul>
+</p>
+<p>Both options may introduce new bugs/problems so my recommendation would be to redeploy everything!</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

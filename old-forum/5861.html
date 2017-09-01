@@ -1,0 +1,20 @@
+<html><header><title>Xaml binding to sorted list</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Xaml binding to sorted list</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5861.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>daniel_higgins posted on Sunday, November 23, 2008</h2><P>Hi All,</P>
+<P>Does&nbsp;xaml binding to a sorted wpf view work in csla 3.5? </P>
+<P>In c#, I tried:</P>
+<P><FONT color=#2b91af size=2><FONT color=#2b91af size=2>ICollectionView</FONT></FONT><FONT size=2> view = </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>CollectionViewSource</FONT></FONT><FONT size=2>.GetDefaultView(parent.ChildCollection);</P>
+<P>view.SortDescriptions.Add(</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>new</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>SortDescription</FONT></FONT><FONT size=2>(</FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>"Ordinal"</FONT></FONT><FONT size=2>, </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>ListSortDirection</FONT></FONT><FONT size=2>.Ascending));</FONT></P>
+<P><FONT size=2>And it failed. When I looked at *view* in the debugger, its CanSort property was false.</FONT></P>
+<P><FONT size=2>Am I barking up the wrong tree here?</FONT><FONT size=2></P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>daniel_higgins replied on Monday, December 08, 2008</h2><P>Hi</P>
+<P>In the non-csla samples I've looked at, using the SortDescriptions on a collection and setting the ItemsSource="{Binding ChildCollection}" in Xaml seemed to work pretty well. When I added a new item to the child collection, the new item shows up in the list box.</P>
+<P>In csla, adding a SortDescription to the default collection view (as per wpf examples I've read), does not appear to work. </P>
+<P>So I used the csla linq features:</P>
+<P>listBox.ItemsSource = from c in parent.ChildCollection orderby c.Ordinal select c;</P>
+<P>That gives me a sorted list. When I add a new item to the collection (parent.ChildCollection.AddNew()), it does not appear in the list box. I thought the linq equipment in csla returned a "hot list" that was tied to the underlying collection. </P>
+<P>So, I suppose I have two questions:</P>
+<P>1. Does the wpf CollectionView and SortDescriptions stuff work on csla collections?</P>
+<P>2. If I cannot use the CollectionView/SortDescriptions stuff, and I instead use linq on clsa, do I need to un-and-re-bind to linq query result? Perhaps I am using the wrong linq expression?</P>
+<P>Thank you<FONT color=#008000 size=2><FONT color=#008000 size=2><FONT color=#000000 size=3></FONT></P></FONT></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JZuerlein replied on Tuesday, December 09, 2008</h2><P>I don't think the CollectionView stuff works with CSLA.&nbsp; My guess is because CSLA collections don't allow sorting.&nbsp; There is a class called SortedBindingList&lt;T&gt; that is used to provide this functionality.&nbsp; It is described in detail in the 2005 business objects book.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>daniel_higgins replied on Tuesday, December 09, 2008</h2><P>Thanks for the reply Jeff.</P>
+<P>I was able to get the effect I wanted by using</P>
+<P>ListCollectionView myView = new ListCollectionView(parent.ChildCollection);</P>
+<P>then applying the SortDescriptions to this new ListCollectionView. I guess the DefaultCollectionView is not sortable.</P>
+<P>It likely has something to do with the differences between BindingList and ObservableCollection, but I had to call myView.Refresh() every time I added a new child to the collection (parent.ChildCollection.AddNew()).</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

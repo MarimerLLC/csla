@@ -1,0 +1,378 @@
+<html><header><title>DataPortal_Create and Database Identity Field</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>DataPortal_Create and Database Identity Field</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5410.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Pixel posted on Tuesday, September 16, 2008</h2><p>Having just upgraded to 3.5.1&nbsp; from 3.0.2. I 'believe' Im experiencing a change in behaviour in the dataportal.&nbsp;&nbsp; I'm under pressure time wise so hope someone can help......I guess the information is there in front of me but I cant see the wood from the trees!!!</p>
+<p>Admitedly I'm using the same techniques in the new version as in 3.0.2 to call a stored procedure on an insert.&nbsp; Im not using LINQ or anything...</p>
+<p>I cant quite understand why I can't upate the objects private variables whilst&nbsp;in the dataportal_create function and have the calling application see them through the property get function.&nbsp; </p>
+<p>Previsouly Im sure I was able to query the output parameter and update the objects Id with the identity field.&nbsp; I am getting this value back from the DB and updating the Id value but when checking it in nUnit the Id value just reverts back to the temporary one.</p>
+<p>I'm not explaing in it too well as Im really pressured for time but here are a few code snippets.</p><font size="2">
+</font><p><font size="2"><br><strong>Parts of DataPortal_Insert&nbsp; (Really basic)<br>.<br>.<br>.<br><font size="2" color="#2b91af">SqlParameter</font><font size="2"> paramClientId =</font><font size="2" color="#0000ff">new</font><font size="2"> </font><font size="2" color="#2b91af">SqlParameter</font><font size="2">(</font><font size="2" color="#a31515">"@clientId"</font><font size="2">, </font><font size="2" color="#2b91af">SqlDbType</font></strong><strong><font size="2">.Int);<br>paramClientId.Direction = </font><font size="2" color="#2b91af">ParameterDirection</font></strong><strong><font size="2">.Output;<br>cm.Parameters.Add(paramClientId);<br>cm.ExecuteNonQuery();<br></font><font size="2">_clientId = (</font><font size="2" color="#0000ff">int</font><font size="2">)cm.Parameters[</font><font size="2" color="#a31515">"@clientId"</font></strong><font size="2"><strong>].Value;</strong></font></font></p>
+<p><font size="2"><font size="2">At this point _clientId is the identity value </font></font></p>
+<p><font size="2"><font size="2">&nbsp;</font></font></p>
+<p><font size="2"><font size="2"><strong>Property Value (Standard stuff)</strong></font></font></p><font size="2"><font size="2"><font size="2"><font size="2" color="#0000ff">
+</font></font></font></font><p><font size="2"><font size="2"><font size="2"><font size="2" color="#0000ff">private</font><font size="2"> </font><font size="2" color="#0000ff">int</font><font size="2"> _clientId;<br><br></font>[System.ComponentModel.</font><font size="2" color="#2b91af">DataObjectField</font><font size="2">(</font><font size="2" color="#0000ff">true</font><font size="2">, </font><font size="2" color="#0000ff">true</font><font size="2">)]<br></font><font size="2" color="#0000ff">public</font><font size="2"> </font><font size="2" color="#0000ff">int</font><font size="2"> ClientId<br>{<br>[System.Runtime.CompilerServices.</font><font size="2" color="#2b91af">MethodImpl</font><font size="2">(System.Runtime.CompilerServices.</font><font size="2" color="#2b91af">MethodImplOptions</font><font size="2">.NoInlining)]<br></font><font size="2" color="#0000ff">get<br></font><font size="2">{<br>CanReadProperty(</font><font size="2" color="#0000ff">true</font><font size="2">);<br></font><font size="2" color="#0000ff">return</font><font size="2"> _clientId;<br>}<br>}</font></font></font></p><font size="2"><font size="2"><font size="2"></font>
+</font></font><p><font size="2"><font size="2"><br></font><br><strong>Calling code: (Test Harness)</strong></font><font size="2" color="#2b91af"><br><br>ClientPersonalDetail</font><font size="2"> client = </font><font size="2" color="#2b91af">ClientPersonalDetail</font><font size="2">.NewClientPersonalDetail();<br>client.Surname = </font><font size="2" color="#a31515">"User"</font><font size="2">;<br></font><font size="2">client.Firstname = </font><font size="2" color="#a31515">"Sample"</font><font size="2">;<br></font><font size="2">client.Save();<br></font><font size="2"><font color="#2b91af">Console.WriteLine</font><font color="#000000"> (client.ClientId);</font></font></p>
+<p><font size="2">ClientId comes back as 0!!!!</font></p><font size="2"></font>
+<p><br>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Tuesday, September 16, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I think you are missing this<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>Client.Save().ClientID?<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899<o:p></o:p></span></p>
+
+<p class=MsoNormal><b><i><span>Magenic</span></i></b><span> </span><span>&reg;</span><b><i><span><o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Pixel
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Tuesday, September 16, 2008 12:48 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> [CSLA .NET] DataPortal_Create and Database Identity Field<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Having just upgraded to 3.5.1&nbsp; from 3.0.2. I 'believe' Im experiencing
+a change in behaviour in the dataportal.&nbsp;&nbsp; I'm under pressure time
+wise so hope someone can help......I guess the information is there in front of
+me but I cant see the wood from the trees!!!<o:p></o:p></p>
+
+<p>Admitiedly&nbsp; I'm using the same techniques in the new version as in
+3.0.2 to call a stored procedure on an insert.&nbsp; Im not using LINQ or
+anything...<o:p></o:p></p>
+
+<p>I cant quite understand why I can't upate the objects private variables
+whilst&nbsp;in the dataportal_create function and have the calling application
+see them through the property get function.&nbsp; <o:p></o:p></p>
+
+<p>Previsouly Im sure I was able to query the output parameter and update the
+objects Id with the identity field.&nbsp; I am getting this value back from the
+DB and updating the Id value but when checking it in nUnit the Id value just
+reverts back to the temporary one.<o:p></o:p></p>
+
+<p>I'm not explaing in it to well as Im really pressured for time but here are
+a few code snippets.<o:p></o:p></p>
+
+<p><span><br>
+<strong>Parts of DataPortal_Insert&nbsp; (Really basic)</strong><b><br>
+<strong>.</strong><br>
+<strong>.</strong><br>
+<strong>.</strong><br>
+<strong><span>SqlParameter</span> paramClientId =<span>new</span> <span>SqlParameter</span>(<span>&quot;@clientId&quot;</span>, <span>SqlDbType</span>.Int);</strong><br>
+<strong>paramClientId.Direction = <span>ParameterDirection</span>.Output;</strong><br>
+<strong>cm.Parameters.Add(paramClientId);</strong><br>
+<strong>cm.ExecuteNonQuery();</strong><br>
+<strong>_clientId = (<span>int</span>)cm.Parameters[<span>&quot;@clientId&quot;</span>].Value;</strong></b><o:p></o:p></span></p>
+
+<p><span>At this point _clientId is the identity value
+<o:p></o:p></span></p>
+
+<p><span>&nbsp;<o:p></o:p></span></p>
+
+<p><strong><span>Property Value (Standard stuff)</span></strong><span><o:p></o:p></span></p>
+
+<p><span>private</span><span> <span>int</span> _clientId;<br>
+<br>
+[System.ComponentModel.<span>DataObjectField</span>(<span>true</span>, <span>true</span>)]<br>
+<span>public</span> <span>int</span> ClientId<br>
+{<br>
+[System.Runtime.CompilerServices.<span>MethodImpl</span>(System.Runtime.CompilerServices.<span>MethodImplOptions</span>.NoInlining)]<br>
+<span>get<br>
+</span>{<br>
+CanReadProperty(<span>true</span>);<br>
+<span>return</span> _clientId;<br>
+}<br>
+}<o:p></o:p></span></p>
+
+<p><span><br>
+<br>
+<strong>Calling code: (Test Harness)</strong><span><br>
+<br>
+ClientPersonalDetail</span> client = <span>ClientPersonalDetail</span>.NewClientPersonalDetail();<br>
+client.Surname = <span>&quot;User&quot;</span>;<br>
+client.Firstname = <span>&quot;Sample&quot;</span>;<br>
+client.Save();<br>
+<span>Console.WriteLine</span><span>
+(client.ClientId);</span></span><o:p></o:p></p>
+
+<p><span>ClientId comes back as 0!!!!<o:p></o:p></span></p>
+
+<p><br>
+&nbsp;<o:p></o:p></p>
+
+<p>&nbsp;<o:p></o:p></p>
+
+<p>&nbsp;<o:p></o:p></p>
+
+<p>&nbsp;<o:p></o:p></p>
+
+<p>&nbsp;<o:p></o:p></p>
+
+<p>&nbsp;<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Wbmstrmjb replied on Tuesday, September 16, 2008</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>sergeyb:</strong></div><div> 
+
+<DIV class=Section1>
+<P class=MsoNormal><SPAN>I think you are missing this<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Client.Save().ClientID?</SPAN><SPAN><o:p>&nbsp;</o:p></SPAN><BR><o:p></o:p></P></DIV>
+<P></div></BLOCKQUOTE></P>
+<P>Can you please explain this?&nbsp; How is:</P>
+<P><FONT color=#ff0000>&nbsp;client.Save();</FONT></P>
+<P><FONT color=#ff0000>client.ClientID;</FONT></P>
+<P>any different than </P>
+<P><FONT color=#ff0000>client.Save().ClientID;</FONT> ?&nbsp; </P>
+<P>I am confused.&nbsp; I too think that the above code should work and now am doubting my knowledge.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Tuesday, September 16, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>.Save method calls the server, passing it the object you are
+trying to save.&nbsp; Server returns an updated copy of that object.&nbsp; So,
+your DataPortal_Insert method is executed on the server side, and that is where
+client ID is updated.&nbsp; So, you need to look at the server copy of the
+object which is the result of Save() function.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899<o:p></o:p></span></p>
+
+<p class=MsoNormal><b><i><span>Magenic</span></i></b><span> </span><span>&reg;</span><b><i><span><o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Wbmstrmjb [mailto:cslanet@lhotka.net]
+<br>
+<b>Sent:</b> Tuesday, September 16, 2008 1:16 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: DataPortal_Create and Database Identity
+Field<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<blockquote>
+
+<div>
+
+<p class=MsoNormal><img id="_x0000_i1025" src="/Themes/default/images/icon-quote.gif"><strong>sergeyb:</strong><o:p></o:p></p>
+
+</div>
+
+<div>
+
+<div>
+
+<p class=MsoNormal>I
+think you are missing this<o:p></o:p></p>
+
+<p class=MsoNormal>Client.Save().ClientID?&nbsp;<o:p></o:p></p>
+
+</div>
+
+</div>
+
+</blockquote>
+
+<p>Can you please explain this?&nbsp; How is:<o:p></o:p></p>
+
+<p><span>&nbsp;client.Save();</span><o:p></o:p></p>
+
+<p><span>client.ClientID;</span><o:p></o:p></p>
+
+<p>any different than <o:p></o:p></p>
+
+<p><span>client.Save().ClientID;</span> ?&nbsp; <o:p></o:p></p>
+
+<p>I am confused.&nbsp; I too think that the above code should work and now am
+doubting my knowledge.<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Wbmstrmjb replied on Tuesday, September 16, 2008</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>sergeyb:</strong></div><div> 
+
+<DIV class=Section1>
+<P class=MsoNormal><SPAN>.Save method calls the server, passing it the object you are trying to save.&nbsp; Server returns an updated copy of that object.&nbsp; So, your DataPortal_Insert method is executed on the server side, and that is where client ID is updated.&nbsp; So, you need to look at the server copy of the object which is the result of Save() function.</SPAN><BR><o:p></o:p></P></DIV>
+<P></div></BLOCKQUOTE></P>
+<P>I feel like I've taken some kind of stupid pills.&nbsp; Why didn't the object come back from the server?&nbsp; You're saying that in his "test code", the object "client" is going to the server and staying there?&nbsp; This is so not normal.&nbsp; Why after a Save() can he not get the updated values of his object on the client?&nbsp; CSLA has never been a one-way transport.&nbsp; I am not doubting your answer, considering your position, but I am certainly doubting my understanding of it right now.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Tuesday, September 16, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>It is possible I am not explanting it correctly.&nbsp; You
+should always consume the return value of Save() function and replace the original
+object with that value at some point.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899<o:p></o:p></span></p>
+
+<p class=MsoNormal><b><i><span>Magenic</span></i></b><span> </span><span>&reg;</span><b><i><span><o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Wbmstrmjb
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Tuesday, September 16, 2008 1:31 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: RE: DataPortal_Create and Database Identity
+Field<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<blockquote>
+
+<div>
+
+<p class=MsoNormal><img id="_x0000_i1025" src="/Themes/default/images/icon-quote.gif"><strong>sergeyb:</strong><o:p></o:p></p>
+
+</div>
+
+<div>
+
+<div>
+
+<p class=MsoNormal>.Save
+method calls the server, passing it the object you are trying to save.&nbsp;
+Server returns an updated copy of that object.&nbsp; So, your DataPortal_Insert
+method is executed on the server side, and that is where client ID is
+updated.&nbsp; So, you need to look at the server copy of the object which is
+the result of Save() function.<o:p></o:p></p>
+
+</div>
+
+</div>
+
+</blockquote>
+
+<p>I feel like I've taken some kind of stupid pills.&nbsp; Why didn't the
+object come back from the server?&nbsp; You're saying that in his &quot;test
+code&quot;, the object &quot;client&quot; is going to the server and staying
+there?&nbsp; This is so not normal.&nbsp; Why after a Save() can he not get the
+updated values of his object on the client?&nbsp; CSLA has never been a one-way
+transport.&nbsp; I am not doubting your answer, considering your position, but
+I am certainly doubting my understanding of it right now.<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Wbmstrmjb replied on Tuesday, September 16, 2008</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>sergeyb:</strong></div><div> 
+
+<DIV class=Section1>
+<P class=MsoNormal><SPAN>It is possible I am not explanting it correctly.&nbsp; You should always consume the return value of Save() function and replace the original object with that value at some point.</SPAN><BR><o:p></o:p></P></DIV>
+<P></div></BLOCKQUOTE></P>
+<P>&nbsp;</P>
+<P>All is well again with the universe!&nbsp; I just realized what was going on.&nbsp; Yes, Save returns the updated object, not updates the object itself.&nbsp; I totally missed that part of his code.&nbsp; Sorry to waste your time.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tmg4340 replied on Tuesday, September 16, 2008</h2><P><FONT face=Tahoma size=2>No - I believe the OP made a common mistake.&nbsp; Instead of saying</FONT></P>
+<P><FONT face=Tahoma size=2>"client.Save();"</FONT></P>
+<P><FONT face=Tahoma size=2>it should say</FONT></P>
+<P><FONT face=Tahoma size=2>"client = client.Save();"</FONT></P>
+<P><FONT face=Tahoma size=2>Sergey's point is that when the DP_ methods run, they return a <STRONG><EM>new instance</EM></STRONG> of the object.&nbsp; Since the object is serialized back and forth, you must update the reference to your object on the client.</FONT></P>
+<P><FONT face=Tahoma size=2>(In the case of a local DataPortal, the framework makes a clone of the object, even though the DP_ methods run in the same process.&nbsp; This is done so that client code does not have to make a distinction between DataPortal locations.)</FONT></P>
+<P><FONT face=Tahoma size=2>HTH</FONT></P>
+<P><FONT face=Tahoma size=2>- Scott</FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, September 16, 2008</h2>That is almost certainly the problem - and it is listed as one of the breaking changes from 3.0 to 3.5 - but a lot of people still miss this one.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Pixel replied on Tuesday, September 16, 2008</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div>That is almost certainly the problem - and it is listed as one of the breaking changes from 3.0 to 3.5 - but a lot of people still miss this one.</div></BLOCKQUOTE><br><br>Thanks Rocky.<br><br>With looming deadlines I didnt quite take the time to step back and look through the notes.<br><br>I'm glad there is a great community behind this framework.<br><br><br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

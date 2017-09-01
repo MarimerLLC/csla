@@ -1,0 +1,68 @@
+<html><header><title>CSLA 3.0 Beta 1 WPF ValidationPanel Recursive Infinite Loop?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA 3.0 Beta 1 WPF ValidationPanel Recursive Infinite Loop?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3034.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>GlennMiller posted on Wednesday, June 13, 2007</h2>
+
+
+
+
+
+<p class="MsoPlainText">We're using WPF, and seem to have found a problem with
+the CSLA validation panel causing an infinite loop. Here's the scenario:<span></span></p>
+
+
+
+<p class="MsoPlainText"><span></span>We have a details view where at run-time we build a list
+of text boxes representing properties of a business object selected from a list
+in separate "sidebar" view. The run-time code binds the text boxes to
+the selected BO's properties. We keep the underlying details view reference
+around for the remaining scope of our application. As the user clicks different
+BO's in the sidebar, we rebind the details view. The BO's are not all of the
+same type, so we rebind by removing the text boxes and recreating a new set of
+them.<span></span></p>
+
+
+
+<p class="MsoPlainText"><span></span>In the details view we use CSLA's validation panel to
+wrap around the dynamically added bound text boxes.<span>&nbsp; </span>We added the Validation panel beforehand in
+XAML, and the run-time code adds the text boxes to it.<o:p></o:p></p>
+
+
+
+<p class="MsoPlainText"><o:p></o:p>The first time a user selects an item in the sidebar
+things work fine (i.e. you select an item and the bindings are added and the
+details view shows the bound controls and validation works fine). However,
+subsequent clicks on the sidebar make the application crash, caused by an
+infinite loop in the validation panel logic.<o:p></o:p></p><p class="MsoPlainText"><o:p></o:p>Here is where our stack-trace shows a recursive infinite
+loop. It happens in our rebinding code, after we've removed the text boxes for
+the first BO and before we've added them for the second.</p>
+
+
+
+<p class="MsoPlainText"><o:p></o:p>ReloadBindings() is called, which calls
+_bindings.Clear(); base.FindChildBindings(); and<span>&nbsp; </span>Refresh();.</p>
+
+
+
+<p class="MsoPlainText"><o:p>&nbsp;</o:p>In<span>&nbsp; </span>Refresh();<span>&nbsp; </span>ErrorScan(); is called.</p>
+
+
+
+<p class="MsoPlainText"><o:p>&nbsp;</o:p>ErrorScan is where things go wrong:</p>
+
+
+
+
+
+
+
+<p class="MsoPlainText">if (_bindings.Count == 0)<br><span></span>&nbsp;&nbsp;&nbsp; ReloadBindings();</p><p class="MsoPlainText">We are back up to ReloadBindings, and the program loops.</p>
+
+
+
+
+
+
+
+<p class="MsoPlainText"><span></span>We were able to stop this behavior by putting a check in
+ReloadBindings to not call Refresh unless _bindings.Count is greater than zero.<o:p></o:p></p><p class="MsoPlainText"><o:p></o:p>From what we can tell it was assumed that when
+ReloadBindings was called there would always be bound controls within the CSLA
+Validation panel? Is this a correct assertion? Or is this a bug that can be
+simply fixed by putting in that greater than zero check?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Paul Czywczynski replied on Wednesday, June 13, 2007</h2>I believe the latest source tree has the fix. We came across it a few weeks ago and Rocky was able to check in a fix for us. We've hadn't the problem since. You could wait until beta 2 which I think will be ready soon.<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

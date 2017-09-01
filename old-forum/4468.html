@@ -1,0 +1,126 @@
+<html><header><title>WCF Data Portal and Identity Management</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>WCF Data Portal and Identity Management</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4468.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Diz posted on Thursday, March 06, 2008</h2>I'm working on an intranet app - dual head Win/Web, based on CSLA business objects.&nbsp; <br><br>Using CSLA 3.5 Beta 2, I'm trying to get WCF working for the dataportal. <br><br>Client requires WCF be hosted in a Windows Service.&nbsp; I'm using a console app in place of the Windows Service for dev.&nbsp; <br><br>I've been running into this and that error, am currently getting the "Invalid Token for impersonation - it cannot be duplicated." error.&nbsp; This confuses me because there's nothing I know of causing impersonation.&nbsp; <br>But that's not my main question.&nbsp; I need access to the user's network username from within the dataportal so that I can use it to mark "who updated this" on rows. <br><br>I don't care about an actual identity or principal object, don't care about roles, etc, but if identity or principal comes across, that's fine too as it will give me the username that I need.<br><br>I keep reading that by default WCF will pass the windows identity, but no combination of my experimenting has actually allowed this to happen.&nbsp; <br><br>It sounds like nothing in WCF is easy, but is there a known way to get this information to go across the wire?<br><br><br>App.config (WPF Client)<br>----------------------------------------<br>&lt;?xml version="1.0" encoding="utf-8" ?&gt;<br>&lt;configuration&gt;<br>&nbsp;&nbsp;&nbsp; <br>&nbsp; &lt;appSettings&gt;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;add key="CslaAuthentication" value="Csla" /&gt;<br>&nbsp;&nbsp; <br>&nbsp;&nbsp;&nbsp; &lt;add key="CslaDataPortalProxy"<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; value="Csla.DataPortalClient.WcfProxy, Csla"/&gt;<br>&nbsp; &lt;/appSettings&gt;<br>&nbsp; <br>&nbsp; &lt;system.serviceModel&gt;<br>&nbsp;&nbsp;&nbsp; &lt;client&gt;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;endpoint name="WcfDataPortal"<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; address="net.tcp://corpdev10knd:9090/WcfDataPortal"<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; binding="netTcpBinding"&nbsp; <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; contract="Csla.Server.Hosts.IWcfPortal" /&gt;<br>&nbsp;&nbsp;&nbsp; &lt;/client&gt;<br>&nbsp;&nbsp;&nbsp; <br>&nbsp; &lt;/system.serviceModel&gt;<br>&lt;/configuration&gt;<br>----------------------------------------<br><br>Server app.config (WCF hosted in Windows Console App)<br>----------------------------------------<br>&lt;?xml version="1.0" encoding="utf-8" ?&gt;<br>&lt;configuration&gt;<br><br>&nbsp; &lt;appSettings&gt;<br>&nbsp;&nbsp;&nbsp; &lt;add key="CslaAuthentication" value="Csla" /&gt;<br>&nbsp;&nbsp; &lt;/appSettings&gt;<br>&nbsp; <br>&nbsp; &lt;system.serviceModel&gt;<br>&nbsp;&nbsp;&nbsp; <br>&nbsp;&nbsp;&nbsp; &lt;services&gt;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;!-- Before deployment, you should remove the returnFaults behavior configuration to avoid disclosing information in exception messages --&gt;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;service name="Csla.Server.Hosts.WcfPortal" behaviorConfiguration="returnFaults"&gt;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;endpoint address="net.tcp://localhost:9090/WcfDataPortal" <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; contract="Csla.Server.Hosts.IWcfPortal" <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; binding="netTcpBinding"/&gt;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/service&gt;<br>&nbsp;&nbsp;&nbsp; &lt;/services&gt;<br><br>&nbsp;&nbsp;&nbsp; &lt;behaviors&gt;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;serviceBehaviors&gt;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;behavior name="returnFaults"&gt;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;serviceDebug includeExceptionDetailInFaults="true"/&gt;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/behavior&gt;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/serviceBehaviors&gt;<br>&nbsp;&nbsp;&nbsp;&nbsp; <br>&nbsp;&nbsp;&nbsp; &lt;/behaviors&gt;<br>&nbsp; &lt;/system.serviceModel&gt;<br>&nbsp;<br>&lt;/configuration&gt;<br>----------------------------------------<br><br>Any advice would be appreciated.&nbsp; Thanks!<br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>liruiyt replied on Sunday, March 09, 2008</h2><P>In the PT, there are two class about security, which are Principal.cs and Identity.cs.</P>
+<P>And to deal with your problem, you just need to call the Login or Logout method of Principal class.</P>
+<P>public static bool Login(string username, string password)</P>
+<P>{}</P>
+<P>public static void Logout()</P>
+<P>{}</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, March 10, 2008</h2><P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>Diz:</strong></div><div></P>
+<P>I keep reading that by default WCF will pass the windows identity, but no combination of my experimenting has actually allowed this to happen.&nbsp; <BR></div></BLOCKQUOTE></P>
+<P>That is true (sort of), but only when you host in IIS or WAS. If you host in your own custom process then you assume responsibility for things like impersonation and identity management - at least that's my understanding.</P>
+<P>If you are using a custom CSLA principal, then the data portal will take care of the principal for you - but you'll still need to make sure your WCF host accepts requests without trying to do Windows impersonation - which probably requires some extra WCF configuration.</P>
+<P>In my experience even hosting in IIS or WAS typically requires extra WCF configuration too. Rarely can you get away with the default WCF settings in a real app.</P>
+<P>And you are right, nothing with WCF comes easy...</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>DazedAndConfused replied on Monday, May 19, 2008</h2><P>We are using a framework wrapping&nbsp;CSLA in my company. Until recently, in most projects&nbsp;the server was hosted in IIS. I have built a new solution and am hosting this in a windows service. In order to provide logging by the server, I need to obtain the windows login of the user and use in the database fetch method. </P>
+<P>We were using the ApplicationContext to return the user ID, this now has the account info for the IIS account, not the actual user.</P>
+<P>We are using basicHttpBinding and I have the credentials&nbsp;set up and working in a test project. This involves using [(ServiceBehaviour(InstanceContextMode = InstanceContectMode.PerCall)] and [OperationBehaviour(Impersonation = ImpersonationOption.Required)] around the methods. </P>
+<P>What I need to be able to do, it get this working with CSLA, but am unsure how to do this.</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, May 19, 2008</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>ApplicationContext.User returns the current .NET principal. That&#8217;s
+all it does.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>So if you are using Windows security (and it sounds like you
+are) then it is up to the server host (typically IIS) to impersonate the
+caller. If you are running in a custom Windows service then you will have to
+make your service do the impersonation &#8211; unless you can get WCF to do it
+for you, but I don&#8217;t know if that is possible.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>This sounds like a pretty advanced scenario &#8211; with luck
+you can get some information from MSDN or either Juval or Michelle&#8217;s
+books in terms of how to implement impersonation with WCF in a custom Windows
+service.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky</span><o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>DazedAndConfused replied on Monday, May 19, 2008</h2><P>Thanks for the reply. I can get WCF to do it, can send you code if you want?</P>
+<P>It easy for me to do it if I have full control over the operations contracts, but the way we are using the CSLA / IWcfPortal means that I haven't got control of the operations contracts. These are in the IWcfPortal.cs. I am wondering if I just wrap these methods with the impersonation operation contract specifics, it may just work. This will be nicer solution than me having to change the code to have to pass the user name.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, May 19, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>The data portal is flexible, specifically to accommodate scenarios
+where people have needs beyond the basic ones provided by the standard data
+portal channels provided with CSLA.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>In other words, you can create your own client-side proxy and
+server-side host classes and plug them into the data portal. This is not hard
+to do. Look at Chapter 5 in the <i>Expert 2005 Business Objects</i> book, or
+better at the <i>CSLA .NET Version 2.1 Handbook</i> to see how a proxy/host is
+created. You can take the existing WCF proxy/host classes and copy them into
+your own project, modify them and tell CSLA to use them.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> DazedAndConfused
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Monday, May 19, 2008 10:39 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: WCF Data Portal and Identity Management<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Thanks for the reply. I can get WCF to do it, can send you code if you want?<o:p></o:p></p>
+
+<p>It easy for me to do it if I have full control over the operations
+contracts, but the way we are using the CSLA / IWcfPortal means that I haven't
+got control of the operations contracts. These are in the IWcfPortal.cs. I am
+wondering if I just wrap these methods with the impersonation operation
+contract specifics, it may just work. This will be nicer solution than me
+having to change the code to have to pass the user name.<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

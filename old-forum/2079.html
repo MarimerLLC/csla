@@ -1,0 +1,34 @@
+<html><header><title>Object fails if radio button is not checked</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Object fails if radio button is not checked</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/2079.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>GrullonM posted on Thursday, January 04, 2007</h2><P>I have a form with many different controls (textboxes, labels, radio buttons, etc..)</P>
+<P>The RadioButtonLists bind to Boolean values (bit data type in SQL Server) and are used just for Yes/No answers.</P>
+<P>Null values are allowed in the database on this column for a specific reason and the issue I am having with the application is that I can't submit the form (it fails) if I don't check the radio buttons on the form.</P>
+<P>Any ideas?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, January 04, 2007</h2><P>When you say "can't submit the form" do you mean that the browser won't do the postback, or that the object is either throwing an exception or is becoming invalid (IsValid is false)?</P>
+<P>If you really can't do a postback then you are out of my area of expertise and it is probably some html thing.</P>
+<P>But if you are having issues with the object, it may be that you need to support null values for your property. If the property is a Boolean value then it must be true or false. If you want to support null, you'll probably want to use Nullable&lt;T&gt; as the type for that property (and its backing field).</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>GrullonM replied on Thursday, January 04, 2007</h2><P>I am having issues with the object itself and you are abolutely right, I need to set Null on my property but did not know where to add it.</P>
+<P>I checked page 322 of the book(vb) and see how you implement nullable in your framework. How do I make my property nullable?</P>
+<P>Thanks!</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, January 04, 2007</h2>
+
+
+
+
+<DIV align=left><FONT face=Arial color=#0000ff size=2></FONT>&nbsp;</DIV>
+<DIV align=left><SPAN class=984333220-04012007><FONT face=Arial color=#0000ff size=2>&nbsp; Dim mField1 As Nullable(Of 
+Boolean)</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=984333220-04012007><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=984333220-04012007><FONT face=Arial color=#0000ff size=2>&nbsp; Public Property TheValue() As Nullable(Of 
+Boolean)</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=984333220-04012007><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=984333220-04012007></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=984333220-04012007><FONT face=Arial color=#0000ff size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </FONT></SPAN></DIV><BR>
+<BLOCKQUOTE>
+  <DIV class=OutlookMessageHeader align=left>
+  <HR>
+  <FONT face=Tahoma size=2><B>From:</B> GrullonM [mailto:cslanet@lhotka.net] 
+  <BR><B>Sent:</B> Thursday, January 04, 2007 1:15 PM<BR><B>To:</B> 
+  rocky@lhotka.net<BR><B>Subject:</B> Re: [CSLA .NET] Object fails if radio 
+  button is not checked<BR></FONT><BR></DIV>
+  <DIV></DIV>
+  <P>I am having issues with the object itself and you are abolutely right, I 
+  need to set Null on my property but did not know where to add it.</P>
+  <P>I checked page 322 of the book(vb) and see how you implement nullable in 
+  your framework. How do I make my property nullable?</P>
+  <P>Thanks!</P><BR><BR><BR></BLOCKQUOTE></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,36 @@
+<html><header><title>Field not marked as dirty after calling PropertyHasChanged</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Field not marked as dirty after calling PropertyHasChanged</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/12176.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>kreid posted on Wednesday, October 09, 2013</h2><p>I have a property that required some custom behaviour in the setter:</p>
+<p>I need to set another property bases on the new value, and delay rule checking until both properties are set. NB: all rules are triggered by PrimaryContactId, not PrimaryContact,</p>
+<p>Here is my code:</p>
+<pre style="width:90%;overflow-x:auto;border:1px solid #ccc;"> public static readonly PropertyInfo PrimaryContactIdProperty = RegisterProperty(c =&gt; c.PrimaryContactId);
+        public int PrimaryContactId
+        {
+            get { return GetProperty(PrimaryContactIdProperty); }
+        }
+
+        public static readonly PropertyInfo PrimaryContactProperty = RegisterProperty(c =&gt; c.PrimaryContact, RelationshipTypes.Child | RelationshipTypes.LazyLoad);
+        public IContact PrimaryContact
+        {
+            get
+            {
+                if (!FieldManager.FieldExists(PrimaryContactProperty))
+                {
+                    LoadProperty(PrimaryContactProperty, ContactLoader.Get(this.PrimaryContactId));
+                    OnPropertyChanged(PrimaryContactProperty);
+                }
+                return GetProperty(PrimaryContactProperty);
+            }
+            set
+            {
+                CanWriteProperty(PrimaryContactIdProperty, true); // Execute any authorization rules on PrimaryContactId<br />                OnPropertyChanging(PrimaryContactIdProperty);
+                LoadProperty(PrimaryContactIdProperty, value != null ? value.Id : -1);
+                LoadProperty(PrimaryContactProperty, value);
+                PropertyHasChanged(PrimaryContactIdProperty);  // Execute any property rules on PrimaryContactId
+            }
+        }
+</pre>
+<p>This results in my Business object being marked as dirty, but the PrimaryContactIdProperty itself is not marker as dirty, so it isn&#39;t updated.</p>
+<p>Lookig through the source I see that &quot;FieldManager.SetFieldData&lt;P&gt;(propertyInfo, newValue);&quot; is used by SetProperty to mark updated fields as dirty. Unfortunately thes is an internal method :(.</p>
+<p>What can I do?</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Wednesday, October 09, 2013</h2><p>Change your setter code to:</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; set<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; CanWriteProperty(PrimaryContactIdProperty, true); // Execute any authorization rules on PrimaryContactId<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; OnPropertyChanging(PrimaryContactIdProperty);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; LoadProperty(PrimaryContactProperty, value);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; SetProperty(PrimaryContactIdProperty, value != null ? value.Id : -1);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>kreid replied on Thursday, October 10, 2013</h2><p>This is logical, and a correct solution at the moment; but what if I need to assign some rules to PrimaryContact in future? I will need to use load property for both properties. This is my concern because I don&#39;t know if there is a solution, other than NOT assigning any rules to PrimaryContact. The problem is that future developers may not know this. So I am trying to come up with a foolproof pattern.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Thursday, October 10, 2013</h2><p>In general terms - my coding preference is to keep ALL properties as simple get/set and some extra code for lazy loaded properties. </p>
+<p>So in your case - the problem is that your rules is attached to a property that is NOT the one set by the user. The user actually sets the PrimaryContact property - and I would rather have a rule that then sets the PrimaryContactId and runs the other rules. </p>
+<p>So I believe all rules that need to run should have PrimaryContact as the PrimaryProperty. <br />Also remember that a rule may set an error or warning on another property than the PrimaryProperty. </p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

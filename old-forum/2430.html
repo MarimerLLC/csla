@@ -1,0 +1,19 @@
+<html><header><title>Conceptual question</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Conceptual question</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/2430.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>AGMs posted on Monday, February 26, 2007</h2><P class=MsoNormal>Hello to all,</P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal><SPAN>I have a conceptual question for my use case. <o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>I have a win form where I create and maintain articles. I use a typical business object inheriting from BusinessBase with its validation rules and about 30 properties.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>On the other hand, I must create another form where users may create articles massively, so users will supply a begin code and an end code, and will also supply the default values for properties.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>A process inheriting from CommandBase will create the articles from the begin code to the end code.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>As I’ve to validate the numeric interval of the begin code and the end code, I’ve to create two objects one for the normal creation and other for massive creation (CommandBase object apart)? In this case I’ll have two objects with a lot of common validation rules. <o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>I don’t see the correct way to solve it.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Thanks in advance<o:p></o:p></SPAN></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, February 26, 2007</h2><P>Having two objects is fine - reuse of properties shouldn't be a primary goal.</P>
+<P>But reuse of the validation rules <EM>should be</EM> a goal. If you have custom rule methods, you can "normalize" them into a separate class that both your business objects can collaborate with to access the rules.</P>
+<P>Also, you can normalize the AddBusinessRules() behavior, by having your business objects delegate the AddBusinessRules() call to a separate class (perhaps the same one).</P>
+<P>Also, you may or may not need a CommandBase to do your work.</P>
+<P>Assume you have ArticleEdit, which is your full-blown article edit object.</P>
+<P>Then assume you have ArticleCreator, which is an editable root that only accepts the start and end codes. When you Save() an ArticleCreator, it can do the work to create the article from start to end in its DP_Insert() method.</P>
+<P>If you are doing Windows Forms, you can then create an EditableRootListBase-derived collection of ArticleCreator, and you'd automatically get in-place grid editing, so the user can just add one after another into a grid. As they move off each row, the previous row's data would be immediately saved, causing that creation to occur.</P>
+<P>Of course you can do a similar thing with CommandBase too - I'm just tossing out options here <img src="/emoticons/emotion-1.gif" alt="Smile [:)]" /></P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

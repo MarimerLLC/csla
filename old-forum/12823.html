@@ -1,0 +1,24 @@
+<html><header><title>Can I manually set an object's property to be invalid</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Can I manually set an object's property to be invalid</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/12823.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>JaredLane posted on Friday, January 30, 2015</h2><p>(new to CSLA) - I am trying to do some collection validation, but it does not scale. &nbsp;I would like to write my own method that will loop through the collection without firing any additional events and if I find an object is invalid, I would like to manually set the property to be invalid, which would be reflected through the interface.&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Saturday, January 31, 2015</h2><p>In short.</p>
+<p>No - you cannot set a property to be invalid (have broken rule) directly by yourself.&nbsp;<br />IE: You are not allowed to manually alter the content of BrokenRulesCollection &nbsp;(whis is what makes an property/object Invalid)</p>
+<p>Normally - this behavior is built-in to the CSLA Object structure.&nbsp;<br />When a child object gets Invalid it is reflected/available in all parents that the structure is Invalid.</p>
+<p>And depending on the type of UI there are different ways of reflecting this in the Interface. &nbsp;</p>
+<p>BUT, if you really need this and the standard built-in behavior doesn&#39;t fit you, you can </p>
+<p>&nbsp;</p>
+<ol>
+<li>create a rule and define the rule on a property</li>
+<li>loop through the collection&nbsp;</li>
+<li>and if there is any broken rules set a value in that property that makes the rule to be broken.&nbsp;</li>
+</ol>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JaredLane replied on Monday, February 02, 2015</h2><p>Thank you. &nbsp;The timely response is much appreciated.&nbsp;</p>
+<p>The three steps you listed is basically what I did, but when the list has 100+ items, it takes quite some time for the validation to run.....more time than the users will find acceptable. &nbsp;</p>
+<p>Basically, I have records with effective and expiration dates on them, and the records cannot over lap dates, e.g. the expiration date of one record cannot fall between the effective and expiration date of another.</p>
+<p>I&#39;ll look into alternative methods to accomplish this check.</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Monday, February 02, 2015</h2><p>Hi,</p>
+<p>I would put this as a single rule in the &quot;parent&quot; object of the list to check on ChildChanged event.&nbsp;</p>
+<p>That rule should be responsible for checking that none of the child objects have overlapping date periods.&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JaredLane replied on Monday, February 02, 2015</h2><p>That&#39;s the path I decided to take, although I won&#39;t know which items in the collection are problematic, so I won&#39;t be able to highlight those in the list. &nbsp;Since the validation will be reflected as a user adds or edits a record, they will know what they are adding is the problem, just not which item it has a problem with. &nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>skagen00 replied on Wednesday, February 04, 2015</h2><p>What you might be running into is that if you use ChildChanged of the list to then tell the children which ones are valid and not valid (which makes sense) is that you might be getting a ton of noise in ChildChanged.&nbsp; ChildChanged fires a lot (used to or still does for meta-data), and you might be running your routine a great deal.</p>
+<p>What I would suggest is to determine if this is what might be causing your problem by throwing some kind of static integer counter and see what happens when you&nbsp;make one change.</p>
+<p>If this is the problem you might consider doing something like this in ChildChanged...</p>
+<p>At the top, if _suppressChildChangedHandling is true, just return.</p>
+<p>Around your routine which checks all children dates and validates which ones are a problem, just toggle the _suppressChildChangedHandling to true for the duration of your routine.&nbsp; It&#39;s possible you may need to do a couple OnPropertyChanged() calls after the routine to make sure certain bindings are refreshed, but this would cut down the unnecessary computations that may be happening. </p>
+<p>&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

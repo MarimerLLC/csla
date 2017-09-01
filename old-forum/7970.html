@@ -1,0 +1,75 @@
+<html><header><title>CSLA .NET 3.8.1 available</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA .NET 3.8.1 available</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/7970.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka posted on Tuesday, November 10, 2009</h2><P>I've put CSLA .NET 3.8.1 online for download. The only difference between this and 3.8.0 is that in 3.8.1 the Csla project has no dependency on ASP.NET MVC.</P>
+<P>Let no one say that I disregard community feedback (outcry?) when I do something wrong :)</P>
+<UL>
+<LI><A href="http://www.lhotka.net/cslanet/download.aspx">Download for Windows</A></LI>
+<LI><A href="http://www.lhotka.net/cslalight/download.aspx">Download for Silverlight</A></LI></UL>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>paupdb replied on Tuesday, November 10, 2009</h2>3.8.1 makes my life easier so yay :)<br>You the man Rocky <br><br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>paupdb replied on Wednesday, November 11, 2009</h2>Rocky,<br><br>Found a bug when using the 3.8.1 Csla for Silverlight release.<br>The assembly version number for the cslalightcs project has not been incremented - its still sitting at 3.8.0.0.<br>The cslacs project has been incremented though, which is causing the MobileFormatter to fail because the cslacs and cslalightcs assemblies don't match on version number.<br><br>To fix it I just updated the assembly and file version numbers of cslalightcs to match the cslacs project.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, November 11, 2009</h2><P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>paupdb:</strong></div><div>Rocky,<BR><BR>Found a bug when using the 3.8.1 Csla for Silverlight release.<BR>The assembly version number for the cslalightcs project has not been incremented - its still sitting at 3.8.0.0.<BR>The cslacs project has been incremented though, which is causing the MobileFormatter to fail because the cslacs and cslalightcs assemblies don't match on version number.<BR><BR>To fix it I just updated the assembly and file version numbers of cslalightcs to match the cslacs project.<BR></div></BLOCKQUOTE></P>
+<P>Thank you for finding that - I've updated the downloads to fix the issue, so if you get the *-091111.zip files all should be well.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jimbo replied on Thursday, November 12, 2009</h2>The assembly file version is a repeating issue, as I recall that the assembly version and file version was not maintained in many early versions of csla and sample projects etc and there is no compulsion imposed by the VS IDE to maintain this..<br>It is easy to forget this detail when you are committing code using the Major.Minor.Revision format as against the Microsoft Major.Minor.BUILD.revision format. and auto build versioning.or managing the assembly file in your build server.<br>It is the File version that matters more in the case of csla distributions. The Assembly version could be kept at (say) 3.5 until you advance to .net 4.<br><br>jimbo<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, November 12, 2009</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>This version number issue was a search-replace mistake.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I thought all the version numbers were in the 3.8.0.0 format.
+But it turns out that the Silverlight projects are in 3.8.0 format.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Since I don&#8217;t release binaries, I just update the version
+numbers in the projects. There is no automated build process, because I don&#8217;t
+actually do a build as such.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Jimbo
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Thursday, November 12, 2009 7:09 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] CSLA .NET 3.8.1 available<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>The assembly file version is a repeating issue, as I recall
+that the assembly version and file version was not maintained in many early
+versions of csla and sample projects etc and there is no compulsion imposed by
+the VS IDE to maintain this..<br>
+It is easy to forget this detail when you are committing code using the
+Major.Minor.Revision format as against the Microsoft Major.Minor.BUILD.revision
+format. and auto build versioning.or managing the assembly file in your build
+server.<br>
+It is the File version that matters more in the case of csla distributions. The
+Assembly version could be kept at (say) 3.5 until you advance to .net 4.<br>
+<br>
+jimbo<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Cine replied on Thursday, November 12, 2009</h2>Make a new file in the root of svn&nbsp; named AssemblyInfo.cs<br>which contains all the common settings, like version. And ofcourse remove the same settings from the already existing AssemblyInfo.cs files<br>and add this to all the relevant csproj files:<br><br>&nbsp;&nbsp;&nbsp; &lt;Compile Include="..\..\AssemblyInfo.cs"&gt;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;Visible&gt;false&lt;/Visible&gt;<br>&nbsp;&nbsp;&nbsp; &lt;/Compile&gt;<br><br>Then you just have 1 place to update the version.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>lukky replied on Wednesday, November 11, 2009</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div>
+<p>Let no one say that I disregard community feedback (outcry?) when I do something wrong :)</p></div></BLOCKQUOTE><br><br><img src="/emoticons/emotion-22.gif" alt="Beer [B]" /><img src="/emoticons/emotion-22.gif" alt="Beer [B]" /><img src="/emoticons/emotion-22.gif" alt="Beer [B]" /> <img src="/emoticons/emotion-19.gif" alt="Party!!! [<:o)]" /><br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

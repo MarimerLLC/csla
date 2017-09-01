@@ -1,0 +1,156 @@
+<html><header><title>Silverlight HTTP Concurrent connections</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Silverlight HTTP Concurrent connections</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6294.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>davido_xml posted on Friday, January 30, 2009</h2><P>Hi,</P>
+<P>As far as I know IE7 (and other browsers) limit the number of concurrent connections per domain. I think the limit is 2. I believe IE8 will increase this limit to 6. (source <A href="http://msdn.microsoft.com/en-us/magazine/dd434653.aspx">http://msdn.microsoft.com/en-us/magazine/dd434653.aspx</A>)</P>
+<P>I am looking at designing an object (call it widget) to suit a use case. The object has, amonng others, several integer properties that are essentially foriegn keys to name-value pairs. So let's say my object has a </P>
+<P>CategoryIdProperty, ColourIdProperty, TransactionTypeIdProperty etc.</P>
+<P>In my XAML I plan on creating a CslaDataProvider to return the widget object and a CslaDataProvider per "foriegn key" to translate the integer Id properties to the matching string name.</P>
+<P>So imagine now I have 10 such "foriegn key" properties.</P>
+<P>Firstly, is this the correct approach or should I edit widget to also return the matching string name for each "foreign key"?</P>
+<P>If it is the correct approach are the calls from the CslaDataProviders queued and managed or should I write code to check this myself?</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Friday, January 30, 2009</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I think this is not a very efficient approach.&nbsp; I try to retrieve
+the &#8220;string value&#8221; for each foreign key as part of the same stored
+procedure that returns your object.&nbsp; Even though 10 joins is a lot, but it
+will be much-much faster than 10 calls to a server.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> davido_xml
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Friday, January 30, 2009 8:09 AM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> [CSLA .NET] Silverlight HTTP Concurrent connections<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Hi,<o:p></o:p></p>
+
+<p>As far as I know IE7 (and other browsers) limit the number of concurrent
+connections per domain. I think the limit is 2. I believe IE8 will increase
+this limit to 6. (source <a href="http://msdn.microsoft.com/en-us/magazine/dd434653.aspx">http://msdn.microsoft.com/en-us/magazine/dd434653.aspx</a>)<o:p></o:p></p>
+
+<p>I am looking at designing an object (call it widget) to suit a use case. The
+object has, amonng others, several integer properties that are essentially
+foriegn keys to name-value pairs. So let's say my object has a <o:p></o:p></p>
+
+<p>CategoryIdProperty, ColourIdProperty, TransactionTypeIdProperty etc.<o:p></o:p></p>
+
+<p>In my XAML I plan on creating a CslaDataProvider to return the widget object
+and a CslaDataProvider per &quot;foriegn key&quot; to translate the integer Id
+properties to the matching string name.<o:p></o:p></p>
+
+<p>So imagine now I have 10 such &quot;foriegn key&quot; properties.<o:p></o:p></p>
+
+<p>Firstly, is this the correct approach or should I edit widget to also return
+the matching string name for each &quot;foreign key&quot;?<o:p></o:p></p>
+
+<p>If it is the correct approach are the calls from the CslaDataProviders
+queued and managed or should I write code to check this myself?<o:p></o:p></p>
+
+<p>&nbsp;<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>davido_xml replied on Friday, January 30, 2009</h2>Thanks for the reply. Do you have any information on how CSLA queues requests?</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Friday, January 30, 2009</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>If you are using SynchornizedProxy, CSLA will fire requests one
+at a time.&nbsp; Otherwise, it relies on SL to take care of it.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> davido_xml
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Friday, January 30, 2009 9:26 AM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: Silverlight HTTP Concurrent connections<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Thanks for the reply. Do you have any information on how
+CSLA queues requests?<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

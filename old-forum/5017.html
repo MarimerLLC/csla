@@ -1,0 +1,27 @@
+<html><header><title>what should be the Object model</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>what should be the Object model</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5017.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>vijay posted on Thursday, June 26, 2008</h2><P class=MsoNormal>I need some help in deciding the type of objects we should be usign for following scneraio.</P>
+<P class=MsoNormal>&nbsp;</P>
+<P class=MsoNormal>I have some information that is stored at Country (table t_country) and State (table t_country_state) level. User is allowed to do operation (update or delete) on multiple records at a time and records are displayed in Grid control.</P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal>To work on records user can select </P>
+<P class=MsoNormal>1. Country or </P>
+<P class=MsoNormal>2. Country and any of the States of that Country.</P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal>When use selects first option (Country) all operations are done on table t_country. If user selects Country and State only table impacted is t_country_state.</P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal><o:p></o:p><SPAN>Initially I thought of using Editable Root List and Editable Root object for this and pass State as NULL whenever use wants to work at Country. Is that correct way of implementing? Or should we have different set of objects for Country and State? How should we implement State objects so that they are not exposed to the Country directly and only used through the Client.</SPAN></P>
+<P><SPAN>Let me know if someone need more information about this.</SPAN></P>
+<P><SPAN>Thanks</SPAN></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Zafar Ullah replied on Monday, July 07, 2008</h2><P>Vijay,</P>
+<P>Go with the 2nd option i.e create different object for both entities. It will stream line your handling and calling both objects based on the selection.</P>
+<P>Your code might look like </P>
+<P>ddl = dorpdownlist</P>
+<P>if(ddl.SelectedValue == "Country")</P>
+<P>{</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Country objCountry = Country.GetCountry();</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; objCountry..........</P>
+<P>}</P>
+<P>else</P>
+<P>{</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; State objState = State.GetState(); // also pass country </P>
+<P>}</P>
+<P>Hope it helps</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>vijay replied on Monday, July 07, 2008</h2><P>Thanks Zafar for your time. </P>
+<P>We have decided to go for second approach. </P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

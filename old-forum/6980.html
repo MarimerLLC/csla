@@ -1,0 +1,69 @@
+<html><header><title>LocalProxy vs WcfProxy behavioral differences</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>LocalProxy vs WcfProxy behavioral differences</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6980.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>lwmorris posted on Wednesday, May 20, 2009</h2>I believe there is a problem with LocalProxy.<br /><br />Expected behavior:<br /><br />Using the WcfProxy, AddInstanceAuthorizationRules fires when a BusinessObject is first created and upon deserialization. This is nice because after an object is saved, I can query CanExecute, CanReadProperty, CanWriterProperty and they reflect the authorization rules defined in the business object. I expect the same behavior when using LocalProxy.<br /><br />Actual behavior:<br /><br />The AddInstanceAuthorizationRules fires when a BusinessObject is first created and when the object is cloned. Unfortunately, the AddInstanceAuthorizationRules appears to fire prior to the property data being populated. As a result, any logic in the AddInstanceAuthorizationRules is useless. <br /><br />For example, c.CanWriteProperty(“Name”) correctly return false when using the WcfProxy, but true when using the LocalProxy.<br />            Class1 c = new Class1();<br />            c.Name="Larry";<br />            c = c.Save();<br /><br />            //I expect this to return false.<br />            System.Diagnostics.Debug.WriteLine(c.CanWriteProperty("Name"));<br /><br />Work around:<br /><br />I had to override the Save method in my base object.<br /><br />        public override T Save()<br />        {<br />            T saved = base.Save();<br />            T clone = saved.Clone();<br />            return clone;<br />        }<br /><br /><br />And add a call to AddInstanceAuthorizationRules() prior to exiting DataPortal.Fetch methods.<br /><br />Example code business class:<br /><br />using System;<br />using Csla;<br /><br />namespace ClassLibrary1<br />{<br />    [Serializable]<br />    public class Class1 : BusinessBase<br />    {<br />        private static PropertyInfo NameProperty = RegisterProperty(new PropertyInfo("Name", "Name"));<br />        public string Name<br />        {<br />            get { return GetProperty(NameProperty); }<br />            set { SetProperty(NameProperty, value); }<br />        }<br /><br />        protected override void AddInstanceAuthorizationRules()<br />        {<br />            // Don't let anyone change the Name property after the object has been saved.<br />            if (!this.IsNew)<br />                AuthorizationRules.InstanceAllowWrite(NameProperty.Name, Guid.Empty.ToString());<br />        }<br /><br /><br />        [RunLocal]<br />        protected override void DataPortal_Create()<br />        {<br />        }<br /><br />        protected override void DataPortal_Insert()<br />        {<br />        }<br /><br />        protected override void DataPortal_Fetch(object criteria)<br />        {<br />            LoadProperty(NameProperty, "Larry");<br />        }<br />    }<br />}<br /><br /><br /></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, May 20, 2009</h2><P>I suspect, without digging into this, that the issue may be that the WcfProxy uses the NetDataContractSerializer, while (by default) LocalProxy (and Clone() and the rest of CSLA) uses the BinaryFormatter.</P>
+<P>While these two serializers are nearly the same, there are some subtle differences, and it is possible that the NDCS invokes the OnDeserialized() method later in the process than the BF.</P>
+<P>You could try switching CSLA to always use the NDCS - it is a config option named CslaSerializationFormatter that goes in appSettings. Valid options are BinaryFormatter and NetDataContractSerializer</P>
+<P>&lt;add key="CslaSerializationFormatter" value="NetDataContractSerializer" /&gt;</P>
+<P>I could be totally wrong too - but this is an easy thing for you to try.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>lwmorris replied on Thursday, May 21, 2009</h2>Adding the CslaSerializationFormatter didn't make any difference.<br /><br />System.Diagnostics.Debug.WriteLine(c.CanWriteProperty("Name")); <br /><br />Should follow IsNew. c=c.Save() still tells me I'm allowed to write to name where as c=c.Save().Clone() tells me I'm not.<br /><br />It seems that when using the WcfProxy, the OnDeserialize calls InitializeAuthorizationRules, which works. Calling Clone() ends up doing the same. LocalProxy only call InitializeAuthorizationRules when the object is created. It needs to do it again after the object's data has been populated.<br /><br /><br />Thanks for any help!</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, May 21, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoPlainText><span>It
+was an idea :)<o:p></o:p></span></p>
+
+<p class=MsoPlainText><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoPlainText><span>I
+don&#8217;t have time to dig into this now, or probably in the near future.<o:p></o:p></span></p>
+
+<p class=MsoPlainText><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoPlainText><span>Like
+it or not, the LocalProxy and remote proxies just don&#8217;t work the same way.
+The remote proxies serialize your object graph twice &#8211; once on the way to
+the server, once on the way back. LocalProxy serializes the object graph once,
+so the &#8220;server-side&#8221; code operates on a clone. That is probably the
+issue you are facing.<o:p></o:p></span></p>
+
+<p class=MsoPlainText><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoPlainText><span>One
+design goal for LocalProxy is performance. It tries, as much as possible, to
+cut overhead so the 1- and 2-tier scenarios really are faster than 3- and
+4-tier scenarios. This design goal is higher in priority than complete
+functional parity with the remote proxies.<o:p></o:p></span></p>
+
+<p class=MsoPlainText><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoPlainText><span>Fortunately
+the data portal proxy object is a pluggable component. You can create your own.
+So you could create a copy of LocalProxy in your project and do a second clone
+after the &#8220;server-side&#8221; update to force a
+serialization/deserialization process after the &#8220;server-side&#8221; code
+is complete.<o:p></o:p></span></p>
+
+<p class=MsoPlainText><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoPlainText><span>I
+suspect most people wouldn&#8217;t want to take the perf hit for that, but if
+your functionality requirements need that to occur, then it may be worth it for
+you.<o:p></o:p></span></p>
+
+<p class=MsoPlainText><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoPlainText><span>Rocky<o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>lwmorris replied on Thursday, May 21, 2009</h2>Ok. We'll simply copy the existing LocalProxy then do something like:<br /><br />    public DataPortalResult Update(object obj, DataPortalContext context)<br />    {<br />        ICloneable obj = _portal.Update(obj, context);<br />        return new DataPortalResult(obj.Clone());<br />    }<br /><br />Thank you for help.</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

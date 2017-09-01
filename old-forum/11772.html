@@ -1,0 +1,129 @@
+<html><header><title>&quot;System.NotSupportedException: Can not change a read-only list or collection&quot; Random issue</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>&quot;System.NotSupportedException: Can not change a read-only list or collection&quot; Random issue</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11772.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Pravin posted on Tuesday, January 08, 2013</h2><p>I am getting this issue while setting value to property.</p>
+<p>here is scenario:-&nbsp;</p>
+<p>I have a async rule for one property and and while setting this property in code I get set or load failed for property issue I checked stack trace and seems exception is of &quot;System.NotSupportedException: Can not change a read-only list or collection&quot;.I think this is related ti Context.results collection in async rule and it is giving error at&nbsp;<i><span lang="EN-GB">context.Results.Add</span></i><span lang="EN-GB">(&hellip;) line .</span></p>
+<p><span lang="EN-GB">Anyone already have acrossed such issue ? Please help</span></p>
+<p><span lang="EN-GB">&nbsp;PS - i am not getting this issue every time i went to set value t property this is very <i><span style="text-decoration:underline;">randomly</span></i> generated.&nbsp;</span></p>
+<p><span lang="EN-GB">Thanks in advance</span></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Wednesday, January 09, 2013</h2><p>Which version of CSLA do you use and runtime (NET, SL, WinRT)?</p>
+<p>Can you show us the code for the async rule and how you set the property in code?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Pravin replied on Wednesday, January 09, 2013</h2><p>Thanks JonnyBee for reply .</p>
+<p>I am using 4.1 SL version</p>
+<p>code is here </p>
+<p>async rule - </p>
+<p>&nbsp;<span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">protected o</span></span></span></span></span></span><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">verride</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> </span></span><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">void</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> Execute(</span></span><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;">RuleContext</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> context)</span></span></p>
+<p><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">{</span></span></p>
+<p><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">
+<p>factory.BookGroupExistsBeginExecute(</p>
+<p>(s, r) =&gt;</p>
+<p>{</p>
+<font face="Consolas" size="2"><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></font></span><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></span>
+<p><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">if</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> (r.Exception != </span></span><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">null</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">)
+<p>{</p>
+<p>context.AddErrorResult(r.Exception.ToString());</p>
+<p>}</p>
+<font face="Consolas" size="2"><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></font></span><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></span></p>
+<p><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">else</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> </span></span><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">if</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> (!r.Data.Exists)
+<p>{</p>
+<p>context.Results.Add(</p>
+<font face="Consolas" size="2"><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></font></span><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></span></p>
+<p><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">new</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> </span></span><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;">RuleResult</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">(
+<p>RuleName,</p>
+<font face="Consolas" size="2"><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></font></span><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></span></p>
+<p><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">this</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">.PrimaryProperty,<font face="Consolas" size="2"><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></font></span><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></span></p>
+<p><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;">LanguageService</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">.GetText(</span></span><span style="font-family:Consolas;color:#a31515;font-size:x-small;"><span style="font-family:Consolas;color:#a31515;font-size:x-small;"><span style="font-family:Consolas;color:#a31515;font-size:x-small;">&quot;BookGroupsNotExist&quot;</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">)));
+<p>}</p>
+<font face="Consolas" size="2"><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></font></span><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></span></p>
+<p><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">if</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> (!restrictPropertyChange)
+<p>{</p>
+<font face="Consolas" size="2"><font face="Consolas" size="2">
+<p>target.LoadProperty(FromAsyncRuleProp, </p>
+</font></font></span><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></span></p>
+<p><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">true</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">);
+<p>context.Complete(); </p>
+<p>}</p>
+<font face="Consolas" size="2"><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></font></span><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></span></p>
+<p><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">else</span></span></span></p>
+<span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">
+<p>{</p>
+<p>context.Complete();</p>
+<p>}</p>
+<p>},</p>
+<p>target.SelectedCompanies);</p>
+<p>}</p>
+</span></span></span></span></p>
+<p>
+<p><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">
+<p>&nbsp;</p>
+</span></span>}</p>
+</p>
+<p>
+<p>I am not setting property inside rule </p>
+<p>Property is set in Business object and on which this async rule is get triggred </p>
+<p>&nbsp;<span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">if</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> (bookGroupInfo != </span></span><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">null</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">) </span></span><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">this</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">.Entity.SecondaryBookGroupId = bookGroupInfo.Id;</span></span></p>
+<p>
+<p>
+<p>{</p>
+<span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">
+<p>&nbsp;</p>
+</span></span></span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">
+<p>&nbsp;</p>
+</span></span></span></span>
+<p>&nbsp;</p>
+</p>
+<p>}</p>
+</p>
+<p>so randomly&nbsp;I am getting <em>Property load or set failed for property SecondaryBookGroupId</em>&nbsp;issue for this line(while setting property)</p>
+<p>If i use alternate way and remove async rule&nbsp;then there is no issue.issue comes&nbsp;randomly when&nbsp;i use async rule.</p>
+<p>Thanks in advance..&nbsp;&nbsp;&nbsp;</p>
+</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Thursday, January 10, 2013</h2><p>Could it be the LanguageService that gives the exception? </p>
+<p>try to replace it with a static string and see if you still get the exception?&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Russ replied on Thursday, January 10, 2013</h2><p>Could this be the&nbsp;race condition&nbsp;that was occurring when multiple business objects were created in rapid succession. This was&nbsp;fixed in RC1 4.5.4-121017:</p>
+<p>
+<table border="1" width="624" cellpadding="0" cellspacing="0" style="border-collapse:collapse;width:6.5in;mso-border-top-alt:solid #4F81BD 1.0pt;mso-border-top-themecolor:accent1;mso-border-bottom-alt:solid #4F81BD 1.0pt;mso-border-bottom-themecolor:accent1;mso-yfti-tbllook:1184;mso-padding-alt:0in 5.4pt 0in 5.4pt;" class="LightShading-Accent11">
+<tbody>
+<tr style="height:15pt;mso-yfti-irow:5;">
+<td width="54" valign="top" style="height:15pt;padding-bottom:0in;padding-top:0in;padding-left:5.4pt;padding-right:5.4pt;width:40.85pt;background-color:transparent;border:#f0f0f0;">
+<p align="right" style="TEXT-ALIGN:right;MARGIN:0in 0in 0pt;mso-yfti-cnfc:4;" class="MsoNormal"><b><span style="FONT-SIZE:11pt;FONT-FAMILY:&#39;Calibri&#39;,&#39;sans-serif&#39;;COLOR:black;">1107</span></b></p>
+</td>
+<td width="570" valign="top" style="height:15pt;padding-bottom:0in;padding-top:0in;padding-left:5.4pt;padding-right:5.4pt;width:427.15pt;background-color:transparent;border:#f0f0f0;">
+<p style="MARGIN:0in 0in 0pt;" class="MsoNormal"><span style="FONT-SIZE:11pt;FONT-FAMILY:&#39;Calibri&#39;,&#39;sans-serif&#39;;COLOR:black;">Fix bug with race condition in rule initialization code for both Authz and Business rules</span></p>
+</td>
+</tr>
+</tbody>
+</table>
+</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Thursday, January 10, 2013</h2><p>I don&#39;t believe this is the case. The race condition occurred when rules was initializing when first/second instance was created at the same time.</p>
+<p>The original post identified the exception occurred in context.Results.Add</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Pravin replied on Thursday, January 10, 2013</h2><p>LanguageService will not be point for Exception.but even though i replaced and test with&nbsp;hardcode string and i am still getting issue. It is not consistent issue</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Friday, January 11, 2013</h2><p>context.AddErrrorResult creates and adds a new item to Results, defined as:</p>
+<p>&nbsp;</p>
+<pre>&nbsp;&nbsp;&nbsp;&nbsp;<span>private</span>&nbsp;<span>List</span>&lt;<span>RuleResult</span>&gt;&nbsp;_results;</pre>
+<pre>And there is no way that this is going to throw the given exception. <br />So it could be that the actual line is incorrect and that it is context.Complete() that causes the exception. </pre>
+<pre>CSLA 4.1 has a known bug there - <a href="http://www.lhotka.net/cslabugs/edit_bug.aspx?id=1026">http://www.lhotka.net/cslabugs/edit_bug.aspx?id=1026</a>&nbsp;</pre>
+<pre>This was fixed in CSLA 4.3  </pre>
+<p>&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

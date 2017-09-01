@@ -1,0 +1,172 @@
+<html><header><title>WCF TCP configuration/custom principal issue?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>WCF TCP configuration/custom principal issue?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10011.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>itogroup posted on Tuesday, February 01, 2011</h2><p>I&#39;m using CSLA .NET 3.8.2.0 and working on moving from using the Remoting-based DataPortal to the WCF-based DataPortal, specifically using TCP.</p>
+<p>I can get everything working beautifully using a basicHttpBinding, but am having mixed luck with the netTcpBinding. </p>
+<p>I have a business object which doesn&#39;t require any security roles that I&#39;ve been using to test the DataPortal. Using TCP I can get the object with the generic principal on the thread and I can get it after calling the Logout() method on my custom principal (to get the custom principal on the thread). This means that we have IIS and WAS working correctly and there aren&#39;t any firewall issues.</p>
+<p>When I call the Login method on my custom principal, I get an exception in WcfProxy.Fetch(Type objectType, object criteria, DataPortalContext context) when it calls response = svr.Fetch(new FetchRequest(objectType, criteria, context)); The exception&#39;s message is &quot;There was an error while trying to deserialize parameter http://ws.lhotka.net/WcfDataPortal:request.&nbsp; Please see InnerException for more details.&quot; but the InnerException is null.</p>
+<p>I&#39;ve added a LoadPrincipal(string username) method to my principal, created a custom UserNamePasswordValidator, created a custom IAuthorizationPolicy, and subclassed WcfProxy to override its GetChannelFactory() as described in Using CSLA .NET 3.0.</p>
+<p>As I said above, when I use the basicHttpBinding, the login works fine and my program runs perfectly. It&#39;s just when I switch over to the netTcpBinding that the login fails.</p>
+<p>I&#39;ve re-read chapter 1 of Using CSLA.NET Version 3.0. I&#39;m hoping someone has some insight before I have to delve into Bustamante&#39;s Learning WCF again.</p>
+<p>Below are the relevant parts of the client&#39;s app.config:</p>
+<pre>&lt;configuration&gt;
+	&lt;appSettings&gt;
+		&lt;add key=&quot;CslaAuthentication&quot; value=&quot;Csla&quot;/&gt;
+		&lt;add key=&quot;CslaDataPortalProxy&quot; value=&quot;Harld.Data.HarldWcfProxy, Harld.Data&quot;/&gt;
+	&lt;/appSettings&gt;
+	&lt;system.serviceModel&gt;
+		&lt;client&gt;
+			&lt;endpoint	name=&quot;HarldWcfDataPortal&quot;
+						address=&quot;net.tcp://servername.domain.tld:42753/WcfPortal.svc&quot;
+						binding=&quot;netTcpBinding&quot;
+						contract=&quot;Csla.Server.Hosts.IWcfPortal&quot; bindingConfiguration=&quot;WcfPortalBinding&quot;&gt;
+			&lt;/endpoint&gt;
+			&lt;!--&lt;endpoint	name=&quot;HarldWcfDataPortal&quot;
+						address=&quot;https://servername.domain.tld:4433/WcfPortal.svc&quot;
+						binding=&quot;basicHttpBinding&quot;
+						contract=&quot;Csla.Server.Hosts.IWcfPortal&quot; 
+						bindingConfiguration=&quot;BasicSslBinding&quot;&gt;
+			&lt;/endpoint&gt;--&gt;
+		&lt;/client&gt;
+		&lt;bindings&gt;
+			&lt;basicHttpBinding&gt;
+				&lt;binding
+					name=&quot;BasicSslBinding&quot;
+					maxReceivedMessageSize=&quot;2147483647&quot;
+					maxBufferPoolSize=&quot;2147483647&quot;
+					receiveTimeout=&quot;00:01:00&quot;
+					sendTimeout=&quot;00:01:00&quot;&gt;
+					&lt;security mode=&quot;Transport&quot;&gt;
+						&lt;message clientCredentialType=&quot;UserName&quot; algorithmSuite=&quot;Default&quot; /&gt;
+					&lt;/security&gt;
+					&lt;readerQuotas
+						maxDepth=&quot;2147483647&quot;
+						maxStringContentLength=&quot;2147483647&quot;
+						maxArrayLength=&quot;2147483647&quot;
+						maxBytesPerRead=&quot;2147483647&quot;
+						maxNameTableCharCount=&quot;2147483647&quot; /&gt;
+				&lt;/binding&gt;
+			&lt;/basicHttpBinding&gt;
+			&lt;netTcpBinding&gt;
+				&lt;binding
+					name=&quot;WcfPortalBinding&quot;
+					maxReceivedMessageSize=&quot;2147483647&quot;
+					maxBufferPoolSize=&quot;2147483647&quot;
+					receiveTimeout=&quot;00:01:00&quot;
+					sendTimeout=&quot;00:01:00&quot;&gt;
+					&lt;security mode=&quot;Transport&quot;&gt;
+						&lt;message clientCredentialType=&quot;UserName&quot; algorithmSuite=&quot;Default&quot; /&gt;
+					&lt;/security&gt;
+					&lt;readerQuotas
+						maxDepth=&quot;2147483647&quot;
+						maxStringContentLength=&quot;2147483647&quot;
+						maxArrayLength=&quot;2147483647&quot;
+						maxBytesPerRead=&quot;2147483647&quot;
+						maxNameTableCharCount=&quot;2147483647&quot; /&gt;
+				&lt;/binding&gt;
+			&lt;/netTcpBinding&gt;
+		&lt;/bindings&gt;
+	&lt;/system.serviceModel&gt;
+&lt;/configuration&gt;</pre>
+<p>And the relevant parts of the server&#39;s web.config:</p>
+<pre>&lt;configuration&gt;
+	&lt;system.serviceModel&gt;
+		&lt;serviceHostingEnvironment&gt;
+			&lt;baseAddressPrefixFilters&gt;
+				&lt;add prefix=&quot;https://servername.domain.tld:4433&quot;/&gt;
+				&lt;add prefix=&quot;net.tcp://servername.domain.tld:42753&quot;/&gt;
+			&lt;/baseAddressPrefixFilters&gt;
+		&lt;/serviceHostingEnvironment&gt;
+		&lt;services&gt;
+			&lt;service name=&quot;Csla.Server.Hosts.WcfPortal&quot; behaviorConfiguration=&quot;DebugBehavior&quot;&gt;
+				&lt;endpoint contract=&quot;Csla.Server.Hosts.IWcfPortal&quot;
+						  address=&quot;https://servername.domain.tld:4433/WcfPortal.svc&quot;
+						  binding=&quot;basicHttpBinding&quot;
+						  bindingConfiguration=&quot;BasicSslBinding&quot; /&gt;
+				&lt;endpoint contract=&quot;Csla.Server.Hosts.IWcfPortal&quot;
+						  address=&quot;net.tcp://servername.domain.tld:42753/WcfPortal.svc&quot;
+						  binding=&quot;netTcpBinding&quot; 
+						  bindingConfiguration=&quot;WcfPortalBinding&quot;&gt;
+				&lt;/endpoint&gt;
+			&lt;/service&gt;
+		&lt;/services&gt;
+		&lt;bindings&gt;
+			&lt;basicHttpBinding&gt;
+				&lt;binding
+					name=&quot;BasicSslBinding&quot;
+					maxReceivedMessageSize=&quot;2147483647&quot;
+					maxBufferPoolSize=&quot;2147483647&quot;
+					receiveTimeout=&quot;00:01:00&quot;
+					sendTimeout=&quot;00:01:00&quot;&gt;
+					&lt;security mode=&quot;Transport&quot;&gt;
+						&lt;message clientCredentialType=&quot;UserName&quot; algorithmSuite=&quot;Default&quot; /&gt;
+					&lt;/security&gt;
+					&lt;readerQuotas
+						maxDepth=&quot;2147483647&quot;
+						maxStringContentLength=&quot;2147483647&quot;
+						maxArrayLength=&quot;2147483647&quot;
+						maxBytesPerRead=&quot;2147483647&quot;
+						maxNameTableCharCount=&quot;2147483647&quot; /&gt;
+				&lt;/binding&gt;
+			&lt;/basicHttpBinding&gt;
+			&lt;netTcpBinding&gt;
+				&lt;binding
+					name=&quot;WcfPortalBinding&quot;
+					maxReceivedMessageSize=&quot;2147483647&quot;
+					maxBufferPoolSize=&quot;2147483647&quot;
+					receiveTimeout=&quot;00:01:00&quot;
+					sendTimeout=&quot;00:01:00&quot;&gt;
+					&lt;security mode=&quot;Transport&quot;&gt;
+						&lt;message clientCredentialType=&quot;UserName&quot; algorithmSuite=&quot;Default&quot; /&gt;
+					&lt;/security&gt;
+					&lt;readerQuotas
+						maxDepth=&quot;2147483647&quot;
+						maxStringContentLength=&quot;2147483647&quot;
+						maxArrayLength=&quot;2147483647&quot;
+						maxBytesPerRead=&quot;2147483647&quot;
+						maxNameTableCharCount=&quot;2147483647&quot; /&gt;
+				&lt;/binding&gt;
+			&lt;/netTcpBinding&gt;
+		&lt;/bindings&gt;
+		&lt;behaviors&gt;
+			&lt;serviceBehaviors&gt;
+				&lt;behavior name=&quot;DebugBehavior&quot;&gt;
+					&lt;serviceDebug includeExceptionDetailInFaults=&quot;true&quot; /&gt;
+				&lt;/behavior&gt;
+				&lt;behavior name=&quot;HarldAuthBehavior&quot;&gt;
+					&lt;serviceDebug includeExceptionDetailInFaults=&quot;true&quot; /&gt;
+					&lt;serviceAuthorization principalPermissionMode=&quot;Custom&quot;&gt;
+						&lt;authorizationPolicies&gt;
+							&lt;add policyType=&quot;Harld.Data.PrincipalPolicy, Harld.Data&quot; /&gt;
+						&lt;/authorizationPolicies&gt;
+					&lt;/serviceAuthorization&gt;
+					&lt;serviceCredentials&gt;
+						&lt;userNameAuthentication
+							userNamePasswordValidationMode=&quot;Custom&quot;
+							customUserNamePasswordValidatorType=&quot;Harld.Data.CredentialValidator, Harld.Data&quot; /&gt;
+					&lt;/serviceCredentials&gt;
+					&lt;serviceMetadata httpGetEnabled=&quot;true&quot; /&gt;
+				&lt;/behavior&gt;
+				&lt;behavior name=&quot;MexBehavior&quot;&gt;
+					&lt;serviceMetadata
+					  httpsGetEnabled=&quot;true&quot; httpsGetUrl=&quot;https://servername.domain.tld:4433/Furniture/mex&quot; /&gt;
+				&lt;/behavior&gt;
+			&lt;/serviceBehaviors&gt;
+		&lt;/behaviors&gt;
+	&lt;/system.serviceModel&gt;
+&lt;/configuration&gt;</pre></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Tuesday, February 01, 2011</h2><p>I don&#39;t know the answer for sure. Here are some things to think about.</p>
+<p>By default WCF uses the DataContractSerializer, which isn&#39;t sufficient for CSLA. So the WCF server-side portal includes functionality to force the use of the NetDataContractSerializer.</p>
+<p>It is possible that the TCP binding doesn&#39;t honor the same extension attributes as the HTTP bindings, and so the NDCS isn&#39;t being used. If the DCS were used, serialization and/or deserialization would fail because CSLA forms messages that the DCS simply can&#39;t handle.</p>
+<p>I don&#39;t know of an easy way to determine which serializer is being executed. You can probably use fiddler to look at the data stream to find out though. The XML created by the DCS and NDCS are extremely different. The DCS XML is much cleaner, because it lacks nearly all metadata (like assembly names), while the NDCS XML is more comprehensive and includes everything necessary to clone .NET objects, including full .NET type information.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>itogroup replied on Tuesday, February 08, 2011</h2><p>I&#39;m having some issues getting Fiddler configured correctly (I&#39;ve never used it before). I have Fiddler running on the client machine. The NetTcpBinding doesn&#39;t have the ProxyAddress property (as BasicHTTPBinding and WSHttpBinding do). I added a default proxy to the system.net section of the client app.config</p>
+<p>&lt;defaultProxy useDefaultCredentials=&quot;true&quot;&gt;<br />&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &lt;proxy bypassonlocal=&quot;False&quot; proxyaddress=&quot;http://127.0.0.1:8888&quot; /&gt;<br />&lt;/defaultProxy&gt;</p>
+<p>Fiddler says it&#39;s capturing on all processes, but nothing appears when I try to fetch an object through the DataPortal over the TCP binding. Any thoughts? I also tried explicitly adding &lt;add key=&quot;CslaSerializationFormatter&quot; value=&quot;NetDataContractSerializer&quot; /&gt; to both the web.config and app.config, no change.</p>
+<p>&nbsp;</p>
+<p>Though, I did find some more detail about the exception being thrown:</p>
+<p>&quot;DataTable does not support schema inference from Xml.&quot;</p>
+<p>&nbsp;&nbsp; at System.Data.DataTable.ReadXml(XmlReader reader, XmlReadMode mode, Boolean denyResolving)<br />&nbsp;&nbsp; at System.Data.DataTable.ReadXmlSerializable(XmlReader reader)<br />&nbsp;&nbsp; at System.Data.DataTable.System.Xml.Serialization.IXmlSerializable.ReadXml(XmlReader reader)<br />&nbsp;&nbsp; at System.Runtime.Serialization.XmlObjectSerializerReadContext.ReadIXmlSerializable(XmlSerializableReader xmlSerializableReader, XmlReaderDelegator xmlReader, XmlDataContract xmlDataContract, Boolean isMemberType)<br />&nbsp;&nbsp; at System.Runtime.Serialization.XmlDataContract.ReadXmlValue(XmlReaderDelegator xmlReader, XmlObjectSerializerReadContext context)<br />&nbsp;&nbsp; at System.Runtime.Serialization.XmlObjectSerializerReadContextComplex.InternalDeserializeInSharedTypeMode(XmlReaderDelegator xmlReader, Int32 declaredTypeID, Type declaredType, String name, String ns)<br />&nbsp;&nbsp; at System.Runtime.Serialization.XmlObjectSerializerReadContextComplex.InternalDeserialize(XmlReaderDelegator xmlReader, Int32 declaredTypeID, RuntimeTypeHandle declaredTypeHandle, String name, String ns)<br />&nbsp;&nbsp; at ReadHarldIdentityFromXml(XmlReaderDelegator , XmlObjectSerializerReadContext , XmlDictionaryString[] , XmlDictionaryString[] )<br />&nbsp;&nbsp; at System.Runtime.Serialization.ClassDataContract.ReadXmlValue(XmlReaderDelegator xmlReader, XmlObjectSerializerReadContext context)<br />&nbsp;&nbsp; at System.Runtime.Serialization.XmlObjectSerializerReadContextComplex.InternalDeserializeInSharedTypeMode(XmlReaderDelegator xmlReader, Int32 declaredTypeID, Type declaredType, String name, String ns)<br />&nbsp;&nbsp; at System.Runtime.Serialization.XmlObjectSerializerReadContextComplex.InternalDeserialize(XmlReaderDelegator xmlReader, Int32 declaredTypeID, RuntimeTypeHandle declaredTypeHandle, String name, String ns)<br />&nbsp;&nbsp; at ReadHarldPrincipalFromXml(XmlReaderDelegator , XmlObjectSerializerReadContext , XmlDictionaryString[] , XmlDictionaryString[] )<br />&nbsp;&nbsp; at System.Runtime.Serialization.ClassDataContract.ReadXmlValue(XmlReaderDelegator xmlReader, XmlObjectSerializerReadContext context)<br />&nbsp;&nbsp; at System.Runtime.Serialization.XmlObjectSerializerReadContextComplex.InternalDeserializeInSharedTypeMode(XmlReaderDelegator xmlReader, Int32 declaredTypeID, Type declaredType, String name, String ns)<br />&nbsp;&nbsp; at System.Runtime.Serialization.XmlObjectSerializerReadContextComplex.InternalDeserialize(XmlReaderDelegator xmlReader, Int32 declaredTypeID, RuntimeTypeHandle declaredTypeHandle, String name, String ns)<br />&nbsp;&nbsp; at ReadDataPortalContextFromXml(XmlReaderDelegator , XmlObjectSerializerReadContext , XmlDictionaryString[] , XmlDictionaryString[] )<br />&nbsp;&nbsp; at System.Runtime.Serialization.ClassDataContract.ReadXmlValue(XmlReaderDelegator xmlReader, XmlObjectSerializerReadContext context)<br />&nbsp;&nbsp; at System.Runtime.Serialization.XmlObjectSerializerReadContextComplex.InternalDeserializeInSharedTypeMode(XmlReaderDelegator xmlReader, Int32 declaredTypeID, Type declaredType, String name, String ns)<br />&nbsp;&nbsp; at System.Runtime.Serialization.XmlObjectSerializerReadContextComplex.InternalDeserialize(XmlReaderDelegator xmlReader, Int32 declaredTypeID, RuntimeTypeHandle declaredTypeHandle, String name, String ns)<br />&nbsp;&nbsp; at ReadFetchRequestFromXml(XmlReaderDelegator , XmlObjectSerializerReadContext , XmlDictionaryString[] , XmlDictionaryString[] )<br />&nbsp;&nbsp; at System.Runtime.Serialization.ClassDataContract.ReadXmlValue(XmlReaderDelegator xmlReader, XmlObjectSerializerReadContext context)<br />&nbsp;&nbsp; at System.Runtime.Serialization.XmlObjectSerializerReadContextComplex.InternalDeserializeInSharedTypeMode(XmlReaderDelegator xmlReader, Int32 declaredTypeID, Type declaredType, String name, String ns)<br />&nbsp;&nbsp; at System.Runtime.Serialization.XmlObjectSerializerReadContextComplex.InternalDeserialize(XmlReaderDelegator xmlReader, Type declaredType, String name, String ns)<br />&nbsp;&nbsp; at System.Runtime.Serialization.NetDataContractSerializer.InternalReadObject(XmlReaderDelegator xmlReader, Boolean verifyObjectName)<br />&nbsp;&nbsp; at System.Runtime.Serialization.XmlObjectSerializer.ReadObjectHandleExceptions(XmlReaderDelegator reader, Boolean verifyObjectName)<br />&nbsp;&nbsp; at System.ServiceModel.Dispatcher.DataContractSerializerOperationFormatter.DeserializeParameterPart(XmlDictionaryReader reader, PartInfo part, Boolean isRequest)</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tmg4340 replied on Tuesday, February 08, 2011</h2><p>I can&#39;t help you with the Fiddler issues, but I do have experience with that exception.&nbsp; This is what you get when your DataTable is empty - i.e. it has no rows <strong>and no columns.</strong>&nbsp;&nbsp;.NET&#39;s XML serializers have two requirements when trying to serialize a DataTable:</p>
+<p>1. It must have at least one column defined.</p>
+<p>2. It must have a name.</p>
+<p>I don&#39;t really understand #2, but I can tell you it&#39;s a requirement...</p>
+<p>So, ultimately your problem is that whatever is constructing your DataTable is not building a schema for it, and when that process returns no rows, the resulting DataTable object is empty.</p>
+<p>HTH</p>
+<p>- Scott</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>itogroup replied on Wednesday, February 23, 2011</h2><p>Scott,</p>
+<p>I finally got a chance to verify that the table has a name and the schema is getting loaded correctly, even if there are no rows. Plus it serializes and deserializes fine through the HTTP-based channels. </p>
+<p>Rocky&#39;s suggestion about the mismatched serializers seems like it could be right, I just can&#39;t seem to get at the underlying byte stream to confirm.</p>
+<p>Rob</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

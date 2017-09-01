@@ -1,0 +1,11 @@
+<html><header><title>Re: How to handle transactions across root objects</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Re: How to handle transactions across root objects</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3316.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>alef posted on Thursday, August 02, 2007</h2><P>Hello Joe,</P>
+<P>The recommendation for the Command Object I've followed. My code I've written is based on your solution. I've find many posts from you. But the difficulty about my question is that the transaction is across root objects but there is a dependency. First I need to save the roles, recuperate the identity values for the roles from the database and then do the saving of the project with his projectresources.</P>
+<P>So it is the following&nbsp;part of the code which is not correct. How can I transfer the identity value for the roles to the project?</P><FONT size=2>
+<P>[</FONT><FONT color=#2b91af size=2>Transactional</FONT><FONT size=2>(</FONT><FONT color=#2b91af size=2>TransactionalTypes</FONT><FONT size=2>.TransactionScope)]</P>
+<P></FONT><FONT color=#0000ff size=2>protected</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>override</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>void</FONT><FONT size=2> DataPortal_Execute()</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (_roles != </FONT><FONT color=#0000ff size=2>null</FONT><FONT size=2>)</P>
+<P>_roles &nbsp;= _roles.Save();</P>
+<P></FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (_project!= </FONT><FONT color=#0000ff size=2>null</FONT><FONT size=2>)</P>
+<P>_project= _project.Save();</P>
+<P>}</P></FONT></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

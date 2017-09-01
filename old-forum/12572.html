@@ -1,0 +1,75 @@
+<html><header><title>IIS 7 and WCF 4 REST Service and dataportal configuration</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>IIS 7 and WCF 4 REST Service and dataportal configuration</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/12572.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Tatjana posted on Wednesday, April 02, 2014</h2><p>Hello everyone,</p>
+<p class="MsoNormal">I<span style="font-size:12px;">&nbsp;have developed wcf .net 4 REST service that uses the wcf dataportal. Both services
+are hosted in IIS 7 in same web app. &nbsp;Parts of the web.config are enclosed at the end of this message. &nbsp;</span></p>
+<p class="MsoNormal"><span style="font-size:12px;"></span><span style="font-size:12px;">My wcf service runs successfully on ASP.NET developer server, but not in the IIS web server. &nbsp;When accessing an API from web browser on port 80, I keep receiving this exception message:</span></p>
+<p class="MsoNormal"><span><i>Exception has been thrown by the target of an invocation</i></span></p>
+<p class="MsoNormal"><span style="font-size:12px;">Would you have any ideas why could this be happening? &nbsp;</span></p>
+<p class="MsoNormal">&nbsp;</p>
+<p class="MsoNormal"><span style="font-size:12px;"><span style="text-decoration:underline;">The web,config:</span></span></p>
+<p class="MsoNormal">&lt;?xml version=&quot;1.0&quot;?&gt;</p>
+<p class="MsoNormal">&lt;configuration&gt;</p>
+<p class="MsoNormal">&nbsp; &lt;appSettings&gt;</p>
+<p class="MsoNormal">&nbsp; &nbsp; &lt;add key=&quot;MyDbName&quot; value=&quot;MY_DB&quot; /&gt;</p>
+<p class="MsoNormal">&nbsp; &nbsp; &lt;add key=&quot;CslaAuthentication&quot; value=&quot;Csla&quot;/&gt;</p>
+<p class="MsoNormal">&nbsp; &lt;/appSettings&gt;</p>
+<p class="MsoNormal">&nbsp; &lt;connectionStrings/&gt;</p>
+<p class="MsoNormal">&nbsp; &lt;system.serviceModel&gt;</p>
+<p class="MsoNormal">&nbsp; &nbsp; &lt;protocolMapping&gt;</p>
+<p class="MsoNormal">&nbsp; &nbsp; &nbsp; &lt;add scheme=&quot;http&quot; binding=&quot;webHttpBinding&quot; /&gt;</p>
+<p class="MsoNormal">&nbsp; &nbsp; &lt;/protocolMapping&gt;</p>
+<p class="MsoNormal">&nbsp; &nbsp; &lt;behaviors&gt;</p>
+<p class="MsoNormal">&nbsp; &nbsp; &nbsp; &lt;serviceBehaviors&gt;</p>
+<p class="MsoNormal">&nbsp; &nbsp; &nbsp; &nbsp; &lt;behavior name=&quot;WebServiceBehavior&quot;&gt;</p>
+<p class="MsoNormal">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;serviceMetadata httpGetEnabled=&quot;true&quot;/&gt;</p>
+<p class="MsoNormal">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;serviceDebug includeExceptionDetailInFaults=&quot;true&quot;/&gt;</p>
+<p class="MsoNormal">&nbsp; &nbsp; &nbsp; &nbsp; &lt;/behavior&gt;</p>
+<p class="MsoNormal">&nbsp; &nbsp; &nbsp; &nbsp; &lt;behavior name=&quot;returnFaults&quot;&gt;</p>
+<p class="MsoNormal">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;serviceDebug includeExceptionDetailInFaults=&quot;true&quot; /&gt;</p>
+<p class="MsoNormal">&nbsp; &nbsp; &nbsp; &nbsp; &lt;/behavior&gt;</p>
+<p class="MsoNormal">&nbsp; &nbsp; &nbsp; &lt;/serviceBehaviors&gt;</p>
+<p class="MsoNormal">&nbsp; &nbsp; &nbsp; &lt;endpointBehaviors&gt;</p>
+<p class="MsoNormal">&nbsp; &nbsp; &nbsp; &nbsp; &lt;behavior name=&quot;RESTEndpointBehavior&quot;&gt;</p>
+<p class="MsoNormal">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;webHttp /&gt;</p>
+<p class="MsoNormal">&nbsp; &nbsp; &nbsp; &nbsp; &lt;/behavior&gt;</p>
+<p class="MsoNormal">&nbsp; &nbsp; &nbsp; &lt;/endpointBehaviors&gt;</p>
+<p class="MsoNormal">&nbsp; &nbsp; &lt;/behaviors&gt;</p>
+<p class="MsoNormal">&nbsp; &nbsp; &lt;serviceHostingEnvironment multipleSiteBindingsEnabled=&quot;true&quot; minFreeMemoryPercentageToActivateService=&quot;1&quot; /&gt;</p>
+<p class="MsoNormal">&nbsp; &nbsp; &lt;services&gt;</p>
+<p class="MsoNormal">&nbsp; &nbsp; &nbsp; &lt;service behaviorConfiguration=&quot;WebServiceBehavior&quot; name=&quot;Something&quot;&gt;</p>
+<p class="MsoNormal">&nbsp; &nbsp; &nbsp; &nbsp; &lt;endpoint address=&quot;&quot; binding=&quot;webHttpBinding&quot; contract=&quot;ISomethingContract&quot; behaviorConfiguration=&quot;RESTEndpointBehavior&quot; /&gt;</p>
+<p class="MsoNormal">&nbsp; &nbsp; &nbsp; &nbsp; &lt;endpoint address=&quot;mex&quot; binding=&quot;mexHttpBinding&quot; contract=&quot;IMetadataExchange&quot;/&gt;</p>
+<p class="MsoNormal">&nbsp; &nbsp; &nbsp; &nbsp; &lt;host&gt;</p>
+<p class="MsoNormal">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;baseAddresses&gt;</p>
+<p class="MsoNormal">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;add baseAddress=&quot;http://localhost:8000&quot; /&gt;</p>
+<p class="MsoNormal">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;/baseAddresses&gt;</p>
+<p class="MsoNormal">&nbsp; &nbsp; &nbsp; &nbsp; &lt;/host&gt;</p>
+<p class="MsoNormal">&nbsp; &nbsp; &nbsp; &lt;/service&gt;</p>
+<p class="MsoNormal">&nbsp; &nbsp; &nbsp; &lt;service name=&quot;Csla.Server.Hosts.WcfPortal&quot; behaviorConfiguration=&quot;returnFaults&quot;&gt;</p>
+<p class="MsoNormal">&nbsp; &nbsp; &nbsp; &nbsp; &lt;endpoint binding=&quot;wsHttpBinding&quot; contract=&quot;Csla.Server.Hosts.IWcfPortal&quot; bindingConfiguration=&quot;WSHttpBinding_IWebService&quot;/&gt;</p>
+<p class="MsoNormal">&nbsp; &nbsp; &nbsp; &lt;/service&gt;</p>
+<p class="MsoNormal">&nbsp; &nbsp; &lt;/services&gt;</p>
+<p class="MsoNormal">&nbsp; &nbsp; &lt;bindings&gt;</p>
+<p class="MsoNormal">&nbsp; &nbsp; &nbsp; &lt;wsHttpBinding&gt;</p>
+<p class="MsoNormal">&nbsp; &nbsp; &nbsp; &nbsp; &lt;binding name=&quot;WSHttpBinding_IWebService&quot; closeTimeout=&quot;00:01:00&quot; openTimeout=&quot;00:01:00&quot; receiveTimeout=&quot;00:10:00&quot; sendTimeout=&quot;00:01:00&quot; bypassProxyOnLocal=&quot;false&quot; transactionFlow=&quot;false&quot; hostNameComparisonMode=&quot;StrongWildcard&quot; maxBufferPoolSize=&quot;2147483647&quot; maxReceivedMessageSize=&quot;2147483647&quot; messageEncoding=&quot;Text&quot; textEncoding=&quot;utf-8&quot; useDefaultWebProxy=&quot;true&quot; allowCookies=&quot;false&quot;&gt;</p>
+<p class="MsoNormal">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;readerQuotas maxDepth=&quot;2147483647&quot; maxStringContentLength=&quot;2147483647&quot; maxArrayLength=&quot;2147483647&quot; maxBytesPerRead=&quot;2147483647&quot; maxNameTableCharCount=&quot;2147483647&quot;/&gt;</p>
+<p class="MsoNormal">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;reliableSession ordered=&quot;true&quot; inactivityTimeout=&quot;00:10:00&quot; enabled=&quot;false&quot;/&gt;</p>
+<p class="MsoNormal">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;security mode=&quot;None&quot;&gt;</p>
+<p class="MsoNormal">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;transport clientCredentialType=&quot;None&quot;/&gt;</p>
+<p class="MsoNormal">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;/security&gt;</p>
+<p class="MsoNormal">&nbsp; &nbsp; &nbsp; &nbsp; &lt;/binding&gt;</p>
+<p class="MsoNormal">&nbsp; &nbsp; &nbsp; &lt;/wsHttpBinding&gt;</p>
+<p class="MsoNormal">&nbsp; &nbsp; &lt;/bindings&gt; &nbsp; &nbsp;</p>
+<p class="MsoNormal">&nbsp; &lt;/system.serviceModel&gt;</p>
+<p class="MsoNormal">&nbsp; &lt;system.web&gt;</p>
+<p class="MsoNormal">&nbsp; &nbsp; &lt;sessionState mode=&quot;InProc&quot; cookieless=&quot;true&quot; regenerateExpiredSessionId=&quot;false&quot; timeout=&quot;20&quot;/&gt;</p>
+<p class="MsoNormal">&nbsp; &nbsp; &lt;compilation debug=&quot;true&quot; targetFramework=&quot;4.0&quot;&gt;</p>
+<p class="MsoNormal">&nbsp; &nbsp; &lt;/compilation&gt;</p>
+<p class="MsoNormal">&nbsp; &nbsp; &lt;authentication mode=&quot;Windows&quot;/&gt;</p>
+<p class="MsoNormal">&nbsp; &nbsp; &nbsp; &nbsp;&lt;pages controlRenderingCompatibilityVersion=&quot;3.5&quot; clientIDMode=&quot;AutoID&quot;/&gt;</p>
+<p class="MsoNormal">&nbsp; &lt;/system.web&gt;<span style="font-size:12px;">&nbsp;</span></p>
+<p class="MsoNormal"><span></span></p>
+<p class="MsoNormal">&lt;/configuration&gt;</p>
+<p class="MsoNormal"></p>
+<p>&nbsp;</p>
+<p class="MsoNormal">Thank you in advance,<br />Tanja</p>
+<p class="MsoNormal">PS. The web site is setup in the ASP.NET v4.0 Application pool &nbsp;(Integrated managed pipeline mode and ApplicationPoolIdentity for indenty) and the WcfPortal.svc is located in the same location where my svc file is.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

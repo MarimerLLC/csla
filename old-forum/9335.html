@@ -1,0 +1,41 @@
+<html><header><title>Urgent Please Help Problem in Creating a Business Rule</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Urgent Please Help Problem in Creating a Business Rule</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9335.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Deepak posted on Friday, August 06, 2010</h2><p><b>Hi,</b></p>
+<p><b><br /></b></p>
+<p><b>I&nbsp; am using CSLA&nbsp; 3.0.5.0.&nbsp; I have one instance - On edit of an object does not permit users to edit certain properties in accordance with the value of another property . For example there is an object Person with properties Name, age,active. If a person want to edit person details he will load the person to&nbsp; win form. But i have to create a rule which checks the value of active ( true,false). if true allow the user to edit details of person else dont permit him to do so and show some prompt like the error provider</b></p>
+<p><b><br /></b></p>
+<p><b>Deepak</b></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Marjon1 replied on Friday, August 06, 2010</h2><p>You could do this as a business rule, where your description would be that they cannot edit this field but this would still allow them make changes and they would have to manually correct them and you would need to hold the original values so you had something to compare them to know if they had been changed back. I wouldn&#39;t recommend this option unless you wanted people to edit values which isn&#39;t what I think you want to achieve.</p>
+<p>The better option is to override the CanWriteProperty method and for the properities in question check your active flag and return false when required, this would prevent any changes&nbsp;occurring to those properties. You would then need to disable or make read-only those fields on the UI to prevent data-binding issues (assuming you are using data-bindings). </p>
+<p>There is a control included as part of CSLA called the ReadWriteAuthorization control that can do this for you (disable controls that don&#39;t have write access), or you can do it manually for each control by checking the CanWriteProperty method in your GUI.</p>
+<p>The method may look like this:</p>
+<p><span style="font-family:mceinline;"></span></p>
+<p><span style="font-family:mceinline;">Protected Overrides CanWriteProperty(ByVal PropertyName as String) As Boolean</span></p>
+<p><span style="font-family:mceinline;">&nbsp;&nbsp; &nbsp; If Me.Active = False Then</span></p>
+<p><span style="font-family:mceinline;">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; If PropertyName = &quot;Age&quot; OrElse PropertyName = &quot;Name&quot; Then</span></p>
+<p><span style="font-family:mceinline;">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Return False</span></p>
+<p><span style="font-family:mceinline;">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; End If</span></p>
+<p><span style="font-family:mceinline;">&nbsp;&nbsp; Else</span></p>
+<p><span style="font-family:mceinline;">&nbsp;&nbsp; &nbsp; &nbsp; Return MyBase.CanWriteProperty(PropertyName)</span></p>
+<p><span style="font-family:mceinline;">&nbsp;&nbsp;End If</span></p>
+<p><span style="font-family:mceinline;">End Sub</span></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Deepak replied on Friday, August 06, 2010</h2><p>Hi Marjon</p>
+<p>Thanks for the reply </p>
+<p>Actually &nbsp;the non editable field includes not only Name and age but also the&nbsp; &#39;Active&#39; too. </p>
+<p>After the event &#39;Fetch&#39; , if i can do something like this</p>
+<p>Step1 : Check the value of the Active of Current object</p>
+<p>Step 2: If true disable/ non writable all properties</p>
+<p>Step 3: if false Enable/writable &nbsp;all controls</p>
+<p>&nbsp;</p>
+<p>Can i use/ create some thing like what we call after Fetch &#39;ValidationRules.CheckRules()&#39; for Authorization mechanism</p>
+<p>&nbsp;</p>
+<p>Waiting for your reply</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Marjon1 replied on Friday, August 06, 2010</h2><p>You&#39;d be able to do something like what you want with authorization rules in the new CSLA 4 (from my understanding, haven&#39;t used it yet).</p>
+<p>However, you can still use the CanWriteProperty method described above, you&#39;ll just need to customize it to include whatever properities you want disabled whenever the active flag is false; even if this includes in the active flag itself.</p>
+<p>The only thing I would suggest is that if the user can change the active flag and fields should still be editable at that time until it is fetched again, you may also want to include the IsDirty flag in your check or have an internal variable that holds the original state of the Active flag at the time of creation/fetch that is never changed and use that instead.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Deepak replied on Friday, August 06, 2010</h2><p>I also read about the new features in CSLA 4 but as I am not in a position to change my version from the live software.&nbsp;</p>
+<p>But <img src="http://forums.lhotka.net/emoticons/emotion-1.gif" alt="Smile" /> Thanks For the quick reply let me work out something on that</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Deepak replied on Sunday, August 08, 2010</h2><p>Hi </p>
+<p>In one more problem you can help me</p>
+<p>I have classes Person --&gt;&nbsp; PersonRoles --&gt;&nbsp; PersonRole</p>
+<p>The personRoles List class is bound to a gridview. There are three fields that can be edited in the PersonRole grid view that is&nbsp; RoleType, StartDate, EndDate and Active</p>
+<p>If a user want to deactivate a role of a person he should set EndDate to today and Active to &#39;N&#39; . </p>
+<p>I can Override CanWriteProperty in PersonRole class and write rules for setting the values </p>
+<p>But one of the rule is that i should check the person&#39;s Primary role , which is inside the Class Person</p>
+<p>Can you tell me how can i check&nbsp; a property value of the Parent class in its child classes?</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

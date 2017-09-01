@@ -1,0 +1,29 @@
+<html><header><title>Newbie, Howto use  Csla.Data.DataMapper.Map correctly?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Newbie, Howto use  Csla.Data.DataMapper.Map correctly?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10118.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>NickyLarson posted on Monday, February 28, 2011</h2><p>Hi everyone,</p>
+<p>&nbsp;</p>
+<p>This maybe a silly question but , i don&acute;t know how to use correctly the&nbsp; Csla.Data.DataMapper.Map</p>
+<p>In the ProjectTracker, use CslaDataSource binding to a DetailsView and then can operate do to insert , delete, update.</p>
+<p>Exe the update in the ProjectEdit.aspx</p>
+<p>&nbsp;&nbsp;&nbsp; protected void ProjectDataSource_UpdateObject(object sender, Csla.Web.UpdateObjectArgs e)<br />&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Project obj = GetProject();<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Csla.Data.DataMapper.Map(e.Values, obj);</b><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; e.RowsAffected = SaveProject(obj);<br />&nbsp;&nbsp;&nbsp; }</p>
+<p>here all the object of type Project are in the<b> e.Values</b> and then mapped to the <b>obj</b> of type Project.</p>
+<p>Now my question is, I have a form with 2 text box and they aren&acute;t binding with none CslaDataSource. How can I use <b>Csla.Data.DataMapper.Map </b>in this situation. I have done like this but i am not sure if it&acute;s the best or the correctly way to do this.</p>
+<p>&nbsp;</p>
+<p>private int updateField()</p>
+<p>{</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Project obj = GetProject();</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; obj.name= this.textboxName.text;</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; obj.address= this.textboxAddress.text;
+&nbsp;&nbsp;&nbsp;&nbsp;</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return SaveProject(obj);</p>
+<p>}</p>
+<p>&nbsp;</p>
+<p>Like a say i am newbie maybe some of you can laugh but i am still learning.</p>
+<p>&nbsp;</p>
+<p>Thanks in advance</p>
+<p>&nbsp;</p>
+<p>NickyLarson.</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>ajj3085 replied on Monday, February 28, 2011</h2><p>The datamapper is really meant to work as you have shown in your first code snippit; its goal is to help support two way databinding in Asp.Net.&nbsp; If you&#39;re not using two way databinding, then the second method you have shown is how you would acomplish updating the BO.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>NickyLarson replied on Tuesday, March 01, 2011</h2><p>Hi Andy,</p>
+<p>&nbsp;</p>
+<p>Thank you for the reply, you help me a lot, <span id="result_box" class="short_text" lang="en"><span title="Clique para obter tradu&ccedil;&otilde;es alternativas" class="hps">You</span> <span title="Clique para obter tradu&ccedil;&otilde;es alternativas" class="hps">dispelled</span> <span title="Clique para obter tradu&ccedil;&otilde;es alternativas" class="hps">my</span> <span title="Clique para obter tradu&ccedil;&otilde;es alternativas" class="hps">doubts.</span></span></p>
+<p><span class="short_text" lang="en"><span title="Clique para obter tradu&ccedil;&otilde;es alternativas" class="hps">NickyLarson<br /></span></span></p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

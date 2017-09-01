@@ -1,0 +1,117 @@
+<html><header><title>Item &amp; ItemInHierarchy</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Item &amp; ItemInHierarchy</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/7700.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Kevin Fairclough posted on Tuesday, September 29, 2009</h2>Hi All&nbsp; <br><br>This is pretty much my first use case and I'm stuck already!<br><br>I have the following use case.&nbsp; Enter item details (which is a largish object with child collections) and also maintain a hierarchy of said items.&nbsp; However because the Item may be large in size I don't want the hierarchy to be the same Item type, hence ItemInHierarchy, also ItemInHierarchy should just display Name + No for each link aswell as some data about the link.<br><br>I'm leading to the idea of this being 2 use cases but I need them to be 1 save operation.&nbsp; When I save the Item it also saves any changes to the hierarchy.<br><br>I was think of having a child object in Item of type ItemInHierarchy, which managed the hierarchy and living with the duplicate Item/ItemInHierarchy at the root level.&nbsp; Does this seem feasible?<br><br>Any ideas, or advice/experience would be appreciated as I'm completely stuck.&nbsp; I have a blank canvas as its a new development.<br><br>TIA <br>Kevin<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, September 29, 2009</h2><P>First off, are Item and ItemHierarchy words your end users would understand? If not, that may be the root of your problem.</P>
+<P>Use cases, or user stories, or user scenarios, are user-focused. It should be the case that the words you use to describe your objects are mostly the words used by a user to describe what they are trying to do.</P>
+<P>Oh sure, later in implementation you might use somewhat more cryptic techie terms/names. But at the design stage things should be in the user-focused language.</P>
+<P>In any case, your problem description is too vague for me to guess what you are trying to do. Is this like a bill of materials or something?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Kevin Fairclough replied on Tuesday, September 29, 2009</h2>It is essentially a bill of materials, yes.&nbsp; Or at least the forerunner to a BOM.<br><br>I need a hierarchy of Items but my Item object is too heavy, hence the lighter Item<b>In</b>Hierarchy (my object not user requested).<br><br>The terms derived from user (given to me) are Item, Contains(Items) &amp; Contained In(Items).<br><br>My main gripe was I need to pick Items in order to create the Contains hierarchy and this is where ItemInHierarchy came from.&nbsp; A lighter Item object that can be used to structure the items that are contained within the Item.<br><br>So do I have <br>Item.ItemContainsHierarchy.Contains.Add(itemInHierarchy)&nbsp; etc.?<br>or do I separate the hierarchies from Item object, if so how do I save then together, a command object?<br><br>Thanks for your time.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, September 29, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I spent many years in manufacturing, which is why I thought this
+sounded somewhat like a BOM :)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I agree, when building a BOM structure, typically the items in
+the BOM aren&#8217;t the actual &#8220;items&#8221; or products. The use case
+isn&#8217;t to edit product information, it is to establish relationships between
+products.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>So the BOM structure is a hierarchy of &#8220;item link&#8221;
+objects that usually contain a small number of read-only properties describing
+the actual item/product.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>In this case, you&#8217;ll almost certainly have some ROL
+containing products so the user can pick a product to add to the BOM.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>And you&#8217;ll have the BOM itself, which is an editable root.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I think the issue here is that the user says &#8220;Item&#8221;
+and that has two contextual meanings.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>&#8220;Item&#8221; is something they pick to add to the
+hierarchy &#8211; and what they are really describing is a ROL of ItemInfo
+objects.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>&#8220;Item&#8221; is also something in the hierarchy &#8211;
+and what they are really describing is a BB (editable child) in the hierarchy.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>You just have to tease the two concepts apart and recognize that
+they aren&#8217;t the same thing within the use case.<o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Kevin Fairclough replied on Wednesday, September 30, 2009</h2>You indeed must be happy away from the BOM!!!&nbsp; But it has returned for a short while to say hello <img src="/emoticons/emotion-1.gif" alt="Smile [:)]" /><br><br>In my case the "item link" has a mixture of read-only and editable fields.&nbsp; The read-only fields are part of the link display, i.e. Item Identifier, Name etc.&nbsp; I understand I need a read-only retrieval mechanism for these items to link.&nbsp; The link however must also be able to store other data such as qty, uom, fitted, sequence etc.&nbsp; hence my object ItemInHierarchy.<br><br>I now have the following concepts; Item(EditableRoot), ItemContainsBOM(?), ItemInHierarchy(EditableChild), ItemROList(ROLB of ROB) I also need a collection of ItemInHierarchy objects inside the ItemContainsBOM.<br><br>Do I need to separate the ItemContains(BOM) from the main Item root object even though they part of the same use case? is the ItemContains(BOM) as you say a separate root object?&nbsp; or can it be a child of the Item(EditableRoot)?<br><br>If I separate them to be two editable roots; Item, ItemContainsBOM, how do I save them together in one transaction?&nbsp; Do I also bring in a ItemSaver(Command)?<br><br>Thanks<br>Kevin<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, September 30, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Why would you separate Item and ItemContainsBOM?<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>We used the terms &#8216;product&#8217; and &#8216;part&#8217; to keep our sanity. A
+product is the top level item, and parts and the items in the hierarchy.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Product -&gt; ComposedOfParts -&gt; Part<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Also of course<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Part -&gt; Composed of Parts -&gt; Part<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Because this is a hierarchy with potentially many levels of
+detail.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Different properties and rules were involved in a Product compared
+to a Part, so they (for us) were clearly different things.<o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Kevin Fairclough replied on Wednesday, September 30, 2009</h2>There is no need to separate them, I was thrown when you said the BOM is the editable root.&nbsp; Where in my case the Item is the editable root.&nbsp; My use case is to create/edit Item and link it to sub-items n levels deep, therefore my BOM is an editable child?<br><br>My Item edit object is huge (or will be) and I don't want the Item in the hierarchy to be the same object type.&nbsp; <br><br>Kevin<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

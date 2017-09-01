@@ -1,0 +1,162 @@
+<html><header><title>Transaction handling in CLSA.NET</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Transaction handling in CLSA.NET</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4777.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>gsitaramireddy posted on Wednesday, April 30, 2008</h2><P>Hi I am new to CSLA.net, I&nbsp;want to&nbsp;learn more about it.</P>
+<P>When I am trying to delete a record from DB2 database, I am getting the below error and inner exception&nbsp;</P>
+<P>at the line&nbsp; "connEmp.Open();" in&nbsp;my code sample.<BR><STRONG></STRONG></P>
+<P><STRONG>Error:</STRONG>&nbsp; "ERROR [58005] [IBM][DB2/6000] SQL0998N Error occurred during transaction or heuristic processing. Reason Code = "16". Subcode = "2-8004D026". SQLSTATE=58005"<BR><STRONG>Inner Exception:</STRONG> <EM>"_COMPlusExceptioncode -532459699</EM><STRONG>"</STRONG></P>
+<P>Below are two ways I tried.</P>
+<P>[Transactional(TransactionalTypes.TransactionScope)]<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; private void DataPortal_Delete(Criteria criteria)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; using (DB2Connection connEmp = new DB2Connection(Databases.EmpDBConnection))<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; connEmp.Open();</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; using (DB2Command cmdEmp = connEmp.CreateCommand())<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; string strSQL = "SP_DELETE_Employee";<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; cmdEmp.CommandType = CommandType.StoredProcedure;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; cmdEmp.CommandText = strSQL;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; cmdEmp.Parameters.Add("EmpID",criteria.EmpId);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; cmdEmp.ExecuteNonQuery();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</P>
+<P>and</P>
+<P>[Transactional(TransactionalTypes.TransactionScope)]<BR>private void DataPortal_Delete(Criteria criteria)<BR>{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Database dbEmp = DatabaseFactory.CreateDatabase();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; System.Data.Common.DbCommand dbCommand = dbEmp.GetStoredProcCommand("SP_DELETE_Employee");<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; dbEmp.AddInParameter(dbCommand, "EmpID", DbType.Int16, criteria.empId);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; dbEmp.ExecuteNonQuery(dbCommand);<BR>}</P>
+<P>&nbsp;</P>
+<P><STRONG>Distributed transaction coordinator</STRONG> service also running on my machine.</P>
+<P>I added below code in web.config to change the default transaction time out</P>
+<P>&lt;system.transactions&gt;</P>
+<P>&nbsp;&nbsp;&nbsp; &lt;defaultSettings timeout="00:010:00" /&gt;</P>
+<P>&nbsp; &lt;/system.transactions&gt;</P>
+<P><BR>I am using below softwares list</P>
+<P>Visual Studio 2005,ASP.NET 2.0,CSLA.NET 3.0.4,UDB DB2 9.1.2 database,C#.NET and Microsoft Enterprise Library 3.1 and Windows XP with SP2.</P>
+<P>Is it mandatory to run the MDT service to work with CSLA Transactions, if not can you please advise me the best solution to resolve this problem.</P>
+<P>If I removed transaction attribute <STRONG>([Transactional(TransactionalTypes.TransactionScope)]</STRONG>) it was working fine in both the cases.</P>
+<P>Can some one please help me to work with transactions in CSLA.net.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, May 02, 2008</h2><P>I don't think DB2 provides support for System.Transactions.TransactionScope?</P>
+<P>I think you need to use either manual ADO.NET transactions or Enterprise Services with DB2.</P>
+<P>So use</P>
+<P>[Transactional(TransactionalTypes.EnterpriseServices)]</P>
+<P>and you should be good (assuming your machine is configured to allow the DTC to work).</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>gsitaramireddy replied on Monday, May 05, 2008</h2><P>Thank you very much for support, but I am getting "<SPAN id=ErrorLabel>Access is denied. (Exception from HRESULT: 0x80070005 (E_ACCESSDENIED))</SPAN>&nbsp;" error.</P>
+<P>When I use [Transactional(TransactionalTypes.EnterpriseServices)]</P>
+<P>&nbsp;</P>
+<P>Sitha Ram<BR><BR></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, May 05, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>You probably need to enable DTC on your machine &#8211; it is
+disabled by default with WinXP SP2 and higher.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> gsitaramireddy
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Monday, May 05, 2008 12:10 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] Transaction handling in CLSA.NET<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Thank you very much for support, but I am getting &quot;Access is denied.
+(Exception from HRESULT: 0x80070005 (E_ACCESSDENIED))&nbsp;&quot; error.<o:p></o:p></p>
+
+<p>When I use [Transactional(TransactionalTypes.EnterpriseServices)]<o:p></o:p></p>
+
+<p>&nbsp;<o:p></o:p></p>
+
+<p>Sitha Ram<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>gsitaramireddy replied on Tuesday, May 06, 2008</h2><P>Hi Rocky,</P>
+<P>Currently the 'Distributed Transaction Coordinator' Service status is started on my Machine.</P>
+<P>Sitha Ram</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, May 06, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>There is an MSDN knowledge base article on how to enable the DTC
+&#8211; it is more than just the service, because the windows firewall blocks
+it too.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Otherwise I don&#8217;t know what to suggest.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> gsitaramireddy
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Tuesday, May 06, 2008 8:32 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: Transaction handling in CLSA.NET<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Hi Rocky,<o:p></o:p></p>
+
+<p>Currently the 'Distributed Transaction Coordinator' Service status is
+started on my Machine.<o:p></o:p></p>
+
+<p>Sitha Ram<o:p></o:p></p>
+
+<p>&nbsp;<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<span> </span><o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>gsitaramireddy replied on Monday, May 12, 2008</h2><P>I will try that, thanks for the information.</P>
+<P>Sitha Ram</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>dblwizard replied on Thursday, May 24, 2012</h2><p>Rocky,</p>
+<p>Whats the difference between Manual and EnterpriseServices?&nbsp; I&#39;m getting the same error if I use EnterpriseServices but not if I use manual.&nbsp; I&#39;m working with IBM to solve this as well but Id like to understand the difference?</p>
+<p>From what I understand transactions in db2 are implied.&nbsp; Meaning that there is a transaction wrapped from one Commit/Rollback to the other.&nbsp; </p>
+<p>So I&#39;m just trying to understand what changing out that attribute actually effects.</p>
+<p>Thanks</p>
+<p>dbl</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, May 24, 2012</h2><p>For a comprehensive answer look at the 2008 book or the &#39;Using CSLA 4&#39; book.</p>
+<p>In summary:</p>
+<ul>
+<li>Manual means you and/or your database must manage the transaction. CSLA does not put your code into any transaction context.</li>
+<li>TransactionScope means CSLA puts your code into a TransactionScope context before calling your root DataPortal_XYZ method.</li>
+<li>EnterpriseServices means CSLA puts your code into a COM+ transactional context (which uses the DTC) before calling your DataPortal_XYZ method.</li>
+</ul>
+<p>&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

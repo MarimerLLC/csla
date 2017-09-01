@@ -1,0 +1,69 @@
+<html><header><title>NetRun with command line parameters?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>NetRun with command line parameters?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/1581.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>ScottHutchinson posted on Tuesday, October 24, 2006</h2><P>We use NetRun on .NET 1.1. We would like to be able to pass command line parameters to our application when launching it via NetRun. For instance, we&nbsp;want to pass a username and password from another&nbsp;application, so the user would not need to login again.&nbsp;However, as soon as we add ByVal Args() As String to Sub Main, we can no longer launch the application with NetRun, because it throws a System.Reflection.TargetParameterCountException. I have tried to fix this by modifying NetRun, but could not find a solution using either LoadFrom/Invoke or ExecuteAssembly.</P>
+<P>Has anybody been able to do this?</P>
+<P>Thanks!</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Brian Criswell replied on Tuesday, October 24, 2006</h2>I did this a while back.&nbsp; I am pretty sure you have to alter NetRun to pass its arguments to the application as an object or string array.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ScottHutchinson replied on Wednesday, November 15, 2006</h2><P><FONT face="Courier New">I figured out how to do it. See example code snippets&nbsp;below. <FONT>The important changes are highlighted (but for someone reason you might not be able to see the highlights).</FONT></FONT></P><FONT color=#0000ff size=2>
+<P><FONT face="Courier New">Public</FONT></FONT><FONT face="Courier New"><FONT size=2> </FONT><FONT color=#0000ff size=2>Class</FONT><FONT size=2> Launcher</FONT></FONT></P>
+<P><FONT size=2><FONT face="Courier New"><FONT color=#0000ff>Public</FONT> <FONT color=#0000ff>Sub</FONT> RunApp(<FONT color=#0000ff>ByVal</FONT> AppURL <FONT color=#0000ff>As</FONT> <FONT color=#0000ff>String</FONT>, <FONT color=#0000ff>ByVal</FONT> params() <FONT color=#0000ff>As</FONT> <FONT color=#0000ff>String</FONT>)</FONT></FONT></P>
+<P><FONT color=#008000><FONT face="Courier New" size=2>' before we do anything, invoke the workaround</FONT></P></FONT>
+<P><FONT color=#008000><FONT face="Courier New" size=2>' for the serialization bug</FONT></P></FONT>
+<P><FONT face="Courier New" size=2>SerializationWorkaround()</FONT></P>
+<P><FONT color=#0000ff><FONT face="Courier New" size=2>Try</FONT></P></FONT>
+<P><FONT color=#008000><FONT face="Courier New" size=2>' get and parse the URL for the app we are</FONT></P></FONT>
+<P><FONT color=#008000><FONT face="Courier New" size=2>' launching</FONT></P></FONT>
+<P><FONT face="Courier New" size=2>mAppURL = AppURL</FONT></P>
+<P><FONT face="Courier New" size=2>mAppDir = GetAppDirectory(mAppURL)</FONT></P>
+<P><FONT face="Courier New" size=2>mAppName = GetAppName(mAppURL)</FONT></P>
+<P><FONT color=#008000><FONT face="Courier New" size=2>'Pass an empty instance of the Web Proxy</FONT></P></FONT>
+<P><FONT face="Courier New" size=2>System.Net.GlobalProxySelection.Select = System.Net.GlobalProxySelection.GetEmptyWebProxy</FONT></P>
+<P><FONT face="Courier New" size=2>SetSecurity()</FONT></P>
+<P><FONT color=#008000><FONT face="Courier New" size=2>' load the assembly into our AppDomain</FONT></P></FONT>
+<P><FONT size=2><FONT face="Courier New"><FONT color=#0000ff>Dim</FONT> asm <FONT color=#0000ff>As</FONT> [Assembly] = [Assembly].LoadFrom(AppURL)</FONT></FONT></P>
+<P><FONT size=2><FONT face="Courier New"><FONT color=#0000ff>Dim</FONT> objArray(0) <FONT color=#0000ff>As</FONT> <FONT color=#0000ff>Object</P></FONT></FONT></FONT>
+<P><FONT color=#008000><FONT face="Courier New" size=2>' run the program by invoking its entry point</FONT></P></FONT>
+<P><FONT size=2><FONT face="Courier New"><FONT color=#0000ff>With</FONT> asm.EntryPoint</FONT></FONT></P>
+<P><FONT size=2><FONT face="Courier New"><FONT><FONT color=#0000ff>If</FONT> .GetParameters().Length = 0 <FONT color=#0000ff>Then</P></FONT></FONT></FONT></FONT>
+<P><FONT color=#008000><FONT face="Courier New" size=2>' Set objArray = Nothing to maintain compatibility with applications</FONT></P></FONT>
+<P><FONT color=#008000><FONT face="Courier New" size=2>' that do not receive parameters (i.e., Sub Main() has no parameters defined).</FONT></P></FONT>
+<P><FONT size=2><FONT face="Courier New"><FONT>objArray = <FONT color=#0000ff>Nothing</P></FONT></FONT></FONT></FONT>
+<P><FONT color=#0000ff><FONT face="Courier New" size=2>Else</FONT></P></FONT>
+<P><FONT face="Courier New" size=2>objArray(0) = params</FONT></P>
+<P><FONT size=2><FONT face="Courier New"><FONT><FONT color=#0000ff>End</FONT> <FONT color=#0000ff>If</P></FONT></FONT></FONT></FONT>
+<P><FONT face="Courier New" size=2>.Invoke(asm.EntryPoint, <FONT>objArray</FONT>)</FONT></P>
+<P><FONT size=2><FONT face="Courier New"><FONT color=#0000ff>End</FONT> <FONT color=#0000ff>With</FONT> <FONT color=#008000>'asm.EntryPoint</P></FONT></FONT></FONT>
+<P><FONT color=#0000ff><FONT face="Courier New" size=2>Finally</FONT></P></FONT>
+<P><FONT face="Courier New" size=2>RemoveSecurity()</FONT></P>
+<P><FONT size=2><FONT face="Courier New"><FONT color=#0000ff>End</FONT> <FONT color=#0000ff>Try</P></FONT></FONT></FONT>
+<P><FONT size=2><FONT face="Courier New"><FONT color=#0000ff>End</FONT> <FONT color=#0000ff>Sub</FONT></FONT></FONT></P>
+<P><FONT size=2><FONT face="Courier New"><FONT color=#0000ff></FONT></FONT></FONT>&nbsp;</P><FONT size=2><FONT face="Courier New"><FONT color=#0000ff><FONT color=#0000ff size=2>
+<P>Module</FONT><FONT size=2><FONT color=#000000> Main</FONT></P>
+<P></FONT><FONT color=#0000ff size=2>Public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Sub</FONT><FONT size=2> Main(</FONT><FONT color=#0000ff size=2>ByVal</FONT><FONT size=2> Args() </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>String</FONT><FONT size=2>)</P>
+<P></FONT><FONT color=#0000ff size=2>Try</P></FONT><FONT size=2>
+<P></FONT><FONT color=#008000 size=2>' launch the app based on the URL provided by the user</P></FONT><FONT size=2>
+<P>RunApplication(Args)</P><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Private</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Sub</FONT><FONT size=2> RunApplication(</FONT><FONT color=#0000ff size=2>ByVal</FONT><FONT size=2> Args() </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>String</FONT><FONT size=2>)</P>
+<P></FONT><FONT color=#008000 size=2>' The first command line argument (the application url) is always required.</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Dim</FONT><FONT size=2> AppURL </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>String</FONT><FONT size=2> = Args(0)</P>
+<P></FONT><FONT color=#008000 size=2><FONT>' Depending on the particular application, there might also be additional</FONT></P></FONT><FONT size=2>
+<P></FONT><FONT color=#008000 size=2><FONT>' command line arguments.</FONT></P></FONT><FONT size=2>
+<P></FONT><FONT><FONT color=#0000ff size=2>Dim</FONT><FONT size=2> params() </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>String</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT><FONT color=#0000ff size=2>If</FONT><FONT size=2> Args.Length &gt; 1 </FONT><FONT color=#0000ff size=2>Then</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>ReDim</FONT><FONT size=2><FONT> params(Args.GetUpperBound(0) - 1)</FONT></P>
+<P></FONT><FONT color=#008000 size=2><FONT>' Put the other command line arguments in their own array.</FONT></P></FONT><FONT size=2>
+<P><FONT>Array.Copy(Args, 1, params, 0, params.Length)</FONT></P>
+<P></FONT><FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>If</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#008000 size=2>' create setup object for the new app domain </P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Dim</FONT><FONT size=2> setupDomain </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>New</FONT><FONT size=2> AppDomainSetup</P>
+<P></FONT><FONT color=#0000ff size=2>With</FONT><FONT size=2> setupDomain</P>
+<P></FONT><FONT color=#008000 size=2>' give it a valid base path</P></FONT><FONT size=2>
+<P>.ApplicationBase = CurrentDomainPath()</P>
+<P></FONT><FONT color=#008000 size=2>' give it a config file name</P></FONT><FONT size=2>
+<P>.ConfigurationFile = AppURL &amp; </FONT><FONT color=#800000 size=2>".config"</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>With</FONT><FONT size=2> </FONT><FONT color=#008000 size=2>'setupDomain</P></FONT><FONT size=2>
+<P></FONT><FONT color=#008000 size=2>' create new application domain </P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Dim</FONT><FONT size=2> newDomain </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> AppDomain = AppDomain.CreateDomain(GetAppName(AppURL), </FONT><FONT color=#0000ff size=2>Nothing</FONT><FONT size=2>, setupDomain)</P>
+<P></FONT><FONT color=#008000 size=2>' create launcher object in new appdomain</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Dim</FONT><FONT size=2> launcher </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> Launcher = </FONT><FONT color=#0000ff size=2>CType</FONT><FONT size=2>(newDomain.CreateInstanceAndUnwrap(</FONT><FONT color=#800000 size=2>"NetRun"</FONT><FONT size=2>, </FONT><FONT color=#800000 size=2>"NetRun.Launcher"</FONT><FONT size=2>), Launcher)</P>
+<P></FONT><FONT color=#008000 size=2>' use launcher object from the new domain</P></FONT><FONT size=2>
+<P></FONT><FONT color=#008000 size=2>' to launch the remote app in that appdomain</P></FONT><FONT size=2>
+<P>launcher.RunApp(AppURL<FONT>, params</FONT>)</P>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Sub</FONT></P>
+<P><FONT color=#0000ff size=2>&nbsp;</P></FONT></FONT></FONT></FONT></FONT></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

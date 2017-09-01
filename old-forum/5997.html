@@ -1,0 +1,32 @@
+<html><header><title>Csla Performance advice</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Csla Performance advice</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5997.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>decius posted on Monday, December 15, 2008</h2><P>I'm trying to optimize our Csla-built security infrastructure.&nbsp; I've run across some very surprising results and I was hoping for some advice regarding performance optimization.&nbsp; </P>
+<P>Obviously, my first step to optmize was to get rid of dead weight in our Identity... This is where I am baffled.&nbsp; I removed what was about 30 of 39 string properties of the identity that we weren't really using, which also sped up the stored procedure since it didn't have to parse as much.&nbsp; Also, eliminated a dr.Read for each property in the DataAccess...&nbsp;However, I am seeing the opposite I would have thought when using&nbsp;RedGate's AntsProfiler to analyze performance!&nbsp; Performance got WORSE, but just slightly.&nbsp; I have run many many tests at this point that all show this result.</P>
+<P>I have spent two days trying to figure out what could cause that to happen.&nbsp; I have tried various different DataPortal proxies (DotNetRemoting, WebServices, Wcf) and they all show the same.</P>
+<P>The only thing I can think of is that I made another small nested Criteria class in the Identity (IsSignedInCriteria and LoginCriteria, which was previously one larger class called "Criteria").&nbsp; I figured that this would improve performance, but maybe it slowed it down???&nbsp; Is this maybe resulting in a lot of extra serialization work that's unnecessary?&nbsp; </P>
+<P>Below is the 2 new Criterias</P><FONT size=2>
+<BLOCKQUOTE dir=ltr>
+<P>[</FONT><FONT color=#2b91af size=2>Serializable</FONT><FONT size=2>()]</P>
+<P></FONT><FONT color=#0000ff size=2>private</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>class</FONT><FONT size=2> </FONT><FONT color=#2b91af size=2>LoginCriteria</P></FONT><FONT size=2>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>string</FONT><FONT size=2> Username;</P>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>string</FONT><FONT size=2> SessionID;</P>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>string</FONT><FONT size=2> Environment;</P>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> LoginCriteria(</FONT><FONT color=#0000ff size=2>string</FONT><FONT size=2> username, </FONT><FONT color=#0000ff size=2>string</FONT><FONT size=2> sessionID, </FONT><FONT color=#0000ff size=2>string</FONT><FONT size=2> environment)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>.Username = username;</P>
+<P></FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>.SessionID = sessionID;</P>
+<P></FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>.Environment = environment;</P>
+<P>}</P>
+<P>}</P>
+<P>[</FONT><FONT color=#2b91af size=2>Serializable</FONT><FONT size=2>()]</P>
+<P></FONT><FONT color=#0000ff size=2>private</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>class</FONT><FONT size=2> </FONT><FONT color=#2b91af size=2>IsSignedInCriteria</P></FONT><FONT size=2>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>string</FONT><FONT size=2> UserId;</P>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>string</FONT><FONT size=2> SessionId;</P>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> IsSignedInCriteria(</FONT><FONT color=#0000ff size=2>string</FONT><FONT size=2> userId, </FONT><FONT color=#0000ff size=2>string</FONT><FONT size=2> sessionId)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>.UserId = userId;</P>
+<P></FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>.SessionId = sessionId;</P>
+<P>}</P>
+<P>}</P></BLOCKQUOTE></FONT>
+<P>&nbsp;</P>
+<P>Thanks for any help.</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,26 @@
+<html><header><title>CommandObject question/suggestion</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CommandObject question/suggestion</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/633.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>sune42 posted on Sunday, July 16, 2006</h2><P>Hi</P>
+<P>Is it only possible to get a TRUE/FALSE response back from a CommandObject?</P>
+<P>Would it not be practical to have it return any data-type?</P>
+<P>Perhaps I am using it wrong, but what I wanted to do is to a "CountOrders" kind of operation and I thought the CommandObject would be a perfect choice in the CSLA framework. Or what object should I use to just execute a simple command that returns a int?</P>
+<P>i my case, the GetStatistics() operation would on the server side just do a&nbsp;"Select Count(*) FROM WHERE..." operation and return a&nbsp;int value.&nbsp;</P>
+<P>I think creating a full blown "ReadOnly Root object" would be overkill for a simple operation like this.</P>
+<P>Perhaps a&nbsp;NameValueList object would work, but I find that a bit ugly solution.</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Michael Hildner replied on Sunday, July 16, 2006</h2><P>Hi sune42,</P>
+<P>FWIW, I almost posted about the same question yesterday :)&nbsp;It was my first time needing something like "Select Count(*) From ... Where..." in a project using CSLA.</P>
+<P>I copied the example CommandOjbect class from Chapter 7 to get started. That class's public Execute() method&nbsp;returns a boolean. I changed things around so it would return an int and also accept a couple args that I could use in my WHERE clause.</P>
+<P>Then in the DataPortal_Execute method I put in the data access code, get the result and store it in my _result field.</P>
+<P>Seems to work just fine. Hope I'm not doing anything wrong or pointing you in the wrong direction.</P>
+<P>Regards,</P>
+<P>Mike</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Sunday, July 16, 2006</h2><P>If all you want to do is retrieve a value or a set of values, I'd use a ReadOnlyBase-derived object. That's the purpose of that base class, and it is often lighter-weight than a CommandBase-derived object.</P>
+<P>Remember that "weight" is defined by the number and type of instance fields in your class - nothing else matters.</P>
+<P>With a ROB you can define exactly the criteria needed to define the request and send only those fields to the server, then the ROB itself contains exactly the fields needed to return the results.</P>
+<P>With CommandBase, the criteria and result fields are both defined in the command object - so the empty result fields are serialized to the server, and the now-useless criteria fields are serialized back to the client.</P>
+<P>Where CommandBase really shines (imo) is in two areas:</P>
+<OL>
+<LI>When clarity is more important than efficiency. I originally created the commandbase idea to overcome continual questions about how to do what you guys want to do - get a value back by running a database query. It was too high a hurdle for many people to use a ROB to do this, it just didn't "feel right" even though it is the best answer. So CommandBase offers clarity - a base class that is "for running server-side commands".</LI>
+<LI>When your use case requires client-side, then server-side, then client-side processing (or two of those three). CommandBase makes it very easy for you to run some client-side code, then move to the server and run some server-side code, then return to the client to run some more client-side code. In this regard, CommandBase is the best and most clear example of true mobile objects to be found in the CSLA .NET framework.</LI></OL>
+<P>In the book I really only show an example of #1 - through the Exists() commands as discussed in Chapter 8. But the templates, as discussed in Chapter 7, show the model for #2, which is where I think the real power of CommandBase comes into play.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sune42 replied on Monday, July 17, 2006</h2><P>Thanks for that excellent explaination!</P>
+<P>Now I know what to do.</P>
+<P>I thought the Command object would be lighter as it has a more specific purpose. </P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Michael Hildner replied on Monday, July 17, 2006</h2><P>I guess I just assumed that CommandBase would be lighter too. I apreciate the explanation.</P>
+<P>Mike</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

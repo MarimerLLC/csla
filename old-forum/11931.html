@@ -1,0 +1,13 @@
+<html><header><title>Sorting SortedBindingList by child object property</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Sorting SortedBindingList by child object property</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11931.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>scjohnson posted on Wednesday, April 10, 2013</h2><p>Hello,</p>
+<p>I&#39;m trying to sort a GridView by a property of a child object. I&#39;m able to successfully set the DataField of a BoundField to the child column (&quot;Application.Name&quot;), but this doesn&#39;t work for sorting. How would I go about accessing this child property in the ApplySort method of a SortedBindingList?</p>
+<p>&nbsp;</p>
+<p>Thanks,</p>
+<p>Sam Johnson</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Wednesday, April 10, 2013</h2><p>Hi, </p>
+<p>SortedBindingList does not support sorting on a child property. Only properties on the actual object may be used for sorting. </p>
+<p>So you could add an extra property to the list to project the child property or to use LINQ with projection but that requires more code in the UI and does not support editing of the list.</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>scjohnson replied on Thursday, April 11, 2013</h2><p>Thank you! Using this, I was simply able to add the following property to the object and was able to sort:</p>
+<pre style="font-family:Consolas;font-size:13;color:black;background:#fafafa;"><span style="color:blue;">public</span>&nbsp;<span style="color:blue;">string</span>&nbsp;ApplicationName
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">get</span>&nbsp;{&nbsp;<span style="color:blue;">return</span>&nbsp;<span style="color:blue;">this</span>.Application.Name;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</pre></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

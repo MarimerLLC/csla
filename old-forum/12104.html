@@ -1,0 +1,35 @@
+<html><header><title>A BindingSourceNode problem.</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>A BindingSourceNode problem.</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/12104.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>lanzhoulei posted on Friday, August 02, 2013</h2><p>hi, all.</p>
+<p>When I modify the sample <strong>ActionExtenderSample(C# )</strong> <span class="hps">solution. async save data. than throw DataGridView.IndexOutOfRangeException. <span class="hps">I hope</span> <span class="hps">to get some help. Thank you.</span></span></p>
+<p><span class="hps"><span class="hps">
+<div><span class="hps"><span style="color:#008000;">// field</span></span></div>
+<div><span class="hps">private OrderDetailCollection _details;</span></div>
+<div><span class="hps"></span></div>
+<div><span class="hps"></span></div>
+<div><span class="hps"><span style="color:#008000;">// constructor</span></span></div>
+<div><span class="hps">_details = OrderDetailCollection.GetOrderDetailCollection();</span></div>
+</span></span></p>
+<p><span class="hps"><span class="hps">
+<div><span class="hps"><span style="color:#008000;">// BindUI method</span></span></div>
+<div><span class="hps">_BindingTree = BindingSourceHelper.InitializeBindingSourceTree(this.components, orderDetailCollectionBindingSource);<br />_BindingTree.Bind(_details);</span></div>
+<div><span class="hps"><span class="hps"><span style="color:#008000;"></span></span></span></div>
+<div><span class="hps"><span class="hps"><span style="color:#008000;">// button click: delete item</span></span></span></div>
+<div><span class="hps"><span class="hps"></span><span class="hps">private void button1_Click(object sender, EventArgs e)<br />{</span></span></div>
+</span></span></p>
+<div>
+<div><span class="hps">&nbsp;&nbsp;&nbsp; var data = orderDetailCollectionBindingSource.Current as OrderDetail;<br />&nbsp;&nbsp;&nbsp; _details.Remove(data);</span><span class="hps"><span style="color:#008000;"><br /></span>}</span></div>
+<div><span class="hps"></span></div>
+<div><span class="hps"></span></div>
+<div><span class="hps"><span style="color:#008000;">// toolSave click</span></span></div>
+<div><span class="hps">private void toolSave_Click(object sender, EventArgs e)<br />{<br />&nbsp;&nbsp;&nbsp; SaveAsync(); </span></div>
+<div><span class="hps">}</span></div>
+<div><span class="hps"></span></div>
+<div><span class="hps"></span></div>
+<div><span class="hps">private void SaveAsync()<br />{<br />_BindingTree.Apply();<br />var old = _details.Clone();</span></div>
+<div><span class="hps"></span></div>
+<span class="hps">
+<div></div>
+<div><span style="color:#ff0000;">// Raise Paint event. Here will throw exception: DataGridView.IndexOutOfRangeException</span></div>
+<div><span style="color:#ff0000;">// If I remove it, then no problem<br />orderDetailListDataGridView.Width = 300;<br />orderDetailListDataGridView.Height = 100; </span></div>
+<div><br />_details.BeginSave((o, r) =&gt;<br />{<br />if (r.Error == null)<br />&nbsp;&nbsp;&nbsp; _details = r.NewObject as OrderDetailCollection;<br />else<br />&nbsp;&nbsp;&nbsp; _details = old;<br />_BindingTree.Bind(_details);<br />});</div>
+<div></div>
+</span><span class="hps"><br />}</span> </div></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,8 @@
+<html><header><title>Re: Using Forms Authentication &amp; Custom (Csla) Principal/Identity</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Re: Using Forms Authentication &amp; Custom (Csla) Principal/Identity</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5238.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>kenb posted on Wednesday, August 13, 2008</h2><P>Joe --</P>
+<P>I've seen some of your other posts on this subject.&nbsp; I've just encountered a problem with WebResource.axd.</P>
+<P>I'm not quite sure how to programmatically determine if (a) the session has expired, in which case I want to expire the FormsAuthentication ticket or (b) the request is being made for something like WebResource.axd and the session object isn't expired, but is unavailable nonetheless (in which case I do <STRONG>not</STRONG> want to expire the FormsAuthentication ticket.</P>
+<P>Right now I've got :</P><PRE>If Request.Url.AbsolutePath.EndsWith("WebResource.axd") Then
+     Exit Sub
+End If</PRE>
+<P>But that seems like a pretty lame hack. Any suggestions?</P>
+<P>--Ken</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

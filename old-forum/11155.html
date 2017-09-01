@@ -1,0 +1,235 @@
+<html><header><title>Call DataPortal From A PropertyRule</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Call DataPortal From A PropertyRule</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11155.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Chris62 posted on Tuesday, February 14, 2012</h2><p>I have a PropertyRule that needs to call into the database for values to verify against and I&#39;m having problems with the DataPortal. &nbsp;I&#39;m getting an &quot;Object is not valid and can not be saved&quot; error message, but it&#39;s erroring out before I get to the save section. &nbsp;It&#39;s erroring on the PropertyRule call</p>
+<p>This is the Parent Business Class</p>
+<p>
+     [Serializable]<br />
+    public class BizObject : BusinessBase<br />
+    {<br />
+        private readonly static PropertyInfo IdProperty = RegisterProperty(p =&gt; p.Id, &quot;Primary Key&quot;, 0);<br />
+        public int Id<br />
+        {<br />
+            get { return GetProperty(IdProperty); }<br />
+            private set { SetProperty(IdProperty, value); }<br />
+        }<br />
+        public readonly static PropertyInfo SomeOtherIdProperty = RegisterProperty(p =&gt; p.SomeOtherId, &quot;Some Other Id&quot;, 0);<br />
+        public int SomeOtherId<br />
+        {<br />
+            get { return GetProperty(IdProperty); }<br />
+            set { SetProperty(SomeOtherIdProperty, value); }<br />
+        }<br />
+        public readonly static PropertyInfo AnotherIdProperty = RegisterProperty(p =&gt; p.AnotherId, &quot;Another Id&quot;, 0);<br />
+        public int AnotherId<br />
+        {<br />
+            get { return GetProperty(AnotherIdProperty); }<br />
+            set { SetProperty(AnotherIdProperty, value); }<br />
+        }<br />
+        // normal factory methods for Parent object<br />
+        protected override void AddBusinessRules()<br />
+        {<br />
+            base.AddBusinessRules();<br />
+            BusinessRules.AddRule(new AdditionRule(SomeOtherIdProperty, new List() { AnotherIdProperty}));<br />
+        }<br />
+        // normal dataportal_xyz for Parent object<br />
+    }</p>
+<p>This is the Business Object that will retrieve the data from the data base</p>
+<p>
+    [Serializable]<br />
+    public class AnotherBizObject : BusinessBase
+</p>
+<p><br />
+    {<br />
+        // usual propeties, factories, data portals, etc...<br />
+        public static int GetReturnId(int AnotherID)<br />
+        {<br />
+            GetReturn cmd = new GetReturn() { AnotherID = AnotherID };<br />
+            cmd = DataPortal.Execute(cmd);<br />
+            return cmd.ReturnId;<br />
+        }<br />
+<br />
+        [Serializable]<br />
+        private class GetReturn : CommandBase<br />
+        {<br />
+            public int AnotherID { get; set; }<br />
+            public int ReturnId { get; set; }<br />
+<br />
+            protected override void DataPortal_Execute()<br />
+            {<br />
+                // call to database here, use AnotherID to search on, return ReturnId<br />
+                ReturnId = 10;<br />
+            }<br />
+        }<br />
+    }</p>
+<p>Here&#39;s the business rule used in the Parent Object</p>
+<p>
+     [Serializable]<br />
+    public class AdditionRule : PropertyRule<br />
+    {<br />
+        public AdditionRule(IPropertyInfo Primary, IEnumerable Properties)
+            : base(Primary)<br />
+        {<br />
+            AffectedProperties.AddRange(Properties);<br />
+        }<br />
+<br />
+        protected override void Execute(RuleContext context)<br />
+        {<br />
+            base.Execute(context);<br />
+<br />
+            int someOtherId = (int)ReadProperty(context.Target, BizObject.SomeOtherIdProperty);<br />
+            int anotherID = (int)ReadProperty(context.Target, BizObject.AnotherIdProperty);<br />
+            if (someOtherId &gt; 0 &amp;&amp; anotherID &gt; 0)<br />
+            {<br />
+                int returnID = AnotherBizObject.GetReturnId(anotherID);<br />
+<br />
+                if (returnID != (someOtherId + anotherID))<br />
+                {<br />
+                    context.AddErrorResult(&quot;Error&quot;);<br />
+                }<br />
+            }<br />
+        }<br />
+    }<br />
+</p>
+<p>It errors on the line &quot;int returnID = AnotherBizObject.GetReturnId(anotherID);&quot; &nbsp;It doesn&#39;t like going through the dataportal. &nbsp;Also this works running through Visual Studio(localhost), but it fails when I push up to a dev/test environment(which is making debugging a treat).</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Chris62 replied on Tuesday, February 14, 2012</h2><p>Here&#39;s the stack trace:</p>
+<p>
+<h2><i>Object is not valid and can not be saved</i> </h2>
+</p>
+<p><span style="font-family:Arial, Helvetica, Geneva, SunSans-Regular, sans-serif;"><b>Description: 
+</b>An unhandled exception occurred during the execution of the current web 
+request. Please review the stack trace for more information about the error and 
+where it originated in the code. <br /><br /><b>Exception Details: 
+</b>Csla.Rules.ValidationException: Object is not valid and can not be 
+saved<br /><br /><b>Source Error:</b> <br /><br />
+<table bgcolor="#ffffcc" width="100%">
+<tbody>
+<tr>
+<td><code>An unhandled exception was generated during the execution of the 
+current web request. Information regarding the origin and location of the 
+exception can be identified using the exception stack trace below.</code> 
+</td>
+</tr>
+</tbody>
+</table>
+<br /><b>Stack Trace:</b> <br /><br />
+<table bgcolor="#ffffcc" width="100%">
+<tbody>
+<tr>
+<td><code>
+<pre>[ValidationException: Object is not valid and can not be saved]
+   Csla.BusinessBase`1.Save() +303
+   Surveys.Controllers.SurveyController.Save(FormCollection controls) in C:\Code\SurveySystem\Main\Surveys\Surveys\Controllers\SurveyController.cs:107
+   lambda_method(Closure , ControllerBase , Object[] ) +108
+   System.Web.Mvc.ActionMethodDispatcher.Execute(ControllerBase controller, Object[] parameters) +17
+   System.Web.Mvc.ReflectedActionDescriptor.Execute(ControllerContext controllerContext, IDictionary`2 parameters) +208
+   System.Web.Mvc.ControllerActionInvoker.InvokeActionMethod(ControllerContext controllerContext, ActionDescriptor actionDescriptor, IDictionary`2 parameters) +27
+   System.Web.Mvc.&lt;&gt;c__DisplayClass15.&lt;InvokeActionMethodWithFilters&gt;b__12() +55
+   System.Web.Mvc.ControllerActionInvoker.InvokeActionMethodFilter(IActionFilter filter, ActionExecutingContext preContext, Func`1 continuation) +263
+   System.Web.Mvc.&lt;&gt;c__DisplayClass17.&lt;InvokeActionMethodWithFilters&gt;b__14() +19
+   System.Web.Mvc.ControllerActionInvoker.InvokeActionMethodWithFilters(ControllerContext controllerContext, IList`1 filters, ActionDescriptor actionDescriptor, IDictionary`2 parameters) +191
+   System.Web.Mvc.ControllerActionInvoker.InvokeAction(ControllerContext controllerContext, String actionName) +343
+   System.Web.Mvc.Controller.ExecuteCore() +116
+   System.Web.Mvc.ControllerBase.Execute(RequestContext requestContext) +97
+   System.Web.Mvc.ControllerBase.System.Web.Mvc.IController.Execute(RequestContext requestContext) +10
+   System.Web.Mvc.&lt;&gt;c__DisplayClassb.&lt;BeginProcessRequest&gt;b__5() +37
+   System.Web.Mvc.Async.&lt;&gt;c__DisplayClass1.&lt;MakeVoidDelegate&gt;b__0() +21
+   System.Web.Mvc.Async.&lt;&gt;c__DisplayClass8`1.&lt;BeginSynchronous&gt;b__7(IAsyncResult _) +12
+   System.Web.Mvc.Async.WrappedAsyncResult`1.End() +62
+   System.Web.Mvc.&lt;&gt;c__DisplayClasse.&lt;EndProcessRequest&gt;b__d() +50
+   System.Web.Mvc.SecurityUtil.&lt;GetCallInAppTrustThunk&gt;b__0(Action f) +7
+   System.Web.Mvc.SecurityUtil.ProcessInApplicationTrust(Action action) +22
+   System.Web.Mvc.MvcHandler.EndProcessRequest(IAsyncResult asyncResult) +60
+   System.Web.Mvc.MvcHandler.System.Web.IHttpAsyncHandler.EndProcessRequest(IAsyncResult result) +9
+   System.Web.CallHandlerExecutionStep.System.Web.HttpApplication.IExecutionStep.Execute() +8966925
+   System.Web.HttpApplication.ExecuteStep(IExecutionStep step, Boolean&amp; completedSynchronously) +184
+</pre>
+</code></td>
+</tr>
+</tbody>
+</table>
+</span></p>
+<p><span style="font-family:Arial, Helvetica, Geneva, SunSans-Regular, sans-serif;">We&#39;re running CSLA&nbsp;</span><span style="font-family:Arial, Helvetica, Geneva, SunSans-Regular, sans-serif;">4.2.2.0</span></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Tuesday, February 14, 2012</h2><p>Hi, </p>
+<p>This should work just fine.</p>
+<p><b>So what is the error message that you get from the AnotherBizObject?</b></p>
+<p>You may also consider to inhert from Csla.Rules.PropertyRule and set </p>
+<p>CanRunInCheckRules = true<br />CanRunOnServer = false<br />CanRunAsAffectedProperty = false </p>
+<p>This will deny the rule from running in Data Access (serverside of data portal), allow in CheckRules() on client and deny as affected property from another property that was changed. The effect is that the rule only runs when the user edits the property in UI.</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Tuesday, February 14, 2012</h2><p>Hmm, I&#39;d also rather have the rule call the GetReturn commandobject directly and not got to AntoherBizObject.</p>
+<p><b>So I&#39;d prefer to put this static factory code inside the public available GetReturn command object (following the Singe Responsibility pattern):</b></p>
+<p>public static int GetReturnId(int AnotherID)<br />
+        {<br />
+            GetReturn cmd = new GetReturn() { AnotherID = AnotherID };<br />
+            cmd = DataPortal.Execute(cmd);<br />
+            return cmd.ReturnId;<br />
+        }</p>
+<p><b>Or explicitly specify the object type on DataPortal.Execute</b></p>
+<p>public static int GetReturnId(int AnotherID)<br />
+        {<br />
+            GetReturn cmd = new GetReturn() { AnotherID = AnotherID };<br />
+            cmd = DataPortal.Execute&lt;GetReturn&gt;(cmd);<br />
+            return cmd.ReturnId;<br />
+        }</p>
+<p>From your error message it is clear that Execute (which actually calls Save) is called on a BusinessBase object and NOT the CommandBase object.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Chris62 replied on Tuesday, February 14, 2012</h2><p>I (hopefully) changed it around to what you&#39;re suggesting:</p>
+<p>
+    [Serializable]<br />
+    public class AnotherBizObject : BusinessBase
+</p>
+<p><br />
+    {<br />
+        // usual propeties, factories, data portals, etc...<br />
+    }<br />
+<br />
+    [Serializable]<br />
+    public class GetReturn : CommandBase<br />
+    {<br />
+        public static int GetReturnId(int AnotherID)<br />
+        {<br />
+            GetReturn cmd = new GetReturn() { AnotherID = AnotherID };<br />
+            cmd = DataPortal.Execute(cmd);<br />
+            return cmd.ReturnId;<br />
+        }<br />
+        private readonly static PropertyInfo AnotherIDProperty = RegisterProperty(p =&gt; p.AnotherID, &quot;Another Id&quot;);<br />
+        public int AnotherID { get; set; }<br />
+        private readonly static PropertyInfo ReturnIDProperty = RegisterProperty(p =&gt; p.ReturnId, &quot;Return Id&quot;);<br />
+        public int ReturnId { get; set; }<br />
+<br />
+        protected override void DataPortal_Execute()<br />
+        {<br />
+            // call to database here, use AnotherID to search on, return ReturnId<br />
+            ReturnId = 10;<br />
+        }<br />
+    }</p>
+<p>In the AdditionRule I changed it to:</p>
+<p>
+// snip<br />
+ int anotherID = (int)ReadProperty(context.Target, BizObject.AnotherIdProperty);<br />
+<br />
+            if (someOtherId &gt; 0 &amp;&amp; anotherID &gt; 0)<br />
+            {<br />
+                int returnID = GetReturn.GetReturnId(anotherID); &nbsp;// changed to use new object GetReturn instead<br />
+<br />
+// snip
+</p>
+<p>P.S. this isn&#39;t the actual code, I stripped out the other pieces that are working and this is a simplified example</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Tuesday, February 14, 2012</h2><p>Hi, </p>
+<p><b>Ok, one more major problem. </b></p>
+<p>Do not mix propertyinfo and unmanaged properties like this. Use the snippets from the support folder when you declare properties. </p>
+<p>DataPortal will create a &quot;clone&quot; of the object before calling Execute (actually Save) and your fields will have a value of 0 (the defalt value).</p>
+<p>Your properties must be declared like this:</p>
+<p><b><i>private readonly static PropertyInfo ReturnIDProperty = RegisterProperty(p =&gt; p.ReturnId);<br />
+        public int ReturnId <br />{ <br />&nbsp;&nbsp; get return ReadProperty(ReturnIDProperty); <br />&nbsp;&nbsp; private set LoadProperty(ReturnIDProperty, value); <br />}</i></b></p>
+<p><i>As in your DataPortal_Execute you try to get the unmanaged field value.<br />- the recommended way is to use managed properties. <br /></i></p>
+<p><br />The error message you get simply says that the BusinessObject has broken rules and is not valid for save.</p>
+<p><b>You should inspect &lt;BusinessObject&gt;.BrokenRulesCollection to see which rules are broken for which fields and redirect to a new page to show the errors. </b></p>
+<p><b>Do you use the CslaModelBinder (assuming that this is an ASP.NET MVC application)? <br /></b></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Chris62 replied on Thursday, February 16, 2012</h2><p>Ok, I fixed most of this. &nbsp;(Sorry for the delay, got pulled off for a prod issue). &nbsp;Currently I write out to a file with any broken rules in it, and so far there are none(after fixing some table perms), yet .IsValid, and .IsSaveable are both testing false (.IsSelfValid is true) for the parent object, while BrokenRulesCollection.Count is 0. &nbsp;</p>
+<p>The parent may or may not be creating children based on properties being set(example: if SomePropertyId = 5, then create a child object using a property rule).</p>
+<p>We&#39;re not using CslaModelBinder, this is a Survey website, the questions/answers will be different for each survey.</p>
+<p>I put a couple of lines of code in the DataPortal_Insert() to write a line to a file on the server, and we&#39;re not getting to the server(probably the IsSaveable and/or IsValid being false).</p>
+<p>
+        protected override void DataPortal_Insert()<br />
+        {<br />
+            TextWriter here = new StreamWriter(&quot;C:\\dp_insert.txt&quot;, true);<br />
+            here.WriteLine(&quot;insert&quot;);<br />
+            here.Close();<br />
+         // normal insert code here</p>
+<p>Hopefully I haven&#39;t confused you <img src="http://forums.lhotka.net/emoticons/emotion-2.gif" alt="Big Smile" />, and thanks for your help!!!</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Thursday, February 16, 2012</h2><p>Use BrokenRules.GetAllBrokenRules method to get a list of all objects in you &quot;tree&quot; that has broken rules. </p>
+<p>When IsSelfValid is true and IsValid is false then you have broken rules on the child objects and the object cannot be saved.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Chris62 replied on Friday, February 17, 2012</h2><p>The GetAllBrokenRules really helped out. &nbsp;From there I was able to dig through and locate the error(I missed setting a permission on a table). &nbsp;It&#39;s now up and running.</p>
+<p>&nbsp;</p>
+<p>Thanks again for your help(and patience)!!!</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Chris62 replied on Tuesday, February 14, 2012</h2><p>I haven&#39;t been able to find any other error messages. &nbsp;Either in the Event Viewer or the WCF trace log(turned on through web.config/system.diagnostics).</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

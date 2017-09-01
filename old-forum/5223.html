@@ -1,0 +1,88 @@
+<html><header><title>Mark child objects as new when database transaction fails</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Mark child objects as new when database transaction fails</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5223.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Gregd posted on Sunday, August 10, 2008</h2><FONT size=2>
+<P>I have a parent-child relationship where I have multiple child objects. The first child object saves successfully, but the second doesn't, and the database transaction performs a rollsback. The parent object and the second child are still marked as new (isNew = true), but the first child is not (isNew = false).</P>
+<P>When the data is updated and resubmited, the framework now tries to update the first child instead of inserting it, which throws an error (because it was rolled back last time).</P>
+<P>What is the best way to&nbsp;rollback all of the child objects to being new, so that when I save next time, it inserts instead of updates?</P>
+<P>We are using framework 2.1.4.</FONT><FONT size=2></P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>skagen00 replied on Sunday, August 10, 2008</h2><P>If you have everything wrapped transactionally, your Save() will fail and your database will obviously be where you want it to be. </P>
+<P>I'm not sure when this was introduced but it's in the latest version of the framework (recently defaulted to do this, before you could enable this behavior) but you can send a cloned version of the object in an override for Save, so that when your update fails, you fall back on the original object - if the update succeeds, the result from the save is the one you use. </P>
+<P>That's really the easiest manner to do it. There is an overhead to cloning an object, but it'll give you clean behavior in this area of concern. </P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Sunday, August 10, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>This really should not be happening.&nbsp; Data portal should
+throw an exception in Save() of parent object, and you should not be re-binding
+to broken objects that come back from data portal.&nbsp; Could you show what
+your code looks like that calls Save()?<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899<o:p></o:p></span></p>
+
+<p class=MsoNormal><b><i><span>Magenic</span></i></b><span> </span><span>&reg;</span><b><i><span><o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Gregd
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Sunday, August 10, 2008 9:49 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> [CSLA .NET] Mark child objects as new when database transaction
+fails<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p><span>I have a parent-child relationship where I
+have multiple child objects. The first child object saves successfully, but the
+second doesn't, and the database transaction performs a rollsback. The parent
+object and the second child are still marked as new (isNew = true), but the
+first child is not (isNew = false).<o:p></o:p></span></p>
+
+<p><span>When the data is updated and resubmited, the
+framework now tries to update the first child instead of inserting it, which
+throws an error (because it was rolled back last time).<o:p></o:p></span></p>
+
+<p><span>What is the best way to&nbsp;rollback all of
+the child objects to being new, so that when I save next time, it inserts
+instead of updates?<o:p></o:p></span></p>
+
+<p><span>We are using framework 2.1.4.<o:p></o:p></span></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rsbaker0 replied on Monday, August 11, 2008</h2><P>Assuming you are doing the entire save operation in a transaction (e.g. all children are being saved in the same transaction), the easiest way to avoid this problem is to save a clone of the object rather the object itself. If the Save() fails, then the original object is unmodified, reflecting the state of the database after the Rollback().</P>
+<P>In CSLA 3.0 and later, there are provisions for having this happen automatically (e.g. an AutoCloneOnUpdate setting). However, you have to remember that you need to replace your original reference to the object with the one returned from the Save() operation. </P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Gregd replied on Monday, August 11, 2008</h2><P>Thanks everyone. We found the problem was that we were saving the object to viewstate, and that was why it didn't rollback.</P>
+<P>&nbsp;</P>
+<P>We have created a new AutoCloneOnUpdate&nbsp;&nbsp;property and updated the functions so that it now works like CSLA 3.0.</P>
+<P>&nbsp;</P>
+<P>Thanks</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

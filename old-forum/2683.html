@@ -1,0 +1,198 @@
+<html><header><title>CancelEdit doesn't undo child collections?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CancelEdit doesn't undo child collections?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/2683.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonM posted on Thursday, April 12, 2007</h2><P>Okay, I have a simple object here with a few properties and a child collection.</P>
+<UL>
+<LI>Root Collection</LI>
+<UL>
+<LI>Child objects</LI>
+<UL>
+<LI>Property 1</LI>
+<LI>Property 2</LI>
+<LI>Property 3</LI>
+<LI>Child Collection</LI>
+<UL>
+<LI>Child Object</LI>
+<UL>
+<LI>Property 1</LI>
+<LI>Property 2</LI>
+<LI>Property 3</LI></UL></UL></UL></UL></UL>
+<P>I'm having more trouble.&nbsp; For some reason calling CancelEdit() reverts the changes to all of the child objects in the root collection and their properties.&nbsp; However the properties in the nested child collection does not get reverted.&nbsp; It looks like they undo code is actually running on my nested child collection and child objects, but the values don't change.&nbsp; Any ideas here?&nbsp; I've searched through the forum and I did make sure all of my ID values are unique.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, April 12, 2007</h2><P>When you say "values don't change" is this through data binding, or is your test directly calling the properties?</P>
+<P>In other words, I have unit tests in cslatest that do this, but obviously without data binding. If you are using data binding, my guess is that somehow the UI simply isn't refreshing after the values have changed.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>burmajam replied on Thursday, April 12, 2007</h2>I'm trying to solve similar problem for few hours. change on child collection or child doesn't trigger OnIsDirtyChanged and if I make in parent object change and undo it, only parent is undone but it still stays dirty. What makes me angry is that a year ago I've made something similar and it worked correctly <img src="/emoticons/emotion-6.gif" alt="Sad [:(]" /></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, April 12, 2007</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>In 2.0+ remember that events from child objects IN A COLLECTION
+automatically trigger a ListChanged event from the collection. But YOU must handle
+that ListChanged event in your root object (the parent of the collection) and call
+OnPropertyChanged or OnUnknownPropertyChanged at that point.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Also remember that the IsDirty flags have nothing to do with the
+events at all. You override IsDirty in your root (parent of the collection) to
+also check the collection&#8217;s IsDirty flag &#8211; and that in turn checks
+the flags of all the children it contains.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<div>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> burmajam
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Thursday, April 12, 2007 8:59 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] CancelEdit doesn't undo child collections?<o:p></o:p></span></p>
+
+</div>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>I'm trying to solve similar problem for few hours. change on
+child collection or child doesn't trigger OnIsDirtyChanged and if I make in
+parent object change and undo it, only parent is undone but it still stays
+dirty. What makes me angry is that a year ago I've made something similar and
+it worked correctly <img id="_x0000_i1025" src="/emoticons/emotion-6.gif" alt="Sad <img src=" />"><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jimbo replied on Saturday, April 14, 2007</h2>I can't find any reference in the Book that says YOU MUST handle this
+event. The indexed references to calling OnPropertyChanged and
+OnUnknownPropertyChanged are equally uninformative in respect of what
+may be needed in the BO..&nbsp; If you must handle it for undo to
+operate as expected then one would think that it would be spelled out
+in some detail.&nbsp; Lets have some good examples.<br>
+<br>
+Jimbo<br>
+<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Saturday, April 14, 2007</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>The undo behaviors DO NOT require or rely on these events at
+all. They are automatic (assuming you have the parent-child relationships set
+up correctly).<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>The events are only important if you are using Windows Forms (or
+WPF) data binding, or if your custom UI framework uses those events.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<div>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Jimbo
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Saturday, April 14, 2007 9:26 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: CancelEdit doesn't undo child collections?<o:p></o:p></span></p>
+
+</div>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>I can't find any reference in the Book that says YOU MUST
+handle this event. The indexed references to calling OnPropertyChanged and
+OnUnknownPropertyChanged are equally uninformative in respect of what may be
+needed in the BO..&nbsp; If you must handle it for undo to operate as expected
+then one would think that it would be spelled out in some detail.&nbsp; Lets
+have some good examples.<br>
+<br>
+Jimbo<br>
+<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Dan replied on Friday, August 15, 2008</h2><P>I am having problems cascading&nbsp;CancelEdit from the parent object to the child collection (using ver 3.5.1). My 'Cancel' handler is shown below:</P>
+<P><FONT color=#008000 size=2>' suspend events</P></FONT><FONT size=2>
+<P>ProviderBindingSource.RaiseListChangedEvents = </FONT><FONT color=#0000ff size=2>False</P></FONT><FONT size=2>
+<P>CMEEntriesBindingSource.RaiseListChangedEvents = </FONT><FONT color=#0000ff size=2>False</P></FONT><FONT size=2>
+<P></FONT><FONT color=#008000 size=2>' Unbind</P></FONT><FONT size=2>
+<P>UnBindBsource(CMEEntriesBindingSource, </FONT><FONT color=#0000ff size=2>True</FONT><FONT size=2>, </FONT><FONT color=#0000ff size=2>False</FONT><FONT size=2>)</P>
+<P>UnBindBsource(ProviderBindingSource, </FONT><FONT color=#0000ff size=2>True</FONT><FONT size=2>, </FONT><FONT color=#0000ff size=2>True</FONT><FONT size=2>)</P>
+<P></FONT><FONT color=#008000 size=2>' Rebind data</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Me</FONT><FONT size=2>.ProviderBindingSource.DataSource = </FONT><FONT color=#0000ff size=2>Nothing</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Me</FONT><FONT size=2>.CMEEntriesBindingSource.DataSource = ProviderBindingSource</P>
+<P></FONT><FONT color=#0000ff size=2>Me</FONT><FONT size=2>.ProviderBindingSource.DataSource = _provider</P>
+<P></FONT><FONT color=#008000 size=2>' resume events</P></FONT><FONT size=2>
+<P>ProviderBindingSource.RaiseListChangedEvents = </FONT><FONT color=#0000ff size=2>True</P></FONT><FONT size=2>
+<P>CMEEntriesBindingSource.RaiseListChangedEvents = </FONT><FONT color=#0000ff size=2>True</P></FONT><FONT size=2>
+<P></FONT><FONT color=#008000 size=2>' Refresh UI</P></FONT><FONT size=2>
+<P>ProviderBindingSource.ResetBindings(</FONT><FONT color=#0000ff size=2>False</FONT><FONT size=2>)</P>
+<P>CMEEntriesBindingSource.ResetBindings(</FONT><FONT color=#0000ff size=2>False</FONT><FONT size=2>)</FONT></P>
+<P><FONT size=2><FONT size=3>Is it possible I am missing something? My BO is of the BB class and the collection is of the BLB class. Thanks in advance.</FONT></FONT></P>
+<P><FONT size=2>Dan</P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, August 15, 2008</h2><P>Data binding does not work if undo operations cascade from parent to children. So when using data binding, as you show in your code, CSLA only does the undo operation on the "current" object - based on the currency rules of data binding.</P>
+<P>If you want undo operations to cascade through the entire object graph, then you must follow the pattern described in the&nbsp;<EM>Using CSLA .NET 3.0</EM> ebook and illustrated by the current PTWin code.</P>
+<P>Specfically, you can call BeginEdit(), CancelEdit() and ApplyEdit() manually, but <EM>only when the objects are not bound to the UI</EM>. </P>
+<P>Data binding will still do its thing too - using undo on a per-object basis based on data binding's currency rules.</P>
+<P>But doing the manual calls allows you to do form-level cancel buttons and other more complex scenarios (modal dialogs, etc).</P>
+<P>Frankly the whole thing is way more complex than we could ever hope. Fortunately the WPF and Silverlight binding models are (at least currently) a lot simpler than Windows Forms and that makes things a lot easier.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Dan replied on Saturday, August 16, 2008</h2><P><FONT face=Tahoma>Many thanks for the feedback. I was using a somewhat modified version of the "unbindUI" routine from the PTWin source (and&nbsp;book); I re-wrote&nbsp;the&nbsp;code&nbsp;and it worked.</FONT></P>
+<P><FONT face=Tahoma>Dan.</FONT></P>
+<P><FONT face=Tahoma></FONT>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>burmajam replied on Saturday, April 14, 2007</h2><P>Hi Rocky,</P>
+<P>Tnx for your reply.&nbsp;Subscribing to ListChanged event was missing part, but there are also a lot of needed steps for binding, save and and undo to work correctly. Don't ask me what I've done, even I don't know, but it works now.</P>
+<P>Tnx again</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

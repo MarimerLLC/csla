@@ -1,0 +1,43 @@
+<html><header><title>Calculated Properties</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Calculated Properties</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10966.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>xal posted on Thursday, December 08, 2011</h2><p>Here&#39;s a little demo app I just wrote.</p>
+<p>It only shows the size of the object graph after serialization, with and without calculated properties.</p>
+<p>It does not test:</p>
+<p>-Serialization times</p>
+<p>-Deserialization times</p>
+<p>-Dataportal fetch times</p>
+<p>All of these will be slower without calculated properties. In the first two cases because there is more data to serialize and deserialize and in the last case because the values need to be calculated on the server.</p>
+<p>This is just the most basic example. I did not take the time to create the rules to calculate those values, I&#39;m just getting them from the first collection.</p>
+<p>&nbsp;</p>
+<p><span style="text-decoration:underline;"><b>For the data that is generated for this example</b></span>, it shows that not using calculated properties implies a 66% increase memory use, if we serialize data to a memory stream. Again, I want to stress that this is just for this data, it could be more, it could be less depending on the number of properties, their types, and the lengths of the strings. But regardless, not using calculated properties will always take more time and memory.</p>
+<p>&nbsp;</p>
+<p>Andr&eacute;s</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Thursday, December 08, 2011</h2><p>Try making the calculated property value a private non-serialized field to eliminate the serialization overhead.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>edore replied on Thursday, December 08, 2011</h2><p>The problem with properties with private backing fields is you can&#39;t set the value&nbsp;in a rule using AddOutValue().&nbsp; Am I right?&nbsp; Or I may have misunderstood something...</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Saturday, December 10, 2011</h2><p><div style='padding-left: 50px;background-color:silver'><b>edore<br></b></p>
+<p>The problem with properties with private backing fields is you can&#39;t set the value&nbsp;in a rule using AddOutValue().&nbsp; Am I right?&nbsp; Or I may have misunderstood something...</p>
+<div style="clear:both;"></div>
+<p></div></p>
+<p>That&#39;s a misunderstanding. </p>
+<p>But the RuleEngine has no knowledge of how to set the private field so you - the developer - must override the business object non-generic LoadProperty (that is called by the rule engine) to set the private field. </p>
+<p>ex:</p>
+<pre style="font-family:Consolas;font-size:13px;color:black;background:none repeat scroll 0% 0% #fafafa;">&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">static</span>&nbsp;<span style="color:blue;">readonly</span>&nbsp;<span style="color:#2b91af;">PropertyInfo</span>&lt;<span style="color:blue;">string</span>&gt;&nbsp;MyPrivateFieldProperty&nbsp;=&nbsp;RegisterProperty&lt;<span style="color:blue;">string</span>&gt;(c&nbsp;=&gt;&nbsp;c.MyPrivateField,&nbsp;<span style="color:#2baf9a;">RelationshipTypes</span>.PrivateField);
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:green;">//&nbsp;[NotUndoable,&nbsp;NonSerialized]</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">private</span>&nbsp;<span style="color:blue;">string</span>&nbsp;_privateValue&nbsp;= MyPrivateFieldProperty.DefaultValue;
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">string</span> MyPrivateField
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">get</span>&nbsp;{&nbsp;<span style="color:blue;">return</span>&nbsp;GetProperty(MyPrivateFieldProperty,&nbsp;_privateValue);&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">set</span>&nbsp;{&nbsp;SetProperty(MyPrivateFieldProperty,&nbsp;<span style="color:blue;">ref</span>&nbsp;_privateValue,&nbsp;<span style="color:blue;">value</span>);&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">protected</span>&nbsp;<span style="color:blue;">override</span>&nbsp;<span style="color:blue;">void</span>&nbsp;LoadProperty(Csla.Core.<span style="color:#2baaaf;">IPropertyInfo</span>&nbsp;propertyInfo,&nbsp;<span style="color:blue;">object</span>&nbsp;newValue)
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">if</span>&nbsp;(propertyInfo&nbsp;==&nbsp;MyPrivateFieldProperty)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_privateValue&nbsp;=&nbsp;(<span style="color:blue;">string</span>)newValue;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; else <span style="color:blue;">base</span>.LoadProperty(propertyInfo,&nbsp;newValue);
+&nbsp;&nbsp;&nbsp;&nbsp;}</pre>
+<p>Will allow you to use the AddOutValue in a BusinessRule for the MyPrivateField private backing field. </p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>edore replied on Monday, December 12, 2011</h2><p>Hi Jonny,</p>
+<p>I already knew this &quot;hack&quot; and it&#39;s certainly not something I want to do everytime I need to set a property with private backing field.&nbsp; It&#39;s annoying and leads to quite ugly code&nbsp;if you have have a couple properties like that.&nbsp; </p>
+<p>So to me, calculated properties with private backing fields are not a good solution, and calculated properties with managed backing fields aren&#39;t either because they contribute to the metastate of the BO, which is wrong IMHO.&nbsp; Memory and serialization overhead aren&#39;t my main concern at the moment, I feel the mobile formatter improvements will help us reduce this overhead...</p>
+<p>I&#39;m looking forward for the elimination of the private backing fields but I hope the replacement will take metastate into account.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>xal replied on Thursday, December 08, 2011</h2><p>Yes, that would work around the serialization problem. But you keep the memory overhead anyway. You also end up processing the rules twice -on client and server-, thus doubling the cpu overhead. The point of this it to keep the server light and fast. If those properties are calculated and are never read, they will never incur any overhead. With that solution they will.</p>
+<p>The first implementation I made declares the propertyinfo object using PrivateField, but there really is no private field because the property is just a calculation based on another.</p>
+<p>Are you trying to say that calculated properties are wrong or bad? I think there&#39;s a big difference between a business rule and a calculated property, and rules are not adequate for this situation. If you have a datetime property, but also want to expose the time and date parts separately in another 2 properties, it makes no sense to store those values separately. Think about SmartDate, would you change it&#39;s implementation to have a field for the date and another one for the string and yet another for DBValue? Then you&#39;d have to create a rule for when the dateformat changes. And the same for the date, text and DBValue properties. And you&#39;d also have to keep up with all of them and always keep an eye out for somebody writing code that sets those fields directly. Do you really think that is the best way to go?</p>
+<p>On the other hand, I suggested various improvements for private fields and in another post I was basically told not to use them bacause they were going away when the new serializer comes. So what is it really? is support for private fields going to be discontinued completely?</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

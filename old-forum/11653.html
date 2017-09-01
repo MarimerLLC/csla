@@ -1,0 +1,30 @@
+<html><header><title>Edit Level Error Message in AcceptChanges</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Edit Level Error Message in AcceptChanges</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11653.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>g.beraudo@castsoftware.com posted on Monday, October 22, 2012</h2><p>Dear Rocky, Dear all,&nbsp;</p>
+<p>This is a question related to Edit Level... I&#39;m sorry to ask the same question discussed in other thread. &nbsp;I know this is a recurring trouble which comes from incorrect databinding (or more precisely unbinding). <br />I&#39;m in WinForm with CSLA 4.3.</p>
+<p>My root object has 4 children.&nbsp;</p>
+<p>I&#39;m following the ProjectTracker saving pattern, re-read &#39;Export 2008 Business Objects&#39; and loose some of my hair already.</p>
+<p>In my Rebind() code, after unbinding and before calling .ApplyEdit() my root and all its children have their EditLevel = 1.</p>
+<p>When calling myRoot.ApplyEdit() , an exception is raised in the following&nbsp;&nbsp;(UndoableBase.cs) code:</p>
+<p>
+<p>&nbsp; &nbsp; protected internal void AcceptChanges(int parentEditLevel)&nbsp;&nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; AcceptingChanges();</p>
+<p>&nbsp; &nbsp; &nbsp; if (this.EditLevel - 1 != parentEditLevel)</p>
+</p>
+<p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; throw new UndoException(string.Format(Resources.EditLevelMismatchException, &quot;AcceptChanges&quot;),</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; this.EditLevel, parentEditLevel, this.ToString(), String.Empty); //Exception there both EditLevel and parentEditLevel are set to 0</p>
+<p>I do not understand why, as having all my EditLevel to 1 seems a correct prerequisite for the ApplyEdit() call. Am I wrong?</p>
+<p>Am I missing something?</p>
+<p>I have checked that all my controls use BindingSources, and that all BindingSources are correctly unbound. I do not know how to investigate this problem further.</p>
+<p>Thanks for your feedback,</p>
+<p>Gilles</p>
+</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Monday, October 22, 2012</h2><p>Well, basically this means that one of the child objects is already at EditLevel 0.</p>
+<p>Do you have any inter-graph/using references that is not properly handled (private backing field marked with NonSerialized/NotUndoable)?</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>g.beraudo@castsoftware.com replied on Monday, October 22, 2012</h2><p>Thanks Jonny for the valuable answer.&nbsp;This helpded me finding the cause. </p>
+<p>I&#39;m using managed fields only, but I was doing the following:</p>
+<p>
+<p>Bo r = Root.Child1(0); &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;</p>
+<p>Root.Child1.Remove(r);</p>
+<p>Root.Child2.Add(r); &nbsp;// replaced by&nbsp;Root.Child2.Add(r.Clone())</p>
+<p>I assume that the r object was part of both the &#39;deleted list&#39; of Child1 and the list of &nbsp;Child2, thus undergoing twice the &nbsp;ApplyChange().&nbsp;</p>
+<p>Thanks again.</p>
+<p>Gilles</p>
+</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

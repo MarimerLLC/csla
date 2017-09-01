@@ -1,0 +1,212 @@
+<html><header><title>loadProperty returns default value not value from DataReader</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>loadProperty returns default value not value from DataReader</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6260.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>davido_xml posted on Tuesday, January 27, 2009</h2><P>Hi,</P>
+<P>I am binding to a grid in Silver light using the following:</P><FONT color=#0000ff size=2><FONT color=#0000ff size=2>
+<P>&lt;</FONT></FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>csla</FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>:</FONT></FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>CslaDataProvider</FONT></FONT><FONT color=#ff0000 size=2><FONT color=#ff0000 size=2> x</FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>:</FONT></FONT><FONT color=#ff0000 size=2><FONT color=#ff0000 size=2>Key</FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>="ExpensesData"</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#ff0000 size=2><FONT color=#ff0000 size=2>ManageObjectLifetime</FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>="True"</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#ff0000 size=2><FONT color=#ff0000 size=2>IsInitialLoadEnabled</FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>="True"</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#ff0000 size=2><FONT color=#ff0000 size=2>ObjectType</FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>="XXX.ReadOnlyExpenseList, XXX, Version=..., Culture=neutral, PublicKeyToken=null"</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#ff0000 size=2><FONT color=#ff0000 size=2>PropertyChanged</FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>="CslaDataProvider_PropertyChanged"</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#ff0000 size=2><FONT color=#ff0000 size=2>DataChanged</FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>="CslaDataProvider_DataChanged"</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#ff0000 size=2><FONT color=#ff0000 size=2>FactoryMethod</FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>="GetExpenseList"/&gt;</P></FONT></FONT>
+<P>&nbsp;</P>
+<P>It appears that LoadProperty&lt;&gt; returns default value not value from DataReader for all properties except the SafeDateTime. Can anyone see my error?</P>
+<P>Thanks in advance.</P>
+<P>READONLYLIST</P>
+<P>+++++++++++++++</P><FONT size=2>
+<P>[</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>Serializable</FONT></FONT><FONT size=2>]</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>public</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>class</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>ReadOnlyExpenseList</FONT></FONT><FONT size=2> : </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>ReadOnlyListBase</FONT></FONT><FONT size=2>&lt;</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>ReadOnlyExpenseList</FONT></FONT><FONT size=2>, </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>ReadOnlyExpense</FONT></FONT><FONT size=2>&gt;</P>
+<P>{</P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>
+<P>#if</FONT></FONT><FONT size=2> SILVERLIGHT</P></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>
+<P>public ReadOnlyExpenseList() {}</P></FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>
+<P>#else</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>private</FONT></FONT><FONT size=2> ReadOnlyExpenseList() { }</P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>
+<P>#endif</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>public</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>static</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>void</FONT></FONT><FONT size=2> GetExpenseList(</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>EventHandler</FONT></FONT><FONT size=2>&lt;</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>DataPortalResult</FONT></FONT><FONT size=2>&lt;</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>ReadOnlyExpenseList</FONT></FONT><FONT size=2>&gt;&gt; handler)</P>
+<P>{</P>
+<P></FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>DataPortal</FONT></FONT><FONT size=2>&lt;</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>ReadOnlyExpenseList</FONT></FONT><FONT size=2>&gt; dp = </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>new</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>DataPortal</FONT></FONT><FONT size=2>&lt;</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>ReadOnlyExpenseList</FONT></FONT><FONT size=2>&gt;();</P>
+<P>dp.FetchCompleted += handler;</P>
+<P>dp.BeginFetch();</P>
+<P>}</P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>
+<P>#if</FONT></FONT><FONT size=2> !SILVERLIGHT</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>private</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>void</FONT></FONT><FONT size=2> DataPortal_Fetch()</P>
+<P>{</P>
+<P>RaiseListChangedEvents = </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>false</FONT></FONT><FONT size=2>;</P>
+<P>IsReadOnly = </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>false</FONT></FONT><FONT size=2>;</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>using</FONT></FONT><FONT size=2>(</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>SqlConnection</FONT></FONT><FONT size=2> connection = </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>new</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>SqlConnection</FONT></FONT><FONT size=2>(</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>DataConnection</FONT></FONT><FONT size=2>.ConnectionString))</P>
+<P>{</P>
+<P>connection.Open();</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>using</FONT></FONT><FONT size=2>(</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>SqlCommand</FONT></FONT><FONT size=2> command = </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>new</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>SqlCommand</FONT></FONT><FONT size=2>(</FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>"GetExpenses"</FONT></FONT><FONT size=2>, connection))</P>
+<P>{</P>
+<P>command.CommandType = System.Data.</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>CommandType</FONT></FONT><FONT size=2>.StoredProcedure;</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>using</FONT></FONT><FONT size=2>(Csla.Data.</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>SafeDataReader</FONT></FONT><FONT size=2> reader = </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>new</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>SafeDataReader</FONT></FONT><FONT size=2>(command.ExecuteReader()))</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>while</FONT></FONT><FONT size=2> (reader.Read())</P>
+<P>{</P>
+<P>Add(</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>ReadOnlyExpense</FONT></FONT><FONT size=2>.GetReadOnlyExpense(reader));</P>
+<P>}</P>
+<P></P>
+<P>}</P>
+<P>}</P>
+<P>connection.Close();</P>
+<P>}</P>
+<P>IsReadOnly = </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>true</FONT></FONT><FONT size=2>;</P>
+<P>RaiseListChangedEvents = </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>true</FONT></FONT><FONT size=2>;</P>
+<P>}</P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>
+<P>#endif</P></FONT></FONT><FONT size=2>
+<P>READONLY BO</P>
+<P>+++++++++++++</P>
+<P>[</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>Serializable</FONT></FONT><FONT size=2>]</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>public</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>class</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>ReadOnlyExpense</FONT></FONT><FONT size=2> : </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>ReadOnlyBase</FONT></FONT><FONT size=2>&lt;</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>ReadOnlyExpense</FONT></FONT><FONT size=2>&gt;</P>
+<P>{</P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>
+<P>#if</FONT></FONT><FONT size=2> SILVERLIGHT</P></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>
+<P>public ReadOnlyExpense() { }</P></FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>
+<P>#else</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>private</FONT></FONT><FONT size=2> ReadOnlyExpense() { }</P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>
+<P>#endif</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>private</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>static</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>PropertyInfo</FONT></FONT><FONT size=2>&lt;</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>int</FONT></FONT><FONT size=2>&gt; ExpenseIdProperty = RegisterProperty&lt;</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>int</FONT></FONT><FONT size=2>&gt;(</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>new</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>PropertyInfo</FONT></FONT><FONT size=2>&lt;</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>int</FONT></FONT><FONT size=2>&gt;(</FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>"ExpenseId"</FONT></FONT><FONT size=2>, </FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>"Expense Id"</FONT></FONT><FONT size=2>, 0));</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>public</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>int</FONT></FONT><FONT size=2> ExpenseId</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>get</P></FONT></FONT><FONT size=2>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>return</FONT></FONT><FONT size=2> GetProperty(ExpenseIdProperty);</P>
+<P>}</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>private</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>static</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>PropertyInfo</FONT></FONT><FONT size=2>&lt;</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>SmartDate</FONT></FONT><FONT size=2>&gt; ExpenseDateProperty = RegisterProperty&lt;</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>SmartDate</FONT></FONT><FONT size=2>&gt;(</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>new</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>PropertyInfo</FONT></FONT><FONT size=2>&lt;</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>SmartDate</FONT></FONT><FONT size=2>&gt;(</FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>"ExpenseDate"</FONT></FONT><FONT size=2>, </FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>"Expense Date"</FONT></FONT><FONT size=2>, </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>DateTime</FONT></FONT><FONT size=2>.Today));</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>public</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>SmartDate</FONT></FONT><FONT size=2> ExpenseDate</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>get</P></FONT></FONT><FONT size=2>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>return</FONT></FONT><FONT size=2> GetProperty(ExpenseDateProperty);</P>
+<P>}</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>private</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>static</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>PropertyInfo</FONT></FONT><FONT size=2>&lt;</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>string</FONT></FONT><FONT size=2>&gt; ClientNameProperty = RegisterProperty&lt;</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>string</FONT></FONT><FONT size=2>&gt;(</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>new</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>PropertyInfo</FONT></FONT><FONT size=2>&lt;</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>string</FONT></FONT><FONT size=2>&gt;(</FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>"ClientName"</FONT></FONT><FONT size=2>, </FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>"Client Name"</FONT></FONT><FONT size=2>, </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>string</FONT></FONT><FONT size=2>.Empty));</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>public</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>string</FONT></FONT><FONT size=2> ClientName</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>get</P></FONT></FONT><FONT size=2>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>return</FONT></FONT><FONT size=2> GetProperty(ClientNameProperty);</P>
+<P>}</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>private</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>static</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>PropertyInfo</FONT></FONT><FONT size=2>&lt;</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>string</FONT></FONT><FONT size=2>&gt; LocationProperty = RegisterProperty&lt;</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>string</FONT></FONT><FONT size=2>&gt;(</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>new</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>PropertyInfo</FONT></FONT><FONT size=2>&lt;</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>string</FONT></FONT><FONT size=2>&gt;(</FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>"Location"</FONT></FONT><FONT size=2>, </FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>"Location"</FONT></FONT><FONT size=2>, </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>string</FONT></FONT><FONT size=2>.Empty));</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>public</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>string</FONT></FONT><FONT size=2> Location</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>get</P></FONT></FONT><FONT size=2>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>return</FONT></FONT><FONT size=2> GetProperty(LocationProperty);</P>
+<P>}</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>private</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>static</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>PropertyInfo</FONT></FONT><FONT size=2>&lt;</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>int</FONT></FONT><FONT size=2>&gt; CategoryIdProperty = RegisterProperty&lt;</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>int</FONT></FONT><FONT size=2>&gt;(</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>new</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>PropertyInfo</FONT></FONT><FONT size=2>&lt;</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>int</FONT></FONT><FONT size=2>&gt;(</FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>"CategoryId"</FONT></FONT><FONT size=2>, </FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>"Category Id"</FONT></FONT><FONT size=2>, 0));</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>public</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>int</FONT></FONT><FONT size=2> CategoryId</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>get</P></FONT></FONT><FONT size=2>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>return</FONT></FONT><FONT size=2> GetProperty(CategoryIdProperty);</P>
+<P>}</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>private</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>static</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>PropertyInfo</FONT></FONT><FONT size=2>&lt;</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>int</FONT></FONT><FONT size=2>&gt; CallReasonIdProperty = RegisterProperty&lt;</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>int</FONT></FONT><FONT size=2>&gt;(</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>new</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>PropertyInfo</FONT></FONT><FONT size=2>&lt;</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>int</FONT></FONT><FONT size=2>&gt;(</FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>"CallReasonId"</FONT></FONT><FONT size=2>, </FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>"CallReason Id"</FONT></FONT><FONT size=2>, 0));</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>public</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>int</FONT></FONT><FONT size=2> CallReasonId</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>get</P></FONT></FONT><FONT size=2>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>return</FONT></FONT><FONT size=2> GetProperty(CallReasonIdProperty);</P>
+<P>}</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>private</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>static</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>PropertyInfo</FONT></FONT><FONT size=2>&lt;</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>decimal</FONT></FONT><FONT size=2>&gt; NetPremiumQuotedProperty = RegisterProperty&lt;</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>decimal</FONT></FONT><FONT size=2>&gt;(</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>new</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>PropertyInfo</FONT></FONT><FONT size=2>&lt;</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>decimal</FONT></FONT><FONT size=2>&gt;(</FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>"NetPremiumQuoted"</FONT></FONT><FONT size=2>, </FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>"Net Premium Quoted"</FONT></FONT><FONT size=2>, 0));</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>public</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>decimal</FONT></FONT><FONT size=2> NetPremiumQuoted</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>get</P></FONT></FONT><FONT size=2>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>return</FONT></FONT><FONT size=2> GetProperty(NetPremiumQuotedProperty);</P>
+<P>}</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>private</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>static</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>PropertyInfo</FONT></FONT><FONT size=2>&lt;</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>decimal</FONT></FONT><FONT size=2>&gt; RenewalChargeProperty = RegisterProperty&lt;</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>decimal</FONT></FONT><FONT size=2>&gt;(</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>new</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>PropertyInfo</FONT></FONT><FONT size=2>&lt;</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>decimal</FONT></FONT><FONT size=2>&gt;(</FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>"RenewalCharge"</FONT></FONT><FONT size=2>, </FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>"Renewal Charge"</FONT></FONT><FONT size=2>, 0));</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>public</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>decimal</FONT></FONT><FONT size=2> RenewalCharge</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>get</P></FONT></FONT><FONT size=2>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>return</FONT></FONT><FONT size=2> GetProperty(RenewalChargeProperty);</P>
+<P>}</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>private</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>static</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>PropertyInfo</FONT></FONT><FONT size=2>&lt;</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>int</FONT></FONT><FONT size=2>&gt; OutcomeIdProperty = RegisterProperty&lt;</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>int</FONT></FONT><FONT size=2>&gt;(</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>new</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>PropertyInfo</FONT></FONT><FONT size=2>&lt;</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>int</FONT></FONT><FONT size=2>&gt;(</FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>"OutcomeId"</FONT></FONT><FONT size=2>, </FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>"Outcome Id"</FONT></FONT><FONT size=2>, 0));</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>public</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>int</FONT></FONT><FONT size=2> OutcomeId</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>get</P></FONT></FONT><FONT size=2>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>return</FONT></FONT><FONT size=2> GetProperty(OutcomeIdProperty);</P>
+<P>}</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>private</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>static</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>PropertyInfo</FONT></FONT><FONT size=2>&lt;</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>int</FONT></FONT><FONT size=2>&gt; CompetitionIdProperty = RegisterProperty&lt;</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>int</FONT></FONT><FONT size=2>&gt;(</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>new</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>PropertyInfo</FONT></FONT><FONT size=2>&lt;</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>int</FONT></FONT><FONT size=2>&gt;(</FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>"CompetitionId"</FONT></FONT><FONT size=2>, </FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>"Competition Id"</FONT></FONT><FONT size=2>, 0));</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>public</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>int</FONT></FONT><FONT size=2> CompetitionId</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>get</P></FONT></FONT><FONT size=2>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>return</FONT></FONT><FONT size=2> GetProperty(CompetitionIdProperty);</P>
+<P>}</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>private</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>static</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>PropertyInfo</FONT></FONT><FONT size=2>&lt;</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>decimal</FONT></FONT><FONT size=2>&gt; CompetingQuoteProperty = RegisterProperty&lt;</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>decimal</FONT></FONT><FONT size=2>&gt;(</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>new</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>PropertyInfo</FONT></FONT><FONT size=2>&lt;</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>decimal</FONT></FONT><FONT size=2>&gt;(</FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>"CompetingQuote"</FONT></FONT><FONT size=2>, </FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>"Competing Quote"</FONT></FONT><FONT size=2>, 0));</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>public</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>decimal</FONT></FONT><FONT size=2> CompetingQuote</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>get</P></FONT></FONT><FONT size=2>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>return</FONT></FONT><FONT size=2> GetProperty(CompetingQuoteProperty);</P>
+<P>}</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>private</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>static</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>PropertyInfo</FONT></FONT><FONT size=2>&lt;</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>int</FONT></FONT><FONT size=2>&gt; MileageProperty = RegisterProperty&lt;</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>int</FONT></FONT><FONT size=2>&gt;(</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>new</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>PropertyInfo</FONT></FONT><FONT size=2>&lt;</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>int</FONT></FONT><FONT size=2>&gt;(</FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>"Mileage"</FONT></FONT><FONT size=2>, </FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>"Mileage"</FONT></FONT><FONT size=2>, 0));</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>public</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>int</FONT></FONT><FONT size=2> Mileage</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>get</P></FONT></FONT><FONT size=2>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>return</FONT></FONT><FONT size=2> GetProperty(MileageProperty);</P>
+<P>}</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>private</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>static</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>PropertyInfo</FONT></FONT><FONT size=2>&lt;</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>int</FONT></FONT><FONT size=2>&gt; MileageReasonIdProperty = RegisterProperty&lt;</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>int</FONT></FONT><FONT size=2>&gt;(</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>new</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>PropertyInfo</FONT></FONT><FONT size=2>&lt;</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>int</FONT></FONT><FONT size=2>&gt;(</FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>"MileageReasonId"</FONT></FONT><FONT size=2>, </FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>"Mileage Reason Id"</FONT></FONT><FONT size=2>, 0));</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>public</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>int</FONT></FONT><FONT size=2> MileageReasonId</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>get</P></FONT></FONT><FONT size=2>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>return</FONT></FONT><FONT size=2> GetProperty(MileageReasonIdProperty);</P>
+<P>}</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>protected</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>override</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>void</FONT></FONT><FONT size=2> AddAuthorizationRules()</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>string</FONT></FONT><FONT size=2>[] canRead = </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>new</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>string</FONT></FONT><FONT size=2>[] { </FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>"AdminUser"</FONT></FONT><FONT size=2>, </FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>"RegularUser"</FONT></FONT><FONT size=2>, </FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>"ReadOnlyUser"</FONT></FONT><FONT size=2> };</P>
+<P></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2>//AuthorizationRules.AllowGet(typeof(Company), canRead);</P></FONT></FONT><FONT size=2>
+<P>AuthorizationRules.AllowRead(ExpenseIdProperty, canRead);</P>
+<P>AuthorizationRules.AllowRead(ClientNameProperty, canRead);</P>
+<P>AuthorizationRules.AllowRead(LocationProperty, canRead);</P>
+<P>AuthorizationRules.AllowRead(CategoryIdProperty, canRead);</P>
+<P>AuthorizationRules.AllowRead(CallReasonIdProperty, canRead);</P>
+<P>AuthorizationRules.AllowRead(NetPremiumQuotedProperty, canRead);</P>
+<P>AuthorizationRules.AllowRead(RenewalChargeProperty, canRead);</P>
+<P>AuthorizationRules.AllowRead(OutcomeIdProperty, canRead);</P>
+<P>AuthorizationRules.AllowRead(CompetitionIdProperty, canRead);</P>
+<P>AuthorizationRules.AllowRead(CompetingQuoteProperty, canRead);</P>
+<P>AuthorizationRules.AllowRead(MileageProperty, canRead);</P>
+<P>AuthorizationRules.AllowRead(MileageReasonIdProperty, canRead);</P>
+<P>}</P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>
+<P>#if</FONT></FONT><FONT size=2> !SILVERLIGHT</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>public</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>static</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>ReadOnlyExpense</FONT></FONT><FONT size=2> GetReadOnlyExpense(</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>SafeDataReader</FONT></FONT><FONT size=2> reader)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>return</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>DataPortal</FONT></FONT><FONT size=2>.FetchChild&lt;</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>ReadOnlyExpense</FONT></FONT><FONT size=2>&gt;(reader);</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>private</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>void</FONT></FONT><FONT size=2> Child_Fetch(</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>SafeDataReader</FONT></FONT><FONT size=2> reader)</P>
+<P>{</P>
+<P>LoadProperty&lt;</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>int</FONT></FONT><FONT size=2>&gt;(ExpenseIdProperty, reader.GetInt32(</FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>"ExpenseId"</FONT></FONT><FONT size=2>));</P>
+<P>LoadProperty&lt;</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>SmartDate</FONT></FONT><FONT size=2>&gt;(ExpenseDateProperty, reader.GetSmartDate(</FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>"ExpenseDate"</FONT></FONT><FONT size=2>));</P>
+<P>LoadProperty&lt;</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>string</FONT></FONT><FONT size=2>&gt;(ClientNameProperty, reader.GetString(</FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>"ClientName"</FONT></FONT><FONT size=2>));</P>
+<P>LoadProperty&lt;</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>string</FONT></FONT><FONT size=2>&gt;(LocationProperty, reader.GetString(</FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>"Location"</FONT></FONT><FONT size=2>));</P>
+<P>LoadProperty&lt;</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>int</FONT></FONT><FONT size=2>&gt;(CategoryIdProperty, reader.GetInt32(</FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>"CategoryId"</FONT></FONT><FONT size=2>));</P>
+<P>LoadProperty&lt;</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>int</FONT></FONT><FONT size=2>&gt;(CallReasonIdProperty, reader.GetInt32(</FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>"CallReasonId"</FONT></FONT><FONT size=2>));</P>
+<P>LoadProperty&lt;</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>decimal</FONT></FONT><FONT size=2>&gt;(NetPremiumQuotedProperty, reader.GetDecimal(</FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>"NetPremiumQuoted"</FONT></FONT><FONT size=2>));</P>
+<P>LoadProperty&lt;</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>decimal</FONT></FONT><FONT size=2>&gt;(RenewalChargeProperty, reader.GetDecimal(</FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>"RenewalCharge"</FONT></FONT><FONT size=2>));</P>
+<P>LoadProperty&lt;</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>int</FONT></FONT><FONT size=2>&gt;(OutcomeIdProperty, reader.GetInt32(</FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>"OutcomeId"</FONT></FONT><FONT size=2>));</P>
+<P>LoadProperty&lt;</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>int</FONT></FONT><FONT size=2>&gt;(CompetitionIdProperty, reader.GetInt32(</FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>"CompetitionId"</FONT></FONT><FONT size=2>));</P>
+<P>LoadProperty&lt;</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>decimal</FONT></FONT><FONT size=2>&gt;(CompetingQuoteProperty, reader.GetDecimal(</FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>"CompetingQuote"</FONT></FONT><FONT size=2>));</P>
+<P>LoadProperty&lt;</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>int</FONT></FONT><FONT size=2>&gt;(MileageProperty, reader.GetInt32(</FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>"Mileage"</FONT></FONT><FONT size=2>));</P>
+<P>LoadProperty&lt;</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>int</FONT></FONT><FONT size=2>&gt;(MileageReasonIdProperty, reader.GetInt32(</FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>"MileageReasonId"</FONT></FONT><FONT size=2>));</P>
+<P>}</P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>
+<P>#endif</P></FONT></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Tuesday, January 27, 2009</h2><P>You can't pass a datareader through the DataPortal.</P>
+<P><FONT color=#0000ff size=2><FONT color=#0000ff size=2>public</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>static</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>ReadOnlyExpense</FONT></FONT><FONT size=2> GetReadOnlyExpense(</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>SafeDataReader</FONT></FONT><FONT size=2> reader)<BR>{<BR></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>return</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>DataPortal</FONT></FONT><FONT size=2>.FetchChild&lt;</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>ReadOnlyExpense</FONT></FONT><FONT size=2>&gt;(reader);<BR>}</FONT></P>
+<P>When filling a child object with a datareader you call internal methods and pass the reader directly to them.</P>
+<P>Joe</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>davido_xml replied on Tuesday, January 27, 2009</h2><P>Thanks for the reply. I'm new so please bear with me...</P>
+<P>I got the code from the Rolodex example which seems to be doing the same as mine. I don't get any errors or warnings about sending a datareader, just default values for most of the properties.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>davido_xml replied on Tuesday, January 27, 2009</h2>It was an Authorization problem on my side. I have not yet implemented security so I need to keep the lines in <FONT size=2>AddAuthorizationRules commented out for now.</FONT></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

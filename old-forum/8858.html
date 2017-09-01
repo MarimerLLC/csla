@@ -1,0 +1,45 @@
+<html><header><title>Request for additional ViewModelBase&lt;T&gt; changes</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Request for additional ViewModelBase&lt;T&gt; changes</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/8858.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jack posted on Thursday, April 29, 2010</h2><p>Not sure if this already came up but could we add virtual OnModelXyz methods for all the attached events in OnModelChanged.&nbsp; </p>
+<p>If I want to do any processing based on those then I have to basically replicate OnModelChanged and then pay attention to any future changes.</p>
+<p>Thanks</p>
+<p>jack</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Friday, April 30, 2010</h2><p>Hi Jack ,</p>
+<p>See this issue: http://www.lhotka.net/cslabugs/edit_bug.aspx?id=730 &nbsp; </p>
+<p>Checked in 2 days ago and available in CSLA 4 repository. </p>
+<p>If you have time - you can download the latest version from repository and try out.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jack replied on Friday, April 30, 2010</h2><p>Those were the changes I thought I had seen mentioned before.&nbsp; However what I was looking for was some of the other private methods.&nbsp; I overrode OnModelChanged so that I could attach/detach from the same events to expose the private methods.&nbsp; It would be nice to not have to attach/detach from the same events over and over.</p>
+<p>I posed my override of OnModelChanged.&nbsp; Mostly I&#39;m looking to trap changes to certain properites in my ViewModel so I can do something to the UI.</p>
+<p>Jack</p>
+<p>protected override void OnModelChanged(T oldValue, T newValue)</p>
+<p>{</p>
+<p>base.OnModelChanged(oldValue, newValue);</p>
+<p>&nbsp;</p>
+<p>if (ReferenceEquals(oldValue, newValue)) return;</p>
+<p>// unhook events from old value</p>
+<p>if (oldValue != null)</p>
+<p>{</p>
+<p>var npc = oldValue as INotifyPropertyChanged;</p>
+<p>if (npc != null)</p>
+<p>npc.PropertyChanged -= Model_PropertyChanged;</p>
+<p>var ncc = oldValue as INotifyChildChanged;</p>
+<p>if (ncc != null)</p>
+<p>ncc.ChildChanged -= Model_ChildChanged;</p>
+<p>var nb = oldValue as INotifyBusy;</p>
+<p>if (nb != null)</p>
+<p>nb.BusyChanged -= Model_BusyChanged;</p>
+<p>}</p>
+<p>// hook events on new value</p>
+<p>if (newValue != null)</p>
+<p>{</p>
+<p>var npc = newValue as INotifyPropertyChanged;</p>
+<p>if (npc != null)</p>
+<p>npc.PropertyChanged += Model_PropertyChanged;</p>
+<p>var ncc = newValue as INotifyChildChanged;</p>
+<p>if (ncc != null)</p>
+<p>ncc.ChildChanged += Model_ChildChanged;</p>
+<p>var nb = newValue as INotifyBusy;</p>
+<p>if (nb != null)</p>
+<p>nb.BusyChanged += Model_BusyChanged;</p>
+<p>}</p>
+<p>OnViewModelChanged(EventArgs.Empty);</p>
+<p>}</p>
+<p>protected virtual void Model_BusyChanged(object sender, BusyChangedEventArgs e){}</p>
+<p>protected virtual void Model_PropertyChanged(object sender, PropertyChangedEventArgs e) {}</p>
+<p>protected virtual void Model_ChildChanged(object sender, ChildChangedEventArgs e){}</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

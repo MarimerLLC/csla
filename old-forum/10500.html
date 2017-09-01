@@ -1,0 +1,25 @@
+<html><header><title>Auto Increment Properties</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Auto Increment Properties</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10500.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>abreu.bruno posted on Thursday, July 07, 2011</h2><p><span><span title="Como posso pegar um valor de uma coluna auto-increment no banco de dados e">How can I get a value of an auto-increment column in the database and&nbsp;<br /></span><span title="setar em uma propriedade?">set on a property?</span></span></p>
+<p>Here is my code:</p>
+<p>protected override void DataPortal_Insert()</p>
+<p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; using (AquariusEntities ae = new AquariusEntities())</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Model.Account account;</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; account = new Model.Account</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; CreationDate = ReadProperty(CreationDateProperty),</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Description = ReadProperty(DescriptionProperty),</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Id = ReadProperty(IdProperty),</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; LastAccess = ReadProperty(LastAccessProperty),</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Password = ReadProperty(PasswordProperty)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; };</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; ae.AddToAccount(account);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; ae.SaveChanges();</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; SetProperty&lt;Int32&gt;(CodeProperty, account.Code);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; }</p>
+</p>
+<p><span><span title="Clique para mostrar tradu&ccedil;&otilde;es alternativas" class="hps">But when</span>&nbsp;<span title="Clique para mostrar tradu&ccedil;&otilde;es alternativas" class="hps">I try to</span>&nbsp;<span title="Clique para mostrar tradu&ccedil;&otilde;es alternativas" class="hps">access the property</span>&nbsp;<span title="Clique para mostrar tradu&ccedil;&otilde;es alternativas" class="hps">from my</span>&nbsp;<span title="Clique para mostrar tradu&ccedil;&otilde;es alternativas" class="hps">object (account.Code),</span>&nbsp;</span><span><span title="Clique para mostrar tradu&ccedil;&otilde;es alternativas" class="hps">it</span>&nbsp;<span title="Clique para mostrar tradu&ccedil;&otilde;es alternativas" class="hps">is</span>&nbsp;<span title="Clique para mostrar tradu&ccedil;&otilde;es alternativas" class="hps">the default value</span><span title="Clique para mostrar tradu&ccedil;&otilde;es alternativas">.</span></span></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>abreu.bruno replied on Friday, July 08, 2011</h2><p>??</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>tiago replied on Friday, July 08, 2011</h2><p>Hi Bruno, Download the samples and give them uma boa mirada. I recommend PTracker; most if not all of the answers are there.</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>Marjon1 replied on Monday, July 11, 2011</h2><p>The key thing to remember that you always get a new object back when calling save, so your call must look like: <b>&nbsp;obj = obj.Save()</b></p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,471 @@
+<html><header><title>Null Reference Exception in Utilities.CallByName CSLA 3.6.1 (Please Help)</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Null Reference Exception in Utilities.CallByName CSLA 3.6.1 (Please Help)</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6279.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jack posted on Wednesday, January 28, 2009</h2><font face="Arial">I'm completely stuck on an issue with updating managed properties that have a ValidationRule attached to them.&nbsp; Basically it seems that the first time I call SetProperty and there is an attached business rule it is it crashing.&nbsp; It has something to do with instantiating as if I trap the exception and make the same call again then I am fine.<br><br>I have loaded my data, done data binding, and then I am setting a property in code.&nbsp; I traced it through to the CallByName method in Utilities.cs (see stack trace) and it is failing on the highlighted line [</font><font face="Courier New" size="2"><font color="#ff0000"><b>return p.GetValue(target, args);<font color="#000000">]<font face="Arial"> </font></font></b><font color="#000000"><font face="Arial">as p is null</font></font></font></font><font face="Arial"><br><br></font><blockquote><font face="Courier New" size="2">public static object CallByName(<br></font><font face="Courier New" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; object target, string methodName, CallType callType,<br></font><font face="Courier New" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; params object[] args)<br></font><font face="Courier New" size="2">&nbsp;&nbsp;&nbsp; {<br></font><font face="Courier New" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; switch (callType)<br></font><font face="Courier New" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br></font><font face="Courier New" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; case CallType.Get:<br></font><font face="Courier New" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br></font><font face="Courier New" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; PropertyInfo p = target.GetType().GetProperty(methodName);<br></font><font face="Courier New" size="2"><font color="#ff0000"><b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return p.GetValue(target, args);</b></font><br></font><font face="Courier New" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br></font><font face="Courier New" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; case CallType.Let:</font><br></blockquote><font face="Arial"><br><br></font><blockquote><font face="Arial">&gt;<font face="Courier New" size="2">&nbsp;&nbsp;&nbsp;<font size="1"> Csla.dll!Csla.Utilities.CallByName(object target = {Epm.Library.DataEntry.DataCollection}, string methodName = "DataEntryId", Csla.CallType callType = Get, object[] args = {object[0]}) Line 43&nbsp;&nbsp;&nbsp; C#</font></font></font><font size="1"><br></font><font face="Arial" size="1"><font face="Courier New">&nbsp;&nbsp;&nbsp;&nbsp; Csla.dll!Csla.Validation.CommonRules.StringMaxLength(object target = {Epm.Library.DataEntry.DataCollection}, Csla.Validation.RuleArgs e = {DataEntryId?MaxLength=20&amp;Format=}) Line 64 + 0x38 bytes&nbsp;&nbsp;&nbsp; C#</font></font><font size="1"><br></font><font face="Arial" size="1"><font face="Courier New">&nbsp;&nbsp;&nbsp;&nbsp; Csla.dll!Csla.Validation.RuleMethod.Invoke(object target = {Epm.Library.DataEntry.DataCollection}) Line 103 + 0x1d bytes&nbsp;&nbsp;&nbsp; C#</font></font><font size="1"><br></font><font face="Arial" size="1"><font face="Courier New">&nbsp;&nbsp;&nbsp;&nbsp; Csla.dll!Csla.Validation.ValidationRules.CheckRules(System.Collections.Generic.List&lt;Csla.Validation.IRuleMethod&gt; list = Count = 1) Line 1087 + 0xf bytes&nbsp;&nbsp;&nbsp; C#</font></font><font size="1"><br></font><font face="Arial" size="1"><font face="Courier New">&nbsp;&nbsp;&nbsp;&nbsp; Csla.dll!Csla.Validation.ValidationRules.CheckRules(string propertyName = "DataEntryId") Line 996 + 0xb bytes&nbsp;&nbsp;&nbsp; C#</font></font><font size="1"><br></font><font face="Arial" size="1"><font face="Courier New">&nbsp;&nbsp;&nbsp;&nbsp; Csla.dll!Csla.Core.BusinessBase.PropertyHasChanged(string propertyName = "DataEntryId") Line 300 + 0x18 bytes&nbsp;&nbsp;&nbsp; C#</font></font><font size="1"><br></font><font face="Arial" size="1"><font face="Courier New">&nbsp;&nbsp;&nbsp;&nbsp; Csla.dll!Csla.Core.BusinessBase.LoadPropertyValue&lt;string&gt;(Csla.PropertyInfo&lt;string&gt; propertyInfo = {Csla.PropertyInfo&lt;string&gt;}, string oldValue = "CATTERHA", string newValue = "Jack", bool markDirty = true) Line 2583 + 0x2d bytes&nbsp;&nbsp;&nbsp; C#</font></font><font size="1"><br></font><font face="Arial" size="1"><font face="Courier New">&nbsp;&nbsp;&nbsp;&nbsp; Csla.dll!Csla.Core.BusinessBase.SetProperty&lt;string&gt;(Csla.PropertyInfo&lt;string&gt; propertyInfo = {Csla.PropertyInfo&lt;string&gt;}, string newValue = "Jack", Csla.Security.NoAccessBehavior noAccess = ThrowException) Line 2352 + 0x65 bytes&nbsp;&nbsp;&nbsp; C#</font></font><font size="1"><br></font><font face="Arial" size="1"><font face="Courier New">&nbsp;&nbsp;&nbsp;&nbsp; Csla.dll!Csla.Core.BusinessBase.SetProperty&lt;string&gt;(Csla.PropertyInfo&lt;string&gt; propertyInfo = {Csla.PropertyInfo&lt;string&gt;}, string newValue = "Jack") Line 2244 + 0x44 bytes&nbsp;&nbsp;&nbsp; C#</font></font><font size="1"><br></font><font face="Arial" size="1"><font face="Courier New">&nbsp;&nbsp;&nbsp;&nbsp; EPM.Library.dll!Epm.Library.DataEntry.DataCollection.DataEntryId.set(string value = "Jack") Line 107 + 0x17 bytes&nbsp;&nbsp;&nbsp; C#</font></font><font size="1"><br></font><font face="Arial" size="1"><font face="Courier New">&nbsp;&nbsp;&nbsp;&nbsp; EPM.Library.dll!Epm.Library.DataEntry.DataEntrySession.Save() Line 446 + 0x2a bytes&nbsp;&nbsp;&nbsp; C#</font></font><font size="1"><br></font><font face="Arial" size="1"><font face="Courier New">&nbsp;&nbsp;&nbsp;&nbsp; EpmWin.exe!EpmWin.DataEntrySessionForm.bSave_Click(object sender = {Text = "SaveData"}, System.EventArgs e = {X = 25 Y = 12 Button = Left}) Line 183 + 0x3e bytes&nbsp;&nbsp;&nbsp; C#</font></font><font size="1"><br></font><font face="Arial" size="1"><font face="Courier New">&nbsp;&nbsp;&nbsp;&nbsp; [External Code]&nbsp;&nbsp;&nbsp; </font></font><font size="1"><br></font><font face="Arial" size="1"><font face="Courier New">&nbsp;&nbsp;&nbsp;&nbsp; EpmWin.exe!EpmWin.Program.Main() Line 18 + 0x1d bytes&nbsp;&nbsp;&nbsp; C#</font></font><font size="1"><br></font><font face="Arial"><font face="Courier New" size="2"><font size="1">&nbsp;&nbsp;&nbsp;&nbsp; [External Code]&nbsp;&nbsp;</font>&nbsp;</font> </font><br></blockquote><font face="Arial">I thought maybe it had to do with the _forceInit business but I'm fairly certain that everything is okay.&nbsp; I've also upgraded to 3.6.1 which is suppose to remove that issue and I still have the problem. <br><br>I'm assuming its something I am doing but I'm baffled. I'm using an ObjectFactory to load all my objects.&nbsp; I'm making the call from the parentRoot to update the property on the first element of a ChildList.<br><br>In case it helps this is my code to add the business rule:<br><font face="Courier New" size="2">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; //DataEntryId<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; ValidationRules.AddRule(CommonRules.StringMaxLength, new CommonRules.MaxLengthRuleArgs(DataEntryIdProperty, 20));<br></font><br>I'm even getting the same error when I try to update a property on my root class:<br><font size="2"><br></font></font><div><font size="2">Csla.PropertyLoadException: Property load or set failed for property UpdatorId (Validation rule rule://Csla.Validation.CommonRules/StringMaxLength/UpdatorId?MaxLength=20&amp;Format= failed in property UpdatorId) ---&gt; Csla.Validation.ValidationException: Validation rule rule://Csla.Validation.CommonRules/StringMaxLength/UpdatorId?MaxLength=20&amp;Format= failed in property UpdatorId ---&gt; System.NullReferenceException: Object reference not set to an instance of an object.</font><font size="2"><br></font><font size="2">&nbsp;&nbsp; at Csla.Utilities.CallByName(Object target, String methodName, CallType callType, Object[] args) in C:\Csla\Framework\cslacs\Csla\Utilities.cs:line 48</font><font size="2"><br></font><font size="2">&nbsp;&nbsp; at Csla.Validation.CommonRules.StringMaxLength(Object target, RuleArgs e) in C:\Csla\Framework\cslacs\Csla\Validation\CommonRules.cs:line 64</font><font size="2"><br></font><font size="2">&nbsp;&nbsp; at Csla.Validation.RuleMethod.Invoke(Object target) in C:\Csla\Framework\cslacs\Csla\Validation\RuleMethod.cs:line 103</font><font size="2"><br></font><font size="2">&nbsp;&nbsp; at Csla.Validation.ValidationRules.CheckRules(List`1 list) in C:\Csla\Framework\cslacs\Csla\Validation\ValidationRules.cs:line 1087</font><font size="2"><br></font><font size="2">&nbsp;&nbsp; --- End of inner exception stack trace ---</font><font size="2"><br></font><font size="2">&nbsp;&nbsp; at Csla.Validation.ValidationRules.CheckRules(List`1 list) in C:\Csla\Framework\cslacs\Csla\Validation\ValidationRules.cs:line 1097</font><font size="2"><br></font><font size="2">&nbsp;&nbsp; at Csla.Validation.ValidationRules.CheckRules(String propertyName) in C:\Csla\Framework\cslacs\Csla\Validation\ValidationRules.cs:line 996</font><font size="2"><br></font><font size="2">&nbsp;&nbsp; at Csla.Core.BusinessBase.PropertyHasChanged(String propertyName) in C:\Csla\Framework\cslacs\Csla\Core\BusinessBase.cs:line 300</font><font size="2"><br></font><font size="2">&nbsp;&nbsp; at Epm.Library.DataEntry.DataEntrySession.PropertyHasChanged(String propertyName) in C:\epm\SourceCode\EPM.Libary\DataEntry\DataEntrySession.cs:line 235</font><font size="2"><br></font><font size="2">&nbsp;&nbsp; at Csla.Core.BusinessBase.LoadPropertyValue[P](PropertyInfo`1 propertyInfo, P oldValue, P newValue, Boolean markDirty) in C:\Csla\Framework\cslacs\Csla\Core\BusinessBase.cs:line 2583</font><font size="2"><br></font><font size="2">&nbsp;&nbsp; at Csla.Core.BusinessBase.SetProperty[P](PropertyInfo`1 propertyInfo, P newValue, NoAccessBehavior noAccess) in C:\Csla\Framework\cslacs\Csla\Core\BusinessBase.cs:line 2352</font><font size="2"><br></font><font size="2">&nbsp;&nbsp; --- End of inner exception stack trace ---</font><font size="2"><br></font><font size="2">&nbsp;&nbsp; at Csla.Core.BusinessBase.SetProperty[P](PropertyInfo`1 propertyInfo, P newValue, NoAccessBehavior noAccess) in C:\Csla\Framework\cslacs\Csla\Core\BusinessBase.cs:line 2356</font><font size="2"><br></font><font size="2">&nbsp;&nbsp; at Csla.Core.BusinessBase.SetProperty[P](PropertyInfo`1 propertyInfo, P newValue) in C:\Csla\Framework\cslacs\Csla\Core\BusinessBase.cs:line 2244</font><font size="2"><br></font><font size="2">&nbsp;&nbsp; at Epm.Library.DataEntry.DataEntrySession.set_UpdatorId(String value) in C:\epm\SourceCode\EPM.Libary\DataEntry\Generated\DataEntrySession.Generated.cs:line 228</font><font size="2"><br></font><font size="2">&nbsp;&nbsp; at Epm.Library.DataEntry.DataEntrySession.Save() in C:\epm\SourceCode\EPM.Libary\DataEntry\DataEntrySession.cs:line 446</font><font size="2"><br></font><font size="2">&nbsp;&nbsp; at EpmWin.DataEntrySessionForm.bSave_Click(Object sender, EventArgs e) in C:\epm\SourceCode\EpmWin\EpmWin\DataEntrySessionForm.cs:line 183</font><font size="2"><br></font></div><div><br></div>I'm getting quite frustrated so any push in the right direction would be appreciated although I would like to understand what it is I am doing wrong.<br><br>Thanks<br><br>jack<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, January 29, 2009</h2>Have you looked in the debugger to see the value of methodName at the point of failure? If so, what is that value?</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jack replied on Thursday, January 29, 2009</h2>It is the name of the Property I am trying to update.  In the simple case at<br />the bottom of my post - 'UpdatorId', in the big long stacktrace (same id)<br />'DataEntryId'.<br /><br />Thanks<br /><br />-----Original Message-----<br />From: RockfordLhotka [mailto:cslanet@lhotka.net] <br />Sent: Thursday, January 29, 2009 8:53 AM<br />To: jaddington@alexandergracie.com<br />Subject: Re: [CSLA .NET] Null Reference Exception in Utilities.CallByName<br />CSLA 3.6.1 (Please Help)<br /><br />Have you looked in the debugger to see the value of methodName at the point<br />of failure? If so, what is that value?<br /><br /></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jack replied on Tuesday, February 03, 2009</h2>Rocky,
+
+I have updated to 3.6.1 RC1 and I am still having this issue.  Any thoughts?
+Anywhere else I can look or try or give you more information to help?
+<br><br>This is my call to add the business rule:<br><br>//UpdatorId<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; ValidationRules.AddRule(CommonRules.StringMaxLength, new CommonRules.MaxLengthRuleArgs(UpdatorIdProperty, 20));<br><br>Thanks
+
+jack<br><br>&nbsp;-----Original Message-----
+From: Jack Addington [mailto:cslanet@lhotka.net] 
+Sent: Thursday, January 29, 2009 9:23 AM
+To: jaddington@alexandergracie.com
+Subject: RE: [CSLA .NET] Null Reference Exception in Utilities.CallByName
+CSLA 3.6.1 (Please Help)
+
+It is the name of the Property I am trying to update.  In the simple case at
+the bottom of my post - 'UpdatorId', in the big long stacktrace (same id)
+'DataEntryId'.
+
+Thanks
+
+-----Original Message-----
+From: RockfordLhotka [mailto:cslanet@lhotka.net] 
+Sent: Thursday, January 29, 2009 8:53 AM
+To: jaddington@alexandergracie.com
+Subject: Re: [CSLA .NET] Null Reference Exception in Utilities.CallByName
+CSLA 3.6.1 (Please Help)
+
+Have you looked in the debugger to see the value of methodName at the point
+of failure? If so, what is that value?</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, February 03, 2009</h2>Can you create a small project - perhaps a console app - that has just a<br />class, your property and your AddRule() call? If it occurs in that scenario,<br />you can share the project with me and I'll see what I can do to track down<br />the issue.<br /><br />The problem is that I have code using StringMaxLength and it works fine. As<br />you can imagine, I'm trying to help you troubleshoot through pure<br />speculation at this point, with no direct example of failure to work<br />against.<br /><br />Rocky</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>bt1 replied on Tuesday, February 03, 2009</h2><P>Could this be the force static initilization thing when there is a base classe between BusinessBase and the final class?</P>
+<P>Add the following to EVERY class (change ClassName to the name of your class ie constructor)</P><FONT color=#0000ff size=1>
+<P>#pragma</FONT><FONT size=1> warning disable 0414</P>
+<P></FONT><FONT color=#0000ff size=1>private</FONT><FONT size=1> </FONT><FONT color=#0000ff size=1>static</FONT><FONT size=1> </FONT><FONT color=#0000ff size=1>int</FONT><FONT size=1> _forceInit;</P></FONT><FONT color=#0000ff size=1>
+<P>#pragma</FONT><FONT size=1> warning restore 0414</FONT></P>
+<P><FONT color=#0000ff size=1>private</FONT><FONT size=1> ClassName()</P>
+<P>{ </FONT><FONT color=#008000 size=1>/* require use of factory methods */</P></FONT><FONT size=1>
+<P>_forceInit = 1;</P>
+<P>}</P>
+<P>&nbsp;</P><FONT size=1>
+<P></FONT><FONT color=#0000ff size=1>protected</FONT><FONT size=1> </FONT><FONT color=#0000ff size=1>override</FONT><FONT size=1> </FONT><FONT color=#0000ff size=1>void</FONT><FONT size=1> OnDeserialized(</FONT><FONT color=#2b91af size=1>StreamingContext</FONT><FONT size=1> context)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=1>base</FONT><FONT size=1>.OnDeserialized(context);</P>
+<P>_forceInit = 1;</P>
+<P>}</P></FONT></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jack replied on Tuesday, February 03, 2009</h2>Rocky,<br><br>The problem is that I defined the underlying property as internal (non-public).<br><br>I'm using a codeGen template so it just creates common rules for any basic database schema information it can find.<br><br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; internal string UpdatorId<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; get { return ReadProperty&lt;string&gt;(UpdatorIdProperty); }<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; set { SetProperty&lt;string&gt;(UpdatorIdProperty, value); }<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; }<br><br>I never want these variables visable or set via the UI so that made sense.&nbsp; I scoured the 2008 book and didn't see any reference to not using the validation functions on non-public properties.&nbsp; Also after the exception happens, I can actually try again and it works so something is slightly off??<br><br>I'm just putting together a console app to show it working/crashing.<br><br>Thanks<br><br>jack<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, February 03, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Oh.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>In that case this behavior is by design. The CallByName() method
+is designed to replicate in C# a VB runtime feature that lets you call a method
+or property by name. Neither the VB nor C#-replica allow you to invoke
+non-public members of an object.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>If you want to invoke a non-public member by name, you&#8217;ll
+need to create your own CallByName() equivalent.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jack replied on Tuesday, February 03, 2009</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Rocky,<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I don&#8217;t want to do anything extra &#8211; this is all invoked from the
+rules validation logic of the framework when making a call to SetProperty for a
+non-public property.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Are you saying that one cannot, by design, use the CommonRules
+validation logic with non-public managed properties?<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Thanks<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>jack<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Rockford Lhotka
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Tuesday, February 03, 2009 1:05 PM<br>
+<b>To:</b> jaddington@alexandergracie.com<br>
+<b>Subject:</b> RE: [CSLA .NET] RE: Null Reference Exception in
+Utilities.CallByName CSLA 3.6.1 (Please Help)<o:p></o:p></span></p>
+
+</div>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal><span>Oh.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>In that case this behavior is by design. The CallByName() method
+is designed to replicate in C# a VB runtime feature that lets you call a method
+or property by name. Neither the VB nor C#-replica allow you to invoke
+non-public members of an object.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>If you want to invoke a non-public member by name, you&#8217;ll need
+to create your own CallByName() equivalent.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, February 03, 2009</h2>I’m saying that you can’t use the CommonRules rule methods against non-public properties.<br /><br />It doesn’t matter if the property is managed or not – the property must be public in scope:<br /><br />public string MyProperty<br />{<br />}<br /><br />You said your property is internal:<br /><br />internal string MyProperty<br />{<br />}<br /><br />That is not public, and so it won’t work.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, February 03, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I&#8217;m saying that you can&#8217;t use the CommonRules rule
+methods against non-public properties.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>It doesn&#8217;t matter if the property is managed or not &#8211;
+the property must be public in scope:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>public string MyProperty<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>{<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>}<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>You said your property is internal:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>internal string MyProperty<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>{<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>}<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>That is not public, and so it won&#8217;t work.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky</span><b><span><o:p></o:p></span></b></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jack replied on Tuesday, February 03, 2009</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Thank you for the clarification &#8211; is that something that
+could be added to the wishlist for managed properties?&nbsp; <o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Can you not go through the FieldManager to get the property
+value instead&nbsp; or maybe have some logic that if the call to </span><span>CallByName </span><span>returns
+null then try to check if the field is a managed property and then find the
+field?&nbsp; <o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Thanks<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>jack<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Rockford Lhotka
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Tuesday, February 03, 2009 3:30 PM<br>
+<b>To:</b> jaddington@alexandergracie.com<br>
+<b>Subject:</b> RE: [CSLA .NET] RE: Null Reference Exception in
+Utilities.CallByName CSLA 3.6.1 (Please Help)<o:p></o:p></span></p>
+
+</div>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal><span>I&#8217;m saying that you can&#8217;t use the CommonRules rule
+methods against non-public properties.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>It doesn&#8217;t matter if the property is managed or not
+&#8211; the property must be public in scope:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>public string MyProperty<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>{<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>}<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>You said your property is internal:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>internal string MyProperty<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>{<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>}<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>That is not public, and so it won&#8217;t work.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky</span><b><span><o:p></o:p></span></b></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, February 03, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I may consider tapping into the managed field mechanism to avoid
+reflection in CommonRules, yes. More likely, I&#8217;ll create a set of
+ManagedRules that mirror the current ones, but require the target object to use
+the field manager.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I think, looking into the future (of Silverlight and Windows
+Azure) that the idea of using private fields may become quaint :)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky</span><b><span><o:p></o:p></span></b></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jack replied on Tuesday, February 03, 2009</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div>
+
+
+
+
+
+
+ 
+
+
+
+<div class="Section1">
+
+<p class="MsoNormal"><span>I may consider tapping into the managed field mechanism to avoid
+reflection in CommonRules, yes. More likely, I’ll create a set of
+ManagedRules that mirror the current ones, but require the target object to use
+the field manager.<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><o:p>&nbsp;</o:p></span></div></BLOCKQUOTE></p><p class="MsoNormal">Ok Thanks<br></p>
+
+<p class="MsoNormal"><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div>
+
+
+
+
+
+</p><p class="MsoNormal"><span>I think, looking into the future (of Silverlight and Windows
+Azure) that the idea of using private fields may become quaint :)<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><o:p>&nbsp;</o:p></span><span><o:p> </o:p></span></div></BLOCKQUOTE></p>
+
+<p class="MsoNormal"><span>Care to expand?&nbsp; I thought I was being smart having a whole slew of internal managed properties that I used to do everything&nbsp; I needed within my assembly and then I was just exposing filtered (LINQ) or public properties for the UI and external processes.&nbsp; Given I'm trying to do a Silverlight plugin I would like to avoid more issues in the future.</span></p><p class="MsoNormal"><span>thanks</span></p><p class="MsoNormal"><span>jack<br></span><b><span><o:p></o:p></span></b></p>
+
+<p class="MsoNormal"><span><o:p>&nbsp;</o:p></span></p>
+
+</div></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, February 03, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>The primary reason the field manager exists is that I needed a
+way to serialize an object graph without using reflection. This is because
+Silverlight (and I suspect Azure) doesn&#8217;t allow private reflection.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Managed backing fields allow CSLA (the MobileFormatter) to
+serialize an object graph with full fidelity, and without reflection. Which is
+why mobile objects now extend into the Silverlight environment just as well as
+a Windows client.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Looking forward to Azure (if my assumption is correct), the same
+will apply. And if there ends up being a CSLA .NET 3.6 for CF the same
+restriction will apply.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Now you CAN use private backing fields with the MobileFormatter &#8211;
+you just have to write OnGetState() and OnSetState() methods in every one of
+your classes so you can get/set all your fields. If you worked in VB5 or 6 you
+probably did some of this, either with CSLA for COM or using the PropertyBag
+concept of the time. It is boring code, easy to get wrong and hard to debug.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>So there&#8217;s a pretty strong incentive to use managed
+backing fields in the future, to support these three platforms without creating
+maintenance issues.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>In terms of using internal properties &#8211; that&#8217;s
+entirely up to you. If your objects work well with WPF data binding, they&#8217;ll
+probably work pretty well with Silverlight as well. Obviously internal
+properties are not available to the UI or data binding of any sort.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I would be a bit suspicious about internal properties, only in
+as much as you might be using your objects for more than one purpose. And that
+would be bad OO design. An object should have exactly one responsibility &#8211;
+one job in life. And that responsibility should fit in the context of a single user
+task/use case/story.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>So having a public interface for the UI, and a non-public
+interface for &#8220;other code&#8221; could imply that your objects are doing
+double-duty &#8211; which would probably violate the single responsibility
+principle.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky</span><b><span><o:p></o:p></span></b></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jack replied on Tuesday, February 03, 2009</h2>Here is a sample.<br><br>Toggling the internal/public causes the exceptions to be thrown or work fine.<br><br>Thanks<br><br>jack<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

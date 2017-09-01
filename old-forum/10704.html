@@ -1,0 +1,85 @@
+<html><header><title>ClientContext cleared during simultaneous ViewModel refresh</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>ClientContext cleared during simultaneous ViewModel refresh</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10704.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>richardp posted on Wednesday, September 21, 2011</h2><p>
+<p>Hi, I am using CSLA 4.1.0 for a Silverlight app.</p>
+<p>I recently experienced a problem where my ClientContext was being randomly cleared.</p>
+<p>After a lot of digging I have traced the source of the problem (I hope).</p>
+<p>It is because I am refreshing several ViewModel objects simultaneously.</p>
+<p>I am using the MVVM pattern.</p>
+<p>I have a main page user control with several child user controls on it.</p>
+<p>Several of the child user controls have their own dedicated view models.</p>
+<p>When the main page loads it sets off&nbsp;initialization&nbsp;of the child view models simultaneously.</p>
+<p>They are all attempting to refresh using the ViewModel method &quot;BeginRefresh&quot;.</p>
+<p>(It is easy to get into this situation in Silverlight with everything being async.)</p>
+<p>&nbsp;</p>
+<p>It seems there is some sort of race condition and the ClientContext sometimes gets cleared by the DataPortal at the wrong time.</p>
+<p>&nbsp;</p>
+<p>I have re-worked the code so that all calls to the DataPortal are sequential and the code is working with no probs.</p>
+<p>&nbsp;</p>
+<p>I was wondering if the CSLA is designed so that only one call to the DataPortal can be active at any one time,&nbsp;or maybe I have found a bug in ViewModel, or maybe I am doing something else wrong.</p>
+<p>&nbsp;</p>
+<p>Cheers, Richard.</p>
+<p>&nbsp;</p>
+</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Thursday, September 22, 2011</h2><p>You should make sure to initialize all context at application startup. </p>
+<p>The context will then be transferred to the background workers in DataPortal. </p>
+<p>Any context that was uninitialized (non existing) will be created when addressed/items added in the background thread but NOT returned to the UI thread (and so would seem to be &quot;cleared&quot;),</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>richardp replied on Thursday, September 22, 2011</h2><p>Hi Jonny,
+Thanks for your reply.</p>
+<p>
+I understand that the ClientContext is passed only from the Client to the Server with each DataPortal call,
+and is not passed back. I am not adding anything to the ClientContext on the server side.</p>
+<p>
+On the client side I set up the ClientContext at startup.</p>
+<p>
+On the client side I verify (with an Assert) that the Context information I require is present in the Context before making the calls to the DataPortal (BeginRefresh).
+Then I make 2 async calls to the DataPortal.</p>
+<p>
+On the server side, the Context information is sometimes present, sometimes not.
+</p>
+<p>Sometimes it is present at first then it dissappears. It happens randomly.</p>
+<p>
+Stepping thru code shown below with the debugger on the server side code I have literally seen the count change (drop to zero) as I step thru.</p>
+<p>
+int count1 = ApplicationContext.ClientContext.Count;
+</p>
+<p>int count2 = ApplicationContext.ClientContext.Count;
+</p>
+<p>int count3 = ApplicationContext.ClientContext.Count;
+</p>
+<p>
+I can only assume this is because the first call to the DataPortal returns and somehow clears the Context that the second call is using??</p>
+<p>
+I should add that I am accessing the ClientContext thru a static helper class I added.
+It just adds a bit of logging and make the access more convenient.
+Do you think is it possible that this static class is causing the problem?</p>
+<p>
+The code is like this -</p>
+<p>
+public static class ClientContextHelper</p>
+<p>
+{
+</p>
+<p>public static void AddOrUpdateValue(string key, object value)</p>
+<p>
+{
+</p>
+<p>			if (ApplicationContext.ClientContext.Contains(key))
+</p>
+<p>				{</p>
+<p>
+					ApplicationContext.ClientContext[key] = value;</p>
+<p>
+				}
+</p>
+<p>				else</p>
+<p>
+				{
+</p>
+<p>					_log.Debug(&quot;key ({0}) value ({1}) added&quot;, key, value);</p>
+<p>
+					ApplicationContext.ClientContext.Add(key, value);</p>
+<p>
+				}</p>
+<p>
+}</p>
+<p>}</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>richardp replied on Thursday, September 22, 2011</h2><p>Doh! its OK Jonny I found my problem, I had some code that I thought was executing on the server and it was executing on the client.</p>
+<p>Reading this post also helped me.</p>
+<p><a href="http://forums.lhotka.net/forums/p/9153/43477.aspx">http://forums.lhotka.net/forums/p/9153/43477.aspx</a></p>
+<p>Thanks.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

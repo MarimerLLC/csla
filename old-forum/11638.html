@@ -1,0 +1,266 @@
+<html><header><title>Unexpected CSLA multithreading issues.</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Unexpected CSLA multithreading issues.</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11638.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>rxelizondo posted on Tuesday, October 09, 2012</h2><p>
+<p class="MsoNormal">Hello.</p>
+<p class="MsoNormal">I am very much aware that interacting with one CSLA business
+object instance from multiple threads can lead to concurrency issues, but what I&nbsp;wasn&#39;t&nbsp;expecting was to run into&nbsp;concurrency&nbsp;issues when interacting with multiple CSLA business
+object instances all running on individual threads.</p>
+<p class="MsoNormal"></p>
+<p class="MsoNormal">Rather than trying to explain the issue with words, I will try
+to illustrate it with some overly simplistic code. Take a look at the snippet
+below:</p>
+<p class="MsoNormal"><span>static</span><span> <span>void</span> DoIt()</span></p>
+<p class="MsoNormal"><span>{</span></p>
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp; <span>var</span> cslaObject = <span>new</span>
+CSLAObject();</span></p>
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;
+cslaObject.Property1 = <span>&quot;A&quot;</span>;</span></p>
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;
+cslaObject.Property1 = <span>&quot;B&quot;</span>;</span></p>
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;
+cslaObject.Property1 = <span>&quot;C&quot;</span>;</span></p>
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;
+cslaObject.Save();</span></p>
+<p class="MsoNormal"><span>}</span></p>
+<p class="MsoNormal">&nbsp;</p>
+<p class="MsoNormal">As you can see, the code
+above does nothing other than creating a CSAL based business object, sets up
+some property values and saves itself. Key to this function is to note that the
+&ldquo;cslaObject&rdquo; is only accessed by the current thread, it&rsquo;s never shared with
+other threads. </p>
+<p class="MsoNormal">&nbsp;</p>
+<p class="MsoNormal">Now let&rsquo;s move on to the
+code that creates the multiple threads:</p>
+<p class="MsoNormal">&nbsp;</p>
+<p class="MsoNormal"><span>static</span><span> <span>void</span> Main(<span>string</span>[] args)</span></p>
+<p class="MsoNormal"><span>{</span></p>
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp; <span>Thread</span> thread1 = <span>new</span>
+<span>Thread</span>(DoIt);</span></p>
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp; <span>Thread</span> thread2 = <span>new</span>
+<span>Thread</span>(DoIt);</span></p>
+<p class="MsoNormal"><span>&nbsp;</span></p>
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;
+thread1.Start();</span></p>
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;
+thread2.Start();</span></p>
+<p class="MsoNormal"><span>}</span></p>
+<p class="MsoNormal">&nbsp;</p>
+<p class="MsoNormal">Nothing interesting happening
+here, it&rsquo;s just a method that creates two threads that call the &ldquo;DoIt()&rdquo; method.</p>
+<p class="MsoNormal">&nbsp;</p>
+<p class="MsoNormal">DISCLAIMER: Giving the
+fact that I am not a multithreading application developer expert and I am certainly
+no CSLA expert, I will proceed to explain what I think is going on here. It
+goes something like this:</p>
+<p class="MsoNormal">&nbsp;</p>
+<p class="MsoListParagraphCxSpFirst">1)<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>Thread1 kicks off.</p>
+<p class="MsoListParagraphCxSpMiddle">2)<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>Thread1 creates the CSLA object.</p>
+<p class="MsoListParagraphCxSpMiddle">3)<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>Thread1 sets up the Property1 value.</p>
+<p class="MsoListParagraphCxSpMiddle">4)<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>Thread1 pauses for a second&hellip;.</p>
+<p class="MsoListParagraphCxSpMiddle">5)<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>Thread2 kicks off.</p>
+<p class="MsoListParagraphCxSpMiddle">6)<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>Thread2 creates the CSLA object.</p>
+<p class="MsoListParagraphCxSpMiddle">7)<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>Thread2 sets up the Property1 value.</p>
+<p class="MsoListParagraphCxSpMiddle">8)<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>Thread2 sets up the Property2 value.</p>
+<p class="MsoListParagraphCxSpLast">9)<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>Exceptions is thrown (Collection was modified,
+enumeration operation may not be execute)</p>
+<p class="MsoNormal">&nbsp;</p>
+<p class="MsoNormal">So it looks to me like although
+both threads are accessing completely different CSLA objects, some of the CSLA
+internals are being accessed by both threads. My guess is that this has to do
+with the optimization done by the CSLA when it sets up the rules since I believe
+that some of the rule infrastructure is shared through all the objects of the
+same type.</p>
+<p class="MsoNormal">&nbsp;</p>
+<p class="MsoNormal">Again, I have no idea if
+this is the issue or not, I arrived to this conclusion&nbsp;through&nbsp;observation and the process of elimination but I have no conclusive evidence since the&nbsp;problem&nbsp;its hard to reproduce, I did&#39;t spent to much time looking into this and I am no CSLA expert.&nbsp;</p>
+<p class="MsoNormal">&nbsp;</p>
+<p class="MsoNormal">But before I jump into conclusion,
+I would like to know if someone can tell me if my assumption that my sample
+code above is subject to multithreading issues or not. Because if it&rsquo;s not then
+I probably need to go back and fix whatever I am doing wrong with my CSLA business
+objects.</p>
+<p class="MsoNormal">&nbsp;</p>
+<p class="MsoNormal">Sorry if this has been
+asked before (I have a feeling is has). I did a quick search on the CSLA forums
+and only found information regarding concurrency issues when multiple threads access
+single object and not my specific example.</p>
+<p class="MsoNormal">&nbsp;</p>
+<p class="MsoNormal">Thanks.</p>
+</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Tuesday, October 09, 2012</h2><p>Which version of Csla do you use?</p>
+<p>Do you have rules attachbusiness to the properties?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rxelizondo replied on Tuesday, October 09, 2012</h2><p>We are currently using version&nbsp;4.2.2.0 on a WPF application.</p>
+<p>Yes, we have many rules attached to the properties both business and authorization rules.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Tuesday, October 09, 2012</h2><p>I&#39;d like to dig into this - are you able to reproduce this in a sample with or without rules and if so could you post it here as attachment?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Tuesday, October 09, 2012</h2><p>I took your simplistic sample and added one atuhz rule and 2 business rules to the property with CSLA 4.3 (trunk) and was unable to recreate the problem.</p>
+<p>A couple of updates in CSLA 4.3 (from 4.2.2) to be aware of:</p>
+<p>1047 Fix race condition bug with MethodCaller<br />1026 Add lock on ClearRules in BusinessRules</p>
+<p>Especially item 1026 may have solved this issue.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rxelizondo replied on Tuesday, October 09, 2012</h2><p>Thanks Jonny.</p>
+<p>I don&#39;t want to mess around with upgrading the CSLA to a newer version at this time so I did&#39;t test our current code with the version you suggested. However, I did take a couple of minutes to try to replicate the error we are having and managed to crash the code on two&nbsp;different&nbsp;places. I am posting the crash information here to see if by you looking at where the code crashed you may be able to tell if the fixes you are mentioning may apply to our&nbsp;problem.</p>
+<p>I also attached screen shots of the Visual Studio&nbsp;stack&nbsp;trace.</p>
+<p>If this does not help (and my guess is that you will want a repro at one point or another) I may put some time aside to try to create a repro.</p>
+<p>&nbsp;</p>
+<p>Thanks.</p>
+<p>&nbsp;</p>
+<p>
+<p>-----------------------------------------------------------</p>
+<p>Crash 1:</p>
+<p>&nbsp;</p>
+<p>Occurred at:&nbsp;</p>
+<p>Csla.Rules.BusinessRules</p>
+<p>&nbsp;</p>
+<p>On function:&nbsp;</p>
+<p>private List&lt;string&gt; RunRules(IEnumerable&lt;IBusinessRule&gt; rules, bool cascade, RuleContextModes executionContext)</p>
+<p>&nbsp;</p>
+<p>Stack Trace:</p>
+<p>System.InvalidOperationException occurred</p>
+<p>&nbsp; Message=Collection was modified; enumeration operation may not execute.</p>
+<p>&nbsp; Source=mscorlib</p>
+<p>&nbsp; StackTrace:</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp;at System.ThrowHelper.ThrowInvalidOperationException(ExceptionResource resource)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp;at System.Collections.Generic.List`1.Enumerator.MoveNextRare()</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp;at System.Collections.Generic.List`1.Enumerator.MoveNext()</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp;at System.Linq.Enumerable.WhereListIterator`1.MoveNext()</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp;at System.Linq.Buffer`1..ctor(IEnumerable`1 source)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp;at System.Linq.OrderedEnumerable`1.&lt;GetEnumerator&gt;d__0.MoveNext()</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp;at Csla.Rules.BusinessRules.RunRules(IEnumerable`1 rules, Boolean cascade, RuleContextModes executionContext)</p>
+<p>&nbsp;</p>
+<p>
+<p>-----------------------------------------------------------</p>
+</p>
+<p>Crash 2:</p>
+<p>&nbsp;</p>
+<p>Occurred at:</p>
+<p>Csla.Rules.BusinessRules</p>
+<p>&nbsp;</p>
+<p>On function:&nbsp;</p>
+<p>private List&lt;string&gt; CheckRulesForProperty(Csla.Core.IPropertyInfo property, bool cascade, RuleContextModes executionContext)</p>
+<p>&nbsp;</p>
+<p>Stack Trace:</p>
+<p>System.InvalidOperationException occurred</p>
+<p>&nbsp; Message=Collection was modified; enumeration operation may not execute.</p>
+<p>&nbsp; Source=mscorlib</p>
+<p>&nbsp; StackTrace:</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp;at System.ThrowHelper.ThrowInvalidOperationException(ExceptionResource resource)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp;at System.Collections.Generic.List`1.Enumerator.MoveNextRare()</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp;at System.Collections.Generic.List`1.Enumerator.MoveNext()</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp;at System.Linq.Enumerable.WhereSelectListIterator`2.MoveNext()</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp;at Csla.Rules.BusinessRules.CheckRulesForProperty(IPropertyInfo property, Boolean cascade, RuleContextModes executionContext)&nbsp;</p>
+</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rxelizondo replied on Friday, October 12, 2012</h2><p>&nbsp;</p>
+<p>I just tried to run the application with the latest version of the CSLA (4.3.13) and the problem still persist. So fix 1047 and 1026 do not fix this particular problem.</p>
+<p>&nbsp;</p>
+<p>The latest crash that we experienced&nbsp;happened&nbsp;when trying to enumerate the &quot;TypeAuthRules.Rules&quot;&nbsp;collection:</p>
+<p>&nbsp;</p>
+<p>
+<p>&nbsp; &nbsp; public bool HasPermission(AuthorizationActions action, Csla.Core.IMemberInfo element)</p>
+<p>&nbsp; &nbsp; {</p>
+<p>.........</p>
+<p>&nbsp; &nbsp; &nbsp;// Crash&nbsp;occurred&nbsp;here (Collection was modified; enumeration operation may not execute.)</p>
+</p>
+<p>
+<p>&nbsp; &nbsp; &nbsp; var rule =&nbsp;TypeAuthRules.Rules.FirstOrDefault(c =&gt; c.Element != null &amp;&amp; c.Element.Name == element.Name &amp;&amp; c.Action == action);</p>
+<p>.........</p>
+<p>}</p>
+</p>
+<p>Anyway, our workaround is to create an instance of the CSLA object and initialize some of its&nbsp;properties&nbsp;properties&nbsp;on the main thread. We do this in the main thread before any multithreading begins. This seems to give the CSLA object time to initialize itself on a thread safe environment and our problems&nbsp;disappear.</p>
+<p>Giving the fact that the exception&nbsp;occurs&nbsp;on the CSLA object I can only&nbsp;assume&nbsp;that this is a CSLA bug.</p>
+<p>Maybe in the&nbsp;coming&nbsp;days I will have some time to try to dig deeper into the issue. For now, if you anyone has any ideas then please let me know.</p>
+<p>Thanks.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Sunday, October 14, 2012</h2><p>This was reported earlier too in connection to AddBusinessRules:</p>
+<p><a href="http://forums.lhotka.net/forums/p/11511/53368.aspx#53368%20%20">http://forums.lhotka.net/forums/p/11511/53368.aspx#53368&nbsp; </a></p>
+<p>Bugtracker: <a href="http://lhotka.net/cslabugs/edit_bug.aspx?id=1078">http://lhotka.net/cslabugs/edit_bug.aspx?id=1078</a></p>
+<p>But I now see that the same should be applied to AddObjectAuthorizationRules (in InitializePerTypeRules method).</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rxelizondo replied on Sunday, October 14, 2012</h2><p>
+<p class="MsoNormal">Thanks Jonny,</p>
+<p class="MsoNormal">If is no big deal, could you please post the code with
+the fix you guys came up?</p>
+<p class="MsoNormal"></p>
+<p class="MsoNormal">I would like to copy / paste your fix into the CSLA version
+we are currently using. We will eventually upgrade to the newest CSLA version
+but this is not the right time for us to do that.</p>
+<p class="MsoNormal">Thanks.</p>
+</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Monday, October 15, 2012</h2><p>Open the link to bugtracker and look at the SVN Revisions.</p>
+<p>This will show you the diff for each file. </p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Monday, October 15, 2012</h2><p>Hi Rene,</p>
+<p>I updated the code for both 4.3 and 4.5 to handle race conditions for both Authz and Business rules. </p>
+<p><a href="http://www.lhotka.net/cslabugs/edit_bug.aspx?id=1107" target="_blank">http://www.lhotka.net/cslabugs/edit_bug.aspx?id=1107</a> </p>
+<p>Look at the SVN Revisions connected to this item.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rxelizondo replied on Saturday, October 13, 2012</h2><p>Rocky / Jonny</p>
+<p>I think I may have the&nbsp;cause&nbsp;of the problem but you guys will need to verify my assumption, these multithreading&nbsp;issues are real brain&nbsp;teasers&nbsp;<img src="http://forums.lhotka.net/emoticons/emotion-1.gif" alt="Smile" /></p>
+<p>I&nbsp;believe&nbsp;the issue has to do with the way you guys are trying to optimize the call to the &quot;InitializeBusinessRules()&quot; function (the double checked locking optimization). I have copied and pasted the&nbsp;function&nbsp;here for your reference. Please see below:</p>
+<p>--------------------------------------------------------------------</p>
+<div>private void InitializeBusinessRules()</div>
+<div>{</div>
+<div>
+<div>&nbsp; &nbsp; var rules = BusinessRuleManager.GetRulesForType(this.GetType());</div>
+<div>&nbsp; &nbsp; if (!rules.Initialized)</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; lock (rules)</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; if (!rules.Initialized)</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; rules.Initialized = true;</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; try</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; AddBusinessRules();</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; catch (Exception)</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; BusinessRuleManager.CleanupRulesForType(this.GetType());</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; throw; &nbsp;// and rethrow exception</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</div>
+</div>
+<div>}</div>
+<div>
+<p>--------------------------------------------------------------------</p>
+<p>Now consider the following sequence of events happening when a CSLA class gets instantiated for the very *first* time.</p>
+</div>
+<p>1)<span>	</span>Thread 1 starts creating an instance of &ldquo;SomeClass&rdquo;.</p>
+<p>2)<span>	</span>Thread 1 enters &ldquo;InitializeBusinessRules()&rdquo;.</p>
+<p>3)<span>	</span>Thread 1 reads that &ldquo;rules.Initialized&rdquo; is equals to false.</p>
+<p>4)<span>	</span>Thread 1 acquires lock.</p>
+<p>5)<span>	</span>Thread 1 sets &ldquo;rules.Initialized&rdquo; to be equal to true (**this is the problem**).</p>
+<p>6)<span>	</span>Thread 1 enters &ldquo;AddBusinessRules()&rdquo;.</p>
+<p>7)<span>	</span>&hellip;.. In the meantime, while Thread 1 is busy working on &ldquo;AddBusinessRules()&rdquo;.</p>
+<p>8)<span>	</span>Thread 2 starts creating an instance of &ldquo;SomeClass&rdquo;.</p>
+<p>9)<span>	</span>Thread 2 enters &ldquo;InitializeBusinessRules()&rdquo;.</p>
+<p>10)<span>	</span>Thread 2 reads that &ldquo;rules.Initialized&rdquo; is equals to true.</p>
+<p>11)<span>	</span>Thread 2 moves on (** oh, oh&hellip; but what if Thread 1 is not finished calling the &ldquo;AddBusinessRules()&rdquo; function? **).</p>
+<p>12)<span>	</span>Thread 2 assumes that all business rules are setup so somewhere along the line it calls &ldquo;CheckRules()&rdquo;.</p>
+<p>13)<span>	</span>While Thread 2 is in the middle of calling &ldquo;CheckRules()&rdquo; Thread 1 (still executing the&nbsp;&ldquo;AddBusinessRules()&rdquo; function)&nbsp;adds more business rules (modifying the rules collection). At some point Thread 2&nbsp;tries&nbsp;to enumerate the&nbsp;business&nbsp;rule collection but crashes with &ldquo;Collection was modified; enumeration operation may not execute&rdquo; exception&nbsp;because&nbsp;Thread 1 modified the collection</p>
+<div></div>
+<div>I ended up&nbsp;removing&nbsp;the double checked locking optimization as shown by the code below and we stopped having errors.</div>
+<div></div>
+<div></div>
+<div></div>
+<div>--------------------------------------------------------------------</div>
+<div></div>
+<div></div>
+<div>
+<div>private void InitializeBusinessRules()</div>
+<div>{</div>
+<div>&nbsp; &nbsp; var rules = BusinessRuleManager.GetRulesForType(this.GetType());</div>
+<div>&nbsp; &nbsp; lock (rules)</div>
+<div>&nbsp; &nbsp; {</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; if (!rules.Initialized)</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; {</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; rules.Initialized = true;</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; try</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; AddBusinessRules();</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; catch (Exception)</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; BusinessRuleManager.CleanupRulesForType(this.GetType());</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; throw; &nbsp;// and rethrow exception</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; }</div>
+<div>&nbsp; &nbsp; }</div>
+<div>}</div>
+<div>
+<p>--------------------------------------------------------------------</p>
+<p>I guess you could also move the &quot;rules.Initialized = true&quot; line after the &quot;AddBusinessRules()&quot; instruction&nbsp;but my guess is that having the &quot;&nbsp;if (!rules.Initialized)&quot; line outside the lock is probably looking for trouble.</p>
+<p>Please let me know if you guys agree that this my be a problem or not.</p>
+<p>Thanks.</p>
+</div>
+</div>
+<p>&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

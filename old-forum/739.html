@@ -1,0 +1,42 @@
+<html><header><title>Gridview Sort doesn't sort!</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Gridview Sort doesn't sort!</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/739.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>david.wendelken posted on Thursday, July 27, 2006</h2><P>I'm at the point where I'm starting to use my business object library by web pages.<BR></P>
+<P>I'm using a GridView control for the first time&nbsp;and everything seemed really easy and straightforward until I started to test the sorting.&nbsp; It doesn't sort.</P>
+<P>I have the AllowSorting="True" defined in the gridview tag, and I have SortExpression="thePropertyName" defined in the bound field tags.</P>
+<P>Any clues?&nbsp; I'm using caching per the ResourceList.aspx page example if that is mucking things up.</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>david.wendelken replied on Thursday, July 27, 2006</h2><P>The documentation in the book I'm using says what I did above is all that's needed...</P>
+<P>I created a gridview_sorting and gridview_sorted event handlers.&nbsp; Debugging shows that gridview_sorting is receiving the correct sort criteria...</P>
+<P>I tried issuing a databind&nbsp; and also removing the cache and then databinding, but no change in behavior.</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>david.wendelken replied on Thursday, July 27, 2006</h2><P>My colleague just came in and said, "Did you search for an answer?"</P>
+<P>Duh.&nbsp; </P>
+<P>Obviously, she metabolizes caffiene faster than I do.&nbsp; Or she's smarter than me... :(</P>
+<P>See this thread.</P>
+<P><A HREF="/forums/thread/1550.aspx">http://forums.lhotka.net/forums/thread/1550.aspx</A></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>HardPressed replied on Sunday, May 25, 2008</h2><P>This took me several hours to figure out and it seems pretty stupid but all you have to do is add</P>
+<P>a OnGridView_Sorting Event to fire .... my code looks like this after setting a datasource</P><FONT color=#0000ff size=2><FONT color=#0000ff size=2>
+<P>try</P></FONT></FONT><FONT size=2>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>this</FONT></FONT><FONT size=2>.gvProject.DataBind();</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>catch</P></FONT></FONT><FONT size=2>
+<P>{</P>
+<P></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2>//No rows , so alternate report sent</P></FONT></FONT><FONT size=2>
+<P>NoActualData = </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>true</FONT></FONT><FONT size=2>;</P>
+<P>gvProject.Visible = </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>false</FONT></FONT><FONT size=2>;</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>if</FONT></FONT><FONT size=2> (</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>this</FONT></FONT><FONT size=2>.gvProject.Rows.Count &gt; 0)</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>try</P></FONT></FONT><FONT size=2>
+<P>{</P>
+<P></FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>String</FONT></FONT><FONT size=2> sort = </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>this</FONT></FONT><FONT size=2>.gvProject.SortExpression;</P>
+<P></P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>this</FONT></FONT><FONT size=2>.gvProject.Sort(</FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>"PID"</FONT></FONT><FONT size=2>, </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>SortDirection</FONT></FONT><FONT size=2>.Descending);</P>
+<P></P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>catch</FONT></FONT><FONT size=2> (</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>Exception</FONT></FONT><FONT size=2> ex)</P>
+<P>{</P>
+<P>ex.ToString();</P>
+<P>}</P><FONT color=#0000ff size=2><FONT color=#0000ff size=2>
+<P>protected</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>void</FONT></FONT><FONT size=2> gvProject_Sorting(</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>object</FONT></FONT><FONT size=2> sender, </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>GridViewSortEventArgs</FONT></FONT><FONT size=2> e)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>if</FONT></FONT><FONT size=2>(e.SortExpression == </FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>"WBS"</FONT></FONT><FONT size=2> &amp;&amp; </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>this</FONT></FONT><FONT size=2>.gvProject.SortDirection == </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>SortDirection</FONT></FONT><FONT size=2>.Ascending )</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>this</FONT></FONT><FONT size=2>.gvProject.Sort(</FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>"WBS"</FONT></FONT><FONT size=2>, </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>SortDirection</FONT></FONT><FONT size=2>.Descending);</P>
+<P>}</P>
+<P>}</P></FONT></FONT></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

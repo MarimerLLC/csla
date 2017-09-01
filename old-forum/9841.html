@@ -1,0 +1,33 @@
+<html><header><title>Silverlight application - Setting up services</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Silverlight application - Setting up services</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9841.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Gort posted on Tuesday, December 07, 2010</h2><p>I am trying to set up a new Silverlight application.&nbsp; I continue to have issues getting the WcfPortal.svc set up correctly.&nbsp; I am using CSLA 4.01 with .NET/SL 4.</p>
+<p>I have my SL application and web hosting site.&nbsp; In the site I have a WCF service called &#39;WcfSlPortal.svc&#39; that looks like this:</p>
+<p><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">
+<p>&lt;%</p>
+</span></span></span><span style="font-family:Consolas;font-size:x-small;">
+<p>&nbsp;</p>
+</span></span></p>
+<p><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">@</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> </span></span><span style="font-family:Consolas;color:#800000;font-size:x-small;"><span style="font-family:Consolas;color:#800000;font-size:x-small;"><span style="font-family:Consolas;color:#800000;font-size:x-small;">ServiceHost</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> </span></span><span style="font-family:Consolas;color:#ff0000;font-size:x-small;"><span style="font-family:Consolas;color:#ff0000;font-size:x-small;"><span style="font-family:Consolas;color:#ff0000;font-size:x-small;">Service</span></span></span><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">=&quot;Csla.Server.Hosts.Silverlight.WcfPortal&quot;</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> %&gt;</span></span></p>
+<p>If I have no reference to CSLA, I get the following error when I attempt to open the service page in a browser:</p>
+<p>&nbsp;</p>
+<p><em>The type &#39;Csla.Server.Hosts.Silverlight.WcfPortal&#39;, provided as the Service attribute value in the ServiceHost directive, or provided in the configuration element system.serviceModel/serviceHostingEnvironment/serviceActivations could not be found.</em></p>
+<p>If I set a reference to CSLA (not Silverlight version),&nbsp;I can then view my service page&nbsp;properly.&nbsp;</p>
+<p>When I attempt to make the following call from my SL application, I run into issues:</p>
+<p>
+<p><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">
+<p>BeginRefresh(evt =&gt; </p>
+</span></span></span><span style="font-family:Consolas;font-size:x-small;">
+<p>&nbsp;</p>
+</span></span>
+<p><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;">MyInfo</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">.GetByIdAsync(</span></span><span style="font-family:Consolas;color:#a31515;font-size:x-small;"><span style="font-family:Consolas;color:#a31515;font-size:x-small;"><span style="font-family:Consolas;color:#a31515;font-size:x-small;">&quot;123&quot; </span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">, myEventHandler));</span></span></p>
+</p>
+</p>
+<p>&nbsp;</p>
+<p>&nbsp;In my event handler, I get the following error:</p>
+<p><em>Could not load type &#39;Csla.Serialization.SerializableAttribute&#39; from assembly &#39;Csla, Version=4.0.0.0, Culture=neutral, PublicKeyToken=93be5fdc093e4c30&#39;.</em></p>
+<p>So, I change the CSLA reference in my web site project to CSLA (for Silverlight), and then get the original errror when I attempt to view my service page in a browser once again:</p>
+<p><em>The type &#39;Csla.Server.Hosts.Silverlight.WcfPortal&#39;, provided as the Service attribute value in the ServiceHost directive, or provided in the configuration element system.serviceModel/serviceHostingEnvironment/serviceActivations could not be found.</em>ANY help is greatly appreciated.</p>
+<p>Also, do my class libraries which house my CSLA biz objects HAVE to be called &lt;Project&gt;.Client and &lt;Project&gt;.Server?&nbsp; Mine are not and now I&#39;m wondering if that may be my issues.</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Wednesday, December 08, 2010</h2><p>You have to use the .NET version of Csla.dll on .NET (the server) and you have to use the SL version of Csla.dll on Silverlight (the client). The version of the dll must match the platform on which it is running.</p>
+<p>The two versions of Csla.dll must be in sync (they must be the same version - even though they are built for each respective platform).</p>
+<p>YOUR business assemblies must have the same assembly name, and use the same namespaces, even though they are built for each respective platform.</p>
+<p>It doesn&#39;t matter what you name the <em>project</em> in Visual Studio, but the output dll names <em>must be exactly the same</em>, and so must their version numbers.</p>
+<p>Serialization includes the assembly qualified type name of each type - which means the assembly qualified type name (assembly name, version, signing key) must be <em>identical</em> on client and server, even though the two assemblies are compiled for different platforms.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Gort replied on Wednesday, December 08, 2010</h2><p>Rocky, thanks so much for the info.&nbsp; The naming of the assemblies was my issue.&nbsp; We just ordered the Silverlight videos so looking forward to reviewing those as well.</p>
+<p>Tks.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,108 @@
+<html><header><title>DataGridView and user entry exceptions with int and double</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>DataGridView and user entry exceptions with int and double</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4652.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>sgraham posted on Wednesday, April 09, 2008</h2><P>I have two issues that are similar in nature but may or may not have the same resolution.</P>
+<P>I have EditableCollection bound to a BindingSource which is bound to a DataGridView.</P>
+<P>1)&nbsp; When a user enters text or a large number into a cell that is bound to an int property, a FormatException is thrown.&nbsp; What is the best way to handle these situations?&nbsp; I realize that I can override the DataError event but I'm not even sure what I would do once I'm in that event.</P>
+<P>2)&nbsp; When a user enters zero into a cell that is bound to an int or double property (and already has a value), a ArgumentException is thrown stating that Object of type 'System.DBNull' cannot be converted to type 'System.Double'.&nbsp; Any idea why this is happening and how&nbsp;I can fix it?&nbsp; This also leads to an interesting question, if the user removes all numbers/letters from a field, what will happen?&nbsp;&nbsp;In that case, I would think it would make sense for the ErrorProvider to flash the error (similar to string properties that are required).&nbsp; How would I implement that?</P>
+<P>Thanks in advance for any feedback!</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sgraham replied on Monday, April 14, 2008</h2><P>After additional research on the DataGridView control,&nbsp;I found that if you change the default cell style (to percent, decimal, etc.), the DBNull value is set to 0 which translates 0 to DBNull and causes this error.&nbsp; If I change the DBNull value to &lt;nothing&gt; (delete the zero), it allows zero to be keyed again.&nbsp; However, it still doesn't handle a user "clearing" a fields bound to ints or doubles.&nbsp; Is there a work around or solution for that?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Monday, April 14, 2008</h2>I think you can tell it a value to use instead of DBNull.&nbsp; Also, I think this is why people have taken to creating SmartInt, SmartDecimal, etc.&nbsp; Check the CslaContrib for those classes.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sgraham replied on Monday, April 14, 2008</h2><P>If I tell it a value (such as "NULL"), it still fires a FormatException when clearing the field.</P>
+<P>I understand that concept of the "smart" classes in the contrib project.&nbsp; However,&nbsp;it seems to me the use of such classes is for when your object property&nbsp;could have empty values.&nbsp; In this case, my object can not have empty values.&nbsp; The GUI is what is allowing the empty values.&nbsp; Unless there is a good fix,&nbsp;I may have to alert the user or change the value back for them by canceling their invalid edit.&nbsp; Thoughts?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Monday, April 14, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>If this is an issue that you encounter on a consistent basis, I
+would look into third party controls.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Senior Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> sgraham
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Monday, April 14, 2008 2:45 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] DataGridView and user entry exceptions with int
+and double<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>If I tell it a value (such as &quot;NULL&quot;), it still fires a
+FormatException when clearing the field.<o:p></o:p></p>
+
+<p>I understand that concept of the &quot;smart&quot; classes in the contrib
+project.&nbsp; However,&nbsp;it seems to me the use of such classes is for when
+your object property&nbsp;could have empty values.&nbsp; In this case, my
+object can not have empty values.&nbsp; The GUI is what is allowing the empty
+values.&nbsp; Unless there is a good fix,&nbsp;I may have to alert the user or
+change the value back for them by canceling their invalid edit.&nbsp; Thoughts?<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Steve Graham replied on Tuesday, October 28, 2008</h2><P>Hi Sean, you need to code two datagridview events:</P>
+<P>1. The DataError event to "forget" the error that occurs when the user&nbsp;clears a numeric cell</P><SPAN>
+<P class=MsoNormal><SPAN>&nbsp;&nbsp; Private</SPAN><SPAN><FONT color=#000000> </FONT><SPAN>Sub</SPAN><FONT color=#000000> dgv_DataError( _<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN><FONT color=#000000>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </FONT></SPAN><SPAN>ByVal</SPAN><FONT color=#000000> sender </FONT><SPAN>As</SPAN><FONT color=#000000> </FONT><SPAN>Object</SPAN><FONT color=#000000>, _<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN><FONT color=#000000>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </FONT></SPAN><SPAN>ByVal</SPAN><FONT color=#000000> e </FONT><SPAN>As</SPAN><FONT color=#000000> System.Windows.Forms.DataGridViewDataErrorEventArgs) _<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN><FONT color=#000000>&nbsp;&nbsp; </FONT></SPAN><SPAN>Handles</SPAN><FONT color=#000000> _<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT color=#000000><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>&nbsp;&nbsp;</SPAN>dgv.DataError<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><o:p><FONT color=#000000>&nbsp;</FONT></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN><FONT color=#000000>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </FONT></SPAN><SPAN>If</SPAN><FONT color=#000000> </FONT><SPAN>TypeOf</SPAN><FONT color=#000000> (e.Exception) </FONT><SPAN>Is</SPAN><FONT color=#000000> System.FormatException </FONT><SPAN>Then<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN><FONT color=#000000>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </FONT></SPAN><SPAN>If</SPAN><FONT color=#000000> e.RowIndex &lt;&gt; -1 </FONT><SPAN>AndAlso</SPAN><FONT color=#000000> dgv.Columns(e.ColumnIndex).Name = </FONT><SPAN>"colY"</SPAN><FONT color=#000000> </FONT><SPAN>Then<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><FONT color=#000000><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>e.Cancel = </FONT><SPAN>True<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN><FONT color=#000000>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </FONT></SPAN><SPAN>End</SPAN><FONT color=#000000> </FONT><SPAN>If<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN><FONT color=#000000>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </FONT></SPAN><SPAN>End</SPAN><FONT color=#000000> </FONT><SPAN>If<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN><SPAN><SPAN><FONT color=#000000>&nbsp;&nbsp;&nbsp; </FONT></SPAN><SPAN>End</SPAN><FONT color=#000000> </FONT><SPAN>Sub</SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN></SPAN></SPAN>&nbsp;</P>
+<P class=MsoNormal><SPAN><SPAN><FONT face="Times New Roman" color=#000000 size=3>2. The CellValidating event to&nbsp;place a zero into the empty cell</FONT></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN><FONT face="Times New Roman" color=#000000 size=3></FONT></SPAN></SPAN>&nbsp;</P>
+<P class=MsoNormal></SPAN><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN><SPAN>Private</SPAN> <SPAN>Sub</SPAN> dgv_CellValidating( _<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>ByVal</SPAN> sender <SPAN>As</SPAN> <SPAN>Object</SPAN>, _<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>ByVal</SPAN> e <SPAN>As</SPAN> System.Windows.Forms.DataGridViewCellValidatingEventArgs) _<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN><SPAN>Handles</SPAN> _<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>dgv.CellValidating<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>If</SPAN> e.RowIndex &lt;&gt; -1 <SPAN>AndAlso</SPAN> dgv.Columns(e.ColumnIndex).Name = <SPAN>"colY"</SPAN> <SPAN>Then<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>If</SPAN> e.FormattedValue.ToString() = <SPAN>String</SPAN>.Empty <SPAN>Then<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>dgv.Rows(e.RowIndex).Cells(e.ColumnIndex).Value = 0<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>End</SPAN> <SPAN>If<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>End</SPAN> <SPAN>If<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN><SPAN>End</SPAN> <SPAN>Sub</SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN></SPAN></SPAN>&nbsp;</P>
+<P class=MsoNormal><FONT face="Times New Roman"><FONT size=3><FONT color=#000000><SPAN><SPAN><FONT face="Times New Roman" color=#000000 size=3>The <SPAN><SPAN><FONT face="Times New Roman" color=#000000 size=3>CellValidating </FONT></SPAN></SPAN>event is required to allow focus to move away from the cell&nbsp;otherwise focus is locked onto the&nbsp;cell. In my scenario I validate for a number between 100 and 100,000 so as&nbsp;focus moves away from the cell a error provider icon appears.&nbsp;Hope this helps.</FONT></SPAN></SPAN></FONT></FONT></FONT><FONT face="Times New Roman"><FONT size=3><FONT color=#000000><SPAN><SPAN><FONT face="Times New Roman" color=#000000 size=3>&nbsp;&nbsp;</FONT></SPAN></SPAN></FONT></FONT></FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Madrus replied on Wednesday, July 15, 2009</h2>Guys, it is a year later but I have had the same experience as Sean and have finally found another solution to this nuisance. I will mention it here just in case.<br /><br />My field was of type Currency, which is actually Double. I did get similar error messages as Sean when trying to leave empty cells or “0” in (while “0.0” worked just fine!). I did not go as far as “forgetting” (a question of personal taste) but I did try to set the Value to “0”, even to “(double)0.0” in my CellValidating event as Steve suggested. Funny enough, it did no good: the error messages persisted.<br /><br />The solution I found was simple but I still do not understand why it works. I implemented another event, CellEndEdit, which is triggered after CellValidating. In that event I check the trimmed value and set it to “(double)0.0” if “0”. It seems that setting the Value to 0.0 in the CellValidating event does not affect the new value whereas doing it in CellEndEdit works fine.<br /><br />Here are my snippets.<br /><br />        private void yourDGV_CellEndEdit(object sender, DataGridViewCellEventArgs e)<br />        {<br />            if (this.yourDGV.CurrentCell.Value.ToString().Trim() == "0" <br />            {<br />                this.yourDGV.CurrentCell.Value = (double)0.0;<br />            }<br />        } // end event yourDGV_CellEndEdit<br /><br />        private void yourDGV_CellValidating(object sender, DataGridViewCellValidatingEventArgs e)<br />        {<br />            Double number;<br />            NumberStyles style;<br /><br />            style = NumberStyles.Number | NumberStyles.AllowCurrencySymbol | NumberStyles.AllowThousands;<br /><br />            if (String.IsNullOrEmpty(e.FormattedValue.ToString()))<br />            {<br />                // if empty set back the original value<br />                this.yourDGV.CancelEdit();<br />                e.Cancel = false;<br />            }<br />            else<br />            {<br />                if (Double.TryParse(e.FormattedValue.ToString(), style, CultureInfo.CurrentCulture, out number) == false)<br />                {<br />                    // error: the input does not parse to double<br />                    e.Cancel = true;<br />                }<br />                else <br />                {<br />                    //… do your real checks on the "number" variable<br />                }<br />            }<br />                <br />            if (e.Cancel)<br />            {<br />                // go back to the old value<br />                this.yourDGV.RefreshEdit();<br />            }<br />        } // end event yourDGV_CellValidating<br /><br />In this way, if the user tries to leave the empty cell, it is possible but the old value reappears. If (s)he types “0”, then it is substituted with “0.0”. And, what is important for me, I don’t get any errors and DataError event does not fire.</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

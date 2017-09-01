@@ -1,0 +1,30 @@
+<html><header><title>CSLA and filter/sorting in ComponentOne C1DataGrid</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA and filter/sorting in ComponentOne C1DataGrid</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/8604.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Imker posted on Wednesday, March 03, 2010</h2><p>When using virtually any collection as Itemssource for a C1DataGrid</p>
+<p>I get filtering and sorting from the C1DataGrid. When using the</p>
+<p>CslaDataProvider with a BusinessListBase I can not sort or filter the grid.</p>
+<p>The data and all the columns show up as expected, but no filtering, no sorting.</p>
+<p>Why?</p>
+<p>&nbsp;</p>
+<p>As a beginner in CSLA I build a minimal</p>
+<p>BusinessObject</p>
+<p>Resource : BusinessBase&lt;Resource&gt;</p>
+<p>and a list of </p>
+<p>Resources : BusinessListBase&lt;Resources, Resource&gt;</p>
+<p>then in XAML using the CslaDataProvider </p>
+<p>&nbsp;&lt;csla:CslaDataProvider x:Key=&quot;ResourceList&quot;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ObjectType=&quot;{x:Type business:Resources}&quot;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; FactoryMethod=&quot;GetResourceList&quot;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; IsAsynchronous=&quot;True&quot;/&gt;</p>
+<p>and later, using it with:</p>
+<p>&lt;c1grid:C1DataGrid</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Name=&quot;c1DataGrid1&quot; <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ItemsSource=&quot;{Binding}&quot;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; AllowSort=&quot;True&quot;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; xmlns:c1grid=&quot;http://schemas.componentone.com/wpf/C1DataGrid&quot; /&gt;<br /></p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Wednesday, March 03, 2010</h2><p>There&#39;s an item in the FAQ about sorting CSLA lists in WPF:</p>
+<p><a href="http://www.lhotka.net/cslanet/faq/WPFFaq.ashx">http://www.lhotka.net/cslanet/faq/WPFFaq.ashx</a></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Imker replied on Wednesday, March 03, 2010</h2><p>Hi Rocky, wow that was fast.</p>
+<p>I read that ObservableCollection will come with CSLA 4.</p>
+<p>I don&#39;t need the Winforms support so can I already use the CSLA 4 preview?</p>
+<p>It&#39;s my first CSLA Project and it&#39;s a small one in WPF.</p>
+<p>&nbsp;</p>
+<p>Greetings from Switzerland.</p>
+<p>&nbsp;</p>
+<div style="width:800px;height:100%;top:0px;right:0px;padding-left:0px;position:fixed;background-color:white;z-index:1000;display:none;border:0px 0px 0px 1px solid black;">
+<div style="border:0px none;top:1px;width:100%;height:42px;position:absolute;">
+<div style="position:absolute;left:2px;right:0px;">WikipediaWictionaryChambers (UK)Google imagesGoogle defineThe Free DictionaryJoin exampleWordNetGoogleUrban DictionaryAnswers.comrhymezone.comMerriam-Webster&lt;&gt;0</div>
+<div style="position:absolute;left:0px;right:0px;top:40px;width:100%;height:1px;background-color:black;"></div>
+<div style="position:absolute;left:2px;right:0px;top:22px;">wvcidfjoguarm</div>
+</div>
+</div></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, March 03, 2010</h2><p>I wouldn&#39;t recommend using the CSLA 4 preview for anything real - at least not unless you have a high tolerance for troubleshooting. It is a preview, not a beta!</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>ajj3085 replied on Wednesday, March 03, 2010</h2><p>I believe this is because Wpf doesn&#39;t fully support BindingList, and that&#39;s what Csla lists subclass from.&nbsp; This will change in Csla 4, so it will work as you expect.&nbsp; I think you can use Linq to Csla as a workaround in the meantime though.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

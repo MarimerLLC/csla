@@ -1,0 +1,320 @@
+<html><header><title>Is CSLA too smart for MVVM?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Is CSLA too smart for MVVM?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/7574.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>SonOfPirate posted on Thursday, September 03, 2009</h2><P>I've been spending a lot of time over the past couple of weeks reading about and playing with the Model-View-ViewModel pattern.&nbsp; As part of this I've had numerous conversations with my development team about what I'm finding.&nbsp; Unfortunately, I think I'm walking away with more questions and uncertainty than I would have expected this far into my investigation.&nbsp; Most of it centers around how "powerful" our CSLA business objects are and if that prevents us from really leveraging a pattern like MVVM the way other frameworks/architectures would.</P>
+<P>So, my first question is if exposing Model as a data property is a legitimate implementation? If the purpose of the ViewModel is to abstract the Model and create an abstract view (per John Grossman), then exposing the Model via a property seems to be contradictory.</P>
+<P>For example, if we have a PurchaseOrder business object with PONumber, Customer and BillToAddress properties along with a child list of PurchaseOrderItems, it is correct to define a single Data property on our PurchaseOrderViewModel of type PurchaseOrder or would we want to have separate PONumber, Customer and BillToAddress properties on our VM as well?</P>
+<P>Perhaps if we consider the BillToAddress is of type Address which contains properties for Street, City, State, Zip and Country.&nbsp; We could certainly bind our UI element to Data.BillToAddress.City but now our UI has (some) knowledge of our business object model.&nbsp; Wouldn't it be better for our ViewModel to expose a BillToCity property as:</P>
+<P><CODE>public System.String BillToCity<BR>{<BR>&nbsp; &nbsp; get { return _model.BillToAddress.City; }<BR>&nbsp; &nbsp; set { _model.BillToAddress.City = value; }<BR>} </CODE></P>
+<P>Now we have some semblance that we are refactoring our Model into an abstract view - or the API that a View may bind to.</P>
+<P>Second question: one of the definitions of a ViewModel presented by Grossman is the idea that the ViewModel's purpose is to wrap our Model and make it suitable for data-binding.&nbsp; However, one of the great things Rocky has done with Csla is build our business objects with the intent that they are used as data sources (for data-binding) in the UI.&nbsp; This means that all of the stuff our ViewModel would do for us is already in our BOs.&nbsp; For instance, raising the PropertyChanged event.&nbsp; All our ViewModel would do is bubble the event from our Model to the UI.&nbsp; So where is the value of the ViewModel?</P>
+<P>Another aspect of the wrapper is to implement functions like Save and Cancel - which are also implemented on our BO.&nbsp; So again our ViewModel is simply delegating to our BO.</P>
+<P>So, are we trying to find a way to implement this pattern just for the sake of doing so or does it really make sense in the CSLA world?&nbsp; It seems to me that given the way our business objects are designed that simply including our Model as a StaticResource (talking XAML, of course) accomplished the same thing without the intermediary object.</P>
+<P>Now I'm not necessarily advocating that because I firmly believe a separation needs to exist between layers and roles (designer vs. developer) so if there is a valid and strong argument against the pattern because our BO are too smart, then perhaps we should consider if this intelligence is implemented in the right place.&nbsp; Is the MVVM pattern telling us that our BOs should not be implementing INotifyPropertyChanged because this is the responsibility of the ViewModel?</P>
+<P>What do you think?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>lukky replied on Friday, September 04, 2009</h2>Very interesting thoughts.<br><br>Though I'm still a WinForms person (slowly reading on WPF in my spare time, which is not a lot), I had the same kind of question when i started working on an application that made use of SCSF (basically Model-View-Presenter).<br><br>As I didn't really have the luxury of spending weeks on this, I decided to use the Presenter only as a mean to decouple retrieval of BOs from the View. I found that most of the time what I needed was already implemented as business logic on my BO, and if not, I could simply add it to the BO.<br><br>At one point I even questioned the use of the Presenter at all. I decided to leave it there since it was part of the SCSF Guidance.<br><br>I hope others will share their thoughts on the subject too.<br><br>Regards<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>SonOfPirate replied on Friday, September 04, 2009</h2><P>Well, another thing I just picked up on reading a little more into MVVM, following my example of a PurchaseOrderViewModel, and going with the notion that we should be exposing the individual properties we want for our View and not a single property for the Model, the Items property on our VM should actually be returning another VM!&nbsp; In this case, the child VM would represent the PurchaseOrderItems collection contained in our PurchaseOrder Model object.</P>
+<P>The complexity of the solution increases!&nbsp; What is the payoff?</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jack replied on Friday, September 04, 2009</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I think if you worry less about conforming to the endless blog
+postings and more on what makes sense to the situation and what is manageable
+you won't stress as much.&nbsp; I spent and wasted countless hours and late
+nights trying to twist and manipulate my understandings to fit what I thought /
+hoped was the way to do things.&nbsp; Then you find you can't make the XAML do
+what you want any ways or you can't bind a certain way and you just end up in
+circles.&nbsp; Throw in being very new to CSLA and every issue I came to became
+a theoretical vs. technical understanding/implementation.&nbsp; I didn't know
+if things should work and if they did I worried that I was doing it the wrong
+way. &nbsp;I think it's better to almost do it the wrong way and then refactor
+than spend time trying to figure out what the right way is.&nbsp; By the time I
+figured out what I hoped was the right way my project was already late and I
+still had to make it work.&nbsp; Of course I'm working for myself so there is a
+team of people waiting for my advice :-)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I haven't looked at the new 3.8 ViewModel but if you look at the
+CSLADataProvider as a pseudo model then exposing it as no different than
+exposing a child model.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I've tried to sticking to the 'No Code Behind unless eye Candy'
+(which also includes making 3rd party controls work in some cases where I can't
+bind to the VM).&nbsp; Rocky has blogged about the problems with ListBoxes -
+wait till you try to deal with a 3rd party treeview that supports multiple
+selection.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>- anything that is strictly UI or is made easier via UI I'll
+re-expose a BO property (say I'm making a wizard to help set 5 properties)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>- anything that will be re-used across views or I can use
+outside the UI I'll push back into the BO<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>- merge Can/Is properties where applicable (ie IsBusy in my
+ViewModel is IsBusyUI + IsBusyCsla).<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>- I'm trying to make ChildVM's and databind them to ChildViews where
+I can but I've had quite a few gotcha's where the ChildModel is generated and
+binded but of course the binding keeps the same instance unless you raise
+ChangeNotifications at the right time which can actually be hard when you try
+to open a form via XAML<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>- I've struggled mightily with the idea of the view reacting to
+changes in the ViewModel to do something vs. just telling the view to do it.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>- I've also found I have to wrap certain collections (especially
+from linq selects) as in SL we don't have the LinqBindingList.&nbsp; I've
+peeked at some of the LiveLinq or other implementations out there (ComponentOne
+has a nice optimized LinqCollection but it doesn't support SL yet).&nbsp; Once
+I wrap them in my ViewModel I can respond to CSLA notification events and then
+easily raise change notifications for my UI lists so that the binding re-fires
+and my UI list updates its original LINQ query results.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>But I am liking the MVVM more and more.&nbsp; I think if you
+value a smart intuitive UI then a VM is a saving grace.&nbsp; I'm really into
+Visual Design and intelligent UI's vs. the old standard 40 CRUD windows and
+drill down 5 layers with endless prompts to the user etc.&nbsp; My problem is
+still getting from my paper design through to the XAML and then hooking the
+pieces together.&nbsp; However to build all the intelligence in to the UI you
+really do need that middle piece and I think that is where the VM shines.&nbsp;
+<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>My BO can be powerful and leverage CSLA and deal with all the
+Business Logic, the View is eyecandy, and the VM is the glue to really keep it
+all together and manipulate the parts to make a intuitive UI.&nbsp; I'm trying
+to work efficiently and get my BO - VM - View working and then I find I can
+almost shut down work on the other two and focus on the VM to improve the UI
+Experience.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Bottom-line if you have a simple CRUD window that you want to
+popup to enter some details then you have no real VM and hopefully you've put
+enough logic into a re-usable base class that there is very little to do other
+than maybe navigation or message notification back to a parent or something and
+you simply expose your CLSA BO as 'Data'.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I don't know if that helps you at all - but as Rocky has said a
+few times, it is somewhat of a 'trend' and it is very very new.&nbsp; Throw in
+the hacks from SL2 to do things and then trying to undo them with SL3 but not
+quite being the same as WPF and it gets very difficult to keep up.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I also did go down the path with PRISM&nbsp; and found I was
+writing way too much extra stuff and was very confused with Navigation.&nbsp; I
+moved away and starting leveraging Silverlight.FX but again I'm finding
+limitations with that and there is next to no support - it is more a proof of
+concepts plus some slick eyecandy.&nbsp; I actually think now that I have some
+more experience I'll liekly go back to PRISM again and see where it can help
+out.&nbsp; I believe their SL3 compatible version is suppose to link in
+Navigation which is really the bit they were missing.&nbsp; I've really
+struggled with CompositeViews and injecting my VM's into the childViews at the
+moment I want.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Also once a bit more of 3.8 is out I'll re-visit how I'm
+interfacing with CSLA and likely adopt as much as I can there.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Anyhow just a few rambling thoughts on a Friday afternoon.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>jack<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> SonOfPirate [mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> September-04-09 11:19 AM<br>
+<b>To:</b> jaddington@alexandergracie.com<br>
+<b>Subject:</b> Re: [CSLA .NET] Is CSLA too smart for MVVM?<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Well, another thing I just picked up on reading a little more into MVVM,
+following my example of a PurchaseOrderViewModel, and going with the notion
+that we should be exposing the individual properties we want for our View and
+not a single property for the Model, the Items property on our VM should
+actually be returning another VM!&nbsp; In this case, the child VM would
+represent the PurchaseOrderItems collection contained in our PurchaseOrder
+Model object.<o:p></o:p></p>
+
+<p>The complexity of the solution increases!&nbsp; What is the payoff?<o:p></o:p></p>
+
+<p>&nbsp;<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, September 04, 2009</h2><P>This, right here, is where I started hating MVVM. Fortunately it turns out to be a misunderstanding of the pattern, promoted by people who just haven't thought through things far enough.</P>
+<P>There are really two MVVM patterns - one for anemic Models and one for rich Models.</P>
+<P>CSLA obviously is a rich Model world, and so the anemic MVVM pattern is really inappropriate. Sadly, I've seen that put forth as "the one true way", which means you could think MVVM itself sucks (which is where I was a few months ago).</P>
+<P>I've come to realize that there's a large community of people who recognize this broader truth, and in fact it seems that more and more of the MVVM thinkers are realizing that the anemic model largely sucks in general.</P>
+<P>So what's the difference?</P>
+<P>In the anemic MVVM model, the View communicates <EM>only</EM> with the VM. And the VM delegates to the Model. This is almost required if your Model is composed of dumb DTO or Entity objects, because those objects just don't do the things you need to make the UI work nicely.</P>
+<P>In the rich MVVM model, the View communicates with the VM, but the VM exposes the Model as a property. This allows the View to bind to properties of the Model and/or ViewModel as appropriate. And it allows the View to bind to methods (verbs/actions) on the ViewModel - assuming you have some commanding model that actually works with MVVM.</P>
+<P>Obviously CSLA works much better with this second approach, because your Model is already super-smart and it is a total waste of time to implement containment-and-delegation around it. In fact, applying the anemic MVVM technique to a CSLA object means you need to bi-directionally wrap not only the properties, but all the data binding interfaces and everything. Your ViewModel class will be HUGE - and all full of stupid plumbing code CSLA already did for you in the business object!</P>
+<P>&nbsp;</P>
+<P>Realizing all this, I'm finding the MVVM pattern to be really nice. Really nice.</P>
+<P>Creating a ViewModel is a matter of exposing the Model as a property, and implementing code to manage the business object's lifetime appropriately. And the ViewModel can have extra UI-oriented properties (like IsNotSavable if that makes some UI widget easier to bind). </P>
+<P>And the ViewModel of course implements verbs/commands/actions. Possibly these include Refresh() or Save(), but might also include ShowDetails() or OpenDialog().</P>
+<P>Remember that the ViewModel is tightly coupled to the View. It exists purely to service the needs of the View. If the View has a button that does something, the ViewModel will have a method that is invoked when the button is clicked. So the ViewModel might have all sorts of UI-specific methods and properties.</P>
+<P>All that, while the Model remains purely focused on the underlying business use case. Remember, you should be able to take your Model and use it behind a web service unchanged. If you can't do that, you blurred the lines between the Presentation and Business layers.</P>
+<P>Conversely, if you can't take your Model and build a web service because you'd lose important business rules or functionality, then you've allowed business logic to creep into the Presentation layer and that's also really bad.</P>
+<P>MVVM isn't magic. While it provides a home for what would have been code-behind, it is a UI construct and doesn't change the need to keep your business logic in your business objects, and your UI logic in the UI (in this case in the View and ViewModel).</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jack replied on Friday, September 04, 2009</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>As usual very elegantly put and I agree whole heartedly.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> RockfordLhotka [mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> September-04-09 2:30 PM<br>
+<b>To:</b> jaddington@alexandergracie.com<br>
+<b>Subject:</b> Re: [CSLA .NET] Is CSLA too smart for MVVM?<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>This, right here, is where I started hating MVVM. Fortunately it turns out
+to be a misunderstanding of the pattern, promoted by people who just haven't
+thought through things far enough.<o:p></o:p></p>
+
+<p>There are really two MVVM patterns - one for anemic Models and one for rich
+Models.<o:p></o:p></p>
+
+<p>CSLA obviously is a rich Model world, and so the anemic MVVM pattern is
+really inappropriate. Sadly, I've seen that put forth as &quot;the one true
+way&quot;, which means you could think MVVM itself sucks (which is where I was
+a few months ago).<o:p></o:p></p>
+
+<p>I've come to realize that there's a large community of people who recognize
+this broader truth, and in fact it seems that more and more of the MVVM
+thinkers are realizing that the anemic model largely sucks in general.<o:p></o:p></p>
+
+<p>So what's the difference?<o:p></o:p></p>
+
+<p>In the anemic MVVM model, the View communicates <em>only</em> with the VM.
+And the VM delegates to the Model. This is almost required if your Model is
+composed of dumb DTO or Entity objects, because those objects just don't do the
+things you need to make the UI work nicely.<o:p></o:p></p>
+
+<p>In the rich MVVM model, the View communicates with the VM, but the VM
+exposes the Model as a property. This allows the View to bind to properties of
+the Model and/or ViewModel as appropriate. And it allows the View to bind to
+methods (verbs/actions) on the ViewModel - assuming you have some commanding
+model that actually works with MVVM.<o:p></o:p></p>
+
+<p>Obviously CSLA works much better with this second approach, because your
+Model is already super-smart and it is a total waste of time to implement
+containment-and-delegation around it. In fact, applying the anemic MVVM
+technique to a CSLA object means you need to bi-directionally wrap not only the
+properties, but all the data binding interfaces and everything. Your ViewModel
+class will be HUGE - and all full of stupid plumbing code CSLA already did for
+you in the business object!<o:p></o:p></p>
+
+<p>&nbsp;<o:p></o:p></p>
+
+<p>Realizing all this, I'm finding the MVVM pattern to be really nice. Really
+nice.<o:p></o:p></p>
+
+<p>Creating a ViewModel is a matter of exposing the Model as a property, and
+implementing code to manage the business object's lifetime appropriately. And
+the ViewModel can have extra UI-oriented properties (like IsNotSavable if that
+makes some UI widget easier to bind). <o:p></o:p></p>
+
+<p>And the ViewModel of course implements verbs/commands/actions. Possibly
+these include Refresh() or Save(), but might also include ShowDetails() or
+OpenDialog().<o:p></o:p></p>
+
+<p>Remember that the ViewModel is tightly coupled to the View. It exists purely
+to service the needs of the View. If the View has a button that does something,
+the ViewModel will have a method that is invoked when the button is clicked. So
+the ViewModel might have all sorts of UI-specific methods and properties.<o:p></o:p></p>
+
+<p>All that, while the Model remains purely focused on the underlying business
+use case. Remember, you should be able to take your Model and use it behind a
+web service unchanged. If you can't do that, you blurred the lines between the
+Presentation and Business layers.<o:p></o:p></p>
+
+<p>Conversely, if you can't take your Model and build a web service because
+you'd lose important business rules or functionality, then you've allowed
+business logic to creep into the Presentation layer and that's also really bad.<o:p></o:p></p>
+
+<p>MVVM isn't magic. While it provides a home for what would have been
+code-behind, it is a UI construct and doesn't change the need to keep your
+business logic in your business objects, and your UI logic in the UI (in this
+case in the View and ViewModel).<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>emathias replied on Thursday, September 10, 2009</h2>This thread was absolutely the right info at the perfect time.  I've been working with Josh Smith's MSDN 2/2009 article on MVVM.  While reading, I kept thinking there is a tremendous overlap between the VM and a CSLA business object.  This intensified when I started reading about the application of the IDataError interface into the VM.  My pea-brain fired a few memory neurons and I looked up Rocky's post on the application of the same IDataError interface into the BO.  Okay, yet another reason to use the BO as a VM.<br /><br />Rocky, you have been a great advocate of the generation of plural csla business objects to reflect the needs of application.  This is opposed to the practice of using a code generation tool for the automatic representation of the data model in CSLA objects;  a sin I am particularly guilty of.  <br /><br />So can we not move a bit closer to CSLA - MVVM harmony if we actually practice this healthy habit?  Create our BOs to primarily reflect the needs of the GUI instead of merely a data layer?  We then are more consistent with the VM ideology, yet get all the great benefits of the CSLA architecture.  <br /><br />I'm also pleased I'm actually reading a MSDN article from the present year instead of the previous 2.  :)<br /><br />Ed</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, September 10, 2009</h2>Ed, I tend to agree, in that I do think a good object model will naturally<br />fit behind the UI without needing to be reshaped. You shouldn't need a<br />complex object between the view and your model - that's just poor object<br />design in my opinion.<br /><br />However, there are some realities of working with XAML binding that do<br />require some location to store UI-related code.<br /><br />That could be in code-behind. The problem with code-behind is that it is not<br />easily tested, otherwise I really don't see a big problem with it<br />personally.<br /><br />But testability is a big deal, so moving event handling code out of<br />code-behind into a set of testable methods in some object does seem wise.<br /><br />What I'm doing for version 3.8 is making sure CSLA .NET provides good<br />support for a particular flavor of MVVM. The flavor where the ViewModel<br />exposes the Model as a property so it can be bound to the UI, but where the<br />ViewModel can also add extra methods (verb/action/command) and UI helper<br />properties.<br /><br />This is working quite well, and I expect to do another alpha release Friday<br />that includes several key elements (Silverlight only right now):<br /><br />* ViewModelBase - contains useful protected methods to make it easier for<br />you to create a VM class for a CSLA object<br /><br />* ViewModel - subclass of ViewModelBase that implements common public<br />methods (Save, Delete, AddNew, Cancel, RemoveItem) - again so you can<br />subclass, but this one lets you do a lot less work if you are using<br />InvokeMethod or Execute<br /><br />* InvokeMethod - enhanced version of the same component from 3.6/3.7 that<br />uses element binding and can be triggered by any event to call any method on<br />the VM<br /><br />* Execute - trigger action that does much of what InvokeMethod does, but<br />through the new event trigger model from Blend 3 - it turns out though that<br />InvokeMethod can do some binding things that you just can't do with trigger<br />actions, which is a little disappointing<br /><br />* PropertyStatus - enhanced version of the same component from 3.6/3.7 that<br />uses element binding, but also exposes properties for many metastate values,<br />so a UI control can bind to PropertyStatus, rather than having<br />PropertyStatus directly manipulate the UI control (basically inverts the<br />binding model)<br /><br />* CslaDataProvider - enhanced version of the same component from 3.6/3.7<br />that allows binding to the ObjectInstance property, so you can use a<br />CslaDataProvider as a "child" provider attached to a "root" data provider;<br />kind of a more automated ViewModel construct for CRUD oriented screens where<br />you don't need other commands beyond the basic CRUD stuff</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Henrik replied on Saturday, September 05, 2009</h2>Thanks for that explanation Rocky. It cleared up a lot of stuff for me.<br /><br />I still can't help having the nagging feeling that MVVM is just another twist of MVC, MVP and code behind or for that matter Joe Fallon's Use Case Controller.<br /><br />Cheers<br />/Henrik</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Saturday, September 05, 2009</h2>Oh it is similar to MVP/MVC/etc.<br /><br />They are all UI patterns after all, so they are all trying to solve the same<br />basic thing, which is how to organize UI code and keep business logic in a<br />business layer.</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

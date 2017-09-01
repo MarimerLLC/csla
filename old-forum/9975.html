@@ -1,0 +1,29 @@
+<html><header><title>INotifyDataErrorInfo.GetErrors issue</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>INotifyDataErrorInfo.GetErrors issue</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9975.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Peran posted on Monday, January 24, 2011</h2><p>Hi Rocky,</p>
+<p>The msdn documentation gives this description for&nbsp;INotifyDataErrorInfo.GetErrors(string propertyName)</p>
+<p>&nbsp;</p>
+<p>Gets the validation errors for a specified property *or for the entire entity*.</p>
+<p>&nbsp;</p>
+<p>The current implementation in Csla.Core.BusinessBase will not return errors for the entire entity if propertyName = string.Empty</p>
+<p>&nbsp;</p>
+<p>
+<p>&nbsp;&nbsp; &nbsp;System.Collections.IEnumerable INotifyDataErrorInfo.GetErrors(string propertyName)</p>
+<p>&nbsp;&nbsp; &nbsp;{</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp;return BusinessRules.GetBrokenRules()</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;.Where(c =&gt; c.Property == propertyName &amp;&amp; c.Severity == RuleSeverity.Error)</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;.ToList();</p>
+<p>&nbsp;&nbsp; &nbsp;}</p>
+<div></div>
+</p>
+<p>The following modification would:</p>
+<p>&nbsp;</p>
+<p>&nbsp;&nbsp; &nbsp;System.Collections.IEnumerable INotifyDataErrorInfo.GetErrors(string propertyName)</p>
+<p>&nbsp;&nbsp; &nbsp;{</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp;return BusinessRules.GetBrokenRules()</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;.Where(c =&gt; (string.IsNullOrEmpty(propertyName) || c.Property == propertyName) &amp;&amp; c.Severity == RuleSeverity.Error)</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;.ToList();</p>
+<p>&nbsp;&nbsp; &nbsp;}</p>
+<p>&nbsp;</p>
+<p>Shall I raise an issue on bugtracker?</p>
+<p>Regards</p>
+<p>&nbsp;</p>
+<p>Peran</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, January 24, 2011</h2><p>Yes, please add this as a bug, thanks</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

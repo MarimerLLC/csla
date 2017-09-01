@@ -1,0 +1,30 @@
+<html><header><title>Implementing Objects as Root or Child within hierarchical structures?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Implementing Objects as Root or Child within hierarchical structures?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10769.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>alex.enjoy posted on Thursday, October 13, 2011</h2><p>
+<p>Hello,</p>
+<p>after reading the CSLA4 books I am not sure how to implement the following scenario:</p>
+<p>given the following classes to build up a simple contact management:</p>
+<p>
+<ul>
+<li>class Contact { IEnumerable&lt;ContactRelation&gt; RelatedContacts; }</li>
+<li>class ContactRelation { string RelationType; Contact RelatedContact; }</li>
+</ul>
+</p>
+<p>Any contact can be referenced to any other contact or to itself.<br />The count of references between any two contacts is not limited.</p>
+<p>So, how to implement the Contact BO? Inherit from BusinessRoot or from BusinessChild?</p>
+<p>The same problem I have with a &nbsp;self referencing tree system:</p>
+<p>
+<ul>
+<li>class Item { IEnumerable&lt;Item&gt; Children; Item Parent; }</li>
+</ul>
+</p>
+<p>What base type has the Item BO to be of?</p>
+<p>Thinking about a filesystem, I could argue the Partition is the BusinessRoot and the Folder would be a BusinessChild.<br />But when you look at any Subfolder on its own, is this one a Root with Childs?</p>
+<p>I am puzzled about this concern.<br />Any help?</p>
+<p>&nbsp;</p>
+<p>thank you,<br />Alexander.&nbsp;</p>
+</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>StefanCop replied on Thursday, October 13, 2011</h2><p>Hi,</p>
+<p>I would model both as root objects (Contact and ContactRelation), unless you can draw a a clear picture of your object graph. </p>
+<p>I think, the question is what you want to load immediately and what you need for update? With child objects you tend to load them immediatly. But with your statement &quot;Any contact can be referenced to any other contact or to itself&quot; you will end in cycles and endless-loading-loops. </p>
+<p>The second sample of a strict hierarchical tree system can work with child items, if you like to load and update the tree only through your very root node object. </p>
+<p>Using trees (and display them in UI) I found this a good approach: The tree is implemeted with read-only objects and lists limited to a minimum properties needed in a tree view, such that it can be loaded fast. If you selected a node in the tree you load an probably editable object with more/all properties.</p>
+<p>(btw you always inherit from BusinessBase but mark it as a child). </p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>ajj3085 replied on Sunday, October 16, 2011</h2><p>I&#39;d implement a Contract BO for editing your contract.&nbsp; Then a ContractRelationshipList as a root ReadOnlyListBase which contains ContractRelationshipInfo objects.&nbsp; You can then have command objects for adding or removing a relationship, or if there&#39;s data that exists only as part of the relationship ,have a ContactRelationship root BO. You can then use that type for adding, editing or deleting a relationship.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

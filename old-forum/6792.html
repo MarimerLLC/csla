@@ -1,0 +1,259 @@
+<html><header><title>Is CSLA.NET useful for my project?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Is CSLA.NET useful for my project?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6792.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>StoreIntegrator posted on Tuesday, April 14, 2009</h2><P>Hi,</P>
+<P>I read some discussion on the forum and tried to download some code samples. I have been using my own DAL in the past for my DNN (Dotnetnuke) applications since DNN DAL is missing the nullable integer, datetime etc. Also I do not like retyping a tedious DAL. Now I am charmed by LINQ and I used the PLINQ of CodeSmith. I think it is not really a Business Layer, but more a Data access layer.</P>
+<P>I&nbsp;miss for a web application some things:</P>
+<OL>
+<LI>Caching the datalayer (DAL); DNN does not support SQL cache dependency nor ASP.NET output caching. I also would like to cache certain data objects. Also some there are some nice LINQ extensions out in which you can easily case data like .Where(i =&gt;i.ItemId = itemId).Cache(10) where 10 is the number of minutes in the cache.</LI>
+<LI>The PLINQ uses compiled queries which are nearly as fast as Stored Procedures. But then easier to maintain.</LI>
+<LI>I like the LINQ since you do not have to write Stored Procedures and a datamodel change is reflected fast in your code due to the strong typed DAL.</LI>
+<LI>I would like to call static objects so that I do not have to bother with datacontext etc. Just CustomerManager.Load(customerId) or ProductManager.Load(productId), and ProductManager.Save(product). In these functions the create datacontext, sql etc. is present then. Similar for an product. If you would like to have the ProductTranslations a simple Product.Translation would get the data. Now it seems I need to code the Business Layer on top of the DAL created with PLINQ of Codesmith.</LI>
+<LI>I miss some bulk data operations like multiple row updates or inserts in the LINQ itself. I used a data adapter in the past for it, but with LINQ it seems you need to iterate every single record to the database.</LI></OL>
+<P>I think 1. and 4 are most important for me. Is CSLA.NET then something for my store project?</P>
+<P>Any help appreciated. In particular is there is some sample project with code smith template that shows the implementation of 1 and 4.</P>
+<P>J.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, April 20, 2009</h2><P>1) If you are using the data portal, you can do caching (using static fields or System.Web.Caching) in your object's factory methods. That is a powerful technique that works even if the UI technology (DNN) doesn't support caching.</P>
+<P>4) This is exactly how CSLA is designed to work. The preferred model for building a CSLA object is to implement static factory methods that use the data portal to create and populate the object instance.</P>
+<P>If you are totally fixated on PLINQ though, and it sounds like you are, then I don't know if CSLA will be a great fit for you. PLINQ (or LINQ to Objects in general) is about reshaping sets of data objects into other data objects. And that's a fine thing.</P>
+<P>But it isn't what CSLA is about. CSLA is about creating objects based on behavior, not data. While reshaping them is fine to an extent, the reality is that if you are reshaping a CSLA object model (beyond sorting and filtering of collections), then you just have a broken object model and you should really rethink your object design...</P>
+<P>It sounds to me like you need to step back and decide whether you want data-centric objects or behavior-centric objects. If you want data-centric, CSLA isn't a great fit. If you want behavior-centric, then CSLA should be a great fit.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>StoreIntegrator replied on Sunday, May 03, 2009</h2><P>Dear Rocky,</P>
+<P>Seems that point 4) is in CSLA. Where can I catch up information on how to generate a CSLA for my MSSQL database objects? I would like to see some samples of how the generated logic looks like. I am also interesting to know if somebody can generate a DAL for me or show me some additional guidance in using the CSLA codesmith templates.</P>
+<P>You mention filtering. In LINQ this can easily be done by passing an additional WHERE clause to the database server so that the data returned is limited ('filtered') by this WHERE clause. I think the CSLA objects&nbsp;are filtered on the web server ? That makes is heavier than using LINQ?</P>
+<P>Any help is appreciated.</P>
+<P>Best Regards,</P>
+<P>J.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Sunday, May 03, 2009</h2>You have a lot of wrong impressions about CSLA.<br />The first thing you should do is buy and read the book.<br /><br />CSLA will retrieve data from the database using any data access technology you wish. I happen to use ADO.Net and datareaders since they are the fastest. So CSLA is "lighter" than LINQ if you use ADO.Net. The advantage to using LINQ to SQL is its ease of coding and implementation.<br /><br />If I pass a WHERE clause in my SQL statement then the filtering occurs in the database.<br /><br />Sometimes a list can be retrieved and you may only want to view a subset of it at any given time. Yet you still want the entire list available in memory. This is the case where you could filter it on the client (or web server).<br /><br />I do not think that anyone is going to generate a DAL for you. (But I could be wrong.)<br /><br />Joe</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Sunday, May 03, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Joe&#8217;s reply is very good. Don&#8217;t confuse CSLA with an
+ORM &#8211; it is not an ORM. CSLA helps you build a distributed business
+layer, not a data access layer.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Also, you say that filtering can be done in LINQ by passing a
+where clause to the database. Don&#8217;t confuse LINQ with LINQ to SQL. LINQ
+to SQL is one tiny part of LINQ, and is actually something that Microsoft has
+indicated is not on the strategic path. <o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Yes, L2S allows you to filter data in a query, but any data
+access technology allows you to do that. CSLA is not a data access layer, but
+it does provide a rich business layer (or more accurately helps you create one).
+You could do filtering in the business layer, or even the UI layer (some data
+grid controls do it). And sometimes that makes sense, especially for smart
+client apps (Silverlight, WPF, etc). CSLA also allows you to push the filtering
+concept into the data access layer, and sometimes that makes sense, especially
+for web apps, or any app where there are thousands of rows of data.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>The point is that there&#8217;s flexibility so you can choose
+the right answer for your particular situation and application.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky</span><b><span><o:p></o:p></span></b></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>StoreIntegrator replied on Monday, May 04, 2009</h2><P>Hi,</P>
+<P>Thanks for the quick replies. I have ordered the book at bol.com since CSLA seems interesting. I have seen you use the Catalook Dotnetnuke store for paperbacks. I want to use CSLA for my DNN shopping engine&nbsp;I am creating. I have my own CodeSmith that generates stored procedures and DAL (so is it called in DNN). I have not yet a code template for Caching and static calls. For that reason I am looking what can be interested. In particular since I am also using webservices and in the future Silverlight. It would be easier to judge if some code samples would be present for a database.</P>
+<P>Any help appreciated.</P>
+<P>J.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, May 04, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>The ProjectTracker application is the primary reference
+application for CSLA .NET, and it uses a database (via LINQ to SQL at the
+moment) for a data access layer.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, May 04, 2009</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>StoreIntegrator:</strong></div><div>
+<P>I have seen you use the Catalook Dotnetnuke store for paperbacks. I want to use CSLA for my DNN shopping engine&nbsp;I am creating.</P>
+<P></div></BLOCKQUOTE></P>
+<P>In my view, there's certainly a market opportunity for you - the Catalook store is overly complex, really hard to configure, harder to style and doesn't have good support for selling downloadable content.</P>
+<P>On the other hand, it is really cheap. Unfortunately in this case I think I got what I paid for :(</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>StoreIntegrator replied on Wednesday, May 06, 2009</h2><P>Hi Rocky,</P>
+<P>Currently no software download is in my roadmap. At the time I have resources for that I will contact you. It is interesting that you talk about LinQ to SQL project "<SPAN>The ProjectTracker application is the primary reference application for CSLA .NET, and it uses a database (via LINQ to SQL at the moment) for a data access layer." Can I download that to see how that uses a static DAL, or it that also not having it?</SPAN></P>
+<P><SPAN>J.</SPAN></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, May 06, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I don&#8217;t know what you mean by &#8220;static DAL&#8221;.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>ProjectTracker uses the DataPortal_XYZ model and in the
+DataPortal_XYZ methods it uses L2S to interact with the database. So yes, if
+you download ProjectTracker and look at the code you&#8217;ll see how to use
+L2S to create a DAL behind CSLA objects.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Also Chapter 18 of the 2008 book discusses this, and other data
+access options supported by CSLA .NET.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky</span><b><span><o:p></o:p></span></b></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>StoreIntegrator replied on Sunday, May 10, 2009</h2><P>Hi,</P>
+<P>I have not received your book yet. I think this week it will arrive.</P>
+<P>With static I mean:</P>
+<P>In DNN you use to write:</P>
+<P>AddressController addressController = new AddressController()<BR>Address address = addressController.GetAddressById(1)</P>
+<P>Static is:</P>
+<P>Address address = AddressController.GetAddressById(1)</P>
+<P>Same for a CRUD:</P>
+<P>AddressController.GetAddressById(1)<BR>AddressController.Update(address)<BR>AddressController.Delete(1)<BR>AddressController.Create(address)<BR>AddressController.List()</P>
+<P>J.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, May 11, 2009</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>CSLA requires the use of factory methods. Well, that&#8217;s not
+entirely true, but it <i>encourages</i> the use of factory methods.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>You can create your factory methods as static methods &#8211;
+which is what I usually do.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>var customer = Customer.GetCustomer(123);<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Or you can create factory classes, with factory methods<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>var factory = new CustomerFactory();<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>var customer = factory.GetCustomer(123);<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Either approach is fine. The first one is simple and easy to implement.
+The second enables the use of dependency injection and other &#8220;fancy&#8221;
+patterns &#8211; but honestly there&#8217;s little value to taking that
+approach since the typical factory method just invokes the data portal, so
+there&#8217;s already a great deal of abstraction involved, and adding more
+abstraction offers little value.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> StoreIntegrator
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Sunday, May 10, 2009 4:34 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: RE: Is CSLA.NET useful for my project?<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Hi,<o:p></o:p></p>
+
+<p>I have not received your book yet. I think this week it will arrive.<o:p></o:p></p>
+
+<p>With static I mean:<o:p></o:p></p>
+
+<p>In DNN you use to write:<o:p></o:p></p>
+
+<p>AddressController addressController = new AddressController()<br>
+Address address = addressController.GetAddressById(1)<o:p></o:p></p>
+
+<p>Static is:<o:p></o:p></p>
+
+<p>Address address = AddressController.GetAddressById(1)<o:p></o:p></p>
+
+<p>Same for a CRUD:<o:p></o:p></p>
+
+<p>AddressController.GetAddressById(1)<br>
+AddressController.Update(address)<br>
+AddressController.Delete(1)<br>
+AddressController.Create(address)<br>
+AddressController.List()<o:p></o:p></p>
+
+<p>J.<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>StoreIntegrator replied on Sunday, May 24, 2009</h2>Hi Rocky,<br /><br />I have received your book. Quite impressive, but honestly: 768 pages....say 5 min per page...oeps...my wife will be angry with me...not talking about the kids.<br /><br />I have studied a bit the dataportal. I see your point about the factory, but how to generate such dataportal for say 30 tables on the fly including the stored procs ? Maybe in your next edition you can devote a chapter to it? I am more practical: this sounds good, I want to use it for my business logic. So if I use the CodeSmith templates I generate a Business logic from my database on the fly including stored procedures and webservices?<br /><br />I also read a bit about subsonic and Entity Framework....I feel Entity framework is not that far yet, but might be appealing also? I am convinced that Linq to Sql will not be suited for this. What do you recommend?<br /><br />J. </div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rfcdejong replied on Tuesday, August 25, 2009</h2>An old post, but i do like it. I'm wondering if StoreIntegrator got any futher with the DNN module using CSLA.<br /><br />StoreIntegrator, are u still reading the forum?</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,27 @@
+<html><header><title>SQL Statement error showing as rowindex out of boundary error in setproperty. </title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>SQL Statement error showing as rowindex out of boundary error in setproperty. </h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10911.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>bala345 posted on Wednesday, November 23, 2011</h2><p>I am using CSLA 3.8.3, Doing windows forms programming.&nbsp;</p>
+<p>I my Root object (a BB) , &nbsp;I have a BLB as Child. &nbsp;BLB contains List of ChildRecord.</p>
+<p>In the ChildRecord &nbsp;I have a SlNo Field &nbsp;-- &nbsp;It stores the record number . ( I use &nbsp;BLBbindingsource.postion +1 to set the SlNo field)</p>
+<p>When I fetch a saved &nbsp;Root from Database and delete one childRecord in BLB, &nbsp;In the PostionChangedEvent Or in the Roots&#39;s ChildChagedEvent, &nbsp; &nbsp;I have to loop through all the records and change the SlNo for all the Childrecords. &nbsp;It works until I hit save. &nbsp;But When I try to save it, &nbsp;the item deleted gets deleted. But No other changes I made after the deletion &nbsp;get saved. &nbsp;</p>
+<p>Is there a way to set this right?</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>bala345 replied on Saturday, November 26, 2011</h2><p>This behavior was found to be because of a error in SQL update Stored Procedure&nbsp;</p>
+<p>Which was like&nbsp;</p>
+<p>&quot; </p>
+<p>Create Proc &nbsp; MyDetail_Update</p>
+<p>declare @Param1 int , @param2 varchar(10) &nbsp;....</p>
+<p>as</p>
+<p>Begin</p>
+<p>&nbsp;Update &nbsp;MyDetail</p>
+<p>Set &nbsp;Field1 &nbsp;= &nbsp;@param1, &nbsp;Field2 = @param2 ....</p>
+<p>where &nbsp;KeyField = @paramx and &nbsp;SlNo = @SlNo&nbsp;</p>
+<p>Return</p>
+<p>end&nbsp;</p>
+<p>&quot;</p>
+<p>The problem is, &nbsp;SlNo is made as a PrimaryKey which was not passed the old SlNo value which was modified. &nbsp; Since the error&#39;s never throw an sql exception but some rowindex out of range kind of exceptions in setproperty &nbsp;- I thought that it is coming somewhere from the code which I could not find any fault with.&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,282 @@
+<html><header><title>Concurrency &amp; Root Collection</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Concurrency &amp; Root Collection</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5290.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>MadGerbil posted on Friday, August 22, 2008</h2><P>I've got a collection I show to users - a collection which supports updates and inserts.</P>
+<P>Although unlikely, it is possible to have this collection open on two people's workstations at one time.&nbsp;I'm trying to think through a good concurrency handling techinque.</P>
+<P>What I've come up with is applying a date/time stamp to the entire collection so that this date/time stamp is stored in a separate table.&nbsp; I grab that date/time value when I load up the collection and when I save the collection that value gets changed to the current date/time.&nbsp;&nbsp; If a person tries to save the table and that value doesn't match then changes were obviously made while they had the colletion open - they are informed and the collection would be re-opened with the lastest changes (thereby losing theirs).</P>
+<P>I'm used to handling this on a per item basis - I've never done this for an entire collection.</P>
+<P>The storing of a date/time stamp in a different table seems "clunky" to me.</P>
+<P>thoughts?</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Friday, August 22, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I would lean toward having a stamp in each item in collection,
+not collection itself.&nbsp; This way you can allow one user to edit item A
+while another user can edit item B, and allow both changes to commit.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899<o:p></o:p></span></p>
+
+<p class=MsoNormal><b><i><span>Magenic</span></i></b><span> </span><span>&reg;</span><b><i><span><o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> MadGerbil
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Friday, August 22, 2008 1:35 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> [CSLA .NET] Concurrency &amp; Root Collection<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>I've got a collection I show to users - a collection which supports updates
+and inserts.<o:p></o:p></p>
+
+<p>Although unlikely, it is possible to have this collection open on two
+people's workstations at one time.&nbsp;I'm trying to think through a good
+concurrency handling techinque.<o:p></o:p></p>
+
+<p>What I've come up with is applying a date/time stamp to the entire
+collection so that this date/time stamp is stored in a separate table.&nbsp; I
+grab that date/time value when I load up the collection and when I save the
+collection that value gets changed to the current date/time.&nbsp;&nbsp; If a
+person tries to save the table and that value doesn't match then changes were
+obviously made while they had the colletion open - they are informed and the
+collection would be re-opened with the lastest changes (thereby losing theirs).<o:p></o:p></p>
+
+<p>I'm used to handling this on a per item basis - I've never done this for an
+entire collection.<o:p></o:p></p>
+
+<p>The storing of a date/time stamp in a different table seems
+&quot;clunky&quot; to me.<o:p></o:p></p>
+
+<p>thoughts?<o:p></o:p></p>
+
+<p>&nbsp;<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>MadGerbil replied on Friday, August 22, 2008</h2><P>Let's say the collection contains 10 items which are open on two users workstations.&nbsp; Let's also say that the users both edit the same 5 items.&nbsp; They both press "Save" and one user's items get saved while the other user is stuck with 5 items that could not save - or worse yet, one item that did save and 5 others that didn't.</P>
+<P>How would you communicate what happened to the user who just lost his changes?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Friday, August 22, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Firstly, I was never able to come up with an answer to that that
+is satisfactory.&nbsp; I tend not to use concurrency in general because I think
+it results in bad user perception of the application, usually worse than last
+wins scenario.&nbsp; Just my opinion though.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I would probably raise a specific error in SP so that you can
+listen to it in your UI.&nbsp; If you see that error inside Catch block (.BusinessException)
+in your UI when Save is called, just show an appropriate message and allow the
+user to reload the data and re-do the changes.&nbsp; There is not much else you
+can do I think.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899<o:p></o:p></span></p>
+
+<p class=MsoNormal><b><i><span>Magenic</span></i></b><span> </span><span>&reg;</span><b><i><span><o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> MadGerbil
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Friday, August 22, 2008 2:00 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: Concurrency &amp; Root Collection<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Let's say the collection contains 10 items which are open on two users
+workstations.&nbsp; Let's also say that the users both edit the same 5
+items.&nbsp; They both press &quot;Save&quot; and one user's items get saved
+while the other user is stuck with 5 items that could not save - or worse yet,
+one item that did save and 5 others that didn't.<o:p></o:p></p>
+
+<p>How would you communicate what happened to the user who just lost his
+changes?<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>nermin replied on Friday, August 22, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>My take on that issue is if you want the system where concurrent
+updates are &#8220;safe&#8221;, then your BO should track the fields that have
+changed and only update/modify on DB end the fields that have been modified on
+UI.&nbsp; That way you do not care if the value in consecutive update has been
+modified, that was the intent.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>You can handle deletes in the same manner.&nbsp; If user A
+deletes the record that user B tries to update, then the update is treated as
+an insert. <o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Nermin<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Sergey Barskiy
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Friday, August 22, 2008 1:07 PM<br>
+<b>To:</b> Nermin Dibek<br>
+<b>Subject:</b> RE: [CSLA .NET] RE: Concurrency &amp; Root Collection<o:p></o:p></span></p>
+
+</div>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal><span>Firstly, I was never able to come up with an answer to that that
+is satisfactory.&nbsp; I tend not to use concurrency in general because I think
+it results in bad user perception of the application, usually worse than last
+wins scenario.&nbsp; Just my opinion though.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I would probably raise a specific error in SP so that you can
+listen to it in your UI.&nbsp; If you see that error inside Catch block
+(.BusinessException) in your UI when Save is called, just show an appropriate
+message and allow the user to reload the data and re-do the changes.&nbsp;
+There is not much else you can do I think.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899<o:p></o:p></span></p>
+
+<p class=MsoNormal><b><i><span>Magenic</span></i></b><span> </span><span>&reg;</span><b><i><span><o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> MadGerbil
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Friday, August 22, 2008 2:00 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: Concurrency &amp; Root Collection<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Let's say the collection contains 10 items which are open on two users
+workstations.&nbsp; Let's also say that the users both edit the same 5
+items.&nbsp; They both press &quot;Save&quot; and one user's items get saved
+while the other user is stuck with 5 items that could not save - or worse yet,
+one item that did save and 5 others that didn't.<o:p></o:p></p>
+
+<p>How would you communicate what happened to the user who just lost his
+changes?<o:p></o:p></p>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rsbaker0 replied on Friday, August 22, 2008</h2><P>I think "last one wins" is a disaster, because the first user's changes are lost without notice. </P>
+<P>Any concurrency solution (at least one that doesn't stop the user from even starting to make edits that can't be saved&nbsp;with locking mechanisms that are there own can of worms)&nbsp;is going to anger the "losing" user. So, you just have to decide who is going to lose. I think "first one wins" is best, because at least you can inform the loser that they're changes weren't saved. </P>
+<P>We use "changed values concurrency" as our solution because it provides better concurrency than timestamps. So, users can edit the same object at the same time, and if they don't change the same field, both edits will go through. This is implemented by including the previous values of all changed fields in the WHERE clause sent to the database. If someone else changed one of the fields, then the WHERE clause won't match any records and you can detect the concurrency violation that way. </P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Fintanv replied on Monday, August 25, 2008</h2><P>Concurrency control is hard, and what strikes me is that in your message you imply that the likelyhood of an issue occurring is small.&nbsp; If this is the case, is the work to implement a good concurrency solution going to provide sufficient RO? &nbsp;How about implementing an audit trail instead where you use triggers to track the insert, update and delete operations?&nbsp; Then if an issue ever does occur, and you get a support call, you can use the audit trail to explain what happened.&nbsp; Indeed if you provide a searchable frontend to the audit table(s) and educate your customers, then they can research the issues themselves.</P>
+<P>Yes I have implemented this in 'real life' and it worked well.&nbsp; Just my 2cents :-)</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

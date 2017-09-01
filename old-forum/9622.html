@@ -1,0 +1,38 @@
+<html><header><title>Calling dataportal from object factory</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Calling dataportal from object factory</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9622.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>rodogo posted on Monday, October 11, 2010</h2><p>Hi guys,</p>
+<p>I am just starting with this framework, I&#39;ve bought the book and I&#39;ve got the samples from the site.</p>
+<p>There is a &#39;silly&#39; question I haven&#39;t been able to find neither in the book nor the samples.</p>
+<p>Is it a good practise to call Dataportal.Create&lt;&gt; inside of an object factory method?</p>
+<p>Example:</p>
+<p>public class OrderFactory : ObjectFactory</p>
+<p>{</p>
+<p>&nbsp; public object Create(){ //....}</p>
+<p>&nbsp; public object Fetch( int i)</p>
+<p>{</p>
+<p>&nbsp; var obj= Dataportal.Create&lt;Order&gt;();</p>
+<p>//...</p>
+<p>// Do not need to call MarkOld(obj)</p>
+<p>}</p>
+<p>&nbsp;</p>
+<p>I&#39;ve seen Rocky&#39;s &quot;SimpleNTier&quot; sample, and he does something like this:</p>
+<p>&nbsp;</p>
+<p>
+<p>public Order Fetch(int id)</p>
+<p>{</p>
+<p>var obj = (Order)MethodCaller.CreateInstance(typeof(Order));</p>
+<p>//....</p>
+<p>MarkOld(obj);</p>
+<p>}</p>
+</p>
+<p>Am I missing something?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Monday, October 11, 2010</h2><p>My recommendation is that the ObjectFactory should never call any DataPortal methods on the BusinessObjects.</p>
+<p>When using ObjectFactory you are basically on your own in regards of state management. </p>
+<p>public object Fetch( int i)<br />{&nbsp; <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var obj= Dataportal.Create&lt;Order&gt;();</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; //...</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // Do not need to call MarkOld(obj)<b><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // NO!!&nbsp; YOU MUST CALL MarkOld(obj) AS A NEWLY CREATED OBJECT IS NEW !!</b><br />}</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Monday, October 11, 2010</h2><p>I am going to disagree with you Jonny (sorry :) ).</p>
+<p>It is fine to call <i>root level</i> data portal methods in factory objects. So Create/Fetch/Delete are fine.</p>
+<p>It is NOT fine to call child level data portal methods. So CreateChild/FetchChild are not fine.</p>
+<p>Root level data portal methods are location transparent and always run through the data portal infrastructure. So really you can call them from almost anywhere and they should work fine.</p>
+<p>Child level data portal methods are part of the DataPortal_XYZ infrastructure and absolutely won&#39;t work within the context of a factory object. The DataPortal_XYZ and ObjectFactory models can not be intermixed.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Tuesday, October 12, 2010</h2><p>Hi Rocky and all,</p>
+<p>The question was:<br />Is it a good practise to call Dataportal.Create&lt;&gt; inside of an object factory method?</p>
+<p>I still recommend all my programmers to NEVER call data portal methods directly from ObjectFactory.&nbsp;</p>
+<p>Yes -&nbsp; ObjectFactory code may call the static factory methods for Root objects like root.NewEditableObject() that will call DataPortal.Create but I prefer to keep all the DataPortal calls within that root class/static factory methods and not have them spread around in many object factory classes. </p>
+<p>Just my preferences and opinion.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

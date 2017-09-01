@@ -1,0 +1,804 @@
+<html><header><title>Transactional scope gives an error when using ADO.NET entities</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Transactional scope gives an error when using ADO.NET entities</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4729.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Piet Koole posted on Tuesday, April 22, 2008</h2>I am trying te get entities to work with the CSLA framework.<br>If I use it in the DataPortal_Update I get an error at the moment I execute the context.SaveChanges command. Removing [Transactional(TransactionalTypes.TransactionScope)] helps. <br>Can the combination ever work?<br><br>Piet<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, April 22, 2008</h2><P>I have not had time to research EF with CSLA, so you are a pioneer :)</P>
+<P>I'd be very surprised to find that EF doesn't work with the TransactionScope concept though - it would be shocking to find that they weren't supporting the primary transactional model in .NET. All the Transactional attribute does is put your code in a using block with a TransactionScope object - nothing fancy at all.</P>
+<P>What is the exception?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Piet Koole replied on Tuesday, April 22, 2008</h2>This is de code<br>&nbsp;&nbsp;&nbsp; [Transactional(TransactionalTypes.TransactionScope)]<br>&nbsp;&nbsp;&nbsp; protected override void DataPortal_Update()<br>&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; using (CobraXE.PersonenContext personenContext = new CobraXE.PersonenContext())<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // insert Persoon data<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; //System.Data.Linq.Binary lastChanged = null;<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var data = (from p in personenContext.Personen<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; where p.PersoonKey == Key<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; select p).First&lt;CobraXE.Persoon&gt;();<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; data.Sofinummer = Sofinummer;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; personenContext.SaveChanges();<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; //mTimestamp = lastChanged.ToArray();<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // update child objects<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; //DataPortal.UpdateChild(ReadProperty&lt;PersoonResources&gt;(ResourcesProperty), this);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>&nbsp;&nbsp;&nbsp; }<br><br>This is the exception<br><br><br>First exception<br>{"The underlying provider failed on Open."}<br>&nbsp;&nbsp;&nbsp; [System.Data.ProviderException]: {"The underlying provider failed on Open."}<br>&nbsp;&nbsp;&nbsp; Data: {System.Collections.ListDictionaryInternal}<br>&nbsp;&nbsp;&nbsp; HelpLink: null<br>&nbsp;&nbsp;&nbsp; InnerException: {"MSDTC on server 'VMBASIS20GB' is unavailable."}<br>&nbsp;&nbsp;&nbsp; Message: "The underlying provider failed on Open."<br>&nbsp;&nbsp;&nbsp; Source: "System.Data.Entity"<br>&nbsp;&nbsp;&nbsp; StackTrace: "&nbsp;&nbsp; at System.Data.EntityClient.EntityConnection.OpenStoreConnectionIf(Boolean openCondition, DbConnection storeConnectionToOpen, DbConnection originalConnection, String exceptionCode, String attemptedOperation, Boolean&amp; closeStoreConnectionOnFailure)\r\n&nbsp;&nbsp; at System.Data.EntityClient.EntityConnection.Open()\r\n&nbsp;&nbsp; at System.Data.Objects.ObjectContext.EnsureConnection()\r\n&nbsp;&nbsp; at System.Data.Objects.ObjectContext.SaveChanges(Boolean acceptChangesDuringSave)\r\n&nbsp;&nbsp; at System.Data.Objects.ObjectContext.SaveChanges()\r\n&nbsp;&nbsp; at CTB.Cobra.CobraNexus.Library.Persoon.DataPortal_Update() in E:\\Projecten\\CobraNexus\\CTB.Cobra.CobraNexus.Library\\Persoon.cs:line 190\r\n&nbsp;&nbsp; at dm(Object , Object[] )\r\n&nbsp;&nbsp; at Csla.Reflection.MethodCaller.CallMethod(Object obj, DynamicMethodHandle methodHandle, Object[] parameters)"<br>&nbsp;&nbsp;&nbsp; TargetSite: {Void OpenStoreConnectionIf(Boolean, System.Data.Common.DbConnection, System.Data.Common.DbConnection, System.String, System.String, Boolean ByRef)}<br><br>As printed in the messagebox<br><br>{"DataPortal.Update failed (System.Data.ProviderException: The underlying provider failed on Open. ---&gt; System.Data.SqlClient.SqlException: MSDTC on server 'VMBASIS20GB' is unavailable.\r\n&nbsp;&nbsp; at System.Data.SqlClient.SqlConnection.OnError(SqlException exception, Boolean breakConnection)\r\n&nbsp;&nbsp; at System.Data.SqlClient.SqlInternalConnection.OnError(SqlException exception, Boolean breakConnection)\r\n&nbsp;&nbsp; at System.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject stateObj)\r\n&nbsp;&nbsp; at System.Data.SqlClient.TdsParser.Run(RunBehavior runBehavior, SqlCommand cmdHandler, SqlDataReader dataStream, BulkCopySimpleResultSet bulkCopyHandler, TdsParserStateObject stateObj)\r\n&nbsp;&nbsp; at System.Data.SqlClient.SqlDataReader.ConsumeMetaData()\r\n&nbsp;&nbsp; at System.Data.SqlClient.SqlDataReader.get_MetaData()\r\n&nbsp;&nbsp; at System.Data.SqlClient.TdsParser.TdsExecuteTransactionManagerRequest(Byte[] buffer, TransactionManagerRequestType request, String transactionName, TransactionManagerIsolationLevel isoLevel, Int32 timeout, Sql<br>InternalTransaction transaction, TdsParserStateObject stateObj, Boolean isDelegateControlRequest)\r\n&nbsp;&nbsp; at System.Data.SqlClient.TdsParser.GetDTCAddress(Int32 timeout, TdsParserStateObject stateObj)\r\n&nbsp;&nbsp; at System.Data.SqlClient.SqlInternalConnectionTds.GetDTCAddress()\r\n&nbsp;&nbsp; at System.Data.SqlClient.SqlInternalConnection.EnlistNonNull(Transaction tx)\r\n&nbsp;&nbsp; at System.Data.SqlClient.SqlInternalConnection.Enlist(Transaction tx)\r\n&nbsp;&nbsp; at System.Data.SqlClient.SqlInternalConnectionTds.Activate(Transaction transaction)\r\n&nbsp;&nbsp; at System.Data.ProviderBase.DbConnectionInternal.ActivateConnection(Transaction transaction)\r\n&nbsp;&nbsp; at System.Data.ProviderBase.DbConnectionPool.GetConnection(DbConnection owningObject)\r\n&nbsp;&nbsp; at System.Data.ProviderBase.DbConnectionFactory.GetConnection(DbConnection owningConnection)\r\n&nbsp;&nbsp; at System.Data.ProviderBase.DbConnectionClosed.OpenConnection(DbConnection outerConnection, DbConnectionFactory connectionFactory)\r\n&nbsp;&nbsp; at System.Data.SqlClient.SqlConnection.Open()\r\n&nbsp;&nbsp; at System.Data.Entit<br>yClient.EntityConnection.OpenStoreConnectionIf(Boolean openCondition, DbConnection storeConnectionToOpen, DbConnection originalConnection, String exceptionCode, String attemptedOperation, Boolean&amp; closeStoreConnectionOnFailure)\r\n&nbsp;&nbsp; --- End of inner exception stack trace ---\r\n&nbsp;&nbsp; at System.Data.EntityClient.EntityConnection.OpenStoreConnectionIf(Boolean openCondition, DbConnection storeConnectionToOpen, DbConnection originalConnection, String exceptionCode, String attemptedOperation, Boolean&amp; closeStoreConnectionOnFailure)\r\n&nbsp;&nbsp; at System.Data.EntityClient.EntityConnection.Open()\r\n&nbsp;&nbsp; at System.Data.Objects.ObjectContext.EnsureConnection()\r\n&nbsp;&nbsp; at System.Data.Objects.ObjectContext.SaveChanges(Boolean acceptChangesDuringSave)\r\n&nbsp;&nbsp; at System.Data.Objects.ObjectContext.SaveChanges()\r\n&nbsp;&nbsp; at CTB.Cobra.CobraNexus.Library.Persoon.DataPortal_Update() in E:\\Projecten\\CobraNexus\\CTB.Cobra.CobraNexus.Library\\Persoon.cs:line 190\r\n&nbsp;&nbsp; at dm(Object , Object[] )\r\n&nbsp;&nbsp; at Csla.Reflection.MethodCaller.CallMethod(Ob<br>ject obj, DynamicMethodHandle methodHandle, Object[] parameters))"}<br>&nbsp;&nbsp;&nbsp; base {System.Exception}: {"DataPortal.Update failed (System.Data.ProviderException: The underlying provider failed on Open. ---&gt; System.Data.SqlClient.SqlException: MSDTC on server 'VMBASIS20GB' is unavailable.\r\n&nbsp;&nbsp; at System.Data.SqlClient.SqlConnection.OnError(SqlException exception, Boolean breakConnection)\r\n&nbsp;&nbsp; at System.Data.SqlClient.SqlInternalConnection.OnError(SqlException exception, Boolean breakConnection)\r\n&nbsp;&nbsp; at System.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject stateObj)\r\n&nbsp;&nbsp; at System.Data.SqlClient.TdsParser.Run(RunBehavior runBehavior, SqlCommand cmdHandler, SqlDataReader dataStream, BulkCopySimpleResultSet bulkCopyHandler, TdsParserStateObject stateObj)\r\n&nbsp;&nbsp; at System.Data.SqlClient.SqlDataReader.ConsumeMetaData()\r\n&nbsp;&nbsp; at System.Data.SqlClient.SqlDataReader.get_MetaData()\r\n&nbsp;&nbsp; at System.Data.SqlClient.TdsParser.TdsExecuteTransactionManagerRequest(Byte[] buffer, TransactionManagerRequestType request, String transactionName, TransactionManagerIsolationLevel<br>&nbsp;isoLevel, Int32 timeout, SqlInternalTransaction transaction, TdsParserStateObject stateObj, Boolean isDelegateControlRequest)\r\n&nbsp;&nbsp; at System.Data.SqlClient.TdsParser.GetDTCAddress(Int32 timeout, TdsParserStateObject stateObj)\r\n&nbsp;&nbsp; at System.Data.SqlClient.SqlInternalConnectionTds.GetDTCAddress()\r\n&nbsp;&nbsp; at System.Data.SqlClient.SqlInternalConnection.EnlistNonNull(Transaction tx)\r\n&nbsp;&nbsp; at System.Data.SqlClient.SqlInternalConnection.Enlist(Transaction tx)\r\n&nbsp;&nbsp; at System.Data.SqlClient.SqlInternalConnectionTds.Activate(Transaction transaction)\r\n&nbsp;&nbsp; at System.Data.ProviderBase.DbConnectionInternal.ActivateConnection(Transaction transaction)\r\n&nbsp;&nbsp; at System.Data.ProviderBase.DbConnectionPool.GetConnection(DbConnection owningObject)\r\n&nbsp;&nbsp; at System.Data.ProviderBase.DbConnectionFactory.GetConnection(DbConnection owningConnection)\r\n&nbsp;&nbsp; at System.Data.ProviderBase.DbConnectionClosed.OpenConnection(DbConnection outerConnection, DbConnectionFactory connectionFactory)\r\n&nbsp;&nbsp; at System.Data.SqlClient.SqlConnection.Open<br>()\r\n&nbsp;&nbsp; at System.Data.EntityClient.EntityConnection.OpenStoreConnectionIf(Boolean openCondition, DbConnection storeConnectionToOpen, DbConnection originalConnection, String exceptionCode, String attemptedOperation, Boolean&amp; closeStoreConnectionOnFailure)\r\n&nbsp;&nbsp; --- End of inner exception stack trace ---\r\n&nbsp;&nbsp; at System.Data.EntityClient.EntityConnection.OpenStoreConnectionIf(Boolean openCondition, DbConnection storeConnectionToOpen, DbConnection originalConnection, String exceptionCode, String attemptedOperation, Boolean&amp; closeStoreConnectionOnFailure)\r\n&nbsp;&nbsp; at System.Data.EntityClient.EntityConnection.Open()\r\n&nbsp;&nbsp; at System.Data.Objects.ObjectContext.EnsureConnection()\r\n&nbsp;&nbsp; at System.Data.Objects.ObjectContext.SaveChanges(Boolean acceptChangesDuringSave)\r\n&nbsp;&nbsp; at System.Data.Objects.ObjectContext.SaveChanges()\r\n&nbsp;&nbsp; at CTB.Cobra.CobraNexus.Library.Persoon.DataPortal_Update() in E:\\Projecten\\CobraNexus\\CTB.Cobra.CobraNexus.Library\\Persoon.cs:line 190\r\n&nbsp;&nbsp; at dm(Object , Object[] )\r\n&nbsp;&nbsp; at Csla.Reflecti<br>on.MethodCaller.CallMethod(Object obj, DynamicMethodHandle methodHandle, Object[] parameters))"}<br>&nbsp;&nbsp;&nbsp; _businessObject: {1}<br>&nbsp;&nbsp;&nbsp; _innerStackTrace: "&nbsp;&nbsp; at System.Data.EntityClient.EntityConnection.OpenStoreConnectionIf(Boolean openCondition, DbConnection storeConnectionToOpen, DbConnection originalConnection, String exceptionCode, String attemptedOperation, Boolean&amp; closeStoreConnectionOnFailure)\r\n&nbsp;&nbsp; at System.Data.EntityClient.EntityConnection.Open()\r\n&nbsp;&nbsp; at System.Data.Objects.ObjectContext.EnsureConnection()\r\n&nbsp;&nbsp; at System.Data.Objects.ObjectContext.SaveChanges(Boolean acceptChangesDuringSave)\r\n&nbsp;&nbsp; at System.Data.Objects.ObjectContext.SaveChanges()\r\n&nbsp;&nbsp; at CTB.Cobra.CobraNexus.Library.Persoon.DataPortal_Update() in E:\\Projecten\\CobraNexus\\CTB.Cobra.CobraNexus.Library\\Persoon.cs:line 190\r\n&nbsp;&nbsp; at dm(Object , Object[] )\r\n&nbsp;&nbsp; at Csla.Reflection.MethodCaller.CallMethod(Object obj, DynamicMethodHandle methodHandle, Object[] parameters)\r\n&nbsp;&nbsp; at Csla.Reflection.MethodCaller.CallMethod(Object obj, DynamicMethodHandle methodHandle, Object[] parameters)\r\n&nbsp;&nbsp; at Csla.Reflection.MethodCaller.CallMethod(Object obj, String method, <br>Object[] parameters)\r\n&nbsp;&nbsp; at Csla.Reflection.LateBoundObject.CallMethod(String method)\r\n&nbsp;&nbsp; at Csla.Server.SimpleDataPortal.Update(Object obj, DataPortalContext context)"<br>&nbsp;&nbsp;&nbsp; BusinessException: {"The underlying provider failed on Open."}<br>&nbsp;&nbsp;&nbsp; BusinessObject: {1}<br>&nbsp;&nbsp;&nbsp; StackTrace: "&nbsp;&nbsp; at System.Data.EntityClient.EntityConnection.OpenStoreConnectionIf(Boolean openCondition, DbConnection storeConnectionToOpen, DbConnection originalConnection, String exceptionCode, String attemptedOperation, Boolean&amp; closeStoreConnectionOnFailure)\r\n&nbsp;&nbsp; at System.Data.EntityClient.EntityConnection.Open()\r\n&nbsp;&nbsp; at System.Data.Objects.ObjectContext.EnsureConnection()\r\n&nbsp;&nbsp; at System.Data.Objects.ObjectContext.SaveChanges(Boolean acceptChangesDuringSave)\r\n&nbsp;&nbsp; at System.Data.Objects.ObjectContext.SaveChanges()\r\n&nbsp;&nbsp; at CTB.Cobra.CobraNexus.Library.Persoon.DataPortal_Update() in E:\\Projecten\\CobraNexus\\CTB.Cobra.CobraNexus.Library\\Persoon.cs:line 190\r\n&nbsp;&nbsp; at dm(Object , Object[] )\r\n&nbsp;&nbsp; at Csla.Reflection.MethodCaller.CallMethod(Object obj, DynamicMethodHandle methodHandle, Object[] parameters)\r\n&nbsp;&nbsp; at Csla.Reflection.MethodCaller.CallMethod(Object obj, DynamicMethodHandle methodHandle, Object[] parameters)\r\n&nbsp;&nbsp; at Csla.Reflection.MethodCaller.CallMethod(Object obj, String method, Object<br>[] parameters)\r\n&nbsp;&nbsp; at Csla.Reflection.LateBoundObject.CallMethod(String method)\r\n&nbsp;&nbsp; at Csla.Server.SimpleDataPortal.Update(Object obj, DataPortalContext context)\r\n&nbsp;&nbsp; at Csla.DataPortal.Update(Object obj)\r\n&nbsp;&nbsp; at Csla.DataPortal.Update[T](T obj)\r\n&nbsp;&nbsp; at Csla.BusinessBase`1.Save()\r\n&nbsp;&nbsp; at CTB.Cobra.CobraNexus.WinApp.PersonenForm.saveButton_Click(Object sender, EventArgs e) in E:\\Projecten\\CobraNexus\\CTB.Cobra.CobraNexus.WinApp\\PersonenForm.cs:line 82"<br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Tuesday, April 22, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Here is the solution to this issue:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><a href="http://forums.microsoft.com/MSDN/ShowPost.aspx?PostID=3036946&amp;SiteID=1">http://forums.microsoft.com/MSDN/ShowPost.aspx?PostID=3036946&amp;SiteID=1</a><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>More precisely, a hack for this issue </span><span>J</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Senior Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img border=0 width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Piet Koole
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Tuesday, April 22, 2008 9:26 AM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] Transactional scope gives an error when using
+ADO.NET entities<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>This is de code<br>
+&nbsp;&nbsp;&nbsp; [Transactional(TransactionalTypes.TransactionScope)]<br>
+&nbsp;&nbsp;&nbsp; protected override void DataPortal_Update()<br>
+&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; using (CobraXE.PersonenContext personenContext =
+new CobraXE.PersonenContext())<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // insert Persoon data<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; //System.Data.Linq.Binary
+lastChanged = null;<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var data = (from p in
+personenContext.Personen<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+where p.PersoonKey == Key<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+select p).First&lt;CobraXE.Persoon&gt;();<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; data.Sofinummer = Sofinummer;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; personenContext.SaveChanges();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; //mTimestamp =
+lastChanged.ToArray();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // update child objects<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+//DataPortal.UpdateChild(ReadProperty&lt;PersoonResources&gt;(ResourcesProperty),
+this);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+&nbsp;&nbsp;&nbsp; }<br>
+<br>
+This is the exception<br>
+<br>
+<br>
+First exception<br>
+{&quot;The underlying provider failed on Open.&quot;}<br>
+&nbsp;&nbsp;&nbsp; [System.Data.ProviderException]: {&quot;The underlying
+provider failed on Open.&quot;}<br>
+&nbsp;&nbsp;&nbsp; Data: {System.Collections.ListDictionaryInternal}<br>
+&nbsp;&nbsp;&nbsp; HelpLink: null<br>
+&nbsp;&nbsp;&nbsp; InnerException: {&quot;MSDTC on server 'VMBASIS20GB' is
+unavailable.&quot;}<br>
+&nbsp;&nbsp;&nbsp; Message: &quot;The underlying provider failed on Open.&quot;<br>
+&nbsp;&nbsp;&nbsp; Source: &quot;System.Data.Entity&quot;<br>
+&nbsp;&nbsp;&nbsp; StackTrace: &quot;&nbsp;&nbsp; at
+System.Data.EntityClient.EntityConnection.OpenStoreConnectionIf(Boolean
+openCondition, DbConnection storeConnectionToOpen, DbConnection
+originalConnection, String exceptionCode, String attemptedOperation,
+Boolean&amp; closeStoreConnectionOnFailure)\r\n&nbsp;&nbsp; at
+System.Data.EntityClient.EntityConnection.Open()\r\n&nbsp;&nbsp; at
+System.Data.Objects.ObjectContext.EnsureConnection()\r\n&nbsp;&nbsp; at
+System.Data.Objects.ObjectContext.SaveChanges(Boolean
+acceptChangesDuringSave)\r\n&nbsp;&nbsp; at
+System.Data.Objects.ObjectContext.SaveChanges()\r\n&nbsp;&nbsp; at
+CTB.Cobra.CobraNexus.Library.Persoon.DataPortal_Update() in
+E:\\Projecten\\CobraNexus\\CTB.Cobra.CobraNexus.Library\\Persoon.cs:line
+190\r\n&nbsp;&nbsp; at dm(Object , Object[] )\r\n&nbsp;&nbsp; at
+Csla.Reflection.MethodCaller.CallMethod(Object obj, DynamicMethodHandle
+methodHandle, Object[] parameters)&quot;<br>
+&nbsp;&nbsp;&nbsp; TargetSite: {Void OpenStoreConnectionIf(Boolean,
+System.Data.Common.DbConnection, System.Data.Common.DbConnection,
+System.String, System.String, Boolean ByRef)}<br>
+<br>
+As printed in the messagebox<br>
+<br>
+{&quot;DataPortal.Update failed (System.Data.ProviderException: The underlying
+provider failed on Open. ---&gt; System.Data.SqlClient.SqlException: MSDTC on
+server 'VMBASIS20GB' is unavailable.\r\n&nbsp;&nbsp; at
+System.Data.SqlClient.SqlConnection.OnError(SqlException exception, Boolean
+breakConnection)\r\n&nbsp;&nbsp; at
+System.Data.SqlClient.SqlInternalConnection.OnError(SqlException exception,
+Boolean breakConnection)\r\n&nbsp;&nbsp; at System.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject
+stateObj)\r\n&nbsp;&nbsp; at System.Data.SqlClient.TdsParser.Run(RunBehavior
+runBehavior, SqlCommand cmdHandler, SqlDataReader dataStream,
+BulkCopySimpleResultSet bulkCopyHandler, TdsParserStateObject
+stateObj)\r\n&nbsp;&nbsp; at
+System.Data.SqlClient.SqlDataReader.ConsumeMetaData()\r\n&nbsp;&nbsp; at
+System.Data.SqlClient.SqlDataReader.get_MetaData()\r\n&nbsp;&nbsp; at
+System.Data.SqlClient.TdsParser.TdsExecuteTransactionManagerRequest(Byte[] buffer,
+TransactionManagerRequestType request, String transactionName,
+TransactionManagerIsolationLevel isoLevel, Int32 timeout, Sql<br>
+InternalTransaction transaction, TdsParserStateObject stateObj, Boolean
+isDelegateControlRequest)\r\n&nbsp;&nbsp; at
+System.Data.SqlClient.TdsParser.GetDTCAddress(Int32 timeout,
+TdsParserStateObject stateObj)\r\n&nbsp;&nbsp; at
+System.Data.SqlClient.SqlInternalConnectionTds.GetDTCAddress()\r\n&nbsp;&nbsp;
+at System.Data.SqlClient.SqlInternalConnection.EnlistNonNull(Transaction
+tx)\r\n&nbsp;&nbsp; at System.Data.SqlClient.SqlInternalConnection.Enlist(Transaction
+tx)\r\n&nbsp;&nbsp; at
+System.Data.SqlClient.SqlInternalConnectionTds.Activate(Transaction
+transaction)\r\n&nbsp;&nbsp; at
+System.Data.ProviderBase.DbConnectionInternal.ActivateConnection(Transaction
+transaction)\r\n&nbsp;&nbsp; at System.Data.ProviderBase.DbConnectionPool.GetConnection(DbConnection
+owningObject)\r\n&nbsp;&nbsp; at
+System.Data.ProviderBase.DbConnectionFactory.GetConnection(DbConnection
+owningConnection)\r\n&nbsp;&nbsp; at
+System.Data.ProviderBase.DbConnectionClosed.OpenConnection(DbConnection
+outerConnection, DbConnectionFactory connectionFactory)\r\n&nbsp;&nbsp; at
+System.Data.SqlClient.SqlConnection.Open()\r\n&nbsp;&nbsp; at System.Data.Entit<br>
+yClient.EntityConnection.OpenStoreConnectionIf(Boolean openCondition,
+DbConnection storeConnectionToOpen, DbConnection originalConnection, String
+exceptionCode, String attemptedOperation, Boolean&amp;
+closeStoreConnectionOnFailure)\r\n&nbsp;&nbsp; --- End of inner exception stack
+trace ---\r\n&nbsp;&nbsp; at
+System.Data.EntityClient.EntityConnection.OpenStoreConnectionIf(Boolean
+openCondition, DbConnection storeConnectionToOpen, DbConnection
+originalConnection, String exceptionCode, String attemptedOperation,
+Boolean&amp; closeStoreConnectionOnFailure)\r\n&nbsp;&nbsp; at
+System.Data.EntityClient.EntityConnection.Open()\r\n&nbsp;&nbsp; at
+System.Data.Objects.ObjectContext.EnsureConnection()\r\n&nbsp;&nbsp; at System.Data.Objects.ObjectContext.SaveChanges(Boolean
+acceptChangesDuringSave)\r\n&nbsp;&nbsp; at
+System.Data.Objects.ObjectContext.SaveChanges()\r\n&nbsp;&nbsp; at
+CTB.Cobra.CobraNexus.Library.Persoon.DataPortal_Update() in
+E:\\Projecten\\CobraNexus\\CTB.Cobra.CobraNexus.Library\\Persoon.cs:line
+190\r\n&nbsp;&nbsp; at dm(Object , Object[] )\r\n&nbsp;&nbsp; at
+Csla.Reflection.MethodCaller.CallMethod(Ob<br>
+ject obj, DynamicMethodHandle methodHandle, Object[] parameters))&quot;}<br>
+&nbsp;&nbsp;&nbsp; base {System.Exception}: {&quot;DataPortal.Update failed
+(System.Data.ProviderException: The underlying provider failed on Open. ---&gt;
+System.Data.SqlClient.SqlException: MSDTC on server 'VMBASIS20GB' is
+unavailable.\r\n&nbsp;&nbsp; at
+System.Data.SqlClient.SqlConnection.OnError(SqlException exception, Boolean
+breakConnection)\r\n&nbsp;&nbsp; at System.Data.SqlClient.SqlInternalConnection.OnError(SqlException
+exception, Boolean breakConnection)\r\n&nbsp;&nbsp; at
+System.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject
+stateObj)\r\n&nbsp;&nbsp; at System.Data.SqlClient.TdsParser.Run(RunBehavior
+runBehavior, SqlCommand cmdHandler, SqlDataReader dataStream,
+BulkCopySimpleResultSet bulkCopyHandler, TdsParserStateObject
+stateObj)\r\n&nbsp;&nbsp; at
+System.Data.SqlClient.SqlDataReader.ConsumeMetaData()\r\n&nbsp;&nbsp; at
+System.Data.SqlClient.SqlDataReader.get_MetaData()\r\n&nbsp;&nbsp; at System.Data.SqlClient.TdsParser.TdsExecuteTransactionManagerRequest(Byte[]
+buffer, TransactionManagerRequestType request, String transactionName,
+TransactionManagerIsolationLevel<br>
+&nbsp;isoLevel, Int32 timeout, SqlInternalTransaction transaction,
+TdsParserStateObject stateObj, Boolean
+isDelegateControlRequest)\r\n&nbsp;&nbsp; at
+System.Data.SqlClient.TdsParser.GetDTCAddress(Int32 timeout,
+TdsParserStateObject stateObj)\r\n&nbsp;&nbsp; at
+System.Data.SqlClient.SqlInternalConnectionTds.GetDTCAddress()\r\n&nbsp;&nbsp; at
+System.Data.SqlClient.SqlInternalConnection.EnlistNonNull(Transaction
+tx)\r\n&nbsp;&nbsp; at
+System.Data.SqlClient.SqlInternalConnection.Enlist(Transaction
+tx)\r\n&nbsp;&nbsp; at
+System.Data.SqlClient.SqlInternalConnectionTds.Activate(Transaction
+transaction)\r\n&nbsp;&nbsp; at System.Data.ProviderBase.DbConnectionInternal.ActivateConnection(Transaction
+transaction)\r\n&nbsp;&nbsp; at
+System.Data.ProviderBase.DbConnectionPool.GetConnection(DbConnection
+owningObject)\r\n&nbsp;&nbsp; at
+System.Data.ProviderBase.DbConnectionFactory.GetConnection(DbConnection owningConnection)\r\n&nbsp;&nbsp;
+at System.Data.ProviderBase.DbConnectionClosed.OpenConnection(DbConnection
+outerConnection, DbConnectionFactory connectionFactory)\r\n&nbsp;&nbsp; at
+System.Data.SqlClient.SqlConnection.Open<br>
+()\r\n&nbsp;&nbsp; at
+System.Data.EntityClient.EntityConnection.OpenStoreConnectionIf(Boolean
+openCondition, DbConnection storeConnectionToOpen, DbConnection
+originalConnection, String exceptionCode, String attemptedOperation,
+Boolean&amp; closeStoreConnectionOnFailure)\r\n&nbsp;&nbsp; --- End of inner
+exception stack trace ---\r\n&nbsp;&nbsp; at System.Data.EntityClient.EntityConnection.OpenStoreConnectionIf(Boolean
+openCondition, DbConnection storeConnectionToOpen, DbConnection
+originalConnection, String exceptionCode, String attemptedOperation,
+Boolean&amp; closeStoreConnectionOnFailure)\r\n&nbsp;&nbsp; at System.Data.EntityClient.EntityConnection.Open()\r\n&nbsp;&nbsp;
+at System.Data.Objects.ObjectContext.EnsureConnection()\r\n&nbsp;&nbsp; at
+System.Data.Objects.ObjectContext.SaveChanges(Boolean
+acceptChangesDuringSave)\r\n&nbsp;&nbsp; at
+System.Data.Objects.ObjectContext.SaveChanges()\r\n&nbsp;&nbsp; at
+CTB.Cobra.CobraNexus.Library.Persoon.DataPortal_Update() in
+E:\\Projecten\\CobraNexus\\CTB.Cobra.CobraNexus.Library\\Persoon.cs:line
+190\r\n&nbsp;&nbsp; at dm(Object , Object[] )\r\n&nbsp;&nbsp; at Csla.Reflecti<br>
+on.MethodCaller.CallMethod(Object obj, DynamicMethodHandle methodHandle, Object[]
+parameters))&quot;}<br>
+&nbsp;&nbsp;&nbsp; _businessObject: {1}<br>
+&nbsp;&nbsp;&nbsp; _innerStackTrace: &quot;&nbsp;&nbsp; at
+System.Data.EntityClient.EntityConnection.OpenStoreConnectionIf(Boolean
+openCondition, DbConnection storeConnectionToOpen, DbConnection
+originalConnection, String exceptionCode, String attemptedOperation,
+Boolean&amp; closeStoreConnectionOnFailure)\r\n&nbsp;&nbsp; at
+System.Data.EntityClient.EntityConnection.Open()\r\n&nbsp;&nbsp; at
+System.Data.Objects.ObjectContext.EnsureConnection()\r\n&nbsp;&nbsp; at
+System.Data.Objects.ObjectContext.SaveChanges(Boolean acceptChangesDuringSave)\r\n&nbsp;&nbsp;
+at System.Data.Objects.ObjectContext.SaveChanges()\r\n&nbsp;&nbsp; at
+CTB.Cobra.CobraNexus.Library.Persoon.DataPortal_Update() in
+E:\\Projecten\\CobraNexus\\CTB.Cobra.CobraNexus.Library\\Persoon.cs:line
+190\r\n&nbsp;&nbsp; at dm(Object , Object[] )\r\n&nbsp;&nbsp; at
+Csla.Reflection.MethodCaller.CallMethod(Object obj, DynamicMethodHandle
+methodHandle, Object[] parameters)\r\n&nbsp;&nbsp; at
+Csla.Reflection.MethodCaller.CallMethod(Object obj, DynamicMethodHandle
+methodHandle, Object[] parameters)\r\n&nbsp;&nbsp; at Csla.Reflection.MethodCaller.CallMethod(Object
+obj, String method, <br>
+Object[] parameters)\r\n&nbsp;&nbsp; at
+Csla.Reflection.LateBoundObject.CallMethod(String method)\r\n&nbsp;&nbsp; at
+Csla.Server.SimpleDataPortal.Update(Object obj, DataPortalContext
+context)&quot;<br>
+&nbsp;&nbsp;&nbsp; BusinessException: {&quot;The underlying provider failed on
+Open.&quot;}<br>
+&nbsp;&nbsp;&nbsp; BusinessObject: {1}<br>
+&nbsp;&nbsp;&nbsp; StackTrace: &quot;&nbsp;&nbsp; at
+System.Data.EntityClient.EntityConnection.OpenStoreConnectionIf(Boolean
+openCondition, DbConnection storeConnectionToOpen, DbConnection
+originalConnection, String exceptionCode, String attemptedOperation,
+Boolean&amp; closeStoreConnectionOnFailure)\r\n&nbsp;&nbsp; at
+System.Data.EntityClient.EntityConnection.Open()\r\n&nbsp;&nbsp; at
+System.Data.Objects.ObjectContext.EnsureConnection()\r\n&nbsp;&nbsp; at
+System.Data.Objects.ObjectContext.SaveChanges(Boolean acceptChangesDuringSave)\r\n&nbsp;&nbsp;
+at System.Data.Objects.ObjectContext.SaveChanges()\r\n&nbsp;&nbsp; at
+CTB.Cobra.CobraNexus.Library.Persoon.DataPortal_Update() in
+E:\\Projecten\\CobraNexus\\CTB.Cobra.CobraNexus.Library\\Persoon.cs:line
+190\r\n&nbsp;&nbsp; at dm(Object , Object[] )\r\n&nbsp;&nbsp; at
+Csla.Reflection.MethodCaller.CallMethod(Object obj, DynamicMethodHandle
+methodHandle, Object[] parameters)\r\n&nbsp;&nbsp; at
+Csla.Reflection.MethodCaller.CallMethod(Object obj, DynamicMethodHandle
+methodHandle, Object[] parameters)\r\n&nbsp;&nbsp; at Csla.Reflection.MethodCaller.CallMethod(Object
+obj, String method, Object<br>
+[] parameters)\r\n&nbsp;&nbsp; at
+Csla.Reflection.LateBoundObject.CallMethod(String method)\r\n&nbsp;&nbsp; at
+Csla.Server.SimpleDataPortal.Update(Object obj, DataPortalContext
+context)\r\n&nbsp;&nbsp; at Csla.DataPortal.Update(Object obj)\r\n&nbsp;&nbsp;
+at Csla.DataPortal.Update[T](T obj)\r\n&nbsp;&nbsp; at
+Csla.BusinessBase`1.Save()\r\n&nbsp;&nbsp; at
+CTB.Cobra.CobraNexus.WinApp.PersonenForm.saveButton_Click(Object sender,
+EventArgs e) in E:\\Projecten\\CobraNexus\\CTB.Cobra.CobraNexus.WinApp\\PersonenForm.cs:line
+82&quot;<br>
+<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>emmanuel replied on Tuesday, April 22, 2008</h2><P>Another possibility is to add an ObjectContextManager.cs in Csla\Data folder which will look very similar to the files ContextManager.cs and ConnectionManager.cs. Except that now you use an ObjectContext instead of a DataContext.</P>
+<P>You should then be able to replace:</P>
+<P>using (CobraXE.PersonenContext personenContext = new CobraXE.PersonenContext())</P>
+<P>with:</P><FONT color=#0000ff size=2>
+<P>using</FONT><FONT size=2> (</FONT><FONT color=#0000ff size=2>var</FONT><FONT size=2> ctx = </FONT><FONT color=#2b91af size=2>ObjectContextManager</FONT><FONT size=2>&lt;CobraXE.PersonenContext</FONT><FONT size=2>&gt;.GetManager(<FONT color=#a31515 size=2>"yourConnectionString"</FONT></FONT><FONT size=2>))</FONT></P>
+<P><FONT size=2>where "yourConnectionString" is the one of your Entity Data Model.</FONT></P>
+<P><FONT size=2></FONT>&nbsp;</P>
+<P><FONT size=2>Emmanuel.</P></FONT>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Piet Koole replied on Tuesday, April 22, 2008</h2>Thanks, it works.<br>Piet<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, April 22, 2008</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>That exception occurs because you are opening multiple
+connections to the database and the DTC is being brought into play. This is a
+well-known &#8220;feature&#8221; of TransactionScope and affects all code that
+opens multiple database connections.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>As Emmanuel mentions, something like the ConnectionManager or
+ContextManager for EF should allow reuse of the connection. I&#8217;m sure CSLA
+.NET 3.5.x will include some connection manager for EF when I get time to
+add/test it.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Or you can configure your machine to enable the DTC (because the
+exception indicates you haven&#8217;t enabled it on your machine).<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky</span><b><span><o:p></o:p></span></b></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rogercito replied on Monday, December 08, 2008</h2>Just for feedback about this problem, i coundn't make it work with the "open" instruction, had to start the DTC.<br><br>I have a BB-&gt;BLB(child)-&gt;BB(child) object and in the last BB child update I still get the same error stated in the initial post.<br><br>&nbsp; private void Child_Update(PruebaTable pruebatable)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; using (var ctx = ObjectContextManager&lt;PruebaCSLAEntities2&gt;.GetManager("PruebaCSLAEntities", true))<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ctx.ObjectContext.Connection.Open();<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; long id = ReadProperty(PruebaTableItemIDProperty);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // get project data<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var data = (from p in ctx.ObjectContext.PruebaTableItems<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; where p.PruebaTableID == pruebatable.PruebaTableID &amp;&amp; p.PruebaTableListID==id<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; select p).First();<br><br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; data.PruebaTableListNota = ReadProperty(PruebaTableItemNotaProperty);<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ctx.ObjectContext.SaveChanges();<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; MarkOld();<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br><br>The only solution I found was starting the service <span id="_ctl0_MainContent_PostFlatView"><span>"Distributed Transaction Coordinator" in the control panel.<br><br><br>Im using Vista and SQL Server 2005</span></span><span id="_ctl0_MainContent_PostFlatView"><span><strong></strong></span></span> (EF).<br><br>Have a nice day!<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, December 08, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>TransactionScope will use the DTC if more than one database
+connection is used within the transaction &#8211; even if the second connection
+uses the same connection string.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>It is possible that EF is opening some connection behind the
+scenes &#8211; seems probable actually, given your findings. Not much any of us
+can do if EF runs off and opens its own connections&#8230;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky <o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> rogercito
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Monday, December 08, 2008 7:15 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: Transactional scope gives an error when
+using ADO.NET entities<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Just for feedback about this problem, i coundn't make it
+work with the &quot;open&quot; instruction, had to start the DTC.<br>
+<br>
+I have a BB-&gt;BLB-&gt;BB test conficuration and in the lasr BB child update I
+still get the same error stated in the initial post.<br>
+<br>
+&nbsp; private void Child_Update(PruebaTable pruebatable)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; using (var
+ctx =
+ObjectContextManager&lt;PruebaCSLAEntities2&gt;.GetManager(&quot;PruebaCSLAEntities&quot;,
+true))<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+ctx.ObjectContext.Connection.Open();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+long id = ReadProperty(PruebaTableItemIDProperty);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+// get project data<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+var data = (from p in ctx.ObjectContext.PruebaTableItems<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+where p.PruebaTableID == pruebatable.PruebaTableID &amp;&amp;
+p.PruebaTableListID==id<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+select p).First();<br>
+<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+data.PruebaTableListNota = ReadProperty(PruebaTableItemNotaProperty);<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+ctx.ObjectContext.SaveChanges();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&amp;nbs
+p;&nbsp; MarkOld();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+<br>
+The only solution I found was starting the service &quot;Distributed
+Transaction Coordinator&quot; in<b> <strong>START &gt; SETTINGS &gt; CONTROL
+PANEL &gt; ADMINISTRATIVE TOOLS &gt; SERVICES</strong></b><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Piet Koole replied on Tuesday, April 22, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Thanks for the quick reply.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Piet Koole<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><span>This
+is de code<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;
+[Transactional(TransactionalTypes.TransactionScope)]<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp; protected override void DataPortal_Update()<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp; {<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; using (CobraXE.PersonenContext
+personenContext = new CobraXE.PersonenContext())<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // insert Persoon
+data<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; //System.Data.Linq.Binary
+lastChanged = null;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var data = (from p in
+personenContext.Personen<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+where p.PersoonKey == Key<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+select p).First&lt;CobraXE.Persoon&gt;();<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; data.Sofinummer =
+Sofinummer;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; personenContext.SaveChanges();<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; //mTimestamp =
+lastChanged.ToArray();<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // update child
+objects<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+//DataPortal.UpdateChild(ReadProperty&lt;PersoonResources&gt;(ResourcesProperty),
+this);<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<o:p></o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;
+}<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>This is the exception<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+</div>
+
+<div>
+
+<p class=MsoNormal><span>First
+exception<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><span>{&quot;The underlying provider failed on Open.&quot;}<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp; [System.Data.ProviderException]: {&quot;The
+underlying provider failed on Open.&quot;}<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp; Data:
+{System.Collections.ListDictionaryInternal}<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp; HelpLink: null<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp; InnerException: {&quot;MSDTC on server
+'VMBASIS20GB' is unavailable.&quot;}<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp; Message: &quot;The underlying provider failed
+on Open.&quot;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp; Source: &quot;System.Data.Entity&quot;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp; StackTrace: &quot;&nbsp;&nbsp; at
+System.Data.EntityClient.EntityConnection.OpenStoreConnectionIf(Boolean
+openCondition, DbConnection storeConnectionToOpen, DbConnection
+originalConnection, String exceptionCode, String attemptedOperation,
+Boolean&amp; closeStoreConnectionOnFailure)\r\n&nbsp;&nbsp; at
+System.Data.EntityClient.EntityConnection.Open()\r\n&nbsp;&nbsp; at
+System.Data.Objects.ObjectContext.EnsureConnection()\r\n&nbsp;&nbsp; at
+System.Data.Objects.ObjectContext.SaveChanges(Boolean acceptChangesDuringSave)\r\n&nbsp;&nbsp;
+at System.Data.Objects.ObjectContext.SaveChanges()\r\n&nbsp;&nbsp; at
+CTB.Cobra.CobraNexus.Library.Persoon.DataPortal_Update() in
+E:\\Projecten\\CobraNexus\\CTB.Cobra.CobraNexus.Library\\Persoon.cs:line
+190\r\n&nbsp;&nbsp; at dm(Object , Object[] )\r\n&nbsp;&nbsp; at
+Csla.Reflection.MethodCaller.CallMethod(Object obj, DynamicMethodHandle
+methodHandle, Object[] parameters)&quot;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp; TargetSite: {Void
+OpenStoreConnectionIf(Boolean, System.Data.Common.DbConnection,
+System.Data.Common.DbConnection, System.String, System.String, Boolean ByRef)}<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><span>As
+printed in the messagebox<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>{&quot;DataPortal.Update failed (System.Data.ProviderException:
+The underlying provider failed on Open. ---&gt;
+System.Data.SqlClient.SqlException: MSDTC on server 'VMBASIS20GB' is
+unavailable.\r\n&nbsp;&nbsp; at System.Data.SqlClient.SqlConnection.OnError(SqlException
+exception, Boolean breakConnection)\r\n&nbsp;&nbsp; at
+System.Data.SqlClient.SqlInternalConnection.OnError(SqlException exception,
+Boolean breakConnection)\r\n&nbsp;&nbsp; at
+System.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject
+stateObj)\r\n&nbsp;&nbsp; at System.Data.SqlClient.TdsParser.Run(RunBehavior
+runBehavior, SqlCommand cmdHandler, SqlDataReader dataStream,
+BulkCopySimpleResultSet bulkCopyHandler, TdsParserStateObject
+stateObj)\r\n&nbsp;&nbsp; at System.Data.SqlClient.SqlDataReader.ConsumeMetaData()\r\n&nbsp;&nbsp;
+at System.Data.SqlClient.SqlDataReader.get_MetaData()\r\n&nbsp;&nbsp; at
+System.Data.SqlClient.TdsParser.TdsExecuteTransactionManagerRequest(Byte[]
+buffer, TransactionManagerRequestType request, String transactionName,
+TransactionManagerIsolationLevel isoLevel, Int32 timeout, Sql<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>InternalTransaction transaction, TdsParserStateObject stateObj,
+Boolean isDelegateControlRequest)\r\n&nbsp;&nbsp; at
+System.Data.SqlClient.TdsParser.GetDTCAddress(Int32 timeout,
+TdsParserStateObject stateObj)\r\n&nbsp;&nbsp; at System.Data.SqlClient.SqlInternalConnectionTds.GetDTCAddress()\r\n&nbsp;&nbsp;
+at System.Data.SqlClient.SqlInternalConnection.EnlistNonNull(Transaction
+tx)\r\n&nbsp;&nbsp; at
+System.Data.SqlClient.SqlInternalConnection.Enlist(Transaction
+tx)\r\n&nbsp;&nbsp; at System.Data.SqlClient.SqlInternalConnectionTds.Activate(Transaction
+transaction)\r\n&nbsp;&nbsp; at
+System.Data.ProviderBase.DbConnectionInternal.ActivateConnection(Transaction
+transaction)\r\n&nbsp;&nbsp; at
+System.Data.ProviderBase.DbConnectionPool.GetConnection(DbConnection
+owningObject)\r\n&nbsp;&nbsp; at System.Data.ProviderBase.DbConnectionFactory.GetConnection(DbConnection
+owningConnection)\r\n&nbsp;&nbsp; at
+System.Data.ProviderBase.DbConnectionClosed.OpenConnection(DbConnection
+outerConnection, DbConnectionFactory connectionFactory)\r\n&nbsp;&nbsp; at
+System.Data.SqlClient.SqlConnection.Open()\r\n&nbsp;&nbsp; at System.Data.Entit<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>yClient.EntityConnection.OpenStoreConnectionIf(Boolean
+openCondition, DbConnection storeConnectionToOpen, DbConnection
+originalConnection, String exceptionCode, String attemptedOperation,
+Boolean&amp; closeStoreConnectionOnFailure)\r\n&nbsp;&nbsp; --- End of inner
+exception stack trace ---\r\n&nbsp;&nbsp; at
+System.Data.EntityClient.EntityConnection.OpenStoreConnectionIf(Boolean
+openCondition, DbConnection storeConnectionToOpen, DbConnection
+originalConnection, String exceptionCode, String attemptedOperation,
+Boolean&amp; closeStoreConnectionOnFailure)\r\n&nbsp;&nbsp; at
+System.Data.EntityClient.EntityConnection.Open()\r\n&nbsp;&nbsp; at
+System.Data.Objects.ObjectContext.EnsureConnection()\r\n&nbsp;&nbsp; at
+System.Data.Objects.ObjectContext.SaveChanges(Boolean acceptChangesDuringSave)\r\n&nbsp;&nbsp;
+at System.Data.Objects.ObjectContext.SaveChanges()\r\n&nbsp;&nbsp; at
+CTB.Cobra.CobraNexus.Library.Persoon.DataPortal_Update() in
+E:\\Projecten\\CobraNexus\\CTB.Cobra.CobraNexus.Library\\Persoon.cs:line
+190\r\n&nbsp;&nbsp; at dm(Object , Object[] )\r\n&nbsp;&nbsp; at Csla.Reflection.MethodCaller.CallMethod(Ob<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>ject obj, DynamicMethodHandle methodHandle, Object[]
+parameters))&quot;}<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp; base {System.Exception}:
+{&quot;DataPortal.Update failed (System.Data.ProviderException: The underlying
+provider failed on Open. ---&gt; System.Data.SqlClient.SqlException: MSDTC on
+server 'VMBASIS20GB' is unavailable.\r\n&nbsp;&nbsp; at
+System.Data.SqlClient.SqlConnection.OnError(SqlException exception, Boolean
+breakConnection)\r\n&nbsp;&nbsp; at
+System.Data.SqlClient.SqlInternalConnection.OnError(SqlException exception,
+Boolean breakConnection)\r\n&nbsp;&nbsp; at
+System.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject
+stateObj)\r\n&nbsp;&nbsp; at System.Data.SqlClient.TdsParser.Run(RunBehavior
+runBehavior, SqlCommand cmdHandler, SqlDataReader dataStream, BulkCopySimpleResultSet
+bulkCopyHandler, TdsParserStateObject stateObj)\r\n&nbsp;&nbsp; at
+System.Data.SqlClient.SqlDataReader.ConsumeMetaData()\r\n&nbsp;&nbsp; at
+System.Data.SqlClient.SqlDataReader.get_MetaData()\r\n&nbsp;&nbsp; at
+System.Data.SqlClient.TdsParser.TdsExecuteTransactionManagerRequest(Byte[] buffer,
+TransactionManagerRequestType request, String transactionName,
+TransactionManagerIsolationLevel<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;isoLevel, Int32 timeout, SqlInternalTransaction
+transaction, TdsParserStateObject stateObj, Boolean
+isDelegateControlRequest)\r\n&nbsp;&nbsp; at System.Data.SqlClient.TdsParser.GetDTCAddress(Int32
+timeout, TdsParserStateObject stateObj)\r\n&nbsp;&nbsp; at
+System.Data.SqlClient.SqlInternalConnectionTds.GetDTCAddress()\r\n&nbsp;&nbsp;
+at System.Data.SqlClient.SqlInternalConnection.EnlistNonNull(Transaction
+tx)\r\n&nbsp;&nbsp; at System.Data.SqlClient.SqlInternalConnection.Enlist(Transaction
+tx)\r\n&nbsp;&nbsp; at
+System.Data.SqlClient.SqlInternalConnectionTds.Activate(Transaction
+transaction)\r\n&nbsp;&nbsp; at
+System.Data.ProviderBase.DbConnectionInternal.ActivateConnection(Transaction
+transaction)\r\n&nbsp;&nbsp; at System.Data.ProviderBase.DbConnectionPool.GetConnection(DbConnection
+owningObject)\r\n&nbsp;&nbsp; at
+System.Data.ProviderBase.DbConnectionFactory.GetConnection(DbConnection
+owningConnection)\r\n&nbsp;&nbsp; at
+System.Data.ProviderBase.DbConnectionClosed.OpenConnection(DbConnection outerConnection,
+DbConnectionFactory connectionFactory)\r\n&nbsp;&nbsp; at
+System.Data.SqlClient.SqlConnection.Open<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>()\r\n&nbsp;&nbsp; at
+System.Data.EntityClient.EntityConnection.OpenStoreConnectionIf(Boolean
+openCondition, DbConnection storeConnectionToOpen, DbConnection originalConnection,
+String exceptionCode, String attemptedOperation, Boolean&amp;
+closeStoreConnectionOnFailure)\r\n&nbsp;&nbsp; --- End of inner exception stack
+trace ---\r\n&nbsp;&nbsp; at
+System.Data.EntityClient.EntityConnection.OpenStoreConnectionIf(Boolean
+openCondition, DbConnection storeConnectionToOpen, DbConnection
+originalConnection, String exceptionCode, String attemptedOperation,
+Boolean&amp; closeStoreConnectionOnFailure)\r\n&nbsp;&nbsp; at
+System.Data.EntityClient.EntityConnection.Open()\r\n&nbsp;&nbsp; at
+System.Data.Objects.ObjectContext.EnsureConnection()\r\n&nbsp;&nbsp; at
+System.Data.Objects.ObjectContext.SaveChanges(Boolean
+acceptChangesDuringSave)\r\n&nbsp;&nbsp; at
+System.Data.Objects.ObjectContext.SaveChanges()\r\n&nbsp;&nbsp; at
+CTB.Cobra.CobraNexus.Library.Persoon.DataPortal_Update() in
+E:\\Projecten\\CobraNexus\\CTB.Cobra.CobraNexus.Library\\Persoon.cs:line
+190\r\n&nbsp;&nbsp; at dm(Object , Object[] )\r\n&nbsp;&nbsp; at Csla.Reflecti<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>on.MethodCaller.CallMethod(Object obj, DynamicMethodHandle
+methodHandle, Object[] parameters))&quot;}<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp; _businessObject: {1}<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp; _innerStackTrace: &quot;&nbsp;&nbsp; at System.Data.EntityClient.EntityConnection.OpenStoreConnectionIf(Boolean
+openCondition, DbConnection storeConnectionToOpen, DbConnection
+originalConnection, String exceptionCode, String attemptedOperation,
+Boolean&amp; closeStoreConnectionOnFailure)\r\n&nbsp;&nbsp; at System.Data.EntityClient.EntityConnection.Open()\r\n&nbsp;&nbsp;
+at System.Data.Objects.ObjectContext.EnsureConnection()\r\n&nbsp;&nbsp; at
+System.Data.Objects.ObjectContext.SaveChanges(Boolean
+acceptChangesDuringSave)\r\n&nbsp;&nbsp; at System.Data.Objects.ObjectContext.SaveChanges()\r\n&nbsp;&nbsp;
+at CTB.Cobra.CobraNexus.Library.Persoon.DataPortal_Update() in
+E:\\Projecten\\CobraNexus\\CTB.Cobra.CobraNexus.Library\\Persoon.cs:line
+190\r\n&nbsp;&nbsp; at dm(Object , Object[] )\r\n&nbsp;&nbsp; at
+Csla.Reflection.MethodCaller.CallMethod(Object obj, DynamicMethodHandle
+methodHandle, Object[] parameters)\r\n&nbsp;&nbsp; at
+Csla.Reflection.MethodCaller.CallMethod(Object obj, DynamicMethodHandle
+methodHandle, Object[] parameters)\r\n&nbsp;&nbsp; at
+Csla.Reflection.MethodCaller.CallMethod(Object obj, String method, <o:p></o:p></span></p>
+
+<p class=MsoNormal><span>Object[] parameters)\r\n&nbsp;&nbsp; at
+Csla.Reflection.LateBoundObject.CallMethod(String method)\r\n&nbsp;&nbsp; at
+Csla.Server.SimpleDataPortal.Update(Object obj, DataPortalContext
+context)&quot;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp; BusinessException: {&quot;The underlying
+provider failed on Open.&quot;}<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp; BusinessObject: {1}<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp; StackTrace: &quot;&nbsp; &nbsp;at
+System.Data.EntityClient.EntityConnection.OpenStoreConnectionIf(Boolean
+openCondition, DbConnection storeConnectionToOpen, DbConnection
+originalConnection, String exceptionCode, String attemptedOperation,
+Boolean&amp; closeStoreConnectionOnFailure)\r\n&nbsp;&nbsp; at
+System.Data.EntityClient.EntityConnection.Open()\r\n&nbsp;&nbsp; at
+System.Data.Objects.ObjectContext.EnsureConnection()\r\n&nbsp;&nbsp; at
+System.Data.Objects.ObjectContext.SaveChanges(Boolean
+acceptChangesDuringSave)\r\n&nbsp;&nbsp; at System.Data.Objects.ObjectContext.SaveChanges()\r\n&nbsp;&nbsp;
+at CTB.Cobra.CobraNexus.Library.Persoon.DataPortal_Update() in
+E:\\Projecten\\CobraNexus\\CTB.Cobra.CobraNexus.Library\\Persoon.cs:line
+190\r\n&nbsp;&nbsp; at dm(Object , Object[] )\r\n&nbsp;&nbsp; at
+Csla.Reflection.MethodCaller.CallMethod(Object obj, DynamicMethodHandle
+methodHandle, Object[] parameters)\r\n&nbsp;&nbsp; at
+Csla.Reflection.MethodCaller.CallMethod(Object obj, DynamicMethodHandle
+methodHandle, Object[] parameters)\r\n&nbsp;&nbsp; at
+Csla.Reflection.MethodCaller.CallMethod(Object obj, String method, Object<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>[] parameters)\r\n&nbsp;&nbsp; at
+Csla.Reflection.LateBoundObject.CallMethod(String method)\r\n&nbsp;&nbsp; at
+Csla.Server.SimpleDataPortal.Update(Object obj, DataPortalContext
+context)\r\n&nbsp;&nbsp; at Csla.DataPortal.Update(Object obj)\r\n&nbsp;&nbsp;
+at Csla.DataPortal.Update[T](T obj)\r\n&nbsp;&nbsp; at Csla.BusinessBase`1.Save()\r\n&nbsp;&nbsp;
+at CTB.Cobra.CobraNexus.WinApp.PersonenForm.saveButton_Click(Object sender,
+EventArgs e) in
+E:\\Projecten\\CobraNexus\\CTB.Cobra.CobraNexus.WinApp\\PersonenForm.cs:line
+82&quot;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>Van:</span></b><span> RockfordLhotka
+[mailto:cslanet@lhotka.net] <br>
+<b>Verzonden:</b> dinsdag 22 april 2008 14:59<br>
+<b>Aan:</b> Piet Koole<br>
+<b>Onderwerp:</b> Re: [CSLA .NET] Transactional scope gives an error when using
+ADO.NET entities<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>I have not had time to research EF with CSLA, so you are a pioneer :)<o:p></o:p></p>
+
+<p>I'd be very surprised to find that EF doesn't work with the TransactionScope
+concept though - it would be shocking to find that they weren't supporting the
+primary transactional model in .NET. All the Transactional attribute does is
+put your code in a using block with a TransactionScope object - nothing fancy
+at all.<o:p></o:p></p>
+
+<p>What is the exception?<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+<DIV><P><HR>
+Aan de inhoud van dit bericht kunnen geen rechten worden ontleend. CTB en/of een van haar handelsmaatschappijen is niet aansprakelijk voor eventuele onjuistheden en/of onvolledige vermeldingen.<BR>
+
+</P></DIV>
+
+<BR>
+This outbound message from CTB has been checked for all known viruses by KPN MailScan, powered by MessageLabs.<BR>
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

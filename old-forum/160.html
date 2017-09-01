@@ -1,0 +1,69 @@
+<html><header><title>Wcf Converstion From Remoting</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Wcf Converstion From Remoting</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/160.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>soa_person posted on Sunday, May 21, 2006</h2><P>Hi,</P>
+<P>I am porting our application from Remoting to WCF.&nbsp; Server side is working fine.&nbsp; But when I try to call a method in our object,&nbsp; I am still strugling.&nbsp; Could anyone help on this?</P>
+<P>Here is my client side code.</P><FONT color=#008080 size=2>
+<P>ChannelFactory</FONT><FONT size=2>&lt;</FONT><FONT color=#008080 size=2>IWcfPortal</FONT><FONT size=2>&gt; fact = </FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> </FONT><FONT color=#008080 size=2>ChannelFactory</FONT><FONT size=2>&lt;</FONT><FONT color=#008080 size=2>IWcfPortal</FONT><FONT size=2>&gt;(</FONT><FONT color=#800000 size=2>"Csla.Server.Hosts.WcfPortal"</FONT><FONT size=2>);</P>
+<P></FONT><FONT color=#008080 size=2>IWcfPortal</FONT><FONT size=2> mgr = fact.CreateChannel();</P>
+<P></FONT><FONT color=#008080 size=2>WindowsPrincipal</FONT><FONT size=2> prn = </FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> </FONT><FONT color=#008080 size=2>WindowsPrincipal</FONT><FONT size=2>(</FONT><FONT color=#008080 size=2>WindowsIdentity</FONT><FONT size=2>.GetCurrent());</P>
+<P></FONT><FONT color=#008080 size=2>Employees</FONT><FONT size=2> emp = </FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> </FONT><FONT color=#008080 size=2>Employees</FONT><FONT size=2>(); </P>
+<P></FONT><FONT color=#008080 size=2>FetchRequest</FONT><FONT size=2> fr = </FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> </FONT><FONT color=#008080 size=2>FetchRequest</FONT><FONT size=2>( emp, </FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> Csla.Server.</FONT><FONT color=#008080 size=2>DataPortalContext</FONT><FONT size=2>(prn, </FONT><FONT color=#0000ff size=2>true</FONT><FONT size=2>));</P>
+<P></FONT><FONT color=#008080 size=2>WcfResponse</FONT><FONT size=2> res = mgr.Fetch(fr);</FONT><FONT color=#008000 size=2>// .StoreCustomer(cust);</FONT></P>
+<P><FONT color=#008000 size=2></FONT>&nbsp;</P>
+<P><FONT color=#008000 size=2>....</FONT></P>
+<P><FONT color=#008000 size=2></FONT>&nbsp;</P>
+<P><FONT color=#008000 size=2>I am getting below error.</FONT></P>
+<P><FONT color=#008000 size=2>System.ServiceModel.CommunicationException: The server did not provide a meaningful reply; this might be caused by a contract mismatch, a premature session shutdown or an internal server error.<BR></FONT></P>
+<P><FONT color=#008000 size=2>Thanks in advance.</FONT></P>
+<P><FONT color=#008000 size=2>-sa</P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, May 22, 2006</h2><P>WindowsPrincipal objects aren't serializable, so you can't pass them through the DataPortalContext object. </P>
+<P>Are you building your own WCF channel? The code you list appears to be a mix of channel and business code? I have a working WcfChannel for the February CTP on my web site in the Downloads&nbsp;area. It should require no business code changes on your part at all - just a change to your client-side config file.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>soa_person replied on Monday, May 22, 2006</h2><P>No.&nbsp; I am not building my own WCF channel.&nbsp; Here is my server side config as well as client side.</P>
+<P>I am using your WcfChannel only.&nbsp; Still it is not working.</P>
+<P><STRONG>Server Side:</STRONG></P><FONT color=#0000ff size=2>
+<P>&lt;</FONT><FONT color=#800000 size=2>system.serviceModel</FONT><FONT color=#0000ff size=2>&gt;</FONT></P>
+<P><FONT color=#0000ff size=2>&lt;</FONT><FONT color=#800000 size=2>services</FONT><FONT color=#0000ff size=2>&gt;</P>
+<P></P>
+<P>&lt;</FONT><FONT color=#800000 size=2>service</FONT><FONT color=#0000ff size=2> </FONT><FONT color=#ff0000 size=2>name</FONT><FONT color=#0000ff size=2>=</FONT><FONT size=2>"</FONT><FONT color=#0000ff size=2>Csla.Server.Hosts.WcfPortal</FONT><FONT size=2>"</FONT><FONT color=#0000ff size=2>&gt;</P>
+<P>&lt;</FONT><FONT color=#800000 size=2>endpoint</P></FONT><FONT color=#0000ff size=2>
+<P></FONT><FONT color=#ff0000 size=2>address</FONT><FONT color=#0000ff size=2>=</FONT><FONT size=2>"</FONT><FONT color=#0000ff size=2>http://localhost:8082/WcfManager</FONT><FONT size=2>"</P></FONT><FONT color=#0000ff size=2>
+<P></FONT><FONT color=#ff0000 size=2>binding</FONT><FONT color=#0000ff size=2>=</FONT><FONT size=2>"</FONT><FONT color=#0000ff size=2>basicHttpBinding</FONT><FONT size=2>"</FONT><FONT color=#0000ff size=2> </P>
+<P></FONT><FONT color=#ff0000 size=2>contract</FONT><FONT color=#0000ff size=2>=</FONT><FONT size=2>"</FONT><FONT color=#0000ff size=2>Csla.Server.Hosts.IWcfPortal</FONT><FONT size=2>"</FONT><FONT color=#0000ff size=2> /&gt;</P>
+<P>&lt;/</FONT><FONT color=#800000 size=2>service</FONT><FONT color=#0000ff size=2>&gt;</P>
+<P></P>
+<P>&lt;/</FONT><FONT color=#800000 size=2>services</FONT><FONT color=#0000ff size=2>&gt;</P>
+<P>&lt;/</FONT><FONT color=#800000 size=2>system.serviceModel</FONT><FONT color=#0000ff size=2>&gt;</FONT></P>
+<P><FONT color=#0000ff size=2></FONT>&nbsp;</P>
+<P><FONT color=#0000ff size=2><STRONG>Server Implementation:</STRONG></FONT></P><FONT color=#0000ff size=2><FONT color=#0000ff size=2>
+<P>class</FONT><FONT color=#000000 size=2> </FONT><FONT color=#008080 size=2>Program</P></FONT><FONT size=2>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>private</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>static</FONT><FONT size=2> </FONT><FONT color=#008080 size=2>ServiceHost</FONT><FONT size=2> _factoryHost;</P>
+<P></FONT><FONT color=#0000ff size=2>static</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>void</FONT><FONT size=2> Main(</FONT><FONT color=#0000ff size=2>string</FONT><FONT size=2>[] args)</P>
+<P>{</P>
+<P>StartWCFServer();</P>
+<P></P>
+<P></FONT><FONT color=#008080 size=2>Console</FONT><FONT size=2>.ReadLine();</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>private</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>static</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>void</FONT><FONT size=2> StartWCFServer()</P>
+<P>{</P>
+<P>_factoryHost = </FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> </FONT><FONT color=#008080 size=2>ServiceHost</FONT><FONT size=2>(</FONT><FONT color=#0000ff size=2>typeof</FONT><FONT size=2>(Csla.Server.Hosts.</FONT><FONT color=#008080 size=2>WcfPortal</FONT><FONT size=2>));</P>
+<P>_factoryHost.Open();</P>
+<P></FONT><FONT color=#008080 size=2>Console</FONT><FONT size=2>.WriteLine(</FONT><FONT color=#800000 size=2>"WCF Server is running ..."</FONT><FONT size=2>);</P>
+<P>}</P></FONT></FONT>
+<P><FONT color=#0000ff size=2></FONT>&nbsp;</P>
+<P><FONT color=#0000ff size=2><STRONG>Clinet Side:</STRONG></FONT></P><FONT color=#0000ff size=2><FONT color=#0000ff size=2>
+<P>&lt;</FONT><FONT color=#800000 size=2>system.serviceModel</FONT><FONT color=#0000ff size=2>&gt;</P>
+<P>&lt;</FONT><FONT color=#800000 size=2>client</FONT><FONT color=#0000ff size=2>&gt;</P>
+<P>&lt;</FONT><FONT color=#800000 size=2>endpoint</FONT><FONT color=#0000ff size=2> </P>
+<P></FONT><FONT color=#ff0000 size=2>name</FONT><FONT color=#0000ff size=2>=</FONT><FONT color=#000000 size=2>"</FONT><FONT color=#0000ff size=2>Csla.Server.Hosts.WcfPortal</FONT><FONT size=2><FONT color=#000000>"</FONT></P></FONT><FONT size=2>
+<P></FONT><FONT color=#ff0000 size=2>address</FONT><FONT color=#0000ff size=2>=</FONT><FONT color=#000000 size=2>"</FONT><FONT color=#0000ff size=2>http://localhost:8082/WcfManager</FONT><FONT size=2><FONT color=#000000>"</FONT></P></FONT><FONT size=2>
+<P></FONT><FONT color=#ff0000 size=2>binding</FONT><FONT color=#0000ff size=2>=</FONT><FONT color=#000000 size=2>"</FONT><FONT color=#0000ff size=2>basicHttpBinding</FONT><FONT color=#000000 size=2>"</FONT><FONT color=#0000ff size=2> </P>
+<P></FONT><FONT color=#ff0000 size=2>contract</FONT><FONT color=#0000ff size=2>=</FONT><FONT color=#000000 size=2>"</FONT><FONT color=#0000ff size=2>Csla.Server.Hosts.IWcfPortal</FONT><FONT color=#000000 size=2>"</FONT><FONT color=#0000ff size=2> /&gt;</P>
+<P>&lt;/</FONT><FONT color=#800000 size=2>client</FONT><FONT color=#0000ff size=2>&gt;</P>
+<P>&lt;/</FONT><FONT color=#800000 size=2>system.serviceModel</FONT><FONT color=#0000ff size=2>&gt;</FONT></P>
+<P><FONT color=#0000ff size=2>I didn't make any changes in existing working code.&nbsp; But still it is not working.&nbsp; Somewhere I am not doing right.</FONT></P>
+<P>&nbsp;</P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>boon3333 replied on Sunday, August 06, 2006</h2><P>Dear Amal</P>
+<P>Did you manage to get it to work eventually? Thanks.</P>
+<P>Boon</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, May 23, 2006</h2><P>Hmm. I fought with this sort of cryptic error for quite a while. It is so very clear that WCF is a beta product at this point...</P>
+<P>Have you tried using either the Remoting or Enterprise Services channel to make sure your app works in general? That would help narrow the problem down to the WcfChannel rather than some other issue with serialization or your objects or whatever.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>soa_person replied on Tuesday, May 23, 2006</h2><P>Yes.&nbsp; It works well with Remoting using RemotingProxy.rem.</P>
+<P>Thanks</P>
+<P>Amal</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, May 23, 2006</h2><P>In that case I'm not sure what to suggest. My WcfChannel is a prototype written on top of&nbsp;a pre-beta, so it wouldn't surprise me if you've run into some glitch in either my code or in WCF (either is quite possible). On the other hand it could just be a configuration issue - it took me quite a few attempts to get even simple WCF communication working... People say Remoting is hard to configure, but WCF is several times harder than Remoting yet...</P>
+<P>There are tools in the WCF SDK to log and monitor traffic over the wire. You may also want to add some log/trace output from the WcfChannel's server-side host class to see if the call even gets there, and if so whether the invocation of the business object succeeds.</P>
+<P>Gotta love living beyond the bleeding edge...</P>
+<P>Rocky</P><BR></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

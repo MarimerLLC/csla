@@ -1,0 +1,27 @@
+<html><header><title>Issue with CSLA and Sql Server 2005 Compact Edition</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Issue with CSLA and Sql Server 2005 Compact Edition</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/7729.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>mjrod posted on Monday, October 05, 2009</h2>I'm trying to implement a compact and repair feature for an application I have. In doing so, what is the procedure to get CSLA to release its connections to the .SDF file so that I can perform the compact?<br><br>I dont' see anywhere that I can do that.<br><br>Thanks. <br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, October 05, 2009</h2>It is your data access code that is responsible for opening and closing any database connections. Generally speaking, if a method opens a connection, that method should close it. Do you have methods that aren't closing your connections?</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>mjrod replied on Monday, October 05, 2009</h2>First thing, I'm new to CSLA, and the application I'm using isn't something I built.&nbsp;&nbsp; I am assuming that CSLA opens the connection reading from the app.config file as I see there are connection strings in there for the database.&nbsp; However, are you saying that you can create a connection and pass that as a reference to CSLA?<br><br>Forgive me, I'm just trying to understand and know what to look for.<br><br>Thanks for the help.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>mjrod replied on Monday, October 05, 2009</h2>Rocky<br><br>You gave me the clue I needed and as I've gone through, I've discovered how it's implemented and the issue.<br><br>Thanks.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, October 05, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>No, CSLA calls one of your methods (probably called
+DataPortal_Fetch, DataPortal_Insert, etc &#8211; it will start with &#8220;DataPortal_&#8221;)
+and in that method your code opens the database connection, uses it and
+(should) close it.<o:p></o:p></span></p>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>mjrod replied on Tuesday, October 06, 2009</h2>Rocky,<br><br>Wanted to say thanks again.&nbsp; Your help was appreciated and I was able to make the appropriate changes and get my functionality implemented the way I needed. <br><br>CSLA is completely new, but the more I work with it, the more I understand how it works and why it was chosen.<br><br>MJ<br><br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

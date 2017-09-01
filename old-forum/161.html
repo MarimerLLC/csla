@@ -1,0 +1,49 @@
+<html><header><title>Change when moving from 2.0 to 2.0.1 - Swapping items in list - problems. </title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Change when moving from 2.0 to 2.0.1 - Swapping items in list - problems. </h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/161.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>skagen00 posted on Monday, May 22, 2006</h2><P><FONT size=2><FONT color=#808080><FONT color=#000000>In BusinessListBase, this method is a new override it appears: </FONT></FONT></FONT></P>
+<P><FONT size=2><FONT color=#808080>///</FONT><FONT color=#008000> </FONT><FONT color=#808080>&lt;summary&gt;</FONT></FONT></P>
+<P><FONT size=2><FONT color=#808080>///</FONT><FONT color=#008000> Replaces the item at the specified index with</P></FONT></FONT>
+<P><FONT size=2><FONT color=#808080>///</FONT><FONT color=#008000> the specified item, first moving the original</P></FONT></FONT>
+<P><FONT size=2><FONT color=#808080>///</FONT><FONT color=#008000> item to the deleted list.</P></FONT></FONT>
+<P><FONT size=2><FONT color=#808080>///</FONT><FONT color=#008000> </FONT><FONT color=#808080>&lt;/summary&gt;</P></FONT></FONT>
+<P><FONT size=2><FONT color=#808080>///</FONT><FONT color=#008000> </FONT><FONT color=#808080>&lt;param name="index"&gt;</FONT><FONT color=#008000>The zero-based index of the item to replace.</FONT><FONT color=#808080>&lt;/param&gt;</P></FONT></FONT>
+<P><FONT size=2><FONT color=#808080>///</FONT><FONT color=#008000> </FONT><FONT color=#808080>&lt;param name="item"&gt;</P></FONT></FONT>
+<P><FONT size=2><FONT color=#808080>///</FONT><FONT color=#008000> The new value for the item at the specified index. </P></FONT></FONT>
+<P><FONT size=2><FONT color=#808080>///</FONT><FONT color=#008000> The value can be null for reference types.</P></FONT></FONT>
+<P><FONT size=2><FONT color=#808080>///</FONT><FONT color=#008000> </FONT><FONT color=#808080>&lt;/param&gt;</P></FONT></FONT>
+<P><FONT size=2><FONT color=#808080>///</FONT><FONT color=#008000> </FONT><FONT color=#808080>&lt;remarks&gt;&lt;/remarks&gt;</P></FONT></FONT>
+<P><FONT size=2><FONT color=#0000ff>protected</FONT> <FONT color=#0000ff>override</FONT> <FONT color=#0000ff>void</FONT> SetItem(<FONT color=#0000ff>int</FONT> index, C item)</FONT></P>
+<P><FONT size=2>{</FONT></P>
+<P><FONT size=2>RemoveItem(index);</FONT></P>
+<P><FONT size=2><FONT color=#0000ff>base</FONT>.SetItem(index, item);</FONT></P>
+<P><FONT size=2>}</FONT></P>
+<P>This broke the following working code:</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; swapItem = _editingQuery.Items[rowToSwap1];<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _editingQuery.Items[rowToSwap1] = _editingQuery.Items[rowToSwap2];<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _editingQuery.Items[rowToSwap2] = swapItem;</P>
+<P>In one example, rowToSwap1 = 1 and rowToSwap2 = 0 in a 2 item list. </P>
+<P>When the second line is executed (assigning rowToSwap1), it would remove item for index value&nbsp;1 from the list and then try to assign to index value 1, which would now be invalid because it was removed.&nbsp; </P>
+<P>This sort of code is done to facilitate "move up" and "move down" in the collection. </P>
+<P>I'm trying to figure out a nice solution to this, but in the meantime I wanted to post this to see if anyone handles swapping in a different manner or if there was a clever solution someone might have to offer. Once I figure something out (unless someone beats me to the punch) I'll post what I decided to do. </P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>skagen00 replied on Monday, May 22, 2006</h2><FONT size=1>
+<P>I suspect this would work for me. If someone who is more familiar with the framework might confirm this, I'd appreciate it.&nbsp; </FONT></P><FONT color=#0000ff size=1><FONT size=1>
+<P></FONT><FONT color=#0000ff size=1>public</FONT><FONT size=1> </FONT><FONT color=#0000ff size=1>void</FONT><FONT size=1> SwapPositions(</FONT><FONT color=#0000ff size=1>int</FONT><FONT size=1> rowToSwap1, </FONT><FONT color=#0000ff size=1>int</FONT><FONT size=1> rowToSwap2)</P>
+<P>{</P>
+<P></FONT><FONT color=#008080 size=1>QueryItem</FONT><FONT size=1> swapItem1, swapItem2;</P>
+<P></FONT><FONT color=#0000ff size=1>if</FONT><FONT size=1> (rowToSwap1&nbsp;&lt; 0&nbsp;|| rowToSwap1&nbsp;&gt;= </FONT><FONT color=#0000ff size=1>this</FONT><FONT size=1>.Count ||</P>
+<P>rowToSwap2&nbsp;&lt; 0&nbsp;|| rowToSwap2&nbsp;&gt;= </FONT><FONT color=#0000ff size=1>this</FONT><FONT size=1>.Count)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=1>throw</FONT><FONT size=1> </FONT><FONT color=#0000ff size=1>new</FONT><FONT size=1> </FONT><FONT color=#008080 size=1>IndexOutOfRangeException</FONT><FONT size=1>(</FONT><FONT color=#800000 size=1>"Valid range of collection is 0 to "</FONT><FONT size=1> +</P>
+<P>(</FONT><FONT color=#0000ff size=1>this</FONT><FONT size=1>.Count - 1).ToString() + </FONT><FONT color=#800000 size=1>". Indexes provided were "</FONT><FONT size=1> +</P>
+<P>rowToSwap1.ToString() + </FONT><FONT color=#800000 size=1>" and "</FONT><FONT size=1> + rowToSwap2.ToString() + </FONT><FONT color=#800000 size=1>"."</FONT><FONT size=1>);</P>
+<P>}</P>
+<P>swapItem1 = Items[rowToSwap1];</P>
+<P>swapItem2 = Items[rowToSwap2];</P>
+<P></FONT><FONT color=#0000ff size=1>this</FONT><FONT size=1>.RemoveAt(rowToSwap1);</P>
+<P></FONT><FONT color=#0000ff size=1>this</FONT><FONT size=1>.Insert(rowToSwap1,swapItem2);</P>
+<P></FONT><FONT color=#0000ff size=1>this</FONT><FONT size=1>.RemoveAt(rowToSwap2);</P>
+<P></FONT><FONT color=#0000ff size=1>this</FONT><FONT size=1>.Insert(rowToSwap2, swapItem1);</P>
+<P></FONT><FONT color=#0000ff size=1>this</FONT><FONT size=1>.DeletedList.Remove(swapItem1);</P>
+<P></FONT><FONT color=#0000ff size=1>this</FONT><FONT size=1>.DeletedList.Remove(swapItem2);</P>
+<P></P>
+<P>}</P></FONT></FONT><FONT size=1></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, May 23, 2006</h2><P>Not to be contrary, but SetItem() hasn't changed since 2.0 was officially released. My guess is that you haven't been using the RTM code, but rather have been using an earlier beta release.</P>
+<P>SetItem() has to work the way it is in 2.0 RTM, because otherwise the concept of replacing an existing item with a new item wouldn't work properly - the old item would be simply discarded (the reference would be dropped) and it would never be deleted from the underlying database when Save() was called.</P>
+<P>I think that your best bet for allowing reordering of items in the list is to take a copy of SortedBindingList and change it to provide a view that allows for arbitrary reordering of items.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>mtagliaf replied on Monday, May 22, 2006</h2><font face="Tahoma"><font size="2">For ordered lists, I usually have an integer property that represents the sort order, and use this to control sorting on a grid (via a hidden column). Then the swap of two items is easy - simply exchange the value of this property.<br><br>matt tag<br></font></font></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>DavidDilworth replied on Tuesday, May 23, 2006</h2><P>I agree with Matt, the use of a "display order array" or "sort order property" usually makes the problem of swapping and sorting much easier.</P>
+<P>P.S.&nbsp; Good to see you on the new forum Matt!</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, May 23, 2006</h2><P>Hi Matt!</P>
+<P>Your idea of the extra property, coupled with SortedBindingList, seems like an excellent answer - very nice.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>mtagliaf replied on Tuesday, May 23, 2006</h2><font face="Verdana" size="1">It's good to feel wanted....<br><br>Now all I need is a week or two so I can effectively learn CSLA 2.0 and convert my apps....<br><br>matt tag<br></font></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Tuesday, May 23, 2006</h2>Buy the book, and read it cover to cover.<br><br>I did this just before starting my first CSLA application, and it helped me emmencely.&nbsp; I had all the ideas of the framework fresh in my mind, and I understood why I was writing certain code.<br><br>I soon got into a pattern, so alot of my business objects are structured the same way (one of the great benefits of using CSLA).<br><br>Andy<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>y0mbo replied on Wednesday, May 24, 2006</h2>Have you found a soltution to this problem?<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>y0mbo replied on Wednesday, May 24, 2006</h2>Nevermind. Dumb user error.<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

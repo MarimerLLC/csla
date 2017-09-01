@@ -1,0 +1,90 @@
+<html><header><title>Rules triggering other rules</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Rules triggering other rules</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10981.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>dan_morey posted on Tuesday, December 13, 2011</h2><p>I have a business object set up with properties AAA, BBB, CCC and DDD.</p>
+<p>I wanted to blank the latter properties if early ones get changed. &nbsp;This means if BBB changes, AAA will be left alone and CCC and DDD will be set to nothing.</p>
+<p>I have set up a rule so that if AAA changes it sets BBB to Nothing, another rule sp that if BBB changes it sets CCC to Nothing and yet another if CCC changes it sets DDD to nothing.</p>
+<p>When I try this out and set AAA to a value, it sets BBB to nothing, that then sets CCC to nothing, but then DDD is not set to nothing.</p>
+<p>I&#39;ve looked on the forum and noticed that it says that rules use LoadProperty and so shouldn&#39;t trigger other rules, but my first rule is triggering the second, but my second is not triggering the third.</p>
+<p>This has made me unsure what to do. If I leave it as is, the last rule doesn&#39;t run, but if I modify the rules so changing AAA set BBB, CCC and DDD to nothing then it could still trigger another rule.</p>
+<p>Does anyone why this is happening? I would expect it to either not trigger other rules, or always trigger other rules. Not trigger the next layer of rules but not the next layer after that. I hope I&#39;m making sense.</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Tuesday, December 13, 2011</h2><p>Rules only cascade one level. So if BBB is dependent on AAA, then when rules for AAA run so will BBB rules. But that&#39;s as far as it goes.</p>
+<p>In other words, if CCC is dependent on BBB those rules won&#39;t run because of AAA changing.</p>
+<p>If you want to change AAA and have all those other properties run their rules, make them all dependent.</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Tuesday, December 13, 2011</h2><p>Like Rocky stated - affected properties is only checked on the &quot;next&quot; level. </p>
+<p>Assuming the fields are all string fields you could write a generic rule like this:</p>
+<p>&nbsp; <span style="color:#0000ff;font-weight:bold;">public</span>&nbsp;<span style="color:#ff0000;">class</span>&nbsp;ClearFields : Csla.Rules.PropertyRule<br />
+&nbsp;&nbsp;{<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#0000ff;font-weight:bold;">public</span>&nbsp;<span style="color:#191970;font-weight:bold;">ClearFields</span> (IPropertyInfo primaryProperty,&nbsp;<span style="color:#ff1493;font-weight:bold;">params</span>&nbsp;IPropertyInfo[]&nbsp;additionalFields)&nbsp;:&nbsp;<span style="font-weight:bold;">base</span>(primaryProperty)<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#0000ff;font-weight:bold;">if</span>&nbsp;(additionalFields ==&nbsp;<span style="font-weight:bold;">null</span>)<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#008080;font-weight:bold;">throw</span>&nbsp;<span style="color:#191970;font-weight:bold;">ArgumentNullException</span>(<span style="color:#0000ff;">&quot;additionalFields cannot be null&quot;</span>);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;AffectedProperties.<span style="color:#191970;font-weight:bold;">AddRange</span>(additionalFields)<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CanRunOnServer =&nbsp;<span style="color:#008b8b;font-weight:bold;">false</span>;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CanRunInCheckRules =&nbsp;<span style="color:#008b8b;font-weight:bold;">false</span>;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CanRunAsAffectedProperty =&nbsp;<span style="color:#008b8b;font-weight:bold;">false</span>;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#0000ff;font-weight:bold;">protected</span>&nbsp;<span style="color:#a52a2a;">override</span>&nbsp;<span style="color:#ff0000;">void</span>&nbsp;<span style="color:#191970;font-weight:bold;">Execute</span>(RuleContext context)<br />
+&nbsp;&nbsp;&nbsp;&nbsp;{<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#0000ff;font-weight:bold;">foreach</span>&nbsp;(<span style="color:#000080;">var</span>&nbsp;element&nbsp;<span style="color:#0000ff;font-weight:bold;">in</span>&nbsp;<span style="font-weight:bold;">this</span>.AffectedProperties)&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;context.<span style="color:#191970;font-weight:bold;">AddOutValue</span>(element,&nbsp;<span style="color:#ff0000;">string</span>.Empty);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br />
+&nbsp;&nbsp;&nbsp;&nbsp;}<br />
+&nbsp;&nbsp;}</p>
+<p>&nbsp;</p>
+<p>Usage:</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; BusinessRules.<span style="color:#191970;font-weight:bold;">AddRule</span>(<span style="color:#008b8b;font-weight:bold;">new</span>&nbsp;<span style="color:#191970;font-weight:bold;">ClearFields</span>(AAAProperty,&nbsp;BBBProperty,&nbsp;CCCProperty,&nbsp;DDDProperty);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;BusinessRules.<span style="color:#191970;font-weight:bold;">AddRule</span>(<span style="color:#008b8b;font-weight:bold;">new</span>&nbsp;<span style="color:#191970;font-weight:bold;">ClearFields</span>(BBBProperty,&nbsp;CCCProperty,&nbsp;DDDProperty);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;BusinessRules.<span style="color:#191970;font-weight:bold;">AddRule</span>(<span style="color:#008b8b;font-weight:bold;">new</span>&nbsp;<span style="color:#191970;font-weight:bold;">ClearFields</span>(CCCProperty,&nbsp;DDDProperty);</p>
+<p>&nbsp;</p>
+<p>The ClearFelds rule will only run when the property is changed by the user (or code on the client side of DataPortal)&nbsp; and rules for additional fields will be rechecked as they are in the AffectedProperties list.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>dan_morey replied on Tuesday, December 13, 2011</h2><p>I&#39;ve set up a dependency between AAA and CCC. Now when AAA is changed ,the rule will blank BBB and the BBB rule will blank CCC. The dependency then kicks off the CCC rule to blank DDD. This seems to work fine for what I am doing here.</p>
+<p>I like what you have put JonnyBee as It looks like I can set up the rules so that just the one will run. I&#39;ll just have to set everything I need to blank in the one rule, and have a rule for each of the three properties as I have now (but with more properties). However, I&#39;m not entirely sure what the three properties are that you have used.</p>
+<p>CanRunOnServer, sounds like it won&#39;t trigger if it&#39;s on the server (i.e. gone through the data portal).</p>
+<p>CanRunAsAffectedProperty, sounds like it prevents this rule running if it would have been trigger by another rule (the one cascade level that Rocky mentions). This looks like the most important for what I need.</p>
+<p>I have no idea what CanRunInCheckRules. What does this do (and the others if I am wrong in my assumptions).</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Tuesday, December 13, 2011</h2><p>CanRunInCheckRules web falske will prevent the rule from running when CheckRules is called.</p>
+<p>The end result when all is false is that the rule only runs when user update a field.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>cornel_md replied on Wednesday, January 11, 2012</h2><p>Hi All,</p>
+<p>I was just wondering if it is a problem to&nbsp;<span>update the latter properties in the property setter, rather than creating a PropertyRule for this particular case.</span></p>
+<p><span>Ex:</span></p>
+<pre>public static readonly PropertyInfo AAAProperty = RegisterProperty(c =&gt; c.AAA);
+public string AAA
+{
+	get { return GetProperty(AAAProperty); }
+	set { 
+		SetProperty(AAAProperty, value); 
+		BBB = string.Empty;
+	}
+}
+public static readonly PropertyInfo BBBProperty = RegisterProperty(c =&gt; c.BBB);
+public string BBB
+{
+	get { return GetProperty(BBBProperty); }
+	set { 
+		SetProperty(BBBProperty, value); 
+		CCC = string.Empty;
+	}
+}
+public static readonly PropertyInfo CCCProperty = RegisterProperty(c =&gt; c.CCC);
+public string CCC
+{
+	get { return GetProperty(CCCProperty); }
+	set { 
+		SetProperty(CCCProperty, value); 
+		DDD = string.Empty;
+	}
+}
+public static readonly PropertyInfo DDDProperty = RegisterProperty(c =&gt; c.DDD);
+public string DDD
+{
+	get { return GetProperty(DDDProperty); }
+	set { SetProperty(DDDProperty, value); }
+}
+</pre>
+<p>Thanks</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Wednesday, January 11, 2012</h2><p>Hi,</p>
+<p>I try to always remind my developer that properties is not code. </p>
+<p>The reason being that I like my data access to look like this: </p>
+<p>using (BypassPropertyChecks())<br />{<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; DDD = &quot;a&quot;;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; CCC = &quot;b&quot;;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; AAA = &quot;c&quot;;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; BBB = &quot;e&quot;;<br />}</p>
+<p>and not have to worry about the sequence of property setters and have the same syntax for both managed fields and private fields. </p>
+<p>The alternative would be :</p>
+<p>LoadProperty(DDDProperty, &quot;a&quot;);<br />LoadProperty(CCCProperty, &quot;a&quot;);<br />
+LoadProperty(AAAProperty, &quot;a&quot;);<br />LoadProperty(BBBProperty, &quot;a&quot;);<br />_EEEfield = &quot;e&quot;;</p>
+<p><b>You should also be aware that some databinding tecnologies will <i>ALWAYS </i>call the setter - no matter if the value was changed or not. So simply tabbing around without changing any value in the UI would clear fields. CSLA Rules on the other hand will be triggered when field value is changed and is a much better approach.<br /></b></p>
+<p><b>Also - for a web app using the DataMapper or CslaModelBinder you would not want to care about the sequence of setters when updating your model. </b></p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,13 @@
+<html><header><title>DataPortal Fetch Error</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>DataPortal Fetch Error</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3712.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>saadhvi posted on Monday, October 15, 2007</h2><P>Hi all,</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; I got the following error in data portal fetch.</P>
+<P>"System.Web.Services.Protocols.SoapException: Server was unable to process request. ---&gt; System.Exception: System.Web.Services.Protocols.SoapException: Server was unable to process request. ---&gt; System.Reflection.TargetInvocationException: Exception has been thrown by the target of an invocation. ---&gt; System.ArgumentException: Invalid token for impersonation - it cannot be duplicated.\n&nbsp;&nbsp; at System.Security.Principal.WindowsIdentity.CreateFromToken(IntPtr userToken)\n&nbsp;&nbsp; at System.Security.Principal.WindowsIdentity..ctor(SerializationInfo info)\n&nbsp;&nbsp; at System.Security.Principal.WindowsIdentity..ctor(SerializationInfo info, StreamingContext context)</P>
+<P>We are implementing CSLA for the first time, we don't get any errors in executing Project Tracker solution given with CSLA frame work 2.0. But when we try to implement in our application , we got the above error.</P>
+<P>Your timely help to resolve this error will be appreciated</P>
+<P>Regards,</P>
+<P>Uma</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, October 15, 2007</h2><P>The issue is clearly one of security configuration. Your server is trying to impersonate the client's WindowsIdentity and you have some sort of mismatch.</P>
+<P>The configuration problem could be at the IIS level, the ASP.NET level or the CSLA level.</P>
+<P>The CSLA level has a simple rule - the client and server both must use the same CslaAuthentication value in your &lt;appSettings&gt; block. This is the easiest to check and fix, but is probably not your problem. Your problem is probably at the ASP.NET level or in the configuration of your virtual root in IIS.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>saadhvi replied on Monday, October 15, 2007</h2><P>Hi Rocky,</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Thank you&nbsp;so much for your valuable suggestion.</P>
+<P>Regards,</P>
+<P>Uma</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

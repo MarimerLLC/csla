@@ -1,0 +1,140 @@
+<html><header><title>CslaDataProvider.CreateHandler() bug</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CslaDataProvider.CreateHandler() bug</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5665.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Ash002 posted on Thursday, October 23, 2008</h2>Hi All<br><br>Extending CslaDataProvider causes CreateHandler() to fail on the line <br><br><font size="2" face="Courier New">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; MethodInfo method = this.GetType().GetMethod("QueryCompleted", BindingFlags.Instance | BindingFlags.NonPublic);<br></font><br>as <font size="2" face="Courier New">QueryCompleted()</font> is private. Can fix?<br><br>Thanks in advance<br><br>Ashley<br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Friday, October 24, 2008</h2>BindingFlags.NonPublic means it should find private members.&nbsp; Perhaps it's not searching the inheritance hierarchy though?<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Friday, October 24, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Yes, I think it is missing FlattenHierarchy binding flag.&nbsp;
+I will try to fix it today.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> ajj3085
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Friday, October 24, 2008 8:20 AM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] CslaDataProvider.CreateHandler() bug<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>BindingFlags.NonPublic means it should find private
+members.&nbsp; Perhaps it's not searching the inheritance hierarchy though?<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Friday, October 24, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>This has been fixed in the latest source code.&nbsp; Unit tests
+have also been added for this use case.&nbsp; If you need the fix right now,
+you can grab it from SVN.&nbsp; You will need two files: CslaDateProvider and
+MethodCaller.&nbsp; If not, it will be available in the next release of 3.6.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Thanks for reporting this, Ashley.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899<o:p></o:p></span></p>
+
+<p class=MsoNormal><b><i><span>Magenic</span></i></b><span> </span><span>&reg;</span><b><i><span><o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Ash002
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Thursday, October 23, 2008 10:50 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> [CSLA .NET] CslaDataProvider.CreateHandler() bug<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Hi All<br>
+<br>
+Extending CslaDataProvider causes CreateHandler() to fail on the line <br>
+<br>
+<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+MethodInfo method = this.GetType().GetMethod(&quot;QueryCompleted&quot;,
+BindingFlags.Instance | BindingFlags.NonPublic);<br>
+</span><br>
+as <span>QueryCompleted()</span>
+is private. Can fix?<br>
+<br>
+Thanks in advance<br>
+<br>
+Ashley<br>
+<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Ash002 replied on Sunday, October 26, 2008</h2>Thanks guys, great service!!<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,35 @@
+<html><header><title>the &quot;Kosher&quot; way to register custom authorization rules</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>the &quot;Kosher&quot; way to register custom authorization rules</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9292.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>breakphreak posted on Thursday, July 29, 2010</h2><p>hey there :)</p>
+<p>Just discovered in the source a static method, called &quot;AddObjectAuthorizationRules()&quot; that every business object type (for example) might implement. I find it very useful for the following pattern (problem description will follow):</p>
+<p>&nbsp;</p>
+<ul>
+<li>Some application-level base class imlements the method above (static protected)</li>
+<li>The implementation scans the attributes of the actual (probably derived) class, generates authorization rules and registers them</li>
+</ul>
+<p>&nbsp;</p>
+<p>Implementation details:</p>
+<p>&nbsp;</p>
+<ul>
+<li>Scanning class/interface-level attributes is easy</li>
+<li>Registering class-level rules is easy</li>
+<li>Scanning property-level attributes is easy</li>
+<li><strong>PROBLEM</strong>: Registering property-level rules is cumbersome.</li>
+</ul>
+<p>&nbsp;</p>
+<p><strong>Explanation</strong>: </p>
+<p>&nbsp;</p>
+<ul>
+<li>to create a property-level rule (which will be obviously mapped to Write/ReadProperty action), I need to supply an &quot;element&quot; argument, which is of type &quot;IMemberInfo&quot; to the rule constructor.</li>
+<li>to get the IPropertyInfo for the right property I might use FieldManager, but I am in the static context</li>
+</ul>
+<p>&nbsp;</p>
+<p>Possible solutions (both not very &quot;Kosher&quot;):</p>
+<p>&nbsp;</p>
+<ul>
+<li>Patch the Csla source, thus declaring the &quot;PropertyInfoManager&quot; as <i>public</i>. Not very exciting. Assumed you&#39;ve done it on purpose and expecting some other probs (order call of static constructors etc)</li>
+<li style="direction:ltr;">Provide a custom local implementation for &quot;IMemberInfo&quot; interface (i.e. simply supplying the Name property) and passing the instance to the Rule constructor.</li>
+</ul>
+<p>&nbsp;</p>
+<p>As you might see, neither option is very exciting and looks more like a workaround. Assumed you&#39;ve considered issues like mine, when designing the cool library, it would be great to hear a bit of advice regarding the better solution that fully complies to the Csla state of mind.</p>
+<p>&nbsp;</p>
+<p><b>Update</b>: continued here:&nbsp;<a href="http://forums.lhotka.net/forums/p/9293/44087.aspx#44087">http://forums.lhotka.net/forums/p/9293/44087.aspx#44087</a></p>
+<p>&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

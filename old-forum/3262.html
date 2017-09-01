@@ -1,0 +1,17 @@
+<html><header><title>strange occurence in DataMapper - Src.value = nothing</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>strange occurence in DataMapper - Src.value = nothing</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3262.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jav posted on Wednesday, July 25, 2007</h2><P>csla 2.1.4</P>
+<P>I have scores of WebForms that have been working just fine. Since yesterday I have run into a puzzeling problem.&nbsp; A DetailsView gets data from a CslaDataSource.&nbsp; Any fileds that are populated from the DB&nbsp;behave just&nbsp;fine, as&nbsp;do fields that were blank in the DB and are not touched in the DetailsView.&nbsp; However, if I delete a populated TextBox's contents, the value of that field is being read back into the object as 'Nothing' (which generates an arror in my LoadParameters method which will accept an empty string but not Nothing)</P>
+<P>If instead of completely deleting the text from the textbox, I replace a with a space character, everything works fine.</P>
+<P>I am pretty sure it's I who is doing something wrong somewhere but nothing appears out of place to my eyes.&nbsp; Would appreciate if anybody has an explanation for this weird behavior. BTW, all the text&nbsp;fields of my newly generated objects are always set to "" and this object is no exception.</P>
+<P>TIA</P>
+<P>jav</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, July 25, 2007</h2><P>Odds are you accidentally used a .NET string function instead of a VB one in your property set.</P>
+<P>For example, this works:</P>
+<P>Set(ByVal value As String)<BR>&nbsp; CanWriteProperty(...)<BR>&nbsp; If _name &lt;&gt; value Then<BR>&nbsp; ' ...</P>
+<P>But this will fail:</P>
+<P>Set(ByVal value As String)<BR>&nbsp; CanWriteProperty(...)<BR>&nbsp; If _name.Equals(value) Then<BR>&nbsp; ' ...</P>
+<P>The first one allows VB to automatically convert Nothing to "", but the second one invokes a .NET function that goes boom.</P>
+<P>Same with Len(x) vs x.Length and many other functions.</P>
+<P>One answer is to follow the C# forumla for a setter:</P>
+<P>Set(ByVal value As String)<BR>&nbsp; CanWriteProperty(...)<BR>&nbsp; If String.IsNullOrEmpty(value) Then value = ""<BR>&nbsp; If _name.Equals(value) Then<BR>&nbsp; ' ...</P>
+<P>That de-nulls the inbound value and allows you to use VB or .NET functions as you choose.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jav replied on Thursday, July 26, 2007</h2><P>Thanks Rocky.&nbsp; That is of great help.&nbsp; I am surprised I didn't encounter this before.&nbsp; I think I am going to start using your last suggestion as it appears to be the most bullet proof.</P>
+<P>Jav</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

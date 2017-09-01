@@ -1,0 +1,96 @@
+<html><header><title>Business Object Abstration...</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Business Object Abstration...</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11011.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>cmichaelgraham posted on Friday, December 23, 2011</h2><p>Greetings,</p>
+<p>I&#39;m trying to figure out how to abstract the implementation of my business objects through a set of interfaces.</p>
+<p>The problem I&#39;m having is figuring out how to represent the child collections.&nbsp; I was thinking ObservableCollection&lt;IMyChild&gt; would work in the parent, but the concrete parent will have an ObservableCollection&lt;MyChild&gt;, which is not an ObservableCollection&lt;IMyChild&gt;.</p>
+<p>I want to be able to pass the MyParent to my app code, but have my app code access the parent and child via the interfaces...</p>
+<p>Any advice is greatly appreciated :)</p>
+<p>-Mike</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Friday, December 23, 2011</h2><p>Hi,</p>
+<p>The problem here is that an interface is not serializable. So CSLA business objects may implement your interfaces but declarations must be a concrete type. </p>
+<p>My advice would be to rather look at using ObjectFactories in your DataAccess. </p>
+<p>When you use ObjectFactories your BO&#39;s will only</p>
+<ul>
+<li>declare properties</li>
+<li>static factory methods</li>
+<li>business rules&nbsp;</li>
+</ul>
+<p>And the ObjectFactory will have </p>
+<ul>
+<li>data access </li>
+<li>&quot;state&quot; update&nbsp;</li>
+</ul>
+<p>Plus you can create &quot;mock&quot; factories and make your own plugable ObjectFactoryLoader by using Interfaces. </p>
+<p>Even if you child property is declared as ObservableCollection&lt;MyChild&gt; the app code may cast the content to ObservableCollection&lt;IMyChild&gt; following the Liskov substitution principle.</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>cmichaelgraham replied on Monday, December 26, 2011</h2><p>Thank you for the response.&nbsp; </p>
+<p>I agree that the use of factories is important.&nbsp; My app code should receive a factory for creating new IMyChild objects.&nbsp; The factory will actually return the concrete MyChild object.&nbsp; </p>
+<p>My struggle is with the declaration of the child collection in IMyParent.</p>
+<p>CSLA creates a child collection in the concrete class that is, among other things, and ObservableCollection&lt;MyChild&gt;.</p>
+<p>These are my goals:</p>
+<ul>
+<li>I want to expose the child collection through my IMyParent interface.&nbsp; </li>
+<li>I want the app code to know only of the IMyFactory, IMyParent, and IMyChild interfaces, not the concrete underlying classes</li>
+<li>
+I want the app code to create new IMyParent and IMyChild objects using IMyFactory</li>
+<li>I want the app code to be able to add a factory-created IMyChild to the IMyParent-exposed child collection</li>
+<li>I want the app code to be able to bind to the IMyParent-exposed child collection and pick up collection changed events so the view updates when items are added or removed from the child collection</li>
+</ul>
+<p>Here is some <a target="_blank" title="code to illustrate my problem" href="https://gist.github.com/1520963">code to illustrate my problem</a></p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Monday, December 26, 2011</h2><p>Hi, </p>
+<p>I believe you should create an intermediate CSLA base class for MyChild that implements IChild interface.&nbsp; </p>
+<p>Look at this post series about polymorfism: <a href="http://forums.lhotka.net/forums/p/10976/51082.aspx#51082%20">http://forums.lhotka.net/forums/p/10976/51082.aspx#51082</a> </p>
+<p>The Child list should be declared as BusinessListBase of ChildBase objects (the concrete base class) and this should be the type of the managed property in Parent. </p>
+<p>You should then be able to expose the list as BusinessLisBase of child or ObservableCollection of IChild.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>cmichaelgraham replied on Tuesday, December 27, 2011</h2><p>Wow !!&nbsp; Thanks - that looks like it will do exactly what I asked <img src="http://forums.lhotka.net/emoticons/emotion-1.gif" alt="Smile" /></p>
+<p>I did notice (in the referenced post) that the interface IMyChild would have to inherit from IMobileObject (for proper Serialization?)...</p>
+<p>Is that really a requirement, or just from the example in that post?&nbsp; It does make sense that CSLA would require that the objects implement that...</p>
+<p>I was actually hoping that these requirements could be satisfied also:</p>
+<ul>
+<li>The IMyFactory, IMyParent, and IMyChild have no dependency on CSLA</li>
+<li>Target is Silverlight &amp; WPF</li>
+</ul>
+<p>One of the goals of the abstraction / interfaces is that the app code is independent of the Business Object implementation.</p>
+<p>I recognize that this may be impossible, and I greatly appreciate your assistance...</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>cmichaelgraham replied on Tuesday, December 27, 2011</h2><p class="MsoNormal">Here&#39;s an attempt to capture the essence of the interface design goals:</p>
+<ul>
+<li class="MsoNormal">I
+     want the app code to know only of the IMyFactory, IMyParent, and IMyChild
+     interfaces, not the concrete underlying classes</li>
+<li class="MsoNormal">I
+     want the app code to create new IMyParent and IMyChild objects using
+     IMyFactory</li>
+<li class="MsoNormal">I
+     want to expose the strongly-typed child collection (of IMyChild objects) through my IMyParent interface.&nbsp; </li>
+<li class="MsoNormal">I
+     want the app code to be able to add a factory-created IMyChild to the
+     IMyParent-exposed strongly-typed child collection (of IMyChild objects)</li>
+<li class="MsoNormal">I
+     want the app code to be able to bind to the IMyParent-exposed strongly-typed child collection (of IMyChild objects) and pick up collection changed events so the view updates when
+     items are added or removed from the child collection</li>
+<li class="MsoNormal">I
+     want the IMyFactory, IMyParent, and IMyChild have no dependency on CSLA</li>
+<li class="MsoNormal">I
+     want the implementation to run in Silverlight &amp; in WPF</li>
+</ul>
+<p>So I just hand the app code an IMyFactory and an IMyParent and it goes about its work...</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Tuesday, December 27, 2011</h2><p>Well,</p>
+<p>How do you plan to specify the databinding interfaces?</p>
+<p>UI often require knowledge of additional interfaces like INotifyDataError/INotifyErrorInfo/IPropertyChanged and <b>more. </b></p>
+<p>CSLA.Xaml helper classes for Error/Warn/Info and ViewModel will require access to CSLA objects. </p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>cmichaelgraham replied on Tuesday, December 27, 2011</h2><p>HI JonnyBee - it is a good point you make.</p>
+<p>This is a large application with lots of plugin extensions.&nbsp; Some of the extensions expose objects to the user like wells, leases, etc.&nbsp; I want to fully exploit CSLA for these extensions and have no issue with taking a dependency for these.&nbsp; This is where CSLA shines, with business rules, authorization rules, state tracking, UI helpers, and the like.</p>
+<p>The application also provides other plugin extensions that are more generic tools.&nbsp; An example is a decline curve chart.&nbsp; These tools &quot;attach&quot; themselves to dynamic data sources through &quot;templates&quot; that define how to map the data.</p>
+<p>To keep these tool as reusable as possible, the template objects get passed to the chart tool by the containing UI classes.&nbsp; There are many varied use cases for these tools and so there are many sets of containing UI classes.&nbsp; </p>
+<p>In some scenarios, the containing UI classes will load the chart templates from a back end configuration database (this is a case that could be implemented using CSLA if the interface abstraction dilemma can be solved), while in other use cases, the templates may just be created using POCOs generated in code.&nbsp; Other chart use cases will be constructed after the base product is shipped and deployed, and may provide the chart templates using some not-yet-known scheme.</p>
+<p>It would be nice, but not crucial, if one of the chart template implementations could be CSLA-based.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>cmichaelgraham replied on Tuesday, December 27, 2011</h2><p>What would you think about creating an ObservableCollection&lt;IMyChild&gt; in the MyParent business object and writing code to keep in in sync with the MyChildCollection?</p>
+<p>That way, the IMyParent interface can expose the ObservableCollection&lt;IMyChild&gt;, but consumers of the concrete classes get all of the CSLA goodness?</p>
+<p>Would I just have to hook the collection changed event in both observable collections and propagate the changes to the other?</p>
+<p>Do you see any hidden problems with that approach?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>cmichaelgraham replied on Tuesday, December 27, 2011</h2><p>I updated the GIST to illustrate the idea...&nbsp; Seems to work...&nbsp; Please let me know if you can think of any gotchas...</p>
+<p><a target="_blank" title="Gist Code Sample" href="https://gist.github.com/1520963">Gist Code Sample</a></p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Saturday, December 31, 2011</h2><p>My simplest sample would be like this:</p>
+<ul>
+<li>IChild interface</li>
+<li>ChildObject&lt;T&gt; - intermediate base class with IChild properties</li>
+<li>ChildObject1&nbsp;&nbsp;&nbsp;&nbsp; - actual implementation of child type 1</li>
+<li>ChildObject2&nbsp;&nbsp;&nbsp;&nbsp; - actual implementation of child type 2</li>
+<li>ChildBusinessList - Busines list class of type IChild.</li>
+</ul>
+<p>My code:</p>
+<p>&nbsp; // Common interface for child <br />&nbsp; public interface IChild : Csla.Core.IEditableBusinessObject<br />&nbsp; {<br />&nbsp;&nbsp;&nbsp; int Id { get; set; }<br />&nbsp;&nbsp;&nbsp; string Name { get; set; }<br />&nbsp; }<br /><br />&nbsp; [Serializable]<br />&nbsp; // Common base class with common properties <br />&nbsp; public class ChildType&lt;T&gt; : BusinessBase&lt;T&gt; where T : ChildType&lt;T&gt;, IChild<br />&nbsp; {<br />&nbsp;&nbsp;&nbsp; private static readonly PropertyInfo&lt;int&gt; IdProperty = RegisterProperty&lt;int&gt;(p =&gt; p.Id);<br />&nbsp;&nbsp;&nbsp; public int Id<br />&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; get { return GetProperty(IdProperty); }<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; set { SetProperty(IdProperty, value); }<br />&nbsp;&nbsp;&nbsp; }<br /><br />&nbsp;&nbsp;&nbsp; // example with managed backing field<br />&nbsp;&nbsp;&nbsp; private static readonly PropertyInfo&lt;string&gt; NameProperty = RegisterProperty&lt;string&gt;(p =&gt; p.Name);<br />&nbsp;&nbsp;&nbsp; public string Name<br />&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; get { return GetProperty(NameProperty); }<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; set { SetProperty(NameProperty, value); }<br />&nbsp;&nbsp;&nbsp; }<br />&nbsp; }<br /><br />&nbsp; [Serializable]<br />&nbsp; public class ChildType1 : ChildType&lt;ChildType1&gt;, IChild<br />&nbsp; {<br />&nbsp;&nbsp;&nbsp; public ChildType1(int id, string name)<br />&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; using (BypassPropertyChecks)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Id = id;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Name = name;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; MarkAsChild();<br />&nbsp;&nbsp;&nbsp; }<br />&nbsp; }<br /><br />&nbsp; [Serializable]<br />&nbsp; public class ChildType2 : ChildType&lt;ChildType2&gt;, IChild<br />&nbsp; {<br />&nbsp;&nbsp;&nbsp; public ChildType2(int id, string name)<br />&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; using (BypassPropertyChecks)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Id = id;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Name = name;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; MarkAsChild();<br />&nbsp;&nbsp;&nbsp; }<br />&nbsp; }<br /><br />&nbsp; [Serializable]<br />&nbsp; public class ChildBusinessList :<br />&nbsp;&nbsp;&nbsp; BusinessListBase&lt;ChildBusinessList, IChild&gt;<br />&nbsp; {<br />&nbsp;&nbsp;&nbsp; public static ChildBusinessList GetEditableRootList(int id)<br />&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return DataPortal.Fetch&lt;ChildBusinessList&gt;(id);<br />&nbsp;&nbsp;&nbsp; }<br /><br />&nbsp;&nbsp;&nbsp; private void DataPortal_Fetch(int criteria)<br />&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; RaiseListChangedEvents = false;<br /><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; this.Add(new ChildType1(1, &quot;Xyx&quot;));<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; this.Add(new ChildType2(2, &quot;Zzy&quot;));<br /><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; RaiseListChangedEvents = true;<br />&nbsp;&nbsp;&nbsp; }<br />&nbsp; }</p>
+<p>Unit Test:</p>
+<p>&nbsp;&nbsp;&nbsp; [TestMethod()]<br />&nbsp;&nbsp;&nbsp; public void GetEditableRootListTest()<br />&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var list = ChildBusinessList.GetEditableRootList(1);<br /><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Assert.AreEqual(typeof(ChildType1), list[0].GetType());<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Assert.AreEqual(typeof(ChildType2), list[1].GetType());<br />&nbsp;&nbsp;&nbsp; }</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

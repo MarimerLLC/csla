@@ -1,0 +1,31 @@
+<html><header><title>Expose ReadOnlyListBase through Interface?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Expose ReadOnlyListBase through Interface?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10167.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>hurcane posted on Monday, March 14, 2011</h2><p>I have two object graphs that need to be used interchangeably by a method. The graph is a simple read-only root object, read-only child list, and read-only child object.</p>
+<p>I have defined Interfaces for the root and child objects, but I am getting stuck with how to expose the basic functionality of the list. The method needs to be able to access the Count property and enumerate the collection.</p>
+<p>Putting some concrete values on this:</p>
+<p>StockItem (ReadOnlyBase) implements IItemInfo</p>
+<p>StockItemPrices (ReadOnlyListBase) implements <b>???</b></p>
+<p>StockItemPrice (ReadOnlyBase) implements IItemPriceInfo</p>
+<p>My other object graph is similar in structure, but consists of CatalogItem, CatalogItemPrices, and CatalogItemPrice objects.</p>
+<p>IItemInfo needs a property to expose the prices collection. I think I want to expose it as an interface, but how do I also expose the Item and Count properties, as well as the enumerator, which are all features built into the classes?</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Monday, March 14, 2011</h2><p>You can probably use one of the standard enumeration/list/collection interfaces already implemented by ReadOnlyListBase. It is a subclass of ObservableCollection (CSLA 4) or BindingList (3.8 and older).</p>
+<p>Those Microsoft base classes implement IEnumerable&lt;T&gt;, IList&lt;T&gt;, and (I think) ICollection&lt;T&gt;. They implement some non-generic version as well.</p>
+<p>IEnumerable is where foreach and LINQ start working.</p>
+<p>I think IList is where the Count property comes in.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>hurcane replied on Tuesday, March 15, 2011</h2><p>Thanks, Rocky.</p>
+<p>I had gone this route, trying the following:</p>
+<p>Interface IItemInfo</p>
+<p style="padding-left:30px;">...</p>
+<p style="padding-left:30px;">ReadOnly Property Prices As IItemPricesInfo</p>
+<p style="padding-left:30px;">...</p>
+<p>End Interface</p>
+<p>Interface IItemPricesInfo : Inherits IList(Of IItemPriceInfo)</p>
+<p style="padding-left:30px;">Function GetPriceFor(OrderDate As Date) As IItemPriceInfo</p>
+<p>End Interface</p>
+<p>When I did this, the read-only list classes needed implementations of the IList methods for type IItemPriceInfo. This was getting messier than I wanted.</p>
+<p>Then I realized I could move my GetPriceFor method into the parent class. The property prices could simply be exposed as IList(Of IItemPriceInfo). A simple cast is all that I needed in the parent class.</p>
+<p>Thanks again!</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>hurcane replied on Wednesday, March 16, 2011</h2><p>Another followup to this issue. The &quot;simple&quot; cast that I referenced in my previous post turns out not to be so simple, at least in .NET 2.0. I know .NET 4.0 has some enhancements with regard to covariance and contravariance, but I don&#39;t think that applies to using Interfaces.</p>
+<p>You cannot directly cast ReadOnlyListBase(Of ListInfo, ListItemInfo) to IList(Of ListItemInfo).</p>
+<p>Instead, something like the following is needed:</p>
+<p>Dim newList As List(Of ListItemInfo)</p>
+<p>For Each listItem In ROBList</p>
+<p style="padding-left:30px;">newList.Add(listItem)</p>
+<p>Next</p>
+<p>return newList.AsReadOnly</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Wednesday, March 16, 2011</h2><p>Can&#39;t Linq help you?&nbsp; </p>
+<p>this.Select( x=&gt; x).Cast&lt;IListItemInfo&gt;().ToList().AsReadOnly()?</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

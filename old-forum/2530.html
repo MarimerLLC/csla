@@ -1,0 +1,44 @@
+<html><header><title>Query shared members</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Query shared members</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/2530.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Wal972 posted on Thursday, March 15, 2007</h2><FONT size=2>
+<P><FONT face=Arial>Hi</FONT></P>
+<P><FONT face=Arial>Can someone please explain why I need to have two different wording because I get the following error</FONT></P>
+<P><FONT face=Arial>Access of shared member, constant member, enum member or nested type through an instance; qualify expression will not be evaluated.</FONT></FONT></P>
+<P><FONT face=Arial><FONT color=#0000ff size=2>Private</FONT><FONT size=2> mEmployeeDetail </FONT><FONT color=#0000ff size=2>As</FONT></FONT><FONT size=2><FONT face=Arial> EmployeeDetail = Library.EmployeeDetail.NewEmployeeDetail</FONT></P>
+<P></FONT><FONT face=Arial><FONT color=#0000ff size=2>Protected</FONT><FONT size=2> mTaxDetail </FONT><FONT color=#0000ff size=2>As</FONT></FONT><FONT size=2><FONT face=Arial> TaxDetail = Library.TaxDetail.NewTaxDetail</FONT></P>
+<P></FONT><FONT face=Arial><FONT color=#0000ff size=2>Protected</FONT><FONT size=2> mAddressDetail </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> AddressDetail = AddressDetail.NewAddresDetail</FONT></FONT></P>
+<P><FONT face=Arial><FONT size=2>Thanks for the help</FONT></FONT></P>
+<P><FONT face=Arial><FONT size=2>Ellie</P></FONT></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jhw replied on Thursday, March 15, 2007</h2>I don't understand your question Ellie, can you explain it more? Are you talking about calling a shared method via an instance instead of the class?</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Thursday, March 15, 2007</h2><P>Ellie,</P>
+<P>It isn't clear from your post when or where you are getting the error message.</P>
+<P>This looks correct to me:</P>
+<P><FONT size=2><FONT face=Arial><FONT color=#0000ff>Protected</FONT> mTaxDetail <FONT color=#0000ff>As</FONT> TaxDetail = Library.TaxDetail.NewTaxDetail</FONT></FONT></P>
+<P><FONT face=Arial size=2></FONT>&nbsp;</P>
+<P><FONT face=Arial size=2>You could get that message if you incorrectly coded it like this: (Note the use of mTaxDetail on the right side.)</FONT></P>
+<P><FONT size=2><FONT face=Arial><FONT color=#0000ff>Protected</FONT> mTaxDetail <FONT color=#0000ff>As</FONT> TaxDetail = mTaxDetail.NewTaxDetail</FONT></FONT></P>
+<P>Joe</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Wal972 replied on Thursday, March 15, 2007</h2><P><FONT face=Arial size=2>Access of shared member, constant member, enum member or nested type through an instance; qualify expression will not be evaluated.</FONT></P>
+<P><FONT face=Arial>Sorry for the confusion.</FONT></P><FONT face=Arial>
+<P><FONT size=2><FONT face=Arial><FONT color=#0000ff>Private</FONT> mEmployeeDetail <FONT color=#0000ff>As</FONT></FONT><FONT face=Arial> EmployeeDetail = Library.EmployeeDetail.NewEmployeeDetail</FONT></FONT></P>
+<P><FONT size=2>works but if I have</FONT></P>
+<P><FONT size=2><FONT face=Arial><FONT color=#0000ff>Private</FONT> mEmployeeDetail <FONT color=#0000ff>As</FONT></FONT><FONT face=Arial> EmployeeDetail = EmployeeDetail.NewEmployeeDetail</FONT></FONT></P>
+<P><FONT size=2>then the error occurs. Yet</FONT></P>
+<P><FONT face=Arial><FONT size=2><FONT color=#0000ff>Protected</FONT> mAddressDetail <FONT color=#0000ff>As</FONT> AddressDetail = AddressDetail.NewAddresDetail</FONT></FONT></P>
+<P><FONT size=2>works</FONT></P>
+<P><FONT size=2>What is that all about ?</FONT></P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>malloc1024 replied on Thursday, March 15, 2007</h2><p class="MsoNormal">Are you calling this code in a class that contains a shared
+property called EmployeeDetail?<span>&nbsp; </span>If so,
+you should include Library.<span>&nbsp; </span>The reason
+for this is if you omit Library, the code:</p><p class="MsoNormal"><br></p>
+
+<p class="MsoNormal"><span>Private
+mEmployeeDetail As EmployeeDetail = EmployeeDetail.NewEmployeeDetail</span></p><p class="MsoNormal"><br><span> <o:p></o:p></span></p>
+
+<p class="MsoNormal"><span>Really is
+(notice the </span><span>Me.</span><span>)</span></p><p class="MsoNormal"><br><span><o:p></o:p></span></p>
+
+<p class="MsoNormal"><span>Private
+mEmployeeDetail As EmployeeDetail = Me.EmployeeDetail.NewEmployeeDetail.</span></p><p class="MsoNormal"><br><span><o:p></o:p></span></p>
+
+<p class="MsoNormal"><span>It is incorrect
+to call a shared property from an instance.<span>&nbsp;
+</span>As a result, you will get this error.<o:p></o:p></span></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Wal972 replied on Thursday, March 15, 2007</h2><P><FONT face=Arial size=2>Thanks so much, I had unintentionally done just that. I could find an explain in the help so I couldn't work out the problem</FONT></P>
+<P><FONT face=Arial size=2>The property for the EmployeeDetail within the Employee Class had the same name as the child class EmployeeDetail.</FONT></P>
+<P><FONT face=Arial size=2>Thanks, thanks thanks, it has driven me nuts off and on for ages but never found the problem</FONT></P>
+<P><FONT face=Arial size=2>Ellie</FONT></P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

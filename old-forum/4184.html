@@ -1,0 +1,248 @@
+<html><header><title>Csla 3.5 GetProperty and Authorisation</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Csla 3.5 GetProperty and Authorisation</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4184.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Skafa posted on Thursday, January 17, 2008</h2>Hey Rocky,<br><br>I'm currently looking into and testing Csla 3.5 and I find the following quite awkward:<br><br>For retrieving a managed property's value you use: GetProperty&lt;Type&gt;(PropertyInfo)<br><br>this will fire (from the base) CanRead and things like that.<br><br>But how do we retrieve the fields raw value without firing authorisation code (for use in the Insert / Update DataPortal functions)?<br><br>When I look at the ProjectTracker code, you use the GetProperty method in the DataPortal functions. But won't this give weird resulsts when a certain property has authorisation rules and you still want to be able to save your object?<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, January 17, 2008</h2><P>Hah! Good point. This is exactly why there are SetProperty() and LoadProperty() methods. Somehow it didn't occur to me that I need a ReadProperty() that works like LoadProperty().</P>
+<P>(unless you can think of a better name than ReadProperty())</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Skafa replied on Thursday, January 17, 2008</h2>ReadProperty sounds fine for me.<br><br>great work so far; I'm happily using these new features.<br><br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>vdhant replied on Thursday, January 17, 2008</h2><P>This is what i was kinda getting to here. I should have put that i was specifically meaning 3.5.<BR><A HREF="/forums/thread/20461.aspx">http://forums.lhotka.net/forums/thread/20461.aspx</A><BR><BR>Sounds like a good plan and the name is good.<BR>Anthony</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Skafa replied on Friday, January 18, 2008</h2>Rocky,<br><br>What version (cs or vb) is the most up to date? which do you recommend to use for testing at the moment ?<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>skagen00 replied on Friday, January 18, 2008</h2><P>This would be of interest to me too, our architecture is going to use a couple of the features in 3.5 that we were just starting to build in now and are very interested in moving forward. (We use C#)</P>
+<P>Also, in your release notes you say that the property stuff is prototype code and mentioned evaluating "if I like it". That is, how confident are you that this property approach will become a permanent part of CSLA? I assume extremely likely, but I wanted to get some sort of "yeah, that's the plan" if that's indeed the case. Would hate to start architecting around a 50/50 proposition :).</P>
+<P>Chris</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, January 18, 2008</h2><P>I need to update the change log to remove the "prototype" comment. This is a done deal at this point - what you see is what you get (plus a ReadProperty() method as discussed earlier in the thread).</P>
+<P>The VB and C# versions are in sync now, except that C# has indexed LINQ support and VB doesn't yet. Everything else should be the same. And if it isn't please let me know, as that means I missed something!</P>
+<P>I'll probably do another preview release in the next 1-2 days, as I did get one of my other primary goals done, and I'd like feedback - the object-level authorization concept has now been formalized into Csla.Security. So instead of implementing (by convention) those four static methods on each type (CanGetObject(), etc), it is all managed now through CSLA itself.</P>
+<P>This is an important change, as it allows the data portal and UI code to check authorization in a standard, reusable manner. The result is less code in each object (no need to check authorization in factory methods or a Save() override) and the potential to use authorization in UI frameworks.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Skafa replied on Friday, January 18, 2008</h2>,,So instead of implementing (by convention) those four static methods on
+each type (CanGetObject(), etc), it is all managed now through CSLA
+itself.''<br><br>Can you give a quick example of how to implement this the 3.5 way?<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>KKoteles replied on Friday, January 18, 2008</h2><P>Rocky,</P>
+<P>I haven't started looking at 3.5 yet; however...&nbsp;&nbsp;I know I've always had an issue with the use of ValidationRules.CheckRules() when I also had set AllowRead authorization on a property that also has business rules associated with it.&nbsp; It would always error since users in a certain role couldn't access the property and the CheckRules() function would try to access the property on their behalf.</P>
+<P>Is ValidationRules.CheckRules() going to be able to take advantage of the new ReadProperty() method to elimitate this problem?</P>
+<P>Ken<FONT size=2></P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, January 18, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>It depends on how you implement your rule method (as it did in
+2.0-3.0).<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>If your rule method accesses the value through the public
+property on the business object, then GetProperty() will be called and authorization
+will occur.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>If you want to avoid that pre-3.5 you needed to bypass the property
+and get the field directly. That&#8217;s true in 3.5 as well, except now you
+need to bypass the property and call ReadProperty() to get the &#8220;field&#8221;
+value.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>So in this regard nothing has really changed in any meaningful
+way.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> KKoteles
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Friday, January 18, 2008 11:13 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] Csla 3.5 GetProperty and Authorisation<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Rocky,<o:p></o:p></p>
+
+<p>I haven't started looking at 3.5 yet; however...&nbsp;&nbsp;I know I've
+always had an issue with the use of ValidationRules.CheckRules() when I also
+had set AllowRead authorization on a property that also has business rules
+associated with it.&nbsp; It would always error since users in a certain role
+couldn't access the property and the CheckRules() function would try to access
+the property on their behalf.<o:p></o:p></p>
+
+<p>Is ValidationRules.CheckRules() going to be able to take advantage of the
+new ReadProperty() method to elimitate this problem?<o:p></o:p></p>
+
+<p>Ken<span><o:p></o:p></span></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>KKoteles replied on Thursday, January 24, 2008</h2><P>Rocky,</P>
+<P>What I was trying to get at are things like your CommonRules.&nbsp; As an example StringMaxLength uses reflection to call the getter of a property.&nbsp; If you are not in a role that can 'see' a dependant&nbsp;property (however, for some reason it has a dependancy associated with a property you can 'see' - ValidationRules.AddDependantProperty) then everything is OK for the actual property being changed, but when the common rule fires for the denied read dependant property -&nbsp;you get an error (due to the deny read).</P>
+<P>Can the common rules be updated to make sure they call the ReadProperty() methods?&nbsp; This should eliminate the error when I am not reading the property directly, but the common rule functionality does for validation purposes.</P>
+<P>Ken</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, January 24, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Ahh, I see.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>That&#8217;s a tricky problem. I&#8217;m not requiring that
+people use the new managed property scheme &#8211; nor do I want to. The managed
+property scheme is very nice, but does incur a performance hit when compared to
+using private fields. My guess is that for most apps the perf hit is acceptable,
+but for other apps it may not be acceptable.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>So ReadProperty() and LoadProperty() aren&#8217;t universally
+useful. They only work with managed properties, not private field properties.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> KKoteles
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Thursday, January 24, 2008 2:24 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: Csla 3.5 GetProperty and Authorisation<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Rocky,<o:p></o:p></p>
+
+<p>What I was trying to get at are things like your CommonRules.&nbsp; As an
+example StringMaxLength uses reflection to call the getter of a property.&nbsp;
+If you are not in a role that can 'see' a dependant&nbsp;property (however, for
+some reason it has a dependancy associated with a property you can 'see' -
+ValidationRules.AddDependantProperty) then everything is OK for the actual
+property being changed, but when the common rule fires for the denied read
+dependant property -&nbsp;you get an error (due to the deny read).<o:p></o:p></p>
+
+<p>Can the common rules be updated to make sure they call the ReadProperty()
+methods?&nbsp; This should eliminate the error when I am not reading the
+property directly, but the common rule functionality does for validation
+purposes.<o:p></o:p></p>
+
+<p>Ken<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>vdhant replied on Thursday, January 24, 2008</h2><P>I was thinking about this very problem and the solution I was thinking of is as follows.<BR><BR>As ReadProperty (read is all you would need for the validation) is a protected method this is what causes the issue. For example, if it where public it wouldn't be a problem but making it public is obviously something you don’t want to do. <BR><BR>Not that i have tested that this would work (i.e. whether the compiler will let you but i am thinking it should), why don’t you make ReadProperty 'internal protected' instead of just protected. This way any part of the internal framework (i.e. CSLA) can read a value when required. By doing this it would allow you to create a protected method within the base class for rule, that allows the code that makes up the rule call this method (passing in the property name that you need) which internal calls the ReadProperty. This would work (I think) because it is the base class (which is internal) is calling the ReadProperty (which is also internal). All that would have to occur is for the rule&nbsp;base class method, when it is called check that the target object the correct CSLA object and then pass on the request.<BR><BR>This is just what i was thinking for my 2 bob worth.<BR>Thanks<BR>Anthony<o:p></o:p></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, January 25, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>That would work for managed fields, but not for private fields,
+because the rule method has no access to the private fields of an object.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> vdhant
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Thursday, January 24, 2008 9:11 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: RE: Csla 3.5 GetProperty and Authorisation<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>I was thinking about this very problem and the solution I was thinking of is
+as follows.<br>
+<br>
+As ReadProperty (read is all you would need for the validation) is a protected
+method this is what causes the issue. For example, if it where public it
+wouldn't be a problem but making it public is obviously something you donâ€™t
+want to do. <br>
+<br>
+Not that i have tested that this would work (i.e. whether the compiler will let
+you but i am thinking it should), why donâ€™t you make ReadProperty 'internal
+protected' instead of just protected. This way any part of the internal
+framework (i.e. CSLA) can read a value when required. By doing this it would
+allow you to create a protected method within the base class for rule, that
+allows the code that makes up the rule call this method (passing in the
+property name that you need) which internal calls the ReadProperty. This would
+work (I think) because it is the base class (which is internal) is calling the
+ReadProperty (which is also internal). All that would have to occur is for the
+rule&nbsp;base class method, when it is called check that the target object the
+correct CSLA object and then pass on the request.<br>
+<br>
+This is just what i was thinking for my 2 bob worth.<br>
+Thanks<br>
+Anthony<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

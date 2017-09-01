@@ -1,0 +1,83 @@
+<html><header><title>Troubles migrating to CSLA 4.5 and Silverlight 5</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Troubles migrating to CSLA 4.5 and Silverlight 5</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11675.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Dane posted on Saturday, November 03, 2012</h2><p>I&#39;m quite certain all my troubles are related to the breaking changes introduced in CSLA 4.5 for Silverlight 5 but I&#39;ve read all the posts I can find, I&#39;ve updated the config namespaces from Silverlight to Mobile but I&#39;m still missing something.</p>
+<p>My project has its primary UI in Silverlight. It&#39;s been functional for quite some time under CSLA 4 and Silverlight 4. I&#39;m working on bringing it forward to CSLA 4.5 / Silverlight 5 and I&#39;m having significant issues with DataPortal usage.</p>
+<p>As an example I have a class which inherits ReadOnlyListBase. It has a static method GetListAsync.</p>
+<pre class="csharpcode"><span class="kwrd">public</span> <span class="kwrd">static</span> <span class="kwrd">void</span> GetListAsync(MyCriteria criteria, EventHandler&lt;DataPortalResult&lt;MyList&gt;&gt; handler)
+{
+    DataPortal&lt;MyList&gt; dataPortal = <span class="kwrd">new</span> DataPortal&lt;MyList&gt;();
+    dataPortal.FetchCompleted += handler;
+    dataPortal.BeginFetch(criteria);
+}
+</pre>
+<p>I&#39;ve then implemented a DataPortal_Fetch override which is only visible outside of Silverlight, (#if !SILVERLIGHT preprocessor). DataPortal_Fetch then accesses my DAL and loads the list. Prior to the version upgrade the DataPortal_Fetch method was being called on the server but now it is never being called. The callback shows a DataPortalResult with an Error as follows:</p>
+<pre class="csharpcode">e.Error {Csla.DataPortalException: DataPortal.Fetch failed (Invalid operation - fetch not allowed) ---<span class="kwrd">&gt;</span> Csla.Reflection.CallMethodException: MyList.DataPortal_Fetch method call failed ---<span class="kwrd">&gt;</span> System.NotSupportedException: Invalid operation - fetch not allowed
+   at Csla.ReadOnlyListBase`2.DataPortal_Fetch(Object criteria)
+   at lambda_method(Closure , Object , Object[] )
+   at Csla.Reflection.MethodCaller.CallMethod(Object obj, DynamicMethodHandle methodHandle, Boolean hasParameters, Object[] parameters)
+   --- End of inner exception stack trace ---
+   at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccess(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter.ValidateEnd(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter.GetResult()
+   at Csla.Server.SimpleDataPortal.<span class="kwrd">&lt;</span><span class="html">Fetch</span><span class="kwrd">&gt;</span>d__6.MoveNext()
+   --- End of inner exception stack trace ---
+   at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccess(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter.ValidateEnd(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter`1.GetResult()
+   at Csla.DataPortal`1.<span class="kwrd">&lt;</span><span class="html">BeginFetch</span><span class="kwrd">&gt;</span>d__1e.MoveNext()
+}    System.Exception {Csla.DataPortalException}</pre>
+<pre class="csharpcode">I&#39;m obviously not understanding something about the changes. Any help you can provide would be appreciated.</pre>
+<pre class="csharpcode">Thanks</pre></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>skagen00 replied on Monday, November 05, 2012</h2><p>I&#39;m running into a case with creating a BO where my DP_Create code on the server isn&#39;t getting called too.</p>
+<p>It ends up determining that it should RunLocal=true and then just does a DP_Create locally in SL rather than going to the server.&nbsp; It&#39;s almost like it&#39;s reflecting SL code to find a matching DP_Create and when it doesn&#39;t find it it decides to ignore the fact it might exist in the .NET server code.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>skagen00 replied on Monday, November 05, 2012</h2><p>DataPortalT.cs - DoCreateAsync</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var method = Server.DataPortalMethodCache.GetCreateMethod(objectType, criteria);</p>
+<p>This ends up looking for a DataPortal_Create and ends up finding the Csla.Core.BusinessBase&#39;s implementation of DataPortal_Create which is marked as [RunLocal].&nbsp; As a result, it never ends up getting to the server&#39;s DataPortal_Create(criteria) which I&#39;ve implemented in my own class to provide some data access behind DataPortal_Create.</p>
+<p>Is this a bug or something we need to work around - and if so, what is the workaround? </p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>skagen00 replied on Monday, November 05, 2012</h2><p>Here is a workaround - not elegant but I think it&#39;d work fairly consistently - if I add this in my own BusinessBase (from Csla.BusinessBase), the GetCreateMethod ends up locating this on the server side and then going to the server.&nbsp; Hoping perhaps to get some guidance on the best approach to take.</p>
+<p>#if SILVERLIGHT</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /// &lt;summary&gt;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /// Create a non-[RunLocal] DataPortal_Create to allow Silverlight to not catch the [RunLocal] marked Csla.Core.BusinessBase&#39;s<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /// DataPortal_Create.<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /// &lt;/summary&gt;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; protected void DataPortal_Create(object criteria)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</p>
+<p>#endif</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Tuesday, November 06, 2012</h2><p>Hi,</p>
+<p>It is a braking change in CSLA 4.5 that all versions now use the standard&nbsp;DataPortal implementation.</p>
+<p>Which means that SL DataPortal now honors<strong> [RunLocal]</strong> attribute and that ProxyModes enum (Auto/LocalOnly) no longer exists. Pre 4.5 the SL DataPortal would not check for the existence of RunLocal attribute. </p>
+<p>I believe this is part of of issue <strong>1073 : Make Silverlight and WinRT use the standard .NET data portal implementation</strong></p>
+<p><em>Execisting code in SL / WinRT that used the&nbsp;ProxyModes.LocalOnly must be updated to use the RunLocal attribute and you must also verify that RunLocal is only applied to methods that should run locally. &nbsp;</em></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>skagen00 replied on Tuesday, November 06, 2012</h2><p>Hi Johnny -</p>
+<p>I&#39;m not entirely sure you followed the question. I have a server side dataportal_create method in my class, but it fails to get called *because* it&#39;s finding a dataportal_create marked as runlocal in Csla.Core.BusinessBase.</p>
+<p>What is the appropriate route? Is it to basically have DataPortal_Create/etc that look like the following? </p>
+<p>protected void DataPortal_Create(object criteria)</p>
+<p>{</p>
+<p>#if !SILVERLIGHT</p>
+<p>Data access code</p>
+<p>#endif</p>
+<p>}</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, November 06, 2012</h2><p>This sounds like a bug.</p>
+<p>I&#39;m not entirely sure how to resolve the bug without creating a breaking change.</p>
+<p>If you don&#39;t implement DP_Create at all, the desired behavior IS to have it run locally. So the current implementation is &quot;correct&quot;.</p>
+<p>Solutions that come to mind:</p>
+<ol>
+<li>Remove the DP_Create from the base class - forcing all classes to implement the method excplicitly, and breaking most current apps</li>
+<li>Conditionally remove the [RunLocal] attribute from the DP_Create in the base class on Silverlight, forcing all SL apps to default to calling the server even if there isn&#39;t a DP_Create on the server</li>
+<li>Rename this bug as a feature, and provide guidance on creating a dummy DP_Create on SL that doesn&#39;t have [RunLocal]</li>
+</ol>
+<p>I&#39;m kind of leaning toward option 3.</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Dane replied on Tuesday, November 06, 2012</h2><p>I&#39;m still pretty confused. I don&#39;t use the RunLocal attribute at all and I have no DataPortal_XYZ methods in my Silverlight code (they&#39;re all removed by pre-processors). I&#39;m using the Encapsulated Invocation data access model and my DataPortal_XYZ methods are invoking my DAL only on the .NET side, there&#39;s no access or knowledge of this layer from within Silverlight.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Tuesday, November 06, 2012</h2><p>I believe the CSLA BusinessBase base class DataPortal_Create method has the RunLocal attribute - so unless you override the default implementation it will be called locally.&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Dane replied on Tuesday, November 06, 2012</h2><p>Specifically I&#39;m running into it with the DataPortal_Fetch method and I&#39;m getting the exception I posted at the top of this thread, i.e &quot;Invalid operation, fetch not allowed&quot;. Are you saying I need to create a Silverlight side DataPortal_Fetch implementation that&#39;s empty?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>skagen00 replied on Tuesday, November 06, 2012</h2><p>I don&#39;t have any DataPortal_Fetch signatures in my SL and I&#39;m fine.&nbsp; I suspect you have something else going on.</p>
+<p>I found the [RunLocal] issue w/ DP_Create by stepping through the debug of CSLA.&nbsp; Is the signature of your DP_Fetch identical to what&#39;s being passed? Maybe it has become less forgiving in terms of type-matching? (Just a thought).</p>
+<p>(Sorry to have hijacked your thread with that DP_Create issue which certainly sounds different from what you&#39;re experiencing)</p>
+<p>Do you believe it&#39;s getting to the server? I sometimes would put breakpoints in my CompressedHost/Utility class to just give myself the knowledge that such-and-such was hitting the server.&nbsp; (Or a breakpoint in the CSLA server side data-portal class).&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Dane replied on Tuesday, November 06, 2012</h2><p>No, I don&#39;t believe it&#39;s reaching the server at all. I may have issues with all other DataPortal_XYZ methods as well but my app first failed on a Fetch so that&#39;s where I started to focus. The DataPortal_Fetch virtual method is defined to take a criteria of type object so the type is definitely appropriate. At this point I&#39;m at a complete loss. I&#39;m sure it has something to do with changes in either CSLA 4.5 or Silverlight 5 because it&#39;s been working without issue for months under CSLA 4 and Silverlight 4.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, November 06, 2012</h2><p>Did you make the required changes to the client and server regarding the serialization configuration?</p>
+<p><a href="http://www.lhotka.net/weblog/CSLA4Version45Beta1Released.aspx">http://www.lhotka.net/weblog/CSLA4Version45Beta1Released.aspx</a>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Dane replied on Tuesday, November 06, 2012</h2><p>If you are referring to the item about the change in namespace yes. Though the example has a typo in it. That post says to replace &quot;Silverlight&quot; with &quot;Mobile&quot; in the Csla.Server.Hosts.IWcfPortal but there&#39;s no &quot;Silverlight&quot; in that example. In my code I found Csla.Server.Hosts.Silverlight appearing in three places, the contract element of the service endpoint and the name element for that service defined in the web.config and again in the Service element of the WcfPortal.svc file. I replaced the &quot;Silverlight&quot; with &quot;Mobile&quot; in both files and made sure the name elements in the two locations matches.</p>
+<p>This did have wondering however as the contract is Csla.Server.Hosts.Mobile.IWcfPortal and, exploring around with Intellisense, I could not find that interface at that location. I&#39;ve only found IWcfPortal at Csla.WcfPortal.IWcfPortal. I tried updating the contract but with no luck. I also found that my ServiceReferenece.ClientConfig file had a contract WcfPortal.IWcfPort which differs from that in the web.config file. I tried updating both of these with the Csla.Server.Hosts.Mobile.IWcfPortal and then the Cals.WcfPortal.IWcfPortal but again without any luck in either case.&nbsp;</p>
+<p>I don&#39;t believe the other three bullet items in that post are&nbsp;relevant&nbsp;to my project.</p>
+<p>UPDATE: I found that Csla.WcfPortal.IWcfPortal is the only definition for that interface in Silverlight but I found that the .NET assembly has both Csla.Server.Hosts.Mobile.IWcfPortal and Csla.Server.Hosts.IWcfPortal. I haven&#39;t found any combination of these however that is getting me past the original exception.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Dane replied on Wednesday, November 07, 2012</h2><p>I went ahead and tried adding an empty protected override DataPortal_Fetch to the Silverlight code of my read only list class. It now runs without an exception but, of course, returns no data because it never calls the service. The initial exception I included above (and the fact it goes away when I include a Silverlight implementation of that method) seems to indicate that CSLA is demanding such an implementation or, perhaps that is being caused by the Silverlight client&#39;s inability to communicate with the server. I&#39;m at a complete loss what to try next. There appears to be something wrong with the communication between the client and server components through the WCF portal but I&#39;ve about exhausted the avenues I can think of to test.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, November 07, 2012</h2><p>Have you set the client side data portal proxy type to WcfProxy? It sounds like the data portal is configured to run in local mode (the default).</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Dane replied on Thursday, November 08, 2012</h2><p>Thanks Rocky. That seems to have put me back on track. </p>
+<p>I&#39;d added this to app.xaml.cs when I first created the Silverlight project.</p>
+<pre class="csharpcode"><span class="kwrd">private</span> <span class="kwrd">void</span> Application_Startup(<span class="kwrd">object</span> sender, StartupEventArgs e)
+{
+    <span class="rem">//Csla.DataPortal.ProxyTypeName = &quot;Local&quot;;</span>
+    <span class="kwrd">this</span>.RootVisual = <span class="kwrd">new</span> MainPage();
+}
+</pre>
+<p>I commented out the Local setting because I didn&#39;t want local and then I forgot to remove it. If I understand correctly Local is now default therefore I need to set it explicitly to return to non-Local.</p>
+<p>I went back and re-read the section on Silverlight proxy in Using CSLA 4 Data Portal Configuration and with the new info pieced together what seems to be a working solution. I replaced the commented line above with this.</p>
+<pre class="csharpcode">Csla.DataPortal.ProxyTypeName = <span class="kwrd">typeof</span>(Csla.DataPortalClient.WcfProxy).AssemblyQualifiedName;
+Csla.DataPortalClient.WcfProxy.DefaultEndPoint = <span class="str">&quot;BasicHttpBinding_IWcfPortal&quot;</span>;
+</pre>
+<p>The endpoint name was copied from the documentation back when I first created the ServiceReferences.ClientConfig file. It appears these were the default prior to 4.5?</p>
+<p>Anyway, I&#39;m past that hurdle and continuing to convert the rest of the app.</p>
+<p>Thanks again to Rocky, Jonny and skagen for your assistance.</p>
+<p>P.S. Rocky: Are there future plans to update the Using CSLA 4 ebooks for the 4.5 world? I know time must be a huge issue but I thought I&#39;d ask.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

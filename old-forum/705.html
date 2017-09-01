@@ -1,0 +1,58 @@
+<html><header><title>Stange error with the dataGridView</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Stange error with the dataGridView</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/705.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoOfMetL posted on Monday, July 24, 2006</h2><br>
+Process :<br>
+<br>
+Screen ProjectEdit : <br>
+<br>
+Description =&nbsp; "1"<br>
+Role = "Project Manager"<br>
+<br>
+&lt;&lt; Modify Description<br>
+&lt;&lt; Change the role of one Ressource<br>
+&lt;&lt; Modify Description<br>
+<br>
+Description =&nbsp; "2"<br>
+
+Role = "Developer"<br>
+<br>
+Click on the button Cancel<br>
+<br>
+Result : <br>
+<br>
+Description =&nbsp; "1"<br>
+
+
+
+Role = "Developer"<br>
+<br>
+So there is a problem.<br>
+<br>
+I think that the problem is the DataGridView call the method EndInit, so a snaphsot is taken.<br>
+When the state object is restored :<br>
+&nbsp;&nbsp;&nbsp;&nbsp; - parent one snaphsot (Initial)<br>
+&nbsp;&nbsp;&nbsp;&nbsp; - kind 2 snapshots (Initial + EndInit)<br>
+So the object is not entierely restored to this initial state.<br>
+<br>
+Do you have an idea ?<br>
+<br>
+Thank you.<br>
+<br>
+<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, July 24, 2006</h2>I'm not entirely sure what you are saying (the post is a bit cryptic <img src="/emoticons/emotion-1.gif" alt="Smile [:)]" />).<br><br>But I think the answer is that you should ONLY use BeginEdit/CancelEdit/EndEdit on the bindingsource objects, never on the business object itself, when doing data binding in Windows Forms 2.0. This has been discussed on a couple threads now, and consistent use of bindingsource methods seems to resolve the issues.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoOfMetL replied on Monday, July 24, 2006</h2><br>
+Thank you for you answer<br>
+<br>
+But, It's just a problem that I have found when I tested the Tracker Project. I don't modify the code or the Framework.<br>
+<br>
+And I tried to explain the process to reproduce the problem.<br>
+<br>
+<br>
+<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, July 24, 2006</h2>It is true, the current ProjectTracker code does call the n-level undo methods on the object directly and so it doesn't work correctly. I expect to update it for version 2.1, but I have also been waiting for people to more completely establish that the hypothesis about only interacting with bindingsource methods does resolve the issue.<br><br>Remember, I move at half-speed, because any change I make has to be made to both the VB and C# code bases, so I hold off making any changes as much as possible - especially if I don't know for sure that they are correct - because that double effort is a serious penalty...<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoOfMetL replied on Monday, July 24, 2006</h2>Ok<br><br>I am happy to see there is a solution. <br><br>I will try : "only interacting with bindingsource methods", and I will wait the version 2.1 <br><br>Thank you.<br><br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoOfMetL replied on Tuesday, July 25, 2006</h2>I try to call the method CancelEdit() on the BindingSource but it's doesen't work.<br>
+<br>
+When I change a value of a drop-down list in the datagridview, I think that it calls the EndEdit method, so there is a problem.<br>
+<br>
+I try to put the property CausesValidation to False, and it's works. However, I don't know if it is a good idea.<br>
+<br>
+<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, July 25, 2006</h2>In the PTracker forms there are TWO bindingsource controls. You need to tell both to EndEdit or CancelEdit, since both are actively bound to controls. I think you should call EndEdit/CancelEdit on the child bindingsource first, then the parent.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoOfMetL replied on Tuesday, July 25, 2006</h2>I called the method CancelEdit for the Two Bindingsource but first the parent and after the child.<br>
+<br>
+I try first Child and after Parent, and IT'S WORKING<br>
+<br>
+Thank you<br>
+<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

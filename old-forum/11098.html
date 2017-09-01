@@ -1,0 +1,23 @@
+<html><header><title>Is LINQ to SQL server-side execution ?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Is LINQ to SQL server-side execution ?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11098.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Hurty posted on Friday, January 27, 2012</h2><p>Hello everyone.</p>
+<p>For couple of months I&#39;ve been working with CSLA framework and I&#39;ve been very positive about all the features. They are just great. However, I ran into making the whole application currently working on being <b>3-tier application</b>. So I created WCF data portal and put the logic server-side except...</p>
+<p>...except local LINQ to SQL logic.</p>
+<p>So here is the question:<br /><b>Are LINQ to SQL executing actions server-side or only local-side.</b></p>
+<p>Here is snippet from what I use:</p>
+<p><i>&nbsp;using (var ctx = ContextManager&lt;LoginDataDataContext&gt;.GetManager(Database.LoginData))</i></p>
+<p>Will using the context trigger the actions on the server or will they remain on local machine ?</p>
+<p>George.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>richardb replied on Friday, January 27, 2012</h2><p>If this code is in your DataPortal_xxx methods then it would run in the location where the Data portal is configured, in this case in your WCF data portal on the server.</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Friday, January 27, 2012</h2><p>Hi,</p>
+<p>If your app is to be a true 3-tier application then all data access (including Linq2SQL) must happen on the serverside.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Hurty replied on Sunday, January 29, 2012</h2><p>Thanks guys... but if my LINQ2SQL code (posted above) it <b>not</b> included in DataPortal_ZYZ() methos would that code still run on server or will be local only?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Sunday, January 29, 2012</h2><p>Only code in DataPortal_XYZ&nbsp; or Objectfactories or called from within these methods are executed on the server. </p>
+<p>IE: All code is cleintSide code except for code that is called by:</p>
+<ul>
+<li>DataPortal.Create</li>
+<li>DataPortal.Fetch</li>
+<li>DataPortal.Save</li>
+<li>DataPortal.Delete</li>
+<li>DataPortal.Execute</li>
+</ul>
+<p>from the client. The DataPortal will add context information and depending on configuration send the object to the server and call the method on the server. </p>
+<p>For more detailed information I recommend the <b><i>Using CSLA 4</i></b> ebooks from Rocky.</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Hurty replied on Monday, January 30, 2012</h2><p>Thank you for the answer. Have the books from Lhotka, but haven&#39;t met anything about remote LINQ. And as you&#39;ve said I should move my LINQ2SQL code to <b>DataPortal.SOMETHING() </b>to execute on the server.</p>
+<p>A lot of thanks for the clearness. </p>
+<p>George.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

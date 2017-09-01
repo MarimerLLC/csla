@@ -1,0 +1,108 @@
+<html><header><title>Criteria isn't nested class or derived form CriteriaBase.</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Criteria isn't nested class or derived form CriteriaBase.</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3519.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>hanami279 posted on Tuesday, September 11, 2007</h2><P>Hi all,</P>
+<P>I need to create a criteria class for search function using CSLA. From the view of CSLA, criteria is an object that store all information related to all value we want to search. This class can be nested in business object or can be derived from CriteriaBase.</P>
+<P>From UI code, we must call method like:</P>
+<P>Ex: StateList states = StateList.GetState(stateCode, countyCode,...);</P>
+<P>But i find this way isn't convinent so i wrap all criterias in one class like below:</P>
+<P>[Serializable()]</P>
+<P>public class StateCriteria : Csla.ReadOnlyBase&lt;StateCriteria &gt;</P>
+<P>{</P>
+<P>&nbsp;&nbsp;&nbsp;public string StateCode = "";</P>
+<P>&nbsp;&nbsp;&nbsp;public string CountyName = "";</P>
+<P>&nbsp;&nbsp;&nbsp;//.... and so on</P>
+<P>}</P>
+<P>and my code is simpler:</P>
+<P>Ex: StateList states = StateList.GetState(stateCriteria); // where criteria hold all value about which state we want to seach.</P>
+<P>My approach is still working. But i wonder one thing, CSLA book point that criteria must be nested or inherit from CriteriaBase, because reflection mechaism use this information to create an instance of this object server. Why my approach is still working?</P>
+<P>Regards.</P>
+<P><FONT face="Courier New" size=2></FONT>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>phucphlq replied on Wednesday, September 12, 2007</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Hi all,<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>I see CSLA uses 2 ways to create a instance on server. When you
+call as Data_Portal.Create&lt;T&gt; or Fetch&lt;T&gt; CSLA will use T to find
+class. In other case, it uses Criteria.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>Hi Rocky, I think you should use only a way.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> hanami279
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Wednesday, September 12, 2007 10:32<br>
+<b>To:</b> phucphlq@dsp.com.vn<br>
+<b>Subject:</b> [CSLA .NET] Criteria isn't nested class or derived form
+CriteriaBase.<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Hi all,<o:p></o:p></p>
+
+<p>I need to create a criteria class for search function using CSLA. >From the
+view of CSLA, criteria is an object that store all information related to all
+value we want to search. This class can be nested in business object or can be
+derived from CriteriaBase.<o:p></o:p></p>
+
+<p>From UI code, we must call method like:<o:p></o:p></p>
+
+<p>Ex: StateList states = StateList.GetState(stateCode, countyCode,...);<o:p></o:p></p>
+
+<p>But i find this way isn't convinent so i wrap all criterias in one class
+like below:<o:p></o:p></p>
+
+<p>[Serializable()]<o:p></o:p></p>
+
+<p>public class StateCriteria : Csla.ReadOnlyBase&lt;StateCriteria &gt;<o:p></o:p></p>
+
+<p>{<o:p></o:p></p>
+
+<p>&nbsp;&nbsp;&nbsp;public string StateCode = &quot;&quot;;<o:p></o:p></p>
+
+<p>&nbsp;&nbsp;&nbsp;public string CountyName = &quot;&quot;;<o:p></o:p></p>
+
+<p>&nbsp;&nbsp;&nbsp;//.... and so on<o:p></o:p></p>
+
+<p>}<o:p></o:p></p>
+
+<p>and my code is simpler:<o:p></o:p></p>
+
+<p>Ex: StateList states = StateList.GetState(stateCriteria); // where criteria
+hold all value about which state we want to seach.<o:p></o:p></p>
+
+<p>My approach is still working. But i wonder one thing, CSLA book point that
+criteria must be nested or inherit from CriteriaBase, because reflection
+mechaism use this information to create an instance of this object server. Why
+my approach is still working?<o:p></o:p></p>
+
+<p>Regards.<o:p></o:p></p>
+
+<p>&nbsp;<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

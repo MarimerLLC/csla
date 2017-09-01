@@ -1,0 +1,92 @@
+<html><header><title>Validation Rules With Parent Child Relationships. Is it a Bug?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Validation Rules With Parent Child Relationships. Is it a Bug?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/8611.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>jlfernandezmiranda posted on Wednesday, March 03, 2010</h2><p>Hi guys.</p>
+<p>I use CSLA 3.7 version</p>
+<p>I have a Editable Root named Root1 and 2 EditableChilds:&nbsp; Child1 and Child2</p>
+<p>Child1 and Child2 are sharing the same string property( named Shared_Child_Property) </p>
+<p>I want to validate if exist at least one value not nullorempty for Shared_Child_Property&nbsp; (it is the same if exist in Child1.SharedProperty or Child2.SharedProperty)</p>
+<p>in root 1 i declared:</p>
+<p>Private Shared Child1Property As PropertyInfo(Of Child1) = _<br />RegisterProperty(New PropertyInfo(Of Child1)(&quot;Child&quot;))<br />Public ReadOnly Property Child1() As Child1<br />Get<br />If Not FieldManager.FieldExists(Child1) Then<br />LoadProperty(Child1Property, Child1.NewChild())<br />End If<br />Return GetProperty(Child1Property)<br />End Get<br />End Property</p>
+<p>....</p>
+<p>The same property declaration i did for Child2</p>
+<p>My problem is the follow:</p>
+<p>In Child_Create method of Child1, i call ValidationRules(the same ocurrs for child2)...</p>
+<p>And ValidationRules in Child 1 call this function :</p>
+<p>&nbsp;Private Function ValidateAtLeastOneSharedProperty(Of T As Root1)( _<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ByVal target As T, ByVal e As RuleArgs) As Boolean</p>
+<p>dim parent as Root1 = target.GetParent</p>
+<p>dim IsValidSharedPropChild1 as boolean = not string.IsnullorEmpty(target.Shared_Child_Property)</p>
+<p>dim IsValidSharedPropChild2 as boolean = not string.IsnullorEmpty(parent.Child2.Shared_Child_Property) </p>
+<p>if not IsValidSharedPropChild1 andAlso not IsValidSharedPropChild2 then</p>
+<p>e.Description = &quot;You must enter at least one valid string for Shared_Child_Property&quot;</p>
+<p>return false</p>
+<p>else</p>
+<p>return true</p>
+<p>end if</p>
+<p>End Function</p>
+<p>&nbsp;</p>
+<p>I don&acute;t know why target.GetParent return &#39;nothing&#39; in the first call( when -i call from Child_Create), but if i write any string on child1.Shared_Child_Property and then delete the error provider worksfine, because return a correct parent (root1) instead of return &#39;nothing&#39;.</p>
+<p>&nbsp;Any Ideas. Thanks Jose Luis</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Wednesday, March 03, 2010</h2><p>The Parent property isn&#39;t set until the child object is actually added as a child of the parent. </p>
+<p>Creating the child object occurs first. Then the child is added as a child of the parent.</p>
+<p>The DataPortal_Create() method is what is creating the child. This occurs before the object is assigned to its parent.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jlfernandezmiranda replied on Thursday, March 04, 2010</h2><p>Thanks Rocky. </p>
+<p>I read your book and I would need to catch FieldDataDeserialized() method in root1 to call validationrules.checkrules.</p>
+<p>But I solved this problem calling ValidationRules.CheckRules from&nbsp; DataPortal_OnDataPortalInvokeComplete, in this method I check</p>
+<p>If ApplicationContext.ExecutionLocation = _<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ApplicationContext.ExecutionLocations.Client AndAlso _<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; e.Operation = (DataPortalOperations.Create) Then</p>
+<p>&nbsp;</p>
+<p>&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;EnforceValidationRulesOn Child1 and Child2 Shared_Property&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;</p>
+<p>Child1.EnforceValidationManually</p>
+<p>Child2.EnforceValidationManually</p>
+<p>end if</p>
+<p>Because this 2 rules are dependants, but theirs locations are in distincts childproperties,</p>
+<p> I had to add this lines in Set Block of each Shared_Property.</p>
+<p>For Shared_Property in child1 I do:</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Set(ByVal value As String)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; SetProperty(Of String)( Shared_Property, value.Trim)<br /><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Dim parent As Object = TryCast(Me.Parent, root1)<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; If parent IsNot Nothing Then<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; CType(parent, root).Child2.EnforceValidationManually<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End If<br /><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Set</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br />This line call the ValidationRule for&nbsp; child2.SharedProperty, but NOT REMOVE the broken rule because Property_Changed has not been fired.</p>
+<p>Is there any way easier to do this?</p>
+<p>If I have 2 dependant properties to validate in 2 diferents editablechild properties, how do i to create a ruleDependant?</p>
+<p>&nbsp;</p>
+<p>Thanks</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, March 05, 2010</h2><p>I typically put this kind of rule in the parent object, not in the child. The parent object knows when the child object is created, and when it changes, so it is a simple location to put this type of rule.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jlfernandezmiranda replied on Friday, March 05, 2010</h2><p>Hi Rocky, thanks for your answer</p>
+<p>I have a Root: ---&gt; CustomerA</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; And 2 Childs&nbsp; -----&gt; HomePhone</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ------------------&gt; These childs props are sharing PhoneNumerProperty(String)</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -------&gt;WorkPhone</p>
+<p>I choose this implementation because i don&#39;t want to save null values in my database.</p>
+<p>I put the rule in the parent like you suggest me, in this way:</p>
+<p>This is my code:</p>
+<p>&nbsp;&nbsp;&nbsp; &lt;Serializable()&gt; _<br />&nbsp;&nbsp;&nbsp; Public Class CustomerA<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Inherits BusinessBase(Of CustomerA)</p>
+<p>.........<br /><br />&#39;&#39;&#39;&#39;&#39;&#39;&#39;&nbsp; this is Child1<br /><br />&nbsp;&nbsp;&nbsp; Private Shared HomePhoneProperty As PropertyInfo(Of&nbsp; HomePhone) = RegisterProperty(New PropertyInfo(Of&nbsp; HomePhone)(&quot;HomePhone&quot;, &quot;HomePhone&quot;))<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &#39;&#39;&#39; &lt;Summary&gt;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &#39;&#39;&#39; Gets the HomePhone value.<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &#39;&#39;&#39; &lt;/Summary&gt;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Public ReadOnly Property HomePhone() As HomePhone<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Get<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; If Not FieldManager.FieldExists(HomePhoneProperty) Then<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; LoadProperty(Of HomePhone)(HomePhoneProperty, HomePhone.NewHomePhone)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End If<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return GetProperty(HomePhoneProperty)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Get<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Property<br /><br /><br />&#39;&#39;&#39;&#39;&#39;&#39;&#39;&nbsp; this is Child2<br /><br />&nbsp;&nbsp;&nbsp; Private Shared WorkPhoneProperty As PropertyInfo(Of WorkPhone) = RegisterProperty(New PropertyInfo(Of WorkPhone)(&quot;WorkPhone&quot;, &quot;WorkPhone&quot;))<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &#39;&#39;&#39; &lt;Summary&gt;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &#39;&#39;&#39; Gets the WorkPhone value.<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &#39;&#39;&#39; &lt;/Summary&gt;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Public ReadOnly Property WorkPhone() As WorkPhone<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Get<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; If Not FieldManager.FieldExists(WorkPhoneProperty) Then<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; LoadProperty(Of WorkPhone)(WorkPhoneProperty, WorkPhone.NewWorkPhone)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End If<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return GetProperty(WorkPhoneProperty)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Get<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Property<br /><br />........</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Protected Overrides Sub AddBusinessRules()</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ValidationRules.AddRule(Of CustomerA)(AddressOf ValidateAtLeat1Phone(Of CustomerA), HomePhoneProperty, 3)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; ValidationRules.AddRule(Of CustomerA)(AddressOf&nbsp; ValidateAtLeat1Phone(Of CustomerA),WorkPhoneProperty, 3)<br /><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ValidationRules.AddDependentProperty(HomePhoneProperty, WorkPhoneProperty, True)</p>
+<p>&nbsp;</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Sub</p>
+<p>&nbsp;</p>
+<p>&nbsp; Private Shared Function ValidateAtLeat1Phone(Of T As CustomerA)( _<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ByVal target As T, _<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ByVal e As Validation.RuleArgs) As Boolean</p>
+<p><br />&nbsp;&nbsp;&nbsp;&nbsp; dim hasHomePhone as boolean= not String.IsNullOrEmpty(target.HomePhone.PhoneNumer)</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp; dim hasWorkPhone as boolean= not String.IsNullOrEmpty(target.WorkPhone.PhoneNumer)</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp; dim IsValidRule as boolean =&nbsp; not  hasHomePhone AndAlso hasWorkPhone) </p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if not  IsValidRule then</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; e.Description= &quot;You must enter 1 phone number&quot;</p>
+<p>&nbsp;&nbsp;&nbsp; end if</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return&nbsp; IsValidRule</p>
+<p>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; End Function</p>
+<p>&nbsp;&nbsp; End Class</p>
+<p>When I create the root, the ValidateAtLeat1Phone is called but the errorprovider no catch it , so the description of broken rule is not shown, and also the&nbsp;&nbsp; function is not fired when I change&nbsp; PhoneNumerProperty in a child.</p>
+<p>What is my mistake? </p>
+<p>How do i to fire this ruleMethod?</p>
+<p>THANKS YOU VERY MUCH</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jlfernandezmiranda replied on Monday, March 08, 2010</h2><p>Rocky, my first question when I design this Validation Rule was the following:</p>
+<p>What is the OBJECT that handles the rule behavior?</p>
+<p>My answer was: The object is the shared property(PhoneNumber) located in child property, so it is a good place to put the validation rule. The parent object(root object) has no responsability to handle this shared property, so to put the validation rule in this class is no sense.</p>
+<p>In my UI i have 3 errorprovider controls, 1 for root and the others 2 for childs and also each error provider handles your own datasource (child class) so the root error provider&nbsp; has no responsability to manage the child property, because of this the rule broken is not shown. I could catch the root error provider in Property child events of root object in the UI and set error in the root error provider, but this idea violates encapsulation and normalization of behavior.</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

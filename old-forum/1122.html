@@ -1,0 +1,33 @@
+<html><header><title>Validation of child collection?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Validation of child collection?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/1122.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>jas_nhs posted on Tuesday, September 05, 2006</h2>Validation rules:<br>
+I have successfully implemented some custom rules, so 
+know how that can be used. However, my object (UserAccount) has a collection of 
+Roles as a property, named UserAccountRoles (simple parent-child, and not 
+related to Membership per se), and I was wondering if it is possible to devise a 
+rule which checks that at least one Role has been assigned. I tried 
+this:<br>
+<font face="Courier New, Courier, monospace">&nbsp;&nbsp;&nbsp; 
+ValidationRules.AddRule(AccountRoleRequired,"UserAccountRoles");<br><br>&nbsp;&nbsp;&nbsp; 
+private bool AccountRoleRequired(object target, Csla.Validation.RuleArgs 
+e)<br>&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (_userAccountRoles.Count == 0)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+e.Description = "User has not been allocated an Account Role";<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return 
+false;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; //else<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return true;<br>&nbsp;&nbsp;&nbsp; 
+}<br></font><br>
+but this gets called at object declaration time and the rule 
+basically always fails. <br>
+Probably I am approaching this from the wrong 
+angle - but how might I acheive what I want?<br>
+<br>
+Thanks<br>
+<br>
+James.<br>
+<br>
+<br>
+<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Tuesday, September 05, 2006</h2><P>You don't say what you mean by fails:</P>
+<P>"this gets called at object declaration time and the rule basically always fails."</P>
+<P>It could be something as simple as using the Property instead of the member variable: UserAccountRoles</P>
+<P>Then just be sure the Property uses the lazy loading style:</P>
+<P>If _userAccountRoles Is Nothing Then</P>
+<P>&nbsp;_userAccountRoles = UserAccountRoles.GetRoles</P>
+<P>End If</P>
+<P>Return _userAccountRoles</P>
+<P>Joe</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

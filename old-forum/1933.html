@@ -1,0 +1,51 @@
+<html><header><title>Windows authentication/connection - disaster has struck!</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Windows authentication/connection - disaster has struck!</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/1933.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>gajit posted on Friday, December 08, 2006</h2><P>I have found myself in a little pickle. Having developed what is looking to be a really slick application using CSLA 2.1, I have encountered an issue that is potentially devastating...</P>
+<P>I have implemented my application using CSLA based authentication - the need to manage application-based users/roles outweighed the windows method. However, my connection strings reflect a windows-authentication. This had been working fine ... until I needed to interact with another piece of 3rd party software, that is sent an instruction' to populate a row from within my application - by means of a username that it extracts from the function SUSER_SNAME()</P>
+<P><FONT color=#ff00ff size=3><FONT color=#000000>My problem is, that when I call the stored procedure to do this, the user name being returned always appears to be "SQLADMIN"...</FONT></FONT></P>
+<P>Any ideas where this username is being drawn from? Shouldn't the authentication reflect my username that is being validated in the domain?</P>
+<P>My connection string looks like this...</P><FONT color=#0000ff size=3>
+<P></FONT><FONT color=#ff0000 size=3>connectionString</FONT><FONT color=#0000ff size=3>=</FONT><FONT size=3>"</FONT><FONT color=#0000ff size=3>Data Source=SQLTEST;Initial Catalog=ResQ_Sandbox;Integrated Security=True</FONT><FONT size=3>"</P></FONT><FONT color=#0000ff size=3>
+<P></FONT><FONT color=#ff0000 size=3>providerName</FONT><FONT color=#0000ff size=3>=</FONT><FONT size=3>"</FONT><FONT color=#0000ff size=3>System.Data.SqlClient</FONT><FONT size=3>"</FONT><FONT color=#0000ff size=3> /&gt;</P></FONT>
+<P>if I modify the connection string to use SQL authentication, the problem goes away - but we plan on deploying to over 100 users within the company, with a 'healthy' turnover of employees, so having individual app.configs isn;t going to work.</P>
+<P>I'm running WinXP Pro - db is SQL Server 2005.</P>
+<P>Your help or any suggestions would be greatly appreciated.</P>
+<P>Thanks,</P>
+<P>G.</P>
+<P>&nbsp;</P>
+<P><FONT color=#ff00ff size=3><FONT color=#000000></FONT>&nbsp;</P></FONT>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>albruan replied on Friday, December 08, 2006</h2><P>I'm assuming you mean the name being returned from your stored proc is "SQLADMIN".&nbsp; On that basis, the reason you're getting "SQLADMIN" being returned is that it is the name under which all operations on SQL Server are apparently&nbsp;being handled.&nbsp; Regardless of the number of users of the app, there is a single connection to SQL Server for them all.</P>
+<P>This article may be of some assistance even though it deals with creating audit trails: <A href="http://www.sqlservercentral.com/columnists/spustovit/easyauditingasharedaccount.asp">http://www.sqlservercentral.com/columnists/spustovit/easyauditingasharedaccount.asp</A></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>gajit replied on Friday, December 08, 2006</h2><P>Thanks. But what is setting this characteristic?</P>
+<P>I have a VB6 app, which calls the same proc, but "correctly" returns the windows login of the user - not a 'catch-all' userid?</P>
+<P>Similarly the username returned by the 3rdparty VB app is returning the 'correct user' - not the catch-all...</P>
+<P>If my connection string suggests a Windows-authenticated login when executing a proc, I would expect the result of suser_sname() to reflect the user that logged in...</P>
+<P>I am verym very confused ... and at this point very concerned -&nbsp;I HAVE to idetify the user that's logged in...</P>
+<P>Thanks,</P>
+<P>G.</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>albruan replied on Friday, December 08, 2006</h2>A suggestion someone made to me about what was happening when my application executed a statement against SQL Server was to use the Profiler, available under the Tools menu in SQL Server Management Studio, and check to see what SQL Server was receiving from the application.&nbsp; Give it a try, copy the SQL code, paste it into SQL Server and see what happens then.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>gajit replied on Friday, December 08, 2006</h2><P>Thanks.</P>
+<P>I have checked that - all of the connections show 'mydomain\SQLADMIN' as the user ...</P>
+<P>This is very frustrating - first I have to determine if it's an expected behaviour - I don't understand why it would have changed ...</P>
+<P>Thanks,</P>
+<P>G.</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Friday, December 08, 2006</h2>Are you sure the application isn't running as mydomain\sqladmin?&nbsp; That sounds like a domain account someone created, I don't think that gets created automatically, I haven't found such a user in our domain here.<br><br>Also, seach the code, maybe someone added a pinvoke to login as that user?<br><br>Andy<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>gajit replied on Friday, December 08, 2006</h2><P>sqladmin is in fact one of our domain admins - or rather machine admins (the sql server machines).</P>
+<P>But don't understand why my connection would adopt this username when I start the app.</P>
+<P>No other developers on this project so the code is mine.. and definitely no code invoke this userlogin...(all mineeeeeee!)..</P>
+<P>G.</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Friday, December 08, 2006</h2>Does this happen on other machines?&nbsp; Did the profiler yield anything odd?<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>gajit replied on Friday, December 08, 2006</h2><P>Profiler didn't show anything 'strange' other than all the transactions showed as mydomain\sqladmin...</P>
+<P>I know of at least one other machine that we are testing on that has the same issue - I'm trying to hunt down a Win2k machine to try it on ....</P>
+<P>It may be picking up the user elected when connecting to say Tools ...</P>
+<P>Reading through some docs, it seems that Windows auth maps to a sql server domain user when connecting ...&nbsp;not absoultely sure what this means .. but am investigating...</P>
+<P>I'm actually quite surprised it even lets me use windows auth, as I am definitely not a domain user...</P>
+<P>Very strange... I'll keep you posted.</P>
+<P>Thanks,</P>
+<P>G.</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,18 @@
+<html><header><title>Friendly name from resource file</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Friendly name from resource file</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/12103.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>flying_monkey posted on Friday, August 02, 2013</h2><p>Hi,</p>
+<p>I have been using the friendly name in the property info to provide proper business rule messages. My problem now is that I need to have my application run in more the one locale. I saw this post http://forums.lhotka.net/forums/t/6888.aspx where JonnyBee says to put the friendly name into a resource file and then use that to easily translate the friendly names.</p>
+<p>My problem is I tried this, I have two resource files in my application. Resources.resx and Resources.fr-CA.resx. The friendly name seems to successfully pull from Resources.resx at application start but when I switch languages the friendly name doesn&#39;t pull from the correct file and just shows from the default Resources.resx.</p>
+<p>Does anyone have any ideas of what I&#39;m missing?</p>
+<p>Thanks for the help.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Saturday, August 03, 2013</h2><p>Which type of application (web, SL, WPF, WinForms) do you have? </p>
+<p>
+You would typically not  change language after startup in a rich client. </p>
+<p>
+My first solution was to load from resource when application start up (the users Culture).
+</p>
+<p>
+For a web application is more complex -  as this requires your own IPropertyInfo that reads from resource file on each read of FriendlyName.</p>
+<p>RegisterProperty is only called once per property (as it is static) so&nbsp;</p>
+<p><ol>
+<li>You may create your own PropertyInfoFactory to set the friendly name from resource file (but only one selected/active language in a &quot;rich&quot; client)</li>
+<li>You may subclass PropertyInfo and change FriendlyName to read from resource file. Then your custom PropertyInfoFactory must create the new subclassed PropertyInfo. This will work for a web application / application server as well.</li>
+</ol></p>
+<p>I only needed 1 for &quot;rich&quot; client in edge application.&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

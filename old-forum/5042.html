@@ -1,0 +1,72 @@
+<html><header><title>How best to do this</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>How best to do this</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5042.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>JohnCantley posted on Tuesday, July 01, 2008</h2><P>Using the latest version 2 code. </P>
+<P>I have a form that lists the days of the week and appointments for each day. I grab all of the appointments slots for a particular center and then want to break them down by day and display them. I was looking at using the FindAll predicate but see that it is not part of the read only business base. Can I add that to the read only base and then pull in all days and just find the days using something like FindAll&nbsp;and bind them that way or should I pull each day one at a time and display that way. This will not be heavily used so 7 db calls is not out of the question. I was hoping to see a FindAll in there and then just grab them out of my business object. If I can add a FindAll can someone point me to where I need to look to do that?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>nermin replied on Tuesday, July 01, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I would use FilteredBindingList.&nbsp; To Csla List
+FilteredBindingList is what DataView is to DataTable.&nbsp; Everything is
+stored in the BusinesList but subset is accessible form the
+FilteredBindingList.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Moreover, the same way you specify predicates for FindAll, you
+can specify custom filter criteria in your implementation of
+FilteredBindingList;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Nermin<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> JohnCantley
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Tuesday, July 01, 2008 12:29 PM<br>
+<b>To:</b> Nermin Dibek<br>
+<b>Subject:</b> [CSLA .NET] How best to do this<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Using the latest version 2 code. <o:p></o:p></p>
+
+<p>I have a form that lists the days of the week and appointments for each day.
+I grab all of the appointments slots for a particular center and then want to
+break them down by day and display them. I was looking at using the FindAll
+predicate but see that it is not part of the read only business base. Can I add
+that to the read only base and then pull in all days and just find the days
+using something like FindAll&nbsp;and bind them that way or should I pull each
+day one at a time and display that way. This will not be heavily used so 7 db
+calls is not out of the question. I was hoping to see a FindAll in there and
+then just grab them out of my business object. If I can add a FindAll can
+someone point me to where I need to look to do that?<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

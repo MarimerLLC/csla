@@ -1,0 +1,300 @@
+<html><header><title>CSLA .NET 3.5 preview release</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA .NET 3.5 preview release</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4178.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka posted on Tuesday, January 15, 2008</h2><P>I have refreshed the CSLA .NET 3.5 download with much more recent code. (<A href="http://www.lhotka.net/cslanet/download.aspx">www.lhotka.net/cslanet/download.aspx</A>)</P>
+<P>The C# and VB versions of the framework and ProjectTracker are now very comparable. The only difference is that the VB framework doesn't have the LINQ extensions yet (though the C# version doesn't have the coolest parts yet either).</P>
+<P>Some highlights:</P>
+<OL>
+<LI>All the new property/field/child management code is in both versions. The result is code reduction of ~35% per property and no more string literals for property names.</LI>
+<LI>All the new child object code is in both versions. The result is no more plumbing code for child objects, "automatic" lazy loading support and consistent persistence for root and child objects.</LI>
+<LI>Both versions have seriously enhanced type coercion that is used by the new property scheme and by DataMapper. </LI>
+<LI>Both versions have much improved type casting for SmartDate, allowing much more flexible use of this type.</LI>
+<LI>Check out the new ConnectionManager and ContextManager classes in Csla.Data for simplification of data access code with ADO.NET or LINQ.</LI>
+<LI>ProjectTracker.Library now uses an external data access assembly, which was created using LINQ to SQL.</LI></OL>
+<P>There are <EM>many</EM> other changes/enhancements/fixes - check out the <A href="http://www.lhotka.net/Article.aspx?area=4&amp;id=71994329-d218-4c02-a4d4-ce5ea4ac8d4b">change log</A> for details. Or look at all the <A href="http://www.lhotka.net/cslanet/WishList.aspx">green in the wish list</A>, because that's all in 3.5.</P>
+<P>I am still planning to do a beta release around January 25, so this is probably the last preview release before the beta.</P>
+<P>I'm still working on a number of issues, and have more testing to do in general, but this is getting reasonably close to the final 3.5 feature set.</P>
+<P>If you have comments/questions/concerns, please voice them now! Once the beta starts I'll be doing bug fixes only.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>PC Tech replied on Wednesday, January 16, 2008</h2>Thats great news Rocky! I'm looking forward to using Csla.net 3.5 in an upcoming LOB project. I've been using Csla.net 2.0 until now with great success. When can we expect a "hard copy" book release similar to the one for Csla.net 2.0 that starts from the bottom up? Keep up the good work.&nbsp;</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, January 16, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>With luck &#8220;Expert 2008 Business Objects&#8221; will be out
+around July.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> PC Tech
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Wednesday, January 16, 2008 4:13 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] CSLA .NET 3.5 preview release<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Thats great news Rocky! I'm looking forward to using
+Csla.net 3.5 in an upcoming LOB project. I've been using Csla.net 2.0 until now
+with great success. When can we expect a &quot;hard copy&quot; book release
+similar to the one for Csla.net 2.0 that starts from the bottom up? Keep up the
+good work.&nbsp;<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>vdhant replied on Wednesday, January 16, 2008</h2><P>First of all great work... <BR>but i must say you have wet my apatite with "though the C# version doesn't have the coolest parts yet either"... may i ask what plans you have in store.<BR>Thanks <BR>Anthony</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, January 16, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>There are two LINQ related features for 3.5.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>The first is indexed queries, which have been discussed in
+another thread. They are largely complete in C# and are being ported to VB.
+This is a useful feature if you do repeated equality searches against a list (BLB
+or ROLB).<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>The second addresses one of the most likely negative scenarios
+with LINQ. If you do this:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>var data = from i in someList select i;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>What you get back is an IEnumerable&lt;ItemType&gt;. The items
+themselves still belong to the original list object, but you can manipulate
+them through the query result. If you add or remove items from &#8220;data&#8221;
+it has NO IMPACT on the actual list. That is potentially quite confusing,
+especially if you bind &#8220;data&#8221; to a grid and expect the user to get
+useful results as they interact with the data in the grid.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>So the second feature will ensure &#8220;data&#8221; is
+something more complex &#8211; a LinqBindingList&lt;T&gt;. This is still a list
+containing the query result, but it is like FilteredBindingList or
+SortedBindingList, in that it is a live view of the original list. So when
+items are added/removed from &#8220;data&#8221; in this case, they are also
+added/removed from the original list. The result is much more what you&#8217;d
+normally expect, especially if you bind the UI to this result.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> vdhant
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Wednesday, January 16, 2008 7:01 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: CSLA .NET 3.5 preview release<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>First of all great work... <br>
+but i must say you have wet my apatite with &quot;though the C# version doesn't
+have the coolest parts yet either&quot;... may i ask what plans you have in
+store.<br>
+Thanks <br>
+Anthony<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Skafa replied on Thursday, January 17, 2008</h2>See this thread for an issue I found Rocky:<br><br>http://forums.lhotka.net/forums/thread/20461.aspx<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ward0093 replied on Thursday, January 17, 2008</h2><P>Great News Rocky!&nbsp; I have to say your framework has saved a ton of time developing as well as creating stardard modules and methodologies for all of us to work off of.&nbsp; Keep up the great work.</P>
+<P>We have a list of upgrades to perform this spring (Infragistics, DevExpress, and of course CSLA)... we would like to plan it around the 3.5 Production Release... do you have a timeframe for that release?</P>
+<P>Thanks,<BR>ward0093</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, January 17, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I am still shooting for a Jan 25 beta release. Depending on how
+the beta goes, and how much time I have free given that I&#8217;m spending 3
+weeks traveling to a client in February, I&#8217;d like to think a release at
+the end of February is possible. Or mid-March maybe.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> ward0093
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Thursday, January 17, 2008 8:18 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] CSLA .NET 3.5 preview release<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Great News Rocky!&nbsp; I have to say your framework has saved a ton of time
+developing as well as creating stardard modules and methodologies for all of us
+to work off of.&nbsp; Keep up the great work.<o:p></o:p></p>
+
+<p>We have a list of upgrades to perform this spring (Infragistics, DevExpress,
+and of course CSLA)... we would like to plan it around the 3.5 Production
+Release... do you have a timeframe for that release?<o:p></o:p></p>
+
+<p>Thanks,<br>
+ward0093<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Henrik replied on Friday, January 18, 2008</h2><P class=MsoNormal><SPAN><FONT face=Calibri>Hi Rocky<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><o:p><FONT face=Calibri>&nbsp;</FONT></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><FONT face=Calibri>I took the liberty of translating the new resource strings in CSLA.NET 3.5 Beta into Danish.<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><o:p><FONT face=Calibri>&nbsp;</FONT></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><FONT face=Calibri>I've attached the Danish resource file to this mail.<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><o:p><FONT face=Calibri>&nbsp;</FONT></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><FONT face=Calibri>Haven't had the chance (time) to try/test the new features in 3.5 yet, but from what I've read on the forum and the change log it looks like I'll be in for a treat.<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><o:p><FONT face=Calibri>&nbsp;</FONT></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><FONT face=Calibri>Thank you for a great framework.<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><o:p><FONT face=Calibri>&nbsp;</FONT></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><FONT face=Calibri>Best regards<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT face=Calibri>Henrik</FONT></SPAN></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, January 18, 2008</h2>Thank you Henrik, I appreciate it!!</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jfreeman replied on Monday, January 21, 2008</h2>Rocky,<br><br>I downloaded the 3.5 preview and noticed the code snippets and templates have not been updated.&nbsp; Do you know when the new versions will be available?&nbsp; Thanks.<br><br>Jonathan<br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, January 21, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I&#8217;m going as fast as I can to get the new features
+themselves done and tested. That requires updating ProjectTracker to make sure
+it all works in the (rapidly increasing) combination of scenarios of UI and
+data portal. Things like the snippets will come next, and to be honest, the
+templates may not get updated until I get to Chapter 7 in the book (that&#8217;s
+where they are on my critical path).<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Unfortunately my wife&#8217;s grandfather just passed away
+earlier today, and that will likely mean a delay in the beta release from Jan
+25 to sometime later. I don&#8217;t yet know enough details to predict the
+impact, but I&#8217;m sure everyone understands that family comes first.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> jfreeman
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Monday, January 21, 2008 4:09 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] CSLA .NET 3.5 preview release<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Rocky,<br>
+<br>
+I downloaded the 3.5 preview and noticed the code snippets and templates have
+not been updated.&nbsp; Do you know when the new versions will be
+available?&nbsp; Thanks.<br>
+<br>
+Jonathan<br>
+<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jfreeman replied on Monday, January 21, 2008</h2>Rocky,<br><br>I'm sorry to hear about your wife's grandfather.&nbsp; I didn't mean to be pushy.&nbsp; I was just curious.&nbsp; In the grand scheme of things, this stuff does not even compare to family matters.&nbsp; Thanks.<br><br>Jonathan<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,13 @@
+<html><header><title>NameValuList</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>NameValuList</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/702.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>yh_ink posted on Friday, July 21, 2006</h2><P>I was reading through the book and i dont understand what the code below is doing.could anyone please explain this.This is in the constructor region</P><FONT color=#0000ff size=2>
+<P>#region</FONT><FONT size=2> Constructors</FONT></P>
+<P><FONT color=#008000 size=2>private NameList()</P>
+<P>&nbsp;{</P>
+<P>&nbsp;}</P>
+<P>&nbsp;private NameList(System.Runtime.Serialization.SerializationInfo info,System.Runtime.Serialization.StreamingContext context):</P>
+<P>base(info,context)</P>
+<P>{}</P></FONT><FONT color=#0000ff size=2>
+<P>#endregion</P>
+<P>&nbsp;</P>
+<P>What is it for could anyone explain????Do we have to use it for the class to work???</P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Michael Hildner replied on Sunday, July 23, 2006</h2><P>yh_ink,</P>
+<P>What version of CSLA are you using? I don't see this in the 2.0 book.</P>
+<P>Mike</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>msk replied on Monday, July 24, 2006</h2>It's a constructor needed by ISerializable.&nbsp; I think this is because NamedValueList doesn't have the same inheritance hierarchy as other Csla classes.&nbsp;&nbsp; </div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

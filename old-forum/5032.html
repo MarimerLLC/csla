@@ -1,0 +1,157 @@
+<html><header><title>NameValueList and Authorization.</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>NameValueList and Authorization.</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5032.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>tarekahf posted on Saturday, June 28, 2008</h2>As per the Book (Expert VB 2005 Business Objects), the NameValueList is similar to ReadOnlyListBase, but I noticed that the NVL does not have a region for Authorization.<br><br>I have implemented custom authentication and authorization properly and it is working properly.<br><br>I have a requirement where the Authenticated User may be allowed to get the List of NVL, or he may not be allowed to get the list, based on certain criteria (which I will take care of, the Authorization Logic).<br><br>My Questions:<br><br>- Is it possible to add authorization rules to NVL Class Implementation ?<br><br>- Should I implement a ReadOnlyBase class wrapper over NVL Object ? So that the NVL beomes a property of the ReadOnlyBase object, which will be subject to Authorization Rules ?!<br><br>- If I implement a wrapper, then how I will perform Data Binding from the UI to the ReadOnlyBase, property NVL ?<br><br>- If the Current Authenticated User is not authorized, then I want to end the execution of the function is a controlled manner, and report an Error Message to the UI, and display the Error to the User. I need help with this.<br><br>I am thinking of the following:<br><br>
+<pre>public class AttendDateList<br>  inherits NameValueList(of SmartDate, String)<br>  ... bla bla ...<br>  ... bla bla ...<br>  ... bla bla ...<br>  public shared function GetList(prmStaffID as String) ... bla bla bla<br>   ' Get the List of Attendance Date for a given Staff ID<br>   ' Not all Authenticated Users can execute this function.<br>   ' Only certain Roles with certain attributes can perform this function.<br>  end function<br>end class<br><br>public class AttendanceAdjustment<br>  inherits ReadOnlyBase<br>  private mStaffID as string<br>  private mListAttendDate as AttendDateList<br>  ...bla bla ..<br>  public readonly property ListAttendDate (prmStaffID as String) as AttendDateList<br>    Get<br>      ' Perform check to see if the current authenticated user can get the list of Attendance<br>      ' Dates for the given prmStaffID, if not, report error.<br>      ' If authorized, get the list and update the property<br>    end Get<br>  end property<br>end class<br></pre><p>Please help.</p><p>Tarek.<br></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Sunday, June 29, 2008</h2>Hi,<br><br>In these situations I prefer to have the NVL list as a property of the BO and add authorization rules to the BO. So I have no authorization rules in the NVL list - these rules are placed on the properties (NVL and "selected value") in th BO.<br><br>/jonny<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tarekahf replied on Sunday, June 29, 2008</h2><p>Hi <strong>JonnyBee</strong>,</p><p>Thank you for your feedback.</p>I think that you and I are in agreement, aren't we ?!<p>Great !</p><p>Could you please tell me how do you handle unexpected errors and controlled errors while you are creating and loading the data (NVL) into the BO ?</p>Suppose some unexpected error occurs while in the Data Portal Fetch ? How do you report the error in a nice way to the UI/Presentation Layer ?<br><br>Now suppose that the logged in user is not authorized to see the NVL of the Staff ID he entered, so how do you report a controlled error report to the user (UI)?<br><br>Regards...<br><br>Tarek.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Monday, June 30, 2008</h2>Hi, <br><br>First - remember that NVL templates&nbsp; implements "singelton" pattern to cache the latest resultset and you must make some changes in your code to allow different results per staff id. <br><br> I would call the CanReadProperty inside the BO - Fetch to check whether to load the NVL list or not. <br><br>For error reporting:<br> If an exception occurs the BO Fetch will return a DataPortalException to the controlelr/UI and you should tell it to the user. <br><br>/jonny<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tarekahf replied on Monday, June 30, 2008</h2><P><STRONG><U>I have implemented the NVL as follows:</U></STRONG> 
+<P><PRE>Imports Microsoft.VisualBasic
+Imports Csla
+Imports Csla.Data
+Imports System.Data
+Imports System.Data.SqlClient
+Imports MyCSLA.Library
+
+&lt;Serializable()&gt; _
+Public Class AttendDateList
+    Inherits NameValueListBase(Of SmartDate, String)
+
+#Region " Business Methods "
+    Public Function DefaultAttenDate() As SmartDate
+
+        Dim list As AttendDateList = Me
+        If list.Count &gt; 0 Then
+            Return list.Items(0).Key
+        Else
+            Throw New NullReferenceException( _
+              "No roles available; default role can not be returned")
+        End If
+
+    End Function
+
+#End Region
+
+#Region " Factory Methods "
+
+    Public Shared Function GetList(ByVal prmStaffID As String) As AttendDateList
+        Return (DataPortal.Fetch(Of AttendDateList) _
+              (New MyCriteria(GetType(AttendDateList), prmStaffID)))
+
+    End Function
+
+    Public Shared Sub InvalidateCache()
+    End Sub
+
+    Private Sub New()
+        ' require use of factory methods
+    End Sub
+
+#End Region
+
+#Region " Data Access "
+
+    &lt;Serializable()&gt; _
+    Public Class MyCriteria
+        Inherits CriteriaBase
+        Private mStaffID As String
+        Public ReadOnly Property StaffID() As String
+            Get
+                Return mStaffID
+            End Get
+        End Property
+        Public Sub New(ByVal MyType As Type, ByVal prmStaffID As String)
+            MyBase.New(MyType)
+            mStaffID = prmStaffID
+        End Sub
+    End Class
+
+    Private Overloads Sub DataPortal_Fetch(ByVal criteria As MyCriteria)
+
+        Me.RaiseListChangedEvents = False
+        Using cn As New OleDb.OleDbConnection(AppDatabase.FlextimeDB)
+            cn.Open()
+            Using cm As OleDb.OleDbCommand = cn.CreateCommand
+                cm.CommandType = CommandType.Text
+                cm.CommandText = "select * from cmbAttendResDates where StaffID= '" &amp; criteria.StaffID &amp; "'"
+                Using dr As New SafeDataReader(cm.ExecuteReader)
+                    IsReadOnly = False
+                    With dr
+                        While .Read()
+                            Me.Add(New NameValuePair( _
+                              .GetSmartDate("AttendDate"), .GetString("AttendDateDesc")))
+                        End While
+                    End With
+                    IsReadOnly = True
+                End Using
+            End Using
+        End Using
+        Me.RaiseListChangedEvents = True
+
+    End Sub
+
+#End Region
+End Class
+
+&lt;Serializable()&gt; _
+Public Class AttendAdj
+    Inherits ReadOnlyBase(Of AttendAdj)
+#Region "   Business Methods  "
+    Private mStaffID As String = String.Empty
+    Private mAttendDate As SmartDate = New SmartDate(SmartDate.EmptyValue.MinDate)
+    Private mlstAttendDate As AttendDateList
+    Protected Overrides Function GetIDValue() As Object
+        Return mStaffID
+    End Function
+#End Region
+
+#Region "   Factory Methods "
+
+    Public Shared Function GetAttendAdjDateList(ByVal prmStaffID As String) As AttendDateList
+
+        'If Not CanGetObject() Then
+        '    Throw New System.Security.SecurityException( _
+        '      "User not authorized to view a project")
+        'End If
+        Return AttendDateList.GetList(prmStaffID)
+
+    End Function
+
+    Private Sub New()
+        ' require use of factory methods
+    End Sub
+    Friend Sub New(ByVal id As String)
+        mStaffID = id
+    End Sub
+#End Region
+
+#Region "   Data Access   "
+    &lt;Serializable()&gt; _
+    Private Class Criteria
+
+        Private mStaffID As String
+        Public ReadOnly Property StaffId() As String
+            Get
+                Return mStaffID
+            End Get
+        End Property
+
+        Public Sub New(ByVal id As String)
+            mStaffID = id
+        End Sub
+    End Class
+ 
+#End Region
+End Class
+</PRE>
+<HR>
+
+<P>And on the UI, and am using this code</P><PRE>    Protected Sub srcAttendDateList_SelectObject(ByVal sender As Object, ByVal e As Csla.Web.SelectObjectArgs) Handles srcAttendDateList.SelectObject
+        e.BusinessObject = AttendAdj.GetAttendAdjDateList(Me.txtStaffIDFilter.Text)
+    End Sub
+
+    Protected Sub txtStaffIDFilter_TextChanged(ByVal sender As Object, ByVal e As System.EventArgs) Handles txtStaffIDFilter.TextChanged
+        Me.ddAttendnaceDateFilter.DataBind()
+    End Sub
+</PRE>
+<P>The above is working fine so far. But still need to implement authorization.</P>
+<P><STRONG><U>I have the following questions:</U></STRONG></P>
+<P>1. Why only in NVL List, if I have special&nbsp;Criteria, then I need to Inherit from Criteria Base and pass the Type of my NVL Object with a New Criteria Object ? I am already passing the type of the new NVL object in the Fetch function ? Why not follow the same technique for using Criteria Object in ReadOnlyBase object for example ?</P>
+<P>2. Could you please elaborate on how to enable Authorization (CanRead) for the NVL ? I am still finding difficulties understanding this topic "Implementing Authorization in CSLA", it is a bit complicated.</P>
+<P>3. I still do not understand about Error Control and reporting. Could you please kindly give me more hints ?</P>
+<P>Suppose I have a read function "IsUserAuthorized(StaffID)" which will check if the current logged in user allowed to read the content of the NVL ? In this case, how I can implement it using CSLA Approach ?</P>
+<P>Tarek.</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

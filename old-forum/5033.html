@@ -1,0 +1,56 @@
+<html><header><title>Filtered List Child Collection</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Filtered List Child Collection</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5033.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Wal972 posted on Sunday, June 29, 2008</h2><P>How do I bind a datagridview to filtered child collection in the&nbsp;UI&nbsp;&nbsp;? using a binding source for the parent BO and another for the child collection</P>
+<P>Thanks</P>
+<P>Ellie</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, July 01, 2008</h2><P>This is unfortunately a bit tricky.</P>
+<P>Normally when you drag objects from the data sources window onto your form, Visual Studio actually binds the child bindingsource to the parent bindingsource. Not to your object, but to the parent bindingsource!</P>
+<P>And that's fine, but it only works if you want that child bindingsource to bind directly to the parent business object's property. Which you do NOT want to do if you want to get in the middle and sort the values.</P>
+<P>So instead what you need to do is drag the parent and child object onto the form - but make sure to drag the child type as a root node of the data sources window, not as a child of the parent.</P>
+<P>Then handle the current item changed event on the parent bindingsource, and manually set the datasource of the "child" bindingsource to the sorted/filtered/whatever view of the child list.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Wal972 replied on Tuesday, July 01, 2008</h2><P>If i wanted to have the child filtered list as a property of the parent bo would that be ok as&nbsp;I am not constantly refiltering, only&nbsp;when the&nbsp;bos are loaded. &nbsp;If it is, how do i set that up ?</P>
+<P>Thanks</P>
+<P>Ellie</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, July 01, 2008</h2>If you just want it filtered when you load it, I'd do the filtering in the stored procedure or SQL statement, or worst case in the DataPortal_Fetch() method. No sense moving the unwanted rows any further from the hard drive behind the database than necessary.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Wal972 replied on Tuesday, July 01, 2008</h2><P>No&nbsp;I need them all, basically I have a Pay BO which has Child Line Items. I want to filter for the UI the different types of Line Items. They are all used in the Child BO, the need for splitting has to do with formatting and excluding particular types eg. Entitlements from the Payment types of Wages, Deductions, Tax etc. Any suggestions would be most welcome</P>
+<P>Thanks</P>
+<P>Ellie</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, July 02, 2008</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I don&#8217;t understand. The filter occurs one time only, but
+very late in the process? Or the filter changes during the lifetime of the
+object?<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I already told you how to handle the case where the filter
+changes during the lifetime of the object.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>If the filter occurs late in the process, so you can&#8217;t do
+it in the data access layer, then I would still use the technique I described
+earlier &#8211; binding the objects to the UI both as root objects, and
+handling the current item changed event in the parent&#8217;s bindingsource to
+filter/bind the child list.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tmg4340 replied on Wednesday, July 02, 2008</h2><FONT face=Tahoma size=2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>Wal972:</strong></div><div></FONT>
+<P><FONT face=Tahoma size=2>If i wanted to have the child filtered list as a property of the parent bo would that be ok as&nbsp;I am not constantly refiltering, only&nbsp;when the&nbsp;bos are loaded. &nbsp;If it is, how do i set that up ?</FONT></P>
+<P><FONT face=Tahoma size=2></div></BLOCKQUOTE></FONT></P>
+<P><FONT face=Tahoma size=2>Setting aside Rocky's comments for the moment, I think the answer to this is "no".&nbsp; IIRC, FilteredBindingList does not play well with serialization - it's designed primarily as a UI construct, and won't travel across the wire.&nbsp; I suppose you could have the "real" child collection as one parent property, and the filtered collection as another.&nbsp; But you'd have to mark the filtered property as NonSerialized and NotUndoable, and then re-hook it during your OnDeserialized call.&nbsp;&nbsp;You'd also&nbsp;have to be careful how you set that up, otherwise you'll end up with two copies of your child collection, and you'll end up with other, weirder errors.&nbsp; <img src="/emoticons/emotion-1.gif" alt="Smile [:)]" /></FONT></P>
+<P><FONT face=Tahoma size=2>HTH</FONT></P>
+<P><FONT face=Tahoma size=2>- Scott</FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>stefan replied on Thursday, July 03, 2008</h2>Or what about having a public method that would return a filtered list...<br>Then you would bind the GUI to the result of a method call...<br><br>But I don't know the implication that would have on the underlaying BusinessListBase object (thinking of the EditLevel...). I expect that this way you would have to keep your hands off that list object...<br><br><br>Just a thought<br><br>Stefan<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

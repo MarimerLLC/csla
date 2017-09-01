@@ -1,0 +1,43 @@
+<html><header><title>Cancel() on BindingSourceNode doesn't seem to work properly.</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Cancel() on BindingSourceNode doesn't seem to work properly.</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10594.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>njwessing posted on Friday, August 05, 2011</h2><p>I have been struggling with edit level problems the past few days since I can only find scarce information on the subject. &nbsp;I have a BO with an child list and the objects in that child list each have their own child list. I&#39;m using BindingSourceHelper and BindingSourceNode to be able to edit the details of a SizeConfig object in a popup window. This window allows me to add template objects as well as element objects to each template object. Using BindingSourceNode.Apply() works great on my objects after I have made edits to them. However Cancel() seems to only undo the last change I have made in that window. Even if I make no changes the edit levels are higher than they should be.</p>
+<p>Here is a sample of what I am doing in code:</p>
+<p>void Form_Load() {</p>
+<p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; bsDropDown = BindingSourceHelper.InitializeBindingSourceTree(components, bsList);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; bsDropDown.Bind(NameValueList);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; bsRoot = BindingSourceHelper.InitializeBindingSourceTree(components, bsSizeConfig);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; bsRoot.Bind(CurrentSize);</p>
+</p>
+<p>}</p>
+<p>void okButton_Click(){</p>
+<p>bsRoot.Apply();</p>
+<p>bsRoot.Close();</p>
+<p>bsList.Apply();</p>
+<p>bsList.Close();</p>
+<p>}</p>
+<p>void cancelButton_Click(){</p>
+<p>bsRoot.Cancel(CurrentSize);</p>
+<p>bsDropDown.Cancel(NameValueList)</p>
+<p>}</p>
+<p>Here is what the data model looks like:</p>
+<p>SizeConfig - Object that I am editing</p>
+<p style="padding-left:30px;">Template - Child list of SizeConfig</p>
+<p style="padding-left:60px;">Element - Child list of Template</p>
+<p>&nbsp;</p>
+<p>I have a ComboBox that is bound to bsList that is used to change an id on SizeConfig.</p>
+<p>I have a DataGridView that is used to show the Templates belonging to the SizeConfig. Bound to bsTemplates.</p>
+<p>I have a second DataGridView that is used to show the Elements belonging to the selected Template. Bound to bsElements.</p>
+<p>&nbsp;</p>
+<p>bsSizeConfig - bound to the edited object</p>
+<p>bsTemplates - bound to bsSizeConfig - Templates</p>
+<p>bsElements - bound to bsTemplates - Elements</p>
+<p>&nbsp;</p>
+<p>When I Cancel() on the object the edit levels are as follows:</p>
+<p>SizeConfig - 3</p>
+<p style="padding-left:30px;">Template - 2</p>
+<p style="padding-left:60px;">Element - 2</p>
+<p style="padding-left:60px;">&nbsp;</p>
+<p>When I Apply() on the object the edit levels all correctly reset to 0.&nbsp;</p>
+<p>I really have no idea why the BindingSourceNode is not working for me. Hopefully someone reading this has had a similar issue and knows what to do to solve this. Thanks in advance for any help.</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Monday, August 08, 2011</h2><p>Hi, </p>
+<p>Your code should never call BeginEdit/EndEdit/CancelEdit on objects that are active in DataBinding to the UI. </p>
+<p>DataBinding/BindingSource assumes it is the &quot;one and only&quot; owner of the data objects and will actually call BeginEdit/EndEdit/CancelEdit&nbsp; very often. </p>
+<p>You should only call these methods before databound or after disconnected from UI. </p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>njwessing replied on Monday, August 08, 2011</h2><p>In the view that calls this window I am suspending the binding sources before I open this window. I&#39;m not actually calling begin/end/cancel edit on my objects. I&#39;m using the BindingSourceNode class to help me. For some reason Apply() works perfectly but cancel does not.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

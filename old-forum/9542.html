@@ -1,0 +1,37 @@
+<html><header><title>Silverlight - problem compiling</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Silverlight - problem compiling</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9542.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>griff posted on Wednesday, September 15, 2010</h2><p>Hi</p>
+<p>I have used Blake&#39;s PetShop silverlight example as a template.</p>
+<p>I have my two projects MyApp.Business and MyApp.Business.Silverlight.&nbsp;</p>
+<p>MyApp.Business.Silverlight has csla &nbsp;(silverlight) correctly referenced and BOs linked etc. but I get compile errors e.g.</p>
+<p>
+<p>Error<span>	</span>5<span>	</span>&#39;Fetch&#39; is not a member of &#39;Csla.DataPortal&#39;.</p>
+<p>I have noticed looking at Blake&#39;s example that the code below&nbsp;#If Not SILVERLIGHT is greyed out in the&nbsp;MyApp.Business.Silverlight and mine isn&#39;t - hence the compile errors I think - could this be my problem and&nbsp;can someone please advise on how to correct.</p>
+<p>Code Snippet</p>
+<p> [</p>
+<p>
+<p>Option Explicit On</p>
+<p>Option Strict On</p>
+<p>#If Not SILVERLIGHT Then</p>
+<p>Imports System</p>
+<p>Imports System.Data</p>
+<p>Imports System.Data.SqlClient</p>
+<p>Imports Csla</p>
+<p>Imports Csla.Data</p>
+<p>Namespace PetShop.Business</p>
+<p>&nbsp;&nbsp; &nbsp;Partial Public Class AccountInfoList</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;Private Shadows Sub DataPortal_Fetch(ByVal criteria As AccountCriteria)</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;IsReadOnly = False</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Dim cancel As Boolean = False</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;OnFetching(criteria, cancel)</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;If (cancel) Then</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Return</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;End If</p>
+<p>]</p>
+</p>
+</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Thursday, September 16, 2010</h2><p>Check if you have declared a compiler variable named SILVERLIGHT in your SL project?</p>
+<p>The line<br /><i>#If Not SILVERLIGHT Then</i><br />is a compiler command as to whether the code should be included or excluded at compiletime.</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>griff replied on Thursday, September 16, 2010</h2><p>Hi</p>
+<p>how do I do this?</p>
+<p>&nbsp;</p>
+<p>Richard</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>griff replied on Thursday, September 16, 2010</h2><p>Hi</p>
+<p>now sorted, thanks</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

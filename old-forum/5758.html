@@ -1,0 +1,181 @@
+<html><header><title>Rolodex exception</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Rolodex exception</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5758.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Michael Hildner posted on Thursday, November 06, 2008</h2><P>Greetings,</P>
+<P>I've been trying to get Rolodex to run. Seem to be having an issue similar to this post - <A HREF="/forums/3/27687/ShowThread.aspx">http://forums.lhotka.net/forums/3/27687/ShowThread.aspx</A></P>
+<P>When I navigate to <A href="http://localhost:2430/WcfPortal.svc">http://localhost:2430/WcfPortal.svc</A>&nbsp;I get an exception. Stack trace is below. Any ideas?</P>
+<P>Thanks,</P>
+<P>Mike</P>
+<P>&nbsp;</P>
+<P>[InvalidOperationException: The type 'Csla.Server.Hosts.Silverlight.WcfPortal', provided as the Service attribute value in the ServiceHost directive could not be found.]<BR>&nbsp;&nbsp; System.ServiceModel.Activation.ServiceHostFactory.CreateServiceHost(String constructorString, Uri[] baseAddresses) +4072062<BR>&nbsp;&nbsp; System.ServiceModel.HostingManager.CreateService(String normalizedVirtualPath) +11656092<BR>&nbsp;&nbsp; System.ServiceModel.HostingManager.ActivateService(String normalizedVirtualPath) +42<BR>&nbsp;&nbsp; System.ServiceModel.HostingManager.EnsureServiceAvailable(String normalizedVirtualPath) +479<BR><BR>[ServiceActivationException: The service '/WcfPortal.svc' cannot be activated due to an exception during compilation.&nbsp; The exception message is: The type 'Csla.Server.Hosts.Silverlight.WcfPortal', provided as the Service attribute value in the ServiceHost directive could not be found..]<BR>&nbsp;&nbsp; System.ServiceModel.AsyncResult.End(IAsyncResult result) +11527290<BR>&nbsp;&nbsp; System.ServiceModel.Activation.HostedHttpRequestAsyncResult.End(IAsyncResult result) +194<BR>&nbsp;&nbsp; System.ServiceModel.Activation.HostedHttpRequestAsyncResult.ExecuteSynchronous(HttpApplication context, Boolean flowContext) +176<BR>&nbsp;&nbsp; System.ServiceModel.Activation.HttpModule.ProcessRequest(Object sender, EventArgs e) +278<BR>&nbsp;&nbsp; System.Web.SyncEventExecutionStep.System.Web.HttpApplication.IExecutionStep.Execute() +68<BR>&nbsp;&nbsp; System.Web.HttpApplication.ExecuteStep(IExecutionStep step, Boolean&amp; completedSynchronously) +75<BR></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Thursday, November 06, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I think your references to CSLA are invalid in WCF project.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Michael Hildner [mailto:cslanet@lhotka.net]
+<br>
+<b>Sent:</b> Thursday, November 06, 2008 6:49 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> [CSLA .NET] Rolodex exception<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Greetings,<o:p></o:p></p>
+
+<p>I've been trying to get Rolodex to run. Seem to be having an issue similar
+to this post - <a href="/forums/3/27687/ShowThread.aspx">http://forums.lhotka.net/forums/3/27687/ShowThread.aspx</a><o:p></o:p></p>
+
+<p>When I navigate to <a href="http://localhost:2430/WcfPortal.svc">http://localhost:2430/WcfPortal.svc</a>&nbsp;I
+get an exception. Stack trace is below. Any ideas?<o:p></o:p></p>
+
+<p>Thanks,<o:p></o:p></p>
+
+<p>Mike<o:p></o:p></p>
+
+<p>&nbsp;<o:p></o:p></p>
+
+<p>[InvalidOperationException: The type
+'Csla.Server.Hosts.Silverlight.WcfPortal', provided as the Service attribute
+value in the ServiceHost directive could not be found.]<br>
+&nbsp;&nbsp;
+System.ServiceModel.Activation.ServiceHostFactory.CreateServiceHost(String
+constructorString, Uri[] baseAddresses) +4072062<br>
+&nbsp;&nbsp; System.ServiceModel.HostingManager.CreateService(String
+normalizedVirtualPath) +11656092<br>
+&nbsp;&nbsp; System.ServiceModel.HostingManager.ActivateService(String
+normalizedVirtualPath) +42<br>
+&nbsp;&nbsp; System.ServiceModel.HostingManager.EnsureServiceAvailable(String
+normalizedVirtualPath) +479<br>
+<br>
+[ServiceActivationException: The service '/WcfPortal.svc' cannot be activated
+due to an exception during compilation.&nbsp; The exception message is: The
+type 'Csla.Server.Hosts.Silverlight.WcfPortal', provided as the Service
+attribute value in the ServiceHost directive could not be found..]<br>
+&nbsp;&nbsp; System.ServiceModel.AsyncResult.End(IAsyncResult result) +11527290<br>
+&nbsp;&nbsp;
+System.ServiceModel.Activation.HostedHttpRequestAsyncResult.End(IAsyncResult
+result) +194<br>
+&nbsp;&nbsp;
+System.ServiceModel.Activation.HostedHttpRequestAsyncResult.ExecuteSynchronous(HttpApplication
+context, Boolean flowContext) +176<br>
+&nbsp;&nbsp; System.ServiceModel.Activation.HttpModule.ProcessRequest(Object
+sender, EventArgs e) +278<br>
+&nbsp;&nbsp;
+System.Web.SyncEventExecutionStep.System.Web.HttpApplication.IExecutionStep.Execute()
++68<br>
+&nbsp;&nbsp; System.Web.HttpApplication.ExecuteStep(IExecutionStep step, Boolean&amp;
+completedSynchronously) +75<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Michael Hildner replied on Thursday, November 06, 2008</h2><P>You're right. Thanks Sergey! I was referencing the light .dll and not the .net .dll in that project. Guess I wasn't sure which projects were supposed to reference which Csla.dll when I initally "fixed" the broken references.</P>
+<P>BTW, trying to search out my problem here, I see you've put a lot of effort supporting people's troubles. Much appreciated.</P>
+<P>Mike</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Thursday, November 06, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>My pleasure.&nbsp; Thanks for the kind words.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Michael Hildner
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Thursday, November 06, 2008 7:02 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: Rolodex exception<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>You're right. Thanks Sergey! I was referencing the light .dll and not the
+.net .dll in that project. Guess I wasn't sure which projects were supposed to
+reference which Csla.dll when I initally &quot;fixed&quot; the broken
+references.<o:p></o:p></p>
+
+<p>BTW, trying to search out my problem here, I see you've put a lot of effort
+supporting people's troubles. Much appreciated.<o:p></o:p></p>
+
+<p>Mike<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

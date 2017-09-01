@@ -1,0 +1,26 @@
+<html><header><title>Is it possible to prevent ApplicationContext.User from serializing from the Silverlight Client back to the host?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Is it possible to prevent ApplicationContext.User from serializing from the Silverlight Client back to the host?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/12172.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>RobKraft posted on Thursday, October 03, 2013</h2><p>We are still using CSLA 3.83.</p>
+<p>When we send requests from the Silverlight Client to the Host, code in&nbsp;GetBaseCriteriaRequest in WcfProxy.cs does this:</p>
+<p>request.Principal = MobileFormatter.Serialize(ApplicationContext.User);</p>
+<p>and that causes our Principal object, which is rather large (30k) to get sent to the server. &nbsp;On the server, we pull the User from the session so we are discarding the principal sent up from the client.</p>
+<p>I don&#39;t see an override option to eliminate the sending of the Principal.</p>
+<p>Should I just modify our Csla code to do this?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>skagen00 replied on Thursday, October 03, 2013</h2><p>I haven&#39;t had to tackle this problem before - but conceivably could you go with a more manual serialization for your Principal/Identity.&nbsp; That is, overriding the serialization methods as necessary (OnGetState/OnSetState/OnGetChildren/OnSetChildren) such that you look @ whether you&#39;re in the Silverlight context and serialize a shell of the information you need (if any) versus the full amount - maybe through a compiler directive, etc.</p>
+<p>In that way - you may be able to communicate a smaller scale Principal/Identity pair when making requests to the server from the client.</p>
+<p>Anyway, just two cents.</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Thursday, October 03, 2013</h2><p>This was an option added to CSLA, but I think it was in CSLA 4. In current versions it is absolutely possible to prevent the principal from serializing from client to server.</p>
+<p>If you need to stick with the older version of CSLA then you may need to modify the framework code. But at least you can probably look at the current code to see how we did it.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>skagen00 replied on Thursday, October 03, 2013</h2><p>This is related but a little off-topic -</p>
+<p>I would guess that a 5k-10k principal/identity&nbsp;(ours is around that size) would be more efficient to pass with the request rather than have to re-fetch permissions/etc based on a forms authentication cookie on the server on each call...</p>
+<p>What is the general motivation around this setting - is it security related?&nbsp; We have a certain &quot;hash&quot; that goes into our identity that is checked against the rest of the identity with each server call (not that something like that is entirely secure, but it definitely helps).</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RobKraft replied on Friday, October 04, 2013</h2><p>Thanks for replying.&nbsp; We keep the Principal in session in memory on the server.&nbsp; When the call from the client hits the server, code in <span style="font-family:Consolas;">
+<p>Application_AcquireRequestState</p>
+<p>populates the principal:</p>
+<p>
+<p><span style="font-family:Consolas;"><font face="Consolas">
+<p>principal = (Lucity.Security.</p>
+</font></span>
+<p>&nbsp;</p>
+<span style="font-family:Consolas;color:#2b91af;"><span style="font-family:Consolas;color:#2b91af;">GBAPrincipal</span></span><span style="font-family:Consolas;">)thisSession[</span><span style="font-family:Consolas;color:#a31515;"><span style="font-family:Consolas;color:#a31515;">&quot;CslaPrincipal&quot;</span></span>
+<p><span style="font-family:Consolas;">];</span></p>
+<p><span style="font-family:Consolas;"></span></p>
+<p><span style="font-family:Consolas;">So we are completely ignoring the Principal sent up from the client.&nbsp; Our app has lots of fine grained permissions (10,000+).&nbsp; When the Silverlight client needs a permission it has not already loaded it calls the server for updated permissions and keeps the updated Principal object locally in Silverlight.&nbsp; Over time, this object grows in size.&nbsp; For us it is usually 10k to start with, and often grows to 30k, but could grow to 100k or more if a user does a lot of different stuff within one session.</span></p>
+</p>
+</p>
+</span></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RobKraft replied on Friday, October 04, 2013</h2><p>Thanks Rocky, we have been testing here and our change is working well!&nbsp;&nbsp; We appreciate the confirmation that our approach is probably valid as well as all the time you spend responding to questions about Csla!</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

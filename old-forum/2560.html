@@ -1,0 +1,39 @@
+<html><header><title>Problem with static method for deleting</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Problem with static method for deleting</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/2560.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>RichardETVS posted on Tuesday, March 20, 2007</h2><P class=MsoNormal><SPAN>Hi<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>I try the following code, in the BO class:<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><BLOCKQUOTE><div><o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>public</SPAN><SPAN> <SPAN>static</SPAN> <SPAN>void</SPAN> DeleteEditableRoot(<SPAN>long</SPAN> Id)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN></SPAN><SPAN>{<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>Csla.<SPAN>DataPortal</SPAN>.Delete(Id);<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>}<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN></div></BLOCKQUOTE><o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>But I get an exception in MethodCalle.cs:<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><BLOCKQUOTE><div><o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN><SPAN>public</SPAN> <SPAN>static</SPAN> <SPAN>MethodInfo</SPAN> FindMethod(<SPAN>Type</SPAN> objType, <SPAN>string</SPAN> method, <SPAN>Type</SPAN>[] types)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN>{<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>MethodInfo</SPAN> info = <SPAN>null</SPAN>;<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>do<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>{<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>//find for a strongly typed match<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>&nbsp;&nbsp;</SPAN><b>info = objType.GetMethod(method, oneLevelFlags, <SPAN>null</SPAN>, types, <SPAN>null</SPAN>);</b><o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN></div></BLOCKQUOTE><o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>The problem is that <i>objType</i> is null. Well, probably I am doing something wrong, but what?<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Thanks for any help.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Richard<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><BLOCKQUOTE><div></P>
+<P class=MsoNormal>System.NullReferenceException was unhandled<o:p></o:p></P>
+<P class=MsoNormal><SPAN>&nbsp; </SPAN>Message="La référence d'objet n'est pas définie à une instance d'un objet." <o:p></o:p></P>
+<P class=MsoNormal><SPAN>&nbsp; </SPAN><SPAN>Source="Csla"<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp; </SPAN>StackTrace:<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>at Csla.MethodCaller.FindMethod(Type objType, String method, Type[] types) in MethodCaller.cs:ligne 210<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>at Csla.MethodCaller.GetMethod(Type objectType, String method, Object[] parameters) in MethodCaller.cs:ligne 146<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>&nbsp;&nbsp; </SPAN>at Csla.DataPortal.Delete(Object criteria) in Client\DataPortal.cs:ligne 352<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>at BusinessObjects.EditableRootUnChamp.DeleteEditableRoot(Int64 Id) in EditableRootUnChamp.cs:ligne 165<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN></div></BLOCKQUOTE><o:p></o:p></SPAN></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, March 20, 2007</h2><P>DataPortal.Delete() accepts a criteria object. The Criteria class must either be nested inside your business class, or it must inherit from CriteriaBase (which forces you to specify your business object type).</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RichardETVS replied on Thursday, March 22, 2007</h2>Ok, thanks :)</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

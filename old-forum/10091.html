@@ -1,0 +1,24 @@
+<html><header><title>WinForms Resizing a Child MDI form</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>WinForms Resizing a Child MDI form</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10091.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>meaningoflights posted on Sunday, February 20, 2011</h2><p>Hi,</p>
+<p>I&#39;ve hit a brick wall and hoping someone could shed light.</p>
+<p>I&#39;ve got an MDI Parent and normal child forms resize fine. The problem is any child forms that inherit from a base form with a CSLA 3.7.1 implementation cannot be resized. Here is a small bare bone repro:</p>
+<p>[View:http://datingbutler.webhost4life.com/rocks/tempfiles/ResizeCSLAChildForm.zip:550:0]</p>
+<p>A response would be much appreciated. Even if this cant be done it&#39;d be good to know?</p>
+<p>Cheers</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Monday, February 21, 2011</h2><p>It&#39;s got to be something with your frmMaintenanceBase. <b>This has nothing to do with Csla </b></p>
+<p>Inheritance is sometimes very cumbersome in WindowsForms.</p>
+<p>AHA, You cannont use AutoSizeMode = GrowAndShrink.</p>
+<p><i>The default value is set to <code>GrowOnly</code>. This property determines the mode by which the form automatically resizes itself and takes a value from the <code>AutoSizeMode</code></i> enumeration:
+</p>
+<dl><dd>
+<ul>
+<li> <i><code>GrowAndShrink</code> - The control grows or shrinks to fit its contents. <b>The control cannot be resized manually.  
+</b></i></li>
+<li> <i><code>GrowOnly</code> - The control grows as much as necessary
+ to fit its contents but does not shrink smaller than the value of its 
+Size property. The form can be resized, but cannot be made so small that
+ any of its contained controls are hidden.
+</i></li>
+</ul>
+</dd></dl>
+<p>After changing AutoSizeMode - manual resizing works fine on my computer.</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>meaningoflights replied on Monday, February 21, 2011</h2><p>Legend!!! Thanks for this JonnyBee, its a pity the form cant be shrunk but obviously thats by &quot;some weird&quot; design.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

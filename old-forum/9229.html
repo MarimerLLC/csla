@@ -1,0 +1,43 @@
+<html><header><title>Type Initializer error using PropertyInfo</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Type Initializer error using PropertyInfo</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9229.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>GPhillips posted on Tuesday, July 20, 2010</h2><p>I have been using CSLA 3.8.2 w/VB in a new application.&nbsp; I had been using syntax from CSLA 2.0 for properties and decided to switch to the new PropertyInfo method.&nbsp; I rewrote a lot of code, but when I tried running it I received the error</p>
+<p>{&quot;The type initializer for &#39;EPM.Library.OwnerBase&#39; threw an exception.&quot;}</p>
+<p>{&quot;Can not register property OwnerID after containing type (Entity) has been instantiated&quot;}</p>
+<p>I tried this with and without the ForceInit hack with no changes (is it still necessary in 3.8.2?)</p>
+<p>My inheritance looks like this</p>
+<p>BusinessBase</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp; Entity</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; OwnerBase</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Owner</p>
+<p>There are PropertyInfo statements in the Entity and the OwnerBase classes.&nbsp; Entity is used by most of my classes so it is likely that another class derived from it would have been already created the Shared PropertyInfo&#39;s in Entity (which I assume would not be a problem).</p>
+<p>I have tried to step the code, but it never reaches the New() routine of the Owner object so I assume this is being thrown by CSLA when it hits the first PropertyInfo in OwnerBase.&nbsp; How do I go about finding the problem?</p>
+<p>I have a shared function in Owner (GetByID) that is called to retrieve the object.&nbsp; I have</p>
+<p>Dim obj as Owner</p>
+<p>obj = Owner.GetByID(1234)</p>
+<p>The exception throws on the GetByID, and a breakpoint at the beginning of it never hits.</p>
+<p>Any help on how to fix this would be greatly appreciated.</p>
+<p>Gary P</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, July 20, 2010</h2><p>Are you using the lambda overloads for RegisterProperty()? If not, are your type parameters correct? That&#39;s the most common mistake.</p>
+<p>If you are in .NET, the forceInit trick shouldn&#39;t be necessary. If you are in SL the forceInit trick shouldn&#39;t be necessary <i>if your PropertyInfo(Of T) fields are public</i>.</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>GPhillips replied on Tuesday, July 20, 2010</h2><p>I&#39;m not sure what you mean by &quot;lamda overloads&quot;.&nbsp; The RegisterProperty&#39;s in the classes look like this:</p>
+<p>Protected Shared CodeProperty As PropertyInfo(Of String) = RegisterProperty(New PropertyInfo(Of String)(&quot;Code&quot;))</p>
+<p>Is there something more needed?&nbsp; I am notusing LINQ for DB access currently.&nbsp; I&#39;ll make them all Public, if that will help.&nbsp; The project is WinForms.</p>
+<p>The error is thrown in PropertyInfoManager.cs, RegisterProperty&lt;T&gt;.&nbsp; Returning true on IsLocked.&nbsp; It is looking at the Cache for the Inherited Entity object rather than the Owner object.</p>
+<p>&nbsp;</p>
+<p>Thanks for the AMAZINGLY quick response.</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>stefan replied on Tuesday, July 20, 2010</h2><p>Hi,</p>
+<p>remember that all the classes in your hierarchy have to be generic...</p>
+<p>Are they?</p>
+<p>&nbsp;</p>
+<p>Stefan</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>GPhillips replied on Tuesday, July 20, 2010</h2><p>Stefan,</p>
+<p>Hmmm.</p>
+<p>They currently look like this (all are marked Serializable):</p>
+<p><br />Public MustInherit Class Entity<br />&nbsp;&nbsp;&nbsp; Inherits BusinessBase(Of Entity)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Protected Shared PropertyInfos here</p>
+<p>Partial Public Class OwnerBase<br />&nbsp;&nbsp;&nbsp; Inherits Entity<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Additional Protected Shared PropertyInfos here (erroring on these)</p>
+<p>Public Class Owner<br />&nbsp;&nbsp;&nbsp; Inherits OwnerBase<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Possibly some here too.</p>
+<p>Is that somehow the problem?&nbsp; (This was not a problem before switching to the PropertyInfo template)</p>
+<p>Thanks</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>GPhillips replied on Tuesday, July 20, 2010</h2><p>Stefan,</p>
+<p>After rereading your post I went back to Rocky&#39;s book.&nbsp; On page 239-240 (where he discusses inheritance and the Shared Field problem) there is reference to custom base classes (which I assume is what I have going here).&nbsp; In the book it shows a custom base class defined as follows:</p>
+<p>&lt;Serializable()&gt; _<br />Public MustInherit Class CustomBase(Of T As CustomBase(Of T))<br />&nbsp;&nbsp;&nbsp; Inherits BuisinessBase(Of T)</p>
+<p>Is that what you are referring to?&nbsp; That in my case I would need to apply this syntax to the Entity and OwnerBase Classes?&nbsp; If so, don&#39;t I lose the ability to access each of my derived classes as a generic Entity?&nbsp; I have many routines that operate on an Entity whether that be an Owner, Vendor, Order, etc. and I REALLY don&#39;t want to have to rewrite all those (and all the calls to them) as Generics too.&nbsp; &nbsp; </p>
+<p>Or, I may be confused about exactly how generics work.</p>
+<p>And thanks for your quick response too.&nbsp; I&#39;m staring to feel like I may have to abandon the PropertyInfo idea and go back to handling all my own property changes like we did in CSLA 2.0 unless there is some way to get the same functionality.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

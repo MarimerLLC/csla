@@ -1,0 +1,37 @@
+<html><header><title>CSLA CreateInstance BusinessListBase results in System.TypeLoadException</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA CreateInstance BusinessListBase results in System.TypeLoadException</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/8311.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>meaningoflights posted on Friday, January 08, 2010</h2>Hi,<br><br>I'm trying to load a BusinessBaseList class dynamically. Its for the purpose of unit testing, to be able to load child objects dynamically (so a validation rule passes in the parent object). <br><br>We have a parent "Subscription" object which holds SubscriptionRecipients and here's what the classes look like: <br><font size="1"><br>Public Class Subscription<br>&nbsp;&nbsp;&nbsp; Inherits BusinessBase(Of Subscription)<br>&nbsp;&nbsp;&nbsp; Private WithEvents _subscriptionRecipients As SubscriptionRecipients = SubscriptionRecipients.NewSubscriptionRecipients()<br>&nbsp;.....<br>&nbsp; Private Sub New()<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ' require use of factory methods<br>&nbsp;&nbsp;&nbsp; End Sub<br>.....<br>End Class<br><br>Public Class SubscriptionRecipients<br>&nbsp;&nbsp;&nbsp; Inherits BusinessListBase(Of SubscriptionRecipients, SubscriptionRecipient)<br>....<br>&nbsp;&nbsp;&nbsp; Private Sub New()<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; MarkAsChild()<br>&nbsp;&nbsp;&nbsp; End Sub<br>...<br>End Class<br><br>Public Class SubscriptionRecipient<br>
+&nbsp;&nbsp;&nbsp; Inherits BusinessBase(Of SubscriptionRecipient)<br>....</font><br><br><br>I can easily dynamically create a SubscriptionRecipient, eg:<br><br>oh = Activator.CreateInstance(Nothing, businessObjectName)<br>
+obj = oh.Unwrap()<br><br><br>But with every attempt at dynamically creating a SubscriptionRecipientS object I get a System.TypeLoadException. <br><br>I've tried various strategies and am banging my head against a wall. Rubbing broken glass in my eye's would be less painful at this stage... Any suggestions would much be appreciated!<br><br>Thanks in advance <br><br>ps I'm trying to get FusLogVW.exe going but haven't used it before and its not giving me any clues :(<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, January 08, 2010</h2><P>You are using Activator.CreateInstance() to replicate the data portal, because the data portal is failing to create the instance?</P>
+<P>Is this in a 3-tier physicaly deployment? If so, are you <EM>sure</EM> you have the same business DLL on client and server?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>meaningoflights replied on Friday, January 08, 2010</h2>Hi Rocky, thanks for your response. I'm not at work and wont get to try anything till Monday but thought I'd ask one more Q.<br><br>I'm using Activator.CreateInstance() since I wish to be able to create objects dynamically to make the unit tests more re-usable. I'll have to do a bit more reading, is it even possible to use the DataPortal without hardcoding the type?&nbsp; EG, this wont work but demonstrates the concept of a perfect solution:<br><br>DataPortal.Create(Of&nbsp; Type.GetType("stringNameOfBusinessObject"))
+<br><br>?<br><br>The solution is a winform app, 3 tiers with BO's, CSLA and Presentation layer, its client only.<br><br>Any help much appreciated!<br><br><br><pre><br></pre><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, January 08, 2010</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>The data portal works on Type objects or type information. So
+you can sort of be dynamic, but generics don&#8217;t quite work as you have in your post
+:)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>If you are calling Activator.CreateInstance() in a unit test you
+need to be aware of the context in which the unit test is running. Unit test
+frameworks create special AppDomain environments in which the tests run, and
+dynamic type loading doesn&#8217;t always work as expected. It depends on how the
+unit test framework sets up the type search path for the .NET type loader. It could
+easily be the case that you are running into an issue along this line.<o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>meaningoflights replied on Friday, January 08, 2010</h2>Hi,<br><br>I haven't tried VS2010 (.net 4) but have a feeling the dynamic type would help out for this task.<br><br>We're using Nunit tests its not anything funky like RhinoMocks at this job, just test classes with test methods in the BO tier. I did think along your lines with the search path and this thread sheds some light on the context:<br><br>http://social.msdn.microsoft.com/Forums/en-US/netfxbcl/thread/aa6667e5-cd80-4414-ad4e-2ae799c347c3<br><br>I'm pretty sure I'm in the right context, seeing I can dynamically load a SubscriptionRecipient fine, its only the SubscriptionRecipientS object causes the TypeLoadException and I'm going to hunt that down with techniques like: http://www.eggheadcafe.com/software/aspnet/31984726/how-to-debug-systemtypel.aspx<br><br>I'll try to put together a bare bones repro and will post some more info on Monday, have a great weekend:)<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>meaningoflights replied on Sunday, January 10, 2010</h2>Hi,<br><br>I've put together a cut down solution that repro's the problem:<br><br><a href="http://www.jeremythompson.net/rocks/persoFiles/ReproCreateInstance.zip">ReproCreateInstance.zip</a><br><br>In the TestClass there is 2 test methods, the first test dynamically instantiates a BusinessBase successfully but the second unit test fails with a "System.LoadTypeException" when dynamically instantiating a BusinessLISTBase <br><br>I'd very much appreciate any advice, feedback, idea's, etc on how to dynamically instantiate a BusinessLISTBase?&nbsp; Many thanks </div><div style='padding:0 15 3 15;background-color:powderblue'><h2>meaningoflights replied on Monday, January 11, 2010</h2>Ok for anyone else... I've got a workaround:<br><br>Dim businessObjectName As String = .PropertyType.FullName &amp; "+Criteria"<br>'for example: businessObjectName = "xxx.xxx.BusinessObjects.SubscriptionRecipients+Criteria"<br>oh = Activator.CreateInstance(Nothing, businessObjectName)<br>obj = oh.Unwrap()<br>Dim childObj As Object = DataPortal.Fetch(obj)<br><br>Its not perfect, but for a unit test to get past a validation rule enforcing that a Parent Object containing collection(s) of Children must have atleast one Child Object per collection(s).. this will be fine.<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,454 @@
+<html><header><title>Undo doesn't work in sample application for the resources collection if you don't change something at the project.</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Undo doesn't work in sample application for the resources collection if you don't change something at the project.</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3405.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>alef posted on Tuesday, August 21, 2007</h2><P>Hi,</P>
+<P>Try the following:</P>
+<P>Open a project.</P>
+<P>Change a role in the resources grid.</P>
+<P>Click cancel and you see that the modifications aren't rolled back.</P>
+<P>I've found that the undo will work for the resources if we do also a change&nbsp;on the root object (project).</P>
+<P>I'm using the version 2.1.4.</P>
+<P>&nbsp;</P>
+<P>Alef</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jhw replied on Tuesday, August 21, 2007</h2><P>This is what I do in the case of child collections:</P>
+<P>Add to collection:</P>
+<P>Create a property in the parent object to add the item so that beginEdit can be called in the parent. This property simply calls the child collection add property. If I just directly call the child collection add, then begin edit cannot be called for the parent.</P>
+<P>&nbsp;</P>
+<P>Remove from collection</P>
+<P>Same as add except that it does the remove.</P>
+<P>&nbsp;</P>
+<P>Update a collection:</P>
+<P>Does not work for me so I only use undo for add remove operations. If a person did a remove/add operation then perhaps that would work.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>alef replied on Wednesday, August 22, 2007</h2><P>Thank you for describing the work-around for adding and removing items to the collection.</P>
+<P>I've investigated the problem a little bit deeper.</P>
+<P>What I've discovered is that the first item in the resources collection is just by opening the form already on level 2. The root object is still on level 1.&nbsp; So what I don't understand is that at some way BeginEdit is called on the first object in the child collection without doing this through the root object.</P>
+<P>Apparently I was wrong with saying you have to edit the root project. I've discovered the following :</P>
+<P>1) the following situation doesn't work</P>
+<P>Edit the role for the first resource.</P>
+<P>Click on Cancel.</P>
+<P>2) the following situation works</P>
+<P>Edit the role for the first resource.</P>
+<P><STRONG>Click on whatever column on the second resource.</STRONG></P>
+<P>Click on Cancel</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, August 24, 2007</h2><P>Yes, there are some issues with the 2.1.4 code - both in BusinessListBase, but more importantly in the data binding code in PTWin.</P>
+<P>Look at the PTWin code for 3.0.1 and use the techniques shown there to do your data binding and that should help a lot.</P>
+<P>There are some bug fixes in BusinessListBase in 3.0.1 as well, though I don't think they affect what you are seeing here.</P>
+<P>The key, and what I really didn't fully appreciate until recently, is that there's a rule you simply can't break when using data binding:</P>
+<P><STRONG>Never interact with the business object directly while it is data bound. Instead, always interact with the bindingsource object.</STRONG></P>
+<P>This means that things like canceling or saving require totally unbinding the object from the bindingsource objects and then (if the form stays open) rebinding.</P>
+<P>Ugly and sad, but true.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, August 24, 2007</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Now that I think about it, the 3.0.2 test code in PTWin may be
+better. I&#8217;m still refining some of that code as I write the 3.0 ebook,
+and so (right now) the best source is the C# code in svn.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> RockfordLhotka
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Friday, August 24, 2007 12:11 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] Undo doesn't work in sample application for the
+resources collection if you don't change something at the project.<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Yes, there are some issues with the 2.1.4 code - both in BusinessListBase,
+but more importantly in the data binding code in PTWin.<o:p></o:p></p>
+
+<p>Look at the PTWin code for 3.0.1 and use the techniques shown there to do
+your data binding and that should help a lot.<o:p></o:p></p>
+
+<p>There are some bug fixes in BusinessListBase in 3.0.1 as well, though I
+don't think they affect what you are seeing here.<o:p></o:p></p>
+
+<p>The key, and what I really didn't fully appreciate until recently, is that
+there's a rule you simply can't break when using data binding:<o:p></o:p></p>
+
+<p><strong>Never interact with the business object directly while it is data
+bound. Instead, always interact with the bindingsource object.</strong><o:p></o:p></p>
+
+<p>This means that things like canceling or saving require totally unbinding
+the object from the bindingsource objects and then (if the form stays open)
+rebinding.<o:p></o:p></p>
+
+<p>Ugly and sad, but true.<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>alef replied on Sunday, August 26, 2007</h2><P><SPAN>I've tested your version 3.0.2 and the particular case of Undo that I was describing is working with this new version. <o:p></o:p></SPAN></P>
+<P><SPAN>But the following case is not working in this new version 3.0.2 :<o:p></o:p></SPAN></P>
+<P><SPAN>1) Open project "Expert C# 2005 Business Objects"<o:p></o:p></SPAN></P>
+<P><SPAN>2) Change the role of the first resource to "Sponsor"<o:p></o:p></SPAN></P>
+<P><SPAN>3) Change the role of the second resource to "Sponsor"<o:p></o:p></SPAN></P>
+<P><SPAN>4) Click with the mouse on whatever cell on the first resource (the grid will fire some events which will disturb the undo level)<o:p></o:p></SPAN></P>
+<P><SPAN>5) Click on Cancel. You'll see nothing is rolled back.<o:p></o:p></SPAN></P>
+<P><SPAN>&nbsp;<o:p></o:p></SPAN></P>
+<P><SPAN>Also the following case is not working<o:p></o:p></SPAN></P>
+<P><SPAN>1) Open project "Expert C# 2005 Business Objects"<o:p></o:p></SPAN></P>
+<P><SPAN>2) Change the role of the first resource to "Sponsor"<o:p></o:p></SPAN></P>
+<P><SPAN>3) Click with the mouse on whatever cell on the second resource (the grid will fire some events which will disturb the undo level)<o:p></o:p></SPAN></P>
+<P><SPAN>4) Click on Cancel. You'll see nothing is rolled back.<o:p></o:p></SPAN></P>
+<P><SPAN>&nbsp;<o:p></o:p></SPAN></P>
+<P><SPAN>When I change the Cancel_Button_Click event in the PTWin application version 2.1.4 everything is solved:<o:p></o:p></SPAN></P>
+<P><SPAN>private</SPAN><SPAN> <SPAN>void</SPAN> Cancel_Button_Click(<SPAN>object</SPAN> sender, <SPAN>EventArgs</SPAN> e)<o:p></o:p></SPAN></P>
+<P><SPAN>{<o:p></o:p></SPAN></P>
+<P><SPAN>&nbsp;&nbsp;&nbsp;projectBindingSource.RaiseListChangedEvents = <SPAN>false</SPAN>;<o:p></o:p></SPAN></P>
+<P><SPAN>&nbsp;&nbsp;&nbsp;resourcesBindingSource.RaiseListChangedEvents = <SPAN>false</SPAN>;<o:p></o:p></SPAN></P>
+<P><SPAN>&nbsp;&nbsp;&nbsp;this</SPAN><SPAN>.resourcesBindingSource.CancelEdit();<o:p></o:p></SPAN></P>
+<P><SPAN>&nbsp;&nbsp;&nbsp;this</SPAN><SPAN>.projectBindingSource.CancelEdit();<o:p></o:p></SPAN></P>
+<P><SPAN>&nbsp;&nbsp;&nbsp;projectBindingSource.RaiseListChangedEvents = <SPAN>true</SPAN>;<o:p></o:p></SPAN></P>
+<P><SPAN>&nbsp;&nbsp;&nbsp;</SPAN><SPAN>resourcesBindingSource.RaiseListChangedEvents = <SPAN>true</SPAN>;<o:p></o:p></SPAN></P>
+<P><SPAN>&nbsp;&nbsp;&nbsp;projectBindingSource.ResetBindings(<SPAN>false</SPAN>);<o:p></o:p></SPAN></P>
+<P><SPAN>}</SPAN><SPAN><o:p></o:p></SPAN></P>
+<P><SPAN>Maybe can you consider this for your 3.0 ebook. The GUI comes to be more complex. I should prefer only to cancel the root object, but this is not working. Also take note that you need first to cancel the resourcesBindingSource and then projectBindingSource, otherwise it will not work.<o:p></o:p></SPAN></P>
+<P><SPAN>I'm also obeying to your rule : <STRONG>Never interact with the business object directly while it is data bound. Instead, always interact with the bindingsource object.</STRONG></SPAN></P>
+<P><SPAN><o:p>But totally unbinding is apparently not necessary, just disabling the events while canceling is enough.</o:p></SPAN></P>
+<P><SPAN>I don't know really 100% the why of this, but I've come to this solution by trying all the possible combinations. Maybe it is for you easier to understand why this is working?<o:p></o:p></SPAN></P>
+<P>Alef<SPAN><o:p></o:p></SPAN></P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, August 27, 2007</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>When looking at 3.0.2 it is important to use both the new CSLA
+and the new code in ProjectTracker (PTWin), because there are substantial
+changes in both.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>And please realize that the code in PTWin is not the latest &#8211;
+the latest code that properly unbinds for Save/Apply is only in svn at the
+moment. But the Cancel/Close code in PTWin should correctly unbind the objects.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Your code is actually not sufficient. It is even harder than
+that to get it totally right &#8211; check the 3.0.2 PTWin code to see what I
+mean.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> alef
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Sunday, August 26, 2007 5:00 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: Undo doesn't work in sample application for
+the resources collection if you don't change something at the project.<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>I've tested your version 3.0.2 and the particular case of Undo that I was
+describing is working with this new version. <o:p></o:p></p>
+
+<p>But the following case is not working in this new version 3.0.2 :<o:p></o:p></p>
+
+<p>1) Open project &quot;Expert C# 2005 Business Objects&quot;<o:p></o:p></p>
+
+<p>2) Change the role of the first resource to &quot;Sponsor&quot;<o:p></o:p></p>
+
+<p>3) Change the role of the second resource to &quot;Sponsor&quot;<o:p></o:p></p>
+
+<p>4) Click with the mouse on whatever cell on the first resource (the grid
+will fire some events which will disturb the undo level)<o:p></o:p></p>
+
+<p>5) Click on Cancel. You'll see nothing is rolled back.<o:p></o:p></p>
+
+<p>&nbsp;<o:p></o:p></p>
+
+<p>Also the following case is not working<o:p></o:p></p>
+
+<p>1) Open project &quot;Expert C# 2005 Business Objects&quot;<o:p></o:p></p>
+
+<p>2) Change the role of the first resource to &quot;Sponsor&quot;<o:p></o:p></p>
+
+<p>3) Click with the mouse on whatever cell on the second resource (the grid
+will fire some events which will disturb the undo level)<o:p></o:p></p>
+
+<p>4) Click on Cancel. You'll see nothing is rolled back.<o:p></o:p></p>
+
+<p>&nbsp;<o:p></o:p></p>
+
+<p>When I change the Cancel_Button_Click event in the PTWin application version
+2.1.4 everything is solved:<o:p></o:p></p>
+
+<p>private void Cancel_Button_Click(object sender, EventArgs e)<o:p></o:p></p>
+
+<p>{<o:p></o:p></p>
+
+<p>&nbsp;&nbsp;&nbsp;projectBindingSource.RaiseListChangedEvents = false;<o:p></o:p></p>
+
+<p>&nbsp;&nbsp;&nbsp;resourcesBindingSource.RaiseListChangedEvents = false;<o:p></o:p></p>
+
+<p>&nbsp;&nbsp;&nbsp;this.resourcesBindingSource.CancelEdit();<o:p></o:p></p>
+
+<p>&nbsp;&nbsp;&nbsp;this.projectBindingSource.CancelEdit();<o:p></o:p></p>
+
+<p>&nbsp;&nbsp;&nbsp;projectBindingSource.RaiseListChangedEvents = true;<o:p></o:p></p>
+
+<p>&nbsp;&nbsp;&nbsp;resourcesBindingSource.RaiseListChangedEvents = true;<o:p></o:p></p>
+
+<p>&nbsp;&nbsp;&nbsp;projectBindingSource.ResetBindings(false);<o:p></o:p></p>
+
+<p>}<o:p></o:p></p>
+
+<p>Maybe can you consider this for your 3.0 ebook. The GUI comes to be more
+complex. I should prefer only to cancel the root object, but this is not
+working. Also take note that you need first to cancel the
+resourcesBindingSource and then projectBindingSource, otherwise it will not
+work.<o:p></o:p></p>
+
+<p>I'm also obeying to your rule : <strong>Never interact with the business
+object directly while it is data bound. Instead, always interact with the
+bindingsource object.</strong><o:p></o:p></p>
+
+<p>But totally unbinding is apparently not necessary, just disabling the events
+while canceling is enough.<o:p></o:p></p>
+
+<p>I don't know really 100% the why of this, but I've come to this solution by
+trying all the possible combinations. Maybe it is for you easier to understand
+why this is working?<o:p></o:p></p>
+
+<p>Alef<o:p></o:p></p>
+
+<p class=MsoNormal>&nbsp;<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>alef replied on Monday, August 27, 2007</h2><P>I've downloaded version 3.0.2 (test 2), so I am really testing both the new CSLA code and the new code in ProjectTracker (PTWin). I've verified also sub version and downloaded the latest file of ProjectEdit.cs but there is only a change in the SaveProject method, not in the Cancel_Button_Click.</P>
+<P>Do I need to look also for new files in the CSLA framework? I've looked at BusinessBase.cs and UndoableBase.cs but they are the same.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, August 27, 2007</h2><P>Hmm. The reason I'm asking is because you aren't calling the UnbindBindingSource() helper method - but rather are simply calling CancelEdit() on the bindingsources.&nbsp;I know for a fact that doesn't work, because I started there.</P>
+<P>The problem is that <EM>immediately</EM> upon calling CancelEdit() the bindingsource will also call BeginEdit() on your object - leaving the object still at edit level 1. Things get kind of messed up due to that.</P>
+<P>This is why I created that UnbindBindingSource() helper you can see in the 3.0.2 PTWin code.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>alef replied on Monday, August 27, 2007</h2><P>Oh, I now understand you that you are asking if I'm really using 3.0.2 PTWin code.</P>
+<P>When I discovered the misbehavior in version 2.1.4, I posted this message and you suggested to look at your new code. I did that but I found out that the code 3.0.2&nbsp;was not&nbsp;solving the undo.&nbsp;So I went back to the version 2.1.4 and started to find a solution in this version 2.1.4&nbsp;and this is the reason you are not seeing UnbindBindingSource() helper method.</P>
+<P>So I think your new version 3.0.2 is not yet completely solving the undo.</P>
+<P>The solution I describe is really working in 2.1.4. I don't know what is happening with the EditLevel (it is not so easy to debug this), but anyway the UI is behaving correctly.</P>
+<P>Is it possible for you to test the cases I've described in your code 3.0.2 and you'll see that is not working for these cases.</P>
+<P>I hope that the solution I provided is really a good one, because I want to keep the UI as simple as possible, and I find even my soluton is too much code. Ideally we should just call CancelEdit() on the root object, we should try to reach this target.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>PederSvaleng replied on Tuesday, August 28, 2007</h2><P>I've been following this thread because we have some problems with n-level undo when using 3.0.2 version. </P>
+<P>In project tracker I've&nbsp;tried both cslacs-3.0.1-070723 and cslacs-3.0.2-070809 and the undo mechanism is only working in the 3.0.1 version. In the 3.0.2 it behaves strange. Just thought I'd let you know :)</P>
+<P>It's difficult for me to try the 3.0.1 version in our program because of some exceptions problems in 3.0.1. You fixed it 3.0.2 so I'm very happy about that.</P>
+<P>--</P>
+<P>Peder</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, August 28, 2007</h2><P>Ha!</P>
+<P>This is only semi-relevant, but I'm being pulling in several directions at once just now - work, family, ebook, etc. So 3.0.2 is, of course, a work in progress, and not all was checked in.</P>
+<P>So if you look at the svn code <EM>NOW</EM> you should find code that works (C#).</P>
+<P>Make sure to get the updated WinPart along with ProjectEdit and ResourceEdit.</P>
+<P>The issue is this (relatively major) change in how IEditableObject is handled that makes IEO only ever do 1-level undo - just like a DataTable. This appears to be the only way to get data binding to really be happy, because that's what it expects from IEO.</P>
+<P><EM>BUT</EM> we want a form-level Cancel button too, which requires n-level undo.</P>
+<P>Yet that rule "never touch the object while it is data bound" remains true.</P>
+<P>So if you look at the code you'll see BeginEdit() called <EM>before</EM> binding. And CancelEdit() or ApplyEdit() <EM>after</EM> binding (and before rebinding if that occurs).</P>
+<P>When I get some time I'll get the VB updated as well and refresh the 3.0.2 download, but that might be next week the way things are going just at the moment.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, August 28, 2007</h2>OK, I got a refresh of 3.0.2 up - both VB and C# - with the (I believe) working PTWin code.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>PederSvaleng replied on Wednesday, August 29, 2007</h2><P>That was fast! And now it works :) Thank you VERY much Rocky! PTWIN is now working as expected,&nbsp;and so is our program.</P>
+<P><img src="/emoticons/emotion-2.gif" alt="Big Smile [:D]" /></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>PederSvaleng replied on Wednesday, August 29, 2007</h2><P>Csla.Core.UndoException: Edit level mismatch in CopyState<BR>&nbsp;&nbsp; at Csla.Core.UndoableBase.CopyState(Int32 parentEditLevel)<BR>&nbsp;&nbsp; at Csla.Core.UndoableBase.Csla.Core.IUndoableObject.CopyState(Int32 parentEditLevel)<BR>&nbsp;&nbsp; at Csla.Core.UndoableBase.CopyState(Int32 parentEditLevel)<BR>&nbsp;&nbsp; at Csla.Core.UndoableBase.Csla.Core.IUndoableObject.CopyState(Int32 parentEditLevel)<BR>&nbsp;&nbsp; at Csla.BusinessListBase`2.CopyState(Int32 parentEditLevel)<BR>&nbsp;&nbsp; at Csla.BusinessListBase`2.Csla.Core.IUndoableObject.CopyState(Int32 parentEditLevel)<BR>&nbsp;&nbsp; at Csla.Core.UndoableBase.CopyState(Int32 parentEditLevel)<BR>&nbsp;&nbsp; at Csla.Core.UndoableBase.Csla.Core.IUndoableObject.CopyState(Int32 parentEditLevel)<BR>&nbsp;&nbsp; at Csla.Core.UndoableBase.CopyState(Int32 parentEditLevel)<BR>&nbsp;&nbsp; at Csla.Core.BusinessBase.BeginEdit()</P>
+<P>I was probably to fast.. When saving I'm getting this exception&nbsp;in my program. I thing that this worked in cslacs-3.0.2-070809. But this is way beyond my knowledge.. </P>
+<P>Another question, and it's bit offtopic just to make&nbsp;sure I'm not doing anything wrong. When sending a business object to a dialog form, do I have to what I'm doing under? Or can I skip: turning of RaiseListChangedEvents, UnbindingSource, RebindUI? Or is it just a matter of taste?</P>
+<P><FONT color=#0000ff size=2>private</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>void</FONT><FONT size=2> OnSelectCareProvision( )<BR></FONT><FONT size=2>{<BR>&nbsp;&nbsp;&nbsp;</FONT><FONT color=#0000ff size=2>try<BR>&nbsp;&nbsp;&nbsp;</FONT><FONT size=2>{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;P<FONT color=#2b91af size=2>atientOfOtherProvider</FONT><FONT size=2> pat = (</FONT><FONT color=#2b91af size=2>PatientOfOtherProvider</FONT><FONT size=2>)bsPatientOfOtherProviderList.Current;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</FONT></FONT><FONT size=2><FONT size=2><FONT color=#2b91af size=2>DlgPatientCareProvision</FONT><FONT size=2> dlg = </FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> </FONT><FONT color=#2b91af size=2>DlgPatientCareProvision</FONT><FONT size=2>( );&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//Form</FONT></FONT></FONT></P>
+<P><FONT size=2><FONT size=2><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;this</FONT><FONT size=2>.bsPatientSwitch.RaiseListChangedEvents = </FONT><FONT color=#0000ff size=2>false</FONT><FONT size=2>; //root<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>.bsPatientOfOtherProviderList.RaiseListChangedEvents = </FONT><FONT color=#0000ff size=2>false</FONT><FONT size=2>; //child list<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>.bsEmploymentList.RaiseListChangedEvents = </FONT><FONT color=#0000ff size=2>false</FONT><FONT size=2>;&nbsp;//child list<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;UnbindBindingSource( </FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>.bsPatientOfOtherProviderList, </FONT><FONT color=#0000ff size=2>false</FONT><FONT size=2>, </FONT><FONT color=#0000ff size=2>false</FONT><FONT size=2> );<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;UnbindBindingSource( </FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>.bsEmploymentList, </FONT><FONT color=#0000ff size=2>false</FONT><FONT size=2>, </FONT><FONT color=#0000ff size=2>false</FONT><FONT size=2> );<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;UnbindBindingSource( </FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>.bsPatientSwitch, </FONT><FONT color=#0000ff size=2>false</FONT><FONT size=2>, </FONT><FONT color=#0000ff size=2>true</FONT><FONT size=2> );<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;dlg.PatientOfOtherProvider = pat;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</FONT></FONT></FONT><FONT size=2><FONT color=#2b91af size=2>&nbsp;DialogResult</FONT><FONT size=2> result = dlg.ShowDialog( );<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</FONT><FONT size=2><FONT color=#0000ff size=2>switch</FONT><FONT size=2> ( result )<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</FONT><FONT color=#0000ff size=2>case</FONT><FONT size=2> </FONT><FONT color=#2b91af size=2>DialogResult</FONT><FONT size=2>.OK:<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</FONT></FONT><FONT size=2><FONT size=2><FONT size=2>RebindUI( </FONT><FONT color=#0000ff size=2>true</FONT><FONT size=2>, </FONT><FONT color=#0000ff size=2>true</FONT><FONT size=2> );<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</FONT></FONT></FONT><FONT size=2><FONT size=2><FONT size=2>}<BR></FONT></FONT></FONT><FONT size=2><FONT size=2><FONT size=2>}</FONT></FONT></FONT></FONT></P>
+<P><FONT size=2>I thought I just could do this:</FONT></P>
+<P><FONT color=#0000ff size=2>private</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>void</FONT><FONT size=2> OnSelectCareProvision( )<BR></FONT><FONT size=2>{<BR>&nbsp;&nbsp;&nbsp;</FONT><FONT color=#0000ff size=2>try<BR>&nbsp;&nbsp;&nbsp;</FONT><FONT size=2>{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;P<FONT color=#2b91af size=2>atientOfOtherProvider</FONT><FONT size=2> pat = (</FONT><FONT color=#2b91af size=2>PatientOfOtherProvider</FONT><FONT size=2>)bsPatientOfOtherProviderList.Current;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</FONT></FONT><FONT size=2><FONT size=2><FONT color=#2b91af size=2>DlgPatientCareProvision</FONT><FONT size=2> dlg = </FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> </FONT><FONT color=#2b91af size=2>DlgPatientCareProvision</FONT><FONT size=2>( );&nbsp;&nbsp;//Form&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</FONT></FONT></FONT><FONT size=2><FONT size=2><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</FONT><FONT size=2><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;dlg.PatientOfOtherProvider = pat;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</FONT></FONT></FONT><FONT size=2><FONT color=#2b91af size=2>&nbsp;DialogResult</FONT><FONT size=2> result = dlg.ShowDialog( );<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</FONT><FONT size=2><FONT color=#0000ff size=2>switch</FONT><FONT size=2> ( result )<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</FONT><FONT color=#0000ff size=2>case</FONT><FONT size=2> </FONT><FONT color=#2b91af size=2>DialogResult</FONT><FONT size=2>.OK:<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;///////</FONT></FONT><FONT size=2><FONT size=2><FONT size=2>RebindUI( </FONT><FONT color=#0000ff size=2>true</FONT><FONT size=2>, </FONT><FONT color=#0000ff size=2>true</FONT><FONT size=2> );<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//Do nothing here..</FONT></FONT></FONT></FONT></P>
+<P><FONT size=2><FONT size=2><FONT size=2><FONT size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</FONT></FONT></FONT><FONT size=2><FONT size=2><FONT size=2>}<BR></FONT></FONT></FONT><FONT size=2><FONT size=2><FONT size=2>}</FONT></FONT></FONT></FONT></P>
+<P><FONT size=2>&nbsp;</P>
+<P><FONT size=2><FONT size=2><FONT size=2>I've been trying different things here, but I've always get exception when saving my root business object (which worked before);</FONT></FONT></FONT></FONT><FONT size=2><FONT size=2><FONT size=2></P></FONT></FONT></FONT>
+<P><FONT size=2></FONT>&nbsp;</P>
+<P><FONT size=2>&nbsp;</P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>PederSvaleng replied on Wednesday, August 29, 2007</h2><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>private</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>void</FONT><FONT size=2> BindUI( )<BR>{<BR>&nbsp;&nbsp;&nbsp;aPatient.BeginEdit( );<BR>&nbsp;&nbsp;&nbsp;</FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>.bsPatientSwitch.DataSource = aPatient;<BR>}</FONT></P>
+<P><FONT size=2>aPatient.BeginEdit() gives the exception. But I guess you already knew :)</P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, August 29, 2007</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>PederSvaleng:</strong></div><div>
+<P>Another question, and it's bit offtopic just to make&nbsp;sure I'm not doing anything wrong. When sending a business object to a dialog form, do I have to what I'm doing under? Or can I skip: turning of RaiseListChangedEvents, UnbindingSource, RebindUI? Or is it just a matter of taste?</P>
+<P></div></BLOCKQUOTE></P>
+<P>No, I don't think any of this is optional. Every time I think there's a shortcut, it turns out to cause problems. So as far as I can tell, the sequence (and order counts!) of the code in the latest 3.0.2 PTWin is correct.</P>
+<P>If you find another reliable solution please let us know!</P>
+<P>In general:</P>
+<OL>
+<LI><EM>Before binding</EM>, call BeginEdit() on the root</LI>
+<LI>To cancel, <EM>unbind all objects </EM>(as shown in PTWin), then call CancelEdit() on the root</LI>
+<LI>To save, <EM>unbind all objects</EM> (as shown in PTWin), then call ApplyEdit() on the root and save it</LI></OL>
+<P>Unbinding is a multi-step process, and seems harder than it should be, but it is what it is.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Wednesday, August 29, 2007</h2>Rocky,<br><br>Is it always necessary to call BeginEdit before binding?&nbsp; Lets suppose that I don't have an undo operation that the users can initiate.<br><br>I ask this because my users found an odd error.<br><br>Basically, if the users change the quote they are working on by selecting a new item in a drop down list, then click on Save on my toolbar, they get a ValidationException:&nbsp; Object cannot be saved while edited.<br><br>If they click off the dropdown and click Save, it works fine.&nbsp;&nbsp;&nbsp; Is this related?<br><br><br>EDIT:&nbsp; This got a bit weirder; Save doesn't exhibit the problem if I change the controls to update on propertychange, but another toolbar button (Lock) which calls a method on the object, then attempts to save, does.&nbsp; <br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, August 29, 2007</h2><P>You only need to call the explicit BeginEdit(), CancelEdit() and ApplyEdit() on the <EM>unbound object</EM> if you have&nbsp;a form-level Cancel button.</P>
+<P>If you don't have a form-level Cancel button, then the user has no way to request a complete undo. The most they could do is press ESC in a grid row to request that row be undone - and that's automatic with data binding.</P>
+<P>You do still need to unbind the object before saving it however. That is inescapable to get reliable results, otherwise at least one object <EM>will be at an elevated edit level</EM> when Save() is called...</P>
+<P>But please be aware that 3.0.2 includes a change to the IEditableObject interface works to bring its behavior in line with the DataTable (as data binding expects), and so what works in 3.0.2 won't work prior to that point. In fact, I am not sure <EM>anything</EM> can work reliably prior to 3.0.2 if you have parent-child data and in-place grid editing.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, August 29, 2007</h2><P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>ajj3085:</strong></div><div>Rocky,<BR>Basically, if the users change the quote they are working on by selecting a new item in a drop down list, then click on Save on my toolbar, they get a ValidationException:&nbsp; Object cannot be saved while edited.<BR><BR>If they click off the dropdown and click Save, it works fine.&nbsp;&nbsp;&nbsp; Is this related?<BR></div></BLOCKQUOTE></P>
+<P>Oh, I just noticed that the button is on a toolbar. I don't think those buttons (by default) take focus, and that could be your problem. If they don't take focus, it is possible that the last control (especially complex controls like a dropdown) might not complete data binding updates before the click event runs.</P>
+<P>Isn't there an option on a toolbar button to make it take focus though?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Wednesday, August 29, 2007</h2>Rocky,<br><br>Thanks for the replies.&nbsp; I'll have to check out the new PT example, because I don't unbind the object before calling save.&nbsp; I DO turn off all RaiseListChangedEvents, and call EndEdit on all the binding sources.<br><br>I've found though that calling EndEdit on the Document's binding source causes a BeginEdit followed by a property set (for some reason the combo doesn't do this even though its set to update on PropertyChange), so the Edit is ended than started again somehow (BeginEdit ignores the call because BindingEdit is true).&nbsp; More frustrating is that the combobox already set the value previously.<br><br>The result is that the root objects EditLevel remains at 1 even after calling EndEdit.&nbsp; Argh.<br><br>It may be the focus causing this problem, I'll have to investigate.&nbsp; I'm not sure if the toolbar has an option to make it focus though; its the UltraToolbarsManager from Infragistics, not the standard toolbar.<br><br>Thanks for the tips.&nbsp; I'll post back with my findings.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, August 29, 2007</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Yes, the issue with just calling EndEdit() is that the
+bindingsource <i>immediately</i> calls BeginEdit() again.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>So the only way to really get to edit level 0 for all objects is
+to unbind.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Wednesday, August 29, 2007</h2>Hmm, I didn't think this was the case if RaiseEvents was off..<br><br>Its odd that this ususally works, and its only combobox + toolbar that leads to the issue.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Wednesday, August 29, 2007</h2>So it seems the new model is to set RaiseEvents to false, then simply unbind the BindingSource controls instead of just calling EndEdit on all of them?&nbsp; <br><br>I changed the code so that it follows this same pattern, and it seems to work.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, August 29, 2007</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Yes, that&#8217;s correct. Though &#8220;simply unbind&#8221; is
+a bit misleading, since you do have to find the specific current object, then
+disconnect binding, then end the edit by calling IEditableObject directly on
+the object.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>And you must unbind children first, then the root, but you can&#8217;t
+reset the child bindingsource.DataSource until after you&#8217;ve cleared the
+root &#8211; it is a delicate sequence of calls </span><span>L</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>OK, maybe it isn&#8217;t quite as delicate as I think &#8211;
+but after messing with this as much as I have, these are my conclusions :) &nbsp;It
+is like magic.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Hermione comes to mind: &#8220;It isn&#8217;t alo-ha-more-AH, its
+alo-ha-MORE-ah.&#8221;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> ajj3085
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Wednesday, August 29, 2007 10:33 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: Undo doesn't work in sample application for
+the resources collection if you don't change something at the project.<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>So it seems the new model is to set RaiseEvents to false,
+then simply unbind the BindingSource controls instead of just calling EndEdit
+on all of them?&nbsp; <br>
+<br>
+I changed the code so that it follows this same pattern, and it seems to work.<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>PederSvaleng replied on Thursday, August 30, 2007</h2><P>Now thing are getting a bit more stable here. It's just one little thing that happens when I save the root object.. </P><FONT color=#2b91af size=2>
+<P>PatientSwitch</FONT><FONT size=2> temp = aPatient.Clone( );<BR>aPatient = temp.Save(); // This goes good.</FONT></P>
+<P><FONT size=2>aPatient.BeginEdit( ); // This gives and copy state exception.<BR></FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>.bsPatientSwitch.DataSource = aPatient;</FONT></P>
+<P><FONT size=2>So my workaround is <BR></FONT></P>
+<P><FONT size=2><FONT color=#2b91af size=2>PatientSwitch</FONT><FONT size=2> temp = aPatient.Clone( );<BR></FONT><FONT color=#2b91af size=2>PatientSwitch</FONT><FONT size=2> temp2 = temp.Save( );<BR>aPatient = </FONT><FONT color=#2b91af size=2>PatientSwitch</FONT><FONT size=2>.GetPatientSwitch( temp.RoleId );</FONT><FONT size=2>&nbsp;</P>
+<P>aPatient.BeginEdit( ); // This works&nbsp;<BR><FONT color=#0000ff size=2>this</FONT><FONT size=2>.bsPatientSwitch.DataSource = aPatient;</FONT></P>
+<P>It seems that there is a wrong edit level in one of the child objects in the aPatient's object graph. After the saving. I don't now what my question really is but I just thought I'd let you know. Maybe I'm doing something wrong.. :) (as usual).</P></FONT></FONT>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Thursday, August 30, 2007</h2>Before you clone the aPatient instance, you should call ApplyEdit.<br><br>Before you do that, you need to se the bsPatientSwitch.DataSource = null.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Thursday, August 30, 2007</h2>Indeed, its amazing how much databinding I've been able to learn from your explorations in this.&nbsp; I don't think I'd have figured it out myself.<br><br>It seems that setting the root's BS.Datasource to null works; the other BindingSource's datasources are the root binding source, so setting the root seems to unbind them all.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>PederSvaleng replied on Thursday, August 30, 2007</h2><P>Thanks you. Of course you are right. My mistake. I tried to what you said, but it didn't work.&nbsp;you mean like this?&nbsp;</P><FONT color=#0000ff size=2>
+<P>this</FONT><FONT size=2>.bsPatientSwitch.DataSource = </FONT><FONT color=#0000ff size=2>null</FONT><FONT size=2>;<BR></FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>.aPatient.ApplyEdit( );<BR></FONT><FONT color=#0000ff size=2>try<BR></FONT><FONT size=2>{<BR></FONT><FONT color=#2b91af size=2>PatientSwitch</FONT><FONT size=2> temp = aPatient.Clone( );<BR></FONT><FONT color=#008000 size=2>//PatientSwitch temp2 = temp.Save( );<BR></FONT><FONT color=#008000 size=2>//aPatient = PatientSwitch.GetPatientSwitch( temp.RoleId );<BR></FONT><FONT size=2>aPatient = temp.Save( );<BR>}</FONT></P>
+<P><FONT size=2>One other thing. Our graph is indeed hugh. What happens (with editlevels) if you have a root object inside the graph of another root object? Will this cause problems. Another thing that made problems is this way of doing a selection in a list:</FONT></P><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>private</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>void</FONT><FONT size=2> OnSelectEmployment( )<BR>{<BR></FONT><FONT color=#0000ff size=2>try<BR></FONT><FONT size=2>{<BR>&nbsp;&nbsp;&nbsp;</FONT><FONT color=#2b91af size=2>Employee</FONT><FONT size=2> aEmp = (</FONT><FONT color=#2b91af size=2>Employee</FONT><FONT size=2>)bsEmploymentList.Current;</FONT></P>
+<P><FONT size=2>Correct me if I'm wrong but this call seems to raise the edit level of aEmp. Scary?????</FONT></P>
+<P><FONT size=2>Rocky doesn't to it this way, but I thoght it would be legal to do what I do. Since editlevel is hard for me to work out, I got confused using this statement.</FONT><FONT size=2></P>
+<P></P>
+<P></FONT><FONT size=2></FONT>&nbsp;</P>
+<P><FONT size=2>&nbsp;</P></FONT>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Thursday, August 30, 2007</h2>Hmm, I don't think its supported to have a root containing another root, unless the contained root object is a switchable object.&nbsp; <br><br>The code you added was all I needed to get working again, but you may want to try what Rocky suggests, which is to unbind everything, etc.&nbsp; <br><br>It seems you have a list of employees which you then select one of for editing; that's unusual, normally you'd have a list of EmployeeInfo objects (which are readonly) and use that for selection and display only.&nbsp; Then when you need to edit you'd load the full blown editable object.&nbsp;&nbsp; If you switch to that model, it may help get things&nbsp; under control.&nbsp; Just my two cents though.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>PederSvaleng replied on Thursday, August 30, 2007</h2><P>I agree. I've learned big big&nbsp;time from this thread!&nbsp;I do as Rocky suggests, which is to unbind everything, I just didn't show it :). The root object is a swithable object but it behaves as a root. </P>
+<P>I see your point when selecting the employee, it's just that our model is like that :)</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>renegrin replied on Tuesday, September 04, 2007</h2><P>Excellent thread.</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>PederSvaleng replied on Wednesday, September 05, 2007</h2><P><FONT size=2>Just would like to say that everything runs very smoothly now, after reading this thread. I'm now able to pass the object from an editable child collection to a modal dialog, and get it back&nbsp;(undo&nbsp;works fine). Life is good!&nbsp;But when I try to remove&nbsp;an item from my list in my&nbsp;main form, things are just as good.&nbsp;</FONT></P>
+<P><FONT size=2>I have one datasource that are bound to one root object (aPatient).<BR><BR></FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> ( dgEmploymentList.SelectedRows.Count &gt; 0 )<BR>{<BR>&nbsp;&nbsp;&nbsp;</FONT><FONT color=#0000ff size=2>int</FONT><FONT size=2> pos = bsEmploymentList.Position;<BR>&nbsp;&nbsp;&nbsp;</FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>.aPatient.PersonPlayer.EmploymentList[pos].Organization.ApplyEdit( ); //workaround<BR>&nbsp;&nbsp;&nbsp;</FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>.aPatient.PersonPlayer.EmploymentList.RemoveAt( pos );<BR></FONT><FONT size=2>}<BR>...<BR>RebindUI(false,true).<BR><BR></FONT><FONT size=2>As you can se from my code I manually call applyEdit() to the Organization object to get it's editlevel down to 0.&nbsp;If I don't, then the edit level in Organization is 1 when a call aPatient.CancelEdit() and then Exception!</FONT></P>
+<P><FONT size=2>Anybody knows&nbsp;what I'm doing wrong?&nbsp;The other objects in the list has editlevel 0. </FONT></P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

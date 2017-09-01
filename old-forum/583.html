@@ -1,0 +1,20 @@
+<html><header><title>GetFloat</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>GetFloat</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/583.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>DesNolan posted on Monday, July 10, 2006</h2>Hi,<br>
+<br>
+I have a Float field in my database, which my query returns ok, but
+when I try to use the GetFloat method of the SafeDataRead to assign the
+value to a private Float field on my BO the system throws an
+InValidCast exception. Using GetDouble works for me, but not sure why
+GetFloat won't. Anyone have any ideas?<br>
+<br>
+Thanks,<br>
+<br>
+Des Nolan<br>
+(using CSLA to build an 'open' version of a Disaster Recovery Planning product)<br>
+<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Tuesday, July 11, 2006</h2>Sql data types don't map directly to .Net datatypes.&nbsp; A float in Sql likely has a greater percision than a float in .Net, hence the need for double.&nbsp;&nbsp;&nbsp; Floats in .Net have a 7 digit percision; doubles have 15 - 16.<br><br>HTH<br>Andy<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>DesNolan replied on Tuesday, July 11, 2006</h2>Andy,<br>
+<br>
+I will check that out.<br>
+<br>
+Thanks,<br>
+<br>
+Des Nolan<br>
+<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

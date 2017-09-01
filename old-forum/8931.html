@@ -1,0 +1,99 @@
+<html><header><title>Silverlight with Windows auth</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Silverlight with Windows auth</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/8931.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>artsd posted on Thursday, May 13, 2010</h2><p>I read this thread <a href="http://forums.lhotka.net/forums/p/8825/42014.aspx">http://forums.lhotka.net/forums/p/8825/42014.aspx</a> and this article <a href="http://msdn.microsoft.com/en-us/library/aa302377.aspx">http://msdn.microsoft.com/en-us/library/aa302377.aspx</a>.</p>
+<p>I still cannot get anywhere with the VS2010 CSLA 4 Beta 1 Silverlight &quot;WindowsAuthentication&quot; sample app.</p>
+<p>I think I have tried every combination of</p>
+<ul>
+<li>system.web / identity / impersonate = true/false</li>
+<li>system.web / authentication / mode = Windows</li>
+<li>system.webServer / validation / validateIntegratedModeConfiguration = true/false</li>
+</ul>
+<p>The first problem is that the Csla.Silverlight.Security.PopulateWindowsIdentity() is throwing an exception on the foreach loop over IdentityReferenceCollection beause the Translate fails on one of my groups (it succeeds on earlier entries in the collection).</p>
+<p>So I skip over that foreach and go right to the line that assigns identityName to System.Security.Principal.WindowsIdentity.GetCurrent().Name.</p>
+<p>identityName is always set to &quot;IIS APPPOOL\ASP.NET v4.0&quot; which then gets shortened to just &quot;ASP.NET v4.0&quot;.</p>
+<p>I thought maybe this had something to do with the fact that I had to run VS2010 as administrator in order to debug with IIS hosting the WCF web service (as opposed to Cassini), but I am not sure of that.</p>
+<p>And of course, I cannot run outside the debugger because of the Translate exception (unless I comment that code out and recompile CSLA -- which I am trying to avoid).</p>
+<p>I am sure there is some little setting I missed somewhere but where?!?!?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>artsd replied on Thursday, May 13, 2010</h2><p>I also wanted to note that IIS Manager&#39;s Authentication settings for this virtual directory application only show &quot;ASP.NET Impersonation&quot; and &quot;Windows Authentication&quot; enabled. All others are disabled. Thanks for any assistance you can offer.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, May 14, 2010</h2><p>You are going to have to help troubleshoot the Translate issue - I&#39;ve never seen that. What is the exception, and what group causes it?</p>
+<p>Regarding the impersonation - you might find it easier to troubleshoot that by just adding an aspx page to the virtual root and debugging with ASP.NET itself from a browser. Take Silverlight out of the picture, and just focus on getting ASP.NET and IIS to impersonate the caller. That really has nothing to do with SL - it is purely a server-side ASP.NET concept.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>artsd replied on Friday, May 14, 2010</h2><p>&nbsp;</p>
+<div>
+<p>The exception on Translate was System.Security.Principal.IdentityNotMapped &quot;Some or all identity references could not be translated.&quot;</p>
+<div>Here are some screen shots showing the IdentityReference and the exception.</div>
+</div>
+<div></div>
+<div>Let me know if I can give you anything else. Thanks.</div>
+<div><a href="http://forums.lhotka.net/cfs-file.ashx/__key/CommunityServer.Components.UserFiles/00.00.00.80.63.Translate_5F00_ex/exception.png"><img src="http://forums.lhotka.net/resized-image.ashx/__size/550x0/__key/CommunityServer.Components.UserFiles/00.00.00.80.63.Translate_5F00_ex/exception.png" border="0" alt="" /></a></div>
+<p><a href="http://forums.lhotka.net/cfs-file.ashx/__key/CommunityServer.Components.UserFiles/00.00.00.80.63.Translate_5F00_ex/item_5F00_quickwatch.png"><img src="http://forums.lhotka.net/resized-image.ashx/__size/550x0/__key/CommunityServer.Components.UserFiles/00.00.00.80.63.Translate_5F00_ex/item_5F00_quickwatch.png" border="0" alt="" /></a></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, May 14, 2010</h2><p>OK, that helps, thanks.</p>
+<p>Can you try changing the code in WindowsIdentity.cs so the foreach loop looks like this:</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; foreach (System.Security.Principal.IdentityReference item in groups)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (item.IsValidTargetType(typeof(System.Security.Principal.NTAccount)))<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; System.Security.Principal.NTAccount account = (System.Security.Principal.NTAccount)item.Translate(typeof(System.Security.Principal.NTAccount));<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (account.Value.Contains(DomainDelimiter))<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; roles.Add(account.Value.Substring(account.Value.LastIndexOf(DomainDelimiter) + 1));<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; else<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; roles.Add(account.Value);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</p>
+<p>I think that will fix the issue, since I&#39;ve added a check to confirm that the item is valid before trying the translate.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>artsd replied on Friday, May 14, 2010</h2><p>Sorry to say but that did not fix it. The call to IsValidTargetType passed but the Translate still threw the same exception.</p>
+<p>I &quot;fixed&quot; it for now by eating the IdentityNotMappedException. Not the best way I am sure. I will try to post more details about the exception in a followup post.</p>
+<p>
+<p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp;foreach (System.Security.Principal.IdentityReference item in groups)<br />&nbsp;&nbsp; &nbsp; &nbsp;{<br />&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;try<br />&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;{<br />&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;if (item.IsValidTargetType(typeof(System.Security.Principal.NTAccount)))<br />&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;{<br />&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;System.Security.Principal.NTAccount account = (System.Security.Principal.NTAccount)item.Translate(typeof(System.Security.Principal.NTAccount));<br />&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;if (account.Value.Contains(DomainDelimiter))<br />&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;{<br />&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;roles.Add(account.Value.Substring(account.Value.LastIndexOf(DomainDelimiter) + 1));<br />&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;}<br />&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;else<br />&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;{<br />&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;roles.Add(account.Value);<br />&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;}<br />&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;}<br />&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;}<br />&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;catch (System.Security.Principal.IdentityNotMappedException)<br />&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;{<br />&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;; // ignore<br />&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;}<br />&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;catch<br />&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;{<br />&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;throw;<br />&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;}<br />&nbsp;&nbsp; &nbsp; &nbsp;}</p>
+<div></div>
+</p>
+</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>artsd replied on Friday, May 14, 2010</h2><p>...</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>artsd replied on Friday, May 14, 2010</h2><p>The SID that this is throwing on is &quot;S-1-5-82-0&quot;. I found out that &quot;S-1-5-82&quot; has something to do with IIS7 app pool so maybe that is a clue.</p>
+<p><a href="http://blogs.msdn.com/spatdsg/archive/2010/02/10/wsfederationauthenticationmodule-auth-failure.aspx">http://blogs.msdn.com/spatdsg/archive/2010/02/10/wsfederationauthenticationmodule-auth-failure.aspx</a></p>
+<p><a href="http://www.adopenstatic.com/cs/blogs/ken/archive/2008/01/29/15759.aspx">http://www.adopenstatic.com/cs/blogs/ken/archive/2008/01/29/15759.aspx</a></p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, May 14, 2010</h2><p>Maybe it is a non-issue then, since if impersonation was working you&#39;d have a real identity, not one of the system identities, and this wouldn&#39;t happen at all.</p>
+<p>I am pretty sure that&#39;s the case, since nobody has ever encountered (or at least reported) the issue you are seeing.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>artsd replied on Friday, May 14, 2010</h2><p>OK. I will try to get that working with simplified ASPX.</p>
+<p>Ignore my last post because the SID for IIS7 was &quot;S-1-5-8-82&quot; not &quot;S-1-5-82&quot; like I had.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>artsd replied on Friday, May 14, 2010</h2><p>I did as you suggested and made a simple ASPX page. If ASP.NET impersonation and Windows authentication in enabled, I correctly get my domain user and my groups. If impersonation is disabled, I get the Translate exception when processing SID S-1-5-82-0 for user &quot;IIS APPPOOL\ASP.NET v4.0&quot;.</p>
+<p>So ASPX is working as you expected.</p>
+<p>Of course I still have the same exact problem with the WCF service though. Still working on it...</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, May 14, 2010</h2><p>Have you read through the PnP guidance book for WCF configuration? It is on codeplex, and is probably the most comprehensive discussion of WCF configuration available. iirc, they talk about configuring WCF for impersonation pretty thoroughly.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>artsd replied on Friday, May 14, 2010</h2><p>OK. I will read that guide. I finally got something to work (but not CSLA yet). I decided to do a dirt simple WCF service with the following implementation. I made the following DoWork() method. The WindowsIdentity was always coming back as the ASP account. The HttpContext was always null. The Thread was always correct.</p>
+<p>When I added the OperationBehavior Impersonation &quot;Required&quot; attribute, then the WindowsIdentity now works and is the same as the Thread. This is what I want.</p>
+<p>If I use OperationBehavior&nbsp;Impersonation &quot;Allowed&quot; attribute, then it goes back to ASP user. CSLA uses the Allowed attribute.</p>
+<p>I thought adding:<br />&lt;serviceHostingEnvironment aspNetCompatibilityEnabled=&quot;true&quot; multipleSiteBindingsEnabled=&quot;true&quot; /&gt;<br />to the &lt;system.serviceModel&gt; section of Web.Config would help. But then I needed to add service class attribute:<br />[AspNetCompatibilityRequirements(RequirementsMode = AspNetCompatibilityRequirementsMode.Allowed)]. But even with that, WindowsIdentity is still ASP acct.&nbsp;</p>
+<p>namespace AgWcfSecTest.Web<br />{<br />public class Service1 : IService1<br />
+    {<br />&nbsp;&nbsp;<strong>[OperationBehavior(Impersonation = ImpersonationOption.Required)]</strong><br />&nbsp;&nbsp;public string DoWork()<br />&nbsp;&nbsp;{<br />&nbsp;&nbsp; &nbsp;string s1 = &quot;WindowsIdentity: &lt;null&gt;&quot;;<br />&nbsp;&nbsp; &nbsp;string s2 = &quot;HttpContext.Current.User:&nbsp;&lt;null&gt;&quot;;<br />&nbsp;&nbsp; &nbsp;string s3 = &quot;Thread.CurrentPrincipal.Identity: &lt;null&gt;&quot;;</p>
+<p>&nbsp;&nbsp; &nbsp;string s = &quot;&quot;;<br /><br />&nbsp;&nbsp; &nbsp;System.Security.Principal.WindowsIdentity ident = System.Security.Principal.WindowsIdentity.GetCurrent();<br />&nbsp;&nbsp; &nbsp;if (ident != null)<br />&nbsp;&nbsp; &nbsp; &nbsp;s1 = &quot;WindowsIdentity: &quot; + ident.Name;<br /><br />&nbsp;&nbsp; &nbsp;if (HttpContext.Current != null &amp;&amp; HttpContext.Current.User != null &amp;&amp; HttpContext.Current.User.Identity != null)<br />&nbsp;&nbsp; &nbsp; &nbsp;s2 = &quot;HttpContext.Current.User: &quot; + HttpContext.Current.User.Identity.Name;<br /><br />&nbsp;&nbsp; &nbsp;if (Thread.CurrentPrincipal != null &amp;&amp; Thread.CurrentPrincipal.Identity != null)<br />&nbsp;&nbsp; &nbsp; &nbsp;s3 = &quot;Thread.CurrentPrincipal.Identity: &quot; + Thread.CurrentPrincipal.Identity.Name;<br /><br />&nbsp;&nbsp; &nbsp;s = s1 + &quot;\n&quot; + s2 + &quot;\n&quot; + s3;<br /><br />&nbsp;&nbsp; &nbsp;return s;<br />&nbsp;&nbsp; &nbsp;}<br />}<br />
+}<br />
+</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>artsd replied on Friday, May 14, 2010</h2><p>OK. I think this will be my last post to this thread but I wanted to share my final findings in case it helps someone else.</p>
+<p>Fyi, I am using: VS2010, CSLA v4 beta 1, IIS7, .NET 4.</p>
+<p>In order to make WCF CSLA service properly work with Silverlight and Windows authentication such that&nbsp;PopulateWindowsIdentity() in WindowsIdentity.cs does the right thing, in IIS Authentication settings, enable only ASP.NET Impersonation and Windows Authentication.</p>
+<p>In Web.Config, configure as below.. In the end I think my problem came down to themissing&nbsp;impersonateCallerForAllOperations:.</p>
+<p>
+<p>&lt;configuration&gt;</p>
+<p>&nbsp;&nbsp; &nbsp;&lt;appSettings&gt;</p>
+<p><b>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;&lt;add key=&quot;CslaAuthentication&quot; value=&quot;Windows&quot; /&gt;</b></p>
+<p>&nbsp;&nbsp; &nbsp;&lt;/appSettings&gt;</p>
+<p>&nbsp;&nbsp; &nbsp;&lt;system.web&gt;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &lt;compilation debug=&quot;true&quot; targetFramework=&quot;4.0&quot;&gt; &lt;/compilation&gt;</p>
+<p><b>&nbsp;&nbsp; &nbsp; &nbsp; &lt;authentication mode=&quot;Windows&quot; /&gt;</b></p>
+<p><b>&nbsp;&nbsp; &nbsp; &nbsp; &lt;identity impersonate=&quot;true&quot; /&gt;</b></p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &lt;pages controlRenderingCompatibilityVersion=&quot;3.5&quot; clientIDMode=&quot;AutoID&quot; /&gt;</p>
+<p>&nbsp;&nbsp; &nbsp;&lt;/system.web&gt;</p>
+<p>&nbsp;&nbsp; &nbsp;&lt;system.serviceModel&gt;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;&lt;bindings&gt;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&lt;basicHttpBinding&gt;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&lt;binding name=&quot;ArtsBasicHttpEndpointBinding&quot;&gt;</p>
+<p><b>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&lt;security mode=&quot;TransportCredentialOnly&quot;&gt;</b></p>
+<p><b>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&lt;transport clientCredentialType=&quot;Windows&quot; /&gt;</b></p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&lt;/security&gt;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&lt;/binding&gt;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&lt;/basicHttpBinding&gt;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &lt;/bindings&gt;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &lt;behaviors&gt;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;serviceBehaviors&gt;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;behavior name=&quot;WcfPortalBehavior&quot;&gt;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;serviceMetadata httpGetEnabled=&quot;true&quot; /&gt;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;serviceDebug includeExceptionDetailInFaults=&quot;true&quot; /&gt;</p>
+<p><b>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;serviceAuthorization impersonateCallerForAllOperations=&quot;true&quot; /&gt;</b></p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;/behavior&gt;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;/serviceBehaviors&gt;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;&lt;/behaviors&gt;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;&lt;services&gt;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&lt;service behaviorConfiguration=&quot;WcfPortalBehavior&quot; name=&quot;Csla.Server.Hosts.Silverlight.WcfPortal&quot;&gt;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&lt;endpoint address=&quot;&quot; binding=&quot;basicHttpBinding&quot; bindingConfiguration=&quot;ArtsBasicHttpEndpointBinding&quot; name=&quot;ArtsEndpoint&quot; contract=&quot;Csla.Server.Hosts.Silverlight.IWcfPortal&quot;&gt;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&lt;identity&gt;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&lt;dns value=&quot;localhost&quot; /&gt;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&lt;/identity&gt;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&lt;/endpoint&gt;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&lt;/service&gt;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;&lt;/services&gt;</p>
+<p>&nbsp;&nbsp; &nbsp;&lt;/system.serviceModel&gt;</p>
+<p>&nbsp;</p>
+<p>&nbsp;&nbsp; &nbsp;&lt;system.webServer&gt;</p>
+<p><b>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;&lt;validation validateIntegratedModeConfiguration=&quot;false&quot; /&gt;</b></p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;&lt;directoryBrowse enabled=&quot;false&quot; /&gt;</p>
+<p>&nbsp;&nbsp; &nbsp;&lt;/system.webServer&gt;</p>
+<p>&lt;/configuration&gt;</p>
+<p>&nbsp;</p>
+</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, May 14, 2010</h2><p>Thanks for sharing your results!!</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

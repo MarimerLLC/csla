@@ -1,0 +1,9 @@
+<html><header><title>help a newbie?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>help a newbie?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4430.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>ebrady posted on Wednesday, February 27, 2008</h2><P>Please forgive my ignorance :)&nbsp; Not only am I new to CSLA.NET but I'm also a beginner with regard to object oriented programming and .NET.</P>
+<P>When I run the ProjectTracker application I see all of these "ASP.NET Development server" icons&nbsp;in my system tray.&nbsp; Why do these appear?&nbsp; And are all of them necessary?&nbsp; I would have expected only one to show up based on the remote host I've chosen to use, in this case WCF.&nbsp; Is there something in the App.config file that I need to comment out?</P>
+<P>Thanks in advance for your comments :)</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Thursday, February 28, 2008</h2><P>I think the dev server connects to a random port each time you run the app.</P>
+<P>So you can just Exit out of the one in your tray when you are done running the app.</P>
+<P>That way they won't "build up".</P>
+<P>Joe</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ebrady replied on Thursday, February 28, 2008</h2><P>Thanks for your response Joe.&nbsp; I just found what I was looking for.&nbsp; In the Project Tracker solution all of the web projects have a property "Always Start When Debugging" and this was set to True for each web project.&nbsp; This is apparently what was causing them to start when I fired up the project.&nbsp;</P>
+<P>Well, on to the next issue :)</P>
+<P>Thanks again.</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

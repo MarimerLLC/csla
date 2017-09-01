@@ -1,0 +1,14 @@
+<html><header><title>Web application didn't run after update to vs 2008</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Web application didn't run after update to vs 2008</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4586.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>hanami279 posted on Sunday, March 30, 2008</h2><P>Hi all,</P>
+<P>I have some problem with old csla poject. I had a CSLA based project with CSLA on .Net framework 2.0. The application run perfectly but customer want to apply new change and i need to maintain this project.</P>
+<P>This application is written with VS 2005, but now i use VS 2008 to modify it. When i open, a dialog box appear to ask for update solution. I choose update but do not change framework target (remaining .Net framework 2.0). After that i build solution and test in debug mode. When i browser for url of web application i get message:</P>
+<P>"<EM>Could not load file or assembly 'PresentationCore' or one of its dependencies. An attempt was made to load a program with an incorrect format." </EM></P>
+<P>I could not understand what was happen with my project. </P>
+<P>I have install .Net framework 2.0, 3.0 and 3.5.</P>
+<P>I use CSLA version 3.0.2 on Windows XP x64 edition with Visual Studio 2008</P>
+<P>Thanks so much.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>hanami279 replied on Sunday, March 30, 2008</h2><P>Hi,</P>
+<P>After few hour to search by Google i found out that, this is a problem with .Net framework, not CSLA.</P>
+<P>I go to "bin" directory of web project and delete two file:</P>
+<P>PresentationCore.dll and System.Printing.dll</P>
+<P>And everything is back to normal.</P>
+<P>As i want to share exp with others peopel maybe in same situation like me.</P>
+<P>Thanks.</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

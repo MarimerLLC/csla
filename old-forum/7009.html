@@ -1,0 +1,26 @@
+<html><header><title>CSLA Light - Exceptions</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA Light - Exceptions</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/7009.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>CampbellCM posted on Wednesday, May 27, 2009</h2>I've run into a problem where my exceptions are getting squashed.  I am throwing a specific exception in a Child_Update method but as it percolates up through the DataPortal_Update method it is getting squashed by a DataPortalException.  I could live with that if the original exception was included as an InnerException but that's not the case.  I don't want to show my users a DataPortalException message, I want to show them the original exception message that explains what went wrong.<br /><br />Any suggestions?</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Wednesday, May 27, 2009</h2>The use of DataPortalException is by design. Since that is the way it works you are expected to catch that exception in your UI code. You could create a recursive GetLowestException function if you want to always get the innermost exception and display that ex.message to your users. It is up to you to decide what do with the DPEx.One of its features is that it contains the broken BO graph inside of it - so you could refer to its properties if you needed to.<br /><br />Joe<br /></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, May 27, 2009</h2><P>DataPortalException has a BusinessException property that should return the original exception that triggered everything.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>CampbellCM replied on Wednesday, May 27, 2009</h2>Thanks for the responses.
+
+I'm "catching" the exception in the form of a Csla.Core.SavedEventArgs.Error and I don't see a BusinessException property.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, May 27, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I think that Error property returns something of type Exception.
+You&#8217;d need to cast that value to DataPortalException to get at the extra
+properties.<o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>CampbellCM replied on Wednesday, May 27, 2009</h2>Under the described circumstances, will I always see a DataPortalException?</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, May 27, 2009</h2>No, there are other options.<br /><br />I'd write my code like this:<br /><br />Exception error = sourceobject.Error;<br />var dpe = ...Error As DataPortalException;<br />if (dpe != null)<br />  error = dpe.BusinessException;<br />// process Exception in the error field here</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>CampbellCM replied on Thursday, May 28, 2009</h2>DataPortalException does not have a BusinessException property, not on the SL client anyway.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, May 28, 2009</h2>I apologize, I forgot we were talking about Silverlight.<br /><br />As this question has come up a couple times on the forum in the past month,<br />I've added this answer to the FAQ:<br />http://www.lhotka.net/cslanet/faq/SilverlightFaq.ashx<br /><br />Rocky</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>CampbellCM replied on Thursday, May 28, 2009</h2>Thank you Rocky, that's what I needed.</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,23 @@
+<html><header><title>Couldn't create WebService</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Couldn't create WebService</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4473.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Kiri posted on Friday, March 07, 2008</h2><P>I read the book&nbsp;and follow the sample application from CSLA.NET 2.0.</P>
+<P>I have a problem to create WebService project and add Web Reference from the Csla class.</P>
+<P>In the PTWebService project contains PTService.asmx and PTService.cs that has all Methods.</P>
+<P>In the WebServicesHost project contains only WebServicePortal.asmx that has a code like this:</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT size=2>&lt;%</FONT><FONT color=#0000ff size=2>@</FONT><FONT size=2> </FONT><FONT color=#800000 size=2>WebService</FONT><FONT size=2> </FONT><FONT color=#ff0000 size=2>Language</FONT><FONT color=#0000ff size=2>="C#"</FONT><FONT size=2> </FONT><FONT color=#ff0000 size=2>Class</FONT><FONT color=#0000ff size=2>="Csla.Server.Hosts.WebServicePortal"</FONT><FONT size=2> %&gt;</FONT></P>
+<P><FONT size=2>When I add Web Reference and browse, It cannot&nbsp;refer to the WebServicesProxy class.&nbsp; It's look like this:</FONT></P>
+<P><FONT size=2>&nbsp;&nbsp;&nbsp;&nbsp; 
+<TABLE bgColor=#ffffcc>
+
+<TR>
+<TD><CODE><PRE><FONT color=red>Line 1:  &lt;%@ WebService Language="C#" Class="Csla.Server.Hosts.WebServicePortal" %&gt;
+</FONT></PRE></CODE></TD></TR></TABLE></P>
+<P>In the IIS, I create 2 virtual web.&nbsp; One for the PTService.asmx and another for WebServicePortal.asmx.</P>
+<P>The book said, ensure Csla.dll is in the Bin directory.&nbsp; My question is which Bin directory?&nbsp; The PTService.asmx bin or the WebServicePortal.asmx bin directory?</FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, March 10, 2008</h2><P>You are trying to recreate CSLA yourself?</P>
+<P>If you are just trying to use the data portal you don't need to add a web reference. The only time you need to add that web reference for the data portal is if you are recreating CSLA.</P>
+<P>If that is what you are trying to do, that's fine - but this was a tricky thing to accomplish, because Csla.dll is both the source and consumer of the web service for the data portal.</P>
+<OL>
+<LI>You need to create the Csla project <EM>server components</EM> and build the project. </LI>
+<LI>Then you need to create a temporary web service that hosts that Csla.dll (the DLL, not the project!!!) and exposes the web service.</LI>
+<LI>Then you need to open the Csla project and add a web reference to that temporary service hosting Csla.dll.</LI></OL>
+<P>Once this is done you can discard that temporary web service and the Csla.dll file created in step 1 (because it wasn't complete anyway).</P>
+<P>Like I said, kind of tricky, but since you only need to do this once ever it isn't a big deal. </P>
+<P>Again, none of this is necessary to <EM>use</EM> the data portal through web services. To do that, just read Chapter 12 and follow those (simpler) directions.</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

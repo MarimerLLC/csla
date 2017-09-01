@@ -1,0 +1,37 @@
+<html><header><title>CSLA 4.3.14</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA 4.3.14</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/12655.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>harrybow5 posted on Tuesday, June 03, 2014</h2><p>Hey,&nbsp;</p>
+<p>We have recently moved from CSLA 4.0.3 to CSLA 4.3.14.2.&nbsp;</p>
+<p>Everything has been working well until a colleague has mentions that they are no longer able to see what is currently within the deleted list.</p>
+<p>On looking at the deleted list it seems to be a &#39;object&#39; however i thought it was treated as a list(of T) so you can see what is current inside the deleted list.</p>
+<p>Because of that we are unable to see what is currently in the deleted list AND to remove items from the list.</p>
+<p>&nbsp;</p>
+<p>When trying to do ?me.deletedList in the intermediate window i get the following message.&nbsp;</p>
+<p>{&quot;The generic type &#39;Csla.BusinessBindingListBase`2&#39;
+was used with the wrong number of generic arguments in assembly &#39;Csla,
+Version=4.3.14.1, Culture=neutral,
+PublicKeyToken=93be5fdc093e4c30&#39;.&quot;:&quot;Csla.BusinessBindingListBase`2&quot;}</p>
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp; _HResult: -2146233054</span></p>
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp; _message: &quot;The generic type
+&#39;Csla.BusinessBindingListBase`2&#39; was used with the wrong number of generic
+arguments in assembly &#39;Csla, Version=4.3.14.1, Culture=neutral,
+PublicKeyToken=93be5fdc093e4c30&#39;.&quot;</span></p>
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp; Data:
+{System.Collections.ListDictionaryInternal}</span></p>
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp; HelpLink: Nothing</span></p>
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp; HResult: -2146233054</span></p>
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp; InnerException: Nothing</span></p>
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp; IsTransient: False</span></p>
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp; Message: &quot;The generic type
+&#39;Csla.BusinessBindingListBase`2&#39; was used with the wrong number of generic
+arguments in assembly &#39;Csla, Version=4.3.14.1, Culture=neutral,
+PublicKeyToken=93be5fdc093e4c30&#39;.&quot;</span></p>
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp; ResourceId: 6731</span></p>
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp; Source: Nothing</span></p>
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp; StackTrace: Nothing</span></p>
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp; TargetSite: Nothing</span></p>
+<p>&nbsp;</p>
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp; TypeName:
+&quot;Csla.BusinessBindingListBase`2&quot;</span></p>
+<p class="MsoNormal">-------------------------------------------------------------</p>
+<p class="MsoNormal">&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, June 06, 2014</h2><p>This issue is occurring in code that is in a subclass, or that is outside the object instance?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>harrybow5 replied on Monday, June 09, 2014</h2><p>Hey Rocky,&nbsp;</p>
+<p>Sorry for only just replying. </p>
+<p>We are attempted to do a undelete on a object that cannot be deleted for various reasons that only become apparent on the save of a object list. this works perfectly and i can debug it within the object list absolutely fine, however on the guys machine i am unable to debug the deleted list, do i need to set a option in visual studio to allow me to debug it?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>harrybow5 replied on Monday, June 09, 2014</h2><p>This is within the object list instance, we have tried to do &#39;?me.deletedlist&#39; in the intermediate window on the &#39;RemoveItem&#39; sub routine.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

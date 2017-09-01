@@ -1,0 +1,57 @@
+<html><header><title>Inlining Question/Discussion</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Inlining Question/Discussion</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3788.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>boo posted on Friday, October 26, 2007</h2>I won't pretend to know much about inling.&nbsp; Rocky says to put it on the property attributes, so I blindly do it without question.<br><br>So tonight I went to find out exactly what 'inlining' is (something I've been meaning to do for a few years now); appears to be JIT optimizations.&nbsp; But while reading the below blog where I got this information from I found that it appears JIT won't inline method targets that are MarshalByRef...so do we really need to have that attribute on our properties?<br><br>http://blogs.msdn.com/davidnotario/archive/2004/11/01/250398.aspx<br><br>Again, I don't really understand inlining, but I'm interested in understanding it a bit better, the reason Rocky uses it on properties (and not static methods or instance methods - or maybe he is and I should be to) and how this differs from what the person is saying in the above post.&nbsp; I know Rocky's a smart guy (and the contribs), so there's a piece of the puzzle I'm missing.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Sunday, October 28, 2007</h2><P>You only need that attribute around methods that call CanReadProperty(), CanWriteProperty() or PropertyHasChanged(), where you use the overload that <EM>does not require the property name</EM>. If you look at the code behind that overload you'll see that it uses System.Diagnostics to get the stack trace and thus the property name.</P>
+<P>If the inlining optimization is applied by the JITter then that technique would fail, and your code wouldn't work correctly.</P>
+<P>Since CSLA business objects <EM>do not inherit from MarshalByRefObject</EM>, that exemption has no meaning here.</P>
+<P>As someone recently pointed out in another thread though, apparently there are <EM>other optimizations</EM> that can make the stack trace scheme fail - specifically in the 64 bit space. So ultimately this technique may be a bust, so in the long run it is probably better to switch to the string literal property name overloads and stop using the inlining attribute.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>boo replied on Sunday, October 28, 2007</h2>That's right; it's by value.&nbsp; It's good to know about this stack trace issue though; I'll send a memo out so that are group starts moving items away from the parameterless calls of the above mentioned methods.&nbsp; Have these overloads been deprecate in 3.0 CSLA?, in otherwords:<br><br>[Obsolete("May cause problems in 64 bit environments", false)]<br>public void PropertyHasChanged() {...}<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Sunday, October 28, 2007</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Not in 3.0.x no. Perhaps in 3.5.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> boo
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Sunday, October 28, 2007 6:36 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] Inlining Question/Discussion<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>That's right; it's by value.&nbsp; It's good to know about
+this stack trace issue though; I'll send a memo out so that are group starts
+moving items away from the parameterless calls of the above mentioned
+methods.&nbsp; Have these overloads been deprecate in 3.0 CSLA?, in otherwords:<br>
+<br>
+[Obsolete(&quot;May cause problems in 64 bit environments&quot;, false)]<br>
+public void PropertyHasChanged() {...}<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

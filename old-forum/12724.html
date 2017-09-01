@@ -1,0 +1,17 @@
+<html><header><title>Older CSLA with asp.net web api - authentication, what am I doing wrong?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Older CSLA with asp.net web api - authentication, what am I doing wrong?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/12724.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>JCardina posted on Monday, August 18, 2014</h2><p>Can anyone save some of my hair? :)</p>
+<p>I&#39;m trying to create an asp.net WEB API interface for an older CSLA project. &nbsp;I am testing by hard coding the login on every request in various ways (once in the startup code, as an authorization request filter, inside the individual route request etc etc). &nbsp;All the ways I tried work exactly once perfectly and then I get the infamous:</p>
+<p>&#39;Default principal object cannot be set twice.&#39;</p>
+<p>exception in BusinessPrincipal.vb (yeah I know it&#39;s very old, but it&#39;s released software, I can&#39;t upgrade CSLA)</p>
+<p>I know that there is an issue where you need to set&nbsp;HttpContext.Current.User = Thread.CurrentPrincipal; due to some internal workings of the web API and I do that already, that has not resolved the issue.</p>
+<p>I&#39;d like to know if anyone has implemented a web api front end and how they handled this issue or any pointers as to what could be the solution.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JCardina replied on Wednesday, August 20, 2014</h2><p>I&#39;m going to answer my own question here in the hopes it will help someone else in future. &nbsp;My problems revolved around two things: I was using the visual studio web server and it seems to go snakey on a regular basis and I highly recommend people not use it for this kind of thing but rather use IIS instead.</p>
+<p>Secondly and the initial source of my problem was a line of code in BusinessPrincipal.vb constructor which has the following block of code:</p>
+<p>&nbsp;Try</p>
+<p> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;If Not TypeOf OldPrincipal Is BusinessPrincipal &nbsp;Then</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; currentdomain.SetThreadPrincipal(Me)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; End If</p>
+<p> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Catch</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &#39; failed, but we don&#39;t care because there&#39;s nothing</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &#39; we can do in this case</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; End Try</p>
+<p>&nbsp;</p>
+<p>This was causing the exception. &nbsp;I added an alternative to initialize the business object library and pass in a parameter that bypasses that line of code and it works perfectly.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

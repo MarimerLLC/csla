@@ -1,0 +1,96 @@
+<html><header><title>Some help needed: Serialization Error in CslaLight</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Some help needed: Serialization Error in CslaLight</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5994.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Andreas posted on Monday, December 15, 2008</h2><P>Hi,</P>
+<P>I am getting a&nbsp;Serialization exception&nbsp;in cslalight (MoblileFormatter.Serialize(XmlWriter writer, object graph)) when I am adding a&nbsp;managed property of type Dictionary&lt;string, string&gt; to my business object. Here is my declaration:</P>
+<P>private static PropertyInfo&lt;System.Collections.Generic.Dictionary&lt;string, string&gt;&gt; ErrorsProperty = RegisterProperty&lt;System.Collections.Generic.Dictionary&lt;string, string&gt;&gt;(new PropertyInfo&lt;System.Collections.Generic.Dictionary&lt;string, string&gt;&gt;("Errors", "Errors", new System.Collections.Generic.Dictionary&lt;string, string&gt;()));<BR>public System.Collections.Generic.Dictionary&lt;string, string&gt; Errors<BR>{<BR>&nbsp;&nbsp;&nbsp; get<BR>&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return GetProperty(ErrorsProperty);<BR>&nbsp;&nbsp;&nbsp; }<BR>}</P>
+<P>Is&nbsp;a kind of Dictionary&lt;string, string&gt;-type allowed for managed backing fields anyway?</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Monday, December 15, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>There is another thread dedicated to this.<br>
+<br>
+<o:p></o:p></span></p>
+
+<p class=MsoNormal><a href="http://forums.lhotka.net/forums/thread/28961.aspx">http://forums.lhotka.net/forums/thread/28961.aspx</a><o:p></o:p></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img border=0 width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Andreas
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Monday, December 15, 2008 9:09 AM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> [CSLA .NET] Some help needed: Serialization Error in CslaLight<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Hi,<o:p></o:p></p>
+
+<p>I am getting a&nbsp;Serialization exception&nbsp;in cslalight
+(MoblileFormatter.Serialize(XmlWriter writer, object graph)) when I am adding
+a&nbsp;managed property of type Dictionary&lt;string, string&gt; to my business
+object. Here is my declaration:<o:p></o:p></p>
+
+<p>private static
+PropertyInfo&lt;System.Collections.Generic.Dictionary&lt;string, string&gt;&gt;
+ErrorsProperty = RegisterProperty&lt;System.Collections.Generic.Dictionary&lt;string,
+string&gt;&gt;(new
+PropertyInfo&lt;System.Collections.Generic.Dictionary&lt;string,
+string&gt;&gt;(&quot;Errors&quot;, &quot;Errors&quot;, new
+System.Collections.Generic.Dictionary&lt;string, string&gt;()));<br>
+public System.Collections.Generic.Dictionary&lt;string, string&gt; Errors<br>
+{<br>
+&nbsp;&nbsp;&nbsp; get<br>
+&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return GetProperty(ErrorsProperty);<br>
+&nbsp;&nbsp;&nbsp; }<br>
+}<o:p></o:p></p>
+
+<p>Is&nbsp;a kind of Dictionary&lt;string, string&gt;-type allowed for managed
+backing fields anyway?<o:p></o:p></p>
+
+<p>&nbsp;<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

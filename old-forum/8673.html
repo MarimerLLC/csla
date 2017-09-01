@@ -1,0 +1,12 @@
+<html><header><title>CSLA 2.0.3 to CSLA 2.1</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA 2.0.3 to CSLA 2.1</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/8673.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>randalv posted on Tuesday, March 16, 2010</h2><p>I am having problems upgrading from CSLA 2.0.3 to 2.1. </p>
+<p>I have figured out how to upgrade the validation rules, but I am receiving an error while saving one of my objects.</p>
+<p>the error I receive is <span style="color:red;" id="ctl00_CT_lblError" class="redbold">Type 
+&#39;System.Data.Common.DbConnection&#39; in Assembly &#39;System.Data, Version=2.0.0.0, 
+Culture=neutral, PublicKeyToken=b77a5c561934e089&#39; is not marked as 
+serializable.</span></p>
+<p>&nbsp;</p>
+<p>Can anyone tell me what I need to change to get this to work?</p>
+<p>&nbsp;</p>
+<p>Thanks</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>skagen00 replied on Tuesday, March 16, 2010</h2><p>You must have a handle to a DbConnection as a member variable for a business object you&#39;re trying to serialize or you have a HANDLE to an object from within a business object you&#39;re trying to serialize (doing any sort of data portal operation with, really).</p>
+<p>Anything that is part of the object graph will attempt to be serialized - and as you can see, DbConnection is not marked as serializable.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Thursday, March 18, 2010</h2><p>Hi, </p>
+<p>Or - you have put the DbConnection in ApplicationContext.ClientContext or ApplicationContext.GlobalContext that are also serialized. If this is the case then change to use ApplicationContext.LocalContext instead as LocalContext only exist on the running machine and is not serialized to remote portal.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

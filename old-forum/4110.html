@@ -1,0 +1,266 @@
+<html><header><title>Possible Bug - Insert Item</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Possible Bug - Insert Item</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4110.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>DCottle posted on Thursday, January 03, 2008</h2><P>I am using a CSLA BusinessListBase as the Datasource for a Windows.Forms.BindingSource.&nbsp;&nbsp; That BindingSource is then used as the datasource for the Infragistics UltraWinGrid (7.1, Vol3)</P>
+<P>The actual datastructure that is held by the grid is:</P>
+<P>BusinessListbase (lvl1)</P>
+<P>&nbsp;&nbsp;&nbsp;BusinessBase (lvl2)</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;BusinessListBase (lvl3)</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;BusinessBase (lvl4)</P>
+<P>&nbsp;</P>
+<P>When adding a row to the grid (lvl4) by clicking on the new template&nbsp;row, CSLA fires the InsertItem method to add the newly created object.&nbsp; The problem is that the InsertItem method does not set the IsChild = True of the object it just inserted.&nbsp; If you then leave that row without changing anything, the CancelEdit method is called, and eventually the DeleteChild method is called.&nbsp; This is where it goes boom.&nbsp; You cannot call DeleteChild on an object that is not a child.</P>
+<P>I may be mistaken in how things are supposed to work.&nbsp; I am not a newb to CSLA, but I am not nearly as experienced as alot of people here are.&nbsp; Can somebody please enlighten me as to what may be going wrong here, and why we would not ALWAYS want to set item.IsChild = True when calling the InsertItem method?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, January 03, 2008</h2><P>The business object developer decides whether the objects are child or not. It is up to you to call MarkChild() in the constructor of a child object.</P>
+<P>So your lvl4 class should always be calling MarkChild() in the constructor, because it is clearly a child in your model. So should lvl2 and lvl3. The only root you have is your lvl1 class.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>DCottle replied on Thursday, January 03, 2008</h2><P>Maybe I am a bit confused as to the real meaning of IsChild.</P>
+<P>It is my understanding that Ischild is simply a flag to indicate that I have a parent to whom I belong.&nbsp; If I was inserted via InsertItem into a collection, then I obviously <STRONG>always</STRONG> have a parent.</P>
+<P>However, if IsChild is meant to simply be a logical indicator of a relationship between two objects then I understand where you are coming from.&nbsp; If that is the case though, what do you call an object that is a member of a BusinessListBase and not marked as IsChild=True?&nbsp; What is that type of object?</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, January 03, 2008</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>DCottle:</strong></div><div>
+<P>However, if IsChild is meant to simply be a logical indicator of a relationship between two objects then I understand where you are coming from.&nbsp; If that is the case though, what do you call an object that is a member of a BusinessListBase and not marked as IsChild=True?&nbsp; What is that type of object?</P>
+<P></div></BLOCKQUOTE></P>
+<P>Unsupported, or invalid <img src="/emoticons/emotion-1.gif" alt="Smile [:)]" /></P>
+<P>CSLA .NET strictly defines objects into a set of categories (stereotypes is a better word):</P>
+<OL>
+<LI>Editable root</LI>
+<LI>Editable child</LI>
+<LI>Editable root list</LI>
+<LI>Editable child list</LI>
+<LI>Read-only root</LI>
+<LI>Read-only child</LI>
+<LI>Read-only root list</LI>
+<LI>Read-only child list</LI>
+<LI>Name/value list</LI>
+<LI>Command</LI>
+<LI>Dynamic list</LI></OL>
+<P>Any stereotype with "editable child" in the name must call MarkChild() in the constructor to indicate that the object is logically a child. I chose this approach rather than having two base classes (BusinessRootBase&lt;T&gt; and BusinessChildBase&lt;T&gt; for example), though there are days I think the multiple base classes (one per stereotype) might have been a better option.</P>
+<P>Technically there are some other stereotypes:</P>
+<OL>
+<LI>Switchable</LI>
+<LI>Switchable list</LI></OL>
+<P>But in my view these indicate (99.9% of the time anyway) a flawed object model. So I usually forget to include them in the list of stereotypes.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>DCottle replied on Thursday, January 03, 2008</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div>
+<P>&nbsp;&nbsp;&nbsp;Unsupported, or invalid <img src="/emoticons/emotion-1.gif" alt="Smile [:)]" /></P>
+<P></div></BLOCKQUOTE></P>
+<P>That makes my point exactly.&nbsp; If it is added via InsertItem then it has to be a child.&nbsp; </P>
+<P>Rather than beat a dead horse, can you tell me this:</P>
+<P>If I want to consider items added via InsertItem as always being children, can you see any harm to me making available the MarkAsChild method in the IEditableObject interface and simply calling the item.MarkAsChild from InsertItem?</P>
+<P>I realize that the customization would need to be manually ported from one version of CSLA to the next, but since partial classes are available for custom code changes that is a bit easier nowadays...</P>
+<P>Thanks,</P>
+<P>David</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, January 03, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>It is important to realize that the coding pattern of parent and
+child objects are not the same. Look at Chapter 7 for details, but there are
+differences in how you code a child object from a root object that go far
+beyond whether MarkChild() is called.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>If you want an object that can be either a root or child, then
+you are following the Switchable stereotype. Again, that typically indicates a
+flawed object model. But if you are satisfied that your model isn&#8217;t
+flawed, and are willing to put in the effort to build a switchable object then
+go for it.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>In that case you still don&#8217;t expose MarkChild() as public.
+Instead, you indicate to the object whether it is being created in &#8220;root
+mode&#8221; or &#8220;child mode&#8221; based on how it is created. Typically you
+have a&nbsp; root factory that is public and a child factory that is
+internal/Friend. In your collection&#8217;s AddNewCore() override you call the
+child factory, while other consumers (like the UI) call the public factory.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Look at the SwitchableObject template in the csla\templates
+directory to get some idea how it fits together. To build such an object you
+need dual factories, dual data access code and dual constructors. This is a
+supported (though frowned upon) stereotype, and doesn&#8217;t require
+alteration of CSLA.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>But you must make the determination of root or child at object
+creation time, because the data access and other behaviors are different for
+each stereotype. I think you are just asking for trouble if you start switching
+objects between being root or child in the middle of their lifetimes. Certainly
+you are well outside the design parameters of CSLA at that point, and thus you
+are on your own in terms of resolving any issues that occur as a result :)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> DCottle
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Thursday, January 03, 2008 11:35 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] Possible Bug - Insert Item<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<blockquote>
+
+<div>
+
+<p class=MsoNormal><img id="_x0000_i1025" src="/Themes/default/images/icon-quote.gif"><strong>RockfordLhotka:</strong><o:p></o:p></p>
+
+</div>
+
+<div>
+
+<p>&nbsp;&nbsp;&nbsp;Unsupported, or invalid <img id="_x0000_i1026" src="/emoticons/emotion-1.gif" alt="Smile <img src=" />"><o:p></o:p></p>
+
+</div>
+
+</blockquote>
+
+<p>That makes my point exactly.&nbsp; If it is added via InsertItem then it has
+to be a child.&nbsp; <o:p></o:p></p>
+
+<p>Rather than beat a dead horse, can you tell me this:<o:p></o:p></p>
+
+<p>If I want to consider items added via InsertItem as always being children,
+can you see any harm to me making available the MarkAsChild method in the
+IEditableObject interface and simply calling the item.MarkAsChild from
+InsertItem?<o:p></o:p></p>
+
+<p>I realize that the customization would need to be manually ported from one
+version of CSLA to the next, but since partial classes are available for custom
+code changes that is a bit easier nowadays...<o:p></o:p></p>
+
+<p>Thanks,<o:p></o:p></p>
+
+<p>David<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>DCottle replied on Thursday, January 03, 2008</h2><P>We have taken the time to set up our objects as switchable objects with all of the "duel" stuff that you mentioned.&nbsp; And I certainly can add the MarkChild call to those constructors.</P>
+<P>My only point was that if an item is added to a collection <STRONG>must</STRONG> be a child, then it makes sense to me to put it there instead of having to make sure you get the line of code in every object that will ever be derived from the EditableBusinessBase.</P>
+<P>Taken from a different perspective.&nbsp; Why do you call SetParent in the InsertItem method?&nbsp;You could just as easily make the statement that we should just override the InsertItem method in each of our objects and set the parent there.&nbsp; It would work, but seems pretty silly to do that when you know your parent at the time it is inserted inside of the base InsertItem().&nbsp; </P>
+<P>At this point though, I feel as though I am just arguing so I must say thank you for your input and time taken to answer my questions.&nbsp; I appreciate all you have done for our community.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, January 03, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I do understand what you are saying.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>However, if I were to do anything, it would be to have
+InsertItem() throw an exception if you attempt to add a non-child object. In
+fact you&#8217;ve convinced me that this is a good idea, so I&#8217;ve added it
+to the wish list (to throw an exception), because it is true that allowing a
+root object to be inserted is invalid and really should be prevented.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>It would be very incorrect to have CSLA simply &#8220;make the
+object a child&#8221; when there&#8217;s a whole lot of coding that must occur
+for an object to behave as a child. There&#8217;s no way for InsertItem() to
+know if the developer did implement all that code or it they just messed up by
+trying to insert a non-child where only a child can go.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Silent acceptance of an invalid object is incorrect, but so is
+silently altering a flag that is supposed to indicate that the developer knew
+what they were doing :)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> DCottle
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Thursday, January 03, 2008 12:15 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: Possible Bug - Insert Item<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>We have taken the time to set up our objects as switchable objects with all
+of the &quot;duel&quot; stuff that you mentioned.&nbsp; And I certainly can add
+the MarkChild call to those constructors.<o:p></o:p></p>
+
+<p>My only point was that if an item is added to a collection <strong>must</strong>
+be a child, then it makes sense to me to put it there instead of having to make
+sure you get the line of code in every object that will ever be derived from
+the EditableBusinessBase.<o:p></o:p></p>
+
+<p>Taken from a different perspective.&nbsp; Why do you call SetParent in the
+InsertItem method?&nbsp;You could just as easily make the statement that we
+should just override the InsertItem method in each of our objects and set the
+parent there.&nbsp; It would work, but seems pretty silly to do that when you
+know your parent at the time it is inserted inside of the base
+InsertItem().&nbsp; <o:p></o:p></p>
+
+<p>At this point though, I feel as though I am just arguing so I must say thank
+you for your input and time taken to answer my questions.&nbsp; I appreciate
+all you have done for our community.<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>DCottle replied on Thursday, January 03, 2008</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div> 
+
+<DIV class=Section1>
+<P class=MsoNormal>
+<P class=MsoNormal><SPAN><o:p></o:p></SPAN></P><SPAN>Silent acceptance of an invalid object is incorrect, but so is silently altering a flag that is supposed to indicate that the developer knew what they were doing :)<o:p></o:p></SPAN></P>
+<P class=MsoNormal></div></BLOCKQUOTE></P>
+<P class=MsoNormal>&nbsp;</P>
+<P class=MsoNormal>That is classic.&nbsp; ;)</P>
+<P class=MsoNormal>Thanks for the lively discussion.&nbsp; </P></DIV></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

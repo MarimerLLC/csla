@@ -1,0 +1,14 @@
+<html><header><title>why Child_PropertyChanged of BusinessListBase onlyexecute in remoting and not in local?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>why Child_PropertyChanged of BusinessListBase onlyexecute in remoting and not in local?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6127.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>arquisoft posted on Monday, January 12, 2009</h2><P>Please We have a problem :</P>
+<P>&nbsp;</P>
+<P>we have un DataGridView binding to a collection (3000 rows) and </P>
+<P>when the user change un value in one row happens :</P>
+<P>&nbsp;a) when is in local is fast . because NOT EXECUTE Child_PropertyChanged of BusinessListBase </P>
+<P>b)&nbsp;when is in remoting is slowly because EXECUTE Child_PropertyChanged of BusinessListBase </P>
+<P>why ?</P>
+<P>I give thanks </P>
+<P>Alejandro Román</P>
+<P>Arquisoft Chile</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, January 12, 2009</h2><P>This could be a bug, I've added an item to the bug tracker.</P>
+<P><A href="http://www.lhotka.net/cslabugs/edit_bug.aspx?id=286">http://www.lhotka.net/cslabugs/edit_bug.aspx?id=286</A></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>arquisoft replied on Monday, January 12, 2009</h2><P>Thanks. </P>
+<P>AR</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, January 20, 2009</h2><P>I believe I've fixed this issue, but would appreciate confirmation. You should be able to replace your BLB with the latest code in svn:</P>
+<P><A href="http://www.lhotka.net/cslacvs/viewvc.cgi/trunk/cslacs/Csla/BusinessListBase.cs?view=log">http://www.lhotka.net/cslacvs/viewvc.cgi/trunk/cslacs/Csla/BusinessListBase.cs?view=log</A></P>
+<P>And I think it will now work. My unit tests showing inconsistent behavior before/after serialization are now passing, and Child_PropertyChanged doesn't re-raise ListChanged except after deserialization (when it is necessary because BindingList&lt;T&gt; doesn't raise the event like it should).</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

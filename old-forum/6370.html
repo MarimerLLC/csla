@@ -1,0 +1,153 @@
+<html><header><title>Slllloooow binding of children to grid (Infragistics) </title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Slllloooow binding of children to grid (Infragistics) </h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6370.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Skeeboe posted on Saturday, February 07, 2009</h2>I'm using csla 2.1, I have an object that is a ER>ECC>EC. I have two binding sources, one that the bbject binds to but only the root section is bound to a few labels and text boxes. The second binding source is  bound to an infragistics grid. It's data source is the first binding source with the child collection of the object as the datamember. These binding sources are created automatically by just dropping the data objects onto the form. When i bind the object to the first binding source the text boxes, label and the grid all get populated but it takes about 15-25 seconds. If i split the object into two objects, a root and a root collection containing the children and bind them directly to their respective binding sources the form binds pretty much instantly! Obviously I want to keep them as just one object but i can't have the grid, etc. taking that long to reply... Any ideas as to why that is taking so long to bind?  </div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rfcdejong replied on Saturday, February 07, 2009</h2>It's proberly the query's behind.. how is your criteria for the child objects? Put a tracer on the database, watch the query's being fired. Maybe u can lazy load or put some caching in place. Perhaps ure missing some indexs on the database?<br /><br />Anyway, the infragistics grids have a nice feature called: "LoadOnDemand". It's a property on the grid.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Skeeboe replied on Saturday, February 07, 2009</h2>The object is returned very fast. Its the actual binding that is slow when i bind to the children of the object compared to a root collection. I already have the LoanOnDemand set. <br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Sunday, February 08, 2009</h2><P>CSLA supports the standard .NET data binding interfaces, and so in general is very fast for binding (as fast as anything anyway).</P>
+<P>But you must be aware that you can do things that can cause perf issues. For example, if you've overridden CanReadProperty() and don't have an efficient authz story that can kill performance. Or if you are somehow triggering some event and have event processing that is occurring, such that it occurs on a per-property or per-object basis that can kill performance.</P>
+<P>Unfortunately the only way to figure this out is to spend some quality time with the debugger, or to insert extensive profiling code.</P>
+<P>But I'd start by walking through the binding process for one row of data to see exactly what all happens and where events get handled, etc.</P>
+<P>Or I'd start by reducing your code so it is a vanilla list of objects - so you have no rules, no authz, no event hooking, etc. (basically comment out anything in your collection or child class other than the properties and data access). Then start re-adding stuff to see what triggers the issue.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Skeeboe replied on Monday, February 09, 2009</h2>So I removed all brokenrules, there are no buisness rules, no validation. There is only a bindingsource for the root and there is a few textboxes bound to some public properties of the root object. I removed the public property for the children from the object. All that is left is the private variable and I'm loading it as normal. So I have a single root, the private child variable has 27,000 records (20 public properties, again no, business rules, brokenrules, etc). The object loads the data in about a second, once I bind to the bindingsource it takes at least 15 seconds before it returns to the next line in code. Obviously if I don't load the child records the object binds immediately.<br>I am using 2.1.4, I just tried it with 3.0.5 and it works immediately. I will continue to test some more with 3.0.5 and see how it goes.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Skeeboe replied on Monday, February 09, 2009</h2>With 3.0.5, I'm getting edit level mis-match errors in the data portal update when saving (dealing with copystate). I see lots of messages on the forums regarding this but it looks like Rocky thinks he fixed it in 3.0.2 and 3.0.4.x. But I still have those issues. Is there an easy fix for the edit level problem or my original issue and i'll stay in 2.1.4. <br>I 'm not too confident about moving 75 projects from 2.1.4 to 3.0.5 yet. <br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, February 09, 2009</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Edit level exceptions indicate bugs in the UI code. There is no
+easy solution beyond fixing the UI code. You can ignore those bugs, but they&#8217;ll
+cause you problems one way or another.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky <o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Skeeboe
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Monday, February 09, 2009 8:46 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] Slllloooow binding of children to grid
+(Infragistics)<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>With 3.0.5, I'm getting edit level mis-match errors in the
+data portal update when saving (dealing with copystate). I see lots of messages
+on the forums regarding this but it looks like Rocky thinks he fixed it in
+3.0.2 and 3.0.4.x. But I still have those issues. Is there an easy fix for the
+edit level problem or my original issue and i'll stay in 2.1.4. <br>
+I 'm not too confident about moving 75 projects from 2.1.4 to 3.0.5 yet. <br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, February 09, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>There are _<i>many</i>_ important bug fixes in 3.0.5, especially
+around Windows Forms data binding. It is absolutely the case that you should
+consider upgrading away from the old 2.1.x code.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Skeeboe replied on Monday, February 09, 2009</h2>I would love to, I can see that even aquiring data and binding are extremely fast in 3.0.5. But I can't save anything because of the edit level errors that didn't prevent me from saving in 2.1. Is there an easy fix for this? Again I have 75 projects that use csla 2.1.4 and that is a lot of code to update if i'm doing something wrong. There are only a few places that I even use n-level undo, is there a way I can disable that error check in 95% of the code that I don't use n-level undo?<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, February 09, 2009</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>The problem is that you actually use undo everywhere &#8211;
+because the bindingsource uses it. And your code to interact with the
+bindingsource is incorrect today, which is why you are getting the exceptions.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Odds are you just need to unbind your objects from the
+bindingsource before doing the save. The <i>Using CSLA .NET 3.0</i> ebook has a
+chapter covering how to do this. The process is (imo) more complex that it
+should be, but it isn&#8217;t difficult and once you have the key helper
+methods it is easy enough to implement.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Skeeboe
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Monday, February 09, 2009 9:02 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: Slllloooow binding of children to grid
+(Infragistics)<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>I would love to, I can see that even aquiring data and
+binding are extremely fast in 3.0.5. But I can't save anything because of the
+edit level errors that didn't prevent me from saving in 2.1. Is there an easy
+fix for this? Again I have 75 projects that use csla 2.1.4 and that is a lot of
+code to update if i'm doing something wrong. There are only a few places that I
+even use n-level undo, is there a way I can disable that error check in 95% of
+the code that I don't use n-level undo?<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Monday, February 09, 2009</h2>I realize that you probably want this done "right now," but it really would be in your best interest to upgrade and fix your UI code.&nbsp; The reason is that not fixing it (which is what you are suggesting) is pretty much just covering your eyes and refusing to see the problems.&nbsp;&nbsp; These problems may not result in a crash even, but your UI will behave VERY oddly.. and your users will pay the price.<br><br>This is similar to upgrading code from .Net 1 to .Net 2.&nbsp; Suddenly people were getting InvalidOperationExceptions talking about <a href="http://social.msdn.microsoft.com/Forums/en-US/vbgeneral/thread/f41bb09a-e13d-46db-a9ec-2958d7415eb3/">cross thread UI calls</a>.&nbsp; The exception was added because people were doing things that were never supported (using UI components on a thread other than the ones on which they were created) that was leading to all kinds of hard to debug problems.&nbsp; MS enforced the thread affinity and suddenly people were getting this exception.. to tell them their code isn't thread safe and needed to be fixed.<br><br>Are all 75 of your projects UI projects (Asp.Net, WinForms, Wpf)?&nbsp; You'll only need to change the UI layer to fix these problems. <br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Skeeboe replied on Monday, February 09, 2009</h2>I definately don't want to turn a blind eye, but I don't know of any weird ui issues in the program. Anyways, after looking at it we have maybe 20 or so windowsforms UI projects. Of those only 8 are 2.1.4 the rest and most of the dlls are 1.5.4. Even still those 8 contain a -lot- of forms. Lots of setup screens, popup grids, etc. I don't have a program to do unit tests on a ui so that is going to require multiple testers to hit every form and re-verify. <br />But the real question is what changes do i need to make on the ui layer to fix the issues? Is it applyedit on the bindingsource? I have several instances where changing a public property on an object causes other public properties to change. Is that going to mess something up now since the bindingsource supposedly wants total control and i shouldn't be hitting the object directly? I purchased Rocky's eBook, is there a specific section that i should just read over?</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, February 09, 2009</h2>The Using CSLA .NET 3.0 ebook has a chapter specifically on windows forms -<br />that is the chapter you need, as it is focused entirely on the painful<br />lessons learned (through the experience and help of many people on this<br />forum) about exactly what Windows Forms data binding requires to function<br />properly.<br /><br />Rocky<br /><br /><br />-----Original Message-----<br />From: Skeeboe [mailto:cslanet@lhotka.net] <br />Sent: Monday, February 09, 2009 12:00 PM<br />To: rocky@lhotka.net<br />Subject: Re: [CSLA .NET] RE: Slllloooow binding of children to grid<br />(Infragistics)<br /><br />I definately don't want to turn a blind eye, but I don't know of any weird<br />ui issues in the program. Anyways, after looking at it we have maybe 20 or<br />so windowsforms UI projects. Of those only 8 are 2.1.4 the rest and most of<br />the dlls are 1.5.4. Even still those 8 contain a -lot- of forms. Lots of<br />setup screens, popup grids, etc. I don't have a program to do unit tests on<br />a ui so that is going to require multiple testers to hit every form and<br />re-verify. <br />But the real question is what changes do i need to make on the ui layer to<br />fix the issues? Is it applyedit on the bindingsource? I have several<br />instances where changing a public property on an object causes other public<br />properties to change. Is that going to mess something up now since the<br />bindingsource supposedly wants total control and i shouldn't be hitting the<br />object directly? I purchased Rocky's eBook, is there a specific section that<br />i should just read over?<br /><br /></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

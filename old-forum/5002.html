@@ -1,0 +1,92 @@
+<html><header><title>Why developers should move .NET 2.0 projects to VS2008</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Why developers should move .NET 2.0 projects to VS2008</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5002.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee posted on Sunday, June 22, 2008</h2><p>and using CSLA 3.0.x or 3.5. </p>
+<p>After moving a couple of projects from VS2005 to VS2008, I learned that so much of the C# 3.0 features are just "syntax sugar" that the C# 3.0/3.5 compiler will compile into valid IL code - even when your projects target is the .NET 2.0 Framework. </p>
+<p>So move your .NET 2.0 projects to VS2008 - and you can use a lot of the new C# syntax such as: <br></p>
+<ul>
+<li>local variable inference 
+</li><li>object initializers 
+</li><li>anonymous types 
+</li><li>lambda expressions 
+</li><li>automatic properties 
+</li><li>partial methods/events <br></li><li>extension methods (with a small extra class in LinqBridge) 
+</li><li>LINQ to Objects</li></ul>
+<p>In projects that target .NET 2.0!!!&nbsp; For the first 6 bullets please see these posts:<br><a href="http://www.danielmoth.com/Blog/2007/05/using-c-30-from-net-20.html">http://www.danielmoth.com/Blog/2007/05/using-c-30-from-net-20.html</a><br><a href="http://www.danielmoth.com/Blog/2007/05/using-extension-methods-in-fx-20.html">http://www.danielmoth.com/Blog/2007/05/using-extension-methods-in-fx-20.html</a></p>
+<p>and for LINQ to Objects se this one (open source and free use)<br><a href="http://www.albahari.com/nutshell/linqbridge.html">http://www.albahari.com/nutshell/linqbridge.html</a></p>
+<p>So what I would like to see is&nbsp;CSLA 3.5 (for VS2008) and targeting .NET 2.0, 3.0, 3.5 thereby giving developers the possibility to use the same snippets and&nbsp;templates for all targets (and the new property declaration in CSLA 3.5). I am NOT proposing to make CSLA 3.5 compile in VS2005 - rather have "CSLA&nbsp;3.5 for VS2008" and support all .NET version targets in VS2008. &nbsp;</p>
+<p>I did modify CSLA 3.5 to compile for .NET 2.0 in VS2008 and it is not much work (&lt; 1 hr) and basically what you need to do is:</p>
+<ul>
+<li>add compiler directives that hide the "indexed collections"&nbsp;and classes in&nbsp;LINQ directory 
+</li><li>add the Func delegate for DataMapper class</li></ul>
+<p>That way we would have access to all the new property declarations and have a much easier upgrade path to newer version of the .Net framework. </p>
+<p>Hopefully we might have CSLA 3.5 compiled for .NET 2.0 and .NET 3.5 - and have&nbsp;VS2008 pick the right version based on the projects target. <br></p>
+<p>What is your idea on this folks?</p>
+<p>/jonny</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, June 23, 2008</h2><P>There were also several incompatibilities between .NET 2.0 and 3.0 that were solved with compiler directives in CSLA .NET 3.0. I would expect those same issues to exist in 3.5, though I removed the related compiler directives because I did not plan for CSLA 3.5 to support .NET 2.0 or 3.0.</P>
+<P>I am open to the idea, but don't have time to pursue and test the changes in C# and VB and the two ProjectTracker implementations.</P>
+<P>If you are willing to make the changes and test them in all four code bases (CSLA/ProjectTracker in C#/VB), I can send you the CSLA .NET contributor agreement for you to sign.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, June 23, 2008</h2><P>I should qualify that though - in that I'll only proceed with this if there is fairly broad support for the idea across the community. Obviously this would radically broaden my support/testing surface area, which is not good for me or the community.</P>
+<P>Also, nothing can be allowed to interfere with <EM>Expert 2008 Business Objects</EM> or the CSLA Light/CSLA .NET 3.6&nbsp;project. I'm presupposing that the changes you suggest are truly minor and would not impact those efforts.</P>
+<P>They wouldn't affect the book, because it is being written against 3.5.x - and this would certainly be rolled into 3.6.</P>
+<P>But it could impact CSLA Light, which is part of the reason for there being a 3.6. The other motivations for 3.6 being:</P>
+<OL>
+<LI>Support for ADO.NET Entity Framework (similar to the current LINQ to SQL support)</LI>
+<LI>Enhanced LINQ to CSLA indexing support (to get the &lt; and &gt; operators indexed)</LI>
+<LI>Support for .NET 3.5 SP1 features, especially in WPF</LI>
+<LI>Possible support for ASP.NET MVC (which works as-is, but there's the potential for interesting helper methods in the View)</LI></OL>
+<P>In short, I'm in the middle of several big initiatives that involve more than just me. The scheduling isn't terribly flexible, and anything that would alter the scope or introduce risk can't be allowed.</P>
+<P>However, if there is broad community support for .NET 2.0/3.0 support, and someone willing to do the dev and testing work in all four code bases, and there's a high level of confidence that it won't negatively impact 3.6, then I'll consider it.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Tuesday, June 24, 2008</h2>Hi Rocky, <br><br>Yes , I understand that this should only get into the framework if there is a fairly broad support for this. <br><br>Our client is still running Win2000 clients and this limits us to .Net 2.0. We would like to use the new features/syntax sugar in C# 3.0 as well as LINQ to Objects (in .Net 2.0) and have cleaner upgrade path to CSLA 3.5/.NET 3.5 (with WPF and Silverlight)&nbsp; when our client transitions to Vista. <br><br>Furthermore - we would also like to have just one set of snippets and templates as well. Switching between snippets/templates for CSLA 3.0 and CSLA 3.5 could be a real hassle.&nbsp; <br><br>But based on the response here it does not seem to be much support/requirements for having CSLA 3.5 available in VS2008 projects that target .Net 2.0. <br><br>/jonny <br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>triplea replied on Tuesday, June 24, 2008</h2>I like the idea since my client isn't installing .Net 3.5 on any production boxes until the end of the year and I have just started writing an app for them using CSLA 3.0 (to run on .Net 2.0). But I can understand that it might confuse matters even more when it comes to users selecting a version of CSLA to use (it appears new users still struggle with this) plus if it isn't widely used, I would hesitate to adopt it in case I hit a brick wall and cannot get much help from the forum...</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, June 24, 2008</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>&gt;</span> But based on the response here it does not seem to
+be much <o:p></o:p></p>
+
+<p class=MsoNormal>&gt; support/requirements for having CSLA 3.5 available in <o:p></o:p></p>
+
+<p class=MsoNormal>&gt;VS2008 projects that target .Net 2.0.<o:p></o:p></p>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>I don&#8217;t know &#8211; give it time and let&#8217;s see
+if other people chime in with comments.<o:p></o:p></p>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Rocky<o:p></o:p></p>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Wednesday, June 25, 2008</h2><P>I plan to move to VS 2008, CSLA 3.5 and .Net 3.5 at the same time.</P>
+<P>So I would not be interested in this.</P>
+<P>Joe</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ianinspain replied on Friday, July 04, 2008</h2><P>Hi Rocky,</P>
+<P>just saw your email and i am a little confused, you list the following items in 3.6</P>
+<P>&nbsp;</P>
+<OL>
+<LI>Support for ADO.NET Entity Framework (similar to the current LINQ to SQL support) 
+<LI>Enhanced LINQ to CSLA indexing support (to get the &lt; and &gt; operators indexed) 
+<LI>Support for .NET 3.5 SP1 features, especially in WPF 
+<LI>Possible support for ASP.NET MVC (which works as-is, but there's the potential for interesting helper methods in the View)</LI></OL>
+<P>Actually number 1 and number 4 ... are high on my list!, can you confirm the new book is going to cover these? ... From what i understand these features are for 3.6 .... but is the book being targeted at 3.5?? ....</P>
+<P>MVC and entity framework is something i have been looking forward to integrate with CSLA ... i really didn't want to start downloading patches almost immediatly i.e. PRINT BOOK 2008 and then a pdf to learn the mvc and entity bits..</P>
+<P>Any info you can offer on this would be really helpful and hopefully putting my mind a rest :-)</P>
+<P>Thanks</P>
+<P>Ian</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Saturday, July 12, 2008</h2><P>The <EM>Expert 2008 Business Objects</EM> book will target CSLA .NET 3.6 - which is really 3.5 with server-side support for CSLA Light clients and some minor changes for .NET 3.5 SP1.</P>
+<P>At the moment my plan for ADO.NET EF support primarily centers around creating an EF version of Csla.Data.ConnectionManager. I may do more, but EF is quite controversial and I'm not interested in putting a lot of work into supporting it until there's broader enthusiasm in the market for it.</P>
+<P>It is important to realize that CSLA works with ASP.NET MVC now, today. There's absolutely nothing I <EM>have</EM> to do to make them play together - they work together very nicely! However, it may be that I can create some helper methods/controls/tools around View creation. If I get time I'll reseach that sort of thing, but it isn't a real high priority, because the status quo is not bad at all.</P>
+<P>The new book <EM>will not</EM> cover ASP.NET MVC. That will likely be an ebook following the Apress book. My current plan is to have three interface chapters: WPF, Web Forms and WCF services.</P>
+<P>It is most likely the case that the data access in the book will use LINQ to SQL, though I may switch to EF - though what I'd like to do is show both (space and time permitting).</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ianinspain replied on Monday, July 21, 2008</h2><P>Thanks rocky for the confirmation...</P>
+<P>&nbsp;</P>
+<P>Best regards</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

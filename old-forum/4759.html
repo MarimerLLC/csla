@@ -1,0 +1,160 @@
+<html><header><title>RollBack Transactions - [Transactional(TransactionalTypes.TransactionScope)]</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>RollBack Transactions - [Transactional(TransactionalTypes.TransactionScope)]</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4759.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Inquistive_Mind posted on Monday, April 28, 2008</h2><FONT size=2>
+<P>Hello All,</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; I am trying to save two Business Objects in&nbsp;a single transaction.I noticed that the first business object saves and writes to the database while there is a stored procedure name error(intentional. was curious to see&nbsp;whether both&nbsp;BO would be rolled back or not)&nbsp;in the second business object and it throws an exception.However since the dataportal has been wrapped in the TransactionScope should'nt the database write by the first business object be rolled back? I have looked at the examples using command object etc that have been posted in this forum.I am a little confused with this approach and I am wondering whats the point in using TransactionScope if it cannot be used to Save multiple business&nbsp;objects as a single transaction. I am&nbsp;thinking&nbsp;of putting the code of saving the two BO's in a separate Try-Catch. I guess I am missing quite a lot here.</P>
+<P>[</FONT><FONT color=#2b91af size=2>Transactional</FONT><FONT size=2>(</FONT><FONT color=#2b91af size=2>TransactionalTypes</FONT><FONT size=2>.TransactionScope)]</P>
+<P></FONT><FONT color=#0000ff size=2>protected</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>override</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>void</FONT><FONT size=2> DataPortal_Insert()</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>int</FONT><FONT size=2> rowsinserted = 0;</P>
+<P></FONT><FONT color=#0000ff size=2>using</FONT><FONT size=2> (</FONT><FONT color=#2b91af size=2>DbConnection</FONT><FONT size=2> cn = </FONT><FONT color=#2b91af size=2>Database</FONT><FONT size=2>.DBConnection)</P>
+<P>{</P>
+<P>cn.Open();</P>
+<P></FONT><FONT color=#0000ff size=2>using</FONT><FONT size=2> (</FONT><FONT color=#2b91af size=2>DbCommand</FONT><FONT size=2> cm = cn.CreateCommand())</P>
+<P>{</P>
+<P></FONT>
+<P><FONT size=2></P></FONT><FONT color=#2b91af size=2>UserGroupPermissions</FONT><FONT size=2> _userGroupPermissions = </FONT><FONT color=#2b91af size=2>UserGroupPermissions</FONT><FONT size=2>.NewUserGroupPermissions(_groupId);
+<P></P>
+<P>_userGroupPermissions.Save();</P>
+<P></FONT><FONT color=#2b91af size=2>UserGroupFieldPermissions</FONT><FONT size=2> _userGroupFieldPermissions = </FONT><FONT color=#2b91af size=2>UserGroupFieldPermissions</FONT><FONT size=2>.NewUserGroupFieldPermissions(groupID, 110 </FONT><FONT color=#008000 size=2>/* AssetIdentificationEdit */</FONT><FONT size=2>);</P>
+<P>_userGroupFieldPermissions.Save();</P>
+<P></FONT><FONT color=#008000 size=2>&nbsp;</P></FONT><FONT size=2>
+<P>}</P>
+<P>} </P>
+<P>}</P>
+<P>Thanks in advance,</P>
+<P>Vikas</P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Monday, April 28, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>What code do you have in .Save() calls to your permission
+objects?&nbsp; Are those standard Save methods of a business object or did you
+override them for a specific purpose?&nbsp; I was kind of expecting to see
+calls to some internal method, not Save calls.&nbsp; Save calls invoke DataPortal
+again.&nbsp; I wonder if this is why you are seeing this behavior&#8230;&nbsp;
+And yes, Transactional attribute should rollback the first save.&nbsp; Just out
+of curiosity, create internal methods and call them directly to save the data
+just to see if transactional support starts working again.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Senior Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Inquistive_Mind
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Monday, April 28, 2008 9:50 AM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> [CSLA .NET] RollBack Transactions -
+[Transactional(TransactionalTypes.TransactionScope)]<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p><span>Hello All,<o:p></o:p></span></p>
+
+<p><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+I am trying to save two Business Objects in&nbsp;a single transaction.I noticed
+that the first business object saves and writes to the database while there is
+a stored procedure name error(intentional. was curious to see&nbsp;whether
+both&nbsp;BO would be rolled back or not)&nbsp;in the second business object
+and it throws an exception.However since the dataportal has been wrapped in the
+TransactionScope should'nt the database write by the first business object be
+rolled back? I have looked at the examples using command object etc that have
+been posted in this forum.I am a little confused with this approach and I am
+wondering whats the point in using TransactionScope if it cannot be used to
+Save multiple business&nbsp;objects as a single transaction. I
+am&nbsp;thinking&nbsp;of putting the code of saving the two BO's in a separate
+Try-Catch. I guess I am missing quite a lot here.<o:p></o:p></span></p>
+
+<p><span>[<span>Transactional</span>(<span>TransactionalTypes</span>.TransactionScope)]<o:p></o:p></span></p>
+
+<p><span>protected</span><span> <span>override</span> <span>void</span> DataPortal_Insert()<o:p></o:p></span></p>
+
+<p><span>{<o:p></o:p></span></p>
+
+<p><span>int</span><span> rowsinserted = 0;<o:p></o:p></span></p>
+
+<p><span>using</span><span> (<span>DbConnection</span> cn =
+<span>Database</span>.DBConnection)<o:p></o:p></span></p>
+
+<p><span>{<o:p></o:p></span></p>
+
+<p><span>cn.Open();<o:p></o:p></span></p>
+
+<p><span>using</span><span> (<span>DbCommand</span> cm =
+cn.CreateCommand())<o:p></o:p></span></p>
+
+<p><span>{<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>UserGroupPermissions</span><span> _userGroupPermissions = <span>UserGroupPermissions</span>.NewUserGroupPermissions(_groupId);
+<o:p></o:p></span></p>
+
+<p><span>_userGroupPermissions.Save();<o:p></o:p></span></p>
+
+<p><span>UserGroupFieldPermissions</span><span> _userGroupFieldPermissions = <span>UserGroupFieldPermissions</span>.NewUserGroupFieldPermissions(groupID,
+110 <span>/* AssetIdentificationEdit */</span>);<o:p></o:p></span></p>
+
+<p><span>_userGroupFieldPermissions.Save();<o:p></o:p></span></p>
+
+<p><span>&nbsp;<o:p></o:p></span></p>
+
+<p><span>}<o:p></o:p></span></p>
+
+<p><span>} <o:p></o:p></span></p>
+
+<p><span>}<o:p></o:p></span></p>
+
+<p><span>Thanks in advance,<o:p></o:p></span></p>
+
+<p><span>Vikas<o:p></o:p></span></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Inquistive_Mind replied on Monday, April 28, 2008</h2><P>Thanks Sergey for your response.</P>
+<P>I think I got what I need.I need to be calling the UserGroupFieldPermissons in the Save(DataPortal_Insert) of UserGroupPermissions rather than call both the Save in the Root object(UserGroup)</P>
+<P>Maybe I was not clear in what I am trying to achieve here.I am creating a Group and once a group is created,I am using the groupID to create the group permissions set&nbsp;for the group with default value false and for each permission I am creating a field permission set that will allow permissions upto the field level. The Group Permission Set is divided into different domains and I have Internal Sealed Classes for each domain.Same for Group Field Permission Set.</P>
+<P>The hierarchy is something like this.</P>
+<P>Group --&gt; Group Permissions For each domain ---&gt; Group Field Permissions For each Permission</P>
+<P>Let me give an example.</P>
+<P>I have group Technicians who can View,Edit,Delete an Equipment Record and in that Group of Technicians I can allow/deny some of the Technicians to edit some fields of the Equipment Record.</P>
+<P>Thanks again for your response.I will try your suggestion.</P>
+<P>&nbsp;Vikas</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

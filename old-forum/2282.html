@@ -1,0 +1,18 @@
+<html><header><title>Web Hosting</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Web Hosting</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/2282.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Michael Hildner posted on Monday, February 05, 2007</h2><P>There's been a few posts on web hosting, full trust and all that, just thought I'd pass along what I've found out.</P>
+<P>Not a plug, but I've used discountasp.net (without CSLA) for hosting services for a couple years now - mainly because they were nice enough to host our New Mexico .NET User Group for free - SQL server and all.</P>
+<P>Anyway, because of a potential gig, I asked their support if full trust was supported. They said:</P><FONT size=2>
+<P>At DiscountASP.NET, we run each web site with its own application pool running with a unique identity. This allows us to configure ASP.NET to run in Full Trust mode without sacrificing security.</P></FONT>
+<P>So I made more or less a "Hello World" app - </P><FONT size=2>
+<P></FONT><FONT color=#2b91af size=2>RacerEditableRootList</FONT><FONT size=2> racers =</P>
+<P></FONT><FONT color=#2b91af size=2>RacerEditableRootList</FONT><FONT size=2>.GetRacerEditableRootList();</P>
+<P></FONT><FONT color=#0000ff size=2>foreach</FONT><FONT size=2> (</FONT><FONT color=#2b91af size=2>RacerEditableChild</FONT><FONT size=2> racer </FONT><FONT color=#0000ff size=2>in</FONT><FONT size=2> racers)</P>
+<P>{</P>
+<P>Response.Write(racer.FirstName + </FONT><FONT color=#a31515 size=2>" "</FONT><FONT size=2> + racer.LastName + </FONT><FONT color=#a31515 size=2>"&lt;br&gt;"</FONT><FONT size=2>);</P>
+<P>}</P></FONT>
+<P>And that works just fine. .GetRacerEditableRootList() calls <FONT color=#2b91af size=2>DataPortal</FONT><FONT size=2>.Fetch, </FONT>so I assume reflection is kicking in. No worries so far.</P>
+<P>Regards,</P>
+<P>Mike</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Tuesday, February 06, 2007</h2><P>Good tip.</P>
+<P>Nice information.</P>
+<P>Thanks.</P>
+<P>Joe</P>
+<P>&nbsp;</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

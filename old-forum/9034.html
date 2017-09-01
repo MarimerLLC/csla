@@ -1,0 +1,20 @@
+<html><header><title>Mobile Object</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Mobile Object</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9034.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Harmanjeet posted on Friday, June 04, 2010</h2><p>Hi! Rocky</p>
+<p>What&#39;s the any real practical scenario, where we need to <em>pass</em> <strong><em><span style="text-decoration:underline;">mobile objects</span></em></strong> as a <em>reference</em> type as a parameter to other methods.</p>
+<p>&nbsp;</p>
+<p>regards</p>
+<p>Harmanjeet</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Friday, June 04, 2010</h2><p>When you pass any object (string, Guid, Customer, etc) to a method it is always pass by reference. Object instances are always passed by reference in .NET, end of story. Given that, there are countless practical scenarios where you &quot;pass an object&quot; as a parameter to a method <img src="http://forums.lhotka.net/emoticons/emotion-2.gif" alt="Big Smile" /></p>
+<p>But I suspect that&#39;s not the intent of your question. Unfortunately I can&#39;t figure out what you are asking, can you please clarify?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Harmanjeet replied on Sunday, June 06, 2010</h2><p>Hi! Rocky</p>
+<p>I asked the above Question in the context of Mobile Object. Were, do we need them to pass as reference instead of Value, in real pratical scenario.</p>
+<p>not the generic concept of Pass by Value/Reference.</p>
+<p>&nbsp;</p>
+<p>regards</p>
+<p>Harmanjeet</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Monday, June 07, 2010</h2><p>There is no way to pass an object over the network by reference. Objects are copied or cloned across the network, so you always end up with a different instance of the object on the other machine. Read chapter 1 of the Expert Business Objects book for information on this.</p>
+<p>Some technologies, like .NET Remoting, simulate passing objects over the network by reference. That is really not &quot;by reference&quot; - they are simulating the concept. CSLA has never used or supported that concept, which is good because that idea doesn&#39;t work in web services or (without some effort) WCF.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Harmanjeet replied on Monday, June 07, 2010</h2><p>Hi!</p>
+<p>thanks for reply.</p>
+<p>i am satisfied with answer.</p>
+<p>&nbsp;</p>
+<p>regards</p>
+<p>Harmanjeet</p>
+<p>&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

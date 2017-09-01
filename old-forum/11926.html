@@ -1,0 +1,91 @@
+<html><header><title>Save Command in Silverlight</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Save Command in Silverlight</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11926.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>hanspret posted on Tuesday, April 09, 2013</h2><p>I&#39;ve got a situation where I need to save an object but there is other interactions with the database that need to happen with the save process. If one of the transactions fail all the transactions need to rollback.</p>
+<p>To satisfy this requirement I have created a command object using&nbsp;CommandBase. The Save Command work as expected but in Silverlight I want to return the Root object so that the&nbsp; Model can be in a state of &quot;Saved&quot; or not Dirty.</p>
+<p>The problem is that when I assign the Model with the saved object I get the error &quot;Edit level mismatch&quot;.</p>
+<p><strong>The command code&nbsp;is as follows:</strong></p>
+<p>[Serializable()]</p>
+<p>public class SaveAssetTypeCommand : CommandBase&lt;SaveAssetTypeCommand&gt;</p>
+<p>{</p>
+<p>public SaveAssetTypeCommand()</p>
+<p>{ }</p>
+<p>public static PropertyInfo&lt;CseAssetTypeRoot&gt; AssetTypeObjProperty = RegisterProperty&lt;CseAssetTypeRoot&gt;(c =&gt; c.AssetTypeObj);</p>
+<p>public CseAssetTypeRoot AssetTypeObj</p>
+<p>{</p>
+<p>get { return ReadProperty(AssetTypeObjProperty); }</p>
+<p>set { LoadProperty(AssetTypeObjProperty, value); }</p>
+<p>}</p>
+<p>public static PropertyInfo&lt;int&gt; ResultDeletedProperty = RegisterProperty&lt;int&gt;(c =&gt; c.ResultDeleted);</p>
+<p>public int ResultDeleted</p>
+<p>{</p>
+<p>get { return ReadProperty(ResultDeletedProperty); }</p>
+<p>set { LoadProperty(ResultDeletedProperty, value); }</p>
+<p>}</p>
+<p>public static PropertyInfo&lt;int&gt; ResultInsertedProperty = RegisterProperty&lt;int&gt;(c =&gt; c.ResultInserted);</p>
+<p>public int ResultInserted</p>
+<p>{</p>
+<p>get { return ReadProperty(ResultInsertedProperty); }</p>
+<p>set { LoadProperty(ResultInsertedProperty, value); }</p>
+<p>}</p>
+<p>public static void Execute(CseAssetTypeRoot oAssetType, EventHandler&lt;DataPortalResult&lt;SaveAssetTypeCommand&gt;&gt; callback)</p>
+<p>{</p>
+<p>var dp = new DataPortal&lt;SaveAssetTypeCommand&gt;();</p>
+<p>dp.ExecuteCompleted += callback;</p>
+<p>dp.BeginExecute(new SaveAssetTypeCommand { AssetTypeObj = oAssetType });</p>
+<p>}</p>
+<p>#if !SILVERLIGHT</p>
+<p>public static SaveAssetTypeCommand Execute(CseAssetTypeRoot oAssetType)</p>
+<p>{</p>
+<p>return DataPortal.Execute&lt;SaveAssetTypeCommand&gt;(new SaveAssetTypeCommand { AssetTypeObj = oAssetType });</p>
+<p>}</p>
+<p>[Transactional(TransactionalTypes.TransactionScope)]</p>
+<p>protected override void DataPortal_Execute()</p>
+<p>{</p>
+<p>//First do the deletion</p>
+<p>var DeletedList = AssetTypeObj.CseAssetTypeSpecLinks.GetDeletedItems();</p>
+<p>foreach (int item in DeletedList)</p>
+<p>{</p>
+<p>using (var dalManager = DAL.Interface.DALFactory.GetManager())</p>
+<p>{</p>
+<p>var tableAccessor = dalManager.GetDataAccessor&lt;DAL.Interface.IAscSpecValueDAL&gt;();</p>
+<p>ResultDeleted = tableAccessor.BulkDelete(item, AssetTypeObj.TypeCode);</p>
+<p>&nbsp;</p>
+<p>}</p>
+<p>}</p>
+<p>//Now do Insertion</p>
+<p>foreach (var item in AssetTypeObj.CseAssetTypeSpecLinks)</p>
+<p>{</p>
+<p>if (item.IsNew)</p>
+<p>{</p>
+<p>using (var dalManager = DAL.Interface.DALFactory.GetManager())</p>
+<p>{</p>
+<p>var tableAccessor = dalManager.GetDataAccessor&lt;DAL.Interface.IAscSpecValueDAL&gt;();</p>
+<p>ResultInserted = tableAccessor.BulkInsert(item.SpecID, AssetTypeObj.TypeCode);</p>
+<p>}</p>
+<p>}</p>
+<p>}</p>
+<p>AssetTypeObj = AssetTypeObj.Save();</p>
+<p>}</p>
+<p>&nbsp;</p>
+<p>#endif</p>
+<p>}</p>
+<p>&nbsp;</p>
+<p><strong>The Silverlight Save Code is as follows:</strong></p>
+<p>public override void Save(object sender, Csla.Xaml.ExecuteEventArgs e)</p>
+<p>{</p>
+<p>Shell.Instance.ShowStatus(new Status { Text = &quot;Saving&quot;, IsBusy = true });</p>
+<p>Business.SaveAssetTypeCommand.Execute(Model, (o, ee) =&gt;</p>
+<p>{</p>
+<p>if (ee.Error == null)</p>
+<p>{</p>
+<p>&nbsp;</p>
+<p>Model = ee.Object.AssetTypeObj;</p>
+<p>OnSaved();</p>
+<p>}</p>
+<p>else</p>
+<p>OnError(ee.Error);</p>
+<p>});</p>
+<p>&nbsp;</p>
+<p>}</p>
+<p>&nbsp;</p>
+<p>On the &quot;Model = ee.Object.AssetTypeObj;&quot; line I get the error.</p>
+<p>What should I do to re-assign the saved object to the Model?</p>
+<p><span style="font-size:x-small;font-family:Consolas;color:#2b91af;"><span style="font-size:x-small;font-family:Consolas;color:#2b91af;"><span style="font-size:x-small;font-family:Consolas;color:#2b91af;">&nbsp;</span></span></span></p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

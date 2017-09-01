@@ -1,0 +1,39 @@
+<html><header><title>AddNew performance question</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>AddNew performance question</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9950.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>bartol posted on Tuesday, January 18, 2011</h2><p>Hi,</p>
+<p>I am using CSLA 4.0 and WPF and I have this BO that has a child collection (based on BusinessListBase) where the results of a calculation are stored. The child that is stored in the collection only has two properties: a Guid and a double.</p>
+<p>The problem I have is when I use AddNew to create over 10,000 items (the results of my calculation) it takes a long time to create them. I am overriding AddNewCore as such:</p>
+<p>
+<p>
+<p>protected override MyResult AddNewCore()&nbsp;<br /><span style="font-size:8.33333px;">{<br /></span><span style="font-size:10px;">&nbsp;&nbsp; &nbsp;Add(MyResult.New());<br /></span><span style="font-size:10px;">&nbsp;&nbsp; &nbsp;return Items[Items.Count - 1];<br /></span><span style="font-size:10px;">}</span></p>
+<p><span style="font-size:10px;">The code that fills the collection is something like this:</span></p>
+<p><span style="font-size:xx-small;">
+<p>foreach(var item in CalculationResults)<br />{<br />&nbsp;&nbsp; &nbsp;var c = AddNew();<br />&nbsp;&nbsp; &nbsp;c.Value = item.value;<br />&nbsp;&nbsp; &nbsp;c.ReferenceId = item.Id;<br />}</p>
+<p>I wonder if there is a better and faster way to do this? I stepped through the CSLA code and there are lot of IsValid checks during the process which maybe could be postponed until the end of my bulk operation.</p>
+<p>Thanks,<br />B</p>
+</span></p>
+</p>
+</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Tuesday, January 18, 2011</h2><p>If you are loading that amount of data then you should make sure to set: </p>
+<p style="padding-left:30px;">RaiseListChangedEvents = false; </p>
+<p>before you add items and </p>
+<p style="padding-left:30px;">RaiseListChangedEvents = true;</p>
+<p>when you are done.</p>
+<p>I presume this is done in your data access layer and not with active databinding?&nbsp;</p>
+<p> Anyway -&nbsp; the ListChangedEvents may have serious affect of performance and should be off while you load data.</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>bartol replied on Tuesday, January 18, 2011</h2><p>Hi,</p>
+<p><span style="font-size:10px;">I have tried adding the RaiseListChangedEvents but it does not make a measurable difference since I am not subscribing to any event in this specific case. I am wondering if I should do a fetch on the list and load it through the DataPortal and resetting it but I am afraid that is going to cause havoc with the parent/child relationships of the objects.</span></p>
+<p><span style="font-size:10px;">The only way I managed to speedup the additions to nearly instant was by hacking the CSLA code by setting a static flag which returns true for IsValid in BusinessBase (terrible I know...).</span></p>
+<p><span style="font-size:10px;">Thanks,<br />B&nbsp;</span></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Marjon1 replied on Tuesday, January 18, 2011</h2><p>Since you&#39;ve already checked RaiseListChangedEvents, I make the following two suggestions.</p>
+<p>&nbsp;</p>
+<ul>
+<li>Use either BypassPropertyChecks() when loading the values inside the for loop or use LoadProperty; this will then prevent many events firing. This can add up with many items.</li>
+</ul>
+<ul>
+<li>This is a personal preference, but I would prefer to create an instance of the object in the AddNewCore, add that to the list and then return to the object, instead of accessing the list count and returning based on index. Probably doesn&#39;t make much difference for this simple example, but have had examples where changing this can make a big difference (mostly in loops).</li>
+</ul>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>bartol replied on Wednesday, January 19, 2011</h2><p>Hi,</p>
+<p>Thanks for that. I just tried BypassPropertyChecks now but still no difference. Also the problem appears in all types of list manipulation, for example, calling MyList.Clear() where MyList contains 1000 items similar to what I described above takes a couple of seconds to process unless I &quot;suspend&quot; the IsValid processing on BusinessBase. Very odd.</p>
+<p>Cheers,<br />B&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, January 19, 2011</h2><p>What do you mean by &quot;IsValid checks&quot;?</p>
+<p>The IsValid implementation in BusinessBase is passive. In other words it doesn&#39;t run unless some code reads the property value. That implies that somewhere in the application there&#39;s some code that&#39;s re-reading IsValid as each child is added? What is that code?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>bartol replied on Thursday, January 20, 2011</h2><p>Hi,</p>
+<p><span style="font-size:10px;">The IsValid checks are triggered by a PropertyStatus in the UI. I can email you a stack trace if you want but basically what happens is that the AddNewCore indirectly triggers a Child_PropertyChanged which later on causes a ObjectStatus.Refresh() which calls IsSavable thus IsValid is called. The code I posted above does not show this because I only found it later. This exact same things happens when I call Clear in the collection. In this particular screen a call to Clear of a collection with 8 items causes over 50 calls to IsValid (that is as fas as I counted).</span></p>
+<p><span style="font-size:10px;">B</span></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, January 20, 2011</h2><p>In this case you might try unbinding the object from the UI before doing mass operations.</p>
+<p>I think someone already suggested setting RLCE to false? Unfortunately the .NET ObservableCollection base class doesn&#39;t have that concept, so there&#39;s no way to entirely disable collection changed events, and that&#39;s what most UI components use to know they should refresh...</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

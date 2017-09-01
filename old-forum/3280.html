@@ -1,0 +1,72 @@
+<html><header><title>Setting Values using a business object</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Setting Values using a business object</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3280.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>jyjy posted on Friday, July 27, 2007</h2><P>I am having a hard time loading a data into my FormView elements.&nbsp; Basically,</P>
+<P>My FormView is in insert mode.&nbsp; It looks like this.&nbsp;&nbsp;Before this page is loaded, I have Session["PO Number"] = "PO123".&nbsp; If you look at the bottom of Initialize(),</P>
+<P>I have the following:</P><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (Session[</FONT><FONT color=#a31515 size=2>"PO Number"</FONT><FONT size=2>] != </FONT><FONT color=#0000ff size=2>null</FONT><FONT size=2>)</P>
+<P>{</P>
+<P>FormView1.DefaultMode = </FONT><FONT color=#2b91af size=2>FormViewMode</FONT><FONT size=2>.Edit;</P>
+<P></FONT><FONT color=#008000 size=2>//FormView1.DataBind();</P></FONT><FONT size=2>
+<P>}</P>
+<P>So, my objective is to after the UI elements are initialized with items, I want to load a business obejct and have the values set automatically, but it's not working.&nbsp; In my aspx file, I have <FONT size=2></P>
+<P>&lt;%# Bind("DateString") %&gt;</P></FONT>
+<P>for each UI element.</P>
+<P>Please help.</P>
+<P>&nbsp;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>protected</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>void</FONT><FONT size=2> Page_Load(</FONT><FONT color=#0000ff size=2>object</FONT><FONT size=2> sender, </FONT><FONT color=#2b91af size=2>EventArgs</FONT><FONT size=2> e)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (IsPostBack)</P>
+<P>{</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>else</P></FONT><FONT size=2>
+<P>{</P>
+<P>Initialize();</P>
+<P>}</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>protected</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>void</FONT><FONT size=2> Initialize()</P>
+<P>{</P>
+<P></FONT><FONT color=#008000 size=2>// Vendor</P></FONT><FONT size=2>
+<P></FONT><FONT color=#2b91af size=2>DropDownList</FONT><FONT size=2> ddlVendor = (</FONT><FONT color=#2b91af size=2>DropDownList</FONT><FONT size=2>)FormView1.FindControl(</FONT><FONT color=#a31515 size=2>"ddlVendor"</FONT><FONT size=2>);</P>
+<P></FONT><FONT color=#2b91af size=2>Companies</FONT><FONT size=2> oCompanies = Intel.SystemEngineering.Procure.</FONT><FONT color=#2b91af size=2>Companies</FONT><FONT size=2>.GetCompanyList(2);</P>
+<P></FONT><FONT color=#2b91af size=2>Vendors</FONT><FONT size=2> oVendors = Intel.SystemEngineering.Procure.</FONT><FONT color=#2b91af size=2>Vendors</FONT><FONT size=2>.GetVendors(0);</P>
+<P></FONT><FONT color=#0000ff size=2>foreach</FONT><FONT size=2> (</FONT><FONT color=#2b91af size=2>Company</FONT><FONT size=2> oCompany </FONT><FONT color=#0000ff size=2>in</FONT><FONT size=2> oCompanies)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>foreach</FONT><FONT size=2> (</FONT><FONT color=#2b91af size=2>Vendor</FONT><FONT size=2> oVendor </FONT><FONT color=#0000ff size=2>in</FONT><FONT size=2> oVendors)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (oCompany.ID == oVendor.CompanyID)</P>
+<P>ddlVendor.Items.Add(</FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> </FONT><FONT color=#2b91af size=2>ListItem</FONT><FONT size=2>(oCompany.ShortName, oVendor.ID.ToString()));</P>
+<P>}</P>
+<P>}</P>
+<P></FONT><FONT color=#008000 size=2>// Bill To and Ship To</P></FONT><FONT size=2>
+<P></FONT><FONT color=#2b91af size=2>DropDownList</FONT><FONT size=2> ddlBillTo = (</FONT><FONT color=#2b91af size=2>DropDownList</FONT><FONT size=2>)FormView1.FindControl(</FONT><FONT color=#a31515 size=2>"ddlBillTo"</FONT><FONT size=2>);</P>
+<P></FONT><FONT color=#2b91af size=2>DropDownList</FONT><FONT size=2> ddlShipTo = (</FONT><FONT color=#2b91af size=2>DropDownList</FONT><FONT size=2>)FormView1.FindControl(</FONT><FONT color=#a31515 size=2>"ddlShipTo"</FONT><FONT size=2>);</P>
+<P>oCompanies = Intel.SystemEngineering.Procure.</FONT><FONT color=#2b91af size=2>Companies</FONT><FONT size=2>.GetCompanyList(1); </FONT><FONT color=#008000 size=2>// 1 is a company type</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>foreach</FONT><FONT size=2> (</FONT><FONT color=#2b91af size=2>Company</FONT><FONT size=2> oCompany </FONT><FONT color=#0000ff size=2>in</FONT><FONT size=2> oCompanies)</P>
+<P>{</P>
+<P>ddlBillTo.Items.Add(</FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> </FONT><FONT color=#2b91af size=2>ListItem</FONT><FONT size=2>(oCompany.ShortName, oCompany.ID.ToString()));</P>
+<P>ddlShipTo.Items.Add(</FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> </FONT><FONT color=#2b91af size=2>ListItem</FONT><FONT size=2>(oCompany.ShortName, oCompany.ID.ToString()));</P>
+<P>}</P>
+<P></FONT><FONT color=#008000 size=2>// Status</P></FONT><FONT size=2>
+<P></FONT><FONT color=#2b91af size=2>DropDownList</FONT><FONT size=2> ddlStatus = (</FONT><FONT color=#2b91af size=2>DropDownList</FONT><FONT size=2>) FormView1.FindControl(</FONT><FONT color=#a31515 size=2>"ddlStatus"</FONT><FONT size=2>);</P>
+<P></FONT><FONT color=#2b91af size=2>PurchaseOrderStatuses</FONT><FONT size=2> oStatuses = Intel.SystemEngineering.Procure.</FONT><FONT color=#2b91af size=2>PurchaseOrderStatuses</FONT><FONT size=2>.GetPurchaseOrderStatuses();</P>
+<P></FONT><FONT color=#0000ff size=2>foreach</FONT><FONT size=2> (</FONT><FONT color=#2b91af size=2>PurchaseOrderStatus</FONT><FONT size=2> oStatus </FONT><FONT color=#0000ff size=2>in</FONT><FONT size=2> oStatuses)</P>
+<P>ddlStatus.Items.Add(</FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> </FONT><FONT color=#2b91af size=2>ListItem</FONT><FONT size=2>(oStatus.Name, oStatus.ID.ToString()));</P>
+<P></FONT><FONT color=#008000 size=2>//CslaDataSource1.SelectObject += new EventHandler&lt;Csla.Web.SelectObjectArgs&gt;(OnSelect);</P></FONT><FONT size=2>
+<P></FONT><FONT color=#008000 size=2>//CslaDataSource1.</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (Session[</FONT><FONT color=#a31515 size=2>"PO Number"</FONT><FONT size=2>] != </FONT><FONT color=#0000ff size=2>null</FONT><FONT size=2>)</P>
+<P>{</P>
+<P>FormView1.DefaultMode = </FONT><FONT color=#2b91af size=2>FormViewMode</FONT><FONT size=2>.Edit;</P>
+<P></FONT><FONT color=#008000 size=2>//FormView1.DataBind();</P></FONT><FONT size=2>
+<P>}</P>
+<P>}</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>protected</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>void</FONT><FONT size=2> OnSelect(</FONT><FONT color=#0000ff size=2>object</FONT><FONT size=2> sender, Csla.Web.</FONT><FONT color=#2b91af size=2>SelectObjectArgs</FONT><FONT size=2> e)</P>
+<P>{</P>
+<P>e.BusinessObject = </FONT><FONT color=#2b91af size=2>PurchaseOrder</FONT><FONT size=2>.GetPurchaseOrder(</FONT><FONT color=#a31515 size=2>"PO123"</FONT><FONT size=2>);</P>
+<P></P>
+<P></FONT><FONT color=#008000 size=2>//FormView1.DataBind();</P></FONT><FONT size=2>
+<P></FONT><FONT color=#008000 size=2>//e.BusinessObject.</P></FONT><FONT size=2>
+<P></FONT><FONT color=#008000 size=2>//PurchaseOrder oPO = PurchaseOrder.GetPurchaseOrder("PO123");</P></FONT><FONT size=2>
+<P></FONT><FONT color=#008000 size=2>//Csla.Data.DataMapper.Map(e.Values, oPO);</P></FONT><FONT size=2>
+<P></FONT><FONT color=#008000 size=2>//e.RowsAffected = 1;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#008000 size=2>//oPO.Save();</P></FONT><FONT size=2>
+<P></FONT><FONT color=#008000 size=2>//Session["PO Number"] = oPO.Number;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#008000 size=2>//Response.Redirect("LineItem.aspx", true);</P></FONT><FONT size=2>
+<P>}</P></FONT></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

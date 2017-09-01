@@ -1,0 +1,145 @@
+<html><header><title>Object responsibility suggestions.</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Object responsibility suggestions.</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/1881.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>jlazanowski posted on Friday, December 01, 2006</h2><P class=MsoNormal>In my model I have several classes that have a myriad of child collections. For example my Driver class has the following collections:</P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>Address</P>
+<P class=MsoNormal><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>Contact</P>
+<P class=MsoNormal><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>Schedule</P>
+<P class=MsoNormal><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>HoursOfService</P>
+<P class=MsoNormal><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>Events</P>
+<P class=MsoNormal><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>Registrations</P>
+<P class=MsoNormal><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>Training</P>
+<P class=MsoNormal><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>Vacation</P>
+<P class=MsoNormal><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>Clock</P>
+<P class=MsoNormal><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>Differential</P>
+<P class=MsoNormal><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>Rotation</P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal>Now not all of these are “only” child collections, but from the perspective of this question that’s the only consideration. When I load the Driver object, I want to fetch all of the children. It’s the children’s responsibility to load itself <SPAN>&nbsp;</SPAN>save itself etc. </P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal>I’m using LLBLGen Pro for my DAL so I have a BLSupport class that “brokers” the object loads and defines the predicates. LLBL uses what are called pre-fetch paths to load related entities in a single call, so the broker class is set-up to predefine these pre-fetch paths.</P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal>Now to the crux of the question. When I load the driver class for edit I want ALL of the child objects loaded which is no problem, however there will also be times that I use a readonlybase to load the driver object and “some” or “all” of the children depending on the case.<SPAN>&nbsp; </SPAN>The way I have it setup right now, I have a single class that passes a secondary item into the criteria class _childType that then uses a switch to see what child objects to load. I’m wondering if this is the right approach, or if I should be defining one read-only base per collection type that I wish to load or combination thereof. </P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal>The problem I see with that is that it can get pretty messy pretty quick, I could potentially need to create a TON of read-only bases to get the correct combination. Anyone doing something similar or have suggestion on how to handle a situation like this?</P>
+<P class=MsoNormal>&nbsp;</P>
+<P class=MsoNormal>Thanks,</P>
+<P class=MsoNormal>Justin</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Fintanv replied on Friday, December 01, 2006</h2><P>This comes up on a fairly frequent basis, and the answer is the oft repeated mantra of "Design your classes based on what they do (target functionality), not based on the data relations".&nbsp; In other words having a Driver class with 11 child collection classes is an indication that your design is off.&nbsp; This will not scale well, and as you are finding out, it leads to messy solutions.&nbsp; Rather you should design your business objects around the use cases your customers have identified (usually with your help to keep them on task ;-).&nbsp; For instance there may be a DriverPersonalInformation class that holds the Address and Contact information.&nbsp; Another may be DriverTrainning that will hold the trainning info for a specific driver.&nbsp; You would pull the info for a specific driver by having the user select from a list maintened by your DriverReadOnlyList collection.&nbsp; Yes you are going to have many more classes, but they will ultimately be more focused for the task at hand, and will improve extensibility and maintainability.</P>
+<P>Best Regards,</P>
+<P>Fintan</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jlazanowski replied on Friday, December 01, 2006</h2><P class=MsoNormal>I agree, this topic does come up quite a bit, however I thought this one was a bit different.</P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal>11 child collections is large, but it is in fact based on the cases, and as stated in the previous post some of these are not only children, but parent objects depending on the case.</P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal>My question was more relating on what the best method for dealing with a situation like this is, when I pull a single driver to edit, I do what to load the entire object graph because that is what the case states, however there are many times that I will be dealing with a collection of drivers, and loading the entire graph for each of these is quite obviously inefficient.</P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal>So from the Responsibility standpoint, the Driver object should call its children and the children should load their data.</P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal>When I’m dealing with other cases, (I’ll use scheduling in this example), I want to call a collection of driver object, and child object scheduling. For this case I don’t need all of the other items, I don’t care about contacts, or events, but I would need collections like HoursOfService and Clock to make sure that the driver has the hours available to schedule.</P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal>I’m working on the principal that behavior should only exsit once within my object model, using this principal I should say that I should have a DriverSchedule object that loads Driver objects and children Schedule, HOS, and Clock. That seems fine to me, what concerns me is the sheer number of objects that are possible (maybe not now but later) within the system to handle all of these responsibilities.</P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal>I’m wondering if it’s better to create a class as I have now where depending on the passed criteria, it loads the appropriate child object(s), however I’m not sure that this will end up causing a maintainability nightmare down the road.</P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal>I’m not trying to discount your suggestion, just not sure that I expressed my original question well enough I have a tendency to ramble..<img src="/emoticons/emotion-5.gif" alt="Wink [;)]" /></P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal>TIA,</P>
+<P class=MsoNormal>Justin</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>malloc1024 replied on Friday, December 01, 2006</h2>
+
+<p class="MsoNormal">If you need to load a specific driver and edit it, you would
+return the driver and its children.<span>&nbsp; </span>If
+you need lists, you would use read-only lists.<span>&nbsp;
+</span>To keep the number of read-only lists down, you would flatten the lists
+as much as possible.<span>&nbsp; </span>I usually end up
+with many read-only lists, but I really do not find them that difficult to
+maintain.<span>&nbsp; </span>If you are still concerned
+about many read-only classes, you could use datasets (gulp) or you could create
+your own generic read-only collection that would mimic a dataset in the way it handles
+data.<span>&nbsp; </span>This would allow you to create as many
+lists as you need from only a few classes.</p>
+
+
+<p class="MsoNormal">Your idea of passing a criteria object that tells the driver
+object to load which children is not a bad idea; however, it does complicate
+the driver object a bit.<span>&nbsp; </span>What happens
+when you only want to load one property on a child?<span>&nbsp; </span>Do you return all the children’s data for
+that object? <span>&nbsp;</span>If so, you are returning
+too much data.<span>&nbsp; </span>Further, the driver object
+now has more responisblies and covers more use-cases.<span>&nbsp; </span>This will make it more difficult to maintain
+the driver class.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jlazanowski replied on Friday, December 01, 2006</h2><P class=MsoNormal>Exactly this is specifically the problem that I am struggling with it really I suppose comes down to the lesser of two evils.</P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal><SPAN>a.)<SPAN>&nbsp;&nbsp;&nbsp; </SPAN></SPAN>do I complicate the driver object by having it decide what children to load</P>
+<P class=MsoNormal><SPAN>b.)<SPAN>&nbsp;&nbsp;&nbsp; </SPAN></SPAN>complicate the object model by creating a multitude of classes to figure out what object graph I need to load</P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal>Problem a presents as having complexity within a single object, adding more responsibility and perhaps unwanted or unexpected behavior</P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal>Problem b presents as having maintainability issue. Since I’m hand coding the BL If I need to have say 10 different classes for combinations of parent/children objects and I need to change a field in the parent class, I need to “fix” ten different classes.</P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal>Maybe I’m just missing something simple, or my idea of a concept is out of whacky with reality.</P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal>On a side note</P>
+<P class=MsoNormal><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>malloc1024:</strong></div><div></P>
+<P class=MsoNormal>What happens when you only want to load one property on a child?&nbsp; Do you return all the children’s data for that object? &nbsp;If so, you are returning too much data.</P>
+<P class=MsoNormal></div></BLOCKQUOTE></P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal>Since it’s the child’s responsibility to load itself with data, wouldn’t this really be a different behavior and thus a different class one with simply the property to be returned? </P>
+<P class=MsoNormal>Or, does this really need to be separated out, if I had a very heavy class (resource wise i.e. a picture) then I could see where that would be important, but if we’re talking about 10 “normal” properties of any object being loaded from persistence would it really be that big a performance benefit to separate out one field? </P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal>P.S. Dataset’s are out <img src="/emoticons/emotion-5.gif" alt="Wink [;)]" /></P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal>I appreciate the responses.</P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal>Justin</P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Wal972 replied on Friday, December 01, 2006</h2>When you are defining the driver you would have different types of children which are used in natural combinations as you illustrated before. When you edit the driver are you working on all these different ones or could break them down into groups and USE them thus allowing you to get the ones you need. The Driver doesn't need to act as the gatekeeper for the whole show.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>malloc1024 replied on Friday, December 01, 2006</h2>
+
+<p class="MsoNormal">You are correct that both options have downsides.<span>&nbsp; </span>Programming is about making compromises and
+choosing the best solution for the problem.<span>&nbsp;
+</span>This is what makes it challenging and fun.</p>
+
+
+<p class="MsoNormal"><o:p>&nbsp;</o:p></p>
+
+
+<p class="MsoNormal">You are correct that option b can be a problem to
+maintain.<span>&nbsp; </span>However, if you need to add
+additional properties to the driver class, it doesn’t necessary mean you will
+need to add those properties to the read-only version.<span>&nbsp; </span>It depends on what you want to display to the
+user.<span>&nbsp; </span>If you want to make sure both have
+the same properties, you could use an interface to make it easier to maintain.</p>
+
+
+<p class="MsoNormal"><o:p>&nbsp;</o:p></p>
+
+
+<p class="MsoNormal">Keep in mind that objects are defined by behavior not
+data.<span>&nbsp; </span>Properties are considered
+data.<span>&nbsp; </span>Basing your decision to have your
+driver class act as a read-only list based on data might not be wise.<span>&nbsp; </span>I have never tried option A, therefore I
+can’t say it won’t work; however, I have my doubts that is it a better option
+that B.<span>&nbsp; </span>If you feel that option A will
+work for you, go for it.<span>&nbsp; </span>At the very least
+you will find out if it works for you. <span>&nbsp;</span></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Friday, December 01, 2006</h2>Actually solution B is the most maintanable solution, because if your use case changes, it only affects one set of objects (assuming none are shared between use cases).&nbsp; <br><br>Now, the data access code may be shared through refactoring to internal helper classes.&nbsp; That way if the schema changes, the changes should be mainly to the data access class and affected use cases.<br><br>B is more complex though because there are more objects to learn, but if you really have so many, y ou can use namespaces to group objects which handle a single use case together.&nbsp; In that way you can more easily figure out which objects you need, because namespace X helps you acomplish these tasks.<br><br>Remember, code reuse does not equal maintainablity.&nbsp; It can help, but it can also reduce maintainability in many scenarios as well.<br><br>HTH<br>Andy<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Wal972 replied on Saturday, December 02, 2006</h2><P>Does the Driver act as a container or does it have its own properties. Because I had a complicated Customer object which I broke down like you did. Then I simply created different ROOT objects which pulled together the relevent child objects for the task at hand. Like the Driver Schedule. etc.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>swegele replied on Wednesday, January 31, 2007</h2><P>Hi Justin,</P>
+<P>I have been using CSLA for years and am currently writing a CSLA business layer that uses the LLBLGen DAL.</P>
+<P>Let me tell you what many, including myself, have learned...making those readonly classes is worth it (using a code generator of course)</P>
+<P>ReadOnly is a valid behavior that warrants an object.&nbsp; When you think of the "Behavior" you see a readonly object.&nbsp; But when you think of the "Data" or "Properties" you think Sheesh these all look the same.&nbsp; And so you begin to try and make them all inherit from one object or something like that.&nbsp; Things get messy and complex quickly.&nbsp; I know because I tried and just kept hitting walls.</P>
+<P>I agree it is a lot of code to write.&nbsp; So the solution....don't write it, rather generate it!&nbsp; Figure out the pattern and use LLBL or CodeSmith to make a template.&nbsp; It is well worth your time.</P>
+<P>Quote from Rocky at SanFran Dev conference:<BR>"Anyone who isn't using code generation is an idiot"</P>
+<P>If you know him you know he isn't a harsh guy...just a big teddy bear so he wasn't being cruel as much as making a passionate point.&nbsp; But regardless that statement motivated me to&nbsp;go home and starting learning more.&nbsp; I found CodeSmith to be a good fit for CSLA.</P>
+<P>Regarding changing one property and then having to change many other places...I know what you mean.&nbsp; But using interfaces helped me at least to immediately see which ones needed changing.</P>
+<P>Other tip I will give you...don't change the framework unless absolutely necessary because it becomes very painful to upgrade later and Rocky is cranking these out as quick as I can check this forum!</P>
+<P>HTH</P>
+<P>Sean Wegele</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>SonOfPirate replied on Thursday, February 01, 2007</h2><P>Justin, I am actually in the same boat.&nbsp; I have a "root" object with 6-8 child collections similar to what you've described.&nbsp; This is for a web app and I am running into performance problem because I am forced to populate all of the child collections along with the parent because of the use case involved.</P>
+<P>In my case, the object is being displayed using a tab strip style interface where the parent object's properties are displayed on the "General" tab and each child collection has its own tab with its elements displayed in a GridView on each.&nbsp; I have debated the approach I have used and found this post very interesting to read.</P>
+<P>In my case, I approach the design with a couple "tenets" in mind:</P>
+<OL>
+<LI>Unless I plan on implementing inline/in-cell editing, all of my collections contain read-only versions of my objects.&nbsp; Along with this, I am able to flatten any relationships and return a single, readable result set.&nbsp; I don't need the foreign keys used in the relationship to the Contact, for example, I need the Contact's name instead. 
+<LI>Any time I need to perform edits I will have an editable root object.</LI></OL>
+<P>This is well and good but does not address the child collection issue except that I've already declared that each child collection should contain read-only objects.&nbsp; Note that I did not say that the collection was read-only - have to add and remove items somehow, ya know?</P>
+<P>My default implementation of a child collection is based on the examples Rocky has provided where the parent instantiates the child collection and populates it from the same data reader that the parent used for itself.&nbsp; Unfortunately, as you have found and I am experiencing, this has a performance impact when the number of collections and number of child items elevates.</P>
+<P>The option in my case is to "break" or decouple the relationship between the parent and the child collections.&nbsp; So, instead of having a Driver object with an HoursOfService child collection that is instantiated internally and populated when the Driver object is fetched, the DriverHoursOfService collection becomes a root collection that is responsible for retrieving its own data.&nbsp; To make this possible, the factory method/constructor requires the corresponding identifier for the Driver object to lookup.&nbsp; I can still have a method/property in my Driver class that returns the collection&nbsp;(for simplicity) but my DriverHoursOfService collection is free-standing and can be used with any UI configuration.</P>
+<P>In addition, by decoupling the relationship between the parent and the child collections, if I need to remove a collection - or add a new one - I don't have to change the parent's class.&nbsp; I simply remove the existing&nbsp;or add the new class(es) into the application and they are good to go.</P>
+<P>For example, let's say we needed to add Attachments to the Project class in Rocky's ProjectTracker application.&nbsp; By creating a ProjectAttachments collection that accepted the ProjectId as a parameter in the GetProjectAttachments method, we can simply "plug" it into the app and make use of it in our client app.&nbsp; If we use the other approach, not only would we have to create the ProjectAttachments class, but we'd have to modify the Project class to instantiate and populate the collection and expose a property so we could access it.&nbsp; Then, we'd have to modify the sproc (assuming we're using one) to return the additional result set as well.&nbsp; So, three changes for the price of one.&nbsp; This is what Andy was getting at.&nbsp; And, I don't remember the exact wording, but there is an OOP principal that dictates that we should only be&nbsp;modifying one thing per change.</P>
+<P>So, as much of a headache as it will be for me to change my UI to adapt to this approach, I am changing my app in this manner.&nbsp; I can then use lazy-loading on the UI tabs and save the initial load time by not incurring the overhead of creating, retrieving and populating the child collections that the user isn't interested in.</P>
+<P>HTH - just my two cents.</P>
+<P>P.S. It's actually not that difficult to implement the child collections BOTH ways although I am not sure if it breaks the "one responsibility" rule.&nbsp; Having a factory method/constructor that accepts the parent's identifier and uses the DataPortal_Fetch method to populate its contents AND having a second factory method/constructor that accepts a DataReader and populates itself directly allows you to decide how to use the collection but gives you the freedom to choose either method.</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>swegele replied on Thursday, February 01, 2007</h2><P>SonOfPirate</P>
+<P>That last statement about doing BOTH is very wise...it gets messy fast trying to do both because there are so many different permutations of workflow.&nbsp; I did my last full CLSA project with all my root objects as switchable and it cost me ALOT of time and headache.</P>
+<P>I won't do that this time.</P>
+<P>Sean</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

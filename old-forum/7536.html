@@ -1,0 +1,161 @@
+<html><header><title>CSLA SilverLight Question</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA SilverLight Question</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/7536.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>SouthSpawn posted on Saturday, August 29, 2009</h2><DIV>I notice that when I do the following.</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>&nbsp;&lt;Button x:Name="CompanyAction_Button"<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Content="Update Company" Grid.Column="2" Grid.Row="10" Width="125" HorizontalAlignment="Left"<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; csla:InvokeMethod.TriggerEvent="Click"<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; csla:InvokeMethod.Resource="{StaticResource CompanyDetailsData}"<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; csla:InvokeMethod.MethodName="Save"&gt;&lt;Button&gt;</DIV>
+<DIV><BR>CSLA will automatically disable the button for me.</DIV>
+<DIV><BR>So it expects the user to type in something, then "TAB" off for the control to become enable.<BR><BR>I am a "Mouse" guy.</DIV>
+<DIV>So if I change something in one of my fields, then use the mouse directly to try and save the data.</DIV>
+<DIV>The button still will become disabled.</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>How do I shut this feature off.</DIV>
+<DIV><BR>Thanks</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>&nbsp;</DIV></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Sunday, August 30, 2009</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>You
+can turn it off via ManualEnableControl property on InvokeMethod.&nbsp; Just
+set it to true.&nbsp; You will need to handle validation exception somehow at
+that point though.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> SouthSpawn
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Saturday, August 29, 2009 9:30 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> [CSLA .NET] CSLA SilverLight Question<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<div>
+
+<p class=MsoNormal>I notice that when I do the following.<o:p></o:p></p>
+
+</div>
+
+<div>
+
+<p class=MsoNormal>&nbsp;<o:p></o:p></p>
+
+</div>
+
+<div>
+
+<p class=MsoNormal>&nbsp;&lt;Button x:Name=&quot;CompanyAction_Button&quot;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Content=&quot;Update Company&quot; Grid.Column=&quot;2&quot;
+Grid.Row=&quot;10&quot; Width=&quot;125&quot; HorizontalAlignment=&quot;Left&quot;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+csla:InvokeMethod.TriggerEvent=&quot;Click&quot;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+csla:InvokeMethod.Resource=&quot;{StaticResource CompanyDetailsData}&quot;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+csla:InvokeMethod.MethodName=&quot;Save&quot;&gt;&lt;Button&gt;<o:p></o:p></p>
+
+</div>
+
+<div>
+
+<p class=MsoNormal><br>
+CSLA will automatically disable the button for me.<o:p></o:p></p>
+
+</div>
+
+<div>
+
+<p class=MsoNormal><br>
+So it expects the user to type in something, then &quot;TAB&quot; off for the
+control to become enable.<br>
+<br>
+I am a &quot;Mouse&quot; guy.<o:p></o:p></p>
+
+</div>
+
+<div>
+
+<p class=MsoNormal>So if I change something in one of my fields, then use the
+mouse directly to try and save the data.<o:p></o:p></p>
+
+</div>
+
+<div>
+
+<p class=MsoNormal>The button still will become disabled.<o:p></o:p></p>
+
+</div>
+
+<div>
+
+<p class=MsoNormal>&nbsp;<o:p></o:p></p>
+
+</div>
+
+<div>
+
+<p class=MsoNormal>How do I shut this feature off.<o:p></o:p></p>
+
+</div>
+
+<div>
+
+<p class=MsoNormal><br>
+Thanks<o:p></o:p></p>
+
+</div>
+
+<div>
+
+<p class=MsoNormal>&nbsp;<o:p></o:p></p>
+
+</div>
+
+<div>
+
+<p class=MsoNormal>&nbsp;<o:p></o:p></p>
+
+</div>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>SouthSpawn replied on Sunday, August 30, 2009</h2>Will it be "possible" to grab&nbsp;the provider object and read the list of "broken business rules" off of the provider object?<BR><BR></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

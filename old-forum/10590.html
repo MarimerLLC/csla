@@ -1,0 +1,82 @@
+<html><header><title>FieldData.IsDirty - possible bug prevents access to private _isDirty flag</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>FieldData.IsDirty - possible bug prevents access to private _isDirty flag</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10590.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>ejames posted on Thursday, August 04, 2011</h2><p>The FieldData class has the ability to track the Dirty status of its property. In most cases this tracking works as expected.</p>
+<p>Here&#39;s where it goes wrong for me:</p>
+<p>&nbsp;</p>
+<ul>
+<li>FieldData is managing a Child business object.
+<ul>
+<li>Everything is clean.</li>
+</ul>
+</li>
+<li>I set the property to point to a different and clean child business object.&nbsp;
+<ul>
+<li>FieldData._isDirty equals True; as expected.</li>
+</ul>
+</li>
+<li>When I call FieldData.IsDirty it returns False; not what I&#39;d expect
+<ul>
+<li>FieldData delegates the call to the Clean child object. &nbsp;</li>
+</ul>
+</li>
+</ul>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>
+Here&#39;s the code...
+</p>
+<p>&nbsp;</p>
+<pre>[Serializable()]
+public class FieldData : IFieldData
+{
+    private string _name;
+    private T _data;
+    <span style="color:blue;"><strong>private bool _isDirty;</strong></span>
+    ...SNIP...
+
+    public virtual T Value
+    {
+      get
+      {
+        return _data;
+      }
+      set
+      {
+        _data = value;
+       <span style="color:blue;"><strong> _isDirty = true;</strong></span>
+      }
+    }
+
+    ...SNIP...
+    
+    public virtual bool <strong>IsSelfDirty</strong>
+    {
+      get {<span style="color:blue;"><strong> return IsDirty; </strong></span>}
+    }
+    
+    public virtual bool IsDirty
+    {
+      get
+      {
+      <span style="color:blue;"><strong>  ITrackStatus child = _data as ITrackStatus;
+        if (child != null)
+        {
+          return child.IsDirty;
+        }
+        else
+        {
+          return _isDirty;
+        }</strong></span>
+      }
+    }    
+}
+</pre>
+<p>&nbsp;</p>
+<p>I&#39;d like to call IsSelfDirty but that delegates to IsDirty therefore serving no special purpose.</p>
+<p>My suggestion...</p>
+<p>Change<strong> FieldData.IsSelfDirty</strong> to <strong>return _isDirty</strong> field.</p>
+<p>Does this break the semantics of IsSelfDirty?</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Thursday, August 04, 2011</h2><p>If the field is a reference to a child object, then the child object must manage its own metastate. The parent (the FieldData object) can&#39;t manage the metastate of its child - it must delegate through to the child.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ejames replied on Friday, August 05, 2011</h2><p>Thanks for the reply, Rocky.</p>
+<p>My scenario is a little off the beaten track.</p>
+<p>I shall mark my child object as Dirty to get the result I require.</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

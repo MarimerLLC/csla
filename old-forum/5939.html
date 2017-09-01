@@ -1,0 +1,323 @@
+<html><header><title>3.6 version breaks remoting support?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>3.6 version breaks remoting support?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5939.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>AaronH posted on Thursday, December 04, 2008</h2><P>We've recently upgraded from the CSLA 3.5 to 3.6.Latest and .NET Remoting does not appear to be working correctly.&nbsp; There are actually 2 issues going on:</P>
+<P>1.) Trying to generate WSDL is throwing an exception:</P>
+<P><A href="http://localhost/remotinghost/remotingportal.rem?wsdl">http://localhost/remotinghost/remotingportal.rem?wsdl</A></P>
+<P>Generates:</P><PRE>System.NullReferenceException: Object reference not set to an instance of an object.
+   at System.Runtime.Remoting.MetadataServices.WsdlGenerator.RealSchemaType.PrintMessageWsdl(TextWriter textWriter, StringBuilder sb, String indent, ArrayList refNames)
+   at System.Runtime.Remoting.MetadataServices.WsdlGenerator.XMLNamespace.PrintMessageWsdl(TextWriter textWriter, StringBuilder sb, String indent, ArrayList refNames)
+   at System.Runtime.Remoting.MetadataServices.WsdlGenerator.PrintWsdl()
+   at System.Runtime.Remoting.MetadataServices.WsdlGenerator.Generate()
+   at System.Runtime.Remoting.MetadataServices.MetaData.ConvertTypesToSchemaToStream(ServiceType[] serviceTypes, SdlType sdlType, Stream outputStream)
+   at System.Runtime.Remoting.MetadataServices.SdlChannelSink.GenerateSdl(SdlType sdlType, IServerResponseChannelSinkStack sinkStack, ITransportHeaders requestHeaders, ITransportHeaders responseHeaders, Stream&amp; outputStream)
+   at System.Runtime.Remoting.MetadataServices.SdlChannelSink.ProcessMessage(IServerChannelSinkStack sinkStack, IMessage requestMsg, ITransportHeaders requestHeaders, Stream requestStream, IMessage&amp; responseMsg, ITransportHeaders&amp; responseHeaders, Stream&amp; responseStream)
+   at System.Runtime.Remoting.Channels.Http.HttpHandlerTransportSink.HandleRequest(HttpContext context)
+   at System.Runtime.Remoting.Channels.Http.HttpRemotingHandler.InternalProcessRequest(HttpContext context)
+</PRE><PRE><FONT face="Times New Roman">If we roll back to version 3.5.X, I receive the WSDL just fine.</FONT></PRE><PRE><FONT face="Times New Roman">2.) I'm assuming that this issue is tied to an issue that we're having regarding inheritance and invalid casting due to type mismatch cast exceptions when setting or retrieving values from FieldManager (GetProperty and SetProperty).  We have addressed these issues with the 'dummy' variables as recommended in the other posts, but it is still not working under 3.6 when using .NET Remoting.</FONT></PRE><PRE><FONT face="Times New Roman">Anyone have any issues with this or is the development team aware of this issue?</FONT></PRE><PRE><FONT face="Times New Roman">Thanks!</FONT></PRE></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, December 04, 2008</h2><P>I see the same WSDL problem, though I don't know the cause. </P>
+<P>The only meaningful <A href="http://www.lhotka.net/cslacvs/viewvc.cgi/trunk/cslacs/Csla/Server/Hosts/RemotingPortal.cs?view=log">change to remoting</A> in the past&nbsp;few years is that the Delete() method now accepts an optional&nbsp;generic parameter like Create() and Fetch().</P>
+<P>I must confess that I haven't been using (or testing) anything beyond the WCF channel for a while now. That's probably not good, but it is somewhat hard to imagine why anyone would choose to use remoting :)</P>
+<P>I'll add this to the bug list.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>AaronH replied on Thursday, December 04, 2008</h2><P>Hahah, I know, I know.&nbsp; I've been swamped with other learning activities (ie WPF and your latest framework ;) and haven't had a chance to figure out how to set up the WCF channel yet.&nbsp; I'll get there.</P>
+<P>Any ideas on #2?&nbsp; Unfortunately we have already converted all of our GetProperty and SetProperty methods to go without specifying generic types, and I don't want to revert back to it (that would take hours).&nbsp; Is that something that you can easily test on your end?</P>
+<P>Thanks again!</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, December 04, 2008</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I don&#8217;t understand the issue with number 2?<o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>AaronH replied on Thursday, December 04, 2008</h2><P>It's regarding this issue:</P>
+<P><A HREF="/forums/thread/26402.aspx">http://forums.lhotka.net/forums/thread/26402.aspx</A></P>
+<P>If I run my code against local dataportal, it works.&nbsp; However, running against remoting server, the index of the items don't match up, and I get type conversion errors.&nbsp; In each subclass, I have implemented created the static dummy field and initialized it to 0.&nbsp; This initialization occurs both in the constructor and OnDeserialized() in each subclass.</P>
+<P>Does that make sense?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, December 04, 2008</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>That doesn&#8217;t sound like the same issue &#8211; hence my
+confusion.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>If the RegisterProperty() calls don&#8217;t work you&#8217;ll
+get null ref exceptions or property not registered exceptions.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>If I understand you correctly, you are getting some sort of
+casting or type mismatch exception?<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky</span><b><span><o:p></o:p></span></b></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>AaronH replied on Thursday, December 04, 2008</h2><P>Sorry for any confusion, I thought it was the same issue.&nbsp; Here's what's happening in detail:</P>
+<P>Here is my class hierarchy ClassB --&gt; ClassA --&gt; BusinessBase</P>
+<P>Within ClassA...</P><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>private</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>static</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>PropertyInfo</FONT></FONT><FONT size=2>&lt;</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>string</FONT></FONT><FONT size=2>&gt; SomeValueProperty = RegisterProperty(</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>new</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>PropertyInfo</FONT></FONT><FONT size=2>&lt;</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>string</FONT></FONT><FONT size=2>&gt;(</FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>"SomeValue"</FONT></FONT><FONT size=2>));</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>public</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>string</FONT></FONT><FONT size=2> SomeValue</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;get</FONT></FONT><FONT size=2> { </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>return</FONT></FONT><FONT size=2> GetProperty</FONT><FONT size=2>(SomeValueProperty); }</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;set</FONT></FONT><FONT size=2> { SetProperty</FONT><FONT size=2>(SomeValueProperty, </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>value</FONT></FONT><FONT size=2>); }</P>
+<P>}</P>
+<P><FONT size=3>Here is the affected statement:</FONT></P></FONT>
+<P>ClassA.SomeValue = "I'm a string";</P>
+<P>What's happening is that when SetValue() within the&nbsp;setter{}&nbsp;is called, it calls FieldManager.GetFieldData(propertyInfo).&nbsp; Within GetFieldData(), it uses the index of the property&nbsp;to retrieve the field from _fieldData (_fieldData[prop.Index]).&nbsp; The problem is, it's retrieving the wrong field because the _fieldData array does not contain the count that it should contain.&nbsp; </P>
+<P>So in my specific scenario, passing "SomeValueProperty" in retrieves the&nbsp;field "SomeOtherIntegerProperty" of type <FONT color=#0000ff>int</FONT> instead of "SomeValueProperty" because&nbsp;the indexes don't match.</P>
+<P><FONT size=2><FONT size=3>This code works fine if going against my local portal, but when using the remoting portal is when it's problematic.&nbsp; I am positive that the .dll's in the remoting bin folder and in my project are the same as well.</FONT></FONT></P>
+<P>Does this make sense?&nbsp; I realize this might be confusing, but hopefully you've seen this or are able to reproduce it.</P>
+<P>Thanks again!</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, December 04, 2008</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>It does sound like a different set of symptoms from the same
+problem. Interesting that this is the first encounter with this symptom.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Can you please use the debugger and ensure that the
+OnDeserialized() method is being invoked as we expect &#8211; on the client
+when the object graph comes back from the server?<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>My suspicion is that it isn&#8217;t being called, so the static _forceInit
+(or _dummy) field isn&#8217;t being set on deserialization &#8211; on either
+the server or the client, one of the two.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Thanks!<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>AaronH replied on Thursday, December 04, 2008</h2><P>Yes, OnDeserialized() is being invoked, and it is overriden in each subclass as recommended.&nbsp; We thought maybe having the private constructor set the _dummy value was an issue too, but no luck there.</P>
+<P>Aaron</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, December 04, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>And you do the force init in <i>every one of your classes</i>?
+Not just the leaf node class, but the base classes too?<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> AaronH
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Thursday, December 04, 2008 8:52 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: RE: RE: 3.6 version breaks remoting
+support?<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Yes, OnDeserialized() is being invoked, and it is overriden in each subclass
+as recommended.&nbsp; We thought maybe having the private constructor set the
+_dummy value was an issue too, but no luck there.<o:p></o:p></p>
+
+<p>Aaron<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>AaronH replied on Friday, December 05, 2008</h2><P>Ok, so as it turns out, I believe the issues to be unrelated.&nbsp; The remoting still works, but here's what I had to do (which I'm terribly embarrassed about not catching in first place):</P>
+<P><FONT size=1>private static int _forceInit; </FONT><BR><FONT size=1>private New() : base() <BR>{ <BR>&nbsp;&nbsp;&nbsp; _forceInit = 0; <BR>} </FONT><BR><FONT size=1>protected override void OnDeserialized(System.Runtime.Serialization.StreamingContext context) <BR>{ <BR>&nbsp;&nbsp;&nbsp; _forceInit = 0; <BR>&nbsp;&nbsp;&nbsp; base.OnDeserialized(context); <BR>} </FONT></P>
+<P>It's important to call the base constructor and method all the way down the inheritance chain.&nbsp; I was so rushed when finding the initial solution to the _dummy fix that I just copied and pasted what I found in a previous post, which didn't include the calls to base.</P>
+<P>So to wrap things up:&nbsp; I'm still getting the issue when requesting the wsdl, however, I'm able to successfully use .NET Remoting in conjunction with CSLA 3.6.Latest and a 4 level inheritance hierarchy.</P>
+<P>Thanks for all of your ideas!</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, December 05, 2008</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Aaron, I&#8217;m glad you found the answer!!!<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I did add the wsdl issue to the bug list &#8211; though it falls
+below the threshold for fixing before RTW of 3.6 since remoting actually does
+work regardless.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky </span><b><span><o:p></o:p></span></b></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jkellywilkerson replied on Wednesday, September 16, 2009</h2>Greetings All,<br /><br />Has there been any update on the WSDL issue? I seem to be having the same issue with version 3.7.0.<br /><br />I was having a difficult time getting things working on a new machine. I went through all my standard processes that worked using previous versions, 2.x and 3.0.x, and my client would not work through remoting.<br /><br />I checked for the wsdl response from the app server and got an error, so I started troubleshooting from that end. That lead me to this thread and no real answer except that remoting should continue to work.<br /><br />I decided to run the client through the VS in debug mode and it worked fine. I then tried it using a shortcut to the .exe in the bin\debug folder (in order to test without VS debug mode which did not work before) and it worked as well. Not sure why it didn't work until I ran from VS. Any ideas? I know that doesn't give you much incite into how things are setup here, but I just transitioned to version 3.7.0 from 3.0.1 and have never seen this behavior before.<br /><br />Thanks,<br /><br />Kelly.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, September 16, 2009</h2>Are you using Cassini for your testing? If so, you'd have needed to use VS to get Cassini running, otherwise the "server" endpoint wouldn't be there.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jkellywilkerson replied on Wednesday, September 16, 2009</h2>Well, that's the crazy thing. I don't normally use Cassini or even run it within VS. I do if I need to set breakpoints on the client side, but I've had the app server portion of this thing running without any issues for a couple of years now. I generally publish everything to a test app server to get a general feel for an actual client experience.<br /><br />Here is the app setting entry in the app.config:<br /><br />add key="CslaDataPortalUrl" value="http://development-wks/BitsyRemotingHost/RemotingPortal.rem"<br /><br />The "localhost:xxxx/Host/..." line has been removed for some time.<br /><br />Like I said, it was just strange that as soon as I ran it from within VS, the other method worked just fine.  I will copy the client completely off of this development workstation and see what the results are.<br /><br />Thanks, Kelly.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Friday, December 05, 2008</h2><BLOCKQUOTE><div><img src="/Themes/basicblue/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div>I must confess that I haven't been using (or testing) anything beyond the WCF channel for a while now. That's probably not good, but it is somewhat hard to imagine why anyone would choose to use remoting :)</div></BLOCKQUOTE><br><br>Well, I'm on 3.6 and still using remoting, and haven't encountered this issue.<br><br>Not to high-jack the thread... but is there a simple way to switch from remoting to Wcf?&nbsp; Currently my deploy process copies the clickonce files to a known location, and copies business layer files to the wwwroot/RemotingHost/ location.&nbsp; If switching is as simple as changing the configuration files, that would be great.&nbsp; <br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, December 05, 2008</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I don&#8217;t believe the problem is due to remoting. I suspect
+there&#8217;s a missing bit of code to trigger static field initialization on
+either server or client. I&#8217;m seriously considering adding a bit of
+reflection code to avoid this static field issue. Unfortunately I can only do
+so in .NET, because in SL the reflection is too limited. So the use of
+_forceInit appears totally unavoidable in SL </span><span>L</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>To answer your question about switching to WCF, the answer is
+that it is purely a config thing &#8211; from the CSLA perspective.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>You simply need to do this:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoListParagraph><span><span>1.<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span></span><span>Upgrade your server to .NET 3.5 SP1 (assuming CSLA 3.6)<o:p></o:p></span></p>
+
+<p class=MsoListParagraph><span><span>2.<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span></span><span>Add a svc file to your data portal host web site<o:p></o:p></span></p>
+
+<p class=MsoListParagraph><span><span>3.<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span></span><span>Add a few lines of config to web.config &#8211; mostly boiler-plate<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Now your server is ready to go. Then you do this on the client:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoListParagraph><span><span>1.<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span></span><span>Add a few lines of config to app.config &#8211; mostly boiler-plate<o:p></o:p></span></p>
+
+<p class=MsoListParagraph><span><span>2.<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span></span><span>Change the CslaDataPortalProxy to use the WcfProxy<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>That should be it.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>The only caveat I&#8217;ll throw out, is that WCF has a
+bajillion configuration options. Actually getting it configured and running in
+a production setting can take some time, because you need to get all the
+options set as you need them. The big help with this is that Microsoft Patterns
+and Practices put a guidance book on codeplex a while back, and it is invaluable
+in getting WCF properly configured.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>That&#8217;s not really a CSLA thing &#8211; the steps above
+will make CSLA happy &#8211; it is a WCF thing.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky </span><b><span><o:p></o:p></span></b></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Friday, December 05, 2008</h2>Ok, sounds simple enough.&nbsp; I'll have to update my deployment setup to make sure to include the svc file, but that shouldn't be difficult.<br><br>I'll check for that book... the configuration is one of the reasons I've steered clear for now... but I can't let sit using remoting forever..<br><br>Thanks!<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>AaronH replied on Friday, December 05, 2008</h2><P>Actually, I suspected that WCF setup would be easy as the only thing that truly differs (aside from config settings) is the addition of the .svc file.&nbsp; I managed to create a local web application in IIS (7.0), copy the PTracker WcfHost files into that, and point the PTracker WPF app config to it.&nbsp; Worked without a hitch.</P>
+<P>I then copied <STRONG>my</STRONG> project's remoting host contents into a new web app, and created the svc file.&nbsp; Pulled up the svc file in the browser without a hitch.&nbsp; </P>
+<P>BUT, we're using Windows Authentication, not CSLA, and I received the CommunicationException:</P>
+<P><STRONG>The underlying connection was closed: A connection that was expected to be kept alive was closed by the server.</STRONG></P>
+<P>I'm not looking for you to debug this for me, just wanted to point out that moving from .NET Remoting to WCF is not as easy as it seems (without having a decent grasp on WCF and authentication).&nbsp; </P>
+<P>Of course, if you're familiar with this issue and have a quick fix that you can share, I'll accept it :)</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Friday, December 05, 2008</h2>Ha... sorry, I wish I did.&nbsp; As Rocky said, it's probably a configuration problem.&nbsp; That seems to be the huge issue, and why I haven't really looked into Wcf yet.&nbsp; Complicating things for me would be that I'd also need to figure out how to compress the traffic as I'm doing now using the CompressedDataPortal from the community.&nbsp; I have an office in another town that communicates with our database server here over a T1 link, so I need to keep things over the network as quick as possible.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Friday, December 05, 2008</h2><P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div>&nbsp;<BR><SPAN>&nbsp;I’m seriously considering adding a bit of reflection code to avoid this static field issue. Unfortunately I can only do so in .NET, because in SL the reflection is too limited. So the use of _forceInit appears totally unavoidable in SL </SPAN><SPAN>L<BR></SPAN><SPAN>Rocky&nbsp;<BR></SPAN></div></BLOCKQUOTE></P>
+<P>Please do. I am about to upgrade to 3.6 and I hate the idea of tweaking every single class in a deep inheritance hierarchy to deal with this issue.</P>
+<P>Joe</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, December 05, 2008</h2><P>My only fear with this, is that it <EM>will</EM> introduce a difference between .NET and SL that could cause confusion. People with .NET classes that move to SL would need to go add the _forceInit code throughout, because there's simply no way to get SL to reflect against private fields.</P>
+<P>To be clear, the reflection I'm talking about is a bit of code that would trigger in the field manager on the very first request for the property list for a given type. The code would loop through each type in the inheritance hierarchy, reading one static field value from each type (which ever one it finds first).</P>
+<P>This should have no meaningful perf impact, and would solve the _forceInit issue rather entirely. But it only works if you can reflect against a static field - which you can't in SL :(</P>
+<P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>JoeFallon1:</strong></div><div></P>
+<P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div>&nbsp;<BR><SPAN>&nbsp;I’m seriously considering adding a bit of reflection code to avoid this static field issue. Unfortunately I can only do so in .NET, because in SL the reflection is too limited. So the use of _forceInit appears totally unavoidable in SL </SPAN><SPAN>L<BR></SPAN><SPAN>Rocky&nbsp;<BR></SPAN></div></BLOCKQUOTE></P>
+<P>Please do. I am about to upgrade to 3.6 and I hate the idea of tweaking every single class in a deep inheritance hierarchy to deal with this issue.</P>
+<P>Joe</P>
+<P>&nbsp;</P></div></BLOCKQUOTE></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

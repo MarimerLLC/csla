@@ -1,0 +1,77 @@
+<html><header><title>OT: Banging my head on the meeting room table</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>OT: Banging my head on the meeting room table</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4677.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>albruan posted on Saturday, April 12, 2008</h2><P><FONT face=Arial>How does one deal with project leads and a technical lead who can't or won't&nbsp;embrace object-oriented design and/or event-driven design?&nbsp; Ones who have absolutely no idea what RAD, Scrum, waterfall or design patterns&nbsp;are?</FONT></P>
+<P><FONT face=Arial>I've spent at least half this week stuck in meetings supposedly set up to hammer out a major redesign of a project that's already way behind schedule.&nbsp; This coming Wednesday, the project co-leads are meeting with the department manager and an IT director to deliver a time estimate&nbsp;on getting the first phase of the system into the user's hands.&nbsp; Soooooo, here we developers are ... sitting in meetings with&nbsp;the leads&nbsp;as they question us how long it will take to get the work done before we even have a design.&nbsp; All they've given us are some specs ... and the technical lead, who's supposed to be architecting the system, hasn't come up with anything other than some flowcharts; it's rather telling that his CV&nbsp;here on the 'net states that among his skills is the&nbsp; "Design and implementation of complex <STRONG>data-driven</STRONG> systems."&nbsp; </FONT></P>
+<P><FONT face=Arial>Two of us, along with a member of another team who was brought in to offer some advice, have brought up the point several times that we need to start by designing Overpayment, CheckVoucher, Void and WriteOff classes (to name a few) based on the behavior of each object.&nbsp; Our intent was then to continue the process by implementing design patterns to connect the classes as needed, but the discussion never gets that far; instead, our suggestions are brushed off.&nbsp; The leads keep looking at the project as if it's no different than writing a COBOL program substituting&nbsp;VB.NET for COBOL.&nbsp; To their way of thinking, an object is just another COBOL subprogram that gets called by the main program executing one line after another ... one procedure after another.</FONT></P>
+<P><FONT face=Arial>To be fair, it's a very complex system for recovering overpayments made on insurance claims.&nbsp; Based on user requirements, they've determined there are around&nbsp;six thousand combinations of events that can affect the outcome.&nbsp; What's&nbsp;truly frightening&nbsp;is they're talking about us using a massively&nbsp;nested if...then...else...endif construct to handle the workflow.</FONT></P>
+<P><FONT face=Arial>So, I'll be heading back into the office this Saturday morning for a "voluntary" eight-hour "system design" meeting so we can finally pulverize the bones of the poor ol' horse.&nbsp; You know the one.&nbsp; The one they keep beating even though it was dead earlier in the week and was a completely unrecognizable bloody pulp by early Thursday morning.</FONT></P>
+<P><FONT face=Arial>Sigh...........</FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>albruan replied on Saturday, April 12, 2008</h2>Here I am getting ready to head out the door for the "voluntary" meeting and wondering if 8:00 A.M. is too early to get drunk when I suddenly realize I don't drink.&nbsp; Damn!</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>MGervais replied on Saturday, April 12, 2008</h2><P><SPAN>Allen,</SPAN><o:p></o:p></P>
+<P><SPAN>I think you will find that most people have experienced what you described in some form or another in their career. The problem, in my opinion, is there are no quick fixes for this scenario.</SPAN><o:p></o:p></P>
+<P><SPAN>Luckily, for me, I work for a Department Head that lets us, the Development Team, determine the best course of action and we all work together to find that course.</SPAN><o:p></o:p></P>
+<P><SPAN>If I may...the only piece of advice I can offer to you is to go over the heads of the co-Leads and the Technical Lead. It sounds as though you, and the rest of the team at large, have given them plenty of time to "come around" and now it is time to force the issue. If you truly believe they are leading you down a path that may be detrimental to the project/product/company, is it not your duty to go higher up the chain of command to make sure your ideas are heard.</SPAN><o:p></o:p></P>
+<P><SPAN>If at that point the project is still heading down a path that you do not believe in, then perhaps you have to make a decision of whether or not you want to continue to be a part of the project. I dislike quitting as much as the next person, but there comes a point where a line must be drawn.</SPAN><o:p></o:p></P>
+<P><SPAN>I hope everything works out...let us know.</SPAN></P>
+<P><SPAN></SPAN><o:p></o:p>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Boris replied on Saturday, April 12, 2008</h2>
+
+<p class="MsoNormal">albruan,<br>
+<br>
+I've been in similar situations many times, and yes it could be very
+frustrating.</p>
+
+<p class="MsoNormal"><o:p>&nbsp;</o:p></p>
+
+<p class="MsoNormal">Let me speculate a bit ;)</p>
+
+<p class="MsoNormal"><o:p>&nbsp;</o:p></p>
+
+<p class="MsoNormal"><span>-<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span>I suspect you’re talking about a big company, most
+likely one that is not primarily doing software?</p>
+
+<p class="MsoNormal"><span>-<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span>Are the technical decisions made by non technical people?</p>
+
+<p class="MsoNormal"><span>-<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span>Are you finding yourself spending more than half of
+your time going to stupid meetings?</p>
+
+<p class="MsoNormal"><span>-<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span>Are you happy with VT department there? </p>
+
+<p class="MsoNormal"><span>-<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span>How about the QA people? Many of them? Would they be
+able to recognize the software if the color schema changes?</p>
+
+<p class="MsoNormal"><span>-<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span>Are there some counter productive &amp; heavy processes
+that you need to follow? Processes that make no sense in the software industry…</p>
+
+<p class="MsoNormal"><o:p>&nbsp;</o:p></p>
+
+<p class="MsoNormal">If your case smells like that and you really care about the
+product, move baby!</p>
+
+<p class="MsoNormal">If you are a contractor, well…then clearly state what you
+think, nobody will probably listen, but you keep calculating how much you’ve
+made at the end of the day…</p>
+
+<p class="MsoNormal"><o:p>&nbsp;</o:p></p>
+
+<p class="MsoNormal">I think places like that are incapable of creating something
+from scratch that would be good…It is just impossible, that is my experience…</p>
+
+<p class="MsoNormal">There will be a few attempts and the business will start
+talking about outsourcing, then other problems will present themselves…</p>
+
+<p class="MsoNormal"><o:p>&nbsp;</o:p></p>
+
+<p class="MsoNormal">About TDD &lt;-&gt; Design</p>
+
+<p class="MsoNormal">My experience is that TDD is a great thing after a certain
+point!</p>
+
+<p class="MsoNormal">Some design, especially in the beginning is a Good thing,
+you should capitalize on you knowledge…(I’m not saying overdesign here) TDD will
+most likely get you to the same point, with lots of refactoring ;(</p>
+
+<p class="MsoNormal"><o:p>&nbsp;</o:p></p>
+
+<p class="MsoNormal"><o:p>&nbsp;</o:p></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>FatPigeon replied on Sunday, April 13, 2008</h2>Leave.</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

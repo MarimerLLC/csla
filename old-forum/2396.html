@@ -1,0 +1,1246 @@
+<html><header><title>Using rules to change object's state</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Using rules to change object's state</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/2396.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>RichardETVS posted on Wednesday, February 21, 2007</h2><P class=MsoNormal><SPAN>Hi<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>I am new here. Excuse any mistake in English, as it is not my first language.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>First, I want to say I am very impressed by Rockford Lhotka’s work; in my humble opinion the CSLA is both a good lesson in Dot Net technologies and in development best practices. And the book is, for what I read at now (to page 137) well written.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>We’ll develop a distributed application treating documents. Some parts of the documents will be read with OCR tools, some others will by typed by human operators. Both operations will imply minimum business rules, because the speed of treatment will be critical. <SPAN>&nbsp;</SPAN>In fact the application will, after all the OCR and typing steps, do automatics verifications on the collected data, and it is in this step that the business rules will be used.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>The Framework seems to handle that easily, if I understand well. I can add the rules to the business object at the verification step, and maybe unsing a command object to do the job, right?<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Let’s say it is ok. But the verification process will not prevent object to be stored in database, it must simply change the state of the object. Later, the application will use this object’s state to decide of the fate of the object. So it is not really “valid” result or even a rule severity “error” or “warning” that interests me. It is the ability to use the rules to change the object state. I suppose I’ll find answers to my preoccupation in the rest of the book and in the handbook, but any advice would be appreciated.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Thanks a lot!<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Richard <o:p></o:p></SPAN></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RichardETVS replied on Friday, February 23, 2007</h2><P class=MsoNormal><SPAN><EM>Hmm, welcome in this forum, Richard!<o:p></o:p></EM></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>As far as I am in the book, it seems that the way to go is to overload the “Save()” method of BO. As we’ll have common objects for all the clients (like credit slip), but as the rules will be mostly by client, we can’t put the rule on the BO objects. I think I shall have an object to dynamically attach rules to BO. Again, any advice would be welcome.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Richard<o:p></o:p></SPAN></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Friday, February 23, 2007</h2>hey richard,<br><br>Since you're not validating, it doesn't seem like you would need validation rules at all.<br><br>That said, you may have methods that DO change the objects state in response to a property change.&nbsp; In those cases, I would probably create a method to do the evaluation after you set the BO's field, but before the PropertyHasChanged call (in case you add rules in the future.. you'd probably want them run before any rules checking).<br><br>HTH<br>Andy<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RichardETVS replied on Friday, February 23, 2007</h2><P class=MsoNormal><SPAN>Thanks for your answer, Andy&nbsp;!<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>In fact, we’ll use validation rules, but not in the usual meaning. It will not be edition / validation, but edition at one step, and later validation, on saved objects. So, the rules system of CSLA <SPAN>&nbsp;</SPAN>seems useful, even if I have to adapt it.</SPAN></P>
+<P class=MsoNormal><SPAN></SPAN>&nbsp;</P>
+<P class=MsoNormal><SPAN>Richard<o:p></o:p></SPAN></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Friday, February 23, 2007</h2>Later when you need validation, it sounds like a different use case, and thus wouldn't you have a different object?&nbsp; I forgot to mention that in my reply.. that it sounds like you have two uses cases:&nbsp; data entry, and entry validation, which probably lends itself better to two differnet objects handling each case.<br><br>Andy<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RichardETVS replied on Friday, February 23, 2007</h2><P class=MsoNormal><SPAN>Let’s say it is a kind of workflow. Effectively, we could say there are two use cases, data entry and entry validation. <o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>But the same objects follow all the steps of the workflow. Object A is at data entry step, and then it is at entry validation step. At this step, I think to attach rules to the object A and check them, changing the object’s state accordingly to the results of the rules checking. It would be the responsibility of a controller object, at the entry validation step, to attach rules and check the objects.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Richard<o:p></o:p></SPAN></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Friday, February 23, 2007</h2><BLOCKQUOTE><div><img src="/Themes/basicblue/images/icon-quote.gif"> <strong>RichardETVS:</strong></div><div><span>But the same objects follow all the steps of the workflow. Object A is at data entry step, and then it is at entry validation step. </span></div></BLOCKQUOTE><br><br>Two steps in the work flow would be two uses cases, and you'd probably want two objects.&nbsp; Only after you design them as two objects would you compare to see if the behaviors are the same.&nbsp; In the case you describe, that doesn't seem to be the case because in step one the object can be saved without any validation, and in step two certain rules must be meet.<br><br><BLOCKQUOTE><div><img src="/Themes/basicblue/images/icon-quote.gif"> <strong>RichardETVS:</strong></div><div><span>At this step, I think to attach rules to the object A and check them, changing the object’s state accordingly to the results of the rules checking. It would be the responsibility of a controller object, at the entry validation step, to attach rules and check the objects.</div></BLOCKQUOTE></span><span></span><br><br>'Attaching' rules based on some private state is a good indication you'd probably want two different objects.&nbsp; It sounds like step one would have pretty much no rules, and in step two you'd attach a whole set of rules to prevent saving an invalid object.&nbsp; Again, it sounds like you'd be better served with two objects, one for each use case.<br><br>Of course only you know the details of your use case, so you'll have to decide in the end based on the cases which is the better design.&nbsp; The problem you may run into with one object is that if use case A changes it would impact your single object, and you may introduce bugs into your program when the user attempts to execute use case B.&nbsp; With two objects, code which fulfils use case B has a less likely chance of failing because of changes to use case A's object.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RichardETVS replied on Friday, February 23, 2007</h2><P class=MsoNormal><SPAN>Again, thanks for your answers.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Not sure I understand what you mean. Let’s say I have a credit slip document; let’s call it object A. At step A, data entry, I’ll use only a minimal set of rules (to be sure there is no empty field, by example). At this step, an object that we could call DataEntryManager do the work on the documents object, like Object A. At the next step, Ill use another object, let’s call it EntryValidationManager, who will work with the same object A, the credit slip. The EntryValidationManager could attach the rules at object A and checks them. In a way, that is an application of the Strategy pattern, in the sense of the same object would change of behaviour at each step.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Do you say that the original paper document, the credit slip, should be represented twice, with one class for the data entry and with another for the entry validation? It would seem strange for me.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Richard<o:p></o:p></SPAN></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Justin replied on Friday, February 23, 2007</h2><P>We do something similar in our application and have started using CSLA for our next version. Basically we have documents who have minimal rules to be met on initial data entry to save and even more rules that must be met before the document gets "approved" and some things that are simply warnings but must not be met.</P>
+<P>We are adapting CSLA slightly where we have a base object that understands the approval workflow that all documents follow. Then we&nbsp;are looking at adding a"severity level" to the broken rule objects that the save and approval code can evaluate, so when you add a new rule you&nbsp;specify it severity if failed as to whether it can't be saved or approved or is simply a warning.</P>
+<P>As far as custom rules per objects even defined by end users, well&nbsp;we are going to&nbsp;use inhereitance so there is a base document object and inherited documented object for each document type&nbsp;that contains that documents properties and business rules (and even layouts for rendering engines), and further down the road we are looking at users being able to write new document objects in either c# or vb and they can put the source into our app which will compile and dynamically load (perhaps with a gui designer that emits code like winforms). Our view is why make a custom limited business rule language up when the compilers and dom models&nbsp;for much more complete and robust languages already exist in the runtime.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Friday, February 23, 2007</h2>Richard,<br><br>A lot of it depends on&nbsp; your use case.&nbsp; You bring up the Strategy pattern, which is a perfectly valid pattern.&nbsp; I would only say that as long as Object A is deciding to use EntryValidationManager or DataEntryManager to check values and there are no other behaviors that must be implemented then you are probably fine.&nbsp; <br><br>The key though is that object A is in charge of that decision; if you have the UI decide which to use, or if either of the managers is attempting to alter the state of object A (including if rules are broken or not, or even which rules are run) then you are going to run into problems because putting business logic in your UI or you're breaking encapsulation.&nbsp; <br><br>Also, if there are other behaviors besides rule checking then you would not want to use the proposed design.&nbsp; Lets say you have a Finalize use case, which can only be done after the credit slip is fully validated (step two in the workflow).&nbsp; In that case you would certainly want two different classes, because you should never have a Finalize method on the data entry class.<br><br>HTH<br>Andy<br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Justin replied on Friday, February 23, 2007</h2><P>Andy,</P>
+<P>I would agree object should be in charge in fact I would put the DataEntryManager and EntryValidationManager code in object A and perhaps filter the broken rules based on it being viewed in a data entry UI or manager UI or perhaps the method that actually sends the document to the manager changes the workflow state so that now manager rules are enforced.</P>
+<P>I am not sure why you would want a separate class for a finalize vs finalize throwing an exception if it where somehow called before the proper time? Seems like that would create excessive overhead in object schema change, especially if you needed to make a new version of a object for each step in a workflow just beacuse that step has different methods that can be called when in that step.</P>
+<P>Justin</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Friday, February 23, 2007</h2><BLOCKQUOTE><div><img src="/Themes/basicblue/images/icon-quote.gif"> <strong>Justin:</strong></div><div>I am not sure why you would want a separate class for a finalize vs
+finalize throwing an exception if it where somehow called before the
+proper time? Seems like that would create excessive overhead in object
+schema change, especially if you needed to make a new version of a
+object for each step in a workflow just beacuse that step has different
+methods that can be called when in that step.</div></BLOCKQUOTE><br><br>Well it depends on what Finalize does exactly. and what other behaviors the class implements.&nbsp; If changing the Finalize method because use case two changes breaks the behavior expected of the object when used in use case one, you have a problem.&nbsp; That's the case I was thinking of when I posted that part of my reply.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>malloc1024 replied on Friday, February 23, 2007</h2>
+
+<p class="MsoNormal">The strategy pattern would be a good option here; however,
+if you want to have the Document object control its own strategy, you might want
+to consider using that state pattern instead.</p>
+
+<p class="MsoNormal">In addition to this, you could create a Document and
+DocumentEntry class that would implement an interface that would contain the
+properties that would be exposed to the presentation layer.<span>&nbsp; </span>The Document object would be the full-blown business
+object while the DocumentEntry object would be a data container that would contain
+only the necessary behavior for data entry. The user’s information would be
+entered into the DocumentEntry object and then sent to the DataEntryManager.<span>&nbsp; </span>When the DataEntryManager is done with the
+DocumentEntry object, it would send it to the Document object to check the
+rules and save it.<span>&nbsp; </span>The Document object
+would be able to expose the DocumentEntry information because they would share
+the same interface. This would allow you to have two separate classes that fulfill
+two separate use-cases.<span>&nbsp; </span>Further, the
+DocumentEntry class solves the problem of exposing invalid methods to the
+presentation layer.<span>&nbsp; </span>Although there is nothing
+wrong with throwing exceptions for invalid methods, it is usually cleaner to
+not expose them.<span>&nbsp; </span>This is just another option
+and the strategy or state should work fine without the extra DocumentEntry
+class.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Justin replied on Saturday, February 24, 2007</h2><P>I agree that having different classes for different use cases makes it pretty clear to implementers what methods can and cannot be called, I would argue exceptions thrown from those methods when called at the&nbsp;wrong time might be even more clear since the exception message could describe the reason vs simply no method, and either way an implementer should have suffcient documentation as to the various states and&nbsp;methods of a object.</P>
+<P>The IMO huge downside to the interface with multiple classes for each state is schema change and maintenance, you are now spreading your BL and schema across multiple classes that must all be maintained in sync should changes need to be made. In my experience the more source code that represents the same entity the more work in development and testing changes to those entities goes up expoentially. </P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RichardETVS replied on Monday, February 26, 2007</h2><P class=MsoNormal><SPAN>Well, a lot of interesting answers, I thank you all very much. I shall take time to think about each suggestion, as time is needed for such considerations. Malloc, you’re right, State Pattern is more adapted this situation than Strategy.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>I’ll keep for now that using the CLSA rules system can be used to alter state of the business object. I have to think about how, when, and if it I the best solution in a given context (or Use Case), but basically it is possible.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>I shall post a more precise model when I’ll have it. Again, thanks a lot for the answers :) .<o:p></o:p></SPAN></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Monday, February 26, 2007</h2><BLOCKQUOTE><div><img src="/Themes/basicblue/images/icon-quote.gif"> <strong>Justin:</strong></div><div>I would argue exceptions thrown from those methods when called at
+the&nbsp;wrong time might be even more clear since the exception message
+could describe the reason vs simply no method, and either way an
+implementer should have suffcient documentation as to the various
+states and&nbsp;methods of a object.</div></BLOCKQUOTE><br><br>I have to disagree here.&nbsp; You see a method, and you assume you can call it.&nbsp; If there's no such method, you obviously are using the wrong class to perform the task you want.&nbsp; Ideally yes you should have sufficent documentation, but that's not always the case.&nbsp; <br><br>Also consider what happens when many people have changed the class; do they always remember to update the exception message?&nbsp; Probably not.<br><br><BLOCKQUOTE><div><img src="/Themes/basicblue/images/icon-quote.gif"> <strong>Justin:</strong></div><div>In my experience the more source code that represents the same entity
+the more work in development and testing changes to those entities goes
+up expoentially.</div></BLOCKQUOTE><br><br>That's the thing, its not the same entity.&nbsp; One entity is performing rule checking and has the code to implement use case one.&nbsp; The other is a different entity because its rules and purpose is different; namely to fulfill&nbsp; use case two.&nbsp; If there is overlap, this should be contained in another class (probably internal to the assembly) whose purpose is to provide the needed functionality.&nbsp; <br><br>All this is theoritical though, since the 'correct' design depends on the use cases.&nbsp; There are certainly many cases where the 'throw an exception' is correct, I'm not saying that should never be used or even that it should be used sparingly.&nbsp; To me though, each stage in a work flow sounds like a seperate use case.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, February 26, 2007</h2><P>I know this is semantics, but the use of the word "entity" in this context is dangerous. "Entity" is a term that is closely tied to data in most people's minds, and so using that term when discussing behavioral OO design is dangerous because business objects should not be closely tied to data. Business objects are consumers of data, but they aren't <EM>defined</EM> by data.</P>
+<P>There <EM>are</EM> entity objects. Even they are behavioral: their responsibility is to contain data, and their behaviors are to get/set values. These are also known as data transfer objects, though there is, I suppose, a subtle difference between the two - though it is a difference of intent, not of implementation.</P>
+<P>This is why I think behavioral or responsibility-driven design is so important. It encompasses all the data-driven scenarios with entity objects and DTOs, but is far more expansive because it also covers true business objects, process objects and so forth. Things that pure data-centric OO design just can't express very well.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Justin replied on Monday, February 26, 2007</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div> 
+<P>I know this is semantics, but the use of the word "entity" in this context is dangerous. "Entity" is a term that is closely tied to data in most people's minds, and so using that term when discussing behavioral OO design is dangerous because business objects should not be closely tied to data. Business objects are consumers of data, but they aren't <EM>defined</EM> by data.</P>
+<P>There <EM>are</EM> entity objects. Even they are behavioral: their responsibility is to contain data, and their behaviors are to get/set values. These are also known as data transfer objects, though there is, I suppose, a subtle difference between the two - though it is a difference of intent, not of implementation.</P>
+<P>This is why I think behavioral or responsibility-driven design is so important. It encompasses all the data-driven scenarios with entity objects and DTOs, but is far more expansive because it also covers true business objects, process objects and so forth. Things that pure data-centric OO design just can't express very well.</P>
+<P></div></BLOCKQUOTE></P>
+<P>I agree in many ways with your view on this and as we are utilizing CSLA you can tell I think it has merit. The flip side is being pragmatic and not forcing a philosphy on to something that may work better in a data centric approach. I think you have protrayed this in the opposite&nbsp;sense that you didn't want people to force an pure-data centric OO approach when it really doesnt work so well.</P>
+<P>In my experiance it is a big trade off to maintain multiple classes that all represent the same data entity&nbsp; (code generators can help). My experiance with basically a document managment system that I was trying to share my opinion on was that its very impractical to maintain a entity who design may change over time that has many dozens of properties and many steps (if not user definable steps) in workflow, by creating one class for each step. I think in this case a data centric approach is better, but again just an opinion.</P>
+<P>Justin</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Monday, February 26, 2007</h2>Good point.. <br><br>Everywhere in my post, I was using 'entity' to mean 'business object.'&nbsp; Probably shouldn't have done that, but I was trying to keep the terms the same from the post to which I replied.&nbsp;&nbsp; My bad.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Justin replied on Monday, February 26, 2007</h2><P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>ajj3085:</strong></div><div>I have to disagree here.&nbsp; You see a method, and you assume you can call it.&nbsp; If there's no such method, you obviously are using the wrong class to perform the task you want.&nbsp; Ideally yes you should have sufficent documentation, but that's not always the case.&nbsp; <BR><BR>Also consider what happens when many people have changed the class; do they always remember to update the exception message?&nbsp; Probably not.</div></BLOCKQUOTE></P>
+<P>I don't assume anything when using someone elses object and the same entity represented across multiple classes with different methods would have no more inherit meaning as to the order in which they can be called.</P>
+<P>I would argue to that its easier to remeber to update an exception in one class than keep many classes updated should the one entity change.</P>
+<P>So an entity that has perhaps many tasks that could be performed at different&nbsp;states should in fact be many different classes all having the same properties but very few if only one method that executes that task? Sounds very similar to stateless design and at that point why have&nbsp;classes at all, just have functions that take parameters represting the current state of the entity and act on it.</P>
+<P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>ajj3085:</strong></div><div><BR>That's the thing, its not the same entity.&nbsp; One entity is performing rule checking and has the code to implement use case one.&nbsp; The other is a different entity because its rules and purpose is different; namely to fulfill&nbsp; use case two.&nbsp; If there is overlap, this should be contained in another class (probably internal to the assembly) whose purpose is to provide the needed functionality.&nbsp; <BR><BR>All this is theoritical though, since the 'correct' design depends on the use cases.&nbsp; There are certainly many cases where the 'throw an exception' is correct, I'm not saying that should never be used or even that it should be used sparingly.&nbsp; To me though, each stage in a work flow sounds like a seperate use case.<BR></div></BLOCKQUOTE></P>
+<P>Again I disagree it is the same entity in the sense that its properties&nbsp;uniquely identitfy the same real world entity, it simply is at a different point in its workflow.</P>
+<P>In the design with one class per stage in workflow, what prevents me from loading the entities data in the wrong class?&nbsp;Would it throw an exception as it loads form the data store and checks some persisted state value? If so all you have done is increase the amount of classes with the same properties (more schema change maintenence)&nbsp;and move the exception to the data load instead of the time you try and act on that data. </P>
+<P>Justin</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Monday, February 26, 2007</h2>To start, after reading Rocky's comments, I'm going to use Business object, and not entity.<br><br><BLOCKQUOTE><div><img src="/Themes/basicblue/images/icon-quote.gif"> <strong>Justin:</strong></div><div>I don't assume anything when using someone elses object and the same entity represented across multiple classes with different methods would have no more inherit meaning as to the order in which they can be called.</div></BLOCKQUOTE><br><br>Well that's fine, but you can't argue that an object which doesn't have
+the method you need will force you to look for the appropriate object.&nbsp;
+<br>
+
+<br>Its not the same business object.&nbsp; If it were the same, it would be identical in all cases and thus you wouldn't need more than one.&nbsp; But an class with different methods cannot be the same business class, by definition.<br><br><p><BLOCKQUOTE><div><img src="/Themes/basicblue/images/icon-quote.gif"> <strong>Justin:</strong></div><div>I would argue to that its easier to remeber to update an exception in one class than keep many classes updated should the one entity change.</div></BLOCKQUOTE></p><p>You wouldn't be updating many business objects, you'd only update the one affected by a change in the use case.&nbsp; The other business objects shouldn't need to be updated, since their use cases have not changed.<br></p>
+<p><BLOCKQUOTE><div><img src="/Themes/basicblue/images/icon-quote.gif"> <strong>Justin:</strong></div><div>So an entity that has perhaps many tasks that could be performed at different&nbsp;states should in fact be many different classes all having the same properties but very few if only one method that executes that task? Sounds very similar to stateless design and at that point why have&nbsp;classes at all, just have functions that take parameters represting the current state of the entity and act on it.</div></BLOCKQUOTE></p><p>No, the business objects would only have the properties it needs to peform the use case it was built to handle.&nbsp; There's no reason to keep properties which have nothing to do with the current use case.<br></p>
+
+<p><BLOCKQUOTE><div><img src="/Themes/basicblue/images/icon-quote.gif"> <strong>Justing:</strong></div><div>Again I disagree it is the same entity in the sense that its properties&nbsp;uniquely identitfy the same real world entity, it simply is at a different point in its workflow.</div></BLOCKQUOTE></p><p>That's data centric design, and we are talking about behavior centric design.&nbsp; I'm not going to rehash the problems with data centric design, Rocky and others have posted extensively about the problems with such a design.&nbsp; Search the forum and Rocky's blogs and books.<br></p>
+
+<p><BLOCKQUOTE><div><img src="/Themes/basicblue/images/icon-quote.gif"> <strong>Justing:</strong></div><div>In the design with one class per stage in workflow, what prevents me from loading the entities data in the wrong class?&nbsp;Would it throw an exception as it loads form the data store and checks some persisted state value? If so all you have done is increase the amount of classes with the same properties (more shcema change maitenence)&nbsp;and move the exception to the data load instead of the time you try and act on that data.</div></BLOCKQUOTE></p><p>Yes, you'd likely get an exception if you attempt to load a workflow item at an inappropriate stage.&nbsp; And isn't it better to get an exception before any time is wasted constructing and doing some work on the object, only to find out its in an invalid state when you call the method to move to the next step in the workflow?<br></p>It doesn't really matter if there are many classes with similar or the same properties.&nbsp; Property code is the easiest part of the class to code... so easy that it is ideally generated by a tool automatically.&nbsp; There's no value in re-using property code.&nbsp; The value is in the methods (behaviors) that the classes encapuslate.<br><br>Again, I won't rehash arguments already made; search the forum and Rocky's blog as this has been discussed many times.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Justin replied on Tuesday, February 27, 2007</h2><P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>ajj3085:</strong></div><div>To start, after reading Rocky's comments, I'm going to use Business object, and not entity.</div></BLOCKQUOTE></P>
+<P>Ok with me, I was using entity to refer to the real thing and class to refer to the "business object"<BR></P>
+<P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>ajj3085:</strong></div><div><BR>Well that's fine, but you can't argue that an object which doesn't have the method you need will force you to look for the appropriate object.&nbsp; </div></BLOCKQUOTE></P>
+<P>Either way the object will not allow an incosistent state should a implementer try. I suppose you could argue runtime vs complie time as far as when it would be caught. Although you could still try and load it in the wrong state so you still have exceptions to deal with.</P>
+<P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>ajj3085:</strong></div><div><BR>Its not the same business object.&nbsp; If it were the same, it would be identical in all cases and thus you wouldn't need more than one.&nbsp; But an class with different methods cannot be the same business class, by definition.<BR></div></BLOCKQUOTE></P>
+<P>Again if this is the case why do you need objects at all just have functions that take parameters since in your view an object really shouldnt be stateful or transistion states, only represent one state. You really dont need all this OO overhead if your just going to load a bunch of values up and perform one method on them.</P>
+<P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>ajj3085:</strong></div><div>You wouldn't be updating many business objects, you'd only update the one affected by a change in the use case.&nbsp; The other business objects shouldn't need to be updated, since their use cases have not changed.</div></BLOCKQUOTE></P>
+<P>So if I have a document entity that various BL related to certain properties values changing all that would not need to be reproduced through every "business object" that represents that document at a different stage in its workflow? Ah no&nbsp;I guess I could put those in some core "data centric" object that all the "business objects" use except how do&nbsp;I bubble a "data centric" broken rule up to the&nbsp; "business objects" broken rule so the&nbsp;consumer knows? What did that buy me again besides more schema change overhead?</P>
+<P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>ajj3085:</strong></div><div>No, the business objects would only have the properties it needs to peform the use case it was built to handle.&nbsp; There's no reason to keep properties which have nothing to do with the current use case.</div></BLOCKQUOTE></P>
+<P>If a entity has many uses cases in which they all need most if not all the same properties this is still practical or is it just sticking to a pattern blindly?</P>
+<P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>ajj3085:</strong></div><div></P>
+<P>That's data centric design, and we are talking about behavior centric design.&nbsp; I'm not going to rehash the problems with data centric design, Rocky and others have posted extensively about the problems with such a design.&nbsp; Search the forum and Rocky's blogs and books.<BR></div></BLOCKQUOTE></P>
+<P>I know what it is and understand the issues, but just as Rocky has pushed poeple to let go of blindly sticking to a complete data centric design I would say to stick to behavior centric without compromise is just as bad. Good thing is CSLA doesn't seem to mind either way.</P>
+<P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>ajj3085:</strong></div><div>Yes, you'd likely get an exception if you attempt to load a workflow item at an inappropriate stage.&nbsp; And isn't it better to get an exception before any time is wasted constructing and doing some work on the object, only to find out its in an invalid state when you call the method to move to the next step in the workflow?</div></BLOCKQUOTE></P>
+<P>I don't know seems kind of odd to tie the retrieval from persisent storage to enforcement of an invailid state. Really wasting time seems thin, at that point you already wasted time coding the consumer incorrectly, either way is a runtime exception that should not occur in a consumer using the workflow properly.</P>
+<P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>ajj3085:</strong></div><div>It doesn't really matter if there are many classes with similar or the same properties.&nbsp; Property code is the easiest part of the class to code... so easy that it is ideally generated by a tool automatically.&nbsp; There's no value in re-using property code.&nbsp; The value is in the methods (behaviors) that the classes encapuslate.</div></BLOCKQUOTE></P>
+<P>What are properties again? Oh yeah they are methods on an object, so how exactly are they&nbsp;any less important than another method. Do you not have any BL embedded in a setter? I would say that thats quite a blanket statement to make that properties have no reuse value, I mean isnt that kinda one of the premises of OO vs a purely procedural langauge?<BR></P>
+<P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>ajj3085:</strong></div><div><BR>Again, I won't rehash arguments already made; search the forum and Rocky's blog as this has been discussed many times.<BR></div></BLOCKQUOTE></P>
+<P>No need to rehash with me, I know many projects that have failed do to pushing the data centric design without waver.&nbsp;That does not mean it doesn't have it uses and I thought it might have a fit from my experiance in document managment that the OP was referring to.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>malloc1024 replied on Tuesday, February 27, 2007</h2><p class="MsoNormal">Objects should be able to change their state and behavior dynamically.<span>&nbsp; </span>This can be done with the strategy, state and
+other patterns.<span>&nbsp; </span>However, when you change
+the behavior or state of an object, it usually means that you are using the
+class in a different use-case.<span>&nbsp; </span>It seems
+to me that a use-case driven design suggests creating a new class for each
+use-case while a more pure OOP design suggests dynamically switching the behavior
+or state on the class.<span>&nbsp; </span>It also seems
+that a use-case driven design promotes less re-use.<span>&nbsp; </span>This is the part where I am somewhat
+confused.<span>&nbsp; </span>Is there such thing as a
+use-case driven design and does it differ from a more pure OOP design?<span>&nbsp; </span>How much of a role should use-cases really have
+in your design?<span>&nbsp; </span>I have heard conflicting
+opinions on this.<span>&nbsp; </span>I have read on this
+forum that you should design you classes based on use-case; however, I have read
+from other sites that use-cases should not influence your design.<span>&nbsp; </span>I think others have been confused by this and
+it is the reason why there is disagreement in this thread.<span>&nbsp; </span></p>
+
+<p class="MsoNormal"><o:p>&nbsp;</o:p></p>
+
+<p class="MsoNormal">I have provided a link that includes some author’s opinions
+on use-cases and OOP form ootips.org.</p>
+
+<p class="MsoNormal"><o:p>&nbsp;</o:p>
+
+</p><p class="MsoNormal"><a href="http://ootips.org/use-cases-critique.html">http://ootips.org/use-cases-critique.html</a></p>
+
+<p class="MsoNormal"><o:p><br></o:p></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RichardETVS replied on Wednesday, February 28, 2007</h2>Food for thoughts, in all those answers. I think I'll have a few more questions :</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jimbo replied on Wednesday, February 28, 2007</h2>Its amazing how a simple question can spark off such depth of esoteric
+discussion. The newbe or practical developer can be overwhelmed in the
+search for a straight answer.<br>
+<br>
+I'm also very interested in how we can better approach state changes in
+BO's&nbsp; and in a current development we have this same dilema
+between the use of a universal BO and specific BOs for each use case
+(state) in the flow.<br>
+<br>
+The biggest hurdle regarding using distinct objects by case
+(state)&nbsp; is often simply because of developer inertia fear and
+uncertainty, and also (to use a vb shortcut) the constant difficulty of
+clearly differentiating the balance between data centric, structured
+and behavioural thinking - Is the UI, db, appserver, or the
+class(BO)&nbsp; in charge etc.<br>
+<br>
+There is an application/database development human factor that
+constantly comes in. "Why do we need to have a different BO when the
+current one has the same basic properties?" is a common question. "Why
+can't this BO be adaptable?".&nbsp; Sometimes this complaint is quite
+justified as we see in our QA, the evidence of the age-old&nbsp; copy -
+paste - hack-what-you-think-you-need process going on to achieve the
+production goals, rather than the drive for appropriate design for
+re-use, collaboration, inheritance and interface. This leads to
+maintenace nightmares - which developers can always relate to.<br>
+<br>
+If the architects are so uncertain then the workers make their own decicisions for better or worse.<br>
+<br>
+. <br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RichardETVS replied on Wednesday, February 28, 2007</h2><P class=MsoNormal><SPAN>Let’s say I see the main BOs, the ones who will follow the workflow, as kind of agents. They have a goal (to follow the workflow). They must, at each step of the workflow, cooperate with some other specialized BO. They have no real intelligence, but they “borrow” they intelligence and behaviour at each step (with patterns like Strategy or State). Those intelligence and behaviour will vary with the configuration (there are rules at per client / per BO basis).<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>The BO live in a kind of loop, in the loop the general manger asks to each object what it wants to do. The BO, with a determined combination of states / configuration, decides to which step it has to go. It goes to this step, and at this step, the specialized object for the step helps the main BO. It can be by providing the right rules for the BO and asking it to check them, varying the BO state. It could be by providing some user input for the BO.<o:p></o:p></SPAN></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jimbo replied on Wednesday, February 28, 2007</h2>Richard,<br>
+You are pulling us back to the point - great.&nbsp; And I see the same
+need to have a BO that lives a life or grows. Some of our peers have
+already said that this is the implementation of the so-called State
+pattern. I seem to agree - sort of - but&nbsp; we need a concrete
+example, right?<br>
+<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Wednesday, February 28, 2007</h2>Richard,<br><br>It sounds like you're on the right track.&nbsp; Behavior based design does seem un-nature or more complex at first.&nbsp; Its this way because we are taught to view inheritience and reuse based on data.&nbsp; I know my degree program did this as well.<br><br>The final answer you come to must depend on your use cases.&nbsp; Do all clients have the same series of steps, but with varying rules to move between each step?&nbsp; If so, you may end up with a design where each step (and each step is likely a seperate use case) is represented by a BO.&nbsp; The details of the rules would need to be loaded based on what client is operating.&nbsp; You'd likely then use state or strategy pattern with in the BO, so that the details of the rules can vary by client.&nbsp; As long as the BO is in charge of which rule object it should apply (based on the client).&nbsp; <br><br>Justin and I can debate all we want... but in the end the solution to your particular problem lies in the use cases you must implement.&nbsp; Only they can really guide you as to how to build your system; after all, if you don't implement the use cases, you haven't built the system your customers want.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, February 28, 2007</h2><P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>Jimbo:</strong></div><div>Its amazing how a simple question can spark off such depth of esoteric discussion. The newbe or practical developer can be overwhelmed in the search for a straight answer.<BR></div></BLOCKQUOTE></P>
+<P>That is so very true... But I'm not going to help in this post <img src="/emoticons/emotion-5.gif" alt="Wink [;)]" /></P>
+<P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>Jimbo:</strong></div><div><BR>There is an application/database development human factor that constantly comes in. "Why do we need to have a different BO when the current one has the same basic properties?" is a common question. "Why can't this BO be adaptable?".&nbsp; Sometimes this complaint is quite justified as we see in our QA, the evidence of the age-old&nbsp; copy - paste - hack-what-you-think-you-need process going on to achieve the production goals, rather than the drive for appropriate design for re-use, collaboration, inheritance and interface. This leads to maintenace nightmares - which developers can always relate to.<BR></div></BLOCKQUOTE></P>
+<P>The biggest issue here, is that reuse is a form of coupling. And coupling is bad. So reuse is bad.</P>
+<P>But reuse is good. Reuse is desirable. Reuse has, for many, become an overriding goal.</P>
+<P>So the <EM>real</EM> challenge is reconciling these two opposing facts. Reuse is desirable. Yet reuse==coupling, and coupling is very much <EM>not</EM> desirable.</P>
+<P>I think the answer is to recognize that reuse is <EM>not a goal</EM>. It is a coincidental and beneficial&nbsp;side-effect of what should be the real goal: increasing the maintainability of code.</P>
+<P>To increase the maintainability of code, your code must be consistently structured and behavior must be normalized. But in normalizing behavior, you <EM>must not introduce complexity</EM>. If you introduce complexity, then you lose maintainability.</P>
+<P>Look at it this way. If you have behavior X, that is used for the purpose of P' that is good.</P>
+<P>If X, unchanged, can be used by P'' that's very good, because you introduce no complexity, and you get reuse. You do, unfortunately, incur some coupling, because there's a mutual dependency: P'-&gt;X and P''-&gt;X, therefore P'&lt;-X-&gt;P'' and P'&lt;-&gt;P''.</P>
+<P>But in my view, as long as X is unchanged this level of coupling is acceptible to gain the reuse.</P>
+<P>However, if X had to be altered for use by P'' then we have a problem. By definition, changing X to suit P'' means that X is no longer exactly what was expected by P', and you run the risk of breaking P'. The inevitable result is that the complexity of X increases, because it needs to provide exactly what is required by both P' and P'', though they are different.</P>
+<P>So in this scenario we have the worst of all worlds. P' and P'' are coupled through X, and X now has complexity that it shouldn't have. So we lose clarity, simplicity and decoupling in the pursuit of reuse.</P>
+<P>This is what I mean when I say that <EM>reuse is not a goal</EM>. If reuse is a goal you end up in this mess. But if reuse is a beneficial side-effect, and <EM>maintainabilty</EM> is the goal, then you are better able to make an intelligent, considered, decision on the trade-offs between clarity, reuse and coupling.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>malloc1024 replied on Wednesday, February 28, 2007</h2>
+
+<p class="MsoNormal"><span>If changing
+the behavior of an object at runtime is not desirable because it increases
+complexity and coupling, does this mean that the strategy and state patterns
+are unnecessary because they allow you to change behavior at runtime?<span>&nbsp; </span>Is it ever desirable to have the ability to change
+the behavior of an object at runtime rather than creating a new object to fit a
+use-case?&nbsp; Thanks.<o:p></o:p></span></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Wednesday, February 28, 2007</h2><BLOCKQUOTE><div><img src="/Themes/basicblue/images/icon-quote.gif"> <strong>Justin:</strong></div><div>Either way the object will not allow an incosistent state should a implementer try. I suppose you could argue runtime vs complie time as far as when it would be caught. Although you could still try and load it in the wrong state so you still have exceptions to deal with.</div></BLOCKQUOTE><br><br>Again a lot of what happens depends on the use case.&nbsp; Assuming you can have multiple items ready for the next stage of the workflow, you'd probably load an editable object based on an item from a readonly collection of items, in which case you wouldn't necessary need to worry about exceptions.&nbsp; (The bo would still throw one, but the UI may not need to worry.&nbsp; Again, it depends on the workflow and how many people are in the mix working on work items).<br>
+
+<p><BLOCKQUOTE><div><img src="/Themes/basicblue/images/icon-quote.gif"> <strong>Justin:</strong></div><div>Again if this is the case why do you need objects at all just have functions that take parameters since in your view an object really shouldnt be stateful or transistion states, only represent one state. You really dont need all this OO overhead if your just going to load a bunch of values up and perform one method on them.</div></BLOCKQUOTE></p><p>In a very simple, non-interactive workflow, you might be right you don't need all the overhead of OO. You may be better off with another method.&nbsp; But if the item needs to be modified, such as additional data added, existing data changed, and certain rules must be met (such as some new data MUST be entered, you can't choose value X if value A is chosen) then a business object makes a lot of sense.&nbsp; The problem is that you can take your argument and use it to rule out OO in every case.&nbsp; But we're not just using OO to make things simple; we're using it to help with maintainability.&nbsp; An OO based application (if done right) is usually easier to maintain than a procedural application (also done right).<br></p>
+
+<p><BLOCKQUOTE><div><img src="/Themes/basicblue/images/icon-quote.gif"> <strong>Justin:</strong></div><div>So if I have a document entity that various BL related to certain properties values changing all that would not need to be reproduced through every "business object" that represents that document at a different stage in its workflow?</div></BLOCKQUOTE></p><p>Sorry, I'm having trouble understanding the question..<br></p><p><BLOCKQUOTE><div><img src="/Themes/basicblue/images/icon-quote.gif"> <strong>Justin:</strong></div><div> Ah no&nbsp;I guess I could put those in some core "data centric" object that all the "business objects" use except how do&nbsp;I bubble a "data centric" broken rule up to the&nbsp; "business objects" broken rule so the&nbsp;consumer knows? What did that buy me again besides more schema change overhead?</div></BLOCKQUOTE></p><p>If the change in schema really does affect every use case, yes you're right you'd have some work to do.&nbsp; It depends on the specifics though.&nbsp; The rules could be kept in one spot and you could probably designate an object that defines rules for multiple types, not just a&nbsp; single type.&nbsp; Proper refactoring&nbsp;  would likely save a lot of headaches.<br></p>
+
+<p><BLOCKQUOTE><div><img src="/Themes/basicblue/images/icon-quote.gif"> <strong>Justin:</strong></div><div>If a entity has many uses cases in which they all need most if not all the same properties this is still practical or is it just sticking to a pattern blindly?</div></BLOCKQUOTE></p><p>Using code gen and other techniques make it practical.&nbsp; OO isn't about code reuse, its about building a maintainable application.&nbsp; Your one BO that handles ALL stages of the workflow is undoutably large, complex and its very likely that making a change to it will break its other intended uses.&nbsp; Some times you need to do more work upfront to do less work later.<br></p>
+<p><BLOCKQUOTE><div><img src="/Themes/basicblue/images/icon-quote.gif"> <strong>ajj3085:</strong></div><div>I know what it is and understand the issues, but just as Rocky has pushed poeple to let go of blindly sticking to a complete data centric design I would say to stick to behavior centric without compromise is just as bad. Good thing is CSLA doesn't seem to mind either way.</div></BLOCKQUOTE></p><p></p>I'm not sticking blindly to a principal; I'm sticking to it because it makes sense, and I know what happens when you go the other route.&nbsp; Workflow rules are business rules, and putting that logic in the data layer or designing&nbsp; your objects around data lead to harder to maintain and harder to change systems.&nbsp; <br><br>Before Clsa I did design my objects around the database and tried to make one object do many things simply because it shared the same properties.&nbsp; Our BOs were simply generated from a specific table, and then we added methods.&nbsp; And you know what, the system WAS harder to maintain and&nbsp; harder to change.&nbsp; Since I've started doing things in a behavior based way, I've found it much easier to build and maintain my applications.&nbsp; I'm advocating the behavior based way because I've found the data based way leads to a mess, each and every time.&nbsp;&nbsp; <br>
+<p><BLOCKQUOTE><div><img src="/Themes/basicblue/images/icon-quote.gif"> <strong>Justin:</strong></div><div>I don't know seems kind of odd to tie the retrieval from persisent storage to enforcement of an invailid state. Really wasting time seems thin, at that point you already wasted time coding the consumer incorrectly, either way is a runtime exception that should not occur in a consumer using the workflow properly.</div></BLOCKQUOTE></p><p>So its better to construct an object which you can do nothing with but throw away?&nbsp; As I said before, you usually don't get into this scenario because you usually already know you can load the editable object.<br></p>
+
+<p><BLOCKQUOTE><div><img src="/Themes/basicblue/images/icon-quote.gif"> <strong>ajj3085:</strong></div><div>What are properties again? Oh yeah they are methods on an object, so how exactly are they&nbsp;any less important than another method. Do you not have any BL embedded in a setter? I would say that thats quite a blanket statement to make that properties have no reuse value, I mean isnt that kinda one of the premises of OO vs a purely procedural langauge?</div></BLOCKQUOTE></p><p>Yes, techinically they are methods.&nbsp; Do I have logic in my properties?&nbsp; Nothing that's not consistently easy to regenerate via code gen.&nbsp; The actual business rules themselves are in other methods that get called via the PropertyHasChanged call.&nbsp; 99% of my property definitions are identical to each other in form.&nbsp; That's what I mean when I say they have no value.&nbsp; The premise of OO is that the object is the only one that can change its state; in procedural languages, the program keeps ALL state and its up to the program to maintain that state, and almost anything called can modify that state.<br></p>
+<p><BLOCKQUOTE><div><img src="/Themes/basicblue/images/icon-quote.gif"> <strong>ajj3085:</strong></div><div>No need to rehash with me, I know many projects that have failed do to pushing the data centric design without waver.&nbsp;That does not mean it doesn't have it uses and I thought it might have a fit from my experiance in document managment that the OP was referring to.</div></BLOCKQUOTE></p><p>Would I push behavior based design on say a data import tool?&nbsp; I wouldn't and databased design there is just fine.&nbsp; But the fact here is that we are talking about a workflow.&nbsp; Workflows are defined by business processes, and those are the kinds of things that should be put into a business layer, and my experience tells me the best way to build a business layer is behavior (ie, use case) based design.&nbsp; <br></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RichardETVS replied on Wednesday, February 28, 2007</h2><P class=MsoNormal><SPAN>Strangely enough, it seems to me that this “use case” approach is tied to non object database. We start with some objects (let’s say type A), we save the data of objects in the database, and then, for another use case, we build new different objects from the data in the database, let’s say type B.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>But if we use a pure oriented object database, it seems to me that becomes complex. There are no rows, tables, datareaders. We save just type A objects, and from them we must construct Type B. It seems complex or not natural, or there is something I did not understand.<o:p></o:p></SPAN></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, February 28, 2007</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Object databases still need to store their data in a relational
+manner. This typically means that the “objects” in the database must match what
+would have been tables in a traditional RDBMS. If that’s true, then you STILL
+need to map the data from those “relational objects” into your actual business
+objects.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Of course I haven’t looked at all the ODBMS systems out there.
+And it may be that some of them do store fields in a normalized manner, and
+allow those fields to appear in numerous object representations. But that’s not
+the case for the ones I’ve looked at thus far.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>For example, your Customer object has a CustomerName field. And
+your Order object has a CustomerName field. They should probably be the same
+field (updating one auto-updates the other). But if they really are fields in
+two different objects, then they aren’t linked, and you have a problem.
+However, if the ODBMS does allow you to “construct” objects that contain
+arbitrary fields – basically elevating fields to be first-class citizens – then
+you can solve this by associating that same field with both Customer and Order.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>But I haven’t seen that. Yet that is the sort of thing you MUST
+DO if you are creating responsibility-driven business objects. That’s the <i>real</i>
+job of ORM (though most ORM tools don’t do this well either…)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<div>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> RichardETVS
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Wednesday, February 28, 2007 7:54 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] Using rules to change object's state<o:p></o:p></span></p>
+
+</div>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Strangely
+enough, it seems to me that this â€œuse caseâ€ approach is tied to non object
+database. We start with some objects (letâ€™s say type A), we save the data of
+objects in the database, and then, for another use case, we build new different
+objects from the data in the database, letâ€™s say type B.<o:p></o:p></p>
+
+<p class=MsoNormal>&nbsp;<o:p></o:p></p>
+
+<p class=MsoNormal>But
+if we use a pure oriented object database, it seems to me that becomes complex.
+There are no rows, tables, datareaders. We save just type A objects, and from
+them we must construct Type B. It seems complex or not natural, or there is
+something I did not understand.<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RichardETVS replied on Wednesday, February 28, 2007</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div> 
+
+<DIV class=Section1>
+<P class=MsoNormal><SPAN>Object databases still need to store their data in a relational manner. This typically means that the “objects” in the database must match what would have been tables in a traditional RDBMS.&nbsp;</SPAN><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P></DIV>
+<P></div></BLOCKQUOTE></P>
+<P>Well, that's not the case of db4o (by the way, it&nbsp; is free for internal dev, <A href="http://www.db4o.com">www.db4o.com</A> ).You just save objects. </P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, February 28, 2007</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I have actually worked with db4o and use it as an example of
+what I’m talking about.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>If you create a Customer object with CustomerName, and you
+create an Order object with CustomerName you’ll have the field twice in your
+db. Go change the customer name in your customer and watch as it DOESN’T change
+on the orders for that customer. Whoops...<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<div>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> RichardETVS
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Wednesday, February 28, 2007 9:57 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: Using rules to change object's state<o:p></o:p></span></p>
+
+</div>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<blockquote>
+
+<div>
+
+<p class=MsoNormal><img id="_x0000_i1025" src="/Themes/default/images/icon-quote.gif"><strong>RockfordLhotka:</strong><o:p></o:p></p>
+
+</div>
+
+<div>
+
+<div>
+
+<p class=MsoNormal>Object
+databases still need to store their data in a relational manner. This typically
+means that the â€œobjectsâ€ in the database must match what would have been
+tables in a traditional RDBMS.&nbsp;&nbsp;<o:p></o:p></p>
+
+<p class=MsoNormal>&nbsp;<o:p></o:p></p>
+
+</div>
+
+</div>
+
+</blockquote>
+
+<p>Well, that's not the case of db4o (by the way, it&nbsp; is free for internal
+dev, <a href="http://www.db4o.com">www.db4o.com</a> ).You just save objects. <o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RichardETVS replied on Wednesday, February 28, 2007</h2><P>But why it should change? Maybe I am a little stupid here, but if I make two classes with each one a same name property, it does not mean that they have the same data. That the property name is the same is coincidence. </P>
+<P>If it is important that properties share the same information, I would rather have them containing the same object. And for an Order object, I would have an association with the Customer object. Well, that is so plain, and I know you're really more expert than me, that I suppose I miss your point, here.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Wednesday, February 28, 2007</h2>Richard,<br><br>Presumably because that's what the use case dictates should happen.&nbsp; I wouldn't think you'd want to change the company name on the applications order form and NOT change the master record.&nbsp; If you didn't update the master record, the next time you place an order, it would be under the old company name.&nbsp; It would be unusual to let the company name be different for just one order.<br><br>That's not to say that a use case would never be created that did allow just that scenario, just that such a use case would be a rare occurance.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Justin replied on Wednesday, February 28, 2007</h2><P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>ajj3085:</strong></div><div>Richard,<BR><BR>Presumably because that's what the use case dictates should happen.&nbsp; I wouldn't think you'd want to change the company name on the applications order form and NOT change the master record.&nbsp; If you didn't update the master record, the next time you place an order, it would be under the old company name.&nbsp; It would be unusual to let the company name be different for just one order.<BR><BR>That's not to say that a use case would never be created that did allow just that scenario, just that such a use case would be a rare occurance.<BR></div></BLOCKQUOTE></P>
+<P>Thats an instance issue not a class issue, if the instance of the customer object data should remain static on the order then fine that instance isnt modified, there would be however a master customer instance that contains the most current customer data for new orders. </P>
+<P>Of course this gets into&nbsp;temporal versioning&nbsp;where most developers opt out and take the simpler approach of de normalizing thier data which can work fine in simplier systems like this example, but can become a big problem in a large system where say person data is now denormalized and replicated many times.</P>
+<P>Justin</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, February 28, 2007</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>This is where, with real OO applications, people get into
+trouble.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Are you really proposing that, to get one field of data on
+Order, you are going to load the entire Customer object?<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I&#8217;ve been down that road, early in my exploration of OO.
+It sounds so sexy. Total reuse. One object with one set of data. One object to
+rule them all &#8230; and in the darkness bind them. (sorry, I&#8217;m a
+hopeless LoTR geek&#8230;)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>But in reality it is bunk. It simply doesn&#8217;t work for
+anything beyond a handful of users, if that. The performance and scalability ramifications
+are non-trivial, especially in any sort of distributed environment.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>You can get away with a lot if the database is on the user&#8217;s
+workstation and so, by definition, there&#8217;s one user. But as soon as you
+start trying to load entire Customer objects to get one field of data for
+dozens or hundreds of users, and that data must travel even from the db to the
+app server, you are done for.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<div>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> RichardETVS
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Wednesday, February 28, 2007 1:06 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: RE: Using rules to change object's state<o:p></o:p></span></p>
+
+</div>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>But why it should change? Maybe I am a little stupid here, but if I make two
+classes with each one a same name property, it does not mean that they have the
+same data. That the property name is the same is coincidence. <o:p></o:p></p>
+
+<p>If it is important that properties share the same information, I would
+rather have them containing the same object. And for an Order object, I would
+have an association with the Customer object. Well, that is so plain, and I
+know you're really more expert than me, that I suppose I miss your point, here.<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Justin replied on Wednesday, February 28, 2007</h2><P>I agree that it may be impracticle to load all the data for an entity and shouldn't be if it's not needed, but isn't that a physical implementation issue and not&nbsp;a logical design issue?</P>
+<P>What if the OO runtime we used was orthogonally persisent where you never had to "save" objects to persistent storage instead the runtime handled that and conversely handled demand loading of data as it was accessed would you now change your logical design because the physical platform issues to not impede it?</P>
+<P>Now of course we don't have a runtime like that in widespread use (see lisp machines) so we must make compromises in a class design causing physical architecture&nbsp;to creep up into our business objects, but this can be mitigated to some degree.</P>
+<P>For instance in our CSLA project we implement some demand loading of properties eleminating the need for XxxInfo classes, instead the main class, say Customer as in this example would only have minimal data loaded (such as ID and Name) in the instance referenced in the Order objects Customer property when the Order is fetched. We have base properties that allow the consumer to know if the Customer is fully loaded and attributes that the designer can specific what loads in minimally. For us this works great since we reuse some entities many times over, and the UI for handling them is very consistent and was well worth the extra effort to add to the base framework, but would not work for everyone I am sure. Oh and yes this scales very well for us.</P>
+<P>Perhaps one day we all won't be so worried about how to save and load data from disk and worry more about how to solve business problems directly without compromise.</P>
+<P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div> 
+</P>
+<DIV class=Section1>
+<P class=MsoNormal><SPAN>This is where, with real OO applications, people get into trouble.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Are you really proposing that, to get one field of data on Order, you are going to load the entire Customer object?<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>I’ve been down that road, early in my exploration of OO. It sounds so sexy. Total reuse. One object with one set of data. One object to rule them all … and in the darkness bind them. (sorry, I’m a hopeless LoTR geek…)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>But in reality it is bunk. It simply doesn’t work for anything beyond a handful of users, if that. The performance and scalability ramifications are non-trivial, especially in any sort of distributed environment.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>You can get away with a lot if the database is on the user’s workstation and so, by definition, there’s one user. But as soon as you start trying to load entire Customer objects to get one field of data for dozens or hundreds of users, and that data must travel even from the db to the app server, you are done for.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Rocky<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN><SPAN><o:p>&nbsp;</o:p></SPAN></div></BLOCKQUOTE></P></DIV></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Justin replied on Wednesday, February 28, 2007</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div> 
+
+<DIV class=Section1>
+<P class=MsoNormal><SPAN>I have actually worked with db4o and use it as an example of what I’m talking about.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>If you create a Customer object with CustomerName, and you create an Order object with CustomerName you’ll have the field twice in your db. Go change the customer name in your customer and watch as it DOESN’T change on the orders for that customer. Whoops...<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Rocky<FONT size=3><FONT color=#000000><FONT face="Times New Roman"></div></BLOCKQUOTE></FONT></FONT></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT size=3><FONT color=#000000><FONT face="Times New Roman">Maybe you where trying to simplify but true OODBMS don't store in relational form at all (columns and tuples), they do however promote normalization which I think most everyone agrees is a good thing, although I am getting the feeling maybe not so here, which seems odd.</FONT></FONT></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT face="Times New Roman" color=#000000 size=3>Your example also&nbsp;seems odd (again maybe you where trying to simplify), but why would you have a CustomerName string property and not a Customer property with a Customer class? That seems like classic denormaliztion and generally that would be a very bad thing. How do I know it's the right customer "John Smith" or the other "John Smith"? </FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT face="Times New Roman" color=#000000 size=3>There are some OODBMS that support composition of new objects from existing object through a query language to say pull just CustomerName out of a full customer object giving you a new simpler object. Most avoid this and instead would perfer you to create these "view" objects in your OO language&nbsp;that wrap the full object, thereby exposing just the members you want while not replicating the same data over and over again.&nbsp;Just classic normalization using objects&nbsp;with object references&nbsp;instead of table with foriegn keys.</FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT face="Times New Roman" color=#000000 size=3>Justin</FONT></SPAN></P></DIV></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, February 28, 2007</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Please note, I am not saying that the ODBMS stores the data
+relationally.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I am saying YOU must store the data relationally. The concepts
+of data normalization existed long before RDBMS showed up on the scene. I was
+doing normalization of data using ISAM files and hierarchical databases long
+before Oracle was a viable database engine.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Just because you store “objects” doesn’t mean you get to mystically
+ignore the very nature of your data.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>If you have a single field of data that is shared across
+multiple “objects” then you are in trouble. And the fact is that most
+applications have that exact scenario over and over again. That is NOT a
+relational database issue, that’s a simple data design issue.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<div>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Justin
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Wednesday, February 28, 2007 1:09 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: RE: Using rules to change object's state<o:p></o:p></span></p>
+
+</div>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<blockquote>
+
+<div>
+
+<p class=MsoNormal><img id="_x0000_i1025" src="/Themes/default/images/icon-quote.gif"><strong>RockfordLhotka:</strong><o:p></o:p></p>
+
+</div>
+
+<div>
+
+<div>
+
+<p class=MsoNormal>I
+have actually worked with db4o and use it as an example of what Iâ€™m talking
+about.<o:p></o:p></p>
+
+<p class=MsoNormal>&nbsp;<o:p></o:p></p>
+
+<p class=MsoNormal>If
+you create a Customer object with CustomerName, and you create an Order object
+with CustomerName youâ€™ll have the field twice in your db. Go change the
+customer name in your customer and watch as it DOESNâ€™T change on the orders
+for that customer. Whoops...<o:p></o:p></p>
+
+<p class=MsoNormal>&nbsp;<o:p></o:p></p>
+
+<p class=MsoNormal>Rocky<span><o:p></o:p></span></p>
+
+</div>
+
+</div>
+
+<p class=MsoNormal><span>Maybe you where trying to simplify but true OODBMS don't
+store in relational form at all (columns and tuples), they do however promote
+normalization which I think most everyone agrees is a good thing, although I am
+getting the feeling maybe not so here, which seems odd.</span><o:p></o:p></p>
+
+<p class=MsoNormal><span>Your example also&nbsp;seems odd (again maybe you where
+trying to simplify), but why would you have a CustomerName string property and
+not a Customer property with a Customer class? That seems like classic
+denormaliztion and generally that would be a very bad thing. How do I know it's
+the right customer &quot;John Smith&quot; or the other &quot;John Smith&quot;? </span><o:p></o:p></p>
+
+<p class=MsoNormal><span>There are some OODBMS that support composition of new
+objects from existing object through a query language to say pull just
+CustomerName out of a full customer object giving you a new simpler object.
+Most avoid this and instead would perfer you to create these &quot;view&quot;
+objects in your OO language&nbsp;that wrap the full object, thereby exposing
+just the members you want while not replicating the same data over and over
+again.&nbsp;Just classic normalization using objects&nbsp;with object
+references&nbsp;instead of table with foriegn keys.</span><o:p></o:p></p>
+
+<p class=MsoNormal><span>Justin</span><o:p></o:p></p>
+
+</blockquote>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>pelinville replied on Wednesday, February 28, 2007</h2><DIV>I don't get that though.&nbsp; Why would you have CustomerName as a field in both Order and Customer objects?</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>Having both with a property with CustomerName property I understand.&nbsp; But both having a field that is a part of the object?</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>It seems this is only a problem when you have conflicting use cases. </DIV>
+<DIV>&nbsp;</DIV>
+<DIV>1. The Order will display the name of the customer. Once placed this name shall not change regardless of customer changes.</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>2. When a customer name changes all references to that name will also change.</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>Sorry, missed the first one when you spoke of performance.</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>I kinda agree with that.&nbsp; But not completly.&nbsp; Our application does this in almost all cases. We are&nbsp;hosting about 150 schools.&nbsp; This is for all the teachers students and guardians.</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>I wouldn't try it in a extreamly high transaction environment. But in more moderate cases it works out well.</DIV></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, February 28, 2007</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I picked an arbitrary, and perhaps not the best, example here.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>But consider that when you edit a customer&#8217;s data, you
+need to change the name.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>And when you are entering an order for a customer, the customer
+may want you to change their name (or some other bit of data). At the very
+least, that data appears as part of the order. What order doesn&#8217;t show
+the customer&#8217;s number, name and probably address? A subset of the
+customer data is part of (even if only in a read-only manner) the order.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>It seems obvious, then, that Order has a &#8216;using&#8217;
+relationship with Customer, and any time you display an Order on screen, you&#8217;d
+load a Customer to get those few fields of data required. But it turns out, in
+reality, that loading the huge Customer object just to get 3-5 fields of data
+is impractical.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rather, those fields of customer data, are really part of the
+order object. A typical design will involve the Order object having 3-5
+properties (perhaps read-only) that are actually customer data.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>But if the customer data is changed &#8211; like the customer&#8217;s
+name changes from &#8220;ABC Corp&#8221; to &#8220;XYZ Inc&#8221;, you&#8217;d
+rather expect that any orders would automatically gain that change right? You
+can either do this the hard (insane?) way, by having your customer edit code
+seek out and find all orders for that customer so you can change their corresponding
+values. Or you can normalize the data so changing that one field automatically
+impacts all other locations.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>In the RDBMS world you&#8217;d store the value once and then use
+it where needed through JOIN statements. But pre-RDBMS (a world I lived in for
+years), you&#8217;d load the order data, then you&#8217;d load the required
+customer data and you&#8217;d use the fields you gathered. Think of it like
+doing a manual JOIN.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>And realistically that &#8220;manual join&#8221; concept is what
+you have to do with an ODBMS too. Your Order business object CAN&#8217;T be
+loaded directly from the database. You have to load your OrderData object and
+your CustomerData object and pull the fields from each that are really required
+to construct the logical concept of an Order.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>The core issue is that an ODBMS is a database first, and an
+object representation second. Sure, all data is represented as properties of
+objects. But it is STILL DATA, and is still subject to the same core rules
+about how data works.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<div>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> pelinville
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Wednesday, February 28, 2007 3:49 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> RE: [CSLA .NET] Using rules to change object's state<o:p></o:p></span></p>
+
+</div>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<div>
+
+<p class=MsoNormal>I don't get that though.&nbsp; Why would you have
+CustomerName as a field in both Order and Customer objects?<o:p></o:p></p>
+
+</div>
+
+<div>
+
+<p class=MsoNormal>&nbsp;<o:p></o:p></p>
+
+</div>
+
+<div>
+
+<p class=MsoNormal>Having both with a property with CustomerName property I
+understand.&nbsp; But both having a field that is a part of the object?<o:p></o:p></p>
+
+</div>
+
+<div>
+
+<p class=MsoNormal>&nbsp;<o:p></o:p></p>
+
+</div>
+
+<div>
+
+<p class=MsoNormal>It seems this is only a problem when you have conflicting
+use cases. <o:p></o:p></p>
+
+</div>
+
+<div>
+
+<p class=MsoNormal>&nbsp;<o:p></o:p></p>
+
+</div>
+
+<div>
+
+<p class=MsoNormal>1. The Order will display the name of the customer. Once
+placed this name shall not change regardless of customer changes.<o:p></o:p></p>
+
+</div>
+
+<div>
+
+<p class=MsoNormal>&nbsp;<o:p></o:p></p>
+
+</div>
+
+<div>
+
+<p class=MsoNormal>2. When a customer name changes all references to that name
+will also change.<o:p></o:p></p>
+
+</div>
+
+<div>
+
+<p class=MsoNormal>&nbsp;<o:p></o:p></p>
+
+</div>
+
+<div>
+
+<p class=MsoNormal>&nbsp;<o:p></o:p></p>
+
+</div>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>pelinville replied on Wednesday, February 28, 2007</h2><DIV>My only part of your statement I take issue with is "<FONT face=Calibri color=#1f497d>loading the huge Customer object just to get 3-5 fields of data is impractical".</FONT></DIV>
+<DIV><FONT face=Calibri color=#1f497d></FONT>&nbsp;</DIV>
+<DIV><FONT face=Calibri color=#1f497d><FONT color=#000000>I have found this to often not be the case.&nbsp; Because huge is, or at least could be, a bit of an overstatement.&nbsp; If customer only has 6 fields to begin with then I would say that only getting 3 is a bad idea (depending on the size of the other 3 of course.)</FONT></FONT></DIV>
+<DIV><FONT face=Calibri></FONT>&nbsp;</DIV>
+<DIV><FONT face=Calibri>But even if they are large fields or there are 20 total, I have found that using containment and enforcing encapsulation increases maintainability by a huge amount. Even with something as simple as CustomerName it helps.&nbsp;(Formatting&nbsp;and&nbsp;validation all that)&nbsp; So normally I have found it to be worth any performance hits to keep fields encapsulated in the class to which they belong.&nbsp; (But sometimes I have to cheat and join at the db.)</FONT></DIV>
+<DIV><FONT face=Calibri></FONT>&nbsp;</DIV>
+<DIV><FONT face=Calibri>But maybe we are just talking past each other.</FONT></DIV>
+<DIV><FONT face=Calibri></FONT>&nbsp;</DIV>
+<DIV><FONT face=Calibri>In db4o the developer is tempted to put CustomerName as a <EM>field</EM>&nbsp;in Order.&nbsp; This means that CustomerName is actually stored in two places. The reason they are tempted to do this is because the "data" is not easy to get at from outside of the object.&nbsp; But that is exactly what you don't want to do when using db4o because the data problems you mention. (This is the major weakness of the OODBMS, getting at the raw data.)</FONT></DIV>
+<DIV><FONT face=Calibri></FONT>&nbsp;</DIV>
+<DIV><FONT face=Calibri>But when using the RDBMS as the storage, the CustomerName field , in a decent design, would be stored in one place. Order (or any object) can "cheat" to populate it's field.&nbsp; Logically the CustomerName is still controlled by Customer (since that is the table it is in). So if you change it in Order the <STRONG>next </STRONG>time you load Customer you will see the correct name.&nbsp; But the only reason to "cheat" is for performance reasons.</FONT></DIV>
+<DIV><FONT face=Calibri></FONT>&nbsp;</DIV>
+<DIV><FONT face=Calibri>This is also true in db4o.&nbsp; The only reason to "cheat" and store the name in the Order object is to facilitate a semblance of reporting efficiency.&nbsp;</FONT></DIV>
+<DIV><FONT face=Calibri></FONT>&nbsp;</DIV>
+<DIV><FONT face=Calibri>And finally there are a large number of applications that just don't need to cheat. These include large multi user apps. It seems to me if the application does not need "real time" data and it is not a high transaction app then why not do it right and resist cheating? In other words only cheat when you are forced to?</FONT></DIV>
+<DIV>&nbsp;</DIV>
+<DIV>Isn't there some saying like "Premature optimization is horrible thing?" </DIV>
+<DIV><FONT face=Calibri color=#1f497d><FONT color=#000000></FONT><FONT size=3><FONT color=#000000><FONT face="Times New Roman"><FONT size=6><FONT face=Calibri size=3></FONT></FONT>&nbsp;</DIV>
+<DIV>&nbsp;</DIV></FONT></FONT></FONT></FONT>
+<DIV><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div> 
+</DIV>
+<DIV class=Section1>
+<P class=MsoNormal><SPAN>I picked an arbitrary, and perhaps not the best, example here.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>But consider that when you edit a customer’s data, you need to change the name.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>And when you are entering an order for a customer, the customer may want you to change their name (or some other bit of data). At the very least, that data appears as part of the order. What order doesn’t show the customer’s number, name and probably address? A subset of the customer data is part of (even if only in a read-only manner) the order.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>It seems obvious, then, that Order has a ‘using’ relationship with Customer, and any time you display an Order on screen, you’d load a Customer to get those few fields of data required. But it turns out, in reality, that loading the huge Customer object just to get 3-5 fields of data is impractical.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Rather, those fields of customer data, are really part of the order object. A typical design will involve the Order object having 3-5 properties (perhaps read-only) that are actually customer data.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>But if the customer data is changed – like the customer’s name changes from “ABC Corp” to “XYZ Inc”, you’d rather expect that any orders would automatically gain that change right? You can either do this the hard (insane?) way, by having your customer edit code seek out and find all orders for that customer so you can change their corresponding values. Or you can normalize the data so changing that one field automatically impacts all other locations.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>In the RDBMS world you’d store the value once and then use it where needed through JOIN statements. But pre-RDBMS (a world I lived in for years), you’d load the order data, then you’d load the required customer data and you’d use the fields you gathered. Think of it like doing a manual JOIN.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>And realistically that “manual join” concept is what you have to do with an ODBMS too. Your Order business object CAN’T be loaded directly from the database. You have to load your OrderData object and your CustomerData object and pull the fields from each that are really required to construct the logical concept of an Order.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>The core issue is that an ODBMS is a database first, and an object representation second. Sure, all data is represented as properties of objects. But it is STILL DATA, and is still subject to the same core rules about how data works.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Rocky<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p></o:p></SPAN></P></DIV></div></BLOCKQUOTE></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RichardETVS replied on Thursday, March 01, 2007</h2><P class=MsoNormal><SPAN>Rocky&nbsp;; let’s see if I get it right.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><BLOCKQUOTE><div><o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>You can get away with a lot if the database is on the user’s workstation and so, by definition, there’s one user. But as soon as you start trying to load entire Customer objects to get one field of data for dozens or hundreds of users, and that data must travel even from the db to the app server, you are done for.{</div></BLOCKQUOTE><o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>You’re saying that in an ideal world, the order would have a customer object, but in real world and for distributed applications, performance considerations prevent use of the Customer object as field or Order, and it is better to duplicate some data in the Order object, like CustomerName?<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN></SPAN>&nbsp;</P>
+<P class=MsoNormal><SPAN>And if you use a RDBS, with a join update, you could modify both the Customer and the Client tables, preserving data integrity? And that in an ODBS, you have to manually handle this case, if you chose to optimize performances by having an Order containing a CustomerName field?<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN></SPAN>&nbsp;</P>
+<P class=MsoNormal><SPAN>To manually handle things like that seems pretty complicated. I would rather desing my model object so I can choose activation depth wisely, with a system like db4o. So I could load an Order object with its CustomerObject field; but only the first level fields of the Customer would be loaded; not the collections of objects it could have. That’s clear that I do not want to load the entire data graph of objects if I load an Order, and I came with the Order, the Customer object in the field, and all commands object for this customer. I think using a ODBS implies a different kind of data normalisation than with a RDBS. <o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN></SPAN>&nbsp;</P>
+<P class=MsoNormal><SPAN>I wonder if lazy loading and weak references are compatibles with the CSLA concept of mobiles objects, too.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Richard<o:p></o:p></SPAN></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, March 01, 2007</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Ultimately what I am getting at here is that there really are
+different views on how object design should work.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>There’s a data-centric view, where the primary characteristic of
+an object is the data it contains.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>And there’s a responsibility-centric view, where the primary
+characteristic of an object is its purpose within a use case.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I started learning about OOD by reading Booch and Jacabsen, and
+therefore I started with that data-centric view, like most people do. Slowly
+over the years, having suffered with pain and complexity over and over again, I
+came around to the responsibility-driven viewpoint. People like Cunningham,
+Beck, Taylor and West are the luminaries here. <o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I only wish I’d STARTED where I am now and skipped all those
+years of pain and suffering.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>But it appears that everyone must go through this cycle, and it
+also appears that a lot of people never get out of it – preferring instead to
+come up with more and more elaborate ways to make the data-centric approach “work”.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>And please note: I do not think I (or Cunningham/West/Beck/etc)
+have all the answers. The REAL lesson out of all this, is that OOD is a
+journey, not a destination. Every time I turn around I’m learning a new and
+better way to think about something, or at least to express it.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>It is also important to realize that CSLA .NET supports either
+approach. You can (with some care) use CSLA to help you build data-centric
+objects, and you’ll get a lot of value from doing that. I’ve done that myself
+numerous times. But I personally think you are <i>better off</i> using CSLA to
+help you build responsibility-driven objects, because I think that approach to
+OOD is far superior.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<div>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> RichardETVS
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Thursday, March 01, 2007 7:06 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: Using rules to change object's state<o:p></o:p></span></p>
+
+</div>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Rocky&nbsp;;
+letâ€™s see if I get it right.<o:p></o:p></p>
+
+<p class=MsoNormal>&nbsp;<o:p></o:p></p>
+
+<blockquote>
+
+<div>
+
+<p class=MsoNormal>You
+can get away with a lot if the database is on the userâ€™s workstation and so,
+by definition, thereâ€™s one user. But as soon as you start trying to load
+entire Customer objects to get one field of data for dozens or hundreds of
+users, and that data must travel even from the db to the app server, you are
+done for.{<o:p></o:p></p>
+
+</div>
+
+</blockquote>
+
+<p class=MsoNormal>Youâ€™re
+saying that in an ideal world, the order would have a customer object, but in
+real world and for distributed applications, performance considerations prevent
+use of the Customer object as field or Order, and it is better to duplicate
+some data in the Order object, like CustomerName?<o:p></o:p></p>
+
+<p class=MsoNormal>&nbsp;<o:p></o:p></p>
+
+<p class=MsoNormal>And
+if you use a RDBS, with a join update, you could modify both the Customer and
+the Client tables, preserving data integrity? And that in an ODBS, you have to
+manually handle this case, if you chose to optimize performances by having an
+Order containing a CustomerName field?<o:p></o:p></p>
+
+<p class=MsoNormal>&nbsp;<o:p></o:p></p>
+
+<p class=MsoNormal>To
+manually handle things like that seems pretty complicated. I would rather
+desing my model object so I can choose activation depth wisely, with a system
+like db4o. So I could load an Order object with its CustomerObject field; but
+only the first level fields of the Customer would be loaded; not the
+collections of objects it could have. Thatâ€™s clear that I do not want to load
+the entire data graph of objects if I load an Order, and I came with the Order,
+the Customer object in the field, and all commands object for this customer. I
+think using a ODBS implies a different kind of data normalisation than with a
+RDBS. <o:p></o:p></p>
+
+<p class=MsoNormal>&nbsp;<o:p></o:p></p>
+
+<p class=MsoNormal>I
+wonder if lazy loading and weak references are compatibles with the CSLA concept
+of mobiles objects, too.<o:p></o:p></p>
+
+<p class=MsoNormal>&nbsp;<o:p></o:p></p>
+
+<p class=MsoNormal>Richard<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RichardETVS replied on Thursday, March 01, 2007</h2><P><SPAN>Well, I suppose I still on the data centric side, because there is something I do not understand. Let’s say databases do not exist, that we work only in memory for a local application. How I get my CustomerName updated in both the Customer Object and in the Order object? If I can’t use SQL join to put them in a database?<o:p></o:p></SPAN></P>
+<P><SPAN>Now, I am conscious that OOD in a long journey, and there is a lot of things I did not see, yet. If you have some links, books and articles about </SPAN><SPAN>responsibility-driven object design, I am interested. <o:p></o:p></SPAN></P>
+<P><SPAN>And thanks for your good job, Rocky, as I said, your framework and book are both useful and good lesson in development.<o:p></o:p></SPAN></P>
+<P><SPAN>Richard<o:p></o:p></SPAN></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Justin replied on Thursday, March 01, 2007</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>RichardETVS:</strong></div><div> 
+<P><SPAN>Well, I suppose I still on the data centric side, because there is something I do not understand. Let’s say databases do not exist, that we work only in memory for a local application. How I get my CustomerName updated in both the Customer Object and in the Order object? If I can’t use SQL join to put them in a database?<o:p></o:p></SPAN></P>
+<P><SPAN>Now, I am conscious that OOD in a long journey, and there is a lot of things I did not see, yet. If you have some links, books and articles about </SPAN><SPAN>responsibility-driven object design, I am interested. <o:p></o:p></SPAN></P>
+<P><SPAN>And thanks for your good job, Rocky, as I said, your framework and book are both useful and good lesson in development.<o:p></o:p></SPAN></P>
+<P><SPAN>Richard<o:p></o:p></SPAN></P>
+<P></div></BLOCKQUOTE></P>
+<P>I really think this concept is important, what if you didn't have to worry about your persisents engine, disk i/o and other physical implementation details, what would your objects look like? Are you making design decisions based on good design philosphies or are you letting implementation creep up and break through your encapsulation.</P>
+<P>This is always a struggle since physical architecture issues are the reality we work with but the ideal is something we strive for correct?</P>
+<P>So which is the better design in this specific example ignoring implementation issues? Should an Order have a CustomerName property or should an Order have a Customer property that is a reference to a Customer class instance?</P>
+<P>As far as replicating a relational join using a pure OO in memory model that is relativley easy. The Order object hold a reference to a Customer object (this is equivalent to an Order table having a Customer FK field), then you make a new "view" object wrapping both and exposing both Order properties and Customer properties of your choosing but the getters and setters simply go to to wrapped objects. In this design you simply replace SQL code with OO code to accomplish the same thing. SQL being a declarative language with a smart optimizer can eliminate the physical I/O of retrieving the unrequested Customer data from disk&nbsp;whereas with OO in memory this doesn't matter since you are just holding references to class instances which unless you actually request a specific property it will not incur the overhead of reading the data from that memory location. Note though with a in memory OO model you pretty much eliminate the need to even do this type of "join" since the base Order object holds a reference to the full Customer object yet it has no cost associated with holding the reference.</P>
+<P>Now imagine a OO runtime that could be backed by persisent storage instead of volatile ram but performed just as good how would our designs look?</P>
+<P>Justin</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>malloc1024 replied on Thursday, March 01, 2007</h2>
+
+
+
+<p class="MsoNormal">Booch and Jacobsen are strong advocates of the use-case
+driven design.<span>&nbsp; </span>A use-case driven design
+does have it merits and many developers have used it successfully.<span> </span>However, it does seem that a use-case driven design can lead
+to a more functional design rather than an object oriented design.<span>&nbsp; </span>Bertrand Meyer, one of the earliest and most
+vocal proponents of OOP, wrote, “Use cases favor a functional approach, based
+on processes (actions).<span>&nbsp; </span>This approach is
+the reverse of OO decomposition, which focuses on data abstractions; it carries
+a serious risk of reverting, under the heading of object-oriented development,
+to the most traditional forms of function design.” <span>&nbsp;</span>He and others have written about there dislike
+of a use-case driven design. <span>&nbsp;&nbsp;</span>There is
+never a consensus on how to develop code.<span>&nbsp;
+</span>This is what makes it fun, challenging and frustrating at times. Ultimately,
+it is up to the developer to try different techniques to decide what works best
+for him or her.<span>&nbsp; </span>If you want to learn
+more about the use-case driven approach, you can read the book listed
+below.<span>&nbsp; </span>If you want to read about the
+potential problems with a use-case driven approach, you can read the following
+article: <a href="http://www.toa.com/pub/use_cases.htm">http://www.toa.com/pub/use_cases.htm</a>
+.</p>
+
+<p class="MsoNormal"><o:p>&nbsp;</o:p></p>
+
+<p class="MsoNormal"><span>“Object-Oriented
+Software Engineering: A Use Case Driven Approach” by </span>Jacobsen:</p>
+
+<p class="MsoNormal"><a href="http://www.amazon.com/Object-Oriented-Software-Engineering-Driven-Approach/dp/0201544350">http://www.amazon.com/Object-Oriented-Software-Engineering-Driven-Approach/dp/0201544350</a></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, March 01, 2007</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Certainly read the books by David A. Taylor and David West.
+Evans’ DDD book is quite good as well.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Google for “single responsibility design” or “responsibility driven
+design” and you’ll find a fair amount of material as well.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<div>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> RichardETVS
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Thursday, March 01, 2007 9:06 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: RE: Using rules to change object's state<o:p></o:p></span></p>
+
+</div>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Well, I suppose I still on the data centric side, because there is something
+I do not understand. Letâ€™s say databases do not exist, that we work only in
+memory for a local application. How I get my CustomerName updated in both the
+Customer Object and in the Order object? If I canâ€™t use SQL join to put them
+in a database?<o:p></o:p></p>
+
+<p>Now, I am conscious that OOD in a long journey, and there is a lot of things
+I did not see, yet. If you have some links, books and articles about
+responsibility-driven object design, I am interested. <o:p></o:p></p>
+
+<p>And thanks for your good job, Rocky, as I said, your framework and book are
+both useful and good lesson in development.<o:p></o:p></p>
+
+<p>Richard<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RichardETVS replied on Friday, March 02, 2007</h2><P>Ok, thanks for all the answes, I'll dig into tha stuff.</P>
+<P>&nbsp;</P>
+<P>Richard</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Justin replied on Wednesday, February 28, 2007</h2><P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>ajj3085:</strong></div><div><BR>Again a lot of what happens depends on the use case.&nbsp; Assuming you can have multiple items ready for the next stage of the workflow, you'd probably load an editable object based on an item from a readonly collection of items, in which case you wouldn't necessary need to worry about exceptions.&nbsp; (The bo would still throw one, but the UI may not need to worry.&nbsp; Again, it depends on the workflow and how many people are in the mix working on work items).</div></BLOCKQUOTE><BR></P>
+<P>The read only collection is the consumer here, it must be coded to understand the workflow, I could just as easily write a collection that examines the properties of the object to display only the ones in the correct state, either way the consumer is preventing an exception.<BR></P>
+<P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>ajj3085:</strong></div><div>In a very simple, non-interactive workflow, you might be right you don't need all the overhead of OO. You may be better off with another method.&nbsp; But if the item needs to be modified, such as additional data added, existing data changed, and certain rules must be met (such as some new data MUST be entered, you can't choose value X if value A is chosen) then a business object makes a lot of sense.&nbsp; The problem is that you can take your argument and use it to rule out OO in every case.&nbsp; But we're not just using OO to make things simple; we're using it to help with maintainability.&nbsp; An OO based application (if done right) is usually easier to maintain than a procedural application (also done right).</P>
+<P></div></BLOCKQUOTE><BR></P>
+<P>Multiple classes with the same properties and one method to act on them is just as hard to maintian as multiple functions all having the same parameters, it's why OO came to be, but some people still prefer&nbsp;pure funtions, sounds like whats happening here except your using a runtime that has all this OO overhead. It's just like MS's stateless com+ object recommendations your barely even using objects more like groupings of functions.<BR></P>
+<P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>ajj3085:</strong></div><div>Sorry, I'm having trouble understanding the question..</div></BLOCKQUOTE></P>
+<P>Per your example "such as some new data MUST be entered, you can't choose value X if value A is chosen" That BL must be replicated in every class that has X editable. So now to resuse that BL you must make yet another class that understands X and all classes that have X now need to reference this new "rule" class that is separate from the actual classes that contain X. Sounds like a break down of containment, instead of just implement the BL for X in the same place that defines what X is.<BR></P>
+<P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>ajj3085:</strong></div><div>If the change in schema really does affect every use case, yes you're right you'd have some work to do.&nbsp; It depends on the specifics though.&nbsp; The rules could be kept in one spot and you could probably designate an object that defines rules for multiple types, not just a&nbsp; single type.&nbsp; Proper refactoring&nbsp; would likely save a lot of headaches.</div></BLOCKQUOTE></P>
+<P>Again sound like you would be better of without objects and just use a bunch of functions that take parameters since your decomposing all your BL from one entity into separate independent classes. <BR></P>
+<P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>ajj3085:</strong></div><div>Using code gen and other techniques make it practical.&nbsp; OO isn't about code reuse, its about building a maintainable application.&nbsp; Your one BO that handles ALL stages of the workflow is undoutably large, complex and its very likely that making a change to it will break its other intended uses.&nbsp; Some times you need to do more work upfront to do less work later.</P>
+<P></div></BLOCKQUOTE><BR></P>
+<P>I disagree OO is about reuse, function code is very maintainable but objects are all about componentization&nbsp;and hence&nbsp;reuse.</P>
+<P></P>
+<P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>ajj3085:</strong></div><div>I'm not sticking blindly to a principal; I'm sticking to it because it makes sense, and I know what happens when you go the other route.&nbsp; Workflow rules are business rules, and putting that logic in the data layer or designing&nbsp; your objects around data lead to harder to maintain and harder to change systems.&nbsp;</div></BLOCKQUOTE></P>
+<P>I have also seen hard to maintian systems based on your model to doesn't mean it always occurs and that one always works better than the other. Don't busniess rules basically just enforce&nbsp;how data can be modified? Is max length on a string a business rule or data type attribute? </P>
+<P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>Justin:</strong></div><div><BR>Before Clsa I did design my objects around the database and tried to make one object do many things simply because it shared the same properties.&nbsp; Our BOs were simply generated from a specific table, and then we added methods.&nbsp; And you know what, the system WAS harder to maintain and&nbsp; harder to change.&nbsp; Since I've started doing things in a behavior based way, I've found it much easier to build and maintain my applications.&nbsp; I'm advocating the behavior based way because I've found the data based way leads to a mess, each and every time.&nbsp; </div></BLOCKQUOTE></P>
+<P>I have seen systems that work great on data centric approaches so what? I don't propose one is better than the other they both have thier uses and I don't think we are done fully understanding information theory to proclaim one the absolute winner.</P>
+<P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>ajj3085:</strong></div><div>So its better to construct an object which you can do nothing with but throw away?&nbsp; As I said before, you usually don't get into this scenario because you usually already know you can load the editable object.</div></BLOCKQUOTE></P>
+<P>Define "better" they both have their tradeoffs kinda depends on teh specific use-case huh ;)?<BR></P>
+<P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>ajj3085:</strong></div><div>Yes, techinically they are methods.&nbsp; Do I have logic in my properties?&nbsp; Nothing that's not consistently easy to regenerate via code gen.&nbsp; The actual business rules themselves are in other methods that get called via the PropertyHasChanged call.&nbsp; 99% of my property definitions are identical to each other in form.&nbsp; That's what I mean when I say they have no value.&nbsp; The premise of OO is that the object is the only one that can change its state; in procedural languages, the program keeps ALL state and its up to the program to maintain that state, and almost anything called can modify that state.</div></BLOCKQUOTE></P>
+<P>Again isn't the point of OO combining data and code not separating it?<BR></P>
+<P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>ajj3085:</strong></div><div>Would I push behavior based design on say a data import tool?&nbsp; I wouldn't and databased design there is just fine.&nbsp; But the fact here is that we are talking about a workflow.&nbsp; Workflows are defined by business processes, and those are the kinds of things that should be put into a business layer, and my experience tells me the best way to build a business layer is behavior (ie, use case) based design.&nbsp; <BR></P>
+<P></div></BLOCKQUOTE></P>
+<P>"Workflow" is a pretty general term, workflows invlove data, heck even a data import tool probably has "workflow" ;).</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

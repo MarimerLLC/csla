@@ -1,0 +1,123 @@
+<html><header><title>CSLA.NET 3.0 ProjectTracker website issues with VS2008</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA.NET 3.0 ProjectTracker website issues with VS2008</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4062.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>twistedstream posted on Wednesday, December 19, 2007</h2><P>I'm having some trouble getting the latest release version of CSLA.NET 3.0 (3.0.3) to run in Visual Studio 2008 (I'm running Team Developer).&nbsp; </P>
+<P>PTWin (the Windows Forms project) works, but I can't get the PTWeb to work (or any of the other websites it seems).&nbsp; PTWeb compiles just fine, but when I browse to it or start the project in debug mode, I get this error in my browser:</P>
+<P><SPAN></P>
+<BLOCKQUOTE dir=ltr>
+<H1><FONT color=#ff0000>Server Error in '/ProjectTracker/v3/PTWeb' Application. </FONT></H1>
+<H1>
+<HR>
+</H1>
+<H2><I>Compilation Error</I> </H2>
+<P></SPAN><FONT face="Arial, Helvetica, Geneva, SunSans-Regular, sans-serif "><B>Description: </B>An error occurred during the compilation of a resource required to service this request. Please review the following specific error details and modify your source code appropriately. <BR><BR><B>Compiler Error Message: </B>CS0246: The type or namespace name 'ProjectTracker' could not be found (are you missing a using directive or an assembly reference?)<BR><BR><B>Source Error:</B><BR><BR></P>
+<P>
+<TABLE bgColor=#ffffcc>
+
+<TR>
+<TD></TD></TR>
+<TR>
+<TD><CODE><PRE>Line 1:  using System;
+<FONT color=red>Line 2:  using ProjectTracker.Library.Security;
+</FONT>Line 3:  using System.Web;
+Line 4:  using System.Web.Security;</PRE></CODE></TD></TR></TABLE></P>
+<P><BR><B><FONT face=Verdana>Source File:</FONT></B> c:\Program Files\CSLA.NET\v3\ProjectTrackercs\www\PTWeb\App_Code\PTMembershipProvider.cs &nbsp;&nbsp; <B><FONT face=Verdana>Line:</FONT></B> 2 <BR><BR><BR></P>
+<DIV class=expandable><U>Show Detailed Compiler Output:</U></DIV>
+<DIV><BR></DIV>
+<DIV>
+<TABLE bgColor=#ffffcc>
+
+<TR>
+<TD><CODE><PRE>c:\windows\system32\inetsrv&gt; "C:\WINDOWS\Microsoft.NET\Framework\v2.0.50727\csc.exe" /t:library /utf8output /R:"C:\WINDOWS\assembly\GAC_MSIL\System\2.0.0.0__b77a5c561934e089\System.dll" /R:"C:\WINDOWS\assembly\GAC_MSIL\ReachFramework\3.0.0.0__31bf3856ad364e35\ReachFramework.dll" /R:"C:\WINDOWS\assembly\GAC_32\System.Transactions\2.0.0.0__b77a5c561934e089\System.Transactions.dll" /R:"C:\WINDOWS\assembly\GAC_MSIL\System.Runtime.Serialization\3.0.0.0__b77a5c561934e089\System.Runtime.Serialization.dll" /R:"C:\WINDOWS\assembly\GAC_MSIL\Microsoft.Build.Utilities\2.0.0.0__b03f5f7f11d50a3a\Microsoft.Build.Utilities.dll" /R:"C:\WINDOWS\assembly\GAC_32\System.Data\2.0.0.0__b77a5c561934e089\System.Data.dll" /R:"C:\WINDOWS\assembly\GAC_MSIL\WindowsBase\3.0.0.0__31bf3856ad364e35\WindowsBase.dll" /R:"C:\WINDOWS\assembly\GAC_MSIL\System.Xml\2.0.0.0__b77a5c561934e089\System.Xml.dll" /R:"C:\WINDOWS\assembly\GAC_MSIL\PresentationCFFRasterizer\3.0.0.0__31bf3856ad364e35\PresentationCFFRasterizer.dll" /R:"C:\WINDOWS\assembly\GAC_MSIL\System.Messaging\2.0.0.0__b03f5f7f11d50a3a\System.Messaging.dll" /R:"C:\WINDOWS\assembly\GAC_32\PresentationCore\3.0.0.0__31bf3856ad364e35\PresentationCore.dll" /R:"C:\WINDOWS\assembly\GAC_MSIL\PresentationUI\3.0.0.0__31bf3856ad364e35\PresentationUI.dll" /R:"C:\WINDOWS\assembly\GAC_MSIL\Microsoft.Build.Tasks\2.0.0.0__b03f5f7f11d50a3a\Microsoft.Build.Tasks.dll" /R:"C:\WINDOWS\assembly\GAC_32\System.Printing\3.0.0.0__31bf3856ad364e35\System.Printing.dll" /R:"C:\WINDOWS\assembly\GAC_MSIL\System.Web.Services\2.0.0.0__b03f5f7f11d50a3a\System.Web.Services.dll" /R:"C:\WINDOWS\assembly\GAC_MSIL\UIAutomationProvider\3.0.0.0__31bf3856ad364e35\UIAutomationProvider.dll" /R:"C:\WINDOWS\Microsoft.NET\Framework\v2.0.50727\mscorlib.dll" /R:"C:\WINDOWS\assembly\GAC_MSIL\System.ServiceModel\3.0.0.0__b77a5c561934e089\System.ServiceModel.dll" /R:"C:\WINDOWS\assembly\GAC_MSIL\System.Design\2.0.0.0__b03f5f7f11d50a3a\System.Design.dll" /R:"C:\WINDOWS\assembly\GAC_MSIL\System.Web.RegularExpressions\2.0.0.0__b03f5f7f11d50a3a\System.Web.RegularExpressions.dll" /R:"C:\WINDOWS\assembly\GAC_MSIL\System.Drawing\2.0.0.0__b03f5f7f11d50a3a\System.Drawing.dll" /R:"C:\WINDOWS\assembly\GAC_MSIL\System.IdentityModel.Selectors\3.0.0.0__b77a5c561934e089\System.IdentityModel.Selectors.dll" /R:"C:\WINDOWS\assembly\GAC_MSIL\System.Web.Mobile\2.0.0.0__b03f5f7f11d50a3a\System.Web.Mobile.dll" /R:"C:\WINDOWS\assembly\GAC_MSIL\Microsoft.Transactions.Bridge\3.0.0.0__b03f5f7f11d50a3a\Microsoft.Transactions.Bridge.dll" /R:"C:\WINDOWS\assembly\GAC_MSIL\Microsoft.VisualC\8.0.0.0__b03f5f7f11d50a3a\Microsoft.VisualC.dll" /R:"C:\WINDOWS\assembly\GAC_MSIL\System.Workflow.Runtime\3.0.0.0__31bf3856ad364e35\System.Workflow.Runtime.dll" /R:"C:\WINDOWS\assembly\GAC_MSIL\System.Workflow.ComponentModel\3.0.0.0__31bf3856ad364e35\System.Workflow.ComponentModel.dll" /R:"C:\WINDOWS\assembly\GAC_MSIL\System.DirectoryServices\2.0.0.0__b03f5f7f11d50a3a\System.DirectoryServices.dll" /R:"C:\WINDOWS\assembly\GAC_MSIL\SMDiagnostics\3.0.0.0__b77a5c561934e089\SMDiagnostics.dll" /R:"C:\WINDOWS\assembly\GAC_32\System.EnterpriseServices\2.0.0.0__b03f5f7f11d50a3a\System.EnterpriseServices.dll" /R:"C:\WINDOWS\assembly\GAC_MSIL\System.Runtime.Remoting\2.0.0.0__b77a5c561934e089\System.Runtime.Remoting.dll" /R:"C:\WINDOWS\assembly\GAC_MSIL\System.ServiceModel.Web\3.5.0.0__31bf3856ad364e35\System.ServiceModel.Web.dll" /R:"C:\WINDOWS\assembly\GAC_MSIL\UIAutomationTypes\3.0.0.0__31bf3856ad364e35\UIAutomationTypes.dll" /R:"C:\WINDOWS\assembly\GAC_MSIL\System.Configuration\2.0.0.0__b03f5f7f11d50a3a\System.Configuration.dll" /R:"C:\WINDOWS\assembly\GAC_MSIL\Microsoft.Build.Framework\2.0.0.0__b03f5f7f11d50a3a\Microsoft.Build.Framework.dll" /R:"C:\WINDOWS\assembly\GAC_MSIL\PresentationFramework\3.0.0.0__31bf3856ad364e35\PresentationFramework.dll" /R:"C:\WINDOWS\assembly\GAC_32\System.Web\2.0.0.0__b03f5f7f11d50a3a\System.Web.dll" /R:"C:\WINDOWS\assembly\GAC_MSIL\System.Windows.Forms\2.0.0.0__b77a5c561934e089\System.Windows.Forms.dll" /R:"C:\WINDOWS\assembly\GAC_MSIL\System.ServiceProcess\2.0.0.0__b03f5f7f11d50a3a\System.ServiceProcess.dll" /R:"C:\WINDOWS\assembly\GAC_MSIL\System.WorkflowServices\3.5.0.0__31bf3856ad364e35\System.WorkflowServices.dll" /R:"C:\WINDOWS\assembly\GAC_MSIL\System.Security\2.0.0.0__b03f5f7f11d50a3a\System.Security.dll" /R:"C:\WINDOWS\assembly\GAC_MSIL\System.IdentityModel\3.0.0.0__b77a5c561934e089\System.IdentityModel.dll" /R:"C:\WINDOWS\assembly\GAC_MSIL\System.Deployment\2.0.0.0__b03f5f7f11d50a3a\System.Deployment.dll" /out:"C:\WINDOWS\Microsoft.NET\Framework\v2.0.50727\Temporary ASP.NET Files\projecttracker_v3_ptweb\8015fee5\df080ba2\App_Code.ogggzsfd.dll" /D:DEBUG /debug+ /optimize- /w:4 /nowarn:1659;1699;1701  "C:\WINDOWS\Microsoft.NET\Framework\v2.0.50727\Temporary ASP.NET Files\projecttracker_v3_ptweb\8015fee5\df080ba2\App_Code.ogggzsfd.0.cs" "C:\WINDOWS\Microsoft.NET\Framework\v2.0.50727\Temporary ASP.NET Files\projecttracker_v3_ptweb\8015fee5\df080ba2\App_Code.ogggzsfd.1.cs"
+
+
+Microsoft (R) Visual C# 2005 Compiler version 8.00.50727.1433
+for Microsoft (R) Windows (R) 2005 Framework version 2.0.50727
+Copyright (C) Microsoft Corporation 2001-2005. All rights reserved.
+
+c:\Program Files\CSLA.NET\v3\ProjectTrackercs\www\PTWeb\App_Code\PTMembershipProvider.cs(2,7): error CS0246: The type or namespace name 'ProjectTracker' could not be found (are you missing a using directive or an assembly reference?)
+</PRE></CODE></TD></TR></TABLE></DIV>
+<P><BR><U>Show Complete Compilation Source:</U></P>
+<DIV>&nbsp;</DIV>
+<HR>
+
+<P><B><FONT face=Verdana>Version Information:</FONT></B>&nbsp;Microsoft .NET Framework Version:2.0.50727.1433; ASP.NET Version:2.0.50727.1433 </FONT></P></BLOCKQUOTE>
+<P>Looking at the csc.exe command-line that ASP.NET is executing and it's clear that the ProjectTracker.Library.dll isn't being included as a reference, hence the compilation error.&nbsp; What would cause this?&nbsp; This assembly, along with EnterpriseServiceHostcs.dll and Csla.dll exist in the Bin directory of the website.&nbsp; I shouldn't have to add an entry to the &lt;system.web&gt;&lt;compilation&gt;&lt;assemblies&gt; section of my web.config (I actually tried this and it didn't work either).</P>
+<P>I went through the steps in the <A href="http://lhotka.net/files/csla20/BuildCsla.pdf">How To PDF</A> for Project Tracker and everything seems to be the same, even though I'm using VS2008 instead of VS2005.&nbsp; I did have to go through an upgrade process since 3.0.3 still has projects and solutions in VS2005 format.</P>
+<P>I checked to make sure the NETWORK SERVICE account has read-access to the website directory (in my case c:\Program Files\CSLA.NET\v3\ProjectTrackercs\www\PTWeb\) and it does.</P>
+<P>Maybe I need to wait until CSLA.NET 3.5 before I can run ProjectTracker in VS2008?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, December 19, 2007</h2><P>Did you try right-clicking on the web project and choosing "Add reference" to add a reference to the ProjectTracker.Library project?</P>
+<P>I don't recall encountering this issue, but I spent almost no time working in Windows or Web while creating CSLA 3.0 - it was all WPF/WF/WCF - so maybe something got confused.</P>
+<P>I have been using PTWeb in 3.5 recently, so I know it works there. But I don't remember what (if anything) I did during the 2005-&gt;2008 upgrade process. I seem to recall that there were some assembly reference issues though, and perhaps this was one of them.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>twistedstream replied on Wednesday, December 19, 2007</h2><P>The project reference was already there, but I did attempt to remove it and re-add it.&nbsp; Still, no beans.&nbsp;</P>
+<P>The odd thing is that the assemblies exist in the Bin directory of the website, but seem to not be available to ASP.NET at runtime.&nbsp; In the subdirectory for your virtual directory under the <STRONG>C:\WINDOWS\Microsoft.NET\Framework\v2.0.50727\Temporary ASP.NET Files</STRONG> directory, you usually find an <STRONG>assembly</STRONG> subdirectory that contains shadow copies of all the assemblies in the website's Bin directory.&nbsp; In this case, this directory does not exist.</P>
+<P>I'd be curious to learn more about this assembly reference issue you had when converting ProjectTracker to 3.5.</P>
+<P>~pete</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, December 20, 2007</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I don&#8217;t remember the specifics of what I did around
+assembly references. I just remember that I had to re-reference some things,
+like the references got lost somehow (or were wrong in previous builds, but VS
+2005 didn&#8217;t care?).<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>You can look at the history of the project files and web.config
+files in svn (<a href="http://www.lhotka.net/cslacvs">www.lhotka.net/cslacvs</a>)
+in the trunk and perhaps get an idea what needed to change.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> twistedstream
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Wednesday, December 19, 2007 11:24 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] CSLA.NET 3.0 ProjectTracker website issues with
+VS2008<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>The project reference was already there, but I did attempt to remove it and
+re-add it.&nbsp; Still, no beans.&nbsp;<o:p></o:p></p>
+
+<p>The odd thing is that the assemblies exist in the Bin directory of the
+website, but seem to not be available to ASP.NET at runtime.&nbsp; In the
+subdirectory for your virtual directory under the <strong>C:\WINDOWS\Microsoft.NET\Framework\v2.0.50727\Temporary
+ASP.NET Files</strong> directory, you usually find an <strong>assembly</strong>
+subdirectory that contains shadow copies of all the assemblies in the website's
+Bin directory.&nbsp; In this case, this directory does not exist.<o:p></o:p></p>
+
+<p>I'd be curious to learn more about this assembly reference issue you had
+when converting ProjectTracker to 3.5.<o:p></o:p></p>
+
+<p>~pete<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,85 @@
+<html><header><title>WCF Child Fetch Question </title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>WCF Child Fetch Question </h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5234.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>jfreeman posted on Tuesday, August 12, 2008</h2><P>This is probably pretty simple but I am stuck and need some help.&nbsp; I have&nbsp;a parent child relationship and I want to lazy load the children when I select a parent record in a list.&nbsp; I am able to get this to work.&nbsp; The problem comes when I set up the aplication to use the WCF Data Portal.&nbsp; The application works fine when I call a ReadOnlyBase object and get data but I get errors when I run Child_Fetch in my ReadOnlyListBase object.&nbsp; Here is an example of the Child_Fetch code:</P><FONT color=#e0e0e0 size=3><FONT color=#e0e0e0 size=3>
+<P></FONT></FONT><FONT size=2><FONT color=#000000>private void Child_Fetch(int censusID</FONT><FONT color=#000000>)</FONT></FONT></P>
+<P><FONT color=#000000 size=2>{</FONT></P>
+<P><FONT size=2><FONT color=#000000>this.RaiseListChangedEvents = false</FONT><FONT color=#000000>;</FONT></FONT></P>
+<P><FONT color=#000000><FONT size=2>using (var mgr = ContextManager&lt;CensusDataContext&gt;</FONT></FONT><FONT size=2><FONT color=#000000>.GetManager("HotelDB"</FONT><FONT color=#000000>))</FONT></FONT></P>
+<P><FONT color=#000000 size=2>{</FONT></P>
+<P><FONT size=2><FONT color=#000000>var data = (from p in mgr.DataContext.up_Census_Destinations(censusID</FONT><FONT color=#000000>) </FONT></FONT><FONT size=2><FONT color=#000000>select p</FONT><FONT color=#000000>);</FONT></FONT></P>
+<P><FONT size=2><FONT color=#000000>IsReadOnly = false</FONT><FONT color=#000000>;</FONT></FONT></P>
+<P><FONT size=2><FONT color=#000000>foreach (var item in data</FONT><FONT color=#000000>)</FONT></FONT></P>
+<P><FONT size=2><FONT color=#000000>&nbsp;&nbsp;&nbsp;Add(new Census_DestinationInfo(item.RouteOriginCode</FONT><FONT color=#000000>, </FONT></FONT><FONT size=2><FONT color=#000000>item.RouteTypeCode</FONT><FONT color=#000000>, </FONT></FONT><FONT size=2><FONT color=#000000>item.Destination</FONT><FONT color=#000000>));</FONT></FONT></P>
+<P><FONT size=2><FONT color=#000000>IsReadOnly = true</FONT><FONT color=#000000>;</FONT></FONT></P>
+<P><FONT color=#000000 size=2>}</FONT></P>
+<P><FONT size=2><FONT color=#000000>this.RaiseListChangedEvents = true</FONT><FONT color=#000000>;</FONT></FONT></P>
+<P><FONT color=#000000 size=2>}</FONT></P>
+<P>It looks like it is not using the WCF data portal for the child fetch.&nbsp; Is that possible?&nbsp; Thanks.</P>
+<P>Jonathan</P>
+<P><FONT size=2></FONT>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, August 12, 2008</h2><P>To lazy load a child, that child needs to have a factory method like a root object, and a DataPortal_Fetch() method to go with it. You have to manually call MarkAsChild() in that DataPortal_Fetch() method.</P>
+<BLOCKQUOTE dir=ltr>
+<P>[Serializable]<BR>public class MyChild<BR>{<BR>&nbsp; // ...<BR><BR>&nbsp; internal static MyChild GetChild(...)<BR>&nbsp; {<BR>&nbsp;&nbsp;&nbsp; return DataPortal.Fetch&lt;MyChild&gt;(...);<BR>&nbsp; }<BR><BR>&nbsp; private void DataPortal_Fetch(...)<BR>&nbsp; {<BR>&nbsp;&nbsp;&nbsp; MarkAsChild();<BR>&nbsp;&nbsp;&nbsp; // load data here<BR>&nbsp; }<BR>}</P></BLOCKQUOTE>
+<P>You'll implement the insert/update/delete methods as Child_XYZ, but the fetch has to act like a root so the data portal can interact with it directly.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jfreeman replied on Wednesday, August 13, 2008</h2><P>Do I need to call the MarkAsChild even thought I'm using version 3.5?&nbsp; Also,&nbsp;my Fetch logic is currently in a ReadOnlyList object (ChildList).&nbsp; Does it need to be in the ReadOnlyBase (ChildInfo)?&nbsp; When I tried to add the MarkAsChild to the DataPortal_Fetch in the ChildList, it could not find the method.&nbsp; Which namespace is the method in?&nbsp; Thanks.</P>
+<P>Jonathan</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, August 13, 2008</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>The problem is that there are several scenarios, and you need to
+understand the principles to know what to do in each scenario.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoListParagraph><span><span>1.<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span></span><span>The data portal can retrieve ANY object as long as that object
+has a DataPortal_Fetch() method (this even includes non-CSLA objects!).<o:p></o:p></span></p>
+
+<p class=MsoListParagraph><span><span>2.<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span></span><span>When the data portal invokes DataPortal_Fetch() it DOES NOT
+automatically call MarkAsChild(), because it assumes you are retrieving a root
+object.<o:p></o:p></span></p>
+
+<p class=MsoListParagraph><span><span>3.<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span></span><span>If your DataPortal_Fetch() method retrieves OTHER objects by
+using the FetchChild() method, THOSE objects will be loaded through
+Child_Fetch(), and they will be automatically marked as child objects.<o:p></o:p></span></p>
+
+<p class=MsoListParagraph><span><span>4.<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span></span><span>Read-only objects don&#8217;t have MarkAsChild(), because they
+are never updated (so there&#8217;s no difference between a root and child).<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>So if you are lazy loading a read-only list, that list will have
+an internal/Friend factory that calls DataPortal.Fetch(), which calls
+DataPortal_Fetch(). That DataPortal_Fetch() method will typically use
+DataPortal.FetchChild() to load the child objects into the list. Because these
+are read-only objects, no MarkAsChild() is involved.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>If you are lazy loading an <i>editable</i> list, you&#8217;d
+follow the same procedure, but you must manually call MarkAsChild() in the
+DataPortal_Fetch() of the list - but DataPortal.FetchChild() will make that
+automatic for the objects <i>inside</i> the list.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky</span><b><span><o:p></o:p></span></b></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jfreeman replied on Wednesday, August 13, 2008</h2><P>I think we are on the same page.&nbsp; I added the DataPortal calls to my List object late last night and got things working but was confused when I saw mention of the MarkAsChild method.&nbsp; Thanks for explaining how things work in detail.&nbsp; I really appreciate your time.&nbsp; Thanks.</P>
+<P>Jonathan</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

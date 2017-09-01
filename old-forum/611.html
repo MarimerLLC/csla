@@ -1,0 +1,50 @@
+<html><header><title>Removing items is slow</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Removing items is slow</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/611.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 posted on Thursday, July 13, 2006</h2>I have a DataGridView, and am using the following code to remove selected rows:<br><p class="MsoNormal"><span><span></span></span><span>private</span><span> </span><span>void</span><span> RemoveNumbersBtn_Click( </span><span>object</span><span> sender, </span><span>EventArgs</span><span> e ) {<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></span><span>List</span><span>&lt;</span><span>PhoneNumber</span><span>&gt;
+selectedRows;<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></span><span>PhoneNumber</span><span>
+num;</span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>selectedRows = </span><span>new</span><span> </span><span>List</span><span>&lt;</span><span>PhoneNumber</span><span>&gt;();<o:p></o:p></span></p>
+
+
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></span><span>foreach</span><span> ( </span><span>DataGridViewCell</span><span>
+cell </span><span>in</span><span> <o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>MergeNumbersDataGridView.SelectedCells ) {<o:p></o:p></span></p>
+
+
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>num
+= (</span><span>PhoneNumber</span><span>)cell.OwningRow.DataBoundItem;<o:p></o:p></span></p><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></span><span>if</span><span> ( !selectedRows.Contains(
+num ) ) {<o:p></o:p></span>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>selectedRows.Add( num );<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>}<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>}<o:p></o:p></span></p>
+
+
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>MergeNumbersDataGridView.SuspendLayout();<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></span><span>foreach</span><span>( </span><span>PhoneNumber</span><span>
+number </span><span>in</span><span> selectedRows ) {<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>MergeNumbersBindingSource.Remove( number );<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>}<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>MergeNumbersDataGridView.ResumeLayout();<o:p></o:p></span></p>&nbsp;
+
+<span><span></span>}<br><br>It works, but seems like it could be quicker; it takes about half a second for the grid to update.&nbsp; Any ideas?<br><br>Thanks<br>Andy<br></span></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>vargasbo replied on Thursday, July 13, 2006</h2>Did you suspend event listners while you're doing the update?<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>xal replied on Thursday, July 13, 2006</h2>Andy, I don't know if this is the cause of your problem, but you're using selected cells...<br><br>I'd loop through <span>MergeNumbersDataGridView.</span>SelectedRows and then get it's DataBoundItem.<br>That way you don't have to check whether your private list contains the item...<br><br><br>Andrés</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Thursday, July 13, 2006</h2>Andrés,<br><br>Thanks for the tip, but the peformance hit seems to be the calls to Remove on the binding source, not looping the selected cells (there aren't many usually).<br><br>Andy<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>xal replied on Thursday, July 13, 2006</h2>Andy, <br><br>Two questions: <br>-Why not calling the object directly instead of going through the binding source? you might want to try that to see if there's any difference... although there shouldn't be.<br><br>-Are you using the SortedBindingList? Currently the sorted binding list resorts the entire list whenever an item is removed(*) instead of just removing the removed item, which would be ideal... So, if you remove many items your SortedList will be resorting itself many times. Maybe if we had some sort of SuspendSort / ResumeSort in the SortedBindingList we could do a better job at handling this bulk change situations.<br><br><br><br>(*) The BindingList doesn't have a way for you to discover which item is being / has been removed. This is not true for added items since you can find out which item is being added through both of the binding list's events. Curiously, I recently contacted Rocky about this issue that affects SortedBindingList and prevents you from doing other stuff too... (that involve the need to know which items are being removed :D )<br><br>Andrés<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tetranz replied on Thursday, July 13, 2006</h2>Hi Andy<br><br>I've wrestled with the same slowness.<br><br>I've found that removing an item from a collection connected to a grid hits the UI with a lot of events. I worked around it with a somewhat kludgy shotgun approach. Whenever I do anything significant, including deleting from a collection, I try to disable as many events as I can.<br><br>Setting RaiseListChangeEvents on your collection will probably help. Also do this on the BindingSource.<br><br>I'm a bit short on time to really get into detail right now but I go one further and modify CSLA (BusinessBase I think) to give me a way of disabling INotifyPropertyChanged events on a business object. I might be getting&nbsp; confused with CancelEdit() but I seem to remember that deleting from a collection caused the deleted object to raise INotifyPropertyChanged events.<br><br>I use the Janus grid so DataGridView might be different but Janus provide an event just before deleting and one after. I disable events before deleting and reenable after delete. I've found this to improve performance from the half second wading through maple syrup experience you're seeing to pretty well instant.<br><br>When I have time I really want to look into this a bit further.<br><br>Cheers<br>Ross<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Thursday, July 13, 2006</h2>Ross,<br><br>Thanks, I was suspecting events hammering the UI as well.&nbsp; I guess my gut instinct is to have a Remove( List&lt;PhoneNumber&gt; ) overload, which will fire just one event (Reset) after its finished removing all the specified items.<br><br>Any gotchas that anybody sees with this method?<br><br>Andy<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Thursday, July 13, 2006</h2>Argh.<br><br>In the future I'll learn to check the visibility of the properties on the collection.&nbsp; So the solution is exteremly simple; set RaiseListChangedEvents to false before removing, set it to true after, then call ResetBindings on the collection.&nbsp; <br><br>Thanks everyone.<br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tetranz replied on Thursday, July 13, 2006</h2>I'm pleased you solved it. <br><br>Just one thing that might not be worth wasting time on but FWIW ....<br><br>I suspect you discovered that after you set RaiseListChangedEvents to
+false, the item didn't disappear so you solved it with ResetBindings.<br><br>For things to be really working efficiently, you shouldn't have to do a ResetBindings. I think that sends a ListChanged event of type Reset to the grid which causes the grid to reload all data.<br><br>Normally when you delete an item, the collection fires a ListChanged event of type ItemDeleted and the grid should just remove that item. I derive my collections from my own base which derives from the CSLA class. In that base class I have a method that tells the collection to raise a ListChanged event of the type I specify. When deleting, I remember the collection index and then after the delete but before setting RaiseListChangedEvents true, I raise a single ListChanged event of type ItemDeleted. I know its kind of kludgy and I'm overriding the "natural" events but its the only way I've really been able to get my UI working efficiently without unnecessary events or reloading.<br><br>Cheers<br>Ross<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Thursday, July 13, 2006</h2>Ross,<br><br>Thanks for the tip.&nbsp; I chose ResetBindings though because my code may be removing many items at once, not just one.. so rather than raise ListChanged.ItemRemoved for each one, I opted to do a simple reset.<br><br>Its not a big deal, since each row is only four columns, and there typically will be fewer than five items in the list (which is why I was suprised that the grid took so long to update before my fix).<br><br>Andy<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

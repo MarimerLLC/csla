@@ -1,0 +1,88 @@
+<html><header><title>Values lost after insert</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Values lost after insert</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5610.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>peterdougstuart posted on Thursday, October 16, 2008</h2><P>Hi </P>
+<P>I am upgrading a bunch of code from CSLA 1.0 to 3.5. I have a DataPortal_Insert method which puts some values into the database but also gets a few values back&nbsp;e.g. db identity key. As&nbsp;I debug through DataPortal_Insert everythings seems&nbsp;ok i.e. the values go into the DB and the identity key comes back fine. However when the object comes back to the UI it seems to have forgotten the identity key i.e. the object seems to be in exactly the same state as it was before save was called and has not retained the values that were changed in DataPortal_Insert.</P>
+<P>My DataPortal_Fetch methods work fine. My guess is the problem is something to do with object serializable / unserialization however I'm at a bit of a dead end so could really use any pointers. I am using local objects i.e. no application server.</P>
+<P>Any help would be great!</P>
+<P>Cheers</P>
+<P>Peter</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Thursday, October 16, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Just a guess &#8211; are you missing myObject = myObject.Save(),
+replacing the old object with newly saved one?<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> peterdougstuart
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Thursday, October 16, 2008 4:04 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> [CSLA .NET] Values lost after insert<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Hi <o:p></o:p></p>
+
+<p>I am upgrading a bunch of code from CSLA 1.0 to 3.5. I have a
+DataPortal_Insert method which puts some values into the database but also gets
+a few values back&nbsp;e.g. db identity key. As&nbsp;I debug through
+DataPortal_Insert everythings seems&nbsp;ok i.e. the values go into the DB and
+the identity key comes back fine. However when the object comes back to the UI
+it seems to have forgotten the identity key i.e. the object seems to be in
+exactly the same state as it was before save was called and has not retained
+the values that were changed in DataPortal_Insert.<o:p></o:p></p>
+
+<p>My DataPortal_Fetch methods work fine. My guess is the problem is something
+to do with object serializable / unserialization however I'm at a bit of a dead
+end so could really use any pointers. I am using local objects i.e. no
+application server.<o:p></o:p></p>
+
+<p>Any help would be great!<o:p></o:p></p>
+
+<p>Cheers<o:p></o:p></p>
+
+<p>Peter<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>peterdougstuart replied on Thursday, October 16, 2008</h2><P>Wow! That's done it. Thanks so much!!! You have made me very happy, I was well and truly stuck.</P>
+<P>&nbsp;</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,76 @@
+<html><header><title>Struggling with EditableRootList object and LINQ to SQL</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Struggling with EditableRootList object and LINQ to SQL</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5225.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>triplea posted on Monday, August 11, 2008</h2><P>I am struggling to implement a simple EditableRootList object using CSLA 3.5. Lets say I have the following:<BR><BR>CustomerList : BusinessListBase&lt;CustomerList, Customer&gt; (Root)<BR>Customer: BusinessBase&lt;Customer&gt;</P>
+<P>There are some LINQ to SQL related questions embedded below so its not pure CSLA related but help is appreciated nevertheless :-)</P>
+<P>1. When fetching Customer objects in the DataPortal_Fetch of CustomerList, should I be adding the items like this:<BR><FONT color=#0000ff size=2><FONT color=#0000ff size=2>this</FONT></FONT><FONT size=2>.Add(</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>Customer</FONT></FONT><FONT size=2>.GetCustomer(data));<BR></FONT>or<BR><FONT color=#0000ff size=2><FONT color=#0000ff size=2>this</FONT></FONT><FONT size=2>.Add(</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>DataPortal</FONT></FONT><FONT size=2>.FetchChild&lt;</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>Customer</FONT></FONT><FONT size=2>&gt;(data));</FONT><BR>or another way?<BR>Data is my LINQ to SQL <FONT color=#0000ff size=2><FONT color=#0000ff size=2>var</FONT></FONT>.</P>
+<P>2. In the above scenario, when using the first way, I can jump to other related tables (e.g. customer invoices table) when I am in the Child_Fetch method of Customer. If I use the second way, these related tables throw an System.ArgumentException.</P>
+<P>3. What is the Update method supposed to look like? I was hoping I wouldn't have to implement it (in the same way that Editable Child Lists dont really implement the Update method anymore) but that does not seem to be the case. </P>
+<P>All in all I am not used to use EditableRootLists and am a bit unsure if items witihn the list are supposed to be child objects or not...</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, August 12, 2008</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>triplea:</strong></div><div> 
+<P>1. When fetching Customer objects in the DataPortal_Fetch of CustomerList, should I be adding the items like this:<BR><FONT color=#0000ff size=2><FONT color=#0000ff size=2>this</FONT></FONT><FONT size=2>.Add(</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>Customer</FONT></FONT><FONT size=2>.GetCustomer(data));<BR></FONT>or<BR><FONT color=#0000ff size=2><FONT color=#0000ff size=2>this</FONT></FONT><FONT size=2>.Add(</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>DataPortal</FONT></FONT><FONT size=2>.FetchChild&lt;</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>Customer</FONT></FONT><FONT size=2>&gt;(data));</FONT><BR>or another way?<BR>Data is my LINQ to SQL <FONT color=#0000ff size=2><FONT color=#0000ff size=2>var</FONT></FONT>.</P>
+<P></div></BLOCKQUOTE></P>
+<P>The idea in 3.5 is to use FetchChild() so the data portal can do more work for you. But the old-style approach continues to work as long as you do your own MarkOld() calls, etc.</P>
+<P>'data' isn't the full query result though right? You'd be in a foreach loop at this point - looping through the query result, so 'data' is just ONE ITEM from the query result.</P>
+<P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>triplea:</strong></div><div></P>
+<P>2. In the above scenario, when using the first way, I can jump to other related tables (e.g. customer invoices table) when I am in the Child_Fetch method of Customer. If I use the second way, these related tables throw an System.ArgumentException.</P>
+<P></div></BLOCKQUOTE></P>
+<P>I don't know why that would be the case. Either way the parameter is passed to the new child object, and either way you'd need to know the type of 'data'. As long as your L2S data context is still alive I would expect either approach to work.</P>
+<P>However, FetchChild() does invoke the Child_Fetch() method using reflection, so perhaps L2S gets confused by that?</P>
+<P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>triplea:</strong></div><div></P>
+<P>3. What is the Update method supposed to look like? I was hoping I wouldn't have to implement it (in the same way that Editable Child Lists dont really implement the Update method anymore) but that does not seem to be the case. </P>
+<P></div></BLOCKQUOTE></P>
+<P>An editable child list doesn't need Child_Update(), because CSLA can do it for you.</P>
+<P>An editable <EM>root</EM> list does need DataPortal_Update() because I don't know how to open your database. <EM>You</EM> must open the database (or L2S data context), but then you can call base.Child_Update() and let CSLA do most of the work for you:</P>
+<P>protected override void DataPortal_Update()<BR>{<BR>&nbsp; // open database<BR>&nbsp; base.Child_Update(this);<BR>&nbsp; // close database<BR>}</P>
+<P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>triplea:</strong></div><div> </P>
+<P>All in all I am not used to use EditableRootLists and am a bit unsure if items witihn the list are supposed to be child objects or not...</P>
+<P></div></BLOCKQUOTE></P>
+<P>BLB and ERLB are very different.</P>
+<P>BLB supports the editable root list and editable child list stereotypes. These do updates in a batch - so the user edits many objects in memory, and they are all saved in one data portal call.</P>
+<P>ERLB supports the dynamic root list stereotype. This is a list of <EM>editable root</EM> objects with a twist. It contains editable root objects that are <EM>fetched</EM> somewhat like child objects, and are <EM>saved</EM> like root objects. As the user completes interacting with each individual object, that object is <EM>immediately saved</EM>.</P>
+<P>ERLB is designed specifically to support in-place editing with a Windows Forms grid. While it might work in other scenarios, it is designed specifically for the Windows Grid and in-place editing, where the user's changes are committed <EM>immediately</EM> as the user moves off each row.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>triplea replied on Tuesday, August 12, 2008</h2><P>Thanks a lot for your input!</P>
+<P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div></P>
+<P>'data' isn't the full query result though right? You'd be in a foreach loop at this point - looping through the query result, so 'data' is just ONE ITEM from the query result.</P>
+<P></div></BLOCKQUOTE></P>
+<P>Yes thats exactly right, data is only 1 item which is extracted using a foreach loop.</P>
+<P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div></P>
+<P>As long as your L2S data context is still alive I would expect either approach to work.</P>
+<P></div></BLOCKQUOTE></P>
+<P>How could I ensure that the data context is still alive when I get into the Child_Fetch()? Do I need to use the transactional attribute or manually do something else?</P>
+<P>Also thanks for the BLB/ERLB clarification. In my case I use a BLB as an editable root list.</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Tuesday, August 12, 2008</h2>You should look into the Csla.Data.ContextManager.&nbsp; If your root BLB base, your DP_U would look like this:<br><br>[Transactional( Transaction.TransactionScope )]<br>protected override DataPortal_Update() {<br>&nbsp;&nbsp;&nbsp;&nbsp; ContextManager&lt;MyDataContext&gt; mgr;<br><br>&nbsp;&nbsp;&nbsp;&nbsp; using( mgr = ContextManager&lt;MyDataContext&gt;.GetManager() {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // do child updates<br>&nbsp;&nbsp;&nbsp;&nbsp; }<br>}<br><br>In your child object, you get a ContextManager in the same way, and you'll get the one that your root object created.<br><br>HTH<br>Andy<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, August 12, 2008</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>If you use Csla.Data.ContextManager then keeping the context
+alive is just a matter of loading all your child objects inside the using
+block.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>using (var ctx = ContextManager&lt;MyDatabase&gt;.GetManager(&#8220;dbName&#8221;))<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>{<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp; // load root and all children here<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>}<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>triplea replied on Tuesday, August 12, 2008</h2><P>Not sure if I was too tired or if I changed anything without noticing but the&nbsp;<BR><FONT size=2><FONT color=#0000ff>this</FONT>.Add(<FONT color=#2b91af><FONT color=#2b91af>DataPortal</FONT></FONT>.FetchChild&lt;<FONT color=#2b91af><FONT color=#2b91af>Customer</FONT></FONT>&gt;(data));<BR></FONT>way seems to be working now...</P>
+<P>Thanks for both your help</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

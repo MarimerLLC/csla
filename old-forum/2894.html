@@ -1,0 +1,185 @@
+<html><header><title>Need an opinion about Shared Web Hosting</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Need an opinion about Shared Web Hosting</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/2894.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>NightOwl888 posted on Thursday, May 17, 2007</h2><P>I am a developer that owns a small E-Commerce site.&nbsp; I am considering selling the business.&nbsp; I have a prospective buyer, but he is not very technical and I am insisting that he get his own hosting provider instead of calling me every time the site goes down (which sort of defeats the purpose of selling the site in the first place).</P>
+<P>Since hosting the site offsite also means hosting the database offsite, there are some challenges with converting all of the applications for use with a shared hosting provider.&nbsp; Ideally, this could be done without changing too much of the architecture.</P>
+<P>The business runs on 4 custom applications and some 3rd party software.&nbsp; The site itself and one of the custom applications were built as 2-tier applications.&nbsp; Upon analysis, the site will require no changes. The other 2-tier Windows service can easily be converted by writing an XML Web Service wrapper around the data access layer, which fortunately is in a class of its own.</P>
+<P>Then there is an administration application (a&nbsp;Windows client)&nbsp;and a Windows service that are built using a modified version of CSLA 1.5.&nbsp; CSLA was introduced to this business about 1 year ago, and the CSLA classes were intended to be used in all applications but the work wasn't completed in the other two.&nbsp; These applications contain all of the key functionality of the business and it is very important that these applications be converted for use with an offsite database.</P>
+<P>The easiest option it seems would be to use .NET Remoting for these 2 applications.&nbsp; However, does this mean that I will require my prospective buyer to buy multiple sites from the shared hosting provider?&nbsp; I have never personally used a shared hosting provider. Can anybody recommend a shared hosting provider that will guarantee that all of the sites can access the database?&nbsp; Or am I wrong in making this assumption - can I configure my CSLA server to run on the same IIS site as my website?</P>
+<P>I went back to read the "Visual Basic .NET Business Objects" book to see what it says about web services, and from what I gather the recommended approach to the architecture is to use the CSLA classes on the web server that hosts the XML web service.&nbsp; Since my Windows client applications already use the CSLA classes directly including its UI databinding functionality,&nbsp;using an XML web service this way&nbsp;would require an extensive rewrite of the entire UI layer.</P>
+<P>It would be easier to create an XML web service that uses the data access code, and put calls into the CSLA classes to the XML web service to retrieve the data.&nbsp; Somehow this seems to go against the grain of what CSLA is trying to accomplish.&nbsp; Any opinions?</P>
+<P>Just to be sure I don't get any answers like "who cares, you are selling it aren't you?", I should also point out that I may still be responsible for maintaining the code in the near future, so doing anything that would provide maintenance problems in the future would be counterproductive.&nbsp; I will also be responsible for making the conversions to the code to get these applications hosted elsewhere.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, May 17, 2007</h2><P>In a web app you ideally do NOT use remoting or web services to talk to any app server at all. It is far better (usually) to have the web server talk directly to the database. CSLA supports this as the default mode for the data portal, and that is typically the right choice.</P>
+<P>Many shared hosting providers offer a virtual root with a SQL server database for that root. If you use the data portal in local mode, then you could install your app into the VR and have a dedicated database for that customer - which is also probably the right answer (maximum isolation, dedicated cost structure, etc).</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>NightOwl888 replied on Thursday, May 17, 2007</h2><P>Rocky,</P>
+<P>Thanks for your quick reply.&nbsp; While I COULD port the website to CSLA, that really isn't my issue.&nbsp; I have 2 CSLA Windows applications that need to be converted to work with a remote database on the shared host (the website will work fine the way it is).&nbsp; These applications are used to manage the business (phone orders, order changes, order processing, automated bookkeeping, etc).</P>
+<P>So, I am faced with the options of using XML web services or remoting to host these two applications locally, while my database and website&nbsp;are hosted remotely.</P>
+<P>Remoting seems like it should work, but that probably means I will have to get more than one remote website to host the additional endpoints for the&nbsp;remoting components that access the database.</P>
+<P>XML Web Services, while I don't usually consider them an option for "in house" software seem more viable because I can host the endpoints for both applications on the same virtual root as the website.&nbsp; However, this means that the "Data Access" portions of my CSLA classes will be remote calls to XML Web Services.&nbsp; As I pointed out before, this doesn't seem like the right way to go.</P>
+<P>I guess a third option would be to rebuild my CSLA Windows application as a web based application, but given the number and complexity of the forms involved, this would be a monumental task.&nbsp; Not to mention, this doesn't solve the issue with the CSLA driven Windows Service that will also likely have to be run locally.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, May 17, 2007</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>NightOwl888:</strong></div><div>
+<P>Remoting seems like it should work, but that probably means I will have to get more than one remote website to host the additional endpoints for the&nbsp;remoting components that access the database.</P>
+<P></div></BLOCKQUOTE></P>
+<P>You may be unaware, but you can host a remoting endpoint from within a normal web site. In other words, the same virtual root that exposes your web UI can also expose your remoting endpoint if you desire. This does require that the web site's \bin directory contain the business assemblies used by the windows app, and Csla.dll of course. And you need the remoting entries in web.config - but that's all there is to it.</P>
+<P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>NightOwl888:</strong></div><div></P>
+<P>XML Web Services, while I don't usually consider them an option for "in house" software seem more viable because I can host the endpoints for both applications on the same virtual root as the website.&nbsp; However, this means that the "Data Access" portions of my CSLA classes will be remote calls to XML Web Services.&nbsp; As I pointed out before, this doesn't seem like the right way to go.</P>
+<P></div></BLOCKQUOTE></P>
+<P>You certainly can rebuild your objects to call web services instead of stored procedures. This is a perfectly acceptable architecture/design - though it comes with some costs: performance, and of course the need to build a set of web services to support the data requirements of the objects.</P>
+<P>The DeepData sample app from my web site (discussed on a recent DNR TV show) includes an example of loading objects from a web service.</P>
+<P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>NightOwl888:</strong></div><div></P>
+<P>I guess a third option would be to rebuild my CSLA Windows application as a web based application, but given the number and complexity of the forms involved, this would be a monumental task.&nbsp; Not to mention, this doesn't solve the issue with the CSLA driven Windows Service that will also likely have to be run locally.</P>
+<P></div></BLOCKQUOTE></P>
+<P>Yeah, this seems like a very expensive option, and one that really shouldn't be necessary.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>David replied on Thursday, May 17, 2007</h2><P>I just setup a remote data portal at <A href="http://www.webhost4life.com">www.webhost4life.com</A> and I was surprised by how easy it was, and how good the performance is. It's no problem to have multiple remote portals accessing the one database either. In my case I created a separate subdomain for the data portal and that give you a seperate virtual root.</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>NightOwl888 replied on Thursday, May 17, 2007</h2><P>Funny, I was just looking at their website when I received the email about your post.&nbsp; I noticed that they allow you to put up to 8 virtual hosts on their server - that is 4 more than I need so it should work fine.&nbsp; In fact, this solves the entire issue because I just need to use remoting on the Windows Services as well.</P>
+<P>As Rocky pointed out, it is possible to host&nbsp;the endpoints for all of the remoting components&nbsp;under the same root.&nbsp; I tried this some time ago and had some issues with it, I just don't remember what they were.&nbsp; At the very least it makes sense to seperate them physically for deployment purposes even if it isn't necessary for the applications to work that way.</P>
+<P>Well, thanks to you any doubts I had about <A href="http://www.webhost4life.com">www.webhost4life.com</A> are now minimized.&nbsp; I just have one question though (sort of a symptom of not doing development for a year, I guess) - how did you secure the endpoints of your remoting components being that they were Internet facing?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>David replied on Friday, May 18, 2007</h2><P>At this point I'm just testing a Beta so I haven't worried too much about security. The way I see it though, using a CSLA Windows Forms application with a remote data portal is not that different to a browser based application, and therefore the approach to security is the same. In other words, if you follow the guidelines in Rocky’s book it will be reasonably secure without doing anything special.</P>
+<P>Of course I may be completely in the dark here, so please enlighten me if that is the case.</P>
+<P>The only thing I might need to change is to secure the transmission with SSL. Although I haven't actually done this at webhost4life I don't think it is difficult.<BR></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, May 18, 2007</h2>
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>There are two differences from a typical web UI.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>First, your objects might pass data back and forth that would
+never be sent out to a browser. Some of that data may be sensitive, and if so,
+then you probably need to take steps to protect it further.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Second, there’s the issue of interception. The data sent to your
+server from the browser is validated and otherwise processed AFTER it gets to the
+server. In a smart client scenario the data is often (typically) validated and
+large processed (calculations, etc) on the client BEFORE it gets to the server.
+This means that a “man in the middle” who was extremely clever (able to
+deserialze, change and reserialize the byte stream) could alter your values as
+they went across the wire.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>SSL addresses both issues. Or the remoting encrypting in .NET
+2.0 can help address them (though you need some secure way of getting a key to
+the client).<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Things can get more complex from here though. Things like replay
+attacks and other hacks that can occur if you have a “man in the middle” can be
+very hard to overcome, though SSL does solve pretty much all of them as far as
+I am aware. The remoting encryption probably solves the vast majority of issues
+– especially if you put some sort of auto-incrementing message id in each
+message (using ApplicationContext.GlobalContext probably), because then the receiver
+of the message can check to see if that value is the expected value, thus
+preventing the replay attack scenario.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>As with any security issue, you need to do a threat assessment
+and evaluate the cost/benefit/risk issues around each possible type of attack.
+Then you can decide which scenarios should be addressed and come up with a
+strategy.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky</span><b><span><o:p></o:p></span></b></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+</div>
+
+
+
+
+<BR>
+
+<P><FONT SIZE=2>No virus found in this outgoing message.<BR>
+Checked by AVG Free Edition.<BR>
+Version: 7.5.467 / Virus Database: 269.7.3/809 - Release Date: 5/17/2007 5:18 PM<BR>
+</FONT> </P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>NightOwl888 replied on Friday, May 18, 2007</h2><P>Dave and Rocky,</P>
+<P>Being from a banking background, I have a little experience regarding security.&nbsp; I agree with Rocky that putting SSL encryption in place is a great idea and it will protect any sensitive data while it is <EM>in transit.&nbsp;&nbsp;</EM>Personally, I prefer the SSL to the .NET remoting encryption route for the following reasons:</P>
+<OL>
+<LI>SSL is an older, tested, and proven way to secure data in transit</LI>
+<LI>SSL does not require any code changes to implement and can be administered seperate from the application</LI>
+<LI>Securing the public/private key pair using .NET remoting encryption can be a tricky matter</LI>
+<LI>Using .NET remoting encryption will require changes to the code of the application</LI></OL>
+<P>However, what my original question addressed was how to protect the .NET remoting <EM>endpoint</EM>.&nbsp; This is an entirely different matter altogether.&nbsp; Keep in mind, putting a .NET remoting endpoint on the Internet is like giving all the hackers in the world the keys to your database.&nbsp;&nbsp;In .NET using reflection to reverse engineer the .NET remoting endpoint into MSIL and&nbsp;then&nbsp;build an application that can call it is a trivial matter.&nbsp; And since SSL&nbsp;doesn't block any unauthorized acess to your server (after all, anyone can call a server with SSL installed), SSL alone isn't enough to protect your endpoint from hacking.&nbsp; If you have ever analyzed the logs of an Internet facing webserver, you are probably aware of the dozens of attempts by automated programs to find vulnerabilities on your server.&nbsp; Without a doubt, .NET remoting endpoints are something hackers will program their robots to look for if they haven't already.</P>
+<P>I should point out that if you don't have any gold, you don't need to build Fort Knox. But&nbsp;if your database contains any sensitive data (personal information, credit card numbers, account passwords, etc) - even if they are encrypted in the database, securing the endpoint to your application is crucial.&nbsp; After all, your application has unencrypted access to this information, doesn't it?</P>
+<P>One thing that makes .NET less secure than other languages is the easy ability to read all of the strings in plain text that are compiled into the application.&nbsp; It is a very important matter to put your database connection strings outside of your code -&nbsp;not just to make it easier to point to another database, but also for security reasons.&nbsp; Another thing to keep in mind is that&nbsp;configuration files&nbsp;that contain your database connection strings with the extension .config cannot be downloaded from the Internet, but if you use some custom scheme for configuration you should add your file extension to the list of files that cannot be downloaded (consult the MSDN documentation for this).</P>
+<P>Two ways to address the specific problem of securing the .NET remoting endpoint&nbsp;(across the Internet) are:</P>
+<OL>
+<LI>Configure your virtual host to reject all requests that do not fall within a certain IP range or come from a specific IP address</LI>
+<LI>Use MS Certificate Services to generate a public/private key pair and install the keys in the keystore on your server and all of the client computers&nbsp;that will access it.</LI></OL>
+<P>Both of these methods can be implemented without changing a single line of code and will be completely transparent to your application.&nbsp; In addition, they can be used simultaneously.&nbsp; There are certainly other schemes that can be used such as .NET remtoing encryption, but most of them require you to modify your application in one way or another.</P>
+<P>While the first method I mentioned isn't completely foolproof because IP addresses can be spoofed (althouh enabling this option certainly reduces the chances of being hacked), the second method brings you to a whole new level of security.&nbsp; Using a public/private key pair will ensure your server will reject any nontrusted computers from making requests to your server, and the only way to thwart this is to gain access to a certificate that the server will accept.&nbsp; Not to mention, you don't have to purchase a public SSL certificate because this public/private key pair will also encrypt the in transit data to the level you specify when you generate the certificate.</P>
+<P>Granted, my description above is not complete of the whole process and it is recommended that your Certificate Server never be connected to any public (or depending on the level of trust in your organization, private) networks.&nbsp; But this should point you in the right direction.&nbsp; The MSDN documentation is a good source of information about creating and installing private certificates using MS Certificate Services.</P>
+<P>A good source of information about security with .NET remoting (although the book is now a little dated) is "Advanced .NET Remoting in VB.NET" (there is also a C# version) by APress.</P>
+<P>Dave, I guess the only question is which methods will <A href="http://www.webhost4life.com">www.webhost4life.com</A> allow you to configure?&nbsp; Since the process of installing private certificates on a webserver is almost exactly the same as installing an SSL certificate, I imagine this is an option with your hosting provider, but&nbsp;since you have access to their control panel and I do not, can you tell me if&nbsp;they allow you to configure certificates?&nbsp; Do they allow you to lock down your virtual host to a specific IP range?</P>
+<P>NightOwl888</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>David replied on Saturday, May 19, 2007</h2><P>NightOwl888,</P>
+<P>Thanks for all that information - I'm sure this will be very helpful when I get to the point of needing to lock things down&nbsp;more securely. The main thing I had considered was the database connection strings, and by following the recommened procedure I believe I am pretty safe there. I have&nbsp;experimented with&nbsp;encryting the connections string section of the&nbsp;web.config which is easy to do in .Net2, but I haven't implemented it yet.</P>
+<P>You can't configure certificates via the control panel but I'm sure webhost4life would have no problem installing a private certificate for you. Going back a couple of years I used to purchase my SSL certificates myself and would have to log a support request for them to install it. The process is a bit more automated now with standard SSL, but they're very good at handling non-standard configuration issues that can't be done via their control panel. In most cases they don't even charge for it. I'm fairly sure you can't specify a specific IP range for a virtual host, but again I would expect they would allow you to do this by logging a support request. I'm sure you could get them to confirm this without being a customer.</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>NightOwl888 replied on Saturday, July 19, 2008</h2><P>David,</P>
+<P>After over a year of being sidetracked, I am back on this again. I am seriously considering webhost4life as the place to host my website and database.</P>
+<P>After reviewing my options for securing the Internet-facing application endpoint, I still come to the same conclusion: I will likely need to host some web services in order to accomplish this.</P>
+<P>I found this article from Microsoft which spells it out in black and white: </P>
+<P>Do Not Expose Remoted Objects to the Internet</P>
+<P><A href="http://msdn.microsoft.com/en-us/library/aa302429.aspx">http://msdn.microsoft.com/en-us/library/aa302429.aspx</A></P>
+<P>&nbsp;</P>
+<P>However, now I have an extra level of complexity - my CSLA&nbsp;1.51&nbsp;classes must be able to run locally or remotely through web services (instead of remoting). And those web services must implemtent WS-Security. They need to run locally now too&nbsp;because my web site now uses CSLA.</P>
+<P>Anyway, I am just curious where your implementation ended up - did you find a way to secure remoting endpoints, or did you switch to web services? Every time I think about how much maintenance it will be to keep my CSLA classes and remoting endpoints in sync I cringe.</P>
+<P>-NightOwl888</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tetranz replied on Saturday, July 19, 2008</h2>One issue you might run into is that CSLA (I think) requires full trust permissions. Most shared hosts only give you medium trust. The only host I've heard of (other than virtual private servers) that gives you full trust is discountasp.com. I've never used them so I don't really know anything else about them.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>NightOwl888 replied on Saturday, July 19, 2008</h2><P>Yea, I found a related thread on this and I am starting to worry: <A HREF="/forums/thread/6814.aspx">http://forums.lhotka.net/forums/thread/6814.aspx</A></P>
+<P>It sounds like it can be worked around somewhat because only certain functionality uses reflection. But then, I am using the same CSLA library in both my partial trust shared host provider and in a Windows application, so I may need to write some conditional logic in each case whether to use the functionality that requires reflection. That could amount to a large amount of work!</P>
+<P>The thing I am most concerned about is securing the endpoint that will be sitting on the shared host so it can only be accessed the Windows client.</P>
+<P>I am reading up on CSLA 2.0 right now, and I noticed it supports web services through the dataportal. I have yet to find out whether I can use WS-Security with this configuration, but it sounds promising. Then it will be a matter of figuring out which of these options can be implemented the fastest:</P>
+<OL>
+<LI>Upgrade the 40+ Business Objects to CSLA 2.x to support Web Services in the DataPortal.</LI>
+<LI>Follow the pattern used in CSLA 2.x to create a dataportal in CSLA 1.51 that supports Web Services and WS-Security.</LI>
+<LI>Create Web Services for each of the business objects that the Windows application uses, and put in conditinal calls to the Web Service from&nbsp;my Business Objects&nbsp;based on the configuration file.</LI>
+<LI>Make the Windows Forms UI into an ASP.NET&nbsp;Web UI.</LI></OL>
+<P>Since there are only about 15 forms in the Windows application and at least twice as many objects, #4 might end up being the easiest to implement, and would solve my security issue with no extra effort.</P>
+<P>The long term goal of this application is to upgrade it to CSLA 2.x, so this is grunt work that will need to be done regardless of which option I choose. I have also been considering migrating the Windows application to the Web just for the sake of sharing UI components.</P>
+<P>BTW - one of the Windows Services was incorporated into my CSLA library and another is no longer in use, so I am down to migrating just 3 applications (a Windows Client, a Windows Service, and an ASP.NET web site) for use with the shared host.</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>David replied on Sunday, July 20, 2008</h2><P>I haven't&nbsp;done any more on this as it won't really be an issue for me. The only time I will place the remote objects on a public web server is for my demo app, and the only consequence of that getting hacked is a bit of inconvenience.</P>
+<P>If any of my customers want to use remoting over the Internet they will most likley use a VPN, so I think it should be fine.</P>
+<P>Sorry I couldn't be of any more help.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Sunday, July 20, 2008</h2><P>It would be difficult to get any recent version of CSLA .NET to work in medium trust, because it uses the BinaryFormatter (or NetDataContractSerializer) and that isn't allowed. And it uses reflection, which isn't allowed (as used anyway).</P>
+<P>There's the possibility that CSLA Light (CSLA .NET for Silverlight) may (with some tweaks) work when built against the .NET runtime too. If so (and we're quite a ways from trying this) it might address the medium trust issue. If this works (big if), then you could build a web site using CSLA Light (perhaps combined with the CslaDataSource from CSLA .NET?) that would run in medium trust, talking to an app server running with full trust, or talking directly to a SQL database.</P>
+<P>But today you need full trust, and there's no easy way around that...</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>NightOwl888 replied on Monday, July 21, 2008</h2><P>Thanks for the response Rocky.</P>
+<P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div> </P>
+<P>It would be difficult to get any recent version of CSLA .NET to work in medium trust, because it uses the BinaryFormatter (or NetDataContractSerializer) and that isn't allowed. And it uses reflection, which isn't allowed (as used anyway).</P>
+<P></div></BLOCKQUOTE></P>
+<P>I am currently using version 1.51 on .NET 2.0, but&nbsp;I plan to upgrade as soon as we can. Unfortunately I can't wait for CSLA Light - I need to move everything to a shared (or dedicated)&nbsp;host by October.</P>
+<P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div> </P>
+<P>But today you need full trust, and there's no easy way around that...</P>
+<P></div></BLOCKQUOTE></P>
+<P>I just got a response to a help ticket from webhost4life and they have another plan that sounds like it will work with fewer application changes (although quite a bit more expensive): <A href="http://www.webhost4life.com/advancevps.asp">http://www.webhost4life.com/advancevps.asp</A>. Basically, they will allow me to install whatever I want on the server even though it isn't fully dedicated - I could probably&nbsp;even put the Windows Service&nbsp;there and it says they support Crystal Reports too.</P>
+<P>They also answered my other help ticket about .NET Reflection and this is their reply:</P>
+<P>"The .NET Reflection mechanism which you want to use should be supported by our share hosting service."</P>
+<P>While I agree, yes it should - that still doesn't mean it will. Maybe I will sign up for their plan to see if I can get my other CSLA website to work there. So far, I am not too impressed with the blanket statements I am getting from their support team. </P>
+<P>Then again, it seems that if they didn't allow serialization or reflection, it would be very limited what could actually be accomplished and they would run into this very frequently. Being that it doesn't sound like they run into people complaining about it not working, maybe they are running on a higher trust level than most shared hosts?</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, July 21, 2008</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>NightOwl888:</strong></div><div>
+<P>They also answered my other help ticket about .NET Reflection and this is their reply:</P>
+<P>"The .NET Reflection mechanism which you want to use should be supported by our share hosting service."</P>
+<P>While I agree, yes it should - that still doesn't mean it will. Maybe I will sign up for their plan to see if I can get my other CSLA website to work there. So far, I am not too impressed with the blanket statements I am getting from their support team. </P>
+<P>Then again, it seems that if they didn't allow serialization or reflection, it would be very limited what could actually be accomplished and they would run into this very frequently. Being that it doesn't sound like they run into people complaining about it not working, maybe they are running on a higher trust level than most shared hosts?</P>
+<P></div></BLOCKQUOTE></P>
+<P><EM>Public</EM> reflection works in medium trust. <EM>Private</EM> reflection does not.</P>
+<P>So if you make your DataPortal_XYZ methods public, it might just work. I'd mark them with the EditorBrowsable attribute then, to make them invisible to Intellisense so the UI developer doesn't accidentally invoke them.</P>
+<P>But the BinaryFormatter or NetDataContractSerializer also use reflection - typically to get your private fields. Unless you are willing to mark all your fields as public you'll still be in trouble with serialization...</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>NightOwl888 replied on Monday, July 21, 2008</h2>I am still inclined to go with the more expensive hosting option that undoubtedly allows you to run with full trust. Ideally it would be best&nbsp;to find hosting that meets my software requirements, not alter the software to meet the hosting requirements.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tetranz replied on Monday, July 21, 2008</h2><P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>NightOwl888:</strong></div><div>I am still inclined to go with the more expensive hosting option that undoubtedly allows you to run with full trust. Ideally it would be best&nbsp;to find hosting that meets my software requirements, not alter the software to meet the hosting requirements.</div></BLOCKQUOTE></P>
+<P>A virtual server is probably your best option if you don't want to stretch to a dedicated server.&nbsp;I think the VPS offerings at JodoHost are pretty good value.&nbsp;<A href="http://www.jodohost.com/windows-vps.asp">http://www.jodohost.com/windows-vps.asp</A>&nbsp; I haven't tried one but I happily use their shared hosting and keep an eye on their forums. I think their VPS comes with access to an external SQL Server.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Sunday, July 20, 2008</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>NightOwl888:</strong></div><div>
+<P>I found this article from Microsoft which spells it out in black and white: </P>
+<P>Do Not Expose Remoted Objects to the Internet</P>
+<P><A href="http://msdn.microsoft.com/en-us/library/aa302429.aspx">http://msdn.microsoft.com/en-us/library/aa302429.aspx</A></P>
+<P></div></BLOCKQUOTE></P>
+<P>This is generally good advice, because it isn't good on Microsoft's part to assume you know how to expose remoted objects in a secure manner. So by stating this clearly, they avoid anyone doing it wrong, and then blaming Microsoft for the results.</P>
+<P>And really, you should think twice. And then again.</P>
+<P>If you have a client out in the wild world, calling your server, perhaps you should be service-oriented. Yes, that's a lot more expensive and complex, but it often suits the requirements better.</P>
+<P>But if you decide that the client, even in the wild world, is within your application's semantic and security trust boundaries, and if you secure your communication channel using SSL or WS-Security, then I don't see where there's a problem using the data portal to move your objects between client and server.</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

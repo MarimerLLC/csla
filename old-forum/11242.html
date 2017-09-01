@@ -1,0 +1,22 @@
+<html><header><title>Serialization issue with .NET 4.0 and .NET 4.5 beta</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Serialization issue with .NET 4.0 and .NET 4.5 beta</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11242.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>robertoh posted on Tuesday, March 20, 2012</h2><p>Hello guys,</p>
+<p>we&#39;re using CSLA 4.3 in a distributed environment and encountered the following issues with the usage of the data portal:</p>
+<p><em>There was an error while trying to deserialize parameter </em><a href="http://ws.lhotka.net/WcfDataPortal:request"><em>http://ws.lhotka.net/WcfDataPortal:request</em></a><em>. The InnerException message was &#39;Member &#39;m_identity&#39; was not found.&#39;.</em></p>
+<p>After some investigation we figured out that this is caused by the fact that the server was running on a machine that had a .NET 4.5 beta installed and the client was running with a &#39;pure&#39; .NET 4.0 installation; the same is true when the server is running on &#39;pure&#39; .NET 4.0 and the client on a .NET 4.5 beta machine.</p>
+<p>Everything works fine if both machines have exactly the same .NET runtime version / installation; either two times &#39;pure&#39; .NET 4.0 or two times .NET 4.5 beta.</p>
+<p>There are some changes in the serializer in the &#39;patched&#39; .NET 4.0 runtime (which comes with the installation of the .NET 4.5 beta installation).</p>
+<p>Is this a known issue? </p>
+<p>Thanks for information and help!</p>
+<p>Regards,</p>
+<p>robert.oh.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, March 20, 2012</h2><p>This wouldn&#39;t be the first time Microsoft has changed the serialization format out from under us.</p>
+<p>But it would be the first time they were incompatible since the .NET 1.0 to 1.1 fiasco.</p>
+<p>I suggest you do two things:</p>
+<ol>
+<li>Submit a bug to Microsoft via connect, so they know they are potentially repeating the 1.0 to 1.1 mess</li>
+<li>Try using the new binary reader/writer Sergey created for CSLA 4.3 - they probably won&#39;t have this issue because it is CSLA code doing the low-level creation of the byte stream; no guarantees, but it might be a workaround</li>
+</ol>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, March 20, 2012</h2><p>Oh wait, sorry, my workaround isn&#39;t available if the client is .NET :(</p>
+<p>So I don&#39;t have a real workaround to suggest. Microsoft must have changed how the NDCS works in 4.5 (I&#39;m assuming you are using WcfProxy), and to me that sounds like a bug in .NET.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>robertoh replied on Tuesday, March 20, 2012</h2><p>Hello Rocky,</p>
+<p>thanks for the fast answers.</p>
+<p>You&#39;re right, we&#39;re using the WcfProxy and we will create a Microsoft bug in connect.</p>
+<p>Thanks,</p>
+<p>robert.oh.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>BGrojer replied on Thursday, March 22, 2012</h2><p>Connect issue is here:<br /><br />https://connect.microsoft.com/VisualStudio/feedback/details/732591/serialization-issue-with-net-4-0-and-net-4-5-beta</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

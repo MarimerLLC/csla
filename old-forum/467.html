@@ -1,0 +1,241 @@
+<html><header><title>Sorting / Filtering EditableRootList</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Sorting / Filtering EditableRootList</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/467.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Crestline posted on Monday, June 26, 2006</h2>Is it possible?<br>
+<br>
+We looked at the SortedBindingList but it looks like it will only work
+with ReadOnlyLists.&nbsp; Just wondering if we are missing something or
+not.<br>
+<br>
+Thanks.<br>
+<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Brian Criswell replied on Monday, June 26, 2006</h2>It works with any List&lt;T&gt;.&nbsp; Both BusinessBase and ReadOnlyBase support this.&nbsp; I must be missing your meaning.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, June 26, 2006</h2><P>Yes, SortedBindingList is designed to act as a live, editable "view" over any IList&lt;T&gt;.</P>
+<P>The new FilteredBindingList coming in 2.1 will do the same thing, but acting as a filter instead.</P>
+<P>And since they both implement IList&lt;T&gt; themselves, they'll be stackable - which I find very cool:</P>
+<P>List&lt;string&gt; list&nbsp;= new List&lt;string&gt;();<BR>FilteredBindingList&lt;string&gt; f = new FilteredBindingList&lt;string&gt;(list);<BR>f.ApplyFilter("Rocky");<BR>SortedBindingList&lt;string&gt; s = new SortedBindingList&lt;string&gt;(f);<BR>s.ApplySort();</P>
+<P>The result displays only items containing "Rocky" and in sorted order <img src="/emoticons/emotion-1.gif" alt="Smile [:)]" /></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>brembot replied on Monday, December 11, 2006</h2>How am i going to filter multiple values in a property?<br><br>Ex. StudentNo Like "1,5,7"<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, December 11, 2006</h2>
+
+
+
+
+<DIV align=left><SPAN class=630560004-12122006><FONT face=Arial color=#0000ff size=2>If you are using FilteredBindngList you can create your own 
+filter provider method to do virtually anything you'd like.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=630560004-12122006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=630560004-12122006><FONT face=Arial color=#0000ff size=2>Public Module StudentFilter</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=630560004-12122006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=630560004-12122006><FONT face=Arial color=#0000ff size=2>&nbsp; Public&nbsp;Function Filter(ByVal item As Object, 
+ByVal filter As Object) As Boolean</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=630560004-12122006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=630560004-12122006><FONT face=Arial color=#0000ff size=2>&nbsp;&nbsp;&nbsp; Dim value As String&nbsp;= 
+item.ToString</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=630560004-12122006><FONT face=Arial color=#0000ff size=2>&nbsp;&nbsp;&nbsp; ' assume filter is an array of 
+string</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=630560004-12122006><FONT face=Arial color=#0000ff size=2>&nbsp;&nbsp;&nbsp; Dim list() As String = CType(filter, 
+String())</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=630560004-12122006><FONT face=Arial color=#0000ff size=2>&nbsp;&nbsp;&nbsp; For Each item As String In 
+list</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=630560004-12122006><FONT face=Arial color=#0000ff size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; If value.Contains(item) 
+Then</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=630560004-12122006><FONT face=Arial color=#0000ff size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ' found a 
+match</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=630560004-12122006><FONT face=Arial color=#0000ff size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return 
+True</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=630560004-12122006><FONT face=Arial color=#0000ff size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End If</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=630560004-12122006><FONT face=Arial color=#0000ff size=2>&nbsp;&nbsp;&nbsp; Next</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=630560004-12122006><FONT face=Arial color=#0000ff size=2>&nbsp;&nbsp;&nbsp; ' didn't find a 
+match</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=630560004-12122006><FONT face=Arial color=#0000ff size=2>&nbsp;&nbsp;&nbsp; Return False</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=630560004-12122006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=630560004-12122006><FONT face=Arial color=#0000ff size=2>&nbsp; End Function</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=630560004-12122006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=630560004-12122006><FONT face=Arial color=#0000ff size=2>End Class</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=630560004-12122006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=630560004-12122006><FONT face=Arial color=#0000ff size=2>To use this, set the FilterProvider property of the 
+FilteredBindingList to the address of (delegate pointer to) this Filter 
+method.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=630560004-12122006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=630560004-12122006><FONT face=Arial color=#0000ff size=2>Dim list As StudentList = 
+StudentList.GetList</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=630560004-12122006><FONT face=Arial color=#0000ff size=2>Dim filteredList As New FilteredBindingList(list, AddressOf 
+StudentFilter.Filter)</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=630560004-12122006><FONT face=Arial color=#0000ff size=2>Dim limit() As String = {"1", "5", "7"}</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=630560004-12122006><FONT face=Arial color=#0000ff size=2>filteredList.ApplyFilter("StudentNo", 
+limit)</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=630560004-12122006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=630560004-12122006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=630560004-12122006><FONT face=Arial color=#0000ff size=2>Rocky</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=630560004-12122006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV><BR>
+<BLOCKQUOTE>
+  <DIV class=OutlookMessageHeader align=left>
+  <HR>
+  <FONT face=Tahoma size=2><B>From:</B> brembot [mailto:cslanet@lhotka.net] 
+  <BR><B>Sent:</B> Monday, December 11, 2006 8:27 PM<BR><B>To:</B> 
+  rocky@lhotka.net<BR><B>Subject:</B> Re: [CSLA .NET] Sorting / Filtering 
+  EditableRootList<BR></FONT><BR></DIV>
+  <DIV></DIV>How am i going to filter multiple values in a property?<BR><BR>Ex. 
+  StudentNo Like "1,5,7"<BR><BR><BR><BR></BLOCKQUOTE></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>brembot replied on Tuesday, December 19, 2006</h2><font face="Tahoma"><font size="2">Hello Rocky, <br><br>Thanks for your reply and it works. One more thing, How about filtering two or more property in a list? How am i going to achieve that?<br><br>Thanks in advance.<br>Marlon<br></font></font></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, December 19, 2006</h2><P>If you pass Nothing/null for the property name, then the business object itself is passed into your filter method as the item parameter.</P>
+<P>If the caller needs to dynamically specify the property names to use, you can just make your filter parameter (the second parameter) a more complex object that contains both the list of property names and the list of other filter criteria.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Inquistive_Mind replied on Tuesday, January 23, 2007</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div>
+<P>Yes, SortedBindingList is designed to act as a live, editable "view" over any IList&lt;T&gt;.</P>
+<P>The new FilteredBindingList coming in 2.1 will do the same thing, but acting as a filter instead.</P>
+<P>And since they both implement IList&lt;T&gt; themselves, they'll be stackable - which I find very cool:</P>
+<P>List&lt;string&gt; list&nbsp;= new List&lt;string&gt;();<BR>FilteredBindingList&lt;string&gt; f = new FilteredBindingList&lt;string&gt;(list);<BR><FONT color=#0000ff>f.ApplyFilter("Rocky");<BR></FONT>SortedBindingList&lt;string&gt; s = new SortedBindingList&lt;string&gt;(f);<BR>s.ApplySort();</P>
+<P>The result displays only items containing "Rocky" and in sorted order <img src="/emoticons/emotion-1.gif" alt="Smile [:)]" /></P>
+<P></div></BLOCKQUOTE></P>
+<P>&nbsp;</P>
+<P>Hello Rocky,</P>
+<P>I am trying to filter out an Editable List Object and bind it to the the grid but the ApplyFilter() method signature requires two Paramterers.Is there something I am missing?I want to filter a list by just a string and I do not want to create another object and pass the criteria object to it.Any thoughts on this?</P>
+<P>&nbsp;</P>
+<P>Thanks in Advance</P>
+<P>V</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, January 23, 2007</h2><P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>Inquistive_Mind:</strong></div><div></P>
+<P>I am trying to filter out an Editable List Object and bind it to the the grid but the ApplyFilter() method signature requires two Paramterers.Is there something I am missing?I want to filter a list by just a string and I do not want to create another object and pass the criteria object to it.Any thoughts on this?</P>
+<P></div></BLOCKQUOTE></P>
+<P>This is suppored - just pass string.Empty or "" as the property name. That'll result in the filter running against the ToString() value of the entire object. So as long as your object puts the appropriate values into its ToString() output you are all set.</P>
+<P>The only alternative is to write your own custom filter method, so it could be aware of all the different properties of your specific object and how you want to deal with them.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>seamusc replied on Tuesday, January 08, 2008</h2>Hi Rocky,<br><br>I am using the CSLA version 2.0.0.0 I am afraid for now but I would be keen to know how you would suggest I can Filter a DataGridView that is bound to BusinessListBase object. For sorting I can simply use <br><br>SortedBindingList&lt;TaskType&gt; sortedList = new SortedBindingList&lt;TaskType&gt;(taskTypeList);<br>sortedList.ApplySort("DisplayOrder", ListSortDirection.Ascending);<br>this.bindingSource1.DataSource = sortedList;<br><br>but i am not sure how I can achive the same for filtering in this version of the CSLA<br><br>regards<br><br>Shay<br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Tuesday, January 08, 2008</h2>Csla 2.x versions are depreciated.&nbsp; Can you upgrade to Csla 3?&nbsp; You don't need .net framework 3 to use it.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, January 08, 2008</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I suppose you could try back-porting FilteredBindingList into
+CSLA 2.0.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Or you can look at CSLAcontrib on CodePlex, as there&#8217;s a contribution
+there that may help (ObjectListView or something like that?)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JohnWester replied on Thursday, September 11, 2008</h2>it appears using the SortedBindingList you can only set one property name in the applySort, so you can only sort one column on a grid at a time.&nbsp; Is this correct?&nbsp; Is there a way to sort on multiple columns?<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Thursday, September 11, 2008</h2><P>Yes it is correct.</P>
+<P>No you cannot sort on multiple columns with it.</P>
+<P>I use the ObjectListView instead - it does sorting and filtering on multiple columns.</P>
+<P>It is available for free in the CSLA Contrib download section.</P>
+<P>Check old posts here for samples on how to use it.</P>
+<P>Oh - and once you move up to .Net 3.5 you can use LINQ to do sorting and filtering. I haven't got there yet. Maybe around Xmas I can move in to the modern world&nbsp; - nice way to end the year!</P>
+<P>Joe</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, September 11, 2008</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>It is true that the implementation is relatively simplistic.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>On codeplex there&#8217;s a more complex implementation.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>But I think the real answer is LINQ to CSLA, and so I view
+SortedBindingList and FilteredBindingList as effectively obsolete at this point.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky</span><o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>PC Tech replied on Wednesday, November 12, 2008</h2><P>I'm using Csla 3.5.2 and I am trying to wean myself off of the SortedBindingList and FilteredBindingList and to&nbsp;use Linq instead. I'm hitting a bit of&nbsp;a snag though. When using a SortedBindingList, any change I make to the original BLB collection is immediately reflected in the SBL including adding and removing items. On the other hand, when I use Linq if I add or remove from the underlying collection the change does not appear automatically. I need to maunally re-run the Linq query to see the changes. Is there a way to have the collection returned by the Linq query to work dynamically?</P>
+<P><U>Old Way</U></P><FONT size=2></FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>SortedBindingList</FONT></FONT><FONT size=2>&lt;</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>ShippingWeightTableItem</FONT></FONT><FONT size=2>&gt; sbl = </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>new</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>SortedBindingList</FONT></FONT><FONT size=2>&lt;</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>ShippingWeightTableItem</FONT></FONT><FONT size=2>&gt;(WeightTable);<BR>sbl.ApplySort(</FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>"Weight"</FONT></FONT><FONT size=2>, </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>ListSortDirection</FONT></FONT><FONT size=2>.Ascending);<BR>bindingSource2.DataSource = sbl;</FONT><FONT size=2> 
+<P><U>New&nbsp;Way</U></FONT></P>
+<P><FONT color=#0000ff size=2><FONT color=#0000ff size=2><FONT color=#000000>bindingSource2.DataSource = </FONT>from</FONT></FONT><FONT size=2> w </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>in</FONT></FONT><FONT size=2> WeightTable </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>orderby</FONT></FONT><FONT size=2> w.Weight </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>ascending </FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>select</FONT></FONT><FONT size=2> w;</P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Wednesday, November 12, 2008</h2><P>If you use "regular" LINQ to Objects then the result is IEnumerable(Of T) and it is not "linked" (pun intended) to the source collection.</P>
+<P>If you use LINQ to CSLA then the result is a collection of the same type as the source and the two are linked so that changes in the result are reflected in the source.</P>
+<P>I am not sure which version of CSLA this appears in first. 3.5 or 3.6.</P>
+<P>Joe</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>maxal replied on Tuesday, December 23, 2008</h2>What is the LINQ to CSLA? Are there examples how to use in instead of "regular" LINQ to Objects?<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, December 23, 2008</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>The Expert C# 2008 Business Objects book has an entire chapter
+(14) devoted to LINQ to CSLA.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>LINQ to CSLA has two features:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoListParagraph><span><span>1.<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span></span><span>When doing a non-projection query against a BLB you get back a
+LinqBindingList&lt;T&gt; instead of an IEnumerable&lt;T&gt;. The
+LinqBindingList class is much like SortedBindingList or FilteredBindingList, in
+that it is a live view over the real BLB you started with. This means if you
+add/remove items from the result of the query, they are added/removed in the
+real BLB too.<o:p></o:p></span></p>
+
+<p class=MsoListParagraph><span><span>2.<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span></span><span>Indexed queries against a BLB. If you mark a child object&#8217;s
+property with the Indexable attribute, and then use that property in the where
+clause of a LINQ query against the list, CSLA will create an index against that
+property and will use the index for the query. This is great if you do numerous
+queries against a single instance of a large list &#8211; in which case you can
+get many orders of magnitude better performance. If you don&#8217;t do multiple
+queries against a single large list, it is actually counter-productive, because
+creating the index is more expensive than the benefit of using it.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>No examples of using it are really needed, because it just
+works. There&#8217;s no special syntax or special effort on your part. If you
+do a non-projection query against a BLB, you get a LBL&lt;T&gt; back. If you
+put the Indexable attribute on a child property, and use that property (alone)
+in a where clause, you&#8217;ll get indexing.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky</span><b><span><o:p></o:p></span></b></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>maxal replied on Tuesday, December 23, 2008</h2>Thank you, I have to read the book, I know that. Couple of questions before that, if I may.<br><br>Am I right that LinqBindingList&lt;T&gt; is not used when I use Linq against RLB (read-only) list?<br>Also, I see that indexes are used for filtering (where clause in Linq) but I could not find them being used for sorting. Are they used for that?<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RangerGuy replied on Tuesday, December 19, 2006</h2><P><FONT face=Arial size=1>I'm trying to figure this out as well.... </FONT></P>
+<P><FONT face=Arial size=1>I have to filter on a property that is of type enum. The filter doesn't seem to work on anything but a string and when I create a custom filter function.. it sets both params as the filter value.</FONT></P>
+<P><FONT face=Arial size=1>If I find an answer I will post it for ya :).</FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Mike.Smith replied on Tuesday, January 23, 2007</h2><P>Has a solution the the structure problem been discovered yet? I am trying to filter based on a Guid (as I suspect others may want to do) but it doesn't seem to work out-of-the-box.</P>
+<P>The error I get is: "System.InvalidCastException: Conversion from type 'Guid' to type 'String' is not valid."</P>
+<P>What is the preferred work-around?</P>
+<P>Thanks in advance,</P>
+<P>Mike</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Mike.Smith replied on Tuesday, January 23, 2007</h2><P>In case anyone else is having a bit of trouble with&nbsp;Enums/Structures/Guids and filtering, I may have a solution:</P>
+<P>&nbsp;&nbsp;&nbsp; Public Shared Function Filter(ByVal item As Object, _<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ByVal filterValue As Object) As Boolean</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Dim result As Boolean = False</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; If item IsNot Nothing AndAlso _<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; filterValue IsNot Nothing Then</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; result = <FONT color=#ffa500><FONT color=#ff0000>item.ToString.Equals(filterValue.ToString)</FONT><BR></FONT>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End If</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return result</P>
+<P>&nbsp;&nbsp;&nbsp; End Function</P>
+<P>It works like a charm for me and I can't find a problem with it but of course that doesn't mean there isn't a problem. <img src="/emoticons/emotion-1.gif" alt="Smile [:)]" /> Feedback&nbsp;would be&nbsp;appreciated.</P>
+<P>Mike</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

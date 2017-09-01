@@ -1,0 +1,14 @@
+<html><header><title>Problem with DataGridView &amp; Csla</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Problem with DataGridView &amp; Csla</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/829.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Bonio posted on Monday, August 07, 2006</h2><P>I have a grid bound to a customer orderlist object (via a bindingsourcontrol). When a product code is keyed in, the valid price is retrieved and shown on the grid. </P>
+<P>The problem is as follows:</P>
+<P>When a user inputs a quantity, the object calculates the extended price for that item (qty*price), however, this does not show-up in the ExtPrice cell until I have moved off the row.</P>
+<P>I have tried adding the BindingSourceRefresh to the form. but to no avail.</P>
+<P>Any suggestions gratefully received,</P>
+<P>TIA</P>
+<P>Bonio</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Monday, August 07, 2006</h2>I think this is just how the grid works; I don't think you can change it.&nbsp; How does the grid know you're done typing unless you accept the entry by moving off or hitting the accept key (I dont' recall which one that is.. enter perhaps?).<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Bonio replied on Monday, August 07, 2006</h2><P>I don't think I made myself clear in my originl question.</P>
+<P>The problem is, I can enter values in a row (quantity, price) etc, move off those cells (so the edit is committed) and still the calculated sells are not updated. If I move the across the calculated cells with the grid cursor, they magically show their calculated values. Strangely this problem does not manifest itself in the first row of the grid where all the calculated sells are immediately updated when I press enter after inputting a quantity.</P>
+<P>I have tried C1 Flexgrid as well and still get the same problem.</P>
+<P>&nbsp;</P>
+<P>Bonio</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jurjen replied on Tuesday, August 08, 2006</h2><P><FONT face=Verdana size=2>When you calculate the value for your property, do you 'set' this property or just the member variable ? If you do the latter, maybe calling PropertyChanged(CalculatedProperty) will solve the problem ?</FONT></P>
+<P><FONT face=Verdana size=2>Jurjen</FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Bonio replied on Tuesday, August 08, 2006</h2><P>Thanks for the tip Jurjen, in fact that was exactly what was causing the problem!</P>
+<P>Thanks for your help</P>
+<P>Bonio</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

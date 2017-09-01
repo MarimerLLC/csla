@@ -1,0 +1,129 @@
+<html><header><title>Different ListChanged event behavior in 3.5.2 vs 3.6.0</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Different ListChanged event behavior in 3.5.2 vs 3.6.0</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6060.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Andreas posted on Monday, December 29, 2008</h2><P><SPAN>I experienced a different&nbsp;ListChanged event behavior of BLB between v3.5.2 and v3.6.0&nbsp;when a property of a containing&nbsp;child object changed. In version 3.5.3 the ListChanged event was called only once, as I expected. In version 3.6.0 the ListChanged event is called two times??<o:p></o:p></SPAN></P>
+<P><SPAN>A Happy and&nbsp;Successful New Year to&nbsp;the Fantastic CSLA Team,<o:p></o:p></SPAN></P>
+<P>Andreas</P>
+<P class=MsoNormal><o:p><FONT face=Calibri>&nbsp;</FONT></o:p></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Andreas replied on Sunday, January 11, 2009</h2><P>Hi,</P>
+<P><SPAN>Unfortunately I was not able find the problem by debugging Csla 3.6&nbsp;why OnListChanged is called two times after a property of a child item was changed. This behavior gets me in trouble with my current business logic&nbsp;and causes performance decreases as well. I would really appreciate if someone can figure out if this is a bug and may get fixed sometime (or if I have to life with it and need to change my business logic).<SPAN>I've written a small test program: </SPAN></SPAN></P>
+<P><FONT color=#0000ff><FONT color=#0000ff>using</FONT><FONT color=#000000> System;</FONT></P><FONT color=#0000ff>
+<P>using</FONT><FONT color=#000000> System.Collections.Generic;</FONT></P><FONT color=#0000ff>
+<P>using</FONT><FONT color=#000000> System.Linq;</FONT></P><FONT color=#0000ff>
+<P>using</FONT><FONT color=#000000> System.Text;</FONT></P><FONT color=#0000ff>
+<P>using</FONT><FONT color=#000000> Csla;</FONT></P><FONT color=#0000ff>
+<P>namespace</FONT><FONT color=#000000> OnListChanged</FONT></P>
+<P>{</P>
+<P><FONT color=#0000ff>&nbsp;&nbsp;&nbsp;public</FONT> <FONT color=#0000ff>class</FONT> <FONT color=#2b91af>Person</FONT> : Csla.<FONT color=#2b91af>BusinessBase</FONT>&lt;<FONT color=#2b91af>Person</FONT>&gt;</P>
+<P>&nbsp;&nbsp;&nbsp;{</P>
+<P><FONT color=#0000ff>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;public</FONT> Person()</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</P>
+<P><FONT color=#0000ff>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;public</FONT> <FONT color=#0000ff>static</FONT> <FONT color=#2b91af>PropertyInfo</FONT>&lt;<FONT color=#0000ff>string</FONT>&gt; NameProperty = </P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;RegisterProperty&lt;<FONT color=#0000ff>string</FONT>&gt;(<FONT color=#0000ff>new</FONT> <FONT color=#2b91af>PropertyInfo</FONT>&lt;<FONT color=#0000ff>string</FONT>&gt;(<FONT color=#a31515>"Name"</FONT>));</P>
+<P><FONT color=#0000ff>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;public</FONT> <FONT color=#0000ff>string</FONT> FirstName</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{</P>
+<P><FONT color=#0000ff>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get</P></FONT>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{</P>
+<P><FONT color=#0000ff>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return</FONT> GetProperty&lt;<FONT color=#0000ff>string</FONT>&gt;(NameProperty);</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</P>
+<P><FONT color=#0000ff>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set</P></FONT>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;SetProperty&lt;<FONT color=#0000ff>string</FONT>&gt;(NameProperty, <FONT color=#0000ff>value</FONT>);</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</P>
+<P>&nbsp;&nbsp;&nbsp;}</P>
+<P><FONT color=#0000ff>&nbsp;&nbsp;&nbsp;public</FONT> <FONT color=#0000ff>class</FONT> <FONT color=#2b91af>PersonList</FONT> : Csla.<FONT color=#2b91af>BusinessListBase</FONT>&lt;<FONT color=#2b91af>PersonList</FONT>, <FONT color=#2b91af>Person</FONT>&gt;</P>
+<P>&nbsp;&nbsp;&nbsp;{</P>
+<P><FONT color=#0000ff>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;public</FONT> PersonList() { }</P>
+<P><FONT color=#0000ff>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;protected</FONT> <FONT color=#0000ff>override</FONT> <FONT color=#0000ff>void</FONT> OnListChanged(System.ComponentModel.<FONT color=#2b91af>ListChangedEventArgs</FONT> e)</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{</P>
+<P><FONT color=#0000ff>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;base</FONT>.OnListChanged(e);</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</P>
+<P><FONT color=#0000ff>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;protected</FONT> <FONT color=#0000ff>override</FONT> <FONT color=#0000ff>void</FONT> OnChildChanged(Csla.Core.<FONT color=#2b91af>ChildChangedEventArgs</FONT> e)</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{</P>
+<P><FONT color=#0000ff>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;base</FONT>.OnChildChanged(e);</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</P>
+<P>&nbsp;&nbsp;&nbsp;}</P>
+<P><FONT color=#0000ff>&nbsp;&nbsp;&nbsp;class</FONT> <FONT color=#2b91af>Program</P></FONT>
+<P>&nbsp;&nbsp;&nbsp;{</P>
+<P><FONT color=#0000ff>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;static</FONT> <FONT color=#0000ff>void</FONT> Main(<FONT color=#0000ff>string</FONT>[] args)</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{</P>
+<P><FONT color=#2b91af>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;PersonList</FONT> list = <FONT color=#0000ff>new</FONT> <FONT color=#2b91af>PersonList</FONT>();</P>
+<P><FONT color=#008000>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// this caueses PersonList.OnListChanged to be called one time, as expected</P></FONT>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;list.Add(<FONT color=#0000ff>new</FONT> <FONT color=#2b91af>Person</FONT>());</P>
+<P><FONT color=#2b91af>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Person</FONT> bo = list[0];</P>
+<P><FONT color=#008000>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// this caueses PersonList.OnChildChanged to be called one time (as expected)</P></FONT>
+<P><FONT color=#008000>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// and PersonList.OnListChanged to be called two times...?</FONT></P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;bo.FirstName = <FONT color=#a31515>"Peter"</FONT>;</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</P>
+<P>&nbsp;&nbsp;&nbsp;}</P>
+<P>}&nbsp;&nbsp;&nbsp;</P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, January 20, 2009</h2><P>Sometimes I get talked into adding features to the framework because they are really good features. And then later I really regret the decision.</P>
+<P>The ChildChanged event is a good example, and is the root cause of this issue.</P>
+<P>Sometimes when a child object changes, it needs to raise a ListChanged from the parent. Other times it doesn't. Yet always it needs to raise the ChildChanged events all the way to the root. This turns out to be really quite complex.</P>
+<P>I thought I had it right, but I am seeing the same issue you are, and it is most certainly because of ChildChanged :(</P>
+<P>So, back to the drawing board...</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, January 20, 2009</h2><P>I believe I've fixed this issue (also noted in other threads), but would appreciate confirmation. You should be able to replace your BLB with the latest code in svn:</P>
+<P><A href="http://www.lhotka.net/cslacvs/viewvc.cgi/trunk/cslacs/Csla/BusinessListBase.cs?view=log">http://www.lhotka.net/cslacvs/viewvc.cgi/trunk/cslacs/Csla/BusinessListBase.cs?view=log</A></P>
+<P>And I think it will now work. My unit tests showing double-events and inconsistent behavior before/after serialization are now passing at least.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tetranz replied on Thursday, January 22, 2009</h2>Thanks Rocky. It's working well for me now. <br><br><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div>I believe I've fixed this issue (also noted in other threads), but would appreciate confirmation.</div></BLOCKQUOTE></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, January 22, 2009</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Excellent, thank you!!<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky <o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> tetranz
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Thursday, January 22, 2009 8:26 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] Different ListChanged event behavior in 3.5.2
+vs 3.6.0<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Thanks Rocky. It's working well
+for me now. <o:p></o:p></p>
+
+<div>
+
+<p class=MsoNormal><span><img width=100 height=100 id="_x0000_i1025" alt="Image removed by sender."></span><strong>RockfordLhotka:</strong><o:p></o:p></p>
+
+</div>
+
+<div>
+
+<p class=MsoNormal>I believe I've fixed this issue (also noted in other
+threads), but would appreciate confirmation.<o:p></o:p></p>
+
+</div>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

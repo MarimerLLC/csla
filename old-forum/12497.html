@@ -1,0 +1,30 @@
+<html><header><title>serialize variable on BusinessListBase?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>serialize variable on BusinessListBase?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/12497.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>swegele posted on Friday, March 14, 2014</h2><p>If I add a private variable on my BusinessListBase...how or can I serialize it so it is still there on the other side of the WCF portal?</p>
+<p>Say like this?</p>
+<p>TestList BusinessListBase(of Test)</p>
+<p>private mTestString as String</p>
+<p>I assumed the BusinessListBase would preserve and serialize variable just like BusinessBase but apparently not.</p>
+<p>I am tracking a list of issues to report to the parent when IParent is set in SetParent after DataPortal call.&nbsp; I override SetParent and alert the root parent in there.</p>
+<p>Any ideas</p>
+<p>Sean</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>ajj3085 replied on Sunday, March 16, 2014</h2><p>You can&#39;t.&nbsp; Databinding will no look for properties on collections and so Csla doesn&#39;t support it either.&nbsp; what you&#39;ll need to do is create a class and put the property there as well as the property for the collection, but I&#39;m not exactly sure what you&#39;re trying to do.</p>
+<p>It sounds like issues can be edited by themselves and so I&#39;m not sure why its reporting to another object.&nbsp; normal you&#39;ll not need to call setparent yourself.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>swegele replied on Sunday, March 16, 2014</h2><p>I discovered this was ONLY happening on 1 of 4 child collections.&nbsp; This one is not lazy loaded and uses the ChildFetch_DataPortal.&nbsp; All the other collections (which are lazy loaded) serialize their variables correctly across the full dataportal fetch.</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>swegele replied on Sunday, March 16, 2014</h2><p>The BusinessListBase DOES serialize / deserialize private variables correctly but only over a full dataportal call.</p>
+<p>Normally I would handle it like you say in the children of the list.&nbsp; But the problem is if there is a Referential Integrity problem, I skip loading that child.&nbsp; But I am alerting the user of which child type and id caused the problem and which object &amp; id it was looking for.&nbsp; So the user can save the root object but they are alerted to the problem with a warning rule.&nbsp; </p>
+<p>If there is no child to break a rule on, then I have to have the list alert its parent since BusinessListBase doesn&#39;t have broken rules.</p>
+<p>I got it working, by handling the lazy loaded and non-lazy loaded listbases differently.&nbsp; Cool feature.</p>
+<p>Root give a nice list of any RefIntegrity issues from n-levels down the tree:</p>
+<p>&quot;ChildType (id-1234) was unable to find it&#39;s referenced TargetType (id-5678)&quot;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sash_kr replied on Monday, March 17, 2014</h2><p>What a small world <img src="http://forums.lhotka.net/emoticons/emotion-1.gif" alt="Smile" />. I have the same question:&nbsp;<a href="http://forums.lhotka.net/forums/t/12499.aspx">http://forums.lhotka.net/forums/t/12499.aspx</a>&nbsp;(I had posted it at the same day).</p>
+<p>I guess it should work, but Andy says - NO! I&#39;m pretty sure Andy is a cool guy <img src="http://forums.lhotka.net/emoticons/emotion-1.gif" alt="Smile" />. But I can&#39;t believe that it will not work <img src="http://forums.lhotka.net/emoticons/emotion-9.gif" alt="Crying" />.</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>skagen00 replied on Monday, March 17, 2014</h2><p>I do believe you may be able to use OnGetState/OnSetState to manually serialize and deserialize fields for a collection, and you should be able to databind to these properties in XAML, etc.</p>
+<p>It&#39;s not clean, and under such circumstances i&#39;d just introduce the root object containing the collection and have the properties in the root as advised above, but I do believe it can be done.</p>
+<p>Maybe I am not recalling properly, but I think so.</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Monday, March 17, 2014</h2><p>@skagen00 - yes, you are correct.&nbsp;</p>
+<p>See my answer in the other thread:&nbsp;<a href="http://forums.lhotka.net/forums/p/12499/57073.aspx#57073">http://forums.lhotka.net/forums/p/12499/57073.aspx#57073</a>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Monday, March 17, 2014</h2><p>Hey Jonny, so is this considered supported then, or could a future version of Csla break this?&nbsp; </p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Tuesday, March 18, 2014</h2><p>Hi Andy,</p>
+<p>My general recommendation/pattern is to create a new &quot;Parent&quot; and add properties to this parent.&nbsp;</p>
+<p>Strictly speaking - csla (for as long as I have used used it since 2.x) - has allowed you to have serialized fields on a list object but with the following constraints: &nbsp;</p>
+<p>
+<ul>
+<li>no support for databinding on these properties (especially in WindowsForms)</li>
+<li>no PropertChanged event handler</li>
+<li>no support for rules (authorization/validation) on these properties&nbsp;</li>
+</ul>
+</p>
+<p>I do not believe we will ever want to merge BusinessListBase / BusinessBase into a new &quot;super base class&quot; &nbsp;so I will stick with my general recommendation.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

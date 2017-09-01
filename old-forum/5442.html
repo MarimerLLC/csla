@@ -1,0 +1,66 @@
+<html><header><title>Help - Cannot Debug Csla 3.6 - Debugger just ends</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Help - Cannot Debug Csla 3.6 - Debugger just ends</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5442.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>stefan posted on Monday, September 22, 2008</h2>I am struggling with this issue for nearly two weeks now, with no result <img src="/emoticons/emotion-6.gif" alt="Sad [:(]" /><br>I am using clsa 3.6.x, compiled from the svn checkout.<br>I am having trouble with fetching an object that uses the new PropertyInfo features.<br>I have a mixture of&nbsp; properties that have a local backing field, as well as properties thast are <br>completely managed.<br>I also use the ChildDataPortal.<br><br>When I run the application, I am getting an (expected) IndexOutOfRangeException from one of Child_Fetch methods, <br>because there is a DataReader that is looking for a fieldname that is not included in the stored procedures' result set.<br><br>As soon as I set a breakpoint, the application (the debugger) crashes when processing Csla framework code with no messages!<br><br>SimpleDataPortal.cs<br>&nbsp;&nbsp;&nbsp; <br><font size="2">&nbsp;&nbsp;&nbsp; public DataPortalResult Fetch(Type objectType, object criteria, DataPortalContext context)<br>&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; LateBoundObject obj = null;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; IDataPortalTarget target = null;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var eventArgs = new DataPortalEventArgs(context, objectType, DataPortalOperations.Fetch);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; try<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // create an instance of the business object.<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; obj = new LateBoundObject(objectType);<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>target = obj.Instance as IDataPortalTarget;</b><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ...<br></font><br>When I debug step by step, I can reach the line indicated above. <br>But after a short period of about 3-4 seconds, the debugger just ends. <br>Stepping in results in a message saying that the debugger can not continue debugging.<br><br>What is this?<br>Having no breakpoints, the code just 'runs through' ...<br>Is this a result of the new dynamic code invocation, that is replacing reflection?<br><br>Stefan<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rsbaker0 replied on Monday, September 22, 2008</h2><P>This usually happens when you have a stack overflow. </P>
+<P>Try changing the Exception handling setting in the debugger to "Thrown" versus just "Unhandled" for .NET runtime exceptions.</P>
+<P>Sometimes, the debugger will try to evaluate your properties even though you didn't call them explicitly in your code. If you get a stack overflow in that case, it's hard to debug. </P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>stefan replied on Tuesday, September 23, 2008</h2>Thanks, but that didn't bring me any further, same behaviour.<br><br>I configured the debugger to show the disassembly when no source is available.<br>When I let the debugger run through (F5), he appears to reach a point where he is unable to <br>locate the underlying source code. What is strange is that he is telling me that he is missing the source <br>for my own class...<br><br><b><font size="2">Disassembly:<br>MyApp.Library.MyBusinessClass.DataPortal_Fetch<br>"Cannot show disassembly. This expression has not yet been translated into system-specific computercode"<br></font></b><br>I translated the text in bold style from german, I hope it resembles the English version...<br>That really sounds strange to me <img src="/emoticons/emotion-3.gif" alt="Surprise [:O]" /><br><br><br>I am considering a reinstall of Visual Studio this afternoon... <img src="/emoticons/emotion-6.gif" alt="Sad [:(]" /><br><br><br>Stefan<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, September 23, 2008</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Can you try this on a different computer &#8211; maybe your VS
+install is corrupt?<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, September 22, 2008</h2>I don't know why that would be happening. I've had similar issues in Silverlight, but not on the .NET side. The Silverlight issues are almost certainly due to the beta quality of Silverlight - but you'd hope that .NET 3.5 SP1 (released) would be more stable...</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>stefan replied on Friday, September 26, 2008</h2>I finally got rid of that annoying debugger thing!<br>My Visual Studio install was not corrupt - <br>Tried it on another machine with a virgin VS 2008 SP1 install, <br>checked out the solution, had to reestablish the corect build order, <br>refreshed some references, and encountered the same issues there.<br><br>The problem was:&nbsp; I had followed the ProjectTracker(3.6) syntax for all the<br>GetProperty/SetProperty invocations! This resulted in nearly three weeks of project stagnation <img src="/emoticons/emotion-9.gif" alt="Crying [:'(]" /><br><br>Rocky:<br><b>I THOUGHT I resolved my problems by just pedantically adding the type parameters to each GetProperty and SetProperty call, just as Intellisense was showing all the time!<br>Because I could debug again on the new machine!<br><br></b>I don't know why you chose to omit the generic type parameter (Of ....)<br>&nbsp;... maybe just because VS let's us do it.<br>I assume, once a solution gets more complex (than PTracker anyway), the debugger cannot handle this any more...<br><br>My recommendation is as follows: As long as your are calling the strongly typed versions, always invoke GetProperty and SetProperty the generic way!<br><br>Going back to my old dev machine, I updated the solution from the repository, and <b>STILL have the issue</b>! What the...<br><br>By the way, did you change the default NoAccessBehaviour for the setters to throw an exception?<br>Maybe it is unchanged from the beginning and I didn't notice.<br><br>Stefan<br><br>PS: Neat side effect of all this trouble: got rid of my old VS2005 installation, and I have a really good new folder structure for my solution now...<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, September 26, 2008</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I am glad you discovered the source of the issue, though it is unfortunate
+that you lost so much time.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>There is a specific and intentional coding change to CSLA .NET
+in 3.6 that allows the dropping of the generic type parameters on those calls.
+You can&#8217;t drop them in 3.5, but in 3.6 you can allow the compiler to use
+type inference to determine the type parameter values.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky</span><b><span><o:p></o:p></span></b></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

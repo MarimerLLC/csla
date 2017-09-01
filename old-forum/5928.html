@@ -1,0 +1,125 @@
+<html><header><title>Rolodex - The service '/WcfPortal.svc' does not exist...</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Rolodex - The service '/WcfPortal.svc' does not exist...</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5928.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>thunt posted on Wednesday, December 03, 2008</h2><P>How do I get WcfHostWeb running and then hit F5 to debug the Rolodex solution?&nbsp; I right-click on WcfHostWeb - choose View in Browser and can bring up page for WcfPortal.svc.&nbsp; If&nbsp; I hit F5 I get a dialog "Unable to attach to application WebDev.WebServer.exe the system cannot find the file specified..continue anyway - Yes/No.&nbsp; If I hit yes, I get a blank browser window.&nbsp; Isn't this a conflict since I already have WcfHostWeb running on same port?</P>
+<P>With nothing running, If I just hit F5 I get the login page, but no login works and trace shows "The service '/WcfPortal.svc' does not exist".&nbsp; Obviously, this is due to not launching WcfHostWeb first?</P>
+<P>I've set the Web project as startup and forced it to use port 2430.&nbsp; The login page displays, but no login works.&nbsp; I have rebuilt connection string from settings page in WcfHostWeb properties and test connection button works fine.&nbsp; I have read all the threads in forum and still stuck.&nbsp; </P>
+<P>Below is&nbsp;traces.svclog exception with "The service '/WcfPortal.svc' does not exist".</P>
+<P>&nbsp;</P>
+<P>&lt;E2ETraceEvent xmlns="<A href='http://schemas.microsoft.com/2004/06/E2ETraceEvent">http://schemas.microsoft.com/2004/06/E2ETraceEvent"&gt;&lt;System</A> xmlns="<A href='http://schemas.microsoft.com/2004/06/windows/eventlog/system">1310753http://schemas.microsoft.com/2004/06/windows/eventlog/system"&gt;&lt;EventID&gt;131075&lt;/EventID&gt;&lt;Type&gt;3&lt;/Type&gt;&lt;SubType</A> Name="Error"&gt;0&lt;/SubType&gt;&lt;Level&gt;2&lt;/Level&gt;&lt;TimeCreated SystemTime="2008-12-03T14:07:05.5084339Z" /&gt;&lt;Source Name="System.ServiceModel" /&gt;&lt;Correlation ActivityID="{00000000-0000-0000-0000-000000000000}" /&gt;&lt;Execution ProcessName="WebDev.WebServer" ProcessID="2136" ThreadID="6" /&gt;&lt;Channel /&gt;&lt;Computer&gt;TERRYLAB&lt;/Computer&gt;&lt;/System&gt;&lt;ApplicationData&gt;&lt;TraceData&gt;&lt;DataItem&gt;&lt;TraceRecord xmlns="<A href="http://schemas.microsoft.com/2004/10/E2ETraceEvent/TraceRecord">http://schemas.microsoft.com/2004/10/E2ETraceEvent/TraceRecord</A>" Severity="Error"&gt;&lt;TraceIdentifier&gt;http://msdn.microsoft.com/en-US/library/System.ServiceModel.Diagnostics.ThrowingException.aspx&lt;/TraceIdentifier&gt;&lt;Description&gt;Throwing an exception.&lt;/Description&gt;&lt;AppDomain&gt;db813434-1-128727868036363739&lt;/AppDomain&gt;&lt;Exception&gt;&lt;ExceptionType&gt;System.ServiceModel.EndpointNotFoundException, System.ServiceModel, Version=3.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089&lt;/ExceptionType&gt;&lt;Message&gt;The service '/WcfPortal.svc' does not exist.&lt;/Message&gt;&lt;StackTrace&gt;&nbsp;&nbsp; at System.ServiceModel.ServiceHostingEnvironment.HostingManager.EnsureServiceAvailable(String normalizedVirtualPath)<BR>&nbsp;&nbsp; at System.ServiceModel.ServiceHostingEnvironment.EnsureServiceAvailableFast(String relativeVirtualPath)<BR>&nbsp;&nbsp; at System.ServiceModel.Activation.HostedHttpRequestAsyncResult.HandleRequest()<BR>&nbsp;&nbsp; at System.ServiceModel.Activation.HostedHttpRequestAsyncResult.BeginRequest()<BR>&nbsp;&nbsp; at System.ServiceModel.Activation.HostedHttpRequestAsyncResult.OnBeginRequest(Object state)<BR>&nbsp;&nbsp; at System.ServiceModel.Channels.IOThreadScheduler.CriticalHelper.WorkItem.Invoke2()<BR>&nbsp;&nbsp; at System.ServiceModel.Channels.IOThreadScheduler.CriticalHelper.WorkItem.Invoke()<BR>&nbsp;&nbsp; at System.ServiceModel.Channels.IOThreadScheduler.CriticalHelper.ProcessCallbacks()<BR>&nbsp;&nbsp; at System.ServiceModel.Channels.IOThreadScheduler.CriticalHelper.CompletionCallback(Object state)<BR>&nbsp;&nbsp; at System.ServiceModel.Channels.IOThreadScheduler.CriticalHelper.ScheduledOverlapped.IOCallback(UInt32 errorCode, UInt32 numBytes, NativeOverlapped* nativeOverlapped)<BR>&nbsp;&nbsp; at System.ServiceModel.Diagnostics.Utility.IOCompletionThunk.UnhandledExceptionFrame(UInt32 error, UInt32 bytesRead, NativeOverlapped* nativeOverlapped)<BR>&nbsp;&nbsp; at System.Threading._IOCompletionCallback.PerformIOCompletionCallback(UInt32 errorCode, UInt32 numBytes, NativeOverlapped* pOVERLAP)<BR>&lt;/StackTrace&gt;&lt;ExceptionString&gt;System.ServiceModel.EndpointNotFoundException: The service '/WcfPortal.svc' does not exist.&lt;/ExceptionString&gt;&lt;/Exception&gt;&lt;/TraceRecord&gt;&lt;/DataItem&gt;&lt;/TraceData&gt;&lt;/ApplicationData&gt;&lt;/E2ETraceEvent&gt;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Wednesday, December 03, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Your WCF web project should really be the one running on port
+2430.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> thunt
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Wednesday, December 03, 2008 9:33 AM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> [CSLA .NET] Rolodex - The service '/WcfPortal.svc' does not
+exist...<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>I can load IE with <a href="http://localhost:2430/WcfPortal.svc">http://localhost:2430/WcfPortal.svc</a>
+and get valid service page displayed.&nbsp; I've set the Web project as startup
+and forced it to use port 2430.&nbsp; The login page displays, but no login
+works.&nbsp; I have rebuilt connection string from settings page in WcfHostWeb
+properties and test connection button works fine.<o:p></o:p></p>
+
+<p>I have read all the threads in forum and still stuck.&nbsp; Below
+is&nbsp;traces.svclog exception with &quot;The service '/WcfPortal.svc' does
+not exist&quot;.<o:p></o:p></p>
+
+<p>&nbsp;<o:p></o:p></p>
+
+<p>&lt;E2ETraceEvent xmlns=&quot;<a href="http://schemas.microsoft.com/2004/06/E2ETraceEvent">1310753http://schemas.microsoft.com/2004/06/windows/eventlog/system&quot;&gt;&lt;EventID&gt;131075&lt;/EventID&gt;&lt;Type&gt;3&lt;/Type&gt;&lt;SubType</a>
+Name=&quot;Error&quot;&gt;0&lt;/SubType&gt;&lt;Level&gt;2&lt;/Level&gt;&lt;TimeCreated
+SystemTime=&quot;2008-12-03T14:07:05.5084339Z&quot; /&gt;&lt;Source
+Name=&quot;System.ServiceModel&quot; /&gt;&lt;Correlation
+ActivityID=&quot;{00000000-0000-0000-0000-000000000000}&quot;
+/&gt;&lt;Execution ProcessName=&quot;WebDev.WebServer&quot;
+ProcessID=&quot;2136&quot; ThreadID=&quot;6&quot; /&gt;&lt;Channel
+/&gt;&lt;Computer&gt;TERRYLAB&lt;/Computer&gt;&lt;/System&gt;&lt;ApplicationData&gt;&lt;TraceData&gt;&lt;DataItem&gt;&lt;TraceRecord
+xmlns=&quot;<a href="http://schemas.microsoft.com/2004/10/E2ETraceEvent/TraceRecord">http://schemas.microsoft.com/2004/10/E2ETraceEvent/TraceRecord</a>&quot;
+Severity=&quot;Error&quot;&gt;&lt;TraceIdentifier&gt;http://msdn.microsoft.com/en-US/library/System.ServiceModel.Diagnostics.ThrowingException.aspx&lt;/TraceIdentifier&gt;&lt;Description&gt;Throwing
+an
+exception.&lt;/Description&gt;&lt;AppDomain&gt;db813434-1-128727868036363739&lt;/AppDomain&gt;&lt;Exception&gt;&lt;ExceptionType&gt;System.ServiceModel.EndpointNotFoundException,
+System.ServiceModel, Version=3.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089&lt;/ExceptionType&gt;&lt;Message&gt;The
+service '/WcfPortal.svc' does not
+exist.&lt;/Message&gt;&lt;StackTrace&gt;&nbsp;&nbsp; at
+System.ServiceModel.ServiceHostingEnvironment.HostingManager.EnsureServiceAvailable(String
+normalizedVirtualPath)<br>
+&nbsp;&nbsp; at System.ServiceModel.ServiceHostingEnvironment.EnsureServiceAvailableFast(String
+relativeVirtualPath)<br>
+&nbsp;&nbsp; at
+System.ServiceModel.Activation.HostedHttpRequestAsyncResult.HandleRequest()<br>
+&nbsp;&nbsp; at
+System.ServiceModel.Activation.HostedHttpRequestAsyncResult.BeginRequest()<br>
+&nbsp;&nbsp; at
+System.ServiceModel.Activation.HostedHttpRequestAsyncResult.OnBeginRequest(Object
+state)<br>
+&nbsp;&nbsp; at
+System.ServiceModel.Channels.IOThreadScheduler.CriticalHelper.WorkItem.Invoke2()<br>
+&nbsp;&nbsp; at
+System.ServiceModel.Channels.IOThreadScheduler.CriticalHelper.WorkItem.Invoke()<br>
+&nbsp;&nbsp; at
+System.ServiceModel.Channels.IOThreadScheduler.CriticalHelper.ProcessCallbacks()<br>
+&nbsp;&nbsp; at
+System.ServiceModel.Channels.IOThreadScheduler.CriticalHelper.CompletionCallback(Object
+state)<br>
+&nbsp;&nbsp; at System.ServiceModel.Channels.IOThreadScheduler.CriticalHelper.ScheduledOverlapped.IOCallback(UInt32
+errorCode, UInt32 numBytes, NativeOverlapped* nativeOverlapped)<br>
+&nbsp;&nbsp; at
+System.ServiceModel.Diagnostics.Utility.IOCompletionThunk.UnhandledExceptionFrame(UInt32
+error, UInt32 bytesRead, NativeOverlapped* nativeOverlapped)<br>
+&nbsp;&nbsp; at
+System.Threading._IOCompletionCallback.PerformIOCompletionCallback(UInt32
+errorCode, UInt32 numBytes, NativeOverlapped* pOVERLAP)<br>
+&lt;/StackTrace&gt;&lt;ExceptionString&gt;System.ServiceModel.EndpointNotFoundException:
+The service '/WcfPortal.svc' does not
+exist.&lt;/ExceptionString&gt;&lt;/Exception&gt;&lt;/TraceRecord&gt;&lt;/DataItem&gt;&lt;/TraceData&gt;&lt;/ApplicationData&gt;&lt;/E2ETraceEvent&gt;<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>thunt replied on Wednesday, December 03, 2008</h2>Changed the Web project port to something else and WORKS <img src="/emoticons/emotion-10.gif" alt="Embarrassed [:$]" /></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

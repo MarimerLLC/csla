@@ -1,0 +1,17 @@
+<html><header><title>Am I right about using one undo level with binding in this way ?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Am I right about using one undo level with binding in this way ?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6778.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Programmer1987 posted on Sunday, April 12, 2009</h2><P>I have Business Class [CostItem] that complex enough to make me crazy </P>
+<P>it has many properties [A,B,C]&nbsp;some of them are inherited from businessListBase</P>
+<P>I want to use Wpf Window with Cancel Ok buttons so I put this small plan for that :</P>
+<P>1- my long story start in grid contains Collections of [CostItem] Class </P>
+<P>2- double click on the row , opens new window for selected [CostItem]</P>
+<P>3- Onload Window And Before Binding the SelectedCostItem To the [MainGrid] DataContext </P>
+<P>I will Call BeginEdit() for the CostItem Object</P>
+<P>4- Because I will made the CostItem Class Property [<FONT size=2><FONT size=3>DisableIEditableObject]</FONT> to True</FONT></P>
+<P><FONT size=2>The Begin Edit will only affect the costItem object and not of any its collection child.</FONT></P>
+<P><FONT size=2>5- when cancel button I will&nbsp; call cancelEdit for CostItem Object</FONT></P>
+<P><FONT size=2>6- when okay button I will call ApplyEdit for Costitem object</FONT></P>
+<P><FONT size=2>7- when the user try to edit any of collection child property I will call Begin Edit just to this property </FONT></P>
+<P><FONT size=2>and call cancelEdit if user canceled that and applychange if the user want to commit that </FONT></P>
+<P><FONT size=2>--------------</FONT></P>
+<P><FONT size=2>my question is Am I right in this plan ?&nbsp;are there any problems or missing points</FONT></P>
+<P><FONT size=2>I know that i have to rebind the object after apllying changes , in Wpf is there any Pause binding Feature ?!!</FONT></P>
+<P><FONT size=2>sorry for talking alot :)</FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rsbaker0 replied on Sunday, April 12, 2009</h2>I use DisableIEditableObject also, but I think your explict call to BeginEdit() will cascade to all child objects. It also does this if DisableIEditableObject is false, but only if BindingEdit also is false (e.g. the object is unbound at the time you call BeginEdit() )</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

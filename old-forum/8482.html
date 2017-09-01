@@ -1,0 +1,60 @@
+<html><header><title>Silverlight inheritance</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Silverlight inheritance</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/8482.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Calin posted on Saturday, February 06, 2010</h2><p>Hi,
+
+ I am using CSLA for silverlight in a 3 tier scenario, all communication is done throw the WcfPortal. I have a base business class declared like this:
+
+public class BaseBussinesObject : BusinessBase
+            where TBussinesObject : BaseBussinesObject
+
+witch has some common properties like Id
+
+my business classes use this like this:
+
+public partial class User : BaseBussinesObject
+
+The issue I have is that when I try to access from User properties that are in the base class I get a exception:
+
+&quot;The type initializer for &#39;Business.Bos.BaseBussinesObject`1&#39; threw an exception.&quot;
+
+What am I missing here ?
+
+
+Thank you,</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Saturday, February 06, 2010</h2><p>I&#39;d have to see more complete code to help.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>bartol replied on Sunday, February 07, 2010</h2><p>I am not sure if this will solve the problem but I remember a similar situation where the error was due to the static properties not being correctly registered.</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>am_fusion replied on Sunday, February 07, 2010</h2><p>I thought that there was code in the CSLA base classes to initialize the static PropertyInfo stuff now?&nbsp; We have experienced the same symptom but did not dig deep to find the cause.&nbsp; We simply adjusted our debuging strategy to solve the problem.&nbsp; I would love to track down and fix the underlying cause but can&#39;t seem to find the time these days.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Sunday, February 07, 2010</h2><p>In .NET that&#39;s true always.</p>
+<p>In SL that&#39;s true only if the PropertyInfo&lt;T&gt; fields are declared public - that&#39;s due to a private reflection limitation of SL.</p>
+<p>But of course the base class generic type and RegisterProperty() calls still have to be done correctly or the registration won&#39;t be correct even if it does run.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Calin replied on Monday, February 08, 2010</h2><p>Hi All,</p>
+<p>&nbsp;This is my base class:</p>
+<p>&nbsp;</p>
+<p>public abstract class BaseBussinesObject&lt;TBussinesObject&gt; : BusinessBase&lt;TBussinesObject&gt;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;where TBussinesObject : BaseBussinesObject&lt;TBussinesObject&gt;</p>
+<p>&nbsp;&nbsp; &nbsp;{&nbsp;&nbsp; &nbsp; &nbsp;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;public static PropertyInfo&lt;int&gt; IdProperty = RegisterProperty&lt;int&gt;(x =&gt; x.Id);</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;public int Id</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;{</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;get { return GetProperty(IdProperty); }</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;set { SetProperty(IdProperty, value); }</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;}</p>
+<p>}</p>
+<p>&nbsp;</p>
+<p>And here is a implemenation:</p>
+<p>
+<p>public partial class User :&nbsp;BaseBussinesObject&nbsp;&lt;User&gt;</p>
+<p>&nbsp;&nbsp; &nbsp;{</p>
+<p>}</p>
+</p>
+<p>&nbsp;</p>
+<p>Accessing User.Id from the silvelight application throws the exception from the first post.</p>
+<p>Hope this makes thinks more clear.</p>
+<p>&nbsp;</p>
+<p>Regards,</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, February 08, 2010</h2><p>You create the object by calling DataPortal.Create() right?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Calin replied on Tuesday, February 09, 2010</h2><p>Hi,</p>
+<p>&nbsp;</p>
+<p>&nbsp;I am&nbsp;actually&nbsp;using this to get the entity</p>
+<p>&nbsp;</p>
+<p>public static void Get(EventHandler&lt;DataPortalResult&lt;User&gt;&gt; callback, int id)</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;{</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;var dp = new DataPortal&lt;User&gt;();</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;dp.FetchCompleted += callback;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;dp.BeginFetch(new SingleCriteria&lt;User, int&gt;(id));</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;}</p>
+<p>&nbsp;</p>
+<p>Regards,</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

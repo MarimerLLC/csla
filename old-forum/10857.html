@@ -1,0 +1,16 @@
+<html><header><title>binding IsEnabled to IsValid in SL (without MVVM)</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>binding IsEnabled to IsValid in SL (without MVVM)</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10857.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>vschaak posted on Wednesday, November 09, 2011</h2><p>Hi,</p>
+<p>I try to bind the isEnabled property of a button to the IsValid Property of a BO in a SL app, WITHOUT using&nbsp;MVVM. Sounds simple, at least should be.<br />Other controls and validation are successfully bound to textboxes, but the button is always enabled, even if validation errors occur and the object&#39;s definitly not valid.</p>
+<p>???</p>
+<p>What to do? (Beside using MVVM <img src="http://forums.lhotka.net/emoticons/emotion-5.gif" alt="Wink" />)</p>
+<p>Thanks for help.</p>
+<p>Volker</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>jh72i replied on Wednesday, November 09, 2011</h2><p>Perhaps the IsValid property doesn&#39;t raise a notification when it is set so the UI won&#39;t know to respond/redraw</p>
+<p>I have a suspicion&nbsp;there isn&#39;t an OnPropertyChanged(&quot;IsValid&quot;) type thing going on with IsValid - its one of those more passive propeties that you interrogate rather than be notified about.</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>vschaak replied on Thursday, November 10, 2011</h2><p>Hi,</p>
+<p>indeed, IsValid/IsSavable does&#39;nt reflect changes to the binding infrastructure <img src="http://forums.lhotka.net/emoticons/emotion-6.gif" alt="Sad" />, at least without using own intermediate functionality (like in MVVM).</p>
+<p>Sad.</p>
+<p>Volker</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>vschaak replied on Wednesday, November 09, 2011</h2><p>Hi,</p>
+<p>false alert<img src="http://forums.lhotka.net/emoticons/emotion-16.gif" alt="Zip it!" /></p>
+<p>There was a conflict with a base-class method, handling some controls enabled state, my fault.</p>
+<p>IsValid definitly reacts on what it should.</p>
+<p>&nbsp;</p>
+<p>Volker</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,20 @@
+<html><header><title>Slightly OT: Anyway to get compiler to catch this goof?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Slightly OT: Anyway to get compiler to catch this goof?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5521.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>rsbaker0 posted on Friday, October 03, 2008</h2><P>So, yesterday I was implementing a new BusinessBase&lt;T&gt; derived class. </P>
+<P>Through an oversight on my part, here is what happened. </P>
+<P>I already had: (substituting class names for discussion)</P>
+<P>class FirstClass : BusinessBase&lt;FirstClass&gt; ...</P>
+<P>Then I went to implement SecondClass, and incorrectly declared it...</P>
+<P>class SecondClass : BusinessBase&lt;FirstClass&gt; ...</P>
+<P>This seemed to satisfy the generic constraint requirements and was not caught until runtime when I tried to Save the object and got an invalid cast exception because you can't cast a FirstClass to a SecondClass.</P>
+<P>I actually have a common MyBusinessBase&lt;T&gt; class in between my classes and BusinessBase&lt;T&gt;. Is there something I could put in the declaration or implementation that would catch errors like this?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Friday, October 03, 2008</h2><P>It isn't always an error. In fact I have an inheritance hierarchy setup that way.</P>
+<P>The "problem" is that FirstClass is probably fetching and saving items as FirstClass.</P>
+<P>In my hierarchy, since I know I will be deriving SecondClass from FirstClass, the FirstClass code fetches and saves items as type SecondClass.</P>
+<P>e.g.<BR>FirstClass=MyAccountGen</P>
+<P>SecondClass=MyAccount</P>
+<P>All the code generated stuff in MyAccountGen like Fetch and Save refer to MyAccount.</P>
+<P>Joe</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rsbaker0 replied on Friday, October 03, 2008</h2><P>I see. But is your declaration:</P>
+<P>class SecondClass : FirstClass </P>
+<P>or</P>
+<P>class SecondClass : BusinessBase&lt;FirstClass&gt; </P>
+<P>The first declaration would seem to define an "is-a" relationship (e.g. a SecondClass is-a FirstClass), while I don't think this true of the latter case.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Friday, October 03, 2008</h2><P>class SecondClass : FirstClass </P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

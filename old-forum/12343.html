@@ -1,0 +1,26 @@
+<html><header><title>Entity Framework Code First - BrokenRule has no key defined</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Entity Framework Code First - BrokenRule has no key defined</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/12343.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>asprog posted on Tuesday, February 04, 2014</h2><p>Hi,</p>
+<p>I&#39;m trying to create my first application with CSLA and Entity Framework using code first.</p>
+<p>But when the client tries to load data for the first time after start I get the following exception on the server:</p>
+<p style="padding-left:30px;"><i>A first chance exception of type &#39;System.Data.Entity.ModelConfiguration.ModelValidationException&#39; occurred in EntityFramework.dll</i></p>
+<p style="padding-left:30px;"><i>Additional information: One or more validation errors were detected during model generation:</i></p>
+<p style="padding-left:30px;"><i>Basilisque.Base.ClientBase.Service.Business.BrokenRule: : EntityType &#39;BrokenRule&#39; has no key defined. Define the key for this EntityType.</i></p>
+<p style="padding-left:30px;"><i>BrokenRules: EntityType: EntitySet &#39;BrokenRules&#39; is based on type &#39;BrokenRule&#39; that has no keys defined.</i></p>
+<p>While I can read the error and understand that there is no key defined, I don&#39;t know how to fix that.</p>
+<p>There is no type &#39;<i>Basilisque.Base.ClientBase.Service.Business.BrokenRule</i>&#39;. There is no type &#39;BrokenRule&#39;in my solution at all. So I guess CSLA generates that type at runtime?</p>
+<p>&nbsp;</p>
+<p>Here is the StackTrace:</p>
+<p style="padding-left:30px;">&nbsp; &nbsp;<i>bei System.Data.Entity.Core.Metadata.Edm.EdmModel.Validate()</i></p>
+<p style="padding-left:30px;"><i>&nbsp; &nbsp;bei System.Data.Entity.DbModelBuilder.Build(DbProviderManifest providerManifest, DbProviderInfo providerInfo)</i></p>
+<p style="padding-left:30px;"><i>&nbsp; &nbsp;bei System.Data.Entity.DbModelBuilder.Build(DbConnection providerConnection)</i></p>
+<p style="padding-left:30px;"><i>&nbsp; &nbsp;bei System.Data.Entity.Internal.LazyInternalContext.CreateModel(LazyInternalContext internalContext)</i></p>
+<p style="padding-left:30px;"><i>&nbsp; &nbsp;bei System.Data.Entity.Internal.RetryLazy`2.GetValue(TInput input)</i></p>
+<p style="padding-left:30px;"><i>&nbsp; &nbsp;bei System.Data.Entity.Internal.LazyInternalContext.InitializeContext()</i></p>
+<p style="padding-left:30px;"><i>&nbsp; &nbsp;bei System.Data.Entity.Internal.InternalContext.Initialize()</i></p>
+<p style="padding-left:30px;"><i>&nbsp; &nbsp;bei System.Data.Entity.Internal.InternalContext.GetEntitySetAndBaseTypeForType(Type entityType)</i></p>
+<p style="padding-left:30px;"><i>&nbsp; &nbsp;bei System.Data.Entity.Internal.Linq.InternalSet`1.Initialize()</i></p>
+<p style="padding-left:30px;"><i>&nbsp; &nbsp;bei System.Data.Entity.Internal.Linq.InternalSet`1.get_InternalContext()</i></p>
+<p style="padding-left:30px;"><i>&nbsp; &nbsp;bei System.Data.Entity.Infrastructure.DbQuery`1.System.Linq.IQueryable.get_Provider()</i></p>
+<p style="padding-left:30px;"><i>&nbsp; &nbsp;bei System.Linq.Queryable.Select[TSource,TResult](IQueryable`1 source, Expression`1 selector)</i></p>
+<p style="padding-left:30px;"><i>&nbsp; &nbsp;bei Basilisque.Base.DataAccessBase.Business.BaseDal`4.Fetch() in d:\Develop\ASProg\Basilisque\Main\Source\Base\DataAccessBase\DataAccessBase\Business\BaseDal.cs:Zeile 24.</i></p>
+<p>&nbsp;</p>
+<p>Any suggestions?</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

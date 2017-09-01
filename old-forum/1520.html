@@ -1,0 +1,41 @@
+<html><header><title>Using EnterpriseServiceHost</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Using EnterpriseServiceHost</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/1520.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>don012001 posted on Tuesday, October 17, 2006</h2><P>I tried using "Enterpriseservicehost" for testing the PTWeb application. I have registered the "EnterpriseServicesHostcs" component as well in COM+.</P>
+<P>The application is expecting the COM+ runtime to look for configuration details in the application.config file.</P>
+<P>At runtime the COM+ runtime&nbsp;looks for "C:\WINNT\system32\dllhost.exe.config" for configuration details. </P>
+<P>Because of that we are getting runtime errors. Any workaround for this.</P>
+<P>Appreciate any quick help.</P>
+<P>-DON.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, October 17, 2006</h2>Yes, follow the instructions in Chapter 12 for configuring the enterprise services host. You need to set a property in the COM+ Application through MMC to tell it where to find the config file.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>don012001 replied on Wednesday, October 18, 2006</h2><P>I'm using WIN2K server as development and deployment machine. In that case the procedure we are following is not useful right. Pls correct me If I'm wrong.</P>
+<P>-DON.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, October 18, 2006</h2>
+
+
+
+
+<DIV align=left><SPAN class=421571819-18102006><FONT face=Arial color=#0000ff size=2>Yeah, with Win2k I think you need to put the config file in 
+the same directory as dllhost itself... Not a good answer.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=421571819-18102006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=421571819-18102006><FONT face=Arial color=#0000ff size=2>I think that Clemens Vasters had once blogged a workaround 
+to this issue - it involved mucking about fairly deep in .NET, but I seem to 
+recall he had a solution - google is probably your friend 
+there.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=421571819-18102006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=421571819-18102006><FONT face=Arial color=#0000ff size=2>Rocky</FONT></SPAN></DIV><BR>
+<BLOCKQUOTE>
+  <DIV class=OutlookMessageHeader align=left>
+  <HR>
+  <FONT face=Tahoma size=2><B>From:</B> don012001 [mailto:cslanet@lhotka.net] 
+  <BR><B>Sent:</B> Wednesday, October 18, 2006 1:30 PM<BR><B>To:</B> 
+  rocky@lhotka.net<BR><B>Subject:</B> Re: [CSLA .NET] Using 
+  EnterpriseServiceHost<BR></FONT><BR></DIV>
+  <DIV></DIV>
+  <P>I'm using WIN2K server as development and deployment machine. In that case 
+  the procedure we are following is not useful right. Pls correct me If I'm 
+  wrong.</P>
+  <P>-DON.</P><BR><BR><BR></BLOCKQUOTE></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>don012001 replied on Thursday, October 19, 2006</h2><P>Rocky,</P>
+<P>We can make our code work with Enterprise Services (COM+) in 2 ways.</P>
+<P>1. having a file dllhost.exe.config created and place it under &lt;windows Folder&gt;\System32, and place the config details in this file.</P>
+<P>2. Change the class definition of <FONT color=#0000ff size=2></P>
+<P>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>class</FONT><FONT size=2> </FONT><FONT color=#008080 size=2>EnterpriseServicesPortal</FONT><FONT size=2> :</FONT><FONT size=2>&nbsp;&nbsp;Csla.Server.Hosts.</FONT><FONT color=#008080 size=2>EnterpriseServicesPortal<BR></FONT><FONT size=2>{<BR></FONT><FONT size=2></FONT><FONT color=#008000 size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// no code needed - implementation is in the base class<BR>}</FONT><FONT size=2> </FONT></P>
+<P><FONT size=2>to</FONT></P>
+<P><FONT size=2><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>class</FONT><FONT size=2> </FONT><FONT color=#008080 size=2>EnterpriseServicesPortal</FONT><FONT size=2> : Csla.Server.Hosts.</FONT><FONT color=#008080 size=2>EnterpriseServicesPortal<BR></FONT><FONT size=2>{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> EnterpriseServicesPortal() : </FONT><FONT color=#0000ff size=2>base</FONT><FONT size=2>()<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</FONT><FONT color=#008080 size=2>AppDomain</FONT><FONT size=2>.CurrentDomain.SetData(</FONT><FONT color=#800000 size=2>"APP_CONFIG_FILE"</FONT><FONT size=2>, &lt;</FONT><FONT color=#800000 size=2>path&gt;\app.config"</FONT><FONT size=2>);&nbsp;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</FONT></FONT><FONT size=2><FONT color=#008000 size=2>&nbsp;// no code needed - implementation is in the base class<BR></FONT></FONT><FONT size=2><FONT color=#008000>}</FONT><FONT size=2>&nbsp;</FONT></FONT></P>
+<P><FONT size=2><FONT size=2></FONT></FONT>&nbsp;</P>
+<P><FONT size=2><FONT size=2>This is working fine with me.</FONT></FONT></P>
+<P><FONT size=2><FONT size=2>-DON.</FONT></FONT></P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

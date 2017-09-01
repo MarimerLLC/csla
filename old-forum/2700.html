@@ -1,0 +1,48 @@
+<html><header><title>Centralized Configuration</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Centralized Configuration</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/2700.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>mike_nz posted on Saturday, April 14, 2007</h2><P>Hi there,</P>
+<P>First of all, this CSLA framework looks really awesome.&nbsp; I have just finished reading the book and found it to hit the nail on the head with many things!&nbsp;<img src="/emoticons/emotion-1.gif" alt="Smile [:)]" /> &nbsp;You're a dude Rockford!!&nbsp;</P>
+<P>One area that I am still having trouble with is configuration.&nbsp; I have spent a long time writing a product with Delphi COM+ business objects where configuration such as connection strings are stored in the Registry.&nbsp; This worked out great...&nbsp; From time to time we would write small tools etc which would interact with the COM+ business objects.&nbsp; These tools needed to know nothing about configuration or connection strings or debug settings or logging etc...</P>
+<P>It seems in the .NET world assemblies like to get their configuration from the host application (whether it be an exe.config or a web.config etc).&nbsp; This seems like a pain to me because a large product could have, say a web site for the most part, but then a number of tools and utilities.&nbsp; Lets say we wanted to change the debug settings or connection strings we would have to update potentially quite a few *.config files.&nbsp; This would become a problem if one was missed etc.</P>
+<P>A few ideas which come to mind are:</P>
+<UL>
+<LI>Use the registry?</LI>
+<LI>Use Machine.Config?</LI>
+<LI>Store in a database table (possibly generate large traffic on DB)?</LI>
+<LI>Roll your own?</LI>
+<LI>Use EntLibs central config file idea?</LI></UL>
+<P>Does anybody have any experiance with this, or able to offer some suggestions.</P>
+<P>Cheers</P>
+<P>Mike</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Bayu replied on Sunday, April 15, 2007</h2>Hey!<br><br>There is a voice in my head saying that config files could 'inherit' or 'include' each other. Never done this, but I believe I read it somewhere once though. In that case you could specify the connection strings in an independent config file which can be reused across your apps.<br><br>Personally, I prefer the DB way. It is really easy to write a small set of CSLA classes that enable you to store per-app and per-user settings in a DB. You could implement the readonly classes as singletons that use caching, so your configs are fetched only once per app and/or once per user. A great plus is also that the settings can be administered by us on-the-fly instead of having to deploy the config files ......<br><br>We have the settings time out after 20 mins which works fine 90% of the time. In those other cases users can press a Refresh Config button that is in the toolbar.<br><br>This is a much better solution than using a registry because the users configuration is independent of the machine he is working on. When people switch from desktop to laptop or from the office-pc to a pc at home: all settings are there. There is one tiny caveat: and that is when you store machine specific settings, like the size of the MainForm (think of a 21 inch flatpanel vs a 13 inch laptop) or a Recent Files list. However, who prevents you from extending your schema with per-clientmachine settings?<br><br>Regards,<br>Bayu<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>albruan replied on Sunday, April 15, 2007</h2><P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>Bayu:</strong></div><div>There is a voice in my head saying that config files could 'inherit' or 'include' each other. Never done this, but I believe I read it somewhere once though. In that case you could specify the connection strings in an independent config file which can be reused across your apps.</div></BLOCKQUOTE></P>
+<P>You're absolutely right, Bayu.&nbsp; I can't remember from whom, but I'd heard that once before, myself,&nbsp;so I thought I'd google it.&nbsp; I turned up the following from beansoftware.com:</P>
+<P class=ArticleText><SPAN><FONT face=Arial size=2>The appSettings element can contain a file attribute that points to an external file. I will change my web.config file to look like the following:</FONT></SPAN></P><SPAN>
+<P class=ArticleText><SPAN>&lt;?</SPAN><SPAN>xml</SPAN><SPAN> </SPAN><SPAN>version</SPAN><SPAN>=</SPAN><SPAN>"<SPAN>1.0</SPAN>"<SPAN>?&gt;</SPAN></SPAN></P>
+<P class=ArticleText><SPAN>&lt;</SPAN><SPAN>configuration</SPAN><SPAN>&gt;</SPAN></P>
+<P class=ArticleText><SPAN>&nbsp;&nbsp;&nbsp; &lt;</SPAN><SPAN>appSettings</SPAN><SPAN>/&gt;</SPAN></P>
+<P class=ArticleText><SPAN>&nbsp;&nbsp;&nbsp; &lt;</SPAN><SPAN>connectionStrings</SPAN><SPAN>/&gt;</SPAN></P>
+<P class=ArticleText><SPAN>&nbsp;&nbsp;&nbsp; &lt;</SPAN><SPAN>system.web</SPAN><SPAN>&gt;</SPAN></P>
+<P class=ArticleText><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;</SPAN><SPAN>compilation</SPAN><SPAN> </SPAN><SPAN>debug</SPAN><SPAN>=</SPAN><SPAN>"<SPAN>false</SPAN>"<SPAN> </SPAN><SPAN>strict</SPAN><SPAN>=</SPAN>"<SPAN>false</SPAN>"<SPAN> </SPAN><SPAN>explicit</SPAN><SPAN>=</SPAN>"<SPAN>true</SPAN>"<SPAN> /&gt;</SPAN></SPAN></P>
+<P class=ArticleText><SPAN>&nbsp;&nbsp;&nbsp; &lt;/</SPAN><SPAN>system.web</SPAN><SPAN>&gt;</SPAN></P>
+<P class=ArticleText><SPAN>&nbsp;&nbsp;&nbsp; &lt;</SPAN><SPAN>appSettings</SPAN><SPAN> </SPAN><SPAN>file</SPAN><SPAN>=</SPAN><SPAN>"<SPAN>externalSettings.config</SPAN>"<SPAN>/&gt;</SPAN></SPAN></P>
+<P class=ArticleText><SPAN>&lt;/</SPAN><SPAN>configuration</SPAN><SPAN>&gt;</SPAN></P></SPAN>
+<P class=ArticleText><SPAN><FONT face=Arial size=2>Next, we can create the external file "externalSettings.config" and add an appSettings section with our connection information and any other settings that we want to use.</FONT></SPAN></P>
+<P class=ArticleText><SPAN><FONT face=Arial size=2>If the external file is present, ASP.Net combines the appSettings values from web.config with those in the external file. If a key/value exists in both files, then ASP.Net will use the setting from the external file.</FONT></SPAN></P>
+<P class=ArticleText><SPAN><FONT face=Arial size=2>This feature is useful when one keeps user-specific or environment-specific settings in the external file. It is better to design web.config to contain those settings that are global, while each user setting is contained in an external file. This approach makes it easier to move around global web.config changes. </FONT></SPAN></P>
+<P class=ArticleText><SPAN><FONT face=Arial size=2>One caution to this approach is that ASP.Net runtime does not detect when the external file changes. Thus to launch a new version of the application with all changes in effect, one will need to make changes to the web.config itself.</FONT></SPAN></P>
+<P class=ArticleText><SPAN><FONT size=2></FONT></SPAN>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Bayu replied on Monday, April 16, 2007</h2><BLOCKQUOTE><div><img src="/Themes/alternate1/images/icon-quote.gif"> <strong>albruan:</strong></div><div><p class="ArticleText"><span><font face="Arial" size="2">One caution to this approach is that ASP.Net runtime does not detect when the external file changes. Thus to launch a new version of the application with all changes in effect, one will need to make changes to the web.config itself.</font></span></p>
+</div></BLOCKQUOTE><br><br>Ah, this sounds like what that voice in my head was saying. ;-)<br><br>To find a trick that triggers IIS is trivial of course: simply add a setting to the web.config with the version number of your external configs. ;-)<br><br>Bayu<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>NinjaPenguin replied on Thursday, April 19, 2007</h2>
+
+<p class="MsoNormal">Hi Mike, <br>
+<br>
+I have found the <a href="http://www.microsoft.com/downloads/details.aspx?familyid=5a14e870-406b-4f2a-b723-97ba84ae80b5&amp;displaylang=en">EntLib
+block</a> to work well for config. It gives you the ability to deploy a static
+.exe.config or web config which contains the config info needed by the block to
+enable it load all other config information from an external data source. As it
+uses a provider pattern that external source can be a DB the registry another
+.config file or whatever other type of store you want to use if you role your
+own assembly to access a custom store, provided it has the required interface. <br>
+<br>
+Whatever option you chose in the end I would say it is at least worth the time
+to take a look and see if it suits your situation.<br>
+<br>
+Regards <br>
+<br>
+Simon G</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

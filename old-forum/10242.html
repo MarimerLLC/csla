@@ -1,0 +1,24 @@
+<html><header><title>How does the ContextManager access the web.config</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>How does the ContextManager access the web.config</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10242.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>WillGo posted on Wednesday, April 06, 2011</h2><p>I am new to this forum and fairly new to CSLA, have been working with it for a couple of months.&nbsp; We have a ASP.NET application writen in c#&nbsp;using CSLA.NET 3.6, linq to sql and Sql Server 2008 as the&nbsp;back-end.&nbsp;The database name is CIMS and is on a separate database server.&nbsp;&nbsp;We have a number of separate projects in the application, including a project that includes the generated L2S code &quot;DalLinq&quot;&nbsp;and a number of projects that contain the CSLA business layer.&nbsp; A typical data access fetch looks like this:</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p><span style="font-size:x-small;"><font size="2">
+<p>&nbsp;</p>
+</font></span>
+<p>&nbsp;</p>
+<span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">using</span></span><span style="font-size:x-small;"> (</span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">var</span></span><span style="font-size:x-small;"> mgr = </span><span style="color:#2b91af;font-size:x-small;"><span style="color:#2b91af;font-size:x-small;">ContextManager</span></span><span style="font-size:x-small;">&lt;Cis.Cims.DalLinq.</span><span style="color:#2b91af;font-size:x-small;"><span style="color:#2b91af;font-size:x-small;">CimsDataContext</span></span><span style="font-size:x-small;">&gt;.GetManager(</span><span style="color:#2b91af;font-size:x-small;"><span style="color:#2b91af;font-size:x-small;">Database</span></span>
+<p><span style="font-size:x-small;">.Cims))
+<p>{</p>
+<p>&nbsp; // perform some linq query</p>
+<p>}</p>
+<p>Database.Cims returns &quot;Cims&quot;, the name of the database.</p>
+<p>I&#39;ve recently added a new gridview using a linqdatasource to populate.&nbsp; The ContextTypeName for the LinqDataSource is CimsDataContext, the main DataContext for the application.&nbsp;This grid works fine locally.&nbsp; However after publishing to our test server and acessing this page remotely, I am met with:</p>
+<p><em>A network-related or instance-specific error occurred while establishing a connection to SQL Server. The server was not found or was not accessible. Verify that the instance name is correct and that SQL Server is configured to allow remote connections.</em></p>
+<p>Other parts of the application not using the linqdatasource seem to work fine, both on my machine and on the test server.&nbsp; In stepping through the code I can see where the LinqDataSource is calling the CimsDataContext constructor which is retrieving the connectionstring from the project&#39;s app.config.&nbsp; This connection string is pointed to &quot;localhost&quot;, which would explain why it works on my machine, but not on our test web server.&nbsp;</p>
+<p>All of the connections strings are stored in the web.config, not the the &quot;DalLinq&quot; app.config.&nbsp; There are no references to the database server in the app.config, only the web.config.&nbsp; How is it that the ContextManager accesses the web.config to get the proper connection string?&nbsp; </p>
+<p>What would recommend to fix this problem?&nbsp; I don&#39;t want to spread connection strings around to different config files, so putting the correct connection string in the app.config is not a solution.&nbsp; Thanks in advance,</p>
+<font size="2">
+<p>Will</p>
+</font></span></p>
+</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Wednesday, April 06, 2011</h2><p>ContextManager gets the connection string by using the ConfigurationManager object&#39;s connection string collection. The ConfigurationManager type is in the System.Configuration namespace.</p>
+<p>In short, it uses the standard .NET way to get elements from the &lt;connectionStrings&gt; element of the config file.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>WillGo replied on Wednesday, April 06, 2011</h2><p>Wow.&nbsp; I assumed that the ConfigurationManager would not access the web.config from a library project.&nbsp; Thanks</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

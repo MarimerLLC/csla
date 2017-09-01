@@ -1,0 +1,17 @@
+<html><header><title>Why did the non generic DataPortal.Execute(CommandBase) method was removed?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Why did the non generic DataPortal.Execute(CommandBase) method was removed?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9042.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>markell posted on Sunday, June 06, 2010</h2><p>Dear ladies and sirs.</p>
+<p>What is the rationale for removing this method? We found it very useful and used it very much. It allows to pass one command to the server and get back another command, which we think of as a command result.</p>
+<p>Take for instance, we have a <b>LogOnCommand</b>. It carries the user credentials, but what gets back is <b>LogOnCommandResult</b>, which has a different set of properties.</p>
+<p>The non generic method made this easy. What was the issue with it, that made it incompatible with the CSLA 4 scheme of things?</p>
+<p>&nbsp;</p>
+<p>Thanks.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Sunday, June 06, 2010</h2><p>How did you do that? The design of Execute() is to round-trip one object from client to server to client.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>markell replied on Sunday, June 06, 2010</h2><p>Easy. This works fine when <b>ObjectFactory</b> is used.</p>
+<p>Imagine <b>MyCommand</b> and <b>MyCommandResult</b> both deriving from <b>CommandBase</b>.</p>
+<p>Then the following code works in CSLA 3.8:</p>
+<p><b>CommandBase myCmd = new MyCommand(....);</b></p>
+<p><b>var myCmdResult = (MyCommandResult)DataPortal.Execute(myCmd);</b></p>
+<p>The respective object factory execute method can be declared like so:</p>
+<p><b>private </b><b>MyCommandResult ExecuteMyCommand(</b><b>MyCommand cmd)<br />{</b></p>
+<p><b>&nbsp; .....<br /></b></p>
+<p><b>&nbsp; return new </b><b>MyCommandResult(...);</b></p>
+<p><b>}</b></p>
+<p>That&#39;s it.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Sunday, June 06, 2010</h2><p>Interesting. That is certainly an unintended consequence of the object factory. I&#39;ll have to think about whether I want to open that door officially or not.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>markell replied on Sunday, June 06, 2010</h2><p>Can you share the reasons why not?</p>
+<p>&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

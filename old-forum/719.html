@@ -1,0 +1,98 @@
+<html><header><title>Why not SmartInt, etc.?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Why not SmartInt, etc.?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/719.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>david.wendelken posted on Tuesday, July 25, 2006</h2><P>The smart date class is pretty neat.&nbsp; </P>
+<P>Isn't there a need for a SmartInt, SmartDecimal, etc., that can handle nulls as gracefully?</P>
+<P>Has anyone tried doing that?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Tuesday, July 25, 2006</h2>I haven't done it, but I believe others have done SmartBool.&nbsp; There's no reason you can't make those classes, they should be very easy to build.&nbsp; If you have a need, certainly go ahead and build them.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, July 25, 2006</h2><P>Though if you goal is merely to allow data binding to work with null values, then you can use Nullable&lt;T&gt; (or int? in C#). Binding still doesn't work right without some help, but this blog entry points to a solution from some guys in Norway</P>
+<P><A href="http://www.lhotka.net/weblog/ExtendingControlsToHandleNullableTypes.aspx">http://www.lhotka.net/weblog/ExtendingControlsToHandleNullableTypes.aspx</A></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>SonOfPirate replied on Tuesday, July 25, 2006</h2><P>What a timely post.&nbsp; This is actually what brought me to the forum today.&nbsp; Is databinding to a Windows Form control the only limitation to using System.Nullable&lt;T&gt;?</P>
+<P>I have lost hair over the last few years dealing the need to have a "not set" indicator for various properties that are of primitive types (int, bool, etc.).&nbsp; Easy enough with enumerations to add a NotSet value, but how to deal with this with a ValueType?&nbsp; SmartDate accomplishes this but I've never been completely comfortable with using the MinValue/MaxValue to indicate 'null'.&nbsp; System.Nullable&lt;T&gt; seems like a great way around this and I have already put it in place with some custom configuration file stuff where I only want to reset the programmed defaults if the value was actually entered into the config file.</P>
+<P>For those of you who have not lost sleep along with me deciphering the new System.Configuration classes, when you create a custom element,&nbsp;for instance,&nbsp;you define the type of the attribute and a default value when you construct the custom element.&nbsp; A nice feature of these classes is that the object graph is created even if the entries don't exist in the config file.&nbsp; In this case, each property/attribute will be given the default value that you defined in the constructor.&nbsp; And, in a typical implementation, these config settings are mapped to some other object that is a "normal" component of your application.&nbsp; So, issue #1 with all of this is that your default value is defined in two places!!!&nbsp; Never a good thing.&nbsp; Issue #2 is that it is preferable to only set the value from the config file if it was actually defined in the file.&nbsp; Unless you have some way of determining this, your SOL.</P>
+<P>Enter System.Nullable&lt;T&gt;.</P>
+<P>In all of our custom config classes, we've replace primitive value types with System.Nullable&lt;valuetype&gt; and a default value of 'null'.&nbsp; Then in the code the maps the config settings to our&nbsp;objects, we test the HasValue property to detect if the setting was actually in the config file.&nbsp; This works great because now we can change our default values in one place and not have to worry about collateral affects.&nbsp; In addition, we have avoided the MinValue/MaxValue scenario (which doesn't work with boolean types!?!?!).</P>
+<P>So,&nbsp;why not use System.Nullable&lt;T&gt;?&nbsp; And why not implement SmartDate as System.Nullable&lt;System.DateTime&gt; and eliminate the MinValue/MaxValue issue?&nbsp; I know the issues with formatting, parsing and comparing that are mentioned in the book and am not suggesting that we completely throw out SmartDate.&nbsp; What I mean is, could there be a compromise that takes the behavior/implementation of System.Nullable and the benefits of delegation from SmartDate to create a better...NullableDate?</P>
+<P>I guess I'm wondering what is really under-the-hood of System.Nullable?&nbsp; Isn't it really doing the same thing SmartDate is as far as delegation goes?&nbsp; And, wouldn't a null value be reflected by not having a reference to the internal object to delegate to?&nbsp; However, in trying to implement this, we would be back to the same problem with value types - how do we know that the internal variable is null?&nbsp; In other words, we'd have something like:</P>
+<P><CODE>public class NullableDate<BR>{<BR>&nbsp;&nbsp;&nbsp; private DateTime value;<BR><BR>&nbsp;&nbsp;&nbsp; public System.Boolean HasValue<BR>&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; get<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return (value != null);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<BR>&nbsp;&nbsp;&nbsp; }<BR>}</CODE></P>
+<P>Won't work!</P>
+<P>Does default(T) somehow make this work?&nbsp; So, if we had this instead:</P>
+<P><CODE>public class NullableDate&lt;T&gt;<BR>{<BR>&nbsp;&nbsp;&nbsp; private&nbsp;T value;<BR><BR>&nbsp;&nbsp;&nbsp; public System.Boolean HasValue<BR>&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; get<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return (value != default(T));<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<BR>&nbsp;&nbsp;&nbsp; }<BR>}</CODE></P>
+<P>Would we have System.Nullable???</P>
+<P>Thanks for letting me vent...</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, July 25, 2006</h2>
+
+
+
+
+<DIV align=left><SPAN class=340584319-25072006><FONT face=Arial color=#0000ff size=2>If it helps, you can create a 
+Nullable&lt;SmartDate&gt;&nbsp;&nbsp; :)</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=340584319-25072006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=340584319-25072006><FONT face=Arial color=#0000ff size=2>Rocky</FONT></SPAN></DIV></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, July 25, 2006</h2>
+
+
+
+
+<DIV align=left><SPAN class=981015219-25072006><FONT face=Arial color=#0000ff size=2>But one other thing about SmartDate - and this was the 
+clincher for me in terms of keeping it in the framework:</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=981015219-25072006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=981015219-25072006><FONT face=Arial color=#0000ff size=2>When it comes to dates, "empty" and "null" are not the same 
+thing. There are very clearly defined semantics about what happens when you 
+compare anything to null - the result is ALWAYS null. Nullable&lt;T&gt; helps 
+with this - in that they preserve the null semantics (at least in 
+C#).</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=981015219-25072006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=981015219-25072006><FONT face=Arial color=#0000ff size=2>But I have worked on many, many applications where an empty 
+date can be compared to a real date. And the result isn't null - it is a valid 
+boolean result. Nullable&lt;T&gt; doesn't help with this at all, because it 
+merely does null propogation - which is totally useless.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=981015219-25072006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=981015219-25072006><FONT face=Arial color=#0000ff size=2>Now it might be possible to create an Empty&lt;T&gt; - I 
+haven't had time to give that a lot of thought. But even if you did that, you'd 
+lose the special parsing and formatting capabilities offered by 
+SmartDate.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=981015219-25072006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=981015219-25072006><FONT face=Arial color=#0000ff size=2>So for me, the "empty" concept was the driver for keeping 
+SmartDate in the framework, and the remaining features just support that 
+decision.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=981015219-25072006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=981015219-25072006><FONT face=Arial color=#0000ff size=2>Rocky</FONT></SPAN></DIV></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>david.wendelken replied on Tuesday, July 25, 2006</h2><P>I spent about 30 minutes cloning SmartDate into SmartInt this afternoon.</P>
+<P>I'll be testing it over the next week, and will post it if it works out.&nbsp; <BR><BR>Rocky, would you like to add them to the framework if we supply them?&nbsp; I would think they would be very stable over time, thus requiring little to no maintenance on your part... :)</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, July 25, 2006</h2>
+
+
+
+
+<DIV align=left><SPAN class=575161502-26072006><FONT face=Arial color=#0000ff size=2>I appreciate the thought. Unfortunately at this time I 
+don't have a mechanism by which I can accept code from external sources into the 
+framework. The problem rests with IP ownership - I'd need to have you sign an 
+agreement granting me the code. This is something I've considered putting 
+together (because you aren't the first to want to contribute code), but haven't 
+done thus far.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=575161502-26072006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=575161502-26072006><FONT face=Arial color=#0000ff size=2>Rocky</FONT></SPAN></DIV><BR>
+<BLOCKQUOTE>
+  <DIV class=OutlookMessageHeader align=left>
+  <HR>
+  <FONT face=Tahoma size=2><B>From:</B> david.wendelken 
+  [mailto:cslanet@lhotka.net] <BR><B>Sent:</B> Tuesday, July 25, 2006 8:21 
+  PM<BR><B>To:</B> rocky@lhotka.net<BR><B>Subject:</B> Re: [CSLA .NET] RE: Why 
+  not SmartInt, etc.?<BR></FONT><BR></DIV>
+  <DIV></DIV>
+  <P>I spent about 30 minutes cloning SmartDate into SmartInt this 
+afternoon.</P>
+  <P>I'll be testing it over the next week, and will post it if it works 
+  out.&nbsp; <BR><BR>Rocky, would you like to add them to the framework if we 
+  supply them?&nbsp; I would think they would be very stable over time, thus 
+  requiring little to no maintenance on your part... :)</P>
+  <P>&nbsp;</P><BR><BR><BR></BLOCKQUOTE></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>david.wendelken replied on Tuesday, July 25, 2006</h2><P>The DotNetNuke project has a pretty reasonable one that protects the interests of all parties.</P>
+<P>Want a copy of it to look at?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, July 25, 2006</h2>
+
+
+
+
+<DIV align=left><SPAN class=122062203-26072006><FONT face=Arial color=#0000ff size=2>Sure, can't hurt.</FONT></SPAN></DIV><BR>
+<BLOCKQUOTE>
+  <DIV class=OutlookMessageHeader align=left>
+  <HR>
+  <FONT face=Tahoma size=2><B>From:</B> david.wendelken 
+  [mailto:cslanet@lhotka.net] <BR><B>Sent:</B> Tuesday, July 25, 2006 9:33 
+  PM<BR><B>To:</B> rocky@lhotka.net<BR><B>Subject:</B> Re: [CSLA .NET] RE: RE: 
+  Why not SmartInt, etc.?<BR></FONT><BR></DIV>
+  <DIV></DIV>
+  <P>The DotNetNuke project has a pretty reasonable one that protects the 
+  interests of all parties.</P>
+  <P>Want a copy of it to look at?</P><BR><BR><BR></BLOCKQUOTE></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Wednesday, July 26, 2006</h2>You could start a project on CslaContrib and add the code there. <br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

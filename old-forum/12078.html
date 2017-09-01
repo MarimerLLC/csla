@@ -1,0 +1,19 @@
+<html><header><title>WPF + Csla 4 + MVVM</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>WPF + Csla 4 + MVVM</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/12078.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>st3fanus posted on Thursday, July 18, 2013</h2><p>Hi.. </p>
+<p>I have a view which is it&#39;s datacontext bounded to a viewmodel from viewmodellocator property, like :</p>
+<p>public MyViewModel</p>
+<p>{</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; get {&nbsp; return .....&nbsp; }</p>
+<p>}</p>
+<p>BUT the problem is this property is called twice when the view is display.</p>
+<p>After experiment I found that because MyViewModel inherit from Csla.Xaml.ViewModelBase&lt;T&gt;</p>
+<p>If i remove that inheritance MyViewModel property is called once</p>
+<p>Currently I set View&#39;s datacontext binding mode = OneTime so that property is called once.</p>
+<p>BUT this is not a scenario i want,</p>
+<p>Could some one explained this ? or any suggestions i welcome, I think there is something I&#39;m missing</p>
+<p>thanks a lot</p>
+<p>&nbsp;</p>
+<p>stefanus</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

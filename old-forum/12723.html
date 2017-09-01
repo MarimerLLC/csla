@@ -1,0 +1,18 @@
+<html><header><title>Xamarin Studio Suport</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Xamarin Studio Suport</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/12723.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jonathan Parker posted on Sunday, August 17, 2014</h2><p>Hi all,</p>
+<p>I am currently evaluating whether to use CSLA in my project.</p>
+<p>I&#39;m also new to Xamarin. The plan is to develop for iOS and Android initially.</p>
+<p>I have successfully added the Android and iOS CSLA nuget packages to my Xamarin solution but am stuck on adding the CSLA Core package to my PCL project. I get this error</p>
+<p>Adding CSLA-Core...</p>
+<p>Adding &#39;CSLA-Core 4.5.601&#39; to MyProject.Domain.</p>
+<p>Could not install package &#39;CSLA-Core 4.5.601&#39;. You are trying to install this package into a project that targets &#39;portable-net45+win+wp80+MonoAndroid10+MonoTouch10&#39;, but the package does not contain any assembly references or content files that are compatible with that framework. For more information, contact the package author.</p>
+<p>I then tried creating a Shared project and putting my domain code in there and it seems to work.</p>
+<p>Is anyone else doing this? Is this the correct approach?</p>
+<p>Thanks,</p>
+<p>Jonathan.</p>
+<p>P.S. I&#39;m excited about using CSLA and Xamarin for the first time.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, August 22, 2014</h2><p>CSLA doesn&#39;t currently provide a PCL assembly. The NuGet package has assemblies for all the platforms, and they are created with what is now basically the shared project concept (which behind the scenes is just tooling over the Linked File concept that has been in Visual Studio projects since the beginning).</p>
+<p>Creating a PCL hasn&#39;t been a priority, because PCLs don&#39;t allow customization of code per platform, and CSLA includes some pretty optimized code for full .NET vs some of the more sandboxed platforms.</p>
+<p>There is an issue to do this in GitHub now though, because there&#39;s a &quot;bait and switch&quot; hack you can use with NuGet to provide a PCL shell without an implementation, where NuGet automatically provides each project with the platform-specific assembly that does contain an implementation.</p>
+<p>I&#39;m still debating how much energy to put into that, given that the shared project concept works so well and doesn&#39;t require any effort...</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jonathan Parker replied on Friday, August 22, 2014</h2><p>Thanks for the reply Rocky,</p>
+<p>I guess the issue only comes up when you want to use PCL libraries together with CSLA. I&#39;m guessing the Xamarin component gallery will be going down the PCL route rather than the Shared Project route in future. Correct me if I&quot;m wrong.</p>
+<p>The &#39;bait and switch&#39; sounds interesting. I&#39;m guessing that it&#39;s the equivalent of an interface assembly except that it supports classes as well which are then &#39;reimplemented&#39; against the platform specific framework.</p>
+<p>I&#39;m not sure the way forward for my project at the moment. I may just have to go ahead with the Shared Project and see how it goes.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

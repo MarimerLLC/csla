@@ -1,0 +1,23 @@
+<html><header><title>Unit testing async factory methods</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Unit testing async factory methods</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/8645.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>triplea posted on Thursday, March 11, 2010</h2><p>What is the best way/practice/pattern of writing unit tests when the async factories are used? E.g. lets say&nbsp;I have a test for my Customer object and for simplicity sake I want to assert that:</p>
+<p><strong>GetCustomer(int id, EventHandler&lt;DataPortalResult&lt;Customer&gt;&gt; handler)</strong> </p>
+<p>returns a customer with name &quot;X&quot;. How do I make sure my test waits for the factory method to complete before asserting and of course exiting the test?</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>skagen00 replied on Thursday, March 11, 2010</h2><p>Have you looked at the Silverlight Unit Testing framework?</p>
+<p>If you go here: </p>
+<p><a href="http://feeds.timheuer.com/timheuer/pdc/silverlight/wmv">http://feeds.timheuer.com/timheuer/pdc/silverlight/wmv</a></p>
+<p>Session CL32</p>
+<p><a href="http://ecn.channel9.msdn.com/o9/pdc09/wmvhigh/CL32.wmv">CL32 - Developing Testable Silverlight Applications (Keith Jones)</a></p>
+<p>This one talked a little bit about how actions are &quot;queued&quot; up to where certain asynch operations / etc can have a condition that is waited on. I confess I haven&#39;t used the unit test framework, but I thought I&#39;d mention it.</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>tmg4340 replied on Thursday, March 11, 2010</h2><p>You might also check this thread:</p>
+<p><a href="http://forums.lhotka.net/forums/t/8620.aspx">http://forums.lhotka.net/forums/t/8620.aspx</a></p>
+<p>The main thrust is that Rocky/Magenic ended up solving this problem by creating UnitDriven, their own testing framework.&nbsp; It might prove useful for what you&#39;re doing.</p>
+<p>HTH</p>
+<p>- Scott</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>triplea replied on Thursday, March 11, 2010</h2><p>Thanks to both, I will check the links and get back to mark an answer.</p>
+<p>One thing I did forget to mention is that I am not actually doing any SL development aty the moment so not using CSLA Light . I&nbsp;have a WPF client and am using standard CSLA.</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Thursday, March 11, 2010</h2><p>UnitDriven works in nunit and mstest as well.</p>
+<p>That was half the point actually. We needed three things:</p>
+<ul>
+<li>a unit test framework that worked in SL (because nothing existed when we started)</li>
+<li>a unit test framework that handled async operations</li>
+<li>a unit test framework that allowed <em>the exact same test code</em> to run on SL and .NET</li>
+</ul>
+<p>UnitDriven on the SL side is a complete (if relatively simple) unit test framework that meets those needs.</p>
+<p>UnitDriven on the .NET side is an &quot;add-in&quot; to nunit or mstest that enables async tests to be written in exactly the same way we write them on the SL side - so the same tests can be used for both platforms.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>triplea replied on Friday, March 12, 2010</h2><p>Thanks for the clarification. I didn&#39;t even look at UnitDriven because I thought it was only addressing SL issues around unit testing but all is clear now.</p>
+<p>Thanks!</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

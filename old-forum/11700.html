@@ -1,0 +1,17 @@
+<html><header><title>Re: steps to get the samples to run (winforms and webforms only)</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Re: steps to get the samples to run (winforms and webforms only)</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11700.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>tiago posted on Tuesday, November 13, 2012</h2><p>Hi Mike,</p>
+<p>Interesting point of vue that reminded me why&nbsp;I became interested on the code generation issue. At the time there were no &quot;Using CSLA 4&quot; ebooks. These ebooks provide comprehensive explanation of how to use CSLA. The 2005 and 2008 books were more about CSLA internals and Project Tracker was the major source of &quot;how to&quot; documentation.</p>
+<p>Then CSLA 3.5.0 arrived bringing PropertyInfo - a new way of property handling. The code you had to write increased a lot in a way that seemed complex and error prone. Why do I have to write all this code? Snippets are a good&nbsp; help but you need to have a good understanding&nbsp;&nbsp;of CSLA concepts in&nbsp;order to put together a project that runs. What is the correct template for an EditableRoot? Is this method needed? Why is this method on the ProjectTracker and it&#39;s not on the stereotype template? Is my class going to fail if I don&#39;t include it?</p>
+<p>A code generator can do it for you.&nbsp;A code generator &quot;serves&quot; you a full blown class ready to run, that can list and search the database, load and save objects and it can even declare business and authorization rules from your rule library. Looking at the generated classes you end up learning a lot about CSLA.</p>
+<p>I thinks that there are two main areas you must master:</p>
+<p>1) stereotypes - what is the use case of each stereotype</p>
+<p>A good code generator (like the one I will promote at the end of this post) will&nbsp;validate stereotype relations and won&#39;t allow your EditableRoot object to be the child of any other object. So in fact you don&#39;t have to worry about this.</p>
+<p>2) how to write business rules and how to write authorization rules</p>
+<p>CSLA provides some very common rules but you will always need to write your custom rules. There are 2 libraries of rules around</p>
+<p>- CSLA samples RuleTutorial</p>
+<p>- CslaGenFork rules library</p>
+<p>If you can&#39;t find there the rule you need, at least you will find plenty of samples you can analyse (and copy).</p>
+<p>If you have a good understanding of these two CSLA areas, with the help of a good code generator your class will need minimal hand coding, most of the time none at all.</p>
+<p>You can see how CslaGenFork generated code &quot;tastes&quot; like on the&nbsp;Csla sample ActionExtenderSample you can find on source control for 4.3.x</p>
+<p>svn://svn.lhotka.net/csla/core/branches/V4-3-x/Samples/NET/cs/ActionExtenderSample</p>
+<p>&nbsp;</p>
+<p>Concernig samples in general and WebForms samples, I must say CSLA has a very complete set of samples. I understand Rocky has no time no maintain samples of some technologies, namely WebForms. CslaContrib is the place where those samples can live. If you port some WebForms samples like PTWeb to Csla 4.3.13 or 4.5.x I think Jonny will be glad to include them on CslaContrib web site.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

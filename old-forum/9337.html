@@ -1,0 +1,9 @@
+<html><header><title>Best Practice for csla Lookup list in Asp.net MVC</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Best Practice for csla Lookup list in Asp.net MVC</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9337.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>RandyH posted on Friday, August 06, 2010</h2><p>Based on the ProjectTracker samples it appears as though the best practice when using csla is to pass the business object to the view via&nbsp;its Model. That works great.</p>
+<p>My question is if the business object has field(s) that are selected from some list (a read only root list) what is the best practice for getting the list to the view? As far as I know there are 3 basic approaches:</p>
+<ol>
+<li>From within the controller place the list in ViewData</li>
+<li>Create html helpers that will return the list to the view</li>
+<li>Create a view model that has the business object as one of its properties and create properties for and lookup list on the view model.</li>
+</ol>
+<p>Any thoughts would be greatly appreciated.</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>xAvailx replied on Friday, August 06, 2010</h2><p>I generally create a view model class that has properties for the other classes needed in the view. That way you get strong typing.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

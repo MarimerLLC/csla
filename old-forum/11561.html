@@ -1,0 +1,22 @@
+<html><header><title>Authorization Rules.</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Authorization Rules.</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11561.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>joemorin73 posted on Tuesday, September 04, 2012</h2><p>I have, I hope, a simple question in regards to authorization with collections and children,</p>
+<p>I have a root collection with an unknown amount of children.&nbsp; In my scenario, I have authorization rules that are placed on the children.&nbsp; I have placed these rules in the child class.</p>
+<p>When I interact with the object, these rules appear to be ignored.&nbsp; (In one test, the rules should have prevented me from saving, but no check was performed.)</p>
+<p>If the child contains the rules, will the collection enforce or ignore the authorization rules?</p>
+<p>Using CSLA 4.3.13</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Tuesday, September 04, 2012</h2><p>Hi,</p>
+<p>The collections will NOT enforce child authorization rules (CanCreate/CanEdit/CanDelete...) </p>
+<p>This must be handled by YOUR code.&nbsp;</p>
+<p>IE: The &quot;root&quot; object will be enforced by the &quot;root&quot; DataPortal - but if you want to check<br />authorization for all Child/GrandChild/....&nbsp; then this must be done by YOUR code. </p>
+<p>There&#39;s already have an item in the BugTracker for this but not prioritized for any release, yet.<br /><a href="http://www.lhotka.net/cslabugs/edit_bug.aspx?id=945">http://www.lhotka.net/cslabugs/edit_bug.aspx?id=945 </a></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>joemorin73 replied on Tuesday, September 04, 2012</h2><p>Just to clarify, authorization rules will not descend?</p>
+<p>I am asking as the bug appears to be in regards to the collection events.</p>
+<p>I ask as the following events I have on the children: <span style="COLOR:#2b91af;">AuthorizationActions</span>.CreateObject, <span style="COLOR:#2b91af;">AuthorizationActions</span>.DeleteObject, <span style="COLOR:#2b91af;">AuthorizationActions</span>.EditObject,&nbsp;<br /><span style="COLOR:#2b91af;">AuthorizationActions</span>.GetObject need to be checked for each child in the collection.&nbsp; I will have to manually check these?</p>
+<p>Also, I understand there may not be an answer to this question.&nbsp; If and when bug 945 is implemented, do you know if it will be only on the first level, or will&nbsp;the authorisation check cascade up all the children?&nbsp; (IE, grandchildren and etc.)</p>
+<p><span style="color:#3366cc;"></span>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Tuesday, September 04, 2012</h2><p>The idea would be that the user is only allowed to:</p>
+<ul>
+<li>AddNew when CanCreateObject</li>
+<li>Delete when CanDeleteObject</li>
+<li>GetObject when CanGetObject</li>
+</ul>
+<p>These should ALL only be checked for when calling these actions. IE: The user should only be allowed to add/remove children when authorized and CSLA should not need to recheck this within the context of a Save method. So the user should not be allowed to do more actions/edits than the user is authorized for.</p>
+<p>CanEditObject is today - only checked on the &quot;root&quot; object&nbsp; - when calling a Save method (and the object has both IsNew and IsDeleted = false) . </p>
+<p>I do NOT know if this will cascade down to each child object when bug 945 is implemented. </p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>joemorin73 replied on Tuesday, September 04, 2012</h2><p>Here is a bit of an issue for myself.&nbsp; Our security is not a simple role based security.&nbsp; It is a combination role with a hierarchy.&nbsp; To check security, I need to examine part of the object&#39;s information.&nbsp; When the collection is loaded, there may be a mix of editable and non editable objects in the collection.&nbsp; Without having the individual objects maintaining this, it may be a lot of manual work to probe these collections.</p>
+<p>I see the property checks are done in the child objects.&nbsp; I&#39;d rather not, but should I set the security on the properties as opposed to the object?</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

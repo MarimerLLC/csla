@@ -1,0 +1,17 @@
+<html><header><title>EditableRoot containing referenced ReadOnlyRoot</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>EditableRoot containing referenced ReadOnlyRoot</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/12275.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>rshuck posted on Wednesday, December 18, 2013</h2><p>I wanted to add what seemed a simple enough relationship property to an EditableRoot object but have come unstuck at the first hurdle.</p>
+<p>An example would be an editable Project with a read only ProjectStatus, the project is editable and so is which status is assigned but not the status itself.</p>
+<p>I can see three scenarios but each one has it&#39;s own negative effects.</p>
+<p>EditableRoot contains ReadOnlyRoot property - roots are not supposed to own other roots</p>
+<p>EditableRoot contains ReadOnlyChild property - the read only object is not a really a child object</p>
+<p>EditableRoot contains Id of ReadOnlyRoot and has a reference to a ReadOnlyRoot - Id could be set to an invalid value and would require extra checks to ensure it existed.</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Thursday, December 19, 2013</h2><p>Hi,</p>
+<p>In general terms - be careful on making <strong>using</strong> or <strong>intergraph</strong> references. CSLA defaults to <strong>owning</strong> references (ie a graph structure - somewhat similar to an XML document). This is in part due to serialization / deserialization on the wire and in BeginEdit/UndoEdit to restore values. </p>
+<p>The <strong>Using CSLA 4: Creating Business Objects</strong> ebook discusses these references and how to implement them. <br />Se <a href="http://download.lhotka.net/Default.aspx?t=UsingCsla4">http://download.lhotka.net/Default.aspx?t=UsingCsla4</a></p>
+<p>So my general recommendation is to use value references - ie: EditableRook contains the Id of the item in a list and if required add a BusinessRule for Validation. </p>
+<p>We often use a Unit-Of-Work pattern (UOW) (somtimes also called Use Case Controller pattern) with a ReadOnlyRoot object that contains both the EditableRoot (and children) with ReadonlyLists and NameValueLists to use for the UI. </p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rshuck replied on Thursday, December 19, 2013</h2><p>Hi Jonny</p>
+<p>Thanks for a perfect explanation.&nbsp; I do have the books and videos and have read them so many times I am embarrassed.</p>
+<p>The reason for my pause in implementing a foreign Id to an object was it looked scarily untyped, introduces dependency on another object&#39;s data as opposed to just the other object and open to abuse (by myself) later on.</p>
+<p>Code such as </p>
+<p>ProjectEdit.Status = StatusListViewModel.Current</p>
+<p>looks nicer than</p>
+<p>ProjectEdit.ProjectStatusId = StatusListViewModel.Current.Id</p>
+<p>I know I can have my cake and eat it by having Id and ProjectStatus in my ProjectEdit object but would have to disable serialization, lazy load and sync the two together and I believe that your suggestion of using the UoW pattern would be easier to maintain.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

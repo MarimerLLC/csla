@@ -1,0 +1,23 @@
+<html><header><title>Moving a business object from a list to a new list</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Moving a business object from a list to a new list</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9214.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Calin posted on Thursday, July 15, 2010</h2><p>Hi,</p>
+<p>I have a simple scenario, made it into a test so I can see it better, let me know if you need to code:</p>
+<p>&nbsp;</p>
+<p>0: loadedUser.BeginEdit()</p>
+<p>1: Vendor vendor =&nbsp;loadedUser.AvailableVendors[0]</p>
+<p>2: loadedUser.AvailableVendors.Remove(vendor)</p>
+<p>3: loadedUser.Vendors.Add(vendor).</p>
+<p>4: loadedUser.ApplyEdit() ---------&gt;&gt;&gt;&gt; Crush, Edit level&nbsp;mismatch.</p>
+<p>&nbsp;</p>
+<p>Why does it crush ?</p>
+<p>I&#39;ve asked myself the same question for about 3 hours now, and finally&nbsp;stumbled&nbsp;on&nbsp;DeletedList, so if on line 2 I remove the vendor from the DeleteList then we are fine all works great.</p>
+<p>Does anybody have a good&nbsp;explanation&nbsp;on this please ?</p>
+<p>&nbsp;</p>
+<p>Thank you,</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Thursday, July 15, 2010</h2><p>This question comes up from time to time, and I should add it to the FAQ.</p>
+<p>The answer lies in understanding how BLB works with child objects. When you remove an object from a BLB, it isn&#39;t removed - it is marked for deletion and moved to the DeletedList. So your step 2 isn&#39;t doing what you think it does.</p>
+<p>The easiest way to accomplish what you want is to clone the child object and add the clone to the new list, then remove the original child from the original list, and somehow make that child aware that it shouldn&#39;t actually delete itself when the original list is saved.</p>
+<p>A more complex solution is to override the remove behavior of the original list, changing the remove behavior so it doesn&#39;t mark the child as deleted, and doesn&#39;t add it to the DeletedList. That requires a relatively deep understanding of how BLB is implemented so you can do the override without breaking the rest of the BLB behaviors.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Calin replied on Friday, July 16, 2010</h2><p>Thank you,</p>
+<p>&quot;The easiest way to accomplish what you want is to clone the child object and add the clone to the new list, then remove the original child from the original list, and somehow make that child aware that it shouldn&#39;t actually delete itself when the original list is saved.&quot;</p>
+<p>&nbsp;</p>
+<p>This helped, I was sure that the Remove override is not the best solution.</p>
+<p>Defenitely a FAQ subject, searched your Expert Business Object book and didn&#39;t any direct mentions on this also.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>abogoslovskiy replied on Monday, September 15, 2014</h2><p>Hello!</p>
+<p>How can we override RemoveItem? We need to have original object and move it from one list to another list without cloning. Your sources don&#39;t give opportunity for this.</p>
+<p>Thanks for your attention!</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

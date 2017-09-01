@@ -1,0 +1,1391 @@
+<html><header><title>CSLA .NET 3.0 Available</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA .NET 3.0 Available</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3162.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka posted on Tuesday, July 10, 2007</h2><P><IMG alt="CSLA .NET 3.0" hspace=15 src="http://www.lhotka.net/images/csla30_logo1_72.png" align=left border=0> CSLA .NET version 3.0 is now available for <A href="http://www.lhotka.net/cslanet/download.aspx">download</A>. </P>
+<P>See <A href="http://www.lhotka.net/weblog/CSLANET30AvailableForDownload.aspx">this blog post</A> for the full announcement and details.</P>
+<P>Also, catch the official release announcement on <A href="http://www.dotnetrocks.com/default.aspx?showNum=253">.NET Rocks!</A></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Tuesday, July 10, 2007</h2>Great, this is before my next release!<br><br>I found a "bug" though; the C# solution doesn't compile if NET20 is defined.&nbsp; <br><br>Error&nbsp;&nbsp;&nbsp; 1&nbsp;&nbsp;&nbsp; The type or namespace name 'VisibilityMode' could not be found (are you missing a using directive or an assembly reference?)&nbsp;&nbsp;&nbsp; C:\source\Csla\Csla\Wpf\AuthorizationPanel.cs&nbsp;&nbsp;&nbsp; 49&nbsp;&nbsp;&nbsp; 12&nbsp;&nbsp;&nbsp; Csla<br><br>I'll comment that class myself for now though.<br><br>Andy<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, July 10, 2007</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Something is wrong then, because there&#8217;s no such thing as
+AuthorizationPanel anymore &#8211; it is now Authorizer.cs.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I just checked the zip file and it is correct &#8211; is it
+possibly you have some old code in your directory or something?<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> ajj3085
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Tuesday, July 10, 2007 11:01 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] CSLA .NET 3.0 Available<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Great, this is before my next release!<br>
+<br>
+I found a &quot;bug&quot; though; the C# solution doesn't compile if NET20 is
+defined.&nbsp; <br>
+<br>
+Error&nbsp;&nbsp;&nbsp; 1&nbsp;&nbsp;&nbsp; The type or namespace name
+'VisibilityMode' could not be found (are you missing a using directive or an
+assembly reference?)&nbsp;&nbsp;&nbsp;
+C:\source\Csla\Csla\Wpf\AuthorizationPanel.cs&nbsp;&nbsp;&nbsp; 49&nbsp;&nbsp;&nbsp;
+12&nbsp;&nbsp;&nbsp; Csla<br>
+<br>
+I'll comment that class myself for now though.<br>
+<br>
+Andy<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Tuesday, July 10, 2007</h2>Opps... that's what it is.. sorry about that.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Stephen Richards replied on Tuesday, July 10, 2007</h2><P>Rocky,</P>
+<P>I'm sitting here listening to your show on .NET Rocks! and trying to compile the VB version of CSLA 3.0 on a machine with the .NET Framework 2.0 (but not 3.0) and I'm getting five "The referenced component could not be found"&nbsp; warning messages.&nbsp; Looking at Csla.vbproj, I see references to version 3.0.0.0 for PresentationCore, PresentationFramework, System.Runtime.Serialization, System.ServiceModel, and WindowsBase.</P>
+<P>Can you tell me what I need to do to compile without installing version 3.0 of the Framework?&nbsp; Thanks!</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, July 10, 2007</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Yes, you will get the warnings. There&#8217;s no way I know of
+to prevent them, because (I don&#8217;t believe) you can put compilation
+conditionals in a vbproj file.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>If I&#8217;m wrong, and you can put conditional symbol checks in
+a vbproj file then I&#8217;m happy to do so.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Otherwise, these are just warnings and you can ignore them. Or
+you can go into the project&#8217;s references and remove the references to the
+missing assemblies.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Stephen Richards replied on Tuesday, July 10, 2007</h2><P>Thanks, the new DLL works great in my initial testing.</P>
+<P>You may want to put a note about these warnings&nbsp;on <A href="http://www.lhotka.net/Article.aspx?id=ac20fe4c-6afc-4176-bcb4-d74b5a370356">http://www.lhotka.net/Article.aspx?id=ac20fe4c-6afc-4176-bcb4-d74b5a370356</A>&nbsp;because I'm sure I'm not the only one who will ask.</P>
+<P>Stephen</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, July 10, 2007</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>Stephen Richards:</strong></div><div>
+<P>Thanks, the new DLL works great in my initial testing.</P>
+<P>You may want to put a note about these warnings&nbsp;on <A href="http://www.lhotka.net/Article.aspx?id=ac20fe4c-6afc-4176-bcb4-d74b5a370356">http://www.lhotka.net/Article.aspx?id=ac20fe4c-6afc-4176-bcb4-d74b5a370356</A>&nbsp;because I'm sure I'm not the only one who will ask.</P>
+<P>Stephen</P>
+<P></div></BLOCKQUOTE></P>
+<P>Excellent point - I've added a note to that effect, thanks!</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Solutrian replied on Tuesday, July 10, 2007</h2><P>I had two NUnit failures in the C# tests:</P>
+<P>&nbsp;</P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><B><SPAN>Error expected 4 and returned 5, either are correct mine returned 5</SPAN><SPAN>&nbsp; </SPAN><o:p></o:p></B></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>public</SPAN> <SPAN>void</SPAN> AscendingSort()<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>{<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>int</SPAN>[] intArr = { 45, 23, 56, 56, 11, 87, 94, 44 };<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>. . .<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>Assert</SPAN>.AreEqual(<SPAN>true</SPAN>, sortedList.Contains(56));<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>// as there are two values both 4 or 5 are correct indices<SPAN>&nbsp; </SPAN><o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>//<SPAN>Assert</SPAN>.IsTrue(4, sortedList.IndexOf(56)); &lt;- mine retured 5</SPAN></P>
+<P class=MsoNormal><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // changed the test to:</SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>Assert</SPAN>.IsTrue(sortedList.IndexOf(56) == 4 || sortedList.IndexOf(56) == 5,<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>"Expected either 4 or 5 for an index value, returned:"</SPAN>+sortedList.IndexOf(56).ToString());<o:p></o:p></SPAN></P>
+<P class=MsoNormal><o:p><FONT face=Calibri>&nbsp;</FONT></o:p></P>
+<P class=MsoNormal><o:p><FONT face=Calibri>&nbsp;</FONT></o:p></P>
+<P class=MsoNormal><FONT face=Calibri><SPAN>Error Expected 1 returned 0</SPAN><o:p></o:p></FONT></P>
+<P class=MsoNormal><o:p><FONT face=Calibri>&nbsp;</FONT></o:p></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN>[<SPAN>TestMethod</SPAN>()] <SPAN>This test is ok but it creates the per type rules before the next test</SPAN><o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN><SPAN>public</SPAN> <SPAN>void</SPAN> StringRequired()<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN>{<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>ApplicationContext</SPAN>.GlobalContext.Clear();<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>ApplicationContext</SPAN>.GlobalContext[<SPAN>"Shared"</SPAN>] = 0;<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>HasPerTypeRules</SPAN> root = <SPAN>new</SPAN> <SPAN>HasPerTypeRules</SPAN>();();<SPAN>&nbsp; </SPAN></SPAN><SPAN><SPAN>ß</SPAN></SPAN><SPAN>--Sets per type rules in this test and sets shared to 1<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>. . .<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>} <o:p></o:p></SPAN></P>
+<P class=MsoNormal><o:p><FONT face=Calibri>&nbsp;</FONT></o:p></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN>[<SPAN>TestMethod</SPAN>()]<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN><SPAN>public</SPAN> <SPAN>void</SPAN> NoDoubleInit()<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN>{<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>ApplicationContext</SPAN>.GlobalContext.Clear();<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>ApplicationContext</SPAN>.GlobalContext[<SPAN>"Shared"</SPAN>] = 0;<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>HasPerTypeRules</SPAN> root = <SPAN>new</SPAN> <SPAN>HasPerTypeRules</SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>root = <SPAN>new</SPAN> <SPAN>HasPerTypeRules</SPAN>();<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>// <SPAN>this test fails as the per type rules were set in the previous test.</SPAN><o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>Assert</SPAN>.AreEqual(1, (<SPAN>int</SPAN>)<SPAN>ApplicationContext</SPAN>.GlobalContext[<SPAN>"Shared"</SPAN>], <SPAN>"Rules should init just once"</SPAN>);<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN>}<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Reversing the order of the methods fixes the test.</SPAN></P>
+<P class=MsoNormal><SPAN></SPAN>&nbsp;</P>
+<P class=MsoNormal><SPAN>&gt;&gt; The later&nbsp;only happens when running the tests using TestDriven.Net</SPAN></P>
+<P class=MsoNormal><SPAN>&gt;&gt; The former with both TestDriven.Net and NUnit v2.4.1</SPAN></P>
+<P class=MsoNormal><SPAN></SPAN>&nbsp;</P>
+<P class=MsoNormal><SPAN>Thanks for sharing all your great work.</SPAN></P>
+<P class=MsoNormal><SPAN>Jay</SPAN></P>
+<P class=MsoNormal><o:p><FONT face=Calibri>&nbsp;</FONT></o:p></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, July 10, 2007</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>Solutrian:</strong></div><div>
+<P>I had two NUnit failures in the C# tests:</P>
+<P>
+<P class=MsoNormal><o:p><FONT face=Calibri></FONT></o:p></P></div></BLOCKQUOTE></P>
+<P>That's odd. I just rechecked and the tests run fine for me.</P>
+<P>Well, except for a missing reference to WindowsBase - so I did fix that and update the download.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RichardETVS replied on Thursday, July 12, 2007</h2><P><BLOCKQUOTE><div>I plan to write an ebook showing how to use the new features and enhancements in CSLA .NET 3.0. This ebook should be available in the third quarter of 2007 (probably September). </div></BLOCKQUOTE></P>
+<P>Should we wait to september to use CSLA .Net 3.0 ?</P>
+<P>&nbsp;</P>
+<P>Thanks</P>
+<P>&nbsp;</P>
+<P>Richard</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, July 12, 2007</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>That is entirely up to you.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>3.0 is complete and released at this point, but obviously there
+is scant documentation &#8211; just the change log, ProjectTracker and some of
+the samples in svn. The 3.0 ebook will provide more documentation on how to use
+the new features, and I hope that it proves to be very valuable to people.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>There <i>are</i> some important bug fixes in 3.0 however,
+especially in BusinessListBase and a couple other places &#8211; and with
+n-level undo in general. So if you are trying to do data binding in Windows
+Forms I suggest that you do want 3.0 as soon as you can get it.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>The thing is this: other than some bug fixes, you can treat 3.0
+just like 2.1.4. You can ignore the new features, and just use it as you&#8217;ve
+been using 2.1.4. Then when the ebook comes out you can choose to start using
+the new features based on that documentation.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>It is also the case that many of the really interesting new
+features center around WCF and WPF. While there are some really nice
+enhancements elsewhere, they are largely optional (unless you really wanted &#8220;feature
+X&#8221; &#8211; in which case you probably know what it does already).<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> RichardETVS
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Thursday, July 12, 2007 8:36 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] CSLA .NET 3.0 Available<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<blockquote>
+
+<div>
+
+<p class=MsoNormal>I plan to write an ebook showing how to use the new features
+and enhancements in CSLA .NET 3.0. This ebook should be available in the third
+quarter of 2007 (probably September). <o:p></o:p></p>
+
+</div>
+
+</blockquote>
+
+<p>Should we wait to september to use CSLA .Net 3.0 ?<o:p></o:p></p>
+
+<p>&nbsp;<o:p></o:p></p>
+
+<p>Thanks<o:p></o:p></p>
+
+<p>&nbsp;<o:p></o:p></p>
+
+<p>Richard<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RichardETVS replied on Monday, July 16, 2007</h2><P>Ok, thanks</P>
+<P>&nbsp;</P>
+<P>Richard</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>petervdm replied on Monday, July 16, 2007</h2>Hi<br><br>We were experiencing some EditLevel issues when we tried out RC2 of CSLA3 but resolved those by using the framework correctly.<br><br>I have just upgraded the solution to use the final release (12/7) and am experiencing EditLevel issues again (albeit in different places).<br><br>There is not too much difference in the code between the two CSLA releases (RC2 and 3) and so I am a bit baffled as to why we are having this issue.<br><br>Any ideas?<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, July 16, 2007</h2><P>I don't think anything changed from beta 2 to release - at least in regards to any n-level undo behaviors.</P>
+<P>The only meaningful change to the core framework was to implement INotifyCollectionChanged (a CollectionChanged event) on BusinessListBase. That should not impact Windows Forms at all, because the event and interface are WPF concepts.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Patrick.Roeper replied on Thursday, July 19, 2007</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div> 
+<P>The only meaningful change to the core framework was to implement INotifyCollectionChanged (a CollectionChanged event) on BusinessListBase. That should not impact Windows Forms at all, because the event and interface are WPF concepts.</P>
+<P></div></BLOCKQUOTE></P>
+<P>Rocky,</P>
+<P>On that note... We decided to implement a custom BusinessListBase class as well as a custom BusinessBase class when we started using CSLA. Our&nbsp;application does property level authentication based off of&nbsp;role user levels and a database defined data-dictionary (basically&nbsp;allowing the user to define what each role can&nbsp;see/edit).&nbsp;We figured the best implementation was to override the&nbsp;CanReadProperty and&nbsp;CanWriteProperty in our own implementation of the business base classes. Anyways,&nbsp;I took a copy of our solution (currently using the latest CSLA 2 version)&nbsp;off line to test it with the new CSLA 3.0 framework and I am getting an error with our BusinessListBase.</P>
+<P>This is currently what the class declaration looks like...</P><FONT color=#0000ff size=2>
+<P>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>abstract</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>class</FONT><FONT size=2> </FONT><FONT color=#2b91af size=2>XEBusinessListBase</FONT><FONT size=2>&lt;T, C&gt; : </FONT><FONT color=#2b91af size=2>BusinessListBase</FONT><FONT size=2>&lt;T, C&gt; </FONT><FONT color=#0000ff size=2>where</FONT><FONT size=2> T : </FONT><FONT color=#2b91af size=2>XEBusinessListBase</FONT><FONT size=2>&lt;T, C&gt;</P>
+<P></FONT><FONT color=#0000ff size=2>where</FONT><FONT size=2> C : </FONT><FONT color=#2b91af size=2>IEditableBusinessObject</P></FONT>
+<P>Every one of our XEBusinessListBase objects now is throwing an error regarding 'INotifyCollectionChanged'.</P>
+<P><FONT color=#ff0000 size=2>Error&nbsp;58&nbsp;The type 'System.Collections.Specialized.INotifyCollectionChanged' is defined in an assembly that is not referenced. You must add a reference to assembly 'WindowsBase, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35'.&nbsp;</FONT></P>
+<P>So I guess I have 2 options? Make a reference to the .NET 3.0 WindowsBase assembly in all my Business Object assemblies or change something around with my custom BusinessListBase class. Can you give me some suggestions?</P>
+<P>I briefly looked at your new BusinessListBase declaration and I noticed...</P><FONT color=#0000ff size=2>
+<P>#if</FONT><FONT size=2> !NET20</P>
+<P>, </FONT><FONT color=#2b91af size=2>INotifyCollectionChanged</P></FONT><FONT color=#0000ff size=2>
+<P>#endif</P></FONT>
+<P>Is there a quick fix so I can get back&nbsp;to testing CSLA 3.0 with our application? Thanks!</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, July 19, 2007</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>You either need to reference the .NET 3.0 assemblies, or you
+need to build CSLA .NET without .NET 3.0 support<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><a href="http://www.lhotka.net/Article.aspx?area=4&amp;id=ac20fe4c-6afc-4176-bcb4-d74b5a370356">http://www.lhotka.net/Article.aspx?area=4&amp;id=ac20fe4c-6afc-4176-bcb4-d74b5a370356</a><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Patrick.Roeper
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Thursday, July 19, 2007 3:41 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: CSLA .NET 3.0 Available<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<blockquote>
+
+<div>
+
+<p class=MsoNormal><img border=0 id="_x0000_i1025" src="/Themes/default/images/icon-quote.gif"><strong>RockfordLhotka:</strong><o:p></o:p></p>
+
+</div>
+
+<div>
+
+<p>The only meaningful change to the core framework was to implement
+INotifyCollectionChanged (a CollectionChanged event) on BusinessListBase. That
+should not impact Windows Forms at all, because the event and interface are WPF
+concepts.<o:p></o:p></p>
+
+</div>
+
+</blockquote>
+
+<p>Rocky,<o:p></o:p></p>
+
+<p>On that note... We decided to implement a custom BusinessListBase class as
+well as a custom BusinessBase class when we started using CSLA.
+Our&nbsp;application does property level authentication based off of&nbsp;role
+user levels and a database defined data-dictionary (basically&nbsp;allowing the
+user to define what each role can&nbsp;see/edit).&nbsp;We figured the best
+implementation was to override the&nbsp;CanReadProperty
+and&nbsp;CanWriteProperty in our own implementation of the business base
+classes. Anyways,&nbsp;I took a copy of our solution (currently using the
+latest CSLA 2 version)&nbsp;off line to test it with the new CSLA 3.0 framework
+and I am getting an error with our BusinessListBase.<o:p></o:p></p>
+
+<p>This is currently what the class declaration looks like...<o:p></o:p></p>
+
+<p><span>public</span><span> <span>abstract</span> <span>class</span> <span>XEBusinessListBase</span>&lt;T,
+C&gt; : <span>BusinessListBase</span>&lt;T, C&gt; <span>where</span> T : <span>XEBusinessListBase</span>&lt;T,
+C&gt;<o:p></o:p></span></p>
+
+<p><span>where</span><span> C : <span>IEditableBusinessObject<o:p></o:p></span></span></p>
+
+<p>Every one of our XEBusinessListBase objects now is throwing an error
+regarding 'INotifyCollectionChanged'.<o:p></o:p></p>
+
+<p><span>Error&nbsp;58&nbsp;The type
+'System.Collections.Specialized.INotifyCollectionChanged' is defined in an
+assembly that is not referenced. You must add a reference to assembly
+'WindowsBase, Version=3.0.0.0, Culture=neutral,
+PublicKeyToken=31bf3856ad364e35'.&nbsp;</span><o:p></o:p></p>
+
+<p>So I guess I have 2 options? Make a reference to the .NET 3.0 WindowsBase
+assembly in all my Business Object assemblies or change something around with
+my custom BusinessListBase class. Can you give me some suggestions?<o:p></o:p></p>
+
+<p>I briefly looked at your new BusinessListBase declaration and I noticed...<o:p></o:p></p>
+
+<p><span>#if</span><span> !NET20<o:p></o:p></span></p>
+
+<p><span>, <span>INotifyCollectionChanged<o:p></o:p></span></span></p>
+
+<p><span>#endif<o:p></o:p></span></p>
+
+<p>Is there a quick fix so I can get back&nbsp;to testing CSLA 3.0 with our
+application? Thanks!<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Patrick.Roeper replied on Thursday, July 19, 2007</h2><P>Annnddddd it builds again. Thanks Rocky.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>culprit replied on Wednesday, September 05, 2007</h2><P>Rocky,</P>
+<P>One BusinessBase I have contains a child BusinessListBase similar to the Project/Resources (ProjectEdit Form) you have in ProjectTracker. I am not pulling the data for the child from a DB but just creating each child as a new object. I am binding to a TreeList instead of a grid. I dont know what I am doing wrong but the child never shows as being dirty. </P>
+<P>ADDED: I tested this as well with the DataGrid with not difference. I also examined the ChildList on form load and verified the data in each Child in the collection (16). I then changed the value of the only editable property (a boolean Checked value) in the child, confirmed that it indeed was changed at the beginning of the Save procedure but the IsDirty flag on this child, even though changed, was still False. I am sure it is something simple I am doing wrong.</P>
+<P>Also, when editing a Project in ProjectTracker (new 3.0)&nbsp;and clicking Apply the form just reloads empty. This is the code I am using in my project; I wonder if there is a problem with this code.</P>
+<P>Thank You,</P>
+<P>Rob</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>culprit replied on Wednesday, September 05, 2007</h2><P>One other quick question: I notice that we went from EndEdit() on the BindingSource to ApplyEdit() and BeginEdit() on the CSLA object, would you mind explaining this change? Also, we have a lot of code like 2.1 code where we are firing the EndEdit() function and then rebinding by setting DataSource to nothing and then back to the BO; is this method still okay? It seems to work okay even with the 3.0 CSLA.</P>
+<P>Thank You,</P>
+<P>Rob</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, September 05, 2007</h2><P>Read through this thread regarding data binding</P>
+<P><A HREF="/forums/1/16971/ShowThread.aspx">http://forums.lhotka.net/forums/1/16971/ShowThread.aspx</A></P>
+<P>The only correct code out there now is found in 3.0.2, at least for parent-child data in the same form, where you want a form-level Cancel button. That is the code I'll be discussing in the 3.0 ebook.</P>
+<P>Things are a little simpler if you don't have parent-child data, but the same pattern is still required.</P>
+<P>Things are much simpler if you don't have a form-level Cancel button, because then there's never a need to call any n-level undo methods directly on the business object. In that case you <EM>only</EM> call the methods on the bindingsource.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>culprit replied on Wednesday, September 05, 2007</h2><P>Rocky,</P>
+<P>I think I found why the ProjectEdit form did not reload after clicking the Apply button. (I am using the VB version) The "rebind" If statement was inside the Else side of the If SaveObject statement. I put it in the finally section and it seems to work okay.</P>
+<P>Rob</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>culprit replied on Wednesday, September 05, 2007</h2><P>Sorry to query so much but I noticed another slight difference when editing now compared to before. Now if you do not move the focus away from the edited control (ie - Checkbox) it does not see this as a change. I think this may be because now we are not performing EndEdit on the bindingsource. Do you have an alternative way we can commit any changes to the currently focused control without leaving that control?</P>
+<P>Thank You,</P>
+<P>Rob</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, September 05, 2007</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I don&#8217;t follow you? You _<i>must</i>_ call EndEdit() on
+the bindingsource, then unbind it, then call ApplyEdit() on the business
+object.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>The UnbindBindingSource() method calls EndEdit() or CancelEdit()
+as appropriate.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> culprit
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Wednesday, September 05, 2007 2:18 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: CSLA .NET 3.0 Available<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Sorry to query so much but I noticed another slight difference when editing
+now compared to before. Now if you do not move the focus away from the edited
+control (ie - Checkbox) it does not see this as a change. I think this may be
+because now we are not performing EndEdit on the bindingsource. Do you have an
+alternative way we can commit any changes to the currently focused control
+without leaving that control?<o:p></o:p></p>
+
+<p>Thank You,<o:p></o:p></p>
+
+<p>Rob<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>culprit replied on Thursday, September 06, 2007</h2>
+
+
+
+
+Rocky,<BR>
+I am sorry to email you directly to ask you this but this is driving me crazy. We are implementing CSLA in a very large project and I just have one issue that I cant seem to get around. <BR>
+&nbsp;<BR>
+I am creating a ChildCollection and Child objects manually by parsing a string and then bind the parent to a form and the child to a grid. I change the value on the child's Checked property and when I analyze the Child's properties before saving it does show the new value but the IsDirty flag on the child collection is still False. I am not sure what to do to make this flag change or what I can do to force the object to save itself when the child collection has changed. Below I have included the relevant code in the parent object and the full code for the ChildCollection and Child:<BR>
+&nbsp;<BR>
+Parent:<BR>
+&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;<BR><FONT size=2>
+</FONT><FONT color=#0000ff size=2>Private</FONT><FONT size=2> _claimFields </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> InsuranceFields = ScriptAssist.InsuranceFields.NewInsuranceFields()<BR>
+&nbsp;<BR><FONT size=2>
+</FONT><FONT color=#0000ff size=2>Public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>ReadOnly</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Property</FONT><FONT size=2> ClaimFields() </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> ScriptAssist.InsuranceFields<BR>
+&lt;System.Runtime.CompilerServices.MethodImpl(Runtime.CompilerServices.MethodImplOptions.NoInlining)&gt; _<BR>
+</FONT><FONT color=#0000ff size=2>Get<BR></FONT><FONT size=2>
+CanReadProperty(</FONT><FONT color=#a31515 size=2>"Claimfields"</FONT><FONT size=2>, </FONT><FONT color=#0000ff size=2>True</FONT><FONT size=2>)<BR>
+</FONT><FONT color=#0000ff size=2>Return</FONT><FONT size=2> _claimFields<BR>
+</FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Get<BR></FONT><FONT size=2>
+</FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Property<BR>
+</FONT></FONT><BR><FONT size=2>&nbsp;<BR>
+</FONT><FONT color=#0000ff size=2>Public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Overrides</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>ReadOnly</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Property</FONT><FONT size=2> IsValid() </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Boolean<BR></FONT><FONT size=2>
+</FONT><FONT color=#0000ff size=2>Get<BR></FONT><FONT size=2>
+</FONT><FONT color=#0000ff size=2>Return</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>MyBase</FONT><FONT size=2>.IsValid </FONT><FONT color=#0000ff size=2>AndAlso</FONT><FONT size=2> _claimFields.IsValid<BR>
+</FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Get<BR></FONT><FONT size=2>
+</FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Property<BR></FONT><FONT size=2>
+</FONT><FONT color=#0000ff size=2>Public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Overrides</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>ReadOnly</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Property</FONT><FONT size=2> IsDirty() </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Boolean<BR></FONT><FONT size=2>
+</FONT><FONT color=#0000ff size=2>Get<BR></FONT><FONT size=2>
+</FONT><FONT color=#0000ff size=2>Return</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>MyBase</FONT><FONT size=2>.IsDirty </FONT><FONT color=#0000ff size=2>OrElse</FONT><FONT size=2> _claimFields.IsDirty<BR>
+</FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Get<BR></FONT><FONT size=2>
+</FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Property</FONT><BR>
+<FONT color=#0000ff size=2></FONT>&nbsp;<BR><FONT color=#0000ff size=2><FONT size=2>
+_claimFields = InsuranceFields.GetInsuranceFields(_claimFieldsText)<BR>
+&nbsp;<BR>
+&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<BR>
+&nbsp;<BR>
+Child Collection<BR>
+&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;<BR><FONT color=#0000ff size=2>
+Imports</FONT><FONT size=2><FONT color=#000000> System</FONT><BR></FONT><FONT color=#0000ff size=2>
+Imports</FONT><FONT size=2><FONT color=#000000> System.Data</FONT><BR></FONT><FONT color=#0000ff size=2>
+Imports</FONT><FONT size=2><FONT color=#000000> System.Data.SqlClient</FONT><BR></FONT><FONT color=#0000ff size=2>
+Imports</FONT><FONT size=2><FONT color=#000000> Csla</FONT><BR></FONT><FONT color=#0000ff size=2>
+Imports</FONT><FONT size=2><FONT color=#000000> Csla.Data</FONT><BR>
+&lt;Serializable()&gt; _<BR></FONT><FONT color=#0000ff size=2>
+Public</FONT><FONT color=#000000 size=2> </FONT><FONT color=#0000ff size=2>Class</FONT><FONT size=2><FONT color=#000000> InsuranceFields</FONT><BR>
+</FONT><FONT color=#0000ff size=2>Inherits</FONT><FONT size=2> BusinessListBase(</FONT><FONT color=#0000ff size=2>Of</FONT><FONT size=2> InsuranceFields, InsuranceField)<BR>
+#</FONT><FONT color=#0000ff size=2>Region</FONT><FONT size=2> </FONT><FONT color=#a31515 size=2>" BindingList Overrides "<BR></FONT><FONT size=2>
+</FONT><FONT color=#0000ff size=2>Protected</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Overrides</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Function</FONT><FONT size=2> AddNewCore() </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Object<BR></FONT><FONT size=2>
+</FONT><FONT color=#0000ff size=2>Dim</FONT><FONT size=2> item </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> InsuranceField = InsuranceField.NewInsuranceField<BR>
+</FONT><FONT color=#0000ff size=2>Me</FONT><FONT size=2>.Add(item)<BR>
+</FONT><FONT color=#0000ff size=2>Return</FONT><FONT size=2> item<BR>
+</FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Function<BR></FONT><FONT size=2>
+#</FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Region</FONT><FONT size=2> </FONT><FONT color=#008000 size=2>' BindingList Overrides<BR></FONT><FONT size=2>
+#</FONT><FONT color=#0000ff size=2>Region</FONT><FONT size=2> </FONT><FONT color=#a31515 size=2>" Factory Methods "<BR></FONT><FONT size=2>
+</FONT><FONT color=#0000ff size=2>Friend</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Shared</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Function</FONT><FONT size=2> NewInsuranceFields() </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> InsuranceFields<BR>
+</FONT><FONT color=#0000ff size=2>Return</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>New</FONT><FONT size=2> InsuranceFields()<BR>
+</FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Function<BR></FONT><FONT size=2>
+</FONT><FONT color=#0000ff size=2>Friend</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Shared</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Function</FONT><FONT size=2> GetInsuranceFields(</FONT><FONT color=#0000ff size=2>ByVal</FONT><FONT size=2> ClaimFields </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>String</FONT><FONT size=2>) </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> InsuranceFields<BR>
+</FONT><FONT color=#0000ff size=2>Return</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>New</FONT><FONT size=2> InsuranceFields(ClaimFields)<BR>
+</FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Function<BR></FONT><FONT size=2>
+</FONT><FONT color=#0000ff size=2>Private</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Sub</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>New</FONT><FONT size=2>()<BR>
+MarkAsChild()<BR>
+</FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Sub<BR></FONT><FONT size=2>
+</FONT><FONT color=#0000ff size=2>Private</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Sub</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>New</FONT><FONT size=2>(</FONT><FONT color=#0000ff size=2>ByVal</FONT><FONT size=2> ClaimFields </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>String</FONT><FONT size=2>)<BR>
+MarkAsChild()<BR>
+Fetch(ClaimFields)<BR>
+</FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Sub<BR></FONT><FONT size=2>
+#</FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Region</FONT><FONT size=2> </FONT><FONT color=#008000 size=2>' Factory Methods<BR></FONT><FONT size=2>
+#</FONT><FONT color=#0000ff size=2>Region</FONT><FONT size=2> </FONT><FONT color=#a31515 size=2>" Data Access "<BR></FONT><FONT size=2>
+</FONT><FONT color=#0000ff size=2>Public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Function</FONT><FONT size=2> GetClaimFields() </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>String<BR></FONT><FONT size=2>
+</FONT><FONT color=#0000ff size=2>Dim</FONT><FONT size=2> sClaimFields </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>String</FONT><FONT size=2> = </FONT><FONT color=#a31515 size=2>""<BR></FONT><FONT size=2>
+</FONT><FONT color=#0000ff size=2>For</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Each</FONT><FONT size=2> Field </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> InsuranceField </FONT><FONT color=#0000ff size=2>In</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Me<BR></FONT><FONT size=2>
+</FONT><FONT color=#0000ff size=2>If</FONT><FONT size=2> Field.Checked = </FONT><FONT color=#0000ff size=2>True</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Then<BR></FONT><FONT size=2>
+sClaimFields = sClaimFields &amp; Field.Key<BR>
+</FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>If<BR></FONT><FONT size=2>
+</FONT><FONT color=#0000ff size=2>Next<BR></FONT><FONT size=2>
+</FONT><FONT color=#0000ff size=2>Return</FONT><FONT size=2> sClaimFields<BR>
+</FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Function<BR></FONT><FONT size=2>
+</FONT><FONT color=#0000ff size=2>Private</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Sub</FONT><FONT size=2> Fetch(</FONT><FONT color=#0000ff size=2>ByVal</FONT><FONT size=2> ClaimFields </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>String</FONT><FONT size=2>)<BR>
+RaiseListChangedEvents = </FONT><FONT color=#0000ff size=2>False<BR></FONT><FONT size=2>
+</FONT><FONT color=#008000 size=2>'Here aer the 3.2 only fields<BR></FONT><FONT size=2>
+</FONT><FONT color=#0000ff size=2>Me</FONT><FONT size=2>.Add(InsuranceField.GetInsuranceField(</FONT><FONT color=#a31515 size=2>"CF,CG,CH,CI,CJ,CK-"</FONT><FONT size=2>, </FONT><FONT color=#a31515 size=2>"Employer Fields"</FONT><FONT size=2>, </FONT><FONT color=#0000ff size=2>CBool</FONT><FONT size=2>(InStr(ClaimFields, </FONT><FONT color=#a31515 size=2>"CF"</FONT><FONT size=2>))))<BR>
+</FONT><FONT color=#0000ff size=2>Me</FONT><FONT size=2>.Add(InsuranceField.GetInsuranceField(</FONT><FONT color=#a31515 size=2>"DY-"</FONT><FONT size=2>, </FONT><FONT color=#a31515 size=2>"Date of Injury"</FONT><FONT size=2>, </FONT><FONT color=#0000ff size=2>CBool</FONT><FONT size=2>(InStr(ClaimFields, </FONT><FONT color=#a31515 size=2>"DY"</FONT><FONT size=2>))))<BR>
+</FONT><FONT color=#0000ff size=2>Me</FONT><FONT size=2>.Add(InsuranceField.GetInsuranceField(</FONT><FONT color=#a31515 size=2>"DZ-"</FONT><FONT size=2>, </FONT><FONT color=#a31515 size=2>"Claim/Ref (Injury Type)"</FONT><FONT size=2>, </FONT><FONT color=#0000ff size=2>CBool</FONT><FONT size=2>(InStr(ClaimFields, </FONT><FONT color=#a31515 size=2>"DZ"</FONT><FONT size=2>))))<BR>
+</FONT><FONT color=#008000 size=2>'Fields common between 3.2 and 5.1<BR></FONT><FONT size=2>
+</FONT><FONT color=#0000ff size=2>Me</FONT><FONT size=2>.Add(InsuranceField.GetInsuranceField(</FONT><FONT color=#a31515 size=2>"CM,CN,CO,CP-"</FONT><FONT size=2>, </FONT><FONT color=#a31515 size=2>"Patient Address"</FONT><FONT size=2>, </FONT><FONT color=#0000ff size=2>CBool</FONT><FONT size=2>(InStr(ClaimFields, </FONT><FONT color=#a31515 size=2>"CM"</FONT><FONT size=2>))))<BR>
+</FONT><FONT color=#0000ff size=2>Me</FONT><FONT size=2>.Add(InsuranceField.GetInsuranceField(</FONT><FONT color=#a31515 size=2>"CQ-"</FONT><FONT size=2>, </FONT><FONT color=#a31515 size=2>"Patient Phone"</FONT><FONT size=2>, </FONT><FONT color=#0000ff size=2>CBool</FONT><FONT size=2>(InStr(ClaimFields, </FONT><FONT color=#a31515 size=2>"CQ"</FONT><FONT size=2>))))<BR>
+</FONT><FONT color=#0000ff size=2>Me</FONT><FONT size=2>.Add(InsuranceField.GetInsuranceField(</FONT><FONT color=#a31515 size=2>"DR-"</FONT><FONT size=2>, </FONT><FONT color=#a31515 size=2>"Physician Last Name"</FONT><FONT size=2>, </FONT><FONT color=#0000ff size=2>CBool</FONT><FONT size=2>(InStr(ClaimFields, </FONT><FONT color=#a31515 size=2>"DR"</FONT><FONT size=2>))))<BR>
+</FONT><FONT color=#008000 size=2>'Fields unique to 5.1<BR></FONT><FONT size=2>
+</FONT><FONT color=#0000ff size=2>Me</FONT><FONT size=2>.Add(InsuranceField.GetInsuranceField(</FONT><FONT color=#a31515 size=2>"CA,CB-"</FONT><FONT size=2>, </FONT><FONT color=#a31515 size=2>"Patient Name"</FONT><FONT size=2>, </FONT><FONT color=#0000ff size=2>CBool</FONT><FONT size=2>(InStr(ClaimFields, </FONT><FONT color=#a31515 size=2>"CA"</FONT><FONT size=2>))))<BR>
+</FONT><FONT color=#0000ff size=2>Me</FONT><FONT size=2>.Add(InsuranceField.GetInsuranceField(</FONT><FONT color=#a31515 size=2>"CX-"</FONT><FONT size=2>, </FONT><FONT color=#a31515 size=2>"Patient SSN"</FONT><FONT size=2>, </FONT><FONT color=#0000ff size=2>CBool</FONT><FONT size=2>(InStr(ClaimFields, </FONT><FONT color=#a31515 size=2>"CX"</FONT><FONT size=2>))))<BR>
+</FONT><FONT color=#0000ff size=2>Me</FONT><FONT size=2>.Add(InsuranceField.GetInsuranceField(</FONT><FONT color=#a31515 size=2>"EJ-"</FONT><FONT size=2>, </FONT><FONT color=#a31515 size=2>"Orig Product ID Qualifier"</FONT><FONT size=2>, </FONT><FONT color=#0000ff size=2>CBool</FONT><FONT size=2>(InStr(ClaimFields, </FONT><FONT color=#a31515 size=2>"EJ"</FONT><FONT size=2>))))<BR>
+</FONT><FONT color=#0000ff size=2>Me</FONT><FONT size=2>.Add(InsuranceField.GetInsuranceField(</FONT><FONT color=#a31515 size=2>"AM06-"</FONT><FONT size=2>, </FONT><FONT color=#a31515 size=2>"WC Segment"</FONT><FONT size=2>, </FONT><FONT color=#0000ff size=2>CBool</FONT><FONT size=2>(InStr(ClaimFields, </FONT><FONT color=#a31515 size=2>"AM06"</FONT><FONT size=2>))))<BR>
+</FONT><FONT color=#0000ff size=2>Me</FONT><FONT size=2>.Add(InsuranceField.GetInsuranceField(</FONT><FONT color=#a31515 size=2>"EA-"</FONT><FONT size=2>, </FONT><FONT color=#a31515 size=2>"Orig Product Code"</FONT><FONT size=2>, </FONT><FONT color=#0000ff size=2>CBool</FONT><FONT size=2>(InStr(ClaimFields, </FONT><FONT color=#a31515 size=2>"EA"</FONT><FONT size=2>))))<BR>
+</FONT><FONT color=#0000ff size=2>Me</FONT><FONT size=2>.Add(InsuranceField.GetInsuranceField(</FONT><FONT color=#a31515 size=2>"EB-"</FONT><FONT size=2>, </FONT><FONT color=#a31515 size=2>"Orig Prescribed Qty"</FONT><FONT size=2>, </FONT><FONT color=#0000ff size=2>CBool</FONT><FONT size=2>(InStr(ClaimFields, </FONT><FONT color=#a31515 size=2>"EB"</FONT><FONT size=2>))))<BR>
+</FONT><FONT color=#0000ff size=2>Me</FONT><FONT size=2>.Add(InsuranceField.GetInsuranceField(</FONT><FONT color=#a31515 size=2>"AM13-"</FONT><FONT size=2>, </FONT><FONT color=#a31515 size=2>"Include Clinical Seg"</FONT><FONT size=2>, </FONT><FONT color=#0000ff size=2>CBool</FONT><FONT size=2>(InStr(ClaimFields, </FONT><FONT color=#a31515 size=2>"AM13"</FONT><FONT size=2>))))<BR>
+</FONT><FONT color=#0000ff size=2>Me</FONT><FONT size=2>.Add(InsuranceField.GetInsuranceField(</FONT><FONT color=#a31515 size=2>"MED-"</FONT><FONT size=2>, </FONT><FONT color=#a31515 size=2>"Medicare Format"</FONT><FONT size=2>, </FONT><FONT color=#0000ff size=2>CBool</FONT><FONT size=2>(InStr(ClaimFields, </FONT><FONT color=#a31515 size=2>"MED"</FONT><FONT size=2>))))<BR>
+</FONT><FONT color=#0000ff size=2>Me</FONT><FONT size=2>.Add(InsuranceField.GetInsuranceField(</FONT><FONT color=#a31515 size=2>"DX-"</FONT><FONT size=2>, </FONT><FONT color=#a31515 size=2>"Send Copay"</FONT><FONT size=2>, </FONT><FONT color=#0000ff size=2>CBool</FONT><FONT size=2>(InStr(ClaimFields, </FONT><FONT color=#a31515 size=2>"DX"</FONT><FONT size=2>))))<BR>
+</FONT><FONT color=#0000ff size=2>Me</FONT><FONT size=2>.Add(InsuranceField.GetInsuranceField(</FONT><FONT color=#a31515 size=2>"2E-"</FONT><FONT size=2>, </FONT><FONT color=#a31515 size=2>"Include PCP ID"</FONT><FONT size=2>, </FONT><FONT color=#0000ff size=2>CBool</FONT><FONT size=2>(InStr(ClaimFields, </FONT><FONT color=#a31515 size=2>"2E"</FONT><FONT size=2>))))<BR>
+RaiseListChangedEvents = </FONT><FONT color=#0000ff size=2>True<BR></FONT><FONT size=2>
+</FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Sub<BR></FONT><FONT size=2>
+#</FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Region</FONT><FONT size=2> </FONT><FONT color=#008000 size=2>' Data Access<BR></FONT><FONT color=#0000ff size=2>
+End</FONT><FONT color=#000000 size=2> </FONT><FONT color=#0000ff size=2>Class</FONT><BR>
+<FONT color=#0000ff size=2>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;</FONT><BR>
+<FONT color=#0000ff size=2></FONT>&nbsp;<BR>
+<FONT color=#0000ff size=2>Child</FONT><BR>
+<FONT color=#0000ff size=2>&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;</FONT><BR><FONT color=#0000ff size=2>
+Imports</FONT><FONT size=2><FONT color=#000000> System</FONT><BR></FONT><FONT color=#0000ff size=2>
+Imports</FONT><FONT size=2><FONT color=#000000> System.Data</FONT><BR></FONT><FONT color=#0000ff size=2>
+Imports</FONT><FONT size=2><FONT color=#000000> System.Data.SqlClient</FONT><BR></FONT><FONT color=#0000ff size=2>
+Imports</FONT><FONT size=2><FONT color=#000000> Csla</FONT><BR></FONT><FONT color=#0000ff size=2>
+Imports</FONT><FONT size=2><FONT color=#000000> Csla.Data</FONT><BR></FONT><FONT color=#0000ff size=2>
+Imports</FONT><FONT size=2><FONT color=#000000> Csla.Validation</FONT><BR>
+&lt;Serializable()&gt; _<BR></FONT><FONT color=#0000ff size=2>
+Public</FONT><FONT color=#000000 size=2> </FONT><FONT color=#0000ff size=2>Class</FONT><FONT size=2><FONT color=#000000> InsuranceField</FONT><BR>
+</FONT><FONT color=#0000ff size=2>Inherits</FONT><FONT size=2> BusinessBase(</FONT><FONT color=#0000ff size=2>Of</FONT><FONT size=2> InsuranceField)<BR>
+#</FONT><FONT color=#0000ff size=2>Region</FONT><FONT size=2> </FONT><FONT color=#a31515 size=2>" Business Properties and Methods "<BR></FONT><FONT size=2>
+</FONT><FONT color=#008000 size=2>' declare members<BR></FONT><FONT size=2>
+</FONT><FONT color=#0000ff size=2>Private</FONT><FONT size=2> _ID </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> Guid = Guid.Empty<BR>
+</FONT><FONT color=#0000ff size=2>Private</FONT><FONT size=2> _key </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>String</FONT><FONT size=2> = </FONT><FONT color=#a31515 size=2>""<BR></FONT><FONT size=2>
+</FONT><FONT color=#0000ff size=2>Private</FONT><FONT size=2> _name </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>String</FONT><FONT size=2> = </FONT><FONT color=#a31515 size=2>""<BR></FONT><FONT size=2>
+</FONT><FONT color=#0000ff size=2>Private</FONT><FONT size=2> _checked </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Boolean</FONT><FONT size=2> = </FONT><FONT color=#0000ff size=2>False<BR></FONT><FONT size=2>
+&lt;System.ComponentModel.DataObjectField(</FONT><FONT color=#0000ff size=2>True</FONT><FONT size=2>, </FONT><FONT color=#0000ff size=2>True</FONT><FONT size=2>)&gt; _<BR>
+</FONT><FONT color=#0000ff size=2>Public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>ReadOnly</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Property</FONT><FONT size=2> ID() </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> Guid<BR>
+&lt;System.Runtime.CompilerServices.MethodImpl(Runtime.CompilerServices.MethodImplOptions.NoInlining)&gt; _<BR>
+</FONT><FONT color=#0000ff size=2>Get<BR></FONT><FONT size=2>
+</FONT><FONT color=#0000ff size=2>Return</FONT><FONT size=2> _ID<BR>
+</FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Get<BR></FONT><FONT size=2>
+</FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Property<BR></FONT><FONT size=2>
+</FONT><FONT color=#0000ff size=2>Public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Property</FONT><FONT size=2> Key() </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>String<BR></FONT><FONT size=2>
+&lt;System.Runtime.CompilerServices.MethodImpl(Runtime.CompilerServices.MethodImplOptions.NoInlining)&gt; _<BR>
+</FONT><FONT color=#0000ff size=2>Get<BR></FONT><FONT size=2>
+</FONT><FONT color=#0000ff size=2>Return</FONT><FONT size=2> _key<BR>
+</FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Get<BR></FONT><FONT size=2>
+&lt;System.Runtime.CompilerServices.MethodImpl(Runtime.CompilerServices.MethodImplOptions.NoInlining)&gt; _<BR>
+</FONT><FONT color=#0000ff size=2>Set</FONT><FONT size=2>(</FONT><FONT color=#0000ff size=2>ByVal</FONT><FONT size=2> value </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>String</FONT><FONT size=2>)<BR>
+_key = value<BR>
+</FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Set<BR></FONT><FONT size=2>
+</FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Property<BR></FONT><FONT size=2>
+</FONT><FONT color=#0000ff size=2>Public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Property</FONT><FONT size=2> Name() </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>String<BR></FONT><FONT size=2>
+&lt;System.Runtime.CompilerServices.MethodImpl(Runtime.CompilerServices.MethodImplOptions.NoInlining)&gt; _<BR>
+</FONT><FONT color=#0000ff size=2>Get<BR></FONT><FONT size=2>
+</FONT><FONT color=#0000ff size=2>Return</FONT><FONT size=2> _name<BR>
+</FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Get<BR></FONT><FONT size=2>
+&lt;System.Runtime.CompilerServices.MethodImpl(Runtime.CompilerServices.MethodImplOptions.NoInlining)&gt; _<BR>
+</FONT><FONT color=#0000ff size=2>Set</FONT><FONT size=2>(</FONT><FONT color=#0000ff size=2>ByVal</FONT><FONT size=2> value </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>String</FONT><FONT size=2>)<BR>
+_name = value<BR>
+</FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Set<BR></FONT><FONT size=2>
+</FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Property<BR></FONT><FONT size=2>
+</FONT><FONT color=#0000ff size=2>Public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Property</FONT><FONT size=2> Checked() </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Boolean<BR></FONT><FONT size=2>
+&lt;System.Runtime.CompilerServices.MethodImpl(Runtime.CompilerServices.MethodImplOptions.NoInlining)&gt; _<BR>
+</FONT><FONT color=#0000ff size=2>Get<BR></FONT><FONT size=2>
+</FONT><FONT color=#0000ff size=2>Return</FONT><FONT size=2> _checked<BR>
+</FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Get<BR></FONT><FONT size=2>
+&lt;System.Runtime.CompilerServices.MethodImpl(Runtime.CompilerServices.MethodImplOptions.NoInlining)&gt; _<BR>
+</FONT><FONT color=#0000ff size=2>Set</FONT><FONT size=2>(</FONT><FONT color=#0000ff size=2>ByVal</FONT><FONT size=2> value </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Boolean</FONT><FONT size=2>)<BR>
+_checked = value<BR>
+</FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Set<BR></FONT><FONT size=2>
+</FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Property<BR></FONT><FONT size=2>
+</FONT><FONT color=#008000 size=2>''' </FONT><FONT color=#808080 size=2>&lt;summary&gt;<BR></FONT><FONT size=2>
+</FONT><FONT color=#008000 size=2>''' Get the unique id for the current object.<BR></FONT><FONT size=2>
+</FONT><FONT color=#008000 size=2>''' </FONT><FONT color=#808080 size=2>&lt;/summary&gt;<BR></FONT><FONT size=2>
+</FONT><FONT color=#008000 size=2>''' </FONT><FONT color=#808080 size=2>&lt;returns&gt;</FONT><FONT color=#008000 size=2>A value that is the unique id of the object.</FONT><FONT color=#808080 size=2>&lt;/returns&gt;<BR></FONT><FONT size=2>
+</FONT><FONT color=#008000 size=2>''' </FONT><FONT color=#808080 size=2>&lt;remarks&gt;&lt;/remarks&gt;<BR></FONT><FONT size=2>
+</FONT><FONT color=#0000ff size=2>Protected</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Overrides</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Function</FONT><FONT size=2> GetIdValue() </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Object<BR></FONT><FONT size=2>
+</FONT><FONT color=#0000ff size=2>Return</FONT><FONT size=2> _ID<BR>
+</FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Function<BR></FONT><FONT size=2>
+#</FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Region</FONT><FONT size=2> </FONT><FONT color=#008000 size=2>' Business Properties and Methods<BR></FONT><FONT size=2>
+#</FONT><FONT color=#0000ff size=2>Region</FONT><FONT size=2> </FONT><FONT color=#a31515 size=2>" Validation Rules "<BR></FONT><FONT size=2>
+</FONT><FONT color=#008000 size=2>''' </FONT><FONT color=#808080 size=2>&lt;summary&gt;<BR></FONT><FONT size=2>
+</FONT><FONT color=#008000 size=2>''' Method that allows the addition of custom business rules.<BR></FONT><FONT size=2>
+</FONT><FONT color=#008000 size=2>''' </FONT><FONT color=#808080 size=2>&lt;/summary&gt;<BR></FONT><FONT size=2>
+</FONT><FONT color=#008000 size=2>''' </FONT><FONT color=#808080 size=2>&lt;remarks&gt;&lt;/remarks&gt;<BR></FONT><FONT size=2>
+</FONT><FONT color=#0000ff size=2>Private</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Sub</FONT><FONT size=2> AddCustomRules()<BR>
+</FONT><FONT color=#008000 size=2>'todo: add custom/non-generated rules here...<BR></FONT><FONT size=2>
+</FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Sub<BR></FONT><FONT size=2>
+</FONT><FONT color=#008000 size=2>''' </FONT><FONT color=#808080 size=2>&lt;summary&gt;<BR></FONT><FONT size=2>
+</FONT><FONT color=#008000 size=2>''' Method that allows the addition of shared custom business rules.<BR></FONT><FONT size=2>
+</FONT><FONT color=#008000 size=2>''' </FONT><FONT color=#808080 size=2>&lt;/summary&gt;<BR></FONT><FONT size=2>
+</FONT><FONT color=#008000 size=2>''' </FONT><FONT color=#808080 size=2>&lt;remarks&gt;&lt;/remarks&gt;<BR></FONT><FONT size=2>
+</FONT><FONT color=#0000ff size=2>Private</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Sub</FONT><FONT size=2> AddSharedCustomRules()<BR>
+</FONT><FONT color=#008000 size=2>'todo: add custom/non-generated shared rules here...<BR></FONT><FONT size=2>
+</FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Sub<BR></FONT><FONT size=2>
+</FONT><FONT color=#008000 size=2>''' </FONT><FONT color=#808080 size=2>&lt;summary&gt;<BR></FONT><FONT size=2>
+</FONT><FONT color=#008000 size=2>''' Method used to instigate the addition of all Business rules both Custom and Common.<BR></FONT><FONT size=2>
+</FONT><FONT color=#008000 size=2>''' </FONT><FONT color=#808080 size=2>&lt;/summary&gt;<BR></FONT><FONT size=2>
+</FONT><FONT color=#008000 size=2>''' </FONT><FONT color=#808080 size=2>&lt;remarks&gt;&lt;/remarks&gt;<BR></FONT><FONT size=2>
+</FONT><FONT color=#0000ff size=2>Protected</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Overrides</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Sub</FONT><FONT size=2> AddInstanceBusinessRules()<BR>
+AddCustomRules()<BR>
+</FONT><FONT color=#0000ff size=2>MyBase</FONT><FONT size=2>.AddBusinessRules()<BR>
+</FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Sub<BR></FONT><FONT size=2>
+</FONT><FONT color=#008000 size=2>''' </FONT><FONT color=#808080 size=2>&lt;summary&gt;<BR></FONT><FONT size=2>
+</FONT><FONT color=#008000 size=2>''' Method that allows the addition of shared common business rules.<BR></FONT><FONT size=2>
+</FONT><FONT color=#008000 size=2>''' </FONT><FONT color=#808080 size=2>&lt;/summary&gt;<BR></FONT><FONT size=2>
+</FONT><FONT color=#008000 size=2>''' </FONT><FONT color=#808080 size=2>&lt;remarks&gt;</FONT><FONT color=#008000 size=2>These rules represent the database defaults that can be generated.</FONT><FONT color=#808080 size=2>&lt;/remarks&gt;<BR></FONT><FONT size=2>
+</FONT><FONT color=#0000ff size=2>Private</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Sub</FONT><FONT size=2> AddSharedCommonRules()<BR>
+</FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Sub<BR></FONT><FONT size=2>
+</FONT><FONT color=#008000 size=2>''' </FONT><FONT color=#808080 size=2>&lt;summary&gt;<BR></FONT><FONT size=2>
+</FONT><FONT color=#008000 size=2>''' Method used to instigate the addition of all Business rules both Custom and Common.<BR></FONT><FONT size=2>
+</FONT><FONT color=#008000 size=2>''' </FONT><FONT color=#808080 size=2>&lt;/summary&gt;<BR></FONT><FONT size=2>
+</FONT><FONT color=#008000 size=2>''' </FONT><FONT color=#808080 size=2>&lt;remarks&gt;&lt;/remarks&gt;<BR></FONT><FONT size=2>
+</FONT><FONT color=#0000ff size=2>Protected</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Overrides</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Sub</FONT><FONT size=2> AddBusinessRules()<BR>
+AddSharedCommonRules()<BR>
+AddSharedCustomRules()<BR>
+</FONT><FONT color=#0000ff size=2>MyBase</FONT><FONT size=2>.AddBusinessRules()<BR>
+</FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Sub<BR></FONT><FONT size=2>
+#</FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Region</FONT><FONT size=2> </FONT><FONT color=#008000 size=2>' Validation Rules<BR></FONT><FONT size=2>
+#</FONT><FONT color=#0000ff size=2>Region</FONT><FONT size=2> </FONT><FONT color=#a31515 size=2>" Authorization Rules "<BR></FONT><FONT size=2>
+</FONT><FONT color=#0000ff size=2>Protected</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Overrides</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Sub</FONT><FONT size=2> AddAuthorizationRules()<BR>
+<BR>
+</FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Sub<BR></FONT><FONT size=2>
+#</FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Region</FONT><FONT size=2> </FONT><FONT color=#008000 size=2>' Authorization Rules<BR></FONT><FONT size=2>
+#</FONT><FONT color=#0000ff size=2>Region</FONT><FONT size=2> </FONT><FONT color=#a31515 size=2>" Factory Methods "<BR></FONT><FONT size=2>
+</FONT><FONT color=#0000ff size=2>Friend</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Shared</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Function</FONT><FONT size=2> NewInsuranceField() </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> InsuranceField<BR>
+</FONT><FONT color=#0000ff size=2>Return</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>New</FONT><FONT size=2> InsuranceField()<BR>
+</FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Function<BR></FONT><FONT size=2>
+</FONT><FONT color=#0000ff size=2>Friend</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Shared</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Function</FONT><FONT size=2> GetInsuranceField(</FONT><FONT color=#0000ff size=2>ByVal</FONT><FONT size=2> Key </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>String</FONT><FONT size=2>, </FONT><FONT color=#0000ff size=2>ByVal</FONT><FONT size=2> Name </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>String</FONT><FONT size=2>, </FONT><FONT color=#0000ff size=2>ByVal</FONT><FONT size=2> Checked </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Boolean</FONT><FONT size=2>) </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> InsuranceField<BR>
+</FONT><FONT color=#0000ff size=2>Return</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>New</FONT><FONT size=2> InsuranceField(Key, Name, Checked)<BR>
+</FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Function<BR></FONT><FONT size=2>
+</FONT><FONT color=#0000ff size=2>Private</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Sub</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>New</FONT><FONT size=2>()<BR>
+ValidationRules.CheckRules()<BR>
+MarkAsChild()<BR>
+</FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Sub<BR></FONT><FONT size=2>
+</FONT><FONT color=#0000ff size=2>Private</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Sub</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>New</FONT><FONT size=2>(</FONT><FONT color=#0000ff size=2>ByVal</FONT><FONT size=2> Key </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>String</FONT><FONT size=2>, </FONT><FONT color=#0000ff size=2>ByVal</FONT><FONT size=2> Name </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>String</FONT><FONT size=2>, </FONT><FONT color=#0000ff size=2>ByVal</FONT><FONT size=2> Checked </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Boolean</FONT><FONT size=2>)<BR>
+MarkAsChild()<BR>
+Fetch(Key, Name, Checked)<BR>
+</FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Sub<BR></FONT><FONT size=2>
+#</FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Region</FONT><FONT size=2> </FONT><FONT color=#008000 size=2>' Factory Methods<BR></FONT><FONT size=2>
+#</FONT><FONT color=#0000ff size=2>Region</FONT><FONT size=2> </FONT><FONT color=#a31515 size=2>"Data Access"<BR></FONT><FONT size=2>
+</FONT><FONT color=#0000ff size=2>Private</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Sub</FONT><FONT size=2> Fetch(</FONT><FONT color=#0000ff size=2>ByVal</FONT><FONT size=2> Key </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>String</FONT><FONT size=2>, </FONT><FONT color=#0000ff size=2>ByVal</FONT><FONT size=2> Name </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>String</FONT><FONT size=2>, </FONT><FONT color=#0000ff size=2>ByVal</FONT><FONT size=2> Checked </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Boolean</FONT><FONT size=2>)<BR>
+_ID = Guid.NewGuid<BR>
+_key = Key<BR>
+_name = Name<BR>
+_checked = Checked<BR>
+MarkOld()<BR>
+ValidationRules.CheckRules()<BR>
+</FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Sub<BR></FONT><FONT size=2>
+#</FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Region<BR>
+End</FONT><FONT color=#000000 size=2> </FONT><FONT color=#0000ff size=2>Class<BR></FONT>
+<FONT color=#0000ff size=2>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;</FONT><BR>
+<FONT color=#0000ff size=2></FONT>&nbsp;<BR>
+<FONT color=#0000ff size=2>I greatly appreciate your insight on this issue. I would prefer to remove much of the validation/authorization and other unneeded code from the ChildCollection and Child if possible.</FONT><BR>
+<FONT color=#0000ff size=2></FONT>&nbsp;<BR>
+<FONT color=#0000ff size=2>Sincerely,</FONT><BR>
+<FONT color=#0000ff size=2>Rob</FONT><BR>
+<FONT color=#0000ff size=2>&nbsp;<BR></FONT></FONT></FONT><br /><hr />Invite your mail contacts to join your friends list with Windows Live Spaces. It's easy! <a href='http://spaces.live.com/spacesapi.aspx?wx_action=create&wx_url=/friends.aspx&mkt=en-us' target='_new'>Try it!</a>
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, September 06, 2007</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>You have to call PropertyHasChanged() in your set blocks, or no
+one will know that the property has changed.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Rob Standridge
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Thursday, September 06, 2007 11:45 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> RE: [CSLA .NET] RE: CSLA .NET 3.0 Available<o:p></o:p></span></p>
+
+</div>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal><span>Rocky,<br>
+I am sorry to email you directly to ask you this but this is driving me crazy.
+We are implementing CSLA in a very large project and I just have one issue that
+I cant seem to get around. <br>
+&nbsp;<br>
+I am creating a ChildCollection and Child objects manually by parsing a string
+and then bind the parent to a form and the child to a grid. I change the value
+on the child's Checked property and when I analyze the Child's properties
+before saving it does show the new value but the IsDirty flag on the child collection
+is still False. I am not sure what to do to make this flag change or what I can
+do to force the object to save itself when the child collection has changed.
+Below I have included the relevant code in the parent object and the full code
+for the ChildCollection and Child:<br>
+&nbsp;<br>
+Parent:<br>
+&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;<br>
+<span>Private</span> _claimFields <span>As</span>
+InsuranceFields = ScriptAssist.InsuranceFields.NewInsuranceFields()<br>
+&nbsp;<br>
+<span>Public</span> <span>ReadOnly</span>
+<span>Property</span> ClaimFields() <span>As</span>
+ScriptAssist.InsuranceFields<br>
+&lt;System.Runtime.CompilerServices.MethodImpl(Runtime.CompilerServices.MethodImplOptions.NoInlining)&gt;
+_<br>
+<span>Get<br>
+</span>CanReadProperty(<span>&quot;Claimfields&quot;</span>,
+<span>True</span>)<br>
+<span>Return</span> _claimFields<br>
+<span>End</span> <span>Get<br>
+End</span> <span>Property<br>
+</span><br>
+&nbsp;<br>
+<span>Public</span> <span>Overrides</span>
+<span>ReadOnly</span> <span>Property</span>
+IsValid() <span>As</span> <span>Boolean<br>
+Get<br>
+Return</span> <span>MyBase</span>.IsValid <span>AndAlso</span> _claimFields.IsValid<br>
+<span>End</span> <span>Get<br>
+End</span> <span>Property<br>
+Public</span> <span>Overrides</span> <span>ReadOnly</span> <span>Property</span> IsDirty() <span>As</span> <span>Boolean<br>
+Get<br>
+Return</span> <span>MyBase</span>.IsDirty <span>OrElse</span> _claimFields.IsDirty<br>
+<span>End</span> <span>Get<br>
+End</span> <span>Property</span><br>
+&nbsp;<br>
+<span>_claimFields =
+InsuranceFields.GetInsuranceFields(_claimFieldsText)<br>
+&nbsp;<br>
+&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<br>
+&nbsp;<br>
+Child Collection<br>
+&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;<br>
+Imports</span><span> System</span><span><br>
+Imports</span><span> System.Data</span><span><br>
+Imports</span><span> System.Data.SqlClient</span><span><br>
+Imports</span><span> Csla</span><span><br>
+Imports</span><span> Csla.Data</span><span><br>
+&lt;Serializable()&gt; _<br>
+Public</span><span> </span><span>Class</span><span> InsuranceFields</span><span><br>
+Inherits BusinessListBase(Of InsuranceFields, InsuranceField)<br>
+#Region </span><span>&quot; BindingList Overrides &quot;<br>
+</span><span>Protected Overrides Function AddNewCore() As
+Object<br>
+Dim item As InsuranceField = InsuranceField.NewInsuranceField<br>
+Me.Add(item)<br>
+Return item<br>
+End Function<br>
+#End Region </span><span>' BindingList Overrides<br>
+</span><span>#Region </span><span>&quot;
+Factory Methods &quot;<br>
+</span><span>Friend Shared Function NewInsuranceFields() As
+InsuranceFields<br>
+Return New InsuranceFields()<br>
+End Function<br>
+Friend Shared Function GetInsuranceFields(ByVal ClaimFields As String) As
+InsuranceFields<br>
+Return New InsuranceFields(ClaimFields)<br>
+End Function<br>
+Private Sub New()<br>
+MarkAsChild()<br>
+End Sub<br>
+Private Sub New(ByVal ClaimFields As String)<br>
+MarkAsChild()<br>
+Fetch(ClaimFields)<br>
+End Sub<br>
+#End Region </span><span>' Factory Methods<br>
+</span><span>#Region </span><span>&quot;
+Data Access &quot;<br>
+</span><span>Public Function GetClaimFields() As String<br>
+Dim sClaimFields As String = </span><span>&quot;&quot;<br>
+</span><span>For Each Field As InsuranceField In Me<br>
+If Field.Checked = True Then<br>
+sClaimFields = sClaimFields &amp; Field.Key<br>
+End If<br>
+Next<br>
+Return sClaimFields<br>
+End Function<br>
+Private Sub Fetch(ByVal ClaimFields As String)<br>
+RaiseListChangedEvents = False<br>
+</span><span>'Here aer the 3.2 only fields<br>
+</span><span>Me.Add(InsuranceField.GetInsuranceField(</span><span>&quot;CF,CG,CH,CI,CJ,CK-&quot;</span><span>, </span><span>&quot;Employer
+Fields&quot;</span><span>, CBool(InStr(ClaimFields, </span><span>&quot;CF&quot;</span><span>))))<br>
+Me.Add(InsuranceField.GetInsuranceField(</span><span>&quot;DY-&quot;</span><span>, </span><span>&quot;Date of
+Injury&quot;</span><span>, CBool(InStr(ClaimFields, </span><span>&quot;DY&quot;</span><span>))))<br>
+Me.Add(InsuranceField.GetInsuranceField(</span><span>&quot;DZ-&quot;</span><span>, </span><span>&quot;Claim/Ref (Injury
+Type)&quot;</span><span>, CBool(InStr(ClaimFields, </span><span>&quot;DZ&quot;</span><span>))))<br>
+</span><span>'Fields common between 3.2 and 5.1<br>
+</span><span>Me.Add(InsuranceField.GetInsuranceField(</span><span>&quot;CM,CN,CO,CP-&quot;</span><span>,
+</span><span>&quot;Patient Address&quot;</span><span>, CBool(InStr(ClaimFields, </span><span>&quot;CM&quot;</span><span>))))<br>
+Me.Add(InsuranceField.GetInsuranceField(</span><span>&quot;CQ-&quot;</span><span>, </span><span>&quot;Patient
+Phone&quot;</span><span>, CBool(InStr(ClaimFields, </span><span>&quot;CQ&quot;</span><span>))))<br>
+Me.Add(InsuranceField.GetInsuranceField(</span><span>&quot;DR-&quot;</span><span>, </span><span>&quot;Physician Last
+Name&quot;</span><span>, CBool(InStr(ClaimFields, </span><span>&quot;DR&quot;</span><span>))))<br>
+</span><span>'Fields unique to 5.1<br>
+</span><span>Me.Add(InsuranceField.GetInsuranceField(</span><span>&quot;CA,CB-&quot;</span><span>, </span><span>&quot;Patient Name&quot;</span><span>,
+CBool(InStr(ClaimFields, </span><span>&quot;CA&quot;</span><span>))))<br>
+Me.Add(InsuranceField.GetInsuranceField(</span><span>&quot;CX-&quot;</span><span>, </span><span>&quot;Patient SSN&quot;</span><span>, CBool(InStr(ClaimFields, </span><span>&quot;CX&quot;</span><span>))))<br>
+Me.Add(InsuranceField.GetInsuranceField(</span><span>&quot;EJ-&quot;</span><span>, </span><span>&quot;Orig Product ID
+Qualifier&quot;</span><span>, CBool(InStr(ClaimFields, </span><span>&quot;EJ&quot;</span><span>))))<br>
+Me.Add(InsuranceField.GetInsuranceField(</span><span>&quot;AM06-&quot;</span><span>, </span><span>&quot;WC Segment&quot;</span><span>, CBool(InStr(ClaimFields, </span><span>&quot;AM06&quot;</span><span>))))<br>
+Me.Add(InsuranceField.GetInsuranceField(</span><span>&quot;EA-&quot;</span><span>, </span><span>&quot;Orig Product
+Code&quot;</span><span>, CBool(InStr(ClaimFields, </span><span>&quot;EA&quot;</span><span>))))<br>
+Me.Add(InsuranceField.GetInsuranceField(</span><span>&quot;EB-&quot;</span><span>, </span><span>&quot;Orig Prescribed
+Qty&quot;</span><span>, CBool(InStr(ClaimFields, </span><span>&quot;EB&quot;</span><span>))))<br>
+Me.Add(InsuranceField.GetInsuranceField(</span><span>&quot;AM13-&quot;</span><span>, </span><span>&quot;Include Clinical
+Seg&quot;</span><span>, CBool(InStr(ClaimFields, </span><span>&quot;AM13&quot;</span><span>))))<br>
+Me.Add(InsuranceField.GetInsuranceField(</span><span>&quot;MED-&quot;</span><span>, </span><span>&quot;Medicare
+Format&quot;</span><span>, CBool(InStr(ClaimFields, </span><span>&quot;MED&quot;</span><span>))))<br>
+Me.Add(InsuranceField.GetInsuranceField(</span><span>&quot;DX-&quot;</span><span>, </span><span>&quot;Send Copay&quot;</span><span>, CBool(InStr(ClaimFields, </span><span>&quot;DX&quot;</span><span>))))<br>
+Me.Add(InsuranceField.GetInsuranceField(</span><span>&quot;2E-&quot;</span><span>, </span><span>&quot;Include PCP
+ID&quot;</span><span>, CBool(InStr(ClaimFields, </span><span>&quot;2E&quot;</span><span>))))<br>
+RaiseListChangedEvents = True<br>
+End Sub<br>
+#End Region </span><span>' Data Access<br>
+</span><span>End</span><span> </span><span>Class<br>
+&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<br>
+&nbsp;<br>
+Child<br>
+&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;<br>
+Imports</span><span> System</span><span><br>
+Imports</span><span> System.Data</span><span><br>
+Imports</span><span> System.Data.SqlClient</span><span><br>
+Imports</span><span> Csla</span><span><br>
+Imports</span><span> Csla.Data</span><span><br>
+Imports</span><span> Csla.Validation</span><span><br>
+&lt;Serializable()&gt; _<br>
+Public</span><span> </span><span>Class</span><span> InsuranceField</span><span><br>
+Inherits BusinessBase(Of InsuranceField)<br>
+#Region </span><span>&quot; Business Properties and
+Methods &quot;<br>
+</span><span>' declare members<br>
+</span><span>Private _ID As Guid = Guid.Empty<br>
+Private _key As String = </span><span>&quot;&quot;<br>
+</span><span>Private _name As String = </span><span>&quot;&quot;<br>
+</span><span>Private _checked As Boolean = False<br>
+&lt;System.ComponentModel.DataObjectField(True, True)&gt; _<br>
+Public ReadOnly Property ID() As Guid<br>
+&lt;System.Runtime.CompilerServices.MethodImpl(Runtime.CompilerServices.MethodImplOptions.NoInlining)&gt;
+_<br>
+Get<br>
+Return _ID<br>
+End Get<br>
+End Property<br>
+Public Property Key() As String<br>
+&lt;System.Runtime.CompilerServices.MethodImpl(Runtime.CompilerServices.MethodImplOptions.NoInlining)&gt;
+_<br>
+Get<br>
+Return _key<br>
+End Get<br>
+&lt;System.Runtime.CompilerServices.MethodImpl(Runtime.CompilerServices.MethodImplOptions.NoInlining)&gt;
+_<br>
+Set(ByVal value As String)<br>
+_key = value<br>
+End Set<br>
+End Property<br>
+Public Property Name() As String<br>
+&lt;System.Runtime.CompilerServices.MethodImpl(Runtime.CompilerServices.MethodImplOptions.NoInlining)&gt;
+_<br>
+Get<br>
+Return _name<br>
+End Get<br>
+&lt;System.Runtime.CompilerServices.MethodImpl(Runtime.CompilerServices.MethodImplOptions.NoInlining)&gt;
+_<br>
+Set(ByVal value As String)<br>
+_name = value<br>
+End Set<br>
+End Property<br>
+Public Property Checked() As Boolean<br>
+&lt;System.Runtime.CompilerServices.MethodImpl(Runtime.CompilerServices.MethodImplOptions.NoInlining)&gt;
+_<br>
+Get<br>
+Return _checked<br>
+End Get<br>
+&lt;System.Runtime.CompilerServices.MethodImpl(Runtime.CompilerServices.MethodImplOptions.NoInlining)&gt;
+_<br>
+Set(ByVal value As Boolean)<br>
+_checked = value<br>
+End Set<br>
+End Property<br>
+</span><span>''' </span><span>&lt;summary&gt;<br>
+</span><span>''' Get the unique id for the current object.<br>
+''' </span><span>&lt;/summary&gt;<br>
+</span><span>''' </span><span>&lt;returns&gt;</span><span>A value that is the unique id of the object.</span><span>&lt;/returns&gt;<br>
+</span><span>''' </span><span>&lt;remarks&gt;&lt;/remarks&gt;<br>
+</span><span>Protected Overrides Function GetIdValue() As
+Object<br>
+Return _ID<br>
+End Function<br>
+#End Region </span><span>' Business Properties and Methods<br>
+</span><span>#Region </span><span>&quot;
+Validation Rules &quot;<br>
+</span><span>''' </span><span>&lt;summary&gt;<br>
+</span><span>''' Method that allows the addition of custom
+business rules.<br>
+''' </span><span>&lt;/summary&gt;<br>
+</span><span>''' </span><span>&lt;remarks&gt;&lt;/remarks&gt;<br>
+</span><span>Private Sub AddCustomRules()<br>
+</span><span>'todo: add custom/non-generated rules here...<br>
+</span><span>End Sub<br>
+</span><span>''' </span><span>&lt;summary&gt;<br>
+</span><span>''' Method that allows the addition of shared
+custom business rules.<br>
+''' </span><span>&lt;/summary&gt;<br>
+</span><span>''' </span><span>&lt;remarks&gt;&lt;/remarks&gt;<br>
+</span><span>Private Sub AddSharedCustomRules()<br>
+</span><span>'todo: add custom/non-generated shared rules
+here...<br>
+</span><span>End Sub<br>
+</span><span>''' </span><span>&lt;summary&gt;<br>
+</span><span>''' Method used to instigate the addition of
+all Business rules both Custom and Common.<br>
+''' </span><span>&lt;/summary&gt;<br>
+</span><span>''' </span><span>&lt;remarks&gt;&lt;/remarks&gt;<br>
+</span><span>Protected Overrides Sub
+AddInstanceBusinessRules()<br>
+AddCustomRules()<br>
+MyBase.AddBusinessRules()<br>
+End Sub<br>
+</span><span>''' </span><span>&lt;summary&gt;<br>
+</span><span>''' Method that allows the addition of shared
+common business rules.<br>
+''' </span><span>&lt;/summary&gt;<br>
+</span><span>''' </span><span>&lt;remarks&gt;</span><span>These rules represent the database defaults that can be
+generated.</span><span>&lt;/remarks&gt;<br>
+</span><span>Private Sub AddSharedCommonRules()<br>
+End Sub<br>
+</span><span>''' </span><span>&lt;summary&gt;<br>
+</span><span>''' Method used to instigate the addition of
+all Business rules both Custom and Common.<br>
+''' </span><span>&lt;/summary&gt;<br>
+</span><span>''' </span><span>&lt;remarks&gt;&lt;/remarks&gt;<br>
+</span><span>Protected Overrides Sub AddBusinessRules()<br>
+AddSharedCommonRules()<br>
+AddSharedCustomRules()<br>
+MyBase.AddBusinessRules()<br>
+End Sub<br>
+#End Region </span><span>' Validation Rules<br>
+</span><span>#Region </span><span>&quot;
+Authorization Rules &quot;<br>
+</span><span>Protected Overrides Sub AddAuthorizationRules()<br>
+<br>
+End Sub<br>
+#End Region </span><span>' Authorization Rules<br>
+</span><span>#Region </span><span>&quot;
+Factory Methods &quot;<br>
+</span><span>Friend Shared Function NewInsuranceField() As
+InsuranceField<br>
+Return New InsuranceField()<br>
+End Function<br>
+Friend Shared Function GetInsuranceField(ByVal Key As String, ByVal Name As
+String, ByVal Checked As Boolean) As InsuranceField<br>
+Return New InsuranceField(Key, Name, Checked)<br>
+End Function<br>
+Private Sub New()<br>
+ValidationRules.CheckRules()<br>
+MarkAsChild()<br>
+End Sub<br>
+Private Sub New(ByVal Key As String, ByVal Name As String, ByVal Checked As
+Boolean)<br>
+MarkAsChild()<br>
+Fetch(Key, Name, Checked)<br>
+End Sub<br>
+#End Region </span><span>' Factory Methods<br>
+</span><span>#Region </span><span>&quot;Data
+Access&quot;<br>
+</span><span>Private Sub Fetch(ByVal Key As String, ByVal
+Name As String, ByVal Checked As Boolean)<br>
+_ID = Guid.NewGuid<br>
+_key = Key<br>
+_name = Name<br>
+_checked = Checked<br>
+MarkOld()<br>
+ValidationRules.CheckRules()<br>
+End Sub<br>
+#End Region<br>
+End</span><span> </span><span>Class<br>
+&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<br>
+&nbsp;<br>
+I greatly appreciate your insight on this issue. I would prefer to remove much
+of the validation/authorization and other unneeded code from the
+ChildCollection and Child if possible.<br>
+&nbsp;<br>
+Sincerely,<br>
+Rob<br>
+&nbsp;</span><o:p></o:p></span></p>
+
+<div class=MsoNormal align=center><span>
+
+<hr align=center>
+
+</span></div>
+
+<p class=MsoNormal><span>Invite
+your mail contacts to join your friends list with Windows Live Spaces. It's
+easy! <a href="http://spaces.live.com/spacesapi.aspx?wx_action=create&amp;wx_url=/friends.aspx&amp;mkt=en-us" target="_new">Try it!</a><o:p></o:p></span></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>culprit replied on Thursday, September 06, 2007</h2><P>I know this goes along with some saying about the Forest but can't remember it. Thankfully I did not go into rocket science. </P>
+<P>Thank you Rocky</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jhoojharsinghyadav replied on Wednesday, September 12, 2007</h2>Rocky,<br><br>I do have a querry when coming over to the business base, readonlylist classes/objects.<br><br>so far as my understanding is concerned here is what i do have concluded from the different kind of objects .<br><br>1. ReadOnlyBase i.e NonTransactionalBusinessObject (as it contains all the definiton of buisness object to be displayed on List forms i.e projectlist etc)<br>2. ReadonlyList i.e NonTransactionalBusinessComponent( as it implements the readonly base object )<br><br>but coming over to the businessbase object .which i do term as TransactionalBusinessComponent it do contains the TranasactionalBusinessObject in itself as well as its implementation . <br><br>what i am curious about is ,why this object is not implementing something like TransactionalBusinesobject like Readonlybase which do contains all the definition for the business object , its validation rules <br>such that when coding large business objects say as invoice which can contain upto 100 properties , then this kind of implementation is quite neat and clean .<br>as BusinessObject lies different and TransactionlaComponet diffrently .<br><br>Thanks<br>Govind<br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, September 05, 2007</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Thanks, it is now correct in svn.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> culprit
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Wednesday, September 05, 2007 1:54 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: CSLA .NET 3.0 Available<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Rocky,<o:p></o:p></p>
+
+<p>I think I found why the ProjectEdit form did not reload after clicking the
+Apply button. (I am using the VB version) The &quot;rebind&quot; If statement
+was inside the Else side of the If SaveObject statement. I put it in the
+finally section and it seems to work okay.<o:p></o:p></p>
+
+<p>Rob<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jhoojharsinghyadav replied on Monday, July 23, 2007</h2>Hi Rocky,<br><br>I am quite new to CSLA .<br><br>BUt had worked on similar kind of architechtures in my previos projects .<br><br>in my current project ,&nbsp; i am planning to use CSLA + AJAX+WF+PAGEFLOWS+WCF+ENT LIB 3.0 +ASP.NET PROVIDERS&nbsp; <br><br>Would it be possible to have a integration of all the things and move ahead smmmotthly , coz not using csla providers for the very reason had used the aspnet_DB and customised it a lot with extending the default providers and would be troublesome for me to move back to start from begining . <br>and need wf / pageflows to control whole of the flow of application and pages with several action buttons .<br>ajax inddedd will be required .<br><br>Awaiting your valuable answer to this .<br><br>thanks<br>Govind<br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, July 23, 2007</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I&#8217;m not sure I understand the question.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Yes, you can use all those technologies together.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>But if you are asking if you can use the ASP.NET
+ObjectDataSource control with CSLA objects the general answer is no. The
+ObjectDataSource control is designed to work primarily with DataTables, and as
+a bonus it works with data transfer objects (DTOs). But, as I discuss in the
+book, it simply can&#8217;t handle the more complex business objects you
+typically create using CSLA .NET (objects with read-only properties, validation
+rules, private constructors, etc).<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>If you are asking about the ASP.NET <i>membership</i> providers,
+then the answer is yes. You can use the ASP.NET membership provider instead of
+Windows or CSLA custom authentication &#8211; <i>as long as you don&#8217;t
+have a separate application server</i>. <o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>And even if you do have a separate application server, you can <i>still</i>
+use the ASP.NET membership provider, but you need to wrap their principal
+object with a custom principal object. This is discussed in Chapter 10.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> jhoojharsinghyadav
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Monday, July 23, 2007 9:12 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] CSLA .NET 3.0 Available<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Hi Rocky,<br>
+<br>
+I am quite new to CSLA .<br>
+<br>
+BUt had worked on similar kind of architechtures in my previos projects .<br>
+<br>
+in my current project ,&nbsp; i am planning to use CSLA + AJAX+WF+PAGEFLOWS+WCF+ENT
+LIB 3.0 +ASP.NET PROVIDERS&nbsp; <br>
+<br>
+Would it be possible to have a integration of all the things and move ahead
+smmmotthly , coz not using csla providers for the very reason had used the
+aspnet_DB and customised it a lot with extending the default providers and
+would be troublesome for me to move back to start from begining . <br>
+and need wf / pageflows to control whole of the flow of application and pages
+with several action buttons .<br>
+ajax inddedd will be required .<br>
+<br>
+Awaiting your valuable answer to this .<br>
+<br>
+thanks<br>
+Govind<br>
+<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jhoojharsinghyadav replied on Tuesday, July 24, 2007</h2>Rocky ,
+
+IT sounds great , 
+here is my scenario elaborated.
+1. i had extended the default providers for asp.net (membership,profile,sqlsitemap) and yes the application server is same , and database is 1 for the application and aspnetdb
+2. i am going to use the principal and identity extended with custom principal and identity objects.
+3. the application is asp.net + ajax + CSLA + ENTLIB3.0
+4. the application will have complex workflows and pageflows so do require workflows/pageflows to control the business flow of applciation
+
+5 now i want to up using SOA kind of implementation using all the above things i.e using webservices (WCF) but not sure how to move ahead with .
+
+6. if could it b possible , that i do share up some of the basic designs of my app with you , and you could suggest how to implement soa on the same using all the above methodologies .
+
+Thanks
+Govind
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, July 24, 2007</h2><P>I can't provide free consulting, no. However, here are a couple suggestions:</P>
+<OL>
+<LI>You can post your approach in a new thread on this forum and see if anyone on the forum has any comments</LI>
+<LI>I wrote a whole series of <A href="http://www.lhotka.net/weblog/CategoryView,category,Service-Oriented.aspx">blog posts about SOA</A>, which might be useful</LI>
+<LI>I can put you in touch with a <A href="http://www.magenic.com">Magenic</A> sales person, because Magenic does provide architecture and design review as a consulting service</LI></OL>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jhoojharsinghyadav replied on Tuesday, July 31, 2007</h2>hi rocky,
+
+<br>after quite a load of headhunting with the csla sample being provided by you .i do have a 
+couple of querries to be asked . before that here are my observations and conclusions based on that headhunting please correct if wrong somewhere
+
+<br><br>1. the project library that is the business logic as far as i had consumed knowledge of that 
+<br>2. in that library there is one interesting thing , that is the whole of the business entity and the business logic is being implemented in a single class ,<br>3. then this class can be compiled in a single dll and used directly with an asp.net application .
+<br>4.so this becomes 3 layer architechture i.e database,businesslogic and presentation<br>5. if my deployment is 2 tier i.e database resides on 1 server and the businesslogic with asp.net files on other then it does works fine with same'<br><br>now i wnat to go for 3 tier deployment i.e my busines logic on application server , the datbase , and the iis hosting asp.net pages.<br><br>1.would it&nbsp; be better&nbsp; to go with&nbsp; webservices&nbsp; or&nbsp; just simply remoting&nbsp; or&nbsp; use wcf&nbsp; for the purpose.<br>2. in&nbsp; business logic whole of the logic&nbsp; +&nbsp; entities are defined into one class&nbsp; , i ll go for&nbsp; 2&nbsp; classes for the same respectively one pure business entity , and the other business logic.<br>3. for dataaccess ill go with enterrpise library DAABS .<br>4. the next big thing to integrate between them is the workflows i.e wf so would implement a diff layer for tat and deploy it on the iis server .<br>5. the validation rules , can it be gud to go for validation blocks or continue using the validation rules .<br>also i dont want post backs to get the validation rules be fired but instead want them to get raised before any of the event without getting the pge post back like as its getting done on windows implementation where the validation for start and end date if wrong gets fired immediatley without causing any event to be fired<br>6. regarding the latest relesae of csla 3.0 it is using wcf , but on viewing the project code , my founding was that the webservice layer do had the same duplication of code for business entites as was being there at the project tracker library ., so dint get the clear vison of why the code duplicacy is there inspite of fact it is using the project library also<br><br>8. in the projectlibrary there is a class projectinfo , but i couldnt get where this is being exactly used up <br>if i m not wrong on same the implementatin goes like this , <br>the project class do contains all the attributes which do are being required to make a new entry,update for projects.<br>while the projectinfo class is merely being used for the list purpose i.e&nbsp; the listings of all the projects in conjunction to the project list .<br>so now for one simple object project there do exist at least 5&nbsp; classes -projectinfo,projectlist,project,projectresource,projectresources .<br>is it necessary to follow the same structure for everyobject to go as in accordance with csla .<br><br>could you please through up some light on the same <br><br>thanks<br>govind<br><br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, July 31, 2007</h2><P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>jhoojharsinghyadav:</strong></div><div>hi rocky, <BR>now i wnat to go for 3 tier deployment i.e my busines logic on application server , the datbase , and the iis hosting asp.net pages.<BR></div></BLOCKQUOTE></P>
+<P>I strongly suggest you read chapters 1 and 2 of the <EM>Expert C#/VB 2005 Business Objects</EM> book, because those chapters discuss the intended and supported architectures for CSLA .NET. In fact, "CSLA" stands for <EM>component-based, scalable, logical architecture</EM> and so it <EM>is an architecture</EM> first, and&nbsp;a framework second.</P>
+<P>CSLA is designed to put the business logic on <EM>both the client and app server</EM> using the concept of mobile objects.</P>
+<P>I personally recommend against building web apps where the business logic is all on the app server. This means that every web request must go to the web server, then to the app server, probably to the database server and back to the user. The performance will usually be bad.</P>
+<P>But if you really want to do that, then I suggest you limit your use of CSLA to the app server, and build your app server to expose a set of services as discussed in Chapter 11. Then you can build your web application to consume the web services, data binding directly to the service proxy objects. That will help keep the overhead as low as possible on the web server - which must be a goal for any hope of performance in such an archirecture.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jhoojharsinghyadav replied on Wednesday, August 01, 2007</h2><P>hi rocky,</P>
+<P>yes i had read those chapters being suggested by you .</P>
+<P>as being suggested by you , i would rather choose to be on using the 2-tier architechture viz : application server + iis and dataserver .</P>
+<P>so now it comes out that for this kind of a architechture&nbsp; i would be required only to implement the csla in library section and use them directly to my asp.net pages ( correct if wrong ) . and later on if required to sepaarate the application layer will implement a new layer for that but that woudl require a change of all so to avoid it what i feels is i go up with a wrapper layer which would give call to the library layer and then use that wrapper layer itself directly into my project . so as to when the web service layer is implemented it goes in betwwen the wrapper layer and library layer rather then wrapper layer and the presentation layer .</P>
+<P>databse-&gt;librarylayer-&gt;wrapperlayer-&gt;asp.net</P>
+<P>database-&gt;librarylayer-&gt;webservices/proxies-&gt;wrapperlayer-&gt;asp.net</P>
+<P>no change required for front end as is .</P>
+<P>one more request , i would like to begin a new forum thread to share up this with the forum users and get their valuable comments/suggestions on same .would it b possible for me to start a new thread of my own and watch it on continously .</P>
+<P>thanks</P>
+<P>govind</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, August 01, 2007</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>jhoojharsinghyadav:</strong></div><div>
+<P>so now it comes out that for this kind of a architechture&nbsp; i would be required only to implement the csla in library section and use them directly to my asp.net pages ( correct if wrong ) . and later on if required to sepaarate the application layer will implement a new layer for that but that woudl require a change of all so to avoid it what i feels is i go up with a wrapper layer which would give call to the library layer and then use that wrapper layer itself directly into my project . so as to when the web service layer is implemented it goes in betwwen the wrapper layer and library layer rather then wrapper layer and the presentation layer .</P>
+<P></div></BLOCKQUOTE></P>
+<P>I suppose you could do that, but that would make it difficult to get a lot of benefit from CSLA.</P>
+<P>Remember that CSLA includes the data portal, which is designed so you can change from a two tier to a three tier architecture. When you use the data portal to do this, you are using <EM>mobile objects</EM>, and so the business layer runs on <EM>both</EM> the web server and application server.</P>
+<P>The result is that you get the best of all worlds. The business logic that can run on the web server does run there. The business and data access logic that needs to run on the application server runs there.</P>
+<P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>jhoojharsinghyadav:</strong></div><div></P>
+<P>one more request , i would like to begin a new forum thread to share up this with the forum users and get their valuable comments/suggestions on same .would it b possible for me to start a new thread of my own and watch it on continously .</P>
+<P></div></BLOCKQUOTE></P>
+<P>Of course! That is a very good idea.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jhoojharsinghyadav replied on Wednesday, August 01, 2007</h2><P>Hi rocky,</P>
+<P>thanks for your valuable suggestions</P>
+<P>coming on to the webservice part being implemented with project tracker and after going throught the chapter 11 here is my understandng of the same .</P>
+<P>1. credential class is being implemented as a supportive class to pass on the user credentials so as to authenticate him prior mamking any call to the web methods.</P>
+<P>my question is , does there do exist or possible a way so as to my websrvice calls become as simple as i am making calls to the buisness objects i mean <STRONG>mobile webmethods</STRONG> as the mobile objects are .</P>
+<P>also please do suggest me the way to start up a new thread . as i was being unable to locate that .</P>
+<P>thanks</P>
+<P>govind</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, August 01, 2007</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>jhoojharsinghyadav:</strong></div><div>
+<P>also please do suggest me the way to start up a new thread . as i was being unable to locate that .</P>
+<P></div></BLOCKQUOTE></P>
+<P>Go here: <A HREF="/forums/5/ShowForum.aspx">http://forums.lhotka.net/forums/5/ShowForum.aspx</A></P>
+<P>And click on the New Post button in the upper left.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jhoojharsinghyadav replied on Wednesday, August 29, 2007</h2>Rocky,
+
+I am implementing RBAC(role based access control system in my APP).
+for which my roles (custom) will be having permissions sets rights on objects .
+<br>example :Customer (Add,update,view,delete,authorise,confirm) etc
+
+<br><br>this method is there to get the users authentication for the specified action 
+ <br>public static bool CanAddObject()
+    <br>{
+      <br>return Csla.ApplicationContext.User.IsInRole(
+        "ProjectManager");<br>&nbsp;}
+
+<br><br>but i dont want to hard code the roles , "ProjectManager" etc  instead i would like to go for a custom implementation of the above method like 
+
+ <br>public static bool CanAddObject()
+    <br>{
+      return Csla.ApplicationContext.User.hasRight(enumActions.Add,enumObjects.Customer,user.rol);<br>&nbsp;}
+
+<br><br>or in this way
+
+ <br><br>public static bool CanAddObject()
+    <br>{
+      return <br>Csla.ApplicationContext.User.IsInRoles(getRolesforAction(enumActions.Add,enumObjects.Customer);
+    <br>}
+
+
+<br><br>Could this kind be of thing possible to achieve with CSLA or it do require the base modifications at CSLA level .
+
+thanks
+govind
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jhoojharsinghyadav replied on Wednesday, August 29, 2007</h2>Rocky,<br><br>1 more thing , why there isnt any place for permissions . in CSLa , may be i could be wrong as i cant find them .<br>but as per mine understanding it should go like this , <br>a permission base class should be there and instead of checking the user.inrole at every action (add,delete) etc&nbsp; it should go like for asking the user.haspermission(permissionname)&nbsp; .<br><br>and the permission names could be stored up in a separate out of box&nbsp; xml file, sql , config&nbsp; any where .<br><br>what you say about this kind of implementation with csla , as per my understanding it will be an extension to the existing role base management and will be a deep dive into the same .<br>thanks<br>govind <br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Wednesday, August 29, 2007</h2><P>govind,</P>
+<P>I use both Roles and Permissions exactly as you describe.</P>
+<P>Rocky is aware of the issue and has added a Delegate for IsInRole to the wish list. He just hasn't gotten around to implementing it yet.</P>
+<P>Joe</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jhoojharsinghyadav replied on Thursday, August 30, 2007</h2>hi joe,<br><br>Yes i am too in process of implementing the same . and once achieved will post it over .<br><br>i am going with permission set rather then being depending on role as the implementation is RBAC .<br><br>thanks<br>govind<br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jhoojharsinghyadav replied on Thursday, August 30, 2007</h2>Joe /Rocky,<br><br>&nbsp;&nbsp; I tried using the membership provider of Microsoft with sqlserver i.e sqlmembership provider and thus its real real untidy work i would end up saying .<br><br>these are wholly my views ,<br><br>&nbsp;i am not able to understand why microsoft guys had created up so much of complexity with these simple providers , they had entirely hard coded the membership methods say for creatuser(string name ,.....) rather then it it should go up with a fully customisable format i.e my view is that instead of taking these parameters hard coded , why hadnt they considered of making a class of userinfo which do contain all the properties for the user , membership and profiler (and could have use 1 table for membership and user and 1 for profile if required else its not to be required) and then passed that object to the createuser method .<br><br>this could have an great added advantage to the users like me looking for customisation of membership provider , what was required just to modify the userinfo class (add,delete properties , modify procedures for them ) and let the methods roll on as is .<br><br>is this kind of thing be achiveable ...?????<br><br>hugely stucked with customisation of membership providers .<br>&nbsp;<br>request your valuable comments on the same <br>thanks<br>govind<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jhoojharsinghyadav replied on Monday, September 03, 2007</h2>please have a visit to http://forums.lhotka.net/forums/17224/ShowThread.aspx#17224<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>miloy001 replied on Tuesday, July 31, 2007</h2><P>When I tried to open VB solution in VS2005 (without sp1), it says the project is created in a newer version and can not be opened. Do I need VS2005 + SP1 or VS2008 Beta?</P>
+<P>Thanks,</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, July 31, 2007</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>The cslacs and cslavb solutions both open in VS 2005 SP1. I
+wouldn&#8217;t think Microsoft changed the sln file format just for a service
+pack, but I suppose that is possible. You can probably just edit the sln file
+in notepad and back the version number by one if that&#8217;s the case (but I really
+doubt that&#8217;s the case).<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Some of the _<i>projects</i>_ under the ProjectTracker folder
+are VS 2008 projects &#8211; the readme.txt at the top level describes which
+ones. Those projects are _<i>not</i>_ in the ProjectTracker solution. The
+ProjectTracker solution is a VS 2005 SP1 solution, and only includes VS 2005
+projects.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky</span><o:p></o:p></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

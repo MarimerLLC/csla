@@ -1,0 +1,43 @@
+<html><header><title>BusinessPrincipalBase - Is it part of 4.0.1 or not?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>BusinessPrincipalBase - Is it part of 4.0.1 or not?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9781.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>tbim92 posted on Thursday, November 18, 2010</h2><p>I have been using CSLA 2.1.3 for years and love it (of course). I&#39;m looking into upgrading to the latest 4.0.1 to take advantage of all the improvements. In doing this, I&#39;m reading the C# 2008 book based on 3.6.0. Obviously changes have been made from 3.6.0 to 4.0.1 but...</p>
+<p>CSLA 4.0.1 does not have a BusinessPrincipalBase class, but the CslaPrincipal.OnGetState and OnSetState use &quot;BusinessPrincipalBase.Identity&quot; as an argument to AddValue and GetValue method calls. Is this correct?&nbsp;I admit I haven&#39;t tested anything, but I don&#39;t see how it can be valid if the class doesn&#39;t exist in this version of CSLA.</p>
+<p>BusinessPrincipalBase is also mentioned in a couple of method comments - in ApplicationContext.cs, CslaIdentity.cs and CslaIdentity.partial.cs.</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>Curelom replied on Thursday, November 18, 2010</h2><p>It&#39;s been renamed to Csla.Security.CslaPrincipal</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tbim92 replied on Thursday, November 18, 2010</h2><p>So are the calls to GetValue and SetValue passing a string with BusinessPrincipalBase.Identity correct? Or should that string be changed to CslaPrincipal.Identity?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, November 18, 2010</h2><p>In CSLA 4 there is now CslaPrincipal and CslaIdentity, and they are designed to work together. There&#39;s also CslaIdentityBase if you need to create a custom identity with extra information beyond the standard IIdentity stuff. But even CslaIdentityBase is designed to work with CslaPrincipal.</p>
+<p>The big thing is that CslaPrincipal assumes the CslaIdentityBase/CslaIdentity contains the user&#39;s information <em>and the user&#39;s roles</em>.</p>
+<p>So in the simple case, a login is simply a matter of using the data portal to fetch a CslaIdentity, providing the appropriate server-side data access code. In the more complex case you create a subclass of CslaIdentityBase to add your extra managed properties.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tbim92 replied on Thursday, November 18, 2010</h2><p>
+<p>Thank you for both of your responses. And Rocky, I understand your explanation which you also explain well in your book (which I have purchased several versions of - VB and C#). I read through this section today. I would not waste you time on a question I could dig out of your book.</p>
+<p>My actual question is still not answered. I&#39;m wondering if, when BusinessPrincipalBase was renamed to CslaPrincipal for version 4 did the CslaPrincipal.OnGetState and OnSetState methods accidentally not get changed? The code download for CSLA 4.0.1 has the following code in the CslaPrincipal class:</p>
+<p>&nbsp;&nbsp; &nbsp;protected override void OnGetState(Csla.Serialization.Mobile.SerializationInfo info, Csla.Core.StateMode mode)</p>
+<p>&nbsp;&nbsp; &nbsp;{</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp;info.AddValue(&quot;<b>BusinessPrincipalBase.Identity</b>&quot;, MobileFormatter.Serialize(_identity));</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp;base.OnGetState(info, mode);</p>
+<p>&nbsp;&nbsp; &nbsp;}</p>
+<p>&nbsp;&nbsp; &nbsp;protected override void OnSetState(Csla.Serialization.Mobile.SerializationInfo info, Csla.Core.StateMode mode)</p>
+<p>&nbsp;&nbsp; &nbsp;{</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp;base.OnSetState(info, mode);</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp;_identity = (IIdentity)MobileFormatter.Deserialize(info.GetValue&lt;byte[]&gt;(&quot;<b>BusinessPrincipalBase.Identity</b>&quot;));</p>
+<p>&nbsp;&nbsp; &nbsp;}</p>
+<p>Since BusinessPrincipalBase was renamed to CslaPrincipal in 4.0.1, and since BusinessPrincipalBase doesn&#39;t exist anymore, should these functions now be the following?:</p>
+<p>&nbsp;&nbsp; &nbsp;protected override void OnGetState(Csla.Serialization.Mobile.SerializationInfo info, Csla.Core.StateMode mode)</p>
+<p>&nbsp;&nbsp; &nbsp;{</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp;info.AddValue(&quot;<b>CslaPrincipal.Identity</b>&quot;, MobileFormatter.Serialize(_identity));</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp;base.OnGetState(info, mode);</p>
+<p>&nbsp;&nbsp; &nbsp;}</p>
+<p>&nbsp;&nbsp; &nbsp;protected override void OnSetState(Csla.Serialization.Mobile.SerializationInfo info, Csla.Core.StateMode mode)</p>
+<p>&nbsp;&nbsp; &nbsp;{</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp;base.OnSetState(info, mode);</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp;_identity = (IIdentity)MobileFormatter.Deserialize(info.GetValue&lt;byte[]&gt;(&quot;<b>CslaPrincipal.Identity</b>&quot;));</p>
+<p>&nbsp;&nbsp; &nbsp;}</p>
+<p>The code changed is the argument to AddValue and GetValue ----&gt; I changed the string &quot;BusinessPrincipalBase.Identity&quot; to &quot;CslaPrincipal.Identity&quot;.</p>
+</p>
+<p>Thank you for your time.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, November 18, 2010</h2><p>I see what you are saying. That&#39;s arguably a bug, but not something that will actually cause an issue.</p>
+<p>The name used for serialization/deserialization doesn&#39;t matter - it is arbitrary - as long as the same name is used for serialization and deserialization. So the code works fine because the names match, but the human-readability is reduced.</p>
+<p>I&#39;ll add this as a bug.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tbim92 replied on Friday, November 19, 2010</h2><p>Sounds good. Maybe instead of a bug you can tack it on as an&nbsp;extension&nbsp;of the enhancement to renaming that class! It sounds better that way. If you do a search for BusinessPrincipalBase you&#39;ll find it mentioned in a few method comments as well. So you might want to change those just to keep the code base clean and current.</p>
+<p>As always, thanks for CSLA.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, November 19, 2010</h2><p>I appreciate you wanting to make it sound better :)</p>
+<p>I&#39;ve developed a system for tracking issues over time though.</p>
+<ol>
+<li>Things get reported and I triage them into enhancement or bug (sometimes task), and so some other categorization</li>
+<li>They get assigned to a dev, who works on it and marks it as &#39;checked in&#39; when done</li>
+<li>When I do a release (beta or higher) the &#39;checked in&#39; issues are closed</li>
+<li>During the beta cycle a closed issue can be &#39;reopened&#39;, worked on, and &#39;checked in&#39; again</li>
+<li>After RTW for a release closed means closed. Anything new related to the issue is a new bug/enhancement</li>
+</ol>
+<p>Gotta have rules :)</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

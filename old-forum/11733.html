@@ -1,0 +1,20 @@
+<html><header><title>Csla 4.5.4 .NET 4</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Csla 4.5.4 .NET 4</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11733.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>aramka posted on Wednesday, December 05, 2012</h2><p>Im trying to upgrade to Csla 4.5.4 from 4.2.2. Im using VS 2010 v10.0.40219.1 SP1Rel and targeting .NET framework 4. When i switch the references i get the following exception:</p>
+<p>Could not load type &#39;System.Runtime.CompilerServices.IAsyncStateMachine&#39; from assembly &#39;mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089&#39;.</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp;at Csla.DataPortal`1.DoCreateAsync(Type objectType, Object criteria, Boolean isSync)</p>
+<p>&nbsp; &nbsp;at Csla.DataPortal`1.Create(Type objectType, Object criteria)</p>
+<p>&nbsp; &nbsp;at Csla.DataPortal`1.Create(Object criteria)</p>
+<p>&nbsp; &nbsp;at Csla.DataPortal.Create[T](Object criteria)</p>
+<p>&nbsp; &nbsp;at Csla.DataPortal.Create[T]()</p>
+<p>&nbsp; &nbsp;at Core.Sebring.BusinessObjects.DocTypes.EditableCategory.NewEditableCategory() in D:\Development\Core\Sebring\Sebring\Core.Sebring.BusinessObjects\DocTypes\EditableCategory.cs:line 305</p>
+<p>&nbsp; &nbsp;at Core.Sebring.BusinessObjects.Test.EditableCategoryTest.EditableCategory_InvalidTableAddedWheresMyBrokenRule() in D:\Development\Core\Sebring\Sebring\Core.Sebring.BusinessObjects.Test\DocTypes\EditableCategoryTest.cs:line 399</p>
+<p>Any help is greatly appreciated. Thank you.</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tiago replied on Wednesday, December 05, 2012</h2><p>Hi,</p>
+<p>You should add a reference to AsyncTargetingPack. If you install Csla from NuGet&nbsp;everything you need&nbsp;will be automaticaly installed.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>aramka replied on Wednesday, December 05, 2012</h2><p>Thanks for your reply. Im using the VS 2010. from what I have read the AsyncTargetingPack is for VS 2012. Can I use CSLA 4.5.4 with VS 2010? Or do I have to upgrade to VS 2012 if I want to use CSLA 4.5.4?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tiago replied on Thursday, December 06, 2012</h2><p>Hi aranka,</p>
+<p>VS2012 is required only if you are targeting .NET 4.5</p>
+<p>If you are using VS2010, you must target .NET 4 but you can reference (and use) CSLA 4,5.x, provided you add a reference to the AsyncTargetingPack.</p>
+<p>Installing CSLA using NuGet will automatically solve the AsyncTargetingPack&nbsp;reference.</p>
+<p>&lt;edit&gt;</p>
+<p>If you are using VS2010, you can&#39;t use the async/await keywords.</p>
+<p>&lt;/edit&gt;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>aramka replied on Thursday, December 06, 2012</h2><p>Thanks alot. I appreciate your help.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

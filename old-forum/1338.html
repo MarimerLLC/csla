@@ -1,0 +1,27 @@
+<html><header><title>Design Question</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Design Question</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/1338.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>pfowler posted on Wednesday, September 27, 2006</h2><P>Hi I have a design question I would like some feedback on.</P>
+<P>I have the following three classes; EditableRoot, EditableChildList and EditableChild. (EditableChildList is contained by EditableRoot.)</P>
+<P>The scenario is to create an EditableRoot and then setup an EditableChild and then call save on EditableRoot to save them both in the same transaction. Something roughly like the following:</P>
+<P>EditableRoot er = EditableRoot.NewEditableRoot();</P>
+<P>er.Name = "ABC";</P>
+<P>EditableChild ec = er.NewEditableChild();</P>
+<P>ec.Desc = "ZXY abc";</P>
+<P>er.AddEditableChild(ec);</P>
+<P>er.Save();</P>
+<P>What is the recommended best practice to achive this with CSLA. Are there any standard naming conventions and or approaches to this problem?</P>
+<P>Thanks in advance.</P>
+<P>Peter</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Wednesday, September 27, 2006</h2>Well, it depends.<br><br>Usually you have a property on the ER to get to the collection.&nbsp; So you'd have something like this:<br><br><font color="#0000ff">public </font><font color="#008000">EditableChildList </font>Children {<br><font color="#0000ff">&nbsp;&nbsp;&nbsp; get </font>{ <font color="#0000ff">return </font>ecl; }<br>&nbsp;&nbsp;&nbsp;<font color="#0000ff"> private set</font> { <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <font color="#0000ff">if </font>( ecl != <font color="#0000ff">value </font>) {<br><font color="#0000ff">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if </font>( ecl != <font color="#0000ff">null </font>) {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ecl.ListChanged -= <font color="#0000ff">new </font><font color="#008000">ListChangedEventHandler</font>( ListChanged );<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; elc = <font color="#0000ff">value</font>;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <font color="#0000ff">if </font>( ecl != <font color="#0000ff">null </font>) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ecl.ListChanged += <font color="#0000ff">new </font><font color="#008000">ListChangedEventHandler</font>( ListChanged );<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+}<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>}<br><br><font color="#0000ff">private void</font> ListChanged( <font color="#0000ff">object </font>sender, <font color="#008000">ListChangedEventArgs </font>e ) {<br>&nbsp;&nbsp; PropertyHasChanged( <font color="#ff0000">"Children"</font> );<br>}<br><br>Then you could do:<br><br>er.Children.Add( ec );<br><br>or if you override AddNewCore in ECL, you can do:<br><br>ec = er.Children.AddNew();<br><br>but only if you can create a new child without filling in any extra information.<br><br>HTH<br>Andy<br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>pfowler replied on Wednesday, September 27, 2006</h2><P>Andy, thanks for the response.</P>
+<P>Ok, what I think I will do is the following:</P>
+<P>EditableRoot er = EditableRoot.NewEditableRoot();</P>
+<P>er.Name = "ABC";</P>
+<P>EditableChildList ecl = er.Children;</P>
+<P>EditableChild ec = EditableChild.NewEditableChild();</P>
+<P>ec.Desc = "ZXY abc";</P>
+<P>ecl.Add(ec);</P>
+<P>er.Save();</P>
+<P>What is the primary purpose of the events in the property? Are they required for binding purposes?</P>
+<P>Thanks</P>
+<P>Peter</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Thursday, September 28, 2006</h2>That is perfectly valid.<br><br>Yes, the purpose of catching the ListChanged event is so that the parent can 'bubble' the event up, although in this case you're changing the event raised.&nbsp; <br><br>The reason is that you typically listen to the CurrentItemChanged events from the bindingsource to which your root object is bound so that you can properly enable / disable the button / toolbar that allows saving.<br><br>Andy<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

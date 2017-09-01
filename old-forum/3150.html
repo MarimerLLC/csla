@@ -1,0 +1,76 @@
+<html><header><title>? about moving from 2.0.3.0 to latest</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>? about moving from 2.0.3.0 to latest</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3150.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>jkellywilkerson posted on Friday, July 06, 2007</h2><P>Greetings,</P>
+<P>I am currently using CSLA.NET v2.0.3.0.&nbsp; What kind of changes will be required in my BO's in order to move to the latest version?&nbsp; Any input greatly appreciated.</P>
+<P>Thanks,</P>
+<P>Kelly.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, July 06, 2007</h2><P>No changes should be required.</P>
+<P>However, as I note in my <A href="http://www.lhotka.net/weblog/CSLANET30Beta2AvailableForDownload.aspx">blog post</A>, you may run into some exceptions around n-level undo that will help you find any bugs you have in your current code due to mis-matched Begin/Cancel/Apply edit calls. Fixes here involve your UI code, not your business objects.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jkellywilkerson replied on Friday, July 06, 2007</h2><P>Hey Rocky - thanks for the quick reply.&nbsp; Was there some discussion about ValidationRules being changed that required using (calling)&nbsp;them in a different way?</P>
+<P>Kelly.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, July 06, 2007</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Sorry, didn&#8217;t see that you were coming from 2.0.3&#8230;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Yes, there are many changes from 2.0 to 2.1, especially around
+validation rules. The <i>CSLA .NET Version 2.1 Handbook</i> provides
+documentation around the changes and how to use them.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>In most cases the code changes from 2.0 to 2.1 (and thus 3.0)
+are pretty straightforward: you need to change any rule methods from instance
+methods to Shared/static methods, or you need to associate the instance methods
+with your properties using some slightly different per-instance code
+(AddInstanceBusinessRules() and AddInstanceRule()). It is best to change to
+Shared/static methods though, as then you get the memory and performance
+benefits of 2.1.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> jkellywilkerson
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Friday, July 06, 2007 1:07 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] ? about moving from 2.0.3.0 to latest<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Hey Rocky - thanks for the quick reply.&nbsp; Was there some discussion
+about ValidationRules being changed that required using (calling)&nbsp;them in
+a different way?<o:p></o:p></p>
+
+<p>Kelly.<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

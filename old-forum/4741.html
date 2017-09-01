@@ -1,0 +1,508 @@
+<html><header><title>CSLA 3.5 PropertyInfo and Undoable</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA 3.5 PropertyInfo and Undoable</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4741.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>ErikPhilips posted on Tuesday, April 22, 2008</h2><P>I'm not sure if I'm implementing something wrong but when I create a property on an inherited BusinessBase using PropertyInfo, if I do not use a private field to store property data, the property is not undoable.&nbsp; I just want to make sure this is by design.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, April 23, 2008</h2><P>It should be undoable.</P>
+<P>In ProjectTracker, the Project class uses managed backing fields and the Cancel button works fine to undo changes to those properties.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ErikPhilips replied on Wednesday, April 23, 2008</h2><P>Ok i'm trying a very limited&nbsp;set of code&nbsp;that I believe should mimic the ProjectTracker's editing capabilities of the Project class.&nbsp; The only thing not implemented is the security context.&nbsp; The following code does not work for the Name property and does work for the Color property.</P>
+<P>When I trace the code for an undo call (UndoableBase.sc #199&nbsp;protected internal void UndoChanges(int parentEditlevel), I trace to a "reflect" call of "fields = currentType.GetFields(...);".&nbsp; After the call fields contains 1 field named "_name".&nbsp; So i'm not sure how this undoes managed fields.</P>
+<P>&nbsp;</P><PRE>using System;
+using System.Windows.Forms;
+using Csla;
+using Csla.Core;
+
+namespace WindowsFormsApplication3
+{
+   public partial class Form1: Form
+   {
+      public Form1()
+      {
+         InitializeComponent();
+         this.Load += new System.EventHandler(this.Form1_Load);
+      }
+
+      Dog d = new Dog();
+      TextBox t = new TextBox();
+      TextBox t2 = new TextBox();
+      Button bCancel = new Button();
+      Button bApply = new Button();
+      BindingSource bs = new BindingSource();
+
+      public void Form1_Load(object sender, EventArgs e)
+      {
+         t.Left = 10; t.Top = 50; Controls.Add(t);
+         t2.Left = 120; t2.Top = 50; Controls.Add(t2);
+         
+         bCancel.Text = "Cancel Edit"; bCancel.Left = 10; bCancel.Top = 90; Controls.Add(bCancel);
+         bCancel.Click += new EventHandler(bCancel_Click);
+         
+         bApply.Text = "Apply Edit"; bApply.Left = 90; bApply.Top = 90; Controls.Add(bApply);
+         bApply.Click += new EventHandler(bApply_Click);
+
+         d.BeginEdit();         
+         bs.DataSource = d;
+
+         t.DataBindings.Add("Text", bs, "Name");
+         t2.DataBindings.Add("Text", bs, "Color");
+      }
+
+      void bCancel_Click(object sender, EventArgs e)
+      {
+         t.DataBindings.Clear();
+         t2.DataBindings.Clear();
+         bs.DataSource = null;
+         d.CancelEdit();
+         d.BeginEdit();
+         bs.DataSource = d;
+         t.DataBindings.Add("Text", bs, "Name");
+         t2.DataBindings.Add("Text", bs, "Color");
+      }
+
+      void bApply_Click(object sender, EventArgs e)
+      {
+         t.DataBindings.Clear();
+         t2.DataBindings.Clear();
+         bs.DataSource = null;
+         d.ApplyEdit();
+         d.BeginEdit();
+         bs.DataSource = d;
+         t.DataBindings.Add("Text", bs, "Name");
+         t2.DataBindings.Add("Text", bs, "Color");
+      }
+
+   }
+
+   [Serializable()]
+   public class Dog: BusinessBase
+   {
+      private static PropertyInfo _nameProp = RegisterProperty(typeof(Dog), new PropertyInfo("Name"));
+      public string Name
+      {
+         get { return GetProperty(_nameProp); }
+         set { SetProperty(_nameProp, value); }
+      }
+
+      private string _color;
+      public string Color
+      {
+         get { return _color; }
+         set { _color = value; }
+      }
+
+      public Dog()
+      {
+         LoadProperty(_nameProp, "Lucky");
+         _color = "Red";
+      }
+   }
+}</PRE></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, April 23, 2008</h2><P>You know, I've never tried using managed properties with the non-generic version of BusinessBase - maybe that's the problem.</P>
+<P>You have Dog : BusinessBase rather than Dog : BusinessBase&lt;Dog&gt; - is that accurate?</P>
+<P>The answer to your question about undo of managed fields is that the managed fields are stored in a FieldDataManager object, and it implements IUndoableObject, and so it takes a snapshot of the values and restores them within that object. So your business object should have a field (declared by BusinessBase) called _fieldManager (if I remember right), and UndoableBase should hit that field and cascade the call to that FieldDataManager object.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ErikPhilips replied on Thursday, April 24, 2008</h2><P>When I pasted the code in above,&nbsp;somehow&nbsp;the &lt;Dog&gt; Generic param was removed (it exists in my code).&nbsp; I do see the _fieldManager in the non-generic Csla.Core.BusinessBase which the generic BusinessBase inherits from.&nbsp; Why my compiled version only sees the field _name is beyond me.&nbsp;&nbsp;I have&nbsp;traced to the fields again and manually execute "FieldInfo f = currentType.GetField("_fieldManager");", f is null.&nbsp; I'm going to try this on another machine and see if I get the same results.&nbsp; I would assume that GetFields should return plenty more private fields then just the one i have created (assuming you have created some in the inherited classes like the _fieldManager).</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, April 24, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>_fieldManager is created in a lazy manner, so it could be null.
+But if it is null, that indicates that nothing has triggered its creation &#8211;
+meaning that there&#8217;s been no access to managed fields in your object
+(none have been set or retrieved).<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>And yes, it is true that there are other fields that would be
+undone &#8211; like _isDeleted, _isNew, etc.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> ErikPhilips
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Thursday, April 24, 2008 12:32 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] CSLA 3.5 PropertyInfo and Undoable<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>When I pasted the code in above,&nbsp;somehow&nbsp;the &lt;Dog&gt; Generic
+param was removed (it exists in my code).&nbsp; I do see the _fieldManager in
+the non-generic Csla.Core.BusinessBase which the generic BusinessBase inherits
+from.&nbsp; Why my compiled version only sees the field _name is beyond
+me.&nbsp;&nbsp;I have&nbsp;traced to the fields again and manually execute
+&quot;FieldInfo f = currentType.GetField(&quot;_fieldManager&quot;);&quot;, f
+is null.&nbsp; I'm going to try this on another machine and see if I get the same
+results.&nbsp; I would assume that GetFields should return plenty more private
+fields then just the one i have created (assuming you have created some in the
+inherited classes like the _fieldManager).<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ErikPhilips replied on Thursday, April 24, 2008</h2><P>Alright I just spent lots of time tracing the ProjectTracker program.&nbsp; Here is the run down I traced.</P>
+<P>Form loads<BR>&nbsp;&nbsp;&nbsp;Dataloaded<BR>&nbsp;&nbsp;&nbsp;BeginEdit called on _project [EditLevel = 1]<BR>&nbsp;&nbsp;&nbsp;TextBox modified.<BR>&nbsp;&nbsp;&nbsp;Cancel button clicked. [EditLevel=2 (either on text change or tab, i didn't look doesn matter)]</P>
+<P>&nbsp;</P>
+<P>Call to UnbingBindingSource [EditLevel = 2, _bindingEdit=true]<BR>&nbsp;&nbsp;&nbsp;Set BindingSource.Datasource = null<BR>&nbsp;&nbsp;&nbsp;Calls CancelEdit on the "Current" of the BindingSource<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Calls CancelEdit on the current ProjectResource object as an IEditableObject<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Calls CancelEdit on the current ProjectResource object as a BusinessBase<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Calls UndoChanges<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;At this point&nbsp;many fields are "undone"&nbsp;except fieldManager(s) because of bindingEdit&nbsp;[EditLevel=<FONT color=#ff0000>1</FONT>, _bindingEdit=true]<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;UndoChangesComplete&nbsp; [EditLevel=1, _bindingEdit=<FONT color=#ff0000>false</FONT>]<BR>Call to CancelEdit on _project (becomes CancelEdit on _project as BusinessBase) [EditLevel=1, _bindingEdit=false]<BR>&nbsp;&nbsp;&nbsp;At this point many fields are "undone" including fieldManager(s) [EditLevel=<FONT color=#ff0000>0</FONT>, _bindingEdit=false]<BR></P>
+<P>So my question is why&nbsp;does project tracker do&nbsp;double duty on undo's per single edit?&nbsp; Secondly, why can't a fieldManager be "undone" while _bindingEdit = true?</P>
+<P>Time to go read the help file...&nbsp;&nbsp;&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, April 24, 2008</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>It is possible there&#8217;s a bug lurking in CSLA.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>However, before we got there, let&#8217;s make sure this isn&#8217;t
+a data binding misunderstanding (because that is quite likely).<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>PTWin is (intentionally) a complex implementation, where I&#8217;m
+using data binding AND I want a top-level Cancel button on the form.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>If you ONLY use data binding (no form-level Cancel button) then
+things are simpler.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>If you ONLY use a form-level Cancel button (disable IEditableObject
+in the object) then things are simpler.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>But PTWin has it all turned on &#8211; using all the features
+together.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoListParagraph><span><span>1.<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span></span><span>BEFORE binding the object to the UI an explicit BeginEdit() is
+called.<o:p></o:p></span></p>
+
+<p class=MsoListParagraph><span><span>2.<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span></span><span>Then the object is data bound, which elevates the edit level <i>again</i>,
+but under data binding&#8217;s control<o:p></o:p></span></p>
+
+<p class=MsoListParagraph><span><span>3.<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span></span><span>Child objects might have their edit levels elevated even more by
+data binding<o:p></o:p></span></p>
+
+<p class=MsoListParagraph><span><span>4.<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span></span><span>Data binding will decrement the edit levels too, as the user
+moves around the UI/object model<o:p></o:p></span></p>
+
+<p class=MsoListParagraph><span><span>5.<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span></span><span>The edit level will never go below 1 though, because that&#8217;s
+where data binding started<o:p></o:p></span></p>
+
+<p class=MsoListParagraph><span><span>6.<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span></span><span>AFTER unbinding the object from the UI, an explicit CancelEdit()
+or ApplyEdit() is called &#8211; and that gets the edit level back to 0<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>If you want to have a form-level Cancel button you must follow
+this approach. Nothing else works.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Well, the only other alternative is to disable IEditableObject
+(which you can do) but then the user won&#8217;t get normal in-place editing
+behaviors that come from data binding, because your objects will be ignoring
+all data binding requests in terms of undo.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ErikPhilips replied on Thursday, April 24, 2008</h2><P>Alright it all sound great.&nbsp; I guess&nbsp;my&nbsp;confusion was that the&nbsp;BeginEdit before binding was completely optional.&nbsp;&nbsp;More&nbsp;I look into it, there is the except&nbsp;"unless you want a form-level Cancel".&nbsp; Makes perfect sense.&nbsp; I'll do that when needed.</P>
+<P>However, regardless if you are or are not using a form level, it very much appears that if the object was ever edited by a Binding-&gt;BindingSource, the _bindingEdit will be true and you cannot undo either N-Level fieldManager fields, nor simple non-form level Cancel because of _bindingEdit.&nbsp; This makes me wonder what your thought process was behind line 144 in UndoableBase.cs.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, April 24, 2008</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Ahh, well, that line is there (and this may now be a bug with
+FieldDataManager) because in the context of data binding it turns out that you
+can&#8217;t cascade the call to child objects. That&#8217;s not how the DataSet
+works, and data binding doesn&#8217;t work right if a parent cascades a data
+binding BeginEdit() call to its children (even though a <i>manual</i>
+BeginEdit() should cascade).<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>But I suspect that you are correct &#8211; FDM isn&#8217;t a real
+child &#8211; it is just a state-holder for the current object, and so the call
+<i>should</i> cascade to the FDM.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>So that line should probably read:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp; <span>// this is a child
+object, cascade the call<o:p></o:p></span></span></p>
+
+<p class=MsoNormal><b><span>&nbsp; <span>if</span>
+(!_bindingEdit || value <span>is</span> FieldManager.<span>FieldDataManager</span>)<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp; ((Core.<span>IUndoableObject</span>)value).CopyState(<span>this</span>.EditLevel + 1);<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky</span><b><span><o:p></o:p></span></b></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ErikPhilips replied on Thursday, April 24, 2008</h2><P>I assume similar code for CopyState and AcceptChanges in UndoableBase.cs...</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Saturday, April 26, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I think you are probably quite right.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Is it possible for you to make these changes and see if they
+have any positive (or negative) impact?<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Thanks!<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> ErikPhilips
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Thursday, April 24, 2008 11:21 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: RE: RE: CSLA 3.5 PropertyInfo and Undoable<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>I assume similar code for CopyState and AcceptChanges in UndoableBase.cs...<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ErikPhilips replied on Saturday, April 26, 2008</h2><P>&nbsp;</P>
+<P>My sample application works properly, no negative impact I can see.&nbsp; My real application also is performing normally.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ErikPhilips replied on Sunday, April 27, 2008</h2><P>This is really kicking my butt.&nbsp; Yes there is still some type of bug.&nbsp; EndEdit is being called for the object from a bound ListBox.&nbsp;&nbsp;It appears that LoadPropertyValue&nbsp;calls PropertyHasChanged which&nbsp;calls BindableBase.OnPropertyChanged this in turn goes through .Net calls down to EndEdit for the current object.&nbsp; This only occurs for FieldManager values.&nbsp; Here is a stacktrace of a single change to the name of a dog:</P>
+<P>&gt;&nbsp;Csla.dll!Csla.Core.BusinessBase.System.ComponentModel.IEditableObject.EndEdit() Line 890&nbsp;C#</P>
+<P>(External Calls)<BR>&nbsp;&nbsp;System.Windows.Forms.dll!System.Windows.Forms.CurrencyManager.EndCurrentEdit() + 0x77 bytes&nbsp;<BR>&nbsp;&nbsp;System.Windows.Forms.dll!System.Windows.Forms.CurrencyManager.ChangeRecordState(int newPosition = 0, bool validating = false, bool endCurrentEdit, bool firePositionChange = true, bool pullData = false) + 0xa0 bytes&nbsp;<BR>&nbsp;&nbsp;System.Windows.Forms.dll!System.Windows.Forms.CurrencyManager.Position.set(int value) + 0x3e bytes&nbsp;<BR>&nbsp;&nbsp;System.Windows.Forms.dll!System.Windows.Forms.ListBox.OnSelectedIndexChanged(System.EventArgs e = {System.EventArgs}) + 0x78 bytes&nbsp;<BR>&nbsp;&nbsp;System.Windows.Forms.dll!System.Windows.Forms.ListBox.NativeRemoveAt(int index) + 0x67 bytes&nbsp;<BR>&nbsp;&nbsp;System.Windows.Forms.dll!System.Windows.Forms.ListBox.ObjectCollection.SetItemInternal(int index, object value = {WindowsFormsApplication3.Dog}) + 0x182 bytes&nbsp;<BR>&nbsp;&nbsp;System.Windows.Forms.dll!System.Windows.Forms.ListBox.SetItemCore(int index, object value) + 0x37 bytes&nbsp;<BR>&nbsp;&nbsp;System.Windows.Forms.dll!System.Windows.Forms.ListControl.DataManager_ItemChanged(object sender, System.Windows.Forms.ItemChangedEventArgs e) + 0x6c bytes&nbsp;<BR>&nbsp;&nbsp;System.Windows.Forms.dll!System.Windows.Forms.CurrencyManager.OnItemChanged(System.Windows.Forms.ItemChangedEventArgs e) + 0x67 bytes&nbsp;<BR>&nbsp;&nbsp;System.Windows.Forms.dll!System.Windows.Forms.CurrencyManager.List_ListChanged(object sender, System.ComponentModel.ListChangedEventArgs e) + 0x3cf bytes&nbsp;<BR>&nbsp;&nbsp;System.Windows.Forms.dll!System.Windows.Forms.BindingSource.OnListChanged(System.ComponentModel.ListChangedEventArgs e) + 0x7b bytes&nbsp;<BR>&nbsp;&nbsp;System.Windows.Forms.dll!System.Windows.Forms.BindingSource.InnerList_ListChanged(object sender, System.ComponentModel.ListChangedEventArgs e) + 0x2e bytes&nbsp;<BR>&nbsp;&nbsp;System.dll!System.ComponentModel.BindingList&lt;System.__Canon&gt;.OnListChanged(System.ComponentModel.ListChangedEventArgs e) + 0x17 bytes&nbsp;<BR>&nbsp;&nbsp;System.dll!System.ComponentModel.BindingList&lt;WindowsFormsApplication3.Dog&gt;.Child_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) + 0x1f7 bytes&nbsp;</P>
+<P>&nbsp;&nbsp;[External Code]&nbsp;<BR>&nbsp;&nbsp;Csla.dll!Csla.Core.BindableBase.OnPropertyChanged(string propertyName = "Name") Line 102 + 0x29 bytes&nbsp;C#<BR>&nbsp;&nbsp;Csla.dll!Csla.Core.BusinessBase.PropertyHasChanged(string propertyName = "Name") Line 285 + 0x9 bytes&nbsp;C#<BR>&nbsp;&nbsp;Csla.dll!Csla.Core.BusinessBase.LoadPropertyValue&lt;string&gt;(Csla.PropertyInfo&lt;string&gt; propertyInfo = {Csla.PropertyInfo&lt;string&gt;}, string oldValue = "Lucky", string newValue = "Luckya", bool markDirty = true) Line 2313 + 0x29 bytes&nbsp;C#<BR>&nbsp;&nbsp;Csla.dll!Csla.Core.BusinessBase.SetProperty&lt;string&gt;(Csla.PropertyInfo&lt;string&gt; propertyInfo = {Csla.PropertyInfo&lt;string&gt;}, string newValue = "Luckya", Csla.Security.NoAccessBehavior noAccess = ThrowException) Line 2116 + 0x39 bytes&nbsp;C#<BR>&nbsp;&nbsp;Csla.dll!Csla.Core.BusinessBase.SetProperty&lt;string&gt;(Csla.PropertyInfo&lt;string&gt; propertyInfo = {Csla.PropertyInfo&lt;string&gt;}, string newValue = "Luckya") Line 2017 + 0x35 bytes&nbsp;C#<BR>&nbsp;&nbsp;WindowsFormsApplication3.exe!WindowsFormsApplication3.Dog.Name.set(string value = "Luckya") Line 93 + 0x14 bytes&nbsp;C#<BR>&nbsp;&nbsp;[External Code]&nbsp;<BR>&nbsp;&nbsp;WindowsFormsApplication3.exe!WindowsFormsApplication3.Program.Main() Line 18 + 0x1a bytes&nbsp;C#<BR>&nbsp;&nbsp;[External Code]&nbsp;<BR></P>
+<P>&nbsp;</P><PRE>   public partial class Form1: Form
+   {
+      public Form1()
+      {
+         InitializeComponent();
+         this.Load += new System.EventHandler(this.Form1_Load);
+      }
+
+      DogList dl = new DogList();
+      TextBox t = new TextBox();
+      TextBox t2 = new TextBox();
+      ListBox l = new ListBox();
+      Button bCancel = new Button();
+      Button bApply = new Button();
+      BindingSource bs = new BindingSource();
+
+      public void Form1_Load(object sender, EventArgs e)
+      {
+
+         for ( int i = 0; i &lt; 5; i++ )
+         {
+            Dog d = new Dog();
+            dl.Add(d);
+         }
+
+         t.Left = 150; t.Top = 50; Controls.Add(t);
+         t2.Left = 270; t2.Top = 50; Controls.Add(t2);
+         l.Left = 10;l.Top = 50;Controls.Add(l);l.Height = 200;
+         
+         bCancel.Text = "Cancel Edit"; bCancel.Left = 150; bCancel.Top = 90; Controls.Add(bCancel);
+         bCancel.Click += new EventHandler(bCancel_Click);
+         
+         bApply.Text = "Apply Edit"; bApply.Left = 230; bApply.Top = 90; Controls.Add(bApply);
+         bApply.Click += new EventHandler(bApply_Click);
+
+         bind();
+      }
+
+      void bCancel_Click(object sender, EventArgs e)
+      {
+         //unbind();
+         bs.CancelEdit();
+         //bind();
+      }
+
+      void bApply_Click(object sender, EventArgs e)
+      {
+         //unbind();
+         bs.ApplyEdit();
+         //bind();
+      }
+
+      void unbind()
+      {
+         t.DataBindings.Clear();
+         t2.DataBindings.Clear();
+         l.DataBindings.Clear();
+         bs.DataSource = null;
+      }
+      
+      void bind()
+      {
+         bs.DataSource = dl;
+         Binding tb = t.DataBindings.Add("Text", bs, "Name");
+         tb.DataSourceUpdateMode = DataSourceUpdateMode.OnPropertyChanged;
+         Binding tb2 = t2.DataBindings.Add("Text", bs, "Color");
+         tb2.DataSourceUpdateMode = DataSourceUpdateMode.OnPropertyChanged;
+         l.DataSource = bs;
+         l.DisplayMember = "Name";
+      }
+
+   }
+   [Serializable()]
+   public class DogList: BusinessListBase&lt;DogList, Dog&gt;
+   {
+   }
+
+
+   [Serializable()]
+   public class Dog: BusinessBase&lt;Dog&gt;
+   {
+
+      private static PropertyInfo _nameProp = RegisterProperty(typeof(Dog), new PropertyInfo("Name"));
+      public string Name
+      {
+         get { return GetProperty(_nameProp); }
+         set { SetProperty(_nameProp, value); }
+      }
+
+      private string _color;
+      public string Color
+      {
+         get { return _color; }
+         set { _color = value; }
+      }
+
+      public Dog()
+      {
+         LoadProperty(_nameProp, "Lucky");
+         _color = "Red";
+      }
+   }
+</PRE></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Sunday, April 27, 2008</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>You do realize that unbinding isn&#8217;t as simple as you have
+it in your code?<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Look at the PTWin code or the Windows Forms chapter in the <i>Using
+CSLA .NET 3.0</i> ebook to see how to safely unbind from a bindingsource.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ErikPhilips replied on Sunday, April 27, 2008</h2><P>I didn't do a good job of presenting my code at 2:45am my time <img src="/emoticons/emotion-5.gif" alt="Wink [;)]" />.&nbsp; I was only unbinding controls from the source for&nbsp;testing, which isn't even used in the code I presented.&nbsp; Also notice I'm using the CancelEdit and ApplyEdit on the BindingSource not the BusinessListBase.</P>
+<P>But none of that really matters, as EndEdit gets called as soon as a single character is typed in the Dog.Name TextBox (DataSourceUpdateMode.OnPropertyChanged), that single character causes a chain of events that eventually calls EndEdit on the current object.&nbsp; No other code that is incorrect&nbsp;after binding makes any difference if I still can't Undo because EndEdit is called anytime a SetProperty (calling LoadProperty) causes EndEdit.&nbsp; As soon as the ListBox datasource is not bound to DogList, EndEdit is not called.&nbsp; Saving to a Database or whatever with the actual BusinessList or Item doesn't make a difference if the effects before it are in error.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ErikPhilips replied on Sunday, April 27, 2008</h2>I also want to metion that the Listbox EndEdit is only a problem if you are not using a global Form-Level Cancel.&nbsp; Only direct binding Cancel and N-Level undo does this problem exist.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ErikPhilips replied on Monday, April 28, 2008</h2><P>I re-created my entire demo from scratch, with no copying-pasting, and it worked.&nbsp; The only thing I did differently was allowed the IDE to create the user controls.&nbsp; So I went through and found the only difference between my original code I posted here and the new code was the following line:</P><FONT color=#008000 size=2>
+<P>Listbox1.FormattingEnabled = true;</P>
+<P></FONT>I certainly have no problem saying I don't completely understand the inner workings of binding, but why does FormattingEnabled prevent or cause EndEdit to be called?&nbsp; To be perfectly clear, this is not a bug in Csla.&nbsp; If I create my own non-Csla base with INotifyPropertyChanged, and IEditableObject, then create multiple instances and store them in a BindingList, EndEdit is called if FormattingEnabled = false on any listbox&nbsp;the BindingList&nbsp;is bound too.</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

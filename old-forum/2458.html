@@ -1,0 +1,44 @@
+<html><header><title>Doubt about Aggregation, Composition???</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Doubt about Aggregation, Composition???</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/2458.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>kdlc posted on Thursday, March 01, 2007</h2><P class=MsoNormal><FONT size=2><FONT face="Times New Roman">Hello Everyone!</FONT></FONT></P>
+<P class=MsoNormal><FONT size=2><FONT face="Times New Roman"></FONT></FONT>&nbsp;</P>
+<P class=MsoNormal><FONT size=2><FONT face="Times New Roman">I've this scenario (Pretty Common!):<o:p></o:p></FONT></FONT></P>
+<P class=MsoNormal><FONT size=2><FONT face="Times New Roman"><SPAN>&nbsp;</SPAN>Customer Object Root Object<o:p></o:p></FONT></FONT></P>
+<P class=MsoNormal><FONT size=2><FONT face="Times New Roman"><SPAN>&nbsp;</SPAN>Invoice Object Root Object<o:p></o:p></FONT></FONT></P>
+<P class=MsoNormal><FONT size=2><FONT face="Times New Roman"><SPAN>&nbsp;</SPAN><o:p></o:p></FONT></FONT></P>
+<P class=MsoNormal><FONT face="Times New Roman" size=2>The doubt that I have its related with the Invoice Having a (HAS A) Customer Object, <SPAN>&nbsp;</SPAN>how can I implement the aggregation??</FONT></P>
+<P class=MsoNormal><FONT face="Times New Roman" size=2>Should I use a Customer Root Object inside the Invoice Object and Load it, Save It, Etc in the Invoice DATAPORTAL Methods? Or should I interact with the database directly ???</FONT></P>
+<P class=MsoNormal><o:p><FONT face="Times New Roman" size=2>&nbsp;</FONT></o:p></P>
+<P class=MsoNormal><FONT face="Times New Roman" size=2>What do you guys recommend??</FONT></P>
+<P class=MsoNormal><o:p><FONT face="Times New Roman" size=2>&nbsp;</FONT></o:p></P>
+<P class=MsoNormal><FONT face="Times New Roman" size=2>Something like this:</FONT></P>
+<P class=MsoNormal><SPAN>Private</SPAN><SPAN> <SPAN>Overloads</SPAN> <SPAN>Sub</SPAN> DataPortal_Fetch(<SPAN>ByVal</SPAN> criteria <SPAN>As</SPAN> Criteria)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Using</SPAN><SPAN> cn <SPAN>As</SPAN> <SPAN>New</SPAN> SqlConnection(Database.RedStarDBConnection)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>cn.Open()<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Using</SPAN><SPAN> cm <SPAN>As</SPAN> SqlCommand = cn.CreateCommand<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>cm.CommandType = CommandType.StoredProcedure<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>cm.CommandText = <SPAN>"sp_SelectInvoice"<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN>cm.Parameters.AddWithValue(<SPAN>"@InvoiceID"</SPAN>, criteria.Id)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Using</SPAN><SPAN> dr <SPAN>As</SPAN> <SPAN>New</SPAN> SafeDataReader(cm.ExecuteReader)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>dr.Read()<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>With</SPAN><SPAN> dr<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>mInvoiceID = .GetInt32(<SPAN>"InvoiceID"</SPAN>)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>mCustomerID = .GetInt32(<SPAN>"CustomerID"</SPAN>)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>xCustomer = Customer.GetCustomer(mCustomerID)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>‘Load Customer Information<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>With</SPAN><SPAN> xCustomer<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>mCustomerID = .CustomerID<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>mFullName = .FullName<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>mFullAddress = .FullAddress<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>mHomePhone = .HomePhone<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>mWorkPhone = .WorkPhone<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>mCellPhone = .CellPhone<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>End</SPAN><SPAN> <SPAN>With<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN>‘load Invoice Information<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>mInvoiceDate = </SPAN><SPAN>.GetSmartDate(<SPAN>"InvoiceDate"</SPAN>, mInvoiceDate.EmptyIsMin)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>...more code …</SPAN></P>
+<P class=MsoNormal><SPAN></SPAN>&nbsp;</P>
+<P class=MsoNormal><SPAN></SPAN>&nbsp;</P>
+<P class=MsoNormal><SPAN>THANKS in ADVANCE!</SPAN></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jeff replied on Thursday, March 01, 2007</h2>I prefer doing a join and loading the customer related fields from the same datareader. Seems cleaner to me to keep objects like this seperate if all you need are some read only fields from another object.&nbsp;I've seen this called "borrowed fields" on this forum in the past. But if you have a use case that calls for editing both root objects at once, you could always create a non-csla class just for this purpose. It could have references to the required root objects and could be responsible for loading/updating them together.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>hurcane replied on Thursday, March 01, 2007</h2>If you are using this same customer object in other use cases, I would consider keeping the database code separate in each object. It's not as efficient, but it's often good enough. </div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

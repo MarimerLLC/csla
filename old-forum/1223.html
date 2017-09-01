@@ -1,0 +1,24 @@
+<html><header><title>Re: Combobox Binding Problem</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Re: Combobox Binding Problem</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/1223.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>GinoK posted on Wednesday, September 13, 2006</h2><P>Brian,</P>
+<P>No joy there, the text field is blank and I removed refernces from the databindings text property also as I read on previous forums that should be blank. </P>
+<P>The Combobox is set up as follows:</P>
+<P># From my &nbsp;initialization code :</P>
+<P>Me.CurrencyNVListBindingSource.DataSource = CurrencyNVList.GetList()</P>
+<P><FONT size=2>cboCurrency.DataSource = CurrencyNVListBindingSource<BR>cboCurrency.DisplayMember = "Value"<BR>cboCurrency.ValueMember = "Key"<BR>cboCurrency.DataBindings.DefaultDataSourceUpdateMode = DataSourceUpdateMode.OnPropertyChanged</FONT></P>
+<P>(Apart from the population of the NVL most of the above appears to be irrelevant as it would have been set from the designer, I have tried the code with the line in or ommited with no change in results)</P>
+<P><BR># Passed From Windows Form Designer i.e Initialize Component</P>
+<P><FONT size=2>'<BR>'cboCurrency<BR>'<BR>Me.ReadWriteAuthorization1.SetApplyAuthorization(Me.cboCurrency, True)<BR>Me.cboCurrency.DataBindings.Add(New System.Windows.Forms.Binding("SelectedValue", Me.ControlCompanyBindingSource, "CurrencyID", True, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged))<BR>Me.cboCurrency.DataSource = Me.CurrencyNVListBindingSource<BR>Me.cboCurrency.DisplayMember = "Value"<BR>Me.cboCurrency.FormattingEnabled = True<BR>Me.cboCurrency.Location = New System.Drawing.Point(158, 141)<BR>Me.cboCurrency.Name = "cboCurrency"<BR>Me.cboCurrency.Size = New System.Drawing.Size(121, 24)<BR>Me.cboCurrency.TabIndex = 46<BR>Me.cboCurrency.ValueMember = "Key"<BR>'<BR>'CurrencyNVListBindingSource<BR>'<BR>Me.CurrencyNVListBindingSource.DataSource = GetType(Csla.NameValueListBase(Of Integer, String).NameValuePair)<BR>Me.BindingSourceRefresh1.SetReadValuesOnChange(Me.CurrencyNVListBindingSource, False)</FONT></P><FONT color=#008000 size=2>
+<P>'</P></FONT>
+<P><FONT color=#008000><FONT size=2>'ControlCompanyBindingSource</FONT></P></FONT>
+<P><FONT color=#008000><FONT size=2>'</FONT></P></FONT>
+<P><FONT size=2><FONT color=#0000ff>Me</FONT>.ControlCompanyBindingSource.DataSource = <FONT color=#0000ff>GetType(</FONT>Adsell.Library.BTier.ControlCompany)</FONT></P>
+<P><FONT size=2><FONT color=#0000ff>Me</FONT>.BindingSourceRefresh1.SetReadValuesOnChange(<FONT color=#0000ff>Me</FONT>.ControlCompanyBindingSource, <FONT color=#0000ff>True</FONT>)</FONT></P>
+<P><FONT size=2></FONT></P>
+<P><BR>&nbsp;</P>
+<P>I based application on some of Rocky's ideas in his book. The form uses the BindingSourceRefresh which can also cause behaviour of combo to vary. For example if the BusinessBase binding source has the property ReadValuesOnChange on binding is set to true, immediately I select an item from the list the underlying SelectedValue is set but the ComboBox displays nothing. If this property is set to false the Underlying Property appears to be set but the ComboBox displayed text remains visible until I tab from the control.</P>
+<P>Regardless of which way I work the underlying logic of the code appears to be working but the visual aspect would make it unworkable as an application from a user's perspective. </P>
+<P>By the way I am using Visual 2005 with .net 2.0 if that has any bearing.</P>
+<P>I also had a similar problem on a Datagrid using a NVL in one of the columns with a root collection and again while it appeared to set the value the display from the NVL cleared on exiting. When compared to the latest textbook from Rocky on his implementation of resource in the Project it appeared to be coded in a similar fashion but mine didn't work. The ptracker project however bahaved as expected on my PC.</P>
+<P>&nbsp;</P>
+<P>Thanks </P>
+<P>&nbsp;</P>
+<P>Ian</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

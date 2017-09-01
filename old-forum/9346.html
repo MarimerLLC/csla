@@ -1,0 +1,34 @@
+<html><header><title>What stereotype to use for rapidly changing collections</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>What stereotype to use for rapidly changing collections</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9346.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>SeanO posted on Monday, August 09, 2010</h2><p>This will be my first exposure to CSLA, and I&#39;m not quite finished with the book yet, but I had a question I can&#39;t seem to figure out just by looking through the index in the book.</p>
+<p>I am developing an application that can assess various measure of risk associated with commodities portfolios. &nbsp;This involves taking input from the user about the forward prices of various commodities, as well as information about various contracts they might have. &nbsp;For example, the forward price of gas for the next 36 months might be entered by the user and then stored. &nbsp;The forward price of oil might stored in another array for the same time period.</p>
+<p>For some of the procedures, we must perform monte carlo simulations to evaluate the portfolio based on thousands of different simulated prices. &nbsp;This means changing the entire array of forward prices for each commodity, then evaluating all contracts based those new prices and storing the results, many times. &nbsp;Note that we don&#39;t care about storing the simulated prices, but we do care about maintaining the integrity of the original prices in the data.</p>
+<p>Any suggestions would be greatly appreciated.</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Monday, August 09, 2010</h2><p>The CSLA stereotypes are generally concerned with supporting use cases (user scenarios, stories - whatever you want to call them) that deal with some sort of interface (web, windows, service, etc).</p>
+<p>I wouldn&#39;t use BusinessBase to create batch processing objects for example. That seems to make little sense, since the features you gain from that base class are probably useless in such a scenario.</p>
+<p>Running a simulation is a batch process - or at least a non-interactive, compute-intensive process. So you have to ask whether you need n-level undo, data binding, interactive business rules or authorization to implement such an algorithm. My guess: no.</p>
+<p>Here&#39;s an important secret (not really a secret, but something that people don&#39;t often realize): the data portal doesn&#39;t care about the CSLA stereotypes or base classes. <i>Any serializable object can flow through the data portal</i>. So it is quite realistic to use the data portal to retrieve a set of near-POCO objects that contain the data necessary to seed your simulation (as an example), and to save the results.</p>
+<p>So based on what little I know from your post, for the data entry user scenario I&#39;d use editable objects (BusinessBase/BusinessListBase) because that&#39;s what they are designed to do. And for the simulation algorithm I&#39;d use much simpler objects.</p>
+<p>There are many possibilities on the simulation.</p>
+<ol>
+<li>You might make the simulation objects serializable and directly fetch/save them.</li>
+<li>You might have a simple set of data load objects, a set of results saver objects and other objects that implement the algorithm.</li>
+<li>Etc.</li>
+</ol>
+<p>I do think the key is to remember that the data portal is largely independent of the rest of CSLA. It has its own requirements, but those do not include the CSLA base classes. In short, the data portal:</p>
+<ul>
+<li>Requires your class be serializable
+<ul>
+<li>On Silverlight this means implementing IMobileObject or subclassing MobileObject</li>
+</ul>
+</li>
+<li>Requires that your class participate in one of the four data access models
+<ul>
+<li>Class contains DataPortal_XYZ methods that do the data access</li>
+<li>Class contains DataPortal_XYZ methods that invoke an external DAL</li>
+<li>Class has ObjectFactory attribute, with factory class that does the data access</li>
+<li>Class has ObjectFactory attirbute, with factory class that invokes an external DAL</li>
+</ul>
+</li>
+</ul>
+<p>Technically that&#39;s it.</p>
+<p>Then again, it is often simpler to implement data retrieval objects by subclassing ReadOnlyBase, and data update objects using CommandBase - just to get the managed property capabilities if nothing else (though that&#39;s far more important for Silverlight than .NET).</p>
+<p>&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

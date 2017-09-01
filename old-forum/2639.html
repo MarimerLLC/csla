@@ -1,0 +1,50 @@
+<html><header><title>How do I recover from delete operation...</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>How do I recover from delete operation...</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/2639.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>yogeshprabhu posted on Thursday, March 29, 2007</h2><P>Hello,<o:p></o:p></P>
+<P>I’m new to CSLA based development I'm using CSLA Version 2.1.4. </P>
+<P>In my business layer I have created a root&nbsp;object inheriting from Csla.BusinessBase&lt;T&gt; and an editable collection of root by inheriting from Csla.EditableRootListBase&lt;T&gt;.&nbsp; The root object has standard Data Portal methods to insert, update and delete the data. <o:p></o:p></P>
+<P>In the Windows Forms UI, I have data-bound&nbsp;this list to the DataGridView, similar to the code shown in PTracker sample. I could insert, update, and delete items as expected.&nbsp;&nbsp;Whenever I pressed Esc key during the updates, I got the expected behavior of changes being undone. I have also created event handler for DataError event of the DataGridView. This is the only place errors are shown to the end-user.<o:p></o:p></P>
+<P class=MsoNormal><FONT size=2><SPAN>private</SPAN><SPAN> <SPAN>void</SPAN> domainListDataGridView_DataError(<SPAN>object</SPAN> sender, <SPAN>DataGridViewDataErrorEventArgs</SPAN> e)<o:p></o:p></SPAN></FONT></P>
+<P class=MsoNormal><SPAN><FONT size=2>{<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT size=2><SPAN>&nbsp; </SPAN><SPAN>if</SPAN> (e.Exception != <SPAN>null</SPAN>)<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT size=2><SPAN>&nbsp; </SPAN>{<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT size=2><SPAN>&nbsp;&nbsp;&nbsp; </SPAN><SPAN>MessageBox</SPAN>.Show(e.Exception.Message, <SPAN>"Error"</SPAN>);<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT size=2><SPAN>&nbsp;&nbsp;&nbsp; </SPAN>e.Cancel = <SPAN>true</SPAN>;<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT size=2><SPAN>&nbsp; </SPAN>}<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT size=2>}</FONT></SPAN></P>
+<P class=MsoNormal><o:p><FONT face=Arial size=2>&nbsp;</FONT></o:p></P>
+<P class=MsoNormal><SPAN>I ran into the problem when SQL stored procedure throws an error for violating check constraints. For example deleting a record that is referenced else where throws an error something like “The DELETE statement conflicted with…”. I wrapped this exception in my business layer with friendlier error message, but I can not figure out how to undo the delete operation after showing the error. Pressing Esc key after this error is shown has no effect. Once this error is shown, I keep on getting the exact same error if I click anywhere else in the grid. So if DataPortal_DeleteSelf fails, how do I change the business object’s internal state?<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Thanks<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Yogesh<o:p></o:p></SPAN></P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>yogeshprabhu replied on Friday, March 30, 2007</h2><P>In case of deletion exception, I marked the business object to be Clean. This seemed to fix my UI issue, and now I can navigate around, after showing the error once to the end user, but it doesn't seem right. Thoughts, anybody?</P>
+<P class=MsoNormal><FONT size=2><SPAN>private</SPAN><SPAN> <SPAN>void</SPAN> DataPortal_Delete(<SPAN>Criteria</SPAN> criteria)<o:p></o:p></SPAN></FONT></P>
+<P class=MsoNormal><SPAN><FONT size=2>{<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT size=2><SPAN>&nbsp; </SPAN><SPAN>Database</SPAN> db = <SPAN>DatabaseFactory</SPAN>.CreateDatabase();<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT size=2><SPAN>&nbsp; </SPAN><SPAN>using</SPAN> (<SPAN>DbCommand</SPAN> cmd = db.GetStoredProcCommand(<SPAN>"Code_Delete"</SPAN>))<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT size=2><SPAN>&nbsp; </SPAN>{<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT size=2><SPAN>&nbsp;&nbsp;&nbsp; </SPAN>db.AddInParameter(cmd, <SPAN>Fields</SPAN>.TableName, <SPAN>DbType</SPAN>.String, criteria.CodeType);<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT size=2><SPAN>&nbsp;&nbsp;&nbsp; </SPAN>db.AddInParameter(cmd, <SPAN>Fields</SPAN>.ItemId, <SPAN>DbType</SPAN>.Int16, criteria.Id);<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><o:p><FONT size=2>&nbsp;</FONT></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><FONT size=2><SPAN>&nbsp;&nbsp;&nbsp; </SPAN><SPAN>try<o:p></o:p></SPAN></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT size=2><SPAN>&nbsp;&nbsp;&nbsp; </SPAN>{<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT size=2><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>db.ExecuteNonQuery(cmd);<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT size=2><SPAN>&nbsp;&nbsp;&nbsp; </SPAN>}<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT size=2><SPAN>&nbsp;&nbsp;&nbsp; </SPAN><SPAN>catch</SPAN> (<SPAN>Exception</SPAN> ex)<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT size=2><SPAN>&nbsp;&nbsp;&nbsp; </SPAN>{<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT size=2><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>// Because of the database exception, this object won't be deleted. Marking it<o:p></o:p></SPAN></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT size=2><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>// clean seems to work from the UI standpoint, but is this the right way to <o:p></o:p></SPAN></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT size=2><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>// recover the bussiness object state?<o:p></o:p></SPAN></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT size=2><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>MarkClean();<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT size=2><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>if</SPAN> (ex.Message.StartsWith(<SPAN>"The DELETE statement conflicted"</SPAN>))<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT size=2><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>throw</SPAN> <SPAN>new</SPAN> <SPAN>ApplicationException</SPAN>(<SPAN>"Related records exist, child record(s) must be deleted first."</SPAN>, ex);<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT size=2><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>else<o:p></o:p></SPAN></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT size=2><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>throw</SPAN> ex;<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT size=2><SPAN>&nbsp;&nbsp;&nbsp; </SPAN>}<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT size=2><SPAN>&nbsp; </SPAN>}<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT size=2>}</FONT></SPAN></P>
+<P>Yogesh</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>SonOfPirate replied on Friday, March 30, 2007</h2><P>It seems to me that you are working with a collection of items if you are binding a DataGridView.&nbsp; So, my thinking is that your problem is at the collection level, not with the object itself.&nbsp; Yes, you should still mark the object as undeleted (_isDeleted = false), I don't know that I agree with marking it clean as that would indicate that any changes that were made to the record prior to being deleted but not yet persisted had, in fact, been persisted.&nbsp; I would leave it dirty but indicate that it is not deleted.</P>
+<P>Back to my original thought...&nbsp; The reason that the escape key is not having an affect on your UI is most likely due to the fact that the object was removed from your collection despite failing at the database.&nbsp; I would look at this code, maybe stepping through it, to see if you are properly moving the item into the deleted items collection when deleted then back into the base collection when the escape key is pressed.&nbsp; Then I'd look at how you can automatically do this when the delete operation fails.</P>
+<P>HTH</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Friday, March 30, 2007</h2><P>Also - your SP could delete the child records for you based on the ID of the top level record. Then the command would tend to succeed more often. &lt;g&gt;</P>
+<P>Joe</P>
+<P>&nbsp;</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,78 @@
+<html><header><title>Object Design - Data or IDs?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Object Design - Data or IDs?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/1433.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Crestline posted on Tuesday, October 10, 2006</h2>Hi,<br>
+<br>
+This not so much a specific CSLA question as maybe a general design question.&nbsp; Thanks in advance for any suggestions...<br>
+<br>
+Our data model is one that uses a lot of related IDs as a way of data
+validation.&nbsp; Our question is, when genreating theCSLA objects,
+what is good practice as far as:<br>
+<br>
+Loading the ID in to the object and letting the UI handle the link to
+the data OR having the stored procedure link the IDs to the data and
+only pull data into the objects?<br>
+<br>
+-BR<br>
+<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Crestline replied on Wednesday, October 11, 2006</h2>Does anyone have any advice?&nbsp; Sorry for the newbie question....<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jav replied on Wednesday, October 11, 2006</h2><P>Your question as it is asked does not appear to make any sense - at least to me.&nbsp; Perhaps you can post an example.</P>
+<P>When generating the Csla object, you have to have the ID as a part of&nbsp; the object!</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Crestline replied on Wednesday, October 11, 2006</h2>A simple data desgin mock up of a couple tables and their columns<br>
+<br>
+Person (table)<br>
+-personid<br>
+-name<br>
+-cityid <br>
+-countryid<br>
+<br>
+City (table)<br>
+-cityid<br>
+-citymame<br>
+<br>
+Country (table)<br>
+-countryid<br>
+-coutryname<br>
+<br>
+So now in our app when we load the PersonObject, which way should we fill it:<br>
+A) <br>
+&lt;sudo code&gt;<br>
+public class Person: BusinessBase&lt;Person&gt;<br>
+private int _id;<br>
+private string _name;<br>
+private int _cityid;<br>
+private int _countryid;<br>
+&lt;/sudo code&gt;<br>
+Simply load the actual IDs of City and Country (not the string
+names)?&nbsp; This would thne require us to have name/value pairs
+loaded so that when the PersonObject data is presented in a Form, that
+the we use "name" from the pairs<br>
+<br>
+B) <br>
+&lt;sudo code&gt;<br>
+public class Person: BusinessBase&lt;Person&gt;<br>
+private int _id;<br>
+private string _name;<br>
+private string _city;<br>
+private string _country;<br>
+&lt;/sudo code&gt;<br>
+The underlying stored procedures for the Person object take care of
+the mapping and the object will then contain the text and no IDs at
+all.&nbsp; This would then require all the stored procedures
+(select,insert,update,delete) to manage the mappings as needed.<br>
+<br>
+Another question about the data design above, is this what most people
+use or would you change it so that the Person table would actual
+contain the 'text' for City and Country instead of the related table
+IDs?&nbsp; This situation is just for an example but it shows what I'm
+talking about in it's simpliest form.<br>
+<br>
+Thanks.<br>
+<br>
+<br>
+<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Brian Criswell replied on Wednesday, October 11, 2006</h2>I usually load the ids for lookups and have the UI or other code resolve the lookup (through a ComboBox or IBindingList.Find()).<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Crestline replied on Wednesday, October 11, 2006</h2>Ok, this is how we normally used to do it and I just wanted to clarify
+that CSLA follows along this path.&nbsp; Sorry for the noob question
+but just wanted to double check!<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, October 11, 2006</h2>So you are implementing the "Add or Edit Person data" use case? Which is probably a use case where the user is adding or editing all the data about a person?<br><br>Normally, in such a case, I would expose the city and country id values as properties from Person, not the human-readable text. The reason being that the UI will most likely make use of some sort of complex bound control (list, combobox, etc) to allow the user to select the city and country. That same data binding mechanism will automatically cause the control to display the human-readable text.<br><br>So you'll really have three classes: Person, CityList and CountryList. The latter two would be NameValueListBase-derived objects, and could be bound to a list or combobox control. Data binding does all the hard work for you.<br><br>On the other hand, the CityList might be too big. It might be unrealistic to just use a simple list or combobox control from a usability perspective. In that case you might choose to expose both the CityId and a (read-only) CityName property from Person. You can bind a Label to CityName so the user can see the selected value - and then you might give them a button so they can get a dialog to select a new city. That dialog's result would be the new CityId, and setting the Person.CityId property would trigger Person to execute a Command object to refresh the CityName property.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Crestline replied on Wednesday, October 11, 2006</h2>Thanks Rocky.&nbsp; We were heading down the name/value list road as we
+have done in similar situations in the past.&nbsp; You basically just
+validated what we thought was the right way to go about it.&nbsp; We
+have a 'company' library referenced into the app that contains a lot of
+these lists already...&nbsp; we're good to go!<br>
+<br>
+Love CSLA!<br>
+<br>
+<br>
+<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

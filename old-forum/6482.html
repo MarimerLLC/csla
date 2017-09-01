@@ -1,0 +1,69 @@
+<html><header><title>Rolodex derivation loads in IE but not Firefox</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Rolodex derivation loads in IE but not Firefox</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6482.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>James Thomas posted on Sunday, February 22, 2009</h2>Hi All,<br><br>Just seeing if someone else has solved this problem. I have a Silverlight app that's based on Rolodex, but differs in that I moved the host page into WcfHostWeb to make debugging easier. The app now works fine in IE, but the silverlight app doesn't load in firefox (the html of the host page loads ok, but the silverlight app itself doesn't). Has anyone else seen this, or has an idea of what the problem might be?<br><br>Thanks, James.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Sunday, February 22, 2009</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Is start up page correct?<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> James Thomas
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Sunday, February 22, 2009 6:29 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> [CSLA .NET] Rolodex derivation loads in IE but not Firefox<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Hi All,<br>
+<br>
+Just seeing if someone else has solved this problem. I have a Silverlight app
+that's based on Rolodex, but differs in that I moved the host page into
+WcfHostWeb to make debugging easier. The app now works fine in IE, but the
+silverlight app doesn't load in firefox (the html of the host page loads ok,
+but the silverlight app itself doesn't). Has anyone else seen this, or has an
+idea of what the problem might be?<br>
+<br>
+Thanks, James.<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>James Thomas replied on Wednesday, March 04, 2009</h2>Yes - I found the problem.<br><br>In a VS generated page various width and height attributes aren't set. I copied the ones used in rolodex and the page now appears in Firefox 3 too.<br><br>These are the lines I changed:<br><br>&lt;html xmlns="http://www.w3.org/1999/xhtml" style="height:100%;"&gt;<br>&lt;body style="height:100%;margin:0;"&gt;<br>&nbsp;&nbsp;&nbsp; &lt;form id="form1" runat="server" style="height:100%;"&gt;<br><br>Hope this helps someone else who runs into the same problem.<br>James.<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

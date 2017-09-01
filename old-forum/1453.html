@@ -1,0 +1,86 @@
+<html><header><title>ASP.NET 2.0 Membership Service with remote Data Portal</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>ASP.NET 2.0 Membership Service with remote Data Portal</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/1453.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>MaciejN posted on Wednesday, October 11, 2006</h2><P dir=ltr><FONT face=Arial size=2>Hello everyone!</FONT></P>
+<P><FONT face=Arial size=2>I am developing a C# web app which uses the ASP.NET 2.0 membership features for authentication. I have read p536-537 regarding what is needed for this solution to work but nevertheless still get this error when trying to "get" an object:</FONT></P>
+<P><EM><FONT face=Arial color=#ff0000 size=2>System.Web.Services.Protocols.SoapException: Server was unable to process request. ---&gt; System.ArgumentException: Object of type 'System.Runtime.Serialization.TypeLoadExceptionHolder' cannot be converted to type 'System.Security.Principal.IPrincipal'.</FONT></EM></P>
+<P><FONT face=Arial color=#000000 size=2>I have already created the MembershipPrincipal object and added it to my .Library porject.</FONT></P>
+<P><FONT face=Arial color=#000000 size=2>I have two aspx pages to my app. login.aspx and default.aspx. The book also says that I should put the following in my global.asax AcquireRequestState event:</FONT></P><FONT color=#008000>
+<P><FONT face=Arial size=2>Csla.ApplicationContext.User = new MIHS.Web.Portal.Library.MembershipPrincipal(HttpContext.Current.User);</FONT></P>
+<P><FONT face=Arial color=#000000 size=2>After I have successfully logged in I call my object like so</FONT></P><FONT color=#000000><FONT face=Arial color=#008000 size=2>
+<P>Client _Client = Client.GetClient(Guid.Empty, Context.Items["MIHSPortal_ApplicationName"].ToString());</P></FONT></FONT>
+<P><FONT face=Arial color=#000000 size=2>and get the error above.</FONT></P>
+<P><FONT face=Arial color=#000000 size=2>If anyone can help I would appreciate it. I am confused a bit since I think I have done everything correctly. </FONT></P>
+<P><FONT face=Arial color=#000000 size=2>Specifically:</FONT></P>
+<P><FONT color=#000000><FONT size=2><FONT face=Arial>1. Must I use the <FONT color=#0000ff>&lt;</FONT><FONT color=#800000>add</FONT><FONT color=#0000ff> </FONT><FONT color=#ff0000>key</FONT><FONT color=#0000ff>=</FONT>"<FONT color=#0000ff>CslaAuthentication</FONT>"<FONT color=#0000ff> </FONT><FONT color=#ff0000>value</FONT><FONT color=#0000ff>=</FONT>"<FONT color=#0000ff>Csla</FONT>"<FONT color=#0000ff> /&gt; <FONT color=#000000>entry in the various config files since I am not using CSLA authentication?</FONT></FONT></FONT></FONT></FONT></P>
+<P><FONT face=Arial color=#000000 size=2>Thanks.</FONT></P>
+<P><FONT face=Arial color=#000000 size=2>Maciej</FONT></P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, October 11, 2006</h2>Yes, you must set CslaAuthentication to Csla unless you are using Windows integrated authentication. Since you are using non-Windows authentication then this is required.<br><br>The data portal has one, very simple, requirement: the principal object must derive from Csla.Security.BusinessPrincpalBase. That's all it cares about.<br><br>So as long as you are certain that the client code (running in the web server) has HttpContext.Current.User set to something that derives from BusinessPrincipalBase then you should be good.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>MaciejN replied on Thursday, October 12, 2006</h2><P><FONT face=Arial size=2><img src="/emoticons/emotion-1.gif" alt="Smile [:)]" />Rocky,</FONT></P>
+<P><FONT face=Arial size=2>Thanks for the quick reply. Your reply makes sense to me and that is why I don't understand why I am receiving the error. Here is my MembershipPrincipal class:</FONT></P>
+<P><FONT face=Arial color=#006400 size=2>using System;<BR>using System.Collections.Generic;<BR>using System.Text;</FONT></P>
+<P><FONT face=Arial color=#006400 size=2>namespace MIHS.Web.Portal.Library<BR>{<BR>&nbsp;&nbsp;&nbsp; [Serializable()]<BR>&nbsp;&nbsp;&nbsp; public class MembershipPrincipal : Csla.Security.BusinessPrincipalBase<BR>&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; private System.Security.Principal.IPrincipal _principal;</FONT></P>
+<P><FONT face=Arial color=#006400 size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public MembershipPrincipal(System.Security.Principal.IPrincipal principal) : base(principal.Identity)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _principal = principal;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</FONT></P>
+<P><FONT face=Arial color=#006400 size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public override bool IsInRole(string role)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return _principal.IsInRole(role);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<BR>&nbsp;&nbsp;&nbsp; }<BR>}<BR></FONT></P>
+<P><FONT face=Arial size=2>Does this look good to you?</FONT></P>
+<P><FONT face=Arial size=2>Here is the exact location of the exception in WebServicesProxy.cs:</FONT></P>
+<P><FONT face=Arial color=#006400 size=2>&nbsp;&nbsp;&nbsp; public Server.DataPortalResult Fetch(<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Type objectType, object criteria, Server.DataPortalContext context)<BR>&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; object result;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Server.Hosts.WebServicePortal.FetchRequest request = <BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; new Server.Hosts.WebServicePortal.FetchRequest();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; request.ObjectType = objectType;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; request.Criteria = criteria;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; request.Context = context;</FONT></P>
+<P><FONT face=Arial color=#006400><FONT size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; using (WebServiceHost.WebServicePortal wsvc = GetPortal())<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </FONT><FONT size=2><FONT><FONT color=#ff0000>result = Deserialize(wsvc.Fetch(Serialize(request)));</FONT><BR></FONT>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</FONT></FONT></P>
+<P><FONT face=Arial color=#006400 size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (result is Exception)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; throw (Exception)result;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return (Server.DataPortalResult)result;<BR>&nbsp;&nbsp;&nbsp; }<BR></FONT></P>
+<P><FONT face=Arial size=2>I am using CSLA 2.0.3.</FONT></P>
+<P><FONT face=Arial size=2>Maciej</FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, October 12, 2006</h2>Perhaps the ASP.NET membership principal object isn't serializable - or perhaps it tries to do some automated work when it is being deserialized.<br><br>I did try wrapping the membership principal as I discuss in the book - but to be honest, I never did try to pass it through the data portal.<br><br>The exception you are getting doesn't, on the surface, seem to make any sense. Some code in that process is obviously trying to set the principal or cast to a principal, and that's failing. So you need to determine what code, during deserialization, is somehow trying to do that work - either your code, or (hopefully not) some code in the membership principal.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>MaciejN replied on Thursday, October 12, 2006</h2><P>I havn't modified your CSLA code in any way. I am just consuming it.</P>
+<P>I have two lines of code:</P>
+<P><FONT face=Arial size=2>Csla.ApplicationContext.User = new MIHS.Web.Portal.Library.MembershipPrincipal(HttpContext.Current.User);</FONT></P>
+<P><FONT face=Arial size=2>This does not produce an error and:</FONT></P><FONT face=Arial size=2>
+<P>Client _Client = Client.GetClient(Guid.Empty, Context.Items["MIHSPortal_ApplicationName"].ToString());</P>
+<P>which does.</P>
+<P>The Client object is just an object that inherits from BusinessBase and is located in the Library.</P>
+<P>I am trying to mimic the PTWeb application except for trying&nbsp;to use ASP Membership and remote data portal.</P>
+<P>Is their anything else I can do to help?</P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, October 12, 2006</h2>Are you using a remote data portal (application server), or are you running the data portal in local mode?<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>MaciejN replied on Thursday, October 12, 2006</h2><P>I would like to use the remote data portal configuration. Specifically so all data access is done from the library running on another physical server and using WebServicesHost as my transport.</P>
+<P>Here is are my CSLA&nbsp;web.config items:</P>
+<P>&nbsp;&nbsp;&lt;add key="CslaAuthentication" value="Csla" /&gt;<BR>&nbsp;&nbsp;&lt;add key="CslaDataPortalProxy" value="Csla.DataPortalClient.WebServicesProxy, Csla"/&gt;<BR>&nbsp;&nbsp;&lt;add key="CslaDataPortalUrl" value="<A href='http://someserver/MIHS.Web.Portal.WebServiceHost/CslaDataPortal.asmx"/'>http://someserver/MIHS.Web.Portal.WebServiceHost/CslaDataPortal.asmx"/</A>&gt;<BR></P>
+<P>I'm not sure if I need anything else.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>MaciejN replied on Wednesday, October 18, 2006</h2><P>Rocky,</P>
+<P>I'm sure your very busy and I appreciate your time, but I would like to know your thoughts on this issue. Do you think this is an issue with CSLA or do you feel its my implementation.</P>
+<P>Maciej</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, October 18, 2006</h2>
+
+
+
+
+<DIV align=left><SPAN class=171582019-18102006><FONT face=Arial color=#0000ff size=2>As I mentioned earlier, I've never tried passing the 
+ASP.NET membership principal across the data portal - so I have no idea if it 
+can be done.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=171582019-18102006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=171582019-18102006><FONT face=Arial color=#0000ff size=2>If I were you, what I'd do is try to clone the object (see 
+the Clone() implementation in Chapter 3 and base your code off that) to force 
+serialization/deserialization of the object without all the complexity of a 
+network. See if that works or fails - and it might just fail right there if they 
+are doing something wonky on deserialization.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=171582019-18102006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=171582019-18102006><FONT face=Arial color=#0000ff size=2>If that _works_, then you'll have to troubleshoot it across 
+the network.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=171582019-18102006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=171582019-18102006><FONT face=Arial color=#0000ff size=2>Given the exception you are seeing, I am guessing it does 
+have something to do with deserializing the membership 
+provider.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=171582019-18102006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=171582019-18102006><FONT face=Arial color=#0000ff size=2>Though to ensure it isn't some other problem, perhaps the 
+FIRST thing you should do is get your code working with a regular custom 
+principal - one that doesn't contain a membership principal - and make sure your 
+code works from end to end. That would eliminate that 
+possibility.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=171582019-18102006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=171582019-18102006><FONT face=Arial color=#0000ff size=2>So in short, no, I don't think this is a CSLA issue. I 
+think it is either an issue with your code or with some implementation detail of 
+the membership principal that is triggered on 
+deserialization.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=171582019-18102006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=171582019-18102006><FONT face=Arial color=#0000ff size=2>Rocky</FONT></SPAN></DIV><BR>
+<BLOCKQUOTE>
+  <DIV class=OutlookMessageHeader align=left>
+  <HR>
+  <FONT face=Tahoma size=2><B>From:</B> MaciejN [mailto:cslanet@lhotka.net] 
+  <BR><B>Sent:</B> Wednesday, October 18, 2006 1:57 PM<BR><B>To:</B> 
+  rocky@lhotka.net<BR><B>Subject:</B> Re: [CSLA .NET] ASP.NET 2.0 Membership 
+  Service with remote Data Portal<BR></FONT><BR></DIV>
+  <DIV></DIV>
+  <P>Rocky,</P>
+  <P>I'm sure your very busy and I appreciate your time, but I would like to 
+  know your thoughts on this issue. Do you think this is an issue with CSLA or 
+  do you feel its my implementation.</P>
+  <P>Maciej</P><BR><BR><BR></BLOCKQUOTE></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>MaciejN replied on Wednesday, October 18, 2006</h2><P>Thank you for your quick and concise reply. I will attempt to do as you suggest.</P>
+<P>Maciej</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

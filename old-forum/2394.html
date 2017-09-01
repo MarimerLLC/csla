@@ -1,0 +1,44 @@
+<html><header><title>Project Tracker Error</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Project Tracker Error</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/2394.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>somayajulu posted on Wednesday, February 21, 2007</h2><P class=MsoNormal><FONT face=Arial size=2>I have downloaded CSLA 2.1.3. The ProjectTrackercs solution build’s without errors. When I try to login by providing username and password, I’m getting the following error:</FONT></P>
+<P class=MsoNormal><o:p><FONT face=Arial size=2>&nbsp;</FONT></o:p></P>
+<P class=MsoNormal><o:p><FONT face=Arial size=2>&nbsp;</FONT></o:p></P>
+<P class=MsoNormal><FONT face=Arial size=2>Access to the registry key 'HKEY_CLASSES_ROOT\EnterpriseServicesHost.EnterpriseServicesPortal' is denied.</FONT></P>
+<P class=MsoNormal><o:p><FONT face=Arial size=2>&nbsp;</FONT></o:p></P>
+<P class=MsoNormal><FONT face=Arial size=2>Failed to register assembly 'EnterpriseServicesHostcs, Version=1.0.0.0, Culture=neutral, PublicKeyToken=01ff308b9193369a'.</FONT></P>
+<P class=MsoNormal><o:p><FONT face=Arial size=2>&nbsp;</FONT></o:p></P>
+<P class=MsoNormal><FONT face=Arial size=2>You must have administrative credentials to perform this task. Contact your system administrator for assistance.</FONT></P>
+<P class=MsoNormal><o:p><FONT face=Arial size=2>&nbsp;</FONT></o:p></P>
+<P class=MsoNormal><B><FONT face=Arial><FONT size=2>Following is the stack trace:<o:p></o:p></FONT></FONT></B></P>
+<P class=MsoNormal><FONT face=Arial><FONT size=2><SPAN>&nbsp;&nbsp; </SPAN>at System.EnterpriseServices.RegistrationDriver.InstallAssembly(RegistrationConfig regConfig, Object obSync)</FONT></FONT></P>
+<P class=MsoNormal><FONT face=Arial><FONT size=2><SPAN>&nbsp;&nbsp; </SPAN>at System.EnterpriseServices.RegistrationHelper.InstallAssemblyFromConfig(RegistrationConfig&amp; regConfig)</FONT></FONT></P>
+<P class=MsoNormal><FONT face=Arial><FONT size=2><SPAN>&nbsp;&nbsp; </SPAN>at System.EnterpriseServices.RegistrationHelper.InstallAssembly(String assembly, String&amp; application, String partition, String&amp; tlb, InstallationFlags installFlags)</FONT></FONT></P>
+<P class=MsoNormal><FONT face=Arial><FONT size=2><SPAN>&nbsp;&nbsp; </SPAN>at System.EnterpriseServices.RegistrationHelper.System.EnterpriseServices.Thunk.IThunkInstallation.DefaultInstall(String asm)</FONT></FONT></P>
+<P class=MsoNormal><FONT face=Arial><FONT size=2><SPAN>&nbsp;&nbsp; </SPAN>at System.EnterpriseServices.Thunk.Proxy.RegisterAssembly(Assembly assembly)</FONT></FONT></P>
+<P class=MsoNormal><FONT face=Arial><FONT size=2><SPAN>&nbsp;&nbsp; </SPAN>at System.EnterpriseServices.Thunk.Proxy.LazyRegister(Guid id, Type serverType, Boolean checkCache)</FONT></FONT></P>
+<P class=MsoNormal><FONT face=Arial><FONT size=2><SPAN>&nbsp;&nbsp; </SPAN>at System.EnterpriseServices.Thunk.Proxy.CoCreateObject(Type serverType, Boolean bQuerySCInfo, Boolean&amp; bIsAnotherProcess, String&amp; uri)</FONT></FONT></P>
+<P class=MsoNormal><FONT face=Arial><FONT size=2><SPAN>&nbsp;&nbsp; </SPAN>at System.EnterpriseServices.ServicedComponentProxyAttribute.CreateInstance(Type serverType)</FONT></FONT></P>
+<P class=MsoNormal><FONT face=Arial><FONT size=2><SPAN>&nbsp;&nbsp; </SPAN>at System.Runtime.Remoting.Activation.ActivationServices.IsCurrentContextOK(Type serverType, Object[] props, Boolean bNewObj)</FONT></FONT></P>
+<P class=MsoNormal><FONT face=Arial><FONT size=2><SPAN>&nbsp;&nbsp; </SPAN>at EnterpriseServicesHost.EnterpriseServicesProxy.GetServerObject() in C:\Visual Studio Projects\csla20\ProjectTracker20cs\EnterpriseServicesHostcs\EnterpriseServicesProxy.cs:line 13</FONT></FONT></P>
+<P class=MsoNormal><FONT face=Arial><FONT size=2><SPAN>&nbsp;&nbsp; </SPAN>at Csla.DataPortalClient.EnterpriseServicesProxy.Fetch(Type objectType, Object criteria, DataPortalContext context) in C:\Visual Studio Projects\csla20\csla20cs\Csla\DataPortal\Client\EnterpriseServicesProxy.cs:line 52</FONT></FONT></P>
+<P class=MsoNormal><FONT face=Arial><FONT size=2><SPAN>&nbsp;&nbsp; </SPAN>at Csla.DataPortal.Fetch(Type objectType, Object criteria) in C:\Visual Studio Projects\csla20\csla20cs\Csla\DataPortal\Client\DataPortal.cs:line 185</FONT></FONT></P>
+<P class=MsoNormal><FONT face=Arial><FONT size=2><SPAN>&nbsp;&nbsp; </SPAN>at Csla.DataPortal.Fetch[T](Object criteria) in C:\Visual Studio Projects\csla20\csla20cs\Csla\DataPortal\Client\DataPortal.cs:line 140</FONT></FONT></P>
+<P class=MsoNormal><FONT face=Arial><FONT size=2><SPAN>&nbsp;&nbsp; </SPAN>at ProjectTracker.Library.Security.PTIdentity.GetIdentity(String username, String password) in C:\Visual Studio Projects\csla20\ProjectTracker20cs\ProjectTracker.Library\Security\PTIdentity.cs:line 57</FONT></FONT></P>
+<P class=MsoNormal><FONT face=Arial><FONT size=2><SPAN>&nbsp;&nbsp; </SPAN>at ProjectTracker.Library.Security.PTPrincipal.Login(String username, String password) in C:\Visual Studio Projects\csla20\ProjectTracker20cs\ProjectTracker.Library\Security\PTPrincipal.cs:line 15</FONT></FONT></P>
+<P class=MsoNormal><FONT face=Arial><FONT size=2><SPAN>&nbsp;&nbsp; </SPAN>at PTMembershipProvider.ValidateUser(String username, String password) in c:\Visual Studio Projects\csla20\ProjectTracker20cs\www\PTWeb\App_Code\PTMembershipProvider.cs:line 11</FONT></FONT></P>
+<P class=MsoNormal><FONT face=Arial><FONT size=2><SPAN>&nbsp;&nbsp; </SPAN>at System.Web.UI.WebControls.Login.OnAuthenticate(AuthenticateEventArgs e)</FONT></FONT></P>
+<P class=MsoNormal><FONT face=Arial><FONT size=2><SPAN>&nbsp;&nbsp; </SPAN>at System.Web.UI.WebControls.Login.AttemptLogin()</FONT></FONT></P>
+<P class=MsoNormal><FONT face=Arial><FONT size=2><SPAN>&nbsp;&nbsp; </SPAN>at System.Web.UI.WebControls.Login.OnBubbleEvent(Object source, EventArgs e)</FONT></FONT></P>
+<P class=MsoNormal><FONT face=Arial><FONT size=2><SPAN>&nbsp;&nbsp; </SPAN>at System.Web.UI.Control.RaiseBubbleEvent(Object source, EventArgs args)</FONT></FONT></P>
+<P class=MsoNormal><FONT face=Arial><FONT size=2><SPAN>&nbsp;&nbsp; </SPAN>at System.Web.UI.WebControls.Button.OnCommand(CommandEventArgs e)</FONT></FONT></P>
+<P class=MsoNormal><FONT face=Arial><FONT size=2><SPAN>&nbsp;&nbsp; </SPAN>at System.Web.UI.WebControls.Button.RaisePostBackEvent(String eventArgument)</FONT></FONT></P>
+<P class=MsoNormal><FONT face=Arial><FONT size=2><SPAN>&nbsp;&nbsp; </SPAN>at System.Web.UI.WebControls.Button.System.Web.UI.IPostBackEventHandler.RaisePostBackEvent(String eventArgument)</FONT></FONT></P>
+<P class=MsoNormal><FONT face=Arial><FONT size=2><SPAN>&nbsp;&nbsp; </SPAN>at System.Web.UI.Page.RaisePostBackEvent(IPostBackEventHandler sourceControl, String eventArgument)</FONT></FONT></P>
+<P class=MsoNormal><FONT face=Arial><FONT size=2><SPAN>&nbsp;&nbsp; </SPAN>at System.Web.UI.Page.RaisePostBackEvent(NameValueCollection postData)</FONT></FONT></P>
+<P class=MsoNormal><FONT face=Arial><FONT size=2><SPAN>&nbsp;&nbsp; </SPAN>at System.Web.UI.Page.ProcessRequestMain(Boolean includeStagesBeforeAsyncPoint, Boolean includeStagesAfterAsyncPoint)</FONT></FONT></P>
+<P class=MsoNormal><o:p><FONT face=Arial size=2>&nbsp;</FONT></o:p></P>
+<P class=MsoNormal><o:p><FONT face=Arial size=2>&nbsp;</FONT></o:p></P>
+<P class=MsoNormal><FONT face=Arial size=2>Any help to fix this problem will be appreciated.</FONT></P>
+<P class=MsoNormal><o:p><FONT face=Arial size=2>&nbsp;</FONT></o:p></P>
+<P class=MsoNormal><FONT face=Arial size=2>Thanks</FONT></P>
+<P class=MsoNormal><o:p><FONT face=Arial size=2>&nbsp;</FONT></o:p></P>
+<P class=MsoNormal><o:p><FONT face=Arial size=2>Som</FONT></o:p></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, February 21, 2007</h2>Read the instructions document from the download page (<A href="http://www.lhotka.net/cslanet/download.aspx">www.lhotka.net/cslanet/download.aspx</A>). And read Chapter 12, which covers configuration of the EnterpriseServices data portal channel.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>somayajulu replied on Thursday, February 22, 2007</h2><P><FONT face=Arial size=2>Thank you. It worked.</FONT></P>
+<P><FONT face=Arial size=2>Som</FONT></P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

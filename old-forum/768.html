@@ -1,0 +1,38 @@
+<html><header><title>ActiveObjects Child Collections</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>ActiveObjects Child Collections</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/768.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>marciak posted on Monday, July 31, 2006</h2><P>We are currently in the process of moving over to CSLA 2.0, using ActiveObjects.&nbsp; We have an ActiveBusinessBase class with some child collections.&nbsp; In the declaration of the collections, when we try to create the New collection, an error does not pop, but if i step through the class I see the collection has an exception:</P>
+<P>&nbsp;</P>
+<P>Count = Exception of type:&nbsp; '{System.TypeLoadException}' occurred.</P>
+<P>&nbsp;</P>
+<P>Not sure what we have done wrong, can anyone help?</P>
+<P>&nbsp;</P>
+<P>Thank you</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rkelley replied on Monday, July 31, 2006</h2><P>We currently use the same setup that you are using, what we do is this:</P>
+<P>In the Parent Object</P>
+<P>private CHILDCOLLECTION _collection = CHILDCOLLECTION.NEWCHILDCOLLECTION();</P>
+<P>public CHILDCOLLECTION COLLECTION<BR>{<BR>&nbsp;&nbsp;&nbsp;&nbsp; get { return _collection; }<BR>}</P>
+<P>in the CHild Collection:</P>
+<P>public static CHILDCOLLECTION NEWCHILDCOLLECTION()<BR>{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return new CHILDCOLLECTION();<BR>}</P>
+<P>Obviously replace CHILDCOLLECTION with your collection but we have not had any problems with this so far.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>dvirb57 replied on Wednesday, August 16, 2006</h2><P>We are experiencing the same problem with all of our ChildCollections when creating a New ChildCollection.&nbsp; We are using VB.Net and CSLA version 2.03.&nbsp; </P>
+<P>The first step we perform is to create a new Parent object, then attempt to retrieve or create new child collections but when you view the collection either in the Immediate Window or in the Watch, the collection displays this message:</P>
+<P>Count = Exception of type: '{System.TypeLoadException}' occurred</P>
+<P>Has anyone else experienced this and have a suggestion?&nbsp; I have tried to go through the Child and ChildCollection code with a fine tooth comb, comparing it to the code presented in the book but I can't find where our code varies from the documented structure of a BusinessListBase(Of ChildCol, Child)</P>
+<P>Any suggestions or help would be appreciated.</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P><FONT size=2>&nbsp;</P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>chrisintampa replied on Saturday, September 09, 2006</h2><P><FONT face=Arial>has anyone made any headway with this problem?&nbsp; I too have the exact same issue and I'm dead in the water because of it. </FONT></P>
+<P><FONT face=Arial>i&nbsp;also have another&nbsp; message that may help somebody figure this out.</FONT></P>
+<P><FONT face=Arial>this line of code:</FONT></P>
+<P><FONT face=Arial>Label1.Text = </FONT><FONT face=Arial><FONT color=#800000>"Number of Links Found: "</FONT> &amp; testspider.MasterLinks.Count</P></FONT>
+<P><FONT face=Arial>if i mouseover the testspider.MasterLinks.Count - i get this message </FONT></P>
+<P><FONT face=Arial>testspider.MasterLinks.Count = {"The generic type 'System.Collections.ObjectModel.Collection`1' was used with the wrong number of generic arguments in assembly 'mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089'.":"System.Collections.ObjectModel.Collection`1"}</FONT></P>
+<P><FONT face=Arial>i have seen this message on the web but was unable to make heads or tails of it.</FONT></P>
+<P><FONT face=Arial>my object has 4 different collection in it and they all suffer from this same problem.</FONT></P>
+<P><FONT face=Arial></FONT>&nbsp;</P>
+<P><FONT face=Arial></FONT>&nbsp;</P>
+<P><FONT face=Arial></FONT>&nbsp;</P>
+<P><FONT face=Arial></FONT>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>lshapiro replied on Monday, October 02, 2006</h2><P>We are also experiencing this problem.&nbsp; Did anyone ever respond with a solution or have you come up with one.</P>
+<P>thanks</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jwooley replied on Thursday, October 05, 2006</h2><P>I am seeing the same behavior with Project Tracker. I started a new thread at <A HREF="/forums/thread/7285.aspx">http://forums.lhotka.net/forums/thread/7285.aspx</A>&nbsp;since the issue does not appear to be specific to ActiveTracker.</P>
+<P>Jim Wooley<BR><A href="http://devauthority.com/blogs/jwooley">http://devauthority.com/blogs/jwooley</A></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>WillTartak replied on Wednesday, March 07, 2007</h2><P>Hi, </P>
+<P>In case anyone is searching for a solution to this. I think I found a simple one. At least it is working for me. It somehow occurred to me after reading this thread and Jim Wooley's referenced above.</P>
+<P>In the Child List's contructor add this as the first line:</P>
+<P><STRONG>MyBase.New()</STRONG></P>
+<P>hth,</P>
+<P>\ ^ / i l l&nbsp; Tartak</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

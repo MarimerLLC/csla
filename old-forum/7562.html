@@ -1,0 +1,266 @@
+<html><header><title>Using CSLA PropertyInfo with a DAL</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Using CSLA PropertyInfo with a DAL</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/7562.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>BigPines2 posted on Wednesday, September 02, 2009</h2>I recently moved from CSLA 2.1 to CSLA 3.5.3. One of the new features I am seeing is the ability to use PropertyInfo to let CSLA manage the values of the property. I really like the idea of this new approach because it takes care of all the authorization calls, etc. However, I am using a DAL (ActiveObjects) and this DAL works by using attributes on the property backing fields like this:<br><br><font size="2">&lt;DBRequired("EntityName")&gt; _<br>Protected mEntityName As String = String.Empty<br><br>Public Property Name() As String<br>&nbsp;&nbsp;&nbsp;&nbsp; &lt;System.Runtime.CompilerServices.MethodImpl(Runtime.CompilerServices.MethodImplOptions.NoInlining)&gt; _<br>&nbsp;&nbsp;&nbsp;&nbsp; Get<br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; CanReadProperty(True)<br>&nbsp; &nbsp; &nbsp;&nbsp; &nbsp;&nbsp; Return mEntityName<br>&nbsp;&nbsp;&nbsp;&nbsp; End Get<br>&nbsp;&nbsp;&nbsp;&nbsp; &lt;System.Runtime.CompilerServices.MethodImpl(Runtime.CompilerServices.MethodImplOptions.NoInlining)&gt; _<br>&nbsp;&nbsp;&nbsp;&nbsp; Set(ByVal Value As String)<br>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;&nbsp; CanWriteProperty(True)<br>&nbsp; &nbsp; &nbsp; &nbsp;&nbsp;&nbsp; mEntityName = Value<br>&nbsp;&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; PropertyHasChanged()<br>&nbsp;&nbsp;&nbsp;&nbsp; End Set<br>End Property</font><br><br>Obviously, if there is no backing field declared in the class, I can't assign this attribute to it so going with PropertyInfo breaks my DAL which I want to keep.<br><br>I have come up with a few "solutions" but I don't like any of them very well:<br>1) Don't use the new PropertyInfo feature.<br>2) Stop using the DAL.<br>3) Use PropertyInfo and keep the backing fields with the attributes and manually keep them in sync. Yuck!<br>3) Possibly modify the DAL somehow to work with PropertyInfo. Off the top of my head, I don't even have any ideas how I would do this.<br><br>Am I missing something? Has anyone else solved this problem? Am I the last hold-out still using the ActiveObjects DAL?<br><br>Mike<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rsbaker0 replied on Wednesday, September 02, 2009</h2>Why not tag the Property itself with your attribute instead of the backing field?</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, September 02, 2009</h2><P>As long as you aren't doing Silverlight work you can use PropertyInfo&lt;T&gt; <EM>and also</EM> use private backing fields. These are compatible concepts, though there are obviously some subtle coding differences.</P>
+<P>This is the problem with ORM/DAL frameworks that assume they can set properties and/or fields. And really I can't fault these tools for setting fields - that seems perfectly reasonable in most scenarios. The ones that set properties are just broken imo though.</P>
+<P>What would <EM>really</EM> be nice, is if the DAL framework allowed you to provide a delegate or lambda that it invoked for any get/set operations of a field value. That way you could implement a pair of functions that worked however you saw fit - in this case making calls to LoadProperty() and ReadProperty()...</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>BigPines2 replied on Thursday, September 03, 2009</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div>As long as you aren't doing Silverlight work you can use PropertyInfo&lt;T&gt; <em>and also</em> use private backing fields. These are compatible concepts, though there are obviously some subtle coding differences.
+<p>This is the problem with ORM/DAL frameworks that assume they can set properties and/or fields. And really I can't fault these tools for setting fields - that seems perfectly reasonable in most scenarios. The ones that set properties are just broken imo though.</p>
+<p>What would <em>really</em> be nice, is if the DAL framework allowed you to provide a delegate or lambda that it invoked for any get/set operations of a field value. That way you could implement a pair of functions that worked however you saw fit - in this case making calls to LoadProperty() and ReadProperty()...</div></BLOCKQUOTE><br></p>Thanks Rocky. Yes, I decided to use both PropertyInfo and private backing fields for now because I want to get the value out of both. It is not optimum for sure because it requires me to keep the backing fields in sync with PropertyInfo which kind of defeats the purpose of the DAL automatically doing everything. However, it is the best compromise I could some up with right now. Eventually, I would like to dig into the DAL and modify it to work with PropertyInfo. I don't see why we couldn't use delegates in this situation. I'll have to look into that when I have some free time. Hehehehe - yeah right!<br><br>Out of curiosity, why does my temporary solution not work with Silverlight? Thank goodness I am not using it...yet.<br><br>Mike<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>BigPines2 replied on Thursday, September 03, 2009</h2>OK, I think I have all this down now. Chapter 7: Property Descriptions (Page 235 and 236 of the VB 2008 book) explain it all very well. It won't be as manual as I originally thought to get them to play together. Plus, I will get a performance increase by doing the extra work myself.<br><br>I am still a little confused as to why this would not work well with Silverlight though.<br><br>Mike<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>BigPines2 replied on Thursday, September 03, 2009</h2>New problem/concern. The book illustrates SetProperty using private backing fields like this:<br><font size="2"><br>Private Shared NameProperty As PropertyInfo(Of String) = RegisterProperty(New PropertyInfo(Of String)("Name"))<br><br>&lt;DBRequired("EntityName")&gt; _<br>Protected mEntityName As String = NameProperty.DefaultValue<br>Public Property Name() As String<br>&nbsp; &nbsp; &nbsp; Get<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return GetProperty(NameProperty, mEntityName)<br>&nbsp;&nbsp;&nbsp;&nbsp; End Get<br>&nbsp;&nbsp;&nbsp;&nbsp; Set(ByVal Value As String)<br><font color="#ff0000">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; SetProperty(NameProperty, mEntityName, Value.Trim)</font><br>&nbsp;&nbsp;&nbsp;&nbsp; End Set<br>End Property</font><br><br>of course, you can see my DAL attribute in there too. The problem is I get a compile error with the above red line of code indicating the <b>"Overload resolution failed because no accessible 'SetProperty' is most specific for these arguments."</b> If I change the code as follows, it works fine:<br><br><font size="2">Private Shared NameProperty As PropertyInfo(Of String) = RegisterProperty(New PropertyInfo(Of String)("Name"))<br>
+<br>
+&lt;DBRequired("EntityName")&gt; _<br>
+Protected mEntityName As String = NameProperty.DefaultValue<br>
+Public Property Name() As String<br>
+&nbsp; &nbsp; &nbsp; Get<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return GetProperty(NameProperty, mEntityName)<br>
+&nbsp;&nbsp;&nbsp;&nbsp; End Get<br>
+&nbsp;&nbsp;&nbsp;&nbsp; Set(ByVal Value As String)<br>
+<font color="#0000ff">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; SetProperty<b>(Of String) </b>(NameProperty, mEntityName, Value.Trim)</font><br>
+&nbsp;&nbsp;&nbsp;&nbsp; End Set<br>
+End Property</font><br><br>Is this normal? Has something changed since the 2008 book was released? Is something else going on?<br><br>EDIT: I just found this doesn't work either: <font color="#ff0000" size="2">ReadProperty(NameProperty, mEntityName)</font>. Should I simply call: <font size="2">ReadProperty(NameProperty)</font>? Will that work correctly? LoadProperty has a similar problem. I guess I could just access the private backing fields directly if I don't want the authorization, etc.<br><br>Mike<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, September 03, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>&gt;</span>I am still a little
+confused as to why this would not work well with Silverlight though.<span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>The problem with Silverlight is that the MobileFormatter (nor
+any other formatter) can serialize non-public field values. This is due to
+reflection limitations on Silverlight.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>The primary reason for introducing managed backing fields was so
+that the MobileFormatter could transparently get/set your field values automatically
+&#8211; by just getting them from the field manager.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>If you have private backing fields this can&#8217;t be automatic. There&#8217;s
+still a solution &#8211; you must override OnGetState() and OnSetState() in your object
+and manually get/set the field values to/from the serialization stream. That is
+not hard code &#8211; it is trivial really &#8211; but it is tedious code, and it is easy
+to forget to add the two lines there when you add a new field and then that
+field doesn&#8217;t serialize.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>So if you go down that road I <i>strongly</i> suggest using
+code-gen to create your business classes, because then you can just code-gen
+these two methods and never have to worry about forgetting to add a new field.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>BigPines2 replied on Thursday, September 03, 2009</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div><span>The problem with Silverlight is that the MobileFormatter (nor
+any other formatter) can serialize non-public field values. This is due to
+reflection limitations on Silverlight.<br><br></span><div class="Section1"><p class="MsoNormal"><span><o:p></o:p>The primary reason for introducing managed backing fields was so
+that the MobileFormatter could transparently get/set your field values automatically
+– by just getting them from the field manager.</span></p><p class="MsoNormal"><br><span><o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><o:p></o:p>If you have private backing fields this can’t be automatic. There’s
+still a solution – you must override OnGetState() and OnSetState() in your object
+and manually get/set the field values to/from the serialization stream. That is
+not hard code – it is trivial really – but it is tedious code, and it is easy
+to forget to add the two lines there when you add a new field and then that
+field doesn’t serialize.</span></p><p class="MsoNormal"><br><span><o:p></o:p></span></p>
+
+
+
+
+
+<p class="MsoNormal"><span><o:p></o:p>So if you go down that road I <i>strongly</i> suggest using
+code-gen to create your business classes, because then you can just code-gen
+these two methods and never have to worry about forgetting to add a new field.<o:p></o:p></span></div></BLOCKQUOTE></p><p class="MsoNormal">Thanks for the heads up! Even though I currently have no plans to use Silverlight, I think I want to protect for this now just in case. Is there an example of this code posted somewhere? I checked the 2008 book and the 3.0 eBok with no luck.</p><p class="MsoNormal"><br></p><p class="MsoNormal">Thanks again.</p><p class="MsoNormal"><br></p>Mike
+
+</div></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, September 03, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>CSLA .NET for Silverlight is later than the 2008 book, and the
+2008 book is later than the 3.0 ebook.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>The primary source of information on CSLA .NET for Silverlight
+is the video series at <a href="http://store.lhotka.net">http://store.lhotka.net</a>,
+but even that doesn&#8217;t cover manual serialization of private fields, as it is an
+advanced topic, not a mainstream topic (or that should be the case anyway).<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>There are unit tests in the Silverlight test suite that do
+manual serialization &#8211; check the tests for MobileFormatter. And I think we
+might have a sample or other test app that does some manual serialization as
+well.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>It isn&#8217;t difficult though &#8211; the idea was to make it roughly
+comparable to the old VB5/6 serialization model that used a PropertyBag, or to
+what you do when you manually implement ISerializable in .NET, and we achieved
+that goal for fields.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>For child references things are a whole lot more complex, but
+you should generally always use managed fields for child references, because
+there&#8217;s a <i>whole lot</i> of other work you need to do for child objects if
+you use a private backing field.<o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>BigPines2 replied on Thursday, September 03, 2009</h2>Thanks Rocky. You have been helpful.<br><br>Sounds like it is time for a new book to consolidate all this "new" stuff. Expert 2010 Business Objects?<br><br>Since I don't use the DAL for children objects, I shouldn't have a problem using the managed backing fields there.<br><br>Mike<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, September 03, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>My approach is a new video series for CSLA .NET for Windows 3.8 &#8211;
+filming starts Sept 13.</span><b><span><o:p></o:p></span></b></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>BigPines2 replied on Thursday, September 03, 2009</h2>Unfortunately the attribute is not compatible with properties. It only works on the backing fields. I would have to re-write the DAL to use the property somehow and frankly I have no idea where to start on that.<br><br>Mike<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rsbaker0 replied on Thursday, September 03, 2009</h2><P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>BigPines2:</strong></div><div>Unfortunately the attribute is not compatible with properties. It only works on the backing fields. I would have to re-write the DAL to use the property somehow and frankly I have no idea where to start on that.<BR><BR>Mike<BR></div></BLOCKQUOTE></P>
+<P>Yes, sorry about that clunker of an idea. Rocky is also quite correct in that loading data via the Property setter is in general&nbsp;a (very) bad plan as it incurs much unnecessary overhead and likely has unintended side-effects.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>BigPines2 replied on Thursday, September 03, 2009</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>rsbaker0:</strong></div><div>Yes, sorry about that clunker of an idea. Rocky is also quite correct in that loading data via the Property setter is in general&nbsp;a (very) bad plan as it incurs much unnecessary overhead and likely has unintended side-effects.</div></BLOCKQUOTE><br>No worries. Thanks for attempting to help! I also started thinking that having the DAL set the properties directly may get a little confusing on the timing of the updates. :)<br><br>You don't have any ideas for me about the above "problems" do you?<br><br>Mike<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>BigPines2 replied on Thursday, September 03, 2009</h2>OK, new problem. *sigh*<br><br>Now using more more code directly out of the book (page 236) is not working:<br><font color="#ff0000" size="2"><br>GetPropertyConvert(Of SmartDate, String)(PoliciesAndProceduresReceivedProperty, mPoliciesAndProceduresReceived)<br><br>SetPropertyConvert(Of SmartDate, String)(PoliciesAndProceduresReceivedProperty, mPoliciesAndProceduresReceived, Value)</font><br><br>I am getting the compile error <font size="2">"Name 'GetPropertyConvert' is not declared."</font><br><br>Huh? This is part of BusinessBase right? I don't need to import another namespace or anything do I? I am scratching my head here. I'm sure I am just doing something stupid but I sure can't see it.<br><br>Mike<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rsbaker0 replied on Thursday, September 03, 2009</h2><P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>BigPines2:</strong></div><div>.<BR>...</P>
+<P><BR>You don't have any ideas for me about the above "problems" do you?<BR><BR>Mike<BR></div></BLOCKQUOTE></P>
+<P>If you are referring to the issue of having to include the type qualifier in your SetProperty() call, I have a similar issue, but I'm using C# and the message is slightly different. </P>
+<P>Even with managed properties and no backing fields. This does not work:</P><FONT size=2>
+<P>SetProperty(StringProperty, </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>value</FONT></FONT><FONT size=2>);</P></FONT>
+<P>But this does...</P><FONT size=2>
+<P>SetProperty&lt;</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>string</FONT></FONT><FONT size=2>&gt;(StringProperty, </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>value</FONT></FONT><FONT size=2>);</P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, September 03, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>It is true that some of the overloads for these methods changed
+since the book was published. This was due to various feature requests and
+their side-effects on overload resolution.<o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>BigPines2 replied on Thursday, September 03, 2009</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div>
+
+
+
+
+
+
+ 
+
+
+
+<div class="Section1">
+
+<p class="MsoNormal"><span>It is true that some of the overloads for these methods changed
+since the book was published. This was due to various feature requests and
+their side-effects on overload resolution.<o:p></o:p></span></p>
+
+</div>
+
+</div></BLOCKQUOTE><br><font size="2">No problem. If I could just figu</font><font color="#000000" size="2">re out what the replace</font><font color="#000000" size="2">ment for <b>GetPropertyConvert </b>and </font><font color="#ff0000" size="2"><font color="#000000" size="3"><font size="2"><b>SetPropertyConvert </b>are, I think I would be set. I have checked the 3.0 eBook but have not found anything there. I checked the CSLA BusinessBase source code and these methods simply don't exist in 3.5.3. *shrug*<br><br>Thanks Rocky.<br><br>Mike<br><br>EDIT: It looks like they just got renamed to GetProperty and SetProperty and you just have to pass the extra type in the call.<br></font></font></font></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, September 03, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I think in 3.5 they were still overloads of SetProperty(). That
+was the issue &#8211; the overloads became ambiguous in certain cases and to solve
+the issue I had to rename the methods to SetPropertyConvert(), etc. I <i>think</i>
+that happened in 3.6?<o:p></o:p></span></p>
+
+<p class=MsoNormal><b><span><o:p>&nbsp;</o:p></span></b></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, September 03, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I should be more helpful.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>The old overloads were SetProperty&lt;P, V&gt; where P is the
+type of the backing field and V is the type of the value &#8211; so SetProperty&lt;SmartDate,
+string&gt;().<o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

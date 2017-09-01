@@ -1,0 +1,22 @@
+<html><header><title>Wizard business object(s)?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Wizard business object(s)?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10695.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Russ posted on Monday, September 19, 2011</h2><p><span style="font-family:Calibri;">
+<p class="MsoNormal" style="margin:0in 0in 10pt;"><span style="font-size:small;">I&rsquo;m using CSLA 4.1 to build a SL4 application using bxf, MVVM and I&rsquo;m trying to determine the best CSLA business objects to use to support a wizard interface. You know, the typical user wizard that has a series of pages that the user needs to complete and press the next button to proceed.</span></p>
+<p class="MsoNormal" style="margin:0in 0in 10pt;"><span style="font-size:small;">I can envision using a single Entity Root stereotype object and letting the view model manage the next and previous page navigation or I could see using an Entity Root stereotype object for each page in the wizard. The latter approach provides the benefit of tying the next button the CanSave property and letting the rules engine do its thing. The latter approach has the disadvantage of having to create and maintain several BOs for each wizard.</span></p>
+<p class="MsoNormal" style="margin:0in 0in 10pt;"><span style="font-size:small;">I would appreciate any guidance that anyone is willing to share.</span></p>
+<p class="MsoNormal" style="margin:0in 0in 10pt;"><span style="font-size:small;">Thanks</span></p>
+<p class="MsoNormal" style="margin:0in 0in 10pt;"><span style="font-size:small;">Russ.</span></p>
+<font face="Calibri">
+<p class="MsoNormal" style="margin:0in 0in 10pt;">&nbsp;</p>
+</font></span>
+<p class="MsoNormal" style="margin:0in 0in 10pt;">&nbsp;</p>
+</p>
+<p class="MsoNormal" style="margin:0in 0in 10pt;">&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Monday, September 19, 2011</h2><p>Hi Russ, </p>
+<p>Most of the time I end up doing the first version. And that is because the user has to complete all wizard pages before I can save or do the create. </p>
+<p>An alternative would be to have a &quot;root&quot; object with a separate child object per page and pass the root object to the next/previous page. Last page can only Save if the &quot;root&quot; object is Savable.</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Russ replied on Monday, September 19, 2011</h2><p>Thanks Jonny,</p>
+<p>I will&nbsp;follow your lead and use the first option of having only one Editable Root object for the wizard.</p>
+<p>How have you structured this in the past?&nbsp; One Editable Root object, one View Model and a View for each page in the wizard?&nbsp; Or have you used a single View with an items container like a tab control or list box control to hold the wizard pages?</p>
+<p>Thanks again </p>
+<p>Russ.</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Monday, September 19, 2011</h2><p>I got to admit that most of my wizard pages have been in WinForms.<br /><br />One key factor here is that you should keep a 1:1 relationship between viewmodel and business object.<br /><br />IE: If you VievModel descends from Csla.Xaml.ViewModel - whenever the dependency property Model is set the ViewModel calls BeginEdit on the object.<br />So the ViewModel (much like BindingSource in WinForms) assumes it has total ownership of the Model. Meaning that if you create 5 ViewModels to the same object - the object will have 5 serialized snapshots in memory (and EditLevel at 5).<br /><br />I expect others to chime in too -&nbsp; but this is why you may opt for #2 in my post and create a ViewModel for each wizard page with a Child Object per ViewModel. </p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Russ replied on Thursday, September 22, 2011</h2><p>Thanks Jonny,</p>
+<p>I still think I will try option #1 however I will try to control the UI naviagtion using rules and BO properties that the View can bind to&nbsp;that tell the next and previous buttons when they are enabled.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

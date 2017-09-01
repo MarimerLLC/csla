@@ -1,0 +1,42 @@
+<html><header><title>Validation WebService</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Validation WebService</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/12169.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>jairan posted on Tuesday, October 01, 2013</h2><p>Validation rules of the attributes do not work with webservice.</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>Ex :</p>
+<p>BusinessRules.AddRule(new Required(CodPrestadorOperadoraProperty));</p>
+<p>&nbsp;</p>
+<p>The field is required, but when I save generates the error&nbsp;</p>
+<p>&nbsp;</p>
+<p>_Eleg.Save();</p>
+<p>&quot; Object is not valid and can not be saved &quot;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Tuesday, October 01, 2013</h2><p>I do not understand the actual issue here.&nbsp;</p>
+<p>If the field has no value then the rule is broken, the object will have IsSavable = false and the Save method will give that exception.&nbsp;</p>
+<p>Can you provide more details and code?&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jairan replied on Wednesday, October 02, 2013</h2><p>Hello Jonny,</p>
+<p>This attribute is mandatory, the time I save should not prevent action stating that there is a required field and that it was not filled.</p>
+<p>&nbsp;</p>
+<p>/////</p>
+<p>&nbsp; Protected override void AddBusinessRules()</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; base.AddBusinessRules();</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; BusinessRules.AddRule(new Csla.Rules.CommonRules.Required (CodPrestadorOperadoraProperty , () =&gt; &quot;Codigo Obrigatorio.&quot; ) &nbsp;);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; BusinessRules.AddRule(new MaxLength(CodPrestadorOperadoraProperty, 10));</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; BusinessRules.AddRule(new MinLength(CodPrestadorOperadoraProperty, 2));</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>////</p>
+<p>&nbsp;</p>
+<p>//// Save</p>
+<p>_Eleg.CodPrestadorOperadora = null;&nbsp;</p>
+<p>_Eleg = _Eleg.Save(); &nbsp;</p>
+<p>////</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jairan replied on Wednesday, October 02, 2013</h2><p>&nbsp;</p>
+<p>Using the WinForm, usually works.</p>
+<p>Now the WebService that this rule does not bar.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jairan replied on Wednesday, October 02, 2013</h2><p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>When I use the &quot;ErrorProvider&quot;, know what the error is.</p>
+<p>&nbsp;</p>
+<p>When not use, do not know what error is.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Wednesday, October 02, 2013</h2><p>Hi,</p>
+<p>The business object is not aware of any type of UI or Service. <br />Csla is for business objects and not just data access code.&nbsp;</p>
+<p>If the object has broken rules with severity ERROR the object is considered broken and you are not allowed to call Save.&nbsp;</p>
+<p>An alternative is to change the Severity to <b>Warning </b>or <b>Information</b>. Any broken rule with these severities will NOT block Save operation.&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jairan replied on Wednesday, October 02, 2013</h2><p>Understand.</p>
+<p>Thank you Jonny for the clarifications</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

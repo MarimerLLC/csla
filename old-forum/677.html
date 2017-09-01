@@ -1,0 +1,23 @@
+<html><header><title>Property Change - Bulk Update</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Property Change - Bulk Update</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/677.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>skehiaian posted on Wednesday, July 19, 2006</h2>I've ran into a situation that whenever a specific property gets updated in my root object, I need to&nbsp;recalculate a property&nbsp;for each item in it's child collection.&nbsp; The problem is that the child collection has about 20000&nbsp;items which needs to be looped through and have the business logic applied to each item.&nbsp; This is taking some time to accomplish if I load all 20000 child objects just to update 1 field, update each one whenever the property changes (which freezes the UI for a few seconds), then save the&nbsp;child list back to the database when the root object is saved.&nbsp; The child objects are not public so they are not even used in the UI.&nbsp; I have been debating whether this approach is correct or not.&nbsp; The alternate and much faster way would be to use a stored procedure to update the field in the child records, but that would mean that I would have to put the business logic to recalculate the field in the stored procedure itself.&nbsp; Any thoughts on this?</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Ike Ellis replied on Wednesday, July 19, 2006</h2><P>I think you do it in the stored procedure.&nbsp; There's no sense looping through objects when SQL Server can do that so quickly.&nbsp; I guess I would say, just have the method call the stored procedure, so there it is well-documented where the business logic is.</P>
+<P>But then again, I'm brand-new to CSLA and am just now learning the framework, so take whatever I say with a grain of salt.</P>
+<P>I love Martin Fowler's quote:</P>
+<P>"Question: What is the difference between a methodologist and a terrorist?<BR>Answer: You can negotiate with a terrorist." <BR></P>
+<P>I don't know what made me think of that, but I think it applies.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>pelinville replied on Wednesday, July 19, 2006</h2><DIV>Can you change the field in the DB to a calculated field?&nbsp; </DIV>
+<DIV>&nbsp;</DIV>
+<DIV>SQL Server User Functions (especially with CLR support if you can) are very powerful things.</DIV></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, July 19, 2006</h2><P>What they said <img src="/emoticons/emotion-1.gif" alt="Smile [:)]" /></P>
+<P>Seriously, you have to look at the use cases and the intended purposes behind each part of CSLA .NET and decide what makes sense where. There are six CSLA .NET base classes that work together to support 11 stereotypes - none of which are for batch processing like you describe. The stereotypes are:</P>
+<OL>
+<LI>Editable root object</LI>
+<LI>Editable child object</LI>
+<LI>Editable root collection</LI>
+<LI>Editable child collection</LI>
+<LI>Read-only root object</LI>
+<LI>Read-only child object</LI>
+<LI>Read-only root collection</LI>
+<LI>Read-only child collection</LI>
+<LI>Name/value list</LI>
+<LI>Command execution</LI>
+<LI>Process execution</LI></OL>
+<P>Now you might use "Command execution" to launch your batch process, but none of the CSLA .NET base classes exist for the purpose of <EM>implementing</EM> such a batch process. This is because the best way (typically) to do a batch process is to do it in the database with a stored procedure.</P>
+<P>Failing that, the best approach is typically to apply the Flyweight and Iterator design patterns. Basically load the data into memory in the fastest, most efficient manner possible, then iterate through that data with a Flyweight or Iterator to perform your operation on each row of data, then save the data back in the fastest, most efficient manner possible. </P>
+<P>No need for any of the CSLA .NET features here at all - except again for possibly CommandBase so you can transfer the processing to the app server before actually doing the batch process.</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

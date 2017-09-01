@@ -1,0 +1,8 @@
+<html><header><title>CSLA &amp;amp; WCF</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA &amp;amp; WCF</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10758.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>lazaroms posted on Sunday, October 09, 2011</h2><p>I was reading the Expert VB 2008 BO, I have a doubt. If I use WCF to create couple of web services, does it means that I will have another one website to host?</p>
+<p>Now I have a project library and a web project (interface).</p>
+<p> The WCF project will be another website?</p>
+<p>My hosting provider allow just one website in my contract, I&#39;m thinking that the WCF site could not be in the same physical hosting where the web project is. They have differents web.config files and differents App_Code folders.</p>
+<p>Any help or commments will be truely appreciated.</p>
+<p>Thank,</p>
+<p>&nbsp;</p>
+<p>Lazaro M</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, October 10, 2011</h2><p>You can have a WCF endpoint in a normal web site. You just need to add the system.ServiceModel element to your existing web.config, add the svc file to your site along with the aspx files, and make sure Csla.dll and your business assemblies are in the bin folder.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

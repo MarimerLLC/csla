@@ -1,0 +1,35 @@
+<html><header><title>Editable List of ReadOnly Objects?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Editable List of ReadOnly Objects?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/2174.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>clonger posted on Friday, January 19, 2007</h2>Is there a native CSLA framework class that supports an editable list of ReadOnlyBase objects?&nbsp; From my understanding of it ReadOnlyListBase is an immutable collection of ReadOnlyBase objects and BusinessListBase is a collection of editable BusinessBase objects.<br><br>I have searched the forum for an answer to this and aplogize in advance if this has already been addressed or a RTFM question.<br><br>Chris<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Friday, January 19, 2007</h2>Well, by definition a read only list cannot be modified, nor can a readonly object... so an editable list of readonly objects doesn't make a lot of sense.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>clonger replied on Friday, January 19, 2007</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>ajj3085:</strong></div><div>Well, by definition a read only list cannot be modified, nor can a readonly object... so an editable list of readonly objects doesn't make a lot of sense.<br></div></BLOCKQUOTE><br><br>I apologize if my original post was unclear.<br><br>My aim is to have an editable collection that readonly objects can be added and deleted from as well as be persisted to the db.&nbsp; In the application users are given a list of cities (the readonly objects), one or more of which they can select as being of interest.&nbsp; Each users' list (the editable collection) is persisted to the db and when a new story is posted relevant to a city of interest the user receives notification.&nbsp; Users can modify their collection of cities of interest at any time (not just upon the initial creation of the collection).<br><br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Brian Criswell replied on Friday, January 19, 2007</h2>I do not think you want an editable list of read-only objects, which would not work using the built-in base classes as you would not be able to save the items in the list.&nbsp; Beyond that, you are really talking about to separate lists: one that the user selects cities from and one of the cities that have been selected.&nbsp; I think you would be looking at the following:<br><ul><li>CityList (read only list of cities)</li><li>City (read only item)</li><li>UserCityList (list of cities the user has chosen)</li><li>UserCity (a city the user has chosen)</li></ul>So the user has a list of cities that they can choose from, and the ones that they have chosen are persisted to the database.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>clonger replied on Friday, January 19, 2007</h2>
+
+
+
+
+<DIV align=left><SPAN class=030083422-19012007><FONT face=Arial color=#0000ff size=2>Brian-</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=030083422-19012007><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=030083422-19012007><FONT face=Arial color=#0000ff size=2>Thank you for the great reply.&nbsp; I think it is right 
+on.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=030083422-19012007><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=030083422-19012007><FONT face=Arial color=#0000ff size=2>Chris</FONT></SPAN></DIV>
+<DIV>&nbsp;</DIV>
+<P><FONT size=2>___________________________________________<BR>Christopher J. 
+Long<BR>The Washington Service - Brick Securities<BR>7101 Wisconsin 
+Avenue<BR>Suite 1410<BR>Bethesda, MD 20814<BR>Office: (301)913-5122<BR>Fax: 
+(301)913-5101<BR>Bloomberg: WSA &lt;GO&gt;<BR>Mobile: (301)602-2590</FONT> </P>
+<DIV>&nbsp;</DIV><BR>
+<DIV class=OutlookMessageHeader align=left>
+<HR>
+<FONT face=Tahoma size=2><B>From:</B> Brian Criswell [mailto:cslanet@lhotka.net] 
+<BR><B>Sent:</B> Friday, January 19, 2007 3:31 PM<BR><B>To:</B> 
+chris.long@washingtonservice.com<BR><B>Subject:</B> Re: [CSLA .NET] Editable 
+List of ReadOnly Objects?<BR></FONT><BR></DIV>
+<DIV></DIV>I do not think you want an editable list of read-only objects, which 
+would not work using the built-in base classes as you would not be able to save 
+the items in the list.&nbsp; Beyond that, you are really talking about to 
+separate lists: one that the user selects cities from and one of the cities that 
+have been selected.&nbsp; I think you would be looking at the following:<BR>
+<UL>
+  <LI>CityList (read only list of cities)
+  <LI>City (read only item)
+  <LI>UserCityList (list of cities the user has chosen)
+  <LI>UserCity (a city the user has chosen)</LI></UL>So the user has a list of 
+cities that they can choose from, and the ones that they have chosen are 
+persisted to the database.<BR><BR><BR><BR></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

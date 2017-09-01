@@ -1,0 +1,42 @@
+<html><header><title>Business Rule AddOutValue to update a calculated field marks the object DIRTY</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Business Rule AddOutValue to update a calculated field marks the object DIRTY</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/12171.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>AbbasMalik posted on Thursday, October 03, 2013</h2><p>Hi,</p>
+<p>Updating a calculated field in a business rule also marks the object DIRTY. Is there a way to avoid this?</p>
+<p><span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;">
+<p>context.AddOutValue(_QtyProperty, qty / factor);</p>
+<p>Thanks.</p>
+</span></span></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Thursday, October 03, 2013</h2><p>Why shouldn&acute;t it mark the object as dirty? Assuming that the rule is only allowed to run when the property is changed the object will always be DIrty - already.&nbsp;</p>
+<p>Remember, it could just as easily be a lookup filed (name, adress etc) as a calculated field.&nbsp;</p>
+<p>The proper way to exclude the field, if that is what you want, is to override IsSelfDirty in the business object and exclude the calculated properties for the IsDirty check. &nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>AbbasMalik replied on Thursday, October 03, 2013</h2><p>Jonny</p>
+<p>I am not saving the calculated field in the database. After loading an object from the database, a rule is run to populate the calculated property. So, in this case, I don&#39;t need to mark the object as dirty.</p>
+<p>What if I try LoadProperty() instead of AddOutValue() like this:</p>
+<p><span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;"><font face="Consolas" size="2"><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></font></span><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></span>
+<p><span style="font-size:x-small;font-family:Consolas;color:#2b91af;"><span style="font-size:x-small;font-family:Consolas;color:#2b91af;"><span style="font-size:x-small;font-family:Consolas;color:#2b91af;">PurchOrdLine</span></span></span><span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;"> bo = (</span></span><span style="font-size:x-small;font-family:Consolas;color:#2b91af;"><span style="font-size:x-small;font-family:Consolas;color:#2b91af;"><span style="font-size:x-small;font-family:Consolas;color:#2b91af;">PurchOrdLine</span></span></span><span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;">)context.Target;<br />LoadProperty(bo, _QtyTotalProperty, (qty + qtyFree) / factor);</span></span></p>
+</span></span></p>
+<p>Thanks.</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>g.beraudo@castsoftware.com replied on Thursday, October 03, 2013</h2><p>Hi Abbas,</p>
+<p>I&#39;m asssuming that you checkrules in the fetch method.</p>
+<p>We call MarkOld() after having loaded our BO and checked the rules.</p>
+<p>Note: this also assume that you will not save computed properties in DB.</p>
+<p>Gilles</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>AbbasMalik replied on Thursday, October 03, 2013</h2><p>Hi&nbsp;Gilles</p>
+<p>Calling MarkOld() just after the CheckRules solved the problem.</p>
+<p>Thanks.</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>g.beraudo@castsoftware.com replied on Thursday, October 10, 2013</h2><p>[edit: please ignore the following comment, I was too quick the current behavior is the one expected]</p>
+<p>Hi Jonny,</p>
+<p>I dig a little the code of RuleContext. I do not understand the intend usage of AddDirtyProperty.</p>
+<p>I was expecting this method to be implicitly called when using AddOutValue, I realized today that this is not the case.</p>
+<p>I&#39;m asking the question because I saw that recently (after 4.5.10), we now cascade automatically if there are dirtyproperties, but the CascadeOnDirtyProperties flag has no impact if we use AddOutValue.</p>
+<p>Regard,s</p>
+<p>Gilles</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rfcdejong replied on Monday, October 07, 2013</h2><p>We use a attribute above the property which prevent it from making the business object dirty.</p>
+<p><span style="font-size:12px;">&nbsp; &nbsp; &nbsp; &nbsp; public static PropertyInfo&lt;decimal?&gt; TotaalGeschatInkomenProperty = RegisterProperty&lt;decimal?&gt;(c =&gt; c.TotaalGeschatInkomen, &quot;Totaal geschat inkomen&quot;);</span></p>
+<p><span style="font-size:12px;">&nbsp; &nbsp; &nbsp; &nbsp; [Calculated]<br /></span><span style="font-size:12px;">&nbsp; &nbsp; &nbsp; &nbsp; public decimal? TotaalGeschatInkomen<br /></span><span style="font-size:12px;">&nbsp; &nbsp; &nbsp; &nbsp; {<br /></span><span style="font-size:12px;">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; get { return GetProperty(TotaalGeschatInkomenProperty); }<br /></span><span style="font-size:12px;">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; set { SetProperty(TotaalGeschatInkomenProperty, value); }<br /></span><span style="font-size:12px;">&nbsp; &nbsp; &nbsp; &nbsp; }<br /></span></p>
+<p><br />this is the attribute</p>
+<p>&nbsp; &nbsp; [AttributeUsage(AttributeTargets.Property)]<br /><span style="font-size:12px;">&nbsp; &nbsp; public sealed class CalculatedAttribute : Attribute&nbsp;<br /></span><span style="font-size:12px;">&nbsp; &nbsp; {&nbsp;</span><span style="font-size:12px;">}</span><span style="font-size:12px;">&nbsp;</span></p>
+<p><span style="font-size:12px;"><br />and a custom class implementing the interface IPropertyInfoFactory is the most important</span></p>
+<p>The amount of code to place is too large to paste here.<br />Look at the DefaultPropertyInfoFactory.cs in csla for more information.</p>
+<p>The clue is to return a CalculatedPropertyInfo if a property is marked with IsCalculated attribute.<br />&nbsp;<br />In a abstraction layer override LoadPropertyMarkDirty and check if the property is an ICalculatedPropertyInfo, if it isn&#39;t then don&#39;t mark it dirty.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>AbbasMalik replied on Tuesday, October 08, 2013</h2><p>Hi rfcdejong </p>
+<p>Thanks for&nbsp;suggesting another solution ... for the timebeing I am&nbsp;fine with&nbsp;MarkClean() workaround. May be I implement it later as you suggested. </p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

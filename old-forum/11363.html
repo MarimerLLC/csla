@@ -1,0 +1,179 @@
+<html><header><title>Bug in MethodCaller</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Bug in MethodCaller</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11363.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>tbaldridge posted on Wednesday, May 16, 2012</h2><p>I&#39;ve found a bug in the way the MethodInfo is cached in CSLA. I&#39;m using the most recent release. The issue comes down to this code:&nbsp;<br /><br />The _methodCache in MethodCaller is not thread safe. This means that if one thread is making the first DataPortal call to an object while another thread is doing the same. One of the threads either hangs or we get an invalid argument exception.&nbsp;</p>
+<p>We can duplicate this with a common Dictionary&lt;int, int&gt; as follows:</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; IDictionary&lt;int, int&gt; dict = new Dictionary&lt;int,int&gt;();</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; while (true)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Console.Write(&quot;.&quot;);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; var x = Enumerable.Range(0, 20)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; .Select(t =&gt; Task.Factory.StartNew(() =&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; dict[t] = t;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; return dict[t];</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }))</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; .ToArray();</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Task.WaitAll(x);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>I&#39;ve developed two solutions to this problem. 1) We can switch the _methodCache to use the ConcurrentDictionary, but then we&#39;re locked into .NET 4 +. Otherwise, we can wrap Dictionary into a new class called &quot;SafeDictionary&quot; and do something like this:</p>
+<p>&nbsp;</p>
+<p>&nbsp;public class SafeDictionary&lt;TKey, TVal&gt; : IDictionary&lt;TKey, TVal&gt;</p>
+<p>&nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; private Dictionary&lt;TKey, TVal&gt; _d;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; public SafeDictionary()</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; _d = new Dictionary&lt;TKey, TVal&gt;();</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; public void Add(TKey key, TVal value)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; lock (_d)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; _d.Add(key, value);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; public bool ContainsKey(TKey key)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; lock (_d)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; return _d.ContainsKey(key);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>etc.....</p>
+<p>&nbsp;</p>
+<p>Or app is currently suffering form this bug. They are few and far between, but about once every few days our app just blows up due to an internal CLSA issue dealing with these global thread-unsafe dictionaries.&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, May 17, 2012</h2><p>Your post doesn&#39;t show the actual code used by CSLA. We don&#39;t use a raw Dictionary.</p>
+<p>I&#39;m not saying there might not be an issue, but I would appreciate it if you can try duplicating the issue with equivalent code.</p>
+<p>I am not eager to assume the high cost of using a lock on every dictionary operation. The performance ramifications of all those locks will be non-trivial.</p>
+<p>The actual code that is used to access the dictionary is this:</p>
+<p>&nbsp;&nbsp;&nbsp; private static DynamicMethodHandle GetCachedMethod(object obj, System.Reflection.MethodInfo info, params object[] parameters)<br />&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var key = new MethodCacheKey(obj.GetType().FullName, info.Name, GetParameterTypes(parameters));<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; DynamicMethodHandle mh = null;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (!_methodCache.TryGetValue(key, out mh))<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; lock (_methodCache)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (!_methodCache.TryGetValue(key, out mh))<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; mh = new DynamicMethodHandle(info, parameters);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _methodCache.Add(key, mh);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return mh;<br />&nbsp;&nbsp;&nbsp; }</p>
+<p>The only issue I can see with the&nbsp;existing code is that the dictionary Add method might not be atomic. In other words, it may add the&nbsp;key first or value first, and perhaps that&#39;s&nbsp;where the&nbsp;conflict comes into play. One would hope that they add the&nbsp;value first, then the key, which should be quite safe - but&nbsp;that may not be the case...&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, May 17, 2012</h2><p>OK, I think I have a&nbsp;cheaper answer for the issue.</p>
+<p>The conflict should be extremely rare, and would only occur during app initialization (basically) because once the dictionary is loaded there&#39;d never be a conflict.</p>
+<p>When a failure occurs it is an exception in the first TryGetValue call. Rather than forcing 100% use of expensive lock statements, I tried wrapping that first call in a try..catch block.</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public int GetValue(int key)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; int result = -1;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; bool found = false;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; try<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; found = _dict.TryGetValue(key, out result);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; catch<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; { }<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (!found)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; lock (this)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (!_dict.TryGetValue(key, out result))<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; result = key;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _dict.Add(key, key);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return result;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</p>
+<p>This appears to solve the problem. Are you willing to apply a similar change to the MethodCaller code to see if it solves your problem for real?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tbaldridge replied on Thursday, May 17, 2012</h2><p>&nbsp;</p>
+<p>Line 229 in MethodCaller.cs defines the _memberCache as:</p>
+<pre>private&nbsp;static&nbsp;readonly&nbsp;Dictionary&lt;MethodCacheKey,&nbsp;DynamicMemberHandle&gt;&nbsp;_memberCache&nbsp;=&nbsp;new&nbsp;Dictionary&lt;MethodCacheKey,&nbsp;DynamicMemberHandle&gt;();
+</pre>
+<pre></pre>
+<p>I&#39;d love to provide the actual code causing the error, but this is a bug that only happens in very specific situations.  For instance, it blows up in several&nbsp;cases in our project, but I re-order the dataportal calls, or connect a higher number (or smaller number) of clients then the code blows up less often.<br /> <br />The actual MSDN documentation on this &nbsp;collection states:</p>
+<p>&nbsp;</p>
+<p>Public static (<span class="input">Shared</span>&nbsp;in Visual Basic) members of this type are thread safe. Any instance members are not guaranteed to be thread safe.</p>
+<p>A&nbsp;<span class="selflink">Dictionary&lt;TKey, TValue&gt;.KeyCollection</span>&nbsp;can support multiple readers concurrently, as long as the collection is not modified. Even so, enumerating through a collection is intrinsically not a thread-safe procedure. To guarantee thread safety during enumeration, you can lock the collection during the entire enumeration. To allow the collection to be accessed by multiple threads for reading and writing, you must implement your own synchronization.</p>
+<p>&nbsp;</p>
+<p>&quot;&nbsp;The performance ramifications of all those locks will be non-trivial.&quot;</p>
+<p>&nbsp;</p>
+<p><br />Well, on my machine I&#39;m doing a read and a write in the following times:</p>
+<p>Dictionary&lt;int, int&gt; - 150ns<br />SafeDictionary&lt;int, int&gt;  - 230ns<br />ConcurrentDcitonary&lt;int, int&gt; - 70ns
+</p>
+<p>I wouldn&#39;t be so fast at writing alternative methods off without actually testing them. In fact, the ConcurrentDictionary is actually quite a bit faster than the&nbsp;standard dictionary when it comes to reads. So, on .NET 4.0+ this will actually be a speed improvement.&nbsp;So you could use locking on everything &lt; .NET 4.0 and no locking on everything more than that. <br />&nbsp;<br />&quot;<span>&nbsp;</span><span>One would hope that they add the&nbsp;value first, then the key, which should be quite safe&quot;<br /><br />Not in the slightest! What&#39;s going to happen in the following situation?<br /><br />1) Thread 1 adds the key<br />2) Thread 2 reads the dictionary and sees the key, and reads the value, which is null since Thread 1 hasn&#39;t inserted the value yet<br />3) Thread 1 adds the value<br /><br />It&#39;s utterly impossible to have a thread-safe dictionary that supports concurrent writes without at least a CAS if not also a lock. The documentation for&nbsp;</span><span>Not in the slightest! What&#39;s going to happen in the following situation?</span></p>
+<p><span></span><span><br /></span><span>1) Thread 1 adds the key</span><br /><span>2) Thread 2 reads the dictionary and sees the key, and reads the value, which is null since Thread 1 hasn&#39;t inserted the value yet</span><br /><span>3) Thread 1 adds the value</span></p>
+<p><span></span><span><br /></span><span>It&#39;s utterly impossible to have a thread-safe dictionary that supports concurrent writes without at least a CAS if not also a lock. The documentation for&nbsp;</span><span>Dictionary states that it does neither, so that&#39;s the problem right there.</span><br /><span>&nbsp;</span></p>
+<pre><p>&nbsp;</p></pre></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, May 17, 2012</h2><p>Sorry, I think you missed my point. I gave you the code used by methodcaller to interact with the dictionary in my post. I don&#39;t really care about your code at all - my point was that you provided an example against a raw dictionary, and that is not what is occurring within methodcaller.</p>
+<p>The fact that your test was invalid doesn&#39;t really matter though, as I was able to duplicate the issue when running code comparable to the actual code used in methodcaller.</p>
+<p>I believe the code I subsequently posted will resolve the issue - catching the rare scenario where there is a failure, and still only requiring a lock when the item isn&#39;t already present in the dictionary.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tbaldridge replied on Thursday, May 17, 2012</h2><p>I thought your solution might work at first, but I&#39;m still seeing problems with it. The reason is that the Dictionary can be in the middle of being updated when a reader comes along to read the value. The problem is that Dictionary does not have any atomic methods at all. </p>
+<p>&nbsp;</p>
+<p>For example:</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; class Program</p>
+<p>&nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; public static IDictionary&lt;int, int&gt; dict = new Dictionary&lt;int, int&gt;();</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; static void Main(string[] args)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; while (true)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Console.Write(&quot;.&quot;);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; dict = new Dictionary&lt;int, int&gt;();</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; var ts = DateTime.Now;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; var foo = new Foo();</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; var mi = foo.GetType().GetMethod(&quot;MyMethod&quot;);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; var param = Expression.Parameter(typeof(int));</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; var ld = Expression.Lambda&lt;Func&lt;int, int&gt;&gt;(Expression.Call(Expression.Constant(foo), mi, param), param).Compile();</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; var x = Enumerable.Range(0, 10)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; .Select(t =&gt; Task.Factory.StartNew(() =&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; int z = 1;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; for (int c = 0; c &lt; 10000; c++)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; try</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; if (!dict.ContainsKey(c)) dict<img src="http://forums.lhotka.net/emoticons/emotion-44.gif" alt="Coffee" /> = c;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; catch</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; lock (dict)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; if (!dict.ContainsKey(c)) dict<img src="http://forums.lhotka.net/emoticons/emotion-44.gif" alt="Coffee" /> = c;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</p>
+</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; z = GetValue(c);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }))</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; .ToArray();</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Task.WaitAll(x);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Console.WriteLine(DateTime.Now - ts);</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; public static int GetValue(int key)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; int result = -1;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; bool found = false;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; try</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; found = dict.TryGetValue(key, out result);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; catch</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; { }</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; if (!found)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; lock (dict)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; if (!dict.TryGetValue(key, out result))</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; result = key;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; dict.Add(key, key);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; return result;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<div></div>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>The above code dies in the first four iterations (but runs fine with a single thread). So trying to selectively lock is not going to help. You can&#39;t have CAS-free mutable thread-safe data structures, it&#39;s just not possible.&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tbaldridge replied on Thursday, May 17, 2012</h2><p>The other thing I&#39;ll point out is that this happening &quot;<span>during app initialization (basically)&quot; is a bit misleading. This conflict can occur whenever there is a MethodCache cache miss. So this can happen whenever any method is invoked for the first time (see line 61 in MethodCaller.cs).&nbsp;<br /><br />Actually, we have global non-thread safe dictionaries in the following files:</span></p>
+<p>FieldDataManger.cs - _consolidatedLists</p>
+<p>PropertyInfoManager.cs - _propertyInfoCache</p>
+<p>MethodCaller.cs -_methodCache</p>
+<p>AuthorizationRuleManager.cs - _perTypeRules</p>
+<p>BusinessRuleManager.cs - _perTypeRules</p>
+<p>DataPortalMethodCache.cs - _cache</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, May 17, 2012</h2><p>We aren&#39;t using comparable code.</p>
+<p>MethodCaller doesn&#39;t use the dictionary methods you are using, nor does it do arbitrary interaction with the dictionary. It interacts with the dictionary in a very specific manner through a single method. That&#39;s generally true of all the dictionaries you listed in an earlier post.</p>
+<p>The following code uses the same pattern as CSLA, but with the exception handling added. It doesn&#39;t fail on my 8 core machine, even when allowed to run for a very long time. Notice that each iteration blanks the &quot;cache&quot; so the odds of cache collisions are the same (high) for each outer iteration of the loop.</p>
+<p>using System;<br />using System.Collections.Generic;<br />using System.Linq;<br />using System.Text;<br />using System.Threading.Tasks;</p>
+<p>namespace ConsoleApplication1<br />{<br />&nbsp; class Program<br />&nbsp; {<br />&nbsp;&nbsp;&nbsp; static void Main(string[] args)<br />&nbsp;&nbsp;&nbsp; {</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; while (true)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var dict = new Data();</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Console.Write(&quot;.&quot;);</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var x = Enumerable.Range(0, 10)</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; .Select(t =&gt; Task.Factory.StartNew(() =&gt;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; for (int i = 0; i &lt; 10; i++)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; dict.GetValue(i);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }))</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; .ToArray();</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Task.WaitAll(x);</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br />&nbsp;&nbsp;&nbsp; }</p>
+<p>&nbsp;&nbsp;&nbsp; public class Data<br />&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; private Dictionary&lt;int, int&gt; _dict = new Dictionary&lt;int, int&gt;();</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public int GetValue(int key)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; int result = -1;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; bool found = false;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; try<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; found = _dict.TryGetValue(key, out result);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; catch<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; { }<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (!found)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; lock (this)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (!_dict.TryGetValue(key, out result))<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; result = key;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _dict.Add(key, key);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (key != result)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; throw new Exception(&quot;value mismatch&quot;);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return result;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br />&nbsp;&nbsp;&nbsp; }<br />&nbsp; }<br />}</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tbaldridge replied on Friday, May 18, 2012</h2><p>That seems to fix it. I tried it in several situations, including with colliding hash keys, and it seems to work okay. Thanks!</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, May 18, 2012</h2><p>Good, thank you for the confirmation.</p>
+<p>I plan to incorporate this change into the upcoming 4.3 bug fix release in the next few days, and of course into 4.5.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,7 @@
+<html><header><title>Sorting Newbie question</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Sorting Newbie question</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/2329.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Misled posted on Monday, February 12, 2007</h2><P>I want to sort a list. The sortedbindinglist does it but I'm being a dummy here. Help please. Here's by list code:</P>
+<P>Dim mList as AnyList = AnyList.getList(SomeID)</P>
+<P>How do I use sortedbindinglist from here.....</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Misled replied on Monday, February 12, 2007</h2><P>All I have to do is ask a dumb question on here and then I figure it out immediately.....</P>
+<P>Dim mList as AnyList = AnyList.getList(SomeID)</P>
+<P>&nbsp;</P><FONT color=#0000ff size=2>
+<P>Dim</FONT><FONT size=2> sortedObject</FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>New</FONT><FONT size=2> Csla.SortedBindingList(</FONT><FONT color=#0000ff size=2>Of</FONT><FONT size=2> AnyListinfo)(mList)</P>
+<P>sortedObject.ApplySort(</FONT><FONT color=#a31515 size=2>"AnyColumn"</FONT><FONT size=2>, ComponentModel.ListSortDirection.Ascending)</P></FONT></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,732 @@
+<html><header><title>How to handle transactions across root objects</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>How to handle transactions across root objects</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3313.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>alef posted on Thursday, August 02, 2007</h2><P>I was looking at the project tracker example. Suppose we change the property Id for the Role object so that it is an identity value to make my question a little bit more difficult.</P>
+<P>And suppose now we want to let the end-user create a new role and change e.g. an existing resource line in the grid to this newly created role. And this must all be&nbsp;done in one transaction. I've included already the code but I have still the following problem :</P>
+<P>When new roles are created and this newly created roles are used in projects how is it possible to update the projects (so we need the new identity values given by the database&nbsp;for the roles and change the property role in the ProjectResource objects&nbsp;with this new Identity values)?</P>
+<P>&nbsp;</P>
+<P>&nbsp; [Serializable]<BR>&nbsp; public class TransactionCommand : CommandBase, ICloneable<BR>&nbsp; {</P>
+<P>&nbsp;&nbsp;&nbsp; #region Authorization Methods</P>
+<P>&nbsp;&nbsp;&nbsp; public static bool CanExecuteCommand()<BR>&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // TODO: customize to check user role<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; //return ApplicationContext.User.IsInRole("");<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return true;<BR>&nbsp;&nbsp;&nbsp; }</P>
+<P>&nbsp;&nbsp;&nbsp; #endregion</P>
+<P>&nbsp;&nbsp;&nbsp; #region Client-side Code</P>
+<P>&nbsp;&nbsp;&nbsp; private Roles _roles;<BR>&nbsp;&nbsp;&nbsp; private Project _project;</P>
+<P>&nbsp;&nbsp;&nbsp; public Roles Roles<BR>&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; get<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return _roles;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<BR>&nbsp;&nbsp;&nbsp; }</P>
+<P>&nbsp;&nbsp;&nbsp; public Project Project<BR>&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; get<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return _project;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<BR>&nbsp;&nbsp;&nbsp; }</P>
+<P><BR>&nbsp;&nbsp;&nbsp; #endregion</P>
+<P>&nbsp;&nbsp;&nbsp; #region Factory Methods<BR>&nbsp;&nbsp;&nbsp; public static TransactionCommand SaveProjectTogetherWithRoles(Project Project, Roles Roles)<BR>&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; TransactionCommand cmd = new TransactionCommand(Project, Roles);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; //execute clone of object<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; TransactionCommand clonedCommand = ((ICloneable)cmd).Clone() as TransactionCommand;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return DataPortal.Execute&lt;TransactionCommand&gt;(clonedCommand);<BR>&nbsp;&nbsp;&nbsp; }</P>
+<P>&nbsp;&nbsp;&nbsp; private TransactionCommand()<BR>&nbsp;&nbsp;&nbsp; { /* require use of factory methods */ }</P>
+<P>&nbsp;&nbsp;&nbsp; private TransactionCommand(Project Project, Roles Roles)<BR>&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _project = Project;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _roles = Roles;<BR>&nbsp;&nbsp;&nbsp; }</P>
+<P>&nbsp;&nbsp;&nbsp; #endregion</P>
+<P>&nbsp;&nbsp;&nbsp; #region Server-side Code</P>
+<P>&nbsp;&nbsp;&nbsp; [Transactional(TransactionalTypes.TransactionScope)]<BR>&nbsp;&nbsp;&nbsp; protected override void DataPortal_Execute()<BR>&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (_roles != null)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _roles = _roles.Save();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (_project != null)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _project = _project.Save();<BR>&nbsp;&nbsp;&nbsp; }</P>
+<P>&nbsp;&nbsp;&nbsp; #endregion</P>
+<P>&nbsp;&nbsp;&nbsp; #region ICloneable</P>
+<P>&nbsp;&nbsp;&nbsp; object ICloneable.Clone()<BR>&nbsp;&nbsp;&nbsp; {</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; using (MemoryStream buffer = new MemoryStream())<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; BinaryFormatter formatter = new BinaryFormatter();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; formatter.Serialize(buffer, this);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; buffer.Position = 0;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; object temp = formatter.Deserialize(buffer);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return temp;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</P>
+<P>&nbsp;&nbsp;&nbsp; }</P>
+<P>&nbsp;&nbsp;&nbsp; #endregion</P>
+<P>&nbsp; }</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>triplea replied on Thursday, August 02, 2007</h2><P>That depends a bit on what you are trying to achieve. These roles you are creating I assume are not specific to the project you are editing. So conceptually they are disconencted from the project you are editing, even if they are on the same form.<BR>You should either:<BR>&nbsp;1. Not allow creating roles in the same form you are editing a project but from a different admin screen wherein you can edit them and handle their saving in a single transaction.<BR>&nbsp;or <BR>&nbsp;2. If you want to provide the functionality of editing roles and a project in the same form, when save is pressed, first save the Roles and then the Project. Even if the Project transaction fails, you still have the Roles but that's fine since you need them anyway.</P>
+<P>Having the Roles as a list within your Project class&nbsp;would not be the way to go.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Thursday, August 02, 2007</h2><P>Skipping over your example, the title is:</P>
+<P>&nbsp;How to handle transactions across root objects.</P>
+<P>Rocky has answered this many times - please do a search of the forum.</P>
+<P>I beleive he recommends using a Command Object to start the tr and then call save on both BOs.</P>
+<P>I have also posted a possible solution in the past.</P>
+<P>Joe</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>alef replied on Thursday, August 02, 2007</h2><P>Hello Joe,</P>
+<P>This recommendation for the Command Object I've followed. My code I've written is based on your solution. I've find many posts from you. But the difficulty about my question is that the transaction is across root objects but there is a dependency. First I need to save the roles, recuperate the identity values for the roles from the database and then do the saving of project with his projectresources.</P>
+<P>So it is the following&nbsp;part of the code which is not correct. How can I transfer the identity value for the roles to the project?</P><FONT size=2>
+<P>[</FONT><FONT color=#2b91af size=2>Transactional</FONT><FONT size=2>(</FONT><FONT color=#2b91af size=2>TransactionalTypes</FONT><FONT size=2>.TransactionScope)]</P>
+<P></FONT><FONT color=#0000ff size=2>protected</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>override</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>void</FONT><FONT size=2> DataPortal_Execute()</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (_roles != </FONT><FONT color=#0000ff size=2>null</FONT><FONT size=2>)</P>
+<P>_roles &nbsp;= _roles.Save();</P>
+<P></FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (_project!= </FONT><FONT color=#0000ff size=2>null</FONT><FONT size=2>)</P>
+<P>_project= _project.Save();</P>
+<P>}</P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, August 02, 2007</h2><P>At least in ProjectTracker, the Roles object invalidates the RoleList cache, forcing it to reload itself from the database.</P>
+<P>This happens in the _roles.Save() call, so by the time _project.Save() is called the RoleList is known to be invalid.</P>
+<P>If you call ValidationRulesCheckRules() in your Save() method, that would force revalidation of the Role property based on the <EM>new role list</EM>.</P>
+<P>protected override Project Save()<BR>{<BR>&nbsp; ValidationRules.CheckRules();<BR>&nbsp; return base.Save();<BR>}</P>
+<P>The <EM>real</EM> complication here, is that this is all running on the application server. The <EM>client doesn't know that the roles were saved</EM>!!</P>
+<P>So your command object needs to call RoleList.InvalidateCache() after it returns to the client to make sure the updates occur correctly. If you follow the template for a command object from the book, you'll see where there's a place to run client-side code after the DP_Execute() method is complete, and that's where you'd make this call.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>alef replied on Thursday, August 02, 2007</h2><P>Hello Rocky,</P>
+<P>Maybe I didn't express me very well but I was trying to do something different with your projecttracker application.</P>
+<P>You can download the sample here : <A href="http://users.skynet.be/firstlook/ProjectTracker20cs.zip">http://users.skynet.be/firstlook/ProjectTracker20cs.zip</A></P>
+<P>I did the following changes :</P>
+<P>a) changes in the database </P>
+<P>the table Roles : field Id is now an identity column </P>
+<P>changed the SP addRole to take into account the identity column</P>
+<P>b) changes in ProjectTracker.Library</P>
+<P>I changed the authorization for the roles and role objects so that also the user pm can add, delete and modify these objects.</P>
+<P>I changed the role class so that if the user is creating a new role the Id is -1. The second new role will have an Id = -2 and so on,...</P>
+<P>These dummy numbers must finally be replaced with the numbers that the database is given for the identity column.</P>
+<P>I added the class TransactionCommand. The purpose for this is to save the changes done to the roles and a project together, in a transaction. </P>
+<P>c) changes in PTWin</P>
+<P>The combobox for the Role in the usercontrol ProjectEdit is bound to <FONT color=#2b91af>Roles</FONT>.GetRoles()</P>
+<P>and not anymore to RoleList.GetList().</P>
+<P>I added two buttons to the Usercontrol ProjectEdit:</P>
+<P>Button "<STRONG>Add New Role</STRONG>" is to let the user add a new role in an inputbox&nbsp;without going to another screen and I don't want that this new role is immediately saved to the database. So if the user clicks on the Cancel button in the ProjectEdit&nbsp;form&nbsp;nothing is been saved to the database. So neither the project, neither newly added roles are saved when the user clicks Cancel.</P>
+<P>Button "<STRONG>Commit added roles and project in one transaction</STRONG>" which must save the changes to the database.</P>
+<P>Steps to reproduce :</P>
+<P>1) log-in with user pm</P>
+<P>2) edit a project</P>
+<P>3) add a new role via the button "Add New Role" eg Tester</P>
+<P>This newly added role will be visible in the combobox because the combobox is bound to <FONT color=#2b91af>Roles</FONT>.GetRoles() and not anymore to RoleList.GetList().</P>
+<P>4) change the role for the first resource to this newly created role Tester</P>
+<P>5) Ckick the apply button and you'll get the following error :</P>
+<P>The UPDATE statement conflicted with the FOREIGN KEY constraint "FK_Assignments_Roles"</P>
+<P>The conflict occurred in table "dbo.Roles", column "Id"</P>
+<P>&nbsp;</P>
+<P>The problem is that ProjectResource has still a role = -1 (this is the newly created Tester role)</P>
+<P>and this role = -1 doesn't exist in the database.</P>
+<P>I'm thinking about the following solution :</P>
+<P>Create a temporary dictionary with the corresponding values in the database&nbsp;for the newly created roles.</P>
+<P>eg&nbsp;&nbsp; -1 (id&nbsp;propery for the newly created role Tester)&nbsp;&nbsp; ==&gt;&nbsp;&nbsp;&nbsp; 7 (this is the value in the database)</P>
+<P>Then when saving the project loop through the projectresources collection and replace all the items which has a negative role id with the value from the dictionary.</P>
+<P>Do you have some cleaner way to solve this?</P>
+<P>&nbsp;</P>
+<P>So the whole purpose is&nbsp;to provide the functionality of editing roles and a project in the same form (as <A HREF="/members/triplea.aspx">triplea</A> also mentioned) and if the user chooses to click on the cancel button nothing is saved to the database. So if the user is creating a new role and changing the resource to this new role and finally the user chooses to cancel, this role may not exist in the database.</P>
+<P>The code for the two buttons are :</P><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>private</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>void</FONT><FONT size=2> addNewRoleButton_Click(</FONT><FONT color=#0000ff size=2>object</FONT><FONT size=2> sender, </FONT><FONT color=#2b91af size=2>EventArgs</FONT><FONT size=2> e)</P>
+<P>{</P>
+<P></FONT><FONT color=#2b91af size=2>InputBoxResult</FONT><FONT size=2> inputboxRole = </FONT><FONT color=#2b91af size=2>InputBox</FONT><FONT size=2>.Show(</FONT><FONT color=#a31515 size=2>"Add a new role"</P></FONT><FONT size=2>
+<P>, </FONT><FONT color=#a31515 size=2>"Add new role"</FONT><FONT size=2>, </FONT><FONT color=#a31515 size=2>""</FONT><FONT size=2>, 100, 0);</P>
+<P></FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (inputboxRole.ReturnCode == </FONT><FONT color=#2b91af size=2>DialogResult</FONT><FONT size=2>.OK)</P>
+<P>{</P>
+<P></FONT><FONT color=#2b91af size=2>Role</FONT><FONT size=2> _role = _roles.AddNew();</P>
+<P>_role.Name = inputboxRole.Text;</P>
+<P>}</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>private</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>void</FONT><FONT size=2> commitRolesAndProject_Click(</FONT><FONT color=#0000ff size=2>object</FONT><FONT size=2> sender, </FONT><FONT color=#2b91af size=2>EventArgs</FONT><FONT size=2> e)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>using</FONT><FONT size=2> (</FONT><FONT color=#2b91af size=2>StatusBusy</FONT><FONT size=2> busy = </FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> </FONT><FONT color=#2b91af size=2>StatusBusy</FONT><FONT size=2>(</FONT><FONT color=#a31515 size=2>"Saving..."</FONT><FONT size=2>))</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>.projectBindingSource.RaiseListChangedEvents = </FONT><FONT color=#0000ff size=2>false</FONT><FONT size=2>;</P>
+<P></FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>.resourcesBindingSource.RaiseListChangedEvents = </FONT><FONT color=#0000ff size=2>false</FONT><FONT size=2>;</P>
+<P></FONT><FONT color=#008000 size=2>// do the save</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>.projectBindingSource.EndEdit();</P>
+<P></FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>.resourcesBindingSource.EndEdit();</P>
+<P></FONT><FONT color=#0000ff size=2>try</P></FONT><FONT size=2>
+<P>{</P>
+<P></FONT><FONT color=#2b91af size=2>TransactionCommand</FONT><FONT size=2>.SaveProjectTogetherWithRoles(_project, _roles);</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>catch</FONT><FONT size=2> (Csla.</FONT><FONT color=#2b91af size=2>DataPortalException</FONT><FONT size=2> ex)</P>
+<P>{</P>
+<P></FONT><FONT color=#2b91af size=2>MessageBox</FONT><FONT size=2>.Show(ex.BusinessException.ToString(),</P>
+<P></FONT><FONT color=#a31515 size=2>"Error saving"</FONT><FONT size=2>, </FONT><FONT color=#2b91af size=2>MessageBoxButtons</FONT><FONT size=2>.OK,</P>
+<P></FONT><FONT color=#2b91af size=2>MessageBoxIcon</FONT><FONT size=2>.Exclamation);</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>catch</FONT><FONT size=2> (</FONT><FONT color=#2b91af size=2>Exception</FONT><FONT size=2> ex)</P>
+<P>{</P>
+<P></FONT><FONT color=#2b91af size=2>MessageBox</FONT><FONT size=2>.Show(ex.ToString(),</P>
+<P></FONT><FONT color=#a31515 size=2>"Error Saving"</FONT><FONT size=2>, </FONT><FONT color=#2b91af size=2>MessageBoxButtons</FONT><FONT size=2>.OK,</P>
+<P></FONT><FONT color=#2b91af size=2>MessageBoxIcon</FONT><FONT size=2>.Exclamation);</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>finally</P></FONT><FONT size=2>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>.projectBindingSource.RaiseListChangedEvents = </FONT><FONT color=#0000ff size=2>true</FONT><FONT size=2>;</P>
+<P></FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>.resourcesBindingSource.RaiseListChangedEvents = </FONT><FONT color=#0000ff size=2>true</FONT><FONT size=2>;</P>
+<P></FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>.projectBindingSource.ResetBindings(</FONT><FONT color=#0000ff size=2>false</FONT><FONT size=2>);</P>
+<P></FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>.resourcesBindingSource.ResetBindings(</FONT><FONT color=#0000ff size=2>false</FONT><FONT size=2>);</P>
+<P>}</P>
+<P>}</P></FONT>
+<P>&nbsp;</P>
+<P>Alef</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, August 02, 2007</h2><P>Yeah, you have designed yourself into an interesting situation, no doubt there.</P>
+<P>I don't have any immediate thoughts on a solution, other than perhaps dropping the use of RoleList entirely, and using the role data directly from Roles. That would at least allow you to implement events on the Role objects so they could notify listeners when they've changed - and your ProjectResource object would be such a listener.</P>
+<P>Might or might not work, but it is interesting to consider.</P>
+<P>Good luck! <img src="/emoticons/emotion-1.gif" alt="Smile [:)]" /></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>alef replied on Friday, August 03, 2007</h2><P>Hi Rocky,</P>
+<P>I've to admit in your example I want to do some strange design. But this design I want to use&nbsp;for example to create a new product.&nbsp;So the screen to create a product has&nbsp;a lot of comboboxen (Name Value pairs) eg Color, Mark, Model, ...and there this behavior is quite normal. If the user clicks on the cancel button the product may not be saved in the database neither newly created color, mark or model. So this is the reason I want to have a proper solution for situations like this.</P>
+<P>I've worked out your idea with the events and it solves the problem but the code is not clean. You can find the code here : <A href="http://users.skynet.be/firstlook/ProjectTracker20cs.zip">http://users.skynet.be/firstlook/ProjectTracker20cs.zip</A></P>
+<P>I'll describe what I've changed:</P>
+<P><STRONG>1) PTWin : class ProjectEdit</STRONG></P><FONT size=2>
+<BLOCKQUOTE dir=ltr>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> ProjectEdit(</FONT><FONT color=#2b91af size=2>Project</FONT><FONT size=2> project)</P>
+<P>{</P>
+<P>....</P>
+<P>_roles = </FONT><FONT color=#2b91af size=2>Roles</FONT><FONT size=2>.GetRoles();</P>
+<P>Csla.</FONT><FONT color=#2b91af size=2>ApplicationContext</FONT><FONT size=2>.LocalContext[</FONT><FONT color=#a31515 size=2>"roles"</FONT><FONT size=2>] = _roles; </FONT></P>
+<P><FONT color=#008000 size=2>...</P></FONT><FONT size=2>
+<P>}</P></BLOCKQUOTE></FONT>
+<P>I'm using ApplicationContext so I can get also access to the same collection _roles in ProjectTracker.Library. This piece of code is bothering me, but I don't know how to do this in a clean way. </P>
+<P>I can not call Roles.GetRoles() in ProjectTracker.Library because it will give me another collection because it will be retrieved again for the database. So it will be a different collection and it&nbsp;will not pointing to the same collection as in the GUI, so the PropertyChanged will not be catched. And also the newly created roles in GUI will not be visible in ProjectTracker.Library if I call Roles.GetRoles() in ProjectTracker.Library.</P>
+<P>This ApplicationContext is something new and is not explained in your book, so maybe I'm not using this in the right way because I don't understand very well this ApplicationContext.</P>
+<P>But anyway I'm not satisfied with this solution because now the business must read also this ApplicationContext and has to know about the LocalContext "roles". But normally the BO doesn't know that it has to use this. Have you any idea how to solve this in a clean way?</P>
+<P><STRONG>2) class ProjectResource</STRONG></P><FONT size=2>
+<BLOCKQUOTE dir=ltr>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>int</FONT><FONT size=2> Role</P>
+<P>{</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;....</P></FONT><FONT size=2>
+<BLOCKQUOTE dir=ltr>
+<P></FONT><FONT color=#0000ff size=2>set</P></FONT><FONT size=2>
+<P>{</P>
+<BLOCKQUOTE dir=ltr>
+<P>CanWriteProperty(</FONT><FONT color=#0000ff size=2>true</FONT><FONT size=2>);</P>
+<P></FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (!_role.Equals(</FONT><FONT color=#0000ff size=2>value</FONT><FONT size=2>))</P>
+<P>{</P>
+<BLOCKQUOTE dir=ltr>
+<P>_role = </FONT><FONT color=#0000ff size=2>value</FONT><FONT size=2>;</P>
+<P>PropertyHasChanged();</P>
+<P></FONT><FONT color=#008000 size=2>//Roles tmpRoles = Roles.GetRoles(); //this I can not do because it will give another collection then the one used in the GUI</P></FONT><FONT size=2>
+<P></FONT><FONT color=#2b91af size=2>Roles</FONT><FONT size=2> tmpRoles =(</FONT><FONT color=#2b91af size=2>Roles</FONT><FONT size=2>)</FONT><FONT color=#2b91af size=2>ApplicationContext</FONT><FONT size=2>.LocalContext[</FONT><FONT color=#a31515 size=2>"roles"</FONT><FONT size=2>];&nbsp; <FONT color=#008000>//this will give me the same collection&nbsp;that is used in the GUI </FONT></FONT></P>
+<P><FONT size=2></FONT><FONT color=#2b91af size=2>Role</FONT><FONT size=2> tmpRole = tmpRoles.GetRoleById(_role);</P>
+<P>tmpRole.PropertyChanged += </FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> System.ComponentModel.</FONT><FONT color=#2b91af size=2>PropertyChangedEventHandler</FONT><FONT size=2>(tmpRole_PropertyChanged);</P></BLOCKQUOTE>
+<P>}</P></BLOCKQUOTE>
+<P>}</P></BLOCKQUOTE>
+<P>}</P></BLOCKQUOTE></FONT>
+<P>&nbsp;</P><FONT size=2>
+<BLOCKQUOTE dir=ltr>
+<P></FONT><FONT color=#0000ff size=2>void</FONT><FONT size=2> tmpRole_PropertyChanged(</FONT><FONT color=#0000ff size=2>object</FONT><FONT size=2> sender, System.ComponentModel.</FONT><FONT color=#2b91af size=2>PropertyChangedEventArgs</FONT><FONT size=2> e)</P>
+<P>{</FONT><FONT color=#008000 size=2></P></FONT><FONT size=2>
+<BLOCKQUOTE dir=ltr>
+<P></FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (e.PropertyName == </FONT><FONT color=#a31515 size=2>"Id"</FONT><FONT size=2>)</P>
+<P>{</P>
+<BLOCKQUOTE dir=ltr>
+<P>_role = ((</FONT><FONT color=#2b91af size=2>Role</FONT><FONT size=2>)sender).Id; <FONT color=#008000>//store the new identity value retrieved from the database in _role</FONT></FONT></P></BLOCKQUOTE>
+<P dir=ltr><FONT size=2>}</P></BLOCKQUOTE>
+<P>}</P>
+<P>&nbsp;</P></BLOCKQUOTE>
+<P dir=ltr><STRONG>3) class TransactionCommand</STRONG></P>
+<P dir=ltr>The cloning I have put in comment because otherwise I'll not catch the PropertyChanged event. But will it still work if we deploy the application in 3 tiers, because then the cloning will be done automatically? Have you some idea how to solve this?</P>
+<BLOCKQUOTE dir=ltr><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>static</FONT><FONT size=2> </FONT><FONT color=#2b91af size=2>TransactionCommand</FONT><FONT size=2> SaveProjectTogetherWithRoles(</FONT><FONT color=#2b91af size=2>Project</FONT><FONT size=2> Project, </FONT><FONT color=#2b91af size=2>Roles</FONT><FONT size=2> Roles)</P>
+<P>{</P>
+<P></FONT><FONT color=#2b91af size=2>TransactionCommand</FONT><FONT size=2> cmd = </FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> </FONT><FONT color=#2b91af size=2>TransactionCommand</FONT><FONT size=2>(Project, Roles);</P>
+<P></FONT><FONT color=#008000 size=2>//execute clone of object</P></FONT><FONT size=2>
+<P></FONT><FONT color=#008000 size=2>//TransactionCommand clonedCommand = ((ICloneable)cmd).Clone() as TransactionCommand; </P></FONT><FONT size=2>
+<P></FONT><FONT color=#008000 size=2>//return DataPortal.Execute&lt;TransactionCommand&gt;(clonedCommand); </P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> </FONT><FONT color=#2b91af size=2>DataPortal</FONT><FONT size=2>.Execute&lt;</FONT><FONT color=#2b91af size=2>TransactionCommand</FONT><FONT size=2>&gt;(cmd);</P>
+<P>}</P></BLOCKQUOTE>
+<P dir=ltr>&nbsp;</P>
+<P dir=ltr>Thank you very much for the help and hopefully we can find a solution together and maybe this a good item to speak about in a next dnrTV show because I think a lot of people will be in the same situation as me. I'm working at Fortis Investments and I have to put in place a new architecture for about 20 developers. Before .NET we created our own framework in VB6 and we have lots of applications which are in a situation like this. But now I want to study first your framework to see if it can easily deal with situations like this before using it at our company.</P>
+<P dir=ltr>With kind regards</P>
+<P dir=ltr>Alef</P>
+<P dir=ltr>&nbsp;</P>
+<P dir=ltr>&nbsp;</P></FONT></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>alef replied on Sunday, August 05, 2007</h2><P>Hi Rocky,</P>
+<P>Have you already had the time to look at the changes I've implemented?</P>
+<P>Many thanks</P>
+<P>Alef</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Sunday, August 05, 2007</h2><P>To be honest, I don't have the time to look through it all in detail - I'm simply juggling too many things right now.</P>
+<P>But on further reflection, I think we're making this much harder than it really is.</P>
+<P>All you have is&nbsp;a simple mapping issue. </P>
+<P>You have a list, A, that contains some temporary values. It transforms into A' when you save it.</P>
+<P>You have another list, X, that uses values from A. Before you can save X, you need to map its A values to A' values. Once that's done, X uses values from A' and can be safely saved.</P>
+<P>So all you need is a ListMapper that accepts A and A' as arguments, and then you can ask it to resolve an old key into a new key. That's easy code to write.</P>
+<P>Then you need a FixUpChildren object that loops through X and replaces all A values with A' values by using Listmapper.</P>
+<P>At a high level, your DP_E() method would look like this:</P>
+<P>RoleList&nbsp;oldList&nbsp;= _roleList.Clone();<BR>_roleList = _roleList.Save();<BR>ListMapper map = new ListMapper(oldList, _roleList);<BR>FixUpChildren(_project.Resources, map);<BR>_project = _project.Save();</P>
+<P>A = oldList<BR>A' = _roleList<BR>X = _project.Resources</P>
+<P>Seems like a very simple, direct answer to the problem.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>alef replied on Monday, August 06, 2007</h2><P>Hello Rocky,</P>
+<P>I've worked out the idea you have which seems to be a clever idea. You have absolutely right,&nbsp;it is just a mapping issue.&nbsp;&nbsp;We are almost getting there but not yet 100%. If you read further on you'll see why.</P>
+<P>My first thought was it will not work because the two lists oldList and newList will not have the same index because the newList can have less items then the oldList (eg the deleted items will not be anymore in the newList). And I can not use the GetIdValue to match an item from the oldList to the newList because this GetIdValue relies just on the primary key which is different between the two collections.</P>
+<P>But this thought is wrong because if you delete items they don't exist anymore in the oldList, you have&nbsp;placed them in a separate collection. So the index of the oldList and newList are in sync and the ListMapper function can do his work.&nbsp;<STRONG>Correct me here if I'm wrong</STRONG>.</P>
+<P>&nbsp;</P>
+<P>I've discovered the following problem. Suppose you create a new role X, assign this new role X to a ProjectResource object whose value is Y, then delete role Y. When we call </P>
+<P>_roles = _roles.Save();</P>
+<P>it will fail and results in the following error :</P>
+<P>The DELETE statement conflicted with the REFERENCE constraint "FK_Assignments_Roles". The conflict occurred in database PTRACKER.MDF", table "dbo.Assignments", column 'Role'.</P>
+<P>&nbsp;The problem here is the framework wants to delete role Y but ProjectResource is still pointing to this role Y. (image that only this ProjectResource is pointing to this role Y otherwise the error thrown is correct).</P>
+<P>It is only in the call</P>
+<P>_project = _project.Save();</P>
+<P>that&nbsp;in the database the role will be updated to X, and only then it will be possible to delete the role Y.</P>
+<P><STRONG>Do you have some idea how to solve this?</STRONG></P>
+<P>&nbsp;</P>
+<P>I'll describe the changes I've done in the class TransactionCommand</P><FONT size=2>
+<BLOCKQUOTE dir=ltr>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>static</FONT><FONT size=2> </FONT><FONT color=#2b91af size=2>TransactionCommand</FONT><FONT size=2> SaveProjectTogetherWithRoles(</FONT><FONT color=#2b91af size=2>Project</FONT><FONT size=2> Project, </FONT><FONT color=#2b91af size=2>Roles</FONT><FONT size=2> Roles)</P>
+<P>{</P>
+<BLOCKQUOTE dir=ltr>
+<P></FONT><FONT color=#2b91af size=2>TransactionCommand</FONT><FONT size=2> cmd = </FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> </FONT><FONT color=#2b91af size=2>TransactionCommand</FONT><FONT size=2>(Project, Roles);</P>
+<P></FONT><FONT color=#008000 size=2>//execute clone of object</P></FONT><FONT size=2>
+<P></FONT><FONT color=#008000 size=2>//TransactionCommand clonedCommand = ((ICloneable)cmd).Clone() as TransactionCommand; //Alef</P></FONT><FONT size=2>
+<P></FONT><FONT color=#008000 size=2>//return DataPortal.Execute&lt;TransactionCommand&gt;(clonedCommand); //Alef</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> </FONT><FONT color=#2b91af size=2>DataPortal</FONT><FONT size=2>.Execute&lt;</FONT><FONT color=#2b91af size=2>TransactionCommand</FONT><FONT size=2>&gt;(cmd);</P></BLOCKQUOTE>
+<P>}</P>
+<P><STRONG>Is this cloning of the command necessary or not?</STRONG></P>
+<P><STRONG></STRONG>&nbsp;</P>
+<P><STRONG></STRONG>&nbsp;</P><FONT size=2>
+<P>[</FONT><FONT color=#2b91af size=2>Transactional</FONT><FONT size=2>(</FONT><FONT color=#2b91af size=2>TransactionalTypes</FONT><FONT size=2>.TransactionScope)]</P>
+<P></FONT><FONT color=#0000ff size=2>protected</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>override</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>void</FONT><FONT size=2> DataPortal_Execute()</P>
+<P>{</P>
+<BLOCKQUOTE dir=ltr>
+<P></FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (_roles != </FONT><FONT color=#0000ff size=2>null</FONT><FONT size=2>)</P>
+<P>{</P>
+<BLOCKQUOTE dir=ltr>
+<P></FONT><FONT color=#2b91af size=2>Roles</FONT><FONT size=2> oldList = _roles.Clone();</P>
+<P>_roles = _roles.Save();</P>
+<P></FONT><FONT color=#2b91af size=2>Dictionary</FONT><FONT size=2>&lt;</FONT><FONT color=#0000ff size=2>int</FONT><FONT size=2>, </FONT><FONT color=#0000ff size=2>int</FONT><FONT size=2>&gt; keyMapping = ListMapper(oldList,_roles);</P>
+<P>FixUpChildren(_project.Resources, keyMapping);</P></BLOCKQUOTE>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (_project != </FONT><FONT color=#0000ff size=2>null</FONT><FONT size=2>)</P>
+<BLOCKQUOTE dir=ltr>
+<P>_project = _project.Save();</P></BLOCKQUOTE>
+<P>}</P></BLOCKQUOTE>
+<P></FONT><FONT color=#0000ff size=2>private</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>void</FONT><FONT size=2> FixUpChildren(</FONT><FONT color=#2b91af size=2>ProjectResources</FONT><FONT size=2> projectResources, </FONT><FONT color=#2b91af size=2>Dictionary</FONT><FONT size=2>&lt;</FONT><FONT color=#0000ff size=2>int</FONT><FONT size=2>, </FONT><FONT color=#0000ff size=2>int</FONT><FONT size=2>&gt; keyMapping)</P>
+<P>{</P>
+<BLOCKQUOTE dir=ltr>
+<P></FONT><FONT color=#0000ff size=2>foreach</FONT><FONT size=2> (</FONT><FONT color=#2b91af size=2>ProjectResource</FONT><FONT size=2> projectResource </FONT><FONT color=#0000ff size=2>in</FONT><FONT size=2> projectResources)</P>
+<P>{</P>
+<BLOCKQUOTE dir=ltr>
+<P></FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (projectResource.IsDirty)</P>
+<P>{</P>
+<BLOCKQUOTE dir=ltr>
+<P></FONT><FONT color=#0000ff size=2>int</FONT><FONT size=2> newId;</P>
+<P></FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (keyMapping.TryGetValue(projectResource.Role, </FONT><FONT color=#0000ff size=2>out</FONT><FONT size=2> newId))</P>
+<P>{</P>
+<BLOCKQUOTE dir=ltr>
+<P>projectResource.Role = newId;</P></BLOCKQUOTE>
+<P>}</P></BLOCKQUOTE>
+<P dir=ltr>}</P></BLOCKQUOTE>
+<P dir=ltr>}</P></BLOCKQUOTE>
+<P>}</P>
+<P>&nbsp;</P>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#2b91af size=2>Dictionary</FONT><FONT size=2>&lt;</FONT><FONT color=#0000ff size=2>int</FONT><FONT size=2>, </FONT><FONT color=#0000ff size=2>int</FONT><FONT size=2>&gt; ListMapper(</FONT><FONT color=#2b91af size=2>Roles</FONT><FONT size=2> _oldRoles, </FONT><FONT color=#2b91af size=2>Roles</FONT><FONT size=2> _newRoles)</P>
+<P>{</P>
+<BLOCKQUOTE dir=ltr>
+<P></FONT><FONT color=#2b91af size=2>Dictionary</FONT><FONT size=2>&lt;</FONT><FONT color=#0000ff size=2>int</FONT><FONT size=2>, </FONT><FONT color=#0000ff size=2>int</FONT><FONT size=2>&gt; keyMapping = </FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> </FONT><FONT color=#2b91af size=2>Dictionary</FONT><FONT size=2>&lt;</FONT><FONT color=#0000ff size=2>int</FONT><FONT size=2>, </FONT><FONT color=#0000ff size=2>int</FONT><FONT size=2>&gt;();</P>
+<P></FONT><FONT color=#0000ff size=2>for</FONT><FONT size=2>(</FONT><FONT color=#0000ff size=2>int</FONT><FONT size=2> i = 0 ; i &lt; _oldRoles.Count ;i++)</P>
+<P>{</P>
+<BLOCKQUOTE dir=ltr>
+<P dir=ltr></FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (_oldRoles<img src="/emoticons/emotion-55.gif" alt="Idea [I]" />.IsNew )</P>
+<P>{</P>
+<BLOCKQUOTE dir=ltr></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>int</FONT><FONT size=2> oldKey = _oldRoles<img src="/emoticons/emotion-55.gif" alt="Idea [I]" />.Id;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>int</FONT><FONT size=2> newKey = _newRoles<img src="/emoticons/emotion-55.gif" alt="Idea [I]" />.Id;</P>
+<P>keyMapping.Add(oldKey, newKey);</P></BLOCKQUOTE>
+<P>}</P></BLOCKQUOTE>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> keyMapping;</P></BLOCKQUOTE>
+<P>}</P></FONT>
+<P>&nbsp;</P></BLOCKQUOTE></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, August 06, 2007</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Typically in cases like this the <i>values are unique too</i>,
+and so you can use the value to do the mapping &#8211; you don&#8217;t need
+both sets of keys &#8211; you can simply match the value for the old key with
+the value in the new list to find the new key.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>If that&#8217;s not the case, then you can still solve the
+problem by just keeping the old key as a property in your RoleEdit child
+objects in the editable list.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Regarding deleting: this is <i>desired</i> behavior. Clearly
+Project <i>can not have value Y if it has been deleted!!</i> I don&#8217;t know
+what you expect would happen here, but I would expect failure.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>On the other hand, that scenario <i>should never happen</i>
+because the Project should have been validating that property against the <i>current
+list</i> to start with, and so it could NOT have a value of Y because Y isn&#8217;t
+in the current list.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> alef
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Monday, August 06, 2007 7:54 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] How to handle transactions across root objects<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Hello Rocky,<o:p></o:p></p>
+
+<p>I've worked out the idea you have which seems to be a clever idea. You have
+absolutely right,&nbsp;it is just a mapping issue.&nbsp;&nbsp;We are almost
+getting there but not yet 100%. If you read further on you'll see why.<o:p></o:p></p>
+
+<p>My first thought was it will not work because the two lists oldList and
+newList will not have the same index because the newList can have less items
+then the oldList (eg the deleted items will not be anymore in the newList). And
+I can not use the GetIdValue to match an item from the oldList to the newList
+because this GetIdValue relies just on the primary key which is different
+between the two collections.<o:p></o:p></p>
+
+<p>But this thought is wrong because if you delete items they don't exist
+anymore in the oldList, you have&nbsp;placed them in a separate collection. So
+the index of the oldList and newList are in sync and the ListMapper function
+can do his work.&nbsp;<strong>Correct me here if I'm wrong</strong>.<o:p></o:p></p>
+
+<p>&nbsp;<o:p></o:p></p>
+
+<p>I've discovered the following problem. Suppose you create a new role X,
+assign this new role X to a ProjectResource object whose value is Y, then
+delete role Y. When we call <o:p></o:p></p>
+
+<p>_roles = _roles.Save();<o:p></o:p></p>
+
+<p>it will fail and results in the following error :<o:p></o:p></p>
+
+<p>The DELETE statement conflicted with the REFERENCE constraint
+&quot;FK_Assignments_Roles&quot;. The conflict occurred in database
+PTRACKER.MDF&quot;, table &quot;dbo.Assignments&quot;, column 'Role'.<o:p></o:p></p>
+
+<p>&nbsp;The problem here is the framework wants to delete role Y but
+ProjectResource is still pointing to this role Y. (image that only this
+ProjectResource is pointing to this role Y otherwise the error thrown is
+correct).<o:p></o:p></p>
+
+<p>It is only in the call<o:p></o:p></p>
+
+<p>_project = _project.Save();<o:p></o:p></p>
+
+<p>that&nbsp;in the database the role will be updated to X, and only then it
+will be possible to delete the role Y.<o:p></o:p></p>
+
+<p><strong>Do you have some idea how to solve this?</strong><o:p></o:p></p>
+
+<p>&nbsp;<o:p></o:p></p>
+
+<p>I'll describe the changes I've done in the class TransactionCommand<o:p></o:p></p>
+
+<blockquote>
+
+<p><span>public</span><span> <span>static</span> <span>TransactionCommand</span> SaveProjectTogetherWithRoles(<span>Project</span> Project, <span>Roles</span>
+Roles)<o:p></o:p></span></p>
+
+<p><span>{<o:p></o:p></span></p>
+
+<blockquote>
+
+<p><span>TransactionCommand</span><span> cmd = <span>new</span> <span>TransactionCommand</span>(Project, Roles);<o:p></o:p></span></p>
+
+<p><span>//execute clone of object<o:p></o:p></span></p>
+
+<p><span>//TransactionCommand
+clonedCommand = ((ICloneable)cmd).Clone() as TransactionCommand; //Alef<o:p></o:p></span></p>
+
+<p><span>//return
+DataPortal.Execute&lt;TransactionCommand&gt;(clonedCommand); //Alef<o:p></o:p></span></p>
+
+<p><span>return</span><span> <span>DataPortal</span>.Execute&lt;<span>TransactionCommand</span>&gt;(cmd);<o:p></o:p></span></p>
+
+</blockquote>
+
+<p><span>}<o:p></o:p></span></p>
+
+<p><strong><span>Is this cloning of the command
+necessary or not?</span></strong><span><o:p></o:p></span></p>
+
+<p><span>&nbsp;<o:p></o:p></span></p>
+
+<p><span>&nbsp;<o:p></o:p></span></p>
+
+<p><span>[<span>Transactional</span>(<span>TransactionalTypes</span>.TransactionScope)]<o:p></o:p></span></p>
+
+<p><span>protected</span><span> <span>override</span> <span>void</span> DataPortal_Execute()<o:p></o:p></span></p>
+
+<p><span>{<o:p></o:p></span></p>
+
+<blockquote>
+
+<p><span>if</span><span> (_roles != <span>null</span>)<o:p></o:p></span></p>
+
+<p><span>{<o:p></o:p></span></p>
+
+<blockquote>
+
+<p><span>Roles</span><span> oldList = _roles.Clone();<o:p></o:p></span></p>
+
+<p><span>_roles = _roles.Save();<o:p></o:p></span></p>
+
+<p><span>Dictionary</span><span>&lt;<span>int</span>, <span>int</span>&gt; keyMapping = ListMapper(oldList,_roles);<o:p></o:p></span></p>
+
+<p><span>FixUpChildren(_project.Resources,
+keyMapping);<o:p></o:p></span></p>
+
+</blockquote>
+
+<p><span>}<o:p></o:p></span></p>
+
+<p><span>if</span><span> (_project != <span>null</span>)<o:p></o:p></span></p>
+
+<blockquote>
+
+<p><span>_project = _project.Save();<o:p></o:p></span></p>
+
+</blockquote>
+
+<p><span>}<o:p></o:p></span></p>
+
+</blockquote>
+
+<p><span>private</span><span> <span>void</span> FixUpChildren(<span>ProjectResources</span> projectResources, <span>Dictionary</span>&lt;<span>int</span>,
+<span>int</span>&gt; keyMapping)<o:p></o:p></span></p>
+
+<p><span>{<o:p></o:p></span></p>
+
+<blockquote>
+
+<p><span>foreach</span><span> (<span>ProjectResource</span>
+projectResource <span>in</span> projectResources)<o:p></o:p></span></p>
+
+<p><span>{<o:p></o:p></span></p>
+
+<blockquote>
+
+<p><span>if</span><span> (projectResource.IsDirty)<o:p></o:p></span></p>
+
+<p><span>{<o:p></o:p></span></p>
+
+<blockquote>
+
+<p><span>int</span><span> newId;<o:p></o:p></span></p>
+
+<p><span>if</span><span> (keyMapping.TryGetValue(projectResource.Role, <span>out</span>
+newId))<o:p></o:p></span></p>
+
+<p><span>{<o:p></o:p></span></p>
+
+<blockquote>
+
+<p><span>projectResource.Role = newId;<o:p></o:p></span></p>
+
+</blockquote>
+
+<p><span>}<o:p></o:p></span></p>
+
+</blockquote>
+
+<p><span>}<o:p></o:p></span></p>
+
+</blockquote>
+
+<p><span>}<o:p></o:p></span></p>
+
+</blockquote>
+
+<p><span>}<o:p></o:p></span></p>
+
+<p><span>&nbsp;<o:p></o:p></span></p>
+
+<p><span>public</span><span> <span>Dictionary</span>&lt;<span>int</span>, <span>int</span>&gt;
+ListMapper(<span>Roles</span> _oldRoles, <span>Roles</span> _newRoles)<o:p></o:p></span></p>
+
+<p><span>{<o:p></o:p></span></p>
+
+<blockquote>
+
+<p><span>Dictionary</span><span>&lt;<span>int</span>, <span>int</span>&gt; keyMapping = <span>new</span>
+<span>Dictionary</span>&lt;<span>int</span>,
+<span>int</span>&gt;();<o:p></o:p></span></p>
+
+<p><span>for</span><span>(<span>int</span> i = 0 ; i &lt; _oldRoles.Count
+;i++)<o:p></o:p></span></p>
+
+<p><span>{<o:p></o:p></span></p>
+
+<blockquote>
+
+<p><span>if</span><span> (_oldRoles<img id="_x0000_i1025" src="/emoticons/emotion-55.gif" alt="Idea <img src=" />">.IsNew )<o:p></o:p></span></p>
+
+<p><span>{<o:p></o:p></span></p>
+
+<blockquote>
+
+<p><span>int</span><span> oldKey = _oldRoles<img id="_x0000_i1026" src="/emoticons/emotion-55.gif" alt="Idea <img src=" />">.Id;<o:p></o:p></span></p>
+
+<p><span>int</span><span> newKey = _newRoles<img id="_x0000_i1027" src="/emoticons/emotion-55.gif" alt="Idea <img src=" />">.Id;<o:p></o:p></span></p>
+
+<p><span>keyMapping.Add(oldKey, newKey);<o:p></o:p></span></p>
+
+</blockquote>
+
+<p><span>}<o:p></o:p></span></p>
+
+</blockquote>
+
+<p><span>}<o:p></o:p></span></p>
+
+<p><span>return</span><span> keyMapping;<o:p></o:p></span></p>
+
+</blockquote>
+
+<p><span>}<o:p></o:p></span></p>
+
+<p><span>&nbsp;<o:p></o:p></span></p>
+
+</blockquote>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>alef replied on Tuesday, August 07, 2007</h2><P>Hello Rocky,</P>
+<P>You have absolutely right, the name property of the role object is unique. But if we take the name property as the key in the dictionary it makes the replacement of the identity values in the children more difficult because the ProjectResource works only with Id of the Role and we don't have a link to the Role object. If the ProjectResource should have a property to the Role object then it would be a lot easier. Can you tell me for what reason you are using the Id and not the object role itself?</P>
+<P><o:p>&nbsp;</o:p></P>
+<P>Regarding deleting: I’ll try to explain it in more detail what I'm trying to do.</P>
+<P>The sequence of the action queries is important since we are dealing with a relational data structure of projects and roles. For example, it would not be prudent to insert a project record into the database without a corresponding and valid Roles table record. This particular case we are treating well but other cases not, I’ll give an example further on. A good rule of thumb for sequencing your action queries is as follows: <o:p></o:p></P>
+<P>1. Update parent rows<o:p></o:p></P>
+<P>2. Insert parent rows<o:p></o:p></P>
+<P>3. Update child rows<o:p></o:p></P>
+<P>4. Insert child rows<o:p></o:p></P>
+<P>5. Delete child rows<o:p></o:p></P>
+<P>6. Delete parent rows</P>
+<P><o:p>&nbsp;</o:p></P>
+<P>The code in the DataPortal_Execute method of TransacionCommand will not have this sequence of action queries. </P>
+<P>A) It first call _roles.Save() which will persists all the modifications on the roles to the database. The code in DataPortal_Update of Roles.cs looks like</P>
+<P><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>foreach (Role item in DeletedList)<o:p></o:p></P>
+<P><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>{<o:p></o:p></P>
+<P><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>item.DeleteSelf(cn);<o:p></o:p></P>
+<P><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>}<o:p></o:p></P>
+<P><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>DeletedList.Clear();<o:p></o:p></P>
+<P><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>foreach (Role item in this)<o:p></o:p></P>
+<P><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>{<o:p></o:p></P>
+<P><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>if (item.IsNew)<o:p></o:p></P>
+<P><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>{<o:p></o:p></P>
+<P><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>item.Insert(cn);<o:p></o:p></P>
+<P><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>}<o:p></o:p></P>
+<P><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>else<o:p></o:p></P>
+<P><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>item.Update(cn);<o:p></o:p></P>
+<P><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>}</P>
+<P>(first all the deletes will be executed, then the insert and updates will be executed).</P>
+<P><o:p>&nbsp;</o:p></P>
+<P>B) Then all the modifications done to the project will be saved.</P>
+<P><o:p>&nbsp;</o:p></P>
+<P>So we have the following sequence: (roles are the parent, project is the child)</P>
+<P><SPAN>1.<SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN></SPAN>Delete parent rows</P>
+<P><SPAN>2.<SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN></SPAN>Insert/Update parent rows</P>
+<P><SPAN>3.<SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN></SPAN>Save the child row which can be an update, insert or delete</P>
+<P><o:p>&nbsp;</o:p></P>
+<P>So suppose the end-user is executing the following actions:</P>
+<P><SPAN>1.<SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN></SPAN>He adds a new role Tester.</P>
+<P><SPAN>2.<SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN></SPAN>He changes an existing ProjectResource by changing the role from “Software architect” to Tester. (suppose it is the only ProjectResource which has this role “Software architect”, no other ProjectResource is pointing to this role) So in this case it must be possible to delete the role “Software architect”, because this ProjectResource is not pointing anymore to this role neither other ProjectResources)</P>
+<P><SPAN>3.<SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN></SPAN>Then the end-user deletes the role “Software architect” </P>
+<P><o:p>&nbsp;</o:p></P>
+<P>So when persisting all the modifications of the user to the database the sequence of the action queries is very important:</P>
+<P>If we follow the rule of thumb for the action queries</P>
+<P><SPAN>1.<SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN></SPAN>Update parent rows </P>
+<P>Obsolete in our example of actions that the end-user has executed</P>
+<P><SPAN>2.<SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN></SPAN>Insert parent rows</P>
+<P><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>insert role Tester</P>
+<P>3. Update child rows</P>
+<P>Update the role from “Software architect” to “Tester” for the ProjectResource</P>
+<P>Suppose that this ProjectResource was the ONLY one pointing to “Software architect”. After the update statement the “Software architect” is not been used anymore and&nbsp;then it must&nbsp;be possible&nbsp;to delete this role in a next step. THAT IS THE REASON we need first to update the child rows (step3) before deleting the parent rows (step 6)</P>
+<P>4. Insert child rows</P>
+<P><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>Obsolete<o:p></o:p></P>
+<P>5. Delete child rows<o:p></o:p></P>
+<P>Obsolete<o:p></o:p></P>
+<P>6. Delete parent rows</P>
+<P>Delete the role “Software architect”</P>
+<P><o:p>&nbsp;</o:p></P>
+<P>Do you have an idea how you can change the sequence of the action queries? In the sequence of action queries you are using we'll have an error:</P>
+<P>The DELETE statement conflicted with the REFERENCE constraint "FK_Assignments_Roles". The conflict occurred in database PTRACKER.MDF", table "dbo.Assignments", column 'Role'.</P>
+<P>This is because you first delete the role (but at this moment you didn't changed yet the projectresource, this projectresource is still pointing to “Software architect”) and only afterwards you are updating the projectresource to point to this new role Tester. If you should do the delete now, then the delete will be succesfull.</P>
+<P>&nbsp;</P>
+<P>Alef</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>alef replied on Thursday, August 09, 2007</h2><P>Hello Rocky,</P>
+<P>&nbsp;</P>
+<P>Please, can you have a look&nbsp;at this?</P>
+<P>&nbsp;</P>
+<P>Regards</P>
+<P>Alef</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, August 09, 2007</h2><P class=MsoNormal><SPAN><FONT color=#000000>I’m actually just wrapping up a lot of loose ends before I go on vacation next week, so I don’t have more time to spend on this right now.<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><o:p><FONT color=#000000>&nbsp;</FONT></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><FONT color=#000000>As we’ve discussed this, each solution I’ve offered has revealed some new layer of requirements that were previously unknown (to me anyway). I feel like I’m playing a game of whack-a-mole. <img src="/emoticons/emotion-1.gif" alt="Smile [:)]" />&nbsp;I don’t have time to offer free business analysis and consulting on this forum. I love to help, and do as much as I can, but I can only go so far...<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><o:p><FONT color=#000000>&nbsp;</FONT></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><FONT color=#000000>My last comment is this: I think you need to rethink the object model so it meets your needs. You are starting with an object model that is designed for a different pair of use cases, trying to make them fit this new use case. Clearly the object model doesn’t match your needs, so design a different object model.<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><o:p><FONT color=#000000>&nbsp;</FONT></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><FONT color=#000000>I don’t know exactly what that new object model looks like, and as I say, I don’t have time over the next 2-3 weeks to analyze the requirements and design such an object model. I can see right now that the next requirement is that this work in a multi-user environment with concurrency, at which point your complexity shoots sky high.<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><o:p><FONT color=#000000>&nbsp;</FONT></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><FONT color=#000000>Personally, I’d drop the database integrity rules and maintain integrity at the object level. That’d simplify the problem immensely. <o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><o:p><FONT color=#000000>&nbsp;</FONT></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><FONT color=#000000>Failing that, I’d give the DBA that insists on keeping the integrity rules a blob of XML from all the objects and tell him or her to figure out how to resolve the issue. <img src="/emoticons/emotion-5.gif" alt="Wink [;)]" /><o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><o:p><FONT color=#000000>&nbsp;</FONT></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><FONT color=#000000>And failing that, again, rethink your object model. You have designed a situation where the data update for a role must occur along with the data update for a line item. I don’t care if you are using objects, datasets or whatever, you have allowed yourself to get into an ugly situation with requirements that appears to be very difficult to resolve at the database update level.<o:p></o:p></FONT></SPAN></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>alef replied on Friday, August 10, 2007</h2><P>Hello Rocky,</P>
+<P>I hope you'll have a good vacation and come back with a fresh mind to implement new things and maintain the existing. I appreciate very much your help.</P>
+<P>I was thinking about the following solutions regarding the deleting&nbsp;(it keeps me awake this ugly situation I've put myself in) and I want it to share it. Maybe it is a light in the dark.</P>
+<P>1) first solution</P>
+<P>If we make the <STRONG>save</STRONG> method more granalur and <STRONG>split</STRONG> this in three methods : insert, update and delete </P>
+<P>In place of doing the following in DataPortal_Execute() in the class TransactionCommand<O:P></O:P></P>
+<BLOCKQUOTE dir=ltr>
+<P><SPAN>_roles = _roles.Save();</SPAN></P>
+<P><SPAN>_project = _project.Save();<O:P></O:P></SPAN></P></BLOCKQUOTE>
+<P>we can do for example the following to solve the particular use casse I've designed myself in&nbsp;:</P>
+<P>&nbsp;&nbsp;&nbsp;_roles.Update():</P>
+<P>&nbsp;&nbsp;&nbsp;_roles.Insert();</P>
+<P>&nbsp;&nbsp;&nbsp;_project.Update();&nbsp; // the Update method must first see if he has to do an update and not e.g. insert&nbsp;or delete</P>
+<P>&nbsp;&nbsp;&nbsp;_project.Insert(); // the method must first check if it is a new project. If it is not a new project then nothing should happen</P>
+<P>&nbsp;&nbsp;&nbsp; _project.Delete(); //idem</P>
+<P>&nbsp;&nbsp;&nbsp;_roles.Delete();</P>
+<P>2) second solution</P>
+<P>We could tackle the problem in a more generic way and design a solution that supports the grouping of an arbitrary amount of use cases into one unit-of-work. This unit-of-work will then use the database model to find out the sequence of insert-update-delete statements for each business entity. This solution will also provide us the all-or-nothing concept: commit either every modification or nothing at all (if an error occured somewhere in the process).</P>
+<P>Regards</P>
+<P>Alef</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, August 10, 2007</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>You certainly could make Roles be more granular in how it saves
+itself.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Just override Save() and throw a notsupportedexception to
+prevent its use.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Then implement your three more granular methods, but make sure
+they throw an exception unless Csla.ApplicationContext.ExecutionLocation is
+Server (don&#8217;t want them called on the client).<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Then your command object can safely call these methods as needed.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky</span><o:p></o:p></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

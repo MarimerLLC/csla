@@ -1,0 +1,28 @@
+<html><header><title>Re: Responsiveness and Reports</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Re: Responsiveness and Reports</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/2961.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>ozitraveller posted on Thursday, May 31, 2007</h2><P>Hi </P>
+<P>I just have a couple of questions and I hope some could help me or point me in the correct direction.</P>
+<P>I created a desktop app and it works perfectly well. However, retreiving the data and binding it to the form creates an ugly visual effect as this happens, the half drawn form efect. Does anyone have any ideas on what I could do to give the impression of a speedy data delivery? I thought of using a timer with a small delay to allow the form to draw first, then do that databinding. Unless some can tell me how to make the data retreival asynchronous?</P>
+<P>And the other question is, how to do reports using csla? Are business objects the way to go? What about Reporting Services? The reports in my little app are just straight list nothing fancy. However, I have other apps which do have large complicated reports.</P>
+<P>Any help would be greatfully appreciated.</P>
+<P>thanks</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Thursday, May 31, 2007</h2><P>I use Active Reports .Net 2.0 for reports in my web project.</P>
+<P>I am able to use CSLA Read Only BOs for the Header/Footer and ROCs for the Groups and Detail sections.</P>
+<P>It wasn't that hard to figure out once I saw how the reports worked. In fact you could set up 2 base class methods to fetch the BOs and then override them in each report. My ReadOnlyBO in the header is used in almost all my reports with no overrides required as they all have a logo, title, date, subtitile, etc. If a given ROC can be used for more than one report I create an intermediate level class to override GetROC method and then inherit the common reports from that.</P>
+<P>It is simple for list reports.</P>
+<P>It also worked for an extremely complex report - just required more coding.</P>
+<P>All in all - Active Reports is a good product. It meets our needs.</P>
+<P>SQL Server Reporting services was not good enough (as of last year.)</P>
+<P>Joe</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Q Johnson replied on Thursday, May 31, 2007</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>ozitraveller:</strong></div><div>
+<P>retreiving the data and binding it to the form creates an ugly visual effect as this happens, the half drawn form efect. Does anyone have any ideas on what I could do to give the impression of a speedy data delivery? </P>
+<P></div></BLOCKQUOTE></P>
+<P>Have you tried using SuspendLayout() at the top of your Form's Load event and ResumeLayout at the bottom (after all of your initialization code has run)?&nbsp; That has always been satisfactory for me.&nbsp; But maybe my forms aren't as busy at start up as your is...</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ozitraveller replied on Thursday, May 31, 2007</h2><P>Thanks Guys</P>
+<P>I agree with you about Reporting Services, I'm being forced to do some at the moment (not happy!), much prefer Active Reports!!!</P>
+<P>I would love to see how these classes of your work. I;ll see what I can come up with on Google.</P>
+<P>&nbsp;</P>
+<P>I haven't tried SuspendLayout() before, and yes these forms have a lot of data on them, including comboboxes, etc. But I'll give it a try.</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Dog Ears replied on Friday, June 01, 2007</h2><P>I found binding Combo boxes to CSLA collections slow with the Windows Combo box, I use the ComponentOne List.net combo and it's fine,&nbsp; don't really know why the Windows Combo was so slow, improvements can be made by changing the order of the propertie assignments... [if i remember correctly?]</P>
+<P><FONT size=2><FONT color=#0000ff>...<BR>this</FONT>.cboJobType.DataSource = Planning.<FONT color=#2b91af>JobTypeList</FONT>.GetList();<BR><FONT color=#0000ff>this</FONT>.cboJobType.ValueMember = <FONT color=#a31515>"Type"</FONT>;<BR><FONT color=#0000ff>this</FONT>.cboJobType.DisplayMember = <FONT color=#a31515>"Description"</FONT>;<BR>...</FONT></P>
+<P>Regards,</P>
+<P>Graeme.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ozitraveller replied on Sunday, June 03, 2007</h2><P>Thanks Graeme.</P>
+<P>There is a little improvement.</P>
+<P>I found retrieving the data is 1 problem and sync'ing the key to the underlying record also takes time too compounding the delay effect.</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,63 @@
+<html><header><title>Property Copy Failed</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Property Copy Failed</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/817.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>fargs posted on Friday, August 04, 2006</h2><P>Hi,</P>
+<P>Can someone explain what would be causing this error. My object is bound to a grid. When i update and integer value (it is fine for strings) it causes a 'object not set to a reference' when the validation rules are checked for the property set.</P>
+<P>Any ideas?</P><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Sub</FONT><FONT size=2> CheckRules(</FONT><FONT color=#0000ff size=2>ByVal</FONT><FONT size=2> propertyName </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>String</FONT><FONT size=2>)<BR></FONT><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;Dim</FONT><FONT size=2> rules </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> ValidationRulesManager = RulesToCheck<BR></FONT><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;If</FONT><FONT size=2> rules </FONT><FONT color=#0000ff size=2>IsNot</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Nothing</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Then<BR><FONT color=#ff0000>&nbsp;&nbsp;&nbsp;//It's&nbsp;failing because the rules.GetRulesForProperty method is returning nothing and it is trying to&nbsp;call&nbsp;GetList&nbsp;&nbsp;&nbsp;&nbsp;<BR></FONT></FONT><FONT color=#0000ff size=2><FONT color=#ff0000>&nbsp;&nbsp;&nbsp;//There are no rules for this property</FONT></FONT><FONT color=#0000ff size=2><BR></FONT><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;Dim</FONT><FONT size=2> list </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> List(</FONT><FONT color=#0000ff size=2>Of</FONT><FONT size=2> IRuleMethod) = rules.GetRulesForProperty(propertyName, </FONT><FONT color=#0000ff size=2>False</FONT><FONT size=2>).GetList(</FONT><FONT color=#0000ff size=2>True</FONT><FONT size=2>)<BR></FONT><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;If</FONT><FONT size=2> list </FONT><FONT color=#0000ff size=2>IsNot</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Nothing</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Then<BR></FONT><FONT size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CheckRules(list)<BR></FONT><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>If<BR></FONT><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>If<BR></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Sub</FONT></P>
+<P><FONT color=#0000ff size=2>Les</P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>fargs replied on Friday, August 04, 2006</h2><P>I have narrowed down the error. I think this might be a bug. I am using CSLA 2.1.</P>
+<P>When I add a validation rule to the property, everything works fine. But if I have a property without a validation rule in the grid, it will fail. </P>
+<P>I believe if the GetRulesForProperty(propertyName, <FONT color=#000080>False</FONT>) is changed to GetRulesForProperty(propertyName, <FONT color=#ff0000>True</FONT>), it might resolve the issue, but i'm not sure if that will break anything else.</P>
+<P>Will it?</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Brian Criswell replied on Friday, August 04, 2006</h2>I believe you are running in to this problem:<br>http://forums.lhotka.net/forums/permalink/4040/4164/ShowThread.aspx#4164<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>fargs replied on Friday, August 04, 2006</h2><P>That's great. Thanks. </P>
+<P>Where can I get the fix that Rocky has checked in?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Brian Criswell replied on Friday, August 04, 2006</h2>search the forums and Rocky's site for "CVS".<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Moe replied on Thursday, June 14, 2007</h2><P>There are two things to check: </P>
+<P>&nbsp;&nbsp;1. check that the property name&nbsp;matchs&nbsp;case in the object and in your binding expression&nbsp;&nbsp;&nbsp; "bind&nbsp;("PropertyName")" </P>
+<P>2. if you are using Datamapper class to populate your object, this class will cause this error if a text box is bound to an integer or decimal property. I had to modify&nbsp;The "<FONT size=2>SetPropertyValue()" method of this</FONT>&nbsp;class to make it work for me</P>
+<P>I marked the part I modified below</P><FONT color=#0000ff size=2>
+<P>Public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Sub</FONT><FONT size=2> SetPropertyValue( _</P>
+<P></FONT><FONT color=#0000ff size=2>ByVal</FONT><FONT size=2> target </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Object</FONT><FONT size=2>, </FONT><FONT color=#0000ff size=2>ByVal</FONT><FONT size=2> propertyName </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>String</FONT><FONT size=2>, _</P>
+<P></FONT><FONT color=#0000ff size=2>ByVal</FONT><FONT size=2> value </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Object</FONT><FONT size=2>)</P>
+<P></FONT><FONT color=#0000ff size=2>Dim</FONT><FONT size=2> propertyInfo </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> PropertyInfo = _</P>
+<P>target.GetType.GetProperty(propertyName)</P>
+<P></FONT><FONT color=#0000ff size=2>If</FONT><FONT size=2> value </FONT><FONT color=#0000ff size=2>Is</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Nothing</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Then</P></FONT><FONT size=2>
+<P>propertyInfo.SetValue(target, value, </FONT><FONT color=#0000ff size=2>Nothing</FONT><FONT size=2>)</P>
+<P></FONT><FONT color=#0000ff size=2>Else</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Dim</FONT><FONT size=2> pType </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> Type = Utilities.GetPropertyType(propertyInfo.PropertyType)</P>
+<P></FONT><FONT color=#0000ff size=2>Dim</FONT><FONT size=2> vType </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> Type = Utilities.GetPropertyType(value.GetType)</P>
+<P></FONT><FONT color=#0000ff size=2>If</FONT><FONT size=2> pType.Equals(vType) </FONT><FONT color=#0000ff size=2>Then</P></FONT><FONT size=2>
+<P></FONT><FONT color=#008000 size=2>' types match, just copy value</P></FONT><FONT size=2>
+<P>propertyInfo.SetValue(target, value, </FONT><FONT color=#0000ff size=2>Nothing</FONT><FONT size=2>)</P>
+<P></FONT><FONT color=#0000ff size=2>Else</P></FONT><FONT size=2>
+<P></FONT><FONT color=#008000 size=2>' types don't match, try to coerce types</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>If</FONT><FONT size=2> pType.Equals(</FONT><FONT color=#0000ff size=2>GetType</FONT><FONT size=2>(Guid)) </FONT><FONT color=#0000ff size=2>Then</P></FONT><FONT size=2>
+<P>propertyInfo.SetValue(target, </FONT><FONT color=#0000ff size=2>New</FONT><FONT size=2> Guid(value.ToString), </FONT><FONT color=#0000ff size=2>Nothing</FONT><FONT size=2>)</P>
+<P></FONT><FONT color=#0000ff size=2>ElseIf</FONT><FONT size=2> pType.IsEnum </FONT><FONT color=#0000ff size=2>AndAlso</FONT><FONT size=2> vType.Equals(</FONT><FONT color=#0000ff size=2>GetType</FONT><FONT size=2>(</FONT><FONT color=#0000ff size=2>String</FONT><FONT size=2>)) </FONT><FONT color=#0000ff size=2>Then</P></FONT><FONT size=2>
+<P>propertyInfo.SetValue( _</P>
+<P>target, System.Enum.Parse(pType, value.ToString), </FONT><FONT color=#0000ff size=2>Nothing</FONT><FONT size=2>)</P>
+<P></FONT><FONT color=#008000 size=2>' '------Modified Part Start Here -----</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>ElseIf</FONT><FONT size=2> pType.FullName = </FONT><FONT color=#a31515 size=2>"System.Int32"</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>And</FONT><FONT size=2> vType.FullName = </FONT><FONT color=#a31515 size=2>"System.String"</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Then</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>If</FONT><FONT size=2> value.Equals(</FONT><FONT color=#0000ff size=2>String</FONT><FONT size=2>.Empty) </FONT><FONT color=#0000ff size=2>Then</P></FONT><FONT size=2>
+<P>value = </FONT><FONT color=#a31515 size=2>"0"</P></FONT><FONT size=2>
+<P>propertyInfo.SetValue(target, _</P>
+<P>Convert.ChangeType(value, pType), </FONT><FONT color=#0000ff size=2>Nothing</FONT><FONT size=2>)</P>
+<P></FONT><FONT color=#0000ff size=2>Else</P></FONT><FONT size=2>
+<P>propertyInfo.SetValue(target, _</P>
+<P>Convert.ChangeType(value, pType), </FONT><FONT color=#0000ff size=2>Nothing</FONT><FONT size=2>)</P>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>If</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>ElseIf</FONT><FONT size=2> pType.FullName = </FONT><FONT color=#a31515 size=2>"System.Decimal"</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>And</FONT><FONT size=2> vType.FullName = </FONT><FONT color=#a31515 size=2>"System.String"</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Then</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>If</FONT><FONT size=2> value.Equals(</FONT><FONT color=#0000ff size=2>String</FONT><FONT size=2>.Empty) </FONT><FONT color=#0000ff size=2>Then</P></FONT><FONT size=2>
+<P>value = </FONT><FONT color=#a31515 size=2>"0"</P></FONT><FONT size=2>
+<P>propertyInfo.SetValue(target, _</P>
+<P>Convert.ChangeType(value, pType), </FONT><FONT color=#0000ff size=2>Nothing</FONT><FONT size=2>)</P>
+<P></FONT><FONT color=#0000ff size=2>Else</P></FONT><FONT size=2>
+<P>propertyInfo.SetValue(target, _</P>
+<P>Convert.ChangeType(value, pType), </FONT><FONT color=#0000ff size=2>Nothing</FONT><FONT size=2>)</P>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>If</P></FONT><FONT size=2>
+<P></FONT><FONT color=#008000 size=2>'-------------------------------------End of Modification---------------------------------------------------------</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Else</P></FONT><FONT size=2>
+<P>propertyInfo.SetValue(target, _</P>
+<P>Convert.ChangeType(value, pType), </FONT><FONT color=#0000ff size=2>Nothing</FONT><FONT size=2>)</P>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>If</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>If</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>If</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Sub</FONT></P>
+<P><FONT color=#0000ff size=2><FONT color=#000000>I hope this helps</FONT></FONT></P>
+<P><FONT color=#0000ff size=2><FONT color=#000000></FONT></FONT>&nbsp;</P>
+<P><FONT color=#0000ff size=2><FONT color=#000000>Moe</FONT></P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>skaue replied on Thursday, December 06, 2007</h2>Call me lazy, but does anyone have this in c#<br><br>The datamapper is driving me nutz atm :-/<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>skaue replied on Friday, December 07, 2007</h2>c# variant located here:<br>http://forums.lhotka.net/forums/permalink/19598/19598/ShowThread.aspx#19598<br><br>:-)<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

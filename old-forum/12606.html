@@ -1,0 +1,17 @@
+<html><header><title>Assigning default values to properties</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Assigning default values to properties</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/12606.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>mayurimalgave posted on Friday, May 02, 2014</h2><p>Hello..</p>
+<p>I have created a Silverlight&nbsp;application with&nbsp;CSLA. I want to assign default values to some of&nbsp;the BusinessBase class&#39;s properties, which are not bound to the UserControls.</p>
+<p>eg: 1] SysDate - The current datetime should be assigned to it.</p>
+<p>2] UserId - The current user&#39;s id should be assigned to it.</p>
+<p>These fields are not bound to UI.</p>
+<p>So, where should I assign these values in BusinessBase class?</p>
+<p>Or what is the best practice for handling such type of issue?</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>tiago replied on Saturday, May 03, 2014</h2><p>Hi,</p>
+<p>&nbsp;</p>
+<p>For CSLA 4.5 this is how I do it:</p>
+<p>&nbsp;</p>
+<p>/// &lt;summary&gt;<br />/// Loads default values for the &lt;see cref=&quot;Doc&quot;/&gt; object properties.<br />/// &lt;/summary&gt;<br />[Csla.RunLocal]<br />protected override void DataPortal_Create()<br />{<br /> &nbsp; &nbsp;LoadProperty(DocDateProperty, new SmartDate(DateTime.Today));<br /> &nbsp; &nbsp;base.DataPortal_Create();<br />}</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>mayurimalgave replied on Monday, May 05, 2014</h2><p>Thanks..I tried your suggestion&nbsp;&amp; it worked..</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Sunday, May 04, 2014</h2><p>Why do you need them in the BO?</p>
+<p>If you only use it for tracking of last changed/changed by in a database you do not need these properties in your BO. </p>
+<p>Use Csla.ApplicationContext.User.Name to get the userid and DateTime,.Now() to get the timestamp in your DataPortal_XYZ methods.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>mayurimalgave replied on Monday, May 05, 2014</h2><p style="margin:0cm 0cm 10pt;" class="MsoNormal"><span style="font-size:small;font-family:Calibri;">Thanks for reply..</span></p>
+<p style="margin:0cm 0cm 10pt;" class="MsoNormal"><span style="font-size:small;font-family:Calibri;">There are some&nbsp;dependent properties which need to be validated on UserId &amp; SysDate.</span></p>
+<p style="margin:0cm 0cm 10pt;" class="MsoNormal"><span style="font-size:small;font-family:Calibri;">So I am trying to initialize in BO.</span></p>
+<p style="margin:0cm 0cm 10pt;" class="MsoNormal"><span style="font-size:small;font-family:Calibri;">If any other way, please suggest.</span></p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Monday, May 05, 2014</h2><p>In this case you must initialize the values in DataPortal_Create and DataPortal_Fetch.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

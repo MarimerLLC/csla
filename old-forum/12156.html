@@ -1,0 +1,19 @@
+<html><header><title>Calling Stored Procs in v 3.0</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Calling Stored Procs in v 3.0</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/12156.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>akselsoft posted on Thursday, September 19, 2013</h2><p>I know....very old version --- I&#39;ve inherited this application and I had everything working perfectly until we turned on the data remoting. </p>
+<p>I&#39;m sure what I need to do is fairly simple - but since it&#39;s an older version, finding the right documentation is next to impossible.</p>
+<p>What&#39;s happening is that my call to a business object method is running locally instead of using the remote version. </p>
+<p>Now I&#39;m playing with different approaches (such as setting up weird constructs in the save) but all I want to do is call a method and be sure it&#39;s going to run on the server rather than the local connection.</p>
+<p>Can anyone help here?</p>
+<p>Thanks</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Friday, September 20, 2013</h2><p>I&#39;ll assume that your application uses DataPortal and is configured to use remoting. </p>
+<p>Basically - any call that is expected to go to the server must call the DataPortal.XYZ methods and the implementation must not have the [RunLocal] attribute applied as this will the DataPortl to run the method locally. </p>
+<p>So verify that:</p>
+<ul>
+<li>your Save method calls the (BusinessBase).Save() method (that in turn calls DataPortal.Update/Insert/Delete based on the metastate of the object)</li>
+<li>make sure that [RunLocal] attribute is not applied to the DataPortal_XYZ methods in your code.</li>
+<li>make sure your DataPortal is configured to use a remote server.&nbsp;</li>
+</ul>
+<p>The &quot;right documentation&quot; is readily available. </p>
+<ul>
+<li><a href="http://store.lhotka.net/Default.aspx?tabid=1560&amp;catpageindex=2&amp;ProductID=13">Using CSLA .NET 3.0</a> ebook is available in the CSLA Store and cover CSLA 3.0.2 in the samples. </li>
+<li><a href="http://www.apress.com/9781430210191">Expert C# 2008 Business Objects</a> book is available in both paper and ebook and cover CSLA 3.6</li>
+</ul>
+<p>&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,10 @@
+<html><header><title>Design Question:  Should I build up my objects through inheritance?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Design Question:  Should I build up my objects through inheritance?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3074.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>DeHaynes posted on Friday, June 22, 2007</h2><P>I am building a system to keep track of Employees.&nbsp; In the system, for each employee, I also keep track of family members AND Next of Kin.&nbsp; As I was coding the employee object, it struct me that I am going to need about 90% of the same code for a relative (family member)&nbsp;object and a Next of Kin object.&nbsp; So my question is:</P>
+<P>&nbsp;&nbsp;&nbsp;Should I build a generic Contact Object with all the basic data for a person.&nbsp;&nbsp; Then inherit from that to build a employee object,&nbsp;relative object and Next of Kin object?</P>
+<P>Thanks in advance.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>malloc1024 replied on Friday, June 22, 2007</h2>
+
+<p class="MsoNormal"><span>Inheritance
+should be based on behavior not data.<span>&nbsp;
+</span>Properties are data not behavior.<span>&nbsp;
+</span>If your object shares behavior, inheritance can be considered.<span>&nbsp; </span>However, keep in mind that you should favor composition
+over inheritance.</span></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>DeHaynes replied on Friday, June 22, 2007</h2><P>Thanks for the response.</P>
+<P>I had soon come to a similiar conclusion after writing that but I left it just in case someone had a different experience.</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,25 @@
+<html><header><title>Move Collection child to another collection</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Move Collection child to another collection</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9361.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Gravity00 posted on Wednesday, August 11, 2010</h2><p>Whats the best way to move a child of a collection to another collection?</p>
+<p>&nbsp;</p>
+<p>&nbsp;var &nbsp;newX = x.Clone();</p>
+<p>xCollection.Add(newX);</p>
+<p>&nbsp;</p>
+<p>OR</p>
+<p>var newX = xCollection.AddNew();</p>
+<p>but what to do with x?</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Wednesday, August 11, 2010</h2><p>This is in the FAQ: <a href="http://www.lhotka.net/cslanet/faq/CslaObjectFaq.ashx">http://www.lhotka.net/cslanet/faq/CslaObjectFaq.ashx</a></p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Gravity00 replied on Thursday, August 12, 2010</h2><p>Thanks.</p>
+<p>I&#39;m actually doing a copy. Is it true that Add(X x) and AddNew() differ in that &#39;AddNew&#39; marks the collection as IsDirty and &#39;Add&#39; doesn&#39;t?</p>
+<p>&nbsp;</p>
+<p>var newX = x.Clone();</p>
+<p>owner.xCollection.Add(newX);</p>
+<p>owner is NOT marked IsDirty (xCollection is a CSLA property of owner).</p>
+<p>AND</p>
+<p>owner.xCollection.AddNew();</p>
+<p>owner IS marked as IsDirty</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, August 12, 2010</h2><p>Add and AddNew are very different.</p>
+<p>AddNew causes AddNewCore to execute, which creates a new object and adds it to the collection. This doesn&#39;t add your existing object - it creates a new one. Since the new object is actually new, IsDirty and IsNew are both true - so the collection is dirty.</p>
+<p>Add accepts a &quot;new&quot; object as a parameter and adds that object to the collection. If the new object has IsDirty=false, then the collection won&#39;t be dirty.</p>
+<p>The IsDirty property of a collection is entirely dependent on whether any of its child objects are dirty.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Gravity00 replied on Thursday, August 12, 2010</h2><p>&quot;The IsDirty property of a collection is entirely dependent on whether any of its child objects are dirty.&quot;</p>
+<p>Thanks, that&#39;s the bit I missed!</p>
+<p>However, I noticed that when I removed a child form the collection the collection became IsDirty</p>
+<p>How come?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, August 12, 2010</h2><p>This is because the removed child is marked for deletion (so IsDeleted and IsDirty are true) and it is moved to DeletedList. When that collection is saved, that child is deleted from the database.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

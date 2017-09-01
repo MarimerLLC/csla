@@ -1,0 +1,12 @@
+<html><header><title>DataBinding WPF EditableChildCollection to a ListBox</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>DataBinding WPF EditableChildCollection to a ListBox</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6518.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Luzius posted on Thursday, February 26, 2009</h2><P>Hi,</P>
+<P>I have a question about DataBinding a Child-Collection to a ListBox:</P>
+<P>I have an editable root object TaskList which has some properties and also a editable ChildCollection TasksCollection which contains editable children of type Task.</P>
+<P>I used a CslaDataProvider to bind the whole TaskList to a Grid. I set the ObjectInstance in code.</P>
+<P>The Grid contains a ListBox which&nbsp;displays all Tasks.&nbsp;Each task has a CheckBox to finish the Task. Depending on whether the Task is finished I display different icons using data triggers.</P>
+<P>&nbsp;</P>
+<P>Everything&nbsp;is displayed correctly when it's loaded, but the Icon is not changed when the CheckBox is checked or unchecked.</P>
+<P>The TaskList does not fire the PropertyChanged event, but it fires the ChildChanged event.</P>
+<P>&nbsp;</P>
+<P>Since I'm new to CSLA and WPF, I'm pretty lost at the moment.</P>
+<P>Could anyone give me a hint? </P>
+<P>Thanks Luzius&nbsp;</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

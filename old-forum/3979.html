@@ -1,0 +1,14 @@
+<html><header><title>Re: PTMembershipProvider</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Re: PTMembershipProvider</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3979.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>ozitraveller posted on Monday, December 03, 2007</h2><P>Hi</P>
+<P>I'm hoping some might be able to help me. I want to implement the rest of this class, so I understand what is happening here. I'm no web developer, but I've been asked to do a website, so I based my site on PTracker and so far it's going ok. </P>
+<P>What I need to be able to do is allow valid users to download files, and admins to upload files to specific folders. And admins&nbsp;need to be able to edit any of the content.</P>
+<P>Cheers</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, December 04, 2007</h2><P>Assuming you have the forms authentication working in your web site (and I imagine you do if you followed PTWeb), the easiest answer is to use directory-level authorization.</P>
+<P>In ASP.NET you can create a subfolder in your virtual root. In that folder you can add a web.config file. In that file you can include the authorization elements in &lt;system.web&gt; and specify that items in the folder can only be accessed by a specific role.</P>
+<P>Then put your upload.aspx page (or whatever it is called) in that subfolder, and only people in that one role will be able to access the page.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ozitraveller replied on Tuesday, December 04, 2007</h2><P>Hi Rocky</P>
+<P>Yes I have forms authentication working.</P>
+<P>And thanks for the help.</P>
+<P>Cheers</P>
+<P>Ozi</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ozitraveller replied on Tuesday, December 04, 2007</h2><P>Hi </P>
+<P>I seem to have killed off debugging in switching from&nbsp;VS web server to IIS. Does anyone know whether there are any doc that cover this?</P>
+<P>Any help would be appreciated.</P>
+<P>Cheers</P>
+<P>Ozi</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

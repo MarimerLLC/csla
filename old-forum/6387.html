@@ -1,0 +1,90 @@
+<html><header><title>Binding Textbox to a child object Silverlight</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Binding Textbox to a child object Silverlight</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6387.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>danielw posted on Tuesday, February 10, 2009</h2><P>Hi All,</P>
+<P>I am having a bit of a problem getting my head around the best way of getting the following schenario to work,</P>
+<P>Problem<BR>I have a Root Object User which has a collection NextOfKins.<BR>Now I have set up my form with a CSLA Dataprovider that gets the the User, I then bind two way&nbsp;lots of text boxes to the Dataprovider&nbsp; User objectwhich works fine. <BR>I then have a&nbsp;combobox that is bound to the the NextOfKins followed by textboxes that I want to bind to the selected NextOfKin&nbsp;item in the combo box. The problem is I do not know what/how to bind these text boxes. </P>
+<P>I have tried to create a new Dataprovider with the type of NextOfKin and then in code setting the data property of this object but the property is readonly.</P>
+<P>I know I can bind a datagrid to the NextOfKin object through the dataprovider but there are a lot of properties on the NextOfKin so the grid would need to be massive and would be hard to read and edit.</P>
+<P>I also realise that I could create a new root Object NextOfKin and get that object when the combobox is changed but that means the user will need to save the nextofkin each time a change is made. I would rather have a single User object that can be saved once all the changes have been made.</P>
+<P>Is it possible to do as I would like I seem to be going round in&nbsp; circles at the moment</P>
+<P>Cheers</P>
+<P>Daniel<BR></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, February 10, 2009</h2><P>The way this is typically done in XAML is to set the grid's datacontext to the child object.</P>
+<P>Assuming your overall data context is the root object, you might have this:</P>
+<P>&lt;Grid DataContext="{Binding Source={StaticResource Mydata},Path=Data}" /&gt;</P>
+<P>Your normal controls use binding expressions just to set the Path.</P>
+<P>But you can always have a control set its DataContext, and if that's a container control, that new data context applies to all the controls it contains.</P>
+<P>I think you can do this:</P>
+<P>&lt;StackPanel DataContext="{Binding Path=ChildProperty}" /&gt;</P>
+<P>where 'ChildProperty' is the property of the root that refers to the child object.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>danielw replied on Tuesday, February 10, 2009</h2><P>Hi Rocky,</P>
+<P>Thanks for the reply.</P>
+<P>I can see how this works for a single Child Property. But will this work for a child collection the issue I have got is how to set the controls datacontext to a specific child of the collection. ie if i select the 5th child in the collection via the dropdown i need the controls to display the data. Does the Dataprovider know about current item.</P>
+<P>&nbsp;</P>
+<P>Cheers</P>
+<P>Daniel</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, February 10, 2009</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>This is what a ListBox is used for (or other similar list
+controls). List controls use a DataTemplate, and the controls inside that
+DataTemplate get bound to the current item in the list.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> danielw
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Tuesday, February 10, 2009 9:05 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] Binding Textbox to a child object Silverlight<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Hi Rocky,<o:p></o:p></p>
+
+<p>Thanks for the reply.<o:p></o:p></p>
+
+<p>I can see how this works for a single Child Property. But will this work for
+a child collection the issue I have got is how to set the controls datacontext
+to a specific child of the collection. ie if i select the 5th child in the
+collection via the dropdown i need the controls to display the data. Does the
+Dataprovider know about current item.<o:p></o:p></p>
+
+<p>&nbsp;<o:p></o:p></p>
+
+<p>Cheers<o:p></o:p></p>
+
+<p>Daniel<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>joemcd replied on Wednesday, February 11, 2009</h2><P>Daniel,</P>
+<P>Many 3rd party grids have a alternate "card" or "one record" view.&nbsp; This is the way I've always solved this problem.&nbsp; Bind to the grid and let it handle the 1-record-at-a-time issue.&nbsp;</P>
+<P>Joe</P>
+<P>&nbsp;</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

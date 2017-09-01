@@ -1,0 +1,28 @@
+<html><header><title>Performance enhancements</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Performance enhancements</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3400.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Ank posted on Monday, August 20, 2007</h2><P>Hello,</P>
+<P>My team and I&nbsp;are begining to experiment with CSLA for an upcoming project. The big question for us (especially due to the nature of the project) is performance. Are there any performance concerns with CSLA or any tips, best practices for CSLA to improve performance?</P>
+<P>Thanks,</P>
+<P>Ank</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Monday, August 20, 2007</h2><P>CSLA is very high performance.</P>
+<P>Datasets are significantly slower.</P>
+<P>Joe</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ozitraveller replied on Monday, August 20, 2007</h2><P>I found this significantly useful...</P>
+<P>CanReadProperty performance heads-up </P>
+<P><A HREF="/forums/thread/16637.aspx">http://forums.lhotka.net/forums/thread/16637.aspx</A></P>
+<P>&nbsp;</P>
+<P>and this too...</P>
+<P>Performance of creating large collection </P>
+<P><A HREF="/forums/thread/4044.aspx">http://forums.lhotka.net/forums/thread/4044.aspx</A></P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>skagen00 replied on Monday, August 20, 2007</h2><P>I think for the most part considerations of&nbsp;performance go far beyond CSLA or DataSet. </P>
+<P>This might involve making good use of caching, making sure one retrieves the right amount of data to get the job done, preparing the proper indexes for SQL, ... I truly do not believe that deciding CSLA or not CSLA has as anywhere near as much play on performance as the actual programming. </P>
+<P>I will say this - I wholly believe that it is entirely possible to build a good performing CSLA application as much as it is entirely possible to build a good performing "data-centric" or alternative business object approached business layer. That said, i think it's entirely possible to build a <EM>bad performing</EM> CSLA application (and data-centric application). </P>
+<P>In all sincerity I do not believe performance is a problem you will find&nbsp;with the CSLA framework if used properly. I think the reason one chooses CSLA is if they want to enable a strong business layer in their application. In our case, that is why we chose CSLA. </P>
+<P>Chris</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>triplea replied on Tuesday, August 21, 2007</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>skagen00:</strong></div><div> 
+<P>I think for the most part considerations of&nbsp;performance go far beyond CSLA or DataSet. </P>
+<P>This might involve making good use of caching, making sure one retrieves the right amount of data to get the job done, preparing the proper indexes for SQL, ... I truly do not believe that deciding CSLA or not CSLA has as anywhere near as much play on performance as the actual programming. </P>
+<P></div></BLOCKQUOTE></P>
+<P>I fully agree with this statement as well, since by performance I believe you are mostly referring to DB interaction time (ie how long it takes to perform search, save etc actions).</P>
+<P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>ozitraveller:</strong></div><div> </P>
+<P>CanReadProperty performance heads-up </P>
+<P><A HREF="/forums/thread/16637.aspx"><FONT color=#99aa99>http://forums.lhotka.net/forums/thread/16637.aspx</FONT></A></P>
+<P></div></BLOCKQUOTE></P>
+<P>I found the above to improve performance as well but more on the UI domain (rendering my custom user controls).</P>
+<P>Finally, consider what type of dataportal you will use. There are pros and cons in either approach and sometimes you have to compromise in some domains in order to achieve maximum performnace. But more on that in Rocky's book.</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

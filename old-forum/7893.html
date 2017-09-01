@@ -1,0 +1,93 @@
+<html><header><title>Question: Does anyone use the non-generic DataPortal methods?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Question: Does anyone use the non-generic DataPortal methods?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/7893.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka posted on Wednesday, October 28, 2009</h2><P>For some time now the data portal has had generic and non-generic methods:</P>
+<P>DataPortal.Fetch()</P>
+<P>DataPortal.Fetch&lt;T&gt;()</P>
+<P>I am curious as to whether anyone still uses the non-generic methods?</P>
+<P>I ask, because it would simplify life if I could get rid of them, and I'm considering eliminating them in version 4.0. But if there are sound reasons to have them I'd like to know.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>cdkisa replied on Wednesday, October 28, 2009</h2>I only use generics.
+
+My vote: simplify your life!</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>fussion_am replied on Wednesday, October 28, 2009</h2>I have not used the non-generic version for quite sometime.&nbsp; I too vote to simplify.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>chrisghardwick replied on Wednesday, October 28, 2009</h2>I think it would be time to upgrade your library if your still using the non-generic dataportal methods. </div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Wednesday, October 28, 2009</h2>I use the generic methods only.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rxelizondo replied on Wednesday, October 28, 2009</h2>I vote for removal too.<br /><br />And if you happen to feel inspired, don’t hesitate to remove just about everything else that you feel would simplify the CSLA. You have my 10000000% support.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Fintanv replied on Wednesday, October 28, 2009</h2>I use the generic methods only. You have my vote to remove them.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Wednesday, October 28, 2009</h2><P>Don't think I use non-generic calls either.&nbsp; Slightly off topic, but do you use the Obsolete attribute, or find it unnessary?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>chrduf replied on Wednesday, October 28, 2009</h2>You have my vote to remove them. It is very easy to migrate to the new syntax.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Marjon1 replied on Wednesday, October 28, 2009</h2>I'm not using them, so removing them is alright by me.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rxelizondo replied on Wednesday, October 28, 2009</h2>I was just thinking about this post and could not help but wonder, if we are going to go ahead and remove support for non generic data portals (which I agree with 100%), why not remove support for the other non generic features too. Why not clean up while we have the patient open?<br /><br />For example, page 351 of the book:<br />Note: It might seem like the RuleArgs parameter should just be of type DecoratedRuleArgs or MaxLengthRuleArgs, using the generic RuleHandler delegate. That would be ideal, but it would break backward compatibility with older versions of CLSA .NET, so I’ve chosen to take the approach shown here.<br /><br />Just search the e-book for the text “backward compatibility” and fix the CSLA so that you don’t have to used that word in the book ever again :)<br /><br />Man, I am sure that sooner or later someone is going to curse at me for ranting about this all the time. Sorry guys, that’s just the way I am!<br /></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, October 28, 2009</h2>One step at a time. I have other things I want to discuss regarding the business/validation rules subsystem - that'll be another thread (or two).</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>mbblum replied on Wednesday, October 28, 2009</h2>I'm in the process of updating our objects to 3.8 over the next couple months. If I find any, they will get changed to generics. <br /><br />Make the change is my recommendation. While it is "breaking" if not already being used, it is a relatively easy and desirable change to make during an upgrade.<br /></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>skagen00 replied on Wednesday, October 28, 2009</h2>No non-generic usage here either.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, October 28, 2009</h2>> No generic usage here either.<br /><br />No generic, or no non-generic?</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>skagen00 replied on Thursday, October 29, 2009</h2>No non-generic use - I corrected my post right after I misspoke but it was too late to stop the generated e-mails :)</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Thursday, October 29, 2009</h2>Hi, <br><br>We should only use the generic versions too but somtimes it is hard to tell if it is the generic or non-generic methd that is chosen by the compiler. <br><br>Example from the ProjectTracker.Library.Project.cs class ExistsCommand: <br><font size="2"><i>&nbsp;ExistsCommand result = null;<br>&nbsp;result = DataPortal.Execute(new ExistsCommand(id));</i></font><br><br>The compiler chooses the generic version even if the code does not explicitly say generic. <br><br>How about adding an Obsolete attribute and message "Change to ....., will be removed in Csla 4.0" on the non generic methods in DataPortal (and others that you will probably remove) . <br><br><br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, October 29, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Given the questions about the Obsolete attribute, I should maybe
+explain my plan.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>My plan is to eliminate the need for the criteria object to
+contain the target object type. So you do this:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>return DataPortal.Fetch&lt;CustomerEdit&gt;(new
+SingleCriteria&lt;int&gt;(id));<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Ideally I&#8217;ll derive a scheme where SingleCriteria isn&#8217;t
+necessary either:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>return DataPortal.Fetch&lt;CustomerEdit&gt;(id);<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Obviously the type of business object is critically important,
+so it must be available &#8211; and it is through the type parameter. Which means the
+non-generic methods would either entirely go away, or at best their method
+signatures would change to include a type parameter:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>return DataPortal.Fetch(typeof(CustomerEdit), id);<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>No matter how you look at it, the non-generic methods (as they
+are today) are going away.</span><b><span><o:p></o:p></span></b></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Thursday, October 29, 2009</h2><P>The plan makes sense.&nbsp; I bring up Obsolete though because since you've&nbsp;started handling&nbsp;Csla more like a framework as opposed to example code, it might make sense to have a more formal way to retire portions of the API.&nbsp; </P>
+<P>Slapping Obsolete on classes, methods, etc. once the decision has been made to abandon them I think would be a good idea.&nbsp; The attribute can be applied as a warning shot that "this code is likely going away soon."&nbsp; Maybe standardize the number of releases before the API is actually removed / no longer will work.&nbsp; As developers upgrade, the compiler will tell them what sections of code they need to pay attention to, and give them a chance to change before the API simply breaks.</P>
+<P>This might be a fair trade-off between keeping backward compatibilty while allowing the framework to continue to evolve as well.&nbsp; Maybe not as fast as some would like, but I think there are plenty that would rather it be slower too... so maybe this can be a compromise.</P>
+<P>Just an idea, anyway.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, October 29, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>True, I could put the attributes in 3.8.1 or something.</span><b><span><o:p></o:p></span></b></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rxelizondo replied on Thursday, October 29, 2009</h2>I have nothing against obsolete attributes but if all possible, please surround the code that will become obsolete with a conditional compilation symbol. This way, people can setup the project to not include such code when the CSLA is compiled.<br /><br />I say this because I am the kind of guy that is more into getting a compiler error than getting a compiler warning. Warnings can be easily overlooked, compiler errors are in your face messages. I have no need for backwards compatibility, if I use a new version of the framework then I adapt to the new code so warning are useless to me.<br /><br />This could also help you to make 100% sure that obsolete functionality is not part of new functionality as you refractor the CSLA.<br /></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Friday, October 30, 2009</h2><P><BLOCKQUOTE><div><img src="/Themes/basicblue/images/icon-quote.gif"> <strong>rxelizondo:</strong></div><div>I have nothing against obsolete attributes but if all possible, please surround the code that will become obsolete with a conditional compilation symbol. This way, people can setup the project to not include such code when the CSLA is compiled. I say this because I am the kind of guy that is more into getting a compiler error than getting a compiler warning. Warnings can be easily overlooked, compiler errors are in your face messages. I have no need for backwards compatibility, if I use a new version of the framework then I adapt to the new code so warning are useless to me. This could also help you to make 100% sure that obsolete functionality is not part of new functionality as you refractor the CSLA.</div></BLOCKQUOTE></P>
+<P>Please realize that you're NOT the only one actually using this framework.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rxelizondo replied on Friday, October 30, 2009</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>ajj3085:</strong></div><div><P>Please realize that you're NOT the only one actually using this framework.</P></div></BLOCKQUOTE><br /><br />Hi ajj3085<br /><br />I knew that sooner or later I would get in someone’s nerves with my “all in or all out” philosophies :)<br /><br />Of course I realize that I am not the only one that uses the CSLA, but I don’t see how adding a conditional compilation symbol in this case would cause any issues whatsoever with backwards compatibility. I only see benefits here.<br /><br />Am I missing something?<br /></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Saturday, October 31, 2009</h2>In the end Obsolete doesn't really play here, because the changes I'm talking about making require that the methods just plain go away - or at best change their signatures. Either way, marking them obsolete isn't meaningful in this particular context.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Henrik replied on Thursday, October 29, 2009</h2>I also vote for "killing" the non-generic DataPortal in 4.0.<br /></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Regent replied on Thursday, October 29, 2009</h2>I use the generic methods only too.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rasupit replied on Thursday, October 29, 2009</h2>Never use the non-generic ever since the existence of generic.&nbsp; I'm voting for removing the non-generic version too. <br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Russ replied on Thursday, October 29, 2009</h2>I currently support many CSLA based projects. I think I have kept all the evolving ones up to date. One way to be sure is to remove the non-generic methods. If it breaks I'll fix it or I'll simply leave the project referencing the older CSLA version.<br /><br />I much prefer simplicity and I encourage you to accelerate the removal of backward compatible interfaces for the following reasons:<br /><br />1) If you have created a better way to do something I may not always catch the blog and continue following the old pattern only to have to change all that code later.<br /><br />2) You will have less code to support and your next book will be a little thinner.<br /><br />3) Having fewer ways to do the same thing within the framework reduces the learning curve for new programmers. A lot of time is spent researching and comparing the available options.<br /><br />Just my opinion.<br /><br />Keep up the great work.<br /></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>TAC replied on Thursday, October 29, 2009</h2>I'd be happy for that change.<br><br>While your at it maybe consider removing the non-generic LoadProperty, or at least renaming it.<br>My problem with it is let's say we have a string property called 'Name'<br>to load it I would say...<br>LoadProperty(NameProperty, dr.GetString("Name"));<br>That's fine, but you don't actually get the strong type checking you'd expect, if you said...<br>LoadProperty(NameProperty, 5);<br>it would fall back on the non-generic method.<br><br>This is why I always say<br>LoadProperty&lt;string&gt;(NameProperty, dr.GetString("Name"));<br>but it would nice to not have to do that.<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

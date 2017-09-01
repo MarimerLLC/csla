@@ -1,0 +1,53 @@
+<html><header><title>CSLA 4.2.2 Broke&quot;ApplicationContext.User&quot;</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA 4.2.2 Broke&quot;ApplicationContext.User&quot;</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11154.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>rxelizondo posted on Monday, February 13, 2012</h2><p>
+<p>Hello,</p>
+<p>I&nbsp;decided&nbsp;to update from CSLA&nbsp;<span>4.1.0 to&nbsp;</span><span>4.2.2 and was expecting&nbsp;everything&nbsp;to&nbsp;continue&nbsp;to work&nbsp;seamlessly&nbsp;but that&nbsp;wasn&#39;t&nbsp;the case.</span></p>
+<p>One thing that I noticed is that the call to&nbsp;&quot;ApplicationContext.User&quot; on version 4.2.2 does not behave the same way as on version 4.1.0.</p>
+<p>I searched the change log and didn&#39;t find anything regarding breaking changes so I&nbsp;wasn&#39;t&nbsp;expecting&nbsp;the change on&nbsp;behavior.&nbsp;I did do a&nbsp;comparison&nbsp;between the two version of the &quot;ApplicationContext&quot; file and notice some significant changes.</p>
+<p>Anyway,&nbsp;I don&#39;t have time to dig in to see what is going on but I just wanted to bring up the issue.&nbsp;if someone know the reason for the change I&nbsp;would&nbsp;appreciated&nbsp;the feedback if not, I will probably investigate the issue further later on during the week.</p>
+<p>Thanks.</p>
+</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, February 13, 2012</h2><p>On what platform?</p>
+<p>There were changes to the way the web implementation was loaded to address a bug. I don&#39;t think we changed the actual implementation of the web or XAML providers though - just the way in which the web provider is loaded.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rxelizondo replied on Tuesday, February 28, 2012</h2><p>
+<p>Hi Rocky,</p>
+<p>Sorry for taking so long to get back to you. To answer your question, this is failing on a WPF application.</p>
+<p>I haven&rsquo;t had the chance to go back and try to figure out what exactly is going on but if I recall correctly, the issue occurs as follows:</p>
+<p>&nbsp; &nbsp;1)<span>	</span>I set the &quot;ApplicationContext.User&quot; value during application&nbsp;start up.</p>
+<p>&nbsp; &nbsp;2)<span>	</span> At some point or another without reason, the CSLA resets the &quot;ApplicationContext.User&quot; to null.</p>
+<p>This of course would cause all kinds of issue but the problem for me surfaced when the CSLA was executing one of the IsInRole rules because the IsInRole uses &quot;ApplicationContext.User&quot; internally and since &quot;ApplicationContext.User&quot; is null the application fails to resolve the rule.</p>
+<p>Thanks.</p>
+</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Tuesday, February 28, 2012</h2><p>Hi, </p>
+<p>Please make sure that Csla.Xaml.dll <b>is </b>present and Csla.Web <b>is not</b> present in your bin folder.</p>
+<p>The ApplicationContext manager is dynamically loaded based on the presence of either on dll&#39;s (types) in this prioritized sequence:</p>
+<ol>
+<li>Csla.Web.ApplicationContextManager</li>
+<li>Csla.Xaml.ApplicationContextManager</li>
+<li>Csla.ApplicationContext.ApplicationContextManager</li>
+</ol>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rxelizondo replied on Tuesday, February 28, 2012</h2><p>&nbsp;</p>
+<p>Ok, I guess I could try that but just to be clear, things are working fine on version 4.1, so does this means that the change in behavior&nbsp;is a breaking change introduced on version 4.2?</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Tuesday, February 28, 2012</h2><p>Yes, the &quot;4.1 ApplicationContext&quot;&nbsp; was moved to Csla.Xaml assembly and the default ApplicationContext stripped of Xaml application code to support Mono with the same codebase. </p>
+<p>And the Csla.Xaml ApplicationContext is loaded dynamically similar to Csla.Web.ApplicationContext in Csla 4.1.</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rxelizondo replied on Tuesday, February 28, 2012</h2><p>&nbsp;</p>
+<p>Just curious, what if I&nbsp;wasn&#39;t&nbsp;using XAML at all? What if I was using a Console application or Windows Forms&nbsp;application?</p>
+<p>Sorry if this is a silly question but I have not kept up to date with the CSLA.</p>
+<p>Thanks.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, February 28, 2012</h2><p>I talk about this in the Using CSLA 4 books.</p>
+<p>There are three environments we support: WPF, ASP.NET, and &#39;other&#39;. To support these we use a provider model to load the right implementation. We had to factor this out a bit to support mono, but the code is the same, just in different assemblies.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rxelizondo replied on Friday, March 16, 2012</h2><p>Ok, adding &quot;Csla.Xaml.dll&quot; appears to have fixed the problem but there was one small issue. &nbsp;&nbsp;I like to copy the folders containing the&nbsp;CSLA source code into my project (not just the dll) so when adding the &quot;Csla.Xaml&quot; project I got an error telling me that the &quot;Error.png&quot;, &quot;Information.png&quot; and &quot;Warning.png&quot; files where not found. The reason is because the &quot;files&quot; are actually shortcuts to real files located on the &quot;Csla.Silverlight&quot; project folder. Given the fact that there are people out there (like me) that could not possible care less about Silverlight, I wish the shortcuts where replaced with the actual files to avoid the issue. It would be a nice thing to do.</p>
+<p>&nbsp;</p>
+<p>Rocky, could you please tell me the <span>Using CSLA 4 </span>book name as well as the title of the section (page number would be great) that&nbsp;describes&nbsp;how the CSLA supports those three models. Specifically, I would like to know what i need to do to remove the dependency on&nbsp;&quot;Csla.Xaml.dll&quot;.</p>
+<p>Thanks.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, March 16, 2012</h2><p>Thankfully tables of contents are easy to read, and thankfully I put a TOC in each book. The User property topic is listed as an entry right in the TOC, because it is relatively important.</p>
+<p>As we&#39;re talking about WPF and Silverlight, you can probably imagine that the TOC to look at is in the <em>Using CSLA 4: WPF and Silverlight</em> book. That&#39;s where I looked anyway.</p>
+<p>And ... drum roll please ... looking at the TOC, the winning page is ... 31.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rxelizondo replied on Saturday, March 17, 2012</h2><p>&nbsp;</p>
+<p>Ok, judging from the way you responded to my post (in a sarcastic way) my guess is that I must have rubbed you the wrong way. Being the fact that this wasn&rsquo;t my intention I will try to redeem myself:</p>
+<p>If my comment about &quot;I could not care less about Silverlight&quot; sounded like a mindless rant or implied that I didn&rsquo;t appreciate the work you have done around Silverlight then I apologize, this wasn&rsquo;t my intention.</p>
+<p>If asking (right down to the page number) the book section that covers the &quot;User&quot; property topic sounds like I am asking for too much then you are obviously correct. The truth is that I had not even downloaded the Using WPF / Silverlight book or even looked into any of the other books when I asked the question and I should probably have put at least a minimum amount of effort looking for an answer.</p>
+<p>Again, I apologize, a lot of our focus has now move or is in the process of moving to Linux \ Android platforms so running into technical difficulties revolving around Microsoft based technologies has now turned away from what it used to be an exciting challenge and an opportunity to learn something new &nbsp;into nothing but frustration. So lately, instead of taking the time to investigate an issue I just&nbsp;immediately&nbsp;jump into posting looking for a quick answer or just to rant about it.</p>
+<p>I think I am going&nbsp;through&nbsp;a technology&nbsp;frustration&nbsp;phase, hope it will be over soon.</p>
+<p>Thanks for answering the question though!</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Saturday, March 17, 2012</h2><p>Sorry, I too am going through a frustrating and challenging period in my life right now, and I am finding it hard to have as much patience as necessary with people&#39;s technical frustration as they post on the forum. I really need to just not answer at all, rather than allowing everything else that&#39;s going on to spill over into this venue.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rxelizondo replied on Sunday, March 18, 2012</h2><p>
+<p>Rocky,&nbsp;</p>
+<p>No worries, keep up the good work, I certainly appreciate your efforts and patient... You know, I still remember picking up that Visual Basic 6 Business Objects book oh so many years ago (I think I got it from the Borders bookstore) it was a life changing event for me, you have been an inspiration to many of us and will always be number one in my books!</p>
+<p>Hope whatever is frustrating you will soon pass, just hang in there!</p>
+</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

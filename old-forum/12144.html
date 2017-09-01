@@ -1,0 +1,58 @@
+<html><header><title>Data type conversion in Business rule</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Data type conversion in Business rule</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/12144.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Arjun posted on Friday, September 06, 2013</h2><p>Hi,</p>
+<p>I have a business rule, Where i need to assign a value to the property. However, the tricky part is the casting the value to the type of property. </p>
+<p>For example: </p>
+<p>in business rule call:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; BusinessRules.AddRule(New AssignValueRule(NameProperty))</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; BusinessRules.AddRule(New AssignValueRule(AgeProperty))</p>
+<p>Here, name is string and Age is integer. So when i assign value in the busines rule &quot;AssignValueRule&quot;, i need to cast it to the property type, its&nbsp;something like below.</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Context.AddOutValue(PrimaryProperty, Cast(inputValue, TypeOf(PrimaryProperty))</p>
+<p>when rule called on &quot;NameProperty&quot; the inputValue should be casting to String. And when called on &quot;AgeProperty&quot;, inputValue should be casting to Integer.</p>
+<p>Please help me&nbsp;in&nbsp;implementing this.</p>
+<p>&nbsp;</p>
+<p>Thanks in advance.</p>
+<p>Arjun.</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>skagen00 replied on Friday, September 06, 2013</h2><p>can you have your AssignValueRule be a generic? AssignValueRule&lt;T&gt; : BusinessRule</p>
+<p>new AssignValueRule&lt;int&gt;(AgeProperty)</p>
+<p>new AssignValueRule&lt;string&gt;(NameProperty)</p>
+<p>Maybe I&#39;m not understanding your question fully though!</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Arjun replied on Friday, September 06, 2013</h2><p>Hi, </p>
+<p>So you mean, there should be separate rule for every type ?? one for integer and one for String and so on ??</p>
+<p>I am trying to write a business rule that applies to all properties irrespective of type. Any ideas ?</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>skagen00 replied on Friday, September 06, 2013</h2><p>What does your AssignValueRule do? What are you trying to accomplish?</p>
+<p>You do want to add a rule to each property though, no?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Arjun replied on Friday, September 06, 2013</h2><p>Hi,</p>
+<p>Please see my example. This business rule will be called for all properties in my business base class. Say I have 10 properties, (5 integers and 5 string). This business rule fetches values from other list and assign to corresponding property.</p>
+<p>the business rule call will be like this.</p>
+<p>BusinessRule.AddRule(New AssignValueRule(NameProperty))</p>
+<p>BusinessRule.AddRule(New AssignValueRule(AddressProperty))</p>
+<p>BusinessRule.AddRule(New AssignValueRule(IDProperty))</p>
+<p>BusinessRule.AddRule(New AssignValueRule(AgeProperty))</p>
+<p>&nbsp;</p>
+<p>....................and so on</p>
+<p>&nbsp;</p>
+<p>Now, the business rule should handle assigning the values as per the property types.</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>skagen00 replied on Friday, September 06, 2013</h2><p>Your initial e-mail lists:</p>
+<p>Cast(inputValue, TypeOf(PrimaryProperty))</p>
+<p>Since PrimaryProperty is an IPropertyInfo you&#39;re probably more wanting to do something like PrimaryProperty.Type (which would be the int or string)).</p>
+<p>Is your current problem that it&#39;s not casting right? Because what you have would try to cast the inputValue as a PropertyInfo.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Arjun replied on Tuesday, September 10, 2013</h2><p>Hi,</p>
+<p>yes I have a problem with casting. I am trying like this.</p>
+<p>Context.AddOutValue(PrimaryProperty, DirectCast(&lt;ValueToBeCasted&gt;, PrimaryProperty.Type))</p>
+<p>Here value to be casted is a property of string type. Whever PrimaryProperty is Integer, I want the &lt;ValueToBeCasted&gt; to convert to the type of primary property. </p>
+<p>But the statement I tried above is throwing a compile time error. So need help in way where i can achieve&nbsp;this conversion.</p>
+<p>Thanks,</p>
+<p>Arjun</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Saturday, September 07, 2013</h2><p>No, you have just one rule but this rule instance is aware of the actual type of the field.&nbsp;</p>
+<p>Look at CommonRules.MaxValue&lt;T&gt; and CommonRules.MinValue&lt;T&gt; rules. <br />These rules use the generic constraint to know the actual type of the property.&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Arjun replied on Tuesday, September 10, 2013</h2><p>Hi JonnyBee,</p>
+<p>You mean to say I need not do any casting ? But I got a runtime error when i implemented the rule without casting (like below). </p>
+<p>Context.AddOutValue(PrimaryProperty, &lt;InputValue&gt;) </p>
+<p>This work when PrimaryProperty is String. But when I invoke this rule on Integer, this throws an error. Please suggest an idea.</p>
+<p>&nbsp;</p>
+<p>Thanks,</p>
+<p>Arjun</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Friday, September 20, 2013</h2><p>Hi, </p>
+<p>My suggetion is to use a generic constraint on the rule (so you know the type of the field) and then use<i> Csla.Utilities.CoerceValue&lt;T&gt;</i> to convert the value to the new type. </p>
+<p><i>Csla.Utilities.CoerceValue </i>uses every technique available to convert the value into the desired type.</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

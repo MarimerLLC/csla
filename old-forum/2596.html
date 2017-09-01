@@ -1,0 +1,6 @@
+<html><header><title>GlobalContext Problem...</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>GlobalContext Problem...</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/2596.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>kbcb posted on Tuesday, March 27, 2007</h2><P>Hey... Was wondering if anyone could tell me why this doesn't work?:</P>
+<P>Csla.ApplicationContext.GlobalContext["ClientId"]&nbsp;= Client.GenerateNewId( );</P>
+<P>If I break after the above line of code, ApplicationContext.GlobalContext["ClientId"] is null. However, if I do the following, it works fine:</P>
+<P>Guid clientId = Client.GenerateNewId( );<BR>Csla.ApplicationContext.GlobalContext["ClientId"] = clientId;</P>
+<P>Don't understand what's going on here... My collegue and I figured that the compiler was holding the original reference of GlobalContext (before the GlobalContext was overwritten with the new one from the data portal) to set the data after the portal call is made.</P>
+<P>Could use some clarification on this. Thanks!</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

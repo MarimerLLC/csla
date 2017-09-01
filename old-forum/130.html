@@ -1,0 +1,23 @@
+<html><header><title>consolidating application configuration files..</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>consolidating application configuration files..</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/130.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>JCardina posted on Wednesday, May 17, 2006</h2><P>We have a rather large CSLA app that has grown to the app itself and a dozen add on programs and utilities.&nbsp; They all use the same exact configuration file settings and currently we instruct users to copy the main applications config file and rename it to the utility or add-on program name depending on which one they purchased or are using.</P>
+<P>This is ugly on it's own and particularly when they change their data source or something to say the least.&nbsp; I'm wondering if there is any reliable method to consolidate those configuration files into one single one "Global.config" or somethign that will work also with asp.net as well as winforms.</P>
+<P>I noticed that the new ConfigurationManager class in .net 2.x seems to support opening other config files but I can't make heads or tails of it so far.</P>
+<P>Any thoughts or ideas would be very welcome.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Skeeboe replied on Wednesday, May 17, 2006</h2>We modified CSLA to look in a default.config if it can't find an entry in the local app.config. That gives us the ability for each program have a different value for each setting or they can all use the default. I haven't looked into the ConfigurationManager in 2.0 yet.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jurjen replied on Thursday, May 18, 2006</h2><P><FONT face=Verdana size=2>I usually create&nbsp;a Common.Config with database and other settings.</FONT></P>
+<P><FONT face=Verdana size=2>Then from the various App.Config I refer to this Common.Config, this way you can still use your standard code to retrieve AppSettings values. No additional code needed. </FONT></P>
+<P><FONT face=Verdana size=2></FONT>&nbsp;</P>
+<P><FONT face=Verdana size=2>App.Config :</FONT></P>
+<P><FONT face=Verdana size=2>&lt;appSettings file="..\Common.Config" /&gt;</FONT></P>
+<P><FONT face=Verdana size=2>Or </FONT></P>
+<P><FONT face=Verdana size=2>&lt;appSettings file="..\Common.Config" &gt;</FONT></P>
+<P><FONT face=Verdana size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;add key="MyPath" value="C:\" /&gt;</FONT></P>
+<P><FONT face=Verdana size=2>&lt;/appSettings</FONT></P>
+<P><FONT face=Verdana size=2></FONT>&nbsp;</P>
+<P><FONT face=Verdana size=2>Common.Config :</FONT></P>
+<P><FONT face=Verdana size=2>&lt;?xml version="1.0" encoding="utf-8" ?&gt;</FONT></P>
+<P><FONT face=Verdana size=2>&lt;appSettings&gt;<BR>&nbsp;&nbsp;&lt;add key="DB:Security"&nbsp;&nbsp;&nbsp;&nbsp; value="....." /&gt;<BR>&lt;/appSettings&gt;<BR></FONT></P>
+<P><FONT face=Verdana size=2>Hope this helps...<BR>Jurjen.</FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JCardina replied on Thursday, May 18, 2006</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>Jurjen:</strong></div><div>
+<P><FONT face=Verdana size=2>I usually create&nbsp;a Common.Config with database and other settings.</FONT></P>
+<P><FONT face=Verdana size=2>Then from the various App.Config I refer to this Common.Config, this way you can still use your standard code to retrieve AppSettings values. No additional code needed. </FONT></P>
+<P></div></BLOCKQUOTE></P>
+<P>That helps a *lot*!&nbsp; I didn't know you could do that.</P>
+<P>I'll check that out, thank you very much for posting that.</P>
+<P>Cheers!</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

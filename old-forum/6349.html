@@ -1,0 +1,494 @@
+<html><header><title>Problems communicating with WCFHost (Silverlight)</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Problems communicating with WCFHost (Silverlight)</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6349.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jack posted on Thursday, February 05, 2009</h2>I am trying to run my first Silverlight App and I'm running into issues communicating with my WCF host.<br><br>I have the rolodex solution up and running and I mostly tried cut/paste from there.<br><br>I also have a WCFHost website running for a winforms test app using the same libraries and I can do my data retrieval through that.<br><br>My first attempt was to add a new Silverlight ServiceReference so I could share.&nbsp; I struggled and ended up with two services, one on wsHttpBindings and another with basicBindings as Silverlight wouldn't support the other.<br><br>I had been trying to create a service reference with the built in Add Service Reference dialogs but that seemed to create a lot of compile time issues so I reverted to creating a new wcf website and copied/pasted the serviceReference.ClientConfig from Rolodex.<br><br>I am able to open the site and I can even generate a config from the svcutil.exe app which looks almost just like the Rolodex one.<br><br>However as soon as I try to retrieve my data I get the following error:<br><br>An error occurred while trying to make a request to URI 'http://localhost:1686/EpmWCFHostSilverlight/WcfPortalSilverlight.svc'. This could be due to attempting to access a service in a cross-domain way without a proper cross-domain policy in place, or a policy that is unsuitable for SOAP services. You may need to contact the owner of the service to publish a cross-domain policy file and to ensure it allows SOAP-related HTTP headers to be sent. Please see the inner exception for more details.<br><br>{System.Security.SecurityException ---&gt; System.Security.SecurityException: Security error.<br>&nbsp;&nbsp; at System.Net.BrowserHttpWebRequest.InternalEndGetResponse(IAsyncResult asyncResult)<br>&nbsp;&nbsp; at System.Net.BrowserHttpWebRequest.&lt;&gt;c__DisplayClass5.&lt;EndGetResponse&gt;b__4(Object sendState)<br>&nbsp;&nbsp; at System.Net.AsyncHelper.&lt;&gt;c__DisplayClass2.&lt;BeginOnUI&gt;b__0(Object sendState)<br>&nbsp;&nbsp; --- End of inner exception stack trace ---<br>&nbsp;&nbsp; at System.Net.AsyncHelper.BeginOnUI(SendOrPostCallback beginMethod, Object state)<br>&nbsp;&nbsp; at System.Net.BrowserHttpWebRequest.EndGetResponse(IAsyncResult asyncResult)<br>&nbsp;&nbsp; at System.ServiceModel.Channels.HttpChannelFactory.HttpRequestChannel.HttpChannelAsyncRequest.CompleteGetResponse(IAsyncResult result)}<br><br>Any ideas?<br><br>thanks<br>jack<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, February 05, 2009</h2><P>The most common source of trouble here is that Visual Studio keeps switching the default startup project to the Silverlight client app, rather than the hosting web app.</P>
+<P>You must have your startup app be the web app, otherwise you'll end up going "cross domain" to two different portal on localhost.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jack replied on Thursday, February 05, 2009</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>It&#8217;s not that &#8211; I double checked a few times.&nbsp; I&#8217;m getting the
+Silverlight App opening and I can debug a few lines of code.&nbsp; I&#8217;m basically
+trying to simulate what the CompanyEditor.axml page is doing except I
+hard-coded my id#.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp; <span>void</span> Page_Loaded(<span>object</span> sender, <span>RoutedEventArgs</span>
+e)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span>CslaDataProvider</span>
+provider = <span>this</span>.Resources[<span>&quot;DataEntrySessionDataProvider&quot;</span>] <span>as</span> <span>CslaDataProvider</span>;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; provider.FactoryParameters.Add(4609);<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;provider.FactoryMethod = <span>&quot;GetDataEntrySession&quot;</span>;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; provider.Refresh();<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+}</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>As soon as I do the Refresh() it jumps to here:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>public</span><span> Csla.WcfPortal.WcfResponse EndFetch(System.<span>IAsyncResult</span> result) {<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span>object</span>[]
+_args = <span>new</span> <span>object</span>[0];<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Csla.WcfPortal.WcfResponse _result =
+((Csla.WcfPortal.WcfResponse)(<span>base</span>.EndInvoke(<span>&quot;Fetch&quot;</span>, _args, result)));<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span>return</span>
+_result;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+}</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> RockfordLhotka
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Thursday, February 05, 2009 1:01 PM<br>
+<b>To:</b> jaddington@alexandergracie.com<br>
+<b>Subject:</b> Re: [CSLA .NET] Problems communicating with WCFHost
+(Silverlight)<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>The most common source of trouble here is that Visual Studio keeps switching
+the default startup project to the Silverlight client app, rather than the
+hosting web app.<o:p></o:p></p>
+
+<p>You must have your startup app be the web app, otherwise you'll end up going
+&quot;cross domain&quot; to two different portal on localhost.<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>skagen00 replied on Thursday, February 05, 2009</h2><P>I was ramming my head against a wall with a problem communicating to the host too. When I was establishing my projects based off the silverlight ones, I set the assembly name for each project (in properties of the project) to be what I was used to- CompanyName.Application.Client and CompanyName.Application.Server (for my client/silverlight class library and my server class library, respectively).</P>
+<P>These need to be the same!! CompanyName.Application.Business is the route I took. </P>
+<P>It's hardly obvious but I hope that's your problem! </P>
+<P>Chris</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jack replied on Thursday, February 05, 2009</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I solved my issue but I do not really understand how.&nbsp; Any
+explanation would be appreciated.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>What I did was take the wcfHostWeb project from Rolodex and copied
+it into my solution.&nbsp; I tweaked the port so it didn&#8217;t conflict with
+Rolodex and it is working&#8230; <o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>So what is the difference?&nbsp; I believe I created a website
+vs. a webapp or is it just a webservice using WCF?&nbsp; I don&#8217;t really
+have a clue after banging my head so much&#8211; I&#8217;m using the WCF website
+I copied from PTracker for a winapp test window and the wcf proxy works fine.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>If I had a WPF and a Silverlight implementation should I have
+separate WCF project/site?&nbsp; Or can I have two different services?<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I don&#8217;t even want to start having to think about what the different
+binding options are&#8230; I had wsHttp for nonSilverlight and now
+basicHttpBindings for Silverlight.&nbsp; <o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Too many new things </span><span>J</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>jack<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> skagen00
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Thursday, February 05, 2009 2:31 PM<br>
+<b>To:</b> jaddington@alexandergracie.com<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: Problems communicating with WCFHost
+(Silverlight)<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>I was ramming my head against a wall with a problem communicating to the
+host too. When I was establishing my projects based off the silverlight ones, I
+set the assembly name for each project (in properties of the project) to be
+what I was used to- CompanyName.Application.Client and
+CompanyName.Application.Server (for my client/silverlight class library and my
+server class library, respectively).<o:p></o:p></p>
+
+<p>These need to be the same!! CompanyName.Application.Business is the route I
+took. <o:p></o:p></p>
+
+<p>It's hardly obvious but I hope that's your problem! <o:p></o:p></p>
+
+<p>Chris<o:p></o:p></p>
+
+<p>&nbsp;<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, February 05, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I don&#8217;t know what all you did, so can&#8217;t offer an
+explanation.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>The rules are relatively simple though.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Silverlight can talk to the site it came from with no extra
+effort.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>If it needs to talk to another site, that site must have a cross
+domain policy file to allow the communication.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>This is true for WCF, sockets, HTTP or any other server
+communication from Silverlight, and is a very necessary security precaution.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>In development environments this can be confusing, because it is
+easy to forget that each instance of Cassini is a different site &#8211; <a href="http://localhost:1234">http://localhost:1234</a> is different from <a href="http://localhost:6543">http://localhost:6543</a>. <o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>And because Visual Studio will create a temporary website to
+host/debug your Silverlight app if the app is set as the startup project, it is
+terribly easy to accidentally end up in a cross domain scenario you
+didn&#8217;t expect. I realize you said this wasn&#8217;t your issue &#8211;
+but it is the most common issue.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>The Rolodex app has two web sites: the one to host the SL app,
+and a separate one to host the server-side data portal components. The data
+portal host has a clientaccesspolicy.xml file to allow the SL app to interact
+with it. This was a conscious choice in implementing Rolodex, because it
+illustrates what I think will be a very common (perhaps the most common)
+scenario, where the web server and application server are separate machines.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jack replied on Friday, February 06, 2009</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I definitely didn&#8217;t have the </span><span>clientaccesspolicy.xml
+file or crossdomain.xml in the beginning but I did try copying them over &#8211;
+I just thought since I had the WCF working for the proxy from a winapp it would
+be a piece of cake </span><span>J</span><span>.&nbsp; <o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I will likely not worry too much about it until it becomes time
+to deploy and then concentrate on making sure I understand.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Maybe it was the server address thing, although I was aware of
+it from the forum, I had the Rolodex working fine, and I was checking my
+taskbar to see the addresses.&nbsp; Like anything when you are frantic and
+banging your head it&#8217;s likely that just starting from scratch would have
+done the trick.&nbsp; It gets so confusing when you have 3 web.configs open at
+once plus alt-tab back to everything in VS for Rolodex and google + the CSLA
+forums open </span><span>J</span><span>.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Going forward &#8211; If I am using the WCF proxy from different
+UI&#8217;s, can they all communicate through the same webapp or is that just
+asking for trouble?<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Thanks<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>jack</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Rockford Lhotka
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Thursday, February 05, 2009 8:21 PM<br>
+<b>To:</b> jaddington@alexandergracie.com<br>
+<b>Subject:</b> RE: [CSLA .NET] RE: Problems communicating with WCFHost
+(Silverlight)<o:p></o:p></span></p>
+
+</div>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal><span>I don&#8217;t know what all you did, so can&#8217;t offer an
+explanation.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>The rules are relatively simple though.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Silverlight can talk to the site it came from with no extra
+effort.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>If it needs to talk to another site, that site must have a cross
+domain policy file to allow the communication.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>This is true for WCF, sockets, HTTP or any other server
+communication from Silverlight, and is a very necessary security precaution.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>In development environments this can be confusing, because it is
+easy to forget that each instance of Cassini is a different site &#8211; <a href="http://localhost:1234">http://localhost:1234</a> is different from <a href="http://localhost:6543">http://localhost:6543</a>. <o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>And because Visual Studio will create a temporary website to
+host/debug your Silverlight app if the app is set as the startup project, it is
+terribly easy to accidentally end up in a cross domain scenario you
+didn&#8217;t expect. I realize you said this wasn&#8217;t your issue &#8211;
+but it is the most common issue.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>The Rolodex app has two web sites: the one to host the SL app,
+and a separate one to host the server-side data portal components. The data
+portal host has a clientaccesspolicy.xml file to allow the SL app to interact
+with it. This was a conscious choice in implementing Rolodex, because it
+illustrates what I think will be a very common (perhaps the most common)
+scenario, where the web server and application server are separate machines.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, February 06, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>The Silverlight data portal and .NET data portal are not the same.
+You can host both of them in the same virtual root, but they require different
+endpoints, and probably different WCF bindings.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>The Silverlight data portal uses the MobileFormatter, and is
+designed specifically to support Silverlight clients. There is no .NET proxy
+for interacting with this type of host.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>The .NET WcfHost in the data portal uses the
+NetDataContractSerializer, which doesn&#8217;t exist in Silverlight. It
+supports Windows clients (of all interface types), but won&#8217;t work with a
+Silverlight client.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Silverlight only works with the basicHttp binding in WCF, so the
+Silverlight WcfHost must use this binding.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Normally in .NET you&#8217;d use wsHttp binding because it
+offers more capabilities around security. I typically use this binding for
+Windows clients. basicHttp will work fine too, but you lose the more modern
+feature options.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Jack Addington
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Friday, February 06, 2009 7:46 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> RE: [CSLA .NET] RE: Problems communicating with WCFHost
+(Silverlight)<o:p></o:p></span></p>
+
+</div>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal><span>I definitely didn&#8217;t have the clientaccesspolicy.xml file
+or crossdomain.xml in the beginning but I did try copying them over &#8211; I
+just thought since I had the WCF working for the proxy from a winapp it would
+be a piece of cake </span><span>J</span><span>.&nbsp; <o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I will likely not worry too much about it until it becomes time
+to deploy and then concentrate on making sure I understand.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Maybe it was the server address thing, although I was aware of
+it from the forum, I had the Rolodex working fine, and I was checking my
+taskbar to see the addresses.&nbsp; Like anything when you are frantic and banging
+your head it&#8217;s likely that just starting from scratch would have done the
+trick.&nbsp; It gets so confusing when you have 3 web.configs open at once plus
+alt-tab back to everything in VS for Rolodex and google + the CSLA forums open </span><span>J</span><span>.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Going forward &#8211; If I am using the WCF proxy from different
+UI&#8217;s, can they all communicate through the same webapp or is that just
+asking for trouble?<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Thanks<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Jack</span><b><span><o:p></o:p></span></b></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

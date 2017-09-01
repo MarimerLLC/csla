@@ -1,0 +1,12 @@
+<html><header><title>WPF data binding</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>WPF data binding</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9068.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Gravity00 posted on Friday, June 11, 2010</h2><p>Hi,</p>
+<p>&nbsp;</p>
+<p>I have a BusinessList Base class &#39;Roster&#39; which has a factory method &quot;FetchAll&quot;. I am databinding this to a listbox using an ObjectDataProvider</p>
+<p>&lt;ObjectDataProvider x:Key=&quot;roster&quot; ObjectType=&quot;bo:Roster&quot; &nbsp;MethodName=&quot;FetchAll&quot;/&gt;</p>
+<p>&nbsp;</p>
+<p>I have a button for deleting an item from the list. In the code behind how do I get access to the object returned from the factory method?</p>
+<p>I tried&nbsp;</p>
+<p>_roster = (Roster)(FindResource(&quot;roster&quot;) as ObjectDataProvider).ObjectInstance;</p>
+<p>but it return a emply collection?</p>
+<p>Cheers</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Friday, June 11, 2010</h2><p>You should consider using CslaDataProvider, as it understands the static factory method model recommended for CSLA objects. I don&#39;t think the ObjectDataProvider works? I know it didn&#39;t work originally, though perhaps Microsoft changed something in .NET 3.5.</p>
+<p>Even so, the CslaDataProvider includes other CSLA-specific features and functionality that you&#39;ll almost certainly find useful.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

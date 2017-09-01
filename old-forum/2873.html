@@ -1,0 +1,46 @@
+<html><header><title>Verifying MarkOld call on dataportal (IsDirty not reset)</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Verifying MarkOld call on dataportal (IsDirty not reset)</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/2873.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>NickTower posted on Tuesday, May 15, 2007</h2><P>My basic question is how can I set a breakpoint on my businessbase MarkOld method to see that it gets called by the simpledataportal on the server?</P>
+<P>My issue is after saving a&nbsp;list of businessbase objects that have been edited in a datagridview, that my list is still showing IsDirty = True.</P>
+<P>Any help would be much appreciated.</P>
+<P>Nick</P>
+<P>P.S.&nbsp; I saw&nbsp;another post&nbsp;where Rocky mentioned using the bindingsource EndEdit call prior to saving to the DB, but that hasn't helped.&nbsp; Here's my code for save button click:</P><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>If</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Not</FONT><FONT size=2> mSuppliers.IsDirty </FONT><FONT color=#0000ff size=2>Then</P></FONT><FONT size=2>
+<P>&nbsp; MainForm.StatusLabel.Text = </FONT><FONT color=#a31515 size=2>"Already saved."</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>&nbsp; Exit</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Sub</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>If</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Me</FONT><FONT size=2>.SupplierListBindingSource.RaiseListChangedEvents = </FONT><FONT color=#0000ff size=2>False</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Me</FONT><FONT size=2>.SupplierListBindingSource.EndEdit()</P>
+<P></FONT><FONT color=#0000ff size=2>Dim</FONT><FONT size=2> temp </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> SupplierList = mSuppliers.Clone</P>
+<P></FONT><FONT color=#0000ff size=2>Try</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>&nbsp; Using</FONT><FONT size=2> busy </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> StatusBusy = </FONT><FONT color=#0000ff size=2>New</FONT><FONT size=2> StatusBusy(</FONT><FONT color=#a31515 size=2>"Saving Supplier List..."</FONT><FONT size=2>)</P>
+<P></FONT><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp; Me</FONT><FONT size=2>.SupplierListBindingSource.DataSource = </FONT><FONT color=#0000ff size=2>Nothing</P></FONT><FONT size=2>
+<P>&nbsp;&nbsp;&nbsp; mSuppliers = temp.Save</P>
+<P></FONT><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp; Me</FONT><FONT size=2>.SupplierListBindingSource.DataSource = mSuppliers</P>
+<P></FONT><FONT color=#0000ff size=2>&nbsp; End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Using</P></FONT><FONT size=2>
+<P>&nbsp; MainForm.StatusLabel.Text = </FONT><FONT color=#a31515 size=2>"Last Saved "</FONT><FONT size=2> &amp; Now.ToString</P>
+<P></FONT><FONT color=#0000ff size=2>Catch</FONT><FONT size=2> ex </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> Csla.DataPortalException</P>
+<P>MessageBox.Show(ex.BusinessException.ToString, </FONT><FONT color=#a31515 size=2>"Error Saving"</FONT><FONT size=2>, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)</P>
+<P></FONT><FONT color=#0000ff size=2>Catch</FONT><FONT size=2> ex </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> Exception</P>
+<P>MessageBox.Show(ex.ToString, </FONT><FONT color=#a31515 size=2>"Error Saving"</FONT><FONT size=2>, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)</P>
+<P></FONT><FONT color=#0000ff size=2>Finally</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Me</FONT><FONT size=2>.SupplierListBindingSource.RaiseListChangedEvents = </FONT><FONT color=#0000ff size=2>True</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Try</P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>NickTower replied on Tuesday, May 15, 2007</h2><P>I apologize, this is the code for saving my list to the dataporal, seeing rocky's notes in the book that distinguish between local and remote portal saving.</P>
+<P>Nick</P>
+<P>----</P><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>If</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Not</FONT><FONT size=2> mSuppliers.IsDirty </FONT><FONT color=#0000ff size=2>Then</P></FONT><FONT size=2>
+<P>MainForm.StatusLabel.Text = </FONT><FONT color=#a31515 size=2>"Already saved."</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Exit</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Sub</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>If</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Me</FONT><FONT size=2>.SupplierListBindingSource.EndEdit()</P>
+<P></FONT><FONT color=#0000ff size=2>Me</FONT><FONT size=2>.SupplierListBindingSource.RaiseListChangedEvents = </FONT><FONT color=#0000ff size=2>False</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Try</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Using</FONT><FONT size=2> busy </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> StatusBusy = </FONT><FONT color=#0000ff size=2>New</FONT><FONT size=2> StatusBusy(</FONT><FONT color=#a31515 size=2>"Saving Supplier List..."</FONT><FONT size=2>)</P></FONT><FONT size=2>
+<P>mSuppliers = mSuppliers.Save</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Using</P></FONT><FONT size=2>
+<P>MainForm.StatusLabel.Text = </FONT><FONT color=#a31515 size=2>"Last Saved "</FONT><FONT size=2> &amp; Now.ToString</P>
+<P></FONT><FONT color=#0000ff size=2>Catch</FONT><FONT size=2> ex </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> Csla.DataPortalException</P>
+<P>MessageBox.Show(ex.BusinessException.ToString, </FONT><FONT color=#a31515 size=2>"Error Saving"</FONT><FONT size=2>, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)</P>
+<P></FONT><FONT color=#0000ff size=2>Catch</FONT><FONT size=2> ex </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> Exception</P>
+<P>MessageBox.Show(ex.ToString, </FONT><FONT color=#a31515 size=2>"Error Saving"</FONT><FONT size=2>, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)</P>
+<P></FONT><FONT color=#0000ff size=2>Finally</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Me</FONT><FONT size=2>.SupplierListBindingSource.RaiseListChangedEvents = </FONT><FONT color=#0000ff size=2>True</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Try</P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, May 15, 2007</h2>The data portal only calls MarkOld on the root object. If you are saving a list of objects, then the objects in the list are child objects and <EM>you</EM> must call MarkOld yourself within those objects.</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

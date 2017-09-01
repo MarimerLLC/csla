@@ -1,0 +1,11 @@
+<html><header><title>Persisting Child Objects</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Persisting Child Objects</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/2997.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>OzMaqsood posted on Thursday, June 07, 2007</h2><P>Hi all,</P>
+<P>I'm new to the world of CSLA but a quick question to ask.</P>
+<P>Basically I have a Root object which contains a single Child object. </P>
+<P>One of the properties on the Child object is modified and the object is marked as Dirty.</P>
+<P>The UI calls Root.Save to save the changes to the database. Within the Root.DataPortal_Update method, the Child changes are saved via a call to the Child.Update method.</P>
+<P>However the Child object does not get saved. This is because the Root object has not changed and IsDirty returns false. It seems like the Child object will only be saved if the Root object has changed.</P>
+<P>A simple solution is to call Child.Save within the Root.Save method. Is this the right thing to do?</P>
+<P>Thanks</P>
+<P>Oz</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Thursday, June 07, 2007</h2>No, you need to override the IsDirty and IsValid properties on the parent to include the state of the child.. like this:<br><br>public override bool IsDirty {<br>&nbsp; get { return base.IsDirty || myChild.IsDirty; }<br>}<br><br><br>public override bool IsValid {<br>
+&nbsp; get { return base.IsValid &amp;&amp; myChild.IsValid ; }<br>
+}</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>OzMaqsood replied on Thursday, June 07, 2007</h2>Thanks a lot!</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

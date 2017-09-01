@@ -1,0 +1,20 @@
+<html><header><title>Problem keeping total of child list amounts</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Problem keeping total of child list amounts</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/2863.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>mikeclimbs posted on Monday, May 14, 2007</h2><P>I have a Editable Root Parent(TransactionHeader) with a Child List(TransactionDetails) that contains an&nbsp;amount&nbsp;field(&nbsp;Debit ).&nbsp; Also I have a Calculated Property in the parent TotalDebits.&nbsp; TotalDebits is updated using the ListChanged event.&nbsp; The TotalDebits field is used for&nbsp;validation and is also bound to a label in the UI</P>
+<P>Editing of the child is done via a grid</P>
+<P>The issue is everytime the TotalDebits property is updated by the ListChanged event the grid refreshes and sets focus back to the first row.</P>
+<P>Is there a better way to handle totaling the child list.</P>
+<P>I'm using&nbsp; Csla 2.14 and VB</P>
+<P>Thanks </P>
+<P>Mike</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, May 14, 2007</h2><P>If I understand correctly, your root object handles ListChanged and loops through the children to re-total the value, then raises its own PropertyChanged to indicate that the total value is updated?</P>
+<P>I do this sort of thing all the time without such an issue.</P>
+<P>Something at the UI level is grabbing focus. Objects and events can't alter focus - it is almost certainly code in your UI that is the issue.</P>
+<P>Do you have any UI code to handle ListChanged or PropertyChanged? Do you have any code handling a changed (or other) event for that textbox? Or any other control outside the grid?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>mikeclimbs replied on Monday, May 14, 2007</h2><P>Rocky,</P>
+<P>Thanks for the help,&nbsp; I'll review my UI for the culprit</P>
+<P>Thanks</P>
+<P>Mike</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>mikeclimbs replied on Monday, May 14, 2007</h2><P>Rocky,</P>
+<P>As usual you were right.&nbsp; My UI was the issue.</P>
+<P>I'm using a devexpress grid and they have a property KeepFocusedRowOnUpdate that defaults to true.&nbsp; When&nbsp;true it moves focus off new rows on update.&nbsp; Changing it to false solved my issue.</P>
+<P>Thanks</P>
+<P>Mike</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

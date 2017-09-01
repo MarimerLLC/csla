@@ -1,0 +1,30 @@
+<html><header><title>Strange Problem Trying to Mark Object as 'Dirty'</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Strange Problem Trying to Mark Object as 'Dirty'</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/1175.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Bonio posted on Sunday, September 10, 2006</h2><P>This is really stumping me?? I have a C1 flexgrid bound to a Supplier object via a databinding source. I have a collection of SupplierContacts in the object and in the&nbsp;Supplier object. One of the fields of the&nbsp;SupplierContact object is boolean marked 'DefaultShipping'.</P>
+<P>The flexgrid is bound to the SupplierContacts list and shows addresses plus the DefaultShipping as a checkbox. I need to enforce one rule for DefaultShipping - there must always be one and <U>only one</U> DefaultShipping checked in the list at one time. To achieve this rule, I wrote a loop in the 'set' part of the DefaultShipping that would reset other contacts if this particular contact had DefaultShipping set to true.</P>
+<P>When I test it in the flexgrid, the property is called and the value is being set correctly&nbsp; and being marked 'Dirty' (and I can see this in a 'watch'), however, after PropertyChanged as been called, the 'IsDirty' is reset to false and hence I cannot save?? I am using the latest version of CSLA 2 from Rocky's CVS.</P>
+<P>Any ideas why this property won't stay dirty - I have not events etc attached,</P>
+<P>&nbsp;</P>
+<P>Thanks</P>
+<P>&nbsp;</P>
+<P>Bonio</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Bonio replied on Sunday, September 10, 2006</h2><P>As a follow-up, I think I have pinpointed the problem area:</P>
+<P>When I initially load the form, I can edit the checkboxes on the flexgrid and the IsDirty flag is set and I can save. Following this first save though, the IsDirty flag is set when I change a checkbox but it appears to be reset prior to a save.</P>
+<P>I have two flexgrids on the form - a SupplierContacts and a SupplierContactPhone (1:many rel). I have three databinding sources - the main SupplierEO one, one for SupplierContactList and one for SupplierContactPhoneList.</P>
+<P>I use the Clone before Save method shown in Rocky's book - I have found that if I remove the clone bit and just save the object, there is no problem with the IsDirty flag (although I get an error with timestamps in my stored proc :( ) . If I use the Clone method, the IsDirty problem seems start after the first save on the object.</P>
+<P>I will now proceed to bang my head against a wall until I find an answer :s</P>
+<P>Bonio</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Sunday, September 10, 2006</h2>Just guessing here, but I bet that data binding is calling CancelEdit on your object(s), thus resetting the dirty flag.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Bonio replied on Sunday, September 10, 2006</h2><P>Hi Rocky,</P>
+<P>Thanks for the reply.</P>
+<P>How can I prevent the databinding calling CancelEdit??</P>
+<P>Thanks again</P>
+<P>Bonio</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Sunday, September 10, 2006</h2>
+
+
+
+
+<DIV align=left><SPAN class=561523800-11092006><FONT face=Arial color=#0000ff size=2>I don't know that you can - nor do I know if this is 
+actually the problem - you need to confirm that this is what is happening before 
+you can try to find a solution.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=561523800-11092006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=561523800-11092006><FONT face=Arial color=#0000ff size=2>One possibility is that you might need to call EndEdit on 
+the bindingsource or something along that line.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=561523800-11092006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=561523800-11092006><FONT face=Arial color=#0000ff size=2>Rocky</FONT></SPAN></DIV></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

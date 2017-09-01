@@ -1,0 +1,65 @@
+<html><header><title>Code checking for local dataportal vs. remote dataportal</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Code checking for local dataportal vs. remote dataportal</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5208.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>xxxJasonxxx posted on Thursday, August 07, 2008</h2><P>What is the smartest way for my&nbsp;object/app to determine if it is currently running using a local dataportal or a remote dataportal?</P>
+<P>I know I could find out by checking the config file, but I was wondering if CSLA has a shortcut property somewhere specifically for this purpose.</P>
+<P>We want different code to run depending on whether it is local dataportal or remote dataportal&nbsp;(really the issue is whether or not the serialization is going to happen - my understanding is that in local the serialization does not happen).</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rsbaker0 replied on Thursday, August 07, 2008</h2><P>Here is a method I have that does it:</P>
+<P>&nbsp;</P><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>public</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>static</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>void</FONT></FONT><FONT size=2> NotAllowedOnClient()</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>if</FONT></FONT><FONT size=2> (</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>ApplicationContext</FONT></FONT><FONT size=2>.DataPortalProxy != </FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>"Local"</FONT></FONT><FONT size=2> &amp;&amp;</P>
+<P></FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>ApplicationContext</FONT></FONT><FONT size=2>.ExecutionLocation == </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>ApplicationContext</FONT></FONT><FONT size=2>.</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>ExecutionLocations</FONT></FONT><FONT size=2>.Client)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>throw</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>new</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>NotSupportedException</FONT></FONT><FONT size=2>(</FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>"Illegal client method call with remote server portal in use"</FONT></FONT><FONT size=2>);</P>
+<P>}</P>
+<P>}</P>
+<P>(Off topic: Does any one know how to cut/paste code here so it looks nice?)</P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>nermin replied on Thursday, August 07, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>You could use ApplicationContext.DataPortalProxy property to
+determine that (LocalProxy, WcfProxy,&#8230;)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> xxxJasonxxx
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Thursday, August 07, 2008 3:37 PM<br>
+<b>To:</b> Nermin Dibek<br>
+<b>Subject:</b> [CSLA .NET] Code checking for local dataportal vs. remote
+dataportal<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>What is the smartest way for my&nbsp;object/app to determine if it is
+currently running using a local dataportal or a remote dataportal?<o:p></o:p></p>
+
+<p>I know I could find out by checking the config file, but I was wondering if CSLA
+has a shortcut property somewhere specifically for this purpose.<o:p></o:p></p>
+
+<p>&nbsp;<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

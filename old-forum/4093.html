@@ -1,0 +1,183 @@
+<html><header><title>DataPortal.Fetch failed (Invalid operation - fetch not allowed)</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>DataPortal.Fetch failed (Invalid operation - fetch not allowed)</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4093.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>ataylorm posted on Wednesday, December 26, 2007</h2><P>Ugg...&nbsp; So I am getting this error message when trying to create an instance of my child class by calling:<FONT size=2></P>
+<P></FONT><FONT color=#2b91af size=2>UserAccount</FONT><FONT size=2> tmpAccount = </FONT><FONT color=#2b91af size=2>UserAccount</FONT><FONT size=2>.GetUserAccountByUserID(tmpUser.UserID);</P></FONT>
+<P>Any ideas what I have wrong in my child class?</P>
+<P>THANKS!!!!!</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P><FONT size=2>
+<P>[</FONT><FONT color=#2b91af size=2>Serializable</FONT><FONT size=2>()]</P>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>class</FONT><FONT size=2> </FONT><FONT color=#2b91af size=2>UserAccount</FONT><FONT size=2> : Csla.</FONT><FONT color=#2b91af size=2>BusinessBase</FONT><FONT size=2>&lt;</FONT><FONT color=#2b91af size=2>UserAccount</FONT><FONT size=2>&gt;</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>private</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>string</FONT><FONT size=2> _id;</P>
+<P></FONT><FONT color=#0000ff size=2>private</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>string</FONT><FONT size=2> _PhoneNumber;</P>
+<P></FONT><FONT color=#0000ff size=2>private</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>string</FONT><FONT size=2> _MobileNumber;</P>
+<P>&nbsp;</P>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>string</FONT><FONT size=2> id</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>get</P></FONT><FONT size=2>
+<P>{</P>
+<P>CanReadProperty(</FONT><FONT color=#0000ff size=2>true</FONT><FONT size=2>);</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> _id;</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>set</P></FONT><FONT size=2>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (_id != </FONT><FONT color=#0000ff size=2>value</FONT><FONT size=2>)</P>
+<P>{</P>
+<P>_id = </FONT><FONT color=#0000ff size=2>value</FONT><FONT size=2>;</P>
+<P>PropertyHasChanged(</FONT><FONT color=#a31515 size=2>"id"</FONT><FONT size=2>);</P>
+<P>}</P>
+<P>}</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>string</FONT><FONT size=2> PhoneNumber</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>get</P></FONT><FONT size=2>
+<P>{</P>
+<P>CanReadProperty(</FONT><FONT color=#0000ff size=2>true</FONT><FONT size=2>);</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> _PhoneNumber;</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>set</P></FONT><FONT size=2>
+<P>{</P>
+<P>_PhoneNumber = </FONT><FONT color=#0000ff size=2>value</FONT><FONT size=2>;</P>
+<P>PropertyHasChanged(</FONT><FONT color=#a31515 size=2>"PhoneNumber"</FONT><FONT size=2>);</P>
+<P>}</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>string</FONT><FONT size=2> MobileNumber</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>get</P></FONT><FONT size=2>
+<P>{</P>
+<P>CanReadProperty(</FONT><FONT color=#0000ff size=2>true</FONT><FONT size=2>);</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> _MobileNumber;</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>set</P></FONT><FONT size=2>
+<P>{</P>
+<P>_MobileNumber = </FONT><FONT color=#0000ff size=2>value</FONT><FONT size=2>;</P>
+<P>PropertyHasChanged(</FONT><FONT color=#a31515 size=2>"MobileNumber"</FONT><FONT size=2>);</P>
+<P>}</P>
+<P>}</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></FONT><FONT color=#0000ff size=2>
+<P>#region</FONT><FONT size=2> Business Methods</P>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>string</FONT><FONT size=2> Tester()</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> </FONT><FONT color=#a31515 size=2>"tester"</FONT><FONT size=2>;</P>
+<P>}</P>
+<P>&nbsp;</P>
+<P></FONT><FONT color=#0000ff size=2>protected</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>override</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>object</FONT><FONT size=2> GetIdValue()</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> _id;</P>
+<P>}</P></FONT><FONT color=#0000ff size=2>
+<P>#endregion</P>
+<P>#region</FONT><FONT size=2> Validation Rules</P>
+<P></FONT><FONT color=#0000ff size=2>protected</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>override</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>void</FONT><FONT size=2> AddBusinessRules()</P>
+<P>{</P></FONT><FONT color=#008000 size=2>
+<P>// ValidationRules.AddRule&lt;Role&gt;(NoDuplicates, "Id");</P>
+<P>// ValidationRules.AddRule(</P>
+<P>// Csla.Validation.CommonRules.StringRequired, "Name");</P></FONT><FONT size=2>
+<P>}</P></FONT><FONT color=#008000 size=2>
+<P>// private static bool NoDuplicates&lt;T&gt;(T target, Csla.Validation.RuleArgs e) where T: Role</P>
+<P>// {</P>
+<P>// Roles parent = (Roles)target.Parent;</P>
+<P>// if (parent != null)</P>
+<P>// {</P>
+<P>// foreach (Role item in parent)</P>
+<P>// if (item.Id == target._id &amp;&amp; !ReferenceEquals(item, target))</P>
+<P>// {</P>
+<P>// e.Description = "Role Id must be unique";</P>
+<P>// return false;</P>
+<P>// }</P>
+<P>// }</P>
+<P>// return true;</P>
+<P>// }</P></FONT><FONT color=#0000ff size=2>
+<P>#endregion</P>
+<P>#region</FONT><FONT size=2> Authorization Rules</P>
+<P></FONT><FONT color=#0000ff size=2>protected</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>override</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>void</FONT><FONT size=2> AddAuthorizationRules()</P>
+<P>{</P></FONT><FONT color=#008000 size=2>
+<P>// AuthorizationRules.AllowWrite(</P>
+<P>// "Id", "Administrator");</P>
+<P>// AuthorizationRules.AllowWrite(</P>
+<P>// "Name", "Administrator");</P></FONT><FONT size=2>
+<P>}</P></FONT><FONT color=#0000ff size=2>
+<P>#endregion</P>
+<P>#region</FONT><FONT size=2> Factory Methods</P>
+<P>&nbsp;</P>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>static</FONT><FONT size=2> </FONT><FONT color=#2b91af size=2>UserAccount</FONT><FONT size=2> GetUserAccountByUserID(</FONT><FONT color=#0000ff size=2>string</FONT><FONT size=2> id)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> </FONT><FONT color=#2b91af size=2>DataPortal</FONT><FONT size=2>.Fetch&lt;</FONT><FONT color=#2b91af size=2>UserAccount</FONT><FONT size=2>&gt;(id);</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>internal</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>static</FONT><FONT size=2> </FONT><FONT color=#2b91af size=2>UserAccount</FONT><FONT size=2> NewUserAccount()</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> </FONT><FONT color=#2b91af size=2>DataPortal</FONT><FONT size=2>.Create&lt;</FONT><FONT color=#2b91af size=2>UserAccount</FONT><FONT size=2>&gt;();</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>internal</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>static</FONT><FONT size=2> </FONT><FONT color=#2b91af size=2>UserAccount</FONT><FONT size=2> GetUserAccount(</FONT><FONT color=#0000ff size=2>string</FONT><FONT size=2> id)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> </FONT><FONT color=#2b91af size=2>UserAccount</FONT><FONT size=2>(id);</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>private</FONT><FONT size=2> UserAccount()</P>
+<P>{</P>
+<P>MarkAsChild();</P>
+<P></FONT><FONT color=#008000 size=2>//ValidationRules.CheckRules();</P></FONT><FONT size=2>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>private</FONT><FONT size=2> UserAccount(</FONT><FONT color=#0000ff size=2>string</FONT><FONT size=2> id)</P>
+<P>{</P>
+<P>MarkAsChild();</P>
+<P>Fetch(id);</P>
+<P>}</P></FONT><FONT color=#0000ff size=2>
+<P>#endregion</P>
+<P>#region</FONT><FONT size=2> Data Access</P>
+<P></FONT><FONT color=#0000ff size=2>private</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>void</FONT><FONT size=2> Fetch(</FONT><FONT color=#0000ff size=2>string</FONT><FONT size=2> id)</P>
+<P>{</P>
+<P>_id = id;</P>
+<P></FONT><FONT color=#2b91af size=2>General</FONT><FONT size=2> tmpUtils = </FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> </FONT><FONT color=#2b91af size=2>General</FONT><FONT size=2>();</P>
+<P></FONT><FONT color=#2b91af size=2>DataTools</FONT><FONT size=2> tmpData = </FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> </FONT><FONT color=#2b91af size=2>DataTools</FONT><FONT size=2>();</P>
+<P></FONT><FONT color=#2b91af size=2>DataSet</FONT><FONT size=2> tmpDataSet = tmpData.ExecuteDataset(</FONT><FONT color=#2b91af size=2>String</FONT><FONT size=2>.Format(</FONT><FONT color=#a31515 size=2>"SELECT UserAccount.* FROM UserAccount INNER JOIN UserTimeStamps ON UserAccount.TimeStamp = UserTimeStamps.TimeStamp WHERE UserTimeStamps.UserGUID ='{0}' and UserTable = '{1}'"</FONT><FONT size=2>, _id, </FONT><FONT color=#a31515 size=2>"UserAccount"</FONT><FONT size=2>));</P>
+<P></FONT><FONT color=#2b91af size=2>DataView</FONT><FONT size=2> tmpReturnedData;</P>
+<P>tmpReturnedData = </FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> </FONT><FONT color=#2b91af size=2>DataView</FONT><FONT size=2>();</P>
+<P>tmpReturnedData.Table = tmpDataSet.Tables[</FONT><FONT color=#a31515 size=2>"DataReturned"</FONT><FONT size=2>];</P>
+<P></FONT><FONT color=#0000ff size=2>foreach</FONT><FONT size=2> (</FONT><FONT color=#2b91af size=2>DataRow</FONT><FONT size=2> d </FONT><FONT color=#0000ff size=2>in</FONT><FONT size=2> tmpReturnedData.Table.Rows)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>switch</FONT><FONT size=2> (d[</FONT><FONT color=#a31515 size=2>"FieldName"</FONT><FONT size=2>].ToString())</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>case</FONT><FONT size=2> </FONT><FONT color=#a31515 size=2>"PhoneNumber"</FONT><FONT size=2>:</P>
+<P>PhoneNumber = d[</FONT><FONT color=#a31515 size=2>"FieldValue"</FONT><FONT size=2>].ToString();</P>
+<P></FONT><FONT color=#0000ff size=2>break</FONT><FONT size=2>;</P>
+<P></FONT><FONT color=#0000ff size=2>case</FONT><FONT size=2> </FONT><FONT color=#a31515 size=2>"MobileNumber"</FONT><FONT size=2>:</P>
+<P>MobileNumber = d[</FONT><FONT color=#a31515 size=2>"FieldValue"</FONT><FONT size=2>].ToString();</P>
+<P></FONT><FONT color=#0000ff size=2>break</FONT><FONT size=2>;</P>
+<P>}</P>
+<P>}</P>
+<P>MarkOld();</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>internal</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>void</FONT><FONT size=2> Insert()</P>
+<P>{</P>
+<P></FONT><FONT color=#008000 size=2>// if we're not dirty then don't update the database</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (!</FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>.IsDirty) </FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2>;</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>internal</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>void</FONT><FONT size=2> Update()</P>
+<P>{</P>
+<P></FONT><FONT color=#008000 size=2>// if we're not dirty then don't update the database.</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (!</FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>.IsDirty) </FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2>;</P>
+<P>}</P>
+<P>&nbsp;</P>
+<P></FONT><FONT color=#0000ff size=2>internal</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>void</FONT><FONT size=2> DeleteSelf()</P>
+<P>{</P>
+<P></FONT><FONT color=#008000 size=2>// if we're not dirty then don't update the database</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (!</FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>.IsDirty) </FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2>;</P>
+<P></FONT><FONT color=#008000 size=2>// if we're new then don't update the database</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (</FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>.IsNew) </FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2>;</P>
+<P></FONT><FONT color=#008000 size=2>//DeleteRole(_id);</P></FONT><FONT size=2>
+<P>MarkNew();</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>internal</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>static</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>void</FONT><FONT size=2> DeleteUserAccount(</FONT><FONT color=#0000ff size=2>int</FONT><FONT size=2> id)</P>
+<P>{</P>
+<P>}</P></FONT><FONT color=#0000ff size=2>
+<P>#endregion</P></FONT><FONT size=2>
+<P>}</P>
+<P>}</P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Marjon1 replied on Wednesday, December 26, 2007</h2><font size="1">Andrew,<br><br>You haven't overriden the DataPortal_Fetch method, you've implemented your own Fetch method. It is unable to find the correct method to call, thus the cause of your error.</font><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Q Johnson replied on Wednesday, December 26, 2007</h2><P>A Child object cannot Fetch or do any other CRUD operations on its own volition.&nbsp; The respective Parent must perform these actions.&nbsp; Usually that will be an Editable Root or Collection object.</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Thursday, December 27, 2007</h2><P>The other two responders are correct.</P>
+<P>You are mixing up child and root concepts.</P>
+<P>Since you marked this BO as a child it should be contained in some parent root BO or collection.</P>
+<P>A child BO does NOT call DataPortal.Fetch.</P>
+<P>e.g. it should look more like this: (note the pased in dr comes from the parent BO.)</P><FONT color=#0000ff size=2>
+<P>Protected</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Friend</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Shared</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Function</FONT><FONT size=2> GetMyChild(</FONT><FONT color=#0000ff size=2>ByVal</FONT><FONT size=2> dr </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> SafeDataReader) </FONT><FONT color=#0000ff size=2>AsMyChild</FONT><FONT size=2><BR>&nbsp; </FONT><FONT color=#0000ff size=2>Dim</FONT><FONT size=2> child </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>New</FONT><FONT size=2>&nbsp;MyChild<BR>&nbsp; child.Fetch(dr)<BR>&nbsp; </FONT><FONT color=#0000ff size=2>Return</FONT><FONT size=2> child<BR></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Function</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Protected</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Overridable</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Sub</FONT><FONT size=2> Fetch(</FONT><FONT color=#0000ff size=2>ByVal</FONT><FONT size=2> dr </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> SafeDataReader)<BR></FONT><FONT color=#0000ff size=2>&nbsp; With</FONT><FONT size=2> dr<BR></FONT><FONT color=#008000 size=2>&nbsp; &nbsp; 'fill class variables here<BR></FONT><FONT color=#0000ff size=2>&nbsp; End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>With</P></FONT><FONT size=2>
+<P>&nbsp; MarkOld()<BR>&nbsp; ValidationRules.CheckRules()<BR></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Sub</P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ataylorm replied on Thursday, December 27, 2007</h2><P>Thanks for everyones help!&nbsp; I think I am almost there.&nbsp; Everything is working except for the save method.&nbsp; When I make changes to the child, but not changes to the parent the parent.save() doesn't detect that the child isdirty.</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Marjon1 replied on Thursday, December 27, 2007</h2><font size="2">You need to override the IsDirty &amp; IsValid on the parent object to detect that the child is valid and/or dirty.</font><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>pgroenenstein replied on Wednesday, September 16, 2009</h2>Ok but please show us where does the "dr" comes from? In other words How does the code looks like where "getMyChild" is being called from? </div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Wednesday, September 16, 2009</h2>It comes from the parent object, which executed the datareader.  Note that this thread is rather old, so if you're using the newest Csla you should be using the child dataportal and implementing a Child_Fetch method (which takes a data reader).</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>pgroenenstein replied on Wednesday, September 16, 2009</h2>Thanks <br /><br />please give me an overview of what you mean. I 'm confused..some pseudo code perhaps? When I use the dataportal my "object" looks for the DB local instead of on the server. Dataportal obviously not invoked!</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Wednesday, September 16, 2009</h2>usually in the parent's DataPortal_Fetch, you'll do something like this:<br /><br />private void DataPortal_Fetch( obj criteira ) {<br />   // usual load stuff, including getting a dr for the child object)<br />   MyChildObj = ChildObj.Fetch( dr );<br />}<br /><br />in your ChildObj class, youll have this:<br /><br />internal static ChildObj Fetch( DataReader dr ){  return DataPortal.FetchChild( dr ); }<br /><br />private void Child_Fetch( DataReader dr ) {<br />   // load the child from the dr<br />}</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>pgroenenstein replied on Wednesday, September 16, 2009</h2>Got it sorted!<br /><br />I used the "DataPortal_Create" sub on the object then add it to the collection as a child, marking it as a child as I go. My mistake was to use "Child_Create" first time around. <br />It is all in the book in Chapter 5 section 'Loading Default Values from a Data Store'. </div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

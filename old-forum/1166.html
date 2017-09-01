@@ -1,0 +1,91 @@
+<html><header><title>Deployment Problem going from V2.0 to V2.0.3</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Deployment Problem going from V2.0 to V2.0.3</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/1166.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>surfdog86 posted on Friday, September 08, 2006</h2>Hello:<br><br>I have been running a csla V2.0 web site on multiple web servers.<br><br>Recently I updated to V2.0.3.&nbsp; <br><br>I tested successfully on my dev and qa machines, both single web servers.<br><br>Now, when I deploy to the prod win2003 servers, I get errors (DataPortal.Update failed) that lead me to believe I have csla.dll problems.&nbsp; I used the same set of deployment files for each of the dev, qa and prod<br>environments, changing only web.config entries.<br><br>On dev and qa, testing worked after file copying without an iisreset.&nbsp; On prod, I tried an iisreset as well as rebooting.<br><br>Any help or ideas on this would be greatly appreciated.<br><br>Thanks,<br>Marc<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, September 08, 2006</h2>Do you have both web and app servers? In other words, are you using a remote data portal configuration?<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>surfdog86 replied on Friday, September 08, 2006</h2>No, purely web servers with local access to the db.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, September 08, 2006</h2>
+
+
+
+
+<DIV align=left><SPAN class=546315219-08092006><FONT face=Arial color=#0000ff size=2>That is good, as it is the simplest 
+case.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=546315219-08092006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=546315219-08092006><FONT face=Arial color=#0000ff size=2>What is the exception you are getting that leads you to 
+believe you have an incorrect dll version?</FONT></SPAN></DIV><BR>
+<BLOCKQUOTE>
+  <DIV class=OutlookMessageHeader align=left>
+  <HR>
+  <FONT face=Tahoma size=2><B>From:</B> surfdog86 [mailto:cslanet@lhotka.net] 
+  <BR><B>Sent:</B> Friday, September 08, 2006 2:31 PM<BR><B>To:</B> 
+  rocky@lhotka.net<BR><B>Subject:</B> Re: [CSLA .NET] Deployment Problem going 
+  from V2.0 to V2.0.3<BR></FONT><BR></DIV>
+  <DIV></DIV>No, purely web servers with local access to the 
+  db.<BR><BR><BR><BR></BLOCKQUOTE></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>surfdog86 replied on Friday, September 08, 2006</h2>
+
+
+
+
+<DIV align=left><SPAN class=276261020-08092006><FONT face=Arial color=#0000ff size=2>I throw a soap exception from a web service.&nbsp; 
+DataPortal.Update failed is returned.&nbsp; </FONT></SPAN></DIV>
+<DIV align=left><SPAN class=276261020-08092006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=276261020-08092006><FONT face=Arial color=#0000ff size=2>I checked the app event log and there is nothing 
+recorded.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=276261020-08092006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=276261020-08092006><FONT face=Arial color=#0000ff size=2>It is a very simple method, trying to insert to 
+DB.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=276261020-08092006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=276261020-08092006><FONT face=Arial color=#0000ff size=2>The funny part is that the very same code functions 
+correctly on dev and qa servers.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=276261020-08092006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=276261020-08092006><FONT face=Arial color=#0000ff size=2>The only difference in prod is the fact that there are two 
+web servers.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=276261020-08092006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=276261020-08092006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV><BR>
+<DIV class=OutlookMessageHeader align=left>
+<HR>
+<FONT face=Tahoma size=2><B>From:</B> Rockford Lhotka 
+[mailto:cslanet@lhotka.net] <BR><B>Sent:</B> Friday, September 08, 2006 1:01 
+PM<BR><B>To:</B> marc@lynda.com<BR><B>Subject:</B> RE: [CSLA .NET] Deployment 
+Problem going from V2.0 to V2.0.3<BR></FONT><BR></DIV>
+<DIV></DIV>
+<DIV align=left><SPAN class=546315219-08092006><FONT face=Arial color=#0000ff size=2>That is good, as it is the simplest 
+case.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=546315219-08092006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=546315219-08092006><FONT face=Arial color=#0000ff size=2>What is the exception you are getting that leads you to 
+believe you have an incorrect dll version?</FONT></SPAN></DIV><BR>
+<BLOCKQUOTE>
+  <DIV class=OutlookMessageHeader align=left>
+  <HR>
+  <FONT face=Tahoma size=2><B>From:</B> surfdog86 [mailto:cslanet@lhotka.net] 
+  <BR><B>Sent:</B> Friday, September 08, 2006 2:31 PM<BR><B>To:</B> 
+  rocky@lhotka.net<BR><B>Subject:</B> Re: [CSLA .NET] Deployment Problem going 
+  from V2.0 to V2.0.3<BR></FONT><BR></DIV>
+  <DIV></DIV>No, purely web servers with local access to the 
+db.<BR><BR><BR><BR></BLOCKQUOTE><BR><BR><BR></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, September 08, 2006</h2>
+
+
+
+
+<DIV align=left><SPAN class=124383120-08092006><FONT face=Arial color=#0000ff size=2>You need to look at the inner exception to see why it 
+failed. Perhaps there's a database security issue, or a connection string issue 
+or something like that.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=124383120-08092006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=124383120-08092006><FONT face=Arial color=#0000ff size=2>Rocky</FONT></SPAN></DIV><BR>
+<BLOCKQUOTE>
+  <DIV class=OutlookMessageHeader align=left>
+  <HR>
+  <FONT face=Tahoma size=2><B>From:</B> Marc Tibbitts 
+  [mailto:cslanet@lhotka.net] <BR><B>Sent:</B> Friday, September 08, 2006 3:17 
+  PM<BR><B>To:</B> rocky@lhotka.net<BR><B>Subject:</B> RE: [CSLA .NET] 
+  Deployment Problem going from V2.0 to V2.0.3<BR></FONT><BR></DIV>
+  <DIV></DIV>
+  <DIV align=left><SPAN class=276261020-08092006><FONT face=Arial color=#0000ff size=2>I throw a soap exception from a web service.&nbsp; 
+  DataPortal.Update failed is returned.&nbsp; </FONT></SPAN></DIV>
+  <DIV align=left><SPAN class=276261020-08092006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+  <DIV align=left><SPAN class=276261020-08092006><FONT face=Arial color=#0000ff size=2>I checked the app event log and there is nothing 
+  recorded.</FONT></SPAN></DIV>
+  <DIV align=left><SPAN class=276261020-08092006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+  <DIV align=left><SPAN class=276261020-08092006><FONT face=Arial color=#0000ff size=2>It is a very simple method, trying to insert to 
+  DB.</FONT></SPAN></DIV>
+  <DIV align=left><SPAN class=276261020-08092006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+  <DIV align=left><SPAN class=276261020-08092006><FONT face=Arial color=#0000ff size=2>The funny part is that the very same code functions 
+  correctly on dev and qa servers.</FONT></SPAN></DIV>
+  <DIV align=left><SPAN class=276261020-08092006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+  <DIV align=left><SPAN class=276261020-08092006><FONT face=Arial color=#0000ff size=2>The only difference in prod is the fact that there are 
+  two web servers.</FONT></SPAN></DIV></BLOCKQUOTE></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

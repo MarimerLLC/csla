@@ -1,0 +1,10 @@
+<html><header><title>UTF8 with Linq in CSLA </title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>UTF8 with Linq in CSLA </h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10392.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>linhvu posted on Sunday, May 22, 2011</h2><p>Hi,</p>
+<p>I have website. The website is wrote by ASP.NET with CSLA. I have a problem. Please, help me.</p>
+<p>I try to encode UTF-8 with ASP.NET but I can&#39;t. My database do not store &nbsp;formal data.</p>
+<p>Example: Thử &gt;&gt; Thu?.</p>
+<p>I used to tag Meta (&lt;<b><i>meta http-equiv=&quot;Content-Type&quot; content=&quot;text/html; charset=UTF-8&quot;</i></b>/&gt;) and </p>
+<p>&lt;%@ Page Title=&quot;&quot; Language=&quot;C#&quot; MasterPageFile=&quot;~/Site.master&quot; AutoEventWireup=&quot;true&quot; CodeFile=&quot;DangKiDeTai.aspx.cs&quot; Inherits=&quot;Sinhvien_DangKiDeTai&quot; ContentType=&quot;text/html&quot; <b><i>ResponseEncoding=&quot;UTF-8&quot; ValidateRequest=&quot;false&quot;</i></b>%&gt;.&nbsp;</p>
+<p>&nbsp;</p>
+<p>thanks,</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Sunday, May 22, 2011</h2><p>As you probably know, you need to use compatible data types all the way from the UI through to the database. That probably means using Unicode data types in your app and database.</p>
+<p>The most likely problem is that your database column may be defined using a text type that doesn&#39;t support Unicode?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>linhvu replied on Sunday, May 22, 2011</h2><p>I using text type nvarchar. I think problem in webform or Linq don&#39;t support unicode UTF-8.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

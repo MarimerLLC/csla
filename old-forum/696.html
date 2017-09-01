@@ -1,0 +1,14 @@
+<html><header><title>Naming Conventions in ProjectTracker??</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Naming Conventions in ProjectTracker??</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/696.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>david.wendelken posted on Friday, July 21, 2006</h2><P>The sample ProjectTracker application has business objects with method names like:</P>
+<UL>
+<LI><STRONG>GetProjectList</STRONG></LI>
+<LI><STRONG>GetResourceList</STRONG></LI></UL>
+<P>When I first went thru the project code, this was great.&nbsp; Now that I'm building my own project with lots more objects in it, I'm not so sure I like those names.</P>
+<P>If all the above functions were named <STRONG>GetList</STRONG>, I would have less coding to do (because the template would automatically have the correct name) and interfaces could be developed that would let me manipulate any List object in the same manner.&nbsp; I'm sure there are other methods that could be similarly "generically named" since they all perform the same task.</P>
+<P>Is this worth doing, or would I be shooting myself in the foot?</P>
+<P>Comments?</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>skagen00 replied on Friday, July 21, 2006</h2><P>I know the CodeSmith C# templates include the class names when calculating the factory method names.</P>
+<P>But if that's something not easily accomodated, why not just change it to GetList if it helps you with code gen or template usage. After all the only real user of this is going to be the UI code (or the parent object if it's a child object). </P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, July 21, 2006</h2><P>I really think it is a matter of personal preference - and consistency.</P>
+<P>I like the readability of GetCustomer(), GetProduct(), etc.</P>
+<P>But I surely see what you are saying about GetObject(), GetList(), etc. If you go down this road, you really could just use NewObject(), GetObject() and DeleteObject() for everything...</P>
+<P>My view on these sorts of things is that consistency is <EM>far</EM> more important than anything else. So pick a model that works (just Get(), New() doesn't work sadly...) and make sure you are globally consistent with that model. That way anyone approaching your code can rapidly pick up on your scheme and know that it is univerally applied and everyone is happy.</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

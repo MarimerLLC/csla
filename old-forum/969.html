@@ -1,0 +1,32 @@
+<html><header><title>Version 2.1 August pre-release</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Version 2.1 August pre-release</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/969.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka posted on Monday, August 21, 2006</h2>I have just posted a refresh of CSLA .NET version 2.1 for download at<br><a href="http://www.lhotka.net/cslanet/download.aspx">www.lhotka.net/cslanet/download.aspx</a>. <br><br>Both the C# and VB versions are now available for testing (thanks in large part to my <a href="http://www.magenic.com">Magenic</a> colleague Brant Estes, and to the Instant C# and Instant VB products from <a href="http://www.tangiblesoftwaresolutions.com/">Tangible</a>). The unit tests are also available for download.<br><br>At this point version 2.1 is feature complete - as in I am no longer adding features to this version. I am still going through and working on comments, cleanup and, of course, fixing any bugs or issues that come to my attention.<br><br>My focus now shifts to updating the ProjectTracker app to work with 2.1. I don't anticipate this being difficult, as the few breaking changes in 2.1 should only affect some advanced edge cases, and not normal business code. The sole excepiton being that now per-type validation rules are the default, and so there are a couple places in ProjectTracker that need adjusting to either exploit per-type rules, or to continue to use per-instance rules.<br><br>My current plan is to release version 2.1 by the end of September, with an e-book describing the changes and how to use the new features being available sometime in November.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Brian Criswell replied on Monday, August 21, 2006</h2>This sounds great, Rocky.&nbsp; I am really looking forward to the e-book.&nbsp; I know that a similar e-book would have gone a long way when I first started with CSLA last year and the 1.x features did not match the book.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JZuerlein replied on Monday, August 21, 2006</h2><P>Thank you so much Brian and Rocky!</P>
+<P>We'll be sure to send you our test results.</P>
+<P>Jeff</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, August 22, 2006</h2>One other related note for those who use the anonymous cvs access. I have now merged the 2.1 branch into the main HEAD branch, and all future 2.1 changes will be made to the main line. In other words, when using <a href="http://www.lhotka.net/cslacvs">www.lhotka.net/cslacvs</a> or anonymous cvs access, the main line HEAD "branch" is current and active.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, August 24, 2006</h2>OK, I feel like Microsoft doing this, but here goes... <img src="/emoticons/emotion-5.gif" alt="Wink [;)]" /><br><br>You can now download CSLA .NET Version 2.1 August Pre-release <i>Refresh</i> from <a href="http://www.lhotka.net/cslanet/download.aspx">www.lhotka.net/cslanet/download.aspx</a>. The new version is dated 060824.<br><br>Earlier this week I put out the pre-release, and people have found a few problems that I've tried to address. Since a couple were fairly serious, I thought it worth getting them out ASAP.<br><br><ol><li>There was a recusive overflow with a remote data portal that is fixed</li><li>CslaDataSource now recognizes new types as they are added to business assemblies</li><li>The VB CslaDataSource now supports paged collections</li><li>EditableRootListBase was broken for in-place editing in a grid</li><li>I have also spent a lot of time commenting, so there are no longer any warnings in C# or VB about missing or invalid XML comments</li></ol>If you are using any previous 2.1 build, I strongly recommend updating to this refresh.<br><br>As always, please remember that this is TEST CODE and it is not production ready!! Any help testing is very much appreciated.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>vbLuis replied on Tuesday, August 29, 2006</h2><P>I downloaded the 2.1 test zip file (cslatest-2.1-060824.zip) and noticed that BOTH projects are in C#. I assume you intended the Cslavb.Test project to be in VB? But alas, it is not.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, August 29, 2006</h2>
+
+
+
+
+<DIV align=left><SPAN class=461172204-30082006><FONT face=Arial color=#0000ff size=2>Nope. the tests are only in C#. In fact, the tests are the 
+SAME FILES. If you look, each test file exists only once and is merely 
+referenced by both project files. This is because I don't have the time to 
+create/maintain the tests twice - it is bad enough having to maintain the 
+framework twice...</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=461172204-30082006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=461172204-30082006><FONT face=Arial color=#0000ff size=2>I chose C# to do the tests because it is the most 
+restrictive language, thanks to its case sensitivity. VB is much more forgiving 
+than C# in many ways, and so I needed to choose the lowest common denominator so 
+to speak - C# - in order to ensure compatibility between both the VB and C# 
+frameworks.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=461172204-30082006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=461172204-30082006><FONT face=Arial color=#0000ff size=2>Rocky</FONT></SPAN></DIV><BR>
+<BLOCKQUOTE>
+  <DIV class=OutlookMessageHeader align=left>
+  <HR>
+  <FONT face=Tahoma size=2><B>From:</B> vbLuis [mailto:cslanet@lhotka.net] 
+  <BR><B>Sent:</B> Tuesday, August 29, 2006 9:58 PM<BR><B>To:</B> 
+  rocky@lhotka.net<BR><B>Subject:</B> Re: [CSLA .NET] Version 2.1 August 
+  pre-release<BR></FONT><BR></DIV>
+  <DIV></DIV>
+  <P>I downloaded the 2.1 test zip file (cslatest-2.1-060824.zip) and noticed 
+  that BOTH projects are in C#. I assume you intended the Cslavb.Test project to 
+  be in VB? But alas, it is not.</P><BR><BR><BR></BLOCKQUOTE></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

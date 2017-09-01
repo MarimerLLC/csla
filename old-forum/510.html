@@ -1,0 +1,13 @@
+<html><header><title>The built in CSLA security option</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>The built in CSLA security option</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/510.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>sune42 posted on Thursday, June 29, 2006</h2><P>Hi</P>
+<P>I am currently reading your book and I find it to be very exciting.</P>
+<P>If I use the built in Security Option in CSLA, is the security DB table hit on each request to the data-portal or is it cached somewhere? when is the DB table called?</P>
+<P>If I create 1000 CSLA objects and I do some DB operations on these objects, will there be 1000 requests to the Security/User/role tables as well? Or is it cached on a "thread/user" or ASP.NET page basis?</P>
+<P>Perhaps a "blog entry" about the performance implication of using the security model could be a good idea?</P>
+<P>Or can I tie it to a "login session " cookie so that I don't have to call the DB table each time?</P>
+<P>Thanks for everything!</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, June 29, 2006</h2><P>In a Windows application the security DB is typically hit just once to load the principal object. As long as the user leaves the app open, they are authenticated.</P>
+<P>In Web apps dealing with state is always up to the developer. Since the user's identity is a type of state, it is up to you to deal with that state. The only bit of state ASP.NET helps you track is the username. That is true for any type of ASP.NET authentication - including the new membership provider concept (though they help further by reloading the user's details from the db on every page request).</P>
+<P>So the answer to your question is that it is up to you how to manage the user's principal state in your web app. I discuss the most common options in the book, and illustrate one option in the ProjectTracker sample app.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sune42 replied on Thursday, June 29, 2006</h2><P>Thanks for clarifying that!</P>
+<P>&nbsp;</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

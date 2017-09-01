@@ -1,0 +1,203 @@
+<html><header><title>Need help using CSLA 3.8.3 with MVC 2</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Need help using CSLA 3.8.3 with MVC 2</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/8976.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>j055 posted on Monday, May 24, 2010</h2><p>Hi</p>
+<p>I&#39;m trying to use 3.8.3 with MVC 2. Is this supported? I changed the default model binder:</p>
+<p>ModelBinders.Binders.DefaultBinder = new Csla.Web.Mvc.CslaModelBinder();</p>
+<p>After I call the UpdateModel method:</p>
+<p>UpdateModel(order, collection);</p>
+<p>&nbsp;I get the following exception:</p>
+<p>Method not found: &#39;System.Collections.Generic.IDictionary`2&lt;System.String,System.Web.Mvc.ValueProviderResult&gt; System.Web.Mvc.ModelBindingContext.get_ValueProvider()&#39;. </p>
+<p><strong>Stack Trace:</strong> <br /><br />
+<table bgcolor="#ffffcc" width="100%">
+<tbody>
+<tr>
+<td><code>
+<pre>[MissingMethodException: Method not found: &#39;System.Collections.Generic.IDictionary`2&lt;System.String,System.Web.Mvc.ValueProviderResult&gt; System.Web.Mvc.ModelBindingContext.get_ValueProvider()&#39;.]
+   Csla.Web.Mvc.CslaModelBinder.OnModelUpdated(ControllerContext controllerContext, ModelBindingContext bindingContext) in C:\Users\andrew.jocelyn\Documents\Visual Studio 2008\Projects\CSLA\CSLA 3.8.3\cslacs\Csla\Web\Mvc\CslaModelBinder.cs:36
+   System.Web.Mvc.DefaultModelBinder.BindComplexElementalModel(ControllerContext controllerContext, ModelBindingContext bindingContext, Object model) +60
+   System.Web.Mvc.DefaultModelBinder.BindComplexModel(ControllerContext controllerContext, ModelBindingContext bindingContext) +1048
+   System.Web.Mvc.DefaultModelBinder.BindModel(ControllerContext controllerContext, ModelBindingContext bindingContext) +280
+   System.Web.Mvc.Controller.TryUpdateModel(TModel model, String prefix, String[] includeProperties, String[] excludeProperties, IValueProvider valueProvider) +449
+   System.Web.Mvc.Controller.UpdateModel(TModel model, String prefix, String[] includeProperties, String[] excludeProperties, IValueProvider valueProvider) +66
+   System.Web.Mvc.Controller.UpdateModel(TModel model, IValueProvider valueProvider) +56
+</pre>
+</code></td>
+</tr>
+</tbody>
+</table>
+</p>
+<p>Can you tell me what I&#39;m doing wrong?</p>
+<p>Thanks<br />Andrew</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>bniemyjski replied on Monday, May 24, 2010</h2><p>
+<p>Hello,</p>
+<p>Yes, this is supported. Please take a look at this <a href="http://forums.lhotka.net/forums/p/5459/26555.aspx">post </a>and this <a href="http://forums.lhotka.net/forums/p/5484/26662.aspx#26662">post </a>for more information. If you are still experiencing this issue after reading these two threads, please let us know.</p>
+<p>Thanks</p>
+<p>-Blake Niemyjski</p>
+</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>j055 replied on Tuesday, May 25, 2010</h2><p>Hi</p>
+<p>I&#39;ve read the posts but I don&#39;t see anything in there that helps me with my problem. I was assuming I could get the model binding to work with just CSLA and CSLA.Web.MVC.</p>
+<p>Please advise.</p>
+<p>Thanks<br />Andrew</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Tuesday, May 25, 2010</h2><p>The CslaModelBinder in 3.8 only directly supports BusinessBase objects. The CSLA 4 CslaModelBinder supports BusinessListBase as well. I suspect this might be the problem you are encountering.</p>
+<p>MVC 2 was working its way through pre-release as our development shifted from 3.8 to 4, and so the 3.8 implementation is essentially incomplete - we stopped working on 3.8 before MVC 2 was stable.</p>
+<p>However, you should be able to take the CSLA 4 Csla.Web.Mvc project and use its code in a .NET 3.5 project - basically back-port the newer code. I don&#39;t think we used much (if any) .NET 4 specific code in that particular project.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>SDM10012 replied on Wednesday, June 16, 2010</h2><p>Is this thread relevant to these issues ??</p>
+<p>In 3.8 Samples:</p>
+<p>ProjectTrackerWeb.MVC will not load .... &quot;Project Type is not Supported in this Installation&quot;</p>
+<p>Compiling CSLA.Web.MVC fails with ...&nbsp; Error&nbsp;1&nbsp;Cannot apply indexing with [] to an expression of type &#39;System.Web.Mvc.IValueProvider&#39;&nbsp;C:\Projects\CSLA\cslacs\Csla\Web\Mvc\CslaModelBinder.cs&nbsp;31&nbsp;66&nbsp;Csla.Web.Mvc</p>
+<p>I need a&nbsp;reference project&nbsp;for using the CSLA login / membership code using VS 2008 / ASP.Net 2.0 / .Net 3.5 ... I&#39;m able to load the ProjectTrackerMVC files into a new project .... but am concerned that the MVC &quot;plumbing&quot; is not compiling cleanly.</p>
+<p>Running to meeting now ...&nbsp; there is more to add ....&nbsp;I also get&nbsp;compiler errors when I try to Replace the 3.8 CSLA.Web.Mvc code with 4.0 project.</p>
+<p>Steve</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>SDM10012 replied on Wednesday, June 16, 2010</h2><p>Sorry .. that is ASP.Net MVC 2.0</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>bniemyjski replied on Wednesday, June 16, 2010</h2><p>
+<p>Hello,</p>
+<p>Have you installed the ASP.NET MVC 2.0 runtime for VS2008?</p>
+<p>Thanks</p>
+<p>-Blake Niemyjski</p>
+</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>SDM10012 replied on Wednesday, June 16, 2010</h2><p>Thanks for responding ... I&#39;m hoping to get this issue resolved today ....</p>
+<p>Problems mentioined above were encountered after installing MVC from Web Platform Installer ...</p>
+<p>Which is more current ( I just noticed that there is an upgrade to WPInstaller ) ..... that code or ASP.NET MVC 2 RTM - 3/12/2010&nbsp; </p>
+<p>Which issues are you thinking can be resolved by your suggestion ???</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>SDM10012 replied on Wednesday, June 16, 2010</h2><p>Compiler error when replacing 3.8.3 CslaModelBinder with 4.0 is</p>
+<p>Error&nbsp;1&nbsp;The type or namespace name &#39;Rules&#39; does not exist in the namespace &#39;Csla&#39; (are you missing an assembly&nbsp; reference?)&nbsp; &nbsp;C:\CSLA_Samples\cslacs\Csla.Web.Mvc\CslaModelBinder.cs&nbsp;96&nbsp;55&nbsp;Csla.Web.Mvc</p>
+<p>That is compile time error ... any workaround for that variable ???&nbsp; </p>
+<p>protected override void OnModelUpdated(ControllerContext controllerContext, ModelBindingContext bindingContext)<br />&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var obj = bindingContext.Model as Csla.Core.BusinessBase;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (obj != null)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var errors = from r in obj.BrokenRulesCollection<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; where r.Severity == <strong><em><span style="text-decoration:underline;">Csla.Rules.RuleSeverity.Error<br /></span></em></strong>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; select r;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; foreach (var item in errors)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; string mskey = CreateSubPropertyName(bindingContext.ModelName, item.Property);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; bindingContext.ModelState.AddModelError(mskey, item.Description);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; else<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; base.OnModelUpdated(controllerContext, bindingContext);</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>SDM10012 replied on Wednesday, June 16, 2010</h2><p>PS ... adding 4.0 Rules Namespace to 3.8.3 project raised even more compile time errors</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>SDM10012 replied on Wednesday, June 16, 2010</h2><p>finally got a clean compile .... Changed </p>
+<p>&nbsp; var errors = from r in obj.BrokenRulesCollection<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; where r.Severity == <strong><em><span style="text-decoration:underline;">Csla.Rules.RuleSeverity.Error<br /></span></em></strong>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; select r;</p>
+<p>to</p>
+<p>&nbsp; var errors = from r in obj.BrokenRulesCollection<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; where r.Severity == <strong><em><span style="text-decoration:underline;">Csla.Validation.RuleSeverity.Error<br /></span></em></strong>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; select r;</p>
+<p>&nbsp;</p>
+<p>I&#39;m going to create another solution after downloading the CSLA 3.8.3 source and the PTWebMVCSamples ..... and do another re-load&nbsp;of&nbsp;the PtWebMVC project files into an empty MVC2.0 project .... with the above code change ....</p>
+<p>Is that a sound approach to get a ProjectTracker MVC2.0 solution running ??</p>
+<p>Thx,</p>
+<p>Steve</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>SDM10012 replied on Wednesday, June 16, 2010</h2><p>There is also this compile error when using the 4.0 Web.Mvc in 3.8</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>
+<p><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">
+<p style="padding-left:60px;">protected virtual bool SaveObject&lt;T&gt;(T item, Action&lt;T&gt; updateModel, bool forceUpdate) where T : class, Csla.Core.ISavable<br />&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; try<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ViewData.Model = item;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (updateModel != null)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; updateModel(item);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <strong><em><span style="text-decoration:underline;">ViewData.Model = item.Save(forceUpdate);<br /></span></em></strong>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return true;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; catch (Csla.DataPortalException ex)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (ex.BusinessException != null)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ModelState.AddModelError(&quot;&quot;, ex.BusinessException.Message);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; else<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ModelState.AddModelError(&quot;&quot;, ex.Message);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return false;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; catch<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return false;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</p>
+<font size="2" color="#0000ff"><font size="2" color="#0000ff">
+<p>&nbsp;</p>
+</font></font></span><font size="2" color="#0000ff">
+<p>&nbsp;</p>
+</font></span>
+<p><span style="font-size:x-small;">Error&nbsp;37&nbsp;<strong><em><span style="text-decoration:underline;">No overload for method &#39;Save&#39; takes &#39;1&#39; arguments</span></em></strong>&nbsp;C:\Documents and Desktop\PROJECT_TRACKER_MVC\CslaSource-4.0.0-100524\Source\Csla.Web.Mvc\Controller.cs&nbsp;48&nbsp;26&nbsp;Csla.Web.Mvc</span></p>
+<span style="font-size:x-small;"></span></p>
+</p>
+<p><span style="font-size:x-small;">It will compile cleanly with this revision:
+<p style="padding-left:30px;">ViewData.Model = item;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (updateModel != null)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; updateModel(item);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <strong><em><span style="text-decoration:underline;">ViewData.Model = item.Save();&nbsp; &lt;=== REMOVING&nbsp;forceUpdate<br /></span></em></strong>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return true;</p>
+<p><br />Any risks here ????</p>
+</span></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>SDM10012 replied on Thursday, June 17, 2010</h2><p>???</p>
+<p>I&#39;m still concerned that the &quot;patches&quot; to:</p>
+<ul>
+<li>&nbsp;the v 4.0 CslaModelBinder source code re Rules <br /><br />and this</li>
+<li>
+<p style="padding-left:30px;">ViewData.Model = item;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (updateModel != null)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; updateModel(item);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <strong><em><span style="text-decoration:underline;">ViewData.Model = item.Save();&nbsp; &lt;=== REMOVING&nbsp;forceUpdate<br /></span></em></strong>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return true;<br /><br />code change to the 3.8 Csla.Web.Mvc.Controller class</p>
+</li>
+</ul>
+<p>are un-tested ... could cause problems with the solution I need to deliver Using .Net 3.5 and Asp.Net MVC 2.0.</p>
+<p>Is this the correct work-around to get a clean comile ???</p>
+<p>Thanks,</p>
+<p>Steve</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>bniemyjski replied on Friday, June 18, 2010</h2><p>
+<p>Hello,</p>
+<p>I&#39;m unfamiliar with these changes. However, they do look like they should be safe todo. But, I would run the 4.0 unit tests against this and make sure that they still pass. Rocky is out on vacation, I&#39;m not sure when he will be back...</p>
+<p>Thanks</p>
+<p>-Blake Niemyjski</p>
+</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>SDM10012 replied on Monday, June 21, 2010</h2><p>still not clear if I am adopting the correct approach ....</p>
+<p>Anyone else using MVC2.0 with VS2008&nbsp; and CSLA 3.8 ???</p>
+<p>thx,</p>
+<p>Steve</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>xAvailx replied on Monday, June 21, 2010</h2><p>Hello,</p>
+<p>Yep, completed two large size applications with CSLA 3.8 &amp; MVC 2.0. One with .NetFramework 3.5 other with 4.0. </p>
+<p>I didn&#39;t use model binding with collections.</p>
+<p>We updated the CslaModel Binder from CSLA 3.8 to work with MVC 2.0. I haven&#39;t looked into CSLA 4.0, so can&#39;t help there.</p>
+<p>It looks like this:</p>
+<p>&nbsp;</p>
+<p>&nbsp;protected override void OnModelUpdated(ControllerContext controllerContext, ModelBindingContext bindingContext)<br />&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var obj = bindingContext.Model as Csla.Core.BusinessBase;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (obj != null)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var errors = from r in obj.BrokenRulesCollection<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; where r.Severity == Csla.Validation.RuleSeverity.Error<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; select r;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; foreach (var item in errors)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; bindingContext.ModelState.AddModelError(item.Property, item.Description);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; bindingContext.ModelState.SetModelValue(item.Property, bindingContext.ValueProvider.GetValue(item.Property));<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; else<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; base.OnModelUpdated(controllerContext, bindingContext);<br />&nbsp;&nbsp;&nbsp; }</p>
+<p>&nbsp;</p>
+<p>HTH.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>SDM10012 replied on Tuesday, June 22, 2010</h2><p>Rocky -</p>
+<p>&nbsp;</p>
+<p>There were a couple of responses re: this issue on this thread today, but neither of them addressed my changes</p>
+<p style="padding-left:90px;margin:0in 0in 0pt;" class="MsoNormal"><span style="font-size:small;font-family:Times New Roman;">finally got a clean compile ....
+<p style="padding-left:90px;margin:0in 0in 0pt;" class="MsoNormal"><strong><em><span style="text-decoration:underline;">Changed ( in&nbsp; <span style="font-size:x-small;">Csla.Web.Mvc.CslaModelBinder) </span><span style="font-size:x-small;">OnModelUpdated</span></span></em></strong></p>
+</span></p>
+<p style="padding-left:90px;margin:0in 0in 0pt;" class="MsoNormal"><span style="font-size:small;font-family:Times New Roman;">&nbsp;</span></p>
+<p style="padding-left:90px;margin:0in 0in 0pt;" class="MsoNormal"><span style="font-size:small;"><span style="font-family:Times New Roman;"><span style="mso-spacerun:yes;">&nbsp; </span>var errors = from r in obj.BrokenRulesCollection</span></span></p>
+<p style="padding-left:90px;margin:0in 0in 0pt;" class="MsoNormal"><span style="font-size:small;"><span style="font-family:Times New Roman;"><span style="mso-spacerun:yes;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><strong><em><span style="text-decoration:underline;">where r.Severity == Csla.Rules.RuleSeverity.Error</span></em></strong></span></span></p>
+<p style="padding-left:90px;margin:0in 0in 0pt;" class="MsoNormal"><span style="font-size:small;"><span style="font-family:Times New Roman;"><span style="mso-spacerun:yes;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>select r;</span></span></p>
+<p style="padding-left:90px;margin:0in 0in 0pt;" class="MsoNormal"><span style="font-size:small;font-family:Times New Roman;">&nbsp;</span></p>
+<p style="padding-left:90px;margin:0in 0in 0pt;" class="MsoNormal"><span style="font-size:small;font-family:Times New Roman;">to</span></p>
+<p style="padding-left:90px;margin:0in 0in 0pt;" class="MsoNormal"><span style="font-size:small;font-family:Times New Roman;">&nbsp;</span></p>
+<p style="padding-left:90px;margin:0in 0in 0pt;" class="MsoNormal"><span style="font-size:small;"><span style="font-family:Times New Roman;"><span style="mso-spacerun:yes;">&nbsp; </span>var errors = from r in obj.BrokenRulesCollection</span></span></p>
+<p style="padding-left:90px;margin:0in 0in 0pt;" class="MsoNormal"><span style="font-size:small;"><span style="font-family:Times New Roman;"><span style="mso-spacerun:yes;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong><em><span style="text-decoration:underline;"> </span></em></strong></span><strong><em><span style="text-decoration:underline;">where r.Severity == Csla.Validation.RuleSeverity.Error</span></em></strong></span></span></p>
+<p style="padding-left:90px;margin:0in 0in 0pt;" class="MsoNormal"><span style="font-size:small;"><span style="font-family:Times New Roman;"><span style="mso-spacerun:yes;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>select r;</span></span></p>
+<p style="padding-left:90px;margin:0in 0in 0pt;" class="MsoNormal">&nbsp;</p>
+<p style="padding-left:30px;margin:0in 0in 0pt;" class="MsoNormal"><span style="font-size:small;font-family:Times New Roman;"><strong><em><span style="text-decoration:underline;">&nbsp;and -- in <span style="font-size:x-small;">Csla.Web.Mvc.</span>SaveObject</span></em></strong></span></p>
+<p style="padding-left:30px;margin:0in 0in 0pt;" class="MsoNormal"><span style="font-size:small;font-family:Times New Roman;"></span></p>
+<p style="padding-left:30px;margin:0in 0in 0pt;" class="MsoNormal"><span style="font-size:small;font-family:Times New Roman;"></span></p>
+<p>
+<p style="padding-left:120px;margin:0in 0in 0pt;" class="MsoNormal"><span style="font-size:small;font-family:Times New Roman;">ViewData.Model = item;</span></p>
+<p style="padding-left:120px;margin:0in 0in 0pt;" class="MsoNormal"><span style="font-size:small;"><span style="font-family:Times New Roman;"><span style="mso-spacerun:yes;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>if (updateModel != null)</span></span></p>
+<p style="padding-left:120px;margin:0in 0in 0pt;" class="MsoNormal"><span style="font-size:small;"><span style="font-family:Times New Roman;"><span style="mso-spacerun:yes;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>updateModel(item);</span></span></p>
+<p style="padding-left:120px;margin:0in 0in 0pt;" class="MsoNormal"><span style="font-size:small;"><span style="font-family:Times New Roman;"><span style="mso-spacerun:yes;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>ViewData.Model = item.Save();<span style="mso-spacerun:yes;">&nbsp;<strong><em><span style="text-decoration:underline;"> </span></em></strong></span><strong><em><span style="text-decoration:underline;">&lt;=== REMOVING forceUpdate</span></em></strong></span></span></p>
+<p style="padding-left:120px;margin:0in 0in 0pt;" class="MsoNormal"><span style="font-size:small;"><span style="font-family:Times New Roman;"><span style="mso-spacerun:yes;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>return true;</span></span></p>
+<p style="padding-left:90px;margin:0in 0in 0pt;" class="MsoNormal">&nbsp;</p>
+</p>
+<p style="padding-left:90px;margin:0in 0in 0pt;" class="MsoNormal">&nbsp;</p>
+<p style="padding-left:30px;margin:0in 0in 0pt;" class="MsoNormal"><span style="font-size:small;font-family:Times New Roman;"></span></p>
+<p style="margin:0in 0in 0pt;" class="MsoNormal"><span style="font-size:small;font-family:Times New Roman;">Your insights, please.</span></p>
+<p style="margin:0in 0in 0pt;" class="MsoNormal"><span style="font-size:small;font-family:Times New Roman;"></span></p>
+<p style="margin:0in 0in 0pt;" class="MsoNormal"><span style="font-size:small;font-family:Times New Roman;">Thanks,</span></p>
+<p style="margin:0in 0in 0pt;" class="MsoNormal"><span style="font-size:small;font-family:Times New Roman;"></span></p>
+<p style="margin:0in 0in 0pt;" class="MsoNormal"><span style="font-size:small;font-family:Times New Roman;">Steve</span></p>
+<p style="margin:0in 0in 0pt;" class="MsoNormal"></p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, June 22, 2010</h2><p>Hi Steve, I was on vacation the past week, and at Tech Ed the week prior, so I&#39;ve been somewhat hands-off with the forum of late.</p>
+<p>My approach with MVC 2 is to get CSLA 4 done and working, then to back-port the code to 3.8.4. There&#39;s a lot of work still occurring for MVC in CSLA 4 and I don&#39;t have the time (or desire) to maintain it twice while it is so volatile.</p>
+<p>Other than minor tweaks though, the CSLA 4 code will be a direct back-port to 3.8 - which should affect none of the MVC code of course, just some relatively small differences around other parts of CSLA. That probably includes adding the Save(forceSave) overload to ISavable in 3.8, etc.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>SDM10012 replied on Wednesday, June 23, 2010</h2><p>Surprised that this required your input, Chief.&nbsp; My radar says that MVC 2.0 adoption using .Net 3.5 has more momentum than .Net 4.0 and VS 2010.</p>
+<p>Is my approach really such a &quot;bleeding edge&quot; use case ?????&nbsp; -- No one else has done a QA validation of the changes to the &quot;boilerplate that I have made ????</p>
+<p>I ( and I trust a significant segment of Enterprise CSLA developers ) must deal with &quot;governance&quot; issues around the adoption / &quot;blessing&quot; of .Net 4.0 and VS 2010.</p>
+<p>Wer&#39;e just starting to use the ModelBinder ..... I&#39;m kinda&#39; &quot;betting my career on this&quot; ..... what&#39;s the safe thing to do ????</p>
+<p>The other solutions to the issue on this thread ... should I consider them instead of the changes that I have made to:</p>
+<ul>
+<li>the v 4.0 CslaModelBinder source code re Rules ( I&#39;m using the 4.0 Csla.Web.Mvc project in my 3.5&nbsp;solution)&nbsp;<br /><br />and th3</li>
+</ul>
+<li>
+<p style="padding-left:30px;">&nbsp;<strong><em><span style="text-decoration:underline;">ViewData.Model = item.Save();&nbsp; &lt;=== REMOVING&nbsp;forceUpdat&nbsp; </span></em></strong>code change to the 3.8 Csla.Web.Mvc.Controller class</p>
+</li>
+<p style="padding-left:30px;">&nbsp;</p>
+<p>Best to all ... and special thanks to&nbsp;you again R. L. ...</p>
+<p>Steve</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>Thanks to all ..</p>
+<p>Steve</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, June 23, 2010</h2><p>It is just a matter of time/priorities on my end. Magenic has a .NET 4 project using MVC, and so I have access to someone who&#39;s directly using that code and can help test/debug/improve how it works. Additionally all my time and focus has been on CSLA 4 for months now - 3.8 is technically in maintenance (bug fix) mode.</p>
+<p>The fact that I&#39;m back-porting MVVM and MVC constructs to 3.8 is because, as you note, most people are still using .NET 3.5 and so it is worth some level of effort to keep 3.8 reasonably up to date. But make no mistake, 3.8 is in maintenance mode and won&#39;t see the improvements in most areas that will occur in 4.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>SDM10012 replied on Wednesday, June 23, 2010</h2><p>understand ... just need to know if the &quot;patches&quot; that I applied to get a clean compile might blow up in certain cases.</p>
+<p>If so I&#39;ll avoid those cases.</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, June 23, 2010</h2><p>Well I do think your forceSave change will cause an issue. Though I didn&#39;t look at it in depth - but if you don&#39;t do forceSave, then you need to re-fetch the object so you can do an update. The whole point of forceSave is to allow you to create a &quot;new&quot; object and then make it do an update instead of insert.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>SDM10012 replied on Wednesday, June 23, 2010</h2><p>OK ... thanks Rocky .... I&#39;m going to try here and on the LinkedIn and Facebook groups to see if I can find others who are working with CSLA 3.8 / .Net 3.5 / and ASP.Net MVC 2.0 .... can&#39;t believe that I am the &quot;sole early adopter&quot;.</p>
+<p>Steve</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>xAvailx replied on Thursday, June 24, 2010</h2><p>Steve,</p>
+<p>I posted a reply to your post with the change I made to CSLA 3.8 to make it work with MVC 2.0.</p>
+<p>I noticed you tried to copy some of the source from CSLA 4.0 and back ported to CSLA 3.8, that is probably why you are getting most of the issues. As I said, we modified CSLA 3.8 to make it work with MVC 2.0, that change should get model binding working (except for collections). </p>
+<p>HTH.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>SDM10012 replied on Thursday, June 24, 2010</h2><p>Our app is (at this point) exclusively read-only.</p>
+<p>But the main root BO has children and grand-children that need to talk to controls on the Views.</p>
+<p>So ... please help me understand ... collection binding ... The code I have now [4.0 back port] is working with the ProjectTracker Project View Index.aspx .... Iterating through the Model ... collection of ProjectInfo objects.</p>
+<p>I want to do a build doing the &quot;back port&quot; .... but since&nbsp;I know enough to &quot;be dangerous&quot; here ... please ... any heads up/caveats on my approach will be appreciated.</p>
+<p>Thanks,</p>
+<p>Steve</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, June 24, 2010</h2><p>If you want, you can pull the 3.8.4 MVC project from svn. I just back-ported the CSLA 4 code (other than the authz stuff, which is just too different) into 3.8.</p>
+<p>I&#39;d appreciate any bug reports or other feedback.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>SDM10012 replied on Friday, June 25, 2010</h2><p>will do. Thanks, Rocky.</p>
+<p>anyone else working in this space ???</p>
+<p>Steve</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

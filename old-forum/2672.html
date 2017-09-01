@@ -1,0 +1,187 @@
+<html><header><title>Trouble passing parent to child objects</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Trouble passing parent to child objects</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/2672.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonM posted on Tuesday, April 10, 2007</h2><P>I need to access parent objects for validation.&nbsp; I've setup a parent property and a SetParent method on all of my classes of the approriate type.&nbsp; However, when I try to do something like:</P><FONT color=#0000ff><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>void</FONT><FONT size=2> SetParent(</FONT><FONT color=#0000ff size=2>ref</FONT><FONT size=2> </FONT><FONT color=#2b91af size=2>CSortProfileDB</FONT><FONT size=2> Parent)</P>
+<P>{</P>
+<P>m_Parent = Parent;</P>
+<P></FONT><FONT color=#0000ff size=2>foreach</FONT><FONT size=2> (</FONT><FONT color=#2b91af size=2>CChild</FONT><FONT size=2> m_Child </FONT><FONT color=#0000ff size=2>in</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>.Items)</P>
+<P>{</P>
+<P>m_Child.SetParent(</FONT><FONT color=#0000ff size=2>ref</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>);</P>
+<P>}</P>
+<P>}</P></FONT></FONT>
+<P>It doesn't work. I get a compiler error:</P>
+<P><FONT color=#ff0000>Error&nbsp;4&nbsp;Cannot pass '&lt;this&gt;' as a ref or out argument because it is read-only&nbsp;C:\Development\Source\depot\EIIConsole\USPSSortProfileEditor\CSLA Classes\cSortCases.cs&nbsp;32&nbsp;42&nbsp;USPSSortProfileEditor</FONT><BR></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>xal replied on Tuesday, April 10, 2007</h2>There's no need to mark the parameter as "ref", an actual reference to the object will be passed anyway, not a copy if that was your concern...<br><br>Also, make sure that your m_Parent variable is marked [NonSerialized(), NotUndoable()]!! And of course, override OnDeserialized and set the parent again for all your children.<br><br>Are you by any chance using cslagen?? I ask because of the m_ prefix.. <img src="/emoticons/emotion-2.gif" alt="Big Smile [:D]" /> If so, it already has an option to do this.. (although it's not strongly typed...)<br><br><br>Andrés<br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonM replied on Tuesday, April 10, 2007</h2><P>I'm not using CSLAgen, the m_ is part of our coding standards.&nbsp; I noticed that CSLA already provides a Parent property in the business base class.&nbsp; Whenever I try to use it, it is set to null.&nbsp; Do I have to set the Parent object in the business base? </P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, April 10, 2007</h2><P>The parent property is only set on child objects contained within a BusinessListBase collection.</P>
+<P>However, if your parent object directly contains a child, your parent object can call _child.SetParent(Me) to set the parent reference. To do this properly, you must make this call after any time you set the value of your _child field AND after deserialization (override the OnDeserialized() method).</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonM replied on Wednesday, April 11, 2007</h2><P>Rocky,</P>
+<P>That makes sense to me.&nbsp; For some reason my classes that derive from BusinessListBase or BusinessBase do not contain a SetParent method.&nbsp; Do I have to create it?</P>
+<P>Note: I'm using the c# version of CSLA.net 2.1.4.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, April 11, 2007</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>It is part of the IEditableBusinessObject interface &#8211; you just
+need to cast your child object to that interface to call the method.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<div>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> JonM
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Wednesday, April 11, 2007 10:17 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] Trouble passing parent to child objects<o:p></o:p></span></p>
+
+</div>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Rocky,<o:p></o:p></p>
+
+<p>That makes sense to me.&nbsp; For some reason my classes that derive from
+BusinessListBase or BusinessBase do not contain a SetParent method.&nbsp; Do I
+have to create it?<o:p></o:p></p>
+
+<p>Note: I'm using the c# version of CSLA.net 2.1.4.<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonM replied on Wednesday, April 11, 2007</h2>Okay, casting it to IEditableBusinessObject now lets me call SetParent.&nbsp; Now for some reason I'm getting an 'object not set to instance of object error'.&nbsp; Even though my class has been intialized.&nbsp; Basically, I've got an editable root object with to child collections that I'm trying to do a <FONT color=#0000ff>.SetParent(this);</FONT> on.&nbsp; I've implemented the IParent interface on my root object.&nbsp; Should I be calling this from the Dataportal_Fetch method?&nbsp; I'm running in local mode (no dataportal).</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, April 11, 2007</h2><P>I'm not sure I follow, but I might.</P>
+<P>So you have </P>
+<P>Root<BR>&nbsp;contains Col1<BR>&nbsp;&nbsp; contains ChildA objects<BR>&nbsp;contains Col2<BR>&nbsp;&nbsp;&nbsp; contains ChildB objects</P>
+<P>CSLA will automatically make sure all the ChildA and ChildB objects' parent values are set. You want to set a parent property on Col1 and Col2?</P>
+<P>That isn't directly built into CSLA - you'll have to do that yourself by declaring your own private/protected field in your collection, and implementing your own SetParent() method.</P>
+<P>The primary trick here is to make sure to mark the _parent field as NonSerializable and NotUndoable so it is safely ignored by both serialization and n-level undo.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonM replied on Wednesday, April 11, 2007</h2><P>Rocky, <o:p></o:p></P>
+<P>First of all, thanks again for all of your help on this issue, I really appreciate your help and support for us amateurs. Next, you are basically correct, my model is as follows:<BR><BR>Editable Root<BR><BR><SPAN>&nbsp;</SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>contains Editable Child Collection1<BR><SPAN>&nbsp;</SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>contains Editable Child Objects<BR><BR><SPAN>&nbsp;</SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>contains Editable Child Collection2<BR><SPAN>&nbsp;</SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>contains Editable Child Objects<BR><SPAN>&nbsp;</SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>contains editable Child Collection 2a<BR><SPAN>&nbsp;</SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>contains editable child objects<BR><BR><SPAN>&nbsp;</SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>The main reason I need the parent relationship is that one of the fields in the grandchild object in child collection 2a needs to validate against the entries in child collection1. My UI design keeps me from breaking the 2 main child collections into seperate root child collections. Therefore I need to walk up to the parent object and over to the editable child collection1 to validate entries in the grand child collection 2a. So far this is the only way I can think of to accomplish this. Is there a better way? <o:p></o:p></P>
+<P class=MsoNormal>Thanks again,</P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal>Jon</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, April 12, 2007</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I think you are on the right track by implementing a Parent
+property on your collection. As I note in my previous post, that&#8217;s not
+too hard as long as you remember to attribute the field properly, and remember
+to reset the parent reference (from the editable root) after deserialization.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<div>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> JonM
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Wednesday, April 11, 2007 10:17 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: Trouble passing parent to child objects<o:p></o:p></span></p>
+
+</div>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Rocky, <o:p></o:p></p>
+
+<p>First of all, thanks again for all of your help on this issue, I really
+appreciate your help and support for us amateurs. Next, you are basically
+correct, my model is as follows:<br>
+<br>
+Editable Root<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; contains
+Editable Child Collection1<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+contains Editable Child Objects<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; contains
+Editable Child Collection2<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+contains Editable Child Objects<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&amp;nb
+sp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+contains editable Child Collection 2a<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+contains editable child objects<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; The main
+reason I need the parent relationship is that one of the fields in the
+grandchild object in child collection 2a needs to validate against the entries
+in child collection1. My UI design keeps me from breaking the 2 main child
+collections into seperate root child collections. Therefore I need to walk up
+to the parent object and over to the editable child collection1 to val idate
+entries in the grand child collection 2a. So far this is the only way I can
+think of to accomplish this. Is there a better way? <o:p></o:p></p>
+
+<p class=MsoNormal>Thanks
+again,<o:p></o:p></p>
+
+<p class=MsoNormal>&nbsp;<o:p></o:p></p>
+
+<p class=MsoNormal>Jon<o:p></o:p></p>
+
+<p>&nbsp;<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

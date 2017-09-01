@@ -1,0 +1,19 @@
+<html><header><title>Inconsistency in Constructors in ProjectTracker?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Inconsistency in Constructors in ProjectTracker?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/568.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>david.wendelken posted on Friday, July 07, 2006</h2><P>The&nbsp;constructors that create a new ProjectInfo and ResourceInfo have radically different parameter lists.</P>
+<P>ProjectInfo lists each parameter as a separate, strongly typed parameter.</P>
+<P>ResourceInfo just accepts a SafeDataReader and parses things out inside the constructor.</P>
+<P>Why the difference?</P>
+<P>Is it just:</P>
+<UL>
+<LI>Um.&nbsp; Never noticed I was inconsistent.&nbsp; :)&nbsp; (No one else has <EM>ever </EM>done that... :)</LI>
+<LI>The Guid in ProjectInfo makes me want to (have to?) do it differently.&nbsp; (And then why?)</LI>
+<LI>Just to show it doesn't matter which way you want to do it. (and then which do you prefer, and why?)</LI></UL>
+<P>Thanks!</P>
+<P>PS.&nbsp; I just put a junior programmer on the task of cranking out basic &lt;thing&gt;Info and &lt;thing&gt;InfoList classes.&nbsp; She's bopping right thru them with a 10 minute or less intro to each&nbsp;sample class we're using as a base, and a 10 minute or less walk-thru when she gets the first of each type done.&nbsp; Productivity is sweet!&nbsp; </P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Friday, July 07, 2006</h2>I believe the difference is just to show you can use either method, because its internal to the business layer, and thus doesn't matter as much.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>david.wendelken replied on Saturday, July 08, 2006</h2><P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>ajj3085:</strong></div><div>I believe the difference is just to show you can use either method, because its internal to the business layer, and thus doesn't matter as much.<BR></div></BLOCKQUOTE></P>
+<P>Which way do you prefer, and why?</P>
+<P>I'm leaning towards the constructor with specific parameters.&nbsp; If I have to parse out the fields anyway, might as well make it easier for other classes to create it from their own source data.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Sunday, July 09, 2006</h2><P>It is to show multiple approaches.</P>
+<P>Also, it is due to reviewer feedback during the writing process. I originally went with one approach (which was to do more work in the constructor, and not have a private Fetch() method for instance), but then my region scheme was confusing (because the constructor, which was doing the "fetch" was in the factory region, not the data access region).</P>
+<P>The result was a flurry of emails between myself and the reviewers. The code in the book, then, shows the "wordy" way of doing it - where each region has proper code for the region, and the constructor calls a private Fetch(). There's no doubt in my mind that this is the most clear and "proper" way of doing it (though it took some convincing to get me there&nbsp;<img src="/emoticons/emotion-1.gif" alt="Smile [:)]" />). However, I thought it worthwhile to show other approaches too - at least in the code.</P>
+<P>But the real point has already been made - it doesn't matter a lot because this is all hidden within the business layer. As long as you pick an approach and are consistent with it I really don't think it matters a lot.</P>
+<P>Personally, I've been sticking with the factory-&gt;constructor-&gt;Fetch() approach.</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

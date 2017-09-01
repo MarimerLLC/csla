@@ -1,0 +1,38 @@
+<html><header><title>Entity Framework</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Entity Framework</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6923.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>MikeB posted on Sunday, May 10, 2009</h2><P>Rocky, </P>
+<P>I have just got back from a 250 mile journey to buy your book. Well, I went to see the play We Will Rock You in Toronto, Ontario as well, but believe it or not, it was the closest bookstore&nbsp;to my house that had the Expert c# 2008 book. I am really interested in using CSLA with Entity Framework as the data access layer. In your book you state that the Project Tracker will be reworked to include an example using the Entity Framework. Is this still on your plate of "things-to-do"?</P>
+<P>I haven't started designing my application yet, but I am tossing around the idea of using CSLA or my own WCF services classes....</P>
+<P>Great book and Framework BTW!</P>
+<P>Mike B</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, May 11, 2009</h2><P>Unfortunately that is still on my list of things to do.</P>
+<P>The challenge for me, is that it is rather boring work. The use of EF is very similar to the use of L2S shown in the book. The only real differences are that EF has crappy support for stored procedures, so I need to abandon them, and that there are some entity identity concepts in EF that require (potentially) storing an extra data field in the business objects to track the relationship back to the entity.</P>
+<P>That's not to say I won't get around to it at some point, but it hasn't floated to the top of my list, and probably won't for a while (I have to finish a bunch of M/Oslo work, the Silverlight video series and start working on support for SL 3).</P>
+<P>Honestly, I'm far more interested in EF version 2, which is perhaps a year out (?), but should make things much better (I hope).</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>MikeB replied on Monday, May 11, 2009</h2><P>Thanks for the reply. That is unfortunate that there is no example. I could really use the guidance since both frameworks are pretty new to me....</P>
+<P>I was wondering if you can tell me if I am on the write track. I created the beginnings of my Entity Framework model. I also created my first BusinessBase derived class EmployeeBO.</P>
+<P>In the DataPortal_Fetch(...) I use the Entities context to load the employee, then from there, I use ReadProperty to set my business object.</P>
+<P>protected override void DataPortal_Update(SingleCriteria&lt;EmployeeBO, int&gt; criteria)</P>
+<P>{</P>
+<P>&nbsp;&nbsp;&nbsp;using (InformEntities entities = new InformEntities())</P>
+<P>{</P>
+<P>&nbsp;&nbsp;&nbsp;var emp = (from e in entities.Employees where e.EmployeeId == criteria.Value select e).First();</P>
+<P>&nbsp;&nbsp; LoadProperty(IdProperty, data.EmployeeId);</P>
+<P>&nbsp;&nbsp; LoadProeprty(FirstProperty, data.First);</P>
+<P>&nbsp;&nbsp; etc...<BR>}</P>
+<P>}</P>
+<P>I was wondering, does the Employee object from the entity framework get disposed at this point? Or do I have to call anything to dispose it?</P>
+<P>&nbsp;</P>
+<P>Mike Bujak</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>crussi replied on Monday, May 11, 2009</h2><P>Mike,</P>
+<P>Sergey Barskiy upgraded the Silverlight Rolodex example to use EF.&nbsp; I am thinking the DAL should be similar for both WPF and Silverlight.&nbsp; You can see this post to find the download from his blog <A HREF="/forums/thread/31324.aspx">http://forums.lhotka.net/forums/thread/31324.aspx</A>&nbsp;.&nbsp; </P>
+<P>Chris</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>MikeB replied on Tuesday, May 12, 2009</h2><P>Thanks, I will check it out.</P>
+<P>&nbsp;</P>
+<P>Mike B</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>MikeB replied on Tuesday, May 12, 2009</h2><P>Well, unfortunately I cannot load the projects. I am assuming the Rolodex application was done in Silverlight? I try to load it and get an error "The project type is not supported by this installation".</P>
+<P>&nbsp;</P>
+<P>Anyway, I can see his EF classes and the Business classes and was going through those. In his factory methods, he uses the DataPortalClient and DataPortalResult. I am wondering what does the client application have to do to create an object?</P>
+<P>&nbsp;</P>
+<P>I have looked through Expert c# 2008 book and found that this is to use the fetch in asynchronous mode. My only problem is that I cannot see how it is used in the client. Any help or examples?</P>
+<P>public static void GetCompany(int companyId, EventHandler&lt;DataPortalResult&lt;Company&gt;&gt; handler)</P>
+<P>{</P>
+<P>&nbsp;&nbsp;&nbsp;DataPortal&lt;Company&gt; dp = new DataPortal&lt;Company&gt;();</P>
+<P>&nbsp;&nbsp; dp.FetchCompleted += handler;</P>
+<P>&nbsp;&nbsp; db.BeginFetch(new SingleCriteria&lt;Company, int&gt;(companyId);<BR>}</P>
+<P>&nbsp;</P>
+<P>Mike B</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

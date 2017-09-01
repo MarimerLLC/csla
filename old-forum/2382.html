@@ -1,0 +1,81 @@
+<html><header><title>Clearing SharedValidationRules</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Clearing SharedValidationRules</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/2382.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>dgauerke posted on Monday, February 19, 2007</h2><P>I've looked through the forums and while other suggestion are valid for relatively static rules, I will be generating dynamic assemblies by compiling the business rules.&nbsp; These rules will be written in VB.Net or C# by the person maintaining the Rules (possibly the client).&nbsp; The application requires the changing of the domain of the rules (ie a different company) which may have a completely separate set of rules on the same database structure WITHOUT exiting the application.&nbsp; In order to apply these new rules, the old ones need to be removed.&nbsp; Unfortunately the SharedValidationRules mManager Dictionary is not visible to the application UI, so with 2 small changes (which I've made):</P>
+<P>File: ValidationRules<BR>&nbsp;&nbsp;&nbsp; Added:<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Public Shared Sub ClearSharedRules()<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; SharedValidationRules.Clear()<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Sub</P>
+<P>File: SharedValidationRules<BR>&nbsp;&nbsp;&nbsp; Added:<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Public Sub Clear()<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; mManagers.Clear()<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Sub</P>
+<P>Usage:<BR>&nbsp;&nbsp;&nbsp; ValidationRules.ClearSharedRules()<BR></P>
+<P>Is is possible to get this included in the next release (or something similar)&nbsp;so I don't have to keep making this change in subsequent revisions?</P>
+<P>Thanks,<BR>David Gauerke</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Monday, February 19, 2007</h2>David,<br><br>Not sure its a good idea for those methods to be public.&nbsp; The UI shouldn't know how to clear rules; actually I don't think the UI should be able to do that at all.&nbsp; Your business objects should decide what the rules are... not the UI.<br><br>Have you considered loading the dynamically generated classes into a seperate appdomain?&nbsp; Then you could simply unload the appdomain when the company changes and load up a new one for the new company.<br><br>Of course whether or not that works for you depends on the specifics of your situation, which I don't know. <img src="/emoticons/emotion-1.gif" alt="Smile [:)]" /><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RobKraft replied on Thursday, April 19, 2007</h2><P>I'd like to request an enhancement also to be able to clear the cache of the business rules.&nbsp; Our application loads some business rules dynamically because each of our customers can configure which properties of a class are required or not.&nbsp; The only reason I would like to be able to clear the cache is so that I can reload some different business rules in my Nunit testing.&nbsp; My Nunit tests do the following (which is not working)</P>
+<P>1) Set a string datatype property in the database to required</P>
+<P>2) Test that saving the object without specifying the string fails</P>
+<P>3) Test that saving the object with the string succeeds</P>
+<P>4) Set the string datatype in the database back to not required</P>
+<P>5) Set an int datatype in the database to required</P>
+<P>6) Test that saving the object with the int succeeds (it does NOT succeed because the string value from the previous test is still required).</P>
+<P>I guess for now, I will set a property of each datatype to required at the beginning, then run each test providing all the "other" values for each test.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Thursday, April 19, 2007</h2><P>If you switch to instance rules, does that help?&nbsp; </P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>david.wendelken replied on Thursday, April 19, 2007</h2><P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>ajj3085:</strong></div><div>David,<BR><BR>Not sure its a good idea for those methods to be public.&nbsp; The UI shouldn't know how to clear rules; actually I don't think the UI should be able to do that at all.&nbsp; Your business objects should decide what the rules are... not the UI.<BR><BR>Have you considered loading the dynamically generated classes into a seperate appdomain?&nbsp; Then you could simply unload the appdomain when the company changes and load up a new one for the new company.<BR><BR>Of course whether or not that works for you depends on the specifics of your situation, which I don't know. <img src="/emoticons/emotion-1.gif" alt="Smile [:)]" /><BR></div></BLOCKQUOTE></P>
+<P>I agree wholeheartedly!</P>
+<P>The UI should not be able to do this.&nbsp; </P>
+<P>I'm assuming that only one customer's worth of data would be loaded at a time?&nbsp; If so, the objects should flush the list of rules and re-populate them when the objects are re-populated with a new customer's data.</P>
+<P>If the above assumption is not true, then the rules shouldn't be shared, they should be instance rules, set on a per-object basis.&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RobKraft replied on Monday, April 23, 2007</h2><P>I don't intend to clear the cash in the application; I really just want to be able to do it with my NUnit testing.&nbsp; Our customers each run their own web server (this is not an App Serv Provider solution); so they will configure their app and NOT want to clear their cache.&nbsp; However, I want to test my code.&nbsp; Specifically I want to test my logic that marks a string field required if our customer flags one as required; then another test that marks an int field required if a customer flags an int as required.</P>
+<P>I've worked around this by running all the tests at once; so this is not a high priority request.&nbsp; However, I don't see the risk in exposing the ability to clear this cache - as long as we are writing all the UI code, we wouldn't expose that ability to our customers.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, April 23, 2007</h2><P>I've added this to the wish list. </P>
+<P>I have serious reservations, because people <EM>will</EM> use it outside of your narrow testing scenario, and the results will almost certainly be bad - and I'll have to live with the resulting support requests and complaints about bad performance and/or instability. So I need to weigh whether I feel it is worth supporting this valid testing scenario, knowing that I'll have to pay a permanent/continual price in terms of support.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Tuesday, April 24, 2007</h2>Would loading the assembly under test (and perhaps part of the test) into a seperate appdomain acomplish what you need?&nbsp; <br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RobKraft replied on Tuesday, April 24, 2007</h2>I believe that loading it in a separate AppDomain and unloading that AppDomain would work.&nbsp; I spent a few hours trying to pummel the code into something that would work, but&nbsp;I was not successful.&nbsp; I may try it again in the future when I have more time.&nbsp; Thanks for all the feedback.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, April 24, 2007</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I thought nunit created an appdomain for each test. Or does it
+create one appdomain and then just calls into it for each test?<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<div>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> RobKraft
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Tuesday, April 24, 2007 1:48 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] Clearing SharedValidationRules<o:p></o:p></span></p>
+
+</div>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>I believe that loading it in a separate AppDomain and unloading
+that AppDomain would work.&nbsp; I spent a few hours trying to pummel the code
+into something that would work, but&nbsp;I was not successful.&nbsp; I may try
+it again in the future when I have more time.&nbsp; Thanks for all the
+feedback.<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>xal replied on Tuesday, April 24, 2007</h2>Why not just add a ClearRuleCache() method to your internal testing version of csla so that you can use that in your tests?<br><br>Andrés<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>DesignGeek replied on Saturday, April 19, 2008</h2>Are you using a rules engine to compile the rules?</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

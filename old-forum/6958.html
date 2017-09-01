@@ -1,0 +1,96 @@
+<html><header><title>examples of IMobileObject.GetChildren?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>examples of IMobileObject.GetChildren?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6958.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>swegele posted on Saturday, May 16, 2009</h2><P>I have 2 DTO's<BR><BR>Investigator and InvestigatorMedLicense</P>
+<P>I have implemented IMobileObject on both of them but I am not handling the InvestigatorMeedLicense properly because I get this error </P>
+<BLOCKQUOTE dir=ltr>
+<P>Type 'IRB.DTO.InvestigatorMEDLicense[]' with data contract name 'ArrayOfInvestigatorMEDLicense' ....is not expected.</P></BLOCKQUOTE>
+<P>Can anyone guide me in how to implement the Get/Set Children on Investigator so that it is handled properly</P>
+<P>Thanks</P>
+<P>Sean</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Sunday, May 17, 2009</h2><P>You will have a much easier time if you can inherit from the pre-build base classes in Csla.Core (MobileObject, MobileList, etc). Implementing IMobileObject is not trivial, especially with child objects.</P>
+<P>But if you really must implement the interface yourself, then you should look at the base classes in Csla.Core, because you'll need to do exactly what they do. They are your guide.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>swegele replied on Sunday, May 17, 2009</h2><P>"ooo lala sasoon"!</P>
+<P>That worked great Rocky...I didn't know about that mobile object &amp; mobile list.&nbsp; Even works with the shortened property syntax.</P><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>public</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>Guid</FONT></FONT><FONT size=2> LocationID { </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>get</FONT></FONT><FONT size=2>; </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>set</FONT></FONT><FONT size=2>; }</P></FONT>
+<P>One question in followup...will inheriting from MobileObject cause any complication in sharing out my DTO's to external partners (say to a BizTalk service bus at a partner)?</P>
+<P>Sean</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Sunday, May 17, 2009</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I can&#8217;t say for sure, but I don&#8217;t think so.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Most serializers simply reflect against your public properties
+to get/set the values. That&#8217;s true of the DCS and (in a way) the
+XmlSerializer for example.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>The point is, those serializers don&#8217;t care what interfaces
+you implement, or what methods you have, or anything else &#8211; they ignore
+everything except for the get/set property behaviors.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>The MobileFormatter, on the other hand, doesn&#8217;t use
+reflection because of the limitations on reflection in Silverlight. Instead, it
+relies on the cooperation of the object instance to load/unload the
+serialization stream. The IMobileObject interface defines the core behavior. But
+as you discovered, implementation of the interface (especially for contained objects)
+can be quite complex. The MobileXYZ base classes in Csla.Core are an attempt to
+provide the minimum necessary implementation of IMobileObject for various types
+(object, list, dictionary, etc) to simplify creation of types that work with MobileFormatter.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> swegele
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Sunday, May 17, 2009 11:45 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] examples of IMobileObject.GetChildren?<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>&quot;ooo lala sasoon&quot;!<o:p></o:p></p>
+
+<p>That worked great Rocky...I didn't know about that mobile object &amp;
+mobile list.&nbsp; Even works with the shortened property syntax.<o:p></o:p></p>
+
+<p><span>public</span><span> <span>Guid</span> LocationID { <span>get</span>; <span>set</span>; }<o:p></o:p></span></p>
+
+<p>One question in followup...will inheriting from MobileObject cause any
+complication in sharing out my DTO's to external partners (say to a BizTalk
+service bus at a partner)?<o:p></o:p></p>
+
+<p>Sean<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

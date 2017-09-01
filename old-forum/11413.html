@@ -1,0 +1,24 @@
+<html><header><title>Security Database</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Security Database</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11413.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>st3fanus posted on Wednesday, June 13, 2012</h2><p>Hi all...</p>
+<p>&nbsp;</p>
+<p>&nbsp;I&#39;ve read csla books, and i want to ask about :</p>
+<p>Why do rocky make suggest two database ( one for app ) and one for security database ?</p>
+<p>Is there any explanation for this ?? reasons ?</p>
+<p>&nbsp;</p>
+<p>thanks a lot</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tiago replied on Thursday, June 14, 2012</h2><p>Hi Stefanus,</p>
+<p>There are some reasons I can think of:</p>
+<ol>
+<li>use integrated authentication on some scenarios and just don&#39;t use the security datanase</li>
+<li>use the same security database for two or more instances of the same application (different departments, but IT board member must have access to all of them)</li>
+<li>use the same security database for several different applications</li>
+</ol>
+<p>Regards</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Thursday, June 14, 2012</h2><p>Historically Security has often been separated from the actual database. </p>
+<p>In the early 2000&#39;s we had Active Directory Application Mode (<i>ADAM</i>) that later became Active Directory Lightweight Directory Service (<i>AD LDS</i>).</p>
+<p>Today we still have ASP.NET Membership Provider, <a href="http://msdn.microsoft.com/en-us/library/yh26yfzy.aspx">http://msdn.microsoft.com/en-us/library/yh26yfzy.aspx</a> and the WebMatrix WebSecurity that wraps a membership provider. </p>
+<p>The ProjectTracker sample uses the membership provider for users and roles.</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>st3fanus replied on Friday, June 15, 2012</h2><p>Hi Jonny and Tiago..</p>
+<p>Thanks a lot for your quick reponse.. </p>
+<p>&nbsp;</p>
+<p>@Jonny, honestly I have not learn / try / read about what you said.. </p>
+<p>&nbsp;&nbsp;&nbsp; but i will try to look for that later.. :) thanks</p>
+<p>@ tiago, thanks for sharing your opinion :)</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

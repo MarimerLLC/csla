@@ -1,0 +1,25 @@
+<html><header><title>Strange in Bind a BusinessObjectGetterVM with View</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Strange in Bind a BusinessObjectGetterVM with View</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11582.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>st3fanus posted on Monday, September 17, 2012</h2><p>Hi all.. </p>
+<p>actually I&#39;m confusing with my previous problem here :http://forums.lhotka.net/forums/t/11579.aspx</p>
+<p>&nbsp;</p>
+<p>That problem not yet solved, SO I tried to learn each posibility and I found a strange problem , And then I tried to get an explanation separately for this question</p>
+<p>I have an DomainEditGetterVM which is set as a DataContext of DomainEditV, </p>
+<p>DomainEditGetterVM is associated with DomainEditGetter BO as UnitOfWork that contain :</p>
+<p>1. DomainEdit&nbsp; ( BO )</p>
+<p>2. TeacherList&nbsp; ( ReadOnly List for combobox )</p>
+<p>3. SubjectList&nbsp; ( ReadOnly List for COmbo )</p>
+<p>&nbsp;</p>
+<p>And then In the DomainEditGetterVM I have an DomainEditVM propertiy which wrapped DomainEdit BO for DomainEditV ( View ) WHERE [ DomainEdit has BeginSave() DomainEditGetter Can&#39;t Save BO into Server ]</p>
+<p>My Original Problem is still not yet solved BUT in this thread I just want to ask about :</p>
+<p>&nbsp;</p>
+<p>WHY My DomainEditVM Property is called 6 TIMES when I create an DomainEditV ( View ) ??</p>
+<p>My Reason Ask this question is : I think this is caused my DomainEdit is wrapped 6 times when I set Model =&gt; which is on ManageObjectLifetime = true, BeginEdit on that class is run</p>
+<p>DomainEditVM( DomainEdit model )</p>
+<p>{</p>
+<p>Model = model;</p>
+<p>}</p>
+<p>&nbsp;</p>
+<p>thanks a lot</p>
+<p>stefanus</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

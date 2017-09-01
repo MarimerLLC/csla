@@ -1,0 +1,10 @@
+<html><header><title>modify csla 1.x</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>modify csla 1.x</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3401.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>jhw posted on Monday, August 20, 2007</h2><P>I am working on a project that was created in 1.x. I need to modify the csla itself. When I open the solution it gives error:</P>
+<P>Error reading key file c:\mykey.snk.</P>
+<P>Dependancy dataportal can not be found.</P>
+<P>I don't see this file within the project download. Where do I get it, as I assume this project must be signed.</P>
+<P>&nbsp;</P>
+<P>thanks</P>
+<P>heath</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, August 20, 2007</h2><P>In version 1.x I didn't ship a key file as part of the solution - that's a best practice, though it turned out to be such a PITA that I am shipping a key file as part of the 2.x and 3.x solutions even though it is a bad idea.</P>
+<P>So your organization must have its own key file - or some previous developer created one maybe?</P>
+<P>There are instructions in the <EM>Business Objects</EM> book on how to create and use a key file if you can't find the one that was used in your organization in the past.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jhw replied on Monday, August 20, 2007</h2><P>I went ahead and generated my own key. </P>
+<P>Thanks</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,1378 @@
+<html><header><title>How to fire up  rules on a LIST ?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>How to fire up  rules on a LIST ?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9050.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Lord02 posted on Monday, June 07, 2010</h2><p>Hi there,</p>
+<p>Can you tell me how I can force rules to be explicitly run after loading data with a CSLA List ?</p>
+<p>The CSLA entity is called &quot;Status&quot; and then I have &quot;StatusList&quot; ( BusinessListBase&lt; StatusList, Status &gt; ) ... the StatusList is populating itself<br />by this:<br /><br />this.LoadProperty( _currentStatusListProperty, RecoveryPlanner.Business.StatusList.GetByStatusID(2));&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br /><br />but I notice the businessRules ( validation rules) are NOT being run ( they&#39;re positioned in the Status CSLA class ... not the StatusList )</p>
+<p>How can I explictly force the rules to be run after filling the list ?<br />the list never calls anything like FieldManager.XXXXX to use the Status CSLA ( which WOULD run the rules ... but I don&#39;t want to make the Status do anything at this point ... I only want the List to populate itself, and run the rules to check it&#39;s own data )<br /><br />This is how I populate the list:<br /><br />private void DataPortal_Fetch(StatusCriteria criteria)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; bool cancel = false;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; OnFetching(criteria, ref cancel);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (cancel) return;<br /><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; RaiseListChangedEvents = false;<br /><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; using (SqlConnection connection = new SqlConnection(ADOHelper.ConnectionString))<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; connection.Open();<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; using (SqlCommand command = new SqlCommand(&quot;[dbo].[rp_Status_Select]&quot;, connection))<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; command.CommandType = CommandType.StoredProcedure;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; command.Parameters.AddRange(ADOHelper.SqlParameters(criteria.StateBag));<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; command.Parameters.AddWithValue(&quot;@StatusNameHasValue&quot;, criteria.StatusNameHasValue);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; using(var reader = new SafeDataReader(command.ExecuteReader()))<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if(reader.Read())<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; do<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; this.Add(new Status(reader));<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; } while(reader.Read());<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; else<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; throw new Exception(string.Format(&quot;The record was not found in &#39;Status&#39; using the following criteria: {0}.&quot;, criteria));<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br /><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; RaiseListChangedEvents = true;<br /><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; OnFetched();<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br /><br />//TODO: how do I run the rules for the list, after it has populated the data ?<br /><br />This is the rule I want to call, after populating the list .... to verify the initial state of the data:<br /><br />private static bool AllPriorTasksToMilestoneMustBeClosed&lt;T&gt;(T target, Csla.Validation.RuleArgs e) where T : Status<br /><br />( it IS working if I change data and stuff, but I need it to run at my initial load of the list )</p>
+<p>regards,<br />EE</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Monday, June 07, 2010</h2><p>The rules are in the child objects contained in the list. So if you want to force the rules to run, you need to call CheckRules() in each child.</p>
+<p>This is often done in the DataPortal_Fetch() of the child - that&#39;s the normal solution.</p>
+<p>If you don&#39;t want the rules to run until the list is fully populated (due to sibling-level rules in the child objects) then you&#39;ll need to implement an internal method in the child class, so the list can loop through the children to tell each child to run its rules.</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>bniemyjski replied on Monday, June 07, 2010</h2><p>
+<p>Hello,</p>
+<p>Since you are loading this from the database this should be valid since you have database intergrity (hopefully). You have two places that you could call CheckRules() on. You could call them on OnFetched() or OnMapped() since you are using the CodeSmith templates. You could also create and call a method called BrokenRules() on the List that returns a string of the errors. Below is some code that I typed up that may not compile.</p>
+<p>private string BrokenRules() {</p>
+<p>var error = new StringBuilder();</p>
+<p>foreach(var item in this.Items){</p>
+<p>error.AppendLine(string.Format(&quot;Item {0} contains the following broken rules {1}&quot;, item.Name, item.BrokenRulesCollection.ToString());</p>
+<p>}</p>
+<p>return error.ToString();</p>
+<p>}</p>
+<p>Thanks</p>
+<p>-Blake Niemyjski</p>
+</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Lord02 replied on Tuesday, June 08, 2010</h2><p>Hi,</p>
+<p>The LIST is not using it&#39;s children to populate itself ( hence, I&#39;m not running through the DataPortal_Fetch() inside the *children* )<br />- How do YOU populate a list ? Do you call fetch on the child for each and every item/child ( so it will be multiple calls to the database, instead of just ONE call to the database by populating it in the Fetch of the LIST ? )<br /><br />I guess I have to create some internal function to loop through all the children and check if they&#39;re valid or not ( CheckRules )</p>
+<p>p.s. why am I not getting emails when you post answer to this thread ? I&#39;ve checked the &quot;Email me replies to this post&quot; ?</p>
+<p>rgd,<br />EE</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, June 08, 2010</h2><p>You might need to go into your profile and give the forum permission to send you emails, I&#39;m not sure.</p>
+<p>You should read chapters 17 and 18 of Expert Business Objects - they cover various data access concerns and techniques.</p>
+<p>I typically have the list do the database query, and then loop through the results (through the datareader or entity list or whatever), calling DataPortal.ChildFetch() for each child - passing the appropriate row of data or entity so the child can populate itself. This is the model the data portal is designed to support.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Lord02 replied on Tuesday, June 08, 2010</h2><p>OK, now I got the email ( did not change anything in my forums settings )<br /><br />I&#39;m already doing it like that, that is ... I make the Child create itselfWith this ( marked BOLD ):</p>
+<p>private void DataPortal_Fetch(StatusCriteria criteria)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; bool cancel = false;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; OnFetching(criteria, ref cancel);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (cancel) return;<br /><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; RaiseListChangedEvents = false;<br /><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; using (SqlConnection connection = new SqlConnection(ADOHelper.ConnectionString))<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; connection.Open();<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; using (SqlCommand command = new SqlCommand(&quot;[dbo].[rp_Status_Select]&quot;, connection))<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; command.CommandType = CommandType.StoredProcedure;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; command.Parameters.AddRange(ADOHelper.SqlParameters(criteria.StateBag));<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; command.Parameters.AddWithValue(&quot;@StatusNameHasValue&quot;, criteria.StatusNameHasValue);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; using(var reader = new SafeDataReader(command.ExecuteReader()))<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if(reader.Read())<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; do<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>this.Add(new Status(reader));</b><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; } while(reader.Read());<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; else<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; throw new Exception(string.Format(&quot;The record was not found in &#39;Status&#39; using the following criteria: {0}.&quot;, criteria));<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br /><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; RaiseListChangedEvents = true;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br /><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; OnFetched();&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</p>
+<p>And then I added this in the child ( the Status ... of StatusList ):<br /><br />partial void OnMapped()<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; this.ValidationRules.CheckRules();&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br /><br />but then the Status will not continue loading it&#39;s children ... I&#39;ll attach image to this post</p>
+<p>
+
+
+
+
+
+
+
+
+ 
+  Normal
+  0
+  
+  
+  21
+  
+  
+  false
+  false
+  false
+  
+  IS
+  X-NONE
+  X-NONE
+  
+   
+   
+   
+   
+   
+   
+   
+   
+   
+  
+  MicrosoftInternetExplorer4
+  
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+  
+
+ 
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+ 
+
+
+
+
+
+</p>
+<p class="MsoNormal"><span style="font-size:11pt;font-family:&#39;Calibri&#39;,&#39;sans-serif&#39;;color:#1f497d;">I need to be able to call the CheckRules <b><span style="text-decoration:underline;">AFTER</span></b>
+&nbsp;all the data has been loaded into the Grid &hellip;<br /></span></p>
+<p>&nbsp;</p>
+<p>
+
+
+
+
+
+
+
+
+ 
+  Normal
+  0
+  
+  
+  21
+  
+  
+  false
+  false
+  false
+  
+  IS
+  X-NONE
+  X-NONE
+  
+   
+   
+   
+   
+   
+   
+   
+   
+   
+  
+  MicrosoftInternetExplorer4
+  
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+  
+
+ 
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+ 
+
+
+
+
+
+</p>
+<p class="MsoNormal"><span style="font-size:11pt;font-family:&#39;Calibri&#39;,&#39;sans-serif&#39;;color:#1f497d;">This is how the data looks like:</span></p>
+<p>
+01 - Without_CheckRules.png </p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>
+
+
+
+
+
+
+
+
+ 
+  Normal
+  0
+  
+  
+  21
+  
+  
+  false
+  false
+  false
+  
+  IS
+  X-NONE
+  X-NONE
+  
+   
+   
+   
+   
+   
+   
+   
+   
+   
+  
+  MicrosoftInternetExplorer4
+  
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+  
+
+ 
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+ 
+
+
+
+
+
+</p>
+<p class="MsoNormal"><span style="font-size:11pt;font-family:&#39;Calibri&#39;,&#39;sans-serif&#39;;color:#1f497d;">But if I run this in the Status class ( the child )</span></p>
+<p class="MsoNormal"><span style="font-size:10pt;font-family:Consolas;color:blue;">partial</span><span style="font-size:10pt;font-family:Consolas;"> <span style="color:blue;">void</span> OnMapped()</span></p>
+<p class="MsoNormal"><span style="font-size:10pt;font-family:Consolas;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+{</span></p>
+<p class="MsoNormal"><span style="font-size:10pt;font-family:Consolas;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color:blue;">this</span>.ValidationRules.CheckRules();&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></p>
+<p class="MsoNormal"><span style="font-size:10pt;font-family:Consolas;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</span><span style="font-size:11pt;font-family:&#39;Calibri&#39;,&#39;sans-serif&#39;;color:#1f497d;"></span></p>
+<p class="MsoNormal"><span style="font-size:11pt;font-family:&#39;Calibri&#39;,&#39;sans-serif&#39;;color:#1f497d;">&nbsp;</span></p>
+<p class="MsoNormal"><span style="font-size:11pt;font-family:&#39;Calibri&#39;,&#39;sans-serif&#39;;color:#1f497d;">The data will only look like this:</span></p>
+<p>&nbsp;</p>
+<p>and then 02 - With_CheckRules.png</p>
+<p>&nbsp;</p>
+<p>
+
+
+
+
+
+
+
+
+ 
+  Normal
+  0
+  
+  
+  21
+  
+  
+  false
+  false
+  false
+  
+  IS
+  X-NONE
+  X-NONE
+  
+   
+   
+   
+   
+   
+   
+   
+   
+   
+  
+  MicrosoftInternetExplorer4
+  
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+  
+
+ 
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+ 
+
+
+
+
+
+</p>
+<p class="MsoNormal"><span style="font-size:11pt;font-family:&#39;Calibri&#39;,&#39;sans-serif&#39;;color:#1f497d;">This is the rule I want to run &hellip; it checks the &bdquo;<b>CanCloseMileStoneTask</b>&ldquo;
+( the column on the right &hellip; which will be hidden when released, only for debug
+now &hellip; it controls the &bdquo;Closed&ldquo; Property )</span></p>
+<p class="MsoNormal"><b><span style="font-size:11pt;font-family:&#39;Calibri&#39;,&#39;sans-serif&#39;;color:#1f497d;">- I need this rule which runs through all the Tasks and marks if
+the user can close the task or not.-</span></b></p>
+<p class="MsoNormal"><span style="font-size:11pt;font-family:&#39;Calibri&#39;,&#39;sans-serif&#39;;color:#1f497d;">&nbsp;</span></p>
+<p class="MsoNormal"><span style="font-size:10pt;font-family:Consolas;color:blue;">protected</span><span style="font-size:10pt;font-family:Consolas;"> <span style="color:blue;">override</span> <span style="color:blue;">void</span>
+OnChildChanged(Csla.Core.<span style="color:#2b91af;">ChildChangedEventArgs</span>
+e)</span></p>
+<p class="MsoNormal"><span style="font-size:10pt;font-family:Consolas;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+{</span></p>
+<p class="MsoNormal"><span style="font-size:10pt;font-family:Consolas;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color:green;">//todo: pr&oacute;fa&eth;i a&eth; f&aelig;ra hinga&eth;:</span></span></p>
+<p class="MsoNormal"><span style="font-size:10pt;font-family:Consolas;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color:green;">//base.OnChildChanged(e);</span></span></p>
+<p class="MsoNormal"><span style="font-size:10pt;font-family:Consolas;color:green;">&nbsp;</span></p>
+<p class="MsoNormal"><span style="font-size:10pt;font-family:Consolas;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color:#2b91af;">ProjectTask</span> gaur = e.ChildObject <span style="color:blue;">as</span> <span style="color:#2b91af;">ProjectTask</span>;</span></p>
+<p class="MsoNormal"><span style="font-size:10pt;font-family:Consolas;">&nbsp;</span></p>
+<p class="MsoNormal"><span style="font-size:10pt;font-family:Consolas;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color:blue;">if</span> (gaur != <span style="color:blue;">null</span>)</span></p>
+<p class="MsoNormal"><span style="font-size:10pt;font-family:Consolas;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+{</span></p>
+<p class="MsoNormal"><span style="font-size:10pt;font-family:Consolas;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color:green;">//if( gaur.MileStone == true
+)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span></p>
+<p class="MsoNormal"><span style="font-size:10pt;font-family:Consolas;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:green;">//e.ListChangedArgs.</span></span></p>
+<p class="MsoNormal"><span style="font-size:10pt;font-family:Consolas;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+CurrentProjectTask = gaur;</span></p>
+<p class="MsoNormal"><span style="font-size:10pt;font-family:Consolas;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><b><span style="font-size:14pt;font-family:Consolas;color:red;">this.ValidationRules.CheckRules(&quot;StatusID&quot;);</span></b></p>
+<p class="MsoNormal"><span style="font-size:10pt;font-family:Consolas;">&nbsp;</span></p>
+<p class="MsoNormal"><span style="font-size:10pt;font-family:Consolas;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color:green;">//TODO: pr&oacute;fa&eth;i a&eth; b&aelig;ta &thorn;essu inn:</span></span></p>
+<p class="MsoNormal"><span style="font-size:10pt;font-family:Consolas;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color:green;">//OnPropertyChanged(&quot;StatusID&quot;); // <a href="http://forums.lhotka.net/forums/EditPost.aspx/p/9032/42960.aspx#42960">http://forums.lhotka.net/forums/p/9032/42960.aspx#42960</a></span></span></p>
+<p class="MsoNormal"><span style="font-size:10pt;font-family:Consolas;color:green;">&nbsp;</span></p>
+<p class="MsoNormal"><span style="font-size:10pt;font-family:Consolas;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+CurrentProjectTask = <span style="color:blue;">null</span>;</span></p>
+<p class="MsoNormal"><span style="font-size:10pt;font-family:Consolas;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+}</span></p>
+<p class="MsoNormal"><span style="font-size:10pt;font-family:Consolas;">&nbsp;</span></p>
+<p class="MsoNormal"><span style="font-size:10pt;font-family:Consolas;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color:green;">//&aacute; a&eth; vera h&eacute;rna:</span></span></p>
+<p class="MsoNormal"><span style="font-size:10pt;font-family:Consolas;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color:blue;">base</span>.OnChildChanged(e);</span></p>
+<p class="MsoNormal"><span style="font-size:10pt;font-family:Consolas;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</span></p>
+<p class="MsoNormal">&nbsp;</p>
+<p class="MsoNormal"><span style="font-size:10pt;font-family:Consolas;"><br /></span></p>
+<p class="MsoNormal">&nbsp;</p>
+<p class="MsoNormal"><span style="font-size:10pt;font-family:Consolas;">protected bool AddBusinessValidationRules()<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ValidationRules.AddRule&lt;Status&gt;(AllPriorTasksToMilestoneMustBeClosed&lt;Status&gt;, &quot;StatusID&quot;);<br /><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return true;</span><span style="font-size:10pt;font-family:Consolas;"></span></p>
+<p class="MsoNormal"><span style="font-size:11pt;font-family:&#39;Calibri&#39;,&#39;sans-serif&#39;;color:#1f497d;"> }&nbsp; <br /></span></p>
+<p class="MsoNormal"><span style="font-size:11pt;font-family:&#39;Calibri&#39;,&#39;sans-serif&#39;;color:#1f497d;">&nbsp;</span></p>
+<p class="MsoNormal"><span style="font-size:11pt;font-family:&#39;Calibri&#39;,&#39;sans-serif&#39;;color:#1f497d;">&nbsp;</span></p>
+<p class="MsoNormal"><span style="font-size:10pt;font-family:Consolas;color:blue;">private</span><span style="font-size:10pt;font-family:Consolas;"> <span style="color:blue;">bool</span> isRunningAllPriorTasksToMilestoneMustBeClosed = <span style="color:blue;">false</span>;</span></p>
+<p class="MsoNormal"><span style="font-size:10pt;font-family:Consolas;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color:blue;">private</span> <span style="color:blue;">static</span> <span style="color:blue;">bool</span> AllPriorTasksToMilestoneMustBeClosed&lt;T&gt;(T
+target, Csla.Validation.<span style="color:#2b91af;">RuleArgs</span> e) <span style="color:blue;">where</span> T : <span style="color:#2b91af;">Status</span></span></p>
+<p class="MsoNormal"><span style="font-size:10pt;font-family:Consolas;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+{</span></p>
+<p class="MsoNormal"><span style="font-size:10pt;font-family:Consolas;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color:blue;">if</span>
+(target.isRunningAllPriorTasksToMilestoneMustBeClosed == <span style="color:blue;">true</span>)</span></p>
+<p class="MsoNormal"><span style="font-size:10pt;font-family:Consolas;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+{</span></p>
+<p class="MsoNormal"><span style="font-size:10pt;font-family:Consolas;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color:blue;">return</span> <span style="color:blue;">true</span>;</span></p>
+<p class="MsoNormal"><span style="font-size:10pt;font-family:Consolas;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+}</span></p>
+<p class="MsoNormal"><span style="font-size:10pt;font-family:Consolas;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+target.isRunningAllPriorTasksToMilestoneMustBeClosed = <span style="color:blue;">true</span>;</span></p>
+<p class="MsoNormal"><span style="font-size:10pt;font-family:Consolas;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color:green;">//int numberOfClosedTasks = 0;</span></span></p>
+<p class="MsoNormal"><span style="font-size:10pt;font-family:Consolas;color:green;">&nbsp;</span></p>
+<p class="MsoNormal"><span style="font-size:10pt;font-family:Consolas;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color:green;">// # Rule number one: Never talk about Fight club -
+Regla sem kemur &iacute; veg fyrir a&eth; h&aelig;gt s&eacute; a&eth; vista MileStone ef &ouml;nnur t&ouml;sk innan
+sama phase er ekki loki&eth;</span></span></p>
+<p class="MsoNormal"><span style="font-size:10pt;font-family:Consolas;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color:green;">// &thorn;arf a&eth; vera h&aelig;gt a&eth; toggla
+&quot;CanSaveMilestone&quot; fram og aftur eftir &thorn;v&iacute; sem t&ouml;skin innan phasans
+breytast.-</span></span></p>
+<p class="MsoNormal"><span style="font-size:10pt;font-family:Consolas;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color:green;">// passa a&eth; uppf&aelig;ra l&iacute;ka estimatedDags &aacute; V&Ouml;R&ETH;UM &aacute;
+sama dags. og Task me&eth; h&aelig;stu dags. ( er &thorn;etta ekki gert n&uacute; &thorn;egar ni&eth;r&iacute; Phase
+reglunum ? )</span></span></p>
+<p class="MsoNormal"><span style="font-size:10pt;font-family:Consolas;color:green;">&nbsp;</span></p>
+<p class="MsoNormal"><span style="font-size:10pt;font-family:Consolas;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color:green;">//Regla #1 &thorn;arf v&aelig;ntanlega a&eth; keyra strax &iacute; byrjun,
+ekki bara &iacute; OnChildChanged ( &thorn;v&iacute; &thorn;a&eth; ver&eth;ur a&eth; vera h&aelig;gt a&eth; loka V&ouml;r&eth;u STRAX &iacute;
+upphafi forms ):</span></span></p>
+<p class="MsoNormal"><span style="font-size:10pt;font-family:Consolas;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color:blue;">if</span> (target.CurrentProjectTask != <span style="color:blue;">null</span>)</span></p>
+<p class="MsoNormal"><span style="font-size:10pt;font-family:Consolas;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+{</span></p>
+<p class="MsoNormal"><span style="font-size:10pt;font-family:Consolas;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+RuleNumberOne&lt;T&gt;(target, target.CurrentProjectTask.PhaseID);</span></p>
+<p class="MsoNormal"><span style="font-size:10pt;font-family:Consolas;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+}<span style="color:green;">// # Rule number one ENDS</span></span></p>
+<p class="MsoNormal"><span style="font-size:10pt;font-family:Consolas;color:green;">&nbsp;</span></p>
+<p class="MsoNormal"><span style="font-size:10pt;font-family:Consolas;color:green;">&nbsp;</span></p>
+<p class="MsoNormal"><span style="font-size:10pt;font-family:Consolas;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color:green;">//TODO: Ef fasi er opna&eth;ur eftir a&eth; honum hefur veri&eth;
+loka&eth; &thorn;&aacute; sj&aacute;lfkrafa &thorn;arf a&eth; opna fasana sem &aacute; eftir koma,</span></span></p>
+<p class="MsoNormal"><span style="font-size:10pt;font-family:Consolas;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color:green;">// &THORN;annig yr&eth;i fari&eth; og teki&eth; af haki&eth; &iacute; close, &aacute;
+v&ouml;r&eth;um fasanna sem koma &aacute; eftir</span></span></p>
+<p class="MsoNormal"><span style="font-size:10pt;font-family:Consolas;color:green;">&nbsp;</span></p>
+<p class="MsoNormal"><span style="font-size:10pt;font-family:Consolas;color:green;">&nbsp;</span></p>
+<p class="MsoNormal"><span style="font-size:10pt;font-family:Consolas;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color:green;">// # Rule number two Begins:</span></span></p>
+<p class="MsoNormal"><span style="font-size:10pt;font-family:Consolas;color:green;">&nbsp;</span></p>
+<p class="MsoNormal"><span style="font-size:10pt;font-family:Consolas;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color:blue;">var</span> allClosedMilestones = <span style="color:blue;">from</span> p <span style="color:blue;">in</span>
+target.Phases</span></p>
+<p class="MsoNormal"><span style="font-size:10pt;font-family:Consolas;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color:blue;">from</span> c <span style="color:blue;">in</span>
+p.ProjectTasks</span></p>
+<p class="MsoNormal"><span style="font-size:10pt;font-family:Consolas;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color:blue;">where</span> c.MileStone == <span style="color:blue;">true</span></span></p>
+<p class="MsoNormal"><span style="font-size:10pt;font-family:Consolas;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color:blue;">where</span> c.Closed == <span style="color:blue;">true</span></span></p>
+<p class="MsoNormal"><span style="font-size:10pt;font-family:Consolas;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color:blue;">select</span> c;</span></p>
+<p class="MsoNormal"><span style="font-size:10pt;font-family:Consolas;">&nbsp;</span></p>
+<p class="MsoNormal"><span style="font-size:10pt;font-family:Consolas;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color:blue;">foreach</span> (<span style="color:blue;">var</span>
+closedMilestone <span style="color:blue;">in</span> allClosedMilestones)</span></p>
+<p class="MsoNormal"><span style="font-size:10pt;font-family:Consolas;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+{</span></p>
+<p class="MsoNormal"><span style="font-size:10pt;font-family:Consolas;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color:blue;">var</span> allLesserNotClosed = <span style="color:blue;">from</span> p <span style="color:blue;">in</span>
+target.Phases</span></p>
+<p class="MsoNormal"><span style="font-size:10pt;font-family:Consolas;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color:blue;">from</span> c <span style="color:blue;">in</span>
+p.ProjectTasks</span></p>
+<p class="MsoNormal"><span style="font-size:10pt;font-family:Consolas;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color:blue;">where</span> c.MileStone == <span style="color:blue;">true</span></span></p>
+<p class="MsoNormal"><span style="font-size:10pt;font-family:Consolas;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color:blue;">where</span> c.TaskID &lt; closedMilestone.TaskID</span></p>
+<p class="MsoNormal"><span style="font-size:10pt;font-family:Consolas;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">where</span>
+c.Closed == <span style="color:blue;">false</span></span></p>
+<p class="MsoNormal"><span style="font-size:10pt;font-family:Consolas;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color:blue;">select</span> c;</span></p>
+<p class="MsoNormal"><span style="font-size:10pt;font-family:Consolas;">&nbsp;</span></p>
+<p class="MsoNormal"><span style="font-size:10pt;font-family:Consolas;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color:blue;">if</span> (allLesserNotClosed.Count() &gt; 0)</span></p>
+<p class="MsoNormal"><span style="font-size:10pt;font-family:Consolas;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+{</span></p>
+<p class="MsoNormal"><span style="font-size:10pt;font-family:Consolas;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+closedMilestone.CanCloseMilestoneTask = <span style="color:blue;">false</span>;</span></p>
+<p class="MsoNormal"><span style="font-size:10pt;font-family:Consolas;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+}</span></p>
+<p class="MsoNormal"><span style="font-size:10pt;font-family:Consolas;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color:blue;">else</span></span></p>
+<p class="MsoNormal"><span style="font-size:10pt;font-family:Consolas;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+{</span></p>
+<p class="MsoNormal"><span style="font-size:10pt;font-family:Consolas;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+closedMilestone.CanCloseMilestoneTask = <span style="color:blue;">true</span>;</span></p>
+<p class="MsoNormal"><span style="font-size:10pt;font-family:Consolas;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+RuleNumberOne&lt;T&gt;(target, closedMilestone.PhaseID);</span></p>
+<p class="MsoNormal"><span style="font-size:10pt;font-family:Consolas;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+}</span></p>
+<p class="MsoNormal"><span style="font-size:10pt;font-family:Consolas;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+}</span></p>
+<p class="MsoNormal"><span style="font-size:10pt;font-family:Consolas;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color:green;">// # Rule number two Ends</span></span></p>
+<p class="MsoNormal"><span style="font-size:10pt;font-family:Consolas;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></p>
+<p class="MsoNormal"><span style="font-size:10pt;font-family:Consolas;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;target.isRunningAllPriorTasksToMilestoneMustBeClosed
+= <span style="color:blue;">false</span>;</span></p>
+<p class="MsoNormal"><span style="font-size:10pt;font-family:Consolas;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color:blue;">return</span> <span style="color:blue;">true</span>;</span></p>
+<p class="MsoNormal"><span style="font-size:10pt;font-family:Consolas;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+}</span></p>
+<p class="MsoNormal"><span style="font-size:10pt;font-family:Consolas;">&nbsp;</span></p>
+<p class="MsoNormal"><span style="font-size:10pt;font-family:Consolas;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color:blue;">private</span> <span style="color:blue;">static</span> <span style="color:blue;">void</span> RuleNumberOne&lt;T&gt;(T target, <span style="color:blue;">int</span> phaseId) <span style="color:blue;">where</span> T
+: <span style="color:#2b91af;">Status</span></span></p>
+<p class="MsoNormal"><span style="font-size:10pt;font-family:Consolas;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+{</span></p>
+<p class="MsoNormal"><span style="font-size:10pt;font-family:Consolas;">&nbsp;</span></p>
+<p class="MsoNormal"><span style="font-size:10pt;font-family:Consolas;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color:blue;">var</span> milestones = <span style="color:blue;">from</span>
+p <span style="color:blue;">in</span> target.Phases</span></p>
+<p class="MsoNormal"><span style="font-size:10pt;font-family:Consolas;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color:blue;">from</span> c <span style="color:blue;">in</span>
+p.ProjectTasks</span></p>
+<p class="MsoNormal"><span style="font-size:10pt;font-family:Consolas;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color:blue;">where</span> p.PhaseID == phaseId</span></p>
+<p class="MsoNormal"><span style="font-size:10pt;font-family:Consolas;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color:blue;">where</span> c.MileStone == <span style="color:blue;">true</span></span></p>
+<p class="MsoNormal"><span style="font-size:10pt;font-family:Consolas;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color:blue;">select</span> c;</span></p>
+<p class="MsoNormal"><span style="font-size:10pt;font-family:Consolas;">&nbsp;</span></p>
+<p class="MsoNormal"><span style="font-size:10pt;font-family:Consolas;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color:green;">//var milestones = from m in
+target.CurrentProjectTask.PhaseID ProjectTasks</span></span></p>
+<p class="MsoNormal"><span style="font-size:10pt;font-family:Consolas;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color:green;">//&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+where m.MileStone == true</span></span></p>
+<p class="MsoNormal"><span style="font-size:10pt;font-family:Consolas;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color:green;">//&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+select m;</span></span></p>
+<p class="MsoNormal"><span style="font-size:10pt;font-family:Consolas;color:green;">&nbsp;</span></p>
+<p class="MsoNormal"><span style="font-size:10pt;font-family:Consolas;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color:blue;">var</span> countNotClosed = (<span style="color:blue;">from</span>
+p <span style="color:blue;">in</span> target.Phases</span></p>
+<p class="MsoNormal"><span style="font-size:10pt;font-family:Consolas;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color:blue;">from</span> c <span style="color:blue;">in</span>
+p.ProjectTasks</span></p>
+<p class="MsoNormal"><span style="font-size:10pt;font-family:Consolas;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color:blue;">where</span> p.PhaseID == phaseId</span></p>
+<p class="MsoNormal"><span style="font-size:10pt;font-family:Consolas;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color:blue;">where</span> c.MileStone == <span style="color:blue;">false</span></span></p>
+<p class="MsoNormal"><span style="font-size:10pt;font-family:Consolas;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color:blue;">where</span> c.Closed == <span style="color:blue;">false</span></span></p>
+<p class="MsoNormal"><span style="font-size:10pt;font-family:Consolas;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color:blue;">select</span> c).Count();</span></p>
+<p class="MsoNormal"><span style="font-size:10pt;font-family:Consolas;">&nbsp;</span></p>
+<p class="MsoNormal"><span style="font-size:10pt;font-family:Consolas;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color:blue;">var</span> countAll = (<span style="color:blue;">from</span>
+p <span style="color:blue;">in</span> target.Phases</span></p>
+<p class="MsoNormal"><span style="font-size:10pt;font-family:Consolas;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color:blue;">from</span> c <span style="color:blue;">in</span>
+p.ProjectTasks</span></p>
+<p class="MsoNormal"><span style="font-size:10pt;font-family:Consolas;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color:blue;">where</span> p.PhaseID == phaseId</span></p>
+<p class="MsoNormal"><span style="font-size:10pt;font-family:Consolas;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color:blue;">where</span> c.MileStone == <span style="color:blue;">false</span></span></p>
+<p class="MsoNormal"><span style="font-size:10pt;font-family:Consolas;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color:blue;">select</span> c).Count();</span></p>
+<p class="MsoNormal"><span style="font-size:10pt;font-family:Consolas;">&nbsp;</span></p>
+<p class="MsoNormal"><span style="font-size:10pt;font-family:Consolas;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color:green;">//TODO: f&aelig; villu ef &eacute;g er a&eth; setja inn v&ouml;r&eth;u &iacute; Phase
+&thorn;ar sem engin t&ouml;sk eru !!!!! - hugsanlega hverfur &thorn;essi villa &thorn;egar &thorn;a&eth; ver&eth;ur
+komi&eth; amk eitt MileStone fyrir hvert phase</span></span></p>
+<p class="MsoNormal"><span style="font-size:10pt;font-family:Consolas;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color:green;">//&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;eftir
+n&yacute;skr&aacute;ningu Task &iacute; gegnum Project</span></span></p>
+<p class="MsoNormal"><span style="font-size:10pt;font-family:Consolas;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color:blue;">if</span> (milestones != <span style="color:blue;">null</span>)</span></p>
+<p class="MsoNormal"><span style="font-size:10pt;font-family:Consolas;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+{</span></p>
+<p class="MsoNormal"><span style="font-size:10pt;font-family:Consolas;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color:green;">//h&eacute;r kemur NULL reference villa &thorn;egar keyrt er inn &iacute;
+2nd skipti&eth; </span></span></p>
+<p class="MsoNormal"><span style="font-size:10pt;font-family:Consolas;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:green;">//sem er a&eth; valda &ouml;llu ruglinu:</span></span></p>
+<p class="MsoNormal"><span style="font-size:10pt;font-family:Consolas;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color:blue;">var</span> coll = <span style="color:blue;">new</span> <span style="color:#2b91af;">List</span>&lt;<span style="color:#2b91af;">ProjectTask</span>&gt;();</span></p>
+<p class="MsoNormal"><span style="font-size:10pt;font-family:Consolas;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color:blue;">foreach</span> (<span style="color:blue;">var</span>
+milestone <span style="color:blue;">in</span> milestones)</span></p>
+<p class="MsoNormal"><span style="font-size:10pt;font-family:Consolas;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+{</span></p>
+<p class="MsoNormal"><span style="font-size:10pt;font-family:Consolas;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+coll.Add(milestone);</span></p>
+<p class="MsoNormal"><span style="font-size:10pt;font-family:Consolas;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+}</span></p>
+<p class="MsoNormal"><span style="font-size:10pt;font-family:Consolas;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color:blue;">foreach</span> (<span style="color:blue;">var</span>
+milestone <span style="color:blue;">in</span> coll)</span></p>
+<p class="MsoNormal"><span style="font-size:10pt;font-family:Consolas;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+{</span></p>
+<p class="MsoNormal"><span style="font-size:10pt;font-family:Consolas;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+milestone.CanCloseMilestoneTask = (countAll == 0) || (countNotClosed == 0);</span></p>
+<p class="MsoNormal"><span style="font-size:10pt;font-family:Consolas;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+}</span></p>
+<p class="MsoNormal"><span style="font-size:10pt;font-family:Consolas;">&nbsp;</span></p>
+<p class="MsoNormal"><span style="font-size:10pt;font-family:Consolas;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+}</span></p>
+<p class="MsoNormal"><span style="font-size:10pt;font-family:Consolas;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+}</span></p>
+<p class="MsoNormal"><span style="font-size:10pt;font-family:Consolas;color:blue;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+#endregion</span><span style="font-size:11pt;font-family:&#39;Calibri&#39;,&#39;sans-serif&#39;;color:#1f497d;"></span></p>
+<p class="MsoNormal"><span style="font-size:11pt;font-family:&#39;Calibri&#39;,&#39;sans-serif&#39;;color:#1f497d;">&nbsp;</span></p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Lord02 replied on Tuesday, June 08, 2010</h2><p>02 - With_CheckRules.png</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Lord02 replied on Tuesday, June 08, 2010</h2><p>How would you do this, and more importanlty WHERE would you call this rule ?</p>
+<p><i>&quot;If you don&#39;t want the rules to run until the list is fully populated
+(due to sibling-level rules in the child objects) then you&#39;ll need to
+implement an internal method in the child class, so the list can loop
+through the children to tell each child to run its rules.&quot;</i></p>
+<p>I was thinking of something like this:<br /><br />protected override void OnPropertyChanged(string propertyName)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; base.OnPropertyChanged(propertyName);<br /><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (propertyName == &quot;SelectedProjectID&quot;)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; RecoveryPlanner.Business.ProjectTaskList.ProjectIDToFetchFrom = SelectedProjectID;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; //Only get Status: Recovery ( which has StatusID: 2 )<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b> this.LoadProperty( _currentStatusListProperty, RecoveryPlanner.Business.StatusList.GetByStatusID(2));<br /><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; //TODO: if I change something in the status, it will probably fire up the rule ????<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; foreach (Status item in CurrentStatusList)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; //TODO: loop through each item and check it&#39;s rule ?&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; item.CheckXXXXX&nbsp; // Not availble ...&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br /></b><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; this.LoadProperty( _steeringCommitteeForSelectedProjectProperty,RecoveryPlanner.Business.SteeringCommitteeList.GetByProjectId(SelectedProjectID));<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; this.LoadProperty( _statusLastUpdatedProperty, RecoveryPlanner.Business.ProjectTaskHistoryInfo.GetByProjectID(SelectedProjectID).DatePerformed );<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</p>
+<p><i><br /></i></p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>Lord02 replied on Tuesday, June 08, 2010</h2><p>I&#39;ve completed this successfully:</p>
+<p>Created an internal function to run AFTER the whole list has been populated.-</p>
+<p><br />See my solution:</p>
+<p>
+
+
+
+
+
+
+
+
+ 
+  Normal
+  0
+  
+  
+  21
+  
+  
+  false
+  false
+  false
+  
+  IS
+  X-NONE
+  X-NONE
+  
+   
+   
+   
+   
+   
+   
+   
+   
+   
+  
+  MicrosoftInternetExplorer4
+  
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+  
+
+ 
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+ 
+
+
+
+
+
+<p class="MsoNormal"><span style="font-size:10pt;font-family:Consolas;color:blue;">protected</span><span style="font-size:10pt;font-family:Consolas;"> <span style="color:blue;">override</span> <span style="color:blue;">void</span> OnPropertyChanged(<span style="color:blue;">string</span>
+propertyName)</span></p>
+<p class="MsoNormal"><span style="font-size:10pt;font-family:Consolas;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {</span></p>
+<p class="MsoNormal"><span style="font-size:10pt;font-family:Consolas;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color:blue;">base</span>.OnPropertyChanged(propertyName);</span></p>
+<p class="MsoNormal"><span style="font-size:10pt;font-family:Consolas;">&nbsp;</span></p>
+<p class="MsoNormal"><span style="font-size:10pt;font-family:Consolas;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color:blue;">if</span> (propertyName != <span style="color:#a31515;">&quot;CanSave&quot;</span>)</span></p>
+<p class="MsoNormal"><span style="font-size:10pt;font-family:Consolas;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+{</span></p>
+<p class="MsoNormal"><span style="font-size:10pt;font-family:Consolas;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color:blue;">if</span> (CurrentStatusList != <span style="color:blue;">null</span>)</span></p>
+<p class="MsoNormal"><span style="font-size:10pt;font-family:Consolas;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+CanSave = <span style="color:blue;">this</span>.IsSavable &amp;&amp; CurrentStatusList.IsSavable;</span></p>
+<p class="MsoNormal"><span style="font-size:10pt;font-family:Consolas;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+}</span></p>
+<p class="MsoNormal"><span style="font-size:10pt;font-family:Consolas;">&nbsp;</span></p>
+<p class="MsoNormal"><span style="font-size:10pt;font-family:Consolas;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color:blue;">if</span> (propertyName == <span style="color:#a31515;">&quot;SelectedProjectID&quot;</span>)</span></p>
+<p class="MsoNormal"><span style="font-size:10pt;font-family:Consolas;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+{</span></p>
+<p class="MsoNormal"><span style="font-size:10pt;font-family:Consolas;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+RecoveryPlanner.Business.<span style="color:#2b91af;">ProjectTaskList</span>.ProjectIDToFetchFrom
+=
+SelectedProjectID;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></p>
+<p class="MsoNormal"><span style="font-size:10pt;font-family:Consolas;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:green;">//Only get Status: Recovery ( which has StatusID: 2 )</span></span></p>
+<p class="MsoNormal"><span style="font-size:10pt;font-family:Consolas;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color:blue;">this</span>.LoadProperty( _currentStatusListProperty,
+RecoveryPlanner.Business.<span style="color:#2b91af;">StatusList</span>.GetByStatusID(2));</span></p>
+<p class="MsoNormal"><span style="font-size:10pt;font-family:Consolas;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></p>
+<p class="MsoNormal"><span style="font-size:10pt;font-family:Consolas;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">foreach</span> (<span style="color:#2b91af;">Status</span>
+item <span style="color:blue;">in</span> CurrentStatusList)</span></p>
+<p class="MsoNormal"><span style="font-size:10pt;font-family:Consolas;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+{</span></p>
+<p class="MsoNormal"><span style="font-size:10pt;font-family:Consolas;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color:green;">//TODO: loop through each item and check it&#39;s rule,
+through the new internal function I added:</span></span></p>
+<p class="MsoNormal"><span style="font-size:10pt;font-family:Consolas;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span style="font-size:14pt;font-family:Consolas;color:red;">item.CheckForBrokenStatuses();</span></p>
+<p class="MsoNormal"><span style="font-size:10pt;font-family:Consolas;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+}</span></p>
+<p class="MsoNormal"><span style="font-size:10pt;font-family:Consolas;">&nbsp;</span></p>
+<p class="MsoNormal"><span style="font-size:10pt;font-family:Consolas;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color:blue;">this</span>.LoadProperty(
+_steeringCommitteeForSelectedProjectProperty,RecoveryPlanner.Business.<span style="color:#2b91af;">SteeringCommitteeList</span>.GetByProjectId(SelectedProjectID));</span></p>
+<p class="MsoNormal"><span style="font-size:10pt;font-family:Consolas;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color:blue;">this</span>.LoadProperty( _statusLastUpdatedProperty,
+RecoveryPlanner.Business.<span style="color:#2b91af;">ProjectTaskHistoryInfo</span>.GetByProjectID(SelectedProjectID).DatePerformed
+);</span></p>
+<p class="MsoNormal"><span style="font-size:10pt;font-family:Consolas;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+}</span></p>
+<p class="MsoNormal"><span style="font-size:10pt;font-family:Consolas;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</span></p>
+<p class="MsoNormal"><span style="font-size:11pt;font-family:&#39;Calibri&#39;,&#39;sans-serif&#39;;color:#1f497d;">&nbsp;</span></p>
+<p class="MsoNormal"><span style="font-size:11pt;font-family:&#39;Calibri&#39;,&#39;sans-serif&#39;;color:#1f497d;">&nbsp;</span></p>
+<p class="MsoNormal"><span style="font-size:11pt;font-family:&#39;Calibri&#39;,&#39;sans-serif&#39;;color:#1f497d;">In status ( the Child ) I added this:</span></p>
+<p class="MsoNormal"><span style="font-size:11pt;font-family:&#39;Calibri&#39;,&#39;sans-serif&#39;;color:#1f497d;">&nbsp;</span></p>
+<p class="MsoNormal"><span style="font-size:10pt;font-family:Consolas;color:blue;">internal</span><span style="font-size:10pt;font-family:Consolas;"> <span style="color:blue;">void</span> </span><span style="font-family:Consolas;color:red;">CheckForBrokenStatuses</span><span style="font-size:10pt;font-family:Consolas;">()</span></p>
+<p class="MsoNormal"><span style="font-size:10pt;font-family:Consolas;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {</span></p>
+<p class="MsoNormal"><span style="font-size:10pt;font-family:Consolas;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color:blue;">this</span>.ValidationRules.CheckRules();</span></p>
+<p class="MsoNormal"><span style="font-size:10pt;font-family:Consolas;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+}</span></p>
+<p class="MsoNormal">&nbsp;</p>
+<p class="MsoNormal"><span style="font-size:10pt;font-family:Consolas;">Thanx Lhotka !<br />EE</span></p>
+<p class="MsoNormal"><span style="font-size:10pt;font-family:Consolas;"><br /></span></p>
+<p class="MsoNormal"><span style="font-size:10pt;font-family:Consolas;">&nbsp;</span></p>
+</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

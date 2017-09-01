@@ -1,0 +1,15 @@
+<html><header><title>OT: Java equivalent for CSLA</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>OT: Java equivalent for CSLA</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3123.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Doug Ramirez posted on Saturday, June 30, 2007</h2><P><SPAN>I'm going to be moving into a new role as a Java architect.&nbsp; It's been a few years since I was proficient in J2EE app server technology and so I'm curious if anyone has any recommendations for a CSLA equivalent for Java.<o:p></o:p></SPAN></P>
+<P><SPAN>Also, while I have to admit that I haven't looked into this at all, I am wondering what the most difficult challenges would be to port CSLA to Java.<o:p></o:p></SPAN></P>
+<P><SPAN>Any advice is appreciated.<o:p></o:p></SPAN></P>
+<P><SPAN>Doug</SPAN></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Sunday, July 01, 2007</h2><P>This comes up from time to time, and I don't think there is any equivalent in the Java world. There are many frameworks over there though: Spring, Hibernate, etc.</P>
+<P>Some CSLA features should translate pretty directly: n-level undo, the data portal, authorization.</P>
+<P>Others wouldn't translate all that easily: data binding support, validation for example.</P>
+<P>Data binding doesn't translate because there's no unified UI concept in Java comparable to Windows Forms and Web Forms (or WPF). Instead, there are many competing UI schemes, and each has their own approach to making things work. My guess is that you'd have to pick one to support and live within those boundaries.</P>
+<P>Validation may be possible, but my implementation relies on delegates and to my knowledge that feature doesn't exist in the Java platform. If Java has function pointers (I don't know) you could do a rough equivalent to my implementation.</P>
+<P>I do know that I've seen similar concepts in Java though, where a "rule method" is actually a "rule object" and that class just implements an interface that defines a single method - the rule method. Rather than holding a delegate reference to the rule method, your framework holds a reference to the rule object, and calls the rule method via that interface.</P>
+<P>Beyond those major features, I'm sure there are some gotcha's that would require some rethinking. Conceptually however, much of the framework would translate.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>omrivm replied on Wednesday, July 04, 2007</h2>
+
+<p class="MsoNormal">Hi Doug,<br>
+Did you tried to translate CSLA to Java?<o:p></o:p></p>
+
+Thanks,<br>Omri<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

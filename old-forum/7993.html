@@ -1,0 +1,82 @@
+<html><header><title>Edit Level Mismatch in Copystate</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Edit Level Mismatch in Copystate</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/7993.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>vensulu posted on Sunday, November 15, 2009</h2><P>I am using CLSA 3.0 in my application to provide N-level undo feature and I am using WPF as my GUI application.</P>
+<P>I am getting error messgae "EditLevel mistmatch in copystate" -- I tried to debug the issue and it is little strange, the fisrt time i invoke my appllication and make chnages i dont get any error , it works fine but seconde time when i try to edit&nbsp;during the call to&nbsp;BeginEdit() which causes the problem.</P>
+<P>I tried to debug the code and found the root cause being the child Editlevel is greater then the Parent EditLevel, I am not sure how this can happen and how to solve this poroblem.</P>
+<P>Help required , as how to slove this problem or find the root cause for this problem.</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Sunday, November 15, 2009</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Is
+this happening when you use DataGrid?<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> vensulu
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Sunday, November 15, 2009 10:59 AM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> [CSLA .NET] Edit Level Mismatch in Copystate<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>I am using CLSA 3.0 in my application to provide N-level undo feature and I
+am using WPF as my GUI application.<o:p></o:p></p>
+
+<p>I am getting error messgae &quot;EditLevel mistmatch in copystate&quot; -- I
+tried to debug the issue and it is little strange, the fisrt time i invoke my
+appllication and make chnages i dont get any error , it works fine but seconde
+time when i try to edit&nbsp;during the call to&nbsp;BeginEdit() which causes
+the problem.<o:p></o:p></p>
+
+<p>I tried to debug the code and found the root cause being the child Editlevel
+is greater then the Parent EditLevel, I am not sure how this can happen and how
+to solve this poroblem.<o:p></o:p></p>
+
+<p>Help required , as how to slove this problem or find the root cause for this
+problem.<o:p></o:p></p>
+
+<p>&nbsp;<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>msrs_it replied on Friday, September 10, 2010</h2><p>Make sure that your are <b>unbinding any bindingsources</b> in your UI project before using ApplyEdit() or CancelEdit().</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

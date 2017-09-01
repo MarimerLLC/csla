@@ -1,0 +1,24 @@
+<html><header><title>EditableSwitchable compilation problem </title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>EditableSwitchable compilation problem </h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/2154.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>sukhorukov posted on Wednesday, January 17, 2007</h2><P class=MsoNormal><SPAN>Hi,<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>I am currently using xml and CodeSmith templates (Version: 1.1.0 RC) for CSLA code generation with SplitBase generation method.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>My BO model:<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<OL>
+<LI class=MsoNormal><SPAN>EditableRoot (Person) as parent for EditableSwitchable (PersonResidence)<o:p></o:p></SPAN></LI>
+<LI class=MsoNormal><SPAN>EditableSwitchable object have tag: &lt;Relationship Parent="Person" /&gt; (because I need foreign key (PersonID) for PersonResidence insert/update operations)<o:p></o:p></SPAN></LI></OL>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>When I compile source code (output from CodeSmith) I get next errors in PersonResidence.Base.cs:<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>1. The type arguments for method 'IISU20.Common.Library.PersonResidenceBase&lt;T&gt;.ExecuteInsert&lt;P&gt;(System.Data.SqlClient.SqlConnection, P)' cannot be inferred from the usage. Try specifying the type arguments explicitly<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Error Line: ExecuteInsert(cn, <SPAN>null</SPAN>);</SPAN><SPAN><o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>2. The type arguments for method 'IISU20.Common.Library.PersonResidenceBase&lt;T&gt;.ExecuteUpdate&lt;P&gt;(System.Data.SqlClient.SqlConnection, P)' cannot be inferred from the usage. Try specifying the type arguments explicitly.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Error Line: ExecuteUpdate(cn, <SPAN>null</SPAN>);</SPAN><SPAN><o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Is this a bug in CodeSmith templates? Any thoughts?<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Thanks,<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Kostya<o:p></o:p></SPAN></P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

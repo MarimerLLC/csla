@@ -1,0 +1,175 @@
+<html><header><title>CSLA .NET 2.0 Performance Issues </title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA .NET 2.0 Performance Issues </h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6063.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>LDSK posted on Tuesday, December 30, 2008</h2><P>I am using CSLA 2.0 with .NET 2.0.</P>
+<P>On my win forms based&nbsp;application, I have a custom datagrid (designed by our team), which saves user preferences (sorting, filtering, columns width, hiding columns etc.,). To have sorting and filtering&nbsp; on the datagrid on multiple columns,&nbsp;team decided to use ObjectListView by&nbsp;converting&nbsp;the datasource to a objectListView (as per my understanding this was found online via some forum on CSLA( may be this one..i dont know).</P>
+<P>datagrid.datasource = New CSLA.ObjectListView(myListObject)</P>
+<P>This datagrid&nbsp;loads around 15,000 - 20,000 rows at one time.</P>
+<P>This has a huge performance hit. My Win form takes nearly 2-3 minutes to load.</P>
+<P>When i debug i see that, though the CSLA objects takes about 30-40 seconds to fetch the data from the DB and assign to the datagrid, it then loops on public properties like for ever...I am unable to get past debugging this...</P>
+<P>As you can see there are many variables to my problem. I am just wondering if the answer to this will be an upgrade to CSLA 3.0 as it promises performance increase, atleast to a certain extent.</P>
+<P>I am also thinking about a third party datagrid control to further improve the performance.</P>
+<P>It will be of help if some one can shed light on the performance improvement part of CSLA 3.0.</P>
+<P>Will an upgrade to CSLA 3.0 improve performance signifiacntly?</P>
+<P>Does anyone have the same issues?</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>dlambert replied on Tuesday, December 30, 2008</h2>I can't tell you if CSLA 3.0 will handle this any better than CSLA 2.0, but I can see a number of areas where you may want to reconsider design choices.<br><br>First, 15,000+ rows of anything in a UI seems like a problem.&nbsp; Nobody sits down at an application with the intent of reading 15,000 of *anything*.&nbsp; What are your users really trying to accomplish here?&nbsp; Are they scanning 15,000 items looking for a couple of items they're interested in?&nbsp; Are they sorting / searching?&nbsp; Are they processing a list from one end to the other?&nbsp; If you know what your users are really doing here, you'll have a clue how to help them get to a more reasonable subset of items, and that'll be a big help.&nbsp; From your description, I'd start with the filtering bit, and see if you could change the UI to find out what you're going to filter on first, and then narrow your query by that right up front.<br><br>If it turns out that you really need to display really large numbers of records, then keep reading.<br><br>The next bit that might bear investigation is the use of the phrase "one at a time" in your post.&nbsp; If you're actually doing 15,000 DB calls, then there's a humongous improvement to be had by simply knocking that off.&nbsp; Load a collection with one DB call, then pass the Data Reader down to children so that they can set their private properies.&nbsp; I'm almost certain the Project Tracker app shows this technique.<br><br>On the subject of DB changes, you could also look at letting the DB help you with paging, so you're bringing back hunks of records (maybe 100 or 200 at a time).&nbsp; This could help you in a couple ways.&nbsp; If your grid supports paging, you can just let it ask for more records when it needs them, or you can load your collection asynchronously, and start displaying records as they arrive at the UI.&nbsp; This is going to be more work than the method you're using now, but if you've really got one of those one in a million apps that needs thousands of records at the UI, you're going to have to work a little bit to make the UI responsive.<br><br>Finally, I'd look at the properties of the object itself.&nbsp; Make it absolutely as narrow as possible.&nbsp; This helps all the way up and down the stack by not hauling around information you're not going to use.&nbsp; If you need to show another screen when someone double-clicks an object, fetch the "big" object then -- don't haul around 15,000 records worth of extra properties just in case the user clicks on #11,451.<br><br>Hopefully, there's something in here that'll give you some ideas.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rsbaker0 replied on Tuesday, December 30, 2008</h2><P>I'm not sure this is a CSLA problem. I certainly agree that showing the user tens of thousands of rows is not a good way to do things, but we can easily fetch upwards of 10-20,000 rows/second from a SQL database into a&nbsp; grid, even faster with a narrow table, and I'm not&nbsp;even using a native DAL but instead letting an&nbsp;ORM generate my SQL&nbsp;and fetch objects for me. &nbsp;</P>
+<P>You mentioned looping on public properties, which&nbsp;I could see being normal if this is just your grid trying to paint itself and fetching the values from your objects. </P>
+<P>I'd consider trying a profiler to see where your code is spending it's time. (I test drove the ANTS profiler last year and liked it, but I'm sure there are other good ones). </P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>lalsteris replied on Tuesday, December 30, 2008</h2><P>In the case of csla 2.0, ensure that you are not loading your object values through your properties.&nbsp; This will slow things down since the property setters usually&nbsp;check for authorizations and may fire change events if you haven't paused the firing of events.&nbsp; You should aim for loading the values directly into the fields.&nbsp; If you are doing this 20,000 times, you will experience significant slow down.</P>
+<P>I have also experienced slow-loading data grids in the past&nbsp;... if I can remember correctly, debugging pointed me to an ErrorProvider that was bound to the same bindingsource as my grid.&nbsp; I'd have to look at some old code to remember exactly what I did ... if you temporarily remove any errorproviders from your form and it then loads a lot faster, then that may point to your problem.&nbsp; Otherwise, I am totally wrong!&nbsp; </P>
+<P>Also, how does the "ObjectListView" work.&nbsp; If it scans through and reads all properties of all records, then I assume the authorization checks are being called at least num_of_properties_per_record * number_of_record times.</P>
+<P>Good luck.</P>
+<P>Leigh</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>maxal replied on Wednesday, December 31, 2008</h2>Creating 15000-20000 instances of CSLA objects will take time.<br><br>In one of our projects, where we used DevExpress grid, I implemented this solution:<br>DevExpress grid supports so-called "Server" mode. I implemented the "lazy" loading of objects to the list where first only primary keys were from the list were loaded. And then objects were loaded by request (with some buffers, of cause, but that's details). What I found is that loading only primary keys instead of creating objects was many-many times faster even when using same SQL statement. So, we achived very good results with that.<br><br>Other option we used for long lists are:<br>1. Creating and fetching objects in background process. Just make sure you move them to the main list in main thread. In fact, we used it in WPF application, but it doesn't matter, you can do the same in WinForms.<br><br>2. If you can, redesign you application to use pages, or Next &lt;n&gt; records approach. I know that many people will say that this is an obvious solution, expecially people from web world, but I also know that sometimes you can be stuck with arguments "my old program showed the list for me, why can't you do the same?" Good luck with that.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>LDSK replied on Wednesday, December 31, 2008</h2><P>Thank you all for your comments.</P>
+<P>I am also investigating how to acheive paging on my Win data grid.</P>
+<P>Paging is&nbsp;easy to do with a .NET object - Data Adapter has one implementation that lets you take the start records and max records. This implementation is not available on a CSLA.data.Objectadapter.<FONT size=2></P>
+<P>da.Fill(ds,startrecord,maxrecords,srctable) </P></FONT>
+<P>maxal,</P>
+<P>Can you please give me some sample&nbsp;code or&nbsp;example of how you did the lazy loading with Dev express grid ?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Wednesday, December 31, 2008</h2><P>I used the ObjectListView in 2.0.</P>
+<P>In my view it is obsolete in 3.6. Because now we have LINQ to CSLA with indexing. I plan to fully remove it from my project next week and learn the new technology at the same time.</P>
+<P>If I recall correctly the ObjectListView does have a performance hit for a large number of items. I think I saw it for 1,000 items. I am pretty sure it is a big part of the hit you are seeing with 15,000 items.</P>
+<P>Joe</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>maxal replied on Friday, January 02, 2009</h2>It was about two week of coding. I will probably take some time to describe it in details in by blog. <br><br>I even modified CSLA sources to support it. I could do it without such modifications but it would require a lot of duplicate code for read-only and not read-only lists. But briefly, I just supported IListServer interface from DevExpress.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>LDSK replied on Friday, January 02, 2009</h2><P>Maxal,</P>
+<P>Thank you. please do let me know how to get to that post when you do so.</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>maxal replied on Sunday, January 11, 2009</h2>Here it is, Lazy Loading for CSLA lists. <a href="http://discoveringdotnet.alexeyev.org/2009/01/lazy-loading-for-csla-lists-to-support.html">http://discoveringdotnet.alexeyev.org/2009/01/lazy-loading-for-csla-lists-to-support.html</a><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Friday, January 02, 2009</h2>Hi, <br><br>If your Property Get method include the following line <br><b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; CanReadProperty(true);</b><br>then your code (or actually CSLA)&nbsp; makes a expensive reflection call to determine the property name. <br><br>For a start (and if you don't need property authorization) you cold just do a search and replace to add a comment tag before the CanReadProperty and CanWriteProperty methods. Then check the performance again and you will be surprised. <br><br>If you do need the property authorization you should include the property name to these methods. Then CSLA will not need to do the reflection call. Make your code like this and you will get a much better performance. <br><br>&nbsp;&nbsp;&nbsp; public string Name<br>&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; get<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br><b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; CanReadProperty("Name", true);<br></b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return _name;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; set<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br><b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; CanWriteProperty("Name", true);<br></b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (value == null) value = string.Empty;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (_name != value)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _name = value;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; PropertyHasChanged();<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>&nbsp;&nbsp;&nbsp; }<br><br>And - If you have many ValidationRules being called for each of the items on Fetch from database they will also execute reflection calls and require some time. I<br><br>BTW - Csla 3.5 introduced the PropertyInfo and new Set/Get methods that avoids the use of Reflection. <br><br>/jonny<br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>LDSK replied on Friday, January 02, 2009</h2><P>Jonny,</P>
+<P>Thank you for your reply. I searched my APP and found that CanReadPropert(True) is in every id property that uniquely identifies a record/object.</P>
+<P>See below for property code.My APp does not implement any authorization for now. But i strongly beleive that who ever put it in there did so for a reason. Why do you think this line of code is in there?</P>
+<P><FONT size=2>&lt;System.ComponentModel.Browsable(</FONT><FONT color=#0000ff size=2>False</FONT><FONT size=2>)&gt; _</P>
+<P></FONT><FONT color=#0000ff size=2>Public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>ReadOnly</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Property</FONT><FONT size=2> Id() </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Integer</P></FONT><FONT size=2>
+<P>&lt;System.Runtime.CompilerServices.MethodImpl(Runtime.CompilerServices.MethodImplOptions.NoInlining)&gt; _</P>
+<P></FONT><FONT color=#0000ff size=2>Get</P></FONT><FONT size=2>
+<P>CanReadProperty(</FONT><FONT color=#0000ff size=2>True</FONT><FONT size=2>)</P>
+<P></FONT><FONT color=#0000ff size=2>Return</FONT><FONT size=2> id</P>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Get</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Property</P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Curelom replied on Friday, January 02, 2009</h2>It could be the previous author used a template to generate the Properties and speed wasn't important at the time, i.e. they may have been working with less records.&nbsp; I think it would be an extremely rare case that you would need to put read authorization on an id.&nbsp; Check with the business needs of your object.&nbsp; If you don't have documentation, or the previous author isn't available, then contact your business owners and document it for the next developer.&nbsp; If you are going to be making any modifications at all to the code, you should be familiar with these.&nbsp;The walking on glass approach won't achieve anything.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>LDSK replied on Friday, January 02, 2009</h2><P>Curelom,</P>
+<P>I appreciate your technical advice and not the rest.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Curelom replied on Friday, January 02, 2009</h2>Sorry about that.&nbsp; I'm often confusing to myself, let alone other people.&nbsp; I'm just saying that the previous developer may not have had an actual&nbsp;reason for adding the authorization, such as using a template or because it's just a rather standard call.&nbsp; You mention yourself that you aren't using authorization.&nbsp; It seems that you are trying to read his/her mind.&nbsp; I think all that will do is cause you to pull your hair out.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>LDSK replied on Friday, January 02, 2009</h2>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<DIV>
+
+<div class=Section1>
+
+<p class=MsoNormal><font size=2 color=navy face=Arial><span>No Problem. Once again thank you for your pointers
+on this.<o:p></o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 color=navy face=Arial><span><o:p>&nbsp;</o:p></span></font></p>
+
+<div>
+
+<div class=MsoNormal align=center><font size=3 face="Times New Roman"><span>
+
+<hr align=center>
+
+</span></font></div>
+
+<p class=MsoNormal><b><font size=2 face=Tahoma><span>From:</span></font></b><font size=2 face=Tahoma><span> Curelom
+[mailto:cslanet@lhotka.net] <br>
+<b><span>Sent:</span></b> Friday, January 02, 2009
+4:24 PM<br>
+<b><span>To:</span></b> Kumarasamy, Suhanya [UBC]<br>
+<b><span>Subject:</span></b> Re: [CSLA .NET] CSLA .NET
+2.0 Performance Issues</span></font><o:p></o:p></p>
+
+</div>
+
+<p class=MsoNormal><font size=3 face="Times New Roman"><span><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=MsoNormal><font size=3 face="Times New Roman"><span>Sorry about that.&nbsp; I'm often confusing to myself, let alone other
+people.&nbsp; I'm just saying that the previous developer may not have had an
+actual&nbsp;reason for adding the authorization, such as using a template or
+because it's just a rather standard call.&nbsp; You mention yourself that you
+aren't using authorization.&nbsp; It seems that you are trying to read his/her
+mind.&nbsp; I think all that will do is cause you to pull your hair out.<br>
+<br>
+<o:p></o:p></span></font></p>
+
+</div>
+
+</DIV>
+<DIV><SPAN><EM><STRONG>&nbsp; 
+<P CLASS="MsoNormal">
+<FONT FACE="Arial" SIZE="1"><SPAN>*****************************************************************************************************************************************************************</SPAN></FONT>
+</P>
+<P CLASS="MsoNormal">
+<FONT FACE="Arial" SIZE="1"><SPAN>This e-mail transmission and any attachments that accompany it may contain UBC&nbsp;information that is privileged, confidential or otherwise exempt from disclosure under applicable law and is intended solely for the use of the individual(s) to whom it was intended to be addressed. If you have received this e-mail by mistake, or you are not the intended recipient, any disclosure, dissemination, distribution, copying or other use or retention of this communication or its substance is prohibited.&nbsp; If you have received this communication in error, please immediately reply to the author via e-mail that you received this message by mistake and also permanently delete the original and all copies of this e-mail and any attachments from your computer. Exclaimer Version 4.22</SPAN></FONT>
+</P></STRONG></EM></SPAN></DIV></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>dlambert replied on Friday, January 02, 2009</h2>The CanReadProperty(True) syntax is pretty common -- it's the default syntax if you use the 2.0 code snippets, for instance.&nbsp; It's slightly easier to code (especially if you're generating code) because you don't have to use the name of the property in the call.&nbsp; It also withstands refactoring a little easier than the use of hard-coded property names because the C# refactoring tools won't pick up the string constant if you change the name of one of your properties -- you'll have to do it yourself.<br><br>All that having been said, I think Jonny's point is excellent - it's surely worth trying without that call to see how much of your problem is in that call.&nbsp; It's very likely that you could do without the call in this case -- it's really only used when you've got a single object serving different types of users, and some users get to see more properties than others.&nbsp; For example, if you've got an employee object and you want to hide the Salary property unless the user is in the "HR" group, you'd use this functionality.&nbsp; Many objects don't need this kind of granularity.&nbsp; If you're using this, you should be able to see evidence of it in your code -- look for "AuthorizationRules" with any of these property names, I believe.<br><br>If you can try it without the call, you'd know pretty quickly whether it's worth looking into further.&nbsp; Even if you do need it, you should be able to pick up some time switching to the hard-coded syntax as Jonny pointed out.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>LDSK replied on Friday, January 02, 2009</h2><P>dlambert,</P>
+<P>Thank you. I am going to try by commenting this line of code and will let you all know. Unfortunately this has to wait till Monday, as i am not in office today.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Friday, January 02, 2009</h2>Hi,<br><br>Yes, by default the property snippets for CSLA 2.0 includes those lines and fro the benefit of all those that want to use authorization. We also tend to override the CanWriteProperty methods where certain properties are only allowed to be set when some conditions are met (other then just authorization) such as a CheckBox, type or combination of other values. <br><br>We also had a case with slow performance this summer that was resolved with adding the property name or just removing the check for CanRead.. and CanWrite.... <br><br>BTW: The CanRead.. and CanWrite.. lines are also the ones that requires the&nbsp; compiler directive <br>&nbsp;[System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]<br>to make sure reflection will get the correct propertyname. <br><br>Did your company write an all new datagridview control or subclass the standard datagrid view. There are some issues with the standard datagridview and performance - especially with the AutoSizeColumn setting. You will find valuable information in the DataGridViewFAQ available at <a href="http://windowsclient.net/downloads/folders/applications/default.aspx">http://windowsclient.net/downloads/folders/applications/default.aspx</a> <br><br>/jonny<br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Monday, January 05, 2009</h2><P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>JonnyBee:</strong></div><div>Hi,<BR><BR><BR>BTW: The CanRead.. and CanWrite.. lines are also the ones that requires the&nbsp; compiler directive <BR>&nbsp;[System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]<BR>to make sure reflection will get the correct propertyname. <BR><BR></div></BLOCKQUOTE></P>
+<P>Note:</P>
+<P>The use of reflection to get the property name was found to be unreliable and was made obsolete. The string value of the property name should be provided in old code.</P>
+<P>Joe</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Monday, January 05, 2009</h2>Also, if the CanReadProperty is going to be removed, or if it's going to be modified to include the string literal property name, I would remove the System.Runtime.CompilerServices.MethodImpl attribute.&nbsp; Inlining would allow the method call to be sped up, IIRC.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, January 12, 2009</h2><P>Even upgrading from 2.0 to 2.1 will probably help a lot. In fact the whole point of 2.1 was performance improvements, due to some poor design choices on my part in the 2.0 implementation. </P>
+<P>These specifically impacted business/validation rules and authorization rules. The switch from per-instance to per-type rules had a radical impact on both performance and memory consuption.</P>
+<P>But if you are going to upgrade, I'd recommend going to 3.0, because it includes more bug fixes and so forth beyond 2.1, along with the performance enhancements.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>LDSK replied on Tuesday, January 13, 2009</h2><P>Hi Rocky,</P>
+<P>Thank you. One more question. If i decide to upgrade 2.0 to 3.0, do i have to make any code changes to my application at all?</P>
+<P>Do i have to make any code change once the upgrade is done to make it work with the new version?</P>
+<P>thanks,</P>
+<P>Suhanya</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, January 13, 2009</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>You will need to make some code changes to go from 2.0 to 3.0,
+or even to 2.1. Read the change logs for each intermediate version and look for
+the highlighted breaking changes to get an idea what breaking changes will
+affect your application.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> LDSK
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Tuesday, January 13, 2009 8:40 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] CSLA .NET 2.0 Performance Issues<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Hi Rocky,<o:p></o:p></p>
+
+<p>Thank you. One more question. If i decide to upgrade 2.0 to 3.0, do i have
+to make any code changes to my application at all?<o:p></o:p></p>
+
+<p>Do i have to make any code change once the upgrade is done to make it work
+with the new version?<o:p></o:p></p>
+
+<p>thanks,<o:p></o:p></p>
+
+<p>Suhanya<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

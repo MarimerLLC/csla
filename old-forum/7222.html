@@ -1,0 +1,18 @@
+<html><header><title>Binding Infragistics UltraWebGrid with CSLADataSource</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Binding Infragistics UltraWebGrid with CSLADataSource</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/7222.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeW posted on Thursday, July 02, 2009</h2><DIV><FONT face=Arial size=2><SPAN class=237494819-02072009>I'm trying to get the UltraWebGrid&nbsp;(ver 9.1)&nbsp;to work with CSLA ver 3.6.2, but can't seem to get it to insert/update/delete without causing an error.&nbsp; I can successfully fill the grid.&nbsp; The standard GridView works correctly</SPAN></FONT></DIV>
+<DIV><FONT face=Arial size=2><SPAN class=237494819-02072009></SPAN></FONT>&nbsp;</DIV>
+<DIV><FONT face=Arial size=2><SPAN class=237494819-02072009>I have set the following properties on the UltraWebGrid:</SPAN></FONT></DIV>
+<DIV><FONT face=Arial size=2><SPAN class=237494819-02072009></SPAN></FONT>&nbsp;</DIV>
+<DIV><FONT face=Arial size=2><SPAN class=237494819-02072009>DataKeyField : Object primary key</SPAN></FONT></DIV>
+<DIV><FONT face=Arial size=2><SPAN class=237494819-02072009>DataMember: Full Class Name</SPAN></FONT></DIV>
+<DIV><FONT face=Arial size=2><SPAN class=237494819-02072009>DataSourceID: CSLADataSource</SPAN></FONT></DIV>
+<DIV><FONT face=Arial size=2><SPAN class=237494819-02072009></SPAN></FONT>&nbsp;</DIV>
+<DIV><FONT face=Arial size=2><SPAN class=237494819-02072009>When I try to do anything other than select, I get the following error in the CslaDataSource.cs class in the GetType method:</SPAN></FONT></DIV>
+<DIV><FONT face=Arial size=2><SPAN class=237494819-02072009></SPAN></FONT>&nbsp;</DIV>
+<DIV><FONT face=Arial size=2><SPAN class=237494819-02072009>"Could not load file or assembly 'DealTrack.BO' or one of its dependencies. The system cannot find the file specified."</SPAN></FONT></DIV>
+<DIV><FONT face=Arial size=2><SPAN class=237494819-02072009></SPAN></FONT>&nbsp;</DIV>
+<DIV><FONT face=Arial size=2><SPAN class=237494819-02072009>This error seems to occur prior to any of the CSLADataSource events kicking off.</SPAN></FONT></DIV>
+<DIV><FONT face=Arial size=2><SPAN class=237494819-02072009></SPAN></FONT>&nbsp;</DIV>
+<DIV><FONT face=Arial size=2><SPAN class=237494819-02072009>Anyone else run into this?&nbsp; Any help would be appreciated.</SPAN></FONT></DIV>
+<DIV><FONT face=Arial size=2><SPAN class=237494819-02072009></SPAN></FONT>&nbsp;</DIV>
+<DIV><FONT face=Arial size=2><SPAN class=237494819-02072009>Thanks,</SPAN></FONT></DIV>
+<DIV><FONT face=Arial size=2><SPAN class=237494819-02072009>Joe</SPAN></FONT></DIV></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rfcdejong replied on Thursday, July 09, 2009</h2>Joe, did u fix it by now?<br /><br />It sounds like something simple as setting a reference in the correct project. However it's strange that the standard GridView works and the UltraWebGrid doesn't.<br /><br />Try adding a reference to DealTrack.BO in your startup project, mostly that does the trick.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeW replied on Friday, July 10, 2009</h2>Unfortunately, no.  I doubled checked all of my references and the startup project does have a reference.<br /><br />Everything in the grid works as you would expect until a postback occurs.  That's when I get the error.<br /><br />I'm sure it's something simple, but I haven't figured it out yet.  I assume it should be working?</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

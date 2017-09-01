@@ -1,0 +1,27 @@
+<html><header><title>PTracker Authentication fails</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>PTracker Authentication fails</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/8949.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>kwadwo posted on Monday, May 17, 2010</h2><p>Hi,</p>
+<p>i am new to CSLA and i just got the PTracker sample applicaiton. i am trying to run the PTWeb sample. i have configured my wcf dataportal and i am able to view the service&nbsp;wsdl through the web url correctly.</p>
+<p>for some reason, even though i have setup the ptracker database and security database according to the directions Rocky gave, authentication still fails. i get the following&nbsp;exception error&nbsp;when i try to login to the PTweb application.</p>
+<p><em>The request for security token could not be satisfied because authentication failed</em></p>
+<p>&nbsp; i have cross checked my connection strings in the web.config on both the PTweb and wcf dataportal and they are correctly formed. i have been struggling with this for 2 weeks! and i am making no progress.</p>
+<p>does any body know what i could be doing wrong? i am running on IIS 7 on a windows 7 os and a SQL 2005. </p>
+<p>any pointers or any help on how to make the ptracker sample project work will be a great help to me!</p>
+<p>thanks!</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, May 17, 2010</h2><p>Have you put a breakpoint in the global.asax code where the authentication is handled? You should be able to walk through that code and see the authentication request.</p>
+<p>Also, there&#39;s the custom membership provider class - put a breakpoint there to walk through the process that occurs after the user clicks the login button.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>kwadwo replied on Tuesday, May 18, 2010</h2><p><span style="font-size:x-small;"><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">
+<p>Hi Rocky,</p>
+<p>after steping through the code. i found that it throws the exception:</p>
+<p>&quot;Caller was not authenticated by the service&quot; when the Fetch method is called on line 232 in the DataPortal class.</p>
+<p>try</p>
+</span></span><span style="font-size:x-small;">
+<p>{</p>
+<p>result = proxy.Fetch(objectType, criteria, dpContext);</p>
+<p>}</p>
+<font size="2">
+<p>&nbsp;</p>
+</font></span>
+<p><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">catch</span></span><span style="font-size:x-small;"> (Server.DataPortalException ex)
+<p>{</p>
+<p>.....</p>
+<p>could it be that my dataportal is not well configured?</p>
+</span></p>
+</span></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, May 18, 2010</h2><p>What is the actual exception? That message text is not familiar to me, and it doesn&#39;t really tell us anything about what is happening.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,12 @@
+<html><header><title>How to perform cascade delete in CSLA?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>How to perform cascade delete in CSLA?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11415.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Zubair posted on Thursday, June 14, 2012</h2><p>Hi</p>
+<p>&nbsp;</p>
+<p>I want to perform cascade delete using CSLA only, suppose I m passing deleting employee table record then it should deleted record from all the table where &nbsp;that empid is used.</p>
+<p>&nbsp;</p>
+<p>eagerly&nbsp;waiting for your reply</p>
+<p>&nbsp;</p>
+<p>Thanks</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Thursday, June 14, 2012</h2><p>Hi,</p>
+<p>The only safe way is to use &quot;cascading delete&quot; on relationships in the database. </p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Zubair replied on Thursday, June 14, 2012</h2><p>HI</p>
+<p>Thanks for your quick reply, so that means we cant perform cascade delete from code behind using CSLA classes?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Thursday, June 14, 2012</h2><p>Uhm, well you can do cascade delete but YOUR code must handle the deletion by either making sure to load ALL child objects and marks as Deleted ot traverse the entire tree and call delete in the data access layer. </p>
+<p>If you have a rich client and lazy load child objects this can be a real PITA. </p>
+<p>So my recommended way is to use cascading delete in the database.</p>
+<p>&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

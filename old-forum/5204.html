@@ -1,0 +1,228 @@
+<html><header><title>AllowWrite - DenyWrite properties mixed on same object</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>AllowWrite - DenyWrite properties mixed on same object</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5204.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>PabloDiaz posted on Thursday, August 07, 2008</h2><P>Hi everyone,</P>
+<P>I'm newbie to CSLA and trying to figure out the best approach to handle this scenario.</P>
+<P>I have an object with four fields: field1, field2, field3, field4</P>
+<P>I have N number of roles and N number of status. On status1, Role1 has access to field1, field2; then I allowWrite to those fields in my authorization rules, but field3, field4 are denyWrite. That work perfectly. The problem is that when I logout and the View(form) is open field3 and field4 are made available to user. I think that is because those fields doesn't have an allowWrite on them, and framework makes them available to everybody which is not denied.</P>
+<P>And this is making me think that I am going to&nbsp;need writing the authorization rules for every role inside this object. Am I wrong? What if I have five roles with 15 properties on this object, that would be a lot of rules. I think my problem is having an object on which not all properties are allowWrite for the current role, but a mixed of allowWrite and denyWrite.</P>
+<P>Thanks in advanced</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>nermin replied on Thursday, August 07, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I think you are going about it a wrong way.&nbsp; You are
+looking at which Role denies access to the property, but instead you should be
+trying to set up which role has access to the property.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Let me explain.&nbsp; Your Role1 is authorized to write field1
+and field2 and denied write access on field3 and field4.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Now lets assume that you have Role two that has access to all 4
+fields (field1, field2, field3, field4)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Your authorization should then be on field3 and field4 checking
+whether user is in Role2 and only allowing write for that role.&nbsp; Then
+Role1 is obviously denied access, as well as unauthenticated users (after
+logout). <o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Nermin Dibek<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> PabloDiaz
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Thursday, August 07, 2008 10:59 AM<br>
+<b>To:</b> Nermin Dibek<br>
+<b>Subject:</b> [CSLA .NET] AllowWrite - DenyWrite properties mixed on same
+object<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Hi everyone,<o:p></o:p></p>
+
+<p>I'm newbie to CSLA and trying to figure out the best approach to handle this
+scenario.<o:p></o:p></p>
+
+<p>I have an object with four fields: field1, field2, field3, field4<o:p></o:p></p>
+
+<p>I have N number of roles and N number of status. On status1, Role1 has
+access to field1, field2; then I allowWrite to those fields in my authorization
+rules, but field3, field4 are denyWrite. That work perfectly. The problem is
+that when I logout and the View(form) is open field3 and field4 are made
+available to user. I think that is because those fields doesn't have an
+allowWrite on them, and framework makes them available to everybody which is
+not denied.<o:p></o:p></p>
+
+<p>And this is making me think that I am going to&nbsp;need writing the
+authorization rules for every role inside this object. Am I wrong? What if I
+have five roles with 15 properties on this object, that would be a lot of
+rules. I think my problem is having an object on which not all properties are
+allowWrite for the current role, but a mixed of allowWrite and denyWrite.<o:p></o:p></p>
+
+<p>Thanks in advanced<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>PabloDiaz replied on Thursday, August 07, 2008</h2><P>Hi,</P>
+<P>Let's see at this simple puzzle.</P>
+<P>My object with four fields: field1, field2, field3, field4.</P>
+<P>Role1&nbsp;is&nbsp;AllowWrite&nbsp;field1 and field2 but not field3 nor field4.</P>
+<P>The rest of roles can't write on any of the properties.</P>
+<P>field3 and field4 are now a problem for me. Because they don't have any allowWrite rule applied on them.</P>
+<P>Perhaps, I could do something dummy like:</P><FONT size=2>
+<P>AuthorizationRules.AllowWrite(</FONT><FONT color=#800000 size=2>"field3"</FONT><FONT size=2>, </FONT><FONT color=#800000 size=2>"dummyRole"</FONT><FONT size=2>);</P></FONT>
+<P>Not specifying an existent role, this works but is ugly. Or my other choice would be setting the DenyWrite for every property and every role which could not be smart. Because you could have 7 roles and 15 properties.</P>
+<P>What is the best way to handle this situation?</P>
+<P>Thanks.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>PabloDiaz replied on Thursday, August 07, 2008</h2>Is there something in CSLA like DenyWriteToAll? I'm&nbsp;using CSLA2.0. Unfortunately, I can not move to the most recent version.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Thursday, August 07, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I think if you issue AllowWrite to a non-existing role, you will
+end up with DenyAll rights?...<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899<o:p></o:p></span></p>
+
+<p class=MsoNormal><b><i><span>Magenic</span></i></b><span> </span><span>&reg;</span><b><i><span><o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> PabloDiaz
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Thursday, August 07, 2008 1:15 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: AllowWrite - DenyWrite properties mixed on
+same object<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Is there something in CSLA like DenyWriteToAll?
+I'm&nbsp;using CSLA2.0. Unfortunately, I can not move to the most recent
+version.<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>PabloDiaz replied on Thursday, August 07, 2008</h2><P>Don't you think that solution is a little bit strange?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Thursday, August 07, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I basically suggested this because you did not want to list all
+roles in DenyWrite which is the correct solution.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899<o:p></o:p></span></p>
+
+<p class=MsoNormal><b><i><span>Magenic</span></i></b><span> </span><span>&reg;</span><b><i><span><o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> PabloDiaz
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Thursday, August 07, 2008 2:18 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: RE: AllowWrite - DenyWrite properties mixed
+on same object<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Don't you think that solution is a little bit strange?<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Thursday, August 07, 2008</h2>No, that's actually the <a HREF="/forums/thread/15524.aspx">recommended way</a> to handle this.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>PabloDiaz replied on Thursday, August 07, 2008</h2><P>I think that I was just needing to hear it from the architect.</P>
+<P>Thank you very much.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Thursday, August 07, 2008</h2>Heh... totally understand.&nbsp; FWIW though, anyone from Magenic is probably working on Csla with Rocky, or has used it quite a bit.&nbsp; At least that's how things seem.<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

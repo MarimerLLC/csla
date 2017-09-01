@@ -1,0 +1,10 @@
+<html><header><title>Pay Run group action</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Pay Run group action</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/1701.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Wal972 posted on Tuesday, November 07, 2006</h2><P>Hi Guys,</P>
+<P>I have a payrun root list object which contain individual pays (root busines object). Now my question is this, how would you go about a group save for the pays and not activating until a required at the end. So it's all or nothing.</P>
+<P>Thanks</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Tuesday, November 07, 2006</h2>You mean you want to update the database within a transaction?&nbsp; You can h andle it manually (and if you're using Csla 1.x you'll have to do it this way) or in Csla 2&nbsp; you can use the Transactional attribute and specify TransactionScope.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Wal972 replied on Tuesday, November 07, 2006</h2>no i want active the save on the pay one after the other, not the database activity</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>malloc1024 replied on Tuesday, November 07, 2006</h2>
+
+<p class="MsoNormal">I am not exactly sure what you are asking but I will try to
+help.<span>&nbsp; </span>The Payrun class inherits from
+BusinessListBase and the Pay class inherits from the BusinessBase correct?<span>&nbsp; </span>When you edit or add a Pay object you would call
+ApplyEdit on it.<span>&nbsp; </span>When you are done
+editing all the Pay objects, you would call Save on the Payrun class to save
+all the Pay objects at once.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

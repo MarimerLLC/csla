@@ -1,0 +1,42 @@
+<html><header><title>Create vs Fetch</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Create vs Fetch</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/760.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>cmay posted on Sunday, July 30, 2006</h2><P>I am hoping someone can answer this for me.</P>
+<P>I posted about this a while back (<A HREF="/forums/post/1655.aspx">http://forums.lhotka.net/forums/post/1655.aspx</A>)&nbsp;but got no response, but I just ran into this same problem again today so I am going to try again.</P>
+<P>In the templates that come with CSLA, specifically the EditableRoot, the "GetEditableRoot" factory method calls a Create method on the dataportal:</P>
+<P>&nbsp; Public Shared Function GetEditableRoot(ByVal id As Integer) As EditableRoot<BR>&nbsp;&nbsp;&nbsp; Return DataPortal.Create(Of EditableRoot)(New Criteria(id))<BR>&nbsp; End Function</P>
+<P>I have been changing these to call the DataPortal.Fetch.</P>
+<P>Is it supposed to be calling Create, and if so why?</P>
+<P>If you are calling a "get" isn't that really you fetching the object from the datasource?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Sunday, July 30, 2006</h2>It is a template bug, which fixed in cvs on the 2.1 branch.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>cmay replied on Sunday, July 30, 2006</h2><P>Thanks.</P>
+<P>&nbsp;</P>
+<P>Chris</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Bonio replied on Monday, July 31, 2006</h2><P>Hi Rocky</P>
+<P>How can we get access to the 2.1 branch? I have downloaded all the branches in CVS and can't</P>
+<P>see a 2.1 version. I am currently using csCSLA20 - is this the latest?</P>
+<P>Thanks</P>
+<P>Bonio</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, July 31, 2006</h2>
+
+
+
+
+<DIV align=left><SPAN class=718480614-31072006><FONT face=Arial color=#0000ff size=2>You are using TortoiseCVS? If so, on the Revision tab, 
+click the button to get the list of revisions and choose V2-1. If you are using 
+another client you are on your own, as I only use 
+Tortoise...</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=718480614-31072006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=718480614-31072006><FONT face=Arial color=#0000ff size=2>If you are using the web interface (<A href="http://www.lhotka.net/cslacvs">www.lhotka.net/cslacvs</A>), then you'll 
+need to get into the module directory FIRST (like csla20cs), and then the 
+combobox should list V2-1 as a branch.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=718480614-31072006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=718480614-31072006><FONT face=Arial color=#0000ff size=2>Rocky</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=718480614-31072006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV><BR>
+<BLOCKQUOTE>
+  <DIV class=OutlookMessageHeader align=left>
+  <HR>
+  <FONT face=Tahoma size=2><B>From:</B> Bonio [mailto:cslanet@lhotka.net] 
+  <BR><B>Sent:</B> Monday, July 31, 2006 6:40 AM<BR><B>To:</B> 
+  rocky@lhotka.net<BR><B>Subject:</B> Re: [CSLA .NET] Create vs 
+  Fetch<BR></FONT><BR></DIV>
+  <DIV></DIV>
+  <P>Hi Rocky</P>
+  <P>How can we get access to the 2.1 branch? I have downloaded all the branches 
+  in CVS and can't</P>
+  <P>see a 2.1 version. I am currently using csCSLA20 - is this the latest?</P>
+  <P>Thanks</P>
+  <P>Bonio</P><BR><BR><BR></BLOCKQUOTE></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

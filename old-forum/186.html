@@ -1,0 +1,46 @@
+<html><header><title>Is this a bug in the sample app ? DataGridView Default Error Dialog</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Is this a bug in the sample app ? DataGridView Default Error Dialog</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/186.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>mensand posted on Wednesday, May 24, 2006</h2><P>Hi all,</P>
+<P>I've bought the book (C# version at bookpool.com) and was impressed as soon as i got reading it. Great work. When i downloaded the code from this site i was trying to play a bit with it but got stuck with the following.</P>
+<P>The following exceptions (see lowest part of this post) i get when i run the sample windowsforms tracker.</P>
+<P>What i do is login as "power" and then open the projects for edit.</P>
+<P>project "Expert C# Business Objects"</P>
+<P>Select one&nbsp;resource. "Jefferson Thomas"</P>
+<P>change the lastname to "Jefferson TEST" press the apply button&nbsp;and then the exception are raised over and over again when you move the mouse over the grid.</P>
+<P>What i'm doing wrong ? Or is it a bug ?</P>
+<P>I think i found the problem maker in ResourceEdit.cs I've added 1 line of code. And marked it green</P><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>private</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>void</FONT><FONT size=2> SaveResource(</FONT><FONT color=#0000ff size=2>bool</FONT><FONT size=2> rebind)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>using</FONT><FONT size=2> (</FONT><FONT color=#008080 size=2>StatusBusy</FONT><FONT size=2> busy = </FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> </FONT><FONT color=#008080 size=2>StatusBusy</FONT><FONT size=2>("Saving..."))</P>
+<P>{</P>
+<P></FONT><FONT color=#008000 size=2>// stop the flow of events</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>.ResourceBindingSource.RaiseListChangedEvents = </FONT><FONT color=#0000ff size=2>false</FONT><FONT size=2>;</P>
+<P></FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>.AssignmentsBindingSource.RaiseListChangedEvents = </FONT><FONT color=#0000ff size=2>false</FONT><FONT size=2>;</P>
+<P></FONT><FONT color=#008000 size=2>// do the save</P></FONT><FONT size=2>
+<P></FONT><FONT color=#008080 size=2>Resource</FONT><FONT size=2> temp = Resource.Clone();</P>
+<P>temp.ApplyEdit();</P>
+<P></FONT><FONT color=#0000ff size=2>try</P></FONT><FONT size=2>
+<P>{</P>
+<P>_resource = temp.Save();</P>
+<P>_resource.BeginEdit();</P>
+<P></FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (rebind)</P>
+<P>{</P>
+<P></FONT><FONT color=#008000 size=2>// rebind the UI</P></FONT><FONT size=2>
+<P></FONT><FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>.ResourceBindingSource.DataSource = </FONT><FONT color=#0000ff size=2>null</FONT></FONT><FONT size=2><FONT>;<BR></FONT></FONT><FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>.AssignmentsBindingSource.DataSource = </FONT><FONT color=#0000ff size=2>null</FONT></FONT><FONT size=2><FONT>;<BR></FONT></FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2><FONT>.ResourceBindingSource.DataSource = _resource;<BR>/</FONT>/Added the line below<BR></FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2><FONT>.AssignmentsBindingSource.DataSource = _resource.Assignments;</FONT></P>
+<P>ApplyAuthorizationRules();</P>
+<P>}</P>
+<P>}</P></FONT>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>Greetings Andre Mens</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>---------------------------<BR>DataGridView Default Error Dialog<BR>---------------------------<BR>The following exception occurred in the DataGridView:</P>
+<P>&nbsp;</P>
+<P>System.IndexOutOfRangeException: Index 0 does not have a value.</P>
+<P>&nbsp;&nbsp; at System.Windows.Forms.CurrencyManager.get_Item(Int32 index)</P>
+<P>&nbsp;&nbsp; at System.Windows.Forms.DataGridView.DataGridViewDataConnection.GetError(Int32 rowIndex)</P>
+<P>&nbsp;</P>
+<P>To replace this default dialog please handle the DataError event.<BR>---------------------------<BR>OK&nbsp;&nbsp; <BR>---------------------------<BR></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, May 24, 2006</h2>There is <A href="http://www.lhotka.net/Articles.aspx?id=6432c872-92ce-4bb8-bc26-b610b71956c8">errata</A> regarding the rebinding code regarding this issue.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>mensand replied on Wednesday, May 24, 2006</h2><P>Hi Rocky</P>
+<P>You're correct in this. Only the erata you're talking about is already fixed in the version i have the problem i've stumbled on is in a different file ResourceEdit.cs<BR>It looks like the samen coding bug.</P>
+<P>Greetings Andre</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, May 25, 2006</h2><P>Got it - thanks! I have fixed this now in cvs and it will be part of 2.0.1.</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

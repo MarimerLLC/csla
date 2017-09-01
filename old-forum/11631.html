@@ -1,0 +1,10 @@
+<html><header><title>Csla analog for ObservableCollection with possibility for filtering.</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Csla analog for ObservableCollection with possibility for filtering.</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11631.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>neo_u posted on Sunday, October 07, 2012</h2><p>Hello.</p>
+<p>I&#39;m trying to create BO with possibility to filter via DataGrid from WPF.</p>
+<p>But, when I&#39;m trying to do that if I&#39;m using BindableBusinessList CollectionViewSource.GetDefaultView() returns me a ICollectionView where I can&#39;t do neither sorting nor filtering.</p>
+<p>When I&#39;m using SortedBindingList - I can sort, however I can&#39;t filter.</p>
+<p>And the latest what I found is FilteredBindingLIst, I hoped that it will gave me possibility for filtering, still no success.</p>
+<p>Maybe there is some special class for what ICollectionView will be sortable and filterable, or at least filterable.</p>
+<p>&nbsp;</p>
+<p>Thanks in advance for the answers</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Sunday, October 07, 2012</h2><p>Hi</p>
+<p>Use Linq queries on you business list with the ToSyncList() extension to return a LinqObservableCollection of the result. </p>
+<p>If you do a search fro ToSyncList on the forum you will find several posts related to this. </p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

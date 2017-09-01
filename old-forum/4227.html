@@ -1,0 +1,18 @@
+<html><header><title>My.User.IsInRole vs Csla.ApplicationContext.User.IsInRole</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>My.User.IsInRole vs Csla.ApplicationContext.User.IsInRole</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4227.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>JohnB posted on Thursday, January 24, 2008</h2><font face="Verdana" size="2">I have custom authentication wired up in my application and I was testing the different methods to check for IsInRole. Let me first state that when authenticating the user I set the Csla.ApplicationContext.User to my custom authenticated principal object like such:<br></font><font face="Verdana" size="2">'------------</font><br><font face="Verdana" size="2">Dim pPrincipal As DSPrincipal = New DSPrincipal(userIdentity)<br>
+Csla.ApplicationContext.User = pPrincipal<br>'------------<br><br></font><font face="Verdana" size="2">Public Property User() As IPrincipal<br>
+&nbsp;&nbsp;&nbsp; Get<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; If HttpContext.Current Is Nothing Then<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return Thread.CurrentPrincipal<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Else<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return HttpContext.Current.User<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End If<br>
+&nbsp;&nbsp;&nbsp; End Get<br>
+&nbsp;&nbsp;&nbsp; Set(ByVal value As IPrincipal)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; If HttpContext.Current IsNot Nothing Then<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; HttpContext.Current.User = value<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End If<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Thread.CurrentPrincipal = value<br>
+&nbsp;&nbsp;&nbsp; End Set<br>
+&nbsp; End Property<br><br></font><font face="Verdana" size="2">If I call Csla.ApplicationContext.User.IsInRole, the code above will execute. If I call My.User.IsInRole, it does not.<br><br></font><font face="Verdana" size="2">Please correct me if I am wrong but my
+understanding of using the Csla.ApplicationContext.User.IsInRole is
+that it would work both in a WinForms app as well as in a Web app.</font><br><font face="Verdana" size="2"><br>So is it safe to say that I should not use My.User.IsInRole within my business objects?<br><br>Thanks,<br>John<br></font></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, January 24, 2008</h2>My.User is governed by a setting in the project properties dialog. If you are going to use custom principals, you need to tell VB that's what you are doing, otherwise it gives you the Windows principal.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, January 24, 2008</h2>Oh, but it is true that you should NOT use My.User in a Class Library. It should only be used in a Windows Forms project. A business class library assembly could easily be used on a web server (and will be if you use a remote data portal) and then My.User is unreliable because it doesn't have (to my knowledge) the same logic as Csla.ApplicationContext.User to understand the different environment.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JohnB replied on Thursday, January 24, 2008</h2><font face="Verdana" size="2">Thanks!</font></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,111 @@
+<html><header><title>Binding a Progress readout to a large collection fill</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Binding a Progress readout to a large collection fill</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5948.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>bcrowell posted on Saturday, December 06, 2008</h2>Can anyone help me with how to accomplish this concept?<br><br>I've got a large csla collection object I need to fill on an app server. Speed is not such an issue as this is really a disaster recovery sort of operation. However, I would like to have a progress readout showing the percent completed of the collection load as it fills up. I tried disabling the Me.RaiseListChangedEvents statement the refresh based on the bindsource's listchanged event but that didn't get me anywhere. Any help would be appreciate. Thanks all.<br><br>Byron<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>bcrowell replied on Saturday, December 06, 2008</h2>FYI this is a winforms app using csla 3.5. Thanks.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Saturday, December 06, 2008</h2><P>Unfortunately this is relatively difficult. Even if you look at it in a 2-tier model it is really hard, and 3-tier makes it worse. Well, maybe not, since the basic answer is the same in both cases...</P>
+<P>Problem 1 is that ADO.NET doesn't raise events as it loads the data, so unless you break the database query into chunks (so you do multiple queries to get multiple subsets of the data) you'll have to wait until all the data is retrieved from the database.</P>
+<P>Problem 2 is that you then copy the data retrieved from the database (now in a datareader, dataset, entity collection or whatever) into your business object. This can be done using a looping structure, and you may be able to run a progress bar off this - but for two things. First, if you use a datareader you don't know how many rows you are going to get until you reach the end. Second, in a 3-tier model this code is running on the app server.</P>
+<P>Problem 3 is that you want the progress bar to update while the processing is occurring, which probably means running the data load on a background thread. Though you can use tricks with Timer controls to avoid this.</P>
+<P>The solution is to do the multiple queries - chunking your data retrieval - but this must originate from the <EM>client workstation</EM> so it can do the progress updates. Before going further you should realize that this will not perform as well as getting the data in one shot, but it will allow for meaningful progress display.</P>
+<P>(as an aside, this is the reason most Microsoft software doesn't show real progress - it is too expensive in terms of both performance and complexity - so they show a busy animation instead)</P>
+<P>Anyway, here's the deal.</P>
+<P>In your collection's static factory method, DO NOT directly call the data portal. Instead, you are going to be a little tricky. </P>
+<OL>
+<LI>In your collection, implement IReportTotalRowCount - your UI can use this interface to get the total row count</LI>
+<LI>Create a private Command (RowCountRetriever) object inside the collection</LI>
+<LI>Write the DataPortal_Execute() method to retrieve the total number of rows of data</LI>
+<LI>Create a private Command (DataChunkRetriever) object inside the collection</LI>
+<LI>Write the DataPortal_Execute() method to retrieve a chunk of data</LI>
+<LI>In the collection's factory method, use RowCountRetriever to get the total number of rows to expect</LI>
+<LI>In the collection's factory method, in a loop, make repeated calls to DataChunkRetriever to retrieve all the data in chunks - each call goes to the app server, which talks to the database to retrieve a small chunk of the overall data</LI>
+<OL>
+<LI>When you get a chunk, disable event raising in your collection</LI>
+<LI>Add the new data into your collection</LI>
+<LI>Reenable event raising</LI>
+<LI>Manually call OnListChanged() with a Reset change</LI>
+<OL>
+<LI>The ListChanged event will cause the UI to update</LI>
+<LI>Your UI should directly handle ListChanged so it can update the progress bar</LI>
+<LI>Remember that the UI can use IReportTotalRowCount to get the max value for the progress bar</LI></OL></OL></OL>
+<P>As I said, this doesn't perform as well, and it is obviously more complex than the direct approach. But it will get you a fully functioning progress bar in a 3-tier environment, and without multi-threading.</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>bcrowell replied on Saturday, December 06, 2008</h2>Terrific as usual.<br>Thanks Rocky. I'll take a whack at this. It's pretty cool to get full support on a Saturday morning.<br><br>thanks.<br><br>Byron<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Saturday, December 06, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>This is not as simple as it sounds.&nbsp; Reason being the data
+is filled on the server, but you want to show the progress on the client.&nbsp;
+The only way I could think of is to have the filling process update a row in
+progress table as it runs, using some sort of unique operation identifier as a
+key.&nbsp; This key would be generated on the client prior to calling fill
+operation.&nbsp; You would need to call fill operation on a background thread,
+not main thread of the application. On the main thread you would probably have
+a time that would fire a command object to get the value for progress table/row.&nbsp;
+Once you get the value, you can update a progress bar in the UI.&nbsp; Once you
+background thread completes, you can stop the timer and hide the progress bar.&nbsp;
+You might also never complete the progress bar (set to 100 %) until background
+thread completes, as it may not complete even though the progress value in DB
+is 100 % due to transfer speed of the object.&nbsp; <o:p></o:p></span></p>
+
+<p class=MsoNormal><span>Does this make sense?<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> bcrowell
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Saturday, December 06, 2008 9:45 AM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> [CSLA .NET] Binding a Progress readout to a large collection
+fill<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Can anyone help me with how to accomplish this concept?<br>
+<br>
+I've got a large csla collection object I need to fill on an app server. Speed
+is not such an issue as this is really a disaster recovery sort of operation.
+However, I would like to have a progress readout showing the percent completed
+of the collection load as it fills up. I tried disabling the
+Me.RaiseListChangedEvents statement the refresh based on the bindsource's
+listchanged event but that didn't get me anywhere. Any help would be
+appreciate. Thanks all.<br>
+<br>
+Byron<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

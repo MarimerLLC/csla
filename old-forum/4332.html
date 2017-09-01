@@ -1,0 +1,123 @@
+<html><header><title>DataPortal.Fetch failed (Invalid operation - fetch not allowed)</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>DataPortal.Fetch failed (Invalid operation - fetch not allowed)</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4332.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Compiler posted on Tuesday, February 12, 2008</h2><P>Hi everyone. I am having difficulty solving this problem.</P>
+<P>Here is part of the CSLS class</P>
+<P>&nbsp;</P><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>static</FONT><FONT size=2> </FONT><FONT color=#2b91af size=2>Users</FONT><FONT size=2> GetUsers(</FONT><FONT color=#0000ff size=2>string</FONT><FONT size=2> user_id)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> </FONT><FONT color=#2b91af size=2>DataPortal</FONT><FONT size=2>.Fetch&lt;</FONT><FONT color=#2b91af size=2>Users</FONT><FONT size=2>&gt;(</FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> </FONT><FONT color=#2b91af size=2>Criteria</FONT><FONT size=2>(user_id));</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>static</FONT><FONT size=2> </FONT><FONT color=#2b91af size=2>Users</FONT><FONT size=2> GetUsers(</FONT><FONT color=#2b91af size=2>String</FONT><FONT size=2> User_id, </FONT><FONT color=#2b91af size=2>String</FONT><FONT size=2> CompanyID)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> </FONT><FONT color=#2b91af size=2>DataPortal</FONT><FONT size=2>.Fetch&lt;</FONT><FONT color=#2b91af size=2>Users</FONT><FONT size=2>&gt;(</FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> </FONT><FONT color=#2b91af size=2>Criteriam</FONT><FONT size=2>(User_id, CompanyID));</P>
+<P>}</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P><FONT size=2>
+<P>[</FONT><FONT color=#2b91af size=2>Serializable</FONT><FONT size=2>()]</P>
+<P></FONT><FONT color=#0000ff size=2>private</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>class</FONT><FONT size=2> </FONT><FONT color=#2b91af size=2>Criteria</P></FONT><FONT size=2>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>private</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>string</FONT><FONT size=2> _user_id;</P>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>string</FONT><FONT size=2> User_id</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>get</FONT><FONT size=2> { </FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> _user_id; }</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> Criteria(</FONT><FONT color=#0000ff size=2>string</FONT><FONT size=2> user_id)</P>
+<P>{</P>
+<P>_user_id = user_id;</P>
+<P>}</P>
+<P>}</P>
+<P>[</FONT><FONT color=#2b91af size=2>Serializable</FONT><FONT size=2>()]</P>
+<P></FONT><FONT color=#0000ff size=2>private</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>class</FONT><FONT size=2> </FONT><FONT color=#2b91af size=2>Criteriam</P></FONT><FONT size=2>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>private</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>string</FONT><FONT size=2> _userID;</P>
+<P></FONT><FONT color=#0000ff size=2>private</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>string</FONT><FONT size=2> _companyCode;</P>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>string</FONT><FONT size=2> UserID</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>get</FONT><FONT size=2> { </FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> _userID; }</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>string</FONT><FONT size=2> CompanyID</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>get</FONT><FONT size=2> { </FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> _companyCode; }</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> Criteriam(</FONT><FONT color=#0000ff size=2>string</FONT><FONT size=2> UserID, </FONT><FONT color=#0000ff size=2>string</FONT><FONT size=2> CompanyID)</P>
+<P>{</P>
+<P>_companyCode = CompanyID;</P>
+<P>_userID = UserID;</P>
+<P>}</P>
+<P>}</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P><FONT color=#0000ff size=2>
+<P>private</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>void</FONT><FONT size=2> Dataportal_Fetch(</FONT><FONT color=#2b91af size=2>Criteriam</FONT><FONT size=2> criteria)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>using</FONT><FONT size=2> (</FONT><FONT color=#2b91af size=2>SqlConnection</FONT><FONT size=2> cn = </FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> </FONT><FONT color=#2b91af size=2>SqlConnection</FONT><FONT size=2>(</FONT><FONT color=#a31515 size=2>"Data Source=JSI-MSS;Initial Catalog=GEAS;User ID=sa; password=sa04eric;Asynchronous Processing=true"</FONT><FONT size=2>))</P>
+<P>{</P>
+<P>cn.Open();</P>
+<P></FONT><FONT color=#0000ff size=2>using</FONT><FONT size=2> (</FONT><FONT color=#2b91af size=2>SqlCommand</FONT><FONT size=2> cm = cn.CreateCommand())</P>
+<P>{</P>
+<P>cm.CommandType = </FONT><FONT color=#2b91af size=2>CommandType</FONT><FONT size=2>.StoredProcedure;</P>
+<P>cm.CommandText = </FONT><FONT color=#a31515 size=2>"sp_user_PSWExpired"</FONT><FONT size=2>;</P>
+<P>cm.Parameters.AddWithValue(</FONT><FONT color=#a31515 size=2>"@User_id"</FONT><FONT size=2>, criteria.UserID);</P>
+<P>cm.Parameters.AddWithValue(</FONT><FONT color=#a31515 size=2>"@company_code"</FONT><FONT size=2>, criteria.CompanyID);</P>
+<P>cm.Parameters.Add(</FONT><FONT color=#a31515 size=2>"@Expired"</FONT><FONT size=2>, </FONT><FONT color=#2b91af size=2>SqlDbType</FONT><FONT size=2>.Bit).Value = </FONT><FONT color=#0000ff size=2>false</FONT><FONT size=2>;</P>
+<P>cm.Parameters[</FONT><FONT color=#a31515 size=2>"@Expired"</FONT><FONT size=2>].Direction = </FONT><FONT color=#2b91af size=2>ParameterDirection</FONT><FONT size=2>.InputOutput;</P>
+<P>cm.ExecuteNonQuery();</P>
+<P>_GetPSWExpiration = (</FONT><FONT color=#2b91af size=2>Boolean</FONT><FONT size=2>)cm.Parameters[</FONT><FONT color=#a31515 size=2>"@Expired"</FONT><FONT size=2>].Value;</P>
+<P>}</P>
+<P>}</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>private</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>void</FONT><FONT size=2> DataPortal_Fetch(</FONT><FONT color=#2b91af size=2>Criteria</FONT><FONT size=2> criteria)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>using</FONT><FONT size=2> (</FONT><FONT color=#2b91af size=2>SqlConnection</FONT><FONT size=2> cn = </FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> </FONT><FONT color=#2b91af size=2>SqlConnection</FONT><FONT size=2>(</FONT><FONT color=#a31515 size=2>"Data Source=JSI-MSS;Initial Catalog=GEAS;User ID=sa; password=sa04eric;Asynchronous Processing=true"</FONT><FONT size=2>))</P>
+<P>{</P>
+<P>cn.Open();</P>
+<P></FONT><FONT color=#0000ff size=2>using</FONT><FONT size=2> (</FONT><FONT color=#2b91af size=2>SqlCommand</FONT><FONT size=2> cm = cn.CreateCommand())</P>
+<P>{</P>
+<P>cm.CommandType = </FONT><FONT color=#2b91af size=2>CommandType</FONT><FONT size=2>.StoredProcedure;</P>
+<P>cm.CommandText = </FONT><FONT color=#a31515 size=2>"sp_user_list"</FONT><FONT size=2>;</P>
+<P>cm.Parameters.AddWithValue(</FONT><FONT color=#a31515 size=2>"@user_id"</FONT><FONT size=2>, criteria.User_id);</P>
+<P></FONT><FONT color=#0000ff size=2>using</FONT><FONT size=2> (</FONT><FONT color=#2b91af size=2>SafeDataReader</FONT><FONT size=2> dr = </FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> </FONT><FONT color=#2b91af size=2>SafeDataReader</FONT><FONT size=2>(cm.ExecuteReader()))</P>
+<P>{</P>
+<P>dr.Read();</P>
+<P>_user_uid = dr.GetInt32(</FONT><FONT color=#a31515 size=2>"user_uid"</FONT><FONT size=2>);</P>
+<P>_user_id = dr.GetString(</FONT><FONT color=#a31515 size=2>"user_id"</FONT><FONT size=2>);</P>
+<P>_password = dr.GetString(</FONT><FONT color=#a31515 size=2>"password"</FONT><FONT size=2>);</P>
+<P>_initials = dr.GetString(</FONT><FONT color=#a31515 size=2>"initials"</FONT><FONT size=2>);</P>
+<P>_first_name = dr.GetString(</FONT><FONT color=#a31515 size=2>"first_name"</FONT><FONT size=2>);</P>
+<P>_middle_name = dr.GetString(</FONT><FONT color=#a31515 size=2>"middle_name"</FONT><FONT size=2>);</P>
+<P>_last_name = dr.GetString(</FONT><FONT color=#a31515 size=2>"last_name"</FONT><FONT size=2>);</P>
+<P>_title = dr.GetString(</FONT><FONT color=#a31515 size=2>"title"</FONT><FONT size=2>);</P>
+<P>_suffix = dr.GetString(</FONT><FONT color=#a31515 size=2>"suffix"</FONT><FONT size=2>);</P>
+<P>_street_1 = dr.GetString(</FONT><FONT color=#a31515 size=2>"street_1"</FONT><FONT size=2>);</P>
+<P>_street_2 = dr.GetString(</FONT><FONT color=#a31515 size=2>"street_2"</FONT><FONT size=2>);</P>
+<P>_city = dr.GetString(</FONT><FONT color=#a31515 size=2>"city"</FONT><FONT size=2>);</P>
+<P>_state = dr.GetString(</FONT><FONT color=#a31515 size=2>"state"</FONT><FONT size=2>);</P>
+<P>_zip = dr.GetString(</FONT><FONT color=#a31515 size=2>"zip"</FONT><FONT size=2>);</P>
+<P>_home_phone = dr.GetString(</FONT><FONT color=#a31515 size=2>"home_phone"</FONT><FONT size=2>);</P>
+<P>_work_phone = dr.GetString(</FONT><FONT color=#a31515 size=2>"work_phone"</FONT><FONT size=2>);</P>
+<P>_mobile_phone = dr.GetString(</FONT><FONT color=#a31515 size=2>"mobile_phone"</FONT><FONT size=2>);</P>
+<P>_fax = dr.GetString(</FONT><FONT color=#a31515 size=2>"fax"</FONT><FONT size=2>);</P>
+<P>_email_addr = dr.GetString(</FONT><FONT color=#a31515 size=2>"email_addr"</FONT><FONT size=2>);</P>
+<P>_sms_addr = dr.GetString(</FONT><FONT color=#a31515 size=2>"sms_addr"</FONT><FONT size=2>);</P>
+<P>_ssn = dr.GetString(</FONT><FONT color=#a31515 size=2>"ssn"</FONT><FONT size=2>);</P>
+<P>_dln = dr.GetString(</FONT><FONT color=#a31515 size=2>"dln"</FONT><FONT size=2>);</P>
+<P>_role_uid = dr.GetInt32(</FONT><FONT color=#a31515 size=2>"role_uid"</FONT><FONT size=2>);</P>
+<P>_status = dr.GetBoolean(</FONT><FONT color=#a31515 size=2>"status"</FONT><FONT size=2>);</P>
+<P></FONT><FONT color=#008000 size=2>// load child objects</P></FONT><FONT size=2>
+<P>dr.NextResult();</P>
+<P>}</P>
+<P>}</P>
+<P>}</P>
+<P>}</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>I have 2 GetUsers static procedure. The other one has 2 parameters while the other one has only one.<FONT color=#0000ff size=2></P>
+<P>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>static</FONT><FONT size=2> </FONT><FONT color=#2b91af size=2>Users</FONT><FONT size=2> GetUsers(</FONT><FONT color=#0000ff size=2>string</FONT><FONT size=2> user_id)</FONT></P><FONT size=2><FONT color=#0000ff size=2>
+<P>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>static</FONT><FONT size=2> </FONT><FONT color=#2b91af size=2>Users</FONT><FONT size=2> GetUsers(</FONT><FONT color=#2b91af size=2>String</FONT><FONT size=2> User_id, </FONT><FONT color=#2b91af size=2>String</FONT><FONT size=2> CompanyID)</FONT></P>
+<P><FONT size=2></FONT>&nbsp;</P>
+<P><FONT size=2>The first GetUsers call the Dataportal_fetch</FONT></P><FONT size=2><FONT color=#0000ff size=2>
+<P>private</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>void</FONT><FONT size=2> DataPortal_Fetch(</FONT><FONT color=#2b91af size=2>Criteria</FONT><FONT size=2> criteria)</FONT></P>
+<P><FONT size=2></FONT>&nbsp;</P>
+<P><FONT size=2>while the second one calls the Dataportal_fetch which has different parameter than the first one.</FONT></P><FONT size=2><FONT color=#0000ff size=2>
+<P>private</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>void</FONT><FONT size=2> Dataportal_Fetch(</FONT><FONT color=#2b91af size=2>Criteriam</FONT><FONT size=2> criteria)</FONT></P>
+<P><FONT size=2>&nbsp;</P></FONT></FONT></FONT></FONT></FONT></FONT></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Tuesday, February 12, 2008</h2><P>You are calling the Base method in CSLA.</P>
+<P>Try Overriding (or Overloading) the DP_Fetch method so it will call the one in your class.</P>
+<P>Joe</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Wednesday, February 13, 2008</h2>You may overload the DataPortal_Fetch method but you must use correcty casing in method name. <br><br>Dataportal_Fetch and<br>DataPortal_Fetch&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; are considered 2 different methods. <br><br>/jonny <br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Compiler replied on Wednesday, February 13, 2008</h2>thanks everyone for your help.</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

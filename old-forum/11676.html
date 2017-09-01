@@ -1,0 +1,43 @@
+<html><header><title>Silverlight DataPortalProxy using it as Local and Remote</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Silverlight DataPortalProxy using it as Local and Remote</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11676.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jaans posted on Sunday, November 04, 2012</h2><p>
+<p>My fellow CSLA developers</p>
+<p>I&#39;m seeking some suggestions from the CSLA Dev Team &amp; the community regarding ways to dynamically toggle / switch / reconfigure the data portal to be local or remote.</p>
+<p>Let me begin with what I&#39;m trying to achieve. We have an Silverlight application that will run in both an &quot;online&quot; and &quot;offline&quot; mode. By this I mean that as a user you might run the out of browser Silverlight application and &quot;synchronise&quot; data from an online source (here this would be a DataPortalProxy running on the remote server). This is typically data that is used to start an offline workflow.</p>
+<p>&nbsp;</p>
+<p>After this synchronise completes, the user is able to make (mostly updates and a few object inserts) to the CSLA business objects in a purely &quot;offline&quot; scenario in that there may not even be any&nbsp;Internet&nbsp;connectivity (here I&#39;m thinking that I could have a local DataPortalProxy that updates to a local Silverlight database (NinjaDB, SQLLite, etc.).</p>
+<p>&nbsp;</p>
+<p>Then at some future point in time, the user has connectivity again and has finished his workflow. Then any changes is then &quot;synchronised&quot; back to the online store.</p>
+<p>&nbsp;</p>
+<p>Put simply and more condensed: a Silverlight client application downloads data from a server (remote data portal proxy) and stores it in a local database (local data portal proxy), makes changes locally and later sends the data with changes back to the remote server (remote data portal proxy - which is always the same as where we downloaded from to begin with).</p>
+<p>&nbsp;</p>
+<p>The key aspect is a dynamic mix a local and remote data portal proxy.</p>
+<p>So I&#39;m asking whether any of you have some experience of what works well for something like this.</p>
+<p>&nbsp;</p>
+<p>Some thoughts I&#39;m having is to have duplicated dedicated Business Objects that has one set used for the local data store and the other set used for the remote data. For my purposes, these object structures will be very similar if not exactly the same.&nbsp;</p>
+<p>&nbsp; * Would I be able to use something like the &quot;RunLocal&quot; attribute with the local set of objects?</p>
+<p>&nbsp;</p>
+<p>What about using one set of objects, but somehow mix and match when the call goes local or remote.</p>
+<p>At first glance a really flexible and powerful options would be if I could somehow control the dataportal proxy desitnation on a per call bases (typically the &quot;root&quot; call to an object factory Get/Fetch/Delete/Save).</p>
+<p>&nbsp;</p>
+<p>A coding usage scenario that has come to mind would be something where I could do something like this:</p>
+<p style="padding-left:30px;">MyBusinessObject myBo = null;</p>
+<p style="padding-left:30px;">using (DataPortal.Local)</p>
+<p style="padding-left:30px;">{</p>
+<p style="padding-left:30px;">&nbsp; myBO = MyBusinessObject.Get(...);</p>
+<p style="padding-left:30px;">&nbsp; myBO.Property = newValue;</p>
+<p style="padding-left:30px;">&nbsp; myBO.Save(); // Saves it to local data store</p>
+<p style="padding-left:30px;">}</p>
+<p>&nbsp;</p>
+<p style="padding-left:30px;">using (DataPortal.Remote)</p>
+<p style="padding-left:30px;">{</p>
+<p style="padding-left:30px;">&nbsp; myBO.Save(); // Saves it to Remote Data portal proxy</p>
+<p style="padding-left:30px;">}</p>
+<p>&nbsp;</p>
+<p>Is there parhaps some usefull objects that might in assisting me to &quot;plug in&quot; the online/offline logic? Some sort of ProxyManager/Factory?</p>
+<p>I&#39;d be looking to implement this using CSLA 4.5 (or earlier if need be).</p>
+<p>I&#39;d love to get your feedback.</p>
+<p>Thanks,</p>
+<p>Jaans</p>
+</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Sunday, November 04, 2012</h2><p>My best suggestion is this one from an earlier thread: </p>
+<p><a href="http://forums.lhotka.net/forums/p/11622/53824.aspx#53824">http://forums.lhotka.net/forums/p/11622/53824.aspx#53824</a></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jaans replied on Sunday, November 04, 2012</h2><p>Thanks JonnyBee</p>
+<p>I didn&#39;t see that one - useful indeed. I would seem that a custom client-side data portal proxy is the way to go.</p>
+<p>Pity there isn&#39;t much to learn yet from others&#39; past experiences - let&#39;s see how I go.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

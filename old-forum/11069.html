@@ -1,0 +1,17 @@
+<html><header><title>Can Csla Help with an Asynchronous HTTP Post</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Can Csla Help with an Asynchronous HTTP Post</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11069.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jav posted on Wednesday, January 18, 2012</h2><p>I&nbsp;am trying&nbsp;to do an HTTP Post of string data&nbsp;from within SL.&nbsp; I create an HttpWebRequest and then do:</p>
+<pre style="FONT-FAMILY:Consolas;BACKGROUND:white;COLOR:black;FONT-SIZE:12px;">request.BeginGetRequestStream(<span style="COLOR:blue;">new</span> <span style="COLOR:#2b91af;">AsyncCallback</span>(GetRequestStreamCallback), request);
+</pre>
+<p>In the&nbsp;GetRequestStreamCallback&nbsp; method when I try to read the data that&nbsp;I need to send from a TextBox control using</p>
+<pre style="font-family:Consolas;background:white;color:black;font-size:12px;"><span style="color:blue;">string</span>&nbsp;postData&nbsp;=&nbsp;txtData.Text;
+</pre>
+<p>I get an error:</p>
+<p>System.UnauthorizedAccessException: Invalid cross-thread access</p>
+<p>Is there a way for me to create a Csla class that I can&nbsp;use to&nbsp;accomplish all that.</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Wednesday, January 18, 2012</h2><p>Probably yes.</p>
+<p>You&#39;ll probably want to create a command object to do this. </p>
+<p>This particular object will use the local data portal even if the rest of the app doesn&#39;t. In the factory method when you call the data portal make sure to use the force local parameter.</p>
+<p>Then implement the DataPortal_Execute method in the class. This method must accept a callback parameter like all client-side DataPortal_XYZ methods in Silverlight. Inside the DataPortal_Execute method you <em>must</em> ensure that the callback is invoked when the operation is complete - regardless of error or success.</p>
+<p>With all that done, your app can just invoke the static factory method on the command class. The factory method will invoke the data portal, forcing it to run in local mode. The data portal will invoke your DataPortal_Execute, and in that method you&#39;ll do your async web request call. When the web request call completes (error or success) you will invoke the callback parameter.</p>
+<p>The callback parameter tells the data portal that the operation is complete. The data portal will invoke the callback provided by the static factory method (typically the ExecuteCompleted event handler). That is probably a callback provided by the original calling code, so you know that the call is complete.</p>
+<p>In short - as a <em>consumer</em> of the command you are just interacting with a normal CSLA business object. Nothing special. <em>Inside</em> the command object you are just using the local data portal - perhaps not super-common, but not complex or unusual.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jav replied on Thursday, January 19, 2012</h2><p>Great.&nbsp; Thanks Rocky. I will try that.</p>
+<p>Jav</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

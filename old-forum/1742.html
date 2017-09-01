@@ -1,0 +1,212 @@
+<html><header><title>Suggestion for new Contrib Project - ValidationRulesLib</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Suggestion for new Contrib Project - ValidationRulesLib</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/1742.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>sune42 posted on Sunday, November 12, 2006</h2><P>Hi</P>
+<P>I just have an idea for a new project that I think coul be very helpful.</P>
+<P>Would it not be helpful to create a new library of common Validation rules, for things like </P>
+<P>URL's, emails, zipcodes, URL/FTPs, CharactersOnly, NumbersOnly....... </P>
+<P>Sure, its not that hard to create your own , but collaborating on a common library<BR>could be even better so that we don't have to invent the wheel over and over again<BR>and fight with regexes.</P>
+<P>What do you think?</P>
+<P>/Andy</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>david.wendelken replied on Sunday, November 12, 2006</h2><P>I think it's a great idea.</P>
+<P>I'll be adding in a new set of classes that support providing a public list of all rules in the object this week.</P>
+<P>I would love for the library of validation rules to play well with it. :)</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>david.wendelken replied on Sunday, November 12, 2006</h2><P>I've got a&nbsp;white paper some colleagues of mine and I did a few years back about the advantages of preparing a pre-defined list of solutions to common business rules.&nbsp;&nbsp; I'm contacting Rocky to get the permissions necessary to attach it.</P>
+<P>Here's a partial extract.&nbsp; Hope it is of interest.</P>
+<DIV class=Section1><FONT face=Arial size=5>
+<P class=PaperTitle><STRONG>Building a Business Rule Play Book</STRONG></P>
+<P class=Byline><EM><FONT size=2><SPAN><SPAN>ã</SPAN></SPAN>David Wendelken<SPAN>&nbsp;&nbsp;&nbsp; &nbsp;</SPAN>,L3 Communications, Inc.<BR></FONT></EM><EM><FONT size=2>Michael Snyder<SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>,CASEtech, Inc.<BR></FONT></EM><EM><FONT size=2>Galina Abdoulaeva<SPAN>&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>,CASEtech, Inc.</FONT></EM></P>
+<P class=Subhead1><STRONG>Introduction</STRONG></FONT></P>
+<P class=Subhead2><STRONG><FONT face=Arial>What is a Play Book?</FONT></STRONG></P>
+<P class=Text><FONT size=2>In sports, the play book is tactically action-oriented and contains a short-hand version of the cooperative knowledge of the team.<SPAN>&nbsp; </SPAN>That statement was very precisely stated, and we must very carefully analyze it.<SPAN>&nbsp; </SPAN></FONT></P>
+<P class=Text><FONT size=2>First, it is <I>tactically action-oriented</I>. It does not discuss strategic theory or the greater social context of the game.<SPAN>&nbsp; </SPAN>Its focus is on short-term tactical operations.</FONT></P>
+<P class=Text><FONT size=2>Second, it is <I>short-hand</I> version.<SPAN>&nbsp; </SPAN>It enables coach, captain and team members to communicate a complicated set of pre-planned actions quickly and unambiguously.<SPAN>&nbsp; </SPAN>There is little leisure for long explanations while in the midst of a game, even less so for planning.<SPAN>&nbsp; </SPAN>Time is of the essence.<SPAN>&nbsp; </SPAN>So, too, is accuracy, for the game will be lost if the players have different understandings of what each is about to do.</FONT></P>
+<P class=Text><FONT size=2>Third, it is <I>cooperative</I> knowledge.<SPAN>&nbsp; </SPAN>It does not incorporate the rules of the game, nor does it include the intricacies of how an individual can best kick, throw, or catch a ball.<SPAN>&nbsp; </SPAN>It does not cover how the rules of the game will be enforced.<SPAN>&nbsp; </SPAN>It covers what the team does together, so that their actions are coordinated and thus more powerful than they would be in isolation.</FONT></P>
+<P class=Text><FONT size=2>Fourth, it is a <I>book of plays</I>.<SPAN>&nbsp; </SPAN>As a book, it can be opened and referred to at need.<SPAN>&nbsp; </SPAN>It is a repository of information.<SPAN>&nbsp; </SPAN>It contains plays.<SPAN>&nbsp; </SPAN>Plays have a plot, a story to tell, and depend upon actors to fulfill appropriate roles in order to reach a denouement.<SPAN>&nbsp; </SPAN>In a crunch, a new play can be improvised out of the building blocks of other plays, with each role having a reasonably certain and accurate expectation of its part in the new drama.</FONT></P>
+<P class=Subhead2><STRONG><FONT face=Arial>What is a Business Rule?</FONT></STRONG></P>
+<P class=Text><FONT size=2>The term “business rule” is now beginning to be fashionable and thus subject to all the abuses of techno-babble and buzzword compliance.<SPAN>&nbsp; </SPAN>To avoid this, let’s go back to basics and start our definition from there.<SPAN>&nbsp; </SPAN>What is a rule?<SPAN>&nbsp; </SPAN>There are two divergent meanings to the root word that are of interest to us.<SPAN>&nbsp; </SPAN></FONT></P>
+<P class=Text><FONT size=2>First, “to rule” meaning “to govern.”<SPAN>&nbsp; </SPAN>Rulers constrain our behavior, forbid or command courses of action.<SPAN>&nbsp; </SPAN></FONT></P>
+<P class=Text><FONT size=2>Second, “a rule” as in “a measure, a ruler.”<SPAN>&nbsp; </SPAN>Rules provide consistency in how we measure for all the benefits that can give us in communication and reliability. </FONT></P>
+<P class=Text><FONT size=2>Thus, a business rule is a rule about business, in particular, about how a business must or should operate, or how it takes measure of its situation.</FONT></P>
+<P class=Text><FONT size=2>Just as a law does not have to include why it was promulgated, or for what purpose, so it is with business rules.<SPAN>&nbsp; </SPAN>Even as a law without proper context invites abuse when it is interpreted, so can a business rule foster inefficiency when it is enforced in inappropriate situations.<SPAN>&nbsp; </SPAN>But, that particular issue is outside of the scope of this article.<SPAN>&nbsp; </SPAN>(Remember, a play book is tactically oriented and does not cover the greater social context or the strategy of the game!<SPAN>&nbsp; </SPAN>We invite you to check out our website www.casetech.net for papers covering those aspects of using business rules, and others.)</FONT></P>
+<P class=Subhead2><STRONG><FONT face=Arial>What is a Business Rule Play Book?</FONT></STRONG></P>
+<P class=Text><FONT size=2>Well, one obvious answer is that it is a book full of business rules.<SPAN>&nbsp; </SPAN>That’s a darn good guess, but not quite right!<SPAN>&nbsp; </SPAN>If this were a business-oriented audience, we would focus on just that.<SPAN>&nbsp; </SPAN>As you are, by and large, an audience composed of technicians, our focus is somewhat different.<SPAN>&nbsp; </SPAN>A sports book does not contain <I>actual </I></FONT><FONT size=2>plays where an <I>actual </I>person performs an <I>actual </I>task at an <I>actual</I> point in time; it contains the <I>pattern </I>of a play, its <I>definition</I>, if you will.<SPAN>&nbsp; </SPAN>Thus, by analogy, the business rule play book we are discussing is a book of rule patterns.<SPAN>&nbsp; </SPAN>Each rule pattern describes a standardized snippet of behavior, typically in the context of a standardized business or technical situation.</FONT></P></DIV>
+<P class=Subhead1><FONT face=Arial size=5><STRONG>Rule Patterns</STRONG></FONT></P>
+<P class=Subhead2><STRONG><FONT face=Arial>Sample Rule Pattern Definitions (with Sample Rules)</FONT></STRONG></P>
+<P class=Text><FONT size=2>I’ve always found that using examples from personal life works better than more academic or business examples.<SPAN>&nbsp; </SPAN>The examples seem to stick in student’s minds better.<SPAN>&nbsp; </SPAN>Perhaps that is because real life is so much more amusing than business or academia could ever be!<SPAN>&nbsp; </SPAN>Of course, real life can be much more scandalous, too!<SPAN>&nbsp; </SPAN>The sample rules have been chosen to amuse or annoy, as the case may be, on the premise that any adrenaline surge from a technical article is a welcome relief!</FONT></P>
+<P class=Text><FONT size=2>Our rule pattern book has nearly a hundred patterns in it, and I expect to reach one hundred and fifty by the time rule patterns dealing with user interface issues are defined and added in.</FONT></P>
+<P>
+<TABLE class=MsoNormalTable cellSpacing=0 cellPadding=0>
+
+<TR>
+<TD>
+<P class=Text><B><FONT size=2>Pattern Mnemonic<o:p></o:p></FONT></B></P></TD>
+<TD>
+<P class=Text><B><FONT size=2>Description and Example<o:p></o:p></FONT></B></P></TD></TR>
+<TR>
+<TD>
+<P class=Text><FONT size=2>A and B</FONT></P></TD>
+<TD>
+<P class=Text><FONT size=2>If one of the data items in this set is filled in with a non-blank value, all of them must be filled in with a non-blank value.</FONT></P>
+<P class=Text><FONT size=2>“If the name of the significant other is supplied, the gender of that person must also be supplied, and vice-versa.”</FONT></P></TD></TR>
+<TR>
+<TD>
+<P class=Text><FONT size=2>A or B</FONT></P></TD>
+<TD>
+<P class=Text><FONT size=2>Only one of the set of data items may have a non-blank value.</FONT></P>
+<P class=Text><FONT size=2>“Men may record a wife’s name or a girlfriend’s name, but not both.”</FONT></P></TD></TR>
+<TR>
+<TD>
+<P class=Text><FONT size=2>B if A</FONT></P></TD>
+<TD>
+<P class=Text><FONT size=2>A data item cannot have a non-blank value if another data item is blank.</FONT></P>
+<P class=Text><FONT size=2>“Address Line 2 must be blank unless Address Line 1 is filled in.”</FONT></P></TD></TR>
+<TR>
+<TD>
+<P class=Text><FONT size=2>MinMax LE</FONT></P></TD>
+<TD>
+<P class=Text><FONT size=2>One data item must be less than, or equal to, another data item, if both are filled in.</FONT></P>
+<P class=Text><FONT size=2>“Divorce Date must be on or after Marriage Date.”</FONT></P></TD></TR>
+<TR>
+<TD>
+<P class=Text><FONT size=2>No Overlap</FONT></P></TD>
+<TD>
+<P class=Text><FONT size=2>The data record has starting and ending range values, which must not overlap with another set of rule-specified data records.</FONT></P>
+<P class=Text><FONT size=2>“A wife may not have more than one husband at a time.”</FONT></P></TD></TR>
+<TR>
+<TD>
+<P class=Text><FONT size=2>No Cousin</FONT></P></TD>
+<TD>
+<P class=Text><FONT size=2>Two or more different relational paths back to the same "ancestor" entity exist.<SPAN>&nbsp; </SPAN>None of the specified relational paths may be traced back to the same data record in the specified "ancestor" entity.<SPAN>&nbsp; </SPAN></FONT></P>
+<P class=Text><FONT size=2>“A person may not marry someone who has the same mother.”</FONT></P>
+<P class=Text><FONT size=2>(The reverse of this pattern is the Cousin pattern, where the paths must trace back to the same record.)</FONT></P></TD></TR>
+<TR>
+<TD>
+<P class=Text><FONT size=2>Data Subset Definition</FONT></P></TD>
+<TD>
+<P class=Text><FONT size=2>The data for the entity is subdivided into "business sets" which correspond to a subset of the data records based upon an algorithm specified in the rule.<SPAN>&nbsp; </SPAN>This is used as a way to filter out unwanted data records.<SPAN>&nbsp; </SPAN>A specific rule poses the question: “Is this record a member of the set?” and provides the information necessary to answer it correctly.</FONT></P>
+<P class=Text><FONT size=2>“A person is a marriage prospect if they are currently single, have a steady job, and have no debilitating diseases.”</FONT></P>
+<P class=Text><FONT size=2>Other Data Subset Definition rules may be needed, such as “Is this disease debilitating?” and “Is this a steady job?”<SPAN>&nbsp; </SPAN>The sample rule could (and should) invoke them as part of getting its answer.<SPAN>&nbsp; </SPAN>That way, the sample rule automatically stays up-to-date when how we determine if a disease is debilitating changes </FONT></P></TD></TR></TABLE></P>
+<P class=Text><FONT size=2>The rule patterns mentioned above are primarily “data validation” oriented.<SPAN>&nbsp; </SPAN>However, the last pattern mentioned is definitional in nature.<SPAN>&nbsp; </SPAN>It defines a question of interest and how to answer it.<SPAN>&nbsp; </SPAN>Rules that answer questions (which may be for data subset definitions or formula calculations) are a very useful way to organize code, because any program that needs to know the answer can just ask the rule.<SPAN>&nbsp; </SPAN>This provides a single point of change for application creation and maintenance purposes.<SPAN>&nbsp; </SPAN>In fact, properly done, many programs become fairly small control frameworks that just ask a series of rules for guidance and action.<SPAN>&nbsp; </SPAN>This is structured design and programming on steroids, but without the health risks!</FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>david.wendelken replied on Sunday, November 12, 2006</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>david.wendelken:</strong></div><div>
+<P>I think it's a great idea.</P>
+<P>I'll be adding in a new set of classes that support providing a public list of all rules in the object this week.</P>
+<P>I would love for the library of validation rules to play well with it. :)</P>
+<P></div></BLOCKQUOTE></P>
+<P>Just loaded up the first cut of this to CSLA Contrib.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>MikeHamilton replied on Monday, November 13, 2006</h2><P>A Newb here, where do I get the files you uploaded?</P>
+<P>Mike</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>david.wendelken replied on Monday, November 13, 2006</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>MikeHamilton:</strong></div><div>
+<P>A Newb here, where do I get the files you uploaded?</P>
+<P>Mike</P>
+<P></div></BLOCKQUOTE></P>
+<P>Near the top right of this screen is a link to CSLA Contrib.</P>
+<P>Go there and click on the Source Code tab.</P>
+<P>The download links are there.</P>
+<P>You are looking for the CslaSrd project.&nbsp; I only have a C# version done of my contribution.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Curelom replied on Wednesday, November 15, 2006</h2>What would also be helpful in the validation rules is to be able to customize the property name that the user sees.&nbsp; For example instead of the user seeing "StartDateString is required", they could see "Starting Date is required"</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>david.wendelken replied on Wednesday, November 15, 2006</h2><P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>Curelom:</strong></div><div>What would also be helpful in the validation rules is to be able to customize the property name that the user sees.&nbsp; For example instead of the user seeing "StartDateString is required", they could see "Starting Date is required"</div></BLOCKQUOTE></P>
+<P>That's a good idea and it prompted me to think of a way to do it.&nbsp; I'll try it out and post back later.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Curelom replied on Tuesday, December 05, 2006</h2><P>I've taken a stab at the property names that seems to work pretty good.&nbsp; Let me know what you think.&nbsp; It uses values from the resources from the calling application&nbsp;with a resource name format&nbsp;of ObjectName_PropertyName</P>
+<P>With a little modification it could work well for globalization as well.</P><FONT color=#0000ff size=2>
+<P>using</FONT><FONT size=2> System;</P></FONT><FONT color=#0000ff size=2>
+<P>using</FONT><FONT size=2> System.Collections.Generic;</P></FONT><FONT color=#0000ff size=2>
+<P>using</FONT><FONT size=2> System.Text;</P></FONT><FONT color=#0000ff size=2>
+<P>using</FONT><FONT size=2> System.Text.RegularExpressions;</P></FONT><FONT color=#0000ff size=2>
+<P>using</FONT><FONT size=2> System.Reflection;</P></FONT><FONT color=#0000ff size=2>
+<P>using</FONT><FONT size=2> System.Resources;</P></FONT><FONT color=#0000ff size=2>
+<P>using</FONT><FONT size=2> Csla;</P></FONT><FONT color=#0000ff size=2>
+<P>using</FONT><FONT size=2> Csla.Properties;</P></FONT><FONT color=#0000ff size=2>
+<P>using</FONT><FONT size=2> Csla.Validation;</P></FONT><FONT color=#0000ff size=2>
+<P>namespace</FONT><FONT size=2> Library.Validation {</P>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>static</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>class</FONT><FONT size=2> </FONT><FONT color=#008080 size=2>CustomRules</FONT><FONT size=2> {</P></FONT><FONT color=#0000ff size=2>
+<P>#region</FONT><FONT size=2> StringRequired</P>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> Rule ensuring a string value contains one or more</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> characters.</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;/summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;param name="target"&gt;</FONT><FONT color=#008000 size=2>Object containing the data to validate</FONT><FONT color=#808080 size=2>&lt;/param&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;param name="e"&gt;</FONT><FONT color=#008000 size=2>Arguments parameter specifying the name of the string</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> property to validate</FONT><FONT color=#808080 size=2>&lt;/param&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;returns&gt;&lt;see langword="false" /&gt;</FONT><FONT color=#008000 size=2> if the rule is broken</FONT><FONT color=#808080 size=2>&lt;/returns&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;remarks&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> This implementation uses late binding, and will only work</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> against string property values.</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;/remarks&gt;</P></FONT><FONT size=2>
+<P>[System.Diagnostics.CodeAnalysis.</FONT><FONT color=#008080 size=2>SuppressMessage</FONT><FONT size=2>(</FONT><FONT color=#800000 size=2>"Microsoft.Design"</FONT><FONT size=2>, </FONT><FONT color=#800000 size=2>"CA1062:ValidateArgumentsOfPublicMethods"</FONT><FONT size=2>)]</P>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>static</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>bool</FONT><FONT size=2> StringRequired(</FONT><FONT color=#0000ff size=2>object</FONT><FONT size=2> target, </FONT><FONT color=#008080 size=2>RuleArgs</FONT><FONT size=2> e) {</P>
+<P></FONT><FONT color=#0000ff size=2>string</FONT><FONT size=2> value = (</FONT><FONT color=#0000ff size=2>string</FONT><FONT size=2>)</FONT><FONT color=#008080 size=2>Utilities</FONT><FONT size=2>.CallByName(</P>
+<P>target, e.PropertyName, </FONT><FONT color=#008080 size=2>CallType</FONT><FONT size=2>.Get);</P>
+<P></FONT><FONT color=#008000 size=2>//don't validate if user doesn't have write authorization</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (target </FONT><FONT color=#0000ff size=2>is</FONT><FONT size=2> Csla.Security.</FONT><FONT color=#008080 size=2>IAuthorizeReadWrite</FONT><FONT size=2>) {</P>
+<P>Csla.Security.</FONT><FONT color=#008080 size=2>IAuthorizeReadWrite</FONT><FONT size=2> rw = target </FONT><FONT color=#0000ff size=2>as</FONT><FONT size=2> Csla.Security.</FONT><FONT color=#008080 size=2>IAuthorizeReadWrite</FONT><FONT size=2>;</P>
+<P></FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (!rw.CanWriteProperty(e.PropertyName))</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>true</FONT><FONT size=2>;</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (</FONT><FONT color=#0000ff size=2>string</FONT><FONT size=2>.IsNullOrEmpty(value)) {</P>
+<P></FONT><FONT color=#008080 size=2>ResourceManager</FONT><FONT size=2> rmCsla = </FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> </FONT><FONT color=#008080 size=2>ResourceManager</FONT><FONT size=2>(</FONT><FONT color=#800000 size=2>"Csla.Properties.Resources"</FONT><FONT size=2>, </FONT><FONT color=#008080 size=2>Assembly</FONT><FONT size=2>.GetCallingAssembly());</P>
+<P>e.Description = </FONT><FONT color=#0000ff size=2>string</FONT><FONT size=2>.Format(rmCsla.GetString(</FONT><FONT color=#800000 size=2>"StringRequiredRule"</FONT><FONT size=2>),</P>
+<P>GetResourceValue((target.GetType()).Name, e.PropertyName));</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>false</FONT><FONT size=2>;</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>true</FONT><FONT size=2>;</P>
+<P>}</P></FONT><FONT color=#0000ff size=2>
+<P>#endregion</P></FONT><FONT size=2>
+<P></FONT><FONT color=#008000 size=2>//get display value for property</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>static</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>string</FONT><FONT size=2> GetResourceValue(</FONT><FONT color=#0000ff size=2>string</FONT><FONT size=2> objectName, </FONT><FONT color=#0000ff size=2>string</FONT><FONT size=2> propertyName) {</P>
+<P></FONT><FONT color=#008080 size=2>ResourceManager</FONT><FONT size=2> appRm = </FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> </FONT><FONT color=#008080 size=2>ResourceManager</FONT><FONT size=2>(</FONT><FONT color=#800000 size=2>"HelpDesk.Properties.Resources"</FONT><FONT size=2>,</P>
+<P></FONT><FONT color=#008080 size=2>Assembly</FONT><FONT size=2>.GetEntryAssembly());</P>
+<P></FONT><FONT color=#0000ff size=2>string</FONT><FONT size=2> temp = appRm.GetString(objectName + </FONT><FONT color=#800000 size=2>"_"</FONT><FONT size=2> + propertyName);</P>
+<P></FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (</FONT><FONT color=#0000ff size=2>string</FONT><FONT size=2>.IsNullOrEmpty(temp)) {</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> propertyName;</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> temp;</P>
+<P>}</P>
+<P>}</P>
+<P>}</P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>david.wendelken replied on Wednesday, April 18, 2007</h2><P>Just posted a new validation library, plus new Smart classes, plus public rule list support to the CslaContrib project.</P>
+<P>The sub-project is CslaSrd.&nbsp; I have only updated the c# version.</P>
+<P>Unfortunately, I put the new version in a sub-directory of the old version, and don't have the ability to fix it yet, so you'll have to dig a bit harder than I would like.</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>david.wendelken replied on Friday, April 27, 2007</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>david.wendelken:</strong></div><div>
+<P>Just posted a new validation library, plus new Smart classes, plus public rule list support to the CslaContrib project.</P>
+<P>The sub-project is CslaSrd.&nbsp; I have only updated the c# version.</P>
+<P>Unfortunately, I put the new version in a sub-directory of the old version, and don't have the ability to fix it yet, so you'll have to dig a bit harder than I would like.</P>
+<P></div></BLOCKQUOTE></P>
+<P>I made the corrections to the file placement.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>david.wendelken replied on Wednesday, April 18, 2007</h2><P>Some friends of mine and I are finishing up our first cut of extending the CommonRules library.</P>
+<P>We've got the following extra "Smart" classes: SmartBool, SmartFloat, SmartDecimal, SmartInt16, SmartInt32, SmartInt64.</P>
+<P>We added SmartSafeDataReader,&nbsp; a subclass of SafeDataReader, that supports the additional "Smart" classes.</P>
+<P>We took the CommonRules library, cloned it, and changed the name to StdRules.</P>
+<P>We've added the following rules to the library:</P>
+<UL>
+<LI>SmartDateRequired</LI>
+<LI>SmartFieldRequired (all the other Smart classes)</LI>
+<LI>MinMax (works for comparable classes, first field must not be greater than second field)</LI>
+<LI>IsEmailAddress (with extended user-friendly error messages compared to RegExMatch)</LI></UL>
+<P>We're about to add several more, including:</P>
+<UL>
+<LI>BIfA (Field B can only be filled in if Field A is filled in.&nbsp; Ex: Addr Line 2 cannot be filled in if Addr Line 1 is blank.)</LI>
+<LI>AOrB (Only one of the specified set of fields can be filled in.&nbsp; Ex: A gentleman can fill in his girlfriend's name, or his wife's name, but not both.</LI>
+<LI>AAndB (If one of the specified set of fields is filled in, all must be filled in. Ex: If my wife finds out the name of my mistress, all other facts about her must also be revealed. :)</LI></UL>
+<P>In addition, we've subclassed the BusinessBase and BusinessBaseList classes to add two additional properties:</P><FONT size=2></FONT><FONT color=#0000ff size=2><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;summary&gt;<BR></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> Provides a collection of all validation rules on the object that are broken, i.e., in an invalid state.<BR></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;/summary&gt;<BR></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#008080 size=2>BrokenRulesCollection</FONT><FONT size=2> BrokenRules</FONT></P><FONT size=2><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;summary&gt;<BR></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> Provides a collection of all validation rules on the object. <BR></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;/summary&gt;<BR></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#008080 size=2>PublicRuleInfoList</FONT><FONT size=2> Rules</P>
+<P></FONT></FONT></FONT>To make the last method work, we had to re-factor the rule error messages in the resource file.&nbsp; The current resource tags for CommonRules do not exactly match the rule name they go with.&nbsp; In addition, they use the String.Format method of substitution.&nbsp; For example:</P>
+<P>
+<TABLE>
+
+<TR>
+<TD>MaxValueRule</TD>
+<TD>{0} can not exceed {1}</TD></TR></TABLE></P>
+<P>
+<TABLE>
+
+<TR>
+<TD>MinValueRule</TD>
+<TD>{0} can not be less than {1}</TD></TR></TABLE></P>
+<P>Our messages are structured like this:</P>
+<P>
+<TABLE>
+
+<TR>
+<TD>ruleMaxValue</TD>
+<TD>{rulePropertyName} can not exceed {maxValue}.</TD></TR></TABLE><BR></P>
+<P>
+<TABLE>
+
+<TR>
+<TD>ruleMinValue</TD>
+<TD>{rulePropertyName} can not be less than {minValue}.</TD></TR></TABLE></P>
+<P>This was necessary to allow the PublicRuleInfo class to deduce the correct error message to display.</P>
+<P>&nbsp;</P>
+<P>Anyone want to give it a test drive?</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>FreeAsInBeer replied on Thursday, April 19, 2007</h2>funny enough, I came to the contrib forum to see if there was work being done on validation libraries. <br><br>I think it's an excellent idea, and I'd be willing to help out where I can. Coding, documentation or testing, just let me know.<br><br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>david.wendelken replied on Friday, April 20, 2007</h2>I'll add some stubs to the StdRules library, and you can work on the ones you want.</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

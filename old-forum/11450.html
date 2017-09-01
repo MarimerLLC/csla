@@ -1,0 +1,7 @@
+<html><header><title>SafeDataReader and GetDateTimeOffset overload</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>SafeDataReader and GetDateTimeOffset overload</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11450.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jaans posted on Tuesday, July 03, 2012</h2><p>Hi Rocky</p>
+<p>All the more I&#39;m running into scenarios where <i>DateTimeOffset</i> is being used to store dates in SQL Server (in favour of UTC).</p>
+<p>What are your thoughts on adding this overload to the <i>SafeDataReader</i>?</p>
+<p>I believe this overload is currently specific to the <i>SqlClient</i> data reader, so perhaps we can have the <i>GetDateTimeOffset()</i> overload throw a <i>NotSupportedException</i> if the <i>SafeDataReader</i> was constructed with another type of data reader?</p>
+<p>Maybe it&#39;s just me, but I would certainly find it useful!</p>
+<p>Thanks,<br />Jaans</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Wednesday, July 04, 2012</h2><p>Already registered in the bugtracker:</p>
+<p><a href="http://www.lhotka.net/cslabugs/edit_bug.aspx?id=937">http://www.lhotka.net/cslabugs/edit_bug.aspx?id=937 </a></p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

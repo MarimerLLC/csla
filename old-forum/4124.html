@@ -1,0 +1,339 @@
+<html><header><title>Weak points in the framework. Do they exist?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Weak points in the framework. Do they exist?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4124.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>goracio posted on Saturday, January 05, 2008</h2><P>I'm working on learning the framework design and plan to use it in projects.</P>
+<P>But&nbsp;I have&nbsp;some doubt about its&nbsp;good design and applicability in mission critical, secure applications.</P>
+<P>First, server side executed code is in the business object. why that code must exist&nbsp;on the client. May be DataPortal_XYZ method would be better to relocate in dedicated for server execution classes.</P>
+<P>Second, business rules must be checked on application server as well on the client, business object may be forged on the client (client assembly decompiled, business rules removed, and again compiled). So application server will recieve unchecked data.</P>
+<P>Client must not recieve information from the server, that not allowed to see by user roles. Hiding information on the client can not hide it from hacker.</P>
+<P>May be there exist more weak points. Who knows?</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jimbo replied on Saturday, January 05, 2008</h2>If your client is being hacked then csla is not to blame.&nbsp; Read Rocky's blogs on the pros and cons of n-tier etc.<br>
+<br>
+The weakest points of the framework (in my opinion) is more to do with
+the lack of the ability to employ&nbsp; programming to interface in so
+many areas.<br>
+It is necessary for example to "remember" to create or ignore the many
+possible static methods that are used in the client business objects
+and form classes to produce the appropriate behavioural results such as
+is examplified in the "Book" and ProjectTracker.<br>
+This is a great area of resistance to the acceptability of the
+framework to many programmers who don't necessary have a thorough
+appreciation of the concepts and options available, but are also
+exposed to other frameworks that may be more wizardry or enforceful to
+guide them along certain completion paths in their&nbsp; programming. <br>
+The attitude is often that csla is not productive because you have to
+go through so many loosely&nbsp; defined hoops to get something done. <br>
+Of course we constantly need to remind people that no two classes are the same.<br>
+<br>
+Jimbo<br>
+<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>goracio replied on Saturday, January 05, 2008</h2><P>Thanks for reply.</P>
+<P>But I thought that the main goal&nbsp; of application server is security. There must be 100% proof that on obtaining client software to the applcation server there would be no chance to circumvent security. </P>
+<P>I thought how this framework may be used in the right secure way.</P>
+<P>1) To fetch objects from server the data access must reside in another&nbsp; assembly, on client it must be excluded. Data that was filled into the business object must be obtain from data access layer in intermediate collections (or data tables). But there is problem with saving data to database, there must be some object which accepts business objects, and updates database. There must be some way not to expose data layer code to the client.</P>
+<P>The business rules must be rechecked on server. May be it can be done in the framework, i dont know. But in the books there are no examples on this case. Examples, dont give fully protected solution, and there are no guidelines how to get full security from the framework.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jimbo replied on Saturday, January 05, 2008</h2>I'm not the person who can really satisfy your question. It should come
+from Rocky et al.&nbsp; However, all I can say is if you want the
+levels of separation you are suggesting then you dispense with the csla
+mobile objects and the csla dataportal technology and use traditional
+n-tier architecture to pass your DTOs or use paranoid web services etc.
+( which will still work quite happily with csla on the client
+side).&nbsp; Surely in any business scenario, "security" (what ever it
+means) is not the responsibility of a particular&nbsp; application per
+se - but the systems' environment itself.<br>
+<br>
+jimbo<br>
+<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tmg4340 replied on Saturday, January 05, 2008</h2><FONT face=Tahoma size=2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>goracio:</strong></div><div> </FONT>
+<P><FONT face=Tahoma size=2>Thanks for reply.</FONT></P>
+<P><FONT face=Tahoma size=2>But I thought that the main goal&nbsp; of application server is security. There must be 100% proof that on obtaining client software to the applcation server there would be no chance to circumvent security. </FONT></P>
+<P><FONT face=Tahoma size=2>I thought how this framework may be used in the right secure way.</FONT></P>
+<P><FONT face=Tahoma size=2>1) To fetch objects from server the data access must reside in another&nbsp; assembly, on client it must be excluded. Data that was filled into the business object must be obtain from data access layer in intermediate collections (or data tables). But there is problem with saving data to database, there must be some object which accepts business objects, and updates database. There must be some way not to expose data layer code to the client.</FONT></P>
+<P><FONT face=Tahoma size=2>The business rules must be rechecked on server. May be it can be done in the framework, i dont know. But in the books there are no examples on this case. Examples, dont give fully protected solution, and there are no guidelines how to get full security from the framework.</FONT></P>
+<P><FONT face=Tahoma size=2></div></BLOCKQUOTE></FONT></P>
+<P><FONT face=Tahoma size=2>In my opinion, you're going to spend an awful lot of time to try and achieve these goals, whether you use CSLA or not, and you're not going to get there.&nbsp; "100% proof... there would be no chance to circumvent security" is not really an attainable goal in my opinion, at least in any kind of distributed scenario.&nbsp; How do you program against an employee who wants to be malicious - i.e. anyone who has a legitimate reason to use the application, and thus has the access required?&nbsp; How do you program against social engineering?&nbsp; There are certainly best practices for some of this, but the goal of securing an application is not a 100% defense against possible intrusion.</FONT></P>
+<P><FONT face=Tahoma size=2>As for the "right secure way" that you mention, this issue must be tackled regardless of whether you use CSLA or not.&nbsp; There is no&nbsp;way to keep all the "data layer code" off the client, simply because the client has to interact with the data in some form.&nbsp; Even if you move the data-related code to another assembly, some process has be to be able to do your ORM.&nbsp; That means there has to be some place where the business objects and data-access code mix.&nbsp; Sure, you can put that on some app server, which in theory is more protected than your clients.&nbsp; But look at it this way - said app server has to be able to send your client objects for its use, and take them back so it can perform any validation, translate the objects into data, and get the updates to the database.&nbsp; You've now introduced a vulnerability into your app, because you have to transmit the objects over the wire.&nbsp; Just because&nbsp;your business objects don't have any data-access code doesn't mean a potential hacker can't learn valuable things them.</FONT></P>
+<P><FONT face=Tahoma size=2>Lastly, there are a series of best practices related to database access that can get you a long way.&nbsp; Those would be used whether you used CSLA or not.&nbsp; And a</FONT><FONT face=Tahoma size=2>s has already been mentioned, if your client gets hacked, that's not a CSLA-specific issue.&nbsp; Using something other than CSLA isn't going to inherently make your application more secure on the client.&nbsp; If your client code is hacked, disassembled, etc., it doesn't matter how you wrote the app - said hacker will be able to figure out how you access your remote systems and replicate it.</FONT></P>
+<P><FONT face=Tahoma size=2>All I'm saying is that, in a distributed scenario, I don't see CSLA being any more vulnerable than any other distributed system you might use.&nbsp; Security measures can be built in at many points, and CSLA will happily work with them.&nbsp; But I don't think you can get your 100% system, regardless of the technology you use.</FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>goracio replied on Saturday, January 05, 2008</h2><P>The main reason for my question about security is that i have good proven application server framework. It was used in a bank. But the main flaw of that system that it is tied to Net remoting, client accepts datasets as payload, and editing of individual items goes through entities (business objects)&nbsp;that can be created on the client from datasets, or can be fetched individually. All operations are through managers that have methods and are derived from MarhalByRefObject, client obtains only interface (base abstract class). Of course there is SessionContext and authentification. I think it is more secure, but has a&nbsp;drawback - exposes many methods. CSLA exposes little methods through its DataPortal. But i wanted to know sombody would tried to use CSLA technology in any financial organisations?</P>
+<P>Portal methodes are untyped and any binary data can be send instead of the real object. I know that server side validator can be plugged in OnDataPortal_XYZ methodes. But somebody used it (framework) in really important (from financinal point of view) applications?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tmg4340 replied on Saturday, January 05, 2008</h2><FONT face=Tahoma size=2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>goracio:</strong></div><div></FONT>
+<P><FONT face=Tahoma size=2>The main reason for my question about security is that i have good proven application server framework. It was used in a bank. But the main flaw of that system that it is tied to Net remoting, client accepts datasets as payload, and editing of individual items goes through entities (business objects)&nbsp;that can be created on the client from datasets, or can be fetched individually. All operations are through managers that have methods and are derived from MarhalByRefObject, client obtains only interface (base abstract class). Of course there is SessionContext and authentification. I think it is more secure, but has a&nbsp;drawback - exposes many methods. CSLA exposes little methods through its DataPortal. But i wanted to know sombody would tried to use CSLA technology in any financial organisations?</FONT></P>
+<P><FONT face=Tahoma size=2>Portal methodes are untyped and any binary data can be send instead of the real object. I know that server side validator can be plugged in OnDataPortal_XYZ methodes. But somebody used it (framework) in really important (from financinal point of view) applications?</FONT></P>
+<P><FONT face=Tahoma size=2></div></BLOCKQUOTE></FONT></P>
+<P><FONT face=Tahoma size=2>Well, for starters, DataPortal methods do not have to be untyped.&nbsp; In prior versions, they accepted objects, but starting with the version 2.0, you can provide strongly-typed versions of the DP_ methods.&nbsp; The DP code can correctly find the typed versions.&nbsp; The untyped versions&nbsp;are there largely for compatability reasons.&nbsp; But even if you use the untyped methods, you'll still want to cast your parameters to the right types.&nbsp; So sure - any data can be sent.&nbsp; But unless it can be translated into the types you're expecting...</FONT></P>
+<P><FONT face=Tahoma size=2>Interface-based/base-class programming is not necessarily any more secure.&nbsp; It's the recommended methodology in typical n-tier programming, and it's certainly a good general OO programming style.&nbsp; And it keeps your client from having to know about the particulars of an object.&nbsp; But they are still getting and using them.&nbsp; Again, if your code is compromised, it doesn't matter whether you're using interface-based programming or not - if the hacker can disassemble your code, they can see how you're using your interfaces and replicate the action.</FONT></P>
+<P><FONT face=Tahoma size=2>You said your current system has many methods.&nbsp; That in itself is not an insecure situation, but it implies to me&nbsp;a chatty system - a real no-no in distributed programming.&nbsp; Maybe that's a bad assumption.&nbsp; And while you've isolated your DAL code in your system, you're still passing data across the wire.&nbsp; I don't see where a DataSet would be&nbsp;more secure&nbsp;than a business object, and I would also argue that a DataSet tells a hacker just as much about the data as a system that uses BO's.&nbsp; Sure, a DataSet probably doesn't have much in the way of business rules, but in the end, most institutions - especially financial ones - are going to say that the data is much more valuable than the applications that work on it.&nbsp; It doesn't much matter to me how your system uses the account&nbsp;information I've stolen...</FONT></P>
+<P><FONT face=Tahoma size=2>In the end, good defensive programming techniques should serve you just fine with CSLA.&nbsp; The&nbsp;"level of paranoia" you code into your systems is up to you, but CSLA&nbsp;shouldn't get in the way of&nbsp;any of it.&nbsp; Beyond that, you should have several other security measures and technologies in use, and CSLA isn't going to compromise those either.&nbsp; I don't know whether anyone has used it for a financial institution.&nbsp; Rocky might be able to comment on that.</FONT></P>
+<P><FONT face=Tahoma size=2>One last question: if you have a good, proven, secure&nbsp;framework, but it relies too much on Remoting and is too chatty, why do you want to re-invent the entire wheel?&nbsp; Chattiness can be fixed with some facades, and if everything runs off of interfaces/base classes, you should be able to swap out your transport channel without a ton of effort.&nbsp; Do you need to throw the whole thing out and start over?</FONT></P>
+<P><FONT face=Tahoma size=2>- Scott</FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>goracio replied on Sunday, January 06, 2008</h2><P>Thanks, Scott!</P>
+<P>But the old system is not chatty, and business rules inforced through entity bussiness&nbsp;classes, that is used for editing data. The editing goes through individual piece of entity items in individual win forms that designed for editing the entity. There is not allowed to edit data in grid, if data is edited then clicking on the row provides form for editing data (and int has relative to the main entity data).</P>
+<P>The problem that the system can not be easyly converted to other transport technology (not net remoting)&nbsp;because every XYZManager is net remoting class, all communication with them through net remoting Transparent proxy. the Real proxy extended in custom way, and context data goes through callContext.</P>
+<P>I had some time to think about CSLA architecture. &nbsp;And now i think that there is not a trouble that any data can be fed to portal, because if in server code no dangerous serializable classes there is no danger that binary data can be deserialized into something dangerous. </P>
+<P>In order to completely remove server side methods from the client we have in C# compiler #define, #ifdef directives. If we wrap server side methods in #ifdef directives then compiling code with defined clientside directive. For example when no exists compiler directive #define SERVERSIDE, on compiling there would be no server side code in client assembly. </P>
+<P>And another approach.&nbsp;As Rocky said in his blog in DataPortalXYZ methods we can take data from code that exists in another assemblies that will not be present on the client. </P>
+<P>The only&nbsp;point that i have to resolve its versioning. If the client and server has different versions. I know (from Jeff Richter articles) that serializing and deserializing can be done without version. What can be done in versioning situation with this FrameWork. Maybe Rocky will&nbsp;answer.</P>
+<P>Max.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tmg4340 replied on Sunday, January 06, 2008</h2><P><FONT face=Tahoma size=2>I can't say for 100% sure, but I believe that using compiler directives to remove your server-side code from your client assemblies is going to cause you problems.&nbsp; Binary serialization - which is what the DP uses - may work.&nbsp; But there is a client-side DataPortal, which needs to have the DP_ methods available because of the possibility of the RunLocal attribute.&nbsp; I suppose if you put your compiler directives inside the methods, leaving the method signatures available, it might work.&nbsp; I've honestly never tried it.</FONT></P>
+<P><FONT face=Tahoma size=2>I'm trying to figure out what the paranoia is about having server-side code in the client.&nbsp; I can see where it could be an extra level of security not to have it, but I keep coming back to the following point: if your code is hacked on the client, the presence of the server-side code doesn't matter at that point.&nbsp; The fact that the hacker can't see the code doesn't matter, because it's not running on the client - it's running on the server.&nbsp; Hacking your client-side code gives the hacker the ability to call the server-side code that they can't see, so what's the point?</FONT></P>
+<P><FONT face=Tahoma size=2>If you're trying to keep the server-side code away from them so that they can't create their own application to send malicious data - well, I'm no hacker, but if I have your client code hacked, it doesn't seem to be a big stretch to take what you've already written and&nbsp;remove the business-rule checks, thus potentially allowing me to send whatever the heck I want.&nbsp; But presumably your server-side DP code will re-validate the data, so even if I remove the client-side business rules, I still don't get what I want.</FONT></P>
+<P><FONT face=Tahoma size=2>Having the server-side code available to a potential hacker is of limited value, since it runs on the server.&nbsp; Unless they can change the code and inject the changes into your server - in which case you have bigger problems - the server-side code is unchangeable.&nbsp; And as you've mentioned, you can take your DAL code and put it into a separate assembly that only exists on the server, so even if they see the method calls, they can't replicate them.&nbsp; This, I think, would be a better solution than trying to get compiler directives to work.&nbsp; But I've been wrong before...</FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Sunday, January 06, 2008</h2><P>With any framework it is important to understand, and accept, the philosophy and goals on which the framework is founded. This is the purpose behind Chapters 1 and 2 in the book, to explain the philosophy, goals and resulting design choices I have made. 
+<P>I’ve blogged about a lot of this numerous times, but here’s a short and sweet summary of my (and thus CSLA’s) philosophy. 
+<P>CSLA .NET is a client/server, n-tier development tool. Its primary purpose is to make it easier to build a powerful, feature-rich and .NET-integrated business layer composed of business objects. Those objects are ideally designed using single-responsibility design. 
+<P>The other primary purpose of CSLA .NET is to enable flexible deployment of the business layer on a single machine, or on both a client and server. This uses the concept called mobile objects, which is strictly an n-tier concept. 
+<P>N-tier directly implies that you are building an application with multiple layers, where those layers are deployed on 2 or more physical tiers (some inter-layer communication at least crosses process boundaries, if not network boundaries). However, it is an architecture for building <I>an application</I>. Singular. 
+<P>An application describes a “trust boundary”. By which I don’t just mean security, but also semantic trust. N-tier applications rarely re-apply all business logic on every tier. That is incredibly expensive and inefficient in many ways. And it is pointless, because all the tiers live within this trust boundary. 
+<P>If you have code that will run <I>outside the trust boundary of your application</I> then you have, by definition, two applications. It is not possible for an application to span a trust boundary. 
+<P>When you have two applications, they should communicate with each other using message-based techniques. These days this is often called “SOA”, and so the techniques are now “service-oriented”. Regardless of the terminology, the point is that you have <I>two applications</I>, one on either side of the trust boundary. The only thing flowing across the trust boundary is raw data in the form of messages (XML or otherwise). 
+<P>Neither application trusts the other. In many cases this means both applications will implement the same logic. At least the same validation, but often the same calculations and data manipulation. The client application does this to provide the user with a decent user experience. The server application does this because it doesn’t trust the client application. So they both do it. 
+<P>If you <I>really</I> want to be service-oriented, you won’t try to share code between these two applications. If you do that, you lose the primary benefit of SOA, which is decoupling and version independence. But that is really expensive, because you must then implement and maintain two applications that have much of the same <I>logical</I> code. 
+<P>But if all you want is to safely traverse the trust boundary, and you don’t care about being “SOA” or loosely coupled or version independent, then you can share code between the two applications. You can build them both against the same business DLL. This business DLL can be created using CSLA .NET if you like. 
+<P>Which ultimately brings us to the issue of data access code in the DataPortal_XZY methods. This too is a topic I’ve discussed many times, but here’s a quick summary. 
+<P>The DataPortal_XZY methods really only have one purpose: to trigger interaction with the data persistence mechanism. They don’t have to <I>include</I> or even <I>implement</I> the data persistence, they just need to trigger it. 
+<P>However, the data access mechanism does need to get and set the object’s <I>field data</I>. Fields are private. So you are left with two real options: get/set the fields in the DP_XYZ methods, or externalize the get/set operation. 
+<P>If you externalize the get/set operation you have two basic options: somehow make the fields non-private (make them protected, expose them via an interface, etc) or you use reflection. Making the fields non-private is an unsound idea for very obvious reasons. Using reflection is slow. 
+<P>So personally I recommend leaving the field get/set behavior in the DP_XYZ methods. That is meaningless code anyway – there’s no security benefit to be gained by protecting code like 
+<BLOCKQUOTE>
+<P>X = Y; 
+<P>A = B; 
+<P>C = D;</P></BLOCKQUOTE>
+<P>Really, who cares? 
+<P>What you <I>do want to externalize</I> is the code to open the database and execute the SQL. Well, really what you want to externalize is the SQL. 
+<P>And you can do that very effectively. See the DeepData example on my web site, or attend Dunn Training’s CSLA .NET training class to see this idea in action. 
+<P>But even externalizing the SQL isn’t enough if you want to re-use the business layer in two different applications. The reason is that the client application will almost certainly consume and produce DTOs to send as messages across the boundary. The server application will almost certainly use ADO.NET to talk to the database. 
+<P>So what you really need is a more complex architecture where the DP_XYZ methods always consume and produce DTOs. Your client application’s “DAL” then ships those DTOs to/from the server application, while the server application’s DAL puts the DTO data into/out of the database using ADO.NET. Or LINQ. 
+<P>So the application stack (with both applications) looks like this: 
+<BLOCKQUOTE>
+<P>Client Presentation 
+<P>Client UI 
+<P>Business Objects (CSLA) 
+<P>DTOs 
+<P>Client “DAL” (service calls) 
+<P><B>&lt;------- trust boundary -----&gt;</B> 
+<P>Service Presentation (XML) 
+<P>Service UI (actual service code) 
+<P>Business Objects (CLSA) 
+<P>DTOs 
+<P>Service DAL (ADO.NET, LINQ, etc.)</P></BLOCKQUOTE>
+<P>Both applications follow the same basic architecture – the one from Chapter 1 in my book. Both business object layers can be the same (again, assuming you don’t care about being “SOA”). The DTO layers need to be the same as well, because they are the official contract followed by the DP_XYZ methods. But the DAL implementations are obviously radically different from each other. 
+<P>And really, if you are willing to use dynamic language features like those in VB, Ruby or Python, then the DTOs don’t need to be <I>the same type</I>, they just need to have the <I>same</I> <I>shape</I>. But if you want to stick with strong typing (like C# or VB without the dynamic options turned on) then they need to be the same type.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>goracio replied on Monday, January 07, 2008</h2><P>Thanks, Rocky.</P>
+<P>But there another issue that i think can add benefit to CSLA architecture when realized. Namely, now business objects (BO) when there are complex BO graph - root BO with a lists of child objects (maybe one root and many child lists aggregated inside the root - its not uncommon)&nbsp; upon changing only one child object inside the list when updating then all object graph must by serialized and go to the server. But logicaly what is needed is to send an update to only one child object. Then when update completed from the server goes once again&nbsp;completed object graph (including root and not updated children). Then&nbsp;We have another copy of ALL BO. We must replace original BO with new BO. It seems illogical and consumes bandwidth and server resources. What is needed (IMHO) that when updating then to the server would be sent only updates&nbsp; and returned a result with only server self-updated fields (timestamps, and when inserted - Guids or Autoincremented values).</P>
+<P>I dont think that there's much effort in achieving that goal. For all updates needed only one dedicated for the purpose object (i mean c# Type). It can be constructed of Updating object type,&nbsp;a list&nbsp;of objects that&nbsp; include&nbsp;dictionary with fieldname- value pairs, primary key values (common structrure with fieldname - value ordered list), good if present&nbsp;original values of the fields&nbsp;and i think each BO must contain objectID (client generated) so on method return when recieving reply from the server client could find object in a graph and update timestamps, autoincrements or other data. Constructing such a change package could be done using reflection.&nbsp;Custom attributes can mark primary key fields that must be included in update package. What is needed that upon update there in BO preserved original values. What is good that BO upon update only updates its state and not totally&nbsp; replaced with new object. Its common that we need only refresh one child object and not the hole composite graph.</P>
+<P>Then there one more sugestion that i would like be implemented in the Framework. There must exist application object (singleton). Its good if portal itself was singleton and not single call object. Having such a thing we can do much faster routing of methods calls to BO. I suggest registering in dictionary mapping of BO Type with precreated (or lazyly created) Manager that implements C#&nbsp;interface with Update, Insert, Delete ... methods. It can be derived from base class that has those virtual methods. Each method calls virtual&nbsp;OnBeforeXYZ and OnAfterXYZ methods. The Base manager class&nbsp;also must have Property to mark it ReadOnly or not. Modifing Methods can check it and throw exception when readoonly state. The same base manager could be done for Command BO supporting only Execute method. When call comes to Portal it checks what object and what method (update, delete,insert...) to invoke. Then finds through dictionary the Manager corresponding to the object Type and invokes method through fast interface method call. Evry method must accept criteria and update package.</P>
+<P>One other thing that i would like to see in the framework is RolesForObject. Because for practical purposes theres no need for RolesForProperty. I think that its unmanagable. When user dosnt authorized to see object date He (she) wont get object from the server. If its readonly then checks must be on server and on clients not to Modify data. I think that if data present on the client and user is not authorized to see that data it cam be easyly circumvented by loading client program in AppDomain (By AppDomain.Execute method), next loading in the same domain custom tailored assembly that do reflection on BO data and displaying it to&nbsp;not very good&nbsp;user.</P>
+<P>Regards,</P>
+<P>Max</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, January 07, 2008</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Again, it is important to understand the philosophy of the
+framework.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>CSLA .NET implements mobile objects. A side-effect of this is
+location transparency, where the object model and as much of the context as
+possible is the same on both client and server.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>This is fundamentally different from a split model where the client
+has the object model and the server is just a set of data services. That is a
+different architectural philosophy (neither better nor worse &#8211; just different),
+and is the one commonly used when building MTS/COM+ components through the late
+1990&#8217;s.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>The advantage of the split model is that less data flows on the
+wire. The drawback is that there&#8217;s little or no location transparency.
+The client and server never have access to the same sets of information, and
+the developer must fully understand the programming model of the client and
+server because they are different.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>The advantage of the mobile object model is that there is
+location transparency, so the developer is always working against a consistent
+object model. They can interact with the same objects on the client or server
+to do validation or other business processing where it is appropriate. The drawback
+is that (potentially) more data moves across the wire.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I built many apps using the split model, and the COM version of
+CSLA followed that approach. It works quite well, and is very much the way most
+people use Web services or WCF services today. But it isn&#8217;t interesting
+(to me at least). I suppose it is a &#8220;been there, done that&#8221; thing.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Mobile objects are far more interesting. Again, I&#8217;m not
+saying better or worse, but they are more interesting to me at least. And for a
+lot of applications mobile objects offer some really nice advantages, especially
+if you embrace and exploit the fact that your object model exists on both sides
+of the wire (if there is a wire). You can do some really cool stuff, especially
+in more complex applications where some logic simply can&#8217;t be implemented
+on the client (typically because server-side resources or huge tables are
+required), but where it is valuable to have the business layer intact and
+available.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> goracio
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Monday, January 07, 2008 2:25 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] Weak points in the framework. Do they exist?<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Thanks, Rocky.<o:p></o:p></p>
+
+<p>But there another issue that i think can add benefit to CSLA architecture
+when realized. Namely, now business objects (BO) when there are complex BO
+graph - root BO with a lists of child objects (maybe one root and many child
+lists aggregated inside the root - its not uncommon)&nbsp; upon changing only
+one child object inside the list when updating then all object graph must by
+serialized and go to the server. But logicaly what is needed is to send an
+update to only one child object. Then when update completed from the server
+goes once again&nbsp;completed object graph (including root and not updated
+children). Then&nbsp;We have another copy of ALL BO. We must replace original
+BO with new BO. It seems illogical and consumes bandwidth and server resources.
+What is needed (IMHO) that when updating then to the server would be sent only
+updates&nbsp; and returned a result with only server self-updated fields
+(timestamps, and when inserted - Guids or Autoincremented values).<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>boo replied on Tuesday, January 08, 2008</h2>I'm a little late on this, but I have to sound off - application servers primary role is not for sercurity, it's for extensibility.&nbsp; In other words ApplicationServer != Security - I fight management all the time on this.&nbsp; <br><br>Authorization, Authentication, Encryption, Data Integrity, Non-Repudiation, Accessiblity -&gt; this is how you implement security.&nbsp; If you're assemblies are not strongly signed - of course a user can recompile an assembly to have the same signature and subvert you're application.&nbsp; If you don't use a protocol that supports a secure channel (such as https) then of coarse someone with a sniffer can intercept data.&nbsp; If you don't have an ACL for a network resource then the amount of potential hackers increases infinitely.&nbsp; If you don't use strong passwords, or integrated authentication, then of course it's easy for someone to hack the database.&nbsp; ETC.<br><br>No framework exists that provides good security out of the box, there are only frameworks that exist that allow you to utilize security mechanisms to implement good security as an organization.<br><br>Companies I have worked for or have collegues who have worked for have sworn up and down on some peice of hardware, or firewall, or some other software that provided a 'turtle-shell' security approach and sold having these things in place as making their network secure - only to see to subverted it in someway.<br><br>Please, if you're looking for good security, implement good security practices and look for tools that help implement those practices.&nbsp; No framework is perfect, and their is no such thing as 100% secure, but CSLA provides a lot of possibilites and extension points to allow using the framework in a secure way.&nbsp; The question becomes what are you enterprise security requirements?<br><br>Again, appologize for being behind on the post, but security gets me going. :)<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>DavidDilworth replied on Wednesday, January 09, 2008</h2><P>Good post boo.</P>
+<P>"Security" is about making things difficult for the casual or novice person who is trying to hack your application.&nbsp; Not trying to stop the serious or determined hacker.</P>
+<P>Any serious hackers, or serious crime syndicate, will be able to put the time and effort into breaking your application.&nbsp; This includes getting someone inside your organization as a mole, if they need to.&nbsp; If they think the reward is big enough, they will get through.</P>
+<P>So getting all the basics in&nbsp;place as boo&nbsp;suggested&nbsp;is the way to go.</P>
+<P>If you are worrying about what happens when somebody in your company gets your application code from their desktop PC&nbsp;and decompiles it, puts in a trojan horse and then recompiles it without you noticing then I would suggest that your company is already compromised.</P>
+<P>Obviously, we (as software developers) must make it as hard as we can for others to break our applications.</P>
+<P>But don't let "security" be the main driving force behind what application framework you should choose to use.</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>goracio replied on Wednesday, January 09, 2008</h2><P>Thanks!</P>
+<P>But, aside from the security, there's problem with saving original fields for optimistic concurrency on updates and the need to send to and from the server the hole object tree instead of the only updated object (or better only fields that changed). I came across a lot of frameworks that have the main goal - "philosophy of the framework". It's better be practical approach and assisting developers needs. Practically, I&nbsp;dont recommend using this framework in big projects.</P>
+<P>Max.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, January 09, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>This is why framework choice is a matter of personal preference.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>No framework solves all problems. All frameworks trade off one
+set of problems for another. If a framework focuses on security it often is
+very complex or has performance issues. If a framework focuses on ease of use
+it often suffers from a lack of flexibility. If a framework focuses on
+scalability it often lacks security or ease of use. What you need to decide
+(and apparently have) is which issues you want the framework to solve, and
+which you want to solve yourself. <o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>You mention concurrency. If CSLA forced people to use per-field
+original value concurrency I&#8217;d lose a whole bunch of users. If it force
+the use of timestamps I&#8217;d lose a whole bunch of users. So instead I allow
+you to do the one that works best for you. And of course I lose some users due
+to this flexibility, because they want a framework that mandates one or the
+other &#8211; but I&#8217;m willing to lose those people to keep the rest.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Similarly, CSLA implements a mobile object model rather than a
+datagram model. These two models provide a totally different set of costs/benefits.
+However, due to the way the data portal works CSLA can be used as part of a
+larger datagram-based solution and so it addresses a larger pool of needs than
+if it only supported the datagram model.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>No framework solves all problems. CSLA often incurs a cost of
+complexity to offer flexibility specifically to broaden the range of application
+styles it supports. This is a net gain, but does lose some people because they
+want a simpler, more focused and limited solution. And I&#8217;m fine with
+that.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> goracio
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Wednesday, January 09, 2008 12:12 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: Weak points in the framework. Do they
+exist?<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Thanks!<o:p></o:p></p>
+
+<p>But, aside from the security, there's problem with saving original fields
+for optimistic concurrency on updates and the need to send to and from the
+server the hole object tree instead of the only updated object (or better only
+fields that changed). I came across a lot of frameworks that have the main goal
+- &quot;philosophy of the framework&quot;. It's better be practical approach
+and assisting developers needs. Practically, I&nbsp;dont recommend using this
+framework in big projects.<o:p></o:p></p>
+
+<p>Max.<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>DavidDilworth replied on Wednesday, January 09, 2008</h2><P>If the main requirements for your project are "security" and the need to "minimize your usage of network bandwith" then CSLA is definitely not for you.&nbsp; These are not Rocky's&nbsp;design goals for CSLA.</P>
+<P>I suggest you create your own low level TCP/IP&nbsp;encrypted binary transport mechanism framework.&nbsp; That way you will have real good control over those things that are important to you.</P>
+<P>However, I'm sure there are plenty of people who work on "big projects" who don't have "security" and "network bandwidth" as their main requirements.&nbsp; And&nbsp;I expect some of them are quite happy to choose CSLA because it offers them a framework as a basis for their project.</P>
+<P>CSLA is not "one framework to rule them all".&nbsp; Rocky has never claimed that.&nbsp; But what is on offer will suit a number of different people working on different sizes and types of projects.</P>
+<P>To paraphrase what Rocky said, you "pays your money and you takes your choice".</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

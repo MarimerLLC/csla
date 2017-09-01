@@ -1,0 +1,90 @@
+<html><header><title>Allowing users to change dataportal to application server mode</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Allowing users to change dataportal to application server mode</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4977.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Marjon1 posted on Monday, June 16, 2008</h2><font size="2" face="Arial">We are writing an application were the user can choose to use an application server or not. This information is stored within the app.config of the project. However, we are in the process of getting the application certified for use with Windows Vista (to get some Microsoft Partner Points) and the app.config file can not be changed by a normal user (only admin) which is presenting a problem for us.<br><br>We can move the database connection and number of other settings that can change out into their own settings.config file stored within a writable path on the system, however, if we move the csla settings then we would need to change CSLA itself. This we want to avoid if at all possible. <br><br>I was curious if anyone else has ran into this problem and how they have solved it, or what approach you would take. The other alternative is to write a seperate application which can escalate permsissions, but this would be a bit of a pain with our current setup.<br><br>Thanks,<br><br>Marjon<br></font></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Monday, June 16, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I think (not 100% sure though) that you can write settings using
+ConfigurationManager without actually having to commit any changes to hard-drive
+/ app.config.&nbsp; So, you can store settings in separate cofig file, then use
+ConfigurationManager to create an in-memory setting that CSLA can read.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Senior Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Marjon
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Monday, June 16, 2008 2:02 AM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> [CSLA .NET] Allowing users to change dataportalto application
+server mode<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal><span>We
+are writing an application were the user can choose to use an application
+server or not. This information is stored within the app.config of the project.
+However, we are in the process of getting the application certified for use
+with Windows Vista (to get some Microsoft Partner Points) and the app.config
+file can not be changed by a normal user (only admin) which is presenting a
+problem for us.<br>
+<br>
+We can move the database connection and number of other settings that can
+change out into their own settings.config file stored within a writable path on
+the system, however, if we move the csla settings then we would need to change
+CSLA itself. This we want to avoid if at all possible. <br>
+<br>
+I was curious if anyone else has ran into this problem and how they have solved
+it, or what approach you would take. The other alternative is to write a
+seperate application which can escalate permsissions, but this would be a bit
+of a pain with our current setup.<br>
+<br>
+Thanks,<br>
+<br>
+Marjon<br>
+</span><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Monday, June 16, 2008</h2><P>How about using this technique:</P>
+<P>In the app.config file set:</P>
+<P>&lt;appSettings file="user.config"&gt;</P>
+<P>Then in the file user.config you can set:</P>
+<P>&lt;?xml version="1.0" encoding="utf-8" ?&gt;<BR>&nbsp;&nbsp; &lt;appSettings&gt;&nbsp;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;add key="ConnectionString" value="data source=myDBServer;database=MyDB;uid=someUser;password=somePwd" /&gt;<BR>&nbsp; &nbsp;&lt;/appSettings&gt;<BR></P>
+<P>Joe</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Marjon1 replied on Monday, June 16, 2008</h2><font face="Arial"><font size="2">The problem with this method is that the user.config file must be a relative path to the app.config, which means that it is going to have the same file access issues. If it was possible to do something like<br><font face="Courier New"><br></font></font></font><font size="2" face="Arial">&lt;appSettings file="%appdata%\user.config"&gt;<br><br></font><font size="2" face="Arial">It could then put the data in the application data folder this would work fine.<br>I've tested this and it doesn't work :(<br><br>Any other suggestions?<br></font></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

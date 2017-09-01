@@ -1,0 +1,14 @@
+<html><header><title>Issue with IIS 6.0 Application Pool Identity</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Issue with IIS 6.0 Application Pool Identity</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/1209.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>jgk1701 posted on Wednesday, September 13, 2006</h2><P>I am having an issue setting up the application pool identity account in IIS 6.0.</P>
+<P>I want the account to be a domain user account (DOMAIN\AppDev for this example) instead of one of the built in local accounts because the SQL Server database is on another server.&nbsp;</P>
+<P>I have added DOMAIN\AppDev to the local machines IIS_WPG group so that account will have the privileges necessary to execute&nbsp;a worker process.&nbsp; I have setup the SQL Server to allow logins from DOMAIN\AppDev, etc.&nbsp; The dataportal's config file has the proper connection string.&nbsp; When I run the client app, I get the following exception:</P>
+<P>Exception Type: System.Net.WebException<BR>Status: ProtocolError<BR>Response: System.Net.HttpWebResponse<BR>Message: The remote server returned an error: (401) Unauthorized.TargetSite: Void HandleReturnMessage(System.Runtime.Remoting.Messaging.IMessage, System.Runtime.Remoting.Messaging.IMessage)<BR>HelpLink: NULL<BR>Source: mscorlib</P>
+<P>The inner exception is</P>
+<P>Exception Type: System.ComponentModel.Win32Exception<BR>NativeErrorCode: -2146893022<BR>ErrorCode: -2147467259<BR>Message: The target principal name is incorrect<BR>TargetSite: Byte[] GetOutgoingBlob(Byte[], Boolean ByRef)<BR>HelpLink: NULL<BR>Source: System</P>
+<P>The client app is configured to use Windows authentication.</P>
+<P>Any help will be greatly appreciated.</P>
+<P>Thanks,</P>
+<P>&nbsp;</P>
+<P>Jeff</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>guyroch replied on Wednesday, September 13, 2006</h2>Not sure if this will help but have you signed your assembly by including a .snk file to your Csla projects?<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jgk1701 replied on Thursday, September 14, 2006</h2><P>Yes.</P>
+<P>Can anyone help me out there?</P>
+<P>Thanks,</P>
+<P>Jeff</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RobKraft replied on Thursday, September 13, 2007</h2>I just ran into this.&nbsp; To get it to work at the moment, I changed the config of my WebApp in IIS.&nbsp; I allow anonymous access.&nbsp; I don't think this is how I want to deploy it in production, but it works for the moment.</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

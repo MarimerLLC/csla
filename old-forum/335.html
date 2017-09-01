@@ -1,0 +1,125 @@
+<html><header><title>CslaDataSource vs. ObjectDataSource</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CslaDataSource vs. ObjectDataSource</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/335.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>SonOfPirate posted on Saturday, June 10, 2006</h2><P>I am a bit disappointed that the book does not delve into a better explanation why we should be using the custom CslaDataSource versus the built-in ObjectDataSource.&nbsp; As comprehensive as most of the explanations are, this left me at a loss.</P>
+<P>I've done quite a bit of reading and playing with the ObjectDataSource and am struggling to understand why implementing a custom equivalent is better.&nbsp; I always tend to rely on built-in before custom and, frankly, at first glance the CslaDataSource looks like it requires significantly more coding by the end-user/developer than using an ObjectDataSource.</P>
+<P>I'd like to open a comparitive discussion for those of us struggling to understand the merits behind the custom approach.&nbsp; Specifically, what short-comings in the ObjectDataSource are we overcoming with the custom CslaDataSource that justify its implementation???&nbsp; It is obvious from searching &amp; scanning the forum that this approach is being pursued widely with a number of issues including paging and sorting which are provided for in the ObjectDataSource.</P>
+<P>I am open to this and believe that Rocky tends to have solid rationale behind the approaches used in his framework, unfortunately, this is not explained very well in the book.&nbsp; Any help understanding why we should go this route is appreciated.</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Saturday, June 10, 2006</h2><P>The ObjectDataSource requires that you bastardize your object model to conform to its set of requirements. These include:</P>
+<OL>
+<LI>A public default constructor</LI>
+<LI>All properties must be public read/write and can never refuse to accept or return a value</LI>
+<LI>You must be able to do stateless updates, where the object accepts all values from data binding and blindly inserts them into the database</LI></OL>
+<P>Now these are all achievable goals. But not if you want to have any hope of creating an object model that is useful in any other context (like Windows Forms or even behind a Web Service).</P>
+<P>And these goals are very hard to achieve with CSLA .NET, because it is designed around a different set of principles.</P>
+<P>To use the ObjectDataSource with a CSLA .NET object, you'd need to make the constructor public, and then compensate as needed within your object code because the factory methods are no longer the only way to create an object. This isn't overly difficult, but there are some edge cases that are tricky.</P>
+<P>Then you have to avoid all use of read-only properties. So even your primary key value (which should be immutable) must be changable. Moreover, you can't block any values from being set or read in any property - so you can't use the authorization support in CSLA. Any blockage of a get/set will cause the ObjectDataSource to fail, causing your page to fail.</P>
+<P>Finally, your object needs to do a "blind update", where it accepts that all data put into the object is old data, even though the object is new (because ObjectDataSource creates it to do the update). I did add framework support for this through the Save(forceUpdate) overload.</P>
+<P>But perhaps most important is this: all your objects must be editable root objects. You can't have any child objects. So any behaviors that would naturally fall within the context of a collection or a parent object must be implemented within the child object.</P>
+<P>As an example, you might have rules about OrderLineItem objects controlling total sales or some discount percentage or other things that require looking at all the line items to determine the right course of action. When using the ObjectDataSource, each OrderLineItem must be a standalone editable root - because data binding will update those rows in an atomic manner. This means that the OrderLineItem class must contain all the code for a line item, PLUS all the code for an Order, so it can do the right thing while being saved.</P>
+<P>Obviously you can normalize this behavior and make your code maintainable. But this type of object model is much more expensive to create and maintain than a "real" object model where the very relationships between objects naturally enforce quite a lot of the rules inherent in your use cases.</P>
+<P>So in short, it is possible to create bastardized objects that do work behind ObjectDataSource, as long as you are willing to pay the price in terms of increased complexity and decreased functionality from CSLA. Or you can use the CslaDataSource, which doesn't impose these conditions on your objects, but does require you to write an extra few lines of code to copy the data.</P>
+<P>I had though, btw, of doing what ObjectDataSource does, and use more aggressive reflection to load the data into the objects. But I already get so much flak for my use of reflection that I thought I'd just create DataMapper and then leave it up to you to decide whether to use reflection or not. With ObjectDataSource you automatically use tons of reflection and have no choice - perhaps I should have just taken that approach as well...</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>SonOfPirate replied on Saturday, June 10, 2006</h2><P>Rocky,</P>
+<P>Thanks for the prompt &amp; thorough reply.&nbsp; This certainly addresses the issues and gives me a better understanding of the approach - and why.&nbsp; I will look closer at that section in the book and the code now that I have a grasp on what's "wrong" with the ObjectDataSource.</P>
+<P>My concern, as you eluded to, is/was based on the MS premise that the 'x'DataSource objects were designed to make the UI code free of any rigorous data-binding code.&nbsp; And, working in a distributed team environment makes this concept appealing so my UI guys aren't screwing up functionality (form vs. function, ya know?).&nbsp; That was why the event handlers you described seemed counter-productive.&nbsp; But, with this explanation I understand their purpose and benefit.</P>
+<P>I am wondering what your thoughts are, however, of finding a way to accomplish both approaches and design the CslaDataSource to behave by default like the ObjectDataSource in that it would use reflection to eliminate the need for the UI code but provide means for the developer to override, or cancel, this behavior and implement code like you've described sans reflection?</P>
+<P>Obviously, the typical approach of virtual protected methods won't work because we aren't expected to derive from CslaDataSource, but perhaps making use of CancelEventArgs?&nbsp;&nbsp; An approach that I have taken previously that comes to mind now is in the protected method that raises the event, such as OnSelectObject, when we check to see if&nbsp;an event handler is defined (SelectObject != null), add an else clause so that we raise the event if the user/developer has indicated a handler otherwise, if no handler is defined, we proceed with the default implementation. So, we would have code similar to this:</P>
+<P><CODE>internal void OnSelectObject(SelectObjectArgs e)<BR>{<BR>&nbsp; &nbsp; if (SelectObject == null)<BR>&nbsp; &nbsp; {<BR>&nbsp; &nbsp; &nbsp; &nbsp; // Default process using reflection<BR>&nbsp; &nbsp; }<BR>&nbsp; &nbsp; else<BR>&nbsp; &nbsp; &nbsp; &nbsp; SelectObject(this, e);<BR>} </CODE></P>
+<P>I'm not sure this would work in this case and maybe the default code should be in the ExecuteSelect method of the CslaDataSourceView class?&nbsp; If args.BusinessObject is null, then the event wasn't handled and no object was created so use reflection to do so(?).</P>
+<P>What do you think?&nbsp; Is this more work that it's worth or do you think there's a way to accomplish this so we can have the "best of both worlds"?</P>
+<P>Thanks in advance.</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Saturday, June 10, 2006</h2>
+
+
+
+
+<DIV align=left><SPAN class=971024518-10062006><FONT face=Arial size=2>If you look at the ObjectDataSource, it too requires four methods be 
+implemented (select, insert, update, delete). WIth a DataTable those four 
+methods are implemented in the generated TableAdapter itself, but if you are 
+using DTOs you have to implement a second class that contains these 
+methods.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=971024518-10062006><FONT face=Arial size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=971024518-10062006><FONT face=Arial size=2>When I created the CslaDataSource I thought about following their model - 
+forcing you to implement a class for each edtiable root that would implement 
+these four methods, and then using reflection to invoke them. That's what the 
+ObjectDataSource does. But I dislike their model, because I think most people 
+have a more intuitive understanding of events than they do of invoking some 
+methods in an external class.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=971024518-10062006><FONT face=Arial size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=971024518-10062006><FONT face=Arial size=2>In other words, it isn't the presence of these four methods that is extra 
+code (as compared to the ObjectDataSource), but rather what you have to write 
+inside these four methods. In the case of the ObjectDataSource, by the time 
+their insert method is called (for instance), they've created the object and 
+used reflection to copy all the values from the page into the object (hence the 
+public ctor and public read/write propery requirements). It is then up to you to 
+save that object in your insert method.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=971024518-10062006><FONT face=Arial size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=971024518-10062006><FONT face=Arial size=2>The only thing that is actually different with the CslaDataSource is that 
+I don't create the object, nor do I automatically populate its properties. I 
+don't create it, because I don't know which factory method you want to use - or 
+if you want to use one at all. You might have done what I did in PTWeb and used 
+Session to cache the object - I just don't know. Similarly, I don't 
+automatically load the properties. What would I do for read-only properties? Or 
+properties that refused to be set due to an authorization violation? This is why 
+I created DataMapper - to assist you in this step, but not to wrest control from 
+you entirely. Finally, you need to save the object. With CSLA objects you just 
+call Save(), so that's often easy enough. But I did want to give you the option 
+of following a stateless model, so I overloaded Save() with the forceUpdate 
+option.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=971024518-10062006><FONT face=Arial size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=971024518-10062006><FONT face=Arial size=2>To totally emulate how the ObjectDataSource works WITH A DATATABLE, you 
+need to have some equivalent to the TableAdapter. Some generated code that 
+implements the four methods required by the data source object. You could 
+certainly do this with CodeSmith or any other code generator you might use to 
+create your actual business objects, so I don't see this as an insurmountable 
+hurdle. But you'd need some way by which those four methods would know which 
+factory methods to call to create instances of your object for the purpose of 
+create. That can also be done if you are very clever about how you write your 
+code generation template for your TableAdapter-equivalent.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=971024518-10062006><FONT face=Arial size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=971024518-10062006><FONT face=Arial size=2>You would still need a default public constructor for insert, update and 
+delete. And you'd need to ensure your object's code always works, even if it is 
+created without going through the normal factory creation 
+process.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=971024518-10062006><FONT face=Arial size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=971024518-10062006><FONT face=Arial size=2>That just leaves copying the data into the properties - which 
+ObjectDataSource will do assuming you ignore good OOP practices and always have 
+only public read-write properties that never refuse to accept or return a value. 
+That's just a design choice you'd have to impose on yourself as you create your 
+business objects. I think this is wrong-headed - but that's just my opinion, and 
+if you make your "business object" into what is effectively a DTO then 
+ObjectDataSource would load it.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=971024518-10062006><FONT face=Arial size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=971024518-10062006><FONT face=Arial size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=971024518-10062006><FONT face=Arial size=2>Another way to look at this is to consider whether you could create an 
+enhanced version of CslaDataSource that reduced the amount of code required 
+behind the four methods. There are three key operations there: 1) create the 
+object, 2) load the object with data, 3) insert/update/delete the 
+object.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=971024518-10062006><FONT face=Arial size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=971024518-10062006><FONT face=Arial size=2>You could, perhaps, use some sort of attribute-based scheme by which 
+you'd decorate your factory methods so the data source control would know which 
+factory to call to do each operation.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=971024518-10062006><FONT face=Arial size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=971024518-10062006><FONT face=Arial size=2>You could then have the data source control use DataMapper itself to load 
+the object's properties. I don't know what you'd do about read-only properties, 
+or properties that have authorization rules. Perhaps you'd decide to follow the 
+ObjectDataSource here and just force the use of DTO-style 
+design.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=971024518-10062006><FONT face=Arial size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=971024518-10062006><FONT face=Arial size=2>Finally, CSLA objects are always saved by calling Save(), so that could 
+automatically be called by the data source control.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=971024518-10062006><FONT face=Arial size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=971024518-10062006><FONT face=Arial size=2>So yes, I do think you could create a variant of CslaDataSource that 
+would eliminate the need for the four events. You'd give up all control over the 
+process of creating/updating the objects, but it would save you 
+code.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=971024518-10062006><FONT face=Arial size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=971024518-10062006><FONT face=Arial size=2>The big issue I see is the loading of read-only or other intelligent 
+properties, and the fact that you'd be forced to create all editable root 
+objects. The idea of using Session to cache objects like I did in PTWin wouldn't 
+work. The result would be an object model compromised to deal only with ASP.NET, 
+and not useful in any broader sense, which is a shame. But for some scenarios 
+that's probably a cost worth paying. </FONT></SPAN></DIV>
+<DIV align=left><SPAN class=971024518-10062006><FONT face=Arial size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=971024518-10062006><FONT face=Arial size=2>Rocky</FONT></SPAN></DIV></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>kdubious replied on Tuesday, June 13, 2006</h2><P>Rocky, </P>
+<P>This is why you write the books and I buy them!</P>
+<P>&nbsp;</P>
+<P>Kevin</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

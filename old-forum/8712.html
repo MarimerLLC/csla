@@ -1,0 +1,26 @@
+<html><header><title>Linq to Sql - Order of operations</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Linq to Sql - Order of operations</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/8712.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 posted on Wednesday, March 24, 2010</h2><p>Hi,</p>
+<p>I have a Csla BusinessListBase, which is a child of another BO.</p>
+<p>The problem I have is this; users can add items to the list, which ties a produt to the price list (the price list is the parent BO, if that matters).</p>
+<p>The problem is that a user can add a product which is already on the list.&nbsp; Not a huge deal, I have business rules that prevent saving.</p>
+<p>But if the user chooses to delete the BO which already exists in the database and keep the &quot;new&quot; BO which links the same product to the same price list, Linq To Sql attempts to do the insert of the new object first, which of course causes a database constraint.</p>
+<p>Any ideas?</p>
+<p>Thanks</p>
+<p>Andy</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Wednesday, March 24, 2010</h2><p>I am curious as to why the Insert happens first.</p>
+<p>As I recall the code for a BBL loops over the items in the Deleted list first so the object should be removed form the database prior to the insert. Therefore the insert should work.</p>
+<p>1. Would a transaction affect the above logic?</p>
+<p>2. Do you have any custom code which changes the above logic?</p>
+<p>Joe</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Wednesday, March 24, 2010</h2><p>I&#39;m curious as well.&nbsp; The BLB does fire the DeleteSelf methods first, then the Insert Updates.&nbsp;Its linq that is executing the insert before the delete when SubmitChanges is called.</p>
+<p>The statements are already executing within a transaction, and there&#39;s nothing in the BLB class that alters Csla&#39;s behavior.</p>
+<p>Andy</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Wednesday, March 24, 2010</h2><p>I came up with this as a workaround:</p>
+<p>&nbsp;&nbsp;&nbsp;protected override void Child_Update( params object[] parameters ) {<br />&nbsp;&nbsp;&nbsp;var listChanged = RaiseListChangedEvents;<br />&nbsp;&nbsp;&nbsp;RaiseListChangedEvents = false;</p>
+<p>&nbsp;&nbsp;&nbsp;try {<br />&nbsp;&nbsp;&nbsp;&nbsp;foreach ( var child in DeletedList ) {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DataPortal.UpdateChild( child, parameters );<br />&nbsp;&nbsp;&nbsp;&nbsp;}</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;DeletedList.Clear();</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;using ( var mgr = ContextManager&lt;MyDataContext&gt;.GetManager() ) {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;mgr.DataContext.SubmitChanges();<br />&nbsp;&nbsp;&nbsp;&nbsp;}<br />&nbsp;&nbsp;&nbsp;}<br />&nbsp;&nbsp;&nbsp;finally {<br />&nbsp;&nbsp;&nbsp;&nbsp;RaiseListChangedEvents = listChanged;<br />&nbsp;&nbsp;&nbsp;}</p>
+<p>&nbsp;&nbsp;&nbsp;base.Child_Update( parameters );<br />&nbsp;&nbsp;}&nbsp;</p>
+<p>
+<p>Can&#39;t say I&#39;m thrilled with it though.</p>
+</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tmg4340 replied on Wednesday, March 24, 2010</h2><p>I may be mis-reading this, but digging around in the DataContext code using Reflector seems to indicate that when developing the list of objects to process, the list is sorted so that inserts are processed, then updates, then deletes.</p>
+<p>HTH</p>
+<p>- Scott</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Wednesday, March 24, 2010</h2><p>Digging around online seems to back this up, as appearently others have had a similar issue.&nbsp; Seems kind of brain dead.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

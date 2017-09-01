@@ -1,0 +1,12 @@
+<html><header><title>Invalid Cast Exception with Custom Identity</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Invalid Cast Exception with Custom Identity</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/2839.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>JabbaTheNut posted on Wednesday, May 09, 2007</h2><P>I have custom identity and principal objects (LVIdentity and LVPrincipal) that&nbsp;are identical to PTIdentity and PTPrincipal&nbsp;except that I have added an ID property to LVIdentity.&nbsp; Upon login, I set the Csla.ApplicationContext.User to my custom principal in the following way:</P>
+<P>LVIdentity identity = LVIdentity.GetIdentity(username, password);</P>
+<P>LVPrincipal principal = new LVPrincipal(identity);</P>
+<P>Csla.ApplicationContext.User = principal;</P>
+<P>I have read in other posts that in order to access the ID property of the Csla.ApplicationContext.User.Identity object, I must cast it as my custom LVIdentity:</P>
+<P>LVIdentity identity = (LVIdentity)Csla.ApplicationContext.User.Identity;</P>
+<P>int m_id = identity.ID;</P>
+<P>As confirmation of this, I&nbsp;am unable to&nbsp;see the ID property in Intellisense until I cast in the above manner.</P>
+<P>The problem I am having is that when I attempt to use the above code, I get the following error:</P>
+<P>"DataPortal.Fetch failed: unable to cast object of type 'System.Security.Principal.GenericIdentity' to type 'LV.Security.LVIdentity'".</P>
+<P>What am I missing?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, May 09, 2007</h2>Before you call the data portal, even the first time (like to log in), you need to have a "valid" principal that inherits from the CSLA base class. Odds are you have left it as the default as your app starts - which would be a genericprincipal.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JabbaTheNut replied on Thursday, May 10, 2007</h2><P>Rocky,</P>
+<P>You're the best!&nbsp; That was it.&nbsp; Thanks :)</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

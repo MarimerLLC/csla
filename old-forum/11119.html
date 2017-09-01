@@ -1,0 +1,30 @@
+<html><header><title>collection summary property - bound to windows form datagridview</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>collection summary property - bound to windows form datagridview</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11119.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>fredg posted on Thursday, February 02, 2012</h2><p>Hi,</p>
+<p>&nbsp;&nbsp; We have a datagridview in windows form which is bound to a collection of business object. One column(property) uses&nbsp;a sum of another column(property), e.g. percentage of total price:</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; $% = price/sum(price).</p>
+<p>Can we use sth like custom business rule to calculate this property? How can we get the sum(price) in the business object class? </p>
+<p>If not, do we have other way to achieve this?&nbsp; </p>
+<p>Thanks.</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Thursday, February 02, 2012</h2><p>You could&nbsp;implement a TotalPrice property in the collection object, and make sure to recalculate this property value on:</p>
+<ul>
+<li>OnDeserialization</li>
+<li>OnChildChanged</li>
+</ul>
+<p>Then in the business rule in the child class, use the Parent property to access the collection where you can get the TotalPrice value.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>fredg replied on Thursday, February 02, 2012</h2><p>Thanks. Parent works.</p>
+<p>Another question: If I want to add a total row into the bottom of datagridview, because datagridview is bound to bindingsource, what&#39;s the best way to achieve this? I have some ideas:</p>
+<p>&nbsp;&nbsp; 1. insert another datagridview under primary datagridview;</p>
+<p>&nbsp;&nbsp; 2. is there any custom datagridview with footer?</p>
+<p>&nbsp;&nbsp; 3. Add total row into bindingsource&#39;s datasource when binding and remove it when updating?</p>
+<p>.......</p>
+<p>Thanks.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Thursday, February 02, 2012</h2><p>Some grids have builtin funtions for summary/total lines.</p>
+<p>For others you may create a &quot;fake line&quot; with a total property shown below the grid.</p>
+<p>I would try to not create e &quot;fake&quot; line in the list and try to keep in sync at bottom.&nbsp; </p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>fredg replied on Thursday, February 02, 2012</h2><p><span style="font-family:&#39;Verdana&#39;,&#39;sans-serif&#39;;"><span style="font-size:small;">&quot;Some grids have builtin funtions for summary/total lines.&quot;</span></span></p>
+<p><span style="font-family:&#39;Verdana&#39;,&#39;sans-serif&#39;;"><span style="font-size:small;">Can you please provide some sample or link? Thanks.</span></span></p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Friday, February 03, 2012</h2><p>I&#39;m fairly certain most commercial 3rd party grids have this feature. </p>
+<p>C1 FlexGrid supports Range Aggregates, <a title="http://www.componentone.com/superproducts/flexgridwinforms/" href="http://www.componentone.com/superproducts/flexgridwinforms/">http://www.componentone.com/superproducts/flexgridwinforms/</a> </p>
+<p>DevExpress XtraGrid&nbsp; support Totals and Group summary: <a title="http://devexpress.com/Products/NET/Controls/WinForms/Grid/" href="http://devexpress.com/Products/NET/Controls/WinForms/Grid/">http://devexpress.com/Products/NET/Controls/WinForms/Grid/</a> </p>
+<p>Infragistics WinGrid supports fomulas much like Excel. <a title="http://www.infragistics.com/dotnet/netadvantage/winforms/wingrid.aspx#Overview" href="http://www.infragistics.com/dotnet/netadvantage/winforms/wingrid.aspx#Overview">http://www.infragistics.com/dotnet/netadvantage/winforms/wingrid.aspx#Overview </a></p>
+<p>just to mention a couple of grids.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>vschaak replied on Friday, February 03, 2012</h2><p>Hi fredg,</p>
+<p>there are even approaches to do such summary with the standard winforms datagridview:</p>
+<p>Sample:</p>
+<p><a href="http://dzaebel.net/DgvFooter.htm">http://dzaebel.net/DgvFooter.htm</a></p>
+<p>HTH</p>
+<p>Volker</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,26 @@
+<html><header><title>An attempt was made to load a program with an incorrect format</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>An attempt was made to load a program with an incorrect format</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/8883.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>hanspret posted on Wednesday, May 05, 2010</h2><p>Hi </p>
+<p>I am using CSLA 3.7.1.0 in my data access layer. I have deployed my application on my laptop and someone&#39;s else laptop and the application is working like a dream, but as soon as I deploy it to a terminal server 2008 64bit I get the following error.</p>
+<p>Could not load file or assembly &#39;CSLA 3.7.1.0&#39;....An attempt was made to load a program with an incorrect format</p>
+<p>Is this because it is a 64bit machine? And if so is there a CSLA.dll that I can use for a 64bit?</p>
+<p>&nbsp;</p>
+<p>Thank you</p>
+<p><span style="font-family:&#39;Calibri&#39;,&#39;sans-serif&#39;;color:#1f497d;font-size:11pt;mso-fareast-font-family:Calibri;mso-fareast-theme-font:minor-latin;mso-ansi-language:EN-ZA;mso-fareast-language:EN-ZA;mso-bidi-language:AR-SA;">&nbsp;</span></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rsbaker0 replied on Wednesday, May 05, 2010</h2><p>Yes, this is a 32/64 bit issue, but I think it&#39;s because your .EXE is mismatched in how it was built compared to your DLLs.</p>
+<p>We have had similar issues here, but only because we have a 32 bit C++ DLL that is part of our assembly set. So, we have to be sure that the &quot;Platform target&quot; for the .EXE itself is x86. It&#39;s the setting on the entry .EXE that seems to control this. </p>
+<p>So,&nbsp;one thing to try&nbsp; to look at the &quot;Build&quot; Properties tab of your .EXE and your DLL&#39;s to make sure that everything is consistent. If an EXE is set to &quot;Any CPU&quot; (or &quot;x64&quot;) while a DLL is set to x86, then it won&#39;t run on an x64 box. Similarly, if the .EXE is set to x86 and the .DLL is x64, you&#39;d also have trouble. (I&#39;m not an expert on this, but we have had this happen several times and managed to correct it by managing the Platform target of the individual .EXE/assembly projects). If everything you are using is .NET managed code and you have no 32 bit dependencies (internal or external), then I&#39;d think everything should be set to &quot;Any CPU&quot;. </p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>bniemyjski replied on Wednesday, May 05, 2010</h2><p>
+<p>Hello,</p>
+<p>Thats not true, an assembly that is set to compile as x86 will still run on x64. An assembly compiled as x64 will not run on a 32bit operating system. I would compile the CSLA library as AnyCPU. The easiest place to manage this is in the Configuration manager. Right click the solution in the solution explorer to edit this setting. The only time you should receive a BadImageFormatException is when an x86 compiled assembly attempts to load a x64 compiled assembly.</p>
+<p>Thanks</p>
+<p>-Blake Niemyjski</p>
+</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rsbaker0 replied on Wednesday, May 05, 2010</h2><p><div style='padding-left: 50px;background-color:silver'><b>Blake Niemyjski<br></b>
+<p>Thats not true, an assembly that is set to compile as x86 will still run on x64.</p>
+<p>
+<div style="CLEAR:both;"></div>
+</div></p>
+<p>I don&#39;t think anyone said anything to the contrary. </p>
+<p>However, an .EXE&nbsp;compiled to run on &quot;Any CPU&quot; that references a DLL&nbsp;explicitly compiled as x86 &nbsp;will run on an x86 box but will not run on x64 and *must* be compiled as x86.</p>
+</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>hanspret replied on Thursday, May 06, 2010</h2><p>Hi</p>
+<p>I build the application with &quot;any cpu&quot; and it is working now. </p>
+<p>&nbsp;</p>
+<p>Thanks for the replies.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

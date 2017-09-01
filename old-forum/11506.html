@@ -1,0 +1,63 @@
+<html><header><title>BusinessRules based on a originating property</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>BusinessRules based on a originating property</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11506.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>rfcdejong posted on Wednesday, July 25, 2012</h2><p>A&nbsp;<span>colleague</span>&nbsp;of my has a issue having editable &#39;calculated&#39; properties where an user can change the value of several properties which has business rules.</p>
+<p><strong>BO with 5 properties</strong><br />Startdate<br />Years<br />Months<br />Duration (total months)<br />Enddate</p>
+<p><br /><strong>Scenarios</strong><br /><span lang="EN-US">When
+enddate has changed and when the startdate has a value<br /></span>Then the years, months and duration properties should be calculated.</p>
+<p class="MsoNormal"><span lang="EN-US">When
+startdate has changed and when the enddate has a value<br />
+Then the year, months and duration properties should be calculated.</span></p>
+<p class="MsoNormal"><span lang="EN-US">When
+years property has changed and startdate has a value<br />
+Then the duration and enddate property should be calculated.</span></p>
+<p>
+<span lang="EN-US">When
+months property has changed and startdate has a value<br />
+Then the years, months (if &gt;= 12), duration and enddate should be calculated.<br /></span></p>
+<p><span lang="EN-US">And some others.<br /><br /><strong>Not working solution</strong><br />See the attachment as a test project.<br />Currently my&nbsp;</span><span>colleague</span>&nbsp;made 4 businessrules<br /><br />CalcDurationFromDates<br />CalcDurationFromYearsAndMonths<br />CalcEnddate<br />SplitIntoYearsAndMonths</p>
+<p>&nbsp;</p>
+<p>What is the recommended way to solve this without having to &#39;hack&#39; and setting a custom &#39;originating property&#39;? Maybe just one businessrule instead of the 4 differend business rules?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Wednesday, July 25, 2012</h2><p>This is a classic case of rules that should run on the client side only and when a given property is changed. </p>
+<p>The recommended way is to create e &quot;generic&quot; rule that allows you to specify the PrimaryProperty to act upon as a separate parameter and set </p>
+<pre style="font-family:Consolas;font-size:13;color:black;background:#fafafa;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CanRunAsAffectedProperty&nbsp;=&nbsp;<span style="color:blue;">false</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CanRunOnServer&nbsp;=&nbsp;<span style="color:blue;">false</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CanRunInCheckRules&nbsp;=&nbsp;<span style="color:blue;">false</span>;</pre>
+<p>Take f.ex the CalcEndDate rule I would write as:</p>
+<pre style="font-family:Consolas;font-size:13;color:black;background:#fafafa;">&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">class</span>&nbsp;<span style="color:#2b91af;">CalcEnddate</span>&nbsp;:&nbsp;<span style="color:#2b91af;">CommonBusinessRule</span>
+&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">private</span>&nbsp;<span style="color:blue;">readonly</span>&nbsp;<span style="color:#2baaaf;">IPropertyInfo</span>&nbsp;_enddateProperty;
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">private</span>&nbsp;<span style="color:blue;">readonly</span>&nbsp;<span style="color:#2baaaf;">IPropertyInfo</span>&nbsp;_startdateProperty;
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">private</span>&nbsp;<span style="color:blue;">readonly</span>&nbsp;<span style="color:#2baaaf;">IPropertyInfo</span>&nbsp;_durationProperty;
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;CalcEnddate(<span style="color:#2baaaf;">IPropertyInfo</span>&nbsp;primaryProperty,&nbsp;<span style="color:#2baaaf;">IPropertyInfo</span>&nbsp;enddateProperty, <br />                <span style="color:#2baaaf;">IPropertyInfo</span>&nbsp;startdateProperty, <span style="color:#2baaaf;">IPropertyInfo</span>&nbsp;durationProperty)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;<span style="color:blue;">base</span>(primaryProperty)
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;InputProperties&nbsp;=&nbsp;<span style="color:blue;">new</span>&nbsp;<span style="color:#2b91af;">List</span>&lt;<span style="color:#2baaaf;">IPropertyInfo</span>&gt;&nbsp;{&nbsp;startdateProperty,&nbsp;durationProperty&nbsp;};
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;AffectedProperties.Add(enddateProperty);
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_enddateProperty&nbsp;=&nbsp;enddateProperty;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_startdateProperty&nbsp;=&nbsp;startdateProperty;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_durationProperty&nbsp;=&nbsp;durationProperty;
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CanRunAsAffectedProperty&nbsp;=&nbsp;<span style="color:blue;">false</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CanRunOnServer&nbsp;=&nbsp;<span style="color:blue;">false</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CanRunInCheckRules&nbsp;=&nbsp;<span style="color:blue;">false</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">protected</span>&nbsp;<span style="color:blue;">override</span>&nbsp;<span style="color:blue;">void</span>&nbsp;Execute(Csla.Rules.<span style="color:#2b91af;">RuleContext</span>&nbsp;context)
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">int</span>?&nbsp;duration&nbsp;=&nbsp;context.InputPropertyValues[_durationProperty]&nbsp;<span style="color:blue;">as</span>&nbsp;<span style="color:blue;">int</span>?;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#2b91af;">DateTime</span>?&nbsp;startdate&nbsp;=&nbsp;context.InputPropertyValues[_startdateProperty]&nbsp;<span style="color:blue;">as</span>&nbsp;<span style="color:#2b91af;">DateTime</span>?;
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">if</span>&nbsp;(!duration.HasValue&nbsp;||&nbsp;!startdate.HasValue)&nbsp;<span style="color:blue;">return</span>;
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;context.AddOutValue(_enddateProperty,&nbsp;startdate.Value.AddMonths(duration.Value));
+&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;}</pre>
+<p>And add as</p>
+<pre style="font-family:Consolas;font-size:13;color:black;background:#fafafa;">BusinessRules.AddRule(<span style="color:blue;">new</span>&nbsp;<span style="color:#2b91af;">CalcEnddate</span>(StartdateProperty,&nbsp;EnddateProperty,&nbsp;StartdateProperty,&nbsp;DurationProperty));
+BusinessRules.AddRule(<span style="color:blue;">new</span>&nbsp;<span style="color:#2b91af;">CalcEnddate</span>(DurationProperty,&nbsp;EnddateProperty,&nbsp;StartdateProperty,&nbsp;DurationProperty));</pre>
+<p>Yes, this requires one instance of the rule for each field to act upon as they are edited by the user.</p>
+<p>The end result: You can instruct the rule engine that this rule is to be run ONLY when PrimaryProperty is changed by the user and NOT on the logical serverside, in CheckRules or as an AffectedProperty from another rule.</p>
+<p>Using this technique you decouple what the rule actually does (as transformation) from the PrimaryProperty it acts upon. This is important as in this case you only want the actual transformation rule to run for the Property that was changed.and let the RuleEngine revalite the updated fields afterwards.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rfcdejong replied on Thursday, July 26, 2012</h2><p>I might not completely understand, but is it not that when the duration changes by a business rule then the enddate calculation is an affected property?<br />I&#39;m currently trying to change the code so that it works in all situations, but until now i&#39;m not successfull.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Thursday, July 26, 2012</h2><p>The challenge of having fields that update each other is that you have no control over the sequence of execution for the AffectedProperties. So chances are that another rule updates and resets the last edit by user. </p>
+<p>That is why I prefer to have these rules run as a &quot;propertyrule&quot; on each field so I can be sure that these rules executes and updates the other fields based on the last edit - and than revalidate the AffectedProperties.</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rfcdejong replied on Thursday, July 26, 2012</h2><p>I got it working with some modifications, see the attachment.<br />Most of the business rules have now&nbsp;CanRunAsAffectedProperty set to false.</p>
+<p>In the business object they are added forearch property that can be changed.</p>
+<p>It works, but indeed it has a risk when properties update other properties. And there is a learning curve some people just hack around.&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

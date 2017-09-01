@@ -1,0 +1,311 @@
+<html><header><title>Telerik RadGrid for SL2 (2009.2) - Issues with IEditableObject</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Telerik RadGrid for SL2 (2009.2) - Issues with IEditableObject</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/7291.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jack posted on Thursday, July 16, 2009</h2>Is anybody using Telerik's radGrid for SL2 and experiencing EditLevel issues when trying to save ChildLists?&nbsp; I swapped from the standard MS datagrid to their grid in a few spots and I'm suddenly having issues saving.<br><br>I'm seeing the following behavior:&nbsp; <br><br>1) click on a column twice to select column and then enter edit mode<br>
+2) I can see the call to&nbsp;IEditableObject.BeginEdit() (valid/expected)<br>
+3) I change my value<br>
+4) I click on a different row and IEditableObject.AcceptEdit() (valid/expected)<br>
+5) Immediately though IEditableObject.BeginEdit() fires on the same row (not expected)<br><br>The second call leaves my child EditLevel at 2 while everything else is still at 1<br>
+<br>
+I'm also not seeing the calls to CancelEdit() if I don't make the change in step 3 although the BeginEdit does not fire a second time.<br><br>I can get around all that by using the DisableIEditable flag but it is a bit of a pain and it seems that the normal datagrid is working fine.<br><br>I have logged a ticket with them but just an FYI for anybody struggling or if someone has seen and gotten around that.<br><br>Thanks<br><br>jack<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Friday, July 17, 2009</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Yep,
+we found this issue and submitted it to Telerik a few weeks ago.&nbsp; They
+fixed one of the problems in last Friday&#8217;s release, and admitted to
+having another one.&nbsp; They said they will have it fixed at some point.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Jack
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Thursday, July 16, 2009 9:06 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> [CSLA .NET] Telerik RadGrid for SL2 (2009.2) - Issues with
+IEditableObject<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Is anybody using Telerik's radGrid for SL2 and experiencing
+EditLevel issues when trying to save ChildLists?&nbsp; I swapped from the
+standard MS datagrid to their grid in a few spots and I'm suddenly having
+issues saving.<br>
+<br>
+I'm seeing the following behavior:&nbsp; <br>
+<br>
+1) click on a column twice to select column and then enter edit mode<br>
+2) I can see the call to&nbsp;IEditableObject.BeginEdit() (valid/expected)<br>
+3) I change my value<br>
+4) I click on a different row and IEditableObject.AcceptEdit() (valid/expected)<br>
+5) Immediately though IEditableObject.BeginEdit() fires on the same row (not
+expected)<br>
+<br>
+The second call leaves my child EditLevel at 2 while everything else is still
+at 1<br>
+<br>
+I'm also not seeing the calls to CancelEdit() if I don't make the change in
+step 3 although the BeginEdit does not fire a second time.<br>
+<br>
+I can get around all that by using the DisableIEditable flag but it is a bit of
+a pain and it seems that the normal datagrid is working fine.<br>
+<br>
+I have logged a ticket with them but just an FYI for anybody struggling or if
+someone has seen and gotten around that.<br>
+<br>
+Thanks<br>
+<br>
+jack<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jack replied on Friday, July 17, 2009</h2>I got this back from them (as well as thanks we know and we'll fix it in our next internal release)<br><br>
+ 
+  Normal
+  0
+  
+  
+  
+  
+  false
+  false
+  false
+  
+  EN-CA
+  X-NONE
+  X-NONE
+  
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+  
+  MicrosoftInternetExplorer4
+  
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+  
+
+ 
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+ 
+
+
+
+
+ /* Style Definitions */
+ table.MsoNormalTable
+	{mso-style-name:"Table Normal";
+	mso-tstyle-rowband-size:0;
+	mso-tstyle-colband-size:0;
+	mso-style-noshow:yes;
+	mso-style-priority:99;
+	mso-style-qformat:yes;
+	mso-style-parent:"";
+	mso-padding-alt:0cm 5.4pt 0cm 5.4pt;
+	mso-para-margin:0cm;
+	mso-para-margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	font-size:11.0pt;
+	font-family:"Calibri","sans-serif";
+	mso-ascii-font-family:Calibri;
+	mso-ascii-theme-font:minor-latin;
+	mso-fareast-font-family:"Times New Roman";
+	mso-fareast-theme-font:minor-fareast;
+	mso-hansi-font-family:Calibri;
+	mso-hansi-theme-font:minor-latin;}
+
+<span>Fortunately there is
+a workaround right now. You can set <strong><span>ValidationMode</span></strong>
+property of <strong><span>RadGridView</span></strong>
+to <strong><span>Row</span></strong>.<br>
+<br>
+</span><br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

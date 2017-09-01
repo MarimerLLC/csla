@@ -1,0 +1,65 @@
+<html><header><title>framework adoption trend(s)</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>framework adoption trend(s)</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/1158.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>tsaltd posted on Thursday, September 07, 2006</h2><P>I evaluated and recommended the 2.0 framework back in April and gladly invested the time that it took for me to qualify myself to make that recommendation.</P>
+<P>The client did adopt CSLA, but went with an offshore team to implement the construction.&nbsp; Since then I have developed a couple of other C# apps using CSLA for a company that retains me to maintain and develop their CRM and sales management applications, but other than that ... and I have been quite pro-active in pitching CSLA to NY Metro area solution providers and promoting CSLA at the 2 or 3 user groups and professional associatons that I belong to ... I'm disappointed to say that ... there does not seem to be a lot going on.</P>
+<P>Has anyone else commented here about the slim pickin's on the job boards ... Dice, Monster, Hot Jobs, Net Temps ... should I be looking somewhere else ??</P>
+<P>I guess this is a problem with a development solution that does not have a marketing organization behind it.&nbsp; Rocky will be speaking at VS Live in New York next week ... maybe that will drum up some excitement, but at this time ... well, I'm just puzzled.</P>
+<P>Steve</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, September 07, 2006</h2>
+
+<br><p class="MsoNormal">I think this is the nature of framework adoption, and is one
+reason I've been hesitant to get serious about creating a commercial version of
+CSLA .NET. There are various commercial frameworks out there, and they seem to
+do OK, but not great.<br>
+<br>It is a rare thing to run into people using these frameworks at actual
+companies. I don't know that this is a commentary on the frameworks, as much as
+those companies are risk-averse. If a company builds its own framework
+(expensive as that is), or avoids using a framework entirely (which imo is more
+expensive), they avoid tying themselves to a vendor in a very intimate manner.<br>
+<br>
+Frameworks are merged directly into applications such that the result in inseparable.
+If the framework becomes untenable, so does the app. If the framework vendor
+disappears, most likely the framework does too...<br>
+<br>
+Sure, you can put the framework code in escrow, and anyone buying a framework
+would be very foolish not to do this. But can you staff assume ownership of
+that framework, even given the source code, in the case that the vendor is
+gone? There's a lot of risk there.<br>
+<br>
+I think there's arguably less risk with a framework like CSLA, where the source
+code is available without the effort of escrow. And where there's a broader
+community of people who understand the framework, adapt it to their needs and
+use it in their projects within the context of an open community forum.<br>
+<br>
+Still, you can't deny that there's an element of risk involved.<br>
+<br>
+Personally I think the benefits outweigh those risks - at least with something
+like CSLA. The productivity and maintainability benefits alone are tremendous,
+and the code is open and documented in a publicly available book, which should
+help offset much of the aforementioned risk.<br>
+<br>
+But then there's the "not built here" technical hurdle too. What I've
+been talking about thus far is a management concern. But from a technical
+level, there are a lot of people who simply dislike using or relying on other
+people's code. That's a hard hurdle to overcome in some cases.<br>
+<br>
+Personally I was in that camp for a period of time early in my career. But on
+the VAX there were the DECUS tapes, which were full of really cool tools and
+code and ideas. And on the Amiga there was the Fred Fish collection - same
+thing. The utility of the contributions available through those channels
+eventually convinced me that it was worth using code not built here - at least
+from time to time :)<br>
+<br>
+And then there's the "philosophical disagreement" hurdle. If you
+believe with all your heart that client/server, n-tier and OO are all dead;
+replaced by SOA - then CSLA would violate your core beliefs in a way that would
+be hard to reconcile. Other examples exist as well of course. People fixate on
+SOA, the DataSet, data transfer objects, workflow - all sorts of technology
+concepts that they can view as excluding OO, and thus CSLA.<br>
+<br>
+I've discussed this before, and I'm OK with it. People have to pursue their
+passions. I think there's a place and time for all these technology concepts,
+and that none of them (including OO) is the right answer for every problem. I
+just happen to think that OO tends to fit into niches within almost all the
+other concepts - it is a great way to implement a service, or a workflow task.
+It is really powerful when used to construct the client app that front-ends a service-oriented
+system. And anywhere you are applying OO to create business apps, I think you
+can apply CSLA .NET to make your life easier.</p>So maybe more marketing would help. But even for-profit companies that have dedicated marketing people have a hard time getting broad usage of their frameworks.<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

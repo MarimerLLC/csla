@@ -1,0 +1,51 @@
+<html><header><title>PropertyChanged Not raised on one specific BO. Any idea where to look at?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>PropertyChanged Not raised on one specific BO. Any idea where to look at?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9382.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>arobadol posted on Monday, August 16, 2010</h2><p>Daer all,</p>
+<p>I&#39;m still working on my Caliburn/CSLa Application. the integration works fine. I have encouter an issue that maybe you will be able to solve easily...</p>
+<p>This is not my first BO and I do not understand why whit this specific one The porperty changed is not raised.</p>
+<p>I have a BO Office which inherits from Business Base. When I change a property the PropertyChanged event is raised.</p>
+<p>the property is declared as the following</p>
+<p>[Serializable] <br />public class Office : BusinessBase&lt;Office&gt; <br />{</p>
+<p>#region Business Methods <br />&nbsp;<br />private static PropertyInfo&lt;Guid&gt; IdProperty = RegisterProperty&lt;Guid&gt;(p =&gt; p.Id); <br />public Guid Id <br />{<br />&nbsp;&nbsp;&nbsp; get { return GetProperty(IdProperty); } <br />&nbsp;&nbsp;&nbsp; private set { SetProperty(IdProperty, value); } <br />}</p>
+<p>private static PropertyInfo&lt;string&gt; NameProperty = RegisterProperty&lt;string&gt;(p =&gt; p.Name); <br />public string Name <br />{<br />&nbsp;&nbsp;&nbsp; get { return GetProperty(NameProperty); } <br />&nbsp;&nbsp;&nbsp; set { SetProperty(NameProperty, value);}</p>
+<p>} ......<br />&nbsp;</p>
+<p>If I use the following unit code I can break on the Property changed code</p>
+<p>&nbsp;<br />AutoResetEvent _testTrigger; <br />[TestMethod] <br />public void OfficePropertyChangedTest() <br />{<br />&nbsp;Office office = null; <br />&nbsp;_testTrigger = new AutoResetEvent(false); <br />&nbsp;var dp = new DataPortal&lt;Office&gt;(); <br />&nbsp;dp.CreateCompleted += (o, e) =&gt;<br />&nbsp;{<br />&nbsp;&nbsp;office = e.Object;<br />&nbsp;&nbsp;_testTrigger.Set();<br />&nbsp;};<br />&nbsp;dp.BeginCreate();&nbsp;<br />&nbsp;_testTrigger.WaitOne();</p>
+<p>&nbsp;office.PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler(office_PropertyChanged); </p>
+<p>&nbsp;office.Name = &quot;Hello&quot;; <br />&nbsp;_testTrigger.WaitOne();</p>
+<p>}</p>
+<p>void office_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)<br />{&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br />&nbsp;//Break here works...<br />&nbsp;&nbsp;_testTrigger.Set();&nbsp;&nbsp;&nbsp;&nbsp; <br />}</p>
+<p>&nbsp;</p>
+<p>But on my other BO Voucher... It does not :(</p>
+<p>&nbsp;&nbsp;[Serializable]<br />&nbsp;&nbsp;&nbsp; &nbsp;public class Voucher : BusinessBase&lt;Voucher&gt;<br />&nbsp;&nbsp;&nbsp; &nbsp;{</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;#region Business Property</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;private static PropertyInfo&lt;Guid&gt; IdProperty = RegisterProperty&lt;Guid&gt;(p =&gt; p.Id);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;public Guid Id<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;{<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;get { return GetProperty(IdProperty); }<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;private set { LoadProperty(IdProperty, value); }<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;}</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;private static PropertyInfo&lt;int&gt; NumberProperty = RegisterProperty&lt;int&gt;(p =&gt; p.Number);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;public int Number<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;{<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;get { return GetProperty(NumberProperty); }<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;set { LoadProperty(NumberProperty, value); }<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;}...</p>
+<p>&nbsp;</p>
+<p>the following Unit test code is used...</p>
+<p>AutoResetEvent _testTrigger; <br />[TestMethod] <br />public void VoucherPropertyChangedTest() <br />{<br />&nbsp;Voucher voucher = null; <br />&nbsp;_testTrigger = new AutoResetEvent(false); <br />&nbsp;<br />&nbsp;var dp = new DataPortal&lt;Voucher&gt;(); <br />&nbsp;dp.CreateCompleted += (o,e)=&gt;<br />&nbsp;{<br />&nbsp;&nbsp;voucher = e.Object;<br />&nbsp;&nbsp;_testTrigger.Set();<br />&nbsp;};</p>
+<p>&nbsp;dp.BeginCreate();<br />&nbsp;_testTrigger.WaitOne();</p>
+<p>&nbsp;voucher.PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler(voucher_PropertyChanged); </p>
+<p>&nbsp;voucher.Number = 123;</p>
+<p>&nbsp;_testTrigger.WaitOne();</p>
+<p>}</p>
+<p>void voucher_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)<br />{<br />&nbsp;//Break is not reached... Any idea????<br />&nbsp;_testTrigger.Set();<br />}</p>
+<p>&nbsp;</p>
+<p>thanks for your help.</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>arobadol replied on Monday, August 16, 2010</h2><p>Found the problem... :)</p>
+<p>&nbsp;</p>
+<p>I was using LoadProperty in the set instead of Set...</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tiago replied on Sunday, January 09, 2011</h2><p><div style='padding-left: 50px;background-color:silver'><b>arobadol<br></b>
+<p>Daer all,</p>
+<p>I&#39;m still working on my Caliburn/CSLa Application. the integration works fine. </p>
+<div style="CLEAR:both;"></div>
+</div></p>
+<p>Hi <strong>arobadol</strong>,</p>
+<p>I intend to use Caliburn with WPF. To be more precise, Caliburn Micro. Have you tryed Caliburn Micro?</p>
+<p>Regards,</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>arobadol replied on Monday, January 10, 2011</h2><p>Dear Tiago,</p>
+<p>&nbsp;</p>
+<p>I was pleased with the integration I did with CSLA and Caliburn 1.1. I&#39;m now porting it to Caliburn 1.2 and some concepts have evolved So I will have to adapt my foundations :(.</p>
+<p>I have no experience with Caliburn Micro but from what I read about it they will probably integrate together the same way they will integrate with Caliburn 1.2.</p>
+<p>I beleive the integration I did with Cliburn 1.1 will be quite different.</p>
+<p>&nbsp;</p>
+<p>I&#39;ll keep you informed when I will be closer to something usefull.</p>
+<p>&nbsp;</p>
+<p>Regards.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,41 @@
+<html><header><title>Best practice for centralized exception logging (with Log4Net)?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Best practice for centralized exception logging (with Log4Net)?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6324.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>rsbaker0 posted on Tuesday, February 03, 2009</h2><P>I just started plugging in Log4Net into our application and am looking to log problems that occur accessing the DAL (e.g. anything from invalid SQL syntax to broken connections, query timeouts), etc. </P>
+<P>Any thoughts on where the best place to inspect and log such exceptions would be? I'm fine with doing this on the server side of the data portal, so DataPortal_OnDataPortalException() looked promising. </P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, February 03, 2009</h2>The data portal has pre-, post- and exception methods that it calls, in addition to the actual DataPortal_XYZ methods.<br /><br />Those exist primarily to support scenarios like logging.<br /><br />The 3.6 data portal also has an authorization concept that is called immediately as the request hits the server (right after the objects deserialize). This is intended for authorization of all requests, but could also be used for logging.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rsbaker0 replied on Tuesday, February 03, 2009</h2><P>In this case I'm mainly looking for exceptions thrown by my DAL, so I think DataPortal_OnDataPortalException() will do the trick. It's nice to know that you could (at least in theory) log all of your data portal calls&nbsp;by hooking the pre/post methods. </P>
+<P>Thanks! </P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, February 03, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>You might want to put the logging code in there anyway.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Keep in mind that log4net has various levels of logging &#8211;
+down to the info level. So you could do info logging in all the methods, and
+error logging in the ODPE() method. Normally the info logging would be turned
+off, but if you needed a detailed trace you could turn it on by changing the
+log4net config in the config file.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Just something to consider.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

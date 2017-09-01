@@ -1,0 +1,16 @@
+<html><header><title>aply edit don't call Update_Portal method</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>aply edit don't call Update_Portal method</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6848.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Programmer1987 posted on Saturday, April 25, 2009</h2><P>I called BeginEdit for busines object before binding it</P>
+<P>the object class inherit from Businessbase class</P>
+<P>when user click&nbsp;Ok button I call Applyedit but the last one don't call update_portal method</P>
+<P>so I called the save method After Applyedit method </P>
+<P>I know that there is no need to do that so I made mistake somewhere in business class code</P>
+<P>could any one tell me where could be a problem ?!?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Marjon1 replied on Saturday, April 25, 2009</h2>Depending on what version you are on, there have been some changes to the way saving of objects should be done. You have always been encouraged to save this way, but it wasn't always enforced in earlier versions.<br /><br />You should always have code that looks like the following line in your save method:<br />BusinessObj = BusinessObj.Save()<br /><br />The ApplyEdit calls just decrease the EditLevel value and essentially mark all the changes as complete and therefore no longer undoable. It does <b>not</b> actually save the object.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Programmer1987 replied on Sunday, April 26, 2009</h2><P>I'm using the last version of CSLA 3.6.1 </P>
+<P>any way I called Save method after calling applyedit </P>
+<P>and works well </P>
+<P>but I want to what happen because other business classes don't need save method after applyedit called</P>
+<P>any way thanks a lot.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Programmer1987 replied on Sunday, April 26, 2009</h2><P>may be I discovered the problem </P>
+<P>my business class don't have parent I mean it is the root </P>
+<P>so the&nbsp; private parent property is null </P>
+<P>and as i noticed the save method called in csla code when calling applyEdit FROM :</P>
+<P>save method called from parent object so when lovely business class don't have parent </P>
+<P>save method will not called ????!!!!!!1</P>
+<P>maybe I'm wrong ,aren't I ?</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,6 @@
+<html><header><title>compiling CSLA using csc.exe</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>compiling CSLA using csc.exe</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/2678.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>rayc posted on Wednesday, April 11, 2007</h2><P>I just downloaded CSLA.<BR>I would now like to compile CSLA using the command line compiler (csc.exe). </P>
+<P>Has anyone been able to do it? I'm not sure what compiler options to use.</P>
+<P>Thanks!</P>
+<P>Ray</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, April 12, 2007</h2><P>That's not something I've tried to do. But you could use VS and turn on all the verbosity for building, and I think they then output the csc calls in the output window. You could copy-paste from there to get them.</P>
+<P>Another option may be to use msbuild rather than calling csc directly. msbuild reads sln and csproj files, and uses that information to invoke the compiler - so you get command-line behavior without having to do all the work yourself.</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

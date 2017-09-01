@@ -1,0 +1,22 @@
+<html><header><title>Breaking change problems between MethodCaller and Silverlight FactoryProxy CSLA 4.3</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Breaking change problems between MethodCaller and Silverlight FactoryProxy CSLA 4.3</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11283.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>csmith1 posted on Thursday, April 05, 2012</h2><p>Silverlight is calling the MethodCaller with a handler to a CompletedHandler.</p>
+<p>See FactoryProxy call below.</p>
+<p>MethodCaller.CallMethod(command,&nbsp;_attribute.ExecuteMethodName,&nbsp;handler);</p>
+<p>&nbsp;</p>
+<p>This actually calls line below in the MethodCaller.</p>
+<p>
+<pre>CallMethod(<span>object</span>&nbsp;obj,&nbsp;<span>string</span>&nbsp;method,&nbsp;<span>params</span>&nbsp;<span>object</span>[]&nbsp;parameters)</pre>
+<pre></pre>
+<pre>The CompletedHandler is now a parameter. I do not see a CallMethod.</pre>
+<pre>This causes multiple problems. One is CompletedHandler is never called. Some functions are never found.</pre>
+<pre>I have changed my FactoryProxy is look like this.</pre>
+<pre><pre><span>try</span><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>var</span>&nbsp;result&nbsp;=&nbsp;&nbsp;<span>MethodCaller</span>.CallMethod(obj,&nbsp;_attribute.FetchMethodName,&nbsp;criteria);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>if</span>&nbsp;((result&nbsp;!=&nbsp;<span>null</span>)&nbsp;&amp;&amp;&nbsp;(result&nbsp;<span>is</span>&nbsp;T))<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;handler((T)result,&nbsp;<span>null</span>);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>else</span><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>throw</span>&nbsp;<span>new</span>&nbsp;<span>NullReferenceException</span>();<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>catch</span>&nbsp;(<span>Exception</span>&nbsp;ex)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;T&nbsp;empty&nbsp;=&nbsp;<span>default</span>(T);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;handler(empty,&nbsp;ex);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</pre>
+</pre>
+</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Thursday, April 05, 2012</h2><p>If you use localproxy in Silverlight you should have metods that has a CallbackHandler as last parameter.&nbsp;</p>
+<p>This is because the data access is asyncronous in Silverlight so the async data access (websevice?) must call the async callback handler.&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>csmith1 replied on Thursday, April 05, 2012</h2><p>Thanks,</p>
+<p>I found it in Using CSLA document.</p>
+<p>That just made the Mock DAL twice as complicated.</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>csmith1 replied on Monday, April 09, 2012</h2><p>&nbsp;I had to use&nbsp;<span>Csla.DataPortalClient.</span>FactoryProxy&nbsp;instead of&nbsp;LocalProxy for the handler.</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<pre></pre></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

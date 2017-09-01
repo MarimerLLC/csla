@@ -1,0 +1,164 @@
+<html><header><title>OnIsDirtyChanged throws NullReferenceException</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>OnIsDirtyChanged throws NullReferenceException</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/589.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>dcalens posted on Tuesday, July 11, 2006</h2>I have a typical scenario with a root object that contains a child collection of 0 to many objects.&nbsp; I use a child edit form that is opened from the root edit form, rather than editing directly in a datagrid.&nbsp; I am also using CSLA 1.53 in a .NET 2.0 UI.<br><br>The code that opens the child edit form is similar to examples on this and the old forum:<br><br>Dim frm As New ChildEdit<br><br>'AddNewChild creates new child with default values, adds to collection, and returns the child.<br>frm.Child = Root.Children.AddNewChild()<br><br>frm.Child.BeginEdit()<br>Root.BeginEdit()<br>frm.ShowDialog()<br>&nbsp;If frm.DialogResult = Windows.Forms.DialogResult.OK Then<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; frm.Child.ApplyEdit()<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Root.ApplyEdit()<br>Else<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;  &nbsp;&nbsp;  frm.Child.CancelEdit()<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;  &nbsp;&nbsp;  Root.ApplyEdit()<br>End If<br><br> I call root.beginedit when initially opening the root edit form.&nbsp; If I add a new child, apply the changes to child and root, but cancel out of the root edit screen, the NullReferenceException is thrown from OnIsDirtyChanged.&nbsp; The "this" is the child with default values.&nbsp; I can't figure out exactly what is null, but my best guess is the chid is missing a reference since it wasn't originally there.&nbsp; Am I not calling my BeginEdits/CancelEdits correctly?<br><br>Thanks in advance,<br>David<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Tuesday, July 11, 2006</h2>First, what is AddNewChild?&nbsp; I'd recommend overriding the protected AddNewCore in your Children collection, and then having the UI call AddNew().<br><br>Calling root.BeginEdit will automatically call BeginEdit on all instances in Children; that may be part of the problem... try reversing the order of your calls.&nbsp; <br><br>Its hard to say exactly without more code..<br><br>In VS, I'd recommend looking at the call stack when the Exception helper appears; that should help you track down exactly where the Null reference is hiding.<br><br>HTH<br>Andy<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>dcalens replied on Tuesday, July 11, 2006</h2>Andy:<br><br>Thanks for the&nbsp; reply.&nbsp; I've overridden the collectionbase innerlist.add several different ways:<br>&nbsp;<br>Public Sub Add()<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; list.Add(Child.NewChild())<br>&nbsp;&nbsp;&nbsp; End Sub<br><br>Public Sub Add(ByVal ID As String)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; list.Add(Child.NewChild(ID))<br>End Sub<br><br>The NewChild function is the shared method that just access the private constructor.&nbsp; I can either provide an ID, or use the default = 0.&nbsp; I haven't decided which one I will eventually end up using.&nbsp; <br><br>The AddNewChild would more appropriately be called AddNew.&nbsp; I use it rather than Add because it returns the newly created child : <br>Public Function AddNewChild() As Child<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Dim Child As Child= Child.NewChild()<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Me.List.Add(Child)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return Child<br>End Function<br><br>I switched the order of the beginedits to no avail.&nbsp; If the root handles the beginedit on all of it's children, do I even need to explicitly call a beginedit on a child?<br><br>I'm a rookie and never used the call stack.&nbsp; I'm uncertain how to get any information out of it, but I'll research it.&nbsp; Thanks for the tip.<br><br>David<br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, July 11, 2006</h2><P>Almost certainly what is happening here is that your code in the collection that adds the child is somehow overriding or bypassing the normal BusinessCollectionBase processing that has to happen with a new child. In particular, BusinessCollectionBase needs to call SetParent on the child, and do some event hooking.</P>
+<P>Normally, when not using data binding (in-place grid editing), you would NOT override the add functionality of the base collection. Rather, you'd just add a new method to add the child - like your AddNewChild() method.</P>
+<P>Also, I would not have the parent form call BeginEdit/CancelEdit/ApplyEdit. That is poor encapsulation. The child form should be entirely responsible for the child object while it is in use. In other words, the child form should call BeginEdit as it loads, and should call CancelEdit/ApplyEdit as it is closed. The parent form should not be interacting with the child object like it is in your code.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>dcalens replied on Tuesday, July 11, 2006</h2><font face="Arial"><font size="2">Thanks for the reply.&nbsp; I am still having issues, but have a little more insight.&nbsp; Taking your suggestion, here is the code on my parent edit from prior to opening the child edit form:<br></font><br></font><blockquote><font face="Courier New" size="2"><span><font color="#0000ff"><span>Dim</span> </font>frm <font color="#0000ff"><span>As New</span></font> ChildEdit</span><br><span>  Root.BeginEdit()</span><br><span>frm.Child = Root.Children.AddNew()</span><br><span>frm.ShowDialog()<span></span></span><br><span><font color="#0000ff"><span>If</span></font>
+frm.DialogResult = Windows.Forms.DialogResult.OK <span><font color="#0000ff">Then</font></span></span><br><span><span></span> &nbsp;&nbsp; Root.ApplyEdit()<span></span></span><br><span><span></span><span><font color="#0000ff"> Else</font></span></span><br><span><span></span>&nbsp;&nbsp; Root.CancelEdit()<span></span></span><br><span><span></span><font color="#0000ff"><span> End</span> <span>If</span></font></span></font></blockquote>
+
+<font face="Arial"><font size="2">So I call another beginedit on the root before adding another item to the collection.&nbsp; As you suggest, the child edit form handles all the begin/apply/cancel for the child edit (not shown above).<br><br>Regarding your first comment, I stepped through adding the child and it triggers the oninsert method of businesscollectionbase, which assigns the editleveladded and parent properties, as well as adds the handler for IsDirtyChanged.&nbsp; So I don't know if I am sidestepping anything here.<br><br>I walked through the stack as Andy suggested and it seems as if MarkDirty is called on the object after the undo is finished.&nbsp; I made a couple of changes in BusinessBase to prevent the error from being thrown, admittedly having no idea what this could affect later.<br><br>Change 1:<br>Comment out the OnIsDirtyChanged in UndoChangesComplete (this is the first place that threw the error):</font></font><p></p><blockquote><font face="Courier New" size="2">
+<span>
+<font color="#0000ff">Protected Overrides Sub</font> UndoChangesComplete()</span><p></p>
+
+
+	<span>mBindingEdit =
+	<span><font color="#0000ff">False</font><br>
+	</span>AddBusinessRules()<br><span></span><span>
+	<font color="#008000">'OnIsDirtyChanged()</font><br></span>
+	<font color="#0000ff">MyBase</font>.UndoChangesComplete()</span>
+<font color="#0000ff" face="Courier New" size="2">
+<p>End Sub</p></font></font></blockquote>
+
+
+<p></p>
+<p><font face="Arial"><font size="2">Change 2:<br>Modify the MarkDeleted method in BusinessBase, which was being called after the child was removed from the list:</font><br></font>
+
+</p>
+<blockquote>
+	<font face="Courier New" size="2"><font color="#0000ff">Protected Sub</font> 
+	MarkDeleted()<br>&nbsp;&nbsp; mIsDeleted =
+	<font color="#0000ff">True</font><br>&nbsp;&nbsp;
+ 	<font color="#0000ff">If Not </font>mIsNew <font color="#0000ff">Then</font><br>&nbsp;&nbsp;&nbsp; MarkDirty()<br>&nbsp;&nbsp;
+	<font color="#0000ff">End
+	If<br>
+	End Sub</font></font></blockquote>
+
+<font color="#000000" face="Arial" size="2">I can't figure out why an object that has been removed from it's 
+parent collection (with the collection restored to it's previous state) is still 
+receiving calls to OnIsDirtyChanged.</font></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>dcalens replied on Wednesday, July 12, 2006</h2><font face="Verdana" size="2">I decided to revert CSLA to
+it's original state (v 1.53) and trace the steps that produced the NullException for anybody that is interested.&nbsp; I am happy to provide code for any of it:<br><br>
+</font>
+<ol><li><font face="Verdana" size="2">Open the root edit form, call beginedit on the root.</font></li><li><font face="Verdana" size="2">Before opening the child edit
+form,&nbsp; call another BeginEdit on the Root and add a new Child to the Child
+Collection (this is demonstrated above).&nbsp; As Rocky suggested,&nbsp; I removed the Add overrides for the child collection.&nbsp; Upon inserting the child, the OnInsert method IS called from
+businesscollectionbase, which adds properties to the new child and apparently hooks the IsDirtyChanged event.</font></li><li><font face="Verdana" size="2">Modify the Child Object in the Edit form and ApplyEdit.&nbsp;
+Apply the Edit to the Root.&nbsp; At this point, the child is at EditLevel&nbsp;
+= 0.&nbsp; The root is at EditLevel = 1.&nbsp; I *think* that's how it's supposed
+to be.<br>
+    </font></li><li><font face="Verdana" size="2">Cancel Out of the Root Edit Form.</font></li><li><font face="Verdana" size="2">UndoChanges is Called on the Root.</font></li><li><font face="Verdana" size="2">UndoChanges is called on the child collection.</font></li><li><font face="Verdana" size="2">UndoChanges is called on the Child (I don't understand why we would want this, since it is being removed anyway).</font></li><li><font face="Verdana" size="2">UndoChangesComplete is called,
+which calls OnIsDirtyChanged, which throws the NullException.&nbsp; (I also
+don't understand why OnIsDirtyChanged is called in
+UndoChangesComplete.&nbsp; I also don't understand what is Null.&nbsp; Does the Child object not have the appropriate event handler?)<br><br></font></li></ol>
+<font face="Verdana" size="2">Removing the OnIsDirtyChanged call from
+UndoChangesComplete isn't enough.&nbsp; Say we get through the UndoChanges
+on the BusinessCollectionBase.&nbsp; The child is removed, which calls the
+OnRemove method.&nbsp; OnRemove first calls DeleteChild, which calls
+MarkDeleted, which calls MarkDirty.&nbsp; This is why I had modified the
+MarkDeleted method.<br>
+<br>
+</font><font face="Verdana" size="2">I ended up making a couple of
+other changes to businesscollectionbase that seem to make sense to me
+and prevent the exception.&nbsp; I'm not entirely comfortable with them and am still hoping to really resolve the issue.&nbsp; If anyone is interested in the modifications, let me know.&nbsp; </font></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, July 12, 2006</h2>
+
+
+
+
+<DIV align=left><SPAN class=484480322-12072006><FONT face=Arial color=#0000ff size=2>Normally what I do is a bit different</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=484480322-12072006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=484480322-12072006><FONT face=Arial color=#0000ff size=2>1) create the root</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=484480322-12072006><FONT face=Arial color=#0000ff size=2>2) call beginedit on the root</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=484480322-12072006><FONT face=Arial color=#0000ff size=2>3) allow user to edit root</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=484480322-12072006><FONT face=Arial color=#0000ff size=2>4) create/add the child</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=484480322-12072006><FONT face=Arial color=#0000ff size=2>5) display child in modal edit window</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=484480322-12072006><FONT face=Arial color=#0000ff size=2>5a) child window calls beginedit on child 
+object</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=484480322-12072006><FONT face=Arial color=#0000ff size=2>5b) user edits child</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=484480322-12072006><FONT face=Arial color=#0000ff size=2>5c) child window calls either canceledit or applyedit on 
+child</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=484480322-12072006><FONT face=Arial color=#0000ff size=2>6) main window calls either canceledit or applyedit on 
+root</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=484480322-12072006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=484480322-12072006><FONT face=Arial color=#0000ff size=2>This is the scenario for which n-level undo was designed, 
+and this model should work.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=484480322-12072006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=484480322-12072006><FONT face=Arial color=#0000ff size=2>My guess is that the null reference exception you are 
+getting is due to data binding. Some UI component is maintaining a reference to 
+your object graph and the IsDirtyChanged event is causing it to refresh - but 
+your object graphi is somehow returning a null value in some property (probably 
+a string property). Data binding doesn't handle null values, so boom. Also, it 
+is hard to trace this, since you don't have access to the data binding 
+processing - which is why the exception seems like it comes from nowhere. At 
+least that's my guess.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=484480322-12072006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=484480322-12072006><FONT face=Arial color=#0000ff size=2>Rocky</FONT></SPAN></DIV><BR>
+<BLOCKQUOTE>
+  <DIV class=OutlookMessageHeader align=left>
+  <HR>
+  <FONT face=Tahoma size=2><B>From:</B> dcalens [mailto:cslanet@lhotka.net] 
+  <BR><B>Sent:</B> Wednesday, July 12, 2006 4:46 PM<BR><B>To:</B> 
+  rocky@lhotka.net<BR><B>Subject:</B> Re: [CSLA .NET] OnIsDirtyChanged throws 
+  NullReferenceException<BR></FONT><BR></DIV>
+  <DIV></DIV><FONT face=Verdana size=2>I decided to revert CSLA to it's original 
+  state (v 1.53) and trace the steps that produced the NullException for anybody 
+  that is interested.&nbsp; I am happy to provide code for any of it:<BR></FONT>
+  <OL>
+    <LI><FONT face=Verdana size=2>Open the root edit form, call beginedit on the 
+    root.</FONT>
+    <LI><FONT face=Verdana size=2>Before opening the child edit form,&nbsp; call 
+    another BeginEdit on the Root and add a new Child to the Child Collection 
+    (this is demonstrated above).&nbsp; As Rocky suggested,&nbsp; I removed the 
+    Add overrides for the child collection.&nbsp; Upon inserting the child, the 
+    OnInsert method IS called from businesscollectionbase, which adds properties 
+    to the new child and apparently hooks the IsDirtyChanged event.</FONT>
+    <LI><FONT face=Verdana size=2>Modify the Child Object in the Edit form and 
+    ApplyEdit.&nbsp; Apply the Edit to the Root.&nbsp; At this point, the child 
+    is at EditLevel&nbsp; = 0.&nbsp; The root is at EditLevel = 1.&nbsp; I 
+    *think* that's how it's supposed to be.<BR></FONT>
+    <LI><FONT face=Verdana size=2>Cancel Out of the Root Edit Form.</FONT>
+    <LI><FONT face=Verdana size=2>UndoChanges is Called on the Root.</FONT>
+    <LI><FONT face=Verdana size=2>UndoChanges is called on the child 
+    collection.</FONT>
+    <LI><FONT face=Verdana size=2>UndoChanges is called on the Child (I don't 
+    understand why we would want this, since it is being removed anyway).</FONT>
+    <LI><FONT face=Verdana size=2>UndoChangesComplete is called, which calls 
+    OnIsDirtyChanged, which throws the NullException.&nbsp; (I also don't 
+    understand why OnIsDirtyChanged is called in UndoChangesComplete.&nbsp; I 
+    also don't understand what is Null.&nbsp; Does the Child object not have the 
+    appropriate event handler?)<BR></FONT></LI></OL><FONT face=Verdana size=2>Removing the OnIsDirtyChanged call from UndoChangesComplete isn't 
+  enough.&nbsp; Say we get through the UndoChanges on the 
+  BusinessCollectionBase.&nbsp; The child is removed, which calls the OnRemove 
+  method.&nbsp; OnRemove first calls DeleteChild, which calls MarkDeleted, which 
+  calls MarkDirty.&nbsp; This is why I had modified the MarkDeleted 
+  method.<BR><BR></FONT><FONT face=Verdana size=2>I ended up making a couple of 
+  other changes to businesscollectionbase that seem to make sense to me and 
+  prevent the exception.&nbsp; I'm not entirely comfortable with them and am 
+  still hoping to really resolve the issue.&nbsp; If anyone is interested in the 
+  modifications, let me know.&nbsp; </FONT><BR><BR><BR></BLOCKQUOTE></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>dcalens replied on Thursday, July 13, 2006</h2>Rocky ~<br><br>I think you are right about databinding.&nbsp; I made my silly little changes and trudged on, only to encounter a nullreferenceexception when adding a child and calling a MarkOld() on it.&nbsp; In this case, it seems to be related to PropValueChanged and is specific to using ComboBoxes (I removed them and the error went away).&nbsp; Several of the properties are set by using a combobox whose datasource is a namevaluelist and that is&nbsp; bound to child properties.&nbsp; <br><br>Do I have to do something special with a databound combobox?&nbsp; Here is what I have now:<br><br><blockquote>BindField(cbSeam, "SelectedValue", _specItem, "SeamID")<br></blockquote><br>Regards,<br>David<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>dcalens replied on Wednesday, July 26, 2006</h2><font color="#0000ff" face="Verdana" size="2">To follow up, I managed to resolve the issue.&nbsp; I found it initially be related to databinding to combo boxes.&nbsp; The confusing thing was that I wasn't having similar problems in other forms.<br><br>After implementing Petar's ActiveObjects, it was brought to my attention that I was missing the &lt;Serializable()&gt; attribute for this particular child collection.&nbsp; Doh!<br><br><br></font></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>dcalens replied on Wednesday, July 12, 2006</h2>Sorry for the confusion on my part.&nbsp; I forgot about IBindingList.AddNew.&nbsp; Now I am wondering if I am overriding it correctly and if that is causing my problem.&nbsp; Is it enough to just put an AddNew method in the child collection?<br><br>Public Function AddNew() As Child...<br><br>Or do I have to specifically override it somehow? <br><br>David<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, July 12, 2006</h2>
+
+
+
+
+<DIV align=left><SPAN class=468292321-12072006><FONT face=Arial color=#0000ff size=2>If you aren't overriding AddNewCore() for data binding, 
+then I would suggest that you DO NOT override any add-related methods at all. 
+Just create another "add" method to create/add your child 
+objects.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=468292321-12072006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=468292321-12072006><FONT face=Arial color=#0000ff size=2>Rocky</FONT></SPAN></DIV><BR>
+<BLOCKQUOTE>
+  <DIV class=OutlookMessageHeader align=left>
+  <HR>
+  <FONT face=Tahoma size=2><B>From:</B> dcalens [mailto:cslanet@lhotka.net] 
+  <BR><B>Sent:</B> Wednesday, July 12, 2006 4:10 PM<BR><B>To:</B> 
+  rocky@lhotka.net<BR><B>Subject:</B> Re: [CSLA .NET] OnIsDirtyChanged throws 
+  NullReferenceException<BR></FONT><BR></DIV>
+  <DIV></DIV>Sorry for the confusion on my part.&nbsp; I forgot about 
+  IBindingList.AddNew.&nbsp; Now I am wondering if I am overriding it correctly 
+  and if that is causing my problem.&nbsp; Is it enough to just put an AddNew 
+  method in the child collection?<BR><BR>Public Function AddNew() As 
+  Child...<BR><BR>Or do I have to specifically override it somehow? 
+  <BR><BR>David<BR><BR><BR><BR></BLOCKQUOTE></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>dcalens replied on Wednesday, July 12, 2006</h2>Is AddNewCore specific to CSLA 2.0?&nbsp; I am using CSLA 1.53 with a 2.0 UI.&nbsp; If that's a bad idea let me know.&nbsp; I have reasons to do so that are too long to explain.<br><br>I got either of the following methods to add child objects to a collection, with no Add overrides:<br><br><blockquote>Public Function AddNew() As Child<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; Dim child As Child = Child..NewChild()<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; List.Add(child)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return(child)<br>End Function<br></blockquote><blockquote>Public Function AddNew() As Child<br>&nbsp;&nbsp;&nbsp; Return CType(CType(Me, IBindingList).AddNew(), SpecificationItem)<br>End Function<br></blockquote>The second methods calls OnAddNew which I have implemented in my child collection.&nbsp; Either way I still end up with the original issue.&nbsp; I'm about to post a follow-up, which has some more information regarding this.<br><br>Thanks,<br>David<br><br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, July 12, 2006</h2>
+
+
+
+
+<DIV align=left><SPAN class=609454421-12072006><FONT face=Arial color=#0000ff size=2>Yes, AddNewCore comes from BindingList&lt;T&gt; and is a 
+.NET 2.0 thing.</FONT></SPAN></DIV>
+<DIV align=left><FONT face=Arial color=#0000ff size=2></FONT>&nbsp;</DIV>
+<DIV align=left><SPAN class=609454421-12072006><FONT face=Arial color=#0000ff size=2>Rocky</FONT></SPAN></DIV></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

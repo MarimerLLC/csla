@@ -1,0 +1,52 @@
+<html><header><title>Undoing Changes Within An EditableRootListBase</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Undoing Changes Within An EditableRootListBase</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9150.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>NickTaylor posted on Wednesday, June 30, 2010</h2><p>Hi,</p>
+<p>Can anyone help me with this one please...?</p>
+<p>I am using an EditableRootListBase object within a ( WinForms )&nbsp;maintenance form as a container for a bunch of business objects. In fact the ERLB is used for binding&nbsp;the data entry fields, a grid, and an infragistics treeview which provides node level databinding. Obviously&nbsp;all are bound to a bindingsource&nbsp;which sits in between the UI and the&nbsp;ERLB list itself.</p>
+<p>I can&#39;t seem to fathom how I undo changes if the user decides&nbsp;to abandon the changes they have made ?</p>
+<p>My framework prevents the user navigating to another record if the&nbsp;data entered is invalid, so navigation is only possible once the data entered is valid.</p>
+<p>I just can&#39;t fathom how to correctly undo any pending changes to the current row&nbsp;if the user decides to cancel the edit&nbsp;? Obviously the current row could be a new row in which case it must be removed from the collection.</p>
+<p>Any help would be most welcome!</p>
+<p>Thanks in advance,</p>
+<p>Nick</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Wednesday, June 30, 2010</h2><p>ERLB exists to address one very specific set of requirements: a list of root objects, bound to a datagrid, where changes to a row (object) are committed as soon as the user leaves that row.</p>
+<p>Not to be too flippant, but any other use of ERLB is outside of its design parameters, and I wish people the best of luck making it work for their scenarios.</p>
+<p>ERLB relies on the data binding contract used by datagrid controls (through IEditableObject) to know when to commit or cancel the edit of a given row (object). If you are using an ERLB outside of a datagrid control, you must completely emulate the datagrid model to get the desired behavior.</p>
+<p>In short:</p>
+<ul>
+<li>When the user enters a row you must call IEO.BeginEdit</li>
+<li>When the user leaves a row you must call IEO.EndEdit</li>
+<li>When the user does a cancel gesture (such as pressing ESC) you must call IEO.CancelEdit, and (since they are on the same row) you must then call IEO.BeginEdit</li>
+</ul>
+<p>If you support remove and add operations things are a little more complex, as you need to emulate the datagrid behaviors for adding and removing items from the list as well.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>NickTaylor replied on Wednesday, June 30, 2010</h2><p>Hi Rocky,</p>
+<p>Many thanks for your response.</p>
+<p>I am using ERLB as a container for a list of root objects ( all pretty standard and based on BusinessBase ). Via the bindingsource, the list is bound to both a datagrid, and I also provide the usual set of text fields to assist in editing the data ( as the grid only shows some of the fields&nbsp;).</p>
+<p>Eveything has worked perfectly so far, I&#39;m adding rows by using the AddNew() method of the bindingsource, and I can remove rows by using the RemoveAt(int index) method of the list itself.&nbsp;Again this works fine. The changes are committed by using the lists&nbsp;SaveItem() method. This however will be called directly when the user tries to navigate off the current record ( the Infragistics grid I&#39;m using has a BeforeRowDeactivate() event, and its this I&nbsp;use to check if the current business object is dirty or savable ). Its just the undo where I have become stuck.</p>
+<p>I think you are saying that I got lucky here, and that I should probably be using something based on BusinessListBase instead ?</p>
+<p>Many thanks again.</p>
+<p>Nick</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, June 30, 2010</h2><p>The Infragistics datagrid should be just doing the right thing. You shouldn&#39;t have to manually worry about these details. As the user enters a row the grid should call BeginEdit, and as they leave the row it should call EndEdit, and if they press ESC it should call CancelEdit. All the mainstream datagrid controls work this way, so they are compatible with the Microsoft datagrid control (and therefore the DataTable, etc).</p>
+<p>You should <i>never</i> interact with the list directly though. You should remove items via the bindingsource. In fact, all interactions should go through the bindingsource. Any direct interaction with the list object is asking for trouble. I wrote an entire chapter in the <a href="http://store.lhotka.net">Using CSLA .NET 3.0 ebook</a> which basically comes down to this one rule: if an object is data bound, only use the bindingsource for interaction.</p>
+<p>The bindingsource always does the right thing - the thing ERLB is expecting. So if you call BeginEdit, EndEdit, CancelEdit, etc. via the bindingsource it should just do the right thing for you.</p>
+<p>You shouldn&#39;t ever need to call SaveItem() explicitly. If you are using data binding correctly, the EndEdit call when a user leaves a row will automatically invoke SaveItem(). Similarly, the CancelEdit call when a user presses ESC will do the cancel, and automatically restart editing of the row.</p>
+<p>Again - that&#39;s true as long as you are going through the bindingsource. If you interact with the list or the child object directly you are fighting data binding, and will almost certainly confuse the bindingsource (because it won&#39;t know what you did).</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>NickTaylor replied on Wednesday, June 30, 2010</h2><p>Thanks Rocky,</p>
+<p>I have both your e-books, so I will have another read through them. </p>
+<p>As always, your help is appreciated.</p>
+<p>Many thanks,</p>
+<p>Nick</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>NickTaylor replied on Wednesday, June 30, 2010</h2><p>Hi Rocky,</p>
+<p>Sorry to be a pain here, but I have one final question.</p>
+<p>Calling&nbsp;the bindingSource.RemoveCurrent()&nbsp;method works perfectly and deletes the object from the DB via the BO as required. </p>
+<p>Calling the bindingSource.EndEdit() method also works perfectly and invokes the saving of data via the BO. </p>
+<p>However, I am still slightly confused regarding the undo. Invoking the bindingSource.CancelEdit() method appears&nbsp;to work for the first undo and then fails for any subsequent undo&#39;s.</p>
+<p>To make this work, I appear to&nbsp;have to grab the current object from the bindingsource and then invoke CancelEdit() on this directly. This also works perfectly, however I am not 100% sure this is what you meant ?</p>
+<p>Am I still barking up the wrong tree !?</p>
+<p>Thanks again,</p>
+<p>Nick</p>
+<p>&nbsp;&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, June 30, 2010</h2><p>Calling bindingsource.CancelEdit() should just work. That&#39;ll cancel edits to the current object, and automatically immediately call BeginEdit() to put the object back into &quot;edit mode&quot;. I would expect subsequent CancelEdit() calls to just repeat the process.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>NickTaylor replied on Thursday, July 01, 2010</h2><p>Hi Rocky,</p>
+<p>After some further playing around, you are of course right in that using a datagrid in conjunction with ERLB works fine providing&nbsp;you&nbsp;use the grid for manipulating the underlying data. I fully appreciate this is exactly what it is designed to do. What I can&#39;t appear to do easily is intercept the save or abandon process by throwing a dialog which asks the user if they want to save or abandon the changes first. This is really what I&#39;m after.</p>
+<p>All I&#39;m really trying to achieve is to provide&nbsp;a simple way of navigating through a bunch of&nbsp;root BO&#39;s&nbsp;within a maintenance form. The contents of the list are selected randomly by the user depending on what they&nbsp;choose to&nbsp;look at. They are not child objects selected by a single select command.</p>
+<p>Currently I have a seperate list object which provides the navigation list ( associated with a bindingsource ), and any movement on here instantiates the&nbsp;appropriate BO to permit editing ( via a second bindingsource ). I then use your methodology (&nbsp;the one you didn&#39;t include in the e-book ) to update the navigation list when the BO is modified and subsequently saved. </p>
+<p>This does work fine, however I felt having a seperate list and list object&nbsp;just to provide navigation for each form&nbsp;is a bit clunky. In effect every maintenance form needs its own set of navigation objects, and this starts to mount up when you have a lot of maintenance forms in your application.</p>
+<p>Surely a&nbsp;simple list holding a&nbsp;bunch of business objects would be much better, but going this route seems to make it difficult to intercept the save and abandon process&nbsp;inherent with databinding.</p>
+<p>I guess I just want to make sure my logic is correct before heading off&nbsp;to write a hundred maintenance forms which then all turn out to be flawed!</p>
+<p>As always, any comment is welcome!</p>
+<p>Thanks,</p>
+<p>Nick&nbsp;&nbsp;&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, July 01, 2010</h2><p>You should know that you don&#39;t have to use BLB or ERLB if they don&#39;t fit your needs. You can use any serializable list type, and add your own behaviors to that type as needed. You might use BLB or ERLB as a guide to get ideas on how to address certain problems, etc. It might be better for you to create your own, simpler, list type.</p>
+<p>Fwiw, in CSLA 4 it is possible to bind an object to multiple bindingsource controls (our one Windows Forms enhancement), which might simplify you implementation.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

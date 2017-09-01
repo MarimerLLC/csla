@@ -1,0 +1,98 @@
+<html><header><title>App.Config &amp; Connection Manager</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>App.Config &amp; Connection Manager</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/8310.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>st3fanus posted on Thursday, January 07, 2010</h2>Hello I'm Stefanus..<br><br>I have a problem with my Connection to Database<br><br>I have wrote this connection string in my app.config file , as below :<br>&lt;?xml version="1.0" encoding="utf-8" ?&gt;<br>&lt;configuration&gt;<br>&nbsp; &lt;appSettings&gt;<br>&nbsp;&nbsp;&nbsp; &lt;add key="Resto_DB"<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; value="server=localhost;database=Resto_DB;uid=sa;pwd=abcdef;"/&gt;<br>&nbsp; &lt;/appSettings&gt;<br>&lt;/configuration&gt;<br><br>And I tried to get my constring from application as below :<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; using (var ctx = ConnectionManager&lt;SqlConnection&gt;.GetManager("Resto_DB"))<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; using (IdentityDal dal = new IdentityDal(ctx))<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; roles = dal.Login(criteria.Username, criteria.Password);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br><br>BUT I GOT AN ERROR THAT SAID : <br>DataPortal.Fetch failed (Database name not found in config file (Resto_DB))<br><br>I hope anyone can help me about my problem<br>Thanks a lot before about respond of my post...<br><br>Stefanus<br><br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Thursday, January 07, 2010</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>The
+value should be in ConnectionStrings area, not AppSerttings.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> st3fanus
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Thursday, January 07, 2010 10:12 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> [CSLA .NET] App.Config &amp; Connection Manager<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Hello I'm Stefanus..<br>
+<br>
+I have a problem with my Connection to Database<br>
+<br>
+I have wrote this connection string in my app.config file , as below :<br>
+&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot; ?&gt;<br>
+&lt;configuration&gt;<br>
+&nbsp; &lt;appSettings&gt;<br>
+&nbsp;&nbsp;&nbsp; &lt;add key=&quot;Resto_DB&quot;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+value=&quot;server=localhost;database=Resto_DB;uid=sa;pwd=abcdef;&quot;/&gt;<br>
+&nbsp; &lt;/appSettings&gt;<br>
+&lt;/configuration&gt;<br>
+<br>
+And I tried to get my constring from application as below :<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; using (var
+ctx = ConnectionManager&lt;SqlConnection&gt;.GetManager(&quot;Resto_DB&quot;))<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+using (IdentityDal dal = new IdentityDal(ctx))<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+roles = dal.Login(criteria.Username, criteria.Password);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+<br>
+BUT I GOT AN ERROR THAT SAID : <br>
+DataPortal.Fetch failed (Database name not found in config file (Resto_DB))<br>
+<br>
+I hope anyone can help me about my problem<br>
+Thanks a lot before about respond of my post...<br>
+<br>
+Stefanus<br>
+<br>
+<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>st3fanus replied on Thursday, January 07, 2010</h2>thanks<b><span> </span></b><span>Sergey Barskiy<o:p></o:p>.. that problem has been solved.<br>But there is another problem that said </span><b><span>Instance Failure</span></b><span> , but i'm sure i have write connection string correctly..<br><br>I have debug that error an stop when :<br>private ConnectionManager(string connectionString, string label)<br>&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _label = label;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _connectionString = connectionString;<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // open connection<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _connection = new C();<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _connection.ConnectionString = connectionString;<b><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _connection.Open(); /// &lt;---------------------------------------------------- STOP HERE<br></b>&nbsp;&nbsp;&nbsp; }</span><b><span><br><br>ERROR MESSAGE : DataPortal.Fetch failed (Instance failure.)<br><br>Is there any setting that I've missed ??<br><br>Thanks a lot<br><br>Stefanus<br></span></b></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>st3fanus replied on Thursday, January 07, 2010</h2>Hello...<br><br>I'm Sorry.. I've found the mistake.. -- My connectionstring still wrong :( <br>So I have solved this problem.. thank a lot.. <br><br><br>Stefanus<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

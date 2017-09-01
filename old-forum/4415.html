@@ -1,0 +1,34 @@
+<html><header><title>Design: why using id in place of a reference to an object</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Design: why using id in place of a reference to an object</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4415.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>alef posted on Tuesday, February 26, 2008</h2><P class=MsoNormal><FONT face=Arial size=2>In the ProjectResource class you have a property Role. This is the property Id of the object Role.</FONT></P>
+<P class=MsoNormal><FONT face=Arial size=2>Why you don’t use a reference to the object Role.</FONT></P>
+<P class=MsoNormal><FONT face=Arial size=2>Suppose the GUI is changing the role with the combobox. Now the class ProjectResource knows only about the id of role, and not for example the name of the role.</FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>alef replied on Wednesday, February 27, 2008</h2><P>Has somebody any idea?</P>
+<P>The purpose I'm asking this,&nbsp;is for implementing the ErrorTreeView control from codeplex. I do not want to see id's, I want to override ToString and show something meaningfull to the user and not showing id's.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>alef replied on Thursday, February 28, 2008</h2><P>To explain the need in my case. I've the following objects:<o:p></o:p></P>
+<P>Model: Editable Root Parent with a property Name(e.g. Shoe123)<o:p></o:p></P>
+<P>ModelColors: EditableChildList <o:p></o:p></P>
+<P>ModelColor: EditableChild with properties&nbsp;Id,&nbsp;ColorId, Quantity</P>
+<P>Colors: EditableRoot List<o:p></o:p></P>
+<P>Color: EditableSwitchable<o:p></o:p></P>
+<P><o:p>&nbsp;</o:p></P>
+<P>So in the GUI we can create/update a model, we can change the name of the model,<o:p></o:p></P>
+<P>and in a grid we can add all the possible colors in which this model is manufactured.<o:p></o:p></P>
+<P>&nbsp;<o:p></o:p></P>
+<P>Now I was playing with the ErrorTreeView control from CSLAContrib to show all the business roles which are broken.<o:p></o:p></P>
+<P>So I want to see something like:<o:p></o:p></P>
+<P>&nbsp;&nbsp;&nbsp;Model : Shoe12<o:p></o:p></P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-Colors<o:p></o:p></P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-Color: <B>Brown</B><o:p></o:p></P>
+<P><SPAN>-<SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN></SPAN>Quantity can not be negative</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-Color: <B>Yellow</B><o:p></o:p></P>
+<P><SPAN>-<SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN></SPAN>Quantity can not be more then 100</P>
+<P><o:p>&nbsp;</o:p></P>
+<P>And not something with an id for the color<o:p></o:p></P>
+<P>&nbsp;&nbsp;&nbsp;Model : Shoe12<o:p></o:p></P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-Colors<o:p></o:p></P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-Color: <B>45</B><o:p></o:p></P>
+<P><SPAN>-<SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN></SPAN>Quantity can not be negative</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-Color: <B>67</B><o:p></o:p></P>
+<P><SPAN>-<SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN></SPAN>Quantity can not be more then 100</P>
+<P class=MsoNormal><o:p><FONT face=Arial size=2>&nbsp;</FONT></o:p></P>
+<P class=MsoNormal><FONT face=Arial size=2>So in the Business Object ModelColor I need to override the ToString method to show the name of the color. But in ModelColor I do not have the name of the Color, I only have ColorId.</FONT></P>
+<P class=MsoNormal><FONT face=Arial size=2>So how can I solve this? Not using ColorId in the business object ModelColor but storing a reference to the object Color? I don’t want to use code like Kleur.GetKleur(_colorId) because this invokes a roundtrip to the database.</FONT></P>
+<P class=MsoNormal><FONT face=Arial size=2>Rocky, can you help me with this?</FONT></P>
+<P class=MsoNormal><o:p><FONT face=Arial size=2>&nbsp;</FONT></o:p></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>malloc1024 replied on Friday, February 29, 2008</h2>I don’t see anything wrong with storing a color object in ModelColor.  Another option would be to add a property called ColorName inside ModelColor.  The ColorName property would send the ColorID to the Colors object and retrieve the corresponding color name.  You would want to cache the Colors collections so you can avoid calling the db every time you look up the ColorName.  Turing the Colors class into a singleton would accomplish this.</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

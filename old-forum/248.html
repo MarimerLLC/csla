@@ -1,0 +1,107 @@
+<html><header><title>Inheriting from a business object</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Inheriting from a business object</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/248.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>PaulD posted on Thursday, June 01, 2006</h2><P><FONT size=2>OK, so I have a base class called ThirdParty, and have 2 derived classes from that; Person and Company.</FONT></P>
+<P><FONT size=2>Most of the information I need is stored up in ThirdParty, and the additional not so common bits in Person and Company.&nbsp; The ThirdParty is responsible for saving its data and the dervived objects is responsible for saving its data.&nbsp; So far so good?&nbsp; Right?</FONT></P>
+<P><FONT size=2>Except one small little snag.&nbsp; It doesn't work! (heh)</FONT></P>
+<P><FONT size=2>ThirdParty can't exist on its own, so I've made it abstract:</FONT></P><FONT color=#0000ff>
+<P><FONT size=2>Public</FONT></FONT><FONT size=2> <FONT color=#0000ff>MustInherit</FONT> <FONT color=#0000ff>Class</FONT> ThirdParty</FONT></P>
+<P><FONT size=2><FONT color=#0000ff>Inherits</FONT> BusinessBase(<FONT color=#0000ff>Of</FONT> ThirdParty)</FONT></P>
+<P><FONT size=2>The base object simply inherit from this:</FONT></P>
+<P><FONT size=2><FONT color=#0000ff>Public</FONT> <FONT color=#0000ff>Class</FONT> Person</FONT></P>
+<P><FONT size=2><FONT color=#0000ff>Inherits</FONT> ThirdParty</FONT></P>
+<P><FONT size=2>Now, the problem is the fact ThirdParty is abstract so CSLA can't create an instance of it.&nbsp; So I get this error.</FONT></P>
+<P><FONT size=2>ThirdPartyTestFixture.ThirdPartyPerson_CreateAndReadBack : Csla.DataPortalException : DataPortal.Fetch failed<BR>&nbsp; ----&gt; System.MissingMethodException : Cannot create an abstract class.</FONT></P>
+<P><FONT size=2>I appreciate the error, obviously it can't create an abstract class.&nbsp; *but* has anyone successfully acheived this in another way?&nbsp; All help greatly appreciated :)</FONT></P>
+<P><FONT size=2>Paul</FONT><FONT size=1></P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>PaulD replied on Thursday, June 01, 2006</h2><P><FONT size=2>I saw Rockys previous post on this subject, where you pass the type into the base class.&nbsp; However, having done that, I now get:</FONT></P><FONT face="Courier New" size=2>ThirdPartyTestFixture.ThirdPartyPerson_CreateAndReadBack : Csla.DataPortalException : DataPortal.Fetch failed<BR>&nbsp; ----&gt; System.ArgumentException : Cannot create an instance of XXXX.ThirdParties.ThirdParty`1[T] because Type.ContainsGenericParameters is true.</FONT>
+<P><FONT size=2>I'm using CSLA 2.0.1 as suggested.</FONT></P>
+<P><FONT size=2>My abstract class now looks like:</FONT></P><FONT size=1>
+<P></FONT><FONT color=#0000ff size=1>Public</FONT><FONT size=1> </FONT><FONT color=#0000ff size=1>MustInherit</FONT><FONT size=1> </FONT><FONT color=#0000ff size=1>Class</FONT><FONT size=1> ThirdParty(</FONT><FONT color=#0000ff size=1>Of</FONT><FONT size=1> T </FONT><FONT color=#0000ff size=1>As</FONT><FONT size=1> ThirdParty(</FONT><FONT color=#0000ff size=1>Of</FONT><FONT size=1> T))</P>
+<P></FONT><FONT color=#0000ff size=1>Inherits</FONT><FONT size=1> BusinessBase(</FONT><FONT color=#0000ff size=1>Of</FONT><FONT size=1> ThirdParty(</FONT><FONT color=#0000ff size=1>Of</FONT><FONT size=1> T))</P></FONT>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>stefan replied on Thursday, June 01, 2006</h2>Hi Paul,<br><br><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>PaulD:</strong></div><div><p><font size="2">My abstract class now looks like:</font></p><font size="1">
+</font><p><font color="#0000ff" size="1">Public</font><font size="1"> </font><font color="#0000ff" size="1">MustInherit</font><font size="1"> </font><font color="#0000ff" size="1">Class</font><font size="1"> ThirdParty(</font><font color="#0000ff" size="1">Of</font><font size="1"> T </font><font color="#0000ff" size="1">As</font><font size="1"> ThirdParty(</font><font color="#0000ff" size="1">Of</font><font size="1"> T))</font></p>
+<p><font color="#0000ff" size="1">Inherits</font><font size="1"> BusinessBase(</font><font color="#0000ff" size="1">Of</font><font size="1"> ThirdParty(</font><font color="#0000ff" size="1">Of</font><font size="1"> T))</font></p>
+<p></div></BLOCKQUOTE><br></p><font color="#0000ff" size="3">Public</font><font size="3"> </font><font color="#0000ff" size="3">MustInherit</font><font size="3"> </font><font color="#0000ff" size="3">Class</font><font size="3"> ThirdParty(</font><font color="#0000ff" size="3">Of</font><font size="3"> T </font><font color="#0000ff" size="3">As</font><font size="3"> ThirdParty(</font><font color="#0000ff" size="3">Of</font><font size="3"> T))</font>
+<p><font color="#0000ff" size="3">Inherits</font><font size="3"> BusinessBase(</font><font color="#0000ff" size="3">Of</font><font size="3"> T)</font></p>
+should work<br><br><p>Stefan<br>
+</p><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, June 01, 2006</h2>It sounds like your Criteria class is in the base class, so the data portal is trying to create an instance of the base class - which it can't, because that class is generic (and of course abstract, but it doesn't even get that far).<br><br>You need to either move your criteria class to the non-generic subclass that is your actual business object, or you need to have it inherit from CriteriaBase so you can specify the non-generic subclass type in the criteria object's constructor.<br><br>Somehow you need to tell the data portal what non-generic type it is supposed to create.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>PaulD replied on Thursday, June 01, 2006</h2><P><FONT size=2>Hi Rocky,</FONT></P>
+<P><FONT size=2>Yeh you hit the nail on the head with that one.&nbsp; I changed my Criteria to be:</FONT></P><FONT size=1>
+<P>#</FONT><FONT color=#0000ff size=1>Region</FONT><FONT size=1> </FONT><FONT color=#800000 size=1>" Criteria class"</FONT></P>
+<P><FONT size=1>&lt;Serializable()&gt; _<BR></FONT><FONT color=#0000ff size=1>Public</FONT><FONT size=1> </FONT><FONT color=#0000ff size=1>Class</FONT><FONT size=1> ThirdPartyCriteria(</FONT><FONT color=#0000ff size=1>Of</FONT><FONT size=1> T </FONT><FONT color=#0000ff size=1>As</FONT><FONT size=1> BusinessBase)<BR></FONT><FONT color=#0000ff size=1>Inherits</FONT><FONT size=1> CriteriaBase</P>
+<P>#</FONT><FONT color=#0000ff size=1>Region</FONT><FONT size=1> </FONT><FONT color=#800000 size=1>" Private declarations"<BR>&nbsp;&nbsp;&nbsp;</FONT><FONT color=#0000ff size=1>Private</FONT><FONT size=1> _thirdPartyId </FONT><FONT color=#0000ff size=1>As</FONT><FONT size=1> Guid<BR>#</FONT><FONT color=#0000ff size=1>End</FONT><FONT size=1> </FONT><FONT color=#0000ff size=1>Region</P></FONT><FONT size=1>
+<P>#</FONT><FONT color=#0000ff size=1>Region</FONT><FONT size=1> </FONT><FONT color=#800000 size=1>" Constructors"<BR>&nbsp;&nbsp;&nbsp;</FONT><FONT color=#0000ff size=1>Public</FONT><FONT size=1> </FONT><FONT color=#0000ff size=1>Sub</FONT><FONT size=1> </FONT><FONT color=#0000ff size=1>New</FONT><FONT size=1>(</FONT><FONT color=#0000ff size=1>ByVal</FONT><FONT size=1> thirdPartyId </FONT><FONT color=#0000ff size=1>As</FONT><FONT size=1> Guid)<BR>&nbsp;&nbsp;&nbsp;</FONT><FONT color=#0000ff size=1>MyBase</FONT><FONT size=1>.New(</FONT><FONT color=#0000ff size=1>GetType</FONT><FONT size=1>(T))<BR>&nbsp;&nbsp;&nbsp;_thirdPartyId = thirdPartyId<BR></FONT><FONT color=#0000ff size=1>End</FONT><FONT size=1> </FONT><FONT color=#0000ff size=1>Sub<BR></FONT><FONT size=1>#</FONT><FONT color=#0000ff size=1>End</FONT><FONT size=1> </FONT><FONT color=#0000ff size=1>Region</FONT></P>
+<P><FONT color=#0000ff size=1>...</FONT></P>
+<P><FONT color=#0000ff size=1><FONT color=#000000 size=2>And it works perfectly.</FONT></FONT></P>
+<P><FONT color=#0000ff size=1><FONT color=#000000 size=2>Thanks :)</FONT></P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>mr_lasseter replied on Saturday, June 24, 2006</h2><P>I am having the same problem.&nbsp; After reading the posts I changed my Base Object to the what is below.&nbsp; Everything now complies, but the DataPortal_Fetch Cannot find the correct method since it is looking for DataPortal_Fetch (object).&nbsp; What am I doing wrong?&nbsp; </P>
+<P>My goal for doing this is to allow all my data access to take place in the in Base Class (using Code Gen) and have all the business logic included in the Project Class.&nbsp; I have thought about using partial classes to accomplish this, but I would like to have the ability to override the base class functionality if necessary.&nbsp; Any thoughts and help would be greatly appreciated.&nbsp; </P>
+<P><FONT color=#0000ff size=2>Public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>MustInherit</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Class</FONT><FONT size=2> ProjectBase(</FONT><FONT color=#0000ff size=2>Of</FONT><FONT size=2> T </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> ProjectBase(</FONT><FONT color=#0000ff size=2>Of</FONT><FONT size=2> T))</P>
+<P></FONT><FONT color=#0000ff size=2>Inherits</FONT><FONT size=2> BusinessBase(</FONT><FONT color=#0000ff size=2>Of</FONT><FONT size=2> T)</FONT></P>
+<P><FONT size=2>...</FONT></P><FONT size=2><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Protected</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Class</FONT><FONT size=2> Criteria(</FONT><FONT color=#0000ff size=2>Of</FONT><FONT size=2> ProjectBase)</P>
+<P></FONT><FONT color=#0000ff size=2>Inherits</FONT><FONT size=2> CriteriaBase</P></FONT></FONT>
+<P><FONT size=2>...</FONT></P><FONT size=2><FONT color=#0000ff size=2>
+<P>Private</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Overloads</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Sub</FONT><FONT size=2> DataPortal_Fetch(</FONT><FONT color=#0000ff size=2>ByVal</FONT><FONT size=2> criteria </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> Criteria(</FONT><FONT color=#0000ff size=2>Of</FONT><FONT size=2> ProjectBase(</FONT><FONT color=#0000ff size=2>Of</FONT><FONT size=2> T)))</FONT><FONT size=2></P></FONT></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>kdlc replied on Saturday, June 24, 2006</h2><P>Check This Post: <A HREF="/forums/thread/1052.aspx">http://forums.lhotka.net/forums/thread/1052.aspx</A></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>mr_lasseter replied on Monday, June 26, 2006</h2><P>The link you provided does not help as the criteria object was created in the sub classes not the base class.&nbsp; My problem is if I create the Criteria Class and Data Portal methods in the Base Class then the call <FONT size=2>DataPortal.Fetch(</FONT><FONT color=#0000ff size=2>Of</FONT><FONT size=2> Project)(</FONT><FONT color=#0000ff size=2>New</FONT><FONT size=2> Criteria(</FONT><FONT color=#0000ff size=2>Of</FONT><FONT size=2> Project)(Id)) from the sub class, the code </FONT><FONT size=3>never actually calls the DataPortal_Fetch in the Base Class since the signature of the f</FONT><FONT size=3>unction is not </FONT></P><FONT size=3><FONT size=2><FONT size=3>
+<P>DataPortal_Fetch(<FONT color=#0000ff size=2>ByVal</FONT><FONT size=2> criteria </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> Criteria</FONT><FONT size=2>)</FONT></P>
+<P><FONT size=2>But is </P></FONT></FONT>
+<P>DataPortal_Fetch(</FONT><FONT color=#0000ff size=2>ByVal</FONT><FONT size=2> criteria </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> Criteria(</FONT><FONT color=#0000ff size=2>Of</FONT><FONT size=2> ProjectBase(</FONT><FONT color=#0000ff size=2>Of</FONT><FONT size=2> T))</FONT></P>
+<P><FONT size=2>Am I making any sense?</P></FONT></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, June 26, 2006</h2>I am at a client site until June 29, with limited email until then.<br /><br />Thank you for your understanding,<br /><br />Rocky</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>mr_lasseter replied on Thursday, July 06, 2006</h2><P>Any ideas on what I can do?</P>
+<P>&nbsp;</P>
+<P>Thanks.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, July 06, 2006</h2><P>I never intended for criteria classes to be generic. My guess is that the data portal code that invokes the DataPortal_XYZ methods would need extra code to deal with generic parameters.</P>
+<P>Criteria classes are supposed to be simple DTO (data transfer object) style objects that just ferry your criteria data from the client to the server. I haven't had time to read this thread and understand why you'd be making the criteria class generic?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>mr_lasseter replied on Thursday, July 06, 2006</h2><P>Rocky,</P>
+<P>Thanks for taking time to answer the post.&nbsp; What I am trying to do is use code generation to handle all the database access for my business objects.&nbsp; I thought I would create a base class for each business object that would contain all database access code as well as private variables and public members.&nbsp; My actual business objects would inherit from these base classes and implement all the business rules.&nbsp;This way if something changed in the database, I could regenerate the database access code without losing all the business rules.&nbsp; I hope I am making sense.</P>
+<P>Do you have any advice on how to go about accomplishing this?&nbsp; Would you use partial classes or not do this at all?&nbsp; </P>
+<P>Thanks.&nbsp; Mike</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, July 06, 2006</h2>
+
+
+
+
+<DIV align=left><SPAN class=921101403-07072006><FONT face=Arial color=#0000ff size=2>This is quite common, and is the basis for the CodeSmith 
+templates, CSLAgen and various other tools and templates out 
+there.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=921101403-07072006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=921101403-07072006><FONT face=Arial color=#0000ff size=2>I'm not sure partial classes are the right approach, but a 
+couple people have been working hard at trying to make them work - and I've 
+slightly altered the framework to help (the Initialize() method in 2.0.1 is for 
+partial class support).</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=921101403-07072006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=921101403-07072006><FONT face=Arial color=#0000ff size=2>I think the more traditional base-class-sub-class approach 
+is cleaner overall. The CriteriaBase class is designed to enable this scenario, 
+allowing you to generate your factory methods and criteria class in your 
+generated base class.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=921101403-07072006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=921101403-07072006><FONT face=Arial color=#0000ff size=2>You should check out <A href="http://forums.lhotka.net">http://forums.lhotka.net</A> for various 
+discussions on code-gen - see what others are doing and how they are approaching 
+the problems.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=921101403-07072006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=921101403-07072006><FONT face=Arial color=#0000ff size=2>Rocky</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=921101403-07072006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=921101403-07072006>
+<DIV align=left>
+<DIV align=left>
+<DIV align=left><STRONG><FONT face=Arial><A title="blocked::http://www.lhotka.net/&#10;http://www.lhotka.net/"><FONT size=4>Rockford Lhotka</FONT><FONT size=1> 
+</FONT></A></FONT></STRONG><FONT size=2><FONT face=Arial size=1>&nbsp;</FONT><FONT face=Arial color=#000000 size=1>(rocky@lhotka.net</FONT><FONT face=Arial><FONT size=1>)<BR></FONT></FONT></FONT><FONT face=Arial><A title="blocked::http://www.magenic.com/&#10;http://www.magenic.com/"><B>Magenic 
+Technologies</B> </A></FONT><FONT face=Arial size=1>Principal Technology 
+Evangelist</FONT></DIV>
+<DIV align=left><FONT face=Arial size=1>Author of the <I><A title="blocked::http://www.lhotka.net/ArticleIndex.aspx?area=CSLA .NET&#10;http://www.lhotka.net/ArticleIndex.aspx?area=CSLA%20.NET">Expert VB 
+2005&nbsp;and C# 2005 Business Objects</A></I> books<FONT face="Times New Roman" size=3> </FONT></FONT></DIV>
+<DIV align=left><FONT face=Arial size=1><FONT size=2>
+<DIV align=left><FONT face=Arial size=1>Microsoft <A title="blocked::http://www.microsoft.com/rd&#10;http://www.microsoft.com/rd">Regional Director </A>and <A title="blocked::http://www.microsoft.com/mvp&#10;http://www.microsoft.com/mvp">MVP</A></FONT></FONT></FONT></DIV></DIV></DIV></DIV></SPAN></DIV><BR>
+<BLOCKQUOTE>
+  <DIV class=OutlookMessageHeader align=left>
+  <HR>
+  <FONT face=Tahoma size=2><B>From:</B> mr_lasseter [mailto:cslanet@lhotka.net] 
+  <BR><B>Sent:</B> Thursday, July 06, 2006 9:50 PM<BR><B>To:</B> 
+  rocky@lhotka.net<BR><B>Subject:</B> Re: [CSLA .NET] Inheriting from a business 
+  object<BR></FONT><BR></DIV>
+  <DIV></DIV>
+  <P>Rocky,</P>
+  <P>Thanks for taking time to answer the post.&nbsp; What I am trying to do is 
+  use code generation to handle all the database access for my business 
+  objects.&nbsp; I thought I would create a base class for each business object 
+  that would contain all database access code as well as private variables and 
+  public members.&nbsp; My actual business objects would inherit from these base 
+  classes and implement all the business rules.&nbsp;This way if something 
+  changed in the database, I could regenerate the database access code without 
+  losing all the business rules.&nbsp; I hope I am making sense.</P>
+  <P>Do you have any advice on how to go about accomplishing this?&nbsp; Would 
+  you use partial classes or not do this at all?&nbsp; </P>
+  <P>Thanks.&nbsp; Mike</P><BR><BR><BR></BLOCKQUOTE></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, July 06, 2006</h2><P>Oops - didn't notice that this email WAS from the forum <img src="/emoticons/emotion-3.gif" alt="Surprise [:O]" /></P>
+<P>Well then, I suggest that you check out some of the other threads on code-gen in the forum you are already reading <img src="/emoticons/emotion-5.gif" alt="Wink [;)]" /></P>
+<P>Nothing you are trying to do is new or unique, and there are examples available (specifically the CodeSmith templates and Kathleen Dollard's code-gen book) that illustrate how to do what you want.</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

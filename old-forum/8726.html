@@ -1,0 +1,32 @@
+<html><header><title>4-Tier Deployment question</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>4-Tier Deployment question</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/8726.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>fresh_ant posted on Thursday, March 25, 2010</h2><p>Hi Rocky &amp; other CSLA users,</p>
+<p>We are a team of developers who recently started exploring CSLA &amp; found it very interesting and useful.</p>
+<p>We are trying a proof of concept aimed towards 4-tier deployment model and have the following question.</p>
+<p>Our deployment scenario is as follows,</p>
+<p>1) Client =&gt;&nbsp;Silverlight OOB application (because ours is a file based application &amp; needs trusted file access at the client which cannot be got in an in-browser silverlight application, hence decided to go in for OOB).</p>
+<p>2) WebServer =&gt; First IIS (hosts the above silverlight application).</p>
+<p>3) AppServer =&gt; Second&nbsp;IIS (hosts a WCF service which talks to a DAL layer).</p>
+<p>4) DB =&gt; Sql Server db.</p>
+<p>The above scenario works very well (in intranet).</p>
+<p>The problem is we want to achieve the following in the internet, the Web Server should be exposed to the public internet, the app server should be inside the firewall (or in the DMZ)</p>
+<p>Our silverlight app in its &quot;ServiceReference.clientconfig&quot; has a endpoint pointing directly to the App server&#39;s WCF service. (may be this is wrong approach).</p>
+<p>So&nbsp;once we go Out-Of-Browser, then the xap has the same endpoint url, but this endpoint is not exposed to the public internet. So anyone who takes the OOB app cannot work (unless we expose the app server to the public) which we do not want to do (for security reasons that we do not want someone to compromise our BL or DAL layers).</p>
+<p>Now can you please suggest what would be the right approach to follow and whether CSLA provides some option (or) means to expose the WCF&nbsp;through the web server (something like a tunnel) or should we follow the option A explained below,</p>
+<p><strong><span style="text-decoration:underline;">1) Option A</span></strong>: Write another CSLA WCF service which will expose the App servers WCF Service (something like First WCF service to wrap the&nbsp;second WCF App service) or act like a redirecting service.</p>
+<p>Say we call this the &quot;Web Servers WCF Service&quot; , this will not have the &quot;Business.Server&quot; reference but it will just have a &quot;service reference&quot; to the &quot;App Servers WCF Service&quot; .</p>
+<p>And the SL client will point to the &quot;Web servers WCF Service&quot; and hence even if it goes OOB, it will still poitn to the Web server and hence we need to expose just one server outside the DMZ.</p>
+<p><strong><span style="text-decoration:underline;">Question:</span></strong></p>
+<p>For doing option A, should we create a client proxy for the &quot;App servers WCF&quot; and then expose this client proxy as a WCF service?</p>
+<p><strong><span style="text-decoration:underline;">2) Option B:</span></strong></p>
+<p>Is there some other option that the framework provides to handle such a scenario.</p>
+<p>Please let us know your suggestion on this and what would be the recommended solution.</p>
+<p>Thanks.</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Thursday, March 25, 2010</h2><p>CSLA .NET for Silverlight directly supports the concept of a 4-tier physical deployment.</p>
+<p>In that case the Silverlight client calls a data portal service on a public facing web server (maybe the one where the app is hosted for download).</p>
+<p>The public facing web server&#39;s data portal doesn&#39;t do any real work, it delegates the call to the CSLA .NET for Windows data portal, which invokes the app server. Typically the app server is behind a second firewall.</p>
+<p>It is possible for you to write code on the public facing web server to examine client requests before allowing them to be processed. This can be useful if you want to add extra security checks, or re-run business rules before allowing the objects to pass through the internal firewall.</p>
+<p>The app server is then able to talk to the database server, because they are both in the trusted zone behind both public and internal firewalls.</p>
+<p>The <a href="http://store.lhotka.net">CSLA .NET for Silverlight video series</a> covers the configuration of this model.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>fresh_ant replied on Friday, March 26, 2010</h2><p>Thank you Rocky for the&nbsp;guidance in the right direction &amp; for such a quick reply.</p>
+<p>Our company has decided to purchase the video series so that we would know the right approach for implementation.</p>
+<p>- Prashant.</p>
+<p>&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,23 @@
+<html><header><title>MVVM - Binding syntax ?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>MVVM - Binding syntax ?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10677.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>cconte posted on Monday, September 12, 2011</h2><p><span></span></p>
+<p>Hi folks,</p>
+<p>Software: CSLA 4.1 &ndash; Bxf&nbsp;&ndash;&nbsp; VS2010</p>
+<p>I&#39;m trying to bind my ModelView (CustomerVM.cs) to my View (CustomerView.xaml) without using&nbsp;<span>DesignSource.</span></p>
+<p>In the&nbsp;Navigation&nbsp;class (MainMenuViewModel.cs) the view is called by using Bxf :&nbsp;</p>
+<p><span>
+<p>public void LoadLoginPage()</p>
+</span>{</p>
+<p><span>Shell.Instance.ShowView(typeof(</span>CustomerView<span>).AssemblyQualifiedName, &quot;customerViewModelViewSource&quot;, new ViewModels.CustomerVM(), &quot;MainContent&quot;);}
+<p>}</p>
+</span></p>
+<p>My problem is that i dont know the right xaml&nbsp;syntax to make the binding in the View.</p>
+<p>I think, it should look to something like that &nbsp;but it doesnt work.</p>
+<p>&lt;mv:MainMenuViewModel x:Key=&quot;MenuViewModel&quot;/&gt;</p>
+<p>...</p>
+<p><span><b>&lt;CollectionViewSource x:Key=&quot;customerViewModelViewSource&quot; Source=&quot;{StaticResource MenuViewModel}&quot; /&gt;&nbsp;</b></span></p>
+<p><span>Thanks in advance for your help,</span></p>
+<p><span>Best regards,</span></p>
+<p><span>C&eacute;dric</span></p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>sergeyb replied on Tuesday, September 13, 2011</h2><p>I am guessing you have a property on your MenuViewModel that contains a list of menu items?&nbsp; If so, you need something like:</p>
+<p><span><b>&lt;CollectionViewSource x:Key=&quot;customerViewModelViewSource&quot; Source=&quot;{StaticResource MenuViewModel, Path=MenuItemsProp}&quot; /&gt; </b></span></p>
+<p><span><strong></strong></span></p>
+<p><span></span></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>cconte replied on Monday, September 19, 2011</h2><p>thx a lot.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

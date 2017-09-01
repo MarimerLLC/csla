@@ -1,0 +1,93 @@
+<html><header><title>SmartInt, SmartBool, SmartStuff</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>SmartInt, SmartBool, SmartStuff</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6454.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>rfcdejong posted on Wednesday, February 18, 2009</h2><P>Hello,</P>
+<P>As we use Nullable&lt;int&gt; or int? we have databinding issues, maybe it might be a WPF learning-curve where we need to impliment an convertor on every xaml. I hope not :)</P>
+<P>But what about SmartInt, SmartBool and so on.</P>
+<P>I looked on CSLA Contrib but those sources are build against an old CSLA version. Heck, they aren't implimenting IMobileObject etc.<BR><BR>Is it doable to build this into something global in WPF?<BR>Or is it smarter to use a SmartInt32&nbsp;IFieldData<BR></P>
+<P>PS: I could join the CSLA Contrib team and impliment those myself hehe.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, February 18, 2009</h2>Anyone is welcome to join CSLAcontrib.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rfcdejong replied on Thursday, February 19, 2009</h2><P>Rocky,</P>
+<P>1) Where does the IMobileObject interface stand for?<BR>I know it's for supporting serialization by the MobileFormater.<BR>The current SmartInt32 in CSLAContrib wont work then i guess.<BR><BR>The SmartData has an TypeConverter, i guess that is for WPF?<BR><BR>Greetings,<BR>Raymond</P>
+<P>PS:<BR>Whoever is "the product owner" of CSLAContrib should say if CSLAContrib continues to CSLA 3.6 (meaning 3.5 .net FW with SP1)<BR><BR></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, February 19, 2009</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>There is no formal &#8220;product owner&#8221; of CSLAcontrib. Various
+people who&#8217;ve had good ideas and/or time to implement them have put
+things in there, but there&#8217;s never been an overall coordinator.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>IMobileObject is the interface required by the MobileFormatter.
+Any non-primitive value that needs to serialize to/from Silverlight must
+implement IMobileObject.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>SmartDate, in 3.6, is finally a complete data type (I think). What
+I mean by this, is that it finally acts like a true value type &#8211; just like
+DateTime, etc. There&#8217;s a ton of code in SmartDate that is there only to
+make it play well with .NET &#8211; including the type converter. That converter
+isn&#8217;t for WPF, it is for .NET in general and covers a scenario where a
+cast won&#8217;t work (I don&#8217;t recall specifically &#8211; either Windows
+Forms or Web Forms data binding needed it).<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Over the past few years I&#8217;ve learned that creating a
+really smooth value type requires a LOT of work!<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> rfcdejong
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Thursday, February 19, 2009 7:07 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] SmartInt, SmartBool, SmartStuff<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Rocky,<o:p></o:p></p>
+
+<p>1) Where does the IMobileObject interface stand for?<br>
+I know it's for supporting serialization by the MobileFormater.<br>
+The current SmartInt32 in CSLAContrib wont work then i guess.<br>
+<br>
+The SmartData has an TypeConverter, i guess that is for WPF?<br>
+<br>
+Greetings,<br>
+Raymond<o:p></o:p></p>
+
+<p>PS:<br>
+Whoever is &quot;the product owner&quot; of CSLAContrib should say if
+CSLAContrib continues to CSLA 3.6 (meaning 3.5 .net FW with SP1)<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,94 @@
+<html><header><title>ExtendingAttribute and Encryption</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>ExtendingAttribute and Encryption</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9489.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>AKaplan posted on Thursday, September 09, 2010</h2><p>So I thought of doing something kinda cool. You might be interested in this a little bit too... Back to dealing with my Library of objects, I have some properties that need to be encrypted and/or be used as an &quot;extended attribute&quot;. Alot of my properties use the csla businessbase GetProperty method, and I thought of tweaking those up in order to handle the option to either be an extended attribute and/or encrypted. So within my library of objects, the property would look something like so:
+<div></div>
+<div>&nbsp;&nbsp;Public Property SSN() As String
+<div>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;Get</div>
+<div>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Return GetProperty(Of String)(_SSNProperty, _SSN)</div>
+<div>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;End Get</div>
+<div>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;Set(ByVal value As String)</div>
+<div>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;SetProperty(Of String)(_SSNProperty, _SSN, value)</div>
+<div>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;End Set</div>
+<div>&nbsp;&nbsp; &nbsp;End Property</div>
+<div></div>
+<div>turned into this...&nbsp;</div>
+<div></div>
+<div>&nbsp;Public Property SSN() As String</div>
+<div>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;Get</div>
+<div>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Return GetProperty(Of String)(_SSNProperty, _SSN, False, True)</div>
+<div>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;End Get</div>
+<div>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;Set(ByVal value As String)</div>
+<div>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;SetProperty(Of String)(_SSNProperty, _SSN, value, False, True)</div>
+<div>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;End Set</div>
+<div>&nbsp;&nbsp; &nbsp;End Property</div>
+<div></div>
+<div>In the csla/Core/BusinessBase.vb file, I worked out the GetProperty function nicely, but the SetProperty method is giving me slightly more trouble...</div>
+<div></div>
+<div>
+<div>Protected Function GetProperty(ByVal propertyInfo As IPropertyInfo, Optional ByVal extendedproperty As Boolean = False, Optional ByVal decrypt As Boolean = False) As Object</div>
+<div>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Dim result As Object = Nothing</div>
+<div></div>
+<div>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;If _bypassPropertyChecks OrElse CanReadProperty(propertyInfo.Name, False) Then</div>
+<div>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Dim info = FieldManager.GetFieldData(propertyInfo)</div>
+<div>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;If info IsNot Nothing Then</div>
+<div>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;result = info.Value</div>
+<div>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;End If</div>
+<div>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Else</div>
+<div>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;result = propertyInfo.DefaultValue</div>
+<div>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;End If</div>
+<div>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;If extendedproperty = True Then</div>
+<div>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<span style="text-decoration:underline;"><b>result = ExtendedAttribute.GetExtendedAttribute(FieldManager.GetFieldData(propertyInfo).Name)</b></span></div>
+<div>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;End If</div>
+<div>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;If decrypt = True Then</div>
+<div>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <span style="text-decoration:underline;"><b>&nbsp;Dim data As Byte() = Convert.FromBase64String(CStr(result))</b></span></div>
+<div><span style="text-decoration:underline;"><b>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;result = AsymmetricEncryptionUtility.DecryptData(data, ConfigurationManager.AppSettings(&quot;RSA.AsymmetricalKey&quot;))</b></span></div>
+<div>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;End If</div>
+<div>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Return result</div>
+<div>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;End Function</div>
+</div>
+<div></div>
+<div></div>
+<div>The place where the newValue is located is giving me a bit of trouble considering that the attribute needs to take in a string value.</div>
+<div></div>
+<div></div>
+<div>
+<div>Protected Sub SetProperty(Of P)(ByVal propertyInfo As PropertyInfo(Of P), ByVal newValue As P, ByVal noAccess As Security.NoAccessBehavior, Optional ByVal extendedProperty As Boolean = False, Optional ByVal encrypt As Boolean = False)</div>
+<div></div>
+<div>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;If _bypassPropertyChecks OrElse CanWriteProperty(propertyInfo.Name, noAccess = Security.NoAccessBehavior.ThrowException) Then</div>
+<div>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Try</div>
+<div>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Dim oldValue As P = Nothing</div>
+<div>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Dim fieldData = FieldManager.GetFieldData(propertyInfo)</div>
+<div>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;If fieldData Is Nothing Then</div>
+<div>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;oldValue = propertyInfo.DefaultValue</div>
+<div>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;fieldData = FieldManager.LoadFieldData(Of P)(propertyInfo, oldValue)</div>
+<div></div>
+<div>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Else</div>
+<div>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Dim fd = TryCast(fieldData, FieldManager.IFieldData(Of P))</div>
+<div>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;If fd IsNot Nothing Then</div>
+<div>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;oldValue = fd.Value</div>
+<div></div>
+<div>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Else</div>
+<div>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;oldValue = DirectCast(fieldData.Value, P)</div>
+<div>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;End If</div>
+<div>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;End If</div>
+<div></div>
+<div>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;If GetType(P) Is GetType(String) AndAlso newValue Is Nothing Then</div>
+<div>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;newValue = CoerceValue(Of P)(GetType(String), Nothing, String.Empty)</div>
+<div>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;End If</div>
+<div>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;If extendedProperty = True Then</div>
+<div></div>
+<div>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<b><span><span style="color:#ff0000;"><span>&nbsp;&nbsp; &nbsp; &nbsp;ExtendedAttribute.SetExtendedAttribute(propertyInfo.Name, newValue</span></span><span><span style="color:#ff0000;">)</span></span></span></b></div>
+<div>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;End If</div>
+<div>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;If encrypt = True Then</div>
+<div>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;<span style="color:#ff0000;">&nbsp;newValue = AsymmetricEncryptionUtility.EncryptData(newValue, ConfigurationManager.AppSettings(&quot;RSA.AsymmetricalKey&quot;))</span></div>
+<div>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;End If</div>
+<div>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;LoadPropertyValue(Of P)(propertyInfo, oldValue, newValue, Not _bypassPropertyChecks)</div>
+<div></div>
+<div>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Catch ex As Exception</div>
+<div>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Throw New PropertyLoadException(String.Format(My.Resources.PropertyLoadException, propertyInfo.Name, ex.Message))</div>
+<div>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;End Try</div>
+<div>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;End If</div>
+<div>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;End Sub</div>
+</div>
+<div></div>
+<div>Any ideas would be appreciated...</div>
+</div>
+</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

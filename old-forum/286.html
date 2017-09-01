@@ -1,0 +1,102 @@
+<html><header><title>passing a class that inherits from BusinessListBase to a web service method</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>passing a class that inherits from BusinessListBase to a web service method</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/286.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>idrissb posted on Tuesday, June 06, 2006</h2><P>I have a windows application that has 2 classes</P>
+<P>Class A - Thing inherit from Businessbase</P>
+<P>Class B- Things inherit from BusinessListBase</P>
+<P>I want to call a web method that passes Class B to the the web method and return Class B to the windows program. It is marked as Serialize() but the proxy is unable to generate the class</P>
+<P>Is it possible to pass inherited objects from BusinessListBase to a web methods. any insights will be appreciated.</P>
+<P>thanks</P>
+<P>idriss</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Tim FOrd replied on Tuesday, June 06, 2006</h2>Hi Idriss<br><br>Are you getting any errors??<br><br>Tim.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>idrissb replied on Tuesday, June 06, 2006</h2><P>no When I create a Web reference in my program and look at the reference.cs, I see it created the thing class but not the THINGS class that was&nbsp; inerithed from BusinessListBase.</P>
+<P>so when I run my program, i get an error at point that about InvalidOperation.</P>
+<P>thanks</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Tim FOrd replied on Tuesday, June 06, 2006</h2>OK, So let me get this straight.<br><br>You have Class A which inherits from BusinessBase<br>You have Class B which inherits from BusinessListBase(of Class A)<br><br>You have a webservice which has a function Something(byval T as Class B) which returns Class B(reference original post)<br><br>right?<br><br>Tim.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>idrissb replied on Tuesday, June 06, 2006</h2><P>pretty much, yes. here is the code for the webmethod. AreaProjects is Class B</P>
+<P><FONT size=2>[</FONT><FONT color=#008080 size=2>WebMethod</FONT><FONT size=2>(CacheDuration = 0, MessageName = </FONT><FONT color=#800000 size=2>"UpdateAreaProject"</FONT><FONT size=2>,</FONT><FONT size=2> EnableSession = </FONT><FONT color=#0000ff size=2>true</FONT><FONT size=2>)]</P>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#008080 size=2>StatusData</FONT><FONT size=2> UpdateAreaProject(</FONT><FONT color=#008080 size=2>AreaProjects</FONT><FONT size=2> areaProjects)</P>
+<P>{</P>
+<P></FONT><FONT color=#008000 size=2>//AreaProjects areaProjects = new AreaProjects();</P></FONT><FONT size=2>
+<P></FONT><FONT color=#008080 size=2>StatusData</FONT><FONT size=2> status = </FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> </FONT><FONT color=#008080 size=2>StatusData</FONT><FONT size=2>();</P>
+<P></FONT><FONT color=#0000ff size=2>try</P></FONT><FONT size=2>
+<P>{</P>
+<P>status = areaProjects.Data_Update();</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>catch</FONT><FONT size=2> (</FONT><FONT color=#008080 size=2>Exception</FONT><FONT size=2> ex)</P>
+<P>{</P>
+<P>status.StatusID = (</FONT><FONT color=#0000ff size=2>int</FONT><FONT size=2>)</FONT><FONT color=#008080 size=2>StatusData</FONT><FONT size=2>.</FONT><FONT color=#008080 size=2>StatusTypeEnum</FONT><FONT size=2>.Error;</P></FONT><FONT size=2>
+<P>status.TechnicalDescription += ex.ToString() + </FONT><FONT color=#800000 size=2>"\r\n"</FONT><FONT size=2>;</P></FONT><FONT size=2>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> status; </P>
+<P></P>
+<P>}</P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Tim FOrd replied on Tuesday, June 06, 2006</h2>Right i know this is in VB.Net but should be pretty easy to convert.<br><br>Have you tried declaring your method like below??<br><br>&nbsp;&nbsp;&nbsp; &lt;WebMethod()&gt; _<br>&nbsp;&nbsp;&nbsp; Public Function PassClassA(ByVal listbaseclass As Csla.BusinessListBase(Of CSLAClass.ClassB, CSLAClass.ClassA))<br><br>&nbsp;&nbsp;&nbsp; End Function<br><br>Will fire up C# shortly and try and work it out that way you are doing it.<br><br><br>Tim<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>idrissb replied on Tuesday, June 06, 2006</h2><P>Tim</P>
+<P>thanks for your help. It is not working. For some reason, when the proxy is created it just can not serialize any class derived from BusinessListBase&lt;T,C&gt;. It has no problem serializing classes deriving from BusinessBase&lt;T&gt;</P>
+<P>I am at a loss. </P>
+<P>Thanks</P>
+<P>idriss</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, June 06, 2006</h2>Have you looked at Chapter 11? It specifically covers how to create a web service that returns data based on a business object.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>idrissb replied on Sunday, June 11, 2006</h2>
+
+
+
+Hi, I have purchased the book and read Chapter 11. It does not cover my issue. May be you can shed some light on it. I have also reviewed the source code that comes with the book. I have no problem passing to the web service and sending from the web service any class derived from <FONT class="">BusinessBase. Classes deriving from BusinessBase contain on item so passing or receiving one item works fine. </FONT><BR>
+&nbsp;<BR>
+so for example <BR>
+&nbsp;<BR>
+public class Project <FONT size=2>: </FONT><FONT class="" color=#008080 size=2>BusinessBase</FONT><FONT size=2>&lt;</FONT><FONT class="" color=#008080 size=2>Project</FONT><FONT size=2>&gt; contains information for one project<BR></FONT><FONT size=2>
+</FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>class</FONT><FONT size=2> </FONT><FONT color=#008080 size=2>Projects</FONT><FONT size=2> : </FONT><FONT class="" color=#008080 size=2>BusinessListBase</FONT><FONT size=2>&lt;</FONT><FONT class="" color=#008080 size=2>Projects</FONT><FONT size=2>, </FONT><FONT class="" color=#008080 size=2>Project</FONT><FONT size=2>&gt;, </FONT><FONT color=#008080 size=2>ISerializable<BR></FONT>
+&nbsp;<BR>
+What I want to do is pass a the Projects class that derives from <FONT class="">businessListBase which holds a list of projects. That class can not be serialized for some reason. is it because it supports IBindingList. It looks like it creates a Projects[] array in the proxy document but I can't seem to be able to add anything to it.</FONT><BR><BR>If you can shed some light, much apprieciated.<BR>
+&nbsp;<BR>
+Idriss<BR><BR><BR><BR>
+<BLOCKQUOTE>
+<HR id=EC_stopSpelling>
+From: cslanet@lhotka.net<BR>To: idrissbennis@hotmail.com<BR>Date: Tue, 6 Jun 2006 17:27:13 -0500<BR>Subject: Re: [CSLA .NET] passing a class that inherits from BusinessListBase to a web service method<BR><BR>Have you looked at Chapter 11? It specifically covers how to create a web service that returns data based on a business object.<BR><BR><BR></BLOCKQUOTE><br /><hr />Express yourself instantly with MSN Messenger! <a href='http://clk.atdmt.com/AVE/go/onm00200471ave/direct/01/' target='_new'>MSN Messenger</a>
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, June 12, 2006</h2>
+
+
+
+
+
+
+<DIV align=left><SPAN class=284553513-12062006>As I discuss in Chapter 
+11, you should not directly return a business object as a result of a web 
+method. Instead, you should create "message objects" either in C# or through an 
+XSD to define the data you are transferring. Chapter 11 does include an example 
+of returning a Project with its associated resource data, and I recommend 
+following that approach.</SPAN></DIV>
+<DIV align=left><SPAN class=284553513-12062006></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=284553513-12062006>Rocky</SPAN></DIV>
+<DIV align=left><SPAN class=284553513-12062006></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=284553513-12062006>
+<DIV align=left>
+<DIV align=left>
+<DIV align=left><STRONG><FONT face=Arial><A title="blocked::http://www.lhotka.net/&#10;http://www.lhotka.net/"><FONT size=4>Rockford Lhotka</FONT><FONT size=1> 
+</FONT></A></FONT></STRONG><FONT size=2><FONT face=Arial size=1>&nbsp;</FONT><FONT face=Arial color=#000000 size=1>(rocky@lhotka.net</FONT><FONT face=Arial><FONT size=1>)<BR></FONT></FONT></FONT><FONT face=Arial><A title="blocked::http://www.magenic.com/&#10;http://www.magenic.com/"><B>Magenic 
+Technologies</B> </A></FONT><FONT face=Arial size=1>Principal Technology 
+Evangelist</FONT></DIV>
+<DIV align=left><FONT face=Arial size=1>Author of the <I><A title="blocked::http://www.lhotka.net/ArticleIndex.aspx?area=CSLA .NET&#10;http://www.lhotka.net/ArticleIndex.aspx?area=CSLA%20.NET">Expert VB 
+2005&nbsp;and C# 2005 Business Objects</A></I> books<FONT face="Times New Roman" size=3> </FONT></FONT></DIV>
+<DIV align=left><FONT face=Arial size=1><FONT size=2>
+<DIV align=left><FONT face=Arial size=1>Microsoft <A title="blocked::http://www.microsoft.com/rd&#10;http://www.microsoft.com/rd">Regional Director </A>and <A title="blocked::http://www.microsoft.com/mvp&#10;http://www.microsoft.com/mvp">MVP</A></FONT></FONT></FONT></DIV></DIV></DIV></DIV></SPAN></DIV><BR>
+<BLOCKQUOTE>
+  <DIV class=OutlookMessageHeader align=left>
+  <HR>
+  <B>From:</B> Idriss Bennis [mailto:cslanet@lhotka.net] <BR><B>Sent:</B> 
+  Sunday, June 11, 2006 3:58 PM<BR><B>To:</B> 
+  rocky@lhotka.net<BR><B>Subject:</B> RE: Re: [CSLA .NET] passing a class that 
+  inherits fromBusinessListBase to a web service method<BR><BR></DIV>
+  <DIV></DIV>Hi, I have purchased the book and read Chapter 11. It does not 
+  cover my issue. May be you can shed some light on it. I have also reviewed the 
+  source code that comes with the book. I have no problem passing to the web 
+  service and sending from the web service any class derived from <FONT class="">BusinessBase. Classes deriving from BusinessBase contain on item so 
+  passing or receiving one item works fine. </FONT><BR>&nbsp;<BR>so for example 
+  <BR>&nbsp;<BR>public class Project : <FONT class="" color=#008080>BusinessBase</FONT>&lt;<FONT class="" color=#008080>Project</FONT>&gt; contains information for one project<BR><FONT color=#0000ff>public</FONT> <FONT color=#0000ff>class</FONT> <FONT color=#008080>Projects</FONT> : <FONT class="" color=#008080>BusinessListBase</FONT>&lt;<FONT class="" color=#008080>Projects</FONT>, <FONT class="" color=#008080>Project</FONT>&gt;, <FONT color=#008080>ISerializable<BR></FONT>&nbsp;<BR>What I want to do is pass a 
+  the Projects class that derives from <FONT class="">businessListBase which 
+  holds a list of projects. That class can not be serialized for some reason. is 
+  it because it supports IBindingList. It looks like it creates a Projects[] 
+  array in the proxy document but I can't seem to be able to add anything to 
+  it.</FONT><BR><BR>If you can shed some light, much 
+  apprieciated.<BR>&nbsp;<BR>Idriss<BR><BR><BR><BR>
+  <BLOCKQUOTE>
+    <HR id=EC_stopSpelling>
+    From: cslanet@lhotka.net<BR>To: idrissbennis@hotmail.com<BR>Date: Tue, 6 Jun 
+    2006 17:27:13 -0500<BR>Subject: Re: [CSLA .NET] passing a class that 
+    inherits from BusinessListBase to a web service method<BR><BR>Have you 
+    looked at Chapter 11? It specifically covers how to create a web service 
+    that returns data based on a business object.<BR><BR><BR></BLOCKQUOTE><BR>
+  <HR>
+  Express yourself instantly with MSN Messenger! <A href="http://clk.atdmt.com/AVE/go/onm00200471ave/direct/01/" target=_new>MSN 
+  Messenger</A> <BR><BR><BR></BLOCKQUOTE></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

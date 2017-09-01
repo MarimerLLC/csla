@@ -1,0 +1,10 @@
+<html><header><title>Login configuration</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Login configuration</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9804.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>lazaroms posted on Wednesday, November 24, 2010</h2><p>Hello all:</p>
+<p>I need help one more time.</p>
+<p>I write the following code in my web config file:</p>
+<p>&nbsp;&nbsp;&nbsp; &lt;authentication mode=&quot;Forms&quot;&gt;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;forms loginUrl=&quot;Login.aspx&quot; name=&quot;MyProject&quot; /&gt;<br />&nbsp;&nbsp;&nbsp; &lt;/authentication&gt;<br />&nbsp;&nbsp;&nbsp; &lt;authorization&gt;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;deny users=&quot;?&quot; /&gt;<br />&nbsp;&nbsp;&nbsp; &lt;/authorization&gt;</p>
+<p>The problem is that the Login page is showing everytime before I show another webpage.</p>
+<p>I think I missed something because I don&#39;t see logic that the user has to log in before seeing any page. It sounds logic to me for user who are not authenticated but not for users.</p>
+<p>Thanks,</p>
+<p>&nbsp;</p>
+<p>Lazaro Manuel</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Sunday, November 28, 2010</h2><p>Do you also have the code in global.asax.cs (or .vb) to restore the user&#39;s principal on each postback? That&#39;s a requirement. See <em>Expert 2008 Business Objects</em> and the ProjectTracker PTWeb sample for examples.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

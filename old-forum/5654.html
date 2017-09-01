@@ -1,0 +1,81 @@
+<html><header><title>I am looking for a simple n-level undo example</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>I am looking for a simple n-level undo example</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5654.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>ezimmerman posted on Wednesday, October 22, 2008</h2><br>Really the only thing that I am looking to accomplish is n-level undo/redo, but having a hard time grasping how to use CSLA for that. I can understand the concepts of saving a snapshot of an object and storing it, but everything I've read says that undo/redo is "built in".<br><br>Are there any clear, simple examples for "n-level" undo/redo?<br><br>Thanks,<br>Eric<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, October 22, 2008</h2><P>There are different scenarios:</P>
+<OL>
+<LI>No data binding</LI>
+<LI>Web Forms data binding</LI>
+<LI>Windows Forms data binding</LI>
+<LI>Windows Forms data binding w/ top level cancel button</LI>
+<LI>WPF data binding</LI>
+<LI>WPF data binding w/ CslaDataProvider</LI></OL>
+<P>Scenarios 1, 2 and 5 are all pretty similar - you explicitly call the object's n-level undo methods:</P>
+<BLOCKQUOTE dir=ltr>
+<P>Customer cust = Customer.GetCustomer(123);<BR>cust.BeginEdit();<BR>// interact with cust<BR>cust.ApplyEdit(); // or cust.CancelEdit();<BR>cust = cust.Save(); // unless you did a CancelEdit() of course</P></BLOCKQUOTE>
+<P>Scenarios 3 and 4 are covered in the <EM>Using CSLA .NET 3.0</EM> ebook, and are not trivial. This is because data binding directly interacts with the object's undo features, and Windows Forms has a lot of very specfiic rules YOU MUST FOLLOW or it won't work right.</P>
+<P>The new CslaActionExtender in version 3.6 should help simplify some aspects of scenarios 3 and 4.</P>
+<P>Scenario 6 may be the simplest of the bunch, because you just set the ManageObjectLifetime property of the CslaDataProvider to True and let the CslaDataProvider (and WPF commanding) do nearly all the work.</P>
+<P>In any case, the ProjectTracker reference app is the place to look for examples of all interface types.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ezimmerman replied on Wednesday, October 22, 2008</h2><br>Alright, how about a specific case...<br><br>- no data binding.<br>- We have one object and one 'description' string property.<br>- The description is originally blank.<br><br>1. User changes the description to "help".<br>2. User changes the description to "I'm stuck".<br>3. User clicks undo<br>4. User clicks undo (we should be back to &lt;blank&gt;)<br>5. User clicks redo<br>6. User clicks redo. (and we should be back to "I'm stuck")<br><br>What are the proper calls for this scenario?<br><br>Thanks,<br>Eric<br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, October 22, 2008</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>The undo feature of CSLA doesn&#8217;t work (easily) at that
+level of granularity. It doesn&#8217;t record specific changes &#8211; it just
+takes a snapshot of the object graph&#8217;s state at a point in time, and
+reverts to that point.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>So to do what you describe:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>x.BeginEdit()<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>x.Description = &#8220;help&#8221;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>x.BeginEdit()<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>x.Description = &#8220;I&#8217;m stuck&#8221;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>x.CancelEdit()<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>Print x.Description<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&gt; &#8220;help&#8221;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>x.CancelEdit()<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>Print x.Description<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&gt; &#8220;&#8221;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>There is no redo supported by CSLA, so 5 and 6 won&#8217;t happen.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>And really, BeginEdit() is an expensive operation &#8211; it isn&#8217;t
+something you want to do to trap a single field change &#8211; it is designed
+to work at the object graph level.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky</span><b><span><o:p></o:p></span></b></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ezimmerman replied on Wednesday, October 22, 2008</h2><br>Thank-you for the response.<br>I'm disappointed that redo isn't a part of it... <br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,122 @@
+<html><header><title>Questions about Undo scenario where BusinessBase&lt;T&gt; object hidden in cache &quot;wrapper&quot;?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Questions about Undo scenario where BusinessBase&lt;T&gt; object hidden in cache &quot;wrapper&quot;?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5653.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>rsbaker0 posted on Wednesday, October 22, 2008</h2><P>To support lazy loading, I've implement a very simple "wrapper" class that just has two fields:</P>
+<P>1.&nbsp;key field (for fetching from the database) </P>
+<P>2.&nbsp;reference to a BusinessBase&lt;T&gt; derived object</P>
+<P>(class header looks something like this: <FONT color=#0000ff size=2><FONT color=#0000ff size=2>public</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>class</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>SingleObjectCache</FONT></FONT><FONT size=2>&lt;T&gt; </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>where</FONT></FONT><FONT size=2> T : </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>MyFetchableBusinessBase</FONT></FONT><FONT size=2>&lt;T&gt;)</P></FONT>
+<P>The purpose of the class is to let another class declare one of these as a member and just let it call GetObject(key) without worrying about&nbsp;duplicate hits to the database. On the first call, the SingleObjectCache object tries to fetch T from the database, and stores a both the key and reference to&nbsp;T if finds it and null otherwise. Subsequent calls using the same key return whatever reference was stored. </P>
+<P>Here is a typical use...</P>
+<P><FONT size=2>SingleObjectCache&lt;STATION&gt; _StationCacheObj;</FONT></P>
+<P><FONT size=2>protected STATION GetStationObject()<BR>{<BR>&nbsp;&nbsp; if (String.IsNullOrEmpty(_key))<BR>&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return null;<BR>&nbsp;&nbsp; }<BR>&nbsp;&nbsp; else<BR>&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (_StationCacheObj == null)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _StationCacheObj = new SingleObjectCache&lt;STATION&gt;();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return _StationCacheObj.GetObject(_key);<BR>&nbsp;&nbsp; }<BR>}</P></FONT>
+<P>Since&nbsp;this seems to hide the IUndoableObject interface of T from containing object, CopyState, UndoChanges, ApplyChanges will just see this as a normal field&nbsp;just serialize the entire contents of the cache wrapper and it's contents without cascading the IUndoableObject interface to the reference of T. </P>
+<P>My question is, why is this bad? I'm trying to figure out what will break. Certainly BeginEdit/CancelEdit/ApplyEdit on the root&nbsp;will dutifully manage the pushing/popping&nbsp;such object on the state stack, but the EditLevel of T won't ever change (or be compared with the root). </P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, October 22, 2008</h2><P>I don't understand the issue you are having? It appears that your wrapper returns the actual business object, so any consuming code doesn't interact with the wrapper other than to get the object?</P>
+<P>So I don't see how this is any different from any other direct use of the business object?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rsbaker0 replied on Thursday, October 23, 2008</h2><P>The issue is that when I include one of these as a "child" of another object, the state management implementation sees only the wrapper, not the wrapped object inside it. So, for example, when CopyState() is called, it looks like a normal field rather than a BO and CopyState() just stores&nbsp; the wrapper (and contained object)&nbsp;on the state stack -- it can't cascade the CopyState() call to the wrapped object.</P>
+<P>My initial response (e.g. the question above) was "so, it still keeps a copy of the object on a stack", it just doesn't maintain the EditLevel. I was trying to figure out what problems this would cause. </P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, October 23, 2008</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Oh, I see, so you want a parent to &#8220;see through&#8221;
+this as a child.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>You can do that, but your wrapper must participate in the undo
+process. In other words, the wrapper must implement IUndoableObject and cascade
+calls down to the child object. I would think that the wrapper could just act
+as a pass-through, so it wouldn&#8217;t track edit levels by itself &#8211; it would
+always just delegate the calls directly to the object it contains.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I haven&#8217;t done this, so I don&#8217;t know what side-issues
+you may encounter, but in general this should work. <o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Obviously the wrapper needs to be Serializable, and if you want
+to go to CSLA .NET for Silverlight, your wrapper will need to implement the
+functionality required by the MobileFormatter (which means implementing Csla.Serialization.Mobile.IMobileObject).<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rsbaker0 replied on Friday, October 24, 2008</h2><P>Thanks, that's a great idea. </P>
+<P>Just to be clear, a design point of the undo implementation is to preserve references to existing BusinessBase objects? Fields you just put on the state stack, but object that implement IUndoableObject don't get put on the stack -- you just cascade the call to them so existing references to them stay intact, right?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, October 24, 2008</h2>That is correct, undo is an "in place" operation for child objects. I really think your wrapper would just delegate every call in that interface down to the child object it contains.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rsbaker0 replied on Friday, October 24, 2008</h2><P>Interesting.</P>
+<P>It seems to be working well but, I'm finding I'm duplicating much of the work you're doing with LoadProperty of a managed child in 3.5:</P>
+<P>- Setting edit level (had to copy your ResetChildEditLevel implementation to a local helper class)...</P>
+<P>- Set parent for wrapped child to the containing object of the wrapper... </P>
+<P>- Adding wrapped child to active child list of parent (I started with CSLA 2.1 and&nbsp;had my own version of your "child data portal" that tracked a list of updateable child objects that needed to be saved when root is saved)... </P>
+<P>- Cascading all the IUndoable object calls</P>
+<P>I&nbsp; haven't waded into the managed properties yet, but I suspect much of this may just "go away" when I do. Maybe an obvious way&nbsp;will reveal itself to formalize the concept of a "lazy child" in the framework itself...</P>
+<P>Thanks again for your help. The framework is proving flexible enough to handle many interesting scenarios. </P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, October 24, 2008</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Well, wait a minute, if all you are trying to do is lazy loading
+of a child &#8211; that is absolutely supported in 3.5 thanks to the field
+manager.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>In fact one of the major reasons for building the FM the way I did
+was to simplify child object management. So even if you don&#8217;t use the FM
+for other properties, you REALLY should use it for all child object references.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>The basic concept is this:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>public MyChild Child<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>{<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp; if (!FieldManager.FieldExists(ChildProperty))<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp; LoadProperty(ChildProperty, Child.GetChild(this.Id));<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp; return GetProperty(ChildProperty);<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>}<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>There are variations of course, but you should be able to get
+the idea from that code.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

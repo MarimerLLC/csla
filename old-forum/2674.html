@@ -1,0 +1,33 @@
+<html><header><title>Inheritance and Factories</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Inheritance and Factories</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/2674.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>ksirmons posted on Tuesday, April 10, 2007</h2><P class=MsoNormal>Howdy all,</P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal>I am working on a Medical Records application and think I need to use inheritance for some common behavior that all of my different medical record types use.</P>
+<P class=MsoNormal>Examples of common behavior are record locking and change management.</P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal>I do not know what type of medical record a certain ID will be until I get some information from the database.<SPAN>&nbsp; </SPAN></P>
+<P class=MsoNormal>Here is a quick and dirty run down of the database structure:<SPAN>&nbsp; </SPAN>A common MR_Entry table that has the Medical Record ID and a Class.<SPAN>&nbsp; </SPAN>The Class is what tells me it is a physical exam or a biopsy.<SPAN>&nbsp; </SPAN>The Biopsy or Physical Exam each has their own database structures.</P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal>I would like to do something like:</P>
+<P class=MsoNormal>Dim MR as new MedicalRecord(1234) and have the MedicalRecord not only get its common data from the database, but also determine it should be a biopsy (which inherits from MedicalRecord) and instantiates a Biospy for return to the MR.</P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal>Once I have the MR, I can examine its class property and based on that be able to tell if it is a Biospy or a PhysicalExam.</P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal>I will then take that MR in the GUI and load a custom control designed for Biospy and pass it the MR, letting the control worry about how to hook the data from the MR to the fields contained in the control. </P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal>Something like form.controls.add(mr.class + “.ascx”)</P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal>I am seeing generics and inheritance and factories dancing through my head, but can’t quite decide what will be the best way to execute this.</P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal>Thank you,</P>
+<P class=MsoNormal>Keith</P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>skagen00 replied on Tuesday, April 10, 2007</h2><P>Hi Keith,</P>
+<P>I do this exact thing.</P>
+<P>Profiles for instance can be individuals or organizations.</P>
+<P>I have the regular factory methods for individuals and organizations. GetIndividual(x), GetOrganization(x).</P>
+<P>And I have a ProfileFactory class that has methods such as "GetProfile(x)", which I believe does an Exists() on individual &amp; organization to narrow down which class's factory method it should delegate to.</P>
+<P>Profile implements IProfile (thus Individual and Organization do so as well).</P>
+<P>And GetProfile(x) on the ProfileFactory class&nbsp;returns an IProfile.</P>
+<P>hope that helps. </P>
+<P>Chris</P>
+<P>&nbsp;</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

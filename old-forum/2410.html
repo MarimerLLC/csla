@@ -1,0 +1,142 @@
+<html><header><title>Getting HttpCurrent info through web service</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Getting HttpCurrent info through web service</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/2410.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>ltgrady posted on Thursday, February 22, 2007</h2><P>We have an ASP.NET (C#) app using CSLA 1.5.&nbsp; When we created the app and our objects we began with the current version and haven't updated yet.&nbsp; Because of our very customized security needs we had to build a custom authorization system.&nbsp; We authenticate using the built in asp.net tools.</P>
+<P>So in our login page we use Membership.ValidateUser to validate and then when we call FormsAuthentication.RedirectFromLoginPage we don't create a cookie, and if I remember correctly, the principle object is stored in the session?&nbsp; It's been a while and I didnt' develop that part of the system.</P>
+<P>Anyway, a majority of our CSLA BO's use the HttpContext.Current.User.Identity.Name to identify who the logged in user is.&nbsp; That is how we decide which options are available to the user, which brands and products they are allowed to see, to pull up their proposals, etc..</P>
+<P>Our problem:<BR>Now we're developing a Web Service.&nbsp; We want to, of course, continue to use our existing CSLA object.&nbsp; This first one is using our ProductSearch object.&nbsp; We're passing in the credential in the SOAP header.&nbsp; Now I can validate the user.&nbsp;&nbsp; However, I can't seem to find the right method or code to get HttpContext.Current.User.Identity.Name to work in my business objects.</P>
+<P>If I can get this working everything else will flow.&nbsp; How do I do this?</P>
+<P>Thanks, larry</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, February 22, 2007</h2><P>I hate to say it, but relying on HttpContext in a business layer is not a good long-term strategy. While there is an answer to your short-term issue, looking forward to WCF you may not even host in IIS/ASP.NET and so HttpContext won't exist at all.</P>
+<P>You are better off, in&nbsp;a business layer, using System.Threading.Thread.CurrentPrincipal.</P>
+<P>Or even <EM>better</EM> is to do what I did in CSLA .NET 2.0 with Csla.ApplicationContext.User, which automatically falls back from one to the other.</P>
+<P>In the short term, look at Chapter 10 (in the 1.0 book) at the Login() method I implement in the web service. That sets both the HttpContext and Thread to use the correct principal based on the user's credentials.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ltgrady replied on Friday, February 23, 2007</h2><P>Actually our plan is to move to CSLA 2.x and when we do to incorporate/customize the CSLA security framework.&nbsp;I didn't realize until now how limiting HttpContext would turn out to be.</P>
+<P>Thanks for the short term solution though, i'll take another look at the chapter and give it a shot.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ltgrady replied on Friday, February 23, 2007</h2><P>I think I have this working but it seems a bit too simple.&nbsp; Can anyone reading please take a look and see if there are any problems with doing this the way i'm doing it.&nbsp; Security isn't exactly my area of expertise.</P><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (</FONT><FONT size=2>UserID == </FONT><FONT color=#0000ff size=2>null</FONT><FONT size=2> || Password == </FONT><FONT color=#0000ff size=2>null</FONT><FONT size=2>)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</FONT><FONT color=#0000ff size=2>throw</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> System.Security.</FONT><FONT color=#008080 size=2>SecurityException</FONT><FONT size=2>(</FONT><FONT color=#800000 size=2>"Valid credentials not provided."</FONT><FONT size=2>);</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (</FONT><FONT color=#008080 size=2>Membership</FONT><FONT size=2>.ValidateUser(UserID, Password))<BR>{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</FONT><FONT size=2>System.Security.Principal.</FONT><FONT color=#008080 size=2>IPrincipal</FONT><FONT size=2> principle = </FONT><FONT color=#008080 size=2>Thread</FONT><FONT size=2>.CurrentPrincipal;</FONT></P>
+<P><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if</FONT><FONT size=2> (principle.Identity.IsAuthenticated)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</FONT><FONT color=#008080 size=2>HttpContext</FONT><FONT size=2>.Current.User = principle;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</FONT><FONT color=#0000ff size=2>else<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</FONT><FONT size=2>{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</FONT><FONT color=#0000ff size=2>throw</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> System.Security.</FONT><FONT color=#008080 size=2>SecurityException</FONT><FONT size=2>(</FONT><FONT color=#800000 size=2>"Invalid member, user, or password"</FONT><FONT size=2>);<BR>&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;}<BR>}<BR></FONT><FONT color=#0000ff size=2>else<BR></FONT><FONT size=2>{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</FONT><FONT color=#0000ff size=2>throw</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> System.Security.</FONT><FONT color=#008080 size=2>SecurityException</FONT><FONT size=2>(</FONT><FONT color=#800000 size=2>"Invalid member, user, or password"</FONT><FONT size=2>);<BR></FONT><FONT size=2>}</FONT></P>
+<P><FONT size=2></FONT>&nbsp;</P>
+<P><FONT size=2><FONT size=3>After doing this HttpContext.Current.User.Identity.Name is working in all of my business objects which is what we need right now.&nbsp; I realize that long term this isn't the best solution and we plan on addressing that, however, for this short term need is there anything above that seems foundationally wrong or that would compromise my security?</FONT></FONT></P>
+<P><FONT size=2>Thanks, lg</P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, February 23, 2007</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>That&#8217;s how you do it &#8211; not everything has to be hard
+</span><span>J</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>However, it is very important that you realize that soap headers
+are not automatically encrypted or anything. The username/password in the soap
+header is in cleartext and can be read by anyone who gets the data stream.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>If you want to encrypt it then you need keys on both ends, and
+then you have to secure the keys, etc. That gets very hard and messy.
+Solutions:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoListParagraph><span><span>1.<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span></span><span>Use SSL (https)<o:p></o:p></span></p>
+
+<p class=MsoListParagraph><span><span>2.<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span></span><span>Use WSE 3.0<o:p></o:p></span></p>
+
+<p class=MsoListParagraph><span><span>3.<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span></span><span>Use WCF<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I don&#8217;t recommend trying to write your own key exchange
+protocol and everything else that&#8217;s required &#8211; that&#8217;s just
+asking for trouble, or at best a false sense of security. Very few people in
+the world have fully thought through everything it takes to build that kind of
+security, and they are the people who created SSL, WS-Security, etc.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<div>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> ltgrady
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Friday, February 23, 2007 10:30 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] Getting HttpCurrent info through web service<o:p></o:p></span></p>
+
+</div>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>I think I have this working but it seems a bit too simple.&nbsp; Can anyone
+reading please take a look and see if there are any problems with doing this
+the way i'm doing it.&nbsp; Security isn't exactly my area of expertise.<o:p></o:p></p>
+
+<p><span>if</span><span> (UserID == <span>null</span> || Password == <span>null</span>)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>throw</span> <span>new</span> System.Security.<span>SecurityException</span>(<span>&quot;Valid credentials not provided.&quot;</span>);<o:p></o:p></span></p>
+
+<p><span>if</span><span> (<span>Membership</span>.ValidateUser(UserID,
+Password))<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;System.Security.Principal.<span>IPrincipal</span> principle = <span>Thread</span>.CurrentPrincipal;</span><o:p></o:p></p>
+
+<p><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if</span><span> (principle.Identity.IsAuthenticated)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>HttpContext</span>.Current.User = principle;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>else<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>throw</span> <span>new</span>
+System.Security.<span>SecurityException</span>(<span>&quot;Invalid member, user, or password&quot;</span>);<br>
+&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;}<br>
+}<br>
+<span>else<br>
+</span>{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>throw</span>
+<span>new</span> System.Security.<span>SecurityException</span>(<span>&quot;Invalid member, user, or password&quot;</span>);<br>
+}</span><o:p></o:p></p>
+
+<p>&nbsp;<o:p></o:p></p>
+
+<p>After doing this HttpContext.Current.User.Identity.Name is working in all of
+my business objects which is what we need right now.&nbsp; I realize that long
+term this isn't the best solution and we plan on addressing that, however, for
+this short term need is there anything above that seems foundationally wrong or
+that would compromise my security?<o:p></o:p></p>
+
+<p><span>Thanks, lg<o:p></o:p></span></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

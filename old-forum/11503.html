@@ -1,0 +1,15 @@
+<html><header><title>Creating an authentication trough competences</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Creating an authentication trough competences</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11503.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Tobique posted on Tuesday, July 24, 2012</h2><p>Hy I&#39;m a new csla user and i have a question.</p>
+<p>&nbsp;</p>
+<p>My application has a user db witch authenticates trough competences instead of roles. </p>
+<p>Now my question is can i modify the Framework so it does it for me just like the isInRole Authentication?</p>
+<p>&nbsp;</p>
+<p>ex. HasCompetence(order)</p>
+<p>&nbsp;</p>
+<p>thx</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Tuesday, July 24, 2012</h2><p>Hi,</p>
+<p>read this blogpost from rocky:&nbsp;http://www.lhotka.net/weblog/PermissionbasedAuthorizationVsRolebasedAuthorization.aspx&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Tobique replied on Tuesday, July 24, 2012</h2><p>Thx I&#39;ll try this then, any Tips for helping me load the permissions instead of the roles? or do I just edit use the CSLAPrincipal and CSLAIdendity as base classes and edit witch information is loaded.</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>vschaak replied on Wednesday, July 25, 2012</h2><p>Hi Tobique,</p>
+<p>first of all, you may probably want to inherit form cslaIdentityBase, since you&#39;ll be able to add properties and functionality. For example properties like &#39;realName&#39; or &#39;PWDExpired&#39; or a functionality to change password, just to name some.</p>
+<p>In the process of fetching uservalidation-data from your DB, you&#39;re free then to retrieve your list of permissions, eventually as a list of strings as a simple approach and add them to the CSLA-Roles, which is something like a mobileList(of string), if I remember correctly.</p>
+<p>That&#39;s all. You only have to take care not to puzzle things, as many authorization-systems use Roles (&#39;Salesmanager&#39; or &#39;admin&#39;&nbsp;as an example)&nbsp;to group permissions (&#39;EditThis&#39; or &#39;deleteThat&#39; for example)&nbsp;and/or users. In such environment one has to be clear, that those Roles are only to simplify permission and/or user-managment and have no direct relevance for your authorization object, which only has to know about permissions, not roles! Therefore your DB-query to fetch your Identity-class should retrieve permissions to add them to the CSLA-roles, no roles, if present in your authorization-system.</p>
+<p>Hope this helps!?</p>
+<p>Best wishes</p>
+<p>Volker</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

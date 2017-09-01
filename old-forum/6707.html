@@ -1,0 +1,105 @@
+<html><header><title>CSLA .NET 3.6.2 available</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA .NET 3.6.2 available</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6707.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka posted on Tuesday, March 31, 2009</h2><P>CSLA .NET 3.6.2 is now available for download.</P>
+<UL>
+<LI><A href="http://www.lhotka.net/weblog/ct.ashx?id=9d8e656e-c328-4eee-8825-405dc7e9d0bc&amp;url=http%3a%2f%2fwww.lhotka.net%2fweblog%2fct.ashx%3fid%3d543ead80-70bc-4f47-ae63-a8f9e63a94c6%26url%3dhttp%253a%252f%252fwww.lhotka.net%252fcslanet%252fdownload.aspx"><STRONG><FONT color=#0000ff>CSLA .NET for Windows</FONT></STRONG></A> 
+<LI><A href="http://www.lhotka.net/weblog/ct.ashx?id=9d8e656e-c328-4eee-8825-405dc7e9d0bc&amp;url=http%3a%2f%2fwww.lhotka.net%2fweblog%2fct.ashx%3fid%3d543ead80-70bc-4f47-ae63-a8f9e63a94c6%26url%3dhttp%253a%252f%252fwww.lhotka.net%252fcslalight%252fdownload.aspx"><STRONG><FONT color=#0000ff>CSLA .NET for Silverlight</FONT></STRONG></A> </LI></UL>
+<P>This is the second point release of CSLA .NET 3.6, and it includes a number of bug fixes, but more importantly there are a number of new features and enhancements based on feedback from users of version 3.6 over the past four months. </P>
+<P>Highlights include:</P>
+<LI>For both Windows and Silverlight 
+<UL>
+<LI>New methods on the ObjectFactory base class to better enable creation of a DAL object 
+<LI>Better support for lazy loaded fields, where an exception is thrown if the field is mis-used accidentally (thus reducing bugs) 
+<LI>ErrorDialog control for WPF and Silverlight to enable XAML-only handling of exceptions from CslaDataProvider 
+<LI>CslaDataProvider now has a Saved event to simplify some UI scenarios 
+<LI>RegisterProperty() now accepts a lambda expression to identify the property name, allowing the compiler to check the name, and avoiding the use of the string literal 
+<LI>MobileDictionary type, so you can create a dictionary that serializes between Silverlight and .NET </LI></UL>
+<LI>For Silverlight only 
+<UL>
+<LI>Better type name resolution, so you can now specify a type by "Namespace.Class, Assembly" without supplying the generic "Version=..." text 
+<LI>New InventoryDemo sample project (C# only right now - it is a work in progress) 
+<LI>Code snippets for async factory and data access methods </LI></UL>
+<P>&nbsp;</P>
+<P>On a related note, the first segment of my CSLA .NET for Silverlight video series is complete, and I’m nearly done with the web infrastructure for the download site. You can get a summary of the video series content on the <A href="http://www.lhotka.net/weblog/ct.ashx?id=9d8e656e-c328-4eee-8825-405dc7e9d0bc&amp;url=http%3a%2f%2fdownload.lhotka.net%2fDefault.aspx%3ft%3dSLVid01"><STRONG><FONT color=#0000ff>CSLA .NET for Silverlight video download page</FONT></STRONG></A>. </P>
+<P>Once I get the store and download site complete, you’ll be able to purchase “early adopter'” access to the series – which means you’ll get access to each video segment as soon as it comes online. Look for this in the next couple weeks!</P></LI></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Geeky replied on Thursday, April 02, 2009</h2><P>Good job rocky!</P>
+<P>The lambda expressions for property names are brilliant - strings have always bugged me ;-)</P>
+<P>Slight bug though (which confused by poor little brain ;-))&nbsp; Line 225 of BusinessBase creates a ValidationException using Resources.NoSaveEditingException - as this happens when the object is not valid, shouldn't it be another message?</P>
+<P>Cheers</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, April 02, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Probably true, but it has been that way for many years. Changing
+the exception type would be a breaking change.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky</span><o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Thursday, April 02, 2009</h2>I think he means the string message is not the appropriate message, not that the exception type should be changed. <br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, April 02, 2009</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Doh!<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Yes, I see, that is a bug.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> ajj3085
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Thursday, April 02, 2009 10:20 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: CSLA .NET 3.6.2 available<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>I think he means the string message is not the appropriate
+message, not that the exception type should be changed. <br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Geeky replied on Wednesday, July 28, 2010</h2><p>Sorry to resurect this, but I have just noticed the same issue&nbsp;in BusinessListBase (line 1026) and BusinessBindingListBase (line 896).&nbsp; In Csla v4 now though - good job by the way :-).</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

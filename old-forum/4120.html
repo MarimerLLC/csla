@@ -1,0 +1,30 @@
+<html><header><title>OT: WPF combobox</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>OT: WPF combobox</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4120.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 posted on Friday, January 04, 2008</h2>Hi,<br><br>I have a WPF control with a combobox.&nbsp; The ItemTemplate is defined like this:<br>
+
+<p class="MsoNormal"><span><span></span></span><span>&lt;</span><span>ComboBox.ItemTemplate</span><span>&gt;<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp; </span></span><span>&lt;</span><span>DataTemplate</span><span>&gt;<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; </span></span><span>&lt;</span><span>Grid</span><span> HorizontalAlignment</span><span>="Left"&gt;<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; </span></span><span>&lt;</span><span>Grid.ColumnDefinitions</span><span>&gt;<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;  &nbsp;&nbsp;  &nbsp;&nbsp;  &nbsp;&nbsp;  </span><span></span></span><span>&lt;</span><span>ColumnDefinition</span><span> Width</span><span>="140"
+/&gt;<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; </span></span><span>&lt;</span><span>ColumnDefinition</span><span> Width</span><span>="140"
+/&gt;<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; </span></span><span>&lt;/</span><span>Grid.ColumnDefinitions</span><span>&gt;<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; </span></span><span>&lt;</span><span>TextBox</span><span> Grid.Column</span><span>="0"</span><span> Height</span><span>="Auto"</span><span> IsReadOnly</span><span>="{</span><span>Binding</span><span> Converter</span><span>={</span><span>StaticResource</span><span> NegationFormatter</span><span>},</span><span> Path</span><span>=IsNew}"</span><span> Text</span><span>="{</span><span>Binding</span><span> Path</span><span>=Number}"</span><span> Name</span><span>="Number"</span><span> Width</span><span>="140"
+/&gt;<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></span><span>&lt;</span><span>TextBox</span><span> Grid.Column</span><span>="1"</span><span> Height</span><span>="Auto"</span><span> IsReadOnly</span><span>="{</span><span>Binding</span><span> Converter</span><span>={</span><span>StaticResource</span><span> NegationFormatter</span><span>},</span><span> Path</span><span>=IsNew}"</span><span> Text</span><span>="{</span><span>Binding</span><span> Path</span><span>=Extension}"</span><span> Name</span><span>="Extension"</span><span> Width</span><span>="140"
+/&gt;<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; </span></span><span>&lt;/</span><span>Grid</span><span>&gt;<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;  </span><span></span></span><span>&lt;/</span><span>DataTemplate</span><span>&gt;<o:p></o:p></span></p><span><span></span></span><span>&lt;/</span><span>ComboBox.ItemTemplate</span><span>&gt;<br><br><br></span>What I'd like to do is have a Click on the textboxes select the item to which they belong, instead of moving the focus to the textbox.&nbsp; I'm sure there's something simple I'm missing, but I can't figure out how to do this..<br><br>Thanks<br>Andy<span> </span><font color="#ffffff"><span></span></font></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>chrislw replied on Friday, January 11, 2008</h2>Sounds like you want a label instead of a textbox.&nbsp; Can you explain the problem in more detail?</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Friday, January 11, 2008</h2>Well, the problem I want to solve is that I have a list of Phone numbers.&nbsp; The user can select an existing one (but not edit) or can enter a new one and select it.&nbsp; If you databind the combobox items, is there a way to specify a different template based on some arbitrary value?&nbsp; I don't have a problem with Label or TextBlock, but I do need the last time in the combobox's items to be TextBoxes.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>chrislw replied on Friday, January 11, 2008</h2><P>I'm looking into the switching template idea.&nbsp; I like that idea.&nbsp; </P>
+<P>As for the textbox focus causing the item to be selected, check out this link:</P>
+<P><A href="http://forums.microsoft.com/MSDN/ShowPost.aspx?PostID=2616125&amp;SiteID=1">http://forums.microsoft.com/MSDN/ShowPost.aspx?PostID=2616125&amp;SiteID=1</A></P>
+<P>Meanwhile, I'll let you know if I find out the template idea.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Friday, January 11, 2008</h2>Awesome, thanks.<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

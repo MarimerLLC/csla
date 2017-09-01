@@ -1,0 +1,118 @@
+<html><header><title>Data Portal web.config Remoting question</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Data Portal web.config Remoting question</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/8685.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Sameer posted on Thursday, March 18, 2010</h2><p>I am using CSLA 3.8 in my application. I am trying to set up data portal in the application server with the following section in the web.config:</p>
+<p>&nbsp;</p>
+<p>
+<p>&nbsp;&nbsp;&lt;system.runtime.remoting&gt;</p>
+<p>&nbsp;&nbsp; &nbsp;&lt;application&gt;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp;&lt;service&gt;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;&lt;wellknown mode=&quot;SingleCall&quot; objectUri=&quot;RemotingPortal.rem&quot; type=&quot;Csla.Server.Hosts.RemotingPortal, Csla&quot;/&gt;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp;&lt;/service&gt;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp;&lt;channels&gt;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;&lt;channel ref=&quot;http&quot;&gt;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&lt;serverProviders&gt;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&lt;provider ref=&quot;wsdl&quot;/&gt;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&lt;formatter ref=&quot;soap&quot; typeFilterLevel=&quot;Full&quot;/&gt;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&lt;formatter ref=&quot;binary&quot; typeFilterLevel=&quot;Full&quot;/&gt;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&lt;/serverProviders&gt;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;&lt;/channel&gt;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp;&lt;/channels&gt;</p>
+<p>&nbsp;&nbsp; &nbsp;&lt;/application&gt;</p>
+<p>&nbsp;&nbsp;&lt;/system.runtime.remoting&gt;</p>
+</p>
+<p>&nbsp;</p>
+<p>The above does not seem to work. Is it not possible to use this code block to server up CSLA 3.8 data portal? Or do I HAVE to use WCF with CSLA 3.8 data portal?</p>
+<p>Any help is highly appreciated.</p>
+<p>Thanks,</p>
+<p>Sameer</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>ajj3085 replied on Thursday, March 18, 2010</h2><p>This is how I have mine setup:</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>
+<p><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;"><font size="2" color="#0000ff"><font size="2" color="#0000ff">
+<p>&lt;</p>
+</font></font></span><font size="2" color="#0000ff">
+<p>&nbsp;</p>
+</font></span>
+<p><span style="color:#a31515;font-size:x-small;"><span style="color:#a31515;font-size:x-small;">system.runtime.remoting</span></span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">&gt;<font size="2" color="#0000ff"><font size="2" color="#0000ff">
+<p>&lt;</p>
+</font></font></span><font size="2" color="#0000ff">
+<p>&nbsp;</p>
+</font></span></p>
+<p><span style="color:#a31515;font-size:x-small;"><span style="color:#a31515;font-size:x-small;">application</span></span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">&gt;<font size="2" color="#0000ff"><font size="2" color="#0000ff">
+<p>&lt;</p>
+</font></font></span><font size="2" color="#0000ff">
+<p>&nbsp;</p>
+</font></span></p>
+<p><span style="color:#a31515;font-size:x-small;"><span style="color:#a31515;font-size:x-small;">service</span></span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">&gt;<font size="2" color="#0000ff"><font size="2" color="#0000ff">
+<p>&lt;</p>
+</font></font></span><font size="2" color="#0000ff">
+<p>&nbsp;</p>
+</font></span></p>
+<p><span style="color:#a31515;font-size:x-small;"><span style="color:#a31515;font-size:x-small;">wellknown</span></span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;"> </span></span><span style="color:#ff0000;font-size:x-small;"><span style="color:#ff0000;font-size:x-small;">mode</span></span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">=</span></span><span style="color:#ff0000;font-size:x-small;"><span style="color:#ff0000;font-size:x-small;">&quot;</span></span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">SingleCall</span></span><span style="color:#ff0000;font-size:x-small;"><span style="color:#ff0000;font-size:x-small;">&quot;</span></span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;"> </span></span><span style="color:#ff0000;font-size:x-small;"><span style="color:#ff0000;font-size:x-small;">objectUri</span></span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">=</span></span><span style="color:#ff0000;font-size:x-small;"><span style="color:#ff0000;font-size:x-small;">&quot;</span></span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">RemotingPortal.rem</span></span><span style="color:#ff0000;font-size:x-small;"><span style="color:#ff0000;font-size:x-small;">&quot;</span></span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;"> </span></span><span style="color:#ff0000;font-size:x-small;"><span style="color:#ff0000;font-size:x-small;">type</span></span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">=</span></span><span style="color:#ff0000;font-size:x-small;"><span style="color:#ff0000;font-size:x-small;">&quot;</span></span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">Csla.Server.RemotingPortal, Csla</span></span><span style="color:#ff0000;font-size:x-small;"><span style="color:#ff0000;font-size:x-small;">&quot;</span></span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">/&gt;<font size="2" color="#0000ff"><font size="2" color="#0000ff">
+<p>&lt;/</p>
+</font></font></span><font size="2" color="#0000ff">
+<p>&nbsp;</p>
+</font></span></p>
+<p><span style="color:#a31515;font-size:x-small;"><span style="color:#a31515;font-size:x-small;">service</span></span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">&gt;<font size="2" color="#0000ff"><font size="2" color="#0000ff">
+<p>&lt;</p>
+</font></font></span><font size="2" color="#0000ff">
+<p>&nbsp;</p>
+</font></span></p>
+<p><span style="color:#a31515;font-size:x-small;"><span style="color:#a31515;font-size:x-small;">channels</span></span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">&gt;<font size="2" color="#0000ff"><font size="2" color="#0000ff">
+<p>&lt;</p>
+</font></font></span><font size="2" color="#0000ff">
+<p>&nbsp;</p>
+</font></span></p>
+<p><span style="color:#a31515;font-size:x-small;"><span style="color:#a31515;font-size:x-small;">channel</span></span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;"> </span></span><span style="color:#ff0000;font-size:x-small;"><span style="color:#ff0000;font-size:x-small;">ref</span></span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">=</span></span><span style="color:#ff0000;font-size:x-small;"><span style="color:#ff0000;font-size:x-small;">&quot;</span></span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">http</span></span><span style="color:#ff0000;font-size:x-small;"><span style="color:#ff0000;font-size:x-small;">&quot;</span></span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">&gt;<font size="2" color="#0000ff"><font size="2" color="#0000ff">
+<p>&lt;</p>
+</font></font></span><font size="2" color="#0000ff">
+<p>&nbsp;</p>
+</font></span></p>
+<p><span style="color:#a31515;font-size:x-small;"><span style="color:#a31515;font-size:x-small;">serverProviders</span></span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">&gt;<font size="2" color="#0000ff"><font size="2" color="#0000ff">
+<p>&lt;</p>
+</font></font></span><font size="2" color="#0000ff">
+<p>&nbsp;</p>
+</font></span></p>
+<p><span style="color:#a31515;font-size:x-small;"><span style="color:#a31515;font-size:x-small;">provider</span></span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;"> </span></span><span style="color:#ff0000;font-size:x-small;"><span style="color:#ff0000;font-size:x-small;">ref</span></span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">=</span></span><span style="color:#ff0000;font-size:x-small;"><span style="color:#ff0000;font-size:x-small;">&quot;</span></span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">wsdl</span></span><span style="color:#ff0000;font-size:x-small;"><span style="color:#ff0000;font-size:x-small;">&quot;</span></span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">/&gt;<font size="2" color="#0000ff"><font size="2" color="#0000ff">
+<p>&lt;</p>
+</font></font></span><font size="2" color="#0000ff">
+<p>&nbsp;</p>
+</font></span></p>
+<p><span style="color:#a31515;font-size:x-small;"><span style="color:#a31515;font-size:x-small;">formatter</span></span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;"> </span></span><span style="color:#ff0000;font-size:x-small;"><span style="color:#ff0000;font-size:x-small;">ref</span></span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">=</span></span><span style="color:#ff0000;font-size:x-small;"><span style="color:#ff0000;font-size:x-small;">&quot;</span></span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">binary</span></span><span style="color:#ff0000;font-size:x-small;"><span style="color:#ff0000;font-size:x-small;">&quot;</span></span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;"> </span></span><span style="color:#ff0000;font-size:x-small;"><span style="color:#ff0000;font-size:x-small;">typeFilterLevel</span></span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">=</span></span><span style="color:#ff0000;font-size:x-small;"><span style="color:#ff0000;font-size:x-small;">&quot;</span></span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">Full</span></span><span style="color:#ff0000;font-size:x-small;"><span style="color:#ff0000;font-size:x-small;">&quot;</span></span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">/&gt;<font size="2" color="#0000ff"><font size="2" color="#0000ff">
+<p>&lt;/</p>
+</font></font></span><font size="2" color="#0000ff">
+<p>&nbsp;</p>
+</font></span></p>
+<p><span style="color:#a31515;font-size:x-small;"><span style="color:#a31515;font-size:x-small;">serverProviders</span></span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">&gt;<font size="2" color="#0000ff"><font size="2" color="#0000ff">
+<p>&lt;/</p>
+</font></font></span><font size="2" color="#0000ff">
+<p>&nbsp;</p>
+</font></span></p>
+<p><span style="color:#a31515;font-size:x-small;"><span style="color:#a31515;font-size:x-small;">channel</span></span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">&gt;<font size="2" color="#0000ff"><font size="2" color="#0000ff">
+<p>&lt;/</p>
+</font></font></span><font size="2" color="#0000ff">
+<p>&nbsp;</p>
+</font></span></p>
+<p><span style="color:#a31515;font-size:x-small;"><span style="color:#a31515;font-size:x-small;">channels</span></span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">&gt;<font size="2" color="#0000ff"><font size="2" color="#0000ff">
+<p>&lt;/</p>
+</font></font></span><font size="2" color="#0000ff">
+<p>&nbsp;</p>
+</font></span></p>
+<p><span style="color:#a31515;font-size:x-small;"><span style="color:#a31515;font-size:x-small;">application</span></span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">&gt;<font size="2" color="#0000ff"><font size="2" color="#0000ff">
+<p>&lt;/</p>
+</font></font></span><font size="2" color="#0000ff">
+<p>&nbsp;</p>
+</font></span></p>
+<p><span style="color:#a31515;font-size:x-small;"><span style="color:#a31515;font-size:x-small;">system.runtime.remoting</span></span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">&gt;</span></span></p>
+</p>
+</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

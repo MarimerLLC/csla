@@ -1,0 +1,35 @@
+<html><header><title>Using ValidationRules that Query the Database</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Using ValidationRules that Query the Database</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/676.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>skehiaian posted on Wednesday, July 19, 2006</h2><P>I wanted to get some thoughts about the pros &amp; cons about accessing the database from within custom validation rules.&nbsp; Part of the requirements for my objects are that some of the fields must be unique. Therefore it would be very intuitive for the UI to display an error immediately when the field gets updated and the valuidation rule runs.&nbsp; Is there any downside to this? Would it be a better design to do the validation when the object is being saved? If I do end up connecting to the database from the validationrules, then I'm&nbsp;going to be executing a CommandBase object to return the results.&nbsp; Any thoughts on this design?</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>pelinville replied on Wednesday, July 19, 2006</h2><DIV>I wouldn't do it simply because it could make the objects more complex.</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>Another thing is that it could slow things down a whole bunch.&nbsp; Everytime one of those values changed you would have to go back to the database.&nbsp; Add in a remote setup and the UI becomes very unresponsive. (Unless you do some fancy thread stuff.&nbsp; I tried this and the comlexity introduced far out weighed the benifits.)</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>I find it better and acceptable in almost all situations to check these things in the Overridden Save.&nbsp; If for nothing else because&nbsp;users expect a delay when saving so this wouldn't cause as much frustration.&nbsp; </DIV>
+<DIV>&nbsp;</DIV>
+<DIV>One suggestion I have is you create a class that is responsible for the checking and don't put this code in the BO itself.&nbsp; This 'validating' class would take one or more of the objects to be checked and then mark the invalid ones.&nbsp; The 'validating' class could also return the objects that already contain the unique valuse giving the user some context to decide what to do.&nbsp; This keeps your original BO as simple as possible.</DIV>
+<DIV>&nbsp;</DIV></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, July 19, 2006</h2><P>This has been discussed before, and the key thing to remember is this: any validation you do prior to the actual save operation is <EM>not meaningful</EM>. It is, at best, a service to your user that you are making a best-guess that their update <EM>might</EM> work.</P>
+<P>But you never know for sure until the actual save is in-process, transactionally, on the server. Well, unless this is a single-threaded, single-user application <img src="/emoticons/emotion-2.gif" alt="Big Smile [:D]" /></P>
+<P>All that said, sometimes it really <EM>is</EM> nice to give the user your best guess as to whether the update might succeed. Users like that stuff. Just don't forget that you <EM>also</EM> need to do the check during the update itself.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>DansDreams replied on Thursday, July 20, 2006</h2>Just to possibly clarify a bit what Rocky said... that kind of thing is&nbsp;often going to be constraint right in the database to accomplish the requirement that it ultimately be checked as part of the save.&nbsp; You could do it in the business layer in a transaction, but it's probably not advisable for performance reasons.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>cultofluna replied on Sunday, August 20, 2006</h2>Hello,<br><br>I'm having a problem similar to this. I have an Element that has an unique ID that is provided by the database. The Element also has a keyword that must be entered by the user. This keyword also has to be unique. In my database I've set a PK on the ID and a SK on the keyword.<br>But how should I handle whether or not the keyword is a duplicate? Shoud I handle the exception from the DataPortal and analyse the error returned from the database? Should I perform a check just before the DataPortal update for the duplicate keyword?<br><br>What is the correct way to solve this in the CSLA?<br><br>Best regards,<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>david.wendelken replied on Monday, August 21, 2006</h2><P>If you are accessing the data via an editable collection (as in Role and Roles in the ProjectTracker sample application), check out the sample NoDuplicates rule in Role.</P>
+<P>A check "just before" the dataportal update isn't guaranteed to work, because another user in a multi-user system could add it "right after" you check and "just before" you issue the update.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>cultofluna replied on Tuesday, August 22, 2006</h2>Thanks for your answer, however is this in CSLA 2? I'm using 1.53, but I can't seem to find the rule NoDuplicates...<br>Could you tell me where to find it?<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, August 23, 2006</h2>
+
+
+
+
+<DIV align=left><SPAN class=218235114-22082006><FONT face=Arial color=#0000ff size=2>The NoDuplicates rule is part of the 2.0 version of 
+ProjectTracker - but it is just an example of a custom rule 
+method.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=218235114-22082006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=218235114-22082006><FONT face=Arial color=#0000ff size=2>Version 1.53 has comparable functionality in terms of 
+building rule methods, and so the same technique should work for 
+you.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=218235114-22082006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=218235114-22082006><FONT face=Arial color=#0000ff size=2>Rocky</FONT></SPAN></DIV><BR>
+<BLOCKQUOTE>
+  <DIV class=OutlookMessageHeader align=left>
+  <HR>
+  <FONT face=Tahoma size=2><B>From:</B> cultofluna [mailto:cslanet@lhotka.net] 
+  <BR><B>Sent:</B> Tuesday, August 22, 2006 4:50 AM<BR><B>To:</B> 
+  rocky@lhotka.net<BR><B>Subject:</B> Re: [CSLA .NET] Using ValidationRules that 
+  Query the Database<BR></FONT><BR></DIV>
+  <DIV></DIV>Thanks for your answer, however is this in CSLA 2? I'm using 1.53, 
+  but I can't seem to find the rule NoDuplicates...<BR>Could you tell me where 
+  to find it?<BR><BR><BR><BR></BLOCKQUOTE></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

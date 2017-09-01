@@ -1,0 +1,22 @@
+<html><header><title>Edit level mismatch in AcceptChanges</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Edit level mismatch in AcceptChanges</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11347.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>CrikeyMoses posted on Tuesday, May 08, 2012</h2><p>I&#39;m using CSLA 4.2 for Silverlight.</p>
+<p>I have a List of objects TownList : BusinessListBase&lt;TownList, Town&gt;.</p>
+<p>I want to re-order the Towns,&nbsp;therefore&nbsp;i have a dragable grid, on the viewmodel i catch the event and basically do the following.</p>
+<p>public void MoveInList(int start, int count, int dest)<br />{</p>
+<p>&nbsp; &nbsp;int from;<br />&nbsp; &nbsp;int to;<br />&nbsp; &nbsp;if (dest &gt;start)<br />&nbsp; &nbsp;{<br />&nbsp; &nbsp; &nbsp; from=start; to=dest-1;<br />&nbsp; &nbsp; &nbsp; Town t = Model[start];<br />&nbsp; &nbsp; &nbsp; Model.RemoveAt(start);<br />&nbsp; &nbsp; &nbsp; Model.Insert(dest - 1, t);<br />&nbsp; &nbsp; }<br />&nbsp; &nbsp; ///// Some more code that does the same thing...<br /><br />&nbsp; &nbsp; for (int i = from; i &lt;= to; i++)</p>
+<p>&nbsp; &nbsp; {<br />&nbsp; &nbsp; &nbsp; &nbsp; ((Town)Model<img src="http://forums.lhotka.net/emoticons/emotion-55.gif" alt="Idea" />).SortOrder = i;<br />&nbsp; &nbsp; }&nbsp;</p>
+<p>}&nbsp;</p>
+<p>This works fine until i want to Save or Cancel, then i get the error msg Edit level mismatch in AcceptChanges/UndoChanges.</p>
+<p>I know the issues is with&nbsp;Model.RemoveAt and&nbsp;Model.Insert</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, May 08, 2012</h2><p>DataGrid controls generally put a child object in &#39;edit mode&#39; when the user enters the row bound to that child. They <em>sometimes</em> take the object out of edit mode when the user leaves the row - and the Silverlight datagrid control is pretty good about that.</p>
+<p>But you are doing drag-and-drop right? That might be defeating or interfering with the datagrid control&#39;s normal behavior.</p>
+<p>I could see, for example, how the datagrid might see the user&#39;s initial click as entering the row, so it puts the child object into edit mode. Then the user drags the item out, and you do a drag-drop implementation. But it is quite possible that at no point does the datagrid realize the user has left the row, so it wouldn&#39;t ever take the child object out of edit mode.</p>
+<p>Additionally this is tricky, because when you remove an item from an editable collection the item is marked for deletion - and I suspect you don&#39;t want that. I <em>think</em> that inserting the same item <em>might</em> remove it from the deleted list - but you&#39;ll need to either test that, or look in the BusinessListBase code to see what happens.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Mr X replied on Wednesday, May 23, 2012</h2><p>I had the same problem using regular lists.&nbsp; Solved it by adding </p>
+<p>
+<p><span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;"><font size="2" face="Consolas"><font size="2" face="Consolas">
+<p>ManageObjectLifetime = </p>
+</font></font></span><font size="2" face="Consolas">
+<p>&nbsp;</p>
+</font></span>
+<p><span style="font-size:x-small;color:#0000ff;font-family:Consolas;"><span style="font-size:x-small;color:#0000ff;font-family:Consolas;"><span style="font-size:x-small;color:#0000ff;font-family:Consolas;">false</span></span></span><span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;">; </span></span></p>
+</p>
+</p>
+<p>in my viewmodel&#39;s factory method.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

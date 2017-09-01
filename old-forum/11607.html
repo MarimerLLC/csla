@@ -1,0 +1,26 @@
+<html><header><title>CSLA 4.2.x FilteredBindingList</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA 4.2.x FilteredBindingList</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11607.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>gajit posted on Friday, September 28, 2012</h2><p>Does anyone have an example of how I could implement an&nbsp;ApplyFilter method for FilteredBindingList other than the standard one which uses the &quot;contains&quot; logic.</p>
+<p>I&#39;d actually like to subclass FBL to have a number of different filter operators, but I&#39;m complete unfamiliar with the C# code that this version is created with.</p>
+<p>Would I be correct in thinking that the actual code that does the comparing is the method &quot;Filter&quot; in the DefaultFilter class?</p>
+<p>How would I go about implementing a custom filter?</p>
+<p>Any help would be appreciated.</p>
+<p>&nbsp;</p>
+<p>Thanks,</p>
+<p>Graham</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>gajit replied on Friday, September 28, 2012</h2><p>never mind. I figured it out.</p>
+<p>I created a &quot;CustomFilters&quot; class, and created a number of methods, e.g.</p>
+<p>&nbsp;&nbsp;&nbsp; Public Shared Function DateGEFilter(ByVal item As Object, ByVal filterValue As Object) As Boolean</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Dim columnvalue As String = item.ToString</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &#39; assume filter is an array of string<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Dim value As String = CType(filterValue, String)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; If CType(columnvalue, DateTime) &gt;= CType(value, DateTime) Then<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &#39; found a match<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return True<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End If<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &#39; didn&#39;t find a match<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return False</p>
+<p>&nbsp;&nbsp;&nbsp; End Function</p>
+<p>Called from my app.&nbsp;like&nbsp;so&nbsp;-</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Dim fLIST As New Csla.FilteredBindingList(Of ContractInfo)(list)</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; fLIST.FilterProvider = AddressOf CustomFilters.DateGEFilter<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; fLIST.ApplyFilter(&quot;DeliveryDate&quot;, dtpFROM.Value)</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; fLIST = New Csla.FilteredBindingList(Of ContractInfo)(fLIST)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; fLIST.FilterProvider = AddressOf CustomFilters.DateLEFilter<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; fLIST.ApplyFilter(&quot;DeliveryDate&quot;, dtpTO.Value)</p>
+<p>&nbsp;</p>
+<p>Woohoo! works great!</p>
+<p><img src="http://forums.lhotka.net/emoticons/emotion-2.gif" alt="Big Smile" /></p>
+<p>Graham</p>
+<p>&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

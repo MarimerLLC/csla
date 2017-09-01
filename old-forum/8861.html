@@ -1,0 +1,288 @@
+<html><header><title>BindingSourceRefresh Control not updating edited control</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>BindingSourceRefresh Control not updating edited control</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/8861.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>wilfreds posted on Friday, April 30, 2010</h2><p>In my project I have noticed that bound controls in winforms is not behaving as they should. I&#39;m shure I had this working before.</p>
+<p>In the book the following sequence is described:</p>
+<p>1.User edits a value in bound control.</p>
+<p>2.Data binding puts the user&#39;s new value into the business object</p>
+<p>3.The business object alters the value in the property set block.</p>
+<p>4.The business object raises its PropertyChanged event.</p>
+<p>In my project the value in the bound control is still what the user entered and not the new value altered by the business object.</p>
+<p>I&#39;m on csla version 3.8.2</p>
+<p>Can someone confirm this?</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Friday, April 30, 2010</h2><p>Are you using the BindingSourceRefresh component? This is a well known Windows Forms issue (they tell me it is a feature), and CSLA 2.0 (or maybe this was even in 1.x) and higher includes the BindingSourceRefresh control that provides a workaround.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>wilfreds replied on Friday, April 30, 2010</h2><p><div style='padding-left: 50px;background-color:silver'><b>RockfordLhotka<br></b>
+<p>Are you using the BindingSourceRefresh component? This is a well known Windows Forms issue (they tell me it is a feature), and CSLA 2.0 (or maybe this was even in 1.x) and higher includes the BindingSourceRefresh control that provides a workaround.</p>
+<div style="CLEAR:both;"></div>
+</div></p>
+<p>&nbsp;</p>
+<p>Yes, I have dropped the BindingSourceRefresh control on the form. And I am sertain that it was working before.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>wilfreds replied on Friday, April 30, 2010</h2><p>I have done some research. I have created a dead simple csla business class to test the behaviour.</p>
+<p>I tested on some csla versions I had on my system just by deleting and adding reference to the csla.dll.</p>
+<p>2.x Working</p>
+<p>3.0.2 Working</p>
+<p>3.6.1 Not working</p>
+<p>3.8.2 Not working</p>
+<p>I think the BindingSourceRefresh control must have broken somwhere between 3.0.2 and 3.6.1</p>
+<p>&nbsp;</p>
+<p>&nbsp;TESTCODE:</p>
+<p><span style="font-size:x-small;">
+<p>Public Property Testverdi() As String</p>
+<p>Get</p>
+<p>CanReadProperty(&quot;Testverdi&quot;, True)</p>
+<p>Return _Testverdi</p>
+<p>End Get</p>
+<p>Set(ByVal value As String)</p>
+<p>If Not _Testverdi.Equals(value) Then</p>
+<p>CanWriteProperty(&quot;Testverdi&quot;, True)</p>
+<p>_Testverdi = value + 1</p>
+<p>PropertyHasChanged(&quot;Testverdi&quot;)</p>
+<p>End If</p>
+<p>End Set</p>
+<p>End Property</p>
+</span></p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Sunday, May 02, 2010</h2><p>Hi, </p>
+<p>The BindingSourceRefresh depends on a custom DesignerAttribute to supply a setting for Host (&quot;container&quot;)&nbsp; in the &lt;form&gt;.Designer.cs file.&nbsp; Without the Host property set, the BSR control is unable to attach itself to the containers DataBinding events and will not do anything useful.</p>
+<p>I have sometimes experienced that Visual Studio Forms Designer is failing to generate this setting - and this often happens when upgrading to a newer version of CSLA.&nbsp; </p>
+<p>Further - the DesignerAttribute is not included in the .NET 4 Client Profile so I have rewritten the BSR to attach itself to DataBinding events on the BindingSources rathert han the Form/Containers DataBindings collection for CSLA 4. So, the new BSR in CSLA 4 does not depend on having the Host property set. The Host property&nbsp; still exists but does nothing (just for backward compatibility.</p>
+<p>So: </p>
+<p>1. Check that the BSR.Host is set in  &lt;form&gt;.Designer.cs. </p>
+<p>2. And check that you have the same CSLA assembly version&nbsp; (if registered) in VS Toolbox and in your project. </p>
+<p>3. Alternatively -&nbsp; grab the BindingSourceRefresh.cs from Csla4 preview and replace into the CSLA version you are using.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>wilfreds replied on Monday, May 03, 2010</h2><p>Thanks Jonny,</p>
+<p>BSR.Host was not present in &lt;form&gt;.Designer.vb. Adding it solved the problem.</p>
+<p>&nbsp;</p>
+<p>In prior versions of CSLA there was no Host property on BSR. So that explains why it was missing. So, if you are upgrading to a newer version of CSLA you need to add BSR.Host. The host property must have been introduced between 3.0.2 and 3.6.1 somewhere.</p>
+<p>Thanks again.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>wilfreds replied on Monday, May 03, 2010</h2><p>
+
+
+
+
+
+
+
+
+ 
+  Normal
+  0
+  
+  
+  21
+  
+  
+  false
+  false
+  false
+  
+  NO-BOK
+  X-NONE
+  X-NONE
+  
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+  
+  MicrosoftInternetExplorer4
+  
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+  
+
+ 
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+ 
+
+
+
+
+
+<p class="MsoNormal"><span lang="EN-US">Hi Jonny,</span></p>
+<p class="MsoNormal"><span lang="EN-US">Since you
+are working on the BSR control. I noticed a change in behavior between the two
+versions we are talking about. The old version could also handle if you threw
+an exception inside the setter of a property.</span></p>
+<p class="MsoNormal" style="margin-bottom:0.0001pt;line-height:normal;"><span style="font-size:10pt;font-family:&#39;Courier New&#39;;" lang="EN-US"><span>&nbsp;&nbsp;&nbsp; </span><span style="color:blue;">Public</span> <span style="color:blue;">Property</span>
+Testverdi() <span style="color:blue;">As</span> <span style="color:blue;">String</span></span></p>
+<p class="MsoNormal" style="margin-bottom:0.0001pt;line-height:normal;"><span style="font-size:10pt;font-family:&#39;Courier New&#39;;" lang="EN-US"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color:blue;">Get</span></span></p>
+<p class="MsoNormal" style="margin-bottom:0.0001pt;line-height:normal;"><span style="font-size:10pt;font-family:&#39;Courier New&#39;;" lang="EN-US"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>CanReadProperty(<span style="color:#a31515;">&quot;Testverdi&quot;</span>,
+<span style="color:blue;">True</span>)</span></p>
+<p class="MsoNormal" style="margin-bottom:0.0001pt;line-height:normal;"><span style="font-size:10pt;font-family:&#39;Courier New&#39;;" lang="EN-US"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color:blue;">Return</span> _Testverdi</span></p>
+<p class="MsoNormal" style="margin-bottom:0.0001pt;line-height:normal;"><span style="font-size:10pt;font-family:&#39;Courier New&#39;;" lang="EN-US"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color:blue;">End</span> <span style="color:blue;">Get</span></span></p>
+<p class="MsoNormal" style="margin-bottom:0.0001pt;line-height:normal;"><span style="font-size:10pt;font-family:&#39;Courier New&#39;;" lang="EN-US"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color:blue;">Set</span>(<span style="color:blue;">ByVal</span> value <span style="color:blue;">As</span> <span style="color:blue;">String</span>)</span></p>
+<p class="MsoNormal" style="margin-bottom:0.0001pt;line-height:normal;"><span style="font-size:10pt;font-family:&#39;Courier New&#39;;" lang="EN-US"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color:blue;">If</span> <span style="color:blue;">Not</span>
+_Testverdi.Equals(value) <span style="color:blue;">Then</span></span></p>
+<p class="MsoNormal" style="margin-bottom:0.0001pt;line-height:normal;"><span style="font-size:10pt;font-family:&#39;Courier New&#39;;" lang="EN-US"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>CanWriteProperty(<span style="color:#a31515;">&quot;Testverdi&quot;</span>,
+<span style="color:blue;">True</span>)</span></p>
+<p class="MsoNormal" style="margin-bottom:0.0001pt;line-height:normal;"><span style="font-size:10pt;font-family:&#39;Courier New&#39;;" lang="EN-US"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color:blue;">If</span> value = <span style="color:#a31515;">&quot;44&quot;</span>
+<span style="color:blue;">Then</span></span></p>
+<p class="MsoNormal" style="margin-bottom:0.0001pt;line-height:normal;"><span style="font-size:10pt;font-family:&#39;Courier New&#39;;" lang="EN-US"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color:blue;">Throw</span> <span style="color:blue;">New</span> Exception(<span style="color:#a31515;">&quot;do not ever use 44&quot;</span>)</span></p>
+<p class="MsoNormal" style="margin-bottom:0.0001pt;line-height:normal;"><span style="font-size:10pt;font-family:&#39;Courier New&#39;;" lang="EN-US"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color:blue;">End</span> <span style="color:blue;">If</span></span></p>
+<p class="MsoNormal" style="margin-bottom:0.0001pt;line-height:normal;"><span style="font-size:10pt;font-family:&#39;Courier New&#39;;" lang="EN-US"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>_Testverdi = value</span></p>
+<p class="MsoNormal" style="margin-bottom:0.0001pt;line-height:normal;"><span style="font-size:10pt;font-family:&#39;Courier New&#39;;" lang="EN-US"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>PropertyHasChanged(<span style="color:#a31515;">&quot;Testverdi&quot;</span>)</span></p>
+<p class="MsoNormal" style="margin-bottom:0.0001pt;line-height:normal;"><span style="font-size:10pt;font-family:&#39;Courier New&#39;;" lang="EN-US"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color:blue;">End</span> <span style="color:blue;">If</span></span></p>
+<p class="MsoNormal" style="margin-bottom:0.0001pt;line-height:normal;"><span style="font-size:10pt;font-family:&#39;Courier New&#39;;" lang="EN-US"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color:blue;">End</span> <span style="color:blue;">Set</span></span></p>
+<p class="MsoNormal" style="margin-bottom:0.0001pt;line-height:normal;"><span style="font-size:10pt;font-family:&#39;Courier New&#39;;" lang="EN-US"><span>&nbsp;&nbsp;&nbsp; </span><span style="color:blue;">End</span> <span style="color:blue;">Property</span></span></p>
+<p class="MsoNormal"><span lang="EN-US">&nbsp;</span></p>
+<p class="MsoNormal"><span lang="EN-US">The value
+of the textbox control would go back to the previous value. In the new version
+it will not. This can cause situations where the user is stuck on the textbox
+control if the user cannot remember a valid value.</span></p>
+<p class="MsoNormal"><span lang="EN-US">&nbsp;I haven&#39;t checked CSLA 4, so this may already have been fixed.<br /></span></p>
+<p class="MsoNormal"><span lang="EN-US">Thanks</span></p>
+<p class="MsoNormal"><span lang="EN-US">Regards,</span></p>
+<p class="MsoNormal"><span lang="EN-US">Wilfred</span></p>
+</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Monday, May 03, 2010</h2><p>Hi Wilfred, </p>
+<p>This is not changed in CSLA 4 but could possible be done by adding by a new property &quot;RefreshOnException&quot; or always Reread (as the previous sode did)</p>
+<p>That change was submitted to CVS repository on January 19 2008 but I do not know why that change was made. </p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>wilfreds replied on Tuesday, May 04, 2010</h2><p>Yes, at least a property &quot;RefreshOnException&quot; vould be nice. It has my vote.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, May 04, 2010</h2>Added to the wish list
+http://www.lhotka.net/cslabugs/edit_bug.aspx?id=743</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

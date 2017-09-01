@@ -1,0 +1,110 @@
+<html><header><title>Problems with csla-build</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Problems with csla-build</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6071.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>DanEssin posted on Wednesday, December 31, 2008</h2>Hi Rocky,<br>It's been a while since I've worked on csla and am now trying to get up to speed on 3.6<br>I have the latest download and am trying to get the setup project in csla-build to build.<br>This is what I've run into so far and I could use some help.<br>1 - I guess powershell is a dependency.<br>2 - "out of the box" the prebuild call to powershell threw an "unknown error" type of message and exited with an error code 1<br>3 - I went to work on the ps script in PowerGUI and discovered that $root was set to windows system despite the cd command in the prebuild event preceeding the poiwershell call. to I rewrote the script thus:<br>#Visual Studio Templates folder location - BATCH file will be calling this script from that location<br>$args |Out-Host<br>$root = (Get-Location).Path<br>Set-Location -Path $args[0]<br>Get-Location | Out-Host<br>Write-Host "Starting"<br>#Load Zip Library<br>[System.Reflection.Assembly]::LoadFrom($args[0] + "\Build\Ionic.Utils.Zip.dll")<br>#Delete Generated Item Templates<br>#del ($root + "\Item Templates\cs\Generated Templates\*.zip") <br>#del ($root + "\Item Templates\vb\Generated Templates\*.zip") <br>del ($args[0] + "\Item Templates\cs\Generated Templates\*.zip") <br>del ($args[0] + "\Item Templates\vb\Generated Templates\*.zip") <br>and so on.<br><br>Thie script now executes correctly if run directly with the appropriate arg but when called as the prebuild event it neither faults nor finishes - so I have not more clue about this.<br>4 - Since I got the prebuild event handled in advance, I remed out the event and tried to complete the setup build. It then complained that www.lhotka.net was not a valid URL and wannted the http:// to be included.<br>5 - After that, it issues the following errors about missing files:<br>ERROR: Unable to build module 'Progress' because the resource specified for 'BannerBitmap' was not found in the project.<br>ERROR: Unable to build module 'License Agreement' because the resource specified for 'BannerBitmap' was not found in the project.<br>ERROR: Unable to build module 'License Agreement' because the resource specified for 'LicenseFile' was not found in the project.<br>ERROR: Unable to build module 'Confirm Installation' because the resource specified for 'BannerBitmap' was not found in the project.<br>ERROR: Unable to build module 'Welcome' because the resource specified for 'BannerBitmap' was not found in the project.<br>ERROR: Unable to build module 'Installation Folder' because the resource specified for 'BannerBitmap' was not found in the project.<br>ERROR: Unable to build module 'Checkboxes&nbsp;&nbsp; (A)' because the resource specified for 'BannerBitmap' was not found in the project.<br>ERROR: Unable to build module 'Finished' because the resource specified for 'BannerBitmap' was not found in the project.<br>Build process cancelled<br>I guess that I cah phony-up some files to satisfy the build configuration but I assume you intended that the download would actually work.<br><br>Your help would be appreciated,<br>Dan<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>DanEssin replied on Wednesday, December 31, 2008</h2>I got thie setup to build (maybe). When running it, when it got to the first item in content installation (CommandObject) it threw the following null-reference exception:<br>System.NullReferenceException was unhandled<br>&nbsp; Message="Object reference not set to an instance of an object."<br>&nbsp; Source="System.Windows.Forms"<br>&nbsp; StackTrace:<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at System.Windows.Forms.Control.MarshaledInvoke(Control caller, Delegate method, Object[] args, Boolean synchronous)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at System.Windows.Forms.Control.Invoke(Delegate method, Object[] args)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at VSContentInstaller.Form.ThreadFunc()<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at System.Threading.ThreadHelper.ThreadStart_Context(Object state)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at System.Threading.ExecutionContext.Run(ExecutionContext executionContext, ContextCallback callback, Object state)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at System.Threading.ThreadHelper.ThreadStart()<br>&nbsp; InnerException: <br><br>tia<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, January 05, 2009</h2><P>csla-build is a work in progress and doesn't currently work (to my knowledge). This is something Nermin was working on a couple months ago on his own time, but then he got busy and hasn't been able to continue.</P>
+<P>It would be really nice to have an msi for CSLA, but it turns out to be a lot of work to create and maintain, and it hasn't floated anywhere near the top of my to-do list. I welcome Nermin's help - but understand that this isn't his job, so anything he does is snuck in between work, family and anything else in his life :)</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>DanEssin replied on Monday, January 05, 2009</h2>Hi,<br>Thanks for the info - it certainly helps. I guess I made relatively good progress with it considering I got the prebuild stuff to execute, and got the vsi to install the templates.. <br><br>Based on your guidance I will leave it at that and get to work on the basics. Any tips on the choice of a data-aware template generator?<br><br>Thanks again,<br>Dan<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, January 05, 2009</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span><a href="http://www.lhotka.net/cslanet/codegen.aspx">http://www.lhotka.net/cslanet/codegen.aspx</a><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> DanEssin
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Monday, January 05, 2009 6:34 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] Problems with csla-build<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Hi,<br>
+Thanks for the info - it certainly helps. I guess I made relatively good
+progress with it considering I got the prebuild stuff to execute, and got the
+vsi to install the templates.. <br>
+<br>
+Based on your guidance I will leave it at that and get to work on the basics.
+Any tips on the choice of a data-aware template generator?<br>
+<br>
+Thanks again,<br>
+Dan<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>DanEssin replied on Monday, January 05, 2009</h2>
+
+
+  
+  
+
+
+Thanks again<br>
+<br>
+Rockford Lhotka wrote:
+<blockquote>
+  
+  
+  
+
+ 
+
+ 
+  
+ 
+  <div class="Section1">
+  <p class="MsoNormal"><span><a href="http://www.lhotka.net/cslanet/codegen.aspx">http://www.lhotka.net/cslanet/codegen.aspx</a><o:p></o:p></span></p>
+  <p class="MsoNormal"><span><o:p>&nbsp;</o:p></span></p>
+  <p class="MsoNormal"><span><o:p>&nbsp;</o:p></span></p>
+  <div>
+  <p class="MsoNormal"><b><span>From:</span></b><span> DanEssin
+[<a class="moz-txt-link-freetext" href="mailto:cslanet@lhotka.net">mailto:cslanet@lhotka.net</a>] <br>
+  <b>Sent:</b> Monday, January 05, 2009 6:34 PM<br>
+  <b>To:</b> <a class="moz-txt-link-abbreviated" href="mailto:rocky@lhotka.net">rocky@lhotka.net</a><br>
+  <b>Subject:</b> Re: [CSLA .NET] Problems with csla-build<o:p></o:p></span></p>
+  </div>
+  <p class="MsoNormal"><o:p>&nbsp;</o:p></p>
+  <p class="MsoNormal">Hi,<br>
+Thanks for the info - it certainly helps. I guess I made relatively
+good
+progress with it considering I got the prebuild stuff to execute, and
+got the
+vsi to install the templates.. <br>
+  <br>
+Based on your guidance I will leave it at that and get to work on the
+basics.
+Any tips on the choice of a data-aware template generator?<br>
+  <br>
+Thanks again,<br>
+Dan<br>
+  <br>
+  <br>
+  <o:p></o:p></p>
+  </div>
+  <br>
+  <br>
+<br>
+</blockquote>
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

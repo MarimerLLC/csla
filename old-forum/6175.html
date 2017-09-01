@@ -1,0 +1,351 @@
+<html><header><title>Enterprise Application Design with CSLA</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Enterprise Application Design with CSLA</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6175.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>gwilliams posted on Thursday, January 15, 2009</h2><P class=MsoNormal><SPAN>I am hoping someone can shed some light on a current topic of discussion with all of our development managers.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>All of our applications utilize 6 common objects; however we do not have Common objects built. <o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>For example all our applications have a Person object ( name, address(s), phone(s), and a collection of attributes specific to the application ). These “objects” may be a data table, dataset, or class file. Also, each application has it own database.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>I have used CSLA in another application and would like to use the framework to build an “Enterprise” wide set of Objects that all applications can use.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>My question is what would be the best way to architect this so that I am not creating a copy of a base library project and changing out the DAL for each application that is built.<o:p></o:p></SPAN></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Friday, January 16, 2009</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>As long as you can decipher DAL specifics from app&#8217;s
+configuration file, you can create a common library with just common classes
+and a reference to it in all of your solutions.&nbsp; Custom properties for
+each app though would be a challenge though.&nbsp; You could put all properties
+into the base class and teach it how to behave differently based on configuration
+file.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> gwilliams
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Thursday, January 15, 2009 10:40 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> [CSLA .NET] Enterprise Application Design with CSLA<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>I
+am hoping someone can shed some light on a current topic of discussion with all
+of our development managers.<o:p></o:p></p>
+
+<p class=MsoNormal>&nbsp;<o:p></o:p></p>
+
+<p class=MsoNormal>All
+of our applications utilize 6 common objects; however we do not have Common
+objects built. <o:p></o:p></p>
+
+<p class=MsoNormal>For
+example all our applications have a Person object ( name, address(s), phone(s),
+and a collection of attributes specific to the application ). These
+???objects??? may be a data table, dataset, or class file. Also, each
+application has it own database.<o:p></o:p></p>
+
+<p class=MsoNormal>&nbsp;<o:p></o:p></p>
+
+<p class=MsoNormal>I
+have used CSLA in another application and would like to use the framework to
+build an ???Enterprise??? wide set of Objects that all applications can use.<o:p></o:p></p>
+
+<p class=MsoNormal>&nbsp;<o:p></o:p></p>
+
+<p class=MsoNormal>My
+question is what would be the best way to architect this so that I am not
+creating a copy of a base library project and changing out the DAL for each
+application that is built.<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Friday, January 16, 2009</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Then again, this would increase coupling between possibly
+unrelated applications, so I would suggest approach common library with
+caution.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="_x0000_i1026" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Sergey Barskiy
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Friday, January 16, 2009 8:12 AM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> RE: [CSLA .NET] Enterprise Application Design with CSLA<o:p></o:p></span></p>
+
+</div>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal><span>As long as you can decipher DAL specifics from app&#8217;s
+configuration file, you can create a common library with just common classes
+and a reference to it in all of your solutions.&nbsp; Custom properties for
+each app though would be a challenge though.&nbsp; You could put all properties
+into the base class and teach it how to behave differently based on
+configuration file.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> gwilliams
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Thursday, January 15, 2009 10:40 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> [CSLA .NET] Enterprise Application Design with CSLA<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>I
+am hoping someone can shed some light on a current topic of discussion with all
+of our development managers.<o:p></o:p></p>
+
+<p class=MsoNormal>&nbsp;<o:p></o:p></p>
+
+<p class=MsoNormal>All
+of our applications utilize 6 common objects; however we do not have Common
+objects built. <o:p></o:p></p>
+
+<p class=MsoNormal>For
+example all our applications have a Person object ( name, address(s), phone(s),
+and a collection of attributes specific to the application ). These
+???objects??? may be a data table, dataset, or class file. Also, each
+application has it own database.<o:p></o:p></p>
+
+<p class=MsoNormal>&nbsp;<o:p></o:p></p>
+
+<p class=MsoNormal>I
+have used CSLA in another application and would like to use the framework to
+build an ???Enterprise??? wide set of Objects that all applications can use.<o:p></o:p></p>
+
+<p class=MsoNormal>&nbsp;<o:p></o:p></p>
+
+<p class=MsoNormal>My
+question is what would be the best way to architect this so that I am not
+creating a copy of a base library project and changing out the DAL for each
+application that is built.<o:p></o:p></p>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>gwilliams replied on Friday, January 16, 2009</h2><P>Thanks for the prompt reply. The DAL component is really what is causing me all the heartburn. It seems to me it is the only real concrete part of the CSLA object. I could add additional properties to the object that would hold DAL configurations and treat the application specific attributes as separate objects and not as "true" children of the parent object.<o:p></o:p></P>
+<P>My end goal is to have all our dev teams utilize a common programming methodology. we have to many people doing to many different things and creating really the same objects. This has led us to have 8 database that hold identical data with no real business reason to keep them all separate. With all these applications being utilized internally I think this is a waste of resources.<o:p></o:p></P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, January 16, 2009</h2><P>I recommend against this approach.</P>
+<P>This sort of thing was tried in the late 90s and early 00s, and I've never seen a company make it work.</P>
+<P>The idea of coupling all your applications to a common set of objects causes so much trouble it can't be beneficial. Can you really create a Customer object that has all the rules and behaviors and meets the performance requirements for every scenario where you use, edit or interact with customer data? And even if you can create such a thing, how massive will that one class become?</P>
+<P>Are the rules for using customer data the same in the 'edit a customer' and 'enter an order' scenarios? And the 'set up AR for a customer' scenario? Almost certainly not. So your "Customer object to rule them all" will be chock full of conditional statements:</P>
+<P>If &lt;in scenario 1&gt;<BR>&nbsp; DoScenario1Stuff<BR>Else If &lt;in scenario 2&gt;<BR>&nbsp; Do Scenario2Stuff<BR>...</P>
+<P>Debugging this will be virtually impossible. Identifying the side-effects of each scenario on any other scenario and/or the data will be virtually impossible.</P>
+<P>The closest analogy to this model that I'm aware of, are the massive COBOL modules that were common 20 years ago.</P>
+<P>Coupling is probably the single biggest roadblock to maintainability. Reuse of code leads to coupling. While reuse <EM>seems good</EM>, it is only good if you can achieve it with minimal coupling. Otherwise the cost of coupling totally outweighs the benefit of reuse and the result is a net loss.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>gwilliams replied on Monday, February 09, 2009</h2><P class=MsoNormal><SPAN>That makes sense. One more questions along the same line..<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>I have multiple objects that have Address information as a child object. The only difference in the data being collected is the relationship to the other object.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>example. Person to Address, trip to address, facility to address. Ect. Should each of these address objects be specific to each object.. meaning I would have 3 address objects tied directly to the object they support.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>The only different in the address object would again be the DAL to create the relationship in the proper table. <o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>My thought would be yes… even though the difference is minor it is still a difference. Correct?<o:p></o:p></SPAN></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, February 09, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>That is true, if they include the DAL code they should be
+different classes.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>If you are using an architecture with a separate DAL you could
+consider having one class (assuming _<i>all</i>_ other behaviors are the same).
+This can work well if your DAL is abstract enough that the Address class just
+passes some &#8220;type token&#8221; through to the DAL so the DAL knows which
+type of data to retrieve.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky</span><b><span><o:p></o:p></span></b></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>gwilliams replied on Monday, February 09, 2009</h2><P>I was going to be using a separate DAL. My initial thought was to set a "Type" property within the Address BO and then in the DAL check for what type and execute the appropriate proc. Was not sure if this would start confusing the matter; one object doing more then one thing.</P>
+<P>&nbsp;</P>
+<P>Thanks for your thoughts on all of this. I now have all 3 of your books and pushing hard to implement the framework as standard coding practices for my group. Can you recommend a trainer in the Denver area for the 3.6 CSLA framework?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, February 09, 2009</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>For training I recommend Dunn Training. They have 3 day and 5
+day classes on CSLA .NET and so a great job.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> gwilliams
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Monday, February 09, 2009 10:49 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: Enterprise Application Design with CSLA<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>I was going to be using a separate DAL. My initial thought was to set a
+&quot;Type&quot; property within the Address BO and then in the DAL check for
+what type and execute the appropriate proc. Was not sure if this would start
+confusing the matter; one object doing more then one thing.<o:p></o:p></p>
+
+<p>&nbsp;<o:p></o:p></p>
+
+<p>Thanks for your thoughts on all of this. I now have all 3 of your books and
+pushing hard to implement the framework as standard coding practices for my
+group. Can you recommend a trainer in the Denver area for the 3.6 CSLA
+framework?<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Monday, February 09, 2009</h2>Yes, you should start as three different BOs for the address.&nbsp; If at the end of the day they share all or most of their same behavior, then you may want to refactor the code to see if any reuse is possible.&nbsp; Later down the line, if the behaviors diverge, you can split them later.<br><br>You can also have some reuse of your data code.&nbsp; This is probably safer.&nbsp; I have an internal class AddressData, and IAddress internal interface.&nbsp; My BOs explicitly implement the interface (so the UI layer can't see it) and the AddressData class will handle insert update, fetch and delete operations for any type that implements the IAddress interface.&nbsp; <br><br>The BO then calls the appropiate method in AddressData, and then once it's done it's work, the BO itself knows how to create the relationship between the address and the parent BO.<br><br>HTH<br>Andy<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

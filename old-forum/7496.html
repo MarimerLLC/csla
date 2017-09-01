@@ -1,0 +1,15 @@
+<html><header><title>Windows Authentication and Roles Authorization</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Windows Authentication and Roles Authorization</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/7496.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>andrewrajcoomar posted on Sunday, August 23, 2009</h2><P>Hi,</P>
+<P>I'd like a little help on how to make CSLA work for Windows Authentication with the NT Security groups being used for Roles to authorize the users.</P>
+<P>There are some limitations regarding using Session. The web admin group and peer-reviews&nbsp;strongly discourages the use of Session on server (farm/load balancing/scalability), and to some extent ViewState (controls viewstate allowed, but persisting objects such as ViewState("objEmployee") = oEmployee, is a no-no.). They allow some caching on the web server RAM&nbsp;or file system,&nbsp;or better yet caching&nbsp;using SQL.</P>
+<P>My basis requirements&nbsp;for an <STRONG><U>intranet web</U></STRONG> application are:</P>
+<OL>
+<LI>Use Csla.ApplicationContext.User 
+<LI>Authenticate user using Integrated Windows Authentication. 
+<LI>Disable Anonymous acces on IIS. 
+<LI>Authorize user&nbsp;using pre-defined NT Security groups; if User.IsInRole(role). 
+<LI>Persist User's name and group during post-back (perhaps caching, controls/properties in MasterPage, or cookie as last resort). 
+<LI>Define other properties; roles collection; String(Of roles); Rollup Group Code, that need to be persisted also. 
+<LI>Add additional authorization to&nbsp;classes based on user Rollup Group Code.</LI></OL>
+<P>Thanks,</P>
+<P>Andrew</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Sunday, August 23, 2009</h2><P>It is important to realize that Csla.ApplicationContext.User is just a way to get to HttpContext.Current.User in an ASP.NET environment.</P>
+<P>In other words, if you are using Windows authn and authz, CSLA .NET does nothing for you - it just uses whatever principal you've set up - which would be the Windows principal/identity. So whatever techniques you use for any non-CSLA web app will work with Csla.ApplicationContext.User as well when using Windows mode.</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

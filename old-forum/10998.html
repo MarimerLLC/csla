@@ -1,0 +1,17 @@
+<html><header><title>How to override remove method </title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>How to override remove method </h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10998.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>vbbeta posted on Tuesday, December 20, 2011</h2><p>Hi guys I have a problem while trying to override the remove method in a collection basically what I want it should do that the yo should call a remove method and remove the selected object from the list but this does not happen because it keeps on looping since the remove method was overridden</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>Here is my code&nbsp;</p>
+<p>&nbsp;</p>
+<p>Public overloads sun remove(I&#39;d as integer)&nbsp;</p>
+<p>For each info as obj in me&nbsp;</p>
+<p>If obj.objid=Id&nbsp;</p>
+<p>Remove(obj)</p>
+<p>Exit sub</p>
+<p>End sub</p>
+<p>&nbsp;</p>
+<p>But this doesn&#39;t work because it&#39;s causing a loop that doesn&#39;t stop any help on this&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Tuesday, December 20, 2011</h2><p>You must call Parent.Remove and not the overridden metod as a recursive call.</p>
+<p>And you should also use a linq query or move item to a variable. You cannot remove an item inside a for-each loop.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>vbbeta replied on Tuesday, December 20, 2011</h2><p>I did try MyBase.Remove But it gives me the error &quot;Invalid for root objects - use Delete instead&quot;</p>
+<p>&nbsp;</p>
+<p>so i tried MyBase.Items.Remove but it&nbsp;doesn&#39;t&nbsp;remove from the collection&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

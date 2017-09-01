@@ -1,0 +1,21 @@
+<html><header><title>Re: Help with Validation rules</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Re: Help with Validation rules</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3118.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>ozitraveller posted on Thursday, June 28, 2007</h2><P>&nbsp;&nbsp;Hi</P>
+<P>I'd appreciate it some could help me. I want to be able to validate a dollar amount,&nbsp;ie. required, and &gt; 0. Also&nbsp;a percent figure (x)&nbsp;which&nbsp;is required,&nbsp;between 0 and 100, and x &lt;= a limit percent&nbsp;(y)&nbsp;.</P>
+<P>Thanks</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, June 29, 2007</h2><P>The &gt;0 rule is already in CSLA, it is CommonRules.MinValue(). For a dollar amount you can probably use a mininum value of 0.01 or 0.005 or something.</P>
+<P>The between 0 and y rule can be done a couple ways. You could use both MinValue() and MaxValue() rules if y is known at the time the object is created.</P>
+<P>Or you could use MinValue() for the bottom and create a custom rule method that takes your dynamic y value into account. To create a custom rule method, the best infomation source is the <A href="http://store.lhotka.net">CSLA .NET Version 2.1 Handbook</A>, or look at the Project class in ProjectTracker.Library because it implements a custom rule method.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ozitraveller replied on Friday, June 29, 2007</h2><P>Thanks Rocky</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ozitraveller replied on Saturday, June 30, 2007</h2><P>Hi</P>
+<P>I must have missed something setting up this rule. Hopefully someone can tell me what I have done wrong.</P>
+<P>I've implemented the following in the BO.</P>
+<P>private const double minPercent = 0.005D;<BR>private const double maxPercent = 1.00D;</P>
+<P><BR>ValidationRules.AddRule(CommonRules.MinValue&lt;double&gt;, <BR>&nbsp;new CommonRules.MinValueRuleArgs&lt;double&gt;("DmfFirst", minPercent));<BR>ValidationRules.AddRule(CommonRules.MaxValue&lt;double&gt;, <BR>&nbsp;new CommonRules.MaxValueRuleArgs&lt;double&gt;("DmfFirst", maxPercent));</P>
+<P>and this is in BindingSource_CurrentItemChanged event</P>
+<P><BR>this.applyButton.Enabled = _recurrentCharges.IsSavable;<BR>SD.Debug.WriteLine(string.Format("IsDirty: {0}", _recurrentCharges.IsDirty));<BR>SD.Debug.WriteLine(string.Format("IsValid: {0}", _recurrentCharges.IsValid));<BR>SD.Debug.WriteLine(string.Format("IsSavable: {0}", _recurrentCharges.IsSavable));</P>
+<P>and when I change the value in my test field, I get the following:</P>
+<P>IsDirty: True<BR>IsValid: False<BR>IsSavable: False<BR></P>
+<P>So the BO knows it's invalid and the data I entered definitely was invalid. However, the errorprovider doesn't indicate there was an error nor display an error message.</P>
+<P>Is there something more I need to do?</P>
+<P>Any help would be greatly appreciated.</P>
+<P>Thanks</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ozitraveller replied on Sunday, July 01, 2007</h2>Resolved</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jpm replied on Monday, May 03, 2010</h2><p>how was it resolved? </p>
+<p>I have the same problem where the child object knows its invalid but the error provider doesn&#39;t seem to be picking it up.</p>
+<p>any ideas would be greatly appriciated</p>
+<p>cheers jm</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

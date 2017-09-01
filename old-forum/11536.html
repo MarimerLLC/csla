@@ -1,0 +1,39 @@
+<html><header><title>Authorization returning reason with details about denied action</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Authorization returning reason with details about denied action</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11536.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Miroslav Galajda posted on Monday, August 20, 2012</h2><p>&nbsp;</p>
+<p>Hi all,</p>
+<p>I have an UI scenario in which I need to display to user the details about why he was denied to do something, for example not to remove some item in the list because some other objects in other business models might be using it.&nbsp;</p>
+<p>Looking at the Csla authorization code I thought I&#39;ve found the solution. But not quite.</p>
+<p>Authorization is available for the calling code through HasPermission method on the BusinessRules class, which I cannot override without modifing Csla code.</p>
+<p>I was thining about the following kind of solution:</p>
+<p>1. Create derived AuthorizationContext class with Results list similar to what&#39;s in the RuleContext</p>
+<p>2. Override HasPermission to supply own instance of AuthorizationContext with support for Results</p>
+<p>3. Somehow expose the Results for the calling code</p>
+<p>The last two points are the problematic points to do. To be able override HasPermission I would need to create an extension method so that I could be able to expose the result list. I have to use extension method, because there&#39;s no way to extended businessrules class without reimplemeting it or modifing it in Csla code.</p>
+<p>Secondly to reimplement the HasPermission method as an extension method I would need to access to internal types that are used in that method.</p>
+<p>So my solution would require to modify the Csla code.</p>
+<p>Are there any other options which I&#39;ve overlooked?</p>
+<p>&nbsp;</p>
+<p>Thanks</p>
+<p>Yours sincerely</p>
+<p>Miroslav Galajda</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Monday, August 20, 2012</h2><p>I would assume this concerns child objects where CSLA never call authorization rules at &quot;object&quot; level f.ex. and the &quot;Delete&quot; method should fail and give an exception and notification to the user? </p>
+<p>So how about simply throwing your own SecurityException (or your own derived&nbsp;exception type) that contains&nbsp;the reason from the Execute method of the rule?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Miroslav Galajda replied on Monday, August 20, 2012</h2><p>Is this the correct way of implementing the authorization rule? If so, I can take it into consideration.</p>
+<p>But for me this is the last way to consider. I would prefer not to use the exceptions in this context, because the HasPermission method is not designed this way. It is inteded to answer the question with yes or no result, isn&#39;t it? I think it isn&#39;t designed that way.</p>
+<p>&nbsp;</p>
+<p>Miroslav Galajda</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Monday, August 20, 2012</h2><p>The typical part is that there is only 1 AuthorizationRule per AuthorizationAction and that the actual method does the check (and eventually throws an Exception). Take f.ex CanWriteProperty method in BusinessBase:</p>
+<p>&nbsp;&nbsp;&nbsp; public bool CanWriteProperty(Csla.Core.IPropertyInfo property, bool throwOnFalse)<br />&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; bool result = CanWriteProperty(property);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (throwOnFalse &amp;&amp; result == false)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; System.Security.SecurityException ex = new System.Security.SecurityException(<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; String.Format(&quot;{0} ({1})&quot;, Resources.PropertySetNotAllowed, property.Name));<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; throw ex;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return result;<br />&nbsp;&nbsp;&nbsp; }</p>
+<p>So - the typical way is to throw an Exception to prevent the method from continuing to execute. </p>
+<p>And to prevent a Delete from a child BusinessListBase you would</p>
+<ul>
+<li>override RemoveItem method in list class </li>
+<li>call HasPermission </li>
+<li>HasPermission may throw an exception (and you may catch this in RemoveItem method) or return false </li>
+<li>RemoveItem must make sure to throw exception to notify UI/User that something went wrong.&nbsp;</li>
+</ul>
+<p>CSLA does NOT check permission in its list classes (other than IsSavable that should only be checked for a root object) so you must implement this check in your own list classes.&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Miroslav Galajda replied on Monday, August 20, 2012</h2><p>
+<p>I&#39;m not sure if I can agree with you about throwing the security exception at the AuthorizationRule level, because it is designed to return true or false as its result. Throwing exception with the same meaning as returning false is abusing the exception mechanism.</p>
+<p>And as you have shown in the example from CanWriteProperty throwing the exception is handled on the higher level. And as you can see at this level it is not expected to be exception thrown during this call, because in the other case, there would be the try catch block. But OK, this could be added with easy to secure the CanWriteProperty method to not throw exception when throwOnFalse=false.</p>
+<p>But unfortunately this is the simplest and easy to do solution :-(</p>
+<p>Probably I will use this method, but I&#39;m not internally satisfied with it.</p>
+<p>&nbsp;</p>
+<p>Miroslav Galajda</p>
+</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,191 @@
+<html><header><title>CSLA .NET 3.5 property declaration syntax</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA .NET 3.5 property declaration syntax</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4261.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Gravity posted on Wednesday, January 30, 2008</h2><FONT face=Verdana size=2>I read through the initial ten pages of this forum; however, I could not find the initial description. [Edit: I did not see 19367 <SPAN id=ctl00_ctl01_bcr_ctl00___ForumName>CSLA .NET 3.5 enhancement - property declarations at first]</SPAN><BR><BR>The CSLA .NET 3.5 property declaration syntax is interesting and seems similar to the DependencyProperty in Workflow yet I do not understand the benefit of RegisterProperty in BusinessBase. The complexity is not at issue; rather it seems to me that performance would suffer with many fields. <BR><BR>Perhaps it is that I have not read of a practical application of the new feature. <BR><BR>Since BusinessBase is becoming rather large, what of segregating the functionality (RegisterProperty, GetRegisteredProperties, GetProperty etc) into a PropertyCache implementation in which the BusinessBase lazy loads as:</FONT> <PRE>private PropertyInfoDataCache __currentcache;<BR><BR>...<BR><BR>protected PropertyInfoDataCache PropertyCache<BR>{<BR>    get<BR>    {<BR>       if (null == this.__currentcache)<BR>                {<BR>                   this.__currentcache = PropertyInfoDataCache.RegisterPropertyInfoCache(this);<BR>                }  <BR>    }<BR>}<BR></PRE></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>vdhant replied on Wednesday, January 30, 2008</h2><P>imho it comes down to consistency. Previously when you had a property, you had to implement about half a dozen lines of code to make sure that it would operate correctly. Thus meaning that as new functionality comes on board (whether from CSLA or logic that you want to implement specifically) you would have to go through and make all these changes to every single property and the chances of mission one somewhere is fairly high. With the new method, when you set a property or get a property it is going through a central conduit meaning that the results are always going to be consistent. It's kind of like the same reason why the DataPortal exists. Its might better to have one central point that many different ones which you have to manage and maintain. And with this you do pay a small pref cost but you do with the dataportal as well, yet the dataportal is used as it is good design practice. And if performance is an issue (even though i think the current implementation is fairly good in this regard) you can still go back to using your own private variables and put the plumbing into each property and because the businessbase is mostly lazy load you wont be any worse off than you where before. But if you do go to the new system, your constancy and reliability (when it comes to the application of auth and val rules) will be a lot higher. <BR>I might have it wrong but i think that is the main jist of it and as a side note i think rocky got the core idea for implementation from <SPAN><FONT face="Times New Roman">DependencyProperty (although i may be wrong there).<BR>Hope that helps <BR>Anthony</FONT></SPAN></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, January 31, 2008</h2><P>I put a summary of the syntax here</P>
+<P><A href="http://www.lhotka.net/Article.aspx?area=4&amp;id=219295b4-7cb6-4ced-a0bf-8f4b56f72b57">http://www.lhotka.net/Article.aspx?area=4&amp;id=219295b4-7cb6-4ced-a0bf-8f4b56f72b57</A></P>
+<P>The use of RegisterProperty() is to enhance performance, as compared to just storing PropertyInfo&lt;T&gt; objects as I was doing a couple weeks ago.</P>
+<P>By using RegisterProperty(), it is possible to assemble a list of all the registered properties. Then I can put them in order using an algorithm that results in the same order every time (like on a client and a server). Then I have fixed positioning of each property, and can give each property an Index value (0 to x).</P>
+<P>Then the field values themselves can be stored in an array of IFieldData. Each field can be retrieved directly be index. The index comes from the PropertyInfo which is supplied to the top-level method (GetProperty, SetProperty, etc). So getting to the right IFieldData is an array lookup rather than a Dictionary lookup - MUCH faster.</P>
+<P>The broader reason for this whole change is a combination of consistency and less code. Using this new technique (either with private fields or managed fields) results in much more consistent code that in the past - making it easier to use snippets or code-gen to create your code. And there's simply less code - about 35% less than the syntax used in my previous books for example. That adds up to a big code savings in many objects!</P>
+<P>Additionally there's the fact that the new syntax enables CSLA to manage child objects for you. So you don't have to write all the plumbing code to deal with IsDirty/IsValid, child events, deserialization issues, etc. Lots of the complexity of using CSLA just disappeared right there!</P>
+<P>And it enables the new child data portal features, which further reduces code/complexity when writing the data access code for child objects.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Gravity replied on Thursday, January 31, 2008</h2><P><FONT face=Verdana size=2>I realized this after I found the seven-page discussion about this feature. Is it permissable to move the implementation out of BaseBusiness in my copy into a separate PropertyInfoCache? In the BaseBusiness I would replace the methods with:</FONT></P><PRE>private PropertyInfoDataCache __currentcache;<BR><BR>...<BR><BR>protected PropertyInfoDataCache PropertyCache<BR>{<BR>    get<BR>    {<BR>       if (null == this.__currentcache)<BR>                {<BR>                   this.__currentcache = PropertyInfoDataCache.RegisterPropertyInfoCache(this);<BR>                }  <BR>    }<BR>}<BR></PRE>
+<P><FONT face=Verdana size=2>My only reason is keeping the various implementations within BaseBusiness modular. Has anyone any opinions about the performance considerations of this? The really motivated could turn the property cache into a provider.</P>
+<P>-- Nick</P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, January 31, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Please be aware that Beta 1 is not the final product &#8211; my focus
+thus far has been on making it work, not on making the internal implementation
+elegant :)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>That code has already changed, if you look at svn, due to the
+earlier feedback regarding inheritance. And it will continue to change over the
+next few weeks as I do further cleanup/stability/performance work.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Some parts of the code can&#8217;t be moved out of BB though,
+because some parts of the code interact with other subsystems like
+validation/authorization/data binding and BB is the only location where all
+those subsystems come together.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>But the code you reference specifically is already gone, and
+changed radically.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Gravity
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Thursday, January 31, 2008 1:17 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] CSLA .NET 3.5 property declaration syntax<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p><span>I realized
+this after I found the seven-page discussion about this feature. Is it
+permissable to move the implementation out of BaseBusiness in my copy into a
+separate PropertyInfoCache? In the BaseBusiness I would replace the methods
+with:</span><o:p></o:p></p>
+
+<pre>private PropertyInfoDataCache __currentcache;<br>
+<br>
+...<br>
+<br>
+protected PropertyInfoDataCache PropertyCache<br>
+{<br>
+&nbsp;&nbsp;&nbsp; get<br>
+&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (null == this.__currentcache)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; this.__currentcache = PropertyInfoDataCache.RegisterPropertyInfoCache(this);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }&nbsp; <br>
+&nbsp;&nbsp;&nbsp; }<br>
+}<o:p></o:p></pre>
+
+<p><span>My only
+reason is keeping the various implementations within BaseBusiness modular. Has
+anyone any opinions about the performance considerations of this? The really
+motivated could turn the property cache into a provider.<o:p></o:p></span></p>
+
+<p><span>-- Nick<o:p></o:p></span></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>skagen00 replied on Thursday, January 31, 2008</h2><P>Just&nbsp;a very small note that the comparisons in the article are ever so subtly different.</P>
+<P>In property accessors / setters of 3.5, to be consistent with the other examples, one still needs to include a throwOnNoAccess flag to get the same behavior as the pre-3.5 property notation. </P>
+<P>private static PropertyInfo&lt;string&gt; NameProperty = <BR>&nbsp; RegisterProperty&lt;string&gt;(typeof(ObjectType), new PropertyInfo&lt;string&gt;("Name"));<BR><BR>public string Name<BR>{<BR>&nbsp; get { return GetProperty&lt;string&gt;(NameProperty<STRONG><FONT color=#0000ff>, true</FONT></STRONG>); }<BR>&nbsp; set { SetProperty&lt;string&gt;(NameProperty, value<FONT color=#0000ff><STRONG>, true</STRONG></FONT>); }<BR>}</P>
+<P>It's a minor thing but I just wanted to mention it. </P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, January 31, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Ahh, good point!!<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Though as Joe has so correctly pointed out, the getter should
+avoid throwing an exception, because even with the CSLA helper controls for
+Windows and WPF an authorization exception is problematic. GetProperty()
+defaults to returning a dummy value rather than throwing an exception &#8211;
+and if you then use one of the CSLA helper controls the user never even sees
+the dummy value &#8211; but at least there&#8217;s no exception to cause issues
+:)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>SetProperty() defaults to throwing a security exception and so
+does act like the pre-3.5 approach.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> skagen00
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Thursday, January 31, 2008 3:50 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] CSLA .NET 3.5 property declaration syntax<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Just&nbsp;a very small note that the comparisons in the article are ever so
+subtly different.<o:p></o:p></p>
+
+<p>In property accessors / setters of 3.5, to be consistent with the other
+examples, one still needs to include a throwOnNoAccess flag to get the same
+behavior as the pre-3.5 property notation. <o:p></o:p></p>
+
+<p>private static PropertyInfo&lt;string&gt; NameProperty = <br>
+&nbsp; RegisterProperty&lt;string&gt;(typeof(ObjectType), new
+PropertyInfo&lt;string&gt;(&quot;Name&quot;));<br>
+<br>
+public string Name<br>
+{<br>
+&nbsp; get { return GetProperty&lt;string&gt;(NameProperty<strong><span>, true</span></strong>); }<br>
+&nbsp; set { SetProperty&lt;string&gt;(NameProperty, value<strong><span>, true</span></strong>); }<br>
+}<o:p></o:p></p>
+
+<p>It's a minor thing but I just wanted to mention it. <o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

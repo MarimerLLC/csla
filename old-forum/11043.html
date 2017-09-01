@@ -1,0 +1,84 @@
+<html><header><title>How to disable Removebutton per instance in ProjectTracker?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>How to disable Removebutton per instance in ProjectTracker?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11043.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>simon posted on Tuesday, January 10, 2012</h2><p>I want to disable the RemoveButton per Instance.</p>
+<p>In the sample (05-WpfSl-111028) the Removebutton in ProjectList View binding to ProjectList ViewModel&#39;s CanRemove:</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; public new bool CanRemove&nbsp;&nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; get { return Csla.Rules.BusinessRules.HasPermission(Csla.Rules.AuthorizationActions.DeleteObject, typeof(ProjectTracker.Library.ProjectEdit)); }</p>
+<p>&nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp;</p>
+<p>I add some code into ProjectEdit Model &#39;s&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;protected override void AddBusinessRules()</p>
+<p>&nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; this.BusinessRules.AddRule(new MyEditRule(AuthorizationActions.EditObject));</p>
+<p>&nbsp; &nbsp; }</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;private class MyEditRule : Csla.Rules.AuthorizationRule</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; public MyEditRule(Csla.Rules.AuthorizationActions action)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; : base(action)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; protected override void Execute(AuthorizationContext context)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; var target = (ProjectEdit)context.Target;</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; if (target != null)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; context.HasPermission = target.Name != &quot;Update ProjectTracker&quot;;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>but it does not work correctly.</p>
+<p><b>how disable the RemoveButton per instance? </b></p>
+<p>&nbsp;now i only use following code to disable the button in my code.</p>
+<p>
+<p>private RoleInfo &nbsp;focusedRow;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; public RoleInfo FocusedRow</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; get { return focusedRow; }</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; set</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; if (focusedRow != value)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; focusedRow = value;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; OnPropertyChanged(&quot;FocusedRow&quot;);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; this.DeleteCommand.RaiseCanExecuteChanged();</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; }</p>
+</p>
+<p>this.DeleteCommand = new DelegateCommand&lt;RoleInfo&gt;(OnDeleteExcuted,OnCanDelete);</p>
+<p>&nbsp;private bool OnCanDelete(RoleInfo info)</p>
+<p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; if (info == null || info.Name == &quot;Administrators&quot;)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; return false;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; else</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; return Csla.Rules.BusinessRules.HasPermission(Csla.Rules.AuthorizationActions.DeleteObject, typeof(Role));</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; }</p>
+</p>
+<p>&nbsp;</p>
+<p><b>&nbsp;but&nbsp;instantiate the Role Model. above code does not work correctly. because below code will run and context.Target is null.</b></p>
+<p>&nbsp; private class RoleDeleteRule : Csla.Rules.AuthorizationRule</p>
+<p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; public RoleDeleteRule(Csla.Rules.AuthorizationActions action) : base(action)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; { &nbsp;}</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; protected override void Execute(AuthorizationContext context)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;var target = (Role)context.Target;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; if (target != null)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; context.HasPermission = target.Name != &quot;Administrators&quot;;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</p>
+</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>simon replied on Tuesday, January 10, 2012</h2><p>I got it from the book.</p>
+<p>
+<p>Finally, for the edit and delete actions you might have an object instance you can supply to the rule:</p>
+<p>bool canEdit = Csla.Rules.BusinessRules.HasPermission( Csla.Rules.AuthorizationActions.EditObject, obj);</p>
+</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

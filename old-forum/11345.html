@@ -1,0 +1,31 @@
+<html><header><title>BusinessListBase questions</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>BusinessListBase questions</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11345.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>kosta_t posted on Thursday, May 03, 2012</h2><p>Hi,</p>
+<p>I am implementing some WPF&nbsp;drag &amp; drop functionality between 2 Lists (in seperate business objects).</p>
+<p>After some experimentation I have the following logic in the drop event handler:</p>
+<ul>
+<li>clone the item (business object) being dropped</li>
+<li>make the cloned item dirty</li>
+<li>add the cloned item to the target list</li>
+<li>remove the item from the source list
+<ul>
+<li>I had to implement a new Remove&#39; method in the target list to clear the deleted list in the source list.</li>
+<li>This is important because I don&#39;t want the &#39;removed&#39; item to be deleted from the db when/if the list is saved.</li>
+</ul>
+</li>
+</ul>
+<p>This works ok, but leaves the wpf controls hosting the source list seeing it as being dirty &amp; enabling the save button on the view. This is because the Remove method triggers a notification to the WPF controls, but clearing the deleted list doesn&#39;t trigger anything.</p>
+<p>If I could force the list to trigger a notification after clearing the deleted list, I could get the wpf controls properly synchronised with the list.</p>
+<p>Surely this (ie moving an item from one list to another) is a fairly common scenario.</p>
+<p>Is there a recommended pattern for this?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Thursday, May 03, 2012</h2><p>There is an alternate method. These lists do not know bout each other, right?</p>
+<p>I would rather use LINQ to filter the rows available from the Source list in the ViewModel and not have to worry about the Source.DeletedList or dirty handling.&nbsp;</p>
+<p>All in all, it is a UI filtering that you need!&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>kosta_t replied on Friday, May 04, 2012</h2><p>Thanks for the reply, but I don&#39;t understand your answer.</p>
+<p>The lists do not know each other, but obviously the drop handler (in the viewmodel) has access to both lists (obtained from the drop info).</p>
+<p>The drop event is being handled in the viewmodel &amp; I am relying on data binding to trigger events in the views (one for each list).</p>
+<p>How do I apply UI filtering from the viewmodel?</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Friday, May 04, 2012</h2><p>Create a IList&lt;botype&gt; property an member variable in your ViewModel.</p>
+<p>Create a filtered list lik this (assuming you have 2 lists: source and dest) </p>
+<p>var myFilteredList= source.ToSyncList(c =&gt; !(dest.Any(p =&gt; p.Id == c.Id)));</p>
+<p>set the member varaible and raise propertychanged on the ViewModel property. </p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>kosta_t replied on Friday, May 04, 2012</h2><p>Unfortunately, the drop handler doesn&#39;t have access to the source viewmodel as that info is not supplied by the drag &amp; drop process.</p>
+<p>I could add a <em>notify</em> method to the business object that contains the list, because I can get to it (via the parent property of the list). Then the drop handler can call that method to force a sync once the drop is done.</p>
+<p>I could alsothen &nbsp;create my own business &amp; businesslist objects which contain the extra methods I am using &amp; then subclass all my business objects &amp; lists from my bases classes. That would wrap things up a little better.</p>
+<p>Still, I waslooking for a more elegant / generic&nbsp;solution.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

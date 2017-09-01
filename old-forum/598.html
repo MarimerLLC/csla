@@ -1,0 +1,24 @@
+<html><header><title>Edit,bindinsource,...?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Edit,bindinsource,...?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/598.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>shahram posted on Wednesday, July 12, 2006</h2><P>Hi!</P>
+<P>I have a combobox on a form that shows a person info and combobox shows person's type so it is databind to typeid of person by selectedvalue. Now when I shows the form combobox seems writes to person object's typeid not read fron it! So I must click a cancel buttin that do bindinsource.CancelEdit() then combobox shows the type like after a canceledit() combobox reads tyoeid from person object to it's selectedvalue!</P>
+<P>I wonder if it is better and faster to avoid databinding and do it by hand!</P>
+<P>Any idea how to solve this problem?</P>
+<P>Then I have solved all this "editlevel bigin edit canceledit applyedit one time by bindingsource, one time by csla object! "&nbsp; I think but I am not sure so any suggestion?</P>
+<P>My solution</P>
+<P>While(object.MyEditLevel&gt;0)--MyEditLevel is a public getter that return EditLevel</P>
+<P>object.CancelEdit()</P>
+<P>before every bindingsource.Datasource = object;</P>
+<P>and</P>
+<P>&nbsp;</P>
+<P>While(object.MyEditLevel&gt;0)--MyEditLevel is a public getter that return EditLevel</P>
+<P>object.ApplyEditEdit()</P>
+<P>before every&nbsp; object.Save()</P>
+<P>Regards</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, July 12, 2006</h2><P>If tis is in .NET 2.0, there was a previous thread on this subject. It turns out that you should avoid calling BeginEdit/CancelEdit/ApplyEdit directly when using Windows Forms data binding.</P>
+<P>Instead, you need to always interact with the bindingsource control - calling its EndEdit and CancelEdit methods instead, and allowing it to call BeginEdit automatically by itself.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>shahram replied on Wednesday, July 12, 2006</h2><P>Yes, I have read that but the issue is in my case I have a roo object(Client) with child collection(Contacts) when I show a Client in win form using bindinsource it gets one beginedit by bindingsource so now editlevel is 1 and then if user clicks a contact so anouther winform opens showing the contact and bindingsource on contact winform does a beginedit on contact now editlevel is 2!</P>
+<P>and when after you edit your contact and want to update&nbsp;you do endedit and root.save but now editlevel is 1and BUMP exception!</P>
+<P>So I thout before calling save do a </P>
+<P>While(EditLevel&gt;0)</P>
+<P>object.ApplyEdit().</P>
+<P>and it seems it works!</P>
+<P>Anyhow it wasn't better if when you do a beginedit on a rootobject it automatically wouldn't increase editlevel on children of thet object?</P>
+<P>Regards</P>
+<P>&nbsp;</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

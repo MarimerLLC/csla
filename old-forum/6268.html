@@ -1,0 +1,666 @@
+<html><header><title>A different approach to managed backing fields and INotifyPropertyChanged</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>A different approach to managed backing fields and INotifyPropertyChanged</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6268.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Justin posted on Tuesday, January 27, 2009</h2><P>So after getting familiar with CSLA 3.6 and Silverlight development I feel like property declarations are somewhat wordy and perhaps redundant and wanted to get a feel for why it was approached this way and what might be the downside to using a more reflective approach.<o:p></o:p></P>
+<P>Take this declaration for a string property from the Rolodex sample:<o:p></o:p></P>
+<P>&nbsp;private static PropertyInfo&lt;string&gt; CompanyNameProperty = RegisterProperty&lt;string&gt;(new PropertyInfo&lt;string&gt;("CompanyName", "Company Name", string.Empty));<BR>&nbsp;&nbsp;&nbsp; public string CompanyName<BR>&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; get<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return GetProperty(CompanyNameProperty);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; set<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; SetProperty(CompanyNameProperty, value);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<BR>&nbsp;&nbsp;&nbsp; }<o:p></o:p></P>
+<P>}<o:p></o:p></P>
+<P>So the property type is basically declared&nbsp;four times and the property name twice along with a derivative name three times just to setup a string property.<o:p></o:p></P>
+<P>What strikes me off the bat is the PropertyInfo declaration is basically acting like an attribute declaration, setting up friendly name and default value and then it is used in place of a string literal to&nbsp;connect the proper backing field.<o:p></o:p></P>
+<P>What if a little reflection was used such that it would be declared something like:<o:p></o:p></P>
+<P>&nbsp;&nbsp;&nbsp; [Attributes.TextField(FriendlyName="Company Name", DefaultValue=String.Empty)]<BR>&nbsp;&nbsp;&nbsp; public string CompanyName<BR>&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; get<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return GetProperty(MethodBase.GetCurrentMethod());<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; set<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; SetProperty(MethodBase.GetCurrentMethod(), value);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<BR>&nbsp;&nbsp;&nbsp; }<o:p></o:p></P>
+<P>This marks up the Property with a TextField attribute that comes from our library we built for previous versions of CSLA, this attribute also as properties for MaxLength and Required etc, that can be honored by a standard rule engine called in SetProperty&nbsp;and the UI.<o:p></o:p></P>
+<P><SPAN><FONT face="Times New Roman" size=3>I know in previous CSLA's PropertyHasChanged() used the stack trace to reflect back and get the propertyinfo without having to use a string literal, but this was problematic with inlining and is in fact pretty slow, and that it was thought that Silverlight would not support as much reflection as it did. </FONT></SPAN></P>
+<P><SPAN><FONT face="Times New Roman" size=3>From what I can see MethodBase.GetCurrentMethod() is supported and is much faster than the stack trace&nbsp;approach and to derive the PropertyInfo from the MethodBase is pretty trivial and the results could be cached. If it were implemented properly the difference in performance&nbsp;between the current implementation and GetCurrentMethod would be a string lookup in a hashtable vs an array index lookup.</FONT></SPAN></P>
+<P><SPAN><FONT face="Times New Roman" size=3>Any thoughts?</FONT></SPAN></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Curelom replied on Tuesday, January 27, 2009</h2>I think this would cause problems with localization.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Justin replied on Tuesday, January 27, 2009</h2>How so?</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>nermin replied on Tuesday, January 27, 2009</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>My guess is that one of the reasons to switch to these managed
+properties was to get away from reflection during serialization and run-time
+costs that might occur because of it.&nbsp; <o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Justin
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Tuesday, January 27, 2009 4:22 PM<br>
+<b>To:</b> Nermin Dibek<br>
+<b>Subject:</b> Re: [CSLA .NET] A different approach to managed backing fields
+and INotifyPropertyChanged<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>How so?<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Justin replied on Tuesday, January 27, 2009</h2><P>Serializtion would not require reflection any more than it does now, since behind the scenes there would still be a collection of IFileData's to loop through and serialize/deserialize.</P>
+<P>Managed backing fields are more expensive than private fields as it is when using getters/setters, the additional overhead of looking up the managed field by name will be more than an array index, but I would imagnine for most business objects it would be negligable, you do it all the time when using datatables with the field name indexer.</P>
+<P>If performance where critical on some properties it would be pretty easy to add a private reference to the IFieldData and use it in the getter/setter to eliminate the indirection at the expense of more lines of code in the get/set.</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Curelom replied on Tuesday, January 27, 2009</h2>With the attribute<br /> [Attributes.TextField(FriendlyName="Company Name", DefaultValue=String.Empty)]<br /><br />How would you set the Friendly Name in a localized manner?</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Justin replied on Tuesday, January 27, 2009</h2><P>The same way you would if you used Rocky's approach? They both have string literals in the initialzers?</P>
+<P>I would imagine instead of FriendlyName="Company Name" you would do FriendlyName=rm.GetString("CompanyName")</P>
+<P>Even better&nbsp;you don't pass a friendly name in the attribute at all, it uses the property name to lookup the proper resource friendly name string.&nbsp;<BR></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, January 27, 2009</h2>If you use the attribute scheme, how do you get a token for use in AddBusinessRules() and AddAuthorizationRules()?<br><br>The purpose behind the static field is to act as a token to represent the property throughout the class, so the property name isn't duplicated all over as a string literal. Any alternative solution must solve that problem.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Justin replied on Tuesday, January 27, 2009</h2><P>I would argue that it would be better to represent most of that as attributes on the property or class themselves.</P>
+<P>So instead of all this:</P>
+<P>ValidationRules.AddRule(Csla.Validation.CommonRules.StringRequired, new Csla.Validation.RuleArgs(CompanyNameProperty));</P>
+<P>ValidationRules.AddRule(Csla.Validation.CommonRules.StringMaxLength, new Csla.Validation.CommonRules.MaxLengthRuleArgs(CompanyNameProperty, 50));</P>
+<P>You simply markup CompanyName like:</P>
+<P>[Attributes.TextField(FriendlyName="Company Name", MaxLength=50, Required=true)]</P>
+<P>Then there is a common AddRules() that is called that iterates over the members using reflection to setup common rules, on top of that now the UI can simply look at the attirbutes for MaxLength or required.</P>
+<P>As for AddAuthorization it would be the same, they should be attributes that take parameter arrays, something like:</P>
+<P>[Attributes.CanRead("AdminUser", "RegularUser", "ReadOnlyUser")]</P>
+<P>Seems cleaner to me, so instead of using a static field as token to connect the addrules to the property, the attributes are implicitly linked to the property.</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, January 27, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Attributes for the rules in CommonRules isn&#8217;t too hard.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Defining an attribute that can describe any arbitrary rule, with
+arbitrary parameters, is trickier.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Also, attributes don&#8217;t cover the per-instance scenarios,
+only the per-type scenarios. While per-type is far more common, the
+per-instance scenarios are real.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Yet another argument for the static field approach is that it is
+extensible. You can subclass PropertyInfo&lt;T&gt; to add extra metadata about
+the properties. This can be useful for denoting the database/table/column the
+value is associated with or other information valuable to the app.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>In the final analysis though, there&#8217;s the weight of
+history.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Already I&#8217;m supporting several property declaration
+models. Dropping them would be a breaking change of non-trivial magnitude for
+people who have hundreds or thousands of classes in their apps.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>The attribute model is a good idea, but it would have to be
+additive to the existing models. Which is certainly possible, but would expand
+my coding/testing/maintenance scope rather a lot. Already, the weight of
+supporting the 3.0 and 3.5 (field manager) models is telling. So among the many
+other concerns, I have to consider whether I think this sounds like fun to do
+at all, and whether it will be fun to maintain for the next decade.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>But I&#8217;ll add it to the wish list, because it is a good
+idea, and perhaps at some point it will seem more fun than some of the other cool
+ideas on the list :)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky</span><o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Justin replied on Tuesday, January 27, 2009</h2><P>Normally attributes are per type as you said, mainly because when you call GetCustomAttributes is constructs a new instance of the attribute everytime from the hard coded constructor and has no idea which instance it attached to.</P>
+<P>We got around this in order to have "dynamic" attributes, that is what if a string property is required after another property has a certain value?</P>
+<P>So all we did was extend BusinessBase to have a GetAttribute(PropertyInfo Property) method, this acted as an instance based&nbsp;attribute cache, that called GetCustomAttributes then stored the attribute references for later use, also this allowed it to pass a reference to the BO instance into the attribute if it needed it for its purposes.</P>
+<P>So if you called GetAttribute twice on the same instance you would get back the same attribute instance for that property, and if you set .Required=false it would remain that way and take effect on the next ApplyRules.</P>
+<P>We also made some pretty complex attributes, such as our CodedValue one. This attribute marked up which code table the possible values come from in our DB, this attribute&nbsp;was the actual class that handled loading and caching the codes in a static field&nbsp;and allowed searching and validating. That way the coded value could be validated with a common rule and the UI would simply grab that attribute from the property in order to populate a pull down .</P>
+<P>Thanks for considering it, we will probably extend 3.6 to use our attributes for a our silverlight project since they have served us well in the past. I mainly wanted to see if there where any gotchas specifically in performance in using reflection in the getter and setter, and if that is why you moved away from it.</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, January 27, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>One of the most expensive reflection activities is retrieving a
+custom attribute. I heard it was the most expensive, but haven&#8217;t
+confirmed that.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Certainly using reflection is expensive in general, which is why
+3.6 eliminates most of it. The combination of the field manager indirection and
+reflection tanked performance in the initial testing. Getting rid of reflection
+makes the field manager workable, and the field manager is critical for
+Silverlight (and Azure) support.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>So yes, I&#8217;d say using reflection in the get/set blocks is
+off limits going forward, for me anyway.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>A friend of mine, and co-developer of CSLA .NET for Silverlight,
+is helping me work through some interesting ideas around the use of lambdas to make
+RegisterProperty() no longer need the one remaining string literal. The same
+technique, if we can work it out, should probably eliminate the use of any
+reflection in CommonRules too, and leads into some features that will likely be
+necessary to support ADO.NET EF in the future.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Remember, I&#8217;m just one guy, and while I&#8217;d love to do
+nothing but develop CSLA, I have to do things that actually make money too. So I
+have to pick my features with some care, to make sure they are interesting (because
+none of us want me to lose interest), and to make sure I&#8217;m ready for .NET
+4.0 and 5.0.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>If CSLA was commercial I&#8217;d have a paid dev team and a paid
+support team, and I could do a lot of other things &#8211; like make an
+attribute-based model by delegating the work to one of my staff. But it isn&#8217;t
+commercial, and rather than building a new feature, I&#8217;m creating a series
+of videos about using CSLA .NET for Silverlight so I can sell them to fund the
+development I have time to do.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Sorry for the rant &#8211; I appreciate your passion in pushing
+a good idea, I really do. But the harsh reality is that I have to balance the
+existing user base, future .NET directions (including things like Azure) and my
+ability to create and maintain anything I do &#8211; while still having a
+little time to do something that actually makes money&#8230;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>If I could start with a clean slate and build a new CSLA that&#8217;d
+be cool, there are many things I&#8217;d do different now. But that&#8217;s
+similar to Microsoft dropping COM for .NET, or perhaps dropping .NET for
+whatever comes next &#8211; it is a wonderful and terrible thing to contemplate,
+but it can&#8217;t happen more than once every 10-15 years.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>That said, Oslo might be the answer. Who cares about any of this
+silly C#/VB syntax crap. One of the things I really want to do (in my spare
+time &#8211; ha!) is to create MCsla &#8211; a DSL for CSLA objects. Assuming
+Oslo and DSLs take off no one need program in C# ever again!! (he says with tongue
+firmly in cheek)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>(but I really do plan to do a DSL for CSLA &#8211; time permitting)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky</span><b><span><o:p></o:p></span></b></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Justin replied on Wednesday, January 28, 2009</h2><P>I don't have any hard numbers but I believe the instance based attribute caching approach we used sped up attribute access greatly as a side effect, since again it was just pulling an already live attribute instance out of a dictionary instead of have the runtime instantiate a new attribute as it does on every GetCustomAttribute call. Also attributes can just be used to setup this stuff on BO construction.&nbsp;MS uses attributes all over the place for telling its serializers what to do , so they aren't inherently slow if used wisely.</P>
+<P>I hope you don't think I am expecting you to change CSLA, I really appreciate all the hard work put into CSLA, and I believe you could make it commercial if you desired, it has helped us significantly, and as always I respect your opinions on BO development.<o:p></o:p></P>
+<P>I really&nbsp;just&nbsp;wanted to get your opinion and get some holes shot in the attribute based approach, so I know what we would be up against if we tried to use it again for a Silverlight implementation. You have pointed some areas we would need to be weary of if we tried(performance and custom rules)&nbsp; and this discussion has helped me get up to speed on the new stuff, which again I appreciate.<o:p></o:p></P>
+<P>On the DSL issue, we have gone down that road before, mainly just trying to create some customizability in our app using XML as a simple DSL. Oslo looks interesting, but I think as you have touched on before, DSL usually ends up needing most of the features of a full language over time anyway, why not use one that is already known by existing developers? With .Net having a built in complier and Code Dom in the runtime it's completely possible to say have a user take an existing BO and customize it through inheritance and overriding using C# or VB just like you do when you write an ASP.net page. If you really wanted to have control over the language runtime you could do what a lot of game developers do and use something like LUA for customization, I believe there is a LUA.net implementation. <o:p></o:p></P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>nermin replied on Thursday, January 29, 2009</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I would guess that the friend of your you are referring to is
+either Aaron, or Justin Chase.&nbsp; Al 3 of us were discussing this idea of
+using Lambda expressions and adding data binding extensions.&nbsp; But looking
+at Aaron&#8217;s example (and also few other examples of static reflection)</span>
+&nbsp;gave me an idea &#8211; independent of your friend- to explore this possibility
+for <span>&nbsp;Property Registration )<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>So replacing this code:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>private</span><span> <span>static</span> <span>PropertyInfo</span>&lt;<span>int</span>&gt;
+IdProperty = RegisterProperty(<span>typeof</span>(<span>Employee</span>), <span>new</span> <span>PropertyInfo</span>&lt;<span>int</span>&gt;(<span>&quot;Id&quot;</span>));<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>with this one:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>private</span><span> <span>static</span> <span>PropertyInfo</span>&lt;<span>int</span>&gt;
+IdProperty = RegisterProperty&lt;<span>int</span>&gt;(x
+=&gt; x.Id);<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I needed to add following code &#8211; RegisterProperty()
+override to BusinessBase&lt;T&gt;:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;
+<span>protected</span> <span>static</span>
+<span>PropertyInfo</span>&lt;P&gt;
+RegisterProperty&lt;P&gt;(<span>Expression</span>&lt;<span>Func</span>&lt;T, <span>object</span>&gt;&gt;
+propertyLambdaExpression) <o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;
+{<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span>PropertyInfo</span> reflectedPropertyInfo = <span>Reflect</span>&lt;T&gt;.GetProperty(propertyLambdaExpression);<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span>return</span> RegisterProperty(<span>new</span> <span>PropertyInfo</span>&lt;P&gt;(reflectedPropertyInfo.Name));<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp; }<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Where Reflect&lt;T&gt;.GetProperty()is the code I borrowed from
+creator of Moq (popular Dynamic Mocking tool) &#8211; Daniel Cazzulino.&nbsp;
+Here is the implementation of GetProperty() inside Reflect static class:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span>public</span> <span>static</span> <span>PropertyInfo</span> GetProperty(<span>Expression</span>&lt;<span>Func</span>&lt;TTarget, <span>object</span>&gt;&gt;
+property)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span>PropertyInfo</span> info = GetMemberInfo(property) <span>as</span> <span>PropertyInfo</span>;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span>if</span> (info == <span>null</span>) <span>throw</span> <span>new</span> <span>ArgumentException</span>(<span>&quot;Member
+is not a property&quot;</span>);<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span>return</span> info;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;
+<span>private</span> <span>static</span> <span>MemberInfo</span> GetMemberInfo(<span>Expression</span>
+member)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;
+{<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span>if</span> (member == <span>null</span>)
+<span>throw</span> <span>new</span> <span>ArgumentNullException</span>(<span>&quot;member&quot;</span>);<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span>LambdaExpression</span> lambda = member <span>as</span> <span>LambdaExpression</span>;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span>if</span> (lambda == <span>null</span>)
+<span>throw</span> <span>new</span> <span>ArgumentException</span>(<span>&quot;Not
+a lambda expression&quot;</span>, <span>&quot;member&quot;</span>);<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span>MemberExpression</span> memberExpr = <span>null</span>;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span>// The Func&lt;TTarget, object&gt; we use returns an
+object, so first statement can be either <o:p></o:p></span></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span>// a cast (if the field/property does not return an
+object) or the direct member access.<o:p></o:p></span></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span>if</span> (lambda.Body.NodeType == <span>ExpressionType</span>.Convert)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+{<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span>// The cast is an unary expression, where the operand
+is the <o:p></o:p></span></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span>// actual member access expression.<o:p></o:p></span></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+memberExpr = ((<span>UnaryExpression</span>)lambda.Body).Operand
+<span>as</span> <span>MemberExpression</span>;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+}<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span>else</span> <span>if</span>
+(lambda.Body.NodeType == <span>ExpressionType</span>.MemberAccess)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+{<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+memberExpr = lambda.Body <span>as</span> <span>MemberExpression</span>;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+}<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span>if</span> (memberExpr == <span>null</span>)
+<span>throw</span> <span>new</span> <span>ArgumentException</span>(<span>&quot;Not
+a member access&quot;</span>, <span>&quot;member&quot;</span>);<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span>return</span> memberExpr.Member;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp; }</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Here is the full source of Reflect sample which is what I used
+in this example:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><a href="http://www.clariusconsulting.net/blogs/kzu/archive/2007/12/30/49063.aspx">http://www.clariusconsulting.net/blogs/kzu/archive/2007/12/30/49063.aspx</a><o:p></o:p></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Hope this helps!<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Nermin<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Rockford Lhotka
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Tuesday, January 27, 2009 11:26 PM<br>
+<b>To:</b> Nermin Dibek<br>
+<b>Subject:</b> RE: [CSLA .NET] RE: A different approach to managed backing
+fields and INotifyPropertyChanged<o:p></o:p></span></p>
+
+</div>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal><span>One of the most expensive reflection activities is retrieving a custom
+attribute. I heard it was the most expensive, but haven&#8217;t confirmed that.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Certainly using reflection is expensive in general, which is why
+3.6 eliminates most of it. The combination of the field manager indirection and
+reflection tanked performance in the initial testing. Getting rid of reflection
+makes the field manager workable, and the field manager is critical for
+Silverlight (and Azure) support.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>So yes, I&#8217;d say using reflection in the get/set blocks is
+off limits going forward, for me anyway.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>A friend of mine, and co-developer of CSLA .NET for Silverlight,
+is helping me work through some interesting ideas around the use of lambdas to
+make RegisterProperty() no longer need the one remaining string literal. The
+same technique, if we can work it out, should probably eliminate the use of any
+reflection in CommonRules too, and leads into some features that will likely be
+necessary to support ADO.NET EF in the future.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Remember, I&#8217;m just one guy, and while I&#8217;d love to do
+nothing but develop CSLA, I have to do things that actually make money too. So
+I have to pick my features with some care, to make sure they are interesting
+(because none of us want me to lose interest), and to make sure I&#8217;m ready
+for .NET 4.0 and 5.0.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>If CSLA was commercial I&#8217;d have a paid dev team and a paid
+support team, and I could do a lot of other things &#8211; like make an
+attribute-based model by delegating the work to one of my staff. But it
+isn&#8217;t commercial, and rather than building a new feature, I&#8217;m
+creating a series of videos about using CSLA .NET for Silverlight so I can sell
+them to fund the development I have time to do.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Sorry for the rant &#8211; I appreciate your passion in pushing
+a good idea, I really do. But the harsh reality is that I have to balance the existing
+user base, future .NET directions (including things like Azure) and my ability
+to create and maintain anything I do &#8211; while still having a little time
+to do something that actually makes money&#8230;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>If I could start with a clean slate and build a new CSLA
+that&#8217;d be cool, there are many things I&#8217;d do different now. But
+that&#8217;s similar to Microsoft dropping COM for .NET, or perhaps dropping
+.NET for whatever comes next &#8211; it is a wonderful and terrible thing to
+contemplate, but it can&#8217;t happen more than once every 10-15 years.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>That said, Oslo might be the answer. Who cares about any of this
+silly C#/VB syntax crap. One of the things I really want to do (in my spare
+time &#8211; ha!) is to create MCsla &#8211; a DSL for CSLA objects. Assuming
+Oslo and DSLs take off no one need program in C# ever again!! (he says with
+tongue firmly in cheek)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>(but I really do plan to do a DSL for CSLA &#8211; time
+permitting)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky</span><b><span><o:p></o:p></span></b></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Justin replied on Tuesday, February 03, 2009</h2><P>After giving this some more&nbsp;thought I am liking&nbsp;the dependency property pattern less and less, I already&nbsp;disliked it from WPF but I didn't have to pollute my own classes with it at least.&nbsp;</P>
+<P>If you go and look at the reasoning the WPF guys did dependancy properties is because reflection is slow. </P>
+<P>Ok so what did MS do to solve the problem, improve reflection performance? No they recreate a psuedo reflection system except it's glued together manually. How do you connect the dependancy property to the "real" property, well name it with a "Property" suffix and then add SetProperty, GetProperty to the real properties get,set. Why define the property once, when you can do it twice right?</P>
+<P>Now I know you are looking at making the PropertyInfo's public to make them accessable from the outside, but at this point why not take it a step further and simply make the PropertyInfo be&nbsp;THE property value?</P>
+<P>What I am mean is, that when we looked at using attributes for metadata we also explored another approach, simply making a property values be classes that contain the data and metadata.</P>
+<P>For instance delcaring CompanyName becomes something:</P>
+<P>public&nbsp;readonly PropertyInfo&lt;string&gt; CompanyName = RegisterProperty&lt;string&gt;(new PropertyInfo&lt;string&gt;("CompanyName", "Company Name", string.Empty));<BR></P>
+<P>Where the PropertyInfo class now has a .Value property to access the value. So you would bind to MyCompany.CompanyName.Value or MyCompany.CompanyName.FriendlyName etc.</P>
+<P>Why go through all the theatrics of making a second property to hold the first properties metadata and connect the two together? UI controls have done this for a long time, you don't add a string property to a form class then add a second property to the form to hold is position and font of that text, you add a TextBox class that has both a Text property and the other metadata. Why not do this for BO's?</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, February 03, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I absolutely thought about exposing a &#8216;property value
+container&#8217; instead of a normal property.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>There are three problems with this that I see.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoListParagraph><span><span>1.<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span></span><span>It makes code interacting with the object feel &#8220;odd&#8221;<o:p></o:p></span></p>
+
+<p class=MsoListParagraph><span><span>2.<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span></span><span>It prevents the use of numerous data binding scenarios<o:p></o:p></span></p>
+
+<p class=MsoListParagraph><span><span>3.<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span></span><span>Common data mapping/serialization technologies would fail<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Issue 1 is that all code interacting with your object would be
+like this:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>_customer.Name.Value = &#8220;Rocky&#8221;;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>When people would expect<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>_customer.Name = &#8220;Rocky&#8221;;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I suspect that&#8217;d be a big turnoff for a lot of people.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Issue 2 is a bigger deal imo. If you look across the data
+binding in web, windows, etc, you&#8217;ll find that not all of the binding
+technologies allow (or consistently allow) the use of dot notation to dig into
+a sub-object. Some do, like XAML, but some don&#8217;t. And so this scheme
+would prevent the use of data binding, or at least complicate the heck out of it
+and prevent the use of designer support in Windows Forms and Web Forms.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Issue 3 may or may not be a big deal. But dot notation isn&#8217;t
+typically supported by serializers like XmlSerializer &#8211; but that doesn&#8217;t
+work with CSLA objects anyway. However, dot notation may not work with the ASP.NET
+MVC helper objects that load/unload objects from postback data &#8211; for the
+same reason DataMapper wouldn&#8217;t work without being &#8220;dot notation&#8221;
+aware. Of course I can fix DataMapper, but I can&#8217;t fix the MVC helpers
+and other Object-to-Object Mapping tools out there.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>If we lived in a vacuum, I really do think it would be ideal to
+have all properties be a richer type. But this model makes interacting with many
+existing .NET technologies much harder, and so I haven&#8217;t pursued the
+approach.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Justin replied on Tuesday, February 03, 2009</h2><P>The reasons you gave are pretty much why we ended up using attributes, at the time(before WPF and dependency properties etc.) they seemed like the best of both worlds for most situations, a simple value type properties with rich metadata attached right to&nbsp;them so it worked fine with databinding, it seemed very natural for our team to create new classes and natural to access the metadata.</P>
+<P>We still ended up creating a richer type for our coded values that had .Code and .Description properties.</P>
+<P>So we ended up having to do custom databinding and custom serialization anyway, and it ended up working out very well, we put the onus on modifiying the supporting framework so our core BO classes could be coded how we felt they should be.</P>
+<P>I think we might look at richer value type containers again at least experimentally, honestly I had hoped MS would continue to refine reflection allowing Property delegates, Property Events, and of course better performance by now, but they&nbsp;seem to be abandoning reflection and attributes in favor of things like dependency properties, very strange to me.</P>
+<P>&nbsp;As far as how natural they are to access(.Value), again we do it all the time with UI controls, it just accepted and works quite well, thats not to say I wouldn't prefer straight up property access with fast rich reflection to get to the property metadata. I know I have seen some talk from the .Net group of adding something like "infoof" to similar to typeof but for retrieving the Info object quickly instead.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Justin replied on Tuesday, February 03, 2009</h2><P>Just as a follow up to the mythical infoof statement, it looks like some have been able to get it's functionality using linq expression trees <A href="http://social.microsoft.com/Forums/en-US/netfxbcl/thread/a29eaf3e-5304-4135-870d-4c05b0cb549b">http://social.microsoft.com/Forums/en-US/netfxbcl/thread/a29eaf3e-5304-4135-870d-4c05b0cb549b</A>:</P>
+<P>Edit sorry just read Nermin's post, looks like he already went over this and had a hand in getting soemthing working already :).</P>
+<P>&nbsp;</P>
+<P>Yes, infoof would be a great feature.<BR>But, in C# 3.0 expression trees can do the trick.<BR><BR></P>
+<DIV>
+<DIV class=codeseg>
+<DIV class=codecontent>
+<DIV class=codesniptitle><SPAN>Code Block</SPAN></DIV>
+<P>using System;<BR>using System.Reflection;<BR>using System.Linq.Expressions;<BR><BR>class Person<BR>{<BR>&nbsp;&nbsp;&nbsp; public int Age { get; set; }<BR>}<BR><BR>class Program<BR>{<BR>&nbsp;&nbsp;&nbsp; static void Main()<BR>&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var person = new Person();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var age = InfoOf(() =&gt; person.Age);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Console.WriteLine(age.Name);<BR>&nbsp;&nbsp;&nbsp; }<BR><BR>&nbsp;&nbsp;&nbsp; static PropertyInfo InfoOf&lt;T&gt;(Expression&lt;Func&lt;T&gt;&gt; ex)<BR>&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return (PropertyInfo)((MemberExpression)ex.Body).Member;<BR>&nbsp;&nbsp;&nbsp; }<BR>}<BR></P></DIV></DIV></DIV></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, February 03, 2009</h2>I should also point out that the primary motivator for introducing the field manager and PropetyInfo was to support the MobileFormatter and Silverlight. All the other features and concepts around it came into being during the discussion of this approach 12-18 months ago - a lot of people here on the forum provided good feedback and input into the design.<br /><br />But the core requirement is to have a way to get/set property values without the use of reflection. Not because of performance, but because private reflection isn't allowed on Silverlight (or Windows Azure, or CF, or ...).<br /><br />In other words, relying on private reflection (and/or the BinaryFormatter or NDCS) was clearly going to become a liabiltiy based on what I expected would happen - and I was right - it would have become a liability.<br /><br />If you look at the field manager, its _primary_ purpose is to maintain a list of property values in a deterministically ordered list, so it is possible for the MobileFormatter to get/set values across multiple platforms in a predictable manner.<br /><br />A close second to that requirement is performance. Which is why field manager uses a more complex data structure than a simple dictionary. It turns out that a dictionary is too slow (we tried) to make this work - and a dictionary isn't necessarily deterministic across platforms either (hash algorithms may be different on 32 bit, 64 bit and SL).<br /><br />I appreciate that you are looking at this from the perspective of the code in your business class. And that's valuable. But I started with a set of hard requirements in terms of serialization without private reflection, and the need for reasonable performance, and worked back into what you see today.<br /><br />As I say, many other design considerations came from external feedback. At the top of that list was to avoid the use of string literal property names throughout a business class.<br /><br />Certainly the use of attributes can minimize the number of places the property name is required. But in the general case it can't eliminate the need. And so no matter how you look at it, there's the requirement to get rid of the string literal in some manner. And (generally speaking) that means having some compiler-checked token that can represent the property in a way that doesn't overly complicate code, or cause performance issues.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Justin replied on Tuesday, January 27, 2009</h2><P>I also wanted to hit some other points</P>
+<P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div> 
+</P>
+<DIV class=Section1>
+<P class=MsoNormal><SPAN>Defining an attribute that can describe any arbitrary rule, with arbitrary parameters, is trickier.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;<FONT face="Times New Roman" color=#000000 size=3></div></BLOCKQUOTE></FONT></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p><FONT face="Times New Roman" color=#000000 size=3>From my experience not any more so that the AddRules code, Attributes can have delegates as parameters too. Maybe a more complex example?</FONT></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p><FONT face="Times New Roman" color=#000000 size=3>edit: I am wrong on this, delegates are not allowed on attribute contructors. Looking back we never really needed to do this, attributes handled 95% our rules validation and anything custom to that property was just coded in the setter.</FONT></o:p></SPAN></P><SPAN><o:p>
+<P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div> 
+</P></o:p></SPAN>
+<P class=MsoNormal><SPAN>Yet another argument for the static field approach is that it is extensible. You can subclass PropertyInfo&lt;T&gt; to add extra metadata about the properties. This can be useful for denoting the database/table/column the value is associated with or other information valuable to the app.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;<SPAN><o:p>&nbsp;<FONT face="Times New Roman" color=#000000 size=3></div></BLOCKQUOTE></FONT></o:p></SPAN></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p><SPAN><o:p><FONT face="Times New Roman" color=#000000 size=3>For me this is exactly what attributes are for, and what we have used them for, putting metadata on a property, and have used them for all those things(table name etc.). Attributes are just classes remember, they are as extensible as you want them to be.</FONT></o:p></SPAN></o:p></SPAN></P></DIV></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

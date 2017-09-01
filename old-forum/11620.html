@@ -1,0 +1,15 @@
+<html><header><title>CSLA 4.5 - OnChildChanged gets called multiple times</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA 4.5 - OnChildChanged gets called multiple times</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11620.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>skagen00 posted on Wednesday, October 03, 2012</h2><p>I&#39;ve got a unit test or two that broke on me because it&#39;s looking for too many mock dtos.&nbsp; </p>
+<p>Structure is this -</p>
+<p>Root BO - contains EditableList of Editable BO.</p>
+<p>When an editable BO&#39;s simple &quot;Name&quot; property changes, OnChildChanged is getting called 7 times in the Root BO.&nbsp; Pre 4.5 it&#39;s only getting called once.</p>
+<p>Going to see if I can figure out what is going on.</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Wednesday, October 03, 2012</h2><p>Hi,</p>
+<p>Probably caused by the IsXYZ properties also raising OnPropertyChanged on the EditableChild. </p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>skagen00 replied on Wednesday, October 03, 2012</h2><p>Sorry, I figured it out - these child property changes are getting captured.</p>
+<p><span style="font-family:Consolas;color:#1e1e1e;font-size:xx-small;"><span style="font-family:Consolas;color:#1e1e1e;font-size:xx-small;"><span style="font-family:Consolas;color:#1e1e1e;font-size:xx-small;">
+<p>test - 0 (0) - IsSelfDirty</p>
+<p>test - 0 (0) - IsDirty</p>
+<p>test - 0 (0) - IsSavable</p>
+<p>test - 0 (0) - IsSelfValid</p>
+<p>test - 0 (0) - IsValid</p>
+<p>test - 0 (0) - IsSavable</p>
+<p>test - 0 (0) - BankName</p>
+</span></span></span></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>skagen00 replied on Wednesday, October 03, 2012</h2><p>This behavior is likely to remain like this, right? (Just want to check before I change code &amp; tests to adjust for it)</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, October 04, 2012</h2><p>I don&#39;t think we plan to change this behavior.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

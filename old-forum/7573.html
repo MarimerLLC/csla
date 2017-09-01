@@ -1,0 +1,31 @@
+<html><header><title>PropertyChanged for child objects</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>PropertyChanged for child objects</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/7573.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>normalham3 posted on Thursday, September 03, 2009</h2>Is there an event that is raised at the Business root level when a child object is changed?<br /><br />I'm working within Silverlight in a MVVM situation.  I have a command on the Save button.  I'd like to call the following when any child objects change.  Before I implement this myself, I want to see if there is anything in the framework for this.<br /><br />SaveCommand.RaiseCanExecuteChanged(); <br /><br />Many thanks,<br />Todd<br /></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>webhead replied on Thursday, September 03, 2009</h2>Business root can be notified when a child list or a property of a child has been changed, you can do this by overriding the OnChildChanged() event.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rfcdejong replied on Saturday, September 12, 2009</h2>I have the same problem, but the childchange isn't being hit when the child is a list and an item within the list is changed. This count for IsDirty but also for IsValid and IsSaveable.<br /><br />It would be nice if the ChildChanged event would had been triggered whenever an item within the child changed, bubbling up. Even if there are childs in childs etc.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rsbaker0 replied on Sunday, September 13, 2009</h2><P>^^^^</P>
+<P>I'm finding that my OnChildChanged() virtual override in my root is being called at least somewhat reliably when the property of an item in child BusinessListBase object is chagned. However, I have a comment in my code that the variant in which a ListChangedEventArgs is passed is the one that seems to work all the time. This doesn't necessarily give up bubbling all the way to the root from a deep descendant, though. </P>
+<P>It's been a while since I worked on this, but I also vaguely remember an issue in which the wiring of the events was different after the object was saved once (or if you used a remote data portal), because OnDeserialized() would wire some events that didn't seem to otherwise be hooked.</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Sunday, September 13, 2009</h2><P>What version of CSLA are we talking about?</P>
+<P>Also, please remember that ChildChanged only works automatically when you are using managed backing fields for all child properties. Otherwise you need to manually hook/rehook the events as objects are created or deserialized.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rsbaker0 replied on Sunday, September 13, 2009</h2><P>^^^</P>
+<P>In my case, it's still CSLA 3.5. However, I'm still getting OnChildChanged via the ListChanged event even for unmanaged properties. This appears to be working because I call OnPropertyChanged in my setters...</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Sunday, September 13, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I don&#8217;t remember how far back (but I think 3.6) I reworked the
+entire event infrastructure to solve some flaws &#8211; check the change logs, as it
+may be that you can just upgrade to get the solution.<o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

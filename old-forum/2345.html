@@ -1,0 +1,44 @@
+<html><header><title>Why would DTC be involved on single DB transaction?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Why would DTC be involved on single DB transaction?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/2345.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>swegele posted on Wednesday, February 14, 2007</h2><P>I thought Rocky said&nbsp;using <FONT size=2>TransactionScope&nbsp; </FONT><FONT size=3>option&nbsp; meant ADO.NET transactions&nbsp;when only hitting one database...so why do I have to&nbsp;mess with&nbsp;DTC Service configuration to avoid that error about remote transactions?</FONT></P>
+<P>Why would I want my users having to go mess with DTC stuff?&nbsp; I barely understand it how could I expect a user of COTS to understand what needs to be changed on their XPSP2 box?!!</P>
+<P>Is there something I am missing?&nbsp; Any other COTS developers out there that actually use System.Transactions in a 2 tier setting?</P>
+<P>Sean</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, February 14, 2007</h2><P>This has come up on the forum before as well. The issue is that the docs and Microsoft info about System.Transactions is simply wrong. I've even talked to people on the data team at Microsoft and they think the docs are right. But they are not <img src="/emoticons/emotion-6.gif" alt="Sad [:(]" /></P>
+<P>Opening multiple connections to the same database, with the same connection string, is still viewed as mutliple database connections by System.Transactions. This causes System.Transactions to enlist the DTC.</P>
+<P>To avoid this you need to open ONE database connection and reuse it through your entire object graph. This is one of the reasons I added LocalContext in version 2.1, to make this easier to manage.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>swegele replied on Wednesday, February 14, 2007</h2><P>Cheers to MS!</P>
+<P>Hmmm interesting....I use the local context solution you recommended and I get the DTC enlistment when I open my first connection.</P>
+<P>I am thinking the problem is LLBLGen...my DAL.&nbsp; I store their DataAcessAdapter in LocalContext.&nbsp;&nbsp; I merely call:</P>
+<P>adapter.OpenConnection</P>
+<P>Whammo! I bet it is doing something under the covers to trigger this behavior.</P>
+<P>I am thinking I might cut and run and just use the built in LLBLGen transaction features.</P>
+<P>Sean</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, February 14, 2007</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Perhaps they are &#8220;optimizing&#8221; the data access by
+opening/closing connections on your behalf. Which normally would be good I&#8217;m
+sure, but in this case could be causing you problems.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky</span><o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>swegele replied on Wednesday, February 14, 2007</h2><P>Ahhhh I think I see...</P>
+<P><A href="http://www.llblgen.com/TinyForum/Messages.aspx?ThreadID=5220">http://www.llblgen.com/TinyForum/Messages.aspx?ThreadID=5220</A></P>
+<P>The last couple messages seem to point out the issue:</P>
+<P><EM>Well, you can use a TransactionScope with SQL Server 2000, however, it will be a DTC transaction automatically. SQL Server 2000 doesn't support light weight transactions, as they call it.<BR><BR>BOb<BR></EM></P>
+<P>Sean</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

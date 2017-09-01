@@ -1,0 +1,87 @@
+<html><header><title>Silverlight directive confusion</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Silverlight directive confusion</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11137.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>griff posted on Wednesday, February 08, 2012</h2><p>Hi</p>
+<p>I&#39;ve suddenly just got a little confused over the SILVERLIGHT directive. &nbsp;I&#39;ve just generated some code (cslagenfork) - a string field as below</p>
+<p>
+<pre>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>///</span><span>&nbsp;</span><span>&lt;summary&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>///</span><span>&nbsp;Maintains&nbsp;metadata&nbsp;about&nbsp;</span><span>&lt;see&nbsp;cref=</span><span>&quot;SchoolName&quot;</span><span>/&gt;</span><span>&nbsp;property.</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>///</span><span>&nbsp;</span><span>&lt;/summary&gt;</span>
+<span>#if</span>&nbsp;SILVERLIGHT
+<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]</span>
+<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;public&nbsp;static&nbsp;readonly&nbsp;PropertyInfo&lt;string&gt;&nbsp;SchoolNameProperty&nbsp;=&nbsp;RegisterProperty&lt;string&gt;(p&nbsp;=&gt;&nbsp;p.SchoolName,&nbsp;&quot;School&nbsp;Name&quot;);</span>
+<span>#else</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>private</span>&nbsp;<span>static</span>&nbsp;<span>readonly</span>&nbsp;<span>PropertyInfo</span>&lt;<span>string</span>&gt;&nbsp;SchoolNameProperty&nbsp;=&nbsp;RegisterProperty&lt;<span>string</span>&gt;(p&nbsp;=&gt;&nbsp;p.SchoolName,&nbsp;<span>&quot;School&nbsp;Name&quot;</span>);
+<span>#endif</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>///</span><span>&nbsp;</span><span>&lt;summary&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>///</span><span>&nbsp;Gets&nbsp;or&nbsp;sets&nbsp;the&nbsp;School&nbsp;Name.</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>///</span><span>&nbsp;</span><span>&lt;/summary&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>///</span><span>&nbsp;</span><span>&lt;value&gt;</span><span>The&nbsp;School&nbsp;Name.</span><span>&lt;/value&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>public</span>&nbsp;<span>string</span>&nbsp;SchoolName
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>get</span>&nbsp;{&nbsp;<span>return</span>&nbsp;GetProperty(SchoolNameProperty);&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>set</span>&nbsp;{&nbsp;SetProperty(SchoolNameProperty,&nbsp;<span>value</span>);&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</pre>
+</p>
+<p>Then from ProjectTracker</p>
+<p>
+<pre>&nbsp;&nbsp;&nbsp;&nbsp;<span>public</span>&nbsp;<span>static</span>&nbsp;<span>readonly</span>&nbsp;<span>PropertyInfo</span>&lt;<span>string</span>&gt;&nbsp;NameProperty&nbsp;=&nbsp;RegisterProperty&lt;<span>string</span>&gt;(c&nbsp;=&gt;&nbsp;c.Name);
+&nbsp;&nbsp;&nbsp;&nbsp;[<span>Display</span>(Name&nbsp;=&nbsp;<span>&quot;Project&nbsp;name&quot;</span>)]
+&nbsp;&nbsp;&nbsp;&nbsp;[<span>Required</span>]
+&nbsp;&nbsp;&nbsp;&nbsp;[<span>StringLength</span>(50)]
+&nbsp;&nbsp;&nbsp;&nbsp;<span>public</span>&nbsp;<span>string</span>&nbsp;Name
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>get</span>&nbsp;{&nbsp;<span>return</span>&nbsp;GetProperty(NameProperty);&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>set</span>&nbsp;{&nbsp;SetProperty(NameProperty,&nbsp;<span>value</span>);&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;}</pre>
+<pre>1. Why does the first example have the SL directive and not the second and vice-versa.</pre>
+<pre>and similary this code.....</pre>
+<pre><pre>&nbsp;&nbsp;&nbsp;&nbsp;<span>public</span>&nbsp;<span>static</span>&nbsp;<span>void</span>&nbsp;CloseProject(<span>int</span>&nbsp;id,&nbsp;<span>EventHandler</span>&lt;<span>DataPortalResult</span>&lt;<span>ProjectCloser</span>&gt;&gt;&nbsp;callback)
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>ProjectCloser</span>&nbsp;cmd&nbsp;=&nbsp;<span>new</span>&nbsp;<span>ProjectCloser</span>&nbsp;{&nbsp;ProjectId&nbsp;=&nbsp;id&nbsp;};
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>DataPortal</span>.BeginExecute&lt;<span>ProjectCloser</span>&gt;(cmd,&nbsp;callback);
+&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+<span>#if</span>&nbsp;!SILVERLIGHT
+&nbsp;&nbsp;&nbsp;&nbsp;<span>public</span>&nbsp;<span>static</span>&nbsp;<span>ProjectCloser</span>&nbsp;CloseProject(<span>int</span>&nbsp;id)
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>ProjectCloser</span>&nbsp;cmd&nbsp;=&nbsp;<span>new</span>&nbsp;<span>ProjectCloser</span>&nbsp;{&nbsp;ProjectId&nbsp;=&nbsp;id&nbsp;};
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cmd&nbsp;=&nbsp;<span>DataPortal</span>.Execute&lt;<span>ProjectCloser</span>&gt;(cmd);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>return</span>&nbsp;cmd;
+&nbsp;&nbsp;&nbsp;&nbsp;}
+</pre>
+<pre>#endif</pre>
+<pre></pre>
+<pre>2. Why doesn&#39;t the</pre>
+<pre><pre>public&nbsp;static&nbsp;void&nbsp;CloseProject(int&nbsp;id,&nbsp;EventHandler&lt;DataPortalResult&lt;ProjectCloser&gt;&gt;&nbsp;callback)
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ProjectCloser&nbsp;cmd&nbsp;=&nbsp;new&nbsp;ProjectCloser&nbsp;{&nbsp;ProjectId&nbsp;=&nbsp;id&nbsp;};
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DataPortal.BeginExecute&lt;ProjectCloser&gt;(cmd,&nbsp;callback);
+&nbsp;&nbsp;&nbsp;&nbsp;}</pre>
+<pre>not have directive around.</pre>
+<pre>#if SILVERLIGHT</pre>
+<pre>...........</pre>
+<pre>#endif</pre>
+<pre></pre>
+<pre>I thought I had this understood but am having a senior moment or missing something.</pre>
+<pre>Thanks</pre>
+<pre>Richard</pre>
+</pre>
+</pre>
+</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Wednesday, February 08, 2012</h2><p>Hi,</p>
+<p>1. For Silverlight the PropertyInfo <b>must </b>be public to be initalized correctly. It <b>may </b>also be public for other platforms but this is not required. </p>
+<p>EditorBrowsable attribute is used to hide this element from appearing in intellisense (Visual Studio) </p>
+<p>Many developers (and the samples)&nbsp; now tend to always make the PropertyInfo public to keep the code as simple as possible and the same for all platforms. Whether you want to use the EditorBrowsable attribute to hide the PropertInfo from appearing in Visual Studios Intellisense is optional up to you. </p>
+<p>2. The async method is common for both SL and .NET (needs no compiler directive)<br />&nbsp;The sync method is only for .NET (not SL) and hence the&nbsp; #if !SILVERLIGHT to not include code in SL. </p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>griff replied on Wednesday, February 08, 2012</h2><p>Hi</p>
+<p>thanks for the prompt reply. &nbsp;If I understand you correctly, if I&#39;m not bothered about hiding the propertyinfo then I can declare as below....</p>
+<p>
+<pre><b>public&nbsp;static&nbsp;readonly&nbsp;PropertyInfo&lt;string&gt;&nbsp;SchoolNameProperty&nbsp;=&nbsp;RegisterProperty&lt;string&gt;(p&nbsp;=&gt;&nbsp;p.SchoolName,&nbsp;&quot;School&nbsp;Name&quot;);</b></pre>
+<pre><b>.......</b></pre>
+<pre>Richard</pre>
+</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Wednesday, February 08, 2012</h2><p>There&#39;s nothing wrong about using this syntax on all platforms if you wish to hide the PropertyInfo&#39;s:</p>
+<p><i>[System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]<br />public static readonly PropertyInfo SchoolNameProperty = RegisterProperty(p =&gt; p.SchoolName, &quot;School Name&quot;);</i></p>
+<p>Or leaving them as public static. </p>
+<p>Read more here: <a href="http://forums.lhotka.net/forums/p/10921/50877.aspx#50877">http://forums.lhotka.net/forums/p/10921/50877.aspx#50877</a> </p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rcollette replied on Wednesday, February 08, 2012</h2><p>Wow.. talk about breaking encapsulation.&nbsp;&nbsp; What is it about Silverlight that requires a static field to be public?&nbsp; I&#39;m going to guess that Reflection was being used in the initialization of PropertyInfo.&nbsp;&nbsp; I am a little sad to see that the cross platform nature of CSLA.NET is not quite what I thought it was.&nbsp; Does it run, yes.&nbsp; Does it cause me to have to design against normal OO design practices for Silverlight, yes.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Wednesday, February 08, 2012</h2><p>@rcolettte: It is due to the restricted reflection in Silverlight.</p>
+<p>If you make all PropertyInfo public (with or without EditorBrowsable) it will work on all platforms. </p>
+<p>CSLA can not alter the restrictions on Reflection in Silverlight.</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tiago replied on Wednesday, February 08, 2012</h2><p>As a side note, that are other public visibility&nbsp;requisites for Silverlight code. Read more about it in <a href="http://tribunatek.blogspot.com/2011/04/technical-note-silverlight-code-for.html">Technical Note: Silverlight code for CSLA 4</a> </p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

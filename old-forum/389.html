@@ -1,0 +1,49 @@
+<html><header><title>Design advice - add child to child</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Design advice - add child to child</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/389.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Michael Hildner posted on Thursday, June 15, 2006</h2><P>Hi,</P>
+<P>Hoping I can get a little advice before I start going down the wrong road.</P>
+<P>I'm working on an Employee maintenance form. Right now I have EmployeeList (BusinessListBase), which&nbsp;is a collection of EmployeeChild (BusinessBase) objects.</P>
+<P>I need to allow the user to manage roles for the employee. An employee can have zero or more roles. Right now I'm thinking I should have a RoleList (BusinessListBase), which would be a collection of EmployeeRole (BusinessBase) objects. Then I would stick an instance of RoleList inside my EmployeeChild object.</P>
+<P>Is that about right? Thanks,</P>
+<P>Mike</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Michael Hildner replied on Friday, June 16, 2006</h2><P>Let me try to rephrase that, I'm having trouble figuring out which flavors of bo's to use.</P>
+<P>Here's a screen shot of the UI.</P>
+<P><A href="http://sierragrandeassociates.com/csla/employeemanagementform.png">http://sierragrandeassociates.com/csla/employeemanagementform.png</A></P>
+<P>I've got the employee part working ok, I think, but now I need to add roles, and would like the "Allowed Roles" to be data bound.</P>
+<P>Here's what I have for classes so far:</P>
+<P>
+<TABLE>
+
+<TR>
+<TD><B>Class Name</B></TD>
+<TD><B>Base Class</B></TD>
+<TD><B>Flavor</B></TD></TR>
+<TR>
+<TD>EmployeeEditableRootList</TD>
+<TD>BusinessListBase</TD>
+<TD>Editable root collection</TD></TR>
+<TR>
+<TD>EmployeeEditableChild</TD>
+<TD>BusinessBase</TD>
+<TD>Editable child</TD></TR>
+<TR>
+<TD>EmployeeRoleEditableRootList</TD>
+<TD>BusinessListBase</TD>
+<TD>Editable root collection</TD></TR>
+<TR>
+<TD>EmployeeRoleEditableChild</TD>
+<TD>BusinessBase</TD>
+<TD>Editable child</TD></TR></TABLE></P>
+<P>What I'd like to do is add the collection of roles (EmployeeRoleEditableRootList) to my EmployeeEditableChild object, but I'm not really sure how to do that. I'm thinking I haven't picked the right type of business objects for what I need.</P>
+<P>Any help is appreciated, thanks,</P>
+<P>Mike</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Michael Hildner replied on Saturday, June 17, 2006</h2><P>Well, I've been hacking this up quite a bit. I think it's driving me crazy as I'm replying to myself :)</P>
+<P>I added the EmployeeRoleEditableRootList to my EmployeeEditableChild and set it up to fetch those children. The editable root list opens up another database connection, so I got an error "MSDTC on server 'MyServer' is unavailable". My transaction got promoted to a full distributed transaction.</P>
+<P>Apparently this automatically happens when you open up another connection. So then I tried changing EmployeeRoleEditableRootList to a child list, but that didn't work either because the data reader that gets passed around doesn't have the right information for the grandchild.</P>
+<P>Searching around, I found out that the connection string can have a "Enlist" parameter. By default it's true, but you can set it to false. If you set it to false, the transaction doesn't get promoted to a full distributed transaction.</P>
+<P>So that seems to work, but I have no idea if it's the right thing to do. I may just tweak my classes so the already open connection gets passed, and reuse that.</P>
+<P>If anyone has any thoughts on this, or a grandchild example, I'd appreciate it.</P>
+<P>Mike</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Sunday, June 18, 2006</h2><P>Mike,</P>
+<P>It sounds like you are potentially on the right track in terms of your object model - though I have one word of caution for the general case. If you have an editable root collection of all your employees, and then each employee loads an editable child collection of roles, you could end up loading a lot of data that is never viewed or used or edited.</P>
+<P>There are two solutions to this. </P>
+<P>One is to use lazy loading on the editable child collection of roles. This way a given employee's roles are only loaded in the case that they are actually viewed or edited. If your UI is designed so a second dialog is used to view the roles this probably makes sense. If your UI is designed with a child grid control on the main form (so when you select an employee in the primary grid the list of roles is dsiplayed in the child grid) then lazy loading would almost certainly be counter-productive.</P>
+<P>Another is to think about your use case - the user scenario/experience. Again, if you have a primary/child grid model then you almost have to pre-load the data. And if you want to do a global save operation (where the user can edit many employees, but they only save all at once), then lazy loading may be the right answer.</P>
+<P>But if the user instead uses a model where they explicitly add/edit a given employee, then you can load your employees grid with a read-only collection and only load an editable root employee object when they choose to do the add/edit. In that case you'd only load roles as part of employee and so you simplify things.</P>
+<P>Even if the user wants to do in-place add/edit of employees in a grid, you can do what I just mentioned. There's another thread about creating a collection of editable root objects, where the collection saves each object as it is edited. That's a perfectly wonderful model if your users are comfortable with changes being committed as they move off each row in the grid.</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

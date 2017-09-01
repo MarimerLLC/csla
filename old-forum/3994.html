@@ -1,0 +1,641 @@
+<html><header><title>DataMapper and the pain</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>DataMapper and the pain</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3994.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>skaue posted on Thursday, December 06, 2007</h2>I must be going about this the wrong way. I use the DataMapper to map my object with the FormView values, and most values work out ok. Decimals and integers don't. Ignoring the exception cripples my object since it inherits certain data from a baseclass.<br><br>I've seen some ideas&nbsp; for altering the DataMapper, but that would mean I had to "remember to hack CSLA after updating it" :-/<br><br>Is there are any one out there who knows a better way to solve this?<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, December 06, 2007</h2><P>I am in the middle of updating DataMapper (in various ways) for 3.5. One set of pretty major changes is around type coercion, especially when dealing with nullable&lt;t&gt; type values.</P>
+<P>Can you give specific value examples of what's failing (what is the value from the FormView, and the exact data type of the property)?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>skaue replied on Friday, December 07, 2007</h2>I did a svn checkout on the trunk and noticed a lot of improvements on datamapper, but I don't suppose these improvements can be easily applied to 3.0.2, or?<br><br>I ended up with making my own datamapper using the code from this post:<br>http://forums.lhotka.net/forums/thread/4221.aspx<br><br>This solved saving decimal and some other convertion issues. I have yet to try a datetime field... looking forward to the agony of that.<br><br>Here's my current datamapper in c#:<br><br><br><pre>using System;
+using System.Collections.Generic;
+using System.Reflection;
+using System.ComponentModel;
+using Csla;
+
+namespace XXXX.BLL.Utils
+{
+    /// 
+    /// Map data from a source into a target object
+    /// by copying public property values.
+    /// 
+    /// 
+    public static class DataMapper
+    {
+
+        internal static class Resources
+        {
+            internal static readonly string PropertyCopyFailed = "property map error";
+        }
+
+        #region Map from IDictionary
+
+        /// 
+        /// Copies values from the source into the
+        /// properties of the target.
+        /// 
+        /// A name/value dictionary containing the source values.
+        /// An object with properties to be set from the dictionary.
+        /// 
+        /// The key names in the dictionary must match the property names on the target
+        /// object. Target properties may not be readonly or indexed.
+        /// 
+        public static void Map(System.Collections.IDictionary source, object target)
+        {
+            Map(source, target, false);
+        }
+
+        /// 
+        /// Copies values from the source into the
+        /// properties of the target.
+        /// 
+        /// A name/value dictionary containing the source values.
+        /// An object with properties to be set from the dictionary.
+        /// A list of property names to ignore.
+        /// These properties will not be set on the target object.
+        /// 
+        /// The key names in the dictionary must match the property names on the target
+        /// object. Target properties may not be readonly or indexed.
+        /// 
+        public static void Map(System.Collections.IDictionary source, object target, params string[] ignoreList)
+        {
+            Map(source, target, false, ignoreList);
+        }
+
+        /// 
+        /// Copies values from the source into the
+        /// properties of the target.
+        /// 
+        /// A name/value dictionary containing the source values.
+        /// An object with properties to be set from the dictionary.
+        /// A list of property names to ignore.
+        /// These properties will not be set on the target object.
+        /// If , any exceptions will be supressed.
+        /// 
+        /// The key names in the dictionary must match the property names on the target
+        /// object. Target properties may not be readonly or indexed.
+        /// 
+        public static void Map(
+          System.Collections.IDictionary source,
+          object target, bool suppressExceptions,
+          params string[] ignoreList)
+        {
+            List ignore = new List(ignoreList);
+            foreach (string propertyName in source.Keys)
+            {
+                if (!ignore.Contains(propertyName))
+                {
+                    try
+                    {
+                        SetPropertyValue(target, propertyName, source[propertyName]);
+                    }
+                    catch (Exception ex)
+                    {
+                        if (!suppressExceptions)
+                            throw new ArgumentException(
+                              String.Format("{0} ({1})",
+                              Resources.PropertyCopyFailed, propertyName), ex);
+                    }
+                }
+            }
+        }
+
+        #endregion
+
+        #region Map from Object
+
+        /// 
+        /// Copies values from the source into the
+        /// properties of the target.
+        /// 
+        /// An object containing the source values.
+        /// An object with properties to be set from the dictionary.
+        /// 
+        /// The property names and types of the source object must match the property names and types
+        /// on the target object. Source properties may not be indexed.
+        /// Target properties may not be readonly or indexed.
+        /// 
+        public static void Map(object source, object target)
+        {
+            Map(source, target, false);
+        }
+
+        /// 
+        /// Copies values from the source into the
+        /// properties of the target.
+        /// 
+        /// An object containing the source values.
+        /// An object with properties to be set from the dictionary.
+        /// A list of property names to ignore.
+        /// These properties will not be set on the target object.
+        /// 
+        /// The property names and types of the source object must match the property names and types
+        /// on the target object. Source properties may not be indexed.
+        /// Target properties may not be readonly or indexed.
+        /// 
+        public static void Map(object source, object target, params string[] ignoreList)
+        {
+            Map(source, target, false, ignoreList);
+        }
+
+        /// 
+        /// Copies values from the source into the
+        /// properties of the target.
+        /// 
+        /// An object containing the source values.
+        /// An object with properties to be set from the dictionary.
+        /// A list of property names to ignore.
+        /// These properties will not be set on the target object.
+        /// If , any exceptions will be supressed.
+        /// 
+        /// 
+        /// The property names and types of the source object must match the property names and types
+        /// on the target object. Source properties may not be indexed.
+        /// Target properties may not be readonly or indexed.
+        /// 
+        /// Properties to copy are determined based on the source object. Any properties
+        /// on the source object marked with the  equal
+        /// to false are ignored.
+        /// 
+        /// 
+        public static void Map(
+          object source, object target,
+          bool suppressExceptions,
+          params string[] ignoreList)
+        {
+            List ignore = new List(ignoreList);
+            PropertyInfo[] sourceProperties =
+              GetSourceProperties(source.GetType());
+            foreach (PropertyInfo sourceProperty in sourceProperties)
+            {
+                string propertyName = sourceProperty.Name;
+                if (!ignore.Contains(propertyName))
+                {
+                    try
+                    {
+                        SetPropertyValue(
+                          target, propertyName,
+                          sourceProperty.GetValue(source, null));
+                    }
+                    catch (Exception ex)
+                    {
+                        if (!suppressExceptions)
+                            throw new ArgumentException(
+                              String.Format("{0} ({1})",
+                              Resources.PropertyCopyFailed, propertyName), ex);
+                    }
+                }
+            }
+        }
+
+        private static PropertyInfo[] GetSourceProperties(Type sourceType)
+        {
+            List result = new List();
+            PropertyDescriptorCollection props =
+              TypeDescriptor.GetProperties(sourceType);
+            foreach (PropertyDescriptor item in props)
+                if (item.IsBrowsable)
+                    result.Add(sourceType.GetProperty(item.Name));
+            return result.ToArray();
+        }
+
+        #endregion
+
+        /// 
+        /// Sets an object's property with the specified value,
+        /// coercing that value to the appropriate type if possible.
+        /// 
+        /// Object containing the property to set.
+        /// Name of the property to set.
+        /// Value to set into the property.
+        public static void SetPropertyValue(object target, string propertyName, object value)
+        {
+            PropertyInfo propertyInfo = target.GetType().GetProperty(propertyName);
+            if (value == null)
+            {
+                propertyInfo.SetValue(target, value, null);
+            }
+            else
+            {
+                Type pType = Utilities.GetPropertyType(propertyInfo.PropertyType);
+                Type vType = Utilities.GetPropertyType(value.GetType());
+                if (pType.Equals(vType))
+                {
+                    // types match, just copy value
+                    propertyInfo.SetValue(target, value, null);
+                }
+                else
+                {
+                    // types don't match, try to coerce types
+                    if (pType.Equals(typeof(Guid)))
+                    {
+                        propertyInfo.SetValue(target, new Guid(value.ToString()), null);
+                    }
+                    else if (pType.IsEnum && vType.Equals(typeof(string)))
+                    {
+                        propertyInfo.SetValue(target, System.Enum.Parse(pType, value.ToString()), null);
+                    }
+                    // '------Modified Part Start Here -----
+                    else if (pType.FullName == "System.Int32" & vType.FullName == "System.String")
+                    {
+                        if (value.Equals(string.Empty))
+                        {
+                            value = "0";
+                            propertyInfo.SetValue(target, Convert.ChangeType(value, pType), null);
+                        }
+                        else
+                        {
+                            propertyInfo.SetValue(target, Convert.ChangeType(value, pType), null);
+                        }
+                    }
+                    else if (pType.FullName == "System.Decimal" & vType.FullName == "System.String")
+                    {
+                        if (value.Equals(string.Empty))
+                        {
+                            value = "0";
+                            propertyInfo.SetValue(target, Convert.ChangeType(value, pType), null);
+                        }
+                        else
+                        {
+                            propertyInfo.SetValue(target, Convert.ChangeType(value, pType), null);
+                        }
+                    }
+                    //-------------------------------------End of Modification---------------------------------------------------------
+                    else
+                    {
+                        propertyInfo.SetValue(target, Convert.ChangeType(value, pType), null);
+                    }
+                }
+            }
+        }
+    }
+}
+</pre>
+
+<p>not sure if this post editor handles code correctly...</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, December 07, 2007</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I do think the CoerceValue() code can easily back-port to 3.0.3.
+So far I haven&#8217;t done anything in DataMapper that is .NET 3.5 or even
+.NET 3.0 specific.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Can you provide specific source/target examples that were
+failing so I can ensure they work in the new model in 3.5?<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> skaue
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Friday, December 07, 2007 7:09 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] DataMapper and the pain<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>I did a svn checkout on the trunk and noticed a lot of
+improvements on datamapper, but I don't suppose these improvements can be
+easily applied to 3.0.2, or?<br>
+<br>
+I ended up with making my own datamapper using the code from this post:<br>
+http://forums.lhotka.net/forums/thread/4221.aspx<br>
+<br>
+This solved saving decimal and some other convertion issues. I have yet to try
+a datetime field... looking forward to the agony of that.<br>
+<span>[&#8230;]</span><o:p></o:p></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>skaue replied on Friday, December 07, 2007</h2>well, given that I wrote my own DataMapper and this one works, you can view for yourself what types the original didn't support that well:<br><br><br>
+<pre>// '------Modified Part Start Here -----<br>                    else if (pType.FullName == "System.Int32" &amp; vType.FullName == "System.String")<br>                    {<br>                        if (value.Equals(string.Empty))<br>                        {<br>                            value = "0";<br>                            propertyInfo.SetValue(target, Convert.ChangeType(value, pType), null);<br>                        }<br>                        else<br>                        {<br>                            propertyInfo.SetValue(target, Convert.ChangeType(value, pType), null);<br>                        }<br>                    }<br>                    else if (pType.FullName == "System.Decimal" &amp; vType.FullName == "System.String")<br>                    {<br>                        if (value.Equals(string.Empty))<br>                        {<br>                            value = "0";<br>                            propertyInfo.SetValue(target, Convert.ChangeType(value, pType), null);<br>                        }<br>                        else<br>                        {<br>                            propertyInfo.SetValue(target, Convert.ChangeType(value, pType), null);<br>                        }<br>                    }<br>                    //-------------------------------------End of Modification---------------------------------------------------------<br></pre>
+<p>Would it be possible to add your CoerceValue() to the 3.0.x branch, or is that branch "locked" ;-)<br></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, December 07, 2007</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>OK, thanks for that. Numeric (primitive) types need to go to a 0
+value from string.Empty or null.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>My 3.5 code now does that (it didn&#8217;t).<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>The 3.0.x branch is not locked, but it is for bug fixes only. I&#8217;ll
+consider this a bug fix (though I think it is&nbsp; a stretch). As a result,
+3.0.x is now 3.0.4 and includes a back-port of the 3.5 code for type coercion.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Friday, December 07, 2007</h2>Doh!&nbsp; And I just finished upgrading to 3.0.3... ah well.&nbsp; I'll wait until I it something that affects me for next upgrade :-)<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, December 07, 2007</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Well 3.0.4 is not a release &#8211; it is test mode stuff. And
+most likely 3.0.4 won&#8217;t &#8220;release&#8221; until 3.5 does &#8211; it&#8217;ll
+be the final vehicle for 3.0 bug fixes up to that point.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>The problem I have is that 3.5 really is 3.5. I&#8217;m not sure
+I can pull off the compiler directive trick to make 3.5 work for .NET 2.0/3.0. Best
+case is maybe using compiler directives to get back to 2.0a and 3.0a, and even
+then I&#8217;m not sure.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>So the 3.0.x branch will probably be alive for bug fixes for a
+long time :(<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> ajj3085
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Friday, December 07, 2007 12:01 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: RE: DataMapper and the pain<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Doh!&nbsp; And I just finished upgrading to 3.0.3... ah
+well.&nbsp; I'll wait until I it something that affects me for next upgrade :-)<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Friday, December 07, 2007</h2>Ahh, ok.&nbsp; I just like keeping up with the office releases.<br><br>It seems like even though the clr hasn't changed for 3.5, 3.5 is more than just additive like 3.0 was, because the compiler has changed.&nbsp; Hopefully MS will slow down a bit, as it is I'm going to skip 3.0 entirely.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, December 07, 2007</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Hehe.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>3.5 is a FAR bigger release than 3.0 in terms of impacting
+existing functionality. This is partially because it requires 2.0 SP1 (aka
+2.0a), which introduces a bunch of new features to 2.0 itself (and thus
+3.0/3.5). The same is true for 3.0 SP1 (aka 3.0a)&#8230; And there are new
+compilers.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>And new ASP.NET features/controls &#8211; including (I&#8217;m
+told) a major change to ASP.NET data binding.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>3.0a has a whole bunch of enhancements to WPF/WCF/WF.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>The net result is that skipping to 3.5 is wise (imo). It really
+represents a higher level of maturity of the 3.0 stuff, plus the new compilers.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> ajj3085
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Friday, December 07, 2007 12:18 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: RE: RE: DataMapper and the pain<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Ahh, ok.&nbsp; I just like keeping up with the office
+releases.<br>
+<br>
+It seems like even though the clr hasn't changed for 3.5, 3.5 is more than just
+additive like 3.0 was, because the compiler has changed.&nbsp; Hopefully MS
+will slow down a bit, as it is I'm going to skip 3.0 entirely.<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tna55 replied on Friday, December 07, 2007</h2><P>Hi,</P>
+<P>I am working with .NET 2.0 and hence the same CSLA.NET framework. Should I jump directly to .NET 3.5 and CSLA.NET or is it worth working with .NET 3.0 before 3.5?</P>
+<P>Our next project will start in Febuary so I was thinking to directly use 3.5.</P>
+<P>Tahir</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, December 07, 2007</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span><a href="http://www.lhotka.net/weblog/MicrosoftNETAndCSLANETVersionConfusion.aspx">http://www.lhotka.net/weblog/MicrosoftNETAndCSLANETVersionConfusion.aspx</a><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> tna55
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Friday, December 07, 2007 2:03 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: RE: RE: RE: DataMapper and the pain<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Hi,<o:p></o:p></p>
+
+<p>I am working with .NET 2.0 and hence the same CSLA.NET framework. Should I
+jump directly to .NET 3.5 and CSLA.NET or is it worth working with .NET 3.0
+before 3.5?<o:p></o:p></p>
+
+<p>Our next project will start in Febuary so I was thinking to directly use
+3.5.<o:p></o:p></p>
+
+<p>Tahir<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Friday, December 07, 2007</h2>2.0 sp1 and 3.0 sp1 add new functionality?&nbsp; I thought MS wasn't going to add functionality via service packs anymore... argh.<br><br>I'm glad you put a positive spin on skipping 3.0; my reason is simply I haven't had time to learn it and move to it (and lack of vs2008 didn't help either).<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>skaue replied on Friday, December 07, 2007</h2>Ok. I will do an update on the svn checkout then to grab the changes. :-)<br><br>I see this thread went off topic along the way. I guess me and my colleague will "upgrade" to 3.5 and vs2008 some time in january, and then this nightmare will be all over.... :P<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Saturday, December 08, 2007</h2><P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>skaue:</strong></div><div>Ok. I will do an update on the svn checkout then to grab the changes. :-)<BR><BR>I see this thread went off topic along the way. I guess me and my colleague will "upgrade" to 3.5 and vs2008 some time in january, and then this nightmare will be all over.... :P<BR></div></BLOCKQUOTE></P>
+<P>Please let me know if you encounter any issues with the 3.0.4 code. Since that is also the intended 3.5 code, if there are issues I'd rather fix them now than later!</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>skaue replied on Sunday, December 09, 2007</h2>Sure thing, Rocky. Thanks for the update. I'll know by monday if this works, but I recon your own tests worked as expected. :-)<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>skaue replied on Monday, December 10, 2007</h2>So far, no problems with the new DataMapper. I have removed my own implementation and using the "proper" one ;-)<br><br>-Tommy<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>skaue replied on Tuesday, December 11, 2007</h2>Ok. I think I have one problem that I hope is solvable without me readding my own DataMapper.<br><br>I have a property that is of type Decimal (in fact I have several). If someone tries to submit an empty string then the DataMapper throws. Seems the CoerceValue only attempts to fix empty strings for primitive values and Decimal isn't one.<br><br><pre>private static object CoerceValue(Type propertyType, Type valueType, object value)<br>    {<br>      if (propertyType.Equals(valueType))<br>      {<br>        // types match, just return value<br>        return value;<br>      }<br>      else<br>      {<br>        if (propertyType.IsGenericType)<br>        {<br>          if (propertyType.GetGenericTypeDefinition() == typeof(Nullable&lt;&gt;))<br>          {<br>            if (value == null) <br>              return null;<br>            else if (valueType.Equals(typeof(string)) &amp;&amp; (string)value == string.Empty)<br>              return null;<br>          }<br>          propertyType = Utilities.GetPropertyType(propertyType);<br>        }<br><br>        if (propertyType.IsEnum &amp;&amp; valueType.Equals(typeof(string)))<br>          return Enum.Parse(propertyType, value.ToString());<br><br>        if (propertyType.IsPrimitive &amp;&amp; valueType.Equals(typeof(string)) &amp;&amp; string.IsNullOrEmpty((string)value))<br>          value = 0;<br>        <br>        try<br>        {<br>          return Convert.ChangeType(value, Utilities.GetPropertyType(propertyType));<br>        }<br>        catch<br>        {<br>          TypeConverter cnv = TypeDescriptor.GetConverter(Utilities.GetPropertyType(propertyType));<br>          if (cnv != null &amp;&amp; cnv.CanConvertFrom(value.GetType()))<br>            return cnv.ConvertFrom(value);<br>          else<br>            throw;<br>        }<br>      }<br>    }</pre>Any suggestions for a fix?<br><br>edit: A short and evil fix is changing <br><pre>propertyType.IsPrimitive</pre>to<br><pre>propertyType.IsPrimitive || System.Decimal<br></pre></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, December 11, 2007</h2><P>That fix is too evil :)</P>
+<P>In the wish list I had the idea of calling a delegate converter - so you could provide conversions that would effectively compliment this default implementation. I think I'll do that after all (I though I had it solved with these changes, but perhaps not).</P>
+<P>I may still handle the Decimal case as you suggest, but the delegate would allow resolving any other failed type conversions without requiring modifications to DataMapper each time.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>skaue replied on Tuesday, December 11, 2007</h2>One thing I haven't tried yet is to check out the "SmartDecimal" from the contrib on Codeplex. I think it works similar to SmartDate (as a string).<br><br>btw, Rocky; have you seen Trac for SVN? A great web interface for surfing you SVN repos.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jrosenthal replied on Friday, May 01, 2009</h2>These posts are about 18 mo old - Has anything been done with this is 3.6.2 because I believe I am having similar issues with in class containing an int.&nbsp; <br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, May 01, 2009</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>What is your specific issue?<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> jrosenthal
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Friday, May 01, 2009 9:05 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: DataMapper and the pain<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>These posts are about 18 mo old - Has anything been done
+with this is 3.6.2 because I believe I am having similar issues with in class
+containing an int.&nbsp; <br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jrosenthal replied on Saturday, May 02, 2009</h2>At this point I am simply trying to create communication thru several layers.&nbsp; I am using DalLinq with a business layer on top of that.&nbsp; Then I created a service with its own interface.&nbsp; When I call into the service from the client I am doing this:<br><font size="2">private void button1_Click(object sender, EventArgs e)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; SOATPostingService.PostingServiceClient psvc = new SOATPostingService.PostingServiceClient();<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; SOATPostingService.PostingListRequest lreq = new DatabaseTest.SOATPostingService.PostingListRequest();<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; SOATPostingService.PostingData pdata = new DatabaseTest.SOATPostingService.PostingData();<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; List&lt;SOATPostingService.PostingData&gt; list = new List&lt;DatabaseTest.SOATPostingService.PostingData&gt;();<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; SOATPostingService.PostingRequest postingreq = new DatabaseTest.SOATPostingService.PostingRequest();<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; postingreq.PostingId = new Guid("D166F769-04EB-41D2-A607-6225A8AED9A4");<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; pdata = psvc.GetPosting(postingreq);<br><br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</font><br><br>The GetPosting call throws a FaultException (property copy failed (Number)).&nbsp; Number is a field in my business layer (and also that DAL) and is just an int.&nbsp; <br><br>The fault occurs when GetCachedProperty() gets called for the int and info (the PropertyInfo) is null as a result of the <font size="2">PropertyInfo info = objectType.GetProperty(propertyName, propertyFlags);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (info == null)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; throw new InvalidOperationException(</font><br>This is in line 157 of MethodCaller.cs<br><br>I don't know if I am doing something wrong or if there is an actual bug.&nbsp; I am trying to pattern my code after what I read in the book and in the PTTracker sample.<br><br>Thanks for your time on this.<br><br>Jeff<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jrosenthal replied on Saturday, May 02, 2009</h2>I believe the fault is my own - That field is not a field in my client so when I put it in the ignorelist it works.&nbsp; Is there a way to automatically have fields that are not found simply ignored instead of having to use an ignorelist or is this a disaster waiting to happen?<br><br>Thanks and sorry for my misunderstanding.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Saturday, May 02, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>In 3.6 you have two choices. Either use the ignore list, or
+create a DataMap to explicitly list the fields/properties that are being mapped
+to and from.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

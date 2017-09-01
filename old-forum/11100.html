@@ -1,0 +1,47 @@
+<html><header><title>Correct implementation of PropertyHasChanged in CSLA4</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Correct implementation of PropertyHasChanged in CSLA4</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11100.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>gajit posted on Friday, January 27, 2012</h2><p>Hi gents,</p>
+<p>Could someone point me in the general direction of the correct implementation of the ProspectHasChanged method in BusinessBase for CSLA4.</p>
+<p>Having previously used CSLA 2.1, I&#39;m trying to get to grips with the version 4 and having imported a couple of my 2.1 business classes from the old version, I&#39;ve come across this breaking change.</p>
+<p>This is a typical code snippet of my 2.1 business class:</p>
+<p>&nbsp;&nbsp;&nbsp; Public Property TEAMNO() As String<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Get<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; CanReadProperty(True)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return mTEAMNO<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Get<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Set(ByVal Value As String)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; CanWriteProperty(True)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; If mTEAMNO &lt;&gt; Value Then<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; mTEAMNO = Value<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <strong>PropertyHasChanged()</strong><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End If<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Set<br />&nbsp;&nbsp;&nbsp; End Property</p>
+<p>I haven&#39;t found a related thread so far, but will keep searching.</p>
+<p>&nbsp;Thanks,</p>
+<p>Graham</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Friday, January 27, 2012</h2><p>Hi,</p>
+<p>The preferred property type is Managed property:</p>
+<pre style="font-family:Consolas;background:#fafafa;color:black;font-size:13px;">&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">static</span>&nbsp;<span style="color:blue;">readonly</span>&nbsp;<span style="color:#2b91af;">PropertyInfo</span>&lt;<span style="color:blue;">int</span>&gt;&nbsp;Num1Property&nbsp;=&nbsp;RegisterProperty&lt;<span style="color:blue;">int</span>&gt;(c&nbsp;=&gt;&nbsp;c.Num1);
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">int</span>&nbsp;Num1
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">get</span>&nbsp;{&nbsp;<span style="color:blue;">return</span>&nbsp;GetProperty(Num1Property);&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">set</span>&nbsp;{&nbsp;SetProperty(Num1Property,&nbsp;<span style="color:blue;">value</span>);&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;}</pre>
+<p>but you can still use private backing fields like this:</p>
+<pre style="font-family:Consolas;background:#fafafa;color:black;font-size:13px;">&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">static</span>&nbsp;<span style="color:blue;">readonly</span>&nbsp;<span style="color:#2b91af;">PropertyInfo</span>&lt;<span style="color:blue;">int</span>&gt;&nbsp;Num2Property&nbsp;=&nbsp;RegisterProperty&lt;<span style="color:blue;">int</span>&gt;(c&nbsp;=&gt;&nbsp;c.Num2,&nbsp;<br />              <span style="color:#2baf9a;">RelationshipTypes</span>.PrivateField);
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:green;">//&nbsp;[NotUndoable,&nbsp;NonSerialized]</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">private</span>&nbsp;<span style="color:blue;">int</span>&nbsp;_name&nbsp;=&nbsp;Num2Property.DefaultValue;
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">int</span>&nbsp;Num2
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">get</span>&nbsp;{&nbsp;<span style="color:blue;">return</span>&nbsp;GetProperty(Num2Property,&nbsp;_name);&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">set</span>&nbsp;{&nbsp;SetProperty(Num2Property,&nbsp;<span style="color:blue;">ref</span>&nbsp;_name,&nbsp;<span style="color:blue;">value</span>);&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;}</pre>
+<p>SetProperty will check CanWriteProperty and call PropertyHasChanged if the field value is changed. </p>
+<p>You must also register properties in order to add BusinessRules or AuthorizationRules. </p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>gajit replied on Friday, January 27, 2012</h2><p>Confused now...</p>
+<p>Are you saying I no longer have to implicity call the PropertyHasChanged method in my business class?</p>
+<p>Your code snippets are from a business class or from the base class?</p>
+<p>Compounding the confusion is probably my VB mindset.... but I can&#39;t determine context based on those examples... sorry.</p>
+<p>Is there somewhere in the &quot;Using CSL4:&quot; books that discussed the actual implementation into a bix class?</p>
+<p>&nbsp;</p>
+<p>Thanks,</p>
+<p>Graham</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>gajit replied on Friday, January 27, 2012</h2><p>Ok, a little less confusing now.</p>
+<p>&nbsp;</p>
+<p>I managed to load the ProjectTracker.Library sample code - albeit in C# - and I see how the implementation has changed significantly. Yikes...</p>
+<p>I should be able to garner what I need from that code... until I get stuck again <img src="http://forums.lhotka.net/emoticons/emotion-7.gif" alt="Tongue Tied" /></p>
+<p>Thanks,</p>
+<p>Graham</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Saturday, January 28, 2012</h2><p>Hi,</p>
+<p>You can still call PropertyHasChanged and OnPropertyChanged manually but you will need so supply an IPropertyInfo to identify the property. </p>
+<p>But when you use the preferred property style you do not have to worry (or even thin) about this.</p>
+<p>The old style PropertyHasChanged without parameters was <i>VERY </i>costly/slow due to the use of call stack and reflection.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

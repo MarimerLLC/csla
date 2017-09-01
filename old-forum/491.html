@@ -1,0 +1,13 @@
+<html><header><title>CanEditObject() on instance base?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CanEditObject() on instance base?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/491.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>burmajam posted on Wednesday, June 28, 2006</h2>Hi all<br><br>I was wondering how CanEditObject() and CanWriteProperty() can have different behaviors based upon some instance criteria (for example... CanWriteProperty = !this.ReadOnly)? It is possible to check that in property setter and throw exception there, but it would be nice if ReadWriteAuthorization class could check that also and make GUI control enabled/disabled.<br><br>Any workarounds?<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, June 28, 2006</h2>The CanReadProperty() and CanWriteProperty() methods can be overridden, allowing you to customize behavior if needed.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>burmajam replied on Thursday, June 29, 2006</h2>Tnx Rocky for the reply.<br><br>One more question. Should I place also attribute like this?<br><br>[EditorBrowsable(EditorBrowsableState.Advanced)]<br>public override bool CanWriteProperty(string propertyName)<br><br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, June 29, 2006</h2>
+
+
+
+
+<DIV align=left><SPAN class=776122015-29062006><FONT face=Arial color=#0000ff size=2>Probably. I guess it depends on whether you want the method 
+to appear in most cases. Honestly, in C#, this attribute is almost useless 
+because most people have VS set to show advanced members... But it is a best 
+practice, because VB has a more sophisticated way of showing advanced members in 
+intellisense, and you never know what the C# team might do in the future as 
+well.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=776122015-29062006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=776122015-29062006><FONT face=Arial color=#0000ff size=2>Rocky</FONT></SPAN></DIV></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

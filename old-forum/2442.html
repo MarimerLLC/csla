@@ -1,0 +1,156 @@
+<html><header><title>Reflecting property values that should not change back to the UI controls without using Undo</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Reflecting property values that should not change back to the UI controls without using Undo</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/2442.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jimbo posted on Wednesday, February 28, 2007</h2>There are many scenarios where (for example) a combo selection is made
+that is not legal - especially things like "status" values. In the VB6
+days we would intercept the index change based on some conditional and
+immediately restore the "old' value from the object property and pop up
+a warning message - maybe.<br>
+<br>
+The csla behaviour is strongly biased toward always setting the new
+selected value and then relying on broken rules to have the user
+re-select the valid value, or otherwise use undo.<br>
+The problem with undo is that it will restore old values for ALL controls at the relevant edit level.<br>
+<br>
+In a property setter, we can prevent the property change based on some
+business logic; however the control will still show the (unwanted)
+selected value.<br>
+<br>
+Other than dynamically repopulating the individual (combo) control&nbsp; to filter the choices based on some state conditions -<br>
+&nbsp;the question really is: how do we refresh the control to restore
+the old value (which is still the current property value in the BO)
+without putting business logic in the UI to do it?<br>
+<br>
+jimbo<br>
+<br>
+<br>
+<br>
+<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Wednesday, February 28, 2007</h2>I think you need to stick a BindingSourceRefresh control on your form.&nbsp; This seems to be a known issue with databinding, and Rocky explains the need for the BindingSourceRefresh control in the chapter on WinForms applications, IIRC.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jimbo replied on Wednesday, February 28, 2007</h2>As I understand the binding source refresh control purpose, it is only
+when an property change notification is broadcast that it is
+applicable. ie all other listeners get the change, but the "current"
+control is not updated.<br>
+This seems to be somewhat different to my case where the PropertyHasChanged call has not even happened. <br>
+<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Wednesday, February 28, 2007</h2>The purpose of the control is to solve the problem you're experiencing, which is the UI assuming whatever value it sticks into the property is the one that will be accepted. <br><br>The UI controls assumption is wrong in your case though, because you're not accepting the value; the BindingSourceRefresh forces the control to re-read the property.&nbsp; I don't think the fact that PropertyHasChanged isn't being called will affect the operation of the component.<br><br>Give it a shot; the worse that will happen is that it doesn't solve your problem, and then we can move on from there. <img src="/emoticons/emotion-1.gif" alt="Smile [:)]" /><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jimbo replied on Wednesday, February 28, 2007</h2>thanks .. Will try what you recommend.<br>
+BTW is this the same behaviour when you implement CanWriteProperty()
+authorization on properties and an exception is raised or not?&nbsp;
+Currently I can't use csla ApplicationContext to use that level of
+individual property authorization as we have a different auth
+architecture.<br>
+<br>
+<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Wednesday, February 28, 2007</h2>I don't think it is.&nbsp; Usually if the property setter throws an exception, databinding won't even let you focus off the control.&nbsp; If it does though, the control may keep the value that was entered, which would be different than the value the BO has... and in that case you'd get similar behavior.. but I'm pretty sure Windows doesn't let focus change if the setting throws an exception.<br><br>That said, the 'proper' way to call CanWriteProperty is the overload that DOES thrown an exception.&nbsp; You prevent the 'cant move focus' problem using the ReadWriteAuthorization control, which will set ReadOnly to true or Enabled to false if CanWriteProperty reports that the property cannot be written to.&nbsp; Hopefully I've explained that clearly..<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jimbo replied on Wednesday, February 28, 2007</h2>Thankyou ajj&nbsp; -&nbsp; the extender control works fine in this scenario.<br><br>With respect to throwing custom or system exceptions in property setters. I have found that the exception message will be captured by the ErrorProvider rather than being passed up to the application's exception message handler. The error icon will be shown and the tooltip message (the Exception message) will show once only.<br>This is happening outside of csla broken rules.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Friday, March 02, 2007</h2>Jimbo,<br><br>Glad to hear its working now.<br><br>If you don't have the error provider, I don't think windows will let you focus off the control.. which is very frustrating... but its good to know that control will help you figure things out.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jimbo replied on Friday, March 02, 2007</h2>Andy (ajj) <br>
+I am using the ErrorProvider. Also I would mention that there are flags
+or attributes with IErrorIinfo implementation that provide control
+over&nbsp; whether you can move the focus&nbsp; to allow you to
+continue or escape the dialog etc. &nbsp; But I dont see how these are
+actually applied&nbsp; in csla.<br>
+<br>
+Perhaps also you can explain why exceptions thrown from property
+setters are somehow consumed by the ErrorProvider ? and dont get
+captured in BrokenRules or passed up as unhandled exception messages. (
+talking about simple binding here).<br>
+<br>
+<br>
+<br>
+<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, March 02, 2007</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>What attributes are you referring to in regards to
+IDataErrorInfo?<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<div>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Jimbo
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Friday, March 02, 2007 1:15 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] Reflecting property values that should not
+change back to the UI controls without using Undo<o:p></o:p></span></p>
+
+</div>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Andy (ajj) <br>
+I am using the ErrorProvider. Also I would mention that there are flags or
+attributes with IErrorIinfo implementation that provide control over&nbsp;
+whether you can move the focus&nbsp; to allow you to continue or escape the
+dialog etc. &nbsp; But I dont see how these are actually applied&nbsp; in csla.<br>
+<br>
+Perhaps also you can explain why exceptions thrown from property setters are
+somehow consumed by the ErrorProvider ? and dont get captured in BrokenRules or
+passed up as unhandled exception messages. ( talking about simple binding
+here).<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jimbo replied on Friday, March 02, 2007</h2>Rocky, <br>
+Sorry I must have implied the wrong info <br>
+I think that I was referring to CancelEventArgs settings in the winforms 2 Validating event.<br>
+Perhaps there is some conjunction.<br>
+<br>
+<br>
+&nbsp;<br>
+<br>
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jimbo replied on Tuesday, March 20, 2007</h2>A tip for the unwary,<br>When adding a BindingSourceRefresh control to the component tray from the Toolbox:<br>The Designer code may automatically associate the control with all of the BindingSources in the following manner eg:<br><br>'RootBindingSource<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; '<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Me.BindingSourceRefresh1.SetReadValuesOnChange(Me.RootBindingSource, False)<br><br>In order for the control to operate as expected for extending simple binding controls, you must check and ensure that the boolean parameter is set to True.<br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>mr_lasseter replied on Wednesday, February 28, 2007</h2><P>I had a similar issue where I wanted to use AutoComplete, but did not want users to be able to enter new values in the combo box.&nbsp; I searched the web for a solution, but the only thing I could come up with was subclassing the combo box and&nbsp; checking if the text of the combo box was in the Items collection in the validating event.</P>
+<P>Hope this helps.<BR>Mike</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jimbo replied on Wednesday, February 28, 2007</h2>Mr Lasseter,<br>
+That still begs the question that the UI is in charge.&nbsp; Easy to do but not in the spirit of the MVC framework.<br>
+<br>
+<br>
+<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>mr_lasseter replied on Wednesday, February 28, 2007</h2><P>In my scenario, I noticed that if the item is not in the list the value that the control is bound to never gets updated.&nbsp; So it was not a problem of the UI being in charge it was that the UI never did inform the class that the value had changed.&nbsp; </P>
+<P>It looks like Andy is right the BindingSourceRefresh should fix your problems.&nbsp; Rocky talks about the same problem you are experiencing popping up in WPF as well.</P>
+<P><A href="http://www.lhotka.net/weblog/DataBindingIssueInWPFWithSolution.aspx">http://www.lhotka.net/weblog/DataBindingIssueInWPFWithSolution.aspx</A></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, February 28, 2007</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>mr_lasseter:</strong></div><div>
+<P>In my scenario, I noticed that if the item is not in the list the value that the control is bound to never gets updated.&nbsp; So it was not a problem of the UI being in charge it was that the UI never did inform the class that the value had changed.&nbsp; </P>
+<P>It looks like Andy is right the BindingSourceRefresh should fix your problems.&nbsp; Rocky talks about the same problem you are experiencing popping up in WPF as well.</P>
+<P><A href="http://www.lhotka.net/weblog/DataBindingIssueInWPFWithSolution.aspx">http://www.lhotka.net/weblog/DataBindingIssueInWPFWithSolution.aspx</A></P>
+<P></div></BLOCKQUOTE></P>
+<P>The Windows Forms solution to this already exists in CSLA .NET in the form of the BindingSourceRefesh control, which you should use on your Windows Forms forms as discussed in Chapter 9.</P>
+<P>The WPF solution isn't totally firmed up yet, but it does turn out that using a value converter automatically solves the problem (though other XAML settings can mess that up). So at the moment I've created a value converter that doesn't actually do any conversion (an identity converter), that you can associate with every editable field. This does resolve the issue, and there's some hope that Microsoft will just plain fix the issue in a future version.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jimbo replied on Friday, March 02, 2007</h2>ms would have us not using custom objects if the truth be known.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, March 02, 2007</h2>That's certainly been true in the past. I think there's a change happening at Microsoft, a move away from the DataSet and toward objects. Unfortunately the move is toward data transfer objects, not "real" objects, so it is important to keep the pressure on Microsoft to continue to evolve toward the <EM>right </EM>answer (imo anyway <img src="/emoticons/emotion-5.gif" alt="Wink [;)]" />).</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jimbo replied on Friday, March 02, 2007</h2>To get back to the subject of this thread,&nbsp; the
+BindingSourceRefresh control works a treat. However because it is a
+file reference in Csla.Windows, the only way I could get it in the form
+designer component tray was to hack the form designer code. After that,
+to apply it in other forms I simply copied it from the first tray and
+pasted into the other form's tray.&nbsp; I was impressed that it
+automatically associated with multiple BindingSources in the one
+designer, whereas i was expecting to need multiple refresh extenders.<br>
+Is there not a way to get the extender control available in the vs
+Toolbox in the client project - like the ErrorProvider component etc? <br>
+<br>
+<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>mr_lasseter replied on Friday, March 02, 2007</h2>You should be able to add the control by right clicking in the toolbox and chosing chose items.&nbsp; From there you can browse to the Csla.dll and it will add the control to the Toolbox.&nbsp; <br><br>Mike<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jimbo replied on Friday, March 02, 2007</h2>Thank you Mike,&nbsp; Simple eh!&nbsp; I'm far from being a gun IDE
+practioner (there are so many ways to skin a cat) but I'm also happy
+that it can be done without the vs wizardry.<br>
+<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Friday, March 02, 2007</h2>That's actually not true.&nbsp; I was at an MSDN road show yesterday, and it seems moving forward they might ONLY support custom objects..<br><br>The presenter said that you cannot use a DataSet or DataTable in Xaml binding because it doesn't implement INotifyPropertyChanged.. the presenter said that may change in the future, but he's not sure if it actually will.<br><br>Andy<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

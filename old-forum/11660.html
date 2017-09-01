@@ -1,0 +1,11 @@
+<html><header><title>Silverlight DataPortal Has Stopped Working: Suggestions?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Silverlight DataPortal Has Stopped Working: Suggestions?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11660.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>MadGerbil posted on Thursday, October 25, 2012</h2><p>My portal now times about (after about 1 minute).&nbsp; It was working fine yesterday and now, with no updates, it seems to have run off and died.&nbsp;&nbsp; </p>
+<p>I&#39;ve tried:</p>
+<p>1: Rebooting the webserver.</p>
+<p>2: Re-publishing the application.</p>
+<p>If I put an update of the application out there I do get the latest update so the website is there.&nbsp;&nbsp; If I run the application in the development environment (local settings) it contacts the database and returns data in good time.&nbsp;&nbsp; So the website is there and the database works, which makes me think something has gone south with the service itself.</p>
+<p>If I pop open the WCF Test Client tool it shows IWcfPortal with Create(), Fetch(), Update(), Delete() much like the picture below:</p>
+<p>See: <a href="http://i49.tinypic.com/1xyog6.jpg">http://i49.tinypic.com/1xyog6.jpg</a></p>
+<p>I cannot imagine what the problem can be at this point - rather stuck, have no idea how to continue.</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>skagen00 replied on Thursday, October 25, 2012</h2>Can you navigate to the service file successfully through a browser using the url of the service itself? </div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>MadGerbil replied on Thursday, October 25, 2012</h2><p>Yes.</p>
+<p>Fortunately, the issue appears to have nothing to do with any of my code or CSLA.&nbsp;&nbsp; I tried my application using the test database and it worked.&nbsp; I tried it again using production and I was blocked - evidently, someone on our DB team decided to give me an entire day&#39;s worth of headaches.&nbsp; </p>
+<p>Thanks again.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

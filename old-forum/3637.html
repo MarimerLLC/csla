@@ -1,0 +1,17 @@
+<html><header><title>Child Objects Loosing Event Handlers</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Child Objects Loosing Event Handlers</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3637.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>RyanL posted on Tuesday, October 02, 2007</h2><P class=MsoNormal>CSLA 2.14</P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal>I have a parent object called Driver.&nbsp; He has an editable list of child objects called Accessories on him.&nbsp; So in other words it looks like this:</P>
+<P class=MsoNormal>Driver (BusinessBase(Of Driver))</P>
+<P class=MsoNormal><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>AccessoryList(BusinessListBase(Of AccessoryList, Accessory))</P>
+<P class=MsoNormal><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>Accessory(BusinessBase(Of Accessory))</P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal>AccessoryList and Accessory were modeled after ProjectResource and ProjectResources in ProjectTracker20vb and from what I can tell have no differences.</P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal>After I call save on my parent object Driver which in turn saves the list of Accessories, the list of Accessories no longer have any event handlers.<SPAN>&nbsp; </SPAN>The reason this has come up in our situation is because we are calling save in our Windows form and leaving the form up after the save.<SPAN>&nbsp; </SPAN>If you then try to change a property on the child object the object no longer gets flagged as dirty or savable.<SPAN>&nbsp; </SPAN>However, if you change one of the parents properties the object then gets flagged as savable and works fine.<SPAN>&nbsp; </SPAN></P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal>It seems as though the child object looses its PropertyHasChanged event handlers and no longer flags the object as dirty, nor does it check the validation rules.</P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal>Has anyone run into this situation?<SPAN>&nbsp; </SPAN>Why is the parent object keeping its event handlers and the children not?</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, October 02, 2007</h2><P>It is important to remember that Save() returns a new object - including new child objects.</P>
+<P>You are probably re-binding the root object, Driver, and are not re-binding the child collection, so your UI is still bound to the old object, not the current "real" object.</P>
+<P>Or, if your Driver object is handling the ListChanged event of its child collection, that will get lost during deserialization of an object graph (with a remote data portal). You need to rehook that even in the OnDeserialized() override in Driver. This only matters if you hook the ListChanged event and use it to trigger raising an OnUnknownPropertyChanged() call in Driver.</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

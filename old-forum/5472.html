@@ -1,0 +1,768 @@
+<html><header><title>Silverlight immediate UI update </title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Silverlight immediate UI update </h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5472.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Ash002 posted on Friday, September 26, 2008</h2><font face="Tahoma">Hi All<br><br>Using CslaDataProvider we wish to display the busy status while for Cancel operation in addition to the operations for which it is currently displayed.<br><br>Busy is display by CslaDataProvider for Fetch. For Save we display busy as well. Both these operations are async operations talking to the server, so the UI is updated when code returns.<br><br>Cancel is not an async operation though. So the UI is not updated unitl the code returns, which is after the cancel has completed, some 18 seconds later. <br><br>Can the Cancel() be run in a BackgroundWorker? It appears to work, and work well but just seems too good to be true. Whats the recommened approach? <br><br>I have also tried a StoryBoard data bound to a data bound to a property to invoke the property in steps. That approach didn't go, but probably just needs a little more work.<br><br>BackgroundWorker code:<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Busy = true;<br>&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; BackgroundWorker worker = new BackgroundWorker();<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; worker.DoWork += (o, e) =&gt;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Provider.Cancel();<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; };<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; worker.RunWorkerCompleted += (o, e) =&gt;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Busy = false;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; };<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; worker.RunWorkerAsync();<br><br>Busy is a dependency property wrapping the CslaDataProvider.IsBusy.<br><br>Thanks<br></font></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Ash002 replied on Friday, September 26, 2008</h2><font face="Tahoma">I noticed elsewhere that Csla object are not thread safe in .net, so BackgroundWorker looks like its out of the question.<br><br>Another approach is to use a StoryBoard to create a loop. The operations happen in the StoryBoard's Completed event. The completed event increments a counter and reinvokes the StoryBoard so the next step can take place:<br><br><br>private void CancelCommandExecute(object parameter)<br>{<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; CancelStory.Begin();<br>}<br><br><br>&nbsp;&nbsp;&nbsp; private int _cancelStep = 0 ;<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <br>&nbsp;&nbsp;&nbsp; void CancelStory_Completed(object sender, EventArgs e)<br>&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; switch (_cancelStep)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; case 1:<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Busy = true;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; break ;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; case 2:<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Provider.Cancel();<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </font><font face="Tahoma">Busy = false;<br></font><font face="Tahoma">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return ; // Finished <br>
+</font><font face="Tahoma">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // set next step and loop into StoryBoard again.<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _cancelStep ++;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; CancelStory.Begin();<br>&nbsp;&nbsp;&nbsp; }<br><br>Any other ideas?<br><br>thanks in advance<br></font></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Friday, September 26, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Another quick and dirty approach:&nbsp; add another busy animation
+for cancel.&nbsp; So, you CancelButton_Click looks like this:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>cancelBusyAnimation.IsRunning = true;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>provider.Cancel();<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>cancelBusyAnimation.IsRunning = false;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899<o:p></o:p></span></p>
+
+<p class=MsoNormal><b><i><span>Magenic</span></i></b><span> </span><span>&reg;</span><b><i><span><o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Ash002
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Friday, September 26, 2008 8:10 AM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] Silverlight immediate UI update<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal><span>I noticed
+elsewhere that Csla object are not thread safe in .net, so BackgroundWorker
+looks like its out of the question.<br>
+<br>
+Another approach is to use a StoryBoard to create a loop. The operations happen
+in the StoryBoard's Completed event. The completed event increments a counter
+and reinvokes the StoryBoard so the next step can take place:<br>
+<br>
+<br>
+private void CancelCommandExecute(object parameter)<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; CancelStory.Begin();<br>
+}<br>
+<br>
+<br>
+&nbsp;&nbsp;&nbsp; private int _cancelStep = 0 ;<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <br>
+&nbsp;&nbsp;&nbsp; void CancelStory_Completed(object sender, EventArgs e)<br>
+&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; switch (_cancelStep)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; case 1:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Busy = true;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; break ;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; case 2:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Provider.Cancel();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Busy = false;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return ; // Finished <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // set next step and loop into StoryBoard again.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _cancelStep ++;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; CancelStory.Begin();<br>
+&nbsp;&nbsp;&nbsp; }<br>
+<br>
+Any other ideas?<br>
+<br>
+thanks in advance<br>
+</span><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Friday, September 26, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Hmmm&#8230;&nbsp; I wonder why does cancel take so long?&nbsp;
+It is pretty much instantaneous on my machine.&nbsp; How big is your object
+graph?&nbsp; Could you try to see how long it takes in unit testing?&nbsp; I
+wonder if re-binding in UI is what is taking so long&#8230;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899<o:p></o:p></span></p>
+
+<p class=MsoNormal><b><i><span>Magenic</span></i></b><span> </span><span>&reg;</span><b><i><span><o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Ash002
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Friday, September 26, 2008 8:07 AM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> [CSLA .NET] Silverlight immediate UI update<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal><span>Hi All<br>
+<br>
+Using CslaDataProvider we wish to display the busy status while for Cancel
+operation in addition to the operations for which it is currently displayed.<br>
+<br>
+Busy is display by CslaDataProvider for Fetch. For Save we display busy as
+well. Both these operations are async operations talking to the server, so the
+UI is updated when code returns.<br>
+<br>
+Cancel is not an async operation though. So the UI is not updated unitl the
+code returns, which is after the cancel has completed, some 18 seconds later. <br>
+<br>
+Can the Cancel() be run in a BackgroundWorker? It appears to work, and work
+well but just seems too good to be true. Whats the recommened approach? <br>
+<br>
+I have also tried a StoryBoard data bound to a data bound to a property to
+invoke the property in steps. That approach didn't go, but probably just needs
+a little more work.<br>
+<br>
+BackgroundWorker code:<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Busy = true;<br>
+&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; BackgroundWorker worker = new
+BackgroundWorker();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; worker.DoWork += (o, e) =&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Provider.Cancel();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; };<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; worker.RunWorkerCompleted += (o, e) =&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Busy = false;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; };<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; worker.RunWorkerAsync();<br>
+<br>
+Busy is a dependency property wrapping the CslaDataProvider.IsBusy.<br>
+<br>
+Thanks<br>
+</span><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Ash002 replied on Sunday, September 28, 2008</h2><font face="Tahoma">It was a pretty big collection, 1400 objects Will check to see what is taking the time. Will try a second Busy animation also.</font> thanks<br>. <br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Ash002 replied on Sunday, September 28, 2008</h2>
+
+
+
+
+
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><font size=2 color=navy face=Tahoma><span>Sergey<o:p></o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 color=navy face=Tahoma><span><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 color=navy face=Tahoma><span>Fetch takes about 6 seconds, on a
+deliberately large data set.<o:p></o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 color=navy face=Tahoma><span><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 color=navy face=Tahoma><span>For cancel however cancelling outside the
+CslaDataProvider is fine, but using the provider is slow. The time taken is in
+the first loop in BLB.UndoChanges() <o:p></o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 color=navy face=Tahoma><span><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=MsoNormal><b><font size=2 color=navy face=Tahoma><span>Code:<o:p></o:p></span></font></b></p>
+
+<p class=MsoNormal><font size=2 face="Courier New"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <font color=blue><span>string</span></font> s = <font color="#a31515"><span>&quot;&quot;</span></font>;<o:p></o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 face="Courier New"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; s += <font color="#a31515"><span>&quot;Rows=&quot;</span></font> +
+(Provider.Data <font color=blue><span>as</span></font> <font color="#2b91af"><span>Users</span></font>).Count.ToString()
++ <font color="#a31515"><span>&quot;\r&quot;</span></font>;<o:p></o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 face="Courier New"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; s+= <font color="#2b91af"><span>DateTime</span></font>.Now.ToString()
++ <font color="#a31515"><span>&quot;\r&quot;</span></font>;<o:p></o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 face="Courier New"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <o:p></o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 face="Courier New"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <font color=blue><span>var</span></font> undoable = Provider.Data <font color=blue><span>as</span></font> Csla.Core.<font color="#2b91af"><span>ISupportUndo</span></font>;<o:p></o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 face="Courier New"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Provider.Data = <font color=blue><span>null</span></font>;<o:p></o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 face="Courier New"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+undoable.CancelEdit();<o:p></o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 face="Courier New"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+undoable.BeginEdit();<o:p></o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 face="Courier New"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Provider.Data =
+undoable;<o:p></o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 face="Courier New"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; s+= <font color="#2b91af"><span>DateTime</span></font>.Now.ToString()
++ <font color="#a31515"><span>&quot;\r&quot;</span></font>;<o:p></o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 face="Courier New"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <o:p></o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 face="Courier New"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Provider.Cancel();<o:p></o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 face="Courier New"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; s+= <font color="#2b91af"><span>DateTime</span></font>.Now.ToString()
++ <font color="#a31515"><span>&quot;\r&quot;</span></font>;<o:p></o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 face="Courier New"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Busy = <font color=blue><span>false</span></font>;</span></font><font size=2 color=navy face=Tahoma><span><o:p></o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 color=navy face=Tahoma><span><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=MsoNormal><b><font size=2 color=navy face=Tahoma><span>Times:<o:p></o:p></span></font></b></p>
+
+<p class=MsoNormal><font size=2 color=navy face=Tahoma><span><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 color=navy face=Tahoma><span>Cancel<o:p></o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 color=navy face=Tahoma><span>Rows=1384<o:p></o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 color=navy face=Tahoma><span>29/09/2008 10:34:14 AM<o:p></o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 color=navy face=Tahoma><span>29/09/2008 10:34:20 AM<o:p></o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 color=navy face=Tahoma><span>29/09/2008 10:34:48 AM<o:p></o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 color=navy face=Tahoma><span><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 color=navy face=Tahoma><span><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 color=navy face=Tahoma><span>Cancel<o:p></o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 color=navy face=Tahoma><span>Rows=1384<o:p></o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 color=navy face=Tahoma><span>29/09/2008 10:36:04 AM<o:p></o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 color=navy face=Tahoma><span>29/09/2008 10:36:10 AM<o:p></o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 color=navy face=Tahoma><span>29/09/2008 10:36:38 AM<o:p></o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 color=navy face=Tahoma><span><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 color=navy face=Tahoma><span>Cancel<o:p></o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 color=navy face=Tahoma><span>Rows=1384<o:p></o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 color=navy face=Tahoma><span>29/09/2008 10:39:41 AM<o:p></o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 color=navy face=Tahoma><span>29/09/2008 10:39:47 AM<o:p></o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 color=navy face=Tahoma><span>29/09/2008 10:40:17 AM<o:p></o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 color=navy face=Tahoma><span><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 color=navy face=Tahoma><span><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 color=navy face=Tahoma><span><o:p>&nbsp;</o:p></span></font></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Sunday, September 28, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Just a guess&#8230;&nbsp; I think what is taking a long time is
+rebinding of UI that provider triggers.&nbsp; Provider itself is just issuing this.Data.Cancel.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Ashley Dickson
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Sunday, September 28, 2008 8:50 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> RE: [CSLA .NET] RE: Silverlight immediate UI update<o:p></o:p></span></p>
+
+</div>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<div>
+
+<p class=MsoNormal><span>Sergey<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Fetch
+takes about 6 seconds, on a deliberately large data set.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>For
+cancel however cancelling outside the CslaDataProvider is fine, but using the
+provider is slow. The time taken is in the first loop in BLB.UndoChanges() <o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Code:<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span>string</span> s = <span>&quot;&quot;</span>;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+s += <span>&quot;Rows=&quot;</span> + (Provider.Data <span>as</span> <span>Users</span>).Count.ToString()
++ <span>&quot;\r&quot;</span>;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+s+= <span>DateTime</span>.Now.ToString() + <span>&quot;\r&quot;</span>;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span>var</span> undoable = Provider.Data <span>as</span> Csla.Core.<span>ISupportUndo</span>;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Provider.Data = <span>null</span>;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+undoable.CancelEdit();<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+undoable.BeginEdit();<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Provider.Data = undoable;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+s+= <span>DateTime</span>.Now.ToString() + <span>&quot;\r&quot;</span>;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Provider.Cancel();<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+s+= <span>DateTime</span>.Now.ToString() + <span>&quot;\r&quot;</span>;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Busy = <span>false</span>;</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Times:<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Cancel<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>Rows=1384<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>29/09/2008
+10:34:14 AM<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>29/09/2008
+10:34:20 AM<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>29/09/2008
+10:34:48 AM<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Cancel<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>Rows=1384<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>29/09/2008
+10:36:04 AM<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>29/09/2008
+10:36:10 AM<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>29/09/2008
+10:36:38 AM<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Cancel<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>Rows=1384<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>29/09/2008
+10:39:41 AM<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>29/09/2008
+10:39:47 AM<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>29/09/2008
+10:40:17 AM<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Sunday, September 28, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>BTW, is this data bound to a grid?<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Ashley Dickson
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Sunday, September 28, 2008 8:50 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> RE: [CSLA .NET] RE: Silverlight immediate UI update<o:p></o:p></span></p>
+
+</div>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<div>
+
+<p class=MsoNormal><span>Sergey<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Fetch
+takes about 6 seconds, on a deliberately large data set.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>For
+cancel however cancelling outside the CslaDataProvider is fine, but using the
+provider is slow. The time taken is in the first loop in BLB.UndoChanges() <o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Code:<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span>string</span> s = <span>&quot;&quot;</span>;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+s += <span>&quot;Rows=&quot;</span> + (Provider.Data <span>as</span> <span>Users</span>).Count.ToString()
++ <span>&quot;\r&quot;</span>;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+s+= <span>DateTime</span>.Now.ToString() + <span>&quot;\r&quot;</span>;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span>var</span> undoable = Provider.Data <span>as</span> Csla.Core.<span>ISupportUndo</span>;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Provider.Data = <span>null</span>;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+undoable.CancelEdit();<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+undoable.BeginEdit();<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Provider.Data = undoable;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+s+= <span>DateTime</span>.Now.ToString() + <span>&quot;\r&quot;</span>;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Provider.Cancel();<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+s+= <span>DateTime</span>.Now.ToString() + <span>&quot;\r&quot;</span>;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Busy = <span>false</span>;</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Times:<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Cancel<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>Rows=1384<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>29/09/2008
+10:34:14 AM<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>29/09/2008
+10:34:20 AM<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>29/09/2008
+10:34:48 AM<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Cancel<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>Rows=1384<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>29/09/2008
+10:36:04 AM<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>29/09/2008
+10:36:10 AM<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>29/09/2008
+10:36:38 AM<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Cancel<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>Rows=1384<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>29/09/2008
+10:39:41 AM<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>29/09/2008
+10:39:47 AM<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>29/09/2008
+10:40:17 AM<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Ash002 replied on Sunday, September 28, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><font size=2 color=navy face=Tahoma><span>Yes it is DataBound to the grid, so I am
+assumming that&#8217;s the problem, hence assigning Provider.Data to null to
+break the data binding.<o:p></o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 color=navy face=Tahoma><span><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 color=navy face=Tahoma><span>Removing the data binding on the grid&#8217;s
+ItemsSource:<o:p></o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 color=navy face=Tahoma><span><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 face="Courier New"><span>&nbsp;&nbsp;&nbsp; <font color=blue><span>var</span></font> u = (<font color="#2b91af"><span>Users</span></font>)Provider.Data;<o:p></o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 face="Courier New"><span>&nbsp;&nbsp;&nbsp; <font color=blue><span>if</span></font> (u != <font color=blue><span>null</span></font>)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+u[0].BusinessTitle = <font color="#a31515"><span>&quot;&quot;</span></font>
+;<o:p></o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 face="Courier New"><span>&nbsp;&nbsp;&nbsp; {<o:p></o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 face="Courier New"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+u[0].ApplyEdit() ;<o:p></o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 face="Courier New"><span><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 face="Courier New"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<font color=blue><span>string</span></font> s = <font color="#a31515"><span>&quot;&quot;</span></font>;<o:p></o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 face="Courier New"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+s+= <font color="#2b91af"><span>DateTime</span></font>.Now.ToString()
++ <font color="#a31515"><span>&quot;\r&quot;</span></font>;<o:p></o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 face="Courier New"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Provider.Cancel();<o:p></o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 face="Courier New"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; s+= <font color="#2b91af"><span>DateTime</span></font>.Now.ToString()
++ <font color="#a31515"><span>&quot;\r&quot;</span></font>;</span></font><font size=2 color=navy face=Tahoma><span><o:p></o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 color=navy face=Tahoma><span><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 color=navy face=Tahoma><span>29/09/2008 12:59:12 PM<o:p></o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 color=navy face=Tahoma><span>29/09/2008 12:59:21 PM<o:p></o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 color=navy face=Tahoma><span><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 color=navy face=Tahoma><span>29/09/2008 1:01:28 PM<o:p></o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 color=navy face=Tahoma><span>29/09/2008 1:01:37 PM<o:p></o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 color=navy face=Tahoma><span><o:p>&nbsp;</o:p></span></font></p>
+
+</div>
+
+
+
+
+<br><br><br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

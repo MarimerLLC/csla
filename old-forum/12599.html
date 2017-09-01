@@ -1,0 +1,19 @@
+<html><header><title>async await &amp; ConnectionManager&lt;C&gt; &amp; [TestMethod]</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>async await &amp; ConnectionManager&lt;C&gt; &amp; [TestMethod]</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/12599.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Peran posted on Thursday, April 24, 2014</h2><p>I&#39;m just starting a new project and using CSLA async await syntax for the first time, I&#39;m experiencing an issue with the ConnectionManager&lt;C&gt; when running a MS Test, in that sometimes ConnectionManager&lt;C&gt;.GetManager() contains a disposed Connection.</p>
+<p>&nbsp;</p>
+<p>I have identified that DeRef() disposes the Connection but does not always remove the ConnectionManager from LocalContext (LocalContext.Contains(contextName) == false on the thread that is calling it, so can not find it to remove it).</p>
+<p>When GetManager() is called for a second time (LocalContext.Contains(contextName) == true, as it was not removed in DeRef(), and) returns the original ConnectionManager which has the disposed Connection.</p>
+<p>&nbsp;</p>
+<p>I can solve the issue by replacing the use of ApplicationContext.LocalContext with a static Dictionary&lt;string, ConnectionManager&lt;C&gt;&gt;, but I suspect there is a good reason why LocalContext is being used?</p>
+<p>&nbsp;</p>
+<p>Some abbreviated code for context...</p>
+<p>[TestMethod]<br />&nbsp;public async Task MyTest()<br />{<br />&nbsp; var cust1 = await Customer.GetAsync(1); &nbsp;<br />&nbsp; var cust2 = await Customer.GetAsync(2);</p>
+<p>...</p>
+<p>private async Task DataPortal_Fetch(int id)<br />{<br />&nbsp; using (var manager = ConnectionManager&lt;SqlConnection&gt;.GetManager(connStr, false))<br />&nbsp; {<br />&nbsp; &nbsp; ...<br />&nbsp; }&nbsp;</p>
+<p>I&#39;m using .ConfigureAwait(false) in all but the top level DataPortal_XYZ methods.</p>
+<p>Any suggestions?</p>
+<p>&nbsp;</p>
+<p>Regards</p>
+<p>&nbsp;</p>
+<p>Peran</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

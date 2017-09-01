@@ -1,0 +1,150 @@
+<html><header><title>C# CslaLight samples</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>C# CslaLight samples</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/8397.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>tiago posted on Thursday, January 21, 2010</h2><P>Hi Sergey,</P>
+<P>I tried to build some samples under svn://svn.lhotka.net/csla/core/trunk/Samples/CslaLight/cs (actually ADONetDataServicesSample) under Silverlight 3 but it was a no can do. Are they supposed to build only under Silverlight&nbsp;2?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Thursday, January 21, 2010</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>They
+should, although they probably have not been touched in a while.&nbsp; You may
+just have to manually fix compile errors.&nbsp; What errors are you getting,
+BTW?<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> tiago
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Thursday, January 21, 2010 5:59 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> [CSLA .NET] C# CslaLight samples<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Hi Sergey,<o:p></o:p></p>
+
+<p>I tried to build some samples under
+svn://svn.lhotka.net/csla/core/trunk/Samples/CslaLight/cs (actually
+ADONetDataServicesSample) under Silverlight 3 but it was a no can do. Are they
+supposed to build only under Silverlight&nbsp;2?<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, January 21, 2010</h2><P>The 3.8.1 (or 3.8.2?) samples should all work on SL3. I went through (I think) all the samples and updated them for 3.8 and SL3.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tiago replied on Friday, January 22, 2010</h2><P>Hi again Sergey,</P>
+<P>The error is</P>
+<P><FONT face="Courier New">The type or namespace name 'SilverlightControls' does not exist in the namespace 'System.Web.UI' (are you missing an assembly reference?)D:\CSLA\Sources\TestSamples\CslaLight\cs\ADONetDataServicesSample\Web\Default.aspx.designer.cs</FONT></P>
+<P>As far as I understood, the referred namespace moved from the SDK to the toolkit. But I have no clue concerning the specific assembly.</P>
+<P>The <FONT face="Courier New">Web.csproj</FONT> file refers to <FONT face="Courier New">&lt;Reference Include="System.Web.Silverlight, Version=2.0.5.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" /&gt;</FONT></P>
+<P>&nbsp;</P>
+<P>Hi Rocky,</P>
+<P>Although this isn't very important, the project files of <FONT face="Courier New">ADONetDataServicesSample</FONT>&nbsp;refer </P>
+<P><FONT face="Courier New">&lt;Reference Include="Csla, Version=3.6.0.0, Culture=neutral, PublicKeyToken=93be5fdc093e4c30, processorArchitecture=MSIL"&gt;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;SpecificVersion&gt;False&lt;/SpecificVersion&gt;</FONT></P>
+<P><FONT face="Courier New"></FONT>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Friday, January 22, 2010</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>You
+are probably missing web forms Silverlight control.&nbsp; Really, Microsoft
+does not distribute it any longer as they prefer that everyone would use OBJECT
+tag instead.&nbsp; I think if you search the forum you will find a resolution
+to this issue.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> tiago
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Friday, January 22, 2010 2:22 AM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: C# CslaLight samples<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Error&nbsp;1&nbsp;The type or namespace name 'SilverlightControls' does not
+exist in the namespace 'System.Web.UI' (are you missing an assembly
+reference?)&nbsp;D:\CSLA\Sources\TestSamples\CslaLight\cs\ADONetDataServicesSample\Web\Default.aspx.designer.cs&nbsp;41&nbsp;41&nbsp;Web<o:p></o:p></p>
+
+<p>As far as I understood, the referred namespace moved from the SDK to the
+toolkit. But I have no clue concerning the specific assembly.<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tiago replied on Saturday, January 23, 2010</h2><P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>sergeyb:</strong></div><div> <SPAN>You are probably missing web forms Silverlight control.&nbsp; Really, Microsoft does not distribute it any longer as they prefer that everyone would use OBJECT tag instead.&nbsp; I think if you search the forum you will find a resolution to this issue.</SPAN></div></BLOCKQUOTE></P>
+<P>Been there, done that. That's how I learned they moved it to the toolkit. I'm in the posting phase ;)</P>
+<P>Thanks anyway Sergey.</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

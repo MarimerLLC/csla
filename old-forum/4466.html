@@ -1,0 +1,13 @@
+<html><header><title>Type is not resolved for member</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Type is not resolved for member</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4466.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>boo posted on Thursday, March 06, 2008</h2><P>Here's the situation, have a library that does all our authentication for applications made from CSLA.</P>
+<P>In test project:</P>
+<UL>
+<LI>Unit test pass without problem using remoting data portal (either on Cassini or IIS on sepearte machine) fine.</LI>
+<LI>Unit tests in oder to pass with local data portal required a work around.&nbsp; I was getting 'Type is not resolved for member pointing to our CSLA principal class implementation.&nbsp; I implemented a hack and it resolved our unit test issues for local data portal.&nbsp; As many bugs as we've found in VS2008 testing tools, we chalked it up to just another one.</LI></UL>
+<P>Now when I'm trying to implment this library in a web service for another application (in order to control who can access it):</P>
+<UL>
+<LI>Local data portal - no problem.</LI>
+<LI>Remote data portal (IIS on a seperate machine) - Type is not resolved for member point to our CSLA principal class implementation.</LI></UL>
+<P>I read the FAQ on PT and it seems this should only be a problem on Cassini (which we never had), but we're getting it on IIS6 (W2K3 Server).</P>
+<P>Our hack for unit testing doesn't work here.&nbsp; I do not know what to do and I have to get this fixed ASAP because I'm already past my deadline.</P>
+<P>&nbsp;</P>
+<P>Thanks!</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>boo replied on Thursday, March 06, 2008</h2>This was due to the web service that was calling the IIS web service for remote data portal being Cassini.&nbsp; Make sense.&nbsp; Can't verify because now the web service calling the remote data portal is telling me another assembly can't be found even though it's in the BIN and I even added it as assembly ref in web.config file too.&nbsp; Tried to changing to to web-app but of coarse that doesn't work on web service project.&nbsp; Those 'web-site' projects are the worst idea ever....shadow paths, reference problems; man things were much easier to deploy in 1.1.</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

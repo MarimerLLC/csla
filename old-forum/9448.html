@@ -1,0 +1,22 @@
+<html><header><title>Problem Iterating through DeletedList (protection level problem)</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Problem Iterating through DeletedList (protection level problem)</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9448.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>lee_b posted on Sunday, August 29, 2010</h2><p>Hi,</p>
+<p>I have a data portal factory with a block of code</p>
+<p>public object Update(BusinessBaseList ol)<br />{</p>
+<p style="padding-left:30px;">foreach(BusinessBase o in ol.DeletedList)<br />{</p>
+<p style="padding-left:60px;">Delete&lt;Object&gt;(o);</p>
+<p style="padding-left:30px;">}</p>
+<p>}</p>
+<p>This used to work, but now I am getting errors around deletedlist that it &quot;cannot be used in this context because the get accessor is inaccessible&quot; and that &quot;DeletedList is inaccessible due to its protection level&quot;</p>
+<p>In the previous CSLA version, it appears that the BusinessListBase.DeletedList was public, but now it is protected. However, there is strong evidence that the version of CSLA I upgraded from (4.0.0-100201 - a pre release version anyway) had been tampered with so I am not sure if my initial approach was valid to begin with.</p>
+<p>With the latest version, what is the proper approach to iterating through a deletedlist and deleting the objects within it?</p>
+<p>&nbsp;</p>
+<p>Thanks</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>ajj3085 replied on Sunday, August 29, 2010</h2><p>I don&#39;t recall DeletedList being protected..&nbsp; but regardless of whether its changed or not...</p>
+<p>If something is in DeletedList, it&#39;s Child_DeleteSelf should be called, and so you should bel able to do whatever deleting you require in there.&nbsp; You shouldn&#39;t need to do anything, it should just work as this is standard behavior for items in the deleted list.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>lee_b replied on Sunday, August 29, 2010</h2><p>Okay, something really odd is happening here. I&#39;ve unloaded and reloaded the CSLA project into my solution, and the method is definitely protected, but when I open the class using notepad, the method shows as public.</p>
+<p>What the hey?</p>
+<p>I&#39;m obviously doing something wrong, but all I am doing is right-clicking on my solution, adding an existing&nbsp;  project and selecting the CSLASource-401-100828\source\Csla\Csla.csproj file. Visual studio appears to be making it protected for some reason.</p>
+<p>I&#39;m really confused right now :/</p>
+<p>&nbsp;</p>
+<p>Edit - Ignore the above, I suspect user error.&nbsp; I&#39;ve reinstalled CSLA with a fresh copy of the latest version, and the method in the source is definitely protected. So I am still with my original problem, that I cannot access the DeletedList method with my current approach, so I can&#39;t see what is in the deletedlist to actually delete.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>mspaourh replied on Monday, August 30, 2010</h2><p>You may want to use<br /><blockquote style="overflow-x: scroll;"><pre style="margin: 0px;">object IEditableCollection.GetDeletedList();</pre></blockquote><br />which is implemented in BusinessListBase.<br /><br />What version where you using prior the upgrade?</p>
+<p>Regards,</p>
+<p>Mario</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Monday, August 30, 2010</h2><p>DeletedList is protected. So are all the metastate properties of objects (IsNew, etc).</p>
+<p>The ObjectFactory base class has methods that allow you to access and manipulate these protected members, including DeletedList.</p>
+<p>Your factory object should subclass ObjectFactory to use these features.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

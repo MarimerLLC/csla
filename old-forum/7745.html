@@ -1,0 +1,32 @@
+<html><header><title>SerializationException</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>SerializationException</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/7745.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>dg78 posted on Wednesday, October 07, 2009</h2><P class=MsoNormal><SPAN>Hi,<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>I have this exception : </SPAN><SPAN>"End of Stream encountered before parsing was completed."<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>in BinaryFormatterWrapper.vb, inside the <SPAN>Public</SPAN><SPAN> <SPAN>Function</SPAN> Deserialize</SPAN> on the instruction :<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Return</SPAN><SPAN> _formatter.Deserialize(serializationStream).<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>This exception happens on a "big" object. I saw in a "small" object that the problem is about I forgot to put a &lt;Serializable()&gt; _ before an internal class.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Now my question :<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Is it possible to see easily what type is not serializable ? <o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>Perhaps it would be good</SPAN>&nbsp;to add in CSLA a test to avoid this problem.</SPAN></P>
+<P class=MsoNormal><SPAN></SPAN>&nbsp;</P>
+<P class=MsoNormal><SPAN>(I use CSLA VB 3.53)</SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Thanks<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Dominique<o:p></o:p></SPAN></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, October 07, 2009</h2><P>There's really no way for CSLA to test for this condition - the only way to know if your object graph is serializable is to run it through the serializer. This is all handled by .NET.</P>
+<P>I'm not aware of a tool or function that will tell you that you've referenced a non-serializable object.</P>
+<P>But it doesn't sound like that's your problem. It sounds like your stream is incomplete - like it was truncated or something.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>dg78 replied on Thursday, October 08, 2009</h2><P class=MsoNormal><SPAN>Thanks, Rocky, for your answer.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>I found where is my problem.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>In my "big" object, I put for some tests :<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp; </SPAN><SPAN>Private</SPAN> _FilteredEmployeAdresse <SPAN>As</SPAN> FilteredBindingList(<SPAN>Of</SPAN> EmployeJEmployeAdresse)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>But <SPAN>&nbsp;</SPAN><SPAN>FilteredBindingList is not serializable then there is a problem during the serialization of the object, but I did not see it and the exception appears during the deserialization.</SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>I think that I need to use a Serializable class that inherits from FilteredBindingList.<o:p></o:p></SPAN></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Thursday, October 08, 2009</h2>FilteredBindingList is really only meant to be used on the client, to display a filtered list of users.  There's no reason for a BO to have an instnace of that class as a member.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>dg78 replied on Thursday, October 08, 2009</h2><P class=MsoNormal><SPAN>Yes, I think now that it is not a good idea to do as I did, I put that for some tests and I forgot to remove.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Rocky, when do you write a book about the best practices to use CSLA, not inside CSLA (you wrote already) but how to use it with many .. many shorts samples for many situations ?<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>I think that you planed it. What's about ?<o:p></o:p></SPAN></P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

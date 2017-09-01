@@ -1,0 +1,89 @@
+<html><header><title>Undoable anomaly:is it an inheritance problem?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Undoable anomaly:is it an inheritance problem?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/2806.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>RichScott posted on Tuesday, May 01, 2007</h2><font color="#000000" size="2"><font face="Arial">I have two root BusinessObjects, (Learner and Course) which have a child object (LearningAimList)&nbsp; in common. <br><br>I'm successfully implementing Undo in a WindowsForms app for Course (BusinessBase&lt;Course&gt;). <br><br>The identical form and identical code, apart from switching the BindingSource.DataSource, fails to rebind properly after CancelEdit when the root object is Learner. I'm rebuilding each time, and only testing one form/root object at once.<br><br></font></font><font color="#000000" size="2"><font face="Arial">BindingSource.</font></font><font color="#000000" size="2"><font face="Arial">CurrentItemChanged doesn't fire for the child-objects of Learner after CancelEdit. It works fine for Learner parent object, works for Course as parent and LearningAimList as Course-child. Just not for LearningAimList when it's a Learner-child.<br><br></font></font><font color="#000000" size="2"><font face="Arial"> Learner inherits from Person (BusinessBase&lt;Person&gt;). That's the only structural difference I can think of. Can any one throw light on this?<br><br></font></font><font color="#000000" size="2"><font face="Arial">I'm using CSLA 2.0, and have spent a year alternately enjoying it and being frustrated!</font></font><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rkelley replied on Tuesday, May 01, 2007</h2><P>Did you copy and paste the form controls or did you design the new form from scratch?</P>
+<P>I have seen on occasion if you copy and paste controls to a new form, some of the information in the backside is retained from the old form. Also, you might be able to just delete your data source and create a new one and rebind all controls using drag and drop.</P>
+<P>Hope this helps.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RichScott replied on Wednesday, May 02, 2007</h2>Thanks for the reply. I don't think it's anything todo with the form itself, the controls are being created and placed at run time, not copied and pasted. The child object control is the same userControl each time. I'm just switching the code to construct different parent controls. OK/Apply/Undo buttons all use the same code.<br><br>The inheritance issue I was wondering about was at the business object level. Could the fact that one parent object inherits from&nbsp; businessbase&lt;Person&gt;, and the other is itself a&nbsp; businessbase&lt;Course&gt; account for any difference in undo behaviour? <br><br>I'm clutching at straws because I've run out of other experimental avenues, and about to simply disable Undo/Apply for this form.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Wednesday, May 02, 2007</h2>The two parent objects aren't sharing the same instance of the child are they?&nbsp; I believe that would cause some problems.<br><br>As far as undo goes, both your classes inherit undoablebase, so it shouldn't matter how the inheritence is working... <br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Bayu replied on Wednesday, May 02, 2007</h2>Hi<br><br>Take a step back, pal. With patience you will get the job done. ;-)<br><br>My guess on this is that you are basing your conclusions on the wrong assumption. You explain that for Course it works and for Learner it doesn't and therefore you think something is wrong with Learner. The alternative possibility is that both are actually not supposed to work and that it is just luck that it happens to work for Course.<br><br>On which object are you calling CancelEdit? On the BindingSource or on the BO? It should be on the BindingSource, because otherwise behavior is unpredictable. So call BindingSource.EndEdit instead of BO.ApplyEdit and the same holds true for CancelEdit. Also try setting breakpoints in one of the core Csla BOs, the one that implements IEditableObject (I believe it is Core.UndoableBase). This interface is implemented in 3 methods (BeginEdit/CancelEdit/EndEdit) and is recognized and invoked by the BindingSource, here you can track what actually happens behind the scenes.<br><br>Also check that you call BindingSource.ResetBindings(false) after saving in order to have your UI refreshed. If you don't call it your UI may still be in sync, but then you are just lucky. Calling this method will ensure your UI is in sync. <br><br>Finally, get the latest Csla download and check the ProjectEdit user control in the ProjectTracker demo. It contains a SaveProject routine that does exactly what you are after. Please note that in the last (current) version it is implemented differently from how it used to be implemented several versions ago. This is because recently some issues with the BindingSource were brought up on this same forum, and the current implementation as in the ProjectEdit usercontrol can be considered as the de-facto way to get the job done.<br><br>This should get you going. If it doesn't, get back here and I will dig out some code for you.<br><br>Good luck!<br>Bayu<br><br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, May 02, 2007</h2><P>Bayu is right, if your one instance of a child object is being a child of two parent objects <EM>at the same time</EM> that isn't allowed.</P>
+<P>Just think what would happen. Parent A would do BeginEdit, so the child would take a snapshot of its state. Parent B would do BeginEdit so the child would take <EM>another</EM> snapshot of its state. Depending on the order in which A or&nbsp;B call CancelEdit or ApplyEdit you'd get some very odd results...</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Bayu replied on Wednesday, May 02, 2007</h2>I will forward those credits to Andy. ;-)<br><br>But thanks anyway! ;-p<br><br>BAndYU<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RichScott replied on Wednesday, May 02, 2007</h2>First of all, many thanks for every one's helpful input. <br>
+<br>
+It isn't a case of one child-instance jointly owned by two parentBO's.
+I was running the experiment afresh each time with just one parent
+object and form.<br>
+<br>
+I take Bayu's point about attention to BindingSource etc (as well as to patience!)..<br>
+-- though I have been following the previous forums on undoable issues,
+and have tried to use the BindingSources of parent and child controls
+for all CancelEdit/EndEdit. I've resorted to extra BeginEdits on the BO
+occasionally to force the root BO's EditLevel above 0 (eg when only
+children are being edited), but that shouldn't be an issue. (?)<br>
+<br>
+Anyway I will download the latest Csla to check that out, have another look at ResetBindings etc, and report back in due course<br>
+<br>
+Thanks again<br>
+<br>
+Rich</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, May 02, 2007</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Calling BeginEdit on the root is only good if you do it <i>before
+binding to a bindingsource</i>!!!!<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>If you call BeginEdit on the root after binding to a
+bindingsource then you are in trouble, because the bindingsource will have
+already called BeginEdit at least once (and maybe more times on child objects).
+The result can be a real mess.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Bayu replied on Wednesday, May 02, 2007</h2><BLOCKQUOTE><div><img src="/Themes/alternate1/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div>
+
+
+
+
+
+
+ 
+
+
+
+<div class="Section1">
+
+<p class="MsoNormal"><span>Calling BeginEdit on the root is only good if you do it <i>before
+binding to a bindingsource</i>!!!!<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><o:p>&nbsp;</o:p></span></p>
+
+<p class="MsoNormal"><span>If you call BeginEdit on the root after binding to a
+bindingsource then you are in trouble, because the bindingsource will have
+already called BeginEdit at least once (and maybe more times on child objects).
+The result can be a real mess.<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><o:p>&nbsp;</o:p></span></p>
+
+<p class="MsoNormal"><span>Rocky<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><o:p>&nbsp;</o:p></span></p>
+
+</div>
+
+</div></BLOCKQUOTE><br><br>Ah yes, that's why I proposed to set those breakpoints. BindingSource will go through the interface implementation which is NOT BeginEdit, rather a wrapper method that ensures BeginEdit is only called once \for databinding\. If you manually call BeginEdit as well this will bypass the interface and force the editlevel up once more. <br><br>Perhaps the bits and pieces are coming together now.<br>Bayu<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RichScott replied on Saturday, May 05, 2007</h2>Hi again, <br>[after downloading latest csla and project tracker and refining my code along those lines (though still using Csla 2.0 for the moment behind my business objects).]<br><br>I pinned down a reason for&nbsp; the difference in behaviour between Course and Learner: a Learner often (usually) has only one LearningAim in their LearningAimList, a Course will nearly always have a LearningAimList.Count of 2 +.<br><br>I still have the same problem undoing a change to a single learning Aim when the Count is 1<br><br>My undo code now looks like this (italics what I added to ProjectTracker.ProjectEdit.Cancel_Button_Click code to keep EditLevel at 1):<br><br>&nbsp;<i>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; this.mainBindingSource.RaiseListChangedEvents = false;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; this.dataGridViewBindingSource.RaiseListChangedEvents = false;<br></i><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; this.mainBindingSource.CancelEdit();<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; this.dataGridViewBindingSource.CancelEdit();<br><br><i>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; this.mainBindingSource.DataSource = null;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; this.dataGridViewBindingSource.DataSource = this.mainBindingSource;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; this.mainBindingSource.DataSource = _learner;<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; this.mainBindingSource.RaiseListChangedEvents = true;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; this.dataGridViewBindingSource.RaiseListChangedEvents = true;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; this.mainBindingSource.ResetBindings(false);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; this.dataGridViewBindingSource.ResetBindings(false);<br></i><br>I need to enable and disable the Undo/Apply buttons as appropriate so in the constructor for the form I have:<br><i><font face="Times New Roman">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; dataGridViewBindingSource.CurrentItemChanged += new EventHandler( CurrentItemChanged);<br></font></i><br>I also tried this<br><i>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; dataGridViewBindingSource.ListChanged += new ListChangedEventHandler( dataGridViewBindingSource_ListChanged);<br></i><br>which made a difference&nbsp; when Count = 1 on first binding but failed after CancelEdit called once<br><br>So my question now is: How do I work undo with a dataGridView child list with Count of 1?<br><br>Help would be greatly appreciated! <br>Rich<br><br><br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Saturday, May 05, 2007</h2><P>A couple things to consider.</P>
+<P>1) If you check some other data binding threads, people have noted that there are some bugs in the DataGridView - some of which have hotfixes you can get from Microsoft. Maybe that can help?</P>
+<P>2) Are you running 2.0.0, or the latest 2.0.x version? I think (don't remember, but you can look in the change logs) that there were some BLB bugs addressed in some of those point releases. Certainly there have been some bugs addressed in 2.1.4, and maybe you can back-port the fixes if they matter in this case.</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

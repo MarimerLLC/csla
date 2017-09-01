@@ -1,0 +1,73 @@
+<html><header><title>Why Doesn't Lhotka's Code Break here?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Why Doesn't Lhotka's Code Break here?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/2941.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>SimpleCSLA posted on Thursday, May 24, 2007</h2>How do you know if this is working right?<br><b>Public Class EnterpriseServicesProxy<br>&nbsp; Inherits Csla.DataPortalClient.EnterpriseServicesProxy<br><br>&nbsp; Protected Overrides Function GetServerObject() As _<br>&nbsp;&nbsp;&nbsp; Csla.Server.Hosts.EnterpriseServicesPortal<br><br>&nbsp;&nbsp;&nbsp; <font color="#ff0000"><i>Return New EnterpriseServicesPortal</i></font><br><br>&nbsp; End Function<br><br>End Class<br><br><br></b>When the EnterpriseServicesPortal is returned, how do you know if it got anything?&nbsp; For example, this code runs fine if I have EnterpriseServicesPortal COM+ running, or even if I delete it from COM+ services.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, May 24, 2007</h2><P>Try removing it from COM+ and then running your app as a non-Admin user, and I bet it fails.</P>
+<P>.NET auto-installs components into COM+ for you. Of course that only works if you are an Admin, so it isn't real reliable.</P>
+<P>Another way to watch it fail is to use the ES proxy from ASP.NET. There too, the user isn't an Admin and so the auto-reg fails.</P>
+<P>Really you don't want to use auto-reg here in any case, because it won't do the right thing. You need to do the steps in Chapter 12 to make it work properly.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>SimpleCSLA replied on Thursday, May 24, 2007</h2>&nbsp;I'm actually trying to use Chapter 4 and ignore Chapter 12 for now.&nbsp; I just want to get the Project Tracker to run.&nbsp; Can you tell me the page in Chapter 4 which allows me to run locally?&nbsp; I see the section on CSLA.DataPortalClient.LocalProxy, but how do I force the Project Tracker to use the LocalProxy and not go through Remoting or Web Services.<br><br>I'm assuming if I run locally I don't need EnterpriseServicesVB.DLL.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>SimpleCSLA replied on Thursday, May 24, 2007</h2>&nbsp;This is the mInnerStackTrace (if it helps):<br><b>"&nbsp;&nbsp; at ProjectTracker.Library.Database.get_SecurityConnection() in C:\CSLA_214\csla20vb\ProjectTracker20vb\ProjectTracker.Library\Database.vb:line 13<br>&nbsp;&nbsp; at ProjectTracker.Library.Security.PTIdentity.DataPortal_Fetch(Criteria criteria) in C:\CSLA_214\csla20vb\ProjectTracker20vb\ProjectTracker.Library\Security\PTIdentity.vb:line 110<br>&nbsp;&nbsp; at Csla.MethodCaller.CallMethod(Object obj, MethodInfo info, Object[] parameters) in C:\CSLA_214\csla20vb\csla20vb\Csla\DataPortal\MethodCaller.vb:line 123<br>&nbsp;&nbsp; at Csla.Server.SimpleDataPortal.Fetch(Type objectType, Object criteria, DataPortalContext context) in C:\CSLA_214\csla20vb\csla20vb\Csla\DataPortal\Server\SimpleDataPortal.vb:line 116"<br></b><br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, May 24, 2007</h2><P>If you just want to get ProjectTracker running, follow the instructions in the PDF available from <A href="http://www.lhotka.net/cslanet/download.aspx">www.lhotka.net/cslanet/download.aspx</A>.</P>
+<P>If you want to understand how to configure the data portal for various configurations use Chapter 12.</P>
+<P>If you want to understand how to <EM>design and implement </EM>the data portal, use Chapter 4.</P>
+<P>You are correct - if you use the local proxy you don't need Enterprise Services. For PTWin this is trivial - just comment out all the data portal config lines in the &lt;appSettings&gt; element.</P>
+<P>For PTWeb this is harder, because in local mode ASP.NET won't let you get at the database files, so you need to copy the mdf files into app_data and change the connection strings.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>SimpleCSLA replied on Thursday, May 24, 2007</h2>&nbsp;I think I'm almost there.&nbsp; I don't see an 'app_data' directory.&nbsp; Does this need to be created directly in the PTWeb folder and do I need to give ASP.NET special permission to access it?<br><br>Thanks.&nbsp;&nbsp;  &nbsp;&nbsp;  <br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, May 24, 2007</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>The App_Data directory needs to be added to your project, yes.
+Use of this folder is standard for ASP.NET apps, and any ASP.NET book or
+article should help you get it created and configured properly.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>(unfortunately all my web sites use a real SQL Server instance,
+so I don&#8217;t know how or if you can use a SQL Express db in this case&#8230;
+In fact, now that I think about it, I may be sending you on a wild goose chase,
+because it may be that SQL Express won&#8217;t work behind ASP.NET?)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> SimpleCSLA
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Thursday, May 24, 2007 10:10 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] Why Doesn't Lhotka's Code Break here?<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>&nbsp;I think I'm almost there.&nbsp; I don't see an
+'app_data' directory.&nbsp; Does this need to be created directly in the PTWeb
+folder and do I need to give ASP.NET special permission to access it?<br>
+<br>
+Thanks.&nbsp;&nbsp; &nbsp;&nbsp; <br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>SimpleCSLA replied on Thursday, May 24, 2007</h2>You may be right.&nbsp; I got a SQL 2005 database to run that used the scripts you provided in the download.<br><br>Now that I have the database running locally, I can mess around with the framework and later tackle remoting.<br><br>Thanks for the help!&nbsp;&nbsp;  &nbsp;&nbsp;  <br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Thursday, May 24, 2007</h2><BLOCKQUOTE><div><img src="/Themes/basicblue/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div>(unfortunately all my web sites use a real SQL Server instance,
+so I don’t know how or if you can use a SQL Express db in this case…
+In fact, now that I think about it, I may be sending you on a wild goose chase,
+because it may be that SQL Express won’t work behind ASP.NET?)</div></BLOCKQUOTE><br><br>IIRC, App_Data exists pretty much for you to store your Sql Express database, to be attached on demand.&nbsp; According to my Pro asp.net 2.0 in C# 2005 book (also from apress).<br><br>On a side note, I've been very happy with the books I've gotten from apress so far..<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

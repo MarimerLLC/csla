@@ -1,0 +1,41 @@
+<html><header><title>Undelete Child Object</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Undelete Child Object</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5748.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>AndyW posted on Thursday, November 06, 2008</h2><P>Hi,</P>
+<P>How do I set a child object that has been set to delete, to undelete.&nbsp; Is this possible?</P>
+<P>Basically when a user un-checks a checkbox in my checkboxlist custom control I set the child object to delete, however they then can re-tick the checkbox at which point I want to remove the deleted flag from the child object.</P>
+<P>Thanks<BR>Andy</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>AbbasMalik replied on Friday, January 17, 2014</h2><p>Hi</p>
+<p>I need to undelete a child object. How can I do this? An urgent solution will be highly appreciated.</p>
+<p>Thanks</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>cfarren replied on Sunday, January 19, 2014</h2><p>In response to the OP. Marking the object as New will remove the deleted flag.</p>
+<div>In response to Abbas, I&#39;ll need some more information. That being said, you can navigate through the deleted list in your listing class to find all the child objects set for deletion when the DataPortal is called.</div></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Monday, January 20, 2014</h2><p>One other possibility is to add your own editable property (ToBeDeleted or IsActive) and create your own filter on top of the list.&nbsp;</p>
+<p>If the user is allows to &quot;delete&quot; / &quot;undelete&quot; in a checkbox then maybe the MarkDeleted mechanism isn&#39;t the appropriate one to use.&nbsp;</p>
+<p>So when needed - I have created:</p>
+<p>
+<ul>
+<li>a separate bool flag as editable property</li>
+<li>pre-processing in Save to call Remove from list (1:N) or MarkDeleted (1:1) before DataPortal.Save is called</li>
+</ul>
+</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>AbbasMalik replied on Wednesday, January 22, 2014</h2><p>Thanks for your response.</p>
+<p>What is the philosophy behind not having an Undelete() method?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Wednesday, January 22, 2014</h2><p>Objects that is deleted in a list (typically) is moved to a new internal list for Deleted items.&nbsp;</p>
+<p>There is no guarantee that the user may already have added a new row in the list that have the same primary key or unique key fields so that it _may_ not be safe to &quot;undelete&quot; the item.&nbsp;</p>
+<p>So the safe processing when saving is to process&nbsp;</p>
+<p>
+<ul>
+<li>DeletedList and then&nbsp;</li>
+<li>Items in list&nbsp;</li>
+</ul>
+</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>AbbasMalik replied on Thursday, January 23, 2014</h2><p>Hi Jonny,</p>
+<p>Thanks for explaining the logic.</p>
+<p>I have 1:1 relation between parent and an optional child. And if the child is marked as deleted, then I have no way to undelete it or create a new child. Due to this limitation, I have to use a child collection instead of a single child. With collections, it is fine to delete and then recreate the new object.</p>
+<p>Best regards</p>
+<p>Abbas</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>cfarren replied on Thursday, January 23, 2014</h2><p>If you can mark it as deleted then why can&#39;t you mark it as new when you want to undelete it?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>AbbasMalik replied on Friday, January 24, 2014</h2><p>Thanks&nbsp;<strong><a href="http://forums.lhotka.net/members/cfarren/default.aspx">cfarren</a>,&nbsp;</strong></p>
+<p>I can call MarkNew() and then MarkOld() to achieve the Undelete() effect. I hope this will work. Thanks for pointing out in the rigght direction.</p>
+<p>Best regards</p>
+<p>Abbas</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ngm replied on Sunday, January 26, 2014</h2><p>Abbas,</p>
+<p>Depending on the scenario, you might consider n-level undo as an option as well.</p>
+<p>MarkNew/MarkOld should work as long as you don&#39;t&nbsp;have any&nbsp;logic handling&nbsp;PropertyChanged notification for IsNew property twice where object is new and then once again when it&#39;s old.</p>
+<p>- ngm</p>
+<p><div style='padding-left: 50px;background-color:silver'><b>Abbas<br></b>
+<p>Thanks&nbsp;<strong><a href="http://forums.lhotka.net/members/cfarren/default.aspx">cfarren</a>,&nbsp;</strong></p>
+<p>I can call MarkNew() and then MarkOld() to achieve the Undelete() effect. I hope this will work. Thanks for pointing out in the rigght direction.</p>
+<p>Best regards</p>
+<p>Abbas</p>
+<div style="CLEAR:both;"></div>
+</div></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>aimee replied on Saturday, January 25, 2014</h2><p>this is unbelieveable!</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

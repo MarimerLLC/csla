@@ -1,0 +1,23 @@
+<html><header><title>ConnectionManager, TransactionScope and Transactions</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>ConnectionManager, TransactionScope and Transactions</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/12192.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>NemisisJedi posted on Monday, October 21, 2013</h2><p>I have some code that i need to run within a transaction. The code is within a DataPortal_Execute function with a transactionType set to Manual.</p>
+<p>e.g<br />&lt;Transactional(TransactionalTypes.Manual)&gt; _&nbsp;</p>
+<p>Within this DataPortal_Execute method i have some code that i want to run, that is not within the transaction and some that is. &nbsp;I thought i could do this by wrapping the code within a TransactionScope using statement like this.</p>
+<p>&lt;Transactional(TransactionalTypes.Manual)&gt; _&nbsp;<br />Protected Overrides Sub DataPortal_Execute()<br /><br />&nbsp; &nbsp;Using lTransactionScope As New TransactionScope(TransactionScopeOption.Suppress)</p>
+<p>&nbsp; &nbsp; &nbsp; &#39; Do some code here, which may call other DataPortal_Execute methods</p>
+<p>&nbsp; &nbsp;End Using&nbsp;<br /><br />&nbsp; &nbsp;Using lTransactionScope As New TransactionScope(TransactionScopeOption.RequiresNew)</p>
+<p>&nbsp; &nbsp; &nbsp; &#39; This code should be included within a transaction</p>
+<p>&nbsp; &nbsp;End Using<br />End Sub&nbsp;</p>
+<p>Now the reason i have the Suppress using statement, is because another object can call this dataportal method, which has its own transactionScope, so i need this code to not be included within it. Something like this.</p>
+<p>&#39; PARENT</p>
+<p>&lt;Transactional(TransactionalTypes.Manual)&gt; _&nbsp;<br />Protected Overrides Sub DataPortal_Execute()<br />&nbsp; &nbsp;Using lTransactionScope As New TransactionScope(TransactionScopeOption.RequiresNew)</p>
+<p>&nbsp; &nbsp; &nbsp; &#39; Call child methods here</p>
+<p>&nbsp; &nbsp;End Using<br />End Sub&nbsp;</p>
+<p>&nbsp;</p>
+<p>&#39; CHILD</p>
+<p>&lt;Transactional(TransactionalTypes.Manual)&gt; _&nbsp;<br />Protected Overrides Sub DataPortal_Execute()<br /><br />&nbsp; &nbsp;Using lTransactionScope As New TransactionScope(TransactionScopeOption.Suppress)</p>
+<p>&nbsp; &nbsp; &nbsp; &#39; This code should not be within the PARENT transaction</p>
+<p>&nbsp; &nbsp;End Using&nbsp;<br /><br />&nbsp; &nbsp;Using lTransactionScope As New TransactionScope(TransactionScopeOption.RequiresNew)</p>
+<p>&nbsp; &nbsp; &nbsp; &#39; This code should be included within the PARENT transaction</p>
+<p>&nbsp; &nbsp;End Using<br />End Sub&nbsp;</p>
+<p>For some reason though, my code within the transactionScope suppress, is still included within the transaction and eventually my code freezes because all the tables are locked. &nbsp;Within the Suppress using statement, i have code that gets data from tables in Sql.</p>
+<div>Should Csla work with transactionScope Suppress option? &nbsp;Am i using the transaction attributes correctly? Should i be doing it another way?</div></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Monday, October 21, 2013</h2><p>If you want to have child code run withing parent transaction, you should not have RequiresNew there, you should not have any code at all there that deals with transactions. &nbsp;The fact that you query some data within a transaction, but using suppress, may still result in an issue because you are querying the data that has not been committed. &nbsp;If you want this, you must use the same connection, which I am not sure you are using.</p>
+<p>In general you can certainly roll out your own transactions with CSLA, although there is usually no reason to do so.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

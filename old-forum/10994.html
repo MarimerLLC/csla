@@ -1,0 +1,21 @@
+<html><header><title>IsDirty = true, IsValid = true but IsSavable = false</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>IsDirty = true, IsValid = true but IsSavable = false</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10994.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Dane posted on Sunday, December 18, 2011</h2><p>I feel like I&#39;m missing something in the initialization of the object in its&nbsp;DataPortal_Fetch but I&#39;m not sure what.&nbsp; The object in question inherits from BusinessBase.&nbsp; I&#39;m fetching an object in a console app and then editing one property.&nbsp; After the edit IsDirty&nbsp;= true, IsValid&nbsp;= true but the object is not savable.&nbsp; What am I missing?</p>
+<p>Thanks for any input you might have,</p>
+<p>Dane R. Vinson</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Sunday, December 18, 2011</h2><p>Hi,</p>
+<p>1. Does your object have async rules (still running or do not call context.Complete, ie: object is still IsBusy)</p>
+<p>2. Does your object have any authorization rules? </p>
+<p>Check if your object has IsBusy = true or authz rules.</p>
+<p>This is the actual code in BusinessBase:</p>
+<pre style="font-family:Consolas;font-size:13px;color:black;background:none repeat scroll 0% 0% #fafafa;">&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">virtual</span>&nbsp;<span style="color:blue;">bool</span>&nbsp;IsSavable
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">get</span>&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">bool</span>&nbsp;auth;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">if</span>&nbsp;(IsDeleted)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;auth&nbsp;=&nbsp;Csla.Rules.<span style="color:#2b91af;">BusinessRules</span>.HasPermission(Rules.<span style="color:#2baf9a;">AuthorizationActions</span>.DeleteObject,&nbsp;<span style="color:blue;">this</span>);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">else</span>&nbsp;<span style="color:blue;">if</span>&nbsp;(IsNew)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;auth&nbsp;=&nbsp;Csla.Rules.<span style="color:#2b91af;">BusinessRules</span>.HasPermission(Rules.<span style="color:#2baf9a;">AuthorizationActions</span>.CreateObject,&nbsp;<span style="color:blue;">this</span>);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">else</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;auth&nbsp;=&nbsp;Csla.Rules.<span style="color:#2b91af;">BusinessRules</span>.HasPermission(Rules.<span style="color:#2baf9a;">AuthorizationActions</span>.EditObject,&nbsp;<span style="color:blue;">this</span>);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">return</span>&nbsp;(auth&nbsp;&amp;&amp;&nbsp;IsDirty&nbsp;&amp;&amp;&nbsp;IsValid&nbsp;&amp;&amp;&nbsp;!IsBusy);&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;}</pre></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Dane replied on Sunday, December 18, 2011</h2><p>Thanks again Jonny.&nbsp; It was an authorization rule.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

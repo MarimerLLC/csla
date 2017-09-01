@@ -1,0 +1,16 @@
+<html><header><title>Could not load file or assembly 'csla, version=2.1.4.0, culture=neutral, PublicKeyToken=93be5fdc093e4c30'or one of its   dependencies. The located assembly's manifest defination does not match the assembly reference. (Exception from HRESULT:   0x80131040)</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Could not load file or assembly 'csla, version=2.1.4.0, culture=neutral, PublicKeyToken=93be5fdc093e4c30'or one of its   dependencies. The located assembly's manifest defination does not match the assembly reference. (Exception from HRESULT:   0x80131040)</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/12486.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Riz posted on Thursday, March 13, 2014</h2><p>Hello Everyone,</p>
+<p>We have upgraded the CSLA version from &quot;2.1.4&quot; to &quot;3.5.3&quot;, after testing the csla new changes in the developer environment we recently pushed our changes to the QA environment and after pushing the changes we started getting few errors. Basically after pushing the changes to QA environment all our projects got build successfully including the upgraded CSLA project but when we try to access our site we are getting the below error:</p>
+<p>Error:</p>
+<p>&quot;Could not load file or assembly &#39;csla, version=2.1.4.0, culture=neutral, PublicKeyToken=93be5fdc093e4c30&#39;or one of its dependencies. The located assembly&#39;s manifest defination does not match the assembly reference. (Exception from HRESULT: 0x80131040)&quot;.</p>
+<p>What is the actual cause of this issue? As the CSLA project has been successfully build then why after using this csla.dll refrence in other Libraries we are still getting the above issue?&nbsp;</p>
+<p>Kindly help us to resolve the above mentioned issue, as we did not got any proper solution to fix this issue till now. &nbsp;</p>
+<p>Thanks for your help in advance.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Friday, March 14, 2014</h2><p>Hi,&nbsp;</p>
+<p>You either still have assemblies that references CSLA 2.1.4 or you have assembly redirects in web.config that points to CSLA 2.1.4.</p>
+<p>You could f.ex&nbsp;</p>
+<ol>
+<li>first verify that you have the same assemblies (size/date/version) in your dev and QA environment</li>
+<li>then inspect app/web.config to check for redirects.&nbsp;</li>
+<li>If no redirects the use a free decompiler (dotPeek, ILSpy, JustDecompile) to inspect the references in your assemblies. &nbsp;&nbsp;</li>
+<li>and make sure that your assemblies does not exist with previous versions in GAC.&nbsp;</li>
+</ol>
+<p>&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

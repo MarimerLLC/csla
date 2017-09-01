@@ -1,0 +1,22 @@
+<html><header><title>creating a base business class - converting from c#</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>creating a base business class - converting from c#</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/8175.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>matt tag posted on Wednesday, December 16, 2009</h2><font face="Verdana" size="2">I pulled the definition below from MyCsla.&nbsp; Can someone help me translate it into VB.NET?<br><br>I'm afraid I'm turning into a "get off my lawn" type developer - my experience in generics is truly lacking. <br><br>thank you.<br><br><br>&nbsp; public abstract class BusinessCore&lt;T&gt;<br>&nbsp;&nbsp;&nbsp; : MyCsla.BusinessBase&lt;T&gt;<br>&nbsp;&nbsp;&nbsp; where T : BusinessCore&lt;T&gt;<br><br><br></font></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, December 16, 2009</h2><P>Public MustInherit Class BusinessCore(Of T As BusinessCore(Of T))<BR>&nbsp; Inherits MyCsla.BusinessBase(Of T)</P>
+<P>Oh, and now that I've helped you, get off my lawn!! And stop playing that loud music!! And slow down when driving down my street, somebody's gonna get hurt! :)</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Thursday, December 17, 2009</h2><P>Give a man a fish...</P>
+<P><A href="http://www.developerfusion.com/tools/convert/csharp-to-vb/">http://www.developerfusion.com/tools/convert/csharp-to-vb/</A></P>
+<P>Joe</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>matt tag replied on Thursday, March 11, 2010</h2><p>more trouble with this.&nbsp;&nbsp; I have created a base class named ListCore as follows:</p>
+<p>&nbsp;</p>
+<p>Public MustInherit Class ListCore(Of T As BusinessBase(Of T))<br />&nbsp;&nbsp;&nbsp; Inherits Csla.BusinessBase(Of T)</p>
+<p>&nbsp;</p>
+<p>And Inherited classes declare like so:</p>
+<p>Public Class Preflist<br />&nbsp;&nbsp;&nbsp; Inherits ListCore(Of Preflist)</p>
+<p>Public Class Blackboard<br />
+&nbsp;&nbsp;&nbsp; Inherits ListCore(Of Blackboard)</p>
+<p>&nbsp;</p>
+<p>That&#39;s working ok.&nbsp; But now I want to create a variable on a form for editing (I will be editing either a Preflist or Blackboard above, but only properties in the base ListCore class.&nbsp; I declare the variable on the form this way</p>
+<p>private fLst as ListCore</p>
+<p>and I get the syntax error &quot;too few type arguments to DV.Lib.ListCore(of T)&quot;.&nbsp;&nbsp; How do I declare this variable?</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, March 11, 2010</h2><p>Dan is absolutely correct.</p>
+<p>You need to create an interface for your child objects, and one list that contains either (or both) types of child object based on that interface.</p>
+<p>The trick to making this work is to make your child object interface inherit from IEditableBusinessObject, because that&#39;s the constraint on the C type in BusinessListBase(Of T, C).</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

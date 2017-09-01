@@ -1,0 +1,269 @@
+<html><header><title>Unit Testing Save of editable stereotypes with Moq</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Unit Testing Save of editable stereotypes with Moq</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/12843.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>coding posted on Tuesday, March 10, 2015</h2><p>we are using Moq with csla for unit testing. Moq is working fine with mocking fetch calls but not working with mocking save call of editable business base.</p>
+<p>&nbsp;While saving, as we mock the child lists &quot;create&quot; calls, editable BO becomes invalid and hence not savable. As it is pure mocking and child create call is not run, so business rules of list and list items dont fire, so not sure why the mocked list shows invalid.</p>
+<p>Please respond back with article/code sample on how to mock save of editable BO and editable BO lists with Moq.</p>
+<p>&nbsp;</p>
+<p>Thanks !!</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>ajj3085 replied on Tuesday, March 10, 2015</h2><p>I&#39;m assuming you have interfaces for the child objects and that&#39;s what you mean by mocking the child lists.&nbsp; If you do nothing, mocks will return the default(T) value where T is the type of the property.&nbsp; For IsValid, that would be false.&nbsp; So you&#39;ll have to make your mocks return true for IsValid, as Csla just iterates the children and queries that flag to determine if they are valid or not.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Wednesday, March 11, 2015</h2><p>Hi,</p>
+<p>And remember IsDirty must also be true or else the Save method will just return the &quot;unmodified&quot; object.&nbsp;</p>
+<pre style="font-family:Consolas;font-size:13;color:black;background:white;"><span style="color:blue;">protected</span>&nbsp;<span style="color:blue;">async</span>&nbsp;<span style="color:blue;">virtual</span>&nbsp;System.Threading.Tasks.<span style="color:#2b91af;">Task</span>&lt;T&gt;&nbsp;SaveAsync(<span style="color:blue;">bool</span>&nbsp;forceUpdate,&nbsp;<span style="color:blue;">object</span>&nbsp;userState,&nbsp;<span style="color:blue;">bool</span>&nbsp;isSync)
+{
+&nbsp;&nbsp;<span style="color:blue;">if</span>&nbsp;(forceUpdate&nbsp;&amp;&amp;&nbsp;IsNew)
+&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:green;">//&nbsp;mark&nbsp;the&nbsp;object&nbsp;as&nbsp;old&nbsp;-&nbsp;which&nbsp;makes&nbsp;it</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:green;">//&nbsp;not&nbsp;dirty</span>
+&nbsp;&nbsp;&nbsp;&nbsp;MarkOld();
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:green;">//&nbsp;now&nbsp;mark&nbsp;the&nbsp;object&nbsp;as&nbsp;dirty&nbsp;so&nbsp;it&nbsp;can&nbsp;save</span>
+&nbsp;&nbsp;&nbsp;&nbsp;MarkDirty(<span style="color:blue;">true</span>);
+&nbsp;&nbsp;}
+&nbsp;&nbsp;T&nbsp;result;
+&nbsp;&nbsp;<span style="color:blue;">if</span>&nbsp;(<span style="color:blue;">this</span>.IsChild)
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">throw</span>&nbsp;<span style="color:blue;">new</span>&nbsp;<span style="color:#2b91af;">InvalidOperationException</span>(<span style="color:#2b91af;">Resources</span>.NoSaveChildException);
+&nbsp;&nbsp;<span style="color:blue;">if</span>&nbsp;(EditLevel&nbsp;&gt;&nbsp;0)
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">throw</span>&nbsp;<span style="color:blue;">new</span>&nbsp;<span style="color:#2b91af;">InvalidOperationException</span>(<span style="color:#2b91af;">Resources</span>.NoSaveEditingException);
+&nbsp;&nbsp;<span style="color:blue;">if</span>&nbsp;(!IsValid&nbsp;&amp;&amp;&nbsp;!IsDeleted)
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">throw</span>&nbsp;<span style="color:blue;">new</span>&nbsp;Rules.<span style="color:#2b91af;">ValidationException</span>(<span style="color:#2b91af;">Resources</span>.NoSaveInvalidException);
+&nbsp;&nbsp;<span style="color:blue;">if</span>&nbsp;(IsBusy)
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">throw</span>&nbsp;<span style="color:blue;">new</span>&nbsp;<span style="color:#2b91af;">InvalidOperationException</span>(<span style="color:#2b91af;">Resources</span>.BusyObjectsMayNotBeSaved);
+&nbsp;&nbsp;<span style="color:blue;">if</span>&nbsp;(IsDirty)
+&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">if</span>&nbsp;(isSync)
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;result&nbsp;=&nbsp;<span style="color:#2b91af;">DataPortal</span>.Update&lt;T&gt;((T)<span style="color:blue;">this</span>);
+&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">else</span>
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;MarkBusy();
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">try</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;result&nbsp;=&nbsp;<span style="color:blue;">await</span>&nbsp;<span style="color:#2b91af;">DataPortal</span>.UpdateAsync&lt;T&gt;((T)<span style="color:blue;">this</span>);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">finally</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;MarkIdle();
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;}
+&nbsp;&nbsp;<span style="color:blue;">else</span>
+&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;result&nbsp;=&nbsp;(T)<span style="color:blue;">this</span>;
+&nbsp;&nbsp;}
+&nbsp;&nbsp;OnSaved(result,&nbsp;<span style="color:blue;">null</span>,&nbsp;userState);
+&nbsp;&nbsp;<span style="color:blue;">return</span>&nbsp;result;
+}</pre></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>coding replied on Wednesday, March 11, 2015</h2><p>yes i have interfaces for child objects, as suggested i did setupget for is valid property but recieving mock serialization error now, pls suggest</p>
+<p>&nbsp;</p>
+<p><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"><font face="Consolas" size="2"><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></font></span><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></span></p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">var</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> mockchildlist = </span></span><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">new</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> </span></span><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;">Mock</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">&lt;</span></span><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;">Ichildlist</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">&gt;(); <font face="Consolas" size="2"><font face="Consolas" size="2">
+<p>mockchildlist.SetupGet(_ =&gt; _.IsValid).Returns(</p>
+</font></font></span><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></span></p>
+<p><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">true</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">);<font face="Consolas" size="2"><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></font></span><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></span></p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><font face="Consolas" size="2" color="#0000ff"><font face="Consolas" size="2" color="#0000ff"><font face="Consolas" size="2" color="#0000ff">
+<p>var</p>
+</font></font></font></span><font face="Consolas" size="2" color="#0000ff"><font face="Consolas" size="2" color="#0000ff">
+<p>&nbsp;</p>
+</font></font></span><font face="Consolas" size="2" color="#0000ff">
+<p>&nbsp;</p>
+</font></span>
+<p><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;color:#000000;font-size:x-small;"> mockchildlistFactory = </span></span><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">new</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;color:#000000;font-size:x-small;"> </span></span><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;">Mock</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;color:#000000;font-size:x-small;">&lt;</span></span><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;">IObjectFactory</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;color:#000000;font-size:x-small;">&lt;</span></span><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;">Ichildlist</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;color:#000000;font-size:x-small;">&gt;&gt;(</span></span><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;">MockBehavior</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"><span style="color:#000000;">.Strict);</span>
+<p><span style="color:#000000;">mockchildlistFactory</span>.Setup(_ =&gt; _.CreateChild()).Returns(mockchildlist.Object);</p>
+<p><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"><font face="Consolas" size="2"><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></font></span><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></span>
+<p>&nbsp;</p>
+<span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">var</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> <span style="color:#000000;">mockchild</span>Factory = </span></span><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">new</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> </span></span><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;">Mock</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">&lt;</span></span><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;">IObjectFactory</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">&lt;</span></span><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;">IChild</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">&gt;&gt;(</span></span><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;">MockBehavior</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">.Strict);</span></span></p>
+<p><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"><font face="Consolas" size="2"><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></font></span><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></span>
+<p><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">var</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> builder = </span></span><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">new</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> </span></span><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;">ContainerBuilder</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">();</span></span></p>
+<font face="Consolas" size="2" color="#0000ff"><font face="Consolas" size="2" color="#0000ff"><font face="Consolas" size="2" color="#0000ff"><font face="Consolas" size="2"><font face="Consolas" size="2"><font face="Consolas" size="2"><font face="Consolas" size="2">
+<p><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"><font face="Consolas" size="2"><font face="Consolas" size="2">
+<p>builder.Register&lt;</p>
+</font></font></span><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></span>
+<p><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;">IObjectFactory</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">&lt;</span></span><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;">IMychildlist</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">&gt;&gt;(_ =&gt; <span style="color:#000000;">mockchildlistFactory</span>.Object);<font face="Consolas" size="2" color="#0000ff"><font face="Consolas" size="2" color="#0000ff"><font face="Consolas" size="2" color="#0000ff"><font face="Consolas" size="2"><font face="Consolas" size="2"><font face="Consolas" size="2"><font face="Consolas" size="2"><font face="Consolas" size="2"><font face="Consolas" size="2"><font face="Consolas" size="2"><font face="Consolas" size="2">
+<p>
+<p>builder.Register&lt;</p>
+</p>
+</font></font><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;">IObjectFactory</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">&lt;</span></span><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;">IChild</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">&gt;&gt;(_ =&gt; imageTagFactory.Object);</span></span></font></font></font></font></font></font></font></font></font></span><font face="Consolas" size="2" color="#0000ff"><font face="Consolas" size="2" color="#0000ff"><font face="Consolas" size="2" color="#0000ff"><font face="Consolas" size="2"><font face="Consolas" size="2"><font face="Consolas" size="2"><font face="Consolas" size="2"><font face="Consolas" size="2"><font face="Consolas" size="2"><font face="Consolas" size="2">
+<p>
+<p>&nbsp;</p>
+</p>
+</font><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;">IObjectFactory</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">&lt;</span></span><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;">IChild</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">&gt;&gt;(_ =&gt; imageTagFactory.Object);</span></span></font></font></font></font></font></font></font></font></font></span></p>
+<font face="Consolas" size="2" color="#0000ff"><font face="Consolas" size="2" color="#0000ff"><font face="Consolas" size="2" color="#0000ff"><font face="Consolas" size="2"><font face="Consolas" size="2"><font face="Consolas" size="2"><font face="Consolas" size="2"><font face="Consolas" size="2"><font face="Consolas" size="2">
+<p>
+<p><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;">IObjectFactory</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">&lt;</span></span><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;">IChild</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">&gt;&gt;(_ =&gt; imageTagFactory.Object);</span></span></p>
+</p>
+</font></font></font></font></font></font></font></font></font></span><font face="Consolas" size="2" color="#0000ff"><font face="Consolas" size="2" color="#0000ff"><font face="Consolas" size="2" color="#0000ff"><font face="Consolas" size="2"><font face="Consolas" size="2"><font face="Consolas" size="2"><font face="Consolas" size="2"><font face="Consolas" size="2">
+<p>
+<p>&nbsp;</p>
+</p>
+</font></font></font></font></font></font></font></font></span>
+<p>
+<p>&nbsp;</p>
+</p>
+</p>
+</font></font></font></font></font></font></font></span><font face="Consolas" size="2" color="#0000ff"><font face="Consolas" size="2" color="#0000ff"><font face="Consolas" size="2" color="#0000ff"><font face="Consolas" size="2"><font face="Consolas" size="2"><font face="Consolas" size="2">
+<p>
+<p>
+<p>&nbsp;</p>
+</p>
+</p>
+</font></font></font></font></font></font></span></p>
+<font face="Consolas" size="2" color="#0000ff"><font face="Consolas" size="2" color="#0000ff"><font face="Consolas" size="2" color="#0000ff"><font face="Consolas" size="2"><font face="Consolas" size="2">
+<p>
+<p>
+<p>&nbsp;</p>
+</p>
+</p>
+</font></font></font></font></font></span><font face="Consolas" size="2" color="#0000ff"><font face="Consolas" size="2" color="#0000ff"><font face="Consolas" size="2" color="#0000ff"><font face="Consolas" size="2">
+<p>
+<p>
+<p>&nbsp;</p>
+</p>
+</p>
+</font></font></font></font></span></p>
+<font face="Consolas" size="2" color="#0000ff"><font face="Consolas" size="2" color="#0000ff"><font face="Consolas" size="2" color="#0000ff">
+<p>
+<p>
+<p>&nbsp;</p>
+</p>
+</p>
+</font></font></font></span><font face="Consolas" size="2" color="#0000ff"><font face="Consolas" size="2" color="#0000ff">
+<p>
+<p>
+<p>&nbsp;</p>
+</p>
+</p>
+</font></font></span><font face="Consolas" size="2" color="#0000ff">
+<p>
+<p>
+<p>&nbsp;</p>
+</p>
+</p>
+</font></span></p>
+<p>
+<p>
+<p>&nbsp;</p>
+</p>
+</p>
+<p>
+<p><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"><font face="Consolas" size="2"><font face="Consolas" size="2">
+<p><strong>parentBO</strong>= </p>
+</font></font></span><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></span>
+<p><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">await </span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;">DataPortal</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">.CreateAsync&lt;T&gt;()</span></span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">;</span></span></p>
+<p>parentBO.//property setters </p>
+</p>
+</p>
+<p><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"><font face="Consolas" size="2"><font face="Consolas" size="2">
+<p><strong>parentBO</strong>= </p>
+</font></font></span><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></span>
+<p><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">await</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> <strong>parentBO</strong>.SaveAsync();</span></span></p>
+<p>// we are using abstractions in csla concept <a href="http://magenic.com/BlogArchive/AbstractionsinCSLA">http://magenic.com/BlogArchive/AbstractionsinCSLA</a></p>
+<p><strong>Error :System.Runtime.Serialization.SerializationException: Type &#39;Moq.Proxy.ProxyMethodHook&#39; in Assembly &#39;Moq, Version=4.2.1502.911, Culture=neutral, PublicKeyToken=69f491c39445e920&#39; is not marked as serializable.<span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"></span></span></strong></p>
+</span></span></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>coding replied on Wednesday, March 11, 2015</h2>yes i have interfaces for child objects, as suggested i did setupget for is valid property but recieving mock serialization error now, pls suggest
+
+
+
+
+
+var mockchildlist = new Mock(); 
+
+mockchildlist.SetupGet(_ =&gt; _.IsValid).Returns(true);
+
+
+
+var mockchildlistFactory = new Mock&gt;(MockBehavior.Strict);
+
+
+mockchildlistFactory.Setup(_ =&gt; _.CreateChild()).Returns(mockchildlist.Object);
+
+
+var mockchildFactory = new Mock&gt;(MockBehavior.Strict);
+
+var builder = new ContainerBuilder();
+
+
+builder.Register&gt;(_ =&gt; mockchildlistFactory.Object);
+
+builder.Register&gt;(_ =&gt; imageTagFactory.Object);
+
+
+
+
+parentBO= await DataPortal.CreateAsync();
+
+parentBO.//property setters 
+
+
+
+parentBO= await parentBO.SaveAsync();
+
+// we are using abstractions in csla concept http://magenic.com/BlogArchive/AbstractionsinCSLA
+
+Error :System.Runtime.Serialization.SerializationException: Type &#39;Moq.Proxy.ProxyMethodHook&#39; in Assembly &#39;Moq, Version=4.2.1502.911, Culture=neutral, PublicKeyToken=69f491c39445e920&#39; is not marked as serializable.
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Wednesday, March 11, 2015</h2><p>Do you have a remote data portal configured for your unit tests?&nbsp; Have you tried Save and not SaveAsync?&nbsp; Something is trying to serialize a type from Mow which is as the error says nit serializable.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>coding replied on Sunday, March 15, 2015</h2><p>Hi </p>
+<p>Another point, I wanted to add, when I tries Dataportal.UpdateChild(childBO) with mock child list in the above code, this serialization error did not occur. Does that also give a clue regarding the error ?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Thursday, March 12, 2015</h2><p>Save actually calls SaveAsync with parameter for sync (boo).</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Thursday, March 12, 2015</h2><p><div style='padding-left: 50px;background-color:silver'><b>JonnyBee<br></b>Save actually calls SaveAsync with parameter for sync (bool).</div></p>
+<p>Yes, but IIRC if sync is false Csla will actually create a Task to run the operation as async, but if its false it won&#39;t.&nbsp; My thinking is that actually doing something as async is triggering serialization and deserializing isn&#39;t finding the Moq assembly.&nbsp; </p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>coding replied on Thursday, March 12, 2015</h2><p><div style='padding-left: 50px;background-color:silver'><b>JonnyBee<br></b>
+<p>Save actually calls SaveAsync with parameter for sync (boo).</p>
+<div style="CLEAR:both;"></div>
+</div></p>
+<p>&nbsp;</p>
+<p>Hi </p>
+<p>I tried using returning an actual child list through mock, it worked ! not sure if this is the correct approach , does it give any clue to serialization problem ?</p>
+<p><span style="color:#000000;">// old mockchildlistFactory</span>.Setup(_ =&gt; _.CreateChild()).Returns(mockchildlist.Object);</p>
+<p>//new<span style="color:#000000;">&nbsp;mockchildlistFactory</span>.Setup(_ =&gt; _.CreateChild()).Returns(new ChildList ());</p>
+<p>Do you have any code sample /article which shows how to do unit testing of save of editable root and editable root list child CRUD with MOQ ??</p>
+<p>Suppose we save root editable object with child lists&nbsp;, basically what all steps we need to mock ? As I know calling save/saveasync will land on Dataportal_update, so do we need to mock child list for mocking as save operation will tend to save the entire object graph ?</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>coding replied on Friday, March 13, 2015</h2><p><div style='padding-left: 50px;background-color:silver'><b>coding<br></b>
+<p>[quote user=&quot;JonnyBee&quot;] </p>
+<p>Save actually calls SaveAsync with parameter for sync (boo).</p>
+<div style="CLEAR:both;"></div>
+</div>
+<p>Hi </p>
+<p>I tried using returning an actual child list through mock, it worked ! not sure if this is the correct approach , does it give any clue to serialization problem ?</p>
+<p><span style="COLOR:#000000;">// old mockchildlistFactory</span>.Setup(_ =&gt; _.CreateChild()).Returns(mockchildlist.Object);</p>
+<p>//new<span style="COLOR:#000000;">&nbsp;mockchildlistFactory</span>.Setup(_ =&gt; _.CreateChild()).Returns(new ChildList ());</p>
+<p>Do you have any code sample /article which shows how to do unit testing of save of editable root and editable root list child CRUD with MOQ ??</p>
+<p>Suppose we save root editable object with child lists&nbsp;, basically what all steps we need to mock ? As I know calling save/saveasync will land on Dataportal_update, so do we need to mock child list for mocking as save operation will tend to save the entire object graph ?</p>
+<p></div></p>
+<p>Another point, I wanted to add, when I tries Dataportal.UpdateChild(childBO) with mock child list in the above code, this serialization error did not occur. Does that also give a clue regarding the error ?</p>
+<p>&nbsp;</p>
+</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>coding replied on Sunday, March 15, 2015</h2><p>Another point, I wanted to add, when I tries Dataportal.UpdateChild(childBO) with mock child list in the above code, this serialization error did not occur. Does that also give a clue regarding the error ?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>coding replied on Thursday, March 12, 2015</h2><p><div style='padding-left: 50px;background-color:silver'><b>Andy<br></b>
+<p>Do you have a remote data portal configured for your unit tests?&nbsp; Have you tried Save and not SaveAsync?&nbsp; Something is trying to serialize a type from Mow which is as the error says nit serializable.</p>
+<div style="CLEAR:both;"></div>
+</div></p>
+<p>Hi </p>
+<p>I tried using returning an actual child list through mock, it worked ! not sure if this is the correct approach , does it give any clue to serialization problem ?</p>
+<p><span style="color:#000000;">// old mockchildlistFactory</span>.Setup(_ =&gt; _.CreateChild()).Returns(mockchildlist.Object);</p>
+<p>//new<span style="color:#000000;">&nbsp;mockchildlistFactory</span>.Setup(_ =&gt; _.CreateChild()).Returns(new ChildList ());</p>
+<p>Do you have any code sample /article which shows how to do unit testing of save of editable root and editable root list child CRUD with MOQ ??</p>
+<p>Suppose we save root editable object with child lists&nbsp;, basically what all steps we need to mock ? As I know calling save/saveasync will land on Dataportal_update, so do we need to mock child list for mocking as save operation will tend to save the entire object graph ?</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>coding replied on Sunday, March 15, 2015</h2><p>Hi Andy,</p>
+<p>Another point, I wanted to add, when I tries Dataportal.UpdateChild(childBO) with mock child list in the above code, this serialization error did not occur. Does that also give a clue regarding the error ?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Sunday, March 22, 2015</h2><p>Maybe.&nbsp; It could be that async is causing things to cross appdomain boundaries.&nbsp; So have you tried changing your test to just call Save instead of SaveAsync.</p>
+<p>&nbsp;</p>
+<p>Also, pleas refrain from double posting.&nbsp; Messages are moderated in this forum, so they won&#39;t appear until they are approved.&nbsp; please be patient.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JasonBock replied on Saturday, April 04, 2015</h2><p>Try putting this in the config file of your test project:</p>
+<p style="margin:0in 0in 0pt;" class="MsoNormal"><span style="font-size:small;font-family:Calibri;">&lt;add key=&quot;CslaAutoCloneOnUpdate&quot; value=&quot;false&quot; /&gt;</span></p>
+<p>This&nbsp;effectively turns off serialization for&nbsp;CSLA, which should eliminate your serialization issue. Don&#39;t do this with production systems, just for test.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

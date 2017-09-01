@@ -1,0 +1,69 @@
+<html><header><title>Issues with storing the BusinessPrincipal in Session for ASP.NET MVC</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Issues with storing the BusinessPrincipal in Session for ASP.NET MVC</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/8607.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>raz0rf1sh posted on Wednesday, March 03, 2010</h2><p>I am running into an issue with ASP.NET MVC where it is forcing the user to log back in after about 20 mins of inactivity.</p>
+<p>I am using Forms Authentication and have increased the time-out in the config file as:</p>
+<p>
+<p>&nbsp;&nbsp; &nbsp;&lt;authentication mode=&quot;Forms&quot;&gt;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp;&lt;forms loginUrl=&quot;~/Account/LogOn&quot; timeout=&quot;9999999&quot; /&gt;</p>
+<p>&nbsp;&nbsp; &nbsp;&lt;/authentication&gt;</p>
+<p>I am also setting the session time-out in the config file as:</p>
+</p>
+<p>
+<p>&nbsp;&nbsp; &nbsp;&lt;sessionState timeout=&quot;120&quot;&gt;&lt;/sessionState&gt;</p>
+<div>I am basing this off of Rocky&#39;s ASP.NET MVC example and have the following in my global.asax:</div>
+<div></div>
+<div>
+<div>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;protected void Application_AcquireRequestState(object sender, EventArgs e)</div>
+<div>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;{</div>
+<div>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;if (HttpContext.Current.Handler is IRequiresSessionState)</div>
+<div>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;{</div>
+<div>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;if (Csla.ApplicationContext.AuthenticationType == &quot;Windows&quot;)</div>
+<div>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;return;</div>
+<div></div>
+<div>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;System.Security.Principal.IPrincipal principal;</div>
+<div></div>
+<div>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;try</div>
+<div>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;{</div>
+<div>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;principal = (System.Security.Principal.IPrincipal)</div>
+<div>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;HttpContext.Current.Session[MyMembershipProvider.SESSION_KEY];</div>
+<div>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;}</div>
+<div>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;catch</div>
+<div>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;{</div>
+<div>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;principal = null;</div>
+<div>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;}</div>
+<div></div>
+<div>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;if (principal == null)</div>
+<div>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;{</div>
+<div>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;if (this.User.Identity.IsAuthenticated &amp;&amp; this.User.Identity is FormsIdentity)</div>
+<div>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;{</div>
+<div>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;// no principal in session, but ASP.NET token</div>
+<div>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;// still valid - so sign out ASP.NET</div>
+<div>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;FormsAuthentication.SignOut();</div>
+<div>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;this.Response.Redirect(this.Request.Url.PathAndQuery);</div>
+<div>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;}</div>
+<div>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;// didn&#39;t get a principal from Session, so</div>
+<div>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;// set it to an unauthenticted PTPrincipal</div>
+<div>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;BusinessPrincipal.Logout();</div>
+<div>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;}</div>
+<div>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;else</div>
+<div>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;{</div>
+<div>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;// use the principal from Session</div>
+<div>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Csla.ApplicationContext.User = principal;</div>
+<div>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;}</div>
+<div>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;}</div>
+<div>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;}</div>
+<div>&nbsp;</div>
+<div>From what I can tell it should ONLY time-out after 120 minutes of inactivity ... but for some reason it always seems to time-out after 20 minutes of inactivity. I have know idea why this is happening, any ideas?</div>
+<div></div>
+<div>I am toying with the idea of just dumping Forms Authentication and handling it myself via Session, but I&#39;m afraid I would lose functionality like [Authorize] attributes and so on. Trying not to go down this path.</div>
+</div>
+</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>raz0rf1sh replied on Thursday, March 04, 2010</h2><p>Still plugging away at this ... is it possible to store the BusinessPrincipal in a cookie?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Thursday, March 04, 2010</h2><p>I believe a cookie wouldn&#39;t be able to hold the amount of information required for a principal.&nbsp; It would also be a security risk (any user could change the cookie and gain unauthorized access).</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>dpk replied on Thursday, March 04, 2010</h2><p>I&#39;m wondering if you need to set the timeout period in IIS (which I believe by default is 20 minutes).</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>raz0rf1sh replied on Saturday, March 06, 2010</h2><p>I&#39;ve set the timeout for the FormsAuthorization, for the SessionState and AppPool ... and I still get a timeout. I had a similar issue with Web Forms and ended up just relying on Session to determine Authentication. I may need to do just do that for MVC.</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>xAvailx replied on Monday, March 15, 2010</h2><p>Your app pool may be getting recycled and thus loosing your session data. Check your event viewer for app pool resets.</p>
+<p>Also I would try switching your session from in memory to sql or out of sate server and then test it out.</p>
+<p>You can test form timeouts and session timeouts by removing the authentication and session cookies in your browser.&nbsp;</p>
+<p>FYI, I believe the code above has a bug...but I don&#39;t recall exactly what it is. You may want to test out removing the session cookie and the authentication cookie separately to test the scenario were one is valid but the other one isn&#39;t.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>raz0rf1sh replied on Saturday, March 20, 2010</h2><p>I had to up the IdleTimeout in the AppPool ... that worked ... just blows that I have to change the timeout for the:</p>
+<p>&nbsp;</p>
+<ul>
+<li>Forms Authentication Cookie</li>
+<li>Session</li>
+<li>AppPool</li>
+</ul>
+<p>&nbsp;</p>
+<p>Craziness! <img src="http://forums.lhotka.net/emoticons/emotion-1.gif" alt="Smile" /></p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,62 @@
+<html><header><title>Module for Csla 4.3.12 and Gizmox Visual WebGUI 6.4.0e</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Module for Csla 4.3.12 and Gizmox Visual WebGUI 6.4.0e</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11497.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>tiago posted on Sunday, July 22, 2012</h2><p>Attached to this message is the&nbsp;source code for&nbsp;Visual WebGUI module that matches functionality of Csla.Windows.dll meaning it has a set of classes and UI controls to make Csla development on Visual WebGUI as easy as on WindowsForms.</p>
+<p>Visual WebGUI is a WEB framework that is build around the &quot;empty client&quot; concept.. All the developer sees is the full set of Windows Forms controls. You write your code on C# or VB.NET and forget Javascript, CSS and HTML exist. If you have a working Windows Forms application, porting it to WebGUI is really easy. The browser is used just to display the visual side of the controls and to return user input back to the server - the concept of &quot;ViewState&quot; doesn&#39;t exist.</p>
+<ul>
+<li>The browser is running a JS kernel that relays low level events to the server: user pressed a key, user clicked at point (X,Y), etc.</li>
+<li>The library handles the low level events like the Windows Forms library does.</li>
+<li>The server is running your application and it doesn&#39;t need to reload state everyt time you click somewhere</li>
+</ul>
+<p>This results in applications easier to write:</p>
+<ul>
+<li>one development language only</li>
+<li>you don&#39;t loose context between page submissions (you don&#39;t have to submit pages)</li>
+</ul>
+<p>and applications that run faster</p>
+<ul>
+<li>less data flows server&nbsp;=&gt; client&nbsp;=&gt; server (namely ViewState)</li>
+<li>application doesn&#39;t need to reload context from BD or whatever</li>
+</ul>
+<p>This looks like a very good environment to work with. I tried ASPX with and without AJAX and... that really stinks. I also tried WebGUI and I missed the Csla tools for WindowsForms&nbsp;so much that I ported them. Jonny Bekkum will publish it on CslaContrib.</p>
+<p><strong>What&#39;s included?</strong></p>
+<ul>
+<li>everything that is on Csla.Windows except BusyAnimation</li>
+<li>CslaActionExtenderToolbar</li>
+<li>BindingSourceExtensions (from CslaContrib)</li>
+<li>ErrorWarnInfoProvider (from CslaContrib)</li>
+</ul>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>wilfreds replied on Monday, August 13, 2012</h2><p>Hello Tiago,</p>
+<p>Thanks for sharing this.</p>
+<p>I took the attached source and compiled it with CSLA 4.3.13. And that worked fine.</p>
+<p>I made a project with databinding to a CSLA object. Databinding works but I can not make the CslaContrib.WebGUI errorProvider work.</p>
+<p>Do you have a small sample showing how to use CslaContrib.WebGUI correctly.</p>
+<p>&nbsp;</p>
+<p>Thanks,</p>
+<p>Wilfred</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tiago replied on Wednesday, August 15, 2012</h2><p>Hi Wilfred,</p>
+<p>In fact I intend to port ActionExtenderSample to WebGUI but that won&#39;t happen for the next weeks. I&#39;m currently using CslaContrib.ErrorWarnInfoProvider and replaced it by CslaContrib.ErrorProvider. Everything works as it should, except ErrorProvider doesn&#39;t show Warning or Information icons/messages.</p>
+<p>Two notes.</p>
+<p>1) TextBox validation only works after you leave the textbox, no matter how you set the <span style="COLOR:darkblue;">DataSourceUpdateMode</span>.</p>
+<p>2) CheckBox validation works really bad. You must use&nbsp;<span style="COLOR:darkblue;">DataSourceUpdateMode</span>.<span style="COLOR:purple;FONT-WEIGHT:bold;">OnPropertyChanged</span>:</p>
+<pre style="FONT-FAMILY:Consolas;BACKGROUND:white;COLOR:black;FONT-SIZE:13px;"><span style="COLOR:blue;">this</span>.<span style="COLOR:purple;">isFileOwnerCheckBox</span>.<span style="COLOR:purple;">DataBindings</span>.<span style="COLOR:darkcyan;">Add</span>(<span style="COLOR:blue;">new</span>&nbsp;<span style="COLOR:darkblue;">Gizmox</span>.<span style="COLOR:darkblue;">WebGUI</span>.<span style="COLOR:darkblue;">Forms</span>.<span style="COLOR:darkblue;">Binding</span>(<span style="COLOR:#a31515;">&quot;CheckState&quot;</span>,&nbsp;<span style="COLOR:blue;">this</span>.<span style="COLOR:purple;">userEditBindingSource</span>,&nbsp;<span style="COLOR:#a31515;">&quot;IsFileOwner&quot;</span>,&nbsp;<span style="COLOR:blue;">true</span>,&nbsp;<span style="COLOR:darkblue;">DataSourceUpdateMode</span>.<span style="COLOR:purple;FONT-WEIGHT:bold;">OnPropertyChanged</span>));
+</pre>
+<p>There is nothing this library can do about this as it depends on Visual WebGUI behaviour (when it relays the key press to the server, etc.).</p>
+<p>&nbsp;</p>
+<p>Concerning&nbsp;&nbsp;CslaContrib.ErrorWarnInfoProvider, its only limitation is that it handles only one notification type at a time: either Error either Warning either Information. This is fine by most apps as they tend not to mix notification types. In case you try to use, say, Error and Warning, it will ignore the Warning and show only the Error.</p>
+<p>&lt;edit&gt;</p>
+<p>Note Gizmox ErrorProvider is broken and won&#39;t databind. The CslaContrib.ErrorProvider uses a fix from&nbsp;Alexnaldo Santos (who used to be a Csla developer and gave explicit permission to use his fix)</p>
+<p>&lt;/edit&gt;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>wilfreds replied on Friday, August 17, 2012</h2><p>Hello Tiago,</p>
+<p>Thank you.</p>
+<p>Looking forward to the ActionExtenderSample :-)</p>
+<p>I took another look, this time using the CslaContrib.ErrorWarnInfoProvider. No luck. I don&#39;t see error icons/messages.</p>
+<p>Only if you have the time. I have attached a very small sample of what I got so far. Its a solution with a library, Windows, and WinGUI project. The windows project shows the error icon when run but not the WinGUI project.</p>
+<p>&nbsp;</p>
+<p>Thanks,</p>
+<p>Wilfred</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tiago replied on Friday, August 17, 2012</h2><p>Hi Wilfred,</p>
+<p>1) Copy &amp; paste&nbsp;WindowsForms code behind and designer for Form1 to WebGUI project</p>
+<p>2) Correct namespace</p>
+<p>3)&nbsp;Replace &quot;System.Windows.Forms&quot; by &quot;Gizmox.WebGUI.Forms&quot; on both files</p>
+<p>4) Replace &quot;Gizmox.WebGUI.Forms.ErrorProvider&quot; by &quot;CslaContrib.WebGUI.ErrorProvider&quot;</p>
+<p>That&#39;s it!</p>
+<p>Code is attached.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>wilfreds replied on Monday, August 20, 2012</h2><p>Hello Tiago,</p>
+<p>Thanks to your working sample I could narrow the problem down to this missing line in the Visual WebGui Form Designer generated code region:</p>
+<p>this.errorWarnInfoProvider1.ContainerControl = this;</p>
+<p>Thanks again,</p>
+<p>Wilfred</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

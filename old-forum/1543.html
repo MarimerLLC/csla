@@ -1,0 +1,72 @@
+<html><header><title>OT: What would you do if you where me (SQL Server or MS Access)?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>OT: What would you do if you where me (SQL Server or MS Access)?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/1543.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>rxelizondo posted on Thursday, October 19, 2006</h2><P class=MsoNormal>We have been building a CSLA application that is targeted to the "regular Joe". Our definition of "regular Joe" suggests that a lot of these regular Joes will not have access to high speed internet.</P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal>This is bad news for us because our&nbsp;current&nbsp;download includes&nbsp;the .Net framework (20 megs) plus the application (20 megs). If you think about it, 40 megs is already quite a bit for someone using dialup.</P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal>Because of this, about a year ago, we decided that we were going to use SQL Server 2005 when the application was ran online and MS Access when the application was ran locally. Since MS Jet (Access) is already included on most PCs, we can spare our users from downloading the extra 40 or 50 megs needed for SQL Server 2005.</P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal>Anyway, here is my question: </P>
+<P class=MsoNormal>&nbsp;</P>
+<P class=MsoNormal>Maintaining 2 databases is a real pain in the butt, further more, we all know that MS Access does not support stored procedure so we had to build a store procedure simulation class to help make everything work. After dealing with all this for about a year, I am thinking of ditching Access and force the user to download SQL Server 2005 whether they like it or not.</P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal>If the decision to continue to support the application with an Access database was up to you, what would you decide to do? Keep supporting Access to spare the user form downloading the extra 50 megs? Or make them suffer in the name of simplicity for the programmers? I appreciate your feedback.</P>
+<P class=MsoNormal>&nbsp;</P>
+<P class=MsoNormal>Thanks.</P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>figuerres replied on Thursday, October 19, 2006</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>rxelizondo:</strong></div><div>
+<P class=MsoNormal>We have been building a CSLA application that is targeted to the "regular Joe". Our definition of "regular Joe" suggests that a lot of these regular Joes will not have access to high speed internet.</P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal>This is bad news for us because our&nbsp;current&nbsp;download includes&nbsp;the .Net framework (20 megs) plus the application (20 megs). If you think about it, 40 megs is already quite a bit for someone using dialup.</P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal>Because of this, about a year ago, we decided that we were going to use SQL Server 2005 when the application was ran online and MS Access when the application was ran locally. Since MS Jet (Access) is already included on most PCs, we can spare our users from downloading the extra 40 or 50 megs needed for SQL Server 2005.</P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal>Anyway, here is my question: </P>
+<P class=MsoNormal>&nbsp;</P>
+<P class=MsoNormal>Maintaining 2 databases is a real pain in the butt, further more, we all know that MS Access does not support stored procedure so we had to build a store procedure simulation class to help make everything work. After dealing with all this for about a year, I am thinking of ditching Access and force the user to download SQL Server 2005 whether they like it or not.</P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal>If the decision to continue to support the application with an Access database was up to you, what would you decide to do? Keep supporting Access to spare the user form downloading the extra 50 megs? Or make them suffer in the name of simplicity for the programmers? I appreciate your feedback.</P>
+<P class=MsoNormal>&nbsp;</P>
+<P class=MsoNormal>Thanks.</P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P></div></BLOCKQUOTE></P>
+<P>&nbsp;</P>
+<P>I would:</P>
+<P>1) ship the user a setup CD with .Net and the app with a click-once installer<BR>&nbsp;&nbsp;&nbsp; that would get them installed w/o the download and updates can happen when needed - clickonce will only download *NEW* files so it should not take long for small updates.</P>
+<P>2) on the cd ship SQL EXPRESS</P>
+<P>3) model the "OnLine/OffLine" use of the app and use the local SQL db like a cache<BR>download static data and have the app always use the local static data first.<BR>work out some logic to sync the data between local and remote.</P>
+<P>MS Access is ok but I have seen files get corrupted bad sometimes!</P>
+<P>also when the user is conneted use the .net background worker process component to have data transfer happen "under the hood" so that some data fills the local cache and things like new orders go out but the user can still use the app. show a thing like a sync-icon that blinks or flashes to showthem it's updating.</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>figuerres replied on Thursday, October 19, 2006</h2><P>PS: sql express is free, </P>
+<P>MS Access is not if the pc does not have MS Access installed then you may be up a creek.</P>
+<P>also to go from Jet to .Net means OLEDB and com-interop that's not great IMHO - can make some things VERY SLOW.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rxelizondo replied on Thursday, October 19, 2006</h2><P>Thanks,</P>
+<P class=MsoNormal>I **REALLY** want to ditch the MS Access database, I never liked it in the first place. I know that using SQL Server 2005 in both ends will make life sooooooo much simpler for us.</P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal>The problem is that everyone that we talked to pretty much said that if there was no technical limitation on using Access then we should spare the user from downloading the extra 50 megs otherwise we would probably risk loosing a lot of customers due to the huge download, at around 80 megs for the full download we even risk loosing broadband users.</P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal>However, I guess they can always try the online version first (no SQL server download necessary) and if they were to like the product, then they could either ask to get a CD with everything shipped to their home or simply take the hit and download everything from the web. At this point, I feel 75% sure I should ditch the MS Access stuff but I am still hesitant.</P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal>PS: When using MS Access database the user does not really has to have Access installed, what its needed is the Jet dlls and the OLEDB driver, most PC already have that even in the new Vista OS.</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Smirk replied on Thursday, October 19, 2006</h2><P>Or&nbsp;use <A href="http://www.vistadb.com/">VistaDB</A>&nbsp;with a 600kb redistributable...&nbsp; :-)</P>
+<P>Mark Haley</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Skafa replied on Thursday, October 19, 2006</h2>Or ship it on a CD for a couple of bucks...<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Friday, October 20, 2006</h2><BLOCKQUOTE><div><img src="/Themes/basicblue/images/icon-quote.gif"> <strong><strong>rxelizondo</strong>:</strong></div><div>The problem is that everyone that we talked to pretty much said that if
+there was no technical limitation on using Access then we should spare
+the user from downloading the extra 50 megs otherwise we would probably
+risk loosing a lot of customers due to the huge download, at around 80
+megs for the full download we even risk loosing broadband users.</div></BLOCKQUOTE><br><br>Well, if JET corrupting databases isn't a technical limitation, then sure its fine.&nbsp; However, as others have suggested, Sql Server Express is a good choice.&nbsp; There's also <a href="http://www.microsoft.com/sql/ctp_sqlserver2005everywhereedition.mspx">Sql Server Everywhere</a> that doesn't have all the features normal Sql Server would, but is a lighter download I believe.&nbsp; <br><br>Hosting a Sql server may be a good idea too, because if the user purchases the software you can ship a cd or something.<br><br>HTH<br>Andy<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Brian Criswell replied on Thursday, October 19, 2006</h2>I completely agree with figuerres.&nbsp; This is how I would handle it.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JHurrell replied on Friday, October 20, 2006</h2>Someone mentioned VistaDB and I'd like to chime in with <a href="http://www.firebirdsql.org/">Firebird</a> which can be accessed via <a href="http://www.dotnetfirebird.org/">DotNetFirebird</a> and also has a small footprint.<br><br>Incidentally, <a href="http://support.microsoft.com/?kbid=202116">Access DOES support stored procedures</a>, but it's a rather tedious exercise to get them created.<br><br>- John<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Friday, October 20, 2006</h2>I'm not sure firebird is a good suggestion.. part of the problem is trying to maintain two different database formats.&nbsp; Firebird would be trading JET for Firebird.<br><br>One of the Sql server (Express or Everywhere) would be a better fit, because they are more or less the same product.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JHurrell replied on Friday, October 20, 2006</h2>That is true if maintaing formats is primary. If distribution size is more important, then Firebird might win.<br><br>- John<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Lakusha replied on Sunday, October 22, 2006</h2><P>SQL Express is a real, but free, SQL Server 2005 product. </P>
+<P>SQL Everywhere is NOT a SQL Server 2005 product (yet at least); It is widely different. See it as another database type as far as development is concerned because you need to treat it this way in your data access layer. See it as a component providing an in-memory relational db.</P>
+<P>On the + side:</P>
+<UL>
+<LI>you <U>compile with it</U>, so it is part of your app, not a service to install, maintain and patch</LI>
+<LI>its T-SQL syntax is a subset of the SQL Server TSQL syntax</LI>
+<LI>it is <U>extremely ligthweight</U> with support for&nbsp;FK (even with CASCADE), outer joins, constraints, transaction isolation, etc.</LI>
+<LI>it works also on PDA, tablet, etc. </LI>
+<LI>It supports replication!!</LI>
+<LI>etc.</LI></UL>
+<P>On the - side:</P>
+<UL>
+<LI>it doesn't support server side code (no triggers, no stored procedures, etc)</LI>
+<LI>it does NOT support all SQL datatypes (you have NVARCHAR but not VARCHAR and it does not support MAX types or even XML datatypes)</LI>
+<LI>its syntaxt is really a subsets, so many nice TSQL features won't work (CTE comes to mind, and probably PIVOT/UNPIVOT, etc.)</LI>
+<LI>Stupidely enough, it does not support SQLCLR...</LI>
+<LI>etc. (of course it will continue trailing the real SQL product, so we should expect it to add many of those features)</LI></UL>
+<P>As far as I see it (for a desktop application), the real use of SQL Everywhere is to be a client side data cache (or business object cache ;-) ). The cache can even be persisted between launches and can benefit both 2 and N tiers deployments. In fact it would be a very nice feature to include it in CSLA since it is the BO's responsability to fetch itself, the BO should also be able to handle its own state and decide if it should refresh itself (of course the expiration process would need the collaboration of a cache manager).</P>
+<P>&nbsp;</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

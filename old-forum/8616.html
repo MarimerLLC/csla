@@ -1,0 +1,22 @@
+<html><header><title>Possible Bug in ProjectTracker</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Possible Bug in ProjectTracker</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/8616.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Norman.Mann posted on Thursday, March 04, 2010</h2><p>Steps to reproduce</p>
+<ul>
+<li>Run PTWin</li>
+<li>Logon an &#39;pm&#39;</li>
+<li>Select &#39;Project-&gt;Edit Project&#39;</li>
+<li>Pick a project</li>
+<li>Unassign all resources an save</li>
+<li>Select &#39;Project-&gt;Edit Project&#39; again and pick the project that was just modified</li>
+</ul>
+<p>On my machine I get an exception. </p>
+<p>Here we still seem to have an empty array</p>
+<p>GetProjectResources(<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ProjectTracker.DalLinq.Assignment[] data)</p>
+<p>but in Child_Fetch the &#39;data&#39; parameter is null.</p>
+<p>Norman</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, March 04, 2010</h2><p>Thanks for pointing this out. What version is this in? The problem sounds familiar, so I think its already in bugtracker.</p>
+<p>The thing with ProjectTracker is that I update it when I work on a revision of the big book. The 2008 book didn&#39;t have a Windows Forms chapter, so that code hasn&#39;t really been worked on since 2005. And of course there are so many new things in CSLA 4 that the next ProjectTracker will be a complete rewrite - unless I shift to a completely different app (which is likely).</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>Norman.Mann replied on Friday, March 05, 2010</h2><p>Hi Rocky,</p>
+<p>sorry for not including this in my initial post. I&#39;m using version 3.8.1.0. </p>
+<p>Any idea why the array doesn&#39;t make it to the server ?</p>
+<p>Do you have any suggestion for a workaround&nbsp;?</p>
+<p>Norman</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>ajj3085 replied on Friday, March 05, 2010</h2><p>Could it be the issue described in <a href="http://forums.lhotka.net/forums/t/8410.aspx">this thread</a>?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Norman.Mann replied on Wednesday, March 10, 2010</h2><p>Yep, that seems to be be the exact same issue.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

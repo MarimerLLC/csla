@@ -1,0 +1,55 @@
+<html><header><title>Multiple Configurations</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Multiple Configurations</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/2845.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>James_2JS posted on Thursday, May 10, 2007</h2><P><FONT face=Tahoma>Hi,</FONT></P>
+<P><FONT face=Tahoma>I am struggling a bit with CSLA configuration and deployment and was hoping someone might be able to help. So here's what I've got.</FONT></P>
+<OL>
+<LI><FONT face=Tahoma>I'm developing an ASP.NET application</FONT></LI>
+<LI><FONT face=Tahoma>I've developed my business objects using v2.1.4</FONT></LI>
+<LI><FONT face=Tahoma>My objects run in local mode</FONT></LI>
+<LI><FONT face=Tahoma>I now need to integrate in with some business objects supplied by a 3rd party</FONT></LI>
+<LI><FONT face=Tahoma>These objects were written using v2.0.x</FONT></LI>
+<LI><FONT face=Tahoma>I don't have the source code for these objects.</FONT></LI>
+<LI><FONT face=Tahoma>These objects must run remotely as they access a database that cannot be accessed from my IIS server</FONT></LI>
+<LI><FONT face=Tahoma>The data for my objects cannot be accessed from the remote server</FONT></LI></OL>
+<P><FONT face=Tahoma>How can I set things up so that I can use both sets of objects in my application, both using different versions of CSLA and both using different data portal settings??</FONT></P>
+<P><FONT face=Tahoma>Many apologies if this has been asked (and answered) elsewhere... I've had a good scout around and couldn't find anything relevant.</FONT></P>
+<P><FONT face=Tahoma>Any help would be greatly appreciated!!<BR><BR>Thank you very much,</FONT></P>
+<P><FONT face=Tahoma></FONT>&nbsp;</P>
+<P><FONT face=Tahoma>James</FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ward0093 replied on Thursday, May 10, 2007</h2><P>Well... I can answer one question...</P>
+<P>I have multiple objects that some run remote and some run local.&nbsp; I have a base object in my library that is setup as Run Remote and then I have to have every BO that runs local override the DataPortal_XXX methods and mark them as RunLocal.</P>
+<P>At least that is what I am doing... </P>
+<P>&nbsp;</P>
+<P>For Multi-Configs... i actually had to create our own config file which at app startup would change the web.config file settings to what we have in our custom config file using the System.Configuration.OpenExeConf... (something like that) method; change the CSLA setting; then saving it.</P>
+<P>&nbsp;</P>
+<P>Not sure if that is the best way... but works great and give a lot flexibilty to changing the Web.Config file CSLA Remoting Tags to what you want them to be... (based on what objects are using it).</P>
+<P>&nbsp;</P>
+<P>Hope that helps, ward0093</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>James_2JS replied on Friday, May 11, 2007</h2><P>Hi Ward0093!</P>
+<P>Thanks for the swift reply!</P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>ward0093:</strong></div><div> 
+<P>Well... I can answer one question...</P>
+<P>I have multiple objects that some run remote and some run local.&nbsp; I have a base object in my library that is setup as Run Remote and then I have to have every BO that runs local override the DataPortal_XXX methods and mark them as RunLocal.</P>
+<P>At least that is what I am doing... </P></div></BLOCKQUOTE> 
+<P>Sounds good for now, and I can see it'll work... but I'm then forcing my objects to always be local and can never take advantage of their portability!!! Also, I can see a day very soon when I've got to write some more objects that have to reside on a totally application server (for yet more security reasons).</P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>ward0093:</strong></div><div> 
+<P>For Multi-Configs... i actually had to create our own config file which at app startup would change the web.config file settings to what we have in our custom config file using the System.Configuration.OpenExeConf... (something like that) method; change the CSLA setting; then saving it.</P>
+<P>&nbsp;</P>
+<P>Not sure if that is the best way... but works great and give a lot flexibilty to changing the Web.Config file CSLA Remoting Tags to what you want them to be... (based on what objects are using it).</P></div></BLOCKQUOTE> 
+<P>I can see how this works for a "one-off" call at start up, but not how it applies to multiple business objects that you are using constantly at runtime!! So do you change the web.config "on the fly" in your business object then??</P>
+<P>&nbsp;</P>
+<P>I'm looking at an option that involves amending the framework slightly. Not sure if this is a good idea though and it might make more headaches for me as I would have to integrate them into every update that Rocky supplies!! Anyway, here's my idea...</P>
+<P>I've created a class called <STRONG><EM>CslaDataPortalConfigPrefixAttribute</EM></STRONG> which takes a string parameter.&nbsp;I can then apply this attribute to all my business object classes. I've then modified Csla/DataPortal/<STRONG>ApplicationContext.vb</STRONG> so that <STRONG>DataPortalProxy</STRONG> and <STRONG>DataPortalUrl</STRONG> are no longer properties but functions which take a type parameter, namely the type of the business object.</P>
+<P>These functions then (through a helper) check to see if the type has a <STRONG><EM>CslaDataPortalConfigPrefixAttribute</EM></STRONG> applied to it (or any of its parents). If so, it uses the prefix to build up the key for using in the application settings call.</P>
+<P>I've then modified&nbsp;Csla/DataPortal/Client/DataPortal.vb, Csla/DataPortal/Client/RemotingProxy.vb and Csla/DataPortal/Client/WebServicesProxy.vb so that the appropriate types are passed through to ApplicationContext.vb.</P>
+<P>I can now add keys as follows:</P><FONT color=#0000ff size=2><FONT color=#0000ff size=2>
+<P>&lt;</FONT><FONT color=#a31515 size=2>add</FONT><FONT color=#0000ff size=2> </FONT><FONT color=#ff0000 size=2>key</FONT><FONT color=#0000ff size=2>=</FONT><FONT color=#000000 size=2>"</FONT><FONT color=#0000ff size=2>CslaDataPortalProxy</FONT><FONT color=#000000 size=2>"</FONT><FONT color=#0000ff size=2> </FONT><FONT color=#ff0000 size=2>value</FONT><FONT color=#0000ff size=2>=</FONT><FONT color=#000000 size=2>"</FONT><FONT color=#0000ff size=2>Csla.DataPortalClient.RemotingProxy, Csla</FONT><FONT color=#000000 size=2>"</FONT><FONT color=#0000ff size=2>/&gt;<BR></FONT></FONT><FONT color=#0000ff size=2>&lt;</FONT><FONT color=#a31515 size=2>add</FONT><FONT color=#0000ff size=2> </FONT><FONT color=#ff0000 size=2>key</FONT><FONT color=#0000ff size=2>=</FONT><FONT size=2>"<FONT color=#0000ff>MyApp</FONT></FONT><FONT color=#0000ff size=2>CslaDataPortalProxy</FONT><FONT size=2>"</FONT><FONT color=#0000ff size=2> </FONT><FONT color=#ff0000 size=2>value</FONT><FONT color=#0000ff size=2>=</FONT><FONT size=2>"</FONT><FONT color=#0000ff size=2>Local</FONT><FONT size=2>"</FONT><FONT color=#0000ff size=2>/&gt;</P></FONT>
+<P>I've given this a whirl and it seems to work well and gives me pretty much everything I want. It also seems like quite an elegant solution, but I'm worried about future upgrades!!</P>
+<P>Any thoughts??</P>
+<P>Thanks,</P>
+<P>&nbsp;</P>
+<P>James</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>xal replied on Saturday, May 12, 2007</h2>Hi!<br>Check out <a href="http://www.softwarethinking.com/blogs/xal/archive/2007/04/23/3.aspx">this article</a>. While it's not strictly related to what you're saying, the source code has a class called "CustomDataPortalRemotingProxy". It allows you to dynamically change dataportal types by setting a property. You could easily change it to read a custom "RunLocal" attribute at class level. That way your objects will always run locally and any other object will use remoting.<br>Or you could leave it just as it is and change the static property to choose the appropriate dp before calling any object.<br><br><br>Andrés<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>James_2JS replied on Monday, May 21, 2007</h2><P>Thanks for the link xal... certainly is interesting stuff.</P>
+<P>The more I look at my problem, the deeper it seems to get. I just can't work out how to have 2 versions of CSLA running side-by-side in the same app. Even with the techniques I've found, and with those in the article I still can't get it to work with different versions of CSLA.</P>
+<P>The only option I can come up with is putting the different versions of CSLA in the GAC.</P>
+<P>Hmmm!!!</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, May 21, 2007</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>James_2JS:</strong></div><div>
+<P>I'm looking at an option that involves amending the framework slightly. Not sure if this is a good idea though and it might make more headaches for me as I would have to integrate them into every update that Rocky supplies!! Anyway, here's my idea...</P>
+<P>I've created a class called <STRONG><EM>CslaDataPortalConfigPrefixAttribute</EM></STRONG> which takes a string parameter.&nbsp;I can then apply this attribute to all my business object classes. I've then modified Csla/DataPortal/<STRONG>ApplicationContext.vb</STRONG> so that <STRONG>DataPortalProxy</STRONG> and <STRONG>DataPortalUrl</STRONG> are no longer properties but functions which take a type parameter, namely the type of the business object.</P>
+<P>These functions then (through a helper) check to see if the type has a <STRONG><EM>CslaDataPortalConfigPrefixAttribute</EM></STRONG> applied to it (or any of its parents). If so, it uses the prefix to build up the key for using in the application settings call.</P>
+<P>I've then modified&nbsp;Csla/DataPortal/Client/DataPortal.vb, Csla/DataPortal/Client/RemotingProxy.vb and Csla/DataPortal/Client/WebServicesProxy.vb so that the appropriate types are passed through to ApplicationContext.vb.</P>
+<P></div></BLOCKQUOTE></P>
+<P>The simpler solution is to create your own custom data portal proxy that reads your config/context and routes the call to one of the exisint proxy objects. That way you don't need to alter CSLA at all.</P>
+<P>You can look at Chapter 4 to see how a data portal proxy is created, and there are some others on the forum that have done similar things.</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

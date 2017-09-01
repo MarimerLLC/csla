@@ -1,0 +1,19 @@
+<html><header><title>Unexplained phenomenon... please please help...</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Unexplained phenomenon... please please help...</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/2204.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>gajit posted on Wednesday, January 24, 2007</h2><P>Hi guys,</P>
+<P>I know this is a CSLA forum (and believe me - this IS a CSLA project), but I've tried the Microsoft website, and googling but I cannot find an answer anywhere.</P>
+<P>All of a sudden, my solution (2 projects) do not compile because the references to dlls they previously had are missing...</P>
+<P>So, thinking I can just remove and add the references again, I do just that. But in my list of references, regardless of how I add them... (either through the specified reference types COM, etc.. or Browse..), under the "Path" column it says "&lt;The system cannot find the reference specified&gt;"</P>
+<P>The references in question are:-</P>
+<P>&nbsp;&nbsp;&nbsp;Microsoft TAPI 3.0 Type Library</P>
+<P>&nbsp;&nbsp;&nbsp;Visual Basic for Applications</P>
+<P>&nbsp;&nbsp;&nbsp;Visual Basic runtime objects and proecedures</P>
+<P>&nbsp;&nbsp; and a 3rd party control VLButtonBar.</P>
+<P>Everything was fine yesterday, and I am totally hung out to dry, am unable to compile, release or publish.</P>
+<P>The only thing that I have changed recently is an attempt at using CS-RCS (sourcec-control) which I later abandoned... surely that wouldn;t have an effect?</P>
+<P>Anyone had this problem, or know what I can do?</P>
+<P>Desperately,</P>
+<P>Gaj.</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>gajit replied on Wednesday, January 24, 2007</h2><P>Hi gents,</P>
+<P>Sorry to waste your times...</P>
+<P>Turns out the install of CS-RCS - and subsequent uninstall, rendered many, many, many of my files 'read only'. I simply removed the read-only attributes recursively in my development folder et voila! I can now add my references - I guess it was trying to create an Interop.xxx.dll and it was being denied.</P>
+<P>Thanks,</P>
+<P>Gaj</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

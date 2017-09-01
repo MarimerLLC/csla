@@ -1,0 +1,47 @@
+<html><header><title>any help on tracking list position?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>any help on tracking list position?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10235.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Brannon posted on Monday, April 04, 2011</h2><p>I&#39;m using CSLA 4.1 with all my children inheriting from BusinessBase and lists inheriting from BusinessListBase and using WPF items with CSLA.Xaml.ViewModel. </p>
+<p>I&#39;ve got a situation where I&#39;m rendering items in a list and the items draw differently if they are first, last and/or their header doesn&#39;t match the previous item. By &quot;render&quot; I mean that they have a UIElement property. (Am I off on the wrong path already and the owner should draw those items that differ between children?) I would like to bind the corresponding ViewModels for the children to a position in the parent model&#39;s list as well as letting them know about the list itself so that they can check properties on siblings. Is that weird or anticipated? Is there some other smarter way to do this with rules and such? Thanks.</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Tuesday, April 05, 2011</h2><p>The question you should ask&nbsp;yourself when added a property to a business object like that, is whether this property will be valuable in the following types of interface:</p>
+<ul>
+<li>web</li>
+<li>service (xml/json)</li>
+<li>xaml</li>
+</ul>
+<p>If the property would only apply to one of these, then it should not be in the business class.</p>
+<p>The solutions are to make the property more abstract so it can apply to all three, or to use a viewmodel in between the UI and business class to implement this property, or a combination of both.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Brannon replied on Saturday, April 09, 2011</h2><p>After further thought, what I really want is an Index property on the item that I can bind to. I&#39;ve got some code below showing how to get the index from the parent property. Please help me make this a registered property (aka, something that triggers OnPropertyChanged). What events on the parent would I subscribe to and when? Or could I do it with some kind of dependency rule?</p>
+<p>
+<p><span>	</span>[TestFixture]</p>
+<p><span>	</span>public class TestParent</p>
+<p><span>	</span>{</p>
+<p><span>		</span>public class A : Csla.BusinessBase&lt;A&gt;</p>
+<p><span>		</span>{</p>
+<p><span>			</span>public int Index</p>
+<p><span>			</span>{</p>
+<p><span>				</span>get</p>
+<p><span>				</span>{</p>
+<p><span>					</span>int idx = -1;</p>
+<p><span>					</span>var p = Parent as IList&lt;A&gt;;</p>
+<p><span>					</span>if (p != null)</p>
+<p><span>					</span>{</p>
+<p><span>						</span>idx = p.IndexOf(this);</p>
+<p><span>					</span>}</p>
+<p><span>					</span>return idx;</p>
+<p><span>				</span>}</p>
+<p><span>			</span>}</p>
+<p><span>		</span>}</p>
+<p>&nbsp;</p>
+<p><span>		</span>public class AList : Csla.BusinessListBase&lt;AList, A&gt; { }</p>
+<p>&nbsp;</p>
+<p><span>		</span>[Test]</p>
+<p><span>		</span>public void Go1()</p>
+<p><span>		</span>{</p>
+<p><span>			</span>var list = new AList();</p>
+<p><span>			</span>var c1 = list.AddNew();</p>
+<p><span>			</span>var c2 = list.AddNew();</p>
+<p><span>			</span>var c3 = list.AddNew();</p>
+<p>&nbsp;</p>
+<p><span>			</span>Assert.AreEqual(0, c1.Index);</p>
+<p><span>			</span>Assert.AreEqual(1, c2.Index);</p>
+<p><span>			</span>Assert.AreEqual(2, c3.Index);</p>
+<p><span>			</span>Assert.AreEqual(-1, new A().Index);</p>
+<p><span>		</span>}</p>
+<div></div>
+</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

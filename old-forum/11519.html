@@ -1,0 +1,576 @@
+<html><header><title>How can I use TranslationCriteria for Fetching&lt;TranslationList&gt;(translationCriteria)</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>How can I use TranslationCriteria for Fetching&lt;TranslationList&gt;(translationCriteria)</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11519.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Maikel posted on Tuesday, August 07, 2012</h2><p>Hi folks,</p>
+<p>I&#39;ve created a criteria class which inherits from the CriteriaBase class...<br /><br /><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><font face="Courier New" size="1" color="#0000ff"><font face="Courier New" size="1" color="#0000ff"><font face="Courier New" size="1" color="#0000ff">
+<p>using</p>
+</font></font></font></span><font face="Courier New" size="1" color="#0000ff"><font face="Courier New" size="1" color="#0000ff">
+<p>&nbsp;</p>
+</font></font></span><font face="Courier New" size="1" color="#0000ff">
+<p>&nbsp;</p>
+</font></span></p>
+<p><span style="font-family:Courier New;font-size:xx-small;"><span style="font-family:Courier New;font-size:xx-small;"> System;</span></span></p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><font face="Courier New" size="1" color="#0000ff"><font face="Courier New" size="1" color="#0000ff"><font face="Courier New" size="1" color="#0000ff">
+<p>using</p>
+</font></font></font></span><font face="Courier New" size="1" color="#0000ff"><font face="Courier New" size="1" color="#0000ff">
+<p>&nbsp;</p>
+</font></font></span><font face="Courier New" size="1" color="#0000ff">
+<p>&nbsp;</p>
+</font></span>
+<p>&nbsp;</p>
+<p><span style="font-family:Courier New;font-size:xx-small;"><span style="font-family:Courier New;font-size:xx-small;"> System.Collections.Generic;</span></span></p>
+<span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><font face="Courier New" size="1" color="#0000ff"><font face="Courier New" size="1" color="#0000ff"><font face="Courier New" size="1" color="#0000ff">
+<p>using</p>
+</font></font></font></span><font face="Courier New" size="1" color="#0000ff"><font face="Courier New" size="1" color="#0000ff">
+<p>&nbsp;</p>
+</font></font></span><font face="Courier New" size="1" color="#0000ff">
+<p>&nbsp;</p>
+</font></span>
+<p>&nbsp;</p>
+<p><span style="font-family:Courier New;font-size:xx-small;"><span style="font-family:Courier New;font-size:xx-small;"> Csla;</span></span></p>
+<span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><font face="Courier New" size="1" color="#0000ff"><font face="Courier New" size="1" color="#0000ff"><font face="Courier New" size="1" color="#0000ff">
+<p>using</p>
+</font></font></font></span><font face="Courier New" size="1" color="#0000ff"><font face="Courier New" size="1" color="#0000ff">
+<p>&nbsp;</p>
+</font></font></span><font face="Courier New" size="1" color="#0000ff">
+<p>&nbsp;</p>
+</font></span>
+<p>&nbsp;</p>
+<p><span style="font-family:Courier New;font-size:xx-small;"><span style="font-family:Courier New;font-size:xx-small;"> Queaso.Core.Communication.Business.Recources;</span></span></p>
+<span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><font face="Courier New" size="1" color="#0000ff"><font face="Courier New" size="1" color="#0000ff"><font face="Courier New" size="1" color="#0000ff">
+<p>namespace</p>
+</font></font></font></span><font face="Courier New" size="1" color="#0000ff"><font face="Courier New" size="1" color="#0000ff">
+<p>&nbsp;</p>
+</font></font></span><font face="Courier New" size="1" color="#0000ff">
+<p>&nbsp;</p>
+</font></span>
+<p>&nbsp;</p>
+<p><span style="font-family:Courier New;font-size:xx-small;"><span style="font-family:Courier New;font-size:xx-small;"> Queaso.Core.Communication.Business
+<p>{</p>
+<font face="Courier New" size="1"><font face="Courier New" size="1">
+<p>[</p>
+</font></font></span><font face="Courier New" size="1">
+<p>&nbsp;</p>
+</font></span></p>
+<p>&nbsp;</p>
+<span style="font-family:Courier New;color:#2b91af;font-size:xx-small;"><span style="font-family:Courier New;color:#2b91af;font-size:xx-small;"><span style="font-family:Courier New;color:#2b91af;font-size:xx-small;">Serializable</span></span></span>
+<p><span style="font-family:Courier New;font-size:xx-small;"><span style="font-family:Courier New;font-size:xx-small;">()]<font face="Courier New" size="1"><font face="Courier New" size="1">
+<p>&nbsp;</p>
+</font></font></span><font face="Courier New" size="1">
+<p>&nbsp;</p>
+</font></span></p>
+<p>&nbsp;</p>
+<span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;">public</span></span></span><span style="font-family:Courier New;font-size:xx-small;"><span style="font-family:Courier New;font-size:xx-small;"> </span></span><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;">class</span></span></span><span style="font-family:Courier New;font-size:xx-small;"><span style="font-family:Courier New;font-size:xx-small;"> </span></span><span style="font-family:Courier New;color:#2b91af;font-size:xx-small;"><span style="font-family:Courier New;color:#2b91af;font-size:xx-small;"><span style="font-family:Courier New;color:#2b91af;font-size:xx-small;">TranslationCriteria</span></span></span><span style="font-family:Courier New;font-size:xx-small;"><span style="font-family:Courier New;font-size:xx-small;"> : </span></span><span style="font-family:Courier New;color:#2b91af;font-size:xx-small;"><span style="font-family:Courier New;color:#2b91af;font-size:xx-small;"><span style="font-family:Courier New;color:#2b91af;font-size:xx-small;">CriteriaBase</span></span></span><span style="font-family:Courier New;font-size:xx-small;"><span style="font-family:Courier New;font-size:xx-small;">&lt;</span></span><span style="font-family:Courier New;color:#2b91af;font-size:xx-small;"><span style="font-family:Courier New;color:#2b91af;font-size:xx-small;"><span style="font-family:Courier New;color:#2b91af;font-size:xx-small;">TranslationCriteria</span></span></span>
+<p><span style="font-family:Courier New;font-size:xx-small;"><span style="font-family:Courier New;font-size:xx-small;">&gt;
+<p>{</p>
+<font face="Courier New" size="1"><font face="Courier New" size="1">
+<p>&nbsp;</p>
+</font></font></span><font face="Courier New" size="1">
+<p>&nbsp;</p>
+</font></span></p>
+<p>&nbsp;</p>
+<span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;">private</span></span></span><span style="font-family:Courier New;font-size:xx-small;"><span style="font-family:Courier New;font-size:xx-small;"> </span></span><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;">static</span></span></span><span style="font-family:Courier New;font-size:xx-small;"><span style="font-family:Courier New;font-size:xx-small;"> </span></span><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;">readonly</span></span></span><span style="font-family:Courier New;font-size:xx-small;"><span style="font-family:Courier New;font-size:xx-small;"> </span></span><span style="font-family:Courier New;color:#2b91af;font-size:xx-small;"><span style="font-family:Courier New;color:#2b91af;font-size:xx-small;"><span style="font-family:Courier New;color:#2b91af;font-size:xx-small;">PropertyInfo</span></span></span><span style="font-family:Courier New;font-size:xx-small;"><span style="font-family:Courier New;font-size:xx-small;">&lt;</span></span><span style="font-family:Courier New;color:#2b91af;font-size:xx-small;"><span style="font-family:Courier New;color:#2b91af;font-size:xx-small;"><span style="font-family:Courier New;color:#2b91af;font-size:xx-small;">Guid</span></span></span><span style="font-family:Courier New;font-size:xx-small;"><span style="font-family:Courier New;font-size:xx-small;">&gt; TranslationIdProperty = RegisterProperty&lt;</span></span><span style="font-family:Courier New;color:#2b91af;font-size:xx-small;"><span style="font-family:Courier New;color:#2b91af;font-size:xx-small;"><span style="font-family:Courier New;color:#2b91af;font-size:xx-small;">Guid</span></span></span>
+<p><span style="font-family:Courier New;font-size:xx-small;"><span style="font-family:Courier New;font-size:xx-small;">&gt;(c =&gt; c.TranslationId);<font face="Courier New" size="1"><font face="Courier New" size="1">
+<p>[System.ComponentModel.</p>
+</font></font></span><font face="Courier New" size="1">
+<p>&nbsp;</p>
+</font></span></p>
+<p>&nbsp;</p>
+<span style="font-family:Courier New;color:#2b91af;font-size:xx-small;"><span style="font-family:Courier New;color:#2b91af;font-size:xx-small;"><span style="font-family:Courier New;color:#2b91af;font-size:xx-small;">DataObjectField</span></span></span><span style="font-family:Courier New;font-size:xx-small;"><span style="font-family:Courier New;font-size:xx-small;">(</span></span><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;">true</span></span></span><span style="font-family:Courier New;font-size:xx-small;"><span style="font-family:Courier New;font-size:xx-small;">, </span></span><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;">true</span></span></span>
+<p><span style="font-family:Courier New;font-size:xx-small;"><span style="font-family:Courier New;font-size:xx-small;">)]<font face="Courier New" size="1"><font face="Courier New" size="1">
+<p>&nbsp;</p>
+</font></font></span><font face="Courier New" size="1">
+<p>&nbsp;</p>
+</font></span></p>
+<p>&nbsp;</p>
+<span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;">public</span></span></span><span style="font-family:Courier New;font-size:xx-small;"><span style="font-family:Courier New;font-size:xx-small;"> </span></span><span style="font-family:Courier New;color:#2b91af;font-size:xx-small;"><span style="font-family:Courier New;color:#2b91af;font-size:xx-small;"><span style="font-family:Courier New;color:#2b91af;font-size:xx-small;">Guid</span></span></span>
+<p><span style="font-family:Courier New;font-size:xx-small;"><span style="font-family:Courier New;font-size:xx-small;"> TranslationId
+<p>{</p>
+<font face="Courier New" size="1"><font face="Courier New" size="1">
+<p>&nbsp;</p>
+</font></font></span><font face="Courier New" size="1">
+<p>&nbsp;</p>
+</font></span></p>
+<p>&nbsp;</p>
+<span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;">get</span></span></span><span style="font-family:Courier New;font-size:xx-small;"><span style="font-family:Courier New;font-size:xx-small;"> { </span></span><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;">return</span></span></span>
+<p><span style="font-family:Courier New;font-size:xx-small;"><span style="font-family:Courier New;font-size:xx-small;"> ReadProperty(TranslationIdProperty); }<font face="Courier New" size="1"><font face="Courier New" size="1">
+<p>&nbsp;</p>
+</font></font></span><font face="Courier New" size="1">
+<p>&nbsp;</p>
+</font></span></p>
+<p>&nbsp;</p>
+<span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;">private</span></span></span><span style="font-family:Courier New;font-size:xx-small;"><span style="font-family:Courier New;font-size:xx-small;"> </span></span><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;">set</span></span></span><span style="font-family:Courier New;font-size:xx-small;"><span style="font-family:Courier New;font-size:xx-small;"> { LoadProperty(TranslationIdProperty, </span></span><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;">value</span></span></span>
+<p><span style="font-family:Courier New;font-size:xx-small;"><span style="font-family:Courier New;font-size:xx-small;">); }
+<p>}</p>
+<font face="Courier New" size="1"><font face="Courier New" size="1">
+<p>&nbsp;</p>
+</font></font></span><font face="Courier New" size="1">
+<p>&nbsp;</p>
+</font></span></p>
+<p>&nbsp;</p>
+<span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;">private</span></span></span><span style="font-family:Courier New;font-size:xx-small;"><span style="font-family:Courier New;font-size:xx-small;"> </span></span><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;">static</span></span></span><span style="font-family:Courier New;font-size:xx-small;"><span style="font-family:Courier New;font-size:xx-small;"> </span></span><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;">readonly</span></span></span><span style="font-family:Courier New;font-size:xx-small;"><span style="font-family:Courier New;font-size:xx-small;"> </span></span><span style="font-family:Courier New;color:#2b91af;font-size:xx-small;"><span style="font-family:Courier New;color:#2b91af;font-size:xx-small;"><span style="font-family:Courier New;color:#2b91af;font-size:xx-small;">PropertyInfo</span></span></span><span style="font-family:Courier New;font-size:xx-small;"><span style="font-family:Courier New;font-size:xx-small;">&lt;</span></span><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;">string</span></span></span><span style="font-family:Courier New;font-size:xx-small;"><span style="font-family:Courier New;font-size:xx-small;">&gt; CultureProperty = RegisterProperty&lt;</span></span><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;">string</span></span></span>
+<p><span style="font-family:Courier New;font-size:xx-small;"><span style="font-family:Courier New;font-size:xx-small;">&gt;(c =&gt; c.Culture);<font face="Courier New" size="1"><font face="Courier New" size="1">
+<p>&nbsp;</p>
+</font></font></span><font face="Courier New" size="1">
+<p>&nbsp;</p>
+</font></span></p>
+<p>&nbsp;</p>
+<span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;">public</span></span></span><span style="font-family:Courier New;font-size:xx-small;"><span style="font-family:Courier New;font-size:xx-small;"> </span></span><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;">string</span></span></span>
+<p><span style="font-family:Courier New;font-size:xx-small;"><span style="font-family:Courier New;font-size:xx-small;"> Culture
+<p>{</p>
+<font face="Courier New" size="1"><font face="Courier New" size="1">
+<p>&nbsp;</p>
+</font></font></span><font face="Courier New" size="1">
+<p>&nbsp;</p>
+</font></span></p>
+<p>&nbsp;</p>
+<span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;">get</span></span></span><span style="font-family:Courier New;font-size:xx-small;"><span style="font-family:Courier New;font-size:xx-small;"> { </span></span><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;">return</span></span></span>
+<p><span style="font-family:Courier New;font-size:xx-small;"><span style="font-family:Courier New;font-size:xx-small;"> ReadProperty(CultureProperty); }<font face="Courier New" size="1"><font face="Courier New" size="1">
+<p>&nbsp;</p>
+</font></font></span><font face="Courier New" size="1">
+<p>&nbsp;</p>
+</font></span></p>
+<p>&nbsp;</p>
+<span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;">set</span></span></span><span style="font-family:Courier New;font-size:xx-small;"><span style="font-family:Courier New;font-size:xx-small;"> { LoadProperty(CultureProperty, </span></span><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;">value</span></span></span>
+<p><span style="font-family:Courier New;font-size:xx-small;"><span style="font-family:Courier New;font-size:xx-small;">); }
+<p>}</p>
+<font face="Courier New" size="1"><font face="Courier New" size="1">
+<p>&nbsp;</p>
+</font></font></span><font face="Courier New" size="1">
+<p>&nbsp;</p>
+</font></span></p>
+<p>&nbsp;</p>
+<span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;">private</span></span></span><span style="font-family:Courier New;font-size:xx-small;"><span style="font-family:Courier New;font-size:xx-small;"> </span></span><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;">static</span></span></span><span style="font-family:Courier New;font-size:xx-small;"><span style="font-family:Courier New;font-size:xx-small;"> </span></span><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;">readonly</span></span></span><span style="font-family:Courier New;font-size:xx-small;"><span style="font-family:Courier New;font-size:xx-small;"> </span></span><span style="font-family:Courier New;color:#2b91af;font-size:xx-small;"><span style="font-family:Courier New;color:#2b91af;font-size:xx-small;"><span style="font-family:Courier New;color:#2b91af;font-size:xx-small;">PropertyInfo</span></span></span><span style="font-family:Courier New;font-size:xx-small;"><span style="font-family:Courier New;font-size:xx-small;">&lt;</span></span><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;">string</span></span></span><span style="font-family:Courier New;font-size:xx-small;"><span style="font-family:Courier New;font-size:xx-small;">&gt; ResourceKeyProperty = RegisterProperty&lt;</span></span><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;">string</span></span></span>
+<p><span style="font-family:Courier New;font-size:xx-small;"><span style="font-family:Courier New;font-size:xx-small;">&gt;(c =&gt; c.ResourceKey);<font face="Courier New" size="1"><font face="Courier New" size="1">
+<p>&nbsp;</p>
+</font></font></span><font face="Courier New" size="1">
+<p>&nbsp;</p>
+</font></span></p>
+<p>&nbsp;</p>
+<span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;">public</span></span></span><span style="font-family:Courier New;font-size:xx-small;"><span style="font-family:Courier New;font-size:xx-small;"> </span></span><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;">string</span></span></span>
+<p><span style="font-family:Courier New;font-size:xx-small;"><span style="font-family:Courier New;font-size:xx-small;"> ResourceKey
+<p>{</p>
+<font face="Courier New" size="1"><font face="Courier New" size="1">
+<p>&nbsp;</p>
+</font></font></span><font face="Courier New" size="1">
+<p>&nbsp;</p>
+</font></span></p>
+<p>&nbsp;</p>
+<span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;">get</span></span></span><span style="font-family:Courier New;font-size:xx-small;"><span style="font-family:Courier New;font-size:xx-small;"> { </span></span><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;">return</span></span></span>
+<p><span style="font-family:Courier New;font-size:xx-small;"><span style="font-family:Courier New;font-size:xx-small;"> ReadProperty(ResourceKeyProperty); }<font face="Courier New" size="1"><font face="Courier New" size="1">
+<p>&nbsp;</p>
+</font></font></span><font face="Courier New" size="1">
+<p>&nbsp;</p>
+</font></span></p>
+<p>&nbsp;</p>
+<span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;">set</span></span></span><span style="font-family:Courier New;font-size:xx-small;"><span style="font-family:Courier New;font-size:xx-small;"> { LoadProperty(ResourceKeyProperty, </span></span><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;">value</span></span></span>
+<p><span style="font-family:Courier New;font-size:xx-small;"><span style="font-family:Courier New;font-size:xx-small;">); }
+<p>}</p>
+<font face="Courier New" size="1"><font face="Courier New" size="1">
+<p>&nbsp;</p>
+</font></font></span><font face="Courier New" size="1">
+<p>&nbsp;</p>
+</font></span></p>
+<p>&nbsp;</p>
+<span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;">private</span></span></span><span style="font-family:Courier New;font-size:xx-small;"><span style="font-family:Courier New;font-size:xx-small;"> </span></span><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;">static</span></span></span><span style="font-family:Courier New;font-size:xx-small;"><span style="font-family:Courier New;font-size:xx-small;"> </span></span><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;">readonly</span></span></span><span style="font-family:Courier New;font-size:xx-small;"><span style="font-family:Courier New;font-size:xx-small;"> </span></span><span style="font-family:Courier New;color:#2b91af;font-size:xx-small;"><span style="font-family:Courier New;color:#2b91af;font-size:xx-small;"><span style="font-family:Courier New;color:#2b91af;font-size:xx-small;">PropertyInfo</span></span></span><span style="font-family:Courier New;font-size:xx-small;"><span style="font-family:Courier New;font-size:xx-small;">&lt;</span></span><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;">string</span></span></span><span style="font-family:Courier New;font-size:xx-small;"><span style="font-family:Courier New;font-size:xx-small;">&gt; VirtualPathProperty = RegisterProperty&lt;</span></span><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;">string</span></span></span>
+<p><span style="font-family:Courier New;font-size:xx-small;"><span style="font-family:Courier New;font-size:xx-small;">&gt;(c =&gt; c.VirtualPath);<font face="Courier New" size="1"><font face="Courier New" size="1">
+<p>&nbsp;</p>
+</font></font></span><font face="Courier New" size="1">
+<p>&nbsp;</p>
+</font></span></p>
+<p>&nbsp;</p>
+<span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;">public</span></span></span><span style="font-family:Courier New;font-size:xx-small;"><span style="font-family:Courier New;font-size:xx-small;"> </span></span><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;">string</span></span></span>
+<p><span style="font-family:Courier New;font-size:xx-small;"><span style="font-family:Courier New;font-size:xx-small;"> VirtualPath
+<p>{</p>
+<font face="Courier New" size="1"><font face="Courier New" size="1">
+<p>&nbsp;</p>
+</font></font></span><font face="Courier New" size="1">
+<p>&nbsp;</p>
+</font></span></p>
+<p>&nbsp;</p>
+<span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;">get</span></span></span><span style="font-family:Courier New;font-size:xx-small;"><span style="font-family:Courier New;font-size:xx-small;"> { </span></span><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;">return</span></span></span>
+<p><span style="font-family:Courier New;font-size:xx-small;"><span style="font-family:Courier New;font-size:xx-small;"> ReadProperty(VirtualPathProperty); }<font face="Courier New" size="1"><font face="Courier New" size="1">
+<p>&nbsp;</p>
+</font></font></span><font face="Courier New" size="1">
+<p>&nbsp;</p>
+</font></span></p>
+<p>&nbsp;</p>
+<span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;">set</span></span></span><span style="font-family:Courier New;font-size:xx-small;"><span style="font-family:Courier New;font-size:xx-small;"> { LoadProperty(VirtualPathProperty, </span></span><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;">value</span></span></span>
+<p><span style="font-family:Courier New;font-size:xx-small;"><span style="font-family:Courier New;font-size:xx-small;">); }
+<p>}</p>
+<font face="Courier New" size="1"><font face="Courier New" size="1">
+<p>&nbsp;</p>
+</font></font></span><font face="Courier New" size="1">
+<p>&nbsp;</p>
+</font></span></p>
+<p>&nbsp;</p>
+<span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;">private</span></span></span><span style="font-family:Courier New;font-size:xx-small;"><span style="font-family:Courier New;font-size:xx-small;"> </span></span><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;">static</span></span></span><span style="font-family:Courier New;font-size:xx-small;"><span style="font-family:Courier New;font-size:xx-small;"> </span></span><span style="font-family:Courier New;color:#2b91af;font-size:xx-small;"><span style="font-family:Courier New;color:#2b91af;font-size:xx-small;"><span style="font-family:Courier New;color:#2b91af;font-size:xx-small;">PropertyInfo</span></span></span><span style="font-family:Courier New;font-size:xx-small;"><span style="font-family:Courier New;font-size:xx-small;">&lt;</span></span><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;">string</span></span></span><span style="font-family:Courier New;font-size:xx-small;"><span style="font-family:Courier New;font-size:xx-small;">&gt; TextProperty = RegisterProperty&lt;</span></span><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;">string</span></span></span>
+<p><span style="font-family:Courier New;font-size:xx-small;"><span style="font-family:Courier New;font-size:xx-small;">&gt;(c =&gt; c.Text);<font face="Courier New" size="1"><font face="Courier New" size="1">
+<p>&nbsp;</p>
+</font></font></span><font face="Courier New" size="1">
+<p>&nbsp;</p>
+</font></span></p>
+<p>&nbsp;</p>
+<span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;">public</span></span></span><span style="font-family:Courier New;font-size:xx-small;"><span style="font-family:Courier New;font-size:xx-small;"> </span></span><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;">string</span></span></span>
+<p><span style="font-family:Courier New;font-size:xx-small;"><span style="font-family:Courier New;font-size:xx-small;"> Text
+<p>{</p>
+<font face="Courier New" size="1"><font face="Courier New" size="1">
+<p>&nbsp;</p>
+</font></font></span><font face="Courier New" size="1">
+<p>&nbsp;</p>
+</font></span></p>
+<p>&nbsp;</p>
+<span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;">get</span></span></span><span style="font-family:Courier New;font-size:xx-small;"><span style="font-family:Courier New;font-size:xx-small;"> { </span></span><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;">return</span></span></span>
+<p><span style="font-family:Courier New;font-size:xx-small;"><span style="font-family:Courier New;font-size:xx-small;"> ReadProperty(TextProperty); }<font face="Courier New" size="1"><font face="Courier New" size="1">
+<p>&nbsp;</p>
+</font></font></span><font face="Courier New" size="1">
+<p>&nbsp;</p>
+</font></span></p>
+<p>&nbsp;</p>
+<span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;">set</span></span></span><span style="font-family:Courier New;font-size:xx-small;"><span style="font-family:Courier New;font-size:xx-small;"> { LoadProperty(TextProperty, </span></span><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;">value</span></span></span>
+<p><span style="font-family:Courier New;font-size:xx-small;"><span style="font-family:Courier New;font-size:xx-small;">); }
+<p>}</p>
+<font face="Courier New" size="1"><font face="Courier New" size="1">
+<p>&nbsp;</p>
+</font></font></span><font face="Courier New" size="1">
+<p>&nbsp;</p>
+</font></span></p>
+<p>&nbsp;</p>
+<span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;">public</span></span></span>
+<p><span style="font-family:Courier New;font-size:xx-small;"><span style="font-family:Courier New;font-size:xx-small;"> TranslationCriteria()
+<p>{</p>
+<p>}</p>
+<font face="Courier New" size="1"><font face="Courier New" size="1">
+<p>&nbsp;</p>
+</font></font></span><font face="Courier New" size="1">
+<p>&nbsp;</p>
+</font></span></p>
+<p>&nbsp;</p>
+<span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;">public</span></span></span><span style="font-family:Courier New;font-size:xx-small;"><span style="font-family:Courier New;font-size:xx-small;"> TranslationCriteria(</span></span><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;">string</span></span></span><span style="font-family:Courier New;font-size:xx-small;"><span style="font-family:Courier New;font-size:xx-small;"> culture, </span></span><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;">string</span></span></span><span style="font-family:Courier New;font-size:xx-small;"><span style="font-family:Courier New;font-size:xx-small;"> resourceKey, </span></span><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;">string</span></span></span><span style="font-family:Courier New;font-size:xx-small;"><span style="font-family:Courier New;font-size:xx-small;"> virtualPath, </span></span><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;">string</span></span></span>
+<p><span style="font-family:Courier New;font-size:xx-small;"><span style="font-family:Courier New;font-size:xx-small;"> text)</span></span></p>
+<p><span style="font-family:Courier New;font-size:xx-small;"><span style="font-family:Courier New;font-size:xx-small;">I have also created a BusinessBase class named TranslationLis</span></span></p>
+</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><font face="Courier New" size="1" color="#0000ff"><font face="Courier New" size="1" color="#0000ff"><font face="Courier New" size="1" color="#0000ff">
+<p>using</p>
+</font></font></font></span><font face="Courier New" size="1" color="#0000ff"><font face="Courier New" size="1" color="#0000ff">
+<p>&nbsp;</p>
+</font></font></span><font face="Courier New" size="1" color="#0000ff">
+<p>&nbsp;</p>
+</font></span>
+<p>&nbsp;</p>
+<p><span style="font-family:Courier New;font-size:xx-small;"><span style="font-family:Courier New;font-size:xx-small;"> System;</span></span></p>
+<span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><font face="Courier New" size="1" color="#0000ff"><font face="Courier New" size="1" color="#0000ff"><font face="Courier New" size="1" color="#0000ff">
+<p>using</p>
+</font></font></font></span><font face="Courier New" size="1" color="#0000ff"><font face="Courier New" size="1" color="#0000ff">
+<p>&nbsp;</p>
+</font></font></span><font face="Courier New" size="1" color="#0000ff">
+<p>&nbsp;</p>
+</font></span>
+<p>&nbsp;</p>
+<p><span style="font-family:Courier New;font-size:xx-small;"><span style="font-family:Courier New;font-size:xx-small;"> System.Globalization;</span></span></p>
+<span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><font face="Courier New" size="1" color="#0000ff"><font face="Courier New" size="1" color="#0000ff"><font face="Courier New" size="1" color="#0000ff">
+<p>using</p>
+</font></font></font></span><font face="Courier New" size="1" color="#0000ff"><font face="Courier New" size="1" color="#0000ff">
+<p>&nbsp;</p>
+</font></font></span><font face="Courier New" size="1" color="#0000ff">
+<p>&nbsp;</p>
+</font></span>
+<p>&nbsp;</p>
+<p><span style="font-family:Courier New;font-size:xx-small;"><span style="font-family:Courier New;font-size:xx-small;"> System.Linq;</span></span></p>
+<span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><font face="Courier New" size="1" color="#0000ff"><font face="Courier New" size="1" color="#0000ff"><font face="Courier New" size="1" color="#0000ff">
+<p>using</p>
+</font></font></font></span><font face="Courier New" size="1" color="#0000ff"><font face="Courier New" size="1" color="#0000ff">
+<p>&nbsp;</p>
+</font></font></span><font face="Courier New" size="1" color="#0000ff">
+<p>&nbsp;</p>
+</font></span>
+<p>&nbsp;</p>
+<p><span style="font-family:Courier New;font-size:xx-small;"><span style="font-family:Courier New;font-size:xx-small;"> Csla;</span></span></p>
+<span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><font face="Courier New" size="1" color="#0000ff"><font face="Courier New" size="1" color="#0000ff"><font face="Courier New" size="1" color="#0000ff">
+<p>using</p>
+</font></font></font></span><font face="Courier New" size="1" color="#0000ff"><font face="Courier New" size="1" color="#0000ff">
+<p>&nbsp;</p>
+</font></font></span><font face="Courier New" size="1" color="#0000ff">
+<p>&nbsp;</p>
+</font></span>
+<p>&nbsp;</p>
+<p><span style="font-family:Courier New;font-size:xx-small;"><span style="font-family:Courier New;font-size:xx-small;"> Queaso.Core.Communication.Data;</span></span></p>
+<span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><font face="Courier New" size="1" color="#0000ff"><font face="Courier New" size="1" color="#0000ff"><font face="Courier New" size="1" color="#0000ff">
+<p>namespace</p>
+</font></font></font></span><font face="Courier New" size="1" color="#0000ff"><font face="Courier New" size="1" color="#0000ff">
+<p>&nbsp;</p>
+</font></font></span><font face="Courier New" size="1" color="#0000ff">
+<p>&nbsp;</p>
+</font></span>
+<p>&nbsp;</p>
+<p><span style="font-family:Courier New;font-size:xx-small;"><span style="font-family:Courier New;font-size:xx-small;"> Queaso.Core.Communication.Business.Recources
+<p>{</p>
+<font face="Courier New" size="1"><font face="Courier New" size="1">
+<p>[</p>
+</font></font></span><font face="Courier New" size="1">
+<p>&nbsp;</p>
+</font></span></p>
+<p>&nbsp;</p>
+<span style="font-family:Courier New;color:#2b91af;font-size:xx-small;"><span style="font-family:Courier New;color:#2b91af;font-size:xx-small;"><span style="font-family:Courier New;color:#2b91af;font-size:xx-small;">Serializable</span></span></span>
+<p><span style="font-family:Courier New;font-size:xx-small;"><span style="font-family:Courier New;font-size:xx-small;">]<font face="Courier New" size="1"><font face="Courier New" size="1">
+<p>&nbsp;</p>
+</font></font></span><font face="Courier New" size="1">
+<p>&nbsp;</p>
+</font></span></p>
+<p>&nbsp;</p>
+<span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;">public</span></span></span><span style="font-family:Courier New;font-size:xx-small;"><span style="font-family:Courier New;font-size:xx-small;"> </span></span><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;">class</span></span></span><span style="font-family:Courier New;font-size:xx-small;"><span style="font-family:Courier New;font-size:xx-small;"> </span></span><span style="font-family:Courier New;color:#2b91af;font-size:xx-small;"><span style="font-family:Courier New;color:#2b91af;font-size:xx-small;"><span style="font-family:Courier New;color:#2b91af;font-size:xx-small;">TranslationList</span></span></span><span style="font-family:Courier New;font-size:xx-small;"><span style="font-family:Courier New;font-size:xx-small;"> : </span></span><span style="font-family:Courier New;color:#2b91af;font-size:xx-small;"><span style="font-family:Courier New;color:#2b91af;font-size:xx-small;"><span style="font-family:Courier New;color:#2b91af;font-size:xx-small;">BusinessListBase</span></span></span><span style="font-family:Courier New;font-size:xx-small;"><span style="font-family:Courier New;font-size:xx-small;">&lt;</span></span><span style="font-family:Courier New;color:#2b91af;font-size:xx-small;"><span style="font-family:Courier New;color:#2b91af;font-size:xx-small;"><span style="font-family:Courier New;color:#2b91af;font-size:xx-small;">TranslationList</span></span></span><span style="font-family:Courier New;font-size:xx-small;"><span style="font-family:Courier New;font-size:xx-small;">, </span></span><span style="font-family:Courier New;color:#2b91af;font-size:xx-small;"><span style="font-family:Courier New;color:#2b91af;font-size:xx-small;"><span style="font-family:Courier New;color:#2b91af;font-size:xx-small;">Translation</span></span></span><span style="font-family:Courier New;font-size:xx-small;"><span style="font-family:Courier New;font-size:xx-small;">&gt;
+<p>{</p>
+</span></span><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><font face="Courier New" size="1" color="#0000ff"><font face="Courier New" size="1" color="#0000ff"><font face="Courier New" size="1" color="#0000ff">
+<p>#region</p>
+</font></font></font></span><font face="Courier New" size="1" color="#0000ff"><font face="Courier New" size="1" color="#0000ff">
+<p>&nbsp;</p>
+</font></font></span><font face="Courier New" size="1" color="#0000ff">
+<p>&nbsp;</p>
+</font></span>
+<p>&nbsp;</p>
+<p><span style="font-family:Courier New;font-size:xx-small;"><span style="font-family:Courier New;font-size:xx-small;"> Business Methods</span></span><span style="font-family:Courier New;font-size:xx-small;"><span style="font-family:Courier New;font-size:xx-small;"></span></span></p>
+<span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;">
+<p>#endregion</p>
+</span></span></span><span style="font-family:Courier New;font-size:xx-small;"><span style="font-family:Courier New;font-size:xx-small;"></span></span><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><font face="Courier New" size="1" color="#0000ff"><font face="Courier New" size="1" color="#0000ff"><font face="Courier New" size="1" color="#0000ff">
+<p>#region</p>
+</font></font></font></span><font face="Courier New" size="1" color="#0000ff"><font face="Courier New" size="1" color="#0000ff">
+<p>&nbsp;</p>
+</font></font></span><font face="Courier New" size="1" color="#0000ff">
+<p>&nbsp;</p>
+</font></span>
+<p>&nbsp;</p>
+<p><span style="font-family:Courier New;font-size:xx-small;"><span style="font-family:Courier New;font-size:xx-small;"> Business and Validation Rules</span></span></p>
+<span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;">
+<p>#endregion</p>
+</span></span></span><span style="font-family:Courier New;font-size:xx-small;"><span style="font-family:Courier New;font-size:xx-small;"></span></span><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><font face="Courier New" size="1" color="#0000ff"><font face="Courier New" size="1" color="#0000ff"><font face="Courier New" size="1" color="#0000ff">
+<p>#region</p>
+</font></font></font></span><font face="Courier New" size="1" color="#0000ff"><font face="Courier New" size="1" color="#0000ff">
+<p>&nbsp;</p>
+</font></font></span><font face="Courier New" size="1" color="#0000ff">
+<p>&nbsp;</p>
+</font></span>
+<p>&nbsp;</p>
+<p><span style="font-family:Courier New;font-size:xx-small;"><span style="font-family:Courier New;font-size:xx-small;"> Authorization Rules</span></span></p>
+<span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;">
+<p>#endregion</p>
+</span></span></span><span style="font-family:Courier New;font-size:xx-small;"><span style="font-family:Courier New;font-size:xx-small;"></span></span><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><font face="Courier New" size="1" color="#0000ff"><font face="Courier New" size="1" color="#0000ff"><font face="Courier New" size="1" color="#0000ff">
+<p>#region</p>
+</font></font></font></span><font face="Courier New" size="1" color="#0000ff"><font face="Courier New" size="1" color="#0000ff">
+<p>&nbsp;</p>
+</font></font></span><font face="Courier New" size="1" color="#0000ff">
+<p>&nbsp;</p>
+</font></span>
+<p>&nbsp;</p>
+<p><span style="font-family:Courier New;font-size:xx-small;"><span style="font-family:Courier New;font-size:xx-small;"> Factory Methods<font face="Courier New" size="1"><font face="Courier New" size="1">
+<p>&nbsp;</p>
+</font></font></span><font face="Courier New" size="1">
+<p>&nbsp;</p>
+</font></span></p>
+<p>&nbsp;</p>
+<span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;">public</span></span></span><span style="font-family:Courier New;font-size:xx-small;"><span style="font-family:Courier New;font-size:xx-small;"> </span></span><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;">void</span></span></span>
+<p><span style="font-family:Courier New;font-size:xx-small;"><span style="font-family:Courier New;font-size:xx-small;"> LoadTranslations()
+<p>{</p>
+<font face="Courier New" size="1"><font face="Courier New" size="1">
+<p>&nbsp;</p>
+</font></font></span><font face="Courier New" size="1">
+<p>&nbsp;</p>
+</font></span></p>
+<p>&nbsp;</p>
+<span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;">this</span></span></span><span style="font-family:Courier New;font-size:xx-small;"><span style="font-family:Courier New;font-size:xx-small;">.AddRange(</span></span><span style="font-family:Courier New;color:#2b91af;font-size:xx-small;"><span style="font-family:Courier New;color:#2b91af;font-size:xx-small;"><span style="font-family:Courier New;color:#2b91af;font-size:xx-small;">DataPortal</span></span></span><span style="font-family:Courier New;font-size:xx-small;"><span style="font-family:Courier New;font-size:xx-small;">.Fetch&lt;</span></span><span style="font-family:Courier New;color:#2b91af;font-size:xx-small;"><span style="font-family:Courier New;color:#2b91af;font-size:xx-small;"><span style="font-family:Courier New;color:#2b91af;font-size:xx-small;">TranslationList</span></span></span>
+<p><span style="font-family:Courier New;font-size:xx-small;"><span style="font-family:Courier New;font-size:xx-small;">&gt;());
+<p>}</p>
+<font face="Courier New" size="1"><font face="Courier New" size="1">
+<p>&nbsp;</p>
+</font></font></span><font face="Courier New" size="1">
+<p>&nbsp;</p>
+</font></span></p>
+<p>&nbsp;</p>
+<span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;">internal</span></span></span><span style="font-family:Courier New;font-size:xx-small;"><span style="font-family:Courier New;font-size:xx-small;"> </span></span><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;">void</span></span></span><span style="font-family:Courier New;font-size:xx-small;"><span style="font-family:Courier New;font-size:xx-small;"> LoadTranslations(</span></span><span style="font-family:Courier New;color:#2b91af;font-size:xx-small;"><span style="font-family:Courier New;color:#2b91af;font-size:xx-small;"><span style="font-family:Courier New;color:#2b91af;font-size:xx-small;">TranslationCriteria</span></span></span>
+<p><span style="font-family:Courier New;font-size:xx-small;"><span style="font-family:Courier New;font-size:xx-small;"> translationCriteria)
+<p>{</p>
+<font face="Courier New" size="1"><font face="Courier New" size="1">
+<p>&nbsp;</p>
+</font></font></span><font face="Courier New" size="1">
+<p>&nbsp;</p>
+</font></span></p>
+<p>&nbsp;</p>
+<span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;">this</span></span></span><span style="font-family:Courier New;font-size:xx-small;"><span style="font-family:Courier New;font-size:xx-small;">.AddRange(</span></span><span style="font-family:Courier New;color:#2b91af;font-size:xx-small;"><span style="font-family:Courier New;color:#2b91af;font-size:xx-small;"><span style="font-family:Courier New;color:#2b91af;font-size:xx-small;">DataPortal</span></span></span><span style="font-family:Courier New;font-size:xx-small;"><span style="font-family:Courier New;font-size:xx-small;">.Fetch&lt;</span></span><span style="font-family:Courier New;color:#2b91af;font-size:xx-small;"><span style="font-family:Courier New;color:#2b91af;font-size:xx-small;"><span style="font-family:Courier New;color:#2b91af;font-size:xx-small;">TranslationList</span></span></span>
+<p><span style="font-family:Courier New;font-size:xx-small;"><span style="font-family:Courier New;font-size:xx-small;">&gt;(translationCriteria));
+<p>}</p>
+</span></span></p>
+<span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;">
+<p>#endregion</p>
+<font face="Courier New" size="1" color="#0000ff"><font face="Courier New" size="1" color="#0000ff"><font face="Courier New" size="1" color="#0000ff">
+<p>#region</p>
+</font></font></font></span><font face="Courier New" size="1" color="#0000ff"><font face="Courier New" size="1" color="#0000ff">
+<p>&nbsp;</p>
+</font></font></span><font face="Courier New" size="1" color="#0000ff">
+<p>&nbsp;</p>
+</font></span>
+<p>&nbsp;</p>
+<p><span style="font-family:Courier New;font-size:xx-small;"><span style="font-family:Courier New;font-size:xx-small;"> Data Acceses<font face="Courier New" size="1"><font face="Courier New" size="1">
+<p>&nbsp;</p>
+</font></font></span><font face="Courier New" size="1">
+<p>&nbsp;</p>
+</font></span></p>
+<p>&nbsp;</p>
+<span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;">protected</span></span></span><span style="font-family:Courier New;font-size:xx-small;"><span style="font-family:Courier New;font-size:xx-small;"> </span></span><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;">void</span></span></span><span style="font-family:Courier New;font-size:xx-small;"><span style="font-family:Courier New;font-size:xx-small;"> DataPortal_Fetch(</span></span><span style="font-family:Courier New;color:#2b91af;font-size:xx-small;"><span style="font-family:Courier New;color:#2b91af;font-size:xx-small;"><span style="font-family:Courier New;color:#2b91af;font-size:xx-small;">TranslationCriteria</span></span></span>
+<p><span style="font-family:Courier New;font-size:xx-small;"><span style="font-family:Courier New;font-size:xx-small;"> criteria)
+<p>{</p>
+<font face="Courier New" size="1"><font face="Courier New" size="1">
+<p>&nbsp;</p>
+</font></font></span><font face="Courier New" size="1">
+<p>&nbsp;</p>
+</font></span></p>
+<p>&nbsp;</p>
+<strong><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;">using</span></span></span><span style="font-family:Courier New;font-size:xx-small;"><span style="font-family:Courier New;font-size:xx-small;"> (</span></span><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;">var</span></span></span><span style="font-family:Courier New;font-size:xx-small;"><span style="font-family:Courier New;font-size:xx-small;"> rep = </span></span><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;">new</span></span></span><span style="font-family:Courier New;font-size:xx-small;"><span style="font-family:Courier New;font-size:xx-small;"> </span></span><span style="font-family:Courier New;color:#2b91af;font-size:xx-small;"><span style="font-family:Courier New;color:#2b91af;font-size:xx-small;"><span style="font-family:Courier New;color:#2b91af;font-size:xx-small;">BaseRepository</span></span></span><span style="font-family:Courier New;font-size:xx-small;"><span style="font-family:Courier New;font-size:xx-small;">&lt;</span></span><span style="font-family:Courier New;color:#2b91af;font-size:xx-small;"><span style="font-family:Courier New;color:#2b91af;font-size:xx-small;"><span style="font-family:Courier New;color:#2b91af;font-size:xx-small;">Translation</span></span></span></strong>
+<p><span style="font-family:Courier New;font-size:xx-small;"><span style="font-family:Courier New;font-size:xx-small;"><strong>&gt;())</strong>
+<p><strong>{</strong></p>
+<font face="Courier New" size="1"><font face="Courier New" size="1">
+<p><strong></strong></p>
+</font></font></span><font face="Courier New" size="1">
+<p>&nbsp;</p>
+</font></span></p>
+<p>&nbsp;</p>
+<span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><strong>var</strong></span></span></span>
+<p><span style="font-family:Courier New;font-size:xx-small;"><span style="font-family:Courier New;font-size:xx-small;"><strong> translations = rep.FetchObjectByCriteria(criteria);</strong><font face="Courier New" size="1"><font face="Courier New" size="1">
+<p><strong></strong></p>
+</font></font></span><font face="Courier New" size="1">
+<p>&nbsp;</p>
+</font></span></p>
+<p>&nbsp;</p>
+<strong><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;">foreach</span></span></span><span style="font-family:Courier New;font-size:xx-small;"><span style="font-family:Courier New;font-size:xx-small;"> (</span></span><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;">var</span></span></span><span style="font-family:Courier New;font-size:xx-small;"><span style="font-family:Courier New;font-size:xx-small;"> item </span></span><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;">in</span></span></span></strong>
+<p><span style="font-family:Courier New;font-size:xx-small;"><span style="font-family:Courier New;font-size:xx-small;"><strong> translations)</strong><font face="Courier New" size="1"><font face="Courier New" size="1">
+<p><strong>Add(</strong></p>
+</font></font></span><font face="Courier New" size="1">
+<p>&nbsp;</p>
+</font></span></p>
+<p>&nbsp;</p>
+<strong><span style="font-family:Courier New;color:#2b91af;font-size:xx-small;"><span style="font-family:Courier New;color:#2b91af;font-size:xx-small;"><span style="font-family:Courier New;color:#2b91af;font-size:xx-small;">DataPortal</span></span></span><span style="font-family:Courier New;font-size:xx-small;"><span style="font-family:Courier New;font-size:xx-small;">.FetchChild&lt;</span></span><span style="font-family:Courier New;color:#2b91af;font-size:xx-small;"><span style="font-family:Courier New;color:#2b91af;font-size:xx-small;"><span style="font-family:Courier New;color:#2b91af;font-size:xx-small;">Translation</span></span></span></strong>
+<p><span style="font-family:Courier New;font-size:xx-small;"><span style="font-family:Courier New;font-size:xx-small;"><strong>&gt;(item));</strong>
+<p><strong>}</strong></p>
+<p><strong>　</strong></p>
+<p>}</p>
+<font face="Courier New" size="1"><font face="Courier New" size="1">
+<p>&nbsp;</p>
+</font></font></span><font face="Courier New" size="1">
+<p>&nbsp;</p>
+</font></span></p>
+<p>&nbsp;</p>
+<span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;">protected</span></span></span><span style="font-family:Courier New;font-size:xx-small;"><span style="font-family:Courier New;font-size:xx-small;"> </span></span><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;">void</span></span></span>
+<p><span style="font-family:Courier New;font-size:xx-small;"><span style="font-family:Courier New;font-size:xx-small;"> DataPortal_Fetch()
+<p>{</p>
+<font face="Courier New" size="1"><font face="Courier New" size="1">
+<p>&nbsp;</p>
+</font></font></span><font face="Courier New" size="1">
+<p>&nbsp;</p>
+</font></span></p>
+<p>&nbsp;</p>
+<span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;">using</span></span></span><span style="font-family:Courier New;font-size:xx-small;"><span style="font-family:Courier New;font-size:xx-small;"> (</span></span><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;">var</span></span></span><span style="font-family:Courier New;font-size:xx-small;"><span style="font-family:Courier New;font-size:xx-small;"> rep = </span></span><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;">new</span></span></span><span style="font-family:Courier New;font-size:xx-small;"><span style="font-family:Courier New;font-size:xx-small;"> </span></span><span style="font-family:Courier New;color:#2b91af;font-size:xx-small;"><span style="font-family:Courier New;color:#2b91af;font-size:xx-small;"><span style="font-family:Courier New;color:#2b91af;font-size:xx-small;">BaseRepository</span></span></span><span style="font-family:Courier New;font-size:xx-small;"><span style="font-family:Courier New;font-size:xx-small;">&lt;</span></span><span style="font-family:Courier New;color:#2b91af;font-size:xx-small;"><span style="font-family:Courier New;color:#2b91af;font-size:xx-small;"><span style="font-family:Courier New;color:#2b91af;font-size:xx-small;">Translation</span></span></span>
+<p><span style="font-family:Courier New;font-size:xx-small;"><span style="font-family:Courier New;font-size:xx-small;">&gt;())
+<p>{</p>
+<font face="Courier New" size="1"><font face="Courier New" size="1">
+<p>&nbsp;</p>
+</font></font></span><font face="Courier New" size="1">
+<p>&nbsp;</p>
+</font></span></p>
+<p>&nbsp;</p>
+<span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;">var</span></span></span>
+<p><span style="font-family:Courier New;font-size:xx-small;"><span style="font-family:Courier New;font-size:xx-small;"> translations = rep.FetchAll();<font face="Courier New" size="1"><font face="Courier New" size="1">
+<p>&nbsp;</p>
+</font></font></span><font face="Courier New" size="1">
+<p>&nbsp;</p>
+</font></span></p>
+<p>&nbsp;</p>
+<span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;">foreach</span></span></span><span style="font-family:Courier New;font-size:xx-small;"><span style="font-family:Courier New;font-size:xx-small;"> (</span></span><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;">var</span></span></span><span style="font-family:Courier New;font-size:xx-small;"><span style="font-family:Courier New;font-size:xx-small;"> item </span></span><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;">in</span></span></span>
+<p><span style="font-family:Courier New;font-size:xx-small;"><span style="font-family:Courier New;font-size:xx-small;"> translations)<font face="Courier New" size="1"><font face="Courier New" size="1">
+<p>Add(</p>
+</font></font></span><font face="Courier New" size="1">
+<p>&nbsp;</p>
+</font></span></p>
+<p>&nbsp;</p>
+<span style="font-family:Courier New;color:#2b91af;font-size:xx-small;"><span style="font-family:Courier New;color:#2b91af;font-size:xx-small;"><span style="font-family:Courier New;color:#2b91af;font-size:xx-small;">DataPortal</span></span></span><span style="font-family:Courier New;font-size:xx-small;"><span style="font-family:Courier New;font-size:xx-small;">.FetchChild&lt;</span></span><span style="font-family:Courier New;color:#2b91af;font-size:xx-small;"><span style="font-family:Courier New;color:#2b91af;font-size:xx-small;"><span style="font-family:Courier New;color:#2b91af;font-size:xx-small;">Translation</span></span></span>
+<p><span style="font-family:Courier New;font-size:xx-small;"><span style="font-family:Courier New;font-size:xx-small;">&gt;(item));
+<p>}</p>
+<p>}</p>
+</span></span></p>
+<span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;"><span style="font-family:Courier New;color:#0000ff;font-size:xx-small;">
+<p>#endregion</p>
+</span></span></span><span style="font-family:Courier New;font-size:xx-small;"><span style="font-family:Courier New;font-size:xx-small;">
+<p>}</p>
+<p>}</p>
+</span></span></p>
+<p>
+<p><span style="font-family:Courier New;font-size:xx-small;"><span style="font-family:Courier New;font-size:xx-small;">The code that&#39;s in bold that&#39;s causing a problem...<br />So I&#39;m using a repository of translations but I want to fetch a TranslationList by passing a translationcriteria parameter...<br />But the compiler expects a Translation parameter... So how can I use TranslationCriteria for fetching Translations...</span></span></p>
+<p><span style="font-family:Courier New;font-size:xx-small;"><span style="font-family:Courier New;font-size:xx-small;">My email is <a href="mailto:mg@queaso.be">mg@queaso.be</a></span></span></p>
+</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Tuesday, August 07, 2012</h2><p>Is very hard to read your code - please post code in a better format!!! </p>
+<p>#1: Use static factory methods (not instance methods) like this:</p>
+<p>&nbsp;&nbsp;&nbsp; #region Factory Methods <br /><br />&nbsp;&nbsp;&nbsp; public static TranslationList GetTranslations()<br />&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return DataPortal.Fetch&lt;TranslationList&gt;();<br />&nbsp;&nbsp;&nbsp; }<br /><br /><br />&nbsp;&nbsp;&nbsp; public static TranslationList GetTranslations(TranslationCriteria translationCriteria)<br />&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return DataPortal.Fetch&lt;TranslationList&gt;(translationCriteria);<br />&nbsp;&nbsp;&nbsp; }<br /><br />&nbsp;&nbsp;&nbsp; #endregion</p>
+<p>&nbsp;&nbsp;&nbsp; Your code will typically degrade performance by taking the returned list and then add all the items to a new list (which is NOT necessary).</p>
+<p>#2: I doubt that you have a Repository based on the business object type? <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; If you have a BO Translation and a DAL object Translation you must use namespace to qualify the DAL object in your BO class. </p>
+<p>#3: From a &quot;layer&quot; perspective the TranslationCriteria class shown here belong to the &quot;business logic&quot; layer and should not be known to the repository (DAL) code. You may however define an Interface in the DAL code and implement this in TranslationCriteria in order to pass this object to the DAL / Repository code. </p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,81 @@
+<html><header><title>Object Factory clarification and design decision</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Object Factory clarification and design decision</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5614.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Cosmin posted on Friday, October 17, 2008</h2>Hi guys,<br><br>I have read nermin's great <a HREF="/forums/post/26982.aspx">post</a> about how to use the ObjectFactory and make it testable as well, but I still have some questions. I may be missing the big picture.<br>Let's consider the diagram attached. I have a simple class hierarchy that has 2 root business objects Account and Document. Accounts and Documents can be of multiple types(leaves in the objects' tree, CustomerAccount and SupplierAccount, and Purchase/SalesOrder and Invoice respectively).<br><br>I've also got a Factory loader that parses the factoryobject attribute and returns the factory. I have one factory for each object type.<br>I don't really know how to glue things toghether now.<br><br>How do I create/fetch/update objects? Is it the same as in classic CSLA? (DataPortal.Create()/Fetch()...). <br>When I do this:<br>CustomerAccount ca = CustomerAccount.NewCustomerAccount()<br><br>I need the AccountFactory to kick in somehow and create an account of type CustomerAccount at runtime and call it's constructor passing as parameter the coresponding dataobject with the default values(or the CustomerAccountDTO in fetch case). The CustomerAccount constructor will call the parent constructor and pass the DTO so the whole tree is initialized.<br><br>How should the code in the NewCustomerAccount method look like and how the code in the AccountFactory.Create() method should look like?<br><br>The flexibility I need is that I should be able to add say a new account in the tree, decorate it with the factoryobject attribute and that should be all.<br><br>Any input and maybe different ideas will be greatly appreciated. A sample on this would clarify things better. A sample using inheritance in the business layer. Once I get my head around this I'll provide a sample based on the attached diagram.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rkelley replied on Sunday, October 19, 2008</h2><P>Cosmin,</P>
+<P>I am going to attempt to give you some more enlightenment here, hopefully. I have a fully working version of ProjectTracker using the ObjecFactory attribute as well as some other Altdotnet goodness. It is still a little rough right now but it works, I have made the code available to everybody here: <A href="http://cslaptrackerfactory.google.code.com">http://cslaptrackerfactory.google.code.com</A>&nbsp;</P>
+<P>Now onto your questions:</P>
+<P>I've also got a Factory loader that parses the factoryobject attribute and returns the factory. I have one factory for each object type.<BR>I don't really know how to glue things toghether now.<BR></P>
+<P><FONT color=#0000ff>When you say you have a factory for each objec type what do you mean? You have an account factory and a document factory? In my sample I have a factory for each abstract business object type, BusinessBase, BusinessListBase, etc... </FONT></P>
+<P><BR>How do I create/fetch/update objects? Is it the same as in classic CSLA? (DataPortal.Create()/Fetch()...). <BR>When I do this:<BR>CustomerAccount ca = CustomerAccount.NewCustomerAccount()</P>
+<P><FONT color=#0000ff>Yes, Your methods will still be static on your business objects and NewCustomerAccount() will still do: return DataPortal.Create&lt;CustomerAccount();&nbsp; The Csla data portal takes care of loading the factory and calling the methods on it.</FONT><BR><BR>I need the AccountFactory to kick in somehow and create an account of type CustomerAccount at runtime and call it's constructor passing as parameter the coresponding dataobject with the default values(or the CustomerAccountDTO in fetch case). The CustomerAccount constructor will call the parent constructor and pass the DTO so the whole tree is initialized.<BR></P>
+<P><FONT color=#0000ff>Don't know if my sample will help you out much on this, I did not set up my sample to use DTO's, could be done though I am sure.</FONT> </P>
+<P><BR>How should the code in the NewCustomerAccount method look like and how the code in the AccountFactory.Create() method should look like?&nbsp; </P>
+<P><FONT color=#0000ff>See Previous</FONT><BR></P>
+<P>I am not sure that you will be able to achieve the flexibility that you desire for sure. Inheritance can cause some strange issues with this stuff. </P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Cosmin replied on Monday, October 20, 2008</h2><br>The link doesn't work. <br><br><b><i>cslaptrackerfactory.google.code.com could not be found. Please check the name and try again.</i></b><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rkelley replied on Monday, October 20, 2008</h2><P>woops: <A href="http://cslaptrackerfactory.googlecode.com">http://cslaptrackerfactory.googlecode.com</A></P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>nermin replied on Monday, October 20, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>The format for google code site should be:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><a href="http://code.google.com/cslaptrackerfactory">http://code.google.com/cslaptrackerfactory</a><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>However that project does not seem to exist<o:p></o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Cosmin
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Monday, October 20, 2008 7:12 AM<br>
+<b>To:</b> Nermin Dibek<br>
+<b>Subject:</b> Re: [CSLA .NET] Object Factory clarification and design
+decision<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal><br>
+The link doesn't work. <br>
+<br>
+<b><i>cslaptrackerfactory.google.code.com could not be found. Please check the
+name and try again.</i></b><br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rkelley replied on Monday, October 20, 2008</h2><P>The link i posted redirects to here:</P>
+<P><A href="http://code.google.com/p/cslaptrackerfactory/">http://code.google.com/p/cslaptrackerfactory/</A></P>
+<P>I guess 6 of 1 half a dozen of the other...</P>
+<P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>nermin:</strong></div><div> 
+</P>
+<DIV class=Section1>
+<P class=MsoNormal><SPAN>The format for google code site should be:<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><A href="http://code.google.com/cslaptrackerfactory">http://code.google.com/cslaptrackerfactory</A><o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>However that project does not seem to exist<o:p></o:p></SPAN></P>
+<DIV>
+<P class=MsoNormal><B><SPAN>From:</SPAN></B><SPAN> Cosmin [mailto:cslanet@lhotka.net] <BR><B>Sent:</B> Monday, October 20, 2008 7:12 AM<BR><B>To:</B> Nermin Dibek<BR><B>Subject:</B> Re: [CSLA .NET] Object Factory clarification and design decision<o:p></o:p></SPAN></P></DIV>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal><BR>The link doesn't work. <BR><BR><B><I>cslaptrackerfactory.google.code.com could not be found. Please check the name and try again.</I></B><BR><BR><BR><o:p></o:p></P></DIV></div></BLOCKQUOTE></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Kevin Fairclough replied on Tuesday, October 21, 2008</h2>With this, is it possible to not send the NHibernate.dll to the client when using remote data portal?<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rkelley replied on Tuesday, October 21, 2008</h2><P>Probably not the way I am doing it for several reasons:</P>
+<P>1. I don't use DTO objects, this may change at some point becuase these would be good serializable small objects that would go across the wire really fast.</P>
+<P>2. I am doing all of my work inside a UnitOfWork container which is tied to NHibernate fairly tightly. Now granted, the only place that knows about UnitOfWork is the 5 Object Factories,</P>
+<P>That's all I can think of right now, somebody else may have some more. It seems like to really make that work you would have to have two seperate "Systems" that passed information back and forth but the one on the other end did the NHibernate work so the primary UI project/installation had no idea. Something like a ServiceBus :&nbsp; <A href="http://code.google.com/p/masstransit/">http://code.google.com/p/masstransit/</A></P>
+<P>my .02</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Kevin Fairclough replied on Wednesday, October 22, 2008</h2>Another Q if you don't mind "sorry for off topic",&nbsp; When NHibernate sets the property value on a Load operation doesn't it fire the SetProperty method in the BO? which will fire validation.&nbsp; I always assumed I couldn't use the managed field directly because of this.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rkelley replied on Wednesday, October 22, 2008</h2>Yes it does fire the set property method, but in the factory I MarkOld the object after the load/update operation is complete so edit levels and the likes do not get messed up.</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

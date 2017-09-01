@@ -1,0 +1,19 @@
+<html><header><title>Lazy loading of a child property</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Lazy loading of a child property</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9924.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>barabasy posted on Friday, January 07, 2011</h2><p>Hello,</p>
+<p>&nbsp;</p>
+<p>I have read the Expert Business Object C# 2008 and I really have trouble to understand why we have to use <b>DataPortal.Fetch</b> when lazy loading a child instead of <b>DataPortal.FetchChild</b>? I am referring to <i>Chapter 9. Parent-Child Relationships</i> and in subsection &quot;<i>Enabling lazy loading in the Child Class</i>&quot;.</p>
+<p>When authoring the child class, we do not know necessarily if someone will lazy load that object. I can choose to always use DataPortal_Fetch and manually call MarkAsChild but is that really equivalent to Child_Fetch? I am really confused. Don&#39;t&nbsp;DataPortal.Fetch and&nbsp;DataPortal.FetchChild both trigger a call to the application server and thus all have access to the database?</p>
+<p>&nbsp;</p>
+<p>Thank you.</p>
+<p>Barabasy</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Friday, January 07, 2011</h2><p>The DataPortal.XYZChild methods will NOT make a call to the server -&nbsp; only the DataPortal.XYZ methods does. </p>
+<p>So to make a call to the server for fetch you must use DataPortal.Fetch - and if lazy loading a child then also make sure to call MarkAsChild. </p>
+<p>The DataPortal.XYZChild methods should be called for loading children in the context of a DataPortal.XYZ call. </p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Marjon1 replied on Friday, January 07, 2011</h2><p>Jonny is right about the DataPortal.XYZChild methods not going across the network to the server, it caught me out when they were first introduced.</p>
+<p>What we have done to get around this, is to create a command object that calls the DataPortal.XYZChild method for us within the execute method, therefore being sent across the wire and any of our children objects can be lazy loaded as required in the future. </p>
+<p>The call looks something like this:</p>
+<p>&nbsp;&nbsp; &nbsp; childObj = LazyLoadCommand.Fetch(Of Child)(Id) &nbsp;&#39;The paramamater is actual a paramArray that is just passed to the&nbsp;relevant&nbsp;child method.</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>barabasy replied on Tuesday, January 11, 2011</h2><p>Thank you for your quick answer and suggestion. Using a command is indeed a good idea. I am still new to CSLA so having such tips is well appreciated.</p>
+<p>Cheers.</p>
+<p>Barabasy</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>barabasy replied on Tuesday, January 11, 2011</h2><p>Thank you for your insigh Jonny. I really appreciate the quick response I got from the community. This is really great.</p>
+<p>&nbsp;</p>
+<p>barabasy</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,23 @@
+<html><header><title>Windows From Binding Problem</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Windows From Binding Problem</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5241.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>akhirudin posted on Thursday, August 14, 2008</h2><P>Hallo all</P>
+<P>I have problem on Binding my Objects into windows form at Design Time</P>
+<P>my objets are:</P>
+<P>Order (Root Object)</P>
+<P>OrderDetails &amp; OrderDetail (Read Only Collection &amp; Child Object)</P>
+<P>OrderShipment (Editable Object)</P>
+<P>Order - OrderDetails (One to Many)</P>
+<P>Order - OrderShipment (One to One)</P>
+<P>an error occur on InitializeCompenent when setting the Grid that is Bind into OrderDetails datasource it's saying</P>
+<P>DataMember property 'OrderShipment' cannot be found on the DataSource.</P>
+<P>it is will run ok when I comment the line on the designer code, but i don't think that is&nbsp;a solution</P>
+<P>I've googled and found similiars problem, here are some of them</P>
+<P><A href="http://forums.microsoft.com/MSDN/ShowPost.aspx?PostID=427717&amp;SiteID=1">http://forums.microsoft.com/MSDN/ShowPost.aspx?PostID=427717&amp;SiteID=1</A></P>
+<P><A href="http://forums.microsoft.com/msdn/ShowPost.aspx?siteid=1&amp;PostID=54552">http://forums.microsoft.com/msdn/ShowPost.aspx?siteid=1&amp;PostID=54552</A></P>
+<P>but I have not found any solutions, Binding &amp; Design the Grid at runtime would be my last choice, but I'm hoping someone here can help me </P>
+<P>FYI: I'm using VB on VS2005 and CSLA 2.14</P>
+<P>Regards</P>
+<P>Fahmi</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>FatPigeon replied on Thursday, August 14, 2008</h2><P>Have you tried removing the data souce from the data sources window and then re-adding it - then maybe resetting the datasource on your binding source?</P>
+<P>Regards,</P>
+<P>Patrick</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>akhirudin replied on Thursday, August 14, 2008</h2><P>Hallo Patrick, yes I have...</P>
+<P>I have event try recreate the user control from scratch and the problem persist</P>
+<P>Regards</P>
+<P>Fahmi</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,28 @@
+<html><header><title>Deletion - parent/child</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Deletion - parent/child</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11158.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>fredg posted on Tuesday, February 14, 2012</h2><p>Hi,</p>
+<p>&nbsp;&nbsp;&nbsp; When deleting parent, all child collections should be cleared first.</p>
+<p>&nbsp;&nbsp;&nbsp; Is there sample code to demonstrate this situation in DataPortal_DeleteSelf() of the parent BO?</p>
+<p>&nbsp;&nbsp;&nbsp; I clear the child collection in this method and then delete parent, but the child still exist in database.</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Tuesday, February 14, 2012</h2><p>Hi,</p>
+<p>I prefer to use cascading delete in the database. </p>
+<p>There could be other relationships too, than the child objects that you have loaded into memory, so this is typically bettter handled in the database (and simpler to code).</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>fredg replied on Wednesday, February 15, 2012</h2><p><span style="font-family:Verdana;font-size:small;">Thanks for your reply. cascading delete in the database is a good option. However, I&#39;m not quite understanding it in CSLA.net. If we recursively clear child collection in parent BO&#39;s delete method before deleting parent self, why not child deletion does not automatically call itself&#39;s deletion method and remove the records from database? If we want to do it in BO, what code looks like?</span></p>
+<p><span style="font-family:Verdana;font-size:small;">My code:</span></p>
+<p>&nbsp;</p>
+<p>
+<p><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">
+<p>void DataPortal_DeleteSelf(Parent Parent)<br />{</p>
+<p>&nbsp;&nbsp;&nbsp; //clear child collection<br />&nbsp;&nbsp;&nbsp; for (int childNumber = ChildCollection.Count() - 1; childNumber &gt;= 0; childNumber--)<br />&nbsp;&nbsp;&nbsp; {&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ChildCollection.RemoveAt(childNumber);<br />&nbsp;&nbsp;&nbsp; }</p>
+<p>&nbsp;&nbsp;&nbsp; ....delete parent....</p>
+<p>}</p>
+<p>&nbsp;</p>
+<span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">
+<p>Do you have correction for my code?</p>
+</span></span></span></span><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">
+<p>&nbsp;</p>
+</span></span></span><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">
+<p>&nbsp;</p>
+</span></span>
+<p>&nbsp;</p>
+</p>
+</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Wednesday, February 15, 2012</h2><p>Remove will only move the item to DeleteItems list but does not do any data access.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>fredg replied on Wednesday, February 15, 2012</h2><p>I see. Do you have any sample code to recommand to replace my child collection clear part&#39;s code to make&nbsp;data access happen?</p>
+<p>&nbsp;&nbsp;&nbsp; //clear child collection<br />&nbsp;&nbsp;&nbsp; for (int childNumber = ChildCollection.Count() - 1; childNumber &gt;= 0; childNumber--)<br />&nbsp;&nbsp;&nbsp; {&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ChildCollection.RemoveAt(childNumber);<br />&nbsp;&nbsp;&nbsp; }</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>fredg replied on Thursday, February 16, 2012</h2><p>Hi, can anyone provide some sample&nbsp;of cascading deleting children before deleting parent from BO layer instead of from DA layer?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>fredg replied on Friday, February 17, 2012</h2><p><span style="font-family:Consolas;font-size:x-small;">After adding: </span></p>
+<p><span style="font-family:Consolas;font-size:x-small;">FieldManager.UpdateChildren(this);</span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"></span></span></p>
+<p><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">Child&#39;s Data access code&nbsp;is called, but if the child table has FK constraint, there would be an error. Looks like we have to remove the FK constraint from child table.</span></span></p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

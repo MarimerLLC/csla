@@ -1,0 +1,305 @@
+<html><header><title>CSLA In a Hosted Environment</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA In a Hosted Environment</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/828.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>jfry posted on Sunday, August 06, 2006</h2><font face="Verdana" size="3">I'm running into an issue.&nbsp; I have my whole application up and running, fully QAed, runs like a champ on my local server.&nbsp; I bought some hosting space, uploaded all the DLL's and ran it.<br><br>And i get this error:<br></font><font face="Verdana" size="3"><pre>[SecurityException: That assembly does not allow partially trusted callers.]<br>   Framework.CSLA.DataPortal..cctor() in DataPortal.cs:229<br></pre><br>Does CSLA not run in a shared hosting environment?  Is there anything I can do to get it to run? Or do i need to rewrite all my business objects?<br><br>Thanks for any light someone can shine my way!<br><br>-jf<br></font></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, August 07, 2006</h2><P>I'm afraid CSLA requires full trust. This is because it uses reflection, the BinaryFormatter (serialization) and optionally uses both Remoting and Enterprise Services. All these technologies require highly elevated trust - often FullTrust.</P>
+<P>Making a verison of CSLA that works in partial trust would mean gutting most of the framework's core features...</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Bonio replied on Monday, August 07, 2006</h2><P>I would like to run my application on an application server at our IT headoffice - I would like users to use the system via 'terminal service' - (i.e users would login to a remote desktop environment). Would this pose a problrm for CSLA??</P>
+<P>Thanks</P>
+<P>Bonio</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, August 07, 2006</h2>
+
+
+
+
+<DIV align=left><SPAN class=536115514-07082006><FONT face=Arial color=#0000ff size=2>You can certainly do that, no problem.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=536115514-07082006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=536115514-07082006><FONT face=Arial color=#0000ff size=2>The primary thing to remember in such a case is that the 
+server can end up being a bottleneck in terms of both CPU and memory. Memory is 
+the biggest challenge.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=536115514-07082006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=536115514-07082006><FONT face=Arial color=#0000ff size=2>When building a Windows Forms UI with CSLA you tend to use 
+features of the framework that are designed under the assumption that the 
+application is running on a user's dedicated workstation. Both data binding and 
+n-level undo are examples, where the technology is pretty resource-intensive and 
+might (or might not) be too resource intensive on a shared 
+server.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=536115514-07082006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=536115514-07082006><FONT face=Arial color=#0000ff size=2>Rocky</FONT></SPAN></DIV><BR>
+<BLOCKQUOTE>
+  <DIV class=OutlookMessageHeader align=left>
+  <HR>
+  <FONT face=Tahoma size=2><B>From:</B> Bonio [mailto:cslanet@lhotka.net] 
+  <BR><B>Sent:</B> Monday, August 07, 2006 6:46 AM<BR><B>To:</B> 
+  rocky@lhotka.net<BR><B>Subject:</B> Re: [CSLA .NET] CSLA In a Hosted 
+  Environment<BR></FONT><BR></DIV>
+  <DIV></DIV>
+  <P>I would like to run my application on an application server at our IT 
+  headoffice - I would like users to use the system via 'terminal service' - 
+  (i.e users would like in to a remote desktop environment). Would this pose a 
+  problrm for CSLA??</P>
+  <P>Thanks</P>
+  <P>Bonio</P><BR><BR><BR></BLOCKQUOTE></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>HarvSather replied on Tuesday, August 08, 2006</h2><div>This article may be of some help<br>
+<br>
+&nbsp;</div>
+
+<div>Moving from Full Trust to partial trust with Code Access Security</div>
+
+<div><font face="Arial" size="2"><a href="http://blog.searyblog.com/blog/_archives/2006/7/6/2088280.html">http://blog.searyblog.com/blog/_archives/2006/7/6/2088280.html</a><br>
+<br>
+<br>
+Harv Sather<br>
+<br>
+<br>
+</font></div></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, August 08, 2006</h2>
+
+
+
+
+<DIV align=left><SPAN class=958400704-09082006><FONT face=Arial color=#0000ff size=2>Yes, that strategy will work in general terms. There are 
+two flaws, at least in concept.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=958400704-09082006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=958400704-09082006><FONT face=Arial color=#0000ff size=2>1) It presupposes your hosting provider will install 
+assemblies in the GAC. More often than not, if they are forcing you to run in 
+partial trust, they are also unwilling to install assemblies in the GAC on your 
+behalf.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=958400704-09082006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=958400704-09082006><FONT face=Arial color=#0000ff size=2>2) It presupposes that your assemblies (the business facade 
+in the blog entry) can guarantee that no malicious code can run within the 
+context of your code, and moreover, that any external malicious code can't get 
+your code to do anything bad. In other words, you have to program at a level of 
+paranoia that most of us never dream about, and which really requires a security 
+audit team and automated tools to get close to right. Even with security audit 
+teams and automated tools, Microsoft can't get it right 
+consistently.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=958400704-09082006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=958400704-09082006><FONT face=Arial color=#0000ff size=2>2a) Of course if you are just trying to defeat CAS, which 
+is the most likely case for all of us, then 2 doesn't matter. Your hosting 
+provider is being silly and using partial trust, and you just want your code to 
+run, and this hack is a way to circumvent CAS for all intents and purposes. 
+</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=958400704-09082006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=958400704-09082006><FONT face=Arial color=#0000ff size=2>And this is why hosting providers generally won't put 
+things in the GAC, because they know damn well that we're either incapable of 
+doing a 100% security audit, or that we're directly trying to circumvent CAS. 
+Either way, if they give in and put stuff in the GAC, they could have just left 
+us all at fulltrust and made things simpler.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=958400704-09082006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=958400704-09082006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=958400704-09082006><FONT face=Arial color=#0000ff size=2>The unfortunate fact is that CAS is a dead technology, and 
+has been for a couple years now. But many hosting providers, and a few 
+recognized author/speaker/experts just don't realize it yet... But think about 
+this: if Microsoft started requiring partial trust as the native mode for .NET 
+code, how much code would run? Almost none of it. So we have nearly 5 years of 
+.NET code built that can't run if CAS is turned on. Unless we're willing to 
+rewrite all that code, CAS can never be turned on in any meaningful way. Thus 
+CAS is dead.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=958400704-09082006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=958400704-09082006><FONT face=Arial color=#0000ff size=2>The same thing happened on the Amiga many years ago. The 
+Amiga OS was built from day 1 to support protected process memory, but the early 
+hardware (68000 chips) didn't have hardware support, and doing the protection in 
+software was too slow. A couple years later, when the 68030 came out with 
+hardware support, they couldn't turn on protected process memory without 
+breaking 99% of the software written for the Amiga. Since the feature wasn't 
+turned on to start with, everyone simply ignored it and did "bad" 
+things.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=958400704-09082006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=958400704-09082006><FONT face=Arial color=#0000ff size=2>If Microsoft _really_ had wanted CAS to work, they'd have 
+made apps run in some low level of trust from day 1. They'd have required us to 
+jump through hoops to elevate trust, thus strongly encouraging code to be 
+written within a partial trust scenario. But that's not what happened, and it is 
+WAAAaaaaay too late now to get the cows back in the barn...</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=958400704-09082006></SPAN><SPAN class=958400704-09082006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=958400704-09082006><FONT face=Arial color=#0000ff size=2>Rocky</FONT></SPAN></DIV><BR>
+<BLOCKQUOTE>
+  <DIV class=OutlookMessageHeader align=left>
+  <HR>
+  <FONT face=Tahoma size=2><B>From:</B> HarvSather [mailto:cslanet@lhotka.net] 
+  <BR><B>Sent:</B> Tuesday, August 08, 2006 9:33 PM<BR><B>To:</B> 
+  rocky@lhotka.net<BR><B>Subject:</B> Re: [CSLA .NET] CSLA In a Hosted 
+  Environment<BR></FONT><BR></DIV>
+  <DIV></DIV>
+  <DIV>This article may be of some help<BR><BR>&nbsp;</DIV>
+  <DIV>Moving from Full Trust to partial trust with Code Access Security</DIV>
+  <DIV><FONT face=Arial size=2><A href="http://blog.searyblog.com/blog/_archives/2006/7/6/2088280.html">http://blog.searyblog.com/blog/_archives/2006/7/6/2088280.html</A><BR><BR><BR>Harv 
+  Sather<BR><BR><BR></FONT></DIV><BR><BR><BR></BLOCKQUOTE></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>steve.king replied on Thursday, March 15, 2007</h2>We recently moved to ClearCase which creates a network drive and stores the source code there from which we do our work.&nbsp; I cannot run my application now because I'm getting the "assembly (CSLA) does not allow partially trusted callers" exception.&nbsp; How can I get around this?&nbsp; Please help!</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, March 15, 2007</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>This is a general .NET issue &#8211; network drives are
+considered part of the Intranet zone, not the local computer, and so files from
+network drives are not considered secure by default.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Some (most) of the issues can be resolved by using the .NET
+security config console to add a security exception, adding your network drive to
+your local computer zone. That way .NET treats it like the C: drive.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I say &#8220;most&#8221; however, because I&#8217;ve run into
+other issues in VS 2005, where VS itself has issues working against network
+drives &#8211; but you may or may not encounter them. My specific issues were
+around having &#8220;My Documents&#8221; on a network drive, and VS thinking I
+was running it for the first time, every time.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<div>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> steve.king
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Thursday, March 15, 2007 4:35 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] CSLA In a Hosted Environment<o:p></o:p></span></p>
+
+</div>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>We recently moved to ClearCase which creates a network drive
+and stores the source code there from which we do our work.&nbsp; I cannot run
+my application now because I'm getting the &quot;assembly (CSLA) does not allow
+partially trusted callers&quot; exception.&nbsp; How can I get around
+this?&nbsp; Please help!<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>steve.king replied on Friday, March 16, 2007</h2><P>Rocky:</P>
+<P>I'm afraid I'm not sure how to go about adding this mapped drive to my local computer zone.&nbsp; Is this a console/command-line utility?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Friday, March 16, 2007</h2>You need the .net SDK, then the appropriate tool appears in the Control Panel under Admin Tools.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>steve.king replied on Friday, March 16, 2007</h2><P>I've added the "URL" to the folder to all of the zones with FullTrust through the .NET 2.0 Configuartion Control Panel applet.&nbsp; This URL (a UNC name)&nbsp;contains my source code but I'm still getting the same error when I try to run my project from the IDE.</P>
+<P>Any suggestions?&nbsp; Do I need to&nbsp;put the AllowPartiallyTrustedCallers attribute into the AssemblyInfo.cs file of the CSLA.NET project and recompile it?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, March 16, 2007</h2><P>No, if you get it right then the code should be considered trusted.</P>
+<P>I haven't tried doing this for a long time (since 2003 I think), but I remember it was a pain in the @$$ to get the settings right to make a network drive available.</P>
+<P>But, at least back then, it was easy to test, because the Windows Forms designer blew up when trying to open forms from non-trusted locations, so testing whether the security was right was simply a matter of trying to open a WinForm project in VS.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jemmer replied on Tuesday, March 20, 2007</h2><P>Hi,</P>
+<P>Please forgive my ignorance, but what is this ".NET security config console to add a security exception" of which you speak?&nbsp; How do I add a network drive to my local computer zone?</P>
+<P>I must be dense, but I don't see anything like a security exception in the .NET 2.0 configuration tool.</P>
+<P>I ask this because since upgrading to VS2005, we've found that we can no longer access assemblies via the VS 2005 toolbox which are located on a network drive. We have some custom controls located in assemblies on a network drive which in VS2003 we could access - for now we've copied them to our local drives, but that's a lousy solution.&nbsp; I'm thinking your post offers a clue as to why VS may be having this problem.&nbsp; I tried raising the trust level to full access for the local intranet, and that appears to work, but seems rather broad brush, and your post alludes to a finer level of control.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, March 20, 2007</h2><P>Start|Programs|Control Panel|Administrative Tools|Microsoft .NET Framework 1.0 Configuration</P>
+<P>Start|Programs|Control Panel|Administrative Tools|Microsoft .NET Framework 1.1 Configuration</P>
+<P>Start|Programs|Control Panel|Administrative Tools|Microsoft .NET Framework 2.0 Configuration</P>
+<P>Depending on which version(s) of .NET you have installed.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jemmer replied on Tuesday, March 20, 2007</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div> 
+<P>Start|Programs|Control Panel|Administrative Tools|Microsoft .NET Framework 2.0 Configuration</P>
+<P>Depending on which version(s) of .NET you have installed.</P>
+<P></div></BLOCKQUOTE></P>
+<P>Yes, I know.&nbsp; As I said, I tried raising the trust level of the local Intranet zone to Full trust (so I used that tool), and that seemd to work, but I feel&nbsp;raising the whole zone to full trust is a bit too broad a brush.&nbsp; You alluded to a finer level of control when you said, in an earlier post in this thread, "<SPAN>Some (most) of the issues can be resolved&nbsp;</SPAN>by using the .NET security config console to add a security exception, adding your network drive to your local computer zone. That way .NET treats it like the C: drive.".</P>
+<P><O:P>I was wondering how to add such a security exception, and particularly how to add a network drive to my local computer zone, since I couldn't find anything in that tool which referred to either a "security exception" or modifying the local zone configuration.&nbsp; Maybe it is there, but I sure couldn't see it...</O:P></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, March 20, 2007</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>You need to add a new URL type Code Group that points at your
+specific URL (server, directory, whatever) and give it the FullTrust permission
+set.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<div>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> jemmer
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Tuesday, March 20, 2007 2:09 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: CSLA In a Hosted Environment<o:p></o:p></span></p>
+
+</div>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<blockquote>
+
+<div>
+
+<p class=MsoNormal><img id="_x0000_i1025" src="/Themes/default/images/icon-quote.gif"><strong>RockfordLhotka:</strong><o:p></o:p></p>
+
+</div>
+
+<div>
+
+<p>Start|Programs|Control Panel|Administrative Tools|Microsoft .NET Framework
+2.0 Configuration<o:p></o:p></p>
+
+<p>Depending on which version(s) of .NET you have installed.<o:p></o:p></p>
+
+</div>
+
+</blockquote>
+
+<p>Yes, I know.&nbsp; As I said, I tried raising the trust level of the local
+Intranet zone to Full trust (so I used that tool), and that seemd to work, but
+I feel&nbsp;rainsing the whole zone to full trust is a bit too broad a
+brush.&nbsp; You alluded to a finer level of control when you said, in an
+earlier post in this thread, &quot;Some (most) of the issues can be
+resolved&nbsp;by using the .NET security config console to add a security
+exception, adding your network drive to your local computer zone. That way .NET
+treats it like the C: drive.&quot;.<o:p></o:p></p>
+
+<p>I was wondering how to add such a security exception, and particularly how
+to add a network drive to my local conmputer zone, since I couldn't find
+anything in that tool which referred to either a &quot;security exception&quot;
+or modifying the local zone configuration.&nbsp; Maybe it is there, but I sure
+couldn't see it...<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,32 @@
+<html><header><title>Help! - How to declare Property of type FilteredBindingList</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Help! - How to declare Property of type FilteredBindingList</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6169.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>andrewrajcoomar posted on Thursday, January 15, 2009</h2><P>How do I create a property of type FilteredBindingList in a base form, so that inherited forms can reference and set that property?</P>
+<P>Sorry, I know this is not very specific to CSLA.</P>
+<P>Thanks,</P>
+<P>Andrew</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, January 15, 2009</h2><P>That may be a little tricky, because Windows Forms doesn't like generics very much, and FilteredBindingList is a generic type.</P>
+<BLOCKQUOTE dir=ltr>
+<P>private FilteredBindingList&lt;????&gt; _myProperty;<BR>public FilteredBindingList&lt;????&gt; MyProperty<BR>{<BR>&nbsp; get { return _myProperty; }<BR>&nbsp; set { _myProperty = value; }<BR>}</P></BLOCKQUOTE>
+<P>Obviously the trick is the "???". Normally this would be something like T, where T is a generic type provided to the containing class. But you can't make a Form generic or Windows Forms will have trouble.</P>
+<P>So you'll probably need to use the non-generic IBindingList interface:</P>
+<BLOCKQUOTE dir=ltr>
+<P>private&nbsp;IBindingList _myProperty;<BR>public IBindingList MyProperty<BR>{<BR>&nbsp; get { return _myProperty; }<BR>&nbsp; set { _myProperty = value; }<BR>}</P></BLOCKQUOTE>
+<P>And then cast the property value to something more specific when you want to use it.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>andrewrajcoomar replied on Thursday, January 15, 2009</h2><P>Rocky,</P>
+<P>Thank you sir, that worked. My next issue is how to use the non-generic <FONT size=2>IReadOnlyObject for ChartFieldInfo so that:</P>
+<P></FONT><FONT color=#0000ff size=2>Dim</FONT><FONT size=2> filteredList </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>New</FONT><FONT size=2> Csla.FilteredBindingList(</FONT><FONT color=#0000ff size=2>Of</FONT><FONT size=2> ChartFieldInfo)(_BOReadOnlyList) </FONT></P>
+<P><FONT size=2><STRONG><U>becomes </U></STRONG></FONT></P>
+<P><FONT size=2><FONT color=#0000ff>Dim</FONT><FONT size=2> filteredList </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>New</FONT><FONT size=2> Csla.FilteredBindingList(</FONT><FONT color=#0000ff size=2>Of</FONT><FONT size=2> BOReadOnlyInfo)(_BOReadOnlyList)</FONT></FONT></P>
+<P><FONT size=2>I tried this unsuccessfully:</FONT></P><FONT size=2><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Private</FONT><FONT size=2> _BOReadOnlyInfo </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> Csla.Core.IReadOnlyObject</P>
+<P></FONT><FONT color=#0000ff size=2>Protected</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Property</FONT><FONT size=2> BOReadOnlyInfo() </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> Csla.Core.IReadOnlyObject</P>
+<P></FONT><FONT color=#0000ff size=2>Get</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Return</FONT><FONT size=2> _BOReadOnlyInfo</P>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Get</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Set</FONT><FONT size=2>(</FONT><FONT color=#0000ff size=2>ByVal</FONT><FONT size=2> value </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> Csla.Core.IReadOnlyObject)</P>
+<P>_BOReadOnlyInfo = value</P>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Set</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Property</FONT></P>
+<P><FONT color=#0000ff size=2></FONT>&nbsp;</P>
+<P><FONT color=#0000ff size=2>By the way, in the above: <FONT color=#0000ff size=2></P>
+<P>Private</FONT><FONT color=#000000 size=2> _BOReadOnlyList </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2><FONT color=#000000> Csla.Core.IReadOnlyCollection</FONT></FONT></P>
+<P><FONT size=2><FONT color=#000000>works.</FONT></FONT></P>
+<P><FONT size=2><FONT color=#000000></FONT></FONT>&nbsp;</P>
+<P><FONT size=2><FONT color=#000000>Thanks a million.</FONT></FONT></P>
+<P><FONT size=2><FONT color=#000000>Andrew</FONT></P></FONT></FONT></FONT></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

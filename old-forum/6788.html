@@ -1,0 +1,106 @@
+<html><header><title>Rebinding BO + _PropertyChange event miss firing</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Rebinding BO + _PropertyChange event miss firing</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6788.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>jamie.clayton posted on Tuesday, April 14, 2009</h2><P>Guys I'm stuck trying to debug a databinding behaviour in windows forms. I've got a parent CSLA 3.0.3&nbsp;BO with a child BO (VB code).&nbsp; I've created a screen and used&nbsp;created a bindingsource that uses&nbsp;the&nbsp; private variable (withevents)&nbsp;in the forms code.&nbsp;When editing the child BO I open a form and pass a copy of the Parent BO to it and allow the child form to edit the BO, then when I return back to the parent form, rebind all the datasources with the copy from the child form.&nbsp; It's a fairly complicated parent/child BO and there are lots of BO_PropertyChange events at the business object and screen level to handle information changing.</P>
+<P>If the child object is edited, everything works as expected. If I create a new child object, then when I return to the parent screen I loose the parent BO_PropertyChange event (it just seems to disconnect).&nbsp; I&nbsp;don't understand this behaviour because the BO_Property Let/Get fires, Business Rules fire and the Parent forms Private variable mBO_PropertyChange event also fires.</P>
+<P>Any suggestion on what to do.&nbsp; I've spent 5 hours trying different re-binding code approaches with little luck.</P>
+<P>Here is some sample code (cut down a lot)</P>
+<P>This is the private variable</P><FONT color=#0000ff size=2><FONT color=#0000ff size=2>
+<P>Private</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>WithEvents</FONT></FONT><FONT size=2> mSale </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>As</FONT></FONT><FONT size=2> Sale = </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Nothing</P>
+<P></FONT></FONT><BR>This is the load mechanism for the parent screen.</P><FONT color=#0000ff size=2><FONT color=#0000ff size=2>
+<BLOCKQUOTE dir=ltr>
+<P>Private</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Sub</FONT></FONT><FONT size=2> Sales_Load(</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>ByVal</FONT></FONT><FONT size=2> sender </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>As</FONT></FONT><FONT size=2> System.Object, </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>ByVal</FONT></FONT><FONT size=2> e </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>As</FONT></FONT><FONT size=2> System.EventArgs) </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Handles</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>MyBase</FONT></FONT><FONT size=2>.Load</P>
+<BLOCKQUOTE dir=ltr>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Me</FONT></FONT><FONT size=2>.Cursor = Cursors.WaitCursor</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>If</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Not</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Me</FONT></FONT><FONT size=2>.DesignMode </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Then</P></FONT></FONT><FONT size=2>
+<P></FONT>
+<P><FONT color=#008000 size=2><FONT color=#008000 size=2></P>
+<P></FONT></FONT><FONT size=2>SaleBindingSource.DataSource = mSale</P>
+<P></P>
+<P></FONT>
+<P><FONT color=#008000 size=2><FONT color=#008000 size=2></P>
+<P></FONT></FONT><FONT size=2></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>If</FONT></FONT><FONT size=2> mSale.SaleFKClientID &lt;&gt; 0 </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>AndAlso</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Not</FONT></FONT><FONT size=2> IsNothing(mSale.Client) </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Then</P>
+<P></P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2>' Display Client name.</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>With</FONT></FONT><FONT size=2> ClientBindingSource</P>
+<P>.DataSource = mSale.Client</P>
+<P>.RaiseListChangedEvents = </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>True</P></FONT></FONT><FONT size=2>
+<P>.ResetBindings(</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>False</FONT></FONT><FONT size=2>)</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>End</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>With</P></FONT></FONT><FONT size=2>
+<P></FONT>
+<P><FONT size=2></P>
+<P>ApplyAuthorizationRules()</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2></P>
+<P></P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Me</FONT></FONT><FONT size=2>.Cursor = Cursors.Default</P></BLOCKQUOTE>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>End</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Sub</FONT></FONT></P></BLOCKQUOTE>
+<P>This is the load mechanism for the Child screen.</P><FONT color=#0000ff size=2><FONT color=#0000ff size=2><FONT size=2>
+<BLOCKQUOTE dir=ltr>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Private</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Sub</FONT></FONT><FONT size=2> OpenClientScreen(</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>ByVal</FONT></FONT><FONT size=2> clientID </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>As</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Integer</FONT></FONT><FONT size=2>)</P>
+<BLOCKQUOTE dir=ltr>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Me</FONT></FONT><FONT size=2>.Cursor = Windows.Forms.Cursors.WaitCursor</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Dim</FONT></FONT><FONT size=2> tempCopy </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>As</FONT></FONT><FONT size=2> Sale</P>
+<P>tempCopy = mSale.Clone</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Dim</FONT></FONT><FONT size=2> frm </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>As</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>New</FONT></FONT><FONT size=2> frmClientEntry(tempCopy)</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Me</FONT></FONT><FONT size=2>.Cursor = Windows.Forms.Cursors.Default</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>With</FONT></FONT><FONT size=2> frm</P>
+<BLOCKQUOTE dir=ltr>
+<P>.ShowDialog()</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Select</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Case</FONT></FONT><FONT size=2> .DialogResult</P>
+<BLOCKQUOTE dir=ltr>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Case</FONT></FONT><FONT size=2> DialogResult.Yes</P>
+<BLOCKQUOTE dir=ltr>
+<P></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2>' The user might have created a new client record (so we still need to treat is as a child object)</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>If</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Not</FONT></FONT><FONT size=2> .Client.IsChild </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Then</P></FONT></FONT><FONT size=2>
+<BLOCKQUOTE dir=ltr>
+<P>.Client.MarkAsChild()</P></BLOCKQUOTE>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>End</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>If</FONT></FONT></P>
+<P dir=ltr><FONT color=#008000 size=2><FONT color=#008000 size=2>' Need to switch off the databinding for a little bit.</P></FONT></FONT><FONT size=2>
+<P dir=ltr></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>With</FONT></FONT><FONT size=2> SaleBindingSource</P>
+<BLOCKQUOTE dir=ltr>
+<P dir=ltr>.RaiseListChangedEvents = </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>False</P></FONT></FONT><FONT size=2>
+<P dir=ltr>.EndEdit()</P>
+<P dir=ltr>.DataSource = </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Nothing</P></FONT></FONT><FONT size=2></BLOCKQUOTE>
+<P dir=ltr></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>End</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>With</P></FONT></FONT><FONT size=2>
+<P dir=ltr></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>With</FONT></FONT><FONT size=2> ClientBindingSource</P>
+<BLOCKQUOTE dir=ltr>
+<P dir=ltr>.RaiseListChangedEvents = </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>False</P></FONT></FONT><FONT size=2>
+<P dir=ltr>.EndEdit()</P>
+<P dir=ltr>.DataSource = </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Nothing</P></FONT></FONT><FONT size=2></BLOCKQUOTE>
+<P dir=ltr></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>End</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>With</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2>' Update the client from the clients screen copy of the sales BO.</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2>' This is important because its painful to change child objects on a popup form.</P></FONT></FONT><FONT size=2>
+<P>mSale = .Sale.Clone</P>
+<P>DataBindingHelper.Rebind(SaleBindingSource, mSale)</P>
+<P>DataBindingHelper.Rebind(ClientBindingSource, mSale.Client)</P></FONT><FONT size=2>
+<P>ApplyAuthorizationRules()</P></BLOCKQUOTE></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Case</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Else</FONT></FONT><FONT size=2> </FONT><FONT color=#008000 size=2><FONT color=#008000 size=2>' Cancel.</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2>' Ignore the changes.</P></BLOCKQUOTE></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>End</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Select</P></BLOCKQUOTE></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2>' If the user deletes the client record (god forbid and it's not used else were, </P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2>' then the sale record should clear that client reference</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>If</FONT></FONT><FONT size=2> .DeletedClientId = clientID </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Then</P></FONT></FONT><FONT size=2>
+<BLOCKQUOTE dir=ltr>
+<P>mSale.SaleFKClientID = 0</P>
+<P></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2>' This should then set the clientNameTextBox.text = String.Empty</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>With</FONT></FONT><FONT size=2> ClientBindingSource</P>
+<BLOCKQUOTE dir=ltr>
+<P>.DataSource = </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Nothing</P></FONT></FONT><FONT size=2>
+<P>.RaiseListChangedEvents = </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>True</P></FONT></FONT><FONT size=2>
+<P>.ResetBindings(</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>False</FONT></FONT><FONT size=2>)</P></BLOCKQUOTE>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>End</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>With</P></BLOCKQUOTE></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>End</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>If</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>End</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>With</P></BLOCKQUOTE></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>End</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Sub</P></BLOCKQUOTE></FONT></FONT></FONT></FONT>
+<P>The&nbsp;parent object, creates a new&nbsp;child using the following&nbsp;</P><FONT color=#0000ff size=2><FONT color=#0000ff size=2><FONT size=2>
+<P></FONT>
+<P><FONT color=#808080 size=2><FONT color=#808080 size=2></P>
+<BLOCKQUOTE dir=ltr>
+<P></FONT></FONT><FONT size=2></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Public</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Sub</FONT></FONT><FONT size=2> NewClient(</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>ByVal</FONT></FONT><FONT size=2> markAsChild </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>As</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Boolean</FONT></FONT><FONT size=2>) </P>
+<P></P>
+<BLOCKQUOTE dir=ltr>
+<P></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2>'Call a method which calls DataPortal.Create(Of Client)</FONT></P><FONT size=2>
+<P><FONT color=#0000ff size=2>msaleClient = Client.NewClient()</FONT></P>
+<P></FONT></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2>' Ok so the sale link to client is a new record (and that changes how we save these records)</P></FONT></FONT>
+<P><FONT color=#0000ff size=2>msaleFKClientID = mClient.PKClientID</FONT></P>
+<P><FONT color=#0000ff size=2>If</FONT></FONT><FONT size=2> markAsChild </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Then</FONT></FONT><FONT size=2> mClient.MarkAsChild()</P></BLOCKQUOTE>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>End</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Sub</FONT></FONT></P></BLOCKQUOTE>
+<P dir=ltr>
+<P><FONT size=2><FONT color=#000000></FONT></P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2></FONT></FONT></FONT></FONT>
+<P></P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

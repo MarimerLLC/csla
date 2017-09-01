@@ -1,0 +1,61 @@
+<html><header><title>Some performance issues when coming back from appserver</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Some performance issues when coming back from appserver</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/12088.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Chris62 posted on Wednesday, July 24, 2013</h2><p>I have a survey application where a Survey has multiple questions, each question in turn may have answers(or may not, if not I display a text box).</p>
+<p>The object structure looks like this:</p>
+<p>Survey(root/parent biz object) -&gt; Questions child list (with Question child objects) -&gt; Each Question child object may have answers to choose from(Answers list with Answer child object, or count may be 0).</p>
+<p>We recently created a survey with 75 questions, about half had predetermined answers(about 4 per question), the rest are text boxes(where child list Answers count is 0).</p>
+<p>I&#39;ve traced the movement of the biz objects between the webserver and appserver to try and determine where the slowdown is occurring. &nbsp;(I wrote to the event viewer) &nbsp;Going from the webserver to the appserver takes about a second, querying the database and building the object model takes about 2.5 to 3 seconds. &nbsp;When the objects return from the appserver to the webserver takes about 9-10 seconds. &nbsp;I don&#39;t understand why the return is taking so long.</p>
+<p>&nbsp;</p>
+<p>In the controller (ASP.NET MVC website) I have:</p>
+<p style="padding-left:30px;">string appname = &quot;StagingWebsite&quot;;</p>
+<p style="padding-left:30px;">if (!EventLog.SourceExists(appname))</p>
+<p style="padding-left:30px;">{</p>
+<p style="padding-left:60px;"><span>	</span>EventLog.CreateEventSource(appname, &quot;Application&quot;);</p>
+<p style="padding-left:30px;">}</p>
+<p style="padding-left:30px;">EventLog.WriteEntry(appname, &quot;Webserver: BEGIN survey GET &quot; + DateTime.Now.ToString());</p>
+<p style="padding-left:30px;">Survey survey = Survey.GetSurvey(sid);</p>
+<p style="padding-left:30px;">EventLog.WriteEntry(appname, &quot;Webserver: END survey GET &quot; + DateTime.Now.ToString());</p>
+<p style="padding-left:30px;">&nbsp;</p>
+<p>The biz object Survey</p>
+<p style="padding-left:30px;">[Serializable]</p>
+<p style="padding-left:30px;">public class Survey : Business&lt;Survey&gt;</p>
+<p style="padding-left:30px;">{</p>
+<p style="padding-left:60px;"><span>	</span>public static Survey GetSurvey(int SurveyId)</p>
+<p style="padding-left:60px;"><span>	</span>{</p>
+<p style="padding-left:90px;"><span>		</span>string appname = &quot;StagingWebsite&quot;;</p>
+<p style="padding-left:90px;"><span>		</span>if (!EventLog.SourceExists(appname))</p>
+<p style="padding-left:90px;"><span>		</span>{</p>
+<p style="padding-left:120px;"><span>			</span>EventLog.CreateEventSource(appname, &quot;Application&quot;);</p>
+<p style="padding-left:90px;"><span>		</span>}</p>
+<p style="padding-left:90px;">EventLog.WriteEntry(appname, &quot;Webserver: BEGIN Go Thru DATAPORTAL&quot; + DateTime.Now.ToString());</p>
+<p style="padding-left:90px;">Survey s = DataPortal.Fetch&lt;Survey&gt;(SurveyId);</p>
+<p style="padding-left:90px;">EventLog.WriteEntry(appname, &quot;Webserver: END Go Thru DATAPORTAL&quot; + DateTime.Now.ToString());</p>
+<p style="padding-left:90px;">return s;</p>
+<p style="padding-left:60px;"><span>	</span>}</p>
+<p style="padding-left:60px;"><span>		</span></p>
+<p style="padding-left:60px;"><span>	</span>private void DataPortal_Fetch(int SurveyId)</p>
+<p style="padding-left:60px;"><span>	</span>{</p>
+<p style="padding-left:90px;"><span>		</span>string appname = &quot;StagingWebsite&quot;;</p>
+<p style="padding-left:90px;"><span>		</span>if (!EventLog.SourceExists(appname))</p>
+<p style="padding-left:90px;"><span>		</span>{</p>
+<p style="padding-left:120px;"><span>			</span>EventLog.CreateEventSource(appname, &quot;Application&quot;);</p>
+<p style="padding-left:90px;"><span>		</span>}</p>
+<p style="padding-left:90px;">EventLog.WriteEntry(appname, &quot;Appserver: BEGIN survey DATA &quot; + DateTime.Now.ToString());</p>
+<p style="padding-left:90px;">// snip, loading data for all properties(including children takes ~3 seconds</p>
+<p style="padding-left:90px;"><span>		</span></p>
+<p style="padding-left:90px;"><span>		</span>EventLog.WriteEntry(appname, &quot;Appserver: END survey DATA &quot; + DateTime.Now.ToString());</p>
+<p style="padding-left:90px;"><span>	</span>}</p>
+<p style="padding-left:30px;">}</p>
+<p>In the event viewer I&#39;m seeing:</p>
+<p>In child lists I&#39;m setting RaiseListChangedEvents to false when I load the biz objects in(and set back to true when complete).</p>
+<p>If anyone needs more code I post it up. &nbsp;Does anyone know where I can look to speed up the &quot;return &nbsp;trip&quot; from the app server to web server?</p>
+<div></div></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Chris62 replied on Wednesday, July 24, 2013</h2><p>From the event viewer</p>
+<p style="padding-left:30px;">Webserver: BEGIN survey GET 7/24/2013 3:19:55 PM</p>
+<p style="padding-left:30px;">Webserver: BEGIN Go Thru DATAPORTAL7/24/2013 3:19:55 PM</p>
+<p style="padding-left:30px;">&nbsp;</p>
+<p style="padding-left:30px;">Appserver: BEGIN survey DATA 7/24/2013 3:19:54 PM</p>
+<p style="padding-left:30px;">Appserver: END survey DATA 7/24/2013 3:19:56 PM</p>
+<p style="padding-left:30px;">&nbsp;</p>
+<p style="padding-left:30px;">Webserver: END Go Thru DATAPORTAL7/24/2013 3:20:05 PM</p>
+<p style="padding-left:30px;">Webserver: END survey GET 7/24/2013 3:20:05 PM</p>
+<p style="padding-left:30px;">Webserver: END GET SURVEY MODEL 7/24/2013 3:20:08 PM</p>
+<p>&nbsp;</p>
+<p>I believe the appserver clock is about a second behind the webserver.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,17 @@
+<html><header><title>Custom validation questions</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Custom validation questions</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5150.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>decius posted on Thursday, July 24, 2008</h2><P>I'm hoping someone can shove me in the right direction here:&nbsp; How can I support validation of a property that is of a custom object type?</P>
+<P>I'm trying to setup a library of generic csla objects, that can be used inside bigger csla objects for my work environment.&nbsp; For instance, I've created a flexible Address object (something in my work environment that is always handled differently from app to app).&nbsp; I'm hoping to use this object as a property in other larger csla objects. </P>
+<P>I had no problems creating the smaller generic object.&nbsp; But when it comes to using it in these larger objects I run into the issue of being able to support the validation of this property (the generic smaller&nbsp;object).</P>
+<P>Can anyone give me advice on this? Anything would be greatly appreciated.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Lalit replied on Friday, July 25, 2008</h2><P>I will suggest to use custom validation methods for such properties. In these methods u can simply check IsValid property of the object and in case of failure return the BrokenRulesCollection.</P>
+<P>&nbsp;</P><FONT color=#0000ff size=2>
+<P>private</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>bool</FONT><FONT size=2> ValidateObject(</FONT><FONT color=#0000ff size=2>object</FONT><FONT size=2> target, </FONT><FONT color=#2b91af size=2>RuleArgs</FONT><FONT size=2> e)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (</FONT><FONT color=#0000ff size=2>target</FONT><FONT size=2>.IsValid)</FONT></P>
+<P><FONT size=2>{</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>true</FONT><FONT size=2>;</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>else</P></FONT><FONT size=2>
+<P>{</P>
+<P>e.Description = </FONT><FONT color=#a31515 size=2>target.BrokenRuleCollection.ToString()</FONT><FONT size=2>;</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>false</FONT><FONT size=2>;</P>
+<P>}</P>
+<P>}</P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>decius replied on Friday, July 25, 2008</h2><P><BR>Thanks. I had actually&nbsp;discovered this exact approach in projectTracker recently.&nbsp; thought I didn't think of returning target.BrokenRuleCollection.ToString().</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

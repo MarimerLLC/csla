@@ -1,0 +1,51 @@
+<html><header><title>Binding  and exceptions throw by the SetProperty erroneously.</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Binding  and exceptions throw by the SetProperty erroneously.</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9195.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Lazaro posted on Friday, July 09, 2010</h2><p class="MsoNormal"><span style="font-size:small;font-family:Calibri;">Hello,</span></p>
+<p class="MsoNormal"><span style="font-size:small;font-family:Calibri;">We are migrating CSLA from 1.3.0 to 3.8.2. </span></p>
+<p class="MsoNormal"><span style="font-size:small;font-family:Calibri;">&nbsp;</span></p>
+<p class="MsoNormal"><span style="font-size:small;font-family:Calibri;">Our property SET had this format:</span></p>
+<p class="MsoNormal"><span style="font-size:10pt;color:blue;font-family:Consolas;mso-fareast-font-family:&#39;Times New Roman&#39;;mso-bidi-font-family:&#39;Courier New&#39;;">public</span><span style="font-size:10pt;font-family:Consolas;mso-fareast-font-family:&#39;Times New Roman&#39;;mso-bidi-font-family:&#39;Courier New&#39;;">&nbsp;<span style="color:blue;">long</span>&nbsp;FICSLoanID<br />{<br />&nbsp;&nbsp;&nbsp;<span style="color:blue;">get</span>&nbsp;{&nbsp;<span style="color:blue;">return</span>&nbsp;_fICSLoanID;&nbsp;}<br />&nbsp;&nbsp;&nbsp;<span style="color:blue;">set</span><br />&nbsp;&nbsp;&nbsp;{<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">if</span>(_fICSLoanID&nbsp;!=&nbsp;<span style="color:blue;">value</span>)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;AssertCanEditFICSLoanID();<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_fICSLoanID&nbsp;=&nbsp;<span style="color:blue;">value</span>;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ValidateFICSLoanNumberRules();<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;MarkDirty();<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br />&nbsp;&nbsp;&nbsp;&nbsp;}<br />}</span></p>
+<p class="MsoNormal"><span style="font-size:small;font-family:Calibri;">&nbsp;</span></p>
+<p class="MsoNormal"><span style="font-size:small;font-family:Calibri;">With the conversion:</span></p>
+<p>
+<span style="color:blue;font-family:Consolas;"><span style="font-size:x-small;">private</span></span><span style="font-family:Consolas;"><span style="font-size:x-small;">&nbsp;<span style="color:blue;">static</span>&nbsp;<span style="color:#2b91af;">PropertyInfo</span>&lt;<span style="color:blue;">long</span>&gt;&nbsp;FICSLoanIDProperty&nbsp;=&nbsp;RegisterProperty&lt;<span style="color:blue;">long</span>&gt;(c&nbsp;=&gt;&nbsp;c.FICSLoanID);<br /><span style="color:blue;">public</span>&nbsp;<span style="color:blue;">long</span>&nbsp;FICSLoanID<br />{</span></span></p>
+<pre></pre>
+<p>
+<span style="font-family:Consolas;"><span style="font-size:x-small;">&nbsp;&nbsp;<span style="color:blue;">get</span>&nbsp;{&nbsp;<span style="color:blue;">return</span>&nbsp;GetProperty(FICSLoanIDProperty,&nbsp;_fICSLoanID);&nbsp;}<br />&nbsp;&nbsp;<span style="color:blue;">set</span>&nbsp;{&nbsp;SetProperty(FICSLoanIDProperty,&nbsp;<span style="color:blue;">ref</span>&nbsp;_fICSLoanID,&nbsp;<span style="color:blue;">value</span>);&nbsp;}<br />}</span></span></p>
+<pre></pre>
+<p>
+<span style="font-family:Consolas;"><span style="font-size:x-small;">&nbsp;</span></span></p>
+<pre></pre>
+<p>
+<span style="font-size:11pt;font-family:&#39;Calibri&#39;,&#39;sans-serif&#39;;mso-fareast-font-family:Calibri;mso-bidi-font-family:&#39;Times New Roman&#39;;">The AssertCanEditFICSLoanID <span style="mso-spacerun:yes;">&nbsp;</span>and ValidateFICSLoanNumberRules logic were moved to the </span></p>
+<p><span style="font-size:11pt;font-family:&#39;Calibri&#39;,&#39;sans-serif&#39;;mso-fareast-font-family:Calibri;mso-bidi-font-family:&#39;Times New Roman&#39;;">Business&nbsp;Rules and<span style="mso-spacerun:yes;">&nbsp; </span>Authorization&nbsp;Rules logic in the new version.</span></p>
+<pre></pre>
+<p>
+<span style="font-size:11pt;font-family:&#39;Calibri&#39;,&#39;sans-serif&#39;;mso-fareast-font-family:Calibri;mso-bidi-font-family:&#39;Times New Roman&#39;;">In the UI we are using a BindingSource windows control.</span></p>
+<pre></pre>
+<p>
+<span style="font-size:11pt;font-family:&#39;Calibri&#39;,&#39;sans-serif&#39;;mso-fareast-font-family:Calibri;mso-bidi-font-family:&#39;Times New Roman&#39;;">&nbsp;</span></p>
+<pre></pre>
+<p>
+<span style="font-size:11pt;font-family:&#39;Calibri&#39;,&#39;sans-serif&#39;;mso-fareast-font-family:Calibri;mso-bidi-font-family:&#39;Times New Roman&#39;;">The problem that we are having is that when we edit a UI control that is bound (through the BindingSource) to a Property of a business object, other properties, whose UI controls were not touched, also get their Set called (with their same values).<span style="mso-spacerun:yes;">&nbsp; </span>Some of those properties are ReadOnly (they should not be called), so they throw exceptions and the binding gets unstable. This happens even when we make the controls bound to those properties ReadOnly or Disable.</span></p>
+<pre></pre>
+<p>
+<span style="font-size:11pt;font-family:&#39;Calibri&#39;,&#39;sans-serif&#39;;mso-fareast-font-family:Calibri;mso-bidi-font-family:&#39;Times New Roman&#39;;">&nbsp;</span></p>
+<pre></pre>
+<p>
+<span style="font-size:11pt;font-family:&#39;Calibri&#39;,&#39;sans-serif&#39;;mso-fareast-font-family:Calibri;mso-bidi-font-family:&#39;Times New Roman&#39;;">We did not get this before since we made sure that the Values were changing &ldquo;</span><span style="font-size:x-small;"><span style="color:blue;font-family:Consolas;">if</span><span style="font-family:Consolas;">(_fICSLoanID&nbsp;!=&nbsp;<span style="color:blue;">value</span>)&rdquo; </span></span><span style="font-size:11pt;font-family:&#39;Calibri&#39;,&#39;sans-serif&#39;;mso-fareast-font-family:Calibri;mso-bidi-font-family:&#39;Times New Roman&#39;;">before we validate any rules; knowing that the binding did set properties not being set in the UI with the same values.</span><span style="font-family:Consolas;"><span style="font-size:x-small;"> </span></span><span style="font-size:11pt;font-family:&#39;Calibri&#39;,&#39;sans-serif&#39;;mso-fareast-font-family:Calibri;mso-bidi-font-family:&#39;Times New Roman&#39;;">However, with the new logic the checking for Business&nbsp;Rules and Authorization&nbsp;Rules happens even if the values being set are the same.</span></p>
+<pre></pre>
+<p>
+<span style="font-size:11pt;font-family:&#39;Calibri&#39;,&#39;sans-serif&#39;;mso-fareast-font-family:Calibri;mso-bidi-font-family:&#39;Times New Roman&#39;;">&nbsp;</span></p>
+<pre></pre>
+<p>
+<span style="font-size:11pt;font-family:&#39;Calibri&#39;,&#39;sans-serif&#39;;mso-fareast-font-family:Calibri;mso-bidi-font-family:&#39;Times New Roman&#39;;">We would like some help to correct the problem, since it seems that other people must have had this issue before.</span></p>
+<pre></pre>
+<p>
+<span style="font-size:11pt;font-family:&#39;Calibri&#39;,&#39;sans-serif&#39;;mso-fareast-font-family:Calibri;mso-bidi-font-family:&#39;Times New Roman&#39;;"></span></p>
+<pre></pre>
+<p>
+<span style="font-size:11pt;font-family:&#39;Calibri&#39;,&#39;sans-serif&#39;;mso-fareast-font-family:Calibri;mso-bidi-font-family:&#39;Times New Roman&#39;;">Thanks,</span></p>
+<pre></pre>
+<p>
+<span style="font-size:11pt;font-family:&#39;Calibri&#39;,&#39;sans-serif&#39;;mso-fareast-font-family:Calibri;mso-bidi-font-family:&#39;Times New Roman&#39;;">Lazaro </span></p>
+<pre></pre>
+<p class="MsoNormal"><span style="font-size:small;font-family:Calibri;">&nbsp;</span></p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Saturday, July 10, 2010</h2><p>The SetProperty() method does check to see if the new value equals the existing value, and it does no work if they are the same.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

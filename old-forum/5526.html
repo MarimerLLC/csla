@@ -1,0 +1,220 @@
+<html><header><title>CanWriteProperty if values are not changed</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CanWriteProperty if values are not changed</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5526.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>detritus posted on Friday, October 03, 2008</h2>I'm having a difficulty understanding why CanWriteProperty is checked at all if the new value is same as the old one. In the end nothing will happen so why bother?<br><br>I'm having this problem in ASP.NET Mvc, where we need to write a ModelBinder class that basically maps properties from form posted dictionary to the BO itself (There is no data-binding there). If the user does not have permission to modify a property, it will return as it was (this part is also manual) and ModelBinder wil try to set same value to the BO which is fine because it's the same value anyway, but CanWriteProperty is called even if the new value is same as the old one and returns an error.<br><br>I think I can write a helper method in the base class to write the new value to the property only if it's different but it seems this should be the default behaviour.<br><br>Sinan<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Friday, October 03, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I think there were a few threads in the past with the same
+question.&nbsp; INMO, if a user is not allowed to set a property, he/she should
+not get to the point where SetProperty is fired, and if he does, then&nbsp;
+security exception should be thrown regardless what new value is.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> detritus
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Friday, October 03, 2008 5:38 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> [CSLA .NET] CanWriteProperty if values are not changed<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>I'm having a difficulty understanding why CanWriteProperty
+is checked at all if the new value is same as the old one. In the end nothing
+will happen so why bother?<br>
+<br>
+I'm having this problem in ASP.NET Mvc, where we need to write a ModelBinder
+class that basically maps properties from form posted dictionary to the BO
+itself (There is no data-binding there). If the user does not have permission
+to modify a property, it will return as it was (this part is also manual) and
+ModelBinder wil try to set same value to the BO which is fine because it's the
+same value anyway, but CanWriteProperty is called even if the new value is same
+as the old one and returns an error.<br>
+<br>
+I think I can write a helper method in the base class to write the new value to
+the property only if it's different but it seems this should be the default
+behaviour.<br>
+<br>
+Sinan<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>detritus replied on Friday, October 03, 2008</h2>You're right, and they don't get to that point. Only this is in asp.net mvc and there is no data-binding, with manual effort you don't let users to change those boxes you assume bound to the properties, and after they're done and submit the form, you get a dictionary of properties and their values which should be written to the BO (manual data-binding if you will). <br><br>Now in this mapping method (IModelBinder implementation), I should not need to check for every property "again" to see if the user authorized to write when in fact user did not change the value anyway.<br><br>I did try to make a helper method to accomplish this like SetChangedProperty but it seems most of the fields, methods I need is either internal or private, ended up having a very ugly looking if clause for every property set statement.<br><br>Did anybody implement a IModelBinder interface with authorization in mind?<br><br>Sinan<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Friday, October 03, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I see.&nbsp; You could you CanWriteProperty method.&nbsp; Would
+this work?<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> detritus
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Friday, October 03, 2008 6:12 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: CanWriteProperty if values are not changed<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>You're right, and they don't get to that point. Only this is
+in asp.net mvc and there is no data-binding, with manual effort you don't let
+users to change those boxes you assume bound to the properties, and after
+they're done and submit the form, you get a dictionary of properties and their
+values which should be written to the BO (manual data-binding if you will). <br>
+<br>
+Now in this mapping method (IModelBinder implementation), I should not need to
+check for every property &quot;again&quot; to see if the user authorized to
+write when in fact user did not change the value anyway.<br>
+<br>
+I did try to make a helper method to accomplish this like SetChangedProperty
+but it seems most of the fields, methods I need is either internal or private,
+ended up having a very ugly looking if clause for every property set statement.<br>
+<br>
+Did anybody implement a IModelBinder interface with authorization in mind?<br>
+<br>
+Sinan<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>detritus replied on Friday, October 03, 2008</h2>If you mean I can override it, I don't think that will help, because I would need the old and new values to decide. <br><br>Sinan<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Friday, October 03, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Seems like the only suggestion is to have a custom property
+setter instead of just SetProperty.&nbsp; You can do value checking, then call
+SetProperty.&nbsp; That might be a lot of work for you though.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> detritus
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Friday, October 03, 2008 8:58 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: RE: CanWriteProperty if values are not
+changed<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>If you mean I can override it, I don't think that will help,
+because I would need the old and new values to decide. <br>
+<br>
+Sinan<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>detritus replied on Saturday, October 04, 2008</h2>Other than writing that custom setter inside Csla project (which I don't want to do), I couldn't find a way to implement it (other than using reflection) in my library project (which cannot access the internals of Csla). In general practice, even the registered properties are private which makes the custom setter method in the base class not usable from outside (like from modelbinder in Web project).<br><br>Anyway, I'm going to try rasupit's idea to see how it goes.<br><br>Thanks,<br><br>Sinan<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rasupit replied on Friday, October 03, 2008</h2>I'm kinda in agreement with Sergey that you should consistently throw an exception on a write attempt made to property that is not permitted.&nbsp; This will actually give better experience to user so that user does not need to enter value to a field in order to find out that they don't have write permission.&nbsp; Of course the field should be disable to let user know that the field is not for editing.<br><br>Here is an example how to disable a text box in MVC by checking the CanWriteProperty:<br><font size="2" face="Courier New">Html.TextBox("Name", new {disabled=ViewData.Model.CanWriteProperty("Name", false) ? "disabled": ""})<br></font>&nbsp;<br>In ModelBinder, the IModelBinder.GetValue method will return null value when the form element is disabled.&nbsp; Therefore you can avoid assigning value to this property when the return value is null.<br><br>Ricky<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>detritus replied on Saturday, October 04, 2008</h2>That might be a good idea assuming I won't have properties that use null as a valid value. We use ExtJs, so we cannot use Html.TextBox but propably same thing could be done there.<br><br>Thanks for the tought,<br><br>Sinan<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rasupit replied on Saturday, October 04, 2008</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>detritus:</strong></div><div>That might be a good idea assuming I won't have properties that use null as a valid value. <br></div></BLOCKQUOTE><br>The value I was referring to is the value from form element; These values are all value types therefore null is an invalid value.<br><br>However unless you write your own custom binder, which I suspect you do (because you asked if any body has implement IModelBinder), you don't have to worry about this. This is how the UpdateModel or TryUpdateModel do internally therefore you'll experience this behavior when you use any of these methods to bind your object.<br><br>Ricky<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>detritus replied on Saturday, October 04, 2008</h2>Thanks Ricky,<br><br>There is a problem with nullable types though, for example if the property is DateTime?, default Mvc binders returns  (correctly of course) null when in fact posted value is empty string. If I disable the textbox I get back null again.<br><br>To differentiate between them I decided to check the posted dictionary keys to see if the property is in the list at all before looking its value (using default binders).<br><br>Seems working now, thanks a lot for your help.<br><br>Sinan<br><br><br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

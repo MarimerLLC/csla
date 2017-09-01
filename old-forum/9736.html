@@ -1,0 +1,180 @@
+<html><header><title>MVVM Silverlight Not refreshing afte fetching type of BusinessListBase</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>MVVM Silverlight Not refreshing afte fetching type of BusinessListBase</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9736.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>hanspret posted on Wednesday, November 10, 2010</h2><p>Hi</p>
+<p>I bought the MVVM video for silverlight. I designed a project exactly like the video. I&#39;v setup a view to display a list of User exactly like the video showed. When I call the factory method ont&nbsp;the&nbsp;I get nothing back. The BusyAnimation keeps on runnig and the canvas on top of the form is still visible. The OnRefreshed nor the OnError method in the viewmodel get hit.</p>
+<p>Below is code from the ViewModel. The Factory Method is <span style="font-family:Consolas;color:#a31515;font-size:x-small;">GetAMSUserCollection.</span></p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"><font face="Consolas" size="2"><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></font></span><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></span>
+<p>&nbsp;</p>
+<span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">public</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> </span></span><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">class</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> </span></span><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;">UserViewModel</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> : </span></span><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;">ViewModel</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">&lt;</span></span><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;">AMSUserCollection</span></span></span>
+<p><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">&gt;
+<p>{</p>
+<font face="Consolas" size="2"><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></font></span><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></span></p>
+<p>&nbsp;</p>
+<span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">public</span></span></span>
+<p><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> UserViewModel()
+<p>{</p>
+<font face="Consolas" size="2"><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></font></span><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></span></p>
+<p>&nbsp;</p>
+<span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;">Shell</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">.Instance.ShowStatus(</span></span><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">new</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> </span></span><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;">Status</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> { Text = </span></span><span style="font-family:Consolas;color:#a31515;font-size:x-small;"><span style="font-family:Consolas;color:#a31515;font-size:x-small;"><span style="font-family:Consolas;color:#a31515;font-size:x-small;">&quot;Loading list&quot;</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">, IsBusy = </span></span><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">true</span></span></span>
+<p><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> });<font face="Consolas" size="2"><font face="Consolas" size="2">
+<p>BeginRefresh(</p>
+</font></font></span><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></span></p>
+<p>&nbsp;</p>
+<span style="font-family:Consolas;color:#a31515;font-size:x-small;"><span style="font-family:Consolas;color:#a31515;font-size:x-small;"><span style="font-family:Consolas;color:#a31515;font-size:x-small;">&quot;GetAMSUserCollection&quot;</span></span></span>
+<p><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">);</span></span></p>
+<p><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"></span></span></p>
+<p><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">My Architect is a&nbsp;3 tier model so the factory method calls the dataportal on the server. I have stepped through the code and can see that the list is build up in the DataPortal_Fetch method. Here is the factory method code</span></span></p>
+</p>
+<p><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><font face="Consolas" size="2" color="#0000ff"><font face="Consolas" size="2" color="#0000ff"><font face="Consolas" size="2" color="#0000ff">
+<p>public</p>
+</font></font></font></span><font face="Consolas" size="2" color="#0000ff"><font face="Consolas" size="2" color="#0000ff">
+<p>&nbsp;</p>
+</font></font></span><font face="Consolas" size="2" color="#0000ff">
+<p>&nbsp;</p>
+</font></span>
+<p><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> </span></span><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">static</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> </span></span><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">void</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> GetAMSUserCollection(</span></span><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;">EventHandler</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">&lt;</span></span><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;">DataPortalResult</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">&lt;</span></span><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;">AMSUserCollection</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">&gt;&gt; callback)
+<p>{</p>
+<font face="Consolas" size="2"><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></font></span><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></span></p>
+<p><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">var</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> dp = </span></span><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">new</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> </span></span><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;">DataPortal</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">&lt;</span></span><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;">AMSUserCollection</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">&gt;();
+<p>dp.CreateCompleted += callback;</p>
+<p>dp.BeginFetch();</p>
+<p>}</p>
+<p>&nbsp;</p>
+<p>I even took all the code out in the factory method but still Iget no reaction in my UI. It is as if the WcfDataportal doesn&#39;t return anything.</p>
+<p>Can anybody pleas give me an answer</p>
+</span></span></p>
+</span></span></p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Wednesday, November 10, 2010</h2><p>Override the OnError method in the viewmodel. If an error occurs during the async processing, this is where you&#39;ll be able to see it.</p>
+<p>You might also override OnRefreshed, because this is where you&#39;ll first see a successful result.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>hanspret replied on Wednesday, November 10, 2010</h2><p>Hi Rocky </p>
+<p>I did override the Onrefresh and OnError methods but execution is never getting to this two methods. I did test the same principals with an Editable BusinessBase object and everything worked 100%. But when I fetch a collection I don&#39;t get any response.</p>
+<p>I debugged even to the class Csla.Server.Hosts.Silerlight.WcfPortal.Fetch, and I can see that the WCF is returning data without throwing an error but somehow it never reach my client</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, November 10, 2010</h2><p>Have you raised the limits on message size for WCF? Are you using compression? </p>
+<p>Those steps are basically required for any real SL app, because the default WCF limits are so low as to be useless.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>hanspret replied on Wednesday, November 10, 2010</h2><p>Yes I did, both on the web.config and ServicesReferences.ClientConfig.</p>
+<p>I did use Compression but took it out as I thought the compression might cause the problem. </p>
+<p><strong>Web.config:&nbsp;&nbsp; </strong></p>
+<p><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">
+<p>&lt;?xml version=&quot;1.0&quot;?&gt;</p>
+<p>&lt;configuration&gt;</p>
+<p>&lt;appSettings/&gt;</p>
+<p>&lt;connectionStrings/&gt;</p>
+<p>&lt;system.serviceModel&gt;</p>
+<p>&lt;services&gt;</p>
+<p>&nbsp;</p>
+<p>&lt;service behaviorConfiguration=&quot;WcfPortalBehavior&quot; name=&quot;Csla.Server.Hosts.Silverlight.WcfPortal&quot;&gt;</p>
+<p>&lt;endpoint address=&quot;&quot; binding=&quot;basicHttpBinding&quot; contract=&quot;Csla.Server.Hosts.Silverlight.IWcfPortal&quot; bindingConfiguration=&quot;BasicHttpBinding_IWcfPortal&quot;&gt;</p>
+<p>&lt;identity&gt;</p>
+<p>&lt;dns value=&quot;localhost&quot;/&gt;</p>
+<p>&lt;/identity&gt;</p>
+<p>&lt;/endpoint&gt;</p>
+<p>&lt;/service&gt;</p>
+<p>&lt;/services&gt;</p>
+<p>&lt;behaviors&gt;</p>
+<p>&lt;serviceBehaviors&gt;</p>
+<p>&lt;behavior name=&quot;returnFaults&quot;&gt;</p>
+<p>&lt;serviceDebug includeExceptionDetailInFaults=&quot;true&quot;/&gt;</p>
+<p>&lt;/behavior&gt;</p>
+<p>&lt;behavior name=&quot;WcfPortalBehavior&quot;&gt;</p>
+<p>&lt;serviceMetadata httpGetEnabled=&quot;true&quot;/&gt;</p>
+<p>&lt;serviceDebug includeExceptionDetailInFaults=&quot;true&quot;/&gt;</p>
+<p>&lt;/behavior&gt;</p>
+<p>&lt;/serviceBehaviors&gt;</p>
+<p>&lt;/behaviors&gt;</p>
+<p>&lt;bindings&gt;</p>
+<p>&lt;basicHttpBinding&gt;</p>
+<p>&lt;binding name=&quot;BasicHttpBinding_IWcfPortal&quot; maxBufferSize=&quot;10000000&quot; maxReceivedMessageSize=&quot;10000000&quot; receiveTimeout=&quot;00:10:00&quot; sendTimeout=&quot;00:10:00&quot; openTimeout=&quot;00:10:00&quot; closeTimeout=&quot;00:10:00&quot;&gt;</p>
+<p>&lt;readerQuotas maxBytesPerRead=&quot;10000000&quot; maxArrayLength=&quot;10000000&quot; maxStringContentLength=&quot;10000000&quot;/&gt;</p>
+<p>&lt;/binding&gt;</p>
+<p>&lt;/basicHttpBinding&gt;</p>
+<p>&lt;/bindings&gt;</p>
+<p>&lt;/system.serviceModel&gt;</p>
+<p>&lt;system.web&gt;</p>
+<p>&lt;!-- </p>
+<p>Set compilation debug=&quot;true&quot; to insert debugging </p>
+<p>symbols into the compiled page. Because this </p>
+<p>affects performance, set this value to true only </p>
+<p>during development.</p>
+<p>--&gt;</p>
+<p>&lt;compilation debug=&quot;true&quot; targetFramework=&quot;4.0&quot;&gt;</p>
+<p>&lt;/compilation&gt;</p>
+<p>&lt;!--</p>
+<p>The &lt;authentication&gt; section enables configuration </p>
+<p>of the security authentication mode used by </p>
+<p>ASP.NET to identify an incoming user. </p>
+<p>--&gt;</p>
+<p>&lt;authentication mode=&quot;Windows&quot;/&gt;</p>
+<p>&lt;!--</p>
+<p>The &lt;customErrors&gt; section enables configuration </p>
+<p>of what to do if/when an unhandled error occurs </p>
+<p>during the execution of a request. Specifically, </p>
+<p>it enables developers to configure html error pages </p>
+<p>to be displayed in place of a error stack trace.</p>
+<p>&lt;customErrors mode=&quot;RemoteOnly&quot; defaultRedirect=&quot;GenericErrorPage.htm&quot;&gt;</p>
+<p>&lt;error statusCode=&quot;403&quot; redirect=&quot;NoAccess.htm&quot; /&gt;</p>
+<p>&lt;error statusCode=&quot;404&quot; redirect=&quot;FileNotFound.htm&quot; /&gt;</p>
+<p>&lt;/customErrors&gt;</p>
+<p>--&gt;</p>
+<p>&lt;pages controlRenderingCompatibilityVersion=&quot;3.5&quot; clientIDMode=&quot;AutoID&quot;/&gt;</p>
+<p>&lt;/system.web&gt;</p>
+<p>&lt;!-- </p>
+<p>The system.webServer section is required for running ASP.NET AJAX under Internet</p>
+<p>Information Services 7.0. It is not necessary for previous version of IIS.</p>
+<p>--&gt;</p>
+<p>&lt;/configuration&gt;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p><strong>ClientConfig</strong></p>
+</span></span></p>
+<p>configuration&gt;</p>
+<p>&lt;system.serviceModel&gt;</p>
+<p>&lt;bindings&gt;</p>
+<p>&lt;basicHttpBinding&gt;</p>
+<p>&lt;binding name=&quot;BasicHttpBinding_IWcfPortal&quot; maxBufferSize=&quot;10000000&quot; maxReceivedMessageSize=&quot;10000000&quot; receiveTimeout=&quot;00:10:00&quot; sendTimeout=&quot;00:10:00&quot; openTimeout=&quot;00:10:00&quot; closeTimeout=&quot;00:10:00&quot;&gt;</p>
+<p>&nbsp;</p>
+<p>&lt;/binding&gt;</p>
+<p>&lt;/basicHttpBinding&gt;</p>
+<p>&lt;/bindings&gt;</p>
+<p>&lt;client&gt;</p>
+<p>&lt;endpoint address=&quot;http://localhost:63719/WcfSlPortal.svc&quot; binding=&quot;basicHttpBinding&quot;</p>
+<p>bindingConfiguration=&quot;BasicHttpBinding_IWcfPortal&quot; contract=&quot;WcfPortal.IWcfPortal&quot;</p>
+<p>name=&quot;BasicHttpBinding_IWcfPortal&quot; /&gt;</p>
+<p>&lt;/client&gt;</p>
+<p>&lt;/system.serviceModel&gt;</p>
+<p>&lt;/configuration&gt;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, November 10, 2010</h2><p>Then I really have no idea. If WCF isn&#39;t returning anything from the server then there&#39;s something wrong with WCF.</p>
+<p>OnError will get any WCF exceptions on the client. Either the WCF call worked and you get OnRefreshed or it failed (or an exception flows back from the server) in which case you&#39;ll get OnError.</p>
+<p>To get <em>neither</em> of them implies that the WCF request never completed at all and no async callback code ran on the client.</p>
+<p>And even that is a little odd, since eventually you&#39;d expect WCF to timeout on the client...</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>hanspret replied on Wednesday, November 10, 2010</h2><p>Thanks for all your help. I actually feel to stupid to tell you what I did wrong.</p>
+<p>&nbsp;I sat 9 straight hours on this problem and just when tears start rolling of frustration I saw the problem (Sort of a typo in my Factory Method). </p>
+<p>I am using Csla a while now with WPF and this is my first project with Silverlight. The Csla is for sure the best tool I ever encountered, keep up the good work.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, November 10, 2010</h2><p>I am still puzzled as to why OnError didn&#39;t happen. What kind of typo did you have? I&#39;d like to replicate the issue and find out why no exception came back to the client (this could be a bug in the data portal or ViewModelBase class).</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>hanspret replied on Thursday, November 11, 2010</h2><p>In the fetch&nbsp;factory method I had:</p>
+<p><strong>public static void GetAMSUserCollection(EventHandler&lt;DataPortalResult&lt;AMSUserCollection&gt;&gt; callback)</strong></p>
+<p><strong>{</strong></p>
+<p><strong>var dp = new DataPortal&lt;AMSUserCollection&gt;();</strong></p>
+<p><strong>dp.FetchCompleted += callback;</strong></p>
+<p><strong>dp.BeginFetch();</strong></p>
+<p><strong>}</strong></p>
+<p><strong></strong></p>
+<p><strong>public static void GetAMSUserCollection(EventHandler&lt;DataPortalResult&lt;AMSUserCollection&gt;&gt; callback)</strong></p>
+<p><strong>{</strong></p>
+<p><strong>var dp = new DataPortal&lt;AMSUserCollection&gt;();</strong></p>
+<p><strong>dp.CreateCompleted += callback;</strong></p>
+<p><strong>dp.BeginFetch();</strong></p>
+<p><strong>}</strong></p>
+<p><strong></strong></p>
+<p>Notice the difference? The second fetch factory method contains &quot;dp.CreateCompleted += callback&quot; while the first one is correct with dp.FetchCompleted.</p>
+<p>The dp.CreateCompleted in the fetch factory method caused all the pain</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

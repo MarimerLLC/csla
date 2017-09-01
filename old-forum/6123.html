@@ -1,0 +1,72 @@
+<html><header><title>LoadProperty in DataPortal.Insert()</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>LoadProperty in DataPortal.Insert()</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6123.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Manu Singhal posted on Monday, January 12, 2009</h2>Hi!<br><br>I have a DataPortal.Insert Method where I Am Retrieving some values&nbsp; and Loading them in the business objects properties. <br><br>But After Save Method is over the Values I Retrieved and Set are removed from Business Object?<br><br>What might be the issue.<br><br>I have checked that values are retrieved properly and LoadProperty Succeeds.<br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Monday, January 12, 2009</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I am guessing you are not using the result of Save().&nbsp; Your
+should have myBO = myBO.Save() code somewhere in your app.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Manu Singhal
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Monday, January 12, 2009 1:30 AM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> [CSLA .NET] LoadProperty in DataPortal.Insert()<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Hi!<br>
+<br>
+I have a DataPortal.Insert Method where I Am Retrieving some values&nbsp; and
+Loading them in the business objects properties. <br>
+<br>
+But After Save Method is over the Values I Retrieved and Set are removed from
+Business Object?<br>
+<br>
+What might be the issue.<br>
+<br>
+I have checked that values are retrieved properly and LoadProperty Succeeds.<br>
+<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,122 @@
+<html><header><title>CSLA &amp; Obfuscation</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA &amp; Obfuscation</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3257.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>rrlanders2 posted on Wednesday, July 25, 2007</h2><P>Apologies to all if this has been asked/answers/rehashed before.</P>
+<P>I'm new to CSLA (starting with 2.1, and I have the book and I am actually reading it!). </P>
+<P>My question is regarding obfuscation. Can the code I write using CSLA be obfuscated (like with the Dotfuscator product) ? We use that product for all of our .NET code we release. (I was not planning on obfuscating any of the csla dlls). </P>
+<P>We have had some issues with classes in our code, and it seems to be with those involved with .NET's reflection - we never did pin down exactly what the cause was, we just did not obfuscate the class in question and everything worked (and of course due to time/schedule constraints we have never gone back to determine exactly what the issue was).</P>
+<P>Thanks, Rod</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, July 25, 2007</h2><A HREF="/forums/thread/4926.aspx">http://forums.lhotka.net/forums/thread/4926.aspx</A></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rrlanders2 replied on Wednesday, July 25, 2007</h2><P>Rocky,</P>
+<P>Thanks for the link&nbsp;to the thread.</P>
+<P>In reading your response, you referenced "anywhere reflection is used to call method by name will fail". </P>
+<P>The product I am using allows me to turn off renaming of objects (and their methods). The code in the methods is still obfuscated and that suffices (that is what we have done in past for an object in an exe that gave us a problem).&nbsp; I have noticed that all the objects in our dlls still have the object/method names (it's only the exes that seem to have everything obfuscated). One thought - following your ProjectTracker code is to put all the business objects that inherit from CLSA into a seperate project/library/dll</P>
+<P>Speculating here (and I&nbsp;will have to&nbsp;test this), if I were to disable renaming of all business objects I create (that inherit from CSLA), do you think CSLA would work ?</P>
+<P>Alternatively - and maybe simplier - &nbsp;putting these objects in a seperate DLL would suffice. </P>
+<P>Your thoughts ?</P>
+<P>Thanks, Rod</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, July 25, 2007</h2><P>The short of it is this: reflection calls use pre-determined method names. Obfuscators, by default, rename methods. The result is that the method name doesn't match the pre-determined name, so failure is the result.</P>
+<P>If you can disable renaming of all CSLA subclass method/property names I would think that'd work.</P>
+<P>Alternately, if you aren't obfuscating Csla.dll, you can probably just not allow renaming of your DataPortal_XYZ methods (if your tool allows per-method blocking). I think (from memory) that those are the only methods called via reflection by name in standard usage.</P>
+<P>Of course if you use the DataMapper or ObjectAdapter then things are much harder, because they reflect against all your properties.</P>
+<P>Also, you must NOT use the auto-detection of property names when calling CanReadProperty(), CanWriteProperty() and PropertyHasChanged(). You'll need to explicitly provide the "real" property name, or the validation/authorization rules won't hook up.</P>
+<P>Hmm. But if you do that, the PropertyChanged event will fire with the "real" property name, rather than the "actual" name - so that could mess up data binding... That's an interesting puzzle, that might require changing CSLA .NET itself - probably to use the stack trace to find the "actual" name for the OnPropertyChanged() call, but to use the passed-in "real" name for the CheckRules() call.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rrlanders2 replied on Wednesday, July 25, 2007</h2><P>Thanks for the thoughts &amp; ideas.</P>
+<P>I took the project tracker solution - cut it down to the library and the PTWIN executable (we are developing windows apps), built it and made sure it ran.</P>
+<P>I the obfuscated it, built an install package, installed it, and of course it would not run.</P>
+<P>I modified the obfuscation project properties for the library to "NOT rename" and "NOT Remove". I think the "Not Remove" referrs to removal of the ability of reflection to find private methods (private due to the Criteria class being private ?) - not quite sure on that reasoning. I am not obfuscating csla or any of it's dlls. Just the code in the PtTracker library and PtWin.</P>
+<P>The program works. The only issue is I get MSDTC errors thrown when I try to save a new project and assign a resource at the same time (it works if I create and save the project and then go back and assign a resource - assume that is due to some sort of enterprise transation service/feature). I do get the same error with the unmodified PTTracker project, so I think it's something I don't have setup via Sql*Server Express - or something else, but probably not obfuscation (error is from System.Data.SqlClient.....). </P>
+<P>If I'm wrong on the SqlClient error, please let me know...</P>
+<P>I have an MSI and the project if you are interested.</P>
+<P>Thanks, Rod</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rrlanders2 replied on Wednesday, July 25, 2007</h2><P>Update: The MSDTC issue was a configuration thing in Component Services. I found some instructions on the web.</P>
+<P>Now the obfuscated version of the project works just fine - as well as the original code. </P>
+<P>Rod</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, July 25, 2007</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I&#8217;m glad to hear you are making progress.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>The DTC error is almost certainly due to some configuration
+issues with DTC &#8211; probably around your Windows Firewall settings. There&#8217;s
+a KB article on MSDN that talks about how to configure XP SP2 to work with the
+DTC.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> rrlanders2
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Wednesday, July 25, 2007 2:54 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] CSLA &amp; Obfuscation<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Thanks for the thoughts &amp; ideas.<o:p></o:p></p>
+
+<p>I took the project tracker solution - cut it down to the library and the
+PTWIN executable (we are developing windows apps), built it and made sure it
+ran.<o:p></o:p></p>
+
+<p>I the obfuscated it, built an install package, installed it, and of course
+it would not run.<o:p></o:p></p>
+
+<p>I modified the obfuscation project properties for the library to &quot;NOT
+rename&quot; and &quot;NOT Remove&quot;. I think the &quot;Not Remove&quot;
+referrs to removal of the ability of reflection to find private methods
+(private due to the Criteria class being private ?) - not quite sure on that
+reasoning. I am not obfuscating csla or any of it's dlls. Just the code in the
+PtTracker library and PtWin.<o:p></o:p></p>
+
+<p>The program works. The only issue is I get MSDTC errors thrown when I try to
+save a new project and assign a resource at the same time (it works if I create
+and save the project and then go back and assign a resource - assume that is
+due to some sort of enterprise transation service/feature). I do get the same
+error with the unmodified PTTracker project, so I think it's something I don't
+have setup via Sql*Server Express - or something else, but probably not
+obfuscation (error is from System.Data.SqlClient.....). <o:p></o:p></p>
+
+<p>If I'm wrong on the SqlClient error, please let me know...<o:p></o:p></p>
+
+<p>I have an MSI and the project if you are interested.<o:p></o:p></p>
+
+<p>Thanks, Rod<o:p></o:p></p>
+
+<p>&nbsp;<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>William replied on Thursday, July 26, 2007</h2>In term of .NET IL protection tool, we use .NET Reactor (http://www.eziriz.com/). We found this tool useful that it protects the IL code with optional obfuscation. Data binding continues to work as it is; stack trace debugging as usual.
+
+Hope this helps.
+
+Regards,
+William
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

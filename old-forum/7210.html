@@ -1,0 +1,92 @@
+<html><header><title>Why no ValidatedDataGridTextColumn in CSLA-for-Windows</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Why no ValidatedDataGridTextColumn in CSLA-for-Windows</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/7210.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>TheEld posted on Wednesday, July 01, 2009</h2><P>I know that Rocky introduces CSLA helper controls like ObjectStatus and PropertyStatus due to WPF shortcommings.&nbsp; So when I see the helper control&nbsp;ValidatedDataGridTextColumn in SliverLight but not WPF it leads me to believe that WPF already has equivelent functionality built into its DataGrid somewhere.</P>
+<P>Is this true?&nbsp; Does WPF/Microsoft.Windows.Controls.DataGrid have built in column-level validation&nbsp;&nbsp;that I can easily bind to a CSLA collection?&nbsp; If so, could someone please point me at it.&nbsp; I've looked high and low and can't find it.&nbsp; I can bind by CSLA lists just fine to the DataGrid, just can't find how to do the validation.</P>
+<P>I am using PropertyStatus outisde of the DataGrid just fine on TextBoxes, but need help using it in DataGrid's.</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Wednesday, July 01, 2009</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Yes,
+it does have similar functionality, although not quite like
+PropertyStatus.&nbsp; <a href="http://www.codeproject.com/KB/WPF/WPFDataGridExamples.aspx#errorinfo">http://www.codeproject.com/KB/WPF/WPFDataGridExamples.aspx#errorinfo</a><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img border=0 width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> TheEld
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Wednesday, July 01, 2009 2:42 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> [CSLA .NET] Why no ValidatedDataGridTextColumn in
+CSLA-for-Windows<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>I know that Rocky introduces CSLA helper controls like ObjectStatus and
+PropertyStatus due to WPF shortcommings.&nbsp; So when I see the helper
+control&nbsp;ValidatedDataGridTextColumn in SliverLight but not WPF it leads me
+to believe that WPF already has equivelent functionality built into its
+DataGrid somewhere.<o:p></o:p></p>
+
+<p>Is this true?&nbsp; Does WPF/Microsoft.Windows.Controls.DataGrid have built
+in column-level validation&nbsp;&nbsp;that I can easily bind to a CSLA
+collection?&nbsp; If so, could someone please point me at it.&nbsp; I've looked
+high and low and can't find it.&nbsp; I can bind by CSLA lists just fine to the
+DataGrid, just can't find how to do the validation.<o:p></o:p></p>
+
+<p>I am using PropertyStatus outisde of the DataGrid just fine on TextBoxes,
+but need help using it in DataGrid's.<o:p></o:p></p>
+
+<p>&nbsp;<o:p></o:p></p>
+
+<p>&nbsp;<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>TheEld replied on Thursday, July 02, 2009</h2><P>OK, thanks for the point in non-CSLA direction.&nbsp; </P>
+<P>But anybody know why this control isn't available in CSLA-for-Windows, if for no other reason then consistency between CSLA&nbsp;products (Windows vs Silverlight)?</P>
+<P>&nbsp;&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, July 02, 2009</h2><P>There are a couple reasons.</P>
+<P>One is that I had an actual development team from Magenic to help me build CSLA .NET for Silverlight. In all other regards I was (and am) the sole developer. And I do this for free, so I only have so much time to build all the cool stuff everyone wants :)</P>
+<P>But the bigger reason is that the Silverlight datagrid control is part of the platform, while the WPF datagrid (when we were working on all this) was a prototype control in the WpfToolkit project. I can't afford to support every external library created for the platform, so I don't try.</P>
+<P>I believe the WPF datagrid will become part of the actual product in .NET 4.0, and (time permitting) I will probably create some custom column types in CSLA .NET 4.0.</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

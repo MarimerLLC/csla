@@ -1,0 +1,46 @@
+<html><header><title>OT: Static method in ASP.NET question.</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>OT: Static method in ASP.NET question.</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/1623.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>tetranz posted on Sunday, October 29, 2006</h2>Hi all<br>
+<br>
+I know how static variables behave in ASP.NET. They lve in AppDomain so are therefore shared among
+users and can be reset at any time if ASP recycles the process. Here's
+a question about static methods.<br>
+<br>
+Say I have a collection (or any object) that is unique to a user's
+session. It hits the db so I cache it in Session. I have something like
+this in my page class. <br>
+<br>
+public MyCollection GetMyCollection()<br>
+{<br>
+&nbsp;&nbsp;&nbsp; MyCollection myCollection = (MyCollection) Session["MyKey"];<br>
+&nbsp;&nbsp;&nbsp; if (myCollection) == null)<br>
+&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; myCollection = MyCollection.GetMyCollection(userId);<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; Session["MyKey"] = myCollection;<br>
+&nbsp;&nbsp;&nbsp; }<br>
+&nbsp;&nbsp;&nbsp; return myCollection;<br>
+}<br>
+<br>
+I think that's fine because the page is a unique instance but what if I now move it out into a static helper method in another class like this:<br>
+<br>
+public static MyCollection GetMyCollection()<br>
+
+{<br>
+
+&nbsp;&nbsp;&nbsp; MyCollection myCollection = (MyCollection) HttpContext.Current.Session["MyKey"];<br>
+
+&nbsp;&nbsp;&nbsp; if (myCollection) == null)<br>
+
+&nbsp;&nbsp;&nbsp; {<br>
+
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; myCollection = MyCollection.GetMyCollection(userId);<br>
+
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; HttpContext.Current.Session["MyKey"] = myCollection;<br>
+
+&nbsp;&nbsp;&nbsp; }<br>
+
+&nbsp;&nbsp;&nbsp; return myCollection;<br>
+
+}<br>
+
+<br>userId is a Guid that comes from my Principal. Is that safe? I'm thinking of what happens if one user loses the processor just before the if statement. What it gets it back again, could myCollection have changed to reflect another user? Am I barking up the wrong tree and worrying about nothing because, I think, myCollection is part of the state that is saved and restored on a context switch.<br><br>Cheers<br>Ross<br>
+<br>
+<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

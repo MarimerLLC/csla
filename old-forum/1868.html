@@ -1,0 +1,9 @@
+<html><header><title>NotifyChanged from SubClasses Into BaseClass</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>NotifyChanged from SubClasses Into BaseClass</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/1868.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>m.dobler posted on Wednesday, November 29, 2006</h2><P>I have a custom CSLA class that has a collection of other CSLA Business Classes. Now I tried to retrieve a NotifyChanged event in the main class when a child class property changed. But no event is raised.</P>
+<P>Does this simply not work or do I have to imlement some code into the child class to make that happen?</P>
+<P>(i need this for some special databinding issues)</P>
+<P>Can somebody help</P>
+<P>best Regards</P>
+<P>Mike Dobler</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Wednesday, November 29, 2006</h2>your class needs to listen to PropertyChanged or ListChanged events, depending on if the child you're listening to is a BusinessBase or BusinessListBase subclass.&nbsp; In your handler, you should raise a property changed event.<br><br>HTH<br>Andy<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>m.dobler replied on Wednesday, November 29, 2006</h2><P>Hi Andy,</P>
+<P>thanks, this will help me a lot. </P>
+<P>Regards,<BR>Mike</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,191 @@
+<html><header><title>Help /w Partial Classes to set [Indexable] attribute</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Help /w Partial Classes to set [Indexable] attribute</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5825.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jack posted on Tuesday, November 18, 2008</h2><P>I'm using codeGen to produce my properyInfo types and want to start adding some [Indexable] attributes to some of them.&nbsp; Can I do this somehow with partial classes or do I need to update my CodeGen template to handle that.</P>
+<P>Can I use a method call to replicate the [Indexable] attribute in the non generated partial class?</P>
+<P>Thanks</P>
+<P>jack</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, November 18, 2008</h2>I don't believe there's an alternative to the attribute, so you will probably need to update your templates.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jack replied on Wednesday, November 19, 2008</h2><P>I really don't know too much about how attributes work (other than the google I did last night) but if you had the time:</P>
+<P>1) What is the advantage of using an attribute over just implementing the IndexableAttribute as a member of PropertyInfo?&nbsp; Doesn't it just lock you in to setting features/options at compile time?</P>
+<P>2) Would this be something that could be tweaked to allow the index to be added at runtime or on the fly?&nbsp; I could see using and index at the beginning of an initialization process to setup children etc and then never needed again.&nbsp; It could then be dropped.&nbsp; I looked through the BusinessListBase where the indexed fields are gathered (IndexSet()&nbsp; the calls to PropertyInfo.GetCustomAttributes()) and it seemed to me that it wouldn't be a stretch to tweak that to use a member of the ProperyInfo vs. extracting the attributes.</P>
+<P>Please note I'm certainly not 'complaining' or anything, just trying to understand/learn the implementation, the reasoning behind it&nbsp;and how I can best use it.</P>
+<P>Thanks</P>
+<P>jack</P>
+<P><FONT size=2>&nbsp;</P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, November 19, 2008</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I&#8217;m not entirely sure you understand the goal of indexing.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Indexing is for use with LINQ to CSLA only. Indexing is only
+useful if you load a collection into memory and then do <i>many</i> queries
+against that same collection, and with a WHERE clause that uses only the
+indexed property.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>If you are not doing <i>many</i> queries against <i>the same
+collection</i> using a WHERE clause that only uses the indexed property, then
+using the Indexable attribute will be a total negative for you.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Good (if done many times against the same collection):<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>var q = from r in myList where r.IndexedProperty &gt; 100 select
+r;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Bad (if done just one or two times against the same collection):<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>var q = from r in myList where r.IndexedProperty &gt; 100 select
+r;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Bad:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>var q = from r in myList where r.IndexedProperty &gt; 100
+&amp;&amp; r.OtherProperty &lt; 1000 select r;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>The reason for the &#8220;bad&#8221; is that creating and
+maintaining an in-memory index isn&#8217;t free. In fact, it is quite
+expensive. So it is only a good thing to do if you can use the index multiple
+times to recoup the cost of its creation.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jack replied on Wednesday, November 19, 2008</h2><P>Rocky,</P>
+<P>I fully understand the goal of indexing and know exactly where and when I'm going to use it.&nbsp;I'm foremost a database guy so&nbsp;I'm just curious about the implementation and trying to learn why you did it one way vs. the other.&nbsp; Also since I'm struggling already with the implementing of CodeGen learning curve (hence the original question) and CSLA learning curve I'm trying to resolve everything in my head at once :-)</P>
+<P>My last post/question was more about why use an attribute vs. not.</P>
+<P>I then had an earlier unanswered post about when exactly the index was rebuilt.&nbsp; If it is so 'expensive' to maintain then why make it so limiting to turn on/off.&nbsp; </P>
+<P>I can see a few different scenarios that use the indexes in different ways:</P>
+<P>1) I'm loading in a complex set of BO's with related data that I can load a mass amount of data on my big fast powerful server, turn on indexing,&nbsp;do my processing, sorting, linking, querying of data, and then serialize everything, send it to the client, and never need the indexes again</P>
+<P>2) On my client side I have a number of filtered views of the data - master/detail.&nbsp; Everytime the user changes the master I want to show a filtered set of detail data and will have numerous different filters within that set as well.&nbsp; Indexes are perfect here.&nbsp; However when it comes time to save the data I don't care about the indexes.&nbsp; I want to send the data back to the server to be saved.&nbsp; I don't need the index on the server or the time to rebuild it.</P>
+<P>3) I have some large data transformations I need to do (essentially transposing columns to rows) that I can do in the database in some instances but in a high workload scenario I would rather pass that to the client and let it churn on his box not mine.</P>
+<P>Anyhow just some thoughts - I'm very excited about the feature and I appreciate your time.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, November 19, 2008</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>CSLA is designed to support the idea of objects designed based
+on use cases, not data.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>If your use case involves retrieving a list of data and doing
+numerous lookups into that list, then indexing should be used in the object(s)
+that support that use case.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>If your use case doesn&#8217;t involve doing numerous lookups
+into a list, then indexing should not be used.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>At least this is the thought process behind nearly everything in
+CSLA, including the LINQ to CSLA design.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>It may help if I answer your other question about when indexes
+are created. They are created on-demand. If you don&#8217;t do a L2C query that
+uses an index, the index is never created.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>So I think we support your scenarios. If you do queries on the
+server and return the objects to the client, and the client doesn&#8217;t do
+queries, then the index would only get created on the server. Or if you load
+the objects on the server, return them to the client and only do queries on the
+client, then the index would only get created on the client.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Chapter 14 in the Expert 2008 Business Objects book is all about
+the LINQ to CSLA implementation &#8211; both indexing and synced query results.
+It should answer many of your questions.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jack replied on Wednesday, November 19, 2008</h2><P>Thank you - that clears up a lot.&nbsp; </P>
+<P>I think what wasn't clear or that I missed from the Alpha Chapter 14 is that the create on-demand is reset with each serialized trip.&nbsp; I sort of assumed that if I used it once and it was created, then it would be re-created with each trip because it has be created at least once.&nbsp; In fact it is almost the opposite - if I serialize the BO then I essentially drop the index and have to incure the cost to rebuild it again if I want to use it.</P>
+<P>That is good to know </P>
+<P>thank you</P>
+<P>jack</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, November 19, 2008</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Right, the index won&#8217;t go across the wire. Going across
+the wire is expensive, so I try to minimize what goes across. It is almost
+always cheaper to recreate structures on either side than to move them.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>So things like validation/business rule associations,
+authorization rules, and indexes do not serialize.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Things that are directly part of the object&#8217;s state or
+meta-state like data fields, state fields (IsNew, etc) and currently broken
+rules do serialize, because they can&#8217;t be recreated on the other side.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

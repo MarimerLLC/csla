@@ -1,0 +1,49 @@
+<html><header><title>(CSLA 1.53 Data Binding) Form's 1st bound control requires 2 tab key presses to exit</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>(CSLA 1.53 Data Binding) Form's 1st bound control requires 2 tab key presses to exit</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/912.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>duffman posted on Wednesday, August 16, 2006</h2><P>If your having this subject's problem, I might save you the hours I spent looking for someone else with it and then solving it.&nbsp; Probably over a hundred hours now.&nbsp; Yes, manic, I know...</P>
+<P>My problem was that on a form, the user had to press the tab key twice to leave the&nbsp;first UI control bound to a business object.&nbsp; After that, everythink worked ok.</P>
+<P>I traced it to a failure b/t the control's Validating() and Validated() events, lost somewhere in&nbsp;MS code.&nbsp; For some reason, the Validating() event&nbsp;was satisfied the 2nd time tab was pressed.&nbsp; For hours and days and weeks I tell you.</P>
+<P>The [Browsable(false)] attribute on properties is important, but it didn't solve this.&nbsp; I have a generic BO layer b/t CSLA.BusinessBase and the table-centric&nbsp;BOs.&nbsp; That layer has&nbsp;hashtables&nbsp;filled with&nbsp;other custom classes that represent various db schema values.</P>
+<P>The generic BO had the [Serializable] class attribute.&nbsp; As soon as I added [Serializable] to the classes that are&nbsp;added as objects&nbsp;to my BO's hashtables, the sun shined again, birds sang again and everything worked as expected.</P>
+<P>I had this exact same problem even when the custom BOs inherited straight from BusinessBase and <EM>merely had the generic BO model hanging on as a property in the custom BOs</EM>.&nbsp; I missed that page if it was in the book.&nbsp; Did I mention the hours and...</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rei replied on Friday, February 04, 2011</h2><p>I&#39;m having the exact same problems. I tried to add <span style="font-size:x-small;">
+<p>&lt;Serializable()&gt; _ to the bo class but it didn&#39;t resolve it. I hope you can reply to this... been working on for hourssssssssssssss and dayssssssssssssssss</p>
+</span></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Friday, February 04, 2011</h2><p>This post is about five years old..</p>
+<p>What version of Csla are you using?&nbsp; What UI, .Net framework version, etc?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rei replied on Tuesday, February 08, 2011</h2><p>I&#39;m using csla v1.0.33, vb.net 2008, and .net framework 3.5</p>
+<p>i bind the texboxes by </p>
+<p>bindfield(txtboxname,&quot;text&quot;, datasource, datamember)</p>
+<p>ie. <span style="font-size:x-small;">BindField(txtLname, </span><span style="font-size:x-small;color:#a31515;"><span style="font-size:x-small;color:#a31515;">&quot;Text&quot;</span></span><span style="font-size:x-small;">, mClient, </span><span style="font-size:x-small;color:#a31515;"><span style="font-size:x-small;color:#a31515;">&quot;LastName&quot;</span></span><span style="font-size:x-small;">)<font size="2">
+<p>&nbsp;</p>
+</font></span></p>
+<p>The work around i have is to manually pass the value to the business object in the _validating event by typing something like </p>
+<p>mclient.lastname=txtlname.text</p>
+<p>There are so many fields and that is why i don&#39;t want to use the workaround stated above.</p>
+<p>when i put break points with out using the work around to trace the problem, it turns out that the _validating gets fired but it doesn&#39;t reach the _validated. The _validated gets fired only after&nbsp;i tab out of the text field again.</p>
+<p>Thanks a lot in advance!</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Tuesday, February 08, 2011</h2><p>Wow.. Csla 1.0?&nbsp; There have been tons of databinding fixes from 1.0 to 3.8.3, the latest version you could use with .net 3.5.&nbsp; </p>
+<p>At the very least I&#39;d consider going to 1.53, as the solution stated in the first post may work if you got to that version.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rei replied on Wednesday, February 09, 2011</h2><p>We tried upgrading to 1.53 but it&#39;s giving me the error &quot;type &#39;safedatareader&#39; is not defined&quot;</p>
+<p>:(</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Wednesday, February 09, 2011</h2><p>Hi,</p>
+<p>The SafeDataReader still exists in Csla 4 so maybe your Csla version 1.0 has been updated with a later SafeDataReader?</p>
+<p>This alone should not stop you from upgrading - just make sure that the class SafeDataReader exists in you actual version.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rei replied on Wednesday, February 09, 2011</h2><p>Thanks for your reply! it&#39;s very much appreciated.</p>
+<p>The csla we used were just provided to us. We basically just add a reference to the dll files... which means I don&#39;t know whether or not the version we have has been updated with a later safedatareader.</p>
+<p>do you know where we can get the csla DLL&#39;s (version higher than 1.0) that has the class SafeDataReader? </p>
+<p>Thank you in advance!</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Wednesday, February 09, 2011</h2><p>First: Use Reflector free version from RedGate (free until 30.5.2011) and you can disassemble the code to VB.NET or C#. </p>
+<p>Then: Goto <a href="http://reflectoraddins.codeplex.com/">http://reflectoraddins.codeplex.com/ </a>and get <a href="http://filegenreflector.codeplex.com/">http://filegenreflector.codeplex.com/</a>. FileGenerator will create a VS2005 or VS2008 solution with code and resources unless the code has been Obfuscated. </p>
+<p><b>SafeDataReader is included with Csla 1.53 download</b>, available on the Csla download page: <a href="http://www.lhotka.net/cslanet/Download.aspx">http://www.lhotka.net/cslanet/Download.aspx </a></p>
+<p>So you should check if the SafeDataReader in your Csla has been updated from a newer Csla (in namespace Csla.Data) or if there is other issues that causes the exceptions.</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rei replied on Wednesday, February 16, 2011</h2><p>Thanks for your reply. I finally got the chance to upgrade to csla 1.53 and resolve the safedatareader error.</p>
+<p>It now compiles. However, i get the error &quot;cannot create channel sink to connect to url&quot; when the get statement is called. ie</p>
+<p><span style="font-size:x-small;"><font size="2">
+<p>result = </p>
+</font></span>
+<p><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">CType</span></span><span style="font-size:x-small;">(DataPortal.Fetch(</span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">New</span></span><span style="font-size:x-small;"> Criteria(UserID)), User)</span></p>
+<p>:(</p>
+<p>when i change the reference back to the old version, it goes through just fine. :(</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+</p>
+<p>&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

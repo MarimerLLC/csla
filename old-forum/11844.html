@@ -1,0 +1,14 @@
+<html><header><title>Loading and displaying a child list in windows form app</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Loading and displaying a child list in windows form app</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11844.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Helius posted on Monday, February 18, 2013</h2><p>I have a rule defined in a business object which should create/ load a child list based on some input property values. </p>
+<p>Taking into consideration the suggestions i have read in this forum&nbsp; i am not using </p>
+<p>context.addoutvalue (childlistprop, GetList(param1, param2 ...))&nbsp; </p>
+<p>but instead:</p>
+<p>loadproperty (target, childlistprop,  GetList(param1, param2 ...)))</p>
+<p>target.PropertyHasChanged(childlistprop)</p>
+<p>In the windows form user interface, i see that the datagrid which should display the child list is not immediately reflecting the changes from the BO childlist. But whenever i change any other field (bound to other BO properties) in form, <b>related or not&nbsp; </b>to the above rule, then the data is correctly displayed in the grid. Can someone give any suggestion ?</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Monday, February 18, 2013</h2><p>It is because Windows Forms will refresh ALL other properties than the one that was changed.</p>
+<p>This is the reason Csla.Windows.BindingSourceRefresh exists - to reread the valus from the Property that was changed.&nbsp;</p>
+<p>First make sure that your PropertyChangedMode is set to Windows as for Csla 4 the default is Xaml. When property changed mode is Windows the PropertyHasChanged should normally raise the OnUnknownPropertyChanged event.</p>
+<p>If this does not help then you may want to call &lt;bo&gt;.OnUnknownPropertyChanged (a PropertyChanged with NULL or String.Empty as propertyname) to signal reread of all properties or add custom code to refresh the binding. &nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Helius replied on Monday, February 18, 2013</h2><p>Jonny thanks, calling&nbsp;<span>&lt;bo&gt;.OnUnknownPropertyChanged resolved my problem.</span></p>
+<p><span><br /></span></p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

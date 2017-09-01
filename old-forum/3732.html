@@ -1,0 +1,73 @@
+<html><header><title>Type Cast Exception in BusinessBase.Clone</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Type Cast Exception in BusinessBase.Clone</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3732.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Patrick.Roeper posted on Wednesday, October 17, 2007</h2><P><FONT face=Verdana size=2>I have a really weird error that I dont believe is due to CSLA, but I am really unsure how to fix this...</FONT></P>
+<P><FONT face=Verdana size=2>The error I am getting is:</FONT></P>
+<P class=MsoNormal><FONT face=Verdana size=2><STRONG>Unable to cast object of type 'xplugs.xxxx.BusinessObjects.zzzz' to type 'xplugs.xxxx.BusinessObjects.zzzz'.</STRONG></FONT></P>
+<P class=MsoNormal><FONT face=Verdana size=2></FONT>&nbsp;</P>
+<P class=MsoNormal><FONT face=Verdana size=2>This is in BusinessBase.cs @<FONT size=2></P>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> T Clone()</P>
+<P>{ </FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> (T) GetClone(); }</FONT></P>
+<P><FONT size=2>So the clone is getting created correctly, it just cant do the type casting.... I believe this could be because the business object this is happening on is an object that is not referenced by any of our projects directly. Please look at the link below for a simple graph of my project structure....</FONT></P>
+<P><A href="http://www.xecorporation.com/project_graph.jpg">http://www.xecorporation.com/project_graph.jpg</A></P>
+<P>At any time, my .exe can use reflection to access an unreferenced class library in order to open a form that overrides the base form in our software. The unreferenced library references CSLA... so I can put business objects in there in order to have custom business objects that our software "doesnt know about".</P>
+<P>Whenever the UI in the unreferenced library's form calls Clone() on a&nbsp;business object in the unreferenced library, I end up with the exception above.</P>
+<P>I was originally getting an "unable to locate assembly" error at...<FONT color=#0000ff size=2></P>
+<P>object</FONT><FONT size=2> temp = formatter.Deserialize(buffer);</FONT></P>
+<P><FONT size=2>... this was due to me not having copied unreferenced.dll into my bin folder after building everything. That is fixed, but now this <img src="/emoticons/emotion-9.gif" alt="Crying [:'(]" /></FONT><FONT size=2></P></FONT></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, November 01, 2007</h2><P>Odds are that you are running into a "feature" (I call it a bug, but Microsoft disagrees) where the .NET runtime is unable to find assemblies/types from dynamically loaded assemblies without your help.</P>
+<P>Typically you encounter this issue when hosting code in COM+ or IE, but it can happen in other cases as well. I don't know for sure that this is your problem, but it is a good bet.</P>
+<P>The solution is to use the code for the "serialization workaround" from the EnterpriseServicesHost class in the data portal, as described in Chapter 4. </P>
+<P>If you look at that code you'll see that it uses a&nbsp;static constructor to invoke some code once during the lifetime of the appdomain, to hook the event that occurs when .NET is unable to find an assembly. Then all the code does, is to loop through the list of loaded assemblies to find the one .NET couldn't find, and return it. Silly, but there you have it.</P>
+<P>(The deep problem is that .NET stores loaded assemblies in multiple lists depending on how they were loaded. In some cases (such as deserialization) the type resolver doesn't look in all the lists, and so doesn't find dynamically loaded assemblies. Fortunately the list of loaded assemblies you get from an AppDomain object is a consolidated list (which is the one you would <EM>think</EM> deserialization would use...) and so you can easily find and return the 'missing' assembly reference).</P>
+<P>I discovered this issue and came up with this workaround way back before .NET 1.0 - it caused all sorts of issues with no-touch deployment, and then loading code into IE. But the issue carries forward to this day...</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Patrick.Roeper replied on Thursday, November 01, 2007</h2><P>Interesting... What steps could I have taken in the debug process to figure this out? </P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, November 01, 2007</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Implement the serialization workaround I mentioned and put a
+breakpoint in the event handler. If you get there, you know that was the
+problem :)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Patrick.Roeper
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Thursday, November 01, 2007 4:09 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] Type Cast Exception in BusinessBase.Clone<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Interesting... What steps could I have taken in the debug process to figure
+this out? <o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Patrick.Roeper replied on Friday, November 02, 2007</h2><P>That did the trick. You da' man Rocky <img src="/emoticons/emotion-15.gif" alt="Geeked [8-|]" /></P>
+<P>For any future people stumbling on this thread, this is on page 203 of&nbsp;Expert C# 2005 Business Objects.</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

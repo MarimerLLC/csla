@@ -1,0 +1,28 @@
+<html><header><title>DataPortal.Fetch failed (Value cannot be null.  Parameter name: constructor)</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>DataPortal.Fetch failed (Value cannot be null.  Parameter name: constructor)</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/12399.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>dragonworld posted on Wednesday, February 26, 2014</h2><p>I&#39;m having a strange issue with a DataPortal.Fetch function. &nbsp;The error is&nbsp;DataPortal.Fetch failed (Value cannot be null. &nbsp;Parameter name: constructor).</p>
+<p>The code that breaks is below and it breaks on the Return DataPortal.Fetch. &nbsp;It never reaches the dataportal fetch method. &nbsp;It looks the same as my other calls but I cannot figure out why this is breaking.</p>
+<p>&nbsp; &nbsp; &nbsp;If Not CanGetObject() Then</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Throw New System.Security.SecurityException(&quot;User not authorize to view a pro Compliance report&quot;)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; End If</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Return DataPortal.Fetch(Of ProCompliance)()</p>
+<p>&nbsp;</p>
+<p>This is my DataPortal Fetch method:</p>
+<p>&nbsp; &nbsp;Private Overloads Sub DataPortal_Fetch()</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; Using cn As SqlConnection = New SqlConnection(SharedOptions.ConnectionString)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; cn.Open()</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; ExecuteFetch(cn)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; If cn.State = ConnectionState.Open Then</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; cn.Close()</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; End If</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; SaveCSV()</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; End Using</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; End Sub</p>
+<p>Here is the stack trace:</p>
+<p>&nbsp; &nbsp;at Csla.Reflection.DynamicMethodHandlerFactory.CreateConstructor(ConstructorInfo constructor)</p>
+<p>&nbsp; &nbsp;at Csla.Reflection.MethodCaller.GetCachedConstructor(Type objectType)</p>
+<p>&nbsp; &nbsp;at Csla.Reflection.MethodCaller.CreateInstance(Type objectType)</p>
+<p>&nbsp; &nbsp;at Csla.Reflection.LateBoundObject..ctor(Type objectType)</p>
+<p>&nbsp; &nbsp;at Csla.Server.SimpleDataPortal.Fetch(Type objectType, Object criteria, DataPortalContext context)</p>
+<p>&nbsp; &nbsp;at Csla.DataPortal.Fetch(Type objectType, Object criteria)</p>
+<p>&nbsp; &nbsp;at Csla.DataPortal.Fetch[T]()</p>
+<p>&nbsp; &nbsp;at RSManagementReports.ProCompliance.GetCSV() in P:\Projects\Utilities\ManagementConsole\Source\ManagementConsole\RSManagementReports\CSVs\ProCompliance.vb:line 60</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>dragonworld replied on Thursday, February 27, 2014</h2><p>Well, in case anyone runs across this, I managed to fix it. &nbsp;I re-created the class, copied and pasted the code, and it worked. &nbsp;No idea what the issue was.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

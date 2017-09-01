@@ -1,0 +1,139 @@
+<html><header><title>binding DataGridView to SortedBindingList bug</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>binding DataGridView to SortedBindingList bug</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4991.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>AzStan posted on Wednesday, June 18, 2008</h2><P>Recently I've had a new round of frustrations trying to display a master-details windows form.&nbsp; I wanted the details grid to be sortable, so I wrapped my BusinessListBase-derived child collection in a SortedBindingList.&nbsp; Lo and behold, the framework started throwing the dreaded "Edit level mismatch in CopyState" error.&nbsp; </P>
+<P>I reproduced the problem in the Project Tracker application, and believe there is definitely an undesirable interplay between the DataGridView and the SortedBindingList (maybe even a bug).&nbsp; If you read on, I will tell you how to reproduce the behavior, and a possible workaround.</P>
+<P>To reproduce the problem.&nbsp; </P>
+<P>1. Using the v3_5 project Tracker application, modify the BindUI() method in the ResourceEdit Winpart as follows:</P>
+<P>Replace the following code:<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _resource.BeginEdit();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; this.ResourceBindingSource.DataSource = _resource;</P>
+<P>with:<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _resource.BeginEdit();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; this.AssignmentsBindingSource.DataSource <BR>&nbsp;= new Csla.SortedBindingList&lt;ProjectTracker.Library.ResourceAssignment&gt;<BR>&nbsp;( _resource.Assignments);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; this.ResourceBindingSource.DataSource = _resource;</P>
+<P>2. Launch the app, and edit a resource.&nbsp; When the resource edit form with the Assigned Project child grid appears, sort the child grid by clicking the column header of the 'Assigned' column.<BR>3. Then, click the cancel button.&nbsp; I get an 'edit level mismatch on CopyState' error.</P>
+<P>On my own project, I am able to work around this problem by setting the grid's visible property to false before going through the unbind/rebind process.&nbsp; This did not seem to work on the project tracker application.</P>
+<P>I hope this helps move the effort forward, and I'd appreciate any insights or tips for sorting the contents of detail grids.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, June 20, 2008</h2><P>Wow, that is an interesting issue! </P>
+<P>I suspect that you'll need to set up the UI bindings different to start with. Rather than dragging the child grid out from the Data Sources window, you'll probably need to bind it as a standalone top level control - and then handle currency changes on the parent to bind the child to a new sortedbindinglist instance that wraps the new parent's child list.</P>
+<P>What I think is happening here, is that the parent bindingsource thinks it is managing the child bindingsource - when in reality you've overridden the child binding. I doubt this is legal from the perspective of the bindingsource.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, June 26, 2008</h2>Any luck with my suggestion?</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>AzStan replied on Thursday, June 26, 2008</h2><P>Rocky:</P>
+<P>I tried separating the two binding sources, setting the ResourceAssignement binding source in a handler for the ResourceBindingSource.CurrentItemChanged event. The grid paints ok, but I still get an error when I sort it, then cancel.&nbsp; So I looked a little further...</P>
+<P>I've got three ResourceAssignment records showing.&nbsp; I create an additional column to report editlevel of the underlying business&nbsp;objects.&nbsp; Before sorting, the first row is at edit level 2, and the next two rows are at edit level 1.&nbsp; The focus is on the first row.</P>
+<P>Then, when I sort (on the Assigned date column), two rows (1 and 3)&nbsp;have an edit level of 2.&nbsp; If I click cancel at this point, I begin the error sequence.&nbsp; If on the other hand, I click on the last row before 'cancel', then there is only one row at edit level 2, and the error does not occur when I click cancel.</P>
+<P>It seems that the grid is not calling EndEdit on the first grid row when the underlying object it moves out of the first position due to the application of the sort.&nbsp; </P>
+<P>I'm pretty busy right now, but I'll keep you posted as I learn more.</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, June 26, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>It is true that neither the grid nor bindingsource will call
+EndEdit in some cases. Specifically when dealing with grandchild collections,
+but I&#8217;m sure there are other cases too. To resolve that, you may have to
+handle the current item changed event from the bindingsource and force an
+EndEdit call &#8211; you can see this done in the parent-child-grandchild
+windows forms sample in svn.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> AzStan
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Thursday, June 26, 2008 5:40 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] binding DataGridView to SortedBindingList bug<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Rocky:<o:p></o:p></p>
+
+<p>I tried separating the two binding sources, setting the ResourceAssignement
+binding source in a handler for the ResourceBindingSource.CurrentItemChanged
+event. The grid paints ok, but I still get an error when I sort it, then
+cancel.&nbsp; So I looked a little further...<o:p></o:p></p>
+
+<p>I've got three ResourceAssignment records showing.&nbsp; I create an
+additional column to report editlevel of the underlying
+business&nbsp;objects.&nbsp; Before sorting, the first row is at edit level 2,
+and the next two rows are at edit level 1.&nbsp; The focus is on the first row.<o:p></o:p></p>
+
+<p>Then, when I sort (on the Assigned date column), two rows (1 and
+3)&nbsp;have an edit level of 2.&nbsp; If I click cancel at this point, I begin
+the error sequence.&nbsp; If on the other hand, I click on the last row before
+'cancel', then there is only one row at edit level 2, and the error does not
+occur when I click cancel.<o:p></o:p></p>
+
+<p>It seems that the grid is not calling EndEdit on the first grid row when the
+underlying object it moves out of the first position due to the application of
+the sort.&nbsp; <o:p></o:p></p>
+
+<p>I'm pretty busy right now, but I'll keep you posted as I learn more.<o:p></o:p></p>
+
+<p>&nbsp;<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Michael replied on Thursday, October 30, 2008</h2><font size="2" face="Arial"><span>I have a very similar problem.<br><br>I have a BLB wrapped in a SortedBindingList, bound to one BindingSource on a UserControl with one editable DGV. Three rows: A, B, C with edit levels 2, 1, 1. Click the column header and the order and edit levels are: C2, B1, A2. Clicking Cancel does <i>not </i>cause the Edit level mismatch, but Save does when BeginEdit() is called.<br><br>After looking at the </span></font><font size="2" face="Arial"><span>parent-child-grandchild
+windows forms sample</span>, I tried bindingSource.EndEdit() on CurrentChanged event. That eliminated part of the problem, but it's still reproducible as follows: three rows A, C, E with edit levels 1, 1, 1. Change A to D, select row C, then sort. Order and edit levels are: C2, D1, E1, and D is the selected row.<br><br></font><font size="2" face="Arial"><span>I have
+several screens inheriting the same logic, so I'll have to leave out
+the sorting for now, but help would be greatly appreciated.</span></font><br><font size="2" face="Arial"><span><br>Thanks<br>Michael<br></span></font></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, October 31, 2008</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Look at the RootChildGrandchildWinFormTest app<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><a href="http://www.lhotka.net/cslacvs/viewvc.cgi/samples/trunk/CslaNet/cs/RootChildGrandchildWinFormTest/">http://www.lhotka.net/cslacvs/viewvc.cgi/samples/trunk/CslaNet/cs/RootChildGrandchildWinFormTest/</a><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>This app is the core reference app for multi-level grid-based
+Windows Forms data binding.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Windows Forms data binding doesn&#8217;t leave much room for
+variation. You either do things the way they like, or it doesn&#8217;t work.
+This app works, and thus illustrates how they like it done.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Michael replied on Sunday, November 16, 2008</h2><font size="2" face="Arial">Thanks for the reply, Rocky.<br><br>I had a look at the <span>RootChildGrandchildWinFormTest, but it does not have a </span></font><font size="2" face="Arial"><span>SortedBindingList. When I wrapped the root.Children in a SortedBindingList&lt;Child&gt; in the Rebind method, I get the same EditLevelMismatch exception as above. Am I doing something wrong?<br><br>Mike<br></span></font></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Michael replied on Tuesday, November 18, 2008</h2><font size="2" face="Arial">Has anyone else tried sorting the </font><font size="2" face="Arial"><span>RootChildGrandchildWinFormTest?</span></font></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

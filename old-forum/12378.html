@@ -1,0 +1,86 @@
+<html><header><title>How to config the new MobileProxy host in a console App or a service App?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>How to config the new MobileProxy host in a console App or a service App?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/12378.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>kmgbkj posted on Thursday, February 13, 2014</h2><p><span>Hi Rocky,</span></p>
+<p><span>&nbsp; &nbsp; &nbsp;I have read the discussion about &quot;</span>Data transfer speed issues for WindowsForms/WPF in 4.5.20<span>&quot; and check the example in source code, learned how to config&nbsp;MobileProxy in Web,but i have several app hosted in a service process,i want to change WCF</span><span>Proxy</span><span>&nbsp; to&nbsp;</span><span>MobileProxy</span><span>&nbsp;that increase the speed. but i can&#39;t get the right way.</span></p>
+<p><span>My old config for wcf is this:</span></p>
+<p>&lt;?xml version=&quot;1.0&quot;?&gt;</p>
+<p>&lt;configuration&gt;</p>
+<p>&nbsp; &lt;appSettings&gt;</p>
+<p>&nbsp; &nbsp; &lt;add key=&quot;CslaAuthentication&quot; value=&quot;Csla&quot;/&gt;</p>
+<p>&nbsp; &nbsp; &lt;add key=&quot;CslaDataPortalProxy&quot; value=&quot;Csla.DataPortalClient.LocalProxy, Csla&quot;/&gt;</p>
+<p>&nbsp; &lt;/appSettings&gt;<span style="font-size:12px;">&nbsp;&nbsp;</span></p>
+<p>&nbsp; &lt;system.serviceModel&gt;</p>
+<p>&nbsp; &nbsp; &lt;services&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &lt;service name=&quot;Csla.Server.Hosts.WcfPortal&quot; behaviorConfiguration=&quot;returnFaults&quot;&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &lt;endpoint address=&quot;http://127.0.0.1:8000/&quot; contract=&quot;Csla.Server.Hosts.IWcfPortal&quot; binding=&quot;customBinding&quot; bindingConfiguration=&quot;compactBinding&quot;/&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &lt;endpoint address=&quot;net.tcp://192.168.1.4:5898/&quot; contract=&quot;Csla.Server.Hosts.IWcfPortal&quot; binding=&quot;netTcpBinding&quot; bindingConfiguration=&quot;compactBindingForTCP2&quot;/&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &lt;/service&gt;</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &lt;service name=&quot;Csla.Server.Hosts.Mobile.WcfPortal&quot; behaviorConfiguration=&quot;WcfPortalBehavior&quot;&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &lt;endpoint address=&quot;net.tcp://192.168.1.4:5899/&quot; contract=&quot;Csla.Server.Hosts.Mobile.IWcfPortal&quot; binding=&quot;netTcpBinding&quot; bindingConfiguration=&quot;compactBindingForTCP2&quot; /&gt; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &lt;/service&gt;</p>
+<p>&nbsp; &nbsp; &lt;/services&gt;</p>
+<p>&nbsp; &nbsp; &lt;bindings&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &lt;customBinding&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &lt;binding name=&quot;compactBinding&quot; sendTimeout=&quot;00:10:00&quot;&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;compactMessageEncoding&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;binaryMessageEncoding&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;readerQuotas maxDepth=&quot;64&quot; maxStringContentLength=&quot;2147483647&quot; maxArrayLength=&quot;2147483647&quot; maxBytesPerRead=&quot;4096&quot; maxNameTableCharCount=&quot;16384&quot;/&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;/binaryMessageEncoding&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;/compactMessageEncoding&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;httpTransport maxReceivedMessageSize=&quot;2147483647&quot;/&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &lt;/binding&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &lt;binding name=&quot;compactBindingForTCP&quot; portSharingEnabled=&quot;true&quot; maxReceivedMessageSize=&quot;2147483647&quot;&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;compactMessageEncoding&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;binaryMessageEncoding&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;readerQuotas maxDepth=&quot;64&quot; maxStringContentLength=&quot;2147483647&quot; maxArrayLength=&quot;2147483647&quot; maxBytesPerRead=&quot;4096&quot; maxNameTableCharCount=&quot;16384&quot;/&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;/binaryMessageEncoding&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;/compactMessageEncoding&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;tcpTransport&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;connectionPoolSettings groupName=&quot;default&quot; idleTimeout=&quot;00:05:00&quot; leaseTimeout=&quot;00:05:00&quot; maxOutboundConnectionsPerEndpoint=&quot;10&quot;/&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;/tcpTransport&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &lt;/binding&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &lt;/customBinding&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &lt;netTcpBinding&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &lt;binding name=&quot;compactBindingForTCP2&quot; closeTimeout=&quot;00:01:00&quot;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; openTimeout=&quot;00:01:00&quot; receiveTimeout=&quot;00:10:00&quot; sendTimeout=&quot;00:10:00&quot;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; transactionFlow=&quot;false&quot; transferMode=&quot;Buffered&quot; transactionProtocol=&quot;OleTransactions&quot;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; hostNameComparisonMode=&quot;StrongWildcard&quot; listenBacklog=&quot;10&quot;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; maxBufferPoolSize=&quot;2147483647&quot; maxBufferSize=&quot;2147483647&quot; maxConnections=&quot;100&quot;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; maxReceivedMessageSize=&quot;2147483647&quot;&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;readerQuotas maxDepth=&quot;64&quot; maxStringContentLength=&quot;2147483647&quot; maxArrayLength=&quot;2147483647&quot; maxBytesPerRead=&quot;4096&quot; maxNameTableCharCount=&quot;16384&quot;/&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;reliableSession ordered=&quot;true&quot; inactivityTimeout=&quot;00:10:00&quot; enabled=&quot;true&quot; /&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &lt;/binding&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &lt;/netTcpBinding&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &lt;basicHttpBinding&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &lt;binding name=&quot;basicHttpBinding_IWcfPortal&quot; maxReceivedMessageSize=&quot;2147483647&quot;&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;readerQuotas maxBytesPerRead=&quot;2147483647&quot; maxArrayLength=&quot;2147483647&quot; maxStringContentLength=&quot;2147483647&quot; maxDepth=&quot;1024&quot; /&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &lt;/binding&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &lt;/basicHttpBinding&gt;</p>
+<p>&nbsp; &nbsp; &lt;/bindings&gt;</p>
+<p>&nbsp; &nbsp; &lt;extensions&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &lt;bindingElementExtensions&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &lt;add name=&quot;compactMessageEncoding&quot; type=&quot;Amib.WCF.CompactMessageEncodingElement, CompactMessageEncoder, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null&quot;/&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &lt;/bindingElementExtensions&gt;</p>
+<p>&nbsp; &nbsp; &lt;/extensions&gt;</p>
+<p>&nbsp; &nbsp; &lt;behaviors&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &lt;serviceBehaviors&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &lt;behavior name=&quot;returnFaults&quot;&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;serviceDebug includeExceptionDetailInFaults=&quot;false&quot;/&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;serviceMetadata httpGetEnabled=&quot;false&quot;/&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &lt;/behavior&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &lt;behavior name=&quot;&quot;&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;serviceMetadata httpGetEnabled=&quot;true&quot; /&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;serviceDebug includeExceptionDetailInFaults=&quot;false&quot; /&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &lt;/behavior&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &lt;behavior name=&quot;WcfPortalBehavior&quot;&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;serviceMetadata httpGetEnabled=&quot;true&quot; /&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;serviceDebug includeExceptionDetailInFaults=&quot;true&quot; /&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &lt;/behavior&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &lt;/serviceBehaviors&gt;</p>
+<p>&nbsp; &nbsp; &lt;/behaviors&gt;</p>
+<p>&nbsp; &lt;/system.serviceModel&gt;</p>
+<p>&lt;startup&gt;&lt;supportedRuntime version=&quot;v4.0&quot; sku=&quot;.NETFramework,Version=v4.0&quot;/&gt;&lt;/startup&gt;</p>
+<p>&lt;/configuration&gt;</p>
+<div></div>
+<p><b><span>Can i use the same config for&nbsp;</span><span>MobileProxy? or the&nbsp;</span><span>MobileProxy can only in use for WebHost?</span></b></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Sunday, February 16, 2014</h2><p>Hi, </p>
+<p>You can use the MobileProxy in all client types starting with Csla 4.5.x. Have a look at this previous post:&nbsp;</p>
+<p><a href="http://forums.lhotka.net/forums/t/11905.aspx">http://forums.lhotka.net/forums/t/11905.aspx</a></p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,77 @@
+<html><header><title>Pass Editable Child Collection to another object</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Pass Editable Child Collection to another object</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/8764.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>superkuton posted on Monday, April 05, 2010</h2><p>How do you pass an Editable Child Collection (ECC) to another object (ERO)?</p>
+<p>The ECC shall also become ECC of the new ERO.</p>
+<p>&nbsp;</p>
+<p>Its something like this:</p>
+<p>Based on a Purchase Request details, prepare the Purchase Order details.</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>ajj3085 replied on Monday, April 05, 2010</h2><p>You can do this, but it isn&#39;t really a supported scenario.&nbsp; A child object should have one and only one parent (root) for its entire lifetime.</p>
+<p>You can do what you want, there is a thread that tells you how if you search, but you&#39;re probably better off cloning the child collection to get the items into the other root object.&nbsp; </p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>superkuton replied on Monday, April 05, 2010</h2><p>thanks. how do i clone the child collection to the other object?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Monday, April 05, 2010</h2><p>Csla provides a Clone method.&nbsp; You may need to override it to reset database key fields, if you have any and clear the lists DeletedItems collection.</p>
+<p>Something like this:</p>
+<p>var cloned = myRoot1.Children.Clone(); // may need to override as noted above</p>
+<p>myRoot2.Children = cloned;</p>
+<p>Although as I said this would be odd... normally you don&#39;t have public setters for your child collection property, and alternately you could loop through the root1&#39;s children, clone and add to root2&#39;s collection.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>superkuton replied on Monday, April 05, 2010</h2><p>thanks again, andy.</p>
+<p>Can you point me to some practical sample codes? (I am new to using csla.)</p>
+<p>I simply want to copy the items from the &#39;Puchase Request&#39;(PR) to the new ERO &#39;Purchase Order&#39; (PO) so that users will no longer need to manually select the items from the PR to the PO.</p>
+<p>Will I pass the cloned or copied ERO or ECC to the new ERO in the factory method? or pass the ECC in the UI of the new ERO?</p>
+<p>Thanks.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, April 05, 2010</h2><p>There was a whole thread on this topic perhaps 3-4 weeks ago.</p>
+<p>The thing to remember is that if you remove an item from a BLB, it is moved into the DeletedList, and when you save that BLB the data will be deleted from the database (or at least your data access layer will be asked to delete it).</p>
+<p>So &quot;moving&quot; a child item from one list to another is a little tricky, because you probably don&#39;t want the original list to delete the item when it is saved. Or maybe you do. But you need to decide, and code accordingly.</p>
+<p>It really is far simpler to clone the child and add it to the other collection. But if you don&#39;t want the original collection to delete the item you removed, you&#39;ll need to do a little extra work to create a CompletelyRemove() method that not only removes the child, but also removes it from the DeletedList.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>superkuton replied on Monday, April 05, 2010</h2><p>Thanks, Rocky.</p>
+<p>I will not be &quot;moving,&quot; or &quot;deleting&quot; the child collection from its ERO. I simply wanted to COPY the children to another NEW ERO.</p>
+<p>It&#39;s somthing like this:</p>
+<p>I have a PurchaseRequest_ERO, which has PurchaseRequestDetails_ECC.</p>
+<p>Based on the <b>Purchase Request (PR)</b>, the user will prepare the <b>Purchase Order (PO)</b> . The Purchase Request ITEMS may not be exactly the same as that of the Purchase Request, but the Purchase Request should serve as the starting point of data entry.</p>
+<p>So, we have the PurchaseOrder_ERO, which has the PurchaseOrderDetails_ECC.</p>
+<p>How will I create a NEW PurchaseOrder_ERO,&nbsp; which has PurchaseOrderDetails_ECC copied from the PurchaseRequestDetails_ECC?</p>
+<p>For example,</p>
+<p>&nbsp;</p>
+<p><b>PR_ERO</b></p>
+<p>------------</p>
+<p>ID&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; :&nbsp; 1</p>
+<p>Date&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; :&nbsp; 1/1/2010</p>
+<p>Requisitioner :&nbsp; My Name</p>
+<p><b>PRDetails_ECC</b></p>
+<p>-----------------------------</p>
+<p>ID&nbsp;&nbsp;&nbsp;&nbsp; |&nbsp;&nbsp;&nbsp;&nbsp; PR_EROID&nbsp;&nbsp;&nbsp;&nbsp; |&nbsp;&nbsp;&nbsp;&nbsp; Item&nbsp;&nbsp;&nbsp;&nbsp; </p>
+<p>1&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 1&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Expert C# 2008 Business Objects</p>
+<p>2&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 2&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Expert VB 2008 Business Objects</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>After creating the PR, the user will now create the PO. The output should be something like:</p>
+<p>&nbsp;</p>
+<p><b>PO_ERO</b></p>
+<p>------------</p>
+<p>ID&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; :&nbsp; 1</p>
+<p>Date&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+ :&nbsp; 1/1/2010</p>
+<p>PRID &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; :&nbsp; 1</p>
+<p>Supplier&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; :&nbsp; Apress</p>
+<p><b>PODetails_ECC</b></p>
+<p>-----------------------------</p>
+<p>ID&nbsp;&nbsp;&nbsp;&nbsp;
+ |&nbsp;&nbsp;&nbsp;&nbsp; PR_EROID&nbsp;&nbsp;&nbsp;&nbsp; |&nbsp;&nbsp;&nbsp;&nbsp; Item&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |&nbsp;&nbsp;&nbsp;&nbsp; Cost</p>
+<p>1&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+1&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Expert C# 2008 Business Objects&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; n2</p>
+<p>2&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+ 2&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Expert VB 2008 Business Objects&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; n2</p>
+<p>&nbsp;</p>
+<p>Will cloning do the trick? Or is there a better technique to simply COPY the children of the PR_ERO to the children of the PO_ERO?</p>
+<p>Thank you.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Tuesday, April 06, 2010</h2><p>If you want a new object (which likely means a new row in your database), you may want to consider adding a factory method in your child BO type which simply Creates a new instance using values from another instance of the same type.&nbsp; Something like:</p>
+<p>var newChild = MyChildBO.Create( child ); </p>
+<p>You would also have a DataPortal_Create( MyChildBO childToCopy ) ;</p>
+<p>Does that make sense?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Wednesday, April 07, 2010</h2><p>I had this exact problem with creating a PO from a PO request. I also have to create it from a previous PO, a catalog, a PO on Hold, etc.</p>
+<p>In general I solved it like this:</p>
+<p>The PO business object has a method:<br />&nbsp; <span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">Public</span></span><span style="font-size:x-small;"> </span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">Sub</span></span><span style="font-size:x-small;"> CreateFromReq(</span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">ByVal</span></span><span style="font-size:x-small;"> reqnumber </span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">As</span></span><span style="font-size:x-small;"> </span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">String</span></span><span style="font-size:x-small;">, </span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">ByVal</span></span><span style="font-size:x-small;"> vendno </span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">As</span></span><span style="font-size:x-small;"> </span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">String</span></span><span style="font-size:x-small;">, </span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">ByVal</span></span><span style="font-size:x-small;"> shipcode </span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">As</span></span><span style="font-size:x-small;"> </span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">String</span></span><span style="font-size:x-small;">)</span></p>
+<p><span style="font-size:x-small;">Inside this method you use the reqnumber to retrieve a complete Req BO from the database.<br />Then you create a new PO business object which is essentially empty.<br />Then you call a method to fill the header of the PO with the header data from the Req (you pass the ReqHdr as a parameter to it.)<br />This is simply a field to field mapping from Source to Destination BO. You could use the DataMapper here if you wanted to.<br /><br />One side issue is that sometimes I do not want to map every single value. Or I may want to set some other values based on the req value. So it isn&#39;t always as clean as you might wish depending on your application logic.</span></p>
+<p><span style="font-size:x-small;">To solve the child detail list issue you continue running code in the method above after setting the header values.</span></p>
+<p><span style="font-size:x-small;">You create a For loop over the list of Req details like this:</span>&nbsp; (lnCount starts at 0 and increments each time you add a line - not shown in snippet below!)</p>
+<p><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">For</span></span><span style="font-size:x-small;"> i </span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">As</span></span><span style="font-size:x-small;"> </span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">Integer</span></span><span style="font-size:x-small;"> = 0 </span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">To</span></span><span style="font-size:x-small;"> POSource.Reqhdr.Reqlns.Count - 1<br />&nbsp; mSourceLine = POSource.Reqhdr.Reqlns.Item(i)<br />&nbsp; </span><span style="font-size:x-small;">mNewLine = poHeader.Polns.AddChild(lnCnt)<br />&nbsp; SetPolnData(mSourceLine, mNewLine, POSource.Reqnumber)<br /><span style="color:#0000ff;">Next</span></span></p>
+<p><span style="font-size:x-small;">The SetPolnData method again matches up fields in the Req object with fields in the PO object. If it is a clean match then DataMapper could work nicely. I have some extra logic in my case so I just matched up the fields I wanted to match and omitted those that I did not want to take from the Req and set my own values.<br /></span><span style="font-size:x-small;"><br />e.g.<br /></span><span style="font-size:x-small;">newLine.Itemno = sourceLn.Itemno<br />newLine.Descr1 = sourceLn.Descr1<br />newLine.Uom = sourceLn.Uom</span>
+<p><span style="font-size:x-small;">And if you have Split Lines for your Req then you set up the same kind of loop inside the SetPolnData method to create each split record.</span></p>
+<p><span style="font-size:x-small;">HTH<br /></span><span style="font-size:x-small;">Joe</span></p>
+<p><span style="font-size:x-small;">
+<p>&nbsp;</p>
+</span></p>
+</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>superkuton replied on Thursday, April 08, 2010</h2><p>Thanks, Joe.
+</p>
+<p>The idea is finally settling down on me. My temporary solution then was looping through the detail&nbsp; items in the UI but your technique is better. I&#39;ll be finally posting my solution when I finish up my testing.</p>
+<p>&nbsp;</p>
+<p>Thank you, andy, rocky and joe!</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

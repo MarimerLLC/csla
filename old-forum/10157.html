@@ -1,0 +1,18 @@
+<html><header><title>how to read the validation message from resource file</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>how to read the validation message from resource file</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10157.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>wasiuddin.786 posted on Thursday, March 10, 2011</h2><p>
+<p>how to read the validation message from resource file</p>
+<p>i have two two project fro business model</p>
+<p>&nbsp;</p>
+<p>1)Model.Client</p>
+<p>2)Model.Server</p>
+<p>&nbsp;</p>
+<p>so how to add the resource file to server and how to add the link to client side</p>
+<p>please give me steps so i can read the validation massage from resource file</p>
+<p>&nbsp;</p>
+<p>it will should work client and serverside validation</p>
+<p>&nbsp;</p>
+</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>mosgath replied on Friday, March 11, 2011</h2><p>We use a resource file called RulesMessages under a resources folder in our server model project and then add it as a linked file in the client Model&nbsp;project.&nbsp; </p>
+<p>Then in the business rules we use the following to access it in the business rule.</p>
+<pre style="font-family:Consolas;background:white;color:black;font-size:13px;"><span style="color:blue;">var</span>&nbsp;message&nbsp;=&nbsp;<span style="color:blue;">string</span>.Format(Resources.<span style="color:#2b91af;">RulesMessages</span>.SomeMessage,&nbsp;PrimaryProperty.FriendlyName);
+context.AddInformationResult(PrimaryProperty,&nbsp;message);</pre>
+<pre style="font-family:Consolas;background:white;color:black;font-size:13px;"></pre>
+<pre style="font-family:Consolas;background:white;color:black;font-size:13px;"></pre></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

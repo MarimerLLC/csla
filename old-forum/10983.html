@@ -1,0 +1,74 @@
+<html><header><title>Advice on how to define business rule</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Advice on how to define business rule</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10983.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>shawndewet posted on Tuesday, December 13, 2011</h2><p>I have a class that has, inter alia, 7 bool properties. &nbsp;Each bool property represents a day of the week. &nbsp;It indicates whether or not that day of the week has been selected, eg, MondayChecked, TuesdayChecked, etc. &nbsp;In the UI, each day is reprsented by a checkbox. &nbsp;The business rule I need to apply is that at least one of the days must be selected by the user. &nbsp;How would I implement this business rule in CSLA 4.1?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Wednesday, December 14, 2011</h2><p>How do you want to display broken rule? </p>
+<ul>
+<li>1 error/warn for the entire list of days </li>
+<li>1 error/warn for each of the properties </li>
+<li>1 error/warn on the first day? </li>
+</ul>
+<p>You could do it with a rule like this in CSLA 4.2.:</p>
+<pre style="font-family:Consolas;background:#fafafa;color:black;font-size:13px;">&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">class</span>&nbsp;<span style="color:#2b91af;">AnyBool</span>&nbsp;:&nbsp;Csla.Rules.<span style="color:#2b91af;">PropertyRule</span>
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">private</span>&nbsp;<span style="color:blue;">readonly</span>&nbsp;<span style="color:#2baaaf;">IPropertyInfo</span>[]&nbsp;_boolProperties;
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;AnyBool(<span style="color:#2baaaf;">IPropertyInfo</span>&nbsp;primaryProperty,&nbsp;<span style="color:blue;">params</span>&nbsp;<span style="color:#2baaaf;">IPropertyInfo</span>[]&nbsp;boolProperties)&nbsp;:&nbsp;<span style="color:blue;">base</span>(primaryProperty)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">if</span>&nbsp;(boolProperties&nbsp;==&nbsp;<span style="color:blue;">null</span>)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">throw</span>&nbsp;<span style="color:blue;">new</span>&nbsp;<span style="color:#2b91af;">ArgumentNullException</span>(<span style="color:#a31515;">&quot;boolProperties&quot;</span>,&nbsp;<span style="color:#a31515;">&quot;At&nbsp;least&nbsp;one&nbsp;bool&nbsp;property&nbsp;must&nbsp;be&nbsp;specified.&quot;</span>);
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_boolProperties&nbsp;=&nbsp;boolProperties;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;InputProperties&nbsp;=&nbsp;InputProperties&nbsp;??&nbsp;<span style="color:blue;">new</span>&nbsp;<span style="color:#2b91af;">List</span>&lt;<span style="color:#2baaaf;">IPropertyInfo</span>&gt;();
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;InputProperties.AddRange(boolProperties);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">protected</span>&nbsp;<span style="color:blue;">override</span>&nbsp;<span style="color:blue;">string</span>&nbsp;GetMessage()
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">return</span>&nbsp;HasMessageDelegate&nbsp;?&nbsp;<span style="color:blue;">base</span>.GetMessage()&nbsp;:&nbsp;<span style="color:#a31515;">&quot;At&nbsp;least&nbsp;one&nbsp;of&nbsp;the&nbsp;fields&nbsp;{0}&nbsp;must&nbsp;be&nbsp;selected.&quot;</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">protected</span>&nbsp;<span style="color:blue;">override</span>&nbsp;<span style="color:blue;">void</span>&nbsp;Execute(<span style="color:#2b91af;">RuleContext</span>&nbsp;context)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">if</span>&nbsp;(!context.InputPropertyValues.Any(p&nbsp;=&gt;&nbsp;(<span style="color:blue;">bool</span>)p.Value))
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">string</span>&nbsp;fields&nbsp;=&nbsp;<span style="color:blue;">string</span>.Join(<span style="color:#a31515;">&quot;,&quot;</span>,&nbsp;_boolProperties.Select(p&nbsp;=&gt;&nbsp;p.FriendlyName));
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;context.AddErrorResult(<span style="color:blue;">string</span>.Format(GetMessage(),&nbsp;fields));
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;}</pre>
+<pre style="font-family:Consolas;background:#fafafa;color:black;font-size:13px;">Usage: </pre>
+<pre style="font-family:Consolas;background:#fafafa;color:black;font-size:13px;"><pre style="font-family:Consolas;background:#fafafa;color:black;font-size:13px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;BusinessRules.AddRule(<span style="color:blue;">new</span>&nbsp;<span style="color:#2b91af;">AnyBool</span>(MondayBoolProperty,&nbsp;MondayBoolProperty,&nbsp;TuesdayBoolProperty,&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;WednesdayBoolProperty,&nbsp;ThursdayBoolProperty,&nbsp;FridayBoolProperty,&nbsp;SaturdayBoolProperty,&nbsp;SundayBoolProperty));</pre>
+</pre>
+<p>The rule would automatically be checked for when any of the boolProperties are changed as InputProperties is considered dependency by the the 4.2 RuleEngine. The rule would also allow you to override the message string by constant or delegate (supports resource strings).</p>
+<p>&nbsp;For CSLA 4.1 you would have to use: </p>
+<pre style="font-family:Consolas;background:#fafafa;color:black;font-size:13px;">&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">class</span>&nbsp;<span style="color:#2b91af;">AnyBool</span>&nbsp;:&nbsp;Csla.Rules.<span style="color:#2b91af;">BusinessRule</span>
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">private</span>&nbsp;<span style="color:blue;">readonly</span>&nbsp;<span style="color:#2baaaf;">IPropertyInfo</span>[]&nbsp;_boolProperties;
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;AnyBool(<span style="color:#2baaaf;">IPropertyInfo</span>&nbsp;primaryProperty,&nbsp;<span style="color:blue;">params</span>&nbsp;<span style="color:#2baaaf;">IPropertyInfo</span>[]&nbsp;boolProperties)&nbsp;:&nbsp;<span style="color:blue;">base</span>(primaryProperty)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">if</span>&nbsp;(boolProperties&nbsp;==&nbsp;<span style="color:blue;">null</span>)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">throw</span>&nbsp;<span style="color:blue;">new</span>&nbsp;<span style="color:#2b91af;">ArgumentNullException</span>(<span style="color:#a31515;">&quot;boolProperties&quot;</span>,&nbsp;<span style="color:#a31515;">&quot;At&nbsp;least&nbsp;one&nbsp;bool&nbsp;property&nbsp;must&nbsp;be&nbsp;specified.&quot;</span>);
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_boolProperties&nbsp;=&nbsp;boolProperties;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;InputProperties&nbsp;=&nbsp;InputProperties&nbsp;??&nbsp;<span style="color:blue;">new</span>&nbsp;<span style="color:#2b91af;">List</span>&lt;<span style="color:#2baaaf;">IPropertyInfo</span>&gt;();
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;InputProperties.AddRange(boolProperties);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">protected</span>&nbsp;<span style="color:blue;">override</span>&nbsp;<span style="color:blue;">void</span>&nbsp;Execute(<span style="color:#2b91af;">RuleContext</span>&nbsp;context)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">if</span>&nbsp;(!context.InputPropertyValues.Any(p&nbsp;=&gt;&nbsp;(<span style="color:blue;">bool</span>)p.Value))
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">string</span>&nbsp;fields&nbsp;=&nbsp;<span style="color:blue;">string</span>.Join(<span style="color:#a31515;">&quot;,&quot;</span>,&nbsp;_boolProperties.Select(p&nbsp;=&gt;&nbsp;p.FriendlyName));
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;context.AddErrorResult(<span style="color:blue;">string</span>.Format(<span style="color:#a31515;">&quot;At&nbsp;least&nbsp;one&nbsp;of&nbsp;the&nbsp;fields&nbsp;</span><span style="color:mediumseagreen;">{0}</span><span style="color:#a31515;">&nbsp;must&nbsp;be&nbsp;selected.&quot;</span>,&nbsp;fields));
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;}</pre>
+<p>And a series of Dependency rules to trigger the rule for each time an input property is changed: </p>
+<p>Usage:</p>
+<pre style="font-family:Consolas;background:#fafafa;color:black;font-size:13px;"><pre style="font-family:Consolas;background:#fafafa;color:black;font-size:13px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;BusinessRules.AddRule(<span style="color:blue;">new</span>&nbsp;<span style="color:#2b91af;">AnyBool</span>(MondayBoolProperty,&nbsp;MondayBoolProperty,&nbsp;TuesdayBoolProperty,&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;WednesdayBoolProperty,&nbsp;ThursdayBoolProperty,&nbsp;FridayBoolProperty,&nbsp;SaturdayBoolProperty,&nbsp;SundayBoolProperty));
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;BusinessRules.AddRule(<span style="color:blue;">new</span>&nbsp;<span style="color:#2b91af;">Dependency</span>(TuesdayBoolProperty,&nbsp;MondayBoolProperty));
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;BusinessRules.AddRule(<span style="color:blue;">new</span>&nbsp;<span style="color:#2b91af;">Dependency</span>(WednesdayBoolProperty,&nbsp;MondayBoolProperty));
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;BusinessRules.AddRule(<span style="color:blue;">new</span>&nbsp;<span style="color:#2b91af;">Dependency</span>(ThursdayBoolProperty,&nbsp;MondayBoolProperty));
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:green;">//&nbsp;and&nbsp;so&nbsp;on&nbsp;...&nbsp;</span></pre>
+</pre></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

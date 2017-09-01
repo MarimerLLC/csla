@@ -1,0 +1,23 @@
+<html><header><title>Using CSLA 3.5.2 for existing software, now starting with Silverlight - suggestions for approach? </title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Using CSLA 3.5.2 for existing software, now starting with Silverlight - suggestions for approach? </h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10969.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>js999 posted on Friday, December 09, 2011</h2><p>We have an existing WPF app with about 90 CSLA business objects, using CSLA 3.5.2 and using the WCF DataPortal.</p>
+<p>We are now starting a smaller Silverlight app to manipulate selected business objects. We want to be able to use the same WCF data portal for both the existing WPF app and the silverlight project.</p>
+<p>I downloaded the CSLA 4.2 package because of the Silverlight support, shared the classes, and I used #if !Silverlight to keep the dataportal code, fetching etc out of the business objects when compiled in Silverlight. </p>
+<p>Obviously, there are still several problems, many of them probably rise from the fact that current business objects source is 3.5.2 compatible, while the Silverlight project currently include the 4.2 CSLA silverlight library....</p>
+<ol>
+<li>Switching all&nbsp;software to CSLA 4.2 is an option - how big a task is this, considering the 90 existing classes... Any really &quot;heavy&quot; changes influencing the way things are done in general, or just minor fix-up throughout the existing source code? </li>
+<li>Will it be possible at all to stay at 3.5.2 for our existing components, and have the silverlight client&nbsp;use the 3.5.2 backend?&nbsp;</li>
+</ol>
+<p>&nbsp;Thanks in advance for any feedback provided.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Friday, December 09, 2011</h2><p>There a ton of rocks on the road .... </p>
+<p>Basically: Csla 3.5 is quite old version and will not be interoperable with&nbsp;code on Csla 4.2 (shared dataportal etc).&nbsp; You will not be able to utilize CSLA 4.2 on the client side (with the DataPortal) to use a CSLA 3.5.2 backend/serveside. </p>
+<p>My recommendation would be to migrate you application to CSLA 4.2. The major issues will be </p>
+<ul>
+<li>Rules (BusinessRules and authorization rules) </li>
+<li>Must use RegisterProperty </li>
+<li>And quite some more breaking changes. </li>
+</ul>
+<p>I&#39;d suggest to read through all the change notes and the breaking changes on the way up to 4.2.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>js999 replied on Friday, December 09, 2011</h2><p>Thank you Jonny - moving forward is always the most appealing, and upgrading would be a step forward. But it would also involve a lot of work and&nbsp;be a risk for our next release. </p>
+<p>I was wondering if there was a valid alternative with less impact on our existing projects, e.g. running CSLA Light 3.6 in the Silverlight client. Or maybe upgrading to version 3.9 overall would mean easy upgrading of existing code, and a&nbsp;much better version of CSLA Light...</p>
+<p>Reading through the change notes is a good start, I will do that. Other recommendations as to what version to settle for are still much welcome.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, December 09, 2011</h2><p>If you are going to stick with 3.x, you should go to 3.8.4.</p>
+<p>To get SL support you have to use at least 3.6, but that was built for Silverlight 2 and is now about 4 years old. There are a lot of bug fixes and features in 3.8 that are really necessary to be productive.</p>
+<p>Ideally yes, you&#39;d move to 4.2, but I understand you can&#39;t if your servers are still running .NET 3.5 - then you are stuck on CSLA 3.x too. In that case 3.8 is you best bet.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>js999 replied on Friday, December 16, 2011</h2><p>Thanks Rocky, that will be what&nbsp;we do for now, then.</p>
+<p>Best regards,</p>
+<p>Jesper.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

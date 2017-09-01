@@ -1,0 +1,25 @@
+<html><header><title>SortedBindingList in GridView (web page) Not Sorting</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>SortedBindingList in GridView (web page) Not Sorting</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/7807.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>AndrewR posted on Saturday, October 17, 2009</h2><P>Hello,</P>
+<P>My users got so&nbsp;accustomed to having&nbsp;sorting on my Winforms, and now I am trying the same SortedBindingList implementation for my web page, but it doesn't work (the gridview is not sortable).</P>
+<P>Does the CslaDataSource support sorting out of the box? </P>
+<P>I'd really appreciate something pointing out how to implement sorting for web pages. I couldn't find any recent post on this subject on the forum.</P>
+<P>I'm using VS 2008, CSLA 3.5</P>
+<P>Thanks,</P>
+<P>Andrew</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Monday, October 19, 2009</h2><P><A HREF="/forums/thread/32764.aspx">http://forums.lhotka.net/forums/thread/32764.aspx</A></P>
+<P>Joe</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>cslasoup replied on Thursday, June 09, 2011</h2><p>I know this is an older thread but in case anyone came across this question (and there are a lot of them I&#39;ve found), this is how I solved this problem...</p>
+<p>I have the following classes as part of a messaging module:</p>
+<p>&lt;Serializable()&gt; _<br />Public Class <strong>MessageList<br /></strong>&nbsp; &nbsp; Inherits ReadOnlyListBase(Of <strong>MessageList</strong>, <strong>MessageInfo</strong>)</p>
+<p>&lt;Serializable()&gt; _<br />Public Class <strong>MessageInfo<br /></strong>&nbsp; &nbsp; Inherits ReadOnlyBase(Of <strong>MessageInfo</strong>)</p>
+<p>The MessageList class is used in the Messages.aspx page; Here are the related Messages.aspx.vb code-behind functions/methods:</p>
+<p>&#39;&#39;&#39; &lt;summary&gt;<br />&#39;&#39;&#39; Retrive the MessageList object from session; if it doesn&#39;t exist, retrieve it and put it in session<br />&#39;&#39;&#39; &lt;/summary&gt;<br />&#39;&#39;&#39; &lt;returns&gt;<br />&#39;&#39;&#39; A MessageList object<br />&#39;&#39;&#39; &lt;/returns&gt;<br />&#39;&#39;&#39; &lt;remarks&gt;&lt;/remarks&gt;<br />Private Function <b>GetMessageList()</b> As MyObject.Library.MessageList</p>
+<p>&nbsp; &nbsp; Dim businessObject As Object = Session(&quot;currentObject&quot;)<br />&nbsp; &nbsp; If businessObject Is Nothing OrElse Not TypeOf businessObject Is MessageList Then</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; businessObject =&nbsp;MyObject.Library.MessageList.GetMessageList()</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; Session(&quot;currentObject&quot;) = businessObject<br />&nbsp; &nbsp;<br />&nbsp; &nbsp; End If</p>
+<p>&nbsp; &nbsp; Return CType(businessObject,&nbsp;MyObject.Library.MessageList)</p>
+<p>End Function</p>
+<p>&#39;&#39;&#39; &lt;summary&gt;<br />&#39;&#39;&#39; GridView Select event<br />&#39;&#39;&#39; &lt;/summary&gt;<br />&#39;&#39;&#39; &lt;remarks&gt;&lt;/remarks&gt;<br />Protected Sub <b>MessageListDataSource_SelectObject</b>(ByVal sender As Object, ByVal e As Csla.Web.SelectObjectArgs) Handles MessageListDataSource.SelectObject</p>
+<p>&nbsp; &nbsp; <b>Dim msgList As MessageList = GetMessageList()</b><br />&nbsp; &nbsp; If String.IsNullOrEmpty(e.SortExpression) Then<br />&nbsp; &nbsp; &nbsp; &nbsp; e.BusinessObject = msgList<br />&nbsp; &nbsp; Else<br />&nbsp; &nbsp; &nbsp; &nbsp; <b>Dim msg As New SortedBindingList(Of MessageInfo)(msgList) &#39;This was what gave me the most trouble</b><br />&nbsp; &nbsp; &nbsp; &nbsp; <b>msg.ApplySort(e.SortProperty, e.SortDirection)<br />&nbsp; &nbsp; &nbsp; &nbsp; e.BusinessObject = msg</b><br />&nbsp; &nbsp; End If</p>
+<p>End Sub</p>
+<p>&nbsp;</p>
+<p>The classes I use are based off of the ProjectTracker example and this solution was based on a solution I found on the forums here:&nbsp;<a href="http://forums.lhotka.net/forums/p/7999/38265.aspx">http://forums.lhotka.net/forums/p/7999/38265.aspx</a></p>
+<p>Hope this helps someone.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

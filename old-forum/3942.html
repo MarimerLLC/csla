@@ -1,0 +1,17 @@
+<html><header><title>Add, Edit &amp; Delete Notification</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Add, Edit &amp; Delete Notification</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3942.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>CSLAer posted on Monday, November 26, 2007</h2><P><FONT face=Tahoma size=2>Hi,</FONT></P>
+<P><FONT size=2>I have a read-only list at the selection form. After select one record, it loads the editable record and goes to another form to edit. I can use editable record.Saved+=new ......to capture the event and reload the read-only list for Add and Edit (I have to change the tem.Save() to record.Save()), however I found it's difficult for record deletion. I use Record.DeleteRecord(Id) to delete record at the selection form. Is there any one can help me?</FONT></P>
+<P><FONT size=2>Thanks</FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>robert_m replied on Tuesday, November 27, 2007</h2><P>If your edit form is modal, then you could simply use DialogResult to find out what happened.</P>
+<P>Like this: </P>
+<P>DialogResult result = editFrm.ShowDialog();</P>
+<P>if (result != DialogResult.Cancel)</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp; doRefresh();</P>
+<P>Looks simpler to me...</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>CSLAer replied on Tuesday, November 27, 2007</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>robert_m:</strong></div><div>
+<P>If your edit form is modal, then you could simply use DialogResult to find out what happened.</P>
+<P>Like this: </P>
+<P>DialogResult result = editFrm.ShowDialog();</P>
+<P>if (result != DialogResult.Cancel)</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp; doRefresh();</P>
+<P>Looks simpler to me...</P>
+<P></div></BLOCKQUOTE></P>
+<P>Thanks for your information. But I'm not using modal form, I want to use a more elegant way to do this with Saved event.</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

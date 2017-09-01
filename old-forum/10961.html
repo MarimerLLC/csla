@@ -1,0 +1,23 @@
+<html><header><title>DataPortal_Delete on BusinessBindingListBase</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>DataPortal_Delete on BusinessBindingListBase</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10961.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>tiago posted on Wednesday, December 07, 2011</h2><p>Hi Rocky,</p>
+<p>Looking at <strong>BusinessBindingListBase&lt;T,C&gt;</strong> we can find DataPortal_Delete as follows</p>
+<p>protected virtual void DataPortal_Delete(object criteria)<br />&nbsp;&nbsp;&nbsp; Member of Csla.BusinessBindingListBase&lt;T,C&gt;</p>
+<p>Summary:<br />Override this method to allow immediate deletion of a business object.</p>
+<p>Parameters:<br />criteria: An object containing criteria values to identify the object.</p>
+<p>Note <strong>BusinessListBase&lt;T,C&gt;</strong> doesn&#39;t include this method.</p>
+<p>1) On p. 52 of <strong><em>Using CSLA4 - Data Access</em></strong> ebook DataPortal_Delete is referred as used on an Editable Root object.</p>
+<p>2) I can find only one example of DataPortal_Delete being used in a *ListBase collection:</p>
+<p>On <strong>EncapsulatedInvoke</strong> solution, the class <strong>SkillEditList</strong> has a DataPortal_Delete method but it&#39;s commented.</p>
+<p>3) I feel a bit confused as I always thought it wasn&#39;t used in collections. Does the DataPortal use the Delete method on collections?</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Thursday, December 08, 2011</h2><p>Hi, </p>
+<p>A &lt;list&gt;.Save() will only ever call DataPortal_Update or &lt;objectFactory&gt;.Update.</p>
+<p>But a DataPortal will call the BO with the &quot;verb&quot; that you typically use in a &quot;static factory method&quot;. </p>
+<p>So for example&nbsp;your code may call DataPortal.Delete&lt;listType&gt;(criteria)&nbsp; on a list object that will look for a DataPortal_Delete or &lt;objectFactory&gt;.Delete method on the data access side. And&nbsp;DataPortal.Fetch&lt;T&gt; or DataPortal.Create&lt;T&gt; acts similar. </p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tiago replied on Thursday, December 08, 2011</h2><p>Hi Jonny,</p>
+<p>After the original post I noticed p. 122 of <strong><em>Using CSLA4 - Data Access</em></strong> ebook refers DataPortal_Delete being used by an Editable Root List.</p>
+<p style="padding-left:30px;">DataPortal.Delete&lt;List&gt;(crit)</p>
+<p>This triggers a call to</p>
+<p style="padding-left:30px;">private void DataPortal_Delete(Criteria crit)</p>
+<p>This means the Editable Root List will delete itself according to <strong>crit</strong> criteria.</p>
+<p>I have only one remaining question: does it also work on Editable Child List? If I call</p>
+<p style="padding-left:30px;">DataPortal.DeleteChild&lt;List&gt;(crit)</p>
+<p>will this triggers a call to</p>
+<p style="padding-left:30px;">private void Child_Delete(Criteria crit)</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Friday, December 09, 2011</h2><p>Hi, </p>
+<p>DataPortal&nbsp;do not have a DeleteChild method.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

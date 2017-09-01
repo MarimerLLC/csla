@@ -1,0 +1,19 @@
+<html><header><title>ReadOnly and Editable classes.</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>ReadOnly and Editable classes.</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11796.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Lokesh posted on Friday, January 18, 2013</h2><p>Hi there,</p>
+<p>I am new to this CSLA framework, so please correct me if I am wrong.</p>
+<p>I have grid which only shows the data from database. No edit, insert, delete operations are performed on it.</p>
+<p>Now my question is, Why am I told to use&nbsp;Read-only&nbsp;classes to bind the grid whereas I can do it using editable classes also ? What performance difference does it make ?</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Friday, January 18, 2013</h2><p>Editable classes have a larger footprint in memory and transfer, support n-level undo and change tracking.</p>
+<p>Why would use these if there is no editing involved? Use ReadOnly classes where there is no editing involved.&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Lokesh replied on Friday, January 18, 2013</h2><p>Thanks for your quick reply.</p>
+<p>Yes, there is no editing involved in the grid.</p>
+<p>But what if I use editable classes instead? Anyways only &quot; Get&quot; properties of the class will be used, no &quot;Set&quot;. &nbsp;The Object won&#39;t be getting dirty.</p>
+<p>So why not use the editable classes?</p>
+<p><i style="font-weight:bold;">&quot;<span>Editable classes have a larger footprint in memory and transfer, support n-level undo and change tracking.</span>&quot; </i>Could please explain this ?</p>
+<p>I just want to know that, if I use the editable classes, will it affect the performance of the application? If yes, How ??</p>
+<p>&nbsp;</p>
+<p>Thanks,</p>
+<p>Lokesh.</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Saturday, January 19, 2013</h2><p>The editable classes uses more memory and support n-leve undo and editing via IEditableObject which will create snapshots in memory.&nbsp;</p>
+<p>DataGridView in f.ex WindowsForms will by default support editing.&nbsp;</p>
+<p>ReadOnly classes in the framework exists for a purpose - to use less memory and have a smaller size when serialized. So while you _may_ use onlyeditable classes - I would find it very confusing if you used editable base classes for readonly list objects.&nbsp;</p>
+<p>As an example - editable base classes will always have a Save / SaveAsync method om them - readonly classes do not. &nbsp;BusinessBase also has other properties like BrokenRules. So anyone - other than yourself - who starts using your classes would easily get confused on the responsibility of the class.&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Lokesh replied on Monday, January 21, 2013</h2><p>Thanks a lot for your reply and&nbsp;explanation. Now I am clear with the use of Editable and&nbsp;Read-only&nbsp;classes.</p>
+<p>Thanks. <img src="http://forums.lhotka.net/emoticons/emotion-1.gif" alt="Smile" />&nbsp;</p>
+<p>&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

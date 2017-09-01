@@ -1,0 +1,379 @@
+<html><header><title>From Silverlight to MVC CslaModelBinding child collections</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>From Silverlight to MVC CslaModelBinding child collections</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10770.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>DanielFowler posted on Thursday, October 13, 2011</h2><p>Hi,</p>
+<p>Background:</p>
+<p>A while ago we developed a business application for silverlight using the csla framework. Now we wish to create an MVC alternative for people who are unable to use Silverlight for one reason or another.</p>
+<p>&nbsp;</p>
+<p>The problem:</p>
+<p>Now the problem is that we wish to re-use the &nbsp;existing business library for the MVC application. We wish to save a parent and all its children as a batch but the cslamodelbinder does not bind the child objects. Is there a way of binding these child collections?</p>
+<p>If not, and we have to save each child seperate as though it were a parent what would be the easiest way? (Bearing in mind all the child objects only have Child data portal methods)</p>
+<p>&nbsp;</p>
+<p>I&#39;ve tried looking round the forums and have only managed to find a very small handfull of posts regarding this problem and these were a little old, was wondering if anyone has found a good solution since then?</p>
+<p>&nbsp;</p>
+<p>Thanks a bunch!</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Thursday, October 13, 2011</h2><p>The <em>Using CSLA 4: ASP.NET MVC</em> ebook shows how to use the CslaModelBinder with child collections.</p>
+<p>Also, in CSLA 4 version 4.2 the CslaModelBinder is enhanced so it will request the child collection (or root collection) from the controller (if it implements IModelCreator) automatically. This doesn&#39;t really change the way things work, but it allows for better organization of your code.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>DanielFowler replied on Thursday, October 13, 2011</h2><p>Thanks Rockford but I had a quick look at the mvc book previously and from what I can gather the CslaBinder only maps the values to existing children but doesn&#39;t create new children. My object looks like this:</p>
+<p>Client [Parent] &nbsp; &gt; &nbsp; Contacts [ChildList] &nbsp; &gt; Contact [Child]</p>
+<p>&nbsp;</p>
+<p>I came up with a way around the problem but its rather hackish i think:</p>
+<p>&nbsp;</p>
+<pre>        [<span>HttpPost</span>]
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>public</span>&nbsp;<span>ActionResult</span>&nbsp;SaveClient(<span>Company</span>&nbsp;client,&nbsp;<span>FormCollection</span>&nbsp;collection)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>this</span>.GetChildren(<span>&quot;Contacts&quot;</span>,&nbsp;<span>&quot;Id&quot;</span>,&nbsp;collection,&nbsp;()&nbsp;=&gt;&nbsp;<span>CompanyContact</span>.NewCourseDelegate())
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.ForEach(c&nbsp;=&gt;&nbsp;client.Contacts.Add(c&nbsp;<span>as</span>&nbsp;<span>CompanyContact</span>));
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>//This&nbsp;line&nbsp;will&nbsp;map&nbsp;all&nbsp;the&nbsp;values&nbsp;from&nbsp;the&nbsp;collection&nbsp;to&nbsp;the&nbsp;client&nbsp;so&nbsp;all&nbsp;child&nbsp;properties&nbsp;and&nbsp;parent&nbsp;properties&nbsp;will&nbsp;be&nbsp;updated</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;TryUpdateModel(client,&nbsp;collection);
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>//Save&nbsp;the&nbsp;client&nbsp;and&nbsp;pass&nbsp;in&nbsp;a&nbsp;condition&nbsp;that&nbsp;will&nbsp;determine&nbsp;whether&nbsp;to&nbsp;update&nbsp;or&nbsp;insert</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;client&nbsp;=&nbsp;client.Save(client.Id&nbsp;&gt;&nbsp;0);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>return</span>&nbsp;Redirect(<span>string</span>.Format(<span>&quot;{0}/{1}&quot;</span>,&nbsp;Url.Action(<span>&quot;EditClient&quot;</span>,&nbsp;<span>&quot;Client&quot;</span>),&nbsp;client.Id));
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</pre>
+<pre><span><br /></span></pre>
+<pre><span>        public</span>&nbsp;<span>List</span>&lt;Csla.Core.<span>BusinessBase</span>&gt;&nbsp;GetChildren(<span>string</span>&nbsp;childPropertyName,&nbsp;<span>string</span>&nbsp;uniqueIdentifier,&nbsp;<span>FormCollection</span>&nbsp;collection,&nbsp;Func&lt;Csla.Core.<span>BusinessBase</span>&gt;&nbsp;createNewChild)</pre>
+<pre>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>List</span>&lt;Csla.Core.<span>BusinessBase</span>&gt;&nbsp;Result&nbsp;=&nbsp;<span>new</span>&nbsp;<span>List</span>&lt;Csla.Core.<span>BusinessBase</span>&gt;();
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>//Find&nbsp;all&nbsp;the&nbsp;child&nbsp;objects&nbsp;posted&nbsp;via&nbsp;the&nbsp;form&nbsp;using&nbsp;the&nbsp;uniqueIdentifier</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>var</span>&nbsp;children&nbsp;=&nbsp;collection.AllKeys.Where(k&nbsp;=&gt;&nbsp;k.StartsWith(childPropertyName)&nbsp;&amp;&amp;&nbsp;k.EndsWith(uniqueIdentifier)).ToList();
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>//Foreach&nbsp;one&nbsp;we&nbsp;want&nbsp;to&nbsp;create&nbsp;a&nbsp;brand&nbsp;new&nbsp;child&nbsp;object</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>foreach</span>&nbsp;(<span>var</span>&nbsp;child&nbsp;<span>in</span>&nbsp;children)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>var</span>&nbsp;NewChild&nbsp;=&nbsp;createNewChild.Invoke();
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>//If&nbsp;the&nbsp;child&nbsp;we&#39;re&nbsp;iterating&nbsp;over&nbsp;has&nbsp;an&nbsp;a&nbsp;unique&nbsp;identifier&nbsp;greater&nbsp;than&nbsp;0</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>//it&nbsp;needs&nbsp;to&nbsp;be&nbsp;marked&nbsp;as&nbsp;old&nbsp;so&nbsp;it&nbsp;Updates&nbsp;instead&nbsp;of&nbsp;inserting.</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>int</span>&nbsp;id&nbsp;=&nbsp;0;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>int</span>.TryParse(collection[child],&nbsp;<span>out</span>&nbsp;id);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>if</span>&nbsp;(id&nbsp;&gt;&nbsp;0)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;manager.MarkAsOld(NewChild);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Result.Add(NewChild);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>return</span>&nbsp;Result;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</pre>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Thursday, October 13, 2011</h2><p>I see, that is a good point.</p>
+<p>We should enhance CslaModelBinder so if it doesn&#39;t find&nbsp;a matching child in the collection, then it adds a new child.</p>
+<p>Your technique might work for you, because you know the nature of your Id property behavior. In the general case that&#39;s not practical of course.</p>
+<p>But CslaModelBinder should be able to handle this pretty easily as an extension of its existing implementation.</p>
+<p>Another thing for the wish list :)</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>DanielFowler replied on Thursday, October 13, 2011</h2><p>Thanks Rockford, glad to hear I wasn&#39;t just missing something silly! :)</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, October 13, 2011</h2><p>Prior to this point there wasn&#39;t a standard way for binding to add new items to a collection, so the functionality wasn&#39;t necessary. Obviously it is something we now need to support.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>DanielFowler replied on Friday, October 14, 2011</h2><p>Ok so I&#39;ve modified the CslaModelBinder to create, delete and modify children based on two values i send from my view &quot;IsNew&quot; and &quot;IsDelete&quot;. The only remaining issue is that the children are not being marked as dirty as i thought they would be. Here is the code :<br /><br /><br /></p>
+<pre>&nbsp;<span>private</span>&nbsp;<span>object</span>&nbsp;BindCslaCollection(<span>ControllerContext</span>&nbsp;controllerContext,&nbsp;<span>ModelBindingContext</span>&nbsp;bindingContext)
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>var</span>&nbsp;collection&nbsp;=&nbsp;(<span>IList</span>)bindingContext.Model;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>var</span>&nbsp;collectionItemType&nbsp;=&nbsp;collection.AsQueryable().ElementType;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>var</span>&nbsp;form&nbsp;=&nbsp;controllerContext.RequestContext.HttpContext.Request.Form;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>string</span>&nbsp;firstPropertyName&nbsp;=&nbsp;collectionItemType.GetProperties()[0].Name;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>int</span>&nbsp;collectionCount&nbsp;=&nbsp;form.AllKeys.Count(k&nbsp;=&gt;&nbsp;k.StartsWith(bindingContext.ModelName)&nbsp;&amp;&amp;&nbsp;k.EndsWith(firstPropertyName));
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>for</span>&nbsp;(<span>int</span>&nbsp;currIdx&nbsp;=&nbsp;0;&nbsp;currIdx&nbsp;&lt;&nbsp;collectionCount;&nbsp;currIdx++)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>string</span>&nbsp;subIndexKey&nbsp;=&nbsp;CreateSubIndexName(bindingContext.ModelName,&nbsp;currIdx);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>if</span>&nbsp;(!bindingContext.ValueProvider.ContainsPrefix(subIndexKey))
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>continue</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>//no&nbsp;value&nbsp;to&nbsp;update&nbsp;skip</span>
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>object</span>&nbsp;elementModel&nbsp;=&nbsp;<span>Activator</span>.CreateInstance(collectionItemType);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>ObjectManager</span>&nbsp;objectManager&nbsp;=&nbsp;<span>new</span>&nbsp;<span>ObjectManager</span>();
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;objectManager.MarkAsChild(elementModel);
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>var</span>&nbsp;suppress&nbsp;=&nbsp;elementModel&nbsp;<span>as</span>&nbsp;Csla.Core.<span>ICheckRules</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>if</span>&nbsp;(suppress&nbsp;!=&nbsp;<span>null</span>)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;suppress.SuppressRuleChecking();
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>var</span>&nbsp;elementContext&nbsp;=&nbsp;<span>new</span>&nbsp;<span>ModelBindingContext</span>()
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ModelMetadata&nbsp;=&nbsp;<span>ModelMetadataProviders</span>.Current.GetMetadataForType(()&nbsp;=&gt;&nbsp;elementModel,&nbsp;elementModel.GetType()),
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ModelName&nbsp;=&nbsp;subIndexKey,
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ModelState&nbsp;=&nbsp;bindingContext.ModelState,
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;PropertyFilter&nbsp;=&nbsp;bindingContext.PropertyFilter,
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ValueProvider&nbsp;=&nbsp;bindingContext.ValueProvider
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;};
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>if</span>&nbsp;(OnModelUpdating(controllerContext,&nbsp;elementContext))
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>//update&nbsp;element&#39;s&nbsp;properties</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>foreach</span>&nbsp;(<span>PropertyDescriptor</span>&nbsp;property&nbsp;<span>in</span>&nbsp;GetFilteredModelProperties(controllerContext,&nbsp;elementContext))
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;BindProperty(controllerContext,&nbsp;elementContext,&nbsp;property);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;OnModelUpdated(controllerContext,&nbsp;elementContext);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;collection.Add(elementModel);
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>var</span>&nbsp;Element&nbsp;=&nbsp;elementModel&nbsp;<span>as</span>&nbsp;Csla.Core.<span>BusinessBase</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>bool</span>&nbsp;IsDelete,&nbsp;IsNew&nbsp;=&nbsp;<span>false</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>bool</span>.TryParse(form[subIndexKey+<span>&quot;.IsDeleted&quot;</span>],&nbsp;<span>out</span>&nbsp;IsDelete);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>bool</span>.TryParse(form[subIndexKey&nbsp;+&nbsp;<span>&quot;.IsNew&quot;</span>],&nbsp;<span>out</span>&nbsp;IsNew);
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>if</span>&nbsp;(IsDelete)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Element.Parent.RemoveChild(Element);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>if</span>&nbsp;(!IsNew)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;objectManager.MarkAsOld(Element);&nbsp;</pre>
+<p>
+<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</span></p>
+&nbsp;
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>gyob00 replied on Friday, November 04, 2011</h2><p>I have the same requirement. We have been asked to make a site using MVC where one requirement is that one page (with some jquery tabs along with other screen partitioning instruments) performs the following</p>
+<p>&nbsp;</p>
+<p>Modify/add a new contact along with modify/add:</p>
+<p>&nbsp;</p>
+<p>0-infinite relatives</p>
+<p>0-infinite employment histories (which each have their own available variable amount of paycodes)</p>
+<p>&nbsp;</p>
+<p>etc..(there are more instances like this in our object graph). We cannot break these actions up onto different pages, it would be a deal breaker.</p>
+<p>&nbsp;</p>
+<p>An elegant solution for MVC is needed. I will try some of the ideas on this post, for now.</p>
+<p>&nbsp;</p>
+<p>Daniel, does your accepted answer solution work? did you have any other challenges you could mention?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>gyob00 replied on Thursday, November 10, 2011</h2><p>the following modification to MVC &nbsp;CslaModelBiner.cs will allow you to use a programming style where you can add new items to children and remove items, too (all at once, with one post) You must include the IsNew, IsDeleted, objectIDs with your post data (I dont think anything else is required unless in a situation where validating, like doing a child update) and respect Microsoft MVC form element naming convention <i>CSLAObjectName[index]</i> and you must start at index 0 and you cannot skip index ordinals (which is the standard-normal way of doing things with Ms MVC). Most of the code is original, I&#39;ve added my hacks to add this functionality. I will continue to hone this until it works or give up. Its working for me now, so I don&#39;t think I&#39;ll be giving up right now.</p>
+<p>&nbsp;</p>
+<p>&nbsp;*update &nbsp;dec 9 2011* fixed some more bugs, and it seems to work well (again)...doing more testing and code cleanup</p>
+<p>&nbsp;</p>
+<p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; private class ObjectManager : Csla.Server.ObjectFactory</p>
+<p>&nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; public new void MarkAsChild(object obj)</p>
+<p>&nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; base.MarkAsChild(obj);</p>
+<p>&nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp; &nbsp; &nbsp; public new void MarkOld(object obj)</p>
+<p>&nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; base.MarkOld(obj);</p>
+<p>&nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp; &nbsp; }</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; /// &lt;summary&gt;</p>
+<p>&nbsp; &nbsp; /// Bind CSLA Collection object using specified controller context and binding context</p>
+<p>&nbsp; &nbsp; /// &lt;/summary&gt;</p>
+<p>&nbsp; &nbsp; /// &lt;param name=&quot;controllerContext&quot;&gt;Controller Context&lt;/param&gt;</p>
+<p>&nbsp; &nbsp; /// &lt;param name=&quot;bindingContext&quot;&gt;Binding Context&lt;/param&gt;</p>
+<p>&nbsp; &nbsp; /// &lt;returns&gt;Bound CSLA collection object&lt;/returns&gt;</p>
+<p>&nbsp; &nbsp; private object BindCslaCollection(ControllerContext controllerContext, ModelBindingContext bindingContext)</p>
+<p>&nbsp; &nbsp; {</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; var collection = (IList)bindingContext.Model;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; var collectionItemType = collection.AsQueryable().ElementType;</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; var form = controllerContext.RequestContext.HttpContext.Request.Form;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; string firstPropertyName = collectionItemType.GetProperties()[0].Name;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; int collectionCount = form.AllKeys.Count(k =&gt; k.StartsWith(bindingContext.ModelName) &amp;&amp; k.EndsWith(firstPropertyName));</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; for (int currIdx = 0; currIdx &lt; collection.Count; currIdx++)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; string subIndexKey = CreateSubIndexName(bindingContext.ModelName, currIdx);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; if (!bindingContext.ValueProvider.ContainsPrefix(subIndexKey))</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; continue; &nbsp; &nbsp; &nbsp;//no value to update skip</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; var elementModel = collection[currIdx];</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; var suppress = elementModel as Csla.Core.ICheckRules;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; if (suppress != null)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; suppress.SuppressRuleChecking();</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; var elementContext = new ModelBindingContext()</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; ModelMetadata = ModelMetadataProviders.Current.GetMetadataForType(() =&gt; elementModel, elementModel.GetType()),</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; ModelName = subIndexKey,</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; ModelState = bindingContext.ModelState,</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; PropertyFilter = bindingContext.PropertyFilter,</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; ValueProvider = bindingContext.ValueProvider</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; };</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; if (OnModelUpdating(controllerContext, elementContext))</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; //update element&#39;s properties</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; foreach (PropertyDescriptor property in GetFilteredModelProperties(controllerContext, elementContext))</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; BindProperty(controllerContext, elementContext, property);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; OnModelUpdated(controllerContext, elementContext);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; // The next portion of the code adds any new and deletes any deleted items I use an HttpContext item to ensure it only executes on the final pass (this function is executing twice) not sure if I like this :-\</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; int IsDeleteCount;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; int IsNewFrmCount;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; bool IsDeleteBool;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; bool IsNewBool;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; IsDeleteCount = 0;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; IsNewFrmCount = 0;</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; for (int currIdx = 0; currIdx &lt; collectionCount; currIdx++)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; string subIndexKey = CreateSubIndexName(bindingContext.ModelName, currIdx);</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; bool.TryParse(form[subIndexKey + &quot;.IsDeleted&quot;], out IsDeleteBool);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; bool.TryParse(form[subIndexKey + &quot;.IsNew&quot;], out IsNewBool);</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; if (IsDeleteBool &amp;&amp; !IsNewBool)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; IsDeleteCount++;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; if (!IsDeleteBool &amp;&amp; IsNewBool)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; IsNewFrmCount++;</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; if (controllerContext.HttpContext.Items.Contains(bindingContext.ModelName.ToString()))</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; controllerContext.HttpContext.Items.Remove(bindingContext.ModelName.ToString());</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; else</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; controllerContext.HttpContext.Items.Add(bindingContext.ModelName.ToString(), &quot;a&quot;);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; IsDeleteCount = 0;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; IsNewFrmCount = 0;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; // have to delete before we add and need to delete in reverse so our indexes dont get out of sync</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; if (IsDeleteCount &gt; 0)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; int colCount1 = collection.Count;</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; for (int currIdx = (colCount1-1); currIdx &gt; -1; currIdx--)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; string subIndexKey = CreateSubIndexName(bindingContext.ModelName, currIdx);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; if (!bindingContext.ValueProvider.ContainsPrefix(subIndexKey))</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; continue; &nbsp; &nbsp; &nbsp;//no value to update skip</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; var elementModel = collection[currIdx];</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; var Element = elementModel as Csla.Core.BusinessBase;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; bool IsDelete1;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; bool.TryParse(form[subIndexKey + &quot;.IsDeleted&quot;], out IsDelete1);</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; if (IsDelete1 &amp;&amp; (IsDeleteCount &gt; 0))</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Element.Parent.RemoveChild(Element);</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; //Add missing items</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; if (IsNewFrmCount &gt; 0)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; // not sure exactly how many times to loop yet (still testing) so I add some extra loops, the continue in the loop will catch my fudge for now</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; int colCount1 = collection.Count + IsNewFrmCount + 1;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; for (int currIdx = 0; currIdx &lt; colCount1; currIdx++)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; string subIndexKey = CreateSubIndexName(bindingContext.ModelName, currIdx);</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; bool IsDelete, IsNew = false;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; bool.TryParse(form[subIndexKey + &quot;.IsDeleted&quot;], out IsDelete);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; bool.TryParse(form[subIndexKey + &quot;.IsNew&quot;], out IsNew);</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; if (IsNew &amp;&amp; !IsDelete)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; if (!bindingContext.ValueProvider.ContainsPrefix(subIndexKey))</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; continue; &nbsp; &nbsp; &nbsp;//no value to update skip</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; object elementModel = Activator.CreateInstance(collectionItemType);</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; ObjectManager objectManager = new ObjectManager();</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; objectManager.MarkAsChild(elementModel);</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; var suppress = elementModel as Csla.Core.ICheckRules;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; if (suppress != null)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; suppress.SuppressRuleChecking();</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; var elementContext = new ModelBindingContext()</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; ModelMetadata = ModelMetadataProviders.Current.GetMetadataForType(() =&gt; elementModel, elementModel.GetType()),</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; ModelName = subIndexKey,</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; ModelState = bindingContext.ModelState,</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; PropertyFilter = bindingContext.PropertyFilter,</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; ValueProvider = bindingContext.ValueProvider</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; };</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; if (OnModelUpdating(controllerContext, elementContext))</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; //update element&#39;s properties</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; foreach (PropertyDescriptor property in GetFilteredModelProperties(controllerContext, elementContext))</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; BindProperty(controllerContext, elementContext, property);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; OnModelUpdated(controllerContext, elementContext);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; var Element = elementModel as Csla.Core.BusinessBase;</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; collection.Add(elementModel);</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; return bindingContext.Model;</p>
+<p>&nbsp; &nbsp; }</p>
+</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>gyob00 replied on Thursday, November 10, 2011</h2><p>P.s. I made the last chunk of code, because When I tried Fowler&#39;s CslaModelBinder code, the existing values were being re-added and therefore were duplicated in the object graph. were you experiencing this side-effect? I may be doing something wrong on my end</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>DanielFowler replied on Thursday, November 10, 2011</h2><p>Hi, gyob00</p>
+<p>I&#39;ve not been working on the project since I last posted so I havn&#39;t had a chance to get it fully working yet. However briefly after the last post i think i modified it slightly and i had the binding working fine except for objects not being marked as dirty.</p>
+<p>I&#39;m not at work atm, ill check it tomorrow and let you know if i changed anything :]</p>
+<p>Sorry for the late reply! And yeah i thought my modifications were a bit frankensteinish too! But deadlines are deadlines unfortunatley lol :[</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>gyob00 replied on Thursday, November 10, 2011</h2><p><span>Hey! </span></p>
+<p><span>I like your modifications - when I said&nbsp;</span><span>Frankenstein</span><span>&nbsp;I was referring to MY hack job. </span></p>
+<p>&nbsp;</p>
+<p><span>Thank you for your original post. I would have been in real trouble without your examples!</span></p>
+<p>
+<div></div>
+<div>:)</div>
+</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>DanielFowler replied on Friday, November 11, 2011</h2><p>Well I&#39;ve just had a look and it seems to work fine, no duplicate values. However I think i may be using the binder differently from you.</p>
+<p>I&#39;m using it implicity, as the defaultbinder for paramaters like : &nbsp;</p>
+<p>&nbsp;</p>
+<pre>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[<span>HttpPost</span>]
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>public</span>&nbsp;<span>ActionResult</span>&nbsp;SaveClient(<span>Company</span>&nbsp;client)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//save client
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>return</span>&nbsp;Redirect(<span>string</span>.Format(<span>&quot;</span><span>{0}</span><span>/</span><span>{1}</span><span>&quot;</span>,&nbsp;Url.Action(<span>&quot;EditClient&quot;</span>,&nbsp;<span>&quot;Client&quot;</span>),&nbsp;//clientid));
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</pre>
+<pre></pre>
+<pre>I think your pulling your existing object from the database then binding via UpdateModel() method.&nbsp;</pre>
+<pre></pre>
+<pre>Im guessing that there could be new records coming in through the POST,&nbsp;you fetch the object from the DB by its id,&nbsp;</pre>
+<pre>call UpdateModel() method to trigger the binding.&nbsp;</pre>
+<pre></pre>
+<pre>In the binder the collection.Count != collection returns true so you jump into the loop that actually creates a child for each record</pre>
+<pre>from the POST, it doesnt check wether it already exists or not in the collection so that may be why you&#39;re getting duplicate values.</pre>
+<pre></pre>
+<pre></pre>
+<pre></pre>
+<pre></pre>
+<pre>Hope that helps! :)</pre>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>gyob00 replied on Friday, November 11, 2011</h2><p>yes, it helps a lot. </p>
+<p>&nbsp;</p>
+<p>at the very end I remove the non-new items to prevent duplication. provided that the post contains all the new AND existing items, it will work correctly.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Edi replied on Saturday, November 09, 2013</h2><p>Has anyone found any good solutions of this problem? I saw it on the git issues as an enhancement but it wasn&#39;t finished too. Any sample or some guidelines would be appreciated too. </p>
+<p>&nbsp;</p>
+<p>Thank you in advance,</p>
+<p>Edi&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>gyob00 replied on Monday, November 18, 2013</h2><p>Yes, I have come to the conclusion that the demonstrative implementation of CSLA is not suited to a ASP.NET MVC environment. Its best to factor a CSLA implementation to only have the web server responsible for Log in security and load balance. The database layer should shred the data graph and deliver XML to the front end. The web server should not touch the XML normally. The front end should normally deal with XML unless loop performance becomes an issue. As Rocky states, the demonstrative implementation is really only an example. If you try to use that in an ASP.NET MVC stack, you are just screwing yourself out of performance and time and the real benefits of CSLA.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>gyob00 replied on Monday, November 18, 2013</h2><p>I should be very clear here... ASP.NET MVC MSSQL environment. Any changes will certainly cause one to refactor...</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>gyob00 replied on Monday, November 18, 2013</h2><p>so basically XPATH MSSQL queries can work manage data against multiple tables faster than C# can. On average, based on my business needs, its about 20x faster. This is odd because for some reason PHP/DB architectures are horribly fast and dont seem to incur noticable perfomance overhead when dealing with multiple tables.....test, refactor, test, etc. In any event the CSLA philosophy is sound, as long as you apply it flexibly.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>gyob00 replied on Monday, November 18, 2013</h2><p>I&#39;ve read that CLR on the DB Server can potentially match or beat the performance I&#39;ve achieved with my XPATH solution. It could even allow for a more bullet proof CSLA implementation without sacrificing performance to multiple MSSQL db calls (which previously affected my particular situation). I&#39;m just too comfortable right now to test this kind of refactor The legacy systems I deal with here, and the entrenched priests of the temple of syrinx, have caused a serenity prayer of design on my part, which has proven to scale well against dealing with a variable amount of tables...</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

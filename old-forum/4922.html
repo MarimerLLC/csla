@@ -1,0 +1,14 @@
+<html><header><title>Change Password</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Change Password</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4922.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Joffies posted on Monday, June 02, 2008</h2><P>Need some advice.</P>
+<P>I have an application that uses the PTracker security objects (Identity and Principal objects)&nbsp;as a starting block.</P>
+<P>Where would the best place be to implement&nbsp;password change functionality as I would like to encapsulate all user security related functionality&nbsp;as far as possible?</P>
+<P>Should I modify the Principal object and create a new business&nbsp; object to implement the change password functionality or perhaps modify the Identity object?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>juddaman replied on Monday, June 02, 2008</h2>
+
+
+
+<p class="MsoNormal"><o:p>&nbsp;</o:p>How about a ChangePasswordCommand object. With a
+ChangePassword method taking the User Id, Old Password and New Password. The
+result of the method would indicate the commands success.<br>
+<br>
+The way I see it is the Identity and Principal objects roles are to allow the
+user to be identified. The Use Case of 'allow user to change their password'
+(or whatever) is its own area or use scenario.</p><br>But I've been wrong before :-)<br><br>HTH<br><br>George<br><br><br><br><br><br><br><br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

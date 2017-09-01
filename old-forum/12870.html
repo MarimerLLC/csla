@@ -1,0 +1,12 @@
+<html><header><title>Trying to Move to C# - Part II</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Trying to Move to C# - Part II</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/12870.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>ebick posted on Thursday, April 23, 2015</h2><p>In my continuing attempt o write a business base class in C# (very familiar with VB), I found several samples that say the following code should work. However I am getting errors. &nbsp;I am using the latest 3.8 CSLA</p>
+<p>Problem #1</p>
+<p>&nbsp;protected override <b><i><span style="text-decoration:underline;">void</span></i></b> AddBusinessRules()</p>
+<p>Problem #2</p>
+<p>ValidationRules.AddRule(Csla.Validation.CommonRules.StringRequired, new <b><i><span style="text-decoration:underline;">Csla</span></i></b>.Validation.RuleArgs(NameProperty));</p>
+<p>For both problems, the problem word (void/Csla), the error is:</p>
+<p><b>Error<span>	</span>1<span>	</span>Expected class, delegate, enum, interface, or struct</b><span>	</span></p>
+<div></div>
+<div>Any help? &nbsp;Thanks in advance.</div>
+<div></div>
+<div>Ed</div></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Friday, April 24, 2015</h2><p>Sounds like your code is missing some curly brackets ({ or }) or they are not correctly placed.&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ebick replied on Friday, April 24, 2015</h2><p>D&#39;oh!</p>
+<p>Sorry, thanks.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

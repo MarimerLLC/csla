@@ -1,0 +1,20 @@
+<html><header><title>To BO or not to BO?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>To BO or not to BO?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/2816.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>SonOfPirate posted on Thursday, May 03, 2007</h2><P>My application has a number of objects that share the following characteristics:</P>
+<OL>
+<LI>All have a text "name"</LI>
+<LI>All have a text "abbreviation"</LI>
+<LI>Most have a numeric "code" value</LI>
+<LI>The list of items is read-only</LI>
+<LI>All are read-only objects</LI>
+<LI>All change infrequently, but the potential for change does exist</LI>
+<LI>Most would need to support parsing text equivalents</LI>
+<LI>It would be nice to reference individual items using dot-syntax rather than through indexers</LI>
+<LI>Localization of the text fields is a plus</LI>
+<LI>All are used as property "types" in the application's business objects</LI></OL>
+<P>My question is whether or not I should implement them as BO's, structs, enums, etc.</P>
+<P>Any thoughts?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonM replied on Thursday, May 03, 2007</h2>The real question is how do you want to interface into them?&nbsp; If end-users must be able to edit/update then a BO makes sense.&nbsp; If you need to validate rules on the fields then a BO makes sense.&nbsp; If you don't need anything other than read-only and you are not using the dataportal then structs and enums makes sense.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>SonOfPirate replied on Thursday, May 03, 2007</h2><P>I shied away from enums because of the 3-field aspect (name, abbreviation and code/value).</P>
+<P>At this point, we are not creating an interface to manage these objects; however, despite being read-only and fixed in nature, change is inevitable and I have to keep the design open to the possibility that the code associated with an item might change, an item might be added or removed, etc.&nbsp; This would be highly infrequent but it doesn't seem reasonable to recompile and redeploy should such changes be required.</P>
+<P>The will be validation performed on the business&nbsp;objects that have these objects as properties, but there is no validation or security within these objects.</P>
+<P>The use of the data portal would all depend on the approach I take.&nbsp; If I go data-driven, then I would use the data portal.&nbsp; If I go static, such as a struct or enum, then I wouldn't.</P>
+<P>The big question is how to build-in the flexibility&nbsp;to allow change when the objects&nbsp;I am referring to&nbsp;are really just data and a BO is intended to encapsulate behavior?&nbsp; Is it appropriate to go with BO's strictly because they are data-driven?</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, May 03, 2007</h2><P>It sounds like you are trying to decide to hard-code or dynamically load the values.</P>
+<P>In my experience, when in doubt, make them dynamic with caching. If there's doubt about whether they'll change - they'll change, and you'll regret having hard-coded them.</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

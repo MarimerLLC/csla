@@ -1,0 +1,36 @@
+<html><header><title>Code Examples- Where Data Grid And ReadOnly ListBase object retrieves only selected information</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Code Examples- Where Data Grid And ReadOnly ListBase object retrieves only selected information</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3562.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Lyndon posted on Tuesday, September 18, 2007</h2><P>Hi,</P>
+<P>In the examples so far that I have seen in project tracker - most of the examples show data grids and readonlylistbase objects&nbsp; that go and get the entire data within a table and so in the Data Access Region, the private class Criteria has&nbsp; a comment 'no criteria- we retrive all ...' and is otherwise codeless.</P>
+<P>When you select an item in the grid- it of course uses the id of the selected item as a criteria in the class representing the selected items to select,update ,delete etc.</P>
+<P>But what about when on a datagrid you want to have one or more&nbsp;selection criteria from the very beginning that brings back a subset of data in the grid? This is obviously more efficient from a design perspective because on any typical transactional data you want to always subset the data. I have a series of dropdown lists where I want to specify the filtering criteria before the data is fetched. I noticed that some grids available out there allow you to filter once fetched which is also useful, but in this case I want the efficiencies mentioned above</P>
+<P>Does any one have code examples of doing that? Does the&nbsp; private criteria class in the readonlylistbase object&nbsp;have entries for each item that you eventually want to use as a filtering item? Are these then used in the data portal fetch command in the parameters.addwithvalue items? </P>
+<P>Sorry if the answer is patently obvious :(</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Tuesday, September 18, 2007</h2><P>The answer is obvious - but I don't think I can get a patent on it. &lt;g&gt;</P>
+<P>I use search forms where the user can choose some or all of the various criteria on the form.</P>
+<P>The left hand column is a check box saying that they want to include that particular criteria. (I check it for the user if they type something in the text box or pick a radio button or cbo.)</P>
+<P>The form is bound to a Root BO whose sole function is to gather up the data and pass itself to the ROC as the criteria. The Root BO has rules which can be validated prior to making the call - like at least one of the checkboxes is checked.</P>
+<P>So an overload of your ROC criteria class takes 1 parameter of Type "SearchFormBO" (or whatever you decide to call your BO that gathers up your dropdown info.) This is then sent through the DataPortal where you now have access to everything the user chose (or didn't choose.)</P>
+<P>Based on this BO it is trivial to build a filter which can be passed to your SQL as part of the WHERE clause.</P>
+<P>&nbsp;</P>
+<P>Joe</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Lyndon replied on Tuesday, September 18, 2007</h2><P>&nbsp;</P>
+<P>;-D</P>
+<P>Thanks,</P>
+<P>I got one criteria working with one dropdown using the criteriaclass in the root BO.</P>
+<P>I am assuming I can specify multiple criteria then in that criteriaclass, based on additional dropdowns etc? (ie about to try that next ...)</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Tuesday, September 18, 2007</h2><P>Nope. You missed what I was saying.</P>
+<P>You&nbsp;do not use a criteira class inside a Root BO.</P>
+<P>The Root BO itself is the criteria for your search screen.</P>
+<P>e.g. call it MySearchBO.</P>
+<P>Then it will contain Properties for your dropdowns. Plus any rules you want.</P>
+<P>Just has a DP_Create and nothing else as you will not be saving this BO to your DB.</P>
+<P>Then your ROC has a factory method like this:</P>
+<P>GetMyList(mySearchBO as MySearchBO) As MyList</P>
+<P>Then in DP_Fetch of your ROC you parse the contents of mySearchBO to build a WHERE clause to fetch your ROC.</P>
+<P>Joe</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Lyndon replied on Wednesday, September 19, 2007</h2><P>So if I understand correctly,</P>
+<P>in effect you create a business object for the marshalling/identification of the search criteria itself, then use its results to build the where clause.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Wednesday, September 19, 2007</h2><P>Yes.</P>
+<P>Again - it is a very scaled down BO.</P>
+<P>It can be used for binding (and unbinding) the search form data.</P>
+<P>Then it&nbsp;is passed to the ROC as shown above.</P>
+<P>Joe</P>
+<P>&nbsp;</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

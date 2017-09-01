@@ -1,0 +1,87 @@
+<html><header><title>Visual Studio Templates - public key not trusted</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Visual Studio Templates - public key not trusted</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5755.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jack posted on Thursday, November 06, 2008</h2><P>I went through all the steps to add the c# templates to VS2008 but I am only able to access a few of them.&nbsp; It seems some of them are signed and others are not.</P>
+<P>EditableRoot.vstemplate</P>
+<BLOCKQUOTE dir=ltr>
+<P>&lt;VSTemplate Version="2.0.0" xmlns="<A href="http://schemas.microsoft.com/developer/vstemplate/2005">http://schemas.microsoft.com/developer/vstemplate/2005</A>" Type="Item"&gt;<BR>&nbsp; &lt;TemplateData&gt;<BR>&nbsp;&nbsp;&nbsp; &lt;DefaultName&gt;EditableRoot.cs&lt;/DefaultName&gt;<BR>&nbsp;&nbsp;&nbsp; &lt;Name&gt;EditableRoot&lt;/Name&gt;<BR>&nbsp;&nbsp;&nbsp; &lt;Description&gt;CSLA.NET EditableRoot Class Template&lt;/Description&gt;<BR>&nbsp;&nbsp;&nbsp; &lt;ProjectType&gt;CSharp&lt;/ProjectType&gt;<BR>&nbsp;&nbsp;&nbsp; &lt;SortOrder&gt;10&lt;/SortOrder&gt;<BR>&nbsp;&nbsp;&nbsp; &lt;Icon&gt;csla.ico&lt;/Icon&gt;<BR>&nbsp; &lt;/TemplateData&gt;<BR>&nbsp; &lt;TemplateContent&gt;<BR>&nbsp;&nbsp;&nbsp; &lt;References&gt;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;Reference&gt;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;Assembly&gt;Csla&lt;/Assembly&gt;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/Reference&gt;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;Reference&gt;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;Assembly&gt;System&lt;/Assembly&gt;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/Reference&gt;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;Reference&gt;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;Assembly&gt;System.Core&lt;/Assembly&gt;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/Reference&gt;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;Reference&gt;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;Assembly&gt;mscorlib&lt;/Assembly&gt;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/Reference&gt;<BR>&nbsp;&nbsp;&nbsp; &lt;/References&gt;<BR>&nbsp;&nbsp;&nbsp; &lt;ProjectItem SubType="Code" TargetFileName="$fileinputname$.cs" ReplaceParameters="true"&gt;EditableRoot.cs&lt;/ProjectItem&gt;<BR>&nbsp; &lt;/TemplateContent&gt;<BR>&lt;/VSTemplate&gt;</P></BLOCKQUOTE>
+<P dir=ltr>vs. EditableRootList:</P>
+<BLOCKQUOTE dir=ltr>
+<P dir=ltr>&lt;VSTemplate Version="2.0.0" xmlns="<A href="http://schemas.microsoft.com/developer/vstemplate/2005">http://schemas.microsoft.com/developer/vstemplate/2005</A>" Type="Item"&gt;<BR>&nbsp; &lt;TemplateData&gt;<BR>&nbsp;&nbsp;&nbsp; &lt;DefaultName&gt;EditableRootList.cs&lt;/DefaultName&gt;<BR>&nbsp;&nbsp;&nbsp; &lt;Name&gt;EditableRootList&lt;/Name&gt;<BR>&nbsp;&nbsp;&nbsp; &lt;Description&gt;CSLA.NET EditableRootList Class Template&lt;/Description&gt;<BR>&nbsp;&nbsp;&nbsp; &lt;ProjectType&gt;CSharp&lt;/ProjectType&gt;<BR>&nbsp;&nbsp;&nbsp; &lt;SortOrder&gt;10&lt;/SortOrder&gt;<BR>&nbsp;&nbsp;&nbsp; &lt;Icon&gt;csla.ico&lt;/Icon&gt;<BR>&nbsp; &lt;/TemplateData&gt;<BR>&nbsp; &lt;TemplateContent&gt;<BR>&nbsp;&nbsp;&nbsp; &lt;References&gt;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;Reference&gt;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;Assembly&gt;Csla&lt;/Assembly&gt;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/Reference&gt;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;Reference&gt;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;Assembly&gt;System&lt;/Assembly&gt;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/Reference&gt;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;Reference&gt;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;Assembly&gt;System.Core&lt;/Assembly&gt;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/Reference&gt;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;Reference&gt;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;Assembly&gt;mscorlib&lt;/Assembly&gt;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/Reference&gt;<BR>&nbsp;&nbsp;&nbsp; &lt;/References&gt;<BR>&nbsp;&nbsp;&nbsp; &lt;ProjectItem SubType="Code" TargetFileName="$fileinputname$.cs" ReplaceParameters="true"&gt;EditableRootList.cs&lt;/ProjectItem&gt;<BR>&nbsp; &lt;/TemplateContent&gt;<BR>&nbsp; <STRONG>&lt;WizardExtension&gt;<BR>&nbsp;&nbsp;&nbsp; &lt;Assembly&gt;CslaItemTemplateWizards, Version=1.0.0.0, Culture=Neutral, PublicKeyToken=93be5fdc093e4c30&lt;/Assembly&gt;<BR>&nbsp;&nbsp;&nbsp; &lt;FullClassName&gt;CslaItemTemplateWizards.ListWizard&lt;/FullClassName&gt;<BR>&nbsp; &lt;/WizardExtension&gt;</STRONG><BR>&lt;/VSTemplate&gt;</P></BLOCKQUOTE>
+<P dir=ltr>Is this by design?&nbsp; How does one go about either ignoring the key issues or making the key trusted.&nbsp; The error I get in VS is:</P>
+<BLOCKQUOTE dir=ltr>
+<P dir=ltr>Error: this template attempted to load an untrusted component 'CslaItemTemplateWizards, Version 1.0.0.0, Culture=neutral, PublicKeyToken=<STRONG>93be5fdc093e4c30</STRONG>.&nbsp; For more information on this problem and how to enable this template, please see the documentation on Customizing Project Templates.</P></BLOCKQUOTE>
+<P dir=ltr>Any help is appreciated.</P>
+<P dir=ltr>Thanks</P>
+<P dir=ltr>jack</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, November 06, 2008</h2><P>Nermin can give you a more complete answer.</P>
+<P>But as I understand it, to avoid that dialog I'd have to purchase (annually) a real certificate from RapidSSL or someone. Since I give this code away for free, it seems unwise to incur a recurring expense just to avoid a dialog, so I suspect we'll just live with the dialog.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jack replied on Thursday, November 06, 2008</h2><P>The dialog I'm refering to kills the Add New Item process.&nbsp; You cannot create the new item.&nbsp; </P>
+<P>I could certainly live with a warning message (which there is when your first import all the templates).</P>
+<P>I think I have to go in and remove that extra Wizard section from the .vstemplate file.</P>
+<BLOCKQUOTE dir=ltr>
+<P>&nbsp; &lt;WizardExtension&gt;<BR>&nbsp;&nbsp;&nbsp; &lt;Assembly&gt;CslaItemTemplateWizards, Version=1.0.0.0, Culture=Neutral, PublicKeyToken=93be5fdc093e4c30&lt;/Assembly&gt;<BR>&nbsp;&nbsp;&nbsp; &lt;FullClassName&gt;CslaItemTemplateWizards.ParentListWizard&lt;/FullClassName&gt;<BR>&nbsp; &lt;/WizardExtension&gt;<BR></P></BLOCKQUOTE></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, November 06, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I&#8217;ll let Nermin answer &#8211; this is totally in his
+ballpark.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I do know that the whole template/installer thing is a work in
+progress, so if there are issues that shouldn&#8217;t be entirely surprising. I
+also know he&#8217;s working on other tasks for his day job, and so this may or
+may not be done by the time 3.6 ships &#8211; but I&#8217;m sure it&#8217;ll be
+done at some point.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Jack
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Thursday, November 06, 2008 4:58 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] Visual Studio Templates - public key not
+trusted<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>The dialog I'm refering to kills the Add New Item process.&nbsp; You cannot
+create the new item.&nbsp; <o:p></o:p></p>
+
+<p>I could certainly live with a warning message (which there is when your
+first import all the templates).<o:p></o:p></p>
+
+<p>I think I have to go in and remove that extra Wizard section from the
+.vstemplate file.<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Chattererman replied on Thursday, November 20, 2008</h2><P><FONT face=Arial size=2>There's no need to remove the &lt;WizardExtension&gt; section from the .vstemplate file.</FONT></P>
+<P><FONT face=Arial size=2>You simply need to build CslaItemTemplateWizards.dll and copy it into <STRONG>&lt;Visual Studio installation path&gt;\Microsoft Visual Studio 9.0\Common7\IDE</STRONG></FONT><FONT face=Arial size=2></P>
+<P><STRONG><BR></STRONG></P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>mr_fuku replied on Thursday, February 26, 2009</h2>Hi:<br><br>I've copied the dll as you suggested and still get the error message whenever trying to add an EditableChildList. The error message is: <br><br><b>Error: this template attempted to load an untrusted component 'CslaItemTemplateWizards, Version=1.0.0.0, Culture=Neutral, PublicKeyToken=93be5fdc093e4c30'.</b>'<br><br>Bummer.<br><br>This really doesn't bode well for the POC I'm trying to write if I can't even add classes based on&nbsp; the templates.<br><br>-Ted<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>mr_fuku replied on Thursday, February 26, 2009</h2>er - ok - after actually rebuilding the <b>CslaItemTemplateWizards.dll </b>as suggested by the previous post, the templates work.<br><br>in other words, you simply can't copy the existing dll. duh.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>russelle replied on Friday, July 24, 2009</h2>I've tried these fixes and none are working for me. Anybody have a step-by-step procedure for fixing the problem or working around it?</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>abiramipattar replied on Tuesday, July 28, 2009</h2>Hi,<br><br>&nbsp; I did all the above things &amp; restarted Visual Studio and it started working. Hope this helps. Thanks.<br><br><br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

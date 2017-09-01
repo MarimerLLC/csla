@@ -1,0 +1,36 @@
+<html><header><title>Multi-Level Editable Data Structure</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Multi-Level Editable Data Structure</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/820.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Chaim posted on Friday, August 04, 2006</h2><P class=MsoNormal><SPAN>I’m having a situation where I am dealing with a Multi-Level object where I need to display all level at once - on one screen where mostly the main data entry will happen on the lower levels:<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Following is an example of objects:<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<OL>
+<LI class=MsoNormal><SPAN>MerchantList – needed to keep the list &amp; to get it from the DB<o:p></o:p></SPAN></LI>
+<LI class=MsoNormal><SPAN>Merchant – needed so we can display derived info in proper context<o:p></o:p></SPAN></LI>
+<LI class=MsoNormal><SPAN>FacilityList - <o:p></o:p></SPAN></LI>
+<LI class=MsoNormal><SPAN>Facility – will have a couple of editable fields<o:p></o:p></SPAN></LI>
+<LI class=MsoNormal><SPAN>EmployeeList – will be able to add new employees<o:p></o:p></SPAN></LI>
+<LI class=MsoNormal><SPAN>Employee – <o:p></o:p></SPAN></LI></OL>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>So I’m trying to come up with the right way to structure the objects and how to retrieve them from the database.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Currently I think I’ll have 3 stored procedures each will bring me 2 levels while calling the subsequent Procedures with the Id’s of its parents, like<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>GetMerchantList()<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>Returns a list of Merchants, therefore I’ve data to populate: 1. MerchantList 2. Merchant<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>Then GetMerchantList (c#) will call GetFacilityList(MerchantID) to get the next 2 levels… and so on.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><B><SPAN>I would be more comfortable knowing if this is the right way</SPAN></B><SPAN>, and if this example has been discussed in the book (which I might have overlooked) .<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Thanks<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Chaim<o:p></o:p></SPAN></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Chaim replied on Friday, August 04, 2006</h2><P>I would greatly appreciate if someone could please comment.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, August 04, 2006</h2><P>I'm afraid you haven't provided enough information to give good advice.</P>
+<P>You have one screen with one OK button? So the user can add data about the merchant's facilities, add and edit some employees and then click either Cancel or OK to abandon or commit everything?</P>
+<P>Or, when the user edits a facility it commits, and when they add an employee it commits?</P>
+<P>Basically, you've provided an overview of your data relationships, but no context in terms of use cases, user scenarios and required behaviors - which is really the important part of the analysis and design process.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Chaim replied on Sunday, August 06, 2006</h2><P>O' Rocky thanks for replying, and for your beautiful product in general.</P>
+<P>I'll be using the information to display it in a master detail type of grid ( 3 to 4 levels).</P>
+<P>so my question is;</P>
+<P>&nbsp;&nbsp;&nbsp;1. how do i structure the objects?</P>
+<P>&nbsp;&nbsp;&nbsp;2. how should it get the data from the database?</P>
+<P>so in my illustration above I've set up a few parent &amp; children objects so its true the one line of code will cause the whole structure to get the data populated but in the end result it will require multiple round trips to be made to the database.</P>
+<P>the first stored procedure a list of all the merchants.(this stored procedure cannot return the facility list, since I'll need to distinguish to which merchant it is related).</P>
+<P>then for each merchant it will call the second stored procedure which will get all the facilities for each merchant ( then the same thing will happen for the Employee list....)</P>
+<P>I'm just not sure if this is the right way of doing it so I'm asking for your advice.</P>
+<P>Thanks (please ask for clarification if needed)</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, August 07, 2006</h2>What you are trying to do is not unlike the issues involved when loading grandchild objects. This has been discussed numerous times, most recently here<br><br><a HREF="/forums/thread/1974.aspx">http://forums.lhotka.net/forums/thread/1974.aspx</a><br><br>There is not an example like this in the book, no. And I doubt very much that you'll be able to get all your data from one stored procedure call - but that'd be true with a DataSet or any other type of object...<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

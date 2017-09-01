@@ -1,0 +1,13 @@
+<html><header><title>OT: Remove static/shared event handler in finalize?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>OT: Remove static/shared event handler in finalize?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3713.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Henrik posted on Monday, October 15, 2007</h2><P>Hi all</P>
+<P>In each of my EditableRoots I have a shared/static event named ObjectChanged, which is raised when an object is added, updated or deleted. </P>
+<P>My RO lists subscribes to these events to add, update or remove the respective RO item in question. </P>
+<P>Now, I subscribe to the events in the RO list contructor with:</P>
+<P>Private Sub New()<BR>&nbsp;&nbsp;&nbsp;AddHandler [BusinessObject].ObjectChanged, AddressOf ObjectChangedHandler<BR>End Sub<BR><BR>My question is: must I remove the handler to the shared/static event again and if so, where should I remove the handler?</P>
+<P>I have thought about removing it in the Finalize method, but have read everywhere that Finalize should only be overriden if you have that 1 in a fantazillion odd case, which I don't think the above pattern is one off.</P>
+<P>Thanks in advance</P>
+<P>/Henrik</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Henrik replied on Monday, October 15, 2007</h2><P>After some longhaired debugging I found that the shared/static event handlers needs to be removed, otherwise the handler (which delegate has a reference to the list) keeps the list in memory indefinitely.</P>
+<P>However removing the handler&nbsp;in the finalizer won't work since the GC is responsible for calling this and does it&nbsp;at arbitrary times (even after the app has ended). </P>
+<P>So I have implemented IDisposable on the RO lists in which the shared/static event handlers are removed.</P>
+<P>The downside to this is that the clients of the RO lists must dispose the lists with a specific call to Dispose, which is easy to forget.</P>
+<P>I recall reading a blog entry by Rocky a few days ago where one of the comments warned against something like this, but I cannot seem to find the blog entry again for an alternate solution. Rocky can you help me with this?</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

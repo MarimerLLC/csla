@@ -1,0 +1,46 @@
+<html><header><title>remote server returned an error : not found</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>remote server returned an error : not found</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11552.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>st3fanus posted on Friday, August 24, 2012</h2><p>Hi all..</p>
+<p>I used Silverlight 5, CSLA 4.13</p>
+<p>&nbsp;</p>
+<p>I have an error that said : &quot;remote server returned an error : not found&quot;. When I execute BeginSave from my ViewModel</p>
+<p>I have no experience with wcf, all what I know about CSLA is from csla ebook series.</p>
+<p>So , Are there any suggesstion for me to solve my problem ?</p>
+<p>could you give me practicals steps to solve this problem ?</p>
+<p>&nbsp;</p>
+<p>thanks a lot</p>
+<p>Stefanus</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Friday, August 24, 2012</h2><p>This means that there is no webserice that answers on the URL address to a remote portal/ WCF Service.</p>
+<p>To correct:</p>
+<ul>
+<li>Verify that web service is running on computer</li>
+<li>Verift that URL address is correct in client app config (open in browser) </li>
+<li>Verify that DataPortalProxyType is correct </li>
+</ul>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>st3fanus replied on Friday, August 24, 2012</h2><p>Hi jonny thanks for your response,</p>
+<p>I can Fetch data into Business Object, </p>
+<p>Is it means that wcf channel is work ?</p>
+<p>&nbsp;</p>
+<p>Do I mean right jonny ?</p>
+<p>&nbsp;</p>
+<p>stefanus</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Friday, August 24, 2012</h2><p>If your DataPortal_Fetch method has [RunLocal] attribute then it will not try to use the remote portal. </p>
+<p>That error message means that somewhere in your code there is a webservice call that does not hit a running service.<br />You must locate where in your code.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>st3fanus replied on Friday, August 24, 2012</h2><p>Hi jonny, sorry I forgot, I means is not Fetch BUT Create.</p>
+<p>BUT the important point is that : I&#39;m not run in local mode, BUT in remote mode</p>
+<p>It&#39;s worked.</p>
+<p>&nbsp;</p>
+<p>My error happend only when BeginSave is run ?</p>
+<p>Do you have any suggestions ? Or Is there something I missing ?</p>
+<p>&nbsp;</p>
+<p>thank a lot jonny I hope you can help me </p>
+<p>&nbsp;</p>
+<p>stefanus</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Friday, August 24, 2012</h2><p>Does BeginFetch / Fetch work?</p>
+<p>The default implementation of DataPortal_Create has the RunLocal attribute so I believe you do NOT use the remote portal before BeginSave</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>st3fanus replied on Friday, August 24, 2012</h2><p>I not yet checked BeginFetch, BUT</p>
+<p>I&#39;m not use default implementation of DataPortal_Create</p>
+<p>I used like this :</p>
+<p>private void DataPortal_Create(DailyTestCriteria dtCriteria)</p>
+<p>{</p>
+<p>&nbsp;</p>
+<p>}</p>
+<p>Am I right that this means i can success connect to remote server on BeginCreate scenario ?</p>
+<p>BUT FAiled in BeginSave scenario ?</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

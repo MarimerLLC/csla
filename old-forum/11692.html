@@ -1,0 +1,43 @@
+<html><header><title>Bindable UserControl stops updating when an event member is added</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Bindable UserControl stops updating when an event member is added</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11692.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Troncho posted on Friday, November 09, 2012</h2><div>
+<p>[System.ComponentModel.<span style="COLOR:#2b91af;">DefaultBindingProperty</span>(<span style="COLOR:#a31515;">&quot;InfoObj&quot;</span>)]</p>
+<p>
+[<span style="COLOR:#2b91af;">DefaultEvent</span>(<span style="COLOR:#a31515;">&quot;InfoObjChanged&quot;</span>)]</p>
+<p><span style="COLOR:blue;">public</span>&nbsp;<span style="COLOR:blue;">partial</span>&nbsp;<span style="COLOR:blue;">class</span>&nbsp;<span style="COLOR:#2b91af;">UCNrgHelpBase</span>&nbsp;:&nbsp;<span style="COLOR:#2b91af;">UserControl</span> </p>
+<p>{</p>
+<p>
+<pre><span style="COLOR:blue;">public</span>&nbsp;<span style="COLOR:blue;">event</span>&nbsp;<span style="COLOR:#2b91af;">EventHandler</span>&lt;<span style="COLOR:#2b91af;">NrgHelpBaseEventArgs</span>&gt;&nbsp;InfoObjChanged;</pre>
+</p>
+</div>
+<pre></pre>
+<p>
+<span style="COLOR:blue;">&nbsp;&nbsp; public</span>&nbsp;<span style="COLOR:blue;">virtual</span>&nbsp;<span style="COLOR:#2b91af;">IReadOnlyInfo</span>&nbsp;InfoObj {...}
+<pre></pre>
+&nbsp;
+<pre></pre>
+...
+<pre></pre>
+}</p>
+<p>If I comment the event (<em>InfoObjChanged</em>), DataBinding works perfectly well.</p>
+<p>If I just leave the event (<em>InfoObjChanged</em>) decleared, </p>
+<p>even without using it anywhere, the control&#39;s bindable property </p>
+<p>updates just fine but the DataSource property never gets updated.</p>
+<p>Do you know what I may be missing here?</p>
+<p>Thanks,</p>
+<p>&nbsp;</p>
+<p>Troncho</p>
+<pre></pre></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>Troncho replied on Saturday, November 10, 2012</h2><p><strong><span style="font-size:x-small;">I found the problem!</span></strong></p>
+<p>It seems that, behind the curtains, when you declare a class with the attribute:</p>
+<pre style="FONT-FAMILY:Consolas;BACKGROUND:white;COLOR:black;FONT-SIZE:15px;">[System.ComponentModel.<span style="color:#2b91af;">DefaultBindingProperty</span>(<span style="color:#a31515;">&quot;InfoObj&quot;</span>)]
+</pre>
+<p>It generates some hidden event for DataBinding handling or something with the following name:&nbsp;[<strong>PropertyName + &quot;Changed&quot;</strong>].</p>
+<p>So, when I declared the </p>
+<pre style="FONT-FAMILY:Consolas;BACKGROUND:white;COLOR:black;FONT-SIZE:15px;"><span style="color:blue;">public</span>&nbsp;<span style="color:blue;">event</span>&nbsp;<span style="color:#2b91af;">EventHandler</span>&lt;<span style="color:#2b91af;">NrgHelpBaseEventArgs</span>&gt;&nbsp;<span style="background-color:#ffff00;"><strong><span style="background-color:#ff6600;"><span style="color:#ffff99;">InfoObjChanged</span></span></strong></span>;
+</pre>
+<p>it seems to suppress the underlaying behaivour for DataBinding to work correctly.</p>
+<p>Just fooling around, I begun changing EventHandler types and names, and I got it working.</p>
+<p>The result being that I only changed my custom event handler&#39;s name to:</p>
+<pre style="font-family:Consolas;background:white;color:black;font-size:15px;"><span style="color:blue;">public</span>&nbsp;<span style="color:blue;">event</span>&nbsp;<span style="color:#2b91af;">EventHandler</span>&lt;<span style="color:#2b91af;">NrgHelpBaseEventArgs</span>&gt;&nbsp;<strong><span style="background-color:#ffff00;">InfoObj_ValueChanged</span></strong>;
+</pre>
+<p>And it all fall into place. Now DataBinding is working again just fine and my custom event is firing just as well.</p>
+<p>So, problem seems to be solved.</p>
+<p>Troncho</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

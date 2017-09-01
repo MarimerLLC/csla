@@ -1,0 +1,42 @@
+<html><header><title>Error 30 The tag 'BrokenRuleSeverityConverter' does not exist in XML namespace  in version 3.6.0 compile</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Error 30 The tag 'BrokenRuleSeverityConverter' does not exist in XML namespace  in version 3.6.0 compile</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6167.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>dennism posted on Thursday, January 15, 2009</h2><P>Error&nbsp;30&nbsp;The tag 'BrokenRuleSeverityConverter' does not exist in XML namespace 'clr-namespace:Csla.Wpf'. Line 9 Position 18.&nbsp;C:\cslacs\Csla\Themes\Generic.xaml&nbsp;9&nbsp;18&nbsp;Csla</P>
+<P>when compiling version 3.6.0 </P>
+<P>but intellisense on csla: shows the class BrokenRuleSeverityConverter </P>
+<P>anyone have solution?</P>
+<P>have vs 2008 with 3.5 sp1 installed...</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, January 16, 2009</h2>I don't know the cause of this. I do remember seeing it from time to time while we created 3.6, but it was usually due to some other code issue that caused a compilation failure, and this was an erroneous message. I suspect Microsoft has some work to do in terms of how the build process incorporates XAML and C# together.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>MTmace replied on Wednesday, February 04, 2009</h2>I am getting the same error. <br>I just installed .net 3.5 with service pack one so I can build the CSLA 3.6 framework and got a build error.<br>The tag 'BrokenRuleSeverityConverter' does not exist in XML namespace 'clr-namespace:Csla.Wpf'.<br>The error is occurring in Generic.xaml in the Themes directory.<br><br>I think the error may have to do with the fact the CSLA.dll files does not exist. Once I remove the Generic.xaml file from my project I get a different error the prevents me from compiling the project. Cryptographic failure while signing assembly. <br>So I think the solution is to create a new key using sn.exe.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, February 04, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>This exception typically occurs for one of two reasons:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoListParagraph><span><span>1.<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span></span><span>You don&#8217;t have VS 2008 SP1 and/or .NET 3.5 SP1 properly
+installed<o:p></o:p></span></p>
+
+<p class=MsoListParagraph><span><span>2.<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span></span><span>There&#8217;s some other build issue in the solution, and this
+is an erroneous error<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky</span><b><span><o:p></o:p></span></b></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>MTmace replied on Thursday, February 05, 2009</h2>I just installed VS 2008 sp 1 and I still have the Cryptographic failure while signing assembly.<br>Do I need to create a new key or can I remove the key?<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>MTmace replied on Thursday, February 05, 2009</h2>Actual error:<br><font size="2" face="Courier New">Cryptographic failure while signing assembly '' Access is denied</font><br><br>I found a solution to the problem:<br>http://blog.devstone.com/aaron/archive/2005/12/01/1365.aspx<br><br>I had to open an explorer window and navigate to following directory:<br>C:\Documents and Settings\All Users\Application Data\Microsoft\Crypto\RSA\MachineKeys<br><br>Then select Tools - Folder Options<br>Select the "View" tab<br>Scrolled to the bottom of the page and deselected "Use simple file sharing".<br><br>This gave me a security tab when I right clicked on the "MachineKeys" folder and went to properties. <br>When the security tab is selected I gave the Administrators group full access to the "MachineKeys" directory.<br><br>Then I was able to build the cslacs project.<br><br>MTmace<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>v3rt1g0 replied on Friday, March 20, 2009</h2>I'm not sure if this will help you, but it helped me.<br><br>We have some legacy CSLA code (1.x era) that we use with ASP.NET 2.0 and to allow simple debugging we needed to workaround an authentication issue we were having.&nbsp; The workaround involved modifying c:\WINDOWS\Microsoft.NET\Framework\v2.0.50727\config\machine.config file to include a &lt;developmentMode developerInstallation="true" /&gt; line.&nbsp; While this is "true" and the matching system variable was set to a path containing the old version of CSLA.dll, we would get this exact BrokenRuleSeverityConverter error when trying to compile the new DLLs.&nbsp; Simply setting this back to "false" (the default), made the issue go away for me.<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

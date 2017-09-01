@@ -1,0 +1,20 @@
+<html><header><title>Move item from one collection to another</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Move item from one collection to another</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/722.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Shazam posted on Tuesday, July 25, 2006</h2><DIV>I have a use case where I need to move a child object from one BusinessListBase collection to another.&nbsp; I'm currently doing this using this code:</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>collectionA.Remove(item);</DIV>
+<DIV>collectionB.Add(item);</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>The problem with this is that this results in a DataPortal.Delete() and then a DataPortal.Add() operation, when in reality I need to do a DataPortal.Update()</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>The thing is, I'm struggling with how I can make this work.&nbsp; Does anybody have any suggestions?</DIV></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>skagen00 replied on Tuesday, July 25, 2006</h2><P>I was kind of running into something similar (swapping items within a list) and was educated on perhaps trying to solve my problem another way. </P>
+<P>What I had done is removed the two items from the deletedlist manually after swapping their positions, with SwapPositions being a method of the collection to handle this behavior for me. </P>
+<P>There <EM>are</EM> manual ways to get around this issue - you could remove the item in collection A from the deleted list of collection A and do something similar to the item as you add it to collection B to prevent an add (MarkDirty?). Though it doesn't seem faithful to the framework. </P>
+<P>What is your problem that has you moving items from one collection to the other? </P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Shazam replied on Tuesday, July 25, 2006</h2><DIV>Basically I have a tree structure that I let users edit.</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>What I set up was a collection of objects, where each object could then also have a child collection that also contained the same type of objects.&nbsp; I'd let users move an object from one parent to another.</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>I solved the issue by totally sidestepping the problem.&nbsp; I was using just one collection before, which each object just containing its parent's ID.&nbsp; That made it really easy to move an object from one parent to another (just change the ID).&nbsp; The problem was when I'd add a new object and then assigned an existing object to that new object.&nbsp; I had to make sure that the new object was&nbsp;inserted first before the existing object was updated.&nbsp; I had a naive Find() method that simply looped through the collection so I could find the parent object.&nbsp; As you'd think, this meant for&nbsp;not small (~300 items)&nbsp;collections it took a very long time to find relevant object.</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>To solve that issue, I used a hashtable to facilitate the Find() method.</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>For my main issue, I went back to using a single collection.&nbsp; Within the object's Update() and Insert() methods, I checked to see if the parent object was dirty.&nbsp; If so, I inserted/updated it first.</DIV></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,248 @@
+<html><header><title>ErrorProvider/Combobox -- validation not showing</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>ErrorProvider/Combobox -- validation not showing</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/973.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>hmadanaraj posted on Monday, August 21, 2006</h2><P>I am fairly new to CSLA so I might be doing something silly. Your help/guidance is very much appreicated. </P>
+<P><STRONG>Situation:</STRONG> I have 3 comboboxes on the form (style is set to: dropdownlist) and 1 errorProvider control. </P>
+<P><STRONG>Sample Data:</STRONG>&nbsp; (a) "Select One", "Blue", "Red", "Green" </P>
+<P>(b) "Select One", "Large", "Medium", "Small"</P>
+<P>(c) "Select One", "John", "Susie", "Cathy"</P>
+<P><STRONG>Problem:</STRONG> When the form first loads up it renders&nbsp;with "Select One" selection, but the icon of the "ErrorProvider" control is not shown. When I cause the slection changed event by Re-selecting the "Select One" choice, the icon of the "ErrorProvider" control starts blinking....This not a problem for the other string or date control on the form which are also the required fields.</P>
+<P><STRONG>Question:</STRONG> What should I do to make the icon of the error-provider show on form load (without, I having to cause the "selection changed")</P>
+<P>Thank you</P>
+<P>Hari</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, August 23, 2006</h2>Make sure your data binding is set up correctly. The error provider control will work fine with a combobox control, but only if the control is properly configured with data binding.<br><br>I usually use drag-and-drop binding to get it set up right ( because otherwise I almost always bind the wrong control properties...)<br><br><ol><li>get rid of any existing control on your form</li><li>in the Data Sources window, configure the object's property to use a combobox</li><li>drag the property onto the form to create the combobox</li><li>now drag the list object containing the list items from Data Sources onto the combobox</li></ol>I have found this to be a reliable way to get combobox binding to work.<br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>hmadanaraj replied on Wednesday, August 23, 2006</h2>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><font size=2 face=Verdana><span>Thank you for your reply Rocky&#8230;<o:p></o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 face=Verdana><span>That helped &#8211; that&#8217;s a cool way to bind.<o:p></o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 face=Verdana><span><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 face=Verdana><span>But, now I am stuck at another hurdle (lack of CSLA
+knowledge. Trying to learn CSLA, while trying to keep up with the project
+time-line)<o:p></o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 face=Verdana><span><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 face=Verdana><span>Your help is very much appreciated.<o:p></o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 face=Verdana><span><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=MsoNormal><b><font size=2 face=Verdana><span>Table structure is as follows:</span></font></b><font size=2 face=Verdana><span> &#8216;Project&#8217;
+table has a foreignKey (fkFacilityInfo), pointing to &#8216;FacilityInfo&#8217;
+table.<o:p></o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 face=Verdana><span>I have two objects &#8216;Project&#8217; and &#8216;FacilityInfo&#8217;
+Project object has reference to the FaclityInfo object through the variable
+(_facilityInfo).<o:p></o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 face=Verdana><span><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 face=Verdana><span>If I update a property on the &#8216;Project&#8217; object
+and press the save button, both the parent (Project) and the child
+(FacilityInfo) gets updated &#8211; No problem.<o:p></o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 face=Verdana><span><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 face=Verdana><span>How do I call the update on the child object
+(FacilityInfo) when I just update a property on the facilityInfo object without
+updating the property on the parent object (Project). <o:p></o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 face=Verdana><span><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 face=Verdana><span>Along the same lines of problem (Parent/Chile), how do I call
+the &#8216;</span></font><font size=2 face=Verdana><span>ValidationRules.CheckRules(); on the child ?<o:p></o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 face=Verdana><span><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 face=Verdana><span><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 face=Verdana><span>Code Sample on the Project.cs:<o:p></o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 face=Verdana><span>***********************<o:p></o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 color=blue face="Courier New"><span>private</span></font><font size=2 face="Courier New"><span> <font color=blue><span>void</span></font> DataPortal_Create(<font color=teal><span>Criteria</span></font> criteria)<o:p></o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 face="Courier New"><span>{&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <o:p></o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 color=gray face="Courier New"><span>///</span></font><font size=2 color=green face="Courier New"><span> Initialize all
+the related child objects<o:p></o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 face="Courier New"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _facilityInfo
+= <font color=teal><span>FacilityInfo</span></font>.GetNew();<o:p></o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 face="Courier New"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <o:p></o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 face="Courier New"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; InitializeProperty();<o:p></o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 face="Courier New"><span><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 face="Courier New"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ValidationRules.CheckRules();<o:p></o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 face="Courier New"><span>}<o:p></o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 face="Courier New"><span><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 color=blue face="Courier New"><span>protected</span></font><font size=2 face="Courier New"><span> <font color=blue><span>override</span></font> <font color=blue><span>void</span></font> DataPortal_Update()<o:p></o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 face="Courier New"><span>{&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <o:p></o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 face="Courier New"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b><font color=red><span>///tried the below two lines,
+hoping that it would call DataPortal_Update on the FacilityInfo &nbsp;&nbsp;///object
+&#8211; but did not work<o:p></o:p></span></font></b></span></font></p>
+
+<p class=MsoNormal><font size=2 face="Courier New"><span>//_facilityInfo.ApplyEdit();<o:p></o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 face="Courier New"><span>//_facilityInfo.Save();<o:p></o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 color=green face="Courier New"><span><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 color=green face="Courier New"><span>_</span></font><font size=2 face="Courier New"><span>facilityInfo.Update();<font color=green><span><o:p></o:p></span></font></span></font></p>
+
+<p class=MsoNormal><font size=2 face="Courier New"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Update();<o:p></o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 face="Courier New"><span>}<o:p></o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 face="Courier New"><span><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 color=blue face="Courier New"><span>private</span></font><font size=2 face="Courier New"><span> <font color=blue><span>void</span></font> Update()<o:p></o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 face="Courier New"><span>{<o:p></o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 face="Courier New"><span>&nbsp;&nbsp;&nbsp; <font color=teal><span>ProjectConfigurationDAL</span></font>.SetProject(<font color=blue><span>this</span></font>);<o:p></o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 face="Courier New"><span>}<o:p></o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 face="Courier New"><span><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 face="Courier New"><span>Code Sample on the FacilityInfo.cs<o:p></o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 face="Courier New"><span>**********************************<o:p></o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 face="Courier New"><span>&nbsp;&nbsp; <font color=blue><span>public</span></font> <font color=blue><span>static</span></font> <font color=teal><span>FacilityInfo</span></font> GetNew()<o:p></o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 face="Courier New"><span>&nbsp;&nbsp; {&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<o:p></o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 face="Courier New"><span>&nbsp;&nbsp; &nbsp;&nbsp; <font color=blue><span>return</span></font> <font color=blue><span>new</span></font> <font color=teal><span>FacilityInfo</span></font>();<o:p></o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 face="Courier New"><span>&nbsp;&nbsp; }</span></font><o:p></o:p></p>
+
+<p class=MsoNormal><font size=2 face=Verdana><span><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 color=blue face="Courier New"><span>private</span></font><font size=2 face="Courier New"><span> FacilityInfo()<o:p></o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 face="Courier New"><span>{&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<o:p></o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 face="Courier New"><span>&nbsp;&nbsp; _state = <font color=maroon><span>&quot;-1&quot;</span></font>;<o:p></o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 face="Courier New"><span>&nbsp;&nbsp; <font color=green><span>//ValidationRules.CheckRules(); </span></font><b><font color=red><span>///commented this line as it
+was breaking</span></font></b><font color=green><span><o:p></o:p></span></font></span></font></p>
+
+<p class=MsoNormal><font size=2 face="Courier New"><span>}</span></font><font size=2 face=Verdana><span><o:p></o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 face=Verdana><span><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 color=blue face="Courier New"><span>internal</span></font><font size=2 face="Courier New"><span> <font color=blue><span>void</span></font> Update()<o:p></o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 face="Courier New"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+{<o:p></o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 face="Courier New"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<font color=teal><span>ProjectConfigurationDAL</span></font>.SetFacilityInfo(<font color=blue><span>this</span></font>);<o:p></o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 face="Courier New"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+}<o:p></o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 face="Courier New"><span><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 face="Courier New"><span><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=MsoNormal><b><font size=2 color=red face="Courier New"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /// The below method
+never gets executed <o:p></o:p></span></font></b></p>
+
+<p class=MsoNormal><font size=2 face="Courier New"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<font color=blue><span>protected</span></font> <font color=blue><span>override</span></font> <font color=blue><span>void</span></font> DataPortal_Update()<o:p></o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 face="Courier New"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+{<o:p></o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 face="Courier New"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Update();<o:p></o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 face="Courier New"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<o:p></o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 face="Courier New"><span><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 face="Courier New"><span>Thanks a ton in advance !!!<o:p></o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 face="Courier New"><span><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 face=Verdana><span>Regards<o:p></o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 face=Verdana><span>Hari<o:p></o:p></span></font></p>
+
+<div>
+
+<div class=MsoNormal align=center><font size=3 face="Times New Roman"><span>
+
+<hr align=center>
+
+</span></font></div>
+
+<p class=MsoNormal><b><font size=2 face=Tahoma><span>From:</span></font></b><font size=2 face=Tahoma><span> RockfordLhotka
+[mailto:cslanet@lhotka.net] <br>
+<b><span>Sent:</span></b> Wednesday, August 23, 2006
+8:09 AM<br>
+<b><span>To:</span></b> Hari
+ Madanaraj<br>
+<b><span>Subject:</span></b> Re: [CSLA .NET]
+ErrorProvider/Combobox -- validation not showing</span></font><o:p></o:p></p>
+
+</div>
+
+<p class=MsoNormal><font size=3 face="Times New Roman"><span><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=MsoNormal><font size=3 face="Times New Roman"><span>Make sure your data
+binding is set up correctly. The error provider control will work fine with a
+combobox control, but only if the control is properly configured with data
+binding.<br>
+<br>
+I usually use drag-and-drop binding to get it set up right ( because otherwise
+I almost always bind the wrong control properties...)<o:p></o:p></span></font></p>
+
+<ol>
+ <li class=MsoNormal><font size=3 face="Times New Roman"><span>get rid of any existing control on your form<o:p></o:p></span></font></li>
+ <li class=MsoNormal><font size=3 face="Times New Roman"><span>in the Data Sources window, configure the
+     object's property to use a combobox<o:p></o:p></span></font></li>
+ <li class=MsoNormal><font size=3 face="Times New Roman"><span>drag the property onto the form to create the
+     combobox<o:p></o:p></span></font></li>
+ <li class=MsoNormal><font size=3 face="Times New Roman"><span>now drag the list object containing the list
+     items from Data Sources onto the combobox<o:p></o:p></span></font></li>
+</ol>
+
+<p class=MsoNormal><font size=3 face="Times New Roman"><span>I have found this to be a reliable way to get combobox binding to work.<br>
+<br>
+<br>
+<br>
+<o:p></o:p></span></font></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,41 @@
+<html><header><title>[CSLA.NET 3.5] Adding the validation rules in a separate module?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>[CSLA.NET 3.5] Adding the validation rules in a separate module?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5326.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>stefan posted on Friday, August 29, 2008</h2>I have a module that is meant to keep all the code that is specific to contact related data in one place.<br>The contact data is stored in a contact table. You can think of it as the Assignment module in PTracker.Library.<br>What I also want it to contain, is the definition of contact specific validation rules, specifically the rules concerning the db-column definition (-&gt; StringMaxLength...). So in case the table definition changes, I only have to look at one place.<br>Here is how I am&nbsp; thinking it could work:<br>First the module:<br><br><font size="2">Friend Module Contacts
+<br>&nbsp;
+Public Interface IContacts<br>&nbsp;&nbsp; ReadOnly Property FirstNameProperty() As Csla.Core.IPropertyInfo
+<br>&nbsp;&nbsp; ...<br>&nbsp;End Interface
+<br><br>#Region " Validation Rules "
+<br>&nbsp;
+Public Sub RegisterBusinessRules(Of T As {Csla.BusinessBase(Of T), 
+IContacts}) _
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (ByVal rules As Csla.Validation.ValidationRules, _
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ByVal bo As IContacts)
+<br>&nbsp;&nbsp; '
+<br>&nbsp;&nbsp; ' strFirstNameContact
+<br>&nbsp;&nbsp; '
+<br>&nbsp;&nbsp; rules.AddRule(Of T)(AddressOf 
+Csla.Validation.CommonRules.StringMaxLength, New 
+Csla.Validation.CommonRules.MaxLengthRuleArgs(bo.FirstNameProperty, 30))
+<br><br>&nbsp;End Sub
+<br>
+#EndRegion<br>End Module<br></font>
+
+<br>Now my business object that has contact data:<br><br><font size="2">Public Class Customer
+<br>&nbsp;Inherits BusinessBase(Of Customer)
+<br>Implements IContacts
+<br><br>&nbsp;Private Shared FirstNameProperty As PropertyInfo(Of String) = 
+RegisterProperty(New PropertyInfo(Of String)("FirstName", "First Name"))
+<br>&nbsp;
+...<br>&nbsp; Friend Property _FirstNameProperty As Csla.Core.IPropertyInfo Implements IContacts.FirstNameProperty<br>&nbsp;&nbsp;&nbsp;&nbsp; Return FirstNameProperty<br>&nbsp; End Property<br><br>#Region " Validation Rules "
+<br>&nbsp;
+Protected Overrides Sub AddBusinessRules()
+<br>&nbsp;&nbsp;&nbsp;&nbsp; <b>Contacts.RegisterBusinessRules(Of Customer)(ValidationRules, Me)
+</b><br>&nbsp;&nbsp;&nbsp;&nbsp; ...<br>&nbsp;End Sub
+<br>
+#End Region
+<br>...<br>End Class<br></font>
+<br>Any problems that I may encounter on my route?<br><br>Stefan<br>
+<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>stefan replied on Monday, September 01, 2008</h2>No comments on this one?<br>I know that the rules I am referring to are easily generated, <br>but even then, in the case of the contact data, I only would have to regenerate one file!<br><br>But there could be pitfalls regarding csla's caching...?<br><br>Stefan<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, September 02, 2008</h2>The idea of calling a central method to register rules that may be common to several similar objects is a fine idea, there should be no problem doing that.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jgamba replied on Friday, October 24, 2008</h2>Hello<br><br>If the Customer class is in another class library project (Project2), What would be the most appropriate method to use RegisterBusinessRules in the base class? doing public the readonly IPropertyInfo properties of IContacts Interface for other projects? creating a Contact
+base class with protected IPropertyInfo properties and
+inheriting the Customer class? another option? what is more
+behavior-centric?<br><br>Furthermore, if in this new project that contains the Customer class, I add a second class SalesPerson which also implements the IContacts interface and also called Contacts.RegisterBusinessRules, but adds behavior by calling a function similar to RegisterBusinessRules in a
+new module in second project, to add a rule StringRequired to the same property
+FirstName, how implement this? <br><br> Thanks in advance<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

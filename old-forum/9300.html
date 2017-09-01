@@ -1,0 +1,227 @@
+<html><header><title>ProjectTrackers Error in Visual Web Developer 2010 Express via WCF</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>ProjectTrackers Error in Visual Web Developer 2010 Express via WCF</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9300.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>jasonlaw posted on Friday, July 30, 2010</h2><p>Hi,</p>
+<p>I encountered the following error when using WCF:</p>
+<p>DataPortal.Fetch failed (Exception has been thrown by the target of an invocation.)</p>
+<p>However, it is working fine if I configure to use &quot;Local&quot; in CslaDataPortalProxy.</p>
+<p>I am using PTWin for this testing.</p>
+<p>Any idea what am I missing for the WCF?</p>
+<p>Thanks in advance.</p>
+<p>Jason Law</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, July 30, 2010</h2><p>What is the inner exception - do a ToString() on the exception object to get the full stack trace.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jasonlaw replied on Friday, July 30, 2010</h2>Hi Rocky, 
+
+Here is the inner exception I get :
+
+&quot;Csla.DataPortalException: DataPortal.Fetch failed (Exception has been thrown by the target of an invocation.) ---&gt; Csla.Reflection.CallMethodException: DataPortal_Fetch method call failed ---&gt; System.Reflection.TargetInvocationException: Exception has been thrown by the target of an invocation. ---&gt; System.ArgumentException: Keyword not supported: &#39;user name&#39;.\r\n   at System.Data.Common.DbConnectionOptions.ParseInternal(Hashtable parsetable, String connectionString, Boolean buildChain, Hashtable synonyms, Boolean firstKey)\r\n   at System.Data.Common.DbConnectionOptions..ctor(String connectionString, Hashtable synonyms, Boolean useOdbcRules)\r\n   at System.Data.SqlClient.SqlConnectionString..ctor(String connectionString)\r\n   at System.Data.SqlClient.SqlConnectionFactory.CreateConnectionOptions(String connectionString, DbConnectionOptions previous)\r\n   at System.Data.ProviderBase.DbConnectionFactory.GetConnectionPoolGroup(String connectionString, DbConnectionPoolGroupOptions poolOptions, DbConnectionOpti
+ons&amp; userConnectionOptions)\r\n   at System.Data.SqlClient.SqlConnection.ConnectionString_Set(String value)\r\n   at System.Data.SqlClient.SqlConnection.set_ConnectionString(String value)\r\n   at System.Data.Linq.SqlClient.SqlProvider.System.Data.Linq.Provider.IProvider.Initialize(IDataServices dataServices, Object connection)\r\n   at System.Data.Linq.DataContext.Init(Object connection, MappingSource mapping)\r\n   at System.Data.Linq.DataContext..ctor(String fileOrServerOrConnection, MappingSource mapping)\r\n   at ProjectTracker.DalLinq.Security.SecurityDataContext..ctor(String connection) in C:\\JLCC\\Avatar\\Marimer LLC\\Samples\\CslaNet\\cs\\ProjectTrackercs\\ProjectTracker.DalLinq\\Security.designer.cs:line 47\r\n   --- End of inner exception stack trace ---\r\n   at System.RuntimeMethodHandle._InvokeConstructor(IRuntimeMethodInfo method, Object[] args, SignatureStruct&amp; signature, RuntimeType declaringType)\r\n   at System.RuntimeMethodHandle.InvokeConstructor(IRuntimeMethodInfo method, Object[] args, 
+SignatureStruct signature, RuntimeType declaringType)\r\n   at System.Reflection.RuntimeConstructorInfo.Invoke(BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)\r\n   at System.RuntimeType.CreateInstanceImpl(BindingFlags bindingAttr, Binder binder, Object[] args, CultureInfo culture, Object[] activationAttributes)\r\n   at System.Activator.CreateInstance(Type type, BindingFlags bindingAttr, Binder binder, Object[] args, CultureInfo culture, Object[] activationAttributes)\r\n   at System.Activator.CreateInstance(Type type, Object[] args)\r\n   at Csla.Data.ContextManager`1..ctor(String connectionString, String label) in C:\\JLCC\\Avatar\\Marimer LLC\\CSLA .NET\\4.0.0\\Source\\Csla\\Data\\ContextManager.cs:line 137\r\n   at Csla.Data.ContextManager`1.GetManager(String database, Boolean isDatabaseName, String label) in C:\\JLCC\\Avatar\\Marimer LLC\\CSLA .NET\\4.0.0\\Source\\Csla\\Data\\ContextManager.cs:line 124\r\n   at Csla.Data.ContextManager`1.GetManager(String database, Boole
+an isDatabaseName) in C:\\JLCC\\Avatar\\Marimer LLC\\CSLA .NET\\4.0.0\\Source\\Csla\\Data\\ContextManager.cs:line 82\r\n   at Csla.Data.ContextManager`1.GetManager(String database) in C:\\JLCC\\Avatar\\Marimer LLC\\CSLA .NET\\4.0.0\\Source\\Csla\\Data\\ContextManager.cs:line 50\r\n   at ProjectTracker.Library.Security.PTIdentity.DataPortal_Fetch(UsernameCriteria criteria) in C:\\JLCC\\Avatar\\Marimer LLC\\Samples\\CslaNet\\cs\\ProjectTrackercs\\ProjectTracker.Library\\Security\\PTIdentity.cs:line 73\r\n   at lambda_method(Closure , Object , Object[] )\r\n   at Csla.Reflection.MethodCaller.CallMethod(Object obj, DynamicMethodHandle methodHandle, Object[] parameters) in C:\\JLCC\\Avatar\\Marimer LLC\\CSLA .NET\\4.0.0\\Source\\Csla\\Reflection\\MethodCaller.cs:line 434\r\n   --- End of inner exception stack trace ---\r\n   at Csla.Reflection.MethodCaller.CallMethod(Object obj, DynamicMethodHandle methodHandle, Object[] parameters) in C:\\JLCC\\Avatar\\Marimer LLC\\CSLA .NET\\4.0.0\\Source\\Csla\\Reflection\\Metho
+dCaller.cs:line 438\r\n   at Csla.Reflection.MethodCaller.CallMethod(Object obj, String method, Object[] parameters) in C:\\JLCC\\Avatar\\Marimer LLC\\CSLA .NET\\4.0.0\\Source\\Csla\\Reflection\\MethodCaller.cs:line 347\r\n   at Csla.Reflection.LateBoundObject.CallMethod(String method, Object[] parameters) in C:\\JLCC\\Avatar\\Marimer LLC\\CSLA .NET\\4.0.0\\Source\\Csla\\Reflection\\LateBoundObject.cs:line 93\r\n   at Csla.Server.SimpleDataPortal.Fetch(Type objectType, Object criteria, DataPortalContext context) in C:\\JLCC\\Avatar\\Marimer LLC\\CSLA .NET\\4.0.0\\Source\\Csla\\Server\\SimpleDataPortal.cs:line 133\r\n   --- End of inner exception stack trace ---\r\n   at Csla.DataPortal.Fetch(Type objectType, Object criteria) in C:\\JLCC\\Avatar\\Marimer LLC\\CSLA .NET\\4.0.0\\Source\\Csla\\DataPortal.cs:line 245\r\n   at Csla.DataPortal.Fetch[T](Object criteria) in C:\\JLCC\\Avatar\\Marimer LLC\\CSLA .NET\\4.0.0\\Source\\Csla\\DataPortal.cs:line 170\r\n   at ProjectTracker.Library.Security.PTIdentity.GetIdenti
+ty(String username, String password) in C:\\JLCC\\Avatar\\Marimer LLC\\Samples\\CslaNet\\cs\\ProjectTrackercs\\ProjectTracker.Library\\Security\\PTIdentity.cs:line 36\r\n   at ProjectTracker.Library.Security.PTPrincipal.Login(String username, String password) in C:\\JLCC\\Avatar\\Marimer LLC\\Samples\\CslaNet\\cs\\ProjectTrackercs\\ProjectTracker.Library\\Security\\PTPrincipal.cs:line 31\r\n   at PTWin.LoginForm.OK_Click(Object sender, EventArgs e) in C:\\JLCC\\Avatar\\Marimer LLC\\Samples\\CslaNet\\cs\\ProjectTrackercs\\PTWin\\LoginForm.cs:line 23\r\n   at System.Windows.Forms.Control.OnClick(EventArgs e)\r\n   at System.Windows.Forms.Button.OnClick(EventArgs e)\r\n   at System.Windows.Forms.Button.PerformClick()\r\n   at System.Windows.Forms.Form.ProcessDialogKey(Keys keyData)\r\n   at System.Windows.Forms.TextBoxBase.ProcessDialogKey(Keys keyData)\r\n   at System.Windows.Forms.Control.PreProcessMessage(Message&amp; msg)\r\n   at System.Windows.Forms.Control.PreProcessControlMessageInternal(Control target, Messa
+ge&amp; msg)\r\n   at System.Windows.Forms.Application.ThreadContext.PreTranslateMessage(MSG&amp; msg)\r\n   at System.Windows.Forms.Application.ThreadContext.System.Windows.Forms.UnsafeNativeMethods.IMsoComponent.FPreTranslateMessage(MSG&amp; msg)\r\n   at System.Windows.Forms.Application.ComponentManager.System.Windows.Forms.UnsafeNativeMethods.IMsoComponentManager.FPushMessageLoop(IntPtr dwComponentID, Int32 reason, Int32 pvLoopData)\r\n   at System.Windows.Forms.Application.ThreadContext.RunMessageLoopInner(Int32 reason, ApplicationContext context)\r\n   at System.Windows.Forms.Application.ThreadContext.RunMessageLoop(Int32 reason, ApplicationContext context)\r\n   at System.Windows.Forms.Application.RunDialog(Form form)\r\n   at System.Windows.Forms.Form.ShowDialog(IWin32Window owner)\r\n   at PTWin.MainForm.DoLogin() in C:\\JLCC\\Avatar\\Marimer LLC\\Samples\\CslaNet\\cs\\ProjectTrackercs\\PTWin\\MainForm.cs:line 327\r\n   at PTWin.MainForm.MainForm_Load(Object sender, EventArgs e) in C:\\JLCC\\Avatar\\Marimer LLC\\
+Samples\\CslaNet\\cs\\ProjectTrackercs\\PTWin\\MainForm.cs:line 39\r\n   at System.Windows.Forms.Form.OnLoad(EventArgs e)\r\n   at System.Windows.Forms.Form.OnCreateControl()\r\n   at System.Windows.Forms.Control.CreateControl(Boolean fIgnoreVisible)\r\n   at System.Windows.Forms.Control.CreateControl()\r\n   at System.Windows.Forms.Control.WmShowWindow(Message&amp; m)\r\n   at System.Windows.Forms.Control.WndProc(Message&amp; m)\r\n   at System.Windows.Forms.ScrollableControl.WndProc(Message&amp; m)\r\n   at System.Windows.Forms.Form.WmShowWindow(Message&amp; m)\r\n   at System.Windows.Forms.Form.WndProc(Message&amp; m)\r\n   at System.Windows.Forms.Control.ControlNativeWindow.OnMessage(Message&amp; m)\r\n   at System.Windows.Forms.Control.ControlNativeWindow.WndProc(Message&amp; m)\r\n   at System.Windows.Forms.NativeWindow.DebuggableCallback(IntPtr hWnd, Int32 msg, IntPtr wparam, IntPtr lparam)\r\n   at System.Windows.Forms.SafeNativeMethods.ShowWindow(HandleRef hWnd, Int32 nCmdShow)\r\n   at System.Windows.Forms.Control.SetVisibleCor
+e(Boolean value)\r\n   at System.Windows.Forms.Form.SetVisibleCore(Boolean value)\r\n   at System.Windows.Forms.Control.set_Visible(Boolean value)\r\n   at System.Windows.Forms.Application.ThreadContext.RunMessageLoopInner(Int32 reason, ApplicationContext context)\r\n   at System.Windows.Forms.Application.ThreadContext.RunMessageLoop(Int32 reason, ApplicationContext context)\r\n   at System.Windows.Forms.Application.Run(Form mainForm)\r\n   at PTWin.Program.Main() in C:\\JLCC\\Avatar\\Marimer LLC\\Samples\\CslaNet\\cs\\ProjectTrackercs\\PTWin\\Program.cs:line 17\r\n   at System.AppDomain._nExecuteAssembly(RuntimeAssembly assembly, String[] args)\r\n   at System.AppDomain.ExecuteAssembly(String assemblyFile, Evidence assemblySecurity, String[] args)\r\n   at Microsoft.VisualStudio.HostingProcess.HostProc.RunUsersAssembly()\r\n   at System.Threading.ThreadHelper.ThreadStart_Context(Object state)\r\n   at System.Threading.ExecutionContext.Run(ExecutionContext executionContext, ContextCallback callback, Object sta
+te, Boolean ignoreSyncCtx)\r\n   at System.Threading.ExecutionContext.Run(ExecutionContext executionContext, ContextCallback callback, Object state)\r\n   at System.Threading.ThreadHelper.ThreadStart()&quot;
+
+Thanks in advance.
+Jason Law</div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Friday, July 30, 2010</h2><p>The part that matters is this:</p>
+<p>
+
+
+
+
+
+
+ 
+  
+ 
+
+
+
+
+ 
+  Normal
+  0
+  
+  
+  
+  
+  false
+  false
+  false
+  
+  EN-US
+  X-NONE
+  X-NONE
+  
+   
+   
+   
+   
+   
+   
+   
+   
+   
+  
+  
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+  
+
+ 
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+ 
+
+
+
+
+<span style="font-size:12pt;font-family:&#39;Verdana&#39;,&#39;sans-serif&#39;;">System.ArgumentException: Keyword not supported: &#39;user
+name&#39;.\r\n at System.Data.Common.DbConnectionOptions</span></p>
+<p>You have a problem with your connection string.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jasonlaw replied on Friday, July 30, 2010</h2><p>AHHHH!!!! &nbsp;I changed all the config file but missed the web.config!!!</p>
+<p>Thank you very much!!!!</p>
+<p>Regards,</p>
+<p>Jason Law</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

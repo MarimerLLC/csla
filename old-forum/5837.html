@@ -1,0 +1,74 @@
+<html><header><title>Lazy Loading question</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Lazy Loading question</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5837.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Cosmin posted on Thursday, November 20, 2008</h2>Hi,<br><br>What happpens if I create a lazy property(ReadOnlyBase) and don't use it on the clientat all but use it on the server on update or insert?<br><br>Say we have a Customer object and a PriceList(lazy) associated with it. On the update of the customer I need some data from the PriceList. What happens if I touch the PriceList property on the server side?<br><br>I know, the best way to know is to try it but don't have time right now and I also need to know if it is ok or my design is not right.<br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Thursday, November 20, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I am not sure if you even need this property at all then.&nbsp;
+You can simply query the DB directly during DataPortal_Update/Insert method.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Cosmin [mailto:cslanet@lhotka.net]
+<br>
+<b>Sent:</b> Thursday, November 20, 2008 12:02 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> [CSLA .NET] Lazy Loading question<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Hi,<br>
+<br>
+What happpens if I create a lazy property(ReadOnlyBase) and don't use it on the
+clientat all but use it on the server on update or insert?<br>
+<br>
+Say we have a Customer object and a PriceList(lazy) associated with it. On the
+update of the customer I need some data from the PriceList. What happens if I
+touch the PriceList property on the server side?<br>
+<br>
+I know, the best way to know is to try it but don't have time right now and I
+also need to know if it is ok or my design is not right.<br>
+<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rsbaker0 replied on Thursday, November 20, 2008</h2><P>I think this works just fine. </P>
+<P>In your Customer example,&nbsp; the object returned from the server after an update/insert will have a populated PriceList that will be returned with the object.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Cosmin replied on Friday, November 21, 2008</h2><br>What happens if you call DataPortal.Fetch on the server side? Is the DataPortal aware of the context and just execute the fetch directly or it will follow the same execution path as if it ran on the client side(get serverside dataportal call the fetch and pass the object, etc). That would be a problem I feel.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rsbaker0 replied on Friday, November 21, 2008</h2><P>DataPortal.Fetch on the "server" side would typically use the "local" data portal. You can freely use your CSLA objects on the server, but any fetching/saving occurs on the same machine. CSLA calls on the server works like a single machine deployment with all your execution logic running on the same machine. </P>
+<P>That being said, I believe it is possible to chain&nbsp;data&nbsp;portals from one server to another, but that probably isn't typical. </P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

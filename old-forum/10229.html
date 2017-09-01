@@ -1,0 +1,25 @@
+<html><header><title>CSLA 4: 3 Different Csla.dll for regular .NET vs WPF vs Silverlight</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA 4: 3 Different Csla.dll for regular .NET vs WPF vs Silverlight</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10229.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Lord02 posted on Friday, April 01, 2011</h2><p>Hi,</p>
+<p>I downloaded the example for CSLA 4.0.1 ... ( from: http://www.lhotka.net/files/csla40/CslaSamples-4.1.0-110118.zip )</p>
+<p>Are there now 3 different CSLA.DLL to include in our projects ? One for .NET, one for WPF and one for Silverlight ? Total of 3 ... ?</p>
+<p>There are 3 subfolders in the Dependencies folder ... <br />namely the &quot;Net&quot;, &quot;Sl&quot; and &quot;Wp&quot; folders. </p>
+<p>The csla.dll in WPF folder is 286KB</p>
+<p>The csla.dll in Sliverlight folder is 300KB</p>
+<p>The csla in .NET folder is 371KB</p>
+<p>What is the difference between these DLL&#39;s ?</p>
+<p>Kind regards,</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Lord02 replied on Friday, April 01, 2011</h2><p>I noticed in the details description for each CSLA.DLL they say in the description field:</p>
+<p>.NET folder:<br />&quot;CSLA.NET for Windows (server)&quot;</p>
+<p>Sl folder:<br />&quot;CSLA.NET for Silverlight&quot;</p>
+<p>Wp folder:<br />CSLA.NET for Windows Phone</p>
+<p>Please explain ... which DLL would I use for:<br />*Regular Windows Forms<br />*WPF<br />*Silverlight<br />*ASP.NET Webforms</p>
+<p>Kind regars,</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Friday, April 01, 2011</h2><p>This is explained in Table 18 in the <em>Using CSLA 4: CSLA .NET Overview</em> ebook.</p>
+<p>A summary of the sub-folders in the \bin folder:</p>
+<ul>
+<li>Client - assemblies built for the .NET 4 Client Profile</li>
+<li>Server - assemblies built for the .NET 4 Full Profile (with the exception of Csla.dll, which is the same as in the Client folder)</li>
+<li>Silverlight - assemblies built for Silverlight 4</li>
+<li>Wp - assemblies built for WP7</li>
+</ul>
+<p>Technologies like WPF and Windows Forms typically run in the Client Profile. Technologies like ASP.NET and WCF run in the Full Profile. But those are defaults, and you can change them in your projects.</p>
+<p>Silverlight is Silverlight.</p>
+<p>WP7 is WP7.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,173 @@
+<html><header><title>Using Csla with Inheritance and Multiple Database Engines</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Using Csla with Inheritance and Multiple Database Engines</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4819.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>andrewem posted on Wednesday, May 07, 2008</h2><P>Hi,</P>
+<P>Essentially, the book (VB 2005 Business Objects SE)&nbsp;uses a single project that contains everything: the properties (or Business Methods), Factory Methods, and Data Access.&nbsp;While this is great for using one database platform, we have used multiple projects to allow us to use multiple database engines. So instead of having to reproduce all of the properties and their business rules in each data project, we just inherit it in each. Although the book mentions this in a couple of lines, there are no examples. Does anyone have an example?</P>
+<P>The reason I'm asking is because we are upgrading from 1.1 to the latest CSLA framework and the problem is that certain things conflict with the two project methodology.</P>
+<P>For example (and this is just one example):</P>
+<P>Public Shared Function NewWhatever() As Whatever</P>
+<BLOCKQUOTE dir=ltr>
+<P>Return DataPortal.Create(Of Whatever)()</P></BLOCKQUOTE>
+<P>End Function</P>
+<P>This does not work, because Whatever is marked as a MustInherit class and you cannot create an instance of such a class. It worked in our old methodology because the previous person who did the work tweaked the methods (i.e. never used Shared, had another factory project, etc) to get everything to work. I, on the other hand, want to take the time now to make sure that everything makes reasonable sense before we go into massively chaning large portions of code to work with the new CSLA.</P>
+<P>Any examples that I can look at? Anyone have any ideas?</P>
+<P>Greatly appreciated..</P>
+<P>A</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Wednesday, May 07, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Disclaimer: I did not have to write a project yet against
+multiple databases.&nbsp; However, if I had to do it, I would have tried to
+have a single set of business objects, and have DB specific code in data portal
+methods.&nbsp; Moreover, I would have tried to have database factory (of sorts)
+that would look in config and create appropriate objects for database currently
+used.&nbsp; Something like:&nbsp; Factory.CreateConnection as DBConnection (or
+IDBCOnnection), etc&#8230; for other db objects.&nbsp; That way your business
+object code is database agnostic altogether.&nbsp; Just a thought&#8230;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Senior Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> andrewem
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Wednesday, May 07, 2008 1:12 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> [CSLA .NET] Using Csla with Inheritance and Multiple Database
+Engines<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Hi,<o:p></o:p></p>
+
+<p>Essentially, the book (VB 2005 Business Objects SE)&nbsp;uses a single
+project that contains everything: the properties (or Business Methods), Factory
+Methods, and Data Access.&nbsp;While this is great for using one database platform,
+we have used multiple projects to allow us to use multiple database engines. So
+instead of having to reproduce all of the properties and their business rules
+in each data project, we just inherit it in each. Although the book mentions
+this in a couple of lines, there are no examples. Does anyone have an example?<o:p></o:p></p>
+
+<p>The reason I'm asking is because we are upgrading from 1.1 to the latest
+CSLA framework and the problem is that certain things conflict with the two
+project methodology.<o:p></o:p></p>
+
+<p>For example (and this is just one example):<o:p></o:p></p>
+
+<p>Public Shared Function NewWhatever() As Whatever<o:p></o:p></p>
+
+<blockquote>
+
+<p>Return DataPortal.Create(Of Whatever)()<o:p></o:p></p>
+
+</blockquote>
+
+<p>End Function<o:p></o:p></p>
+
+<p>This does not work, because Whatever is marked as a MustInherit class and
+you cannot create an instance of such a class. It worked in our old methodology
+because the previous person who did the work tweaked the methods (i.e. never
+used Shared, had another factory project, etc) to get everything to work. I, on
+the other hand, want to take the time now to make sure that everything makes
+reasonable sense before we go into massively chaning large portions of code to
+work with the new CSLA.<o:p></o:p></p>
+
+<p>Any examples that I can look at? Anyone have any ideas?<o:p></o:p></p>
+
+<p>Greatly appreciated..<o:p></o:p></p>
+
+<p>A<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>andrewem replied on Wednesday, May 07, 2008</h2><P>Does anyone else have an ideas?</P>
+<P>One project contains the business properties etc. The other project contains the data access methods. And there is a factory layer currently that creates the objects. We have the existing methodology working perfectly. BUT, we want to develop something that closely follows the book.</P>
+<P>My question in essence is if anyone has a rough template that shows Rocky's code and then it split up into the two projects. I can't imagine I'm the only one who uses the CSLA with multiple databases and I hope no one is going to advocate reproducing everything over and over again for each different database.</P>
+<P>&nbsp;</P>
+<P>A</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Thursday, May 08, 2008</h2><P>Sergey description is spot on.</P>
+<P>I supported Oracle and SQL Server with the same CSLA BOs. I simply created a config file setting like DBType and set it to "Oracle" or SQL Server". </P>
+<P>I have a separate Data Access Layer (DAL) which contain all the ADO.Net code and it reads the config file and creates instances of either the OracleReader or the SqlReader. (and Connection and ...). But the DAL always returns the interface IReader instead of the concrete type. Then all my BO code uses the IReader or whatever and it does not know the difference bewteen the 2 databases.</P>
+<P>HTH</P>
+<P>Joe</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>andrewem replied on Thursday, May 08, 2008</h2><P>Hi,</P>
+<P>I want to keep everyone up to date on my plight. I appreciate the help, but in the case above, what if I want to use a data source that doesn't conform to the Interfaces provided by .NET (for example, what if I want to use LINQ or web services to populate my class properties?)</P>
+<P>So, I have everything set up the way I want it. I have my two assemblies (projects) with inheritance - similar to the working model we have, BUT, there is a snag: this version of the CSLA uses generics, which I like,&nbsp;but consider this:</P>
+<P>DataPortal.Fetch(Of &lt;business object&gt;)&nbsp;</P>
+<P>The &lt;business object&gt; in this case is mustinherit (abstract), so the the CSLA tries to create the abstract object and of course that fails.</P>
+<P>The old CLSA version never used inheritance, so we could create the business object using a factory and call DataPortal.Fetch and it would never create it each time (or at least in the implementation we were using that I have happened to inherit).</P>
+<P>A</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tmg4340 replied on Friday, May 09, 2008</h2><FONT size=2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>andrewem:</strong></div><div></FONT>
+<P><FONT size=2>Hi,</FONT></P>
+<P><FONT size=2>I want to keep everyone up to date on my plight. I appreciate the help, but in the case above, what if I want to use a data source that doesn't conform to the Interfaces provided by .NET (for example, what if I want to use LINQ or web services to populate my class properties?)</FONT></P>
+<P><FONT size=2></div></BLOCKQUOTE></FONT></P>
+<P><FONT face=Tahoma size=2>Then you code your DAL project to manage whatever your data sources are.&nbsp; If you are supporting disparate data sources - especially if one of them is a web service - then your best bet is to probably use DTO's to transfer your data.&nbsp; I responded to another thread outlining some of this (<A HREF="/forums/thread/12631.aspx">http://forums.lhotka.net/forums/thread/12631.aspx</A>), but basically you put your DTO's into a separate assembly, and use those to transmit your data back and forth between your DAL and your BO's.</FONT></P>
+<P><FONT size=2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>andrewem:</strong></div><div></FONT></P>
+<P><FONT size=2>So, I have everything set up the way I want it. I have my two assemblies (projects) with inheritance - similar to the working model we have, BUT, there is a snag: this version of the CSLA uses generics, which I like,&nbsp;but consider this:</FONT></P>
+<P><FONT size=2>DataPortal.Fetch(Of &lt;business object&gt;)&nbsp;</FONT></P>
+<P><FONT size=2>The &lt;business object&gt; in this case is mustinherit (abstract), so the the CSLA tries to create the abstract object and of course that fails.</FONT></P>
+<P><FONT size=2>The old CLSA version never used inheritance, so we could create the business object using a factory and call DataPortal.Fetch and it would never create it each time (or at least in the implementation we were using that I have happened to inherit).</FONT></P>
+<P><FONT size=2></div></BLOCKQUOTE></FONT></P>
+<P><FONT face=Tahoma size=2>You've asked this question several times in several different places, so you must not be getting the answers that you want (or any at all).&nbsp; I'm not sure what you mean by "the old CSLA never used inheritance", but that's not really what's got me scratching my head.&nbsp; I'm going to step back a bit and ask a different question:</FONT></P>
+<P><FONT face=Tahoma size=2>Why would you want to call a DataPortal method with an abstract class?</FONT></P>
+<P><FONT face=Tahoma size=2>I must not be getting it, because for the life of me I can't see how that buys you anything.&nbsp; You have&nbsp;to cast that everywhere.&nbsp; I know that you're trying not to have to re-write a bunch of existing code, but I just don't see how that design was helpful, regardless of the version of CSLA used.&nbsp; IMHO, sometimes it's just better to rip off the band-aid...</FONT></P>
+<P><FONT face=Tahoma size=2>- Scott</FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>andrewem replied on Friday, May 09, 2008</h2><P>Hi Scott,</P>
+<P>Don't worry about it. I've found a solution. I have compiled a list of all the solutions that people stated on here, but many of them have problems. For example, using Interfaces such as&nbsp;IDBConnection doesn't work very well if you are using Web Services (for example) to obtain your data. These DTO's we were looking at seem to add a whole new level of complexity to something that for the way we were doing it originally was simple and worked. </P>
+<P>I realize that there are many 'solutions' that everyone has out there to this problem, we've found one that works for us and has suited us well over the past four years.</P>
+<P>A</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>smiley riley replied on Monday, May 12, 2008</h2><P>Create an interface for the datacalls you want. Create an implentation of each of these for DB, WS etc (Strategy Pattern). You are basically creating a strategy pattern for your DAL calls. You can extend this to MSMQ qnd even add a composite pattern to use two at the same time or automatic rollovers should one become unavailable. Oh and create youself a factory for loading teh concrete types.</P>
+<P>&nbsp;</P>
+<P>public interface DALFacade</P>
+<P>{</P>
+<P>public Order GetOrders();</P>
+<P>}</P>
+<P>public class WebServiceDALFacade</P>
+<P>{</P>
+<P>public Order GetOrders(){...call webservice DAL.}<BR>}</P>
+<P>public class DataBaseDALFacade</P>
+<P>{</P>
+<P>public Order GetOrders(){</P>
+<P>..Here you can load the dataprovider by a factory class. </P>
+<P>DataProvider provider = DataProvider.CreateProvider( some variable to determine sql, oracle etc.</P>
+<P>provider.createparamter(.......);</P>
+<P>provider.createClobParameter(.........);</P>
+<P>IDataReader reader = provider.ExecuteReader(...................);</P>
+<P>Build Order from reader (create as a seperate method and loop through fields setting values using the field name. This way you can reuse the build for every db command that builds an order object. rather than creating crazy new(...............................................................) with 100 params everytime you create the object. My view is the order of a stored procedure is much more likely to change than the field names.<BR>}</P>
+<P>&nbsp;</P>
+<P>}</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

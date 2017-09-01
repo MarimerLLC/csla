@@ -1,0 +1,162 @@
+<html><header><title>I have some questions about Complex Criteria’s object</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>I have some questions about Complex Criteria’s object</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/12312.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>BeyondNet posted on Saturday, January 18, 2014</h2><p>I have a interface (client) with multiples filters, per e.j:&nbsp;</p>
+<p>&nbsp;</p>
+<p>- Search by Code</p>
+<p>- Search by Name</p>
+<p>- Search by Last Name</p>
+<p>- Search by ....</p>
+<p>&nbsp;</p>
+<p>In these cases, I look with always the need of create a new Criteria object, per e.j.:</p>
+<p>&nbsp;</p>
+<p>- SearchByCodeCriteria</p>
+<p>- SearchByNameCriteria</p>
+<p>- SearchByLastNameCriteria</p>
+<p>- SearchBy....</p>
+<p>&nbsp;</p>
+<p>A form of solution maybe create a class with this filters:</p>
+<p>&nbsp;</p>
+<p>public class Filters</p>
+<p>{</p>
+<p>&nbsp; &nbsp; &nbsp; string Code</p>
+<p>&nbsp; &nbsp; &nbsp; string Name</p>
+<p>&nbsp; &nbsp; &nbsp; string LastName</p>
+<p>}</p>
+<p>&nbsp;</p>
+<p>This class &nbsp;may put in the constructor of any Criteria Object. But the problem is the same, I need always of conditionals, p.e.:</p>
+<p>&nbsp;</p>
+<p>If (!String.NullOrEmpty(Foo.Code))</p>
+<p>&nbsp; &nbsp;Filters.Code = Foo.Code;</p>
+<p>&nbsp;</p>
+<p>This same problem repeat been in the moment to fetch in the DataPortal:</p>
+<p>&nbsp;</p>
+<p>If (!String.NullOrEmpty(Filters.Code))</p>
+<p>&nbsp; &nbsp;data = targetRepository.FetchByCode(Filters.Code);</p>
+<p>&nbsp;</p>
+<p>If (!String.NullOrEmpty(Filters.Name))</p>
+<p>&nbsp; &nbsp;data = targetRepository.FetchByName(Filters.Name);</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>The questions is:</p>
+<p>&nbsp;</p>
+<p>Exists any pattern for Criterias, similar to Specifications in DDD, I understand with CSLA .NET is not a ORM, but I think the conditionals in CSLA framework to Criterias Objects is a little problem.</p>
+<p>&nbsp;</p>
+<p>Can you help me with any pattern?</p>
+<p>&nbsp;</p>
+<p>P.D.: I use IoC and DI with Unity, also use Managed Extensibility Framework (MEF) with CSLA .NET to apply polymorphism, but my problem is when I need apply this concepts with the Criteria Objects.</p>
+<p>&nbsp;</p>
+<p>Maybe an option:</p>
+<p>&nbsp;</p>
+<p>public interface IDynamicList&lt;T&gt;</p>
+<p>&nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; List&lt;T&gt; FindAllByCriteria(string criteria);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; List&lt;T&gt; FindAllByCriteria(Func&lt;T, bool&gt; criteria);</p>
+<p>&nbsp; &nbsp; }</p>
+<p>&nbsp;</p>
+<p>&nbsp;[Export(typeof(ICustomerRepository))]</p>
+<p>&nbsp; &nbsp; public class CustomerMock : ICustomerRepository</p>
+<p>&nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; public List&lt;Dto.CustomerDto&gt; FindAllByCriteria(Func&lt;Dto.CustomerDto, bool&gt; criteria)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; throw new NotImplementedException();</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp; &nbsp; }</p>
+<p>&nbsp;</p>
+<p>Best regards</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Monday, January 20, 2014</h2><p>My preference is to have one or more criteria objects with multiple fields (when required). </p>
+<p>This makes the data contract a lot easier and you only need to add extra logic in the DataPortal_XYZ / ObjectFactory methods. </p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>BeyondNet replied on Monday, January 20, 2014</h2><p>Johnny, thanks for your help.</p>
+<p>Is true, really we are using one criteria of search per every need of search. But I think if we use some pattern as &quot;Chains of Responsability&quot;, &quot;Strategy&quot; or &quot;Dependency Injection&quot;, we can achieve some solution.</p>
+<p>This article is interesting, in it we can view the use of an architecture based in NHibernate, but I think can be used as a sample base:</p>
+<p>URL: http://weblogs.asp.net/thangchung/archive/2010/06/20/breaking-if-statements-with-pattern.aspx</p>
+<p>Best Regards</p>
+<div style="position:absolute;z-index:9999;font-size:1em;top:124px;left:140.5px;">
+<div>
+<div class="lang" style="float:right;font-size:80%;color:inherit;background-image:none;border:none;background-position:initial initial;background-repeat:initial initial;">en &rarr; es</div>
+<div class="translation" style="color:inherit;background-image:none;border:none;background-position:initial initial;background-repeat:initial initial;">archivo</div>
+<div class="additional" style="color:inherit;background-image:none;border:none;background-position:initial initial;background-repeat:initial initial;">
+<div style="color:inherit;background-image:none;border:none;background-position:initial initial;background-repeat:initial initial;"><strong>sustantivo</strong>: <i>archivo</i></div>
+</div>
+</div>
+</div></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Monday, January 20, 2014</h2><p>No, don&#39;t get me wrong. </p>
+<p>When I have a &quot;search form&quot; I will typically have a separate Business Object (with additional business rules) and use this object as criteria on the fetch. </p>
+<p>If I have multiple &quot;search forms&quot; there will probably also be separate criteria objects. </p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>BeyondNet replied on Monday, January 20, 2014</h2><p>For the moment, I&#39;m applying this solution: Basically is similar to &quot;Chain of Responsability&quot; pattern, but I use Dependency Injection, because I think is a best solution. &nbsp;The next is optimizing the code with Func&lt;&gt; or Predicated and Generics.</p>
+<p><b><span style="text-decoration:underline;">DI:</span></b></p>
+<p>&nbsp; &nbsp; public interface INodeDataFilter</p>
+<p>&nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; NodeDataInfoList List(NodeDataSearchFilters filters);</p>
+<p>&nbsp; &nbsp; }</p>
+<p>&nbsp; &nbsp;public class NodeDataFilterCode : INodeDataFilter</p>
+<p>&nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; public NodeDataInfoList List(NodeDataSearchFilters filters)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; NodeDataSearchCriteria criteria = new NodeDataSearchCriteria(filters);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; return NodeDataInfoList.GetAllNodeData(criteria);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp; &nbsp; }</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; public class NodeDataFilterName : INodeDataFilter</p>
+<p>&nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; public NodeDataInfoList List(NodeDataSearchFilters filters)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; NodeDataSearchCriteria criteria = new NodeDataSearchCriteria(filters);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; return NodeDataInfoList.GetAllNodeData(criteria);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp; &nbsp; }</p>
+<p><b><span style="text-decoration:underline;">Controller:</span></b></p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; public ActionResult ManagerGridPartial(string criteriaType, string filterValue, string nodeDataCode, string nodeDataName, string nodeId, int status)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; var container = UnityConfig.GetConfiguredContainer();</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; NodeDataSearchFilters filters = new NodeDataSearchFilters()</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; NodeDataCode = criteriaType == &quot;0&quot; ? filterValue : string.Empty,</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; NodeDataName = criteriaType == &quot;1&quot; ? filterValue : string.Empty,</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; NodeId = nodeId,</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Status = status,</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; var concret = container.Resolve&lt;INodeDataFilter&gt;(criteriaType);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; NodeDataInfoList result = concret.List(filters);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; return this.PartialView(SiteMapViewUrl.NodeData_ManagerResultPartial, result);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp;</p>
+<p><b><span style="text-decoration:underline;">InfoList - BO:</span></b></p>
+<p>&nbsp; &nbsp; private void DataPortal_Fetch(NodeDataSearchCriteria criteria)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; var rlce = RaiseListChangedEvents;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; RaiseListChangedEvents = false;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; IsReadOnly = false;</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; List&lt;NodeDataDto&gt; data = null;</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;//Here, always conditionals problems</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; if (!string.IsNullOrEmpty(criteria.NodeDataCode))</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; data = TargetRepository.FetchCustomAll(p =&gt; p.Code == criteria.NodeDataCode);</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; if (!string.IsNullOrEmpty(criteria.NodeDataName))</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; data = TargetRepository.FetchCustomAll(p =&gt; p.Name == criteria.NodeDataName);</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; foreach (var item in data)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Add(NodeDataInfo.GetNodeData(item));</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; IsReadOnly = true;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; RaiseListChangedEvents = rlce;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp;</p>
+<p><b><span style="text-decoration:underline;">Mock:</span></b></p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; public List&lt;NodeDataDto&gt; FetchCustomAll(Func&lt;NodeDataDto, bool&gt; criteria)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; var data = NDatabaseManager.Instance.Database.QueryAndExecute&lt;NodeDataDto&gt;().Where(criteria).ToList();</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; if (data == null)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; throw new DataAccessNotFoundException(&quot;NodeDataTable is not exists&quot;);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; List&lt;NodeDataDto&gt; result = new List&lt;NodeDataDto&gt;();</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Mapper.Map(data, result);</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; return result;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp;</p>
+<p>Best Regards</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

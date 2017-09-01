@@ -1,0 +1,9 @@
+<html><header><title>CSLA 4 version 4.0.1 released</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA 4 version 4.0.1 released</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9447.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka posted on Saturday, August 28, 2010</h2><p>CSLA 4 version 4.0.1 is released and available for download.</p>
+<p><a href="http://www.lhotka.net/cslanet/download.aspx">Download CSLA .NET</a></p>
+<p>This is a bug fix release, with <a href="http://www.lhotka.net/Article.aspx?id=ef41332f-16a2-441e-81d3-260403a196bf">important fixes</a> for some issues in version 4.0.0. If you are using CSLA 4, you should consider upgrading to 4.0.1 as soon as possible.</p>
+<p>Please note that there are a couple potential breaking changes in 4.0.1:</p>
+<ul>
+<li>If you are using private backing fields, your RegisterProperty() calls must now specify Relationships.PrivateField so CSLA knows you are using a private backing field. If you don&#39;t do this, you&#39;ll get runtime exceptions.</li>
+<li>The Save() and BeginSave() methods now raise different (and more reliable) exceptions. If you are explicitly checking for NotSupportedException you will need to check for InvalidOperationException.</li>
+</ul>
+<p>While I try to avoid adding breaking changes in point releases, these were important and I thought it better to get them out as early in the CSLA 4 life-cycle as possible.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

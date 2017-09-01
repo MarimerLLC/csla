@@ -1,0 +1,47 @@
+<html><header><title>What is the purpose of ProjectInfo.Server.cs</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>What is the purpose of ProjectInfo.Server.cs</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/7368.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>NickyLarson posted on Thursday, July 30, 2009</h2><div id="result_box">Hello everyone<br><br>
+I'm trying the ProjectTracker, and I'm not understand the use of
+ProjectInfo.Server.cs is only a partial class. <br><br>What is the purpose of this class.<br><br>Thanks.<br><br>NickyLarson<br><br></div><br><br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, July 30, 2009</h2><P>I had started to create a Silverlight client for ProjectTracker, which requires separating out server-only code from code that is shared between the client and server. That's the purpose behind that file.</P>
+<P>Obviously I didn't continue working on that project - mostly because it would have complicated the ProjectTracker code for readers of <EM>Expert 2008 Business Objects</EM>, where this separation isn't necessary.</P>
+<P>I'll almost certainly take that step in the next few months though, because at some point in here I imagine I'll write <EM>Expert 2010 Business Objects</EM>, or at least an ebook, that covers CSLA .NET 4.0 - and I'll want to address Windows, Web, Silverlight and services together in such a book.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>NickyLarson replied on Thursday, July 30, 2009</h2>Thanks Rocky for reply<br><br>P.S. I am wainting for this book :)<br><br>NickyLarson<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Frances83 replied on Thursday, July 30, 2009</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div><p>I had started to create a Silverlight client for ProjectTracker, which requires separating out server-only code from code that is shared between the client and server. That's the purpose behind that file.</p>
+<p>Obviously I didn't continue working on that project - mostly because it would have complicated the ProjectTracker code for readers of <em>Expert 2008 Business Objects</em>, where this separation isn't necessary.</p>
+<p>I'll almost certainly take that step in the next few months though, because at some point in here I imagine I'll write <em>Expert 2010 Business Objects</em>, or at least an ebook, that covers CSLA .NET 4.0 - and I'll want to address Windows, Web, Silverlight and services together in such a book.</p></div></BLOCKQUOTE><br>Please do! Also, could you change the timeframe from 'in the next few months' to 'in the next few weeks / days'? <img src="/emoticons/emotion-5.gif" alt="Wink [;)]" /><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, July 30, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I didn&#8217;t create the SL ProjectTracker because it would
+have interfered with the <i>Expert 2008 Business Objects</i> book effort.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>However, there are a lot of CSLA .NET for Silverlight examples
+in the Samples download, and a whole set of very focused samples available as
+part of the <a href="http://store.lhotka.net/">CSLA .NET for Silverlight video
+series</a>.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Arguably at this point there are better samples for Silverlight
+than for Windows. Certainly there are more narrowly focused samples to show
+specific features and capabilities.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>And there are also two broader SL samples: Rolodex and
+InventoryDemo.<o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

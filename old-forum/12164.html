@@ -1,0 +1,53 @@
+<html><header><title>Is Thread safe When AsyncBusinessRule completed???</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Is Thread safe When AsyncBusinessRule completed???</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/12164.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Sam_Lin posted on Friday, September 27, 2013</h2><p>Dear all: </p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; when i read the source code of csla, i have some questions.pls help to answer.</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;i have a property (named filedA)&nbsp;with a async rule(business rule not validation rule),it calls the server to calculate something and then update another property (named&nbsp; filedB) on the completed callback thread.</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; now , i have another thread directly update the fieldB, both the two thread will update the filedB by SetFieldData&lt;P&gt;(IPropertyInfo prop, P value) method with no sync lock ?</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; It is not thread safety, right?</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; And how can i make this scenario safety.</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Best Reagards!</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Friday, September 27, 2013</h2><p>I may not fully understand yout scenario - however, this is the general rule:</p>
+<ul>
+<li>Properties should only be updated from the UI thread (this may be done on another thread in DataAccess tho)</li>
+<li>Rules may run an async operation (triggered from the UI&nbsp;by a user editing a value) - but the callback should be handled on the UI thread and thus you do not have a race condition - just that the lates one to do an update wins. </li>
+</ul>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Sam_Lin replied on Friday, September 27, 2013</h2><p>Thanks Jonny.</p>
+<p>First, I dont&#39;t bind this OBJ&nbsp;to UI, So there&#39;s no &quot;UI Thread&quot;.</p>
+<p>Second, I implement my async rule as below:</p>
+<p>public class MyRule:BussinesRule</p>
+<p>{</p>
+<p>.............................</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; protected virtual void Execute(RuleContext context)</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; { </p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;System.Threading.Thread myThread = new Thread(new ParameterizedThreadStart((ThreadRun));</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; myThread .IsBackground = true;</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; myThread .Start(context);</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; private void ThreadRun(object context)</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ...........</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; RuleContext rulecontext = context as RuleContext context;</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; rulecontext.Completed(); <strong>//the completed isn&#39;t called on the original call thread.</strong></p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ...............</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</p>
+<p>......................</p>
+<p>}</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Saturday, September 28, 2013</h2><p>well, that&#39;s not how you are supposed to create an async rule.&nbsp;</p>
+<p>You will create a new thread for each time the rule is executed.&nbsp;</p>
+<p>You should rather look at:</p>
+<ul>
+<li>using async/await</li>
+<li>using the DataPortal to do async call&nbsp;</li>
+<li>or use ThreadPool (and QueueUserWorkItem with a callback)</li>
+<li>or create a Backgroundworker in the Execute method.&nbsp;</li>
+<li>or as last resort - reconsider why this rule should execute asynchronously.&nbsp;</li>
+</ul>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Sam_Lin replied on Saturday, September 28, 2013</h2><p>Dear Jonny:</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Thanks.</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Backgroundworker&nbsp;must be&nbsp;used with the UI Thread,otherwise i must implement subclass of SynchronizationContext which maybe using &quot;await&quot;.</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; DataProtal used the Backgroundworker with the UI Thread, too.</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;TreadPool also need using &quot;await&quot; to&nbsp;guarantee the thread safe.&nbsp;</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; So, we must keep in mind that if we dosn&#39;t used the UI Thread, we must do something to guarantee the thread safe. Right?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Sunday, September 29, 2013</h2><p>No,</p>
+<p>BackgroundWorker can be used in different types of applications (including Console apps). And .NET has (IIRC) 4 different implementations of the SynchronizationContext to support different types of apps (without the use of async).</p>
+<p>So you can use DataPortal or BackgroundWorker in any type of application.</p>
+<p>With thread pool you can specify a callback method to be executed on the &quot;original&quot; thread after the async operation has completed. You are NOT forced to use async/await with the thread pool</p>
+<p>You could also create Task or Task&lt;T&gt; objects and use async/await pattern.&nbsp;</p>
+<p>I highly recommend the &quot;Threading in C#&quot; free ebook from Joe Albahari, available for online reading or download as PDF<br />&nbsp;<a href="http://www.albahari.com/threading/">http://www.albahari.com/threading/#</a></p>
+<p>There is also a very good &quot;Async introduction&quot; with sample available for download (&quot;more samples&quot;) in LinqPad, from&nbsp;<a href="http://www.linqpad.net/">http://www.linqpad.net/</a><br /><i>Asynchrony in C# 5 Interactive Tutorial</i></p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

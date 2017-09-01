@@ -1,0 +1,61 @@
+<html><header><title>Authorisation Rule - PerType Property Read/Write How to rule check on type (instead of instance)</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Authorisation Rule - PerType Property Read/Write How to rule check on type (instead of instance)</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11793.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jaans posted on Thursday, January 17, 2013</h2><p>I&#39;m trying to build a custom convention for Caliburn Micro that automatically sets a input control to be ReadOnly/Disabled if the user doesn&#39;t have write permission against the Csla Property that is being bound to.</p>
+<p>Where I&#39;m stuck is to be able to test whether a particular property can be written to for a given CSLA&nbsp;<b>Type</b>.</p>
+<p>I do <span style="text-decoration:underline;">not</span> have the instance of the CSLA business object available yet, so I cannot call CanWrite() on it. <br />What I do have is the Type of the business object and I need to see if the user can write to the property on the given business object type.</p>
+<p>My property authorisation rules are setup as per type (and not per instance).</p>
+<p>Any ideas anyone?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Thursday, January 17, 2013</h2><p>It may be a bit of an edge case.</p>
+<p>
+<ul>
+<li>Object may have more than one ruleset - and you need to know the ruleset of the actual BO</li>
+<li>I quite often find the need to override CanReadProperty/CanWriteProperty as there can only<br /> be one-1 authorization rule per action/property &nbsp;and I use CanReadU/CanWrite for more than<br /> just &quot;static&quot; field initialization.</li>
+</ul>
+</p>
+<p>Have you considered this alternative - to add the PropertyInfo control in the template?&nbsp;<br /><a href="http://forums.lhotka.net/forums/p/11633/53888.aspx#53888">http://forums.lhotka.net/forums/p/11633/53888.aspx#53888</a></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jaans replied on Thursday, January 17, 2013</h2><p>Thanks Jonny</p>
+<p>Yeah... we currently use the PropertyInfo control which works well, but it&#39;s quite a bit of effort for all the controls, especially when you have projects with many views.</p>
+<p>At the moment, with Caliburn Micro we are able to quite easily and automatically make input controls read-only, or even set grid columns to be read-only when the binding is against a CSLA business object and the property doesn&#39;t have a publicly accessible setter. This works really well as it requires less time spend in XAML for the team.</p>
+<p>The new idea was to reduce our XAML footprint further and stop writing the PropertyInfo control (at last not for CanWrite checks via binding) for each UI element that represents data from a business object..</p>
+<p>Since we define our property authorisation rules as per type rules (as opposed to per-instance) on the business object, I&#39;m speculating that static information is there for the static HasPermission(...) method overloads on the BusinessRules to be extended with an overload that can check for permissions for a AutorizationAction.CanWrite/CanRead together with a Type and a Property (as opposed to an instance and a property).</p>
+<p>What do you think, would it be possible / useful?<br />You have a much deeper understanding of the Rules system and the greater impact such a check would have.&nbsp;</p>
+<p>Ps: Leave the forum alone and enjoy your holiday in paradise <img src="http://forums.lhotka.net/emoticons/emotion-59.gif" alt="Paradise" /><br /><br />Alternatively, we can see if we can have Caliburn Micro&#39;s SetBinding convention dynamically inject PropertyInfo controls for each of the controls and setup the relevant CanWrite binding checks. &nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Thursday, January 17, 2013</h2><p><div style='padding-left: 50px;background-color:silver'><b>Jaans<br></b>Alternatively, we can see if we can have Caliburn Micro&#39;s SetBinding convention dynamically inject PropertyInfo controls for each of the controls and setup the relevant CanWrite binding checks. &nbsp;</div></p>
+<p><b>This would be my recommended solution.&nbsp;</b></p>
+<p>The concept for CanRead/CanWrite is that&nbsp;</p>
+<p>&nbsp;</p>
+<ul>
+<li>these rules _may_ rely on the instance - hence the framework will provide context.Target with the actual object</li>
+<li>and will cache the result per instance of BusinessRules (read instance of BO) when rule.CacheResult is True (default)<br /> ie: AuthzRule will only run once per instance to make these rules perform as good as possible - especially if data access is required.</li>
+</ul>
+<p>&nbsp;</p>
+<p><b>You _could_ modify CSLA and create your own version and allow this. Just be aware that doing so will require that your authz rules can ONLY do static checks. You _could_ comment out the checks in the static AuthorizationRules.HasPermission.</b></p>
+<p><b>Or - you could create a &quot;dummy&quot; instance and call the CanRead/CanWrite methods on that instance. </b></p>
+<p>&nbsp;</p>
+<div style="color:black;background:white;font-family:Consolas;font-size:10pt;">
+<pre style="margin:0px;">&nbsp; &nbsp; <span style="color:blue;">private</span> <span style="color:blue;">static</span> <span style="color:blue;">bool</span> HasPermission(<span style="color:#2b91af;">AuthorizationActions</span> action, <span style="color:blue;">object</span> obj, <span style="color:#2b91af;">Type</span> objType, <span style="color:blue;">string</span> ruleSet)</pre>
+<pre style="margin:0px;">&nbsp; &nbsp; {</pre>
+<pre style="margin:0px;">&nbsp; &nbsp; &nbsp; <span style="color:green;">// COMMMENT THESE LINES WILL ALLOW CHECK OF Read/Write/Ececute</span></pre>
+<pre style="margin:0px;">&nbsp; &nbsp; &nbsp; <span style="color:green;">// -however this may make context.Target be null depending on whether a type or an instance was supplied to the check</span></pre>
+<pre style="margin:0px;">&nbsp; &nbsp; &nbsp; <span style="color:green;">//if (action == AuthorizationActions.ReadProperty ||</span></pre>
+<pre style="margin:0px;">&nbsp; &nbsp; &nbsp; <span style="color:green;">//&nbsp; &nbsp; action == AuthorizationActions.WriteProperty ||</span></pre>
+<pre style="margin:0px;">&nbsp; &nbsp; &nbsp; <span style="color:green;">//&nbsp; &nbsp; action == AuthorizationActions.ExecuteMethod)</span></pre>
+<pre style="margin:0px;">&nbsp; &nbsp; &nbsp; <span style="color:green;">//&nbsp; throw new ArgumentOutOfRangeException(&quot;action&quot;);</span></pre>
+<pre style="margin:0px;">&nbsp;</pre>
+<pre style="margin:0px;">&nbsp; &nbsp; &nbsp; <span style="color:blue;">bool</span> result = <span style="color:blue;">true</span>;</pre>
+<pre style="margin:0px;">&nbsp; &nbsp; &nbsp; <span style="color:blue;">var</span> rule =</pre>
+<pre style="margin:0px;">&nbsp; &nbsp; &nbsp; &nbsp; <span style="color:#2b91af;">AuthorizationRuleManager</span>.GetRulesForType(objType, ruleSet).Rules.FirstOrDefault(c =&gt; c.Element == <span style="color:blue;">null</span> &amp;&amp; c.Action == action);</pre>
+<pre style="margin:0px;">&nbsp; &nbsp; &nbsp; <span style="color:blue;">if</span> (rule != <span style="color:blue;">null</span>)</pre>
+<pre style="margin:0px;">&nbsp; &nbsp; &nbsp; {</pre>
+<pre style="margin:0px;">&nbsp; &nbsp; &nbsp; &nbsp; <span style="color:blue;">var</span> context = <span style="color:blue;">new</span> <span style="color:#2b91af;">AuthorizationContext</span> { Rule = rule, Target = obj, TargetType = objType };</pre>
+<pre style="margin:0px;">&nbsp; &nbsp; &nbsp; &nbsp; rule.Execute(context);</pre>
+<pre style="margin:0px;">&nbsp; &nbsp; &nbsp; &nbsp; result = context.HasPermission;</pre>
+<pre style="margin:0px;">&nbsp; &nbsp; &nbsp; }</pre>
+<pre style="margin:0px;">&nbsp; &nbsp; &nbsp; <span style="color:blue;">return</span> result;</pre>
+<pre style="margin:0px;">&nbsp; &nbsp; }</pre>
+</div>
+<pre>I do not believe we will make this change in CSLA rules framework. 
+</pre>
+<div></div>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jaans replied on Saturday, January 19, 2013</h2><p>@Jonny</p>
+<p>Thanks for that.<br />I see what you are saying about rules that might depend on the Target. As you say if we *know* our roles are only using the standard IsInRole permissions, then we&#39;ll be fine but it&#39;s clearly not a guaranteed scenario and is up to us to ensure that is true for our environment.</p>
+<p>@Skagen00</p>
+<p>I&#39;m assuming you are referring to the CSLA PropertyInfo class used to represent registered CSLA business object properties and not the XAML &lt;csla:PropertyInfo /&gt; control. That sure is an interesting idea, not just for this scenario but for some other scenario&#39;s too. I assume this will have a direct impact to the size of the object when serializing / deserialising.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Saturday, January 19, 2013</h2><p>Actually - extending the static PropertyInfo object will NOT increase the amount of data that is serialized.&nbsp;</p>
+<p>The managed propertyinfo bag uses only an integer index to access the field data so the amount of data to be serialized is not increased unless you create your own FieldData class and add extra properties here.&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>skagen00 replied on Thursday, January 17, 2013</h2><p>I may be misunderstanding, but could you extend propertyinfo (your custom propertyinfo derived from propertyinfo, which you proably already have)&nbsp;to perhaps have an extra piece of information for the role permissions/etc that are required for that given property?&nbsp;&nbsp;Then you could have a CanReadProperty/CanWriteProperty directly off of the propertyinfo and check the current identity&#39;s roles/permissions against them.</p>
+<p>Your businessbase CanReadProperty/CanWriteProperty can piggy back off of that when you have an instance, too - including both instance CanReadProperty/CanWriteProperty as well as those from the PropertyInfo...</p>
+<p>Just a suggestion</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,80 @@
+<html><header><title>Cslalight - CslaDataProvider : ObjectType property that references your CSLA Objects</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Cslalight - CslaDataProvider : ObjectType property that references your CSLA Objects</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/7108.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jaans posted on Monday, June 15, 2009</h2>I had read somewhere before (and now unable to find the original reference) about being able to specify a reference to your object without all the version and public key information. <br /><br />This feature is very usefull if your version number changes regularly (like after a daily build). With the Silverlight CslaDataProvider you would then need to update those references everytime your business object assembly version numbers change.<br /><br />This would be similar to the CslaDataSource for ASP.NET web applications where a strong named Csla Business Object reference could be specified without the Versioning and Public key bits, allowing the reference to remain intact eventhough the version number has since changed.<br /><br />I'm not sure whether this is still to be done, or has already been implemented (in which case I'm not having any joy on 3.6.2).<br /></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, June 17, 2009</h2><P>I am pretty sure that change was done in 3.6.2 or maybe 3.6.1.</P>
+<P>You still need to provide the assembly name:</P>
+<P>"Namespace.Class, Assembly"</P>
+<P>I changed the type resolver used by everything in CSLA .NET for Silverlight, so anywhere you specify an assembly it should work.</P>
+<P>Please note that this only works if the culture/version/key are neutral. If your assembly is signed then I can't help you, because the actual Silverlight type system does require all the information. So all I'm doing is appending the neutral values if you don't provide specific ones.</P>
+<P>In other words, I think you are out of luck.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jaans replied on Wednesday, June 17, 2009</h2>Aaah! That must it it then - all our assemblies are signed.<br /><br />Thanks Rocky.<br /><br />It is a pity, since it works so well with the CslaDataSource in ASP.NET.<br /><br />Just for my understanding, is it a feature of the type resolver that isn't available in Silverlight that prevents us here?<br /><br />Regards,<br />Jaans</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, June 18, 2009</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>My observation in using Type.GetType() in Silverlight is that it
+requires the fully type name, including all details. This is unlike the .NET
+version, which apparently has the option of just using whatever version it
+finds.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Of course the .NET approach means that signing your assembly is
+pointless, since you have no guarantee you are using the signed version :)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>In other words, you are signing your assembly for a reason &#8211;
+the only real reason is to ensure you are using your assembly, not some hacked
+version. But unless you provide the full type name (with the hash key) then you
+STILL don&#8217;t know you are using your assembly, not some hacked version.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>So in this regard SL is forcing you do actually use the fact
+that you signed the assembly, while .NET is allowing you to ignore that you
+signed the assembly (meaning there was no reason to sign it in the first
+place).<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Jaans
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Wednesday, June 17, 2009 7:16 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] Cslalight - CslaDataProvider : ObjectType
+property that references your CSLA Objects<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Aaah! That must it it then - all our assemblies are signed.
+Thanks Rocky. It is a pity, since it works so well with the CslaDataSource in
+ASP.NET. Just for my understanding, is it a feature of the type resolver that
+isn't available in Silverlight that prevents us here? Regards, Jaans<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jaans replied on Thursday, June 18, 2009</h2>Thanks... that makes sense.<br /><br />For us it was more important to have versioning information available on our assemblies since we perform regular updates and have multiple clients on different versions.<br /><br />I tried a couple of things and came to a technique that will work for our scenario. I thought I would post the idea, should anyone else have the need for it.<br /><br />Disclaimer: It's slightly convoluted<br /><br />The general idea is to upon application startup have code modify the ObjectType property of the CslaDataProviders and replace the version number with the one that you need.<br /><br />Super important note: The version number of the server-side business assembly must match the one used for the client-side silverlight business assembly. This is a requirement outside of this implementation (if you are using versioning).<br /><br />Given that above version number synchonicity, there are severeal ways you could determine the version number you are to use when programmatically updating the ObjectType property:<br /><br />1) Have the ASP.NET Server determine it dynamically since you have the full reflection capability available there. Then pass that version information as the InitParameters for the Silverlight application. Then on the client side, in the application startup event you can extract that information and update the ObjectType property of your providers.<br /><br />2) Hardcode it. Consider using a shared/linked file that specifies the version number so you only specify it once (this is what we do).<br /><br />3) Synchonize the Silverlight application version number also. In other words, the server-side business assembly, the client-side business assembly and the client-side silverlight application have the same version number. Then you can extract that version number information from the executing assembly (ps. there is a way to get it without using security critical code) and take it from there.<br /><br />Hope that helps,<br />Jaans</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,62 @@
+<html><header><title>Why ApplySorting causes BindingSource_ListChanged's ListChangedEventArgs to return null</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Why ApplySorting causes BindingSource_ListChanged's ListChangedEventArgs to return null</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/2654.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>GeorgeG posted on Tuesday, April 03, 2007</h2><P>I have an EditableRootListBase that is attached to a binding source. <BR>If the BindingSource.DataSource <BR>&nbsp;is attched to the BusinessBase directly<BR>&nbsp;or <BR>&nbsp;attched to SortedBindingList object with no ApplySort<BR>ListChangedEventArgs behaves correctly.<BR>private void BindingSource_ListChanged( object sender, ListChangedEventArgs e ) {<BR>&nbsp;&nbsp; if (e.PropertyDescriptor != null) {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; MessageBox.Show( e.PropertyDescriptor.DisplayName );<BR>&nbsp;&nbsp;&nbsp; }<BR>}<BR>However, as soon as ApplySort is called either by code or by clicking the grid header<BR>ListChangedEventArgs returns null which is not correct.</P>
+<P>Anybody had the same problem and how was&nbsp;being resolved? </P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Brian Criswell replied on Tuesday, April 03, 2007</h2>Check which type of event was raised, if it was a Reset (which it should be) that does not use the PropertyDescriptor because it is telling listening objects that too much has changed and they should just reread the entire list.&nbsp; I think PropertyDescriptor is only used for ItemChanged (sometimes) and the Add and Remove descriptor types.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Wednesday, April 04, 2007</h2>Is the actual event arguments parameter coming into the handler as null?<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>GeorgeG replied on Wednesday, April 04, 2007</h2><P>Yes, the actual event arguments parameter coming into the handler is &nbsp;null and should not be.</P>
+<P><BR>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Wednesday, April 04, 2007</h2>Hmm... I'm not sure what code would be causing that.&nbsp; Have you tried working your way up the call stack to see what class / method is raising the event without event args?<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>GeorgeG replied on Wednesday, April 04, 2007</h2><P>You are right. One method did not pass the event args as parameter.</P>
+<P>Rocky, <BR>do you think we should update the framework or we will break something?<BR></P>
+<P>In the SortedBindingList class<BR>&nbsp;method SourceChanged()<BR>&nbsp;added e.PropertyDescriptor to constructor under ListChangedType.ItemChanged<BR></P><FONT size=2><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>case</FONT><FONT size=2> </FONT><FONT color=#2b91af size=2>ListChangedType</FONT><FONT size=2>.ItemChanged:</P>
+<P></FONT><FONT color=#008000 size=2>// an item changed - just relay the event with</P></FONT><FONT size=2>
+<P></FONT><FONT color=#008000 size=2>// a translated index value</P></FONT><FONT size=2>
+<P>OnListChanged(</P>
+<P></FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> </FONT><FONT color=#2b91af size=2>ListChangedEventArgs</FONT><FONT size=2>(</P>
+<P></FONT><FONT color=#2b91af size=2>ListChangedType</FONT><FONT size=2>.ItemChanged, SortedIndex( e.NewIndex ), e.PropertyDescriptor ) );</FONT><FONT color=#008000 size=2>//added e.PropertyDescriptor</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>break</FONT><FONT size=2>;</P></FONT></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, May 01, 2007</h2>I've added this in 3.0 - to both SortedBindingList and FilteredBindingList.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>GeorgeG replied on Tuesday, May 01, 2007</h2><br><font size=2 face="sans-serif">Thanks</font>
+<br>
+<br>
+<br>
+<br>
+<table>
+<tr>
+<td><img>
+<br><font size=1 face="sans-serif"><b>&quot;RockfordLhotka&quot; &lt;cslanet@lhotka.net&gt;</b>
+</font>
+<br><font size=1 face="sans-serif">05/01/2007 01:36 PM</font>
+<table>
+<tr>
+<td>
+<div align=center><font size=1 face="sans-serif">Please respond to<br>
+cslanet@lhotka.net</font></div></table>
+<br>
+<td>
+<table>
+<tr>
+<td>
+<div align=right><font size=1 face="sans-serif">To</font></div>
+<td><font size=1 face="sans-serif">&quot;ggeorgiou@jefexservices.com&quot;
+&lt;ggeorgiou@jefexservices.com&gt;</font>
+<tr>
+<td>
+<div align=right><font size=1 face="sans-serif">cc</font></div>
+<td>
+<tr>
+<td>
+<div align=right><font size=1 face="sans-serif">Subject</font></div>
+<td><font size=1 face="sans-serif">Re: [CSLA .NET] Rocky question - Fixed
+- Re: Why ApplySorting causes BindingSource_ListChanged's ListChangedEventArgs
+to return null</font></table>
+<br>
+<table>
+<tr>
+<td>
+<td></table>
+<br></table>
+<br>
+<br>
+<br><font size=3>I've added this in 3.0 - to both SortedBindingList and
+FilteredBindingList.<br>
+<br>
+</font>
+<br>
+<br>
+<br>
+<br>
+<span>Jefferies Execution Services reviews and archives incoming and outgoing e-mail.  Archived information may be produced at the request of regulatory authorities or in connection with civil litigation.  Copying, disclosure, or distribution of material in this e-mail without prior approval is strictly prohibited.  Indications of interest to buy, sell, or cancel will not be considered orders by Jefferies Execution Services until and unless acknowledged as such.</span><br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,41 @@
+<html><header><title>How to use await with EditableRoot.Save()</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>How to use await with EditableRoot.Save()</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/12878.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>pecen posted on Thursday, May 07, 2015</h2><p>I have an Mvc 4 webapp where in one of the controllers I somehow&nbsp;want to use the following function:</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p><span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;"><font face="Consolas" size="2"><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></font></span><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></span>
+<p>&nbsp;</p>
+<span style="font-size:x-small;font-family:Consolas;color:#0000ff;"><span style="font-size:x-small;font-family:Consolas;color:#0000ff;"><span style="font-size:x-small;font-family:Consolas;color:#0000ff;"><span style="font-size:x-small;font-family:Consolas;color:#008000;"><span style="font-size:x-small;font-family:Consolas;color:#008000;"><span style="font-size:x-small;font-family:Consolas;color:#008000;"><span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;"><font face="Consolas" size="2"><font face="Consolas" size="2">
+<p>[</p>
+</font></font></span><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></span>
+<p><span style="font-size:x-small;font-family:Consolas;color:#2b91af;"><span style="font-size:x-small;font-family:Consolas;color:#2b91af;"><span style="font-size:x-small;font-family:Consolas;color:#2b91af;">Authorize</span></span></span><span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;">(<span style="color:#000000;">Roles </span>= </span></span><span style="font-size:x-small;font-family:Consolas;color:#a31515;"><span style="font-size:x-small;font-family:Consolas;color:#a31515;"><span style="font-size:x-small;font-family:Consolas;color:#a31515;">&quot;Administrators&quot;</span></span></span><span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;">)]<font face="Consolas" size="2"><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></font></span><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></span></p>
+<p><span style="font-size:x-small;font-family:Consolas;color:#0000ff;"><span style="font-size:x-small;font-family:Consolas;color:#0000ff;"><span style="font-size:x-small;font-family:Consolas;color:#0000ff;">public</span></span></span><span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;"> </span></span><span style="font-size:x-small;font-family:Consolas;color:#0000ff;"><span style="font-size:x-small;font-family:Consolas;color:#0000ff;"><span style="font-size:x-small;font-family:Consolas;color:#0000ff;">async</span></span></span><span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;"> </span></span><span style="font-size:x-small;font-family:Consolas;color:#2b91af;"><span style="font-size:x-small;font-family:Consolas;color:#2b91af;"><span style="font-size:x-small;font-family:Consolas;color:#2b91af;">Task</span></span></span><span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;">&lt;</span></span><span style="font-size:x-small;font-family:Consolas;color:#2b91af;"><span style="font-size:x-small;font-family:Consolas;color:#2b91af;"><span style="font-size:x-small;font-family:Consolas;color:#2b91af;">ActionResult</span></span></span><span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;">&gt; <span style="color:#000000;">SaveProduct</span>(</span></span><span style="font-size:x-small;font-family:Consolas;color:#2b91af;"><span style="font-size:x-small;font-family:Consolas;color:#2b91af;"><span style="font-size:x-small;font-family:Consolas;color:#2b91af;">ProductEdit</span></span></span><span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;"> <span style="color:#000000;">product</span>)
+<p>{</p>
+<font face="Consolas" size="2"><font face="Consolas" size="2">
+<p><span style="color:#000000;">product</span> = </p>
+</font></font></span><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></span></p>
+<p><span style="font-size:x-small;font-family:Consolas;color:#0000ff;"><span style="font-size:x-small;font-family:Consolas;color:#0000ff;"><span style="font-size:x-small;font-family:Consolas;color:#0000ff;">await</span></span></span><span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;"> <span style="color:#000000;">product.Save()</span><span style="color:#000000;">;</span><font face="Consolas" size="2"><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></font></span><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></span></p>
+<p><span style="font-size:x-small;font-family:Consolas;color:#0000ff;"><span style="font-size:x-small;font-family:Consolas;color:#0000ff;"><span style="font-size:x-small;font-family:Consolas;color:#0000ff;">return</span></span></span><span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;"> <span style="color:#000000;">RedirectToAction</span>(</span></span><span style="font-size:x-small;font-family:Consolas;color:#a31515;"><span style="font-size:x-small;font-family:Consolas;color:#a31515;"><span style="font-size:x-small;font-family:Consolas;color:#a31515;">&quot;Index&quot;</span></span></span><span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;">)<span style="color:#000000;">;</span>
+<p>}</p>
+<p><span style="color:#000000;">Is there a way to make an EditableRoot.Save() to work with async/await?</span></p>
+<p><span style="color:#000000;">Thanks,</span></p>
+<p><span style="color:#000000;">Peter</span></p>
+</span></span></p>
+</span></span></span></span></span></span></span></span></p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Thursday, May 07, 2015</h2><p>use&nbsp;</p>
+<p><span>product = await</span><span>&nbsp;<span>product.SaveAsync()</span><span>;<br /><br /></span></span></p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>pecen replied on Friday, May 08, 2015</h2><p>Thanks a lot!! </p>
+<p>For some reason I totally missed that you&#39;ve added SaveAsync().</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,51 @@
+<html><header><title>Csla.Web.IdentityFactory weakness?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Csla.Web.IdentityFactory weakness?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9857.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>swegele posted on Saturday, December 11, 2010</h2><p>Csla.Web.IdentityFactory has the following:</p>
+<p style="padding-left:30px;">&nbsp;</p>
+<p>&nbsp;&nbsp; &nbsp;public void LoadIdentity(MembershipIdentity.Criteria criteria, MembershipIdentity identity)</p>
+<p>&nbsp;&nbsp; &nbsp;{</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp;LoadProperty(identity, MembershipIdentity.AuthenticationTypeProperty, &quot;Membership&quot;);</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp;if (Membership.ValidateUser(criteria.Name, criteria.Password))</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp;{</p>
+<p>...</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp;identity.LoadCustomData();</p>
+<div></div>
+<p>&nbsp;</p>
+<p style="padding-left:30px;">&nbsp;</p>
+<p>I was so thankful to find I could override &quot;LoadCustomData()&quot;...this is similar to having an OnAfterValidateUser right? &nbsp;What I need is a virtual &quot;OnBeforeValidateUser&quot; which allows me to call the Membership.GetUser(username) BEFORE the login attempt so that I can grab the lastlogindatetime property. &nbsp;That property value will show the last time they logged in BEFORE this attempt which is what I want. &nbsp;Otherwise the value only shows that I just logged in which is useless to me!</p>
+<p>As a hack, I wrote a command object to do this and called it in the Principal.Login method. &nbsp;This works but consider the following problem in silverlight or async implementation:</p>
+<p style="padding-left:30px;">&nbsp;</p>
+<p>public static void Login(string userName, string password, EventHandler&lt;DataPortalResult&lt;IRBIdentity&gt;&gt; handler)</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;{</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;IRBPrincipal.SignalLogin = handler;</p>
+<p>&nbsp;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;//first do prelogin stuff</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;DataPortal&lt;PreloginCheckAndInfoCommand&gt; dp = new DataPortal&lt;PreloginCheckAndInfoCommand&gt;();</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;PreloginCheckAndInfoCommand cmd = new PreloginCheckAndInfoCommand();</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;cmd.Username = userName;</p>
+<p>&nbsp;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;dp.ExecuteCompleted += (o, e) =&gt;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;{</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;if (e.Object != null &amp;&amp; e.Error == null)</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;{</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Csla.ApplicationContext.LocalContext.Add(&quot;PreviousLoginDateTime&quot;, cmd.PreviousLoginDateTime);</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;MembershipIdentity.GetMembershipIdentity&lt;IRBIdentity&gt;(HandleLogin, userName, password, true);</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;}</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;else</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;{</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Csla.ApplicationContext.User = new UnauthenticatedPrincipal();</p>
+<p>&nbsp;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;if (SignalLogin != null)</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;SignalLogin.Invoke(o, new DataPortalResult&lt;IRBIdentity&gt;(null, e.Error, e.UserState));</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;}</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;};</p>
+<p>&nbsp;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;dp.BeginExecute(cmd);</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;}</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>Not only do we have two async calls which is 2 trips across the wire...but we have the clunky implementation of having to new up a DataPortalResult&lt;IIdentity&gt; if the first one fails so the original caller gets notified in the way they expect. &nbsp;YUCK.</p>
+<p>Sean</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Saturday, December 11, 2010</h2><p>That is good feedback and I&#39;ll add it to the wish list.</p>
+<p>In the meantime, the workaround is probably to just copy the code and create your own factory object. Nothing forces you to use the one provided by CSLA - it is primarily there as a convenience.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

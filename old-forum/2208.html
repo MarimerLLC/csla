@@ -1,0 +1,61 @@
+<html><header><title>Foreign Key Properties</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Foreign Key Properties</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/2208.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>d0tnetdude posted on Thursday, January 25, 2007</h2><P>Just curious to see how everyone else is handling this.&nbsp; We have a Project and it is associated to a Customer.&nbsp; The Project BO&nbsp;has a read/write property called CustomerID and a read property called CustomerName.&nbsp; We need to display the friendly name of the Customer, but not allow the user to modify it.&nbsp; Now when the user changes the Customer for the Project, we respond to the PropertyChanged event for CustomerID and update the value of CustomerName from the DB.&nbsp;&nbsp; </P>
+<P>While this is nice&nbsp;in a&nbsp;small class, we have some classes that have multiple foreign key references and I'm just concerned this may get a bit database intensive.</P>
+<P>Any other thoughts or is this how everyone else is handling it?</P>
+<P>Thanks! Matt</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Thursday, January 25, 2007</h2>The only workaround I can think of which would avoid hitting the db would be to cache the list of customers using NVL subclasses.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>david.wendelken replied on Thursday, January 25, 2007</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>d0tnetdude:</strong></div><div>
+<P>Just curious to see how everyone else is handling this.&nbsp; We have a Project and it is associated to a Customer.&nbsp; The Project BO&nbsp;has a read/write property called CustomerID and a read property called CustomerName.&nbsp; We need to display the friendly name of the Customer, but not allow the user to modify it.&nbsp; Now when the user changes the Customer for the Project, we respond to the PropertyChanged event for CustomerID and update the value of CustomerName from the DB.&nbsp;&nbsp; </P>
+<P>While this is nice&nbsp;in a&nbsp;small class, we have some classes that have multiple foreign key references and I'm just concerned this may get a bit database intensive.</P>
+<P></div></BLOCKQUOTE></P>
+<P>I often create a set of GetPublicId functions for all my database tables.&nbsp; Each function is responsible for returning a user-understandable text value that uniquely identifies the record to the user.</P>
+<P>So, on a Person table, I would have a "PersonGetPublicId( PersonId int)" database function. It returns a string value like "Lhotka, Rockford P (Emp# 12345)".</P>
+<P>That makes it easy for a programmer to get a useful, standardized&nbsp;string to pass back for error messages, brief descriptive labels, etc.&nbsp; They are particularly useful for feeding NVList classes, particularly if your BO programmers don't understand the database as well as you would like.</P>
+<P>The same concept could be used on the BO side of the code,&nbsp;except you would add a static function to the various business objects (and a property as well.)&nbsp; </P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>d0tnetdude replied on Thursday, January 25, 2007</h2><P>That's kind of what I am doing now ... I have a helper class I call DBValue, that takes a Table Name, ValueColumnName, and DisplayColumnName (what is returned).&nbsp; I have a Friend Shared Function on my Customer class called GetCustomerName(customerID).&nbsp;&nbsp; This returns the String representation of the Customer Name and sets in the Project object.&nbsp; I also need to start checking to make sure the CustomerID even exists, for now, I assume it does, but could I somehow roll that into this as well or would this be another database hit?&nbsp; Or am I over reacting to the interaction with the database?</P>
+<P>Thanks! Matt</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Friday, January 26, 2007</h2><BLOCKQUOTE><div><img src="/Themes/basicblue/images/icon-quote.gif"> <strong>d0tnetdude:</strong></div><div>That's kind of what I am doing now ... I have a helper class I call DBValue, that takes a Table Name, ValueColumnName, and DisplayColumnName (what is returned).&nbsp; I have a Friend Shared Function on my Customer class called GetCustomerName(customerID).&nbsp;&nbsp; </div></BLOCKQUOTE><br><br>What layer is the client of that class?&nbsp; I hope not the UI layer..<br><br><BLOCKQUOTE><div><img src="/Themes/basicblue/images/icon-quote.gif"> <strong>d0tnetdude:</strong></div><div>This returns the String representation of the Customer Name and sets in the Project object.&nbsp; I also need to start checking to make sure the CustomerID even exists, for now, I assume it does, but could I somehow roll that into this as well or would this be another database hit?&nbsp; Or am I over reacting to the interaction with the database?</div></BLOCKQUOTE><br><br>Well, If you're having the UI set the value of CustomerId from a NVL class which is a list of customers, I think you'll be ok.&nbsp; At the end of the day, if a value is put in that doesn't exist, the insert should fail because you have a FK reference to the customer table.&nbsp; Your UI should be forcing the user to choose from a known list, and you have much less to worry about.&nbsp; Even if you allow the user to type the id directly (which you shouldn't) your FK should prevent the transaction from successfully completing.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>d0tnetdude replied on Friday, January 26, 2007</h2><P>Nope ... it's not in the UI, it's in a Friend helper class in the Business Layer! <img src="/emoticons/emotion-1.gif" alt="Smile [:)]" /></P>
+<P>My thinking is that I don't want to assume the UI is passing me a valid CustomerID, and I want the business objects to handle the validation, as opposed to a SqlException when the foreign key relationship is not valid.&nbsp; The old way we did it was to let the UI set the CustomerID and set the CustomerName, the latter was meaningless as the next time the Project object was loaded it would retrieve the CustomerName.&nbsp; </P>
+<P>I am just trying to make the Business Objects do more of the validating and helping with the assignment of foreign key related variables, like the Name of the Project or the Name of the resources assigned to the Project.&nbsp; My thinking is that I can make the UI even easier to code, by having more of the funtionality at the Business Object Layer.&nbsp;&nbsp; My Business Objects will get "fat", but I'm not sure if that is really a problem.&nbsp; Just interested to see how everyone else is doing this.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>SonOfPirate replied on Friday, January 26, 2007</h2><P>This is prevelant in my applications.&nbsp; The way I have implemented this is to use a similar type of lazy-load approach as Rocky did in ProjectTracker.&nbsp; Here's an example:</P>
+<P><CODE>public System.Guid Customer<BR>{</P>&nbsp; &nbsp; get<BR>&nbsp; &nbsp; {<BR>&nbsp; &nbsp; &nbsp; &nbsp; CanReadProperty();<BR>&nbsp; &nbsp; &nbsp; &nbsp; return _customer;<BR>&nbsp; &nbsp; }<BR>&nbsp; &nbsp; set<BR>&nbsp; &nbsp; {<BR>&nbsp; &nbsp; &nbsp; &nbsp; if (CanWriteProperty() &amp;&amp; (!_customer.Equals(value)))<BR>&nbsp; &nbsp; &nbsp; &nbsp; {<BR>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; _customer = value;<BR>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; _customerName = System.String.Empty;<BR>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; PropertyHasChanged();<BR>&nbsp; &nbsp; &nbsp; &nbsp; }<BR>&nbsp; &nbsp; }<BR>}<BR>&nbsp; &nbsp; <BR>public System.String CustomerName<BR>{<BR>&nbsp; &nbsp; get<BR>&nbsp; &nbsp; {<BR>&nbsp; &nbsp; &nbsp; &nbsp; CanReadProperty();<BR>&nbsp; &nbsp; <BR>&nbsp; &nbsp; &nbsp; &nbsp; if (System.String.IsNullOrEmpty(_customerName) &amp;&amp; (_customer != System.Guid.Empty))<BR>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; _customerName = Customer.GetCustomer(_customer).Name;<BR>&nbsp; &nbsp; <BR>&nbsp; &nbsp; &nbsp; &nbsp; return _customerName;<BR>&nbsp; &nbsp; {<BR>} </CODE>
+<P></P>
+<P>This accomplishes the same thing by retrieving the customer record from the db and setting the internal variable to the name, but the overhead is not incurred unless the value is actually needed.</P>
+<P>Note that I invalidate the _customerName variable in the Customer property setter.&nbsp; This ensures that the correct value is returned should the id property be changed.&nbsp; No need to handle any events this way.</P>
+<P>HTH</P>
+<P>P.S. I should add that for my read-only classes that are used strictly to display the object in lists, I create a View in the db and return either both in the result set or just the name.&nbsp; What is shown above would only be used in an editable (child) object.</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>pelinville replied on Friday, January 26, 2007</h2><DIV>I do what SonOfPirate does with just a slight change.&nbsp; </DIV>
+<DIV>&nbsp;</DIV>
+<DIV>Public Readonly Property CustomerID as Guid</DIV>
+<DIV>&nbsp;&nbsp;&nbsp;Get</DIV>
+<DIV>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return lvCustomerID</DIV>
+<DIV>&nbsp;&nbsp;&nbsp;End Get</DIV>
+<DIV>End Property</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>Private lvCustomer as Customer</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>Public Sub SetCusomer(cust as Customer)</DIV>
+<DIV>&nbsp;&nbsp;&nbsp;If cust Is Nothing then</DIV>
+<DIV>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;lvCustomerID = SmartGuid.MinGuidValue 'This is a guid with all zeros</DIV>
+<DIV>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;lvCustomer = Nothing</DIV>
+<DIV>&nbsp;&nbsp;&nbsp;Else</DIV>
+<DIV>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;lvCustomerID = cust.CustomerID</DIV>
+<DIV>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;lvCustomer&nbsp; = cust</DIV>
+<DIV>&nbsp;&nbsp;&nbsp;End If</DIV>
+<DIV>End Sub</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>Public Readonly Property Customer() as Customer</DIV>
+<DIV>&nbsp;&nbsp;&nbsp;Get</DIV>
+<DIV>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;If lvCustomer&nbsp; is nothing then</DIV>
+<DIV>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;lvCustomer&nbsp; = Customer.GetCustomer(lvCustomerID)</DIV>
+<DIV>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;end if</DIV>
+<DIV>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return lvCustomer </DIV>
+<DIV>&nbsp;&nbsp;&nbsp;End Get</DIV>
+<DIV>End Property</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>Public Property CustomerName() as String</DIV>
+<DIV>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Get</DIV>
+<DIV>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;If me.Customer isnot nothing then</DIV>
+<DIV>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Return me.Customer.Name</DIV>
+<DIV>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Else</DIV>
+<DIV>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Return "" 'Or whatever fullfills your business logic</DIV>
+<DIV>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;End if</DIV>
+<DIV>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;End Get</DIV>
+<DIV>End Property</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>&nbsp;</DIV></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,59 @@
+<html><header><title>Recalculating dependant properties in business rules</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Recalculating dependant properties in business rules</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11004.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>ianmcd0 posted on Thursday, December 22, 2011</h2><p>I came across the post at <a href="http://forums.lhotka.net/forums/p/10941/50937.aspx">http://forums.lhotka.net/forums/p/10941/50937.aspx</a></p>
+<p>I have a similar requirement to what is discussed in this post and have tried implementing two rules based on the example that JonnyBee provided.&nbsp; Having problems though...</p>
+<p>My situation is a little different.&nbsp; I have a product class with three properties CostPrice, SellingPrice and Margin.&nbsp; All three properties are read/write.</p>
+<p>If I change the SellingPrice OR the cost price I want to update the Margin.&nbsp; </p>
+<p>If I change the Margin I want to update the Selling Price</p>
+<p>So I have created two rules.&nbsp; CalcMargin accepts margin as the primary property as well as costprice and sellingprice.&nbsp; CalcSellingPrice accepts sellingprice as the primary property as well as costprice and margin.</p>
+<p>For my situation I don&#39;t want the rule to be executed when the primary property is changed. For example when the user changes the margin I should only be executing CalcSellingPrice, NOT CalcMargin.&nbsp; Currently both rules are being executed.</p>
+<p>Can I make use of BusinessRules to implement this behaviour?&nbsp; (I know I can fall back to doing this in the property sets but I like the idea of defining a rule that might be useful in the future).</p>
+<p>Thanks.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Thursday, December 22, 2011</h2><p>Hi, </p>
+<p>You&#39;ll need to rethink a little on how you attach the rules:</p>
+<p>CalcSellingPrice should have PrimaryProperty = MarginProperty with SellingPrice as AffectedProperty and CostPrice as InputProperty.<br />CalcMargin should be attached to both SellingPriceProperty and CostPriceProperty (as PrimaryProperty) with Margin as AffectedProperty and al input values as InputProperties.</p>
+<p>And both rules should only execute when the PrimaryProperty is changed by user. </p>
+<p>So the CalcMargin rule should look like this:</p>
+<pre style="font-family:Consolas;font-size:13px;color:black;background:none repeat scroll 0% 0% #fafafa;">&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">private</span>&nbsp;<span style="color:blue;">class</span>&nbsp;<span style="color:#2b91af;">CalcMargin</span>&nbsp;:&nbsp;Csla.Rules.<span style="color:#2b91af;">PropertyRule</span>
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">private</span>&nbsp;<span style="color:blue;">readonly</span>&nbsp;<span style="color:#2baaaf;">IPropertyInfo</span>&nbsp;_costPriceProperty;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">private</span>&nbsp;<span style="color:blue;">readonly</span>&nbsp;<span style="color:#2baaaf;">IPropertyInfo</span>&nbsp;_sellingPriceProperty;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">private</span>&nbsp;<span style="color:blue;">readonly</span>&nbsp;<span style="color:#2baaaf;">IPropertyInfo</span>&nbsp;_marginProperty;
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;CalcMargin(<span style="color:#2baaaf;">IPropertyInfo</span>&nbsp;primaryProperty,&nbsp;<span style="color:#2baaaf;">IPropertyInfo</span>&nbsp;costPriceProperty,&nbsp;<span style="color:#2baaaf;">IPropertyInfo</span>&nbsp;sellingPriceProperty,&nbsp;<span style="color:#2baaaf;">IPropertyInfo</span>&nbsp;marginProperty)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;<span style="color:blue;">base</span>(primaryProperty)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_costPriceProperty&nbsp;=&nbsp;costPriceProperty;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_sellingPriceProperty&nbsp;=&nbsp;sellingPriceProperty;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_marginProperty&nbsp;=&nbsp;marginProperty;
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;InputProperties&nbsp;=&nbsp;<span style="color:blue;">new</span>&nbsp;<span style="color:#2b91af;">List</span>&lt;<span style="color:#2baaaf;">IPropertyInfo</span>&gt;();
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;InputProperties.Add(_costPriceProperty);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;InputProperties.Add(_sellingPriceProperty);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;AffectedProperties.Add(_marginProperty);
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CanRunAsAffectedProperty&nbsp;=&nbsp;<span style="color:blue;">false</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CanRunInCheckRules&nbsp;=&nbsp;<span style="color:blue;">false</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CanRunOnServer&nbsp;=&nbsp;<span style="color:blue;">false</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">protected</span>&nbsp;<span style="color:blue;">override</span>&nbsp;<span style="color:blue;">void</span>&nbsp;Execute(<span style="color:#2b91af;">RuleContext</span>&nbsp;context)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">var</span>&nbsp;cost&nbsp;=&nbsp;(<span style="color:blue;">decimal</span>)&nbsp;context.InputPropertyValues[_costPriceProperty];
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">var</span>&nbsp;selling&nbsp;=&nbsp;(<span style="color:blue;">decimal</span>)&nbsp;context.InputPropertyValues[_sellingPriceProperty];
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:green;">//&nbsp;calc&nbsp;margin</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">var</span>&nbsp;margin&nbsp;=&nbsp;.....
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;context.AddOutValue(_marginProperty,&nbsp;margin);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;}<br /><br />Usage:<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; BusinessRules.AddRule(<span style="color:blue;">new</span>&nbsp;<span style="color:#2b91af;">CalcMargin</span>(CostPriceProperty,&nbsp;CostPriceProperty,&nbsp;SellingPriceProperty,&nbsp;MarginProperty));
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;BusinessRules.AddRule(<span style="color:blue;">new</span>&nbsp;<span style="color:#2b91af;">CalcMargin</span>(SellingPriceProperty,&nbsp;CostPriceProperty,&nbsp;SellingPriceProperty,&nbsp;MarginProperty));<br /><br />which will recalculate the margin when the user changes either CostPrice or SellingPrice<br /></pre></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ianmcd0 replied on Friday, December 23, 2011</h2><p>Jonny,&nbsp; thank you,&nbsp;the example you provided is working well.&nbsp; There is one remaining&nbsp;nuance&nbsp;that I am unsure how to deal with.</p>
+<p>I am&nbsp;assigning my two rules as below:</p>
+<p>&nbsp; <span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">BusinessRules.AddRule(</span></span><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">new </span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">CalcMargin(CostPriceProperty, CostPriceProperty, SellingPriceProperty, MarginProperty));<span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> </span></span></span></span></p>
+<p>&nbsp; <span style="font-family:Consolas;font-size:x-small;">BusinessRules.AddRule(</span><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">new </span><span style="font-family:Consolas;font-size:x-small;">CalcMargin(SellingPriceProperty, CostPriceProperty, SellingPriceProperty, MarginProperty)); </span></p>
+<p>&nbsp; <span style="font-family:Consolas;font-size:x-small;">BusinessRules.AddRule(</span><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">new </span><span style="font-family:Consolas;font-size:x-small;">CalcSellingPrice(MarginProperty, CostPriceProperty, MarginProperty, SellingPriceProperty)); </span></p>
+<p>When the user changes the selling price the CalcMargin rule executes.&nbsp; Unfortunately CalcSellingPrice then also fires.&nbsp; When I calculate my margin there is some rounding required so I can&#39;t allow the selling price to be calculated.&nbsp; For example the user might enter a value of 5 and it gets changed to 5.01 when they leave the field.</p>
+<p>Reading the post at <a href="http://www.lhotka.net/weblog/CSLA4BusinessRulesSubsystem.aspx">http://www.lhotka.net/weblog/CSLA4BusinessRulesSubsystem.aspx</a>, Rocky explains that AddOutValue causes updates using LoadProperty so I would have hoped that CalcSellingPrice wouldn&#39;t fire.&nbsp; I&#39;m not sure how to fix this...</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Friday, December 23, 2011</h2><p>Make sure that CalcSellingPrice inherits from PropertyRule and set </p>
+<pre style="font-family:Consolas;font-size:13px;color:black;background:none repeat scroll 0% 0% #fafafa;">&nbsp;&nbsp;&nbsp;&nbsp;<b>&nbsp;&nbsp;&nbsp;&nbsp;CanRunAsAffectedProperty&nbsp;=&nbsp;<span style="color:blue;">false</span>;</b>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CanRunInCheckRules&nbsp;=&nbsp;<span style="color:blue;">false</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CanRunOnServer&nbsp;=&nbsp;<span style="color:blue;">false</span>;</pre>
+<p>This will make sure that CalcSellingPrice is not run as Affected property from another rule or in CheckRules.</p>
+<p>AddOutValue in itself will only update the value (and raise OnPropertyChanged) but the property must also be in AffectProperties list and this causes the rules for those properties to be rechecked. </p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ianmcd0 replied on Wednesday, December 28, 2011</h2><p><img src="http://forums.lhotka.net/emoticons/emotion-10.gif" alt="Embarrassed" />&nbsp; My cut and paste skills are failing me - I had been inheriting from CommonBusinessRule and failed to set the properties correctly as you show above.&nbsp; All is perfect now .&nbsp; Really&nbsp;grateful for your help.&nbsp; Hope you had a good Xmas and all the best for 2012!</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

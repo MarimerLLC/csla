@@ -1,0 +1,25 @@
+<html><header><title>Connection problem -- sql express and csla client app</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Connection problem -- sql express and csla client app</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/2151.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>figuerres posted on Tuesday, January 16, 2007</h2><P>Hi, I have a small Point of Sale app that has two pc's running on a local network.</P>
+<P>pc "A" is running XP Home Ed and has SQL Express installed with the SP1 and Express Mgr.</P>
+<P>pc "B" is also XP Home Ed and just has a client app installed.</P>
+<P>&nbsp;</P>
+<P>A has SQL express with TCP and Named Pipes open so that B can connect and access the data.</P>
+<P>&nbsp;</P>
+<P>the CSLA app when run on A connects fast - ok.</P>
+<P>on B it seems to be very slow, I found and fixed one problem with the sql express config but still seems slow...</P>
+<P>the DB is *NOT* a user-instance so it should be connected and ready like a big SQL install.</P>
+<P>after the inital connection is made it's ok, things work fine.</P>
+<P>just that on startup there is a lag I want to get rid of.</P>
+<P>I'm looking at my code and startup to see if I can tweak things but it seems like the SQL connection is the place that is a problem....</P>
+<P>any ideas ??</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Wednesday, January 17, 2007</h2><P>I have seen something similar.</P>
+<P>I think the connection is inspecting your network to find the server.</P>
+<P>This may be the cause for the delay.</P>
+<P>Perhaps editng your hosts file to let the system know that servername="A" translates to IP address 10.0.0.12 could help.</P>
+<P>Joe</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>figuerres replied on Wednesday, January 17, 2007</h2><P>Yeah, that's partly what I was thinking...</P>
+<P>I found that the server had been configured funny, the local nic was on a 192.168.1.xxx subnet but sql config listed a tcp/ip address of 10.10.xx.xx ! now why sql was not complaining I do not know!</P>
+<P>&nbsp;</P>
+<P>also the client did have an lmhosts but just for fun I edited the connection from foo to 192.168.1.xxx</P>
+<P>same idea as you had -- hit the address not the name!</P>
+<P>that did seem to fix it!</P>
+<P>I was just wondering if SQL express was perhaps not keeping the db live or some such...</P>
+<P>looks like the name lookup was killin it on connection!</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

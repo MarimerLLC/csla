@@ -1,0 +1,94 @@
+<html><header><title>Issues calling DataPortal.Execute on server?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Issues calling DataPortal.Execute on server?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4654.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>macux posted on Thursday, April 10, 2008</h2><font face="Courier New"><font face="Times New Roman">Is it likely that I will have any issues in the following scenario:<br></font></font><ul><li>UI calls businessObject.Save() on a new business object<br></li><li>CSLA calls DataPortal.Update... and in turn DataPortal_Insert on the busines object<br></li><li>Business object does various things including running a command object using DataPortal.Execute</li></ul>The last step is all done within a single transaction which is started and completed with the DataPortal_Insert method. This is obviously vital to the system. Clearly this won't have any issues if the code is being run on one machine but is it likely to cause issues if a non-local proxy is in use?<br><br>When the DataPortal.Execute is called for the command, the framework will check the config again and use Activator.GetObject to create a remoting proxy. This however will be on the local machine now as the original DataPortal call would have moved everything to the remote server. Presumably no serialization will take place in calls for the command object? The transaction is passed as a property on the command so this wouldn't serialize.<br><br>How about issues with non-local proxies other than the remoting proxy?<br><br>Any comments appreciated.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Thursday, April 10, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Once you are inside DataPortal_XXX calls, you are executing on the
+server.&nbsp; At that point you should not use DataPortal.Execute inside of if,
+but instead create DBCommand object directly.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Senior Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> macux
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Thursday, April 10, 2008 8:07 AM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> [CSLA .NET] Issues calling DataPortal.Execute on server?<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Is it likely that I will have any issues in the following
+scenario:<o:p></o:p></p>
+
+<ul>
+ <li class=MsoNormal>UI calls businessObject.Save() on a new business
+     object<o:p></o:p></li>
+ <li class=MsoNormal>CSLA calls DataPortal.Update... and in turn
+     DataPortal_Insert on the busines object<o:p></o:p></li>
+ <li class=MsoNormal>Business object does various things including
+     running a command object using DataPortal.Execute<o:p></o:p></li>
+</ul>
+
+<p class=MsoNormal>The last step is all done within a single transaction which
+is started and completed with the DataPortal_Insert method. This is obviously
+vital to the system. Clearly this won't have any issues if the code is being
+run on one machine but is it likely to cause issues if a non-local proxy is in
+use?<br>
+<br>
+When the DataPortal.Execute is called for the command, the framework will check
+the config again and use Activator.GetObject to create a remoting proxy. This
+however will be on the local machine now as the original DataPortal call would
+have moved everything to the re mote server. Presumably no serialization will
+take place in calls for the command object? The transaction is passed as a
+property on the command so this wouldn't serialize.<br>
+<br>
+How about issues with non-local proxies other than the remoting proxy?<br>
+<br>
+Any comments appreciated.<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>macux replied on Thursday, April 10, 2008</h2>Thanks for the reply. However, the reason I'm doing this is that I'm re-using a method on another class which gets used on its own from the client as well. Looking at the CSLA source it doesn't look like it will cause me an issue doing it like that, unless there is some serialization involved or unless I'm missing something.<br><br>It seems to me all the framework is doing is going through some hoops to call DataPortal_Insert or whatever on the business object. One of the big benefits of the framework is having config file based control over where the code executes and my approach above is in keeping with this, i.e. I want to be able to execute the same method and have it work regardless of location.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, April 10, 2008</h2><P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>macux:</strong></div><div></P>
+<P><BR>When the DataPortal.Execute is called for the command, the framework will check the config again and use Activator.GetObject to create a remoting proxy. This however will be on the local machine now as the original DataPortal call would have moved everything to the remote server. Presumably no serialization will take place in calls for the command object? The transaction is passed as a property on the command so this wouldn't serialize.<BR></div></BLOCKQUOTE></P>
+<P>If your server is properly configured this WILL NOT HAPPEN.</P>
+<P>The server should NOT have the CslaDataPortalProxy item in its config file. This means the server's data portal will run in "local mode" - which means all data portal calls will run on the server - which is what you want.</P>
+<P>I constantly have objects call other objects within the DataPortal_XYZ methods. All those calls run in the same server process, in the same transactional context. The data portal is designed to support this scenario - as long as you configure the server so its data portal runs in local mode (which is the default, and is what you should do).</P>
+<P>The only thing you need to watch for is opening extra database connections. You don't want each root object opening its own database connection (probably) because that will cause the DTC to be used - incurring a performance hit. The Csla.Data.ConnectionManager and Csla.Data.ContextManager classes in CSLA 3.5 are intended to help you avoid this problem without extra work. They reuse an open connection if it exists, or open a connection if there isn't one already (and then that one is reused going forward).</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>macux replied on Friday, April 11, 2008</h2>OK, that's simple now you've said it! Obviously we have completely separate control over the server install. The connection issue is OK as there will only ever be one opened for this process, and one transaction, we have a layer on top of the framework which sorts this out. I appreciate the reply.<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

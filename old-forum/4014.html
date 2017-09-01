@@ -1,0 +1,20 @@
+<html><header><title>Class Life</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Class Life</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4014.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>smgrisw posted on Monday, December 10, 2007</h2>
+
+
+
+<p class="MsoNormal">I am fairly new to CSLA.&nbsp;I have a question about what
+to do after a save method has been applied to a class.<span>&nbsp; </span>Specifically, I have a class that represents
+an appointment object.<span>&nbsp; </span>After the
+appointment has been saved and stored in the database I am unsure as to what
+the pattern is for the next step:<o:p> <br></o:p></p>
+
+<p class="MsoNormal"><span><span>1.<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></span></span>Should
+the class be re-initialized so that the next appointment can be created?</p>
+
+<p class="MsoNormal"><span><span>2.<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></span></span>Should
+the members of the class that make up the appointment be re-initialized with
+out creating a new instance of the class?</p>
+
+<p class="MsoNormal"><span><span>3.<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></span></span>Am
+I missing the pattern completely and the process is different then what I have
+described above.</p>Thanks,<br>Scott<br><br><p class="MsoNormal"><br></p><p class="MsoNormal"><br></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Monday, December 10, 2007</h2>What happens in your use case?&nbsp; Usually in my cases the form is rebound to the form so that the user can continue to edit the object.&nbsp; They can choose to close the window if they want.<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

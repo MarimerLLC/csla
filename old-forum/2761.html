@@ -1,0 +1,312 @@
+<html><header><title>Need Advice</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Need Advice</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/2761.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>DanEssin posted on Monday, April 23, 2007</h2>I am trying to build an app with 3 "layers" of data <br>The first is an editableRootList.<br>The second is each item in that list.<br>The third is 2 editable child lists that are contined within the EditableRootObject.<br><br>I can write a store proc that will retrieve all of the root objects and I can write a stored proc that will retrieve all into (root properties plus child collections) for a specific root object given its PK.<br><br>What I can't do is create a single stored proc what would retrieve all of this data a nd automatically populate all the objects at all levels.<br><br>So the question is - Is there some reasonable way to do this like for example addint another Fetch overload to the root objects that gets called when they are being added to the roolList:<br><br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; private void ExecuteFetch(SqlConnection cn, FilterCriteria criteria)<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; using (SqlCommand cm = cn.CreateCommand())<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; cm.CommandType = CommandType.StoredProcedure;<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; cm.CommandText = "spRule_GetActiveRules";<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; cm.Parameters.AddWithValue("@Category", criteria.Category);<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; using (SafeDataReader dr = new SafeDataReader(cm.ExecuteReader()))<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; while (dr.Read())<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; this.Add(ProcessingRule.GetProcessingRule(cn, dr));<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; }<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; }//using<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; }<br><br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; internal static ProcessingRule GetProcessingRule(SqlConnection cn, SafeDataReader dr)<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; ProcessingRule child = new ProcessingRule();<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; child.MarkAsChild();<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; child.Fetch(cn, dr);<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; return child;<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; }<br><br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; private void Fetch(SqlConnection cn, SafeDataReader dr)<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; FetchObject(dr);<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; MarkOld();<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; using (SqlCommand cm = cn.CreateCommand())<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; cm.CommandType = CommandType.StoredProcedure;<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; cm.CommandText = "spRule_GetRuleDetails";<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; cm.Parameters.AddWithValue("@RuleID", _ruleID);<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; using (SafeDataReader dr1 = new SafeDataReader(cm.ExecuteReader()))<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; dr1.NextResult();<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; FetchChildren(dr1);<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; }<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; }//using<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; }<br><br>or is this nuts and there's a better way?<br><br>Any help would be greatly appreciated,<br>Dan Essin<br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, April 23, 2007</h2><P>I'd think you could do two sprocs: one to get the root data, and one to get all the child data (using a join against the root keys).</P>
+<P>Obviously the first sproc result can be used to load all the editable root objects.</P>
+<P>The second sproc would be called in the ERLB object's DataPortal_Fetch. And here's where things get fun. At this point you have a DataReader with all the child data, and you have an ERLB populated with all the root objects. </P>
+<P>Each row in the DataReader includes the key value for the appropriate root object. Using that value, you can find the right root object in the ERLB and call a Fetch() overload where you pass in the DataReader. That root object can then add that DataReader row to its proper child collection.</P>
+<P>In the ERLB loops through all the rows, repeating that process, then all the child data would be loaded properly.</P>
+<P>This is basically what I did with my <A href="http://www.lhotka.net/Article.aspx?area=11&amp;id=65c98c98-f0e0-477d-b45b-7a1e7d5768ee">DeepData sample</A> to load grandchildren with three total db calls (parent, children, granchildren), and it works pretty well.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>DanEssin replied on Tuesday, April 24, 2007</h2>
+
+
+  
+
+
+<font size="+1">Thanks. I presume that the DeepData sample would
+also work with the editable versions of the objects?<br>
+<br>
+In terms of the CodeSmith Templates is this the correct mapping?<br>
+OrderList&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - Editable Root List<br>
+OrderInfo&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - Editable Switchable<br>
+LineItemList&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - Editable Child List<br>
+LineItemInfo&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - Editable Switchable<br>
+LineItemDetailList - Editable Child List<br>
+LineItemDetail&nbsp;&nbsp;&nbsp;&nbsp; - Editable Child<br>
+<br>
+Dan<br>
+</font><br>
+RockfordLhotka wrote:
+<blockquote>
+  <p>I'd think you could do two sprocs: one to get the root data, and
+one to get all the child data (using a join against the root keys).</p>
+  <p>Obviously the first sproc result can be used to load all the
+editable root objects.</p>
+  <p>The second sproc would be called in the ERLB object's
+DataPortal_Fetch. And here's where things get fun. At this point you
+have a DataReader with all the child data, and you have an ERLB
+populated with all the root objects. </p>
+  <p>Each row in the DataReader includes the key value for the
+appropriate root object. Using that value, you can find the right root
+object in the ERLB and call a Fetch() overload where you pass in the
+DataReader. That root object can then add that DataReader row to its
+proper child collection.</p>
+  <p>In the ERLB loops through all the rows, repeating that process,
+then all the child data would be loaded properly.</p>
+  <p>This is basically what I did with my <a href="http://www.lhotka.net/Article.aspx?area=11&amp;id=65c98c98-f0e0-477d-b45b-7a1e7d5768ee">DeepData
+sample</a> to load grandchildren with three total db calls (parent,
+children, granchildren), and it works pretty well.</p>
+  <br>
+  <br>
+<br>
+</blockquote>
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>DanEssin replied on Tuesday, April 24, 2007</h2>
+
+
+  
+
+
+<font size="+1">I'm looking at the DeepData sample starting with
+the bottom and working up.<br>
+<br>
+I understand the LineItemInfo<br>
+but I'm confused about the LineItemDetailList.<br>
+<br>
+If you're using a DTO, it loops and gets the data for all the detail
+items but I can't see where it reads more than one detail row when
+using a SafeDataReader. LoadChile makes only one call to:<br>
+&nbsp;&nbsp;&nbsp; Add(LineItemDetailInfo.GetItem(data))<br>
+<br>
+<br>
+I must be missing something.<br>
+<br>
+Can you straighten me out?<br>
+<br>
+Thanks,<br>
+Dan<br>
+</font><br>
+RockfordLhotka wrote:
+<blockquote>
+  <p>I'd think you could do two sprocs: one to get the root data, and
+one to get all the child data (using a join against the root keys).</p>
+  <p>Obviously the first sproc result can be used to load all the
+editable root objects.</p>
+  <p>The second sproc would be called in the ERLB object's
+DataPortal_Fetch. And here's where things get fun. At this point you
+have a DataReader with all the child data, and you have an ERLB
+populated with all the root objects. </p>
+  <p>Each row in the DataReader includes the key value for the
+appropriate root object. Using that value, you can find the right root
+object in the ERLB and call a Fetch() overload where you pass in the
+DataReader. That root object can then add that DataReader row to its
+proper child collection.</p>
+  <p>In the ERLB loops through all the rows, repeating that process,
+then all the child data would be loaded properly.</p>
+  <p>This is basically what I did with my <a href="http://www.lhotka.net/Article.aspx?area=11&amp;id=65c98c98-f0e0-477d-b45b-7a1e7d5768ee">DeepData
+sample</a> to load grandchildren with three total db calls (parent,
+children, granchildren), and it works pretty well.</p>
+  <br>
+  <br>
+<br>
+</blockquote>
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, April 24, 2007</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>All the looping-through-datareader code is in the
+DataPortal_Fetch method. Each child and grandchild collection is merely
+responsible for routing the current row to the correct new object so it can
+load itself from that row.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>There are some ways this could be more efficient, but I was going
+for as much simplicity as I could for this demo.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Daniel Essin
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Tuesday, April 24, 2007 6:55 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] Need Advice<o:p></o:p></span></p>
+
+</div>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal><span>I'm looking at the
+DeepData sample starting with the bottom and working up.</span><span><br>
+<br>
+I understand the LineItemInfo<br>
+but I'm confused about the LineItemDetailList.<br>
+<br>
+If you're using a DTO, it loops and gets the data for all the detail items
+but I can't see where it reads more than one detail row when using a
+SafeDataReader. LoadChile makes only one call to:<br>
+&nbsp;&nbsp;&nbsp; Add(LineItemDetailInfo.GetItem(data))<br>
+<br>
+<br>
+I must be missing something.<br>
+<br>
+Can you straighten me out?<br>
+<br>
+Thanks,<br>
+Dan<br>
+</span><br>
+RockfordLhotka wrote: <o:p></o:p></p>
+
+<p>I'd think you could do two sprocs: one to get the root data, and one to get
+all the child data (using a join against the root keys).<o:p></o:p></p>
+
+<p>Obviously the first sproc result can be used to load all the editable root
+objects.<o:p></o:p></p>
+
+<p>The second sproc would be called in the ERLB object's DataPortal_Fetch. And
+here's where things get fun. At this point you have a DataReader with all the
+child data, and you have an ERLB populated with all the root objects. <o:p></o:p></p>
+
+<p>Each row in the DataReader includes the key value for the appropriate root
+object. Using that value, you can find the right root object in the ERLB and
+call a Fetch() overload where you pass in the DataReader. That root object can
+then add that DataReader row to its proper child collection.<o:p></o:p></p>
+
+<p>In the ERLB loops through all the rows, repeating that process, then all the
+child data would be loaded properly.<o:p></o:p></p>
+
+<p>This is basically what I did with my <a href="http://www.lhotka.net/Article.aspx?area=11&amp;id=65c98c98-f0e0-477d-b45b-7a1e7d5768ee">DeepData
+sample</a> to load grandchildren with three total db calls (parent, children,
+granchildren), and it works pretty well.<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+<p class=MsoNormal><span><br>
+<br>
+<o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>DanEssin replied on Tuesday, April 24, 2007</h2>
+
+
+  
+
+
+<font size="+1">Got it. I guess I had my face to close to the first
+tree I found to see the rest of it.<br>
+<br>
+Thanks,<br>
+Dan<br>
+</font><br>
+Rockford Lhotka wrote:
+<blockquote>
+  
+  
+  
+
+ 
+
+ 
+  
+ 
+  <div class="Section1">
+  <p class="MsoNormal"><span>All
+the looping-through-datareader code is in the
+DataPortal_Fetch method. Each child and grandchild collection is merely
+responsible for routing the current row to the correct new object so it
+can
+load itself from that row.<o:p></o:p></span></p>
+  <p class="MsoNormal"><span><o:p>&nbsp;</o:p></span></p>
+  <p class="MsoNormal"><span>There
+are some ways this could be more efficient, but I was going
+for as much simplicity as I could for this demo.<o:p></o:p></span></p>
+  <p class="MsoNormal"><span><o:p>&nbsp;</o:p></span></p>
+  <p class="MsoNormal"><span>Rocky<o:p></o:p></span></p>
+  <p class="MsoNormal"><span><o:p>&nbsp;</o:p></span></p>
+  <div>
+  <div>
+  <p class="MsoNormal"><b><span>From:</span></b><span>
+Daniel Essin
+[<a class="moz-txt-link-freetext" href="mailto:cslanet@lhotka.net">mailto:cslanet@lhotka.net</a>] <br>
+  <b>Sent:</b> Tuesday, April 24, 2007 6:55 PM<br>
+  <b>To:</b> <a class="moz-txt-link-abbreviated" href="mailto:rocky@lhotka.net">rocky@lhotka.net</a><br>
+  <b>Subject:</b> Re: [CSLA .NET] Need Advice<o:p></o:p></span></p>
+  </div>
+  </div>
+  <p class="MsoNormal"><o:p>&nbsp;</o:p></p>
+  <p class="MsoNormal"><span>I'm looking
+at the
+DeepData sample starting with the bottom and working up.</span><span><br>
+  <br>
+  I understand the LineItemInfo<br>
+  but I'm confused about the LineItemDetailList.<br>
+  <br>
+  If you're using a DTO, it loops and gets the data for all the
+detail items
+but I can't see where it reads more than one detail row when using a
+SafeDataReader. LoadChile makes only one call to:<br>
+  &nbsp;&nbsp;&nbsp; Add(LineItemDetailInfo.GetItem(data))<br>
+  <br>
+  <br>
+  I must be missing something.<br>
+  <br>
+  Can you straighten me out?<br>
+  <br>
+  Thanks,<br>
+  Dan<br>
+  </span><br>
+RockfordLhotka wrote: <o:p></o:p></p>
+  <p>I'd think you could do two sprocs: one to get the root data, and
+one to get
+all the child data (using a join against the root keys).<o:p></o:p></p>
+  <p>Obviously the first sproc result can be used to load all the
+editable root
+objects.<o:p></o:p></p>
+  <p>The second sproc would be called in the ERLB object's
+DataPortal_Fetch. And
+here's where things get fun. At this point you have a DataReader with
+all the
+child data, and you have an ERLB populated with all the root objects. <o:p></o:p></p>
+  <p>Each row in the DataReader includes the key value for the
+appropriate root
+object. Using that value, you can find the right root object in the
+ERLB and
+call a Fetch() overload where you pass in the DataReader. That root
+object can
+then add that DataReader row to its proper child collection.<o:p></o:p></p>
+  <p>In the ERLB loops through all the rows, repeating that process,
+then all the
+child data would be loaded properly.<o:p></o:p></p>
+  <p>This is basically what I did with my <a href="http://www.lhotka.net/Article.aspx?area=11&amp;id=65c98c98-f0e0-477d-b45b-7a1e7d5768ee">DeepData
+sample</a> to load grandchildren with three total db calls (parent,
+children,
+granchildren), and it works pretty well.<o:p></o:p></p>
+  <p class="MsoNormal"><br>
+  <br>
+  <o:p></o:p></p>
+  <p class="MsoNormal"><span><br>
+  <br>
+  <o:p></o:p></span></p>
+  </div>
+  <br>
+  <br>
+<br>
+</blockquote>
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

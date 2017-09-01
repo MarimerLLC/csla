@@ -1,0 +1,91 @@
+<html><header><title>Determine whether SetProperty has changed the value</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Determine whether SetProperty has changed the value</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5793.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoshL posted on Wednesday, November 12, 2008</h2>Often in my properties I have a need to do something only if the property value actually changed. Using the pre-3.5 CSLA syntax, it was easy to include this logic in the if statement that tests whether the value changed. In 3.5+, SetProperty handles testing whether the value needs to be modified, and doesn't tell me whether it did anything with it.<br /><br />Would it be possible to return a boolean from SetProperty, indicating whether the property value was modified?<br /><br />Thanks!</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>skagen00 replied on Wednesday, November 12, 2008</h2>I think what you want to do is use the PropertyHasChanged override. It would fire only if a property had changed. Now, if you need to do preprocessing or something conditional based on the value you're setting _from_, then you probably have to add code in the Setter. </div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tetranz replied on Wednesday, November 12, 2008</h2>This is something I miss too. I use PropertyChanged and it works fine but ... it still seems messy because you need a switch statement doing string comparisons to figure out which property has changed. It just seems like it would be cleaner to put the code in the setter like the "old" days.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tetranz replied on Wednesday, November 12, 2008</h2>I meant to say  PropertyChanged rather than  PropertyHasChanged in my last post (edited on forum) but ... you can't use a switch statement if you want to use PropertyInfo.Name to avoid string constants. You need to do a if else if else if else ... etc. That seems even more messy but .... I guess there are bigger things to worry about. <img src="/emoticons/emotion-1.gif" alt="Smile [:)]" /><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Wednesday, November 12, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>On assumption that I follow the question properly, you can still
+do the same style of 2.1 coding if you would like, and instead of<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>SetProperty(someProperty, value) you will have<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>If (ReadProperty(someProperty)!=value)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>{<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; SetProperty(someProperty,
+value);<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; DoSomeOtherStuff();<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>}<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>There is some overhead involved with this though&#8230;.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> tetranz
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Wednesday, November 12, 2008 5:04 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] Determine whether SetProperty has changed the
+value<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>This is something I miss too. I use PropertyHasChanged and
+it works fine but ... it still seems messy because you need a switch statement
+doing string comparisons to figure out which property has changed. It just
+seems like it would be cleaner to put the code in the setter like the
+&quot;old&quot; days.<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tetranz replied on Wednesday, November 12, 2008</h2>D'oh!&nbsp; Thank Sergey. Somehow I didn't think of that. <img src="/emoticons/emotion-1.gif" alt="Smile [:)]" />&nbsp; I suspect it has less overhead than multiple string compares every time any property changes which is what happens when I use PropertyChanged to handle changes in multiple properties.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoshL replied on Wednesday, November 12, 2008</h2>Right - this is probably the best approach right now, though it would be cleaner if we could avoid duplicating the value-comparison code. It's cool that Rocky handles nulls and default values in LoadProperty.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tdrake replied on Wednesday, November 12, 2008</h2>When I done this in the past - eg need to know when the user has changes from existing or default - I've just added private memebers with the original setting and built the login in the setter... <br /><br />I don't use it for undo, but more for some stupid foreign key rubbish I needed to manage while working with an existing database (an update could be a messy delete, insert grrr)<br /><br />Is there a better way?</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoshL replied on Thursday, November 13, 2008</h2>tdrake, I think you are referring to something a bit different. On a property setter, I want to avoid doing anything in the class unless the property value actually changed. This can be accomplished by comparing "value" with the backing-store value on the class. However, the normal property pattern is to then overwrite that backing store with the new value.
+
+It sounds like you have a need to keep track of the _database_ value in order to limit the columns in your update statements to only those that actually changed. To do this, you can either:
+- keep a second set of values on your class (via second set of fields, copy of a DTO...), or
+- re-select the data from the database and compare with class data prior to constructing your Update statement
+
+Hope this helps.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>vdhant replied on Wednesday, November 12, 2008</h2>That sounds like it could be a good idea, but in the mean time, couldn't you hook into the PropertyChanged for that field. This event should only be raised if the value is changed (i.e. it detects that the new value isn't the same as the old one, etc).<br>Cheers<br>Anthony</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

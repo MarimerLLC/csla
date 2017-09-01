@@ -1,0 +1,64 @@
+<html><header><title>Customize Authorization Rules Messages.</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Customize Authorization Rules Messages.</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10773.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>omarcusido posted on Friday, October 14, 2011</h2><p>Hello all. I&#39;m using Authorization Rules in my Business Objects but when any Authorization Rule is broken the message provided on the exception do not fits my needs. I was reviewing the implementation of the DataPortal class and CSLA throws a Security Exception and loads the exception message from a resource. I really wanted to know if there&#39;s a way to change that message to a customized dynamically created message without modify my DataPortal class, I also can&#39;t write directly in the resource file because the message is not always the same.</p>
+<p>&nbsp;</p>
+<p>Regards.</p>
+<p>&nbsp;</p>
+<p>OCP.</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>StefanCop replied on Friday, October 14, 2011</h2><p>Hi</p>
+<p>As far as I know: no.&nbsp; The EditObject action would be possible by overriding BusinessBase Save() Method or somthing in this area.</p>
+<p>If I got the idea from the ebook (&quot;Creating Business Objects&quot;) right, receiving a Security Exception for a broken authorization rule should be an &quot;exception&quot;. </p>
+<p>It&#39;s the UI&#39;s responsibility to check if its allowed before doing it:&nbsp;</p>
+<ul>
+<li>IsSavable includes test for permission</li>
+<li>Per instance/property rules through IAuthorizeReadWrite CanRead/WriteProperty CanExecuteMethod </li>
+<li>and per type access BusinessRules.HasPermission(AuthorizationActions.CreateObject/GetObject/EditObject/DeleteObject, typeof(MyObject) ).&nbsp; </li>
+</ul>
+<p>Also have a look at Csla.Xaml.ViewModelBase, which provides the Can.... Properties.</p>
+<p>Here&#39;s a post which suggests to use validation rules in some cases rather than authorization rules. <br />http://forums.lhotka.net/forums/p/5760/28042.aspx </p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Saturday, October 15, 2011</h2><p>Hi, </p>
+<p>CSLA does not provide a direct method for replacing the error message with your own.But you can add the checks in your own code and throw your own exception.</p>
+<p>For the DataPortal you will have to implement the authorization check in you own static factory methods, ex:</p>
+<pre style="font-family:Consolas;font-size:13px;color:black;background:none repeat scroll 0% 0% #fafafa;">&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">static</span>&nbsp;<span style="color:#2b91af;">Root</span>&nbsp;NewEditableRoot()
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">if</span>&nbsp;(!Csla.Rules.<span style="color:#2b91af;">BusinessRules</span>.HasPermission(<span style="color:#2baf9a;">AuthorizationActions</span>.CreateObject,&nbsp;<span style="color:blue;">typeof</span>(<span style="color:#2b91af;">Root</span>)))
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;    <span style="color:blue;">throw</span>&nbsp;<span style="color:blue;">new</span>&nbsp;<span style="color:#2b91af;">SecurityException</span>(<span style="color:#a31515;">&quot;my&nbsp;custom&nbsp;message&quot;</span>);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">return</span>&nbsp;<span style="color:#2b91af;">DataPortal</span>.Create&lt;<span style="color:#2b91af;">Root</span>&gt;();
+&nbsp;&nbsp;&nbsp;&nbsp;}</pre>
+<p>For Save I would recommend that you create your own intermediate base class for ex BusinessBase and override the Save method and you could even promote the message to a property or lambda expression (marked as nonserializable) to allow to just set the message for each object.</p>
+<pre style="font-family:Consolas;font-size:13px;color:black;background:none repeat scroll 0% 0% #fafafa;">&nbsp; [<span style="color:#2b91af;">Serializable</span>]
+&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">class</span>&nbsp;<span style="color:#2b91af;">MyBusinessBase</span>&lt;T&gt;&nbsp;:&nbsp;Csla.<span style="color:#2b91af;">BusinessBase</span>&lt;T&gt;&nbsp;<span style="color:blue;">where</span>&nbsp;T:<span style="color:#2b91af;">MyBusinessBase</span>&lt;T&gt;
+&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">override</span>&nbsp;T&nbsp;Save()
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;T&nbsp;result;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">if</span>&nbsp;(<span style="color:blue;">this</span>.IsChild)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">throw</span>&nbsp;<span style="color:blue;">new</span>&nbsp;<span style="color:#2b91af;">InvalidOperationException</span>(Csla.Properties.<span style="color:#2b91af;">Resources</span>.NoSaveChildException);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">if</span>&nbsp;(EditLevel&nbsp;&gt;&nbsp;0)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">throw</span>&nbsp;<span style="color:blue;">new</span>&nbsp;<span style="color:#2b91af;">InvalidOperationException</span>(Csla.Properties.<span style="color:#2b91af;">Resources</span>.NoSaveEditingException);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">if</span>&nbsp;(!IsValid&nbsp;&amp;&amp;&nbsp;!IsDeleted)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">throw</span>&nbsp;<span style="color:blue;">new</span>&nbsp;Csla.Rules.<span style="color:#2b91af;">ValidationException</span>(Csla.Properties.<span style="color:#2b91af;">Resources</span>.NoSaveInvalidException);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">if</span>&nbsp;(IsBusy)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">throw</span>&nbsp;<span style="color:blue;">new</span>&nbsp;<span style="color:#2b91af;">InvalidOperationException</span>(Csla.Properties.<span style="color:#2b91af;">Resources</span>.BusyObjectsMayNotBeSaved);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">if</span>&nbsp;(IsDirty)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="color:green;">//&nbsp;this&nbsp;is&nbsp;the&nbsp;same&nbsp;check&nbsp;that&nbsp;DataPortal&nbsp;does&nbsp;for&nbsp;object&nbsp;of&nbsp;type&nbsp;BusinessBase</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="color:blue;">if</span>&nbsp;(<span style="color:blue;">this</span>.IsDeleted)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">if</span>&nbsp;(!Csla.Rules.<span style="color:#2b91af;">BusinessRules</span>.HasPermission(Csla.Rules.<span style="color:#2baf9a;">AuthorizationActions</span>.DeleteObject,&nbsp;<span style="color:blue;">this</span>))
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">throw</span>&nbsp;<span style="color:blue;">new</span>&nbsp;System.Security.<span style="color:#2b91af;">SecurityException</span>(<span style="color:#a31515;">&quot;custom&nbsp;message&nbsp;-&nbsp;not&nbsp;allowed&nbsp;to&nbsp;delete&quot;</span>);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">else</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">if</span>&nbsp;(!Csla.Rules.<span style="color:#2b91af;">BusinessRules</span>.HasPermission(Csla.Rules.<span style="color:#2baf9a;">AuthorizationActions</span>.EditObject,&nbsp;<span style="color:blue;">this</span>))
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">throw</span>&nbsp;<span style="color:blue;">new</span>&nbsp;System.Security.<span style="color:#2b91af;">SecurityException</span>(<span style="color:#a31515;">&quot;custom&nbsp;message&nbsp;-&nbsp;not&nbsp;allowed&nbsp;to&nbsp;save&quot;</span>);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;result&nbsp;=&nbsp;(T)&nbsp;<span style="color:#2b91af;">DataPortal</span>.Update(<span style="color:blue;">this</span>);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">else</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;result&nbsp;=&nbsp;(T)<span style="color:blue;">this</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;OnSaved(result,&nbsp;<span style="color:blue;">null</span>,&nbsp;<span style="color:blue;">null</span>);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">return</span>&nbsp;result;
+&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;}</pre>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>StefanCop replied on Saturday, October 15, 2011</h2><p>Jonny, </p>
+<p>good, clean sample of what I meant to say....</p>
+<p>thx</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>omarcusido replied on Monday, October 17, 2011</h2><p>Thats works for me. Thanks a lot guys.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

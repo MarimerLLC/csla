@@ -1,0 +1,29 @@
+<html><header><title>CSLA WCF Callbacks and Notifications</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA WCF Callbacks and Notifications</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11050.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Hurty posted on Thursday, January 12, 2012</h2><p>I&#39;ve ran into some problems...</p>
+<p>So far I have created about 20 BOs that must call <b>Save()</b> method in a transaction.</p>
+<p>This must be implemented through the build-in CSLA&#39;s WCF support.</p>
+<p>So I brought up WCF service, created CommandBase object and wrapped all the BOs in a transaction.</p>
+<p>The <b>DataPortal_Execute()</b> works just fine, but I was wondering if there is any mechanism that I can notify the Client-Side application of the CommandBase object&#39;s save progress???</p>
+<p>The scenario is as follows:</p>
+<p>1. From the Client-Side I call CommandBase.Execute();</p>
+<p>2. I wait untill all 20 BOs call and return from their Save(); method <i>(executed on Server-Side)</i></p>
+<p>3. Move on...</p>
+<p>&nbsp;</p>
+<p>The goal is:</p>
+<p>1. After each successful Save() method of BO (on Server-Side) the Server to report (through a Callback or any other Server-to-Client-Notification methid) to the Client its progress through the transaction within the CommandBase object.</p>
+<p>&nbsp;</p>
+<p>Does anyone have any idea... ??? Any help would be very appreciated..</p>
+<p>&nbsp;</p>
+<p>Thanks in advance... George.</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Saturday, January 14, 2012</h2><p>Hi, </p>
+<p>CSLA does not provide support for callback from the server so you are on your own in implementing a wsDualHttpBinding.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Hurty replied on Saturday, January 14, 2012</h2><p>Ok. But if I implement (say IWcfPortal interface) will I lose CSLA build-in functionality ???</p>
+<p>Any Idea how this implementation would be made ?</p>
+<p>I am totally lost.. :(</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Sunday, January 15, 2012</h2><p>The data portal serializes the data to send it to/from the server.</p>
+<p>The .NET data portal does this by allowing WCF to do the serialization.</p>
+<p>The Silverlight data portal does its own serialization.</p>
+<p>It <em>might</em> be the case that the .NET data portal (so a .NET client like WPF) could pass a reference to a callback object to the server through the ClientContext dictionary. So if you were using something like wsDualHttpBinding <em>maybe</em> you could do callbacks to that object.</p>
+<p>I really don&#39;t know how that all works (the dual bindings), having not spent any time with them. But you could certainly try it and see if it works.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Hurty replied on Monday, January 16, 2012</h2><p>Thank you all for your fast response...</p>
+<p>Will try the proposed idea and will write back if it succeeded.</p>
+<p>Stay tuned... :)</p>
+<p>Geroge</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonM replied on Monday, January 16, 2012</h2><p>I just did a project where I needed callbacks.&nbsp; It was not&nbsp;a CSLA.net project.&nbsp; I ran across a great article that describes how to get dual binding&nbsp;done along with common issues.&nbsp;&nbsp;I strongly suggest reading through it.&nbsp; It saved me a lot of time and trouble.</p>
+<p><a href="http://www.dotnetconsult.co.uk/weblog2/PermaLink,guid,b891610a-6b78-4b54-b9a6-4ec81c82b7c0.aspx">http://www.dotnetconsult.co.uk/weblog2/PermaLink,guid,b891610a-6b78-4b54-b9a6-4ec81c82b7c0.aspx</a></p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Hurty replied on Tuesday, January 17, 2012</h2><p>Thank you JonM... will read this article and will give it a try...</p>
+<p>Cheers, George</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

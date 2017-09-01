@@ -1,0 +1,492 @@
+<html><header><title>True Master-Child Example for CSLA 2.0</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>True Master-Child Example for CSLA 2.0</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4335.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>KickTheSky posted on Tuesday, February 12, 2008</h2>Greetings, still working on a prototype to sell this idea to my company for a business object framework.&nbsp; Here is the problem I am having.&nbsp; The project tracker sample uses a strange master-child relation where the child technically already exists when created.&nbsp; For example, when adding a resource to a project, the resource already exists in the system. <br><br>Most of the time, however, that child will not exist.&nbsp; For example, I am doing a customer example with multiple contacts.&nbsp; The customer record contains multiple contacts that are created as the customer is created.&nbsp; The problems I am having are the following...<br><br>1) If I want to break the contact info into a seperate form, yet keep it a child object, how can I do this effectively?&nbsp; Specifically, if the user cancels that form, how do you roll back that child?<br><br>2) How is addition and deletion of these objects handled?&nbsp; In the Project Tracker example, there is an assign and unassign that relys on ID's already existing for the child resources.&nbsp; IDs will not exist for these contacts until a customer is persisted.<br><br>Is there a good example out there of this more traditional view of data?&nbsp; Am I the only one that thinks the Project Tracker app is sorely lacking as a good example of how to implement the framework?<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Inquistive_Mind replied on Tuesday, February 12, 2008</h2><FONT size=2>
+<P></FONT><FONT size=2><FONT color=#000000>// Business Base Class</FONT></P></FONT><FONT size=2>
+<P></FONT><FONT size=2><FONT color=#000000>// Parent Object that contains a collection of Children Objects</FONT></P></FONT><FONT size=2>
+<P><FONT color=#000000>[</FONT></FONT><FONT color=#000000 size=2>Serializable</FONT><FONT size=2><FONT color=#000000>()]</FONT></P>
+<P></FONT><FONT color=#000000><FONT size=2>public</FONT><FONT size=2> </FONT><FONT size=2>class</FONT><FONT size=2>&nbsp;SomeParent</FONT><FONT size=2> : </FONT><FONT size=2>BusinessBase</FONT><FONT size=2>&lt;SomeParent</FONT></FONT><FONT size=2><FONT color=#000000>&gt;</FONT></P>
+<P><FONT color=#000000>{</FONT></P></FONT><FONT size=2>
+<P><FONT color=#000000>#region</FONT></FONT><FONT size=2><FONT color=#000000> Constructors</FONT></P>
+<P></FONT><FONT color=#000000 size=2>private</FONT><FONT size=2><FONT color=#000000> SomeParent()</FONT></P>
+<P><FONT color=#000000>{ </FONT></FONT><FONT color=#000000><FONT size=2>/* require use of factory methods */</FONT><FONT size=2> }</P></FONT></FONT><FONT size=2>
+<P><FONT color=#000000>#endregion</FONT></P>
+<P><FONT color=#000000>#region</FONT></FONT><FONT size=2><FONT color=#000000> Public Properties</FONT></P></FONT><FONT size=2>
+<P><FONT color=#000000>#region</FONT></FONT><FONT size=2><FONT color=#000000> SomeParentID</FONT></P>
+<P></FONT><FONT color=#000000><FONT size=2>private</FONT><FONT size=2> </FONT><FONT size=2>Int32</FONT></FONT><FONT size=2><FONT color=#000000> _someParentID = 0;</FONT></P>
+<P><FONT color=#000000>[System.ComponentModel.</FONT></FONT><FONT color=#000000><FONT size=2>DataObjectField</FONT><FONT size=2>(</FONT><FONT size=2>true</FONT><FONT size=2>, </FONT><FONT size=2>true</FONT><FONT size=2>, </FONT><FONT size=2>false</FONT></FONT><FONT size=2><FONT color=#000000>)]</FONT></P>
+<P></FONT><FONT color=#000000><FONT size=2>public</FONT><FONT size=2> </FONT><FONT size=2>Int32</FONT></FONT><FONT size=2><FONT color=#000000> SomeParentID</FONT></P>
+<P><FONT color=#000000>{</FONT></P>
+<P><FONT color=#000000>[System.Runtime.CompilerServices.</FONT></FONT><FONT color=#000000><FONT size=2>MethodImpl</FONT><FONT size=2>(System.Runtime.CompilerServices.</FONT><FONT size=2>MethodImplOptions</FONT></FONT><FONT size=2><FONT color=#000000>.NoInlining)]</FONT></P>
+<P></FONT><FONT size=2><FONT color=#000000>get</FONT></P></FONT><FONT size=2>
+<P><FONT color=#000000>{</FONT></P>
+<P><FONT color=#000000>CanReadProperty(</FONT></FONT><FONT color=#000000><FONT size=2>"SomeParentID"</FONT><FONT size=2>, </FONT><FONT size=2>true</FONT></FONT><FONT size=2><FONT color=#000000>);</FONT></P>
+<P></FONT><FONT color=#000000 size=2>return</FONT><FONT size=2><FONT color=#000000> _someParentID;</FONT></P>
+<P><FONT color=#000000>}</FONT></P>
+<P><FONT color=#000000>}</FONT></P></FONT><FONT size=2>
+<P><FONT color=#000000>#endregion</FONT></P></FONT><FONT size=2>
+<P></FONT><FONT size=2><FONT color=#000000>//Child Object Collection</FONT></P></FONT><FONT size=2>
+<P><FONT color=#000000>#region</FONT></FONT><FONT size=2><FONT color=#000000> ChildList </FONT></P>
+<P></FONT><FONT color=#000000><FONT size=2>private</FONT><FONT size=2> </FONT><FONT size=2>ChildList</FONT><FONT size=2> _childList = Child</FONT><FONT size=2>List</FONT></FONT><FONT size=2><FONT color=#000000>.NewChildList();</FONT></P>
+<P></FONT>
+<P><FONT size=2><FONT color=#000000></FONT></P></FONT><FONT size=2></FONT><FONT color=#000000><FONT size=2>public</FONT><FONT size=2> </FONT><FONT size=2>ChildList</FONT></FONT><FONT size=2><FONT color=#000000> ChildList</FONT></P>
+<P><FONT color=#000000>{</FONT></P>
+<P></FONT><FONT color=#000000><FONT size=2>get</FONT><FONT size=2> { </FONT><FONT size=2>return</FONT></FONT><FONT size=2><FONT color=#000000> _childList; }</FONT></P>
+<P><FONT color=#000000>}</FONT></P></FONT><FONT size=2>
+<P><FONT color=#000000>#endregion</FONT></P>
+<P><FONT color=#000000>#endregion</FONT></P>
+<P><FONT color=#000000>#region</FONT></FONT><FONT size=2><FONT color=#000000> Business Base Requirements</FONT></P>
+<P></FONT><FONT color=#000000><FONT size=2>protected</FONT><FONT size=2> </FONT><FONT size=2>override</FONT><FONT size=2> </FONT><FONT size=2>object</FONT></FONT><FONT size=2><FONT color=#000000> GetIdValue()</FONT></P>
+<P><FONT color=#000000>{</FONT></P>
+<P></FONT><FONT color=#000000 size=2>return</FONT><FONT size=2><FONT color=#000000> _someParentID;</FONT></P>
+<P><FONT color=#000000>}</FONT></P>
+<P></FONT><FONT size=2><FONT color=#000000>// The default IsValid and IsDirty properties must be enhanced for all objects that</FONT></P></FONT><FONT size=2>
+<P></FONT><FONT size=2><FONT color=#000000>// subclass BusinessBase and contain child objects</FONT></P></FONT><FONT size=2>
+<P></FONT><FONT color=#000000><FONT size=2>public</FONT><FONT size=2> </FONT><FONT size=2>override</FONT><FONT size=2> </FONT><FONT size=2>bool</FONT></FONT><FONT size=2><FONT color=#000000> IsValid</FONT></P>
+<P><FONT color=#000000>{</FONT></P>
+<P></FONT><FONT size=2><FONT color=#000000>get</FONT></P></FONT><FONT size=2>
+<P><FONT color=#000000>{</FONT></P>
+<P></FONT><FONT color=#000000><FONT size=2>return</FONT><FONT size=2> </FONT><FONT size=2>base</FONT></FONT><FONT size=2><FONT color=#000000>.IsValid &amp;&amp; _childList.IsValid;</FONT></P>
+<P><FONT color=#000000>}</FONT></P>
+<P><FONT color=#000000>}</FONT></P>
+<P></FONT><FONT color=#000000><FONT size=2>public</FONT><FONT size=2> </FONT><FONT size=2>override</FONT><FONT size=2> </FONT><FONT size=2>bool</FONT></FONT><FONT size=2><FONT color=#000000> IsDirty</FONT></P>
+<P><FONT color=#000000>{</FONT></P>
+<P></FONT><FONT size=2><FONT color=#000000>get</FONT></P></FONT><FONT size=2>
+<P><FONT color=#000000>{</FONT></P>
+<P></FONT><FONT color=#000000><FONT size=2>return</FONT><FONT size=2> </FONT><FONT size=2>base</FONT></FONT><FONT size=2><FONT color=#000000>.IsDirty || _childList.IsDirty;</FONT></P>
+<P><FONT color=#000000>}</FONT></P>
+<P><FONT color=#000000>}</FONT></P></FONT><FONT size=2>
+<P><FONT color=#000000>#endregion</FONT></P></FONT><FONT size=2>
+<P><FONT color=#000000>#region</FONT></FONT><FONT size=2><FONT color=#000000> Factory Methods</FONT></P>
+<P></FONT><FONT color=#000000><FONT size=2>///</FONT><FONT size=2> Create a new instance of a SomeParent</FONT></FONT></P><FONT size=2>
+<P></FONT><FONT color=#000000><FONT size=2>public</FONT><FONT size=2> </FONT><FONT size=2>static</FONT><FONT size=2>&nbsp;SomeParent</FONT></FONT><FONT size=2><FONT color=#000000> NewParent()</FONT></P>
+<P><FONT color=#000000>{</FONT></P>
+<P></FONT><FONT color=#000000 size=2>if</FONT><FONT size=2><FONT color=#000000> (!CanAddObject())</FONT></P>
+<P></FONT><FONT color=#000000><FONT size=2>throw</FONT><FONT size=2> </FONT><FONT size=2>new</FONT><FONT size=2> System.Security.</FONT><FONT size=2>SecurityException</FONT><FONT size=2>(</FONT><FONT size=2>String</FONT><FONT size=2>.Format(</FONT><FONT size=2>ExceptionResources</FONT><FONT size=2>.AddEntityNotAllowed, </FONT><FONT size=2>"SomeParent"</FONT></FONT><FONT size=2><FONT color=#000000>));</FONT></P>
+<P></FONT><FONT color=#000000><FONT size=2>return</FONT><FONT size=2> </FONT><FONT size=2>DataPortal</FONT><FONT size=2>.Create&lt;SomeParent</FONT></FONT><FONT size=2><FONT color=#000000>&gt;();</FONT></P>
+<P><FONT color=#000000>}</FONT></P>
+<P></FONT><FONT color=#000000><FONT size=2>///</FONT><FONT size=2> Get an Instance of a&nbsp;SomeParent by querying on Default</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#000000><FONT size=2>public</FONT><FONT size=2> </FONT><FONT size=2>static</FONT><FONT size=2>&nbsp;</FONT><FONT size=2>SomeParent</FONT><FONT size=2> Get(</FONT><FONT size=2>Int32</FONT></FONT><FONT size=2><FONT color=#000000> someParentID)</FONT></P>
+<P><FONT color=#000000>{</FONT></P>
+<P></FONT><FONT color=#000000 size=2>if</FONT><FONT size=2><FONT color=#000000> (!CanGetObject())</FONT></P>
+<P></FONT><FONT color=#000000><FONT size=2>throw</FONT><FONT size=2> </FONT><FONT size=2>new</FONT><FONT size=2> System.Security.</FONT><FONT size=2>SecurityException</FONT><FONT size=2>(</FONT><FONT size=2>String</FONT><FONT size=2>.Format(</FONT><FONT size=2>ExceptionResources</FONT><FONT size=2>.ViewEntityNotAllowed, </FONT><FONT size=2>"SomeParent"</FONT></FONT><FONT size=2><FONT color=#000000>));</FONT></P>
+<P></FONT><FONT color=#000000><FONT size=2>SomeParent&nbsp;fetchInstance = </FONT><FONT size=2>null</FONT></FONT><FONT size=2><FONT color=#000000>;</FONT></P>
+<P></FONT><FONT size=2><FONT color=#000000>try</FONT></P></FONT><FONT size=2>
+<P><FONT color=#000000>{</FONT></P>
+<P><FONT color=#000000>fetchInstance = </FONT></FONT><FONT color=#000000><FONT size=2>DataPortal</FONT><FONT size=2>.Fetch&lt;</FONT><FONT size=2>SomeParent</FONT><FONT size=2>&gt;(</FONT><FONT size=2>new</FONT><FONT size=2> </FONT><FONT size=2>Criteria</FONT></FONT><FONT size=2><FONT color=#000000>(someParentID));</FONT></P>
+<P><FONT color=#000000>}</FONT></P>
+<P></FONT><FONT color=#000000><FONT size=2>catch</FONT><FONT size=2> (System.</FONT><FONT size=2>Exception</FONT></FONT><FONT size=2><FONT color=#000000> ex)</FONT></P>
+<P><FONT color=#000000>{</FONT></P>
+<P></FONT><FONT color=#000000 size=2>Logger</FONT><FONT size=2><FONT color=#000000>.Error(ex.Message);</FONT></P>
+<P></FONT><FONT color=#000000 size=2>throw</FONT><FONT size=2><FONT color=#000000>;</FONT></P>
+<P><FONT color=#000000>}</FONT></P>
+<P></FONT><FONT color=#000000 size=2>return</FONT><FONT size=2><FONT color=#000000> fetchInstance;</FONT></P>
+<P><FONT color=#000000>}</FONT></P>
+<P></FONT><FONT color=#000000><FONT size=2>///</FONT><FONT size=2> Deletes a SomeParent based on its Default</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#000000><FONT size=2>public</FONT><FONT size=2> </FONT><FONT size=2>static</FONT><FONT size=2> </FONT><FONT size=2>void</FONT><FONT size=2> Delete(</FONT><FONT size=2>Int32</FONT></FONT><FONT size=2><FONT color=#000000> someParentID)</FONT></P>
+<P><FONT color=#000000>{</FONT></P>
+<P></FONT><FONT color=#000000 size=2>if</FONT><FONT size=2><FONT color=#000000> (!CanDeleteObject())</FONT></P>
+<P></FONT><FONT color=#000000><FONT size=2>throw</FONT><FONT size=2> </FONT><FONT size=2>new</FONT><FONT size=2> System.Security.</FONT><FONT size=2>SecurityException</FONT><FONT size=2>(</FONT><FONT size=2>String</FONT><FONT size=2>.Format(</FONT><FONT size=2>ExceptionResources</FONT><FONT size=2>.DeleteEntityNotAllowed, </FONT><FONT size=2>"SomeParent"</FONT></FONT><FONT size=2><FONT color=#000000>));</FONT></P>
+<P></FONT><FONT size=2><FONT color=#000000>try</FONT></P></FONT><FONT size=2>
+<P><FONT color=#000000>{</FONT></P>
+<P></FONT><FONT color=#000000><FONT size=2>DataPortal</FONT><FONT size=2>.Delete(</FONT><FONT size=2>new</FONT><FONT size=2> </FONT><FONT size=2>Criteria</FONT></FONT><FONT size=2><FONT color=#000000>(someParentID));</FONT></P>
+<P><FONT color=#000000>}</FONT></P>
+<P></FONT><FONT color=#000000><FONT size=2>catch</FONT><FONT size=2> (System.</FONT><FONT size=2>Exception</FONT></FONT><FONT size=2><FONT color=#000000> ex)</FONT></P>
+<P><FONT color=#000000>{</FONT></P></FONT><FONT size=2>
+<P></FONT><FONT color=#000000 size=2>throw</FONT><FONT size=2><FONT color=#000000>;</FONT></P>
+<P><FONT color=#000000>}</FONT></P>
+<P><FONT color=#000000>}</FONT></P>
+<P></FONT><FONT color=#000000><FONT size=2>///</FONT><FONT size=2> Save the current instance of a SomeParent</FONT></FONT><FONT color=#000000><FONT size=2></P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#000000><FONT size=2>public</FONT><FONT size=2> </FONT><FONT size=2>override</FONT><FONT size=2>&nbsp;</FONT><FONT size=2>SomeParent</FONT></FONT><FONT size=2><FONT color=#000000> Save()</FONT></P>
+<P><FONT color=#000000>{</FONT></P>
+<P></FONT><FONT color=#000000 size=2>if</FONT><FONT size=2><FONT color=#000000> (IsDeleted &amp;&amp; !CanDeleteObject())</FONT></P>
+<P></FONT><FONT color=#000000><FONT size=2>throw</FONT><FONT size=2> </FONT><FONT size=2>new</FONT><FONT size=2> System.Security.</FONT><FONT size=2>SecurityException</FONT><FONT size=2>(</FONT><FONT size=2>String</FONT><FONT size=2>.Format(</FONT><FONT size=2>ExceptionResources</FONT><FONT size=2>.DeleteEntityNotAllowed, </FONT><FONT size=2>"SomeParent"</FONT></FONT><FONT size=2><FONT color=#000000>));</FONT></P>
+<P></FONT><FONT color=#000000><FONT size=2>else</FONT><FONT size=2> </FONT><FONT size=2>if</FONT></FONT><FONT size=2><FONT color=#000000> (IsNew &amp;&amp; !CanAddObject())</FONT></P>
+<P></FONT><FONT color=#000000><FONT size=2>throw</FONT><FONT size=2> </FONT><FONT size=2>new</FONT><FONT size=2> System.Security.</FONT><FONT size=2>SecurityException</FONT><FONT size=2>(</FONT><FONT size=2>String</FONT><FONT size=2>.Format(</FONT><FONT size=2>ExceptionResources</FONT><FONT size=2>.AddEntityNotAllowed, </FONT><FONT size=2>"SomeParent"</FONT></FONT><FONT size=2><FONT color=#000000>));</FONT></P>
+<P></FONT><FONT color=#000000><FONT size=2>else</FONT><FONT size=2> </FONT><FONT size=2>if</FONT></FONT><FONT size=2><FONT color=#000000> (!CanEditObject())</FONT></P>
+<P></FONT><FONT color=#000000><FONT size=2>throw</FONT><FONT size=2> </FONT><FONT size=2>new</FONT><FONT size=2> System.Security.</FONT><FONT size=2>SecurityException</FONT><FONT size=2>(</FONT><FONT size=2>String</FONT><FONT size=2>.Format(</FONT><FONT size=2>ExceptionResources</FONT><FONT size=2>.UpdateEntityNotAllowed, </FONT><FONT size=2>"SomeParent"</FONT></FONT><FONT size=2><FONT color=#000000>));</FONT></P>
+<P></FONT><FONT color=#000000><FONT size=2>SomeParent</FONT><FONT size=2>&nbsp;saveInstance = </FONT><FONT size=2>null</FONT></FONT><FONT size=2><FONT color=#000000>;</FONT></P>
+<P></FONT><FONT size=2><FONT color=#000000>try</FONT></P></FONT><FONT size=2>
+<P><FONT color=#000000>{</FONT></P>
+<P><FONT color=#000000>saveInstance = </FONT></FONT><FONT color=#000000 size=2>base</FONT><FONT size=2><FONT color=#000000>.Save();</FONT></P>
+<P><FONT color=#000000>}</FONT></P>
+<P></FONT><FONT color=#000000><FONT size=2>catch</FONT><FONT size=2> (System.</FONT><FONT size=2>Exception</FONT></FONT><FONT size=2><FONT color=#000000> ex)</FONT></P>
+<P><FONT color=#000000>{</FONT></P></FONT><FONT size=2>
+<P></FONT><FONT color=#000000 size=2>throw</FONT><FONT size=2><FONT color=#000000>;</FONT></P>
+<P><FONT color=#000000>}</FONT></P>
+<P></FONT><FONT color=#000000 size=2>return</FONT><FONT size=2><FONT color=#000000> saveInstance;</FONT></P>
+<P><FONT color=#000000>}</FONT></P></FONT><FONT size=2>
+<P><FONT color=#000000>#endregion</FONT></P>
+<P><FONT color=#000000>#region</FONT></FONT><FONT size=2><FONT color=#000000> Criteria Classes</FONT></P>
+<P><FONT color=#000000>[</FONT></FONT><FONT color=#000000 size=2>Serializable</FONT><FONT size=2><FONT color=#000000>()]</FONT></P>
+<P></FONT><FONT color=#000000><FONT size=2>private</FONT><FONT size=2> </FONT><FONT size=2>class</FONT><FONT size=2> </FONT><FONT size=2>Criteria</P></FONT></FONT><FONT color=#000000 size=2>
+<P>{</P></FONT><FONT size=2>
+<P><FONT color=#000000>#region</FONT></FONT><FONT size=2><FONT color=#000000> SomeParentID</FONT></P>
+<P></FONT><FONT color=#000000><FONT size=2>private</FONT><FONT size=2> </FONT><FONT size=2>Int32</FONT></FONT><FONT size=2><FONT color=#000000> _someParentID = 0;</FONT></P>
+<P></FONT><FONT color=#000000><FONT size=2>public</FONT><FONT size=2> </FONT><FONT size=2>Int32</FONT></FONT><FONT size=2><FONT color=#000000> SomeParentID</FONT></P>
+<P><FONT color=#000000>{</FONT></P>
+<P></FONT><FONT size=2><FONT color=#000000>get</FONT></P></FONT><FONT size=2>
+<P><FONT color=#000000>{</FONT></P>
+<P></FONT><FONT color=#000000 size=2>return</FONT><FONT size=2><FONT color=#000000> _someParentID;</FONT></P>
+<P><FONT color=#000000>}</FONT></P>
+<P><FONT color=#000000>}</FONT></P></FONT><FONT color=#000000 size=2>
+<P>#endregion</P></FONT><FONT size=2>
+<P></FONT><FONT color=#000000><FONT size=2>public</FONT><FONT size=2> Criteria(</FONT><FONT size=2>Int32</FONT></FONT><FONT size=2><FONT color=#000000> someParentID)</FONT></P>
+<P><FONT color=#000000>{</FONT></P>
+<P><FONT color=#000000>_someParentID = someParentID;</FONT></P>
+<P><FONT color=#000000>}</FONT></P>
+<P><FONT color=#000000>}</FONT></P></FONT><FONT size=2>
+<P><FONT color=#000000>#endregion</FONT></FONT><FONT size=2><FONT color=#000000> Criteria Classes</FONT></P></FONT><FONT size=2>
+<P><FONT color=#000000>#region</FONT></FONT><FONT size=2><FONT color=#000000> Data Access</FONT></P>
+<P><FONT color=#000000>[</FONT></FONT><FONT color=#000000 size=2>RunLocal</FONT><FONT size=2><FONT color=#000000>()]</FONT></P>
+<P></FONT><FONT color=#000000><FONT size=2>protected</FONT><FONT size=2> </FONT><FONT size=2>override</FONT><FONT size=2> </FONT><FONT size=2>void</FONT></FONT><FONT size=2><FONT color=#000000> DataPortal_Create()</FONT></P>
+<P><FONT color=#000000>{</FONT></P>
+<P><FONT color=#000000>ValidationRules.CheckRules();</FONT></P>
+<P><FONT color=#000000>}</FONT></P>
+<P></FONT><FONT color=#000000><FONT size=2>private</FONT><FONT size=2> </FONT><FONT size=2>void</FONT><FONT size=2> DataPortal_Fetch(</FONT><FONT size=2>Criteria</FONT></FONT><FONT size=2><FONT color=#000000> criteria)</FONT></P>
+<P><FONT color=#000000>{</FONT></P>
+<P></FONT><FONT color=#000000><FONT size=2>using</FONT><FONT size=2> (</FONT><FONT size=2>DbConnection</FONT><FONT size=2> conn = </FONT><FONT size=2>Database</FONT></FONT><FONT size=2><FONT color=#000000>.DBConnection)</FONT></P>
+<P><FONT color=#000000>{</FONT></P>
+<P><FONT color=#000000>conn.Open();</FONT></P>
+<P></FONT><FONT color=#000000><FONT size=2>using</FONT><FONT size=2> (</FONT><FONT size=2>DbCommand</FONT></FONT><FONT size=2><FONT color=#000000> cmd = conn.CreateCommand())</FONT></P>
+<P><FONT color=#000000>{</FONT></P>
+<P><FONT color=#000000>cmd.CommandType = </FONT></FONT><FONT color=#000000 size=2>CommandType</FONT><FONT size=2><FONT color=#000000>.StoredProcedure;</FONT></P>
+<P><FONT color=#000000>cmd.CommandText = </FONT></FONT><FONT color=#000000 size=2>"SomeParentGet"</FONT><FONT size=2><FONT color=#000000>;</FONT></P>
+<P></FONT><FONT color=#000000><FONT size=2>DbParameter</FONT><FONT size=2> param;</P></FONT></FONT><FONT size=2>
+<P><FONT color=#000000>#region</FONT></FONT><FONT size=2><FONT color=#000000> @p_SomeParentID</FONT></P>
+<P><FONT color=#000000>param = cmd.CreateParameter();</FONT></P>
+<P><FONT color=#000000>param.ParameterName = </FONT></FONT><FONT color=#000000 size=2>"@p_SomeParentID"</FONT><FONT size=2><FONT color=#000000>;</FONT></P>
+<P><FONT color=#000000>param.DbType = </FONT></FONT><FONT color=#000000 size=2>DbType</FONT><FONT size=2><FONT color=#000000>.Int32;</FONT></P>
+<P><FONT color=#000000>param.Direction = </FONT></FONT><FONT color=#000000 size=2>ParameterDirection</FONT><FONT size=2><FONT color=#000000>.Input;</FONT></P>
+<P><FONT color=#000000>param.Value = </FONT></FONT><FONT color=#000000 size=2>Database</FONT><FONT size=2><FONT color=#000000>.DBNullConvert(criteria.SomeParentID);</FONT></P>
+<P><FONT color=#000000>cmd.Parameters.Add(param);</FONT></P></FONT><FONT color=#000000 size=2>
+<P>#endregion</P></FONT><FONT size=2>
+<P></FONT><FONT color=#000000><FONT size=2>using</FONT><FONT size=2> (</FONT><FONT size=2>NullableDataReader</FONT><FONT size=2> dr = </FONT><FONT size=2>new</FONT><FONT size=2> </FONT><FONT size=2>NullableDataReader</FONT></FONT><FONT size=2><FONT color=#000000>(cmd.ExecuteReader()))</FONT></P>
+<P><FONT color=#000000>{</FONT></P>
+<P></FONT><FONT color=#000000 size=2>if</FONT><FONT size=2><FONT color=#000000> (dr.Read())</FONT></P>
+<P><FONT color=#000000>{</FONT></P>
+<P><FONT color=#000000>Fetch(dr);</FONT></P>
+<P></FONT><FONT size=2><FONT color=#000000>// Load all the child objects</FONT></P></FONT><FONT size=2>
+<P><FONT color=#000000>dr.NextResult();</FONT></P>
+<P><FONT color=#000000>_childList = </FONT></FONT><FONT color=#000000 size=2>ChildList</FONT><FONT size=2><FONT color=#000000>.GetChildList(dr);</FONT></P>
+<P><FONT color=#000000>}</FONT></P>
+<P></FONT><FONT size=2><FONT color=#000000>else</FONT></P></FONT><FONT size=2>
+<P><FONT color=#000000>{</FONT></P>
+<P></FONT><FONT color=#000000><FONT size=2>throw</FONT><FONT size=2> </FONT><FONT size=2>new</FONT><FONT size=2> Csla.</FONT><FONT size=2>DataPortalException</FONT><FONT size=2>(</FONT><FONT size=2>"Criteria Did Not Match any Data"</FONT><FONT size=2>, </FONT><FONT size=2>this</FONT></FONT><FONT size=2><FONT color=#000000>);</FONT></P>
+<P><FONT color=#000000>}</FONT></P>
+<P><FONT color=#000000>}</FONT></P>
+<P><FONT color=#000000>}</FONT></P>
+<P><FONT color=#000000>}</FONT></P>
+<P><FONT color=#000000>}</FONT></P>
+<P></FONT><FONT color=#000000><FONT size=2>private</FONT><FONT size=2> </FONT><FONT size=2>void</FONT><FONT size=2> Fetch(</FONT><FONT size=2>NullableDataReader</FONT></FONT><FONT size=2><FONT color=#000000> dr)</FONT></P>
+<P><FONT color=#000000>{</FONT></P>
+<P><FONT color=#000000>_SomeParentID = dr.GetInt32(</FONT></FONT><FONT color=#000000 size=2>"SomeParentID"</FONT><FONT size=2><FONT color=#000000>);</FONT></P></FONT><FONT size=2>
+<P><FONT color=#000000>}</FONT></P>
+<P><FONT color=#000000>[</FONT></FONT><FONT color=#000000><FONT size=2>Transactional</FONT><FONT size=2>(</FONT><FONT size=2>TransactionalTypes</FONT></FONT><FONT size=2><FONT color=#000000>.TransactionScope)]</FONT></P>
+<P></FONT><FONT color=#000000><FONT size=2>protected</FONT><FONT size=2> </FONT><FONT size=2>override</FONT><FONT size=2> </FONT><FONT size=2>void</FONT></FONT><FONT size=2><FONT color=#000000> DataPortal_Update()</FONT></P>
+<P><FONT color=#000000>{</FONT></P>
+<P></FONT><FONT color=#000000><FONT size=2>if</FONT><FONT size=2> (</FONT><FONT size=2>base</FONT></FONT><FONT size=2><FONT color=#000000>.IsDirty || _childList.IsDirty)</FONT></P>
+<P><FONT color=#000000>{</FONT></P>
+<P></FONT><FONT color=#000000><FONT size=2>using</FONT><FONT size=2> (</FONT><FONT size=2>DbConnection</FONT><FONT size=2> conn = </FONT><FONT size=2>Database</FONT></FONT><FONT size=2><FONT color=#000000>.DBConnection)</FONT></P>
+<P><FONT color=#000000>{</FONT></P>
+<P><FONT color=#000000>conn.Open();</FONT></P>
+<P></FONT><FONT color=#000000><FONT size=2>using</FONT><FONT size=2> (</FONT><FONT size=2>DbCommand</FONT></FONT><FONT size=2><FONT color=#000000> cmd = conn.CreateCommand())</FONT></P>
+<P><FONT color=#000000>{</FONT></P>
+<P><FONT color=#000000>cmd.CommandText = </FONT></FONT><FONT color=#000000 size=2>"SomeParentUpdate"</FONT><FONT size=2><FONT color=#000000>;</FONT></P>
+<P><FONT color=#000000>cmd.CommandType = </FONT></FONT><FONT color=#000000 size=2>CommandType</FONT><FONT size=2><FONT color=#000000>.StoredProcedure;</FONT></P>
+<P></FONT><FONT color=#000000><FONT size=2>DbParameter</FONT><FONT size=2> param;</P></FONT></FONT><FONT size=2>
+<P><FONT color=#000000>#region</FONT></FONT><FONT size=2><FONT color=#000000> @p_SomeParentID</FONT></P>
+<P><FONT color=#000000>param = cmd.CreateParameter();</FONT></P>
+<P><FONT color=#000000>param.ParameterName = </FONT></FONT><FONT color=#000000 size=2>"@p_SomeParentID"</FONT><FONT size=2><FONT color=#000000>;</FONT></P>
+<P><FONT color=#000000>param.DbType = </FONT></FONT><FONT color=#000000 size=2>DbType</FONT><FONT size=2><FONT color=#000000>.Int32;</FONT></P>
+<P><FONT color=#000000>param.Direction = </FONT></FONT><FONT color=#000000 size=2>ParameterDirection</FONT><FONT size=2><FONT color=#000000>.Input;</FONT></P>
+<P><FONT color=#000000>param.Value = </FONT></FONT><FONT color=#000000 size=2>Database</FONT><FONT size=2><FONT color=#000000>.DBNullConvert(_someParentID);</FONT></P>
+<P><FONT color=#000000>cmd.Parameters.Add(param);</FONT></P></FONT><FONT size=2>
+<P><FONT color=#000000>#endregion</FONT></P></FONT><FONT size=2>
+<P></FONT><FONT color=#000000 size=2>int</FONT><FONT size=2><FONT color=#000000> rowsAffected = cmd.ExecuteNonQuery();</FONT></P>
+<P><FONT color=#000000>_childList.Update(</FONT></FONT><FONT color=#000000 size=2>this</FONT><FONT size=2><FONT color=#000000>);</FONT></P>
+<P><FONT color=#000000>}</FONT></P>
+<P><FONT color=#000000>}</FONT></P>
+<P><FONT color=#000000>}</FONT></P>
+<P><FONT color=#000000>}</FONT></P>
+<P><FONT color=#000000></FONT></P></FONT><FONT color=#000000 size=2>
+<P>#endregion</P></FONT><FONT color=#000000 size=2>
+<P>}</P>
+<P>&nbsp;</P>
+<P>Now to the collection object</P><FONT color=#000000 size=2>
+<P>// Business List Base class</P></FONT><FONT size=2>
+<P></FONT>
+<P><FONT color=#000000><FONT size=2></P></FONT><FONT size=2>[</FONT><FONT size=2>Serializable</FONT></FONT><FONT size=2><FONT color=#000000>()]</FONT></P>
+<P></FONT><FONT color=#000000><FONT size=2>public</FONT><FONT size=2> </FONT><FONT size=2>class</FONT><FONT size=2> </FONT><FONT size=2>ChildList</FONT><FONT size=2> : </FONT><FONT size=2>BusinessListBase</FONT><FONT size=2>&lt;Child</FONT><FONT size=2>List</FONT><FONT size=2>, Child</FONT></FONT><FONT size=2><FONT color=#000000>&gt;</FONT></P>
+<P><FONT color=#000000>{</FONT></P></FONT><FONT size=2>
+<P><FONT color=#000000>#region</FONT></FONT><FONT size=2><FONT color=#000000> Business Methods</FONT></P>
+<P></FONT><FONT size=2><FONT color=#000000>// Add methods and expose it to UI for playing with the collection</FONT></P></FONT><FONT size=2>
+<P></FONT><FONT color=#000000><FONT size=2>public</FONT><FONT size=2> </FONT><FONT size=2>void</FONT><FONT size=2> AddChild(</FONT><FONT size=2>int</FONT><FONT size=2> someParentID, </FONT><FONT size=2>string</FONT></FONT><FONT size=2><FONT color=#000000> childItem)</FONT></P>
+<P><FONT color=#000000>{</FONT></P>
+<P></FONT><FONT color=#000000><FONT size=2>Child</FONT><FONT size=2>&nbsp;newItem = Child</FONT></FONT><FONT size=2><FONT color=#000000>.NewChild(someParentID, childItem);</FONT></P>
+<P></FONT><FONT color=#000000 size=2>if</FONT><FONT size=2><FONT color=#000000> (!Contains(newItem))</FONT></P>
+<P></FONT><FONT color=#000000 size=2>this</FONT><FONT size=2><FONT color=#000000>.Add(newItem);</FONT></P>
+<P><FONT color=#000000>}</FONT></P>
+<P></FONT><FONT color=#000000><FONT size=2>public</FONT><FONT size=2> </FONT><FONT size=2>void</FONT><FONT size=2> RemoveChild(</FONT><FONT size=2>int</FONT><FONT size=2> someParentID, </FONT><FONT size=2>string</FONT></FONT><FONT size=2><FONT color=#000000> childItem)</FONT></P>
+<P><FONT color=#000000>{</FONT></P>
+<P></FONT><FONT color=#000000><FONT size=2>Child</FONT><FONT size=2>&nbsp;newItem = Child</FONT></FONT><FONT size=2><FONT color=#000000>.NewChild(someParentID, childItem);</FONT></P>
+<P></FONT><FONT color=#000000><FONT size=2>foreach</FONT><FONT size=2> (Child</FONT><FONT size=2> item </FONT><FONT size=2>in</FONT><FONT size=2> </FONT><FONT size=2>this</FONT></FONT><FONT size=2><FONT color=#000000>)</FONT></P>
+<P><FONT color=#000000>{</FONT></P>
+<P></FONT><FONT color=#000000 size=2>if</FONT><FONT size=2><FONT color=#000000> (item.ParentID == someParentID &amp;&amp; item.ChildItem == chilItem)</FONT></P>
+<P><FONT color=#000000>{</FONT></P>
+<P><FONT color=#000000>Remove(item);</FONT></P>
+<P></FONT><FONT color=#000000 size=2>break</FONT><FONT size=2><FONT color=#000000>;</FONT></P>
+<P><FONT color=#000000>}</FONT></P>
+<P><FONT color=#000000>}</FONT></P>
+<P><FONT color=#000000>}</FONT></P></FONT><FONT size=2>
+<P><FONT color=#000000>#endregion</FONT></P>
+<P><FONT color=#000000>#region</FONT></FONT><FONT size=2><FONT color=#000000> Factory Methods</FONT></P>
+<P></FONT><FONT size=2><FONT color=#000000>// The factory methods are declared as internal scope since they are not for use by the</FONT></P></FONT><FONT size=2>
+<P></FONT><FONT color=#000000 size=2>// UI code, </FONT></P>
+<P><FONT size=2></FONT><FONT color=#000000><FONT size=2>internal</FONT><FONT size=2> </FONT><FONT size=2>static</FONT><FONT size=2> </FONT><FONT size=2>ChildList</FONT></FONT><FONT size=2><FONT color=#000000> NewChildList()</FONT></P>
+<P><FONT color=#000000>{</FONT></P>
+<P></FONT><FONT size=2><FONT color=#000000>//Returns a new instance of the collection object</FONT></P></FONT><FONT size=2>
+<P></FONT><FONT color=#000000><FONT size=2>return</FONT><FONT size=2> </FONT><FONT size=2>new</FONT><FONT size=2> </FONT><FONT size=2>ChildList</FONT></FONT><FONT size=2><FONT color=#000000>();</FONT></P>
+<P><FONT color=#000000>}</FONT></P>
+<P></FONT><FONT color=#000000><FONT size=2>internal</FONT><FONT size=2> </FONT><FONT size=2>static</FONT><FONT size=2> </FONT><FONT size=2>ChildList</FONT><FONT size=2> GetChildList(</FONT><FONT size=2>NullableDataReader</FONT></FONT><FONT size=2><FONT color=#000000> dr)</FONT></P>
+<P><FONT color=#000000>{</FONT></P>
+<P></FONT><FONT size=2><FONT color=#000000>//Returns collection with the child objects based on the data from the database</FONT></P></FONT><FONT size=2>
+<P></FONT><FONT color=#000000><FONT size=2>return</FONT><FONT size=2> </FONT><FONT size=2>new</FONT><FONT size=2> </FONT><FONT size=2>ChildList</FONT></FONT><FONT size=2><FONT color=#000000>(dr);</FONT></P>
+<P><FONT color=#000000>}</FONT></P></FONT><FONT size=2>
+<P><FONT color=#000000>#endregion</FONT></P>
+<P><FONT color=#000000>#region</FONT></FONT><FONT size=2><FONT color=#000000> Constructor</FONT></P>
+<P></FONT><FONT color=#000000 size=2>private</FONT><FONT size=2><FONT color=#000000> ChildList()</FONT></P>
+<P><FONT color=#000000>{</FONT></P>
+<P><FONT color=#000000>MarkAsChild();</FONT></P>
+<P><FONT color=#000000>}</FONT></P>
+<P></FONT><FONT color=#000000><FONT size=2>private</FONT><FONT size=2> ChildList(</FONT><FONT size=2>NullableDataReader</FONT></FONT><FONT size=2><FONT color=#000000> dr)</FONT></P>
+<P><FONT color=#000000>{</FONT></P>
+<P><FONT color=#000000>MarkAsChild();</FONT></P>
+<P><FONT color=#000000>Fetch(dr);</FONT></P>
+<P><FONT color=#000000>}</FONT></P></FONT><FONT size=2>
+<P><FONT color=#000000>#endregion</FONT></P>
+<P><FONT color=#000000>#region</FONT></FONT><FONT size=2><FONT color=#000000> Data Access</FONT></P>
+<P></FONT><FONT size=2><FONT color=#000000>//Loading Data</FONT></P></FONT><FONT size=2>
+<P></FONT><FONT color=#000000><FONT size=2>private</FONT><FONT size=2> </FONT><FONT size=2>void</FONT><FONT size=2> Fetch(</FONT><FONT size=2>NullableDataReader</FONT></FONT><FONT size=2><FONT color=#000000> dr)</FONT></P>
+<P><FONT color=#000000>{</FONT></P>
+<P><FONT color=#000000>RaiseListChangedEvents = </FONT></FONT><FONT color=#000000 size=2>false</FONT><FONT size=2><FONT color=#000000>;</FONT></P>
+<P></FONT><FONT color=#000000 size=2>while</FONT><FONT size=2><FONT color=#000000> (dr.Read())</FONT></P>
+<P></FONT><FONT color=#000000><FONT size=2>this</FONT><FONT size=2>.Add(</FONT><FONT size=2>Child</FONT></FONT><FONT size=2><FONT color=#000000>.GetChild(dr));</FONT></P>
+<P><FONT color=#000000>RaiseListChangedEvents = </FONT></FONT><FONT color=#000000 size=2>true</FONT><FONT size=2><FONT color=#000000>;</FONT></P>
+<P><FONT color=#000000>}</FONT></P>
+<P></FONT><FONT size=2><FONT color=#000000>//Updating Data</FONT></P></FONT><FONT size=2>
+<P></FONT><FONT color=#000000><FONT size=2>internal</FONT><FONT size=2> </FONT><FONT size=2>void</FONT><FONT size=2> Update(</FONT><FONT size=2>SomeParent</FONT></FONT><FONT size=2><FONT color=#000000> someParent)</FONT></P>
+<P><FONT color=#000000>{</FONT></P>
+<P><FONT color=#000000>RaiseListChangedEvents = </FONT></FONT><FONT color=#000000 size=2>false</FONT><FONT size=2><FONT color=#000000>;</FONT></P>
+<P></FONT><FONT size=2><FONT color=#000000>// Delete the child objects that are removed from the collection</FONT></P></FONT><FONT size=2>
+<P></FONT><FONT color=#000000><FONT size=2>foreach</FONT><FONT size=2> (</FONT><FONT size=2>Child</FONT><FONT size=2> item </FONT><FONT size=2>in</FONT></FONT><FONT size=2><FONT color=#000000> DeletedList)</FONT></P>
+<P><FONT color=#000000>item.DeleteSelf(</FONT></FONT><FONT color=#000000 size=2>Convert</FONT><FONT size=2><FONT color=#000000>.ToInt32(item.ParentID), item.ChildItem);</FONT></P>
+<P><FONT color=#000000>DeletedList.Clear();</FONT></P>
+<P></FONT><FONT size=2><FONT color=#000000>// Add or Update any current child objects</FONT></P></FONT><FONT size=2>
+<P></FONT><FONT color=#000000><FONT size=2>foreach</FONT><FONT size=2> (</FONT><FONT size=2>Child</FONT><FONT size=2> item </FONT><FONT size=2>in</FONT><FONT size=2> </FONT><FONT size=2>this</FONT></FONT><FONT size=2><FONT color=#000000>)</FONT></P>
+<P><FONT color=#000000>{</FONT></P>
+<P></FONT><FONT color=#000000 size=2>if</FONT><FONT size=2><FONT color=#000000> (item.IsNew)</FONT></P>
+<P><FONT color=#000000>item.Insert();</FONT></P>
+<P></FONT><FONT size=2><FONT color=#000000>else</FONT></P></FONT><FONT size=2>
+<P><FONT color=#000000>item.Update();</FONT></P>
+<P><FONT color=#000000>}</FONT></P>
+<P><FONT color=#000000>RaiseListChangedEvents = </FONT></FONT><FONT color=#000000 size=2>true</FONT><FONT size=2><FONT color=#000000>;</FONT></P>
+<P><FONT color=#000000>}</FONT></P></FONT><FONT color=#000000 size=2>
+<P>#endregion</P></FONT><FONT color=#000000 size=2>
+<P>}</P>
+<P>&nbsp;</P>
+<P>Now the Child itself</P><FONT color=#008000 size=2>
+<P>// Business Base Class</P></FONT><FONT size=2>
+<P></FONT><FONT color=#008000 size=2>// Child Object</P></FONT><FONT size=2>
+<P>[</FONT><FONT color=#2b91af size=2>Serializable</FONT><FONT size=2>()]</P>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>class</FONT><FONT size=2> </FONT><FONT color=#2b91af size=2>Child</FONT><FONT size=2>: </FONT><FONT color=#2b91af size=2>BusinessBase</FONT><FONT size=2>&lt;Child</FONT><FONT size=2>&gt;</P>
+<P>{</P></FONT><FONT color=#0000ff size=2>
+<P>#region</FONT><FONT size=2> Public Properties</P></FONT><FONT color=#0000ff size=2>
+<P>#region</FONT><FONT size=2> ParentID</P>
+<P></FONT><FONT color=#0000ff size=2>private</FONT><FONT size=2> </FONT><FONT color=#2b91af size=2>Int32</FONT><FONT size=2>? _parentID = </FONT><FONT color=#0000ff size=2>null</FONT><FONT size=2>;</P>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#2b91af size=2>Int32</FONT><FONT size=2>? ParentID</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>get</P></FONT><FONT size=2>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> _parentID;</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>set</P></FONT><FONT size=2>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (_parentID != </FONT><FONT color=#0000ff size=2>value</FONT><FONT size=2>)</P>
+<P>{</P>
+<P>_parentID = </FONT><FONT color=#0000ff size=2>value</FONT><FONT size=2>;</P>
+<P>}</P>
+<P>}</P>
+<P>}</P></FONT><FONT color=#0000ff size=2>
+<P>#endregion</P>
+<P>#region</FONT><FONT size=2> ChildItem</P>
+<P></FONT><FONT color=#0000ff size=2>private</FONT><FONT size=2> </FONT><FONT color=#2b91af size=2>String</FONT><FONT size=2> _childItem = </FONT><FONT color=#0000ff size=2>null</FONT><FONT size=2>;</P>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#2b91af size=2>String</FONT><FONT size=2> ChildItem</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>get</P></FONT><FONT size=2>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> _childItem;</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>set</P></FONT><FONT size=2>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (_childItem != </FONT><FONT color=#0000ff size=2>value</FONT><FONT size=2>)</P>
+<P>{</P>
+<P>_childItem = </FONT><FONT color=#0000ff size=2>value</FONT><FONT size=2>;</P>
+<P>}</P>
+<P>}</P>
+<P>}</P></FONT><FONT color=#0000ff size=2>
+<P>#endregion</P></FONT><FONT color=#0000ff size=2>
+<P>#endregion</P>
+<P>#region</FONT><FONT size=2> BusinessBase Requirements</P>
+<P></FONT><FONT color=#0000ff size=2>protected</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>override</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>object</FONT><FONT size=2> GetIdValue()</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>string</FONT><FONT size=2>.Format(</FONT><FONT color=#a31515 size=2>"{0}:{1}"</FONT><FONT size=2>, _parentID, _childItem);</P>
+<P>}</P></FONT><FONT color=#0000ff size=2>
+<P>#endregion</P></FONT><FONT color=#0000ff size=2>
+<P>#region</FONT><FONT size=2> Constructors</P>
+<P></FONT><FONT color=#008000 size=2>// Default private constructor</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>private</FONT><FONT size=2> Child()</P>
+<P>{</P>
+<P>MarkAsChild();</P>
+<P>}</P>
+<P></FONT><FONT color=#008000 size=2>// New </P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>private</FONT><FONT size=2> Child(</FONT><FONT color=#0000ff size=2>int</FONT><FONT size=2> parentID, </FONT><FONT color=#0000ff size=2>string</FONT><FONT size=2> childItem)</P>
+<P>{</P>
+<P>MarkAsChild();</P>
+<P>_parentID = parentID;</P>
+<P>_childItem = childItem;</P>
+<P>}</P>
+<P></FONT><FONT color=#008000 size=2>// Get</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>private</FONT><FONT size=2> Child(</FONT><FONT color=#2b91af size=2>NullableDataReader</FONT><FONT size=2> dr)</P>
+<P>{</P>
+<P>MarkAsChild();</P>
+<P>_parentID = dr.GetNullableInt32(</FONT><FONT color=#a31515 size=2>"ParentID"</FONT><FONT size=2>);</P>
+<P>_childItem = dr.GetNullableString(</FONT><FONT color=#a31515 size=2>"ChildItem"</FONT><FONT size=2>);</P></FONT><FONT size=2>
+<P>MarkOld();</P>
+<P>}</P></FONT><FONT color=#0000ff size=2>
+<P>#endregion</P>
+<P>#region</FONT><FONT size=2> Factory Method</P>
+<P></FONT><FONT color=#0000ff size=2>internal</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>static</FONT><FONT size=2>&nbsp;</FONT><FONT color=#2b91af size=2>Child</FONT><FONT size=2> NewChild(</FONT><FONT color=#0000ff size=2>int</FONT><FONT size=2> parentID, </FONT><FONT color=#0000ff size=2>string</FONT><FONT size=2> childItem)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> Child</FONT><FONT size=2>(parentID, childItem);</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>internal</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>static</FONT><FONT size=2> </FONT><FONT color=#2b91af size=2>Child</FONT><FONT size=2>GetChild(</FONT><FONT color=#2b91af size=2>NullableDataReader</FONT><FONT size=2> dr)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> Child</FONT><FONT size=2>(dr);</P>
+<P>}</P></FONT><FONT color=#0000ff size=2>
+<P>#endregion</P>
+<P>#region</FONT><FONT size=2> Data Access</P>
+<P></FONT><FONT color=#0000ff size=2>internal</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>void</FONT><FONT size=2> Insert()</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>using</FONT><FONT size=2> (</FONT><FONT color=#2b91af size=2>DbConnection</FONT><FONT size=2> conn = </FONT><FONT color=#2b91af size=2>Database</FONT><FONT size=2>.DBConnection)</P>
+<P>{</P>
+<P>conn.Open();</P>
+<P></FONT><FONT color=#0000ff size=2>using</FONT><FONT size=2> (</FONT><FONT color=#2b91af size=2>DbCommand</FONT><FONT size=2> cmd = conn.CreateCommand())</P>
+<P>{</P>
+<P>cmd.CommandText = </FONT><FONT color=#a31515 size=2>"ChildInsert"</FONT><FONT size=2>;</P>
+<P>cmd.CommandType = </FONT><FONT color=#2b91af size=2>CommandType</FONT><FONT size=2>.StoredProcedure;</P>
+<P></FONT><FONT color=#2b91af size=2>DbParameter</FONT><FONT size=2> param;</P></FONT><FONT color=#0000ff size=2>
+<P>#region</FONT><FONT size=2> @p_ParentID</P>
+<P>param = cmd.CreateParameter();</P>
+<P>param.ParameterName = </FONT><FONT color=#a31515 size=2>"@p_ParentID"</FONT><FONT size=2>;</P>
+<P>param.DbType = </FONT><FONT color=#2b91af size=2>DbType</FONT><FONT size=2>.Int32;</P>
+<P>param.Direction = </FONT><FONT color=#2b91af size=2>ParameterDirection</FONT><FONT size=2>.Input;</P>
+<P>param.Value = </FONT><FONT color=#2b91af size=2>Database</FONT><FONT size=2>.DBNullConvert(_parentID);</P>
+<P>cmd.Parameters.Add(param);</P></FONT><FONT color=#0000ff size=2>
+<P>#endregion</P>
+<P>#region</FONT><FONT size=2> @p_ChildItem</P>
+<P>param = cmd.CreateParameter();</P>
+<P>param.ParameterName = </FONT><FONT color=#a31515 size=2>"@p_ChildItem"</FONT><FONT size=2>;</P>
+<P>param.DbType = </FONT><FONT color=#2b91af size=2>DbType</FONT><FONT size=2>.AnsiString;</P>
+<P>param.Direction = </FONT><FONT color=#2b91af size=2>ParameterDirection</FONT><FONT size=2>.Input;</P>
+<P>param.Value = </FONT><FONT color=#2b91af size=2>Database</FONT><FONT size=2>.DBNullConvert(_childItem);</P>
+<P>cmd.Parameters.Add(param);</P></FONT><FONT color=#0000ff size=2>
+<P>#endregion</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>int</FONT><FONT size=2> rowsAffected = cmd.ExecuteNonQuery();</P>
+<P>}</P>
+<P>}</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>internal</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>void</FONT><FONT size=2> Update()</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (</FONT><FONT color=#0000ff size=2>base</FONT><FONT size=2>.IsDirty)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>using</FONT><FONT size=2> (</FONT><FONT color=#2b91af size=2>DbConnection</FONT><FONT size=2> conn = </FONT><FONT color=#2b91af size=2>Database</FONT><FONT size=2>.DBConnection)</P>
+<P>{</P>
+<P>conn.Open();</P>
+<P></FONT><FONT color=#0000ff size=2>using</FONT><FONT size=2> (</FONT><FONT color=#2b91af size=2>DbCommand</FONT><FONT size=2> cmd = conn.CreateCommand())</P>
+<P>{</P>
+<P>cmd.CommandText = </FONT><FONT color=#a31515 size=2>"ChildUpdate"</FONT><FONT size=2>;</P>
+<P>cmd.CommandType = </FONT><FONT color=#2b91af size=2>CommandType</FONT><FONT size=2>.StoredProcedure;</P>
+<P></FONT><FONT color=#2b91af size=2>DbParameter</FONT><FONT size=2> param;</P></FONT><FONT color=#0000ff size=2>
+<P>#region</FONT><FONT size=2> @p_ParentID</P>
+<P>param = cmd.CreateParameter();</P>
+<P>param.ParameterName = </FONT><FONT color=#a31515 size=2>"@p_ParentID"</FONT><FONT size=2>;</P>
+<P>param.DbType = </FONT><FONT color=#2b91af size=2>DbType</FONT><FONT size=2>.Int32;</P>
+<P>param.Direction = </FONT><FONT color=#2b91af size=2>ParameterDirection</FONT><FONT size=2>.Input;</P>
+<P>param.Value = </FONT><FONT color=#2b91af size=2>Database</FONT><FONT size=2>.DBNullConvert(_parentID);</P>
+<P>cmd.Parameters.Add(param);</P></FONT><FONT color=#0000ff size=2>
+<P>#endregion</P>
+<P>#region</FONT><FONT size=2> @p_childItem</P>
+<P>param = cmd.CreateParameter();</P>
+<P>param.ParameterName = </FONT><FONT color=#a31515 size=2>"@p_childItem"</FONT><FONT size=2>;</P>
+<P>param.DbType = </FONT><FONT color=#2b91af size=2>DbType</FONT><FONT size=2>.AnsiString;</P>
+<P>param.Direction = </FONT><FONT color=#2b91af size=2>ParameterDirection</FONT><FONT size=2>.Input;</P>
+<P>param.Value = </FONT><FONT color=#2b91af size=2>Database</FONT><FONT size=2>.DBNullConvert(_childItem);</P>
+<P>cmd.Parameters.Add(param);</P></FONT><FONT color=#0000ff size=2>
+<P>#endregion</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>int</FONT><FONT size=2> rowsAffected = cmd.ExecuteNonQuery();</P>
+<P>}</P>
+<P>}</P>
+<P>}</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>internal</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>void</FONT><FONT size=2> DeleteSelf(</FONT><FONT color=#0000ff size=2>int</FONT><FONT size=2> ParentID, </FONT><FONT color=#0000ff size=2>string</FONT><FONT size=2> childItem)</P>
+<P>{</P>
+<P>Delete(parentID, childItem);</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>internal</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>void</FONT><FONT size=2> Delete(</FONT><FONT color=#0000ff size=2>int</FONT><FONT size=2> parentID, </FONT><FONT color=#0000ff size=2>string</FONT><FONT size=2> childItem)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>using</FONT><FONT size=2> (</FONT><FONT color=#2b91af size=2>DbConnection</FONT><FONT size=2> conn = </FONT><FONT color=#2b91af size=2>Database</FONT><FONT size=2>.DBConnection)</P>
+<P>{</P>
+<P>conn.Open();</P>
+<P></FONT><FONT color=#0000ff size=2>using</FONT><FONT size=2> (</FONT><FONT color=#2b91af size=2>DbCommand</FONT><FONT size=2> cmd = conn.CreateCommand())</P>
+<P>{</P>
+<P>cmd.CommandType = </FONT><FONT color=#2b91af size=2>CommandType</FONT><FONT size=2>.StoredProcedure;</P>
+<P>cmd.CommandText = </FONT><FONT color=#a31515 size=2>"ChildDelete"</FONT><FONT size=2>;</P>
+<P></FONT><FONT color=#2b91af size=2>DbParameter</FONT><FONT size=2> param;</P></FONT><FONT color=#0000ff size=2>
+<P>#region</FONT><FONT size=2> @p_ParentID</P>
+<P>param = cmd.CreateParameter();</P>
+<P>param.ParameterName = </FONT><FONT color=#a31515 size=2>"@p_ParentID"</FONT><FONT size=2>;</P>
+<P>param.DbType = </FONT><FONT color=#2b91af size=2>DbType</FONT><FONT size=2>.Int32;</P>
+<P>param.Direction = </FONT><FONT color=#2b91af size=2>ParameterDirection</FONT><FONT size=2>.Input;</P>
+<P>param.Value = </FONT><FONT color=#2b91af size=2>Database</FONT><FONT size=2>.DBNullConvert(parentID);</P>
+<P>cmd.Parameters.Add(param);</P></FONT><FONT color=#0000ff size=2>
+<P>#endregion</P>
+<P>#region</FONT><FONT size=2> @p_ChildItem</P>
+<P>param = cmd.CreateParameter();</P>
+<P>param.ParameterName = </FONT><FONT color=#a31515 size=2>"@p_ChildItem"</FONT><FONT size=2>;</P>
+<P>param.DbType = </FONT><FONT color=#2b91af size=2>DbType</FONT><FONT size=2>.AnsiString;</P>
+<P>param.Direction = </FONT><FONT color=#2b91af size=2>ParameterDirection</FONT><FONT size=2>.Input;</P>
+<P>param.Value = </FONT><FONT color=#2b91af size=2>Database</FONT><FONT size=2>.DBNullConvert(assetUsage);</P>
+<P>cmd.Parameters.Add(param);</P></FONT><FONT color=#0000ff size=2>
+<P>#endregion</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>int</FONT><FONT size=2> rowsDeleted = cmd.ExecuteNonQuery();</P>
+<P>}</P>
+<P>}</P>
+<P>}</P></FONT><FONT color=#0000ff size=2>
+<P>#endregion</P></FONT><FONT size=2>
+<P>}</P></FONT>
+<P>Now on the UI</P>
+<P>SomeParent someParent = SomeParent.Get(SomeID);//Get the Parent and its children</P>
+<P>For adding a child to the collection call the public method AddChild of ChildList object which in turn checks to see whether child already exists and then calls the internal constructor.</P>
+<P>someParent.ChildList.AddChild(newID,newChildItem)</P>
+<P>For removing a child from the collection call the public method RemoveChild of ChildList object</P>
+<P>someParent.ChildList.RemoveChild(somechildID,somechildItem)</P>
+<P>Update the Parent someParent.</P>
+<P>someParent.Save();</P>
+<P>This would mean that all the objects are updated in the same transaction scope hence the child list update doesn not require transactional scope and&nbsp;so the Update is&nbsp;called in the SomeParent transaction scope.This would rollback the whole transaction and would prevent inconsistency.</P>
+<P>1) The above example still would work if you want to add the children in a separate form.Get the parent and children(in this case someParent but a empty children list) and use the AddChild() to add and save the Parent.</P>
+<P>2)The IDs for the child objects would have to be created when the the factory method AddChild() calls the internal constructors.In my case I had a composite key and hence I pass the parentID and another value(childItem) wchihc forms the key for the child object.</P>
+<P>HTH,</P>
+<P>Note:I modifed my class so there might be some typos :-(.I created these based on the same example in the text book but instead of the Assign factory method I had to add AddChild and RemoveChild methods.One more issue was configuring the MSDTC to allow distributed transactions.</P>
+<P>Cheers</P></FONT></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jfreeman replied on Friday, February 15, 2008</h2>Would the BOs layout the same way using the new 3.5 edition of the framework?&nbsp; Thanks<br><br>Jonathan<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Inquistive_Mind replied on Friday, February 15, 2008</h2><P>Hi,</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp; I am not quite sure about it since we have not moved to that yet.</P>
+<P>Cheers</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>zinovate replied on Wednesday, June 04, 2008</h2><P>From another Forum post <A href="http://www.lhotka.net/weblog/CSLANET35CodeReductionWithChildObjects.aspx">http://www.lhotka.net/weblog/CSLANET35CodeReductionWithChildObjects.aspx</A></P>
+<P>&nbsp;</P>
+<P>It looks like you can still code the child objects in CSLA 2.0 or using the new 3.5 Child_XXX Methods that auto mark the object as childern.</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

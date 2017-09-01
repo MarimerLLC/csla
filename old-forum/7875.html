@@ -1,0 +1,149 @@
+<html><header><title>Getting JSON from CSLA Business Objects.</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Getting JSON from CSLA Business Objects.</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/7875.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>tarekahf posted on Monday, October 26, 2009</h2><P>I am considering using CSLA .NET&nbsp;DataSource as input to YUI DataSource <A href="http://developer.yahoo.com/yui/datasource/">http://developer.yahoo.com/yui/datasource/</A>, to get results as JSON from the CSLA DataSource.</P>
+<P>I am just wondering if any work has been done on this before ?</P>
+<P>In other words, I want to add a Shared Method to an existing CSLA Business Object to return the object content as JSON.</P>
+<P>Appreciate your feedback/comments.</P>
+<P>Tarek.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, October 26, 2009</h2><P>A JSON interface is the same as an XML interface - in both cases you are talking about building an interface on top of your objects.</P>
+<P>Chapter 21 in <EM>Expert 2008 Business Objects</EM> talks about building service interfaces on top of objects. While I don't specifically discuss JSON (or REST), the concepts from the chapter are valid for those technologies just as much as for XML services.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tarekahf replied on Monday, October 26, 2009</h2>Hi Rocky,<br><br>Thanks a lot for your helpful reply.<br><br>I need your feedback on the following:<br><br>1. What do you think about this approach: integrating YUI Controls and .NET Controls (CSLA.NET Objects) to take advantage of the power of both technologies ?<br><br><br>2. It is good that YUI DataSource controls also supports XML Interfaces. Looks like it does not support calls to Web Services (SOAP). I have the book Expert VB 2005 Business Objects. Do I still need to get Expert 2008 Business Objects to write XML Interface against CSLA Objects ? Becuase I am still on CSLA for .NET 2.0. Do I have to upgrade to write XML Interface for YUI DataSource ? Could you please give me some hints on this direction based on the resources availble to me now ?<br><br>Appreciate your help.<br><br>Tarek.<br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, October 26, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I am not familiar with this YUI library, and don&#8217;t have time to
+research it now, so I don&#8217;t know that I can answer.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>No, you do not need to upgrade CSLA. You can read Chapter 11 of
+the <i>Expert 2005 Business Objects</i> book and the concept is the same.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>JSON or XML services should be considered to be an interface
+over your objects, just like HTML is consider to be an interface. Business
+objects should not know how to generate the interface &#8211; that way leads to
+disaster (are you going to have ToXml(), ToJson(), ToHtml(), ToWindowsForm(), ToXaml()
+and other methods on every object?).<o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tarekahf replied on Monday, October 26, 2009</h2>So you are saying that I should <b>not</b> add methods like: ToJson() or ToXml() for each object ? May I know why ?<br><br>Do you mean that I should implement a wrapper class over each object that will generate the required interface ?<br><br>I was thinking to add a Method just like that "ToXML()" for each
+object, and write a regular ASPX Page that will create the object based
+on parameted from the Query String, and then get the XML and use
+Respone.Write() to send the XML result back to YUI DataSource.<br><br>Appreciate your feedback.<br><br>Tarek.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, October 26, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I think my previous post should have been clear.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>If you add ToXml(), then ToJson(), why not ToHtml()? And
+ToAjaxHtml() and ToXaml()?<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>You are mixing the concept of <i>interface</i> into your
+business layer, which breaks down the architectural separation of concerns.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>What happens when you learn that the way you render your XML or
+Json doesn&#8217;t match someone&#8217;s needs? Do you have ToJson() and ToJson2() and
+ToJson3()?<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Putting interface code into the business layer breaks the
+layered architecture concept, and leads to unmaintainable code.</span><b><span><o:p></o:p></span></b></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tarekahf replied on Monday, October 26, 2009</h2>Ok, I see your point.<br><br>What do you suggest to implement such interface ?<br><br>Should I create another class (or another Object) which will be a wrapper to the original Business Object which will have only the required methods such as ToXML(), ToJson(), or ToHTML() ... and then later, if different requirements are needed, then we can add ToJson2(), ToJson3() or ToXML2() ...etc ?<br><br>After I create this new wrapper class, then the only way I see to provide the XML and/or Json Interface is by creating another ASPX Page that will invoke the Wrapper Class methods to get the required XML/Json or whatever, then use Respone.ContentType and Respone.Write() to send the results to YUI DataSource consumer.<br><br>I simply need to get an XML Representation to my CSLA.NET Business Object, so that it can be consumed by YUI DataSource Control.<br><br>The reason why I am asking here is to get advise on how best to implement such requirements.<br><br>Appreciate your advise.<br><br>Tarek.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tarekahf replied on Monday, October 26, 2009</h2>The reason I am asking on the recommended approach is that I was told once that I must write HTTP Handlers if I want to provide such Interface to Business Objects.<br><br>But, I see that HTTP Handlers are a bit complicated for such requirements.<br><br>Tarek.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tmg4340 replied on Monday, October 26, 2009</h2><P><FONT face=Tahoma size=2>You will probably be well-advised to read the chapters on XML services and CSLA, and to get familiar with XML Web services.&nbsp; Since you're still in VS 2005, you'll have to roll your own JSON support, but it&nbsp;basically works the same as an XML service.&nbsp; Essentially, you are building another interface on top of your BO's, much like an ASPX page.&nbsp; However, in the XML case, it's an ASMX page which handles the XML translation for you.&nbsp; If you need JSON, then you can build ASPX pages and use Response.Write.&nbsp; If you want to handle both types within a single page, then you can do your XML translation in an ASPX page as well, but you'll have to do it by hand, just like you do your JSON format.</FONT></P>
+<P><FONT face=Tahoma size=2>You don't build your BO's to deal with that interface - you use the interface to shape what your BO's return.&nbsp; That doesn't mean you create wrapper classes for each of your BO's -&nbsp;the code-behind of your service&nbsp;page is doing the wrapping for you.&nbsp; If you need multiple data shapes from your BO, those become multiple methods on your service page, or different service pages.&nbsp; But you don't do anything to your BO's.</FONT></P>
+<P><FONT face=Tahoma size=2>HTH</FONT></P>
+<P><FONT face=Tahoma size=2>- Scott</FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tarekahf replied on Monday, October 26, 2009</h2><p>tmg4340,</p><p>May thanks for the reply.</p><p>When you say XML Service, you actually mean a Web Service ? Using SOAP Format ?<br></p><p>I am very much familiar with developing Web Services as a wrapper for CSLA .NET Business Objects. Very easy job for me. But the problem here (as per my understanding) is that the YUI DataSource does not understand the results of SOAP Based XML Reply (Web Service), and in turn, cannot consume such XML web services.</p><p>It appears to me that I have to develop a wrapper of some kind that will generate the XML representation of the Business Object as per the format required by the YUI DataSource Control.</p><p>Appreciate your feedback/advise.</p><p>Tarek.<br></p><p><br></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, October 26, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Yes, you should create another object that maps the business layer
+information to the interface layer.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>This is what an ASP.NET Page (aspx, etc) does to get business
+object properties into HTML, and is exactly what you should do for a service.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>You can do this as you suggest, with an aspx page that writes
+out the stream. Or an asmx page. Or as you say, an HttpHandler.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>But a lot of people do this sort of thing with an aspx page.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Technically you don&#8217;t need some other object either &#8211; the
+generation of XML or JSON can be done in the aspx page.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Which almost makes sense if you think about it &#8211; an aspx page
+usually renders HTML, you are just having it render JSON or XML.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>And if you want a page with a different format you create a
+different aspx page right? So if you need different XML or JSON you&#8217;d just
+create a different aspx page for that too. Otherwise how does the calling app
+know what it is asking for?<o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tarekahf replied on Monday, October 26, 2009</h2>Rocky,<br><br>Thanks a lot ! I feel now confortable with my direction. Looks like my understaning is correct. I will not use HttpHanldlers since they look complicated to me and I do not see the added value.<br><br>I can't wait to see the power of YUI Controls with my CSLA .NET Objects !<br><br>Tarek.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tarekahf replied on Tuesday, October 27, 2009</h2><P>I found the following additional resource related to this topic for those who are interested:<BR><BR><A href="http://developer.yahoo.com/yui/examples/datatable/dt_xhrpostxml.html">http://developer.yahoo.com/yui/examples/datatable/dt_xhrpostxml.html</A>&nbsp;(for this exmaple, the source is XML and is located <A href="http://developer.yahoo.com/yui/examples/datatable/assets/php/ylocal_proxy.php?query=pizza&amp;zip=94089&amp;results=10">here</A>)<BR><BR><A href="http://yuiblog.com/blog/2008/10/15/datatable-260-part-one">http://yuiblog.com/blog/2008/10/15/datatable-260-part-one</A><BR><BR><A href="http://mattberseth.com/blog/2008/09/dynamic_data_experimenting_wit.html">http://mattberseth.com/blog/2008/09/dynamic_data_experimenting_wit.html</A>&nbsp;(this example uses .NET 3.5, Json Built-in support in .NET, Web Service, and YUI DataTable.)</P>
+<P>Tarek.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rasupit replied on Wednesday, October 28, 2009</h2>If your web service only need to support Json and not Soap, you should be able to convert CSLA object to json with very little/no pain.&nbsp; Json serializer works just fine with CSLA objects.<br><br>There are two ways you can do this. 1. Simply returns CSLA object on your ScriptMethod within asmx. 2. use System.Web.Script.Serialization.JavaScriptSerializer to generate json object string that you can render however you like within your aspx page.<br><br>You can also use System.Web.Script.Serialization.ScriptIgnoreAttribute to exclude properties from serialization.&nbsp; I use this attribute to exclude all the IsXXX properties to reduce the footprint.<br><br>HTH,<br>Ricky<br><br><br><br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tarekahf replied on Thursday, October 29, 2009</h2>Ricky,<br><br>Thanks for the helpful reply. It is really great to know that Json is natively supported by .NET 3.5. I was investigating Json.Net and Jayrock for .NET 2.0. Can you imagine the effort I saved now ?<br><br>The problem in my case is that I am on VS 2005 + .NET 2.0 + CSLA 2.0. What do I need to do now ?<br><br>Do you think I can also upgrade to .NET 3.5 &amp; CSLA .NET 3.X and still keep on using VS 2005 ?<br><br>My plan is to start upgrading gradually until I am sure everything is OK.<br><br>Maybe I can Just download .NET 3.5 then add a reference to the .NET Assembly in my project ? Everything else is then supposed to work properly ?<br><br>I hope it is going to be that easy.<br><br>Appreciate your help.<br><br>Tarek.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rasupit replied on Thursday, October 29, 2009</h2>Tarek,<br><br>ASP.NET Ajax is supported since .NET 2.0.&nbsp; Unlike .NET 3.5, the Ajax extension comes in a separate download.<br><br>Here is the download site of <a href="http://www.asp.net/ajax/downloads/archive/">ASP.NET Ajax for ASP.NET 2.0</a> <br><br>HTH,<br>Ricky<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tarekahf replied on Saturday, April 03, 2010</h2><p>Just a quick update on this topic.</p>
+<p>With EssentialObjects Grid Control (and probably other controls too), there is no need to serialize Csla Objects to XML nor Json. EO.Web Controls supports CslaDataSource out of the box.</p>
+<p>See this link for more details:</p>
+<p><a href="http://forums.lhotka.net/forums/p/8758/41666.aspx#41666">http://forums.lhotka.net/forums/p/8758/41666.aspx#41666</a></p>
+<p>Tarek.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

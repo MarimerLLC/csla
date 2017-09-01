@@ -1,0 +1,40 @@
+<html><header><title>Edit level mismatch in AcceptChanges CSLA 4.1 Silverlight</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Edit level mismatch in AcceptChanges CSLA 4.1 Silverlight</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10031.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>JJLoubser posted on Friday, February 04, 2011</h2><p>&nbsp;</p>
+<p>why this error:</p>
+<p>Edit level mismatch in AcceptChanges
+   at Csla.Core.UndoableBase.AcceptChanges(Int32 parentEditLevel)
+   at Csla.Core.UndoableBase.Csla.Core.IUndoableObject.AcceptChanges(Int32 parentEditLevel, Boolean parentBindingEdit)
+   at Csla.Core.FieldManager.FieldDataManager.Csla.Core.IUndoableObject.AcceptChanges(Int32 parentEditLevel, Boolean parentBindingEdit)
+   at Csla.Core.BusinessBase.AcceptingChanges()
+   at Csla.Core.UndoableBase.AcceptChanges(Int32 parentEditLevel)
+   at Csla.Core.BusinessBase.ApplyEdit()
+   at Csla.Xaml.CslaDataProvider.Save()</p>
+<p>&nbsp;</p>
+<p>------</p>
+<p>my bo object has a child of elements</p>
+<p>I use it in a viewmodel for a treeview in the xaml for building a observable collection from it</p>
+<p>all actions are working, but when I save I get the above error.</p>
+<p>the viewmodels that are use in depedence objects are this is set ManageObjectLifetime = false;</p>
+<p>that was the error with one of our other projects, but not in this case</p>
+<p>what else could be wrong.</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Friday, February 04, 2011</h2><p>Do you have a viewmodel for any child objects? ViewModelBase, by default, manages the Model object&#39;s lifetime - which means it calls BeginEdit automatically. It wouldn&#39;t call ApplyEdit automatically for a child object though.</p>
+<p>Usually what you do for a viewmodel that represents a child object, is in the viewmodel&#39;s constructor you set ManageObjectLifetime = false.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JJLoubser replied on Sunday, February 06, 2011</h2><p>yes, must we only have one viewmodel, because we have a viewmodel for every diffrent child.</p>
+<p>class layout:</p>
+<p>&nbsp;</p>
+<p>- ProductCatelogueEditViewModel&lt;CatelogueER&gt; : parent&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (child of ProductER without viewmodel link to CSLAAdapter)</p>
+<p>- ProductCatelogueCategoryViewmodel&lt;CatelogueCategoryEC&gt; : child of above&nbsp; and himself</p>
+<p>- ProductCatelogueItemViewmodel&lt;CatelogueItemEC&gt; : child of above</p>
+<p>for the treeview observablecollection for the xaml there are:</p>
+<p>- ProductCatelogueRootItem is a DependencyObject that contains ProductCatelogueEditViewmodel</p>
+<p>- ProductCatelogueCategoryItem is a DependencyObject that contains CatelogueCategoryViewmodel</p>
+<p>- ProductCatelogueItem is a DependencyObject that contains CatelogueItemViewmodel</p>
+<p>the treeview are build out of above items.</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, February 07, 2011</h2><p>I think about viewmodel objects as having the same parent-child hierarchy as the business objects they contain. Only the root viewmodel should have ManageObjectLifetime as true, so child viewmodels must explicitly set this value to false.</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JJLoubser replied on Tuesday, February 08, 2011</h2><p>yes thanks, my parent&#39;s manageobjectlifetime was true and all the children was false, the 1st child manageobjectlifetime is also false from the parent, that was not the problem, the problem was this:</p>
+<p>&nbsp;</p>
+<p>Csla.RelationshipTypes.Child was Csla.RelationshipTypes.lazyload //lazyload do not work </p>
+<p>in Parent:</p>
+<p>private static readonly PropertyInfo&lt;CatalogueER&gt; CatalogueProperty = RegisterProperty&lt;CatalogueER&gt;(p =&gt; p.Catalogue, Csla.RelationshipTypes.Child);<br />public CatalogueER Catalogue<br />{<br />&nbsp;&nbsp;&nbsp; get<br />&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (!FieldManager.FieldExists(CatalogueProperty) || ReadProperty(CatalogueProperty) == null)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return null; //new CatalogueER();<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; else<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return ReadProperty(CatalogueProperty);<br /><br />&nbsp;&nbsp;&nbsp; }<br />&nbsp;&nbsp;&nbsp; set<br />&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; LoadProperty(CatalogueProperty, value);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; OnPropertyChanged(&quot;Catalogue&quot;);<br />&nbsp;&nbsp;&nbsp; }<br />}</p>
+<p>this property is the 1st child and viemodel of the treeview in it are the category of category until items...</p>
+<p>&nbsp;</p>
+<p>lol thanks man</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

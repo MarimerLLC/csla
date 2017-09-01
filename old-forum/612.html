@@ -1,0 +1,50 @@
+<html><header><title>Removing items is slow</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Removing items is slow</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/612.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 posted on Thursday, July 13, 2006</h2>I have a DataGridView, and am using the following code to remove selected rows:<br><p class="MsoNormal"><span><span></span></span><span>private</span><span> </span><span>void</span><span> RemoveNumbersBtn_Click( </span><span>object</span><span> sender, </span><span>EventArgs</span><span> e ) {<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></span><span>List</span><span>&lt;</span><span>PhoneNumber</span><span>&gt;
+selectedRows;<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></span><span>PhoneNumber</span><span>
+num;</span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>selectedRows = </span><span>new</span><span> </span><span>List</span><span>&lt;</span><span>PhoneNumber</span><span>&gt;();<o:p></o:p></span></p>
+
+
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></span><span>foreach</span><span> ( </span><span>DataGridViewCell</span><span>
+cell </span><span>in</span><span> <o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>MergeNumbersDataGridView.SelectedCells ) {<o:p></o:p></span></p>
+
+
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>num
+= (</span><span>PhoneNumber</span><span>)cell.OwningRow.DataBoundItem;<o:p></o:p></span></p><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></span><span>if</span><span> ( !selectedRows.Contains(
+num ) ) {<o:p></o:p></span>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>selectedRows.Add( num );<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>}<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>}<o:p></o:p></span></p>
+
+
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>MergeNumbersDataGridView.SuspendLayout();<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></span><span>foreach</span><span>( </span><span>PhoneNumber</span><span>
+number </span><span>in</span><span> selectedRows ) {<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>MergeNumbersBindingSource.Remove( number );<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>}<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>MergeNumbersDataGridView.ResumeLayout();<o:p></o:p></span></p>&nbsp;
+
+<span><span></span>}<br><br>It works, but seems like it could be quicker; it takes about half a second for the grid to update.&nbsp; Any ideas?<br><br>Thanks<br>Andy<br></span></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, July 13, 2006</h2><P>Wouldn't you want to tell the bindingsource to not raise events during this process? Then tell it to resume event processing at the end and also tell it to reset the bindings.</P>
+<P>Otherwise what I think happens is that the collection raises lots of listchanged events, and data binding refreshes much of the form (even though you've stopped display updates for the grid). If you cut off the events at the bindingsource perhaps it would stop a lot of extra data binding work.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Friday, July 14, 2006</h2>I actually ended up turning off list changed events at the collection level, so that the events are raised at all using the collections RaiseListChangedEvents flag.&nbsp; Unfortunatly this is a dupe of another post, I'm not sure how two got created.<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

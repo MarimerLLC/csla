@@ -1,0 +1,79 @@
+<html><header><title>Calling a Asp.net UI Experts</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Calling a Asp.net UI Experts</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/1289.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>RangerGuy posted on Wednesday, September 20, 2006</h2>My Clsa bjects are about 90% done now :) <BR><BR>
+
+So for a change of pace I wanted validate some of my ideas on how we can handle our UI requirements. We are going to have some Composite Controls (Asp.net 2.0 flavour)<BR><BR>
+
+I have my first one working good and validating the input from the user nicely. <BR>
+
+My problem is formatting. The control has a Label,Radiobuttonlist and 2 validators (required field and regex validator).
+
+I want the "*" to show up on the right side of the fields when an error is raised. Is it possible to do this. I"ve tried creating table / row / cell <br>objects and adding the controls to the appropriate cells of row but the only controls that end up in there are the validators :(<br><br>
+
+Also.. I'm trying to figure out how to change the background color of the rows that are generated to hold the individual  radio buttons of <br>the radiobuttonlist object. 
+
+I have been searching online most of today.. looking for a good tutorial and experimenting with not much luck. <br>
+
+What is the best way to apply a layout to a composite control. My controls will inherit from System.Web.UI.WebControls.CompositeControl<br><br><br>
+
+I know this isn't really Csla related but any help would be really really appreciated :)</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>figuerres replied on Wednesday, September 20, 2006</h2><P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>RangerGuy:</strong></div><div>My Clsa bjects are about 90% done now :) <BR><BR>So for a change of pace I wanted validate some of my ideas on how we can handle our UI requirements. We are going to have some Composite Controls (Asp.net 2.0 flavour)<BR><BR>I have my first one working good and validating the input from the user nicely. <BR>My problem is formatting. The control has a Label,Radiobuttonlist and 2 validators (required field and regex validator). I want the "*" to show up on the right side of the fields when an error is raised. Is it possible to do this. I"ve tried creating table / row / cell <BR>objects and adding the controls to the appropriate cells of row but the only controls that end up in there are the validators :(<BR><BR>Also.. I'm trying to figure out how to change the background color of the rows that are generated to hold the individual radio buttons of <BR>the radiobuttonlist object. I have been searching online most of today.. looking for a good tutorial and experimenting with not much luck. <BR>What is the best way to apply a layout to a composite control. My controls will inherit from System.Web.UI.WebControls.CompositeControl<BR><BR><BR>I know this isn't really Csla related but any help would be really really appreciated :)</div></BLOCKQUOTE></P>
+<P>&nbsp;</P>
+<P>first I think I know what you are trying to get working with the validators....</P>
+<P>when I setup a web form I have a validation summary, the "items" the validators and the submit button etc...</P>
+<P>I use a table with 3 columns label , input (textbox etc...), error/validator</P>
+<P>you need to set the right properties for it to do the "right thing" dynamic display, message and text each have to be setup right.</P>
+<P>.Display = Dynamic</P>
+<P>.Text = "*"</P>
+<P>.ErrorMessage = "Some Error"</P>
+<P>should cause no display untill validation fails, an "*" on the line that fails, the message in the validation summary control.</P>
+<P>see if that works right for you...</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RangerGuy replied on Thursday, September 21, 2006</h2>Thanks :) figuerres 
+
+Sorry for the delayed post.. I've been working like mad today building these controls.
+
+So I got 3 done.. thanks to your help :)
+
+I have noticed that I need to loop thru all the controls in the page for the validation summary to display all the errors.
+
+I created this function to find the a specific control from the form.
+<br><br>
+protected Control IterateThroughChildren(Control parent,string controlID)<br>
+    {<br>
+        Control foundControl = null;     <br><br>
+<br>
+        foreach (Control c in parent.Controls)<br>
+        {<br>
+            if (c.ID == controlID)<br>
+            {<br>
+                return c;<br>
+            }<br>
+            if (c.Controls.Count > 0)<br>
+            {<br>
+                foundControl = IterateThroughChildren(c, controlID);<br>
+                if (foundControl != null)<br>
+                {<br>
+                    return foundControl;<br>
+                }<br>
+            }     <br>
+            <br><br>
+        }<br>
+        return null;<br>
+    }<br>
+
+If I don't put the following code in the page_load method. My validation summary control does not display the error messages. Any Ideas why it would need me to loop through all the controls manually?
+<br><br>
+ if (Page.IsPostBack)<br>
+ {<br><br>
+
+     foreach (CustomerInfo cInfo in _customerlist)<br>
+     {<br>
+         _radiobuttonlist = (RadioButtonList)IterateThroughChildren(PlaceHolder1, "Cust" + cInfo .CustID);<br>
+         if (_radiobuttonlist != null)<br>
+         {<br>
+                 if (_radiobuttonlist.SelectedItem != null)<br>
+{<br>
+Response.Write("<li>" + _radiobuttonlist.SelectedItem.ToString());<br>
+}<br>
+}<br>
+}<br>
+}<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RangerGuy replied on Thursday, September 21, 2006</h2>I figured it out.. not sure why but it seems that I need to call EnsureChildControls()  in OnInit method of my composite control. I was under the impressoin from the articals i have been reading that you shouldn't have to call this method anymore if you inherit from the CompositeControl object.
+
+
+I'm going to do some more reading and see if I can find out why :)</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

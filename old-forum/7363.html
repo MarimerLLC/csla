@@ -1,0 +1,19 @@
+<html><header><title>LinqBindingList&lt;T&gt; Adding item to list?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>LinqBindingList&lt;T&gt; Adding item to list?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/7363.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Brette.Net posted on Wednesday, July 29, 2009</h2><P>In reading about the LinqBindingList&lt;T&gt; it states.<o:p></o:p></P>
+<P>"adding an item to a LinqBindingList adds the item to the original list as well as any other LinqBindingList"<o:p></o:p></P>
+<P>This is true however when I first do an orderby("Id Asc") then later attempt to add a new item to the LinqBindingList collection the item is added to the source '_list' yet the '_filterIndex' remains unchanged. It seems strange that an OrderBy would effect this. I would expect both lists to get the newly added item since there was no filter criteria that would exclude this.<o:p></o:p></P>
+<P>Has anyone encounterd this?<o:p></o:p></P>
+<P>Brette</P>
+<P><FONT size=1><FONT size=1>&nbsp;</P></FONT></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>AaronErickson replied on Thursday, July 30, 2009</h2>I will create a test to try to re-create this, but I am working at a client right now so it will probably be a couple days.<br /><br />I can state that if you are doing an orderby operation, the result of the orderby should be a new LBL that retains the properties of all LBL collections that are generated from the original BLB.<br /><br />In the interim, maybe try the non-Dynamic Linq version?  (use .OrderBy(item => item.Id); and see if that works?</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Brette.Net replied on Thursday, July 30, 2009</h2><P>Thanks for the reply. To help you in your sample here is what I am doing.</P>
+<P>//When ourWPF Screen loads.</P>
+<P><FONT size=2><FONT color=#000000 size=3>OperationList = </FONT></FONT><FONT color=#000000>BusinessObject.Operations.OrderBy(operation =&gt; operation.OperationName) as </FONT><FONT color=#000000>LinqBindingList&lt;AssociatedOperation&gt;;</FONT></P>
+<P><FONT size=2><FONT size=3>The OperationList is then bound to a ListView. When the add button is clicked the following code is executed.</FONT></FONT></P>
+<P><FONT size=2><FONT size=3>OperationList.Add(Operation.Create());</FONT></FONT></P>
+<P><FONT size=2><FONT size=3>At this time the _list shows the newly added item but the _filterIndex does not. In order to get it to work I have to do the following.</FONT></FONT></P>
+<P><FONT size=2><FONT size=3>//Add Item to list</FONT></FONT></P>
+<P><FONT size=2><FONT size=3>BusinessObject.Operations.Add(Operation.Create());</FONT></FONT></P>
+<P>//Recreate LinkBindingList</P>
+<P>OperationList = <FONT color=#000000>BusinessObject.Operations.OrderBy(operation =&gt; operation.OperationName) as </FONT><FONT color=#000000>LinqBindingList&lt;AssociatedOperation&gt;;</FONT></P>
+<P>This is not a horrible solution but it does not seem right.</P>
+<P>Thanks,</P>
+<P>Brette</P>
+<P><FONT size=2><FONT size=3></FONT>&nbsp;</P></FONT></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

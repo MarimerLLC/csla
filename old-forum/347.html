@@ -1,0 +1,15 @@
+<html><header><title>SortedBindingList: SupportsSearching</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>SortedBindingList: SupportsSearching</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/347.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Helen W posted on Monday, June 12, 2006</h2><P>I am trying to use the SortedBindingList with a class that inherits from BusinessListBase, to provide two sorted views of the list.</P>
+<P>I define </P><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>class</FONT><FONT size=2> </FONT><FONT color=#008080 size=2>CompanyList</FONT><FONT size=2> : </FONT><FONT color=#008080 size=2>BusinessListBase</FONT><FONT size=2>&lt;</FONT><FONT color=#008080 size=2>CompanyList</FONT><FONT size=2>, </FONT><FONT color=#008080 size=2>Company</FONT><FONT size=2>&gt;</P>
+<P>{ </P>
+<P></FONT><FONT color=#0000ff size=2>private</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>static</FONT><FONT size=2> </FONT><FONT color=#008080 size=2>CompanyList</FONT><FONT size=2> m_list;</P>
+<P></FONT><FONT color=#0000ff size=2>private</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>static</FONT><FONT size=2> </FONT><FONT color=#008080 size=2>SortedBindingList</FONT><FONT size=2>&lt;</FONT><FONT color=#008080 size=2>Company</FONT><FONT size=2>&gt; m_sortByPhoneNo;</FONT></P>
+<P><FONT size=2>...</FONT></P>
+<P><FONT size=2><FONT size=3>When m_list is filled, I sort the list so:</FONT></FONT></P><FONT size=2><FONT size=3><FONT size=2>
+<P>m_sortByPhoneNo = </FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> </FONT><FONT color=#008080 size=2>SortedBindingList</FONT><FONT size=2>&lt;</FONT><FONT color=#008080 size=2>Company</FONT><FONT size=2>&gt;(m_list);</P>
+<P>m_sortByPhoneNo.ApplySort(</FONT><FONT color=#800000 size=2>"PhoneNumber"</FONT><FONT size=2>, System.ComponentModel.</FONT><FONT color=#008080 size=2>ListSortDirection</FONT><FONT size=2>.Ascending);</FONT></P>
+<P><FONT size=2>...</FONT></P>
+<P><FONT size=2><FONT size=3>However, when I call the .Find method on m_sortByPhoneNo, my app errors out because .SupportsSearching is false. </FONT></FONT></P>
+<P><FONT size=2><FONT size=3>How do I need to structure these classes to ensure that sorting is supported?</FONT></FONT></P>
+<P><FONT size=2><FONT size=3>Thx</FONT></FONT></P>
+<P><FONT size=2><FONT size=3>Helen</FONT></P></FONT></FONT></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, June 12, 2006</h2>Neither BusinessListBase nor SortedBindingList support filtering or searching (and neither does the base BindingList class from Microsoft). At the present time, you'll need to implement your own class, possibly somewhat like SortedBindingList, that does filtering or searching by implementing that portion of the IBindingList interface.</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

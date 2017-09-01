@@ -1,0 +1,152 @@
+<html><header><title>Re: PropertyDescriptor.DisplayName could use PropertyInfo.FriendlyName</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Re: PropertyDescriptor.DisplayName could use PropertyInfo.FriendlyName</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5493.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Fintanv posted on Monday, September 29, 2008</h2><P>What about the following code?</P>
+<P>(not fully trialed out yet so be gentle ;-)</P><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>class</FONT><FONT size=2> </FONT><FONT color=#2b91af size=2>CslaTypeDescriptorProvider</FONT><FONT size=2>&lt;T&gt; : System.ComponentModel.</FONT><FONT color=#2b91af size=2>TypeDescriptionProvider</P></FONT><FONT size=2>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>private</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>static</FONT><FONT size=2> System.ComponentModel.</FONT><FONT color=#2b91af size=2>TypeDescriptionProvider</FONT><FONT size=2> _baseProvider = System.ComponentModel.</FONT><FONT color=#2b91af size=2>TypeDescriptor</FONT><FONT size=2>.GetProvider(</FONT><FONT color=#0000ff size=2>typeof</FONT><FONT size=2>(T));</P>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> CslaTypeDescriptorProvider():</FONT><FONT color=#0000ff size=2>base</FONT><FONT size=2>(_baseProvider)</P>
+<P>{ }</P>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>override</FONT><FONT size=2> System.ComponentModel.</FONT><FONT color=#2b91af size=2>ICustomTypeDescriptor</FONT><FONT size=2> GetTypeDescriptor(</FONT><FONT color=#2b91af size=2>Type</FONT><FONT size=2> objectType, </FONT><FONT color=#0000ff size=2>object</FONT><FONT size=2> instance)</P>
+<P>{</P>
+<P>System.ComponentModel.</FONT><FONT color=#2b91af size=2>ICustomTypeDescriptor</FONT><FONT size=2> defaultDescriptor = </FONT><FONT color=#0000ff size=2>base</FONT><FONT size=2>.GetTypeDescriptor(objectType, instance);</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> instance == </FONT><FONT color=#0000ff size=2>null</FONT><FONT size=2> ? defaultDescriptor : </FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> </FONT><FONT color=#2b91af size=2>CslaTypeDescriptor</FONT><FONT size=2>(defaultDescriptor, instance);</P>
+<P>}</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>class</FONT><FONT size=2> </FONT><FONT color=#2b91af size=2>CslaTypeDescriptor</FONT><FONT size=2> : System.ComponentModel.</FONT><FONT color=#2b91af size=2>CustomTypeDescriptor</P></FONT><FONT size=2>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> CslaTypeDescriptor(System.ComponentModel.</FONT><FONT color=#2b91af size=2>ICustomTypeDescriptor</FONT><FONT size=2> parent, </FONT><FONT color=#0000ff size=2>object</FONT><FONT size=2> instance):</FONT><FONT color=#0000ff size=2>base</FONT><FONT size=2>(parent) </P>
+<P>{</P>
+<P></P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>override</FONT><FONT size=2> System.ComponentModel.</FONT><FONT color=#2b91af size=2>PropertyDescriptorCollection</FONT><FONT size=2> GetProperties()</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> GetProperties(</FONT><FONT color=#0000ff size=2>null</FONT><FONT size=2>);</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>override</FONT><FONT size=2> System.ComponentModel.</FONT><FONT color=#2b91af size=2>PropertyDescriptorCollection</FONT><FONT size=2> GetProperties(</FONT><FONT color=#2b91af size=2>Attribute</FONT><FONT size=2>[] attributes)</P>
+<P>{</P>
+<P>System.ComponentModel.</FONT><FONT color=#2b91af size=2>PropertyDescriptorCollection</FONT><FONT size=2> col = </FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> System.ComponentModel.</FONT><FONT color=#2b91af size=2>PropertyDescriptorCollection</FONT><FONT size=2>(</FONT><FONT color=#0000ff size=2>null</FONT><FONT size=2>);</P>
+<P></FONT><FONT color=#0000ff size=2>foreach</FONT><FONT size=2> (System.ComponentModel.</FONT><FONT color=#2b91af size=2>PropertyDescriptor</FONT><FONT size=2> p </FONT><FONT color=#0000ff size=2>in</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>base</FONT><FONT size=2>.GetProperties(attributes))</P>
+<P>{</P>
+<P>col.Add(</FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> Core.</FONT><FONT color=#2b91af size=2>PropertyDescriptor</FONT><FONT size=2>(p));</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> col;</P>
+<P>}</P>
+<P>}</P>
+<P>&nbsp;</P><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>class</FONT><FONT size=2> </FONT><FONT color=#2b91af size=2>PropertyDescriptor</FONT><FONT size=2> : System.ComponentModel.</FONT><FONT color=#2b91af size=2>PropertyDescriptor</P></FONT><FONT size=2>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>static</FONT><FONT size=2> </FONT><FONT color=#2b91af size=2>Dictionary</FONT><FONT size=2>&lt;</FONT><FONT color=#2b91af size=2>Type</FONT><FONT size=2>, </FONT><FONT color=#2b91af size=2>List</FONT><FONT size=2>&lt;Csla.Core.</FONT><FONT color=#2b91af size=2>IPropertyInfo</FONT><FONT size=2>&gt;&gt; _propertyTracker = </FONT><FONT color=#0000ff size=2>null</FONT><FONT size=2>;</P>
+<P></FONT><FONT color=#0000ff size=2>static</FONT><FONT size=2> </FONT><FONT color=#2b91af size=2>Dictionary</FONT><FONT size=2>&lt;</FONT><FONT color=#2b91af size=2>Type</FONT><FONT size=2>, </FONT><FONT color=#2b91af size=2>List</FONT><FONT size=2>&lt;Csla.Core.</FONT><FONT color=#2b91af size=2>IPropertyInfo</FONT><FONT size=2>&gt;&gt; PropertyTracker</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>get</P></FONT><FONT size=2>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (_propertyTracker == </FONT><FONT color=#0000ff size=2>null</FONT><FONT size=2>)</P>
+<P>{</P>
+<P>_propertyTracker = </FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> </FONT><FONT color=#2b91af size=2>Dictionary</FONT><FONT size=2>&lt;</FONT><FONT color=#2b91af size=2>Type</FONT><FONT size=2>, </FONT><FONT color=#2b91af size=2>List</FONT><FONT size=2>&lt;Csla.Core.</FONT><FONT color=#2b91af size=2>IPropertyInfo</FONT><FONT size=2>&gt;&gt;();</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> _propertyTracker;</P>
+<P>}</P>
+<P>}</P>
+<P>System.ComponentModel.</FONT><FONT color=#2b91af size=2>PropertyDescriptor</FONT><FONT size=2> _descriptor = </FONT><FONT color=#0000ff size=2>null</FONT><FONT size=2>;</P>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> PropertyDescriptor(System.ComponentModel.</FONT><FONT color=#2b91af size=2>PropertyDescriptor</FONT><FONT size=2> descriptor):</FONT><FONT color=#0000ff size=2>base</FONT><FONT size=2>(descriptor)</P>
+<P>{</P>
+<P>_descriptor = descriptor;</P>
+<P>SetDisplayName();</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> PropertyDescriptor(System.ComponentModel.</FONT><FONT color=#2b91af size=2>PropertyDescriptor</FONT><FONT size=2> descriptor, System.</FONT><FONT color=#2b91af size=2>Attribute</FONT><FONT size=2>[] attrs)</P>
+<P>: </FONT><FONT color=#0000ff size=2>base</FONT><FONT size=2>(descriptor, attrs)</P>
+<P>{</P>
+<P>_descriptor = descriptor;</P>
+<P>SetDisplayName();</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>private</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>void</FONT><FONT size=2> SetDisplayName()</P>
+<P>{</P>
+<P></FONT><FONT color=#2b91af size=2>List</FONT><FONT size=2>&lt;Csla.Core.</FONT><FONT color=#2b91af size=2>IPropertyInfo</FONT><FONT size=2>&gt; list = </FONT><FONT color=#0000ff size=2>null</FONT><FONT size=2>;</P>
+<P></FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (PropertyTracker.ContainsKey(_descriptor.ComponentType))</P>
+<P>{</P>
+<P>list = PropertyTracker[_descriptor.ComponentType];</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>else</P></FONT><FONT size=2>
+<P>{</P>
+<P>list = </FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> </FONT><FONT color=#2b91af size=2>List</FONT><FONT size=2>&lt;Csla.Core.</FONT><FONT color=#2b91af size=2>IPropertyInfo</FONT><FONT size=2>&gt;();</P>
+<P>System.Reflection.</FONT><FONT color=#2b91af size=2>FieldInfo</FONT><FONT size=2>[] fi = _descriptor.ComponentType.GetFields(System.Reflection.</FONT><FONT color=#2b91af size=2>BindingFlags</FONT><FONT size=2>.Static | System.Reflection.</FONT><FONT color=#2b91af size=2>BindingFlags</FONT><FONT size=2>.NonPublic | System.Reflection.</FONT><FONT color=#2b91af size=2>BindingFlags</FONT><FONT size=2>.Public | System.Reflection.</FONT><FONT color=#2b91af size=2>BindingFlags</FONT><FONT size=2>.FlattenHierarchy);</P>
+<P></FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (fi != </FONT><FONT color=#0000ff size=2>null</FONT><FONT size=2> &amp;&amp; fi.Length &gt; 0)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>foreach</FONT><FONT size=2> (System.Reflection.</FONT><FONT color=#2b91af size=2>FieldInfo</FONT><FONT size=2> f </FONT><FONT color=#0000ff size=2>in</FONT><FONT size=2> fi)</P>
+<P>{</P>
+<P>Csla.Core.</FONT><FONT color=#2b91af size=2>IPropertyInfo</FONT><FONT size=2> propInfo = f.GetValue(</FONT><FONT color=#0000ff size=2>null</FONT><FONT size=2>) </FONT><FONT color=#0000ff size=2>as</FONT><FONT size=2> Csla.Core.</FONT><FONT color=#2b91af size=2>IPropertyInfo</FONT><FONT size=2>;</P>
+<P></FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (propInfo != </FONT><FONT color=#0000ff size=2>null</FONT><FONT size=2>) list.Add(propInfo);</P>
+<P>}</P>
+<P>}</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>foreach</FONT><FONT size=2> (Csla.Core.</FONT><FONT color=#2b91af size=2>IPropertyInfo</FONT><FONT size=2> propInfo </FONT><FONT color=#0000ff size=2>in</FONT><FONT size=2> list)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (propInfo.Name == _descriptor.Name)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>._displayName = propInfo.FriendlyName;</P>
+<P></FONT><FONT color=#0000ff size=2>break</FONT><FONT size=2>;</P>
+<P>} </P>
+<P>}</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>override</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>bool</FONT><FONT size=2> CanResetValue(</FONT><FONT color=#0000ff size=2>object</FONT><FONT size=2> component)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> _descriptor.CanResetValue(component);</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>override</FONT><FONT size=2> </FONT><FONT color=#2b91af size=2>Type</FONT><FONT size=2> ComponentType</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>get</FONT><FONT size=2> { </FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> _descriptor.ComponentType; }</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>override</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>object</FONT><FONT size=2> GetValue(</FONT><FONT color=#0000ff size=2>object</FONT><FONT size=2> component)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> _descriptor.GetValue(component);</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>override</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>bool</FONT><FONT size=2> IsReadOnly</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>get</FONT><FONT size=2> { </FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> _descriptor.IsReadOnly; }</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>override</FONT><FONT size=2> </FONT><FONT color=#2b91af size=2>Type</FONT><FONT size=2> PropertyType</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>get</FONT><FONT size=2> { </FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> _descriptor.PropertyType; }</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>override</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>void</FONT><FONT size=2> ResetValue(</FONT><FONT color=#0000ff size=2>object</FONT><FONT size=2> component)</P>
+<P>{</P>
+<P>_descriptor.ResetValue(component);</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>override</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>void</FONT><FONT size=2> SetValue(</FONT><FONT color=#0000ff size=2>object</FONT><FONT size=2> component, </FONT><FONT color=#0000ff size=2>object</FONT><FONT size=2> value)</P>
+<P>{</P>
+<P>_descriptor.SetValue(component, value);</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>override</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>bool</FONT><FONT size=2> ShouldSerializeValue(</FONT><FONT color=#0000ff size=2>object</FONT><FONT size=2> component)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> _descriptor.ShouldSerializeValue(component);</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>string</FONT><FONT size=2> _displayName = </FONT><FONT color=#0000ff size=2>string</FONT><FONT size=2>.Empty;</P>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>override</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>string</FONT><FONT size=2> DisplayName</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>get</P></FONT><FONT size=2>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (</FONT><FONT color=#0000ff size=2>string</FONT><FONT size=2>.IsNullOrEmpty(_displayName))</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>base</FONT><FONT size=2>.DisplayName;</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>else</P></FONT><FONT size=2>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> _displayName;</P>
+<P>}</P>
+<P>}</P>
+<P>}</P>
+<P>}</P></FONT>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>////// I have my own base classes that sit between CSLA and my concrete classes.&nbsp; I tagged them with the attribute:</P><FONT size=2>
+<P>[</FONT><FONT color=#2b91af size=2>Serializable</FONT><FONT size=2>]</P>
+<P>[System.ComponentModel.</FONT><FONT color=#2b91af size=2>TypeDescriptionProvider</FONT><FONT size=2>(</FONT><FONT color=#0000ff size=2>typeof</FONT><FONT size=2>(Core.</FONT><FONT color=#2b91af size=2>CslaTypeDescriptorProvider</FONT><FONT size=2>&lt;Csla.Core.</FONT><FONT color=#2b91af size=2>BindableBase</FONT><FONT size=2>&gt;))]</P>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>abstract</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>class</FONT><FONT size=2> </FONT><FONT color=#2b91af size=2>ReadOnlyBase</FONT><FONT size=2>&lt;T&gt; : Csla.</FONT><FONT color=#2b91af size=2>ReadOnlyBase</FONT><FONT size=2>&lt;T&gt;</P>
+<P></FONT><FONT color=#0000ff size=2>where</FONT><FONT size=2> T : </FONT><FONT color=#2b91af size=2>ReadOnlyBase</FONT><FONT size=2>&lt;T&gt;</P>
+<P>{</P>
+<P>}</P>
+<P>&nbsp;</P><FONT size=2>
+<P>[</FONT><FONT color=#2b91af size=2>Serializable</FONT><FONT size=2>]</P>
+<P>[System.ComponentModel.</FONT><FONT color=#2b91af size=2>TypeDescriptionProvider</FONT><FONT size=2>(</FONT><FONT color=#0000ff size=2>typeof</FONT><FONT size=2>(Core.</FONT><FONT color=#2b91af size=2>CslaTypeDescriptorProvider</FONT><FONT size=2>&lt;Csla.Core.</FONT><FONT color=#2b91af size=2>BusinessBase</FONT><FONT size=2>&gt;))]</P>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>abstract</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>class</FONT><FONT size=2> </FONT><FONT color=#2b91af size=2>BusinessBase</FONT><FONT size=2>&lt;T&gt; : Csla.</FONT><FONT color=#2b91af size=2>BusinessBase</FONT><FONT size=2>&lt;T&gt;, </FONT><FONT color=#2b91af size=2>IBrokenRules</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>where</FONT><FONT size=2> T : Csla.</FONT><FONT color=#2b91af size=2>BusinessBase</FONT><FONT size=2>&lt;T&gt;</P>
+<P>{</P>
+<P>}</P></FONT></FONT></FONT></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

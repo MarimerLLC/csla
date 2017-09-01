@@ -1,0 +1,75 @@
+<html><header><title>External ValidationManager???</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>External ValidationManager???</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3967.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>SonOfPirate posted on Friday, November 30, 2007</h2><P>I'm sure this has been discussed before but I am unable to find anything searching through the forum...</P>
+<P>Has anyone considered using or implemented&nbsp;an external component to manage validation rules and perform validation rather than holding instances of the ValidationRules class for each type of business object?</P>
+<P>I am working on an application where the memory footprint has grown significant due to the manner in which users make use of the app so we are doing quite a bit of profiling on how the app utilizes memory.&nbsp; The addition of per-type validation rules is certainly a significant step forward, however there is still some overhead to having an instance of the ValidationRules class for each business object type.&nbsp; It has occurred to me that we could possibly pull this out of our business objects and have them collaborate with another component, ValidationManager, for instance (essentially a dictionary of ValidationRules objects keyed by type).&nbsp; Instead of holding an instance of the class in a private variable, our AddBusinessRules method would be refactored to call ValidationManager.AddRule instead.&nbsp; The ValidationManager class would manage the list of rules for each type and instance.&nbsp; To perform validation, our business objects would delegate to the ValidationManager.Validate(this) method - notice the argument which is used by the ValidationManager to perform both per-type and per-instance checks if they exist.</P>
+<P>I'm looking for arguments for and against this approach so we can make a more educated decision if it would be beneficial to refactor our code in this way.</P>
+<P>Thanks in advance.</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Saturday, December 01, 2007</h2><P>The only reason I didn't do this in CSLA itself is to preserve the per-instance capability.</P>
+<P>But I wonder how many (if any) people actually <EM>use that ability</EM> after upgrading to 2.1+?</P>
+<P>I know I never use it, I only use per-type rules. Nor do I directly know anyone who is using per-instance rules.</P>
+<P>So it does make me wonder if I shouldn't just drop per-instance support at some point (like in 3.5).</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Saturday, December 01, 2007</h2><P>I am only using per type rules.</P>
+<P>I have a general rule class like yours for common rule&nbsp;methods.</P>
+<P>I also use the strongly typed rule methods in a given class if the rule is specific to it and I need access to member variables. But it is still a per type rule.</P>
+<P>Joe</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Saturday, December 01, 2007</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Yeah, exactly. I use a lot of rules implemented in specific
+business classes, but I haven&#8217;t used a per-instance rule since I changed
+everything in 2.1.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> JoeFallon1
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Saturday, December 01, 2007 4:59 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] External ValidationManager???<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>I am only using per type rules.<o:p></o:p></p>
+
+<p>I have a general rule class like yours for common rule&nbsp;methods.<o:p></o:p></p>
+
+<p>I also use the strongly typed rule methods in a given class if the rule is
+specific to it and I need access to member variables. But it is still a per
+type rule.<o:p></o:p></p>
+
+<p>Joe<o:p></o:p></p>
+
+<p>&nbsp;<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

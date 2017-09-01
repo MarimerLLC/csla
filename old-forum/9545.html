@@ -1,0 +1,22 @@
+<html><header><title>Exception in AddBusinessRules leaves rules in permanently indeterminate state</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Exception in AddBusinessRules leaves rules in permanently indeterminate state</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9545.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>rsbaker0 posted on Friday, September 17, 2010</h2><p>In CSLA 3.5.1, if any sort of exception occurs during the processing of AddBusinessRules for a type, the rules for that type are basically corrupted for the duration of the process life. </p>
+<pre>    private void InitializeBusinessRules()
+    {
+      AddInstanceBusinessRules();
+      if (!(Validation.SharedValidationRules.RulesExistFor(this.GetType())))
+      {
+        lock (this.GetType())
+        {
+          if (!(Validation.SharedValidationRules.RulesExistFor(this.GetType())))
+          {
+            Validation.SharedValidationRules.GetManager(this.GetType(), true);
+            AddBusinessRules();
+          }
+        }
+      }
+    }
+</pre>
+<p>The problem is in the code above:</p>
+<p>RulesExistFor()&nbsp;returns false on the first call, but the call to GetManager() will&nbsp;cause future calls to RulesExistFor() to return true even if the initialization did not complete successfully. &nbsp;</p>
+<p>Would it be reasonable to change this so that the shared rules for the type are discarded from the shared validation rules if an exception occurs during AddBusinessRules?</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Friday, September 17, 2010</h2><p>What good would that do? The exception would almost certainly occur every time someone tried to use that type, so you&#39;d just never get any rules at all.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rsbaker0 replied on Friday, September 17, 2010</h2><p>In my case, it was a transient database exception that occurred, so a subsequent use of the type might very well have succeeded. </p>
+<p>However, the &quot;good&quot; that it would do in the general case would be to prevent use of BO that does not properly enforce it&#39;s business rules.&nbsp; If a BO can&#39;t initialize it&#39;s business rules properly, then you should not be allowed to create and use&nbsp;an instance of that BO. </p>
+<p>As written, if a consumer of the type chooses to eat the exception and try again (exactly the case in my situation because the actual application where this occurred is a service that processing&nbsp;batch jobs offline from the&nbsp;client applications), then now they are given&nbsp;a BO that doesn&#39;t enforce&nbsp;the business rules, and the result could be invalid data persisted to the database.&nbsp;&nbsp;Very bad, and moreover extremely difficult to later diagnose how it might have occurred.</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Friday, September 17, 2010</h2><p>That makes sense, I&#39;ll add it to the wish list - though you should know that the fix will be in CSLA 4, and <i>maybe</i> in 3.8 - but you&#39;ll have to fix your own 3.5 code as you see fit.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rsbaker0 replied on Friday, September 17, 2010</h2><p>Thanks. I&#39;ll have to upgrade to 3.8 anyway at some point, but don&#39;t mind implementing an interim fix. </p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

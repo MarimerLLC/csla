@@ -1,0 +1,25 @@
+<html><header><title>making IsDirty to true</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>making IsDirty to true</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/661.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>yh_ink posted on Tuesday, July 18, 2006</h2><P>Hey guys,</P>
+<P>Please help me out with this.I have two classes.what i am trying to do is get the data from my first class in to the form.then i try to use save method in the form to save some data.what happens is that my webform dosent got to the class which i am trying to call.I found that IsDiry is set to false.What should i do to go to my class by using Save Method only.</P>
+<P>thanks</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>david.wendelken replied on Tuesday, July 18, 2006</h2><P>Web or Windows?</P>
+<P>What are you doing differently from the sample project, ProjectTracker?</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>yh_ink replied on Tuesday, July 18, 2006</h2><P>i am not doing anything different.But what i am trying to do is call my class parent class in my webform and&nbsp; through it&nbsp; trying to update the child.</P>
+<P>let me explain in detail.</P>
+<P>first my webforn calls the parent get method.I have set a property of child in the parent object.Both parent and child here work on two different thing.entirely different.</P>
+<P>Assume _parent(parent)&amp;_child (child)</P>
+<P>this is the wave i call from the form</P>
+<P>//call get&nbsp;&nbsp; _parent.get();</P>
+<P>if(_parent._child.login != null)&nbsp; //here it checks for login in the child if exists</P>
+<P>_parent._child.login= _parent.login;//gets parent login and sets to child</P>
+<P>_parent._child.password = _parent.password //sets password</P>
+<P>_Parent.save();//call parent.save </P>
+<P>things are set in the parent object as they have to be set</P>
+<P>problem here is when i call save it dosent go to the parent class</P>
+<P>there r several ways of working with it instead of working with save method...but i got to use it that way</P>
+<P>this is not the code but thats flow of it.i am new to it.</P>
+<P>thanks</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>I am not knowing what to be done exactly how i should call i guess...</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, July 18, 2006</h2><P>Are you using CSLA .NET 1.53 or 2.0.3?</P>
+<P>If you are using 2.0, I'd suggest that you use the CslaDataSource control and use data binding rather than manually updating all the controls.</P>
+<P>If you are using 1.0, then you kind of do need to update the controls manually.</P>
+<P>From your example I assume you are creating some sort of system to record usernames and passwords? Or are you trying to create a custom principal object - which is a whole other thing, and then you are totally on the wrong track with you code.</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

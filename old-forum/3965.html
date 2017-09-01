@@ -1,0 +1,16 @@
+<html><header><title>OnListChanged Remoting v2.1.4</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>OnListChanged Remoting v2.1.4</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3965.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Robert Schmidt posted on Friday, November 30, 2007</h2><P>Sorry if this is a rehash of an existing thread but I wasn't able to find one that addressed my issue specifically.</P>
+<P>As indicated above I am using v2.1.4 of Csla and .Net Remoting.</P>
+<P>I have the following object structure using BusinessBase and BusinessListBase;</P>
+<P>HeaderCollection &gt; Header &gt; DetailCollection &gt; Detail</P>
+<P>When I change a property in the Detail it only bubbles up as far as DetailCollection. In other words the OnListChanged() overide code in the DetailCollection is called but the event handler in the Header is never called. My code in the OnListChanged() overide only contains a call to base.OnListChanged (just so I can see it being called). I hook up the event in the Headers Fetch method as follows;</P>
+<P>&nbsp;&nbsp;&nbsp; private void Fetch(SafeDataReader sdr)<BR>&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;...<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; this._details = DetailCollection.GetCollection(this._id);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; this._details.ListChanged += new ListChangedEventHandler(Details_ListChanged);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; MarkOld();<BR>&nbsp;&nbsp;&nbsp; }<BR></P>
+<P>This works fine when not using remoting (client server) but when Remoting is turned on Details_ListChanged never gets called.</P>
+<P>I suspect I am hooking up the event incorrectly.</P>
+<P>Any assistance you can provide would be appreciated.</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>skagen00 replied on Friday, November 30, 2007</h2><P>Make sure you are also&nbsp;rehooking any events after deserialization by overriding OnDeserialized.</P>
+<P><FONT color=#0000ff size=2>protected</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>override</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>void</FONT><FONT size=2> OnDeserialized(System.Runtime.Serialization.</FONT><FONT color=#008080 size=2>StreamingContext</FONT><FONT size=2> context)</FONT></P>
+<P><FONT size=2>{</FONT></P>
+<P>&nbsp;&nbsp;&nbsp;re<FONT size=2>hook your events up</FONT></P>
+<P><FONT size=2>}</FONT></P>
+<P><FONT size=2></FONT>&nbsp;</P>
+<P><FONT size=2>&nbsp;</P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Robert Schmidt replied on Friday, November 30, 2007</h2>That was it skagen! Thanks. I suspected this was&nbsp;a problem with the carbon based&nbsp;interface rather than csla...</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

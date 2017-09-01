@@ -1,0 +1,138 @@
+<html><header><title>CSLA for Silverlight - MobileDictionary serialization error</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA for Silverlight - MobileDictionary serialization error</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6550.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Ash002 posted on Tuesday, March 03, 2009</h2>Error when serialising a MobileDictionary from Silverlight client to server.<br><br><font size="2" face="Courier New">&nbsp;&nbsp;&nbsp; private static PropertyInfo&lt;MobileDictionary&lt;string, string&gt;&gt; _Test = <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; RegisterProperty&lt;MobileDictionary&lt;string, string&gt;&gt;(typeof(ReportViewerRequest), new PropertyInfo&lt;MobileDictionary&lt;string, string&gt;&gt;("Test")) ;<br><br>&nbsp;&nbsp;&nbsp; public MobileDictionary&lt;string, string&gt; Test<br>&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; get { return GetProperty(_Test); }<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; set { SetProperty(_Test, value); }<br>&nbsp;&nbsp;&nbsp; }<br><br>&nbsp;&nbsp;&nbsp; // Silverlight data portal method<br>&nbsp;&nbsp;&nbsp; public void Child_Create()<br>&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; LoadProperty(_Test, new MobileDictionary&lt;string, string&gt;());&nbsp; <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Test["test"] = "hello dictionary"; </font><br><br><i>Error:</i><br><font color="#ff0000">The constructor to deserialize an object of type 'Csla.Core.MobileDictionary`2[[System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089],[System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]' was not found.</font><br><br>thrown by ObjectManager.GetConstructor(Type t, Type[] ctorParams) <br><br>We also revived our own mobile dictionary class, pre csla's. This class suffered the same error. Attempted to fix as per http://www.peterguy.com/archives/2007/04/serializing_a_g.html, by providing the missing constructor, but suceeded only in crashing vs.<br><br>Thanks<br><br>Ashley<br><br><br><br><br><br><br><br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, March 04, 2009</h2>Thanks, I'll take a look. If you figure out an answer in the meantime, please let me know!</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>mamboer replied on Tuesday, March 17, 2009</h2>I got the same error when tried to pass a MobileDictionary&lt;string,object&gt; instance from SL client to server.It seems that the BinaryFormatter of System.RunTime can't deserialize it correctly,while the MobileFormatter can~~<br><br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>mamboer replied on Tuesday, March 17, 2009</h2>BTW：<br>&nbsp;&nbsp; When doing deserialization on a MobileDictionary instance using MobileFormatter,its keys and values disappear <br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, March 17, 2009</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Oh, that makes a little more sense to me then. I haven&#8217;t
+had time to look into this &#8211; but it seemed odd that the MF couldn&#8217;t
+serialize it from a SL client to .NET server, since I have unit tests using the
+MF.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I don&#8217;t have any tests using the BF or NDCS though, and if
+I understand correctly you are saying that one or both of these formatters is
+where the problem occurs.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> mamboer
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Tuesday, March 17, 2009 10:11 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] CSLA for Silverlight - MobileDictionary
+serialization error<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>I got the same error when tried to pass a
+MobileDictionary&lt;string,object&gt; instance from SL client to server.It
+seems that the BinaryFormatter of System.RunTime can't deserialize it
+correctly,while the MobileFormatter can~~<br>
+<br>
+<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>mamboer replied on Tuesday, March 17, 2009</h2>I'v reconfirmed my unit tests,the conclusions are:<br>1,MobileDictionary instances can be serialized by both of BF and MF,<br><br>but,<br>2,BF can't deserialize them.(throws exception)<br>3,MF can deserialize them,but not correctly.(data lost)<br><br>On options 3,i pass a MobileDictionary instance from SL client to server,it becomes a blank new instance when come to the server side.<br>&nbsp;<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>mamboer replied on Tuesday, March 17, 2009</h2>@Rocky,<br><br>&nbsp; I found someone had provided a serializable dictionary,it can be serialized/deserialized by BF,XmlSerializer,etc,but it's a pity that it doesn't work with our Csla's MobileFormatter. Maybe you can find sth useful on that implementation~<br><br>&nbsp; http://blogs.microsoft.co.il/blogs/applisec/archive/2008/02/23/serializable-dictionary.aspx<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, March 17, 2009</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I fixed the BF issue, and the fix is in svn &#8211; that was
+easy.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I don&#8217;t have replication of an issue with the MF at this
+time. My unit tests appear to serialize/deserialize the dictionary without data
+loss.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>When you observe this data loss, is it with &lt;primitive,
+primitive&gt;, &lt;primitive, IMobileObject&gt;, &lt;IMobileObject,
+primitive&gt; and/or &lt;IMobileObject, IMobileObject&gt;? I have unit tests
+for all these scenarios &#8211; but it would help narrow my research if I know
+which scenario (or all?) is problematic.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> mamboer
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Tuesday, March 17, 2009 9:31 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: CSLA for Silverlight - MobileDictionary
+serialization error<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>@Rocky,<br>
+<br>
+&nbsp; I found someone had provided a serializable dictionary,it can be
+serialized/deserialized by BF,XmlSerializer,etc,but it's a pity that it doesn't
+work with our Csla's MobileFormatter. Maybe you can find sth useful on that
+implementation~<br>
+<br>
+&nbsp;
+http://blogs.microsoft.co.il/blogs/applisec/archive/2008/02/23/serializable-dictionary.aspx<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>mamboer replied on Tuesday, March 17, 2009</h2>I noticed your fix an hour ago,now MF works like a charm～Thanks so much.<br><br>On the data lost,sorry that it's my careless mistake,and i've found the reason now,the fact is that,<br><br>I defined a custom Criteria(inheritted from CriteriaBase) containing a property of MobileDictionary&lt;string,object&gt; type,but didn't override OnGetState correctly~<br><br>With a little fix,i now can pass a custom criteria with a MobileDictionary&lt;string,object&gt; from SL client to server!!That's what i need! Cheers!<br><br>I will add a new post to show my fruit.&nbsp; <br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

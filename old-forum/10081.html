@@ -1,0 +1,160 @@
+<html><header><title>AutoCloneOnUpdate set to True (default) causing object references not to update properly</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>AutoCloneOnUpdate set to True (default) causing object references not to update properly</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10081.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>bmmathe posted on Wednesday, February 16, 2011</h2><p>I have a need to update a list of objects when a parent object gets saved that is not a child list.&nbsp; This might be confusing but basically the root object needs to modify and save other root objects without making the list a child because I don&#39;t want the Add to call an insert or a remove to call a dataportal delete.&nbsp; There might be another design flaw here but that&#39;s not really question.</p>
+<p>In the root DataPortal_Update I am updating a list of other objects then iterating over that list and calling Save() (in the data portal context so it&#39;s part of a transaction).</p>
+<p>The problem is, when the root object is returned, the list that contains the other root objects has not been updated.&nbsp; For example, there is an object in the list that has a property called Color.&nbsp; Before the save the Color property is set to Red.&nbsp; In the DataPortal_Update method, this property of the object that is in the list is changed from Red to Green then the object is saved like this:</p>
+<p>couch.Color = Colors.Green;</p>
+<p>couch = couch.Save();</p>
+<p>I can see that the object is updated with the Green property properly however if I put a breakpoint at the bottom of my overridden Save() method, the object&#39;s property is still Red.&nbsp; Why is this?</p>
+<p>Thanks,</p>
+<p>Brett Mathe</p>
+<p>&nbsp;</p>
+<p>-------UPDATE-------</p>
+<p>Chris Hardwick sent me a message telling me to turn off CslaAutoCloneOnUpdate which did in fact solve the issue below. &nbsp;Now my question is, why? &nbsp;There is no exception in the DP_Update which should cause the object graph to rollback to it&#39;s previous state. &nbsp;Why are the object references on the root object properties not being updated with the changes made to the objects in the DP_Update? &nbsp;Please see below for a complete example. &nbsp;Currently I have CslaAutoCloneOnUpdate set to false because I need the changes to persist from the DP_XXX but now I lose other important features.</p>
+<p>I am currently using 3.8.2 by the way.</p>
+<p>&nbsp;</p>
+<p>-------Final Update-------</p>
+<p>I found the root issue which was buried in a user control deep in the UI. &nbsp;On a Save() call someone didn&#39;t set the result from Save() back to the reference.</p>
+<p>Doh! &nbsp;Once I set the reference equal to the result that fixed everything after the save further up the stack. &nbsp;I did turn back on Auto Cloning :)</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>bmmathe replied on Wednesday, February 16, 2011</h2><p>I even tried taking the object out of the list and making it a child of the root object.</p>
+<p>I call save on the root, the child object updates but the properties are not set correctly when the object returns to the client!</p>
+<p>I even put a breakpoint on the internal setter for the property and it is not being called. &nbsp;It&#39;s almost like the child object is being &quot;undone&quot; when it returns.</p>
+<p>I added a Guid property and set it to Guid.NewGuid() in the constructor. &nbsp;Before the Save call the Guid is the exact same when it returns so it seems to be the same object reference.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>chrisghardwick replied on Wednesday, February 16, 2011</h2><p>Can you provide a more complete example of the problem?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>bmmathe replied on Wednesday, February 16, 2011</h2><p>I have a list of PaymentCouponList : BLB of PaymentCoupon : BB</p>
+<p>I have a Receipt : BB that can apply one or more of the existing payment coupons.</p>
+<p>There are several rules that dictate which coupons can be used and the user is responsible for making some of these decisions therefore there is a POCO called PaymentCouponManager.&nbsp; The payment coupon manager fetches the list of coupons for this customer and builds a List&lt;PaymentCoupon&gt; of useable coupons in highest priority by interating over each of the customer&#39;s agreements to determine if the coupon is usable for that agreement.</p>
+<div style="font-family:Consolas;font-size:10pt;color:black;background:white;">
+<p style="margin:0px;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <span style="color:blue;">private</span> <span style="color:blue;">void</span> DetermineUseableCoupons()</p>
+<p style="margin:0px;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; {</p>
+<p style="margin:0px;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; _UseableCouponsQueue = <span style="color:blue;">new</span> <span style="color:#2b91af;">List</span>&lt;<span style="color:#2b91af;">PaymentCoupon</span>&gt;();</p>
+<p style="margin:0px;">&nbsp;</p>
+<p style="margin:0px;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <span style="color:blue;">foreach</span>(Agreement.<span style="color:#2b91af;">Agreement</span> agreement <span style="color:blue;">in</span> _Agreements)</p>
+<p style="margin:0px;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; {</p>
+<p style="margin:0px;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <span style="color:blue;">foreach</span> (<span style="color:#2b91af;">PaymentCoupon</span> coupon <span style="color:blue;">in</span> _Coupons)</p>
+<p style="margin:0px;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; {</p>
+<p style="margin:0px;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <span style="color:blue;">if</span> (coupon.RedeemingReceiptId == 0 &amp;&amp; agreement.CanUseCoupon(coupon))</p>
+<p style="margin:0px;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; {</p>
+<p style="margin:0px;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <span style="color:#2b91af;">PaymentCoupon</span> newCoupon = coupon.Clone();</p>
+<p style="margin:0px;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; newCoupon.SetRedeemingValue(agreement);</p>
+<p style="margin:0px;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; _UseableCouponsQueue.Add(newCoupon);</p>
+<p style="margin:0px;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; }</p>
+<p style="margin:0px;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; }</p>
+<p style="margin:0px;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; }</p>
+</div>
+<p><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"></span></span></p>
+<p>The user is prompted to either redeem or ignore each coupon starting with the highest priority.&nbsp; If a coupon is chosen to be redeemed a Receipt : BB is created and that coupon needs to be applied to the receipt.&nbsp; This is in the UI code.</p>
+<p>&nbsp;</p>
+<div style="font-family:Consolas;font-size:10pt;color:black;background:white;">
+<p style="margin:0px;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <span style="color:blue;">private</span> <span style="color:blue;">bool</span> UseCoupons()</p>
+<p style="margin:0px;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; {</p>
+<p style="margin:0px;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <span style="color:blue;">bool</span> couponsUsed = <span style="color:blue;">false</span>;</p>
+<p style="margin:0px;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <span style="color:#2b91af;">PaymentCoupon</span> coupon = <span style="color:blue;">null</span>;</p>
+<p style="margin:0px;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <span style="color:blue;">while</span>((coupon = CouponManager.GetNextCoupon()) != <span style="color:blue;">null</span>)</p>
+<p style="margin:0px;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; {</p>
+<p style="margin:0px;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <span style="color:blue;">string</span> msg = <span style="color:blue;">string</span>.Format(<span style="color:#a31515;">&quot;Do you wish to use your {0} for Agreement {1} in the amount of {2:c}?&quot;</span>,</p>
+<p style="margin:0px;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <span style="color:#2b91af;">FreeTimeTenderTypeList</span>.GetDisplayName(coupon.FreeTimeTenderTypeId),</p>
+<p style="margin:0px;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; coupon.RedeemingAgreementNumber,</p>
+<p style="margin:0px;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; coupon.RedeemingAmount);</p>
+<p style="margin:0px;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <span style="color:#2b91af;">wpfMessageBox</span> popup = <span style="color:blue;">new</span> <span style="color:#2b91af;">wpfMessageBox</span>(<span style="color:#a31515;">&quot;You have a coupon!&quot;</span>, msg);</p>
+<p style="margin:0px;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; popup.AddDialogButton(<span style="color:#a31515;">&quot;No&quot;</span>, <span style="color:#2b91af;">ADialogResult</span>.No);</p>
+<p style="margin:0px;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; popup.AddDialogButton(<span style="color:#a31515;">&quot;Yes&quot;</span>, <span style="color:#2b91af;">ADialogResult</span>.Yes, <span style="color:blue;">true</span>);</p>
+<p style="margin:0px;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; popup.Owner = <span style="color:#2b91af;">Window</span>.GetWindow(<span style="color:blue;">this</span>);</p>
+<p style="margin:0px;">&nbsp;</p>
+<p style="margin:0px;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <span style="color:blue;">if</span> (popup.ShowDialog() == <span style="color:#2b91af;">ADialogResult</span>.Yes)</p>
+<p style="margin:0px;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; {&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; </p>
+<p style="margin:0px;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <span style="color:#2b91af;">AgreementPaymentViewModel</span> agreementModel = CustomerPaymentViewModel.AgreementPaymentViewModels.Single(p =&gt; p.AgreementModel.AgreementId == coupon.RedeemingAgreementId);</p>
+<p style="margin:0px;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <span style="color:blue;">if</span> (agreementModel != <span style="color:blue;">null</span>)</p>
+<p style="margin:0px;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; {</p>
+<p style="margin:0px;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <span style="color:#2b91af;">Receipt</span> couponReceipt = <span style="color:#2b91af;">Receipt</span>.NewReceipt();</p>
+<p style="margin:0px;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; couponReceipt.AgreementPayments.Add(agreementModel.AgreementModel.GetPayment(coupon.RedeemingAmount, <span style="color:blue;">new</span> <span style="color:#2b91af;">List</span>&lt;<span style="color:#2b91af;">AgreementFee</span>&gt;()));</p>
+<p style="margin:0px;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; couponReceipt.ApplyCoupon(coupon, agreementModel.AgreementModel);</p>
+<p style="margin:0px;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; couponReceipt.Save();&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; </p>
+<p style="margin:0px;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; }</p>
+<p style="margin:0px;">&nbsp;</p>
+<p style="margin:0px;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; couponsUsed = <span style="color:blue;">true</span>;</p>
+<p style="margin:0px;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; }&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; </p>
+<p style="margin:0px;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; }</p>
+<p style="margin:0px;">&nbsp;</p>
+<p style="margin:0px;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <span style="color:blue;">if</span> (couponsUsed)</p>
+<p style="margin:0px;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; {</p>
+<p style="margin:0px;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <span style="color:blue;">this</span>.DataContext = <span style="color:#2b91af;">IndividualCustomer</span>.GetIndividualCustomer(CustomerPaymentViewModel.CurrentCustomer.CustomerId);</p>
+<p style="margin:0px;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; }</p>
+<p style="margin:0px;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <span style="color:blue;">return</span> couponsUsed;</p>
+<p style="margin:0px;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; }</p>
+</div>
+<p>&nbsp;</p>
+<p>Here is the ApplyCoupon method on the Receipt object:</p>
+<div style="font-family:Consolas;font-size:10pt;color:black;background:white;">
+<p style="margin:0px;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <span style="color:blue;">public</span> <span style="color:blue;">void</span> ApplyCoupon(<span style="color:#2b91af;">PaymentCoupon</span> coupon, Agreement.<span style="color:#2b91af;">Agreement</span> agreement)</p>
+<p style="margin:0px;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; {</p>
+<p style="margin:0px;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; AppliedCoupons.Add(coupon);</p>
+<p style="margin:0px;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <span style="color:#2b91af;">ReceiptTender</span> newTender = <span style="color:#2b91af;">ReceiptTender</span>.NewReceiptTender(coupon);</p>
+<p style="margin:0px;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; Tenders.Add(newTender);</p>
+<p style="margin:0px;">&nbsp;</p>
+<p style="margin:0px;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; AgreementPayments.Single(p =&gt; p.AgreementId == agreement.AgreementId).ApplyCoupon(coupon, newTender);&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp; </p>
+<p style="margin:0px;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; }</p>
+<p style="margin:0px;">&nbsp;</p>
+<p style="margin:0px;">The AppliedCoupon property is currently setup like this:</p>
+<p style="margin:0px;">&nbsp;</p>
+</div>
+<div style="font-family:Consolas;font-size:10pt;color:black;background:white;">
+<p style="margin:0px;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <span style="color:blue;">private</span> <span style="color:blue;">static</span> <span style="color:#2b91af;">PropertyInfo</span>&lt;<span style="color:#2b91af;">List</span>&lt;<span style="color:#2b91af;">PaymentCoupon</span>&gt;&gt; AppliedCouponsProperty = RegisterProperty&lt;<span style="color:#2b91af;">List</span>&lt;<span style="color:#2b91af;">PaymentCoupon</span>&gt;&gt;(c =&gt; c.AppliedCoupons);</p>
+<p style="margin:0px;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <span style="color:blue;">public</span> <span style="color:#2b91af;">List</span>&lt;<span style="color:#2b91af;">PaymentCoupon</span>&gt; AppliedCoupons</p>
+<p style="margin:0px;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; {</p>
+<p style="margin:0px;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <span style="color:blue;">get</span></p>
+<p style="margin:0px;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; {</p>
+<p style="margin:0px;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <span style="color:blue;">if</span> (!(FieldManager.FieldExists(AppliedCouponsProperty)))</p>
+<p style="margin:0px;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; {</p>
+<p style="margin:0px;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <span style="color:#2b91af;">List</span>&lt;<span style="color:#2b91af;">PaymentCoupon</span>&gt; appliedCoupons = <span style="color:blue;">new</span> <span style="color:#2b91af;">List</span>&lt;<span style="color:#2b91af;">PaymentCoupon</span>&gt;();</p>
+<p style="margin:0px;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; SetProperty&lt;<span style="color:#2b91af;">List</span>&lt;<span style="color:#2b91af;">PaymentCoupon</span>&gt;&gt;(AppliedCouponsProperty, appliedCoupons);</p>
+<p style="margin:0px;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; }</p>
+<p style="margin:0px;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <span style="color:blue;">return</span> GetProperty&lt;<span style="color:#2b91af;">List</span>&lt;<span style="color:#2b91af;">PaymentCoupon</span>&gt;&gt;(AppliedCouponsProperty);</p>
+<p style="margin:0px;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; }</p>
+<p style="margin:0px;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; }</p>
+<p style="margin:0px;">And the DataPortal_Insert method on the Receipt does the ADO.Net call to save the receipt then does this:</p>
+<div style="font-family:Consolas;background:white;color:black;font-size:10pt;">
+<p style="margin:0px;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <span style="color:blue;">if</span> (AppliedCoupons.Count &gt; 0)</p>
+<p style="margin:0px;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; {</p>
+<p style="margin:0px;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <span style="color:blue;">for</span> (<span style="color:blue;">int</span>&nbsp;x = 0;&nbsp;x &lt; AppliedCoupons.Count; x++)</p>
+<p style="margin:0px;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; {</p>
+<p style="margin:0px;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <span style="color:#2b91af;">PaymentCoupon</span> coupon = AppliedCoupons[x];</p>
+<p style="margin:0px;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; coupon.PaymentCouponStatusType = <span style="color:#2b91af;">PaymentCouponStatusType</span>.Redeemed;</p>
+<p style="margin:0px;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; coupon.RedeemingReceiptId = ReceiptId;</p>
+<p style="margin:0px;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; coupon = coupon.Save();</p>
+<p style="margin:0px;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; }</p>
+<p style="margin:0px;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; }</p>
+<p style="margin:0px;">&nbsp;</p>
+<p style="margin:0px;">At the end of the Save() I interrogate the coupon object I just updated and the properties&nbsp;I set are not reflected.</p>
+<p style="margin:0px;">The database however does show that the RedeemingReceiptId did get updated correctly.</p>
+<p style="margin:0px;">&nbsp;</p>
+<p style="margin:0px;">The PaymentCouponManager does not see the updated property in this method:</p>
+<div style="font-family:Consolas;background:white;color:black;font-size:10pt;">
+<p style="margin:0px;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <span style="color:blue;">public</span> <span style="color:#2b91af;">PaymentCoupon</span> GetNextCoupon()</p>
+<p style="margin:0px;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; {</p>
+<p style="margin:0px;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; _CurrentIndex++;</p>
+<p style="margin:0px;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <span style="color:#2b91af;">PaymentCoupon</span> coupon = <span style="color:blue;">null</span>;</p>
+<p style="margin:0px;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <span style="color:blue;">if</span> (_CurrentIndex &lt; UsableCouponsQueue.Count - 1)</p>
+<p style="margin:0px;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; {</p>
+<p style="margin:0px;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; coupon = UsableCouponsQueue[_CurrentIndex];</p>
+<p style="margin:0px;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <span style="color:blue;">if</span> (coupon != <span style="color:blue;">null</span>)</p>
+<p style="margin:0px;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; {</p>
+<p style="margin:0px;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <span style="color:green;">// check to see if this coupon has already been redeemed</span></p>
+<p style="margin:0px;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <span style="color:green;">// if it has move to the next coupon</span></p>
+<p style="margin:0px;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <span style="color:blue;">if</span> (UsableCouponsQueue.SingleOrDefault(c =&gt; <strong>c.RedeemingReceiptId != 0</strong> &amp;&amp; c.PaymentCouponId == coupon.PaymentCouponId) != <span style="color:blue;">null</span>)</p>
+<p style="margin:0px;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; {</p>
+<p style="margin:0px;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; coupon&nbsp;= GetNextCoupon();</p>
+<p style="margin:0px;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; }</p>
+<p style="margin:0px;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <span style="color:blue;">else</span></p>
+<p style="margin:0px;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; {</p>
+<p style="margin:0px;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <span style="color:green;">// the current coupon has not been redeemed</span></p>
+<p style="margin:0px;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <span style="color:green;">// check to see if the agreement can still use this coupon, if not get next coupon</span></p>
+<p style="margin:0px;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; Agreement.<span style="color:#2b91af;">Agreement</span> agreement = _Agreements.SingleOrDefault(c =&gt; c.AgreementId == coupon.RedeemingAgreementId);</p>
+<p style="margin:0px;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <span style="color:blue;">if</span> (agreement != <span style="color:blue;">null</span> &amp;&amp; !agreement.CanUseCoupon(coupon))</p>
+<p style="margin:0px;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; {</p>
+<p style="margin:0px;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; coupon = GetNextCoupon();</p>
+<p style="margin:0px;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; }</p>
+<p style="margin:0px;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; }</p>
+<p style="margin:0px;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; }</p>
+<p style="margin:0px;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; }</p>
+<p style="margin:0px;">&nbsp;</p>
+<p style="margin:0px;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <span style="color:blue;">return</span> coupon;</p>
+<p style="margin:0px;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; }</p>
+</div>
+</div>
+</div></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

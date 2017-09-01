@@ -1,0 +1,193 @@
+<html><header><title>WPF Authorization - ApplyAuthorization on ReadWriteAuthorization</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>WPF Authorization - ApplyAuthorization on ReadWriteAuthorization</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3523.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Curelom posted on Wednesday, September 12, 2007</h2>In forms, CSLA had a collaboration property to override authorization on certain controls.&nbsp; Is there such a thing with the Authorizer in CSLA 3.0 and wpf?</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Paul Czywczynski replied on Wednesday, September 12, 2007</h2>You can use an attached property on your control.<br><br>&nbsp;csla:Authorizer.NotVisibleMode="Ignore"<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Curelom replied on Wednesday, September 12, 2007</h2>Thank you.&nbsp; This appears to work for read, but not write.&nbsp; I've looked at the SetWrite method of the Authorizer and it isn't checking this.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, September 12, 2007</h2>Can you explain the scenario where the object won't allow a write, but you want the UI to try and allow the write to occur (presumably thus causing an exception)?</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Curelom replied on Wednesday, September 12, 2007</h2><P>I have a combobox for the status property of the object.&nbsp; It contains Open/Closed.&nbsp; When the object is closed, none of the properties of the object should be editable, except status.&nbsp; Once status is changed back to Open, all the properties should then be editable.&nbsp; This worked fine in WinForms, but to get it to work in wpf, I had to make a change at the top of the SetWrite method of the Authorizer</P><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>bool</FONT><FONT size=2> canWrite = source.CanWriteProperty(bnd.Path.Path);</P>
+<P></FONT><FONT color=#2b91af size=2>VisibilityMode</FONT><FONT size=2> visibilityMode = GetNotVisibleMode(ctl);</P>
+<P></FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (visibilityMode == </FONT><FONT color=#2b91af size=2>VisibilityMode</FONT><FONT size=2>.Ignore)</P>
+<P>canWrite = </FONT><FONT color=#0000ff size=2>true</FONT><FONT size=2>;</FONT></P>
+<P><FONT size=2>With this change, it works.</P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, September 12, 2007</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>What does CanWriteProperty(&#8220;Status&#8221;) return when the
+object is closed? It must return true right? You&#8217;ve overridden
+CanWriteProperty() to return false for all other properties based on the status
+value?<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I guess I still don&#8217;t understand what&#8217;s happening in
+the app. For the property to be writable, CanWriteProperty() should be
+returning true &#8211; and then Authorizer would turn on the control (or wouldn&#8217;t
+turn it off in this case).<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Curelom
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Wednesday, September 12, 2007 4:55 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] WPF Authorization - ApplyAuthorization on
+ReadWriteAuthorization<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>I have a combobox for the status property of the object.&nbsp; It contains
+Open/Closed.&nbsp; When the object is closed, none of the properties of the
+object should be editable, except status.&nbsp; Once status is changed back to
+Open, all the properties should then be editable.&nbsp; This worked fine in
+WinForms, but to get it to work in wpf, I had to make a change at the top of
+the SetWrite method of the Authorizer<o:p></o:p></p>
+
+<p><span>bool</span><span> canWrite = source.CanWriteProperty(bnd.Path.Path);<o:p></o:p></span></p>
+
+<p><span>VisibilityMode</span><span> visibilityMode = GetNotVisibleMode(ctl);<o:p></o:p></span></p>
+
+<p><span>if</span><span> (visibilityMode == <span>VisibilityMode</span>.Ignore)<o:p></o:p></span></p>
+
+<p><span>canWrite = <span>true</span>;</span><o:p></o:p></p>
+
+<p><span>With this change, it works.<o:p></o:p></span></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Curelom replied on Wednesday, September 12, 2007</h2><FONT size=2>
+<P>I did overwrite the CanWriteProperty.</FONT></P>
+<P><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>override</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>bool</FONT><FONT size=2> CanWriteProperty(</FONT><FONT color=#0000ff size=2>string</FONT><FONT size=2> propertyName) { </P>
+<P></FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (!</FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>.IsTicketBeingClosed() &amp;&amp; </FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>.Status == </FONT><FONT color=#a31515 size=2>"Closed"</P></FONT><FONT size=2>
+<P>&amp;&amp; propertyName != </FONT><FONT color=#a31515 size=2>"Status"</FONT><FONT size=2>)</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>false</FONT><FONT size=2>;</P>
+<P></FONT><FONT color=#0000ff size=2>else</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>base</FONT><FONT size=2>.CanWriteProperty(propertyName);</P></FONT><FONT size=2>
+<P>}</P>
+<P>The control I am working with is below.&nbsp; Debugging, it is going through the SetWrite method twice, once where bnd.Path.Path has a value of Status, the other time it is going through where bnd.Path.Path is an empty string, and that is where CanWriteProperty returns false.&nbsp; I have no idea where it is coming up with the second empty binding.&nbsp; I've noticed it does this for each of my comboboxes.&nbsp; Am I binding them correctly?&nbsp; There is a grid control with the list of objects, and a detail tabcontrol below it.&nbsp; In the tabcontrol I'm setting the DataContext like this<FONT color=#ff0000 size=2></P>
+<P>DataContext</FONT><FONT color=#0000ff size=2>="{</FONT><FONT color=#a31515 size=2>Binding</FONT><FONT color=#ff0000 size=2> Path</FONT><FONT color=#0000ff size=2>=CurrentItem,</FONT><FONT color=#ff0000 size=2> ElementName</FONT><FONT color=#0000ff size=2>=TicketGrid}"</FONT></P>
+<P><FONT color=#a31515 size=2></FONT><FONT color=#000000 size=2>The grid is populated via CslaDataProvider and the ItemsSource of the comboboxes are also populated via CslaDataProvider</FONT></P>
+<P><FONT color=#0000ff size=2>&lt;</FONT><FONT color=#a31515 size=2>ComboBox</FONT><FONT size=2> </FONT><FONT color=#ff0000 size=2>ItemsSource</FONT><FONT color=#0000ff size=2>="{</FONT><FONT color=#a31515 size=2>Binding</FONT><FONT color=#ff0000 size=2> Source</FONT><FONT color=#0000ff size=2>={</FONT><FONT color=#a31515 size=2>StaticResource</FONT><FONT color=#ff0000 size=2> ticketStatusList</FONT><FONT color=#0000ff size=2>}}"</FONT><FONT size=2> </P></FONT><FONT size=2>
+<P></FONT><FONT color=#ff0000 size=2>DisplayMemberPath</FONT><FONT color=#0000ff size=2>="CallStatus"</FONT><FONT color=#ff0000 size=2> MaxWidth</FONT><FONT color=#0000ff size=2>="100"</P></FONT><FONT size=2>
+<P></FONT><FONT color=#ff0000 size=2>SelectedValuePath</FONT><FONT color=#0000ff size=2>="CallStatus"</P></FONT><FONT size=2>
+<P></FONT><FONT color=#ff0000 size=2>SelectedValue</FONT><FONT color=#0000ff size=2>="{</FONT><FONT color=#a31515 size=2>Binding</FONT><FONT color=#ff0000 size=2> Path</FONT><FONT color=#0000ff size=2>=Status}"</FONT><FONT size=2> </P>
+<P></FONT><FONT color=#ff0000 size=2>Width</FONT><FONT color=#0000ff size=2>="Auto"</FONT><FONT color=#ff0000 size=2> Margin</FONT><FONT color=#0000ff size=2>="0,0,0,0"</FONT><FONT color=#ff0000 size=2> Canvas.Left</FONT><FONT color=#0000ff size=2>="240"</FONT><FONT color=#ff0000 size=2> Canvas.Top</FONT><FONT color=#0000ff size=2>="83"</FONT><FONT color=#ff0000 size=2> x</FONT><FONT color=#0000ff size=2>:</FONT><FONT color=#ff0000 size=2>Name</FONT><FONT color=#0000ff size=2>="cmbStatus"</FONT><FONT color=#ff0000 size=2> Height</FONT><FONT color=#0000ff size=2>="22" /&gt;</P></FONT></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, September 12, 2007</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Maybe you have found a bug in how the control walks through the
+visual tree. I&#8217;ll have to try and replicate the issue.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Curelom
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Wednesday, September 12, 2007 6:35 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: WPF Authorization - ApplyAuthorization on
+ReadWriteAuthorization<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p><span>I did overwrite the CanWriteProperty.</span><o:p></o:p></p>
+
+<p><span>public</span><span> <span>override</span> <span>bool</span> CanWriteProperty(<span>string</span>
+propertyName) { <o:p></o:p></span></p>
+
+<p><span>if</span><span> (!<span>this</span>.IsTicketBeingClosed()
+&amp;&amp; <span>this</span>.Status == <span>&quot;Closed&quot;<o:p></o:p></span></span></p>
+
+<p><span>&amp;&amp; propertyName != <span>&quot;Status&quot;</span>)<o:p></o:p></span></p>
+
+<p><span>return</span><span> <span>false</span>;<o:p></o:p></span></p>
+
+<p><span>else<o:p></o:p></span></p>
+
+<p><span>return</span><span> <span>base</span>.CanWriteProperty(propertyName);<o:p></o:p></span></p>
+
+<p><span>}<o:p></o:p></span></p>
+
+<p><span>The control I am working with is below.&nbsp;
+Debugging, it is going through the SetWrite method twice, once where
+bnd.Path.Path has a value of Status, the other time it is going through where
+bnd.Path.Path is an empty string, and that is where CanWriteProperty returns
+false.&nbsp; I have no idea where it is coming up with the second empty
+binding.&nbsp; I've noticed it does this for each of my comboboxes.&nbsp; Am I
+binding them correctly?&nbsp; There is a grid control with the list of objects,
+and a detail tabcontrol below it.&nbsp; In the tabcontrol I'm setting the
+DataContext like this<span><o:p></o:p></span></span></p>
+
+<p><span>DataContext</span><span>=&quot;{</span><span>Binding</span><span> Path</span><span>=CurrentItem,</span><span> ElementName</span><span>=TicketGrid}&quot;</span><span><o:p></o:p></span></p>
+
+<p><span>The grid is populated via
+CslaDataProvider and the ItemsSource of the comboboxes are also populated via
+CslaDataProvider</span><span><o:p></o:p></span></p>
+
+<p><span>&lt;</span><span>ComboBox</span><span> <span>ItemsSource</span><span>=&quot;{</span><span>Binding</span><span> Source</span><span>={</span><span>StaticResource</span><span> ticketStatusList</span><span>}}&quot;</span>
+<o:p></o:p></span></p>
+
+<p><span>DisplayMemberPath</span><span>=&quot;CallStatus&quot;</span><span> MaxWidth</span><span>=&quot;100&quot;<o:p></o:p></span></p>
+
+<p><span>SelectedValuePath</span><span>=&quot;CallStatus&quot;<o:p></o:p></span></p>
+
+<p><span>SelectedValue</span><span>=&quot;{</span><span>Binding</span><span> Path</span><span>=Status}&quot;</span><span> <o:p></o:p></span></p>
+
+<p><span>Width</span><span>=&quot;Auto&quot;</span><span> Margin</span><span>=&quot;0,0,0,0&quot;</span><span> Canvas.Left</span><span>=&quot;240&quot;</span><span> Canvas.Top</span><span>=&quot;83&quot;</span><span> x</span><span>:</span><span>Name</span><span>=&quot;cmbStatus&quot;</span><span> Height</span><span>=&quot;22&quot; /&gt;<o:p></o:p></span></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

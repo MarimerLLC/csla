@@ -1,0 +1,12 @@
+<html><header><title>How to add custom object authorization rule</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>How to add custom object authorization rule</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11035.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>msrs_it posted on Friday, January 06, 2012</h2><p>I have certain objects that are to be edited by its owner only.</p>
+<p>As per my knowledge the AddObjectAuthorizationRules() fires before the object creation and it is also a static method. How can we know that the user is a owner of that object?</p>
+<p>For example, I have a company object. When a user logs in to the system I&#39;m storing his company id in the Identity object.</p>
+<p>the constraint is that the details of that company are edited by this user and admin only.</p>
+<p>How can I frame the object authorization rule?</p>
+<p>&nbsp;</p>
+<p>Thanks and Regards</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Friday, January 06, 2012</h2><p>It depends on how your authorization should be done. </p>
+<p>1. You could add additional check on in static fetch method after DataPortal.Fetch&lt;&gt; statement and check if user can access (fetch) this instance. Ie: call BusinessRules.HasPermission(AuthorizationActions.GetObject, obj, true);</p>
+<p>2. You could override CanWriteProperty to return false when current user is not the owner (in efffect: make all fields readonly).</p>
+<p>3. You could also add a rule for AuthorizationActions.EditObject that would prevent user from calling Save on your root object </p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

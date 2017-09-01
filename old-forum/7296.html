@@ -1,0 +1,134 @@
+<html><header><title>cslalight Rolodex exception</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>cslalight Rolodex exception</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/7296.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>andy posted on Friday, July 17, 2009</h2><P>I am using CSLA framework for my internal application and have a lot of&nbsp;success with it.<BR>Silverlight 3 looks very sexy with the built-in features for biz app.&nbsp; I am&nbsp;interested&nbsp;using cslalight for a real LOB app.&nbsp; Any pit-fall/gotcha&nbsp;that I should be aware of?<BR>I tried out the Rolodex sample app and ran into&nbsp;problem when&nbsp;loading CompanyEditor user control</P>
+<P>&nbsp;&nbsp; at MS.Internal.XcpImports.CheckHResult(UInt32 hr)<BR>&nbsp;&nbsp; at MS.Internal.XcpImports.Collection_AddValue[T](PresentationFrameworkCollection`1 collection, CValue value)<BR>&nbsp;&nbsp; at MS.Internal.XcpImports.Collection_AddDependencyObject[T](PresentationFrameworkCollection`1 collection, DependencyObject value)<BR>&nbsp;&nbsp; at System.Windows.PresentationFrameworkCollection`1.AddDependencyObject(DependencyObject value)<BR>&nbsp;&nbsp; at System.Windows.Controls.UIElementCollection.AddInternal(UIElement value)<BR>&nbsp;&nbsp; at System.Windows.PresentationFrameworkCollection`1.Add(T value)<BR>&nbsp;&nbsp; at Rolodex.Page.ShowControl(UserControl control)<BR>&nbsp;&nbsp; at Rolodex.Page.&lt;&gt;c__DisplayClass4.&lt;list_CompanySelected&gt;b__3(Object o1, EventArgs e1)<BR>&nbsp;&nbsp; at Rolodex.CompanyEditor.OnDataLoaded()<BR>&nbsp;&nbsp; at Rolodex.CompanyEditor.CslaDataProvider_DataChanged(Object sender, EventArgs e)</P>
+<P><BR>I am using the latest version(3.7)<BR>Any suggestion how to resolve the err exception?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, July 20, 2009</h2><P>I haven't run through all the samples to update them to SL 3. And probably won't for some time - there are a lot of samples, and I usually fix them up if-and-when I decided to use any given sample.</P>
+<P>Sergey wrote that sample, and may have some idea what's going on - that exception isn't one I've encountered in other samples so far.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>andy replied on Monday, July 20, 2009</h2><P>Rocky, just want to say thank you for your support and dedication to this awsome framework.&nbsp;&nbsp;I want to get into silverlight 3 space and .net RIA service looks very promising but still have a long way to go.&nbsp; The only problem with it is too tightly couple with&nbsp; E.F and SQL server for me to jump&nbsp;into it for now.&nbsp; Just curious and love to hear from people exposed to cslalight and their experiences with their "killer" apps.</P>
+<P>Andy&nbsp; </P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, July 20, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I think RIA Services will mature into something very
+interesting. I think they have a long way to go before they catch up to where
+CSLA .NET is today, but given a few more years they&#8217;ll probably get
+there.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>You should know that RIA Services can consume more than just EF
+as a data source though. They have something like the data portal (in a way)
+that abstracts where the data comes from, and it is possible to consume data
+from virtually any data source as long as you write the adapter code (conceptually
+much like writing DataPortal_XYZ methods).<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky</span><b><span><o:p></o:p></span></b></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>andy replied on Thursday, July 23, 2009</h2><DIV align=left><SPAN class=937075319-23072009><FONT face=Arial color=#0000ff size=2>Rocky,</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=937075319-23072009></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=937075319-23072009><FONT face=Arial color=#0000ff size=2>I tried out&nbsp;the silverlight Inventory sample and got the err below when clicked on "Products"/"Customers"/"Warehouses"</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=937075319-23072009><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=937075319-23072009><FONT face=Arial color=#0000ff size=2>DataPortal.Fetch failed(Factory type or assembly could not be loaded(InvDal.ProductList,InvDal))</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=937075319-23072009><SPAN></SPAN></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=937075319-23072009><SPAN>Any clue how to fix it?</SPAN></SPAN></DIV>
+<DIV align=left><SPAN class=937075319-23072009><SPAN></SPAN></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=937075319-23072009><SPAN>Thank you for your time.</SPAN></SPAN></DIV>
+<DIV align=left><SPAN class=937075319-23072009><SPAN></SPAN></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=937075319-23072009><SPAN>Andy</SPAN></SPAN></DIV></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>andy replied on Thursday, July 23, 2009</h2>
+
+
+
+
+
+ 
+
+
+<DIV align=left><SPAN class=937075319-23072009><FONT face=Arial color=#0000ff size=2>Rocky,</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=937075319-23072009></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=937075319-23072009><FONT face=Arial color=#0000ff size=2>I tried out&nbsp;the silverlight Inventory sample and got 
+the err below when click on 
+"Products"/"Customers"/"Warehouses"</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=937075319-23072009><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=937075319-23072009><FONT face=Arial color=#0000ff size=2>DataPortal.Fetch failed(Factory type or assembly could not 
+be loaded(InvDal.ProductList,InvDal))</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=937075319-23072009><SPAN></SPAN></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=937075319-23072009><SPAN>Any clue 
+how to fix it?</SPAN></SPAN></DIV>
+<DIV align=left><SPAN class=937075319-23072009><SPAN></SPAN></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=937075319-23072009><SPAN>Thank 
+you for your time.</SPAN></SPAN></DIV>
+<DIV align=left><SPAN class=937075319-23072009><SPAN></SPAN></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=937075319-23072009><SPAN>Andy</SPAN></SPAN></DIV><BR>
+<DIV class=OutlookMessageHeader align=left>
+<HR>
+<FONT face=Tahoma size=2><B>From:</B> Rockford Lhotka 
+[mailto:cslanet@lhotka.net] <BR><B>Sent:</B> Monday, July 20, 2009 11:42 
+AM<BR><B>To:</B> Andy Diep - usa itbp<BR><B>Subject:</B> RE: [CSLA .NET] 
+cslalight Rolodex exception<BR></FONT><BR></DIV>
+<DIV></DIV>
+<DIV class=Section1>
+<P class=MsoNormal><SPAN>I 
+think RIA Services will mature into something very interesting. I think they 
+have a long way to go before they catch up to where CSLA .NET is today, but 
+given a few more years they&#8217;ll probably get there.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>You 
+should know that RIA Services can consume more than just EF as a data source 
+though. They have something like the data portal (in a way) that abstracts where 
+the data comes from, and it is possible to consume data from virtually any data 
+source as long as you write the adapter code (conceptually much like writing 
+DataPortal_XYZ methods).<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Rocky</SPAN><B><SPAN><o:p></o:p></SPAN></B></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P></DIV><BR><BR><BR></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, July 23, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>You should try doing a rebuild of the solution.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>On my machine (and I thought it was just me) I have discovered
+that after installing the SL3 SDK Visual Studio no longer seems to
+automatically rebuild all the projects when it should. In other words, with SL2
+I was usually able to just hit F5 and the right stuff would get built, but with
+SL3 I usually have to explicitly do a rebuild of the solution before I can hit
+F5.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky</span><o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>andy replied on Monday, July 27, 2009</h2><P>I rebuilt and even restarted my vpc but so far&nbsp;no luck with it. :)<BR>will poke around to see I can resolve the issue.</P>
+<P>Andy<BR></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>figuerres replied on Wednesday, September 09, 2009</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>andy:</strong></div><div><P>I am using CSLA framework for my internal application and have a lot of&#160;success with it.<BR>Silverlight 3 looks very sexy with the built-in features for biz app.&#160; I am&#160;interested&#160;using cslalight for a real LOB app.&#160; Any pit-fall/gotcha&#160;that I should be aware of?<BR>I tried out the Rolodex sample app and ran into&#160;problem when&#160;loading CompanyEditor user control</P><br /><P>&#160;&#160; at MS.Internal.XcpImports.CheckHResult(UInt32 hr)<BR>&#160;&#160; at MS.Internal.XcpImports.Collection_AddValue[T](PresentationFrameworkCollection`1 collection, CValue value)<BR>&#160;&#160; at MS.Internal.XcpImports.Collection_AddDependencyObject[T](PresentationFrameworkCollection`1 collection, DependencyObject value)<BR>&#160;&#160; at System.Windows.PresentationFrameworkCollection`1.AddDependencyObject(DependencyObject value)<BR>&#160;&#160; at System.Windows.Controls.UIElementCollection.AddInternal(UIElement value)<BR>&#160;&#160; at System.Windows.PresentationFrameworkCollection`1.Add(T value)<BR>&#160;&#160; at Rolodex.Page.ShowControl(UserControl control)<BR>&#160;&#160; at Rolodex.Page.<>c__DisplayClass4.b__3(Object o1, EventArgs e1)<BR>&#160;&#160; at Rolodex.CompanyEditor.OnDataLoaded()<BR>&#160;&#160; at Rolodex.CompanyEditor.CslaDataProvider_DataChanged(Object sender, EventArgs e)</P><br /><P><BR>I am using the latest version(3.7)<BR>Any suggestion how to resolve the err exception?</P></div></BLOCKQUOTE><br /><br />in case folks are still stuck on this....<br />looks like a bug in silverlight.<br />see here for a possible work around:<br />http://silverlight.net/forums/p/121515/284670.aspx#284670<br /></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Wednesday, September 09, 2009</h2>It is possible that this is related to the latest fix to PropertyStatus for SL 3 that Rocky implemented recently.  Try to use the latest framework version that has this fix.<br /><br />Sergey Barskiy<br />Principal Consultant<br />office: 678.405.0687 | mobile:&#160;404.388.1899<br /><br />Microsoft Worldwide Partner of the Year | Custom Development Solutions, Technical Innovation<br /><br />-----Original Message-----<br />From: figuerres [mailto:cslanet@lhotka.net] <br />Sent: Wednesday, September 09, 2009 5:53 PM<br />To: Sergey Barskiy<br />Subject: Re: [CSLA .NET] cslalight Rolodex exception<br /><br /> andy:I am using CSLA framework for my internal application and have a lot of&#160;success with it.Silverlight 3 looks very sexy with the built-in features for biz app.&#160; I am&#160;interested&#160;using cslalight for a real LOB app.&#160; Any pit-fall/gotcha&#160;that I should be aware of?I tried out the Rolodex sample app and ran into&#160;problem when&#160;loading CompanyEditor user control<br />&#160;&#160; at MS.Internal.XcpImports.CheckHResult(UInt32 hr)&#160;&#160; at MS.Internal.XcpImports.Collection_AddValue[T](PresentationFrameworkCollection`1 collection, CValue value)&#160;&#160; at MS.Internal.XcpImports.Collection_AddDependencyObject[T](PresentationFrameworkCollection`1 collection, DependencyObject value)&#160;&#160; at System.Windows.PresentationFrameworkCollection`1.AddDependencyObject(DependencyObject value)&#160;&#160; at System.Windows.Controls.UIElementCollection.AddInternal(UIElement value)&#160;&#160; at System.Windows.PresentationFrameworkCollection`1.Add(T value)&#160;&#160; at Rolodex.Page.ShowControl(UserControl control)&#160;&#160; at Rolodex.Page.<>c__DisplayClass4.b__3(Object o1, EventArgs e1)&#160;&#160; at Rolodex.CompanyEditor.OnDataLoaded()&#160;&#160; at Rolodex.CompanyEditor.CslaDataProvider_DataChanged(Object sender, EventArgs e)<br />I am using the latest version(3.7)Any suggestion how to resolve the err exception?<br /><br />in case folks are still stuck on this....<br />looks like a bug in silverlight.<br />see here for a possible work around:<br />http://silverlight.net/forums/p/121515/284670.aspx#284670<br /><br /></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

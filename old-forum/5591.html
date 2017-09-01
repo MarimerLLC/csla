@@ -1,0 +1,145 @@
+<html><header><title>WPF:  Save on window close</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>WPF:  Save on window close</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5591.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 posted on Tuesday, October 14, 2008</h2>Hi,<br><br>I'm trying to build up my Wpf library of general helper classes to give a consistent user experience.<br><br>I'm creating a user control which contains everything needed to edit a business object.&nbsp; I'm also creating a BusinessEditWindow, which is a subclass of Wpf's Window.<br><br>I'm trying to override the OnClosing method.&nbsp; The goal is to prompt the user if the window is closing at the BO is dirty.&nbsp; If the BO isn't valid, the choice is close the window and lose changes, or cancel closing of the window.<br><br>If the object is valid though, there are three choices.&nbsp; Saving the BO and closing the window, discarding the BO and closing the window, or canceling the window close.<br><br>The problem is with the save; if there's an error, I want to throw up my error dialog, and cancel the window closing.&nbsp; I'm hitting a problem though, and I'm not sure how to solve it.<br><br>My initial idea was to have every control implement a SaveBusinessObject method, which returns true or false; true means the BO saved, false means there was some kind of exception.&nbsp; Not sure how to code that, since the CslaDataProvider is handling the save command for me.<br><br>My next choice was to allow an exception to be thrown.. except the DataProvider's model is to check the Error property of the DP I'm guessing in an event handler for DataChanged.&nbsp; the problem there is throwing and catching the exception doesn't allow the CslaDataProvider to reset the BO to the instance prior to calling save.<br><br>So, I'm not sure how I should continue here.&nbsp; I also have concerns because the DataProvider is asyncronous, so that my UI stays nice and snappy and windows open immediately.<br><br>Thanks<br>Andy<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Tuesday, October 14, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Here are a few thoughts<o:p></o:p></span></p>
+
+<p class=MsoListParagraph><span><span>1.<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span></span><span>You can have your inherited controls expose data provider instead
+having BOSave.&nbsp; You can probably even skip that if you follow a naming
+convention for provider name, although this seems dirty to me.<o:p></o:p></span></p>
+
+<p class=MsoListParagraph><span><span>2.<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span></span><span>At that point you can<o:p></o:p></span></p>
+
+<p class=MsoListParagraph><span><span>a.<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></span></span><span>Check
+for changes<o:p></o:p></span></p>
+
+<p class=MsoListParagraph><span><span>b.<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></span></span><span>Set
+provider to be synchronous, as I do not think asynchronous mode will work here.<o:p></o:p></span></p>
+
+<p class=MsoListParagraph><span><span>c.<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></span></span><span>Add
+event handler for data changed<o:p></o:p></span></p>
+
+<p class=MsoListParagraph><span><span>d.<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></span></span><span>Fire
+Save() on provider<o:p></o:p></span></p>
+
+<p class=MsoListParagraph><span><span>e.<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></span></span><span>Data Changed
+I think will fire two times (to force UI refresh)<o:p></o:p></span></p>
+
+<p class=MsoListParagraph><span><span>f.<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span></span><span>If error is not null in first Data Changed handler, you know you
+have the error.<o:p></o:p></span></p>
+
+<p class=MsoListParagraph><span><span>g.<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></span></span><span>After
+second Data Changed you can remove handler.<o:p></o:p></span></p>
+
+<p class=MsoListParagraph><span><span>h.<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></span></span><span>Reset
+provider back to original state (synch or async)<o:p></o:p></span></p>
+
+<p class=MsoListParagraph><span><span>i.<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span></span><span>Check for error<o:p></o:p></span></p>
+
+<p class=MsoListParagraph><span><span>j.<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span></span><span>If there was one, popup the message, set cancel to true.<o:p></o:p></span></p>
+
+<p class=MsoListParagraph><span><span>k.<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></span></span><span>Else close
+the form<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899<o:p></o:p></span></p>
+
+<p class=MsoNormal><b><i><span>Magenic</span></i></b><span> </span><span>&reg;</span><b><i><span><o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> ajj3085
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Tuesday, October 14, 2008 3:41 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> [CSLA .NET] WPF: Save on window close<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Hi,<br>
+<br>
+I'm trying to build up my Wpf library of general helper classes to give a
+consistent user experience.<br>
+<br>
+I'm creating a user control which contains everything needed to edit a business
+object.&nbsp; I'm also creating a BusinessEditWindow, which is a subclass of
+Wpf's Window.<br>
+<br>
+I'm trying to override the OnClosing method.&nbsp; The goal is to prompt the
+user if the window is closing at the BO is dirty.&nbsp; If the BO isn't valid,
+the choice is close the window and lose changes, or cancel closing of the
+window.<br>
+<br>
+If the object is valid though, there are three choices.&nbsp; Saving the BO and
+closing the window, discarding the BO and closing the window, or canceling the
+window close.<br>
+<br>
+The problem is with the save; if there's an error, I want to throw up my error
+dialog, and cancel the window closing.&nbsp; I'm hitting a problem though, and
+I'm not sure how to solve it.<br>
+<br>
+My initial idea was to have every control implement a SaveBusinessObject
+method, which returns true or false; true means the BO saved, false means there
+was some kind of exception.&nbsp; Not sure how to code that, since the
+CslaDataProvider is handling the save command for me.<br>
+<br>
+My next choice was to allow an exception to be thrown.. except the
+DataProvider's model is to check the Error property of the DP I'm guessing in
+an event handler for DataChanged.&nbsp; the problem there is throwing and
+catching the exception doesn't allow the CslaDataProvider to reset the BO to
+the instance prior to calling save.<br>
+<br>
+So, I'm not sure how I should continue here.&nbsp; I also have concerns because
+the DataProvider is asyncronous, so that my UI stays nice and snappy and
+windows open immediately.<br>
+<br>
+Thanks<br>
+Andy<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>SS012010 replied on Tuesday, January 12, 2010</h2>Hi,<br />I'm new to CSLA.<br />I want my web app. to prompt the user to save his unsaved data befor he navigates away from the page. It has master page with treeview which is used to navigate through the app. On lot of pages i'm using formview bound to BO.<br /><br />Thanks,<br />SS</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, January 13, 2010</h2>To do this in a web app you'll need to use some client-side script to prevent the user from navigating away - that's a pretty common web thing, and I'm sure you can find examples of the script by googling with Bing :)</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>SS012010 replied on Wednesday, January 13, 2010</h2>Hi Rocky,<br />Thanks alot for your quick response.<br />Actually I was trying to find if there is a way in which i can leverage the the IsDirty property of the BO.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, January 13, 2010</h2><P>This is the web, not Windows :)</P>
+<P>Remember that the user is just interacting with a relatively smart terminal (the browser) that is disconnected from your server 99.999% of the time. When they try to navigate to another page, the browser is not connected to your server, and is under no obligation to ask your server for permission - that's just not part of the web model.</P>
+<P>You may be able to write some AJAX client script that does talk to the server to get permission. I'm not sure that's possible. The only thing I've seen is that browsers have a hook you can use to cause the browser to pop up a simple yes/no dialog to tell the user they are navigating away and will lose data - the user can still click "yes, I want to leave" and you can't stop them from going.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Wednesday, January 13, 2010</h2><P>I've done this, having a page level javascript variable called isDirty.&nbsp; I declare it like this:</P>
+<P>var isDirty = [asp:Literal Id="IsDirtyLit" runat="server"/];</P>
+<P>And set it on each page load to reflect the state of the BO.&nbsp; </P>
+<P>That's not all you have to do though; you also need to listen (in javascript) to things like keypress, clicked, etc, and set that flag to true.&nbsp; Basically once the user changes the state of controls on the page, your object should be considered dirty as well.</P>
+<P>It seems to work fairly well, but you can't rely soley on the Csla IsDirty property because the BO itself won't be dirty until a page submit.</P>
+<P>And all you'll be able to do is maybe provide a "Lose changes?" prompt.</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

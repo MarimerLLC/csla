@@ -1,0 +1,32 @@
+<html><header><title>Help with logic creating an Invoice Wizard</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Help with logic creating an Invoice Wizard</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3995.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>white911 posted on Thursday, December 06, 2007</h2><P><FONT face=Arial><FONT size=2>Hi,<o:p></o:p></FONT></FONT></P>
+<P><FONT face=Arial><FONT size=2>I am having difficulties figuring out the classes I need to implement for a scenario. <o:p></o:p></FONT></FONT></P>
+<P><FONT face=Arial><FONT size=2>Let me explain...<o:p></o:p></FONT></FONT></P>
+<P><FONT face=Arial><FONT size=2>I have an Invoice Business Base Object which it's behavior is to create (or edit) an Invoice. In my windows application I created an AddInvoice Wizard screen which walks you through the creation of a new invoice. However, an Invoice needs to be associated with a customer, so in the Invoice object I have the CustomerID to which the Invoice is associated.&nbsp;In the first screen of the wizard I did as following:&nbsp;<o:p></o:p></FONT></FONT></P>
+<P><FONT face=Arial><FONT size=2>Users Options&nbsp;<o:p></o:p></FONT></FONT></P>
+<P><FONT face=Arial><FONT size=2>1) Select an existing customer - which allows the user to select an existing customer from a combo box<o:p></o:p></FONT></FONT></P>
+<P><FONT face=Arial><FONT size=2>2) Create new customer - I have some text boxes where the user can add the customer info<o:p></o:p></FONT></FONT></P>
+<OL>
+<LI class=MsoNormal><FONT face=Arial><FONT size=2>First Name<o:p></o:p></FONT></FONT></LI>
+<LI class=MsoNormal><FONT face=Arial><FONT size=2>Last Name<o:p></o:p></FONT></FONT></LI>
+<LI class=MsoNormal><FONT face=Arial><FONT size=2>Address<o:p></o:p></FONT></FONT></LI>
+<LI class=MsoNormal><FONT face=Arial><FONT size=2>City<o:p></o:p></FONT></FONT></LI>
+<LI class=MsoNormal><FONT face=Arial><FONT size=2>State<o:p></o:p></FONT></FONT></LI>
+<LI class=MsoNormal><FONT face=Arial><FONT size=2>Zip<o:p></o:p></FONT></FONT></LI></OL>
+<P><FONT face=Arial><FONT size=2>&nbsp;<o:p></o:p></FONT></FONT></P>
+<P><FONT face=Arial><FONT size=2>Now the new customer is not created yet. It gets created when I complete the wizard.<o:p></o:p></FONT></FONT></P>
+<P><FONT face=Arial><FONT size=2>The Business Object behind the wizard screen is the above Invoice object. In a case when the user selected an existing customer from the combo, the Customer ID binds with the CustomerID field in the Invoice object. However, when the user decided to create a new customer, I need a customer business object to create the new customer information and get the new create CustomerID (Auto Identity) and save it to the Invoice object, and once it's done I can save the Invoice object.<o:p></o:p></FONT></FONT></P>
+<P><FONT face=Arial><FONT size=2>So my question is, where should I put the logic for the above? Do I add two Business Objects to the wizard CustomerBO and InvoiceBO, and in the user interface code, I decide which to call first (if customer is new save customer first, otherwise just save invoice). The problem with this case is that I add too much logic and rules now in the user interface code. <BR>Maybe I can add the customer class into an Invoice and in the invoice save I can see if the customer object is new, so save it first. But this means the invoice object has a behavior to create a new customer (in some scenarios)<BR>Or maybe I can create a new object which handles the above.<o:p></o:p></FONT></FONT></P>
+<P><FONT face=Arial><FONT size=2>Please help...<o:p></o:p></FONT></FONT></P>
+<P class=MsoNormal><o:p><FONT face=Arial size=2>&nbsp;</FONT></o:p></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Thursday, December 06, 2007</h2><P>I typically create a 3rd object to hold the Customer and Invoice objects.</P>
+<P>This 3rd object is a Root BO so it can fetch itself, have rules and save itself.</P>
+<P>It is commonly called a Use Case Controller and is designed to handle the one specific use case you have outlined. The benefit is that this controller object contains all the logic that you may have been putting in your screens. This allows different UIs to call the same controller and get the same result - without having to make the UIs "smart". No code duplication across UIs.</P>
+<P>So in this ase you fetch an instance of the 3rd BO and depending on what you pass in, you can decide to fetch an existing customer or not. This 3rd BO knows which path you took and can save the data accordingly. </P>
+<P>Joe</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>white911 replied on Thursday, December 06, 2007</h2><P><FONT face=Arial size=2>Thanks alot. This sounds the righ way to do it. </FONT></P>
+<P><FONT face=Arial size=2>So in my scenario I would create the following BO</FONT></P>
+<P><FONT face=Arial size=2>InvoiceBO<BR>CustomerBO</FONT></P>
+<P><FONT face=Arial size=2>and InvoiceWizardBO - which would have the following Properties<BR>&nbsp;&nbsp;&nbsp; -- Invoice (InvoiceBO)<BR>&nbsp;&nbsp;&nbsp; -- Customer (CustomerBO)</FONT></P>
+<P><FONT face=Arial size=2>and when I call the save it would do some checking if the CustomerBO needs to be saved.</FONT></P>
+<P><FONT face=Arial size=2>I am not clear with how the binding would work? Should I bind my wizard form to InvoiceWizardBO.Invoice?</FONT></P>
+<P><FONT face=Arial size=2>Also where can I find more information?</FONT></P>
+<P><FONT face=Arial size=2></FONT>&nbsp;</P>
+<P><FONT face=Arial size=2></FONT>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>pandelaras replied on Friday, December 07, 2007</h2>how about creating a blank transicive database entry for customers, and then using that to process in ur business logic. Then when the user finishes the wizard to save the customer first, replace the transicive customer with the proper one?</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

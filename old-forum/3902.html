@@ -1,0 +1,346 @@
+<html><header><title>How to handle user-defined roles and permissions?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>How to handle user-defined roles and permissions?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3902.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>rsbaker0 posted on Thursday, November 15, 2007</h2><P>In our application, the user is in complete control over what roles are defined, and what specific functions are allowed for each role (e.g. the "permissions").</P>
+<P>In the Project Tracker example, the roles and authorization rules are static (at least this was my interpretation), so how would you handle our scenario in CSLA?</P>
+<P>One possibility is to call the permissions themselves "roles", so instead of&nbsp;a role being "Administrator",&nbsp;etc.&nbsp;the roles would be "Can Edit Project", "Can Delete Project", etc.&nbsp;In our application there are over 300 such permissions, so I'm not sure if this is advisable as it might add too much weight to the objects. </P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Friday, November 16, 2007</h2><P>This has been discussed many times.</P>
+<P>Do a search for HasPermissions and see what you come up with.</P>
+<P>Joe</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Biceman replied on Friday, November 16, 2007</h2>See this <a HREF="/forums/thread/17224.aspx">article</a> as an alternative.&nbsp; It's what I used as my template since I found the hardcoded role list and permissions too limiting as well.<br><br>Bryan<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rsbaker0 replied on Friday, November 16, 2007</h2><P>I looked at both suggestions -- it appears from this thread that Rocky says you can interpret "IsInRole" to be the equivalent of "HasPermission" except in unusual cases (unless I am missing something).</P>
+<P><A HREF="/forums/thread/12198.aspx">http://forums.lhotka.net/forums/thread/12198.aspx</A></P>
+<P>I have our "HasPermission" functionality completely migrated over from the legacy application we are converting. My main question was how to integrate it into the CSLA framework. The authorization rules would seem to not be useful unless we interpret the roles as permissions. </P>
+<P>Maybe some future version of CSLA could support a flexible authorization rule implementation comparable to the validation rule mechanism, where you can implement almost anything you want rather than just provide a list of strings to be tested elsewhere in the framework.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Biceman replied on Saturday, November 17, 2007</h2>
+
+<p class="MsoNormal"><font face="Arial" size="2">I'm new to CSLA as well so I feel your pain about trying to
+take that leap from the sample project.&nbsp; While I've read both the <i>VB.NET
+Business Objects</i> and <i>Expert VB 2005
+Business Objects</i> books, I learn best from examples.&nbsp; <o:p></o:p></font></p>
+
+
+
+<p class="MsoNormal"><font face="Arial" size="2"><o:p>&nbsp;</o:p><br>The Project Tracker is a good start but far too simplistic
+for what we are trying to do so I've been scouring this forum and trying
+different things out. <span>&nbsp;&nbsp;</span>I wish there were
+more sample applications to learn from but I supposed businesses using CSLA
+don't want to post their work products for the world to see.<o:p></o:p></font></p>
+
+<p class="MsoNormal"><font face="Arial" size="2"><o:p>&nbsp;</o:p>So in the interest of sharing, here is my approach:<o:p></o:p></font></p>
+
+<p class="MsoNormal"><font face="Arial" size="2"><o:p>&nbsp;</o:p>I have three database tables:<o:p></o:p></font></p>
+
+<ul><li><font face="Arial" size="2"><span><span>·<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span></span>Users,<o:p></o:p></font></li><li><font face="Arial" size="2"><span><span>·<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span></span>Roles, and<o:p></o:p></font></li><li><font face="Arial" size="2"><span><span>·<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span></span>Role Permissions<o:p></o:p></font></li></ul>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<p class="MsoNormal"><font face="Arial" size="2">The User table contains a list of each user (e.g., Name,
+Password, Password Expiration Date, List of most recently used passwords).<span>&nbsp; </span>The Roles table contains a row for each Role
+the User belongs to.<span>&nbsp; </span>Finally, the Role
+Permissions table contains a list of the permission(s) associated with each Role
+(i.e., Role, Function and Permission Level).<br><o:p>&nbsp;</o:p><br>When the user logs on the application, his/her password is
+validated.<span>&nbsp; </span>Assuming a valid password,
+the Roles and Role Permissions tables are joined to find all the permissions for
+the particular user.<br><o:p>&nbsp;</o:p><br>Using the Project Tracker Identity as a template, I created
+a new Identity class.<span>&nbsp; </span>Here’s the
+important stuff I added:</font><br><o:p>&nbsp;</o:p><br><span><span>&nbsp;&nbsp; </span>&lt;Serializable()&gt; _<br><span>&nbsp;&nbsp; </span><span>Public</span> <span>Class</span> YAIdentity<br><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span>Inherits</span>
+ReadOnlyBase(<span>Of</span> YAIdentity)<br><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span>Implements</span> IIdentity<br><o:p>&nbsp;</o:p><br>&nbsp;&nbsp;&nbsp; &nbsp; Private</span><span>
+_UserSctyList <span>As</span> <span>New</span>
+List(<span>Of</span> UserScty)<span>&nbsp; </span>‘Holds list of permissions</span></p>
+
+
+
+
+
+
+
+
+
+
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span>''' </span><span>&lt;summary&gt;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span>''' Internal
+class to hold custom security info used during authorization checks<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span>''' </span><span>&lt;/summary&gt;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span>''' </span><span>&lt;remarks&gt;&lt;/remarks&gt;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span>Private</span> <span>Class</span> UserScty<br><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span>Public</span>
+FuncNme <span>As</span> <span>String<span>&nbsp; </span>‘Function Name<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span>Public</span>
+SctyAcesCde <span>As</span> <span>Integer<span>&nbsp; </span>‘Security Access Code</span><o:p><br></o:p></span></p>
+
+
+
+
+
+
+
+
+
+
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span>Public</span>
+<span>Sub</span> <span>New</span>(<span>ByVal</span> pFuncNme <span>As</span> <span>String</span>, <span>ByVal</span> pSctyAcesCde
+<span>As</span> <span>Integer</span>)<br><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>FuncNme = pFuncNme<br><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>SctyAcesCde = pSctyAcesCde<br><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span>End</span> <span>Sub</span><br>End</span><span> <span>Class</span><o:p><br></o:p></span></p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span>''' </span><span>&lt;summary&gt;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span>''' Indicates
+whether user is authorized for specified function and accesses<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span>''' </span><span>&lt;/summary&gt;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span>Friend</span> <span>Function</span> IsAuthorized(<span>ByVal</span>
+FuncNme <span>As</span> <span>String</span>,
+<span>ByVal</span> SctyAcesCde <span>As</span>
+SctyAcesCdes) <span>As</span> <span>Boolean</span><o:p></o:p><br><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span>For</span> <span>Each</span> item <span>As</span> UserScty
+<span>In</span> _UserSctyList<br><span>&nbsp; </span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span>If</span>
+item.FuncNme = FuncNme AndAlso SctyAcesCde = item.SctyAcesCde <span>Then<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span>Return</span>
+<span>True<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span>End</span>
+<span>If<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span>Next</span><o:p><br></o:p></span></p>
+
+
+
+
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span>Return</span>
+<span>False<br>&nbsp;&nbsp;&nbsp;&nbsp; </span><span>End</span> <span>Function</span><br><o:p>&nbsp;</o:p></span></p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<p class="MsoNormal"><font face="Arial"><span>In the DataPortal_Fetch method, I populate </span></font><span><font face="Arial">_UserSctyList based
+on the contents of the second result set (like Rocky does in the Project
+Tracker example).</font><br><o:p>&nbsp;</o:p><br><span>&nbsp;&nbsp;&nbsp;&nbsp; </span><span>Using</span> dr <span>As</span> <span>New</span>
+SafeDataReader(cm.ExecuteReader)<br><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span>While</span>
+dr.Read()<br><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span>With</span>
+dr<br><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>_UserSctyList.Add(<span>New</span> UserScty(.GetString(<span>"FUNC_NME"</span>),
+.GetInt32(<span>"SCTY_ACES_CDE"</span>)))<br><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span>End</span> <span>With<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span>End</span> <span>While<br>&nbsp;&nbsp;&nbsp;&nbsp; </span><span>End</span> <span>Using</span></span><br><o:p>&nbsp;</o:p><br>I created a new Principal class again using the PT Principal as a guide.<br><o:p></o:p><br><span>Namespace</span><span> Security<br><span>&nbsp;&nbsp; </span>&lt;Serializable()&gt; _<br><span>&nbsp; </span><span>Public</span> <span>Class</span> YAPrincipal<br><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span>Inherits</span> Csla.Security.BusinessPrincipalBase<o:p></o:p></span></p>
+
+
+
+
+
+
+
+
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span>Public</span> <span>Shared</span> <span>Function</span>
+Login( _<br><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span>ByVal</span>
+UserNme <span>As</span> <span>String</span>,
+<span>ByVal</span> UserPswdTxt <span>As</span>
+<span>String</span>) <span>As</span> <span>Boolean<o:p></o:p></span></span></p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span>Dim</span>
+identity <span>As</span> YAIdentity =
+YAIdentity.GetIdentity(UserNme, UserPswdTxt)<br><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span>If</span>
+identity.IsAuthenticated <span>Then<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span>Dim</span>
+principal <span>As</span> <span>New</span>
+YAPrincipal(identity)<br><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>Csla.ApplicationContext.User =
+principal<br><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span>End</span> <span>If</span><o:p><br></o:p></span></p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span>Return</span>
+identity.IsAuthenticated<br><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span>End</span> <span>Function</span></span></p><p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span>''' </span><span>&lt;summary&gt;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span>''' Does the
+user have permission?<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span>''' </span><span>&lt;/summary&gt;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span>Public</span> <span>Shared</span> <span>Function</span>
+IsAuthorized(<span>ByVal</span> FuncNme <span>As</span> <span>String</span>, <span>ByVal</span> SctyAcesCde <span>As</span>
+SctyAcesCdes) <span>As</span> <span>Boolean<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span>Dim</span>
+identity <span>As</span> YAIdentity =<span> DirectCast</span>(Csla.ApplicationContext.User.Identity,
+YAIdentity)<br><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span>Return</span>
+identity.IsAuthorized(FuncNme, SctyAcesCde)<br><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span>End</span> <span>Function</span><o:p> <br></o:p></span></p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp; </span>&lt;Flags()&gt; _<br>Public</span><span> <span>Enum</span>
+SctyAcesCdes <span>As</span> <span>Integer<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>Read = 1<br><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>Edit = 2<br><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>Add = 4<br><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>Delete = 8<br><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>Execute = 16<br><span>&nbsp;&nbsp; </span><span>&nbsp;&nbsp; </span><span>End</span> <span>Enum</span><o:p><br></o:p></span></p>
+
+
+
+<p class="MsoNormal"><span><font face="Arial">And finally in my business objects I check for authorization
+as shown below:</font><br><o:p></o:p></span></p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp; </span><span>''' </span><span>&lt;summary&gt;<br>&nbsp;&nbsp; </span><span>''' Is the user
+allowed to Add new items?<br>&nbsp;&nbsp; </span><span>''' </span><span>&lt;/summary&gt;<br>&nbsp;&nbsp; </span><span>''' </span><span>&lt;returns&gt;&lt;/returns&gt;<br>&nbsp;&nbsp; </span><span>''' </span><span>&lt;remarks&gt;&lt;/remarks&gt;<br>&nbsp;&nbsp; </span><span>Public</span> <span>Shared</span> <span>Function</span>
+CanAddObject <span>As</span> <span>Boolean<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span>Return</span>
+Security.YAPrincipal.IsAuthorized(“Project”, Security.SctyAcesCdes.Add)<br><span>&nbsp;&nbsp; </span><span>End</span> <span>Function<br>&nbsp;&nbsp; </span><span>''' </span><span>&lt;summary&gt;<br>&nbsp;&nbsp; </span><span>''' Is the user
+allowed to Read existing items?<br>&nbsp;&nbsp; </span><span>''' </span><span>&lt;/summary&gt;<br>&nbsp;&nbsp; </span><span>''' </span><span>&lt;returns&gt;&lt;/returns&gt;<br>&nbsp;&nbsp; </span><span>''' </span><span>&lt;remarks&gt;&lt;/remarks&gt;<br>&nbsp;&nbsp; </span><span>Public</span> <span>Shared</span> <span>Function</span>
+CanReadObject <span>As</span> <span>Boolean<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span>Return</span>
+Security.YAPrincipal.IsAuthorized((“Project”, Security.SctyAcesCdes.Read)<br><span>&nbsp;&nbsp; </span><span>End</span> <span>Function<br>&nbsp;&nbsp; </span><span>''' </span><span>&lt;summary&gt;<br>&nbsp;&nbsp; </span><span>''' Is the user
+allowed to Delete existing items?<br>&nbsp;&nbsp; </span><span>''' </span><span>&lt;/summary&gt;<br>&nbsp;&nbsp; </span><span>''' </span><span>&lt;returns&gt;&lt;/returns&gt;<br>&nbsp;&nbsp; </span><span>''' </span><span>&lt;remarks&gt;&lt;/remarks&gt;<br>&nbsp;&nbsp; </span><span>Public</span> <span>Shared</span> <span>Function</span>
+CanDeleteObject <span>As</span> <span>Boolean<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span>Return</span>
+Security.YAPrincipal.IsAuthorized((“Project”, Security.SctyAcesCdes.Delete)<br><span>&nbsp;&nbsp; </span><span>End</span> <span>Function<br>&nbsp;&nbsp; </span><span>''' </span><span>&lt;summary&gt;<br>&nbsp;&nbsp; </span><span>''' Is the user
+allowed to Edit existing items?<br>&nbsp;&nbsp; </span><span>''' </span><span>&lt;/summary&gt;<br>&nbsp;&nbsp; </span><span>''' </span><span>&lt;returns&gt;&lt;/returns&gt;<br>&nbsp;&nbsp; </span><span>''' </span><span>&lt;remarks&gt;&lt;/remarks&gt;<br>&nbsp;&nbsp; </span><span>Public</span> <span>Shared</span> <span>Function</span>
+CanEditObject <span>As</span> <span>Boolean<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span>Return</span>
+Security.YAPrincipal.IsAuthorized((“Project”, Security.SctyAcesCdes.Edit)<br><span>&nbsp;&nbsp; </span><span>End</span> <span>Function</span><o:p> <br></o:p></span></p>
+
+<p class="MsoNormal"><font face="Arial" size="2"><span>Obviously, “Project” will vary depending upon the Business
+Object but hopefully you get the idea.</span></font><br></p>Bryan<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Monday, November 19, 2007</h2><P>If you look at the wish list (the items in green), the next version of CSLA has already implemented the Delegate for IsInRole which means you can use a different function (such as HasPermission) in the Authorization framework.</P>
+<P>If you look at the source you may be able to port it backwards if you really need it now.</P>
+<P>Joe</P>
+<P>&nbsp;</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,21 @@
+<html><header><title>Validating A Collection</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Validating A Collection</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/2576.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>JZuerlein posted on Thursday, March 22, 2007</h2><P>I have a situation where I have a Person object with a collection of memberships to groups.</P>
+<P>I need a business rule that says a person can be a member of the "Employees" group or the "Retired Employees" group, but not at the same time.&nbsp; I've got that working for the most part.&nbsp; The problem comes into play when both membership child objects have broken rules, and the user modifies one of them and it is valid.&nbsp; When this happens, I need to run the validation check for both rows, so they both become valid.</P>
+<P>I think what I need is an event on BrokenRulesCollection to tell me when the number of broken rules has changed.&nbsp; That way I could run some code to call check</P>
+<P>For now my solution is to raise an event in the membership object, and have the handler in the collection object iterate over the children and check rules.</P>
+<P>Anyone have a better idea?</P><B>
+<P></B><FONT color=#0000ff>Public</FONT><B> </B><FONT color=#0000ff>Property</FONT><B> ChildID() </B><FONT color=#0000ff>As</FONT><B> </B><FONT color=#0000ff>Integer</P></FONT><B>
+<P></B><FONT color=#0000ff>Get</P></FONT><B>
+<P>CanReadProperty(</B><FONT color=#800000>"ChildID"</FONT><B>, </B><FONT color=#0000ff>True</FONT><B>)</P>
+<P></B><FONT color=#0000ff>Return</FONT><B> _childID</P>
+<P></B><FONT color=#0000ff>End</FONT><B> </B><FONT color=#0000ff>Get</P></FONT><B>
+<P></B><FONT color=#0000ff>Set</FONT><B>(</B><FONT color=#0000ff>ByVal</FONT><B> value </B><FONT color=#0000ff>As</FONT><B> </B><FONT color=#0000ff>Integer</FONT><B>)</P>
+<P>CanWriteProperty(</B><FONT color=#800000>"ChildID"</FONT><B>, </B><FONT color=#0000ff>True</FONT><B>)</P>
+<P></B><FONT color=#0000ff>If</FONT><B> </B><FONT color=#0000ff>Not</FONT><B> _childID.Equals(value) </B><FONT color=#0000ff>Then</P></FONT><B>
+<P>_childID = value</P>
+<P></B><FONT color=#0000ff>Dim</FONT><B> c </B><FONT color=#0000ff>As</FONT><B> </B><FONT color=#0000ff>Integer</FONT><B> = </B><FONT color=#0000ff>Me</FONT><B>.BrokenRulesCollection.Count</P>
+<P>ValidationRules.CheckRules(</B><FONT color=#800000>"RelationshipTypeID"</FONT><B>) </P>
+<P>PropertyHasChanged(</B><FONT color=#800000>"ChildID"</FONT><B>)</P>
+<P></B><FONT color=#0000ff>If</FONT><B> (</B><FONT color=#0000ff>Me</FONT><B>.BrokenRulesCollection.Count &lt;&gt; c) </B><FONT color=#0000ff>Then</FONT><B> </B><FONT color=#0000ff>RaiseEvent</FONT><B> CheckedRulesNeeded(</B><FONT color=#0000ff>Me</FONT><B>, </B><FONT color=#0000ff>New</FONT><B> EventArgs())</P>
+<P></B><FONT color=#0000ff>End</FONT><B> </B><FONT color=#0000ff>If</P></FONT><B>
+<P></B><FONT color=#0000ff>End</FONT><B> </B><FONT color=#0000ff>Set</P></FONT><B>
+<P></B><FONT color=#0000ff>End</FONT><B> </B><FONT color=#0000ff>Property</P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>xal replied on Thursday, March 22, 2007</h2>Have you tried handling BrokenRulesCollection.ListChanged event?<br><br>Andrés<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

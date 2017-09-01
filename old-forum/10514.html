@@ -1,0 +1,32 @@
+<html><header><title>Issue adding grandchild to child</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Issue adding grandchild to child</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10514.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>JasonG posted on Monday, July 11, 2011</h2><p>Following Rocky&#39;s suggestion I created an &quot;add&quot; method in my grandchild collection...<span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">
+<p><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">public void Add(Guid id)<br />{<br />if(!(Contains(id))<br />{<br />&nbsp; int before = this.Count;&nbsp; </span></span></span></p>
+<p><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">&nbsp; grandchild child = grandchild.NewGrandChild(id); </span></span></span></p>
+<p><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">&nbsp; this.Add(child);&nbsp;&nbsp; <br />&nbsp;<br />&nbsp; int after = this.Count;<br />&nbsp;}</span></span></span></p>
+<span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><font face="Consolas" size="2" color="#0000ff">
+<p><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">}</span></span></span></p>
+</font></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span>
+<p>
+<p>when I call the Add methd and check the &quot;before&quot; and &quot;after&quot; all looks ok. &quot;after&quot; = &quot;before&quot; + 1.</p>
+<p>but..&nbsp;</p>
+<p>private void addGrandChildButton_Click(object sender, EventArgs e)<br />{<br />&nbsp;ChildSelect dlg = new ChildSelect();&nbsp; <br />&nbsp;if(dlg.ShowDialog() == DialogResult.OK)&nbsp;&nbsp; <br />&nbsp;try<br />&nbsp;{&nbsp;&nbsp;&nbsp; <br />&nbsp;&nbsp; _congregation.Speakers[currentIndex].Talks.Add(dlg.id);<br />&nbsp;&nbsp;int count = _parent.Children[currentIndex].GrandChildren.Count; <br />&nbsp;}</p>
+<p>}</p>
+</p>
+<p><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">
+<p>
+<p><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">
+<p>When i check the count here there is no change. It is as if no grandchildren were added..</p>
+<p>Does anyone have any idea why, or what the problem could be?</p>
+<p>thanks,</p>
+<p>Jason</p>
+</span></span></p>
+</p>
+</span></span></p>
+<p>&nbsp;</p>
+</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JasonG replied on Thursday, July 21, 2011</h2><p>I havn&#39;t been able to find the source of this problem yet. But i didn&#39;t uncover another problem that is probably related. </p>
+<p>Changes to my Child ojects are not saving. I noticed that when i check my parent oject, the child that i just changed doesn&#39;t have the changes that i just made on the UI. But if i look at the child object in the childBindingsource the changes are there. So there seems to&nbsp; be a dissconnect between my parent object and the child binding soure. </p>
+<p>I&#39;ve deleted the child bindingsource and added a new one. Same issue. </p>
+<p>Any ideas?</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JasonG replied on Friday, July 22, 2011</h2><p>Update :</p>
+<p>in order to get this to work i had to add this line of code to my BindUI() method. I shouldn&#39;t need it, but it doesn&#39;t work without it.</p>
+<p>this.chidrenBindingSource.DataSource = _parent.Children;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

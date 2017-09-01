@@ -1,0 +1,31 @@
+<html><header><title>Property Authorization based on value doesn't appear to be working correctly</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Property Authorization based on value doesn't appear to be working correctly</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/12505.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>simpleman posted on Tuesday, March 18, 2014</h2><p>Hi,</p>
+<p>Hopefully this question will have better success than the last....</p>
+<p class="MsoNormal">I have table called GP.&nbsp;
+Two of the fields are called IsCurrentOption and GPPracticeId .</p>
+<p class="MsoNormal">The GPPracticeId is a foreign key to the GPPractice
+table.&nbsp; A GPPractice also has an IsCurrentOption
+field.</p>
+<p class="MsoNormal">I have a rule that if the GP record is related to a GPPractice
+with the IsCurrentOption &nbsp;= false then
+the GP must have IsCurrentOption = false.</p>
+<p class="MsoNormal">I&rsquo;ve created a Dynamic Root List based on the GP table.&nbsp; This has rules in places to deal with the
+scenario above and that all works well.</p>
+<p class="MsoNormal">In my list I want to stop the user from being able to edit
+the IsCurrentOption field if the associated GPPractice is IsCurrentOption &nbsp;= false.</p>
+<p class="MsoNormal">I created a custom Authorization rule to deal with that
+scenario.&nbsp; </p>
+<p class="MsoNormal">When the list is loaded the rule is evaluated and the IsCurrentOption
+property is readonly where appropriate.</p>
+<p class="MsoNormal">If the GPPractice is changed to a GPPractice that has IsCurrentOption
+&nbsp;= true my Authorization rule is not checked.&nbsp; Instead the BusinessBase will consult its
+cache and get the value from the last time the rule was checked.&nbsp; It&rsquo;s not until the BusinessBase is saved (I&rsquo;m
+assuming &nbsp;putting the BusinessBase &nbsp;through the data portal loses its cache as the
+caches are not serialised), will the rule be checked and return the correct
+result.</p>
+<p class="MsoNormal">I couldn&rsquo;t see any way of forcing my rule to be checked when
+the properties are changed.</p>
+<p>&nbsp;</p>
+<p class="MsoNormal">Any idea&rsquo;s how I can resolve this issue?&nbsp;</p>
+<p class="MsoNormal">Many thanks,</p>
+<p class="MsoNormal">Nathan</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>simpleman replied on Tuesday, March 18, 2014</h2><p>Just discovered the property on the&nbsp;AuthorizationRule CacheResult.</p>
+<p>Setting base.CacheResult = false in my custom rule seems to have solved it.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

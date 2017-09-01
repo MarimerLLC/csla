@@ -1,0 +1,111 @@
+<html><header><title>CSLA.NET 3.5: how to track the deleted item in ListChangedEvent?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA.NET 3.5: how to track the deleted item in ListChangedEvent?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5477.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Patrick posted on Friday, September 26, 2008</h2>Hi, <br><br>for a WinForms data binding scenario I need to track which items are delete from a BusinessListBase.<br><br>The problem is, that by the time the ListChangedEvent fires the item is not in the list anymore and the NewIndex which is passed through the ListChangedEvent is out of bound for the original list (as the item is already moved to the deletedList).<br><br>It's also not possible to look at the latest item in the deletedItems list as this is internal to BusinessListBase.<br><br>Any suggestions on how to do this please?<br><br>Thanks a lot,<br>Patrick<br><br>PS: Here is the code from BusinessListBase for reference:<br><br>protected override void RemoveItem(int index)<br>{<br>&nbsp;&nbsp; &nbsp;// when an object is 'removed' it is really<br>&nbsp;&nbsp; &nbsp;// being deleted, so do the deletion work<br>&nbsp;&nbsp; &nbsp;C child = this[index];<br>&nbsp;&nbsp; &nbsp;bool oldRaiseListChangedEvents = this.RaiseListChangedEvents;<br>&nbsp;&nbsp; &nbsp;try<br>&nbsp;&nbsp; &nbsp;{<br>&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;this.RaiseListChangedEvents = false;<br>&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;RemoveIndexItem(child);<br>&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;RemoveFromMap(child);<br>&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;base.RemoveItem(index);<br>&nbsp;&nbsp; &nbsp;}<br>&nbsp;&nbsp; &nbsp;finally<br>&nbsp;&nbsp; &nbsp;{<br>&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;this.RaiseListChangedEvents = oldRaiseListChangedEvents;<br>&nbsp;&nbsp; &nbsp;}<br>&nbsp;&nbsp; &nbsp;if (!_completelyRemoveChild)<br>&nbsp;&nbsp; &nbsp;{<br>&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;// the child shouldn't be completely removed,<br>&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;// so copy it to the deleted list<br>&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;CopyToDeletedList(child);<br>&nbsp;&nbsp; &nbsp;}<br>&nbsp;&nbsp; &nbsp;if (RaiseListChangedEvents)<br>&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;OnListChanged(new ListChangedEventArgs(ListChangedType.ItemDeleted, index));<br>}</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Friday, September 26, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Perhaps you could expose DeletedList to UI?&nbsp; Why do you
+need to keep track of those, BTW?<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Patrick
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Friday, September 26, 2008 6:06 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> [CSLA .NET] CSLA.NET 3.5: how to track the deleted item in
+ListChangedEvent?<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Hi, <br>
+<br>
+for a WinForms data binding scenario I need to track which items are delete
+from a BusinessListBase.<br>
+<br>
+The problem is, that by the time the ListChangedEvent fires the item is not in
+the list anymore and the NewIndex which is passed through the ListChangedEvent
+is out of bound for the original list (as the item is already moved to the
+deletedList).<br>
+<br>
+It's also not possible to look at the latest item in the deletedItems list as
+this is internal to BusinessListBase.<br>
+<br>
+Any suggestions on how to do this please?<br>
+<br>
+Thanks a lot,<br>
+Patrick<br>
+<br>
+PS: Here is the code from BusinessListBase for reference:<br>
+<br>
+protected override void RemoveItem(int index)<br>
+{<br>
+&nbsp;&nbsp; &nbsp;// when an object is 'removed' it is really<br>
+&nbsp;&nbsp; &nbsp;// being deleted, so do the deletion work<br>
+&nbsp;&nbsp; &nbsp;C child = this[index];<br>
+&nbsp;&nbsp; &nbsp;bool oldRaiseListChangedEvents =
+this.RaiseListChangedEvents;<br>
+&nbsp;&nbsp; &nbsp;try<br>
+&nbsp;&nbsp; &nbsp;{<br>
+&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;this.RaiseListChangedEvents = false;<br>
+&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;RemoveIndexItem(child);<br>
+&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;RemoveFromMap(child);<br>
+&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;base.RemoveItem(index);<br>
+&nbsp;&nbsp; &nbsp;}<br>
+&nbsp;&nbsp; &nbsp;finally<br>
+&nbsp;&nbsp; &nbsp;{<br>
+&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;this.RaiseListChangedEvents =
+oldRaiseListChangedEvents;<br>
+&nbsp;&nbsp; &nbsp;}<br>
+&nbsp;&nbsp; &nbsp;if (!_completelyRemoveChild)<br>
+&nbsp;&nbsp; &nbsp;{<br>
+&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;// the child shouldn't be completely
+removed,<br>
+&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;// so copy it to the deleted list<br>
+&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;CopyToDeletedList(child);<br>
+&nbsp;&nbsp; &nbsp;}<br>
+&nbsp;&nbsp; &nbsp;if (RaiseListChangedEvents)<br>
+&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;OnListChanged(new
+ListChangedEventArgs(ListChangedType.ItemDeleted, index));<br>
+}<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Patrick replied on Sunday, September 28, 2008</h2><BLOCKQUOTE><div><img src="/Themes/basicblue/images/icon-quote.gif"> <strong>sergeyb:</strong></div><div><span>Perhaps you could expose DeletedList to UI?&nbsp; Why do you
+need to keep track of those, BTW?</span></div></BLOCKQUOTE><br>I have a UI control which displays the business objects (as a node graph) using custom data binding. So I need to know which node was removed to remove it from the graph.<br><br>Exposing DeletedList wouldn't help that much as I don't know the index of the deleted item in the list... I could assume it's always the last one but that might not always work.<br><br>Thanks,<br>Patrick<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rasupit replied on Sunday, September 28, 2008</h2>How about overriding RemoveItem and add ListChangingEvent<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Patrick replied on Sunday, September 28, 2008</h2><BLOCKQUOTE><div><img src="/Themes/basicblue/images/icon-quote.gif"> <strong>rasupit:</strong></div><div>How about overriding RemoveItem and add ListChangingEvent<br></div></BLOCKQUOTE><br>Sound like a good idea thanks... I'm really surprised though that this hasn't been a problem for more people... <br>I would be interested to know how e.g. a bound grid control handles this as it correctly removes the item from the list and it also wouldn't be able to obtain a reference of the deleted item (so either it compares it's internal list against the bound list or it does a reset internally)?<br><br>Thanks,<br>Patrick<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rasupit replied on Sunday, September 28, 2008</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>Patrick:</strong></div><div>I'm really surprised though that this hasn't been a problem for more people... <br></div></BLOCKQUOTE><br>I think because people just interested in ListChangedType.ItemDeleted and not the index.&nbsp; You could also argue why is it being passed if it not useful.&nbsp; I think the index is being passed just to fulfill the ListChangedEventArgs signature.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Sunday, September 28, 2008</h2>This <EM>was</EM> a problem for more people. Which is why CSLA collections have the RemovingItem event (from ExtendedBindingList), and it provides access to the item that's being removed.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Patrick replied on Thursday, October 23, 2008</h2>Thank you Rocky<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

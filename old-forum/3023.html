@@ -1,0 +1,31 @@
+<html><header><title>Nested Object Best Practice</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Nested Object Best Practice</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3023.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>shailensukul posted on Monday, June 11, 2007</h2><P>Hi,</P>
+<P>I am creating a group of nested objects that relate to one parent object and am a bit stuck in the process (I am using CSLA.NET CodeSmith templates from the CSLAContrib project).</P>
+<P>Ok so I have one root object ROOTOBJECT,</P>
+<P>It has 1 child object CHILD1 and a collection of child1 is a member of ROOTOBJECT</P>
+<P>ie CHILD1COLLECTION is a member of ROOTOBJECT</P>
+<P>The Child objects have a collection of sub-child objects</P>
+<P>SUBCHILD1_COLLECTION&nbsp;is CHILD1's collection</P>
+<P>Ok ROOTOBJECT has a ROOT_SelectProcedure that selects the root object and then calls&nbsp;CHILD1_SelectByRootId that selects&nbsp;all Child1 objects that have a foreign key to the ROOTID field. The CHILD1_SelectByRootId also calls SUBCHILD1_SelectByChild1ID to get all sub-child objects for Child1.</P>
+<P>Ok now in the code for ROOTOBJECT1, it calls FetchObject which gets a datareader, reads its own fields, calls GetnextResultSet and passes the datareader to CHILD1COLLECTION, which loops to&nbsp;read from the datareader and then calls the constructor of the CHILD1 object, passing in the datareader. CHILD1 builds its fields from the datareader and then calls GetNextResultSet to build its CHILD1COLLECTION.</P>
+<P>Here is where the problem is because CHILD1COLLECTION is still reading from the datareader in a while loop and as soon as GetNextResultSet&nbsp;is called, the loop breaks and I only get 1 item for CHILD1COLLECTION.</P>
+<P>Surely, there must be a better way to do this. I want to work with the CSLA.NET templates and not change its core pattern by much. Does anyone have a best practice on how nested child collections can be fetched?</P>
+<P>&nbsp;</P>
+<P>Many Thanks,</P>
+<P>Shailen Sukul</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>McManus replied on Tuesday, June 12, 2007</h2><P>Hi Shailen,</P>
+<P>Rocky wrote a demo called DeepData that shows an example of loading grandchild objects using a DataReader. The code can be downloaded from <A href="http://www.lhotka.net/Article.aspx?area=11&amp;id=65c98c98-f0e0-477d-b45b-7a1e7d5768ee">http://www.lhotka.net/Article.aspx?area=11&amp;id=65c98c98-f0e0-477d-b45b-7a1e7d5768ee</A>&nbsp;</P>
+<P>Cheers,</P>
+<P>Herman</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Tuesday, June 12, 2007</h2><P>This topic has been discussed many times.</P>
+<P>Try searching the FAQ and the forum for "grandchild".</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>shailensukul replied on Tuesday, June 12, 2007</h2><P>Thank you McManus and JoeFallon for your replies.</P>
+<P>I shall investigate both options and update this thread with my findings.</P>
+<P>:)</P>
+<P>Shailen</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>shailensukul replied on Thursday, July 26, 2007</h2><P>I have decided to create a variant of CSLA Contrib that would allow:</P>
+<P>1. Multiple nested levels</P>
+<P>2. Use of DAAB</P>
+<P>&nbsp;</P>
+<P>See <A href="http://shailensukul.blogspot.com/2007/07/start-new-branch-of-cslanet-template.html">http://shailensukul.blogspot.com/2007/07/start-new-branch-of-cslanet-template.html</A></P>
+<P>&nbsp;</P>
+<P>Thanks</P>
+<P>Shailen Sukul</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

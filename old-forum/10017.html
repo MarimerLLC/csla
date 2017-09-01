@@ -1,0 +1,15 @@
+<html><header><title>TriggerAction and Custom Controls</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>TriggerAction and Custom Controls</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10017.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>bastidas posted on Wednesday, February 02, 2011</h2><p>Hello</p>
+<p>Does the TriggerAction require the custom controls to be 
+derived from FrameworkElement? I&#39;m using a custom control that derives 
+from FrameworkContentElement and I can&#39;t get the Trigger to work on the 
+element&#39;s click Event.</p>
+<p>If that&#39;s the case, what work around can anyone recommend when facing this situation?</p>
+<p>Thank you<br />
+Andres</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Wednesday, February 02, 2011</h2><p>Yes, TriggerAction requires that the control derive from FrameworkElement.</p>
+<p>I suppose it could go up one level to UIElement.</p>
+<p>What is the base class for FrameworkContentElement?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>bastidas replied on Wednesday, February 02, 2011</h2><p>&quot;I suppose it could go up one level to UIElement.&quot; </p>
+<p>Is this something I have to do on my code or a change you might do on TriggerAcction?</p>
+<p>System.Windows.FrameworkContentElement&#39;s base clase is System.Windows.ContentElement which derives from System.Windows.DependencyObject which is, at last, where FrameworkContentElement and FrameworkElement find a common ancestor.</p>
+<p>Andres</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, February 02, 2011</h2><p>There is code in TriggerAction that currently expects the FrameworkElement type.</p>
+<p>I don&#39;t know for certain that this can be just changed to DependencyObject, or what the impact might be in such a change. I don&#39;t see an obvious problem though.</p>
+<p>You could edit TriggerAction to change the FrameworkElement type to DependencyObject in the TargetControl property implementation and the HookEvent method to see if this causes any problems, and to see if it solves your issue.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

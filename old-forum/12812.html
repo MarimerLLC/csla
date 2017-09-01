@@ -1,0 +1,17 @@
+<html><header><title>Are we forced by CSLA to use DbContext in EF6?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Are we forced by CSLA to use DbContext in EF6?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/12812.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>kreid posted on Tuesday, January 13, 2015</h2><p>I&#39;m hoping someone can correct my ignorance here.</p>
+<p>I have upgraded my solution from EF5 to EF6.</p>
+<p>I am using ObjectContextManager in my data layer, database-first with an edmx model.</p>
+<p>To upgrade to EF6 I followed the guide on MSDN:&nbsp;<a href="http://msdn.microsoft.com/en-us/data/upgradeef6.aspx">http://msdn.microsoft.com/en-us/data/upgradeef6.aspx</a></p>
+<p>So now, in my model,</p>
+<p><strong>public partial class StoreDataContext : ObjectContext</strong></p>
+<p>&quot;ObjectContext&quot; refers to System.Data.Entity.Core.Objects.ObjectContext. Good so far.</p>
+<p>However, in my Dal I now have errors everywhere:</p>
+<p><strong>using (var ctx = ObjectContextManager&lt;StoreDataContext&gt;.GetManager(&quot;StoreDataContext&quot;))</strong></p>
+<p>There error is: <strong>The type &#39;Store.DataAccess.Ef.StoreDataContext&#39; must be convertible to type &#39;System.Data.Objects.ObjectContext&#39; in order to use it as parameter &#39;C&#39; in the generic class &#39;Csla.Data.ObjectContextmanager&lt;C&gt;&#39;</strong></p>
+<p>Hmm. I tried referencing the Csla.Data.EF6 library, assuming there was something in it that I could use, but it only contains DbContextManager. I need ObjectContextManager - changing to DbContextManager would require massive changes in all my Dal code.</p>
+<p>Can someone help?</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Wednesday, January 14, 2015</h2><p>Hi,</p>
+<p>So EF6 has defined a new base class for ObjectContext that does not inherit from the build-in one in .NET 4/4.5&nbsp;</p>
+<p>In that case - yes there is no builtin support yet.</p>
+<p>You should however be able to grab the ObjectContextManager class from CSLA and add to your own assembly and change the generic contraint to be the new ObjectContext for EF6. Then use this class until the support has been added to Csla.EF6.</p>
+<p>Issue is created in the backlog.&nbsp;<br /><a href="https://github.com/MarimerLLC/csla/issues/318">https://github.com/MarimerLLC/csla/issues/318</a> &nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

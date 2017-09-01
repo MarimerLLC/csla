@@ -1,0 +1,92 @@
+<html><header><title>Data Integration / EAI / SOA or something...</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Data Integration / EAI / SOA or something...</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/1216.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>djjlewis posted on Thursday, September 14, 2006</h2><p>There's probably no right or wrong answer here, but I thought I'd throw 
+something out for discussion to see if anyone had any related experience or 
+views...:</p>
+<p>Basically, I often find myself designing systems that need to use data from 
+other pre-existing (possibly 3rd party) systems. e.g. We have a central database 
+that stores all of our customer data (id, name, account opened date etc). </p>
+<p>I have already designed some read-only CSLA objects that talk to this systems 
+and retrieve lists or individual records so that this data can be reused across 
+other apps. </p>
+<p>Now suppose I create a brand-new, custom&nbsp;LOB system that needs to reference a 
+customer. I would normally just add a foreign key id to the custom entity table, 
+populated&nbsp;with the customer Id from my objects mentioned above (data coming from 
+from the main customer database). If I now want to display details of that 
+specific customer, I can just call Customer.GetCustomer(id) from anywhere in my 
+new BO and that single record should be loaded from the DB and that all works 
+fine.</p>
+<p>The real difficulty I have (at least conceptually), is when I want to display 
+a large list of my custom-entities and show some property of a customer (such as 
+the name). I guess the "pure" OO way would be to delegate this call to the 
+customer object, but that is going to result in possibly hundreds of calls to 
+the customer database, just to display the name. The obvious answer here is to 
+include a join into the customer database from my custom LOB database query, 
+possibly via a linked server, but I can't help but think that this now tightly 
+couples my custom DB to the master DB and makes my customer business objects 
+redundant. </p>
+<p>The problem is compounded if I wanted to implement a SOA type solution, as I 
+would have probably called a web service to get the customer data in the first 
+place and not even had access to the database?</p>
+<p>Does anyone have any views on integrating disparate enterprise data in a 
+loosely-coupled/SOA way manner, or have any decent book recommendations?</p>
+<p>Thanks in advance,</p>
+<p>Dan.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>djjlewis replied on Friday, September 15, 2006</h2><p class="MsoNormal">Well I think I was right in my assumption there is no right
+way here!<o:p></o:p></p><p class="MsoNormal"><o:p><br></o:p></p>
+
+
+
+
+
+<p class="MsoNormal">After some quick research I’ve decided that for what I wish
+to achieve, the problem really falls into two areas: Master Data Management (MDM)
+and SOA.</p><p class="MsoNormal"><br><o:p></o:p></p>
+
+
+
+
+
+<p class="MsoNormal"><o:p></o:p>Coincidentally, Nick Malik, a Microsoft architect, posted this
+blog entry yesterday which is along similar lines to my problem (it’s here he mentions
+MDM):&nbsp;<o:p> </o:p><a href="http://blogs.msdn.com/nickmalik/default.aspx">http://blogs.msdn.com/nickmalik/archive/2006/09/14/755039.aspx</a><o:p><br></o:p></p><p class="MsoNormal"><o:p><br></o:p></p>
+
+
+
+<p class="MsoNormal">So to paraphrase my original thought: How can I design OO
+libraries that <i>efficiently</i> use data
+from loosely-coupled SOA style services? The example above used a custom entity
+that referenced a customer name. Now if I have a loosely-coupled GetCustomerInfo
+service, I don’t want to call this 100 times every time I get a list 100 of my
+custom entities!<o:p> <br></o:p></p><p class="MsoNormal"><o:p><br></o:p></p>
+
+
+
+<p class="MsoNormal">The obvious solution would be a GetCustomEntityList service
+that itself links directly into the custom LOB database and joins to the
+Customer database, but doesn’t this negate the benefits of a loosely-coupled
+SOA architecture in the first place??<o:p> <br></o:p></p><p class="MsoNormal"><o:p><br></o:p></p>
+
+
+
+
+
+<p class="MsoNormal">Another possible solution I’ve just stumbled upon is the
+prospect of using XQuery to merge data from two services. (<a href="http://www.stylusstudio.com/whitepapers/why_xquery.html">http://www.stylusstudio.com/whitepapers/why_xquery.html</a>
+under the heading “XQuery Will Simplify SOA Data Services”)</p><p class="MsoNormal"><br><o:p></o:p></p>
+
+
+
+<p class="MsoNormal"><o:p></o:p>I guess you could call out to the GetCustomEntityList service
+and a GetCustomerNames service, merge the XML results via XQuery and then
+populate the business objects from this.<o:p> <br></o:p></p><p class="MsoNormal"><o:p><br></o:p></p>
+
+<p class="MsoNormal"><o:p>I</o:p>t sounds like a whole lot of work to gain loose coupling, but
+I’m sure there must be a way of abstracting the merge process?<o:p> <br></o:p></p><p class="MsoNormal"><o:p><br></o:p></p>
+
+
+
+<p class="MsoNormal">Does this sound even remotely viable?<o:p> <br></o:p></p><p class="MsoNormal"><o:p><br></o:p></p>
+
+<p class="MsoNormal">Dan.</p>
+
+<p class="MsoNormal"><o:p>&nbsp;</o:p></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, September 15, 2006</h2>It is my view that your object model should reflect your application's use cases - following a responsibility-driven, behavioral design. <br><br>Part of what this means is that your object model should be designed initially without regard to the data, but rather purely based on what the actors (objects) in each use case need to do to fulfill the requirements of the use case. <i>Then </i>you go through and figure out what data each object needs to implement its responsibility/behaviors.<br><br>If you follow this approach, it is really not uncommon for some of the data to come from one source, while other data comes from another source - at least not in any mid-size to large organization.<br><br>The process of getting that data into and out of your objects is object-relational mapping - in the true sense of the term. Ignore the fact that most "ORM" tools can't solve this problem, when some data is in SQL, some on an AS/400, some in Excel spreadsheets and some accessed via web services. The point is, that this is the <i>true </i>nature of the impedance mismatch problem, and the ORM concept is the solution.<br><br>Of course reality rears its ugly head here. In an ideal world, you'd write DAL/ORM code that was capable of consolidating various data sources into your object in real time. But in many cases that's impractical, because SOA is all about interop, not performance, and calling another application in an SO manner will often result in performance in <i>your </i>application that is totally unacceptable.<br><br>So in real life, what a lot of organizations end up doing is using data replication or synchronization so your application can use a local database to get at "remote" data. Which is basically a very fancy type of caching if you think about it.<br><br>But if you can get away with having your users sit and wait while your DAL/ORM interacts in real-time with other applications, that really is the most elegant solution...<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rhoeting replied on Friday, September 15, 2006</h2><P>Dan, I've wondered about the same types of things, and you don't really see much discussion about it.&nbsp;&nbsp;The FK relationships&nbsp;in an integrated database was they way&nbsp;relations worked in the old days.&nbsp;&nbsp; SOA is forcing us to think differently&nbsp;about how&nbsp;data should be related&nbsp;and integration is done. &nbsp;Pat Helland published a great white paper a couple years ago that may help you form the proper mental approach to your problem.&nbsp; It could be customer data should be treated as a form of "reference data"</P>
+<P><A href="http://msdn.microsoft.com/library/default.asp?url=/library/en-us/dnbda/html/dataoutsideinside.asp">http://msdn.microsoft.com/library/default.asp?url=/library/en-us/dnbda/html/dataoutsideinside.asp</A></P>
+<P>Rob</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>djjlewis replied on Friday, September 15, 2006</h2>Hi Rob,<br><br>I skimmed that article (hopefully get time to read it more in depth later). The part that seemed to apply the most was the reference data as you suggested above. If I'm getting the right idea, basically he’s saying I should have a master service responsible for each bucket of enterprise data (maybe customers, employees etc), then for each app that uses needs this data I would request it from the service and cache it locally (as Rocky pointed out).<br><br>So for a very simplistic example: My custom LOB app just needs to show a customer name against each record. I would create a new table in its database (probably called Client!) with two columns: ‘ClientId’ and ‘ClientName’. When a user is creating a new custom entity (say a customer referral or something) I would present a list of customers in a drop-down (probably populated from a GetCustomers service), then when saving the record, the ClientId is saved to the CustomerReferral table as a foreign key, and both ClientId and ClientName are saved to the local Client table (possibly with a check for duplicates first). I would then setup some schedule to call a SyncCustomerInfo service that goes through all my customer records and makes sure the names still match or marks deleted ones or whatever.<br><br>A much simpler alternative would just be to load all the client ids and names in one hit and sync them with the master version over time, but that would be a huge amount of redundant data if used across several LOB apps only using a small percentage of the data.<br><br>All-in-all, I can see the huge benefits afforded by implementing a good SOA, but there are certainly lots of challenges to overcome, so I think people definitely need to way up the pros and cons before going with such a solution. <br><br>I can see how SO compliments OO in the same way OO compliments a RDBMS, but it seems that many of the RDBMS to OO challenges have well laid out strategies such as ORM, but it seems SO needs to work well against both OO and RDBMS to be truly effective and these strategies have yet to be fully realised (or at least the information is hard to find)?<br><br>Dan.<br><br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

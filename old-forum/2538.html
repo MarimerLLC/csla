@@ -1,0 +1,28 @@
+<html><header><title>Kinda Tricky Authorization Schema - How to Implement?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Kinda Tricky Authorization Schema - How to Implement?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/2538.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>DaseinFiasco posted on Friday, March 16, 2007</h2><P class=MsoNormal>I am developing a relatively simple application with a complex authorization structure, and am faltering in extending CSLA to meet my requirements. I was wondering if anybody here had some advice. Keep in mind that this is my first implementation of CSLA, so forgive me if I overlook an obvious solution.</P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal>My authorization schema looks like this.</P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal>1. An accounts table.</P>
+<P class=MsoNormal>2. A users table. </P>
+<P class=MsoNormal>3. A roles table</P>
+<P class=MsoNormal>4. A join table.</P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal>The join table relates the users, roles, and accounts tables. i.e. it has the columns UserId, RoleId, and AccountId.</P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal>The roles table has records like “Guest”, “Researcher”, “Coach”, “Admin”, etc.</P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal>The end result is that the user might be a “Researcher” and “Admin” under one account, a “Guest” under another, and “Coach” and “Researcher” under another still.</P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal>What it appears I must do is to extend the authorization so that in addition to checking if a user is a member of a given role(s), I must also check that, for a given business entity, if that entity is related to an account, that the given role(s) is also related to that account.</P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal>Here’s what I have been thinking, and I would be grateful for any insight as to whether or not this seems to be a viable set of changes to implement my authorization requirements.</P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal>Create an IAccount interface, that has one member: int AccountId.</P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal>Override the IsInRole(string role) method in my custom Principal class, and replace the private List&lt;string&gt; _roles object in my custom Identity class with a jagged array of Roles and Account Ids (or some other suitable object). Modify all the other corresponding Identity/Principal implementations of roles to accept AccountId as a parameter.</P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal>Subclass the BusinessBase (and other base classes), and override the “public virtual bool Can[Read|Write]Property( string propertyName )” such that the method will first check if the IAccount interface is implemented - if (this is IAccount) - and if so, then search the current user’s roles collection attempting to match the AccountId implemented from IAccount with the user’s assigned roles/accounts.</P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal>Does this sound like I’m generally heading in the right direction? I haven’t written any code to handle this yet, so I may run into scoping problems, etc. But conceptually, are there any other touch-points for roles that I would need to change in CSLA?</P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal>Thanks for any feedback.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, March 16, 2007</h2>Yes, it sounds like you are heading in the right direction. I'll be interested to hear how this works, and if you run into any issues where CSLA doesn't allow you the extensibility to do what you need. I think you should be good to go though.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>skaue replied on Wednesday, April 25, 2007</h2>This sounds a lot like what I need to implement in our project. Have you figured this out yet or did you ditch the whole thing and do something else (like play on the xbox 260 instead)<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

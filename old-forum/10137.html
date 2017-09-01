@@ -1,0 +1,107 @@
+<html><header><title>One Child Object to be used on Many Parent Objects</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>One Child Object to be used on Many Parent Objects</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10137.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>sutono posted on Monday, March 07, 2011</h2><p>Hi Experts,</p>
+<p>&nbsp;</p>
+<p>i&#39;ve got problems on designing child object. As you see that i got a child object that is going to be used by many parent objects.</p>
+<p>This is my example code</p>
+<p>&nbsp;</p>
+<p>public class ParentA : BusinessBase&lt;ParentA&gt;</p>
+<p>{</p>
+<p>private static PropertyInfo&lt;ChildList&gt; _TablesProperty = RegisterProperty&lt;ChildList&gt;(p =&gt; p.Tables);</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;public&nbsp;ChildX Tables</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;{</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;get</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;{</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;if (!(FieldManager.FieldExists(_TablesProperty)))</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;LoadProperty(_TablesProperty,&nbsp;ChildX.NewChild());</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;return GetProperty(_TablesProperty);</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;}</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;}</p>
+<p>&nbsp;</p>
+<p>}</p>
+<p>&nbsp;</p>
+<p>and this is the code for Child Object</p>
+<p>public class ChildX: BusinessBase&lt;ChildX&gt;</p>
+<p>{</p>
+<p>&nbsp;</p>
+<p>private void Child_Insert(ParentA parent)</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;{</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;using (var ctx = ContextManager&lt;DataAccess.MyDataContext&gt;.GetManager(DataAccess.Database.MyDatabase))</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;{</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;LoadProperty(_EntityIdProperty, parent.entityId);</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;ctx.DataContext.sp_AddChild(entityId, childId, code, description, dateCreated);</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;}</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;}</p>
+<p>&nbsp;</p>
+<p>}</p>
+<p>&nbsp;</p>
+<p>Well actually this code is i copied from ProjectTracker sample project. But from this code the object ChildX is the child object of to the object ParentA. My case is i got another root object (ParentB) which is using ChildX as the child object also. From the dataaccess of its child object already fixed to the ParentA as the root object (&quot;private void Child_Insert(ParentA parent)&quot;) so what should i do? can i create the ChildXA and ChildXB that is inherited from object ChildX, so i dont need to re-code the BusinessMethod, AuthenticationRules. I&#39;ve tested but failed. Maybe because of my lack experience on CSLA.</p>
+<p>Thats why i&#39;m asking help from you experts... Please tell me your suggestion of my case.. and maybe write some sample code (that&#39;s going to help me alot).</p>
+<p>Thx a lot, i need it very urgent</p>
+<p>rgds,</p>
+<p>Stone</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Monday, March 07, 2011</h2><p>There is no existing CSLA base class that supports an editable child that is contained by more than one parent at a time.</p>
+<p>The Parent property, along with ChildChanged events, and persistence of the object graph all rely on an object being part of exactly one object graph and having exactly one parent.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Monday, March 07, 2011</h2><p>You could however have a property of type ChildX on both ParentA and ParentB but you cannot move or use the same instance in both parents.</p>
+<p>In order to do this then ChildX should have no reference to any parent type. If you need the parent ID then send it as a data value and not the parent object in Child_Insert/Child_Update </p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, March 07, 2011</h2><p>It is also critically important to not confuse a <em>using</em> relationship with a <em>containment</em> relationship.</p>
+<p>Parent-child is a containment relationship. The child is literally part of the parent. The state of the parent includes its children. In the physical world (outside of maybe some wierd quantum physics) any given thing (particle, atom, molocule, crystal, structure, etc) only exists within one container - it is only part of one thing. Objects are just like that.</p>
+<p>(of course now that I&#39;ve laid down that gauntlet, I&#39;m sure some chemist or physist will prove me wrong :) )</p>
+<p>But in the real world things use other things. I am using a keyboard right now. It is not part of me, I don&#39;t contain it. But I am using it. Objects are like that too.</p>
+<p>In almost every case where an object instance appears to be contained by two objects, the problem is just a misunderstanding of the problem that has led to an incorrect object model. Just consider the real relationships between the objects within the context of the use case or user scenario you are trying to solve.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sutono replied on Tuesday, March 08, 2011</h2><p>Hi thanks for your quick reply experts... Sorry i&#39;m quite busy yesterday to reply.</p>
+<p>i&#39;m so happy to get the reply so quickly from 2 experts&nbsp;especially from Rocky <img src="http://forums.lhotka.net/emoticons/emotion-1.gif" alt="Smile" /></p>
+<p>Yes i&#39;m agree with JonnyBee, i cleared the reference to parent type on child object&#39;s data access. I&#39;d done a little change on my parent object&#39;s business method and my child object&#39;s factory method and data access. Please take a look at my code...</p>
+<p><strong>Code from Parent Object</strong></p>
+<p>&nbsp;</p>
+<p>private static PropertyInfo&lt;PDCVariable&gt; _PDCVariableProperty = RegisterProperty&lt;PDCVariable&gt;(p =&gt; p.PDCVariable);</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;public PDCVariable PDCVariable</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;{</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;get</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;{</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;if (!(FieldManager.FieldExists(_PDCVariableProperty)))</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;LoadProperty(_PDCVariableProperty, PDCVariable.New(F_EntityId));</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;return GetProperty(_PDCVariableProperty);</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;}</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;}</p>
+<p>&nbsp;</p>
+<p><i>so i put in the value that i want to pass in into child object by the first declare object into property when the value on its property is null</i></p>
+<p><b>Code in my child object :</b></p>
+<p>
+<p>internal static PDCVariable New(Guid entityId)</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;{</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;return DataPortal.CreateChild&lt;PDCVariable&gt;(entityId);</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;}</p>
+<p>
+<p>private void Child_Create(Guid entityId)</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;{</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;LoadProperty(_EntityIdProperty, entityId);</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;LoadProperty(_DateCreatedProperty, new SmartDate(System.DateTime.Now));</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;LoadProperty(_IdProperty, Guid.NewGuid());</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;}</p>
+</p>
+<p>&nbsp;</p>
+<p>So in this case, this child object can be used by many parent object as in every business method on parent object must passing the value (entityId) into child object. I&#39;m wondering whether this method if true or not, so i&#39;m just writing my code here... asking for expert&#39;s suggestion :D</p>
+<p>Please give me some suggestion or idea for this.</p>
+</p>
+<p>&nbsp;</p>
+<p>NB for Rocky:</p>
+<p>Hi Rocky, for your 2nd reply about the real relationships between objects within the context of user scenario that i&#39;m trying to solve. Well my user case is like &nbsp;that :<br /><br />&nbsp;in manufacturing company, usually they will create a spec. (for example Spec Finish Goods) and within this spec. they&#39;ll need many specification of different materials in order to finish this spec. Lets say that in Spec Finish Goods, we&#39;re going to have Spec Materials Foil, Spec Materials Inner Frame, etc. So automatically Spec Finish Goods will be the parent object which is containing Spec Material Foil, Spec Material Inner Frame, and many more.<br />&nbsp;So how if i got another spec. (for example Spec Cigarette) which is containing Spec Material Foil also. So i&#39;m wondering if i create a child object SpecMaterialFoil which is will be used by 2 parent object Spec Cigarette and Spec Finish Goods.</p>
+<p>Thats my user case. Hopefully i didnt type wrong, cause my english is quite bad.</p>
+<p>Well thanks for your reply</p>
+<p>Stone</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Charleh replied on Wednesday, March 09, 2011</h2><p>Just clarifying my understanding - but I have a child business list class which is used by multiple parents by interface which works fine</p>
+<p>Is the issue whether a child should be contained by multiple parents simultaneously? I can&#39;t see a problem with having multiple parents use the same child as a business object platform and it works well in the project I&#39;m running - but I can&#39;t see a place where a child instance contained by multiple parents simultaneously would be a good idea</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, March 09, 2011</h2><p>A child can be used by multiple parents, just not at the same time. An editable&nbsp;child can have exactly one parent at any one time.</p>
+<p>This is because the child <em>is literally part of the parent</em>. N-level undo, data binding, persistence, serialization, ChildChanged eventing - all these things rely on an object being part of one object graph and having one parent.</p>
+<p>Other objects and object graphs can have a <em>reference</em> to the same object, as long as that reference is NonSerialized and NotUndoable. That is a <em>using</em> relationship, not a <em>containment</em> relationship.</p>
+<p>If your app is &quot;working&quot; with a child being contained by more than one parent, then that&#39;s just failure waiting to happen, and you haven&#39;t hit the failure conditions yet.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Charleh replied on Wednesday, March 09, 2011</h2><p>Hi Rocky, yes that&#39;s what I thought - I didn&#39;t expect that having a child instance contained in multiple parent instances would work as CLSA would need a lot of supporting code to track multiple parent refs&nbsp;- I wanted to clear up any confusion as I think with this thread it&#39;s easy to get mixed up between multiple parents in a relationship context and multiple parents in an object containment context</p>
+<p>My objects only have a relationship that allows a child BO class to be used&nbsp;by any other class - the actual object instances are contained only within the parent that owns them</p>
+<p>e.g. a standard collection of notes which can be reused on a sales order, customer, invoice etc</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sutono replied on Wednesday, March 09, 2011</h2><p>Hi Charleh,</p>
+<p> Thx for your feedback, of course my child object wont be obtained by multiple parent object at the same time. So my method i think still can work as you had tried. Thx a lot for your sharing experience :)<br /><br />Btw i got another question...<br />How if my parent object contain an editable child list object, and from this editable child list object i need to have another editable child object and this editable child object also got a list of editable child list object?&nbsp;<br /><br />&nbsp;If i draw is like that :</p>
+<p>Parent --&gt; Editable Child List Object (ChildA) --&gt; Editable Child Object (ChildB) --&gt; Editable Child List Object.(ChildC)<br /><br />i cant upload my object diagram image here, so this is the brief of my business flow i&#39;m handling now. &nbsp;i&#39;m quite stress to get a business flow like that. <br /><br />Do i have to create ChildB as a Editable Switchable Object? as the childB is either Parent of the ChildC and also child object of ChildA also.<br />Or all ChildA, ChildB, ChildC i declare as the child object? Can it save all data at the same time after UI used the Parent object method Save() ?<br /><br />Please guide me.... Thx :)&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Charleh replied on Thursday, March 10, 2011</h2><p>A, B and C should be children - and you can save from the Parent which will cascade the save down to the dirty children</p>
+<p>Editable switchable is for a scenario where you need a child that can belong to a parent, or can have no parent: e.g.</p>
+<p>Parent.GetParent() = Parent -&gt; EditableSwitchable (child)</p>
+<p>or</p>
+<p>EditableSwitchable.GetEditableSwitchable() = EditableSwitchable (root)</p>
+<p>I don&#39;t think this is recommended</p>
+<p>What&#39;s your use case? What will your objects be - it depends on what editing you need to allow at each level of the object graph and how far you want to support edit/undo</p>
+<p>If you have a large object graph which will be edited on many screens, you need to decide whether you want to support a scenario such as:</p>
+<p>edit parent -&gt; edit child -&gt; edit child of child -&gt; oops I did something wrong..undo everything </p>
+<p>You can always use &#39;save&#39; to update the object when a user saves on a child edit screen, but bear in mind that the whole object will need to be valid for the save to work and it will need to be saved from the parent</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sutono replied on Thursday, March 10, 2011</h2><p>well from your explanation i dont think i need switchable object anymore. i&#39;ll try out to have child A, B and C 1st and c how its going....</p>
+<p>Thx a lot Charleh... &nbsp;That helps me a lot...</p>
+<p>Thanks also to Rocky and JonnyBee</p>
+<p>Stone :)</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

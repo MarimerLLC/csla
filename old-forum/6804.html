@@ -1,0 +1,176 @@
+<html><header><title>InnerException is always null in CSLA .NET for Silverlight</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>InnerException is always null in CSLA .NET for Silverlight</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6804.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>SWITCH posted on Thursday, April 16, 2009</h2><P>Hi There,<o:p></o:p></P>
+<P>I am having a problem where if I throw a custom exception in the <EM>DataPortal_Fetch()</EM> method of my Business Object, by the time the exception is wrapped and passed back to my Silverlight client app (through the <EM>DataPortalResult.Error</EM> object) all of the inner exceptions have been lost. In other words, the <EM>Error.InnerException </EM>property of the <EM>DataPortalResult </EM>object is always null.&nbsp; </P>
+<P>I am using CSLA.NET for Silverlight v3.6.2 on the client and CSLA .NET v3.6.2 on the server. </P>
+<P>If I inspect the <EM>DataPortalException </EM>object stored in <EM>DataPortalResult.Error </EM>there is a hierarchy of <EM>Csla.WcfPortal.WcfErrorInfo </EM>objects&nbsp;but this does not give me the access I need to the original custom exception that was thrown (only the message of the original exception). <o:p></o:p></P>
+<P>Has anyone encountered this problem? I have seen CSLA.NET related posts on this forum that indicate that inner exception info should be available, but I am not sure if there are differences with CSLALight that prevent inner exception from being returned to the client? Could this be related to the asynchronous nature of the calls to the DataPortal from Silverlight? </P>
+<P>Any help would be greatly appreciated.<o:p></o:p></P>
+<P>Thanks, Richard</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Friday, April 17, 2009</h2>Are you checking DataPortalException.BusinessException?</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>nermin replied on Friday, April 17, 2009</h2>I believe that the ErrorInfo is how WCF transports/serializes exception information from server to the client.  So the limitation is there.  I am not sure whether Inner exception could be set as it was not thrown on the client and all those things like call stack, would not make sense as they apply to a different(server) process, than the exception you are looking at.<br /><br />Hopefully this makes sense,   and I aam sure Rocky and Sergey can explain this a bit better.<br /><br />Nermin</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>SWITCH replied on Friday, April 17, 2009</h2><P>I'll check into the <EM>DataPortalException.BusinessException </EM>to see if that will do the trick. I thought I checked it last night, but it was pretty late so maybe I missed it. </P>
+<P>It would make sense that the Call Stack and related info would not be passed back to the client (since it is running in a different process) but&nbsp;that would&nbsp;make it difficult to pass back additional custom attributes related to the errors that I have added to my CustomException. </P>
+<P>What I would like to do is pass back a custom&nbsp;exception from the server that contains the error message, a tracking reference number and the caption to display in an error dialog.&nbsp;I'm still wondering how I would accomplish this?</P>
+<P>Thanks everyone for the responses!</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, April 17, 2009</h2><P>Nermin is correct, you need to look at the error info.</P>
+<P>Remember that Silverlight and .NET are different platforms, and that they don't share types. Even though some types look similar (like Int32 or Exception) they are not the same.</P>
+<P>Due to this, we can't serialize arbitrary objects from .NET to SL (or visa versa). It just isn't possible.</P>
+<P>The reason we're able to serialize <EM>anything</EM> is because we wrote our own serializer, but it has constraints around what types it can serialize.</P>
+<P>This is all due to a combination of SL being a different platform, and SL not supporting enough reflection to build things like the BinaryFormatter or NetDataContractSerializer.</P>
+<P>So what we do for exceptions, is grab as much of the exception detail as we can convert into primitive data types that we <EM>can serialize</EM>, and we pull that data back to the client and expose it through an error info property.</P>
+<P>Recognizing that we can't rehydrate arbitrary exceptions on the SL client, I am open to suggestions on more useful ways to expose the exception data that we do rip off the server-side exception objects.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jack replied on Friday, April 17, 2009</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I find that I foolishly do this a lot:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>catch(OracleException &nbsp;OraEx)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>{<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>throw new Exception(&quot;Some Nice user message about being unable
+to retrieve some specific data&quot;, OraEx)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>}<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>and then will dig through the inner exception to get the message.&nbsp;
+This always worked in my prior winforms.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Now I'm at least trying to do:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>catch(OracleException &nbsp;OraEx)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>{<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>throw new Exception(&quot;Some Nice user message about being unable
+to retrieve some specific data - &quot; + OraEx.Message, OraEx)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>}<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>because I lose the Message across the wire.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>What about adding to ErrorInfo the last &nbsp;InnerException.Message
+and InnerException.ToString() ???<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Or am I naively missing something?<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Thanks<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>jack<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> RockfordLhotka [mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> April-17-09 2:26 PM<br>
+<b>To:</b> jaddington@alexandergracie.com<br>
+<b>Subject:</b> Re: [CSLA .NET] InnerException is always null in CSLA .NET for
+Silverlight<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Nermin is correct, you need to look at the error info.<o:p></o:p></p>
+
+<p>Remember that Silverlight and .NET are different platforms, and that they
+don't share types. Even though some types look similar (like Int32 or
+Exception) they are not the same.<o:p></o:p></p>
+
+<p>Due to this, we can't serialize arbitrary objects from .NET to SL (or visa
+versa). It just isn't possible.<o:p></o:p></p>
+
+<p>The reason we're able to serialize <em>anything</em> is because we wrote our
+own serializer, but it has constraints around what types it can serialize.<o:p></o:p></p>
+
+<p>This is all due to a combination of SL being a different platform, and SL
+not supporting enough reflection to build things like the BinaryFormatter or
+NetDataContractSerializer.<o:p></o:p></p>
+
+<p>So what we do for exceptions, is grab as much of the exception detail as we
+can convert into primitive data types that we <em>can serialize</em>, and we
+pull that data back to the client and expose it through an error info property.<o:p></o:p></p>
+
+<p>Recognizing that we can't rehydrate arbitrary exceptions on the SL client, I
+am open to suggestions on more useful ways to expose the exception data that we
+do rip off the server-side exception objects.<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>nermin replied on Friday, April 17, 2009</h2>If you are looking for exception information of your OralcleException that is wrapped inside your custom exception (which is the one serialized in ErrorIfo), I believe that there is already a way to get to that information.<br /><br />I believe that ErrorInfo does not only expose the outermost exception information, but rather the whole set.  You need to put some break-points and evaluate ErrorInfo at run-time, but if my memory is correct you will find your original OracleException info somehwere in your ErrorInfo object.<br /></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jack replied on Friday, April 17, 2009</h2>I'll double check - thx<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>SWITCH replied on Friday, April 17, 2009</h2>I was just looking at the  ErrorInfo property of the DataPortalResult.Error object last night in my debugger and all I remember seeing was the ExceptionTypeName (string) of each ErrorInfo object in the exception stack as well as the error message. So, yes, I think if you are only looking for the message of your OracleException you should be able to find it by looping through the ErrorInfo stack and comparing the ExceptionTypeName of the current ErrorInfo object (I think that's what it's called) to the type name of the OracleException. At least, that's one way to do it.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>SWITCH replied on Friday, April 17, 2009</h2><P>Thanks, everyone!</P>
+<P>Ok, that makes much more sense now. I'm thinking off the top of my head without trying this yet, so please forgive me if this doesn't make sense. I'm fairly new to CSLA, but I'm wondering if the following is possible?</P>
+<UL>
+<LI>Add a <EM>CustomErrorInfo </EM>property&nbsp;to the base class of my BO's that holds new "ErrorInfo" BO that can be used to store the extra info I need (e.g. Error Dialog Caption, Reference Number, whatever...). </LI>
+<LI>When there is an exception thrown in my BO, handle it in the BO,&nbsp;load the "ErrorInfo" BO in my&nbsp;<EM>CustomErrorInfo </EM>property with the exception details then rethrow the original exception. </LI>
+<LI>On the client, if there is a <EM>DataPortalResult.Error&nbsp;</EM>returned, then I know I can access the <EM>CustomErrorInfo </EM>property of the BO stored in ((MyBo)<EM>DataPortalResult.Object).CustomErrorInfo </EM>to get back out any extra details I need to properly display a nice error message to the user. </LI></UL>
+<P>Would this work? Would I have a BO in <EM>DataPortalResult.Object </EM>that I could even access if an exception is thrown?</P>
+<P>Maybe that's more of a workaround than the proper way to do it but I don't yet have the experience with the framework so suggest something better.</P>
+<P>Thanks, Rich</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, April 17, 2009</h2><P>Rich,</P>
+<P>I don't know why you'd do all that work?</P>
+<P>We put a lot of work into ensuring that the server-side exception data is carried back to the SL client in as close a manner as possible to the .NET model.</P>
+<P>When you catch the exception on the client side, it should contain the ErrorInfo data, which is all the server-side exception data (I think even the stack trace). While that data is no longer an "exception", it is the same data and you should be able to use it in a catch block to determine the original exception and take appropriate action.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>SWITCH replied on Friday, April 17, 2009</h2><P>Hi Rocky,</P>
+<P>I'm really hoping I don't have to do all that work and maybe I am missing something, but I haven't been able to determine how to get additional custom properties of my custom exception object back to the client. I do see that the standard exception info (e.g. stack trace, wrapped inner exception messages, etc...) are all returned and are available to me. It was just the custom properties of my custom exception that I couldn't figure out how to get back to the client. I was hoping on using the custom properties to help me determine how to display the error to the client (e.g. customizing the error caption, showing a different severity indicator, etc...). </P>
+<P>Thanks, Rich</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, April 17, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Oh, I missed that part.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I&#8217;m not sure how we could accommodate custom data from an
+exception&#8230;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

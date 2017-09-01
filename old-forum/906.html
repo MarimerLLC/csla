@@ -1,0 +1,28 @@
+<html><header><title>non-CSLA BindingList or derived object from BusinessListBase</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>non-CSLA BindingList or derived object from BusinessListBase</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/906.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>jupp posted on Tuesday, August 15, 2006</h2><P>What me confused is when to use a non-Csla- BindingList for a collection of Objects an when to use a derived object from BusinessListBase.</P>
+<P>I have a class Address.&nbsp; The Address&nbsp;class has&nbsp;various&nbsp;fields.&nbsp; In addition to these fields, the address class has a collection of AddressLines for customizing localisation issues. Each address line is a String.&nbsp;</P>
+<P>&nbsp;</P>
+<P>I have to cases to design this class.</P>
+<P>1.</P>
+<P>&nbsp;public class Address : BusinessBase&lt;Address&gt;</P>
+<P>{</P>
+<P>&nbsp;&nbsp;&nbsp;private string _street;</P>
+<P>&nbsp;&nbsp;&nbsp;private string _postalCode;</P>
+<P>....</P>
+<P>&nbsp;&nbsp; BindingList&lt;string&gt; _addressLines;</P>
+<P>}</P>
+<P>2.</P>
+<P>public AddressLine : BusinessBase&lt;AddressLine&gt;</P>
+<P>{</P>
+<P>&nbsp;&nbsp;&nbsp;string _line;</P>
+<P>}</P>
+<P>&nbsp;</P>
+<P>public AddressLines : BusinessListBase&lt;AddressLines, AddressLine&gt;</P>
+<P>{</P>
+<P>}</P>
+<P>public Address : BusinessBase&lt;Address&gt;</P>
+<P>{</P>
+<P>&nbsp;&nbsp; &nbsp;private string _street;</P>
+<P>&nbsp;&nbsp;&nbsp;private string _postalCode;</P>
+<P>&nbsp;&nbsp;&nbsp;AddressLines _addressLines;&nbsp;&nbsp;&nbsp;</P>
+<P>}</P>
+<P><SPAN>How to do? Which is best?</SPAN></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Tuesday, August 15, 2006</h2>Well, normally I'd say go with the BLB class.. as each item in the collection should know how to persist itself (and likely is stored differently from the other data).<br><br>In this particular case though, I have to ask.. will you ever have more than say three address lines?&nbsp; Its been my expierence you won't... which seems to lend itself to creating your class just to hard code AddressLine1, AddressLine2, etc and having a column for each in the db (although there's no reason you couldn't store the lines differently to allow any number of lines.. it just doen't seem like it'd buy you much).<br><br>So, I'd suggest rethinking if you really want to allow more than three or so address lines, especially given that a standard sized envelop only has so much room, and the postal codes in your country may limit how many you can have.<br><br>HTH<br>Andy<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jupp replied on Wednesday, August 16, 2006</h2><P>Thank you.</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,30 @@
+<html><header><title>Adding my own factory methods</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Adding my own factory methods</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/275.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Michael Hildner posted on Monday, June 05, 2006</h2><P>Hi,</P>
+<P>Newbie question here. Is there a best practice to add my own factory method?</P>
+<P>I have an employee table in the DB, which has a primary key. I used CodeSmith to generate the business object. So now I have a Employee.GetEmployee(guid pk) method.</P>
+<P>What I'd like to do is add a method something like GetEmployeeByUserNamePassword(string userName, string password). As I'm new to this, I'm a little lost on the proper way to implement.</P>
+<P>Any thoughts appreciated. Thanks,</P>
+<P>Mike</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Monday, June 05, 2006</h2>Sure, you can do that.. although if you're in C# you may just want to call it GetEmployee( string, string ).<br><br>Andy<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Michael Hildner replied on Monday, June 05, 2006</h2><P>Hello Andy,</P>
+<P>Thanks for the reply. I guess what I'm confused about is *how* do I go about implementing a new method?</P>
+<P>Right now - and I used CodeSmith to generate the code -&nbsp;I have a method that looks like this:</P><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>static</FONT><FONT size=2> </FONT><FONT color=#008080 size=2>Employee</FONT><FONT size=2> GetEmployee(</FONT><FONT color=#008080 size=2>Guid</FONT><FONT size=2> pk)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (!CanGetObject())</P>
+<P></FONT><FONT color=#0000ff size=2>throw</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> System.Security.</FONT><FONT color=#008080 size=2>SecurityException</FONT><FONT size=2>(</FONT><FONT color=#800000 size=2>"User not authorized to view a Employee"</FONT><FONT size=2>);</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> </FONT><FONT color=#008080 size=2>DataPortal</FONT><FONT size=2>.Fetch&lt;</FONT><FONT color=#008080 size=2>Employee</FONT><FONT size=2>&gt;(</FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> </FONT><FONT color=#008080 size=2>Criteria</FONT><FONT size=2>(pk));</P>
+<P>}</P>
+<P>This calls DataPortal.Fetch, which then in turn (I'm assuming right now - not an expert at CSLA yet) calls</P><FONT color=#0000ff size=2>
+<P>private</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>void</FONT><FONT size=2> DataPortal_Fetch(</FONT><FONT color=#008080 size=2>Criteria</FONT><FONT size=2> criteria)</FONT></P>
+<P><FONT size=2>I don't think I should be messing with the DataPortal class. Should I create another DataPortal_Fetch method? If I do, I'm going to need something besides my generated Criteria class, because that has a single member and one constructor:</FONT></P><FONT size=2><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>private</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>class</FONT><FONT size=2> </FONT><FONT color=#008080 size=2>Criteria</P></FONT><FONT size=2>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#008080 size=2>Guid</FONT><FONT size=2> PK;</P>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> Criteria(</FONT><FONT color=#008080 size=2>Guid</FONT><FONT size=2> pk)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>.PK = pk;</P>
+<P>}</P>
+<P>}</P>
+<P></FONT>Hope that makes sense. Since I'd like to pass in two strings and not a Guid to get the Employee object, I guess I could add some members to Criteria, then check to see if those members are not null in the DataPortal_Fetch method. I'm not sure if this is the proper way to go about it.</P>
+<P>Thaks,</P>
+<P>Mike&nbsp;</P></FONT></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Monday, June 05, 2006</h2>Create a UserNamePasswordCriteria class which lives in your Employee class.&nbsp; Create another DataPortal_Fetch method which takes the new criteria class.&nbsp; The static method would be similar tot he one you have now, except it takes two strings and creates the new criteria class instead.<br><br>HTH<br>Andy<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Michael Hildner replied on Monday, June 05, 2006</h2><P>Thank you Andy, makes sense to me.</P>
+<P>Regards,</P>
+<P>Mike</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

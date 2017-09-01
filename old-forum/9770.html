@@ -1,0 +1,12 @@
+<html><header><title>Name value list bound to multiple combo boxes</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Name value list bound to multiple combo boxes</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9770.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>stevenkahan posted on Tuesday, November 16, 2010</h2><p>I have&nbsp; a nvl of state_id, state_abbrev.<br />I have to bind it to multiple combo boxes (applicant license state, applicant address state, vehicle garaging state)<br /><br />I created the NVL with private constructor and using cache.</p>
+<p>When I bound the nvl to all 3 combo boxes, changing one combo box changed all (I guess I should have realized this).</p>
+<p>I have come up with 3 possible solutions (assuming that I&#39;m not doing something wrong in the first place).</p>
+<p>1. Invalidate the cache between setting the datasource for each combo box</p>
+<p>2. Remove the private constructor of the NVL and change the shared function &quot;GetList&quot; to Public and instantiate 3 instances of the NVL</p>
+<p>3.&nbsp; Clone the NVL in the form, keeping the nvl as originally coded using caching and private constructor<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; dim nvl1,nvl2,nvl3 as NVL<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; nvl1 = NVL.GetList()<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; nvl2 = nvl1.clone<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; nvl3 = nvl1.clone</p>
+<p>I&#39;m wondering if one of these solutions is &quot;better&quot; than the others or if I&#39;m doing something wrong in the first place with my approach.</p>
+<p>Thank you.</p>
+<p>&nbsp;</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

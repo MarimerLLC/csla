@@ -1,0 +1,82 @@
+<html><header><title>ObjectFactory and Child Objects.</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>ObjectFactory and Child Objects.</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/8767.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>bniemyjski posted on Monday, April 05, 2010</h2><p>
+<p>Hello,</p>
+<p>How should one treat Child Fetch calls when using the ObjectFactory? I have an EditableChild or a ReadOnlyChild and my code looks like this:</p>
+<p>&nbsp;</p>
+<p>&nbsp;&nbsp;internal static SettingGroupList GetByApplicationID(System.Int32 applicationID)</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;{</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;return DataPortal.<strong>FetchChild</strong>&lt; SettingGroupList &gt;(</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;new SettingGroupCriteria{ApplicationID = applicationID});</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;}</p>
+<p>It doesn&#39;t work because ChildPortal methods are never invoked but I need to call the ObjectFactory Implementation. Should I always just have them call the Regular Fetch? Is there a best practice for this?</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;internal static SettingGroupList GetByApplicationID(System.Int32 applicationID)</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;{</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;return DataPortal.<strong>Fetch</strong>&lt; SettingGroupList &gt;(</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;new SettingGroupCriteria{ApplicationID = applicationID});</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;}</p>
+<p>&nbsp;</p>
+<p>Thanks</p>
+<p>-Blake Niemyjski</p>
+</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Monday, April 05, 2010</h2><p>The child data portal is not compatible with the object factory.</p>
+<p>When using the object factory model, the factory is responsible for 
+creating and initializing child objects as well as root objects.</p>
+<p>You might consider having the root object factory create and invoke 
+other &quot;child&quot; object factories - but this isn&#39;t something the data 
+portal will do for you. When you are in object factory land, you are on 
+your own.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>bniemyjski replied on Wednesday, April 14, 2010</h2><p>
+<p>Hello,</p>
+<p>I understand this completely. What I&#39;m asking about is if you are lazy loading children and you know how you want to load the child during runtime (not during compile time). Would the best approach be to call Fetch&lt;&gt;() instead of FetchChild&lt;&gt;() in your children&#39;s Get Methods as this will invoke Object Factory.</p>
+<p>Thanks</p>
+<p>-Blake Niemyjski</p>
+</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Wednesday, April 14, 2010</h2><p>The simplest way to lazy load child objects is to use a command object (or readonlybase object) to do the work. Basically create it as a unit of work - where that work is to run to the server, load the child object(s) and return the result.</p>
+<p>Then the lazy load code can just Fetch() the ROB, and grab its Results property value to get the child objects. This way the child objects don&#39;t get complex - they remain purely children, and any complexity is shifted up into the ROB parent that is retrieving them - and even that isn&#39;t complex right, just open the database, do the query and call FetchChild() to get each child.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>bniemyjski replied on Wednesday, April 14, 2010</h2><p>
+<p>Hello,</p>
+<p>It wouldn&#39;t be that hard to update this to use that method of retrieval, just seems like a lot of extra work for preexisting functionality.</p>
+<p>Thanks</p>
+<p>-Blake Niemyjski</p>
+</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Wednesday, April 14, 2010</h2><p>The only alternative though, is to implement the fetch (DP_F or factory) and manually call MarkAsChild to make the object a child. Doing that in genned code is probably fine, but doing it manually is not fine because people forget and then have hard to resolve bugs. Those bugs drove me to create the child data portal concept - it was just such a common issue that I felt it needed solving <img src="http://forums.lhotka.net/emoticons/emotion-1.gif" alt="Smile" /></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>bniemyjski replied on Wednesday, April 14, 2010</h2><p>&nbsp;</p>
+<p>Hello,</p>
+<p>Thats what I&#39;m currently doing <img src="http://forums.lhotka.net/emoticons/emotion-1.gif" alt="Smile" />. I think I&#39;ll just detect if they are using object factory and if they are I&#39;m going to output a comment saying this normally is FetchChild&lt;&gt;() but were calling Fetch&lt;&gt;() so the data portal is invoked. If your class is not marked as a child then you changed the object factory implementation <img src="http://forums.lhotka.net/emoticons/emotion-1.gif" alt="Smile" />.</p>
+<p>Thanks</p>
+<p>-Blake Niemyjski</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>bniemyjski replied on Monday, December 20, 2010</h2><p>
+<div>
+<p>Hello,</p>
+<p>This has been fixed in the latest nightly build of the&nbsp;<a href="http://forums.lhotka.net/Template_Frameworks/f/68/p/42712/Reply.aspx/community.codesmithtools.com/nightly/CSLA/">CSLA templates</a>.</p>
+<p>Thanks</p>
+<p>-Blake Niemyjski</p>
+</div>
+</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>bniemyjski replied on Thursday, March 15, 2012</h2><p>Can we do something to change this behavior in CSLA 4.5? I just ran into this again where ChildPortal (CreateChild) wasn&#39;t using the ObjectFactory method which I thought it would use (it&#39;s been a while). Instead of calling the Create Method in OF it created a new instance locally. I understand that these ChildPortal calls should only happen locally...</p>
+<p> My idea is that if you say all my creation logic is going to be in this assembly (which is more than likely on the client), then make the call to object factory for the&nbsp;creation.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, March 15, 2012</h2><p>You are suggesting that the child data portal look for the ObjectFactory attribute and route the call through the regular data portal to the factory if it is present?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>csmith1 replied on Thursday, March 15, 2012</h2><p>I slight aside but think I am on the same subject. I ran in to this bug when unit testing some generated code. I changed the property of the parent that held Identification for the child to a different child. The test was to check if the load child was now the new value but it failed.</p>
+<p>
+<p>The copy of the example from &quot;Using CSLA&quot; leaves out that there is usually a query for children by a property value.</p>
+<p>If it is a Many to One relationship something like ChildId with a backing field&nbsp;_childIdProperty.</p>
+<p>I suggest it read something like:</p>
+<p>if((!FieldManager.FieldExists(AddressesProperty)) ||&nbsp;(!FieldManager.<span>IsFieldDirty</span>(_childIdProperty))</p>
+</p>
+<p>Thanks,</p>
+<p>Charles</p>
+<p>&nbsp;</p>
+<p>Example</p>
+<p>In Creating Business Objects you have:</p>
+<p>public static readonly PropertyInfo&lt;AddressEditList&gt; AddressesProperty =</p>
+<p>RegisterProperty&lt;AddressEditList&gt;(c =&gt; c.Addresses, </p>
+<p>RelationshipTypes.Child | RelationshipTypes.LazyLoad);</p>
+<p> public AddressEditList Addresses</p>
+<p> { </p>
+<p>&nbsp; get </p>
+<p>{</p>
+<p> if (!FieldManager.FieldExists(AddressesProperty))</p>
+<p> {</p>
+<p> LoadProperty(AddressesProperty, null);</p>
+<p> AddressListCreator.GetAddressListCreator((o, e) =&gt;</p>
+<p> {</p>
+<p> if (e.Error != null) throw e.Error; else Addresses = e.Object.Result; });</p>
+<p> }</p>
+<p> return GetProperty(AddressesProperty);</p>
+<p> }</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,30 @@
+<html><header><title>STRANGE : Remote server returned an error : NotFound !!</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>STRANGE : Remote server returned an error : NotFound !!</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11554.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>st3fanus posted on Friday, August 24, 2012</h2><p>Hi Rocky..</p>
+<p>I have a strange error. I use Silverlight 5, and CSLA 4.13</p>
+<p>Jonny has give his suggestion for me here =&gt;&nbsp; http://forums.lhotka.net/forums/p/11552/53539.aspx#53539</p>
+<p>I have no experience with WCF before, I just read your ebook series.</p>
+<p>Based on my understanding I have made a connection to remote server via dataportal on</p>
+<p>BeginCreate BECAUSE I override DataPortal_Create and NOT use RUNLOCAL attribute</p>
+<p>and it&#39;s worked,</p>
+<p>BUT on BeginSave there is an error like my subject title on this thread</p>
+<p>&nbsp;</p>
+<p>Could you give me a guide ?</p>
+<p>Thanks a lot before</p>
+<p>&nbsp;</p>
+<p>stefanus</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Saturday, August 25, 2012</h2><p>In SL and Csla 4.13 the code does not use the RunLocal attribute.</p>
+<p>In you staic factory method the ProxyMode is specified and is likely set to LocalOnly. </p>
+<p>Look at this code: </p>
+<p>&nbsp;&nbsp;&nbsp; public static void NewProductEdit(EventHandler&lt;DataPortalResult&lt;ProductEdit&gt;&gt; callback)<br />&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var dp = new <b>DataPortal&lt;ProductEdit&gt;(DataPortal.ProxyModes.LocalOnly);</b><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; dp.CreateCompleted += callback;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; dp.BeginCreate();<br />&nbsp;&nbsp;&nbsp; }<br /><br />&nbsp;&nbsp;&nbsp; public static void GetProductEdit(int id, EventHandler&lt;DataPortalResult&lt;ProductEdit&gt;&gt; callback)<br />&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var dp = new<b> DataPortal&lt;ProductEdit&gt;();</b><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; dp.FetchCompleted += callback;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; dp.BeginFetch(new SingleCriteria&lt;ProductEdit, int&gt;(id));<br />&nbsp;&nbsp;&nbsp; }</p>
+<p>The NewProductEdit will not use a remote portal - as the dataportal is created with <b>DataPortal.ProxyModes.LocalOnly</b><br />The GetProductEdit will use the remote portal. </p>
+<p>You must still follow my guidelines.</p>
+<p><b>The URL that your SL app is using for DataPortalUrl is either wrong or the remote portal is not running!!!</b></p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>st3fanus replied on Saturday, August 25, 2012</h2><p>Hi Jonny.. </p>
+<p>Yes I got your guidline.. And I have follow that.BUT in My Case On Create Scenario I&#39;m not use local mode. so I need to access remote server as Fetch scenario.</p>
+<p>Currently I don&#39;t know what is the real problem i face. BUT that error is gone.!</p>
+<p>Because I add this config in web.config</p>
+<p>&lt;system.serviceModel&gt;<br />&nbsp;&nbsp;&nbsp; &lt;services&gt;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;service name=&quot;Csla.Server.Hosts.Silverlight.WcfPortal&quot; behaviorConfiguration=&quot;returnFaults&quot; &gt;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;endpoint binding=&quot;basicHttpBinding&quot; bindingConfiguration=&quot;basicHttpBinding_IWcfPortal&quot; contract=&quot;Csla.Server.Hosts.Silverlight.IWcfPortal&quot;/&gt;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/service&gt;<br />&nbsp;&nbsp;&nbsp; &lt;/services&gt;<br />&nbsp;&nbsp;&nbsp; &lt;bindings&gt;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;basicHttpBinding&gt;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;binding name=&quot;basicHttpBinding_IWcfPortal&quot; maxReceivedMessageSize=&quot;2147483647&quot;&gt;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;readerQuotas maxBytesPerRead=&quot;2147483647&quot; maxArrayLength=&quot;2147483647&quot; maxStringContentLength=&quot;2147483647&quot; maxNameTableCharCount=&quot;2147483647&quot; maxDepth=&quot;2147483647&quot;/&gt;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/binding&gt;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/basicHttpBinding&gt;<br />&nbsp;&nbsp;&nbsp; &lt;/bindings&gt;<br />&nbsp;&nbsp;&nbsp; &lt;behaviors&gt;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;serviceBehaviors&gt;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;behavior name=&quot;returnFaults&quot;&gt;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;serviceDebug includeExceptionDetailInFaults=&quot;true&quot; /&gt;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/behavior&gt;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/serviceBehaviors&gt;<br />&nbsp;&nbsp;&nbsp; &lt;/behaviors&gt;<br />&nbsp; &lt;/system.serviceModel&gt;</p>
+<p>What I know is this is increase message transfer capacity in WCF.</p>
+<p>And I have succesfully on BeginSave()</p>
+<p>So currently I STILL not know what is the problem i face ? Is this really about transfer capacity on wcf ? If Yes so if this config is enough on all case ?</p>
+<p>what is guidelines about this problem ?</p>
+<p>&nbsp;</p>
+<p>thanks jonny</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,14 @@
+<html><header><title>use of BindingNavigator</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>use of BindingNavigator</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/2529.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>dg78 posted on Thursday, March 15, 2007</h2><P class=MsoNormal>Hi, </P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal><SPAN>Is anybody use a BindingNavigator with an editable root class and with an editable root list class ?<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>How to link the buttons of the bindingNavigator with CSLA ?<BR>Is it possible or is it better to write our own user control VCR data bar navigation to manage CRUD ?<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Thanks in advance,<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Dominique<o:p></o:p></SPAN></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, March 15, 2007</h2><P>The normal BindingNavigator should work fine with both a root BusinessListBase and a root EditableRootListBase.</P>
+<P>In the root BLB case, you may way want to explicitly call BeginEdit() on the collection before binding it to your form, thus allowing the implementation of form-level Save and Cancel buttons. In particular, you can't do a form-level Cancel button in this case without calling BeginEdit() ahead of time, because data binding won't make that call, and you wouldn't get a snapshot of the entire collection.</P>
+<P>However, if all you want is a Save button, with no Cancel, then you don't need to worry about this.</P>
+<P>In either case, with BLB, your Save button must call bindingSource.EndEdit() before saving your business object in order to tell data binding (and your object) that editing should be accepted on the row that has focus.</P>
+<P>With ERLB you don't need to do any work really, because ERLB itself does almost everything. The only thing you need to do is make sure to call bindingSource.EndEdit() (or CancelEdit()) before the form closes - again to commit (or cancel) the changes made by the user on the last row they edited.</P>
+<P>In all these cases, the BindingNavigator should work, because all it does is control the currency using the BindingSource. Even if you wrote your own VCR controls, you'd need to implement them the same way as the BindingNavigator or they wouldn't work. There is only one right answer for this sort of behavior when using data binding.</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

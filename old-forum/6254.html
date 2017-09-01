@@ -1,0 +1,76 @@
+<html><header><title>modelling a network of objects</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>modelling a network of objects</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6254.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>nampord posted on Monday, January 26, 2009</h2><P>Hi</P>
+<P>I need to model a network of tasks for a project management&nbsp;solution, where every tasks can have an arbitrary&nbsp;number of successor tasks ( which in turn have successors and so on ...).&nbsp; Since a task can have more than&nbsp;one predecessor&nbsp;it is a network of task.</P>
+<P>&nbsp;There is a use case to visualize the entrie network of tasks. And some busienss&nbsp;algorithm need to be able to quickly traverse the network.</P>
+<P>What is the best way to model this with the collections in CSLA?</P>
+<P>Ideally I woudl like to hold a reference to all the successors tasks with each task in order to have access to all&nbsp;the successor's&nbsp;properties. But making the successor tasks a child collection of task will not work since a task can have more than one parent. </P>
+<P>I could just store successor id's and construct the references by hand once all tasks are loaded. But I wonder if there is a better way ... ? </P>
+<P>Thanks for you input </P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, January 26, 2009</h2>This is a variation on a many-to-many relationship, or perhaps one-to-many.<br><br>Either way, the secret is to remember that objects model behavior, not data. Object relationships model behavioral relationships, not data relationships. Finally, many objects reflect the relationship as much as they do the concept/behavior.<br><br>In other words, a task has successor tasks. But a Task is a top-level root concept. So you have this:<br><br>Task<br>SuccessorTaskList<br>SuccessorTask<br><br>And SuccessorTask represents the relationship between this Task and other Task objects. So SuccessorTask will have a <i>navigable</i> <i>using</i> relationship to Task, but it is <i>not</i> a Task itself, because it represents the relationship.<br><br>You can see this in the ProjectTracker app, where a Project has a list of ProjectResource objects, not a list of Resource objects. This is because a project has a <i>relationship</i> with some resources, but doesn't actually contain the resources themselves.<br><br>If you stop and think about this in real-world terms this makes sense. Does your doctor own or control you? When you purchase a product at a store, does the sales order own or control you? No. The doctor has a relationship with you. So does the sales order.<br><br>Similarly, a Task doesn't own or control other Task objects. It has a relationship with them. And your object model needs to reflect that relationship.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>nampord replied on Tuesday, January 27, 2009</h2><P>Thanks for the quick reply, Rocky</P>
+<P>This makes things much clearer in&nbsp; the design and in fact the&nbsp;link between tasks has some properties itself&nbsp; so the SuccessorTask is the right place to store these link properties.</P>
+<P>However&nbsp;my case is somewhat different from the case</P>
+<P>Project<BR>ProjectResources<BR>ProjectResource&nbsp;</P>
+<P>as in my case the navigable using relationship is&nbsp;between the objects&nbsp;themselves (i.e. between tasks). </P>
+<P>The question is how efficient can one support the navigation between the linked objects:</P>
+<P>In your Project example ProjectResource implements a GetResource method , which fetches the Resource object with a given Id. </P>
+<P>In my case I will have all tasks already fetched ( they are children of a Project root) and certainly dont want to go back to the database each time I navigate the network of tasks ( which will be a very frequent operation) </P>
+<P>For efficiency if would be great if the SuccessorTask object could hold a reference to the linked task itself, in order to navigate without the need to involve a lookup table, index or &nbsp;even a fetch from the database. This reference would need to be nonserializable and&nbsp;filled once all tasks are fetched. </P>
+<P>I wonder if I am heading into a dead end with such an approach (e.g. when considering&nbsp; undo of creating&nbsp;or deleting the links between tasks)?</P>
+<P>Thanks</P>
+<P>Frank</P>
+<P><BR><BR>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, January 27, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I think it depends on whether you want this graph to be composed
+of directly editable objects or not.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>If not, then you can use ReadOnlyBase and ReadOnlyListBase and
+you can do exactly what you want. That is a supported scenario.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>If the objects need to be editable, then it can get quite
+complex. The primary challenge you&#8217;ll face is that the current CSLA
+infrastructure only supports parent-child relationships between objects. If you
+have a network of peers, then you have a network of root objects.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>This means you&#8217;ll end up fighting with some of the
+existing infrastructure, in particular BusinessListBase, and to a lesser degree
+the data portal. You may need to create your own collection type, like BLB but
+different, that supports root objects. Maybe you can use EditableRootListBase,
+but I&#8217;m skeptical, because this is outside the design parameters for that
+type.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>If you want these objects to be editable, I would strongly
+recommend a parallel model, where you have the graph itself as read-only
+objects (ROB, ROLB), and when the user selects a node, you create a root BB
+object so they can manipulate that one object. When they save their changes,
+you&#8217;d pull the data from the in-memory BB object to update the ROB in the
+graph.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

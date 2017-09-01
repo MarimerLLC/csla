@@ -1,0 +1,69 @@
+<html><header><title>RE: CSLA Silverlight BusyAnimation - Leaves &quot;dead spot&quot;if Visibility is not set to collapsed</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>RE: CSLA Silverlight BusyAnimation - Leaves &quot;dead spot&quot;if Visibility is not set to collapsed</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/7638.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb posted on Wednesday, September 16, 2009</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>One
+simple solution is for you to bind Visibility to IsBusy yourself.&nbsp; All you
+would need to do this is to have BooleanToVisibilityConverter to use as part of
+binding.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> cds
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Tuesday, September 15, 2009 11:34 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] CSLA Silverlight BusyAnimation - Leaves
+&quot;dead spot&quot; if Visibility is not set to collapsed<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>I agree - I've experienced the same weird problem.<br>
+<br>
+--<br>
+View this message online at: <a href="http://forums.lhotka.net/forums/thread/36345.aspx">http://forums.lhotka.net/forums/thread/36345.aspx</a><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, September 16, 2009</h2><P>Yes, if there's anything I've learned from the past couple years of building XAML controls, it is that the less visual stuff the control does the better. Everything the control does "for you" restricts flexibility in the use of the control.</P>
+<P>This is why the 3.8 PropertyStatus has the option of <EM>not</EM> controlling the target UI control's appearance, instead allowing you to bind the UI control's properties to properties on PropertyStatus. The variations people want to do often conflict, and rather than making PropertyStatus insanely complex, I'm just opening up the properties so binding can be used to accomplish many different visual models.</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,91 @@
+<html><header><title>Unit testing</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Unit testing</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6095.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>rfcdejong posted on Wednesday, January 07, 2009</h2>Is there someone who has written an unit test project for the pttracker project?<br /><br />Or else is it possible to write one to deploy with the sample project?<br /></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rfcdejong replied on Saturday, January 10, 2009</h2><P>Noone?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Saturday, January 10, 2009</h2><P>It is absolutely possible. It may not be practical, for me at least, because it would add yet another whole set of code for me to maintain twice (VB and C#). For a production system I think having unit tests is a great idea - critical even. But they aren't free, and it is already a lot of work to keep the app running and in sync between both languages.</P>
+<P>Now if I created unit tests in C# only, for both the VB and C# ProjectTracker.Library assemblies - THAT would be useful in a practical sense. But that would be counter to the purpose of ProjectTracker, which is to act as a sample. So it is absolutely necessary to do the work in both languages.</P>
+<P>In short, it might happen, but it isn't real high on my priority list, because all it will do is slow down mods to everything.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>William replied on Sunday, January 11, 2009</h2>Rocky,<br><br>In my opinion, I think having unit test code in the sample helps to demonstrate the recommended approach to unit test business objects built with CSLA framework. Actually, this is one of the areas I am struggling with the framework.<br><br>Besides, to my understanding, you plan to concentrate on C# for the framework going forward and the VB version is left as community effort.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rfcdejong replied on Sunday, January 11, 2009</h2>drop VB :)<br /><br />Just kidding ofcourse, i do not want the VB community on my neck ;)<br /></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>triplea replied on Sunday, January 11, 2009</h2>I think the problem is that if a sample unit test project is added there might be too much criticism... There seem to be a lot of ideas floating around about how to unit test your BOs and people seem to have different views (specially when it comes to DB access). Also where do you stop can be an issue since we all seem to have our views on how much code unit tests should cover... Anyway, I am not saying it would be wrong but I can understand why this is not in place yet...</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Sunday, January 11, 2009</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>That&#8217;s perhaps a concern, but realistically I find a
+continual stream of people who do/don&#8217;t like what I&#8217;m doing anyway :)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> triplea
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Sunday, January 11, 2009 2:17 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] Unit testing<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>I think the problem is that if a sample unit test project is
+added there might be too much criticism... There seem to be a lot of ideas
+floating around about how to unit test your BOs and people seem to have
+different views (specially when it comes to DB access). Also where do you stop
+can be an issue since we all seem to have our views on how much code unit tests
+should cover... Anyway, I am not saying it would be wrong but I can understand
+why this is not in place yet...<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rfcdejong replied on Friday, January 16, 2009</h2>Maybe just a codeplex drop? Not really 'supported' by someone from CSLA :)</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jonathan Parker replied on Sunday, January 18, 2009</h2>For now there is a upcoming post at Newmin's .NET about unit testing BOs.<br /><br />Here's where he mentions the upcoming article:<br /><br />Quote:<br />Where is CSLA code?  Well, customerFactory is an instance of ReadOnlyListFactory class.  RetreiveAll() returns CustomerList instance which is ReadOnlyBase implemenation.  But why not use  CustomerList.RetreiveAll() - factory method?  Instead of using Factory Method design patern, we are using Abstract Factory, moving Create(), and Fetch() outside of our Csla BOs, for the purpose of easier Unit Testing.  I will explain the details of this in one of the future posts that has to explain the whole process of testing all of the app layers in Csla - which will probably be the best part of this demo.<br /><br />http://www.nermins.net/default.aspx<br /></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Sunday, January 11, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>The framework is C# going forward. The ProjectTracker app is C#
+and VB.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I don&#8217;t disagree with your request &#8211; and I&#8217;m
+not saying no. I&#8217;m just saying &#8220;not now&#8221; :)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky</span><b><span><o:p></o:p></span></b></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

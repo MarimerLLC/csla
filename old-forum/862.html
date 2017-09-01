@@ -1,0 +1,263 @@
+<html><header><title>Optional TopRow in NameValueList</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Optional TopRow in NameValueList</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/862.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>DanEssin posted on Wednesday, August 09, 2006</h2>For anyone interested, I've made a modification to NameValueList to allow the first item in the list to be a user-defined item like &lt;no selection made&gt; or blank or whatever. I have seen it in several other frameworks and I think that it's a useful additon. I've also added some code to the CodeSmith template to issue a select statement if the data source is a table or view. Since these lists are read-only and probably only read once, this minimizes the number of stored procs that you have to keep track of. I've attached the modified template which also fixes some bugs in TemplateBase.cs. This is version 0.9.5 of the CSLA 2.0 templates.<br><br>Sample Output<br>-------------------------------------<br>using System;<br>using System.Data;<br>using System.Data.SqlClient;<br>using Csla;<br>using Csla.Data;<br><br>namespace DM.Library<br>{ <br>&nbsp;&nbsp;&nbsp; [Serializable()] <br>&nbsp;&nbsp;&nbsp; public class ProgramNameList : Csla.NameValueListBase&lt;string, string&gt;<br>&nbsp;&nbsp;&nbsp; {<br><br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; #region Factory Methods<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; private ProgramNameList()<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; { /* require use of factory method */ }<br><br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; private static ProgramNameList _list;<br><br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; public static ProgramNameList GetProgramNameList()<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; if (_list == null)<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; _list = DataPortal.Fetch&lt;ProgramNameList&gt;(new Criteria());<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; return _list;<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; }<br><br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; public static ProgramNameList GetProgramNameList(string topRowKey, string topRowValue)<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; if (_list == null)<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; _list = DataPortal.Fetch&lt;ProgramNameList&gt;(new Criteria(topRowKey, topRowValue));<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; return _list;<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; }<br><br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; public static void InvalidateCache()<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; _list = null;<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; }<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; #endregion //Factory Methods<br><br><br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; #region Data Access<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; #region Criteria<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; [Serializable()]<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; private new class Criteria<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; bool _addTopRow = false;<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; string _topRowKey = "";<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; string _topRowValue = "";<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; public bool AddTopRow { get { return _addTopRow;} }<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; public string TopRowKey { get { return _topRowKey;} }<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; public string TopRowValue { get { return _topRowValue;} }<br><br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; public Criteria()<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; }<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; public Criteria(string topRowKey, string topRowValue)<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; this._addTopRow = true;<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; this._topRowKey = topRowKey;<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; this._topRowValue = topRowValue;<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; }<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; }<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; #endregion //Filter Criteria<br><br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; protected override void DataPortal_Fetch(Object criteria)<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; RaiseListChangedEvents = false;<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; Criteria _criteria = (Criteria)criteria;<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; using (SqlConnection cn = new SqlConnection(Database.CRMConnection))<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; using (SqlCommand cm = cn.CreateCommand())<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; cn.Open();<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; cm.CommandType = CommandType.Text;<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; cm.CommandText = "SELECT ProgramName, ProgramName FROM Programs";<br><br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; using(SafeDataReader dr = new SafeDataReader(cm.ExecuteReader()))<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; IsReadOnly = false;<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; if (_criteria.AddTopRow)<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp; this.Add(new NameValuePair(_criteria.TopRowKey, _criteria.TopRowValue));<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; while(dr.Read())<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; this.Add(new NameValuePair(dr.GetString("ProgramKey"), dr.GetString("ProgramName")));<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; IsReadOnly = true;<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; }<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; }//using<br><br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; RaiseListChangedEvents = true;<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; }<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; #endregion //Data Access<br><br>&nbsp;&nbsp;&nbsp; }<br>}<br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>SteveChadbourne replied on Wednesday, August 09, 2006</h2><P>I use NameValue lists with a top row quite a lot in my current application and find them very useful so your new template is gratefully received.</P>
+<P>What would happen with your example code if I required a ProgramNameList on one screen with a top row but on another screen without one (a requirement for me) ? I would call ProgramNameList.GetProgramNameList("0", "None Selected") from the first screen which would load the list. On the second screen I would call ProgramNameList.GetProgramNameList() but as the list was already loaded and _list not null the re-load would not happen would it? </P>
+<P>What I have done in this case is make _addTopRow a private static&nbsp;var of the ProgramNameList&nbsp;class and check it along with _list to determine if the list needs to be re-loaded.</P>
+<P>Steve</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>DanEssin replied on Wednesday, August 09, 2006</h2>
+
+
+  
+
+
+<font size="+1">That's a good idea. I'll give it a try. I was just
+going to create another one without the top item since it's going to be
+on a different form.<br>
+<br>
+Dan<br>
+</font><br>
+SteveChadbourne wrote:
+<blockquote>
+  <p>I use NameValue lists with a top row quite a lot in my current
+application and find them very useful so your new template is
+gratefully received.</p>
+  <p>What would happen with your example code if I required a
+ProgramNameList on one screen with a top row but on another screen
+without one (a requirement for me) ? I would call
+ProgramNameList.GetProgramNameList("0", "None Selected") from the first
+screen which would load the list. On the second screen I would call
+ProgramNameList.GetProgramNameList() but as the list was already loaded
+and _list not null the re-load would not happen would it? </p>
+  <p>What I have done in this case is make _addTopRow a private
+static&nbsp;var of the ProgramNameList&nbsp;class and check it along with _list
+to determine if the list needs to be re-loaded.</p>
+  <p>Steve</p>
+  <br>
+  <br>
+<br>
+</blockquote>
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>DanEssin replied on Wednesday, August 09, 2006</h2>
+
+
+  
+
+
+<font size="+1">I've revised the template to incorporate your
+suggestion.<br>
+<br>
+Dan<br>
+</font><br>
+SteveChadbourne wrote:
+<blockquote>
+  <p>I use NameValue lists with a top row quite a lot in my current
+application and find them very useful so your new template is
+gratefully received.</p>
+  <p>What would happen with your example code if I required a
+ProgramNameList on one screen with a top row but on another screen
+without one (a requirement for me) ? I would call
+ProgramNameList.GetProgramNameList("0", "None Selected") from the first
+screen which would load the list. On the second screen I would call
+ProgramNameList.GetProgramNameList() but as the list was already loaded
+and _list not null the re-load would not happen would it? </p>
+  <p>What I have done in this case is make _addTopRow a private
+static&nbsp;var of the ProgramNameList&nbsp;class and check it along with _list
+to determine if the list needs to be re-loaded.</p>
+  <p>Steve</p>
+  <br>
+  <br>
+<br>
+</blockquote>
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>DanEssin replied on Wednesday, August 09, 2006</h2>Here it is.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>SteveChadbourne replied on Thursday, August 10, 2006</h2><P>I can't seem to get it to work. I tried to create a NameValueList from the new template, pointed it at a stored procedure that returns a result set with Id and Name fields and get the following error:</P>
+<P>System.ArgumentOutOfRangeException: Index was out of range. Must be non-negative and less than the size of the collection.<BR>Parameter name: index<BR>&nbsp;&nbsp; at System.Collections.ArrayList.get_Item(Int32 index)<BR>&nbsp;&nbsp; at CodeSmith.Csla.TemplateBase.ObjectInfo.get_Inherits() in c:\dotNet2.0\csla 2.0cs\codesmith 0.9.5\TemplateBase.cs:line 1180<BR>&nbsp;&nbsp; at _CodeSmith.NameValueList_cst.__RenderMethod1(TextWriter writer, Control control) in c:\dotNet2.0\csla 2.0cs\codesmith 0.9.5\NameValueList.cst:line 30<BR>&nbsp;&nbsp; at CodeSmith.Engine.DelegateControl.Render(TextWriter writer)<BR>&nbsp;&nbsp; at CodeSmith.Engine.Control.RenderChildren(TextWriter writer)<BR>&nbsp;&nbsp; at CodeSmith.Engine.CodeTemplate.Render(TextWriter writer)<BR>&nbsp;&nbsp; at CodeSmith.Engine.CodeTemplate.RenderToString()<BR>&nbsp;&nbsp; at CodeSmith.Gui.CodeTemplateGenerator.f(Object A_0, EventArgs A_1)</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>DanEssin replied on Thursday, August 10, 2006</h2><P>I couldn't reproduce the error you got but I did find a bug which I fixed. My SP for testing is:</P>
+<P>CREATE PROCEDURE [dbo].[GetNameValueTest] AS<BR>SELECT ResultID, ResultName from DmResults<BR>GO<BR></P>
+<P>It looks like I can only attach 1 file so I've added a screen shot of the property grid filled out in a way that works with the above SP and the revised template and does not give me an error message.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>SteveChadbourne replied on Thursday, August 10, 2006</h2><P>Generates fine now thanks. Code looks good. I'll let you know when I've had a chance to test it.</P>
+<P>Is it worth passing addTopRow into InvalidateCache ? Makes the factory methods a bit tidier:</P>
+<P>&nbsp;&nbsp;public static MyObect GetMyObect()<BR>&nbsp;&nbsp;{<BR>&nbsp;&nbsp;&nbsp;if (_addTopRow) <BR>&nbsp;&nbsp;&nbsp;&nbsp;InvalidateCache(false);<BR>&nbsp;&nbsp;&nbsp;if (_list == null)<BR>&nbsp;&nbsp;&nbsp;&nbsp;_list = DataPortal.Fetch&lt;MyObect&gt;(new Criteria());<BR>&nbsp;&nbsp;&nbsp;return _list;<BR>&nbsp;&nbsp;}</P>
+<P>&nbsp;&nbsp;public static MyObect GetMyObect(string topRowKey, string topRowValue)<BR>&nbsp;&nbsp;{<BR>&nbsp;&nbsp;&nbsp;if (!_addTopRow) <BR>&nbsp;&nbsp;&nbsp;&nbsp;InvalidateCache(true);<BR>&nbsp;&nbsp;&nbsp;if (_list == null)<BR>&nbsp;&nbsp;&nbsp;&nbsp;_list = DataPortal.Fetch&lt;MyObect&gt;(new Criteria(topRowKey, topRowValue));<BR>&nbsp;&nbsp;&nbsp;return _list;<BR>&nbsp;&nbsp;}</P>
+<P>&nbsp;&nbsp;public static void InvalidateCache(bool addTopRow)<BR>&nbsp;&nbsp;{<BR>&nbsp;&nbsp;&nbsp;_list = null;<BR>&nbsp;&nbsp;&nbsp;_addTopRow = addTopRow;<BR>&nbsp;&nbsp;}<BR></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>DanEssin replied on Thursday, August 10, 2006</h2>
+
+
+  
+  
+
+
+<font size="+1">I thought that I could infer it from which overload
+was being called, the argument-less call clearly wants it to be false
+and the argument call clearly wants it to be true, so I just tested for
+a state change. What do you think?</font><br>
+<br>
+SteveChadbourne wrote:
+<blockquote>
+  <p>Generates fine now thanks. Code looks good. I'll let you know when
+I've had a chance to test it.</p>
+  <p>Is it worth passing addTopRow into InvalidateCache ? Makes the
+factory methods a bit tidier:</p>
+  <p>&nbsp;&nbsp;public static MyObect GetMyObect()<br>
+&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;if (_addTopRow) <br>
+&nbsp;&nbsp;&nbsp;&nbsp;InvalidateCache(false);<br>
+&nbsp;&nbsp;&nbsp;if (_list == null)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;_list = DataPortal.Fetch&lt;MyObect&gt;(new Criteria());<br>
+&nbsp;&nbsp;&nbsp;return _list;<br>
+&nbsp;&nbsp;}</p>
+  <p>&nbsp;&nbsp;public static MyObect GetMyObect(string topRowKey, string
+topRowValue)<br>
+&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;if (!_addTopRow) <br>
+&nbsp;&nbsp;&nbsp;&nbsp;InvalidateCache(true);<br>
+&nbsp;&nbsp;&nbsp;if (_list == null)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;_list = DataPortal.Fetch&lt;MyObect&gt;(new Criteria(topRowKey,
+topRowValue));<br>
+&nbsp;&nbsp;&nbsp;return _list;<br>
+&nbsp;&nbsp;}</p>
+  <p>&nbsp;&nbsp;public static void InvalidateCache(bool addTopRow)<br>
+&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;_list = null;<br>
+&nbsp;&nbsp;&nbsp;_addTopRow = addTopRow;<br>
+&nbsp;&nbsp;}<br>
+  </p>
+  <br>
+  <br>
+<br>
+</blockquote>
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>SteveChadbourne replied on Thursday, August 10, 2006</h2><P>Yes you can infer the new _addTopRow state from which overload you are in. My code offering was just an attempt at making the state change test a bit tidier. Your way works fine.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>DanEssin replied on Thursday, August 10, 2006</h2>
+
+
+  
+
+
+<font size="+1">I agree that your's is tidier.</font><br>
+<br>
+SteveChadbourne wrote:
+<blockquote>
+  <p>Yes you can infer the new _addTopRow state from which overload you
+are in. My code offering was just an attempt at making the state change
+test a bit tidier. Your way works fine.</p>
+  <br>
+  <br>
+<br>
+</blockquote>
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rasupit replied on Thursday, August 10, 2006</h2><P><EM>I've attached the modified template which also fixes some bugs in TemplateBase.cs. This is version 0.9.5 of the CSLA 2.0 templates.</EM></P>
+<P>I appreciate if you can report back the bugs that you found.&nbsp; It will help me stabilize them quicker.</P>
+<P>Thanks,</P>
+<P>Ricky</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>DanEssin replied on Friday, August 11, 2006</h2>
+
+
+  
+  
+
+
+i posted them to your bug tracker.<br>
+<br>
+Dan<br>
+<br>
+rasupit wrote:
+<blockquote>
+  <p><em>I've attached the modified template which also fixes some bugs
+in TemplateBase.cs. This is version 0.9.5 of the CSLA 2.0 templates.</em></p>
+  <p>I appreciate if you can report back the bugs that you found.&nbsp; It
+will help me stabilize them quicker.</p>
+  <p>Thanks,</p>
+  <p>Ricky</p>
+  <br>
+  <br>
+<br>
+</blockquote>
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rasupit replied on Friday, August 11, 2006</h2><P>Dan,</P>
+<P>Thanks for the bug reports, I'll take a look and have them fixed.</P>
+<P>Ricky</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tetranz replied on Sunday, August 13, 2006</h2>I handle this sort of thing with something I've built that I call a HeadedBindinglist. Its along the same lines (although simpler) as the SortedBindingList. It takes any List&lt;T&gt; and an additional instance of T for the header item. The result is something that looks like the original List&lt;T&gt; with the extra item at the top. <br><br>Behind the scenes, all it really does is fiddle with the index and provide an enumerator. If you request index 0, it returns the header item, if you request any other index, you get the item which is at index-1 in the underlying list. This lets you provide a "pure" list from your middle tier with the HeadedBindingList being just a UI thing. You can very economically have multiple HeadedBindingLists for the same List&lt;T&gt; with different header items. Neither the list items nor the list itself is duplicated, its really just pointers. I haven't tried it but it should be able to be chained with the SortedBindingList or FilteredBindingList.<br><br>I can probably post the code next week if anyone is interested. Without being too immodest, I think it is a good solution to this age old, somewhat awkward requirement.<br><br>Cheers<br>Ross<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>SteveChadbourne replied on Monday, August 14, 2006</h2>Yes, I would be interested in seeing it.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>McManus replied on Tuesday, August 15, 2006</h2><P>Ross,</P>
+<P>I like the concept of HeadedBindingList being just a UI thing. Sounds like it's&nbsp;exactly the thing I'm looking for.&nbsp;So yes, I'm very interested in your code...</P>
+<P>Cheers,</P>
+<P>Herman</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>lioncall replied on Tuesday, August 15, 2006</h2><P>Hi,</P>
+<P>In case it's applicable. If you using asp.net 2.0, on ListControl base class there is a property AppendDatBoundItems you can consider using:</P>
+<P class=MsoNormal><SPAN>&lt;</SPAN><SPAN>asp</SPAN><SPAN>:</SPAN><SPAN>DropDownList</SPAN><SPAN> <SPAN>ID</SPAN><SPAN>="DropDownList1"</SPAN> <SPAN>AppendDataBoundItems</SPAN><SPAN>="true"</SPAN> <SPAN>runat</SPAN><SPAN>="server"</SPAN> <SPAN>DataSourceID</SPAN><SPAN>="SqlDataSource1"</SPAN> <SPAN>DataTextField</SPAN><SPAN>="state"</SPAN> <SPAN>DataValueField</SPAN><SPAN>="state"&gt;<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN><SPAN>&lt;</SPAN><SPAN>asp</SPAN><SPAN>:</SPAN><SPAN>ListItem</SPAN> <SPAN>Text</SPAN><SPAN>="(Select a State)"</SPAN> <SPAN>Value</SPAN><SPAN>=""</SPAN> <SPAN>/&gt;</SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN><o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>&lt;/</SPAN><SPAN>asp</SPAN><SPAN>:</SPAN><SPAN>DropDownList</SPAN><SPAN>&gt;</SPAN></P>
+<P class=MsoNormal><SPAN></SPAN>&nbsp;</P>
+<P class=MsoNormal><SPAN><FONT color=#000000>Thanks,</FONT></SPAN></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tetranz replied on Tuesday, August 15, 2006</h2>HeaderedBindingList.zip is attached to this message. I think you need to go to the forum site to get it. Its exactly what I'm using in production except that I've changed the NameSpace.<br><br>Sorry its not really documented but I just told Visual Studio to implement the interfaces and then I filled in only the methods that it really needed.&nbsp; The resulting list is read only although it does respond to ListChanged events in the underlying list. See the SortedBindingList in Rocky's book for further info.<br><br>The contructor has two overloads. One takes an array of headers (so you can have more than one) and the other takes a single object.<br><br>Use it like this: Assuming myList is the underlying list containing instances of MyItem which takes, for example, an Id and Name.<br><br>HeaderedBindingList listForDropdown = new HeaderedBindingList(myList, new MyItem(0, "Select Item"));<br><br>I tend to make a singleton with it. ie, this sort of thing.<br><br>HeaderedBindingList _listForDropdown = null;<br><br>public HeaderedBindingList ListForDropdown<br>{<br>&nbsp;&nbsp;&nbsp; get<br>&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;  if (_listForDropdown == null)<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; _listForDropdown = new HeaderedBindingList(myList, new MyItem(0, "Select Item"));<br>
+
+
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; }<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;  return _listForDropdown;<br>&nbsp;&nbsp;&nbsp; }<br>}<br>
+<br>Back in the middle tier, myList itself is probably a similar singleton and may be be used for things other than just the dropdown. Those things don't want to see the header item(s).<br><br>Cheers<br>Ross<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>McManus replied on Tuesday, August 15, 2006</h2><P>Ross,</P>
+<P>Thanks for posting the HeaderedBindingList code. I played a bit with it and it is exactly what I was looking for!!</P>
+<P>Cheers,</P>
+<P>Herman</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Tuesday, August 15, 2006</h2>Ross,<br><br>This looks awesome, I'll certainly use it whenever I need this functionality.&nbsp; One question though:&nbsp; Does it play nice with sortedbindinglist?&nbsp; (haven't looked at the code, been busy).<br><br>Andy<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tetranz replied on Thursday, August 17, 2006</h2>Hi Andy<br><br>I haven't tried it with SortedBindingList so I don't know the answer. I think it should work.<br><br>I see now that I left out the test in the constructor to see if the source list is a BindingList or just an IList. I've obviously only used it with BindingLists. It should really have that test like SortedBindingList does.<br><br>Ross<br><br><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>ajj3085:</strong></div><div>Ross,<br><br>This looks awesome, I'll certainly use it whenever I need this functionality.&nbsp; One question though:&nbsp; Does it play nice with sortedbindinglist?&nbsp; (haven't looked at the code, been busy).<br><br>Andy<br></div></BLOCKQUOTE></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JHurrell replied on Thursday, August 17, 2006</h2>Ross,<br><br>That really is a good idea. In the past, I've done what I'm sure a lot of other people do and overload a list to accept a header item.<br><br>Coming up with a new UI object to encapsulate the header and the original list is definitely an improved pattern.<br><br>Thanks for sharing.<br><br>- John<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Gareth replied on Wednesday, June 13, 2007</h2>Has anyone managed to get the HeaderedBindingList working with a NameValueListBase?<br><br>I've got a business object:<br><br>public class UserList : NameValueListBase&lt;int, string&gt;<br>{<br>&nbsp;&nbsp;&nbsp; ...<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public static UserList GetList()<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (_list == null)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _list = DataPortal.Fetch&lt;UserList&gt;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (new Criteria(typeof(UserList)));<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return _list;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>&nbsp;&nbsp;&nbsp; ...<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public static NameValuePair NullUser()<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return new NameValuePair(0, string.Empty);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br><br>In my .aspx code I have the following:<br><br>&nbsp;&nbsp;&nbsp; private NetShare.Library.UserList GetUserList()<br>&nbsp;&nbsp;&nbsp; { ...&nbsp; }<br><br>&nbsp;&nbsp;&nbsp; protected void UserListDataSource_SelectObject(object sender, Csla.Web.SelectObjectArgs e)<br>&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; NetShare.Library.UserList obj = GetUserList();<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; HeaderedBindingList&lt;NetShare.Library.UserList&gt; hbl =<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; new HeaderedBindingList&lt;NetShare.Library.UserList&gt;(hbl, NetShare.Library.UserList.NullUser);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; e.BusinessObject = hbl;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br>&nbsp;&nbsp;&nbsp; }<br><br>Unfortunately I don't think I'm fully understanding the model as I'm getting the following errors:<br><br>Error&nbsp;&nbsp;&nbsp; 1&nbsp;&nbsp;&nbsp; The best overloaded method match for 'HeaderedBindingList&lt;NetShare.Library.UserList&gt;.HeaderedBindingList(System.Collections.Generic.IList&lt;NetShare.Library.UserList&gt;, NetShare.Library.UserList[])' has some invalid arguments&nbsp;&nbsp;&nbsp; <br><br>Error&nbsp;&nbsp;&nbsp; 2&nbsp;&nbsp;&nbsp; Argument '2': cannot convert from 'method group' to 'NetShare.Library.UserList[]'&nbsp;&nbsp;&nbsp; <br><br>Can anyone point me in the right direction?<br><br>Thanks,<br>Gareth.<br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>McManus replied on Wednesday, June 13, 2007</h2><P>Gareth,</P>
+<P>The code should look something like:</P>
+<P>protected void UserListDataSource_SelectObject(object sender, Csla.Web.SelectObjectArgs e)<BR>{<BR>&nbsp;&nbsp;&nbsp;&nbsp; NetShare.Library.UserList obj = GetUserList();<BR>&nbsp;&nbsp;&nbsp;&nbsp; HeaderedBindingList&lt;NetShare.Library.UserList<STRONG>.NameValuePair</STRONG>&gt; hbl =<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;new HeaderedBindingList&lt;NetShare.Library.UserList.NameValuePair&gt;(<STRONG>obj</STRONG>, NetShare.Library.UserList.NullUser);<BR>&nbsp;&nbsp;&nbsp;&nbsp;e.BusinessObject = hbl;<BR>}<BR></P>
+<P>Cheers,<BR>Herman</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>alef replied on Tuesday, March 04, 2008</h2><P>I'm trying to implement a NVL of active lookup codes.<o:p></o:p></P>
+<P>So when adding a new row the NVL only has Active records in it.<o:p></o:p></P>
+<P>When editing an existing record it is the list of Active records plus the related record if it isinactive.<o:p></o:p></P>
+<P>I'm using HeaderedBindingList to extend the active values for a combo with the current value for the object (which can be an inactive value)</P>
+<P>In the code below </P>
+<P>* <SPAN>ColorList</SPAN><SPAN>.GetColorList() </SPAN>gives me all the active colors.</P>
+<P><SPAN>*_originalColorLID and _originalColorName</SPAN> are variables with the original values from the database.<o:p></o:p></P>
+<P><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P><SPAN>#region</SPAN><SPAN> ValidColorList</SPAN><o:p></o:p></P>
+<P><SPAN>[<SPAN>NonSerialized</SPAN>()]</SPAN><o:p></o:p></P>
+<P><SPAN>[<SPAN>NotUndoable</SPAN>()]</SPAN><o:p></o:p></P>
+<P><SPAN>private</SPAN><SPAN> <SPAN>HeaderedBindingList</SPAN>&lt;<SPAN>ColorList</SPAN>.<SPAN>NameValuePair</SPAN>&gt; _validColorList = <SPAN>null</SPAN>;</SPAN><o:p></o:p></P>
+<P><SPAN>public</SPAN><SPAN> <SPAN>HeaderedBindingList</SPAN>&lt;<SPAN>ColorList</SPAN>.<SPAN>NameValuePair</SPAN>&gt; ValidColorList</SPAN><o:p></o:p></P>
+<P><SPAN>{</SPAN><SPAN><o:p></o:p></SPAN></P>
+<P><SPAN>get</SPAN><SPAN><o:p></o:p></SPAN></P>
+<P><SPAN>{</SPAN><o:p></o:p></P>
+<P><SPAN>if</SPAN><SPAN> (_validColorList == <SPAN>null</SPAN>)</SPAN><o:p></o:p></P>
+<P><SPAN>{ </SPAN><o:p></o:p></P>
+<P><SPAN>if</SPAN><SPAN> (<SPAN>ColorList</SPAN>.GetColorList().ContainsKey(_originalColorLID))</SPAN><o:p></o:p></P>
+<P><SPAN>{</SPAN><o:p></o:p></P>
+<P><SPAN>_validColorList = <SPAN>new</SPAN> <SPAN>HeaderedBindingList</SPAN>&lt;<SPAN>ColorList</SPAN>.<SPAN>NameValuePair</SPAN>&gt;(<SPAN>ColorList</SPAN>.GetColorList(), <SPAN>new</SPAN> <SPAN>ColorList</SPAN>.<SPAN>NameValuePair</SPAN>[0]);</SPAN><o:p></o:p></P>
+<P><SPAN>}</SPAN><o:p></o:p></P>
+<P><SPAN>else</SPAN><SPAN><o:p></o:p></SPAN></P>
+<P><SPAN>{</SPAN><o:p></o:p></P>
+<P><SPAN>_validColorList = <SPAN>new</SPAN> <SPAN>HeaderedBindingList</SPAN>&lt;<SPAN>ColorList</SPAN>.<SPAN>NameValuePair</SPAN>&gt;(<SPAN>ColorList</SPAN>.GetColorList(), <SPAN>new</SPAN> <SPAN>ColorList</SPAN>.<SPAN>NameValuePair</SPAN>(_originalColorLID, _originalColorName));</SPAN><o:p></o:p></P>
+<P><SPAN>}</SPAN><o:p></o:p></P>
+<P><SPAN>}</SPAN><o:p></o:p></P>
+<P><SPAN>return</SPAN><SPAN> _validColorList ;</SPAN><o:p></o:p></P>
+<P><SPAN>}</SPAN><o:p></o:p></P>
+<P><SPAN>}</SPAN><o:p></o:p></P>
+<P><SPAN>#endregion<o:p></o:p></SPAN></P>
+<P><SPAN>&nbsp;<o:p></o:p></SPAN></P>
+<P><SPAN>&nbsp;<o:p></o:p></SPAN></P>
+<P><SPAN>Now I want to implement the following property but it gives me an error</SPAN><SPAN><o:p></o:p></SPAN></P>
+<P><SPAN>public</SPAN><SPAN> </SPAN><SPAN>string</SPAN><SPAN> ColorName<o:p></o:p></SPAN></P>
+<P><SPAN>{<o:p></o:p></SPAN></P>
+<P><SPAN>get<o:p></o:p></SPAN></P>
+<P><SPAN>{<o:p></o:p></SPAN></P>
+<P><SPAN>CanReadProperty(</SPAN><SPAN>"ColorName"</SPAN><SPAN> </SPAN><SPAN>true</SPAN><SPAN>);<o:p></o:p></SPAN></P>
+<P><SPAN>if</SPAN><SPAN> (_colorLID == _originalColorLID)<o:p></o:p></SPAN></P>
+<P><SPAN>{<o:p></o:p></SPAN></P>
+<P><SPAN>return</SPAN><SPAN> _originalColorName;<o:p></o:p></SPAN></P>
+<P><SPAN>}<o:p></o:p></SPAN></P>
+<P><SPAN>else<o:p></o:p></SPAN></P>
+<P><SPAN>{<o:p></o:p></SPAN></P>
+<P><SPAN>return</SPAN><SPAN> ((</SPAN><SPAN>ColorList</SPAN><SPAN>)ValidColorList).GetItemByKey(_colorLID).Value;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>//=&gt; this gives an error</SPAN><SPAN><o:p></o:p></SPAN></P>
+<P><SPAN>}<o:p></o:p></SPAN></P>
+<P><SPAN>return</SPAN><SPAN> _colorName;<o:p></o:p></SPAN></P>
+<P><SPAN>}<o:p></o:p></SPAN></P>
+<P><SPAN>&nbsp;<o:p></o:p></SPAN></P>
+<P><B><SPAN>Cannot convert type 'Company.Library.Helper.HeaderedBindingList&lt;Csla.NameValueListBase&lt;int,string&gt;.NameValuePair&gt;' to 'Company.Library.ColorList'<o:p></o:p></SPAN></B></P>
+<P class=MsoNormal><o:p><FONT face=Arial size=2>&nbsp;</FONT></o:p></P>
+<P class=MsoNormal><FONT face=Arial size=2>Can you help me with the right syntax? I want to lookup the value in the ValidColorList for a certain key.</FONT></P>
+<P class=MsoNormal><o:p><FONT face=Arial size=2>&nbsp;</FONT></o:p></P>
+<P class=MsoNormal><FONT face=Arial size=2>I’ve tried also </FONT></P>
+<P class=MsoNormal><FONT size=2><SPAN>return</SPAN><SPAN> ((<SPAN>NameValueListBase</SPAN>&lt;<SPAN>int</SPAN>,<SPAN>string</SPAN>&gt;)ValidKleurList).GetItemByKey(_kleurLID).Value;<o:p></o:p></SPAN></FONT></P>
+<P class=MsoNormal><FONT face=Arial size=2>but this gives also an error.</FONT></P>
+<P class=MsoNormal><o:p><FONT face=Arial size=2>&nbsp;</FONT></o:p></P>
+<P class=MsoNormal><o:p><FONT face=Arial size=2>&nbsp;</FONT></o:p></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>damo replied on Tuesday, March 04, 2008</h2>For those of you who are considering doing this in the business logic and not the UI, in DevExpress land (and I think Infragistics) have a concept in their lookup controls call NullText which is the text to display when the property being bound to is null. So I would agree this is a UI / display formatting issue and adding items into your list is not really the way to go.<br><br>For this to work, the corresponding databound property on your business object will have to be nullable.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>alef replied on Wednesday, March 05, 2008</h2><P class=MsoNormal><SPAN><o:p><FONT face=Arial size=2>&nbsp;</FONT></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p><FONT face=Arial size=2>&nbsp;</FONT></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p><FONT face=Arial size=2>&nbsp;</FONT></o:p></SPAN></P>
+<P class=MsoNormal><FONT face=Arial size=2>If you want to show a blank line at the GUI then it is indeed a responsibility for the GUI.</FONT></P>
+<P class=MsoNormal><FONT face=Arial size=2>For that the GUI has two choices:</FONT></P>
+<P class=MsoNormal><FONT face=Arial size=2>1) With the DevExpress LookUpEdit control the user can use Ctrl+Del to clear the value.</FONT></P>
+<P class=MsoNormal><FONT face=Arial size=2>With the property NullText we can set a text that is displayed when the column contains a null reference.</FONT></P>
+<P class=MsoNormal><FONT face=Arial size=2>2) The GUI can add an extra row in the LookUpEdit control because the user doesn’t like Ctrl+Del. This extra row can be either a blank row or a row that shows some text like “[blank]”, etc. Therefore, if a user wants to select nothing, he could just select this extra row.</FONT></P>
+<P class=MsoNormal><FONT face=Arial size=2>This feature is the responsibility for the GUI, it has to create a new list, which always return an empty row as the first item.</FONT></P>
+<P class=MsoNormal><o:p><FONT face=Arial size=2>&nbsp;</FONT></o:p></P>
+<P class=MsoNormal><FONT face=Arial size=2><STRONG>But in the case I’m describing in my opion it is the responsibilty of the business</STRONG> to deliver the valid list for the GUI (all the active codes + the current code even it is inactive for the concerned record)</FONT></P>
+<P class=MsoNormal><o:p><FONT face=Arial size=2>&nbsp;</FONT></o:p></P>
+<P class=MsoNormal><FONT face=Arial size=2>This design discussion I find also interesting. But I want to know also the technical answer.</FONT></P>
+<P class=MsoNormal><FONT face=Arial size=2>How can I find an item in the list wrapped with the hepler class HeaderedBindingList.</FONT></P>
+<P class=MsoNormal><FONT face=Arial size=2>In the NVL list of the CSLA framework there exist a method GetItemByKey.</FONT></P>
+<P class=MsoNormal><FONT face=Arial size=2>Could this be possible with the HeaderedBindingList by casting it to a NVL. I don’t think this is possible because it is a wrapper around the NVL and it is not subclassed from NVL.</FONT></P>
+<P class=MsoNormal><FONT face=Arial size=2>So how can I have the same possibilities with the HeaderedBindingList as the NVL?</FONT></P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

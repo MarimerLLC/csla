@@ -1,0 +1,20 @@
+<html><header><title>CSLA and Cold Fusion</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA and Cold Fusion</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/253.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>tseveryn posted on Friday, June 02, 2006</h2><P>Good afternoon,</P>
+<P>My name is Teresa Severyn.<o:p></o:p></P>
+<P>I am relatively new to CSLA (have both CSLA VB 2003&nbsp;and 2005 books, though, and love it!). <o:p></o:p></P>
+<P>I have the following question:<o:p></o:p></P>
+<P>Would it possible to use CSLA Business Objects and their compiled assemblies for implementing a web application using Cold Fusion at the front end?<o:p></o:p></P>
+<P class=MsoNormal>The thing is, we need to implement two applications that are using the same database:<o:p></o:p></P>
+<P class=MsoNormal><SPAN>-<SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN></SPAN>the first one is the Windows application, will be installed locally on each user’s laptop when he/she goes into the field<o:p></o:p></P>
+<P class=MsoNormal><SPAN><SPAN>-<SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN></SPAN></SPAN>the other one is the web application, used by the team leads/project managers – this one will have to be implemented using Macromedia Cold Fusion.<SPAN><o:p></o:p></SPAN></P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal>Would it be possible to implement common Business Object framework (using VS.NET ) that would serve both apps?<o:p></o:p></P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal>Thank you very much,<o:p></o:p></P>
+<P class=MsoNormal>Teresa S.<SPAN><o:p></o:p></SPAN></P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tetranz replied on Friday, June 02, 2006</h2>Hi Teresa<br><br>For what its worth, I can say that I've successfully used a .NET object from ColdFusion 4.5. I used interop to make it into a com object and then used it in ColdFusion with the &lt;cfobject&gt; tag.<br><br>I don't know how practical your ColdFusion / CSLA project would be in general, I have a feeling that it could easily end up as an exercise in frustration.<br>
+&nbsp;<br>You may have to weigh up the effort and chances of success between struggling with ColdFusion and trying to convince your bosses to switch to ASP.NET <img src="/emoticons/emotion-1.gif" alt="Smile [:)]" /><br><br>Good luck<br>Ross<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ward0093 replied on Friday, June 02, 2006</h2><P>I did Cold Fusion Programming a few years back... and I thought (but correct me if I am wrong) that the Database Tier (not the Middle Tier) is what you embed in your CF Tags?&nbsp; I am not sure how or if you can embed a assembly object... </P>
+<P>If you can... than it should be like every other Web Tools (ASP, ASP 2.0, etc).</P>
+<P>ward0093</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Shazam replied on Sunday, June 04, 2006</h2><DIV>You can't&nbsp;use .NET in MM's version of ColdFusion.</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>Bluedragon provides&nbsp;a version of CF that would allow you to have some limited interoperability with .NET.&nbsp; However, CF isn't a strongly typed language and has no notion of some of the types and concepts that .NET has (enumerations, nullable types, abstract classes, interfaces, overloaded methods, static methods, etc) so you're going to be quite limited in how your CSLA implementation is going to look like.</DIV></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

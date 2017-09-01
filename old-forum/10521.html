@@ -1,0 +1,17 @@
+<html><header><title>Cache an object in my Class Library</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Cache an object in my Class Library</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10521.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>omarcusido posted on Tuesday, July 12, 2011</h2><p>Hello everyone!!!</p>
+<p>I have a Class Library project (Business Layer using CSLA) and I need to cache one object with some configuration values, these values are used at application level and I don&#39;t want to couple my Library with the UI so I can&#39;t use session. In the other hand I need that this object be accessible before the user login. Another issue is that the object cached must be secure (only must be accessible from my Application). I was reading about MemoryCache class in System.Runtime.Caching namespace but I don&#39;t know if exist a better way to do this.</p>
+<p> Please help.</p>
+<p>Best Regards.</p>
+<p>OCP.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Wednesday, July 13, 2011</h2><p>Which type of UI is your app using?</p>
+<p>For a rich client use one of the Context objects in ApplicationContext.</p>
+<p>LocalContext is only on the machine the process is running on.<br />ClientContext is transferred one way to server (when using remote dataportal)<br />GlobalContext is&nbsp;transferred both ways to and from server (when using remot dataportal).</p>
+<p>Or you could create your own static or singelton context&nbsp;object to&nbsp;hold the configuration object.&nbsp;&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>omarcusido replied on Wednesday, July 13, 2011</h2><p>Hello JonnyBee...</p>
+<p>Thank you very much for your answer, I&#39;m using 2 types of UI (WEB and Windows), the context objects work with the Win UI but in the WEB only stay alive the time that takes the call to the server, Unfortunately I need this object cached for every calls made to the server.</p>
+<p>I really appreciate your help.</p>
+<p>Regards.</p>
+<p>OCP.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>omarcusido replied on Thursday, July 14, 2011</h2><p>Hello Everybody...</p>
+<p>I was testing a few solutions using the new MemoryCache class and works fine but I&#39;m not sure about the security of the cached data (Maybe this data could be accessible from another location and this is one of my bigest concerns).</p>
+<p>If somebody have a better idea please help me.</p>
+<p>&nbsp;</p>
+<p>Best Regards.</p>
+<p>OCP.&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

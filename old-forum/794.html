@@ -1,0 +1,22 @@
+<html><header><title>Deleted, Restored ?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Deleted, Restored ?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/794.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoOfMetL posted on Thursday, August 03, 2006</h2><br>
+Hi,<br>
+<br>
+I have a question.<br>
+<br>
+In Our software we never deleted a item into the data base. If the user
+asks to deleted an element, we mark in the data base the fact that the
+element is deleted and if it wishes it, the user can restore this
+element. For that, in each table, we have a field which indicates if
+the line is removed or not. The framework not having been conceived for
+that, I asked for the extent of the modifications to be made to
+Framework or then I to use the framework such as it is currently ?<br>
+<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>xal replied on Thursday, August 03, 2006</h2>You could have a Public Shared Sub ResurrectItem(Byval itemID as Integer) and call a command object to do what you want....<br>Or if you need to fetch the resurrected item, you could call a specialized dataportal_fetch (by passing a different criteria) that updates the column that you need and then fetch everything.... Like public shared function ResurrectAndGet( itemID as integer) as yourBO<br><br>Andrés</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Massong replied on Thursday, August 03, 2006</h2><P class=MsoNormal><SPAN>We just have an IsDeleted-property in our Business Objects...</SPAN></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoOfMetL replied on Thursday, August 03, 2006</h2>Do you have modified the Framework ? or you have just added <span>an IsDeleted-property ?</span><br>
+<br>
+<br>
+<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, August 03, 2006</h2><P>You don't need to modify the framework for this purpose. If you want all (or most) of your objects to have this behavior, just create your own base class that inherits from BusinessBase:</P>
+<P>BusinessBase&lt;-MyBaseClass&lt;-MyObject</P>
+<P>You can add extra features like this to MyBaseClass and all your business objects will inherit that behavior.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoOfMetL replied on Thursday, August 03, 2006</h2><br>
+Ok <br>
+<br>
+Thank you.<br>
+<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Massong replied on Thursday, August 03, 2006</h2><P class=MsoNormal><SPAN>No, I haven’t modified the framework. You can use your own base class that inherits from BusinessBase and implements the IsDeleted property for all your business objects. But then you loose the advantages of generics. I use this IsDeleted-property only in a few of my objects, so I just added this property to them.<o:p></o:p></SPAN></P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

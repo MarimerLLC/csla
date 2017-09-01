@@ -1,0 +1,30 @@
+<html><header><title>SmartDate and Time Zones</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>SmartDate and Time Zones</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3140.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Mozts2007 posted on Wednesday, July 04, 2007</h2><P class=MsoNormal><FONT face=Calibri>I have a Project that we need to keep track of time zones. I have the idea of adding the concept to SmartDate. So that when you call<SPAN>&nbsp; </SPAN>mMySmartdate. DBvalue it gives you the value in GMT/UTC and then when you load the SmartDate it will use the time zone of you system. Does anyone have <SPAN>&nbsp;</SPAN>any ideas on how to best do this? Or if it would work . </FONT></P>
+<P class=MsoNormal><o:p><FONT face=Calibri>&nbsp;</FONT></o:p></P>
+<P class=MsoNormal><FONT face=Calibri>Thanks,</FONT></P>
+<P class=MsoNormal><FONT face=Calibri>Mozts <SPAN>&nbsp;</SPAN><SPAN>&nbsp;</SPAN></FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoOfMetL replied on Thursday, July 05, 2007</h2><div id="result_box">For my part, all the dates which I use are universal dates. <br>My objects
+and the data base store universal dates. <br>But I want that the users use
+local dates. <br>Therefore, I use two functions.<br><br>public DateTime MyDate
+{<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; get { return ToLocalTime (_myDate); } <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; set { _myDate = ToUniversaTime
+(value); }<br>} </div></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Thursday, July 05, 2007</h2>I did something similar, but I hide this detail in my data layer.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoOfMetL replied on Thursday, July 05, 2007</h2><div id="result_box">It
+was my first idea. <br>The business object contains the local date and the
+dates are stored in universal date in the data base. (the translation is done when the object is loaded or saved)<br>But if the objects
+are loaded on the server, the dates will be local at the server and
+not at the customer machine. <br>So I finally adopted the
+solution that I proposed above. </div></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Thursday, July 05, 2007</h2>Actually doesn't Csla set the Locale properly based on client settings?&nbsp; I'm pretty sure it will... unless you're talking about a web server, although I'd think you'd be able to properly set the locale of the session, which should get moved to the data portal... or is that not how it works?<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoOfMetL replied on Friday, July 06, 2007</h2>I takes the example of a Win32 application which uses WebService to
+reach the data on a server. <br>The objects are loaded on the server,
+therefore if GetLocalTime is made during the loading of the data, the date
+will be local at the server. <br><br><div id="result_box">I makes an error? </div><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Mozts2007 replied on Saturday, July 07, 2007</h2><P>Thanks for your help guys </P>
+<P>It sounds like if I need it to work for both windows apps and web apps I need to add the code in my properties not my data access layer. </P>
+<P><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal><SPAN>Some thing like:<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp; </SPAN><SPAN>Dim</SPAN> mStartdate <SPAN>As</SPAN> SmartDate<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN><SPAN>Public</SPAN> <SPAN>Property</SPAN> Startdate() <SPAN>As</SPAN> <SPAN>String</SPAN><o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>Get<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>Return</SPAN> mstart.Date.ToLocalTime.ToString<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>End</SPAN> <SPAN>Get<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>Set</SPAN>(<SPAN>ByVal</SPAN> value <SPAN>As</SPAN> <SPAN>String</SPAN>)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>If</SPAN> mstart.Date.ToLocalTime.ToString &lt;&gt; value <SPAN>Then<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>mstart.Date = <SPAN>Date</SPAN>.Parse(value).ToUniversalTime<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>End</SPAN> <SPAN>If<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>End</SPAN> <SPAN>Set</SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN></SPAN></SPAN><SPAN><SPAN>&nbsp;&nbsp;&nbsp;End</SPAN> <SPAN>Property</SPAN></SPAN></P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

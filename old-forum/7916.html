@@ -1,0 +1,88 @@
+<html><header><title>Proper way to inherit from generic base class</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Proper way to inherit from generic base class</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/7916.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>miker55_2 posted on Friday, October 30, 2009</h2>I'm trying to make a ReadOnlyListBase collection in CSLA 3.7 for Silverlight and although I have it working, I'm not sure if I am declaring things property.&nbsp; I was using the ProductList example from the video series, but I want to expand on that by pushing the property declaration up to a generic base class.<br><br>Can someone with a higher pay grade than me please tell me if I am doing this correctly?<br><br>[Serializable]<br>public abstract class cmpQryCustomersBaseBOC&lt;T, C&gt; : ReadOnlyListBase&lt;T, C&gt;<br>&nbsp; where T : cmpQryCustomersBaseBOC&lt;T, C&gt;<br>&nbsp; where C : cmpQryCustomersBaseBO<br>{<br>}<br><br>[Serializable]<br>public abstract class cmpQryCustomersBaseBO : ReadOnlyBase&lt;cmpQryCustomersBaseBO&gt;<br>{<br><br>&nbsp; protected static PropertyInfo&lt;string&gt; custnameProperty = RegisterProperty&lt;string&gt;(c =&gt; c.custname);<br>&nbsp; public virtual string custname<br>&nbsp; {<br>&nbsp;&nbsp;&nbsp; get { return GetProperty(custnameProperty); }<br>&nbsp; }<br>}<br><br>[Serializable()]<br>public partial class cmpQryCustomersBOC : cmpQryCustomersBaseBOC&lt;cmpQryCustomersBOC, cmpQryCustomersBO&gt;<br>{<br>}<br><br>[Serializable]<br>public partial class cmpQryCustomersBO : cmpQryCustomersBaseBO<br>{<br>}<br><br>TIA!<br><br>Mike<br><br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, October 30, 2009</h2><P>Generally speaking, you should avoid using inheritance to gain properties. Declaring a property in a base class complicates the heck out of your app - specifically data access - and is usually not worth it.</P>
+<P>In my view <EM>property declarations are not code</EM>, so trying to reuse a property declaration is a red herring. Totally counter-productive, because the result is reuse of code that took maybe 3 seconds to write, and the addition of complexity and coupling that will almost certainly waste hours of support time over the life of the application.</P>
+<P>Using a base class to implement <EM>common</EM> <EM>rule methods</EM> is reasonably acceptible. But even there it is better to favor composition (collaboration) over inheritance. Again, this is because inheritance is one of the most tightly coupled relationships available between classes, and coupling is the ultimate evil in software. Therefore most inheritance triggers evil.</P>
+<P>Of course it is Halloween, so if you are going to bring evil into your app, now's the time :)</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, October 30, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Well, where the trouble comes in is when you need to load one
+set of data into two different logical types.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>This has been discussed a few times before, but consider the
+classic case of a Product that has DomesticProduct and InternationProduct
+subclasses. These two subclasses share most of the same properties, so you put
+them in the base class.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Then consider your data access code. The data portal will be
+creating and retrieving <i>the subclass type</i>, not the base class. But you
+don&#8217;t want coupling, so what do you do?<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Well, you hit the database twice to get the data, once to get
+the properties defined by the subclass and again to get the properties defined
+by the base class.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>OR<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>You make the subclass know exactly which fields are necessary
+for the base class to load its data. Now the base class doesn&#8217;t do its
+own data access &#8211; that&#8217;s all handled by the subclasses. Add a field
+to the base class, and you must remember to update the DAL code for all the subclasses,
+or they won&#8217;t provide the base class with the required values.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>It is a total mess.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I&#8217;m not saying that you should use collaboration to store
+property values either, as that&#8217;d lead to the same problem. I&#8217;m
+saying you shouldn&#8217;t view properties as &#8220;meaningful code&#8221;. If
+an object needs data to do its job, it should have that data itself &#8211;
+simple and clean. <o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>But if it uses logic/behaviors that are common with other
+objects, then those behaviors should be normalized into a separate class so the
+<i>behaviors</i> can be reused. In CSLA this is most notably rule methods, and occasionally
+algorithmic methods outside of rule methods.</span><b><span><o:p></o:p></span></b></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>In other words, centralize meaningful behavior and try to reuse
+that (through collaboration, or if you must, through inheritance), but don&#8217;t
+try to reuse property declarations because they aren&#8217;t meaningful code &#8211;
+not when you can stamp them out in just a couple seconds using a snippet&#8230;<o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>miker55_2 replied on Monday, November 02, 2009</h2>Thanks to both of you guys for all of the input.  Actually, the only reason I wanted to make it a base class was so that I would have the option of overriding the properties if I ever needed to.  I also wanted to have an AddBusinessRules method in the base class (which gets constantly re-generated by a code generator), and then be able to override that method in a non generated source code file where we make our custom changes.<br /><br />I used that method quite successfully in a WinForms project with Csla 2.6, but Silverlight seems to be more challenging.  I'll look into doing what I need without the base class.<br /><br />Thanks,<br /><br />Mike</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Kevin Fairclough replied on Wednesday, November 04, 2009</h2>So what your saying is that I shouldn't be doing the following (which I am&nbsp;<img src="/emoticons/emotion-6.gif" alt="Sad [:(]" /> ):<br><br>public abstract class Entity&lt;T&gt; : BusinessBase&lt;T&gt;<br>&nbsp;where T : BusinessBase&lt;T&gt;<br>{<br>&nbsp;cslaprop Id<br>&nbsp;cslaprop Version<br>&nbsp;cslaprop CreatedOn<br>&nbsp;cslaprop CreatedBy<br>&nbsp;cslaprop ModifiedOn<br>
+&nbsp;cslaprop ModifiedBy&nbsp;
+<br><br>&nbsp;...other stuff...<br>}<br><br>public class Item : Entity&lt;Item&gt;<br>{<br>&nbsp;...stuff...<br>}<br><br>I should be creating snippets for these property blocks and effectively copy/paste them into every class?<br><br>Kevin<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, November 04, 2009</h2><P>I'm a pragmatic person. If you are declaring properties in a base class and you are happy with how that is working for you, then be happy.</P>
+<P>But there are some very real drawbacks to doing this, mostly around persistence as I noted earlier, and that can cause maintenance issues over time as you add fields to the base class and forget to load them from one of your subclasses - because finding where to update the data access code is a manual search-and-fix model, which is always error-prone.</P>
+<P>So yes, I personally would put the property declarations into each class. If I want the classes to be polymorphic, I'd either define abstract property declarations on the base class or use an interface - and since the base class is generic the only real option is to use an interface.</P>
+<P>What I <EM>would</EM> put into the base class are common rule implementations. If there are rules around some of these properties that are unique to this family of object types, I'd implement them in the base class so I can easily associate the rules with the properties in each subclass.</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

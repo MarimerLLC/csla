@@ -1,0 +1,61 @@
+<html><header><title>Problem with select button on gridview CSLA 2.0</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Problem with select button on gridview CSLA 2.0</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/2433.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>memocr posted on Monday, February 26, 2007</h2>Hi.<br><br>I have a gridview conected to a csla object. on my gridview i have a select button. what happens is that when i click the select button to select one row of the grid the app crashes, no error, no info, just crashes.<br><br>in the other hand, i connected to tha database using a sqlconnection, sqlcommand and filling a dataset with a dataadapter, you all know the process... i filled the dataset with the result of the same store procedure as my csla object. same grid, same select button and guess what? the select button works!!<br><br>any idea?<br><br>thanks<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, February 26, 2007</h2><P>GridView = ASP.NET right?</P>
+<P>So when you say the "app crashes" you mean the browser crashes? IIS crashes?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>memocr replied on Monday, February 26, 2007</h2>web.... <br>and yeah the browser....<br><br><table cellpadding="0" cellspacing="0">
+<tr>
+<td id="infoIconAlign" rowspan="2" align="left"><br></td>
+<td id="mainTitleAlign" align="left">
+<h1 id="mainTitle">Internet Explorer cannot display the webpage</h1></td></tr>
+<tr>
+<td class="errorCodeAndDivider" id="errorCodeAlign" align="right">&nbsp; 
+</td></tr>
+<tr>
+<td>&nbsp; </td>
+<td id="MostLikelyAlign" align="left">
+<h3 id="likelyCauses">Most likely causes:</h3>
+<ul><li id="causeNotConnected">You are not connected to the Internet. 
+</li><li id="causeSiteProblem">The website is encountering problems. 
+</li><li id="causeErrorInAddress">There might be a typing error in the address. 
+</li></ul></td></tr></table>and i'm just trying to select a row, theres no redirect and it isn't even going into the page_load between hittin' the button and crashing<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, February 26, 2007</h2><P>You know it isn't getting to Page_Load because you are running this in the debugger and have set a breakpoint at the top of that method? </P>
+<P>If that's so - then it appears to be an actual issue getting IE to post back the page, and I've got no idea on that. Try Firefox and see if it has the same issue?</P>
+<P>The problem with IE7, in particular, is that it is intentionally obscure about the actual nature of any problem that is encountered...</P>
+<P>Another thing you can/should do, is turn on more verbose error reporting in your web.config, so if it is a server-side issue (and it most likely is) that you get some more detailed and useful feedback.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>memocr replied on Monday, February 26, 2007</h2>yeah i have a break on the page_load and on the selectedindexchanged.<br><br>well, i didn't try firefox before, but i have now&nbsp; and it actually worked. so, it must be an IE7 issue with CSLA? jjumm.. because as i said before...i don't have the problem when i bind the gridview with a dataset...<br><br>haven't someone else have this issue, because it is very common to bind ur gridview with a csla object....<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, February 26, 2007</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>If it is a browser issue, then it isn&#8217;t CSLA &#8211; it is
+something to do with the javascript being emitted by the ASP.NET page. CSLA
+doesn&#8217;t emit anything to the UI at all.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>In other words, there&#8217;s some difference in how the grid is
+configured or your page is configured between your two test pages. The issue
+may be that in one page you are using data binding and not in the other, or
+something like that.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I, and many, many, other people use the GridView control with
+CSLA </span><span>J</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

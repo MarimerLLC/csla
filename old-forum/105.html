@@ -1,0 +1,14 @@
+<html><header><title>IIdentity</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>IIdentity</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/105.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Samg60 posted on Monday, May 15, 2006</h2>I have just started using CSLA 2.0 and wish to use teh IIdentity and
+IPrincipal classes, however I wish to add a number of properties to the
+Identity Class such as Id, I have done this successfully however when i
+map Csla.ApplicationContext.User = principa none of these new
+properties are available, I appreciate this is becasue the IIdentity
+Interface doesnt expose these but any help would be welcome.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, May 15, 2006</h2><P>You need to cast ApplicationContext.User to your specific type to get at your custom properties. This is always true when working with .NET principal objects, because they are always stored and manipulated as type IPrincipal (and IIdentity of course), and to get at custom enhancements casting is required.</P>
+<P>Personally I tend to create a User class/module with Shared/static methods to abstract the whole thing. Then throughout my code I just do User.Name or User.Supervisor or whatever. The class looks kind of like this:</P>
+<P>public static class User<BR>{<BR>&nbsp;&nbsp;public static string Name<BR>&nbsp; {<BR>&nbsp;&nbsp;&nbsp; get { return ApplicationContext.User.Identity.Name; }<BR>&nbsp; }<BR>&nbsp;&nbsp;// etc.<BR>}</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>guyroch replied on Monday, May 15, 2006</h2><P>I also use a similar approach.&nbsp; However, I have my own class that inherits from BusinessBase, let say MyBusinessBase.&nbsp; I have all of that kind of "global" code into MyBusinessBase.&nbsp; Then I sub-class _ALL_ of my classes from MyBusinessBase, _NOT_ BusinessBase directly.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Samg60 replied on Tuesday, May 16, 2006</h2>thanks both of you although, I am new to all this and am a little lost,
+all I want to do is get the stored proc in my own IIdentity class to
+return things such as client Id etc, and then store these in a session
+so that they can be accesses by the .aspx pages.<br>
+<br>
+<br>
+<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

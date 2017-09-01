@@ -1,0 +1,43 @@
+<html><header><title>OnAddEventHooks / OnRemoveEventHooks</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>OnAddEventHooks / OnRemoveEventHooks</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11355.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>tiago posted on Sunday, May 13, 2012</h2><p>Hi Jonny</p>
+<p>On thread <a href="http://forums.lhotka.net/forums/p/11259/52348.aspx">http://forums.lhotka.net/forums/p/11259/52348.aspx</a>&nbsp;you said</p>
+<p><div style='padding-left: 50px;background-color:silver'><b>JonnyBee<br></b>
+<p>Actually, there is 2 important procedures:</p>
+<ul>
+<li>OnAddEventHooks </li>
+<li>OnRemoveEventHooks </li>
+</ul>
+<p>The purpose is to make the &quot;parent&quot; observe events in the child object and raise own events to notify UI / listeners of chenges. <br />This is necessary for the </p>
+<ul>
+<li>ChildChanged event </li>
+<li>BusyChanged </li>
+<li>PropertyChanged </li>
+<li>ListChanged (SL) </li>
+<li>CollectionChanged </li>
+<li>ChildChanged </li>
+</ul>
+<p>events to work as expected.</p>
+<p>It&#39;s necessary to make UI helpers like PropertyStatus / ObjectStatus / ReadWriteAuthorization to work as expected as they hook into one or more of these events.</p>
+<p>Not exactly sure when these made it into the framework but they do exist in Csla 3.6 and forward.</p>
+<div style="CLEAR:both;"></div>
+</div></p>
+<p>I searched everywhere and found no information on how and when to use these methods. No sample uses them (how come?), no ebook mentions them, no info on the forum.</p>
+<p>1) I guess the UI Helpers you mention are universal (meaning not WinForms exclusive). So these should be used for all UI technologies.</p>
+<p>2) As far as I understood, <strong>OnAddEventHooks</strong> should be used when:</p>
+<ul>
+<li>the object is created</li>
+<li>the object is fetched</li>
+<li>OnDeserialized</li>
+</ul>
+<p>3) When I have an EditableRoot that contains an EditableChildCollection that is made of EditableChild objects, I must use <strong>OnAddEventHooks</strong>:</p>
+<ul>
+<li>on the EditableRoot using the EditableChildCollection property as the parameter</li>
+<li>on the EditableChildCollection using the EditableChild property as the parameter</li>
+</ul>
+<p>Regards</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Monday, May 14, 2012</h2><p>1. The <b>internal work </b>that OnAddEventHooks/OnRemodeEventHooks do to make the parent object observe it&#39;s children is important to get f.ex OnChildChanged events to happen in all parents. <b>You will normally not have to override or hook into these events nor do I recommend to expose these 2 methods to UI helpers</b>. </p>
+<p>2. OnAddEventHooks is called when a</p>
+<ul>
+<li> BO is added to a Parent (BusinessListXYZBase or BusinessBase)</li>
+<li>BO is deserialized (in base class OnDeserialized).</li>
+</ul>
+<p>3. Again - You should NEVER call this event. This event is automatically called by CSLA as needed -&nbsp; your code may use this to customize some behavior of add hooks for your own custom events. </p>
+<p>&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

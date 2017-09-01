@@ -1,0 +1,390 @@
+<html><header><title>Command Object and  the Transactional(TransactionalTypes.TransactionScope) attribute</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Command Object and  the Transactional(TransactionalTypes.TransactionScope) attribute</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4791.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>mikeclimbs posted on Friday, May 02, 2008</h2><P>I'm using sql server 2005 and csla 2.1</P>
+<P>I have a command object used for creating and saving checks.&nbsp; it can create anywhere from 1 to xxxx checks.&nbsp; if any of the checks fail to save I want to rollback all checks.</P>
+<P>I added Transactional(TransactionalTypes.TransactionScope) to the </P>
+<P>DataPortal_Execute() of my command object.&nbsp; It is not rolling back the saved items.</P>
+<P>any help would be appreciated.</P>
+<P>&nbsp;The command obj and&nbsp;bizobject DataPortal_Insert() is below:</P>
+<P>&nbsp;&lt;Transactional(TransactionalTypes.TransactionScope)&gt; _</P>
+<P><FONT color=#0000ff>Protected</FONT> <FONT color=#0000ff>Overrides</FONT> <FONT color=#0000ff>Sub</FONT> DataPortal_Execute()</P>
+<P><FONT color=#0000ff>Try</P>
+<P></FONT><FONT color=#0000ff>Dim</FONT> tr <FONT color=#0000ff>As</FONT> SqlTransaction</P>
+<P><FONT color=#0000ff>Using</FONT> cn <FONT color=#0000ff>As</FONT> SqlConnection = <FONT color=#0000ff>New</FONT> SqlConnection(connectionstr)</P>
+<P>cn.Open()</P>
+<P>tr = cn.BeginTransaction()</P>
+<P><FONT color=#0000ff>Try</P></FONT>
+<P>for each invoice in invoicelist</P>
+<P>create and init bizobj</P>
+<P>&nbsp;&nbsp;&nbsp;bizobj.save</P>
+<P>next</P><FONT color=#0000ff>
+<P>tr.commit</P>
+<P>Result = <FONT color=#0000ff>True</P></FONT>
+<P><FONT color=#0000ff>Catch</P></FONT>
+<P>Result = <FONT color=#0000ff>False</P></FONT>
+<P>tr.Rollback()</P>
+<P><FONT color=#0000ff>End</FONT> <FONT color=#0000ff>Try</P></FONT>
+<P><FONT color=#0000ff>End</FONT> <FONT color=#0000ff>Using</P></FONT>
+<P>&nbsp;</P>
+<P>Protected</FONT> <FONT color=#0000ff>Overrides</FONT> <FONT color=#0000ff>Sub</FONT> DataPortal_Insert()</P>
+<P><FONT color=#0000ff>Dim</FONT> tr <FONT color=#0000ff>As</FONT> SqlTransaction</P>
+<P><FONT color=#0000ff>Using</FONT> cn <FONT color=#0000ff>As</FONT> SqlConnection = <FONT color=#0000ff>New</FONT> SqlConnection(FUNDEZConnection)</P>
+<P>cn.Open()</P>
+<P>tr = cn.BeginTransaction()</P>
+<P><FONT color=#0000ff>Try</P></FONT>
+<P>ExecuteInsert(tr)</P>
+<P><FONT color=#008000>'update child object(s)</P></FONT>
+<P>UpdateChildren(tr)</P>
+<P>tr.Commit()</P>
+<P><FONT color=#0000ff>Catch</P></FONT>
+<P>tr.Rollback()</P>
+<P><FONT color=#0000ff>Throw</P></FONT>
+<P><FONT color=#0000ff>End</FONT> <FONT color=#0000ff>Try</P></FONT>
+<P><FONT color=#0000ff>End</FONT> <FONT color=#0000ff>Using</P></FONT>
+<P><FONT color=#0000ff>End</FONT> <FONT color=#0000ff size=2><FONT size=3>Sub</FONT></P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Friday, May 02, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Just a thought&#8230;&nbsp; Your command&#8217;s data portal is
+creating objects, and calling Save, thus making another data portal call.&nbsp;
+Did you make sure your config file on the server does not have data portal
+section?&nbsp; On a side note, I typically create friend method in Invoice
+class and call it, passing transaction explicitly.&nbsp; For example:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>In invoice object I have <o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Friend Shared Sub Update(transaction as SQLTrsanaction)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ExecuteInsert(transaction)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; UpdateChildren(transaction)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>End Sub&nbsp; <o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>In Command_Execute<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>Create objects<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>Create transaction<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>Invoice.Update(transaction)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Having said that, your code should rollback properly, although I
+generally prefer to pass transaction object explicitly to avoid even
+possibility of using DTC.&nbsp; This is just me though.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Senior Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> mikeclimbs
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Friday, May 02, 2008 3:00 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> [CSLA .NET] Command Object and the
+Transactional(TransactionalTypes.TransactionScope) attribute<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>I'm using sql server 2005 and csla 2.1<o:p></o:p></p>
+
+<p>I have a command object used for creating and saving checks.&nbsp; it can
+create anywhere from 1 to xxxx checks.&nbsp; if any of the checks fail to save
+I want to rollback all checks.<o:p></o:p></p>
+
+<p>I added Transactional(TransactionalTypes.TransactionScope) to the <o:p></o:p></p>
+
+<p>DataPortal_Execute() of my command object.&nbsp; It is not rolling back the
+saved items.<o:p></o:p></p>
+
+<p>any help would be appreciated.<o:p></o:p></p>
+
+<p>&nbsp;The command obj and&nbsp;bizobject DataPortal_Insert() is below:<o:p></o:p></p>
+
+<p>&nbsp;&lt;Transactional(TransactionalTypes.TransactionScope)&gt; _<o:p></o:p></p>
+
+<p><span>Protected</span> <span>Overrides</span>
+<span>Sub</span> DataPortal_Execute()<o:p></o:p></p>
+
+<p><span>Try<o:p></o:p></span></p>
+
+<p><span>Dim</span> tr <span>As</span>
+SqlTransaction<o:p></o:p></p>
+
+<p><span>Using</span> cn <span>As</span>
+SqlConnection = <span>New</span>
+SqlConnection(connectionstr)<o:p></o:p></p>
+
+<p>cn.Open()<o:p></o:p></p>
+
+<p>tr = cn.BeginTransaction()<o:p></o:p></p>
+
+<p><span>Try<o:p></o:p></span></p>
+
+<p>for each invoice in invoicelist<o:p></o:p></p>
+
+<p>create and init bizobj<o:p></o:p></p>
+
+<p>&nbsp;&nbsp;&nbsp;bizobj.save<o:p></o:p></p>
+
+<p>next<o:p></o:p></p>
+
+<p><span>tr.commit<o:p></o:p></span></p>
+
+<p><span>Result = True<o:p></o:p></span></p>
+
+<p><span>Catch<o:p></o:p></span></p>
+
+<p><span>Result = False<o:p></o:p></span></p>
+
+<p><span>tr.Rollback()<o:p></o:p></span></p>
+
+<p><span>End Try<o:p></o:p></span></p>
+
+<p><span>End Using<o:p></o:p></span></p>
+
+<p><span>&nbsp;<o:p></o:p></span></p>
+
+<p><span>Protected</span> <span>Overrides</span>
+<span>Sub</span> DataPortal_Insert()<o:p></o:p></p>
+
+<p><span>Dim</span> tr <span>As</span>
+SqlTransaction<o:p></o:p></p>
+
+<p><span>Using</span> cn <span>As</span>
+SqlConnection = <span>New</span>
+SqlConnection(FUNDEZConnection)<o:p></o:p></p>
+
+<p>cn.Open()<o:p></o:p></p>
+
+<p>tr = cn.BeginTransaction()<o:p></o:p></p>
+
+<p><span>Try<o:p></o:p></span></p>
+
+<p>ExecuteInsert(tr)<o:p></o:p></p>
+
+<p><span>'update child object(s)<o:p></o:p></span></p>
+
+<p>UpdateChildren(tr)<o:p></o:p></p>
+
+<p>tr.Commit()<o:p></o:p></p>
+
+<p><span>Catch<o:p></o:p></span></p>
+
+<p>tr.Rollback()<o:p></o:p></p>
+
+<p><span>Throw<o:p></o:p></span></p>
+
+<p><span>End</span> <span>Try<o:p></o:p></span></p>
+
+<p><span>End</span> <span>Using<o:p></o:p></span></p>
+
+<p><span>End</span> <span>Sub</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>mikeclimbs replied on Friday, May 02, 2008</h2>oops, forgot to mention I'm running in local mode</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Friday, May 02, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>And DTC is running on your machine?<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Senior Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> mikeclimbs
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Friday, May 02, 2008 3:18 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] Command Object and the
+Transactional(TransactionalTypes.TransactionScope) attribute<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>oops, forgot to mention I'm running in local mode<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>mikeclimbs replied on Friday, May 02, 2008</h2><P>Sergey thanks for your help.</P>
+<P>I don't think I'm running DTC.&nbsp; Do I need to be?</P>
+<P>Do you think changing my bizobject dataportal insert so its uses a shared connection will help?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Friday, May 02, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Yes, if you pass transaction around, you will not need DTC to
+enforce transactions.&nbsp; Otherwise, you do need to run DTC in your case.&nbsp;
+The rule is that if you use one connection in SQL Server, you do not need DTC. &nbsp;If
+you search forum, you will find some more discussions on the DTC usage.&nbsp; I
+usually opt to not rely on DTC in my design.&nbsp; So, the pattern that I
+follow is:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>In root objects&#8217; DataPortal_XXX<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Create transaction<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>Try<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>Call Friend Methods of each child:&nbsp;
+aChild.Update(transaction)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>Transcation.Commit<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>Catch<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>Transaction.Rollback<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>Throw<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>End Try<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Senior Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899<o:p></o:p></span></p>
+
+<p class=MsoNormal><b><i><span>Magenic</span></i></b><span> </span><span>&reg;</span><b><i><span><o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> mikeclimbs
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Friday, May 02, 2008 3:39 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: Command Object and the
+Transactional(TransactionalTypes.TransactionScope) attribute<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Sergey thanks for your help.<o:p></o:p></p>
+
+<p>I don't think I'm running DTC.&nbsp; Do I need to be?<o:p></o:p></p>
+
+<p>Do you think changing my bizobject dataportal insert so its uses a shared
+connection will help?<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>mikeclimbs replied on Monday, May 05, 2008</h2><P>Sergey,</P>
+<P>Again thanks for you help.&nbsp; guess its time to look into enaling dts.</P>
+<P>&nbsp;</P>
+<P>Mike</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, May 05, 2008</h2><P>You can also use the Csla.ApplicationContext.LocalContext technique shown in the <EM>CSLA .NET Version 2.1 Handbook</EM> to (relatively) easily pass a connection/transaction object to all your objects.</P>
+<P>Or better still, use the Csla.Data.ConnectionManager class in CSLA .NET 3.5 to manage your connection object so you get automatic reuse and typically avoid needing the DTC.</P>
+<P>ConnectionManager should be pretty easy to back-port to CSLA 2.0/3.0 if necessary.</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

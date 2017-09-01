@@ -1,0 +1,37 @@
+<html><header><title>CSLA 3.6 Abstract Class</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA 3.6 Abstract Class</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9155.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>lazaroms posted on Wednesday, June 30, 2010</h2><p>Hi:</p>
+<p>Once again, I am a rookie, please, need help.</p>
+<p>I need to implement a csla abstract class Person, inheriting from Businessbase. Then I need to implement two derived classes inheriting from Person (User and Client).</p>
+<p>How must I do that?</p>
+<p>Thanks,</p>
+<p>L.M.Santin</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>ajj3085 replied on Wednesday, June 30, 2010</h2><p>First, I think it&#39;s important to step back and ask why you need to create a Person and have User and Client inherit it.&nbsp; You&#39;d want to inherit if you have some common behaviors (and not properties or other data) you wish to inherit.&nbsp; Even if you have some common business rules, these can be shared without the need for inheritence.&nbsp; Inheriting is something that must be considered carefully, as is a form of tight coupling.</p>
+<p>You can do what you want, and its fairly easy.&nbsp; Simply declare your Person class like this:</p>
+<p>[Serializable] public abstract class Person&lt;T&gt; : BusinessBase&lt;T&gt; where T : Person&lt;T&gt; { }&nbsp; </p>
+<p>[Serializable] public sealed class Client : Person&lt;Client&gt; { }</p>
+<p>That will enable your Save method to return the most derived type, and everything should work as you expect it to.&nbsp; When doing this, if you&#39;re using the PropertyInfo&lt;T&gt; style of properties, remember to NOT use the RegisterProperty calls which take a Type as the first parameter. You&#39;ll only encounter problems hard to track down problems (which you can find by searching on the forum) , and that parameter is not required.</p>
+<p>Also, you&#39;ll not that your final class isn&#39;t a generic one; that will be necessary for you to be able to use your classes in WinForms.&nbsp; I&#39;m not sure how or if other UIs care about binding to generic classes, but WinForms doesn&#39;t like it.</p>
+<p>HTH</p>
+<p>Andy</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>lazaroms replied on Thursday, July 01, 2010</h2><p>Hi Andy:</p>
+<p>First of all, thank you veru much for your response.</p>
+<p>Could you please write that declaration code in VB.NET?</p>
+<p>Why must be carefylly considered to implement the inheriting?&nbsp; Will the inheritance bring some complication with CSLA?</p>
+<p>&nbsp;</p>
+<p>Do you know if is there a CSLA Forum in spanish?</p>
+<p>&nbsp;</p>
+<p>Thank you very much</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Thursday, July 01, 2010</h2><p>I believe it&#39;s something like this:</p>
+<p>&lt;Serializable()&gt;&nbsp;&nbsp;_<br /><span style="color:#0000ff;">Public&nbsp;MustInherit&nbsp;Class&nbsp;</span><span style="color:#000000;">Person(Of T as {Person(Of T)}<br />&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">Inherits&nbsp;</span><span style="color:#000000;">BusinessBase<br /></span><span style="color:#0000ff;">End&nbsp;Class<br /></span><span style="color:#000000;">&lt;Serializable()&gt;&nbsp;&nbsp;_<br /></span><span style="color:#0000ff;">Public&nbsp;NotInheritable&nbsp;Class&nbsp;</span><span style="color:#000000;">Client<br />&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000ff;">Inherits&nbsp;</span><span style="color:#000000;">Person(Of Client)<br /></span><span style="color:#0000ff;">End&nbsp;Class</span></p>
+<p>The decision to consider inherting is important because inheritience is a form of very tight coupling.&nbsp; Tight coupling can reduce maintainablity, which is contrary to your goal (which is increasing maintainability).&nbsp; That&#39;s why you should tend to favor composition over inheritence.</p>
+<p>I thought some time ago there was a mention that there was a group in South America which was spanish speaking and focused on Csla.&nbsp; I believe it was posted in the forum, so some searching may turn it up.</p>
+<p>Andy</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>lazaroms replied on Friday, July 02, 2010</h2><p>Thanks again Andy.</p>
+<p>I&#39;ll go through the easier way. I&#39;ll don&#39;t define a class for person, just define a class for client and another one for user.</p>
+<p>&nbsp;</p>
+<p>Thank you again.</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>jindalsyogesh replied on Tuesday, December 18, 2012</h2><p>I am using CSLA 3.7. I have a similar scenario as above. In addition to the above, I need to create a BusinessListBase with Person as child. So, in the list class, I will either cast the child object to access the properties/methods of Client/User class or I can directly call the  properties/methods if Person class has them. But with the above implementation I am unable to implement the list class because of &lt;T&gt;.</p>
+<p>If the above is not possible, the other option I have is to create 2 separate list classes for Client and User (I actually have 3 classes in my case) and don&#39;t use inheritance. I actually didn&#39;t want to create 3 separate list classes and that was my sole reason to look into inheritance, so that I have one list class, one abstract class, and 3 classes which derive from the abstract class.</p>
+<p>Thanks<br />Yogesh</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Friday, December 21, 2012</h2><p><b>First - Please start a new thread rather than posting new questions on a tread that already has a verified answer.!!!! </b></p>
+<p>Look at the Samples\Net\Cs\Polymorphism on how to achieve this. </p>
+<p>Basically - what you need to do is add an Interface for the abstract generic class and use the interface as constraint on the BusinessList class.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jindalsyogesh replied on Friday, December 21, 2012</h2><p>Thanks, I also figured that out. In future I will start a new thread.</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>aadseducation2 replied on Tuesday, December 25, 2012</h2><p><a target="_blank" title="online .net classes" href="http://www.aadseducation.com/net.html"><b>Online .Net Classes</b></a> - Build professional career in Asp.Net platform,with exclusive Asp.net training in hyderabad on international real time projects in .net and become professional web developer *** programmer in .Net technologies.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

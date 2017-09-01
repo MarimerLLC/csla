@@ -1,0 +1,14 @@
+<html><header><title>WinForm newb and databinding </title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>WinForm newb and databinding </h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5684.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>decius posted on Monday, October 27, 2008</h2><P>Really frustrated here, and i feel like a real newb struggling with this.&nbsp; I've always been a WebForm guy, but I've recently found a need for myself to learn WinForm development.&nbsp; I've been using Csla for a good while now, but I'm&nbsp;pulling my hair out with refreshing the winform UI properly with a DataGridView:</P>
+<P>I have a button that invokes my BO's Get and sets the bindingSource1.DataSource&nbsp;= myObject.&nbsp; Trouble is, the UI doesn't update until the button is clicked twice! Very confusing.&nbsp; I can't seem to understand why, as I've wasted most of the day trying to research this :(&nbsp;&nbsp;Oddly enough, I've stepped through the code, and the dang DataSource will contain values on the first click! but they don't show up on the UI!</P>
+<P>the current code for the onclick event of the fetchList button:</P><FONT color=#0000ff size=2>
+<P>private</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>void</FONT><FONT size=2> btnGet_Click(</FONT><FONT color=#0000ff size=2>object</FONT><FONT size=2> sender, </FONT><FONT color=#2b91af size=2>EventArgs</FONT><FONT size=2> e)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>.bindingSource1.RaiseListChangedEvents = </FONT><FONT color=#0000ff size=2>false</FONT><FONT size=2>;</P>
+<P>_cowList = </FONT><FONT color=#2b91af size=2>CowList</FONT><FONT size=2>.GetCowList(txtSponsorId.Text, txtAuthId.Text);//where _cowList is a global property</P>
+<P></FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>.bindingSource1.DataSource = _cowList; </P>
+<P></FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>.bindingSource1.RaiseListChangedEvents = </FONT><FONT color=#0000ff size=2>true</FONT><FONT size=2>;</FONT></P><FONT size=2>
+<P>}</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>decius replied on Monday, October 27, 2008</h2>::sigh:: please disregard this post.&nbsp; My appologies.&nbsp; The problem that I was having was because I am using some custom controls that my office uses and they were conflicting with the DataGridView.&nbsp; again, sorry for the nonesense post.</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

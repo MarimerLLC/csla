@@ -1,0 +1,47 @@
+<html><header><title>Problem With , Server.Hosts.EnterpriseServicesPortal svc = GetServerObject();</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Problem With , Server.Hosts.EnterpriseServicesPortal svc = GetServerObject();</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3999.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>amit posted on Thursday, December 06, 2007</h2><P>Hi ,</P>
+<P>I am trying to run projecttracker20cs PTWeb&nbsp;application (CSLA 2.1.4-070223). I have done all setting as per the release notes. The Projects starts successfully...but when I goes to login or click on ProjectList&nbsp;hyperlink&nbsp;I got &nbsp;following error :-</P>
+<P><SPAN></P>
+<H1>Server Error in '/MyDemo' Application. 
+<HR>
+</H1>
+<H2><I>The system cannot find the file specified. (Exception from HRESULT: 0x80070002)</I> </H2>
+<P></SPAN><FONT face="Arial, Helvetica, Geneva, SunSans-Regular, sans-serif "><B>Description: </B>An unhandled exception occurred during the execution of the current web request. Please review the stack trace for more information about the error and where it originated in the code. <BR><BR><B>Exception Details: </B>System.IO.FileNotFoundException: The system cannot find the file specified. (Exception from HRESULT: 0x80070002)<BR><BR><B>Source Error:</B> <BR><BR>
+<TABLE bgColor=#ffffcc>
+
+<TR>
+<TD><CODE><PRE>Line 50:     public virtual Server.DataPortalResult Fetch(Type objectType, object criteria, Server.DataPortalContext context)
+Line 51:     {
+<FONT color=red>Line 52:       Server.Hosts.EnterpriseServicesPortal svc = GetServerObject();
+</FONT>Line 53:       try
+Line 54:       {</PRE></CODE></TD></TR></TABLE><BR><B><FONT face=Verdana>Source File: </FONT></B>C:\Documents and Settings\anawale\Desktop\csla\csla20cs-2.1.4-070223\csla20cs\csla20cs\Csla\DataPortal\Client\EnterpriseServicesProxy.cs<B><FONT face=Verdana> &nbsp;&nbsp; Line: </FONT></B>52 <BR><BR><B><FONT face=Verdana>Stack Trace:</FONT></B> <BR><BR>
+<TABLE bgColor=#ffffcc>
+
+<TR>
+<TD><CODE><PRE>[FileNotFoundException: The system cannot find the file specified. (Exception from HRESULT: 0x80070002)]
+   System.Runtime.InteropServices.Marshal.ThrowExceptionForHRInternal(Int32 errorCode, IntPtr errorInfo) +0
+   System.EnterpriseServices.Thunk.Proxy.CoCreateObject(Type serverType, Boolean bQuerySCInfo, Boolean&amp; bIsAnotherProcess, String&amp; uri) +539
+   System.EnterpriseServices.ServicedComponentProxyAttribute.CreateInstance(Type serverType) +161
+   System.Runtime.Remoting.Activation.ActivationServices.IsCurrentContextOK(Type serverType, Object[] props, Boolean bNewObj) +73
+   EnterpriseServicesHost.EnterpriseServicesProxy.GetServerObject() +32
+   Csla.DataPortalClient.EnterpriseServicesProxy.Fetch(Type objectType, Object criteria, DataPortalContext context) in C:\Documents and Settings\anawale\Desktop\csla\csla20cs-2.1.4-070223\csla20cs\csla20cs\Csla\DataPortal\Client\EnterpriseServicesProxy.cs:52
+   Csla.DataPortal.Fetch(Type objectType, Object criteria) in C:\Documents and Settings\anawale\Desktop\csla\csla20cs-2.1.4-070223\csla20cs\csla20cs\Csla\DataPortal\Client\DataPortal.cs:185
+   Csla.DataPortal.Fetch(Object criteria) in C:\Documents and Settings\anawale\Desktop\csla\csla20cs-2.1.4-070223\csla20cs\csla20cs\Csla\DataPortal\Client\DataPortal.cs:140
+   ProjectTracker.Library.ProjectList.GetProjectList() in D:\csla20cs-2.1.4-070223\New Folder\csla20cs\ProjectTracker20cs\ProjectTracker.Library\ProjectList.cs:22
+   ProjectList.GetProjectList() +56
+   ProjectList.ProjectListDataSource_SelectObject(Object sender, SelectObjectArgs e) +5
+   Csla.Web.CslaDataSource.OnSelectObject(SelectObjectArgs e) in C:\Documents and Settings\anawale\Desktop\csla\csla20cs-2.1.4-070223\csla20cs\csla20cs\Csla\Web\CslaDataSource.cs:180
+   Csla.Web.CslaDataSourceView.ExecuteSelect(DataSourceSelectArguments arguments) in C:\Documents and Settings\anawale\Desktop\csla\csla20cs-2.1.4-070223\csla20cs\csla20cs\Csla\Web\CslaDataSourceView.cs:93
+   System.Web.UI.DataSourceView.Select(DataSourceSelectArguments arguments, DataSourceViewSelectCallback callback) +17
+   System.Web.UI.WebControls.DataBoundControl.PerformSelect() +149
+   System.Web.UI.WebControls.BaseDataBoundControl.DataBind() +70
+   System.Web.UI.WebControls.GridView.DataBind() +4
+   System.Web.UI.WebControls.BaseDataBoundControl.EnsureDataBound() +82
+   System.Web.UI.WebControls.CompositeDataBoundControl.CreateChildControls() +69
+   System.Web.UI.Control.EnsureChildControls() +87
+   System.Web.UI.Control.PreRenderRecursiveInternal() +41
+   System.Web.UI.Control.PreRenderRecursiveInternal() +161
+   System.Web.UI.Control.PreRenderRecursiveInternal() +161
+   System.Web.UI.Control.PreRenderRecursiveInternal() +161
+   System.Web.UI.Control.PreRenderRecursiveInternal() +161
+   System.Web.UI.Page.ProcessRequestMain(Boolean includeStagesBeforeAsyncPoint, Boolean includeStagesAfterAsyncPoint) +1360
+</PRE></CODE></TD></TR></TABLE></FONT></P>&nbsp;Can anybody please help me :-)</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Friday, December 07, 2007</h2>It sounds like you have a COM library that isn't properly registered.<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

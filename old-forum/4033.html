@@ -1,0 +1,188 @@
+<html><header><title>Redundant calls to AddBusinessRules and AddAuthorizationRules??</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Redundant calls to AddBusinessRules and AddAuthorizationRules??</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4033.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>david.wendelken posted on Thursday, December 13, 2007</h2><P>I've been converting an application to business and authorization rules defined in a database instead of hard-coded into the business objects.</P>
+<P>So, in my AddBusinessRules and AddAuthorizationRule methods, I make a call to the database&nbsp;and load the rules.</P>
+<P>Here's the problem I encountered when performance suddenly became hellishly slow in a test case.&nbsp; </P>
+<P>One of my business objects had no rules defined for it.&nbsp; Paradoxically, having&nbsp;no rules is slower to process than having rules!</P>
+<P>The reason is that if I don't add a business rule to the object, Validation.SharedValidationRules.RulesExistFor() is never set.&nbsp; This means that AddBusinessRules gets called every time an object in a collection is instantiated - instead of only for the first object in the collection!</P>
+<P>Here's the constructor for Core.BusinessBase.&nbsp; It's asking "Do shared rules exist?", when it should be asking "Have I already set up the rules I need?".&nbsp;&nbsp; The later question includes the logical condition of "I have no rules."</P>
+<P><STRONG><EM><FONT size=2>I sure hope we can get this adjusted, or someone will tell me where my code analysis is flawed. :)</FONT></EM></STRONG></P>
+<P><FONT size=2><FONT color=#0000ff>protected</FONT> BusinessBase()<BR>{<BR>&nbsp;&nbsp;&nbsp;&nbsp; Initialize();<BR>&nbsp;&nbsp;&nbsp; AddInstanceBusinessRules();<BR><FONT color=#0000ff>&nbsp;&nbsp;&nbsp;&nbsp; if</FONT> (!Validation.<FONT color=#008080>SharedValidationRules</FONT>.RulesExistFor(<FONT color=#0000ff>this</FONT>.GetType()))<BR>&nbsp;&nbsp;&nbsp; {<BR><FONT color=#0000ff>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; lock</FONT> (<FONT color=#0000ff>this</FONT>.GetType())<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<BR><FONT color=#0000ff>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if</FONT> (!Validation.<FONT color=#008080>SharedValidationRules</FONT>.RulesExistFor(<FONT color=#0000ff>this</FONT>.GetType()))<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; AddBusinessRules();<BR>&nbsp;&nbsp;&nbsp;&nbsp; &nbsp; }<BR>&nbsp;&nbsp;&nbsp;}<BR>&nbsp; AddInstanceAuthorizationRules();<BR><FONT color=#0000ff>&nbsp;&nbsp;if</FONT> (!Security.<FONT color=#008080>SharedAuthorizationRules</FONT>.RulesExistFor(<FONT color=#0000ff>this</FONT>.GetType()))<BR>&nbsp;{<BR><FONT color=#0000ff>&nbsp;&nbsp;&nbsp;&nbsp; lock</FONT> (<FONT color=#0000ff>this</FONT>.GetType())<BR>&nbsp;&nbsp;&nbsp; {<BR><FONT color=#0000ff>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if</FONT> (!Security.<FONT color=#008080>SharedAuthorizationRules</FONT>.RulesExistFor(<FONT color=#0000ff>this</FONT>.GetType()))<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; AddAuthorizationRules();<BR>&nbsp;&nbsp;&nbsp; }<BR>&nbsp; }<BR>}</FONT></P>
+<P><FONT size=2><STRONG><EM><FONT size=4></FONT></EM></STRONG>&nbsp;</P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Thursday, December 13, 2007</h2><P>David,</P>
+<P>I would like to hear Rocky's feedback on this issue.</P>
+<P>On another note: is it safe to make a database call from AddBusineesRules?</P>
+<P>The framework is still constructing the instance - has it passed all the way through the DataPortal at this point? (I don't recall where it is in the process off the top of my head.)</P>
+<P>Joe</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Friday, December 14, 2007</h2>I believe it would be safe, however I would imagine that you can't mark you DP_C as RunLocal though.&nbsp; Your on the "server" when the constructor for the BO runs.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>david.wendelken replied on Friday, December 14, 2007</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>JoeFallon1:</strong></div><div>
+<P>I would like to hear Rocky's feedback on this issue.</P>
+<P></div></BLOCKQUOTE></P>
+<P>You and me both! :)</P>
+<P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>JoeFallon1:</strong></div><div></P>
+<P>On another note: is it safe to make a database call from AddBusineesRules?</P>
+<P>The framework is still constructing the instance - has it passed all the way through the DataPortal at this point? (I don't recall where it is in the process off the top of my head.)</P>
+<P></div></BLOCKQUOTE></P>
+<P>It works for me. ;)&nbsp; I'm not using mobile objects, so I have no idea whether it matters in that situation.&nbsp; </P>
+<P>I've read on the forums that other people have loaded their rules from the database, so I'm guessing it doesn't matter.&nbsp; That, or they aren't using mobile objects either. :)</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, December 14, 2007</h2><P>I do think this is a flaw in the BB ctor code, and unfortunately one that doesn't appear to have a trivial fix, so I'm going to have to think about it a bit. My guess is that the current scheme of lazy-creating the per-type rules list is incorrect, and that the code allowing that to happen should be removed wholesale, but that needs more consideration before doing such major surgery.</P>
+<P>However, talking to the database from AddBusinessRules() is also incorrect. There's one simple rule for data access in CSLA:</P>
+<P><STRONG><FONT color=#ffa500 size=5><EM>Only talk to the database from within a DataPortal_XYZ method.</EM></FONT></STRONG></P>
+<P>So it is perfectly valid to load business rules from a database table, but you must load them through a read-only object that retrieves them. In other words, AddBusinessRules() can get its rules by retrieving a BusinessRuleList object:</P>
+<BLOCKQUOTE dir=ltr>
+<P>protected override void AddBusinessRule()<BR>{<BR>&nbsp; BusinessRuleList myRules = BusinessRuleList.GetList(this.GetType().Name);<BR>&nbsp; // add rules here<BR>}</P></BLOCKQUOTE>
+<P>This gets you to the same place you are now, but is safe to do within a mobile object scenario.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>david.wendelken replied on Friday, December 14, 2007</h2><P>Thanks Rocky!</P>
+<P>I don't access the database directly in the AddBusinessRules method.&nbsp; I call another read-only object that does that in the appropriate way.&nbsp;&nbsp; Sorry, I mis-understood what Joe was asking.&nbsp; </P>
+<P>At a first glance, here's what I've been looking at for a quick fix.&nbsp; I'm still testing so it may fall thru.</P>
+<P>In ValidationRules, I mimicked the AddRules method where it calls GetTypeRules and passes in true.&nbsp; That's what appears to cause the system to think that rules have been set up.&nbsp; But the only way GetTypeRules is ever invoked with a true parameter value is if I'm adding a rule.&nbsp; So, I added a NoRuleNeeded() method that invokes GetTypeRules with a true parameter.</P>
+<P>I'll know if it works in an hour or three. :)</P>
+<P><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;summary&gt;<BR></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> Used to document that there are no rules to add (so the framework will not continue to check for them.)<BR></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;/summary&gt;<BR></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>void</FONT><FONT size=2> NoRulesNeeded()<BR>{<BR></FONT><FONT size=2>&nbsp;&nbsp;&nbsp; GetTypeRules(</FONT><FONT color=#0000ff size=2>true</FONT><FONT size=2>);<BR>}</P></FONT>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, December 14, 2007</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Cool, glad to hear about the way you get the data.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Here&#8217;s a preliminary solution that has minimal impact on
+the existing codebase<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp; protected BusinessBase()<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp; {<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Initialize();<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;AddInstanceBusinessRules();<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if
+(!Validation.SharedValidationRules.RulesExistFor(this.GetType()))<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; lock (this.GetType())<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if
+(!Validation.SharedValidationRules.RulesExistFor(this.GetType()))<o:p></o:p></span></p>
+
+<p class=MsoNormal><b><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;Validation.SharedValidationRules.GetManager(this.GetType(),
+true);<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+AddBusinessRules();<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; AddInstanceAuthorizationRules();<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if
+(!Security.SharedAuthorizationRules.RulesExistFor(this.GetType()))<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;lock (this.GetType())<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if
+(!Security.SharedAuthorizationRules.RulesExistFor(this.GetType()))<o:p></o:p></span></p>
+
+<p class=MsoNormal><b><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Security.SharedAuthorizationRules.GetManager(this.GetType(), true);<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+AddAuthorizationRules();<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp; }<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> david.wendelken
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Friday, December 14, 2007 9:23 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] Redundant calls to AddBusinessRules and
+AddAuthorizationRules??<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Thanks Rocky!<o:p></o:p></p>
+
+<p>I don't access the database directly in the AddBusinessRules method.&nbsp; I
+call another read-only object that does that in the appropriate
+way.&nbsp;&nbsp; Sorry, I mis-understood what Joe was asking.&nbsp; <o:p></o:p></p>
+
+<p>At a first glance, here's what I've been looking at for a quick fix.&nbsp;
+I'm still testing so it may fall thru.<o:p></o:p></p>
+
+<p>In ValidationRules, I mimicked the AddRules method where it calls
+GetTypeRules and passes in true.&nbsp; That's what appears to cause the system
+to think that rules have been set up.&nbsp; But the only way GetTypeRules is
+ever invoked with a true parameter value is if I'm adding a rule.&nbsp; So, I
+added a NoRuleNeeded() method that invokes GetTypeRules with a true parameter.<o:p></o:p></p>
+
+<p>I'll know if it works in an hour or three. :)<o:p></o:p></p>
+
+<p><span>///</span><span> </span><span>&lt;summary&gt;<br>
+///</span><span> Used to document that
+there are no rules to add (so the framework will not continue to check for
+them.)<br>
+</span><span>///</span><span> </span><span>&lt;/summary&gt;<br>
+</span><span>public</span><span> <span>void</span> NoRulesNeeded()<br>
+{<br>
+&nbsp;&nbsp;&nbsp; GetTypeRules(<span>true</span>);<br>
+}<o:p></o:p></span></p>
+
+<p>&nbsp;<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, December 14, 2007</h2>I put the above fix into 3.0.4 and 3.5, because I was already messing with similar things due to a race condition elsewhere - both fixes were complimentary. All updates are in svn now (and this particular update has changes in several locations beyond the ctor btw - and also in ROB).</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>david.wendelken replied on Friday, December 14, 2007</h2><P>Excellent!&nbsp; Your fix works like a charm.&nbsp; </P>
+<P>It was easy to find the other spots, I just did a search on AddBusinessRules() and AddAuthorizationRules(). :)</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jimmunn replied on Friday, February 15, 2008</h2><P>A couple of suggestions:</P>
+<UL>
+<LI>Instead of calling the <EM>RulesExistFor</EM> methods and creating RulesManager classes for all types, whether they have rules or not, how about using two static Dictionary&lt;Type, bool&gt; in BusinessBase? Check for the existence of the key, if it's not there, call the <EM>Add...Rules</EM> method then add an entry to the dictionary for that type. This avoids the overhead of creating unneeded rule managers.</LI>
+<LI>The code is locking on this.GetType(). This is not a recommended practice. Here's a link to an old article, but I&nbsp;think&nbsp;it is still valid: <A href="http://msdn.microsoft.com/archive/default.asp?url=/archive/en-us/dnaraskdr/html/askgui06032003.asp">http://msdn.microsoft.com/archive/default.asp?url=/archive/en-us/dnaraskdr/html/askgui06032003.asp</A>&nbsp;. How about adding a couple of private static object&nbsp;fields&nbsp;to BusinessBase just for the locking?</LI></UL>
+<P>Jim</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

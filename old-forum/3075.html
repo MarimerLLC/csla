@@ -1,0 +1,8 @@
+<html><header><title>SQLDataSource</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>SQLDataSource</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3075.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Dunkers44 posted on Friday, June 22, 2007</h2><P>I am using a sqldatasource as my source for my gridview.</P>
+<P>when i use the selectcommand it works for</P><FONT size=2>
+<P>SelectCommand = </FONT><FONT color=#800000 size=2>"Select Name, DOB, CLIENTID From FiscalResult Where ((Name) Like 'DAMRAURYAN')"</FONT></P>
+<P><FONT color=#800000 size=2>it returns everyone named DAMRAURYAN</FONT></P>
+<P><FONT color=#800000 size=2>but when i use</FONT></P><FONT color=#800000 size=2><FONT size=2>
+<P>SelectCommand = </FONT><FONT color=#800000 size=2>"Select Name, DOB, CLIENTID From FiscalResult Where ((Name) Like 'DAMRAU*')"</FONT></P>
+<P><FONT color=#800000 size=2>It returns nothing?? can you not use this * command???</P></FONT></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>skagen00 replied on Friday, June 22, 2007</h2><P>I believe to accomplish what you're trying to do you'd use %, not *.</P>
+<P>But more importantly - you shouldn't be embedding data-access like that directly in the UI - at least if you're trying to adhere to CSLA...</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

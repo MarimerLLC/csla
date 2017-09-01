@@ -1,0 +1,11 @@
+<html><header><title>Bug in CslaActionExtender.cs?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Bug in CslaActionExtender.cs?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9543.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Kyle posted on Wednesday, September 15, 2010</h2><p>In the OnClick method, just before the save is performed the OnObjectSaving event is fired with a new CancelEventArgs named savingArgs. BUT, after it returns, the wrong CancelEventArgs variable is checked, thus you cannot (as intended) cancel the save using the _ObjectSaving event handler. Fortunately the fix is very easy... hopefully can make it into the next release.</p>
+<p>// Line 654</p>
+<p>CslaActionCancelEventArgs savingArgs = new
+CslaActionCancelEventArgs(false, props.CommandName);</p>
+<p>OnObjectSaving(savingArgs);</p>
+<p>if
+(!savingArgs.Cancel)&nbsp;&nbsp;&nbsp; // was: if (!args.Cancel)</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {&nbsp; // continue with
+save</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Kyle replied on Wednesday, September 15, 2010</h2><p>Forgot to mention, I&#39;m talking about 3.8.3.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, September 15, 2010</h2><p>I&#39;ll add this to the bug list.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

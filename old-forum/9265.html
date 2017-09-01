@@ -1,0 +1,37 @@
+<html><header><title>Helpful Hint:  Replace  xmlns:my  with  xmlns:csla  when dragging controls from VS toolbox</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Helpful Hint:  Replace  xmlns:my  with  xmlns:csla  when dragging controls from VS toolbox</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9265.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>GregDobbs posted on Friday, July 23, 2010</h2><p>If you&#39;re like me and prefer a nice namespace declaration at the top of your XAML for CSLA, here&#39;s a quick and minor change to the framework that&#39;ll do it.</p>
+<p>You will need to add a few lines of code near the top of the AssemblyInfo.cs files in four projects in the CSLA framework (added lines are bold):</p>
+<p>&nbsp;</p>
+<p><span style="text-decoration:underline;">CSLA&nbsp;&nbsp;&nbsp; &nbsp;AssemblyInfo.cs</span> </p>
+<p>
+<p>using System.Reflection;<br />using System.Runtime.CompilerServices;<br />using System.Runtime.InteropServices;<br />using System.Windows;<br /><strong>using System.Windows.Markup; // added by dobbs to support XmlnsDefinition</strong></p>
+<p><strong>// dobbs modification - Added XMLDefinition and XMLPrefix assembly information.<br />// This allows designers to use the csla: prefix in XAML rather than the generic<br />// my: prefix.<br />//Namespaces:<br />[assembly: XmlnsDefinition(&quot;</strong><a href="http://schemas.lhotka.net/dobbs"><strong>http://schemas.lhotka.net/dobbs</strong></a><strong>&quot;, &quot;Csla&quot;)]<br />// dobbs Prefix:<br />[assembly: XmlnsPrefix(&quot;</strong><a href="http://schemas.lhotka.net/dobbs"><strong>http://schemas.lhotka.net/dobbs</strong></a><strong>&quot;, &quot;csla&quot;)]</strong></p>
+<p>// General Information about an assembly is controlled through the following ...</p>
+<p>&nbsp;</p>
+<p><span style="text-decoration:underline;">CSLA.Silverlight&nbsp;&nbsp;&nbsp; &nbsp;AssemblyInfo.cs</span></p>
+<p>using System.Reflection;<br />using System.Runtime.CompilerServices;<br />using System.Runtime.InteropServices;<br />using System.Diagnostics;<br /><strong>using System.Windows.Markup; // added by dobbs to support XmlnsDefinition</strong></p>
+<p><strong>// dobbs modification - Added XMLDefinition and XMLPrefix assembly information.<br />// This allows designers to use the csla: prefix in XAML rather than the generic<br />// my: prefix.<br />//Namespaces:<br />[assembly: XmlnsDefinition(&quot;</strong><a href="http://schemas.lhotka.net/dobbs"><strong>http://schemas.lhotka.net/dobbs</strong></a><strong>&quot;, &quot;Csla&quot;)]<br />[assembly: XmlnsDefinition(&quot;</strong><a href="http://schemas.lhotka.net/dobbs"><strong>http://schemas.lhotka.net/dobbs</strong></a><strong>&quot;, &quot;Csla.Silverlight&quot;)]<br />// dobbs Prefix:<br />[assembly: XmlnsPrefix(&quot;</strong><a href="http://schemas.lhotka.net/dobbs"><strong>http://schemas.lhotka.net/dobbs</strong></a><strong>&quot;, &quot;csla&quot;)]</strong></p>
+<p>// General Information about an assembly is controlled through the following&nbsp; ...</p>
+<p>&nbsp;</p>
+</p>
+<p><span style="text-decoration:underline;">CSLA.XAML&nbsp;&nbsp;&nbsp; &nbsp;AssemblyInfo.cs</span></p>
+<p>using System.Reflection;<br />using System.Runtime.CompilerServices;<br />using System.Runtime.InteropServices;<br />using System.Windows;<br /><strong>using System.Windows.Markup; // added by dobbs to support XmlnsDefinition</strong></p>
+<p><strong>// dobbs modification - Added XMLDefinition and XMLPrefix assembly information.<br />// This allows designers to use the csla: prefix in XAML rather than the generic<br />// my: prefix.<br />//Namespaces:<br />[assembly: XmlnsDefinition(&quot;</strong><a href="http://schemas.lhotka.net/dobbs"><strong>http://schemas.lhotka.net/dobbs</strong></a><strong>&quot;, &quot;Csla.Xaml&quot;)]<br />// dobbs Prefix:<br />[assembly: XmlnsPrefix(&quot;</strong><a href="http://schemas.lhotka.net/dobbs"><strong>http://schemas.lhotka.net/dobbs</strong></a><strong>&quot;, &quot;csla&quot;)]</strong></p>
+<p>// General Information about an assembly is controlled through the following ...</p>
+<p>
+<p>&nbsp;</p>
+</p>
+<p><span style="text-decoration:underline;">CSLA.XAML.Silverlight&nbsp;&nbsp;&nbsp; &nbsp;AssemblyInfo.cs</span></p>
+<p>
+<p>using System.Reflection;<br />using System.Runtime.CompilerServices;<br />using System.Runtime.InteropServices;<br /><strong>using System.Windows.Markup; // added by dobbs to support XmlnsDefinition</strong></p>
+<p><strong>// dobbs modification - Added XMLDefinition and XMLPrefix assembly information.<br />// This allows designers to use the csla: prefix in XAML rather than the generic<br />// my: prefix.<br />//Namespaces:<br />[assembly: XmlnsDefinition(&quot;</strong><a href="http://schemas.lhotka.net/dobbs"><strong>http://schemas.lhotka.net/dobbs</strong></a><strong>&quot;, &quot;Csla.Xaml&quot;)]<br />// dobbs Prefix:<br />[assembly: XmlnsPrefix(&quot;</strong><a href="http://schemas.lhotka.net/dobbs"><strong>http://schemas.lhotka.net/dobbs</strong></a><strong>&quot;, &quot;csla&quot;)]</strong></p>
+<p>// General Information about an assembly is controlled through the following ...</p>
+<p>&nbsp;</p>
+<p>Once you&#39;ve completed the above changes, when you drag a CSLA control onto a XAML control you&#39;ll get a xmlns declaration similar to the following at the top of your XAML:</p>
+</p>
+<p><strong>xmlns:csla=&quot;</strong><a href="http://schemas.lhotka.net/dobbs"><strong>http://schemas.lhotka.net/dobbs</strong></a><strong>&quot;</strong></p>
+<p>And when you drag a control onto the design surface it&#39;ll be prefixed like so (example - a PropertyStatus control):</p>
+<p><strong>&lt;csla:PropertyStatus HorizontalAlignment=&quot;Left&quot; Margin=&quot;5,0,0,0&quot; ...</strong></p>
+<p>Obviously you can change all the /dobbs stuff above to your own company name.</p>
+<p>And if we&#39;re lucky Rocky will put this in the next release and make it all perfect! :-)</p>
+<p>Disclaimer: I only put this in yesterday - working great so far - but let me know if you find any issues!</p>
+<p><strong></strong></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, July 23, 2010</h2><p>That&#39;s very cool - thanks for the post! Yes, I&#39;ll add this to the wish list, as this is a great idea.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

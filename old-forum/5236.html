@@ -1,0 +1,94 @@
+<html><header><title>Child to Parent communication</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Child to Parent communication</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5236.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Cosmin posted on Wednesday, August 13, 2008</h2>Hi,<br><br>I need to communicate from the child to the parent. I got a list of company branches and among the branches there is a special one "All Branches" that I manually build at fetch time. <br>When I change some specific properties on this special branch I want to go through all the real branches and overwrite the same properties with the specific values.<br><br>Any way to do that safely? I was thinking of using events but I'm not sure if they work. I'm thinking of when saving the collection and the collection is hooked to items events. If the dataportal is remote, when the collection comes back is it still hooked to items events?<br>Not a remoting geek, but I feel like there will be a problem if using events<br><br>Thanks,<br>Cosmin<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Wednesday, August 13, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>In the past I always preferred explicit communication between
+objects in a graph to anonymous.&nbsp; In other words, I tend not to rely on
+events in such cases, but instead rely on Parent/Child properties to connect to
+an object to talk to.&nbsp; This always seemed safer and cleaner to me than
+relying on events.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>So, in your case in SomeProperty setter of AllBranches, you
+would have code like:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Foreach(OneBranch branch in this.Parent.Branches)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>{<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>branch.SomeProperty = value;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>}<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>This has been my personal preference, although I know that a lot
+of developers do use events for this.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899<o:p></o:p></span></p>
+
+<p class=MsoNormal><b><i><span>Magenic</span></i></b><span> </span><span>&reg;</span><b><i><span><o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Cosmin
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Wednesday, August 13, 2008 8:57 AM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> [CSLA .NET] Child to Parent communication<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Hi,<br>
+<br>
+I need to communicate from the child to the parent. I got a list of company
+branches and among the branches there is a special one &quot;All Branches&quot;
+that I manually build at fetch time. <br>
+When I change some specific properties on this special branch I want to go
+through all the real branches and overwrite the same properties with the
+specific values.<br>
+<br>
+Any way to do that safely? I was thinking of using events but I'm not sure if
+they work. I'm thinking of when saving the collection and the collection is
+hooked to items events. If the dataportal is remote, when the collection comes
+back is it still hooked to items events?<br>
+Not a remoting geek, but I feel like there will be a problem if using events<br>
+<br>
+Thanks,<br>
+Cosmin<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Cosmin replied on Friday, August 15, 2008</h2>Yeah that is a straight forward solution but I'm using version 3.0 and I dont have any Parent Property on business objects. I can create one but I feel there is a problem with saving when the dataportal is remote. <br>If you have <br>BO<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Child<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {Parent} Property Pointing to BO<br><br>What happens to Parent when you do BO.Save. Save returns a new instance of BO. Is the Parent property still pointing to BO? This is what I'm worried about.<br>How does Clone work ? <br>when I save I do <br>&nbsp;&nbsp;&nbsp;&nbsp; temp = BO.Clone()<br>&nbsp;&nbsp;&nbsp;&nbsp; BO = temp.Save()<br><br>Cosmin.<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

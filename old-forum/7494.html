@@ -1,0 +1,179 @@
+<html><header><title>Cslalight 3.8: Config WcfPortal service for using SL3 Binary XML?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Cslalight 3.8: Config WcfPortal service for using SL3 Binary XML?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/7494.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Cuong posted on Sunday, August 23, 2009</h2>Hi,<br><br>I am using Cslalight 3.8 in a silverlight app. I want to use the new SL3 binary XML feature. I change the service configuration in the web.config (server side) like below:<br>&nbsp;&nbsp;&nbsp; &lt;system.serviceModel&gt;<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &lt;behaviors&gt;<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &lt;serviceBehaviors&gt;<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &lt;behavior name="WcfPortalBehavior"&gt;<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &lt;serviceMetadata httpGetEnabled="true"/&gt;<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &lt;serviceDebug includeExceptionDetailInFaults="true"/&gt;<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &lt;/behavior&gt;<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &lt;/serviceBehaviors&gt;<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &lt;/behaviors&gt;<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &lt;bindings&gt;<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &lt;customBinding&gt;<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &lt;binding name="BinaryBinding"&gt;<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &lt;binaryMessageEncoding /&gt;<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &lt;httpTransport /&gt;<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &lt;/binding&gt;<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &lt;/customBinding&gt;<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &lt;/bindings&gt;<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &lt;services&gt;<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &lt;service behaviorConfiguration="WcfPortalBehavior" name="Csla.Server.Hosts.Silverlight.WcfPortal"&gt;<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &lt;endpoint address="" binding="customBinding" bindingConfiguration="BinaryBinding" contract="Csla.Server.Hosts.Silverlight.IWcfPortal"&gt;<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &lt;identity&gt;<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &lt;dns value="localhost"/&gt;<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &lt;/identity&gt;<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &lt;/endpoint&gt;<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &lt;endpoint address="mex" binding="mexHttpBinding" contract="IMetadataExchange"/&gt;<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &lt;/service&gt;<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &lt;/services&gt;<br>&nbsp;&nbsp;&nbsp; &lt;/system.serviceModel&gt;<br><br>But I get an exception " System.Net.WebException: The remote server returned an error: NotFound."<br><br>Does anybody successfully use the SL3 Binary XML feature with Cslalight? Did I config something wrong?<br><br><br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Sunday, August 23, 2009</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Did
+you check ServiceReference.ClicnConfig to make sure it matches your web.config?<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Cuong
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Sunday, August 23, 2009 5:29 AM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> [CSLA .NET] Cslalight 3.8: Config WcfPortal service for using
+SL3 Binary XML?<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Hi,<br>
+<br>
+I am using Cslalight 3.8 in a silverlight app. I want to use the new SL3 binary
+XML feature. I change the service configuration in the web.config (server side)
+like below:<br>
+&nbsp;&nbsp;&nbsp; &lt;system.serviceModel&gt;<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &lt;behaviors&gt;<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
+&lt;serviceBehaviors&gt;<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
+&lt;behavior name=&quot;WcfPortalBehavior&quot;&gt;<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp; &lt;serviceMetadata httpGetEnabled=&quot;true&quot;/&gt;<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp; &lt;serviceDebug
+includeExceptionDetailInFaults=&quot;true&quot;/&gt;<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
+&lt;/behavior&gt;<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
+&lt;/serviceBehaviors&gt;<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &lt;/behaviors&gt;<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &lt;bindings&gt;<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &lt;customBinding&gt;<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
+&lt;binding name=&quot;BinaryBinding&quot;&gt;<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp; &lt;binaryMessageEncoding /&gt;<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp; &lt;httpTransport /&gt;<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
+&lt;/binding&gt;<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &lt;/customBinding&gt;<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &lt;/bindings&gt;<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &lt;services&gt;<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &lt;service
+behaviorConfiguration=&quot;WcfPortalBehavior&quot;
+name=&quot;Csla.Server.Hosts.Silverlight.WcfPortal&quot;&gt;<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&amp; nbsp; &nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp; &lt;endpoint address=&quot;&quot;
+binding=&quot;customBinding&quot; bindingConfiguration=&quot;BinaryBinding&quot;
+contract=&quot;Csla.Server.Hosts.Silverlight.IWcfPortal&quot;&gt;<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp; &lt;identity&gt;<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &lt;dns value=&quot;localhost&quot;/&gt;<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp; &lt;/identity&gt;<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
+&lt;/endpoint&gt;<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
+&lt;endpoint address=&quot;mex&quot; binding=&quot;mexHttpBinding&quot;
+contract=&quot;IMetadataExchange&quot;/&gt;<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &lt;/service&gt;<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &lt;/services&gt;<br>
+&nbsp;&nbsp;&nbsp; &lt;/system.serviceModel&gt;<br>
+<br>
+But I get an exception &quot; System.Net.WebException: The remote server
+returned an error: NotFound.&quot;<br>
+<br>
+Does anybody successfully use the SL3 Binary XML feature with Cslalight? Did I
+config something wrong?<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jack replied on Sunday, August 23, 2009</h2>I made no changes as it was the default that changed.&nbsp; Not sure if you had it running prior to 3.8 but if so try putting it back the way you had it.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Cuong replied on Sunday, August 23, 2009</h2>@s<span>ergey: Yes, I check the </span><span>ServiceReference.ClienConfig and it work</span><b><span>s </span></b><span>if the </span><span>service</span><b><span> </span></b><span>(server side)</span><b><span> </span></b>uses basicHttpBinding. I prepared a simple demo, could you have a look into it to check the problem?<br>http://www.mediafire.com/download.php?homqzzzazfm<br><br>@Jack: Do you mean that we do not need to change the service configuration in the web.config (server side)? Do we still keep the basicHttpBinding and WcfPortal will use Binary XML to transfer objects between clients and server?<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jack replied on Sunday, August 23, 2009</h2>I may have spoken too soon - have a look at Rocky's reply to the 3.8 alpha 1 post.&nbsp; He split the transfer into 4 pieces, the default change was to #2, not #4 which is what you are struggling with so I've still got to make the same changes you do as well.<br><br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jack replied on Tuesday, August 25, 2009</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Did you get this working?<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Cuong [mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> August-23-09 6:32 PM<br>
+<b>To:</b> jaddington@alexandergracie.com<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: Cslalight 3.8: Config WcfPortal service for
+usingSL3 Binary XML?<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>@sergey: Yes, I check the ServiceReference.ClicnConfig and
+it work<b>s </b>if the service<b> </b>(server side)<b> </b>uses
+basicHttpBinding. I prepared a simple demo, could you have look into it to
+check the problem?<br>
+http://www.mediafire.com/download.php?homqzzzazfm<br>
+<br>
+@Jack: Do you mean that we do not need to change the service configuration in
+the web.config (server side). We still keep the basicHttpBinding and WcfPortal
+will use Binary XML to transfer objects between clients and server?<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Cuong replied on Tuesday, August 25, 2009</h2>Not yet, Jack. If you try my above demo, you will see the service works (with BinaryBinding). But there is an exception when Cslalight transfers objects between clients and server. I do not know the reason why. It seems that Cslalight 3.8.0 only supports basicHttpBinding?<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, August 26, 2009</h2>CSLA should work with any synchronous binding, it doesn't really care what you use with WCF as long as it is synchronous.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Cuong replied on Thursday, December 17, 2009</h2>Now, does anybody successfully config the WcfPortal use the SL3 Binary XML feature? <br><br>My SL app needs to transfer lots raw data between clients/server. The speed to transfer raw data is quite slow, I want to use the SL3 Binary XML feature to improve it. Any suggestion is appreciated.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, December 17, 2009</h2><P>There are links in the FAQ</P>
+<P><A href="http://www.lhotka.net/cslanet/faq/DataPortalFaq.ashx">http://www.lhotka.net/cslanet/faq/DataPortalFaq.ashx</A></P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

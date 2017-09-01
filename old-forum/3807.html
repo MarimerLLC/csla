@@ -1,0 +1,72 @@
+<html><header><title>Design question : switchable object</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Design question : switchable object</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3807.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>alef posted on Tuesday, October 30, 2007</h2>
+
+<p class="MsoNormal">I've the following use cases:<br>
+1) a screen with a grid where you can add/edit/delete roles<br>
+2) a screen with employee information, also a combobox where you can choose the
+role the employee has. The combobox has a Name Value List for displaying the
+roles. There is also a button next to the combobox to add a role via an
+inputbox.<br>
+<br>
+For the first use case I have to create an editable root list<br>
+&nbsp;&nbsp;&nbsp; Roles = EditableRootList<br>
+&nbsp;&nbsp;&nbsp; Role = EditableChild<br>
+&nbsp; <br>
+For the second use case I can't reuse the Role object from the first use case
+because NewRole is not a public method (I'm using code smith templates)<br>
+<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; internal static Role NewRole()<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; return new Role();<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; }<br>
+<br>
+So I have to pass via the EditableRootList object like in the following code<br>
+&nbsp;&nbsp;&nbsp; private void roleLID_newSimpleButton_Click(object sender,
+EventArgs e)<br>
+&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; InputBoxResult inputboxRole =
+InputBox.Show("Add new role :", Add role");<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (inputboxRole.ReturnCode == DialogResult.OK)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; _roles = Roles.GetRoles(); <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Role _role = _roles.AddNew() ;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _role.Naam = inputboxRole.Text;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _roles.Save();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+this.roleListBindingSource.DataSource = RoleList.GetRoleList();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br>
+<br>
+&nbsp;&nbsp;&nbsp; }<br>
+<br>
+This code I don't like because here we are getting all the roles from the
+database just to add a role.<br>
+<br>
+What do I have to do?<br>
+1) is role a case for a switchable object?<br>
+2) create an editable root object for Role?<br>
+3) not using the Name Value List but the Editable Root List to fill the combobox?<br>
+</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>alef replied on Tuesday, October 30, 2007</h2><P>To explain more the idea of the second use case.</P>
+<P>It's a little bit like in the book. You have a screen to edit/add/delete roles. When you are changing s.t. you invalidate the cache of the RoleList, so that the combobox on the screen of the project reflects the changes.</P>
+<P>The use case that I want to implement is similar, except that I don't want another screen to edit the roles. On the same screen of project I want a button "Add role" which displays an inputbox where the user inputs the name of the new role. Also here I want to invalidate the cache of the RoleList, so that the combobox reflects the changes.</P>
+<P>Hopefully this explains more the problem I have. What type of objects do I need to implement that?</P>
+<P>For the combobox a ReadOnlyList and for the button "Add role" an editable root parent?</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, October 31, 2007</h2><P>You have three use cases here.</P>
+<OL>
+<LI>Edit roles</LI>
+<LI>View roles (in combobox)</LI>
+<LI>Add a role</LI></OL>
+<P>1: Use an editable list of editable children</P>
+<P>2: Use a NVL</P>
+<P>3: Use an editable root (like RoleAdd or something)</P>
+<P>As you note, use cases 1 and 3 invalidate the list used by use case 2. The book shows a caching pattern, including invalidation, that you can use to invalidate the list used by use case 2.</P>
+<P>That technique is passive though, meaning that the NVL instance isn't notified immediately that it is invalid. If you need more immediate notification you'll need to implement an Observer pattern (pub/sub).</P>
+<P>A simpler solution is probably to have the UI's code that handles your "Add role" button simply rebind the NVL to the UI after the add role dialog has closed. Since your editable root from use case 3 would have invalidated the NVL cache, rebinding to the NVL will force the reload. Not as "elegant" as an Observer pattern, but a LOT simpler <img src="/emoticons/emotion-1.gif" alt="Smile [:)]" /></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>alef replied on Thursday, November 01, 2007</h2><P><SPAN>This is the second solution of my proposals. Thank you for describing this solution more in detail. Especially mentioning the observer pattern. I'll investigate this. I've found some posts about that on your forum.<o:p></o:p></SPAN></P>
+<P><SPAN>But should it not be easier to use the third solution I proposed : use&nbsp;an Editable Root List to fill the combobox.<o:p></o:p></SPAN></P>
+<P><SPAN>Advantages:<o:p></o:p></SPAN></P>
+<P><SPAN>&nbsp;&nbsp;&nbsp;1) You don't have to create a separate editable root object (like the RoleAdd you are mentioning) Normally this is not a true argument because if your use case is demanding this, so be it. But why you’re splitting my 2 use cases into three? Is this for technical reasons? Or maybe I do not understand very well the concept about use cases. I’m quite new to this area.<o:p></o:p></SPAN></P>
+<P><SPAN>&nbsp;&nbsp; 2) You don't have the problem with the synchronization. Also you don't have to query the database again to fill the combobox just too display this one newly added role.<o:p></o:p></SPAN></P>
+<P><SPAN>Can you tell me what the disadvantages of this third solution are? I'm thinking about maybe the performance to fill the combobox let's say with 2000 roles, because we are using editable objects and not read-only objects. Is this a big difference? Do you have some numbers for the difference?<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, November 01, 2007</h2><P>There is no technical reason why you can't use an editable list to populate a combobox.</P>
+<P>The reason I suggested the solution I did, is because I think it is best to use single responsibility design for your objects. An object should have a single responsibility like "provide a readonly list of data" or "edit a list of data".</P>
+<P>The result is often that you do have more classes. But also, each of those classes is simpler and more focused, which means they are easier/cheaper to maintain.</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

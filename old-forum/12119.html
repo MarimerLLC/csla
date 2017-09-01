@@ -1,0 +1,112 @@
+<html><header><title>Csla.Data.DbContextManager Entity 5 Transactions Distributed Transaction Coordinator</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Csla.Data.DbContextManager Entity 5 Transactions Distributed Transaction Coordinator</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/12119.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>aramka posted on Friday, August 16, 2013</h2><p>Have there been any instances found where the DbContextManager opens a second connection? I have one client where im getting the exception</p>
+<p>An error has occurred. Csla.DataPortalException: DataPortal.Update failed (The underlying provider failed on Open.) ---&gt; Csla.Reflection.CallMethodException: EditableCategory.DataPortal_Update method call failed ---&gt; System.Data.EntityException: The underlying provider failed on Open. ---&gt; System.Transactions.TransactionManagerCommunicationException: Network access for Distributed Transaction Manager (MSDTC) has been disabled. Please enable DTC for network access in the security configuration for MSDTC using the Component Services Administrative tool. ---&gt; System.Runtime.InteropServices.COMException: The transaction manager has disabled its support for remote/network transactions. (Exception from HRESULT: 0x8004D024)</p>
+<p><br />It looks like the DTC is being used, but I have take care to make sure all database updates, deletes, inserts occur within a using block like below<br />using (var cntx = DbContextManager&lt;DataContext&gt;.GetManager())<br />{<br />}</p>
+<p><br />Also, in my dev environment I dont get this exception when running the same code and the DTC service is definitely disabled.</p>
+<p><br />Also, we have another client who doesnt have the DTC service enabled and they do not get this error.<br />I understand that the DbContextManager is most likely solid in that it does what it says, but just thought I post here to see if maybe there was a bug or if anyone else has found a similar issue.</p>
+<p>&nbsp;</p>
+<p>I&#39;ve posted the code in this question</p>
+<p><a href="http://stackoverflow.com/questions/18278994/transaction-escalated-to-dtc-no-multiple-connections">http://stackoverflow.com/questions/18278994/transaction-escalated-to-dtc-no-multiple-connections</a></p>
+<p><br />Any help is greatly appreciated.</p>
+<p><br />Thanks.</p>
+<pre></pre>
+<pre></pre>
+<pre></pre>
+<pre></pre>
+<pre></pre>
+<pre></pre>
+<pre></pre>
+<pre></pre>
+<pre></pre>
+<pre></pre></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Friday, August 16, 2013</h2><p>Hi, </p>
+<p>When you have more than 1 connection within the transaction it is automatically upgraded to use DTC. </p>
+<p>It _might_ be a treading issue if your code runs on more than one thread as the DbContextManager is stored in a slot on the &quot;current&quot; thread. <br />Or the context gets out of scope and you autmatically create a new one with a new connection. You should make sure to have </p>
+<p>using (var cntx = DbContextManager&lt;DataContext&gt;.GetManager())</p>
+<p>in your DataPortal_XXZ methods and make sure that all updates occur with this scope.</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>aramka replied on Friday, August 16, 2013</h2><p>Thanks for your help.</p>
+<p>Im aware of the escalation process for transactions and I pretty sure I have one connection open. Here is my code</p>
+<p>&nbsp;</p>
+<pre><code>protected override void DataPortal_Update()
+    {
+        using (System.Transactions.TransactionScope ts = new System.Transactions.TransactionScope(System.Transactions.TransactionScopeOption.Required, System.Transactions.TransactionManager.MaximumTimeout))
+        {
+            //get the dal manager he knows which dal implementation to use
+            using (var dalMgr = DataAccess.BusinessObjectsDalFactory.GetManager())
+            {
+                //get the category dal implementation
+                var ecDal = dalMgr.GetProvider&lt;DataAccess.BusinessObjectDalInterfaces.ICategoryDAL&gt;();
+
+                //assume all the data is good at this point so use bypassproperty checks
+                using (BypassPropertyChecks)
+                {
+                    var catData = new Models.Category { CategoryId = CategoryId, CategoryName = CategoryName, LastChanged = TimeStamp };
+
+                    ecDal.UpdateCategory(catData);
+
+                    TimeStamp = catData.LastChanged;
+                }
+            }
+
+            ts.Complete();
+        }
+
+        base.DataPortal_Update();
+    }
+
+public class DalManager : Core.Sebring.DataAccess.IBusinessObjectsDalManager {private static string _typeMask = typeof(DalManager).FullName.Replace(&quot;DalManager&quot;, @&quot;{0}&quot;);
+
+public T GetProvider&lt;T&gt;() where T : class
+{
+  var typeName = string.Format(_typeMask, typeof(T).Name.Substring(1));
+  var type = Type.GetType(typeName);
+  if (type != null)
+    return Activator.CreateInstance(type) as T;
+  else
+    throw new NotImplementedException(typeName);
+}
+
+public Csla.Data.DbContextManager&lt;DataContext&gt; ConnectionManager { get; private set; }
+
+public DalManager()
+{
+    ConnectionManager = Csla.Data.DbContextManager&lt;DataContext&gt;.GetManager();
+}
+
+public void Dispose()
+{
+  ConnectionManager.Dispose();
+  ConnectionManager = null;
+}
+
+
+public void UpdateDataBase()
+{
+    DatabaseUpgrader.PerformUpgrade();
+}
+}
+
+ public void UpdateCategory(Models.Category catData)
+    {
+        if (catData == null) return;
+        using (var cntx = DbContextManager&lt;DataContext&gt;.GetManager())
+        {
+            var cat = cntx.DbContext.Set&lt;Category&gt;().FirstOrDefault(c =&gt; c.CategoryId == catData.CategoryId);
+
+            if (cat == null) return;
+
+            if (!cat.LastChanged.Matches(catData.LastChanged))
+                throw new ConcurrencyException(cat.GetType().ToString());
+
+            cat.CategoryName = catData.CategoryName;
+            //cntx.DbContext.ChangeTracker.DetectChanges();
+            cntx.DbContext.Entry&lt;Category&gt;(cat).State = System.Data.EntityState.Modified;
+            cntx.DbContext.SaveChanges();
+            catData.LastChanged = cat.LastChanged;
+        }
+
+    }</code></pre>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>aramka replied on Tuesday, August 20, 2013</h2><p>The problem turned out to be an issue with sql server 2005 and EF5. You can find more information here</p>
+<p><a href="http://stackoverflow.com/questions/18322218/ef-5-connection-management">http://stackoverflow.com/questions/18322218/ef-5-connection-management</a></p>
+<p>And here</p>
+<p>&nbsp;</p>
+<p><a href="http://stackoverflow.com/questions/18278994/transaction-escalated-to-dtc-no-multiple-connections">http://stackoverflow.com/questions/18278994/transaction-escalated-to-dtc-no-multiple-connections</a></p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

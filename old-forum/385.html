@@ -1,0 +1,123 @@
+<html><header><title>Why are Switchable objects bad? </title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Why are Switchable objects bad? </h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/385.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>brettswift posted on Thursday, June 15, 2006</h2>I have a model that shouldn't be uncommon, in fact its probably everywhere. <br><br>Animal ---&gt; AnimalTask ---&gt; CompletedTasks<br><br>Animals have tasks associated with them (ie shots, see the ferrier, check teeth etc). <br>An animal task is one that is associated with that animal, and there is a taskID in there that comes from the Main list of tasks that you can select from when adding a task to a particular animal. <br><br>Then the completed tasks is a log table storing when each task was completed so you can look at a history of the treatment for the animal. <br><br>Animal a = Animal.GetAnimal(id);&nbsp;&nbsp;&nbsp; returns my animal, and a list of tasks associated with it. <br><br>a.Task.CompletedTasks&nbsp; is empty however, so this is where I need to do one of the following: <br><br>a.Task.LoadCompletedTasks(); (instance method)<br>or<br>AnimalTask = AnimalTask.GetCompletedTasks(a.Id,a.Task[index].TaskId);&nbsp; (static method)<br><br><br>I don't have much experience developing OO models or using CSLA - anyone have any suggestions?<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>skagen00 replied on Thursday, June 15, 2006</h2><P>So aren't you just saying that an animal may have many tasks, some of which may be completed? </P>
+<P>So in some respects, doesn't your animal just have a collection of tasks. And each task may have a boolean flag for whether or not it is completed along with perhaps a completed date? </P>
+<P>You shouldn't need some separate log table to move current tasks to "completed tasks", unless I'm vastly missing something.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>brettswift replied on Thursday, June 15, 2006</h2>Yes, you are missing something, I didn't explain it fully. <br><br>Tasks like... shots, or getting the ferrier to re-shoe the horse, are tasks that recurr.&nbsp;&nbsp; There is also a field called "IntervalDays" which when the task is completed, a read-only property will check the interval against the last completed date to see if the task is overdue to bring attention to the user.&nbsp; Thats why I don't have a boolean completed field, because as soon as it's completed, its re-scheduled. <br><br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>guyroch replied on Thursday, June 15, 2006</h2>Switchable objects are in most cases bad because they usually indicate
+bad design.&nbsp; From a best practice perspetive, an object should
+resolve one use case only.&nbsp; So having switchable objects
+theoretically indicates 2 or more use cases for one object.<br>
+<br>
+While this is the rule, there are certainly exceptions to it.&nbsp;
+That being said, the need for a switchable object might become a life
+saver once in a while.<br>
+<br>
+At the end of the day, a switchable object is simply an object that can
+be instatiated as a root object in one case and as a child object in
+another case.<br>
+<br>
+<br>
+<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>brettswift replied on Thursday, June 15, 2006</h2>Thanks guyroch. <br><br>What you said is pretty much what the book says as well.&nbsp; Considering that comment, would I be best using the instance getCompletedTasks method stated in my original post? <br><br>What is the most common way that people will drill down to childeren of childeren of childeren etc ?&nbsp; <br><br>This is the main answer that I am looking for. <br><br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>guyroch replied on Thursday, June 15, 2006</h2>Not sure you got the chance to read my last post, but this is not a
+case of Parent -&gt; Child -&gt; Grand Child object.&nbsp; I think this
+is simply a case of a parent that hase 2 child collections.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>brettswift replied on Thursday, June 15, 2006</h2>guyroch I didn't get your 2nd post.&nbsp; But have a look at my 2nd post way up at the top.&nbsp; I appreciate your advise on my Object Model as well.&nbsp; I might be able to clarify why I'm handling things a bit differently. <br><br>My design is a bit obscure and maybe not as intuitive because of business rules that I've created. (this is aproject that I'm designing myself - for a friend) <br><br>Animals have Tasks such as a need to go to the vet. Think of it as a recurring schedule, rather than a Task I guess. <br><br>So,&nbsp; Horse1, needs to go to the vet every 365 days for a checkup.&nbsp;&nbsp; There is no "completed" boolean field, hence why it doesn't make sense to delete it from one collection and add it to the other.&nbsp; I'll try to explain more thoroughly. <br><br>Saying a horse needs a checkup every 365, its not a matter of them having to see the vet every June, but rather, 1 year from the previous visit, whenever that was.&nbsp;&nbsp; So, in my model I have a boolean field called "IsOverDue" instead of "Completed"&nbsp;&nbsp; This overdue field is a calculated field which looks like this: <br><br>_______________________________<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public bool IsOverdue<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; get {<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; DateTime due = SmartDate.StringToDate(DueDate);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if((DateTime.Compare(due,DateTime.Today) &lt; 0))<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return true;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; else<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return false;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public string DueDate<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; get<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return _lastCompleted.Add(new TimeSpan(_intervalDays, 0, 0, 0)).ToShortDateString();<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>______________________________<br><br><br>_lastCompleted is a readonly property, that will be populated from the CompletedTasks table.&nbsp; It will simply be a select top 1, ordered by descending date, for that particular AnimalTask.&nbsp;&nbsp; Hence, checking to see if the horse is due for a checkup.&nbsp;&nbsp; <br><br>(I think you may be thinking of this as a TODO list, with a history - not the case.. well.. it kind of is, but you don't input Tasks directly to one animal - as the tasks will be common.&nbsp; There is a Tasks table, where you can input tasks that all animals (or most) will have access to.&nbsp;&nbsp; The AnimalTask table is a lookup table joining the pk's from the Animal and Task tables. )<br><br><br>Does this help in why I think this is a parent--&gt;child---&gt; grandchild scenario ? <br><br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>guyroch replied on Thursday, June 15, 2006</h2>We keep posting at the same time :) which make it hard to follow.<br>
+<br>
+I still think that this is not a case of a Parent -&gt; Child -&gt;
+GrandChild scenario.&nbsp; You might not have a completed boolean flag
+but I'm asuming that you do not schedule the a second occurence of the
+same task before the previous one is done right?<br>
+<br>
+By that I mean if you have a task to bring the horse to the vet every
+365 days, that if the horse is late by lets say 30 days, the next task
+will be 365 days from the actual date he went to the vet and not from
+the origianl due date.&nbsp; If that is the case then you do need some
+mechanism to let the user say yep, this task is done, late but done.<br>
+<br>
+If this is the case then all you would need to do is to transfer the
+ScehduledTask into the CompletedTask collection (table) and create a
+new task in the ScehduledTask with a due date 365 days from today, or
+whatever calculation you may have.<br>
+<br>
+Does this make sense?<br>
+<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>brettswift replied on Thursday, June 15, 2006</h2>before I post on this thread I now check the "who's online" and see if you're creating a post or not haha. <br><br>I see what you're getting at - I think.&nbsp; <br><br>You are correct in that the 2nd visit to the vet would be 395 days from the original.&nbsp; However one thing I just noticed is I don't have a set due date, just the last time you completed it, plus the interval.&nbsp;&nbsp; (I chose this way so it would always be rescheduled without the need to run a "re-schedule completed" method). <br><br>The method that the user would input that the task was done, but late, would be:<br><br>1)Select the AnimalTask from the list of configured tasks for that animal (horse). <br>&nbsp;-this will show a form of the task details, and a gridview of the history of the task -and in the event of an overdue task, a warning saying the task is overdue. <br>2) when the user takes the horse to the vet, they come back, and see a button called "This task has been completed"&nbsp; or something along those lines, and they would click it. <br>&nbsp;- this would then take the task info, and create a new CompletedTask row in the Completed Task table. <br><br>Step 2 is where the user dictates its completed but late.&nbsp;&nbsp; Because remember in my AnimalTask object, I figure out if it is overdue by adding the interval to the latest completed date.&nbsp;&nbsp; The new date would be 6/14/2006, instead of the previous one in say 5/1/2005.&nbsp;&nbsp;&nbsp; <br><br>5/1/2005 + 365 days = overdue<br>6/14/2006 + 365 days = 2007 - so the task is still visible as "upcoming" <br><br>Later, in my search criteria I plan to filter these by date, so only show those coming up in the next 2 months for example. <br><br>I hope you don't think I'm defending my model too much here, I just think my design and flow of it is a little mis-understood...&nbsp; maybe not, maybe I'm missing something you're saying? <br><br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>guyroch replied on Thursday, June 15, 2006</h2>What I think about your design doesn't realy matter, what matters is that you believe in it :)<br>
+<br>
+It more clear now.&nbsp; Still maintain that this is a clasic case of a Parent object with 2 direct child collections.<br>
+<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>brettswift replied on Thursday, June 15, 2006</h2>Ok, I guess what I'm missing then is how you would represent that collection ?<br><br>I see that you could return that collection to the parent, although it would be an assortment of tasks. <br><br>IE - my horse needs shots monthly, trips to the vet, and needs to see the ferrier every 6 months. <br><br>my completed tasks list would bring up a conglomerate of all those tasks.&nbsp;&nbsp; So what you're saying is thats ok, but when I click on one AnimalTask - or as you're calling them a ScheduledTask - then I would input search criteria to only return completed tasks for that taskID, on that one Animal.&nbsp; Correct? <br><br>I can see that being another way of doing it, forcing a bit of&nbsp; filtering instead of just getting everything for one grandchild, but it would give me the ability to view ALL completed tasks for one animal all on one page, and see in which order they were completed in.&nbsp;&nbsp; I think your point made it through.. I will consider it. <br><br>Do you have a quick answer on how you would normally access the Grandchild if I were to use this scenario (for future reference as well). <br><br>child.getChilderen&nbsp; instance method, or static method?&nbsp;&nbsp;&nbsp; <br><br>Would a static method imply that the object would be switchable.. is that not the case? <br><br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>SonOfPirate replied on Friday, June 16, 2006</h2><P>If you guys don't mind, I'll throw my two cents in at this point.&nbsp; I think the biggest gap between you may be semantical.</P>
+<P>First, the name "Scheduled Tasks" I beleive is causing confusion.&nbsp; Perhaps this list could be renamed "Assigned Tasks"???&nbsp; If I understand the design correctly, that is essentially what you are dealing with - a list of tasks assigned to that animal from a master list of tasks.</P>
+<P>Each of these Task items maintains its status information which includes, as explained, information about the next time the task is due, its overdue state, etc.&nbsp; These values are based on calculations using the most recent occurance of that task being completed.</P>
+<P>While I agree that the Parent with 2 Child Collections approach is viable and legitimate, let me offer that the model can also be looked at from another perspective.&nbsp; The completion information for a task is a property/attribute of that TASK, not the animal.&nbsp; As such, it would make more sense (to me at least) if the collection of completed tasks is a child of the task itself.&nbsp; This would also make the performing the lookups and calculations necessary to maintain the task's status easier and more logical.</P>
+<P>As a result, I would have:</P>
+<UL>
+<LI>TaskCollection - master read/write collection of tasks for ALL animals 
+<LI>Task - individual master task object 
+<LI>Animal - obvious 
+<LI>AssignedTask - object defining the relationship between the animal and an assigned task as well as additional status info such as IsOverDue. 
+<LI>AssignedTaskCollection - read/write collection of tasks assigned to a particular Animal 
+<LI>CompletedTask - child object of an AssignedTask adding completion information such as date, status, notes, etc. 
+<LI>CompletedTaskCollection - read/write collection of CompletedTask object for a particular AssignedTask.</LI></UL>
+<P>So, to access the date of the most recent occurance of a task, you could use the following code:</P>
+<P><CODE>= myAnimal.AssignedTasks[i1].History[i2].CompletedDate;</CODE></P>
+<P>Note that the History property is an arbitrary name I elected because the CompleteTaskCollection does serve as a history for that task.</P>
+<P>The object model would be more like:</P>
+<P>Animal<BR>&nbsp;&nbsp;&nbsp; AssignedTasks (AssignedTaskCollection)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; AssignedTask<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; History (CompletedTaskCollection)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; CompletedTask</P>
+<P>From the AssignedTask, you would use the following code to determine the task's status:</P>
+<P><CODE>public System.Boolean IsOverDue<BR>{<BR>&nbsp;&nbsp;&nbsp; get<BR>&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return (System.DateTime.Today.Compare(_history[_history.Count - 1].CompletedDate.Add(_interval)) &gt; 0);<BR>&nbsp;&nbsp;&nbsp; }<BR>} </CODE></P>
+<P>Providing a complete history for the Animal at the Animal level can be done by creating a read-only AnimalCompletedTasks collection of AnimalCompletedTaskInfo objects that essentially loads all the same records as the combined AssignedTasks-&gt;CompletedTasks collections hold.&nbsp; This way, the object appears to contain 2 collections, per the Parent-2 Child Collection model, but this second collection is for viewing/reference purposes only and the model described above actually manages the data.</P>
+<P>Hope that helps!</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>brettswift replied on Friday, June 16, 2006</h2>Aye mate.&nbsp; Thank you. <br><br>You are on the same page as me, however to explore guyroch's idea I've built it the way he suggested. <br><br>I may switch, we'll see.&nbsp;&nbsp; For now the LastCompleted property will come from the DB on a join in the select statement when the object is loaded. <br><br>I could probably ask this in another thread but seeing as both of you have mentioned 2 collections in the parent, maybe you could help me out.&nbsp; It could be that I just don't know the datareader well enough, but I think there's more to it.&nbsp; <br><br>____________________________________<br><br>using (SafeDataReader dr = new SafeDataReader(cm.ExecuteReader()))<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; dr.Read();<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _id = dr.GetGuid("Id");<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _name = dr.GetString("Name");<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _birthday = dr.GetSmartDate("Birthday", _birthday.EmptyIsMin);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _photoPath = dr.GetString("PhotoPath");<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; dr.GetBytes("LastChanged", 0, _timestamp, 0, 8);<br><br>------&gt; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; //// load child objects<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; dr.NextResult();<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _tasks = AnimalTasks.GetAnimalTasks(dr);<br><br>------&gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /// load completed tasks&nbsp;&nbsp;&nbsp; <br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; dr.NextResult();<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _completedTasks = CompletedTasks.GetCompletedTasks(dr);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>___________________________________<br><br>If you look at the code above, you will see I am retrieving 2 collections.&nbsp; This should work if both resultsets exist right? <br><br>If one of those collections is empty (ie - no resultset returned from the DB)&nbsp; how can you skip that ? I'm not sure what the code would be..&nbsp; I've tried if(dr.read()) but that fails too... <br><br>What am I doing wrong here?<br><br><br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>hurcane replied on Friday, June 16, 2006</h2>I can answer the question about no records in a result because I just finished working on a read-only object which has a half-dozen collections that may or may not have individual records.<br><br>dr.NextResult will always work. You still get a result set, even if the results have no records. The result set still contains the column information.<br><br>In your child object, you have a "While dr.Read". This will return False when there are no records.<br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>brettswift replied on Friday, June 16, 2006</h2>ah thanks. <br><br>I just had a typo in my stored procedure.<br><br>Anyways, thanks for all the input. <br><br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>guyroch replied on Monday, June 19, 2006</h2>Brett, <br><br>I think your CompletedTasks child collection should be a ReadOnlyList and not an editable child collection.&nbsp; You could achieve this by following the lazy loading example I've provide last week.<br><br>The reason I'm saying this is because I'm pretty sure that the user will not be allowed to modify the content of this collection, right?&nbsp; Only _your_ code will add stuff to this collection.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>guyroch replied on Thursday, June 15, 2006</h2>In you case, the completed tasks would be a ReadOnlyCollection because
+I'm assuming that you can't (or should not)&nbsp; be allowed to modify
+a completed task.<br>
+<br>
+With that said you could laze load your ScheduleTasks read only collection.<br>
+<br>
+public class Animal()<br>
+{<br>
+&nbsp;&nbsp;&nbsp; private TaskList&nbsp; _scheduledTask = null;&nbsp;
+// this is a ReadOnlyCollection, not a collection of BusinessBase
+objects<br>
+<br>
+&nbsp;&nbsp;&nbsp; public TaskList<br>
+&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;  get<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;  {<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;  &nbsp;&nbsp;  if (this._scheduledTask&nbsp; == null)<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;  &nbsp;&nbsp;  {<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;
+this._scheduledTask = TaskList.GetList(&lt;&lt; some animal id criteria
+here &gt;&gt;);<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;  &nbsp;&nbsp;  }<br>
+<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;  &nbsp;&nbsp;  return (this._scheduledTask );<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;  }<br>
+&nbsp;&nbsp;&nbsp; }<br>
+<br>
+<br>
+<br>
+&nbsp;&nbsp;&nbsp;  DataPortal_Update(object Criteria)<br>
+&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;  // to update here<br>
+<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp; // Before you commit, do this if you have transfered a task from ScheduledTasks<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; // to CompletedTasks.&nbsp; It
+will force the lazy loding to reload the new list on completed tasks.<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;  this._scheduledTask = null;<br>
+<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;  // do commit here<br>
+<br>
+&nbsp;&nbsp;&nbsp; }<br>
+}<br>
+<br>
+Hope this helps.&nbsp; BTW, I wrote this code here, not in VS, so obviously it won't compile but you get the picture<br>
+<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>brettswift replied on Thursday, June 15, 2006</h2>seems like our posts are overlapping. <br><br>There may be a better way of designing this.&nbsp; If so, I'd like to figure out both, the better design, and the solution to this design (ie parent-child-grandchild scenario)<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>guyroch replied on Thursday, June 15, 2006</h2>I also think that your design is somewhat flawed as it is, here is what I would suggest...<br>
+<br>
+Animal (Root BusinessBase)<br>
+&nbsp;&nbsp;&nbsp; - ScheduledTasks (CollectionBase)<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;  - Task (Child BusinessBase)<br>
+&nbsp;&nbsp;&nbsp; - CompletedTasks (CollectionBase)&nbsp;&nbsp;&nbsp; <br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;  - Task (Child BusinessBase)<br>
+<br>
+So you have a root business base object called Animal that has 2
+collections of tasks, ScheduledTasks and Completed tasks.&nbsp; <br>
+<br>
+In your DataPortal_Update method, I would simply deleted tasks from the
+ScheduledTasks collection that have been marks as completed and then
+add this task into your CompletedTasks collection.<br>
+<br>
+Hope this helps.<br>
+<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

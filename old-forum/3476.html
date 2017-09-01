@@ -1,0 +1,59 @@
+<html><header><title>Normalizing Objects</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Normalizing Objects</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3476.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>sparky posted on Tuesday, September 04, 2007</h2><P class=MsoNormal><FONT face=Tahoma>Hi,</FONT></P>
+<P class=MsoNormal>&nbsp;</P>
+<P class=MsoNormal><FONT face=Tahoma>I’m new to CSLA, reading the book, up to chapter 8. I am trying to work my way out of the relational way of thinking and onto the behavioral model that Rocky is championing. I think I grasp most of what the book expounds upon but have an OOP design question I need help with to validate my thinking. </FONT></P>
+<P class=MsoNormal><FONT face=Tahoma></FONT>&nbsp;</P>
+<P class=MsoNormal><FONT face=Tahoma>Say I have a use case that simply states “we need to maintain a person’s information”. </FONT></P>
+<P class=MsoNormal><FONT face=Tahoma></FONT>&nbsp;</P>
+<P class=MsoNormal><FONT face=Tahoma>A person has general demographic information (first, last, date of birth, etc.), work authorization information (type, expiration date. etc.), emergency contact information (name, phone, etc.) and more, a bunch more, but this is enough to illustrate my question. So for this question, following SRP, my responsibility/behavior for this class is to update a person’s data. </FONT></P>
+<P class=MsoNormal><FONT face=Tahoma></FONT>&nbsp;</P>
+<P class=MsoNormal><FONT face=Tahoma>I guess my bottom line question is, is this just one class with a bazillion properties or is there a reason to normalize this into multiple classes, not one-to-one to match my database normalization (we’ve learned from the book we don’t want to be data-centric anymore) but more from a logical “object” perspective? Say a main class for <EM>&lt;&lt;person&gt;&gt;</EM> that would then contain <EM>&lt;&lt;personWorkAuthorization&gt;&gt;</EM> and <EM>&lt;&lt;personEmergencyContact&gt;&gt;</EM> classes. These additional classes, personWorkAuthorization and personEmergencyContact, would just be data holders. <SPAN>&nbsp;</SPAN>Or…..would I just have a <EM>&lt;&lt;person&gt;&gt;</EM> class and a <EM>&lt;&lt;personWorkAuthorization&gt;&gt;</EM> class since these 2 model the “real world” things (objects) and stick the emergency contact info in with person? </FONT></P>
+<P class=MsoNormal><FONT face=Tahoma></FONT>&nbsp;</P>
+<P class=MsoNormal><FONT face=Tahoma>Do we ever normalize objects just to get a "cleaner" object model? </FONT></P>
+<P class=MsoNormal><FONT face=Tahoma></FONT>&nbsp;</P>
+<P class=MsoNormal><FONT face=Tahoma>Thanks for the help.</FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>juddaman replied on Wednesday, September 05, 2007</h2><P>Hi</P>
+<P>I guess it depends if your use case "we need to maintain a person’s information" always involves all the data you specified. Or do you in reality have use cases like "maintain a persons demographic information",&nbsp; "maintain a persons work authorization information", etc. </P>
+<P>If it really is "we need to maintain a person’s information"&nbsp; and that is all the data and you wanted to break up th data into objects and then compose them all that is a possibility.</P>
+<P><EM>Say a main class for &lt;&lt;person&gt;&gt; that would then contain &lt;&lt;personWorkAuthorization&gt;&gt; and &lt;&lt;personEmergencyContact&gt;&gt; classes.</EM></P>
+<P>&nbsp;This is combination. But to quote Rocky from the thread <A HREF="/forums/thread/17230.aspx">http://forums.lhotka.net/forums/thread/17230.aspx</A>&nbsp;(have a good read of this thread):</P>
+<P><EM>"composition can have some serious downsides in terms of performance, especially when it comes to data access.&nbsp;</EM> <EM>At least if you view composition as the use of multiple object instances working in a coordinated manner."</EM></P>
+<P>Though, depending exactly how you implement the data access I belive you may be able to avoid the performance loss. For instance if you implement the components as children and only have the root contact the db. This is what you talking about here I think:</P>
+<P><EM>These additional classes, personWorkAuthorization and personEmergencyContact, would just be data holders</EM></P>
+<P>I mentioned this in the <A HREF="/forums/thread/17230.aspx">http://forums.lhotka.net/forums/thread/17230.aspx</A>&nbsp;thread,&nbsp;search for "dumb object", this should help you choose the most appropriate solution based on pros and cons.&nbsp;Though remember to reconsider the use-case maybe it could bebroken down into maintaining different info about people.</P>
+<P>Hope that helps</P>
+<P>George</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>AAKLebanon replied on Wednesday, September 05, 2007</h2>Hi, I recommand you to read this book : 
+<TABLE cellSpacing=0 cellPadding=0>
+
+<TR>
+<TD class=v2 colSpan=3><B>Design Patterns Explained A New Perspective on Object-Oriented Design Second Edition</B></TD></TR>
+<TR>
+<TD class=v2 colSpan=3>By <A class=v1 target=_new>Alan&nbsp;Shalloway</A>, <A class=v1 target=_new>James&nbsp;R.&nbsp;Trott</A></TD></TR></TABLE>
+<TABLE cellSpacing=0 cellPadding=0>
+
+<TR>
+<TH class=v2 align=right>ISBN</TH>
+<TD class=v2 colSpan=2>
+<P>: 0-321-24714-0</P></TD></TR></TABLE>
+<P>&nbsp;</P>
+<P>let's say that i have a Person object that i want to track it's name and address and ...</P>
+<P>the address can vary from time to time (or from a solution to solution). so in a given time I am interesting in the phone number and street name and country. but in another time (or another solution or another time when business requirement change) I am interesting in the mobile phone and region name also and maybe the email address...</P>
+<P>so&nbsp;I am now obliged to change my Person object (and then the view). </P>
+<P>more that this, Person object have validation rules that is related to Person idea, for example a Person must have a Name and an Address (cannot be null for example), a persone Name must be unique and it's age must be grather than 18 year and so on...</P>
+<P>in another hand, the Adress must have a valid phone number and a valid country name ...</P>
+<P>So the validation rules for Person are related to Person idea and the validation rules for Address are related to the Address idea. Person have different behavior than Address. the user can access the Person but not the address (authorisation rules)...</P>
+<P>So I decide to create another object called Address and encapsulate it in Person object. and maybe I do this for the Name field (because a name can be at a given time as First,Last and on another time First,Middle,Last and each time there is different behavior, for example at a given time Middle name must exist, but in another time it can be null...)</P>
+<P>Now Person object know that there is an Address, but does not deal with the details of the Address. and I can now make different type of addresses that inherit from Address, all this without making Person to know anything about the inherited Address.</P>
+<P>I can say that I have encapsulated the Address idea in an abstract class, and aggregated this class in Person class.</P>
+<P>this also promote the reuse of Person class (one of the OO principles)..</P>
+<P>this is my understanding of the book that i refere to it in the begening of this reply, and this is a simple paragraph from the book :</P>
+<P><EM><STRONG>Consider what should be variable in your design. <SPAN class=docEmphasis>This approach is the opposite of focusing on the cause of redesign. Instead of considering what might</SPAN> force <SPAN class=docEmphasis>a change to a design, consider what you want to be</SPAN> able <SPAN class=docEmphasis>to change without redesign. The focus here is</SPAN> on encapsulating the concept that varies<SPAN class=docEmphasis>, a theme of many design patterns.</SPAN></STRONG></EM></P><SPAN class=docEmphasis>
+<P class=docText><STRONG><EM>Or, as I like to rephrase it, "Find what varies and encapsulate it."</EM></STRONG></P>
+<P class=docText><STRONG><EM>These statements may seem odd if you only think about encapsulation as data hiding. They are much more sensible when you think of encapsulation as hiding classes with an abstract class or interface"type encapsulation."<SUP class=docFootnote><A class=docLink>[3]</A></SUP> Containing a reference of this abstract class or interface type (aggregation) hides these derived classes that represent variations in behavior. In other words, the using class has a reference to an abstract class or interface that has more than one specialized derivation. These derivations are hidden (encapsulated) from the using class.</EM></STRONG></P>
+<P class=docFootnote><SUP><A name=ch08fn03><STRONG><EM>[3]</EM></STRONG></A></SUP><STRONG><EM> Generally speaking, type encapsulation is what the Gang of Four means most often when they just say "encapsulation."</EM></STRONG></P>
+<P class=docFootnote>&nbsp;</P>
+<P class=docFootnote>I hope that i show you the solution for this type of problems, and now i think that you can think in a different way how to create your classes...</P>
+<P class=docFootnote>&nbsp;</P>
+<P class=docFootnote>Ahmad El Kerdi, Lebanon...</P></SPAN></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sparky replied on Wednesday, September 05, 2007</h2><P>George and Ahmad thanks for replying. You've both been helpful in opening my thoughts on these issues.</P>
+<P>George - Really good stuff in that post you linked to, it deserves a bookmark. Rocky's statement "Reuse is not the goal. Maintainability is the goal" is enlightening and liberating. How many times have we heard that the goal is reuse, reuse, reuse.</P>
+<P>The pros and cons you helped facilitate on the "dumb object" idea are very informative. Rocky's point that the "dumb object" idea is problematic because of losing interactive data binding additionally brings consideration of the UI into the analysis of the design. Previously I would have tried to leave the UI out of my thinking but I can see how this could lead to different design decisions so ultimately it should come into play.</P>
+<P><BR>Ahmad - You highlighted a provoking paragraph from the book, thanks for the recommendation I will take a look at it. It looks like it's worth picking up.</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

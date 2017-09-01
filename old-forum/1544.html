@@ -1,0 +1,45 @@
+<html><header><title>timestamp Trouble</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>timestamp Trouble</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/1544.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Michael Hildner posted on Thursday, October 19, 2006</h2><P>I'm trying to implement first-write-wins optomistic concurrency. Using 2.0.3 and Sql Server 2005. I based my code and sprocs off the book, but I can't seem to get my update sproc to work. Specifically, I'm having troubles with the timestamp column.</P>
+<P>My business&nbsp;object has a &nbsp;_lastChanged byte array, and in the update routine, I do this:</P><FONT size=2>
+<P>cm.Parameters.AddWithValue(</FONT><FONT color=#800000 size=2>"@LastChanged"</FONT><FONT size=2>, _lastChanged);</P>
+<P>cm.Parameters[</FONT><FONT color=#800000 size=2>"@LastChanged"</FONT><FONT size=2>].Direction = </FONT><FONT color=#008080 size=2>ParameterDirection</FONT><FONT size=2>.Output;</P></FONT>
+<P>The sproc checks for LastChanged:</P><FONT color=#808080 size=2>
+<P>AND</P></FONT><FONT size=2>
+<P>[LastChanged] </FONT><FONT color=#808080 size=2>=</FONT><FONT size=2> @LastChanged</P></FONT><FONT color=#0000ff size=2>
+<P>IF</FONT><FONT size=2> </FONT><FONT color=#ff00ff size=2>@@ROWCOUNT</FONT><FONT size=2> </FONT><FONT color=#808080 size=2>=</FONT><FONT size=2> 0</P>
+<P></FONT><FONT color=#0000ff size=2>RAISERROR</FONT><FONT color=#808080 size=2>(</FONT><FONT color=#ff0000 size=2>'Row has been edited by another user.'</FONT><FONT color=#808080 size=2>,</FONT><FONT size=2> 16</FONT><FONT color=#808080 size=2>,</FONT><FONT size=2> 1</FONT><FONT color=#808080 size=2>)</P></FONT>
+<P>My problem is that @LastChanged is not what I set in _lastChanged. Using the profiler, I can see my timestamp is a varbinary(1):</P>
+<P>declare @p8 varbinary(1)<BR>set @p8=0x00</P>
+<P>Yet in the sproc it's defined as</P><FONT size=2>
+<P>@LastChanged </FONT><FONT color=#0000ff size=2>timestamp</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>OUTPUT</P></FONT>
+<P>That's what I don't understand. The sproc defines a timestamp, yet the command seems to create a varbinary(1). So my updates always fail with "Row has been edited ...".</P>
+<P>How can I pass the proper value to the sproc?</P>
+<P>Thanks,</P>
+<P>Mike</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Friday, October 20, 2006</h2>How are you sending the value to the server in Ado.net?<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Michael Hildner replied on Friday, October 20, 2006</h2><P>Hi Andy,</P>
+<P>I'm using a SqlCommand with a CommandType of .StoredProcedure. Here's the code:</P><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>private</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>void</FONT><FONT size=2> ExecuteUpdate(</FONT><FONT color=#008080 size=2>SqlConnection</FONT><FONT size=2> cn)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>using</FONT><FONT size=2> (</FONT><FONT color=#008080 size=2>SqlCommand</FONT><FONT size=2> cm = cn.CreateCommand())</P>
+<P>{</P>
+<P>cm.CommandType = </FONT><FONT color=#008080 size=2>CommandType</FONT><FONT size=2>.StoredProcedure;</P>
+<P>cm.CommandText = </FONT><FONT color=#800000 size=2>"UpdateSlotMachine"</FONT><FONT size=2>;</P>
+<P>AddUpdateParameters(cm);</P>
+<P>cm.ExecuteNonQuery();</P>
+<P>_lastChanged = (</FONT><FONT color=#0000ff size=2>byte</FONT><FONT size=2>[])cm.Parameters[</FONT><FONT color=#800000 size=2>"@LastChanged"</FONT><FONT size=2>].Value;</P>
+<P>}</FONT><FONT color=#008000 size=2>//using</P></FONT><FONT size=2>
+<P>}</P></FONT>
+<P>In the AddUpdateParameters() method I set a bunch of parameters, including my _lastChanged field:</P><FONT size=2>
+<P>cm.Parameters.AddWithValue(</FONT><FONT color=#800000 size=2>"@LastChanged"</FONT><FONT size=2>, _lastChanged);</P>
+<P>cm.Parameters[</FONT><FONT color=#800000 size=2>"@LastChanged"</FONT><FONT size=2>].Direction = </FONT><FONT color=#008080 size=2>ParameterDirection</FONT><FONT size=2>.Output;</FONT></P>
+<P><FONT size=2>_lastChanged here is 8 bytes, but only one byte gets sent to Sql Server. I'm trying to figure out what to do to make sure I'm sending 8 bytes to the stored procedure.</FONT></P>
+<P><FONT size=2>Thanks,</FONT></P>
+<P><FONT size=2>Mike</P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Friday, October 20, 2006</h2>After you add the LastChanged parameter, try manually setting the DataType propety on the parameter to timestamp.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Michael Hildner replied on Friday, October 20, 2006</h2><P>Thanks Andy,</P>
+<P>That worked, kind of. I changed my parameter stuff to</P><FONT size=2>
+<P>cm.Parameters.Add(</FONT><FONT color=#800000 size=2>"@LastChanged"</FONT><FONT size=2>, </FONT><FONT color=#008080 size=2>SqlDbType</FONT><FONT size=2>.Timestamp);</P>
+<P>cm.Parameters[</FONT><FONT color=#800000 size=2>"@LastChanged"</FONT><FONT size=2>].Value = _lastChanged;</P>
+<P>cm.Parameters[</FONT><FONT color=#800000 size=2>"@LastChanged"</FONT><FONT size=2>].Direction = </FONT><FONT color=#008080 size=2>ParameterDirection</FONT><FONT size=2>.Output;</FONT></P>
+<P><FONT size=2>And now the full 8 bytes get sent to Sql Server.</FONT></P>
+<P><FONT size=2>Of course now I have another issue :)</FONT></P>
+<P><FONT size=2>This is pretty strange. I try to update, and I still get the "Row has been edited by another user" message. This is the whole statement as shown in the profiler:</FONT></P>
+<P><FONT size=2>declare @p8 binary(8)<BR>set @p8=0x0000000000001F41<BR>exec UpdateSlotMachine @SlotMachinePK='1B8E1E96-A027-42E7-B20C-CFE74392BB0C',@SerialNumber=N'00-02544E',@BarCodeNumber=N'00-02544E',@CreatedDate=''2006-10-19 <BR>10:04:53:267'',@CreatedByFK='F76A05FB-33F8-4674-AB83-8AC742CB7502',@ModifiedDate=''2006-10-19 <BR>10:04:53:267'',@ModifiedByFK='F76A05FB-33F8-4674-AB83-8AC742CB7502',@LastChanged=@p8 <BR>output,@Manufacturer=N'Tandyxxx',@AssetNumber=N'123',@Denomination=N'1',@Location=N'B12',@HoldPercent=N'12',@Description=N'Luck Sevens',@HitFrequency=N'2'<BR>select @p8</FONT></P>
+<P><FONT size=2>Now, when I copy and paste that into a new query window, run it, it works fine. I don't understand that at all.</FONT></P>
+<P><FONT size=2>Mike</P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Friday, October 20, 2006</h2>that is strange.. My only suggestion is to open query analyzer and set it to read uncommited transactions.&nbsp; Check out the row just before and just after the update..<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

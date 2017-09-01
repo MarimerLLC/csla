@@ -1,0 +1,113 @@
+<html><header><title>IIDENTITY and Authorization design questions</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>IIDENTITY and Authorization design questions</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/1215.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>dstarkey posted on Thursday, September 14, 2006</h2><P>I am working on an employee main application.&nbsp; My problem is how to incorporate an inordinate amount of possibilities (roles) into the business objects.&nbsp; Background information, my understanding is the PTIdentity class retrieves a role list that pertains to a unique user which is used&nbsp;by the bo's to grant authorization to bo properties etc...&nbsp; I hope this is true or I am totally missing the point!&nbsp; My application can access multiple companies, so the authorization levels would become way to large to statically write each one into the various bo's.</P>
+<P>Here is a sample of my problem.&nbsp; We have a userXrole table that defines the following fields.&nbsp;&nbsp; EmpID, Company, Division and RoleId.&nbsp; So the PTIdentity object retrieves this role list from this table.&nbsp;&nbsp;My EmpID&nbsp;would generate over 400 rows in this table since I have a "Internal" roleID and therefore have access to all of these companies, and that is just my individual entry.&nbsp; What happens when the companies double in volume?&nbsp; So how do I 1) limit the size of this role collection 2) incoportate all of these roles within&nbsp;my bo in an efficient manner??&nbsp; Does anyone have a working sample of how they solved these two problems???&nbsp; </P>
+<P>Should I pass in parmaters to limit the size of these two (role list, and bo list of Authoriztions)collections?&nbsp; How can this be done?&nbsp; Can the AuthorizationRules be built dynamically?&nbsp; What is the best way to do so with my application?&nbsp; Anyone encounter any problems similar to these?&nbsp; I am still fairly new to the framework and any help or samples are greatly appreciated.&nbsp; I am very much stuck on this right now.&nbsp; For instance it is very common for 1 person to have different roles within the same company based on division, yet another permutaion.&nbsp; Please help!!! </P>
+<P>Thanks Don</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, September 14, 2006</h2>I think you need to decompose the problem a bit more.<br><br>It sounds like you have an application with a set of roles - a large list, but finite and (for a single company) probably not unmanagable?<br><br>And then you have many companies - which I take it are effectively "instances" of the application. So that list of roles exists on a per-company basis - but is the same list each time?<br><br>Remember that authorization is business logic - very similar to validation rules really. In the simplest form this is merely an IsInRole check. But in your case it is almost certainly a multi-part check of some sort.<br><br>This is why CanReadProperty and CanWriteProperty are Overridable/virtual - because the simple role-based model doesn't work for all applications. Sometimes you need do have more sophisticated logic.<br><br>It sounds to me (if my assumptions are correct) that your custom Principal object needs to store a Dictionary of companies, with a List of roles for each company. That way you can have a more complex IsInRole that gets the right role list for the current company, and then checks the role.<br><br>In other words, I'm guessing that the action of "Edit Customer Data" requires role X - for all companies. It is always X. But a given user might be in role X for company 1, and not for company 2.<br><br>So your IsInRole needs to see if the current user is in role X for a given company.<br><br>To do this, you'll most likely need a custom Principal object, with an overload of IsInRole - and then you'll need to subclass the CSLA base classes to create your own custom base classes that override CanReadProperty and CanWriteProperty to call your more sophisticated IsInRole method.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>maurera replied on Thursday, February 15, 2007</h2><P>I have done a bit of searching on the forums regarding implementation of custom security and have seen a lot of good ideas.&nbsp; We have a similar need to what the OP of this thread is looking for.&nbsp; <o:p></o:p></P>
+<P>We will have a User Table, Role Table, userXrole table, userroleXsubteam table, and a userroleXfacility table.&nbsp; Basicaly, users will have roles associated with them.&nbsp; A user that has a Role will require some "context" data to determine if the user can perform the Role.&nbsp; This "context"&nbsp;data is&nbsp;defined by&nbsp;the userroleXsubteam and userroleXfacility tables.&nbsp; The Role record will have&nbsp;two bit fields "ReqFacility", "ReqSubTeam" to determine&nbsp;what context the roles need.&nbsp; For example, one Role may be "FacilityRecipeAdmin" whose context would require a FacilityID.&nbsp;&nbsp;Where as Role "FacilityOrderAdmin" may require a FacilityID and a SubTeamID.&nbsp; Or, you could aslo have a "RegionalBuyer" that would only have a SubTeamID context.&nbsp; </P>
+<P>In other words a user could be a "FacilityRecipeAdmin" in facility 1 and 2 and\or a "FacilityOrderAdmin" for Facility 1 subteam 100, facility 1 subteam 200, and facility 2 subteam 100 and\or a "RegionalBuyer" for subteams 100, 200, and 300.</P>
+<P>Ideally we would like to raise an error if the Business developer, or UI developer attempts to check a Role without using the proper context data.&nbsp; Or an administrator tries to assign a Role to a user without supplying the proper context information.</P>
+<P>From what I can gather on the forums, it would make sense for us to have a custom Principal object with a more complicated Overloaded implementation of IsInRole...there is some debate in house as to whether or not we should have the Overloaded IsInRole definition match the IsInRole definition on IPrincipal, or use our own&nbsp;"Context" type&nbsp;as a parameter so that if another Region wanted to use Active Directory to manage there roles it would be (in theory) less painful for them to accomplish a modification...but that is not the problem I am wrestling with right now.&nbsp; <o:p></o:p></P>
+<P>I think I follow what&nbsp;Rocky is&nbsp;saying as far as subclassing the base classes to override CanReadProperty and CanWriteProperty...however, unless I am missing something, it looks like they are not the methods that are calling IsInRole off of IPrincipal (or what would have to be a direct cast of ApplicationContext.User to the custom Principal class in our case).&nbsp; It looks like the IsReadAllowed, IsWriteAllowed methods off of the RolesForProperty class is actually making the call to IsInRole.&nbsp; </P>
+<P><FONT size=2></FONT>So, does that mean that we would have to write our own versions of the RolesForProperty class and the AuthorizationRules class to use from our newly subclassed BusinessBase...which really doesn't sound right to me.<o:p></o:p></P>
+<P>I guess my question is, are we heading in the right direction or are we totally off base here.<o:p></o:p></P>
+<P>I must either not understand something, or am missing something...maybe it’s the late hour.&nbsp; I think I will sleep on it and see if it makes more sense in the morning, any insight would be appreciated.<o:p></o:p></P><FONT size=2></FONT><FONT color=#0000ff size=2></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Friday, February 16, 2007</h2><P>There is some danger in using something other than IsInRole.</P>
+<P>I use it plus something I called HasPermission which is finer grained.</P>
+<P>I ran into this exact issue. The framework only calls IsInRole. Nothing else. This means that if you want to check something else you have to re-write that entire part of the framework (or else modify CSLA directly - which you want to avoid). </P>
+<P>I spoke with Rocky about this and he understands the issue.</P>
+<P>In a future version he may define a Delegate that calls IsInRole by default but you could then replace that implementation with HasPermission as long as the signatures match.</P>
+<P>But there is no guarantee if or when it will make it into the framework. Which is why I am giving you this warning.</P>
+<P>Joe</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, February 16, 2007</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Also, consider this thought:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>If you <i>never</i> <i>use</i> IsInRole, because your whole
+model is based around &#8220;permissions&#8221;, then you can safely repurpose
+IsInRole to check your permissions list &#8211; thus eliminating the need to
+add a HasPermissions method. A lot of people do exactly this, because it is the
+simplest way to get the desired behavior.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>The only thing that would stop this, is if your authorization
+rules are <i>so</i> complex that you sometimes check for the user&#8217;s role,
+and other times check for the user&#8217;s permissions. In that (pretty rare)
+scenario you obviously can&#8217;t use IsInRole to check permissions, because
+you actually need it to check for roles.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<div>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> JoeFallon1
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Friday, February 16, 2007 10:16 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] IIDENTITY and Authorization design questions<o:p></o:p></span></p>
+
+</div>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>There is some danger in using something other than IsInRole.<o:p></o:p></p>
+
+<p>I use it plus something I called HasPermission which is finer grained.<o:p></o:p></p>
+
+<p>I ran into this exact issue. The framework only calls IsInRole. Nothing
+else. This means that if you want to check something else you have to re-write
+that entire part of the framework (or else modify CSLA directly - which you
+want to avoid). <o:p></o:p></p>
+
+<p>I spoke with Rocky about this and he understands the issue.<o:p></o:p></p>
+
+<p>In a future version he may define a Delegate that calls IsInRole by default
+but you could then replace that implementation with HasPermission as long as
+the signatures match.<o:p></o:p></p>
+
+<p>But there is no guarantee if or when it will make it into the framework.
+Which is why I am giving you this warning.<o:p></o:p></p>
+
+<p>Joe<o:p></o:p></p>
+
+<p>&nbsp;<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

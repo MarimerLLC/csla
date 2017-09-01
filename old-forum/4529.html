@@ -1,0 +1,59 @@
+<html><header><title>FILTEREDBINDINGLIST, SORTEDBINDINGLIST and EDIT level problem</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>FILTEREDBINDINGLIST, SORTEDBINDINGLIST and EDIT level problem</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4529.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>pandelaras posted on Thursday, March 20, 2008</h2><P><FONT>I am having a problem binding a child list to these 2 and then persisting list changes to the database. i run into an edit lvl problem. Is there a proper way to do the binding? I have no problem creating filteredbinglists or sortedbindinglists, but i suspect the problem is when i should bind them to the form. I apply the filter to the bindinglist some clicks away using a button and then rebinding properly</FONT></P><FONT color=#0000ff size=2> </FONT>
+<P><FONT color=#008000><FONT size=2>Dim FLTVPELATES As Csla.FilteredBindingList(Of SINALLASOMENOI_EC)</FONT></P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Dim</FONT><FONT size=2> strlist </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> Csla.SortedBindingList(</FONT><FONT color=#0000ff size=2>Of</FONT><FONT size=2> SINALLASOMENOI_EC)</P></FONT>
+<P><FONT></FONT>&nbsp;</P><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Sub</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>New</FONT><FONT size=2>(</FONT><FONT color=#0000ff size=2>ByVal</FONT><FONT size=2> GEF </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> GEFYRA1)</P></FONT><FONT size=2>
+<P>InitializeComponent()</P>
+<P>mGEFYRA = GEF</P>
+<P>BindUI()</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Sub</FONT></P><FONT color=#0000ff size=2>
+<P>Private</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Sub</FONT><FONT size=2> BindUI()</P>
+<P>mGEFYRA.BeginEdit()</P>
+<P></FONT><FONT color=#008000 size=2>FLTVPELATES = New Csla.FilteredBindingList(Of SINALLASOMENOI_EC)(mGEFYRA.SINALLASOMENOI, AddressOf SINALLASOMENOI_FILTER.Filter)</P></FONT><FONT size=2>
+<P></FONT><FONT color=#008000 size=2>strlist = New Csla.SortedBindingList(Of SINALLASOMENOI_EC)(FLTVPELATES )</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Me</FONT><FONT size=2>.GEFYRA1BindingSource.DataSource = mGEFYRA</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Me</FONT><FONT size=2>.SINALLASOMENOIBindingSource.DataSource = <FONT color=#008000>strlist </FONT></FONT></P>
+<P><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Sub</FONT></P>
+<P><FONT color=#0000ff size=2></FONT>&nbsp;</P><FONT color=#0000ff size=2><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Private</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Sub</FONT><FONT size=2> RebindUI(</FONT><FONT color=#0000ff size=2>ByVal</FONT><FONT size=2> saveObject </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Boolean</FONT><FONT size=2>, </FONT><FONT color=#0000ff size=2>ByVal</FONT><FONT size=2> rebind </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Boolean</FONT><FONT size=2>)</P>
+<P></FONT><FONT color=#0000ff size=2>Me</FONT><FONT size=2>.GEFYRA1bidingSource.RaiseListChangedEvents = </FONT><FONT color=#0000ff size=2>False</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Me</FONT><FONT size=2>.SINALLASOMENOIBindingSource.RaiseListChangedEvents = </FONT><FONT color=#0000ff size=2>False</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Try</P></FONT><FONT size=2>
+<P>UnbindBindingSource(</FONT><FONT color=#0000ff size=2>Me</FONT><FONT size=2>.SINALLASOMENOIBindingSource, saveObject, </FONT><FONT color=#0000ff size=2>False</FONT><FONT size=2>)</P></FONT><FONT size=2>
+<P>UnbindBindingSource(</FONT><FONT color=#0000ff size=2>Me</FONT><FONT size=2>.GEFYRA1bidingSource, saveObject, </FONT><FONT color=#0000ff size=2>False</FONT><FONT size=2>)</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Me</FONT><FONT size=2>.SINALLASOMENOIBindingSource.DataSource = </FONT><FONT color=#0000ff size=2>Me</FONT><FONT size=2>.GEFYRA1bidingSource</P>
+<P></FONT><FONT color=#008000 size=2>' save or cancel changes</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>If</FONT><FONT size=2> saveObject </FONT><FONT color=#0000ff size=2>Then</P></FONT><FONT size=2>
+<P>mGEFYRA.ApplyEdit()</P>
+<P></FONT><FONT color=#0000ff size=2>Try</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Dim</FONT><FONT size=2> temp </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> GEFYRA1 = mGEFYRA.Clone()</P>
+<P>mGEFYRA = temp.Save()</P>
+<P></FONT><FONT color=#0000ff size=2>Catch</FONT><FONT size=2> ex </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> Csla.DataPortalException</P>
+<P>MessageBox.Show(ex.BusinessException.ToString(), _</P>
+<P></FONT><FONT color=#a31515 size=2>"Error saving"</FONT><FONT size=2>, MessageBoxButtons.OK, _</P>
+<P>MessageBoxIcon.Exclamation)</P>
+<P></FONT><FONT color=#0000ff size=2>Catch</FONT><FONT size=2> ex </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> Exception</P>
+<P>MessageBox.Show(ex.ToString(), _</P>
+<P></FONT><FONT color=#a31515 size=2>"Error Saving"</FONT><FONT size=2>, MessageBoxButtons.OK, _</P>
+<P>MessageBoxIcon.Exclamation)</P>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Try</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Else</P></FONT><FONT size=2>
+<P>mGEFYRA.CancelEdit()</P>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>If</P></FONT><FONT size=2>
+<P></FONT><FONT color=#008000 size=2>' rebind UI if requested</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>If</FONT><FONT size=2> rebind </FONT><FONT color=#0000ff size=2>Then</P></FONT><FONT size=2>
+<P>BindUI()</P>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>If</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Finally</P></FONT><FONT size=2>
+<P></FONT><FONT color=#008000 size=2>'// rebind the UI</P></FONT><FONT size=2>
+<P>GEFYRA1bidingSource.DataSource = mGEFYRA</P>
+<P></FONT><FONT color=#008000 size=2>' restore events</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>GEFYRA1bidingSource</FONT><FONT size=2>.RaiseListChangedEvents = </FONT><FONT color=#0000ff size=2>True</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Me</FONT><FONT size=2>.SINALLASOMENOIBindingSource.RaiseListChangedEvents = </FONT><FONT color=#0000ff size=2>True</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>If</FONT><FONT size=2> rebind </FONT><FONT color=#0000ff size=2>Then</P></FONT><FONT size=2>
+<P></FONT><FONT color=#008000 size=2>' refresh the UI if rebinding</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Me</FONT><FONT size=2>.GEFYRA1bidingSource.ResetBindings(</FONT><FONT color=#0000ff size=2>False</FONT><FONT size=2>)</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Me</FONT><FONT size=2>.SINALLASOMENOIBindingSource.ResetBindings(</FONT><FONT color=#0000ff size=2>False</FONT><FONT size=2>)</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>If</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Try</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Sub</P></FONT></FONT></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

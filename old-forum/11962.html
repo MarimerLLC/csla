@@ -1,0 +1,25 @@
+<html><header><title>Command Objects executed with BeginExecute are not Async (4.5.24-RC)</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Command Objects executed with BeginExecute are not Async (4.5.24-RC)</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11962.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>BenBoneyIII posted on Monday, April 29, 2013</h2><p>I am using the DataPortal_Execute methods in my command objects. &nbsp;I call them from the Command&#39;s Factory Method:</p>
+<p>DataPortal.BeginExecute(Of MyCommandObj)(cmd, callback)</p>
+<p>I call the Factory Methods from a ViewModel (WPF) using a Lambda expression for the callback.</p>
+<p>The code never runs as Async.</p>
+<p>I am not sure if this is a bug or if I don&#39;t know what I am doing, but if I change this code in the DataPortalT.cs in CSLA, it works:</p>
+<p>This code change is in the BeginExecute(T command, object userState) method.</p>
+<p>
+<p>&nbsp;var result = await DoUpdateAsync(command, false); &nbsp; *** I changed the isSync parameter value to False ***</p>
+</p>
+<p>&nbsp;</p>
+<p>Am I on the right track here?</p>
+<p>Thanks for your help.</p>
+<p>Ben</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Monday, April 29, 2013</h2><p>That does look like a bug. I think the code should actually look like this:</p>
+<pre style="font-size:13px;font-family:Consolas;background:white;color:black;">&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">async</span>&nbsp;<span style="color:blue;">void</span>&nbsp;BeginExecute(T&nbsp;command,&nbsp;<span style="color:blue;">object</span>&nbsp;userState)
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">try</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">var</span>&nbsp;result&nbsp;=&nbsp;<span style="color:blue;">await</span>&nbsp;UpdateAsync(command);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;OnExecuteCompleted(<span style="color:blue;">new</span>&nbsp;<span style="color:#2b91af;">DataPortalResult</span>&lt;T&gt;(result,&nbsp;<span style="color:blue;">null</span>,&nbsp;userState));
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+</pre>
+<p>The same bug is in BeginUpdate too.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>BenBoneyIII replied on Tuesday, April 30, 2013</h2><p>Rocky,</p>
+<p>I changed the BeginExecute as you suggested and that worked great!</p>
+<p>Thanks,</p>
+<p>Ben</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, April 30, 2013</h2><p>Great! I appreciate your help!</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

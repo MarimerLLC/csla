@@ -1,0 +1,41 @@
+<html><header><title>Object Collections bound to DataGridViews</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Object Collections bound to DataGridViews</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/1470.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Crestline posted on Thursday, October 12, 2006</h2>Hi,<br>
+<br>
+We notice some strange behavior when a child collection object is bound
+to a datagridview.&nbsp; On the child datagridview, we enter a couple
+new rows and then place focus on the next new row, just focus on it but
+don't actually enter anything,&nbsp; If we then select a
+different&nbsp; root item in the root collection datagridview and go
+bacjk to the original one where we edited the child collection, we are
+missing the first new child we added and it actually loaded the blank
+child to the end.<br>
+<br>
+Click on Root1<br>
+&nbsp;&nbsp;&nbsp; child1<br>
+&nbsp;&nbsp;&nbsp; child2<br>
+&nbsp;&nbsp;&nbsp; newchild1<br>
+&nbsp;&nbsp;&nbsp; newchild2<br>
+&nbsp;&nbsp;&nbsp; blankchild<br>
+<br>
+Click on Root2<br>
+<br>
+Go back to Root1<br>
+&nbsp;&nbsp;&nbsp; child1<br>
+&nbsp;&nbsp;&nbsp; child2<br>
+&nbsp;&nbsp;&nbsp; newchild2<br>
+&nbsp;&nbsp;&nbsp; blankchild<br>
+<br>
+It's like the new ones were shifted, dropping the first new one and adding in the blank one.<br>
+<br>
+Any one else run across this?<br>
+<br>
+Thanks.<br>
+<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Brian Criswell replied on Thursday, October 12, 2006</h2>It sounds like you are using identity fields in your database and you have the GetIdValue() method return the uninitialized id for the new objects.&nbsp; All of your new objects have an id of 0 (or whatever your default value is).&nbsp; When you do a cancel edit in the DataGridView it tells the underlying list to remove the item.&nbsp; The list determines the item by calling object.Equals(object) on each item.&nbsp; Since the Equals method returns the same value for every new item, the first new item is removed from the list.&nbsp; Do a search for discussions on thread safe default values for integers and you should come across a solution for this.&nbsp; The thread was about a month ago.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Crestline replied on Thursday, October 12, 2006</h2>Thanks Brian.<br>
+<br>
+We don't use GUIDs at this time so your right, we are using database
+identity fields.&nbsp; We'll take a look at this and see what's
+happening.&nbsp; In the past, in other non CSLA projects, we have set
+the id of a dataset's datatable to auto increment by -1 so that the in
+memory items and those read from the db never collide..<br>
+<br>
+<br>
+<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

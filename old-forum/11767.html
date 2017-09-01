@@ -1,0 +1,30 @@
+<html><header><title>Csla.ApplicationContext.User not holding my Custom Principal object</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Csla.ApplicationContext.User not holding my Custom Principal object</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11767.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>TommyB posted on Thursday, January 03, 2013</h2><p>I am developing a POC for a customer using the following technologies.</p>
+<p>&nbsp;</p>
+<ul>
+<li>CSLA.NET 4.5</li>
+<li>.NET Framework 4.5</li>
+<li>ASP.NET MVC 4</li>
+</ul>
+<p>&nbsp;</p>
+<p>I have been running into some issues with the&nbsp;Csla.ApplicationContext.User not holding my Custom principal object. &nbsp;When a user has logged in, it reverts back to the regular&nbsp;principal&nbsp;object when I enter any controller context. &nbsp;Here is the relevant code:</p>
+<p>In my global.asax.cs</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; protected void Application_AuthenticateRequest(Object sender, EventArgs e)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; //if (Csla.ApplicationContext.User != null &amp;&amp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; // &nbsp; &nbsp;Csla.ApplicationContext.User.Identity.IsAuthenticated &amp;&amp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; // &nbsp; &nbsp;Csla.ApplicationContext.User.Identity is FormsIdentity)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; HttpCookie authCookie = Request.Cookies[FormsAuthentication.FormsCookieName];</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; if (authCookie != null)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; FormsAuthenticationTicket ticket = FormsAuthentication.Decrypt(authCookie.Value);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; if (ticket != null &amp;&amp; ticket.Name != string.Empty)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; CslaPoc.Library.Security.RmsPrincipal.Load(ticket.Name);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<div>If the user is authenticated this code executes and the&nbsp;Csla.ApplicationContext.User contains my RmsPrincipal object, roles and all. &nbsp;However, as soon as I get to my controller logic, the&nbsp;Csla.ApplicationContext.User has reverted back to the regular principal object.</div>
+<div></div>
+<div>Originally I had forgotten to reference the Csla.Web assembly in addition to Csla.Web.Mvc. &nbsp;This did not resolve the issue.</div>
+<div></div>
+<div>Any help would be greatly appreciated.</div>
+<p>&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,98 @@
+<html><header><title>Inheriting a generated class</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Inheriting a generated class</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/2470.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>kendallsoft posted on Friday, March 02, 2007</h2><P>Can anyone tell me why this won't work- I get <FONT size=2></P>
+<P>ProjectTracker.Library.Project.Project is inaccessible due to its protection level?? I want to add some methods to the Project class and not have them stepped on during the next code generation????</P></FONT><FONT color=#0000ff size=2>
+<P>using</FONT><FONT size=2> System;</P></FONT><FONT color=#0000ff size=2>
+<P>using</FONT><FONT size=2> System.Collections.Generic;</P></FONT><FONT color=#0000ff size=2>
+<P>using</FONT><FONT size=2> System.Text;</P></FONT><FONT color=#0000ff size=2>
+<P>namespace</FONT><FONT size=2> ProjectTracker.Library</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>class</FONT><FONT size=2> </FONT><FONT color=#008080 size=2>_Project</FONT><FONT size=2> : </FONT><FONT color=#008080 size=2>Project</P></FONT><FONT size=2>
+<P>{</P>
+<P>}</P>
+<P>}</P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Michael Hildner replied on Friday, March 02, 2007</h2><P>The constructor for Project is private, that's why you're getting that message.</P>
+<P>I've never tried to derive from something that has a private constructor, so I'm not sure how to get around it.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Sunday, March 04, 2007</h2><P>You have to change it from Private to Protected in your Gen class.</P>
+<P>Then when you inherit from it you do *not* need to add another constructor in your developer level class which simply calls MyBase.New.</P>
+<P>The CSLA framework uses this Protected constructor to create an instance of the class and then call DataPortal_xyz for you. </P>
+<P>You should standardize your object creation using the DataPortal. It keeps things clear - you know you will always have a Shared method to call DP_xyz and a single constructor used only by CSLA. </P>
+<P>When you mix and match DP_Create and other constructors things just get messy.</P>
+<P>Joe</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>kendallsoft replied on Monday, March 05, 2007</h2><P><SPAN>That did it- thanks to Joe and Michael- I was able to inherit the generated class and create special methods that remain there even after a regen of the project file. The key was to change the protection level of construtor to protected</SPAN></P>
+<P>Also I had to make the new class&nbsp;<FONT color=#008080 size=2>Serializable</FONT></P><FONT color=#0000ff size=2>
+<P>using</FONT><FONT size=2> System;<BR></FONT><FONT color=#0000ff size=2>using</FONT><FONT size=2> System.Collections.Generic;<BR></FONT><FONT color=#0000ff size=2>using</FONT><FONT size=2> System.Text;<BR></FONT><FONT color=#0000ff size=2>namespace</FONT><FONT size=2> ProjectTracker.Library</P>
+<P>{</P>
+<P>[</FONT><FONT color=#008080 size=2>Serializable</FONT><FONT size=2>()]</P>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>class</FONT><FONT size=2> </FONT><FONT color=#008080 size=2>_Project</FONT><FONT size=2>: </FONT><FONT color=#008080 size=2>Project</P></FONT><FONT size=2>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>string</FONT><FONT size=2> SpecialMethod()</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> </FONT><FONT color=#800000 size=2>"Still Available after regen"</FONT><FONT size=2>;</P>
+<P>}</P>
+<P>}</P>
+<P>}</P>
+<P>&nbsp;</P>
+<P>and&nbsp; also create a new guid so I could save the project: (The constructor in the Project.cs file)</P><FONT color=#0000ff size=2>
+<P>protected</FONT><FONT size=2> Project()</P>
+<P>{ </FONT><FONT color=#008000 size=2>/* require use of factory methods */</P></FONT><FONT size=2>
+<P>_id = </FONT><FONT color=#008080 size=2>Guid</FONT><FONT size=2>.NewGuid();</P>
+<P>}</P>
+<P>&nbsp;</P>
+<P>Now I can make this call-</P><FONT size=2>
+<P></FONT><FONT color=#008080 size=2>_Project</FONT><FONT size=2> proj = </FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> </FONT><FONT color=#008080 size=2>_Project</FONT><FONT size=2>();</P>
+<P></FONT><FONT size=2>proj.Name = </FONT><FONT color=#800000 size=2>"Mark's Project"</FONT><FONT size=2>;</P>
+<P></FONT><FONT size=2>proj.Description = </FONT><FONT color=#800000 size=2>"My Project"</FONT><FONT size=2>;</P>
+<P>proj.Started = </FONT><FONT color=#800000 size=2>"1/1/2006"</FONT><FONT size=2>;</P>
+<P></FONT><FONT size=2>proj.Save();</P>
+<P>Response.Write(proj.SpecialMethod());</P></FONT></FONT></FONT>
+<P>Thanks again</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Monday, March 05, 2007</h2>Keep in mind that it might not be clear how to use the new class if you have not hidden the factory methods on the original project class.<br><br>If you want to codegen, you might want to consider making Project a partial class instead of subclassing it.&nbsp; <br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>kendallsoft replied on Monday, March 05, 2007</h2><P>Good point- but my original thought was- a partil class in the app_code directory, but i was getting a persistent error when trying to save a project-</P>
+<P><FONT face=Arial>System.Web.Services.Protocols.SoapException: System.Web.Services.Protocols.SoapException: Server was unable to process request. ---&gt; System.Runtime.Serialization.SerializationException: Unable to find assembly 'App_Code.xcydwgk9, </FONT></P>
+<P><FONT face=Arial>Tried to publish so I could get a "HARD" dll but wouldn't go away-</FONT></P><FONT color=#808080 size=2>
+<P>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;summary&gt;</P>
+<P>///</FONT><FONT color=#008000 size=2> Summary description for _Project</P></FONT><FONT color=#808080 size=2>
+<P>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;/summary&gt;</P>
+<P>///</FONT><FONT color=#008000 size=2> </P></FONT><FONT size=2>
+<P>[</FONT><FONT color=#008080 size=2>Serializable</FONT><FONT size=2>()]</P></FONT><FONT color=#0000ff size=2>
+<P>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>partial</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>class</FONT><FONT size=2> </FONT><FONT color=#008080 size=2>_ProjectExt</FONT><FONT size=2>: </FONT><FONT color=#008080 size=2>Project</P></FONT><FONT size=2>
+<P>{</P>
+<P></P>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> _ProjectExt()</P>
+<P>{</P>
+<P></FONT><FONT color=#008000 size=2>//</P></FONT><FONT size=2>
+<P></FONT><FONT color=#008000 size=2>// TODO: Add constructor logic here</P></FONT><FONT size=2>
+<P></FONT><FONT color=#008000 size=2>//</P></FONT><FONT size=2>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>string</FONT><FONT size=2> SpecialMethod()</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> </FONT><FONT color=#800000 size=2>"Still Available after regen"</FONT><FONT size=2>;</P>
+<P>}</P>
+<P>}</P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>xal replied on Monday, March 05, 2007</h2>Well, the point is to use a partial class and _NOT_ inheritance... you're still using inheritance there.<br><br>Take a look at the approach taken by this codegen tool:<br><br>http://groups.google.com/group/CslaGenerator<br><br><br>Andrés<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>kendallsoft replied on Monday, March 05, 2007</h2><P>ok- I get it. No Inheritance- In the project library I am able to add</P><FONT color=#0000ff size=2>
+<P>Using</FONT><FONT size=2> System;</P></FONT><FONT color=#0000ff size=2>
+<P>using</FONT><FONT size=2> System.Collections.Generic;</P></FONT><FONT color=#0000ff size=2>
+<P>using</FONT><FONT size=2> System.Text;</P></FONT><FONT color=#0000ff size=2>
+<P>namespace</FONT><FONT size=2> ProjectTracker.Library</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>partial</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>class</FONT><FONT size=2> </FONT><FONT color=#008080 size=2>Project</P></FONT><FONT size=2>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>string</FONT><FONT size=2> SpecialMethod()</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> </FONT><FONT color=#800000 size=2>"Still Available after regen"</FONT><FONT size=2>;</P>
+<P>}</P>
+<P>}</P>
+<P>}</P>
+<P>&nbsp;</P>
+<P>Here I get my special method- I did have to change the original Project class to partial as well- that is the part I didn't get originally.</P>
+<P>&nbsp;</P>
+<P>Thanks for all the help working through this!</P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Bowman74 replied on Tuesday, March 20, 2007</h2><P>Ajj,</P>
+<P>Sorry to bring this thread back from the dead but I was wondering about how you use partial classes.&nbsp; I'd like to use them in my generator but I found no good way to override them in the custom code piece of the partial class.&nbsp; For example if I generate the public property declarations how do I later add custom code to the set method?&nbsp; Is there a particular design that you use to get over this?</P>
+<P>I'd like to keep my private attributes, well private, instead of protected but this one issue has kept me from generating partial classes.&nbsp; The need to override bits and pieces of generated code just comes up too often.&nbsp; So if you guys have developed a cool design pattern to work around it I'd sure like to know. <img src="/emoticons/emotion-1.gif" alt="Smile [:)]" /></P>
+<P>Thanks,</P>
+<P>Kevin</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Wednesday, March 21, 2007</h2><P>I do not use partial classes - but I recall reading about overriding methods in a thread.</P>
+<P>As I recall, the pattern is to set up a series of hooks in the code gen partial class that allow you to handle the proper event in your developer class. I don't recall the details but I am sure someone will share thier findings.</P>
+<P>Joe</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Bowman74 replied on Thursday, March 22, 2007</h2><P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>JoeFallon1:</strong></div><div><BR>As I recall, the pattern is to set up a series of hooks in the code gen partial class that allow you to handle the proper event in your developer class. I don't recall the details but I am sure someone will share thier findings.<BR></div></BLOCKQUOTE></P>
+<P>Thanks Joe.&nbsp; That was the only solution I could think of a well.&nbsp; My problem with it is that the hooks are presumably initially generated in the override class which would make it&nbsp;a bit of a pain&nbsp;to add in another hook at a later date and regenerate because you would have to manually add the hook method to all the override partial classes you had previously generated.&nbsp; Also there is a loss of control on when the hooks happen and probably a lot of unneeded calling into unused hooks.&nbsp; Of course these are not insurmountable problems, more like annoyances.&nbsp; Using inheritance has its annoyances as well such as scoping things so they can be accessed by subclasses.&nbsp; So it sounds like a six of one, half dozen of another type of thing.&nbsp; Too bad as I like the concept of partial classes but am unwilling to spend time changing my generator to trade one set of annoyances for a different but just as bad set of annoyances.</P>
+<P><img src="/emoticons/emotion-1.gif" alt="Smile [:)]" /></P>
+<P>Thanks,</P>
+<P>Kevin</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Thursday, March 22, 2007</h2><P>Kevin,</P>
+<P>I reached a similar conclusion once I saw how it needs to be done. I also have a lot invested in the inheritance model. So I really can't justify switching.</P>
+<P>Also, I thought the big reason for partial classes was designer support for MS tools. I am not very clear as to the big benefit in other cases. If anyone has some good reasons to use partial classes I would like to hear them and learn something new.</P>
+<P>Joe</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

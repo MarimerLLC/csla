@@ -1,0 +1,19 @@
+<html><header><title>ComplexTypes ( Embedded ValueObjects) as normal Objects or BOChildObjects</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>ComplexTypes ( Embedded ValueObjects) as normal Objects or BOChildObjects</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9724.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>jeissing posted on Monday, November 08, 2010</h2><p>Hi,</p>
+<p>i want to implement some embedded ValueObjects for my BusinessObject. For&nbsp;example:&nbsp; I want to&nbsp;implement a money class with the&nbsp;properties &quot;Quntity&quot; and &quot;Currency&quot; and some useful&nbsp;methods&nbsp;for rounding, CurrencyConvert,&nbsp;Adding amounts....&nbsp;&nbsp;. How should&nbsp;I implement this ? Is&nbsp;it a&nbsp;Csla.NET Child Object or somthing like a SmartDate ?</p>
+<p>&nbsp;</p>
+<p>Regards</p>
+<p>Josef</p>
+<p>&nbsp;&nbsp;&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Monday, November 08, 2010</h2><p>First, you should decide if you want to ever support Silverlight or WP7. If you do, you&#39;ll need to implement IMobileObject or use one of the existing serializable base classes. CSLA includes some low-level base classes in Csla.Core for reference types, but a struct can&#39;t inherit base class behavior, so any struct will need to implement the interface directly.</p>
+<p>Second, you need to decide what semantics you want. Reference types and value types are different, and they work differently in code. SmartDate is a value type (struct) because I am emulating DateTime, which is a value type. That has its good and bad points, but clearly makes sense for my particular scenario.</p>
+<p>While there are sometimes some minor differences in how .NET stores ref and value types in memory, for the most part there&#39;s not any realistic difference in terms of memory or performance. So the real criteria here is how you want fields of this type to act - like a reference type or a value type.</p>
+<p>So make that decision and roll with it :)</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jeissing replied on Tuesday, November 09, 2010</h2><p>Thanks for the answer. I have one last question to this point.&nbsp; I have make the decision to implement my Money Object &nbsp;with value semantic ( immutable object, copy by value). Know it is possible to implement the Money Object as a struct like the SmartDate. Ich think it is also possible to implement it as an immutable Reference Type (like the .net String Implementation).&nbsp;This&nbsp;means,&nbsp;the implementation shoult return new Money Instances for&nbsp;methods witch changes the state of a Money Object. Do you have any suggestions &nbsp;in the context of csla how to implement value smenatic ( struct or immutable reference type). The Microsoft Framework Design Guidelines recommends the following:</p>
+<p>&quot;Consider defining a struct instead of a class if instances of the type ars small and commonly short-lived or are commany embedded in ohter object .</p>
+<p>Do not define a struct unless the type has all of the following characteristics:</p>
+<p>1. It logically represents a single value, similiar to primitive type(int, double, ect.)</p>
+<p>2. It has an instance size under 16 bytes.</p>
+<p>3. It is immutable.</p>
+<p>4. It will not have to boxed frequently</p>
+<p>In all other cases, you should define your types as classes &quot;</p>
+<p>Expect the 16 byte constraint my Money Object has all of this characteristics. I am not shure if this&nbsp;characteristics&nbsp;are&nbsp;hard rules or more a rule of thumb.</p>
+<p>Regards </p>
+<p>Josef</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

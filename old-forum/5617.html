@@ -1,0 +1,129 @@
+<html><header><title>WPFToolkit DataGrid and EditableRootList Update 2nd time</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>WPFToolkit DataGrid and EditableRootList Update 2nd time</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5617.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>vschuhma posted on Friday, October 17, 2008</h2><P>Hi all,</P>
+<P>I am trying to get the new Wpf datagrid to work with an EditableRootList. When I update one of my items in the collection through editing a cell in the grid everything works fine first time changes are made. I can see the events being fired in the grid and Save is called on the item. The properties passed in are the new ones after editing.</P>
+<P>Second time, same cell, same picture although&nbsp;the item passed seems to be the old one. IsDirty not checked, properties not modified. Of course the&nbsp;Save is ignored in BusinessBase. </P>
+<P>Looks like the Grid is not replacing the references&nbsp;after the first update. However the UI is showing the correct values after the modifications although they are never modified in the DB. I am using a StaticResource and the CslaDataProvider. Csla Version 3.5.1 with VS 2008 Express C# :Net 3.5 Sp1&nbsp;</P>
+<P>Am I missing something or is it really an issue with the new DataGrid?</P>
+<P>Best Regards</P>
+<P>Volker</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>cclark replied on Friday, October 17, 2008</h2><P>I believe you are right,&nbsp;this is the same issue I am encountering, although I am not using the DataGrid (both use the System.Windows.Data.BindingListCollectionView). </P>
+<P>There appear to be a couple of issues going on, the first is that the BindingListCollectionView is holding a reference to the old object, the second is that CSLA has a problem where IEditableObject.BeginEdit is essentially ignored because Csla.Core.BusinessBase.BindingEdit is true even though the object is not in an edit state. I don't know about your framework, but we require the object to be in Edit mode or else we ignore the setter (and in debug mode have a Debug.Assert to alert the devs/testers).</P>
+<P>At this moment, we belive the first problem is really for Microsoft. The second issue may be a bug in CSLA (or rather it better handle the odd behaviours of the MS code).</P>
+<P>We're hoping to know by the end of the day and I will keep you posted.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>cclark replied on Friday, October 17, 2008</h2><P>This fixed one of my problems, see if it fixes yours as well:</P>
+<P>In Csla.Core.BusinessBase.ApplyEdit()</P>
+<P>Move BindingEdit = false to before the AcceptChanges call, so it should look like this:</P><FONT color=#0000ff size=2><FONT color=#0000ff size=2>
+<P>public</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>void</FONT></FONT><FONT size=2> ApplyEdit()<BR>{<BR>&nbsp;&nbsp;&nbsp;_neverCommitted = </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>false</FONT></FONT><FONT size=2>;<BR>&nbsp;&nbsp;&nbsp;BindingEdit = </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>false</FONT></FONT><FONT size=2>;<BR>&nbsp;&nbsp;&nbsp;AcceptChanges(</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>this</FONT></FONT><FONT size=2>.EditLevel - 1);<BR></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2>&nbsp;&nbsp;&nbsp;//BindingEdit = false;<BR></FONT></FONT><FONT size=2>}</FONT></P>
+<P><FONT size=2><FONT size=3>The reason all this is occuring gets a little involved. If it works for you as well I will try to post the writeup this weekend.</FONT></P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, October 17, 2008</h2><P>The question then becomes whether this change breaks Windows Forms behaviors? Windows Forms is SO picky, it seems likely that this may cause problems - though perhaps we'll get lucky?</P>
+<P>There is the ApplicationContext.PropertyChangedMode setting - which I now suspect is poorly named. It is used to change the PropertyChanged behavior to work with either Windows Forms or WPF, and may end up being the control flag for other differing behaviors...</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>vschuhma replied on Saturday, October 18, 2008</h2><P>just made the change you suggested.</P>
+<P>It still does not work. I still get back the wrong "old" object from the UI after one succesful update on a particular row.&nbsp;On subsequent&nbsp;changes to&nbsp;this item in the Grid it&nbsp;will always point &nbsp;to that object and keeps passing it back to me though the UI shows the updated values. The BusinessBase is not marked dirty and fields have the old value&nbsp;of the one change it does propagate to the DB.</P>
+<P>I assume it is a MS issues with the collection view. Sorry but the suggested workaround does not work in my case. Propably have to invalidate the whole ERLB and sort of rebind. </P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Atopper replied on Wednesday, November 12, 2008</h2>Did these issues get reported? If so, is there a response from Microsoft?</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, November 12, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Not by me &#8211; I haven&#8217;t had time to look at any of
+these issues I&#8217;m afraid&#8230;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky <o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Atopper
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Wednesday, November 12, 2008 10:35 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] WPFToolkit DataGrid and EditableRootList Update
+2nd time<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Did these issues get reported? If so, is there a response
+from Microsoft?<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>vschuhma replied on Saturday, November 15, 2008</h2><P>tried to find out where to report to. I couldn't find the appropriate forum for this. I had a look at Vincent Sibal's blog where a lot about data grid is explained but no success.</P>
+<P>I have started to work with the new version just released. Although it looks like the bug is still there. Still investigating my code wether I have made some stupid mistake. Would be nice to hear if anyone else got the DataGrid working?</P>
+<P>Regards Volker</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Atopper replied on Sunday, November 16, 2008</h2>I will start working with this in the next week, I'll report any issues here. I think issues can be reported at: http://www.codeplex.com/wpf/WorkItem/List.aspx.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Atopper replied on Saturday, November 22, 2008</h2>Let me say first that this may be totally wrong. I got the DataGrid working by wrapping my BusinessListBase in an ObservableCollection. If anyone has a better solution, I'm all ears.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Saturday, November 22, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Wouldn&#8217;t it be a joke if all of WPF works with
+IBindingList except for the grid?<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>The one thing I&#8217;ve been trying to avoid is different
+versions of the collection base classes for WPF from every other part of .NET.
+But perhaps it is unavoidable &#8211; a compiler directive or something so you
+build a &#8220;WPF version&#8221; of CSLA for WPF, and an &#8220;everything
+else&#8221; version for everything else&#8230;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Atopper
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Saturday, November 22, 2008 5:27 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: WPFToolkit DataGrid and EditableRootList
+Update 2nd time<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Let me say first that this may be totally wrong. I got the
+DataGrid working by wrapping my BusinessListBase in an ObservableCollection. If
+anyone has a better solution, I'm all ears.<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Atopper replied on Monday, November 24, 2008</h2>I found a bug in my code. I was not correctly assigning the new instance of my business class to the grid’s ItemsSource property when doing the save. I assumed that the grid would work by picking up the DataContext of the parent. I do not know if this is the intended/correct behavior of the DataGrid, but my code does seem to be correctly functioning without the use of the ObservableCollection. In addition, I do all of my data binding in code, rather than in XAML for this project so I do not know if using XAML would yeild the same results.</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

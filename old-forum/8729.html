@@ -1,0 +1,31 @@
+<html><header><title>Using Lambda expressions in PropertyInfos for Generic classes</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Using Lambda expressions in PropertyInfos for Generic classes</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/8729.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Devman posted on Friday, March 26, 2010</h2><p>Hi,</p>
+<p>Sorry if this is not the correct place to post this.I&#39;m going through our BOs and changing PropertyInfo names from literal strings to using lambda expressions as shown below;</p>
+<p>From;</p>
+<p>public static PropertyInfo&lt;string&gt; NameProperty = RegisterProperty(new PropertyInfo&lt;string&gt;(&quot;Name&quot;, PropertyNames.Name));</p>
+<p><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;"></span></span></p>
+<p>To;</p>
+<p>public static PropertyInfo&lt;string&gt; NameProperty = RegisterProperty&lt;string&gt;(x =&gt; x.Name,PropertyNames.Name);</p>
+<p>This works fine for none generic classes, however our generic base classes contain properties too. When I try to do this in the same way i get the following compile error</p>
+<p>&quot;Cannot convert lambda expression to type &#39;System.Type&#39; because it is not a delegate type&quot;.&nbsp;Is it possible to use Lamba expressions in this scenario? </p>
+<p>Regards</p>
+<p>David</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>ajj3085 replied on Friday, March 26, 2010</h2><p>I don&#39;t think its possible to use lambas for this.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Devman replied on Friday, March 26, 2010</h2><p><div style='padding-left: 50px;background-color:silver'><b>Andy<br></b>
+<p>I don&#39;t think its possible to use lambas for this.</p>
+<div style="CLEAR:both;"></div>
+</div></p>
+<p>What is confusing is that the Lambda expressions are working for some generic classes, but not all. &nbsp;The instances where it doesn&#39;t work, I&#39;m only able to point to base class properites (ie x =&gt; x.<span style="font-size:x-small;">CslaFieldManager</span>), and not properties from the current object if that makes any sense.&nbsp;</p>
+<p>The expressions work in my own class---------&nbsp; PBusinessBase&lt;T&gt; :BusinessBase&lt;T&gt;........</p>
+<p>but do not work for any classes which derive from PBusinessBase&lt;T&gt;&nbsp; </p>
+<p>Entity&lt;T&gt;:PBussinessBase&lt;T&gt; and subsequent derived classes.</p>
+<p>Can anyone explain this?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, March 26, 2010</h2><p>In CSLA 3.8 the RegisterProperty() methods have overloads in the generic base classes that allow the use of lambdas. Non-generic base classes like CommandBase and CriteriaBase don&#39;t have those overloads.</p>
+<p>In CSLA 4 all the base classes are now generic, so they all have the overloads.</p>
+<p>However, it is important to remember that the &lt;T&gt; in BusinessBase&lt;T&gt; isn&#39;t a real type until you are creating a concrete subclass. And the RegisterProperty() overloads do type inference on T.</p>
+<p>So generic base classes (any type other than you non-generic business class itself) can&#39;t use the lambda overload, because T will be the wrong type.</p>
+<p>If you create MyBusinessBase&lt;T&gt; as a generic base class, that&#39;s great. But T will end up being some other type (Customer, Product, etc). So any properties you register in MyBusinessBase&lt;T&gt; would register with the wrong T.</p>
+<p>In short, the rules for creating base classes are different from creating business classes, and you can&#39;t use the lambda overloads.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Devman replied on Monday, March 29, 2010</h2><p>Thanks for the replies. There was a problem with&nbsp;some of my class definitions which were constricting&nbsp;the properties I could use in my lambda expressions.</p>
+<p>I had the following which was only letting me use properties from MyBusinessBase instead of MyEntity.</p>
+<p><strong>public abstract class MyEntity&lt;T&gt; : MyBusinessBase&lt;T&gt; where T : MyBusinessBase&lt;T&gt;....</strong></p>
+<p>I&#39;ve changed this to the following and now I can define all my PropertyInfos with lambda expressions.</p>
+<p><strong>public abstract class MyEntity&lt;T&gt; : MyBusinessBase&lt;T&gt; where T : MyEntity&lt;T&gt;....</strong></p>
+<p>&nbsp;</p>
+<p>Regards</p>
+<p>David</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

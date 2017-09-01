@@ -1,0 +1,167 @@
+<html><header><title>How To: Linked List BO's</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>How To: Linked List BO's</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/2794.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>SonOfPirate posted on Friday, April 27, 2007</h2><P>I am wondering if anyone has any experience implementing a linked list collection of BO's?&nbsp; I would love to see an example of how it was implemented both from the BO stand-point and the back-end database for persistence that allowed&nbsp;you to reliably save and restore the list.</P>
+<P>The BO part and linked list part are straight-forward.&nbsp; It is the marriage of the two with database storage that has me a bit uneasy.&nbsp; Specifically, within Csla, how to structure the database, query and BO so that the list is restored correctly when retrieved from the database?</P>
+<P>Thanks in advance.</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, April 27, 2007</h2><P>Why do you need a linked list? And do you mean a simple linked list, or a double linked list?</P>
+<P>A simple linked list is merely a collection through which you can only navigate in one direction, and only from the top down (no random access, no going backward).</P>
+<P>Most people just use a List&lt;T&gt; or ArrayList rather than going to the work of creating an actual linked list, because you can treat those more robust lists like a linked list by smply ignoring all their other capabilities. And if you go that way, then you can just use a BusinessListBase-derived list and be done with it.</P>
+<P>However, .NET does now have a LinkedList&lt;T&gt; class, so if you need the semantics of a real linked list you can use that.</P>
+<P>Remember though, that you can't get BLB-style behavior out of it, because a linked list is a forward-only navigation system. You can't bind it to grids or do anything like that, so most of the BLB behaviors simply don't apply.</P>
+<P>Saving a linked list to a database would be quite comparable to saving the contents of a BLB though. In a BLB you do a for-each through all the children, having each one save itself. In a linked list you'd do the same thing, though I doubt you can use for-each. Instead you'll probably need to use a while block.</P>
+<P>The LinkedList&lt;T&gt; class has several Add methods (before, after, first, last). So to load a linked list from the database, you'd just loop through your datareader like normal, calling AddLast() to add each item to the end of the list.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>SonOfPirate replied on Friday, April 27, 2007</h2><P>I need to use a linked list structure because the data in each object is dependant and/or related to its siblings.&nbsp; E.g. this.StartDate = previous.EndDate.</P>
+<P>My concern is with preserving the order of the items when retrieving them from the database. If a change is made to the SQL, and all I am doing is calling AddLast, then the order of the items will change.</P>
+<P>Would it be worthwhile to persist the id of the previous item with each object then maybe use AddAfter with the Guid as an argument?</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, April 27, 2007</h2><P>Your ordering issue is the same as if you were trying to do ordering in any other type of list: in order to assure consistent ordering in the database too, you need to have some ascending key value you can use to order the items as you retrieve them from the database.</P>
+<P>If you have that, then you can use a list or linked list to load them into memory in that same order.</P>
+<P>To do what you describe you need a doubly-linked list. I don't know if LinkedList&lt;T&gt; meets that criteria or not, but if it does that'd be easier to work with than writing your own. If it doesn't, then you'll have to write your own, because otherwise you'd have no way to get to the previous item.</P>
+<P>Another thing you may consider, as it sounds like you are doing temporal work, is something called an <EM>interval tree</EM>. This is a binary tree structure that is ordered by discrete start/end values for each node. It is often used for temporal or spatial work, since it is extremely efficient at finding conflicts (where a potential new node would overlap an existing node based on range).</P>
+<P>I wrote a balanced (red-black) interval tree a few years ago. It is all correct except that I am not sure the delete operation is as efficient as it could be - but it works, which is really what counts. It is in VB, and like I say, it is quite old (and was a port from some C code I did in some graduate university class) so it may not be pretty.</P>
+<P>In my case I was doing spatial work, and used this to do rapid collision detection, but the original idea was to solve a temporal scenario - I just adapted it for my needs.</P>
+<P>I'm will to share it with you, as long as you realize it is totally as-is <img src="/emoticons/emotion-1.gif" alt="Smile [:)]" /></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Bayu replied on Saturday, April 28, 2007</h2>Interesting idea, this interval tree ....<br><br>I am trying to figure out what you would store on the nodes and links in such a tree ...? Could you elaborate it a bit more?<br><br>According to wikipedia it is something like this:<br>- each node captures a range (starttime - endtime) and each level downwards further divides this range up to the 'elementary' ranges that are on the leaves?<br><br>But to me it seems you'd rather have it like this:<br>- each node stores a single timestamp and the links downward should be seen as less-than and greater-than-or-equals checks. Then the range of the items at the leaf nodes can be deduced from the path of nodes from the root to the leaf?<br><br><br>I guess it is more like the latter, because there each timestamp is only stored once in the tree. The user then manipulates those timestamps in the UI which causes the BOs at the leaf-nodes to re-infer their start- and end-timings.<br><br>If so, it seems to me that this tree can be grown automatically when given the BOs that should be in the leaves, so you would not need to store any additional tree-related properties in the DB, right?<br><br>Thanks,<br>Bayu<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Saturday, April 28, 2007</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Each node has a Min and Max property. The guarantee is that, for
+node N, all items to the left of N will have a Min &lt;= N.Min and all items to
+the right of N will have a Min &gt; N.Min.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>This approach allows for overlap of the Max, or not, as you
+choose. In my case I allowed overlap, because I was actually mapping oriented
+bounding boxes (3D rectangles oriented on the XYZ axes) into 3D space, and so I
+had three interval trees&nbsp; (X, Y and Z). I just checked to make sure all
+three didn&#8217;t overlap first, and if they didn&#8217;t then I&#8217;d do
+the insert into all three trees.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>So the tree itself (in terms of insert and traversal) is all
+based on the Min value, but since each item has a Max value, you can very
+easily create a traversal method that locates collisions over the interval.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Bayu replied on Sunday, April 29, 2007</h2>Ah, thanks for clarifying that. :-)<br><br>Right now I am not so sure anymore if the interval tree as you described is a good solution. It seems to be geared at being able to quickly check for collisions or to avoid those. <br><br>The actual need here I believe is for a data structure that enables to keep a list of items (temporally) connected. This can be achieved by allowing the items in the list to observe each other (previous/next item) and having them keep their local start- and endtimes in sync. As suggested this requires a linked list which may be cumbersome to implement, hard to maintain and perhaps overkill for what is needed.<br><br>I think it is far easier to not have each item maintain its start and endtimings themselves but rather have each item 'conclude' or 'derive' its timings from an external data structure. A binary tree like you suggested would very well serve this purpose, but then in a simpler form. Each node could simply store a single timestamp that 'divides' the children in a set of preceding and succeeding nodes. When the user interacts with the nodes (i.e. setting the timestamps) the value can be easily 'pushed' downward to the BOs. Pattern-wise you could say that this datastructure externalizes the complexity of managing the timings in a dedicated data structure.<br><br>Just my thought that was inspired by your interval tree suggestion. ;-) <br>In hindsight, I just propose to transform the interval tree from a binary tree with two values per node into a 'timestamp tree' with just 1 value per node.<br><br>Kind regards,<br>Bayu<br><br><br><br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Sunday, April 29, 2007</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Yes, I agree &#8211; based on what we know of the requirement,
+the interval tree may be overkill. I brought it up, because I don&#8217;t know
+the full set of requirements.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>If the only requirement is to be able to have a &#8220;ripple
+effect&#8221; then I&#8217;d just use a standard list, and have the collection
+manage the &#8220;ripple&#8221;.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Remember that BLB gets the PropertyChanged event from the
+children, so it knows when they change, and raises a ListChanged event in
+response. I would think that for a ripple you&#8217;d want to turn off the
+raising of ListChanged until the end of the ripple, then raise a
+ListChanged(reset) of your own.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Following this logic, when your BLB-derived object gets a
+PropertyChanged of EndDate, it could ripple the change from that child through
+to the end of the list. Conversely, a change to StartDate would perhaps ripple
+from that child up through the start of the list.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I don&#8217;t see how this would be any different from a double
+linked list in terms of processing effort, because each child is going to be
+invoked from N-to-end or N-to-start either way, so it can adjust its
+startdate/enddate values appropriately.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I do agree that a linkedlist would be more elegant, but there&#8217;s
+a cost to using a linkedlist, because they are harder to implement and work
+with than a standard collection. So there&#8217;s certainly a tradeoff to
+consider.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky</span><o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>SonOfPirate replied on Monday, April 30, 2007</h2><P>My deepest apologies for seemingly disappearing from the discussion for a while - spent the weekend away from the computer for the first time in ages. <img src="/emoticons/emotion-5.gif" alt="Wink [;)]" />&nbsp; BUT!&nbsp; I am thrilled with the direction this has taken.</P>
+<P>Let me first say that while I don't think that an <EM>interval tree</EM> will accomplish what I need directly, I think you may have pointed me in a better direction conceptually.&nbsp; Truth is that we do have more of a tree structure than a simple list as originally conceived.&nbsp; And, there may be an issue with collisions, etc. that we need to address.&nbsp; So, Rocky, I would be THRILLED to take a look at what you did in that past to see if I may be able to pull some value from it.</P>
+<P>I did not realize that I had not provided more information on what we are modelling and will attempt to do so now in the hopes that it may garner more suggestions.</P>
+<P>Essentially we are modelling a timeline in as much that we have a root level object with a terminal start date and end date.&nbsp; Within that object there may be one or more "segments"; each with its own start date,&nbsp;end date and duration.&nbsp; Each segment can be further broken down into its own list of child segments and so on until we get the final resolution we want.&nbsp; Right now we are only going two levels deep, but the requirements dictate that this needs to be adaptable for additional levels in the future.</P>
+<P>Within a particular "branch", we cannot have gaps nor overlap in the segments.&nbsp; So they (as we call it) "float" in that the start date of the next segment will change to match changes to the end date of the previous segment, etc.&nbsp; The limitation here is that the start date of the first segment and end date of the last segment cannot change and will always match the terminal dates of its parent.&nbsp; UNLESS, and here's a tricky part, we haven't explicitly defined one or both of the terminal dates at the parent level.&nbsp; If this is the case, then the parent derives (or infers) its dates from its children (or its parent - this I am still working on).</P>
+<P>In a nutshell, the type of behavior we are looking for is:</P>
+<OL>
+<LI>Create a new timeline and set its StartDate to 1/1/2007 and its Duration to&nbsp;6 years (the EndDate is then derived from these two values).</LI>
+<LI>Create a list of segments within this timeline with each segment containing two child segments each one (1) year in duration.</LI></OL>
+<P>The resulting timeline should resemble the following:</P>
+<P><CODE>Root Timeline (Start: <STRONG>1/1/2007</STRONG>, Duration:&nbsp;<STRONG>6 years</STRONG>, End: 12/31/2012)<BR>&nbsp; &nbsp; ChildSegment1 (Start: 1/1/2007, Duration: 2 years, End: 12/31/2008)<BR>&nbsp; &nbsp; &nbsp; &nbsp; GrandchildSegment1A (Start: 1/1/2007, Duration: <STRONG>1 year</STRONG>, End: 12/31/2007)<BR>&nbsp; &nbsp; &nbsp; &nbsp; GrandchildSegment1B (Start: 1/1/2008, Duration: <STRONG>1 year</STRONG>, End: 12/31/2008)<BR>&nbsp; &nbsp; ChildSegment2 (Start: 1/1/2009, Duration: 2 years, End: 12/31/2010)<BR>&nbsp; &nbsp; &nbsp; &nbsp; GrandchildSegment2A (Start: 1/1/2009, Duration: <STRONG>1 year</STRONG>, End: 12/31/2009)<BR>&nbsp; &nbsp; &nbsp; &nbsp; GrandchildSegment2B (Start: 1/1/2010, Duration: <STRONG>1 year</STRONG>, End: 12/31/2010)<BR>&nbsp; &nbsp; ChildSegment3 (Start: 1/1/2011, Duration: 2 years, End: 12/31/2012)<BR>&nbsp; &nbsp; &nbsp; &nbsp; GrandchildSegment3A (Start: 1/1/2011, Duration: <STRONG>1 year</STRONG>, End: 12/31/2011)<BR>&nbsp; &nbsp; &nbsp; &nbsp; GrandchildSegment3B (Start: 1/1/2012, Duration: <STRONG>1 year</STRONG>, End: 12/31/2012) </CODE></P>
+<P>Only the property values shown in bold have been explicitly defined.&nbsp; All other values are implied/derived.</P>
+<P>From this point, we need to be able to start manipulating values and having the timeline and all segments adjust accordingly.&nbsp; For instance, if we extend GrandchildSegment 2B to have Duration of 2 years:</P>
+<UL>
+<LI>GranchildSegment2B.End&nbsp;= 12/31/2011 
+<LI>ChildSegment2.End&nbsp;= 12/31/2011 
+<LI>ChildSegment2.Duration&nbsp;= 3 years 
+<LI>ChildSegment3.Start&nbsp;= 1/1/2012 
+<LI>ChildSegment3.End&nbsp;= 12/31/2013 
+<LI>GrandchildSegment3A.Start&nbsp; = 1/1/2012 
+<LI>GrandchildSegment3A.End = 12/31/2012 
+<LI>GrandchildSegment3B.Start = 1/1/2013 
+<LI>GrandchildSegment3B.End = 12/31/2013 
+<LI>RootTimeline.Duration = 7 years 
+<LI>RootTimeline.End = 12/13/2013</LI></UL>
+<P>There's obviously a tremendous amount of logic governing what can be changed, the range of those changes, etc. and much of it has been worked out but there is a big issue dealing with the parent/child derivation/inferring part.&nbsp; At this point, I am looking at the parent defining constraints for the children as Rocky explained with the interval tree but need to allow the entire tree to react when any one value is modified.</P>
+<P>The most tangible example of what we are doing is how tasks are managed in MS-Project when you have sub-tasks and those have sub-tasks, etc. and you start manipulating each task's start date, end date or duration values.</P>
+<P>What do you think?</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>SonOfPirate replied on Monday, April 30, 2007</h2><P>Sorry, one more key point: All of this needs to be persisted to a database when editing is complete.&nbsp; So, I'm not just dealing with a data structure, I am dealing with a BO (in my mind, anyway) as we have persistence and business rules that are applied to each object to enforce validity as well as authorization rules to manage who is allowed to do what with the objects.</P>
+<P>And, finally, all of this occurs as a child property of another BO.</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Bayu replied on Monday, April 30, 2007</h2>Wow,<br><br>You are definitely in need of a sophisticated data structure. This is not just about a binary tree with one or more values, you need something much more capable. <br><br>Each node will have to be able to contain arbitrary many children (not just 2 as in binary trees) and each node will have to contain quite a bit of logic to keep all constraints satisfied. Node need to know about their children in case they derive their duration from them and also they need to know about their siblings to check if these are still movable or fixed. Additionally, children need to know about their parents too because depending on the state of their parent some abilities are enabled/disabled.<br><br>For my current app I developed something similar, but in my case it was a graph structure. Only by implementing all the logic on the vertices and edges of this graph I was able to implement the use cases in a maintainable way. As a consequence, the graph-nodes and links thereby have become my business objects. This is not a problem though, because in Csla terms the graph object is the editable root and all the nodes and links are editable children. <br><br>Bayu<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>SonOfPirate replied on Monday, April 30, 2007</h2><P>Yea, you've described it pretty well.&nbsp; The logic itself is coming along pretty well as far as managing parents, siblings, etc. in as much as I have a reference to them.&nbsp; As a data structure, I am able to model this pretty well and get the desired behavior.&nbsp; But, when I try to move this over to Csla so that these objects become BO's, things become problematic.&nbsp; This all ties in to my other running thread: <A HREF="/forums/thread/14277.aspx">http://forums.lhotka.net/forums/thread/14277.aspx</A></P>
+<P>I see two issues holding up my progress:</P>
+<OL>
+<LI>How to persist the data so that it can be reliably recreated</LI>
+<LI>Establishing all of the proper object references assuming a remote data portal environment (i.e. using&nbsp;serialization).</LI></OL>
+<P>I liked the idea of the binary tree because I liked the aspect of sorting when each element is added to the tree.&nbsp; Doing so ensures that the tree will always be the same&nbsp;regardless of the order in which the nodes are created (Yes?).&nbsp; So, I'm thinking of "stealing" from this concept and making the lists&nbsp;sorted by StartDate so that it won't matter what order the elements comes back from the database.&nbsp; I will include validation rules to ensure that the duration and end date properties are valid given the next sibling's start date, etc.&nbsp; I think this will allow me to get away from persisting the unique id's of siblings or any&nbsp;other methods I considered to ensure data integrity when rebuilding the graph.</P>
+<P>That leads me back to my other post and the issue setting up the relationships properly.</P>
+<P>I am now envisioning a 'n'&nbsp;tree data structure where each node can contain a doubly-linked list of 'n'&nbsp;child nodes.&nbsp; Each node will have references to the parent node, previous and next sibling nodes and (I'm thinking) the root node.&nbsp; All of these need to be re-established when the objects are deserialized on the local side of the client.</P>
+<P>I'm thinking that maybe I should implement ISerializable to ensure that the list is serialized in the correct order so that I can re-wire each child object as it is deserialized.&nbsp; That would take care of the sibling part.&nbsp; The other post is already hit on the issues with the parent relationship.</P>
+<P>Rocky, I am very interested in seeing how you implemented the Red-Black tree you referenced if for no other reason than to see how you managed this aspect but am also interested more in this data structure after having researched it today.</P>
+<P>Any thoughts/suggestions on this approach?</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Bayu replied on Tuesday, May 01, 2007</h2>Ah,<br><br>That's a nasty one indeed.<br><br>Custom serialization is the way to go, at least in my case it worked. What I did was this:<br><br>- the graph has two editable child collections, one for nodes and one for links<br>
+- each node or link requires a reference to the graph (basically my root object) in its factory method<br><br>So far so good, basically this ensures all objects have references to all relevant objects.<br><br><br>- then, in order to setup a link I have to set its FromNode and ToNode properties. It is important to note that these two properties are also the ONLY way how nodes can be connected. You can imagine that in the property setters of these a lot of stuff happens, like setting up observer hooks and so on. The great plus is that all this logic is contained within just these 2 setters.<br><br><br>Another insight is that only at this point my data structure actually becomes a graph. From a serialization point of view this makes it quite easy to implement: first you load the nodes and links collection on the graph and after that all is about setting properties.<br><br>Bayu<br><br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

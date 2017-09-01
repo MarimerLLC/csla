@@ -1,0 +1,16 @@
+<html><header><title>The Remote Server returned an error (503) Server Unavailable</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>The Remote Server returned an error (503) Server Unavailable</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/506.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>richardb posted on Thursday, June 29, 2006</h2><P>On occasion the Remoting DataPortal fails with the above message (in the Subject).</P>
+<P>Checking the event log it's clear that an unhandled exception has occurred somewhere in the DataPortal or the code it is running. Heres' the message.</P>
+<P><FONT size=1><FONT size=2>The description for Event ID ( 0 ) in Source ( .NET Runtime ) cannot be found. The local computer may not have the necessary registry information or message DLL files to display messages from a remote computer. You may be able to use the /AUXSOURCE= flag to retrieve this description; see Help and Support for details. The following information is part of the event: .NET Runtime version 1.1.4322.2300- w3wp.exe - Common Language Runtime Debugging Services: Application has generated an exception that could not be handled.</FONT></P>
+<P><FONT size=2>Process id=0x15cc (5580), Thread id=0x13d4 (5076).</FONT></P>
+<P><FONT size=2>Click OK to terminate the application.</FONT></P>
+<P><FONT size=2>Click CANCEL to debug the application..</FONT></P></FONT>
+<P>&nbsp;</P>
+<P>We have to restart the IIS Admin and WWW Publishing services to get the DataPortal responding again to client requests.</P>
+<P>Now, while&nbsp;we are checking we've got exception handling everywhere within our code that might get executed on the portal side, has anyone else come across this problem at all?&nbsp; Could it be something else causing the problem?</P>
+<P>We are IIS6, W2K3, CSLA 1.5x</P>
+<P>In terms of clues, we did have one client trying an operation where a known bug was occurring - the ado connection was closed and then an attempt to close it again was causing an exception to be thrown and caught in our exception handling block.&nbsp; Maybe the IIS and/or DataPortal just freaked out as they repeatedly generated errors here?&nbsp;&nbsp; We've had this twice now over a period of 2 months so it's a rare but "stops everyone" kind of bug.</P>
+<P>Thanks for any hints or advice.</P>
+<P>Richard.</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tjwolf1 replied on Tuesday, August 08, 2006</h2>Did you resolve this? I have a similar issue...when users are working, suddenly everyone cannot connect.</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,107 @@
+<html><header><title>Dynamic configuration of WcfDataPortal</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Dynamic configuration of WcfDataPortal</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3042.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>dlutz52 posted on Thursday, June 14, 2007</h2><P><FONT face=Verdana size=2>Hello all!</FONT></P>
+<P><FONT face=Verdana size=2>Is there any method (outside of modifying CSLA code or having multiple builds) to make the value of the WcfDataPortal endpoint info be based upon where the code is executing? Let me explain.</FONT><FONT face=Verdana size=2></FONT></P>
+<P><FONT face=Verdana size=2>In the place where I work we are proceeding with building a new case management system for one our departments using CSLA 3.0 and WCF.</FONT></P>
+<P><FONT face=Verdana size=2>We have three environments - dev, test and stage. Each of these environments are 3-tier and mirrors of each other as far as app and database servers are concerned. </FONT><FONT face=Verdana size=2>Each of these three environments have their own distinct WcfDataPortal, so each have a different endpoint for the channel based on what environment the app is executing in.</FONT></P>
+<P><FONT face=Verdana size=2>In the WcfProxy.vb file, CSLA gets the endpoint info from the app.config file using a constant named _endpoint set to 'WcfDataPortal' (the name of the endpoint in the app.config file.) This value&nbsp;gets passed to the <FONT size=2>ChannelFactory constructor which proceeds to read the endpoint info from the config file.</FONT></FONT></P>
+<P><FONT face=Verdana size=2><FONT size=2>Now to what I am really getting at. Since this value is stored in app.config, to have the same app run in the three enviroments, we would have to have three app.config files - either three seperate builds or one build and three different copies of of <EM>app</EM>.exe.config file. We would like to avoid both of these alternatives. </FONT></FONT></P>
+<P><FONT face=Verdana size=2><FONT size=2>The most ideal solution would&nbsp;be to have a single app.config with multiple endpoints identified by a different value for the name attribute and be able to dynamically trigger the app to use one or the other based on the 'name' of the endpoint.</FONT></FONT></P>
+<P><FONT face=Verdana size=2>For this to work, there would&nbsp;need to be a static method to set the _endpoint variable to the desired value (having it fall back to 'WcfDataPortal' as a default value.) This would be similar setting the default format string on the SmartDate class using the <FONT size=2>SetDefaultFormatString method.</FONT></FONT></P>
+<P><FONT face=Verdana size=2><FONT size=2>Would such a thing be possible/desireable in the public CSLA codebase? Or should I just bite the bullet and make the necessary code changes to the CSLA code we are using here?</FONT></FONT></P>
+<P><FONT face=Verdana size=2><FONT size=2>Is there any alternative which I may be clueless&nbsp;about?</P></FONT></FONT>
+<P><FONT size=+0><FONT face=Verdana size=2>A very similar&nbsp;concept is presented </FONT><A href="http://www.softwarethinking.com/blogs/xal/archive/2007/04/23/3.aspx"><FONT face=Verdana size=2>here</FONT></A><FONT face=Verdana size=2>&nbsp;by Andre.</FONT></FONT></P>
+<P><FONT size=+0><FONT face=Verdana size=2>Best regards --<BR>David Lutz</FONT></FONT><FONT size=+0></P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, June 15, 2007</h2><P>The obvious alternative is to create your own proxy class that does what you want. Remember that the data portal uses a provider model to load the client-side proxy, so you can always create your own proxy and use that instead.</P>
+<P>I could make the endpoint value configurable, but I'm not entirely sure I see the value. I'd have to make it configurable through the app.config file again, as there's no other known/reliable place to set this value.</P>
+<P>Or I suppose I could make it a static/Shared property of WcfProxy so you could set it through code, though it isn't clear to me how that'd work, because you'd still have to detect <EM>some</EM> config value to know what environment you are in?</P>
+<P>Or, and I think I like this best, I could make a protected EndPoint property within WcfProxy. That would allow you to subclass WcfProxy to create your own custom proxy that could set that value however you see fit - and the default would be the current behavior. But if you want to do something else, you could easily create the subclass and have the data portal load your custom proxy instead of the standard one.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>dlutz52 replied on Wednesday, June 20, 2007</h2><P>Rocky --</P>
+<P>Thanks for your consideration of this issue. Sorry about delayed response but I was away from the computer for a couple of days and then I needed to digest your response for a day.</P>
+<P>First &amp; fourth paragraph: I understand what you are talking about here, but I would rather be writing my code for my application and using CSLA out-of-the-box. </P>
+<P>Second paragraph: I could envision a situation where I had an endpoint named WcfDataPortal and another named&nbsp;WcfDataPortalBackup in the &lt;system.serviceModel&gt;&lt;client&gt; section of the app.config. If one got an&nbsp;exception trying to reach WcfDataPortal then one could try to use WcfDataPortalBackup as an alternative and keep on working. Web services are easy to deploy and will become&nbsp;widespread over time. Another use case could be that an organization has a central web service for user authentication and a seperate web service for the application.</P>
+<P>Your third paragraph points to my interest here. We have three seperate environments - dev, test,and production (including training would be a fourth) in which the developers (or even the app itself) will need to be able to switch between without having to change the app.config file to be different for each environment. Yes, detecting the environment is application specific and not anything that you would need to concern yourself with. To be able to set the _endpoint variable to something other than the default WcfDataPortal would allow one to do this since it is the endpoint's name in the app.config that gets passed to the ChannelFactory(Of IWcfPortal) constructor. Correct?</P>
+<P>I still like my idea of being able to set then value of the endpoint name being sent to the ChanelFactory constructor in a way very similar to how CSLA handles the format string for a SmartDate - simple and flexible within a strict set of requirements (being able to access multiple web services in a single application with CSLA out-of-the-box) using a static method to set the current value of the endpoint name.</P>
+<P>Of course I will defer to your broader vision of CSLA and work with any decision you should make about this.</P>
+<P>Best regards --<BR>David Lutz</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, June 20, 2007</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>dlutz52:</strong></div><div>
+<P>To be able to set the _endpoint variable to something other than the default WcfDataPortal would allow one to do this since it is the endpoint's name in the app.config that gets passed to the ChannelFactory(Of IWcfPortal) constructor. Correct?</P>
+<P></div></BLOCKQUOTE></P>
+<P>Yes, ultimately it is either this, or create a complete custom channel, which seems like a lot of work to solve&nbsp;a simple problem.</P>
+<P>The two options for doing this are to</P>
+<OL>
+<LI>Put a static/Shared EndPoint propery on WcfProxy</LI>
+<LI>Put a protected EndPoint property on WcfProxy</LI></OL>
+<P>The only difference between these two is where you write your code to detect the environment and set the EndPoint property value.</P>
+<P>In option 1, you'd have to find a place early in your application's lifecycle to run your detection code, such that it would run before any other code. This location is different for Windows, WPF and web apps, and would lead to a broadly non-standard approach to solving the issue.</P>
+<P>In option 2, you'd have a well-defined place to put this code: a subclass of WcfProxy that did nothing more than implement a constructor to set the EndPoint property. This code would automatically be called before the WcfProxy was used, so there'd be no ambiguity or inconsistency about how or where to put the code to make it work.</P>
+<P>Option 2 results in code like</P>
+<P>Public Class WcfProxy<BR>&nbsp; Inherits Csla.DataPortalClient.WcfProxy<BR><BR>&nbsp; Public Sub New()<BR>&nbsp;&nbsp;&nbsp; Dim endPoint As String<BR><STRONG>&nbsp;&nbsp;&nbsp; '&nbsp;find endpoint value from&nbsp;somewhere<BR></STRONG>&nbsp;&nbsp;&nbsp;&nbsp;Me.EndPoint = endPoint<BR>&nbsp; End Sub<BR><BR>End Class</P>
+<P>The bolded line of code is where your&nbsp;magic must happen.</P>
+<P>This makes a great deal of sense to me as an extensibilty point, so I'll roll it into Beta 2.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>dlutz52 replied on Wednesday, June 20, 2007</h2><P><FONT face=Tahoma size=2>Rocky --</FONT></P>
+<P><FONT face=Tahoma size=2>Thanks! I am a happy camper now. <img src="/emoticons/emotion-2.gif" alt="Big Smile [:D]" /></FONT></P>
+<P><FONT face=Tahoma size=2>BTW, any ETA on Beta 2?</FONT></P>
+<P><FONT face=Tahoma size=2>David</FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, June 20, 2007</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>My plan is this weekend (earlier if I&#8217;m lucky).<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>The only thing I need to wrap up is to get the CanExecute()
+functionality implemented in the C# version and I&#8217;m ready to go.
+Unfortunately this week has been very busy with other things and I&#8217;ve had
+little time to spend on CSLA development.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> dlutz52
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Wednesday, June 20, 2007 4:13 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] Dynamic configuration of WcfDataPortal<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p><span>Rocky --</span><o:p></o:p></p>
+
+<p><span>Thanks! I
+am a happy camper now. <img id="_x0000_i1025" src="/emoticons/emotion-2.gif" alt="Big Smile <img src=" />"></span><o:p></o:p></p>
+
+<p><span>BTW, any
+ETA on Beta 2?</span><o:p></o:p></p>
+
+<p><span>David</span><o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

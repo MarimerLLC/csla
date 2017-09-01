@@ -1,0 +1,488 @@
+<html><header><title>Criteria Class with Silverlight CSLA 3.6</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Criteria Class with Silverlight CSLA 3.6</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6138.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>danielw posted on Tuesday, January 13, 2009</h2><P>Hi all </P>
+<P>I am writing a silverlight app using CLSA 3.6.</P>
+<P>I have recoded the templates for CLSAGen to create the correct files as required.</P>
+<P>However I am having a bit of an issue with the criteria class. I have created a class as detailed in the book.</P><FONT size=2>
+<P><FONT face="Courier New">[</FONT></FONT><FONT color=#2b91af size=2><FONT face="Courier New" color=#2b91af size=2>Serializable</FONT></FONT><FONT size=2><FONT face="Courier New">()]<BR></FONT></FONT><FONT face="Courier New"><FONT color=#0000ff size=2><FONT color=#0000ff size=2>protected</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>class</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>CriteriaSystemUser</FONT></FONT><FONT size=2> : </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>CriteriaBase<BR></FONT></FONT></FONT><FONT size=2><FONT face="Courier New">{</FONT></P>
+<P></FONT><FONT face="Courier New"><FONT color=#0000ff size=2><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;private</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>string</FONT></FONT></FONT><FONT size=2><FONT face="Courier New"> _USR_Login;<BR></FONT></FONT><FONT face="Courier New"><FONT color=#0000ff size=2><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;public</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>string</FONT></FONT></FONT><FONT size=2><FONT face="Courier New"> USR_Login </FONT><FONT face="Courier New">{<BR></FONT></FONT><FONT face="Courier New"><FONT color=#0000ff size=2><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get</FONT></FONT><FONT size=2> { </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>return</FONT></FONT></FONT><FONT size=2><FONT face="Courier New"> _USR_Login; }<BR></FONT><FONT face="Courier New">&nbsp;&nbsp;&nbsp;}</FONT></P>
+<P><FONT face="Courier New"></FONT></P>
+<P></FONT><FONT face="Courier New"><FONT color=#0000ff size=2><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;public</FONT></FONT><FONT size=2> CriteriaSystemUser(</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>String</FONT></FONT></FONT><FONT size=2><FONT face="Courier New"> uSR_Login)<BR></FONT><FONT face="Courier New">&nbsp;&nbsp;&nbsp;:</FONT></FONT><FONT face="Courier New"><FONT color=#0000ff size=2><FONT color=#0000ff size=2>base</FONT></FONT><FONT size=2>(</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>typeof</FONT></FONT><FONT size=2>(</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>CriteriaSystemUser</FONT></FONT></FONT><FONT size=2><FONT face="Courier New">))<BR></FONT><FONT face="Courier New">&nbsp;&nbsp;&nbsp;{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</FONT></FONT><FONT size=2><FONT face="Courier New">_USR_Login = uSR_Login;<BR></FONT><FONT face="Courier New">&nbsp;&nbsp;&nbsp;}</FONT></FONT></P>
+<P><FONT size=2><FONT face="Courier New">}</FONT></FONT></P><FONT color=#808080 size=2><FONT color=#808080 size=2>
+<P>protected void DataPortal_Fetch(<FONT face="Courier New" color=#2b91af>CriteriaSystemUser</FONT> crit)<BR>{<BR>using (SqlConnection cn = new SqlConnection(DataBase.MakingSpaceOperationsConnection))<BR>{<BR>using (SqlCommand cmd = cn.CreateCommand())<BR>{<BR>cmd.CommandType = System.Data.CommandType.StoredProcedure;<BR>cmd.CommandText = "JM_ServiceCentre_ListBySystemUser";<BR>cmd.Parameters.AddWithValue("@USR_Login", crit.USR_Login);</P>
+<P>.........</P></FONT></FONT>
+<P><FONT size=2><FONT face="Courier New">But If i run this I get a&nbsp;<STRONG>no parameterless constructor defined for this object </STRONG>error</FONT></FONT></P>
+<P><FONT face="Courier New" size=2>So I then add a constructor</FONT></P><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>private</FONT></FONT><FONT size=2> CriteriaSystemUser()</P>
+<P>:</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>base</FONT></FONT><FONT size=2>(</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>typeof</FONT></FONT><FONT size=2>(</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>CriteriaSystemUser</FONT></FONT><FONT size=2>))</P>
+<P>{</P>
+<P></P>
+<P>}</P></FONT>
+<P><FONT size=2><FONT face="Courier New">which now runs succesfully but although the USR_Login value gets set in the class. It is not passed through to the dataportal fetch</FONT></FONT></P>
+<P><FONT size=2><FONT face="Courier New">Any ideas would be most helpful, I have gone back to using the singlecriteria which works fine for now.</FONT></FONT></P>
+<P><FONT size=2><FONT face="Courier New"></FONT></FONT>&nbsp;</P>
+<P><FONT size=2><FONT face="Courier New">Cheers</FONT></FONT></P>
+<P><FONT size=2><FONT face="Courier New">Daniel</FONT></P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Tuesday, January 13, 2009</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Any CSLA class in SL must have a public parameterless
+constructor.&nbsp; There are no exceptions to this rule, including criteria
+classes.&nbsp; This requirement stems out of reflection restrictions in
+Silverlight.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> danielw
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Tuesday, January 13, 2009 8:33 AM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> [CSLA .NET] Criteria Class with Silverlight CSLA 3.6<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Hi all <o:p></o:p></p>
+
+<p>I am writing a silverlight app using CLSA 3.6.<o:p></o:p></p>
+
+<p>I have recoded the templates for CLSAGen to create the correct files as
+required.<o:p></o:p></p>
+
+<p>However I am having a bit of an issue with the criteria class. I have
+created a class as detailed in the book.<o:p></o:p></p>
+
+<p><span>[<span>Serializable</span>()]<br>
+<span>protected</span> <span>class</span>
+<span>CriteriaSystemUser</span> : <span>CriteriaBase<br>
+</span>{</span><span><o:p></o:p></span></p>
+
+<p><span>&nbsp;&nbsp;&nbsp;private</span><span> <span>string</span>
+_USR_Login;<br>
+<span>&nbsp;&nbsp;&nbsp;public</span> <span>string</span> USR_Login {<br>
+<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get</span> { <span>return</span> _USR_Login; }<br>
+&nbsp;&nbsp;&nbsp;}</span><span><o:p></o:p></span></p>
+
+<p><span>&nbsp;&nbsp;&nbsp;public</span><span> CriteriaSystemUser(<span>String</span> uSR_Login)<br>
+&nbsp;&nbsp;&nbsp;:<span>base</span>(<span>typeof</span>(<span>CriteriaSystemUser</span>))<br>
+&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_USR_Login = uSR_Login;<br>
+&nbsp;&nbsp;&nbsp;}</span><o:p></o:p></p>
+
+<p><span>}</span><o:p></o:p></p>
+
+<p><span>protected void DataPortal_Fetch(</span><span>CriteriaSystemUser</span><span> crit)<br>
+{<br>
+using (SqlConnection cn = new
+SqlConnection(DataBase.MakingSpaceOperationsConnection))<br>
+{<br>
+using (SqlCommand cmd = cn.CreateCommand())<br>
+{<br>
+cmd.CommandType = System.Data.CommandType.StoredProcedure;<br>
+cmd.CommandText = &quot;JM_ServiceCentre_ListBySystemUser&quot;;<br>
+cmd.Parameters.AddWithValue(&quot;@USR_Login&quot;, crit.USR_Login);<o:p></o:p></span></p>
+
+<p><span>.........<o:p></o:p></span></p>
+
+<p><span>But If i run this I
+get a&nbsp;<strong><span>no parameterless
+constructor defined for this object </span></strong>error</span><o:p></o:p></p>
+
+<p><span>So I then add a
+constructor</span><o:p></o:p></p>
+
+<p><span>private</span><span> CriteriaSystemUser()<o:p></o:p></span></p>
+
+<p><span>:<span>base</span>(<span>typeof</span>(<span>CriteriaSystemUser</span>))<o:p></o:p></span></p>
+
+<p><span>{<o:p></o:p></span></p>
+
+<p><span>}<o:p></o:p></span></p>
+
+<p><span>which now runs
+succesfully but although the USR_Login value gets set in the class. It is not
+passed through to the dataportal fetch</span><o:p></o:p></p>
+
+<p><span>Any ideas would be
+most helpful, I have gone back to using the singlecriteria which works fine for
+now.</span><o:p></o:p></p>
+
+<p>&nbsp;<o:p></o:p></p>
+
+<p><span>Cheers</span><o:p></o:p></p>
+
+<p><span>Daniel</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>danielw replied on Tuesday, January 13, 2009</h2><P>Thanks for that<BR>I have changed the constructor to&nbsp;public . But I still can not get access to the passed in value in my Fetch procedure</P>
+<P><FONT color=#808080><SPAN>protected void DataPortal_Fetch(</SPAN><SPAN>CriteriaSystemUser</SPAN></FONT><SPAN><FONT color=#808080> crit)<BR>{<BR>using (SqlConnection cn = new SqlConnection(DataBase.MakingSpaceOperationsConnection))<BR>{<BR>using (SqlCommand cmd = cn.CreateCommand())<BR>{<BR>cmd.CommandType = System.Data.CommandType.StoredProcedure;<BR>cmd.CommandText = "JM_ServiceCentre_ListBySystemUser";<BR>cmd.Parameters.AddWithValue("@USR_Login", crit.USR_Login);</FONT></SPAN></P>
+<P><SPAN><FONT color=#808080>The Crit.USR_Login is blank</FONT></SPAN></P>
+<P><SPAN><FONT color=#808080>Cheers</FONT></SPAN></P>
+<P><SPAN><FONT color=#808080>Daniel</FONT></SPAN></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>PeteH replied on Tuesday, January 13, 2009</h2><font face="Tahoma"><font size="2">You will need to add these lines to the CriteriaSystemUser class:<br><br>&nbsp;&nbsp;&nbsp; #region MobileFormatter<br><br>&nbsp;&nbsp;&nbsp; /// &lt;summary&gt;<br>&nbsp;&nbsp;&nbsp; /// Override this method to insert your field values<br>&nbsp;&nbsp;&nbsp; /// into the MobileFormatter serialzation stream.<br>&nbsp;&nbsp;&nbsp; /// &lt;/summary&gt;<br>&nbsp;&nbsp;&nbsp; /// &lt;param name="info"&gt;<br>&nbsp;&nbsp;&nbsp; /// Object containing the data to serialize.<br>&nbsp;&nbsp;&nbsp; /// &lt;/param&gt;<br>&nbsp;&nbsp;&nbsp; /// &lt;param name="mode"&gt;<br>&nbsp;&nbsp;&nbsp; /// The StateMode indicating why this method was invoked.<br>&nbsp;&nbsp;&nbsp; /// &lt;/param&gt;<br>&nbsp;&nbsp;&nbsp; protected override void OnGetState(SerializationInfo info, StateMode mode)<br>&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; base.OnGetState(info, mode);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; info.AddValue("Csla.Silverlight.</font></font><font face="Tahoma"><font size="2">CriteriaSystemUser</font></font><font face="Tahoma"><font size="2">._USR_Login", _USR_Login);<br></font></font><font face="Tahoma"><font size="2">&nbsp;&nbsp;&nbsp; }<br><br>&nbsp;&nbsp;&nbsp; /// &lt;summary&gt;<br>&nbsp;&nbsp;&nbsp; /// Override this method to retrieve your field values<br>&nbsp;&nbsp;&nbsp; /// from the MobileFormatter serialzation stream.<br>&nbsp;&nbsp;&nbsp; /// &lt;/summary&gt;<br>&nbsp;&nbsp;&nbsp; /// &lt;param name="info"&gt;<br>&nbsp;&nbsp;&nbsp; /// Object containing the data to serialize.<br>&nbsp;&nbsp;&nbsp; /// &lt;/param&gt;<br>&nbsp;&nbsp;&nbsp; /// &lt;param name="mode"&gt;<br>&nbsp;&nbsp;&nbsp; /// The StateMode indicating why this method was invoked.<br>&nbsp;&nbsp;&nbsp; /// &lt;/param&gt;<br>&nbsp;&nbsp;&nbsp; protected override void OnSetState(SerializationInfo info, StateMode mode)<br>&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; base.OnSetState(info, mode);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </font></font><font face="Tahoma"><font size="2">_USR_Login </font></font><font face="Tahoma"><font size="2">= info.GetValue&lt;string&gt;("Csla.Silverlight.</font></font><font face="Tahoma"><font size="2">CriteriaSystemUser</font></font><font face="Tahoma"><font size="2">._USR_Login");<br>&nbsp;&nbsp;&nbsp; }<br><br>&nbsp;&nbsp;&nbsp; #endregion<br></font></font></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Tuesday, January 13, 2009</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Alternatively, you can inherit from CriteriaBase and use
+RegisterProperty syntax to register custom properties.&nbsp; This method is probably
+more consistent with other CSLA classes.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> PeteH
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Tuesday, January 13, 2009 10:46 AM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: Criteria Class with Silverlight CSLA 3.6<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal><span>You
+will need to add these lines to the client version of CriteriaSystemUser.<br>
+<br>
+</span><span><br>
+&amp;nbsp;&amp;nbsp;&amp;nbsp; #region MobileFormatter<br>
+<br>
+&amp;nbsp;&amp;nbsp;&amp;nbsp; /// &amp;lt;summary&amp;gt;<br>
+&amp;nbsp;&amp;nbsp;&amp;nbsp; /// Override this method to insert your field
+values<br>
+&amp;nbsp;&amp;nbsp;&amp;nbsp; /// into the MobileFormatter serialzation
+stream.<br>
+&amp;nbsp;&amp;nbsp;&amp;nbsp; /// &amp;lt;/summary&amp;gt;<br>
+&amp;nbsp;&amp;nbsp;&amp;nbsp; /// &amp;lt;param name=&quot;info&quot;&amp;gt;<br>
+&amp;nbsp;&amp;nbsp;&amp;nbsp; /// Object containing the data to serialize.<br>
+&amp;nbsp;&amp;nbsp;&amp;nbsp; /// &amp;lt;/param&amp;gt;<br>
+&amp;nbsp;&amp;nbsp;&amp;nbsp; /// &amp;lt;param name=&quot;mode&quot;&amp;gt;<br>
+&amp;nbsp;&amp;nbsp;&amp;nbsp; /// The StateMode indicating why this method was
+invoked.<br>
+&amp;nbsp;&amp;nbsp;&amp;nbsp; /// &amp;lt;/param&amp;a mp;gt;<br>
+&amp;nbsp;&amp;nbsp;&amp;nbsp; protected override void
+OnGetState(SerializationInfo info, StateMode mode)<br>
+&amp;nbsp;&amp;nbsp;&amp;nbsp; {<br>
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; base.OnGetState(info, mode);<br>
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;
+info.AddValue(&quot;Csla.Silverlight.&lt;/font&gt;&lt;/font&gt;&lt;font
+face=&quot;Tahoma&quot;&gt;&lt;font
+size=&quot;2&quot;&gt;CriteriaSystemUser&lt;/font&gt;&lt;/font&gt;&lt;font
+face=&quot;Tahoma&quot;&gt;&lt;font size=&quot;2&quot;&gt;._USR_Login&quot;,
+_USR_Login);<br>
+&lt;/font&gt;&lt;/font&gt;&lt;font face=&quot;Tahoma&quot;&gt;&lt;font
+size=&quot;2&quot;&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp; }<br>
+<br>
+&amp;nbsp;&amp;nbsp;&amp;nbsp; /// &amp;lt;summary&amp;gt;<br>
+&amp;nbsp;&amp;nbsp;&amp;nbsp; /// Override this method to retrieve your field
+values<br>
+&amp;nbsp;&amp;nbsp;&amp;nbsp; /// from the MobileFormatter serialzation
+stream.<br>
+&amp;nbsp;&amp;nbsp;&amp;nbsp; /// &amp; amp;lt;/summary&amp;gt;<br>
+&amp;nbsp;&amp;nbsp;&amp;nbsp; /// &amp;lt;param name=&quot;info&quot;&amp;gt;<br>
+&amp;nbsp;&amp;nbsp;&amp;nbsp; /// Object containing the data to serialize.<br>
+&amp;nbsp;&amp;nbsp;&amp;nbsp; /// &amp;lt;/param&amp;gt;<br>
+&amp;nbsp;&amp;nbsp;&amp;nbsp; /// &amp;lt;param name=&quot;mode&quot;&amp;gt;<br>
+&amp;nbsp;&amp;nbsp;&amp;nbsp; /// The StateMode indicating why this method was
+invoked.<br>
+&amp;nbsp;&amp;nbsp;&amp;nbsp; /// &amp;lt;/param&amp;gt;<br>
+&amp;nbsp;&amp;nbsp;&amp;nbsp; protected override void OnSetState(SerializationInfo
+info, StateMode mode)<br>
+&amp;nbsp;&amp;nbsp;&amp;nbsp; {<br>
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; base.OnSetState(info, mode);<br>
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;
+_&lt;/font&gt;&lt;/font&gt;&lt;font face=&quot;Tahoma&quot;&gt;&lt;font
+size=&quot;2&quot;&gt;_USR_Login &lt;/font&gt;&lt;/font&gt;&lt;font
+face=&quot;Tahoma&quot;&gt;&lt;font size=&quot;2&quot;&gt;= info.G
+etValue&amp;lt;int&amp;gt;(&quot;Csla.Silverlight.&lt;/font&gt;&lt;/font&gt;&lt;font
+face=&quot;Tahoma&quot;&gt;&lt;font
+size=&quot;2&quot;&gt;CriteriaSystemUser&lt;/font&gt;&lt;/font&gt;&lt;font
+face=&quot;Tahoma&quot;&gt;&lt;font size=&quot;2&quot;&gt;._USR_Login&quot;);<br>
+&amp;nbsp;&amp;nbsp;&amp;nbsp; }<br>
+<br>
+&amp;nbsp;&amp;nbsp;&amp;nbsp; #endregion<br>
+<br>
+</span><span><br>
+</span><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>danielw replied on Tuesday, January 13, 2009</h2><P>Sorry not sure if I am being stupid,<BR>But i have added the code as suggested but I still do not get the value back.</P>
+<P>Do I need to call some other method than <FONT color=#008000 size=2>crit.USR_Login to get the value</FONT></P><FONT color=#0000ff size=2><FONT color=#0000ff size=2><FONT color=#008000 size=2><FONT color=#008000 size=2>
+<P>protected void DataPortal_Fetch(CriteriaSystemUser crit)</FONT></FONT></FONT></FONT><FONT size=2><BR></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>using</FONT></FONT><FONT size=2> (</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>SqlConnection</FONT></FONT><FONT size=2> cn = </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>new</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>SqlConnection</FONT></FONT><FONT size=2>(</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>DataBase</FONT></FONT><FONT size=2>.MakingSpaceOperationsConnection))<BR>{<BR></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>using</FONT></FONT><FONT size=2> (</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>SqlCommand</FONT></FONT><FONT size=2> cmd = cn.CreateCommand())<BR>{<BR>cmd.CommandType = System.Data.</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>CommandType</FONT></FONT><FONT size=2>.StoredProcedure;<BR>cmd.CommandText = </FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>"JM_ServiceCentre_ListBySystemUser"</FONT></FONT><FONT size=2>;<BR></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2>&nbsp;cmd.Parameters.AddWithValue("@USR_Login", crit.USR_Login);</FONT></FONT></P>
+<P><FONT color=#008000 size=2></FONT>&nbsp;</P>
+<P><FONT color=#008000 size=2>cheers</FONT></P>
+<P><FONT color=#008000 size=2>Daniel</FONT></P>
+<P><FONT color=#008000 size=2><FONT color=#008000 size=2>&nbsp;</P></FONT></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>danielw replied on Wednesday, January 14, 2009</h2><P>Thanks for your help<BR>could not get it to work using the override methods of mobile.<BR>And also could not registerpropertys in the CriteriaBase.</P>
+<P>But I took this idea and created a BusinessBase as a criteria as in the book, I could then register the properties and it now works beautifully with the CSLA gen</P>
+<P>Cheers</P>
+<P>daniel </P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>thunt replied on Monday, January 19, 2009</h2><P>Daniel,</P>
+<P>Could you post code to help me out with same issue?</P>
+<P>Cheers</P>
+<P>Terry</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Monday, January 19, 2009</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Here is an example of how to use Criteria class for Silverlight
+inheriting from CriteriaBase.&nbsp; This specific class is embedded inside a
+ROLB class, but you can have it as external / stand alone class as well.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>[<span>Serializable</span>]<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span>public</span> <span>class</span> <span>Criteria</span> : <span>CriteriaBase<o:p></o:p></span></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span>private</span> <span>static</span> <span>PropertyInfo</span>&lt;<span>string</span>&gt;
+SearchProperty = RegisterProperty&lt;<span>string</span>&gt;(<span>typeof</span>(<span>Criteria</span>), <span>new</span> <span>PropertyInfo</span>&lt;<span>string</span>&gt;(<span>&quot;Search&quot;</span>,
+<span>&quot;Search&quot;</span>));<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span>public</span> <span>string</span>
+Search<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+{<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>get</span> { <span>return</span>
+ReadProperty(SearchProperty); }<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+}<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span>private</span> <span>static</span> <span>PropertyInfo</span>&lt;<span>bool</span>&gt;
+IncludeAddressProperty = RegisterProperty&lt;<span>bool</span>&gt;(<span>typeof</span>(<span>Criteria</span>), <span>new</span> <span>PropertyInfo</span>&lt;<span>bool</span>&gt;(<span>&quot;IncludeAddress&quot;</span>,
+<span>&quot;IncludeAddress&quot;</span>));<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span>public</span> <span>bool</span>
+IncludeAddress<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+{<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span>get</span> { <span>return</span>
+ReadProperty(IncludeAddressProperty); }<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+}<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span>public</span> Criteria(<span>Type</span>
+type, <span>string</span> search, <span>bool</span>
+includeAddress)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+: <span>base</span>(type)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+{<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;LoadProperty(SearchProperty, search);<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+LoadProperty(IncludeAddressProperty, includeAddress);<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+}<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span>public</span> Criteria() { }<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+}<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Here
+is how to use it:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>public</span><span> <span>static</span> <span>void</span> GetReadonlySearchedPersonList(<span>string</span> search, <span>bool</span>
+includeAddress, <span>EventHandler</span>&lt;<span>DataPortalResult</span>&lt;<span>ReadonlySearchedPersonList</span>&gt;&gt;
+handler)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span>DataPortal</span>&lt;<span>ReadonlySearchedPersonList</span>&gt;
+dp = <span>new</span> <span>DataPortal</span>&lt;<span>ReadonlySearchedPersonList</span>&gt;();<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+dp.FetchCompleted += handler;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+dp.BeginFetch((<span>new</span> <span>Criteria</span>(<span>typeof</span>(<span>ReadonlySearchedPersonList</span>),
+search, includeAddress)));<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+}<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>private void DataPortal_Fetch(Criteria
+criteria)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&#8230;.</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> thunt
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Monday, January 19, 2009 8:50 AM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: Criteria Class with Silverlight CSLA 3.6<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Daniel,<o:p></o:p></p>
+
+<p>Could you post code to help me out with same issue?<o:p></o:p></p>
+
+<p>Cheers<o:p></o:p></p>
+
+<p>Terry<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>danielw replied on Monday, January 19, 2009</h2><FONT size=2>
+<P>Hi Terry, <BR>Using a business base I did it like this.</P>
+<P>[</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>Serializable</FONT></FONT><FONT size=2>()]<BR></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>public</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>class</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>Criteria</FONT></FONT><FONT size=2> : </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>BusinessBase</FONT></FONT><FONT size=2>&lt;</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>Criteria</FONT></FONT><FONT size=2>&gt;, </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>ICriteria<BR></FONT></FONT><FONT size=2>{<BR></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;private</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>static</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>PropertyInfo</FONT></FONT><FONT size=2>&lt;</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>Int32</FONT></FONT><FONT size=2>&gt; MED_IDProperty = RegisterProperty&lt;</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>Int32</FONT></FONT><FONT size=2>&gt;(</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>new</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>PropertyInfo</FONT></FONT><FONT size=2>&lt;</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>Int32</FONT></FONT><FONT size=2>&gt;(</FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>"MED_ID"</FONT></FONT><FONT size=2>, </FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>"MED_ID"</FONT></FONT><FONT size=2>));<BR></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;public</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>Int32</FONT></FONT><FONT size=2> MED_ID<BR>&nbsp;&nbsp;&nbsp;{<BR></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get</FONT></FONT><FONT size=2>&nbsp;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<BR></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return</FONT></FONT><FONT size=2> GetProperty(MED_IDProperty);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set<BR></FONT></FONT><FONT size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;SetProperty(MED_IDProperty,</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>value</FONT></FONT><FONT size=2>);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>&nbsp;&nbsp;&nbsp;}</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;public</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>Type</FONT></FONT><FONT size=2> ObjectType{<BR></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get</FONT></FONT><FONT size=2> {</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>return</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>typeof</FONT></FONT><FONT size=2>(</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>Criteria</FONT></FONT><FONT size=2>);}<BR>&nbsp;&nbsp;&nbsp;}</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;public</FONT></FONT><FONT size=2> Criteria(</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>Int32</FONT></FONT><FONT size=2> mED_ID)<BR></FONT><FONT size=2>&nbsp;&nbsp;&nbsp;{<BR></FONT><FONT size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;SetProperty(MED_IDProperty, mED_ID);<BR>&nbsp;&nbsp;&nbsp;}</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;public</FONT></FONT><FONT size=2> Criteria()<BR>&nbsp;&nbsp;&nbsp;{<BR>&nbsp;&nbsp;&nbsp;}</P>
+<P>}</P>
+<P>&nbsp;</P>
+<P>with the call being</P><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>public</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>static</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>void</FONT></FONT><FONT size=2> DeleteMedicalContact(</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>Int32</FONT></FONT><FONT size=2> mED_ID,</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>EventHandler</FONT></FONT><FONT size=2>&lt;</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>DataPortalResult</FONT></FONT><FONT size=2>&lt;</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>MedicalContact</FONT></FONT><FONT size=2>&gt;&gt; handler)<BR>{<BR></FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>DataPortal</FONT></FONT><FONT size=2>&lt;</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>MedicalContact</FONT></FONT><FONT size=2>&gt; dp = </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>new</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>DataPortal</FONT></FONT><FONT size=2>&lt;</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>MedicalContact</FONT></FONT><FONT size=2>&gt;();<BR>dp.DeleteCompleted += handler;<BR></FONT><FONT size=2>dp.BeginDelete(</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>new</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>Criteria</FONT></FONT><FONT size=2>(mED_ID));<BR></FONT><FONT size=2>}</FONT></P>
+<P><FONT size=2>cheers</FONT></P>
+<P>Daniel</P>
+<P><FONT size=2>&nbsp;</P></FONT></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jack replied on Thursday, February 19, 2009</h2>Sergey,<br><br>I ran into this same issue but I had put my public constructor inside a #if Silverlight .. #endif block.&nbsp; I had to take that block out in order for it to work.<br><br>Yet my base class has the parameterless public constructor inside those same attributes and it is fine.<br><br>Why is that?<br><br>thanks<br><br>jack<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

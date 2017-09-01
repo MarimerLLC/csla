@@ -1,0 +1,42 @@
+<html><header><title>Caliburn.Micro for Csla</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Caliburn.Micro for Csla</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10178.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>tiago posted on Thursday, March 17, 2011</h2><p><a href="http://caliburnmicro.codeplex.com/">Caliburn.Micro</a> is an open source project (MIT License) that provides a MVVM framework that supports WPF, Silverlight and WP7. It&#39;s powerful enough and yet simple enought to understand (around 1700 LOC).</p>
+<p>I&#39;ve made some extensions to Caliburn.Micro in order to better support Csla.&nbsp;A new <strong>ScreenWithModelBase&lt;T&gt;</strong> merges <strong>Csla.Xaml.ViewModel&lt;T&gt;</strong> with <strong>Caliburn.Micro.Screen</strong> class. Probably I should make a proper HG fork but haven&#39;t done it yet. Anyway it is working and if there are interested users, I can send the source or maybe decide to fork.</p>
+<p>Tiago Freitas Leal</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RodWatkins replied on Friday, March 18, 2011</h2><p>Yes, I am interested. can you send the source.</p>
+<p>Rod</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tiago replied on Friday, March 18, 2011</h2><p>Hi Rod,</p>
+<p>You can fetch the zip at <a href="http://forums.lhotka.net/members/tiago/files/default.aspx">http://forums.lhotka.net/members/tiago/files/default.aspx</a></p>
+<p>Note the WP7 part was left out just because I didn&#39;t install WP7 support and VS2010 refuses to load the project.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JCardina replied on Tuesday, May 10, 2011</h2><p>Hi Tiago, I&#39;m looking at different MVVM frameworks and thought Prism was the way to go but now seeing Caliburn it&#39;s looking more and more interesting as I get to know it better.</p>
+<p>I think I see where your extensions will fit in however I&#39;m concerned that this involves modifying the source of the Caliburn framework.&nbsp; I decided this time around to not modify Csla as I have in the past to make it easier to keep current.&nbsp; I&#39;d like to do the same thing with my MVVM framework if possible.</p>
+<p>Is there any way to accomplish what you did without modifying the Caliburn framework?</p>
+<p>Are your changes restricted to *only* ScreenWithModelBase&lt;T&gt; and all the rest of Caliburn is untouched?</p>
+<p>Without your extensions is Caliburn unusable with CSLA or does it just mean a lot more work to use it with CSLA?</p>
+<p>Any help appreciated.</p>
+<p>Cheers!</p>
+<p>- John</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tiago replied on Tuesday, May 10, 2011</h2><p>Hi John</p>
+<p><div style='padding-left: 50px;background-color:silver'><b>JCardina<br></b> </p>
+<p>Is there any way to accomplish what you did without modifying the Caliburn framework?</p>
+<p>&nbsp;</p>
+<p></div></p>
+<p>I didn&#39;t modify CM code in any way; just added some classes that implement some interfaces.</p>
+<p><div style='padding-left: 50px;background-color:silver'><b>JCardina<br></b></p>
+<p>Are your changes restricted to *only* ScreenWithModelBase&lt;T&gt; and all the rest of Caliburn is untouched?</p>
+<p></div></p>
+<p>Yes. I&#39;ve made those class sometime ago and updated CM over and over again with no changes to these classes. My test project keeps running faultlessly.</p>
+<p>No. I also ported IHaveSubject and its base class from Caliburn &quot;The elder&quot;. But you can remove it if you dont like it. Just like IHaveModel it&#39;s just an add on and no code changes were made to CM itself.</p>
+<p><div style='padding-left: 50px;background-color:silver'><b>JCardina<br></b></p>
+<p>Without your extensions is Caliburn unusable with CSLA or does it just mean a lot more work to use it with CSLA?</p>
+<div style="CLEAR:both;"></div>
+<p></div></p>
+<p>&nbsp;</p>
+<p>You can use the basic Caliburn.Micro with Csla. I used to do it. There is some more work involved to use the basic features. Compare the old way</p>
+<pre style="font-size:13px;background:white;color:black;font-family:Consolas;"><span style="color:blue;">public</span>&nbsp;<span style="color:blue;">class</span>&nbsp;<span style="color:darkblue;">DocEditViewModel</span>&nbsp;:&nbsp;<span style="color:darkblue;">ViewModel</span>&lt;<span style="color:darkblue;">Doc</span>&gt;,&nbsp;<span style="color:darkblue;">IChild</span>&lt;<span style="color:blue;">object</span>&gt;,&nbsp;<span style="color:darkblue;">IViewAware</span>,&nbsp;<span style="color:darkblue;">IHaveDisplayName</span>
+</pre>
+<p>with the new way</p>
+<pre style="FONT-SIZE:13px;BACKGROUND:white;COLOR:black;FONT-FAMILY:Consolas;"><span style="COLOR:blue;">public</span>&nbsp;<span style="COLOR:blue;">class</span>&nbsp;<span style="COLOR:darkblue;">DocEditViewModel</span>&nbsp;:&nbsp;<span style="COLOR:darkblue;">ScreenWithModel</span>&lt;<span style="COLOR:darkblue;">Doc</span>&gt;
+</pre>
+<p>I made ScreenWithModel in order to make it&nbsp;easier to use Caliburn.Micro and Csla. I really can&#39;t remember exactly what features i was finding difficult to use.</p>
+<p>In a nutshell, ScreenWithModel&lt;T&gt; makes life easier, cost nothing to use (cost like in maintenance cost) and&nbsp;doesn&#39;t compromise compatibility with both Caliburn.Micro and CSLA frameworks.</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Wednesday, May 11, 2011</h2><p>Hi all,</p>
+<p><b>Thanks to Tiago for donating the extension in Caliburn.Micro to CslaContrib. </b></p>
+<p>These extensions is now available in CslaContrib as separate projects/assemblies for easier updates to Caliburn.Micro releases and will help you useCsla business objects with Caliburn views/viewmodels. </p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JCardina replied on Wednesday, May 18, 2011</h2><p>Hi Tiago, thank you for your reply.&nbsp; I never got notified that you had replied by the forum software so I thought you hadn&#39;t but I just went back and looked and found your detailed info.&nbsp; I&#39;ve since settled on Prism (I think) but I&#39;m going to look at screenwithmodelbase again to see if I can steal anything you did there. :)</p>
+<p>Cheers!</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tiago replied on Tuesday, May 17, 2011</h2><p>Since there is a growing interest in MVVM, I thought you might find interesting to know Caliburn.Micro is the successor&nbsp;of Caliburn &quot;The Elder&quot;. Rob Eisenberg declared there will be no more development on Caliburn &quot;The Elder&quot;.</p>
+<p>&quot;Caliburn is a legacy framework maintained to support existing apps. Future development is focused on Caliburn.Micro.&quot; he says in the Project Description of Caliburn &quot;The Elder&quot; (check it out at&nbsp;<a href="http://caliburn.codeplex.com/">http://caliburn.codeplex.com/</a>)</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

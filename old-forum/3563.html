@@ -1,0 +1,12 @@
+<html><header><title>Help !! DeepData DTO</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Help !! DeepData DTO</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3563.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>sdoc posted on Tuesday, September 18, 2007</h2>I had a question. I was going through the DNR TV show on CSLA .NET and
+data access and this piece of code in the DeepData example is raising tons of questions in my head regarding the usage of DTO.<br><br>In the 
+OrderList.FetchDto...<br><br><span>Using dal As DeepData.DAL.OrderData = df.GetOrderDataObject</span><br><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; data = CType(
+dal.GetOrders, DeepData.DTO.OrderDto())</span><br><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Using</span><br><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; If data IsNot Nothing Then
+</span><br><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; For Each order As DeepData.DTO.OrderDto In data</span><br><span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Add(OrderInfo.GetOrderInfo(order))</span><br><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Next</span><br><span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End If<br><br><br><span>The dal.getOrders gets all the parents,the children and the grandchildren in Generic Lists. Then why do the </span></span><span>OrderInfo.GetOrderInfo
+(order) <span>again to get all the data? Isnt that redundant? Did I miss something?</span></span></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Tuesday, September 18, 2007</h2><P>"Then why do the <SPAN>OrderInfo.GetOrderInfo (order) <SPAN>again to get all the data?"</SPAN></SPAN></P>
+<P><SPAN><SPAN>If you look closely it is NOT getting anything again.</SPAN></SPAN></P>
+<P><SPAN><SPAN>It is looping over the retrieved data object and then filling a BO named OrderInfo using the order data from the DTO.</SPAN></SPAN></P>
+<P><SPAN><SPAN>Joe</SPAN></SPAN></P>
+<P><SPAN><SPAN></SPAN></SPAN>&nbsp;</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

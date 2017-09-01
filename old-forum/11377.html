@@ -1,0 +1,39 @@
+<html><header><title>Moving from version 1.1 to latest</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Moving from version 1.1 to latest</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11377.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>aidangill posted on Monday, May 28, 2012</h2><p>Hi, </p>
+<p>Client has version 1.1.4 installed within their application, 170 screens in total. </p>
+<p>They now want to move to the web, ASP.NET and are looking at a revamp. </p>
+<p>I am presuming that there will be a good bit of work on moving to the latest CSLA?</p>
+<p>As a very rough outline, what can I expect.</p>
+<p>Thanks</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tmg4340 replied on Monday, May 28, 2012</h2><p>You&#39;re&nbsp;basically looking at a re-write.&nbsp; Between the new property declarations, business rules as objects, and the switch to generics/lambdas/etc., you&#39;re not likely to save much of the current codebase.&nbsp; The current version of CSLA looks almost nothing like 1.1.</p>
+<p>If you&#39;re looking to move towards the most-recent codebase, you&#39;re going to want to get the latest e-books from this site&#39;s store (if you don&#39;t have them already).&nbsp; They will give you a good grounding in how to use the current version of the framework.&nbsp; I wouldn&#39;t get any of the paper books (even the 2008 one) - there are parts that are still relevant, but IMHO not much anymore.</p>
+<p>HTH</p>
+<p>- Scott</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>aidangill replied on Monday, May 28, 2012</h2><p>Thanks Scott,&nbsp;</p>
+<p>Thats a bit of a game changer. I didn&#39;t write the original application, just took it over to maintain for the client and make minor changes.&nbsp;</p>
+<p>I have very very CSLA experience which makes it even more difficult and I haven&#39;t used it in similar project, just straight .NET framework.</p>
+<p>&nbsp;</p>
+<p>Without asking &quot;how long is a piece of string&quot;, if I was to convince the customer to keep CSLA and also for my own benefit, why would I bother using CSLA now if all it encapsulates is now redundant.&nbsp;</p>
+<p>I know the customer has all the business rules in the CSLA but outside of that is there any point?</p>
+<p>&nbsp;</p>
+<p>Apologises now if its a very vague statement to make.</p>
+<p>&nbsp;</p>
+<p>Appreciate your feedback.</p>
+<p>Thanks</p>
+<p>Aidan</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tmg4340 replied on Monday, May 28, 2012</h2><p>That&#39;s an entirely different question, and not really one I&#39;m qualified to answer for you.&nbsp; But I&#39;m not sure anyone is.</p>
+<p>I will admit that in a &quot;straight&quot; ASP.NET environment, you lose some of CSLA&#39;s functionality, since you&#39;re not dealing with a very interactive UI technology.&nbsp; However, there is still benefit - integration with much of the ASP.NET infrastructure (data-binding, errors, etc.), and the overall benefits of building an object-based solution.&nbsp; There are also some helper controls that make using CSLA easier within the various UI environments, web included.</p>
+<p>Regardless, I certainly wouldn&#39;t call CSLA&#39;s functionality &quot;redundant&quot;.&nbsp; It provides a very robust framework for building business apps in a variety of UI technologies.&nbsp; In fact, this is where CSLA would really benefit you.&nbsp; CSLA does very well at supporting multiple front ends using&nbsp;basically the same codebase.&nbsp; So if you ever think you&#39;re going to&nbsp;support multiple&nbsp;front ends (and that can include creating a service interface), CSLA can really help you.</p>
+<p>Ultimately, you have to decide whether the benefits of CSLA are enough for you to continue to use it.&nbsp; Since you don&#39;t have a ton of knowledge in the framework (perhaps none?), the first question you need to answer is whether you can/want to spend the time and money necessary to get the information to learn the framework.&nbsp; CSLA is not something you can learn via trial-and-error - to really understand what&#39;s going on, you need to get the e-books.&nbsp; These forums will help you quite a&nbsp;bit, but not enough to effectively use it.</p>
+<p>- Scott</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>aidangill replied on Monday, May 28, 2012</h2><p>Lads,&nbsp;</p>
+<p>Thanks very much for your time and detailed answers. I am now seriously doubting using CSLA if it requires me to learn it from scratch and then rewrite what is there.&nbsp;</p>
+<p>I am sure there are many benefits of using CSLA but with a good code generator I will have my BLL, DAL and stored procedures.</p>
+<p>The rules I think will be the pain to extract and to create methods to handle those.&nbsp;</p>
+<p>The current system handles the data access and the business rules.&nbsp;</p>
+<p>&nbsp;</p>
+<p>Thanks again for all the replies.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JCardina replied on Monday, May 28, 2012</h2><p>I&#39;m in the middle of doing almost exactly this.&nbsp; I didn&#39;t *need* to modify the db though we did for other reasons.</p>
+<p>As far as the business object library code (csla stuff) it is a complete re-write.</p>
+<p>However, our app was so large with so much to port and much of it very similar that it was worth whipping up a utility to convert the repetitive tasks.</p>
+<p>My advice is to fully learn the new csla, pick a sample business object of every unique type in your source project, port one of each manually, test and retest until happy then look at the source original code and the destination new code of each type and see what you can automate to generate one from the other.&nbsp; </p>
+<p>Even if you only devote a small amount of time to it and cherry pick the 10% most time consuming things to port it&#39;s very worthwhile.</p>
+<p>We made a little utility that you can paste in old code, select what kind of transform you need to do and it will generate the new code from it.</p>
+<p>Saves time and ensures uniformity in the code (the most important thing of all in a big csla project)</p>
+<p>&nbsp;</p>
+<p>(edit)</p>
+<p>I should mention it&#39;s not a utility anyone else can use, we highly customized our csla originally and we use encapsulated invoke and embedded sql, no stored procedures because we support multiple db backends so it wouldn&#39;t be useful to anyone else unfortunately.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

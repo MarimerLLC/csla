@@ -1,0 +1,15 @@
+<html><header><title>How to update related objects</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>How to update related objects</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11426.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Khaled posted on Sunday, June 24, 2012</h2><p>Hello,</p>
+<p>I have BB that could have children of the same type, I have property to determine if the current instance is Simple or Complex</p>
+<p>and I have Price property</p>
+<p>Let me give you this example:</p>
+<p>Water (Simple), Sugar (Simple), Milk(Simple), Pie(Complex), Tea(Complex)</p>
+<p>Pie contains: Water + Sugar + Milk<br />Tea contains: Water + Sugar</p>
+<p>Breakfast contains: Pie + Tea + Water</p>
+<p>so if I open Pie window and edit the Price of sugar, ChildChanged will fired and I will update price of the Pie,</p>
+<p>but Breakfast cost will not get updated until I open its window and manually call refresh method which will do all the calculation.</p>
+<p>my question is this, can I automate this process as I had a lot of objects and I can&#39;t figure what is the best practice to fix this problem.</p>
+<p>I am thinking of updating this using linq but I am hoping to find a better more robust solution</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Sunday, June 24, 2012</h2><p>Well, </p>
+<p>The safest way is to do this within triggers in the database. </p>
+<p>If you wish to do this outside the database then I would create CommandObject(s) to do the recalculation and call this from the Update method of the actual BusinessObjects. Remember this will have to be done recursively.</p>
+<p>&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

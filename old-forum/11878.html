@@ -1,0 +1,54 @@
+<html><header><title>CSLA 4 Authorization rules supressing</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA 4 Authorization rules supressing</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11878.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>lazaroms posted on Tuesday, March 12, 2013</h2><p>Is it possible supress authorization rules in CSLA 4?</p>
+<p>I need to write a GET method, this method will be internal and it will be call from another classes with no authorization needed.</p>
+<p>Thansks for your suggests.</p>
+<p>&nbsp;</p>
+<p>Lazaro M</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Tuesday, March 12, 2013</h2><p>Hi,&nbsp;</p>
+<p>The question is &quot;How do you know when to do authorization or not?&quot;.&nbsp;</p>
+<p><ol>
+<li>If property is only internal for use from other classes in your assembly then change from GetProperty to ReadProperty in your property getter as ReadProperty does not check authorization.&nbsp;</li>
+<li>Create a separate internal property that uses ReadProperty</li>
+<li>Create an internal method that return the property value</li>
+<li>Create a Accessor class that inherits from ObjectFactory which exposes the ReadProperty(&lt;bo&gt;, &lt;PropertyInfo&gt;)&nbsp;</li>
+</ol></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>lazaroms replied on Tuesday, March 12, 2013</h2><p>I&#39;m sorry Jonny, I didn&#39;t explain well.</p>
+<p>I have a class, Product. Now I need another class PublicProduct.</p>
+<p>I need to get an object (Product) from inside PublicProduct bypassing the authorization rules.</p>
+<p>&nbsp;</p>
+<p>PublicProduct and Product will be in the same assembly. PublicProduct is a class created for non-authenticated users and it will have a few properties created from information got from the Product object.</p>
+<p>That&#39;s why I need GetObject static method that bypassthe authorization rules.</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Tuesday, March 12, 2013</h2><p>Hi,</p>
+<p>Different use case = different objects.&nbsp;</p>
+<p>No, there is no bypassing the static authorization rules - these are enforced by the DataPortal.&nbsp;</p>
+<p>You _may_ create a PublicProduct and the have Product inherit from PublicProduct and add authz rules. However - this creates tight coupling and I would rather seek to have different objects.</p>
+<p>You could create separate RuleSets and set &nbsp;the &quot;active&quot; ruleset to one that does not have authorization but it could really complicate the whole application and I have not done this is any of my own projects.&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>lazaroms replied on Tuesday, March 12, 2013</h2><p>Hi Jonny:</p>
+<p>Sorry for writing again but I have a doubt.</p>
+<p>Taking into account that &quot;<span><i>&nbsp;</i></span><span><i>there is no bypassing the static authorization rules - these are enforced by the DataPortal.</i>&quot;</span>&nbsp;, I have a question:</p>
+<p>In cases where we have a &quot;<b><i>using reference</i>&quot;</b>: Must the identity must have authorization to both objects?</p>
+<p>A classic example:</p>
+<p>InvoiceEdit uses an InfoCustomerEdit and a has a list of InvoiceDetailEdit.</p>
+<p>&nbsp;</p>
+<p>Operator users can: 1-Edit the InvoiceEdit, 2-Edit the InvoiceDetailEdit list and &nbsp;3-Get the InfoCustomerEdit</p>
+<p>Supervisor users can: 1-Edit the InvoiceEdit, 2-Edit the InvoiceDetailEdit list and &nbsp;3-<b>EDIT</b> the InfoCustomerEdit</p>
+<p>How would you solve it?</p>
+<p>Thanks again</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>lazaroms replied on Tuesday, March 12, 2013</h2><p>I found a way to do what I want:</p>
+<p>1- Don&#39;t declare an authorization rule for a GetObject action and it will make the class public to anyone</p>
+<p>2-Declare two GetObject static methods: One will have no authorization checking and will be INTERNAL and the other one will be PUBLIC but will look like this:</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; public static MyClass GetMyObjectClass(Guid id)</p>
+<p>&nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; if (Csla.ApplicationContext.User.IsInRole(&quot;CanGetRole&quot;))</p>
+<p>&nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; return DataPortal.Fetch&lt;MyClass&gt;(new&nbsp;MyClassCriteria(id));</p>
+<p>&nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp; &nbsp; &nbsp; else</p>
+<p>&nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; throw new Exception(&quot;User not authorized&quot;);</p>
+<p>&nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp; &nbsp; }</p>
+<div>Thanks for your help.</div>
+<div></div>
+<div></div>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

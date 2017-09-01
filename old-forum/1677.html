@@ -1,0 +1,52 @@
+<html><header><title>Looking for thoughts on Security Requirements</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Looking for thoughts on Security Requirements</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/1677.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>RangerGuy posted on Friday, November 03, 2006</h2>Hoping somebody might have some insight on this. I have 2 requirements for security with the current web based system I'm building.
+
+I have a publicly accessible site and an accompanying Administrative site.
+
+Both are using my Business Layer (and Csla). I need to be able to allow anybody to access the public side of this system on the net. But have specific users set up to access the administrative side. 
+
+I was thinking of just testing to see what the requested URL is. That way I can create a sort of “Anonymous Logon” called “WebUser” with preset permissions that would allow them to do what they need to on the public side but not on the admin side.
+
+I could say 
+
+if ( requestedpath = “/Public” )
+{
+	then log in anonymously 
+}
+Elseif (( requestedpath = “/Admin”)
+{
+	Login using supplied credentials
+}
+Else
+{
+	Redirect to an error page as the path is invalid..
+}
+
+Only I’m not sure where I should place this logic. 
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Friday, November 03, 2006</h2>I'd look into Forms Authentication.&nbsp; You set it up through the config files and basically can lock down the entire admin directory.&nbsp; The best part is that you don't need to worry about any of it.<br><br>HTH<br>Andy<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RangerGuy replied on Friday, November 03, 2006</h2>yeh that's right I forgot I could do that... thanks!
+
+
+I need to basically "auto" login the public site using CLSA securtiy objects. Could I do this in Global.asax file and still require users to log in when accessing the Admin directory?</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Friday, November 03, 2006</h2>You could createa&nbsp; singleton off of your principal class which returns the authenteciated guest user.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RangerGuy replied on Friday, November 03, 2006</h2>mm.... 
+
+My apologies.. I'm not very strong when it comes to ASP.net.. :(
+
+
+I can hard code the username and password for the guest like so CslaPrincipal.Login("WebUser", "testpassword");
+
+What I can't figure out is where can I do this so that the admin side still has to log in. But the public directory gets logged in using Csla Security objects automatically.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Friday, November 03, 2006</h2>Well the guest account wouldn't have the roles necessary to gain access to the admin side.&nbsp; You could set is so that access to a denied area bounces to your login screen.&nbsp; <br><br>When you first authenticate, if there's no ticket, then 'login' using the singleton principal for guest users.&nbsp; Then when access is denied, you can handle that and request a real login.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>guyroch replied on Friday, November 03, 2006</h2><P>I too I'm not a _pro_ when it comes to asp.net, I'm more of a WinApp dude. But consider the following...<o:p></o:p></P>
+<P>Why not just add that logic to your Principal/Identity pair.&nbsp; When you login with an empty username just modify your Identity class to automatically retrieve the role list from the 'Guest' account (or even hard code them) without even checking for a password - cause none was provided for public access.&nbsp; When an administrator tries to login with by providing a username/password from within your administrative functions page, call you login functions with the username/password pair provided and proceed with normal login with your Identity class.&nbsp; Also, modify your logout procedure so that an anonymous login is performed immediately after the logout so that 'Guests' right is granted once again.<o:p></o:p></P>
+<P>To make things a bit simpler, you don't even have to care about 'hacking' the Identity to let empty username login as guest.&nbsp; As long as you set the underlying Principal/Identity pair to your type (calling logout will do that for you) you will be fine.&nbsp; This is because the data portal does not care about if you are authenticated or not, it just cares that the underlying Principal/Identity pair is of the right type.&nbsp; You can to this though only if your publicly available BO's do not check to see if your guests are part of a role before granting access to the BO or not.<o:p></o:p></P>
+<P>
+<P>&nbsp;</P>
+<P></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RangerGuy replied on Friday, November 03, 2006</h2>yeh me neither... 
+
+all good Ideas thanks everybody :)
+
+I'm going to try them now and see how it works. 
+
+Hopefully it works cause then I can go back to getting our custom session management logic working. Of course MS's Custom Session Provider example puts me in to an endless loop..
+
+Oh how I miss working with WinApps LOL!
+
+Web Applications are a nightmare LOL!</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

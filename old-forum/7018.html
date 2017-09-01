@@ -1,0 +1,57 @@
+<html><header><title>COM Migration Path</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>COM Migration Path</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/7018.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>RumbleCow posted on Thursday, May 28, 2009</h2><P class=MsoNormal><FONT face=Calibri><SPAN>Long story short – sort of; our company is looking for a migration path from our legacy VB6 applications (logic)&nbsp;to DotNet.<SPAN>&nbsp; </SPAN>We are currently implementing CLSA 2.1.4-070223 in our DotNet applications and looking for a way to share the same assembly for both DotNet and VB6&nbsp;(GUI) consumption.<SPAN>&nbsp; </SPAN>After converting the back-end logic we will look at rewriting the GUI layer.<SPAN>&nbsp; </SPAN></SPAN></FONT></P>
+<P class=MsoNormal><FONT face=Calibri><SPAN><SPAN></SPAN></SPAN></FONT>&nbsp;</P>
+<P class=MsoNormal><FONT face=Calibri><SPAN><SPAN></SPAN>The ‘Register for COM interop’ option on the ‘compile’ tab is checked in the DotNet business object assembly and we are able to reference the type library (tlb) in VB6.<SPAN>&nbsp; </SPAN>However, when attempting to retrieve the value of a ‘readable’ property we receive a 438 run-time error ‘Object doesn’t support this property or method’.<SPAN>&nbsp; </SPAN>If the class doesn’t inherit from a CSLA base business object the property is accessible from VB6.<SPAN>&nbsp; </SPAN>Our guess -- it’s VB6’s inability to handle generics which is causing the problem.<SPAN>&nbsp; </SPAN>The strong name file provided with csla is being used.<SPAN>&nbsp; </SPAN>Can anyone provide a definitive answer to whether this is the case and how share opinions on experienced migration paths from legacy VB6 applications.<SPAN>&nbsp; </SPAN></SPAN><SPAN><o:p></o:p></SPAN></FONT></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><FONT face=Calibri><SPAN>Not able to access FirstName from COM application (438 run-time error when called from VB6)</SPAN><SPAN><o:p></o:p></SPAN></FONT></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><FONT face=Calibri><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN>Public Class cPerson</SPAN><SPAN><o:p></o:p></SPAN></FONT></P>
+<P class=MsoNormal><FONT face=Calibri><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>Inherits Csla.BusinessBase(Of cPerson)</SPAN><SPAN><o:p></o:p></SPAN></FONT></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><FONT face=Calibri><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>&nbsp;</SPAN>Dim mFirstName As String = ""</SPAN><SPAN><o:p></o:p></SPAN></FONT></P>
+<P class=MsoNormal><FONT face=Calibri><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>Dim mLastName As String = ""</SPAN><SPAN><o:p></o:p></SPAN></FONT></P>
+<P class=MsoNormal><FONT face=Calibri><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>Dim mId As Integer</SPAN><SPAN><o:p></o:p></SPAN></FONT></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><FONT face=Calibri><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>Public Property FirstName() As String</SPAN><SPAN><o:p></o:p></SPAN></FONT></P>
+<P class=MsoNormal><FONT face=Calibri><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>' tried commenting out to work from VB6 -- didn't work</SPAN><SPAN><o:p></o:p></SPAN></FONT></P>
+<P class=MsoNormal><FONT face=Calibri><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>&lt;System.Runtime.CompilerServices.MethodImpl(Runtime.CompilerServices.MethodImplOptions.NoInlining)&gt; _</SPAN><SPAN><o:p></o:p></SPAN></FONT></P>
+<P class=MsoNormal><FONT face=Calibri><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>Get</SPAN><SPAN><o:p></o:p></SPAN></FONT></P>
+<P class=MsoNormal><FONT face=Calibri><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>' tried commenting out to work from VB6 -- didn't work</SPAN><SPAN><o:p></o:p></SPAN></FONT></P>
+<P class=MsoNormal><FONT face=Calibri><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>CanReadProperty(True)</SPAN><SPAN><o:p></o:p></SPAN></FONT></P>
+<P class=MsoNormal><FONT face=Calibri><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>Return mFirstName</SPAN><SPAN><o:p></o:p></SPAN></FONT></P>
+<P class=MsoNormal><FONT face=Calibri><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>End Get</SPAN><SPAN><o:p></o:p></SPAN></FONT></P>
+<P class=MsoNormal><FONT face=Calibri><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>&nbsp;&nbsp;</SPAN>&lt;System.Runtime.CompilerServices.MethodImpl(Runtime.CompilerServices.MethodImplOptions.NoInlining)&gt; _</SPAN><SPAN><o:p></o:p></SPAN></FONT></P>
+<P class=MsoNormal><FONT face=Calibri><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>Set(ByVal value As String)</SPAN><SPAN><o:p></o:p></SPAN></FONT></P>
+<P class=MsoNormal><FONT face=Calibri><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>CanWriteProperty(True)</SPAN><SPAN><o:p></o:p></SPAN></FONT></P>
+<P class=MsoNormal><FONT face=Calibri><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>If Not mFirstName.Equals(value) Then</SPAN><SPAN><o:p></o:p></SPAN></FONT></P>
+<P class=MsoNormal><FONT face=Calibri><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>mFirstName = value</SPAN><SPAN><o:p></o:p></SPAN></FONT></P>
+<P class=MsoNormal><FONT face=Calibri><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>PropertyHasChanged()</SPAN><SPAN><o:p></o:p></SPAN></FONT></P>
+<P class=MsoNormal><FONT face=Calibri><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>End If</SPAN><SPAN><o:p></o:p></SPAN></FONT></P>
+<P class=MsoNormal><FONT face=Calibri><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>End Set</SPAN><SPAN><o:p></o:p></SPAN></FONT></P>
+<P class=MsoNormal><FONT face=Calibri><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>End Property</SPAN><SPAN><o:p></o:p></SPAN></FONT></P>
+<P class=MsoNormal><FONT face=Calibri><SPAN>…</SPAN><SPAN><o:p></o:p></SPAN></FONT></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><FONT face=Calibri><SPAN>Able to access FirstName from COM application:</SPAN><SPAN><o:p></o:p></SPAN></FONT></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><FONT face=Calibri><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN>Public Class Person</SPAN><SPAN><o:p></o:p></SPAN></FONT></P>
+<P class=MsoNormal><FONT face=Calibri><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>Private mFirstName As String = String.Empty</SPAN><SPAN><o:p></o:p></SPAN></FONT></P>
+<P class=MsoNormal><FONT face=Calibri><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>&nbsp;&nbsp;</SPAN>Private mLastName As String = String.Empty</SPAN><SPAN><o:p></o:p></SPAN></FONT></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><FONT face=Calibri><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>Public Sub New(ByVal FirstName As String, ByVal LastName As String)</SPAN><SPAN><o:p></o:p></SPAN></FONT></P>
+<P class=MsoNormal><FONT face=Calibri><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>mFirstName = FirstName</SPAN><SPAN><o:p></o:p></SPAN></FONT></P>
+<P class=MsoNormal><FONT face=Calibri><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>mLastName = LastName</SPAN><SPAN><o:p></o:p></SPAN></FONT></P>
+<P class=MsoNormal><FONT face=Calibri><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>End Sub</SPAN><SPAN><o:p></o:p></SPAN></FONT></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><FONT face=Calibri><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>Public Property FirstName() As String</SPAN><SPAN><o:p></o:p></SPAN></FONT></P>
+<P class=MsoNormal><FONT face=Calibri><SPAN><SPAN>&nbsp;&nbsp; </SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</SPAN>Get</SPAN><SPAN><o:p></o:p></SPAN></FONT></P>
+<P class=MsoNormal><FONT face=Calibri><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>Return mFirstName</SPAN><SPAN><o:p></o:p></SPAN></FONT></P>
+<P class=MsoNormal><FONT face=Calibri><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>End Get</SPAN><SPAN><o:p></o:p></SPAN></FONT></P>
+<P class=MsoNormal><FONT face=Calibri><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>Set(ByVal value As String)</SPAN><SPAN><o:p></o:p></SPAN></FONT></P>
+<P class=MsoNormal><FONT face=Calibri><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>mFirstName = value</SPAN><SPAN><o:p></o:p></SPAN></FONT></P>
+<P class=MsoNormal><FONT face=Calibri><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>End Set</SPAN><SPAN><o:p></o:p></SPAN></FONT></P>
+<P class=MsoNormal><FONT face=Calibri><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>End Property</SPAN><SPAN><o:p></o:p></SPAN></FONT></P>
+<P class=MsoNormal><SPAN><FONT face=Calibri>…<o:p></o:p></FONT></SPAN></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, May 28, 2009</h2><P>It could be generics, but that seems like a long shot. The reason I say this, is because your actual type (the type VB6 sees) is not generic.</P>
+<P>It is more likely that Csla.dll isn't being found or something like that.</P>
+<P>Remember that COM has a global view of the system - it isn't folder-specific - it finds components via the registry.</P>
+<P>.NET however, is folder-specific by default - it finds assemblies by looking in a specific folder path - namely the one containing the EXE file.</P>
+<P>You can try putting Csla.dll into the GAC - that makes it more like COM in that it is in a system-wide location.</P>
+<P>You could also make sure that your business DLL and Csla.dll are in the same directory as your VB6 EXE, and that the business DLL is registered with COM as being in that location.</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

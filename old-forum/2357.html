@@ -1,0 +1,14 @@
+<html><header><title>CSLA Dynamic Database Business Object</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA Dynamic Database Business Object</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/2357.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>gdk9am posted on Thursday, February 15, 2007</h2><P>My application design calls for a dynamic table and field layout.</P>
+<P>It is requirement of my application,&nbsp;&nbsp;to store the user defined fields in the exisiting table rather than a child table.</P>
+<P>Therefore I am creating a dynamic business object which will handle CRUD operations through dynamic SQL.</P>
+<P>I have implemented the ICustomTypeDescriptor interface in this object. However the dictionary which contains the property name, property type, and property&nbsp; value are stored in the object. This seems to cause a problem when the table is empty as manually emunerating through the property descriptor collection so that I manually add the columns to the xceed grid.</P>
+<P>Rocky suggested the following method using ITypeDescriptor. However I cannot find ITypeDescriptor in .NETdocumentation.</P>
+<P class=MsoNormal><SPAN>There are two basic answers: use a dataset or implement ITypeDescriptor.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>The DataSet approach would involve building a business object that contains a single field: the dataset. That field is exposed through a read-only property and the UI connects to it directly. It isn’t my favorite approach, but it certainly can work.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>The ITypeDescriptor approach is a bit more work, but can get better results. This interface allows you to dynamically describe the shape of your object at runtime. Using it, you don’t implement any properties on your object at all, but instead just implement this interface and let data binding dynamically find the shape of your object and get the values from you. This allows you to store the values in a Dicationary or something like that inside your object.<o:p></o:p></SPAN></P>
+<P>Could anyone explain how data binding dynamically finds the shape of your object ?</P>
+<P>I am using developing this application in New Zealand, would like to know any else in NZ has looked or developed a similar object.</P>
+<P>&nbsp;</P>
+<P>.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, February 16, 2007</h2>I meant ICustomTypeDescriptor, sorry. <img src="/emoticons/emotion-10.gif" alt="Embarrassed [:$]" /></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

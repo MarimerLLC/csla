@@ -1,0 +1,1293 @@
+<html><header><title>help with SelectObjectArgs and Telerik RadGrid</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>help with SelectObjectArgs and Telerik RadGrid</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/8962.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>akm123 posted on Thursday, May 20, 2010</h2><p>Hi have a issue with my Telerik RadGrid.&nbsp; It has a column of checkboxes that do not maintain values when the user goes to enter a new item.&nbsp; I have come to the conclusion that the selectobjectargs pulls the records from the datasource each time the user goes to add a new item.&nbsp; The issue is with Telerik you cannot change this behaviour of going to the datasource on the insert since.&nbsp; Soo. Having said that, is there a way change the selectobjectargs event to pull these items only when you import them and not when you go to insert?</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p><span style="font-size:x-small;"><font size="2">
+<p>&nbsp;</p>
+</font></span>
+<p>&nbsp;</p>
+<span style="font-size:x-small;color:#808080;"><span style="font-size:x-small;color:#808080;">///</span></span><span style="font-size:x-small;color:#008000;"><span style="font-size:x-small;color:#008000;"> </span></span>
+<p><span style="font-size:x-small;color:#808080;"><span style="font-size:x-small;color:#808080;">&lt;summary&gt;</span></span></p>
+<span style="font-size:x-small;"><font size="2">
+<p>&nbsp;</p>
+</font></span>
+<p>&nbsp;</p>
+<span style="font-size:x-small;color:#808080;"><span style="font-size:x-small;color:#808080;">///</span></span>
+<p><span style="font-size:x-small;color:#008000;"><span style="font-size:x-small;color:#008000;"> This gets called when a new grid item is added. It, in turn,</span></span></p>
+<span style="font-size:x-small;"><font size="2">
+<p>&nbsp;</p>
+</font></span>
+<p>&nbsp;</p>
+<span style="font-size:x-small;color:#808080;"><span style="font-size:x-small;color:#808080;">///</span></span>
+<p><span style="font-size:x-small;color:#008000;"><span style="font-size:x-small;color:#008000;"> calls the save method below.</span></span></p>
+<span style="font-size:x-small;"><font size="2">
+<p>&nbsp;</p>
+</font></span>
+<p>&nbsp;</p>
+<span style="font-size:x-small;color:#808080;"><span style="font-size:x-small;color:#808080;">///</span></span><span style="font-size:x-small;color:#008000;"><span style="font-size:x-small;color:#008000;"> </span></span>
+<p><span style="font-size:x-small;color:#808080;"><span style="font-size:x-small;color:#808080;">&lt;/summary&gt;</span></span></p>
+<span style="font-size:x-small;"><font size="2">
+<p>&nbsp;</p>
+</font></span>
+<p>&nbsp;</p>
+<span style="font-size:x-small;color:#808080;"><span style="font-size:x-small;color:#808080;">///</span></span>
+<p><span style="font-size:x-small;color:#008000;"><span style="font-size:x-small;color:#008000;"> </span></span></p>
+<span style="font-size:x-small;"><font size="2">
+<p>&nbsp;</p>
+</font></span>
+<p>&nbsp;</p>
+<span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">protected</span></span><span style="font-size:x-small;"> </span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">void</span></span><span style="font-size:x-small;"> grdServices_ItemDataBound(</span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">object</span></span><span style="font-size:x-small;"> sender, </span><span style="font-size:x-small;color:#2b91af;"><span style="font-size:x-small;color:#2b91af;">GridItemEventArgs</span></span>
+<p><span style="font-size:x-small;"> e)
+<p>{</p>
+<font size="2">
+<p>&nbsp;</p>
+</font></span></p>
+<p>&nbsp;</p>
+<span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">if</span></span><span style="font-size:x-small;"> (e.Item.GetType().Name == </span><span style="font-size:x-small;color:#a31515;"><span style="font-size:x-small;color:#a31515;">&quot;GridDataItem&quot;</span></span>
+<p><span style="font-size:x-small;">)
+<p>{</p>
+<font size="2">
+<p>&nbsp;</p>
+</font></span></p>
+<p>&nbsp;</p>
+<span style="font-size:x-small;color:#2b91af;"><span style="font-size:x-small;color:#2b91af;">GridDataItem</span></span><span style="font-size:x-small;"> item = e.Item </span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">as</span></span><span style="font-size:x-small;"> </span><span style="font-size:x-small;color:#2b91af;"><span style="font-size:x-small;color:#2b91af;">GridDataItem</span></span>
+<p><span style="font-size:x-small;">;<font size="2">
+<p>&nbsp;</p>
+</font></span></p>
+<p>&nbsp;</p>
+<span style="font-size:x-small;color:#2b91af;"><span style="font-size:x-small;color:#2b91af;">CheckBox</span></span><span style="font-size:x-small;"> box = (</span><span style="font-size:x-small;color:#2b91af;"><span style="font-size:x-small;color:#2b91af;">CheckBox</span></span><span style="font-size:x-small;">)item.FindControl(</span><span style="font-size:x-small;color:#a31515;"><span style="font-size:x-small;color:#a31515;">&quot;cbObserved&quot;</span></span>
+<p><span style="font-size:x-small;">);<font size="2">
+<p>&nbsp;</p>
+</font></span></p>
+<p>&nbsp;</p>
+<span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">object</span></span><span style="font-size:x-small;"> isChecked = </span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">null</span></span>
+<p><span style="font-size:x-small;">;<font size="2">
+<p>&nbsp;</p>
+</font></span></p>
+<p>&nbsp;</p>
+<span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">if</span></span><span style="font-size:x-small;"> (item.OwnerTableView.DataMember == </span><span style="font-size:x-small;color:#a31515;"><span style="font-size:x-small;color:#a31515;">&quot;MonthlyProgressReportServiceId&quot;</span></span>
+<p><span style="font-size:x-small;">)
+<p>{</p>
+<font size="2">
+<p>isChecked = cbObservedChecked[item[</p>
+</font></span></p>
+<p>&nbsp;</p>
+<span style="font-size:x-small;color:#a31515;"><span style="font-size:x-small;color:#a31515;">&quot;MonthlyProgressReportServiceId&quot;</span></span>
+<p><span style="font-size:x-small;">].Text];
+<p>}</p>
+<font size="2">
+<p>&nbsp;</p>
+</font></span></p>
+<p>&nbsp;</p>
+<span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">if</span></span><span style="font-size:x-small;"> (isChecked != </span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">null</span></span>
+<p><span style="font-size:x-small;">)
+<p>{</p>
+<font size="2">
+<p>box.Checked = (</p>
+</font></span></p>
+<p>&nbsp;</p>
+<span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">bool</span></span><span style="font-size:x-small;">)isChecked == </span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">true</span></span>
+<p><span style="font-size:x-small;">;
+<p>}</p>
+<font size="2">
+<p>&nbsp;</p>
+</font></span></p>
+<p>&nbsp;</p>
+<span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">int</span></span><span style="font-size:x-small;"> colDelete = </span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">this</span></span><span style="font-size:x-small;">.grdServices.Columns.FindByUniqueName(</span><span style="font-size:x-small;color:#a31515;"><span style="font-size:x-small;color:#a31515;">&quot;Delete&quot;</span></span>
+<p><span style="font-size:x-small;">).OrderIndex;<font size="2">
+<p>&nbsp;</p>
+</font></span></p>
+<p>&nbsp;</p>
+<span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">int</span></span><span style="font-size:x-small;"> colObserved = </span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">this</span></span><span style="font-size:x-small;">.grdServices.Columns.FindByUniqueName(</span><span style="font-size:x-small;color:#a31515;"><span style="font-size:x-small;color:#a31515;">&quot;Observed&quot;</span></span>
+<p><span style="font-size:x-small;">).OrderIndex;<font size="2">
+<p>&nbsp;</p>
+</font></span></p>
+<p>&nbsp;</p>
+<span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">int</span></span><span style="font-size:x-small;"> colDateNotified = </span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">this</span></span><span style="font-size:x-small;">.grdServices.Columns.FindByUniqueName(</span><span style="font-size:x-small;color:#a31515;"><span style="font-size:x-small;color:#a31515;">&quot;DateNotified&quot;</span></span>
+<p><span style="font-size:x-small;">).OrderIndex;
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<font size="2">
+<p>&nbsp;</p>
+</font></span></p>
+<p>&nbsp;</p>
+<span style="font-size:x-small;color:#2b91af;"><span style="font-size:x-small;color:#2b91af;">MonthlyProgressReportService</span></span><span style="font-size:x-small;"> servicedata = ((</span><span style="font-size:x-small;color:#2b91af;"><span style="font-size:x-small;color:#2b91af;">MonthlyProgressReportService</span></span><span style="font-size:x-small;">)((</span><span style="font-size:x-small;color:#2b91af;"><span style="font-size:x-small;color:#2b91af;">GridDataItem</span></span>
+<p><span style="font-size:x-small;">)e.Item).DataItem);
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<font size="2">
+<p>&nbsp;</p>
+</font></span></p>
+<p>&nbsp;</p>
+<span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">if</span></span>
+<p><span style="font-size:x-small;"> (servicedata.WasImported)
+<p>{</p>
+<font size="2">
+<p>((</p>
+</font></span></p>
+<p>&nbsp;</p>
+<span style="font-size:x-small;color:#2b91af;"><span style="font-size:x-small;color:#2b91af;">GridDataItem</span></span><span style="font-size:x-small;">)e.Item).Controls[colDelete].Controls[0].Visible = </span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">false</span></span>
+<p><span style="font-size:x-small;">;<font size="2">
+<p>&nbsp;</p>
+</font></span></p>
+<p>&nbsp;</p>
+<span style="font-size:x-small;color:#2b91af;"><span style="font-size:x-small;color:#2b91af;">Label</span></span><span style="font-size:x-small;"> lblNA = </span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">new</span></span><span style="font-size:x-small;"> </span><span style="font-size:x-small;color:#2b91af;"><span style="font-size:x-small;color:#2b91af;">Label</span></span>
+<p><span style="font-size:x-small;">();<font size="2">
+<p>lblNA.Text = </p>
+</font></span></p>
+<p>&nbsp;</p>
+<span style="font-size:x-small;color:#a31515;"><span style="font-size:x-small;color:#a31515;">&quot;N/A&quot;</span></span>
+<p><span style="font-size:x-small;">;<font size="2">
+<p>((</p>
+</font></span></p>
+<p>&nbsp;</p>
+<span style="font-size:x-small;color:#2b91af;"><span style="font-size:x-small;color:#2b91af;">GridDataItem</span></span>
+<p><span style="font-size:x-small;">)e.Item).Controls[colDelete].Controls.Add(lblNA);
+<p>}</p>
+<font size="2">
+<p>&nbsp;</p>
+</font></span></p>
+<p>&nbsp;</p>
+<p><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">else</span></span></p>
+<span style="font-size:x-small;">
+<p>{</p>
+<font size="2">
+<p>((</p>
+</font></span>
+<p>&nbsp;</p>
+<span style="font-size:x-small;color:#2b91af;"><span style="font-size:x-small;color:#2b91af;">GridDataItem</span></span><span style="font-size:x-small;">)e.Item).Controls[colDelete].Controls[0].Visible = </span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">true</span></span>
+<p><span style="font-size:x-small;">;
+<p>}</p>
+<font size="2">
+<p>&nbsp;</p>
+</font></span></p>
+<p>&nbsp;</p>
+<span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">bool</span></span>
+<p><span style="font-size:x-small;"> displayObservedControls = ((servicedata.IsAbstinenceMonitoring) &amp;&amp; (!servicedata.WasMissed));<font size="2">
+<p>((</p>
+</font></span></p>
+<p>&nbsp;</p>
+<span style="font-size:x-small;color:#2b91af;"><span style="font-size:x-small;color:#2b91af;">GridDataItem</span></span><span style="font-size:x-small;">)e.Item).Controls[colObserved].FindControl(</span><span style="font-size:x-small;color:#a31515;"><span style="font-size:x-small;color:#a31515;">&quot;cbObserved&quot;</span></span>
+<p><span style="font-size:x-small;">).Visible = displayObservedControls;<font size="2">
+<p>((</p>
+</font></span></p>
+<p>&nbsp;</p>
+<span style="font-size:x-small;color:#2b91af;"><span style="font-size:x-small;color:#2b91af;">GridDataItem</span></span><span style="font-size:x-small;">)e.Item).Controls[colObserved].FindControl(</span><span style="font-size:x-small;color:#a31515;"><span style="font-size:x-small;color:#a31515;">&quot;Observed_NA&quot;</span></span>
+<p><span style="font-size:x-small;">).Visible = !displayObservedControls;<font size="2">
+<p>((</p>
+</font></span></p>
+<p>&nbsp;</p>
+<span style="font-size:x-small;color:#2b91af;"><span style="font-size:x-small;color:#2b91af;">GridDataItem</span></span><span style="font-size:x-small;">)e.Item).Controls[colDateNotified].FindControl(</span><span style="font-size:x-small;color:#a31515;"><span style="font-size:x-small;color:#a31515;">&quot;rdpDateNotified&quot;</span></span>
+<p><span style="font-size:x-small;">).Visible = displayObservedControls;<font size="2">
+<p>((</p>
+</font></span></p>
+<p>&nbsp;</p>
+<span style="font-size:x-small;color:#2b91af;"><span style="font-size:x-small;color:#2b91af;">GridDataItem</span></span><span style="font-size:x-small;">)e.Item).Controls[colDateNotified].FindControl(</span><span style="font-size:x-small;color:#a31515;"><span style="font-size:x-small;color:#a31515;">&quot;DateNotified_NA&quot;</span></span>
+<p><span style="font-size:x-small;">).Visible = !displayObservedControls;
+<p>&nbsp;</p>
+<font size="2">
+<p>&nbsp;</p>
+</font></span></p>
+<p>&nbsp;</p>
+<span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">if</span></span><span style="font-size:x-small;"> (item.OwnerTableView.DataMember == </span><span style="font-size:x-small;color:#a31515;"><span style="font-size:x-small;color:#a31515;">&quot;MonthlyProgressReportServiceId&quot;</span></span>
+<p><span style="font-size:x-small;">)
+<p>{</p>
+<font size="2">
+<p>isChecked = cbObservedChecked[item[</p>
+</font></span></p>
+<p>&nbsp;</p>
+<span style="font-size:x-small;color:#a31515;"><span style="font-size:x-small;color:#a31515;">&quot;MonthlyProgressReportServiceId&quot;</span></span>
+<p><span style="font-size:x-small;">].Text];
+<p>}</p>
+<font size="2">
+<p>&nbsp;</p>
+</font></span></p>
+<p>&nbsp;</p>
+<span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">if</span></span><span style="font-size:x-small;"> (isChecked != </span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">null</span></span>
+<p><span style="font-size:x-small;">)
+<p>{</p>
+<font size="2">
+<p>box.Checked = (</p>
+</font></span></p>
+<p>&nbsp;</p>
+<span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">bool</span></span><span style="font-size:x-small;">)isChecked == </span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">true</span></span>
+<p><span style="font-size:x-small;">;
+<p>}</p>
+<p>&nbsp;</p>
+<font size="2">
+<p>&nbsp;</p>
+</font></span></p>
+<p>&nbsp;</p>
+<p><span style="font-size:x-small;color:#008000;"><span style="font-size:x-small;color:#008000;">//CheckBox chk = (CheckBox)sender;</span></span></p>
+<span style="font-size:x-small;"><font size="2">
+<p>&nbsp;</p>
+</font></span>
+<p>&nbsp;</p>
+<p><span style="font-size:x-small;color:#008000;"><span style="font-size:x-small;color:#008000;">//bool status = chk.Checked;</span></span></p>
+<span style="font-size:x-small;"><font size="2">
+<p>&nbsp;</p>
+</font></span>
+<p>&nbsp;</p>
+<p><span style="font-size:x-small;color:#008000;"><span style="font-size:x-small;color:#008000;">//GridDataItem item = (GridDataItem)chk.NamingContainer;</span></span></p>
+<span style="font-size:x-small;"><font size="2">
+<p>&nbsp;</p>
+</font></span>
+<p>&nbsp;</p>
+<p><span style="font-size:x-small;color:#008000;"><span style="font-size:x-small;color:#008000;">//string keyvalue = item.GetDataKeyValue(&quot;MonthlyProgressReportServiceId&quot;).ToString(); </span></span></p>
+<span style="font-size:x-small;">
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<font size="2">
+<p>&nbsp;</p>
+</font></span>
+<p>&nbsp;</p>
+<span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">if</span></span>
+<p><span style="font-size:x-small;"> ((servicedata.IsAbstinenceMonitoring) &amp;&amp; (!servicedata.WasMissed))
+<p>{</p>
+<font size="2">
+<p>&nbsp;</p>
+</font></span></p>
+<p>&nbsp;</p>
+<span style="font-size:x-small;color:#2b91af;"><span style="font-size:x-small;color:#2b91af;">RadDatePicker</span></span><span style="font-size:x-small;"> dtNotified = (</span><span style="font-size:x-small;color:#2b91af;"><span style="font-size:x-small;color:#2b91af;">RadDatePicker</span></span><span style="font-size:x-small;">)((</span><span style="font-size:x-small;color:#2b91af;"><span style="font-size:x-small;color:#2b91af;">GridDataItem</span></span><span style="font-size:x-small;">)e.Item).FindControl(</span><span style="font-size:x-small;color:#a31515;"><span style="font-size:x-small;color:#a31515;">&quot;rdpDateNotified&quot;</span></span>
+<p><span style="font-size:x-small;">);<font size="2">
+<p>dtNotified.MinDate = </p>
+</font></span></p>
+<p>&nbsp;</p>
+<span style="font-size:x-small;color:#2b91af;"><span style="font-size:x-small;color:#2b91af;">DateTime</span></span>
+<p><span style="font-size:x-small;">.Parse(servicedata.ServiceDate);<font size="2">
+<p>&nbsp;</p>
+</font></span></p>
+<p>&nbsp;</p>
+<span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">if</span></span><span style="font-size:x-small;"> (!</span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">string</span></span>
+<p><span style="font-size:x-small;">.IsNullOrEmpty(servicedata.PositiveContactDate))
+<p>{</p>
+<font size="2">
+<p>dtNotified.SelectedDate = </p>
+</font></span></p>
+<p>&nbsp;</p>
+<span style="font-size:x-small;color:#2b91af;"><span style="font-size:x-small;color:#2b91af;">DateTime</span></span>
+<p><span style="font-size:x-small;">.Parse(servicedata.PositiveContactDate);
+<p>}</p>
+<p>}</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>}</p>
+<font size="2">
+<p>&nbsp;</p>
+</font></span></p>
+<p>&nbsp;</p>
+<span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">else</span></span><span style="font-size:x-small;"> </span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">if</span></span><span style="font-size:x-small;"> (e.Item.GetType().Name == </span><span style="font-size:x-small;color:#a31515;"><span style="font-size:x-small;color:#a31515;">&quot;GridEditFormInsertItem&quot;</span></span>
+<p><span style="font-size:x-small;">)
+<p>{</p>
+<font size="2">
+<p>&nbsp;</p>
+</font></span></p>
+<p>&nbsp;</p>
+<span style="font-size:x-small;color:#2b91af;"><span style="font-size:x-small;color:#2b91af;">RadDatePicker</span></span><span style="font-size:x-small;"> dtNewDate = (</span><span style="font-size:x-small;color:#2b91af;"><span style="font-size:x-small;color:#2b91af;">RadDatePicker</span></span><span style="font-size:x-small;">)e.Item.FindControl(</span><span style="font-size:x-small;color:#a31515;"><span style="font-size:x-small;color:#a31515;">&quot;rdpServiceDate&quot;</span></span>
+<p><span style="font-size:x-small;">);<font size="2">
+<p>&nbsp;</p>
+</font></span></p>
+<p>&nbsp;</p>
+<span style="font-size:x-small;color:#2b91af;"><span style="font-size:x-small;color:#2b91af;">RadComboBox</span></span><span style="font-size:x-small;"> rdpServiceCode = (</span><span style="font-size:x-small;color:#2b91af;"><span style="font-size:x-small;color:#2b91af;">RadComboBox</span></span><span style="font-size:x-small;">)e.Item.FindControl(</span><span style="font-size:x-small;color:#a31515;"><span style="font-size:x-small;color:#a31515;">&quot;ddlServiceCode&quot;</span></span>
+<p><span style="font-size:x-small;">);<font size="2">
+<p>dtNewDate.MinDate = </p>
+</font></span></p>
+<p>&nbsp;</p>
+<span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">new</span></span><span style="font-size:x-small;"> </span><span style="font-size:x-small;color:#2b91af;"><span style="font-size:x-small;color:#2b91af;">DateTime</span></span><span style="font-size:x-small;">(</span><span style="font-size:x-small;color:#2b91af;"><span style="font-size:x-small;color:#2b91af;">Int32</span></span><span style="font-size:x-small;">.Parse(progressReport.YearMonthReport.Substring(0, 4)), </span><span style="font-size:x-small;color:#2b91af;"><span style="font-size:x-small;color:#2b91af;">Int32</span></span>
+<p><span style="font-size:x-small;">.Parse(progressReport.YearMonthReport.Substring(4, 2)), 1);<font size="2">
+<p>&nbsp;</p>
+</font></span></p>
+<p>&nbsp;</p>
+<span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">if</span></span>
+<p><span style="font-size:x-small;"> (dtNewDate.MinDate.Month &gt;= 12)<font size="2">
+<p>dtNewDate.MaxDate = </p>
+</font></span></p>
+<p>&nbsp;</p>
+<span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">new</span></span><span style="font-size:x-small;"> </span><span style="font-size:x-small;color:#2b91af;"><span style="font-size:x-small;color:#2b91af;">DateTime</span></span><span style="font-size:x-small;">(</span><span style="font-size:x-small;color:#2b91af;"><span style="font-size:x-small;color:#2b91af;">Int32</span></span>
+<p><span style="font-size:x-small;">.Parse(progressReport.YearMonthReport.Substring(0, 4)) + 1, 1, 1);<font size="2">
+<p>&nbsp;</p>
+</font></span></p>
+<p>&nbsp;</p>
+<p><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">else</span></span></p>
+<span style="font-size:x-small;"><font size="2">
+<p>dtNewDate.MaxDate = </p>
+</font></span>
+<p>&nbsp;</p>
+<span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">new</span></span><span style="font-size:x-small;"> </span><span style="font-size:x-small;color:#2b91af;"><span style="font-size:x-small;color:#2b91af;">DateTime</span></span><span style="font-size:x-small;">(</span><span style="font-size:x-small;color:#2b91af;"><span style="font-size:x-small;color:#2b91af;">Int32</span></span><span style="font-size:x-small;">.Parse(progressReport.YearMonthReport.Substring(0, 4)), </span><span style="font-size:x-small;color:#2b91af;"><span style="font-size:x-small;color:#2b91af;">Int32</span></span>
+<p><span style="font-size:x-small;">.Parse(progressReport.YearMonthReport.Substring(4, 2)) + 1, 1);<font size="2">
+<p>dtNewDate.MaxDate = dtNewDate.MaxDate.Subtract(</p>
+</font></span></p>
+<p>&nbsp;</p>
+<span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">new</span></span><span style="font-size:x-small;"> </span><span style="font-size:x-small;color:#2b91af;"><span style="font-size:x-small;color:#2b91af;">TimeSpan</span></span>
+<p><span style="font-size:x-small;">(1, 0, 0, 0));
+<p>dtNewDate.Focus();</p>
+<p>}</p>
+<font size="2">
+<p>&nbsp;</p>
+</font></span></p>
+<p>&nbsp;</p>
+<p><span style="font-size:x-small;color:#008000;"><span style="font-size:x-small;color:#008000;">// grdServices.Rebind();</span></span></p>
+<span style="font-size:x-small;">
+<p>}</p>
+<p>&nbsp;</p>
+<p>---------------here is the selectobject event</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>
+<p><span style="font-size:x-small;color:#808080;"><span style="font-size:x-small;color:#808080;"><font size="2" color="#808080"><font size="2" color="#808080">
+<p>///</p>
+</font></font></span><font size="2" color="#808080">
+<p>&nbsp;</p>
+</font></span>
+<p>&nbsp;</p>
+<span style="font-size:x-small;color:#008000;"><span style="font-size:x-small;color:#008000;"> </span></span>
+<p><span style="font-size:x-small;color:#808080;"><span style="font-size:x-small;color:#808080;">&lt;summary&gt;</span></span></p>
+<span style="font-size:x-small;"><font size="2">
+<p>&nbsp;</p>
+</font></span>
+<p>&nbsp;</p>
+<span style="font-size:x-small;color:#808080;"><span style="font-size:x-small;color:#808080;">///</span></span>
+<p><span style="font-size:x-small;color:#008000;"><span style="font-size:x-small;color:#008000;"> return a list of Services which are attached to a monthly report</span></span></p>
+<span style="font-size:x-small;"><font size="2">
+<p>&nbsp;</p>
+</font></span>
+<p>&nbsp;</p>
+<span style="font-size:x-small;color:#808080;"><span style="font-size:x-small;color:#808080;">///</span></span><span style="font-size:x-small;color:#008000;"><span style="font-size:x-small;color:#008000;"> </span></span>
+<p><span style="font-size:x-small;color:#808080;"><span style="font-size:x-small;color:#808080;">&lt;/summary&gt;</span></span></p>
+<span style="font-size:x-small;"><font size="2">
+<p>&nbsp;</p>
+</font></span>
+<p>&nbsp;</p>
+<span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">protected</span></span><span style="font-size:x-small;"> </span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">void</span></span><span style="font-size:x-small;"> ServicesDataSource_SelectObject(</span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">object</span></span><span style="font-size:x-small;"> sender, Csla.Web.</span><span style="font-size:x-small;color:#2b91af;"><span style="font-size:x-small;color:#2b91af;">SelectObjectArgs</span></span>
+<p><span style="font-size:x-small;"> e)</span></p>
+</p>
+</p>
+<p>
+<p>&nbsp;</p>
+<p>---------------------the telerik RadGrid</p>
+<p>&nbsp;</p>
+</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;"><font size="2" color="#0000ff"><font size="2" color="#0000ff">
+<p>&lt;</p>
+</font></font></span><font size="2" color="#0000ff">
+<p>&nbsp;</p>
+</font></span>
+<p>&nbsp;</p>
+<span style="font-size:x-small;color:#a31515;"><span style="font-size:x-small;color:#a31515;">telerik</span></span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">:</span></span><span style="font-size:x-small;color:#a31515;"><span style="font-size:x-small;color:#a31515;">RadGrid</span></span>
+<p><span style="font-size:x-small;"> <font size="2">
+<p>&nbsp;</p>
+</font></span></p>
+<p>&nbsp;</p>
+<span style="font-size:x-small;color:#ff0000;"><span style="font-size:x-small;color:#ff0000;">EnableViewState</span></span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">=&quot;true&quot;</span></span>
+<p><span style="font-size:x-small;"> <font size="2">
+<p>&nbsp;</p>
+</font></span></p>
+<p>&nbsp;</p>
+<span style="font-size:x-small;color:#ff0000;"><span style="font-size:x-small;color:#ff0000;">ID</span></span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">=&quot;grdServices&quot;</span></span>
+<p><span style="font-size:x-small;"> <font size="2">
+<p>&nbsp;</p>
+</font></span></p>
+<p>&nbsp;</p>
+<span style="font-size:x-small;color:#ff0000;"><span style="font-size:x-small;color:#ff0000;">runat</span></span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">=&quot;server&quot;</span></span>
+<p><span style="font-size:x-small;"> <font size="2">
+<p>&nbsp;</p>
+</font></span></p>
+<p>&nbsp;</p>
+<span style="font-size:x-small;color:#ff0000;"><span style="font-size:x-small;color:#ff0000;">AllowSorting</span></span>
+<p><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">=&quot;True&quot;</span></span></p>
+<span style="font-size:x-small;"><font size="2">
+<p>&nbsp;</p>
+</font></span>
+<p>&nbsp;</p>
+<span style="font-size:x-small;color:#ff0000;"><span style="font-size:x-small;color:#ff0000;">DataSourceID</span></span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">=&quot;ServicesDataSource&quot;</span></span>
+<p><span style="font-size:x-small;"> <font size="2">
+<p>&nbsp;</p>
+</font></span></p>
+<p>&nbsp;</p>
+<span style="font-size:x-small;color:#ff0000;"><span style="font-size:x-small;color:#ff0000;">GridLines</span></span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">=&quot;None&quot;</span></span>
+<p><span style="font-size:x-small;"> <font size="2">
+<p>&nbsp;</p>
+</font></span></p>
+<p>&nbsp;</p>
+<span style="font-size:x-small;color:#ff0000;"><span style="font-size:x-small;color:#ff0000;">AutoGenerateColumns</span></span>
+<p><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">=&quot;False&quot;</span></span></p>
+<span style="font-size:x-small;"><font size="2">
+<p>&nbsp;</p>
+</font></span>
+<p>&nbsp;</p>
+<span style="font-size:x-small;color:#ff0000;"><span style="font-size:x-small;color:#ff0000;">OnItemDataBound</span></span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">=&quot;grdServices_ItemDataBound&quot;</span></span>
+<p><span style="font-size:x-small;"> <font size="2">
+<p>&nbsp;</p>
+</font></span></p>
+<p>&nbsp;</p>
+<span style="font-size:x-small;color:#ff0000;"><span style="font-size:x-small;color:#ff0000;">OnInsertCommand</span></span>
+<p><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">=&quot;grdServices_OnInsert&quot;</span></span></p>
+<span style="font-size:x-small;"><font size="2">
+<p>&nbsp;</p>
+</font></span>
+<p>&nbsp;</p>
+<span style="font-size:x-small;color:#ff0000;"><span style="font-size:x-small;color:#ff0000;">OnDeleteCommand</span></span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">=&quot;grdServices_OnDelete&quot;</span></span>
+<p><span style="font-size:x-small;"> <font size="2">
+<p>&nbsp;</p>
+</font></span></p>
+<p>&nbsp;</p>
+<span style="font-size:x-small;color:#ff0000;"><span style="font-size:x-small;color:#ff0000;">OnNeedDataSource</span></span>
+<p><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">=&quot;grdServices_NeedDataSource&quot;&gt;</span></span></p>
+<span style="font-size:x-small;"><font size="2">
+<p>&nbsp;</p>
+</font></span>
+<p>&nbsp;</p>
+<span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">&lt;</span></span><span style="font-size:x-small;color:#a31515;"><span style="font-size:x-small;color:#a31515;">HeaderContextMenu</span></span>
+<p><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">&gt;</span></span></p>
+<span style="font-size:x-small;"><font size="2">
+<p>&nbsp;</p>
+</font></span>
+<p>&nbsp;</p>
+<span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">&lt;</span></span><span style="font-size:x-small;color:#a31515;"><span style="font-size:x-small;color:#a31515;">CollapseAnimation</span></span><span style="font-size:x-small;"> </span><span style="font-size:x-small;color:#ff0000;"><span style="font-size:x-small;color:#ff0000;">Type</span></span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">=&quot;OutQuint&quot;</span></span><span style="font-size:x-small;"> </span><span style="font-size:x-small;color:#ff0000;"><span style="font-size:x-small;color:#ff0000;">Duration</span></span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">=&quot;200&quot;&gt;&lt;/</span></span><span style="font-size:x-small;color:#a31515;"><span style="font-size:x-small;color:#a31515;">CollapseAnimation</span></span>
+<p><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">&gt;</span></span></p>
+<span style="font-size:x-small;"><font size="2">
+<p>&nbsp;</p>
+</font></span>
+<p>&nbsp;</p>
+<span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">&lt;/</span></span><span style="font-size:x-small;color:#a31515;"><span style="font-size:x-small;color:#a31515;">HeaderContextMenu</span></span>
+<p><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">&gt;</span></span></p>
+<span style="font-size:x-small;"><font size="2">
+<p>&nbsp;</p>
+</font></span>
+<p>&nbsp;</p>
+<span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">&lt;</span></span><span style="font-size:x-small;color:#a31515;"><span style="font-size:x-small;color:#a31515;">MasterTableView</span></span>
+<p><span style="font-size:x-small;"> <font size="2">
+<p>&nbsp;</p>
+</font></span></p>
+<p>&nbsp;</p>
+<span style="font-size:x-small;color:#ff0000;"><span style="font-size:x-small;color:#ff0000;">DataMember</span></span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">=&quot;servicesObserved&quot;</span></span>
+<p><span style="font-size:x-small;"> <font size="2">
+<p>&nbsp;</p>
+</font></span></p>
+<p>&nbsp;</p>
+<span style="font-size:x-small;color:#ff0000;"><span style="font-size:x-small;color:#ff0000;">EnableColumnsViewState</span></span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">=&quot;true&quot;</span></span>
+<p><span style="font-size:x-small;"> <font size="2">
+<p>&nbsp;</p>
+</font></span></p>
+<p>&nbsp;</p>
+<span style="font-size:x-small;color:#ff0000;"><span style="font-size:x-small;color:#ff0000;">DataKeyNames</span></span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">=&quot;MonthlyProgressReportServiceId&quot;</span></span>
+<p><span style="font-size:x-small;"> <font size="2">
+<p>&nbsp;</p>
+</font></span></p>
+<p>&nbsp;</p>
+<span style="font-size:x-small;color:#ff0000;"><span style="font-size:x-small;color:#ff0000;">CommandItemSettings-AddNewRecordText</span></span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">=&quot;Add a New Missed Service&quot;</span></span>
+<p><span style="font-size:x-small;"> <font size="2">
+<p>&nbsp;</p>
+</font></span></p>
+<p>&nbsp;</p>
+<span style="font-size:x-small;color:#ff0000;"><span style="font-size:x-small;color:#ff0000;">CommandItemDisplay</span></span>
+<p><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">=&quot;Bottom&quot;</span></span></p>
+<span style="font-size:x-small;"><font size="2">
+<p>&nbsp;</p>
+</font></span>
+<p>&nbsp;</p>
+<p><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">&gt;</span></span></p>
+<span style="font-size:x-small;"><font size="2">
+<p>&nbsp;</p>
+</font></span>
+<p>&nbsp;</p>
+<span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">&lt;</span></span><span style="font-size:x-small;color:#a31515;"><span style="font-size:x-small;color:#a31515;">Columns</span></span>
+<p><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">&gt;</span></span></p>
+<span style="font-size:x-small;">
+<p>&nbsp;</p>
+<font size="2">
+<p>&nbsp;</p>
+</font></span>
+<p>&nbsp;</p>
+<span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">&lt;</span></span><span style="font-size:x-small;color:#a31515;"><span style="font-size:x-small;color:#a31515;">telerik</span></span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">:</span></span><span style="font-size:x-small;color:#a31515;"><span style="font-size:x-small;color:#a31515;">GridEditCommandColumn</span></span><span style="font-size:x-small;"> </span><span style="font-size:x-small;color:#ff0000;"><span style="font-size:x-small;color:#ff0000;">ButtonType</span></span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">=&quot;ImageButton&quot;</span></span><span style="font-size:x-small;"> </span><span style="font-size:x-small;color:#ff0000;"><span style="font-size:x-small;color:#ff0000;">UniqueName</span></span>
+<p><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">=&quot;EditCommandColumn&quot;</span></span></p>
+<span style="font-size:x-small;"><font size="2">
+<p>&nbsp;</p>
+</font></span>
+<p>&nbsp;</p>
+<span style="font-size:x-small;color:#ff0000;"><span style="font-size:x-small;color:#ff0000;">Visible</span></span>
+<p><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">=&quot;false&quot;&gt;</span></span></p>
+<span style="font-size:x-small;"><font size="2">
+<p>&nbsp;</p>
+</font></span>
+<p>&nbsp;</p>
+<span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">&lt;</span></span><span style="font-size:x-small;color:#a31515;"><span style="font-size:x-small;color:#a31515;">ItemStyle</span></span><span style="font-size:x-small;"> </span><span style="font-size:x-small;color:#ff0000;"><span style="font-size:x-small;color:#ff0000;">CssClass</span></span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">=&quot;MyImageButton&quot;</span></span><span style="font-size:x-small;"> </span>
+<p><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">/&gt;</span></span></p>
+<span style="font-size:x-small;"><font size="2">
+<p>&nbsp;</p>
+</font></span>
+<p>&nbsp;</p>
+<span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">&lt;/</span></span><span style="font-size:x-small;color:#a31515;"><span style="font-size:x-small;color:#a31515;">telerik</span></span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">:</span></span><span style="font-size:x-small;color:#a31515;"><span style="font-size:x-small;color:#a31515;">GridEditCommandColumn</span></span>
+<p><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">&gt;</span></span></p>
+<span style="font-size:x-small;"><font size="2">
+<p>&nbsp;</p>
+</font></span>
+<p>&nbsp;</p>
+<span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">&lt;</span></span><span style="font-size:x-small;color:#a31515;"><span style="font-size:x-small;color:#a31515;">telerik</span></span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">:</span></span><span style="font-size:x-small;color:#a31515;"><span style="font-size:x-small;color:#a31515;">GridCheckBoxColumn</span></span><span style="font-size:x-small;"> </span><span style="font-size:x-small;color:#ff0000;"><span style="font-size:x-small;color:#ff0000;">UniqueName</span></span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">=&quot;Imported&quot;</span></span><span style="font-size:x-small;"> </span><span style="font-size:x-small;color:#ff0000;"><span style="font-size:x-small;color:#ff0000;">HeaderText</span></span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">=&quot;Imported&quot;</span></span><span style="font-size:x-small;"> </span><span style="font-size:x-small;color:#ff0000;"><span style="font-size:x-small;color:#ff0000;">DataField</span></span>
+<p><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">=&quot;WasImported&quot;</span></span></p>
+<span style="font-size:x-small;"><font size="2">
+<p>&nbsp;</p>
+</font></span>
+<p>&nbsp;</p>
+<span style="font-size:x-small;color:#ff0000;"><span style="font-size:x-small;color:#ff0000;">ItemStyle-HorizontalAlign</span></span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">=&quot;Center&quot;</span></span><span style="font-size:x-small;"> </span><span style="font-size:x-small;color:#ff0000;"><span style="font-size:x-small;color:#ff0000;">HeaderStyle-HorizontalAlign</span></span>
+<p><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">=&quot;Center&quot;&gt;</span></span></p>
+<span style="font-size:x-small;"><font size="2">
+<p>&nbsp;</p>
+</font></span>
+<p>&nbsp;</p>
+<span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">&lt;/</span></span><span style="font-size:x-small;color:#a31515;"><span style="font-size:x-small;color:#a31515;">telerik</span></span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">:</span></span><span style="font-size:x-small;color:#a31515;"><span style="font-size:x-small;color:#a31515;">GridCheckBoxColumn</span></span>
+<p><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">&gt;</span></span></p>
+<span style="font-size:x-small;"><font size="2">
+<p>&nbsp;</p>
+</font></span>
+<p>&nbsp;</p>
+<span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">&lt;</span></span><span style="font-size:x-small;color:#a31515;"><span style="font-size:x-small;color:#a31515;">telerik</span></span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">:</span></span><span style="font-size:x-small;color:#a31515;"><span style="font-size:x-small;color:#a31515;">GridBoundColumn</span></span><span style="font-size:x-small;"> </span><span style="font-size:x-small;color:#ff0000;"><span style="font-size:x-small;color:#ff0000;">UniqueName</span></span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">=&quot;ServiceDate&quot;</span></span><span style="font-size:x-small;"> </span><span style="font-size:x-small;color:#ff0000;"><span style="font-size:x-small;color:#ff0000;">HeaderText</span></span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">=&quot;Date&quot;</span></span><span style="font-size:x-small;"> </span><span style="font-size:x-small;color:#ff0000;"><span style="font-size:x-small;color:#ff0000;">SortExpression</span></span>
+<p><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">=&quot;ServiceDate&quot;</span></span></p>
+<span style="font-size:x-small;"><font size="2">
+<p>&nbsp;</p>
+</font></span>
+<p>&nbsp;</p>
+<span style="font-size:x-small;color:#ff0000;"><span style="font-size:x-small;color:#ff0000;">DataField</span></span>
+<p><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">=&quot;ServiceDate&quot;&gt;</span></span></p>
+<span style="font-size:x-small;"><font size="2">
+<p>&nbsp;</p>
+</font></span>
+<p>&nbsp;</p>
+<span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">&lt;/</span></span><span style="font-size:x-small;color:#a31515;"><span style="font-size:x-small;color:#a31515;">telerik</span></span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">:</span></span><span style="font-size:x-small;color:#a31515;"><span style="font-size:x-small;color:#a31515;">GridBoundColumn</span></span>
+<p><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">&gt;</span></span></p>
+<span style="font-size:x-small;"><font size="2">
+<p>&nbsp;</p>
+</font></span>
+<p>&nbsp;</p>
+<span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">&lt;</span></span><span style="font-size:x-small;color:#a31515;"><span style="font-size:x-small;color:#a31515;">telerik</span></span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">:</span></span><span style="font-size:x-small;color:#a31515;"><span style="font-size:x-small;color:#a31515;">GridCheckBoxColumn</span></span><span style="font-size:x-small;"> </span><span style="font-size:x-small;color:#ff0000;"><span style="font-size:x-small;color:#ff0000;">UniqueName</span></span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">=&quot;Monitoring&quot;</span></span><span style="font-size:x-small;"> </span><span style="font-size:x-small;color:#ff0000;"><span style="font-size:x-small;color:#ff0000;">HeaderText</span></span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">=&quot;Monitoring&quot;</span></span><span style="font-size:x-small;"> </span><span style="font-size:x-small;color:#ff0000;"><span style="font-size:x-small;color:#ff0000;">DataField</span></span>
+<p><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">=&quot;IsAbstinenceMonitoring&quot;</span></span></p>
+<span style="font-size:x-small;"><font size="2">
+<p>&nbsp;</p>
+</font></span>
+<p>&nbsp;</p>
+<span style="font-size:x-small;color:#ff0000;"><span style="font-size:x-small;color:#ff0000;">ItemStyle-HorizontalAlign</span></span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">=&quot;Center&quot;</span></span><span style="font-size:x-small;"> </span><span style="font-size:x-small;color:#ff0000;"><span style="font-size:x-small;color:#ff0000;">HeaderStyle-HorizontalAlign</span></span>
+<p><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">=&quot;Center&quot;&gt;</span></span></p>
+<span style="font-size:x-small;"><font size="2">
+<p>&nbsp;</p>
+</font></span>
+<p>&nbsp;</p>
+<span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">&lt;/</span></span><span style="font-size:x-small;color:#a31515;"><span style="font-size:x-small;color:#a31515;">telerik</span></span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">:</span></span><span style="font-size:x-small;color:#a31515;"><span style="font-size:x-small;color:#a31515;">GridCheckBoxColumn</span></span>
+<p><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">&gt;</span></span></p>
+<span style="font-size:x-small;"><font size="2">
+<p>&nbsp;</p>
+</font></span>
+<p>&nbsp;</p>
+<span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">&lt;</span></span><span style="font-size:x-small;color:#a31515;"><span style="font-size:x-small;color:#a31515;">telerik</span></span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">:</span></span><span style="font-size:x-small;color:#a31515;"><span style="font-size:x-small;color:#a31515;">GridDropDownColumn</span></span><span style="font-size:x-small;"> </span><span style="font-size:x-small;color:#ff0000;"><span style="font-size:x-small;color:#ff0000;">UniqueName</span></span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">=&quot;ServiceCode&quot;</span></span><span style="font-size:x-small;"> </span><span style="font-size:x-small;color:#ff0000;"><span style="font-size:x-small;color:#ff0000;">HeaderText</span></span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">=&quot;Service Code&quot;</span></span><span style="font-size:x-small;"> </span><span style="font-size:x-small;color:#ff0000;"><span style="font-size:x-small;color:#ff0000;">ListTextField</span></span>
+<p><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">=&quot;Value&quot;</span></span></p>
+<span style="font-size:x-small;"><font size="2">
+<p>&nbsp;</p>
+</font></span>
+<p>&nbsp;</p>
+<span style="font-size:x-small;color:#ff0000;"><span style="font-size:x-small;color:#ff0000;">ListValueField</span></span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">=&quot;Key&quot;</span></span><span style="font-size:x-small;"> </span><span style="font-size:x-small;color:#ff0000;"><span style="font-size:x-small;color:#ff0000;">DataSourceID</span></span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">=&quot;ServiceCodeDataSource&quot;</span></span><span style="font-size:x-small;"> </span><span style="font-size:x-small;color:#ff0000;"><span style="font-size:x-small;color:#ff0000;">DataField</span></span>
+<p><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">=&quot;ServiceCodeChild.ServiceCodeId&quot;&gt;</span></span></p>
+<span style="font-size:x-small;"><font size="2">
+<p>&nbsp;</p>
+</font></span>
+<p>&nbsp;</p>
+<span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">&lt;</span></span><span style="font-size:x-small;color:#a31515;"><span style="font-size:x-small;color:#a31515;">ItemStyle</span></span><span style="font-size:x-small;"> </span><span style="font-size:x-small;color:#ff0000;"><span style="font-size:x-small;color:#ff0000;">Wrap</span></span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">=&quot;False&quot;</span></span><span style="font-size:x-small;"> </span>
+<p><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">/&gt;</span></span></p>
+<span style="font-size:x-small;"><font size="2">
+<p>&nbsp;</p>
+</font></span>
+<p>&nbsp;</p>
+<span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">&lt;/</span></span><span style="font-size:x-small;color:#a31515;"><span style="font-size:x-small;color:#a31515;">telerik</span></span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">:</span></span><span style="font-size:x-small;color:#a31515;"><span style="font-size:x-small;color:#a31515;">GridDropDownColumn</span></span>
+<p><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">&gt;</span></span></p>
+<span style="font-size:x-small;"><font size="2">
+<p>&nbsp;</p>
+</font></span>
+<p>&nbsp;</p>
+<span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">&lt;</span></span><span style="font-size:x-small;color:#a31515;"><span style="font-size:x-small;color:#a31515;">telerik</span></span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">:</span></span><span style="font-size:x-small;color:#a31515;"><span style="font-size:x-small;color:#a31515;">GridBoundColumn</span></span><span style="font-size:x-small;"> </span><span style="font-size:x-small;color:#ff0000;"><span style="font-size:x-small;color:#ff0000;">UniqueName</span></span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">=&quot;Units&quot;</span></span><span style="font-size:x-small;"> </span><span style="font-size:x-small;color:#ff0000;"><span style="font-size:x-small;color:#ff0000;">HeaderText</span></span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">=&quot;# Units&quot;</span></span><span style="font-size:x-small;"> </span><span style="font-size:x-small;color:#ff0000;"><span style="font-size:x-small;color:#ff0000;">SortExpression</span></span>
+<p><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">=&quot;Units&quot;</span></span></p>
+<span style="font-size:x-small;"><font size="2">
+<p>&nbsp;</p>
+</font></span>
+<p>&nbsp;</p>
+<span style="font-size:x-small;color:#ff0000;"><span style="font-size:x-small;color:#ff0000;">DataField</span></span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">=&quot;NumberOfUnits&quot;</span></span><span style="font-size:x-small;"> </span><span style="font-size:x-small;color:#ff0000;"><span style="font-size:x-small;color:#ff0000;">ItemStyle-HorizontalAlign</span></span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">=&quot;Right&quot;</span></span><span style="font-size:x-small;"> </span><span style="font-size:x-small;color:#ff0000;"><span style="font-size:x-small;color:#ff0000;">HeaderStyle-HorizontalAlign</span></span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">=&quot;Center&quot;</span></span><span style="font-size:x-small;"> </span>
+<p><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">/&gt;</span></span></p>
+<span style="font-size:x-small;"><font size="2">
+<p>&nbsp;</p>
+</font></span>
+<p>&nbsp;</p>
+<span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">&lt;</span></span><span style="font-size:x-small;color:#a31515;"><span style="font-size:x-small;color:#a31515;">telerik</span></span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">:</span></span><span style="font-size:x-small;color:#a31515;"><span style="font-size:x-small;color:#a31515;">GridCheckBoxColumn</span></span><span style="font-size:x-small;"> </span><span style="font-size:x-small;color:#ff0000;"><span style="font-size:x-small;color:#ff0000;">UniqueName</span></span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">=&quot;Missed&quot;</span></span><span style="font-size:x-small;"> </span><span style="font-size:x-small;color:#ff0000;"><span style="font-size:x-small;color:#ff0000;">HeaderText</span></span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">=&quot;Missed ?&quot;</span></span><span style="font-size:x-small;"> </span><span style="font-size:x-small;color:#ff0000;"><span style="font-size:x-small;color:#ff0000;">DataField</span></span>
+<p><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">=&quot;WasMissed&quot;</span></span></p>
+<span style="font-size:x-small;"><font size="2">
+<p>&nbsp;</p>
+</font></span>
+<p>&nbsp;</p>
+<span style="font-size:x-small;color:#ff0000;"><span style="font-size:x-small;color:#ff0000;">ReadOnly</span></span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">=&quot;false&quot;</span></span><span style="font-size:x-small;"> </span><span style="font-size:x-small;color:#ff0000;"><span style="font-size:x-small;color:#ff0000;">ItemStyle-HorizontalAlign</span></span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">=&quot;Center&quot;</span></span><span style="font-size:x-small;"> </span><span style="font-size:x-small;color:#ff0000;"><span style="font-size:x-small;color:#ff0000;">HeaderStyle-HorizontalAlign</span></span>
+<p><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">=&quot;Center&quot;&gt;</span></span></p>
+<span style="font-size:x-small;"><font size="2">
+<p>&nbsp;</p>
+</font></span>
+<p>&nbsp;</p>
+<span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">&lt;/</span></span><span style="font-size:x-small;color:#a31515;"><span style="font-size:x-small;color:#a31515;">telerik</span></span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">:</span></span><span style="font-size:x-small;color:#a31515;"><span style="font-size:x-small;color:#a31515;">GridCheckBoxColumn</span></span>
+<p><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">&gt;</span></span></p>
+<span style="font-size:x-small;"><font size="2">
+<p>&nbsp;</p>
+</font></span>
+<p>&nbsp;</p>
+<span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">&lt;</span></span><span style="font-size:x-small;color:#a31515;"><span style="font-size:x-small;color:#a31515;">telerik</span></span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">:</span></span><span style="font-size:x-small;color:#a31515;"><span style="font-size:x-small;color:#a31515;">GridBoundColumn</span></span><span style="font-size:x-small;"> </span><span style="font-size:x-small;color:#ff0000;"><span style="font-size:x-small;color:#ff0000;">UniqueName</span></span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">=&quot;MonthlyProgressReportServiceId&quot;</span></span><span style="font-size:x-small;"> </span><span style="font-size:x-small;color:#ff0000;"><span style="font-size:x-small;color:#ff0000;">ReadOnly</span></span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">=&quot;true&quot;</span></span><span style="font-size:x-small;"> </span><span style="font-size:x-small;color:#ff0000;"><span style="font-size:x-small;color:#ff0000;">Display</span></span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">=&quot;false&quot;</span></span><span style="font-size:x-small;"> </span><span style="font-size:x-small;color:#ff0000;"><span style="font-size:x-small;color:#ff0000;">DataField</span></span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">=&quot;MonthlyProgressReportServiceId&quot;&gt;&lt;/</span></span><span style="font-size:x-small;color:#a31515;"><span style="font-size:x-small;color:#a31515;">telerik</span></span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">:</span></span><span style="font-size:x-small;color:#a31515;"><span style="font-size:x-small;color:#a31515;">GridBoundColumn</span></span>
+<p><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">&gt;</span></span></p>
+<span style="font-size:x-small;"><font size="2">
+<p>&nbsp;</p>
+</font></span>
+<p>&nbsp;</p>
+<span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">&lt;</span></span><span style="font-size:x-small;color:#a31515;"><span style="font-size:x-small;color:#a31515;">telerik</span></span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">:</span></span><span style="font-size:x-small;color:#a31515;"><span style="font-size:x-small;color:#a31515;">GridTemplateColumn</span></span><span style="font-size:x-small;"> </span><span style="font-size:x-small;color:#ff0000;"><span style="font-size:x-small;color:#ff0000;">UniqueName</span></span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">=&quot;Observed&quot;</span></span><span style="font-size:x-small;"> </span><span style="font-size:x-small;color:#ff0000;"><span style="font-size:x-small;color:#ff0000;">HeaderText</span></span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">=&quot;Observed ?&quot;</span></span><span style="font-size:x-small;"> </span><span style="font-size:x-small;color:#ff0000;"><span style="font-size:x-small;color:#ff0000;">SortExpression</span></span>
+<p><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">=&quot;Observed&quot;</span></span></p>
+<span style="font-size:x-small;"><font size="2">
+<p>&nbsp;</p>
+</font></span>
+<p>&nbsp;</p>
+<span style="font-size:x-small;color:#ff0000;"><span style="font-size:x-small;color:#ff0000;">ItemStyle-HorizontalAlign</span></span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">=&quot;Center&quot;</span></span><span style="font-size:x-small;"> </span><span style="font-size:x-small;color:#ff0000;"><span style="font-size:x-small;color:#ff0000;">HeaderStyle-HorizontalAlign</span></span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">=&quot;Center&quot;</span></span><span style="font-size:x-small;"> </span>
+<p><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">&gt;</span></span></p>
+<span style="font-size:x-small;"><font size="2">
+<p>&nbsp;</p>
+</font></span>
+<p>&nbsp;</p>
+<span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">&lt;</span></span><span style="font-size:x-small;color:#a31515;"><span style="font-size:x-small;color:#a31515;">ItemTemplate</span></span>
+<p><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">&gt;</span></span></p>
+<span style="font-size:x-small;"><font size="2">
+<p>&nbsp;</p>
+</font></span>
+<p>&nbsp;</p>
+<span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">&lt;</span></span><span style="font-size:x-small;color:#a31515;"><span style="font-size:x-small;color:#a31515;">asp</span></span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">:</span></span><span style="font-size:x-small;color:#a31515;"><span style="font-size:x-small;color:#a31515;">CheckBox</span></span><span style="font-size:x-small;"> </span><span style="font-size:x-small;color:#ff0000;"><span style="font-size:x-small;color:#ff0000;">ID</span></span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">=&quot;cbObserved&quot;</span></span><span style="font-size:x-small;"> </span><span style="font-size:x-small;color:#ff0000;"><span style="font-size:x-small;color:#ff0000;">runat</span></span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">=&quot;server&quot;</span></span>
+<p><span style="font-size:x-small;"> <font size="2">
+<p>&nbsp;</p>
+</font></span></p>
+<p>&nbsp;</p>
+<span style="font-size:x-small;color:#ff0000;"><span style="font-size:x-small;color:#ff0000;">EnableViewState</span></span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">=&quot;true&quot;</span></span><span style="font-size:x-small;"> </span><span style="font-size:x-small;color:#ff0000;"><span style="font-size:x-small;color:#ff0000;">Checked</span></span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">=&#39;</span></span><span style="font-size:x-small;">&lt;%# Bind(&quot;WasObserved&quot;) %&gt;</span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">&#39;</span></span><span style="font-size:x-small;"> </span><span style="font-size:x-small;color:#ff0000;"><span style="font-size:x-small;color:#ff0000;">OnCheckedChanged</span></span>
+<p><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">=&quot;cbObserved_CheckedChanged&quot;/&gt;</span></span></p>
+<span style="font-size:x-small;"><font size="2">
+<p>&nbsp;</p>
+</font></span>
+<p>&nbsp;</p>
+<span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">&lt;</span></span><span style="font-size:x-small;color:#a31515;"><span style="font-size:x-small;color:#a31515;">asp</span></span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">:</span></span><span style="font-size:x-small;color:#a31515;"><span style="font-size:x-small;color:#a31515;">Label</span></span><span style="font-size:x-small;"> </span><span style="font-size:x-small;color:#ff0000;"><span style="font-size:x-small;color:#ff0000;">ID</span></span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">=&quot;Observed_NA&quot;</span></span><span style="font-size:x-small;"> </span><span style="font-size:x-small;color:#ff0000;"><span style="font-size:x-small;color:#ff0000;">runat</span></span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">=&quot;server&quot;</span></span><span style="font-size:x-small;"> </span><span style="font-size:x-small;color:#ff0000;"><span style="font-size:x-small;color:#ff0000;">Text</span></span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">=&quot;N/A&quot;</span></span><span style="font-size:x-small;"> </span>
+<p><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">/&gt;</span></span></p>
+<span style="font-size:x-small;"><font size="2">
+<p>&nbsp;</p>
+</font></span>
+<p>&nbsp;</p>
+<span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">&lt;/</span></span><span style="font-size:x-small;color:#a31515;"><span style="font-size:x-small;color:#a31515;">ItemTemplate</span></span>
+<p><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">&gt;</span></span></p>
+<span style="font-size:x-small;"><font size="2">
+<p>&nbsp;</p>
+</font></span>
+<p>&nbsp;</p>
+<span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">&lt;/</span></span><span style="font-size:x-small;color:#a31515;"><span style="font-size:x-small;color:#a31515;">telerik</span></span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">:</span></span><span style="font-size:x-small;color:#a31515;"><span style="font-size:x-small;color:#a31515;">GridTemplateColumn</span></span>
+<p><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">&gt;</span></span></p>
+<span style="font-size:x-small;"><font size="2">
+<p>&nbsp;</p>
+</font></span>
+<p>&nbsp;</p>
+<span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">&lt;</span></span><span style="font-size:x-small;color:#a31515;"><span style="font-size:x-small;color:#a31515;">telerik</span></span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">:</span></span><span style="font-size:x-small;color:#a31515;"><span style="font-size:x-small;color:#a31515;">GridTemplateColumn</span></span><span style="font-size:x-small;"> </span><span style="font-size:x-small;color:#ff0000;"><span style="font-size:x-small;color:#ff0000;">UniqueName</span></span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">=&quot;DateNotified&quot;</span></span><span style="font-size:x-small;"> </span><span style="font-size:x-small;color:#ff0000;"><span style="font-size:x-small;color:#ff0000;">HeaderText</span></span>
+<p><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">=&quot;Date Notified&quot;</span></span></p>
+<span style="font-size:x-small;"><font size="2">
+<p>&nbsp;</p>
+</font></span>
+<p>&nbsp;</p>
+<span style="font-size:x-small;color:#ff0000;"><span style="font-size:x-small;color:#ff0000;">SortExpression</span></span>
+<p><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">=&quot;DateNotified&quot;&gt;</span></span></p>
+<span style="font-size:x-small;"><font size="2">
+<p>&nbsp;</p>
+</font></span>
+<p>&nbsp;</p>
+<span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">&lt;</span></span><span style="font-size:x-small;color:#a31515;"><span style="font-size:x-small;color:#a31515;">ItemTemplate</span></span>
+<p><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">&gt;</span></span></p>
+<span style="font-size:x-small;"><font size="2">
+<p>&nbsp;</p>
+</font></span>
+<p>&nbsp;</p>
+<span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">&lt;</span></span><span style="font-size:x-small;color:#a31515;"><span style="font-size:x-small;color:#a31515;">telerik</span></span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">:</span></span><span style="font-size:x-small;color:#a31515;"><span style="font-size:x-small;color:#a31515;">RadDatePicker</span></span><span style="font-size:x-small;"> </span><span style="font-size:x-small;color:#ff0000;"><span style="font-size:x-small;color:#ff0000;">ID</span></span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">=&quot;rdpDateNotified&quot;</span></span><span style="font-size:x-small;"> </span><span style="font-size:x-small;color:#ff0000;"><span style="font-size:x-small;color:#ff0000;">runat</span></span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">=&quot;server&quot;</span></span><span style="font-size:x-small;"> </span><span style="font-size:x-small;color:#ff0000;"><span style="font-size:x-small;color:#ff0000;">Culture</span></span>
+<p><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">=&quot;English (United States)&quot;</span></span></p>
+<span style="font-size:x-small;"><font size="2">
+<p>&nbsp;</p>
+</font></span>
+<p>&nbsp;</p>
+<span style="font-size:x-small;color:#ff0000;"><span style="font-size:x-small;color:#ff0000;">CssClass</span></span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">=&quot;displayField&quot;</span></span><span style="font-size:x-small;"> </span><span style="font-size:x-small;color:#ff0000;"><span style="font-size:x-small;color:#ff0000;">MinDate</span></span>
+<p><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">=&quot;1900-01-01&quot;&gt;</span></span></p>
+<span style="font-size:x-small;"><font size="2">
+<p>&nbsp;</p>
+</font></span>
+<p>&nbsp;</p>
+<span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">&lt;</span></span><span style="font-size:x-small;color:#a31515;"><span style="font-size:x-small;color:#a31515;">DateInput</span></span><span style="font-size:x-small;"> </span><span style="font-size:x-small;color:#ff0000;"><span style="font-size:x-small;color:#ff0000;">runat</span></span>
+<p><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">=&quot;server&quot;&gt;</span></span></p>
+<span style="font-size:x-small;"><font size="2">
+<p>&nbsp;</p>
+</font></span>
+<p>&nbsp;</p>
+<span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">&lt;/</span></span><span style="font-size:x-small;color:#a31515;"><span style="font-size:x-small;color:#a31515;">DateInput</span></span>
+<p><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">&gt;</span></span></p>
+<span style="font-size:x-small;"><font size="2">
+<p>&nbsp;</p>
+</font></span>
+<p>&nbsp;</p>
+<span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">&lt;</span></span><span style="font-size:x-small;color:#a31515;"><span style="font-size:x-small;color:#a31515;">Calendar</span></span><span style="font-size:x-small;"> </span><span style="font-size:x-small;color:#ff0000;"><span style="font-size:x-small;color:#ff0000;">UseRowHeadersAsSelectors</span></span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">=&quot;False&quot;</span></span><span style="font-size:x-small;"> </span><span style="font-size:x-small;color:#ff0000;"><span style="font-size:x-small;color:#ff0000;">runat</span></span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">=&quot;server&quot;</span></span><span style="font-size:x-small;"> </span><span style="font-size:x-small;color:#ff0000;"><span style="font-size:x-small;color:#ff0000;">UseColumnHeadersAsSelectors</span></span>
+<p><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">=&quot;False&quot;</span></span></p>
+<span style="font-size:x-small;"><font size="2">
+<p>&nbsp;</p>
+</font></span>
+<p>&nbsp;</p>
+<span style="font-size:x-small;color:#ff0000;"><span style="font-size:x-small;color:#ff0000;">ViewSelectorText</span></span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">=&quot;x&quot;</span></span><span style="font-size:x-small;"> </span><span style="font-size:x-small;color:#ff0000;"><span style="font-size:x-small;color:#ff0000;">ShowRowHeaders</span></span>
+<p><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">=&quot;false&quot;&gt;</span></span></p>
+<span style="font-size:x-small;"><font size="2">
+<p>&nbsp;</p>
+</font></span>
+<p>&nbsp;</p>
+<span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">&lt;/</span></span><span style="font-size:x-small;color:#a31515;"><span style="font-size:x-small;color:#a31515;">Calendar</span></span>
+<p><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">&gt;</span></span></p>
+<span style="font-size:x-small;"><font size="2">
+<p>&nbsp;</p>
+</font></span>
+<p>&nbsp;</p>
+<span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">&lt;</span></span><span style="font-size:x-small;color:#a31515;"><span style="font-size:x-small;color:#a31515;">DatePopupButton</span></span><span style="font-size:x-small;"> </span><span style="font-size:x-small;color:#ff0000;"><span style="font-size:x-small;color:#ff0000;">ImageUrl</span></span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">=&quot;&quot;</span></span><span style="font-size:x-small;"> </span><span style="font-size:x-small;color:#ff0000;"><span style="font-size:x-small;color:#ff0000;">HoverImageUrl</span></span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">=&quot;&quot;&gt;&lt;/</span></span><span style="font-size:x-small;color:#a31515;"><span style="font-size:x-small;color:#a31515;">DatePopupButton</span></span>
+<p><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">&gt;</span></span></p>
+<span style="font-size:x-small;"><font size="2">
+<p>&nbsp;</p>
+</font></span>
+<p>&nbsp;</p>
+<span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">&lt;/</span></span><span style="font-size:x-small;color:#a31515;"><span style="font-size:x-small;color:#a31515;">telerik</span></span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">:</span></span><span style="font-size:x-small;color:#a31515;"><span style="font-size:x-small;color:#a31515;">RadDatePicker</span></span>
+<p><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">&gt;</span></span></p>
+<span style="font-size:x-small;"><font size="2">
+<p>&nbsp;</p>
+</font></span>
+<p>&nbsp;</p>
+<span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">&lt;</span></span><span style="font-size:x-small;color:#a31515;"><span style="font-size:x-small;color:#a31515;">asp</span></span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">:</span></span><span style="font-size:x-small;color:#a31515;"><span style="font-size:x-small;color:#a31515;">Label</span></span><span style="font-size:x-small;"> </span><span style="font-size:x-small;color:#ff0000;"><span style="font-size:x-small;color:#ff0000;">ID</span></span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">=&quot;DateNotified_NA&quot;</span></span><span style="font-size:x-small;"> </span><span style="font-size:x-small;color:#ff0000;"><span style="font-size:x-small;color:#ff0000;">runat</span></span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">=&quot;server&quot;</span></span><span style="font-size:x-small;"> </span><span style="font-size:x-small;color:#ff0000;"><span style="font-size:x-small;color:#ff0000;">Text</span></span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">=&quot;N/A&quot;</span></span><span style="font-size:x-small;"> </span>
+<p><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">/&gt;</span></span></p>
+<span style="font-size:x-small;"><font size="2">
+<p>&nbsp;</p>
+</font></span>
+<p>&nbsp;</p>
+<span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">&lt;/</span></span><span style="font-size:x-small;color:#a31515;"><span style="font-size:x-small;color:#a31515;">ItemTemplate</span></span>
+<p><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">&gt;</span></span></p>
+<span style="font-size:x-small;"><font size="2">
+<p>&nbsp;</p>
+</font></span>
+<p>&nbsp;</p>
+<span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">&lt;/</span></span><span style="font-size:x-small;color:#a31515;"><span style="font-size:x-small;color:#a31515;">telerik</span></span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">:</span></span><span style="font-size:x-small;color:#a31515;"><span style="font-size:x-small;color:#a31515;">GridTemplateColumn</span></span>
+<p><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">&gt;</span></span></p>
+<span style="font-size:x-small;"><font size="2">
+<p>&nbsp;</p>
+</font></span>
+<p>&nbsp;</p>
+<span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">&lt;</span></span><span style="font-size:x-small;color:#a31515;"><span style="font-size:x-small;color:#a31515;">telerik</span></span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">:</span></span><span style="font-size:x-small;color:#a31515;"><span style="font-size:x-small;color:#a31515;">GridButtonColumn</span></span><span style="font-size:x-small;"> </span><span style="font-size:x-small;color:#ff0000;"><span style="font-size:x-small;color:#ff0000;">HeaderText</span></span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">=&quot;Remove from Report?&quot;</span></span><span style="font-size:x-small;"> </span><span style="font-size:x-small;color:#ff0000;"><span style="font-size:x-small;color:#ff0000;">CommandName</span></span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">=&quot;Delete&quot;</span></span><span style="font-size:x-small;"> </span><span style="font-size:x-small;color:#ff0000;"><span style="font-size:x-small;color:#ff0000;">Text</span></span>
+<p><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">=&quot;Delete&quot;</span></span></p>
+<span style="font-size:x-small;"><font size="2">
+<p>&nbsp;</p>
+</font></span>
+<p>&nbsp;</p>
+<span style="font-size:x-small;color:#ff0000;"><span style="font-size:x-small;color:#ff0000;">ConfirmText</span></span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">=&quot;Are you sure you want to delete this service?&quot;</span></span><span style="font-size:x-small;"> </span><span style="font-size:x-small;color:#ff0000;"><span style="font-size:x-small;color:#ff0000;">UniqueName</span></span>
+<p><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">=&quot;Delete&quot;</span></span></p>
+<span style="font-size:x-small;"><font size="2">
+<p>&nbsp;</p>
+</font></span>
+<p>&nbsp;</p>
+<span style="font-size:x-small;color:#ff0000;"><span style="font-size:x-small;color:#ff0000;">ConfirmDialogType</span></span>
+<p><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">=&quot;RadWindow&quot;&gt;</span></span></p>
+<span style="font-size:x-small;"><font size="2">
+<p>&nbsp;</p>
+</font></span>
+<p>&nbsp;</p>
+<span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">&lt;/</span></span><span style="font-size:x-small;color:#a31515;"><span style="font-size:x-small;color:#a31515;">telerik</span></span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">:</span></span><span style="font-size:x-small;color:#a31515;"><span style="font-size:x-small;color:#a31515;">GridButtonColumn</span></span>
+<p><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">&gt;</span></span></p>
+<span style="font-size:x-small;"><font size="2">
+<p>&nbsp;</p>
+</font></span>
+<p>&nbsp;</p>
+<span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">&lt;/</span></span><span style="font-size:x-small;color:#a31515;"><span style="font-size:x-small;color:#a31515;">Columns</span></span>
+<p><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">&gt;</span></span></p>
+<span style="font-size:x-small;"><font size="2">
+<p>&nbsp;</p>
+</font></span>
+<p>&nbsp;</p>
+<span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">&lt;</span></span><span style="font-size:x-small;color:#a31515;"><span style="font-size:x-small;color:#a31515;">EditFormSettings</span></span><span style="font-size:x-small;"> </span><span style="font-size:x-small;color:#ff0000;"><span style="font-size:x-small;color:#ff0000;">EditFormType</span></span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">=&quot;Template&quot;</span></span><span style="font-size:x-small;"> </span><span style="font-size:x-small;color:#ff0000;"><span style="font-size:x-small;color:#ff0000;">CaptionFormatString</span></span>
+<p><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">=&quot;Add Missed Service&quot;</span></span></p>
+<span style="font-size:x-small;"><font size="2">
+<p>&nbsp;</p>
+</font></span>
+<p>&nbsp;</p>
+<span style="font-size:x-small;color:#ff0000;"><span style="font-size:x-small;color:#ff0000;">FormCaptionStyle-Font-Bold</span></span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">=&quot;true&quot;&gt;</span></span>
+<p><span style="font-size:x-small;"> <font size="2">
+<p>&nbsp;</p>
+</font></span></p>
+<p>&nbsp;</p>
+<span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">&lt;</span></span><span style="font-size:x-small;color:#a31515;"><span style="font-size:x-small;color:#a31515;">FormStyle</span></span><span style="font-size:x-small;"> </span><span style="font-size:x-small;color:#ff0000;"><span style="font-size:x-small;color:#ff0000;">BackColor</span></span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">=&quot;#ECFED8&quot;</span></span><span style="font-size:x-small;"> </span>
+<p><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">/&gt;</span></span></p>
+<span style="font-size:x-small;"><font size="2">
+<p>&nbsp;</p>
+</font></span>
+<p>&nbsp;</p>
+<span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">&lt;</span></span><span style="font-size:x-small;color:#a31515;"><span style="font-size:x-small;color:#a31515;">FormTemplate</span></span>
+<p><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">&gt;</span></span></p>
+<span style="font-size:x-small;"><font size="2">
+<p>&nbsp;</p>
+</font></span>
+<p>&nbsp;</p>
+<span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">&lt;</span></span><span style="font-size:x-small;color:#a31515;"><span style="font-size:x-small;color:#a31515;">table</span></span><span style="font-size:x-small;"> </span><span style="font-size:x-small;color:#ff0000;"><span style="font-size:x-small;color:#ff0000;">cellspacing</span></span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">=&quot;1&quot;</span></span><span style="font-size:x-small;"> </span><span style="font-size:x-small;color:#ff0000;"><span style="font-size:x-small;color:#ff0000;">cellpadding</span></span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">=&quot;1&quot;</span></span><span style="font-size:x-small;"> </span><span style="font-size:x-small;color:#ff0000;"><span style="font-size:x-small;color:#ff0000;">border</span></span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">=&quot;0&quot;</span></span><span style="font-size:x-small;"> </span><span style="font-size:x-small;color:#ff0000;"><span style="font-size:x-small;color:#ff0000;">runat</span></span>
+<p><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">=&quot;server&quot;&gt;</span></span></p>
+<span style="font-size:x-small;"><font size="2">
+<p>&nbsp;</p>
+</font></span>
+<p>&nbsp;</p>
+<span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">&lt;</span></span><span style="font-size:x-small;color:#a31515;"><span style="font-size:x-small;color:#a31515;">tr</span></span>
+<p><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">&gt;</span></span></p>
+<span style="font-size:x-small;"><font size="2">
+<p>&nbsp;</p>
+</font></span>
+<p>&nbsp;</p>
+<span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">&lt;</span></span><span style="font-size:x-small;color:#a31515;"><span style="font-size:x-small;color:#a31515;">td</span></span>
+<p><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">&gt;</span></span></p>
+<span style="font-size:x-small;">
+<p>Service Date:</p>
+<font size="2">
+<p>&nbsp;</p>
+</font></span>
+<p>&nbsp;</p>
+<span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">&lt;/</span></span><span style="font-size:x-small;color:#a31515;"><span style="font-size:x-small;color:#a31515;">td</span></span>
+<p><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">&gt;</span></span></p>
+<span style="font-size:x-small;"><font size="2">
+<p>&nbsp;</p>
+</font></span>
+<p>&nbsp;</p>
+<span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">&lt;</span></span><span style="font-size:x-small;color:#a31515;"><span style="font-size:x-small;color:#a31515;">td</span></span>
+<p><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">&gt;</span></span></p>
+<span style="font-size:x-small;"><font size="2">
+<p>&nbsp;</p>
+</font></span>
+<p>&nbsp;</p>
+<span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">&lt;</span></span><span style="font-size:x-small;color:#a31515;"><span style="font-size:x-small;color:#a31515;">telerik</span></span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">:</span></span><span style="font-size:x-small;color:#a31515;"><span style="font-size:x-small;color:#a31515;">RadDatePicker</span></span><span style="font-size:x-small;"> </span><span style="font-size:x-small;color:#ff0000;"><span style="font-size:x-small;color:#ff0000;">ID</span></span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">=&quot;rdpServiceDate&quot;</span></span><span style="font-size:x-small;"> </span><span style="font-size:x-small;color:#ff0000;"><span style="font-size:x-small;color:#ff0000;">runat</span></span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">=&quot;server&quot;</span></span><span style="font-size:x-small;"> </span><span style="font-size:x-small;color:#ff0000;"><span style="font-size:x-small;color:#ff0000;">Culture</span></span>
+<p><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">=&quot;English (United States)&quot;</span></span></p>
+<span style="font-size:x-small;"><font size="2">
+<p>&nbsp;</p>
+</font></span>
+<p>&nbsp;</p>
+<span style="font-size:x-small;color:#ff0000;"><span style="font-size:x-small;color:#ff0000;">CssClass</span></span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">=&quot;displayField&quot;</span></span><span style="font-size:x-small;"> </span><span style="font-size:x-small;color:#ff0000;"><span style="font-size:x-small;color:#ff0000;">MinDate</span></span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">=&quot;1900-01-01&quot;</span></span><span style="font-size:x-small;"> </span><span style="font-size:x-small;color:#ff0000;"><span style="font-size:x-small;color:#ff0000;">TabIndex</span></span>
+<p><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">=&quot;1&quot;&gt;</span></span></p>
+<span style="font-size:x-small;"><font size="2">
+<p>&nbsp;</p>
+</font></span>
+<p>&nbsp;</p>
+<span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">&lt;</span></span><span style="font-size:x-small;color:#a31515;"><span style="font-size:x-small;color:#a31515;">DateInput</span></span><span style="font-size:x-small;"> </span><span style="font-size:x-small;color:#ff0000;"><span style="font-size:x-small;color:#ff0000;">ID</span></span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">=&quot;DateInput1&quot;</span></span><span style="font-size:x-small;"> </span><span style="font-size:x-small;color:#ff0000;"><span style="font-size:x-small;color:#ff0000;">runat</span></span>
+<p><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">=&quot;server&quot;&gt;</span></span></p>
+<span style="font-size:x-small;"><font size="2">
+<p>&nbsp;</p>
+</font></span>
+<p>&nbsp;</p>
+<span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">&lt;/</span></span><span style="font-size:x-small;color:#a31515;"><span style="font-size:x-small;color:#a31515;">DateInput</span></span>
+<p><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">&gt;</span></span></p>
+<span style="font-size:x-small;"><font size="2">
+<p>&nbsp;</p>
+</font></span>
+<p>&nbsp;</p>
+<span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">&lt;</span></span><span style="font-size:x-small;color:#a31515;"><span style="font-size:x-small;color:#a31515;">Calendar</span></span><span style="font-size:x-small;"> </span><span style="font-size:x-small;color:#ff0000;"><span style="font-size:x-small;color:#ff0000;">ID</span></span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">=&quot;Calendar1&quot;</span></span><span style="font-size:x-small;"> </span><span style="font-size:x-small;color:#ff0000;"><span style="font-size:x-small;color:#ff0000;">UseRowHeadersAsSelectors</span></span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">=&quot;False&quot;</span></span><span style="font-size:x-small;"> </span><span style="font-size:x-small;color:#ff0000;"><span style="font-size:x-small;color:#ff0000;">runat</span></span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">=&quot;server&quot;</span></span><span style="font-size:x-small;"> </span><span style="font-size:x-small;color:#ff0000;"><span style="font-size:x-small;color:#ff0000;">UseColumnHeadersAsSelectors</span></span>
+<p><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">=&quot;False&quot;</span></span></p>
+<span style="font-size:x-small;"><font size="2">
+<p>&nbsp;</p>
+</font></span>
+<p>&nbsp;</p>
+<span style="font-size:x-small;color:#ff0000;"><span style="font-size:x-small;color:#ff0000;">ViewSelectorText</span></span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">=&quot;x&quot;</span></span><span style="font-size:x-small;"> </span><span style="font-size:x-small;color:#ff0000;"><span style="font-size:x-small;color:#ff0000;">ShowRowHeaders</span></span>
+<p><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">=&quot;false&quot;&gt;</span></span></p>
+<span style="font-size:x-small;"><font size="2">
+<p>&nbsp;</p>
+</font></span>
+<p>&nbsp;</p>
+<span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">&lt;/</span></span><span style="font-size:x-small;color:#a31515;"><span style="font-size:x-small;color:#a31515;">Calendar</span></span>
+<p><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">&gt;</span></span></p>
+<span style="font-size:x-small;"><font size="2">
+<p>&nbsp;</p>
+</font></span>
+<p>&nbsp;</p>
+<span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">&lt;</span></span><span style="font-size:x-small;color:#a31515;"><span style="font-size:x-small;color:#a31515;">DatePopupButton</span></span><span style="font-size:x-small;"> </span><span style="font-size:x-small;color:#ff0000;"><span style="font-size:x-small;color:#ff0000;">ImageUrl</span></span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">=&quot;&quot;</span></span><span style="font-size:x-small;"> </span><span style="font-size:x-small;color:#ff0000;"><span style="font-size:x-small;color:#ff0000;">HoverImageUrl</span></span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">=&quot;&quot;&gt;&lt;/</span></span><span style="font-size:x-small;color:#a31515;"><span style="font-size:x-small;color:#a31515;">DatePopupButton</span></span>
+<p><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">&gt;</span></span></p>
+<span style="font-size:x-small;"><font size="2">
+<p>&nbsp;</p>
+</font></span>
+<p>&nbsp;</p>
+<span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">&lt;/</span></span><span style="font-size:x-small;color:#a31515;"><span style="font-size:x-small;color:#a31515;">telerik</span></span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">:</span></span><span style="font-size:x-small;color:#a31515;"><span style="font-size:x-small;color:#a31515;">RadDatePicker</span></span>
+<p><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">&gt;</span></span></p>
+<span style="font-size:x-small;"><font size="2">
+<p>&nbsp;</p>
+</font></span>
+<p>&nbsp;</p>
+<span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">&lt;/</span></span><span style="font-size:x-small;color:#a31515;"><span style="font-size:x-small;color:#a31515;">span</span></span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">&gt;&lt;</span></span><span style="font-size:x-small;color:#a31515;"><span style="font-size:x-small;color:#a31515;">span</span></span><span style="font-size:x-small;"> </span><span style="font-size:x-small;color:#ff0000;"><span style="font-size:x-small;color:#ff0000;">class</span></span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">=&quot;asterisk&quot;&gt;</span></span><span style="font-size:x-small;color:#ff0000;"><span style="font-size:x-small;color:#ff0000;">&amp;nbsp</span></span><span style="font-size:x-small;">*</span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">&lt;/</span></span><span style="font-size:x-small;color:#a31515;"><span style="font-size:x-small;color:#a31515;">span</span></span>
+<p><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">&gt;</span></span></p>
+<span style="font-size:x-small;"><font size="2">
+<p>&nbsp;</p>
+</font></span>
+<p>&nbsp;</p>
+<span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">&lt;/</span></span><span style="font-size:x-small;color:#a31515;"><span style="font-size:x-small;color:#a31515;">td</span></span>
+<p><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">&gt;</span></span></p>
+<span style="font-size:x-small;"><font size="2">
+<p>&nbsp;</p>
+</font></span>
+<p>&nbsp;</p>
+<span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">&lt;/</span></span><span style="font-size:x-small;color:#a31515;"><span style="font-size:x-small;color:#a31515;">tr</span></span>
+<p><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">&gt;</span></span></p>
+<span style="font-size:x-small;"><font size="2">
+<p>&nbsp;</p>
+</font></span>
+<p>&nbsp;</p>
+<span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">&lt;</span></span><span style="font-size:x-small;color:#a31515;"><span style="font-size:x-small;color:#a31515;">tr</span></span>
+<p><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">&gt;</span></span></p>
+<span style="font-size:x-small;"><font size="2">
+<p>&nbsp;</p>
+</font></span>
+<p>&nbsp;</p>
+<span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">&lt;</span></span><span style="font-size:x-small;color:#a31515;"><span style="font-size:x-small;color:#a31515;">td</span></span>
+<p><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">&gt;</span></span></p>
+<span style="font-size:x-small;">
+<p>Service Code:</p>
+<font size="2">
+<p>&nbsp;</p>
+</font></span>
+<p>&nbsp;</p>
+<span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">&lt;/</span></span><span style="font-size:x-small;color:#a31515;"><span style="font-size:x-small;color:#a31515;">td</span></span>
+<p><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">&gt;</span></span></p>
+<span style="font-size:x-small;"><font size="2">
+<p>&nbsp;</p>
+</font></span>
+<p>&nbsp;</p>
+<span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">&lt;</span></span><span style="font-size:x-small;color:#a31515;"><span style="font-size:x-small;color:#a31515;">td</span></span>
+<p><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">&gt;</span></span></p>
+<span style="font-size:x-small;"><font size="2">
+<p>&nbsp;</p>
+</font></span>
+<p>&nbsp;</p>
+<span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">&lt;</span></span><span style="font-size:x-small;color:#a31515;"><span style="font-size:x-small;color:#a31515;">telerik</span></span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">:</span></span><span style="font-size:x-small;color:#a31515;"><span style="font-size:x-small;color:#a31515;">RadComboBox</span></span><span style="font-size:x-small;"> </span><span style="font-size:x-small;color:#ff0000;"><span style="font-size:x-small;color:#ff0000;">ID</span></span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">=&quot;ddlServiceCode&quot;</span></span><span style="font-size:x-small;"> </span><span style="font-size:x-small;color:#ff0000;"><span style="font-size:x-small;color:#ff0000;">Width</span></span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">=&quot;300px&quot;</span></span><span style="font-size:x-small;"> </span><span style="font-size:x-small;color:#ff0000;"><span style="font-size:x-small;color:#ff0000;">runat</span></span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">=&quot;server&quot;</span></span><span style="font-size:x-small;"> </span><span style="font-size:x-small;color:#ff0000;"><span style="font-size:x-small;color:#ff0000;">TabIndex</span></span>
+<p><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">=&quot;2&quot;</span></span></p>
+<span style="font-size:x-small;"><font size="2">
+<p>&nbsp;</p>
+</font></span>
+<p>&nbsp;</p>
+<span style="font-size:x-small;color:#ff0000;"><span style="font-size:x-small;color:#ff0000;">DataSourceID</span></span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">=&quot;NewServiceCodeDataSource&quot;</span></span><span style="font-size:x-small;"> </span><span style="font-size:x-small;color:#ff0000;"><span style="font-size:x-small;color:#ff0000;">DataTextField</span></span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">=&quot;Value&quot;</span></span><span style="font-size:x-small;"> </span><span style="font-size:x-small;color:#ff0000;"><span style="font-size:x-small;color:#ff0000;">DataValueField</span></span>
+<p><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">=&quot;Key&quot;</span></span></p>
+<span style="font-size:x-small;"><font size="2">
+<p>&nbsp;</p>
+</font></span>
+<p>&nbsp;</p>
+<span style="font-size:x-small;color:#ff0000;"><span style="font-size:x-small;color:#ff0000;">CssClass</span></span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">=&quot;displayField&quot;</span></span><span style="font-size:x-small;"> </span><span style="font-size:x-small;color:#ff0000;"><span style="font-size:x-small;color:#ff0000;">MarkFirstMatch</span></span>
+<p><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">=&quot;true&quot;&gt;</span></span></p>
+<span style="font-size:x-small;"><font size="2">
+<p>&nbsp;</p>
+</font></span>
+<p>&nbsp;</p>
+<span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">&lt;/</span></span><span style="font-size:x-small;color:#a31515;"><span style="font-size:x-small;color:#a31515;">telerik</span></span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">:</span></span><span style="font-size:x-small;color:#a31515;"><span style="font-size:x-small;color:#a31515;">RadComboBox</span></span>
+<p><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">&gt;</span></span></p>
+<span style="font-size:x-small;"><font size="2">
+<p>&nbsp;</p>
+</font></span>
+<p>&nbsp;</p>
+<span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">&lt;</span></span><span style="font-size:x-small;color:#a31515;"><span style="font-size:x-small;color:#a31515;">span</span></span><span style="font-size:x-small;"> </span><span style="font-size:x-small;color:#ff0000;"><span style="font-size:x-small;color:#ff0000;">class</span></span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">=&quot;asterisk&quot;&gt;</span></span><span style="font-size:x-small;color:#ff0000;"><span style="font-size:x-small;color:#ff0000;">&amp;nbsp</span></span><span style="font-size:x-small;">*</span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">&lt;/</span></span><span style="font-size:x-small;color:#a31515;"><span style="font-size:x-small;color:#a31515;">span</span></span>
+<p><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">&gt;</span></span></p>
+<span style="font-size:x-small;"><font size="2">
+<p>&nbsp;</p>
+</font></span>
+<p>&nbsp;</p>
+<span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">&lt;/</span></span><span style="font-size:x-small;color:#a31515;"><span style="font-size:x-small;color:#a31515;">td</span></span>
+<p><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">&gt;</span></span></p>
+<span style="font-size:x-small;"><font size="2">
+<p>&nbsp;</p>
+</font></span>
+<p>&nbsp;</p>
+<span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">&lt;/</span></span><span style="font-size:x-small;color:#a31515;"><span style="font-size:x-small;color:#a31515;">tr</span></span>
+<p><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">&gt;</span></span></p>
+<span style="font-size:x-small;"><font size="2">
+<p>&nbsp;</p>
+</font></span>
+<p>&nbsp;</p>
+<span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">&lt;/</span></span><span style="font-size:x-small;color:#a31515;"><span style="font-size:x-small;color:#a31515;">table</span></span>
+<p><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">&gt;</span></span></p>
+<span style="font-size:x-small;"><font size="2">
+<p>&nbsp;</p>
+</font></span>
+<p>&nbsp;</p>
+<span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">&lt;</span></span><span style="font-size:x-small;color:#a31515;"><span style="font-size:x-small;color:#a31515;">table</span></span><span style="font-size:x-small;"> </span><span style="font-size:x-small;color:#ff0000;"><span style="font-size:x-small;color:#ff0000;">style</span></span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">=&quot;</span></span><span style="font-size:x-small;color:#ff0000;"><span style="font-size:x-small;color:#ff0000;">width</span></span><span style="font-size:x-small;">: </span>
+<p><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">100%&quot;&gt;</span></span></p>
+<span style="font-size:x-small;"><font size="2">
+<p>&nbsp;</p>
+</font></span>
+<p>&nbsp;</p>
+<span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">&lt;</span></span><span style="font-size:x-small;color:#a31515;"><span style="font-size:x-small;color:#a31515;">tr</span></span>
+<p><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">&gt;</span></span></p>
+<span style="font-size:x-small;"><font size="2">
+<p>&nbsp;</p>
+</font></span>
+<p>&nbsp;</p>
+<span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">&lt;</span></span><span style="font-size:x-small;color:#a31515;"><span style="font-size:x-small;color:#a31515;">td</span></span><span style="font-size:x-small;"> </span><span style="font-size:x-small;color:#ff0000;"><span style="font-size:x-small;color:#ff0000;">align</span></span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">=&quot;right&quot;</span></span><span style="font-size:x-small;"> </span><span style="font-size:x-small;color:#ff0000;"><span style="font-size:x-small;color:#ff0000;">colspan</span></span>
+<p><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">=&quot;2&quot;&gt;</span></span></p>
+<span style="font-size:x-small;"><font size="2">
+<p>&nbsp;</p>
+</font></span>
+<p>&nbsp;</p>
+<span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">&lt;</span></span><span style="font-size:x-small;color:#a31515;"><span style="font-size:x-small;color:#a31515;">asp</span></span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">:</span></span><span style="font-size:x-small;color:#a31515;"><span style="font-size:x-small;color:#a31515;">Button</span></span><span style="font-size:x-small;"> </span><span style="font-size:x-small;color:#ff0000;"><span style="font-size:x-small;color:#ff0000;">TabIndex</span></span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">=&quot;3&quot;</span></span><span style="font-size:x-small;"> </span><span style="font-size:x-small;color:#ff0000;"><span style="font-size:x-small;color:#ff0000;">ID</span></span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">=&quot;btnInsertUpdate&quot;</span></span><span style="font-size:x-small;"> </span><span style="font-size:x-small;color:#ff0000;"><span style="font-size:x-small;color:#ff0000;">Text</span></span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">=&#39;</span></span><span style="font-size:x-small;">&lt;%# (Container is GridEditFormInsertItem) ? &quot;Insert&quot; : &quot;Update&quot; %&gt;</span>
+<p><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">&#39;</span></span></p>
+<span style="font-size:x-small;"><font size="2">
+<p>&nbsp;</p>
+</font></span>
+<p>&nbsp;</p>
+<span style="font-size:x-small;color:#ff0000;"><span style="font-size:x-small;color:#ff0000;">runat</span></span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">=&quot;server&quot;</span></span><span style="font-size:x-small;"> </span><span style="font-size:x-small;color:#ff0000;"><span style="font-size:x-small;color:#ff0000;">CommandName</span></span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">=&#39;</span></span><span style="font-size:x-small;">&lt;%# (Container is GridEditFormInsertItem) ? &quot;PerformInsert&quot; : &quot;Update&quot; %&gt;</span>
+<p><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">&#39;&gt;</span></span></p>
+<span style="font-size:x-small;"><font size="2">
+<p>&nbsp;</p>
+</font></span>
+<p>&nbsp;</p>
+<span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">&lt;/</span></span><span style="font-size:x-small;color:#a31515;"><span style="font-size:x-small;color:#a31515;">asp</span></span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">:</span></span><span style="font-size:x-small;color:#a31515;"><span style="font-size:x-small;color:#a31515;">Button</span></span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">&gt;</span></span>
+<p><span style="font-size:x-small;color:#ff0000;"><span style="font-size:x-small;color:#ff0000;">&amp;nbsp;</span></span></p>
+<span style="font-size:x-small;"><font size="2">
+<p>&nbsp;</p>
+</font></span>
+<p>&nbsp;</p>
+<span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">&lt;</span></span><span style="font-size:x-small;color:#a31515;"><span style="font-size:x-small;color:#a31515;">asp</span></span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">:</span></span><span style="font-size:x-small;color:#a31515;"><span style="font-size:x-small;color:#a31515;">Button</span></span><span style="font-size:x-small;"> </span><span style="font-size:x-small;color:#ff0000;"><span style="font-size:x-small;color:#ff0000;">TabIndex</span></span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">=&quot;4&quot;</span></span><span style="font-size:x-small;"> </span><span style="font-size:x-small;color:#ff0000;"><span style="font-size:x-small;color:#ff0000;">ID</span></span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">=&quot;btnCancel&quot;</span></span><span style="font-size:x-small;"> </span><span style="font-size:x-small;color:#ff0000;"><span style="font-size:x-small;color:#ff0000;">Text</span></span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">=&quot;Cancel&quot;</span></span><span style="font-size:x-small;"> </span><span style="font-size:x-small;color:#ff0000;"><span style="font-size:x-small;color:#ff0000;">runat</span></span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">=&quot;server&quot;</span></span><span style="font-size:x-small;"> </span><span style="font-size:x-small;color:#ff0000;"><span style="font-size:x-small;color:#ff0000;">CausesValidation</span></span>
+<p><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">=&quot;False&quot;</span></span></p>
+<span style="font-size:x-small;"><font size="2">
+<p>&nbsp;</p>
+</font></span>
+<p>&nbsp;</p>
+<span style="font-size:x-small;color:#ff0000;"><span style="font-size:x-small;color:#ff0000;">CommandName</span></span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">=&quot;Cancel&quot;&gt;&lt;/</span></span><span style="font-size:x-small;color:#a31515;"><span style="font-size:x-small;color:#a31515;">asp</span></span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">:</span></span><span style="font-size:x-small;color:#a31515;"><span style="font-size:x-small;color:#a31515;">Button</span></span>
+<p><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">&gt;</span></span></p>
+<span style="font-size:x-small;"><font size="2">
+<p>&nbsp;</p>
+</font></span>
+<p>&nbsp;</p>
+<span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">&lt;/</span></span><span style="font-size:x-small;color:#a31515;"><span style="font-size:x-small;color:#a31515;">td</span></span>
+<p><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">&gt;</span></span></p>
+<span style="font-size:x-small;"><font size="2">
+<p>&nbsp;</p>
+</font></span>
+<p>&nbsp;</p>
+<span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">&lt;/</span></span><span style="font-size:x-small;color:#a31515;"><span style="font-size:x-small;color:#a31515;">tr</span></span>
+<p><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">&gt;</span></span></p>
+<span style="font-size:x-small;"><font size="2">
+<p>&nbsp;</p>
+</font></span>
+<p>&nbsp;</p>
+<span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">&lt;/</span></span><span style="font-size:x-small;color:#a31515;"><span style="font-size:x-small;color:#a31515;">table</span></span>
+<p><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">&gt;</span></span></p>
+<span style="font-size:x-small;"><font size="2">
+<p>&nbsp;</p>
+</font></span>
+<p>&nbsp;</p>
+<span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">&lt;/</span></span><span style="font-size:x-small;color:#a31515;"><span style="font-size:x-small;color:#a31515;">FormTemplate</span></span>
+<p><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">&gt;</span></span></p>
+<span style="font-size:x-small;"><font size="2">
+<p>&nbsp;</p>
+</font></span>
+<p>&nbsp;</p>
+<span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">&lt;/</span></span><span style="font-size:x-small;color:#a31515;"><span style="font-size:x-small;color:#a31515;">EditFormSettings</span></span>
+<p><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">&gt;</span></span></p>
+<span style="font-size:x-small;"><font size="2">
+<p>&nbsp;</p>
+</font></span>
+<p>&nbsp;</p>
+<span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">&lt;/</span></span><span style="font-size:x-small;color:#a31515;"><span style="font-size:x-small;color:#a31515;">MasterTableView</span></span>
+<p><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">&gt;</span></span></p>
+<span style="font-size:x-small;"><font size="2">
+<p>&nbsp;</p>
+</font></span>
+<p>&nbsp;</p>
+<span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">&lt;/</span></span><span style="font-size:x-small;color:#a31515;"><span style="font-size:x-small;color:#a31515;">telerik</span></span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">:</span></span><span style="font-size:x-small;color:#a31515;"><span style="font-size:x-small;color:#a31515;">RadGrid</span></span>
+<p><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">&gt;</span></span></p>
+<p><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;"></span></span></p>
+<p><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;"></span></span></p>
+<p><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;"></span></span></p>
+<p><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">--------------the CSLA DATA SOURCE</span></span></p>
+</p>
+<p><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;"><font size="2">
+<p>&nbsp;</p>
+</font></span>
+<p><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">&lt;</span></span><span style="font-size:x-small;color:#a31515;"><span style="font-size:x-small;color:#a31515;">csla</span></span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">:</span></span><span style="font-size:x-small;color:#a31515;"><span style="font-size:x-small;color:#a31515;">CslaDataSource</span></span><span style="font-size:x-small;"> </span><span style="font-size:x-small;color:#ff0000;"><span style="font-size:x-small;color:#ff0000;">ID</span></span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">=&quot;ServicesDataSource&quot;</span></span><span style="font-size:x-small;"> </span><span style="font-size:x-small;color:#ff0000;"><span style="font-size:x-small;color:#ff0000;">runat</span></span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">=&quot;server&quot;</span></span><span style="font-size:x-small;"> </span><span style="font-size:x-small;color:#ff0000;"><span style="font-size:x-small;color:#ff0000;">TypeName</span></span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">=&quot;Beacon.Library.MonthlyProgressReports.ComplianceList, Beacon.Library&quot;</span></span></p>
+<span style="font-size:x-small;"><font size="2">
+<p>&nbsp;</p>
+</font></span>
+<p><span style="font-size:x-small;color:#ff0000;"><span style="font-size:x-small;color:#ff0000;">OnSelectObject</span></span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">=&quot;ServicesDataSource_SelectObject&quot;</span></span><span style="font-size:x-small;"> </span><span style="font-size:x-small;color:#ff0000;"><span style="font-size:x-small;color:#ff0000;">TypeSupportsPaging</span></span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">=&quot;False&quot;</span></span><span style="font-size:x-small;"> </span><span style="font-size:x-small;color:#ff0000;"><span style="font-size:x-small;color:#ff0000;">TypeSupportsSorting</span></span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">=&quot;False&quot;</span></span></p>
+<span style="font-size:x-small;"><font size="2">
+<p>&nbsp;</p>
+</font></span>
+<p><span style="font-size:x-small;color:#ff0000;"><span style="font-size:x-small;color:#ff0000;">TypeAssemblyName</span></span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">=&quot;&quot;&gt;</span></span></p>
+<span style="font-size:x-small;"><font size="2">
+<p>&nbsp;</p>
+</font></span>
+<p><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">&lt;/</span></span><span style="font-size:x-small;color:#a31515;"><span style="font-size:x-small;color:#a31515;">csla</span></span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">:</span></span><span style="font-size:x-small;color:#a31515;"><span style="font-size:x-small;color:#a31515;">CslaDataSource</span></span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">&gt;</span></span></p>
+<p><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;"></span></span></p>
+<p><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">Thank you...</span></span></p>
+<p><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;"></span></span></p>
+</span></span></p>
+</span></p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

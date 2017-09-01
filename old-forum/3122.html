@@ -1,0 +1,8 @@
+<html><header><title>CSLA .NET 3.0 Build Warning</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA .NET 3.0 Build Warning</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3122.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>JabbaTheNut posted on Saturday, June 30, 2007</h2><P>Rocky,</P>
+<P>When you build CSLA .NET 3.0, you get the following warning...</P>
+<P>Field 'Csla.ReadOnlyBase&lt;T&gt;._executeResultCache' is never assigned to, and will always have its default value null</P>
+<P>I noticed, however, that in the CanExecuteMethod(string methodName) method, you do have the following code which does assign _executeResultCache...</P>
+<P>_executeResultCache[methodName] = result;</P>
+<P>Why is the warning thrown?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Sunday, July 01, 2007</h2><P>That's funny, because I think I found that same issue about the time you did <img src="/emoticons/emotion-1.gif" alt="Smile [:)]" /></P>
+<P>I was missing a bit of initialization code in ReadOnlyBase, and that code is now in the class (in svn). </P>
+<P>Thanks for helping find this bug!!!</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

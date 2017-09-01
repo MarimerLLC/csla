@@ -1,0 +1,19 @@
+<html><header><title>Cache a read only root list</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Cache a read only root list</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/670.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Michael Hildner posted on Wednesday, July 19, 2006</h2><P>Hi,</P>
+<P>I have a read only root list that I use for lookups. The list contains images, so it's kinda large and noticeably slow pulling across the network. The list rarely changes.</P>
+<P>Is there anything wrong with changing my class so it's like a NameValueList? That is, have an instance variable of the same type as the class, and in the public static Get method, populate it if it's null, otherwise just re-use it?</P>
+<P>Seems to me that would be ok, but I've made lots of mistakes due to ignorance, so I thought I'd ask.</P>
+<P>Thanks,</P>
+<P>Mike</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Brian Criswell replied on Wednesday, July 19, 2006</h2>There should be nothing wrong with that.&nbsp; One thing you may want to think of is under which scenarios will the cache need to be invalidated.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, July 19, 2006</h2>No, that is a fine thing to do. You can follow the pattern I used in RoleList to do the cache, and to provide a way to invalidate that cache if needed.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Michael Hildner replied on Wednesday, July 19, 2006</h2><P>Brian and Rocky,</P>
+<P>Thanks for verifying. I'll make an InvalidateCache() method that sets the instance variable to null in case it's&nbsp;ever needed. The list changes so infrequently (every couple months or so), I can probably get away with just re-launching the app.</P>
+<P>Thanks,</P>
+<P>Mike</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>david.wendelken replied on Thursday, July 20, 2006</h2><P>I was skimming thru some new 2.0 features and recall reading that you can tie a cache to a data table, which means it would automatically invalidate when the table changes.</P>
+<P>Sounds like what you might need!</P>
+<P>Haven't tried it yet - so maybe it doesn't work or I mis-read that section. :)&nbsp; I'm a couple of weeks away from trying that in my own project...</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Michael Hildner replied on Thursday, July 20, 2006</h2><P>Interesting, I don't recall reading that. Can you point me to a reference?</P>
+<P>Thanks,</P>
+<P>Mike</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>david.wendelken replied on Thursday, July 20, 2006</h2><P><U>Professional ASP.NET 2.0</U>, Evjen, et al.&nbsp;&nbsp;Publisher: WROX (Wiley Publishing)</P>
+<P>p. 752:</P>
+<P>"Because of the unsealing of the <EM>CacheDependency</EM> class, the ASP.NET team has built a new SQL Server cache dependency -- <EM>SqlCacheDependency</EM>.&nbsp; ...&nbsp; When a cache becomes invalid because a table changes within the underlying SQL Server, you now know it immediately."</P>
+<P>p. 756 and following describe the <EM>SqlCacheDepency</EM>&nbsp;usage.</P>
+<P>Keep us posted on how it works!&nbsp; (And any gotchas you run into.)</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Michael Hildner replied on Thursday, July 20, 2006</h2><P>Thanks David,</P>
+<P>I'll have to read up on that. I'm working on a Windows Forms project right now, so not sure if I could use it, but it sounds cool.</P>
+<P>Mike</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

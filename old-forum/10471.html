@@ -1,0 +1,229 @@
+<html><header><title>Bug?: Unit Testing Csla.Web.Mvc.Controller results in access exception</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Bug?: Unit Testing Csla.Web.Mvc.Controller results in access exception</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10471.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>lacota posted on Tuesday, June 28, 2011</h2><p>This is a strange bug. I have a controller derived from Csla.Web.Mvc.Controller. When I attempt to unit test it, checking to see if it retrieves the correct view, I get the following error when calling, &quot;return View()&quot;;</p>
+<p>Attempt by method &#39;MvcPoc.UI.WebApplication.Controllers.MyController.List()&#39; to access method &#39;System.Web.Mvc.Controller.View()&#39; failed.</p>
+<p>On closer inspection this line does not seem to work;</p>
+<p><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">
+<p>ViewData.Model = MyItemList.Get();</p>
+<p>Model remains null (and yes &#39;Get&#39; is returning a list not null). The strange thing is, the model is null in the debugger but if I add this line, </p>
+<p>
+<p><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">
+<p><span style="font-family:Arial;color:#000000;">var isnull = (ViewData.Model == null);</span></p>
+<p><span style="font-family:Arial;color:#000000;">isnull remains false!? </span><span style="font-family:Arial;color:#000000;">There must be some quantum computing going on as the Model seems to be both null and not null at the same time.</span></p>
+<span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">
+<p><span style="font-family:Arial;color:#000000;">If I change the base class to the System.Web.Mvc.Controller this problem goes away and the test passes.</span></p>
+</span></span></span></span>
+<p>&nbsp;</p>
+</span></span></p>
+</p>
+</span></span>The other strange thing is that if I step through the code, including the csla code, I don&#39;t see any problems with the csla controller. In fact I don&#39;t even step into the csla&nbsp;controller.</p>
+<p>This led me to believe that the problem may have to do with reflection in the system controller class. So I derived my own controller from it and tried that. No problem.</p>
+<p>I then built my controllerbase to look the same as the one in csla. Again, no problem</p>
+<p>I then derived my base class from csla controller and got the access error again.</p>
+<p>So then I thought this was a scope thing, so I moved my controllerBase to an external assembly, derived from system controller&nbsp;and still no problem. The problem returned when I derived it&nbsp;from the csla controller.</p>
+<p>The only way to replicate this error is to use the csla controller. I&#39;m at an impasse here. This problem is easy to test;</p>
+<ul>
+<li>create a new mvc 3 application and include unit tests</li>
+<li>add&nbsp;csla references</li>
+<li>derive one of the controllers from csla controller</li>
+<li>run a unit test against it</li>
+</ul></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>BillG replied on Monday, July 18, 2011</h2><p>I am running into the same issue</p>
+<p>I have done the same tests and came to the same set of results</p>
+<p>Has anyone else run into this?</p>
+<p>I&#39;ve looked through the Latest EBook and accompaning code&nbsp;hoping to find a sample or help in testing and was surprised to see no tests for the MVC Project</p>
+<p>Hopefully someone else has come across this and can point to a solution to this problem</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Monday, July 18, 2011</h2><p>Can you post a sample project with unit test project that fails? </p>
+<p>Does your MVC app and unit test projects also include reference to Csla.Web?</p>
+<p>I created the same project on my machine and the UnitTests run just fine.</p>
+<p>Csla.Web.Mvc.Conttroller inherits from System.Web.Mvc.Controller and only adds 2 new methods:</p>
+<ul>
+<li>SaveObject</li>
+<li>LoadProperty</li>
+</ul>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>BillG replied on Monday, July 18, 2011</h2><p>Hi</p>
+<p>Thanks for the quick response </p>
+<p>To See the Same Results</p>
+<p>Create a Sample Razor Application and include the Unit Tests</p>
+<p>Compile and Run the default Controller&nbsp;Tests (About and Home)</p>
+<p>All works</p>
+<p>Change to inherit from CSLA Controller </p>
+<p>Run the Test -</p>
+<p>Both Tests Fail</p>
+<p>Any Help would be greatly appreciated</p>
+<p>&nbsp;</p>
+<p><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"></span></span></span></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>BillG replied on Monday, July 18, 2011</h2><p>HI</p>
+<p>Yes I do have the References to CSLA, CSLA.WEB and CSLA.MVC</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Monday, July 18, 2011</h2><p>I did exactly that - and changed both HomeController and AboutController to inherit from Csla.Web.Mvc.Controller.</p>
+<p>And all unit tests run just fine. I am using the latest CSLA version from svn trunk.</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, July 18, 2011</h2><p>Odds are that the unit test project isn&#39;t configured correctly in some way.</p>
+<p>If the failure is on your .Get() factory call, then you must remember to configure your unit test project so the data portal works, and so your data access code works.</p>
+<p>I usually configure the data portal to be local and to use a mock DAL. Sometimes I&#39;ll use a remote data portal with a mock DAL.</p>
+<p>But it is a pretty good bet that the problem isn&#39;t in the controller, but rather is deeper - like when the data portal tries to talk to the app server.</p>
+<p>OR, the second most likely issue tends to revolve around the use of a custom principal. Unit test frameworks sometimes make this difficult, because the same thread moves between different AppDomains (the test runner, and the test itself). Also, tests that rely on authz rules need some pre-existing authn condition to be set in the test, or better yet in a test initializer.</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>BillG replied on Monday, July 18, 2011</h2><p><img src="http://forums.lhotka.net/emoticons/emotion-42.gif" alt="Confused" />Thanks for the Response</p>
+<p>I have other tests that are exercising the DAL and In those cases there is a separate Mock DAL and the tests work correctly</p>
+<p>But It does seem to be an access issue as the Exact Error is<br />Attempt by method &#39;Ecord.Razor.Controllers.HomeController.Index()&#39; to access method &#39;System.Web.Mvc.Controller.View()&#39; failed.</p>
+<p>and the troubleshooting tip is</p>
+<div class="introduction">
+<p><strong>A <span><a href="http://forums.lhotka.net/forums/ms.help?method=page&amp;id=T%3ASYSTEM.METHODACCESSEXCEPTION&amp;product=VS&amp;productVersion=100&amp;topicVersion=100&amp;locale=EN-US&amp;topicLocale=EN-US&amp;embedded=true&amp;launchingApp=VS" class="mtps-internal-link">MethodAccessException</a></span> exception is thrown when there is an invalid attempt to access a private or protected method inside a class. </strong></p>
+</div>
+<div class="OH_CollapsibleAreaRegion">
+<div class="OH_regiontitle"><strong>Associated Tips</strong></div>
+<div class="OH_CollapsibleArea_HrDiv"><strong>
+<hr class="OH_CollapsibleArea_Hr" />
+</strong></div>
+</div>
+<div class="OH_clear"><strong></strong></div>
+<p><a id="sectionToggle0"><strong></strong></a></p>
+<dl class="authored"><dt><span class="label"><strong>If the access level of a method in a class library has changed, recompile any assemblies that reference the library.</strong></span></dt></dl>
+<p>In this case there is no Data Access or Security Checking</p>
+<p>The Controllers simply serve up the default views so No DAL and No real use of CSLA </p>
+<p>So Strange<img src="http://forums.lhotka.net/emoticons/emotion-42.gif" alt="Confused" /></p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>BillG replied on Tuesday, July 19, 2011</h2><p>Hi</p>
+<p>Some Further Information</p>
+<p>I implemented a MVCFakes in hopes of isolating the root cause</p>
+<p>I was able to get the Following error when creating a Fake Controller Context</p>
+<p><strong>Unable to cast object of type &#39;Ecord.Razor.Controllers.HomeController&#39; to type &#39;System.Web.Mvc.ControllerBase&#39;</strong></p>
+<p>Again, this error only happens when I am inheriting CSLA.Web.MVC.Controller</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Tuesday, July 19, 2011</h2><p>Hi,</p>
+<p>Have you checked to verify that Csla.Web.Mvc and your project references the same version of System.Web.Mvc? </p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>BillG replied on Tuesday, July 19, 2011</h2><p>Hi</p>
+<p>Thanks again for the Quick reply</p>
+<p>In order to confirm I have recompiled the CSLA source and updated the references </p>
+<p>They are the Same</p>
+<p>Thanks angain for any help</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>G.R. replied on Thursday, August 25, 2011</h2><p>Hi,&nbsp;</p>
+<p>I had the same problem in my project. I simply reimplemented the Csla.Web.Mvc.Controller class in my project and everything is working fine. I&#39;m not sure of the exact cause but it&#39;s a nice workaround... &nbsp;</p>
+<p>Guillaume,</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>BillG replied on Thursday, September 01, 2011</h2><p>Hi Guillaume</p>
+<p>Thanks for your response</p>
+<p>Please explain what you meant by implementing it in your own project.&nbsp; Does this mean you copied the files into your MVC program and did not use the CSLA DLL?</p>
+<p>I look forward to your response</p>
+<p>&nbsp;</p>
+<p>Have a GREAT Day</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>G.R. replied on Monday, September 05, 2011</h2><p>
+<p>Hi Bill,</p>
+<p>Here&#39;s the code I added into my project :</p>
+<p>&nbsp;</p>
+<p>using System;</p>
+<p>using Csla;</p>
+<p>using Csla.Core;</p>
+<p>using Csla.Server;</p>
+<p>using Csla.Web.Mvc;</p>
+<p>&nbsp;</p>
+<p>namespace <b>MyProjectNamespace</b></p>
+<p>{</p>
+<p>&nbsp; &nbsp; /// &lt;summary&gt;</p>
+<p>&nbsp; &nbsp; /// Overrides the CSLA controller to handle error.</p>
+<p>&nbsp; &nbsp; /// &lt;/summary&gt;</p>
+<p>&nbsp; &nbsp; public class <b>MyCSLAController </b>:<i> System.Web.Mvc.Controller</i></p>
+<p>&nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; /// &lt;summary&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; /// Performs a Save() operation on an</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; /// editable business object, with appropriate</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; /// validation and exception handling.</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; /// &lt;/summary&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; /// &lt;typeparam name=&quot;T&quot;&gt;Type of business object.&lt;/typeparam&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; /// &lt;param name=&quot;item&quot;&gt;The business object to insert.&lt;/param&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; /// &lt;param name=&quot;forceUpdate&quot;&gt;true to force Save() to be an update.&lt;/param&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; /// &lt;returns&gt;true the Save() succeeds, false if not.&lt;/returns&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; protected internal virtual bool SaveObject&lt;T&gt;(T item, bool forceUpdate)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; where T : class, ISavable</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; return this.SaveObject&lt;T&gt;(</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; item,&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; delegate(T i) { this.UpdateModel&lt;T&gt;(i); },&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; forceUpdate);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; /// &lt;summary&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; /// Performs a Save() operation on an</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; /// editable business object, with appropriate</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; /// validation and exception handling.</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; /// &lt;/summary&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; /// &lt;typeparam name=&quot;T&quot;&gt;Type of business object.&lt;/typeparam&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; /// &lt;param name=&quot;item&quot;&gt;The business object to insert.&lt;/param&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; /// &lt;param name=&quot;updateModel&quot;&gt;Delegate that invokes the UpdateModel() method.&lt;/param&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; /// &lt;param name=&quot;forceUpdate&quot;&gt;true to force Save() to be an update.&lt;/param&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; /// &lt;returns&gt;true the Save() succeeds, false if not.&lt;/returns&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; protected bool SaveObject&lt;T&gt;(T item, Action&lt;T&gt; updateModel, bool forceUpdate)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; where T : class, ISavable</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; bool result;</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; try</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; this.ViewData.Model = item;</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; if (updateModel != null)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; updateModel(item);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; this.ViewData.Model = item.Save(forceUpdate);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; result = true;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; catch (Csla.DataPortalException ex)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; if (ex.BusinessException != null)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; this.ModelState.AddModelError(string.Empty, ex.BusinessException.Message);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; else</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; this.ModelState.AddModelError(string.Empty, ex.Message);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; result = false;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; catch (Exception ex)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; this.ModelState.AddModelError(string.Empty, ex.Message);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; result = false;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; return result;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; /// &lt;summary&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; /// Loads a property&#39;s managed field with the&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; /// supplied value calling PropertyHasChanged&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; /// if the value does change.</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; /// &lt;/summary&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; /// &lt;typeparam name=&quot;T&quot;&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; /// Type of the property.</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; /// &lt;/typeparam&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; /// &lt;param name=&quot;target&quot;&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; /// Object on which to call the method.&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; /// &lt;/param&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; /// &lt;param name=&quot;propertyInfo&quot;&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; /// PropertyInfo object containing property metadata.&lt;/param&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; /// &lt;param name=&quot;newValue&quot;&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; /// The new value for the property.&lt;/param&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; /// &lt;remarks&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; /// No authorization checks occur when this method is called,</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; /// and no PropertyChanging or PropertyChanged events are raised.</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; /// Loading values does not cause validation rules to be</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; /// invoked.</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; /// &lt;/remarks&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; protected void LoadProperty&lt;T&gt;(object target, PropertyInfo&lt;T&gt; propertyInfo, T newValue)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; new ObjectManager().LoadProperty(target, propertyInfo, newValue);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; /// &lt;summary&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; /// Manage the CSLA objects</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; /// &lt;/summary&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; private class ObjectManager : Csla.Server.ObjectFactory</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; /// &lt;summary&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; /// Load the property</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; /// &lt;/summary&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; /// &lt;typeparam name=&quot;P&quot;&gt;the generic type&lt;/typeparam&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; /// &lt;param name=&quot;obj&quot;&gt;the object&lt;/param&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; /// &lt;param name=&quot;propertyInfo&quot;&gt;the CSLA property&lt;/param&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; /// &lt;param name=&quot;newValue&quot;&gt;the new value&lt;/param&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; public new void LoadProperty&lt;P&gt;(object obj, PropertyInfo&lt;P&gt; propertyInfo, P newValue)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; this.LoadProperty(obj, propertyInfo, newValue);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp; &nbsp; }</p>
+<p>}</p>
+</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

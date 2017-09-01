@@ -1,0 +1,12 @@
+<html><header><title>Requirements for Silverlight DesignTime Data in Blend 4</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Requirements for Silverlight DesignTime Data in Blend 4</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10409.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jack posted on Thursday, June 02, 2011</h2><p>Just wondering if there are a set of guidelines on how to make sure my BO are available / useable in Blend.&nbsp; I started trying and found I was getting all sorts of different errors with different objects including ViewModel.&nbsp; </p>
+<p>I&#39;m still using 3.8.x and would take the plunge to 4.x if that helps fix the issues.</p>
+<p>I&#39;m getting errors such as can&#39;t create my childBO (reflection errors) where the childBo is a property of the main BORoot</p>
+<p>Most of my BO&#39;s are exposed via my implementation of MyViewModel&lt;T&gt; : ViewModel&lt;T&gt;&nbsp; etc.</p>
+<p>as well as this pops up all the time:</p>
+<p>Could not load the assembly AlexanderGracie.Library because the following errors occured:</p>
+<p>Could not load type &#39;Csla.DataPortalClient.WcfProxy&#39;1 from assembly &#39;Csla, Version=3.8.2.0, ....</p>
+<p>Could not load type &#39;Csla.Silverlight.ViewModel&#39;1 from assembly &#39;Csla, Version=3.8.2.0,...</p>
+<p>Thanks</p>
+<p>Jack</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Thursday, June 02, 2011</h2><p>Your viewmodel code (typically in the constructors) should check to see if the appliation is running at design time. If so, it shouldn&#39;t try to create the model.</p>
+<p>Alternately, you can use XAML markup to provide mock data for use at design time, instead of using the actual data source.</p>
+<p>Or both.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

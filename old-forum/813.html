@@ -1,0 +1,20 @@
+<html><header><title>Context Issue</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Context Issue</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/813.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>bnair posted on Friday, August 04, 2006</h2><P>Hi All,</P>
+<P>I am using CSLA to build an application.My database table has a column createdBy and I need to get the logged in user in the Business Object.I dont want the user to set it rather I want the BO to read for the current context.</P>
+<P>Here is the code I have in the web app membership provider</P><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>override</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>bool</FONT><FONT size=2> ValidateUser(</P>
+<P></FONT><FONT color=#0000ff size=2>string</FONT><FONT size=2> username, </FONT><FONT color=#0000ff size=2>string</FONT><FONT size=2> password)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>bool</FONT><FONT size=2> result = </FONT><FONT color=#008080 size=2>PEPrincipal</FONT><FONT size=2>.Login(username, password);</P>
+<P></FONT><FONT color=#008080 size=2>HttpContext</FONT><FONT size=2>.Current.Session[</FONT><FONT color=#800000 size=2>"CslaPrincipal"</FONT><FONT size=2>] = Csla.</FONT><FONT color=#008080 size=2>ApplicationContext</FONT><FONT size=2>.User;</P>
+<P>//Csla.</FONT><FONT color=#008080 size=2>ApplicationContext</FONT><FONT size=2>.ClientContext.Add(</FONT><FONT color=#800000 size=2>"user_id"</FONT><FONT size=2>, 123);</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> result;</P>
+<P>}</P></FONT>
+<P>How do I access this in the BO ?</P>
+<P>I tried teh following but its giving me an invalid cast exception</P><FONT size=2>
+<P></FONT><FONT color=#008000 size=2>//PEPrincipal _principal;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#008000 size=2>//_principal = (PEPrincipal)Csla.ApplicationContext.User;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#008000 size=2>//PEIdentity _identity = (PEIdentity)_principal.Identity;</P></FONT><FONT size=2>
+<P></FONT><FONT size=2>Any suggestions ?</FONT></P>
+<P><FONT size=2>Also can anyonw suggest me how to use the ClientContext ?</FONT></P>
+<P><FONT size=2>--bnair</P></FONT>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, August 04, 2006</h2>The basic flow is discussed in Chapter 10. You need to reload the principal on every page request - typically in global.asax.</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

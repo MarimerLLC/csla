@@ -1,0 +1,197 @@
+<html><header><title>Is multiple undo are possible?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Is multiple undo are possible?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3214.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>sai posted on Tuesday, July 17, 2007</h2><P>Is multiple undo are possible, if yes then how that can be achieved?</P>
+<P>Thanks</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, July 17, 2007</h2><P>If you read through Chapter 3 you can see how n-level undo is implemented. It is a nesting approach, which is why it is <EM>N</EM>-level.</P>
+<P>In other words, you can:</P>
+<P>Dim obj As TestObject = TestObject.NewObject()<BR>obj.A = 0<BR>obj.BeginEdit()<BR>obj.A = 123<BR>obj.BeginEdit()<BR>obj.A = 456<BR>obj.BeginEdit()<BR>obj.A = 789<BR>obj.CancelEdit()<BR>obj.CancelEdit()<BR>obj.CancelEdit()</P>
+<P>And obj.A is now 0 again. Change any of the CancelEdit() calls to ApplyEdit() and you'll have accepted that particular change, so obj.A would end up as the accepted value.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sai replied on Tuesday, July 17, 2007</h2><P>Thanks Rocky for reply.</P>
+<P>I tried doing something similar to what you have suggested but my business object is bound to UI control and when CancelEdit is called I observed that BeginEdit gets called</P>
+<P>Dim obj As TestObject = TestObject.NewObject()<BR>obj.A = 0<BR>obj.BeginEdit()<BR>obj.A = 123<BR>obj.BeginEdit()<BR>obj.A = 456<BR>obj.BeginEdit()<BR>obj.A = 789<BR>obj.CancelEdit()</P>
+<P>//Now obj.A = 456. Here BeginEdit gets called pushing this state into stack and the next call </P>
+<P>//to CancelEdit restores this state and the first two states never gets restored</P>
+<P>obj.CancelEdit()<BR>obj.CancelEdit()</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, July 17, 2007</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>If you are using data binding you should never call
+BeginEdit/CancelEdit/ApplyEdit directly. This has been discussed numerous times
+in other threads.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>As with all rules, there are exceptions. If you totally
+understand how data binding is interacting with your object you can do some
+interesting things. But you must completely understand data binding or you&#8217;ll
+end up in trouble.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Again, in general terms, you should never call *Edit while the
+object is data bound. You can call BeginEdit <i>before</i> binding the object.
+You can then call Cancel/ApplyEdit <i>after</i> unbinding the object (though
+unbinding the object is challenging &#8211; see CSLA 3.0&#8217;s
+ProjectTracker\PTWin\ProjectEdit for an example).<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky</span><o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sai replied on Wednesday, July 18, 2007</h2><P>I tried implementing undo changes by studying PeojectEdit example in CSLA 3.0, and observed that <EM>bindingsource</EM>.ResetBindings(false) calls BeginEdit()&nbsp;resulting in&nbsp;the same situation as explained by me earlier in this thread.</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, July 18, 2007</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>If your object is bound through a bindingsource then it is in &#8220;edit
+mode&#8221; (your edit level is at least 1). The bindingsource always calls
+BeginEdit &#8211; when you bind, when you EndEdit, when you CancelEdit or when
+you reset bindings. If you are data bound, you are at edit level 1 (or higher).<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> sai
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Wednesday, July 18, 2007 4:37 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: Is multiple undo are possible?<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>I tried implementing undo changes by studying PeojectEdit example in CSLA
+3.0, and observed that <em>bindingsource</em>.ResetBindings(false) calls
+BeginEdit()&nbsp;resulting in&nbsp;the same situation as explained by me
+earlier in this thread.<o:p></o:p></p>
+
+<p>&nbsp;<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sai replied on Wednesday, July 18, 2007</h2><P>I am using CSLA 2.1.4</P>
+<P>Commenting first line </P><FONT color=#008000 size=2>
+<P>_bindingEdit = false;</P></FONT>
+<P>in BusinessBase.UndoChangesComplete allowed multiple undo.&nbsp;&nbsp;Do you think that this change will break anything else in code.</P>
+<P>I can see modifications to IEditableObject methods in class BusinessBase with CSLA 3.0. </P>
+<P>Please advice on whether CSLA&nbsp;3.0 can fix my problem.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, July 18, 2007</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Yes, that will break things, probably badly.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Data binding can (and does) call BeginEdit multiple times. The
+docs state (correctly) that only the first BeginEdit call should be honored,
+and subsequent calls should be ignored (until EndEdit or CancelEdit are called,
+at which point the <i>next first</i> BeginEdit should be honored).<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Commenting out that line defeats the duplicate call check.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>CSLA3 has a &#8220;fix&#8221; for this problem, in that you can
+tell a business object to ignore all calls to IEditableObject. This effectively
+means that data binding <i>does not</i> affect the edit level of your object.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>For simple detail form editing of an object this is fine. But it
+means you can&#8217;t use in-place editing of objects in a grid and expect the
+ESC key to work&#8230; So it is a trade-off.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> sai
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Wednesday, July 18, 2007 6:07 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] Is multiple undo are possible?<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>I am using CSLA 2.1.4<o:p></o:p></p>
+
+<p>Commenting first line <o:p></o:p></p>
+
+<p><span>_bindingEdit = false;<o:p></o:p></span></p>
+
+<p>in BusinessBase.UndoChangesComplete allowed multiple undo.&nbsp;&nbsp;Do you
+think that this change will break anything else in code.<o:p></o:p></p>
+
+<p>I can see modifications to IEditableObject methods in class BusinessBase
+with CSLA 3.0. <o:p></o:p></p>
+
+<p>Please advice on whether CSLA&nbsp;3.0 can fix my problem.<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

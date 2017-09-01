@@ -1,0 +1,43 @@
+<html><header><title>Question on TransactionScope</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Question on TransactionScope</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/597.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Bonio posted on Wednesday, July 12, 2006</h2><P>I have successfully implemented TransactionScope to control the updating of data across tables, however, I have run into a problem: before I can update one of the tables, I need to run a select statement against another table to find the current levels of inventory. My question is this, is there a danger of another user changing the inventory levels before the transaction commits or does TransactionScope guarantee this won't happen? Should I handle the logic for fetching inventory levels within a stored pro rather than within the BO?</P>
+<P>Thanks</P>
+<P>Bonio</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>DansDreams replied on Wednesday, July 12, 2006</h2><TABLE cellSpacing=0 cellPadding=0>
+
+<TR>
+<TD>
+<P>Notes from the documentation:</P>
+<P>The <B>TransactionScope</B> class creates a transaction with a IsolationLevel of <B>Serializable</B> by default. Depending on your application, you might want to consider lowering the isolation level to avoid high contention in your application.</P></TD></TR></TABLE>
+<DIV class=alert>
+<TABLE cellSpacing=0 cellPadding=0>
+
+<TR>
+<TH align=left></IMG></TH></TR>
+<TR>
+<TD>
+<P>We recommend that you perform only updates, inserts, and deletes within distributed transactions because they consume significant database resources. Select statements may lock database resources unnecessarily, and in some scenarios it may be necessary to use transactions for selects.</P></TD></TR></TABLE></DIV>
+<P>&nbsp;</P>
+<P>So, my understanding would be that by default if you included the Select in the TransactionScope it would protect from the changes you are concerned with.</P>
+<P>I don't know the specifics of what you're trying to accomplish, but one technique you can use to help avoid this is to have update queries do the math as part of the query rather than a three-step read, calculate, update.&nbsp; In other words, the update query is simply to "add 50" rather than to figure out explicitly what the new value should be.&nbsp; You could (should?)&nbsp;also get a value from another table via a subquery in the main update query rather than retrieve it all the way back to the business object.&nbsp; Remember the goal when using transactions is to keep them open for as short a time as possible.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>david.wendelken replied on Wednesday, July 12, 2006</h2><P>This is a question I've had on Transaction Scope that I simply haven't had time to test for myself.&nbsp; I'm sure others need to know the answer too!&nbsp; (I'll answer my own question here eventually&nbsp;if someone doesn't beat me to it! :)<BR><BR>How does Transaction Scope affect a stored procedure that has multiple statements in it, where it fails partway thru.&nbsp; Let's say that the Delete&nbsp;Projects statement returns an error - does the Delete Assignemnts statement get rolled back as part of the built-in transaction scope logic?&nbsp; </P>
+<P>Example:</P>
+<P>CREATE PROCEDURE deleteProject (@id uniqueidentifier)<BR>AS<BR>&nbsp;DELETE&nbsp;Assignments WHERE <A href="mailto:ProjectId=@id">ProjectId = @id</A><BR><BR>&nbsp;DELETE Projects&nbsp;WHERE <A href="mailto:Id=@id">Id=@id</A></P>
+<P>&nbsp;RETURN<BR>END<BR></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, July 12, 2006</h2><P>Yes, this would roll back, otherwise it wouldn't be transactional at all.</P>
+<P>TransactionScope (for a single database connection) is really no different than if you manually created an ADO.NET&nbsp;SqlTransaction object and called Commit or Rollback on that object yourself using a try..catch block. It is just simpler to use, and of course it automatically escalates to use the DTC if your code uses multiple database connections.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>DansDreams replied on Wednesday, July 12, 2006</h2><P>Hoping somebody knows this...</P>
+<P>the documentation says SQL 2005 is a requirement for TransactionScope, but as I recall it works with SQL 2000 as long as you have the DTC service running as well.</P>
+<P>Verification?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, July 12, 2006</h2>
+
+
+
+
+<DIV align=left><FONT face=Arial color=#0000ff size=2><A href="http://www.lhotka.net/Article.aspx?area=4&amp;id=39c79955-ddc9-42c7-a657-d5c2ed49975e">http://www.lhotka.net/Article.aspx?area=4&amp;id=39c79955-ddc9-42c7-a657-d5c2ed49975e</A></FONT></DIV><BR>
+<BLOCKQUOTE>
+  <DIV class=OutlookMessageHeader align=left>
+  <HR>
+  <FONT face=Tahoma size=2><B>From:</B> DansDreams [mailto:cslanet@lhotka.net] 
+  <BR><B>Sent:</B> Wednesday, July 12, 2006 2:20 PM<BR><B>To:</B> 
+  rocky@lhotka.net<BR><B>Subject:</B> Re: [CSLA .NET] Question on 
+  TransactionScope<BR></FONT><BR></DIV>
+  <DIV></DIV>
+  <P>Hoping somebody knows this...</P>
+  <P>the documentation says SQL 2005 is a requirement for TransactionScope, but 
+  as I recall it works with SQL 2000 as long as you have the DTC service running 
+  as well.</P>
+  <P>Verification?</P><BR><BR><BR></BLOCKQUOTE></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>cultofluna replied on Tuesday, July 03, 2007</h2>Hello Rockford,<br><br>Can the option be savely integrated into the dataportal?<br><br>Regards,<br><br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>cultofluna replied on Tuesday, July 03, 2007</h2>Ok no need to integrate in the dataportal... <br><br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; [Transactional(TransactionalTypes.TransactionScope)]<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; protected override void DataPortal_Update()<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; using (SqlConnection cn = new SqlConnection(Database.DataConnection))<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; DatabaseTransactionAdapter dbAdapter = new DatabaseTransactionAdapter(cn);<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; cn.Open();<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; dbAdapter.Begin();<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; if (base.IsDirty)<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; ExecuteUpdate(cn, dbAdapter);<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; }<br><br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; //update child object(s)<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; UpdateChildren(cn);<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; }//using<br><br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; }<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

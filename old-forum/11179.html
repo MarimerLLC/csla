@@ -1,0 +1,16 @@
+<html><header><title>Users/Roles (authentication) example using the encapsulated invoke model?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Users/Roles (authentication) example using the encapsulated invoke model?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11179.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>gajit posted on Tuesday, February 21, 2012</h2><p>Hi gents,</p>
+<p>I&#39;m struggling somewhat to understand the implementation of the user/roles in CSLA4, mainly because all of the examples I&#39;ve seen so far use the DTO model to omplement them.</p>
+<p>In CSLA 2.x the Roles property was implemented as a List in the PTIdentity class, but I don&#39;t really understand how things fit together in DTO model.</p>
+<p>I&#39;m reasonably clear on the &#39;regular&#39; parent/child objects, but because we&#39;re dealing with a system security implement, I&#39;m pretty sure something different applies. Does anyone have an example of how I would implement the PTIdentity, PTPriincipal, xxxDals and IxxxDals?</p>
+<p>Thanks,</p>
+<p>Graham</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>gajit replied on Tuesday, February 21, 2012</h2><p>Interesting.</p>
+<p>I came across a solution, &quot;Permissions&quot; that uses custom authentication that includes a HasPermission implementation. This is very similar to what I&#39;m doing currently with CSLA 2.1.</p>
+<p>This might help.</p>
+<p>It uses ObjectFactory, but as the authentication model will likely never change once I&#39;ve implemented it, it should suffice. Maybe once I&#39;m more familiar with CSLA4, I can re-write using EncapInvoke....</p>
+<p>G.</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>gajit replied on Tuesday, February 21, 2012</h2><p>Maybe, I should dig deeper before posting - sorry.</p>
+<p>There are a plethora of examples in the Dataportal sample projects.</p>
+<p>Oh, well - at the very least my threads will act as a guide for others following the same path ;)</p>
+<p>Thanks,</p>
+<p>Graham</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,18 @@
+<html><header><title>CSLA Support for Broadcast / Observer Pattern</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA Support for Broadcast / Observer Pattern</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/8366.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>liamg posted on Friday, January 15, 2010</h2><P><FONT face=Arial size=2>Hi,</FONT></P>
+<P><FONT face=Arial size=2>I've been using CSLA on and off for about 10 years but its been about 3-4 years since I last used it ... so forgive me if this question is out of date</FONT></P>
+<P><FONT face=Arial size=2>I am building an application that has a requirement whereby changes made to a business object by one user are broadcasted to the other users. I am wondering if CSLA supports broadcasting changes to connected clients and even if the CSLA server contains a list of connected clients</FONT></P>
+<P><FONT face=Arial size=2>I have seen posts mentioning Peter Kozuls Active Objects - but that site seems to be down (the posts are about 4 years old). I also see a class in the CSLA version I have called ObservableCollection. </FONT><FONT face=Arial size=2>I am using CSLA version 3.8.</FONT></P>
+<P><FONT face=Arial size=2>Are there any examples which show how to implement this?</FONT></P>
+<P><FONT face=Arial size=2>Thanks</FONT></P>
+<P><FONT face=Arial size=2>liamg.</FONT></P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P><FONT face=Arial size=2></FONT>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, January 15, 2010</h2><P>CSLA .NET does not provide a solution for this problem, no.</P>
+<P>ObservableCollection is a type introduced by Microsoft to .NET 3.0 to support data binding in WPF.</P>
+<P>The problem is that neither Windows nor .NET have any base plumbing to help solve this problem. And it is not an easy problem to solve in the general case.</P>
+<P>Microsoft does now have some plumbing in place to address the problem - Azure .NET Services. This is part of the Windows Azure platform and it provides a message bus, guaranteed message delivery and automatic firewall negotiation. In short, all the things necessary to really address a pub/sub or distributed observer implementation are included in this product.</P>
+<P>Using it requires a Windows Azure subscription, and you pay per message for using the service.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jh72i replied on Friday, March 12, 2010</h2><p>While CSLA doesn&#39;t provide a solution out of the box, liamg, it is possible to roll your own. There are many considerations, hurdles, etc. and controls that you must build in but it is possible (in my opinion). The beauty of CSLA is that it is already all about mobility of objects which opens interesting possibilities.</p>
+<p>Doesn&#39;t help you in terms of downloadable/pluggable code, etc. but I have implemented exactly what you describe in the company I work for.</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

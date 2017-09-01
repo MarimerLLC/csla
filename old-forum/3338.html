@@ -1,0 +1,408 @@
+<html><header><title>Why the BO instance doesn't have the BO updated properties that was triggered by ValidateChildren() </title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Why the BO instance doesn't have the BO updated properties that was triggered by ValidateChildren() </h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3338.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>yimiqi posted on Monday, August 06, 2007</h2><P>&nbsp;I'm running&nbsp;into issues passing the user inputs into the Criteria&nbsp;object's constructor and exposed as a property of the Criteria for use&nbsp;in the DP_Fetch() method.&nbsp; Basically the issue is the user inputs are not passed even if the property of the&nbsp;ERO are&nbsp;set to the&nbsp;input values.</P>
+<P>I&nbsp;called ValidateChildren () to set the properties&nbsp;of the ERO,but&nbsp;the ERO I passed to the Criteria is empty or only has initial values.</P>
+<P>I did:</P>
+<P>Private mSearchInput As New SearchInput </P>
+<P>Private Sub Search_Click() Handles cmdSearch.Click</P>
+<P>Me.ValidateChildren()</P>
+<P>Me.SearchInputBindingSource.DataSource =&nbsp; objList.GetObjList(mSearchInput)</P>
+<P>End Sub</P>
+<P>The properities of the ERO has user inputs but mSearchInput doesn't, what did I miss?</P>
+<P>Thanks in advance.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Tuesday, August 07, 2007</h2><P>Below is a sample class I built for a search screen for account codes.The idea is that each control on the screen will be bound to the BO. So I have checkboxes on the left side and then dropdowns and textboxes for each field (acctcode, acctdesc, etc.)</P>
+<P>When the user clicks search the screen is unbound into the BO and then the BO is passed to another BO as a parameter to its Fetch method. This way the Fetch method "knows" exactly what the user selected on the search screen.</P>
+<P>The factory method of an ROC that returns the list of Accts the user is searching for looks like this:</P><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Shared</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Function</FONT><FONT size=2> GetAcctList(</FONT><FONT color=#0000ff size=2>ByVal</FONT><FONT size=2> AcctSearchCriteriaBO </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> AcctSearchCriteriaBO) </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> AcctList<BR>&nbsp; </FONT><FONT color=#0000ff size=2>Return</FONT><FONT size=2> DataPortal.Fetch(</FONT><FONT color=#0000ff size=2>Of</FONT><FONT size=2> AcctList)(</FONT><FONT color=#0000ff size=2>New</FONT><FONT size=2> SearchCriteria(AcctSearchCriteriaBO))<BR></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Function</FONT></P>
+<P><FONT color=#000000 size=2>The embedded Criteria class (there is more than 1) is given a new name of SearchCriteria and looks like this:</FONT></P><FONT size=2>
+<P>&lt;Serializable()&gt; _<BR></FONT><FONT color=#0000ff size=2>Private</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Class</FONT><FONT size=2> SearchCriteria<BR>&nbsp; </FONT><FONT color=#0000ff size=2>Public</FONT><FONT size=2> AcctSearchCriteriaBO </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> AcctSearchCriteriaBO<BR></FONT><FONT color=#0000ff size=2>&nbsp; <BR>&nbsp; Public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Sub</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>New</FONT><FONT size=2>(</FONT><FONT color=#0000ff size=2>ByVal</FONT><FONT size=2> AcctSearchCriteriaBO </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> AcctSearchCriteriaBO)<BR>&nbsp;&nbsp;&nbsp; </FONT><FONT color=#0000ff size=2>Me</FONT><FONT size=2>.AcctSearchCriteriaBO = AcctSearchCriteriaBO<BR>&nbsp; </FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Sub<BR></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Class</P></FONT>
+<P><FONT color=#000000 size=2>Then the Fetch code is like this:</FONT></P><FONT color=#0000ff size=2><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Protected</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Overrides</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Sub</FONT><FONT size=2> DataPortal_Fetch(</FONT><FONT color=#0000ff size=2>ByVal</FONT><FONT size=2> criteria </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Object</FONT><FONT size=2>)<BR>&nbsp; RaiseListChangedEvents = </FONT><FONT color=#0000ff size=2>False<BR>&nbsp; </FONT><FONT size=2>IsReadOnly = </FONT><FONT color=#0000ff size=2>False</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>&nbsp; Dim</FONT><FONT size=2> dr </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> SafeDataReader = </FONT><FONT color=#0000ff size=2>Nothing<BR></FONT><FONT color=#0000ff size=2>&nbsp; Dim</FONT><FONT size=2> strSQL </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>String</FONT><FONT size=2> = </FONT><FONT color=#ff00ff size=2>""<BR></FONT><FONT color=#0000ff size=2>&nbsp; Dim</FONT><FONT size=2> crit </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> SearchCriteria = </FONT><FONT color=#0000ff size=2>CType</FONT><FONT size=2>(criteria, SearchCriteria)<BR>&nbsp; strSQL = GetSQL(crit.AcctSearchCriteriaBO)</P><FONT size=2>
+<P>&nbsp; dr = </FONT><FONT color=#0000ff size=2>New</FONT><FONT size=2> SafeDataReader(DAL.ExecuteReader(strSQL))</P>
+<P></FONT><FONT color=#0000ff size=2>&nbsp;While</FONT><FONT size=2> dr.Read<BR>&nbsp; &nbsp; </FONT><FONT color=#0000ff size=2>Dim</FONT><FONT size=2> info </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>New</FONT><FONT size=2> AcctInfo(dr)<BR>&nbsp;&nbsp;&nbsp; </FONT><FONT color=#0000ff size=2>Me</FONT><FONT size=2>.Add(info)<BR>&nbsp; </FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>While</FONT></P><FONT color=#0000ff size=2><FONT size=2>
+<P>&nbsp; IsReadOnly = </FONT><FONT color=#0000ff size=2>True<BR></FONT><FONT size=2>&nbsp; RaiseListChangedEvents = </FONT><FONT color=#0000ff size=2>True<BR></FONT></FONT></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> Sub</FONT></P><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Private</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Function</FONT><FONT size=2> GetSQL(</FONT><FONT color=#0000ff size=2>ByVal</FONT><FONT size=2> mCrit </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> AcctSearchCriteriaBO) </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>String</FONT></P>
+<P>&nbsp; 'use the checked properties only to include in the Search</P>
+<P>&nbsp; 'build a Filter for use in a SQL WHERE clause based on the dropdowns and text boxes.</P>
+<P>&nbsp; 'e.g. acctcode='123' AND acctdesc Like 'Joe%'</P>
+<P><FONT color=#0000ff size=2>End Function</P></FONT><FONT size=2>
+<P></P></FONT><FONT color=#0000ff size=2></FONT></FONT>
+<P>===================================================================</P>
+<P>&nbsp; &lt;Serializable()&gt; _<BR>&nbsp; Public Class AcctSearchCriteriaBO<BR>&nbsp;&nbsp;&nbsp; Inherits MyBusinessBase(Of AcctSearchCriteriaBO)</P>
+<P>#Region " Class Variable Declarations "</P>
+<P>&nbsp;&nbsp;&nbsp; Protected mChkAcctCode As Boolean = False<BR>&nbsp;&nbsp;&nbsp; Protected mChkAcctDesc As Boolean = False<BR>&nbsp;&nbsp;&nbsp; Protected mChkRouteGrp As Boolean = False<BR>&nbsp;&nbsp;&nbsp; Protected mChkStatus As Boolean = False</P>
+<P>&nbsp;&nbsp;&nbsp; Protected mCboOperAcctCode As String = "starts with"<BR>&nbsp;&nbsp;&nbsp; Protected mCboOperAcctDesc As String = "starts with"<BR>&nbsp;&nbsp;&nbsp; Protected mCboOperRouteGrp As String = "starts with"</P>
+<P>&nbsp;&nbsp;&nbsp; Protected mTxtAcctCode As String = ""<BR>&nbsp;&nbsp;&nbsp; Protected mTxtAcctDesc As String = ""<BR>&nbsp;&nbsp;&nbsp; Protected mTxtRouteGrp As String = ""<BR>&nbsp;&nbsp;&nbsp; Protected mOpgStatus As String = "A"</P>
+<P>&nbsp;&nbsp;&nbsp; Protected mOpgSort As String = "acctcode"<BR>&nbsp;&nbsp;&nbsp; Protected mSortDirection As ListSortDirection = ListSortDirection.Ascending<BR>&nbsp;&nbsp;&nbsp; Protected mLstSort As New ArrayList</P>
+<P>#End Region</P>
+<P>#Region " Constructor "</P>
+<P>&nbsp;&nbsp;&nbsp; Protected Sub New()<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 'require use of factory methods&nbsp; <BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Me.Table = "Account Search Criteria"<BR>&nbsp;&nbsp;&nbsp; End Sub</P>
+<P>#End Region</P>
+<P>#Region " Business Properties and Methods "</P>
+<P>&nbsp;&nbsp;&nbsp; Public Overridable ReadOnly Property LstSort() As ArrayList<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Get<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; If mLstSort.Count = 0 Then<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; mLstSort.Add(New DictionaryEntry("acctcode", "Account Code&amp;nbsp;"))<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; mLstSort.Add(New DictionaryEntry("acctdesc", "Description&amp;nbsp;"))<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; mLstSort.Add(New DictionaryEntry("routegrp", "Route Group&amp;nbsp;"))<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; mLstSort.Add(New DictionaryEntry("statustext", "Active&amp;nbsp;"))<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End If<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return mLstSort<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Get<BR>&nbsp;&nbsp;&nbsp; End Property</P>
+<P>&nbsp;&nbsp;&nbsp; Public Overridable Property ChkAcctCode() As Boolean<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Get<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return mChkAcctCode<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Get</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Set(ByVal Value As Boolean)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; mChkAcctCode = Value<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Set<BR>&nbsp;&nbsp;&nbsp; End Property</P>
+<P>&nbsp;&nbsp;&nbsp; Public Overridable Property ChkAcctDesc() As Boolean<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Get<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return mChkAcctDesc<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Get</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Set(ByVal Value As Boolean)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; mChkAcctDesc = Value<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Set<BR>&nbsp;&nbsp;&nbsp; End Property</P>
+<P>&nbsp;&nbsp;&nbsp; Public Overridable Property ChkRouteGrp() As Boolean<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Get<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return mChkRouteGrp<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Get</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Set(ByVal Value As Boolean)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; mChkRouteGrp = Value<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Set<BR>&nbsp;&nbsp;&nbsp; End Property</P>
+<P>&nbsp;&nbsp;&nbsp; Public Overridable Property ChkStatus() As Boolean<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Get<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return mChkStatus<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Get</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Set(ByVal Value As Boolean)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; mChkStatus = Value<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Set<BR>&nbsp;&nbsp;&nbsp; End Property</P>
+<P>&nbsp;&nbsp;&nbsp; Public Overridable Property CboOperAcctCode() As String<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Get<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return mCboOperAcctCode<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Get</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Set(ByVal Value As String)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; mCboOperAcctCode = Value<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Set<BR>&nbsp;&nbsp;&nbsp; End Property</P>
+<P>&nbsp;&nbsp;&nbsp; Public Overridable Property CboOperAcctDesc() As String<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Get<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return mCboOperAcctDesc<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Get</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Set(ByVal Value As String)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; mCboOperAcctDesc = Value<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Set<BR>&nbsp;&nbsp;&nbsp; End Property</P>
+<P>&nbsp;&nbsp;&nbsp; Public Overridable Property CboOperRouteGrp() As String<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Get<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return mCboOperRouteGrp<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Get</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Set(ByVal Value As String)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; mCboOperRouteGrp = Value<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Set<BR>&nbsp;&nbsp;&nbsp; End Property</P>
+<P>&nbsp;&nbsp;&nbsp; Public Overridable Property TxtAcctCode() As String<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Get<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return mTxtAcctCode<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Get</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Set(ByVal Value As String)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; mTxtAcctCode = Value<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; PropertyHasChanged("TxtAcctCode")<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Set<BR>&nbsp;&nbsp;&nbsp; End Property</P>
+<P>&nbsp;&nbsp;&nbsp; Public Overridable Property TxtAcctDesc() As String<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Get<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return mTxtAcctDesc<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Get</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Set(ByVal Value As String)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; mTxtAcctDesc = Value<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; PropertyHasChanged("TxtAcctDesc")<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Set<BR>&nbsp;&nbsp;&nbsp; End Property</P>
+<P>&nbsp;&nbsp;&nbsp; Public Overridable Property TxtRouteGrp() As String<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Get<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return mTxtRouteGrp<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Get</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Set(ByVal Value As String)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; mTxtRouteGrp = Value<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; PropertyHasChanged("TxtRouteGrp")<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Set<BR>&nbsp;&nbsp;&nbsp; End Property</P>
+<P>&nbsp;&nbsp;&nbsp; Public Overridable Property OpgStatus() As String<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Get<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return mOpgStatus<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Get</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Set(ByVal Value As String)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; mOpgStatus = Value<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Set<BR>&nbsp;&nbsp;&nbsp; End Property</P>
+<P>&nbsp;&nbsp;&nbsp; Public Overridable Property OpgSort() As String<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Get<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return mOpgSort<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Get</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Set(ByVal Value As String)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; mOpgSort = Value<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Set<BR>&nbsp;&nbsp;&nbsp; End Property</P>
+<P>&nbsp;&nbsp;&nbsp; Public Overridable Property SortDirection() As ListSortDirection<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Get<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return mSortDirection<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Get</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Set(ByVal Value As ListSortDirection)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; mSortDirection = Value<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Set<BR>&nbsp;&nbsp;&nbsp; End Property</P>
+<P>&nbsp;&nbsp;&nbsp; Public Overrides ReadOnly Property IsValid() As Boolean<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Get<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 'Table level business rule is triggered here. This way the rule only runs once, when you check the validity of the BO.<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ValidationRules.CheckRules("NoneChecked")</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return MyBase.IsValid<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Get<BR>&nbsp;&nbsp;&nbsp; End Property</P>
+<P>&nbsp;&nbsp;&nbsp; Public Overridable ReadOnly Property IsInvalid() As Boolean<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Get<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return Not IsValid<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Get<BR>&nbsp;&nbsp;&nbsp; End Property</P>
+<P>#End Region</P>
+<P>#Region " Validation Rules "</P>
+<P>&nbsp;&nbsp;&nbsp; Protected Overrides Sub AddBusinessRules()&nbsp;&nbsp;&nbsp; <BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 'NoneChecked<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ValidationRules.AddRule(Of AcctSearchCriteriaBO, MyRuleArgs)(AddressOf AtLeastOneIsChecked, New MyRuleArgs("NoneChecked"))<BR>&nbsp;&nbsp;&nbsp; End Sub</P>
+<P>&nbsp;&nbsp;&nbsp; Private Shared Function AtLeastOneIsChecked(Of T As AcctSearchCriteriaBO, R As MyRuleArgs)(ByVal target As T, ByVal e As R) As Boolean<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; If Not (target.mChkAcctCode OrElse target.mChkAcctDesc OrElse target.mChkRouteGrp OrElse target.mChkStatus) Then<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; e.Description = "You must check at least one of the search criteria checkboxes."<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return False<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Else<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return True<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End If<BR>&nbsp;&nbsp;&nbsp; End Function</P>
+<P>#End Region</P>
+<P>#Region " Factory Methods "</P>
+<P>&nbsp;&nbsp;&nbsp; Public Shared Function NewAcctSearchCriteriaBO() As AcctSearchCriteriaBO<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return New AcctSearchCriteriaBO<BR>&nbsp;&nbsp;&nbsp; End Function</P>
+<P>#End Region</P>
+<P>#Region " BusinessBase Overrides "</P>
+<P>&nbsp;&nbsp;&nbsp; Protected Overrides Function GetIdValue() As Object<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return "AcctSearchCriteriaBO"<BR>&nbsp;&nbsp;&nbsp; End Function</P>
+<P>#End Region</P>
+<P>&nbsp; End Class</P>
+<P>&nbsp;</P>
+<P>Hope that helps.</P>
+<P>Joe</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>yimiqi replied on Tuesday, August 07, 2007</h2><P>Thank you Joe for posting your sample code here.</P>
+<P>I have already built pretty much the same&nbsp;factory method of the ROC (like AcctList),&nbsp;embedded &nbsp;Criteria Class (like SearchCriteria), and the ERO (like AcctSearchCriteriaBO) that is used to be bound by search input controls in my project.&nbsp; </P>
+<P>But the issue I'm having is that when the UI passes&nbsp;the&nbsp;AcctSearchCriteriaBO&nbsp;to the SearchCriteria is an empty object or only&nbsp;with its initial values.&nbsp;Therefore when the SearchCriteria is passed to the ROC(AcctList.GetAcctList) DP_Fetch method, it is also empty (doesn't have users' selection).&nbsp; I think my problem might be in the UI code as the BOs are defined almost&nbsp;the same&nbsp;as yours. I must have missed something somewhere in the UI.&nbsp; </P>
+<P>This is the sample prototype&nbsp;UI code I used to pass the AcctSearchCriteriaBO (I will use the BO name in your example, for communication convenience):</P>
+<P>Public Class AccountSearchControl</P>
+<P>Private WithEvents mAcctSearchCriteriaBO As AcctSearchCriteriaBO&nbsp; = AcctSearchCriteriaBO.NewAcctSearchCriteriaBO</P>
+<P>Private Sub Search_Click () Handles btnSearch.Click</P>
+<P>AccountSearchCriteria.ValidateChildren()</P>
+<P>AccountSearchResult.AcctListBindingSource.DataSource = AcctList.GetAcctList(mAcctSearchCriteriaBO)</P>
+<P>End Sub</P>
+<P>End Class</P>
+<P>I do feel somthing is missed from the above code, but...</P>
+<P>You said:</P>
+<P>"When the user clicks search <FONT color=#ff0000>the screen is unbound into the BO</FONT> and then the BO is passed to another BO as a parameter to its Fetch method. <FONT color=#ff0000>This way the Fetch method "knows" exactly what the user selected on the search screen</FONT>."</P>
+<P>I think this (<FONT color=#ff0000>the screen is unbound into the BO</FONT>) is what I missed, therefore the factory method DOESN'T KNOW what the user selected.</P>
+<P>What do I need to do to unbound the screen into the BO?</P>
+<P>I have a few other questions regarding your sample:</P>
+<P><FONT color=#000000 size=2><FONT color=#ff0000>1. The embedded Criteria class (there is more than 1)</FONT> is given a new name of SearchCriteria and looks like this: &gt;&gt;&gt;</FONT></P>
+<P><FONT size=2>Why do you need more than 1 embedded Criteria class?&nbsp; I thought the AcctSearchCriteriaBO encapsulated all the search criterias, is that not true?</FONT></P>
+<P><FONT size=2>2.&nbsp; In the following code</P>
+<P>#Region " Factory Methods "</P>
+<P>&nbsp;&nbsp;&nbsp; Public Shared Function NewAcctSearchCriteriaBO() As AcctSearchCriteriaBO<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return New AcctSearchCriteriaBO<BR>&nbsp;&nbsp;&nbsp; End Function</P>
+<P>#End Region</P>
+<P>The code is all fine.&nbsp; But I'd like to know which way is preferred if I need to initialize some values for the AcctSearchCriteriaBO.&nbsp; Solution 1 :&nbsp; Add the initialization in the same function, something like this:</P>
+<P>#Region " Factory Methods "</P>
+<P>&nbsp;&nbsp;&nbsp; Public Shared Function NewAcctSearchCriteriaBO() As AcctSearchCriteriaBO&nbsp;</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Dim obj As New AcctSearchCriteriaBO&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; obj.TxtAcctCode =&nbsp;"9999"<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return&nbsp;&nbsp;obj</P>
+<P><BR>&nbsp;&nbsp;&nbsp; End Function</P>
+<P>#End Region</P>
+<P>Solution 2:&nbsp; use DP_Create method</P>
+<P>#Region " Factory Methods "</P>
+<P>&nbsp;&nbsp;&nbsp; Public Shared Function NewAcctSearchCriteriaBO() As AcctSearchCriteriaBO&nbsp;</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Return DataPortal.Create(of AcctSearchCriteriaBO)<BR>&nbsp;&nbsp;&nbsp; End Function</P>
+<P>#End Region</P>
+<P>Private Overloads Sub DataPortal_Create()</P>
+<P>mTxtAcctCode = "9999"</P>
+<P>End Sub</P>
+<P>Thank you for your time.</P></FONT>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Wednesday, August 08, 2007</h2><P>Question #1 - simply means that I have other Criteria classes (with different names) that I can use to fetch the same list of Accts. The List BO is not always retrieved as the result of a Search screen.</P>
+<P>Key Question:<BR>I think this (<FONT color=#ff0000>the screen is unbound into the BO</FONT>) is what I missed, therefore the factory method DOESN'T KNOW what the user selected.</P>
+<P>You are correct - the web form does a postback and during the PageLoad of the postback you have to unbind the controls on the screen into your Search BO. In your case it would be best to set up a method (UnbindData or something) that is called when IsPostBack = True.&nbsp; In that method you simply set the porperties of the BO based on the values of the controls on the screen.</P>
+<P>(I use 2 way databinding controls from Rick Strahl - so the unbinding happens "automatically" for me. But the method above accomplishes the same thing in a very clear way.)</P>
+<P>&nbsp;</P>
+<P>Joe</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>yimiqi replied on Thursday, August 09, 2007</h2><P>Joe,</P>
+<P>Thanks for your reply and advices.</P>
+<P>Question #1 - Okay I see.&nbsp; </P>
+<P>Key Question -&nbsp;Thanks for&nbsp;your suggestion to this key question.&nbsp; I think I probably didn't explain my issue clear in my last post and even in the original post of this thread.</P>
+<P>My issue is:&nbsp; </P>
+<P>The BO properties were updated, but the BO instance I created in the UI&nbsp;was not getting the updated property values (seems this is an even simpler problem).&nbsp;But I need to pass the BO instance with udpated property values ( = user inputs) into the GetList fatory method as parameter, and thereafter it is passed into Criteria class to do DP_Fetch method.&nbsp; Sorry for the confusion.</P>
+<P>Here is what I did:</P>
+<P>I called ValidateChildren() to trigger the setting of the BO properties based on the values of the controls on the screen, this is essentially doing the same thing as what the new method you suggested would do.&nbsp;Just instead of doing that in the method, the ValidateChildren() triggers the property setters in the BO, and I can see the properties are updated in the BO, but for some reason the BO instance I created in the UI code isn't getting those property values updated.&nbsp; </P>
+<P>UI code looks something like this:</P>
+<P>Public Class AccountSearchControl</P>
+<P>Private WithEvents mAcctSearchCriteriaBO As AcctSearchCriteriaBO= _&nbsp; AcctSearchCriteriaBO.NewAcctSearchCriteriaBO</P>
+<P>Private Sub Search_Click () Handles btnSearch.Click</P>
+<P>AccountSearchCriteria.ValidateChildren()&nbsp;&nbsp; AccountSearchResult.AcctListBindingSource.DataSource = AcctList.GetAcctList _(mAcctSearchCriteriaBO)</P>
+<P>End Sub</P>
+<P>End Class</P>
+<P>Note:&nbsp; </P>
+<P>My BO property getter and setter has CanReadProperty(), CanWriteProperty() and PropertyHasChanged(),&nbsp; may be there is something I don't know about having these in the getter and setter could change its behaviour?</P>
+<P>Or am I way off to use the ValidateChildren() to trigger the setting of &nbsp;the BO properties?</P>
+<P>Sorry for not&nbsp;expressing&nbsp;the issue clear enough&nbsp;in the pre posts,&nbsp; I hope I explained&nbsp;it&nbsp;clear now in this post.</P>
+<P>I would appreciate any thoughts you have on this.&nbsp; </P>
+<P>P.S. I also changed the topic of this thread to better describe the problem</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Thursday, August 09, 2007</h2><P>1. Is ValidateChildren a method that you wrote? It does the unbinding? How?</P>
+<P>2. Here is my Acct search form code: (State is a class that uses Session behind the scenes but allows for strong typing.)</P><FONT color=#0000ff size=2>
+<P>Partial</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Class</FONT><FONT size=2> AcctSearch<BR>&nbsp; </FONT><FONT color=#0000ff size=2>Inherits</FONT><FONT size=2> MyBasePage<BR></FONT><FONT color=#0000ff size=2>&nbsp;<BR>&nbsp; Protected</FONT><FONT size=2> mCrit </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> AcctSearchCriteriaBO</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Private</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Sub</FONT><FONT size=2> Page_Load(</FONT><FONT color=#0000ff size=2>ByVal</FONT><FONT size=2> sender </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> System.Object, </FONT><FONT color=#0000ff size=2>ByVal</FONT><FONT size=2> e </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> System.EventArgs) </FONT><FONT color=#0000ff size=2>Handles</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>MyBase</FONT><FONT size=2>.Load<BR>&nbsp; </FONT><FONT size=2>mCrit = State.AcctSearchCriteriaBO</P>
+<P></FONT><FONT color=#0000ff size=2>&nbsp; If</FONT><FONT size=2> mCrit </FONT><FONT color=#0000ff size=2>Is</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Nothing</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Then<BR>&nbsp;&nbsp;&nbsp; </FONT><FONT size=2>mCrit = AcctSearchCriteriaBO.NewAcctSearchCriteriaBO()<BR>&nbsp;&nbsp;&nbsp; State.AcctSearchCriteriaBO = mCrit<BR>&nbsp; </FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>If</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>&nbsp; If</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Not</FONT><FONT size=2> IsPostBack </FONT><FONT color=#0000ff size=2>Then<BR>&nbsp;&nbsp;&nbsp;&nbsp;</FONT><FONT color=#ff00ff size=2> </FONT><FONT color=#0000ff size=2>Me</FONT><FONT size=2>.DataBind()<BR></FONT><FONT size=2></FONT><FONT color=#0000ff size=2>&nbsp; End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>If</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Sub</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Private</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Sub</FONT><FONT size=2> btnSearch_Click(</FONT><FONT color=#0000ff size=2>ByVal</FONT><FONT size=2> sender </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> System.Object, </FONT><FONT color=#0000ff size=2>ByVal</FONT><FONT size=2> e </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> System.EventArgs) </FONT><FONT color=#0000ff size=2>Handles</FONT><FONT size=2> btnSearch.Click</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>&nbsp; Me</FONT><FONT size=2>.UnbindData()&nbsp; 'this sets all the properties of the mCrit BO based on the values in the screen.<BR>&nbsp;&nbsp;State.AcctSearchCriteriaBO = mCrit&nbsp;&nbsp; 'store the BO in Session and pass it to the&nbsp;Result page.<BR></FONT><FONT size=2>&nbsp; Response.Redirect(</FONT><FONT color=#ff00ff size=2>"~/AcctResults.aspx"</FONT><FONT size=2>)<BR></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Sub<BR><BR></FONT><FONT color=#0000ff size=2>End Class</FONT></P>
+<P><FONT color=#0000ff size=2></FONT>&nbsp;</P>
+<P><FONT color=#0000ff size=2>===============================================================================</FONT></P>
+<P><FONT color=#0000ff size=2><FONT color=#000000>This is the essential code on the Result page:</FONT></FONT></P><FONT color=#0000ff size=2><FONT color=#000000><FONT color=#0000ff size=2>
+<P>Partial</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Class</FONT><FONT size=2> AcctResults<BR>&nbsp; </FONT><FONT color=#0000ff size=2>Inherits</FONT><FONT size=2> MyBasePage</P>
+<P></FONT><FONT color=#0000ff size=2>Protected</FONT><FONT size=2> mCrit </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> AcctSearchCriteriaBO<BR></FONT><FONT color=#0000ff size=2>Private</FONT><FONT size=2> mAcctList </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> AcctList</P>
+<P></FONT>
+<P><FONT size=2></P></FONT><FONT size=2></FONT><FONT color=#0000ff size=2>Private</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Sub</FONT><FONT size=2> Page_Load(</FONT><FONT color=#0000ff size=2>ByVal</FONT><FONT size=2> sender </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> System.Object, </FONT><FONT color=#0000ff size=2>ByVal</FONT><FONT size=2> e </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> System.EventArgs) </FONT><FONT color=#0000ff size=2>Handles</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>MyBase</FONT><FONT size=2>.Load<BR>&nbsp; </FONT><FONT size=2>mCrit = State.AcctSearchCriteriaBO<BR></FONT><FONT size=2>&nbsp; mAcctList = State.AcctList<BR>&nbsp;</FONT><FONT color=#0000ff size=2>&nbsp;</FONT><FONT size=2>mAcctList = AcctList.GetAcctList(mCrit)<BR></FONT><FONT size=2>&nbsp; doDataBind()<BR></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Sub</FONT></P>
+<P><FONT color=#0000ff size=2>End Class</FONT></P><FONT color=#0000ff size=2>
+<P><FONT color=#0000ff size=2>===============================================================================</FONT></P>
+<P><FONT color=#000000>My code looks a lot like yours. The basic difference is that when my form unbinds on postback my BO keeps its values. You need to debug your form and see why the BO gets the values set but&nbsp; then they disappear.</FONT></P>
+<P><FONT color=#000000>Joe</FONT></P>
+<P>&nbsp;</P></FONT></FONT></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>yimiqi replied on Thursday, August 09, 2007</h2><P>Joe,</P>
+<P>1.&nbsp; ValidateChildren is not a method I wrote.&nbsp; It is:</P><FONT size=1>
+<P></FONT><FONT size=3>Public Overrides Function <B>ValidateChildren</B>() As <B><U><FONT color=#215dc6>Boolean</P></B></FONT></U></FONT>
+<P>Member of: <B><U><FONT color=#215dc6>System</B></U></FONT>.<B><U><FONT color=#215dc6>Windows</B></U></FONT>.<B><U><FONT color=#215dc6>Forms</B></U></FONT>.<B><U><FONT color=#215dc6 size=1><FONT size=3>UserControl</FONT></P></B></U></FONT>
+<P>2.&nbsp; Yeah, my code does look a lot like yours, mine is a windows application though.</P>
+<P><FONT color=#0000ff>The basic difference is that when my form unbinds on postback my BO keeps its values. You need to debug your form and see why the BO gets the values set but&nbsp; then they disappear.</FONT>&nbsp; &gt;&gt;&gt; You are absolutely right.</P>
+<P><FONT color=#000000>Note:&nbsp; I got the idea using ValidateChildren() to trigger the BO properties' setter by Rocky's post in following link</FONT></P>
+<P><A href="http://www.lhotka.net/Article.aspx?area=4&amp;id=54b7097e-2eb5-476d-842b-98fde95c2006">http://www.lhotka.net/Article.aspx?area=4&amp;id=54b7097e-2eb5-476d-842b-98fde95c2006</A></P>
+<P>I will post if I find anything in debugging.</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, August 09, 2007</h2><P>The point of that article is to allow a dual-level validation scheme. One level is purely in the UI, the other is purely in the business object.</P>
+<P>ValidateChildren() is there to validate the child controls in the UI. It has nothing really to do with the business object in any direct sense.</P>
+<P>The assumption in the article you reference is that the UI allows entry of values that the object would never accept. In that case, the invalid value is in the UI, but not the object. The UI <EM>knows the value is bad</EM>, but leaves it on the screen for the user to see (probably along with an errorprovider indicator).</P>
+<P>The code in the save button's click event first checks to see if ValidateChildren() returns true - which would indicate that there <EM>are no UI validation errors</EM>. If that check passes, we know that the values in the UI are in the object (since the UI liked the value, data binding put it in the business object automatically), and so the object's IsSavable property is checked.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>yimiqi replied on Thursday, August 09, 2007</h2><P>Thanks Rocky for clarifying the usage of ValidationChildren() in your article, I have a better understanding of the purpose of that article now.</P>
+<P>I tried, but I'm still not able to track down what the cause is that is making my BO properties disappear:</P>
+<P>Recap of the scenario I'm trying to implement:</P>
+<P>1.&nbsp; UI&nbsp;search control (with many&nbsp;user input controls on it) &nbsp;is&nbsp;bound to an Editable Businees Object Root</P>
+<P>2.&nbsp;&nbsp;The BO&nbsp;has properties&nbsp;that are&nbsp;bound to each user input controls</P>
+<P>3.&nbsp;&nbsp;Set BO properties with user inputs</P>
+<P>4.&nbsp; Send the BO with user&nbsp;input values to&nbsp;the Criteria class</P>
+<P>...</P>
+<P>My problem resides in step&nbsp;3, so let me step through what I did in step 3.</P>
+<P>a. I called&nbsp;<FONT color=#0000ff>UIControl.ValidateChildren()</FONT> from UI class to&nbsp;trigger the&nbsp;BO&nbsp;property setters.&nbsp;</P>
+<P>&nbsp;&nbsp; The call stacks are as following:</P><FONT size=2>
+<P>Csla.dll!Csla.Core.BusinessBase.IEditableObject_BeginEdit() Line 650 Basic</P>
+<P>&gt; Csla.dll!Csla.Core.BusinessBase.CanWriteProperty(String propertyName = "ID", Boolean throwOnFalse = True) </P>
+<P>&gt; Csla.dll!Csla.Core.BusinessBase.CanWriteProperty(String propertyName = "ID") </P>
+<P>&gt; Csla.dll!Csla.Core.BusinessBase.VerifyAuthorizationCache() </P>
+<P>&gt; Csla.dll!Csla.Core.BusinessBase.get_AuthorizationRules() </P>
+<P>&gt; Csla.dll!Csla.Security.AuthorizationRules.HasWriteAllowedRoles(String propertyName = "ID") </P>
+<P>&gt; Csla.dll!Csla.Security.AuthorizationRules.get_InstanceRules() </P>
+<P>&gt; Csla.dll!Csla.Security.AuthorizationRulesManager.GetRolesForProperty(String propertyName = "ID") </P>
+<P>&gt; Csla.dll!Csla.Security.AuthorizationRules.HasWriteAllowedRoles(String propertyName = "ID")</P>
+<P>&gt; Csla.dll!Csla.Core.BusinessBase.PropertyHasChanged(String propertyName = "ID") </P>
+<P>&gt; Csla.dll!Csla.Core.BusinessBase.get_ValidationRules() </P>
+<P>&gt; Csla.dll!Csla.Core.BusinessBase.MarkDirty(Boolean suppressEvent = True) </P>
+<P>&gt; Csla.dll!Csla.Core.BindableBase.OnPropertyChanged(String propertyName = "ID") </P>
+<P>&gt; Csla.dll!Csla.Core.BindableBase.raise_PropertyChanged(Object sender = {Application.Business.MyBO}, System.ComponentModel.PropertyChangedEventArgs e = {System.ComponentModel.PropertyChangedEventArgs}) </P>
+<P>After these calls, in&nbsp; My BO class, the BO properties were updated</P>
+<P>But right after the call of ValidationChildren(), if I do call the getter of the BO properties that were just updated, they already lost their updated values.</P>
+<P>b.&nbsp; So If I do a test right after the <FONT color=#0000ff>UIControl.ValidateChildren()</FONT> statement with something like</P>
+<P><FONT color=#0000ff>dim mSearchBO As SearchBO = SearchBO.NewInput</FONT></P>
+<P><FONT color=#0000ff>dim a As Int32</FONT></P>
+<P><FONT color=#0000ff>a = mSearchBO.ID</FONT></P>
+<P>then a returns 0, which is its initial value</P>
+<P>What did that happen?&nbsp; All the BO properties were not retained?&nbsp; What am I missing?</P>
+<P>My BO property is set up like this:</P><FONT color=#0000ff size=2>
+<P>Public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Property</FONT><FONT size=2> ID </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> Int32</P>
+<P></FONT><FONT color=#0000ff size=2>Get</FONT><FONT size=2> </P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; CanReadProperty(</FONT><FONT color=#a31515 size=2>"ID"</FONT><FONT size=2>, </FONT><FONT color=#0000ff size=2>True</FONT><FONT size=2>)</P>
+<P></FONT><FONT color=#0000ff size=2>Return</FONT><FONT size=2> m_ID</P>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Get</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Set</FONT><FONT size=2> (</FONT><FONT color=#0000ff size=2>ByVal</FONT><FONT size=2> value </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> Int32)</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; CanWriteProperty(</FONT><FONT color=#a31515 size=2>"ID"</FONT><FONT size=2>, </FONT><FONT color=#0000ff size=2>True</FONT><FONT size=2>)</P>
+<P></FONT><FONT color=#0000ff size=2>If</FONT><FONT size=2> m_ID &lt;&gt; value </FONT><FONT color=#0000ff size=2>Then</P></FONT><FONT size=2>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; m_ID = value</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; PropertyHasChanged("</FONT><FONT color=#a31515 size=2>ID"</FONT><FONT size=2>)</P>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>If</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Set</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Property</FONT></P>
+<P><FONT color=#000000 size=3>Questions:</FONT></P>
+<P><FONT size=3>Am I completely off approaching this direction to implement&nbsp;my scenario? especially the part using ValidateChildren() to trigger BO property update</FONT></P>
+<P><FONT size=3>Is my BO property set up incorrectly?&nbsp;The calls to CanReadProperty, CanWriteProperty, and PropertyHasChanged, are they needed? (I tried to comment those line out but it didn't make difference)</FONT></P>
+<P><FONT size=3>Otherwise, why is this not working?</FONT></P>
+<P><FONT size=3>I appreciate any inputs/insights on this issue.</FONT></P>
+<P><FONT size=2></FONT>&nbsp;</P>
+<P><FONT size=2>&nbsp;</P></FONT></FONT>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, August 09, 2007</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Why is there a step 3?<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>The whole point of data binding is so you don&#8217;t have to
+set object properties &#8211; that&#8217;s done by data binding so you don&#8217;t
+have to.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky</span><o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>yimiqi replied on Thursday, August 09, 2007</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div> 
+
+<DIV class=Section1>
+<P class=MsoNormal><SPAN>Why is there a step 3?<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>The whole point of data binding is so you don’t have to set object properties – that’s done by data binding so you don’t have to.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Rocky</SPAN><o:p></o:p></P></DIV>
+<P></div></BLOCKQUOTE></P>
+<P>I did a quick test after Rocky's above response as following:</P>
+<P>Comment out the call to ValidateChildren() in Search Screen.&nbsp; </P>
+<P>Start the app, enter some inputs on the search screen, create instance of the BO, send the BO to GetList fatory method as a parameter, the BO is empty.&nbsp; </P>
+<P>So the test failed.</P>
+<P>I guess the reason I chose to use ValidateChildren() to trigger the BO property set is something called data binding kept in the back of my brain.&nbsp; The ValidateChildren() did the property set for me behind scene (of course not perfectly in my case) magically, i didn't set up a method just to set the object property (that is something I kinda knew I shouldn't do).&nbsp; </P>
+<P>But the question is, where does the data binding come into play in my scenario?&nbsp; How does the BO know users' input (see, I still don't understand how data binding works even if I thought I kinda know).&nbsp; Is everything set up at design time?&nbsp; I checked the data binding property, it all seems right there.&nbsp; What is the real trigger?&nbsp; When will the BO that is bound by the search control know its property has changed?&nbsp; As soon as the user clicks search?&nbsp; </P>
+<P>Rocky, could you point me to the direction that I can learn to re-understand Data Binding in your project traker application?</P>
+<P>Sorry for so many questions</P>
+<P>Thanks for any info</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, August 09, 2007</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>The best place to start is to read Chapter 9 where I describe
+how to create the PTWin project, including setting up data binding. Note, however,
+that there&#8217;s some errata for that chapter, so make sure to check that out
+as well (from <a href="http://www.lhotka.net">www.lhotka.net</a> under the CSLA
+.NET menu).<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Or read Chris Sells&#8217; book on Windows Forms, because I
+think he talks about data binding in more general terms.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>You are right though, data binding is all set up at design time &#8211;
+drag and drop the properties from the Data Sources window onto your form and it
+all gets set up automatically. All you need to do in code is set the
+bindingSource.DataSource property.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky</span><o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>yimiqi replied on Thursday, August 09, 2007</h2><P>Rocky, </P>
+<P>Thanks for your guidance, I will read from Chapter 9 again.&nbsp; I don't have Chris Sell's book in hand,&nbsp; will consider to buy one though.</P>
+<P>A couple of more questions just came up:</P>
+<P>1.&nbsp; So you don't think I need to call ValidateChildren() to do what I intend to do in my case?</P>
+<P>2.&nbsp; If you already already have a BO and a control/form using that&nbsp;BO as the data source.</P>
+<P>In the case of&nbsp;changing&nbsp;your control/form to bind to a different BO&nbsp;but with the same properties as the original BO, do you have to&nbsp;create&nbsp;the different BO first&nbsp;and&nbsp;drag and drop the properties from the&nbsp;new Data Source, basically meaning recreate your control/form even if&nbsp;it has the&nbsp;exact same controls on it but is just bound to a&nbsp;different BO (data source)?&nbsp;&nbsp;Or can you just adjust the BindingSource.DataSource on the existing control/form? Will the second approach cause confusion when comes to Data Binding?</P>
+<P>3. What about creating inherited controls impacting data binding? </P>
+<P>The controls&nbsp;in&nbsp;your&nbsp;project tracker example pretty much created&nbsp;straightly from Windows.Forms.UserControl.&nbsp;&nbsp;In my application,&nbsp; I&nbsp;use lots of inherited controls.&nbsp; and aloso have drag controls on another control etc.&nbsp; I wonder if that caused some confusion in the Data Binding as well.</P>
+<P>4.&nbsp; I do use&nbsp;bindingSource.DataSource in my code, good to know that is the only code needed regarding data binding (rest is at design time).</P>
+<P>Just want to throw the questions out there.&nbsp; Sorry&nbsp;it becomes another lengthy post</P>
+<P>Thanks for your time</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, August 09, 2007</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>You bring up some interesting questions, and I don&#8217;t know
+the answers to all of them.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoListParagraph><span><span>1.<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span></span><span>I&#8217;m not sure why you are calling ValidateChildren(), but its
+purpose is to do control-level validation (in the UI, having nothing to do with
+the business object). I find it primarily useful when dealing with object
+properties of type other than string, where the UI control can be invalid, but
+the business object property might not be (because it doesn&#8217;t even have
+the real value)<o:p></o:p></span></p>
+
+<p class=MsoListParagraph><span><span>2.<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span></span><span>The bindingSource architecture is designed to work on object <i>shape</i>
+not on specific types. So you can set bindingSource.DataSource to <i>any</i>
+object that has the <i>same shape</i> as the one used at design time. What this
+means, is that any object with exactly the same properties as are data bound
+can be used (the object can even have extra properties &#8211; they are just
+ignored). Pretty cool.<o:p></o:p></span></p>
+
+<p class=MsoListParagraph><span><span>3.<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span></span><span>I don&#8217;t think this matters, but it depends on what you do
+in your subclass. Simple (property-level) data binding is independent of
+control implementations and works through reflection at the property level. I
+think there are some attributes you might use on properties that could
+interfere, but normally it just works. Complex (entire object) data binding is
+much more complex, because the control actually interacts with the object
+directly &#8211; this is like a grid or similar control. Very few people write
+complex data binding controls, because it is &#8230; well &#8230; complex.<o:p></o:p></span></p>
+
+<p class=MsoListParagraph><span><span>4.<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span></span><span>The only thing to remember with setting the DataSource, is that
+sometimes you need to &#8220;clear&#8221; it before changing the source &#8211;
+for a root bindingSource that means setting it to null/Nothing, but for child
+bindingSource controls that means setting the DataSource back to the parent
+bindingSource &#8211; see Chapter 9 for info.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>yimiqi replied on Saturday, August 11, 2007</h2><P>Rocky,</P>
+<P>Thanks for your answers to my questions, they are very helpful.</P>
+<P>1.&nbsp;&nbsp;The idea to&nbsp;call&nbsp;ValidateChildren () is&nbsp;intrigued by your article without fully truly understanding its purpose as you explained to me in this post.&nbsp; When&nbsp;I used&nbsp;ValidationChildren() and step through the code, it did what I wanted to do, that is, to set the object properties.</P>
+<P>But, you are right, I&nbsp;don't have to&nbsp;tell set the object properties, data binding does it all.&nbsp; </P>
+<P>However, removing ValidateChildren() didn't solve my problem.&nbsp; After hours of debugging, it turned out that the problem had something to do my using a complex DB key as a unique identifier for the control.&nbsp; Once I changed to use&nbsp;Guid as the unique identifier,&nbsp;my problem&nbsp;was solved.&nbsp; Data binding is doing its job.&nbsp; I don't really need to call ValidationChildren() to set the object properties.&nbsp; However, it&nbsp;will give&nbsp;you the same result if you still leave that call in the code, plus, it does the control-validation in the UI for you.&nbsp; So I will still use ValidationChildren() in my code, with knowing better why I'm using it though :-)&nbsp; Thanks for your guidance!</P>
+<P>2.&nbsp; I'll have to say the BindingSource is so powerful and so cool!&nbsp; Thanks for making me truely realize that.</P>
+<P>3.&nbsp; Again, thanks for educating me more on the data binding.&nbsp; I really like your very clear way of explaining a confusing thing to a newbie like me.&nbsp; I checked all my base controls, inherited controls, good they are all using simple binding except for the grids (is using complex binding).</P>
+<P>4. Thanks for the tip.&nbsp; I did read this in your book or see it on your DNR show.&nbsp; Great tip!</P>
+<P>Thanks so much Rocky for your advices and your dedication to this community, ... and your great framework!&nbsp; </P>
+<P>Thanks to Joe too, for reviewing my code, giving me your suggestions, and posting your own code for my reference.&nbsp; </P>
+<P>I learned a ton from all of you, and this forum!</P>
+<P>Rocky, have a wonderful vacation next week, you deserve it!</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

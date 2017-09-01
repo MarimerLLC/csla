@@ -1,0 +1,324 @@
+<html><header><title>WcfPortal.Fetch failes with FileNotFoundException</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>WcfPortal.Fetch failes with FileNotFoundException</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10871.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>marcelvb posted on Monday, November 14, 2011</h2><p>Hi all,</p>
+<p>I created a Silverlight 4 app with CSLA business objects on the server side. Unfortunately I cannot get it to work. When I try to retrieve a business object Project using its ID (integer) it seems like the fetch fails somewhere between the server receiving the request and calling my fetch method. After some debugging I found the following exception in the Error property of my viewmodel:</p>
+<p>{System.IO.FileNotFoundException: Could not load file or assembly &#39;Atlas.WorkService.ManagementApp, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null&#39; or one of its dependencies. The system cannot find the file specified.<br />&nbsp;&nbsp; at System.RuntimeTypeHandle.GetTypeByName(String name, Boolean throwOnError, Boolean ignoreCase, Boolean reflectionOnly, StackCrawlMarkHandle stackMark, Boolean loadTypeFromPartialName, ObjectHandleOnStack type)<br />&nbsp;&nbsp; at System.RuntimeTypeHandle.GetTypeByName(String name, Boolean throwOnError, Boolean ignoreCase, Boolean reflectionOnly, StackCrawlMark&amp; stackMark, Boolean loadTypeFromPartialName)<br />&nbsp;&nbsp; at System.RuntimeType.GetType(String typeName, Boolean throwOnError, Boolean ignoreCase, Boolean reflectionOnly, StackCrawlMark&amp; stackMark)<br />&nbsp;&nbsp; at System.Type.GetType(String typeName, Boolean throwOnError, Boolean ignoreCase)<br />&nbsp;&nbsp; at Csla.Reflection.MethodCaller.GetType(String typeName, Boolean throwOnError, Boolean ignoreCase)<br />&nbsp;&nbsp; at Csla.Reflection.MethodCaller.GetType(String typeName)<br />&nbsp;&nbsp; at Csla.Serialization.Mobile.MobileFormatter.GetTypeFromCache(String typeName)<br />&nbsp;&nbsp; at Csla.Serialization.Mobile.MobileFormatter.DeserializeAsDTO(List`1 deserialized)<br />&nbsp;&nbsp; at Csla.Serialization.Mobile.MobileFormatter.Deserialize(List`1 data)<br />&nbsp;&nbsp; at Csla.Serialization.Mobile.MobileFormatter.Deserialize(XmlReader reader)<br />&nbsp;&nbsp; at Csla.Serialization.Mobile.MobileFormatter.Deserialize(Stream serializationStream)<br />&nbsp;&nbsp; at Csla.Serialization.Mobile.MobileFormatter.Deserialize(Byte[] data)<br />&nbsp;&nbsp; at Csla.Server.Hosts.Silverlight.WcfPortal.GetCriteria(Byte[] criteriaData)<br />&nbsp;&nbsp; at Csla.Server.Hosts.Silverlight.WcfPortal.Fetch(CriteriaRequest request)<br />}</p>
+<p>ManagementApp is my Silverlight application. It does not make sense that the server side needs a reference to my Silverlight application. Any ideas? I have been going over my code for 2 days now and I can&#39;t find what I&#39;m doing wrong here.</p>
+<p>Regards,</p>
+<p>Marcel</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, November 14, 2011</h2><p>The stack trace indicates that this is occuring while the message from the client is being deserialized on the server. </p>
+<p>Based on this, it looks like one of your business objects must have a property or field that references some object or type&nbsp;in the Atlas.WorkService.ManagementApp assembly, and that is causing the deserialization process to attempt to load that type.</p>
+<p>If you can&#39;t find this reference in your code, you can use something like fiddler to look at the XML being sent over the network - that might help you figure out which of your objects/properties/fields has this reference.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>marcelvb replied on Tuesday, November 15, 2011</h2><p>Hi Rocky,</p>
+<p>&nbsp;</p>
+<p>Thanks for answering. I came to the same conclusion when studying the stacktrace. But the interesting thing is that the business objects that are used in the Silverlight assembly (Atlas.WorkService.ManagementApp) are links to the business objects in the server part (Atlas.WorkService.BusinessLogic). So I guess it&#39;s impossible for those to reference something in the Silverlight assembly.</p>
+<p>What I do notice when debugging, is that the callback parameter contains a reference to has a Target property that references Atlas.WorkService.ManagementApp.ViewModels.ProjectUoWViewModel. So maybe I call my business object the wrong way?</p>
+<p>Some extra info: I&#39;m using the CompressedHost mechanism. I tried it with compression enabled and disabled. If I use Fiddler, would I see anything human-readable?</p>
+<p>Let me show you some relevant code:</p>
+<pre style="font-family:Consolas;font-size:13px;color:black;background:none repeat scroll 0% 0% white;">-----------------------</pre>
+<p>HomeViewModel.cs:</p>
+<pre style="font-family:Consolas;font-size:13px;color:black;background:none repeat scroll 0% 0% white;"><span style="color:blue;">using</span>&nbsp;System;
+<span style="color:blue;">using</span>&nbsp;System.Windows;
+<span style="color:blue;">using</span>&nbsp;Bxf;
+<span style="color:blue;">using</span>&nbsp;Csla.Xaml;
+<span style="color:blue;">using</span>&nbsp;Atlas.WorkService.ManagementApp.Views;
+ 
+<span style="color:blue;">namespace</span>&nbsp;Atlas.WorkService.ManagementApp.ViewModels
+{
+&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">class</span>&nbsp;<span style="color:#2b91af;">HomeViewModel</span>&nbsp;:&nbsp;<span style="color:#2b91af;">DependencyObject</span>
+&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">void</span>&nbsp;OpenProject(<span style="color:blue;">object</span>&nbsp;sender,&nbsp;<span style="color:#2b91af;">ExecuteEventArgs</span>&nbsp;e)
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">var</span>&nbsp;projectId&nbsp;=&nbsp;0;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">if</span>&nbsp;(e.MethodParameter&nbsp;!=&nbsp;<span style="color:blue;">null</span>&nbsp;&amp;&amp;&nbsp;<span style="color:#2b91af;">Int32</span>.TryParse(e.MethodParameter.ToString(),&nbsp;<span style="color:blue;">out</span>&nbsp;projectId))
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#2b91af;">Shell</span>.Instance.ShowView(<span style="color:blue;">typeof</span>(<span style="color:#2b91af;">ProjectView</span>).AssemblyQualifiedName,&nbsp;<span style="color:#a31515;">&quot;projectViewModel&quot;</span>, <br />                                <span style="color:blue;">new</span>&nbsp;<span style="color:#2b91af;">ProjectUoWViewModel</span>(projectId),&nbsp;<span style="color:#a31515;">&quot;Content&quot;</span>);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;}
+}
+<br />-----------------------</pre>
+<p>ProjectViewModel.cs:</p>
+<pre style="font-family:Consolas;font-size:13;color:black;background:white;"><span style="color:blue;">using</span>&nbsp;System.Windows;
+<span style="color:blue;">using</span>&nbsp;Atlas.WorkService.BusinessLogic;
+<span style="color:blue;">using</span>&nbsp;Bxf;
+<span style="color:blue;">using</span>&nbsp;Csla.Xaml;
+<br /><span style="color:blue;">namespace</span>&nbsp;Atlas.WorkService.ManagementApp.ViewModels
+{
+	<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">sealed</span>&nbsp;<span style="color:blue;">class</span>&nbsp;<span style="color:#2b91af;">ProjectUoWViewModel</span>&nbsp;:&nbsp;<span style="color:#2b91af;">ViewModel</span>&lt;<span style="color:#2b91af;">ProjectUoW</span>&gt;
+	{
+		<span style="color:blue;">public</span>&nbsp;ProjectUoWViewModel()
+		{
+			BeginRefresh(<span style="color:#a31515;">&quot;NewProject&quot;</span>);
+		}
+ 
+		<span style="color:blue;">public</span>&nbsp;ProjectUoWViewModel(<span style="color:blue;">int</span>&nbsp;projectId)
+		{
+			ManageObjectLifetime&nbsp;=&nbsp;<span style="color:blue;">true</span>;
+			<span style="color:#2b91af;">Shell</span>.Instance.ShowStatus(<span style="color:blue;">new</span>&nbsp;<span style="color:#2b91af;">Status</span>&nbsp;{&nbsp;Text&nbsp;=&nbsp;<span style="color:#a31515;">&quot;Getting&nbsp;project&quot;</span>,&nbsp;IsBusy&nbsp;=&nbsp;<span style="color:blue;">true</span>&nbsp;});
+			BeginRefresh(<span style="color:#a31515;">&quot;GetProject&quot;</span>,&nbsp;projectId);
+		}
+ 
+		<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">static</span>&nbsp;<span style="color:blue;">readonly</span>&nbsp;<span style="color:#2b91af;">DependencyProperty</span>&nbsp;ProjectViewModelProperty&nbsp;=&nbsp;<span style="color:#2b91af;">DependencyProperty</span>.Register(<span style="color:#a31515;">&quot;ProjectViewModel&quot;</span>,&nbsp;<span style="color:blue;">typeof</span>(<span style="color:#2b91af;">ProjectViewModel</span>),&nbsp;<span style="color:blue;">typeof</span>(<span style="color:#2b91af;">ProjectUoWViewModel</span>),&nbsp;<span style="color:blue;">null</span>);
+		<span style="color:blue;">public</span>&nbsp;<span style="color:#2b91af;">ProjectViewModel</span>&nbsp;ProjectViewModel
+		{
+			<span style="color:blue;">get</span>&nbsp;{&nbsp;<span style="color:blue;">return</span>&nbsp;(<span style="color:#2b91af;">ProjectViewModel</span>)GetValue(ProjectViewModelProperty);&nbsp;}
+			<span style="color:blue;">set</span>&nbsp;{&nbsp;SetValue(ProjectViewModelProperty,&nbsp;<span style="color:blue;">value</span>);&nbsp;}
+		}
+ 
+		<span style="color:blue;">protected</span>&nbsp;<span style="color:blue;">override</span>&nbsp;<span style="color:blue;">void</span>&nbsp;OnRefreshed()
+		{
+			<span style="color:blue;">base</span>.OnRefreshed();
+ 
+			<span style="color:green;">//&nbsp;Set&nbsp;the&nbsp;Project&nbsp;in&nbsp;the&nbsp;ProjectViewModel</span>
+			ProjectViewModel&nbsp;=&nbsp;<span style="color:blue;">new</span>&nbsp;<span style="color:#2b91af;">ProjectViewModel</span>(Model.Project<span style="color:green;"></span>);
+ 
+			<span style="color:#2b91af;">Shell</span>.Instance.ShowStatus(<span style="color:blue;">new</span>&nbsp;<span style="color:#2b91af;">Status</span>());
+		}
+	}
+ 
+	<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">class</span>&nbsp;<span style="color:#2b91af;">ProjectViewModel</span>&nbsp;:&nbsp;<span style="color:#2b91af;">ViewModel</span>&lt;<span style="color:#2b91af;">Project</span>&gt;
+	{
+<span style="color:blue;">			#region</span>&nbsp;Constructor
+ 
+			<span style="color:blue;">public</span>&nbsp;ProjectViewModel(<span style="color:#2b91af;">Project</span>&nbsp;project)
+			{
+				ManageObjectLifetime&nbsp;=&nbsp;<span style="color:blue;">false</span>;
+				Model&nbsp;=&nbsp;project;
+			}
+ 
+<span style="color:blue;">			#endregion</span>&nbsp;Constructor
+ 
+			<span style="color:blue;">protected</span>&nbsp;<span style="color:blue;">override</span>&nbsp;<span style="color:blue;">void</span>&nbsp;BeginSave()
+			{
+				<span style="color:#2b91af;">Shell</span>.Instance.ShowStatus(<span style="color:blue;">new</span>&nbsp;<span style="color:#2b91af;">Status</span>&nbsp;{&nbsp;IsBusy&nbsp;=&nbsp;<span style="color:blue;">true</span>,&nbsp;Text&nbsp;=&nbsp;<span style="color:#a31515;">&quot;Saving&nbsp;changes&quot;</span>&nbsp;});
+				<span style="color:blue;">base</span>.BeginSave();
+			}
+ 
+			<span style="color:blue;">protected</span>&nbsp;<span style="color:blue;">override</span>&nbsp;<span style="color:blue;">void</span>&nbsp;OnSaved()
+			{
+				<span style="color:#2b91af;">Shell</span>.Instance.ShowStatus(<span style="color:blue;">new</span>&nbsp;<span style="color:#2b91af;">Status</span>());
+				<span style="color:blue;">base</span>.OnSaved();
+ 			}
+		}
+}<br /><br />-----------------------<br />ProjectUoW.cs (shared using a link between server and client):<br /><br /><span style="color:blue;">using</span>&nbsp;System;
+<span style="color:blue;">using</span>&nbsp;Csla;
+ 
+<span style="color:blue;">#if</span>&nbsp;SILVERLIGHT
+<span style="color:gray;">using&nbsp;Csla.Serialization;</span>
+<span style="color:blue;">#endif</span>
+ 
+<span style="color:blue;">namespace</span>&nbsp;Atlas.WorkService.BusinessLogic
+{
+&nbsp;&nbsp;[<span style="color:#2b91af;">Serializable</span>]
+&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">partial</span>&nbsp;<span style="color:blue;">class</span>&nbsp;<span style="color:#2b91af;">ProjectUoW</span>&nbsp;:&nbsp;<span style="color:#2b91af;">ReadOnlyBase</span>&lt;<span style="color:#2b91af;">ProjectUoW</span>&gt;
+&nbsp;&nbsp;{
+<span style="color:blue;">&nbsp;&nbsp;&nbsp;&nbsp;#region</span>&nbsp;Business&nbsp;Methods
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">static</span>&nbsp;<span style="color:#2b91af;">PropertyInfo</span>&lt;<span style="color:#2b91af;">Project</span>&gt;&nbsp;ProjectProperty&nbsp;=&nbsp;RegisterProperty&lt;<span style="color:#2b91af;">Project</span>&gt;(c&nbsp;=&gt;&nbsp;c.Project);
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:#2b91af;">Project</span>&nbsp;Project
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">get</span>&nbsp;{&nbsp;<span style="color:blue;">return</span>&nbsp;GetProperty(ProjectProperty);&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+<span style="color:blue;">&nbsp;&nbsp;&nbsp;&nbsp;#endregion</span>
+ 
+<span style="color:blue;">&nbsp;&nbsp;&nbsp;&nbsp;#region</span>&nbsp;Factory&nbsp;Methods
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">static</span>&nbsp;<span style="color:blue;">void</span>&nbsp;GetProject(<span style="color:blue;">int</span>&nbsp;projectId,&nbsp;<span style="color:#2b91af;">EventHandler</span>&lt;<span style="color:#2b91af;">DataPortalResult</span>&lt;<span style="color:#2b91af;">ProjectUoW</span>&gt;&gt;&nbsp;callback)
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">var</span>&nbsp;dp&nbsp;=&nbsp;<span style="color:blue;">new</span>&nbsp;<span style="color:#2b91af;">DataPortal</span>&lt;<span style="color:#2b91af;">ProjectUoW</span>&gt;();
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;dp.FetchCompleted&nbsp;+=&nbsp;callback;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;dp.BeginFetch(<span style="color:blue;">new</span>&nbsp;<span style="color:#2b91af;">SingleCriteria</span>&lt;<span style="color:#2b91af;">ProjectUoW</span>,&nbsp;<span style="color:blue;">int</span>&gt;(projectId));
+&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+<span style="color:blue;">&nbsp;&nbsp;&nbsp;&nbsp;#endregion</span>&nbsp;Factory&nbsp;Methods
+&nbsp;&nbsp;}
+}<br /><br />-----------------------<br />ProjectUoW.server.cs:<br /><br /><span style="color:blue;">using</span>&nbsp;Csla;
+ 
+<span style="color:blue;">namespace</span>&nbsp;Atlas.WorkService.BusinessLogic
+{
+&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">partial</span>&nbsp;<span style="color:blue;">class</span>&nbsp;<span style="color:#2b91af;">ProjectUoW</span>
+&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">void</span>&nbsp;DataPortal_Fetch(<span style="color:#2b91af;">SingleCriteria</span>&lt;<span style="color:#2b91af;">ProjectUoW</span>,&nbsp;<span style="color:blue;">int</span>&gt;&nbsp;projectId)
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;LoadProperty(ProjectProperty,&nbsp;<span style="color:#2b91af;">Project</span>.NewProject());
+ &nbsp;&nbsp; }
+&nbsp;&nbsp;}
+}<br /><br />-----------------------<br />Project.cs (shared using a link between server and client):<br /><br /><span style="color:blue;">using</span>&nbsp;System;
+<span style="color:blue;">using</span>&nbsp;System.Xml.Linq;
+<span style="color:blue;">using</span>&nbsp;Atlas.WorkService.Common;
+<span style="color:blue;">using</span>&nbsp;Csla;
+ 
+<span style="color:blue;">#if</span>&nbsp;SILVERLIGHT
+<span style="color:blue;">using</span>&nbsp;Csla.Serialization;
+<span style="color:blue;">#endif</span>
+ 
+<span style="color:blue;">namespace</span>&nbsp;Atlas.WorkService.BusinessLogic
+{
+&nbsp;&nbsp;[<span style="color:#2b91af;">Serializable</span>]
+&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">partial</span>&nbsp;<span style="color:blue;">class</span>&nbsp;<span style="color:#2b91af;">Project</span>&nbsp;:&nbsp;<span style="color:#2b91af;">BusinessBase</span>&lt;<span style="color:#2b91af;">Project</span>&gt;
+&nbsp;&nbsp;{
+<span style="color:blue;">&nbsp;&nbsp;&nbsp;&nbsp;#region</span>&nbsp;Business&nbsp;Properties
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">private</span>&nbsp;<span style="color:blue;">static</span>&nbsp;<span style="color:blue;">readonly</span>&nbsp;<span style="color:#2b91af;">PropertyInfo</span>&lt;<span style="color:blue;">int</span>&gt;&nbsp;idProperty&nbsp;=&nbsp;RegisterProperty(<span style="color:blue;">new</span>&nbsp;<span style="color:#2b91af;">PropertyInfo</span>&lt;<span style="color:blue;">int</span>&gt;(<span style="color:#a31515;">&quot;Id&quot;</span>,&nbsp;<span style="color:#a31515;">&quot;Id&quot;</span>));
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">int</span>&nbsp;Id
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">get</span>&nbsp;{&nbsp;<span style="color:blue;">return</span>&nbsp;GetProperty(idProperty);&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">set</span>&nbsp;{&nbsp;SetProperty(idProperty,&nbsp;<span style="color:blue;">value</span>);&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;}
+ <br />&nbsp;&nbsp;&nbsp; <span style="color:green;">// Left out other properties here for brevity...</span><br />
+&nbsp;<span style="color:blue;">&nbsp;&nbsp; #endregion</span>
+ 
+<span style="color:blue;">&nbsp;&nbsp;&nbsp;&nbsp;#region</span>&nbsp;Factory&nbsp;Methods
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">static</span>&nbsp;<span style="color:blue;">void</span>&nbsp;NewProject(<span style="color:#2b91af;">EventHandler</span>&lt;<span style="color:#2b91af;">DataPortalResult</span>&lt;<span style="color:#2b91af;">Project</span>&gt;&gt;&nbsp;callback)
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">var</span>&nbsp;dp&nbsp;=&nbsp;<span style="color:blue;">new</span>&nbsp;<span style="color:#2b91af;">DataPortal</span>&lt;<span style="color:#2b91af;">Project</span>&gt;();
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;dp.CreateCompleted&nbsp;+=&nbsp;callback;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;dp.BeginCreate();
+&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">static</span>&nbsp;<span style="color:blue;">void</span>&nbsp;GetProject(<span style="color:blue;">int</span>&nbsp;projectId,&nbsp;<span style="color:#2b91af;">EventHandler</span>&lt;<span style="color:#2b91af;">DataPortalResult</span>&lt;<span style="color:#2b91af;">Project</span>&gt;&gt;&nbsp;callback)
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">var</span>&nbsp;dp&nbsp;=&nbsp;<span style="color:blue;">new</span>&nbsp;<span style="color:#2b91af;">DataPortal</span>&lt;<span style="color:#2b91af;">Project</span>&gt;();
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;dp.FetchCompleted&nbsp;+=&nbsp;callback;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;dp.BeginFetch(<span style="color:blue;">new</span>&nbsp;<span style="color:#2b91af;">SingleCriteria</span>&lt;<span style="color:#2b91af;">Project</span>,&nbsp;<span style="color:blue;">int</span>&gt;(projectId));
+&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+<span style="color:blue;">&nbsp;&nbsp;&nbsp;&nbsp;#endregion</span>&nbsp;Factory&nbsp;Methods
+&nbsp; }
+}
+<br />-----------------------<br />Project.server.cs:<br /><br /><span style="color:blue;">using</span>&nbsp;System;
+<span style="color:blue;">using</span>&nbsp;System.Collections.Generic;
+<span style="color:blue;">using</span>&nbsp;System.Runtime.Caching;
+<span style="color:blue;">using</span>&nbsp;System.Xml.Linq;
+<span style="color:blue;">using</span>&nbsp;Atlas.WorkService.Common;
+<span style="color:blue;">using</span>&nbsp;Atlas.WorkService.DataAccess.Repositories;
+<span style="color:blue;">using</span>&nbsp;Csla;
+<span style="color:blue;">using</span>&nbsp;<span style="color:#2b91af;">ProjectUser</span>&nbsp;=&nbsp;Atlas.WorkService.DataAccess.Mapping.<span style="color:#2b91af;">ProjectUser</span>;
+ 
+<span style="color:blue;">namespace</span>&nbsp;Atlas.WorkService.BusinessLogic
+{
+&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">partial</span>&nbsp;<span style="color:blue;">class</span>&nbsp;<span style="color:#2b91af;">Project</span>
+&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">private</span>&nbsp;<span style="color:blue;">static</span>&nbsp;<span style="color:blue;">readonly</span>&nbsp;<span style="color:#2b91af;">MemoryCache</span>&nbsp;projectCache&nbsp;=&nbsp;<span style="color:blue;">new</span>&nbsp;<span style="color:#2b91af;">MemoryCache</span>(<span style="color:#a31515;">&quot;Project&quot;</span>);
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">private</span>&nbsp;Project()
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">static</span>&nbsp;<span style="color:#2b91af;">Project</span>&nbsp;GetProject(<span style="color:blue;">int</span>&nbsp;id)
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">return</span>&nbsp;<span style="color:#2b91af;">DataPortal</span>.Fetch&lt;<span style="color:#2b91af;">Project</span>&gt;(<span style="color:blue;">new</span>&nbsp;<span style="color:#2b91af;">SingleCriteria</span>&lt;<span style="color:#2b91af;">Project</span>,&nbsp;<span style="color:blue;">int</span>&gt;(id));
+&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">static</span>&nbsp;<span style="color:#2b91af;">Project</span>&nbsp;NewProject()
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">return</span>&nbsp;<span style="color:#2b91af;">DataPortal</span>.Create&lt;<span style="color:#2b91af;">Project</span>&gt;();
+&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">static</span>&nbsp;<span style="color:blue;">void</span>&nbsp;DeleteProject(<span style="color:blue;">int</span>&nbsp;id)
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#2b91af;">DataPortal</span>.Delete&lt;<span style="color:#2b91af;">Project</span>&gt;(<span style="color:blue;">new</span>&nbsp;<span style="color:#2b91af;">SingleCriteria</span>&lt;<span style="color:#2b91af;">Project</span>,&nbsp;<span style="color:blue;">int</span>&gt;(id));
+&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">static</span>&nbsp;<span style="color:blue;">bool</span>&nbsp;Exists(<span style="color:blue;">int</span>&nbsp;id)
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">return</span>&nbsp;<span style="color:#2b91af;">ExistCommand</span>.Execute(id);
+&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">private</span>&nbsp;DataAccess.Mapping.<span style="color:#2b91af;">Project</span>&nbsp;AsDto()
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DataAccess.Mapping.<span style="color:#2b91af;">Project</span>&nbsp;projectDto&nbsp;=&nbsp;<span style="color:blue;">new</span>&nbsp;DataAccess.Mapping.<span style="color:#2b91af;">Project</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Id&nbsp;=&nbsp;Id,<br />                                                  // Left out other properties here...<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; };
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">return</span>&nbsp;projectDto;
+&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">override</span>&nbsp;<span style="color:blue;">void</span>&nbsp;Delete()
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#2b91af;">ProjectRepository</span>.Instance.Delete(AsDto());
+&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:#2b91af;">IDictionary</span>&lt;<span style="color:#2b91af;">User</span>,&nbsp;<span style="color:#2b91af;">ICollection</span>&lt;<span style="color:#2b91af;">JobUserRole</span>&gt;&gt;&nbsp;GetProjectUsers()
+&nbsp;&nbsp;&nbsp;&nbsp;{
+<span style="color:green;">        // Left out implementation here....</span>
+&nbsp;&nbsp;&nbsp; }
+ 
+&nbsp;&nbsp;&nbsp; <span style="color:blue;">protected</span>&nbsp;<span style="color:blue;">override</span>&nbsp;<span style="color:blue;">void</span>&nbsp;DataPortal_Insert()
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DataAccess.Mapping.<span style="color:#2b91af;">Project</span>&nbsp;projectDto&nbsp;=&nbsp;<span style="color:#2b91af;">ProjectRepository</span>.Instance.Add(AsDto());
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Id&nbsp;=&nbsp;projectDto.Id;
+&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">protected</span>&nbsp;<span style="color:blue;">override</span>&nbsp;<span style="color:blue;">void</span>&nbsp;DataPortal_Update()
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#2b91af;">ProjectRepository</span>.Instance.Update(AsDto());
+&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">protected</span>&nbsp;<span style="color:blue;">override</span>&nbsp;<span style="color:blue;">void</span>&nbsp;DataPortal_DeleteSelf()
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#2b91af;">ProjectRepository</span>.Instance.Delete(AsDto());
+&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">void</span>&nbsp;DataPortal_Fetch(<span style="color:#2b91af;">SingleCriteria</span>&lt;<span style="color:#2b91af;">Project</span>,&nbsp;<span style="color:blue;">int</span>&gt;&nbsp;criteria)
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">int</span>&nbsp;projectId&nbsp;=&nbsp;criteria.Value;
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DataAccess.Mapping.<span style="color:#2b91af;">Project</span>&nbsp;project;
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">if</span>&nbsp;(projectCache.Contains(projectId.ToString()))
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;project&nbsp;=&nbsp;(DataAccess.Mapping.<span style="color:#2b91af;">Project</span>)projectCache.Get(projectId.ToString());
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">else</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;project&nbsp;=&nbsp;<span style="color:#2b91af;">ProjectRepository</span>.Instance.GetByKey(projectId);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;projectCache.Add(projectId.ToString(),&nbsp;project,&nbsp;<span style="color:blue;">new</span>&nbsp;<span style="color:#2b91af;">CacheItemPolicy</span>());
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">if</span>&nbsp;(project&nbsp;==&nbsp;<span style="color:blue;">null</span>)&nbsp;<span style="color:blue;">return</span>;
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Id&nbsp;=&nbsp;project.Id;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Description&nbsp;=&nbsp;project.Description;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Status&nbsp;=&nbsp;project.Status;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ProjectType&nbsp;=&nbsp;<span style="color:#2b91af;">MetadataType</span>.GetMetadataType(project.ProjectTypeId);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;WorkItemType&nbsp;=&nbsp;<span style="color:#2b91af;">MetadataType</span>.GetMetadataType(project.WorkItemTypeId);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Metadata&nbsp;=&nbsp;project.Metadata&nbsp;==&nbsp;<span style="color:blue;">null</span>&nbsp;?&nbsp;<span style="color:blue;">null</span>&nbsp;:&nbsp;<span style="color:#2b91af;">XDocument</span>.Parse(project.Metadata);
+&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+<span style="color:blue;">&nbsp;&nbsp;&nbsp;&nbsp;#region</span>&nbsp;ExistsCommand
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;[<span style="color:#2b91af;">Serializable</span>]
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">private</span>&nbsp;<span style="color:blue;">class</span>&nbsp;<span style="color:#2b91af;">ExistCommand</span>&nbsp;:&nbsp;<span style="color:#2b91af;">CommandBase</span>&lt;<span style="color:#2b91af;">ExistCommand</span>&gt;
+&nbsp;&nbsp;&nbsp;&nbsp;{<br /><span style="color:green;">        // Left out implementation here....<br /></span>&nbsp;&nbsp;&nbsp; }
+ 
+<span style="color:blue;">&nbsp;&nbsp;&nbsp;&nbsp;#endregion</span>&nbsp;ExistsCommand
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">override</span>&nbsp;<span style="color:blue;">bool</span>&nbsp;Equals(<span style="color:blue;">object</span>&nbsp;obj)
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">if</span>&nbsp;(obj&nbsp;!=&nbsp;<span style="color:blue;">null</span>&nbsp;&amp;&amp;&nbsp;obj.GetType()&nbsp;==&nbsp;<span style="color:blue;">this</span>.GetType())
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">return</span>&nbsp;Id&nbsp;==&nbsp;((<span style="color:#2b91af;">Project</span>)obj).Id;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">return</span>&nbsp;<span style="color:blue;">false</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">override</span>&nbsp;<span style="color:blue;">int</span>&nbsp;GetHashCode()
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">return</span>&nbsp;Id;
+&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;}
+}
+<br /></pre></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, November 15, 2011</h2><p>Just to confirm, you are using the project/assembly structure shown in the <em>Using CSLA 4</em> ebook series and the <em>CSLA 4 MVVM</em> video series right?</p>
+<p>That is to say you have projects like this:</p>
+<ol>
+<li>UI project (views, viewmodels)</li>
+<li>Business project (business classes, compiled for SL)</li>
+<li>Business project (business classes, compiled for .NET)</li>
+<li>DAL project (data access types)</li>
+</ol>
+<p>Projects 2 and 3 are <em>the exact same project</em>, except they compile to SL and .NET respectively. Project 2 is deployed to the client. Project 3 is deployed to the server.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>marcelvb replied on Tuesday, November 15, 2011</h2><p>Yes, that is basically it, except that I put the Silverlight business objects in the same project as UI project. As I understand it, it is both compiled to SL and put in the same XAP package anyway. Is this a shortcut that is biting my in the butt? I get the feeling my problem is some sort of DLL hell. </p>
+<p>Another problem that I just had, that is different but feels like it is related, is that my unit test that test the business objects failed on the TFS-server. At runtime it said it failed to open System.Windows.dll (SL version!!). It seems like the web project that hosts the CSLA/WCF service and also contains the test page and SL XAP, caused the server version of Csla.dll to end up in the same directory as the SL version of Csla.dll. I solved it by excluding the SL and Web projects on the TFS-server.</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Tuesday, November 15, 2011</h2><p>Yes, that is your problem.</p>
+<p>The data portal (really it is serialization) <em>requires</em> that the client and server assemblies containing your business types &quot;be the same&quot;.</p>
+<p>What that really means is that they must have the same strongly qualified assembly name, and that each type in the assembly has the same full type name (namespace, class, assembly name).</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>marcelvb replied on Tuesday, November 15, 2011</h2><p>That did the trick! <img src="http://forums.lhotka.net/emoticons/emotion-1.gif" alt="Smile" /></p>
+<p>Thanks a lot for your swift response.</p>
+<p>&nbsp;</p>
+<p>Regards,</p>
+<p>Marcel</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,161 @@
+<html><header><title>Properties and RelationshipTypes</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Properties and RelationshipTypes</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/7047.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>acgritt posted on Thursday, June 04, 2009</h2>In looking to implement some LazyLoaded properties for our Silverlight application, I have noticed that the RegisterProperty method takes an enum named RelationshipTypes that has Child and LazyLoad as its values.&nbsp; However, after looking through the 2008 Business Objects book and the web I haven't been able to find much information about exactly what this setting does, if anything.&nbsp; I know from looking at the code the LazyLoad value has to do with when you call ReadProperty and it returning a value vs an exception.&nbsp; Can anyone shed more light on this for me so I know if I need to be setting this value or not.<br><br>Adam Gritt<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, June 04, 2009</h2><P>This was added after the book.</P>
+<P>The LazyLoad option causes CSLA to throw an exception if you attempt to GetProperyt() or ReadProperty() before you load the property with a value. It is a debugging tool to help you avoid accidental bugs where you use&nbsp;a lazy loaded property, get a null, and think that's the right value.</P>
+<P>The Child option (and remember these are a bit flag set, so you can have more than one at a time) is not currently used by CSLA .NET. I suppose I broke my own rule by adding a feature that isn't actually used, but it was my way of ensuring I got the bit flag code correct.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>acgritt replied on Friday, June 05, 2009</h2>In that case what is the correct way to Lazy Load a property?&nbsp; According to the code by Sergey in this post: <a HREF="/forums/thread/32438.aspx">http://forums.lhotka.net/forums/thread/32438.aspx</a>, he uses FieldManager.FieldExists and ReadProperty to check to see if it needs to be loaded.&nbsp; This would conflict with using the LazyLoad option because then the code would throw an exception.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, June 05, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>The idea is that you would just use FieldExists().<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Or to put it another way, the presupposition is that a child
+reference should never actually be null, so the field either exists or not, and
+if it doesn&#8217;t exist then it must need loading.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>The technique shown in that other thread remains perfectly valid
+&#8211; it just requires vigilance elsewhere in your code because you could get
+a null from ReadProperty() and not realize you really had an invalid value.
+This caused at least a couple people some serious heartburn, which is why this new
+stricter technique is now available.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>acgritt replied on Friday, June 19, 2009</h2>In using the RelationshipTypes I have code like the following now:<br><br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; private bool _loadingChannels = false;<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; private static PropertyInfo&lt;Channels.ChannelList&gt; ChannelsProperty = RegisterProperty&lt;Channels.ChannelList&gt;(p =&gt; p.Channels, "Channels", RelationshipTypes.LazyLoad);<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; public Channels.ChannelList Channels<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; get<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; if (!_loadingChannels &amp;&amp; !FieldManager.FieldExists(ChannelsProperty))<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; {<br>#if SILVERLIGHT<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; _loadingChannels = true;<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; Controllers.Channels.ChannelList.GetChannelList(ReadProperty(IdProperty), (o, e) =&gt;<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; LoadProperty(ChannelsProperty, e.Object);<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; OnPropertyChanged(ChannelsProperty.Name);<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; _loadingChannels = false;<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; });<br>#else<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; LoadProperty(ChannelsProperty, Controllers.Channels.ChannelList.GetChannelList(ReadProperty(IdProperty)));<br>#endif<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; }<br><br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; return GetProperty(ChannelsProperty);<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; }<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; }<br><br>The problem I am having is that in Silverlight when this code gets called, the first time through it will throw an InvalidOperationException with the message "Property get not allowed." when it calls GetProperty at the end.&nbsp; In this case should I not be setting it as LazyLoad or is there something else I have wrong here?<br><br>Adam Gritt<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, June 19, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>There are two modes.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>If you use LazyLoad, then you will get an exception on
+ReadProperty() or GetProperty() until the value has been initialized, and so
+you need to make sure that doesn&#8217;t happen. Arguably this is the &#8220;better&#8221;
+approach because it avoids certain bugs you might have in your code.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Or don&#8217;t use LazyLoad, and realize that ReadProperty() and
+GetProperty() may return null, even though the REAL value is not null. This is
+the bug the relationship type helps you avoid &#8211; but if you aren&#8217;t
+worried about this case, then you don&#8217;t need the new feature.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>bniemyjski replied on Friday, October 30, 2009</h2>Hello,<br><br>I have the following code:<br><br>Account account = profile2.Accounts.AddNew();<br><br>which calls this:<br><br>private static readonly PropertyInfo&lt; AccountList &gt; _accountsProperty = RegisterProperty&lt;AccountList&gt;(p =&gt; p.Accounts, Csla.RelationshipTypes.Child | Csla.RelationshipTypes.LazyLoad);<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; private readonly AccountList _accounts = _accountsProperty.DefaultValue;<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; public AccountList Accounts<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; get<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; { <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if(!FieldManager.FieldExists(_accountsProperty))<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if(this.IsNew)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; LoadProperty(_accountsProperty, AccountList.NewList());<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; else<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; LoadProperty(_accountsProperty, AccountList.GetByUniqueID(UniqueID));<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return GetProperty(_accountsProperty, _accounts); <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; }<br><br>The property is lazy loaded and is a child property. If I change the order of the RelationshipTypes then the FeildManager might not work correctly. What is the best approach for this scenario?<br><br>Thanks<br>-Blake Niemyjski</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, October 30, 2009</h2>What do you mean by "change the order"? I don't understand.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>bniemyjski replied on Monday, November 02, 2009</h2>Hello,<br><br>I mean if I change the following from:<br><br>p =&gt; p.Accounts, Csla.RelationshipTypes.Child | Csla.RelationshipTypes.LazyLoad);<br><br>to:<br><br>p =&gt; p.Accounts, Csla.RelationshipTypes.LazyLoad |  Csla.RelationshipTypes.Child );<br><br>It behaves differently.<br><br>Thanks<br>-Blake Niemyjski<br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, November 02, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>That makes no sense. These are bit mask flags, so either way you
+write that line of code the numeric result is 3.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Child = 1, LazyLoad = 2. Combine those values and you get a 3,
+regardless of the order in which they are combined.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Console.WriteLine((int)Csla.RelationshipTypes.LazyLoad);<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Console.WriteLine((int)Csla.RelationshipTypes.Child);<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Console.WriteLine((int)(Csla.RelationshipTypes.Child |
+Csla.RelationshipTypes.LazyLoad));<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Console.WriteLine(((Csla.RelationshipTypes.Child |
+Csla.RelationshipTypes.LazyLoad) &amp; Csla.RelationshipTypes.LazyLoad) != 0);<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Console.WriteLine((int)(Csla.RelationshipTypes.LazyLoad |
+Csla.RelationshipTypes.Child));<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Console.WriteLine(((Csla.RelationshipTypes.LazyLoad |
+Csla.RelationshipTypes.Child) &amp; Csla.RelationshipTypes.LazyLoad) != 0);<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;Console.ReadLine();<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Additionally, the framework never uses the Child value for
+anything &#8211; it is just there as a placeholder. Only the LazyLoad value is
+actually used in the ReadProperty() method of BusinessBase &#8211; nowhere
+else.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Exactly what behavior are you seeing that is different?
+Different behavior in ReadProperty()?</span><b><span><o:p></o:p></span></b></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, November 02, 2009</h2><P>You know, I just looked a little more closely at your code, and it is kind of messed up.</P>
+<P>You are using a combination of private backing field and managed backing field techniques. No wonder it isn't working like you'd expect.</P>
+<P>With child objects I recommend using a managed backing field - in which case you should not be declaring or using a private backing field to store the reference.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>bniemyjski replied on Monday, November 02, 2009</h2>Hello,<br><br>Thanks for the tip.<br><br>Thanks<br>-Blake Niemyjski</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tiago replied on Friday, December 23, 2011</h2><p><div style='padding-left: 50px;background-color:silver'><b>RockfordLhotka<br></b> </p>
+<p>The Child option (...) is not currently used by CSLA .NET. I suppose I broke my own rule by adding a feature that isn&#39;t actually used, but it was my way of ensuring I got the bit flag code correct.</p>
+<div style="CLEAR:both;"></div>
+<p></div></p>
+<p>I noticed PTracker and <strong><em>Using Csla 4</em></strong> samples don&#39;t use the Child option.</p>
+<p>This post refers to CSLA 3.5 or 3.6. I had a look at current source code (4.2.2) and found no use of</p>
+<pre style="FONT-FAMILY:Consolas;BACKGROUND:white;COLOR:black;FONT-SIZE:13px;"><span style="COLOR:darkblue;">RelationshipTypes</span>.<span style="COLOR:purple;FONT-WEIGHT:bold;">Child</span>
+</pre>
+<p>Is there a planned use? Can we remove it from our source code?</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,90 @@
+<html><header><title>Confusion about DataPortal Client and Server Side and Conclusion !</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Confusion about DataPortal Client and Server Side and Conclusion !</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11023.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>st3fanus posted on Wednesday, December 28, 2011</h2><p>Hi all,</p>
+<p>I&#39;m sorry before if this is too long, BUT I hope anyone could give me an answer or confirmation or anything about this problem !!</p>
+<p>&nbsp;</p>
+<p>I arrived at a confusion about client side data portal with  associated server side data portal.</p>
+<p>Below is the scenario which is I need a confirmation. Am I right or wrong and which is the truth ?</p>
+<p>the scenario I&#39;m talking about here is not in local mode. ( said it is in 3 tiers ), and used Encapsulated Invocation Model.</p>
+<p>&nbsp;</p>
+<p><b># MY CURRENT UNDERSTANDING.</b></p>
+<p>No 1. [ Use <b>Synchronous </b>calling ]</p>
+<p>public static RootExample GetRootExample(int id)</p>
+<p>{</p>
+<p style="padding-left:30px;">DataPortal.Fetch&lt;RootExample&gt;(id); </p>
+<p>}</p>
+<p>this client side data portal will initialize invocation into server side, and the server side data portal will create a RootExample BO, and then invoke data access method in RootExample object, like :</p>
+<p>private void DataPortal_Fetch(int id)</p>
+<p>
+ {&nbsp; // content here..&nbsp; } &nbsp; &nbsp; &nbsp; &nbsp; to setup initial properties. and then return into the calling code.</p>
+<p>Am I right ? (&nbsp; for no 1)</p>
+<p>&nbsp;</p>
+<p>No 2. [ If the calling&nbsp; code use <b>Asynchronous </b>calling ]</p>
+<p>public static void GetRootExample(int id,  EventHandler&lt;DataPortalResult&lt;PersonEdit&gt;&gt; callback )</p>
+<p>{</p>
+<p style="padding-left:30px;">DataPortal.BeginFetch&lt;RootExample &gt;(id, callback);</p>
+<p>}</p>
+<p>for example this asynchronous calling, I intended used for WPF or SL.</p>
+<p>SO , based on my knowledge i got from ebook, this asyn calling will trigger a notification when operation complete into calling code. and MY QUESTION here is :</p>
+<p style="padding-left:30px;">Is the <b>same </b>data access method ( like no1 ) will be called on the server when this asyn is started ? So I can used the same data access for Syn and Asyn calling.</p>
+<p style="padding-left:60px;">private void DataPortal_Fetch(int id)</p>
+<p style="padding-left:60px;">
+ {&nbsp; // content here..&nbsp; }</p>
+<p style="padding-left:30px;">&nbsp;&nbsp;&nbsp;&nbsp; And , If the answer is Yes, so <b>who </b>is responsible for trigger notification when operation completed to calling code ??</p>
+<p style="padding-left:30px;">&nbsp;&nbsp;&nbsp;&nbsp; And, If NO, so what data access method will be called on server side ?</p>
+<p style="padding-left:30px;">&nbsp;</p>
+<p>No 3.<b> [ Data Access on Silverlight ]</b></p>
+<p>I read on ebook about this data access for silverlight implementation.</p>
+<p>[System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)] public void DataPortal_Fetch( int id, Csla.DataPortalClient.LocalProxy&lt;RootExample &gt;.CompletedHandler handler)</p>
+<p> { </p>
+<p style="padding-left:30px;">try </p>
+<p style="padding-left:30px;">{ </p>
+<p style="padding-left:60px;">// invoke external DAL here (encapsulated invoke)</p>
+<p style="padding-left:60px;">// or implement DAL code here (encapsulated implementation) </p>
+<p style="padding-left:60px;">handler(this, null); </p>
+<p style="padding-left:30px;">}</p>
+<p style="padding-left:30px;"> catch (Exception ex) { handler(null, ex); } </p>
+<p>}</p>
+<p>My QUESTION is :</p>
+<p style="padding-left:30px;">a. Is the data access above is called <b>ONLY </b>when a silverlight data portal client in <b>local mode </b>is called ?? like this:</p>
+<p style="padding-left:30px;"><br />public static void GetRootExample (int id, EventHandler&lt;DataPortalResult&lt;RootExample &gt;&gt; callback) </p>
+<p style="padding-left:30px;">{ </p>
+<p style="padding-left:60px;">DataPortal.BeginFetch&lt;RootExample &gt;(id, callback, DataPortal.ProxyModes.LocalOnly); </p>
+<p style="padding-left:30px;">}</p>
+<p style="padding-left:30px;">So, the scenario for example is : SOA where SL as an edge application</p>
+<p style="padding-left:30px;">b. My question here is actually relate to no 2 ( IF the answes is NO ).</p>
+<p style="padding-left:30px;">Is the data access above will be called with no 2 factory method ( Asyn calling ) </p>
+<p style="padding-left:30px;">my quess is NO, BUT I still want a confirmation or anything sharing knowledge from expert.</p>
+<p style="padding-left:30px;">So I can think in the right way.</p>
+<p style="padding-left:30px;">&nbsp;</p>
+<p>Note :</p>
+<p>You can answers in format for help me quickly indentified</p>
+<p>no 1 =&gt; ......</p>
+<p>no 2=&gt; .....</p>
+<p>no 3a =&gt; .......</p>
+<p>no 3b =&gt; .....</p>
+<p>&nbsp;</p>
+<p>Thanks a lot every one </p>
+<p>stefanus</p>
+<p style="padding-left:30px;">&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Wednesday, December 28, 2011</h2><p>Hi,</p>
+<p>no 1 =&gt;&nbsp; Correct</p>
+<p>no 2=&gt;&nbsp; The same data access code is called and DataPortal will invoke the callback when response is received.</p>
+<p>no 3a =&gt; Correct, this is primarily for edge applications that use asynchronous data access in SL. <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; This requires the callback to follow all the way down to data access code.</p>
+<p>no 3b =&gt;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>st3fanus replied on Wednesday, December 28, 2011</h2><p>Hi jonny..</p>
+<p>thanks a lot for your quick response.</p>
+<p>I think I&#39;ll get an answer tomorrow, because the different time about 12 hours, BUT .. wow.. nice :) </p>
+<p>I love this community</p>
+<p>&nbsp;</p>
+<p>thank you because you give me a confirmation of my quess, I&#39;ll continue in the progress to learn CSLA again..</p>
+<p>And I think if you don&#39;t mind I will come back into this thread again. because I have found examples on Rocky ebook ( which is still in progress ) that could make me confuse at first because I&#39;m in the middle of learning CSLA Foundation. ( So I hope Rocky can quickly finish these ebooks series :) ) thanks Rocky..</p>
+<p>&nbsp;</p>
+<p>Note :<br />Could you told me , where is the location about no 2 questions on ebooks. on what page ? Because ebooks is my primary source for learning CSLA and of course this community :)</p>
+<p>&nbsp;</p>
+<p>thanks a lot</p>
+<p>stefanus</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Wednesday, December 28, 2011</h2><p>Hi,</p>
+<p>UsingCsla4-03-DataAccess - page 5 and onwards show how to use the dataportal. </p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, December 29, 2011</h2><p>Regarding the ebooks being &quot;not complete&quot; - books 1-6 are complete, some of them are just going through copy editing to clean up language, punctuation, and that sort of thing. The <em>content</em> won&#39;t change in any meaningful way other than to address errata.</p>
+<p>Book 7 is taking longer than I&#39;d expected, mostly because I don&#39;t want to demonstrate a poor WP7 app implementation, and I keep rethinking aspects of WP7 app development... I am now thinking I&#39;ll have this done in January.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,140 @@
+<html><header><title>CSLA 4.0 Generic Business Rule</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA 4.0 Generic Business Rule</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10473.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>MadGerbil posted on Tuesday, June 28, 2011</h2><p>I&#39;d like to write a business rule that compares two date values on an object to make sure one date occurs on or before the other date.&nbsp;&nbsp; I don&#39;t understand how to make this generic though.&nbsp; The best thing I can come up with is a pertype implementation.&nbsp;&nbsp; Any ideas on how to make this generic so that I can use it on serveral types?</p>
+<p>public class DateOrder : Csla.Rules.BusinessRule<br />{<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public DateOrder(Csla.Core.IPropertyInfo primaryProperty)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; : base(primaryProperty) <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;InputProperties = new List&lt;Csla.Core.IPropertyInfo&gt; { PrimaryProperty };<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; protected override void Execute(Csla.Rules.RuleContext context)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;var obj = (MyObject)context.Target;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;if (obj.StartDate &gt; obj.EndDate)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;{<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;context.AddErrorResult(@&quot;Start Date must be less than or equal to the End Date&quot;);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;}<br />&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;}<br />}</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Tuesday, June 28, 2011</h2><pre style="font-family:Consolas;background:#fafafa;color:black;font-size:13px;">You can find these generic rules in CslaContrib (<a href="http://cslacontrib.codeplex.com/">http://cslacontrib.codeplex.com</a> ) and download the latest source in repository. </pre>
+<pre style="font-family:Consolas;background:#fafafa;color:black;font-size:13px;">You will find all the standard CSLA rules and additional rules that will also allow you to set your own error message.</pre>
+<pre style="font-family:Consolas;background:#fafafa;color:black;font-size:13px;">&nbsp;</pre>
+<pre style="font-family:Consolas;background:#fafafa;color:black;font-size:13px;">Usage:</pre>
+<pre style="font-family:Consolas;background:#fafafa;color:black;font-size:13px;">BusinessRules.AddRule(<span style="color:blue;">new</span>&nbsp;<span style="color:#2b91af;">LessThan</span>(Num1Property,&nbsp;Num2Property)&nbsp;</pre>
+<pre style="font-family:Consolas;background:#fafafa;color:black;font-size:13px;">                   {ErrorMessageDelegate&nbsp;=&nbsp;()&nbsp;=&gt;&nbsp;<span style="color:#a31515;">&quot;Num1&nbsp;must&nbsp;be&nbsp;less&nbsp;than&nbsp;Num2.&quot;</span>});
+</pre>
+<pre style="font-family:Consolas;background:#fafafa;color:black;font-size:13px;">&nbsp;</pre>
+<pre style="font-family:Consolas;background:#fafafa;color:black;font-size:13px;">The key is to generic compare rules is to use the IComparable interface:</pre>
+<pre style="font-family:Consolas;background:#fafafa;color:black;font-size:13px;">&nbsp;</pre>
+<pre style="font-family:Consolas;background:#fafafa;color:black;font-size:13px;"> &nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;summary&gt;</span>
+&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;Validates&nbsp;that&nbsp;primary&nbsp;property&nbsp;is&nbsp;less&nbsp;than&nbsp;compareToProperty</span>
+&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;/summary&gt;</span>
+&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">class</span>&nbsp;<span style="color:#2b91af;">LessThan</span>&nbsp;:&nbsp;<span style="color:#2b91af;">CommonBusinessRule</span>
+&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">private</span>&nbsp;<span style="color:#2baaaf;">IPropertyInfo</span>&nbsp;CompareTo&nbsp;{&nbsp;<span style="color:blue;">get</span>;&nbsp;<span style="color:blue;">set</span>;&nbsp;}
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;summary&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;Initializes&nbsp;a&nbsp;new&nbsp;instance&nbsp;of&nbsp;the&nbsp;</span><span style="color:gray;">&lt;see&nbsp;cref=</span><span style="color:gray;">&quot;LessThan&quot;</span><span style="color:gray;">/&gt;</span><span style="color:green;">&nbsp;class.</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;/summary&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;param&nbsp;name=</span><span style="color:gray;">&quot;primaryProperty&quot;</span><span style="color:gray;">&gt;</span><span style="color:green;">The&nbsp;primary&nbsp;property.</span><span style="color:gray;">&lt;/param&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;param&nbsp;name=</span><span style="color:gray;">&quot;compareToProperty&quot;</span><span style="color:gray;">&gt;</span><span style="color:green;">The&nbsp;compare&nbsp;to&nbsp;property.</span><span style="color:gray;">&lt;/param&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;LessThan(<span style="color:#2baaaf;">IPropertyInfo</span>&nbsp;primaryProperty,&nbsp;<span style="color:#2baaaf;">IPropertyInfo</span>&nbsp;compareToProperty)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;<span style="color:blue;">base</span>(primaryProperty)
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CompareTo&nbsp;=&nbsp;compareToProperty;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;InputProperties&nbsp;=&nbsp;<span style="color:blue;">new</span>&nbsp;<span style="color:#2b91af;">List</span>&lt;<span style="color:#2baaaf;">IPropertyInfo</span>&gt;&nbsp;{&nbsp;primaryProperty,&nbsp;compareToProperty&nbsp;};
+&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;summary&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;Initializes&nbsp;a&nbsp;new&nbsp;instance&nbsp;of&nbsp;the&nbsp;</span><span style="color:gray;">&lt;see&nbsp;cref=</span><span style="color:gray;">&quot;LessThan&quot;</span><span style="color:gray;">/&gt;</span><span style="color:green;">&nbsp;class.</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;/summary&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;param&nbsp;name=</span><span style="color:gray;">&quot;primaryProperty&quot;</span><span style="color:gray;">&gt;</span><span style="color:green;">The&nbsp;primary&nbsp;property.</span><span style="color:gray;">&lt;/param&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;param&nbsp;name=</span><span style="color:gray;">&quot;compareToProperty&quot;</span><span style="color:gray;">&gt;</span><span style="color:green;">The&nbsp;compare&nbsp;to&nbsp;property.</span><span style="color:gray;">&lt;/param&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;param&nbsp;name=</span><span style="color:gray;">&quot;errorMessageDelegate&quot;</span><span style="color:gray;">&gt;</span><span style="color:green;">The&nbsp;error&nbsp;message&nbsp;function.</span><span style="color:gray;">&lt;/param&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;LessThan(<span style="color:#2baaaf;">IPropertyInfo</span>&nbsp;primaryProperty,&nbsp;<span style="color:#2baaaf;">IPropertyInfo</span>&nbsp;compareToProperty,
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#2b91af;">Func</span>&lt;<span style="color:blue;">string</span>&gt;&nbsp;errorMessageDelegate)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;<span style="color:blue;">this</span>(primaryProperty,&nbsp;compareToProperty)
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ErrorMessageDelegate&nbsp;=&nbsp;errorMessageDelegate;
+&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;summary&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;Gets&nbsp;the&nbsp;error&nbsp;message.</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;/summary&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;value&gt;&lt;/value&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">protected</span>&nbsp;<span style="color:blue;">override</span>&nbsp;<span style="color:blue;">string</span>&nbsp;ErrorMessage
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">get</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">return</span>&nbsp;HasErrorMessageDelegate&nbsp;?&nbsp;<span style="color:blue;">base</span>.ErrorMessage&nbsp;:&nbsp;CslaContrib.Properties.<span style="color:#2b91af;">Resources</span>.LessThanRule;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;summary&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;Does&nbsp;the&nbsp;check&nbsp;for&nbsp;primary&nbsp;propert&nbsp;less&nbsp;than&nbsp;compareTo&nbsp;property</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;/summary&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;param&nbsp;name=</span><span style="color:gray;">&quot;context&quot;</span><span style="color:gray;">&gt;</span><span style="color:green;">Rule&nbsp;context&nbsp;object.</span><span style="color:gray;">&lt;/param&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">protected</span>&nbsp;<span style="color:blue;">override</span>&nbsp;<span style="color:blue;">void</span>&nbsp;Execute(<span style="color:#2b91af;">RuleContext</span>&nbsp;context)
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">var</span>&nbsp;value1&nbsp;=&nbsp;(<span style="color:#2baaaf;">IComparable</span>)context.InputPropertyValues[PrimaryProperty];
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">var</span>&nbsp;value2&nbsp;=&nbsp;(<span style="color:#2baaaf;">IComparable</span>)context.InputPropertyValues[CompareTo];
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">if</span>&nbsp;(value1.CompareTo(value2)&nbsp;&gt;=&nbsp;0)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;context.AddErrorResult(<span style="color:blue;">string</span>.Format(ErrorMessage,&nbsp;PrimaryProperty.FriendlyName,&nbsp;CompareTo.FriendlyName));
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;}</pre></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>MadGerbil replied on Wednesday, June 29, 2011</h2><p>Thank you Jonny.</p>
+<p>A nice complete answer from which I&quot;ve learned.&nbsp; :D</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>LeslieE replied on Friday, June 22, 2012</h2><p>In my case, I&#39;m dealing with a 3rd party application that we now own and are custimizing in-house.&nbsp; I want to bang out changes as quickly as I can with minimal impact untill I have time to dig in and really learn it.&nbsp; It is using CSLA 2 and I&#39;m not ready to upgrade it yet because I don&#39;t yet have the time to do it.</p>
+<p>&nbsp;I also needed a date compare so here is my hack using CSLA 2 and not requiring me to add classes to my existing code.</p>
+<p><span style="font-family:Consolas;color:#008000;font-size:x-small;"><span style="font-family:Consolas;color:#008000;font-size:x-small;"><span style="font-family:Consolas;color:#008000;font-size:x-small;">//cheating - use pipe delimiter to send two properties</span></span></span></p>
+<p><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">ValidationRules.AddInstanceRule(<font face="Consolas" size="2"><font face="Consolas" size="2">
+<p>
+<p>WqxWeb.Common.</p>
+</p>
+</font></font></span><font face="Consolas" size="2">
+<p>
+<p>&nbsp;</p>
+</p>
+</font></span></p>
+<p>
+<p>&nbsp;</p>
+<span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;">ValidationRules</span></span></span>
+<p><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">.Date1LessThanTDate2,<font face="Consolas" size="2"><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></font></span><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></span></p>
+<p>&nbsp;</p>
+<span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">new</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> </span></span><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;">RuleArgs</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">(</span></span><span style="font-family:Consolas;color:#a31515;font-size:x-small;"><span style="font-family:Consolas;color:#a31515;font-size:x-small;"><span style="font-family:Consolas;color:#a31515;font-size:x-small;">&quot;Date1FieldName|Date2FieldName&quot;</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">,</span></span><span style="font-family:Consolas;color:#a31515;font-size:x-small;"><span style="font-family:Consolas;color:#a31515;font-size:x-small;"><span style="font-family:Consolas;color:#a31515;font-size:x-small;">&quot;Date 1|Date 2&quot;</span></span></span>
+<p><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">));</span></span></p>
+<p><span style="font-family:Consolas;font-size:x-small;"></span></p>
+</p>
+<p><span style="font-family:Consolas;font-size:x-small;">And then parsed the RulesArgs in the ValidationRoutine Date1LessThanDate2<span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">(</span></span><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">object</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> target,</span></span><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;">RuleArgs</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> e)</span></span></span></p>
+<p><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">
+<p>&nbsp;</p>
+</span></span></span></p>
+<p>
+<p><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">string</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">[] eA = e.PropertyName.ToString().Split(</span></span><span style="font-family:Consolas;color:#a31515;font-size:x-small;"><span style="font-family:Consolas;color:#a31515;font-size:x-small;"><span style="font-family:Consolas;color:#a31515;font-size:x-small;">&#39;|&#39;</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">);<font face="Consolas" size="2"><font face="Consolas" size="2">
+<p>
+<p>&nbsp;</p>
+</p>
+</font></font></span><font face="Consolas" size="2">
+<p>
+<p>&nbsp;</p>
+</p>
+</font></span></p>
+</p>
+<p>
+<p>&nbsp;</p>
+<p><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">string&nbsp;</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> e1 = eA[0];</span></span></p>
+<p><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">string&nbsp;</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> e2 = eA[1];<font face="Consolas" size="2"><font face="Consolas" size="2">
+<p>eA = e.PropertyFriendlyName.ToString().Split(</p>
+</font></font></span><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></span></p>
+<p><span style="font-family:Consolas;color:#a31515;font-size:x-small;"><span style="font-family:Consolas;color:#a31515;font-size:x-small;"><span style="font-family:Consolas;color:#a31515;font-size:x-small;">&#39;|&#39;</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">);<font face="Consolas" size="2"><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></font></span><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></span></p>
+<p>&nbsp;</p>
+<p><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">string</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> e3 = eA[0];<font face="Consolas" size="2"><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></font></span><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></span></p>
+<p>&nbsp;</p>
+<p><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">string</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> e4 = eA[1];</span></span></p>
+<p><span style="font-family:Consolas;font-size:x-small;"></span></p>
+<p><span style="font-family:Consolas;font-size:x-small;">Just my quick hack for now to get the validation in there for starters.&nbsp; I can&#39;t believe the 3rd party vendor who wrote this allows a start date AFTER and end date in the first place. Sigh.</span></p>
+</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Friday, June 22, 2012</h2><p>Hi,</p>
+<p>If you look at this in CslaContrib - you will find generic GreaterThan, GreaterThanOrEqual, LessThan, LessThanOrEqual rules and more. </p>
+<p><a href="http://cslacontrib.codeplex.com/SourceControl/changeset/view/98444#1551668">http://cslacontrib.codeplex.com/SourceControl/changeset/view/98444#1551668</a></p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tiago replied on Monday, June 25, 2012</h2><p>Hi,</p>
+<p>Have a look at <a href="http://cslagenfork.codeplex.com/releases/view/85729">Rules sample v.1.1.0</a>. This library includes <em>CslaContrib</em> rules plus rules from the Csla&#39;s <em>RuleTutorial</em> sample.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

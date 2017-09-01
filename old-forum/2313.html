@@ -1,0 +1,21 @@
+<html><header><title>Csla.Data.DataMapper.Map Error</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Csla.Data.DataMapper.Map Error</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/2313.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>SmeatJones posted on Friday, February 09, 2007</h2><P>Hi All</P>
+<P>It's been a while since I read the book and i'm perhaps being a bit lazy here posting my question before I research the answer. A also have to admit I haven't kept upto date since the version 2.0 book was released.</P>
+<P>But, I am receiving the following error whilst trying to convert a <FONT color=#008080 size=2>ReadOnlyListBase to a DataSet:</FONT></P>
+<P><FONT color=#008080 size=2>My Class is declared as follows:</FONT></P><FONT color=#008080 size=2><FONT size=2>
+<P>[</FONT><FONT color=#008080 size=2>Serializable</FONT><FONT size=2>]</P>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>class</FONT><FONT size=2> </FONT><FONT color=#008080 size=2>EnquiryList</FONT><FONT size=2> : </FONT><FONT color=#008080 size=2>ReadOnlyListBase</FONT><FONT size=2>&lt;</FONT><FONT color=#008080 size=2>EnquiryList</FONT><FONT size=2>, </FONT><FONT color=#008080 size=2>EnquiryItem</FONT><FONT size=2>&gt;</FONT></P>
+<P><FONT size=2>{</FONT></P>
+<P><FONT size=2>&nbsp; ..Code omoitted...</FONT></P>
+<P><FONT size=2>}</FONT></P>
+<P>&nbsp;</P>
+<P>I have call my factory method to populate my list:</P><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>static</FONT><FONT size=2> </FONT><FONT color=#008080 size=2>EnquiryList</FONT><FONT size=2> GetEnquiryList(</FONT><FONT color=#0000ff size=2>int</FONT><FONT size=2> LocationID, </FONT><FONT color=#0000ff size=2>int</FONT><FONT size=2> ExecutiveID, </FONT><FONT color=#0000ff size=2>int</FONT><FONT size=2> CommunicationTypeID, </FONT><FONT color=#0000ff size=2>int</FONT><FONT size=2> EnquirySourcID,</FONT></P>
+<P><FONT size=2>and have validated the list is populated.</P></FONT>
+<P><FONT size=2>My error occurs when I call the following method from my UI:</FONT></P><FONT size=2>
+<P></FONT><FONT color=#008080 size=2>DataSet</FONT><FONT size=2> Ds = </FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> </FONT><FONT color=#008080 size=2>DataSet</FONT><FONT size=2>();</P>
+<P>Csla.Data.</FONT><FONT color=#008080 size=2>DataMapper</FONT><FONT size=2>.Map(list, Ds, supress);</P></FONT>
+<P><FONT size=2>The error I get (at runtime) is:</FONT></P>
+<P><FONT size=2>System.ArgumentException was unhandled by user code<BR>&nbsp; Message="Property copy failed (RaiseListChangedEvents)"<BR>&nbsp; Source="Csla"<BR>&nbsp; StackTrace:<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at Csla.Data.DataMapper.Map(Object source, Object target, Boolean suppressExceptions, String[] ignoreList)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at Csla.Data.DataMapper.Map(Object source, Object target, String[] ignoreList)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at ShowroomLogModule_ShowroomLogEnquiryView.PopulateGrid() in c:\$Crypt\Development\LoyaltyLogistix\Automotive\Autolog\Autolog.WebUI\ShowroomLogModule\ShowroomLogEnquiryView.aspx.cs:line 512<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at ShowroomLogModule_ShowroomLogEnquiryView.OnInit(EventArgs e) in c:\$Crypt\Development\LoyaltyLogistix\Automotive\Autolog\Autolog.WebUI\ShowroomLogModule\ShowroomLogEnquiryView.aspx.cs:line 76<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at System.Web.UI.Control.InitRecursive(Control namingContainer)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at System.Web.UI.Page.ProcessRequestMain(Boolean includeStagesBeforeAsyncPoint, Boolean includeStagesAfterAsyncPoint)<BR></FONT></P>
+<P><FONT size=2>I am using version 2.1 of the framework.</P></FONT>
+<P><FONT size=2>Any ideas please?</FONT></P>
+<P><FONT size=2>Smeat</P></FONT></FONT></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

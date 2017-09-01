@@ -1,0 +1,26 @@
+<html><header><title>Generic Routine for Adding Default Values in BO</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Generic Routine for Adding Default Values in BO</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/1711.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Vinodonly posted on Wednesday, November 08, 2006</h2><P>Attached with this post&nbsp;is zip&nbsp;file having multiple files which provides functionality of adding default values to Business Object automatically, it works in this way :-</P>
+<P>1. Add the Tables as specified in Attachment, In short you will store :-</P>
+<P>BO Name :- Order</P>
+<P>Property Name :- Customer</P>
+<P>&amp; Value to Be set :- Xyz Co.</P>
+<P>Also add the related stored procedure as specified.</P>
+<P>2. Do the changes in your business Object as specifed.</P>
+<P>Once these changes are done and new object is created, it will set up a namevaluelist based class to default values for a particular object. Generic routines are provided which loops through all the properties in the list and sets business object properties with appropriate default values.</P>
+<P>Advantage of using this is less code and one time only you can retreive the default value list from database and can create objects with default values without using database connection.</P>
+<P>pls try this and advise your comments/feedback.</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Vinodonly replied on Wednesday, November 08, 2006</h2>i will be also posting additional code for getting lists for business object for filling comboboxes, autocomplete entries etc. later.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tiago replied on Wednesday, November 08, 2006</h2>This is a nice idea. How about publishing it on CSLAcontrib? http://www.codeplex.com/Wiki/View.aspx?ProjectName=CSLAcontrib</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Vinodonly replied on Thursday, November 09, 2006</h2><P>Thanks for your comments. </P>
+<P>Kindly note that i will complete the code to support lists, combo boxes etc. and post it here.&nbsp;</P>
+<P>I beleive for putting it on CSLAContrib, we need&nbsp;Permission from Rocky,&nbsp;so i will send this by email to him also so he can decide and advise his comments.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoOfMetL replied on Thursday, November 09, 2006</h2><br>why put the code in the constructor and not in DataPortal_Create ?<br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Vinodonly replied on Thursday, November 09, 2006</h2><P>You are correct. i will rectify the code. Also i have changed the code to be more generic </P><FONT size=2><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>If</FONT><FONT size=2> mDefaultValueList </FONT><FONT color=#0000ff size=2>Is</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Nothing</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Then</P></FONT><FONT size=2>
+<P>mDefaultValueList = DefaultValueList.GetList(TypeName(</FONT><FONT color=#0000ff size=2>Me</FONT><FONT size=2>))</P>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>If</P></FONT><FONT size=2>
+<P>Library.Utilities.SetDefaultValues(</FONT><FONT color=#0000ff size=2>Me</FONT><FONT size=2>, mDefaultValueList)</P>
+<P></FONT></FONT><FONT size=2></FONT>&nbsp;</P>
+<P><FONT size=2>Additionally SetDefaultValues is also converted to Sub i/o Function, i will be posting final code with combobox support soon.</FONT></P>
+<P><FONT size=2></FONT>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Vinodonly replied on Thursday, November 09, 2006</h2><P>I&nbsp;missed one point here. </P>
+<P>I&nbsp;think new constructor will be called in all cases i.e. if you have dataportal create with parameter or without parameter, so putting code in new will take care of all overloads..</P>
+<P>pls correct me if I'm wrong...</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoOfMetL replied on Thursday, November 09, 2006</h2><div id="result_box"><br>It seems to to me that in the last version of CSLA, DataPortal_Create have no parameter.<br><br>You need only to put the Default Value when it is a new object, not when the object is load from DataBase.<br></div></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Vinodonly replied on Monday, November 13, 2006</h2><P>Updated code is uploaded in below given post</P>
+<P><A HREF="/forums/thread/9126.aspx">http://forums.lhotka.net/forums/thread/9126.aspx</A></P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

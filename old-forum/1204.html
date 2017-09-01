@@ -1,0 +1,46 @@
+<html><header><title>Because of security restrictions, the type Csla.Server.DataPortalContext cannot be accessed</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Because of security restrictions, the type Csla.Server.DataPortalContext cannot be accessed</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/1204.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>jspurlin posted on Wednesday, September 13, 2006</h2><P>Oh lordy. You are going to have to put me away in the neophytes section of the forum.</P>
+<P>So far, the problems have been typographical: using the same casing for Csla, for example.</P>
+<P>In this case, this is all there is to the stack trace:</P>
+<P>[SecurityException: Request failed.]<BR></P>
+<P>So I have been looking for typos. I did update the dll's to the most recent version. I went project by project to update the references to the right version of Csla. I will do this once more to make 'absolutely sure' a version conflict isn't to blame.</P>
+<P>Anyway, any advice on this would be appreciated.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Wednesday, September 13, 2006</h2>Did you check the innerexception property?<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jspurlin replied on Wednesday, September 13, 2006</h2><P>The inner exception is request failed.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>guyroch replied on Wednesday, September 13, 2006</h2>Is your Csla assembly signed with a .snk file?<br>
+<br>
+Programs that run on the CLR use something 
+called code access security (CAS). CAS is different from traditional security 
+systems in that it assigns trust to code rather than users. To do this, the 
+security system gathers a set of evidence about every assembly it loads. 
+This evidence is then compared against the security policy, and 
+a permission grant is generated.<br>
+<br>
+One of the pieces of evidence that 
+the security system gathers is the security <span class="st" id="st">zone</span> that the code is running from. When you run the 
+code from your <span class="st" id="st">local</span> machine, this will 
+be the MyComputer <span class="st" id="st">zone</span>, but when you 
+run it off of a server, or even a network share mapped to a drive on your 
+machine, it will be the LocalIntranet <span class="st" id="st">zone</span>.<br>
+<br>
+By default any code that is run from the 
+MyComputer <span class="st" id="st">zone</span> will get a permission 
+set of FullTrust (unrestricted permission to do anything it pleases). 
+However, by default, there is a more restrictive permission set given to 
+LocalIntranet assemblies.<br>
+<br>
+The way to make an application that works from 
+the MyComputer <span class="st" id="st">zone </span>work from the 
+LocalIntranet <span class="st" id="st">zone</span> is to give the 
+assemblies in your application a strong name, and modify the security policy 
+to trust this strong name. Hence the need for a key.<br>
+<br>
+In CSLA, all of the data portals such as DataPortal and ServicesDataPortal runs in LocalIntranet <span class="st" id="st">zone</span>.&nbsp;
+And because in CSLA 2.x they are all included in the same Csla.dll
+assembly, this Csla.dll assembly needs to be signed with a .snk
+files.&nbsp; However, Rocky did provide a key in Csla 2.x whereas he
+did not in Csla 1.x - you had to create one yourself.<br>
+<br>
+I doubt that you removed this .snk file wihtout noticing it, but just thought I'd bring it forward just the same.<br>
+<br>
+Hope this helps<br>
+<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, September 13, 2006</h2><P>You didn't somehow remove the bits in the server config file that configure Remoting as shown in the book and sample projecttracker app? There are a couple lines in the config file that loosen serialization security over remoting so you can serialize complex, custom types. </P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;channels&gt;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;channel ref="http"&gt;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;serverProviders&gt;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;provider ref="wsdl"/&gt;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;formatter ref="soap" typeFilterLevel="Full"/&gt;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;formatter ref="binary" typeFilterLevel="Full"/&gt;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/serverProviders&gt;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/channel&gt;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/channels&gt;<BR></P>
+<P>If these are missing you'll get some odd security exceptions.</P>
+<P>Also, you are running the server-side code under FullTrust and not some sort of partial trust policy right? CSLA requires FullTrust to work.</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

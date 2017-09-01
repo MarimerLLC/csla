@@ -1,0 +1,50 @@
+<html><header><title>How to implement a common business function</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>How to implement a common business function</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3278.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>JohnB posted on Friday, July 27, 2007</h2><div><font face="Arial" size="2">I am rather new to the framework and I have a 
+question regarding the best method of implementation for deleting a record. 
+Let's assume that I have two tables, employee and location as listed 
+below.</font></div>
+<div>&nbsp;</div>
+<div><font face="Arial" size="2">Employee<br>- EmployeeId<br>- EmployeeName<br>- 
+LocationId</font></div>
+<div>&nbsp;</div>
+<div><font face="Arial" size="2">Location<br>- LocationId<br>- 
+LocationName</font></div>
+<div>&nbsp;</div>
+<div><font face="Arial" size="2">My use case is deleting a location. My rule is that 
+I cannot delete a location record while an employee record with a matching 
+locationId exist. </font></div>
+<div>&nbsp;</div>
+<div><font face="Arial" size="2">My question is what is the best method for 
+implementing this rule? Is there a clean way using the validation rules to do 
+this? Sure I could write a stored proc to check for the locationId in the 
+employee table and return a custom error but that's not clean nor the right way 
+of doing it. So What about a separate BO for deleting? Maybe 
+LocationDelete?</font></div>
+<div>&nbsp;</div>
+<div><font face="Arial" size="2">Any ideas?</font></div></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, July 27, 2007</h2><P>First, you must recognize that this is a data rule, and can only be <EM>really</EM> enforced at the time of delete - in the database. So you must check for data integrity during the delete operation. That's unavoidable, and if there's a failure at this time you should throw an exception (thus rolling back the transaction, and effectively notifying the UI layer).</P>
+<P>You <EM>might also</EM> implement client-side code as a convenience for the user, to inform them that their delete attempt will fail before you actually try. Doing this incurs overhead, but can make for a nicer user experience, especially for Windows Forms or WPF apps. The plumbing for such a check is similar to the Exists() command you can find in the Project and Resource classes in ProjectTracker&nbsp;- probably Employee.Exists().</P>
+<P>Given that, if your use case is as focused as it sounds, we can assume you'll have some read-only object(s) to allow the user to select the location to delete. You may then have a confirmation dialog, displaying the location info to the user and asking if they are sure they want to delete the location. </P>
+<P>The object behind that confirmation dialog could be a read-only root, or an editable root - depends on how you want to approach the issue.</P>
+<P>If you use a read-only root to display the confirmation info, then you'll likely use a command object to actually do the delete. Remember that command objects can execute code on the client, then on the server, then on the client. So it can easily call Employee.Exists() before it tries to do the delete. Or, your LocationDeleter could expose a static/Shared method like CanDelete() that does any "pre-flight" checks it can do, like calling Employee.Exists(). Of course you UI itself could also call Employee.Exists() before even trying to execute the command - either way works.</P>
+<P>If you use an editable root to display the confirmation info, then you have access to the business rules infrastructure, and you could call Employee.Exists() from within a rule method. This method would probably be invoked as you create the editable root, and so the user would immediately see the ErrorProvider icon (in Windows Forms) when the confirm dialog appears - and the OK button could be disabled.</P>
+<P>On the whole though, I'd probably do the following (with LocationDeleter being a command object):</P>
+<OL>
+<LI>Read-only root collection to select the location to delete</LI>
+<LI>The UI calls LocationDeleter.CanDelete() to see if the delete is likey to work</LI>
+<LI>If CanDelete() returns true, the user gets the confirmation dialog, and when they click Yes LocationDeleter.Delete() is called</LI>
+<LI>If CanDelete() returns false, the user is told that an employee exists (or whatever)</LI></OL>
+<P>Just remember that even with this model, LocationDeleter.Delete() can still fail, because some other user could have added an Employee record between step 2 and the time Delete() is actually executing!</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>stanc replied on Friday, July 27, 2007</h2><P>
+<TABLE class=CAMultiPage id=ctl00_ctl01_bcr_PostForm___EditorPages_table cellSpacing=0 cellPadding=0>
+
+<TR>
+<TD>
+<TABLE class=CAPageContent id=ctl00_ctl01_bcr_PostForm___ComposePage cellSpacing=0 cellPadding=0>
+
+<TR>
+<TD>
+<DIV id=ctl00_ctl01_bcr_PostForm___Reply><STRONG>RockfordLhotka wrote the following post at 07-27-2007 11:11 AM:</STRONG> 
+<DIV class=ForumReplyToPostArea>
+<P>Just remember that even with this model, LocationDeleter.Delete() can still fail, because some other user could have added an Employee record between step 2 and the time Delete() is actually executing!</P></DIV></DIV></TD></TR></TABLE></TD></TR></TABLE></P>
+<P>Say the delete does fail because of this. How should we bubble this back up to the UI? Should the BO intercept it and build a collection (IE the BrokenRules collection) and expose that to the UI? Or should the error go straight back up to the UI, and the UI will catch it and respond appropriately?</P>
+<P>Along the same lines for the "pre-flight" checks, would it make sense to write them to a collection (in particular the BrokenRules collection)? The reason I ask, is because the CanDelete() check just returns true or false basically, and the reason it can't be deleted may be able to be fixed by the user if they knew what it was.</P>
+<P>Thanks</P>
+<P>stan</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Friday, July 27, 2007</h2>I would say your bo should catch the sql exception and wrap it in something like a LocationDeleteException, or something similar.&nbsp; <br><br>Then your UI layer should catch that exception so it can display a nice message to the user.&nbsp; That's how I would do this.<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

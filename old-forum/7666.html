@@ -1,0 +1,18 @@
+<html><header><title>Passign object from one silverlight page to another</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Passign object from one silverlight page to another</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/7666.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>zeevb posted on Tuesday, September 22, 2009</h2><P>I am new to silverlight and to csla. Couldn't find a way to pass objects from one silverlight page to another but I came up with a way that seems to work and was wondering if this is the right way :</P>
+<P>in the From page I handle the OnNavigatedFrom page and set the DataContext of the To page to whatever object I need to like the code below :</P><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>protected</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>override</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>void</FONT></FONT><FONT size=2> OnNavigatedFrom(</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>NavigationEventArgs</FONT></FONT><FONT size=2> e)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>base</FONT></FONT><FONT size=2>.OnNavigatedFrom(e);</P>
+<P></FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>PhotoViewer</FONT></FONT><FONT size=2> photoViewer = (</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>PhotoViewer</FONT></FONT><FONT size=2>)e.Content;</P>
+<P>photoViewer.DataContext = WorkOrderObj.PhotographList;</P>
+<P>}</P>
+<P>The To page NavigatedTo event occurs (at least in my machine) after the OnNavigatedFrom event in the From page. Does this way of passing objects from one page to another is the right/best way ?</P>
+<P>&nbsp;</P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, September 22, 2009</h2><P>Navigation is an interesting problem.</P>
+<P>The navigation frameworks (built into SL3, or from CSLA .NET) are designed around the assumption that a user might take a short-cut to the page in the browser, and might navigate directly to that page at some future time.</P>
+<P>In other words, the frameworks are generally designed to assume the current page is the <EM>first page the user hits</EM>.</P>
+<P>That's not what you are describing - you are describing a scenario where the user can't navigate directly to your page without hitting some other page first.</P>
+<P>So I think your model is fine, as long as you handle the direct-navigation case and (presumably) re-route the user to some valid start point when they try to come in at an invalid start point.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>zeevb replied on Tuesday, September 22, 2009</h2><P>Thanks Rocky,</P>
+<P>In the business context of how this application will be used, direct navigation to the"To" page does not make sense, it is a "child" page of the "From" page,&nbsp;so, I am leaning towards using this approach and gracefully handle the direct-navigation if it occurs for some reason.</P>
+<P>&nbsp;</P>
+<P>Thanks</P>
+<P>Zeev</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

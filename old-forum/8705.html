@@ -1,0 +1,5 @@
+<html><header><title>Re: Instantiating a DataPortal&lt;&gt; object in SL3</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Re: Instantiating a DataPortal&lt;&gt; object in SL3</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/8705.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:lightgreen'><h2>chrisdot posted on Tuesday, March 23, 2010</h2><p>Sorry, I&#39;ve solved my problem:</p>
+<p>I was not resolving the DataProxy properly. By doing the following 
+it&#39;s ok:</p>
+<p>Csla.DataPortal.ProxyTypeName = 
+typeof(Csla.DataPortalClient.WcfProxy&lt;&gt;).AssemblyQualifiedName;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

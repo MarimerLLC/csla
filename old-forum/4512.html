@@ -1,0 +1,49 @@
+<html><header><title>CSLA 3.0.2: Filtered NVL in C#</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA 3.0.2: Filtered NVL in C#</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4512.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>cjherasmus posted on Tuesday, March 18, 2008</h2><P><FONT face=Arial size=2>Hi,</FONT></P>
+<P><FONT face=Arial size=2>I'm trying to create a NVL that can retrieve a full set or a filtered set of records. My thinking is to have two factory methods as in:</FONT></P><FONT color=#0000ff size=2>
+<P><FONT face=Arial>public</FONT></FONT><FONT face=Arial><FONT size=2> </FONT><FONT color=#0000ff size=2>static</FONT><FONT size=2> My</FONT><FONT color=#008080 size=2>List</FONT></FONT><FONT size=2><FONT face=Arial> GetList()</FONT></P>
+<P><FONT face=Arial>{</FONT></P>
+<P></FONT><FONT face=Arial><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;if</FONT><FONT size=2> (_list == </FONT><FONT color=#0000ff size=2>null</FONT></FONT><FONT size=2><FONT face=Arial>)</FONT></P>
+<P><FONT face=Arial>{</FONT></P>
+<P><FONT face=Arial>&nbsp;&nbsp;&nbsp;_list = </FONT></FONT><FONT face=Arial><FONT color=#008080 size=2>DataPortal</FONT><FONT size=2>.Fetch&lt;</FONT><FONT color=#008080 size=2>MyList</FONT><FONT size=2>&gt;(</FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> </FONT><FONT color=#008080 size=2>Criteria</FONT><FONT size=2>(</FONT><FONT color=#0000ff size=2>typeof</FONT><FONT size=2>(</FONT><FONT color=#008080 size=2>MyList</FONT></FONT><FONT size=2><FONT face=Arial>)));</FONT></FONT></P>
+<P><FONT size=2><FONT face=Arial>}</FONT></P>
+<P></FONT><FONT face=Arial color=#0000ff size=2>return</FONT><FONT size=2><FONT face=Arial> _list;</FONT></P>
+<P><FONT face=Arial>}</FONT></P>
+<P></FONT><FONT face=Arial><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>static</FONT><FONT size=2> </FONT><FONT color=#008080 size=2>MyList</FONT><FONT size=2> GetList(</FONT><FONT color=#008080 size=2>Guid</FONT></FONT><FONT size=2><FONT face=Arial> id)</FONT></P>
+<P><FONT face=Arial>{</FONT></P>
+<P></FONT><FONT face=Arial><FONT color=#0000ff size=2>if</FONT><FONT size=2> (_list == </FONT><FONT color=#0000ff size=2>null</FONT></FONT><FONT size=2><FONT face=Arial>)</FONT></P>
+<P><FONT face=Arial>{</FONT></P>
+<P><FONT face=Arial>_list = </FONT></FONT><FONT face=Arial><FONT color=#008080 size=2>DataPortal</FONT><FONT size=2>.Fetch&lt;</FONT><FONT color=#008080 size=2>MyList</FONT><FONT size=2>&gt;(</FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> </FONT><FONT color=#008080 size=2>Criteria</FONT></FONT><FONT size=2><FONT face=Arial>(id));</FONT></P>
+<P><FONT face=Arial>}</FONT></P>
+<P></FONT><FONT face=Arial color=#0000ff size=2>return</FONT><FONT size=2><FONT face=Arial> _list;</FONT></P>
+<P>}</P></FONT>
+<P><FONT face=Arial size=2>Then a dataportal_fetch as in:</FONT></P><FONT color=#0000ff size=2>
+<P><FONT face=Arial>private</FONT></FONT><FONT face=Arial><FONT size=2> </FONT><FONT color=#0000ff size=2>void</FONT><FONT size=2> DataPortal_Fetch(</FONT><FONT color=#008080 size=2>Criteria</FONT></FONT><FONT size=2><FONT face=Arial> criteria)</FONT></P>
+<P><FONT face=Arial>{</FONT></P>
+<P><FONT face=Arial>RaiseListChangedEvents = </FONT></FONT><FONT face=Arial color=#0000ff size=2>false</FONT><FONT size=2><FONT face=Arial>;</FONT></P>
+<P></FONT><FONT face=Arial><FONT color=#0000ff size=2>using</FONT><FONT size=2> (</FONT><FONT color=#008080 size=2>SqlConnection</FONT><FONT size=2> cn = </FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> </FONT><FONT color=#008080 size=2>SqlConnection</FONT><FONT size=2>(</FONT><FONT color=#008080 size=2>DatabaseConnection</FONT></FONT><FONT size=2><FONT face=Arial>.MyDB))</FONT></P>
+<P><FONT face=Arial>{</FONT></P>
+<P><FONT face=Arial>cn.Open();</FONT></P>
+<P></FONT><FONT face=Arial><FONT color=#0000ff size=2>using</FONT><FONT size=2> (</FONT><FONT color=#008080 size=2>SqlCommand</FONT></FONT><FONT size=2><FONT face=Arial> cm = cn.CreateCommand())</FONT></P>
+<P><FONT face=Arial>{</FONT></P>
+<P><FONT face=Arial>cm.CommandType = </FONT></FONT><FONT face=Arial color=#008080 size=2>CommandType</FONT><FONT size=2><FONT face=Arial>.StoredProcedure;</FONT></P>
+<P><FONT face=Arial>cm.CommandText = </FONT></FONT><FONT face=Arial color=#800000 size=2>"spGetMyList"</FONT><FONT size=2><FONT face=Arial>;</FONT></P>
+<P><FONT face=Arial>cm.Parameters.AddWithValue(</FONT></FONT><FONT face=Arial color=#800000 size=2>"@prog_id"</FONT><FONT size=2><FONT face=Arial>, criteria.Id);</FONT></P>
+<P></FONT><FONT face=Arial><FONT color=#0000ff size=2>using</FONT><FONT size=2> (</FONT><FONT color=#008080 size=2>SafeDataReader</FONT><FONT size=2> dr = </FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> </FONT><FONT color=#008080 size=2>SafeDataReader</FONT></FONT><FONT size=2><FONT face=Arial>(cm.ExecuteReader()))</FONT></P>
+<P><FONT face=Arial>{</FONT></P>
+<P><FONT face=Arial>IsReadOnly = </FONT></FONT><FONT face=Arial color=#0000ff size=2>false</FONT><FONT size=2><FONT face=Arial>;</FONT></P>
+<P></FONT><FONT face=Arial color=#0000ff size=2>while</FONT><FONT size=2><FONT face=Arial> (dr.Read())</FONT></P>
+<P><FONT face=Arial>{</FONT></P>
+<P><FONT face=Arial>Add(</FONT></FONT><FONT face=Arial><FONT color=#0000ff size=2>new</FONT><FONT size=2> </FONT><FONT color=#008080 size=2>NameValuePair</FONT><FONT size=2>(dr.GetGuid(</FONT><FONT color=#800000 size=2>"net_id"</FONT><FONT size=2>), dr.GetString(</FONT><FONT color=#800000 size=2>"net_name"</FONT></FONT><FONT size=2><FONT face=Arial>)));</FONT></P>
+<P><FONT face=Arial>}</FONT></P>
+<P><FONT face=Arial>IsReadOnly = </FONT></FONT><FONT face=Arial color=#0000ff size=2>true</FONT><FONT size=2><FONT face=Arial>;</FONT></P>
+<P><FONT face=Arial>}</FONT></P>
+<P><FONT face=Arial>}</FONT></P>
+<P><FONT face=Arial>}</FONT></P>
+<P><FONT face=Arial>RaiseListChangedEvents = </FONT></FONT><FONT face=Arial color=#0000ff size=2>true</FONT><FONT size=2><FONT face=Arial>;</FONT></P>
+<P><FONT face=Arial>}</FONT></P>
+<P><FONT face=Arial>I'm retrieving data from a parent-child table relationship. Sometimes I would like to have all children, the other times I would like to have children for a specific parent.</FONT></P>
+<P><FONT face=Arial>Should I use a single stored procedure or one for each list?. Should I have a second data_portal fetch?</FONT></P>
+<P><FONT face=Arial>Thanks</FONT></P>
+<P><FONT face=Arial>Regards</FONT></P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>triplea replied on Tuesday, March 18, 2008</h2>What about 2 seperate classes? Not sure what you mean by having a second dp fetch but in any case it will probably be clearer and more readable to split in 2 classes since the overhead of writing the extra factory methods is not that great...</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Tuesday, March 18, 2008</h2>Well, it seems like you may have a bug.&nbsp; If you're previously asked for a filtered list, then the full list, you'll get the first filtered list because _list has a value now.&nbsp; Same thing for different filtered lists as well; you'll always get the last one, because you're not caching the list by Guid.<br><br>That said, you can have two dataportal fetches.&nbsp; I would change your first call to DataPortal.Fetch&lt;MyList&gt;();<br><br>Then override DataPortal_Fetch() that doesn't take parameters.&nbsp; In this DP_F, fetch the whole list.&nbsp; If your other DP_F( Criteria ) fetch the list filtered by criteria.<br><br>HTH<br>Andy<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>cjherasmus replied on Thursday, March 20, 2008</h2><P>Thanks Andy,</P>
+<P>I've added a second factory method with a parameter and added an override to the fetch method, everything works like a dream. The bug you've mentioned did appear. My application is somewhat unique so to combat that issue I call the public InvalidateCache method before loading the data.</P>
+<P>Regards,</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

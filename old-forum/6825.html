@@ -1,0 +1,192 @@
+<html><header><title>Question regarding IsDirty.</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Question regarding IsDirty.</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6825.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>dhr posted on Monday, April 20, 2009</h2><p>Hi there, I'm creating a customer order datebase, which requires the use of grand children and great grand children.&nbsp; Most of the project is working fine, however, my current issue is when I make a change to a great grand child, my root object's IsDirty property stays at false.</p>
+
+<p>My root object (Customer) does have an override for IsDirty and IsValid, which references the child objects that are in the Customer object. I'm wondering if that is enough, or do I have to also include the grand children and great grand children. </p>
+
+<p>Currently my override looks like this</p>
+<p>        public override bool IsDirty
+        {
+            get { return base.IsDirty || _transactions.IsDirty || _order.IsDirty; }
+        }
+</p>
+
+
+<p>The only way I could think to show my issue was to display the output from my ui's save command (was using it to help myself understand what was going on.)</p>
+
+<ul>
+<li>[Root | Customer] IsDirty: False</li>
+<ul>
+<li>[Child  |Order] IsDirty: False</li>
+<ul>
+<li>[Child | OrderDetail] IsDirty: False</li>
+<ul>
+<li>[Child | Application] IsDirty: <b>True</b></li>
+<li>[Child | Application] IsDirty: False</li>
+<li>[Child | Application] IsDirty: False</li>
+</ul>
+</ul>
+</ul>
+</ul>
+
+
+<p></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Monday, April 20, 2009</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>You
+should also overwrite dirty and valid in each transaction and order and have
+them query their own children lists, etc&#8230;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>If
+you use managed properties, this behavior is automatic, BTW. &nbsp;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> dhr
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Monday, April 20, 2009 11:44 AM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> [CSLA .NET] Question regarding IsDirty.<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Hi there, I'm creating a customer order datebase, which requires the use of
+grand children and great grand children.&nbsp; Most of the project is working
+fine, however, my current issue is when I make a change to a grate grand child,
+my root object's IsDirty property stays at false.<o:p></o:p></p>
+
+<p>My root object (Customer) does have an override for IsDirty and IsValid,
+which references the child objects that are in the Customer object. I'm
+wondering if that is enough, or do I have to also include the grand children
+and grate grand children. <o:p></o:p></p>
+
+<p>Currently my override looks like this<o:p></o:p></p>
+
+<p>public override bool IsDirty { get { return base.IsDirty || _transactions.IsDirty
+|| _order.IsDirty; } } <o:p></o:p></p>
+
+<p>The only way I could think to show my issue was to display the output from
+my ui's save command (was using it to help myself understand what was going
+on.)<o:p></o:p></p>
+
+<ul>
+ <li class=MsoNormal>[Root | Customer] IsDirty: False<o:p></o:p></li>
+ <ul>
+  <li class=MsoNormal>[Child |Order] IsDirty: False<o:p></o:p></li>
+  <ul>
+   <li class=MsoNormal>[Child | OrderDetail] IsDirty: False<o:p></o:p></li>
+   <ul>
+    <li class=MsoNormal>[Child | Application] IsDirty: <b>True</b><o:p></o:p></li>
+    <li class=MsoNormal>[Child | Application] IsDirty: False<o:p></o:p></li>
+    <li class=MsoNormal>[Child | Application] IsDirty: False<o:p></o:p></li>
+   </ul>
+  </ul>
+ </ul>
+</ul>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>dhr replied on Monday, April 20, 2009</h2>Thanks for the quick reply..&nbsp;&nbsp; I had always thought that I needed to override IsDirty in my child objects..&nbsp; <br><br>I added those extra overrides to any child object that also was a parent of another child object, and now everything is working nicely.&nbsp;&nbsp; Many Thanks<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Monday, April 20, 2009</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Indeed,
+unless you switch to managed properties.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> dhr
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Monday, April 20, 2009 12:05 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: Question regarding IsDirty.<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Thanks for the quick reply..&nbsp;&nbsp; I had always
+thought that I needed to override IsDirty in my child objects..&nbsp;&nbsp; I
+guess I need to do this for each object that is a parent for another child?<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

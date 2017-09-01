@@ -1,0 +1,19 @@
+<html><header><title>Security design question/advice...</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Security design question/advice...</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3430.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>rlriggs posted on Monday, August 27, 2007</h2><P><FONT face=Tahoma>First, thanks to Rocky and this community for a great resource.&nbsp;&nbsp; Upfront, I'll say I'm a relative noob at working with CSLA, but I'm very pleased with what I have learned.</FONT></P>
+<P><FONT face=Tahoma>I have a scenario that I'd like some input and to do a sanity check and make sure I'm on the right path.</FONT></P>
+<P><FONT face=Tahoma>Scenario:</FONT></P>
+<UL>
+<LI><FONT face=Tahoma>Windows app to be deployed at multiple franchises of a single company interacting with data on a central server through remote host</FONT></LI>
+<LI><FONT face=Tahoma>Each franchise will have its own separate database with identical structures (and sprocs, etc.)</FONT></LI>
+<LI><FONT face=Tahoma>Each franchise will also interact with a central/shared database among all franchises</FONT></LI>
+<LI><FONT face=Tahoma>Each franchise will have identical roles for users (ie admin, read only, etc.)</FONT></LI>
+<LI><FONT face=Tahoma>Going to use CSLA security</FONT></LI>
+<LI><FONT face=Tahoma>user will only be able to access their local franchise data</FONT></LI></UL>
+<P><FONT face=Tahoma>I'm trying to avoid multiple business object libraries with different connection strings based on the franchise (or having to deploy the business objects everytime I add a new franchise).&nbsp;&nbsp; </FONT></P>
+<P><FONT face=Tahoma>My thought is to use the central database to validate a user's credentials, and based on the franchise that they belong to create a generic franchise role (ie, by City) that will be used to pull the connection string dynamically for that franchise only.&nbsp;&nbsp; I haven't tested this yet, but I would assume that the security objects are created first so that the database connection string would be available before any interaction with the business objects.</FONT></P>
+<P><FONT face=Tahoma>Anyone have any thoughts, better ideas,&nbsp;or experience something similar?&nbsp; Thanks!</FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Monday, August 27, 2007</h2><P>1. The app.config file should probably have the connection string for the central database in it.</P>
+<P>2. Then you can connect to the central DB and validate the user as you described.</P>
+<P>3. As part of the Principal/Identity you add a connection string property which is filled during authentication.</P>
+<P>4. Then whenever you access a BO that pulls data for a franchise you pass in the user.ConnectionString to the ADO.Net command. </P>
+<P>5. This design let's you build the same BOs for multiple databases.</P>
+<P>Joe</P>
+<P>&nbsp;</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

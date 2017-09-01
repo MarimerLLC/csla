@@ -1,0 +1,364 @@
+<html><header><title>Unit Testing &amp; CSLA</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Unit Testing &amp; CSLA</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5373.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Pawz posted on Tuesday, September 09, 2008</h2>Hi all,<br><br>I've got a question about setting up unit tests for business objects that depend on certain other objects having done their job.<br><br>Basically, I've got a JobSchedules BO that I want to test to make sure it's loading up upcoming jobs that need to be manufactured, but in order for a job to be ready for manufacture, there's about half a dozen steps that need to be performed for each job. What's the best way to do this kind of thing? I'm heading down the route of just calling all the business objects in order to set up the job correctly, but I'm a bit worried that if there's a problem with an unrelated BO, this test will fail (ie, if the Materials BO fails, the job may never get ordered, which means it doesn't show up to be scheduled, which means if I test to make sure it's showing up in the Scheduler BO, that test will fail as well, without any clear indication of why). Worst case would be like a top end BO failing (no Job at all!) and like 100 tests go red.<br><br>On the other hand, I wouldn't want to script it out either, because I need to know that all appropriate business logic has been applied at all stages. I'm still new to this Test Driven type stuff, so maybe I'm just missing something simple? <br><br><br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Fintanv replied on Wednesday, September 10, 2008</h2><P>What you need is a "mocking" framework.&nbsp; Essentially the mocking framework will intercept certain calls and substitute some other value/object.&nbsp; In your example you could mock the half dozen steps and then test only the bit of code you actually want to exercise.</P>
+<P>Take a look at the following for some further info:</P>
+<P><A href="http://www.nermins.net/post/2007/04/TDDUsing-Mock-objects-with-CSLANet.aspx">http://www.nermins.net/post/2007/04/TDDUsing-Mock-objects-with-CSLANet.aspx</A></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>coding replied on Tuesday, March 10, 2015</h2><p>Hi&nbsp;</p>
+<p>&nbsp;</p>
+<p>nermins.net url is not working , kindly please share the updated link for TDD with csla</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>nermin replied on Wednesday, September 10, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>An excellent question.&nbsp; And this has been the only big issue
+with Csla, or any tightly integrated system.&nbsp; On one hand you gain so much
+&#8211; if you take a look at the architecture of an Enterprise System built on
+Csla, and comparably sized one built on another technology, you will see that
+ones built on Csla are by far simpler.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>But that tight integration results in complications when it
+comes to Unit testing.&nbsp; But before I get to the point of what is the
+problem in testing scenarios in Csla, let me take a bit longer route explaining
+how is isolating of objects being Unit tested done. <o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>When you unit test your JobSchedules BO, you need to mock calls
+to some of the objects that it depends on, and just assure that internally JobSchedules
+is calling the methods with expected parameters.&nbsp; Those would be your
+mocks.&nbsp; In some other dependencies in order to test the functionality
+inside JobSchedule, dependency object needs to return a pre-packaged set of values
+in order for your tests on JobSchedule to run.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>For example each job might have a list of materials, that the
+job is calculating the total cost for.&nbsp; Since the iteration, and the
+calculation is run on the Job object, you need that pre-packaged set from
+MaterialList BO without running the full MaterialList BO (it executing its own
+internal methods that like you said can fail for other reasons, then having
+perhaps other dependencies like database, etc).&nbsp; So in order to avoid that
+type of dependency you create what is called a Stub.&nbsp; Stubbing MaterialList
+would mean again replacing the actual object with a Stub one that when you
+call, lets say GetListOfItemsAndPrices() methods on it returns a pre-packaged
+response that the JobSchedules BO can use in its test.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Now since I mentioned two types of Fake objects that helps us
+isolate our unit of testing (JobSchedules in this case), for different cases,
+the question becomes how does one create Mocks and Stubs.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>There are 2 ways:<o:p></o:p></span></p>
+
+<p class=MsoListParagraph><span><span>-<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span></span><span>Static Mocks and Stubs<o:p></o:p></span></p>
+
+<p class=MsoListParagraph><span><span>-<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span></span><span>Dynamic Mocks and Stubs<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Static ones are created by subclassing &#8211; in order to
+create a MaterialList Stub, you create an object that inherits from it, then
+override the GetListOfItemsAndPrices() to return the set of data needed for
+your test.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>For static Mocks, you generally tests situations like if a
+certain condition is met on JobSchedules then we call method A() on Material BO
+dependency, or if condition fails, you call method B().&nbsp; Solution again is
+subclassing, overriding methods A() and B() to do nothing other than increasing
+a counter properties like ACalledNTimes, or BCalledNTimes which are also
+defined on you static mock object that subclasses Material BO for example.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>The problem with static Mocks and stubs is that they result in a
+lot of code.&nbsp; Lets go to MaterialListStub, and GetListOfItemsAndPrices().&nbsp;
+What if I want to test how JobSchedules responds to several different
+scenarios, in other words one scenario where GetListOfItemsAndPrices() returns several
+valid items and prices, and then second one where prices are missing on some of
+the elements, or third where the GetListOfItemsAndPrices() perhaps throws some
+sort of exception, perhaps FormatException (you still want to test that the
+code inside your Unit being tested handles the expected exceptions from
+dependencies). <o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>For each of those 3 cases you have to create another Subclass,
+which returns one of the expectations for GetListOfItemsAndPrices().&nbsp; That
+is a lot of code.&nbsp; This is the reason people came up with dynamic Mock and
+Stub frameworks.&nbsp; With this you just say:<o:p></o:p></span></p>
+
+<p class=MsoListParagraph><span><span>1)<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span></span><span>I want to create a stub of object MaterialList<o:p></o:p></span></p>
+
+<p class=MsoListParagraph><span><span>2)<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span></span><span>When called GetListOfItemsAndPrices() replace its return value
+with &#8220;this object&#8221;.<o:p></o:p></span></p>
+
+<p class=MsoListParagraph><span><span>3)<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span></span><span>Inject the Stub of MaterialList instead of actual object into
+JobSchedules<o:p></o:p></span></p>
+
+<p class=MsoListParagraph><span><span>4)<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span></span><span>Call the JobSchedules method you are testing<o:p></o:p></span></p>
+
+<p class=MsoListParagraph><span><span>5)<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span></span><span>Run your assertions<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Now lets take a look how would that look in a code of our test:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>//Arrange<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>var fakeItemsPrices = new Dictionary&lt;Item,Price&gt;(){ new&#8230;,
+new&#8230;, &#8230;};<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>var materialList = MockRepository.GenerateStub&lt;MaterialList&gt;();<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>materialList.Stub(f =&gt; f. GetListOfItemsAndPrices ()).Return(fakeItemsPrices);<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>//Action<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>var jobSchedules = new JobSchedules(MaterialList);<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>var result = jobSchedules.ActionTested();//this is where the
+call to GetListOfItemsAndPrices() occurs<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>//Assert<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>Assert.AreEqual(Expected_Value, result&#8230;.)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Which finally brings me to a problem in testing scenario in
+Csla.&nbsp; HOW DOES ONE INJECT THESE FAKE OBJECTS (STUBS AND MOCKS) during the
+tests and replaces the actual Csla BO dependencies for JobSchedules?<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>In order for that to happen &#8211; in general, outside Csla,
+people use what is called a Dependency Injection pattern.&nbsp; They create
+constructor overloads where they pass as parameters references to all dependencies
+their object interacts with. &nbsp;So what that means is that JobSchedule would
+have a 2 constructors:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>private JobSchedule() : this (new MaterialList()){<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>}<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>Public JobSchedule(MaterialList materialList){<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp; this. materialList = materialList;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>}<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>As you can see all the first constructor does is &#8211; it calls
+the second one passing it a new instance of the MaterialList.&nbsp; Second
+constructor then &#8220;injects&#8221; that referenc into internal field to be
+used for later.&nbsp; But second constructor is also key for our tests, as suring
+the tests we can pass Static/Dynamic Mock of MaterialList instead of the actual
+object, as seen in following 2 lines of the example above:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>var materialList = MockRepository.GenerateStub&lt;MaterialList&gt;();<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&#8230;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>var jobSchedules = new JobSchedules(MaterialList);<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>BUT THAT EXAMPLE WILL NOT WORK ON CSLA! Why?&nbsp; CSLA BOs are
+Mobile Objects, they live in multiple contexts, and are generally created in Server
+Context, not client context.&nbsp; That means &#8211; we do not call
+constructors directly (and that is the reason why constructor are generally private).&nbsp;
+Object is constructed on the server and then serialized back to the
+client.&nbsp; We also generally use Factory Methods to get instances of our
+Csla BOs.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>So how does one &#8220;INJECT&#8221; dependency into Csla BOs
+during tests.&nbsp; One solution (which will cost you) is to use
+TypeMock/Isolator dynamic mocking framework.&nbsp; There are 3 bing names in
+Dynamic Mocking frameworks in .Net: Example above was using RhinMocks 3.5 (by
+far the most popular Mocking framework in .Net).&nbsp; Then there is a newcomer
+Moq which works only on .Net 3.5, and already mentioned TypeMock (renamed to
+Isolator in version 4.2).&nbsp; RhinoMocks and Moq can only work in scenarios
+where Dependencies are injected directly into constructor, or perhaps property
+sets before one calls method being tested.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>TypeMock/Isolator does not need that. You can state replace this
+object, and a call on its method with this value (which will happen later in
+the test) without having an access to the reference that you need to
+mock.&nbsp; In other words, MaterialList can be constructed completely
+internally in JobSchedule object with no outside visibility, and you can still
+replace the actual MaterialList instance with your Dynamic Mock/Stub.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>How?&nbsp; TypeMock, unlike other dynamic mocking frameworks
+uses Profiler API, allowing it to replace the actual objects/calls during
+runtime.&nbsp; You do not need to touch your code in order to make it &#8220;testable&#8221;.&nbsp;
+So the example test from above remains the same except that instead of calling
+this line to create your jobSchedule:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>var jobSchedules = new JobSchedules(MaterialList);<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>is replaced with Csla standard Factory Method (constructed the
+same way as when you use it in code):<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>var jobSchedules = new JobSchedules.CreateNew();<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>The problem with the TypeMock/Isolator is that it will cost you
+(few hundred per developer).&nbsp; There was a free community version that is
+powerful enough for these types of tests (which I used few years back), but
+they changed it recently so that after 30 days it throws very annoying popups
+after each test run.&nbsp; <o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>So I gave up on TypeMock/Isolator, for RhinoMocks.&nbsp; And
+when I construct my objects, I try to make dependencies &#8220;Lazy Loaded&#8221;,
+something like, lets say that the MaterialList is exposed as Property on
+JobSchedules, like:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>public MaterialList Materials{<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp; get{<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp; if(_materials==null) _materials =
+LoadMaterials();<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp; return _materials;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp; }<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp; set{ _materials = value}<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>}<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Then in my test I can set the Materials Property to a value of
+my Mock MaterialList, prior to running test method.&nbsp; Sometimes that is
+impossible (performance might dictate minimizing round-trips to the server, or
+something of that sort so all dependencies/children are loaded inside root Fetch),
+and the only solution is to create a public overload of the constructor on the JobSchedule.&nbsp;
+Problem with that is that then if your test &nbsp;constructs the object by
+calling a constructor overload and the runtime uses FactoryMethods, we might
+miss some of the initializations performed inside Factory Method, and
+DataPortal_XYZ.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Due to that in this upcoming version of Csla.Net we are coming up
+with a concept of ObjectFactory, which will allow us to route calls on:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>DataPortal.Create&lt;JobSchedule&gt;() to our own Factory that
+determines what gets called during construction (including DataPortal_XYZ)
+methods.&nbsp; With getting that level of control, we actually get the ability
+to replace the behavior inside the DataPortal_XYZ, and mock dependencies
+constructed there.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>We are working on this right now, so please stay tuned and
+follow both of our blogs for examples of unit tests on that implement
+ObjectFactory.&nbsp; My blog is at <a href="http://www.nermins.net">www.nermins.net</a>,
+and you will find some of the (older) examples of the dynamic mocking using TypeMock.&nbsp;
+Some of the new examples will utilize the ObjectFactory and will be a part of Csla
+MVC demo (source of which can be already found on my most recent blog post).<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Nermin<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Pawz
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Tuesday, September 09, 2008 7:44 PM<br>
+<b>To:</b> Nermin Dibek<br>
+<b>Subject:</b> [CSLA .NET] Unit Testing &amp; CSLA<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Hi all,<br>
+<br>
+I've got a question about setting up unit tests for business objects that
+depend on certain other objects having done their job.<br>
+<br>
+Basically, I've got a JobSchedules BO that I want to test to make sure it's
+loading up upcoming jobs that need to be manufactured, but in order for a job
+to be ready for manufacture, there's about half a dozen steps that need to be
+performed for each job. What's the best way to do this kind of thing? I'm
+heading down the route of just calling all the business objects in order to set
+up the job correctly, but I'm a bit worried that if there's a problem with an
+unrelated BO, this test will fail (ie, if the Materials BO fails, the job may
+never get ordered, which means it doesn't show up to be scheduled, which means
+if I test to make sure it's showing up in the Scheduler BO, that test will fail
+as well, without any clear indication of why). Worst case would be like a top
+end BO failing (no Job at all!) and like 100 tests go red.<br>
+<br>
+On the other hand, I wouldn't want to script it out either, because I need to
+know that all appropriate business logic has been applied at all stages. I'm
+still new to this Test Driven type stuff, so maybe I'm just missing something
+simple? <br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>SonOfPirate replied on Wednesday, September 10, 2008</h2><P>Keep in mind that there are two ways to look at your code when developing unit tests - and both are just a valid and I highly recommend implementing both.</P>
+<P>The first and simplest are "black box" tests.&nbsp; When you create a black box test, you are testing the functionality of a piece of code with no regard for how or what it's doing internally to accomplish the task.&nbsp; An example is calling a service method and evaluating the response.&nbsp; This can be done at the BO level as well to ensure that things are done correctly.&nbsp; These tests are great for regression and integration testing later on as well.</P>
+<P>However, to be thorough, you need to test how the behavior is implemented. This is typically referred to as "white box" testing (I've heard the term "smoke testing" on occassion, too).&nbsp; The trick here is to evaluate every possible path through your code, including error conditions, to make sure that the code handles every scenario correctly.&nbsp; So, if you are examining a method that has limits on values for a specific parameter, your test should call it with a legitimate value AND values that should make the method fail.&nbsp; If the code behaves one way versus another depending on some object's state, then you need to run the test using every possible state to ensure that the code executes properly.</P>
+<P>When using the mock approach described so thoroughly above, keep this in mind and realize that you might have to have multiple mocks in order to fully test your code.&nbsp; It can get complicated, but the great thing about code-based testing is that it only has to be written once!!!</P>
+<P>HTH</P>
+<P>&nbsp;</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

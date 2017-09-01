@@ -1,0 +1,36 @@
+<html><header><title>CSLA error on Fetch  data</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA error on Fetch  data</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11971.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>vivek posted on Thursday, May 09, 2013</h2><p>Hi,</p>
+<p>When i want to fetch record from CSLA it&#39;s giving error , we are using CSLA version 1 with window 7,&nbsp;</p>
+<p>please help me.</p>
+<p>ExceptionSource: Csla: DataPortalException: DataPortal.Fetch failed ()<br />ExceptionDetail:
+ Csla.DataPortalException: DataPortal.Fetch failed () ---&gt; 
+System.NullReferenceException: Object reference not set to an instance 
+of an object.<br />   at Csla.Server.CallMethodException..ctor(String 
+message, Exception ex) in 
+C:\Tools\CSLA\csla20cs\Csla\DataPortal\Server\CallMethodException.cs:line
+ 44<br />   at Csla.MethodCaller.CallMethod(Object obj, MethodInfo info, 
+Object[] parameters) in 
+C:\Tools\CSLA\csla20cs\Csla\DataPortal\MethodCaller.cs:line 118<br />   at
+ Csla.Server.SimpleDataPortal.Fetch(Type objectType, Object criteria, 
+DataPortalContext context) in 
+C:\Tools\CSLA\csla20cs\Csla\DataPortal\Server\SimpleDataPortal.cs:line 
+109<br />   --- End of inner exception stack trace ---<br />   at 
+Csla.DataPortal.Fetch(Type objectType, Object criteria) in 
+C:\Tools\CSLA\csla20cs\Csla\DataPortal\Client\DataPortal.cs:line 192<br />   at Csla.DataPortal.Fetch[T](Object criteria) in C:\Tools\CSLA\csla20cs\Csla\DataPortal\Client\DataPortal.cs:line 140</p>
+<p>&nbsp;</p>
+<p>Thanks,</p>
+<p>Vivek</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Thursday, May 09, 2013</h2><p>Hi,</p>
+<p>The most likely cause is that the DataPortal is unable to find a DataPortal_Fetch method that accepts the parameters that you supplied to the call. This is done dynamically using the MethodCaller.&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>vivek replied on Tuesday, May 14, 2013</h2><p>Hi Jonny,</p>
+<p>&nbsp;</p>
+<p>Thanks for reply, but i am un able to trace why this error comes&nbsp;</p>
+<p>
+<p>public static GetIdentity GetIdentity(string userName)</p>
+<p><span>		</span>{</p>
+<p><span>			</span></p>
+<p><span>			</span>return Csla.DataPortal.Fetch&lt;Project&gt;(new Criteria(id));</p>
+<p><span>		</span>}</p>
+</p>
+<p>&nbsp;</p>
+<p>Can you please suggest how we can check , from where this error comes, how we get stopped.</p>
+<p>&nbsp;</p>
+<p>-Vivek</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Tuesday, May 14, 2013</h2><p>Add the CSLA source code and trace into the csla internals.</p>
+<p>Also take note of the actual complete stacktrace and look at the parameters and the actual definition of the method to be called.&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

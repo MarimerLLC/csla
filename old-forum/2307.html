@@ -1,0 +1,41 @@
+<html><header><title>Datagrid w/ CSLA 1.5</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Datagrid w/ CSLA 1.5</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/2307.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>RichardW posted on Thursday, February 08, 2007</h2><P>I'm using CSLA 1.5 w/ Net 2.0 and a datagridview w/ an Editable Root Collection object w/ Editable Child objects.&nbsp; I'm setting the value of two other properties based on one property in the EditableChild.&nbsp; The problem is that is will not update the grid.&nbsp; </P>
+<P>&nbsp;</P>
+<P>Thanks Richard</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, February 09, 2007</h2><P>Are you using the old-style binding or a bindingsource? Not that I know exactly what difference that might make, but it could narrow the scope a bit. It is possible that the .NET 2.0 binding doesn't fully support the <EM>property</EM>Changed event concept from .NET 1.x now that there's an actual PropertyChanged event available.</P>
+<P>(disclaimer: I haven't tried what you are doing - I spent very little time with CSLA 1.x on .NET 2.0...)</P>
+<P>One thing you might consider, is altering the code in BindableBase to raise an actual PropertyChanged event rather than the IsDirtyChanged (or in addition?), so as to tap into the new data binding technology more effectively. I don't know if that'd solve it, but it might.</P>
+<P>To get comparable behavior to IsDirtyChanged, you'd want to raise PropertyChanged with a property name of "" - thus causing a global refresh, just like you got in .NET 1.x with IsDirtyChanged.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RichardW replied on Wednesday, February 14, 2007</h2><P>Rocky - thanks for the reply and sorry it took so long for me to reply back.</P>
+<P>Regarding 1.5, I was using bindingsource.</P>
+<P>I decided to go ahead and upgrade to CSLA 2.1.3 and get the&nbsp;2005 book.&nbsp; I wish I had done so earlier! &lt;g&gt;&nbsp; That fixed the binding problem.</P>
+<P>&nbsp;Even though the AddNewCore method in the collection&nbsp;basically does the same thing as 1.5 OnAddNew method, the grid doesn't seem to recognize it - there's no blank line at the bottom of the grid.&nbsp; CanAddObject is set to true.</P>
+<P>Thanks Richard</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, February 14, 2007</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>You do need to set AllowNew to true in the constructor so the
+collection can tell data binding it supports the add new concept.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky</span><b><span><o:p></o:p></span></b></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

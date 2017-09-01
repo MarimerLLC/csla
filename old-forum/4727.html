@@ -1,0 +1,180 @@
+<html><header><title>SQLMetal, PTracker.dbml and Security.dbml</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>SQLMetal, PTracker.dbml and Security.dbml</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4727.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>CyclingFoodmanPA posted on Monday, April 21, 2008</h2><P>Hi,</P>
+<P>Rocky or anyone else reading this, I have a question.&nbsp; Was the PTracker.dbml and Security.dbml generated utilizing SQLMetal or by hand?&nbsp; I am wondering because I am starting a large project and am diving in head first utilizing LINQ, CSLA 3.5 and all the latest and greatest stuff and I generated my dbml file utilizing SQLMetal.&nbsp; Now, here is what I get with SQLMetal:</P><FONT color=#0000ff size=2>
+<P>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>partial</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>class</FONT><FONT size=2> </FONT><FONT color=#2b91af size=2>Usp_csla_SelectProductsAllResult<BR></FONT><FONT size=2>{<BR></FONT><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp; private</FONT><FONT size=2> System.</FONT><FONT color=#2b91af size=2>Nullable</FONT><FONT size=2>&lt;</FONT><FONT color=#0000ff size=2>int</FONT><FONT size=2>&gt; _ProductId;<BR>.<BR>.<BR>.<BR></FONT><FONT size=2>}</FONT></P>
+<P><FONT size=2>And here is what is in Rocky's dbml</FONT></P><FONT size=2><FONT color=#0000ff size=2>
+<P>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>partial</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>class</FONT><FONT size=2> </FONT><FONT color=#2b91af size=2>getRolesResult<BR></FONT><FONT size=2>{<BR></FONT><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp; private</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>int</FONT><FONT size=2> _Id;<BR>.<BR>.<BR>.<BR></FONT><FONT size=2>}</P></FONT></FONT>
+<P>The SQLMetal generated code sticks in the System.Nullable&lt;int&gt; stuff and I get an error message like:</P>
+<P>Error 1 The best overloaded method match for 'Csla.Core.BusinessBase.LoadProperty&lt;int&gt;(Csla.PropertyInfo&lt;intt&gt;, int)' has some invalid arguments&nbsp;D:\Visual Studio 2008\CSLA Framework\BAS\BAS.Operations.Library\InventoryIndicator.cs&nbsp;148&nbsp;7&nbsp;BAS.Operations.Library<BR></P>
+<P>And also</P>
+<P>Error&nbsp;2&nbsp;Argument '2': cannot convert from 'int?' to 'int'&nbsp;D:\Visual Studio 2008\CSLA Framework\BAS\BAS.Operations.Library\InventoryIndicator.cs&nbsp;148&nbsp;57&nbsp;BAS.Operations.Library</P>
+<P>Now, I know why the int? and int error are there is because the SQLMetal generated the Nullable before product Id.</P>
+<P>What I am wondering is do I have to go in and fix all this stuff by hand and if I generate SQLMetal again, pick out the stuff that changed and put it in there?&nbsp; </P>
+<P>Anyway, let me know if anyone else has had this happen and what you did to fix it!!&nbsp; I guess now, I will go in and hand fix the SQLMetal generated code for things to work.</P>
+<P>Thanks in adavance for yor help</P>
+<P>Keith</P>
+<P><BR>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, April 22, 2008</h2>I used the designer in VS 2008 to create the DAL assembly. I would have thought that was the same as sqlmetal, but perhaps it is not?</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>CyclingFoodmanPA replied on Tuesday, April 22, 2008</h2><P>Thanks Rocky, I will try the Designer and see how the 2 compare and then post the forum.&nbsp; Also, something could have changed between the beta of VS2008 and the release as Joseph Rattz pointed out as I discovered a discrepancy in his book versus what was generated.&nbsp; Anyway, I will post on the forum what happens as I am sure someone else will be asking this question in the future.</P>
+<P>Keith</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>CyclingFoodmanPA replied on Tuesday, April 22, 2008</h2><P>Ok,</P>
+<P>After a quick comparison, SQLMetal and the VS Designer do produce different results.&nbsp; SQLMetal inserts some additional attributes when it declares variables for user defined sql stored procedures (usp's).&nbsp; For example:</P>
+<P>public partial class Usp_csla_SelectPositionProductGroupsAllResult<BR>&nbsp;{<BR>&nbsp;&nbsp;// KSS 04/21/2008<BR>&nbsp;&nbsp;//private System.Nullable&lt;short&gt; _PositionProductGroupId;<BR>&nbsp;&nbsp;&nbsp; private short _PositionProductGroupId;&nbsp;&nbsp;<BR>&nbsp;&nbsp;private string _PositionProductGroupName;&nbsp;&nbsp;<BR>&nbsp;&nbsp;private System.Data.Linq.Binary _LastChanged;<BR>&nbsp;&nbsp;<BR>&nbsp;&nbsp;public Usp_csla_SelectPositionProductGroupsAllResult()<BR>&nbsp;&nbsp;{<BR>&nbsp;&nbsp;}<BR>&nbsp;&nbsp;<BR>&nbsp;&nbsp;[Column(Storage="_PositionProductGroupId", DbType="SmallInt")]<BR>&nbsp;&nbsp;//public System.Nullable&lt;short&gt; PositionProductGroupId<BR>&nbsp;&nbsp;&nbsp; public short PositionProductGroupId<BR>&nbsp;&nbsp;{<BR>&nbsp;&nbsp;&nbsp;get<BR>&nbsp;&nbsp;&nbsp;{<BR>&nbsp;&nbsp;&nbsp;&nbsp;return this._PositionProductGroupId;<BR>&nbsp;&nbsp;&nbsp;}<BR>&nbsp;&nbsp;&nbsp;set<BR>&nbsp;&nbsp;&nbsp;{<BR>&nbsp;&nbsp;&nbsp;&nbsp;if ((this._PositionProductGroupId != value))<BR>&nbsp;&nbsp;&nbsp;&nbsp;{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;this._PositionProductGroupId = value;<BR>&nbsp;&nbsp;&nbsp;&nbsp;}<BR>&nbsp;&nbsp;&nbsp;}<BR>&nbsp;&nbsp;}<BR>&nbsp;&nbsp;<BR>&nbsp;&nbsp;[Column(Storage="_PositionProductGroupName", DbType="VarChar(30)")]<BR>&nbsp;&nbsp;public string PositionProductGroupName<BR>&nbsp;&nbsp;{<BR>&nbsp;&nbsp;&nbsp;get<BR>&nbsp;&nbsp;&nbsp;{<BR>&nbsp;&nbsp;&nbsp;&nbsp;return this._PositionProductGroupName;<BR>&nbsp;&nbsp;&nbsp;}<BR>&nbsp;&nbsp;&nbsp;set<BR>&nbsp;&nbsp;&nbsp;{<BR>&nbsp;&nbsp;&nbsp;&nbsp;if ((this._PositionProductGroupName != value))<BR>&nbsp;&nbsp;&nbsp;&nbsp;{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;this._PositionProductGroupName = value;<BR>&nbsp;&nbsp;&nbsp;&nbsp;}<BR>&nbsp;&nbsp;&nbsp;}<BR>&nbsp;&nbsp;}<BR>&nbsp;&nbsp;<BR>&nbsp;&nbsp;[Column(Storage="_LastChanged", DbType="rowversion")]<BR>&nbsp;&nbsp;public System.Data.Linq.Binary LastChanged<BR>&nbsp;&nbsp;{<BR>&nbsp;&nbsp;&nbsp;get<BR>&nbsp;&nbsp;&nbsp;{<BR>&nbsp;&nbsp;&nbsp;&nbsp;return this._LastChanged;<BR>&nbsp;&nbsp;&nbsp;}<BR>&nbsp;&nbsp;&nbsp;set<BR>&nbsp;&nbsp;&nbsp;{<BR>&nbsp;&nbsp;&nbsp;&nbsp;if ((this._LastChanged != value))<BR>&nbsp;&nbsp;&nbsp;&nbsp;{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;this._LastChanged = value;<BR>&nbsp;&nbsp;&nbsp;&nbsp;}<BR>&nbsp;&nbsp;&nbsp;}<BR>&nbsp;&nbsp;}<BR>&nbsp;}</P>
+<P>Note the items commented out.&nbsp; I had to do that for the CSLA code to work.&nbsp; That was produced by SQLMetal.&nbsp; I was having a hard time why things were not compiling and I was getting weird messages until I looked closely at the code in PTracker and then went to my designer.cs class.&nbsp; When I commented out the problem lines and replaced them with lines similar to PTracker they worked.&nbsp; I then generated the code with the designer in Visual Studio and it produced correct code.&nbsp; I don't know if this is a bug or if it is supposed to be this way, but I think the 2 items should produce similar code so I consider it a bug.&nbsp; I mean, what good is a tool that generates code and then you have to go in and change/fix a lot of it for things to work.&nbsp; And then if you regen it again, you loose all your changes.&nbsp; Not good in my opinion.</P>
+<P>Also, I have a table named tlkpNoYes and SQLMetal and the designer gen it to be tlkpNoYe, but SQLMetal makes the t an uppercase T so it is TlkpNoYe.&nbsp; I guess it does that to be gramatically correct, however, I don't care about gramatically correct code!&nbsp; If something ends with s, just add es on the end so it&nbsp;is tlkpNoYeses.&nbsp; </P>
+<P>Anyway, just thought I would let everyone know what I have found so far and I have only scratched the surface.&nbsp; I will have to mail Joseph Rattz and let him know what I found out also as I have been delving into his LINQ book and found it excellent.&nbsp; If you need a book on LINQ, buy it, don't even think about it, just buy it!</P>
+<P>Keith</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Tuesday, April 22, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Good feedback.&nbsp; BTW, I believe, SQLMetal has command line
+option not to &#8220;un-pluralize&#8221; table names.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Senior Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> CyclingFoodmanPA
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Tuesday, April 22, 2008 10:40 AM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] SQLMetal, PTracker.dbml and Security.dbml<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Ok,<o:p></o:p></p>
+
+<p>After a quick comparison, SQLMetal and the VS Designer do produce different
+results.&nbsp; SQLMetal inserts some additional attributes when it declares
+variables for user defined sql stored procedures (usp's).&nbsp; For example:<o:p></o:p></p>
+
+<p>public partial class Usp_csla_SelectPositionProductGroupsAllResult<br>
+&nbsp;{<br>
+&nbsp;&nbsp;// KSS 04/21/2008<br>
+&nbsp;&nbsp;//private System.Nullable&lt;short&gt; _PositionProductGroupId;<br>
+&nbsp;&nbsp;&nbsp; private short _PositionProductGroupId;&nbsp;&nbsp;<br>
+&nbsp;&nbsp;private string _PositionProductGroupName;&nbsp;&nbsp;<br>
+&nbsp;&nbsp;private System.Data.Linq.Binary _LastChanged;<br>
+&nbsp;&nbsp;<br>
+&nbsp;&nbsp;public Usp_csla_SelectPositionProductGroupsAllResult()<br>
+&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;<br>
+&nbsp;&nbsp;[Column(Storage=&quot;_PositionProductGroupId&quot;,
+DbType=&quot;SmallInt&quot;)]<br>
+&nbsp;&nbsp;//public System.Nullable&lt;short&gt; PositionProductGroupId<br>
+&nbsp;&nbsp;&nbsp; public short PositionProductGroupId<br>
+&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;get<br>
+&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;return this._PositionProductGroupId;<br>
+&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;set<br>
+&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;if ((this._PositionProductGroupId != value))<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;this._PositionProductGroupId = value;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;<br>
+&nbsp;&nbsp;[Column(Storage=&quot;_PositionProductGroupName&quot;,
+DbType=&quot;VarChar(30)&quot;)]<br>
+&nbsp;&nbsp;public string PositionProductGroupName<br>
+&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;get<br>
+&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;return this._PositionProductGroupName;<br>
+&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;set<br>
+&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;if ((this._PositionProductGroupName != value))<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;this._PositionProductGroupName = value;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;<br>
+&nbsp;&nbsp;[Column(Storage=&quot;_LastChanged&quot;,
+DbType=&quot;rowversion&quot;)]<br>
+&nbsp;&nbsp;public System.Data.Linq.Binary LastChanged<br>
+&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;get<br>
+&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;return this._LastChanged;<br>
+&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;set<br>
+&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;if ((this._LastChanged != value))<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;this._LastChanged = value;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;}<br>
+&nbsp;}<o:p></o:p></p>
+
+<p>Note the items commented out.&nbsp; I had to do that for the CSLA code to
+work.&nbsp; That was produced by SQLMetal.&nbsp; I was having a hard time why
+things were not compiling and I was getting weird messages until I looked
+closely at the code in PTracker and then went to my designer.cs class.&nbsp;
+When I commented out the problem lines and replaced them with lines similar to
+PTracker they worked.&nbsp; I then generated the code with the designer in
+Visual Studio and it produced correct code.&nbsp; I don't know if this is a bug
+or if it is supposed to be this way, but I think the 2 items should produce
+similar code so I consider it a bug.&nbsp; I mean, what good is a tool that
+generates code and then you have to go in and change/fix a lot of it for things
+to work.&nbsp; And then if you regen it again, you loose all your
+changes.&nbsp; Not good in my opinion.<o:p></o:p></p>
+
+<p>Also, I have a table named tlkpNoYes and SQLMetal and the designer gen it to
+be tlkpNoYe, but SQLMetal makes the t an uppercase T so it is TlkpNoYe.&nbsp; I
+guess it does that to be gramatically correct, however, I don't care about
+gramatically correct code!&nbsp; If something ends with s, just add es on the
+end so it&nbsp;is tlkpNoYeses.&nbsp; <o:p></o:p></p>
+
+<p>Anyway, just thought I would let everyone know what I have found so far and
+I have only scratched the surface.&nbsp; I will have to mail Joseph Rattz and
+let him know what I found out also as I have been delving into his LINQ book
+and found it excellent.&nbsp; If you need a book on LINQ, buy it, don't even
+think about it, just buy it!<o:p></o:p></p>
+
+<p>Keith<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

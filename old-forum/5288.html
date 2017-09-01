@@ -1,0 +1,160 @@
+<html><header><title>What to do when the table is both a Parent and Child</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>What to do when the table is both a Parent and Child</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5288.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>dhtroy posted on Friday, August 22, 2008</h2>I'm new to CSLA, and have been thrown into this rather quickly; I've tried searching for this answer already but haven't been able to locate it (most likely because I'm not entirely certain how to word what I'm searching for)<br><br>I have a table that is both a parent to another table (one-to-many relationship) and has a (many-to-one) relationship with two other tables; in my attached diagram, this table would be the "book reports" table (real table names changed to protect the innocent). <br><br>We use NHibernate to map from the Database to DTOs, and then CSLA for our Business objects. My problem is how to properly set-up my business object so that I can get/set instances of the "Student" and "Teacher" objects through the "Book Reports" business object. (I hope that makes sense).<br><br>Can someone please point me in the right direction?<br><br>Thank you.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Friday, August 22, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I think the answer would depend on UI. Are you showing all book
+reports or are you picking a student or teacher first to narrow down book
+reports?<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899<o:p></o:p></span></p>
+
+<p class=MsoNormal><b><i><span>Magenic</span></i></b><span> </span><span>&reg;</span><b><i><span><o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> dhtroy
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Friday, August 22, 2008 9:38 AM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> [CSLA .NET] What to do when the table is both a Parent and
+Child<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>I'm new to CSLA, and have been thrown into rather quickly;
+I've tried searching for this answer already but haven't been able to locate it
+(most likely because I'm not entirely certain how to word what I'm searching
+for)<br>
+<br>
+I have table that is both a parent to another table (one-to-many relationship)
+and has a (many-to-one) relationship with two other tables; in my attached
+diagram, this table would be the &quot;book reports&quot; table (real table
+names changed to protect the innocent). <br>
+<br>
+We use NHibernate to map from the Database to DTOs, and then CSLA for our
+Business objects. My problem is how to properly set-up my business object so
+that I can get/set instances of the &quot;Student&quot; and &quot;Teacher&quot;
+objects through the &quot;Book Reports&quot; business object. (I hope that
+makes sense).<br>
+<br>
+Can someone please point me in the right direction?<br>
+<br>
+Thank you.<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>dhtroy replied on Friday, August 22, 2008</h2>Thanks for the quick response:<br><br>We're showing all book reports in a list.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Friday, August 22, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Ok, then here is my take on design:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoListParagraph><span><span>1.<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span></span><span>BookReports (BLB)<o:p></o:p></span></p>
+
+<p class=MsoListParagraph><span><span>a.<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></span></span><span>Book
+Report (BB)<o:p></o:p></span></p>
+
+<p class=MsoListParagraph><span><span>i.<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span></span><span>Teacher (one, not list since it is 1-n relationship, probably ROB
+if you cannot modify it, which is my assumption)<o:p></o:p></span></p>
+
+<p class=MsoListParagraph><span><span>ii.<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></span></span><span>Student
+(one, not list since it is 1-n relationship, probably ROB if you cannot modify
+it, which is my assumption)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I would load appropriate teacher and student during fetch of
+each Book Report.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899<o:p></o:p></span></p>
+
+<p class=MsoNormal><b><i><span>Magenic</span></i></b><span> </span><span>&reg;</span><b><i><span><o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> dhtroy
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Friday, August 22, 2008 9:53 AM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: What to do when the table is both a Parent
+and Child<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Thanks for the quick response:<br>
+<br>
+We're showing all book reports in a list.<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>dhtroy replied on Friday, August 22, 2008</h2>Yes, your assumption regarding having Teacher/Student read-only is correct.<br><br>Using what you've stated here, I believe I know what implementation changes I need to make.<br><br>Thank you for the insight.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>TheSquirrelKing replied on Friday, August 14, 2009</h2><P>Apologies for dredging up such an old thread, but, out of curiosity,&nbsp;would you suggest that the Teacher property in BookReport should be an instance of a <FONT face="Courier New">TeacherInfo</FONT> object or just its&nbsp;ID? I've gone with the former out of habit, but the latter option binds more nicely to <FONT face="Courier New">TeacherList</FONT> (in the same way as with NameValueLists) and lightens the <FONT face="Courier New">BookReport</FONT> object a bit. Of course, this comes with the downside of having to call <FONT face="Courier New">TeacherInfo.GetTeacherInfo(&lt;BookReport instance&gt;.Teacher)</FONT> anytime you want to use the <FONT face="Courier New">TeacherInfo</FONT> object in any way.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>dhtroy replied on Friday, August 14, 2009</h2>No worries; I ended up using just the ID of the "Teacher" and "Student" in the BookReport, and I programmatically load those objects on an "as needed" basis, because at the time, our framework was still in the process of being developed, and there were some design issues in our repository layer (which have all been resolved). <br><br>If I were doing it today, I'd probably just add Teacher/Student info lists to the BookReport; but I would only do so if I knew for certain that (1) those info lists were very lightweight and (2) those lists would be small. <br><br>Larger lists ... I would find a way to lazy load them, if possible; obviously, you don't want your users having to sit there waiting for an object to hydrate with a bunch of child collections, when they only plan to edit a single property on the parent record to begin with ...<br><br><br><br><br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

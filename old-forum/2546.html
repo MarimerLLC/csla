@@ -1,0 +1,177 @@
+<html><header><title>Thread Safe Temporary Integer Object IDs</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Thread Safe Temporary Integer Object IDs</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/2546.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>JabbaTheNut posted on Saturday, March 17, 2007</h2><P>I am very new to CSLA and am working my way through a number of basic issues for my business objects.&nbsp; One issue for me is the management of temporary object ids.&nbsp; </P>
+<P>I have&nbsp;been reviewing&nbsp;the posts on this site regarding Guids, CombGuids, Integers, etc.&nbsp; The debate is clearly lively and very interesting.&nbsp; In my current situation, however,&nbsp;I&nbsp;must&nbsp;use integer ids.&nbsp; Given this requirement, I am trying to find a thread-safe way of managing temporary integer object ids prior to saving&nbsp;new objects to the database.</P>
+<P>Below is my attempt at doing this.&nbsp; I have only included the elements of a class that pertain to managing the temporary object ids.&nbsp; Am I missing anything important?</P>
+<P>using Csla;</P>
+<P>[Serializable()]</P>
+<P>public class MyObject : Csla.BusinessBase&lt;MyObject&gt;</P>
+<P>{</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//This is the static property&nbsp;used by&nbsp;all instances of this class.</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;private static int _lastTempId = 0;</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//This is the object id of the instance.</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;private int _id;</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;protected override object GetIdValue()</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//Return the object id of the instance</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return _id;</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;protected override void DataPortal_Create()</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//Set the object id of the instance to _lastTempId - 1.&nbsp; If, by some strange circumstance</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//there are enough objects of this type instantiated such that _lastTempId reaches the</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//minimum possible value for Int32, then _lastTempId is reset to 0.&nbsp; If this is not done,</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//then Interlock.Decrement will cycle from -2147483648 to 2147483647.&nbsp; I want</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//my object ids to be negative at all times.</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if (_lastTempId == -2147483648)</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;System.Threading.Interlocked.Exchange(ref _lastTempId, 0);</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_id = System.Threading.Interlocked.Decrement(ref _lastTempId);</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;protected override void DataPortal_Insert()</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//Code to insert data into database contains an output parameter for the ScopeIdentity.</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//The object id is set to this ScopeIdentity, overriding the previous temporary id.</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_id = (int)myCommand.Parameters("@newId").Value;</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</P>
+<P>}</P>
+<P>&nbsp;</P>
+<P>Any comments would be appreciated.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Bayu replied on Sunday, March 18, 2007</h2>Hey,<br><br>There is a lot with your code that I wish to comment on, most noteworthy:<br>- compare against Integer.MinValue instead of that hard-coded value, prevents errors and is much more readable<br>- this static variable of yours (_lastTempID) is definitely going to cause trouble. As soon as your webserver (hosting your RemotingPortal or WebServicePortal) reboots it will be reset and you could have multiple clients with the same ID<br>- Decrementing and resetting the value is thread-safe (by using the Interlocked method) but the DataPortal_Create method is NOT (!) What could happen now is that two threads inspect the value and see that it equals Integer.MinValue, so they both enter the inner-block of the if-condition and you are in trouble. The resetting will occur thread-safe, also decrementing it will occur thread-safe, but their relative ordering is NOT threadsafe, consider this sequence:<br>&nbsp;&nbsp;&nbsp; - thread 1: enters if-block (because it observes a MinValue)<br>&nbsp;&nbsp;&nbsp; - thread 2: does the same (because it also observes the same MinValue, remember the dp_create is not thread-safe, so does could happen)<br>&nbsp;&nbsp;&nbsp; - thread 2 is lucky and gets to reset the value AND it also decrements it to -1<br>&nbsp;&nbsp;&nbsp; - thread 2 thus ends up with an object with ID = -1<br>&nbsp;&nbsp;&nbsp; - thread 1: was still in the if-block and finally gets to reset the lastTempID ......... and ends up with an object with id equal to -1 too!<br><br>Have a look at the lock (VB: SyncLock) statement in C#, this will help you solve the above scenario.<br><br>Using the lock-statement then you would end-up with a thread-safe autonumbering system for 1 app.Note that this would still not be robust against web-server reboots, but even then. You never know for sure your app is the only app to ever access the DB. So why not use an autonumbering field in your DB for this purpose? This will be thread-safe and robust and will work across all users/apps that access the DB ...<br><br>In addition, if you somehow still really need to manage this autonumbering thing in your code: then better make it a persisted value in your DB which is locked, accessed and decremented using transactions. <br><br>Regards,<br>Bayu<br><br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Brian Criswell replied on Sunday, March 18, 2007</h2>You should subclass the CSLA base objects that you are going to use so that you may add behaviour and share that behaviour among all of your business objects.&nbsp; So you example would look a bit like this (off the top of my head, so syntax may not be correct).<br><br>public abstract class MyObjectBase&lt;T&gt; : Csla.BusinessBase&lt;T&gt;<br>&nbsp;&nbsp;&nbsp; where T : MyObjectBase&lt;T&gt;<br>{<br>&nbsp;&nbsp;&nbsp; private static int _tempId = 0;<br>&nbsp;&nbsp;&nbsp; private static object _lockObject = new object();<br><br>&nbsp;&nbsp;&nbsp; protected int GetTempId()<br>&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;  lock (_lockObject)<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;  {<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;  &nbsp;&nbsp;  if (_tempId == int.MinValue)<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;  &nbsp;&nbsp;  {<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;  &nbsp;&nbsp;  &nbsp;&nbsp;  _tempId = 0;<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;  &nbsp;&nbsp;  }<br><br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;  &nbsp;&nbsp;  return --_tempId;<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;  }<br>&nbsp;&nbsp;&nbsp; }<br>}<br><br>Your business object then looks like this<br>public class MyObject : MyObjectBase&lt;MyObject&gt;<br>{<br>&nbsp;&nbsp;&nbsp; private int _id = GetTempId();<br>}<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JabbaTheNut replied on Sunday, March 18, 2007</h2><P>Thank you Bayu and Brian for your quick responses.</P>
+<P>I can see that I have more to learn :)</P>
+<P>Both of your points are well taken.&nbsp;&nbsp;I believe that Brian's code example resolves the thread-safety issues that Bayu raised.&nbsp; Additionally, I like the idea of subclassing BusinessBase to provide temporary ids across all business objects.&nbsp; However, the issue that is most glaring to me now is the reboot and reset issue, which can cause objects of the same class to have the same ids.&nbsp; I realize that ids can be managed through the database.&nbsp; However, I was hoping to come up with a solution that would not require a hit to the database for every object created, regardless of whether or not it will be saved to the database.&nbsp; Maybe this is not such a big deal.&nbsp; </P>
+<P>What are your thoughts?</P>
+<P>I am seriosly contemplating moving to CombGuids.&nbsp; However, I am particularly concerned about providing data to 3rd party vendors.&nbsp; I am not yet comfortable that providing a CombGuid will be practical.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Sunday, March 18, 2007</h2><P>It isn't that hard though!</P>
+<P>Interlocked.Decrement returns the resulting value, and it is threadsafe.</P>
+<P>DataPortal_Create() is threadsafe, because it is running in an instance on a single thread. While other objects may be created at the same time, they'll run their own DP_Create() methods.</P>
+<P>So you only need to worry about that one bit of shared state, and you can use Interlocked.Decrement() to use it:</P>
+<P>private static int _lastId;</P>
+<P>private void DataPortal_Create(Criteria criteria)<BR>{<BR>&nbsp;&nbsp;&nbsp;_id = Interlocked.Decrement(_lastId);<BR>}</P>
+<P>No global locking required or anything fancy at all.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Sunday, March 18, 2007</h2><P>Sorry, I see that you are worried about the possibility that your appdomain will continue to exist long enough to create a few trillion objects of this particular type... I missed that on the first pass reading the question.</P>
+<P>My response: are you serious? <img src="/emoticons/emotion-2.gif" alt="Big Smile [:D]" /></P>
+<P>I realize that such a thing is hypothetically possible. And perhaps your app really could cause this to happen. But you really need to evaluate whether it is possible in reality for the app to try and create a few trillion Customer objects (for example) within the lifetime of a single appdomain.</P>
+<P>If so, then do the extra work, and take the extra perf hit, to avoid the problem.</P>
+<P>But 99.999% of the time this is impossible in any real sense. So how can you justify the complexity cost and perf hit to avoid something that can't actually happen?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JabbaTheNut replied on Sunday, March 18, 2007</h2><P>Hi Rocky,</P>
+<P>I agree with you.&nbsp; I am not concerned about the application being in existence long enough to reassign a duplicate ID.&nbsp; I was contemplating the possibility of reboots/resets, as posed by Bayu.&nbsp; In these cases, the application would not necessarily have to completely cycle through to assign a duplicate id.&nbsp; Although, I would concede that the probabilty of reassignment of a duplicate id due to reboot/reset is no doubt very low.</P>
+<P>BTW,&nbsp; I think it is so cool that you participate in these forums.&nbsp; The fact that you take the time to address Newbie questions (like mine) is a testament to your commitment to the product.&nbsp; I was initially exposed to CSLA at version 1.5.&nbsp; I found it to be quite impressive and have been waiting for an opportunity to implement it.&nbsp; Finally, at version 2.1.4, I have that opportunity.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Sunday, March 18, 2007</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>The duplicate id issue can only happen in limited scenarios &#8211;
+probably not ones you will encounter &#8211; or at least ones you can avoid.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Remember that the id only needs to be unique within a given
+object graph &#8211; not application-wide. Certainly not cross-user, and not
+even within the context of a single user, except in ONE SPECIFIC COLLECTION.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>So the only time you could get into trouble is if you have an
+object graph to which you are adding new items, and somehow you end up adding
+two items to one specific collection in that object graph with duplicate ID
+values.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>This can&#8217;t happen if you are generating the temporary IDs
+on the client machine (smart client or web server), because any failure on that
+machine or appdomain would cause all those objects to have been lost too. In
+other words, the loss of _lastId automatically goes hand-in-hand with the loss
+of the whole object graph.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>It CAN happen if you are generating the temporary IDs on a
+shared application server. In other words, your DataPortal.Create() call
+actually goes across the network to an app serve to create and initialize the
+new object. In that case, were the app server to fail and reload during the
+time a user is interacting with an object graph on the client, it would be
+possible to get a duplicate id within that object graph.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>The only way to avoid that is to use an ID allocation scheme
+that relies on a persistent store. Remember that if that shared app server
+resets, anything in memory is gone. The only way to know the REAL _lastId value
+is if it was persisted somewhere. It is almost never performant to load one
+integer just to increment it, so what ID allocation algorithms have done for
+decades is to allocate a <i>block</i> of ID values.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>In other words, the app server does a db call to allocate, say,
+100 IDs. The db now has a &#8220;lastId&#8221; value of -100, but the app
+server, in memory, as _lastId of 0. The app server keeps decrementing that in
+memory value until it hits -100, then it goes back to the db to get another
+block. At that point the db has a &#8220;lastId&#8221; of -200 and the process
+repeats.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>If the app server crashes, or even is shut down normally, when
+it restarts it goes to the db and asks for another allocation. This typically
+leaves holes, because the only &#8220;safe&#8221; lastId probably isn&#8217;t
+the REAL lastId. But for temp IDs no one cares really.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>None of that really deals with threading &#8211; threading is
+the smallest part of the issue really. And honestly, most apps don&#8217;t
+encounter this issue, because they allocate the temp ID values on the client
+and avoid the whole issue.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Even if you are initializing new objects on an app server, you
+can allocate the temp ID on the client (in your factory method) and pass it to
+the app server through the criteria object. That is typically far simpler than
+implementing a persisted ID allocation algorithm.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Bayu replied on Monday, March 19, 2007</h2><BLOCKQUOTE><div><img src="/Themes/alternate1/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div>
+
+
+
+
+
+
+ 
+
+
+
+<div class="Section1">
+
+<p class="MsoNormal"><span>The duplicate id issue can only happen in limited scenarios –
+probably not ones you will encounter – or at least ones you can avoid.<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><o:p>&nbsp;</o:p></span></p>
+
+<p class="MsoNormal"><span>Remember that the id only needs to be unique within a given
+object graph – not application-wide. Certainly not cross-user, and not
+even within the context of a single user, except in ONE SPECIFIC COLLECTION.<o:p></o:p></span></p>
+
+</div>
+
+</div></BLOCKQUOTE><br><br>Huh?<br><br>You mean that ID's only need to be unique within the scope that they are used by the app?<br>In that case I agree.<br><br>But ultimately (i.e. when objects are persisted in the DB) the requirements could very well be different, right? Then an object might at least require an ID that is unique within the table, perhaps even a globally unique ID.<br><br>I am not sure if you already hinted at this solution, but I guess the following could work wonderfully:<br>- you use a client-side ID assignment system (e.g. using Brian's base class example but then the variation suggested by Rocky where you assign IDs in the factory method, so all is client-side)<br>- this reaps all benefits indicated by Rocky<br>- however, as soon as an object is saved it gets assigned an (new) ID that satisfies the constraints posed on the DB schema<br><br>This would work very much like an auto-increment integer field in your DB, where you only recieve the ID upon actual insertion of the object in to the DB.<br><br>One potential issue would be with associated objects that need to store referential IDs to this particular object, but that is no different from when you would work with autoincrement fields either. If you would model your BOs after behavior, then I think this is even a non-issue.<br><br>Perhaps I am heading in the wrong direction here, then I guess I did not fully understand Rocky's last post. Let me know. ;-)<br><br>Regards,<br>Bayu<br><br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, March 19, 2007</h2><P>As long as we're talking about temporary IDs then yes, the ID only needs to be unique within a very limited scope.</P>
+<P>It is a set problem. Let O be the set of old objects (IsNew=false) loaded from a database. All the objects in O have real IDs that are (a) unique in the database and (b) unique in the client memory space.</P>
+<P>Then let N be the set of new objects created on this client (IsNew=true). Each client has its own N, but those sets can never interact or conflict, because they exist in different scopes. By the time objects in N' could interact with those in N'', they've become members of O and thus have permanent unique IDs that are unique in the database.</P>
+<P>But it gets even better, in most applications anyway, because the objects in N don't randomly interact with each other. For example, OrderLineItem objects typically only interact with ProductInfo objects that are members of O. The OrderLineItems collection interacts with OrderLineItem objects, and requires that they all have unique IDs, but those IDs only need to be unique <EM>within that specific collection</EM>.</P>
+<P>In other words, in almost every case the temporary IDs only need to be unique within a <EM>very</EM> limited scope (like a collection). Even in a worst case scenario they only need to be unique within N, which is scoped by a given client appdomain.</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

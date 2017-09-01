@@ -1,0 +1,149 @@
+<html><header><title>RuleHandler Delegate</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>RuleHandler Delegate</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5522.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>decius posted on Friday, October 03, 2008</h2><P>I've somehow managed to create a rule that contains no arguments 0_o.&nbsp; thus, in the GetRuleDescriptions() method of ValidationRules.cs, the uri of the rule is an empty string and throws an index out of range exception in the RuleDescription constructor like so:</P><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> RuleDescription(</FONT><FONT color=#0000ff size=2>string</FONT><FONT size=2> ruleString)</P>
+<P>{</P>
+<P></FONT><FONT color=#2b91af size=2>Uri</FONT><FONT size=2> uri = </FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> </FONT><FONT color=#2b91af size=2>Uri</FONT><FONT size=2>(ruleString);</P>
+<P>_scheme = uri.GetLeftPart(</FONT><FONT color=#2b91af size=2>UriPartial</FONT><FONT size=2>.Scheme);</P>
+<P>_methodName = uri.Host;</P>
+<P>_propertyName = uri.LocalPath.Substring(1);</P>
+<P></FONT><FONT color=#0000ff size=2>string</FONT><FONT size=2> args = uri.Query;</P>
+<P>_arguments = </FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> </FONT><FONT color=#2b91af size=2>Dictionary</FONT><FONT size=2>&lt;</FONT><FONT color=#0000ff size=2>string</FONT><FONT size=2>, </FONT><FONT color=#0000ff size=2>string</FONT><FONT size=2>&gt;();</P>
+<P></FONT><FONT color=#0000ff size=2>string</FONT><FONT size=2>[] argArray = args.Split(</FONT><FONT color=#a31515 size=2>'&amp;'</FONT><FONT size=2>);</P>
+<P></FONT><FONT color=#0000ff size=2>foreach</FONT><FONT size=2> (</FONT><FONT color=#0000ff size=2>string</FONT><FONT size=2> arg </FONT><FONT color=#0000ff size=2>in</FONT><FONT size=2> argArray)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>string</FONT><FONT size=2>[] argParams = arg.Split(</FONT><FONT color=#a31515 size=2>'='</FONT><FONT size=2>);</P>
+<P>_arguments.Add(</P>
+<P></FONT><FONT color=#2b91af size=2>Uri</FONT><FONT size=2>.UnescapeDataString(argParams[0]),</P>
+<P></FONT><FONT color=#2b91af size=2>Uri</FONT><FONT size=2>.UnescapeDataString(argParams[1]));&nbsp;<FONT color=#ff0000> //right here!!</FONT></P>
+<P>}</P>
+<P>}</P></FONT>
+<P>I think I'm setting up the rule incorrectly to begin with, i don't think i'm using the RuleHandler delegate correctly, though I tried duping the ProjectTracker StartDate EndDate example of a custom rule.&nbsp; here's my code, any help is greatly appreciated!!!!</P><FONT color=#0000ff size=2>
+<P>private</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>static</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>bool</FONT><FONT size=2> CodeOrText&lt;T&gt;(</P>
+<P>T target, Csla.Validation.</FONT><FONT color=#2b91af size=2>RuleArgs</FONT><FONT size=2> e) </FONT><FONT color=#0000ff size=2>where</FONT><FONT size=2> T : </FONT><FONT color=#2b91af size=2>CodesCriteria</P></FONT><FONT size=2>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (!DoMyValidation())&nbsp;</P>
+<P>{</P>
+<P>e.Description = </FONT><FONT color=#a31515 size=2>"My description"</FONT><FONT size=2>;</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>false</FONT><FONT size=2>;</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>else</P></FONT><FONT size=2>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>true</FONT><FONT size=2>;</P>
+<P>}</P>
+<P>}</P></FONT>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Friday, October 03, 2008</h2><P>Please show the code from AddBusinessRules where you add this rule.</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, October 03, 2008</h2>What does your AddRule() code look like?</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>decius replied on Friday, October 03, 2008</h2><P>ah sorry!&nbsp; I meant to include that</P><FONT size=2>
+<P>ValidationRules.AddRule&lt;</FONT><FONT color=#2b91af size=2>CodesCriteria</FONT><FONT size=2>&gt;(CodeOrText&lt;</FONT><FONT color=#2b91af size=2>CodesCriteria</FONT><FONT size=2>&gt;, </FONT><FONT color=#a31515 size=2>"Code"</FONT><FONT size=2>);</P>
+<P>ValidationRules.AddDependantProperty(</FONT><FONT color=#a31515 size=2>"Code"</FONT><FONT size=2>, </FONT><FONT color=#a31515 size=2>"Text"</FONT><FONT size=2>, </FONT><FONT color=#0000ff size=2>true</FONT><FONT size=2>);</P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, October 03, 2008</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>It should be<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>ValidationRules.AddRule&lt;CodesCriteria&gt;(CodeOrText, &#8220;Code&#8221;);<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I don&#8217;t know if that&#8217;ll fix your problem, but I
+suspect the second generic type is a problem.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>decius replied on Friday, October 03, 2008</h2><P>Thanks for the reply.&nbsp; No unfortunately that didn't solve the problem.&nbsp; Sadly, my slim knowledge and understanding of delegates has made this hard for me to overcome.</P>
+<P>A little more info that might shine some light on things: GetRuleDescriptions() is getting called from a Custom Control I built.&nbsp; It is getting called during the CreateChildControls() method of that Custom Control and calls (via reflection)&nbsp;a private static method of&nbsp;the <FONT color=#2b91af size=2>CodesCriteria <FONT color=#000000>class </FONT></FONT>like so:</P>
+<P>&nbsp;</P><FONT color=#0000ff size=2>
+<P>private</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>static</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>string</FONT><FONT size=2>[] GetRuleDescriptions()</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> </FONT><FONT color=#2b91af size=2>CodesCriteria</FONT><FONT size=2>().ValidationRules.GetRuleDescriptions();</P>
+<P>}</P>
+<P>&nbsp;</P>
+<P>I'm not sure if this order of event would affect things or not.&nbsp; As far as I can tell, this is irrelevant, as this control works fine with other common rules and such, it's only this attempt at a custom rule that it throws up.</P>
+<P>&nbsp;</P>
+<P>EDIT:&nbsp; Yet another interesting piece of information....&nbsp; the Target property of RuleMethod.Handler&nbsp;is null even after the rule has been invoked inside RuleMethod.cs.... is that normal?</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>decius replied on Monday, October 06, 2008</h2>still stuck on this.&nbsp; Anyone have any other suggestions?</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, October 06, 2008</h2><P>I would break that code up into separate lines so you can establish (with the debugger) exactly what is failing. Make sure it is CSLA not returning the rule, not your code failing to process it properly.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>decius replied on Monday, October 06, 2008</h2>Thanks for your reply Rocky.&nbsp; Yes, I have even tried calling GetRuleDescriptions directly from the UI after the object gets created.&nbsp; when stepping through the code with the debugger, everything appears to make sense.&nbsp; However, when Csla tries to read the Query string value of the rule Uri, Uri.Query ends up null for each of these custom rules.&nbsp; I notice that this exception is not handled here, so I assume that custom rules should still end up with a Uri.Query value, is this correct??&nbsp; if so what would determine that value?</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, October 06, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>The query part of the rule:// URI comes from the RuleArgs object.
+<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>If you have a custom RuleArgs subclass you need to override
+ToString() to provide a meaningful value.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Perhaps somehow you don&#8217;t have a valid RuleArgs object?<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> decius
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Monday, October 06, 2008 9:16 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: RuleHandler Delegate<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Thanks for your reply Rocky.&nbsp; Yes, I have even tried
+calling GetRuleDescriptions directly from the UI after the object gets
+created.&nbsp; when stepping through the code with the debugger, everything
+appears to make sense.&nbsp; However, when Csla tries to read the Query string
+value of the rule Uri, Uri.Query ends up null for each of these custom
+rules.&nbsp; I notice that this exception is not handled here, so I assume that
+custom rules should still end up with a Uri.Query value, is this
+correct??&nbsp; if so what would determine that value?<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

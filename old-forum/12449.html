@@ -1,0 +1,22 @@
+<html><header><title>CSLA 4.2.2 to 4.5.x</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA 4.2.2 to 4.5.x</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/12449.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>jasona22 posted on Thursday, March 06, 2014</h2><p>I am implementing the upgrade and after a namespace fix, I am running into the following:</p>
+<p>&nbsp;</p>
+<p>I have a DataPortal_Fetch that looks like:</p>
+<p>Private Shadows Sub DataPortal_Fetch(ByVal criteria As ...)</p>
+<p>...</p>
+<p>Using dr As IDataReader = New SafeDataReader(obj.Fetch( criteria)</p>
+<p>While dr.Read()</p>
+<p>Add(criteria.Factory.LoadObjectInfo(dr))</p>
+<p>End While</p>
+<p>End Using</p>
+<p>...</p>
+<p>End Sub</p>
+<p>&nbsp;</p>
+<p>Before the upgrade everything has been working.&nbsp; After, I get a &quot;Can not change a read-only list or collection&quot; error.</p>
+<p>Whats the new method for loading an InfoList?</p>
+<p>&nbsp;</p>
+<p>PS.&nbsp; Why does the CSLA .NET site keep throwing Script errors and crashing when using IE?&nbsp; Its done this as long as I can remember and I figure I will mention it now.&nbsp; :)</p>
+<p>&nbsp;</p>
+<p>Thanks in advance for your assistance.&nbsp; </p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>ajj3085 replied on Friday, March 07, 2014</h2><p>It doesn&#39;t look like your setting IsReadOnly to false before adding elements to the list, assuming this is a read only list base.&nbsp; Dont forget to set it back to true when you&#39;re done.</p>
+<p>What I dont understand is why this was working before as Csla has required this for a while, so it could be something else but without more code its hard to say.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>MichelRenaud replied on Tuesday, August 19, 2014</h2><p>I just had the same problem upgrading from 4.3. &nbsp;Some of this code dates back to 2008 when we first developed under CSLA 3.0, so that was a weird one this morning. &nbsp;Good thing I found this thread. &nbsp;Easy fix! <img src="http://forums.lhotka.net/emoticons/emotion-1.gif" alt="Smile" /></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jasona22 replied on Monday, March 10, 2014</h2><p>You are correct.&nbsp; The ReadOnly flags were not there and had not been for some time.&nbsp; This was on child list bo.&nbsp; I guess it is good we upgraded.&nbsp; Seems the code had an issue somewhere along the way and didn&#39;t require that or something.&nbsp; </p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

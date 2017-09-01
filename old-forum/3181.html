@@ -1,0 +1,48 @@
+<html><header><title>Improving Efficiency</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Improving Efficiency</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3181.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>devbanana posted on Thursday, July 12, 2007</h2><P>Hi,</P>
+<P>&nbsp;</P>
+<P>I love using CSLA .NET for its functionality and scalability when scalability is required.</P>
+<P>&nbsp;</P>
+<P>However frankly sometimes the data access is just a pain. I just came from a project where I used an ORM layer but was also able to use direct SQL when required, and a project&nbsp;I quoted three weeks for took 8 days.</P>
+<P>&nbsp;</P>
+<P>I'm wondering if there are any related tools that can be tied into CSLA .NET to improve efficiency? Flexibility is great, but time costs and if it takes a whole lot longer to create the necessary business objects for something, well one wonders if it is then worth the gain. I'd love some compromise.</P>
+<P>&nbsp;</P>
+<P>No offense is meant in the above, because I really like using this, just trying to find some ways to gain efficiency as far as time is concerned. What do you think?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>devbanana replied on Thursday, July 12, 2007</h2><P>Not to bump this, but I just was searching around a bit.</P>
+<P>&nbsp;</P>
+<P>Apparnetly many people are using code generators.</P>
+<P>&nbsp;</P>
+<P>so, what do you recommend as far as those are concerned? Do oyu think that's the best way to go?</P>
+<P>&nbsp;</P>
+<P>It'd be nice to have the stored procedures generated as well, and common / simple parts of the business objects, but I'd still want to be able to add to them or modify them obviously.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Skafa replied on Thursday, July 12, 2007</h2>Have a look at CslaGenerator which does all of this:<br><br>http://groups.google.com/group/CslaGenerator<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Thursday, July 12, 2007</h2><P>I use Codesmith to generate BOs.</P>
+<P>I helped create the initial set of templates a few years ago but then had to split off from that project as my style differed greatly from the common style. e.g. I do not use SPs. I have all the SQL coded in Shared methods. etc.</P>
+<P>Bottom line is - if you have some BOs that you have already built then you are familiar with your own style and you can easily create Codesmith templates to re-generate them. Once you have a template you can use it to build other BOs of the same type (Root, Child, ROC, ECC, etc.)</P>
+<P>I also use split classes and inheritance. So I code gen a base class and inherit from it in the final type. In the final type I can override base methods and properties to fine tune the result.</P>
+<P>&nbsp;</P>
+<P>Oh yeah - you should definitely have a Base class for each type defined by Rocky so that you derive all yur classes from your own base types. This allows you to override stuff in CSLA and have all the BOs that inherit from your base types get the new functionality. Rocky has made CSLA much more extensible over the years and it is great to be able to change things without modifying the framework.</P>
+<P>&nbsp;</P>
+<P>Joe</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>devbanana replied on Thursday, July 12, 2007</h2><P>Hello,</P>
+<P>&nbsp;</P>
+<P>Thank you for the responses.</P>
+<P>&nbsp;</P>
+<P>CSLAGen looks nice, and&nbsp;I was trying it (that's why it took me so long to respond), but alas, it is very inaccessible for me because I am blind and use a screen reader.</P>
+<P>&nbsp;</P>
+<P>Are there any tutorials on using codesmith? I wouldn't mind trying that. I downloaded the standard version but am not exactly sure how to get started.</P>
+<P>&nbsp;</P>
+<P>Also to those who have codesmith, does the standard version have enough functionality? That pricier version, well..is pricy :O</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>xal replied on Friday, July 13, 2007</h2>I'm sorry to hear you have trouble using cslagen.<br>Let me know what I can do to improve usability and I'll try to make it more accesible if possible.<br>Maybe this should be discussed in cslagen's forum.<br><br><br>Andrés<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>devbanana replied on Friday, July 13, 2007</h2><P>Hi,</P>
+<P>&nbsp;</P>
+<P>It's a great program it seems, just again a little hard to use.</P>
+<P>&nbsp;</P>
+<P>For example, I just can't seem to find the generate button. It's probably a graphic or something you didn't put any labeling text to? I don't know, but I can't find it. Also can't find the save button for the property windows. Those are the two biggest problems.</P>
+<P>&nbsp;</P>
+<P>Also if you added some key combinations, that'd help a lot.</P>
+<P>&nbsp;</P>
+<P>Anyway, I finally figured out code smith I think. I tried the stored procedure generator first and will mess with the csla templates later on. I just wish there were templates for optimistic concurrency to automatically add the LastChanged timestamp as an output parameter for example, but maybe I can modify it to do that. :)</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>devbanana replied on Friday, July 13, 2007</h2><P>Hi,</P>
+<P>&nbsp;</P>
+<P>Ah, I've finally figured out code smith. Just one question.</P>
+<P>&nbsp;</P>
+<P>Why does it add the ID as a parameter in GetReadOnlyList? I guess I just don't see the sense in that since it is a list and so you wouldn't want just one item.</P>
+<P>&nbsp;</P>
+<P>Also how's this do with child objects?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Friday, July 13, 2007</h2><P>The ID could be the parent ID which you could use to get the list of items that belong to the parent.</P>
+<P>Also - the templates are just a starting point - they may not be 100% bug free. They may not be in compliance with your design standards. Feel free to modify them to meet your unique needs.</P>
+<P>Joe</P>
+<P>&nbsp;</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

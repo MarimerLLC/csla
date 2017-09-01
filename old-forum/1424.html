@@ -1,0 +1,83 @@
+<html><header><title>DB driven Authorization Rules</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>DB driven Authorization Rules</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/1424.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Norty posted on Monday, October 09, 2006</h2><P>Hi NG</P>
+<P>Please bear with me.&nbsp; I am battling a serious learning curve with both .Net and CSLA<img src="/emoticons/emotion-9.gif" alt="Crying [:'(]" />.&nbsp; I am using VB.Net2 and CSLA2.1</P>
+<P>I am wanting to control Authorization Rules from my DB.</P>
+<P>My table structure is along the lines of : Object|Role|CanAdd|CanGet|CanEdit|CanDelete.<BR></P>
+<P>I would like to be able to be able to load this structure on a perType basis, and read from a shared list instaed of hardcoding it into the CanXxxxObject() functions.</P>
+<P>Regards</P>
+<P>Des Norton</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ijoubert replied on Monday, October 09, 2006</h2><P>How many objects/records are we talking about?&nbsp; If the data&nbsp;is not going to hog too much memory, it may be feasible to try the following:</P>
+<OL>
+<LI>Create a object that mirrors the structure of the DB derived from the ReadOnlyListBase.</LI>
+<LI>Add&nbsp;a custom public Contains method to retrieve an item based on the object type, userid, permission, etc.&nbsp; </LI>
+<LI>Instantiate&nbsp;the collection&nbsp;as a shared or cached object at application start. </LI>
+<LI>Modify the CanXXX methods of your&nbsp;objects&nbsp;to call&nbsp;the&nbsp;Contains function of your collection.&nbsp;</LI></OL></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Mark replied on Monday, October 09, 2006</h2><P>That's pretty much what I did.&nbsp; I created&nbsp;a SecurityManager class that loads/caches&nbsp;the relevant security detail at app startup.&nbsp; Then, it was just a matter of&nbsp;changing the authorization lookups as you mentioned...</P>
+<P>private static System.Type OBJECT_TYPE = typeof(MyObjectType);<BR>public static bool CanGetObject<BR>{<BR>&nbsp;&nbsp; get<BR>&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return SecurityManager.CanGetObject(OBJECT_TYPE)<BR>&nbsp;&nbsp; }<BR>}</P>
+<P>public static bool CanAddObject<BR>{<BR>&nbsp;&nbsp; get<BR>&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return SecurityManager.CanAddObject(OBJECT_TYPE);<BR>&nbsp;&nbsp; }<BR>}</P>
+<P>public static bool CanEditObject<BR>{<BR>&nbsp;&nbsp; get<BR>&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return SecurityManager.CanEditObject(OBJECT_TYPE);<BR>&nbsp;&nbsp; }<BR>}</P>
+<P>public static bool CanDeleteObject<BR>{<BR>&nbsp;&nbsp; get<BR>&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return SecurityManager.CanDeleteObject(OBJECT_TYPE);<BR>&nbsp;&nbsp; }<BR>}</P>
+<P>Only negative - I had to define the OBJECT_TYPE variable in each class, but that wasn't too painful.&nbsp; Might even be a better way of doing it with reflection...</P>
+<P>&nbsp;- Mark</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Norty replied on Tuesday, October 10, 2006</h2><P>Izak/Mark</P>
+<P>Thanks for the input.&nbsp; This seems quite workable.</P>
+<P>However, authorised users will have the ability to modify the permissions.&nbsp; New instances of the app will automatically have the newest auth settings.&nbsp; What about existing instances of the app?&nbsp; They somehow need to be aware that the auth settings have changed.</P>
+<P>Regards</P>
+<P>De Norton</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ijoubert replied on Tuesday, October 10, 2006</h2>Look at  how Rocky implements lookup lists (NameValueListBase) classes in the CSLA framework.  There's an excelent example of how to use shared objects which are exposed application wide.
+
+Example: (partial listing)
+
+Public Class PermissionList
+    Inherits Csla.NameValueListBase(Of Integer, String)
+
+...
+
+    Private Shared _list As PermissionList
+
+...
+
+    Public Shared Function GetList() As PermissionList
+        If _list Is Nothing Then
+            _list = DataPortal.Fetch(Of PermissionList)(New Criteria(GetType(PermissionList)))
+        End If
+        Return _list
+    End Function
+
+    Public Shared Sub InvalidateCache()
+        _list = Nothing
+    End Sub
+
+...
+
+End Class
+
+The basic idea is that the values are held by an internal collection class.  A GetList method loads the values from the database if the list is null/nothing.  
+
+Whenever the content of the list changes because a user modified the database values, the second InvalidateCache method can be called to clear the list .  If the list object is null/nothing, the GetList method will reload the list automatically the next time it is called.
+
+In your case, you can implement a solution with two objects.  A shared PermissionList class which by the waydoes not have to inherit from NameValueListBase.  It can use any of the collection base classes.  
+
+You can then create a separate Permission business object derived from BusinessBase, add the appropriate logic to persist the new/modified permission to the database. In your Permission object, immediately following the save to database, call the InvalidateCache method of the shared PermissionList object to force the reload.
+
+Hope this helps
+
+Izak</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ijoubert replied on Tuesday, October 10, 2006</h2>Sorry for the messed up formatting.  I had it all nicely spaced, but once I posted, the formatting was lost.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Norty replied on Tuesday, October 10, 2006</h2><P>Thanks Izak</P>
+<P>Perhaps I'm chasing my tail due to ignorance ...&nbsp; I have no problem with the caching of the list if an authorised user changes the auth settings, and then continues to use the app.&nbsp; What about another user that logged in before the changes were made.&nbsp; My understanding is that the 2 users are essentially using 2 different instances of the application.</P>
+<P>Scenario ...</P>
+<P>DB is corrupted(hacked?)<img src="/emoticons/emotion-10.gif" alt="Embarrassed [:$]" /> and all users have View/Add/Edit/Delete rights to everything.&nbsp; BadBob user takes the oppertunity to start causing havoc with objects.&nbsp; Admin logs in and fixes auth settings, giving BadBob View only rights. Problem solved?&nbsp; Or does BadBob firts have to log off and log on again to refresh his auth settings form DB?</P>
+<P>If BabBob has to log off/on I will need to add some sort of expiration policy to the AuthList ... After every x(Read from config) hits or y(Read from config) minutes (whichever comes first), call InvalidateCache().</P>
+<P>Thanks</P>
+<P>Des Norton</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Mark replied on Tuesday, October 10, 2006</h2><P>Yes, you'll need to invalidate the cache at some point if you want existing instances of the app to reflect changes that others have made.&nbsp; You might need extra code to ensure the application handles itself properly.&nbsp; For example, if you revoke GetObject() access for a person, but they have already have a screen up with the object that they no longer have access to, how should your application respond? Etc, etc...</P>
+<P>That wasn't a big concern for me, so I didn't worry about it.&nbsp; &nbsp;Just as an FYI - Windows works the same way (not that it's necessarily a *good* thing).&nbsp; When you login, you get a "token" that specifies what rights you have.&nbsp; If you go into Active Directory and make security changes to a user account - for example, adding or removing the account from a security group, the user actually has to logoff and login back for those changes to take effect.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ijoubert replied on Tuesday, October 10, 2006</h2>Checking user authorizations only during login is a bad idea.  The application can (and should) be made more robust to improve security and prevent the scenario you describe.  Each business object should validate user permissions agains the permission list instead of 1 call to the list during login.  If you the embed a call to the shared permission list object with the CanRead, CanCreate, CanUpdate & CanDelete methods of your business base class, instead of just in the user object, your scenario can be avoided.
+
+If BadBob logs in while the permission list is corrupt he will have access to the object like you said, but as soon as the admin fixes the permission list ( and thereby invalidates the cache) the first BO call made by BaBob will reload the list and from that point onward, he will be under the new rules.
+
+It is relatively simple to implement the rule checking within every object without a lot of code.  Derive your own BO base classes from the CSLA classes (e.g. MyBusinessBase from BusinessBase) and embed the logic into your MyBusinessBase class.  Then inherit all your BOs from MyBusinessBase instead of the CSLA BusinessBase.  This will apply the permission sensitive logic to your whole application.
+
+You'll end up with a much more robust application design.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Mark replied on Tuesday, October 10, 2006</h2><P>I load the object permissions into my SecurityManager at login, but authorization&nbsp;is performed throughout the lifetime of the application.&nbsp; However, since I never invalidate my security cache, it's basically working against a static list.</P>
+<P>The problem you'll run into is *how* to invalidate the cache.&nbsp; If I'm on workstation #1 and change security permissions, how do I notify workstations #2-10 that they need to reload the security information?&nbsp; That gets a bit more complex and is beyond the scope of CSLA.&nbsp; You'd basically need a bi-directional channel that remains open between client/server so the server could send the notifications to all the clients.&nbsp; You could also implement some timer-based refresh, but with that approach, there is a possibility that an unauthorized request could slip through between the time that the security change was made and the time that the cache was invalidated.</P>
+<P>However, each application should code to its needs.&nbsp; In the 15+ CSLA-based apps that I've rolled out over the last&nbsp;5 years, only&nbsp;3 were complex enough to warrant the need for DB-driven security.&nbsp; The rest are hard-coded (and have never changed).&nbsp; And the 3 apps I have where security is DB-driven?&nbsp; The object permissions tables for those apps have also never been changed or updated since being deployed.&nbsp;&nbsp;&nbsp;One - I think we did a bang-up job setting security during deployment,&nbsp; and&nbsp;2) our business environment/rules are mature enough where they're not changing often.&nbsp; </P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Norty replied on Monday, October 16, 2006</h2><P>Mark, Izak</P>
+<P>Sorry about my disappearing act, but I'd forgtotten about a holiday that was booked and approved months ago<img src="/emoticons/emotion-2.gif" alt="Big Smile [:D]" />.</P>
+<P>I will definately be implementing a SecurityManager that is loaded at login, and&nbsp;valiadted against each time any object is accessed.&nbsp; I will be implementing a cache expiration&nbsp;policy which is controlled via config to allow the client to tweak it.&nbsp; I agree that most security implementations rarely change, if ever.&nbsp; However the client insists...&nbsp; So we will give them the ability to change the security policy on th efly, and set expiration plocies from the config.</P>
+<P>Basically the cache wil invalidate itself after evry (X) reads, or (Y) minutes, whichever comes first.</P>
+<P>Thanks again for you input.</P>
+<P>Des Norton</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>MikeHamilton replied on Friday, November 10, 2006</h2><P>OK a newbie here, so maybe I am off base, but could you not&nbsp;add a method the security manager class that checks the db for a "last update" of security policy tables. and if that time is more recent than the cached last update value, invalidate the cache.</P>
+<P>I know that is a DB call for each security check, so it adds some overhead. Maybe you can do it everytime a "destructive" (delete, update that is not tracked in a history, etc) permission is cheked but only every so often on "read" permissions.</P>
+<P>I know this thread is a little old without updates but I am looking through old message as I (might) need to implement this type of system.</P>
+<P>Mike</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Bayu replied on Friday, November 10, 2006</h2>Mike, <br><br>What you suggest sounds to me like a much 'leaner' solution. <br><br>Basically you augment the idea of <br>- checking every X reads or Y minutes, whatever comes first <br>- then reload the security model.from DB<br><br>Into:<br>- checking every X reads or Y minutes, whatever comes first (or perhaps check every time in your case)<br>- compare local date with last updated date from DB<br>- if last update newer: reload the security model.from DB<br><br>Your approach will involve one more DB hit than the originally presented one in case the security model <i>was</i> updated (one hit to check, another to reload vs just one hit to reload). But as you can expect these updates to occur only very, very rarely I would go for your approach as 99% of the time you just check for a change in date instead of a full reload.<br><br>Bayu<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

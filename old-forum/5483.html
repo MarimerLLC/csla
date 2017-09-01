@@ -1,0 +1,77 @@
+<html><header><title>3.5 Validation Confusion</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>3.5 Validation Confusion</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5483.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>bcrowell posted on Sunday, September 28, 2008</h2>I have a basic business object with a few basic rules like string required, etc. I have it bound to a form via a BindingSource. When I instantiate a new object, I am able to save it right away without filling in the required fields. It seems the validation isn't checked when the IsNew= true.<br><br>However, when I open the same object, I'm not able to update it without filling in the required fields first.<br><br><br>I'm having this problem across my app with newly instantiated objects. I can't apply rules until the object has been saved once. Any ideas would be very helpful.<br><br><br>Thanks much.<br><br>Byron<br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Sunday, September 28, 2008</h2>You need to call ValidationRules.CheckRules() in your DataPortal_Create() method.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>bcrowell replied on Tuesday, September 30, 2008</h2>Hi Rocky,<br><br>So I was getting errors all over the place when I newed up on object that called the validation in the create method. That's actually why I ended up removing it to get the system to work. Here's what I have:<br><br>&lt;RunLocal()&gt; _<br>&nbsp;&nbsp;&nbsp; Protected Overrides Sub DataPortal_Create()<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; LoadProperty(Of Integer)(CONTAINERIDProperty, 0)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ValidationRules.CheckRules()<br><br>&nbsp;&nbsp;&nbsp; End Sub<br><br>And here's my validation section:<br><br>#Region " Validation Rules "<br><br>&nbsp;&nbsp;&nbsp; Protected Overrides Sub AddBusinessRules()<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ValidationRules.AddRule(AddressOf Validation.CommonRules.StringRequired, New Csla.Validation.RuleArgs(DescriptionProperty))&nbsp;&nbsp;&nbsp; <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ValidationRules.AddRule(AddressOf Validation.CommonRules.StringRequired, New Csla.Validation.RuleArgs(DescriptionProperty).Description = "Must Select a Display Page or an Email Template")<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ValidationRules.AddRule(AddressOf Validation.CommonRules.IntegerMinValue, New Validation.CommonRules.IntegerMinValueRuleArgs(HowManyProperty, 1))<br><br>&nbsp;&nbsp;&nbsp; End Sub<br><br>#End Region<br><br>When I call this:<br><br>&nbsp;Dim _CC As ContentContainer<br>&nbsp;_CC = _CC.NewContainer<br><br>I get this error:<br>CSLA.Validation.ValidationEXception: Validation rule rule://StringRequired/False failed in <br>property False --&gt; System.MissingMemberException: Public member 'False' on type 'ContentContainer' not found.<br><br><br>What am I missing. I'm sure it's something really stupid. Thanks.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, September 30, 2008</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>The first thing is that you should never new up an object. Your
+objects should have non-public constructors to prevent the use of the new
+keyword. CSLA doesn&#8217;t support the use of the new keyword &#8211; objects are
+created through the data portal, and the data portal call is normally contained
+in a factory method. No other approach is supported.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Also, notice that you are adding the StringRequired rule to a
+property twice. I suspect that&#8217;d cause a problem &#8211; it certainly isn&#8217;t
+a supported concept. The one workable variation here, is if you have <i>different
+custom RuleArgs subclasses</i> then you can add the same rule twice, because
+the rule:// URI would resolve to different rule names. But I&#8217;m not even
+sure that I&#8217;d recommend doing such a thing &#8211; that seems way overly
+complicated on so many levels&#8230;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Wednesday, October 01, 2008</h2><P>What is this:</P>
+<P>ValidationRules.AddRule(AddressOf Validation.CommonRules.StringRequired, New Csla.Validation.RuleArgs(DescriptionProperty).Description = "Must Select a Display Page or an Email Template")</P>
+<P>It looks like you are trying to set the Description property of the RuleArgs class while setting up rules. That is a No No.</P>
+<P>Only set e.Description when the rule fails!</P>
+<P>Remove this line of code and see if things start working.</P>
+<P>Joe</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>bcrowell replied on Saturday, October 04, 2008</h2>Hi Rocky,<br><br>Yes, when I said "new up" I meant using the dataportal. I'm proud to say that I do at least understand that much about CSLA after a year of working with it. <br><br>It looks like i need to spend more time understanding the Validation concepts so I'll dig into that part of the book again.<br>In reviewing the ProjectTracker application, I see that you have a string required and string length rule on the Resource.vb object but then you don't have a Create method at all and thus don't call the ValidationRules.Checkrules command. Can you explain why that is.<br><br>Many, many thanks.<br><br>Byron<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, October 06, 2008</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>The base class (BusinessBase) has a default implementation of
+DataPortal_Create() that does nothing but call ValidationRules.CheckRules()
+(and it is marked with RunLocal).<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>This was introduced in version 3.5 to reduce the size of your
+code, because a LOT of objects don&#8217;t do any meaningful initialization.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

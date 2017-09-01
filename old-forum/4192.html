@@ -1,0 +1,18 @@
+<html><header><title>Re: Populating a GridView using Combo SelectedValue and CslaDataSource in WebForm</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Re: Populating a GridView using Combo SelectedValue and CslaDataSource in WebForm</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4192.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>ozitraveller posted on Thursday, January 17, 2008</h2><P>Hi </P>
+<P>I thought this would be simple, but the events don't seem to fire in the order I'm expecting. Hoping some can give me a hand. I'm no web developer, yet.. Just frustrated!</P>
+<P>What I'm trying to achieve is use a combo to filter the contents of a gridview. I can populate the combo&nbsp;in the page_load by setting focus to the combo which fires the SelectObject event on the DataSource.</P>
+<P>I want to populate the gridview in combo SelectedIndexChanged event. But the SelectedIndexChanged event on the Combo doesn't fire.</P>
+<P>If I have a SelectObject event on the GridView it fires as soon as the page loads.</P>
+<P>Any help would be greatly appreciated.</P>
+<P>Thanks</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>skagen00 replied on Thursday, January 17, 2008</h2><P>You're talking about a dropdownlist, right?</P>
+<P>I hate to suggest the obvious but you do have AutoPostBack=true on your DropDownList, right? (It was difficult to discern exactly what problem you were communicating.). This setting would have your page "post-back" and your event to fire allowing you to rebind your gridview.</P>
+<P>Happy to give you more feedback if you can describe your issue a little more thoroughly... </P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ozitraveller replied on Thursday, January 17, 2008</h2><P>Hi skagen00</P>
+<P>I saw the AutoPostBack=true just before I saw&nbsp;your reply. So that's now fine.</P>
+<P>Sorry I haven't done this before on a webpage.</P>
+<P>What I want to do is: select a value in the combo and pass the selectedvale to the gridview datasource and rebind.</P>
+<P>thanks</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>skagen00 replied on Thursday, January 17, 2008</h2><P>So in your selected index changed event, one option is to simply say GridView1.DataBind() (or what have you) -- assuming you have a CslaDataSource backing the grid view, it'll nail the SelectObject once you make that call, allowing you to process the call after the selected index has changed. Your e.BusinessObject will end up being perhaps a filtered list or just a list retrieved with criteria based on the selected index.</P>
+<P>i.e. e.BusinessObject = Inventory.GetItemsByCategoryId(value_based_on_selected_index);</P>
+<P>Chris</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ozitraveller replied on Thursday, January 17, 2008</h2><P>Thanks Chris!</P>
+<P>That did it...I should have got that myself.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ehonor replied on Monday, June 28, 2010</h2><p><span style="color:#000000;"><span style="font-family:Arial,Helvetica,sans-serif;">What I did to make it run,, I just bind the column name from CslaDataSource(FormView) to the Dropdownlist eg. SelectedValue=&#39;&lt;%# Bind(&quot;Gender&quot;) %&gt;&#39;</span></span>, it will auto get the selected value of a dropdownlist.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

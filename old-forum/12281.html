@@ -1,0 +1,49 @@
+<html><header><title>Child Objects and Undo</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Child Objects and Undo</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/12281.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>NikolasNick posted on Thursday, December 26, 2013</h2><p>Hello,</p>
+<p>I have an issue regarding child objects and undo. Undo doesn&#39;t work for child objects like:</p>
+<p>&nbsp;Public Shared ReadOnly VatRateProperty As PropertyInfo(Of VatRate) = RegisterProperty(Of VatRate)(Function(c) c.VatRate, RelationshipTypes.Child)<br /><br />&nbsp;&nbsp;&nbsp; Public Property VatRate() As VatRate<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Get<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return GetProperty(VatRateProperty)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Get<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Set(ByVal value As VatRate)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; LoadProperty(VatRateProperty, value)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Set<br />&nbsp;&nbsp;&nbsp; End Property</p>
+<p>I&#39;m assuming that the undo mechanism saves the reference of the object rather than the object itself. How can I overcome this problem?</p>
+<p>&nbsp;</p>
+<p>p.s.: I&#39;m not using the dataportal. I have my own classes for getting/saving data in mysql.</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Thursday, December 26, 2013</h2><p>Hi,</p>
+<p>That would depend on which type of object VatRate is.&nbsp;</p>
+<p>Basically - your object must implement ISupportUndo and the objects that support this is:</p>
+<p>
+<ul>
+<li>BusinessBase</li>
+<li>BusinessListBase</li>
+<li>BusinessBindingListBase</li>
+</ul>
+</p>
+<p>Undo saves the existing fielddata into a &quot;stack&quot; object graph - and you may even configure which serializer to use for Clone and N-level Undo.&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>NikolasNick replied on Thursday, December 26, 2013</h2><p>VatRate and all of my object inherits BusinessBase. When im calling CancelEdit of the<b> BindingSource all the other strings and integers revert back to the their initial values but vatrate does not.</b> Isn&#39;t this supposed to work if VatRate inherits BusinessBase or do i need to change the serializer?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Friday, December 27, 2013</h2><p>Are you using Windows Forms?&nbsp;</p>
+<p>You should never call BeginEdit/CancelEdit/ApplyEdit on an object that is active in databinding. The recommended approach is to call BeginEdit BEFORE you connect UI to Business Objects and when you want to cancel:</p>
+<p>&nbsp;</p>
+<ul>
+<li>Unbind UI from &lt;bo&gt;</li>
+<li>Call &lt;bo&gt;.CancelEdit()</li>
+<li>rebind UI to &lt;bo&gt; (if applicable)</li>
+</ul>
+<p>&nbsp;</p>
+<p>You may experience a situation where the user controls and the dataobjects is out-of -sync. Try to inspect the data field values after CancelEdit has been called.&nbsp;</p>
+<p>You must be aware of:</p>
+<p>&nbsp;</p>
+<ol>
+<li>Databinding will call BeginEdit/CancelEdit/ApplyEdit for every field as you tab around and/or edit value or cancel edit</li>
+<li>DataGridView will call BeginEdit/CancelEdit/ApplyEdit whenever you move from row to row (or press Esc to exit edit mode)</li>
+</ol>
+<p>&nbsp;</p>
+<p>So your mindset should be that whenever a &lt;bo&gt; is active in databinding you should never call any of these methods.&nbsp;</p>
+<p>Also see:&nbsp;<a href="http://msdn.microsoft.com/en-us/library/system.componentmodel.ieditableobject.beginedit(v=vs.110).aspx">http://msdn.microsoft.com/en-us/library/system.componentmodel.ieditableobject.beginedit(v=vs.110).aspx<br /><i>&quot;</i></a><i><span>If&nbsp;</span><span>BeginEdit</span><span>&nbsp;is called on an object that is already being edited, the second and subsequent calls are ignored.&quot;</span></i></p>
+<p>For CSLA this is implemented such that a &lt;bo&gt; knows whether IEditableObject.BeginEdit or ISupportUndo.BeginEdit and reacts according to specification after IEditableObject.BeginEdit has been called and until IEditableObject.CancelEdit or IEditableObject.EndEdit has been called.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>NikolasNick replied on Friday, December 27, 2013</h2><p>Yes I use winforms. I have tried and removed data binding from my object to ui completely (manually setting/getting values from controls) and still it doesn&#39;t work. I have even tried this and still doesn&#39;t work:</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Dim p As New Product&nbsp; *Inherits BusinessBase(Of Product )<br /><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Dim v1 As New VatRate&nbsp; *Inherits BusinessBase(Of VatRate)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; v1.Id = 1<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; p.VatRate = v1<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; MsgBox(p.VatRate.Id) &nbsp; &nbsp; &nbsp; &#39; prints 1<br /><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; p.BeginEdit()<br /><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Dim v2 As New VatRate<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; v2.Id = 5<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; p.VatRate = v2<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; MsgBox(p.VatRate.Id) &nbsp; &nbsp;&nbsp; &nbsp; &#39;prints 5<br /><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; p.CancelEdit()<br /><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; MsgBox(p.VatRate.Id)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &#39; again prints 5 BUT it should print 1?</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Friday, December 27, 2013</h2><p>Well, that explains the whole issue.</p>
+<p>The &quot;snapshot&quot; (ie statestack) is stored in a private member variable within each object &nbsp;so you cannot assign a new object and the restore the old value. </p>
+<p>&nbsp;public&nbsp;abstract&nbsp;class&nbsp;UndoableBase&nbsp;:&nbsp;Csla.Core.BindableBase, &nbsp;Csla.Core.IUndoableObject<br />&nbsp;{</p>
+<pre>&nbsp;&nbsp;<span>//&nbsp;keep&nbsp;a&nbsp;stack&nbsp;of&nbsp;object&nbsp;state&nbsp;values.</span>
+&nbsp;&nbsp;[<span>NotUndoable</span>()]
+&nbsp;&nbsp;<span>private</span>&nbsp;<span>Stack</span>&lt;<span>byte</span>[]&gt;&nbsp;_stateStack&nbsp;=&nbsp;<span>new</span>&nbsp;<span>Stack</span>&lt;<span>byte</span>[]&gt;();   // this is the snapshot</pre>
+<pre></pre>
+<pre>And also take into account that WindowsForms doesn&#39;t support/understand 1:1 relationship. </pre>
+<pre>So if you want references to a list - use the keyfield value rather than setting the item.</pre>
+<pre>You should also understand the differences between </pre>
+<pre><ul><li>owning references (default)</li><li>using references</li><li>inter-graph references. </li></ul><p>These are discussed in Rockys <b>Using Csla 4 : Creating Business Objects</b> ebook. </p></pre>
+<pre>I believe this should work tho&#39;;</pre>
+<pre><span>&nbsp; &nbsp; &nbsp; &nbsp; Dim p As New Product&nbsp; *Inherits BusinessBase(Of Product )</span><br /><br /><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Dim v1 As New VatRate&nbsp; *Inherits BusinessBase(Of VatRate)</span><br /><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; v1.Id = 1</span><br /><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; p.VatRate = v1</span><br /><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; MsgBox(p.VatRate.Id) &nbsp; &nbsp; &nbsp; &#39; prints 1</span><br /><br /><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; p.BeginEdit()</span><br /><br /><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Dim v2 As VatRate<br /></span>        v2 = v1.Clone()</pre>
+<pre><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; v2.Id = 5</span><br /><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; p.VatRate = v2</span><br /><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; MsgBox(p.VatRate.Id) &nbsp; &nbsp;&nbsp; &nbsp; &#39;prints 5</span><br /><br /><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; p.CancelEdit()</span><br /><br /><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; MsgBox(p.VatRate.Id)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &#39; again prints 5 BUT it should print 1?</span></pre></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>NikolasNick replied on Friday, December 27, 2013</h2><p>It&#39;s driving me crazy. I will attempt to modify the&nbsp; &quot;undo&quot; functionality so that the state stack is not lost when assigning a new object rather than values to the object. Yes with your modification the example works but still not solving my issue... I want to assign new object rather than assign its values. Thanks for your time.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

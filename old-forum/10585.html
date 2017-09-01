@@ -1,0 +1,58 @@
+<html><header><title>A few basic questions about CSLA</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>A few basic questions about CSLA</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10585.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>VB-Dev posted on Tuesday, August 02, 2011</h2><p>Hello,</p>
+<p>We&#39;re in the middle of a project, using a framework which is giving us trouble. We may have to switch gears and try another. At this stage of the game, it is frustrating to find that the framework we purchased is not performing the way we&#39;d like.</p>
+<p>I read (eagerly) Rocky&#39;s 2005 book and browsed the 2008 book, but never committed to really digging in and trying CSLA. I&#39;m considering it now.</p>
+<p>A few points to consider. We are a Visual Basic shop. We do not wish to work with code, generated or otherwise, which is written in C#. I realize that the last version of CSLA for VB was a contrib project, 3.6.something.</p>
+<p>We are fed up with lamba expressions, inline functions and LINQ. We need a version of a framework upon which we can leverage our time-tested skills and familiarity with, essentially, .Net 2.0.</p>
+<p>We do not do web development, no ASP.Net, no Silverlight, no WPF, no WCF, no mobile, no &quot;anything&quot; except rich, Windows Forms desktop and server applications.</p>
+<p>With those things said, please allow me to ask the following. All questions are related to Windows Forms projects. </p>
+<p>1. What is the most popular data access method in use for CSLA (NOT including LINQ, Entity Framework, or other .Net 3.5 and 4 technologies)?</p>
+<p>2. Is Microsoft Enterprise Library&nbsp;Data Access Application Block much used with CSLA, and is it used with great success?</p>
+<p>3. Are there MyGeneration templates for the VB versions 3.6.x and earlier? How much of a fuss is it to generate from a SQL Server 2005 database?</p>
+<p>4. Do any versions of CSLA collection objects support Advanced Sorting, ie do any of them implement IBindingListView?</p>
+<p>5. Are CSLA runtimes typically referenced in a project, or are the core files placed into your projects?</p>
+<p>6. How much time/hassle will be spent writing code to hook CSLA up to a data access layer, if we were to use SQL Server with stored procedures? Is this boilerplate stuff found in any templates out there?</p>
+<p>7.&nbsp;Given the situation at our shop, how long can I expect it would take to set up CSLA from download to building forms?</p>
+<p>8. Do CSLA collections offer sorting? Multi-column sorting? Filtering? Or, are these things typically done on the BindingSource? Is it recommened that CSLA collections be bound to a DataGridView via a BindingSource?</p>
+<p>Lastly, please forgive me for any question which were covered in depth in the books. It&#39;s been a couple years since I read them.</p>
+<p>Thanks very much.</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Tuesday, August 02, 2011</h2><p><div style='padding-left: 50px;background-color:silver'><b>VB-Dev<br></b>
+<p>1. What is the most popular data access method in use for CSLA (NOT including LINQ, Entity Framework, or other .Net 3.5 and 4 technologies)?</p>
+</p>
+<p></div></p>
+<p>You can use raw ADO.NET (datareaders, commands, etc), and that is probably the most popular. Certainly it is my preference.</p>
+<p>People used to use the DAAB at a lot (from Patterns and Practices). That may still be popular.</p>
+<p>Some people use the DataSet/TableAdapter - but I think that is a lot of overhead. It does work well though.</p>
+<p><div style='padding-left: 50px;background-color:silver'><b>VB-Dev<br></b></p>
+<p>2. Is Microsoft Enterprise Library&nbsp;Data Access Application Block much used with CSLA, and is it used with great success?</p>
+<p></div></p>
+<p>Yes, DAAB used to be very commonly used. It still might be - but few people talk about anything but EF these days...</p>
+<p><div style='padding-left: 50px;background-color:silver'><b>VB-Dev<br></b></p>
+<p>3. Are there MyGeneration templates for the VB versions 3.6.x and earlier? How much of a fuss is it to generate from a SQL Server 2005 database?</p>
+<p></div></p>
+<p>I don&#39;t know. There were some templates at one point - but I didn&#39;t look into them.</p>
+<p><div style='padding-left: 50px;background-color:silver'><b>VB-Dev<br></b></p>
+<p>4. Do any versions of CSLA collection objects support Advanced Sorting, ie do any of them implement IBindingListView?</p>
+<p></div></p>
+<p>There is a CslaContrib project on codeplex, and it includes a view that does this.</p>
+<p><div style='padding-left: 50px;background-color:silver'><b>VB-Dev<br></b></p>
+<p>5. Are CSLA runtimes typically referenced in a project, or are the core files placed into your projects?</p>
+<p></div></p>
+<p>I strongly recommend having projects reference the DLLs. Including the projects into the solution is just asking for trouble on many levels.</p>
+<p><div style='padding-left: 50px;background-color:silver'><b>VB-Dev<br></b></p>
+<p>6. How much time/hassle will be spent writing code to hook CSLA up to a data access layer, if we were to use SQL Server with stored procedures? Is this boilerplate stuff found in any templates out there?</p>
+<p></div></p>
+<p>This depends a lot on how you approach the design/implementation of the DAL.</p>
+<p>The sad reality is that more people do C# than VB though, and so I don&#39;t know that there are a whole lot of VB code gen templates (for CSLA or otherwise) that are up to date.</p>
+<p><div style='padding-left: 50px;background-color:silver'><b>VB-Dev<br></b></p>
+<p>7.&nbsp;Given the situation at our shop, how long can I expect it would take to set up CSLA from download to building forms?</p>
+<p></div></p>
+<p>I&#39;ll let others answer this based on their experiences. If your devs don&#39;t have experience with object-oriented design, that can be a hurdle - especially if they expect CSLA to be a data-centric ORM. In my view, it is possible to mis-use CSLA as a data-centric ORM-like framework, but that&#39;ll ultimately cause performance and complexity issues.</p>
+<p>But if the business objects are designed to meet the needs of each user scenario (more or less each UI form), then things tend to go pretty smoothly.</p>
+<p><div style='padding-left: 50px;background-color:silver'><b>VB-Dev<br></b></p>
+<p>8. Do CSLA collections offer sorting? Multi-column sorting? Filtering? Or, are these things typically done on the BindingSource? Is it recommened that CSLA collections be bound to a DataGridView via a BindingSource?</p>
+<p></div></p>
+<p>For Windows Forms there are the SortedBindingList and FilteredBindingList view classes. SortedBindingList provides single-column sorting based on IBindingList.</p>
+<p>Again, CslaContrib includes a multi-column sort view. Had Microsoft continued with IBindingList and related technologies, CSLA would probably directly include such a thing. But as you note, Microsoft stopped working on any of that sort of technology 6 years ago, in favor of pursuing XAML and LINQ.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>VB-Dev replied on Tuesday, August 02, 2011</h2><p>Thank you Rocky.&nbsp;Frankly, I do recall being a bit mystified by the design of the sample database in your books, which indicates to me that I may well inadvertently misuse the framework, were I to implement it.</p>
+<p>I have little time in which to implement another framework at this stage. I feel that in order to successfully implement CSLA, I would have to study the books again.</p>
+<p>If anyone has any tips which would enable me to quickly get CSLA (and a data access layer) up and running, I&#39;d appreciate it. I will browse forum posts and other resources in the meantime.</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Wednesday, August 03, 2011</h2><p>I&#39;d recommend the &quot;Using CSLA 4&quot; EBook series. These books focus on how to use the framework and are really good. </p>
+<p><a href="http://download.lhotka.net/Default.aspx?t=UsingCsla4">http://download.lhotka.net/Default.aspx?t=UsingCsla4 </a></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>richardb replied on Thursday, August 04, 2011</h2><p>Checking out the sample projects might be a good place - I needed to get some knoweldge around the Silverlight CSLA examples and Rocky&#39;s sample code provided a good starting template for me.</p>
+<p>If budget allows, I think Dunn Training do some great training courses and the investment would help get your team up to speed quickly, or get someone in for a few weeks to mentor and help get things going.&nbsp; I reckon that investment would pay dividends during your project.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

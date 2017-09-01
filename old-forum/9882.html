@@ -1,0 +1,29 @@
+<html><header><title>SILVERLIGHT/MVVM : CSLA 4 Vs MS RIA Services</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>SILVERLIGHT/MVVM : CSLA 4 Vs MS RIA Services</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9882.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Adalton4 posted on Friday, December 17, 2010</h2><p>Hi,</p>
+<p>&nbsp;</p>
+<p>Is there somewhere a document available that points the differences between CSLA and RIA? If there is not, i would like to start a discussion about the differences between the 2. The purpose is that in a near future, we have to decide either to use one of the 2. We need some pro and cons about the 2 frameworks over architecture, coding experience, maintainability, design experience, maturity, future&nbsp;and&nbsp;runtime. I&#39;ve done/doing CSLA 3.X and 4(w. BXF)&nbsp;myself and have some&nbsp;level 200 experience with the RIA beta in SL3. Up to now, i think RIA is horrible confronted with CSLA, but that may be my unbiased viewpoint due to lack of hands-on working with RIA. I&#39;ve read the post on the difference <a href="http://forums.lhotka.net/forums/p/8952/42602.aspx#42602">http://forums.lhotka.net/forums/p/8952/42602.aspx#42602</a>&nbsp;but&nbsp;after a half year, there may&nbsp;have formed another viewpoint arounf this matter&nbsp;</p>
+<p>&nbsp;</p>
+<p>Please chime in.</p>
+<p>&nbsp;</p>
+<p>Thanks in advance</p>
+<p>&nbsp;</p>
+<p>Rgds</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, December 17, 2010</h2><p>I think RIA Services may evolve into something comparable to CSLA over time. However, that product team moved out of Developer division into SQL Server division within Microsoft, so it is also possible thier focus will become more focused on data and data transport than on supporting a rich client - hard to say.</p>
+<p>The primary difference you&#39;ll see right on the surface is that RIA Services supports Silverlight. CSLA 4 supports Silverlight, WPF, ASP.NET Web Forms, ASP.NET MVC, Windows Phone 7 (WP7), Windows Forms, asmx services, WCF services and Windows Workflow. Of course if you are only doing Silverlight, this broad coverage may not be as important.</p>
+<p>On the flipside, one of the first things you&#39;ll notice is that RIA Services has tooling built into VS, while CSLA is a framework that helps you build code. While there are some code generators supporting CSLA, it isn&#39;t really the same as having tooling built right into VS.</p>
+<p>There are many other differences, primarily at the detail level. RIA Services architecture is not all that different from CSLA - they just generate the client code through a tool, while CSLA has you (basically) share the assembly between client and server.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Adalton4 replied on Monday, December 20, 2010</h2><p>Thanks for your input</p>
+<p>&nbsp;</p>
+<p>Its much appreciated, and it will serve as a&nbsp;functional difference&nbsp;between MS RIA and CSLA!</p>
+<p>&nbsp;</p>
+<p>What i also need is a comparison on a technical level between these 2.</p>
+<p>&nbsp;</p>
+<p>So far, i have&nbsp;found some differences myself using the 2, but i would like the community to chime in and pinpoint further on this</p>
+<p>Please let me provide some examples of these, but this list is certainly not complete...</p>
+<ul>
+<li>In RIA, there is no (SL side) inheritance possible, the generated client side code does not honor this, in CSLA its a breeze, it implies&nbsp;one uses the link client side to server side strategy, but this little effort gives you much back in perspective to oo design. RIA&nbsp;seems indeed more focused on data transport and data oriented client side code.</li>
+<li>In CSLA, the entire object graph is sent back to the server, making it possible to make serverside business-rules/calculations/Object relations&nbsp;possible, in RIA, only the &quot;dirty&quot; editable is send over. Consider this based on the use-case as an advantage/disadvantage</li>
+<li>compression is not available for RIA &quot;out of the box&quot;, you can find an article on MSDN how to plug in into WCF and make compression work the way CSLA does it, but its not trivial, where in CSLA its well documented and allmost trivial to do</li>
+<li>The client side RIA system to do business rules is at my first glance &quot;restricted&quot;, like Rocky states in the mentioned article, where it is for CSLA a breeze to do that, take for example a rule to take duplicates out of a collection.</li>
+<li>Reporting server side validation errors to the correct property in RIA is in my opinion impossible at the moment (without hacks)</li>
+<li>etc.......</li>
+</ul>
+<p>&nbsp;</p>
+<p>Thank u for ur input on this</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

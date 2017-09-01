@@ -1,0 +1,9 @@
+<html><header><title>Error provider</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Error provider</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/1778.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>jlazanowski posted on Thursday, November 16, 2006</h2><P>I have a form that is bound to an Employee object. I have a dependent rule that says if the IsSupervisor property = false that the SuperviorID must have a value.</P>
+<P>The rule is the easy part, my problem is with the error provider. It's set on the employee binding source. In the form, I have a combo box (bound to a NVL) to populate supervisors. Because the combo is bound to a <SPAN>different </SPAN>object, the error provider won't register on the combo box which is where i want the error to display.</P>
+<P>Anyone got a way around this?</P>
+<P>&nbsp;</P>
+<P>Thanks,</P>
+<P>Justin</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Thursday, November 16, 2006</h2>It should work fine.&nbsp; The SelectedItem or SelectedValue property should be bound to something on your Employee object, would it not?<br><br>I have a similar combo, but it has departments instead of supervisor and it works fine.<br><br>Andy<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jlazanowski replied on Thursday, November 16, 2006</h2><P>Yes, that works like a charm, of course I only thought of that 10 seconds <STRONG>AFTER </STRONG>I submitted a stupid question <img src="/emoticons/emotion-5.gif" alt="Wink [;)]" /></P>
+<P>&nbsp;</P>
+<P>Thanks,</P>
+<P>Justin</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

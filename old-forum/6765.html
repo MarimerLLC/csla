@@ -1,0 +1,30 @@
+<html><header><title>Proper Way to Begin/Cancel a Child Collection Edit</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Proper Way to Begin/Cancel a Child Collection Edit</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6765.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>DivisibleByZero posted on Wednesday, April 08, 2009</h2>Ok I have a Child object that has a Child collection. When I click on a button in my main form it will launch a dialog that will bind to the child collection object. The dialog will have apply and cancel buttons which will need to commit/cancel all changes made to the collection respectively.<br><br>My dialog accepts the Children as a parameter:<br><br>ChildrenDialog dlg = new ChildrenDialog(child.Children)<br><br>I need to know how to properly set up the N level undo for this. I've seen conflicting statements on the forums on how to do this (if you should do it on the object itself or not...or to use the bindingsource).<br><br>Can someone please clarify this for me?<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Marjon1 replied on Tuesday, April 14, 2009</h2>Sorry I'm not actually contributing to this discussion, but am hopeful to see some responses to this. I need to do the same thing and getting it right from the beginning would be fantastic.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Adalton4 replied on Wednesday, April 15, 2009</h2><P>Hi,</P>
+<P>&nbsp;</P>
+<P>I am also in an almost&nbsp;similar case. I have a <U>root</U> object with a <U>child collection</U> displayed with minimal editable properties in a grid in the main form. For detailed editing,&nbsp;i edit the items in the child collection in a dialog with the same scenario of commit/cancel the changes to the collection (CSLA 3.6.2). I also use a bindingNavigator to navigate and add/delete between the child items, which seems to work great.</P>
+<P>&nbsp;</P>
+<P>What i did so far to get the thing (almost) working was</P>
+<P>* In the constructor of the dialog</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-&gt; Passing the child collection to the dialog, which seems not to work, it passes the root object</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-&gt; To retrieve the child collection i reassign the datasource to the child collection who i get from drag and drop the collection from the data sources window</P><FONT size=1>
+<P></FONT><FONT color=#0000ff size=1><FONT color=#0000ff size=1>public</FONT></FONT><FONT size=1> FormBookDetail(</FONT><FONT color=#2b91af size=1><FONT color=#2b91af size=1>BindingSource</FONT></FONT><FONT size=1> booksBindingSourceParent)</P>
+<P>{</P></FONT><FONT size=1>
+<P>InitializeComponent();</P>
+<P></FONT><FONT color=#008000 size=1><FONT color=#008000 size=1>// Set the current item in the parentlist to the current item in the detail pane</P></FONT></FONT><FONT size=1>
+<P>booksBindingSource.DataSource = booksBindingSourceParent.DataSource;</P>
+<P>booksBindingSource.DataMember = </FONT><FONT color=#a31515 size=1><FONT color=#a31515 size=1>"Books"</FONT></FONT><FONT size=1>;</P>
+<P>booksBindingSource.Position = booksBindingSourceParent.Position;</P>
+<P></FONT><FONT color=#008000 size=1><FONT color=#008000 size=1>// Populate the DataSource with the DropDown List data</P></FONT></FONT><FONT size=1>
+<P>languageReadOnlyListBindingSource.DataSource = </FONT><FONT color=#2b91af size=1><FONT color=#2b91af size=1>LanguageReadOnlyList</FONT></FONT><FONT size=1>.FetchAll();</P>
+<P>bookTypeReadOnlyListBindingSource.DataSource = </FONT><FONT color=#2b91af size=1><FONT color=#2b91af size=1>BookTypeReadOnlyList</FONT></FONT><FONT size=1>.FetchAll();</P>
+<P>bookSubTypeReadOnlyListBindingSource.DataSource = </FONT><FONT color=#2b91af size=1><FONT color=#2b91af size=1>BookSubTypeReadOnlyList</FONT></FONT><FONT size=1>.FetchBookType(((</FONT><FONT color=#2b91af size=1><FONT color=#2b91af size=1>Book</FONT></FONT><FONT size=1>)booksBindingSource.Current).BookTypeID);</P>
+<P></FONT><FONT color=#008000 size=1><FONT color=#008000 size=1>// Set the initial Read Write Control</P></FONT></FONT><FONT size=1>
+<P>readWriteAuthorizationBook.ResetControlAuthorization();</P></FONT><FONT size=1>
+<P>}</P></FONT>
+<P>* In the Closing event of the form</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-&gt; When i press apply, i close the dialog with calling .EndEdit() on the datasource in the dialog to avoid the 'Edit Level Mismatch in AcceptChanges' error when saving in the main form.</P><FONT size=1>
+<P></FONT><FONT color=#0000ff size=1><FONT color=#0000ff size=1>private</FONT></FONT><FONT size=1> </FONT><FONT color=#0000ff size=1><FONT color=#0000ff size=1>void</FONT></FONT><FONT size=1> FormBookDetail_FormClosing(</FONT><FONT color=#0000ff size=1><FONT color=#0000ff size=1>object</FONT></FONT><FONT size=1> sender, </FONT><FONT color=#2b91af size=1><FONT color=#2b91af size=1>FormClosingEventArgs</FONT></FONT><FONT size=1> e)</P>
+<P>{</P></FONT><FONT size=1>
+<P>booksBindingSource.EndEdit();</P></FONT><FONT size=1>
+<P>}</P></FONT>
+<P>This works while editing 'simple' child collections who rely only on texboxes. However, when i use additional datasources to populate comboxes linked with the child object, it still gives me the 'Edit Level Mismatch in AcceptChanges' error.</P>
+<P><FONT size=1><FONT size=3></FONT>&nbsp;</P></FONT></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

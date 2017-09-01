@@ -1,0 +1,15 @@
+<html><header><title>Object modelling question</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Object modelling question</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/2901.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>triplea posted on Friday, May 18, 2007</h2><P>Guys i am a bit new to object modelling and hope you can guide me a bit on this one. I have a requirement where a Customer can have multiple Systems assigned to him. Depending on which system is selected, a different set of rules (in this case mandatory field checks) applies to the parent Customer object. The obivous structure for me here would be:</P>
+<UL>
+<LI>Customer (BusinessBase)</LI>
+<LI>System (BusinessBase)</LI>
+<LI>CustomerSystemList (BusinessListBase)</LI></UL>
+<P>But then I am questioning the above... As every system generates a different set of checks, should I have 1 class per system inheriting from a base System class? Or is that not good design/overkill?</P>
+<P>Also, where would the checks reside? I would probably place them in Customer but then it also gets messy because since I am placing logic specific to a system within the Customer class...</P>
+<P>Any suggestions to get the above model a bit more structured?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, May 18, 2007</h2><P>In general, you need to ask yourself who's job is it to do what?</P>
+<P>It is clearly not the job of SystemEdit to impose rules on CustomerEdit. Well-behaved objects don't impose rules on each other. But they can certainly be <EM>helpful</EM>!</P>
+<P>The rules must be managed from within CustomerEdit itself, because it is the object affected by these changes.</P>
+<P>However, you could end up with a lot of conditional code inside of CustomerEdit to deal with a large number of types of system, and so you need a way to simplify that task.</P>
+<P>Your rules are mandatory field checks - which I take to mean that CustomerEdit.X is required only when a specific type of system is in the list. I'm assuming here that each SystemEdit knows (or could know) which fields are required, but as noted earlier, they can't <EM>force</EM> CustomerEdit to do anything.</P>
+<P>But CustomerEdit could have a rule method that loops through the child list, asking each child if the specified field is required.</P>
+<P>So some SystemEdit object would know that X is required. In CustomerEdit, when rules are checked for X, (if the value provided is string.Empty) the rule method would walk through the list of child objects, asking each in turn if X is required. If any answer yes, then the rule would fail, otherwise it wuold succeed.</P>
+<P>This way every object is responsible for itself, but they all work together in a polite way to solve the problem.</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

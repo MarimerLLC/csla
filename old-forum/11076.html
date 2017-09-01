@@ -1,0 +1,62 @@
+<html><header><title>User/Object Specific Permissions</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>User/Object Specific Permissions</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11076.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>tdilbert posted on Sunday, January 22, 2012</h2><p><span style="font-family:&#39;Arial&#39;,&#39;sans-serif&#39;;color:black;font-size:9pt;">Hey Rocky,</span></p>
+<p><span style="font-family:&#39;Arial&#39;,&#39;sans-serif&#39;;color:black;font-size:9pt;">First of all, CSLA is awesome. I really like the changes in the framework since the first time a colleague showed me at my previous job back in .NET 2.0. Definitely something I recommend to coders looking for the &quot;best practices&quot; way to build a robust base to their applications.</span></p>
+<p><span style="font-family:&#39;Arial&#39;,&#39;sans-serif&#39;;color:black;font-size:9pt;">The security system in CSLA is great, but I&#39;ve found myself up against a wall now. Basically I have an application where I need to get a little more granular with user access permissions. Here my situation;</span></p>
+<p><span style="font-family:&#39;Arial&#39;,&#39;sans-serif&#39;;color:black;font-size:9pt;">I&#39;ve got an object that represents a &quot;Car&quot; and I want to control access to what properties of the car someone can see (e.g. what type of engine, what colour, how many seats etc.). This is&nbsp;all being handled using the normal CSLA permissions model, everyone is happy.</span></p>
+<p><span style="font-family:&#39;Arial&#39;,&#39;sans-serif&#39;;color:black;font-size:9pt;">Now there are a set of features that, unless you&#39;re in a certain role, you cannot see - how much it cost to build the car for example. That is also being handled by CSLA - everyone is happy.</span></p>
+<p><span style="font-family:&#39;Arial&#39;,&#39;sans-serif&#39;;color:black;font-size:9pt;">Here&#39;s the kicker, how do you handle giving a single person access to only see how much it cost to make Blue Cars? The easy answer is make a &quot;Blue car&quot; permission role, but keep in mind, tomorrow they can have red, purple, light grey - basically &quot;colour&quot; is a variable.</span></p>
+<p><span style="font-family:&#39;Arial&#39;,&#39;sans-serif&#39;;color:black;font-size:9pt;">What I&#39;m after here is figuring out how to control permissions on a per user per object level. This project requires permissions to the level where they can vary depending on the attributes of the car (i.e. you can see how much certain parts of the car cost, but not all parts). Something I think will require more than a role-based security model.</span></p>
+<p><span style="font-family:&#39;Arial&#39;,&#39;sans-serif&#39;;color:black;font-size:9pt;">I&#39;ve got some ideas, but I guess I&rsquo;m not the only person to run into this problem - thought I&#39;d reach out to the community and see if anyone already knows the answer I&rsquo;m looking for or a better way to achieve it.</span></p>
+<p><span style="font-family:&#39;Arial&#39;,&#39;sans-serif&#39;;color:black;font-size:9pt;">Once again thanks man, I&rsquo;m an advocate of CSLA.</span></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Monday, January 23, 2012</h2><p>Hi, </p>
+<p>Rocky has a nice post about this here: <a href="http://www.lhotka.net/weblog/PermissionbasedAuthorizationVsRolebasedAuthorization.aspx">http://www.lhotka.net/weblog/PermissionbasedAuthorizationVsRolebasedAuthorization.aspx</a></p>
+<p>Now - your permissions may be based on some data context and in that sense you need to keep track of the &quot;current&quot; context. Your options are </p>
+<p>1. Load all custom authorization into the IPrincipal object as Permissions.</p>
+<p>2. Create custom authz rules that can check access permissions to users and objects. <br />&nbsp;&nbsp;&nbsp;&nbsp; (Another challenge here is that you can only have 1 authz rule per AuthorizationAction/Object/Property).</p>
+<p>3. Add code in CanReadProperty/CanWriteProperty/CanExecuteMethod that will check both IPrincipal.IsInRole and &quot;context&quot; or &quot;object&quot;.HasPermission</p>
+<p>4. Create an AuthorizationService that loads permission on a per object level when user fetch object for edit. <br />&nbsp;&nbsp;&nbsp; We&#39;ve done this within a bank (to many roles to with millions of customers) and combined with a custom Principal object and 2/3 above.</p>
+<p>The key factor is speed!!</p>
+<p> IsInRole and CanXYZ is called many times so your authorization check should use cached data and not do database access for each check.</p>
+<p>Another big challenge is how to administrate these permissions. It is a PITA&nbsp; to keep overview on User - roles and User - object permissions. </p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tdilbert replied on Monday, January 23, 2012</h2><p>Hey Jonny,</p>
+<p>Sounds like we&#39;re on the same page when it comes to what I&#39;m after here. I think I&#39;ve got a clever way to go about this, once I&#39;ve got something to show I&#39;ll upload examples.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tiago replied on Monday, April 09, 2012</h2><p>Hi Jonny,</p>
+<p>I&#39;m dealing with the resource based access control issue. A given user can or cannot access a given object according to some business rules.</p>
+<p>1) A user can see a folder if he has <strong>Read </strong>permission on that folder..</p>
+<p>2) In my case it&#39;s a folder tree, and the user can create folders if he has <strong>Manager </strong>permission on the parent folder.</p>
+<p>One of the solutions is to build a list of the folders where&nbsp;the user has <strong>Read </strong>and&nbsp;<strong>Manager</strong> permissions at application startup or page load and &quot;hang it&quot; on my CustomIdentity class.</p>
+<p>There could be a simpler solution if only we could access to the DataPortal_Fetch and&nbsp;DataPortal_Create parameters.</p>
+<p>The issue concerns:</p>
+<pre style="font-family:Consolas;background:white;color:black;font-size:13px;"><span style="color:darkblue;">AuthorizationActions</span>.<span style="color:purple;font-weight:bold;">GetObject</span>
+</pre>
+<pre style="font-family:Consolas;background:white;color:black;font-size:13px;"><span style="color:darkblue;">AuthorizationActions</span>.<span style="color:purple;font-weight:bold;">CreateObject</span>
+</pre>
+<p>As you know, on these cases, the Target property of the AuthorizationContext is null (there isn&#39;t yet an object) but DataPortal_Fetch and&nbsp;DataPortal_Create parameters have the piece of information that is needed to resolve the issue.</p>
+<p>On a GetObject action, the Execute method could check for itself whether the user has <strong>Read </strong>permission on the folder, as the folder ID&nbsp;is the DataPortal_Fetch parameter.</p>
+<p>On a CreateObject action, the Execute method could check for itself whether the user has <strong>Manager</strong> permission on the parent folder, as the parent folder ID&nbsp;is the DataPortal_Create parameter.</p>
+<p>Change request: Is it possbile to expose DataPortal_XYZ parameters as some DataPortalContext property?</p>
+<p>&lt;Edit&gt;</p>
+<p>What I do now is:</p>
+<ol>
+<li>on AddObjectAuthorizationRules() add a authz rule <strong>DynamicIsInRole</strong>, a sub-class of CSLA&#39;s&nbsp;<strong>IsInRole</strong> that doesn&#39;t cache the result (<strong>CacheResult</strong> = false)</li>
+<li>on startup/page load, fill the list of <strong>CanReadFolders</strong> and <strong>CanAdminFolders</strong> (CustomIdentity properties)</li>
+<li>on factory Get, (remove &quot;dynamic&quot; role <strong>CurrentFolderRead</strong>)&nbsp;check it the folderID is on the <strong>CanReadFolders</strong> list and add a &quot;dynamic&quot; role <strong>CurrentFolderRead</strong></li>
+<li>on factory New, (remove&nbsp; &quot;dynamic&quot; role <strong>CurrentFolderAdmin</strong>) check it the parentFolderID is on the <strong>CanAdminFolders</strong> list and add a &quot;dynamic&quot; role <strong>CurrentFolderAdmin</strong></li>
+</ol>
+<p>&lt;/Edit&gt;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>edore replied on Monday, April 09, 2012</h2><p>Hi!</p>
+<p>We faced the same need last week and would thought about the same solution than Tiago proposed.&nbsp; We&#39;d be glad to be able to access the criteria in our own rule...</p>
+<p>Thanks to seriously consider this!</p>
+<p>Etienne </p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Monday, April 09, 2012</h2><p>Drepends upon whether this should be checked/enforced on the client or serverside.</p>
+<p><span style="text-decoration:line-through;"><span>You can call &nbsp;the static BusinessRules.HasPermission and supply your own object/citeria in the static factory method or DataPortal_XYZ. That object will be supplied as AuthorizationContext.Target. </span></span></p>
+<p>Update: This would not be possible unless you change the code in BusinessRules. </p>
+<p><b>A possible solution would be to extend the ApplicationContext with a &quot;UserState&quot; object that could be added manually for Get and Create methods in code. </b></p>
+<p><span>The DataPortal will additionaly always check the permission and supply null as value parameter.</span></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tiago replied on Thursday, April 12, 2012</h2><p><div style='padding-left: 50px;background-color:silver'><b>JonnyBee<br></b>
+<p>Drepends upon whether this should be checked/enforced on the client or serverside.</p>
+<p><span style="text-decoration:line-through;"><span>You can call &nbsp;the static BusinessRules.HasPermission and supply your own object/citeria in the static factory method or DataPortal_XYZ. That object will be supplied as AuthorizationContext.Target. </span></span></p>
+<p>Update: This would not be possible unless you change the code in BusinessRules. </p>
+<p><b>A possible solution would be to extend the ApplicationContext with a &quot;UserState&quot; object that could be added manually for Get and Create methods in code. </b></p>
+<p><span>The DataPortal will additionaly always check the permission and supply null as value parameter.</span></p>
+<div style="CLEAR:both;"></div>
+</div></p>
+<p>Since there is no easy workaround, how about exposing DataPortal_XYZ parameters to authz rules as some DataPortalContext property?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, April 12, 2012</h2><p>I am not sure how this makes sense in the broader scheme of things.</p>
+<p>Authz rules are called in various contextual scenarios, many of which are NOT in the context of a data portal call. In fact, most of them are made outside the context of any data portal call.</p>
+<p>So I struggle to see the value of adding some data portal context values to the rule args parameter when 99% of the time those values will be null? Your rule still needs to do something valid in that 99% case...</p>
+<p>These authz rules are intended primarily to be pro-active. To be used by presentation layer code to PREVENT the attempt to do something that turns out to be invalid.</p>
+<p>What you are describing is a scenario where the attempt must be made (you must already be in the data portal call) to find out that the request is invalid.</p>
+<p>This is what exceptions are for. Add your check at the top of the DataPortal_XYZ method and throw an exception to indicate failure.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

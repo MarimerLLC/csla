@@ -1,0 +1,336 @@
+<html><header><title>Wcf on IIS 7.0 vista</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Wcf on IIS 7.0 vista</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4891.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Martin Sørensen posted on Friday, May 23, 2008</h2><P class=MsoNormal><SPAN><FONT face=Calibri>Hi all. Just a quick newbie question again ;o)<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><o:p><FONT face=Calibri>&nbsp;</FONT></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><FONT face=Calibri>I’m trying to setup at project similar to ProjectTracker using Wcf dataportal. This works fine when I use ASP.NET developer server but when I try to get it working in IIS 7.0 I receive this error then hitting the data portal<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><o:p><FONT face=Calibri>&nbsp;</FONT></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><FONT face=Calibri>The request for security token could not be satisfied because authentication failed</FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT face=Calibri></FONT></SPAN>&nbsp;</P><SPAN><FONT face=Calibri>
+<P class=MsoNormal><SPAN>If I browse to <A href="http://localhost/TAHost/WcfPortal.svc"><SPAN>http://localhost/TAHost/WcfPortal.svc</SPAN></A> is shows a page <o:p></o:p></SPAN></P></FONT></SPAN>
+<P class=MsoNormal><SPAN><o:p><FONT face=Calibri>&nbsp;</FONT></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><FONT face=Calibri>In my Wcf host web.config I have<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><o:p><FONT face=Calibri>&nbsp;</FONT></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>&lt;</SPAN><SPAN>appSettings</SPAN><SPAN>&gt;<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>&lt;</SPAN><SPAN>add</SPAN><SPAN> </SPAN><SPAN>key</SPAN><SPAN>=</SPAN><SPAN>"<SPAN>CslaAuthentication</SPAN>"<SPAN> </SPAN><SPAN>value</SPAN><SPAN>=</SPAN>"<SPAN>Csla</SPAN>"<SPAN> /&gt;<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN>&lt;/</SPAN><SPAN>appSettings</SPAN><SPAN>&gt;<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p><FONT face=Calibri>&nbsp;</FONT></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><FONT face=Calibri>------ cut ------------------------<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN>&lt;</SPAN><SPAN>system.serviceModel</SPAN><SPAN>&gt;<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>&lt;</SPAN><SPAN>services</SPAN><SPAN>&gt;<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>&lt;</SPAN><SPAN>service</SPAN><SPAN> </SPAN><SPAN>name</SPAN><SPAN>=</SPAN><SPAN>"<SPAN>Csla.Server.Hosts.WcfPortal</SPAN>"<SPAN> </SPAN><SPAN>behaviorConfiguration</SPAN><SPAN>=</SPAN>"<SPAN>returnFaults</SPAN>"<SPAN>&gt;<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>&lt;</SPAN><SPAN>endpoint</SPAN><SPAN> </SPAN><SPAN>contract</SPAN><SPAN>=</SPAN><SPAN>"<SPAN>Csla.Server.Hosts.IWcfPortal</SPAN>"<SPAN> </SPAN><SPAN>binding</SPAN><SPAN>=</SPAN>"<SPAN>wsHttpBinding</SPAN>"<SPAN> /&gt;<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN></SPAN><SPAN>&lt;/</SPAN><SPAN>service</SPAN><SPAN>&gt;<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>&lt;/</SPAN><SPAN>services</SPAN><SPAN>&gt;<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN></SPAN><SPAN>&lt;</SPAN><SPAN>behaviors</SPAN><SPAN>&gt;<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>&lt;</SPAN><SPAN>serviceBehaviors</SPAN><SPAN>&gt;<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>&lt;</SPAN><SPAN>behavior</SPAN><SPAN> </SPAN><SPAN>name</SPAN><SPAN>=</SPAN><SPAN>"<SPAN>returnFaults</SPAN>"<SPAN>&gt;<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>&lt;</SPAN><SPAN>serviceDebug</SPAN><SPAN> </SPAN><SPAN>includeExceptionDetailInFaults</SPAN><SPAN>=</SPAN><SPAN>"<SPAN>true</SPAN>"<SPAN> /&gt;<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>&lt;/</SPAN><SPAN>behavior</SPAN><SPAN>&gt;<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>&lt;/</SPAN><SPAN>serviceBehaviors</SPAN><SPAN>&gt;<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>&lt;/</SPAN><SPAN>behaviors</SPAN><SPAN>&gt;<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>&lt;</SPAN><SPAN>bindings</SPAN><SPAN>&gt;<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>&lt;</SPAN><SPAN>wsHttpBinding</SPAN><SPAN>&gt;<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>&lt;</SPAN><SPAN>binding</SPAN><SPAN> </SPAN><SPAN>name</SPAN><SPAN>=</SPAN><SPAN>"<SPAN>Transport</SPAN>"<SPAN>&gt;<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>&lt;</SPAN><SPAN>security</SPAN><SPAN> </SPAN><SPAN>mode</SPAN><SPAN>=</SPAN><SPAN>"<SPAN>Transport</SPAN>"<SPAN>&gt;<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>&lt;</SPAN><SPAN>transport</SPAN><SPAN> </SPAN><SPAN>clientCredentialType</SPAN><SPAN>=</SPAN><SPAN>"<SPAN>None</SPAN>"<SPAN>/&gt;<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>&lt;/</SPAN><SPAN>security</SPAN><SPAN>&gt;<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>&lt;/</SPAN><SPAN>binding</SPAN><SPAN>&gt;<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>&lt;</SPAN><SPAN>binding</SPAN><SPAN> </SPAN><SPAN>name</SPAN><SPAN>=</SPAN><SPAN>"<SPAN>NoSecurity</SPAN>"<SPAN>&gt;<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>&lt;</SPAN><SPAN>security</SPAN><SPAN> </SPAN><SPAN>mode</SPAN><SPAN>=</SPAN><SPAN>"<SPAN>None</SPAN>"<SPAN>/&gt;<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN></SPAN><SPAN>&lt;/</SPAN><SPAN>binding</SPAN><SPAN>&gt;<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>&lt;/</SPAN><SPAN>wsHttpBinding</SPAN><SPAN>&gt;<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>&lt;/</SPAN><SPAN>bindings</SPAN><SPAN>&gt;<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>&lt;/</SPAN><SPAN>system.serviceModel</SPAN><SPAN>&gt;</SPAN><o:p></o:p></P>
+<P class=MsoNormal><o:p><FONT face=Calibri>&nbsp;</FONT></o:p></P>
+<P class=MsoNormal><SPAN><FONT face=Calibri>In my website using csla dataportal web.config<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><o:p><FONT face=Calibri>&nbsp;</FONT></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>&lt;</SPAN><SPAN>appSettings</SPAN><SPAN>&gt;<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>&lt;</SPAN><SPAN>add</SPAN><SPAN> </SPAN><SPAN>key</SPAN><SPAN>=</SPAN><SPAN>"<SPAN>CslaAuthentication</SPAN>"<SPAN> </SPAN><SPAN>value</SPAN><SPAN>=</SPAN>"<SPAN>Csla</SPAN>"<SPAN>/&gt;<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>&lt;</SPAN><SPAN>add</SPAN><SPAN> </SPAN><SPAN>key</SPAN><SPAN>=</SPAN><SPAN>"<SPAN>CslaDataPortalProxy</SPAN>"<SPAN> </SPAN><SPAN>value</SPAN><SPAN>=</SPAN>"<SPAN>Csla.DataPortalClient.WcfProxy, Csla</SPAN>"<SPAN>/&gt;<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN>&lt;/</SPAN><SPAN>appSettings</SPAN><SPAN>&gt;</SPAN><SPAN><o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><FONT face=Calibri>--------------- cut -------------------------<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><o:p><FONT face=Calibri>&nbsp;</FONT></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>&lt;</SPAN><SPAN>system.serviceModel</SPAN><SPAN>&gt;<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>&lt;</SPAN><SPAN>client</SPAN><SPAN>&gt;<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>&lt;</SPAN><SPAN>endpoint</SPAN><SPAN> </SPAN><SPAN>name</SPAN><SPAN>=</SPAN><SPAN>"<SPAN>WcfDataPortal</SPAN>"<SPAN> </SPAN><SPAN>address</SPAN><SPAN>=</SPAN>"<SPAN>h<A><FONT color=#0000ff>tp://localhost/TAHost/WcfPortal.svc" </FONT></A></SPAN><SPAN>inding</SPAN><SPAN>=</SPAN>"<SPAN>wsHttpBinding</SPAN>"<SPAN> </SPAN><SPAN>contract</SPAN><SPAN>=</SPAN>"<SPAN>Csla.Server.Hosts.IWcfPortal</SPAN>"<SPAN>/&gt;<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>&lt;/</SPAN><SPAN>client</SPAN><SPAN>&gt;<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>&lt;</SPAN><SPAN>bindings</SPAN><SPAN>&gt;<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>&lt;</SPAN><SPAN>wsHttpBinding</SPAN><SPAN>&gt;<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>&lt;</SPAN><SPAN>binding</SPAN><SPAN> </SPAN><SPAN>name</SPAN><SPAN>=</SPAN><SPAN>"<SPAN>Transport</SPAN>"<SPAN>&gt;<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>&lt;</SPAN><SPAN>security</SPAN><SPAN> </SPAN><SPAN>mode</SPAN><SPAN>=</SPAN><SPAN>"<SPAN>Transport</SPAN>"<SPAN>&gt;<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>&lt;</SPAN><SPAN>transport</SPAN><SPAN> </SPAN><SPAN>clientCredentialType</SPAN><SPAN>=</SPAN><SPAN>"<SPAN>None</SPAN>"<SPAN>/&gt;<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>&lt;/</SPAN><SPAN>security</SPAN><SPAN>&gt;<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>&lt;/</SPAN><SPAN>binding</SPAN><SPAN>&gt;<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>&lt;</SPAN><SPAN>binding</SPAN><SPAN> </SPAN><SPAN>name</SPAN><SPAN>=</SPAN><SPAN>"<SPAN>NoSecurity</SPAN>"<SPAN>&gt;<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>&lt;</SPAN><SPAN>security</SPAN><SPAN> </SPAN><SPAN>mode</SPAN><SPAN>=</SPAN><SPAN>"<SPAN>None</SPAN>"<SPAN>/&gt;<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN></SPAN><SPAN>&lt;/</SPAN><SPAN>binding</SPAN><SPAN>&gt;<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>&lt;/</SPAN><SPAN>wsHttpBinding</SPAN><SPAN>&gt;<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>&lt;/</SPAN><SPAN>bindings</SPAN><SPAN>&gt;<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>&lt;/</SPAN><SPAN>system.serviceModel</SPAN><SPAN>&gt;</SPAN><o:p></o:p></P>
+<P class=MsoNormal><o:p><FONT face=Calibri>&nbsp;</FONT></o:p></P>
+<P class=MsoNormal><FONT face=Calibri>Regards Martin<o:p></o:p></FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Friday, May 23, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Did this part not paste correctly?<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal>&lt;endpoint
+name=&quot;WcfDataPortal&quot; address=&quot;h<span>tp://localhost/TAHost/WcfPortal.svc&quot;
+</span>inding=&quot;wsHttpBinding&quot;
+contract=&quot;Csla.Server.Hosts.IWcfPortal&quot;/&gt;<o:p></o:p></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Senior Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899<o:p></o:p></span></p>
+
+<p class=MsoNormal><b><i><span>Magenic</span></i></b><span> </span><span>®</span><b><i><span><o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Martin SÃƒÂ¸rensen
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Friday, May 23, 2008 10:28 AM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> [CSLA .NET] Wcf on IIS 7.0 vista<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal><span>Hi all. Just a quick newbie question
+again ;o)</span><o:p></o:p></p>
+
+<p class=MsoNormal><span>&nbsp;</span><o:p></o:p></p>
+
+<p class=MsoNormal><span>I???m trying to setup at project
+similar to ProjectTracker using Wcf dataportal. This works fine when I use
+ASP.NET developer server but when I try to get it working in IIS 7.0 I receive
+this error then hitting the data portal</span><o:p></o:p></p>
+
+<p class=MsoNormal><span>&nbsp;</span><o:p></o:p></p>
+
+<p class=MsoNormal><span>The request for security token could
+not be satisfied because authentication failed</span><o:p></o:p></p>
+
+<p class=MsoNormal>&nbsp;<o:p></o:p></p>
+
+<p class=MsoNormal>If
+I browse to <a href="http://localhost/TAHost/WcfPortal.svc">http://localhost/TAHost/WcfPortal.svc</a>
+is shows a page <o:p></o:p></p>
+
+<p class=MsoNormal><span>&nbsp;</span><o:p></o:p></p>
+
+<p class=MsoNormal><span>In my Wcf host web.config I have</span><o:p></o:p></p>
+
+<p class=MsoNormal><span>&nbsp;</span><o:p></o:p></p>
+
+<p class=MsoNormal>&lt;appSettings&gt;<o:p></o:p></p>
+
+<p class=MsoNormal>&lt;add
+key=&quot;CslaAuthentication&quot; value=&quot;Csla&quot; /&gt;<o:p></o:p></p>
+
+<p class=MsoNormal>&lt;/appSettings&gt;<o:p></o:p></p>
+
+<p class=MsoNormal><span>&nbsp;</span><o:p></o:p></p>
+
+<p class=MsoNormal><span>------ cut ------------------------</span><o:p></o:p></p>
+
+<p class=MsoNormal>&lt;system.serviceModel&gt;<o:p></o:p></p>
+
+<p class=MsoNormal>&lt;services&gt;<o:p></o:p></p>
+
+<p class=MsoNormal>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;service
+name=&quot;Csla.Server.Hosts.WcfPortal&quot;
+behaviorConfiguration=&quot;returnFaults&quot;&gt;<o:p></o:p></p>
+
+<p class=MsoNormal>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&lt;endpoint contract=&quot;Csla.Server.Hosts.IWcfPortal&quot;
+binding=&quot;wsHttpBinding&quot; /&gt;<o:p></o:p></p>
+
+<p class=MsoNormal>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&lt;/service&gt;<o:p></o:p></p>
+
+<p class=MsoNormal>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&lt;/services&gt;<o:p></o:p></p>
+
+<p class=MsoNormal>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;behaviors&gt;<o:p></o:p></p>
+
+<p class=MsoNormal>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&lt;serviceBehaviors&gt;<o:p></o:p></p>
+
+<p class=MsoNormal>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;behavior
+name=&quot;returnFaults&quot;&gt;<o:p></o:p></p>
+
+<p class=MsoNormal>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;serviceDebug includeExceptionDetailInFaults=&quot;true&quot;
+/&gt;<o:p></o:p></p>
+
+<p class=MsoNormal>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&lt;/behavior&gt;<o:p></o:p></p>
+
+<p class=MsoNormal>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&lt;/serviceBehaviors&gt;<o:p></o:p></p>
+
+<p class=MsoNormal>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&lt;/behaviors&gt;<o:p></o:p></p>
+
+<p class=MsoNormal>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&lt;bindings&gt;<o:p></o:p></p>
+
+<p class=MsoNormal>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&lt;wsHttpBinding&gt;<o:p></o:p></p>
+
+<p class=MsoNormal>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&lt;binding name=&quot;Transport&quot;&gt;<o:p></o:p></p>
+
+<p class=MsoNormal>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&lt;security mode=&quot;Transport&quot;&gt;<o:p></o:p></p>
+
+<p class=MsoNormal>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&lt;transport clientCredentialType=&quot;None&quot;/&gt;<o:p></o:p></p>
+
+<p class=MsoNormal>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&lt;/security&gt;<o:p></o:p></p>
+
+<p class=MsoNormal>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&lt;/binding&gt;<o:p></o:p></p>
+
+<p class=MsoNormal>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&lt;binding name=&quot;NoSecurity&quot;&gt;<o:p></o:p></p>
+
+<p class=MsoNormal>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&lt;security mode=&quot;None&quot;/&gt;<o:p></o:p></p>
+
+<p class=MsoNormal>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&lt;/binding&gt;<o:p></o:p></p>
+
+<p class=MsoNormal>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&lt;/wsHttpBinding&gt;<o:p></o:p></p>
+
+<p class=MsoNormal>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&lt;/bindings&gt;<o:p></o:p></p>
+
+<p class=MsoNormal>&lt;/system.serviceModel&gt;<o:p></o:p></p>
+
+<p class=MsoNormal><span>&nbsp;</span><o:p></o:p></p>
+
+<p class=MsoNormal><span>In my website using csla dataportal
+web.config</span><o:p></o:p></p>
+
+<p class=MsoNormal><span>&nbsp;</span><o:p></o:p></p>
+
+<p class=MsoNormal>&lt;appSettings&gt;<o:p></o:p></p>
+
+<p class=MsoNormal>&lt;add
+key=&quot;CslaAuthentication&quot; value=&quot;Csla&quot;/&gt;<o:p></o:p></p>
+
+<p class=MsoNormal>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&lt;add key=&quot;CslaDataPortalProxy&quot; value=&quot;Csla.DataPortalClient.WcfProxy,
+Csla&quot;/&gt;<o:p></o:p></p>
+
+<p class=MsoNormal>&lt;/appSettings&gt;<o:p></o:p></p>
+
+<p class=MsoNormal><span>--------------- cut
+-------------------------</span><o:p></o:p></p>
+
+<p class=MsoNormal><span>&nbsp;</span><o:p></o:p></p>
+
+<p class=MsoNormal>&lt;system.serviceModel&gt;<o:p></o:p></p>
+
+<p class=MsoNormal>&lt;client&gt;<o:p></o:p></p>
+
+<p class=MsoNormal>&lt;endpoint
+name=&quot;WcfDataPortal&quot; address=&quot;h<span>tp://localhost/TAHost/WcfPortal.svc&quot;
+</span>inding=&quot;wsHttpBinding&quot; contract=&quot;Csla.Server.Hosts.IWcfPortal&quot;/&gt;<o:p></o:p></p>
+
+<p class=MsoNormal>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&lt;/client&gt;<o:p></o:p></p>
+
+<p class=MsoNormal>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&lt;bindings&gt;<o:p></o:p></p>
+
+<p class=MsoNormal>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&lt;wsHttpBinding&gt;<o:p></o:p></p>
+
+<p class=MsoNormal>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;binding
+name=&quot;Transport&quot;&gt;<o:p></o:p></p>
+
+<p class=MsoNormal>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&lt;security mode=&quot;Transport&quot;&gt;<o:p></o:p></p>
+
+<p class=MsoNormal>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&lt;transport clientCredentialType=&quot;None&quot;/&gt;<o:p></o:p></p>
+
+<p class=MsoNormal>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&lt;/security&gt;<o:p></o:p></p>
+
+<p class=MsoNormal>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&lt;/binding&gt;<o:p></o:p></p>
+
+<p class=MsoNormal>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&lt;binding name=&quot;NoSecurity&quot;&gt;<o:p></o:p></p>
+
+<p class=MsoNormal>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&lt;security mode=&quot;None&quot;/&gt;<o:p></o:p></p>
+
+<p class=MsoNormal>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&lt;/binding&gt;<o:p></o:p></p>
+
+<p class=MsoNormal>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&lt;/wsHttpBinding&gt;<o:p></o:p></p>
+
+<p class=MsoNormal>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&lt;/bindings&gt;<o:p></o:p></p>
+
+<p class=MsoNormal>&lt;/system.serviceModel&gt;<o:p></o:p></p>
+
+<p class=MsoNormal><span>&nbsp;</span><o:p></o:p></p>
+
+<p class=MsoNormal><span>Regards Martin</span><o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Martin Sørensen replied on Friday, May 23, 2008</h2><P>this is what i have in my config</P><FONT color=#0000ff size=2><FONT color=#0000ff size=2>
+<P>&lt;</FONT></FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>endpoint</FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2> </FONT></FONT><FONT color=#ff0000 size=2><FONT color=#ff0000 size=2>name</FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>=</FONT></FONT><FONT size=2>"</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>WcfDataPortal</FONT></FONT><FONT size=2>"</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2> </FONT></FONT><FONT color=#ff0000 size=2><FONT color=#ff0000 size=2>address</FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>=</FONT></FONT><FONT size=2>"</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>http://Trading/TAHost/WcfPortal.svc</FONT></FONT><FONT size=2>"</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2> </FONT></FONT><FONT color=#ff0000 size=2><FONT color=#ff0000 size=2>binding</FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>=</FONT></FONT><FONT size=2>"</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>wsHttpBinding</FONT></FONT><FONT size=2>"</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2> </FONT></FONT><FONT color=#ff0000 size=2><FONT color=#ff0000 size=2>contract</FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>=</FONT></FONT><FONT size=2>"</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Csla.Server.Hosts.IWcfPortal</FONT></FONT><FONT size=2>"</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>/&gt;</FONT></FONT></P>
+<P><FONT color=#000000 size=2></FONT><FONT size=2><FONT color=#000000 size=2>Missing a B ??????</FONT></FONT></P>
+<P><FONT size=2><FONT color=#000000 size=2></FONT></FONT>&nbsp;</P>
+<P><FONT color=#0000ff size=2><FONT color=#0000ff size=2><FONT color=#000000>Regards Martin</FONT></P></FONT></FONT></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

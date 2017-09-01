@@ -1,0 +1,22 @@
+<html><header><title>Create a custom validation rule</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Create a custom validation rule</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9168.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>lazaroms posted on Friday, July 02, 2010</h2><p>Hi all,</p>
+<p>I have a class (Person) inheriting from BusinessBase.</p>
+<p>Person has a property called DateofBirth.</p>
+<p>I need to create a validation rule to prevent that DateofBirth won&#39;t be greater than current date.</p>
+<p>How can create a custom rule to integrated to de class validation rules through the ValidationRules.Addrule?</p>
+<p>Please, any code in VB.NET will appreciated.</p>
+<p>&nbsp;</p>
+<p>Thanks,</p>
+<p>&nbsp;</p>
+<p>L.M</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>Marjon1 replied on Saturday, July 03, 2010</h2><p>The books do a very good job of explaining how to create these rules, as do the CSLA videos.&nbsp;<br />I would recommend both exploring both of those resources, if you haven&#39;t previously. </p>
+<p>You also don&#39;t mention what version of CSLA you are using / targeting.&nbsp;<br />There is a fundamental difference in how rules are created in version 3.x and in the upcoming version 4.</p>
+<p>Here is a basic rule that will compare any standard date field and ensure that it is not greater than the standard date, if this is a rule that may be applied to multiple objects it is good practice to put it into your own common rules library.</p>
+<p style="padding-left:30px;"><span style="font-family:mceinline;">Private Shared Function DateNotGreaterThanCurrentDate(ByVal target as Object, ByVal e as Csla.Validation.RuleArgs) As Boolean<br /></span><span style="font-family:mceinline;"><br />If DirectCast(CallByName(target, e.PropertyName, MethodType.Get, Nothing), Date) &gt;= Date.Now()) Then<br /></span><span style="font-family:mceinline;">&nbsp;&nbsp; &nbsp;e.Description = String.Format(&quot;The {0} field cannot be greater than the current date&quot;, e.PropertyName)<br /></span><span style="font-family:mceinline;">&nbsp;&nbsp; &nbsp;Return False<br /></span><span style="font-family:mceinline;">End If<br /><br /></span><span style="font-family:mceinline;">Return True</span></p>
+<p style="padding-left:30px;"><span style="font-family:mceinline;">End Function&nbsp;</span></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>lazaroms replied on Saturday, July 03, 2010</h2><p>Hi Marjon:</p>
+<p>&nbsp;</p>
+<p>Thank you for your help.</p>
+<p>I&#39;m a rookie and I&#39;m spanish spoken. I red the book but I don&#39;t undestarnd much about custom rules, I&#39;ll do it again.</p>
+<p>Please could you tell where can I find the videos?</p>
+<p>Thanks again,</p>
+<p>&nbsp;</p>
+<p>L.M</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Saturday, July 03, 2010</h2><p>The videos can be purchased at <a href="http://store.lhotka.net/">http://store.lhotka.net/</a></p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

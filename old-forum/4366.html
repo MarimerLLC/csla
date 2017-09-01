@@ -1,0 +1,152 @@
+<html><header><title>Error on DataPortal with Loading assembly msvcm80</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Error on DataPortal with Loading assembly msvcm80</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4366.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>dlabar posted on Monday, February 18, 2008</h2><P>I have a CSLA application that I'm trying to do WCF remoting with.&nbsp; In the DataPortalResult_Fetch method of WcfProxy.cs I'm getting this error message:</P>
+<P><EM>Could not load file or assembly 'msvcm80, Version=8.0.50727.1433, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a' or one of its dependencies. The system cannot find the file specified.</EM></P>
+<P>With a FusionLog as follows:</P>
+<P><EM>Assembly manager loaded from:&nbsp; C:\WINDOWS\Microsoft.NET\Framework\v2.0.50727\mscorwks.dll<BR>Running under executable&nbsp; C:\Perforce_WS\NextGen\main\Development\DotNet\G2\BusinessObjects\TestGUI\bin\Debug\TestGUI.vshost.exe<BR>--- A detailed error log follows. </EM></P>
+<P><EM>=== Pre-bind state information ===<BR>LOG: User = ALPHA\dlabar<BR>LOG: DisplayName = msvcm80, Version=8.0.50727.1433, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a<BR>&nbsp;(Fully-specified)<BR>LOG: Appbase = </EM><A><EM>file:///C:/Perforce_WS/NextGen/main/Development/DotNet/G2/BusinessObjects/TestGUI/bin/Debug/</EM></A><BR><EM>LOG: Initial PrivatePath = NULL<BR>Calling assembly : System.Runtime.Serialization, Version=3.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089.<BR>===<BR>LOG: This bind starts in default load context.<BR>LOG: Using application configuration file:</EM> </P>
+<P>I get the same message running it using local host as I do trying to run it with the dataportal on a different machine.&nbsp; If I run it locally without any remoting, everything works fine.&nbsp; If I add the msvcm80.dll to the bin folder of the localhost folder, I get this compile error:</P>
+<P><EM>Error&nbsp;203&nbsp;A procedure imported by 'msvcm80, Version=8.0.50727.1433, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a' could not be loaded.</EM>&nbsp;&nbsp;<BR></P>
+<P>At first I tried to do DotNet Remoting with the CSLA 2.1 framework, but I was getting the same message so I hoped that upgrading to 3.3 and switching to WCF would work, but it hasn't.</P>
+<P>Does anyone have any suggestions?&nbsp; </P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, February 18, 2008</h2><P>Apparently that assembly is the C++ runtime (or part of it)? You must be using C++ or a component written in C++ within your DataPortal_Fetch method, or in an instance field of your object.</P>
+<P>Given the serialization reference in the execption detail, I'd guess you have an instance field in one of your objects that either directly or indirectly references that C++ runtime.</P>
+<P>I've never tried using C++ in .NET, so I don't know what quirks there might be - but I'm guessing you've found one...</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>dlabar replied on Monday, February 18, 2008</h2><P>Rocky,</P>
+<P>Thanks for that suggestion, my object was referencing a dll that was referencing a dll, and so on, that was referencing ChilkatDotNet2.dll which is written in C++.</P>
+<P>&nbsp;</P>
+<P>I'm in contact with the people at Chilkat but I'm afraid it really isn't their issue.&nbsp; Does anyone have any suggestions on how to overcome this issue?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, February 18, 2008</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>The core issue is that you have a reference chain that is
+causing an attempt to serialize one of their objects, and they hold a reference
+to something in the C++ runtime, so you are trying to serialize some object in
+there.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>The solution is probably to avoid attempting to serialization
+all those objects &#8211; break the chain somewhere in your code by marking an
+instance field as [NonSerialized].<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>If you really need the value(s) that would no longer be
+serialized then you may need to wrap those values in an object of your own
+design that is not only [Serializable], but which also implements ISerializable
+so you have control over what gets serialized &#8211; and thus can prevent the
+serializer from trying to serialize the object from ChilkatDotNet2.dll.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>dlabar replied on Monday, February 18, 2008</h2><P><SPAN><FONT face="Times New Roman" size=3>After removing some code from my DataPortal_Fetch method, I've been able to determine that the objects are deserializing on the server just fine because if I exit my DataPortal_Fetch before grabbing the connection string, I don't get any errors.&nbsp; </FONT></SPAN></P>
+<P><SPAN><FONT face="Times New Roman" size=3>I'm utilizing the Encrypt Decrypt Functionality of the Chilkat dll to decrypt my connection string so if I don't call the Get Database Connection method, then I don't get an error because it doesn't&nbsp;have to load the Chilkat dll.&nbsp;&nbsp;</FONT></SPAN></P>
+<P><SPAN><FONT face="Times New Roman" size=3>Therefore I believe my problem isn't with the remoting, but with how IIS is trying to call the Chilkat Dll.</FONT></SPAN></P>
+<P><SPAN><FONT face="Times New Roman" size=3></FONT></SPAN>&nbsp;</P>
+<P><SPAN><FONT face="Times New Roman" size=3>Any different ideas&nbsp;given this new&nbsp;information?&nbsp; </FONT></SPAN></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>dlabar replied on Monday, February 18, 2008</h2><P>After turning on Debugging on the Server (duh!) I'm getting a different exception.&nbsp; Amazingly, it looks like there is an inner exception that is causing the C++ module failed to load exception.&nbsp; I'm not sure what to do now...</P>
+<P>&nbsp;</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; InnerException: System.TypeInitializationException<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Message="The type initializer for '&lt;Module&gt;' threw an exception."<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Source="ChilkatDotNet2"<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; TypeName="&lt;Module&gt;"<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; StackTrace:<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at &lt;CrtImplementationDetails&gt;.ThrowModuleLoadException(String , Exception )&nbsp;&nbsp;&nbsp; at &lt;CrtImplementationDetails&gt;.LanguageSupport.Initialize(LanguageSupport* )&nbsp;&nbsp;&nbsp; at .cctor()<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; InnerException: &lt;CrtImplementationDetails&gt;.ModuleLoadException<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Message="The C++ module failed to load while attempting to initialize the default appdomain. "<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Nested="A nested exception occurred after the primary exception that caused the C++ module to fail to load. "<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Source="msvcm80"<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; StackTrace:<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at &lt;CrtImplementationDetails&gt;.ThrowModuleLoadException(String errorMessage, Exception innerException)&nbsp;&nbsp;&nbsp; at &lt;CrtImplementationDetails&gt;.LanguageSupport.Initialize(LanguageSupport* )&nbsp;&nbsp;&nbsp; at .cctor()<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; InnerException: System.Runtime.Serialization.SerializationException<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Message="Type is not resolved for member 'CMS.G2.Security.G2Principal,CMS.G2.Security, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null'."<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Source="mscorlib"<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; StackTrace:<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at System.AppDomain.get_Id()&nbsp;&nbsp;&nbsp; at &lt;CrtImplementationDetails&gt;.DoCallBackInDefaultDomain(IntPtr function, Void* cookie)&nbsp;&nbsp;&nbsp; at &lt;CrtImplementationDetails&gt;.DefaultDomain.Initialize()&nbsp;&nbsp;&nbsp; at &lt;CrtImplementationDetails&gt;.LanguageSupport.InitializeDefaultAppDomain(LanguageSupport* )&nbsp;&nbsp;&nbsp; at &lt;CrtImplementationDetails&gt;.LanguageSupport._Initialize(LanguageSupport* )&nbsp;&nbsp;&nbsp; at &lt;CrtImplementationDetails&gt;.LanguageSupport.Initialize(LanguageSupport* )<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; InnerException: <BR></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, February 19, 2008</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I&#8217;m not sure what to recommend with that one. It appears
+that the assembly doesn&#8217;t like being loaded within ASP.NET. Are you sure
+their product supports web environments?<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky</span><o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>dlabar replied on Tuesday, February 19, 2008</h2><P>I've have since given up on trying to get the Chilkat.Dll to work and used the .Net Cryptography to handling decrypting passwords.&nbsp; After removing all references to the Chilkat Dll it works perfectly fine now.&nbsp; Thanks for looking into this.</P>
+<P>&nbsp;</P>
+<P>dlabar</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>brucep replied on Tuesday, April 15, 2008</h2><P>Hi guys. Been a long time since I've posted here. I got this exact error and this thread was one of only two Google hits for the ModuleLoadException, so I thought I would share my thoughts.</P>
+<P>I don't use CSLA.net, but I do use a very similar login / Principal strategy for web applications. So after four days of beating my head against the wall trying to track this down, putting assemblies in the GAC, recompiling my c++ with /clr, /clr: pure, trying to translate the c code to c# with an automatic translator (don't bother), modifying the PATH variable, and about a hundred other things that I don't remember now, I decided to bite the bullet and make my base IPrincipal object inherit from MarshalByRefObject. This was ok because I don't use remoting, I just hook up to remote databases and let TDS do the remoting for me.</P>
+<P>Guess what? The entire error went away. Everything. It definitely has something to do with crossing AppDomain boundaries, and what I found out was that in trying to call into a c++ DLL, I was actually <EM>exposing</EM> an exception that was being swallowed by IIS. I don't know if it was coincidence, but my web apps seemed to speed up dramatically after the change, because there is no way to know for sure how many times IIS was throwing / catching / swallowing this exception.</P>
+<P>The gist of this is that I would take a hard look at doing whatever it takes to make your base IPrincipal object inherit from MarshalByRefObject. Maybe have a context switch or a parameter that goes to a factory that creates a special one for web applications or something, since you rarely need remoting in a web context.</P>
+<P>Here's hoping this post can save someone in the future from a lot of headaches and sleepless nights. Unlike dlabar, I had no choice but to get this working.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>brucep replied on Tuesday, April 15, 2008</h2>Rocky, as a follow-on to this: my testing is going fine with the IPrincipal class&nbsp;inheriting from MarshalByRefObject, but do you know of any gotchas that I should be aware of?</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, April 15, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>This is not something I&#8217;ve tried, so I have no idea,
+sorry.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Certainly you could never use a remote data portal and expect to
+have the principal flow to the server &#8211; that much is obvious.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> brucep
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Tuesday, April 15, 2008 11:45 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: Error on DataPortal with Loading assembly
+msvcm80<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Rocky, as a follow-on to this: my testing is going fine with
+the IPrincipal class&nbsp;inheriting from MarshalByRefObject, but do you know
+of any gotchas that I should be aware of?<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,13 @@
+<html><header><title>Total Record Count</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Total Record Count</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5046.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Zafar Ullah posted on Wednesday, July 02, 2008</h2><P>Hello,</P>
+<P>I am using CSLA.NHibernate from&nbsp;CSLA Contrib. </P>
+<P>I am using CSLA version 3.0.4.0 and CSLA.NHibernate version is compiled using the same version of CSLA and my application is web based(ASP.NET with C#)</P>
+<P>I&nbsp;have a huge number of records to display&nbsp;in our database e.g over 20 million&nbsp;and above in some tables rest of&nbsp;them are under&nbsp;1 lac. I hav&nbsp;implemented paging and a max of 100 records can be shown displayed in a grid at 1 time.</P>
+<P>Actually what we do is we send call to Collection class to load all records which meet under certain search criteria and take its count. like this</P><FONT color=#008080 size=2>
+<P>AMCollection</FONT><FONT size=2>.GetAMCollection(crit).Count</FONT></P>
+<P><FONT size=2>In background NHibernate make objects of&nbsp;&nbsp;all records e.g 1million and then we have a count. which make web page response very slow over 30 sec.</FONT></P>
+<P><FONT size=2>Is there any way to take the total count with out making objects of each record that NHibernate pulls.</FONT></P>
+<P><FONT size=2>Thanks in advance</FONT></P>
+<P><FONT size=2>Zafar Ullah</P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>chrisghardwick replied on Friday, February 25, 2011</h2><p>I might go in a different direction. Maybe count the rows in the database, and return the result. This would perform much better, and would make the application more responsive.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>bniemyjski replied on Monday, April 18, 2011</h2><p>Hello,</p>
+<p>I&#39;d recommend creating a stored procedure that returns the count and maybe a generic Command Object that takes the&nbsp;table name and calls this stored procedure.</p>
+<p>Thanks</p>
+<p>-Blake Niemyjski</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

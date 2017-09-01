@@ -1,0 +1,62 @@
+<html><header><title>CSLA 3.6.X Concurrency Best Practices.</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA 3.6.X Concurrency Best Practices.</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/7015.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>bniemyjski posted on Thursday, May 28, 2009</h2>Hello,<br><br>Rocky, I have been looking through your <a href="http://www.apress.com/book/view/9781430210191">new book</a> as well as the forums <a HREF="/search/SearchResults.aspx?q=concurrency&amp;s=5">here </a>and <a HREF="/search/SearchResults.aspx?q=timestamp&amp;s=5">here</a>, and I haven't come across anything up-to-date on dealing with concurrency. The only document I can find on this issue is located <a href="http://www.lhotka.net/Article.aspx?id=890d3e3c-8a49-486c-ae48-a44e7e1f7844">here</a>. What do you recommend? Do you have any samples?<br><br>Thanks<br>-Blake Niemyjski</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, May 28, 2009</h2><P>The concurrency document in your third link is correct. CSLA doesn't do anything around concurrency, specifically so you can choose a model that works well in your database environment. Data concurrency is a&nbsp;database issue, not an object issue.</P>
+<P>I use timestamps as a general rule, because they are the most efficient and safe technique, especially in a distributed environment. </P>
+<P>You really only have two options - use a timestamp, or maintain a copy of the original values for all your fields. </P>
+<P>That second approach is powerful, and you can&nbsp;implement that by creating custom PropertyInfo&lt;T&gt; and FieldData&lt;T&gt; subclasses (in 3.6 or higher). But you must remember that you just doubled the size of your object in memory, and more importantly over the wire. So while it is a powerful technique, it is not cheap.</P>
+<P>And that's why I prefer the timestamp model. With SQL Server, this adds just 8 bytes to each of your objects (that's the size of the SQL timestamp), and you just ferry it around in a private field so the value is accessible to your DAL when it does an update operation.</P>
+<P>The Resource class in ProjectTracker uses the timestamp technique, and provides a good example for using it with SQL Server.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>bniemyjski replied on Thursday, May 28, 2009</h2>Hello,<br><br>Thanks for your suggestion. I wish you would of had something in your book on this. Even if it isn't a CSLA issue, your recommendations are always welcoming :).<br><br>Thanks<br>-Blake Niemyjski
+
+
+									</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rsbaker0 replied on Thursday, May 28, 2009</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div> 
+<P>...</P>
+<P>That second approach is powerful, and you can&nbsp;implement that by creating custom PropertyInfo&lt;T&gt; and FieldData&lt;T&gt; subclasses (in 3.6 or higher). But you must remember that you just doubled the size of your object in memory, and more importantly over the wire. So while it is a powerful technique, it is not cheap.</P>
+<P>...</P>
+<P></div></BLOCKQUOTE></P>
+<P>I use a modified approach in which I cache the original value of a property only when it is being changed (basically using a structure like your Undo state). </P>
+<P>So, while it requires double the storage in the worst case (perhaps actually even slightly more), in practice it is typically much less. </P>
+<P>The concurrency cache also comes in very handy for determining if a field is *really* dirty (e.g. if you change a value a second time and put it back to the original value, then it's not dirty anymore). </P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>bniemyjski replied on Tuesday, June 09, 2009</h2>Hello,<br><br>Do you have an example of this?<br><br>Thanks<br>-Blake Niemyjski<br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>b30.868 replied on Tuesday, June 30, 2009</h2>I actually implemented the CRC method by calling "LoadProperty  UInt32>(Crc32Property, Function.GetChecksum BBClass>(this));" in the fetch method (as well as the insert and update).<br /><br />Using a binary formatter, I serialize the class into a buffer and generate a checksum from the buffer.<br /><br />However, I've run into an interesting dilema.  <br /><br />If I add a validation rule to the BB class, the buffer length is 199 larger only on the first call to Get(), in every other call the buffer length is 199 less.  <br /><br />With no validation rules being added, buffer length is same on every call to Get(). <br /><br />The initial difference in the buffer lengths causes only the first checksum to be different than all subsequent checksums for the same object.<br /><br />BBClass bbClass = BBClass.Get(1); //Buffer length = 199+n<br />bbClass = BBClass.Get(1); // Buffer length = n<br />bbClass = BBClass.Get(1); // Buffer length = n<br />BBClass bbClass2 = BBClass.Get(1); //Buffer length = n<br /><br />Does anyone have any insight to my dilema?<br /><br />Thanks.<br /><br />-Alan Gamboa<br />CCG Systems, Inc.<br /><br />note:<br /><br />Regardless of the class size or number of validation rules, the first call is always 199 larger.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, July 01, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>You are checking the serialized object byte stream? Interesting
+idea.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Remember that the serialized object includes quite a number of
+things that are not directly under your control, including IsNew, IsDirty &#8211;
+and to your question &#8211; BrokenRules.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Some of the sub-objects (like the broken rules collection) are
+created on-demand to keep the size of the byte stream as small as possible. No
+sense creating an empty object just to serialize it over the wire. And I think
+what you are seeing is one of those on-demand objects being created.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>b30.868 replied on Wednesday, July 01, 2009</h2>Thanks for your insight, that explanation makes sense.<br /><br />-Alan</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rfcdejong replied on Wednesday, July 01, 2009</h2><P>You could also calculate an checksum by using MD5CryptoServiceProvider().ComputeHash(bytes) where bytes would be an byte array which contains data based on property values.</P>
+<P>So calculate the checksum when fetching from the database.. before u save to the database u'll have to fetch it again and calculate it.</P>
+<P>If u think there might be a performance issue to compute a hash, don't worry.<BR>Fetching before saving is something else, but if u want concurrency then i think u'll need to do that.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>b30.868 replied on Wednesday, July 01, 2009</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>rfcdejong:</strong></div><div><P>You could also calculate an checksum by using MD5CryptoServiceProvider().ComputeHash(bytes) where bytes would be an byte array which contains data based on property values.</P><br /><P>So calculate the checksum when fetching from the database.. before u save to the database u'll have to fetch it again and calculate it.</P><br /><P>If u think there might be a performance issue to compute a hash, don't worry.<BR>Fetching before saving is something else, but if u want concurrency then i think u'll need to do that.</P></div></BLOCKQUOTE><br /><br />Any suggestions on how to dynamically create the byte array of data?<br /><br />Thanks.<br /><br />-Alan</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Wbmstrmjb replied on Wednesday, July 01, 2009</h2>There is another option for concurrency which we use that is similar to the timestamp idea.  We have a global sequence (Oracle) that it used to add a Revision number to the record.  All records get Revision = 0 when created and then any future update uses the global sequence to get the next number in the sequence.  Every Revision > 0 is thus unique and used in determining if an error exists.<br /><br />If Party A reads a record with Revision 0 and then Party B also reads that same record, both objects have 0 for their Revision.  When PartyA saves (updates), Revision will be set to next number (say 4568).  When Party B tries to save, his Revison of 0 doesn't match the current Revision of 4568 so an error is fired off from the DB to let the BO know.<br /><br />Similar to timestamp, but just a number.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>b30.868 replied on Wednesday, July 01, 2009</h2>I don't know why I asked that :)<br /><br />Just use FieldDataManager.<br /><br />Thanks for your input.<br /><br />-Alan</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>bniemyjski replied on Wednesday, September 15, 2010</h2><p>
+<p>Hello,</p>
+<p>Wanted to update this post and let everyone know that I did figure this out and we have concurrency support in the <a href="http://www.codesmithtools.com/generate-csla-code-with-templates.aspx">CodeSmith CSLA templates</a> for a few versions now.&nbsp;</p>
+<p>Thanks</p>
+<p>-Blake Niemyjski</p>
+</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

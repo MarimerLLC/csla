@@ -1,0 +1,12 @@
+<html><header><title>read-only BOs in case of un-persistence objects</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>read-only BOs in case of un-persistence objects</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4049.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>shaih posted on Sunday, December 16, 2007</h2><P>Hi,</P>
+<P>I am looking for the correct way of doing the following:</P>
+<P>I would like to have a few BOs that are loaded from the database and from that point have a life of their own (not persistent against the database) - the idea behind this is to have a template in the database and create objects from the template, the objects will not need to save any information to the database but they can change (add items to the item lists, change member data etc).</P>
+<P>I still want to support the data portal methods like delete, update and so on but this will be local and not update the database.</P>
+<P>Should I&nbsp;use read-only BOs or editable BOs that implement the data portal methods to&nbsp;run locally?</P>
+<P>Should I create these methods under the business methods and keep it apart from the data portal methods?</P>
+<P>&nbsp;</P>
+<P>Thanks&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Sunday, December 16, 2007</h2><P>Sounds like you should use an Editable object but then only code for DataPortal_Fetch.</P>
+<P>This makes it act more like a ReadOnly object. Except you can change the values.</P>
+<P>You could write methods like Update or Save but they would *NOT* be DataPortal methods since you do not want to hit the DB. They would just do whatever you thought they should do locally to the object.</P>
+<P>Joe</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Monday, December 17, 2007</h2>Just create your BO like normal.&nbsp; In your dataportal create (or fetch) you can load from any datasource you like.&nbsp; Your update or insert can then talk to a different database (or table) if you want.&nbsp; If you're doing something like templates, it sounds like you'd be creating new objects based off a template.&nbsp; In that case, your New factory method can take a template id or something like that, and your DP_C can load from the database.<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

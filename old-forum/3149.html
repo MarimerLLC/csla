@@ -1,0 +1,39 @@
+<html><header><title>Nice error messages who handles? UI OR Business Objects?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Nice error messages who handles? UI OR Business Objects?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3149.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>dantruj posted on Friday, July 06, 2007</h2><P>I would like to know what layer should handle the nice error messages to show to the user?&nbsp; For example, if a business method in the csla throws an error message (techincal error) and I do not want the UI to display this in an error message box to the user, then what would I do?</P>
+<P>1)&nbsp; Would I rethrow the business error with a nice error from within the business layer?</P>
+<P>Or</P>
+<P>2) Have the UI log the technical error, then display a messagebox with the nice error in there?</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Friday, July 06, 2007</h2>That sounds like it belongs in the UI layer, so option 2 sounds best.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>david.wendelken replied on Monday, July 09, 2007</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>dantruj:</strong></div><div>
+<P>I would like to know what layer should handle the nice error messages to show to the user?&nbsp; For example, if a business method in the csla throws an error message (techincal error) and I do not want the UI to display this in an error message box to the user, then what would I do?</P>
+<P>1)&nbsp; Would I rethrow the business error with a nice error from within the business layer?</P>
+<P>Or</P>
+<P>2) Have the UI log the technical error, then display a messagebox with the nice error in there?</P>
+<P></div></BLOCKQUOTE></P>
+<P>I would reframe your question like this:</P>
+<OL>
+<OL>
+<LI><STRONG>What layer is responsible for knowing that this particular error has occurred?</STRONG></LI>
+<LI><STRONG>What layer is responsible for providing the information necessary to produce a user-understandable error message?</STRONG></LI>
+<LI><STRONG>What layer is responsible for taking the information necessary to produce a user-understandable error message and then turning it into that message.</STRONG></LI>
+<LI><STRONG>What layer is responsible for displaying that message to the user in a manner appropriate to the context in which it happens?</STRONG></LI>
+<LI><STRONG>What layer is responsible for logging the error in a data store?</STRONG></LI></OL></OL>
+<P>Sample answers (and why):</P>
+<P><STRONG>1) What layer is responsible for knowing that this particular error has occurred?</STRONG></P>
+<BLOCKQUOTE dir=ltr>
+<P>Often the business object layer, but it could be the database layer or the ui layer.&nbsp; You might not want it to be the database or ui layer, but those layers will generate errors upon occasion regardless of our wishes to the contrary.</P>
+<P>So, the answer is: The layer the error is created in is responsible for knowing it happened.</P></BLOCKQUOTE>
+<P><STRONG>2) What layer is responsible for providing the information necessary to produce a user-understandable error message?</STRONG></P>
+<BLOCKQUOTE dir=ltr>
+<P>In general, the best place for me&nbsp;is where the error occurred.&nbsp; That's where the necessary information is available, every place else either has to have it passed in or reconstruct it after the fact.</P></BLOCKQUOTE>
+<P><STRONG>3) What layer is responsible for taking the information necessary to produce a user-understandable error message and then turning it into that message.</STRONG></P>
+<BLOCKQUOTE dir=ltr>
+<P>Given that errors can occur in the UI, the UI has to have this capability (even if it just asks another layer to do the work).&nbsp; </P>
+<P>Given that programmers need good error messages as much (or more!) than users, I would do the translation as close to the source of the error as possible.&nbsp; Makes testing and debugging much easier, although having equivalent translation capability in each layer means a bit more infrastructure setup.</P></BLOCKQUOTE>
+<P><STRONG>4) What layer is responsible for displaying that message to the user in a manner appropriate to the context in which it happens?</STRONG></P>
+<BLOCKQUOTE dir=ltr>
+<P>That's the UI.</P></BLOCKQUOTE>
+<P><STRONG>5) What layer is responsible for logging the error in a data store?</STRONG></P>
+<BLOCKQUOTE dir=ltr>
+<P>Again, I prefer to do this as close to where the error happens as possible, otherwise some won't get logged and you won't know it (except for the existence of pernicious,&nbsp;hard-to-kill bugs).</P></BLOCKQUOTE>
+<P>&nbsp;</P>
+<P>Hope that helps!</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>dantruj replied on Tuesday, July 10, 2007</h2>Yes it helps tremendously, thank you.</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,25 @@
+<html><header><title>CommandBase Authorization</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CommandBase Authorization</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10540.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Ranjini posted on Wednesday, July 20, 2011</h2><p>I need to implement&nbsp; role-based authorization on a commandbase object. i.e does this user have rights to do a DataPortal_Execute on this command object. Can someone point me in the direction of a sample or explanation? I have searched the forum/book.</p>
+<p>Thanks much</p>
+<p>Ranjini</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Wednesday, July 20, 2011</h2><p>Add the following </p>
+<pre style="font-family:Consolas;font-size:13px;color:#f6e9c0;background:none repeat scroll 0% 0% #160d03;">&nbsp;&nbsp;&nbsp; <span style="color:#e2b155;">protected</span>&nbsp;<span style="color:#e2b155;">static</span>&nbsp;<span style="color:#e2b155;">void</span>&nbsp;AddObjectAuthorizationRules()
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#a9d3df;">BusinessRules</span>.AddRule(<span style="color:#e2b155;">typeof</span>(CommandName),&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#e2b155;">new</span>&nbsp;Csla.Rules.CommonRules.<span style="color:#a9d3df;">IsInRole</span>(<span style="color:#a9d3df;">AuthorizationActions</span>.EditObject,&nbsp;<span style="color:#c9722b;">&quot;role1&quot;</span>,&nbsp;<span style="color:#c9722b;">&quot;role2&quot;</span>));
+&nbsp;&nbsp;&nbsp;&nbsp;}</pre></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Ranjini replied on Wednesday, July 20, 2011</h2><p>Thanks! I wasnt aware that DataPortal_Execute checks&nbsp;the CanUpdate flag.</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rxelizondo replied on Saturday, January 14, 2012</h2><p>This is good, the &quot;CommandBase&quot; example on the ebook (Creating Business Object Rev 04 page 70) goes&nbsp;something&nbsp;like this:</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>public static bool Execute() </p>
+<p>{ </p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp;if (!CanExecuteCommand()) </p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; throw new System.Security.SecurityException(&quot;Not authorized to execute command&quot;); </p>
+<p>...</p>
+<p>...</p>
+<p>}</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>Basically, the&nbsp;authorization on the example&nbsp;is handled manually rather than automatically like Jonny&nbsp;suggests.</p>
+<p>Perhaps the example should be updated to show authorization they way Jonny suggested in this post. The way is shown now is more&nbsp;confusing&nbsp;than&nbsp;help full&nbsp;unless I am missing something.</p>
+<p>Thanks.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Saturday, January 14, 2012</h2><p>Hi Rene, </p>
+<p>If you are referring to Table 15 -page 71 in<b><i> Using CSLA4 Creating Business Objects</i></b> version 1.0 then the code has been updated to just use the automatic check:</p>
+<p>#if !SILVERLIGHT <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public static bool Execute() <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; { <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; CommandObject cmd = new CommandObject(); <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; cmd.BeforeServer(); <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; cmd = DataPortal.Execute&lt;CommandObject&gt;(cmd); <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; cmd.AfterServer(); <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return cmd.Result; <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; } <br />&nbsp; #endif <br /><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public static void BeginExecute(EventHandler&lt;DataPortalResult&lt;CommandObject&gt;&gt; callback) <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; { <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; CommandObject cmd = new CommandObject(); <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; cmd.BeforeServer(); <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; DataPortal.BeginExecute&lt;CommandObject&gt;(cmd, (o, e) =&gt; <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; { <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (e.Error != null) <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; throw e.Error; <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; e.Object.AfterServer(); <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; callback(o, e); <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }); <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

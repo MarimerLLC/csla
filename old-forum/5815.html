@@ -1,0 +1,76 @@
+<html><header><title>CSLA 3.5 How to define a nullable int</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA 3.5 How to define a nullable int</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5815.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>alef posted on Monday, November 17, 2008</h2><P>When it is not a nullable int I'm using the following syntax for a property CityId:</P>
+<P>&nbsp;private static PropertyInfo&lt;int&gt; CityIdProperty = RegisterProperty&lt;int&gt;(typeof(Joiner), new PropertyInfo&lt;int&gt;("CityId"));</P>&nbsp;&nbsp;public int CityId<BR>&nbsp;&nbsp;&nbsp;get { return GetProperty&lt;int&gt;(CityIdProperty); }<BR>&nbsp;&nbsp;&nbsp;set { SetProperty&lt;int&gt;(CityIdProperty, value); } 
+<P>&nbsp;&nbsp;#region Data Access - Fetch</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;LoadProperty&lt;int&gt;(CityIdProperty, data.numCityId);</P>
+<P>&nbsp;&nbsp;#region Data Access - Insert</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;data.numCityId = ReadProperty&lt;int&gt;(CityIdProperty);</P>
+<P>&nbsp;&nbsp;#region Data Access - Update</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;data.numCityId = ReadProperty&lt;int&gt;(CityIdProperty);</P>
+<P>&nbsp;</P>
+<P>When CityId <STRONG>can be nullable</STRONG> in the SQL database how do I define the property in CSLA 3.5? </P>
+<P>Is the following OK?</P>&nbsp;&nbsp;private static PropertyInfo&lt;int?&gt; CityIdProperty = RegisterProperty&lt;int?&gt;(typeof(Joiner), new PropertyInfo&lt;int?&gt;("CityId"));
+<P>&nbsp;&nbsp;public int? CityId<BR>&nbsp;&nbsp;&nbsp;get { return GetProperty&lt;int?&gt;(CityIdProperty); }<BR>&nbsp;&nbsp;&nbsp;set { SetProperty&lt;int?&gt;(CityIdProperty, value); }</P>
+<P>&nbsp;#region Data Access - Fetch</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;LoadProperty&lt;int?&gt;(CityIdProperty, data.numCityId);</P>
+<P>&nbsp;&nbsp;#region Data Access - Insert</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;data.numCityId = ReadProperty&lt;int?&gt;(CityIdProperty);</P>
+<P>&nbsp;&nbsp;#region Data Access - Update</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;data.numCityId = ReadProperty&lt;int?&gt;(CityIdProperty</P>
+<P>&nbsp;</P>
+<P>Does somebody know how to define this in the xml document for the codesmith templates?</P>
+<P>In the attribute NativeType int? doesn't exist.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>skagen00 replied on Monday, November 17, 2008</h2><P>We use nullable ints as you mention above. </P>
+<P>One thing we did, though, for data access (we use stored procedures) is that null needs to be System.DbNull. So, we created some extension methods for nullable types.</P><FONT size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public static object DBValue(this int? value) <BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (value.HasValue)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return value.Value;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; else<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return DBNull.Value;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</FONT> 
+<P>This allows one do to something like this when adding parameters to the sproc (in the case below, it's a nulable datetime):</P><FONT size=2>
+<P>database.AddInParameter(command, _incorporatedDate.DataParameterName, </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>DbType</FONT></FONT><FONT size=2>.DateTime, ReadProperty(_incorporatedDate).DBValue());</FONT></P>
+<P>When fetching, one needs to check the datareader for DbNull, and if it's DbNull just don't load into it - leave it the default value of null (in the general case):</P>
+<P><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT size=2>&nbsp;&nbsp; if (!reader.IsDBNull(_incorporatedDate.DataColumnName))<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; LoadProperty&lt;DateTime?&gt;(_incorporatedDate, reader.GetDateTime(_incorporatedDate.DataColumnName));<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</FONT></P>
+<P>(DataColumnName and DataParameterName are&nbsp;just an extended properties of our own PropertyInfo objects, but you get the gist0.</P>
+<P>So long story short, we use nullable propertyinfo objects without difficulty. </P>
+<P>Chris</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>alef replied on Thursday, November 20, 2008</h2>Very interesting.<br>
+Extension methods was something new for me, so I had to study a little bit.<br>
+<br>
+So as you mentioned I created the following class:<br>
+&nbsp; public static class MyExtensionMethods<br>
+&nbsp; {<br>
+&nbsp;&nbsp;&nbsp; public static object DBValue(this int? value)<br>
+&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (value.HasValue)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return value.Value;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; else<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return DBNull.Value;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+&nbsp;&nbsp;&nbsp; }<br>
+&nbsp; }<br>
+<br>
+In the method AddInsertParameters generated by CodeSmith I've changed&nbsp; the following code<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (CityId != null)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+cm.Parameters.AddWithValue("@CityId",
+ReadProperty&lt;int?&gt;(HoofdafdelingLIDProperty));<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; else<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; cm.Parameters.AddWithValue("@CityId", DBNull.Value);<br>
+<br>
+to only 1 line as you suggested<br>
+cm.Parameters.AddWithValue("@CityId", ReadProperty&lt;int?&gt;(CityIdProperty).DBValue());<br>
+
+Thank you very much for this code reduction.<br>
+<br>
+For Fetching I changed the code in the method FetchObject generated by CodeSmith from<br>
+&nbsp;&nbsp;&nbsp; LoadProperty&lt;int?&gt;(CityIdProperty, dr.GetInt32("CityId"));<br>
+to<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if(!dr.IsDBNull("CityId"))<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; LoadProperty&lt;int?&gt;(CityIdProperty, dr.GetInt32("CityId"));<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+We have to check for null with dr.IsDBNull because the method GetInt32
+from SafeDataReader will convert null to 0 which is not what we want.<br>
+<br>
+Can you provide the code for your own PropertyInfo objects and how to
+use them? This seems to me very interesting to get rid off the string
+literals @CityId , CityId<br>
+<br>
+<br><br>
+<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

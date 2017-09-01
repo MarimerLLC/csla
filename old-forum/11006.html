@@ -1,0 +1,45 @@
+<html><header><title>Chained Rules &amp; RuleContextModes</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Chained Rules &amp; RuleContextModes</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11006.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Peran posted on Thursday, December 22, 2011</h2><p>Hi Jonny,</p>
+<p>I have been playing with your recent business rule changes (CanRunAsAffectedProperty etc) and noticed different&nbsp;behavior&nbsp;if a rule is run as an inner rule.</p>
+<p>The standard way of running inner rules, within a gateway rule, bypasses any checks on the RuleContext.ExecuteContext</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; if (MyCondition)</p>
+<p>&nbsp; &nbsp; {<br />&nbsp; &nbsp; &nbsp; &nbsp; var chainedContext = context.GetChainedContext(thisMyInnerRule);<br />&nbsp; &nbsp; &nbsp; &nbsp; this.MyInnerRule.Execute(chainedContext);<br />&nbsp; &nbsp; }</p>
+<p>&nbsp;</p>
+<p>If my inner rule has&nbsp;CanRunAsAffectedProperty = false, I would expect it *not* to run if it is an affected property regardless of it being part of a chain or not. &nbsp;Currently the rule runs if it is an inner rule.</p>
+<p>I propose this addition to RuleContext:</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; public void ExecuteChainedRule(Csla.Rules.IBusinessRule chainedRule)</p>
+<div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; {</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; var chainedContext = GetChainedContext(chainedRule);</div>
+<div></div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; if (Csla.Rules.BusinessRules.CanRunRule(chainedRule, chainedContext.ExecuteContext))</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; chainedRule.Execute(chainedContext);</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; }</div>
+<div></div>
+</div>
+<p>Which would also require&nbsp;Csla.Rules.BusinessRules.CanRunRule to be changed from private to internal.</p>
+<p>And my gateway rule could be written as:</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; if (MyCondition)</p>
+<div>&nbsp; &nbsp; {</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; context.ExecuteChainedRule(this.MyInnerRule);</div>
+<div>&nbsp; &nbsp; }</div>
+<p>&nbsp;</p>
+<p>I think this also simplifies the syntax for running chained rules.</p>
+<p>Let me know what you think.</p>
+<div></div>
+<p>Cheers</p>
+<p>Peran</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Friday, December 23, 2011</h2><p>Hi Peran, </p>
+<p>Great idea and added to Bugtracker: <a href="http://www.lhotka.net/cslabugs/edit_bug.aspx?id=1003">http://www.lhotka.net/cslabugs/edit_bug.aspx?id=1003</a></p>
+<p>I wonder if we should just call the method <b><i>RuleContext.ExecuteRule </i></b></p>
+<p>The <i><b>Using CSLA 4 </b></i>ebook also call these <i>outer </i>and <i>inner </i>rules but to a programmer it would simply be on or more (inner) rules to be executed from the this&nbsp; rule&#39;s context. </p>
+<p>What do you think?</p>
+<p>Thanks,</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Peran replied on Thursday, December 29, 2011</h2><p>&#39;ExecuteRule&#39; method name works for me. &nbsp;I added the word &#39;Chained&#39; as it was replacing the call to &#39;Get*Chained*Context&#39;.</p>
+<p>&nbsp;</p>
+<p>Regards</p>
+<p>&nbsp;</p>
+<p>Peran</p>
+<p>&nbsp;</p>
+<p>I renamed the parameter innerRule to go with the documentation.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Thursday, December 29, 2011</h2><p>Great!&nbsp; already checked in to trunk.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

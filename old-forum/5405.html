@@ -1,0 +1,34 @@
+<html><header><title>Rules Dependent Upon the Collection</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Rules Dependent Upon the Collection</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5405.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>MadGerbil posted on Monday, September 15, 2008</h2>Transaction: BusinessBase Object <BR>Transactions: BusinessListBase of Transaction Objects <BR>Invoice Number: Value that must be unique for each transaction<BR>Objective: Find an efficient way to check for duplicates in a collection of 5,000 items<BR>
+<P>I've a collection of&nbsp;<EM>Transaction</EM> objects&nbsp;built from an import process that converts a tab deliminted&nbsp;text file to a <EM>Transactions</EM> collection and then imports that collection into a database table if the objects in the collection are all valid.</P>
+<P>One thing I'd like to check for is duplicates.&nbsp; I want to make sure that if a <EM>Transaction</EM> has the same invoice number as another <EM>Transaction</EM> object within the <EM>Transactions</EM> collection that both are flagged as Invalid.</P>
+<P>Additionally, I'd like to flag a record as Invalid if the <EM>Transaction</EM> already exists within the database.</P><BR>There are two points at which each of these two duplicate checks must be made: <BR>1: When the collection is initially loaded from the text file. <BR>2: When an invoice number is changed by the user. 
+<P>&nbsp;</P>Regarding the checks upon import: 
+<P>1: Solving the check for duplicates within the database is pretty simple.&nbsp; Every time the Invoice Number is changed I could do a quick database check to see if a duplicate exists. I"ll have to pool a connection so that I'm not opening and closing the connection 5,000 times.</P>
+<P>2: Solving the check for duplicates within the collection may be a bit of a bear - with 5,000 items I'm thinking it may be kind of slow.&nbsp; Especially when the collection is first built and the rules are checked for the very first time.</P>
+<P>Thoughts on a way to make this efficient?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Monday, September 15, 2008</h2><P>I take a different approach with regard to importing data.</P>
+<P>1. Read the file into memory (usually a Dataset.)</P>
+<P>2. Sort the dataset in invoice number order (and invoice line sequence.)</P>
+<P>3. Start at the top of the dataset and begin working your way through it one row at a time.</P>
+<P>Using a CSLA Invoice BO:</P>
+<P>4. Load the Header information from row 1.</P>
+<P>5. Load the Line information from row 1.</P>
+<P>6. While the header is the same continue loading lines for that invoice.</P>
+<P>7. Check if it is valid.</P>
+<P>8. If so, save the invoice to the DB and make a note in a log&nbsp;that it was successfully processed.</P>
+<P>9. If not valid, then save the invoice to the DB in Rejected status. Log the reason.</P>
+<P>10. If the Save fails (due to a DB violation) then make a note in the log that that particular invoice could not be processed at all and state the reason. e.g. Duplicate Invoice number.</P>
+<P>11. So I am only dealing with 1 invoice at a time and it is farily simple to handle it.</P>
+<P>Not sure if that helps. But...</P>
+<P>Joe</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>MadGerbil replied on Monday, September 15, 2008</h2><P>Joe,</P>
+<P>You've got a perfectly workable solution there - I may fall back to that if I cannot get this to work.&nbsp; In fact, I did something similar to that in an older version of this product.&nbsp; What I'm hoping to do is open the collection in a datagrid so the person can see and correct errors before ever going to the database.&nbsp;&nbsp; </P>
+<P>If I cannot do that, I'll go with something similar to what you've suggested.</P>
+<P>Thanks.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>SonOfPirate replied on Tuesday, September 16, 2008</h2><P>As I see it, you need to fully define the behavior you are looking for.&nbsp; There is a difference if you want the datagrid to contain ALL of the items versus only the invalid items, for instance.</P>
+<P>In either case, you could still follow Joe's method for loading the business objects but you are trusting that the database query does get changed.&nbsp; Also, does it matter if you import a transaction that has the same invoice number as one already stored in the database?&nbsp; If so, then things get more complicated.</P>
+<P>For the validation part, I would typically create a simply hashtable that is keyed on the invoice number.&nbsp; As you parse each record, you'll create the BO, populate it with the values from the text file and validate it.&nbsp; Your validation method will perform a lookup using the hashtable.&nbsp; If no match is found, it passes; otherwise, you now have a reference to the original item as well as the new one so you can mark BOTH invalid.</P>
+<P>If you only want to display invalid items, you could save valid records as they are created and add invalid items to a collection that is bound to the datagrid for editting.&nbsp; Because the BO's are already wired-up to the validation method, it will take care of re-evaluating the objects when the data is changed.&nbsp; However, because the hashtable is keyed on the invoice number, you'll have to add logic to remove the original entry and replace it with the updated key when the user changes the value.</P>
+<P>Finally, you can save the list of invalid transactions by calling Save() on the collection itself from your UI.</P>
+<P>Like I said, though, if you can only have one transaction per invoice number in the database, this gets more complicated because you'll need to be able to get those from the database or run a query each time a value is changed which is going to affect performance.</P>
+<P>HTH</P>
+<P>&nbsp;</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

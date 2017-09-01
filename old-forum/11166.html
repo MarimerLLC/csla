@@ -1,0 +1,142 @@
+<html><header><title>BO Async call returns before observable collection loads</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>BO Async call returns before observable collection loads</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11166.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>cconte posted on Thursday, February 16, 2012</h2><p>&nbsp;</p>
+<p class="MsoNoSpacing">Hi Folks,</p>
+<p class="MsoNoSpacing"><span lang="EN">- Using silverlight
+4. Csla 4.2 Bxf and MVVM design pattern</span></p>
+<p class="MsoNoSpacing"><span lang="EN">I am designing an
+SL application and I am struggling to get my List to bind correctly to my
+observable collection from my viewmodel.</span></p>
+<p class="MsoNoSpacing"><span lang="EN">Actually, I am
+using an observable collection (<i>UserEditVM.</i></span><span><i>MessageInfoList</i></span>)
+to wrap all the children of one of properties class (<i>UserEdit.Messages)</i> into a VM class (<i>MessageInfoVM</i>). - Hope i&#39;m clear.</p>
+<p class="MsoNoSpacing"><span lang="EN">When I call an instance
+of UserEditVM which going to load the BO, It would &nbsp;seem like the ObservableCollection <i>MessageInfoList</i> is called before the &ldquo;BeginRefresh&rdquo;
+method fully load the data (may cause by the async call).</span></p>
+<p class="MsoNoSpacing"><span lang="EN">I have read on
+internet some recommendation to use the <span>UOW
+approach to avoid these syncronization issues but in my case the MessageList is
+linked to my UserEditBO.</span></span></p>
+<p class="MsoNormal"><span lang="EN-US">Is there a way
+to do this or have I structured my solution incorrectly?</span></p>
+<p class="MsoNormal"><span lang="EN-US">To complete this
+post, I put below a piece of code focused on the issue.</span></p>
+<p class="MsoNormal"><span lang="EN-US">Thanks</span></p>
+<p class="MsoNormal"><span lang="EN-US">Cedric</span></p>
+<p class="MsoNoSpacing">&nbsp;</p>
+<p><b><span style="text-decoration:underline;"><strong><span style="text-decoration:underline;">ViewModel (VM)&nbsp;</span></strong><span>UserEditVM and MessageEditVM</span><span>&nbsp;:</span></span></b></p>
+<p>public class
+UserEditVM : ViewModel&lt;Library.UserEdit&gt;</p>
+<p>&nbsp;&nbsp;&nbsp; {</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public UserEditVM(int userID)</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Shell.Instance.ShowStatus(new
+Status { Text = string.Format(&quot;User {0}&quot;, userID), IsBusy = true });</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+BeginRefresh(&quot;GetUserEdit&quot;, userID);</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public
+ObservableCollection&lt;MessageInfoVM&gt; MessageInfoList</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;<i><b>&nbsp;// Here the issue : Used before &nbsp;the BO &nbsp;is&nbsp;<span>&nbsp;</span><span class="hps">completely&nbsp;</span>loaded</b></i></p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; get</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var result = new
+ObservableCollection&lt;MessageInfoVM&gt;();</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (Model != null)</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (Model.Messages != null)</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; foreach (var item in
+Model.Messages)</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; result.Add(new
+MessageInfoVM { Model = item });</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return result;</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</p>
+<p>...</p>
+<p>}</p>
+<p>public class
+MessageInfoVM : ViewModel&lt;Library.MessageInfo&gt;</p>
+<p>&nbsp;&nbsp;&nbsp; {</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public static readonly DependencyProperty
+ModelProperty =</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+DependencyProperty.Register(&quot;Model&quot;,
+typeof(Library.MessageInfo), typeof(MessageInfoVM), null);</p>
+<p>&nbsp;</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public Library.MessageInfo Model</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; get { return
+(Library.MessageInfo)GetValue(ModelProperty); }</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; set { SetValue(ModelProperty,
+value); }</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public void EditItem()</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Shell.Instance.ShowView(</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; typeof(LioApp.Views.EditMessage).AssemblyQualifiedName,</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&quot;messageEditVMViewSource&quot;, new
+ViewModels.MessageEditVM(Model.MessageID),</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &quot;MainContent&quot;);</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</p>
+<p>&nbsp;&nbsp;&nbsp; }</p>
+<p>&nbsp;</p>
+<p><b><span style="text-decoration:underline;">Business Object (BO)&nbsp;<span>&nbsp;(VM)&nbsp;<span>UserEdit and MessageEdit</span></span><span>&nbsp;:</span></span></b></p>
+<p>public partial
+class UserEdit : BusinessBase&lt;UserEdit&gt;</p>
+<p>&nbsp;&nbsp;&nbsp; {</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; private static PropertyInfo&lt;int&gt;
+UserIDProperty = RegisterProperty&lt;int&gt;(c =&gt; c.UserID);</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public int UserID</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; get { return
+GetProperty(UserIDProperty); }</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; set { LoadProperty(UserIDProperty,
+value); }</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</p>
+<p>&nbsp;</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public static
+PropertyInfo&lt;string&gt; UserNameProperty = RegisterProperty&lt;string&gt;(c
+=&gt; c.UserName);</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public string UserName</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; get { return
+GetProperty(UserNameProperty); }</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; set { SetProperty(UserNameProperty,
+value); }</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public static
+PropertyInfo&lt;MessageInfoList&gt; MessagesProperty =
+RegisterProperty&lt;MessageInfoList&gt;(c =&gt; c.Messages);</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public MessageInfoList Messages</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; get { return
+GetProperty(MessagesProperty); }</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; private set {
+LoadProperty(MessagesProperty, value); }</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</p>
+<p>}</p>
+<p>public partial
+class MessageEdit : BusinessBase&lt;MessageEdit&gt;</p>
+<p>&nbsp;&nbsp;&nbsp; {</p>
+<p>&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;public static readonly
+PropertyInfo&lt;int&gt; MessageIDProperty = RegisterProperty&lt;int&gt;(c =&gt;
+c.MessageID);</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public int MessageID</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; get { return
+GetProperty(MessageIDProperty); }</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; set {
+LoadProperty(MessageIDProperty, value); }</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public static
+PropertyInfo&lt;string&gt; DescriptionProperty =
+RegisterProperty&lt;string&gt;(c =&gt; c.Description);</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public string Description</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; get { return
+GetProperty(DescriptionProperty); }</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; set { SetProperty(DescriptionProperty,
+value); }</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</p>
+<p>}</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

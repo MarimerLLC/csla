@@ -1,0 +1,29 @@
+<html><header><title>Culture dependant serialization</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Culture dependant serialization</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10215.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>bounty posted on Tuesday, March 29, 2011</h2><p>
+<p class="MsoNormal"><span lang="EN-US">Hi,</span></p>
+<p class="MsoNormal"><span lang="EN-US">&nbsp;</span></p>
+<p class="MsoNormal"><span lang="EN-US">we are
+using CSLA v3.8.1.0 to create a WPF application. We are having a problem with
+the properties of the business objects getting mixed up while traveling through
+a WCF data portal. This is a result of different regional/culture setting on
+the server and on the machine that is running the WPF front end. While
+comparing the soap envelopes received from the dev server and from the local
+instance of data portal, I have found out that the properties of the<span>&nbsp; </span>business object are in different order. Our
+business object has the following properties: BusinessUnitName, ChannelName,
+ExternalID. The server is returning the fields in the specified order, but if
+the WPF front end is running on a machine with Slovak culture settings, it is
+expecting the fields to appear in following order: BusinessUnitName,
+ExternalID, ChannelName. This is because the letter &quot;ch&quot; (from the
+ChannelName property) comes after letter &quot;h&quot; in Slovak. </span></p>
+<p class="MsoNormal"><span lang="EN-US">I have
+identified Csla.Core.FieldManager.PropertyInfoManager RegisterProperty method
+as the place where the list of properties is getting sorted.</span></p>
+<p class="MsoNormal"><span lang="EN-US">Is there a
+way to make this sorting culture independent or any other possible solution to this problem?</span></p>
+<p class="MsoNormal"><span lang="EN-US">&nbsp;</span></p>
+<p class="MsoNormal"><span lang="EN-US">Thank you</span></p>
+</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Tuesday, March 29, 2011</h2><p>You could try this: </p>
+<p>&nbsp;&nbsp;&nbsp; public static PropertyInfo&lt;T&gt; RegisterProperty&lt;T&gt;(Type objectType, PropertyInfo&lt;T&gt; info)<br />&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var list = GetPropertyListCache(objectType);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; lock (list)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (list.IsLocked)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; throw new InvalidOperationException(string.Format(Resources.PropertyRegisterNotAllowed, info.Name, objectType.Name));<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; list.Add(info);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; list.Sort(new PropertyComparer());<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return info;<br />&nbsp;&nbsp;&nbsp; }<br /><br />&nbsp;&nbsp;&nbsp; public class PropertyComparer : Comparer&lt;IPropertyInfo&gt;<br />&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public override int Compare(IPropertyInfo x, IPropertyInfo y)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return StringComparer.InvariantCultureIgnoreCase.Compare(x.Name, y.Name);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br />&nbsp;&nbsp;&nbsp; }</p>
+<p>This would sort the PropertyInfos using InvariantCulture. </p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>bounty replied on Tuesday, March 29, 2011</h2><p>Yes,but this would require modification of the PropertyInfoManager class (please correct me if I&#39;m wrong). But the CSLA project is not part of my solution. I&#39;m just referencing the pre-build Csla.dll.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Tuesday, March 29, 2011</h2><p>Unfortunately -&nbsp; that is the only solution to your problem. </p>
+<p>It is probably a bug in Csla that will require changes in the source code and recompile of Csla.</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>bounty replied on Tuesday, March 29, 2011</h2><p>Would you think that setting the CurrentThread.CurrentCulture to invariant culture would make any difference?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Tuesday, March 29, 2011</h2><p>Probably - but that would also have consequences for resources and formatting. </p>
+<p>&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,35 @@
+<html><header><title>BusinessRule that interact with Collections</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>BusinessRule that interact with Collections</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10433.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>rxelizondo posted on Thursday, June 09, 2011</h2><p>
+<p>Hello,</p>
+<p>I have a business rule on a parent object that requires traversing its child collection objects to determine if the rule is broken or not. So the first thing I tried to do was to stick with the pattern of using the &ldquo;InputProperties&rdquo; functionality to store the values that I need to use to determine if the rule is broken or not.</p>
+<p>Unfortunately, I don&rsquo;t believe that the current rule engine supports using the &ldquo;InputProperties&rdquo; property to store values from child collection objects (unless I am missing something). As far as I can see, the &ldquo;InputProperties&rdquo; only supports storing values from variables that are local to the object where rule is being applied on and only if the properties are value type properties.</p>
+<p>So for cases where a rule has to access child collection objects, it looks like the only option is to get a hold of the &ldquo;Context.Target&rdquo; object, cast it to the needed object and to get a reference to the collection from there.</p>
+<p>Could someone tell me if my statement above correct or am I missing something?</p>
+<p>Thanks.</p>
+<div></div>
+</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Thursday, June 09, 2011</h2><p>You are correct, InputProperties only works with properties of the object containing the rule association.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rxelizondo replied on Thursday, June 09, 2011</h2><p>
+<p>Thanks Rocky,</p>
+<p>I am not sure if this is stated on the eBook or not (I didn&rsquo;t find it), but just to be specific for anyone reading this post. InputProperties really only makes sense if you are storing value type variables on it (at least when it comes to thread safety).</p>
+<p>I didn&rsquo;t dive deep on the InputProperties implementation but a quick scan of the source code made me think that the CSLA does not make deep copies of reference types when saving them into InputProperties. All it appears to do is to make a copy of the reference address&hellip;. Assuming that my previous statement is correct, perhaps making deep copies of the reference types that are saved into InputProperties would be nice, that way at least reading the properties of this reference type objects would be thread safe since they are true copies.</p>
+<p>Thanks.</p>
+</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, June 09, 2011</h2><p>I think you&#39;d end up with some very surprising results though, because any changes you made to the reference value would be lost - you&#39;d be changing an orphaned copy of the object, not the actual object.</p>
+<p>So a complete solution would require some way to detect and copy back any changed values to the cloned object graph (because that&#39;s really what we&#39;re talking about) after the rule completes. </p>
+<p>And even if that were possible (which it isn&#39;t with the current FieldData implementation anyway), you&#39;d end up with reconciliation issues, where the object graph might have been changed by other async rules or by the user or other UI thread operations - and the copy-back process would overwrite those changes (or something).</p>
+<p>Really complex stuff...</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rxelizondo replied on Monday, June 27, 2011</h2><p>
+<p class="MsoNormal"><span>Thanks Rocky,</span></p>
+<p class="Default">Perhaps my biggest issue with allowing passing reference
+objects using the <b><i>InputProperties </i></b>is that is not consistent with the way the
+CSLA treats the <b><i>RuleContext .Target</i></b> object&nbsp;</p>
+<p class="MsoNormal"><span>When it comes to the <b><i>RuleContext .Target</i></b>
+property you are very careful with trying to prevent user from running into all
+kind of multithreading issues when running the rule asynchronously. You do this
+by not passing the <b><i>RuleContext .Target</i></b> object unless the <b><i>ProvideTargetWhenAsync
+</i></b>property is set to true.</span></p>
+<p class="MsoNormal"><span>But nothing is done to prevent users
+from making the same mistakes when passing a reference object through the <b><i>InputProperties
+</i></b>collection.</span></p>
+<p class="MsoNormal"><span>So perhaps instead of the property being
+called <b><i>ProvideTargetWhenAsync</i></b>, maybe is should be called <b><i>ProvideReferenceTypesWhenAsync</i></b>.
+Behind the sence, if this property is set to false, the CSLA will not pass the <b><i>RuleContext
+.Target </i></b>or any reference object contained in the <b><i>InputProperties </i></b>collection.</span></p>
+<p class="MsoNormal"><span>Thank you.</span></p>
+</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

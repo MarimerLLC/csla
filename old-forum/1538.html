@@ -1,0 +1,28 @@
+<html><header><title>ValidatonRules And BusinessListBase</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>ValidatonRules And BusinessListBase</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/1538.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoOfMetL posted on Thursday, October 19, 2006</h2><br>
+<div id="result_box">Hello
+<br>
+<br>
+I would like to know how to create rules which relate to a
+collection. <br>
+For example, a collection of object “Boat” which has a
+property “Name” and I wish to be able to check that “Name” is single.
+<br>
+<br>
+Somebody with an idea? <br>
+<br>
+Thank you</div>
+<br>
+<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>skagen00 replied on Thursday, October 19, 2006</h2><P>If I understand you right you want to make sure the name of boats are all unique across the collection. </P>
+<P>I have done tackled this sort of problem when it comes to "seasonal addresses". Someone can have a collection of addresses but the "month/date" ranges of seasonal addresses can't overlap. </P>
+<P>Your case is much clearer so I'll just tell you how I'd tackle your problem. </P>
+<P>I would first add a public get/internal set property on your boat named "IsBoatNameUnique". On a listchanged event of your collection, when a name is changed on a boat - or when boats are added or removed from the collection, you'd do a survey across the collection looking for name collisions. If you find collisions, the collection would communicate to their members via the internal set of the IsBoatNameUnique to tell whether or not the boat name is unique. </P>
+<P>Then, on the boat, there would be a rule added - IsBoatNameValid, which would simply check this flag - if the name is not unique, broken rule, and the two "same named" boats would be invalid within the collection. </P>
+<P>That is (at least if your problem is the same as my seasonal addresses entirely) how I'd probably tackle it. Though if anyone else has done this sort of thing differently I'd certainly be interested in hearing alternative solutions. </P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Fabio replied on Thursday, October 19, 2006</h2>Another possible solution is override AddNewCore to prevent add of repeated obj.<br>Bo of the collection must override Equals and GetHashCode too.<br><br>Any way i think that is a great future to have BusinessRules for collection too.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Thursday, October 19, 2006</h2>I usually just override the IsValid property on the collection.&nbsp; As I'm looping to see if each individual element is valid, I'm checking a dictionary to make sure the 'slot' isn't already filled with another object.&nbsp; So the key to the dictionary in your case would be Name, and the value would be anything really.. just as long as key exists in the dictionary.<br><br>HTH<br>Andy<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>skagen00 replied on Thursday, October 19, 2006</h2><P>Thanks Andy, that makes good sense.&nbsp; </P>
+<P>One nice thing to invalidating elements of the collection themselves is that if you have any number of them in a grid, you can highlight the "errant" ones and the databinding refresh is there, etc. </P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Fabio replied on Thursday, October 19, 2006</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>skagen00:</strong></div><div>
+<p>One nice thing to invalidating elements of the collection themselves is that if you have any number of them in a grid, you can highlight the "errant" ones and the databinding refresh is there, etc.<br></p></div></BLOCKQUOTE><br><br>How many loop you have each time IsValid is invoked ?<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>skagen00 replied on Thursday, October 19, 2006</h2><P>IsValid doesn't encumber any extra processing. It just knows there are children that are now invalid. The only time checking needs to be done is when an item is added/removed or an item's property of name changes.&nbsp; </P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Thursday, October 19, 2006</h2>This is true.&nbsp; The only downside is that the object needs to know about its parent... but I suppose it does anyway.&nbsp; <br><br>Actually I'll have to see if I can retrofit a collection to do this, as the error on the line itself is a good idea.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoOfMetL replied on Thursday, October 19, 2006</h2>Thank you. <br>
+<br>
+It is exactly my problem. Andy, your solution is good, but I
+would like that the user knows the reason of unvalidity of his
+collection.</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,31 @@
+<html><header><title>adding Predicate usage to BusinessListBase and ReadOnlyListBase</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>adding Predicate usage to BusinessListBase and ReadOnlyListBase</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/1074.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Tamir posted on Wednesday, August 30, 2006</h2><P>hi, i just read about Predicate (<A href="http://developer.coreweb.com/articles/Default12.aspx">http://developer.coreweb.com/articles/Default12.aspx</A>)</P>
+<P>i think it would be great if&nbsp; BusinessListBase and ReadOnlyListBase will implement the same methods as System.Collections.Generic.List&lt;T&gt;&nbsp; class implements. </P>
+<P>for example:</P>
+<P>
+<TABLE cellSpacing=0 cellPadding=0>
+
+<TR>
+<TD colSpan=2><PRE><FONT color=#1000a0>public</FONT> <A title="C // Generic Argument"><FONT color=#006018>C</FONT></A> <B>Find</B>(<A title="System.Predicate<C>" href="http://www.aisto.com/roeder/dotnet/Default.aspx?Object=1"><FONT color=#006018>Predicate</FONT></A>&lt;<A title="C // Generic Argument"><FONT color=#006018>C</FONT></A>&gt; match)
+{
+      <FONT color=#1000a0>if</FONT> (<A title="Predicate<C> match; // Parameter"><FONT color=#006018>match</FONT></A> == <FONT color=#800000>null</FONT>)
+      {
+            <FONT color=#1000a0>throw</FONT> <FONT color=#1000a0>new</FONT> <A title=System.ArgumentNullException.ArgumentNullException(string); href="http://www.aisto.com/roeder/dotnet/Default.aspx?Object=2"><FONT color=#006018>ArgumentNullException</FONT></A>(<FONT color=#800000>"match"</FONT>);
+      }
+      <FONT color=#1000a0>for</FONT> (<A title=System.Int32 href="http://www.aisto.com/roeder/dotnet/Default.aspx?Object=3"><FONT color=#006018>int</FONT></A> <B>index</B> = <FONT color=#800000>0</FONT>; <A title="int index // Local Variable"><FONT color=#006018>index</FONT></A> &lt; <FONT color=#1000a0>base</FONT>.<A title="int System.Collections.ObjectModel.Collection<C>.Count { ... }" href="http://www.aisto.com/roeder/dotnet/Default.aspx?Object=4"><FONT color=#006018>Count</FONT></A>; <A title="int index // Local Variable"><FONT color=#006018>index</FONT></A>++)
+      {
+            <FONT color=#1000a0>if</FONT> (<A title="Predicate<C> match; // Parameter"><FONT color=#006018>match</FONT></A>(<FONT color=#1000a0>base</FONT>[<A title="int index // Local Variable"><FONT color=#006018>index</FONT></A>]))
+            {
+                  <FONT color=#1000a0>return</FONT> <FONT color=#1000a0>base</FONT>[<A title="int index // Local Variable"><FONT color=#006018>index</FONT></A>];
+            }
+      }
+      <FONT color=#1000a0>return</FONT> <FONT color=#1000a0>default</FONT>(<A title="C // Generic Argument"><FONT color=#006018>C</FONT></A>);
+}
+and this is a nice way of calling it.</PRE><PRE><A title=System.ArgumentNullException.ArgumentNullException(string); href="http://www.aisto.com/roeder/dotnet/Default.aspx?Object=2"><FONT color=#006018>PersonList</FONT></A> <STRONG>persons = </STRONG><A title=System.ArgumentNullException.ArgumentNullException(string); href="http://www.aisto.com/roeder/dotnet/Default.aspx?Object=2"><FONT color=#006018>PersonList</FONT></A>.<A title=System.ArgumentNullException.ArgumentNullException(string); href="http://www.aisto.com/roeder/dotnet/Default.aspx?Object=2"><FONT color=#006018>GetAllPersons()</FONT></A>}
+<FONT color=#1000a0><A title=System.ArgumentNullException.ArgumentNullException(string); href="http://www.aisto.com/roeder/dotnet/Default.aspx?Object=2"><FONT color=#006018>Person</FONT></A><FONT color=#000000> <STRONG>me = persons.Find</STRONG>
+<STRONG>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(</STRONG>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT color=#1000a0>delegate<FONT color=#000000>(</FONT>Person </FONT></FONT></FONT><STRONG>p</STRONG>)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+<FONT color=#1000a0>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return</FONT> <STRONG>p</STRONG>.<A title="int System.Collections.ObjectModel.Collection<C>.Count { ... }" href="http://www.aisto.com/roeder/dotnet/Default.aspx?Object=4"><FONT color=#006018>Name</FONT></A> == <FONT color=#800000>"Tamir"
+</FONT>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+<STRONG>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;) </STRONG>
+</PRE></TD></TR></TABLE></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, August 30, 2006</h2>Yes, that seems like a nice idea for a future version.<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

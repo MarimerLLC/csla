@@ -1,0 +1,21 @@
+<html><header><title>WPF Validator and Extra TabStops in SimpleTextBox</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>WPF Validator and Extra TabStops in SimpleTextBox</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3335.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>GlennMiller posted on Monday, August 06, 2007</h2>We are not sure if this is a CSLA thing. But, we are using CSLA 3.0 release. Here is what happens:<br><br>We have a Business Rule in CSLA that states "OurField" can't be blank (null).<br><br>On our WPF Form we have a SimpleTextBox<br><br>Clear out the text in the textbox bound to "OurField".<br><br>Red error box appears around "OurField" textbox.<br><br>Then start tabbing around in the WPF Form. What you will see is when tabbing comes back around to that "OurField" textbox the red box has a tabstop / focus (thus to get out of the textbox will require two tabs rather than one)! We have tried to replicate this issue without CSLA and can't. So we are thinking it's a CSLA issue. Could it be a problem in the Decorator Base class that the Validator class uses?<br><br>We are using a Default SimpleStyle for TextBox and we are not defining any custom templates for how the red error validation box works. All defaults.<br><br>Here is the XAML Structure of our WPF Form (this is a small window with only a few bound controls)<br>UserControl-&gt;Validator-&gt;Grid-&gt;TextBox (Style is SimpleTextBox)<br><br>Does anyone have any ideas?<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>GlennMiller replied on Tuesday, August 07, 2007</h2>
+
+<p class="MsoPlainText">We have a work-around of sorts. If you put this on the outermost
+Grid that<span> </span>you have:<o:p></o:p></p>
+
+
+
+<p class="MsoPlainText">KeyboardNavigation.TabNavigation="Cycle"<o:p></o:p></p>
+
+
+
+<p class="MsoPlainText">it seems to fix it.<br></p><p class="MsoPlainText">What this does is constrains the tabstop to just the
+controls in the grid. We think that this extra tabstop, around the error
+validation box, is in 'outerspace'. Thus putting that line in XAML masks the problem.
+The extra tabstop is still there. But the user won't know it.<o:p></o:p></p>
+
+
+
+<p class="MsoPlainText">I am still curious as to why this is an issue?<o:p></o:p></p>
+
+<p class="MsoPlainText"><o:p></o:p></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, August 07, 2007</h2>This doesn't happen to me. But if you are applying an explicit style, then you may be changing the visual tree when the control is in error - adding something in there that can and does accept the focus.</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

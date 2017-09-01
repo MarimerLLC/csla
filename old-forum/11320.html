@@ -1,0 +1,85 @@
+<html><header><title>XAML Conditionally required Business Rules + UI warnings</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>XAML Conditionally required Business Rules + UI warnings</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11320.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>jamie.clayton posted on Sunday, April 22, 2012</h2><p>G&#39;day,</p>
+<p>I&#39;m having a senior moment with XAML and CSLA business rules displaying optionally required fields in WPF at the moment. Can someone please put me out of my misery?</p>
+<p>I have a simple business Rule like like the following, so if a user selected the report format should be PDF, there is a conditional requirement to also supply the file path and name of file for that report.</p>
+<pre style="FONT-FAMILY:Consolas;BACKGROUND:white;COLOR:black;FONT-SIZE:13px;"><span style="COLOR:blue;">Private</span>&nbsp;<span style="COLOR:blue;">Shared</span>&nbsp;<span style="COLOR:blue;">Function</span>&nbsp;PdfFilePathSuppliedRule(<span style="COLOR:blue;">Of</span>&nbsp;T&nbsp;<span style="COLOR:blue;">As</span>&nbsp;ReportDataFilter)<br />(<span style="COLOR:blue;">ByVal</span>&nbsp;target&nbsp;<span style="COLOR:blue;">As</span>&nbsp;T,&nbsp;<span style="COLOR:blue;">ByVal</span>&nbsp;e&nbsp;<span style="COLOR:blue;">As</span>&nbsp;Validation.<span style="COLOR:#2b91af;">RuleArgs</span>)&nbsp;<span style="COLOR:blue;">As</span>&nbsp;<span style="COLOR:blue;">Boolean</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:blue;">Dim</span>&nbsp;result&nbsp;<span style="COLOR:blue;">As</span>&nbsp;<span style="COLOR:blue;">Boolean</span>&nbsp;=&nbsp;<span style="COLOR:blue;">True</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:blue;">If</span>&nbsp;target.IsOutputToPDF&nbsp;<span style="COLOR:blue;">Then</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:blue;">If</span>&nbsp;<span style="COLOR:blue;">String</span>.IsNullOrWhiteSpace(target.PdfFilePath)&nbsp;<span style="COLOR:blue;">Then</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;result&nbsp;=&nbsp;<span style="COLOR:blue;">False</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;e.Description&nbsp;=&nbsp;<span style="COLOR:#a31515;">&quot;Must&nbsp;supply&nbsp;a&nbsp;location&nbsp;and&nbsp;file&nbsp;name&nbsp;<br />                             for&nbsp;the&nbsp;PDF&nbsp;report&nbsp;output.&quot;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:blue;">End</span>&nbsp;<span style="COLOR:blue;">If</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:blue;">End</span>&nbsp;<span style="COLOR:blue;">If</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:blue;">Return</span>&nbsp;result
+<span style="COLOR:blue;">End</span>&nbsp;<span style="COLOR:blue;">Function</span></pre>
+<p>So the XAML UI should, in my mind do the following.</p>
+<ol>
+<li>User Clickes on Checkbox - Output to PDF.</li>
+<li>PDF file path text box should now highlight as a required field, with the standard red boarder.</li>
+<li>User see&#39;s red and supplies file path.</li>
+<li>Report can be generated.</li>
+</ol>
+<p>So I apply this logic and ensure that the property change also triggers the business rules to run from both properties and they are implicitly related via this business rule. The UI just never updates the conditionally required text box when the check box property changes. All the events fire as expected when I debug through this code. It looks like the UI warnings only change if the matching property changes.</p>
+<p>I then start to review what&#39;s going on in&nbsp;the CSLA core code for Csla.Wpf.PropertyStatus in (3.8.4). It implies&nbsp;the only way you can force the second property to display the broken rule to the user&nbsp;is to</p>
+<ol>
+<li>Force a change in the value of the PdfFilePath property and then instantly undo it.</li>
+<li>Disconnect and then reconnect the XAML framework object to the CSLA BO property.</li>
+</ol>
+<p>This all sounds a little complicated, or my reading of C# might be incorrect, usually indicating I&#39;ve stuffed up somewhere.&nbsp; Is there a CSLA method call I&#39;ve missed,&nbsp;that can help me resolve this UI business rule issue in WPF?</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>jamie.clayton replied on Sunday, April 22, 2012</h2><p>Did some searching in the Forum and tried a few techniques. Eventually found a solution. </p>
+<pre style="font-family:Consolas;background:white;color:black;font-size:13px;"><span style="color:blue;"><pre style="font-family:Consolas;background:white;color:black;font-size:13px;"><span style="color:green;">&#39;&#39;&#39;&nbsp;</span><span style="color:gray;">&lt;summary&gt;</span>
+<span style="color:green;">&#39;&#39;&#39;&nbsp;All&nbsp;custom&nbsp;rules&nbsp;need&nbsp;to&nbsp;be&nbsp;placed&nbsp;in&nbsp;this&nbsp;method.</span>
+<span style="color:green;">&#39;&#39;&#39;&nbsp;</span><span style="color:gray;">&lt;/summary&gt;</span>
+<span style="color:green;">&#39;&#39;&#39;&nbsp;</span><span style="color:gray;">&lt;Returns&gt;</span><span style="color:green;">Return&nbsp;true&nbsp;to&nbsp;override&nbsp;the&nbsp;generated&nbsp;rules&nbsp;If&nbsp;false&nbsp;generated&nbsp;rules&nbsp;will&nbsp;be&nbsp;run.</span><span style="color:gray;">&lt;/Returns&gt;</span>
+<span style="color:blue;">Protected</span>&nbsp;<span style="color:blue;">Function</span>&nbsp;AddBusinessValidationRules()&nbsp;<span style="color:blue;">As</span>&nbsp;<span style="color:blue;">Boolean</span>
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:green;">&#39;&nbsp;&nbsp;&nbsp;We&nbsp;want&nbsp;the&nbsp;UI&nbsp;warnings&nbsp;for&nbsp;Report&nbsp;outputs&nbsp;types,&nbsp;to&nbsp;go&nbsp;against&nbsp;the&nbsp;file&nbsp;text&nbsp;boxes,</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:green;">&#39;&nbsp;&nbsp;&nbsp;so&nbsp;we&nbsp;are&nbsp;taking&nbsp;the&nbsp;step&nbsp;of&nbsp;validating&nbsp;against&nbsp;the&nbsp;file&nbsp;path&nbsp;fields&nbsp;and&nbsp;associating&nbsp;the&nbsp;two&nbsp;properties&nbsp;as&nbsp;Dependant.</span>
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:green;">&#39;&nbsp;&nbsp;&nbsp;Ensure&nbsp;that&nbsp;a&nbsp;PDF&nbsp;file&nbsp;path&nbsp;is&nbsp;supplied&nbsp;if&nbsp;the&nbsp;users&nbsp;selects&nbsp;output&nbsp;to&nbsp;pdf.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#2b91af;">ValidationRules</span>.AddRule(<span style="color:blue;">Of</span>&nbsp;ReportDataFilter,&nbsp;<span style="color:#2b91af;">RuleArgs</span>)(<span style="color:blue;">AddressOf</span>&nbsp;ReportDataFilter.PdfFilePathSuppliedRule,&nbsp;<span style="color:blue;">New</span>&nbsp;<span style="color:#2b91af;">RuleArgs</span>(PdfFilePathProperty))
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#2b91af;">ValidationRules</span>.AddDependentProperty(IsOutputToPDFProperty,&nbsp;PdfFilePathProperty,&nbsp;<span style="color:blue;">True</span>)
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:green;">&#39;&nbsp;&nbsp;&nbsp;Ensure&nbsp;that&nbsp;a&nbsp;Excel&nbsp;file&nbsp;path&nbsp;is&nbsp;supplied&nbsp;if&nbsp;the&nbsp;users&nbsp;selects&nbsp;output&nbsp;to&nbsp;Excel.</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#2b91af;">ValidationRules</span>.AddRule(<span style="color:blue;">Of</span>&nbsp;ReportDataFilter,&nbsp;<span style="color:#2b91af;">RuleArgs</span>)(<span style="color:blue;">AddressOf</span>&nbsp;ReportDataFilter.ExcelFilePathSuppliedRule,&nbsp;<span style="color:blue;">New</span>&nbsp;<span style="color:#2b91af;">RuleArgs</span>(ExcelFilePathProperty))
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#2b91af;">ValidationRules</span>.AddDependentProperty(IsOutputToExcelProperty,&nbsp;ExcelFilePathProperty,&nbsp;<span style="color:blue;">True</span>)
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">Return</span>&nbsp;<span style="color:blue;">False</span>
+<span style="color:blue;">End</span>&nbsp;<span style="color:blue;">Function</span></pre>
+<pre style="font-family:Consolas;background:white;color:black;font-size:13px;"><span style="color:blue;"></span></pre>
+<pre style="font-family:Consolas;background:white;color:black;font-size:13px;"><span style="color:blue;"><pre style="font-family:Consolas;background:white;color:black;font-size:13px;"><span style="color:green;">&#39;&#39;&#39;&nbsp;</span><span style="color:gray;">&lt;summary&gt;</span>
+<span style="color:green;">&#39;&#39;&#39;&nbsp;We&nbsp;need&nbsp;to&nbsp;force&nbsp;cross&nbsp;checking&nbsp;of&nbsp;other&nbsp;properties&nbsp;as&nbsp;they&nbsp;are&nbsp;dependent&nbsp;properties&nbsp;together.</span>
+<span style="color:green;">&#39;&#39;&#39;&nbsp;</span><span style="color:gray;">&lt;/summary&gt;</span>
+<span style="color:green;">&#39;&#39;&#39;&nbsp;</span><span style="color:gray;">&lt;param&nbsp;name=</span><span style="color:gray;">&quot;propertyName&quot;</span><span style="color:gray;">&gt;&lt;/param&gt;</span>
+<span style="color:green;">&#39;&#39;&#39;&nbsp;</span><span style="color:gray;">&lt;remarks&gt;&lt;/remarks&gt;</span>
+<span style="color:blue;">Protected</span>&nbsp;<span style="color:blue;">Overrides</span>&nbsp;<span style="color:blue;">Sub</span>&nbsp;OnPropertyChanged(<span style="color:blue;">ByVal</span>&nbsp;propertyName&nbsp;<span style="color:blue;">As</span>&nbsp;<span style="color:blue;">String</span>)
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">MyBase</span>.OnPropertyChanged(propertyName)
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:green;">&#39;&nbsp;&nbsp;&nbsp;Fake&nbsp;the&nbsp;editing&nbsp;of&nbsp;other&nbsp;fields.</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:green;">&#39;&nbsp;&nbsp;&nbsp;Works&nbsp;in&nbsp;combination&nbsp;with&nbsp;the&nbsp;ValidationRules.AddDependentProperty</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">Select</span>&nbsp;<span style="color:blue;">Case</span>&nbsp;propertyName
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">Case</span>&nbsp;IsOutputToPDFProperty.Name
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;OnPropertyChanged(PdfFilePathProperty.Name)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">Case</span>&nbsp;IsOutputToExcelProperty.Name
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;OnPropertyChanged(ExcelFilePathProperty.Name)
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">End</span>&nbsp;<span style="color:blue;">Select</span>
+ 
+<span style="color:blue;">End</span>&nbsp;<span style="color:blue;">Sub</span></pre>
+</span></pre>
+</span></pre></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Sunday, April 22, 2012</h2><p>Hi Jamie, </p>
+<p>You Rules is corrrect but the OnPropertyChanged override should not be required to make this work. </p>
+<p>I suspect that your app is using &quot;Windows&quot; as PropertyChangedMode.</p>
+<p>For XAML in CSLA 3.x you must set<br /><strong><span style="color:#0000ff;">CslaPropertyChangedMode = &quot;Xaml&quot;</span></strong><span style="color:#0000ff;"><br />in app.config to make your app use the XAML property changed mode. </span></p>
+<p><span style="color:#0000ff;"><strong>Windows </strong>is default mode for all Csla 3.x. <strong><br />Xaml </strong>is default mode for Csla 4.x<br /></span></p>
+<p>This is the actual code in BusinessBase: </p>
+<p>&nbsp;&nbsp;&nbsp; <span style="color:#0000ff;font-weight:bold;">protected</span>&nbsp;<span style="color:#a52a2a;">virtual</span>&nbsp;<span style="color:#ff0000;">void</span>&nbsp;<span style="color:#191970;font-weight:bold;">PropertyHasChanged</span>(Csla.Core.IPropertyInfo property)<br />
+&nbsp;&nbsp;&nbsp;&nbsp;{<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#191970;font-weight:bold;">MarkDirty</span>(<span style="color:#008b8b;font-weight:bold;">true</span>);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#000080;">var</span>&nbsp;propertyNames = BusinessRules.<span style="color:#191970;font-weight:bold;">CheckRules</span>(property);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#0000ff;font-weight:bold;">if</span>&nbsp;(ApplicationContext.PropertyChangedMode == ApplicationContext.PropertyChangedModes.Windows)<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#191970;font-weight:bold;">OnPropertyChanged</span>(property);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#0000ff;font-weight:bold;">else</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#0000ff;font-weight:bold;">foreach</span>&nbsp;(<span style="color:#000080;">var</span>&nbsp;name&nbsp;<span style="color:#0000ff;font-weight:bold;">in</span>&nbsp;propertyNames)<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#191970;font-weight:bold;">OnPropertyChanged</span>(name);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;}</p>
+<p>So when PropertyChangedMode is Windows the &lt;BO&gt; will only raise OnPropertyChanged for PrimaryProperty.<br />But when PropertyChangedMode is Xaml the &lt;BO&gt; will raise OnPropertyChanged for all AffectedProperties and this should do the same work as your OnPropertyChanged override.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jamie.clayton replied on Sunday, April 22, 2012</h2><p><div style='padding-left: 50px;background-color:silver'><b>JonnyBee<br></b>For XAML in CSLA 3.x you must set<br /><strong><span style="color:#0000ff;">CslaPropertyChangedMode = &quot;Xaml&quot;</span></strong><span style="color:#0000ff;"><br />in app.config to make your app use the XAML property changed mode</span></div></p>
+<p>Jonny, </p>
+<p>Thanks for the information on *.config settings, I wasn&#39;t aware, or forgot about page 314 of Rockies<a href="http://books.google.com.au/books?id=9Mbx3Svoc1EC&amp;pg=PA314&amp;lpg=PA314&amp;dq=PropertyChangedMode&amp;source=bl&amp;ots=dp2iUV5Vws&amp;sig=AUSGWmQW-k3rmSjngNWufHvcMts&amp;hl=en&amp;sa=X&amp;ei=ZI-UT96bHvCziQfJ2Z3uAw&amp;ved=0CDkQ6AEwAg#v=onepage&amp;q=PropertyChangedMode&amp;f=false"> 2008 Csla book</a> which&nbsp;covers this setting.&nbsp;This is going to be something I will need to manage as I move from a Hybrid Windows forms and WPF solution to exclusive WPF accross our customer&#39;s software. I also removed the OnPropertyChanged code and yet again your correct about not needing it.&nbsp; Will be refactoring some business objects to take advantage of this knowledge, cheers!</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

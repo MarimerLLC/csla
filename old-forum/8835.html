@@ -1,0 +1,34 @@
+<html><header><title>How to use PropertyStatus for child BusinessListBase property (WPF)</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>How to use PropertyStatus for child BusinessListBase property (WPF)</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/8835.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>sanbrar posted on Saturday, April 24, 2010</h2><p>Hello,</p>
+<p>Would greatly appreciate if someone can help me solve this issue, I&nbsp;apologize&nbsp;in advance if its a silly question. Thanks for the help.</p>
+<p>I am trying to display an error if any object in a businesslistbase object is invalid. I thought I can simply use PropertyStatus but it disables the list box in UI. If I can&#39;t do this, is there another way I can do this?</p>
+<p>&nbsp;</p>
+<p>Employee --- Business Base</p>
+<p>&nbsp;child -&gt; &nbsp;BankInfoList --- Business List Base</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; child --&gt; BankInfo --- Business Base</p>
+<p>WPF&nbsp;</p>
+<p>&lt;ListBox Name=&quot;Emp_BankInfoList_ListBox&quot;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;ItemsSource=&quot;{Binding BankInfoList}&quot;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;ItemTemplate=&quot;{StaticResource ListTemplate_BankingDetails}&quot;/&gt;</p>
+<p>&lt;csla:PropertyStatus Property=&quot;{Binding BankInfoList}&quot;&nbsp;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; TargetControl=&quot;{Binding ElementName=Emp_BankInfoList_ListBox}&quot;/&gt;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Sunday, April 25, 2010</h2><p>PropertyStatus won&#39;t do what you want.</p>
+<p>Because you set its TargetControl property, you are telling PropertyStatus to enable/disable the UI control (your listbox). Since CanWriteProperty always returns false for a list (you can never alter properties of the list itself) PropertyStatus disables the UI control because it thinks the user isn&#39;t authorized.</p>
+<p>But even if that was not happening, it still wouldn&#39;t work because the list itself has no errors. In fact, list objects don&#39;t implement IDataErrorInfo so they can&#39;t report errors.</p>
+<p>The answer is to write a valueconverter or other bit of code that loops through all the items in the list, using IDataErrorInfo to get the errors from each item. Then consolidate those into an ObservableCollection&lt;string&gt; and bind that to something in your UI.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sanbrar replied on Monday, April 26, 2010</h2><p>Hi Rocky,</p>
+<p>Thank you for a quick reply. After without much success trying to implement valueconverter ( probably because I just don&#39;t know&nbsp;enough) I decided to try a &nbsp;different approach.</p>
+<p>&nbsp;</p>
+<p>In BB (root parent) I created a&nbsp;IsChildListObjtValid property with simple custom&nbsp;validation rule and also did&nbsp;override OnChildChanged as follow:</p>
+<p>{ &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;base.OnChildChanged(e);</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Type childObjectType = e.ChildObject.GetType();</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;if (childObjectType == typeof(Library.ChildListObjt)&nbsp;|| childObjectType == typeof(Library.childObjt))</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;{</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;if (!ChildListObjt.IsValid)</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;IsChildListObjtValid = true;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;IsChildListObjtValid&nbsp;=&nbsp;ChildListObjt.IsValid;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;}</p>
+<p>}</p>
+<p>&nbsp;</p>
+<p>In WPF I simply used &lt;csla:PropertyStatus Property=&quot;{Binding&nbsp;IsChildListObjtValid}&quot;/&gt;</p>
+<p>This is probably not an effective way of just trying to show if list is valid or not but it works. I think I should probably implement what you&nbsp;suggested&nbsp;but I just couldn&#39;t figure how?</p>
+<p>Thanks</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, April 26, 2010</h2><p>Oh, I thought your list was the root object. Yes, if you have a BB root above the list, then your solution is the simplest and generally best approach.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

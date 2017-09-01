@@ -1,0 +1,11 @@
+<html><header><title>Deleting child objects from UI (search list result)</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Deleting child objects from UI (search list result)</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9769.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>krasimir posted on Tuesday, November 16, 2010</h2><p>I&#39;m building a bug tracking system and I&nbsp;have the following hierarchy:</p>
+<p>User</p>
+<p>&nbsp; - Project</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp; - Comment</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp; - Bug</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - Comment</p>
+<p>When I bild the UI (most probably Silverlight and ASP.NET MVC and/or WebForms), I would like to provide the option for search and &nbsp;display a list with all comments form all projects/bugs from all users. This is not a problem. The problem is what if I select one particullar comment and want to delete it?</p>
+<p>What I understand from the book (2008 edition) is that the only way to delete a child object is to go to its parent object and delete it from the&nbsp;its collection, that holds the child object. But how will I know which is the parent of my selected child form the UI list, when even the static GetXXX() method of the child class should be internal and not public?</p>
+<p>I wonder, wouldn&#39;t be easier to make the all the static ChildClass.GetXXX() methods public, so when I select the comment in my list in the UI, I will be able to get the Parent of the comment, and if the parent of the comment is also a child class (the second case in my first posting on this topic), then I will be able to get the Project object throught its static GetProject() method and then, finally to get the root User object. Once I know which is the right root object, I can delete the comment object without a problem.</p>
+<p>However, this seems not so ellegant to me, I probably I miss something. Moreover, I&#39;m sure there is a good reason for Rocky to made the GetXXX() methods internal and not public.</p>
+<p>Please advise.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

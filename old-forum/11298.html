@@ -1,0 +1,35 @@
+<html><header><title>CSLA/WPF - How to bind ToolTip to a DisplayAttribute</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA/WPF - How to bind ToolTip to a DisplayAttribute</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11298.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>cconte posted on Thursday, April 12, 2012</h2><div>Hi,</div>
+<div></div>
+<p>In my BO, I have added DisplayAttributes to my properties, and would now like to bind the ToolTip property of my TextBox controls to the Description property of the DisplayAttribute.<br />Is &nbsp;WPF and silverlight support the DisplayAttribute dataAnnotation ?</p>
+<div></div>
+<div>Here what I&rsquo;m trying to do:</div>
+<div></div>
+<div>In my csla businessBase class, I have this property :</div>
+<div></div>
+<p>public static PropertyInfo&lt;string&gt; DescriptionProperty = RegisterProperty&lt;string&gt;(c =&gt; c.Description);<br />&nbsp; &nbsp; &nbsp; &nbsp; [Display(Name= &quot;Description&quot;)]<br />&nbsp; &nbsp; &nbsp; &nbsp; [StringLength(140)]<br />&nbsp; &nbsp; &nbsp; &nbsp; public string Description<br />&nbsp; &nbsp; &nbsp; &nbsp; {<br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; get { return GetProperty(DescriptionProperty); }<br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; set { SetProperty(DescriptionProperty, value); }<br />&nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<div></div>
+<div>Below the XAML code. Actually, I don&rsquo;t know how to realize the binding with the ToolTip property of my TextBox controls. That&rsquo;s why I have write XXX.</div>
+<div></div>
+<p>&lt;TextBox Text=&quot;{Binding Model.Description}&quot; ToolTip=&quot;{Binding XXX}&quot;/&gt;</p>
+<div></div>
+<div>Thx in advance for your help,</div>
+<div></div>
+<div>Cedric</div>
+<div></div></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Thursday, April 12, 2012</h2><p>You can bind to Model.DescriptionProperty.FrindlyName or wrap the description in your ViewModel by locating the DisplayAttribute for that property.</p>
+<p>When no friendlyname is provided to PropertyInfo it will try to read Display attributt for that property into FriendlyName.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>cconte replied on Thursday, April 12, 2012</h2><p>
+<p>Thx for your answer JonnyBee,</p>
+<p>I&#39;m using the Bxf framework to create the ViewModel. But from the XAML visual studio editor &nbsp;the DescriptionProperty (PropertyInfo type) seems to be not exposed.</p>
+<p>I think it must be possible to get the Display attribut &nbsp;from the FriendlyName, but so far i wasnt be able to write the right XAML line of code.</p>
+<p>May you show me the XAML line of code to make it right.</p>
+<p>Thanks a lot for your help.</p>
+</p>
+<p>Cedric</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Thursday, April 12, 2012</h2><p>In .NET 4.5 you can bind to static property (new for .Net 4.5) .<br /><a href="http://msdn.microsoft.com/en-us/library/bb613588%28v=vs.110%29.aspx#static_properties">http://msdn.microsoft.com/en-us/library/bb613588%28v=vs.110%29.aspx#static_properties </a></p>
+<p>Workaround for previous versions is to create a dummy instance of the class in resource and use as source:<br /><a title="http://stackoverflow.com/questions/936304/binding-to-static-property" href="http://stackoverflow.com/questions/936304/binding-to-static-property">http://stackoverflow.com/questions/936304/binding-to-static-property</a> </p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>cconte replied on Friday, April 13, 2012</h2><p>Nice JonnyBee. that&#39;s work.</p>
+<p>Below some code and note that&#39;s&nbsp;could help people.</p>
+<p><span style="text-decoration:underline;">BO code :</span></p>
+<p>[Required(ErrorMessageResourceName = &quot;TitleRequired&quot;, ErrorMessageResourceType = typeof(Library.Properties.Resources))]<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [Display(Name = &quot;Title&quot;, ResourceType = typeof(Library.Properties.Resources))]<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [StringLength(45, ErrorMessageResourceName = &quot;Title45Characters&quot;, ErrorMessageResourceType = typeof(Library.Properties.Resources))]<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public string Name<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; get { return GetProperty(NameProperty); }<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; set { SetProperty(NameProperty, value); }<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</p>
+<p><span style="text-decoration:underline;">XAML code :</span></p>
+<p><span style="text-decoration:underline;"></span><br />xmlns:lib=&quot;clr-namespace:Library;assembly=Library&quot;</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;TextBox Grid.Column=&quot;1&quot; Grid.Row=&quot;2&quot; Name=&quot;nameTextBox&quot; ToolTip=&quot;{Binding Source={x:Static lib:TypeCdGEdit.NameProperty}, Path=FriendlyName}&quot; Text=&quot;{Binding Path=Model.Name, Mode=TwoWay, ValidatesOnExceptions=False, NotifyOnValidationError=False}&quot; Margin=&quot;2&quot; /&gt;</p>
+<p><span style="text-decoration:underline;">Note :</span></p>
+<p>Don&#39;t forget to change your resource class and properties to public to make it work. Actually, the&nbsp;System.ComponentModel.DataAnnotations attributes is tricky. DisplayAttribute checks the Type.IsVisible&nbsp; property while ValidationAttribute(RequiredAttribute inherit from them) will not. </p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

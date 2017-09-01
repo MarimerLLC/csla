@@ -1,0 +1,12 @@
+<html><header><title>System.Web.Caching?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>System.Web.Caching?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/1548.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>RangerGuy posted on Friday, October 20, 2006</h2>Just wondering if anybody has a good example of how to implement this for NameValueLists? 
+
+I'm using NameValueList to cache UI Settings etc and would like to take advantage of this libraries memory management features :)
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>skagen00 replied on Friday, October 20, 2006</h2><P>Hello there,</P>
+<P>I'm just curious why singletons within the NameValueLists aren't an appropriate solution for you. Am I missing something?</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RangerGuy replied on Friday, October 20, 2006</h2>I just want to make sure I'm using the most appropriate method to cache these settings for a web site. Found this post which got me thinking about the System.Web.Caching library.
+
+http://forums.lhotka.net/forums/post/5891.aspx</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>skagen00 replied on Friday, October 20, 2006</h2><P>Ah, I gotcha. I see his quote here:</P>
+<P><EM>Rocky: "Regarding your second point, on the web server, there is a very viable solution there: System.Web.Caching. Microsoft has already built a good caching solution that you can use within ASP.NET. This is often preferable to the Shared/static approach I used in the book because their Cache mechanism will flush itself if the system starts to run low on memory. You can still use the same basic coding structure as I did in the book - just replace the use of a Shared/static field with calls to System.Web.Caching and you are ready to roll." </EM></P>
+<P>&nbsp;</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

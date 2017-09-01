@@ -1,0 +1,44 @@
+<html><header><title>csla objects in multipane windows form</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>csla objects in multipane windows form</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11292.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>arquisoft posted on Tuesday, April 10, 2012</h2><p>I&#39;m working with csla 3.8.</p>
+<p>I&#39;m passing the objects by Ref from a usercontrol in one pane to other usercontrol in other</p>
+<p>pane. I have problems with applyEdit give me a error :</p>
+<p>Edit level mismatch in AcceptChanges.</p>
+<p>the first &nbsp;usercontrol have un object Sale. This object has&nbsp; a Client object and the Client</p>
+<p>I edit in the other usercontrol and then I pass the object Sale&nbsp;to the other usercontrol .</p>
+<p>My goal is show both usercontrol at same time to the user.</p>
+<p>thanks</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Wednesday, April 11, 2012</h2><p>You must Bind/Unbind in a proper way before you can call save on the object.&nbsp; </p>
+<p>Look at the BindingSourceExtension in <a href="http://cslacontrib.codeplex.com">CslaContrib</a>. </p>
+<p>Also read my blog post here:<br /><a href="http://jonnybekkum.wordpress.com/2009/10/20/forms-databinding-the-magic-sequence-of-binduiunbindui/">http://jonnybekkum.wordpress.com/2009/10/20/forms-databinding-the-magic-sequence-of-binduiunbindui/ </a></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>arquisoft replied on Friday, April 13, 2012</h2><p>thanks very much. </p>
+<p>I will use pattern MVC to my multipane UI . Of Course model is my csla Objects.</p>
+<p>I am right?.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Friday, April 13, 2012</h2><p>Which UI platform is your application using? </p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>arquisoft replied on Friday, April 13, 2012</h2><p>winforms.</p>
+<p>&nbsp;I coud use :<span style="font-size:x-small;"><font size="2">
+<p>&nbsp;</p>
+</font></span></p>
+<p><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">Me</span></span><span style="font-size:x-small;">.CslaActionExtender1.ResetActionBehaviors(mIngreso)&nbsp; ?</span></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>arquisoft replied on Friday, April 13, 2012</h2><p>i downloaded cslacontrib but only has OBJECT CACHING??</p>
+<p>Thanks</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Saturday, April 14, 2012</h2><p>Goto <i>Source Code</i> tab and download latest source. </p>
+<p><a href="http://cslacontrib.codeplex.com/SourceControl/list/changesets">http://cslacontrib.codeplex.com/SourceControl/list/changesets</a></p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>arquisoft replied on Saturday, April 21, 2012</h2><p>Thanks very much ( I am chilean and I dont speak english very well, my native language is spanish) .</p>
+<p>I `d like&nbsp; use mvc in my projects (winform) . I could user your contribute but I want read some document yours to understand the model.</p>
+<p>thanks</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Sunday, April 22, 2012</h2><p>Recommended reading is </p>
+<p>DataBinding FAQ&nbsp;&nbsp; : <a title="http://windowsclient.net/downloads/folders/applications/entry1302.aspx" href="http://windowsclient.net/downloads/folders/applications/entry1302.aspx">http://windowsclient.net/downloads/folders/applications/entry1302.aspx</a><br />DataGridView FAQ : <a title="http://windowsclient.net/downloads/folders/applications/entry1304.aspx" href="http://windowsclient.net/downloads/folders/applications/entry1304.aspx">http://windowsclient.net/downloads/folders/applications/entry1304.aspx</a><br />Designer FAQ&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; : <a href="http://windowsclient.net/downloads/folders/applications/entry1332.aspx">http://windowsclient.net/downloads/folders/applications/entry1332.aspx</a></p>
+<p>I can also recommend the Data Binding book from Brian Noyes:<br /><a href="http://www.amazon.com/Data-Binding-Windows-Forms-2-0/dp/032126892X">http://www.amazon.com/Data-Binding-Windows-Forms-2-0/dp/032126892X</a></p>
+<p>Plus the samples in CslaContrib and Csla. </p>
+<p>I have never used MVC for a Windows Forms application so I have no references for that.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>shrikant44 replied on Wednesday, April 11, 2012</h2><p>I&#39;m passing the objects by Ref from a usercontrol in one pane to other usercontrol in other.</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<table frame="VOID" border="0" cellspacing="0" rules="NONE">
+<colgroup><col width="108"></col></colgroup>
+	
+<tbody>
+<tr>
+<td align="LEFT" height="17" width="108"><a href="http://www.las-vegas-metro.realpropertymgt.com/">las vegas property management companies</a> </td>
+</tr>
+</tbody>
+</table></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

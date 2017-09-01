@@ -1,0 +1,8 @@
+<html><header><title>Help: business/front end logic implementation 101</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Help: business/front end logic implementation 101</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3482.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>PAT336 posted on Wednesday, September 05, 2007</h2><P>Hi,</P>
+<P>Can anyone help me on how to implement this on Windows from, business class:</P>
+<P>On employee form there is a "Bonus" checkbox, when it is checked "Percentage" textbox should be enabled, if "Percentage" is &gt; 10 then&nbsp;"Area Manager" check box sould be enabled.</P>
+<P>Thanks,</P>
+<P>PAT</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Wednesday, September 05, 2007</h2>You can override CanWriteProperty to take the percent and Area Manager properties into account.&nbsp; <br><br>If Bonus is checked, CWP should return true for Percentage, false if Bonus is not checked.&nbsp; Also, when Bonus is unchecked, it could set those other fields (null them, I'd imagine).<br><br>HTH<br>Andy<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>PAT336 replied on Friday, September 07, 2007</h2><P>Andy,</P>
+<P>I overridden CanWriteProperty to enable/disable UI components and used Set method of bonus property to set percentage 0 when bonus is not checked.</P>
+<P>Thanks a lot,</P>
+<P>Pat</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

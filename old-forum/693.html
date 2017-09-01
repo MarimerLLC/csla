@@ -1,0 +1,230 @@
+<html><header><title>Lazy Performance When I want to cancel</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Lazy Performance When I want to cancel</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/693.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoOfMetL posted on Friday, July 21, 2006</h2>I Download the Project Tracker, and I wanted to test it whit a lot of data.<br>
+<br>
+I add a project with 500 ressources.<br>
+<br>
+And I Click on the button Cancel.<br>
+<br>
+The application is frozen during a very long time (P4 XEON 3 Ghz, 1 GO RAM)<br>
+<br>
+I think the problem is : The Event OnPropertyChanged is called too many time.<br>
+<br>
+Why&nbsp; the Event OnPropertyChanged is called foreach properties and not one time after the object reloaded.<br>
+<br>
+Do you have a solution to my problem ?<br>
+<br>
+It's a serious problem for my futur application.<br>
+<br>
+Thank you.<br>
+<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tetranz replied on Friday, July 21, 2006</h2>I have struggled with the same thing. It is definitely a real issue. I think you get a PropertyChanged event and therefore also a ListChanged event for every property of every item in the collection so the UI really gets hammered with events.<br><br>Setting RaiseListChangedEvents = false on your collection will be some help but I found that it really wasn't enough. That stops the UI being hammered but there is still a lot of unnecessary processing happening with your collection receiving PropertyChanged events.<br><br>I made a simple modification to CSLA to give me a property called INotifyPropertyChangedEnabled. It defaults to true so I can usually ignore it.. It lets me stop PropertyChangedEvents when doing a cancel. This makes a huge difference. It means that you need to refresh the databinding after the cancel.<br><br>Perhaps Rocky could consider doing something more formal about this in a future release of the framework.<br><br>Cheers<br>Ross<br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoOfMetL replied on Friday, July 21, 2006</h2>Thank you for your response.<br>
+<br>
+I try an another solution to solve the problem to Cancel.<br>
+<br>
+I modified the framework :<br>
+<br>
+&nbsp;[Serializable()]<br>
+&nbsp; public abstract class BusinessBase : <br>
+&nbsp;&nbsp;&nbsp; Csla.Core.UndoableBase, IEditableBusinessObject,<br>
+&nbsp;&nbsp;&nbsp; System.ComponentModel.IEditableObject, System.ComponentModel.IDataErrorInfo, <br>
+&nbsp;&nbsp;&nbsp; ICloneable<br>
+&nbsp; {<br>
+&nbsp;....<br>
+<br>
+public void CancelEdit()<br>
+&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; UndoChanges();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+this.OnPropertyChanged("TEST");&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&lt;------------<br>
+&nbsp;&nbsp;&nbsp; }<br>
+<br>
+<br>
+&nbsp;protected override void UndoChangesComplete()<br>
+&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _bindingEdit = false;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ValidationRules.SetTarget(this);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; AddBusinessRules();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; //OnUnknownPropertyChanged();&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;-------------<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; base.UndoChangesComplete();<br>
+&nbsp;&nbsp;&nbsp; }<br>
+<br>
+It seems that it's works.<br>
+<br>
+What do you think about this ?<br>
+<br>
+<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, July 21, 2006</h2><P>This has been discussed in another thread as well.</P>
+<P>The issue is one I discuss in the book - OnUnknownPropertyChanged. As I point out in the book, the default implementation is not ideal. And so I made the method Overridable/virtual so you can create a more efficient implementation.</P>
+<P>If you look, you'll see that it raises PropertyChanged for every property. This is because it MUST raise the event for a property that is actually bound to the UI, and there's no way for the object to know what properties are and aren't bound to any given UI.</P>
+<P>But YOU might know. You might know that a particular object always has its Name property, or Id property or whatever, bound to a control. You can override this method to raise only that one PropertyChanged event - thus avoiding a LOT of overhead.</P>
+<P>As was discussed in the other thread, you could use this technique to recreate the hack I used in .NET 1.x - where I always raised the equivalent of PropertyChanged("IsDirty"). Then you just make sure to always bind the IsDirty property to a CheckBox control with size 0,0 on every form.</P>
+<P>You can do this globally by creating your own base class that sits between BusinessBase&lt;T&gt; and your actual business objects (which is probably a best practice anyway, because there are other things you may want to customize with such an intermediate base class).</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoOfMetL replied on Friday, July 21, 2006</h2>Thank you for your response. (I read your book and I find it very good !)<br><br>But I don't understand why you said : <br><br>"This is because it MUST raise the event for a property that is actually
+bound to the UI, and there's no way for the object to know what
+properties are and aren't bound to any given UI."<br><br>I think that if you raise the PropertyChanged Event with PropertyChangedEventArgs = null<br>the UI rebind all properties.<br><br>&nbsp;public event PropertyChangedEventHandler PropertyChanged;<br><br>private void OnPropertyChanged() {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (PropertyChanged != null) {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; PropertyChanged(this, null);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br><br>MSDN : The PropertyChanged event can indicate that all the properties of the object were modified using Null reference (Nothing in Visual BASIC) or of String.Empty like name of property in PropertyChangedEventArgs. <br><br>Thank you<br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, July 21, 2006</h2><P>See, you learn something new every day <img src="/emoticons/emotion-1.gif" alt="Smile [:)]" /></P>
+<P>You can test this by overriding OnUnknownPropertyChanged and just calling OnPropertyChanged(""). If you find that to work please post here and I can change the framework itself accordingly - probably for version 2.1.</P>
+<P>I hope that really does work, as it would sure simplify this issue rather a lot!</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoOfMetL replied on Monday, July 24, 2006</h2><br>
+I modified the Framework :<br>
+<br>
+&nbsp;&nbsp;&nbsp; protected virtual void OnUnknownPropertyChanged()<br>
+&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; //PropertyInfo[] properties =<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; //&nbsp; this.GetType().GetProperties(<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; //&nbsp; BindingFlags.Public | BindingFlags.Instance);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; //foreach (PropertyInfo item in properties) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; //&nbsp;&nbsp;&nbsp; OnPropertyChanged(item.Name);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; //}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; OnPropertyChanged(string.Empty);<br>
+&nbsp;&nbsp;&nbsp; }<br>
+<br>
+and it seems that it works.<br>
+<br>
+But I test with One Project and 500 ressources assigned. With this
+method the Event OnPropertyChanged is raise 501, so it's not optimized.<br>
+<br>
+I Purpose : <br>
+<br>
+&nbsp;&nbsp;&nbsp; public void CancelEdit()<br>
+&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; UndoChanges();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; OnUnknownPropertyChanged();&nbsp; &lt;-------<br>
+&nbsp;&nbsp;&nbsp; }<br>
+<br>
+&nbsp;&nbsp;&nbsp; protected override void UndoChangesComplete()<br>
+&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _bindingEdit = false;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ValidationRules.SetTarget(this);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; AddBusinessRules();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // OnUnknownPropertyChanged();&nbsp;&nbsp;&nbsp;&nbsp; &lt;--------------<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; base.UndoChangesComplete();<br>
+&nbsp;&nbsp;&nbsp; }<br>
+<br>
+So the event OnPropertyChanged is just raise one time.<br>
+<br>
+What do you think about this ?<br>
+<br>
+Thank you.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>xal replied on Monday, July 24, 2006</h2>Well, If you have 500 child objects it's reasonable for each of them to fire that event.<br><br>Generally, when I have a potentially huge collection I mark it as NotUndoable(), because I will not likely want to save undo data for thousands of items when the user is not likely to edit more than just a few.<br>The problem is not only storing the data in memory, you also need time to process that.<br><br>Also, another question you need to ask yourself is: How necesary is it to call CancelEdit in your forms when you close them? There are few situations where you're actually going to be using the same object in another form, so in general when you close a form you could just forget about the bo, not call CancelEdit() and let the GC take care of it...<br><br>I realize that purists will say it's not the best approach, but it does get the job done.<br><br>Andrés<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoOfMetL replied on Monday, July 24, 2006</h2><br>
+<div align="left"><span class="925124914-24072006"><font color="#0000ff" face="Arial" size="2">To make my test, I used the tracker project. <br>
+<br>
+I created a 
+project having 500 assigned resources. even if it&nbsp;doesn't seem real, there must a 
+case it occurs.<br>
+<br>
+</font></span></div>
+
+<div align="left"><span class="925124914-24072006"><font color="#0000ff" face="Arial" size="2">To my mind I don't intend&nbsp;to call the cancel method inside 
+the close<br>
+<br>
+Thank you for your answer<br>
+</font></span></div>
+<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, July 24, 2006</h2>
+
+
+
+
+<DIV align=left><SPAN class=825344814-24072006><FONT face=Arial color=#0000ff size=2>JoOfMetL,</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=825344814-24072006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=825344814-24072006><FONT face=Arial color=#0000ff size=2>Thank you for checking on the use of an empty string - 
+that's excellent news! I will most likely change version 2.1 to use this 
+technique.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=825344814-24072006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=825344814-24072006><FONT face=Arial color=#0000ff size=2>Regarding you other suggestion, I don't believe that is 
+workable in all cases.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=825344814-24072006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=825344814-24072006><FONT face=Arial color=#0000ff size=2>There could be a case where someone (form, observer, etc.) 
+is bound to a child object. If you do not raise a PropertyChanged event for the 
+child object, then neither the child object, nor its containing collection, will 
+raise their changed events.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=825344814-24072006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=825344814-24072006><FONT face=Arial color=#0000ff size=2>While your main form would know that the top-level object 
+changed, nothing listening to your child collections or objects would have any 
+clue that their data source has changed.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=825344814-24072006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=825344814-24072006><FONT face=Arial color=#0000ff size=2>The point being, I believe those 501 events are actually 
+useful and necessary to be complete, because you don't know what other listeners 
+might exist. Well, YOU might, within your app, but the general "you" of all app 
+developers&nbsp;out there can't know :)</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=825344814-24072006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=825344814-24072006><FONT face=Arial color=#0000ff size=2>Rocky</FONT></SPAN></DIV>
+<DIV align=left><FONT face=Arial color=#0000ff size=2></FONT>&nbsp;</DIV></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoOfMetL replied on Monday, July 24, 2006</h2><br>
+Thank you.<br>
+<br>
+Indeed, it's doesn't work in all cases.<br>
+<br>
+Example : <br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -Projet (Parent)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; --Ressoures (Collection of Child)<br>
+<br>
+<br>
+On my form I Bound a textbox (or a dataGridView) to a field (or all
+field) on one of the Ressource&nbsp; object (belonging to the project
+object)<br>
+<br>
+And I Use this code : <br>
+<br>
+&nbsp;&nbsp;&nbsp; this.ressourcesBindingSource.DataSource = mProjet.Ressources:<br>
+<br>
+I Agree that if the Parent Object (Projet) raise the event PropertyChanged, the UI isn't refresh.<br>
+<br>
+But, I think, it's more logic to have 2 bindingsource.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; projetbindingsource<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ressourcebindingsource<br>
+<br>
+&nbsp;with this relation : <br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // ressourcesBindingSource<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; this.ressourcesBindingSource.DataMember = "Ressources";<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+this.ressourcesBindingSource.DataSource = this.projetBindingSource;<br>
+<br>
+and<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp; this.projetBindingSource.DataSource = mProjet;<br>
+<br>
+And in this case, it's works.<br>
+<br>
+I think of testing like that and if I see that that produced problem
+under certain conditions I will return to the preceding version <br>
+<br>
+Thank you.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br>
+<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonM replied on Monday, July 24, 2006</h2>Is it possible to embed a simple boolean property that acts a switch in the low-level BO.&nbsp; You could check the value in the OnUnknownPropertyChanged event and simply not call the PropertyChanged method if it is set to true??&nbsp; This wouldn't keep the OnUnknownPropertyChanged from being called but you could stop the other events from firing.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoOfMetL replied on Tuesday, July 25, 2006</h2><br>
+Yes it is a good idea. Those which wish to optimize the code could put the boolean at true and the default value would be false.<br>
+<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, July 25, 2006</h2>
+
+
+
+
+<DIV align=left><SPAN class=481541414-25072006><FONT face=Arial color=#0000ff size=2>Well, it is only a good idea if there are no side-effects. 
+It also has a bad code smell - in other words, it is very clearly a 
+hack.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=481541414-25072006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=481541414-25072006><FONT face=Arial color=#0000ff size=2>True, sometimes a hack is the only answer - but it should 
+be a last resort, because it will cause me trouble for years to come... I have 
+to justify everything to thousands of people after all :)</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=481541414-25072006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=481541414-25072006><FONT face=Arial color=#0000ff size=2>A better idea might be (and maybe you've tried this?) to 
+tell the bindingsource not to raise events, then tell the bindingsource to 
+CancelEdit, then tell the bindingsource to raise events and 
+refresh.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=481541414-25072006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=481541414-25072006><FONT face=Arial color=#0000ff size=2>Rocky</FONT></SPAN></DIV><BR>
+<BLOCKQUOTE>
+  <DIV class=OutlookMessageHeader align=left>
+  <HR>
+  <FONT face=Tahoma size=2><B>From:</B> JoOfMetL [mailto:cslanet@lhotka.net] 
+  <BR><B>Sent:</B> Tuesday, July 25, 2006 2:31 AM<BR><B>To:</B> 
+  rocky@lhotka.net<BR><B>Subject:</B> Re: [CSLA .NET] Lazy Performance When I 
+  want to cancel<BR></FONT><BR></DIV>
+  <DIV></DIV><BR>Yes it is a good idea. Those which wish to optimize the code 
+  could put the boolean at true and the default value would be 
+  false.<BR><BR><BR><BR><BR></BLOCKQUOTE></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoOfMetL replied on Tuesday, July 25, 2006</h2><font color="#000000"><br>
+<font face="Times New Roman">Yes you are right, a boolean it's not the best solutions.<br>
+<br>
+I try<font size="3"> <span class="481541414-25072006">to 
+tell the bindingsource not to raise events, then tell the bindingsource to 
+CancelEdit, then tell the bindingsource to raise events and 
+refresh AND IT'S WORKS.<br>
+<br>
+Thank you.<br>
+</span></font></font></font><br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

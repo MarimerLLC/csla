@@ -1,0 +1,38 @@
+<html><header><title>WinRT - call to async CSLA factory method causes delay in rendering</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>WinRT - call to async CSLA factory method causes delay in rendering</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11640.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>TSF posted on Thursday, October 11, 2012</h2><p>This may not be related to CSLA, but I wanted to ask here anyway just in case.&nbsp; In my WinRT app, when I navigate to another page from the main page, I have the following code in the LoadState event:</p>
+<p style="padding-left:30px;">ViewModels.MyViewModel vm = new ViewModels.MyViewModel();<br />this.DataContext = vm;</p>
+<p>In the constructor of&nbsp;MyViewModel is the following:</p>
+<p style="padding-left:30px;">EditableRoot.NewEditableRoot((o, e) =&gt;<br />{<br />&nbsp;&nbsp; if (e.Error != null)<br />&nbsp;throw e.Error;<br />&nbsp;&nbsp; else<br />&nbsp;&nbsp; &nbsp;Model = e.Object;<br />});</p>
+<p>And in the EditableRoot CSLA object, I have the following method:</p>
+<p style="padding-left:30px;">public static void NewEditableRoot(EventHandler&lt;DataPortalResult&lt;EditableRoot&gt;&gt; callback)<br />{<br />&nbsp;&nbsp;&nbsp; DataPortal.BeginCreate&lt;EditableRoot&gt;(callback);<br />}</p>
+<p>What I would expect is that, because the NewEditableRoot factory method is being called asynchronously, there should be no lag in the WinRT app&#39;s ability to display the page to which I&#39;m navigating.&nbsp; But that isn&#39;t the case.&nbsp; The app pauses like it is trying to create the object, and after about 1 second it then displays the new page.&nbsp; If I remove the call to EditableRoot.NewEditableRoot() within the VM constructor, the page loads immediately.&nbsp;&nbsp;The new object being created doesn&#39;t even do a lot and is marked with [RunLocal].&nbsp; Regardless, though, shouldn&#39;t the WinRT page simply load up fast since the object creation isn&#39;t taking place in the UI thread?</p>
+<p>I&#39;d appreciate any pointers on what to look for.&nbsp; But in the meantime, to get around this I have used a DispatcherTimer in the page being loaded.&nbsp; The interval is set to&nbsp;1/2 second, at which point it calls a public method on the VM to do the creation of the object, following which I rebind the VM to the page&#39;s data context.&nbsp; Very ugly, but it does give the intended effect...the page loads quickly.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, October 12, 2012</h2><p>I have had difficulties with initializing the model in the constructor, though in your code I&#39;d expect it to work.</p>
+<p>But you can&#39;t mark a constructor as async, so you can&#39;t use await there. Because of this, the 4.5 ViewModelBase now includes an InitAsync method so you can do this in your UI code:</p>
+<p>this.DataContext = await new MyViewModel().InitAsync();</p>
+<p>Then in the viewmodel class you don&#39;t implement a constructor, or at least not one that starts any async work. Instead you override another method:</p>
+<p>protected override async Task&lt;T&gt; DoInitAsync()<br />{<br />&nbsp; return await MyBusinessClass.GetMyBusinessClassAsync();<br />}</p>
+<p>This has been working well for me, and I think you could do the equivalent with the older event style async methods as well.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>TSF replied on Friday, October 12, 2012</h2><p>Thanks.&nbsp; So does the concept of BeginRefresh in the VM not play a role anymore?&nbsp; Since BeginRefresh doesn&#39;t return anything, what would I be returning in the DoInitAynsc?</p>
+<p>Or should I not use BeginRefresh and instead&nbsp;do as you did going forward...just calling the static factory method in the business object?&nbsp; (e.g. MyBusinessClass.GetMyBusinessClassAsync() )</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>TSF replied on Friday, October 12, 2012</h2><p>I changed my object to use the newer async style, and used the InitAsync call when setting the DataContext, as you show above.&nbsp; But it still does the same thing...the initial view hangs for about 1.5 seconds and then displays the new view.&nbsp; I&#39;m probably doing something wrong somewhere else.&nbsp; It seems as if I have three options:</p>
+<ol>
+<li>The old style (plus using the timer mechanism to which I referred).&nbsp; 
+<ul>
+<li>Pro: the second view displays immediately;&nbsp; can use a progress indicator until the fetched data is retrieved and bound</li>
+<li>Con:&nbsp;messy solution (using a dispatcher timer)</li>
+</ul>
+</li>
+<li>The new style
+<ul>
+<li>Pro: seems like the proper way to code;&nbsp; when the second view does finally get displayed, the data is already bound and ready</li>
+<li>Con: the first view noticeably hangs in an unresponsive state;&nbsp; because of that I can&#39;t use a progress indicator...it simply won&#39;t display since the UI is blocked</li>
+<li></li>
+</ul>
+</li>
+<li>Calling the Async factory method (for the second view) while still&nbsp;in the original view (when the user clicks a button in the app bar) while displaying progress indicator, and then calling Frame.Navigate() to go to the second view while passing the business object as the argument to the navigationParameter.
+<ul>
+<li>Con: this forces the initial view to have knowledge about the second view (i.e. its business object)</li>
+</ul>
+</li>
+</ol>
+<p>I&#39;m leaning toward #1 because at least that way I can display a progress bar to let the user know something is happening.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, October 12, 2012</h2><p>Try breaking the line of code in two:</p>
+<p>var vm = new ViewModel();<br />this.DataContext = await vm.InitAsync();</p>
+<p>Also, it might be that you are putting this code in a blocking method/event. I typically put this code in the launching event handler, which of course must be decorated with the async keyword.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>TSF replied on Friday, October 12, 2012</h2><p>Thanks for your continued help.&nbsp; I tried that, but no change, unfortunately.&nbsp; As to where I have it, I&#39;m calling this in the LoadState event of the second view (the one being navigated to).&nbsp; I added &quot;async&quot; to it...assuming that is acceptable.</p>
+<p style="padding-left:30px;">protected override async void LoadState(Object navigationParameter, Dictionary&lt;String, Object&gt; pageState)</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

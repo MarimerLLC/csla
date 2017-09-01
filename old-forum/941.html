@@ -1,0 +1,40 @@
+<html><header><title>Overriding AddNewCore</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Overriding AddNewCore</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/941.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 posted on Friday, August 18, 2006</h2>Hi,<br><br>When you override AddNewCore, is anyone raising the AddingNew event?&nbsp; <br><br>The docs say that raising the event allows listens to place a custom object in the collection, but it also seems likely that there may be those that want to listen to the event so that they are aware an item was added?<br><br>Should I be raising the event or not?<br><br>Andy<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, August 23, 2006</h2>That event comes from BindingSource, not from the data source object. So your business object should not raise this event, no.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Wednesday, August 23, 2006</h2>BindingSource?&nbsp; Do you mean BindingList?&nbsp; I'm confused... if I don't call OnAddingNew protected method, the AddingNew event never fires.&nbsp; Should that be the case for Csla objects?<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, August 23, 2006</h2>
+
+
+
+
+<DIV align=left><SPAN class=937550314-23082006><FONT face=Arial color=#0000ff size=2>What object raises AddingNew? It is my understanding that 
+the BindingSource control raises an AddingNew method, not the data source object 
+(like a BindingList&lt;T&gt;). There's no AddingNew event defined in any of the 
+data source interfaces like IBindingList (that I'm aware of at 
+least).</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=937550314-23082006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=937550314-23082006><FONT face=Arial color=#0000ff size=2>Rocky</FONT></SPAN></DIV><BR>
+<BLOCKQUOTE>
+  <DIV class=OutlookMessageHeader align=left>
+  <HR>
+  <FONT face=Tahoma size=2><B>From:</B> ajj3085 [mailto:cslanet@lhotka.net] 
+  <BR><B>Sent:</B> Wednesday, August 23, 2006 8:51 AM<BR><B>To:</B> 
+  rocky@lhotka.net<BR><B>Subject:</B> Re: [CSLA .NET] Overriding 
+  AddNewCore<BR></FONT><BR></DIV>
+  <DIV></DIV>BindingSource?&nbsp; Do you mean BindingList?&nbsp; I'm confused... 
+  if I don't call OnAddingNew protected method, the AddingNew event never 
+  fires.&nbsp; Should that be the case for Csla objects?<BR><BR><BR><BR></BLOCKQUOTE></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Wednesday, August 23, 2006</h2>BindingList&lt;T&gt; defines an AddingNew event.&nbsp; The default implemention of AddNewCore will raise this event as well by calling the OnAddingNew( AddingNewEventArgs ) method.&nbsp; <br><br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, August 23, 2006</h2>
+
+
+
+
+<DIV align=left><SPAN class=437445314-23082006><FONT face=Arial color=#0000ff size=2>Huh, well there you go then :)</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=437445314-23082006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=437445314-23082006><FONT face=Arial color=#0000ff size=2>I should think that you'd want to raise that event 
+then.</FONT></SPAN></DIV><BR>
+<BLOCKQUOTE>
+  <DIV class=OutlookMessageHeader align=left>
+  <HR>
+  <FONT face=Tahoma size=2><B>From:</B> ajj3085 [mailto:cslanet@lhotka.net] 
+  <BR><B>Sent:</B> Wednesday, August 23, 2006 9:23 AM<BR><B>To:</B> 
+  rocky@lhotka.net<BR><B>Subject:</B> Re: [CSLA .NET] RE: Overriding 
+  AddNewCore<BR></FONT><BR></DIV>
+  <DIV></DIV>BindingList&lt;T&gt; defines an AddingNew event.&nbsp; The default 
+  implemention of AddNewCore will raise this event as well by calling the 
+  OnAddingNew( AddingNewEventArgs ) method.&nbsp; <BR><BR><BR><BR><BR><BR></BLOCKQUOTE></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

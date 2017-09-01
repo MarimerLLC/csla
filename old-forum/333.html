@@ -1,0 +1,47 @@
+<html><header><title>DataBinding in Win UI</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>DataBinding in Win UI</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/333.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Pradeep posted on Friday, June 09, 2006</h2><DIV>The BindField method for binding a control to a property works pretty good. As soon as I update the control, my business object is updated automatically.</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>But one thing I noticed is that, inorder for .Net to update the business object, I have to tab out&nbsp;of that control or click on another control that is databound (basically change focus to another control). This is bit frustrating. Because, it does not happen if I just click some where outside of the control (on the form). I must click on another bound control. </DIV>
+<DIV>&nbsp;</DIV>
+<DIV>Is this a known issue or am I missing something? Is there any work around for this? I dont want to write a bunch of lost focus methods on each of my control, because that would defeate the purpose of DataBinding.</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>I am using Infragistics control.&nbsp;I hope it has nothing to with infragistics control and&nbsp;is directly related to the way .Net does data binding. Also I am using .Net 1.1 and not 2.0</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>Please let me know your thoughts and suggestions regarding this issue.</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>Thank You</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>&nbsp;</DIV></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, June 09, 2006</h2><P>The way data binding works is such that you do have to exit the control for the value to be set into your data source (in this case your business object). You can call EndEdit on the binding source to force data binding to put the last value into the data source. Also, there's a property you can set on each control so the binding source will do the updates on keystrokes (changed events). I think this only works when using the binding source approach from .NET 2.0 though...</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>vbexpert replied on Sunday, June 11, 2006</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div>
+<P>there's a property you can set on each control so the binding source will do the updates on keystrokes...</P>
+<P></div></BLOCKQUOTE></P>
+<P>May I know what the property name is? I couldn't figure.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, June 12, 2006</h2>
+
+
+
+
+<DIV align=left><SPAN class=034343913-12062006><FONT face=Arial color=#0000ff size=2>It is the Data Source Update Mode in the Advanced dialog 
+under the Databindings property of a control.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=034343913-12062006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=034343913-12062006><FONT face=Arial color=#0000ff size=2>Rocky</FONT></SPAN></DIV><BR>
+<BLOCKQUOTE>
+  <DIV class=OutlookMessageHeader align=left>
+  <HR>
+  <FONT face=Tahoma size=2><B>From:</B> vbexpert [mailto:cslanet@lhotka.net] 
+  <BR><B>Sent:</B> Sunday, June 11, 2006 7:50 PM<BR><B>To:</B> 
+  rocky@lhotka.net<BR><B>Subject:</B> Re: [CSLA .NET] DataBinding in Win 
+  UI<BR></FONT><BR></DIV>
+  <DIV></DIV>
+  <BLOCKQUOTE>
+    <DIV><IMG src="/Themes/default/images/icon-quote.gif"> 
+    <STRONG>RockfordLhotka:</STRONG></DIV>
+    <DIV>
+    <P>there's a property you can set on each control so the binding source will 
+    do the updates on keystrokes...</P>
+    <P></P></DIV></BLOCKQUOTE>
+  <P></P>
+  <P>May I know what the property name is? I couldn't 
+  figure.</P><BR><BR><BR></BLOCKQUOTE></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Brian Tian replied on Thursday, June 29, 2006</h2><P>&nbsp;</P>
+<P>I have the same problem,&nbsp; but I use .Net 2.0,&nbsp; Infragistics 6.2 and CSLA 2.0</P>
+<P>Thank you, I know how to do it now.</P>
+<P>Brain </P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Cslah replied on Friday, June 30, 2006</h2>We've found that sometimes you want to have the data update on keystrokes, such as a numeric field used in calculating a result while still&nbsp;having the formatting applied (if needed) on lost focus of the&nbsp;control. Fortunately, you can still use databindings for this. The BO will get updated OnPropertyChanged, but the formatting won't apply until the control loses focus. It works great. This is what we use for a nullable decimal formatted as&nbsp;currency.<BR><BR>
+<P><FONT size=2><FONT color=#0000ff>Dim</FONT> db <FONT color=#0000ff>As</FONT> System.Windows.Forms.Binding<BR></FONT><FONT size=2>db = control.DataBindings.Add(propertyName, dataSource, _<BR></FONT><FONT size=2>dataMember, <FONT color=#0000ff>True</FONT>, DataSourceUpdateMode.OnPropertyChanged, <FONT color=#800000>""</FONT>, <FONT color=#800000>"c"</FONT>)<BR></FONT><FONT size=2>db.DataSourceNullValue = <FONT color=#0000ff>Nothing</FONT></FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>phucphlq replied on Friday, September 22, 2006</h2><P>But it don't work in grid and treelist control. In grid, we only assign Grid.DataSource = List. </P>
+<P>How to do?</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,32 @@
+<html><header><title>Database Access</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Database Access</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/2867.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>TerryHolland posted on Tuesday, May 15, 2007</h2><P>I have an application that contains a number of business objects.&nbsp; These objects are mainly Editable Roots implementing DataPortal_Create, DataPortal_Fetch, DataPortal_Update &amp; DataPortal_Delete.&nbsp; All of this database access is via the DataPortal.&nbsp; I need the objects to access the database in ways other than these CRUD methods ie GetNextQuoteRef - a method that would need to access the DB to generate the next Quote number (based on a custom algorithm).&nbsp; What is the recommended way of implementing this type of DB activity within CSLA framework?&nbsp; The choices I seem to have are </P>
+<P>1) write a method in my object such as the following pseudo code</P>
+<P>Public Function GetNextQuoteRef () as String</P>
+<P>&nbsp;&nbsp;&nbsp;OpenDBConnection</P>
+<P>&nbsp;&nbsp;&nbsp;CreateCommandObject</P>
+<P>&nbsp;&nbsp;&nbsp;ExecuteCommand</P>
+<P>&nbsp;&nbsp;&nbsp;Return OutputParamFromCommand</P>
+<P>End Function</P>
+<P>&nbsp;</P>
+<P>Alternatively I could create a class that inherits from the CommandBase say clsGetNextQuoteRef and have this class execute my stored procedure.&nbsp; I could then use this class from my Quote business object.&nbsp; This is the route I have taken, but I would like some perspectives on the alternatives</P>
+<P>tia</P>
+<P>Terry Holland</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Tuesday, May 15, 2007</h2><P>The approach you have taken sounds fine to me.</P>
+<P>You have encapsulated the behavior of "getting the next quote ref" into a single re-usable BO.</P>
+<P>Your pseudo code contains a huge mistake though. It opens a DB connection without ensuring you have passed through the data portal. If you ever turn on Remoting, your code will break right there.</P>
+<P>The rest of the pseudo sounds like a good way to use the command object you created and return its output so it looks like a method on your class but is really a database hit.</P>
+<P>Joe</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>TerryHolland replied on Tuesday, May 15, 2007</h2><P>I think my original post was a bit unclear.&nbsp; The pseudo code I provided was an option that I decided not to&nbsp;persue.&nbsp; It had occured to me that all DB interation should go through the DataPortal.&nbsp; The route Ive taken was to create a class clsGetNextQuoteRef.&nbsp; This class inherits from the CommandBase CSLA class and DB activity is through the dataportal.&nbsp; My Quote business object has a the following method:</P>
+<P>Public Class clsQuote</P>
+<P>&nbsp;&nbsp;&nbsp;Inherits Csla.BusinessBase(Of clsQuote)</P>
+<P>....</P>
+<P>&nbsp;&nbsp;&nbsp;Private Function GetNextQuoteRef() as String</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Return clsGetNextQuoteRef.Execute</P>
+<P>&nbsp;&nbsp;&nbsp;End Function</P>
+<P>End Class</P>
+<P>So my business object (Quote) would call its GetNextQuoteRef method which would call the shared Execute method on my clsGetNextQuoteRef class (this class inherits from CommandBase and interacts with the DB via the DataPortal)</P>
+<P>I have avoided communicating with DB unless it is via DataPortal and I think Im looking for confirmation that what Im doing is correct - it sounds as though it is</P>
+<P>&nbsp;</P>
+<P>Terry</P>
+<P>&nbsp;</P>
+<DIV class=ForumPostContentText id=ctl00_ctl01_bcr_ctl00___PostRepeater_ctl01_PostViewWrapper>
+<P>&nbsp;</P>
+<P>&nbsp;</P></DIV></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

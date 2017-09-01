@@ -1,0 +1,33 @@
+<html><header><title>SmartDate and DevExpress ASPxDateEdit Value (FYI)</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>SmartDate and DevExpress ASPxDateEdit Value (FYI)</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11210.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>SNiedinger posted on Tuesday, March 06, 2012</h2><p>Hi,</p>
+<p>FYI,</p>
+<p>I have been chasing a bug this morning where a date was not properly saved.</p>
+<p>I turned out that when initialising the ASPxDateEdit Value property to a SmartDate it converts the date into a &#39;US actual date&#39; (i.e. swaps day and month) I use British regional settings (dd/M/yyyy).</p>
+<p>E.g. </p>
+<p>SmartDate value is 6 March 2012</p>
+<p>when setting the ASPxDateEdit Value property the ASPxDateEdit date actually becomes 3 June 2012 !</p>
+<p>when setting the ASPxDateEdit Date property it works correctly.</p>
+<p>&nbsp;</p>
+<p>As a test I converted the SmarteDate properties in my business object to DateTime? types and then the ASPxDateEdit&nbsp; worked fine. (both Value and Date properties)</p>
+<p>Question:</p>
+<p>DateTime? should be fine for our needs, but would prefer to use SmartDate. Are there any issues in using DateTime?</p>
+<p>Thank you,</p>
+<p>Siegfried</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Tuesday, March 06, 2012</h2><p>DefaultFormat for SmartDate is <b>&quot;d&quot; </b>. </p>
+<p>Do you use remote dataportal? </p>
+<p>This code in LinqPad (<a href="http://www.linqpad.net">http://www.linqpad.net</a>):</p>
+<p><i>var sd = new SmartDate(DateTime.Now);<br />sd.Text.Dump();<br />sd.FormatString.Dump();</i></p>
+<p>gives this output:</p>
+<div><i>06.03.2012<br />d</i></div>
+<div><br /></div>
+<div>Which is correct for my locale setting in Norway.</div>
+<div><br /></div>
+<div><b>Could the real issue be the ASPxDateEdit and how it parses text to DateTime?&nbsp;</b> </div>
+<div><br /></div>
+<div><br /></div></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

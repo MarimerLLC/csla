@@ -1,0 +1,24 @@
+<html><header><title>Error with CSLA + MEF + Serialization</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Error with CSLA + MEF + Serialization</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11378.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>viniciusmaretti posted on Monday, May 28, 2012</h2><p>
+<p>I&#39;m trying to import a class with mef and when it runs on server side it works well, but when i try to do this on client side(silverlight) i get this error :</p>
+<p>(I&#39;ve translated the error, sorry for any mistake)</p>
+<p>The type &#39;Cra.DynamicRules.Minimo&#39; with contract name &#39;Minimo:http://schemas.datacontract.org/2004/07/Cra.DynamicRules&#39; is not expected. Consider using the DataContractResolver or add some statically unknown types to the known types using the KnownTypeAttribute or adding then to known type transmitted to the DataContractSerializer.</p>
+<p>When i put the SerializableAttribute in my class i get an exception in run-time complaining that the base class is not marked as serializable. There comes my problem. I&#39;m using CSLA framework on my base class and i can&#39;t add the attribute i need and just recompile it.</p>
+<p>Can anyone definitely save me? I&#39;ve been trying everything for one week. Thanks in advance.</p>
+</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Monday, May 28, 2012</h2><p>Is it a rule that you import by MEF? </p>
+<p>I think we need to see a bit more of your code to see the actual problem. </p>
+<p>It seems like the rule is set in a &quot;member&quot; variable/property of the BO as the DataContractSerializer tries to serialize the object. This should not happend because Rules should only be registered in AddBusinessRules independently on both .NET and SL and the BrokenRuleCollection should be the only &quot;rule&quot; collection to be transferred on the wire.</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>viniciusmaretti replied on Monday, May 28, 2012</h2><p>Well, i`m not at work right now so i don`t have acess to codes at this moment.</p>
+<p>But basically what i`m trying to do is load business rules with mef.&nbsp;</p>
+<p>Both SL and .NET sides have acess to my business rules repository by a DAL factory. I used the methods&nbsp;(SL)&nbsp;DataPortal.BeginExecute and&nbsp;(.NET)DataPortal.Execute to reach it, and then i get my business rules returning an MobileList&lt;IBusinessRules&gt;.</p>
+<p>In the BO, on AddBusinessRules method i did :</p>
+<p>foreach rule in list</p>
+<p> {</p>
+<p>this.BusinessRules.Add(rule)</p>
+<p>}&nbsp;</p>
+<p>Note : I have an assembly with the BusinessRules and then i`ve created an DyrectoryCatalog passing the &nbsp;path of this assembly. Through a container i get the exported values of type IBusinessRules.&nbsp;</p>
+<p>&nbsp;</p>
+<p>Hope i was clear enough, if not, tomorrow i post some codes.</p>
+<p>Thanks!</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Wednesday, May 30, 2012</h2><p>Hmmm. that&#39;s not going to work.</p>
+<p>BusinessRules is typically bound to a static IPropertyInfo object (PrimaryProperty,, InputProperties, AffectedProperties) and cannot be serialized. Actually - BusinessRules are not meant to be serialized and does not support Mobile formatter. </p>
+<p><b>You should create your own &quot;meta&quot; information on rules (like a ReadOnly / ReadOnlyList) and then create BusinessRule instances with actual PropertyInfo&#39;s in &lt;bo&gt;.AddBusinessRules() method. </b></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>viniciusmaretti replied on Wednesday, May 30, 2012</h2><p>I&#39;ve done this way and seems that it will work.</p>
+<p>Thank you very much!</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

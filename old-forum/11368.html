@@ -1,0 +1,18 @@
+<html><header><title>Unit Testing in Silverlight</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Unit Testing in Silverlight</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11368.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Peabody posted on Monday, May 21, 2012</h2><p>I am trying to test a viewmodel in my silverlight project. &nbsp;The problem I am running into is that I cannot make any calls to the business layer until I have authenticated the user identity. &nbsp;My plan was to authenticate in the test class initialization using AutoResetEvent to wait until authentication had happened before continuing with the unit tests like the following:</p>
+<p>&nbsp;</p>
+<p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; [ClassInitialize]</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; public void InitializeClass()</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; AutoResetEvent finishedEvent = new AutoResetEvent(false);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;Security.SLPrincipal.Login(&quot;testuser&quot;, &quot;testpassword&quot;, (o, e) =&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;finishedEvent.Set();</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; });</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; finishedEvent.WaitOne();</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; }</p>
+</p>
+<p>&nbsp;</p>
+<p>In this code the loging method calls the async dataportal BeginFetch method. &nbsp;The problem is that as soon as the code hits&nbsp;finishedEvent.WaitOne() the application freezes and never unfreezes. &nbsp;I also set breakpoints in the server side code and confirmed that they are never being hit. &nbsp;It is as if the client side is never getting off the call to the server before the WaitOne method is called. &nbsp;&nbsp;I must have some fundamental misunderstanding of either the AutoResetEvent object or how exactly the async BeginFetch method works. &nbsp; Can anybody clarify what I am doing wrong in this scenario?</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Monday, May 21, 2012</h2><p>You really can&#39;t use that type of synchronization primitive in Silverlight, because a lot of things marshal back to the UI thread and you end up blocking yourself.</p>
+<p>This is why we wrote and use UnitDriven (<a href="http://www.codeplex.com/unitdriven">www.codeplex.com/unitdriven</a>) for the CSLA unit tests - it provides a way to manage async test code that is the same on .NET and Silverlight.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

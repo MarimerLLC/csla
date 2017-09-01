@@ -1,0 +1,34 @@
+<html><header><title>TransactionScope doesn't rollback on exception</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>TransactionScope doesn't rollback on exception</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11832.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>mmedic posted on Tuesday, February 12, 2013</h2><p>I have a BO (Country) with a child BO (State)&nbsp;which&nbsp;also&nbsp;has a child BO (City). When I update the parent BO (Country), add a child State and run save, when an exception occurs in the DAL (on purpose), the transaction is not rolled back. I am using SqlCE. I am attaching a sample stripped down project that&nbsp;demonstrates&nbsp;the issue. What am I doing wrong?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Wednesday, February 13, 2013</h2><p>You use your DalManager in faulty ways. </p>
+<p>The DalManager (and the ConnectionManager) relies on reference counting to determine when close the actual connection. </p>
+<p>Your rules are not making sure to dispose the DalManager and hence the dalManager and reference counting is off. Resulting in the update happening on a connection that was created and opened in one of the Fetch operations and is therefore not be enlisted in the TransactionScope on the Update method.</p>
+<p><i>See: <a href="http://msdn.microsoft.com/en-us/library/bb896149%28v=sql.100%29.aspx">http://msdn.microsoft.com/en-us/library/bb896149%28v=sql.100%29.aspx</a></i> </p>
+<p>You must change all your rules, ex </p>
+<p>was:</p>
+<pre style="font-family:Consolas;font-size:13;color:black;background:white;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">protected</span>&nbsp;<span style="color:blue;">override</span>&nbsp;<span style="color:blue;">void</span>&nbsp;Execute(<span style="color:#2b91af;">RuleContext</span>&nbsp;context)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">var</span>&nbsp;name&nbsp;=&nbsp;(<span style="color:blue;">string</span>)context.InputPropertyValues[_nameProperty];
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">var</span>&nbsp;id&nbsp;=&nbsp;(<span style="color:blue;">int</span>)context.InputPropertyValues[_idProperty];
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">var</span>&nbsp;dal&nbsp;=&nbsp;<span style="color:#2b91af;">DalFactory</span>.GetManager();
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">var</span>&nbsp;countryDal&nbsp;=&nbsp;dal.GetProvider&lt;<span style="color:#2b91af;">ICountryDal</span>&gt;();
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">var</span>&nbsp;exists&nbsp;=&nbsp;countryDal.Exists(id,&nbsp;name);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">if</span>&nbsp;(exists)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;context.AddErrorResult(<span style="color:#a31515;">&quot;Country&nbsp;with&nbsp;the&nbsp;same&nbsp;name&nbsp;already&nbsp;exists&nbsp;in&nbsp;the&nbsp;database.&quot;</span>);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</pre>
+<p>DalManager is IDisposable but is not explicitly disposed here so it depends on when the GC will actually collect the object. </p>
+<p>Should be: </p>
+<pre style="font-family:Consolas;font-size:13;color:black;background:white;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">protected</span>&nbsp;<span style="color:blue;">override</span>&nbsp;<span style="color:blue;">void</span>&nbsp;Execute(<span style="color:#2b91af;">RuleContext</span>&nbsp;context)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">var</span>&nbsp;name&nbsp;=&nbsp;(<span style="color:blue;">string</span>)context.InputPropertyValues[_nameProperty];
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">var</span>&nbsp;id&nbsp;=&nbsp;(<span style="color:blue;">int</span>)context.InputPropertyValues[_idProperty];
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">using</span>&nbsp;(<span style="color:blue;">var</span>&nbsp;dal&nbsp;=&nbsp;<span style="color:#2b91af;">DalFactory</span>.GetManager())
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">var</span>&nbsp;countryDal&nbsp;=&nbsp;dal.GetProvider&lt;<span style="color:#2b91af;">ICountryDal</span>&gt;();
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">var</span>&nbsp;exists&nbsp;=&nbsp;countryDal.Exists(id,&nbsp;name);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">if</span>&nbsp;(exists)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;context.AddErrorResult(<span style="color:#a31515;">&quot;Country&nbsp;with&nbsp;the&nbsp;same&nbsp;name&nbsp;already&nbsp;exists&nbsp;in&nbsp;the&nbsp;database.&quot;</span>);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br /><br /><b>Once you correct your rules the update will rollback as expected. </b><br /><b><br />If you experience this behavior - make sure to check the reference count in the ConnectionManager when <br />you enter a DataPortal_XYZ method. It should always start at 1 the first time.  </b></pre></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

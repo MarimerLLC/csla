@@ -1,0 +1,114 @@
+<html><header><title>Providing Edit and Delete rights per Instance?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Providing Edit and Delete rights per Instance?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/7415.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Chaz4Code posted on Thursday, August 06, 2009</h2><P>I have a pretty straight forward scenario.&nbsp; A user may have rights to create objects at the static level&nbsp;but not edit them.&nbsp; However they do have the rights to edit what they create.&nbsp; This is a typical forum scenario I'm working with.&nbsp; I have admins that can edit everything but I don't want to give users the rights to edit everything.&nbsp; I would like to give them to the rights to edit and delete&nbsp;their stuff based on the idea of ownership.</P>
+<P>Anyone done this?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Chaz4Code replied on Thursday, August 06, 2009</h2><P>What I ended up doing was creating a separate role and granting it create rights.&nbsp; Then I override the Save in my business object and checked if the user was only in the new ownership rights role and none of the other roles that might have edit rights.&nbsp; If the user was only in that one role then I verified ownership and if the user is not the owner I throw a SecurityException.&nbsp; Otherwise I just call Base.Save() and let csla compare the static authorizations.&nbsp; I also had to add instance level CanEdit and CanDelete methods so I can show/hide the actions in the GUI.</P>
+<P>Still open to hearing other ideas if they are out there.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, August 06, 2009</h2><P>There's not a lot of other options.</P>
+<P>There's a wish list item to add per-instance object authz rules to CSLA. But I haven't really appraoched that because it usually isn't role based, and it isn't clear that there's a huge value to having CSLA be involved.</P>
+<P>In the final analysis, most per-instance rules deal with things like "the user can edit objects they created" or something like that. Things that are not role-based at all, but instead are based on abitrary state values of the object instance itself.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Friday, August 07, 2009</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I
+actually did something different a few times.&nbsp; I overrode CanWriteProperty.&nbsp;
+Looked something like this<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Public
+override CanWriteProperty(string propertyName)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>{<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Bool
+returnValue = base.CanWritePeoprty(propertyName);<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; If
+(returnValue)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>{<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; If
+(ReadPeoprty(CreatedByID) != MyIdentity.ID)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; returnValue
+= false;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>}<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>Return
+returnValue<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>}<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>An
+advantage of using this in conjunction with PropertyStatus in WPF or
+Silverlight is that you have automatic disabling of all controls, so that the
+user cannot even edit the data. This does introduces some extra overhead, but I
+did not notice it visually from the end user perspective.&nbsp; In addition to
+that I also would create a public property bool CanUserEditData that would have
+similar code and bind Save, Cancel buttons enabled state to that property.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Chaz4Code
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Thursday, August 06, 2009 11:18 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] Providing Edit and Delete rights per Instance?<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>What I ended up doing was creating a separate role and granting it create
+rights.&nbsp; Then I override the Save in my business object and checked if the
+user was only in the new ownership rights role and none of the other roles that
+might have edit rights.&nbsp; If the user was only in that one role then I
+verified ownership and if the user is not the owner I throw a
+SecurityException.&nbsp; Otherwise I just call Base.Save() and let csla compare
+the static authorizations.&nbsp; I also had to add instance level CanEdit and
+CanDelete methods so I can show/hide the actions in the GUI.<o:p></o:p></p>
+
+<p>Still open to hearing other ideas if they are out there.<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

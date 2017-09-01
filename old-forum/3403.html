@@ -1,0 +1,22 @@
+<html><header><title>Hierachial Object</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Hierachial Object</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3403.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>alfredg posted on Monday, August 20, 2007</h2><P>I am working with a table with a parent child relationship to itself. For example</P>
+<P>Employee[employeeid, name, managerid] where manager is is a relation back to employeeid.</P>
+<P>I created a readonlylist class called EmployeeList and a readonlyobject class called EmployeeInfo. The challenge I have run into is how to populate a ManagedEmployees property of the EmployeeInfo class.</P>
+<P>Here is the constructor for the EmployeeInfo class. I assume this is the place I need to work as this is the point in which the parent object's values are populated.</P><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>internal</FONT><FONT size=2> EmployeeInfo(</FONT><FONT color=#008080 size=2>SafeDataReader</FONT><FONT size=2> dr){<BR>_EmployeeID = dr.GetInt32(</FONT><FONT color=#800000 size=2>"EmployeeID"</FONT><FONT size=2>);<BR>_EmployeeName = dr.GetString(</FONT><FONT color=#800000 size=2>"EmployeeName"</FONT><FONT size=2>);<BR>_ManagerID = dr.GetInt32(</FONT><FONT color=#800000 size=2>"ManagerID"</FONT><FONT size=2>);</FONT><FONT size=2>
+<P></FONT><FONT color=#008000 size=2></P></FONT><FONT size=2></FONT><FONT color=#008000 size=2>// LoadChildren<BR></FONT><FONT size=2>_ManagedEmployees = ????<BR>}</FONT></P>
+<P><FONT size=2>Aefried</P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>skagen00 replied on Monday, August 20, 2007</h2><P>Thinking about what you want for your result set, you want a list of individuals each potentially containing a list of individuals - in many respects you have a grandchild situation. </P>
+<P>A question might be - how many employees do you think you'll be dealing with? This might have an impact on what you do for retrieval, along with your use cases for what you want to do with this object. </P>
+<P>That is, if you had 500 or so, you might want to have _managedEmployees be entirely lazy loaded through a command object - that is, you retrieve your employeeId, employeeName, and managerId as you have above, but when it comes to managed employees what you may do is this:</P>
+<P>public EmployeeList ManagedEmployees</P>
+<P>{</P>
+<P>&nbsp;&nbsp;&nbsp;if (_managedEmployees == null)</P>
+<P>&nbsp;&nbsp;&nbsp;{ </P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_managedEmployees = EmployeeList.GetManagedEmployees(_employeeId);</P>
+<P>&nbsp;&nbsp;&nbsp;}</P>
+<P>&nbsp;&nbsp;&nbsp;return _managedEmployees;</P>
+<P>}</P>
+<P>This GetManagedEmployees would perhaps use the same DataPortal.Fetch as EmployeeList.GetUnmanagedEmployees (GetTopLevelEmployees) (perhaps the top level retrieve where maybe you only get the president/CEO - people with no managers) - just would have an employee Id in the criteria. </P>
+<P>Thus you could easily set up a treeview concept where it'll retrieve exactly how much you demand of it. </P>
+<P>Really it depends on your use cases - what are you trying to enable? </P>
+<P>Chris</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>triplea replied on Tuesday, August 21, 2007</h2><P>Providing you construct your query correctly you can then use the deep data example of Rocky's to load children, grandchildren etc.&nbsp;It can be&nbsp;found&nbsp;here: <A href="http://www.lhotka.net/Article.aspx?area=4&amp;id=7fbb619a-ba81-4157-b434-8756b68ccbd0">http://www.lhotka.net/Article.aspx?area=4&amp;id=7fbb619a-ba81-4157-b434-8756b68ccbd0</A></P>
+<P>I guess the main idea is that you select all your managers (select * from Employee where managerid is null ?) and in the same select/stored proc, all the non-manager employees (select * from Employee where managerid is not null). Then you can populate your children with the first result set and grand children with the next result set (as per the above link).</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

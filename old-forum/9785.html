@@ -1,0 +1,18 @@
+<html><header><title>really wierd error</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>really wierd error</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9785.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>BunnyStrider posted on Friday, November 19, 2010</h2><p>&nbsp;</p>
+<div>
+<p>I have an error and I cannot figure it out. &nbsp;The problem is that the error is happening on a substring called from the CSLA code base.</p>
+<p>I think I&#39;m working with CSLA&nbsp;<br />Version: &nbsp;2.1.4.0</p>
+<p>The error is a screenshot of a messagebox of the error.ToString() and then truncated to fit on screen. &nbsp;I cannot get the program to error out on my development machine only on the demo box. &nbsp;</p>
+<div><a href="http://forums.lhotka.net/cfs-file.ashx/__key/CommunityServer.Components.UserFiles/00.00.01.16.17/Untitled.png"><img src="http://forums.lhotka.net/resized-image.ashx/__size/550x0/__key/CommunityServer.Components.UserFiles/00.00.01.16.17/Untitled.png" border="0" alt="" /></a></div>
+</div>
+<p>&nbsp;</p>
+<p>If you can&#39;t read this, basically System.Substring is getting passed an index value that is bigger than the string being substringed on. &nbsp;The CSLA code is line 489 of CSLA\Core\BusinessBase<br />Csla.Core.BusinessBase.CanWriteProperty(true)</p>
+<p>the code that&#39;s supposed to be calling that is:</p>
+<p>&nbsp;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp;public new void Add(NoteNursingCarePlanInterventionChild child)&nbsp;{<br />&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; if(!child.Loading)<br />&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;child.NursingCarePlanDiagnosisId = ForeignKey;<br />&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; base.Add(child);<br />&nbsp;&nbsp; &nbsp; &nbsp;}</p>
+<p>&nbsp;</p>
+<p>the main wierd thing is that this isn&#39;t happening on my dev box but the exact same error will happen every time on the demo box. &nbsp;I&#39;m just at a loss...if you can&#39;t help with the problem is there an easy way to debug on a client machine? &nbsp;I guess that&#39;s my next step</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Marjon1 replied on Friday, November 19, 2010</h2><p>What is the syntax of your PropertyHasChanged() call within NursingCarePlanDiagnosisId?</p>
+<p>When I&#39;ve had&nbsp;obscure&nbsp;problems like this in the past, where it didn&#39;t occur for me on a dev box but did on the client, it was generally due to a difference in debug vs release build modes and the above call.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Saturday, November 20, 2010</h2><p>You need to look at the CanWriteProperty implementation and why you get a ArgumentOutOfRange exception there. </p>
+<p>The implementation of property NursingCarePlanDiagnosisId is certainly calling CanWriteProperty(true) to check if the user is allowed to set the property value. So take a look at the code in CanWriteProperty. </p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>BunnyStrider replied on Monday, November 22, 2010</h2><p>I &quot;fixed&quot; this by setting the Add call when initially building the list to base.Add and only calling my implementation of .Add on additions made by the user through the UI implementation. &nbsp;The CanWriteProperty implementation is CSLA code, I didn&#39;t override it or anything so...</p>
+<p>&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

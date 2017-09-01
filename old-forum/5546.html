@@ -1,0 +1,91 @@
+<html><header><title>Updating references after BLB Save()</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Updating references after BLB Save()</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5546.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Michael posted on Monday, October 06, 2008</h2><font size="2" face="Arial">I have just upgraded from 3.0.4 to 3.5. I have had to update many of my unit tests with code similar to:<br><br></font><font size="2" face="Courier New"><font color="#0000ff">MyBusinessListBase &nbsp; </font>m_list;</font><font size="2" face="Courier New"><br></font><font size="2" face="Courier New"><font color="#0000ff">List</font>&lt;<font color="#0000ff">MyBusinessBase</font>&gt; m_listToDelete = new <font color="#0000ff">List</font>&lt;<font color="#0000ff">MyBusinessBase</font>&gt;();<br><br>[<font color="#0000ff">SetUp</font>]<br><font color="#0000ff">public void</font> SetUp()<br>{<br>&nbsp; m_list = </font><font size="2" face="Courier New"><font color="#0000ff">MyBusinessListBase</font>.GetMyBusinessListBase();</font><font size="2" face="Courier New"><br>}<br><br></font><font size="2" face="Courier New">[<font color="#0000ff">TearDown</font>]<br>
+<font color="#0000ff">public void </font>TearDown()<br>
+{<br>
+&nbsp; foreach (<font color="#0000ff">MyBusinessObject </font>obj <font color="#0000ff">in </font>m_listToDelete)<br>
+&nbsp;&nbsp;&nbsp; m_list.Remove(obj);<br>
+<br>
+&nbsp; m_list = m_list.Save();<br>
+&nbsp; m_list = null;<br>
+}<br><br>[<font color="#0000ff">Test</font>]<br>...<br></font><font size="2" face="Arial"><font face="Courier New"><br><font color="#0000ff">private MyBusinessBase </font>Insert()<br>{<br>&nbsp; <font color="#0000ff">MyBusinessBase </font>obj = m_list.AddNew();<br>&nbsp; obj.Name = "Test";<br>&nbsp; m_listToDelete.Add(obj);<br><br>&nbsp; <font color="#008000">// In 3.0.4, the obj added to m_listToDelete had the correct @@IDENTITY<br>&nbsp; // after the Save(), but not in 3.5<br></font>&nbsp; m_list = m_list.Save();<br><br>&nbsp; <font color="#0000ff">return </font>obj;<br>}<br><font face="Arial"><br>I have updated Insert() as follows:<br><br></font></font></font><font size="2" face="Arial"><font face="Courier New">&nbsp; <font color="#0000ff">MyBusinessBase </font>obj = m_list.AddNew();<br>
+&nbsp; obj.Name = "Test";<br><br>&nbsp; <font color="#0000ff">int</font> index = m_list.IndexOf(obj);<br>
+<br>&nbsp; m_list = m_list.Save();<br><br>&nbsp; obj = m_list[index];<br><br></font></font><font size="2" face="Arial"><font face="Courier New">&nbsp; m_listToDelete.Add(obj);</font></font><font size="2"><br></font><font size="2" face="Arial"><font face="Courier New">
+<br>
+&nbsp; <font color="#0000ff">return </font>obj;</font></font><font size="2"><br><br></font><font size="2" face="Arial">Is there a better way of doing this?</font><font size="2"><font face="Arial"> Is the index guaranteed to be the same?<br><br>Thanks in advance.<br></font></font></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, October 06, 2008</h2><P>3.5 switched the CslaAutoCloneOnUpdate setting from default of false to default of true. This is noted in the breaking changes in the change log. This means the data portal clones your object and <EM>requires</EM> that you do this:</P>
+<P>obj = obj.Save()</P>
+<P>The reason for this is documented in other threads - but comes down to the reality that the pre-3.5 behavior was just plain broken and wrong.</P>
+<P>There are two solutions.</P>
+<OL>
+<LI>You can adapt your code to recognize that Save() always returns a new instance of the object graph.</LI>
+<LI>You can set CslaAutoCloneOnUpdate to false, reverting to the older, broken behavior - though it would make <EM>your</EM> test code work</LI></OL>
+<P>Eventually I'll get rid of the auto-clone option, this is a multi-version transition (I introduced it in 3.0, changed the default in 3.5 and will perhaps get rid of it in 4.0 or something). So in the end you really need to consider changing your code to deal with the result of the Save() method.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Michael replied on Monday, October 06, 2008</h2><font size="2"><span>Thanks for the very fast reply, Rocky. I don't want to use "old and busted", I want the "new hotness".<br><br>Is recording the index the best way to update the reference to the child after the save?<br></span></font></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, October 06, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Well, maybe.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>The whole reason Save() returns a new object graph, is that you
+don&#8217;t know what the save operation actually did to the object graph.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>OK, <i>you</i> can know, because you write DataPortal_Update() &#8211;
+prior to 3.5 anyway, and even in 3.5 you can write it if you want.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I would say that normally the index won&#8217;t change, that&#8217;s
+true. All insert/update operations <i>should</i> happen in-place without
+changing the order, and that&#8217;s how the default DataPortal_Update() is
+written. Obviously deleted items are gone.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Michael
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Monday, October 06, 2008 8:37 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] Updating references after BLB Save()<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal><span>Thanks for the very fast
+reply, Rocky. I don't want to use &quot;old and busted&quot;, I want the
+&quot;new hotness&quot;.<br>
+<br>
+Is recording the index the best way to update the reference to the child after
+the save?<br>
+</span><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Pawz replied on Monday, October 06, 2008</h2>Perhaps it would be simpler to just record the Ids of the objects you want to delete, rather than the objects themselves? Otherwise you'll be chasing your object references wherever they go.<br><br>If you have a list of the IDs of the objects, all you'd need to do would be to load up the main list again and loop through and delete the matching ones - ensuring you're protected from any DataPortal changes in the future...<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Michael replied on Monday, October 06, 2008</h2><font size="2"><font face="Arial">I had thought about that, and you're probably right. As I get further into updating the unit tests it's becoming more of an issue.<br><br>The main part of my question was how to actually get the ID of the newly saved object in the first place. I'm using the index strategy which is working for now.<br></font></font></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Pawz replied on Monday, October 06, 2008</h2>That's one of the main reasons I ended up going with the Guid as the primary key for my tables - generating those IDs on the client makes life a lot easier!<br><br>On the other hand, using the index of a list.... how do you know you've actually got the correct Id? (Assuming that it's an int-based identity column). And shouldn't the newly returned, saved object contain that Id (or else how would it update itself with further changes?)<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Michael replied on Monday, October 06, 2008</h2><font size="2" face="Arial">Yeah, I had a long hard think and did some research before deciding to go with plain old ints for ID's. One thing I do like is being able to query the database easily.<br><br>The problem is the object is a BLB. So, the new children in the returned list have their ID's updated, but the only way I know which child is which is either using an index, or iterating through the list if it happens to have another uniqueness constraint.<br></font></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

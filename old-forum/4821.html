@@ -1,0 +1,102 @@
+<html><header><title>NameValueListBase using Guid and String instead of Int and String</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>NameValueListBase using Guid and String instead of Int and String</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4821.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>ktran posted on Wednesday, May 07, 2008</h2><P>I'm using the CSLA.NET 3.5.1 version.&nbsp; I tried changing the RoleList class from Project Tracker to point to my database roles table which uses a Guid for the RoleId instead of integer.&nbsp; When I use the following code in my class&nbsp; I get a InvalidCastException</P>
+<P>Unable to cast object of type 'System.Collections.Generic.List`1[Csla.NameValueListBase`2+NameValuePair[System.Int32,System.String]]' to type 'System.Collections.Generic.IList`1[Csla.NameValueListBase`2+NameValuePair[System.Guid,System.String]]'.</P>
+<P>&nbsp;</P>
+<P>using Csla;<BR>using Csla.Data;<BR>using System;<BR>using System.Linq;</P>
+<P>namespace ProjectTracker.Library<BR>{<BR>&nbsp;&nbsp;&nbsp; [Serializable()]<BR>&nbsp;&nbsp;&nbsp; public class RoleList : NameValueListBase&lt;Guid, string&gt;<BR>&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; #region&nbsp; Business Methods</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public static Guid DefaultRole()<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; RoleList list = GetList();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (list.Count &gt; 0)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return list.Items[0].Key;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; else<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; throw new NullReferenceException("No roles available; default role can not be returned");<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; #endregion</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; #region&nbsp; Factory Methods</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; private static RoleList _list;</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public static RoleList GetList()<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (_list == null)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _list = DataPortal.Fetch&lt;RoleList&gt;();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return _list;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /// &lt;summary&gt;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /// Clears the in-memory RoleList cache<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /// so the list of roles is reloaded on<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /// next request.<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /// &lt;/summary&gt;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public static void InvalidateCache()<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _list = null;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; private RoleList()<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; { /* require use of factory methods */ }</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; #endregion</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; #region&nbsp; Data Access</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; private void DataPortal_Fetch()<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; this.RaiseListChangedEvents = false;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; using (var ctx = ContextManager&lt;ProjectTracker.DalLinq.AspNetDbDataContext&gt;.GetManager(ProjectTracker.DalLinq.Database.AspNetDb))<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var data = from role in ctx.DataContext.aspnet_Roles<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; select new NameValuePair(role.RoleId, role.RoleName);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; IsReadOnly = false;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; this.AddRange(data);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; IsReadOnly = true;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; this.RaiseListChangedEvents = true;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; #endregion</P>
+<P>&nbsp;&nbsp;&nbsp; }<BR>}</P>
+<P>&nbsp;</P>
+<P>Any help on this matter would be greatly appreciated.</P>
+<P>Thanks,</P>
+<P>Kent</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, May 07, 2008</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>ktran:</strong></div><div>
+<P>Unable to cast object of type 'System.Collections.Generic.List`1[Csla.NameValueListBase`2+NameValuePair[System.Int32,System.String]]' to type 'System.Collections.Generic.IList`1[Csla.NameValueListBase`2+NameValuePair[System.Guid,System.String]]'.</P>
+<P></div></BLOCKQUOTE></P>
+<P>Somewhere in your code you still have a field or class declared as NameValueListBase&lt;int,string&gt; - the exeption is quite clear on that <img src="/emoticons/emotion-1.gif" alt="Smile [:)]" /></P>
+<P>In fact, it appears that your actual type must be declared as an &lt;int, string&gt; and your field is of &lt;guid, string&gt; - and of course you can't cast the former to the latter.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ktran replied on Thursday, May 08, 2008</h2><P>Thanks for you reply Rocky.&nbsp; To clarify are you saying that the NameValueListBase has to be a </P>
+<P>&lt;int, string&gt; pair or can you use it for &lt;guid, string&gt; or whatever combonation of data types?&nbsp; Because there is nowhere in my new project that declares NameValueListBase&lt;int,string&gt;.&nbsp; I've checked the Dbml File for my Linq to Sql classes and the fields I'm using are the expected data types &lt;guid, string&gt;</P>
+<P>&nbsp;</P>
+<P>kent</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, May 08, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I&#8217;m saying that a NameValueListBase object can be of type
+&lt;guid, string&gt;, no problem.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I am also saying that your exception specifically says you have
+an object of type &lt;int. string&gt; that you are trying to assign to a field
+of type &lt;guid, string&gt;. I don&#8217;t know how that is happening in your
+code, but that is what the exception is telling you. I suggest using the debugger
+to examine the object type and field type to figure out how the object is
+ending up as a type you don&#8217;t expect.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> ktran
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Thursday, May 08, 2008 2:56 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] NameValueListBase using Guid and String instead
+of Int and String<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Thanks for you reply Rocky.&nbsp; To clarify are you saying that the
+NameValueListBase has to be a <o:p></o:p></p>
+
+<p>&lt;int, string&gt; pair or can you use it for &lt;guid, string&gt; or
+whatever combonation of data types?&nbsp; Because there is nowhere in my new
+project that declares NameValueListBase&lt;int,string&gt;.&nbsp; I've checked
+the Dbml File for my Linq to Sql classes and the fields I'm using are the
+expected data types &lt;guid, string&gt;<o:p></o:p></p>
+
+<p>&nbsp;<o:p></o:p></p>
+
+<p>kent<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ktran replied on Friday, May 09, 2008</h2><P>Thanks Rocky, I got it worked out, stupid mistake I overlooked.</P>
+<P>I really appreciate your prompt replies :)</P>
+<P>Kent</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

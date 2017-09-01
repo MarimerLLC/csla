@@ -1,0 +1,22 @@
+<html><header><title>CSLA MVVM Silverlight DynamicListBase </title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA MVVM Silverlight DynamicListBase </h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10357.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Ziad posted on Tuesday, May 10, 2011</h2><p>Hello,</p>
+<p>Let us suppose that I have the following two classes in my model:</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 1. Person : BusinessBase&lt;Person&gt;</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 2. Persons : DynamicListBase&lt;Person&gt;</p>
+<p>Then, in my view model I&nbsp;define the following class : </p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 1. PersonsVM : ViewModel&lt;Persons&gt;, in this class I call the static method found in the model Persons.</p>
+<p>I bind the variable Model (found in the viewmodel PersonsVM) to my Silverlight DataGrid.</p>
+<p>As you can notice that my model Persons is a DynamicListBase, this means that whenever the user modifies a line in the DataGrid, the DataPortal_Update will be called automatically... and this works fine.</p>
+<p>But this doesn&#39;t work, on datagrid columns that have a dataTemplate, for example:</p>
+<p>&lt;DatagridTemplateColumn&gt;</p>
+<p>&lt;DataGridTemplateColumn.CellTemplate&gt;</p>
+<p>&lt;DataTemplate&gt;</p>
+<p>&lt;TextBox&nbsp; Text={Binding Path=Model.Name, Mode=TwoWay} &gt; </p>
+<p>&lt;/DataTemplate&gt;</p>
+<p>&lt;/DataGridTemplateColumn.CellTemplate&gt;</p>
+<p>&lt;/DatagridTemplateColumn&gt;</p>
+<p>In the above column, if a change the value found in the textbox and then press enter, the DataPortal_Update is not called...</p>
+<p>My above column template is easy, I know that I can replace it by DataGridTextColumn, but actually I use TemplateColumns for comboboxes ...</p>
+<p>Thanks</p>
+<p>Ziad</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Tuesday, May 10, 2011</h2><p>DynamicListBase (DLB) relies on the datagrid control calling the appropriate data binding methods on the IEditableObject interface. If the datagrid control doesn&#39;t do the right thing (and maybe the SL one doesn&#39;t with templated columns, I don&#39;t know), then there&#39;s nothing DLB can do about that.</p>
+<p>If the datagrid doesn&#39;t call EndEdit when the user leaves the row, the DLB has absolutely no way of knowing that the user left the row, so it doesn&#39;t know to save the object.</p>
+<p>So if the datagrid doesn&#39;t call EndEdit as expected, then you will need to create a subclass of the datagrid control, or some other UI code, and make that call yourself.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

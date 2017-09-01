@@ -1,0 +1,186 @@
+<html><header><title>Custom Business Rules</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Custom Business Rules</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11400.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Mr X posted on Thursday, June 07, 2012</h2><p>I am having trouble implementing two very simple business rules, one updater and one validator. The first rule, verifies if a bool&nbsp;property &quot;IsSelected&quot; is true. If so, it sets the value of a second (a string)&nbsp;property to &quot;&quot;. The second rule&nbsp;creates a broken rule if the second property remains &quot;&quot;. The problem is when I test it&nbsp;I always get a broken rule&nbsp;different&nbsp;than the one I want:</p>
+<p>&quot;null:Specified argument was out of the range of valid values.&quot;&nbsp;&nbsp;</p>
+<p>&nbsp;I looked at the CSLA 4 book and a number of posts but can&#39;t seem to put my finger on the problem. </p>
+<p>Any help would be appreciated.</p>
+<p>&nbsp;</p>
+<p>My code has 2 business rules:</p>
+<p>I set the CityProperty as a dependent property of IsSelected as followed:</p>
+<p><span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;"><font size="2" face="Consolas"><font size="2" face="Consolas">
+<p>BusinessRules.AddRule(</p>
+</font></font></span><font size="2" face="Consolas">
+<p>&nbsp;</p>
+</font></span>
+<p><span style="font-size:x-small;color:#0000ff;font-family:Consolas;"><span style="font-size:x-small;color:#0000ff;font-family:Consolas;"><span style="font-size:x-small;color:#0000ff;font-family:Consolas;">new</span></span></span><span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;"> </span></span><span style="font-size:x-small;color:#2b91af;font-family:Consolas;"><span style="font-size:x-small;color:#2b91af;font-family:Consolas;"><span style="font-size:x-small;color:#2b91af;font-family:Consolas;">Dependency</span></span></span><span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;">(IsSelectedProperty, CityProperty));<span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;"></span></span></span></span></p>
+</p>
+<p>&nbsp;</p>
+<p>and I set the rules priorities as followed:</p>
+<p>
+<p><span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;"><font size="2" face="Consolas"><font size="2" face="Consolas">
+<p>BusinessRules.AddRule(</p>
+</font></font></span><font size="2" face="Consolas">
+<p>&nbsp;</p>
+</font></span>
+<p><span style="font-size:x-small;color:#0000ff;font-family:Consolas;"><span style="font-size:x-small;color:#0000ff;font-family:Consolas;"><span style="font-size:x-small;color:#0000ff;font-family:Consolas;">new</span></span></span><span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;"> </span></span><span style="font-size:x-small;color:#2b91af;font-family:Consolas;"><span style="font-size:x-small;color:#2b91af;font-family:Consolas;"><span style="font-size:x-small;color:#2b91af;font-family:Consolas;">UpdateCityRule</span></span></span><span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;">() { Priority =&nbsp;0 });</span></span></p>
+</p>
+</p>
+<p>BusinessRules.AddRule(<span style="font-size:x-small;color:#0000ff;font-family:Consolas;"><span style="font-size:x-small;color:#0000ff;font-family:Consolas;"><span style="font-size:x-small;color:#0000ff;font-family:Consolas;">new</span></span></span><span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;"> </span></span><span style="font-size:x-small;color:#2b91af;font-family:Consolas;"><span style="font-size:x-small;color:#2b91af;font-family:Consolas;"><span style="font-size:x-small;color:#2b91af;font-family:Consolas;">CityMandatoryRule</span></span></span><span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;">() { Priority =&nbsp;1 });<font size="2" face="Consolas"><font size="2" face="Consolas">
+<p>&nbsp;</p>
+</font></font></span><font size="2" face="Consolas">
+<p>&nbsp;</p>
+</font></span></p>
+<p>
+<p><span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;"></span></span></p>
+</p>
+<p>FIRST RULE:</p>
+<p><span style="font-size:x-small;color:#0000ff;font-family:Consolas;"><span style="font-size:x-small;color:#0000ff;font-family:Consolas;"><span style="font-size:x-small;color:#0000ff;font-family:Consolas;"><span style="font-size:x-small;color:#0000ff;font-family:Consolas;"><span style="font-size:x-small;color:#0000ff;font-family:Consolas;"><span style="font-size:x-small;color:#0000ff;font-family:Consolas;">
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+</span></span></span></span></span></span></p>
+<p><span style="font-size:x-small;color:#0000ff;font-family:Consolas;"><span style="font-size:x-small;color:#0000ff;font-family:Consolas;"><span style="font-size:x-small;color:#0000ff;font-family:Consolas;"><font size="2" color="#0000ff" face="Consolas"><font size="2" color="#0000ff" face="Consolas"><font size="2" color="#0000ff" face="Consolas">
+<p>public</p>
+</font></font></font></span><font size="2" color="#0000ff" face="Consolas"><font size="2" color="#0000ff" face="Consolas">
+<p>&nbsp;</p>
+</font></font></span><font size="2" color="#0000ff" face="Consolas">
+<p>&nbsp;</p>
+</font></span>
+<p><span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;color:#000000;font-family:Consolas;"> </span></span><span style="font-size:x-small;color:#0000ff;font-family:Consolas;"><span style="font-size:x-small;color:#0000ff;font-family:Consolas;"><span style="font-size:x-small;color:#0000ff;font-family:Consolas;">class</span></span></span><span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;color:#000000;font-family:Consolas;"> </span></span><span style="font-size:x-small;color:#2b91af;font-family:Consolas;"><span style="font-size:x-small;color:#2b91af;font-family:Consolas;"><span style="font-size:x-small;color:#2b91af;font-family:Consolas;">UpdateCityRule</span></span></span><span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;color:#000000;font-family:Consolas;"> : Csla.Rules.</span></span><span style="font-size:x-small;color:#2b91af;font-family:Consolas;"><span style="font-size:x-small;color:#2b91af;font-family:Consolas;"><span style="font-size:x-small;color:#2b91af;font-family:Consolas;">BusinessRule</span></span></span></p>
+<span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;">
+<p>{</p>
+<font size="2" face="Consolas"><font size="2" face="Consolas">
+<p>&nbsp;</p>
+</font></font></span><font size="2" face="Consolas">
+<p>&nbsp;</p>
+</font></span>
+<p>&nbsp;</p>
+<span style="font-size:x-small;color:#0000ff;font-family:Consolas;"><span style="font-size:x-small;color:#0000ff;font-family:Consolas;"><span style="font-size:x-small;color:#0000ff;font-family:Consolas;">&nbsp;&nbsp;&nbsp; protected</span></span></span><span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;"> </span></span><span style="font-size:x-small;color:#0000ff;font-family:Consolas;"><span style="font-size:x-small;color:#0000ff;font-family:Consolas;"><span style="font-size:x-small;color:#0000ff;font-family:Consolas;">override</span></span></span><span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;"> </span></span><span style="font-size:x-small;color:#0000ff;font-family:Consolas;"><span style="font-size:x-small;color:#0000ff;font-family:Consolas;"><span style="font-size:x-small;color:#0000ff;font-family:Consolas;">void</span></span></span><span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;"> Execute(Csla.Rules.</span></span><span style="font-size:x-small;color:#2b91af;font-family:Consolas;"><span style="font-size:x-small;color:#2b91af;font-family:Consolas;"><span style="font-size:x-small;color:#2b91af;font-family:Consolas;">RuleContext</span></span></span><span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;"> context)
+<p>&nbsp;&nbsp;&nbsp; {</p>
+<font size="2" face="Consolas"><font size="2" face="Consolas">
+<p>&nbsp;</p>
+</font></font></span><font size="2" face="Consolas">
+<p>&nbsp;</p>
+</font></span>
+<p>&nbsp;</p>
+<span style="font-size:x-small;color:#0000ff;font-family:Consolas;"><span style="font-size:x-small;color:#0000ff;font-family:Consolas;"><span style="font-size:x-small;color:#0000ff;font-family:Consolas;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var</span></span></span><span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;"> target = (</span></span><span style="font-size:x-small;color:#2b91af;font-family:Consolas;"><span style="font-size:x-small;color:#2b91af;font-family:Consolas;"><span style="font-size:x-small;color:#2b91af;font-family:Consolas;">MyObject</span></span></span><span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;">)context.Target;<font size="2" face="Consolas"><font size="2" face="Consolas">
+<p>&nbsp;</p>
+</font></font></span><font size="2" face="Consolas">
+<p>&nbsp;</p>
+</font></span>
+<p>&nbsp;</p>
+<span style="font-size:x-small;color:#0000ff;font-family:Consolas;"><span style="font-size:x-small;color:#0000ff;font-family:Consolas;"><span style="font-size:x-small;color:#0000ff;font-family:Consolas;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if</span></span></span><span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;"> (target.IsSelected)<font size="2" face="Consolas"><font size="2" face="Consolas">
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; context.AddOutValue(CityProperty, </p>
+</font></font></span><font size="2" face="Consolas">
+<p>&nbsp;</p>
+</font></span>
+<p><span style="font-size:x-small;color:#a31515;font-family:Consolas;"><span style="font-size:x-small;color:#a31515;font-family:Consolas;"><span style="font-size:x-small;color:#a31515;font-family:Consolas;">&quot;&quot;</span></span></span><span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;">);</span></span></p>
+<span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;">
+<p>&nbsp;&nbsp;&nbsp; }</p>
+<p>}</p>
+</span></span><span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;"></span></span><span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;"></span></span></p>
+<p>&nbsp;</p>
+<p>&nbsp;SECOND RULE:</p>
+<p>&nbsp;</p>
+<p><span style="font-size:x-small;color:#0000ff;font-family:Consolas;"><span style="font-size:x-small;color:#0000ff;font-family:Consolas;"><span style="font-size:x-small;color:#0000ff;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;"><font size="2" face="Consolas"><font size="2" face="Consolas">
+<p>&nbsp;</p>
+</font></font></span><font size="2" face="Consolas">
+<p>&nbsp;</p>
+</font></span>
+<p><span style="font-size:x-small;color:#0000ff;font-family:Consolas;"><span style="font-size:x-small;color:#0000ff;font-family:Consolas;"><span style="font-size:x-small;color:#0000ff;font-family:Consolas;">public</span></span></span><span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;"> </span></span><span style="font-size:x-small;color:#0000ff;font-family:Consolas;"><span style="font-size:x-small;color:#0000ff;font-family:Consolas;"><span style="font-size:x-small;color:#0000ff;font-family:Consolas;">class</span></span></span><span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;"> </span></span><span style="font-size:x-small;color:#2b91af;font-family:Consolas;"><span style="font-size:x-small;color:#2b91af;font-family:Consolas;"><span style="font-size:x-small;color:#2b91af;font-family:Consolas;">CityMandatoryRule</span></span></span><span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;"> : Csla.Rules.</span></span><span style="font-size:x-small;color:#2b91af;font-family:Consolas;"><span style="font-size:x-small;color:#2b91af;font-family:Consolas;"><span style="font-size:x-small;color:#2b91af;font-family:Consolas;">BusinessRule</span></span></span></p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>
+<p><span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;">
+<p>{</p>
+<font size="2" face="Consolas"><font size="2" face="Consolas">
+<p>&nbsp;</p>
+</font></font></span><font size="2" face="Consolas">
+<p>&nbsp;</p>
+</font></span>
+<p>&nbsp;</p>
+<span style="font-size:x-small;color:#0000ff;font-family:Consolas;"><span style="font-size:x-small;color:#0000ff;font-family:Consolas;"><span style="font-size:x-small;color:#0000ff;font-family:Consolas;">&nbsp;&nbsp;&nbsp; protected</span></span></span><span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;"> </span></span><span style="font-size:x-small;color:#0000ff;font-family:Consolas;"><span style="font-size:x-small;color:#0000ff;font-family:Consolas;"><span style="font-size:x-small;color:#0000ff;font-family:Consolas;">override</span></span></span><span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;"> </span></span><span style="font-size:x-small;color:#0000ff;font-family:Consolas;"><span style="font-size:x-small;color:#0000ff;font-family:Consolas;"><span style="font-size:x-small;color:#0000ff;font-family:Consolas;">void</span></span></span><span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;"> Execute(Csla.Rules.</span></span><span style="font-size:x-small;color:#2b91af;font-family:Consolas;"><span style="font-size:x-small;color:#2b91af;font-family:Consolas;"><span style="font-size:x-small;color:#2b91af;font-family:Consolas;">RuleContext</span></span></span><span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;"> context)
+<p>&nbsp;&nbsp;&nbsp; {</p>
+<font size="2" face="Consolas"><font size="2" face="Consolas">
+<p>&nbsp;</p>
+</font></font></span><font size="2" face="Consolas">
+<p>&nbsp;</p>
+</font></span>
+<p>&nbsp;</p>
+<span style="font-size:x-small;color:#0000ff;font-family:Consolas;"><span style="font-size:x-small;color:#0000ff;font-family:Consolas;"><span style="font-size:x-small;color:#0000ff;font-family:Consolas;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var</span></span></span><span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;"> target = (</span></span><span style="font-size:x-small;color:#2b91af;font-family:Consolas;"><span style="font-size:x-small;color:#2b91af;font-family:Consolas;"><span style="font-size:x-small;color:#2b91af;font-family:Consolas;">MyBO</span></span></span><span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;">)context.Target;<font size="2" face="Consolas"><font size="2" face="Consolas">
+<p>&nbsp;</p>
+</font></font></span><font size="2" face="Consolas">
+<p>&nbsp;</p>
+</font></span>
+<p>&nbsp;</p>
+<span style="font-size:x-small;color:#0000ff;font-family:Consolas;"><span style="font-size:x-small;color:#0000ff;font-family:Consolas;"><span style="font-size:x-small;color:#0000ff;font-family:Consolas;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if</span></span></span><span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;"> ((target.IsSelected) &amp;&amp; (target.City == </span></span><span style="font-size:x-small;color:#a31515;font-family:Consolas;"><span style="font-size:x-small;color:#a31515;font-family:Consolas;"><span style="font-size:x-small;color:#a31515;font-family:Consolas;">&quot;&quot;</span></span></span><span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;">))<font size="2" face="Consolas"><font size="2" face="Consolas">
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; context.AddErrorResult(CityProperty, </p>
+</font></font></span><font size="2" face="Consolas">
+<p>&nbsp;</p>
+</font></span>
+<p><span style="font-size:x-small;color:#a31515;font-family:Consolas;"><span style="font-size:x-small;color:#a31515;font-family:Consolas;"><span style="font-size:x-small;color:#a31515;font-family:Consolas;">&quot;City is required&quot;</span></span></span><span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;">);</span></span></p>
+<p><span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;">&nbsp;&nbsp;&nbsp; }</span></span></p>
+<p><span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;">}</span></span></p>
+</p>
+</p>
+</span></span></span></p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Mr X replied on Thursday, June 07, 2012</h2><p>I realize the code did not formatted the way I wanted. Here is the same code:</p>
+<p style="margin:0cm 0cm 0pt;line-height:normal;mso-layout-grid-align:none;" class="MsoNormal"><span style="font-size:9.5pt;color:blue;font-family:Consolas;">public</span><span style="font-size:9.5pt;font-family:Consolas;"> <span style="color:blue;">class</span> <span style="color:#2b91af;">UpdateCityRule</span> : Csla.Rules.<span style="color:#2b91af;">BusinessRule</span></span></p>
+<p style="margin:0cm 0cm 0pt;line-height:normal;mso-layout-grid-align:none;" class="MsoNormal"><span style="font-size:9.5pt;font-family:Consolas;">{</span></p>
+<p style="margin:0cm 0cm 0pt;text-indent:36pt;line-height:normal;mso-layout-grid-align:none;" class="MsoNormal"><span style="font-size:9.5pt;color:blue;font-family:Consolas;">protected</span><span style="font-size:9.5pt;font-family:Consolas;"> <span style="color:blue;">override</span> <span style="color:blue;">void</span> Execute(Csla.Rules.<span style="color:#2b91af;">RuleContext</span> context)</span></p>
+<p style="margin:0cm 0cm 0pt;text-indent:36pt;line-height:normal;mso-layout-grid-align:none;" class="MsoNormal"><span style="font-size:9.5pt;font-family:Consolas;">{</span></p>
+<p style="margin:0cm 0cm 0pt 36pt;text-indent:36pt;line-height:normal;mso-layout-grid-align:none;" class="MsoNormal"><span style="font-size:9.5pt;color:blue;font-family:Consolas;">var</span><span style="font-size:9.5pt;font-family:Consolas;"> target = (<span style="color:#2b91af;">MyObject</span>)context.Target;</span></p>
+<p style="margin:0cm 0cm 0pt;line-height:normal;mso-layout-grid-align:none;" class="MsoNormal"><span style="font-size:9.5pt;font-family:Consolas;">&nbsp;</span></p>
+<p style="margin:0cm 0cm 0pt 36pt;text-indent:36pt;line-height:normal;mso-layout-grid-align:none;" class="MsoNormal"><span style="font-size:9.5pt;color:blue;font-family:Consolas;">if</span><span style="font-size:9.5pt;font-family:Consolas;"> (target.IsSelected)</span></p>
+<p style="margin:0cm 0cm 0pt 72pt;text-indent:36pt;line-height:normal;mso-layout-grid-align:none;" class="MsoNormal"><span style="font-size:9.5pt;font-family:Consolas;">context.AddOutValue(CityProperty, <span style="color:#a31515;">&quot;&quot;</span>);</span></p>
+<p style="margin:0cm 0cm 0pt 108pt;text-indent:36pt;line-height:normal;mso-layout-grid-align:none;" class="MsoNormal"><span style="font-size:9.5pt;font-family:Consolas;">LoadProperty(target, <span style="color:#2b91af;">MyObject</span>.CityProperty, <span style="color:#a31515;">&quot;&quot;</span>);</span></p>
+<p style="margin:0cm 0cm 0pt;text-indent:36pt;line-height:normal;mso-layout-grid-align:none;" class="MsoNormal"><span style="font-size:9.5pt;font-family:Consolas;">}</span></p>
+<p style="margin:0cm 0cm 0pt;line-height:normal;mso-layout-grid-align:none;" class="MsoNormal"><span style="font-size:9.5pt;font-family:Consolas;">}</span></p>
+<p style="margin:0cm 0cm 10pt;" class="MsoNormal"><span style="font-size:small;font-family:Calibri;">&nbsp;</span><span style="font-size:small;font-family:Calibri;">&nbsp;</span></p>
+<p style="margin:0cm 0cm 0pt;line-height:normal;mso-layout-grid-align:none;" class="MsoNormal"><span style="font-size:9.5pt;color:blue;font-family:Consolas;">public</span><span style="font-size:9.5pt;font-family:Consolas;"> <span style="color:blue;">class</span> <span style="color:#2b91af;">CityMandatoryRule</span> : Csla.Rules.<span style="color:#2b91af;">BusinessRule</span></span></p>
+<p style="margin:0cm 0cm 0pt;line-height:normal;mso-layout-grid-align:none;" class="MsoNormal"><span style="font-size:9.5pt;font-family:Consolas;">{</span></p>
+<p style="margin:0cm 0cm 0pt;text-indent:36pt;line-height:normal;mso-layout-grid-align:none;" class="MsoNormal"><span style="font-size:9.5pt;color:blue;font-family:Consolas;">protected</span><span style="font-size:9.5pt;font-family:Consolas;"> <span style="color:blue;">override</span> <span style="color:blue;">void</span> Execute(Csla.Rules.<span style="color:#2b91af;">RuleContext</span> context)</span></p>
+<p style="margin:0cm 0cm 0pt;text-indent:36pt;line-height:normal;mso-layout-grid-align:none;" class="MsoNormal"><span style="font-size:9.5pt;font-family:Consolas;">{</span></p>
+<p style="margin:0cm 0cm 0pt 36pt;text-indent:36pt;line-height:normal;mso-layout-grid-align:none;" class="MsoNormal"><span style="font-size:9.5pt;color:blue;font-family:Consolas;">var</span><span style="font-size:9.5pt;font-family:Consolas;"> target = (<span style="color:#2b91af;">MyObject</span>)context.Target;</span></p>
+<p style="margin:0cm 0cm 0pt;line-height:normal;mso-layout-grid-align:none;" class="MsoNormal"><span style="font-size:9.5pt;font-family:Consolas;">&nbsp;</span></p>
+<p style="margin:0cm 0cm 0pt 36pt;text-indent:36pt;line-height:normal;mso-layout-grid-align:none;" class="MsoNormal"><span style="font-size:9.5pt;color:blue;font-family:Consolas;">if</span><span style="font-size:9.5pt;font-family:Consolas;"> (!(target.IsSelected) &amp;&amp; (target.City == <span style="color:#a31515;">&quot;&quot;</span>))</span></p>
+<p style="margin:0cm 0cm 0pt 72pt;text-indent:36pt;line-height:normal;mso-layout-grid-align:none;" class="MsoNormal"><span style="font-size:9.5pt;font-family:Consolas;">context.AddErrorResult(CityProperty, <span style="color:#a31515;">&quot;City is required&quot;</span>);</span></p>
+<p style="margin:0cm 0cm 0pt;text-indent:36pt;line-height:normal;mso-layout-grid-align:none;" class="MsoNormal"><span style="font-size:9.5pt;font-family:Consolas;">}</span></p>
+<p style="margin:0cm 0cm 0pt;line-height:normal;mso-layout-grid-align:none;" class="MsoNormal"><span style="font-size:9.5pt;font-family:Consolas;">}</span></p>
+<p style="margin:0cm 0cm 10pt;" class="MsoNormal"><span style="font-size:small;font-family:Calibri;">&nbsp;</span></p>
+<p>
+<p>&nbsp;</p>
+</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, June 07, 2012</h2><p>There&#39;s probably an exception in one of the rules. If an exception occurs in a rule, the exception message is returned as the broken rule text, and it looks like that&#39;s what you are seeing.</p>
+<p>Stepping through the rules in the debugger is probably the fastest way to find out what&#39;s going on.</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Thursday, June 07, 2012</h2><p>Rocky is correct that you get an exception. The reason is that in order to use AddOutValue the propertyinfo must exist in AffecdtedProperties dictionary.&nbsp;</p>
+<p>So the first rule - as to my coding preferences would be like this: </p>
+<p>&nbsp;&nbsp;&nbsp; <span style="color:#0000ff;font-weight:bold;">public</span>&nbsp;<span style="color:#ff0000;">class</span>&nbsp;UpdateCityRule : Csla.Rules.PropertyRule<br />
+&nbsp;&nbsp;&nbsp;&nbsp;{<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#0000ff;font-weight:bold;">public</span>&nbsp;IPropertyInfo&lt;<span style="color:#ff0000;">string</span>&gt;&nbsp;CityProperty&nbsp;{&nbsp;<span style="color:#8b4513;">get</span>;&nbsp;<span style="color:#0000ff;font-weight:bold;">private</span>&nbsp;<span style="color:#8b4513;">set</span>;}<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#0000ff;font-weight:bold;">public</span>&nbsp;<span style="color:#191970;font-weight:bold;">UpdateCityRule</span>(PropertyInfo&lt;<span style="color:#ff0000;font-weight:bold;">bool</span>&gt;&nbsp;selectedProperty,&nbsp;IPropertyInfo&lt;<span style="color:#ff0000;">string</span>&gt;&nbsp;cityProperty) <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; :&nbsp;<span style="font-weight:bold;">base</span>(selectedProperty)<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CityProperty = cityProperty;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;AffectedProperties.<span style="color:#191970;font-weight:bold;">Add</span>(cityProperty);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#0000ff;font-weight:bold;">protected</span>&nbsp;<span style="color:#a52a2a;">override</span>&nbsp;<span style="color:#ff0000;">void</span>&nbsp;<span style="color:#191970;font-weight:bold;">Execute</span>(Csla.Rules.RuleContext context)<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#000080;">var</span>&nbsp;selected =&nbsp;&nbsp;(<span style="color:#ff0000;font-weight:bold;">bool</span>)&nbsp;context.InputPropertyValues[PrimaryProperty];<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#0000ff;font-weight:bold;">if</span>&nbsp;(selected)<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;context.<span style="color:#191970;font-weight:bold;">AddOutValue</span>(CityProperty,&nbsp;<span style="color:#0000ff;">&quot;&quot;</span>);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br />
+&nbsp;&nbsp;&nbsp;&nbsp;}<br />
+<br />
+<br />
+usage&nbsp;<span style="color:#0000ff;font-weight:bold;">in</span>&nbsp;AddBusinessRules:&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;BusinessRules.<span style="color:#191970;font-weight:bold;">AddRule</span>(<span style="color:#008b8b;font-weight:bold;">new</span>&nbsp;<span style="color:#191970;font-weight:bold;">UpdateCityRule</span>(IsSelectedProperty,&nbsp;CityProperty));</p>
+<p>&nbsp;</p>
+<ol>
+<li>This role will automatically be checked by the rule engine when the IsSelectProperty is changed (as it is the PrimaryProperty).<br /><b>IE: Property rules should always have a PrimaryProperty </b></li>
+<li>The rule will be executed in BusinessRules.CheckRules(). </li>
+<li>The City property will be cleared when fr property is selected. </li>
+</ol>
+<p>Notice how the Rule has NO knowledge of the actual BusinessObject.&nbsp; It only needs 2 PropertyInfo&#39;s to use as keys for either reading value from InputProperties og set the OutValue .</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Mr X replied on Friday, June 08, 2012</h2><p>Thank you both very much, it now works!</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

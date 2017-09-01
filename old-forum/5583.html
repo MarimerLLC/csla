@@ -1,0 +1,74 @@
+<html><header><title>DataGridView cancel with escape</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>DataGridView cancel with escape</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5583.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>danielmartind posted on Tuesday, October 14, 2008</h2>Hi,<br><br>I am using CSLA 3.0.5. I have a object tree with an editable root object with serveral child collections all set up in same way as Resource in the Project Tracker example. <br><br>I have bound a collection to a DataGridView and allowed adding by overiding AddNewCore. How do I cancel a new row when the escape key is pressed? <br><br>Dan<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Tuesday, October 14, 2008</h2><P>1. When Escape is pressed Databinding should take care of removing the new row automatically.</P>
+<P>2. If #1 is not working right, then consider upgrading - many databinding fixes were made over time and it is best to be on the latest version. I can't recall the version that Rocky thinks he "finally got it". But even now there are some edge cases that may be an issue. I belivev Rocky recently said that WinForms can't die soon enough with their odd databinding issues. At least WPF is clearer in that regard.</P>
+<P>Joe</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>danielmartind replied on Tuesday, October 14, 2008</h2>Thanks for responding.<br><br>#1 is not working and I am using 3.0.5. I don't really want to upgrade to 3.5/6 yet as I am working on .net 2 projects and they need to support Win2000. <br><br>It can reproduce it in project tracker by editing ProjectResources to overide AddNewCore and the ProjectEdit control to allow new rows.<br><br>It's not a major problem as the user can delete the row by selecting and pressing delete. <br><br>Dan<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, October 14, 2008</h2><P>I don't have time to research this right now. However, it should not be an issue in 3.0.5. The real test is this app:</P>
+<P><A href="http://www.lhotka.net/cslacvs/viewvc.cgi/samples/trunk/CslaNet/cs/RootChildGrandchildWinFormTest/">http://www.lhotka.net/cslacvs/viewvc.cgi/samples/trunk/CslaNet/cs/RootChildGrandchildWinFormTest/</A></P>
+<P>This is my primary test vehicle for data binding issues in Windows Forms. If you can repro your issue in that test app that would go a long way toward helping me resolve any problem. Thanks!</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>danielmartind replied on Wednesday, October 15, 2008</h2>It works fine in that example but there are differences from my project. I will create another project wich targets 3.0.5 so I can check that too. <br><br>The other differences are that I have validation rules and I register the ListChanged event calling OnUnknownPropertyChanged as in the Project Tracker example. Could either of these be causing the trouble?<br><br>Dan<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, October 15, 2008</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>This is why I recommended looking at that particular project.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Windows Forms data binding is very particular about how things
+are done. It leaves little room for flexibility. The sample app shows the
+correct approach if you want in-place grid editing to work, and you really need
+to conform to that model.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>ProjectTracker doesn&#8217;t use in-place grid editing, and so
+doesn&#8217;t conform quite as strictly to the hard-core rules imposed by data
+binding.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky</span><b><span><o:p></o:p></span></b></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>danielmartind replied on Thursday, October 16, 2008</h2>It is the ListChanged event of the collection which is causing the problem. What are the consequences of not using this. I am not doing anything in the event handle other than the OnUnknownPropertyChanged() method as PTracker in this instance. Where I do need to make use of that event, is there anything I can change to enable the proper behavour or do I just have to live with it?<br><br>Think I might brave 3.6 and wpf for the next project!<br><br>Dan<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, October 17, 2008</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>You should not need to handle that event, and probably shouldn&#8217;t
+be calling OnUnknownPropertyChanged() there.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>danielmartind replied on Monday, October 20, 2008</h2>Thanks for your responses. <br><br>I do use that event to calculate totals from child objects in the root object in some cases but will remove from the others. Is this a good way of doing this or is there a better way?<br><br>Is the PTracker example include the event just to show how to handle it or is it providing some other function?<br><br>Dan<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

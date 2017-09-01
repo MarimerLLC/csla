@@ -1,0 +1,47 @@
+<html><header><title>Valid date</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Valid date</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/1675.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>yh_ink posted on Friday, November 03, 2006</h2><P>How to check for vaild date in the class. how to use the brokenrules.using smartdate.</P>
+<P>i have smart date in my class. how should i assign this from my webform.</P>
+<P>_Class.date =&nbsp; this.testbox.text;&nbsp; how should i assign this.The way i did it here is wrong</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Wal972 replied on Friday, November 03, 2006</h2><P>Have a look at the project it should the use of smartdates and how to get at them. Also depending on the Country watch the formating. The date is expected as a string so if its back to front ie. British not US or visa vera it wont work. I generally get my dates returned in dd-MMM-yy format for safety.</P>
+<P>The other thing to watch is how you set the property to accept dates, ie format of string. </P>
+<P>Hope that helps</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>malloc1024 replied on Friday, November 03, 2006</h2>
+
+<p class="MsoNormal">Your assignment doesn’t work because you are setting a
+string value to a date value. <span>&nbsp;</span>Is the
+date property a date type or a smartdate type? </p>
+
+
+<p class="MsoNormal"><o:p>&nbsp;</o:p></p>
+
+
+<p class="MsoNormal">If the date property is a smartdate:</p>
+
+
+<p class="MsoNormal">_Class.date.text <span>&nbsp;</span>= <span>&nbsp;</span>this.textbox.text</p>
+
+
+<p class="MsoNormal">or</p>
+
+
+<p class="MsoNormal">_Class.date.date <span>&nbsp;</span>= <span>&nbsp;</span>(datetime)this.textbox.text</p>
+
+
+<p class="MsoNormal"><o:p>&nbsp;</o:p></p>
+
+
+<p class="MsoNormal">If the date property is a date:</p>
+
+
+<p class="MsoNormal">_Class.date = (datetime)this.textbox.text</p>
+
+
+<p class="MsoNormal"><o:p>&nbsp;</o:p></p>
+
+
+<span>I am not exactly sure what you mean by valid
+date.<span>&nbsp; </span>Do you mean in a valid date
+format?<span>&nbsp; </span>If so, there are many ways you
+can deal with this. Make sure the user can only enter dates in the correct
+format.<span>&nbsp; </span>You can use the datetimepicker
+control for this.<span>&nbsp; </span>You could also separate
+dropdown boxes for the month, day and year or create your own control.<span>&nbsp; </span>You could try casting the string to a date or
+using a regex, but I think these are poor choices in this situation.</span></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

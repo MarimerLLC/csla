@@ -1,0 +1,108 @@
+<html><header><title>Help for newbie </title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Help for newbie </h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/361.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>dstarkey posted on Tuesday, June 13, 2006</h2><P>Registration Exception when trying to get sample project tracker to run.&nbsp; I have the project set up at C:\TSP\csla20\ProjectTracker20cs\EnterpriseServicesHostcs</P>
+<P><BR>virtual web PTWeb points to C:\TSP\csla20\ProjectTracker20cs\www\PTWeb</P>
+<P>Error received on login.&nbsp; Granted machinename\Aspnet full rights to csla20 folder but still same problem.</P>
+<P>Any help is GREATLY APPRECIATED!!! </P>
+<P>Do not know where to grant the rights, or to which account the error is referring to.&nbsp; Please help a newbie! Error follows:</P>
+<P><STRONG>Exception Details: </STRONG><FONT face=Arial>System.UnauthorizedAccessException: Access to the registry key 'HKEY_CLASSES_ROOT\EnterpriseServicesHost.EnterpriseServicesPortal' is denied. <BR><BR>ASP.NET is not authorized to access the requested resource. Consider granting access rights to the resource to the ASP.NET request identity. ASP.NET has a base process identity (typically {MACHINE}\ASPNET on IIS 5 or Network Service on IIS 6) that is used if the application is not impersonating. If the application is impersonating via &lt;identity impersonate="true"/&gt;, the identity will be the anonymous user (typically IUSR_MACHINENAME) or the authenticated request user. <BR><BR>To grant ASP.NET access to a file, right-click the file in Explorer, choose "Properties" and select the Security tab. Click "Add" to add the appropriate user or group. Highlight the ASP.NET account, and check the boxes for the desired access.<BR><BR></FONT><B>Source Error:</B><FONT face=Arial> <BR><BR></FONT>
+<TABLE bgColor=#ffffcc>
+
+<TR>
+<TD><CODE><PRE>Line 11:       Csla.Server.Hosts.EnterpriseServicesPortal GetServerObject()
+Line 12:     {
+<FONT color=red>Line 13:       return new EnterpriseServicesPortal();
+</FONT>Line 14:     }
+Line 15:   }</PRE></CODE></TD></TR></TABLE><BR><B><FONT face=Verdana>Source File: </FONT></B>C:\TSP\csla20\ProjectTracker20cs\EnterpriseServicesHostcs\EnterpriseServicesProxy.cs<B><FONT face=Verdana> &nbsp;&nbsp; Line: </FONT></B>13 <BR></P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>PaulS replied on Friday, September 08, 2006</h2>what was the resolution for this? I have the same question.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>dstarkey replied on Friday, September 08, 2006</h2>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><font size=2 color=navy face=Arial><span>Hi Paul, I think the problem stemmed from
+an improper web config file.&nbsp; I commented out all references to
+EnterpriseServices, and used the local data portal as outlined in chapter 8 I believe.&nbsp;
+This fixed the issues I was having.&nbsp; Hope this helps.<o:p></o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 color=navy face=Arial><span><o:p>&nbsp;</o:p></span></font></p>
+
+<div>
+
+<p class=MsoNormal><font size=2 color=navy face=Arial><span>Thank you,<o:p></o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 color=navy face=Arial><span><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=MsoNormal><b><i><font size=3 color=navy face=Arial><span><o:p>&nbsp;</o:p></span></font></i></b></p>
+
+<p class=MsoNormal><b><i><font size=3 color=navy face=Arial><span>Don Starkey<o:p></o:p></span></font></i></b></p>
+
+<p class=MsoNormal><b><i><font size=3 color=navy face="Times New Roman"><span><o:p>&nbsp;</o:p></span></font></i></b></p>
+
+<p class=MsoNormal><font size=2 color=navy face=Arial><span>Senior Programmer</span></font><font color=navy><span><o:p></o:p></span></font></p>
+
+<p class=MsoNormal><i><font size=3 color=red face="Arial Black"><span>Synergy<o:p></o:p></span></font></i></p>
+
+<p class=MsoNormal><i><font size=3 color=red face="Arial Black"><span><o:p>&nbsp;</o:p></span></font></i></p>
+
+<p class=MsoNormal><st1:address><font size=2 color=navy face=Arial><span>180 N. Michigan Ave., Ste. 1100</span></font></st1:address><font color=navy><span><o:p></o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 color=navy face=Arial><span>Chicago</span></font><font size=2 color=navy face=Arial><span>, IL 60601</span></font><font color=navy><span><o:p></o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 color=navy face=Arial><span>Phone: (312) 899-1024</span></font><font color=navy><span><o:p></o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 color=navy face=Arial><span>Toll Free: 1-800-432-1026</span></font><font color=navy><span><o:p></o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 color=navy face=Arial><span>Fax: (312) 977-1026</span></font><o:p></o:p></p>
+
+</div>
+
+<div>
+
+<div class=MsoNormal align=center><font size=3 face="Times New Roman"><span>
+
+<hr align=center>
+
+</span></font></div>
+
+<p class=MsoNormal><b><font size=2 face=Tahoma><span>From:</span></font></b><font size=2 face=Tahoma><span> PaulS
+[mailto:cslanet@lhotka.net] <br>
+<b><span>Sent:</span></b> Friday, September 08, 2006
+7:09 AM<br>
+<b><span>To:</span></b> Don Starkey<br>
+<b><span>Subject:</span></b> Re: [CSLA .NET] Help for
+newbie</span></font><o:p></o:p></p>
+
+</div>
+
+<p class=MsoNormal><font size=3 face="Times New Roman"><span><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=MsoNormal><font size=3 face="Times New Roman"><span>what was the resolution for this? I have the same question.<br>
+<br>
+<o:p></o:p></span></font></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>lixingjian1984 replied on Wednesday, July 09, 2008</h2>me too ??????!!!!!!!!!!!!!!!!!!!!</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, September 08, 2006</h2>It sounds like you forgot to run regsvcs.exe to put the enterprise services host assembly into COM+. ASP.NET tried, but of course can't, because it doesn't have permissions to alter the registry.<br><br>You can get install directions for ProjectTracker from <a href="http://www.lhotka.net/cslanet/download.aspx">www.lhotka.net/cslanet/download.aspx</a>, and that may help.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jspurlin replied on Tuesday, September 12, 2006</h2><P>Rocky may I ask for a command line example of the syntax for registering the EnterpriseServices? This is a new technique for me, and I do not know if there are any command line flags I need to be aware of.</P>
+<P>Also, do I just register it once and then add it from the References tab where I find the other system dll's?</P>
+<P>Thank you.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, September 12, 2006</h2>The exact command you need is in Chapter 12, where I walk through the process of creating and configuring the enterprise services data portal channel.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>DavidDilworth replied on Thursday, January 11, 2007</h2><P>I know this answer is a little late, but someone else might find it useful.</P>
+<P>This problem is caused by not registering the appropriate EnterpriseServicesHostxx.Dll, where the xx is either cs or vb depending on your language choice.</P>
+<P>See step 7 in the <A href="http://www.lhotka.net/files/csla20/BuildCsla.pdf">installation guide notes</A>&nbsp;from Rocky.&nbsp; Follow the instructions and the problem is resolved.</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

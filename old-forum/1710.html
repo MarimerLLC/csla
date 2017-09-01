@@ -1,0 +1,70 @@
+<html><header><title>Performance problem</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Performance problem</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/1710.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>crepinv posted on Tuesday, November 07, 2006</h2><DIV><FONT face=Arial size=2>Hello all.</FONT></DIV>
+<DIV><FONT face=Arial size=2></FONT>&nbsp;</DIV>
+<DIV><FONT face=Arial size=2>I have a problem that I hope someone has ever encountered in the past because it is a major issue for us. The problem is simple. Because we deploy all our applications in a load-balanced environment, the http session is configured to use SQL Server. For some of our applications, we've found a major performance issue due to this fact. Some objects (BusinessBase) are quite large and take a enormous time to serialize themselves (when the session goes to the database, the objects are serialized as you know).</FONT></DIV>
+<DIV><FONT face=Arial size=2></FONT>&nbsp;</DIV>
+<DIV><FONT face=Arial size=2>Here are some details and numbers: </FONT></DIV>
+<DIV><FONT face=Arial size=2></FONT>&nbsp;</DIV>
+<DIV><FONT face=Arial size=2>For one of the applications that has a problem, the model is quite simple.Essentially, there is an Application object having Functionalities (composition) each having Access and AccesProfil children.&nbsp;The problem occurs when I edit an Application object (which has about 100 Fonctionnalites each having about 5-10 Acces and AccesProfilage children).For me these numbers are far from extreme. The result is that the serialized Application object weighs about 5 megabytes !!! and the time to serialize it using the simple: </FONT></DIV>
+<DIV><FONT face=Arial size=2></FONT>&nbsp;</DIV>
+<DIV><FONT face=Arial size=2>&nbsp; ''' &lt;summary&gt;<BR>&nbsp;&nbsp;&nbsp; ''' Creates a serialized representation of the object.<BR>&nbsp;&nbsp;&nbsp; ''' &lt;/summary&gt;<BR>&nbsp;&nbsp;&nbsp; ''' &lt;returns&gt;A byte representation of the object.&lt;/returns&gt;<BR>&nbsp;&nbsp;&nbsp; Protected Function GetObjectAsByte(ByVal bOject As Object) As Byte()</FONT></DIV>
+<DIV>&nbsp;</DIV>
+<DIV><FONT face=Arial size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Dim buffer As New MemoryStream<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Dim formatter As New BinaryFormatter<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; formatter.Serialize(buffer, bOject)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; buffer.Close()<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return buffer.ToArray()</FONT></DIV>
+<DIV>&nbsp;</DIV>
+<DIV><FONT face=Arial size=2>&nbsp;&nbsp;&nbsp; End Function</FONT></DIV>
+<DIV><FONT face=Arial size=2></FONT>&nbsp;</DIV>
+<DIV><FONT face=Arial size=2>takes more than 30 seconds on my laptop (very recent HP with 2G of memory).</FONT></DIV>
+<DIV><FONT face=Arial size=2></FONT>&nbsp;</DIV>
+<DIV><FONT face=Arial size=2>Do you have any idea of what could be wrong&nbsp;? </FONT></DIV>
+<DIV><FONT face=Arial size=2></FONT>&nbsp;</DIV>
+<DIV><FONT face=Arial size=2>Thank you very much.</FONT></DIV>
+<DIV><FONT face=Arial size=2></FONT>&nbsp;</DIV>
+<DIV><FONT face=Arial size=2>Vincent Crepin</FONT></DIV></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Wednesday, November 08, 2006</h2>Well, this is a web app.&nbsp; Rocky recommends (for the reasons you indicate) that pretty much all objects in your design must be root objects.&nbsp; That is, they can be fetched and saved independant of each other.&nbsp; It sounds like this is not how you designed your BOs, and the best solution is likely to make the children into root objects as well.&nbsp; That way you're only storing one object at a time.<br><br>Search around the forum for Csla and Asp.net.&nbsp; That should give more detailed discussions on this topic.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>davidb replied on Wednesday, November 08, 2006</h2><P>Hi Vincent,</P>
+<P>Are you using the CSLA undo feature in you web app? Calling the BeginEdit method directly or through the IEditableObject interface can greatly increase the size of the object graph that need to be serialized.&nbsp;As you may already know, the undo feature causes the children collections to be serialized into the root object internal undo stack.</P>
+<P>Maybe this&nbsp;causes the&nbsp;size of your object graph to grow&nbsp;and thus slows down the serialization process.</P>
+<P>I hope this help. Good luck,</P>
+<P>David</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tetranz replied on Wednesday, November 08, 2006</h2>Hi Vincent<br><br>You code doesn't indicate this but I wonder if your child objects have a reference to their parent?&nbsp; If they do then you must mark it with the NotUndoable() and (I think) NonSerializable() attributes. If you do not do that and you do a BeginEdit() then the BeginEdit() will go into a loop. The loop usually stops eventually (I'm not sure why) but your serialized objects are very large.<br><br>Cheers<br>Ross<br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Thursday, November 09, 2006</h2><P>For what it is worth,</P>
+<P>I use ASP.Net State Server service and it has the same performance hit for large objects.</P>
+<P>I try to keep the stuff in State to a minimum but sometimes I need the whole BO. When I leave the page I make sure to clear out any unused objects from Session to keep it is small as possible. (i.e. the ones that were used on the page I just left.)</P>
+<P>Also - this idea of re-designing your BOs as all root objects is not a path I ever went down - nor will I. The whole point of these BOs is to be able to re-use them in various environments. Not have to re-design them for a web app. Things work fine when the BOs are designed the standard way.</P>
+<P>Joe</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>pelinville replied on Thursday, November 09, 2006</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>JoeFallon1:</strong></div><div>
+<P>For what it is worth,</P>
+<P>I use ASP.Net State Server service and it has the same performance hit for large objects.</P>
+<P>I try to keep the stuff in State to a minimum but sometimes I need the whole BO. When I leave the page I make sure to clear out any unused objects from Session to keep it is small as possible. (i.e. the ones that were used on the page I just left.)</P>
+<P>Also - this idea of re-designing your BOs as all root objects is not a path I ever went down - nor will I. The whole point of these BOs is to be able to re-use them in various environments. Not have to re-design them for a web app. Things work fine when the BOs are designed the standard way.</P>
+<P>Joe</P>
+<P></div></BLOCKQUOTE></P>
+<DIV>You can reuse the "all root"&nbsp;BOs just as well as the "standard" ones.&nbsp; You just have to be a little&nbsp;more careful with the design.</DIV></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>shawndewet replied on Thursday, November 09, 2006</h2><P>Hi Vincent, here's my tuppence:</P>
+<P>I had a serious performance problem when binding child collections to a root object, and&nbsp;wanting to update the parent object's IsDirty to True whenever an object in the child collection changed.&nbsp; I would add an event handler in my root object to the child collections' IsDirtyChanged event.&nbsp; This event handler would then&nbsp;call the&nbsp;root object's MarkDirty.&nbsp; I had major performance problems when dealing with a child object in this scenario.&nbsp; Well after much head scratching and using VS2005 Team Developer Performance Tools, it&nbsp;turned out that&nbsp;this event handling was the problem.&nbsp; Well I&nbsp;still&nbsp;wanted my root object to&nbsp;report itself as dirty if&nbsp;any of the&nbsp;child collection objects were dirty.&nbsp; So I changed the&nbsp;approach by overriding the IsDirty property of the root object&nbsp;so that it reports&nbsp;a short-circuited combination of MyBase.IsDirty and also MyChildCollection(1..n).IsDirty.&nbsp; That was the end of those performace problems.&nbsp; Hope it helps with your scenario, or&nbsp;anyone&nbsp;else reading this&nbsp;thread?&nbsp; </P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>davidb replied on Monday, November 27, 2006</h2><P>Since your problem&nbsp;is related to the serialization of the object graph I tought you might be interested in this article: <A href="http://www.codeproject.com/dotnet/FastSerializer.asp">http://www.codeproject.com/dotnet/FastSerializer.asp</A>. </P>
+<P>In this two part article the author explains how&nbsp;to replace the standard .NET serialization process by a custom implementation that provides roughly 10 times speed imporvement and reduction of&nbsp;the size of the serialized data. </P>
+<P>If this solution proves to&nbsp;be useful and brings better performances,&nbsp;maybe it&nbsp;could be included in some way in the CSLA framework or&nbsp;in a Contrib project.</P>
+<P>davidb&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>crepinv replied on Wednesday, December 13, 2006</h2><P>Hello again. Thank you very much for all the answers. I've been through many investigations and fixes. I can now pretend that everything works "blazingly" fast. The problems were multiple. A little of all everybody posted. First, we were using beginEdit which was indeed increasing the size of the serialized objects substantially. It was not necessary to keep the&nbsp;undo state&nbsp;when navigating away from the page so I "cancelEdited" before serializing the state. Second and mostly, I implemented a small pattern which consists into releasing the child collections before navigating away from the page. A sort of active lazy load pattern. This way, when I create or edit a child object, I ask the parent to return it as Detached and I release the child collections before leaving the page to go to the child page. When I come back, the child collection gets re-fetched (lazy load) and I reattach the newly created or edited object. Using these 2 simple strategies, I could reduce the size of my serialized state from many megabytes to a maximum of 20k!!!</P>
+<P>By the way, the business rules are always enforced on the parent object by contrast of the "all root objects" strategy which I prefer.</P>
+<P>A little disadvantage of this strategy is that I cannot release a child collection that is dirty but that never happens in my web scenario.</P>
+<P>Vincent.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Wednesday, December 13, 2006</h2>Vincent,<br><br>Glad you were able to figure things out.&nbsp; Just as a note, N-level undo really isn't meant to be used in web apps at all, for many of the reasons you encountered.&nbsp; Check out the book for more info.<br><br>Andy<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>crepinv replied on Wednesday, December 13, 2006</h2>
+
+
+
+
+
+
+<DIV><FONT face=Arial size=2>Yes I know. It was used to allow a journalization 
+mechanism with old values and new values.</FONT></DIV>
+<DIV><FONT face=Arial size=2></FONT>&nbsp;</DIV>
+<DIV><FONT face=Arial size=2>Vincent.</FONT></DIV>
+<BLOCKQUOTE>
+  <DIV>----- Original Message ----- </DIV>
+  <DIV><B>From:</B> 
+  <A title=cslanet@lhotka.net href="mailto:cslanet@lhotka.net">ajj3085</A> 
+</DIV>
+  <DIV><B>To:</B> <A title=vincent.crepin@elapsetech.com href="mailto:vincent.crepin@elapsetech.com">vincent.crepin@elapsetech.com</A> 
+  </DIV>
+  <DIV><B>Sent:</B> Wednesday, December 13, 2006 3:59 
+  PM</DIV>
+  <DIV><B>Subject:</B> Re: [CSLA .NET] Performance 
+  problem</DIV>
+  <DIV><BR></DIV>Vincent,<BR><BR>Glad you were able to figure things out.&nbsp; 
+  Just as a note, N-level undo really isn't meant to be used in web apps at all, 
+  for many of the reasons you encountered.&nbsp; Check out the book for more 
+  info.<BR><BR>Andy<BR><BR><BR><BR></BLOCKQUOTE></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>crepinv replied on Wednesday, December 13, 2006</h2><P>Yes I know. We were using it for a journalization mechanism that provides old values and new values. But it was not necessary to keep that state when leaving the page.</P>
+<P>Vincent.</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,20 @@
+<html><header><title>On Dynamic properties, instance rules and property info requirements</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>On Dynamic properties, instance rules and property info requirements</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10448.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>xal posted on Thursday, June 16, 2011</h2><p>I have an interesting scenario that worked like a charm in older versions and I&#39;m looking at migration possibilities.</p>
+<p>An application has a fixed set of fields for a -let&#39;s say- person, but allows the user to define custom fields that will be displayed in another tab.</p>
+<p>Back then I wrote a CustomProperties class with a custom property descriptor that did read/writes by calling custom GetProperty and SetProperty methods in the CustomProperties object. Those methods would work against a hashtable contained by that same object.</p>
+<p>I used Instance Rules for validation, since the available properties could change at runtime.</p>
+<p>It all worked very well with databinding and even IDataErrorInfo support provided by Csla itself.</p>
+<p>I obviously can&#39;t have static PropertyInfo objects for those properties, because they are dynamic, and at the same time I&#39;m unable to create rules for those properties for that same reason.</p>
+<p>I don&#39;t see a way of porting this code to the latest version of csla with the new property/rules system. Any ideas?</p>
+<p>&nbsp;</p>
+<p>Andr&eacute;s</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Thursday, June 16, 2011</h2><p>Yes, instance rules are gone. </p>
+<p>1. If you could supply some more metadata fro your property (for validation) you could create a gateway rule that in turn could call any rule based on the metadata.</p>
+<p>2. Gateway rules may also be used to trigger an external rule engine (or your code) that returns a set of IPropertyInfo, level and message to be set into RuleContext (and then into your BO bu the rule engine). </p>
+<p>You would probable have to create a list of &quot;CustomProperties&quot;. I haven&#39;t made this type of dynamic properties so I have no personal experience into this challenge. I hope others on the forum will join in on the discussion.</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>xal replied on Thursday, June 16, 2011</h2><p>I have the rules for each property stored in the database. Mostly basic stuff like required, or min/max length.</p>
+<p>The problem is I still need to have a PropertyInfo object for each of them, and since they are dynamic, it wouldn&#39;t work.</p>
+<p>The implementation I use today uses a hashtable in the business object and a custom property descriptor that fills the gap between databinding and the business object. It works very well with data forms and data grids.</p>
+<p>I can&#39;t imagine right now how to make it work since I can&#39;t run validation without property info objects, which I can&#39;t define at runtime.</p>
+<p>Why were instance rules removed? AFAIK they didn&#39;t have any penalty unless you actually decided to use them.</p>
+<p>&nbsp;</p>
+<p>Andr&eacute;s</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

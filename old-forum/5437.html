@@ -1,0 +1,217 @@
+<html><header><title>CSLA Light - Adding JIT object compression to WCF calls</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA Light - Adding JIT object compression to WCF calls</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5437.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>paupdb posted on Sunday, September 21, 2008</h2>Following on from <a HREF="/forums/thread/26306.aspx">Ashley's post</a>, I've been looking at ways to compress the objects being sent over the wire between our Silverlight client and the CSLA.Net server.<br><br>My first choice was to look for some kind of compression mode/option for the WCF transport itself, but I've found very little information on this and I wasn't too confident that Silverlight would play nicely with the few options I found on the web.<br><br>So then I poked around the CSLA WCFProxy itself to see if I could inject some code to do the compression/decompression of the serialised object behind the scenes.<br>What I've come up with is fairly hacky at the moment and the worst part about it is that I have had to change CSLA framework classes to enable my solution to work.&nbsp; But I don't think there's much option since once my code hands over to the DataPortal, its all CSLA from there on in.<br><br>So what I did is as follows:<br><br>1. Added reference to SharpZipLib (normal .Net) into CSLA and SharpZipLib (silverlight version) to CSLALight.&nbsp; <br>SharpZipLib seems to be the only compression library available for Silverlight and normal .Net at the moment, and it works great.<br><br>2. Added the following compress/decompress code to Csla.Utilities in both CslaLight and CSLA.<br>Code is ripped straight from Peter Bromberg's excellent <a href="http://www.eggheadcafe.com/tutorials/aspnet/d566463d-83bd-486a-8633-53aa54f405bf/silverlight-2-beta-2-doi.aspx">Silverlight data tutorial</a><br><br><font size="2" face="Courier New">#region Compression<br>&nbsp;&nbsp;&nbsp; public static byte[] Compress(byte[] byteData)<br>&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; try {<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; MemoryStream ms = new MemoryStream();<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ICSharpCode.SharpZipLib.Zip.Compression.Deflater defl =<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; new ICSharpCode.SharpZipLib.Zip.Compression.Deflater(9, false);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Stream s =<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; new ICSharpCode.SharpZipLib.Zip.Compression.Streams.DeflaterOutputStream(ms, defl);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; s.Write(byteData, 0, byteData.Length);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; s.Close();<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; byte[] compressedData = (byte[])ms.ToArray();<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return compressedData;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; catch {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; throw;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br><br>&nbsp;&nbsp;&nbsp; }<br><br>&nbsp;&nbsp;&nbsp; public static byte[] Decompress(byte[] byteInput)<br>&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; MemoryStream ms = new MemoryStream(byteInput, 0, byteInput.Length);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; byte[] bytResult = null;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; string strResult = String.Empty;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; byte[] writeData = new byte[4096];<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Stream s2 =<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; new ICSharpCode.SharpZipLib.Zip.Compression.Streams.InflaterInputStream(ms);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; try {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; bytResult = ReadFullStream(s2);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; s2.Close();<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return bytResult;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; catch {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; throw;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>&nbsp;&nbsp;&nbsp; }<br><br>&nbsp;&nbsp;&nbsp; private static byte[] ReadFullStream(Stream stream)<br>&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; byte[] buffer = new byte[32768];<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; using (MemoryStream ms = new MemoryStream()) {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; while (true) {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; int read = stream.Read(buffer, 0, buffer.Length);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (read &lt;= 0)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return ms.ToArray();<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ms.Write(buffer, 0, read);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>&nbsp;&nbsp;&nbsp; }<br>&nbsp;&nbsp;&nbsp; #endregion</font><br><br>3. Added code intothe getters and setters of Csla.Server.Hosts.Silverlight.UpdateRequest and Csla.Server.Hosts.Silverlight.WcfResponse (these are in the Csla.Net project), along the lines of:<br><font size="2" face="Courier New"><br>&nbsp;&nbsp;&nbsp; private byte[] _objectData;<br>&nbsp;&nbsp;&nbsp; [DataMember]<br>&nbsp;&nbsp;&nbsp; public byte[] ObjectData {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; get<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return Utilities.Decompress(_objectData);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; set<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _objectData = Utilities.Compress(value);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>&nbsp;&nbsp;&nbsp; }</font><br><br>4. Added the same kind of code into the References.cs generated versions of UpdateRequest and WcfResponse on the CslaLight project.&nbsp; I know this is nasty since this code is generated and so subject to change, but this is a proof of concept so meh.<br><br><br>And thats it.&nbsp; We've tested a few examples with really good results.&nbsp; <br>For example what used to be an 11MB serialised object graph fetch has now shrunk to 100KB over the wire :)<br>There is definitely a bit of impact on the responsiveness of the app since there is now processing overhead for the compress/decompress actions, but its quite tolerable.<br><br>The above is very rudimentary, but with a bit more work I could probably make the compression/decompression actions conditional based on say a web.config appsetting.&nbsp; <br>Or I could make the compress/decompress only kick in when the object graph gets larger than a configurable size. That way small object graphs can stay free of compression, and only the bigger ones will incur the compress/decompress overhead.<br><br><br>My question to the Magenic guys is:&nbsp; <br><br>Any chance we can add in some kind of CompressedDataPortal style functionality to CslaLight?<br><br>Failing that, what of my solution above?&nbsp; Any comments, suggestions on what I could do to minimise/remove having to change the CSLA framework directly to implement my desired compression over the wire behaviour?<br><br>I would think that given Silverlight's internet leaning , providing some kind of compression options to reduce the size of the over-the-wire objects would be a great feature to add to CSLA.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, September 22, 2008</h2><P>That is a great post - thank you!</P>
+<P>We'll look into ways you can do this without modifying existing CSLA code.</P>
+<P>It may be possible now - I haven't gone through it. But the primary extensibility mode for the data portal is for you to create your own WcfProxy and WcfHost classes that encapsulate any custom behavior. Like the pure-.NET data portal, you can entirely replace the communication channel used by the data portal.</P>
+<P>But we'll look through that to make sure it is possible to achieve this scenario in some manner along that line.</P>
+<P>I'm not real interested in taking a dependency on an external library into core CSLA (already have one - don't like it, but can't really avoid it), but I do want to make it practical as an add-on to CSLA.</P>
+<P>But can't you just use http 1.1 compression? This was my expectation - that people would just enable http compression through IIS and be done with it?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>paupdb replied on Monday, September 22, 2008</h2>Hi Rocky<br><br>I agree that putting a SharpZipLib dependency into CSLA is a bad idea.&nbsp; <br>I'll definitely have a look into extending the WcfProxy in order to build my compress/decompress functionality on top of CSLA rather than into it.&nbsp; Do you have any examples of how I should go about this?<br><br>Regarding the HTTP 1.1 compression, that was also my first idea but searching the web for some examples of how to implement this with WCF seemed to indicate that WCF does not in fact support HTTP 1.1. compression out the box.<br><br>This <a href="http://forums.microsoft.com/msdn/ShowPost.aspx?PostID=3830992&amp;SiteID=1">MSDN forum post</a> in particular turned me off the idea of trying to use IIS to compress the responses.&nbsp; Additionally, the HTTP 1.1 compression is based on GZip, which Silverlight does not have - so I didn't want to go through trying to get that working only to hit issues when trying to decompress/compress in the SL client.<br><br>If I've missed something with the HTTP 1.1 compression I'm all ears :)<br><br>Cheers<br><br>Paul<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, September 23, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I don&#8217;t have any examples of replacing the proxy/host in
+Silverlight. It is not terribly hard though, because everything is
+interface-based.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>You can, for example, copy the WcfProxy and WcfHost classes into
+your own projects (SL and .NET respectively) and configure the client to use
+your proxy class, and the server&#8217;s WCF endpoint to your use host class
+and you are set.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> paupdb
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Monday, September 22, 2008 9:23 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] CSLA Light - Adding JIT object compression to
+WCF calls<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Hi Rocky<br>
+<br>
+I agree that putting a SharpZipLib dependency into CSLA is a bad idea.&nbsp; <br>
+I'll definitely have a look into extending the WcfProxy in order to build my
+compress/decompress functionality on top of CSLA rather than into it.&nbsp; Do
+you have any examples of how I should go about this?<br>
+<br>
+Regarding the HTTP 1.1 compression, that was also my first idea but searching
+the web for some examples of how to implement this with WCF seemed to indicate
+that WCF does not in fact support HTTP 1.1. compression out the box.<br>
+<br>
+This <a href="http://forums.microsoft.com/msdn/ShowPost.aspx?PostID=3830992&amp;SiteID=1">MSDN
+forum post</a> in particular turned me off the idea of trying to use IIS to
+compress the responses.&nbsp; Additionally, the HTTP 1.1 compression is based
+on GZip, which Silverlight does not have - so I didn't want to go through
+trying to get that working only to hit issues when trying to
+decompress/compress in the SL client.<br>
+<br>
+If I've missed something with the HTTP 1.1 compression I'm all ears :)<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Monday, September 29, 2008</h2><P class=MsoNormal><FONT face=Calibri>Csla version 3.6 has been extended to provide more generalized implementation of the requested compression functionality.<SPAN>&nbsp; </SPAN>Silverlight WCF Proxy and corresponding host classes have been expanded to contain virtual methods to convert request and response objects prior to sending them across the wire.<SPAN>&nbsp; </SPAN>As a result, you can create two custom classes (one inherits from WcfProxy&lt;T&gt;, the other one from Csla.Server.Hosts.Silverlight.WcfPortal) and provide additional functionality.<SPAN>&nbsp; </SPAN>This implementation is not only allowing you to create a compressed proxy, but also opens the door for other potential issues, such as encryption.<SPAN>&nbsp; </SPAN>There is a sample project under “samples\trunk\CslaLight\cs(and vb)\”<SPAN>&nbsp; </SPAN>The project is called RemotePortalWithCompressedProxy. It is using ICSharpZipLib to create a compressed proxy.<SPAN>&nbsp; </SPAN>Please feel free to take a look.&nbsp; Please note that .ClientCOnfig file has been updated as well as web.config and .svc file to refer to new proxy and server.&nbsp; Also, Silverlight app upon startup sets up new proxy type.</FONT></P>
+<P class=MsoNormal><FONT face=Calibri>Thanks for the suggestion and let us know if you have any questions.</FONT></P>
+<P class=MsoNormal><FONT face=Calibri>Sergey.</FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>paupdb replied on Monday, September 29, 2008</h2>Sergey, thanks for this - sounds excellent.<br><br>I'll definitely give that code a run as soon as I'm finished converting my app to RC0 (which has been a crappy experience thus far).<br><br>-Paul<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>paupdb replied on Monday, September 29, 2008</h2>I've implemented the compression functionality as per your sample project and was able to get up and running with it very quickly.&nbsp; <br>Thanks Sergey, this is a very easy and clean solution.<br><br>One little bug in the Sample project - if you submit a request with no Criteria specified (i.e. request.CriteriaData is null), then the code bombs trying to compress a null object.<br><br>FYI, I'm going to probably implement this functionality only on the ObjectData and only when the ObjectData is over a certain size.&nbsp; <br>So I'll leave the Criteria, Global and UserContext components uncompressed to try to save unnecessary compress/decompress overhead.<br>The great thing about your implementation is that I am able to have this level of control :)<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Tuesday, September 30, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Great to hear that.&nbsp; I will fix the sample project once I
+have a second.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> paupdb
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Monday, September 29, 2008 8:15 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: CSLA Light - Adding JIT object compression
+to WCF calls<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>I've implemented the compression functionality as per your
+sample project and was able to get up and running with it very quickly.&nbsp; <br>
+Thanks Sergey, this is a very easy and clean solution.<br>
+<br>
+One little bug in the Sample project - if you submit a request with no Criteria
+specified (i.e. request.CriteriaData is null), then the code bombs trying to
+compress a null object.<br>
+<br>
+FYI, I'm going to probably implement this functionality only on the ObjectData
+and only when the ObjectData is over a certain size.&nbsp; <br>
+So I'll leave the Criteria, Global and UserContext components uncompressed to
+try to save unnecessary compress/decompress overhead.<br>
+The great thing about your implementation is that I am able to have this level
+of control :)<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Tuesday, September 30, 2008</h2><P>What an awesome thread! An excellent post requesting increased functionality in Csla and showing one way to do it. Compression is something that could be very useful to many developers and we won't all know how to implement it. Then a change to the framework allowing it to be implemented in a flexible fashion just a couple of days later!</P>
+<P>Great job and thanks to all involved.</P>
+<P>Joe</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>zinovate replied on Tuesday, September 30, 2008</h2>I agree, great post. I can't wait to give it a shot. </div><div style='padding:0 15 3 15;background-color:powderblue'><h2>James Thomas replied on Friday, April 10, 2009</h2>I've recently started using compression in my application, that was based on Rocky's blog post: http://www.lhotka.net/weblog/SettingUpABasicNtierCSLANETForSilverlightProject.aspx<br><br>I discovered the new InventoryDemo sample app and copied how it does compression. Posting this in the hope that it helps someone else, but I'd also be grateful if someone who knows more than me could just check through to see if I've got it right. (My application works ok, so I'm guessing it's ok...)<br><br>Steps to implement compression a la InventoryDemo.<br><br>1. Copy the ZipBin folder into your solution.<br><br>Server business objects project:<br>1. Create folder called 'Compression'<br>2. Add CompressedHost.cs and CompressionUtility.cs from the InvLib.Server project.<br>3. Update the namespaces in these files.<br>4. Add a reference to ICSharpCode.SharpZipLib.<br><br>Client business objects project:<br>1. Create folder called 'Compression'.<br>2. Add a link to your CompressionUtility.cs file (in server objects).<br>3. Add 'CompressedProxy.cs' from the InvLib.Client project.<br>4. Update the namespace in CompressedProxy.cs.<br>5. Add a reference to SharpZipLib.<br><br>Web service project:<br>1. Find &lt;service... section in &lt;system.serviceModel&gt; and change the name to 'YourBusinessLibrary.Compression.CompressedHost'.<br>2. Do the same in WcfPortal.svc.<br><br>Silverlight application:<br>1. Add this line to app.xaml.cs Application_startup: Csla.DataPortal.ProxyTypeName = typeof(BusinessLibrary.Compression.CompressedProxy&lt;&gt;).AssemblyQualifiedName;<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, April 10, 2009</h2><P>Thanks James, that's great! I added it to the FAQ too</P>
+<P><A href="http://www.lhotka.net/cslanet/faq/SilverlightDataPortalCompression.ashx">http://www.lhotka.net/cslanet/faq/SilverlightDataPortalCompression.ashx</A></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>dshafer replied on Wednesday, November 04, 2009</h2><P>You guys rock!&nbsp; I just used these instructions and in less that&nbsp;20 minutes&nbsp;took an xml reponse of over 2560 kb down to 88kb.</P>
+<P>Thanks for the great posts,</P>
+<P>Dustin</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>marthac replied on Thursday, September 30, 2010</h2><p>OK I followed those steps exactly and have my project set up just like InventoryDemo. But when I run I get this error with the very first DP call:</p>
+<p>&quot;The remote server returned an error: NotFound&quot;</p>
+<p>I set a break point in the CompressedProxy.ConvertRequest function and it gets there OK. But it never gets any further from what I can tell.</p>
+<p>Does anyone have any ideas as to what I may be doing wrong?<span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"></span></span></span></span></span></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, September 30, 2010</h2><p>It is almost always a configuration issue. Client config, server config and svc file - they all need to agree.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>marthac replied on Thursday, September 30, 2010</h2><p>I checked that. Here they are in case I missed something obvious:</p>
+<p><span style="text-decoration:underline;">Web.Config:</span></p>
+<p>&nbsp;&lt;system.serviceModel&gt;<br />&nbsp;&nbsp;&lt;behaviors&gt;<br />&nbsp;&nbsp;&nbsp;&lt;serviceBehaviors&gt;<br />&nbsp;&nbsp;&nbsp;&nbsp;&lt;behavior name=&quot;WcfPortalBehavior&quot;&gt;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;serviceMetadata httpGetEnabled=&quot;true&quot;/&gt;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;serviceDebug includeExceptionDetailInFaults=&quot;true&quot;/&gt;<br />&nbsp;&nbsp;&nbsp;&nbsp;&lt;/behavior&gt;<br />&nbsp;&nbsp;&nbsp;&lt;/serviceBehaviors&gt;<br />&nbsp;&nbsp;&lt;/behaviors&gt;<br />&nbsp;&nbsp;&lt;bindings&gt;<br />&nbsp;&nbsp;&nbsp;&lt;basicHttpBinding&gt;<br />&nbsp;&nbsp;&nbsp;&nbsp;&lt;binding name=&quot;BasicHttpBinding_IWcfPortal&quot; closeTimeout=&quot;00:10:00&quot; openTimeout=&quot;00:10:00&quot; receiveTimeout=&quot;00:10:00&quot; sendTimeout=&quot;00:10:00&quot; maxBufferSize=&quot;10000000&quot; maxReceivedMessageSize=&quot;10000000&quot;&gt;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;readerQuotas maxStringContentLength=&quot;10000000&quot; maxArrayLength=&quot;10000000&quot; maxBytesPerRead=&quot;10000000&quot; /&gt;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;!--&lt;security mode=&quot;TransportCredentialOnly&quot;&gt;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;transport clientCredentialType=&quot;Windows&quot; /&gt;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/security&gt;--&gt;<br />&nbsp;&nbsp;&nbsp;&nbsp;&lt;/binding&gt;<br />&nbsp;&nbsp;&nbsp;&lt;/basicHttpBinding&gt;<br />&nbsp;&nbsp;&lt;/bindings&gt;<br />&nbsp;&nbsp;&lt;services&gt;<br />&nbsp;&nbsp;&nbsp;&lt;service behaviorConfiguration=&quot;WcfPortalBehavior&quot; name=&quot;Profiler.Core.Compression.CompressedHost&quot;&gt;<br />&nbsp;&nbsp;&nbsp;&nbsp;&lt;endpoint address=&quot;&quot; binding=&quot;basicHttpBinding&quot; contract=&quot;Csla.Server.Hosts.Silverlight.IWcfPortal&quot; bindingConfiguration=&quot;BasicHttpBinding_IWcfPortal&quot;&gt;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;identity&gt;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;dns value=&quot;localhost&quot;/&gt;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/identity&gt;<br />&nbsp;&nbsp;&nbsp;&nbsp;&lt;/endpoint&gt;<br />&nbsp;&nbsp;&nbsp;&lt;/service&gt;<br />&nbsp;&nbsp;&lt;/services&gt;<br />&nbsp;&lt;/system.serviceModel&gt;</p>
+<p><span style="text-decoration:underline;">WcfPortal.svc:</span></p>
+<p>&nbsp;&lt;% @ServiceHost Service=&quot;Profiler.Core.Compression.CompressedHost&quot; %&gt;</p>
+<p><span style="text-decoration:underline;">ServiceReferences.ClientConfig:</span></p>
+<p>&nbsp;&lt;system.serviceModel&gt;<br />&nbsp;&nbsp;&lt;bindings&gt;<br />&nbsp;&nbsp;&nbsp;&lt;basicHttpBinding&gt;<br />&nbsp;&nbsp;&nbsp;&nbsp;&lt;binding name=&quot;BasicHttpBinding_IWcfPortal&quot; maxBufferSize=&quot;10000000&quot;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; maxReceivedMessageSize=&quot;10000000&quot; receiveTimeout=&quot;00:10:00&quot; sendTimeout=&quot;00:10:00&quot; openTimeout=&quot;00:10:00&quot; closeTimeout=&quot;00:10:00&quot;&gt;<br />&nbsp;&nbsp;&nbsp;&nbsp;&lt;/binding&gt;<br />&nbsp;&nbsp;&nbsp;&lt;/basicHttpBinding&gt;<br />&nbsp;&nbsp;&lt;/bindings&gt;<br />&nbsp;&nbsp;&lt;client&gt;<br />&nbsp;&nbsp;&nbsp;&lt;endpoint address=&quot;<a href="http://localhost:2374/WcfPortal.svc">http://localhost:2374/WcfPortal.svc</a>&quot;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; binding=&quot;basicHttpBinding&quot; bindingConfiguration=&quot;BasicHttpBinding_IWcfPortal&quot;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; contract=&quot;WcfPortal.IWcfPortal&quot; name=&quot;BasicHttpBinding_IWcfPortal&quot; /&gt;<br />&nbsp;&nbsp;&lt;/client&gt;<br />&nbsp;&lt;/system.serviceModel&gt;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>espenrl replied on Friday, January 08, 2010</h2>Great stuff! It was up and running in no time.<br /><br />I'm using signed assemblies in my projects , and thus all referenced assemblies has to be signed. The SharpZipLib assemblies were not, and I had to make signed versions of them. Thought I would share this with you guys. Files attached.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Cyber replied on Thursday, June 10, 2010</h2><p>Hi,</p>
+<p>regarding the section:</p>
+<p><b>Web service project:<br />1. Find &lt;service... section in 
+&lt;system.serviceModel&gt; and change the name to 
+&#39;YourBusinessLibrary.Compression.CompressedHost&#39;.<br />2. Do the same in 
+WcfPortal.svc.</b></p>
+<p>I currently have: </p>
+<p>&nbsp;</p>
+<p>&lt;services&gt;<br />&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &lt;service behaviorConfiguration=&quot;HeavonyLight.Web.HeavonyServiceBehavior&quot; name=&quot;HeavonyLight.Web.HeavonyService&quot;&gt;<br />&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &lt;endpoint address=&quot;&quot; binding=&quot;customBinding&quot; bindingConfiguration=&quot;HeavonyLight.Web.HeavonyService.customBinding0&quot; contract=&quot;HeavonyLight.Web.HeavonyService&quot;/&gt;<br />&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &lt;endpoint address=&quot;mex&quot; binding=&quot;mexHttpBinding&quot; contract=&quot;IMetadataExchange&quot;/&gt;<br />&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &lt;/service&gt;<br />&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &lt;/services&gt;</p>
+<p>I use Silverlight 4.0 and have downloaded the relevant 4.0 samples from the project page. I am 10/10 up till this step. Now I&#39;m stuck.</p>
+<p>Any clues on a likely configuration with this CustomBinding stuff in place?</p>
+<p>Cheers.</p>
+<p>EDIT:</p>
+<p>I went into the test application and ripped out the plumbing from there.</p>
+<p>I&#39;ll let you know how my experience goes, Im guessing I need to read up on how channels work some more :)</p>
+<p>&nbsp;</p>
+<p>Thanks.</p>
+<p>&nbsp;</p>
+<p><b><br /></b></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tiago replied on Thursday, September 30, 2010</h2><p>Hi all,</p>
+<p>I loved the solution, specially how fast everything can be up and running. I admit I didn&#39;t know InventoryDemo uses compression. One point remains to be solved (and not a minor one): the license model.</p>
+<p>The Silverlight&nbsp;version of SharpZipLib referenced is&nbsp;SharpZipLib.dll dated Aug 5 2008 and mentions a copyright by HP(???). There are later versions for Silverlight3, Silverlight4 and WindowsPhone7 dated Aug 14 2010.</p>
+<p>Both SharpZipLib (the .NET version)&nbsp;and SharpZipLib.Silverlight are GPL licensed but both have an exception.</p>
+<p>The former states the exception clearly on their home page <a href="http://www.icsharpcode.net/opensource/sharpziplib/">http://www.icsharpcode.net/opensource/sharpziplib/</a>&nbsp;</p>
+<p>The later uses Codeplex that provides limited licensing functionality. So the same exception can be read on a &quot;Discussions&quot; message <a href="http://slsharpziplib.codeplex.com/Thread/View.aspx?ThreadId=85286">http://slsharpziplib.codeplex.com/Thread/View.aspx?ThreadId=85286</a></p>
+<p><span>The exception is the same on both products and states:</span></p>
+<p><span>// As a special exception, the copyright holders of this library give you</span><br /><span>// permission to link this library with independent modules to produce an</span><br /><span>// executable, regardless of the license terms of these independent</span><br /><span>// modules, and to copy and distribute the resulting executable under</span><br /><span>// terms of your choice, provided that you also meet, for each linked</span><br /><span>// independent module, the terms and conditions of the license of that</span><br /><span>// module.&nbsp; An independent module is a module which is not derived from</span><br /><span>// or based on this library.&nbsp; If you modify this library, you may extend</span><br /><span>// this exception to your version of the library, but you are not</span><br /><span>// obligated to do so.&nbsp; If you do not wish to do so, delete this</span><br /><span>// exception statement from your version</span></p>
+<p><span>So this is kind&#39;a chameleon license. If we distribute/sell a product under CSLA license, we can include this library under the same umbrella and&nbsp;we aren&#39;t obliged to open source the applications that use these libraries.</span></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, September 30, 2010</h2><p>Keep in mind that CSLA has absolutely no dependency on SharpZipLib - we just use it for samples because it is free. If you have issues with that component or its license, there are other (commercial) compression libraries available, and you should be able to use them in place of SharpZipLib in your code with no problem.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jaans replied on Thursday, September 30, 2010</h2><p>I&#39;m not sure how its licensing compares but have a look at DotNetZip library</p>
+<p>We were a bit frustrated with SharpZipLib (assembly size for download to the Silverlight client, and incompatibility with .NET compression, and a few others). After some looking around found DotNetZip library -&nbsp;we adapted the ZLib component and created a .NET and a Silverlight version. We plugged this into CSLA and ripped out SharpZipLib. (Ps: the ZLib component is the core ZLib compression engine only, without extra other fluff like files/archives/etc.)</p>
+<p>The did some extensive testing which showed a twofold improvement that not only reduced the Silverlight DLL size from&nbsp;139Kb to 79Kb, but it also give a smaller and faster compression speed than SharpZipLib did - (about 3-8% in our experience with CSLA Binary business objects). Been using it since.</p>
+<p>I&#39;ve been trying to work with the project owner to get the Silverlight version to be part of his release library, and offered to do the work. We are not there yet but he agreed to it. Since then I have added the Silverlight project to the solution and checked it in, but unfortunately he doesn&#39;t have the VS2010 or the Silverlight tools for VS2008 and not very quick to make changes to the release DLL&#39;s. Also, he keeps the key file for signing the project out of the public source (understandably so). The bottom line is you cannot download a signed Silverlight ZLib DLL from the codeplex project yet, but you can easily build your own (using your own key file). </p>
+<p>Alternatively,&nbsp;I can send you&nbsp;his .NET and my adapted Silverlight ZLib assembly (signed with a randomly generated key file), just let me know.<br /><br />Edit: Here&#39;s the link to the DotNetZip site: <a href="http://dotnetzip.codeplex.com/">http://dotnetzip.codeplex.com/</a></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tiago replied on Friday, October 01, 2010</h2><p>Hi Janns,</p>
+<p>Under the scope of Remoting I&#39;ve done a lot of testing of compression libraries:</p>
+<ul>
+<li>SharpZipLib</li>
+<li>LZF</li>
+<li>QuickLZ</li>
+<li>FastLZ</li>
+</ul>
+<p>SharpZipLib resulted in the best compression but it was so slow that the complete transmission time (start of compression - transmission - end of decompression) wasn&#39;t good at all. Of course this also depends on the transmission bandwidth; the slower the media, the more important the compression ratio is.</p>
+<p>The .NET library itself was rule out as a single test was enough to prove it suffers from a very well known problem at least since MNP5/v.42bis modems (<strong>MNP5</strong> compression&nbsp;processes ZIP files but the resulting file is larger than the original; V.42bis solved that problem). But this &quot;inflate on compression&quot; problem was fixed in .NET 4.0</p>
+<p><a href="http://msdn.microsoft.com/en-us/library/ms171868(v=VS.100).aspx">http://msdn.microsoft.com/en-us/library/ms171868(v=VS.100).aspx</a></p>
+<p>&quot;The compression algorithms for the System.IO.Compression.DeflateStream and System.IO.Compression.GZipStream classes have improved so that data that is already compressed is no longer inflated.&quot;</p>
+<p>So this is now a serious alternative to SharpZipLib.</p>
+<p>In the mean time, your solution is the one that is working.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

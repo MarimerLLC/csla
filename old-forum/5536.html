@@ -1,0 +1,106 @@
+<html><header><title>DataPortal switch?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>DataPortal switch?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5536.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>ixman posted on Monday, October 06, 2008</h2><P class=MsoNormal>Hi,</P>
+<P class=MsoNormal>Does anyone know if would be possible to switch the DataPortal inside the application? What I mean is that I have an offline smart client that uses the local DataPortal to load the BOs from a local SQL Express DB. The data is downloaded from a remote server using Sync Framework. Unfortunately, I also have to do some updates on the remote server and I don’t want to put in the local app config a connectionstring to point to the remote SQL Server for the update. All I want is a magic “switch” to change the DataPortal from local to WCF for example to call my BO that will update the remote data store. Any ideas?</P>
+<P class=MsoNormal>&nbsp;</P>
+<P class=MsoNormal>Kind regards,</P>
+<P class=MsoNormal>George B</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Monday, October 06, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Proper solution would be a custom proxy / portal.&nbsp; If you
+want a quick and dirty way, you can write to configuration managers settings as
+in:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>ConfigurationManager</span><span>.AppSettings[<span>&quot;CslaDataPortalProxy&quot;</span>]
+= &#8220;Local&#8221; or<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>ConfigurationManager</span><span>.AppSettings[<span>&quot;CslaDataPortalProxy&quot;</span>]
+= &quot;</span> <span>Csla.DataPortalClient.WcfProxy,
+Csla&quot;</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Make sure you will never save the settings though.&nbsp; The
+code above will only write settings to memory for duration of current session/application.&nbsp;
+You have to be aware that this code will not be thread safe, so if you have
+multi-threaded app, this will now work properly.&nbsp; Also, at some point framework
+use to cache proxy type, but I am not sure when this behavior changed.&nbsp; I
+know, it will work in 3.6 though.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899<o:p></o:p></span></p>
+
+<p class=MsoNormal><b><i><span>Magenic</span></i></b><span> </span><span>&reg;</span><b><i><span><o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> ixman
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Monday, October 06, 2008 9:05 AM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> [CSLA .NET] DataPortal switch?<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Hi,<o:p></o:p></p>
+
+<p class=MsoNormal>Does
+anyone know if would be possible to switch the DataPortal inside the
+application? What I mean is that I have an offline smart client that uses the
+local DataPortal to load the BOs from a local SQL Express DB. The data is downloaded
+from a remote server using Sync Framework. Unfortunately, I also have to do
+some updates on the remote server and I don???t want to put in the local app
+config a connectionstring to point to the remote SQL Server for the update. All
+I want is a magic ???switch??? to change the DataPortal from local to WCF for
+example to call my BO that will update the remote data store. Any ideas?<o:p></o:p></p>
+
+<p class=MsoNormal>&nbsp;<o:p></o:p></p>
+
+<p class=MsoNormal>Kind
+regards,<o:p></o:p></p>
+
+<p class=MsoNormal>George
+B<o:p></o:p></p>
+
+<p>&nbsp;<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ixman replied on Monday, October 06, 2008</h2><P>Thanks,</P>
+<P>I'll go with a custom DataPortal Proxy...</P>
+<P>GB</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,115 @@
+<html><header><title>How to Configure for TransactionScope</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>How to Configure for TransactionScope</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/1076.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>William posted on Wednesday, August 30, 2006</h2><P>I am using TransactionalTypes.TransactionScope for my DataPortal_XXX methods.</P>
+<P>My business objects and Data Portal run on the same web server&nbsp;and access SQL Server database on another machine. What I attempt to save the object, which involves distributed transaction, it throws me the following error.</P>
+<P><FONT face="Courier New" size=2>Csla.DataPortalException : DataPortal.Update failed<BR>Csla.Server.CallMethodException : DataPortal_Insert method call failed<BR>System.Transactions.TransactionManagerCommunicationException : Network access for Distributed Transaction Manager (MSDTC) has been disabled. Please enable DTC for network access in the security configuration for MSDTC using the Component Services Administrative tool.<BR>System.Runtime.InteropServices.COMException : The transaction manager has disabled its support for remote/network transactions. (Exception from HRESULT: 0x8004D024)</FONT></P>
+<P>How should I configure the server or MSDTC to resolve this?</P>
+<P>Regards,<BR>William</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, August 30, 2006</h2>There's a <a href="http://www.microsoft.com/technet/prodtechnol/winxppro/maintain/sp2otech.mspx#E2KAC">Microsoft article</a> on this. The issue appeared with XP SP2, because they tightened security and turned off the DTC by default.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>William replied on Wednesday, August 30, 2006</h2><P>Thanks Rocky. I will try out the configuration outlined in the MS article.</P>
+<P>Regards,<BR>William</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jasmeet replied on Thursday, January 25, 2007</h2><P>Hi Rocky,</P>
+<P>I have recently started using your framework and am still learning my way around.</P>
+<P>I am also using TransactionScope but both my application and the SQL server reside on the same machine.</P>
+<P>I have a parent object with a collection of child objects. In the INSERT on the parent - the sql connection works fine&nbsp;but as soon as it goes to the child update and tries&nbsp;to open a connection, I get the same error as above.</P>
+<P>Need some help as to figure out where I am going wrong.</P>
+<P>Thanks</P>
+<P>Jas</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Thursday, January 25, 2007</h2>Change the code so that only one connection is opened.<br><br>As soon as you open a second connection, even if you use the same connection string, TS promotes the transaction to a distributed transaction.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jasmeet replied on Thursday, January 25, 2007</h2><P>Thanks !</P>
+<P>Had tried that and it worked. Your reply just confirmed that I did&nbsp;right. ~smile~</P>
+<P>&nbsp;</P>
+<P>Jas</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>skaue replied on Wednesday, February 06, 2008</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div>There's a <a href="http://www.microsoft.com/technet/prodtechnol/winxppro/maintain/sp2otech.mspx#E2KAC">Microsoft article</a> on this. The issue appeared with XP SP2, because they tightened security and turned off the DTC by default.<br></div></BLOCKQUOTE><br><br>Article is gone. Any idea where too?<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Bowman74 replied on Wednesday, February 06, 2008</h2><P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>skaue:</strong></div><div><BR><BR>Article is gone. Any idea where too?<BR></div></BLOCKQUOTE></P>
+<P>If you google the DTCTest and DTCPing tools you should be able to get what you need.</P>
+<P>Thanks,</P>
+<P>Kevin</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>andrewem replied on Friday, May 09, 2008</h2><P>Has anyone found a solution to this problem?</P>
+<P>I too am getting the exception:</P>
+<BLOCKQUOTE dir=ltr>
+<P>Network access for Distributed Transaction Manager (MSDTC) has been disabled. Please enable DTC for network access in the security configuration for MSDTC using the Component Services Administrative tool.</P></BLOCKQUOTE>
+<P>I have looked on the Internet and at the article above, nothing is working. I am using a local client Windows XP SP2 connecting across the network to a SQL 2005 database on a Windows 2003 server (standard edition).</P>
+<P>Appreciated.</P>
+<P>A</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Friday, May 09, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Is this the article you followed?<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><a href="http://blogs.msdn.com/florinlazar/archive/2003/12/04/enable-network-dtc-access-in-windows-server-2003.aspx">http://blogs.msdn.com/florinlazar/archive/2003/12/04/enable-network-dtc-access-in-windows-server-2003.aspx</a><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Senior Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img border=0 width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> andrewem
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Friday, May 09, 2008 10:46 AM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] How to Configure for TransactionScope<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Has anyone found a solution to this problem?<o:p></o:p></p>
+
+<p>I too am getting the exception:<o:p></o:p></p>
+
+<blockquote>
+
+<p>Network access for Distributed Transaction Manager (MSDTC) has been
+disabled. Please enable DTC for network access in the security configuration
+for MSDTC using the Component Services Administrative tool.<o:p></o:p></p>
+
+</blockquote>
+
+<p>I have looked on the Internet and at the article above, nothing is working.
+I am using a local client Windows XP SP2 connecting across the network to a SQL
+2005 database on a Windows 2003 server (standard edition).<o:p></o:p></p>
+
+<p>Appreciated.<o:p></o:p></p>
+
+<p>A<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>smiley riley replied on Monday, May 12, 2008</h2><P>Try looking up enabling XA transactions or network DTC transactions one of those anyway.</P>
+<P>Ensure MSDTC is running</P>
+<P>&nbsp;</P>
+<P>this is a guess. Admin Tools&gt;Component Services&gt;My Computer/properties&gt;MSDTC(Tab) </P>
+<P>its there somewhere.Probably best to search rather than guess tho.</P>
+<P>Paul</P>
+<P>&nbsp;</P>
+<P>PS Ensure the remote computer is setup as well. People tend to forget that one.</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,190 @@
+<html><header><title>BusinessBase.PropertyHasChanged calling ValidationRules.CheckRules in Version 2.1.1</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>BusinessBase.PropertyHasChanged calling ValidationRules.CheckRules in Version 2.1.1</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/1835.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jimbo posted on Monday, November 27, 2006</h2>I am having a problem getting the call to ValidationRules.CheckRules in PropertyHasChanged() or PropertyHasChanged(propertyName) to work. - for either Instance rules or Type rules ( inc Common Rules)<br>The only way i can get a result is to call ValidationRules.CheckRules() or ValidationRules.CheckRules(propertyName) directly in my property setters..<br><br>Note I have tried setting NoInlining on/off with no difference.<br><br>Any Ideas ? <br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sam replied on Tuesday, November 28, 2006</h2><P>Hi,</P>
+<P>Please clarify yours problem.</P>
+<P>Sam</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jimbo replied on Wednesday, November 29, 2006</h2>Hi Sam<br>
+<br>
+To outline the position a bit :<br>
+<br>
+We have am EditableRoot Business class with regular property setters as in the standard template like:<br>
+<br>
+#Region " Business Methods "<br>
+<br>
+Private mId1 As Integer<br>
+Private mId2 As Integer<br>
+<br>
+&nbsp; Public Property Id1() As Integer<br>
+&nbsp;&nbsp;&nbsp; Get<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; CanReadProperty(True)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return mId1<br>
+&nbsp;&nbsp;&nbsp; End Get<br>
+&nbsp;&nbsp;&nbsp; Set(ByVal value As Integer)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; CanWriteProperty(True)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; If mId1 &lt;&gt; value Then<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; mId1 = value<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; PropertyHasChanged("Id")<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End If<br>
+&nbsp;&nbsp;&nbsp; End Set<br>
+&nbsp; End Property<br>
+<br>
+Public Property Id2() As Integer<br>
+&nbsp;&nbsp;&nbsp; Get<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; CanReadProperty(True)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return mId2<br>
+&nbsp;&nbsp;&nbsp; End Get<br>
+&nbsp;&nbsp;&nbsp; Set(ByVal value As Integer)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; CanWriteProperty(True)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; If mId2 &lt;&gt; value Then<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; mId2 = value<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; PropertyHasChanged("mId2")<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End If<br>
+&nbsp;&nbsp;&nbsp; End Set<br>
+&nbsp; End Property<br>
+<br>
+'/ other Read/Write properties here<br>
+<br>
+Public ReadOnly Property uid As String<br>
+&nbsp;&nbsp;&nbsp; Get<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return Right("000000" &amp; mId1,6) &amp; Right("000000" &amp; mId2,6)<br>
+&nbsp;&nbsp;&nbsp; End Get<br>
+End Property<br>
+<br>
+&nbsp; Protected Overrides Function GetIdValue() As Object<br>
+&nbsp;&nbsp;&nbsp; Return uid<br>
+&nbsp; End Function<br>
+<br>
+#End Region<br>
+<br>
+We are using "Windows" authorization.<br>
+There are no Auth restrictions on Read/Write/object.<br>
+The uid defines a composite primary key.<br>
+Both Id1 and Id2 start with an initial value of zero.<br>
+The Class is Bound dynamically to the form BindingSource <br>
+The form controls are in turn Databound dynamically to the BindingSource - standard stuff<br>
+<br>
+AddBusinessInstanceRules: <br>
+&nbsp;Instance rules have been added for many properties including Id1
+and Id2 using Common Rules and custom rule delegate functions.<br>
+<br>
+ValidationRules.CheckRules:<br>
+In the Create method we call ValidationRules.CheckRules() directly ( as in the book)<br>
+This will also be called in the Save method after rebinding.<br>
+<br>
+In both cases the calls work and the validation rules are invoked correctly.<br>
+<br>
+note: We are not using the csla DataPortal or passing mobile objects. <br>
+ie: we are using generic datatables and parameterized ADO.Net data access methods.<br>
+The application talks to an existing com+ app server through a tcp remoting Service or IIS/Soap.<br>
+.......................................................................................<br>
+<br>
+The Problem:<br>
+<br>
+As you know, calls to BusinessBase.PropertyHasChanged("propertyName")
+or BusinessBase.PropertyHasChanged() from a property setter will in
+turn call ValidationRules.CheckRules("properyName") or
+ValidationRules.CheckRules().<br>
+<br>
+If you step through the code in debug mode it is apparent that the correct rules list is found.<br>
+However the rule methods themselves do not get invoked.<br>
+<br>
+Note the invocation of the rule delegates happens fine when
+ValidationRules.CheckRules("properyName") or
+ValidationRules.CheckRules() is called directly from&nbsp; anywhere in
+the business class, for example, in the property setters just before
+calling <br>
+PropertyHasChanged("propertyName")<br>
+<br>
+With reference to the recent discussion points on Inlining, we have
+tried setting this attribute option&nbsp; on the property getters and
+setters&nbsp; but with the same result.<br>
+<br>
+Regards<br>
+Jimbo<br>
+<br>
+<br>
+<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>david.wendelken replied on Wednesday, November 29, 2006</h2><P>Have you tried this in front of each getter and setter?</P>
+<P>&nbsp;</P><FONT size=2>
+<P>[System.Runtime.CompilerServices.</FONT><FONT color=#008080 size=2>MethodImpl</FONT><FONT size=2>(System.Runtime.CompilerServices.</FONT><FONT color=#008080 size=2>MethodImplOptions</FONT><FONT size=2>.NoInlining)]</P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jimbo replied on Wednesday, November 29, 2006</h2>Thanks but Yes , as i said in my last paragraph, the attribute setting has been tried according to Rocky's posts.<br>
+
+btw it would be better if you can set this as a global compiler
+directive rather than having to remember to add it in every getter and
+setter.<br>
+
+<br>
+
+jimbo</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jimbo replied on Wednesday, January 03, 2007</h2>Sorry to have to&nbsp; resurrect this issue guys, but its
+important.&nbsp; 100000 lines of vb6 - com+ enterprise legacy code
+migrating&nbsp; to .net 2 and system.transactions.&nbsp; The Csla
+framework has done wonders for removing the&nbsp; form-in-charge
+spagetti and smoothly dealing with binding etc,. but this issue with
+the base classes still prevails.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Brian Criswell replied on Wednesday, January 03, 2007</h2>Could you post your override of the AddRules method for the above object?&nbsp; Also, it probably is nothing but the PropertyHasChanged call should be for "Id2" not "mId2".<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jimbo replied on Wednesday, January 03, 2007</h2>Thanks Brian,<br>
+please treat the example code as pseudo - there are some symantical errors (posted off the top of the head at the time). <br>
+The core of the problem however is that the call to
+PropertyhasChanged() in the property setters does not seem to invoke
+ValidationRules.CheckRules() as expected. And,&nbsp; (not illustrated
+in the original code) it is necessary to add an explicit call to
+ValidationRules.CheckRules() or
+ValidationRules.CheckRules("PropertyName") in every property setter to
+ensure that it happens.<br>
+<br>
+Its been a few weeks since my original post and maybe i need to revisit
+- but so far as my my co-developers have observed, the problem still
+exists.<br>
+<br>
+<br>
+<br>
+<br>
+.<br>
+<br>
+<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, January 03, 2007</h2><P>I would recommend setting a breakpoint at the call to PropertyHasChanged() and walking through the code in the debugger to find out why the call isn't working. There aren't conditionals in that method, so CheckRules() must be called - but perhaps there's some other issue&nbsp;that is causing it to not check the rules for your property or something like that.</P>
+<P>Also note that if you are using the string literal overload of PropertyHasChanged() like you show in your pseudocode, then you don't need the NoInlining attribute on the property get/set. That attribute is only required if you are NOT specifying the property name explicitly for CanReadProperty(), CanWriteProperty() and PropertyHasChanged().</P>
+<P>Finally, remember that the cross-reference process for rules is ultimately string based. So you MUST ensure that the property name used in AddRules() is the same as the one for PropertyHasChanged() - including case - or the ultimate call to CheckRules() will simply not find any rules to process.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>mr_lasseter replied on Wednesday, January 03, 2007</h2><P>&nbsp; Public Property Id1() As Integer<BR>&nbsp;&nbsp;&nbsp; Get<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; CanReadProperty(True)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return mId1<BR>&nbsp;&nbsp;&nbsp; End Get<BR>&nbsp;&nbsp;&nbsp; Set(ByVal value As Integer)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; CanWriteProperty(True)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; If mId1 &lt;&gt; value Then<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; mId1 = value<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; PropertyHasChanged("Id")<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End If<BR>&nbsp;&nbsp;&nbsp; End Set<BR>&nbsp; End Property<BR><BR>Public Property Id2() As Integer<BR>&nbsp;&nbsp;&nbsp; Get<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; CanReadProperty(True)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return mId2<BR>&nbsp;&nbsp;&nbsp; End Get<BR>&nbsp;&nbsp;&nbsp; Set(ByVal value As Integer)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; CanWriteProperty(True)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; If mId2 &lt;&gt; value Then<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; mId2 = value<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; PropertyHasChanged("mId2")<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End If<BR>&nbsp;&nbsp;&nbsp; End Set<BR>&nbsp; End Property</P>
+<P>&nbsp;</P>
+<P>Should be PropertyHasChanged("Id1") and PropertyHasChanged("Id2")<BR></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jimbo replied on Thursday, January 04, 2007</h2>Mr Lasseter, <br>
+I agree with your observation , the literal stings in the example
+pseudo code are incorrect . So I should fix this and post REAL code (
+tomorrow), so that we dont spend time on side issues.<br>
+<br>
+With respect to Rocky's advice, I believe we have adhered to the
+correct aspect of property names in the case of string literals.
+And&nbsp; in other cases tried the reflection route to no avail.<br>
+<br>
+Calling ValidationRules.CheckRules() or
+ValidationRules.CheckRules("propertyname") explicitly - ALWAYS works.
+But not when you walk through PropertyHasChanged() ...&nbsp; the
+framework finds the rules collection ok, but then fails to invoke the
+delegate, be it Type or Instance rules.<br>
+<br>
+One aspect of Rocky's comments may or may not be pertinent::<br>
+he mentions the use of CanReadProperty and CanWriteProperty.&nbsp; In
+all cases we are assuming the default authorizaton to be TRUE, as
+custom authorization on individual properties is not implemented.. One
+would think that the framework is not a user in that sense and these
+redundant calls should have no affect..<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, January 04, 2007</h2><P>Let me reiterate my suggestion: walk through your code in the debugger to see what is happening.</P>
+<P>Only two people before has had this issue, and the problem turned out to be an exception that was thrown in their code.</P>
+<P>The first had the exception&nbsp;before PropertyHasChanged() was called. Data binding silently ate that exception and of course PropertyHasChanged() was never called at all.</P>
+<P>The second had a bug in their first rule method so it threw an exception, aborting all further rule processing.</P>
+<P>Because data binding can hide exceptions, you can only debug this stuff using either the debugger or unit tests (like with nunit) so the properties are set from other code, not through data binding.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jimbo replied on Wednesday, January 17, 2007</h2>Rocky,<br>
+I think this issue is closed.<br>
+Thanks for the wise words.&nbsp; One really has to be diligent with string literals etc.<br>
+Interesting that the process was repaired some time before i realized,
+as I still had redundant&nbsp;
+ValidationRules.CheckRules("propertyName") calls in every property.
+Also there were potential case issues between the use of property names
+ending in Id vs ID.&nbsp; I dont know what the real solution was, but I
+suspect it was the refinement of the construction of the
+&lt;DataObjectField&gt; uid property for the composite primary
+key.&nbsp; In later classes I am dealing successfully with databinding
+with up to 5 concatinated fields.<br>
+<br>
+jimbo<br>
+<br>
+<br>
+<br>
+<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

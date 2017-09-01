@@ -1,0 +1,20 @@
+<html><header><title>Custom Rules library</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Custom Rules library</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3277.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Wal972 posted on Friday, July 27, 2007</h2><P>I use the date check start &lt; end heaps in my code. I am trying to extract it, but each times it fails.</P>
+<P>i have my code </P><FONT color=#0000ff size=2>
+<P>Namespace</FONT><FONT size=2> RulesCheck</P>
+<P></FONT><FONT color=#0000ff size=2>Public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Class</FONT><FONT size=2> Common</P>
+<P></FONT><FONT color=#0000ff size=2>Public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Function</FONT><FONT size=2> StartGTEnd(</FONT><FONT color=#0000ff size=2>ByVal</FONT><FONT size=2> target </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> IDatesCheck, </FONT><FONT color=#0000ff size=2>ByVal</FONT><FONT size=2> e </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> RuleArgs) </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Boolean</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>If</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>CDate</FONT><FONT size=2>(target.Starting) &gt; </FONT><FONT color=#0000ff size=2>CDate</FONT><FONT size=2>(target.Ending) </FONT><FONT color=#0000ff size=2>Then</P></FONT><FONT size=2>
+<P>e.Description = </FONT><FONT color=#800000 size=2>"Start Date can't be after the end date"</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Return</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>False</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Else</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Return</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>True</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>If</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Function</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Class</P>
+<P>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Namespace</FONT></P>
+<P><FONT color=#0000ff size=2><FONT color=#000000>But when I use the addrule method it doesn't work. </FONT></FONT></P>
+<P><FONT color=#0000ff size=2><FONT color=#000000>Help</FONT></FONT></P>
+<P><FONT color=#0000ff size=2>Thanks</FONT></P>
+<P><FONT color=#0000ff size=2>Ellie</P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonStonecash replied on Friday, July 27, 2007</h2>I believe that the StartGTEnd method should be a shared method.&nbsp; The problem is that there is no instance of the common class upon which to invoke the method.&nbsp; A shared method gets around that problem.<br><br>Jon Stonecash<br><br><p><font color="#0000ff" size="2">Public</font><font size="2"> </font><font color="#0000ff" size="2">Class</font><font size="2"> Common</font></p>
+<p><font color="#0000ff" size="2">Public</font><font size="2"> </font><font color="#0000ff" size="2">Function</font><font size="2"> StartGTEnd(</font><font color="#0000ff" size="2">ByVal</font><font size="2"> target </font><font color="#0000ff" size="2">As</font><font size="2"> IDatesCheck, </font><font color="#0000ff" size="2">ByVal</font><font size="2"> e </font><font color="#0000ff" size="2">As</font><font size="2"> RuleArgs) </font><font color="#0000ff" size="2">As</font><font size="2"> </font><font color="#0000ff" size="2">Boolean</font></p><font size="2">
+</font><br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

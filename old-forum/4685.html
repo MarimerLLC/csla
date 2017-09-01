@@ -1,0 +1,146 @@
+<html><header><title>CancelEdit causes Listbox scrolling?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CancelEdit causes Listbox scrolling?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4685.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>ErikPhilips posted on Sunday, April 13, 2008</h2><P>I must be going crazy.&nbsp; Scroll down to the bottom object, then select any object, the listbox will always scroll up so the selected item is at the bottom of the visible list.&nbsp; Occurs on the CancelEdit.</P><PRE>
+using System;
+using System.Windows.Forms;
+using Csla;
+using Csla.Core;
+
+namespace WindowsFormsApplication1
+{
+   public partial class Form1: Form
+   {
+      public Form1()
+      {
+         InitializeComponent();
+      }
+
+      BusinessBase _currentItem = null;
+      BindingSource _bindingSource = new BindingSource();
+      People people = new People();
+      private void Form1_Load(object sender, EventArgs e)
+      {
+         Height = 400;
+         Width = 600;
+
+         ListBox listbox1 = new ListBox();
+         listbox1.Width = 500;
+         listbox1.Height = 300;
+         listbox1.Top = 50;
+         listbox1.Left = 50;
+         Controls.Add(listbox1);
+
+         for ( int i = 0; i &lt; 50; i++ )
+         {
+            Person person = new Person();
+            person.Name = "Test" + i.ToString();
+            people.Add(person);
+         }
+
+         _bindingSource.CurrentChanged += new EventHandler(bs_CurrentChanged);
+         _bindingSource.DataSource = people;
+         listbox1.DataSource = _bindingSource;
+      }
+
+      void bs_CurrentChanged(object sender, EventArgs e)
+      {
+         if ( _currentItem != null )
+            _currentItem.CancelEdit();
+         _currentItem = (BusinessBase) _bindingSource.Current;
+         _currentItem.BeginEdit();
+      }
+   }
+
+   public class People: BusinessListBase
+   {
+   }
+
+   public class Person: BusinessBase
+   {
+      private string _name;
+      public string Name
+      {
+         get
+         {
+            return _name;
+         }
+         set
+         {
+            _name = value;
+         }
+      }
+      public override string ToString()
+      {
+         return _name;
+      }
+   }
+}
+</PRE></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ErikPhilips replied on Monday, April 14, 2008</h2><P>Is anyone using BeginEdit without attaching it to an "Edit" button?&nbsp; My thought process is that if the position is changing on the BindingSource (CurrentChanged), to Cancel any edits if not dirty&nbsp;(and if dirty I have a popup in my real code) on the original current item, and do a BeginEdit on the new current item.&nbsp; So far my users hate hitting and edit button and automatically.&nbsp; The new process works but for whatever reason the listbox selection changes and I'm not sure why.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Monday, April 14, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I use BeginEdit without edit button.&nbsp; I think, you will
+need to unbind and rebind your controls.&nbsp; On a few occasions I added code
+to Cancel to remember what item was highlighted and then selected the same item
+after cancel and re-bind (if available &#8211; it could have been new item)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Senior Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> ErikPhilips
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Monday, April 14, 2008 2:28 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] CancelEdit causes Listbox scrolling?<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Is anyone using BeginEdit without attaching it to an &quot;Edit&quot;
+button?&nbsp; My thought process is that if the position is changing on the
+BindingSource (CurrentChanged), to Cancel any edits if not dirty&nbsp;(and if
+dirty I have a popup in my real code) on the original current item, and do a
+BeginEdit on the new current item.&nbsp; So far my users hate hitting and edit
+button and automatically.&nbsp; The new process works but for whatever reason the
+listbox selection changes and I'm not sure why.<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tetranz replied on Monday, April 14, 2008</h2>Hi Erik,<br><br>I tried your little test program. It's happening because the bindingSource fires it's ListChanged event with a ListChangedType of Reset. I think it's relaying the event from People. That tells the ListBox to reload the list. I think it effectively goes to the top but remembers it's value and then scrolls down just far enough for it to be visible.<br>&nbsp;<br>A solution seems to be to set _bindingSource.RaiseListChangedEvents to false during the CancelEdit. I didn't quite understand it all when I had a quick play with breakpoints. It seemed like the BeginEdit was also firing ListChanged but that wasn't affecting the ListBox. There may be more to it.<br><br>Ross<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ErikPhilips replied on Monday, April 14, 2008</h2><P>&nbsp;</P>
+<P>That's a fantastic solution as far as I can see.&nbsp; I went through all the events of the listbox but apparently wasn't thorough enough.&nbsp; Thanks a lot! <img src="/emoticons/emotion-1.gif" alt="Smile [:)]" /></P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,56 @@
+<html><header><title>Business Rules in Silverlight</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Business Rules in Silverlight</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9661.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Smith866 posted on Thursday, October 21, 2010</h2><p>Hi,</p>
+<p>I am using CSLA 4 and Silverlight 4.&nbsp; I have an object graph with the following structure: Root - ChildList - Child.&nbsp; There is a business rule on my root object that needs to add a new child object to the child list.&nbsp; The problem I have is that ChildList.AddNew has different implementations on SL and .NET.&nbsp; In .NET I can just call AddNew and it will synchronously return my new object.&nbsp; The SL implementation just returns void and adds the new object to the collection asynchronously.&nbsp; </p>
+<p>Does this mean that any rule that adds something to a collection MUST be async?&nbsp; If so, what is the best way to wire up the event handler to the CollectionChanged event on the collection?&nbsp; If I do it in the rule, then an additional handler gets wired up every time the rule runs.</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>emadalsous replied on Thursday, October 21, 2010</h2><p>Hi, when calling AddNew from Sl client , it doesnt return object .</p>
+<p>as i think in SL client if you want to catch the added object for some reason you have to use the (( AddedNew (event))) </p>
+<p>when evert you rule being call in the Execute method you have to do the following code :</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"><font face="Consolas" size="2"><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></font></span><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></span></p>
+<p>&nbsp;</p>
+<p><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">protected</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> </span></span><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">override</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> </span></span><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">void</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> Execute(Csla.Rules.</span></span><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;">RuleContext </span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">context)
+<p>{</p>
+<font face="Consolas" size="2"><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></font></span><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></span></p>
+<p>&nbsp;</p>
+<p><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">var</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> target = (Root</span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">)context.Target;</span></span></p>
+<p>target.YourChildListProperty.AddedNew-=YourCatchMethod_AddedNew;</p>
+<p>&nbsp;</p>
+<p>target.YourChildProperty.AddedNew+=<span style="font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;"><span style="font-family:Consolas;color:#0000ff;"><span style="font-family:Consolas;color:#0000ff;">new</span></span></span><span style="font-family:Consolas;"><span style="font-family:Consolas;"> </span></span><span style="font-family:Consolas;color:#2b91af;"><span style="font-family:Consolas;color:#2b91af;"><span style="font-family:Consolas;color:#2b91af;">EventHandler</span></span></span><span style="font-family:Consolas;"><span style="font-family:Consolas;">&lt;Csla.Core.</span></span><span style="font-family:Consolas;color:#2b91af;"><span style="font-family:Consolas;color:#2b91af;"><span style="font-family:Consolas;color:#2b91af;">AddedNewEventArgs</span></span></span><span style="font-family:Consolas;"><span style="font-family:Consolas;">&lt;</span></span><span style="font-family:Consolas;color:#2b91af;"><span style="font-family:Consolas;color:#2b91af;"><span style="font-family:Consolas;color:#2b91af;">ChildList</span></span></span><span style="font-family:Consolas;"><span style="font-family:Consolas;">&gt;&gt;(<span style="font-family:Arial;">YourCatchMethod_AddedNew</span>);</span></span></span></p>
+<p><span style="font-size:x-small;"><span style="font-family:Consolas;"><span style="font-family:Consolas;">}</span></span></span></p>
+<p><span style="font-family:Consolas;"><span style="font-family:Consolas;"><span style="font-size:x-small;">the <span style="font-family:Arial;">YourCatchMethod_AddedNew will contain parameter e if you want to catch the added new object .</span></span></span></span></p>
+<p><span style="font-family:Consolas;"><span style="font-family:Consolas;"><span style="font-family:Arial;font-size:x-small;"></span></span></span></p>
+<p><span style="font-family:Consolas;"><span style="font-family:Consolas;"><span style="font-family:Arial;font-size:x-small;">Notice the reason why you use (
+<p>target.YourChildListProperty.AddedNew-=YourCatchMethod_AddedNew;) before the +=</p>
+<p>because when your rule called more than once the method will be call two time or three ......</p>
+<p>ihope this is what you were looking for </p>
+</span></span></span></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>cmellon replied on Friday, October 22, 2010</h2><p>I had a similar problem to what you describe, but not with a business rule, I needed to add an object synchronously.</p>
+<p>The way I solved it was to instantiate a new child object and then add it to the collection using the .add routine passing in the object I just created, thats the only way I could think of doing it.</p>
+<p>Dim oNote as Note = New Note</p>
+<p>NoteCollection.Add(oNote)</p>
+<p>Dont know if that can help you or not?</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, October 22, 2010</h2><p>AddNew on Silverlight has to be (potentially) async, because it is likely that you&#39;ll use the data portal to create the new child, and of course the data portal is async.</p>
+<p>Of course AddNew is really there to support data binding scenarios, mostly around adding items to a datagrid or other UI list control. If you are adding items purely through code there&#39;s certainly no requirement to use AddNew and Craig&#39;s suggestion is a good one.</p>
+<p>The only drawback to Craig&#39;s suggestion is that it doesn&#39;t use the data portal, which means you won&#39;t get some automatic behaviors like making your new object run its rules on creation, and of course you have no way to initialize the object with default values like you do when using the data portal&#39;s BeginCreate method.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Friday, October 22, 2010</h2><p>The technique I use for this scenario is as follows:</p>
+<p>In list add method</p>
+<p>Public MyListItem AddNewMyListItem()</p>
+<p>{</p>
+<p>&nbsp; MyListItem newItem = MyListItem.NewMyListItem();</p>
+<p>&nbsp; this.Add(newItem);</p>
+<p>&nbsp; OnAddedNew(newItem);</p>
+<p>&nbsp; return newItem;</p>
+<p>}</p>
+<p>&nbsp;</p>
+<p>In your child class&#39;s factory method (NewMyListItem)&nbsp;you can call return DataPortal.CreateChild&lt;NewMyListItem&gt;(), so you can follow the same factory patter there.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Smith866 replied on Friday, October 22, 2010</h2><p>Thanks everybody for the ideas!&nbsp; I got the rule working by adding a new factory method to my child item object.&nbsp; I didn&#39;t use the constructor as my .NET constructors are private (my understanding was that the only reason for a public constructor was for SL serialization?)&nbsp; In any case, the factory method works fine in both&nbsp;SL and .NET.</p>
+<p>I still have a few issues with the async rule:</p>
+<p>1 - I cannot get the AddedNew event to fire, only the CollectionChanged event.&nbsp; Is this because I have to&nbsp;fire it myself (as in Sergey&#39;s example)?</p>
+<p>2 - How can I pass (or access) the RuleContext in my event handler?&nbsp; I need to be able to call context.Complete() otherwise my property will stay in the busy state indefinitely....my rule will never finish.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, October 22, 2010</h2><p>Yes, your AddNew implementation <i>must call OnAddedNew</i> to indicate that the async (or sync) process is complete.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,209 @@
+<html><header><title>Error thrown in Copystate method Version 3.5</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Error thrown in Copystate method Version 3.5</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4711.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>OpticTygre posted on Friday, April 18, 2008</h2><P>Created a business object and an error gets thrown when trying to set the datasource of a BindingSource to my object.&nbsp; The error is thrown in the CopyState method of the CSLA where it tries to serialize the state of the object.<BR><BR>Error is:<BR><BR>Type 'Csla.PropertyInfo`1[[System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]' in Assembly 'Csla, Version=3.5.0.0, Culture=neutral, PublicKeyToken=93be5fdc093e4c30' is not marked as serializable.<BR><BR>All my classes are marked as serializable, so I'm not sure what's going on here.<BR><BR>-Jason</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Friday, April 18, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>It is trying to serialize PropertyInfo class.&nbsp; Could you
+include the code in your class? &nbsp;That would make it easier to answer&#8230;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Senior Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> OpticTygre
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Friday, April 18, 2008 2:45 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> [CSLA .NET] Error thrown in Copystate method Version 3.5<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Created a business object and an error gets thrown when trying to set the
+datasource of a BindingSource to my object.&nbsp; The error is thrown in the
+CopyState method of the CSLA where it tries to serialize the state of the
+object.<br>
+<br>
+Error is:<br>
+<br>
+Type 'Csla.PropertyInfo`1[[System.Boolean, mscorlib, Version=2.0.0.0,
+Culture=neutral, PublicKeyToken=b77a5c561934e089]]' in Assembly 'Csla,
+Version=3.5.0.0, Culture=neutral, PublicKeyToken=93be5fdc093e4c30' is not
+marked as serializable.<br>
+<br>
+All my classes are marked as serializable, so I'm not sure what's going on
+here.<br>
+<br>
+-Jason<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>OpticTygre replied on Friday, April 18, 2008</h2><P>That's a little difficult to do, as the inheritance chain makes the code a bit complicated.&nbsp; I have some PropertyInfo objects declared as Private, and some as Public (to be able to access the friendly name).&nbsp; The objects themselves are very simple, following exactly the style used in the PTTracker library.&nbsp; Example:<BR><BR><FONT size=2></P>
+<P>&lt;Serializable()&gt; _</P>
+<P></FONT><FONT color=#0000ff size=2>Public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Class</FONT><FONT size=2> CommandFile</P>
+<P></FONT><FONT color=#0000ff size=2>Inherits</FONT><FONT size=2> CommandBase(</FONT><FONT color=#0000ff size=2>Of</FONT><FONT size=2> CommandFile)</P></FONT><FONT color=#0000ff size=2>
+<P>#Region</FONT><FONT size=2> </FONT><FONT color=#a31515 size=2>" Business Methods "</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Private</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Shared</FONT><FONT size=2> IDProperty </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> PropertyInfo(</FONT><FONT color=#0000ff size=2>Of</FONT><FONT size=2> Guid) = RegisterProperty(</FONT><FONT color=#0000ff size=2>Of</FONT><FONT size=2> Guid)(</FONT><FONT color=#0000ff size=2>GetType</FONT><FONT size=2>(CommandFile), </FONT><FONT color=#0000ff size=2>New</FONT><FONT size=2> PropertyInfo(</FONT><FONT color=#0000ff size=2>Of</FONT><FONT size=2> Guid)(</FONT><FONT color=#a31515 size=2>"ID"</FONT><FONT size=2>))</P>
+<P></FONT><FONT color=#0000ff size=2>Public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Shared</FONT><FONT size=2> ModelNumberProperty </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> PropertyInfo(</FONT><FONT color=#0000ff size=2>Of</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>String</FONT><FONT size=2>) = RegisterProperty(</FONT><FONT color=#0000ff size=2>Of</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>String</FONT><FONT size=2>)(</FONT><FONT color=#0000ff size=2>GetType</FONT><FONT size=2>(CommandFile), </FONT><FONT color=#0000ff size=2>New</FONT><FONT size=2> PropertyInfo(</FONT><FONT color=#0000ff size=2>Of</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>String</FONT><FONT size=2>)(</FONT><FONT color=#a31515 size=2>"MODEL_NUMBER"</FONT><FONT size=2>, </FONT><FONT color=#a31515 size=2>"Model Number"</FONT><FONT size=2>))</P>
+<P></FONT><FONT color=#0000ff size=2>Public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Shared</FONT><FONT size=2> SerialNumberProperty </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> PropertyInfo(</FONT><FONT color=#0000ff size=2>Of</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>String</FONT><FONT size=2>) = RegisterProperty(</FONT><FONT color=#0000ff size=2>Of</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>String</FONT><FONT size=2>)(</FONT><FONT color=#0000ff size=2>GetType</FONT><FONT size=2>(CommandFile), </FONT><FONT color=#0000ff size=2>New</FONT><FONT size=2> PropertyInfo(</FONT><FONT color=#0000ff size=2>Of</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>String</FONT><FONT size=2>)(</FONT><FONT color=#a31515 size=2>"SERIAL_NUMBER"</FONT><FONT size=2>, </FONT><FONT color=#a31515 size=2>"Serial Number"</FONT><FONT size=2>))</P>
+<P></FONT><FONT color=#0000ff size=2>Public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Shared</FONT><FONT size=2> TransactionsProperty </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> PropertyInfo(</FONT><FONT color=#0000ff size=2>Of</FONT><FONT size=2> Transactions) = RegisterProperty(</FONT><FONT color=#0000ff size=2>Of</FONT><FONT size=2> Transactions)(</FONT><FONT color=#0000ff size=2>GetType</FONT><FONT size=2>(CommandFile), </FONT><FONT color=#0000ff size=2>New</FONT><FONT size=2> PropertyInfo(</FONT><FONT color=#0000ff size=2>Of</FONT><FONT size=2> Transactions)(</FONT><FONT color=#a31515 size=2>"TRANSACTIONS"</FONT><FONT size=2>, </FONT><FONT color=#a31515 size=2>"Transactions"</FONT><FONT size=2>))</P>
+<P></FONT><FONT color=#0000ff size=2>Public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>ReadOnly</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Property</FONT><FONT size=2> ID() </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> Guid<BR></FONT><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;Get<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</FONT><FONT color=#0000ff size=2>Return</FONT><FONT size=2> GetProperty(</FONT><FONT color=#0000ff size=2>Of</FONT><FONT size=2> Guid)(IDProperty)<BR>&nbsp;&nbsp;&nbsp;</FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Get<BR></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Property</P></FONT><FONT size=2></FONT>
+<P><FONT color=#0000ff size=2></P>
+<P></FONT><FONT size=2></FONT><FONT color=#0000ff size=2>Public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Property</FONT><FONT size=2> MODEL_NUMBER() </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>String<BR>&nbsp;&nbsp;&nbsp;</FONT><FONT color=#0000ff size=2>Get<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</FONT><FONT color=#0000ff size=2>Return</FONT><FONT size=2> GetProperty(</FONT><FONT color=#0000ff size=2>Of</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>String</FONT><FONT size=2>)(ModelNumberProperty)<BR>&nbsp;&nbsp;&nbsp;</FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Get<BR>&nbsp;&nbsp;&nbsp;</FONT><FONT color=#0000ff size=2>Set</FONT><FONT size=2>(</FONT><FONT color=#0000ff size=2>ByVal</FONT><FONT size=2> value </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>String</FONT><FONT size=2>)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;SetProperty(</FONT><FONT color=#0000ff size=2>Of</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>String</FONT><FONT size=2>)(ModelNumberProperty, value)<BR>&nbsp;&nbsp;&nbsp;</FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Set<BR></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Property<BR><BR>...Code continues....<BR><BR></FONT><FONT color=#0000ff size=2><FONT color=#000000 size=3>That's basically it.&nbsp; I have one more property declared in my base class, along with some MustInherit functions, but nothing out of the ordinary.<BR><BR>-Jason</FONT></P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Friday, April 18, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Hmm&#8230;&nbsp; I wonder if this is because you are inheriting
+from CommandBase?&nbsp; Is this the intention?&nbsp; Typically business objects
+should inherit from BusinessBase(Of CommandFIle).&nbsp; Am I off the mark
+totally?<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Senior Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> OpticTygre
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Friday, April 18, 2008 3:15 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: Error thrown in Copystate method Version
+3.5<o:p></o:p></span></p>
+
+</div>
+
+<p>That's a little difficult to do, as the
+inheritance chain makes the code a bit complicated.&nbsp; I have some
+PropertyInfo objects declared as Private, and some as Public (to be able to
+access the friendly name).&nbsp; The objects themselves are very simple,
+following exactly the style used in the PTTracker library.&nbsp; Example:<span><o:p></o:p></span></p>
+
+<p><span>&lt;Serializable()&gt; _<o:p></o:p></span></p>
+
+<p><span>Public</span><span> <span>Class</span> CommandFile<o:p></o:p></span></p>
+
+<p><span>Inherits</span><span> CommandBase(<span>Of</span>
+CommandFile)<o:p></o:p></span></p>
+
+<p><span>#Region</span><span> <span>&quot; Business Methods
+&quot;<o:p></o:p></span></span></p>
+
+<p><span>Private</span><span> <span>Shared</span> IDProperty <span>As</span> PropertyInfo(<span>Of</span>
+Guid) = RegisterProperty(<span>Of</span> Guid)(<span>GetType</span>(CommandFile), <span>New</span>
+PropertyInfo(<span>Of</span> Guid)(<span>&quot;ID&quot;</span>))<o:p></o:p></span></p>
+
+<p><span>Public</span><span> <span>Shared</span>
+ModelNumberProperty <span>As</span> PropertyInfo(<span>Of</span> <span>String</span>) =
+RegisterProperty(<span>Of</span> <span>String</span>)(<span>GetType</span>(CommandFile), <span>New</span>
+PropertyInfo(<span>Of</span> <span>String</span>)(<span>&quot;MODEL_NUMBER&quot;</span>, <span>&quot;Model
+Number&quot;</span>))<o:p></o:p></span></p>
+
+<p><span>Public</span><span> <span>Shared</span>
+SerialNumberProperty <span>As</span> PropertyInfo(<span>Of</span> <span>String</span>) =
+RegisterProperty(<span>Of</span> <span>String</span>)(<span>GetType</span>(CommandFile), <span>New</span>
+PropertyInfo(<span>Of</span> <span>String</span>)(<span>&quot;SERIAL_NUMBER&quot;</span>, <span>&quot;Serial Number&quot;</span>))<o:p></o:p></span></p>
+
+<p><span>Public</span><span> <span>Shared</span>
+TransactionsProperty <span>As</span> PropertyInfo(<span>Of</span> Transactions) = RegisterProperty(<span>Of</span> Transactions)(<span>GetType</span>(CommandFile),
+<span>New</span> PropertyInfo(<span>Of</span>
+Transactions)(<span>&quot;TRANSACTIONS&quot;</span>, <span>&quot;Transactions&quot;</span>))<o:p></o:p></span></p>
+
+<p><span>Public</span><span> <span>ReadOnly</span> <span>Property</span> ID() <span>As</span> Guid<br>
+<span>&nbsp;&nbsp;&nbsp;Get<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Return</span> GetProperty(<span>Of</span> Guid)(IDProperty)<br>
+&nbsp;&nbsp;&nbsp;<span>End</span> <span>Get<br>
+End</span> <span>Property<o:p></o:p></span></span></p>
+
+<p><span>Public</span><span> <span>Property</span>
+MODEL_NUMBER() <span>As</span> <span>String<br>
+&nbsp;&nbsp;&nbsp;Get<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Return</span> GetProperty(<span>Of</span> <span>String</span>)(ModelNumberProperty)<br>
+&nbsp;&nbsp;&nbsp;<span>End</span> <span>Get<br>
+&nbsp;&nbsp;&nbsp;Set</span>(<span>ByVal</span> value <span>As</span> <span>String</span>)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;SetProperty(<span>Of</span>
+<span>String</span>)(ModelNumberProperty, value)<br>
+&nbsp;&nbsp;&nbsp;<span>End</span> <span>Set<br>
+End</span> <span>Property<br>
+<br>
+...Code continues....<br>
+<br>
+</span></span><span>That's basically it.&nbsp; I have one
+more property declared in my base class, along with some MustInherit functions,
+but nothing out of the ordinary.<br>
+<br>
+-Jason</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>OpticTygre replied on Saturday, April 19, 2008</h2><P>I don't think so.&nbsp; CommandBase is defined as:<BR><BR>Public Class CommandBase(Of T)<BR>&nbsp;&nbsp;&nbsp;Inherits BusinessBase(Of CommandBase(Of T))<BR><BR>End Class</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>OpticTygre replied on Saturday, April 19, 2008</h2><P>Ok, silly me.&nbsp; I had a PropertyInfo object declared in my base class that was declared as Private instead of Private Shared.&nbsp; Go fig.&nbsp; It's the little things that kill you.<BR><BR>Thanks for the help.<BR><BR>-Jason</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

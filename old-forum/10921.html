@@ -1,0 +1,17 @@
+<html><header><title>Property Declaration on WPF Only</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Property Declaration on WPF Only</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10921.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>st3fanus posted on Monday, November 28, 2011</h2><p>Hi all,</p>
+<p>&nbsp;</p>
+<p>I just want develop a small app on WPF only.</p>
+<p>Am I right that :</p>
+<p>If i just declare / define a property metadata use</p>
+<p>private static .... NOT use public static readonly</p>
+<p>???</p>
+<p>because i think that I&#39;m not stuck with silverlight limitation for serialization</p>
+<p>&nbsp;</p>
+<p>thanks a lot</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Monday, November 28, 2011</h2><p>The public vs private on the PropertyInfo declaration has to do with reflection limitations on Silverlight/WP7/WinRT - so it really doesn&#39;t directly impact serialization.</p>
+<p>You are right that you can make those fields private when using full .NET.</p>
+<p>However, I&#39;d caution against that (I recommend making them public) because it is pretty clear that the future of .NET on the client is a sandboxed and restricted runtime where the Silverlight/WP7/WinRT limitations on reflection are <em>normal</em> and things like WPF/Windows Forms are the exception.</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>st3fanus replied on Monday, November 28, 2011</h2><p>Hi Roc</p>
+<p>&nbsp;</p>
+<p>Thanks for your quick response.. :) </p>
+<p>I got your recommendation</p>
+<p>thanks</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

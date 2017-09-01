@@ -1,0 +1,165 @@
+<html><header><title>Our agency wants to get rid of CSLA.  I need arguments supporting it.</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Our agency wants to get rid of CSLA.  I need arguments supporting it.</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10259.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>frankhoffy posted on Monday, April 11, 2011</h2><p>Our agency is again having one of those &quot;let&#39;s get rid of CSLA&quot; meetings where the arguments will be that it&#39;s too complicated and we don&#39;t use a lot of the functionality. &nbsp;It sounds like they want to write their own framework.</p>
+<p>I could use some arguments supporting CSLA. &nbsp;We have a lot invested in it. &nbsp;We&#39;re also a small shop. &nbsp;I&#39;ve created frameworks in the past and know how difficult it is. &nbsp;I will likely be the only person in the room who will argue for CSLA. &nbsp;I could use some arguments that both developers and managers can understand. &nbsp;Thanks.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tiago replied on Monday, April 11, 2011</h2><p>I guess that&#39;s not the kind of answer you&#39;re waiting, but the point is &quot;Why do they say it&#39;s too complicated?&quot;</p>
+<p>Is it because they have to write a lot of code in a specific way (CSLA way)? Every framework has its own way of writing code.</p>
+<p>What about not having to write code? Why don&#39;t you try&nbsp;one&nbsp;(or several) of&nbsp;the CSLA code generators?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonStonecash replied on Tuesday, April 12, 2011</h2><p>If this is a &quot;pure&quot; engineering decision (unlikely at best), one way to go about this is to list the various types of functionality that the others want to do: data binding, new/dirty tracking, 1, 2, 3, n-tier development, validation, authorization, and so on.&nbsp; Compare and contrast each item by discussing what is needed in each of these areas and what it would take to accomplish it starting from scratch.&nbsp; These forums are a rich source for enumerating the problems that can come up and the solutions that CSLA offers.&nbsp; At some point, your team should have sufficient data to decide which direction to take.&nbsp; Quite frankly, CSLA is complicated because it provides a fair amount of functionality over a set of topics that are of general interest.&nbsp; But the .NET framework is several orders of magnitude more complicated.</p>
+<p>If this is a &quot;mine is bigger than yours&quot; decision, then all of the marshaling of ration arguments is not going to do you very much good.</p>
+<p>Good Luck.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>vschaak replied on Tuesday, April 12, 2011</h2><p>Hi,</p>
+<p>if the options are a) writing and using an own framework and b) using an existing and prooven one, I&#39;ll always tend to choose b).</p>
+<p>Years ago I walked the other path and created my own little&nbsp;framework. This was ok and a good experience since I learned a lot of that, esp. in the OO field. But since demands evolved I had to realize that writing a framework is very much time-consuming and in fact hard stuff. This counts the&nbsp;more , the smaller your shop/organisation is (and it was a &#39;one man band&#39; by that time). So, one should have a framework, but not have to build one. (I think Rocky stated that once, too) With all the given respect I don&#39;t think that your organisation is more capable in developing a framework in a short time than Rocky and the whole CSLA-community did over the years. And by the way: Is framework-designing and -coding your core business? If not, drop this plan. <br />In fact THIS is quite a good argument for managers, since developing a framework by your own will result in a huge amount of time consumed by non-productive (or: non directly productive) work, which will raise your cost!</p>
+<p><br />Not using a lot of the functionality may count, but be aware that business demands tend to rise and so do the requests regarding the used framework. For an example we initially only&nbsp;used winforms related stuff within CSLA, but are on track to switch over to SL/WPF. Having a framework that&#39;s core supports more than one approach (winforms) doesn&#39;t restrict yourself in choosing UI-technology or any other stuff like data access.</p>
+<p>Even your own framework will dictate a certain way to use it, in that there&#39;s minor difference to use CSLA. But what with other/new team members? CSLA may be not as widespread as other technology, but surely much wider than a homebrewed framework, created by your own. This will make it more easy to integrate new members to the team. There is training/books/videos etc. outside, so using CSLA can be adopted my newbies.</p>
+<p>And to the last: CSLA enforces separation of concerns in some aspects. It&#39;s no data-access technology and it&#39;s no UI technology. It&#39;s all about business objects (with some&nbsp;d.a. and esp.&nbsp;UI related stuff to make things work) This makes team development much more easy. This the more, the smaller your shop is, since in that case project management may be not that big at your side...</p>
+<p>Just my thoughts about it. Hope it helps</p>
+<p>&nbsp;</p>
+<p>Volker</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>frankhoffy replied on Tuesday, April 12, 2011</h2><p>Thanks all, this helps. &nbsp;I&#39;ve really been dreading this meeting. &nbsp;I&#39;ve come to realize over the years that often what I&#39;m fighting at these meetings is laziness.</p>
+<p>I found a <a target="_blank" href="http://weblogs.asp.net/scottgu/archive/2010/01/24/about-technical-debates-both-in-general-and-regarding-asp-net-web-forms-and-asp-net-mvc-in-particular.aspx">good blog post</a> by Scott Guthrie about technical debates. &nbsp;I forwarded it to the meeting organizer.</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>DancesWithBamboo replied on Tuesday, April 12, 2011</h2><p>I don&#39;t know anything about your organization. &nbsp;But in my experience, &quot;Complicated&quot; is code for &quot;I want to do it myself&quot;. &nbsp;CSLA caters to solving business problems. Some developers don&#39;t want to solve business problems; .they want to solve cool technical problems that they make up themselves. &nbsp;Business-centric developers who as you put it &quot;have a lot invested&quot; in CSLA would not choose to abandon it. &nbsp;The types of developers making those arguments might just want to build frameworks (like Rocky) and want you to pay them to do it under the pretense of &quot;simplifying&quot;. &nbsp;You probably don&#39;t have any control over it but maybe your organization needs to ask the question as to&nbsp;whether&nbsp;you have the right kind of&nbsp;developers&nbsp;in your &quot;small shop&quot; if they want to throw away something that is working just to make it themselves.</p>
+<p>Or just ask this question: &quot;How much new revenue will abandoning CSLA generate for the firm?&quot;. &nbsp;When they can&#39;t answer...you got em&#39;.</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>frankhoffy replied on Tuesday, April 12, 2011</h2><p>I had a feeling you folks would be just as passionate on this issue as I am</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Curelom replied on Wednesday, April 13, 2011</h2><p>Just out of curiosity, please let us know the results of your meeting.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>frankhoffy replied on Thursday, April 14, 2011</h2><p><div style='padding-left: 50px;background-color:silver'><b>Curelom<br></b>Just out of curiosity, please let us know the results of your meeting.</div></p>
+<p>Just got done with the meeting today. &nbsp;Basically the way it went was that we listed a bunch of things on the board that a business object framework should do. &nbsp;I was probably the only one in the room who realized this, but CSLA already met most of the criteria.</p>
+<p>I heard things like it&#39;s not truly open source, that Rocky&#39;s the only one who&#39;s supporting it, that it&#39;s too bloated, that it&#39;s too hard to use. &nbsp;I don&#39;t think anybody can truly appreciate what Rocky has done until they try to do it themselves though.</p>
+<p>I might be in the minority among developers these days, but my main goal is to write less code. &nbsp;I have deadlines to meet and customers with high expectations. &nbsp;I think solving business problems should be our main area of concern. &nbsp;I like CSLA because it handles many of the implementation details I used to have to deal with in the data and UI layers, so I can focus all of my efforts on the business objects.</p>
+<p>Anyway, no decisions were made, which was good. &nbsp;I will push back if they suggest writing their own framework though. &nbsp;Are there any other competing frameworks out there, or just ORM tools?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>frankhoffy replied on Thursday, April 14, 2011</h2><p>FYI, here is the list of what they all consider important</p>
+<p>
+<p class="MsoNormal">
+<ul>
+<li>Encapsulation of business rules</li>
+<li>Simple Object-Relational Mapping
+(developer who is creating objects)</li>
+<li>Lightweight
+<ul>
+<li>Simple objects (no inheritance,
+tie to framework</li>
+<li>No application bloating</li>
+</ul>
+</li>
+<li>State Management/Transparent
+persistence</li>
+<li>Contains plumbing to help
+integrate with UI platforms</li>
+<li>Loose coupling between object
+&amp; database
+<ul>
+<li>No mundane programming tasks</li>
+<li>Don&rsquo;t want objects to have to
+mirror database schema</li>
+</ul>
+</li>
+<li>Standardize data access layer</li>
+<li>Plain old objects</li>
+<li>Data binding support<span>&nbsp; </span>(especially WPF)</li>
+<li>Encapsulate way we get data
+(filling objects)</li>
+<li>Configuration driven (eliminating
+code but not code generation)</li>
+<li>Support n-tier, remoting</li>
+<li>Authorization rules</li>
+<li>Simple and quick to implement</li>
+<li>Simple to consume</li>
+<li>Technology agnostic (no dependency
+on a specific technology)</li>
+<li>Independence/Low risk</li>
+<li>Dynamic parent/child relationships</li>
+<li>Error handling (consistent
+behavior, encapsulation)</li>
+<li>Integrated logging</li>
+<li>Control of source code (no black
+boxes)</li>
+<li>Testable</li>
+<li>Optimize the persistence layers</li>
+<li>Supportability of framework itself</li>
+</ul>
+</p>
+<p class="MsoNormal"></p>
+<p class="MsoNormal"></p>
+<p class="MsoNormal"></p>
+<p class="MsoNormal"></p>
+<p class="MsoNormal"></p>
+<p class="MsoNormal"></p>
+<p class="MsoNormal"></p>
+<p class="MsoNormal"></p>
+<p class="MsoNormal"></p>
+<p class="MsoNormal"></p>
+<p class="MsoNormal"></p>
+<p class="MsoNormal"></p>
+<p class="MsoNormal"></p>
+<p class="MsoNormal"></p>
+<p class="MsoNormal"></p>
+<p class="MsoNormal"></p>
+<p class="MsoNormal"></p>
+<p class="MsoNormal"></p>
+<p class="MsoNormal"></p>
+<p class="MsoNormal"></p>
+<p class="MsoNormal"></p>
+<p class="MsoNormal"></p>
+<p class="MsoNormal"></p>
+<p class="MsoNormal"></p>
+<p class="MsoNormal"></p>
+<p class="MsoNormal"></p>
+<p class="MsoNormal"></p>
+<p class="MsoNormal">&nbsp;</p>
+</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JJLoubser replied on Friday, April 15, 2011</h2><p>The best answer: CSLA have the best &lt;Quality Control&gt; ; Save money in the long term. </p>
+<p>&nbsp;</p>
+<p>We run 1 project for 15 years on the old CSLA and 2 new projects on the new CSLA.net 4 for 2 years...</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Wednesday, April 20, 2011</h2><p><div style='padding-left: 50px;background-color:silver'><b>frankhoffy<br></b> </p>
+<ul>
+<li>Lightweight 
+<ul>
+<li>Simple objects (no inheritance, tie to framework </li>
+</ul>
+</li>
+<li>Plain old objects </li>
+<li>Integrated logging </li>
+<li>Control of source code (no black boxes) </li>
+</ul>
+<p></div></p>
+<p>So, that appears to be the only things Csla isn&#39;t, with some cavets.</p>
+<p>One, what the hell is a &quot;lightweight&quot; or &quot;heavyweight&quot; framework?&nbsp; No one seems to really be able to define what they mean to me.&nbsp; </p>
+<p>The POCO / not inherit from framework.&nbsp; Why?&nbsp; The only concern I&#39;ve heard is that it would be hard to move to another framework.&nbsp; Maybe, but I&#39;m personally not even aware of anything I&#39;d consider a &quot;competing&quot; framework.&nbsp; Regardless, you&#39;d need to come up with a solution to those on your own.&nbsp; I&#39;d be hard pressed to imagine moving away from Csla to come up with something that would be more maintainable.</p>
+<p>Logging can be added easily.</p>
+<p>The last point, no black box.&nbsp; Why is your company using .Net at all then?&nbsp; Never mind MVC, WPF, WCF, or even a string or int.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>frankhoffy replied on Wednesday, April 20, 2011</h2><p><div style='padding-left: 50px;background-color:silver'><b>Andy<br></b>The last point, no black box.&nbsp; Why is your company using .Net at all then?&nbsp; Never mind MVC, WPF, WCF, or even a string or int.</div></p>
+<p>Don&#39;t give them any ideas</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Wednesday, April 20, 2011</h2><p>Ha, sorry.&nbsp; I&#39;ve been having similar informal discussions on bringing in Csla, so I understand your frustration.&nbsp; Some of mine probably leaked in. :-)</p>
+<p>Anyway, where would they go if not .Net?&nbsp; Java isn&#39;t exactly open source either..</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, April 20, 2011</h2><p><div style='padding-left: 50px;background-color:silver'><b>frankhoffy<br></b>
+<p>I heard things like it&#39;s not truly open source, that Rocky&#39;s the only one who&#39;s supporting it, that it&#39;s too bloated, that it&#39;s too hard to use. &nbsp;I don&#39;t think anybody can truly appreciate what Rocky has done until they try to do it themselves though.</p>
+</p>
+<p></div></p>
+<p>The definition of OSS is slippery. To my knowledge the only point where CSLA might not be &quot;open source&quot; is because I don&#39;t use a blessed license. But I also don&#39;t use a &quot;poison pill&quot; license like GPL because I don&#39;t necessarily want to further a political agenda with my software :)</p>
+<p>Usually the definition of OSS is that the source must be open and so free-as-in-speech (my repository is public), some version of the software must be free-as-in-beer (all versions are free). Ideally OSS has some public venue for feedback and public bug/issue tracking (this forum and the bug tracker are public).</p>
+<p>If they want a specific business model, like using GPL to be &quot;OSS&quot; and to force any real users to buy the commercial license - that&#39;s fine&nbsp;- but that&#39;s a subset of OSS.</p>
+<p><div style='padding-left: 50px;background-color:silver'><b>frankhoffy<br></b></p>
+<p>Are there any other competing frameworks out there, or just ORM tools?</p>
+<div style="CLEAR:both;">
+<p></div></p>
+<p>There have been some that have come and gone over the years. I&#39;ve been doing this for 15 years now, and I&#39;m not aware of anything that has the same longevity. Not even on the Java side - though <em>maybe</em> Spring has been around this long?</p>
+<p>Some current/recent ones (spelling could be wrong):</p>
+<ul>
+<li>NetTiers</li>
+<li>Mere Mortals</li>
+<li>IdeaBlade</li>
+<li>RIA Services</li>
+</ul>
+<p>Not all of these are open source or free (maybe none of them are actually) - most people think I&#39;m f*cking crazy to do what I do frankly...</p>
+<p>But I&#39;ll share this: when I was early in my career I benefitted greatly from freeware/shareware (that&#39;s what OSS used to be called). And by greatly, I mean some of that software boosted my career in amazing ways, when I needed it most.</p>
+<p>I&#39;ve never met the people who helped me so much, and couldn&#39;t even thank them via the Internet because it didn&#39;t exist yet.</p>
+<p>So among numerous other motivations, CSLA is in part, a way to hopefully do for other people, what was done for me.</p>
+<p>I know, that sounds sappy, and I&#39;m not entirely altrustic obviously (I don&#39;t give away the books/videos), but it is also true.</p>
+</div></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>frankhoffy replied on Thursday, April 21, 2011</h2><p><div style='padding-left: 50px;background-color:silver'><b>RockfordLhotka<br></b>So among numerous other motivations, CSLA is in part, a way to hopefully do for other people, what was done for me.
+<div style="CLEAR:both;">
+<p>I know, that sounds sappy, and I&#39;m not entirely altrustic obviously (I don&#39;t give away the books/videos), but it is also true.</div></p>
+<p>You&#39;re an inspirational person to me Rocky.&nbsp; I noted that as such on my Facebook page.</p>
+</div>
+</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Thursday, April 14, 2011</h2><p>Buy the <a href="http://download.lhotka.net/Default.aspx?t=UsingCsla4">Using CSLA 4 Ebook Series</a></p>
+<p>Even if not all the books are completed these are the most up-to-date ebooks and will give you great information on how to create apps with CSLA4.</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>leovbrown replied on Thursday, April 14, 2011</h2><p>I am pretty much a novice programmer.&nbsp; My wife has a small business and I have been rewriting a work order program that I wrote in Visual Basic 6 about 10 years ago.&nbsp; I chose to learn and use CSLA because I knew that I could never create something that robust on my own.&nbsp; Has it been easy for me to learn CSLA?&nbsp; No.&nbsp; I have watched all the videos that Rocky produced at least 4 times each and am reading the ebooks as they come out..&nbsp; I have had a steep learning curve because I was not a very good programmer to start with and&nbsp;also I&nbsp;had the great idea of incorporating CSLA with Silverlight into Sharepoint.&nbsp; Most of my problems have arisen from figuring out all the security issues between Windows Server, SQL server, IIS, WCF, Silverlight and Sharepoint (Thank God for all the brillant people who help out ignorant people like me on the web!).</p>
+<p>I am over most of the bumps now and I have some of the application done and working.&nbsp; I don&#39;t profess to know everything about CSLA but I learn new things every day and I have never regretted the decision to use it.&nbsp; I have a feeling it will be supported for years to come and it will be a lot easier to upgrade and make changes than if I would have written my own framework.&nbsp; Also if something were to happen to me, I believe it would be easier for someone else to understand the system and support it.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>skagen00 replied on Wednesday, April 20, 2011</h2><p>On my team I have four new hires (each less than a year of experience now, two with a month and a half) straight out of college and all of them are now coding in CSLA.</p>
+<p>Intro book (C#) followed by some hands on explanation of an existing CSLA editable root with child objects and the CSLA training videos and that was enough to provide the fundamentals for them to get rolling.</p>
+<p>To argue against rolling a different framework, I&#39;d completely agree with the sentiment - &quot;how much revenue will it generate&quot;?. And is there any true sentiment for how long it&#39;ll take? And what they&#39;ll truly gain?</p>
+<p>Beyond that, there&#39;s a business risk in having one guy or a couple guys write their own framework, presumably convert product, and then go *poof*.&nbsp; Then where will you be... people who don&#39;t know why the framework was created in the way it was created... </p>
+<p>One thing I always liked about CSLA is the fact that it&#39;s being used in the industry, it&#39;s proven, there are training tools, Rocky is tremendous about moving us along to new technologies, and the community is outstanding.</p>
+<p>Too complicated? Tell that to my four new hires who are doing CSLA + Silverlight w/ MVVM and a DAL using DTOs (the sweet spot one Rocky suggests)... it really isn&#39;t that complicated once there are example classes in your solution for new hires to follow (i.e. you&#39;re not beginning your application from the ground level).</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>frankhoffy replied on Wednesday, April 20, 2011</h2><p><div style='padding-left: 50px;background-color:silver'><b>skagen00<br></b>Too complicated? Tell that to my four new hires who are doing CSLA + Silverlight w/ MVVM and a DAL using DTOs (the sweet spot one Rocky suggests)... it really isn&#39;t that complicated once there are example classes in your solution for new hires to follow (i.e. you&#39;re not beginning your application from the ground level).</div></p>
+<p>At the risk of going off topic...</p>
+<p>When you say DTOs, are you referring to using an ObjectFactory and the corresponding attributes on your business class? &nbsp;I was just looking at that today and was very interested. &nbsp;It would be great if you had a link to a video or blog entry talking about the &quot;sweet spot&quot;. &nbsp;I&#39;d like to share this with the group.</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, April 21, 2011</h2><p><div style='padding-left: 50px;background-color:silver'><b>frankhoffy<br></b>
+<p>When you say DTOs, are you referring to using an ObjectFactory and the corresponding attributes on your business class? &nbsp;I was just looking at that today and was very interested. &nbsp;It would be great if you had a link to a video or blog entry talking about the &quot;sweet spot&quot;. &nbsp;I&#39;d like to share this with the group.</p>
+<p></div></p>
+<p>This technique is discussed, along with examples, in the <em>Using CSLA 4: Data Access</em> ebook.</p>
+</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,583 @@
+<html><header><title>WCF DataPortal and SqlGuid BO fields</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>WCF DataPortal and SqlGuid BO fields</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11197.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Elio posted on Sunday, February 26, 2012</h2><p>Hi, firts of all sorry for my not so good english, i&#39;m using Csla 3.0.5, my&nbsp; Dataportal is WcfProxy, when i reatreave an object with SqlGuid field and that field is Null from the database i get this exception:</p>
+<p>The formatter threw an exception while trying to deserialize the message: There was an error while trying to deserialize parameter http://ws.lhotka.net/WcfDataPortal:FetchResult. The InnerException message was &#39;ValueType &#39;System.Data.SqlTypes.SqlGuid&#39; cannot be null.&#39;.&nbsp; Please see InnerException for more details.</p>
+<p>I googled for a coupled of hours and for my surprise i didnt find nothing about this particular issue, can anybody help me on this?</p>
+<p>Thanks</p>
+<p>Elio</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Sunday, February 26, 2012</h2><p>SqlGuid is not a data type that your BO should use. </p>
+<p>Convert it to a System.Guid or a string instead.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Elio replied on Sunday, February 26, 2012</h2><p>Hi Jonny, Thans for your quick response; i&#39;m afraid that is something that i cannot change because this is a big legacy application and the code of the those BOs librarys is not on my control. But the instersting thing is when the database column is not null everything works fine. Any idea?</p>
+<p>regards</p>
+<p>Elio</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Sunday, February 26, 2012</h2><p>Probably because this code (I use LinqPad to run code):</p>
+<p><i>var x = new System.Data.SqlTypes.SqlGuid((string)null);<br />x.Dump(); </i></p>
+<p>will throw exception </p>
+<div class="spacer">
+<table style="border-bottom:2px dashed;" id="t26">
+<tbody>
+<tr>
+<td class="typeheader" colspan="2"><a class="typeheader"><span id="t26ud" class="typeglyph"></span>ArgumentNullException</a> </td>
+</tr>
+<tr id="sum27">
+<td class="summary" colspan="2">Value cannot be null.Parameter name: g</td>
+</tr>
+<tr style="display:none;">
+<th class="member" title="System.String">Message</th>
+<td><span>Value cannot be null.<br />Parameter name: g</span> </td>
+</tr>
+<tr style="display:none;">
+<th class="member" title="System.String">ParamName</th>
+<td>
+<p>g</p>
+</td>
+</tr>
+<tr style="display:none;">
+<th class="member" title="System.Collections.IDictionary">Data</th>
+<td>
+<table id="t28">
+<tbody>
+<tr>
+<td class="typeheader">IDictionary (0 items)</td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+<tr style="display:none;">
+<th class="member" title="System.Exception">InnerException</th>
+<td><i>null</i> </td>
+</tr>
+<tr style="display:none;">
+<th class="member" title="System.Reflection.MethodBase">TargetSite</th>
+<td>
+<table style="border-bottom:2px dashed;" id="t29">
+<tbody>
+<tr>
+<td class="typeheader" colspan="2"><a class="typeheader"><span id="t29ud" class="typeglyph">6</span>RuntimeConstructorInfo</a> </td>
+</tr>
+<tr id="sum30">
+<td class="summary" colspan="2">Guid..ctor (String g)</td>
+</tr>
+<tr style="display:none;">
+<th class="member" title="System.String">Name</th>
+<td>
+<p>.ctor</p>
+</td>
+</tr>
+<tr style="display:none;">
+<th class="member" title="System.Reflection.MemberTypes">MemberType</th>
+<td>
+<p>Constructor</p>
+</td>
+</tr>
+<tr style="display:none;">
+<th class="member" title="System.Type">DeclaringType</th>
+<td><i title="System.Guid">typeof (Guid)</i> </td>
+</tr>
+<tr style="display:none;">
+<th class="member" title="System.Type">ReflectedType</th>
+<td><i title="System.Guid">typeof (Guid)</i> </td>
+</tr>
+<tr style="display:none;">
+<th class="member" title="System.Int32">MetadataToken</th>
+<td>
+<p>100666501</p>
+</td>
+</tr>
+<tr style="display:none;">
+<th class="member" title="System.Reflection.Module">Module</th>
+<td>
+<table style="border-bottom:2px dashed;" id="t31">
+<tbody>
+<tr>
+<td class="typeheader" colspan="2"><a class="typeheader"><span id="t31ud" class="typeglyph">6</span>RuntimeModule</a> </td>
+</tr>
+<tr id="sum32">
+<td class="summary" colspan="2">CommonLanguageRuntimeLibrary</td>
+</tr>
+<tr style="display:none;">
+<th class="member" title="System.Int32">MDStreamVersion</th>
+<td>
+<p>131072</p>
+</td>
+</tr>
+<tr style="display:none;">
+<th class="member" title="System.String">FullyQualifiedName</th>
+<td>
+<p>C:\Windows\Microsoft.NET\Framework\v4.0.30319\mscorlib.dll</p>
+</td>
+</tr>
+<tr style="display:none;">
+<th class="member" title="System.Guid">ModuleVersionId</th>
+<td>
+<p>ef393d65-870f-4a49-bd31-c168e9aa90c0</p>
+</td>
+</tr>
+<tr style="display:none;">
+<th class="member" title="System.Int32">MetadataToken</th>
+<td>
+<p>1</p>
+</td>
+</tr>
+<tr style="display:none;">
+<th class="member" title="System.String">ScopeName</th>
+<td>
+<p>CommonLanguageRuntimeLibrary</p>
+</td>
+</tr>
+<tr style="display:none;">
+<th class="member" title="System.String">Name</th>
+<td>
+<p>mscorlib.dll</p>
+</td>
+</tr>
+<tr style="display:none;">
+<th class="member" title="System.Reflection.Assembly">Assembly</th>
+<td>
+<table style="border-bottom:2px dashed;" id="t33">
+<tbody>
+<tr>
+<td class="typeheader" colspan="2"><a class="typeheader"><span id="t33ud" class="typeglyph">6</span>RuntimeAssembly</a> </td>
+</tr>
+<tr id="sum34">
+<td class="summary" colspan="2">mscorlib, Version=4.0.0.0, Culture=neutral, 
+PublicKeyToken=b77a5c561934e089</td>
+</tr>
+<tr style="display:none;">
+<th class="member" title="System.String">CodeBase</th>
+<td>
+<p>file:///C:/Windows/Microsoft.NET/Framework/v4.0.30319/mscorlib.dll</p>
+</td>
+</tr>
+<tr style="display:none;">
+<th class="member" title="System.String">FullName</th>
+<td>
+<p>mscorlib, Version=4.0.0.0, Culture=neutral, 
+PublicKeyToken=b77a5c561934e089</p>
+</td>
+</tr>
+<tr style="display:none;">
+<th class="member" title="System.Reflection.MethodInfo">EntryPoint</th>
+<td><i>null</i> </td>
+</tr>
+<tr style="display:none;">
+<th class="member" title="System.Security.Policy.Evidence">Evidence</th>
+<td>
+<table id="t35">
+<tbody>
+<tr>
+<td class="typeheader" colspan="9"><a class="typeheader"><span id="t35ud" class="typeglyph">5</span>Evidence (6 items)</a> </td>
+</tr>
+<tr>
+<th title="System.Security.Permissions.StrongNamePublicKeyBlob">PublicKey</th>
+<th title="System.String">Name</th>
+<th title="System.Version">Version</th>
+<th title="System.String">Value</th>
+<th title="System.Security.SecurityZone">SecurityZone</th>
+<th title="System.Byte
+[]">SHA1</th>
+<th title="System.Byte
+[]">SHA256</th>
+<th title="System.Byte
+[]">MD5</th>
+<th title="System.Security.Cryptography.X509Certificates.X509Certificate">Certificate</th>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>
+<table id="t36">
+<tbody>
+<tr>
+<td class="typeheader" colspan="2">StrongNamePublicKeyBlob</td>
+</tr>
+<tr id="sum37">
+<td class="summary" colspan="2">00000000000000000400000000000000</td>
+</tr>
+</tbody>
+</table>
+</td>
+<td>
+<p>mscorlib</p>
+</td>
+<td>
+<table id="t38" class="limit" title="Limit of graph">
+<tbody>
+<tr>
+<td class="typeheader" colspan="2">Version</td>
+</tr>
+<tr id="sum39">
+<td class="summary" colspan="2">4.0.0.0</td>
+</tr>
+</tbody>
+</table>
+</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+<td>
+<p>file:///C:/Windows/Microsoft.Net/assembly/GAC_32/mscorlib/v4.0_4.0.0.0__b77a5c561934e089/mscorlib.dll</p>
+</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td>
+<p>MyComputer</p>
+</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td><i title="(binary data)">95 4B F3 4C 55 9B DA AE C4 57 4B 6A E8 AB C2 CF C2 
+99 26 89</i> </td>
+<td><i title="(binary data)">byte[]</i> </td>
+<td><i title="(binary data)">D8 18 2D 9D 2E 39 1E 5A 95 29 DA 7E DB B0 58 15</i> 
+</td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td>
+<table id="t40" class="limit" title="Limit of graph">
+<tbody>
+<tr>
+<td class="typeheader" colspan="2">X509Certificate</td>
+</tr>
+<tr id="sum41">
+<td class="summary" colspan="2">System.Security.Cryptography.X509Certificates.X509Certificate</td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+<tr style="display:none;">
+<th class="member" title="System.Security.PermissionSet">PermissionSet</th>
+<td>
+<table id="t42">
+<tbody>
+<tr>
+<td class="typeheader">PermissionSet (0 items)</td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+<tr style="display:none;">
+<th class="member" title="System.Security.SecurityRuleSet">SecurityRuleSet</th>
+<td>
+<p>Level2</p>
+</td>
+</tr>
+<tr style="display:none;">
+<th class="member" title="System.Reflection.Module">ManifestModule</th>
+<td>
+<table id="t43" class="limit" title="Cyclic reference">
+<tbody>
+<tr>
+<td class="typeheader" colspan="2"><span class="typeglyph">q</span>RuntimeModule</td>
+</tr>
+<tr id="sum44">
+<td class="summary" colspan="2">CommonLanguageRuntimeLibrary</td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+<tr style="display:none;">
+<th class="member" title="System.Boolean">ReflectionOnly</th>
+<td>
+<p>False</p>
+</td>
+</tr>
+<tr style="display:none;">
+<th class="member" title="System.String">Location</th>
+<td>
+<p>C:\Windows\Microsoft.NET\Framework\v4.0.30319\mscorlib.dll</p>
+</td>
+</tr>
+<tr style="display:none;">
+<th class="member" title="System.String">ImageRuntimeVersion</th>
+<td>
+<p>v4.0.30319</p>
+</td>
+</tr>
+<tr style="display:none;">
+<th class="member" title="System.Boolean">GlobalAssemblyCache</th>
+<td>
+<p>True</p>
+</td>
+</tr>
+<tr style="display:none;">
+<th class="member" title="System.Int64">HostContext</th>
+<td>
+<p>0</p>
+</td>
+</tr>
+<tr style="display:none;">
+<th class="member" title="System.Boolean">IsDynamic</th>
+<td>
+<p>False</p>
+</td>
+</tr>
+<tr style="display:none;">
+<th class="member" title="System.String">EscapedCodeBase</th>
+<td>
+<p>file:///C:/Windows/Microsoft.NET/Framework/v4.0.30319/mscorlib.dll</p>
+</td>
+</tr>
+<tr style="display:none;">
+<th class="member" title="System.Boolean">IsFullyTrusted</th>
+<td>
+<p>True</p>
+</td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+<tr style="display:none;">
+<th class="member" title="System.ModuleHandle">ModuleHandle</th>
+<td>
+<table id="t45">
+<tbody>
+<tr>
+<td class="typeheader" colspan="2"><a class="typeheader"><span id="t45ud" class="typeglyph">5</span>ModuleHandle</a> </td>
+</tr>
+<tr id="sum46">
+<td class="summary" colspan="2">System.ModuleHandle</td>
+</tr>
+<tr>
+<th class="member" title="System.Int32">MDStreamVersion</th>
+<td>
+<p>131072</p>
+</td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+<tr style="display:none;">
+<th class="member" title="System.RuntimeMethodHandle">MethodHandle</th>
+<td>
+<table style="border-bottom:2px dashed;" id="t47">
+<tbody>
+<tr>
+<td class="typeheader" colspan="2"><a class="typeheader"><span id="t47ud" class="typeglyph">6</span>RuntimeMethodHandle</a> </td>
+</tr>
+<tr id="sum48">
+<td class="summary" colspan="2">System.RuntimeMethodHandle</td>
+</tr>
+<tr style="display:none;">
+<th class="member" title="System.IntPtr">Value</th>
+<td>
+<table id="t49">
+<tbody>
+<tr>
+<td class="typeheader" colspan="2">IntPtr</td>
+</tr>
+<tr id="sum50">
+<td class="summary" colspan="2">1868652760</td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+<tr style="display:none;">
+<th class="member" title="System.Reflection.MethodAttributes">Attributes</th>
+<td>
+<p>PrivateScope, Public, HideBySig, SpecialName, RTSpecialName</p>
+</td>
+</tr>
+<tr style="display:none;">
+<th class="member" title="System.Reflection.CallingConventions">CallingConvention</th>
+<td>
+<p>Standard, HasThis</p>
+</td>
+</tr>
+<tr style="display:none;">
+<th class="member" title="System.Boolean">IsSecurityCritical</th>
+<td>
+<p>False</p>
+</td>
+</tr>
+<tr style="display:none;">
+<th class="member" title="System.Boolean">IsSecuritySafeCritical</th>
+<td>
+<p>False</p>
+</td>
+</tr>
+<tr style="display:none;">
+<th class="member" title="System.Boolean">IsSecurityTransparent</th>
+<td>
+<p>True</p>
+</td>
+</tr>
+<tr style="display:none;">
+<th class="member" title="System.Boolean">ContainsGenericParameters</th>
+<td>
+<p>False</p>
+</td>
+</tr>
+<tr style="display:none;">
+<th class="member" title="System.Boolean">IsGenericMethodDefinition</th>
+<td>
+<p>False</p>
+</td>
+</tr>
+<tr style="display:none;">
+<th class="member" title="System.Boolean">IsGenericMethod</th>
+<td>
+<p>False</p>
+</td>
+</tr>
+<tr style="display:none;">
+<th class="member" title="System.Boolean">IsPublic</th>
+<td>
+<p>True</p>
+</td>
+</tr>
+<tr style="display:none;">
+<th class="member" title="System.Boolean">IsPrivate</th>
+<td>
+<p>False</p>
+</td>
+</tr>
+<tr style="display:none;">
+<th class="member" title="System.Boolean">IsFamily</th>
+<td>
+<p>False</p>
+</td>
+</tr>
+<tr style="display:none;">
+<th class="member" title="System.Boolean">IsAssembly</th>
+<td>
+<p>False</p>
+</td>
+</tr>
+<tr style="display:none;">
+<th class="member" title="System.Boolean">IsFamilyAndAssembly</th>
+<td>
+<p>False</p>
+</td>
+</tr>
+<tr style="display:none;">
+<th class="member" title="System.Boolean">IsFamilyOrAssembly</th>
+<td>
+<p>False</p>
+</td>
+</tr>
+<tr style="display:none;">
+<th class="member" title="System.Boolean">IsStatic</th>
+<td>
+<p>False</p>
+</td>
+</tr>
+<tr style="display:none;">
+<th class="member" title="System.Boolean">IsFinal</th>
+<td>
+<p>False</p>
+</td>
+</tr>
+<tr style="display:none;">
+<th class="member" title="System.Boolean">IsVirtual</th>
+<td>
+<p>False</p>
+</td>
+</tr>
+<tr style="display:none;">
+<th class="member" title="System.Boolean">IsHideBySig</th>
+<td>
+<p>True</p>
+</td>
+</tr>
+<tr style="display:none;">
+<th class="member" title="System.Boolean">IsAbstract</th>
+<td>
+<p>False</p>
+</td>
+</tr>
+<tr style="display:none;">
+<th class="member" title="System.Boolean">IsSpecialName</th>
+<td>
+<p>True</p>
+</td>
+</tr>
+<tr style="display:none;">
+<th class="member" title="System.Boolean">IsConstructor</th>
+<td>
+<p>True</p>
+</td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+<tr style="display:none;">
+<th class="member" title="System.String">StackTrace</th>
+<td><span>   at System.Guid..ctor(String g)</span> </td>
+</tr>
+<tr style="display:none;">
+<th class="member" title="System.String">HelpLink</th>
+<td><i>null</i> </td>
+</tr>
+<tr style="display:none;">
+<th class="member" title="System.String">Source</th>
+<td>
+<p>mscorlib</p>
+</td>
+</tr>
+</tbody>
+</table>
+</div></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Elio replied on Sunday, February 26, 2012</h2><p>Thanks very much Jonny, i switched to WebService DataPortal which accept SqlGui nulls value from db.</p>
+<p>I tested WCF with System.Guid and works fine, but we cannot move our code to use guid, so the service will do the work in the meadel time</p>
+<p>&nbsp;</p>
+<p>Elio</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

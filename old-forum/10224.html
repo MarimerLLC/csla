@@ -1,0 +1,38 @@
+<html><header><title>How to call Local DataPortal_Fetch on selected Objects</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>How to call Local DataPortal_Fetch on selected Objects</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10224.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>lds posted on Thursday, March 31, 2011</h2><p>Hello,</p>
+<p>I&#39;m writting a small silverlight demo and I ran into an issue where<br />I don&#39;t know if my assumption of how to use the DataProtal is wrong.</p>
+<p>In the Demo I have 4 objects that deal with data on the server<br />and 1 object that I like to deal with data locally.</p>
+<p>The 4 object with remote data work fine.<br />The 1 object with local data I&#39;m having a problem<br />calling the local DataPortal_Fetch method.</p>
+<p>In the following code sample 3 of the 4 Factory Methods<br />work as I expected but the one that should call the <br />local DataPortal_Fetch calls the remote DataPortal_Fetch.</p>
+<p><br />[Serializable]<br />public class TestObject : BusinessBase&lt;TestObject&gt;<br />{<br />&nbsp;&nbsp;&nbsp; public static PropertyInfo&lt;String&gt; NameProperty = RegisterProperty&lt;String&gt;(c =&gt; c.Name);<br />&nbsp;&nbsp;&nbsp; [Required(ErrorMessage = &quot;User Name required&quot;)]<br />&nbsp;&nbsp;&nbsp; public String Name<br />&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; get { return GetProperty(NameProperty); }<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; set { SetProperty(NameProperty, value); }<br />&nbsp;&nbsp;&nbsp; }</p>
+<p>#if SILVERLIGHT</p>
+<p>&nbsp;&nbsp;&nbsp; // OK - Calls the local DataPortal_Create. <br />&nbsp;&nbsp;&nbsp; public static void NewLocalTestObject(EventHandler&lt;DataPortalResult&lt;TestObject&gt;&gt; callback)<br />&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; DataPortal.BeginCreate&lt;TestObject&gt;(callback, DataPortal.ProxyModes.LocalOnly);<br />&nbsp;&nbsp;&nbsp; }<br /><strong>&nbsp;&nbsp;&nbsp; // Err - Calls the remote DataPortal_Fetch. It should call the Local DataPortal_Fetch.<br />&nbsp;&nbsp;&nbsp; public static void GetLocalTestObject(EventHandler&lt;DataPortalResult&lt;TestObject&gt;&gt; callback)<br />&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; DataPortal.BeginFetch&lt;TestObject&gt;(callback, DataPortal.ProxyModes.LocalOnly);<br />&nbsp;&nbsp;&nbsp; }<br /></strong>&nbsp;&nbsp;&nbsp; // OK - Calls the remote DataPortal_Create. <br />&nbsp;&nbsp;&nbsp; public static void NewRemoteTestObject(EventHandler&lt;DataPortalResult&lt;TestObject&gt;&gt; callback)<br />&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; DataPortal.BeginCreate&lt;TestObject&gt;(callback);<br />&nbsp;&nbsp;&nbsp; }<br />&nbsp;&nbsp;&nbsp; // OK - Calls the remote DataPortal_Fetch.<br />&nbsp;&nbsp;&nbsp; public static void GetRemoteTestObject(EventHandler&lt;DataPortalResult&lt;TestObject&gt;&gt; callback)<br />&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; DataPortal.BeginFetch&lt;TestObject&gt;(callback);<br />&nbsp;&nbsp;&nbsp; }</p>
+<p>&nbsp;&nbsp;&nbsp; public override void DataPortal_Create(Csla.DataPortalClient.LocalProxy&lt;TestObject&gt;.CompletedHandler handler)<br />&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Name = &quot;Local Create&quot;;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; handler(this, null);<br />&nbsp;&nbsp;&nbsp; }</p>
+<p>&nbsp;&nbsp;&nbsp; public void DataPortal_Fetch(Csla.DataPortalClient.LocalProxy&lt;TestObject&gt;.CompletedHandler handler)<br />&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Name = &quot;Local Fetch&quot;;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; handler(this, null);<br />&nbsp;&nbsp;&nbsp; }<br />#else<br />&nbsp;&nbsp;&nbsp; protected override void DataPortal_Create()<br />&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Name = &quot;Remote Create&quot;;<br />&nbsp;&nbsp;&nbsp; }</p>
+<p>&nbsp;&nbsp;&nbsp; private void DataPortal_Fetch ()<br />&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Name = &quot;Remote Fetch&quot;;<br />&nbsp;&nbsp;&nbsp; }<br />#endif<br />}</p>
+<p><br />Am I wrong to assume that we can have few objects call local DataPortal<br />while the rest of them call the remote DataPortal?</p>
+<p>Thank You.</p>
+<p>Luigi</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Thursday, March 31, 2011</h2><p>Only BeginCreate has the overload to allow the ProxyMode parameter.</p>
+<p>In 4.1 you need to use the long form:</p>
+<p>var dp = new DataPortal&lt;TestObject&gt;();<br />dp.FetchCompleted += callback;<br />dp.BeginFetch();</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>lds replied on Thursday, March 31, 2011</h2><p>Hi Rocky,</p>
+<p>Thank you for your reply, I have changed </p>
+<p>public static void GetLocalTestObject(EventHandler&lt;DataPortalResult&lt;TestObject&gt;&gt; callback)<br />{<br />&nbsp; DataPortal.BeginFetch&lt;TestObject&gt;(callback, DataPortal.ProxyModes.LocalOnly);<br />}</p>
+<p>to</p>
+<p>public static void GetLocalTestObject(EventHandler&lt;DataPortalResult&lt;TestObject&gt;&gt; callback)<br />{<br />&nbsp; var dp = new DataPortal&lt;TestObject&gt;();<br />&nbsp; dp.FetchCompleted += callback;<br />&nbsp; dp.BeginFetch();<br />}</p>
+<p>I still get the same results as before, meaning when I Call GetLocalTestObject it still sets <br />the Name Property to &quot;Remote Fetch&quot; and not to &quot;Local Fetch&quot; which is what I&#39;m try to do.</p>
+<p>I&#39;m looking to have the TestObject DataPortal_XYZ access the Isolated Storage in Silverlight<br />while all the other objects DataPortal_XYZ continue to access the data on the server.</p>
+<p>Thank You</p>
+<p>Luigi</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Thursday, March 31, 2011</h2><p>Sorry, you need to pass the ProxyModes parameter to the new DataPortal&lt;T&gt; call.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>lds replied on Thursday, March 31, 2011</h2><p>Rocky,</p>
+<p>It works like a charm!!!!</p>
+<p>Many Thanks for your help</p>
+<p>Luigi</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Ziad replied on Friday, April 22, 2011</h2><p>Hello,</p>
+<p>I have a similar problem,</p>
+<p>I want my BeginFetch to call my remote DataPortal_Fetch. But the problem is that its not entering the Remote DataPortal_Fetch whenever the BeginFetch() is called. What have you done so it can call the Remote one? I have configured all the WCFproxy stuff and I&#39;m using the compression folders.</p>
+<p>I appreciate any help</p>
+<p>Thanks</p>
+<p>Ziad</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, April 22, 2011</h2><p>Is the client Silverlight, WP7, WPF, or something else?</p>
+<p>The data portal defaults to using LocalProxy in most cases. Silverlight is the only place it defaults to using WcfProxy.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Ziad replied on Friday, April 22, 2011</h2><p>Thanks for your reply.</p>
+<p>I&#39;ve found the error, it was in the Webconfig...</p>
+<p>Thx again</p>
+<p>Ziad</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

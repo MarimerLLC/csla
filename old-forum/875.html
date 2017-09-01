@@ -1,0 +1,21 @@
+<html><header><title>OT: Need UI Webcontrol Advice</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>OT: Need UI Webcontrol Advice</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/875.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>david.wendelken posted on Thursday, August 10, 2006</h2><P>I built a set of pages similar to the ResourceList.aspx and ResourceEdit.aspx for my application.</P>
+<P>Now I want to tie some of them together using a Wizard Control on another page.&nbsp; But, I also want users to be able to navigate directly to the page.</P>
+<P>It seems like I should turn my pages into Webcontrols instead of Webforms.&nbsp; That way, I should be able to embed the same control on a stand-alone page and on a wizard step.</P>
+<P>I converted my ResourceList.aspx equivalent into an ascx file (first one I ever built!) and dragged it onto the wizard step.&nbsp; Then I converted my ResourceEdit.aspx into an ascx file also, and tried to navigate to it by choosing a record to edit.&nbsp; </P>
+<P>I get this error:</P>
+<P><EM>This type of page is not served.</EM> </P>
+<P><EM>The type of page you have requested is not served because it has been explicitly forbidden. &nbsp;The extension '.ascx' may be incorrect. &nbsp;&nbsp;Please review the URL below and make sure that it is spelled correctly. <BR></EM></P>
+<P>I couldn't find a setting in IIS that seemed to have anything to do with this error.&nbsp; Ditto in my web.config file based upon the ProjectTracker web.config file.</P>
+<P>So, how do I make this happen?</P>
+<UL>
+<LI>Turn on ability to serve up ascx files?&nbsp; If so, how do I do it and what are the security ramifications?</LI>
+<LI>Embed a multi-view on the wizard page and switch between the two ascx controls somehow?&nbsp; (It appears that's possible to do, but I haven't learned how to do it yet.)</LI></UL>
+<P>Thanks!<BR></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Friday, August 11, 2006</h2>Did you try running aspnet_regiis -i from the version directory of the framework?<br><br>In server 2003, you need to check the IIS manager's allowed extensions.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>david.wendelken replied on Friday, August 11, 2006</h2><P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>ajj3085:</strong></div><div>Did you try running aspnet_regiis -i from the version directory of the framework?<BR><BR>In server 2003, you need to check the IIS manager's allowed extensions.<BR></div></BLOCKQUOTE></P>
+<P>Realized I wasn't completely clear.&nbsp; The ResourceList.ascx works just fine.&nbsp; It's the hyperlink to the ResourceEdit.ascx that is giving the error.</P>
+<P>I couldn't figure out in IIS where the list of allowed extensions is.&nbsp; Help?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>david.wendelken replied on Friday, August 11, 2006</h2><P>Ok, I've learned some more.</P>
+<P>The problem is (apparently) that we're not allowed to hyperlink directly to a web user control.&nbsp; </P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>david.wendelken replied on Sunday, August 13, 2006</h2><P>I'm trying to access the actual database column data values held in the GridView in a RowCommand event handler.&nbsp; </P>
+<P>I can't figure out where they are!&nbsp; </P>
+<P>Could someone give an example of referencing one of them in a code-behind event handler?</P>
+<P>Preferably by column name instead of its index position...</P>
+<P>Thanks!</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,16 @@
+<html><header><title>errorprovider and BindingSource, but no errors until user clicks Ok </title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>errorprovider and BindingSource, but no errors until user clicks Ok </h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6634.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>l.vanderdonk posted on Thursday, March 19, 2009</h2><P>Hi There,</P>
+<P>Does anybody know if there is an easier way of avoiding errors of errorprovider on CreateObject on a windowsform than the one Rocky suggested 07-16-2007 (see article), I want to keep the call to CheckRules() in create of the BO. Im posting this because it's some time ago and there might be an easier way of doing this(due to an update of csla ed).</P>
+<P><A HREF="/forums/thread/16132.aspx">http://forums.lhotka.net/forums/thread/16132.aspx</A></P>
+<P>Thanks in advance.</P>
+<P>Best Regards,</P>
+<P>Laurens van der Donk</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, March 20, 2009</h2><P>Yes, I recently posted about this on another thread. You can use the short-circuiting feature of the business rules subsystem in CSLA to do this. The basic steps are:</P>
+<OL>
+<LI>Define a property (it can be private) in your object that returns true/false based on whether you want rules to execute (you'll probably base this property on IsNew and other factors)</LI>
+<LI>Create a rule method that always returns true (success), but which manually short-circuits business rule processing based on the property from step 1</LI>
+<LI>Add this rule to all your properties at priority -1, so it runs before any other rules</LI></OL>
+<P>This will suppress all rules from running until the property in step 1 says they should run.</P>
+<P>Then in your Save() method override, you'll to change the property in step 1, call ValidationRules.CheckRules() to check all the rules, and throw a ValidationException if the object isn't valid to prevent the user from creating an object with invalid data.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>l.vanderdonk replied on Saturday, March 21, 2009</h2><P>Hi Rocky,</P>
+<P>This will help. Thanks a lot for your reply.</P>
+<P>Laurens</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,1224 @@
+<html><header><title>CSLA .NET 3.5 enhancement - object level authorization</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA .NET 3.5 enhancement - object level authorization</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4195.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka posted on Friday, January 18, 2008</h2><P>The object-level authorization concept has now been formalized into Csla.Security. So instead of implementing (by convention) those four static methods on each type (CanGetObject(), etc), it is all managed now through CSLA itself.</P>
+<P>This is an important change, as it allows the data portal and UI code to check authorization in a standard, reusable manner. The result is less code in each object (no need to check authorization in factory methods or a Save() override) and the potential to use authorization in UI frameworks.</P>
+<P>There are three parts to this change.</P>
+<P>The first part is in your business object implementation itself. Instead of implementing (by convention) the CanAddObject(), CanGetObject(), CanEditObject() and CanDeleteObject() methods in your object, you now implement a single static/Shared method&nbsp;like this:</P>
+<P>&nbsp;&nbsp;&nbsp; protected static void AddObjectAuthorizationRules()<BR>&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // add object-level authorization rules here<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; AuthorizationRules.AllowCreate(typeof(Project), "ProjectManager");<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; AuthorizationRules.AllowEdit(typeof(Project), "ProjectManager");<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; AuthorizationRules.AllowDelete(typeof(Project), "ProjectManager");<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; AuthorizationRules.AllowDelete(typeof(Project), "Administrator");<BR>&nbsp;&nbsp;&nbsp; }</P>
+<P>This method is called once per AppDomain and associates roles with each operation. You can allow or deny specific roles, just like you can with properties.</P>
+<P>The second part of the change is also in the business object implementation. Typically you'd have calls in your factory methods and a Save() override to check authorization. That is no longer necessary because the data portal (client-side) now performs those checks automatically. The Create() method calls CanCreateObject(), the Fetch() method calls CanGetObject(), the Delete() method calls CanDeleteObject(). The Update() method is more complex, and looks at the state of your object to decide whether to call CanCreateObject(), CanEditObject() or CanDeleteObject().</P>
+<P>BusinessBase.IsSavable now also checks authorization, so an object is savable only if it is dirty, valid and the user is authorized to do the save. This will make most Windows and WPF apps automatically turn Save buttons on/off based on authorization.</P>
+<P>The CslaDataProvider now also uses authorization to turn on/off the AddNew button in a WPF form based on whether the user is authorized to edit the collection (CanEditObject()).</P>
+<P>The third part of the change is that you can write UI code (or business object code) to explicitly check the authorization. This is now done by calling static methods on AuthorizationRules, like this:</P>
+<P>bool canCreate = Csla.Security.AuthorizationRules.CanCreateObject(typeof(Project));<BR>bool canGet = Csla.Security.AuthorizationRules.CanGetObject(typeof(Project));<BR>bool canEdit = Csla.Security.AuthorizationRules.CanEditObject(typeof(Project));<BR>bool canDelete = Csla.Security.AuthorizationRules.CanDeleteObject(typeof(Project));</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Friday, January 18, 2008</h2>Sounds very cool.&nbsp; Can't wait until I finish the part of the project I'm on now, then I can start moving to 3.5!<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jimbo replied on Friday, January 18, 2008</h2>This does not change the fact that you still need to remember to
+include the static method to add Authorisation Rules. It is still using
+the same&nbsp; "convention". &nbsp; Why can't this be an implementation
+contract - even if it the method does nothing ?<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, January 18, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>If you know of a way to force the implementation of a static
+method I&#8217;ll make it a contract. <o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I&#8217;ve been beating my brains out on this, but no obvious
+solution presents itself. A static constructor would be an answer, but there&#8217;s
+no simple/reliable way to force a cctor to execute (short of instantiating the
+type). This is the best compromise I&#8217;ve been able to figure out.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>But if anyone has a better answer I&#8217;m all ears!<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Jimbo
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Friday, January 18, 2008 9:09 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] CSLA .NET 3.5 enhancement - object level
+authorization<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>This does not change the fact that you still need to
+remember to include the static method to add Authorisation Rules. It is still
+using the same&nbsp; &quot;convention&quot;. &nbsp; Why can't this be an
+implementation contract - even if it the method does nothing ?<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>trives replied on Thursday, January 24, 2008</h2><P>Hi Rocky,</P>
+<P>Would you consider adding FlattenHierarchy to the binding flags in&nbsp;ObjectAuthorizationRules.GetRoles(Type objectType)?&nbsp; This would allow the GetMethod call to find a non-private, static method AddObjectAuthorizationRules in a base class of objectType.&nbsp; That static method would then be able to delegate the task of adding authorization rules.</P>
+<P>For example:</P><FONT face="Courier New" color=#0000ff size=2>
+<P>public</FONT><FONT face="Courier New" size=2> abstract </FONT><FONT face="Courier New" color=#0000ff size=2>class</FONT><FONT face="Courier New" size=2> NewBusinessBase&lt;T&gt; : Csla.BusinessBase&lt;T&gt; <BR>&nbsp;&nbsp;&nbsp; where T : NewBusinessBase&lt;T&gt;<BR>{<BR></FONT><FONT face="Courier New" color=#0000ff size=2>&nbsp;&nbsp;&nbsp;protected </FONT><FONT face="Courier New" color=#0000ff size=2>static</FONT><FONT face="Courier New" size=2> </FONT><FONT face="Courier New" color=#0000ff size=2>void</FONT><FONT face="Courier New" size=2> AddObjectAuthorizationRules()<BR>&nbsp;&nbsp;&nbsp;{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; SomeUtility.AddObjectAuthorizationRules(</FONT><FONT face="Courier New" color=#0000ff size=2>typeof</FONT><FONT face="Courier New" size=2>(T));<BR>&nbsp;&nbsp; }<BR>}</P></FONT>
+<P>I image that flattening the hierarchy would be slower, but this hit would occur only once per type.</P>
+<P>Tim</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, January 24, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Ahh, that&#8217;s a good idea!<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> trives
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Thursday, January 24, 2008 2:04 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: CSLA .NET 3.5 enhancement - object level
+authorization<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Hi Rocky,<o:p></o:p></p>
+
+<p>Would you consider adding FlattenHierarchy to the binding flags
+in&nbsp;ObjectAuthorizationRules.GetRoles(Type objectType)?&nbsp; This would
+allow the GetMethod call to find a non-private, static method
+AddObjectAuthorizationRules in a base class of objectType.&nbsp; That static
+method would then be able to delegate the task of adding authorization rules.<o:p></o:p></p>
+
+<p>For example:<o:p></o:p></p>
+
+<p><span>public</span><span> abstract <span>class</span> NewBusinessBase&lt;T&gt; :
+Csla.BusinessBase&lt;T&gt; <br>
+&nbsp;&nbsp;&nbsp; where T : NewBusinessBase&lt;T&gt;<br>
+{<br>
+<span>&nbsp;&nbsp;&nbsp;protected static</span> <span>void</span> AddObjectAuthorizationRules()<br>
+&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; SomeUtility.AddObjectAuthorizationRules(<span>typeof</span>(T));<br>
+&nbsp;&nbsp; }<br>
+}<o:p></o:p></span></p>
+
+<p>I image that flattening the hierarchy would be slower, but this hit would
+occur only once per type.<o:p></o:p></p>
+
+<p>Tim<o:p></o:p></p>
+
+<p>&nbsp;<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>skagen00 replied on Friday, January 25, 2008</h2><P>I'd be very interested in the change in binding flags to include FlattenHierarchy too. In fact, it could come in handy with something we're working on right now. (We're refactoring for 3.5 already). </P>
+<P>Thanks!</P>
+<P>Chris</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, January 25, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I&#8217;ve put that change into svn, so it will be in the next
+release.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> skagen00
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Friday, January 25, 2008 7:59 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: RE: CSLA .NET 3.5 enhancement - object
+level authorization<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>I'd be very interested in the change in binding flags to include
+FlattenHierarchy too. In fact, it could come in handy with something we're
+working on right now. (We're refactoring for 3.5 already). <o:p></o:p></p>
+
+<p>Thanks!<o:p></o:p></p>
+
+<p>Chris<o:p></o:p></p>
+
+<p>&nbsp;<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>stefan replied on Thursday, January 24, 2008</h2>I think that aiming for an analogy between property/method-authorization and type-authorization is good.<br><br>One big advantage of the current implementation of property/method-authorization is the support for custom authorization, namely achievable by the fact that the CanReadProperty/CanWriteProperty/CanExecuteMethod functions are overridable.<br>This is a really big plus. <br><br>Type-authorization should work the same way. <br>The automatic type-authorization checks performed in the data portal should delegate to a custom authorization, if implemented. <br>There should be overridable functions like CanGetObject etc. in each object instance of BusinessBase/BusinessListBase, as these can't be static/shared. But they would be one liners, just calling the static/shared datastructure: <br>"return Csla.Security.AuthorizationRules.CanGetObject(GetType(T))"<br><br>The data portal then would just use 'CanXYZObject' function calls.<br><br>Then the analogy would be perfect...<br><br><br>Stefan<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, January 24, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>That would be nice. Unfortunately you can&#8217;t make static
+methods virtual, so overriding isn&#8217;t really an option.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>However, centralization is an option, because the static methods
+are public, anyone can call them, so you could centralize your authorization
+settings.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Or you could create an instance of an object to provide the
+authorization data &#8211; and that instance could be a subclass or something.
+I haven&#8217;t thought that through.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> stefan [mailto:cslanet@lhotka.net]
+<br>
+<b>Sent:</b> Thursday, January 24, 2008 10:49 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] CSLA .NET 3.5 enhancement - object level
+authorization<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>I think that aiming for an analogy between
+property/method-authorization and type-authorization is good.<br>
+<br>
+One big advantage of the current implementation of
+property/method-authorization is the support for custom authorization, namely
+achievable by the fact that the
+CanReadProperty/CanWriteProperty/CanExecuteMethod functions are overridable.<br>
+This is a really big plus. <br>
+<br>
+Type-authorization should work the same way. <br>
+The automatic type-authorization checks performed in the data portal should
+delegate to a custom authorization, if implemented. <br>
+There should be overridable functions like CanGetObject etc. in each object
+instance ob BusinessBase/BusinessListBase, as they can't be static. But they
+would be one liners, just calling the static/shared datastructure: <br>
+&quot;return Csla.Security.AuthorizationRules.CanGetObject(GetType(T))&quot;<br>
+<br>
+The data portal then would just use 'CanXYZObject' function calls.<br>
+<br>
+Then the analogy would be perfect...<br>
+<br>
+<br>
+S tefan<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>stefan replied on Friday, January 25, 2008</h2>Your are right.<br>And I forgot that the reason why the CanXYZObject functions had to be shared/static was <br>- to be able to adapt the UI to the users authorization beforehand <br>- to check the users authorization from inside any shared/static factory methods<br>&nbsp; (NewObject,GetObject,...), before invoking the dataportal.<br>Both cases working without any instances of the object type in question in memory.<br><br>Now in 3.5, the (now automatic) authorization checks happen when the dataportal has been invoked.<br>This implies that there already is an instance of an object in memory, so the<br>need of having a shared/static mehod is gone in this case.<br><br>So there still remains the first case...and I think that there is no way around a shared/static method here.<br><br>Stefan<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rlarno replied on Thursday, January 24, 2008</h2><P>Hi Rocky,</P>
+<P>I joined the Live Meeting today, great show, got some good pointers on the new features for 3.5. It really looks very promising. Too bad I won't be able to jump onto the 3.5 release for a long while. <img src="/emoticons/emotion-6.gif" alt="Sad [:(]" /></P>
+<P>I saw that you added the SetProperty&lt;T&gt;, etc. good stuff. Now is there a reason these object level authorization methods are not using generics? as in:</P>
+<P><FONT face="Courier New">Csla.Security.AuthorizationRules.AllowCreate&lt;T&gt;(string roleName)</FONT></P>
+<P>So one could use:</P>
+<P><FONT face="Courier New">AuthorizationRules.AllowCreate&lt;Project&gt;("ProjectManager");</FONT></P>
+<UL>
+<LI>I have always liked how generics make code much more readable.</LI>
+<LI>One gets Intellisense to select the type</LI>
+<LI>One does not forget to use typeof(...)</LI></UL>
+<P>Since this is a one-off, I would imagine that the overhead of using a generic (even if there is some) is not critical.</P>
+<P>Rudi</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, January 24, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>The reason for not using generics is because that would prevent
+the use of dynamic loading from metadata. Generics are a compile-time concept,
+but sometimes you don&#8217;t know a type until runtime.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>If you put your auth rules in a metastore (xml file, database)
+and then load them at runtime, you don&#8217;t necessarily know the type &#8211;
+especially if you do your loading in a centralized service.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> rlarno
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Thursday, January 24, 2008 2:43 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] CSLA .NET 3.5 enhancement - object level
+authorization<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Hi Rocky,<o:p></o:p></p>
+
+<p>I joined the Live Meeting today, great show, got some good pointers on the
+new features for 3.5. It really looks very promising. Too bad I won't be able
+to jump onto the 3.5 release for a long while. <img id="_x0000_i1025" src="/emoticons/emotion-6.gif" alt="Sad <img src=" />"><o:p></o:p></p>
+
+<p>I saw that you added the SetProperty&lt;T&gt;, etc. good stuff. Now is there
+a reason these object level authorization methods are not using generics? as
+in:<o:p></o:p></p>
+
+<p><span>Csla.Security.AuthorizationRules.AllowCreate&lt;T&gt;(string
+roleName)</span><o:p></o:p></p>
+
+<p>So one could use:<o:p></o:p></p>
+
+<p><span>AuthorizationRules.AllowCreate&lt;Project&gt;(&quot;ProjectManager&quot;);</span><o:p></o:p></p>
+
+<ul>
+ <li class=MsoNormal>I have always liked how generics make code much
+     more readable.<o:p></o:p></li>
+ <li class=MsoNormal>One gets Intellisense to select the type<o:p></o:p></li>
+ <li class=MsoNormal>One does not forget to use typeof(...)<o:p></o:p></li>
+</ul>
+
+<p>Since this is a one-off, I would imagine that the overhead of using a
+generic (even if there is some) is not critical.<o:p></o:p></p>
+
+<p>Rudi<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>triplea replied on Friday, January 25, 2008</h2><P>I really like the change but have a concern. I have implemented a permission system like the one described here: <A HREF="/forums/thread/17224.aspx">http://forums.lhotka.net/forums/thread/17224.aspx</A>. It works really well for me and I would like to keep it. Basically it allows me to place code in the static CanXYZObject() methods such as:</P>
+<P>return PTPrincipal.HasPermission("Create Project")</P>
+<P>Am I right by thinking I will not be able to use this functionality? Of course I guess I could always stick on the old way but I would hate to miss out on any new cool CSLA features...</P>
+<P>Also, by default if you don't have a AddObjectAuthorizationRules() implementation in your classwould the object happily save (add/update/delete) or will an exception be thrown?<BR></P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, January 25, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>The object-level auth works like the property-level &#8211;
+which is to say that if you don&#8217;t specifically allow/deny any roles then
+all roles are allowed. The default is permissive.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Regarding the HasPermission() thing &#8211; I finally
+implemented something Joe asked for a long time ago. You can now provide a
+replacement behavior for IsInRole() deep within CSLA. This is a provider model
+concept, where you write an IsInRole provider that (if I remember right) looks
+like this:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>void IsInRole(IPrincipal principal, string role)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>The default provider in CSLA simply returns
+principal.IsInRole(role), but you could write a provider like<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>public static void IsInRole(IPrincipal principal, string role)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>{<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp; PTPrincipal.HasPermission(role);<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>}<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Or<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>public static void IsInRole(IPrincipal principal, string role)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>{<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp; var p = principal as MyCustomPrincipalType;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp; if (p != null)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp; return p.HasPermission(role);<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp; else<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp; return false;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>}<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Or whatever you need. Then you just add an entry in the
+app.config file to tell CSLA to load this custom provider and away you go.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> triplea
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Friday, January 25, 2008 7:46 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] CSLA .NET 3.5 enhancement - object level
+authorization<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>I really like the change but have a concern. I have implemented a permission
+system like the one described here: <a href="/forums/thread/17224.aspx">http://forums.lhotka.net/forums/thread/17224.aspx</a>.
+It works really well for me and I would like to keep it. Basically it allows me
+to place code in the static CanXYZObject() methods such as:<o:p></o:p></p>
+
+<p>return PTPrincipal.HasPermission(&quot;Create Project&quot;)<o:p></o:p></p>
+
+<p>Am I right by thinking I will not be able to use this functionality? Of
+course I guess I could always stick on the old way but I would hate to miss out
+on any new cool CSLA features...<o:p></o:p></p>
+
+<p>Also, by default if you don't have a AddObjectAuthorizationRules()
+implementation in your classwould the object happily save (add/update/delete)
+or will an exception be thrown?<o:p></o:p></p>
+
+<p>&nbsp;<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>triplea replied on Friday, January 25, 2008</h2><P>Thanks Rocky but I don't think I quite follow, maybe it was my explanation but I will try again. What I have is an IList&lt;Permission&gt; within MyPrincipal which loads from the database all the permissions the user has. So lets assume 2 roles:<BR><BR>Viewer: "Get Project"<BR>Administrator: "Get Project", "Create Project"</P>
+<P>In my Project.CanAddObject() static method I would have the following:</P>
+<P>public static bool CanAddObject() { HasPermission("Create Project"); }</P>
+<P>Its not so much the HasPermission() method that concerns me (its implemented in my custom base class currently but I can move it as per your comments) but rather how it would fit in the AddObjectAuthorizationRules()&nbsp;implementation. The only way I can think of would be something like this:</P>
+<P>&nbsp;&nbsp;&nbsp; protected static void AddObjectAuthorizationRules()<BR>&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // add object-level authorization rules here<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; AuthorizationRules.AllowCreate(HasPermission("Create Project"));<BR>&nbsp;&nbsp;&nbsp; }</P>
+<P>That would work fine but I'm not sure this overload will be provided.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, January 25, 2008</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Ahh.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>No, in the AddObjectAuthorizationRules() you&#8217;d treat your &#8220;permissions&#8221;
+like &#8220;roles&#8221;.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p>&nbsp;&nbsp;&nbsp; protected static void AddObjectAuthorizationRules()<br>
+&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // add object-level authorization rules here<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; AuthorizationRules.AllowCreate(&quot;Create
+Project&quot;);<br>
+&nbsp;&nbsp;&nbsp; }<o:p></o:p></p>
+
+<p class=MsoNormal><span>Then you&#8217;d use the technique from my previous post to make
+sure all &#8220;IsInRole&#8221; checks actually do a &#8220;HasPermission&#8221;
+check instead.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>triplea replied on Friday, January 25, 2008</h2>Hmm it looks a bit odd but if it works then I am happy! Maybe make a note to cover this in the book (if there will be any free space) <img src="/emoticons/emotion-1.gif" alt="Smile [:)]" /></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rsbaker0 replied on Friday, February 15, 2008</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div> 
+
+<DIV class=Section1>
+<P class=MsoNormal><SPAN>The object-level auth works like the property-level – which is to say that if you don’t specifically allow/deny any roles then all roles are allowed. The default is permissive.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN><SPAN>The default provider in CSLA simply returns principal.IsInRole(role), but you could write a provider like<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN><SPAN>public static void IsInRole(IPrincipal principal, string role)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>{<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>&nbsp; PTPrincipal.HasPermission(role);<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>}<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Or<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>public static void IsInRole(IPrincipal principal, string role)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>{<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>&nbsp; var p = principal as MyCustomPrincipalType;<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>&nbsp; if (p != null)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>&nbsp;&nbsp;&nbsp; return p.HasPermission(role);<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>&nbsp; else<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>&nbsp;&nbsp;&nbsp; return false;<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>}<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Or whatever you need. Then you just add an entry in the app.config file to tell CSLA to load this custom provider and away you go.</SPAN></P></DIV>
+<P></div></BLOCKQUOTE></P>
+<P>I think I'm missing something. </P>
+<P>How can I use this mechanism to have authorization rules or permissions that vary from one object to another of the same class?</P>
+<P>We mainly have "write" rules and only a few "read" ones, so what we have been doing for the time being is to implement object-specific rules as business rules rather than authorization rules. If a user modifies inadvertently modifies something they aren't suppose to, we break the object so it can't be saved. </P>
+<P>No, it's not perfect but the business rule implementation seems almost infinitely flexible. It would be nice to see the equivalent on the authorization side. </P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Saturday, February 16, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>If you want rules to vary from object instance to instance this
+is not the technique for you. In that case you would override CanReadProperty()
+and CanWriteProperty() in your specific business class.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>The purpose of the IsInRole provider is to allow you to use
+something other than the standard .NET principal object, or methods on your
+principal object other than simply IsInRole. For example, at one Magenic client
+they needed to not only check roles, but also check the user’s department code
+(an extra property on the Identity) to see if the user was in the correct
+department as well as the correct role.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> rsbaker0
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Friday, February 15, 2008 7:40 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: CSLA .NET 3.5 enhancement - object level
+authorization<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<blockquote>
+
+<div>
+
+<p class=MsoNormal><img id="_x0000_i1025" src="/Themes/default/images/icon-quote.gif"><strong>RockfordLhotka:</strong><o:p></o:p></p>
+
+</div>
+
+<div>
+
+<div>
+
+<p class=MsoNormal>The
+object-level auth works like the property-level â€“ which is to say that if you
+donâ€™t specifically allow/deny any roles then all roles are allowed. The
+default is permissive.<o:p></o:p></p>
+
+<p class=MsoNormal>&nbsp;The
+default provider in CSLA simply returns principal.IsInRole(role), but you could
+write a provider like<o:p></o:p></p>
+
+<p class=MsoNormal>&nbsp;public
+static void IsInRole(IPrincipal principal, string role)<o:p></o:p></p>
+
+<p class=MsoNormal>{<o:p></o:p></p>
+
+<p class=MsoNormal>&nbsp;
+PTPrincipal.HasPermission(role);<o:p></o:p></p>
+
+<p class=MsoNormal>}<o:p></o:p></p>
+
+<p class=MsoNormal>&nbsp;<o:p></o:p></p>
+
+<p class=MsoNormal>Or<o:p></o:p></p>
+
+<p class=MsoNormal>&nbsp;<o:p></o:p></p>
+
+<p class=MsoNormal>public
+static void IsInRole(IPrincipal principal, string role)<o:p></o:p></p>
+
+<p class=MsoNormal>{<o:p></o:p></p>
+
+<p class=MsoNormal>&nbsp;
+var p = principal as MyCustomPrincipalType;<o:p></o:p></p>
+
+<p class=MsoNormal>&nbsp;
+if (p != null)<o:p></o:p></p>
+
+<p class=MsoNormal>&nbsp;&nbsp;&nbsp;
+return p.HasPermission(role);<o:p></o:p></p>
+
+<p class=MsoNormal>&nbsp;
+else<o:p></o:p></p>
+
+<p class=MsoNormal>&nbsp;&nbsp;&nbsp;
+return false;<o:p></o:p></p>
+
+<p class=MsoNormal>}<o:p></o:p></p>
+
+<p class=MsoNormal>&nbsp;<o:p></o:p></p>
+
+<p class=MsoNormal>Or
+whatever you need. Then you just add an entry in the app.config file to tell
+CSLA to load this custom provider and away you go.<o:p></o:p></p>
+
+</div>
+
+</div>
+
+</blockquote>
+
+<p>I think I'm missing something. <o:p></o:p></p>
+
+<p>How can I use this mechanism to have authorization rules or permissions that
+vary from one object to another of the same class?<o:p></o:p></p>
+
+<p>We mainly have &quot;write&quot; rules and only a few &quot;read&quot; ones,
+so what we have been doing for the time being is to implement object-specific
+rules as business rules rather than authorization rules. If a user modifies
+inadvertently modifies something they aren't suppose to, we break the object so
+it can't be saved. <o:p></o:p></p>
+
+<p>No, it's not perfect but the business rule implementation seems almost
+infinitely flexible. It would be nice to see the equivalent on the
+authorization side. <o:p></o:p></p>
+
+<p>&nbsp;<o:p></o:p></p>
+
+<p>&nbsp;<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Saturday, February 16, 2008</h2><P>Rocky,</P>
+<P>Can you review the 2 posts by Trives starting with Feb 11?</P>
+<P>The idea of IsSelfDirty and IsSelfValid has been useful to me over the years that I have been managing contained BOs. </P>
+<P>He also asks about implementing an Interface.</P>
+<P>Joe</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Saturday, February 16, 2008</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I&#8217;ll get there Joe :)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I just spent two weeks full-time at a client, and so had little
+time to follow the forum at all, much less do any CSLA work. <o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I saw the self-dirty/valid stuff and that&#8217;s also a good
+idea, which I will add into the framework.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I&#8217;m not sure I saw the interface post &#8211; I&#8217;ll have
+to find that one. Is this the one about a provider pattern for authorization?
+That probably won&#8217;t happen in 3.5 &#8211; too big a change, but maybe in
+3.5.1 or something. Or is it something else? I&#8217;ll certainly add
+IsSelfValid/Dirty to the existing interfaces if that&#8217;s the concern.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Now, however, I&#8217;m going to spend the rest of the day with
+my family &#8211; being gone for two full weeks is not much fun. I can&#8217;t
+say I recommend it ;)&nbsp; I don&#8217;t think my dog has left my side since I
+got home. My kids would probably be the same, except the lure of the xbox is
+too great for them to resist :)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rsbaker0 replied on Sunday, February 17, 2008</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div> 
+
+<DIV class=Section1>
+<P class=MsoNormal><SPAN>If you want rules to vary from object instance to instance this is not the technique for you. In that case you would override CanReadProperty() and CanWriteProperty() in your specific business class...</SPAN></P></DIV>
+<P></div></BLOCKQUOTE></P>
+<P>I wasn't so much thinking of changing the semantics of IsInRole() as I was providing a built-in mechanism to inspect the object contents when executing the authorization rules (much like the business rules can), versus looking only at the current user or principal to see if they have a particular permission or are in role without having the object available. </P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Sunday, February 17, 2008</h2><P>Yes, I understand. It is important to realize that there are different questions involved here, each one filling a specific role.</P>
+<P>At the top level is can the user read/write/execute something on a given object. That's where you can override CanReadProperty/CanWriteProperty/CanExecuteMethod - to answer that particular question. This ability isn't new - these methods have been virtual since 2.0.</P>
+<P>A lower level question is whether the user is in a specific "role" (or has a "permission" or whatever). This question is often required to answer the first question, but not always. The change in 3.5 is to allow you to "override" how this question is answered. This meets a very narrow need, where sometimes the question shouldn't be answered merely in terms of roles, but also in terms of permissions or other user profile data.</P>
+<P>Combined, these two extensibility points seem like they should answer most people's need for flexibility, especially since that top level one can be used to entirely replace the auth infrastructure in CSLA if that's necessary.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>maurera replied on Wednesday, February 20, 2008</h2><P>We, too, have an issue with Role Based Application Checks.&nbsp; The situation we find ourselves in is that we require more "contextual" data to check roles.&nbsp; I had posted some time ago regarding this, and thought that the IsInRole Delegate solution might meet our needs.&nbsp; I am now revisiting the issue, and see that it does not (unless I am missing something).</P>
+<P>The situation is such that we don't require extra information on the principle to "check permissions" (like your example of the client you mentioned, which requires knowledge of what department the user was in), we require extra information about the state of the object that contains members we require a role check for...</P>
+<P>For instance, we have an ItemAdministrator role.&nbsp; A user with&nbsp;the ItemAdministrator role has a set of subteams associated with that role (specific to that user)&nbsp;which&nbsp;determines what item's they can administer (our items have a&nbsp;subteam property).&nbsp; For example, user A may be an ItemAdministrator for grocery and meat, while user B may be an ItemAdministrator for Meat and Seafood.&nbsp; In addition, User A may also&nbsp;have the "Buyer" role&nbsp;for subteam frozen and bread.</P>
+<P>This means that when the item is instanced we need to not&nbsp;just ask the question "Is my user in role ItemAdministrator" when modifiying the item's description,&nbsp;we need to ask "Is my user in role ItemAdministrator for the subteam of the current instance of the item they are attempting to administor?"...does this make sense?</P>
+<P>If I understand the problem we would have to bypass the authorization structure of CSLA to accomplish our goal...not somethign I want to do as we would like to leverage your existing code..&nbsp; I suppose we could write our own, but we just don't have the time in the schedule to do this with the initial release.&nbsp; </P>
+<P>I am wondering if we are just missing something fundimental with regards to Role Based Application Checks...</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, February 20, 2008</h2><P>Let's break this down a bit. The Authorization subsystem in CSLA does a series of things.</P>
+<OL>
+<LI>It stores a list of allow/deny roles for each property</LI>
+<LI>It checks the current principal against the list of allow/deny roles</LI>
+<LI>It caches those results for performance</LI>
+<LI>It uses a swappable delegate so you can change how IsInRole is answered</LI>
+<LI>It allows you to override the CanXyzProperty() methods to override at the top level</LI></OL>
+<P>If you override CanXyzProperty() you can</P>
+<OL>
+<LI>Do pre- and post-processing but still use the existing base implementation</LI>
+<LI>Replace the base implementation with your own</LI></OL>
+<P>If you replace the base implementation you can replicate all the pre-existing functions (leveraging the existing implementations) for everything except caching the results - you'd have to do your own results cache.</P>
+<P>But it isn't clear to me how the existing list of allow/deny roles would be useful to you given your requirements? I think you are describing an auth system that is more sophisticated than a normal role-based or permission-based model, so it is no surprise that a role/permission-based model isn't meeting your needs.</P>
+<P>Which is why you can override CanXyzProperty() so you can implement non-standard auth systems.</P>
+<P>And so my question really, is what part of the existing implementation would you want to reuse, given that it seems like a poor fit overall?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Bob Matthew replied on Wednesday, February 20, 2008</h2><P class=MsoNoSpacing><FONT face=Calibri>Rocky,</FONT></P>
+<P class=MsoNoSpacing><o:p><FONT face=Calibri>&nbsp;</FONT></o:p></P>
+<P class=MsoNoSpacing><FONT face=Calibri>I’m experiencing some interesting behavior with the PropertyInfo objects’ Index property.<SPAN>&nbsp; </SPAN>Specifically, inside of the data portal, which has the exact same assemblies as outside of the data portal, the Index for each PropertyInfo of a business object is different.<SPAN>&nbsp; </SPAN>This has the ability to call throw an InvalidCastException (because a string property can’t be an int property) or worse yet, not exception at all.</FONT></P>
+<P class=MsoNoSpacing><o:p><FONT face=Calibri>&nbsp;</FONT></o:p></P>
+<P class=MsoNoSpacing><FONT face=Calibri>I should probably mention that this is most likely due to the fact that I have a custom base class (which for lack of a better name is called BusinessBaseX) that has a single PropertyInfo object (which is common to my objects) being registered.</FONT></P>
+<P class=MsoNoSpacing><o:p><FONT face=Calibri>&nbsp;</FONT></o:p></P>
+<P class=MsoNoSpacing><FONT face=Calibri>I read through the link you posted previously from the MSDN found here: </FONT><A href="http://msdn2.microsoft.com/en-us/library/aa645758(VS.71).aspx"><U><FONT face=Calibri>http://msdn2.microsoft.com/en-us/library/aa645758(VS.71).aspx</FONT></U></A></P>
+<P class=MsoNoSpacing><o:p><FONT face=Calibri>&nbsp;</FONT></o:p></P>
+<P class=MsoNoSpacing><FONT face=Calibri>If you look closely at the beginning of the article, it says that when the static fields are initialized they “are executed in the textual order in which they appear in the class declaration”.<SPAN>&nbsp; </SPAN>In other words, the only way that they could fire in a different order is by having different versions of an assembly on either side of the portal.</FONT></P>
+<P class=MsoNoSpacing><o:p><FONT face=Calibri>&nbsp;</FONT></o:p></P>
+<P class=MsoNoSpacing><FONT face=Calibri>This being the case, I wonder if I might re-suggest a re-consideration of the methodology that I was using a few weeks ago before 3.5 Beta 1.<SPAN>&nbsp; </SPAN>This methodology was the following for the BusinessBase class.</FONT></P>
+<P class=MsoNoSpacing><o:p><FONT face=Calibri>&nbsp;</FONT></o:p></P>
+<P class=MsoNoSpacing><FONT face=Calibri>// dictionary which maps the property to the index of an array</FONT></P>
+<P class=MsoNoSpacing><FONT face=Calibri>private static Dictionary&lt;IPropertyInfo, int&gt; _properties = new Dictionary&lt; IPropertyInfo, int&gt;();</FONT></P>
+<P class=MsoNoSpacing><o:p><FONT face=Calibri>&nbsp;</FONT></o:p></P>
+<P class=MsoNoSpacing><FONT face=Calibri>// instance values of each property</FONT></P>
+<P class=MsoNoSpacing><FONT face=Calibri>private IFieldData[] _values;</FONT></P>
+<P class=MsoNoSpacing><o:p><FONT face=Calibri>&nbsp;</FONT></o:p></P>
+<P class=MsoNoSpacing><FONT face=Calibri>I will keep you posted on more of the specifics of the problem as I debug, as well as potential workarounds.</FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Bob Matthew replied on Wednesday, February 20, 2008</h2>I meant to post this under the 3.5 Beta 1 thread, so I'll repost there.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>maurera replied on Thursday, February 21, 2008</h2><P>Rocky, I intend to get back to you on your question, unfortunatly we are very slammed right now.&nbsp; I should have time to anwer your question sometime this weekend I think.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>maurera replied on Tuesday, February 26, 2008</h2><P>I still have not been able to find some time to review the Authorization mechanism to determine exactly what we want to leverage from your existing code.&nbsp; I still intend to do a more complete analysis of this at some point, but who knows when I will have the time.</P>
+<P>If I remember correctly though, we thought we would be able to leverage your Role Caching.<SPAN>&nbsp; </SPAN>The concept being that our Roles can still be represented as a string…just not a static one.<SPAN>&nbsp; </SPAN>I think the concept was that, instead of “baking in” the Role via AllowXyz, we would want to do something like</P>
+<P>Dim AuthRole as Role = Roles.NewRole(“ItemAdminstrator”)</P>
+<P>AuthRole.SetContext(me.RetailSubTeam)</P>
+<P>AllowWrite(“ItemDescription”, AuthRole)</P>
+<P class=MsoNormal><FONT face=Calibri>Where the RetailSubTeam value is passed into SetContext by reference.<SPAN>&nbsp; </SPAN>The ultimate call to IsInRole via the CanXyz methods would pass in AuthRole.ToString, which would generate the String “ItemAdministrator\1000” (where 1000 is the ID of the item’s RetailSubTeam).<SPAN>&nbsp; </SPAN>This string would be cached as per normal CSLA execution.<SPAN>&nbsp; </SPAN></FONT></P>
+<P class=MsoNormal><FONT face=Calibri>The biggest problem I see here is that this list could grow considerably.<SPAN>&nbsp; </SPAN>For instance, if we have ten properties, each with five roles that could potentially write to the property, and each role could be for any of the Seventy Four sub teams you can begin to see how large this list could become.<SPAN>&nbsp; </SPAN>This doesn’t factor in some of our roles will require both SubTeam and StoreNo for their “context” data.</FONT></P>
+<P class=MsoNormal><FONT face=Calibri>This is just off the top of my head, and obviously wouldn’t work without us rewriting much of CSLA’s authorization mechanism From the CanXyz method down….but I think that was the general concept we were thinking.<SPAN>&nbsp; </SPAN></FONT></P>
+<P class=MsoNormal><FONT face=Calibri>I will try and do a more detailed analysis sometime this week.<SPAN>&nbsp; </SPAN>As of now, we are planning on putting off any complex IsInRole checking until later this year.<SPAN>&nbsp; </SPAN>For the initial release of the application we are going to use “standard” roles that don’t require contextual data.<SPAN>&nbsp; </SPAN>We think we can get away with this since the initial release will be a small subset of users.<SPAN>&nbsp; </SPAN>When the time comes we will either write our own, or revisit the capabilities of CSLA’s authorization mechanism at that time.</FONT></P>
+<P class=MsoNormal><FONT face=Calibri>Please don’t delay the writing of your book or finalization of CSLA 3.5 on our account; we would much prefer your book to get out sooner rather than later.</FONT></P>
+<P class=MsoNormal><o:p><FONT face=Calibri>&nbsp;</FONT></o:p></P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, February 26, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>If you overload CanReadProperty/CanWriteProperty you can still
+use my role caching. It is specifically designed so you can still use the
+cached roles, but change the rules around how they are used.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> maurera [mailto:cslanet@lhotka.net]
+<br>
+<b>Sent:</b> Tuesday, February 26, 2008 10:18 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: RE: CSLA .NET 3.5 enhancement - object
+level authorization<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>I still have not been able to find some time to review the Authorization
+mechanism to determine exactly what we want to leverage from your existing
+code.&nbsp; I still intend to do a more complete analysis of this at some
+point, but who knows when I will have the time.<o:p></o:p></p>
+
+<p>If I remember correctly though, we thought we would be able to leverage your
+Role Caching.&nbsp; The concept being that our Roles can still be represented
+as a stringâ€¦just not a static one.&nbsp; I think the concept was that,
+instead of â€œbaking inâ€ the Role via AllowXyz, we would want to do something
+like<o:p></o:p></p>
+
+<p>Dim AuthRole as Role = Roles.NewRole(â€œItemAdminstratorâ€)<o:p></o:p></p>
+
+<p>AuthRole.SetContext(me.RetailSubTeam)<o:p></o:p></p>
+
+<p>AllowWrite(â€œItemDescriptionâ€, AuthRole)<o:p></o:p></p>
+
+<p class=MsoNormal><span>Where the RetailSubTeam value is
+passed into SetContext by reference.&nbsp; The ultimate call to IsInRole via
+the CanXyz methods would pass in AuthRole.ToString, which would generate the
+String â€œItemAdministrator\1000â€</span><span>
+(where 1000 is the ID of the itemâ€</span><span>™s
+RetailSubTeam).&nbsp; This string would be cached as per normal CSLA
+execution.&nbsp; </span><o:p></o:p></p>
+
+<p class=MsoNormal><span>The biggest problem I see here is
+that this list could grow considerably.&nbsp; For instance, if we have ten
+properties, each with five roles that could potentially write to the property,
+and each role could be for any of the Seventy Four sub teams you can begin to
+see how large this list could become.&nbsp; This doesnâ€™t factor in some of
+our roles will require both SubTeam and StoreNo for their â€œcontextâ€</span><span> data.</span><o:p></o:p></p>
+
+<p class=MsoNormal><span>This is just off the top of my head,
+and obviously wouldnâ€™t work without us rewriting much of CSLAâ€™s
+authorization mechanism From the CanXyz method downâ€¦.but I think that was the
+general concept we were thinking.&nbsp; </span><o:p></o:p></p>
+
+<p class=MsoNormal><span>I will try and do a more detailed
+analysis sometime this week.&nbsp; As of now, we are planning on putting off
+any complex IsInRole checking until later this year.&nbsp; For the initial
+release of the application we are going to use â€œstandardâ€</span><span> roles that donâ€™t require
+contextual data.&nbsp; We think we can get away with</span><span> this since the initial release will
+be a small subset of users.&nbsp; When the time comes we will either write our
+own, or revisit the capabilities of CSLAâ€™s authorization mechanism at that
+time.</span><o:p></o:p></p>
+
+<p class=MsoNormal><span>Please donâ€™t delay the writing of
+your book or finalization of CSLA 3.5 on our account; we would much prefer your
+book to get out sooner rather than later.</span><o:p></o:p></p>
+
+<p class=MsoNormal><span>&nbsp;</span><o:p></o:p></p>
+
+<p>&nbsp;<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>maurera replied on Tuesday, February 26, 2008</h2>Sweet!!&nbsp; I will let you know how we fair when we finally get back to this.&nbsp; I suspect we won't revisit this issue until later on this year though at the rate we are moving.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Wednesday, February 27, 2008</h2><P>Rocky,</P>
+<P>In BusinessBase the code to GetProperty always checks the Authorization rules first.</P>
+<P>Question: If no rules are implemented is this check a performance penalty?</P>
+<P>Joe</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, February 27, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I am sure there is some perf penalty. However, the result is
+cached, so it really only does the check once for a property in an object, and
+after that it continues to use that pre-determined result.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Without having a major explosion of overloads I am not sure how
+you&#8217;d prevent this &#8211; or prevent it in an efficient way. I suppose
+the PropertyInfo could include a flag indicating that no auth should occur &#8211;
+that&#8217;d be reasonable inexpensive.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> JoeFallon1
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Wednesday, February 27, 2008 10:47 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: RE: RE: CSLA .NET 3.5 enhancement - object
+level authorization<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Rocky,<o:p></o:p></p>
+
+<p>In BusinessBase the code to GetProperty always checks the Authorization
+rules first.<o:p></o:p></p>
+
+<p>Question: If no rules are implemented is this check a performance penalty?<o:p></o:p></p>
+
+<p>Joe<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rsbaker0 replied on Thursday, February 21, 2008</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div>
+<P>...A lower level question is whether the user is in a specific "role" (or has a "permission" or whatever). This question is often required to answer the first question, but not always. The change in 3.5 is to allow you to "override" how this question is answered. This meets a very narrow need, where sometimes the question shouldn't be answered merely in terms of roles, but also in terms of permissions or other user profile data....</div></BLOCKQUOTE></P>
+<P>Ah, this would be perfect, if the new "override" just had the ability to inspect the object that prompted the question in the first place. </P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>trives replied on Monday, February 11, 2008</h2><P>I'm trying to leverage managed fields and the field manager (new in 3.5) to encapsulate in a base class object-level authorization for child objects.&nbsp; For example, a method that I'll name CanUpdateChildObjects calls FieldManager.GetChildren in a recursive fashion to traverse an object graph and find all child objects.&nbsp; An overload of the BusinessBase.Save method calls CanUpdateChildObjects.&nbsp; For each&nbsp;new, deleted, or otherwise dirty child object in the graph, CanUpdateChildObjects&nbsp;calls the appropriate authorization method for the child's type (e.g. AuthorizationRules.CanEditObject(child.GetType()) ).&nbsp;&nbsp;&nbsp;If a child is not dirty, then the method does not check authorization for that child type.</P>
+<P>"Ditry" in this context, however, means something different than the IsDirty property.&nbsp; Consider the following classes:</P>
+<P>Project --&gt; ProjectResources --&gt; ProjectResource</P>
+<P>Assume that a user doesn't have authorization to edit a Project (e.g. change the name, description, start date,&nbsp;end date, or add/delete project resources) but does&nbsp;have authorization to change a resource's role (i.e. can edit a ProjectResource).&nbsp; If the&nbsp;user changes ProjectResource.Role, then Project.IsDirty retuns true because one of its child/grandchild objects is dirty.&nbsp; When CanUpdateChildObjects checks authorization for the Project object, the check would fail causing an unintended&nbsp; SecurityException.&nbsp; In this context, "dirty" is the value of just _isDirty, with no consideration of child objects being dirty (i.e. not _isDirty || FieldManager.IsDirty).</P>
+<P>This example is probably a bit contrived, but hopefully it gets the point across.&nbsp; If the BusinessBase exposed something like an IsSelfDirty property, then&nbsp;that would solve the problem I think.&nbsp; For example,</P>
+<P><FONT size=2>protected virtual bool IsSelfDirty<BR>{<BR>&nbsp;&nbsp;&nbsp; get<BR>&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return _isDirty;<BR>&nbsp;&nbsp;&nbsp; }<BR>}</FONT></P>
+<P>Also, a Saving event that exposed the IsDirty value would be useful in BusinessBase.&nbsp; The call to CanUpdateChildObjects could occur in an override of OnSaving.&nbsp; For example,</P><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>virtual</FONT><FONT size=2> T Save()<BR>{<BR>&nbsp;&nbsp;&nbsp; T result;<BR></FONT><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp; if</FONT><FONT size=2> (</FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>.IsChild)<BR></FONT><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; throw</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> </FONT><FONT color=#2b91af size=2>NotSupportedException</FONT><FONT size=2>(</FONT><FONT color=#2b91af size=2>Resources</FONT><FONT size=2>.NoSaveChildException);<BR></FONT><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp; if</FONT><FONT size=2> (EditLevel &gt; 0)<BR></FONT><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; throw</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> Validation.</FONT><FONT color=#2b91af size=2>ValidationException</FONT><FONT size=2>(</FONT><FONT color=#2b91af size=2>Resources</FONT><FONT size=2>.NoSaveEditingException);<BR></FONT><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp; if</FONT><FONT size=2> (!IsValid &amp;&amp; !IsDeleted)<BR></FONT><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; throw</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> Validation.</FONT><FONT color=#2b91af size=2>ValidationException</FONT><FONT size=2>(</FONT><FONT color=#2b91af size=2>Resources</FONT><FONT size=2>.NoSaveInvalidException);<BR></FONT><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp; if</FONT><FONT size=2> (IsDirty)<BR>&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; OnSaving(true);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; result = (T)</FONT><FONT color=#2b91af size=2>DataPortal</FONT><FONT size=2>.Update(</FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>);<BR>&nbsp;&nbsp;&nbsp; }<BR></FONT><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp; else<BR>&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; OnSaving(false);<BR></FONT><FONT size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; result = (T)</FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>;<BR>&nbsp;&nbsp;&nbsp; }<BR>&nbsp;&nbsp;&nbsp; OnSaved(result);<BR></FONT><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp; return</FONT><FONT size=2> result;<BR>}</FONT></P>
+<P><FONT size=3>An ideal solution would be to implement the checking of the child objects after the authorization check for the root object.&nbsp; The root check happens in the client DataPortal, however, and I couldn't see how to&nbsp;make that work.&nbsp; The DataPortalInvoke event didn't seem like a good place.&nbsp; </FONT></P>
+<P><FONT size=3>I'm pretty sure that I can implement this in a custom base class using an _isSelfDirty field and overriding methods like MarkDirty, MarkOld, and MarkNew to maintain it.&nbsp; But, the _isSelfDirty field would basically duplicate _isDirty.&nbsp; So, if the suggestion of an IsSelfDirty property&nbsp;doesn't sound right for some reason&nbsp; (e.g. maybe it's confusing or the usage too specific), that's not a deal breaker.&nbsp;&nbsp;It seems&nbsp;like an&nbsp;innocuous change, so I thought I'd suggest it.</P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Monday, February 11, 2008</h2><P>You make an excelllent point!</P>
+<P>I have been using a base class implementation for 4 years&nbsp;which is similar to what Rocky is adding to 3.5 as far as managing child objects and overriding IsDirty and IsValid.</P>
+<P>Long ago I found the need to do exactly what you describe and I added a Property named IsDirtyOnly (also IsValidOnly)&nbsp;which just checks the root object without regard to the state of any children. This has proved extremely useful in many scenarios so I heartily recommend it for IsDirty and IsValid.</P>
+<P>Joe</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>vdhant replied on Monday, February 11, 2008</h2><P>Good points...<BR>I think that there are some examples that one would need&nbsp;to know the&nbsp;difference between the object hierarchy being dirty and the object being dirty. I think that it would be a good idea to incorporate this concept into the framework.<BR><BR>Just my two bob worth.<BR>Anthony<BR><BR>Just a thought, would you also want a IsSelfValid and IsSelfSavable?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>skagen00 replied on Wednesday, February 13, 2008</h2><P>I like the concept of an IsSelfDirty/IsSelfValid property - obviously this is something we can add downstream the base classes but it seems like it would be a fairly common need. </P>
+<P>The hooks for OnSaving and OnSaved or what have you sound interesting to me. Right now to modify/inject behavior into the Save method you pretty much just have to override the whole thing in most cases. </P>
+<P>Chris</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>SomeGuy replied on Wednesday, February 13, 2008</h2><P>Doesn't calling base.IsDirty() accomplish the same thing? That is, checking the dirty status of the object irrespective of it's children?</P>
+<P>E</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>trives replied on Wednesday, February 13, 2008</h2><P>Calling base.IsDirty() calls the following code in Core.BusinessBase:</P><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>virtual</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>bool</FONT><FONT size=2> IsDirty<BR>{<BR></FONT><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp; get</FONT><FONT size=2> { </FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> _isDirty || (_fieldManager != </FONT><FONT color=#0000ff size=2>null</FONT><FONT size=2> &amp;&amp; FieldManager.IsDirty()); }<BR>}</FONT></P>
+<P>It's true that the base implementation checks the object's _isDirty flag.&nbsp; If it's false, however, it then calls FieldManager.IsDirty, which checks if any of the current object's registered properties are dirty plus calls&nbsp;IsDirty on any child objects.&nbsp; So, the base implementation of IsDirty returns true if the current object is dirty <STRONG><EM>or </EM></STRONG>any of its child objects are dirty.</P>
+<P><FONT size=2>&nbsp;</P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>SomeGuy replied on Wednesday, February 13, 2008</h2><P>Oops. I was thinking pre-FieldManager. Thanks.</P>
+<P>E</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>trives replied on Friday, February 15, 2008</h2><P>Hi Rocky,</P>
+<P>I was wondering if you would consider using a provider pattern for object-level authorization.&nbsp; For example, create an IObjectAuthorizationProvider interface:</P>
+<P>public interface IObjectAuthorizationProvider<BR>{<BR>&nbsp;&nbsp;&nbsp; void AllowGet(type objectType, params string[] roles);<BR>&nbsp;&nbsp;&nbsp; void DenyGet(type objectType, params string[] roles);<BR>&nbsp;&nbsp;&nbsp; void AllowCreate(type objectType, params string[] roles);<BR>&nbsp;&nbsp;&nbsp; void DenyCreate(type objectType, params string[] roles);<BR>&nbsp;&nbsp;&nbsp; void AllowDelete(type objectType, params string[] roles);<BR>&nbsp;&nbsp;&nbsp; void DenyDelete(type objectType, params string[] roles);<BR>&nbsp;&nbsp;&nbsp; void AllowEdit(type objectType, params string[] roles);<BR>&nbsp;&nbsp;&nbsp; void DenyEdit(type objectType, params string[] roles);<BR>&nbsp;&nbsp;&nbsp; bool CanCreateObject(type objectType);<BR>&nbsp;&nbsp;&nbsp; bool CanCreateObject(type objectType, object obj);<BR>&nbsp;&nbsp;&nbsp; bool CanDeleteObject(type objectType);<BR>&nbsp;&nbsp;&nbsp; bool CanDeleteObject(type objectType, object obj);<BR>&nbsp;&nbsp;&nbsp; bool CanEditObject(type objectType);<BR>&nbsp;&nbsp;&nbsp; bool CanEditObject(type objectType, object obj);<BR>&nbsp;&nbsp;&nbsp; bool CanGetObject(type objectType);<BR>}</P>
+<P>Then, in AuthorizationRules, move the implementation of the methods listed in the interface and the associated internal Get*Roles methods to another class (e.g. ObjectAuthorizationProvider).&nbsp; This class would provide the default CSLA implementation.&nbsp; So, the methods in AuthorizationRules related to object-level authorization would delegate to the provider.</P>
+<P>What may look odd are the overloads of CanCreateObject, CanDeleteObject, CanEditObject that take a second parameter.&nbsp; The second parameter is a reference to the root object.&nbsp; I feel this is necessary because the state of an object and its children may affect authorization.&nbsp;&nbsp;The DataPortal.Update would call CanCreateObject(type, obj) during an Insert, CanDeleteObject(type, obj) duing a deferred delete, and CanEditObject(type, obj) during an Execute or Update.&nbsp; The other DataPortal methods would not call the new overloads.&nbsp; The UI would likely call the original methods but could call any of them.</P>
+<P>The reason for this suggestion is that I feel authorization&nbsp;can get pretty&nbsp;involved and can benefit from a good deal of flexibility.&nbsp; Using a provider pattern like this&nbsp;shouldn't break anything for users of the existing authorization implementation and should allow application developers the flexibility to insert a custom authorization implementation.</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Friday, February 15, 2008</h2><P>Rocky,</P>
+<P>Please review this thread for the last few days. There are a number of points that require your feedback.</P>
+<P>Thanks.</P>
+<P>Joe</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>stefan replied on Saturday, February 16, 2008</h2>To me it sounds like this is it...<br><br>not breaking 'traditional' code and <br>providing instance level authorization support for custom systems.<br><br>Stefan<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, February 21, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I&#8217;ve thought about this at length, and I&#8217;m not going
+to do it in 3.5.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Partly this is due to time constraints &#8211; if I don&#8217;t
+finalize 3.5 very soon I won&#8217;t be able to start the Expert 2008 Business
+Objects book in time for it to be marketable, in which case the book won&#8217;t
+happen. We&#8217;re right at the edge of marketability as it is (projected
+completion is now out to September, which is terribly late).<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Partly this is due to other people having suggested different
+approaches to solve the problem. I don&#8217;t have the time to do deep
+analysis/design on this right now, and it is the kind of thing that I could get
+wrong and then be forced into major breaking changes later to get right. That&#8217;d
+be bad.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>So I think the best option is to stick with the current model in
+3.5 and give the whole auth subsystem some serious redesign thinking for a
+future release &#8211; like 4.0 perhaps.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> trives
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Friday, February 15, 2008 12:43 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] CSLA .NET 3.5 enhancement - object level
+authorization<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Hi Rocky,<o:p></o:p></p>
+
+<p>I was wondering if you would consider using a provider pattern for
+object-level authorization.&nbsp; For example, create an
+IObjectAuthorizationProvider interface:<o:p></o:p></p>
+
+<p>public interface IObjectAuthorizationProvider<br>
+{<br>
+&nbsp;&nbsp;&nbsp; void AllowGet(type objectType, params string[] roles);<br>
+&nbsp;&nbsp;&nbsp; void DenyGet(type objectType, params string[] roles);<br>
+&nbsp;&nbsp;&nbsp; void AllowCreate(type objectType, params string[] roles);<br>
+&nbsp;&nbsp;&nbsp; void DenyCreate(type objectType, params string[] roles);<br>
+&nbsp;&nbsp;&nbsp; void AllowDelete(type objectType, params string[] roles);<br>
+&nbsp;&nbsp;&nbsp; void DenyDelete(type objectType, params string[] roles);<br>
+&nbsp;&nbsp;&nbsp; void AllowEdit(type objectType, params string[] roles);<br>
+&nbsp;&nbsp;&nbsp; void DenyEdit(type objectType, params string[] roles);<br>
+&nbsp;&nbsp;&nbsp; bool CanCreateObject(type objectType);<br>
+&nbsp;&nbsp;&nbsp; bool CanCreateObject(type objectType, object obj);<br>
+&nbsp;&nbsp;&nbsp; bool CanDeleteObject(type objectType);<br>
+&nbsp;&nbsp;&nbsp; bool CanDeleteObject(type objectType, object obj);<br>
+&nbsp;&nbsp;&nbsp; bool CanEditObject(t ype objectType);<br>
+&nbsp;&nbsp;&nbsp; bool CanEditObject(type objectType, object obj);<br>
+&nbsp;&nbsp;&nbsp; bool CanGetObject(type objectType);<br>
+}<o:p></o:p></p>
+
+<p>Then, in AuthorizationRules, move the implementation of the methods listed
+in the interface and the associated internal Get*Roles methods to another class
+(e.g. ObjectAuthorizationProvider).&nbsp; This class would provide the default
+CSLA implementation.&nbsp; So, the methods in AuthorizationRules related to
+object-level authorization would delegate to the provider.<o:p></o:p></p>
+
+<p>What may look odd are the overloads of CanCreateObject, CanDeleteObject,
+CanEditObject that take a second parameter.&nbsp; The second parameter is a reference
+to the root object.&nbsp; I feel this is necessary because the state of an
+object and its children may affect authorization.&nbsp;&nbsp;The
+DataPortal.Update would call CanCreateObject(type, obj) during an Insert,
+CanDeleteObject(type, obj) duing a deferred delete, and CanEditObject(type,
+obj) during an Execute or Update.&nbsp; The other DataPortal methods would not
+call the new overloads.&nbsp; The UI would likely call the original methods but
+could call any of them.<o:p></o:p></p>
+
+<p>The reason for this suggestion is that I feel authorization&nbsp;can get
+pretty&nbsp;involved and can benefit from a good deal of flexibility.&nbsp;
+Using a provider pattern like this&nbsp;shouldn't break anything for users of
+the existing authorization implementation and should allow application
+developers the flexibility to insert a custom authorization implementation.<o:p></o:p></p>
+
+<p>&nbsp;<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>akhirudin replied on Wednesday, May 14, 2008</h2><P>hallo sir rocky</P>
+<P>is this also available in version 2.1.4?</P>
+<P>&nbsp;</P>
+<P>Regards</P>
+<P>Fahmi</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rcollette replied on Monday, May 04, 2009</h2>Rocky,<br><br>I'm nearly through the book and I really appreciate your insight and efforts.<br><br>I too have encountered the need to authorize object creation based on some context beyond simply the current principal information.<br><br>For example, a user selects a company from a NameValue list (a root object).&nbsp; The user may or may not be allowed to create new child objects for the selected company.&nbsp; At this point, a Company object has not been loaded, its just a name value list.&nbsp; I still want to be able to enable or disable the UI controls related to creating child objects.&nbsp;&nbsp; <br><br>I definitely could see this being implemented as an instance method like:<br>RootObject.ChildObjectsListProperty.CanCreate()&nbsp;&nbsp; (or maybe CanAdd() since it is a list method)<br><br>Assuming the ChildObjectList has a reference to its parent.<br><br>but there are times when instantiating the root object is overkill in terms of the data that needs to be loaded, in which case a static/shared method on the business object would be helpful:<br><br>Shared ChildObjectList.CanCreate(ContextualInfo as MyContext)<br><br>For example:<br><br>ClientAddressList.canCreate(clientId as integer)<br><br>or<br><br>Csla.Security.AuthorizationRules.CanCreateObject(typeof(ChildObjectList), ContextualInfo)<br><br>where AuthorizationRules delegates back to the type.<br><br>What I do want to avoid is the UI developer having to have some specific knowledge of which authorization method or overload of a method to call.&nbsp;&nbsp; Which is why I have not moved forward with any custom security checks yet.<br><br>Since you're book has been out quite a while now, I am wondering if you have revisted this topic in your thoughts? <br><br>Thank you,<br>Rich Collette<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, May 05, 2009</h2><P>The per-type authz rules need to be implemented as static methods, because they operate at a type level, not an instance level.</P>
+<P>As a result, they actually don't exist on any object - they exist as methods on the Csla.Security.AuthorizationRules class.</P>
+<P>You are correct, I could add overloads to the methods to accept a second parameter of type object. The drawback to that is then the UI developer would need to know (via your documentation) what to actually pass into that parameter. The results wouldn't be self-documenting, and any errors could only be caught at runtime.</P>
+<P>Maybe those issues can't be avoided - I'm just pointing out that they are there.</P>
+<P>It would be better overall, I think, to <EM>not</EM> have such overloads, but rather for the authz method implementations to pick up the ambient context automatically. For example, the current implementations pick up the ambient user principal - that's the context. But other context is available through ApplicationContext in LocalContext, ClientContext and GlobalContext (among other locations).</P>
+<P>Either way is doable though.</P>
+<P>The basic model would be to change the existing implementation to use a provider model, where you are required to provide an object that implements some interface that checks the authz rules for all object types.</P>
+<P>The existing CSLA implementation would be the default - where it just checks the roles. But you could provide CSLA with a replacement implementation that does whatever you'd like.</P>
+<P>The hardest part of this is re-working some of the existing code in AuthorizationRules and AuthorizationRulesManager, because there are a number of non-public methods that a custom provider would need to use. And yet I don't want to make them public, because it would unecessarily complicate the public interface and could poke holes in the existing functionality.</P>
+<P>In any case, there are a couple related items in the wish list</P>
+<UL>
+<LI><A href="http://www.lhotka.net/cslabugs/edit_bug.aspx?id=13">http://www.lhotka.net/cslabugs/edit_bug.aspx?id=13</A></LI>
+<LI><A href="http://www.lhotka.net/cslabugs/edit_bug.aspx?id=12">http://www.lhotka.net/cslabugs/edit_bug.aspx?id=12</A></LI></UL>
+<P>But I haven't done work on either of them. While the 2008 book has been done for a couple months, I've been doing a lot of other work for my employer, for Microsoft and on the CSLA .NET for Silverlight videos. And if you look, the wish list is quite long - these are just a couple items in a sea of requests :)</P>
+<P>Finally, for better or worse, the next priority will almost certainly be Silverlight 3 support, immediately (or maybe concurrently) followed by .NET 4.0 support. Oh, and don't forget Azure support.</P>
+<P>At least I never get bored ;)</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

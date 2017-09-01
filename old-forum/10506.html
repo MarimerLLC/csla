@@ -1,0 +1,39 @@
+<html><header><title>Child_Create with a parameter?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Child_Create with a parameter?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10506.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>TSF posted on Friday, July 08, 2011</h2><p>I created an Editable Child object using the provided template, and the Child_Create method overrides the base.&nbsp; The base siganture doesn&#39;t contain a parameter.</p>
+<p>Can I just declare my Chlid_Create as private (not overidden) and add the needed parameter as necessary?&nbsp; Any problems with that?&nbsp; Would I still need to call base.Child_Create() at the end like normal? T<span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Arial;color:#000000;">hanks.</span></span></span></span></p>
+<p><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Arial;color:#000000;">[Edit] </span></span></span></span><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Arial;color:#000000;">I should have read further in the DataAccess e-book.&nbsp; I now realize that when Child_Insert() is called, I can pass in the necessary arguments there.&nbsp; So I think I&#39;m good.</span></span></span></span></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rxelizondo replied on Friday, July 08, 2011</h2><p>You will normally call &quot;DataPortal.CreateChild()&quot; with whatever parameter you need, for example:</p>
+<p>DataPortal.CreateChild&lt;YourType&gt;(param1, param2, etc);</p>
+<p>As long as you have a &quot;Child_Create()&quot; function with parameters that match the same arguments you used on the &quot;DataPortal.ChreateChild()&quot; call you should be OK. Example:</p>
+<p>----------------------------------------&nbsp;</p>
+<p>DataPortal.CreateChild(123, &quot;abc&quot;);</p>
+<p>private void Child_Create(int someNumber, string someString)</p>
+<p>{</p>
+<p>}</p>
+<p>----------------------------------------&nbsp;</p>
+<p>The&nbsp;&quot;Child_Create()&quot; build in the CSLA is there just for your&nbsp;convenience&nbsp;since most of the times the default implementation provided by the CSLA is good&nbsp;enough&nbsp;so you are spare the trouble&nbsp;&nbsp;of typing the same thing over and over again.</p>
+<p><span>Don&#39;t forget about the calling &quot;BusinessRules.CheckRules()&quot; if you need to do that. And I think that if you are using Silverlight you may have to make the&nbsp;&quot;Child_Create()&quot; function public but I am not sure about that since I try to avoid&nbsp;</span>Silverlight&nbsp;<span>and all its restrictions (something that i am sure I will come to regret pretty soon).</span></p>
+<p>By the way, on your post your talk about&nbsp;<span>Child_Create but in your edit you mention&nbsp;</span><span>Child_Insert, I assume you meant&nbsp;</span>Child_Create.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>TSF replied on Friday, July 08, 2011</h2><p>Thanks for the info.&nbsp; Actually, I <em>did</em> mean to refer to Child_Insert in my edit, because when I saw that the Insert method allowed parameters I realized I could pass what I needed to at that point and still be okay.&nbsp;&nbsp;But it is good to know that I can make a Child_Create method with parameters if I need to.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tiago replied on Friday, July 08, 2011</h2><p>DataPortal mehtods accept exactly ONE parameter. If you need to pass 2 or more parameters, you must:</p>
+<p>1)&nbsp; Create a Criteria Class</p>
+<p>2) Populate your class with as much properties as you need to pass to the DataPortal method</p>
+<p>3) Instanciate our class aand set the properties of the class as you see fit.</p>
+<p>4) Call your dataPortal method passing it your instance of the class</p>
+<p>Example&nbsp; need to pass FatherName and MotherName</p>
+<p>private class CriteriaParentNames</p>
+<p>{</p>
+<p>&nbsp;&nbsp;&nbsp; public string MotherName {&nbsp;get;set; }</p>
+<p>&nbsp;&nbsp;&nbsp; public string FatherName { get; set; }</p>
+<p>&nbsp; &nbsp; public CriteriaParentNames(string mother, string father)</p>
+<p>&nbsp;&nbsp;&nbsp; {</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; MotherName&nbsp; = mother;</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; FatherName&nbsp; = father;</p>
+<p>&nbsp;&nbsp;&nbsp; }</p>
+<p>}</p>
+<p>private Child_Create(CriteriaParentNames crit)</p>
+<p>{</p>
+<p>&nbsp;&nbsp;&nbsp; var myMother = crit.MotherName;</p>
+<p>&nbsp;&nbsp;&nbsp; var myFather = crit.FatherName;</p>
+<p>}</p>
+<p>In you code you invoke it like this</p>
+<p>DataPortal.Create(new CriteriaParentNames{Josefine&quot;, &quot;Napoleon&quot;})</p>
+<p>Of course you should use PropertyInfo for properties, etc</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rxelizondo replied on Friday, July 08, 2011</h2><p>
+<p class="MsoNormal">I believe he was talking about &quot;<span><span>DataPortal.CreateChild&quot; (children creation) not &quot;DataPortal.Create&quot; (root object).</span></span></p>
+</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

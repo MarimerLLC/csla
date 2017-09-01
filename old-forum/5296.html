@@ -1,0 +1,12 @@
+<html><header><title>Question on DataPortal.Update()</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Question on DataPortal.Update()</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5296.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>JasonRShaver posted on Monday, August 25, 2008</h2><P>So I have a object and want to save it.&nbsp; When I call the .Save() method, it calls DataPortal.Update(this).&nbsp; That call has this bit of code in it:</P><FONT color=#0000ff><FONT face="Courier New" color=#0000ff size=1>
+<P>try</P></FONT></FONT>
+<P><FONT face="Courier New" size=1>{</FONT></P>
+<P><FONT color=#008000><FONT color=#008000><FONT face="Courier New" size=1>// when using local data portal, automatically</FONT></P></FONT></FONT>
+<P><FONT color=#008000><FONT color=#008000><FONT face="Courier New" size=1>// clone original object before saving</FONT></P></FONT></FONT>
+<P><FONT size=1><FONT face="Courier New">obj = ((</FONT><FONT color=#2b91af><FONT face="Courier New" color=#2b91af>ICloneable</FONT></FONT><FONT face="Courier New">)obj).Clone();</FONT></FONT></P>
+<P><FONT face="Courier New" size=1>result = proxy.Update(obj, dpContext);</FONT></P>
+<P><FONT face="Courier New" size=1>}</FONT></P>
+<P><FONT size=1><FONT face="Courier New"><FONT color=#0000ff><FONT color=#0000ff>catch</FONT></FONT> (Server.<FONT color=#2b91af><FONT color=#2b91af>DataPortalException</FONT></FONT></FONT><FONT face="Courier New"> ex)</FONT></FONT></P>
+<P><FONT size=2></FONT>&nbsp;</P>
+<P><FONT size=3><FONT size=2>Around line 348.&nbsp; The issue is that CSLA CE does not seem to support the ICloneable interface on BusinessBase.&nbsp; How are you supposed to save stuff with CSLA CE then?&nbsp; For now I just took out the clone, but I was hoping someone could let me know what I am doing wrong there.</FONT></P>
+<P>&nbsp;</P></FONT></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

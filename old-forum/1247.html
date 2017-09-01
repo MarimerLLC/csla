@@ -1,0 +1,136 @@
+<html><header><title>Small suggestion for those who uses an integer identity value as PK.</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Small suggestion for those who uses an integer identity value as PK.</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/1247.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Henrik posted on Monday, September 18, 2006</h2><P class=MsoNormal>Hi</P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal><SPAN>A suggestion for those it may have interest.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Almost all of my classes use an integer identity value as primary key. I’ve used Rocky’s suggestion of how to generate a temporary id (see this article for more details: <A href="http://www.lhotka.net/Article.aspx?area=4&amp;id=252e4f20-f202-4ba5-b6ff-4d629a2b7dcc">http://www.lhotka.net/Article.aspx?area=4&amp;id=252e4f20-f202-4ba5-b6ff-4d629a2b7dcc</A>)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>However, it was a bit daunting to do this for every class, so I subclassed BusinessBase in a new IdBusinessBase, which looks like this:<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>&lt;Serializable()&gt; _<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Public</SPAN><SPAN> <SPAN>MustInherit</SPAN> <SPAN>Class</SPAN> IdBusinessBase(<SPAN>Of</SPAN> T <SPAN>As</SPAN> IdBusinessBase(<SPAN>Of</SPAN> T))<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp; </SPAN><SPAN>Inherits</SPAN> BusinessBase(<SPAN>Of</SPAN> T)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>#<SPAN>Region</SPAN> <SPAN>"&nbsp;Temporary Integer Id "<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp; </SPAN><SPAN>'Shared temporary id for new objects<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp; </SPAN><SPAN>Private</SPAN> <SPAN>Shared</SPAN> _lastTempId <SPAN>As</SPAN> <SPAN>Integer<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp; </SPAN><SPAN>''' </SPAN><SPAN>&lt;summary&gt;<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp; </SPAN><SPAN>''' Returns a unique temporary integer id for an object of type T.<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp; </SPAN><SPAN>''' </SPAN><SPAN>&lt;/summary&gt;<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp; </SPAN><SPAN>''' </SPAN><SPAN>&lt;returns&gt;&lt;/returns&gt;<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp; </SPAN><SPAN>''' </SPAN><SPAN>&lt;remarks&gt;<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp; </SPAN><SPAN>''' Use this method to get a temporary integer id for a new object, if the object uses an<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp; </SPAN><SPAN>''' identity field as it's primary key in the database.<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp; </SPAN>''' The temporary id is shared between all classes of type T and is a continuous<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp; </SPAN>''' negative number starting from -1.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp; </SPAN><SPAN>''' </SPAN><SPAN>&lt;/remarks&gt;<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp; </SPAN><SPAN>Protected</SPAN> <SPAN>Function</SPAN> GetTemporaryId() <SPAN>As</SPAN> <SPAN>Integer<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>SyncLock</SPAN> <SPAN>Me<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>_lastTempId -= 1<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>End</SPAN> <SPAN>SyncLock<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>Return</SPAN> _lastTempId<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp; </SPAN><SPAN>End</SPAN> <SPAN>Function<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN>#<SPAN>End</SPAN> <SPAN>Region<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN>End</SPAN><SPAN> <SPAN>Class<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>I the constructor of your BO you assign your PK field with the return value of this method:<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Private</SPAN><SPAN> <SPAN>Sub</SPAN> <SPAN>New</SPAN>()<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp; </SPAN>_primaryKey = <SPAN>MyBase</SPAN>.GetTemporaryId()<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>End</SPAN><SPAN> <SPAN>Sub<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>/Henrik<o:p></o:p></SPAN></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>malloc1024 replied on Monday, September 18, 2006</h2>
+
+<p class="MsoNormal"><span>This is one of the first things I
+added to my heavily modified version of the CSLA.NET 1.0 framework when it
+first came out.<span>&nbsp; </span>It works out quite well;
+however, there is a chance that you could get a duplicate key when you mix objects
+that have a temp key with objects that have real keys.<span>&nbsp; </span>I have found that this does not happen very
+often though.<span>&nbsp; </span>You might want to check
+the value so it doesn't fall out of the range for integers. Compare it with
+Integer.MinValue.<span>&nbsp; </span>If it falls out of
+range reset the id to -1.<o:p></o:p></span></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Henrik replied on Monday, September 18, 2006</h2><P>Thanks for your input malloc.</P>
+<P>I hadn't thought of the id&nbsp;could get out of range. I'm so used to web apps where the webserver recycles the process every now and then (and thereby resetting the id back to -1). But of course in long running apps, this could happen. I'll add the check for Integer.MinValue to my code.</P>
+<P>/Henrik</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, September 18, 2006</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>Henrik:</strong></div><div><p class="MsoNormal"><span><span>&nbsp;&nbsp; </span><span>Protected</span> <span>Function</span> GetTemporaryId() <span>As</span> <span>Integer<o:p></o:p></span></span></p>
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span>SyncLock</span> <span>Me<o:p></o:p></span></span></p>
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>_lastTempId -= 1<o:p></o:p></span></p>
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span>End</span> <span>SyncLock<o:p></o:p></span></span></p>
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span>Return</span> _lastTempId<o:p></o:p></span></p>
+<p class="MsoNormal"><span><span>&nbsp;&nbsp; </span><span>End</span> <span>Function<o:p></o:p></span></span></p></div></BLOCKQUOTE><br><br>Not to be overly picky, but you have a threading issue here. <br><br>In your SyncLock block you decrement the shared counter, which is fine. However, it is quite possible for Thread A to do this and exit the block. Then Thread B gets the lock and decrements the value again. Then both Thread A and Thread B would return _lastTempId - which would be the same value.<br><br>Either put the Return statement inside the block, or use a local temp variable to store the new value and return the temp variable's value.<br><br>Or remove the SyncLock block entirely - making the code not threadsafe, but faster. The problem with SyncLock is that there's overhead to getting that lock - so you slow down single-threaded code by using it, because that overhead cost gets paid for no benefit.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Henrik replied on Monday, September 18, 2006</h2><P>Yep, you're right. I overlooked that the return statement should be inside the SyncLock block.</P>
+<P>I'm no champ in multi-threading and thread-safety and therefore I may sometimes overuse locking. However most of my applications have two front-ends, a winform and a web. When the code runs, without synclock, in a winform, there shouldn't be any problems, since these are normally single-threaded apps (or I'm at least aware of when I'm using multithreading). But the web app, running in IIS, will be multithreaded due to simultaneous requests, won't it?</P>
+<P>Is SyncLock the fastest way to have thread-safety or are there other methods that are faster. I recall, from my software engineering classes, there are mutex, semaphores and monitors but I haven't really dug into the .NET framework to see if they are there (they probably are)&nbsp;or what their performance is like.</P>
+<P>/Henrik</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Henrik replied on Monday, September 18, 2006</h2><P>I looked up some of the System.Threading stuff in the .net framework help and found out that a SyncLock is actually a monitor behind the scenes. Futhermore a mutex is actually designed more for process synchronization than&nbsp;thread-sync.</P>
+<P>I also found the Semaphore class, but this seems to be the slowest of all since the programmer needs to call Release for each WaitOne call, which would eventually require a Try-Finally block, which must be slower than the SyncLock mechanism.</P>
+<P>/Henrik</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, September 18, 2006</h2>Yes, SyncLock (lock in C#) is a simple Monitor behind the scenes. So it is comparatively lightweight, but any lock objects have a performance cost and should only be used if absolutely needed.<br><br>btw, Microsoft recommends against locking against any public object - like Me or this. What you should so instead is create a private shared object against which you can lock:<br><br>Private Shared _lockObject As New Object<br><br>'...<br>SyncLock _lockObject<br><br><br>This avoids some odd edge cases that are hard to debug.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ItsDubC replied on Friday, October 27, 2006</h2><font color="#000000" face="Arial">I'm new to CSLA so forgive me if I'm overlooking something obvious, but I'm a little confused as to the purpose of having these temporary IDs.&nbsp; Are these IDs assigned to objects until they are saved to the db, at which point their ID value is reassigned to the one generated by the identity column in the db?<br><br>Thanks in advance<br></font></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Friday, October 27, 2006</h2>No problem.&nbsp; Your first problem is that two new, but different objects will be considered Equal if they do not have a unique temporary id.&nbsp; This is because BusinessBase overrides Equals, which compares the value from GetIdValue.. which if you dont' create temporary ids will be 0 (or whatever id you hardcoded).<br><br>This causes major problems when the objects are in a collection together.&nbsp; Databinding will operate on the wrong object, delete the wrong object, etc. because it will attempt to remove the first object with the 0 id... and if all your new objects have that id, then the first one it finds is removed, even if you tried to remove the 3rd new object.<br><br>Make sense?<br>Andy<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ItsDubC replied on Friday, October 27, 2006</h2>This makes sense and I like this idea.&nbsp; If I choose to save one of these objects however, would it be wise for DoInsertUpdate to return it's actual ID from the database after it is generated as part of the insert, and then update the object's ID with the permanent value?<br><br>I'm basically trying to figure out at what point the object's non-temporary ID gets assigned.<br><br>Again, thank you.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Friday, October 27, 2006</h2>Yes, after an insert operation you should update the objects key field... if you save it again, you need the valid id to ensure the update works.<br><br>Andy<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>DansDreams replied on Friday, October 27, 2006</h2>Ah, I just love my GuidBusinessBase.&nbsp; :)</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Friday, October 27, 2006</h2>Ints really aren't that bad to work with... and with them taking I think 1/4 of the size, the hassle is easily worth the benefit <img src="/emoticons/emotion-5.gif" alt="Wink [;)]" /><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Friday, October 27, 2006</h2><P>Sample code for an Insert:</P><FONT size=2>
+<P>DAL.ExecuteNonQuery(tr, CommandType.Text, DAO.Insert(mDescr, mName, ...</FONT><FONT size=2>))<BR></FONT><FONT color=#008000 size=2>'retrieve the newly generated Identity and update the PK in the BO so the child records will save correctly.<BR></FONT><FONT size=2>mKey = </FONT><FONT color=#0000ff size=2>CInt</FONT><FONT size=2>(DAL.ExecuteScalar(tr, CommandType.Text, <FONT color=#ff00ff size=2>"SELECT Scope_Identity()"</FONT>))</FONT></P>
+<P>Joe</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Monday, October 30, 2006</h2>Are you sure that will work?&nbsp; I think those could execute in different transaction scopes..<br><br>Its probably better to do this within a stored proc, that way you're sure.<br><br>Andy<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ItsDubC replied on Monday, October 30, 2006</h2>So for example, I could have a basic stored proc such as <br><br><font face="Courier New"><font size="2">INSERT INTO tblCompany(Name, Phone) <br>VALUES (@name, @phone)<br>SET CompanyID = SCOPE_IDENTITY()</font><br><br><font face="Times New Roman"><font size="3">and on the application side have a SqlParameter called companyIDParameter as an output parameter in order to get the CompanyID, and just do</font><br><br><font size="2"><font face="Courier New">id = (int)companyIDParameter.Value;<br><br><font face="Times New Roman"><font size="3">after I execute the stored proc?</font></font><br></font></font></font></font></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Monday, October 30, 2006</h2><P>Yes - I am sure it works.</P>
+<P>The tr parameter is the transaction.</P>
+<P>Joe</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>guyroch replied on Monday, October 30, 2006</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>JoeFallon1:</strong></div><div>
+<P>Yes - I am sure it works.</P>
+<P>The tr parameter is the transaction.</P>
+<P>Joe</P>
+<P></div></BLOCKQUOTE></P>
+<P>I'm not so sure about that Joe.&nbsp; I had a similar problem a few weeks ago and both command were using the same db transaction and it did not work.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Monday, October 30, 2006</h2><P>Guy,</P>
+<P>Thanks for the response - and the heart attack. &lt;g&gt;</P>
+<P>I was sure until I read your response. Now I have some doubt. </P>
+<P>How do&nbsp;you know&nbsp;the tr is not carried forward and returns the correct answer?</P>
+<P>After all, it has not been committed yet.</P>
+<P>I could easily change it to the code sample you showed IF that "other" database (Oracle) was not involved in my platform. I would also need to know how to do it for Oracle. And to my knowledge Oracle does not support 2 statements in one "batch".</P>
+<P>Looks like some research is required. </P>
+<P>Thanks.</P>
+<P>Joe</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>guyroch replied on Monday, October 30, 2006</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>JoeFallon1:</strong></div><div>
+<P>IF that "other" database (Oracle) was not involved in my platform. </P>
+<P></div></BLOCKQUOTE></P>
+<P>You mean Obstacle 10g, right.&nbsp; LOL&nbsp; </P>
+<P><A href="http://www.cafepress.com/oraclehaters.15080672">http://www.cafepress.com/oraclehaters.15080672</A></P>
+<P>Enjoy</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Monday, October 30, 2006</h2><P>Yes - "I hate Oracle." Trying very hard to drop support for it. Need to get a couple of clients to wise up first though.</P>
+<P>I have been reading about Scope_Identity - most people think it is easiest to use the 2 statements in a batch. But there was one question like this:</P>
+<P>===============================================</P>
+<P>If I do the following:<BR>- Connect to a SQL Server 2000 database (using SqlClient objects)<BR>- Start a transaction<BR>- INSERT a new row<BR>- Run “SELECT Scope_Identity”</P>
+<P>will I get a value specific to my transaction?</P>
+<P>===============================================</P>
+<P>Answer:</P>
+<P>Specific to your transaction, otherwise it wouldn't be much use.</P>
+<P>===============================================</P>
+<P>I think I will post some sample code over in the SQL Server group and see what they have to say.<BR></P>
+<P>My code has worked correctly for a long time now - but you have me nervous that it won't always work correctly. Say under load or something.</P>
+<P>Joe</P>
+<P>===============================================</P>
+<P>Some sample code showing 2 separate queries to get the Identity value: (the Insert ran in a different method but the connection was passed to this method - like I pass my tr.)</P>
+<P>&nbsp;&nbsp; &nbsp;/// &lt;summary&gt;<BR>&nbsp;&nbsp;&nbsp; /// This is called when a row is updated, and it retrieves the latest identity<BR>&nbsp;&nbsp;&nbsp; /// value.&nbsp; Note that it has to use the same connection which I can get from args<BR>&nbsp;&nbsp;&nbsp; /// Also note that I try both the sqlserver2000 and alternative just as an example.<BR>&nbsp;&nbsp;&nbsp; /// &lt;/summary&gt;<BR>&nbsp;&nbsp;&nbsp; /// &lt;param name="sender"&gt;&lt;/param&gt;<BR>&nbsp;&nbsp;&nbsp; /// &lt;param name="args"&gt;&lt;/param&gt;<BR>&nbsp;&nbsp;&nbsp; protected static void OnRowUpdated(object sender, SqlRowUpdatedEventArgs args) {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (args.StatementType == StatementType.Insert) {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; SqlConnection con = args.Command.Connection;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Object new_id = 0;<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // sqlserver 2000 version<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; SqlCommand id_cmd = new SqlCommand("select scope_identity() as id", con);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; new_id = id_cmd.ExecuteScalar();<BR>&nbsp; </P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>guyroch replied on Monday, October 30, 2006</h2><P>Joe, take a look at this thread, which was one of my original thread :)</P>
+<P><A href="/forums/thread/7101.aspx">http://forums.lhotka.net/forums/thread/7101.aspx</A></P>
+<P>You'll see that the tests I did a while back showed different results when using hard text sql command versus parametrized queries.</P>
+<P>If you're using hard text sql commands then you are fine.&nbsp; However, if you're using parametrized queries&nbsp;YOU MUST include the scope_Identity inside the same call.</P>
+<P>Keep in mind though that parametrized queries&nbsp;are _faster_ than hard text sql command because they will get compiled and cached - so it will be faster going forward&nbsp;on subsequent calls.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Monday, October 30, 2006</h2><P>I am using hard text SQL queries, not parameterized queries.</P>
+<P>I am aware of the risks/differences - except for the whole scope identity thing. &lt;g&gt;</P>
+<P>Whew. Thanks. </P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>guyroch replied on Monday, October 30, 2006</h2><P class=MsoNormal>Sorry about the clogged arteries I gave you; glad to see you’re out of the intensive care unit though :)</P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal>Best regards,</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Wednesday, November 01, 2006</h2><P>I found the reason for the issue with parameterized queries.</P>
+<P>Answer posted here:</P>
+<P><A HREF="/forums/thread/7101.aspx">http://forums.lhotka.net/forums/thread/7101.aspx</A></P>
+<P>&nbsp;</P>
+<P>Joe</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RobKraft replied on Friday, July 20, 2007</h2><P>This topic has deviated from the original issue, but I have a different solution to the temporary ID problem.&nbsp; I let the collection class assign temporary IDs.</P>
+<P>I have a private int in the collection:</P><FONT color=#0000ff size=2>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT face="Courier New">private</FONT></FONT><B><FONT size=2><FONT face="Courier New"> </FONT></B></FONT><FONT face=Arial><FONT face="Courier New"><FONT color=#0000ff size=2>int</FONT><B><FONT size=2> _nextTempID = 0;</P></B></FONT></FONT></FONT>
+<P>I have one method in the collection used to add items to the collection and it has:</P><B><FONT size=2>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT face="Courier New">componentRec.SubmitListID = _nextTempID++;</FONT></P>
+<P></B></FONT><FONT face="Courier New"><FONT color=#0000ff size=2>&nbsp;&nbsp;this</FONT><FONT size=2>.Add(componentRec);</FONT></FONT></P>
+<P>And in the collection's dataportal_fetch I set the _nextTempID so that when I load existing data, I won't be assigning a tempID value that matches a real id:</P><FONT size=2><B><FONT size=2>
+<P></B></FONT><FONT color=#0000ff size=2>&nbsp;<FONT face="Courier New">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;while</FONT></FONT><B><FONT size=2><FONT face="Courier New"> (xxx.Read())</FONT></P>
+<P><FONT face="Courier New">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{</FONT></P>
+<P></B></FONT><FONT face="Courier New"><FONT color=#2b91af size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ComponentList</FONT><B><FONT size=2> info = </B></FONT></FONT><FONT face="Courier New"><FONT color=#0000ff size=2>new</FONT><B><FONT size=2> </B></FONT></FONT><FONT face="Courier New" color=#2b91af size=2>ComponentList</FONT><B><FONT size=2><FONT face="Courier New">(xxx);</FONT></P>
+<P></B></FONT><FONT face="Courier New" color=#0000ff size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;this</FONT><FONT size=2><FONT face="Courier New">.Add(info);</FONT></P><B>
+<P></B></FONT><FONT face="Courier New"><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if</FONT><B><FONT size=2> (info.SubmitListID &gt; maxID)&nbsp;</FONT></B></FONT></P>
+<P><FONT face="Courier New"><B><FONT size=2></B></FONT></FONT><FONT size=2><STRONG><FONT face="Courier New">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{</FONT></STRONG></P>
+<P><STRONG><FONT face="Courier New">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_nextTempID = info.SubmitListID + 1;</FONT></STRONG></P>
+<P><STRONG><FONT face="Courier New">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</FONT></STRONG></P>
+<P><FONT size=3>Does anyone perusing this thread see a problem with this design?&nbsp; I did have to scope the "setter"&nbsp; of my unique SubmitListID of my component to be internal instead of private, but that seems a minor trade for the simplicity.</FONT></P>
+<P>&nbsp;</P></FONT></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>guyroch replied on Monday, October 30, 2006</h2><P>For it work and to be executed in the same transaction scope, both commands (the insert and the scope identity) must be sent all at once.</P>
+<P><FONT size=2>mKey = <FONT color=#0000ff>CInt</FONT>(DAL.ExecuteScalar(tr, CommandType.Text, <FONT color=#ff00ff>"&lt;&lt;Insert command here&gt;&gt; ; SELECT Scope_Identity()"</FONT>))</FONT></P>
+<P><FONT size=2>Notice the semi-colon ';' between both commands.&nbsp; Doing it this way will work, this is how I have it setup.&nbsp; If they are sent in 2 distinctive calls to the database, they will NOT run in the scope.</FONT></P>
+<P><FONT size=2></FONT>&nbsp;</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

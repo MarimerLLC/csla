@@ -1,0 +1,35 @@
+<html><header><title>Athorization in CSLA 4</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Athorization in CSLA 4</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11929.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Mar72Vin posted on Wednesday, April 10, 2013</h2><p>Hi,</p>
+<p>I am transitioning from CSLA3 to 4. The new eBooks only really talk about IsInRole. I liked how the old CSLA used AccessGroups and Roles.</p>
+<p>i.e. &quot;Administrator&quot; group access could have many &quot;Role&quot; types. &quot;Job_Read&quot;, &quot;Job_Write&quot;, &quot;Task_Read&quot;, &quot;Role_thatAllowsYouToDoSomethingElse&quot;.</p>
+<p>&nbsp;</p>
+<p>The new membership seems to just have Roles categorized like &quot;Administrator&quot;, &quot;Power User&quot;, &quot;Standard User&quot;...</p>
+<p>&nbsp;</p>
+<p>//Here is a standard way to set authorization permission for a user to read the &quot;CityProperty&quot; in CSLA4</p>
+<p>BusinessRules.AddRule(new Csla.Rules.CommonRules.IsInRole( Csla.Rules.AuthorizationActions.ReadProperty, CityProperty, &quot;Administrator&quot;, &quot;Power User&quot;));</p>
+<p>&nbsp;</p>
+<p>//The old CSLA 3 would&nbsp; do something like this, where &quot;CityName_Read&quot; is a role type the user is in.</p>
+<p>AuthorizationRules.AllowRead(&quot;CityName&quot;, &quot;CityName_Read&quot;);</p>
+<p>&nbsp;</p>
+<p>In the CSLA3 way, both Administrator and PowerUser could be in the &quot;CityName_read&quot; role.</p>
+<p>&nbsp;</p>
+<p>Is it possible to mimic the way CSLA3 handled Authorization? Perhaps making a custom rule for each and every property? (could be quite time prohibitive doing it this way?)</p>
+<p>&nbsp;</p>
+<p>Cheers,</p>
+<p>Tim</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p><br />Actually.... thinking back to when I first setup my original CSLA 3 project I may have just blurred the use of &quot;Role&quot; by labeling each role like &quot;CityName_Read&quot;, &quot;CityName_Write&quot;, etc.... then implemented my own List for &quot;AccessGroup&quot; and &quot;IsInAccessGroup&quot; method in the Identity object.<br /><br />Can anyone see any performance issues with having a huge number of &amp;quot;Roles&amp;quot; loaded into the Identity object? Using many roles in an MVC stateless environment may slow things down a little?</p>
+<p>(it was a long time ago)...</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Wednesday, April 10, 2013</h2><p>The Autorization part works just the same as before -&nbsp; so this is just as valid for CSLA 4:</p>
+<p><a title="http://www.lhotka.net/weblog/PermissionbasedAuthorizationVsRolebasedAuthorization.aspx" href="http://www.lhotka.net/weblog/PermissionbasedAuthorizationVsRolebasedAuthorization.aspx">http://www.lhotka.net/weblog/PermissionbasedAuthorizationVsRolebasedAuthorization.aspx&nbsp;&nbsp;</a> </p>
+<p>I wouldn&#39;t worry so much about loading many roles - just to make sure that loading is very efficient and maybe cached on the server.</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>skagen00 replied on Wednesday, April 10, 2013</h2><p>As a suggestion, our roles are enumerated in&nbsp;an enumeration and we store them as a bit array in order of the enumeration on the identity.&nbsp; Since it&#39;s passed on each call I would echo Jonny in keeping it efficient and lightweight.</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Mar72Vin replied on Wednesday, April 10, 2013</h2><p>Hi skagen00, The enumeration sounds interesting. Does it make the code any less readable doing it your way?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>skagen00 replied on Wednesday, April 10, 2013</h2><p>No not at all, because IsInRole is just what is exposed and the implementation to handle the bit array is encapsulated within the identity/principal.</p>
+<p>Since it&#39;s an enumeration, IsInRole is called with our RolePermission enumeration values.</p>
+<p>The method on our identity (we end up actually invoking it w/ an enumeration on a static class, not usually directly) looks like this.&nbsp; Permissions is our bit array.</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; bool ICheckRoles.IsInRole(string permissionName)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (String.IsNullOrWhiteSpace(permissionName))<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return false;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; RolePermissions permission;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (!Enum.TryParse&lt;RolePermissions&gt;(permissionName, out permission))<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return false;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; int index = (int)permission;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (index &lt; 0 || index &gt;= Permissions.Length)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return false;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return Permissions[index];<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Mar72Vin replied on Wednesday, April 10, 2013</h2><p>Hi JonnyBee, Thanks for the response and the link, This is exactly how I have previously implemented permissions. I had just forgotten that I took this tact.</p>
+<p>It&#39;s great to know that it is also a recommended solution.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

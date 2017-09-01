@@ -1,0 +1,10 @@
+<html><header><title>methodHandle.DynamicMethod returns null but the obj is valid</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>methodHandle.DynamicMethod returns null but the obj is valid</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10536.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Phlar posted on Tuesday, July 19, 2011</h2><p>Hi All,</p>
+<p>I have a rather strange/confusing issue.&nbsp; Prior to making some web.config changes the objectGraph would be returned back to the UI without any issue.&nbsp; We began adding some additional binding changes for timeouts (but have since removed them).&nbsp; Now our objectGraph is null on the client side (we even reverted back to a preivous version from our souce control without any luck).</p>
+<p>I&#39;ve narrowed it down to the following line:</p>
+<p><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">
+<p>result = methodHandle.DynamicMethod(<span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">obj, inParams);</span></span></p>
+<p><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">I&#39;ve evaluated the obj parameter and it does appear to contain the objectGraph we want.&nbsp; However, the result is null.</span></span></p>
+<p><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">Has anyone else encountered this or can give me a hand on where to investigate?</span></span></p>
+<p><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"></span></span></p>
+</span></span></p>
+<p>&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

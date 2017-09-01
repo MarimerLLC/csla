@@ -1,0 +1,8 @@
+<html><header><title>Simple generics question</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Simple generics question</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/7257.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>pondosinat posted on Friday, July 10, 2009</h2><P>I need to pass in an argument that is of a base class type, eg: if I have&nbsp;the following two&nbsp;classes:</P>
+<BLOCKQUOTE dir=ltr>
+<P>Dog : Animal(of Dog)</P>
+<P>Animal(Of T as Animal(Of T)) : BusinessBase(Of T)</P></BLOCKQUOTE>
+<P>And I want declare a variable of type Animal (the base class), how would that look?</P>
+<P>Thanks</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>skagen00 replied on Friday, July 10, 2009</h2>Of the base class? You can't. Because Animal is a generic. <br /><br />What I tend to do when I have generics in the hierarchy is give them an IAnimal interface. Applying IAnimal on the Animal<> class mean that anything that descends from Animal<> will be an IAnimal.<br /><br />Then, you can have an IAnimal typed variable in Dog (if that's your goal). The members of IAnimal can be the various methods &amp; properties declared/implemented in Animal<>.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>pondosinat replied on Friday, July 10, 2009</h2>Great tip, thanks!</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

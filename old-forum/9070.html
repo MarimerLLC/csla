@@ -1,0 +1,12 @@
+<html><header><title>Is there an easy way to establish a new connection timeout LINQ to SQL and CSLA?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Is there an easy way to establish a new connection timeout LINQ to SQL and CSLA?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9070.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>sognibene@hess.com posted on Friday, June 11, 2010</h2><p>Hi All,</p>
+<p>My DataPortal_Fetch() sub looks like this:</p>
+<p>Using ctx = ContextManager(Of MyDataContext).GetManager(MyDB)<br />&nbsp;&#39;code here<br />End Using</p>
+<p>I&#39;m using LINQ to SQL with stored procedures to get my data.&nbsp; Things are going pretty well except when people do very big queries - SQL Server is just timing out when pulling really large datasets.&nbsp; I found that I can call ctx.DataContext.CommandTimeout and increase it from the default of 30 seconds and this fixes the issue for me.</p>
+<p>Using ctx = ContextManager(Of MyDataContext).GetManager(MyDB)<br />&nbsp;ctx.DataContext.CommandTimeout = MyConfig.SQLCommandTimeout<br />&nbsp;&#39;rest of DB code here<br />End Using</p>
+<p>However, I was wondering if there was some good way for me to put this into a config file and have the framework pick it up automatically rather than me having to find all my using ctx blocks and putting in the code to bump up the timeout.</p>
+<p>Thanks!</p>
+<p>-Steve O</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sognibene@hess.com replied on Monday, June 14, 2010</h2><p>Sorry for the bump, but I was wondering if the framework supports this or if I should set to editing all of my list objects...</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sognibene@hess.com replied on Tuesday, June 15, 2010</h2><p><span style="font-size:x-small;">It doesn&#39;t appear that this is supported in the framework I&#39;m on, so I just started adding...</span></p>
+<p><span style="font-size:x-small;">ctx.DataContext.CommandTimeout = MyConfig.SQLCommandTimeout</span></p>
+<p><span style="font-size:x-small;">...to all my DataPortal routines.&nbsp; The SQLCommandTimeout is read from the .config file.</span></p>
+<p><span style="font-size:x-small;"></span></p>
+<p><span style="font-size:x-small;"></span></p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

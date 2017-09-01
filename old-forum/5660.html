@@ -1,0 +1,128 @@
+<html><header><title>Command Binding in WPF</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Command Binding in WPF</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5660.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>JZuerlein posted on Thursday, October 23, 2008</h2><P>I'm using a MVVM pattern with Prism, and I have run into a problem with Commands. </P>
+<P>*I'm not using the CslaDataProvider in my app.</P>
+<P>In my ViewModel object, I have a property "Server" that is an editableroot.&nbsp; There is a function ("SaveServerEditsCommand")&nbsp;that takes in a "Server" object and performs the save operation on it.&nbsp; What is odd is that the Save performs correctly, and the IsDirty flag gets set to false.&nbsp; However, when the function completes, the "Server" object's IsDirty flag is set to true.&nbsp;Has anyone seen something like this happen?</P><FONT color=#ff0000><FONT color=#0000ff>
+<P>&lt;</FONT><FONT color=#a31515>Button</FONT><FONT color=#ff0000> </FONT><FONT color=#ff0000>Content</FONT><FONT color=#0000ff>="Save"</FONT><FONT color=#ff0000> </FONT><FONT color=#ff0000>Command</FONT><FONT color=#0000ff>="{</FONT><FONT color=#a31515>Binding</FONT><FONT color=#ff0000> Path</FONT><FONT color=#0000ff>=SaveServerEditsCommand}"</FONT><FONT color=#ff0000> CommandParameter</FONT><FONT color=#0000ff>="{</FONT><FONT color=#a31515>Binding</FONT><FONT color=#ff0000> Path</FONT><FONT color=#0000ff>=Server,</FONT><FONT color=#ff0000> Mode</FONT><FONT color=#0000ff>=TwoWay}"&gt;</P></FONT></FONT><FONT color=#0000ff><FONT color=#0000ff>
+<P>private</FONT><FONT color=#000000> </FONT><FONT color=#0000ff>void</FONT><FONT color=#000000> SaveServerEdits(CSLABusinessObjects.</FONT><FONT color=#2b91af>Server</FONT><FONT color=#000000> server)</FONT></P>
+<P>{</P>
+<P><FONT color=#0000ff>if</FONT> (server == <FONT color=#0000ff>null</FONT>) <FONT color=#0000ff>return</FONT>;</P>
+<P><FONT color=#0000ff>try</P></FONT>
+<P>{</P>
+<P>server.ApplyEdit();</P>
+<P><FONT color=#2b91af>Server</FONT> savable = server.Clone();</P>
+<P>server = savable.Save();</P>
+<P>(server <FONT color=#0000ff>as</FONT> Csla.Core.<FONT color=#2b91af>ISavable</FONT>).SaveComplete(server);</P>
+<P>server.BeginEdit();</P>
+<P><FONT color=#0000ff>catch</P></FONT>
+<P>{</P>
+<P>}</P>
+<P>SaveServerEditsCommand.RaiseCanExecuteChanged();</P>
+<P>CancelServerEditsCommand.RaiseCanExecuteChanged();</P>
+<P>}</P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, October 23, 2008</h2><P>I don't see the specific issue. Here are some comments:</P>
+<OL>
+<LI>If you use AutoCloneOnUpdate (which is the default in CSLA 3.5 and higher) you shouldn't do the clone yourself - the data portal is already doing the clone</LI>
+<LI>You shouldn't use the "as" keyword like you are - "as" can always return null and should ONLY be used with appropriate null value checking. In your case a direct cast is the correct answer (for your SaveComplete() call)</LI>
+<LI>I suspect that some code in your SaveComplete() handler is altering a property in the new object, and that's why it is marked with IsDirty of true. Is server.IsDirty true IMMEDIATELY after the Save() call completes?</LI>
+<OL>
+<LI>If it is dirty immediately after Save(), then in your DataPortal_Insert/Update method you are probably using SetProperty() rather than LoadProperty(). The data portal now calls MarkOld() <EM>before</EM> calling DataPortal_XYZ, so if your DataPortal_XYZ method alters the object's state it would be dirty.</LI></OL></OL>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JZuerlein replied on Thursday, October 23, 2008</h2><P>Thank you for the response.&nbsp; I made the modifications you suggested in points 1 and 2.&nbsp; There is no SaveComplete() handler.&nbsp; I put breakpoints on the lines in red.&nbsp; The first breakpoint to hit is the one in CanSaveServerEdits.&nbsp; This is because I raised the SaveServerEditsCommand.RaiseCanExecuteChanged event.&nbsp; The parameter passed into the function is dirty.&nbsp; The next breakpoint to hit is the one last one in SaveServerEdits, telling me that the object is not dirty.&nbsp; This suggests to me that there are actually two objects.</P>
+<P>I'm wondering if WPF is creating a clone of the datacontext object before passing it as a command parameter.&nbsp; Any ideas on how to trouble shoot it?</P>
+<P><FONT color=#0000ff>private</FONT> <FONT color=#0000ff>bool</FONT> CanSaveServerEdits(CSLABusinessObjects.<FONT color=#2b91af>Server</FONT> server)</P>
+<P>{</P>
+<P><FONT color=#0000ff>if</FONT> (server == <FONT color=#0000ff>null</FONT>) <FONT color=#0000ff>return</FONT> <FONT color=#0000ff>false</FONT>;</P>
+<P><FONT color=#ff0000>return server.IsSavable;</FONT></P>
+<P>}</P>
+<P><FONT color=#0000ff>private</FONT> <FONT color=#0000ff>void</FONT> SaveServerEdits(CSLABusinessObjects.<FONT color=#2b91af>Server</FONT> server)</P>
+<P>{</P>
+<P><FONT color=#0000ff>if</FONT> (server == <FONT color=#0000ff>null</FONT>) <FONT color=#0000ff>return</FONT>;</P>
+<P><FONT color=#0000ff>try</P></FONT>
+<P>{</P>
+<P>server.ApplyEdit();</P>
+<P>server = server.Save();</P>
+<P>((Csla.Core.<FONT color=#2b91af>ISavable</FONT>)server).SaveComplete(server);</P>
+<P>server.BeginEdit();</P>
+<P>}</P>
+<P><FONT color=#0000ff>catch</FONT>(<FONT color=#2b91af>Exception</FONT> ex)</P>
+<P>{</P>
+<P>}</P>
+<P>SaveServerEditsCommand.RaiseCanExecuteChanged();</P>
+<P>CancelServerEditsCommand.RaiseCanExecuteChanged();</P>
+<P><FONT color=#0000ff>if</FONT> (server.IsDirty)</P>
+<P><FONT color=#ff0000>return;</FONT></P>
+<P><FONT color=#0000ff>else</P></FONT>
+<P><FONT color=#ff0000>return;&nbsp; //&nbsp; Breakpoint stops here.</FONT></P>
+<P>}</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, October 23, 2008</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>So to be clear, you are saying that IsDirty is false at the
+BOTTOM of your method, but that the object WPF binds to has IsDirty as true.
+Meaning that WPF isn&#8217;t binding to the object you get back from Save().<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>So my question is this: where does your code update the form&#8217;s
+DataContext to use the new object?<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>THERE ARE TWO OBJECTS &#8211; the Save() method returns a new
+object. If you don&#8217;t tell WPF to use that new object, it will just keep
+using the old object.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>When using a data provider, the DataContext is updated
+automatically. But using your approach, it seems to me that your code will need
+to update the DataContext somehow.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JZuerlein replied on Thursday, October 23, 2008</h2><P>To setup the binding, I have a ServerView object that has a Model property.&nbsp; When the Model property is set, the ServerViewModel is assigned to the DataContext property of the ServerView.&nbsp; The actual assignment occurs when the ServerViewModel is constructed.</P>
+<P>I get the idea that calling EditableRoot.Save() will return another object.&nbsp; So I think what I'm hearing is that calling...</P>
+<P>server = server.Save();</P>
+<P>will cause a disconnect with databinding, and the DataContext will not be updated.</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, October 23, 2008</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>The Save() method returns a new instance of the object. You need
+to get your view to bind to that new object.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

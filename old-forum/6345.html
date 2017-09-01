@@ -1,0 +1,18 @@
+<html><header><title>Validation Delegate Signatures - why use  &quot;where T: Type&quot;</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Validation Delegate Signatures - why use  &quot;where T: Type&quot;</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6345.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>DCottle posted on Thursday, February 05, 2009</h2><P>Ok, so following the example from the book, Rocky has written that the signature of a Validation Delegate should look like:</P>
+<P>private static bool StartDateGTEndDate&lt;T&gt;(T target, Csla.Validation.RuleArgs e) where T: Project</P>
+<P>if this is an object specific rule, wouldn't it work just as well to write:</P>
+<P>private static bool StartDateGTEndDate&lt;Project&gt;(Project target, Csla.Validation.RuleArgs e)</P>
+<P>&nbsp;</P>
+<P>Otherwise stated, is there any advantage to his syntax if you know that type of object you are dealing with is a Project?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, February 05, 2009</h2><P>I don't know - does that actually compile and run?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Thursday, February 05, 2009</h2><P>The signature will compile but the target value will be useless in the method body.</P>
+<P>When done the right way you can use target. and get intellisense to list the fields and properties for you.</P>
+<P>With this "new" syntax the list does not appear and you lose all the benefits of doing it the right way - you no longer have access to the fields and properties of the target.</P>
+<P>Joe</P>
+<P>PS - I have this comment in my code:</P><FONT size=2>
+<P></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2>'Strongly Typed version: </FONT></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2>This code works because .NET allows Shared methods in a class to access the Private fields of an instance of that type. </FONT></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2>Since target is an instance of MyClass, and the XYZ() method is implemented in MyClass class, </FONT></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2>its code is allowed to access the Private fields of the MyClass object.</P></FONT></FONT><FONT size=2>
+<P></P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>DCottle replied on Tuesday, February 10, 2009</h2><P>Compile, yes.</P>
+<P>&nbsp;</P>
+<P>Run, no.</P>
+<P>&nbsp;</P>
+<P>Well, actually what it is doing is taking &lt;WhateverTextIPutInHere&gt; and treating it as &lt;T&gt;...so the previous comment is correct.&nbsp; You lose all intellisense and specific object typing.</P>
+<P>&nbsp;</P>
+<P>Sorry for the stupid question.&nbsp; Should have investigated it further before posting.</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

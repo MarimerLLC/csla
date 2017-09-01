@@ -1,0 +1,342 @@
+<html><header><title>What a proper way to implement strong authentication security?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>What a proper way to implement strong authentication security?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/12061.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>sash_kr posted on Friday, July 05, 2013</h2><p>Let&#39;s imagine next situation:<br />I&#39;m a manager in big organization. That organization uses WinForms application (3 tier) written with CSLA framework. I have some skills in programming.<br />At one day, I open exe/dll of that application in tools like &quot;ILSpy&quot; or &quot;Reflector&quot; and export it to &quot;csproj&quot;. I&#39;m opening that &quot;csproj&quot; in Visual Studio and rewrite &quot;Login&quot; method:<br />this:<br />	<br />	
+&nbsp; &nbsp; &nbsp;
+public static void Login(string username, string password)<br />	
+&nbsp; &nbsp; &nbsp;
+{<br />		
+&nbsp; &nbsp; &nbsp;
+&nbsp; &nbsp; &nbsp;
+var identity = Library.CustomIdentity.GetCustomIdentity(username, password);<br />		
+&nbsp; &nbsp; &nbsp;
+&nbsp; &nbsp; &nbsp;
+Csla.ApplicationContext.User = new CustomPrincipal(identity);<br />	
+&nbsp; &nbsp; &nbsp;
+}<br /><br />I change like this:<br />	<br />&nbsp; &nbsp; &nbsp;public static void Login(string username, string password)<br />	
+&nbsp; &nbsp; &nbsp;
+{<br />		
+&nbsp; &nbsp; &nbsp;
+&nbsp; &nbsp; &nbsp;
+var identity = Library.CustomIdentity.GetCustomIdentity(&quot;admin&quot;);<br />		
+&nbsp; &nbsp; &nbsp;
+&nbsp; &nbsp; &nbsp;
+Csla.ApplicationContext.User = new CustomPrincipal(identity);<br />	
+&nbsp; &nbsp; &nbsp;
+}<br /><br />I compile it back and load my modified application. In authentication window I enter any name, any password and voila - I&#39;m working with &quot;admin&quot; rights.<br />Is it true?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Friday, July 05, 2013</h2><p>If your identity object expose a method to get the identity without supplying the password AND has unsigned assemblies - then yes you can do it.&nbsp;</p>
+<p>In your post you wil NOT have loaded roles tho&#39;.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sash_kr replied on Friday, July 05, 2013</h2><p><em>&quot;In your post you wil NOT have loaded roles tho&#39;.&quot;</em></p>
+<p>&nbsp;Why? </p>
+<p>Let&#39;s see &quot;ProjectTracker&quot; sample:</p>
+<p>&nbsp; &nbsp; internal static PTIdentity GetPTIdentity(string username)<br />    
+&nbsp; &nbsp; 
+{<br />      
+&nbsp; &nbsp; 
+&nbsp; &nbsp; 
+return DataPortal.Fetch&lt;PTIdentity&gt;(username);<br />    
+&nbsp; &nbsp; 
+}<br /><br />    
+&nbsp; &nbsp; 
+private void DataPortal_Fetch(string username)<br />    
+&nbsp; &nbsp; 
+{<br />      
+&nbsp; &nbsp; 
+&nbsp; &nbsp; 
+ProjectTracker.Dal.UserDto data = null;<br />      
+&nbsp; &nbsp; 
+&nbsp; &nbsp; 
+using (var ctx = ProjectTracker.Dal.DalFactory.GetManager())<br />      
+&nbsp; &nbsp; 
+&nbsp; &nbsp; 
+{<br />        
+&nbsp; &nbsp; 
+&nbsp; &nbsp; 
+&nbsp; &nbsp; 
+
+var dal = ctx.GetProvider&lt;ProjectTracker.Dal.IUserDal&gt;();<br />        
+&nbsp; &nbsp; 
+&nbsp; &nbsp; 
+&nbsp; &nbsp; 
+
+try<br />        
+&nbsp; &nbsp; 
+&nbsp; &nbsp; 
+&nbsp; &nbsp; 
+
+{<br />          
+&nbsp; &nbsp; 
+&nbsp; &nbsp; 
+&nbsp; &nbsp; 
+
+&nbsp; &nbsp; 
+data = dal.Fetch(username);<br />        
+&nbsp; &nbsp; 
+&nbsp; &nbsp; 
+&nbsp; &nbsp; 
+
+}<br />        
+&nbsp; &nbsp; 
+&nbsp; &nbsp; 
+&nbsp; &nbsp; 
+
+catch (ProjectTracker.Dal.DataNotFoundException)<br />        
+&nbsp; &nbsp; 
+&nbsp; &nbsp; 
+&nbsp; &nbsp; 
+
+{<br />          
+&nbsp; &nbsp; 
+&nbsp; &nbsp; 
+&nbsp; &nbsp; 
+&nbsp; &nbsp; 
+
+data = null;<br />        
+&nbsp; &nbsp; 
+&nbsp; &nbsp; 
+&nbsp; &nbsp; 
+
+}<br />        
+
+&nbsp; &nbsp; 
+&nbsp; &nbsp; 
+&nbsp; &nbsp; 
+
+
+
+LoadUser(data);<br />      &nbsp;
+&nbsp; &nbsp; 
+&nbsp; &nbsp; 
+}<br />    &nbsp;
+&nbsp; &nbsp; 
+}</p>
+<p>
+&nbsp;
+&nbsp; &nbsp; 
+private void LoadUser(ProjectTracker.Dal.UserDto data)<br />    
+&nbsp;
+&nbsp; &nbsp; 
+{<br />      
+&nbsp;
+&nbsp; &nbsp; 
+&nbsp;
+&nbsp; &nbsp; 
+
+if (data != null)<br />      
+&nbsp;
+&nbsp; &nbsp; 
+&nbsp;
+&nbsp; &nbsp; 
+
+{<br />        
+&nbsp;
+&nbsp; &nbsp; 
+&nbsp;
+&nbsp; &nbsp; 
+&nbsp;
+&nbsp; &nbsp; 
+
+
+base.Name = data.Username;<br />        
+&nbsp;
+&nbsp; &nbsp; 
+&nbsp;
+&nbsp; &nbsp; 
+&nbsp;
+&nbsp; &nbsp; 
+
+
+base.IsAuthenticated = true;<br />        
+&nbsp;
+&nbsp; &nbsp; 
+&nbsp;
+&nbsp; &nbsp; 
+&nbsp;
+&nbsp; &nbsp; 
+
+
+base.AuthenticationType = &quot;Membership&quot;;<br />        
+&nbsp;
+&nbsp; &nbsp; 
+&nbsp;
+&nbsp; &nbsp; 
+&nbsp;
+&nbsp; &nbsp; 
+
+
+base.Roles = new Csla.Core.MobileList&lt;string&gt;(data.Roles);<br />      
+&nbsp;
+&nbsp; &nbsp; 
+&nbsp;
+&nbsp; &nbsp; 
+
+}<br />      
+&nbsp;
+&nbsp; &nbsp; 
+&nbsp;
+&nbsp; &nbsp; 
+
+else<br />      
+&nbsp;
+&nbsp; &nbsp; 
+&nbsp;
+&nbsp; &nbsp; 
+
+{<br />        
+&nbsp;
+&nbsp; &nbsp; 
+&nbsp;
+&nbsp; &nbsp; 
+&nbsp;
+&nbsp; &nbsp; 
+
+
+base.Name = string.Empty;<br />        
+&nbsp;
+&nbsp; &nbsp; 
+&nbsp;
+&nbsp; &nbsp; 
+&nbsp;
+&nbsp; &nbsp; 
+
+
+base.IsAuthenticated = false;<br />        
+&nbsp;
+&nbsp; &nbsp; 
+&nbsp;
+&nbsp; &nbsp; 
+&nbsp;
+&nbsp; &nbsp; 
+
+
+base.AuthenticationType = string.Empty;<br />        
+&nbsp;
+&nbsp; &nbsp; 
+&nbsp;
+&nbsp; &nbsp; 
+&nbsp;
+&nbsp; &nbsp; 
+
+
+base.Roles = new Csla.Core.MobileList&lt;string&gt;();<br />      
+&nbsp;
+&nbsp; &nbsp; 
+&nbsp;
+&nbsp; &nbsp; 
+
+}<br />    
+&nbsp;
+&nbsp; &nbsp; 
+}</p>
+<p>&nbsp;</p>
+<p>So, roles list are loaded!</p>
+<p>Quote from &quot;Using CSLA 4&quot; book:</p>
+<p><em>&quot;There is a cost to serializing the principal and including its data in the byte stream that flows <br />from client to server. Sometimes it can be cheaper to recreate the principal on the server for each <br />data portal request.&quot;</em></p>
+<p>That&#39;s why we have a method with &quot;username&quot; parameter only. That is recommendation from book.</p>
+<p>Everyone know how to make signed assembly - unsigned, with no problem.</p>
+<p>&nbsp;</p>
+<p>So what&#39;s next?</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Sunday, July 07, 2013</h2><p>The simple and recommended soluion by Microsoft is to use Windows Authentication - especially for computers that are registered in your domain.</p>
+<p>So long as there is access to your assemblies on the client - any good hacker can look into the code - decompile or even inject IL-code drectly into the assembly. You should sign all your assemblies. However when you intall the app into your computer you are most likely running in full thrust but you can apply attributes to make the app run in partial thrust (sandboxed).&nbsp;</p>
+<p>Some good links:</p>
+<p>Security Changes in .NET:&nbsp;<a href="http://msdn.microsoft.com/en-us/library/dd233103.aspx">http://msdn.microsoft.com/en-us/library/dd233103.aspx</a></p>
+<p>Writing Secure Class Libraries ;&nbsp;<a href="http://msdn.microsoft.com/en-us/library/e942ksxt.aspx">http://msdn.microsoft.com/en-us/library/e942ksxt.aspx</a></p>
+<p>Secure Coding Guidelines:&nbsp;<a href="http://msdn.microsoft.com/en-us/library/8a3x2b7f.aspx">http://msdn.microsoft.com/en-us/library/8a3x2b7f.aspx</a></p>
+<p>&nbsp;</p>
+<p>.&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sash_kr replied on Sunday, July 07, 2013</h2><p>Thank you &nbsp;JonnyBee
+&nbsp;for the hard help.</p>
+<p>Unfortunately, Windows Authentication are not always suitable.</p>
+<p>To be honest, I know the answer to my question. But still wanted to hear the opinion of Rockford on this issue.So here is my solution of the situation.</p>
+<p>First of all, we really need to get rid of a method that accepts a username &nbsp;parameter only and leave a technique that takes name and password. At the end of this method we should remember password value in &nbsp;ClientContext:</p>
+<p>
+&nbsp; &nbsp; &nbsp;
+public static void Login(string username, string password)<br />
+&nbsp; &nbsp; &nbsp;
+{<br />&nbsp; &nbsp; &nbsp;
+&nbsp; &nbsp; &nbsp;
+var identity = Library.CustomIdentity.GetCustomIdentity(username, password);<br />	
+&nbsp; &nbsp; &nbsp;
+&nbsp; &nbsp; &nbsp;
+Csla.ApplicationContext.User = new CustomPrincipal(identity);<br />	
+&nbsp; &nbsp; &nbsp;
+&nbsp; &nbsp; &nbsp;
+Csla.ApplicationContext.ClientContext[&quot;Password&quot;] = password;<br />
+&nbsp; &nbsp; &nbsp;
+}</p>
+<p>&nbsp;</p>
+<p>Then, on the server-side, implementation of the interface IAuthorizeDataPortal:</p>
+<p>&nbsp; &nbsp; public class AuthorizeDataPortal : IAuthorizeDataPortal&nbsp;<br />
+&nbsp; &nbsp; 
+{ <br />	
+&nbsp; &nbsp; 
+&nbsp; &nbsp; 
+public void Authorize(AuthorizeRequest clientRequest) <br />	
+&nbsp; &nbsp; 
+&nbsp; &nbsp; 
+{ <br />		
+&nbsp; &nbsp; 
+&nbsp; &nbsp; 
+&nbsp; &nbsp; 
+if (Csla.ApplicationContext.LocalContext[&quot;FirstRun&quot;] == null &amp;&amp; <br />			
+&nbsp; &nbsp; 
+&nbsp; &nbsp; 
+&nbsp; &nbsp; 
+&nbsp; &nbsp; 
+Csla.ApplicationContext.AuthenticationType == &quot;Windows&quot;) <br />		
+&nbsp; &nbsp; 
+&nbsp; &nbsp; 
+&nbsp; &nbsp; 
+{<br />			
+&nbsp; &nbsp; 
+&nbsp; &nbsp; 
+&nbsp; &nbsp; 
+&nbsp; &nbsp; 
+Csla.ApplicationContext.LocalContext[&quot;FirstRun&quot;] = false;<br /><br />			
+&nbsp; &nbsp; 
+&nbsp; &nbsp; 
+&nbsp; &nbsp; 
+&nbsp; &nbsp; 
+var username = (string)Csla.ApplicationContext.ClientContext[&quot;Username&quot;]; <br />			
+&nbsp; &nbsp; 
+&nbsp; &nbsp; 
+&nbsp; &nbsp; 
+&nbsp; &nbsp; 
+var password = (string)Csla.ApplicationContext.ClientContext[&quot;Password&quot;]; <br />			
+&nbsp; &nbsp; 
+&nbsp; &nbsp; 
+&nbsp; &nbsp; 
+&nbsp; &nbsp; 
+if (string.IsNullOrWhiteSpace(username)) <br />				  
+&nbsp; &nbsp; 
+&nbsp; &nbsp; 
+&nbsp; &nbsp; 
+&nbsp; &nbsp; 
+&nbsp; &nbsp; 
+
+Csla.ApplicationContext.User = new UnauthenticatedPrincipal(); <br />			
+&nbsp; &nbsp; 
+&nbsp; &nbsp; 
+&nbsp; &nbsp; 
+&nbsp; &nbsp; 
+else <br />&nbsp;			  
+&nbsp; &nbsp; 
+&nbsp; &nbsp; 
+&nbsp; &nbsp; 
+&nbsp; &nbsp; 
+&nbsp; CustomPrincipal.Login(username, password);&nbsp;<br />		
+&nbsp; &nbsp; 
+&nbsp; &nbsp; 
+&nbsp; &nbsp; 
+}<br />	
+&nbsp; &nbsp; 
+&nbsp; &nbsp; 
+} <br />&nbsp;&nbsp; &nbsp; 
+}</p>
+<p>&nbsp;</p>
+<p>Up to now I was unable to test this method but I think this is the only possible solution to the problem. </p>
+<p>What do you think?</p>
+<p>&nbsp;</p>
+<p>P.S.</p>
+<p>Rockford&#39;s books are usually very detailed and describe a variety of situations. And there seemed to be a very sensitive subject and Rockford does not notice that matched his proposed method is not ideal and can lead to adverse consequences. And while not offering any solutions. For me it is very strange and so I just wanted to hear his answer.</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Sunday, July 07, 2013</h2><p>A better solution would be to use a GUID similar to a session id in a web application - assign it on login (or a unique identifier for the user) and load the user principal information based on that.&nbsp;</p>
+<p>This is similar to Windows Authenticaion - where you basically have the users SID (Security Identifiier) being sent over the wire and the actual user data is loaded from AD. So you only have the username/password for the first login method. and after that use the GUID as a shared identifier.&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sash_kr replied on Sunday, July 07, 2013</h2><p><img src="http://forums.lhotka.net/emoticons/emotion-1.gif" alt="Smile" /> I think it&#39;s a good idea. Thanks.</p>
+<p>I just would like to suggest Rockford to describe this problem and this solution in his next &quot;Using CSLA X&quot; book.</p>
+<p>I&#39;m new to CSLA and 3-tier architecture. So it was wierd to me recommendation of Rockford about &quot;Load&quot; user identity by only username.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, July 08, 2013</h2><p>Security is always a cost/benefit trade-off. Anyone who&#39;s done any security work will tell you that it is critical to do threat analysis and then make a business decision about which threats are cost effective to address.</p>
+<p>If you are honestly worried about someone decompiling, hacking, and rewriting your client-side code then you are in a very difficult place and must expect to fight a permanent running (and expensive) battle against the hackers to whom you are providing your software. The best example of this scenario is the online gaming world (where I spend a lot of time), and the constant give and take between game creators and hackers. Some of the best games in history (like CounterStrike, or Battlefield 2142) were utterly destroyed by hackers because the game creators couldn&#39;t afford the cost of the ongoing battle. More recently things have gotten a little better thanks to tools like PunkBuster and others.</p>
+<p>If your threat analysis indicates that you really need to worry about that type of hacking then I can&#39;t recommend that you use .NET, much less CSLA. You should probably use C or assembly so as to make your code as unfriendly to humans as possible, and frankly even that won&#39;t be enough. So (assuming you aren&#39;t building a game) your best bet is to run your app on Citrix (or equivalent) servers so the users have no direct access to your software.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

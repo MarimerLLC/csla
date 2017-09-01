@@ -1,0 +1,67 @@
+<html><header><title>WcfProxy Issue</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>WcfProxy Issue</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/7965.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>jfreeman posted on Monday, November 09, 2009</h2>I'm running a WinForm app that calls the WcfProxy on an app server.  Fetching data works great but I just starting getting an error when trying to do an Update.  I get a 404 Page Not Found.  I have a grid on my screen that pulls in a lot oif records.  The user may only update a few records and then save.  If I limit the grid to only pull back 30 records, updates work fine.  When I bring back all the records in the table, the error starts showing up.  I've been playing with the maxReceivedMessageSize and maxItemsInObjectGraph settings in my config files but the issue still exists.  I set both of the values to 2147483647.  Any ideas on what is going on?<br /><br />Thanks,<br />Jonathan</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Monday, November 09, 2009</h2>It is probably asp limit of 4 MB.<br /><br />        <br /><br />Sergey Barskiy<br />Principal Consultant<br />office: 678.405.0687 | mobile:&#160;404.388.1899<br /><br />Microsoft Worldwide Partner of the Year | Custom Development Solutions, Technical Innovation<br /><br /><br />-----Original Message-----<br />From: jfreeman [mailto:cslanet@lhotka.net] <br />Sent: Monday, November 09, 2009 5:42 PM<br />To: Sergey Barskiy<br />Subject: [CSLA .NET] WcfProxy Issue<br /><br />I'm running a WinForm app that calls the WcfProxy on an app server.  Fetching data works great but I just starting getting an error when trying to do an Update.  I get a 404 Page Not Found.  I have a grid on my screen that pulls in a lot oif records.  The user may only update a few records and then save.  If I limit the grid to only pull back 30 records, updates work fine.  When I bring back all the records in the table, the error starts showing up.  I've been playing with the maxReceivedMessageSize and maxItemsInObjectGraph settings in my config files but the issue still exists.  I set both of the values to 2147483647.  Any ideas on what is going on?<br /><br />Thanks,<br />Jonathan<br /><br /></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jfreeman replied on Monday, November 09, 2009</h2>What are my options?<br /><br />Jonathan</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Monday, November 09, 2009</h2>Just increase the size to whatever number you need.  The size is in KBs.   is about 100 MB.<br /><br />Sergey Barskiy<br />Principal Consultant<br />office: 678.405.0687 | mobile:&#160;404.388.1899<br /><br />Microsoft Worldwide Partner of the Year | Custom Development Solutions, Technical Innovation<br /><br /><br />-----Original Message-----<br />From: jfreeman [mailto:cslanet@lhotka.net] <br />Sent: Monday, November 09, 2009 5:55 PM<br />To: Sergey Barskiy<br />Subject: Re: [CSLA .NET] RE: WcfProxy Issue<br /><br />What are my options?<br /><br />Jonathan<br /><br /></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jfreeman replied on Tuesday, November 10, 2009</h2>I bumped it up to 2097151 which is the max allowed and I still get a 404 error.  I installed Fiddler on my PC and ran the program to see if I find anything.  It just show a 404 error but I noticed the following:<br /> <br />Content-Length: 36392990<br /> <br />That is considerably larger than the MaxRequestLength.  What can I do to get this working.<br /><br />Thanks,<br />Jonathan</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jfreeman replied on Wednesday, November 11, 2009</h2>Sergey,
+
+Do I need to start trying to do compression since the file is so large?  Thanks.
+
+Jonathan</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Wednesday, November 11, 2009</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Probably
+so.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> jfreeman
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Wednesday, November 11, 2009 9:17 AM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: RE: WcfProxy Issue<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Sergey, Do I need to start trying to do compression since
+the file is so large? Thanks. Jonathan<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jfreeman replied on Wednesday, November 11, 2009</h2>Can you give me any tips or samples to get me started?  I'm not sure how to setup compression.  Can I call and pick your brain for a few minutes?  Thanks.<br /><br />Jonathan</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, November 11, 2009</h2><A href="http://www.lhotka.net/cslanet/faq/DataPortalFaq.ashx">http://www.lhotka.net/cslanet/faq/DataPortalFaq.ashx</A></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Wednesday, November 11, 2009</h2>There is a sample project in Silverlight folders that is part of Samples download that you can steal all the code from.  If your is WPF app, just search the forum, someone posted source code for WCF compression at some point.<br /><br />Sergey Barskiy<br />Principal Consultant<br />office: 678.405.0687 | mobile:&#160;404.388.1899<br /><br />Microsoft Worldwide Partner of the Year | Custom Development Solutions, Technical Innovation<br /><br />-----Original Message-----<br />From: jfreeman [mailto:cslanet@lhotka.net] <br />Sent: Wednesday, November 11, 2009 2:01 PM<br />To: Sergey Barskiy<br />Subject: Re: [CSLA .NET] RE: RE: RE: WcfProxy Issue<br /><br />Can you give me any tips or samples to get me started?  I'm not sure how to setup compression.  Can I call and pick your brain for a few minutes?  Thanks.<br /><br />Jonathan<br /><br /></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jfreeman replied on Monday, November 16, 2009</h2>My app is WinForms.  Is there a way to change WCF to pass binary between the WcfPortal and WinForms?<br /><br />Jonathan</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, November 16, 2009</h2><P>WCF configuration is the same regardless of the UI technology you are using.</P>
+<P>The .NET data portal doesn't have the same hooks for compression as the Silverlight data portal, because there are various compressed bindings you can purchase for .NET WCF.</P>
+<P>But the use of binary XML with WCF is the same for Windows Forms, WPF, Web Forms or any other type of UI.</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

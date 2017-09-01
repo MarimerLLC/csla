@@ -1,0 +1,714 @@
+<html><header><title>Grid Editing Techniques with CSLA for Silverlight</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Grid Editing Techniques with CSLA for Silverlight</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5415.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Ash002 posted on Tuesday, September 16, 2008</h2><font face="Tahoma">Hi All<br><br>We are trying to establish our grid editing basics for a new application. This is a re-engineering of a current app. Our basic edit page will populate a grid, allow editing, and then allow the user to click save when their editing is done, saving muliple rows back to the server.<br><br>The two alternatives CSLA seems to offer are: a BusinessListBase class containing child BusinessBase objects, or an EditableRootListBase containing root BusinessBase objects.<br><br>The BusinessListBase approach:<br></font><blockquote><ul><li><font face="Tahoma">Allows us to save all rows at the end of the users input. </font></li></ul><ul><li><font face="Tahoma">Consistent with our current interface.</font></li></ul><ul><li><font face="Tahoma">if a few hundred rows are displayed, this approach creates a large n-level undo snapshot and send a lot of data back to the server when saving, eg a few meg to save a few rows is quite an overhead.</font></li></ul><ul><li><font face="Tahoma">Conceptually the root collection hosts no business functionality other than to list the search results, ie there are usually no rules applied across the collection itself, rather the rules are in each of the child objects.</font></li></ul><ul><li><font face="Tahoma">N-Level undo is probably not required for these types of grids as refetching would suffice</font></li></ul></blockquote><font face="Tahoma">The EditableRootList approach:<br></font><blockquote><ul><li><font face="Tahoma">Makes us save each row as editing is finished on the row.</font></li></ul><ul><li><font face="Tahoma">Saving as you go might slow down editing as there is a pause after the each row to get across the network to the database.</font></li></ul><ul><li><font face="Tahoma">Conceptually perhaps better because there are usually no business rules to enforce between the objects in the list, use case for editing a list of User objects is simply to be able to update each user in isolation from the others.</font></li></ul><ul><li><font face="Tahoma">N Level undo would apply to each root object and so would match row editing and allow changes to a single row to be cancelled - which would be appropraite.&nbsp; <br></font></li></ul></blockquote><font face="Tahoma">What are people doing to support grid editing of a few hundred rows? </font><br><br><font face="Tahoma">Is it possible to save only the dirty objects from an EditableRootList? <br><br>Is it possible to save only the dirty objects from a BusinessListBase? <br><br>eg Create a new instance of the list and copy in only the dirty objects?<br><br>Is this way off track?!?<br><br>Thanx in advance<br><br>Ashley <br></font><blockquote><br><br></blockquote></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Wednesday, September 17, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Just a few random thoughts&#8230;.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>ERLB saves as you go in Silverlight, just as it does in .NET, essentially
+when you switch rows.&nbsp; There should not be a pause because save (like any
+other operation in CSLA SL) is asynchronous.&nbsp; Cancelling of changes
+however is another story.&nbsp; You have to train your users to hit Cancel to
+discard an edit on existing cell, and Cancel+Cancel to discard changes to all
+cells in current row.&nbsp; This is not as intuitive of a UI as you might like
+for your users.&nbsp; I personally think that BLB with a cancel / save buttons
+makes a better UI. No, it is not possible to only send dirty rows from BLB
+out-of-the-box.&nbsp; There were a few threads on the forum that described that
+people wrote a code to do just that, but CSLA does not support it in itself due
+to data consistency concerns, etc&#8230;.&nbsp; You can probably do it on your
+own if there is a very compelling reason to do so.&nbsp; I am not sure how big
+of a hit on memory you take.&nbsp; I&#8217;d be curious to find out if you can take
+those measurements.&nbsp; <o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899<o:p></o:p></span></p>
+
+<p class=MsoNormal><b><i><span>Magenic</span></i></b><span> </span><span>&reg;</span><b><i><span><o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Ash002
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Tuesday, September 16, 2008 11:45 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> [CSLA .NET] Grid Editing Techniques with CSLA for Silverlight<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal><span>Hi All<br>
+<br>
+We are trying to establish our grid editing basics for a new application. This
+is a re-engineering of a current app. Our basic edit page will populate a grid,
+allow editing, and then allow the user to click save when their editing is
+done, saving muliple rows back to the server.<br>
+<br>
+The two alternatives CSLA seems to offer are: a BusinessListBase class
+containing child BusinessBase objects, or an EditableRootListBase containing
+root BusinessBase objects.<br>
+<br>
+The BusinessListBase approach:</span><o:p></o:p></p>
+
+<ul>
+ <li class=MsoNormal><span>Allows
+     us to save all rows at the end of the users input. </span><o:p></o:p></li>
+</ul>
+
+<ul>
+ <li class=MsoNormal><span>Consistent
+     with our current interface.</span><o:p></o:p></li>
+</ul>
+
+<ul>
+ <li class=MsoNormal><span>if
+     a few hundred rows are displayed, this approach creates a large n-level
+     undo snapshot and send a lot of data back to the server when saving, eg a
+     few meg to save a few rows is quite an overhead.</span><o:p></o:p></li>
+</ul>
+
+<ul>
+ <li class=MsoNormal><span>Conceptually
+     the root collection hosts no business functionality other than to list the
+     search results, ie there are usually no rules applied across the collection
+     itself, rather the rules are in each of the child objects.</span><o:p></o:p></li>
+</ul>
+
+<ul>
+ <li class=MsoNormal><span>N-Level
+     undo is probably not required for these types of grids as refetching would
+     suffice</span><o:p></o:p></li>
+</ul>
+
+<p class=MsoNormal><span>The
+EditableRootList approach:</span><o:p></o:p></p>
+
+<ul>
+ <li class=MsoNormal><span>Makes
+     us save each row as editing is finished on the row.</span><o:p></o:p></li>
+</ul>
+
+<ul>
+ <li class=MsoNormal><span>Saving
+     as you go might slow down editing as there is a pause after the each row
+     to get across the network to the database.</span><o:p></o:p></li>
+</ul>
+
+<ul>
+ <li class=MsoNormal><span>Conceptually
+     perhaps better because there are usually no business rules to enforce
+     between the objects in the list, use case for editing a list of User
+     objects is simply to be able to update each user in isolation from the
+     others.</span><o:p></o:p></li>
+</ul>
+
+<ul>
+ <li class=MsoNormal><span>N
+     Level undo would apply to each root object and so would match row editing
+     and allow changes to a single row to be cancelled - which would be
+     appropraite.&nbsp; </span><o:p></o:p></li>
+</ul>
+
+<p class=MsoNormal><span>What are people
+doing to support grid editing of a few hundred rows? </span><br>
+<br>
+<span>Is it possible to save only the
+dirty objects from an EditableRootList? <br>
+<br>
+Is it possible to save only the dirty objects from a BusinessListBase? <br>
+<br>
+eg Create a new instance of the list and copy in only the dirty objects?<br>
+<br>
+Is this way off track?!?<br>
+<br>
+Thanx in advance<br>
+<br>
+Ashley </span><o:p></o:p></p>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Wednesday, September 17, 2008</h2><BLOCKQUOTE><div><img src="/Themes/basicblue/images/icon-quote.gif"> <strong>Ash002:</strong></div><div>if a few hundred rows are displayed, this approach creates a large n-level undo snapshot and send a lot of data back to the server when saving, eg a few meg to save a few rows is quite an overhead.</div></BLOCKQUOTE><br><br>Um, not quite.&nbsp; N-level undo data doesn't transport; you MUST get your editlevel back to 0 by canceling or applying edits prior to calling save.<br><br>However, if a user only changed 5 out of 100 rows, the other 95 DO get sent back.&nbsp; But the undo snapshots are NOT part of the stream.&nbsp; That's ok though; the unchanged objects are still part of the parent's state, and need to be included technically.<br><br><BLOCKQUOTE><div><img src="/Themes/basicblue/images/icon-quote.gif"> <strong>Ash002:</strong></div><div>Conceptually the root collection hosts no business functionality other than to list the search results, ie there are usually no rules applied across the collection itself, rather the rules are in each of the child objects.</div></BLOCKQUOTE><br><br>In practice this is true, because there's no way for the collection itself to report errors back to the UI via the IDataErrorInfo interface, nor does it have broken rules.&nbsp; But your rules would likely be on the child object anyway.&nbsp; If you need rules across the collection, you could create a parent BusinessBase which has the collection BLB as a child, and run rules there.&nbsp; This also gives you a chance to report the rules.&nbsp; <br><br><BLOCKQUOTE><div><img src="/Themes/basicblue/images/icon-quote.gif"> <strong>Ash002:</strong></div><div>N-Level undo is probably not required for these types of grids as refetching would suffice</div></BLOCKQUOTE><br><br>Then you don't need to use n-level undo.&nbsp; For a user experience that users will expect though, DataBinding will still call BeginEdit / Cancel or ApplyEdit.&nbsp; You shouldn't disable that, because users won't get the expected grid behavior (namely pressing ESC to cancel changes to a row).&nbsp; The binding undo behavior is handled by the n-level undo logic.<br><br><BLOCKQUOTE><div><img src="/Themes/basicblue/images/icon-quote.gif"> <strong>Ash002:</strong></div><div>The EditableRootList approach:&nbsp; Makes us save each row as editing is finished on the row.</div></BLOCKQUOTE><br><br>Yes; ApplyEdit will cause the row to Save.<br><br><BLOCKQUOTE><div><img src="/Themes/basicblue/images/icon-quote.gif"> <strong>Ash002:</strong></div><div>Saving as you go might slow down editing as there is a pause after the each row to get across the network to the database.</div></BLOCKQUOTE><br><br>Yup.&nbsp; It may not even be that noticable though.. but only testing in your environment will tell.<br><br><BLOCKQUOTE><div><img src="/Themes/basicblue/images/icon-quote.gif"> <strong>Ash002:</strong></div><div>Conceptually perhaps better because there are usually no business rules to enforce between the objects in the list, use case for editing a list of User objects is simply to be able to update each user in isolation from the others.</div></BLOCKQUOTE><br><br>That depends on the use case.&nbsp; But if your use case says all the updates are done as a single batch, this isn't the way to go.&nbsp; Remember, a root object is the one controlling the database transaction.<br><br><BLOCKQUOTE><div><img src="/Themes/basicblue/images/icon-quote.gif"> <strong>Ash002:</strong></div><div>N Level undo would apply to each root object and so would match row editing and allow changes to a single row to be cancelled - which would be appropraite.&nbsp; </div></BLOCKQUOTE><br><br>The same experience would apply to the BLB root class as well.&nbsp; The only difference is that ApplyEdit here will commit to the database; ApplyEdit on the BLB child will just "save" the user's changes to the row (which would only be undo-able by reloading the list, unless you do more to use n-level undo).<br><br><BLOCKQUOTE><div><img src="/Themes/basicblue/images/icon-quote.gif"> <strong>Ash002:</strong></div><div>What are people doing to support grid editing of a few hundred rows? </div></BLOCKQUOTE><br><br>It depends on the specific use case.&nbsp; <img src="/emoticons/emotion-1.gif" alt="Smile [:)]" /><br><br><BLOCKQUOTE><div><img src="/Themes/basicblue/images/icon-quote.gif"> <strong>Ash002:</strong></div><div>Is it possible to save only the dirty objects from an EditableRootList? </div></BLOCKQUOTE><br><br>Well, that's what happens by default.&nbsp; Since each object in the list is a root, that object goes back and forth by itself; it has no idea it's even part of a collection.&nbsp; Which means you can't have rules that work "across" the collection.<br><br><BLOCKQUOTE><div><img src="/Themes/basicblue/images/icon-quote.gif"> <strong>Ash002:</strong></div><div>Is it possible to save only the dirty objects from a BusinessListBase? </div></BLOCKQUOTE><br><br>Yes, but the entire object graph will travel to the server in a remoting setup.&nbsp; But clean objects wouldn't communicate with the database, if you code it that way.<br><br><BLOCKQUOTE><div><img src="/Themes/basicblue/images/icon-quote.gif"> <strong>Ash002:</strong></div><div>eg Create a new instance of the list and copy in only the dirty objects?</div></BLOCKQUOTE><br><br>You could do that, but you'd be working with the "premature optimization" anti-pattern.&nbsp; Have you even tried the BLB with 100 objects to see how it performs?&nbsp; There are also other ways to reduce network traffic; you could use the CompressedDataPortal, for example.&nbsp; But before you do anything, I'd see how it works as-is.<br><br>Also, there's a danger when you only try to save part of the objects state; the clean objects might be necessary on the server, for example if rules need to be re-run.&nbsp; If they're not there, you may get broken rules when you shouldn't, or worse, not get broken rules when you should.&nbsp; You also need to worry about how to update the BLB and it's children in place, rather than just replacign the reference and rebinding the UI.&nbsp; <br><br>I recommend trying to send only dirty BOs across the wire; it's not going ot make saving noticably faster, and there are many hidden dangers.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Ash002 replied on Wednesday, September 17, 2008</h2>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><font size=2 color=navy face=Tahoma><span>Hi Guys,<o:p></o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 color=navy face=Tahoma><span><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 color=navy face=Tahoma><span>Thanks for the extensive input. <o:p></o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 color=navy face=Tahoma><span><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 color=navy face=Tahoma><span>To summarise/clarify a little -<o:p></o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 color=navy face=Tahoma><span><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 color=navy face=Tahoma><span>Our need is to create a UI using grids.
+The saving speed of 100 rows is probably ok, its the saving of 200, 300 or 500
+rows which concerns me. The user will then make changes to a few rows and press
+a save button. The save button is required for consistency with the old app and
+for consistency within the new app.<o:p></o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 color=navy face=Tahoma><span><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 color=navy face=Tahoma><span>EditableListRootBase does not, in its
+current form, fit with the save button, as rows are saved automatically on row
+exit - and it has no option to postpone saving.<o:p></o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 color=navy face=Tahoma><span><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 color=navy face=Tahoma><span>Silverlight's async approach is cool and
+certainly would help with any delay occuring on row exit, but we need to use a
+save button for the sake of consistency as stated.<o:p></o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 color=navy face=Tahoma><span><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 color=navy face=Tahoma><span>I understand the snapshot does not travel
+over the wire, so its only a single copy of the data that travels on the wire.<o:p></o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 color=navy face=Tahoma><span><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 color=navy face=Tahoma><span>Yes this could be an anti-pattern of
+premature optimisation and the testing of the theory needs to be done. This
+application however will be sold commercially to many customers, and we can't
+afford to be clobbering their network with our app, and we want to be able to
+run over the internet. Thats the advantage of silverlight. If the option to
+send/recieve less data exists I would use that where appropriate.<o:p></o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 color=navy face=Tahoma><span><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 color=navy face=Tahoma><span>You point is well taken about the risk of
+not sending the whole object over, and the nessecity of the clean objects on
+the server. There are certainly many cases where that is true. Eg form style
+pages which involve more complex object relationships, or a grid such as a
+timesheet. <o:p></o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 color=navy face=Tahoma><span><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 color=navy face=Tahoma><span>However there are many use cases where
+you don't need the clean objects on the server - ie anywhere you could use an
+EditableListRootBase. In these cases the business objects themselves make sense
+as root objects, ie self contained behaviours and rules.<o:p></o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 color=navy face=Tahoma><span><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 color=navy face=Tahoma><span>But I have now learnt that saving only
+the dirty objects in a single save is not an out of the box feature. <o:p></o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 color=navy face=Tahoma><span><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 color=navy face=Tahoma><span>Many Thanks<o:p></o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 color=navy face=Tahoma><span><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 color=navy face=Tahoma><span>Ashley<o:p></o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 color=navy face=Arial><span><o:p>&nbsp;</o:p></span></font></p>
+
+<div>
+
+<div class=MsoNormal align=center><font size=3 face="Times New Roman"><span>
+
+<hr align=center>
+
+</span></font></div>
+
+<p class=MsoNormal><b><font size=2 face=Tahoma><span>From:</span></font></b><font size=2 face=Tahoma><span> ajj3085
+[mailto:cslanet@lhotka.net] <br>
+<b><span>Sent:</span></b> Wednesday, 17 September 2008
+10:47 PM<br>
+<b><span>To:</span></b> Ashley Dickson<br>
+<b><span>Subject:</span></b> Re: [CSLA .NET] Grid
+Editing Techniques with CSLA for Silverlight</span></font><o:p></o:p></p>
+
+</div>
+
+<p class=MsoNormal><font size=3 face="Times New Roman"><span><o:p>&nbsp;</o:p></span></font></p>
+
+<blockquote>
+
+<div>
+
+<p class=MsoNormal><font size=3 face="Times New Roman"><span><img width=32 height=32 id="_x0000_i1025" src="/Themes/basicblue/images/icon-quote.gif"><strong><b><font face="Times New Roman">Ash002:</font></b></strong><o:p></o:p></span></font></p>
+
+</div>
+
+<div>
+
+<p class=MsoNormal><font size=3 face="Times New Roman"><span>if a few hundred rows are displayed, this approach creates a large
+n-level undo snapshot and send a lot of data back to the server when saving, eg
+a few meg to save a few rows is quite an overhead.<o:p></o:p></span></font></p>
+
+</div>
+
+</blockquote>
+
+<p class=MsoNormal><font size=3 face="Times New Roman"><span><br>
+<br>
+Um, not quite.&nbsp; N-level undo data doesn't transport; you MUST get your
+editlevel back to 0 by canceling or applying edits prior to calling save.<br>
+<br>
+However, if a user only changed 5 out of 100 rows, the other 95 DO get sent
+back.&nbsp; But the undo snapshots are NOT part of the stream.&nbsp; That's ok
+though; the unchanged objects are still part of the parent's state, and need to
+be included technically.<o:p></o:p></span></font></p>
+
+<div>
+
+<p class=MsoNormal><font size=3 face="Times New Roman"><span><img width=32 height=32 id="_x0000_i1026" src="/Themes/basicblue/images/icon-quote.gif"><strong><b><font face="Times New Roman">Ash002:</font></b></strong><o:p></o:p></span></font></p>
+
+</div>
+
+<div>
+
+<p class=MsoNormal><font size=3 face="Times New Roman"><span>Conceptually the root collection hosts no business functionality other
+than to list the search results, ie there are usually no rules applied across
+the collection itself, rather the rules are in each of the child objects.<o:p></o:p></span></font></p>
+
+</div>
+
+<p class=MsoNormal><font size=3 face="Times New Roman"><span><br>
+<br>
+In practice this is true, because there's no way for the collection itself to
+report errors back to the UI via the IDataErrorInfo interface, nor does it have
+broken rules.&nbsp; But your rules would likely be on the child object
+anyway.&nbsp; If you need rules across the collection, you could create a
+parent BusinessBase which has the collection BLB as a child, and run rules
+there.&nbsp; This also gives you a chance to report the rules.&nbsp; <o:p></o:p></span></font></p>
+
+<div>
+
+<p class=MsoNormal><font size=3 face="Times New Roman"><span><img width=32 height=32 id="_x0000_i1027" src="/Themes/basicblue/images/icon-quote.gif"><strong><b><font face="Times New Roman">Ash002:</font></b></strong><o:p></o:p></span></font></p>
+
+</div>
+
+<div>
+
+<p class=MsoNormal><font size=3 face="Times New Roman"><span>N-Level undo is probably not required for these types of grids as
+refetching would suffice<o:p></o:p></span></font></p>
+
+</div>
+
+<p class=MsoNormal><font size=3 face="Times New Roman"><span><br>
+<br>
+Then you don't need to use n-level undo.&nbsp; For a user experience that users
+will expect though, DataBinding will still call BeginEdit / Cancel or
+ApplyEdit.&nbsp; You shouldn't disable that, because users won't get the
+expected grid behavior (namely pressing ESC to cancel changes to a row).&nbsp;
+The binding undo behavior is handled by the n-level undo logic.<o:p></o:p></span></font></p>
+
+<div>
+
+<p class=MsoNormal><font size=3 face="Times New Roman"><span><img width=32 height=32 id="_x0000_i1028" src="/Themes/basicblue/images/icon-quote.gif"><strong><b><font face="Times New Roman">Ash002:</font></b></strong><o:p></o:p></span></font></p>
+
+</div>
+
+<div>
+
+<p class=MsoNormal><font size=3 face="Times New Roman"><span>The EditableRootList approach:&nbsp; Makes us save each row as editing
+is finished on the row.<o:p></o:p></span></font></p>
+
+</div>
+
+<p class=MsoNormal><font size=3 face="Times New Roman"><span><br>
+<br>
+Yes; ApplyEdit will cause the row to Save.<o:p></o:p></span></font></p>
+
+<div>
+
+<p class=MsoNormal><font size=3 face="Times New Roman"><span><img width=32 height=32 id="_x0000_i1029" src="/Themes/basicblue/images/icon-quote.gif"><strong><b><font face="Times New Roman">Ash002:</font></b></strong><o:p></o:p></span></font></p>
+
+</div>
+
+<div>
+
+<p class=MsoNormal><font size=3 face="Times New Roman"><span>Saving as you go might slow down editing as there is a pause after the
+each row to get across the network to the database.<o:p></o:p></span></font></p>
+
+</div>
+
+<p class=MsoNormal><font size=3 face="Times New Roman"><span><br>
+<br>
+Yup.&nbsp; It may not even be that noticable though.. but only testing in your
+environment will tell.<o:p></o:p></span></font></p>
+
+<div>
+
+<p class=MsoNormal><font size=3 face="Times New Roman"><span><img width=32 height=32 id="_x0000_i1030" src="/Themes/basicblue/images/icon-quote.gif"><strong><b><font face="Times New Roman">Ash002:</font></b></strong><o:p></o:p></span></font></p>
+
+</div>
+
+<div>
+
+<p class=MsoNormal><font size=3 face="Times New Roman"><span>Conceptually perhaps better because there are usually no business rules
+to enforce between the objects in the list, use case for editing a list of User
+objects is simply to be able to update each user in isolation from the others.<o:p></o:p></span></font></p>
+
+</div>
+
+<p class=MsoNormal><font size=3 face="Times New Roman"><span><br>
+<br>
+That depends on the use case.&nbsp; But if your use case says all the updates
+are done as a single batch, this isn't the way to go.&nbsp; Remember, a root
+object is the one controlling the database transaction.<o:p></o:p></span></font></p>
+
+<div>
+
+<p class=MsoNormal><font size=3 face="Times New Roman"><span><img width=32 height=32 id="_x0000_i1031" src="/Themes/basicblue/images/icon-quote.gif"><strong><b><font face="Times New Roman">Ash002:</font></b></strong><o:p></o:p></span></font></p>
+
+</div>
+
+<div>
+
+<p class=MsoNormal><font size=3 face="Times New Roman"><span>N Level undo would apply to each root object and so would match row
+editing and allow changes to a single row to be cancelled - which would be
+appropraite.&nbsp; <o:p></o:p></span></font></p>
+
+</div>
+
+<p class=MsoNormal><font size=3 face="Times New Roman"><span><br>
+<br>
+The same experience would apply to the BLB root class as well.&nbsp; The only
+difference is that ApplyEdit here will commit to the database; ApplyEdit on the
+BLB child will just &quot;save&quot; the user's changes to the row (which would
+only be undo-able by reloading the list, unless you do more to use n-level
+undo).<o:p></o:p></span></font></p>
+
+<div>
+
+<p class=MsoNormal><font size=3 face="Times New Roman"><span><img width=32 height=32 id="_x0000_i1032" src="/Themes/basicblue/images/icon-quote.gif"><strong><b><font face="Times New Roman">Ash002:</font></b></strong><o:p></o:p></span></font></p>
+
+</div>
+
+<div>
+
+<p class=MsoNormal><font size=3 face="Times New Roman"><span>What are people doing to support grid editing of a few hundred rows? <o:p></o:p></span></font></p>
+
+</div>
+
+<p class=MsoNormal><font size=3 face="Times New Roman"><span><br>
+<br>
+It depends on the specific use case.&nbsp; <img width=32 height=32 id="_x0000_i1033" src="/emoticons/emotion-1.gif" alt="Smile <img src=" />"><o:p></o:p></span></font></p>
+
+<div>
+
+<p class=MsoNormal><font size=3 face="Times New Roman"><span><img width=32 height=32 id="_x0000_i1034" src="/Themes/basicblue/images/icon-quote.gif"><strong><b><font face="Times New Roman">Ash002:</font></b></strong><o:p></o:p></span></font></p>
+
+</div>
+
+<div>
+
+<p class=MsoNormal><font size=3 face="Times New Roman"><span>Is it possible to save only the dirty objects from an EditableRootList?
+<o:p></o:p></span></font></p>
+
+</div>
+
+<p class=MsoNormal><font size=3 face="Times New Roman"><span><br>
+<br>
+Well, that's what happens by default.&nbsp; Since each object in the list is a
+root, that object goes back and forth by itself; it has no idea it's even part
+of a collection.&nbsp; Which means you can't have rules that work
+&quot;across&quot; the collection.<o:p></o:p></span></font></p>
+
+<div>
+
+<p class=MsoNormal><font size=3 face="Times New Roman"><span><img width=32 height=32 id="_x0000_i1035" src="/Themes/basicblue/images/icon-quote.gif"><strong><b><font face="Times New Roman">Ash002:</font></b></strong><o:p></o:p></span></font></p>
+
+</div>
+
+<div>
+
+<p class=MsoNormal><font size=3 face="Times New Roman"><span>Is it possible to save only the dirty objects from a BusinessListBase? <o:p></o:p></span></font></p>
+
+</div>
+
+<p class=MsoNormal><font size=3 face="Times New Roman"><span><br>
+<br>
+Yes, but the entire object graph will travel to the server in a remoting
+setup.&nbsp; But clean objects wouldn't communicate with the database, if you
+code it that way.<o:p></o:p></span></font></p>
+
+<div>
+
+<p class=MsoNormal><font size=3 face="Times New Roman"><span><img width=32 height=32 id="_x0000_i1036" src="/Themes/basicblue/images/icon-quote.gif"><strong><b><font face="Times New Roman">Ash002:</font></b></strong><o:p></o:p></span></font></p>
+
+</div>
+
+<div>
+
+<p class=MsoNormal><font size=3 face="Times New Roman"><span>eg Create a new instance of the list and copy in only the dirty
+objects?<o:p></o:p></span></font></p>
+
+</div>
+
+<p class=MsoNormal><font size=3 face="Times New Roman"><span><br>
+<br>
+You could do that, but you'd be working with the &quot;premature
+optimization&quot; anti-pattern.&nbsp; Have you even tried the BLB with 100
+objects to see how it performs?&nbsp; There are also other ways to reduce
+network traffic; you could use the CompressedDataPortal, for example.&nbsp; But
+before you do anything, I'd see how it works as-is.<br>
+<br>
+Also, there's a danger when you only try to save part of the objects state; the
+clean objects might be necessary on the server, for example if rules need to be
+re-run.&nbsp; If they're not there, you may get broken rules when you
+shouldn't, or worse, not get broken rules when you should.&nbsp; You also need
+to worry about how to update the BLB and it's children in place, rather than
+just replacign the reference and rebinding the UI.&nbsp; <br>
+<br>
+I recommend trying to send only dirty BOs across the wire; it's not going ot
+make saving noticably faster, and there are many hidden dangers.<br>
+<br>
+<br>
+<o:p></o:p></span></font></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Thursday, September 18, 2008</h2>Well, the choice to use Silverlight or not must be made up front, before you do any other work, because that choice will dictate which version of Csla.net to use.&nbsp; <br><br>As far as your concerns, test and find out.&nbsp; Don't do anything unless you've confirmed your fears.&nbsp; While I understand you don't want to "clobber" their network, you also don't want to add unnecessary complexity.&nbsp; Complexity means a harder to debug / maintain program, which means you have more risk of crashes.&nbsp; <br><br>As far as complete object graphs go.. that's up to you and how you design your objects.&nbsp; If your use case allows each row to be updatable independently (because one row does not in any way affect another), you could very well construct a BLB like class that only sends the dirty rows to update.&nbsp; Like you said, this isn't out of the box, but shouldn't be too difficult either.&nbsp; <br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Ash002 replied on Thursday, September 18, 2008</h2>
+
+
+
+
+
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><font size=2 color=navy face=Tahoma><span>The choice to use Silverlight has been
+made and we have been working with Silverlight and Csla for Silverlight a few
+months now.<o:p></o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 color=navy face=Tahoma><span><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 color=navy face=Tahoma><span>You are right to point out that we need
+to do the experiment however. The amount of data which produces an acceptable
+load time, would probably result in an acceptable save time. We could just
+provide an option to set the results size, and users could set according to their
+situation. <o:p></o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 color=navy face=Tahoma><span><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 color=navy face=Tahoma><span>As to making an arrangement to save only
+the dirty data, I would be more inclined to use EditableRootListBase than BLB.
+ERLB seems to be the result of the thinking involved in the Csla paradigm. Ie root
+objects travel on their own, child objects travel with the root. So ERLB not
+sending the updated objects until a save button click, and then sending all the
+saved objects, seems to be in keeping with csla principles. A BLB with missing child
+objects, seem to be outside of those principles. <o:p></o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 color=navy face=Tahoma><span><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 color=navy face=Tahoma><span>In the case where there are business
+rules across the grids rows, then the BLB arrangement would be the right choice.
+But in those cases I wouldn&#8217;t be inclined to optimise and send back only
+dirty data. As that creeps into risky territory. I think ERLB would cover most
+circumstance and keep it simple as you say.<o:p></o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 color=navy face=Tahoma><span><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 color=navy face=Tahoma><span>Actually this idea seems a natural
+extension to ERLB. The principle being that the objects&#8217; only business
+relationships with each other is that they happen to be on the same grid. In
+that sense ERLB is a view technology.<o:p></o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 color=navy face=Tahoma><span><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 color=navy face=Tahoma><span>That said I have played with overriding
+ERLB. Postponing saves is easy. I then create &#8220;copies&#8221; ERLB,
+legitimate as ERLB is just view/collection of BOs. Then clone each dirty or
+deleted BO, add to &#8220;copies&#8221; and pass copies to DataPortal Update().
+On the server side call SaveItem() for each item in copies. All seems too damn
+simple. There is the issue of getting the objects back into the original ERLB, with
+new IDs etc, and checking to make sure Clone() is a deep clone (I am kinda
+assumming that as Clone is essential to Csla and its snap shots etc).<o:p></o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 color=navy face=Tahoma><span><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 color=navy face=Tahoma><span>Will see how iit all goes. <o:p></o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 color=navy face=Tahoma><span><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 color=navy face=Tahoma><span><o:p>&nbsp;</o:p></span></font></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, September 19, 2008</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>Ash002:</strong></div><div> 
+
+<DIV class=Section1>
+<P class=MsoNormal><FONT face=Tahoma color=navy size=2><SPAN>In the case where there are business rules across the grids rows, then the BLB arrangement would be the right choice. But in those cases I wouldn’t be inclined to optimise and send back only dirty data. As that creeps into risky territory. I think ERLB would cover most circumstance and keep it simple as you say.<o:p></o:p></SPAN></FONT></P>
+<P class=MsoNormal></div></BLOCKQUOTE></P>
+<P class=MsoNormal>If you really want to only transfer datagrams, not object graphs, you should consider using the local data portal and calling your own custom WCF services that return/consume datagrams. That may be a simpler overall solution.</P>
+<P class=MsoNormal>Yes, you give up the mobile object features of the data portal, but it sounds like you really don't want them anyway (mobile objects and datagrams are different models).</P></DIV></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Ash002 replied on Friday, September 19, 2008</h2><font face="Tahoma">Hi Rocky<br><br>Hhmmm...<br><br>Well I don't think I am thinking that its just about transfering data graphs, but I'll give it some thought. That would be a client server arrangement with a Silverlight client. <br><br>Whats on my mind is using the validity of EditableRootListBase. Root objects travel to client, root object is changed, root object goes to server. I am told the screens could require the flexibility to be able to load a largish amount of rows for perusal by the user, and we want to use a save button. This seems a natural extension to ERLB, ie is conceptually consistent with the "Rootness", autonomy, of the objects in the collection. <br><br>When a screen is not consistent with ERLB, ie rules across child BOs, then using BLB as it stands is the right approach and gives the advantages of mobile objects. BLB screens may need a smaller limit on the amount of data the retrieve, which is fine. <br><br>Anyway will think on it, and the nessecity.<br><br><br></font></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, September 19, 2008</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>That is true, ERLB does coordinate autonomous root objects. And
+if you user&#8217;s are good with that experience (no cancel button, etc) then
+it is a great option!<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>BLB is a good option too &#8211; for the same scenarios, but
+with different user expectations around when things commit and can be canceled.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>But if you want BLB semantics, and only want to transfer changed
+data (which I thought was discussed earlier in the thread), then you enter the
+realm of datagrams. CSLA doesn&#8217;t do that, because it provides an
+inconsistent object model and context on the client and server. Not that that&#8217;s
+always bad, but it is outside the goals for the data portal, which is all about
+providing a consistent object model and context on both sides of the wire.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Which is why you have the option of using the local data portal
+(globally, or for specific objects), in case you want datagram semantics in
+certain (or all) scenarios.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I&#8217;m not trying to push you one way or another &#8211; just
+trying to compartmentalize the concepts and their application.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>The real world is full of gray areas. But gray areas waste time
+and money, so personally I always force gray areas into one box or another.
+Much like Stephen Colbert&#8217;s attitude (to paraphrase): mobile objects or
+datagrams, pick a side! :)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky</span><b><span><o:p></o:p></span></b></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Ash002 replied on Monday, September 22, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><font size=2 color=navy face=Arial><span>Hi Rocky<o:p></o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 color=navy face=Arial><span><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 color=navy face=Arial><span>I am glad you have been talking about
+releasing Csla material which covers a wider range because that would help us
+know how Clsa is being used. I know it must seem logical when you already know
+it. <o:p></o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 color=navy face=Arial><span><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 color=navy face=Arial><span>We don&#8217;t just want to send changed
+data, that&#8217;s just one possible solution. &#8220;Use case&#8221; is
+Silverlight client with an internet connection to the DB. An ADSL 1 connection
+for example has pretty slow upload speed, but ok download speed. Necessity: an
+example grid had over 11meg of serialised mobile objects when loading 1400
+rows. With only an moderate amount of columns. So 200 rows = 1.5 meg. That&#8217;s
+still quite a download over the net. For a save its 1.5 meg up and 1.5 meg
+down. <o:p></o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 color=navy face=Arial><span><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 color=navy face=Arial><span>We want the object model too, and the
+mobile objects. <o:p></o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 color=navy face=Arial><span><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 color=navy face=Arial><span>Paul has done some quick work in
+compressing the data portal transfers in the Silverlight data portal with good
+results. We could apply compression once a threshhold size is reached. So we
+will see how this goes and start off using vanilla BLBs.<o:p></o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 color=navy face=Arial><span><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 color=navy face=Arial><span>Thanks for your input.<o:p></o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 color=navy face=Arial><span><o:p>&nbsp;</o:p></span></font></p>
+
+</div>
+
+
+
+
+<br><br><br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

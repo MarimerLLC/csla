@@ -1,0 +1,227 @@
+<html><header><title>stored procedure with 3 queries in DalLinq</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>stored procedure with 3 queries in DalLinq</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9259.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>lazaroms posted on Thursday, July 22, 2010</h2><p>Hi all:</p>
+<p>I have an SP, it has 3 queries inside, two of them returns a list and the other one return single data.</p>
+<p>How must I implement a partial class for the result to integrate it to the DalLinq datacontext????</p>
+<p>This is my SP</p>
+<p>&nbsp;</p>
+<p>
+
+
+
+
+
+
+
+
+ 
+  Normal
+  0
+  
+  
+  21
+  
+  
+  false
+  false
+  false
+  
+  ES-MX
+  X-NONE
+  X-NONE
+  
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+  
+  MicrosoftInternetExplorer4
+  
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+  
+
+ 
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+ 
+
+
+
+
+
+<p class="MsoNormal" style="margin-bottom:0.0001pt;line-height:normal;"><span style="font-size:10pt;font-family:&#39;Courier New&#39;;color:blue;" lang="EN-US">ALTER</span><span style="font-size:10pt;font-family:&#39;Courier New&#39;;" lang="EN-US"> <span style="color:blue;">PROCEDURE</span> [dbo]<span style="color:gray;">.</span>[spGetDataandLists]</span></p>
+<p class="MsoNormal" style="margin-bottom:0.0001pt;line-height:normal;"><span style="font-size:10pt;font-family:&#39;Courier New&#39;;" lang="EN-US"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color:gray;">(</span></span></p>
+<p class="MsoNormal" style="margin-bottom:0.0001pt;line-height:normal;"><span style="font-size:10pt;font-family:&#39;Courier New&#39;;" lang="EN-US"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>@Id <span style="color:blue;">UniqueIdentifier</span></span></p>
+<p class="MsoNormal" style="margin-bottom:0.0001pt;line-height:normal;"><span style="font-size:10pt;font-family:&#39;Courier New&#39;;" lang="EN-US"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color:gray;">)</span></span></p>
+<p class="MsoNormal" style="margin-bottom:0.0001pt;line-height:normal;"><span style="font-size:10pt;font-family:&#39;Courier New&#39;;color:blue;" lang="EN-US">AS</span></p>
+<p class="MsoNormal" style="margin-bottom:0.0001pt;line-height:normal;"><span style="font-size:10pt;font-family:&#39;Courier New&#39;;color:blue;" lang="EN-US">SELECT</span><span style="font-size:10pt;font-family:&#39;Courier New&#39;;" lang="EN-US"> Id<span style="color:gray;">,</span> Name<span style="color:gray;">,</span> Desc</span></p>
+<p class="MsoNormal" style="margin-bottom:0.0001pt;line-height:normal;"><span style="font-size:10pt;font-family:&#39;Courier New&#39;;color:blue;" lang="EN-US">FROM</span><span style="font-size:10pt;font-family:&#39;Courier New&#39;;" lang="EN-US"><span>&nbsp;&nbsp; </span>Perm</span></p>
+<p class="MsoNormal" style="margin-bottom:0.0001pt;line-height:normal;"><span style="font-size:10pt;font-family:&#39;Courier New&#39;;color:blue;" lang="EN-US">WHERE</span><span style="font-size:10pt;font-family:&#39;Courier New&#39;;" lang="EN-US"><span>&nbsp; </span><span style="color:gray;">(</span>Id <span style="color:gray;">=</span> @Id<span style="color:gray;">)</span></span></p>
+<p class="MsoNormal" style="margin-bottom:0.0001pt;line-height:normal;"><span style="font-size:10pt;font-family:&#39;Courier New&#39;;color:green;" lang="EN-US">--List #1 (children)</span></p>
+<p class="MsoNormal" style="margin-bottom:0.0001pt;line-height:normal;"><span style="font-size:10pt;font-family:&#39;Courier New&#39;;color:blue;" lang="EN-US">SELECT</span><span style="font-size:10pt;font-family:&#39;Courier New&#39;;" lang="EN-US"> pegr.Id<span style="color:gray;">,</span> grus.Id<span style="color:gray;">,</span> grus.Name<span style="color:gray;">,</span> grus.Acti</span></p>
+<p class="MsoNormal" style="margin-bottom:0.0001pt;line-height:normal;"><span style="font-size:10pt;font-family:&#39;Courier New&#39;;color:blue;" lang="EN-US">FROM</span><span style="font-size:10pt;font-family:&#39;Courier New&#39;;" lang="EN-US"><span>&nbsp;&nbsp; </span>grus <span style="color:gray;">INNER</span> <span style="color:gray;">JOIN</span></span></p>
+<p class="MsoNormal" style="margin-bottom:0.0001pt;line-height:normal;"><span style="font-size:10pt;font-family:&#39;Courier New&#39;;" lang="EN-US"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>pegr <span style="color:blue;">ON</span> grus.Id <span style="color:gray;">=</span> pegr<span style="color:gray;">.</span>grus_Id <span style="color:gray;">INNER</span> <span style="color:gray;">JOIN</span></span></p>
+<p class="MsoNormal" style="margin-bottom:0.0001pt;line-height:normal;"><span style="font-size:10pt;font-family:&#39;Courier New&#39;;" lang="EN-US"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>Perm <span style="color:blue;">ON</span> pegr<span style="color:gray;">.</span>perm_Id <span style="color:gray;">=</span> perm.Id</span></p>
+<p class="MsoNormal" style="margin-bottom:0.0001pt;line-height:normal;"><span style="font-size:10pt;font-family:&#39;Courier New&#39;;color:blue;" lang="EN-US">WHERE</span><span style="font-size:10pt;font-family:&#39;Courier New&#39;;" lang="EN-US"><span>&nbsp; </span><span style="color:gray;">(</span>pegr<span style="color:gray;">.</span>perm_Id <span style="color:gray;">=</span> @Id<span style="color:gray;">)</span></span></p>
+<p class="MsoNormal" style="margin-bottom:0.0001pt;line-height:normal;"><span style="font-size:10pt;font-family:&#39;Courier New&#39;;color:green;" lang="EN-US">--List #2 (potential children)</span></p>
+<p class="MsoNormal" style="margin-bottom:0.0001pt;line-height:normal;"><span style="font-size:10pt;font-family:&#39;Courier New&#39;;color:blue;" lang="EN-US">SELECT</span><span style="font-size:10pt;font-family:&#39;Courier New&#39;;" lang="EN-US"> Id<span style="color:gray;">,</span> Name<span style="color:gray;">,</span> Acti</span></p>
+<p class="MsoNormal" style="margin-bottom:0.0001pt;line-height:normal;"><span style="font-size:10pt;font-family:&#39;Courier New&#39;;color:blue;" lang="EN-US">FROM</span><span style="font-size:10pt;font-family:&#39;Courier New&#39;;" lang="EN-US"><span>&nbsp;&nbsp; </span>grus</span></p>
+<p class="MsoNormal" style="margin-bottom:0.0001pt;line-height:normal;"><span style="font-size:10pt;font-family:&#39;Courier New&#39;;color:blue;" lang="EN-US">WHERE</span><span style="font-size:10pt;font-family:&#39;Courier New&#39;;" lang="EN-US"><span>&nbsp; </span>Id <span style="color:gray;">NOT</span> <span style="color:gray;">IN</span> <span style="color:gray;">(</span><span style="color:blue;">SELECT</span> grus_Id <span style="color:blue;">FROM</span> pegr
+<span style="color:blue;">WHERE</span> <span style="color:gray;">(</span>perm_Id <span style="color:gray;">=</span> @Id<span style="color:gray;">))</span></span></p>
+</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>lazaroms replied on Friday, July 23, 2010</h2><p>Hi, it&#39; me again.</p>
+<p>I found the answer to my question in this article,&nbsp; http://msdn.microsoft.com/en-us/library/bb399344.aspx</p>
+<p>It&acute;s worth to clear that MultipleResultTypesSequentiallyResult1 and MultipleResultTypesSequentiallyResult2 must be declared by th developer en the DataContext&nbsp; Partial Class of the O/R designer, NOT in the auto-generated code.</p>
+<p>Those types mus be declared following the classes in the auto.generated code as a pattern.</p>
+<p>Thanks.</p>
+<p>&nbsp;</p>
+<p>L.M.Santin</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,15 @@
+<html><header><title>RegisterProperty(lambdaExpression) with abstract classes</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>RegisterProperty(lambdaExpression) with abstract classes</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/7589.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>decius posted on Wednesday, September 09, 2009</h2><P>I have some abstract classes I created that extend from BusinessBase&lt;T&gt; like so:</P>
+<P>public class MyClass&lt;T&gt; : Csla.BusinessBase&lt;MyClass&lt;T&gt;&gt;</P>
+<P>This model has worked for me in the past, but now with the RegisterProperty methods this model breaks the lambda expressions because when implementing the above in concrete classes the inferred type of the lambdaExpression is MyClass&lt;T&gt; rather than just the T.&nbsp; </P>
+<P>I've also noticed that it breaks the return type of the save because of the same problem (in the past I simply used the new keyword and added my own implementation). </P>
+<P>Is this incorrect? Should I instead be extending from Csla.Core.BusinessBase rather than Csla.BusinessBase&lt;T&gt;????</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tmg4340 replied on Wednesday, September 09, 2009</h2><P><FONT face=Tahoma size=2>Typically, the class construct recommended would be something like this:</FONT></P>
+<P><FONT face=Tahoma size=2>public abstract class MyClass&lt;T&gt; : Csla.BusinessBase&lt;T&gt;</FONT></P>
+<P><FONT face=Tahoma size=2>Which should solve your issues.</FONT></P>
+<P><FONT face=Tahoma size=2>Was there a specific reason you chose "Csla.BusinessBase&lt;MyClass&lt;T&gt;&gt;"?</FONT></P>
+<P><FONT face=Tahoma size=2>- Scott</FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Wednesday, September 09, 2009</h2><P>The recommendation is to create your own set of Base classes which your BOs&nbsp;can inherit from.</P>
+<P>So MyClass&lt;T&gt; is exactly right. </P>
+<P>But only if it is used as your Base class that concrete BOs inherit from.</P>
+<P>So it is better to name it MyBusinessBass&lt;T&gt; and to put your common company specific code in it.</P>
+<P>HTH</P>
+<P>Joe</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>decius replied on Wednesday, September 09, 2009</h2><P>Thanks! I don't know why I didn't realize that! That's really obvious now that I see it.&nbsp; </P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

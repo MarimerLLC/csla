@@ -1,0 +1,158 @@
+<html><header><title>CslaLight - DataGrid is not refresh correctly</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CslaLight - DataGrid is not refresh correctly</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6714.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Fel posted on Wednesday, April 01, 2009</h2>I'm working with CSLA Light, when I remove child object, delete line from grid, column which fire code that delete data is completely clean. Another 2 columns in selected row are 50% clean, and last column Hyperlinkbutton is still there. When I save and reopen page, this line is gone.<br>I know about DataGrid problem that was "fixed" in December version of Silverlight toolkit. I tried work around for this problem, setting focus on the grid. It doesn't work. <br>Also, I rebind dataprovider to refresh data/grids on page. Unsuccessful.<br><br>Any suggestion what can cause this behavior?<br>Am I only one who experience this problem? <br><br>In my project, I reference the latest version of System.Windows.Controls.Data, 2.0.5.0. <br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Wednesday, April 01, 2009</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I
+would double check to ensure that you have the latest copy of the grid in your
+project.&nbsp; The actual install actually has instruction with it because it
+does not update all places on your system.&nbsp; I am just guessing that this
+is what the problem is, because I am unable to reproduce it with the latest
+version of the grid.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>The
+only workaround is to unbind and rebind the grid, but this should not be
+necessary on the latest version (to the best of my knowledge).&nbsp; If you
+find the actual DLL (System.Windows.Controls.Data.dll) you are referencing, the
+version on DLL should be 2.0.31202.0 and date around 12/16/2008.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Fel
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Wednesday, April 01, 2009 8:13 AM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> [CSLA .NET] CslaLight - DataGrid is not refresh correctly<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>I'm working with CSLA Light, when I remove child object,
+delete line from grid, column which fire code that delete data is completely
+clean. Another 2 columns in selected row are 50% clean, and last column
+Hyperlinkbutton is still there. When I save and reopen page, this line is gone.<br>
+I know about DataGrid problem that was &quot;fixed&quot; in December version on
+Silverlight toolkit. I tried work around for this problem, setting focus on the
+grid. It doesn't work. <br>
+Also, I rebind dataprovider to refresh data/grids on page. Unsuccessful.<br>
+<br>
+Any suggestion what can cause this behavior?<br>
+Am I only one who experience this problem? <br>
+<br>
+In my project, I'm reference the latest version of
+System.Windows.Controls.Data, 2.0.5.0. <br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Fel replied on Friday, April 03, 2009</h2>Thanks Sergey for your response.<br><br>I installed DataGrid dll from 12/2008 one more time on my system. Then, I added reference to it. Great. I got grid refreshing working correctly.<br>Unfortunately, during this process something happen to csla client in my project. I got errors saying that "csla:ValidateDataGridTextColumn" column in XAML has invalid property.<br>I deleted reference to csml and added it again. No success. <br>Interesting, csla works correctly. Only csla data grid columns are not available.<br>&nbsp;<br>Any suggestion?</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Friday, April 03, 2009</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I
+am thinking your CSLA is out of date. &nbsp;I would download the latest and
+update references to CSLA to reference the latest code.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Fel
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Friday, April 03, 2009 10:48 AM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: CslaLight - DataGrid is not refresh
+correctly<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Thanks Sergey for your response.<br>
+<br>
+I installed DataGrid dll from 12/2008 one more time on my system. Then, I added
+reference to it. Great. I got grid refreshing working correctly.<br>
+Unfortunately, during this process something happen to csla client in my
+project. I got errors saying that &quot;csla:ValidateDataGridTextColumn&quot;
+column in XAML has invalid property.<br>
+I deleted reference to csml and added it again. No success. <br>
+Interesting, csla works correctly. Only csla data grid columns are not
+available.<br>
+&nbsp;<br>
+Any suggestion?<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Adam replied on Thursday, June 18, 2009</h2>Hi<br><br>I appear to be having trouble with the datagrid in silverlight when I do an accept/discard it saves the information but then the datagrid blanks out the changed lines. The changed lines won't become visible again until I come completly away from the datagrid and rebind.<br><br>Any ideas?<br><br>I am currently using Silverlight 2 with CSLA.Net for Silverlight 3.6.2.0<br><br>Thanks<br><br>Adam<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Thursday, June 18, 2009</h2>I thought that error was due to a bug in the Silverlight grid. Which was fixed last December. Did you obtain that fix?<br /><br />Joe<br /></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Adam replied on Thursday, June 18, 2009</h2>I found the fix http://www.microsoft.com/downloads/details.aspx?FamilyID=084a1bb2-0078-4009-94ee-e659c6409db0&amp;displaylang=en#Requirements and have tried to apply it only to now have the error;<br><br>Error&nbsp;&nbsp;&nbsp; 1&nbsp;&nbsp;&nbsp; The type 'System.Windows.Controls.DataGridBoundColumn' is defined in an assembly that is not referenced. You must add a reference to assembly 'System.Windows.Controls.Data, Version=2.0.5.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35'.&nbsp;&nbsp; <br><br>Help! Any ideas?<br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Adam replied on Thursday, June 18, 2009</h2>Found the problem to be a reference to the old DataGrid dll in the csla framework so updated and re-built and away I go!<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,126 @@
+<html><header><title>reverse proxy wcf endpoint hell</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>reverse proxy wcf endpoint hell</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/12781.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>uwefms posted on Thursday, October 23, 2014</h2><p>Hi everybody,</p>
+<p>&nbsp; for quite some days I am chewing on how to call a wcf service for a Silverlight app via apache reverse proxy correctly. The setting is as follows:</p>
+<p>Apache reverse proxy called via https:</p>
+<p>https://DmzServerURL/SL_App_01 is routed to</p>
+<p>http://192.168.2.5/Sl_App_01/</p>
+<p>Everything is working fine (Silverlight app shows up) up to the moment I need data from the SQL server. Depending on how I configure the endpoint I get either no errors and nothing is happening up to &quot;No server found&quot; etc.</p>
+<p>I can call the svc by:</p>
+<p>https://DmzServerURL/SL_App_01/WcfPortal.svc</p>
+<p>and can see the correct svc URL using my internal server in the svcutil.exe call. I think I am missing some settings in web.config to use the internal svc adress. </p>
+<p>After 3 days of reading the fog becomes thicker instead of getting a clue what to do. </p>
+<p>Here are my Application_Startup and web.config:</p>
+<p>The actual setting is in index.html - so I can change the endpoind without recompiling.</p>
+<pre>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>private</span>&nbsp;<span>void</span>&nbsp;<span>Application_Startup</span>(<span>object</span>&nbsp;<span>sender</span>,&nbsp;<span>StartupEventArgs</span>&nbsp;<span>e</span>)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+			<span>string</span>&nbsp;<span>cDataPortalUrlString</span>&nbsp;&nbsp;&nbsp;=&nbsp;<span>&quot;&quot;</span>;
+			<span>string</span>&nbsp;<span>cBasicHttpSecurityMode</span>&nbsp;=&nbsp;<span>&quot;none&quot;</span>;
+					
+			<span>if</span>&nbsp;(<span>e</span>.<span>InitParams</span>.<span>ContainsKey</span>(<span>&quot;prodUrl&quot;</span>))&nbsp;
+			{			
+				<span>cDataPortalUrlString</span>&nbsp;=&nbsp;<span>e</span>.<span>InitParams</span>[<span>&quot;prodUrl&quot;</span>];
+			}
+			
+			<span>if</span>&nbsp;(<span>e</span>.<span>InitParams</span>.<span>ContainsKey</span>(<span>&quot;BasicHttpSecurityMode&quot;</span>))&nbsp;
+			{				
+				<span>cBasicHttpSecurityMode</span>&nbsp;=&nbsp;<span>e</span>.<span>InitParams</span>[<span>&quot;BasicHttpSecurityMode&quot;</span>];							
+			}
+			
+&nbsp;			<span>Csla</span>.<span>ApplicationContext</span>.<span>DataPortalProxy</span>		=&nbsp;<span>typeof</span>(<span>Csla</span>.<span>DataPortalClient</span>.<span>WcfProxy</span>).<span>AssemblyQualifiedName</span>;
+			<span>Csla</span>.<span>ApplicationContext</span>.<span>DataPortalUrlString</span>&nbsp;=&nbsp;<span>cDataPortalUrlString</span>;			
+						
+			<span>var</span>&nbsp;<span>binding</span>&nbsp;=&nbsp;<span>new</span>&nbsp;<span>BasicHttpBinding</span>();
+&nbsp;
+			<span>binding</span>.<span>MaxBufferSize</span>&nbsp;=&nbsp;<span>int</span>.<span>MaxValue</span>;&nbsp;</pre>
+<pre>                        // some more binding properties</pre>
+<pre>								
+			<span>if</span>&nbsp;(<span>cBasicHttpSecurityMode</span>.<span>ToLower</span>()&nbsp;==&nbsp;<span>&quot;none&quot;</span>)&nbsp;
+			{
+				<span>binding</span>.<span>Security</span>.<span>Mode</span>&nbsp;=&nbsp;<span>BasicHttpSecurityMode</span>.<span>None</span>&nbsp;;
+			}
+			<span>else</span>
+			{
+				<span>binding</span>.<span>Security</span>.<span>Mode</span>&nbsp;=&nbsp;<span>BasicHttpSecurityMode</span>.<span>Transport</span>;
+			}
+						
+			<span>Csla</span>.<span>DataPortalClient</span>.<span>WcfProxy</span>.<span>DefaultBinding</span>&nbsp;=&nbsp;<span>binding</span>;
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>this</span>.<span>RootVisual</span>&nbsp;=&nbsp;<span>new</span>&nbsp;<span>MainPage</span>();
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+</pre>
+<pre>the crucial line in index.html is:</pre>
+<pre>&lt;param name=&quot;initParams&quot; value=&quot;prodUrl=https://<span>DmzServerURL</span>/Sl_App_01/WcfPortal.svc, BasicHttpSecurityMode=None&quot; /&gt;			</pre>
+<pre></pre>
+<pre>And this is my web.config:</pre>
+<pre></pre>
+<pre>&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
+&lt;configuration&gt;
+	
+  &lt;connectionStrings&gt;	  
+	  &lt;add 
+		name=&quot;SqlConnStr&quot; 
+		connectionString=&quot;Data Source=localhost;Initial Catalog=DB_Name;Integrated Security= false;User ID=UserID;Password=*****&quot; 
+		providerName=&quot;System.Data.SqlClient&quot; /&gt;
+  &lt;/connectionStrings&gt;
+	
+  &lt;system.serviceModel&gt;
+	&lt;!--serviceHostingEnvironment aspNetCompatibilityEnabled=&quot;true&quot; multipleSiteBindingsEnabled=&quot;true&quot; /--&gt;
+    &lt;behaviors&gt;
+      &lt;serviceBehaviors&gt;
+        &lt;behavior name=&quot;WcfPortalBehavior&quot;&gt;
+		  &lt;!--for http and https --&gt;		  
+		  &lt;serviceMetadata httpsGetEnabled=&quot;true&quot; httpGetEnabled=&quot;true&quot; /&gt;
+          &lt;serviceDebug includeExceptionDetailInFaults=&quot;true&quot; /&gt;
+        &lt;/behavior&gt;
+        &lt;behavior name=&quot;&quot;&gt;
+			&lt;!--for http and https --&gt;
+			&lt;serviceMetadata httpsGetEnabled=&quot;true&quot; httpGetEnabled=&quot;true&quot; 
+           externalMetadataLocation=&quot;http://192.168.2.5/Sl_App_01/WcfPortal.svc&quot; /&gt;
+          &lt;serviceDebug includeExceptionDetailInFaults=&quot;false&quot; /&gt;
+        &lt;/behavior&gt;
+      &lt;/serviceBehaviors&gt;
+	&lt;/behaviors&gt;
+    &lt;services&gt;
+      &lt;service behaviorConfiguration=&quot;WcfPortalBehavior&quot; name=&quot;Csla.Server.Hosts.Mobile.WcfPortal&quot;&gt;		  
+		  &lt;endpoint address=&quot;&quot; binding=&quot;basicHttpBinding&quot; bindingConfiguration=&quot;basicHttpBinding_IWcfPortal&quot; contract=&quot;Csla.Server.Hosts.Mobile.IWcfPortal&quot;&gt;
+        &lt;/endpoint&gt;
+        &lt;endpoint address=&quot;mex&quot; binding=&quot;mexHttpBinding&quot; contract=&quot;IMetadataExchange&quot; /&gt;
+      &lt;/service&gt;
+    &lt;/services&gt;
+	  &lt;bindings&gt;
+		  &lt;basicHttpBinding&gt;			  
+			   &lt;binding name=&quot;basicHttpBinding_IWcfPortal&quot; maxBufferSize=&quot;2147483647&quot; maxReceivedMessageSize=&quot;2147483647&quot;&gt;
+				   &lt;!--for http --&gt;
+				   &lt;security mode=&quot;None&quot;&gt;				   
+				   &lt;!--for https --&gt;
+					   &lt;!--security mode=&quot;Transport&quot;--&gt;
+				  &lt;/security&gt;
+			  &lt;/binding&gt;
+		  &lt;/basicHttpBinding&gt;
+
+	  &lt;/bindings&gt;
+
+  &lt;/system.serviceModel&gt;
+  &lt;system.web&gt;
+    &lt;compilation targetFramework=&quot;4.5&quot; /&gt;
+    &lt;authentication mode=&quot;Windows&quot; /&gt;
+    &lt;pages controlRenderingCompatibilityVersion=&quot;3.5&quot; clientIDMode=&quot;AutoID&quot; /&gt;
+  &lt;/system.web&gt;
+  &lt;runtime&gt;
+    &lt;assemblyBinding xmlns=&quot;urn:schemas-microsoft-com:asm.v1&quot;&gt;
+      &lt;dependentAssembly&gt;
+        &lt;assemblyIdentity name=&quot;Csla&quot; publicKeyToken=&quot;93be5fdc093e4c30&quot; culture=&quot;neutral&quot; /&gt;
+        &lt;bindingRedirect oldVersion=&quot;0.0.0.0-4.5.601.0&quot; newVersion=&quot;4.5.601.0&quot; /&gt;
+      &lt;/dependentAssembly&gt;
+    &lt;/assemblyBinding&gt;
+  &lt;/runtime&gt;
+&lt;/configuration&gt;</pre>
+<pre>Needless to say that the app works perfectly in an  local environment or without the reverse proxy on a web server.</pre>
+<pre></pre>
+<pre>Sorry for the long post - maybe somebody can help or at least push me in the right direction.</pre>
+<pre>    regards</pre>
+<pre>       TIA</pre>
+<pre>         Uwe</pre>
+<pre></pre>
+<pre></pre>
+<pre></pre>
+<pre></pre></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,18 @@
+<html><header><title>Indication Of Duplication When Deployment !!</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Indication Of Duplication When Deployment !!</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11609.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>st3fanus posted on Monday, October 01, 2012</h2><p>Hi all...</p>
+<p>I have develop silverlight 5 app use CSLA 4.3.12</p>
+<p>BUT</p>
+<p>I have a confusion when I deployed on win server 2008 with IIS</p>
+<p>I have a successfull deployment BUT, when I need to changed a liitle on my application.</p>
+<p>And I Re DO again for deployment It&#39;s LOOK LIKE that the application is not changed ( AS IF the Old or first app is used on win server IIS ) </p>
+<p>I Have Tried my app on my laptop It&#39;s successfull changed. SO I guess that there is another copy app file when I deploy.</p>
+<p>SO What I must Do ( Steps ) when I want to replace with new one ?? I mean : the folder I must copy to wwwroot ? =&gt; Currently I Copy from My Host Folder / Project Application into wwwroot, BUT IT&#39;S LOOK LIKE there is no different with OLD App</p>
+<p>Sorry for my bad explanation</p>
+<p>&nbsp;</p>
+<p>Thanks a lot</p>
+<p>stefanus</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>thaehn replied on Monday, October 01, 2012</h2><p>Stefanus,</p>
+<p>You need to change your homepage.aspx file and replace:</p>
+<p>&nbsp;&lt;param name=&quot;source&quot; value=&quot;ClientBin/xxxx.zap&quot; (Where xxxx.zap is the zap name)</p>
+<p>with:</p>
+<p>&lt;%<br />&nbsp;string orgSourceValue = @&quot;ClientBin/xxxx.xap&quot;;<br />&nbsp;string param;<br />&nbsp;if (System.Diagnostics.Debugger.IsAttached)<br />&nbsp;&nbsp;param = &quot;&lt;param name=\&quot;source\&quot; value=\&quot;&quot; + orgSourceValue + &quot;\&quot; /&gt;&quot;;<br />&nbsp;else<br />&nbsp;{<br />&nbsp;&nbsp;string xappath = HttpContext.Current.Server.MapPath(@&quot;&quot;) + @&quot;\&quot; + orgSourceValue;<br />&nbsp;&nbsp;DateTime xapCreationDate = System.IO.File.GetLastWriteTime(xappath);<br />&nbsp;&nbsp;param = &quot;&lt;param name=\&quot;source\&quot; value=\&quot;&quot; + orgSourceValue + &quot;?ignore=&quot; + xapCreationDate.ToString() + &quot;\&quot; /&gt;&quot;;<br />&nbsp;}<br />&nbsp;Response.Write(param);<br />%&gt;</p>
+<p>This code will reload the xxxx.zap file when it changes.</p>
+<p>Todd</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

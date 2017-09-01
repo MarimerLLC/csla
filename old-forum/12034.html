@@ -1,0 +1,76 @@
+<html><header><title>Csla.Validation - or how to upgrade from 3.5.x and newer to Csla 4.5</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Csla.Validation - or how to upgrade from 3.5.x and newer to Csla 4.5</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/12034.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee posted on Sunday, June 23, 2013</h2><p style="color:#000000;font-family:Arial, Helvetica, sans-serif;font-size:12px;font-style:normal;font-variant:normal;font-weight:normal;letter-spacing:normal;line-height:normal;orphans:auto;text-align:start;text-indent:0px;text-transform:none;white-space:normal;widows:auto;word-spacing:0px;-webkit-text-stroke-width:0px;">Hi all,&nbsp;</p>
+<p style="color:#000000;font-family:Arial, Helvetica, sans-serif;font-size:12px;font-style:normal;font-variant:normal;font-weight:normal;letter-spacing:normal;line-height:normal;orphans:auto;text-align:start;text-indent:0px;text-transform:none;white-space:normal;widows:auto;word-spacing:0px;-webkit-text-stroke-width:0px;">In the next beta there will be new assemblies for Csla.Validation in all platforms.</p>
+<p style="color:#000000;font-family:Arial, Helvetica, sans-serif;font-size:12px;font-style:normal;font-variant:normal;font-weight:normal;letter-spacing:normal;line-height:normal;orphans:auto;text-align:start;text-indent:0px;text-transform:none;white-space:normal;widows:auto;word-spacing:0px;-webkit-text-stroke-width:0px;">Using these assemblies, existing code that uses CSLA 3.5.x or never will be able to compile and run with a minimum off changes (typically breaking changes) and the old style rule engine signature is supported for synchronous validation rules and authorization rules.</p>
+<p style="color:#000000;font-family:Arial, Helvetica, sans-serif;font-size:12px;font-style:normal;font-variant:normal;font-weight:normal;letter-spacing:normal;line-height:normal;orphans:auto;text-align:start;text-indent:0px;text-transform:none;white-space:normal;widows:auto;word-spacing:0px;-webkit-text-stroke-width:0px;">For async validation/business rules the recommended solution is to rewrite these to new style rule classes.</p>
+<p style="color:#000000;font-family:Arial, Helvetica, sans-serif;font-size:12px;font-style:normal;font-variant:normal;font-weight:normal;letter-spacing:normal;line-height:normal;orphans:auto;text-align:start;text-indent:0px;text-transform:none;white-space:normal;widows:auto;word-spacing:0px;-webkit-text-stroke-width:0px;">From my own experience thus is the basic changes you must update in your code:</p>
+<pre style="color:#000000;font-family:Arial, Helvetica, sans-serif;font-size:12px;margin:8px;font-style:normal;font-variant:normal;font-weight:normal;letter-spacing:normal;line-height:normal;orphans:auto;text-align:start;text-indent:0px;text-transform:none;widows:auto;word-spacing:0px;-webkit-text-stroke-width:0px;">1.&nbsp;&nbsp;AddAuthorizationRules&nbsp;method&nbsp;no&nbsp;longer&nbsp;exists.&nbsp;Move&nbsp;this&nbsp;code&nbsp;to&nbsp;AddBusinessRules&nbsp;method.&nbsp;&nbsp;
+ 
+2.&nbsp;&nbsp;Change&nbsp;code&nbsp;to&nbsp;override&nbsp;CanReadProperty(IPropertyInfo)/CanWriteProperty(IPropertyInfo)/
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CanExecuteMethod(IMethodInfo)&nbsp;in&nbsp;your&nbsp;code&nbsp;(as&nbsp;it&nbsp;is&nbsp;these&nbsp;that&nbsp;gets&nbsp;called&nbsp;by&nbsp;SetProperty/
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;GetProperty&nbsp;and&nbsp;the&nbsp;rule&nbsp;engine).
+&nbsp;
+3.&nbsp;&nbsp;Recommended:&nbsp;Create&nbsp;intermediate&nbsp;base&nbsp;classes&nbsp;(if&nbsp;you&nbsp;do&nbsp;not&nbsp;have&nbsp;them&nbsp;already).
+&nbsp;
+4.&nbsp;&nbsp;CommandObjects&nbsp;now&nbsp;make&nbsp;a&nbsp;copy&nbsp;(serialize)&nbsp;before&nbsp;calling&nbsp;Execute&nbsp;(ie:&nbsp;all&nbsp;fields&nbsp;must&nbsp;be&nbsp;serializable).
+&nbsp;
+5.&nbsp;&nbsp;CriteriaBase&nbsp;is&nbsp;generic&nbsp;base&nbsp;class&nbsp;in&nbsp;CSLA&nbsp;4.5&nbsp;and&nbsp;must&nbsp;have&nbsp;generic&nbsp;constraint.
+&nbsp;
+6.&nbsp;&nbsp;Recommended:&nbsp;All&nbsp;BO/CommandObjects/CriteriaBase&nbsp;objects&nbsp;should&nbsp;have&nbsp;managed&nbsp;properties&nbsp;whenever&nbsp;possible.
+&nbsp;
+7.&nbsp;&nbsp;ObjectFactory&nbsp;&ndash;&nbsp;CommandObjects&nbsp;will&nbsp;call&nbsp;the&nbsp;&ldquo;Execute&rdquo;&nbsp;method&nbsp;-&nbsp;not&nbsp;&quot;Update&quot;.<br /><br />8. The &quot;old&quot; style 3.x rule engine supported both Allow/Deny authorization rules (both active). <br />    The Csla 4.x rule engine only supports one rule (so etiher IsInRole or IsNotInRole rule). <br /><br />9. In AddObjectAuthorizationRules method you must update code to call static methods on the class <br />Csla.Security.<span style="color:#2b91af;">AuthorizationRules</span></pre>
+<pre style="color:#000000;font-family:Arial, Helvetica, sans-serif;font-size:12px;margin:8px;font-style:normal;font-variant:normal;font-weight:normal;letter-spacing:normal;line-height:normal;orphans:auto;text-align:start;text-indent:0px;text-transform:none;widows:auto;word-spacing:0px;-webkit-text-stroke-width:0px;">Using the new Csla.Validation assemblies this code from ProjectTracker (in Csla 3.6 Samples) compiles <br />and runs fine with CSLA 4.5.vNext: <br /><br /><span style="color:blue;">&nbsp;&nbsp;&nbsp; #region</span>&nbsp;&nbsp;Validation&nbsp;Rules
+
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">protected</span>&nbsp;<span style="color:blue;">override</span>&nbsp;<span style="color:blue;">void</span>&nbsp;AddBusinessRules()
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;AuthorizationRules.AllowWrite(NameProperty,&nbsp;<span style="color:#a31515;">&quot;ProjectManager&quot;</span>);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;AuthorizationRules.AllowWrite(StartedProperty,&nbsp;<span style="color:#a31515;">&quot;ProjectManager&quot;</span>);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;AuthorizationRules.AllowWrite(EndedProperty,&nbsp;<span style="color:#a31515;">&quot;ProjectManager&quot;</span>);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;AuthorizationRules.AllowWrite(DescriptionProperty,&nbsp;<span style="color:#a31515;">&quot;Administrator&quot;</span>);
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ValidationRules.AddRule(Csla.Validation.<span style="color:#2b91af;">CommonRules</span>.StringRequired,
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">new</span>&nbsp;Csla.Validation.<span style="color:#2b91af;">RuleArgs</span>(NameProperty));
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ValidationRules.AddRule(
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Csla.Validation.<span style="color:#2b91af;">CommonRules</span>.StringMaxLength,
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">new</span>&nbsp;Csla.Validation.<span style="color:#2b91af;">CommonRules</span>.<span style="color:#2b91af;">MaxLengthRuleArgs</span>(NameProperty,&nbsp;50));
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">var</span>&nbsp;args&nbsp;=&nbsp;<span style="color:blue;">new</span>&nbsp;Csla.Validation.<span style="color:#2b91af;">DecoratedRuleArgs</span>(NameProperty);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;args[<span style="color:#a31515;">&quot;MaxLength&quot;</span>]&nbsp;=&nbsp;50;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ValidationRules.AddRule(
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Csla.Validation.<span style="color:#2b91af;">CommonRules</span>.StringMaxLength,
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;args);
+
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ValidationRules.AddRule&lt;<span style="color:#2b91af;">Project</span>&gt;(StartDateGTEndDate&lt;<span style="color:#2b91af;">Project</span>&gt;,&nbsp;StartedProperty);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ValidationRules.AddRule&lt;<span style="color:#2b91af;">Project</span>&gt;(StartDateGTEndDate&lt;<span style="color:#2b91af;">Project</span>&gt;,&nbsp;EndedProperty);
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ValidationRules.AddDependentProperty(StartedProperty,&nbsp;EndedProperty,&nbsp;<span style="color:blue;">true</span>);
+&nbsp;&nbsp;&nbsp;&nbsp;}
+
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">private</span>&nbsp;<span style="color:blue;">static</span>&nbsp;<span style="color:blue;">bool</span>&nbsp;StartDateGTEndDate&lt;T&gt;(T&nbsp;target,&nbsp;Csla.Validation.<span style="color:#2b91af;">RuleArgs</span>&nbsp;e)&nbsp;<span style="color:blue;">where</span>&nbsp;T&nbsp;:&nbsp;<span style="color:#2b91af;">Project</span>
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">if</span>&nbsp;(target.ReadProperty(StartedProperty)&nbsp;&gt;&nbsp;target.ReadProperty(EndedProperty))
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;e.Description&nbsp;=&nbsp;<span style="color:#a31515;">&quot;Start&nbsp;date&nbsp;can&#39;t&nbsp;be&nbsp;after&nbsp;end&nbsp;date&quot;</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">return</span>&nbsp;<span style="color:blue;">false</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">else</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">return</span>&nbsp;<span style="color:blue;">true</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;}
+
+<span style="color:blue;">&nbsp;&nbsp;&nbsp;&nbsp;#endregion</span>
+
+<span style="color:blue;">&nbsp;&nbsp;&nbsp;&nbsp;#region</span>&nbsp;&nbsp;Authorization&nbsp;Rules
+
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">protected</span>&nbsp;<span style="color:blue;">static</span>&nbsp;<span style="color:blue;">void</span>&nbsp;AddObjectAuthorizationRules()
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:green;">//&nbsp;add&nbsp;object-level&nbsp;authorization&nbsp;rules&nbsp;here</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Csla.Security.<span style="color:#2b91af;">AuthorizationRules</span>.AllowCreate(<span style="color:blue;">typeof</span>&nbsp;(<span style="color:#2b91af;">Project</span>),&nbsp;<span style="color:#a31515;">&quot;ProjectManager&quot;</span>);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Csla.Security.<span style="color:#2b91af;">AuthorizationRules</span>.AllowGet(<span style="color:blue;">typeof</span>(<span style="color:#2b91af;">Project</span>),&nbsp;<span style="color:#a31515;">&quot;Administrator&quot;</span>);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Csla.Security.<span style="color:#2b91af;">AuthorizationRules</span>.AllowEdit(<span style="color:blue;">typeof</span>&nbsp;(<span style="color:#2b91af;">Project</span>),&nbsp;<span style="color:#a31515;">&quot;ProjectManager&quot;</span>);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Csla.Security.<span style="color:#2b91af;">AuthorizationRules</span>.AllowDelete(<span style="color:blue;">typeof</span>(<span style="color:#2b91af;">Project</span>),&nbsp;<span style="color:#a31515;">&quot;ProjectManager&quot;</span>,&nbsp;<span style="color:#a31515;">&quot;Administrator&quot;</span>);
+&nbsp;&nbsp;&nbsp;&nbsp;}
+
+<span style="color:blue;">&nbsp;&nbsp;&nbsp;&nbsp;#endregion</span>
+<br />Hope this helps you upgrade to the latest CSLA version!!</pre></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

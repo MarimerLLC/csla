@@ -1,0 +1,145 @@
+<html><header><title>CSLA for SilverLight</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA for SilverLight</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/7297.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>SouthSpawn posted on Friday, July 17, 2009</h2>Quick question.<br>
+<br>
+In SilverLight .net<br>
+<br>
+I am looking at the demo projects for the SilverLight videos that I purchased.<br>
+<br>
+I am confused on the Business.Clent class.<br>
+<br>
+It only has&nbsp; a "Get" and a "New" method for the SilverLight Client methods.<br>
+<br>
+What is the proper syntax to add the "Update" and "Delete" methods in C#<br>
+<br>
+I am not sure what I pass in for parms in the BeginUpdate method.<br>
+<br>
+Any help would be great.<br>
+<br>
+Thanks,<br>
+Mark<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Saturday, July 18, 2009</h2><P>There are no update or delete methods. There's the standard Save(), except that it is BeginSave(), which automatically invokes the data portal to transfer the object graph to the server where the normal DataPortal_XYZ methods are invoked.</P>
+<P>BeginSave() takes a paramter that is the callback method, so when the save operation is complete it can call your code to tell you the results. If you are using CslaDataProvider you don't need to do anything - it is just automatic - but if you are using code-behind or a ViewModel then you need to write the callback method. If you are using C# this is a simple lambda, and in VB it is a bit harder but not bad.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>SouthSpawn replied on Saturday, July 18, 2009</h2><DIV>Wow Rocky, it's pretty late, you still up :) :)<BR><BR>Anyhow, <BR><BR>Ok, so how do I mark an object for deletion.</DIV>
+<DIV>I can understand the update part, simply because the framework will know to mark the item as old.</DIV>
+<DIV>So therefore, it knows to perform an update when the save method is called.</DIV>
+<DIV><BR>But how do I mark an object for deletion?<BR><BR>Sorry for being a pain here, but I am still a little confused.</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>Thanks,<BR>Mark</DIV></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Saturday, July 18, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Delete works the same as on the .NET side.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>There&#8217;s deferred deletion, where you call Delete() on the
+object so IsDeleted becomes true, then you call BeginSave() so the data portal
+invokes DataPortal_DeleteSelf() on the server. Or in the case of a child
+object, the child delete method.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>And there&#8217;s immediate deletion, where you create a static DeleteObject()
+&#8220;factory method&#8221; that calls DataPortal.BeginDelete(), passing in a
+criteria object. That works much like DataPortal.BeginCreate() or .BeginFetch().<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky</span><b><span><o:p></o:p></span></b></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>artsd replied on Wednesday, January 05, 2011</h2><p>I know this is an old thread but I have a related question. I am using CSLA 4 and Silverlight.</p>
+<p>I am usng deferred delete and then calling save. The default behavior of SimpleDataPortal.Update() is to call MarkNew() on the object after returning from the DataPortal_DeleteSelf call.</p>
+<p>In ViewModelBase&lt;T&gt;.BeginSave(), the Saved handler sets Model to e.NewObject.</p>
+<p>I can see that I really do have the object I just deleted (all properties are still present) and that the record is marked as new.</p>
+<p><strong>My question: is there any way for me to know that this object was just deleted?</strong></p>
+<p>I have my own base class that derives from ViewModel&lt;T&gt; and I override OnModelChanged() so I know when Model is updated. This would be a convenient place for me to set Model to null in the case of a just deleted object. (In my Silverlight UI, after deleting a record, I will blank out that data entry form when the Model is null).</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>SouthSpawn replied on Saturday, July 18, 2009</h2><DIV>Rocky,</DIV>
+<DIV><BR>In our business cases, there might times where a "Delete" will not delete actual data from the database, but only Inactivate the record.</DIV>
+<DIV><BR>There are other times where the actual record may be removed.</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>So here is what I am trying to do on my SilverLight Client.</DIV>
+<DIV><FONT color=#0000ff size=2><FONT color=#0000ff size=2><BR>public</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>static</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>void</FONT></FONT><FONT size=2> DeleteCompany(</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>int</FONT></FONT><FONT size=2> id, </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>EventHandler</FONT></FONT><FONT size=2>&lt;</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>DataPortalResult</FONT></FONT><FONT size=2>&lt;<FONT color=#2b91af>Company</FONT></FONT><FONT size=2>&gt; callback)<BR>{</DIV>
+<DIV>
+<DIV>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;var</FONT></FONT><FONT size=2> dp = </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>new</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>DataPortal</FONT></FONT><FONT size=2>&lt;</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>Company</FONT></FONT><FONT size=2>&gt;();</P>
+<P></FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DeleteCriteria</FONT></FONT><FONT size=2> dc = </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>new</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>DeleteCriteria</FONT></FONT><FONT size=2>();</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;dc.Id = id;</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;dc.DeleteType = </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>DeleteTypeEnum</FONT></FONT><FONT size=2>.DeletePermanent;</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;dp.DeleteCompleted += callback;</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;dp.BeginDelete(dp);<BR>}</P></FONT></DIV><FONT size=2>
+<DIV><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>public</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>static</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>void</FONT></FONT><FONT size=2> InactivateCompany(</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>int</FONT></FONT><FONT size=2> id, </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>EventHandler</FONT></FONT><FONT size=2>&lt;</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>DataPortalResult</FONT></FONT><FONT size=2>&lt;<FONT color=#2b91af>Company</FONT></FONT><FONT size=2>&gt; callback)<BR>{</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;var</FONT></FONT><FONT size=2> dp = </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>new</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>DataPortal</FONT></FONT><FONT size=2>&lt;</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>Company</FONT></FONT><FONT size=2>&gt;();</P>
+<P></FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DeleteCriteria</FONT></FONT><FONT size=2> dc = </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>new</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>DeleteCriteria</FONT></FONT><FONT size=2>();</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;dc.Id = id;</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;dc.DeleteType = </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>DeleteTypeEnum</FONT></FONT><FONT size=2>.Inactivate;</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;dp.DeleteCompleted += callback;</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;dp.BeginDelete(dp);<BR>}</P>
+<P><BR>This will call my Company.Server.cs class<BR><BR>This class looks like this</P><FONT size=2>
+<P>[Csla.Server.</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>ObjectFactory</FONT></FONT><FONT size=2>(</FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>"EnterpriseObjects.Companies.DataAccess.Company, Company"</FONT></FONT><FONT size=2>)]<BR></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>public</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>partial</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>class</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>Company<BR></FONT></FONT><FONT size=2>{<BR><BR></P><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;public</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>static</FONT></FONT><FONT size=2> void </FONT><FONT size=2>DeleteCompany(</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>int</FONT></FONT><FONT size=2> id)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<BR></FONT><FONT size=2><BR><FONT size=2></P>
+<P></FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DeleteCriteria</FONT></FONT><FONT size=2> dc = </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>new</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>DeleteCriteria</FONT></FONT><FONT size=2>();</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;dc.Id = id;</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;dc.DeleteType = </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>DeleteTypeEnum</FONT></FONT><FONT size=2>.DeletePermanent;<BR><FONT color=#0000ff size=2><FONT color=#0000ff size=2><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT color=#2b91af>DataPortal</FONT><FONT size=2><FONT color=#000000>.Delete</FONT><FONT color=#000000>(dc);</FONT></FONT></FONT></FONT></FONT></P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</FONT></FONT><FONT size=2><BR><BR><FONT color=#0000ff size=2><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;public</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>static</FONT></FONT><FONT size=2> void </FONT><FONT size=2>InactivateCompany(</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>int</FONT></FONT><FONT size=2> id)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<BR></FONT></FONT><FONT size=2><FONT size=2><FONT color=#2b91af size=2><FONT color=#2b91af size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DeleteCriteria</FONT></FONT><FONT size=2> dc = </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>new</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>DeleteCriteria</FONT></FONT><FONT size=2>();</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;dc.Id = id;</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;dc.DeleteType = </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>DeleteTypeEnum</FONT></FONT><FONT size=2>.Inactivate;<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT color=#0000ff><FONT color=#2b91af>DataPortal</FONT><FONT size=2><FONT color=#000000>.Delete</FONT><FONT color=#000000>(dc);</FONT></FONT></FONT></FONT></P></FONT><FONT size=2></FONT>
+<P><FONT size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</FONT></P>
+<P></FONT><FONT size=2>}</P></FONT></FONT></DIV></FONT></DIV>
+<DIV><BR>I have a data access class that looks like this.</DIV>
+<DIV>&nbsp;</DIV>
+<DIV><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>public</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>void</FONT></FONT><FONT size=2> Delete(EnterpriseObjects.HelperClasses.</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>DeleteCriteria</FONT></FONT><FONT size=2> criteria)<BR>{</P>
+<P></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2>// delete data here</P></FONT></FONT><FONT size=2>
+<P>}<BR><BR>Will this work?<BR><BR>Or am I going about this wrong?</P></FONT></DIV></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Sunday, July 19, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Nothing forces your server-side delete methods to actually
+delete any data. Remember that you have to implement the DataPortal_Delete() or
+DataPortal_DeleteSelf() methods, and you can absolutely update an &#8216;inactive&#8217;
+flag instead of deleting any rows of data.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>The thing to remember is that the Silverlight client just
+invokes the normal .NET server methods. So your data access should be exactly
+the same as it is for your Windows applications &#8211; only the client parts
+of the business objects are slightly different due to the async data portal in
+SL.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky</span><b><span><o:p></o:p></span></b></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

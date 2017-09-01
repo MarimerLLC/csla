@@ -1,0 +1,14 @@
+<html><header><title>Windows Service needs CSLA authentication</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Windows Service needs CSLA authentication</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3044.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Massong posted on Friday, June 15, 2007</h2><P>Hi all,</P>
+<P>We use Electronic Data Interchange (EDI) to get delivery instructions. These delivery instructions are written into a special folder as text files by a third party software. I wrote a Windows Service that observes this folder with a FileSystemWatcher to store all new delivery instructions into our database.</P>
+<P>What would be the best practise to authenticate the Windows Service with CSLA authentication? Where do I get the user credentials from? The problem is that a Windows Service should not have – and must start without – user interaction. So I can’t use a log on dialog.</P>
+<P>I don’t want to have the user credentials in a config file or hard coded into the service. I could store them in an encrypted file – but then I need a password to decrypt the user credentials…</P>
+<P>Thanks for help.<BR></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, June 15, 2007</h2><P>You have four basic options:</P>
+<OL>
+<LI>Windows Registry</LI>
+<LI>app.config</LI>
+<LI>other file</LI>
+<LI>hard code</LI></OL>
+<P>In the first three cases I would think you'd want the values encrypted. Hard coding is pretty much never good, so I'd pick one of the first three.</P>
+<P>The app.config option is probably easiest, because Microsoft already provides a solution for encrypting parts of the config file. </P>
+<P>Otherwise look at the old configuration application block from Microsoft patterns and practices, as they had encryption code for this too. They supported registry, config file or other file options. I use past tense, because I don't think that block carried forward once encryption was supported directly in the config files by .NET itself.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Massong replied on Wednesday, June 20, 2007</h2><P>Hi Rocky,</P>
+<P>Thanks for your answer. I didn’t know that it is possible to encrypt parts of App.config. I will give it a try. Thanks.</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

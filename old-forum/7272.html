@@ -1,0 +1,538 @@
+<html><header><title>Silverlight 3 &amp; Field Manager</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Silverlight 3 &amp; Field Manager</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/7272.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>acgritt posted on Tuesday, July 14, 2009</h2>We are currently looking at using Silverlight 3 because of the Out-Of-Browser support that it provides.&nbsp; This means that we will have a need to save data from the business objects to the local data store.&nbsp; However, after taking a look at the LocalData examples for running CSLA in Local mode for Silverlight and pulling down CSLA 3.7.0 I have found that there is some lacking functionality to support what we want to do and was wondering if there is a way to get around this.&nbsp; <br><br>The normal Business Object usage is that in the DataPortal_Insert/Update or Child_Insert/Update methods is to call FieldManager.UpdateChildren passing in the extra parameters that are needed so that the child objects can then go and preform their save.&nbsp; However, the FieldManager object in Silverlight does not contain this method.&nbsp; Does this mean I would have to iterate over any child collections or child objects and call their BeginSave individually, or is there another, perhaps better, way to handle this?<br><br>Adam Gritt<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>pondosinat replied on Tuesday, July 14, 2009</h2><P>If using CSLA, you would simply call Save at the root object and all your children will get updated automatically. Silverlight 3 is no exception. Have a look at the book or Rocky's videos for more info.</P>
+<P>Post Edit - sorry- I see you're asking about the local datastore, which I am no expert on...</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>acgritt replied on Tuesday, July 14, 2009</h2>I have read both the 2005 and 2008 books.&nbsp; After looking through all the examples I did find the LocalDataPortalUsingWcfService to be of help but that only allowed me to call the local DataPortal_* methods.&nbsp; The bigger problem is that the expected functionality for then calling to do the Child_* methods doesn't exist for client side Silverlight.&nbsp; I realize this is something new that is probably going to come about with support for the new SL3 features.&nbsp; I am just curious as to when these changes might be able to be expected so I can go back to the Project Manager and tell him whether or not what he wants is do-able in the time frame.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Tuesday, July 14, 2009</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>You
+can iterate through children and call DataPortal.UpdateChild for each
+one.&nbsp; What I am not sure about in your questions is why out of browser
+means local data store.&nbsp; Maybe I am missing a system requirement
+somewhere.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> acgritt
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Tuesday, July 14, 2009 1:18 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> [CSLA .NET] Silverlight 3 &amp; Field Manager<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>We are currently looking at using Silverlight 3 because of
+the Out-Of-Browser support that it provides.&nbsp; This means that we will have
+a need to save data from the business objects to the local data store.&nbsp;
+However, after taking a look at the LocalData examples for running CSLA in
+Local mode for Silverlight and pulling down CSLA 3.7.0 I have found that there
+is some lacking functionality to support what we want to do and was wondering
+if there is a way to get around this.&nbsp; <br>
+<br>
+The normal Business Object usage is that in the DataPortal_Insert/Update or
+Child_Insert/Update methods is to call FieldManager.UpdateChildren passing in
+the extra parameters that are needed so that the child objects can then go and
+preform their save.&nbsp; However, the FieldManager object in Silverlight does
+not contain this method.&nbsp; Does this mean I would have to iterate over any
+child collections or child objects and call their BeginSave individually, or is
+there another, perhaps better, way to handle this?<br>
+<br>
+Adam Gritt<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>acgritt replied on Wednesday, July 15, 2009</h2>My bad, what I should have said was that it needs to support working in Detached mode not Out of Browser.&nbsp; We have been having so many discussions as to what our client wants that I have been getting things all jumbled in my head.&nbsp; They would like to have the application support running in Out of Browser mode and support working Detached.&nbsp; It is the detached that is giving us the problem in the general saving of the children.<br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Wednesday, July 15, 2009</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>In
+general I try to stay away from IsolatedStorage for a few reasons:<o:p></o:p></span></p>
+
+<p class=MsoListParagraph><span><span>1.<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span></span><span>It is specific to computer and computer user<o:p></o:p></span></p>
+
+<p class=MsoListParagraph><span><span>2.<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span></span><span>It has size limit<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>If
+you must use it (which I do not recommend), the cheapest way is to use
+MobileFormatter to serialize object graph and write it to isolated
+storage.&nbsp; You will have version issues to deal with here though, as you
+mot be able to open those files of application version changes.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> acgritt
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Wednesday, July 15, 2009 8:10 AM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: Silverlight 3 &amp; Field Manager<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>My bad, what I should have said was that it needs to support
+working in Detached mode not Out of Browser.&nbsp; We have been having so many
+discussions as to what our client wants that I have been getting things all
+jumbled in my head.&nbsp; They would like to have the application support
+running in Out of Browser mode and support working Detached.&nbsp; It is the
+detached that is giving us the problem in the general saving of the children.<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>acgritt replied on Wednesday, July 15, 2009</h2>We would prefer to avoid the Isolated Storage but the application we are creating should be able to handle the the two issues you brought up.&nbsp; The application is a Configuration application where the old configuration systems used to be a bunch of Excel/Flatfiles and they want to move this so that the database is master instead of the files.&nbsp; Part of the problem is that many of the objects support referencing other objects of the same type.&nbsp; For instance Type A has children of Type B and Type B can point to other Type B's that are children of Type A.&nbsp; Because of this we would have to save each time a Type B is added but they want to have the ability to add these items in an Excel like grid.&nbsp; We found this can cause a performance problem trying to validate and save the changes at the proper times in order to make all the foreign key references work.&nbsp; We have discussed that when we create Type A that we create the max number of each child types but this can also get rather large in a hurry because there are 6 child lists which are currently limited to a max number of items of 88 or 100.&nbsp; The future plans are that this would increase which would cause a much greater load on the system to transfer these objects across the wire.&nbsp; We have discussed using Guid's as the PK for the records but that still has the issue of if a user adds 3 B's to the system and the first one is the one that references the other two, it is difficult to make sure that they all get saved in the proper order.&nbsp; If I am doing something fundamentally wrong here architecture wise I would love to hear it.&nbsp; If it would make more sense to discuss it off the forums let me know.&nbsp; <br><br>However, we do plan on implementing it such that a user has to check out a configuration to work on locally so we don't have an issue with the first item and we can always request that the size of the data store be increased if we need it to be for the second one.<br><br><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>sergeyb:</strong></div><div>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+<div class="Section1">
+
+<p class="MsoNormal"><span>In
+general I try to stay away from IsolatedStorage for a few reasons:<o:p></o:p></span></p>
+
+<p class="MsoListParagraph"><span><span>1.<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span></span><span>It is specific to computer and computer user<o:p></o:p></span></p>
+
+<p class="MsoListParagraph"><span><span>2.<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span></span><span>It has size limit<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><o:p>&nbsp;</o:p></span></p>
+
+<p class="MsoNormal"><span>If
+you must use it (which I do not recommend), the cheapest way is to use
+MobileFormatter to serialize object graph and write it to isolated
+storage.&nbsp; You will have version issues to deal with here though, as you
+mot be able to open those files of application version changes.<o:p></o:p></span></p><br>
+<o:p></o:p>
+
+</div>
+
+</div></BLOCKQUOTE><br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Wednesday, July 15, 2009</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I
+do not see anything fundamentally wrong other then supporting version change.&nbsp;
+You would need to check for checkouts before upgrade, that is all.&nbsp; So,
+using IS should fine, just use MobileFormatter + ICSharpZipLib to keep the size
+down.&nbsp; I would use GUIDS though because this is a distributed application,
+and anything else would be very painfull.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> acgritt
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Wednesday, July 15, 2009 8:34 AM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: RE: Silverlight 3 &amp; Field Manager<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>We would prefer to avoid the
+Isolated Storage but the application we are creating should be able to handle
+the the two issues you brought up.&nbsp; The application is a Configuration
+application where the old configuration systems used to be a bunch of
+Excel/Flatfiles and they want to move this so that the database is master
+instead of the files.&nbsp; Part of the problem is that many of the objects
+support referencing other objects of the same type.&nbsp; For instance Type A
+has children of Type B and Type B can point to other Type B's that are children
+of Type A.&nbsp; Because of this we would have to save each time a Type B is
+added but they want to have the ability to add these items in an Excel like
+grid.&nbsp; We found this can cause a performance problem trying to validate
+and save the changes at the proper times in order to make all the foreign key
+references work.&nbsp; We have discussed that when we create Type A that we
+create the max number of each child types but this can also get rather large in
+a hurry because there are 6 child lists which are currently limited to a max
+number of items of 88 or 100.&nbsp; The future plans are that this would
+increase which would cause a much greater load on the system to transfer these
+objects across the wire.&nbsp; We have discussed using Guid's as the PK for the
+records but that still has the issue of if a user adds 3 B's to the system and
+the first one is the one that references the other two, it is difficult to make
+sure that they all get saved in the proper order.&nbsp; If I am doing something
+fundamentally wrong here architecture wise I would love to hear it.&nbsp; If it
+would make more sense to discuss it off the forums let me know.&nbsp; <br>
+<br>
+However, we do plan on implementing it such that a user has to check out a
+configuration to work on locally so we don't have an issue with the first item
+and we can always request that the size of the data store be increased if we
+need it to be for the second one.<o:p></o:p></p>
+
+<div>
+
+<p class=MsoNormal><img id="_x0000_i1025" src="/Themes/default/im%20%20ages/icon-quote.gif"><strong>sergeyb:</strong><o:p></o:p></p>
+
+</div>
+
+<div>
+
+<div>
+
+<p class=MsoNormal>In
+general I try to stay away from IsolatedStorage for a few reasons:<o:p></o:p></p>
+
+<p class=MsoListParagraph>1.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; It is specific to
+computer and computer user<o:p></o:p></p>
+
+<p class=MsoListParagraph>2.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; It has size limit<o:p></o:p></p>
+
+<p class=MsoNormal>&nbsp;<o:p></o:p></p>
+
+<p class=MsoNormal>If
+you must use it (which I do not recommend), the cheapest way is to use
+MobileFormatter to serialize object graph and write it to isolated
+storage.&nbsp; You will have version issues to deal with here though, as you
+mot be able to open those files of application version changes.<o:p></o:p></p>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+</div>
+
+</div>
+
+<p class=MsoNormal><br>
+<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>acgritt replied on Wednesday, July 15, 2009</h2>Ok, I will give this a try.&nbsp; Do you have any recommendations for a better way to save the objects with the inter-dependencies?&nbsp; We have been talking about a "manager" business object that would do the synchronization and would then have the intelligence to build out the object graph and save it to the server multiple times so that we can maintain a proper order of operations.&nbsp; However, even this isn't going to be easy to manage.&nbsp; I feel like I am missing something here that might make things go easier.&nbsp; <br><br>I have been thinking about doing something similar to what the Assignment class in the ProjectTracker sample does.&nbsp; However, our tables are not set up in a similar manner and we would always have to deal with saving an object to the database as part of the create for the object, which is something I think we want to avoid because it would be desired to have the user make whatever changes they want then click a single save button rather than having the UI automatically saving changes as they happen.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Wednesday, July 15, 2009</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I
+had to do the same with self-referencing table using EF, and it is no walk in
+the park &#8211; a lot of manual labor.&nbsp; I really do not know how to do
+this easier.&nbsp; I setup parent id in each object in the list, and had a
+recursive call that takes parent ID and saves children.&nbsp; The initial call
+had parent id = blank, so it started with top most rows.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> acgritt
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Wednesday, July 15, 2009 9:35 AM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: RE: RE: Silverlight 3 &amp; Field Manager<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Ok, I will give this a try.&nbsp; Do you have any
+recommendations for a better way to save the objects with the inter-dependencies?&nbsp;
+We have been talking about a &quot;manager&quot; business object that would do
+the synchronization and would then have the intelligence to build out the
+object graph and save it to the server multiple times so that we can maintain a
+proper order of operations.&nbsp; However, even this isn't going to be easy to
+manage.&nbsp; I feel like I am missing something here that might make things go
+easier.&nbsp; <br>
+<br>
+I have been thinking about doing something similar to what the Assignment class
+in the ProjectTracker sample does.&nbsp; However, our tables are not set up in
+a similar manner and we would always have to deal with saving an object to the
+database as part of the create for the object, which is something I think we
+want to avoid because it would be desired to have the user make whatever
+changes they want then click a single save button rather than having the UI
+automatically saving changes as they happen.<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>acgritt replied on Wednesday, July 15, 2009</h2>In that case did you save the Parent and then take the id and use that for the children as a separate SaveChanges call? Or did you use a Guid and just pass it down and do a single SaveChanges call like in the updated Rolodex sample that I believe you had created that used the Entity Framework (also a model I am trying to follow)?<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Wednesday, July 15, 2009</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I
+was just looping through the list, and just saving one row at a time.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> acgritt
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Wednesday, July 15, 2009 2:15 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: RE: RE: RE: Silverlight 3 &amp; Field
+Manager<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>In that case did you save the Parent and then take the id
+and use that for the children as a separate SaveChanges call? Or did you use a
+Guid and just pass it down and do a single SaveChanges call like in the updated
+Rolodex sample that I believe you had created that used the Entity Framework
+(also a model I am trying to follow)?<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>acgritt replied on Thursday, July 16, 2009</h2>I am trying to take your advice and use the MobileFormatter and ICSharpZipLib however I am wondering if I am missing something because while the data comes across the line from the web service just fine, I can't seem to get it to serialize locally without going through and adding KnownType attributes to several of the types.&nbsp; I am trying to use the DataContractSerializer to serialize the objects.&nbsp; I haven't been able to find much other information about the MobileFormatter and how to use it otherwise.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Thursday, July 16, 2009</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Use
+MobileFormatter to serialize the object instead of DataContarcSerializer, the
+compress the output (byte[])<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> acgritt
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Thursday, July 16, 2009 11:17 AM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: RE: RE: RE: RE: Silverlight 3 &amp; Field
+Manager<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>I am trying to take your advice and use the MobileFormatter
+and ICSharpZipLib however I am wondering if I am missing something because
+while the data comes across the line from the web service just fine, I can't
+seem to get it to serialize locally without going through and adding KnownType
+attributes to several of the types.&nbsp; I am trying to use the
+DataContractSerializer to serialize the objects.&nbsp; I haven't been able to
+find much other information about the MobileFormatter and how to use it
+otherwise.<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>cristoph replied on Tuesday, December 08, 2009</h2>Is better if you use a Silverlight client side database. For example with siaqodb( http://siaqodb.com ) you can save objects into client side database very simple and get them back via LINQ. I think this is what you need...</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

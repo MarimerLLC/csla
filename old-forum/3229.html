@@ -1,0 +1,13 @@
+<html><header><title>isDirty not set when Child is updated</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>isDirty not set when Child is updated</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3229.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>gartnerj posted on Thursday, July 19, 2007</h2><P>Folks,</P>
+<P>I have a Editable Root class that has a Child List as part of the class.</P>
+<P>When I am testing a SAVE for the Editable Root, I am doing an Add to the child list:</P>
+<P>EditableRoot.ChildList.Add(item);</P>
+<P>Then I do the EditableRoot.ApplyEdit(); and EditableRoot.Save();</P>
+<P>It looks like the Update to the ChildList isn't causing the isDirty to be set, so the Save does nothing (doesn't call Dataportal.Insert or Dataportal.Update on the EditableRoot).</P>
+<P>I am using CSLA 2.1 -- any ideas?&nbsp; I'm sure it's probably something basic I'm not doing in the child list.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Thursday, July 19, 2007</h2><P>Actually it is something basic you are not doing in the Root BO.</P>
+<P>You should always override IsValid and IsDirty to account for the presence of the Child Collection or Child BO.</P>
+<P>Page 417 of the VB book has a sample:</P>
+<P>IsValid:<BR>&nbsp; Return MyBase.IsValid AndAlso mResources.IsValid</P>
+<P>IsDirty:<BR>&nbsp; Return MyBase.IsDirty OrElse mResources.IsDirty</P>
+<P>Joe</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>gartnerj replied on Thursday, July 19, 2007</h2>Thansk Joe -- I'll give that a try!</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>gartnerj replied on Thursday, July 19, 2007</h2>Thanks Joe -- that was the problem!&nbsp; MUCH appreciated!</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

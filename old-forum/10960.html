@@ -1,0 +1,37 @@
+<html><header><title>Common Rule Validation StringRequired not returning the proper language/culture translated message</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Common Rule Validation StringRequired not returning the proper language/culture translated message</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10960.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>mrb@cspace posted on Wednesday, December 07, 2011</h2><p>
+<p class="MsoNormal">Hi,&nbsp;</p>
+<p class="MsoNormal">We use CSLA 3.6.2 on windows 7 with vs2010.&nbsp; Our app can be run in multiple languages with
+English as our primary language. &nbsp; Our problem is that when the app&#39;s culture is set to something other than English (de-DE), the string returned from a StringRequired validation is an English property name followed by the non-English part of the message. &nbsp;We&#39;re expecting the whole message to be in the language of the app&#39;s culture. Here are the details:</p>
+<p class="MsoNormal">We have this property setting:</p>
+<p class="MsoNormal"><span>public</span><span> <span>static</span>
+<span>PropertyInfo</span>&lt;<span>string</span>&gt;
+TitleProperty = RegisterProperty(<span>new</span> <span>PropertyInfo</span>&lt;<span>string</span>&gt;(<span>&quot;Title&quot;</span>, <span>AnnouncementActivityMessages</span>.Title,
+<span>string</span>.Empty));</span></p>
+<p class="MsoNormal">We have this validation rule:</p>
+<p class="MsoNormal"><span>ValidationRules.AddRule(<span>CommonRules</span>.StringRequired, <span>new</span> <span>DecoratedRuleArgs</span>(TitleProperty));</span></p>
+<p class="MsoNormal">This is the english resource for AnnouncementActivityMessages.Title</p>
+<p class="MsoNormal"><span>&lt;</span><span>data</span><span> </span><span>name</span><span>=</span><span>&quot;<span>Title</span>&quot;<span> </span><span>xml:space</span><span>=</span>&quot;<span>preserve</span>&quot;<span>&gt;</span></span></p>
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp; &lt;</span><span>value</span><span>&gt;</span><span>My Title<span>&lt;/</span><span>value</span><span>&gt;</span></span></p>
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp; &lt;</span><span>comment</span><span>&gt;</span><span>Property on the business object<span>&lt;/</span><span>comment</span><span>&gt;</span></span></p>
+<p class="MsoNormal"><span>&lt;/</span><span>data</span><span>&gt;</span></p>
+<p class="MsoNormal">This is the German resource for AnnouncementActivityMessages.Title</p>
+<p class="MsoNormal"></p>
+<p class="MsoNormal"><span>&lt;</span><span>data</span><span> </span><span>name</span><span>=</span><span>&quot;<span>Title</span>&quot;<span> </span><span>xml:space</span><span>=</span>&quot;<span>preserve</span>&quot;<span>&gt;</span></span></p>
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp; &lt;</span><span>value</span><span>&gt;</span><span>Titel<span>&lt;/</span><span>value</span><span>&gt;</span></span></p>
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp; &lt;</span><span>comment</span><span>&gt;</span><span>Property on the business object<span>&lt;/</span><span>comment</span><span>&gt;</span></span></p>
+<p class="MsoNormal"><span>&lt;/</span><span>data</span><span>&gt;</span></p>
+<p class="MsoNormal">When we run this in English, everything is great.&nbsp; But when we switch the app to run in another
+language (anything other than English) and run through the validation, we get
+the following error message generated:&nbsp;</p>
+<p class="MsoNormal"><span><span>My Title
+erforderlich</span></span></p>
+<p class="MsoNormal">Another interesting twist is that if I do an IISReset on my
+webserver and refresh the page, it starts to work and as I move to a different
+part of the app, where we&#39;re validating a title for a different business object,
+I see the original problem again.&nbsp;</p>
+<span>Has anyone else experienced this problem?</span></p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Wednesday, December 07, 2011</h2><p>Yes, that is how PropertyInfo is coded. </p>
+<p>PropertyInfo sets the value when the PropertyInfo is created and will thus only have the &quot;first&quot; value available. There is (even up until now) no dynamic read that will support switching of locale within the running application.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>mrb@cspace replied on Wednesday, December 07, 2011</h2><p>Thank you Jonny. &nbsp;I think I understand what you&#39;re saying, but I don&#39;t understand how CSLA seems to know that we&#39;re working in the German language (because the message contained the German translation from the CSLA resource strings), yet when getting my local resources for the friendly field name, it doesn&#39;t have the culture correct. &nbsp;</p>
+<p>I don&#39;t know enough about it, but it may be that in our environment, we&#39;ve created a CSLA service so that requests get handled via the service. &nbsp;I wonder if when the service starts this might have something to do with properties being loaded with their English translations.</p>
+<p>If that&#39;s the case, it may be far easier for us to simply change from using the CommonRules to instead use custom rules (which we have written some for special situations), and this would allow us to return what we need.</p>
+<p>Again, really appreciate the quick and insightful response</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Wednesday, December 07, 2011</h2><p>Quite simply - the rule reads the message text from Csla satellite resources if found for the current thread language.</p>
+<p>PropertyInfo.FriendlyName is set when the PropertyInfo is created (when the class is instantiated the first time) and will keep that value for the time the application is running.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>mrb@cspace replied on Wednesday, December 07, 2011</h2><p>Ah, I see.&nbsp; Thanks very much.&nbsp; We&#39;re going to take a different approach with it.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,46 @@
+<html><header><title>Issue with IsDirty on a grandchild object</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Issue with IsDirty on a grandchild object</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/2884.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>RikGarner posted on Wednesday, May 16, 2007</h2><P>I seem to be having a problem seeing IsDirty propogated up through a&nbsp;three level hierarchy. </P>
+<P>Root object has a child list of sections; each section has a child list of items.</P>
+<P>Tests look like this, only the first two pass. </P><FONT size=1>
+<P></FONT><FONT size=2>cce.SectionsList[0].ItemList[0].State1 = <FONT color=#0000ff>true</FONT>;</FONT></P>
+<P><FONT size=2><FONT color=#008080>Assert</FONT>.IsTrue(cce.SectionsList[0].ItemList[0].IsDirty);</FONT></P>
+<P><FONT size=2><FONT color=#008080>Assert</FONT>.IsTrue(cce.SectionsList[0].ItemList.IsDirty);</FONT></P>
+<P><FONT size=2><FONT color=#008080>Assert</FONT>.IsTrue(cce.SectionsList.IsDirty);</FONT></P>
+<P><FONT size=2><FONT color=#008080>Assert</FONT>.IsTrue(cce.SectionsList[0].IsDirty);</FONT></P>
+<P><FONT size=1><FONT size=2>Do I need to override the default Save behaviour to make this work?</FONT></FONT></P>
+<P><FONT size=1>&nbsp;</P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, May 16, 2007</h2>You don't override Save - you override IsDirty and IsValid for any parent class, so it includes it children in the result.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RikGarner replied on Monday, May 21, 2007</h2><P>Excellent - it works now!</P>
+<P>As an aside, in the template code that updates a collection, it checks IsNew to determine whether to Insert, but it doesn't check IsDirty before doing an Update. Can I add that check as an optimisation, or is there a hidden side effect that it might introduce?</P>
+<P>I've just thought about this some more&nbsp;- is it sensitive to whether I'm in the 'youngest' (i.e. bottommost) collection in the hierachy?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, May 21, 2007</h2>
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>You can certainly have your collection check IsDirty. I
+typically have the child object itself do that check, but either place works.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky</span><o:p></o:p></p>
+
+</div>
+
+
+
+
+<BR>
+
+<P><FONT SIZE=2>No virus found in this outgoing message.<BR>
+Checked by AVG Free Edition.<BR>
+Version: 7.5.467 / Virus Database: 269.7.6/813 - Release Date: 5/20/2007 7:54 AM<BR>
+</FONT> </P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

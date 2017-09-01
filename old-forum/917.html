@@ -1,0 +1,15 @@
+<html><header><title>Dates, DataGridViews, and ErrorProviders</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Dates, DataGridViews, and ErrorProviders</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/917.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>cmay posted on Wednesday, August 16, 2006</h2><P>I am trying to databind a smartdate (actually the Text property of a smartdate) to a cell in a datagridview.</P>
+<P>Now I know I can write some validation methods to check that, for exmaple, that the date is greater than today, and I can use the errorprovider to display a nice error message.</P>
+<P>However, I seem lost as to how I can validate that the text typed in as being a date.</P>
+<P>i.e. If the person types in "ASDF" for the date, I would like to show a validation error message just as if they typed in "1/1/1900" for a date that must be in the future.</P>
+<P>The only thing I can think of is to do some work arounds, for example:</P>
+<P>1) check the text to make sure its a date<BR>2) if not a valid date, don't set the SmartDate Text property and instead store the "bad" text in a private variable<BR>3) Call the propertychanged<BR>4) check the "bad" text&nbsp; variable and raise a validation error.</P>
+<P>I'm thinking there should be a better way to do this... anyone know how to validate that the text for a smartdate and tap into the errorprovider/validation events?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jurjen replied on Wednesday, August 16, 2006</h2><P>cmay,</P>
+<P>As fas as I know SmartDate already does this check for you when you set the Text property.</P>
+<P>Dim sd as new csla.SmartDate<BR>sd.Text = "ASDF" </P>
+<P>will result in an exception...</P>
+<P>An unhandled exception of type 'System.ArgumentException' occurred in Csla.dll<BR>Additional information: String value can not be converted to a date</P>
+<P>...and the SmartDate object will keep the value it had before...</P>
+<P>HTH,<BR>Jurjen.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>cmay replied on Wednesday, August 16, 2006</h2><P>Well it does throw that error, but that exception doesn't work with errorprovidor.</P>
+<P>I can catch that error and display my own msgbox to the user, but there is already this built in method for checking (validating) the values using the CSLA Vadation Rules.&nbsp; I am trying to tap into that so I can get the nice inline error icons and tooltips and what not.</P>
+<P>&nbsp;</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

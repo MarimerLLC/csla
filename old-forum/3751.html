@@ -1,0 +1,30 @@
+<html><header><title>csla svn repository - no tag for 3-0-2</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>csla svn repository - no tag for 3-0-2</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3751.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jimbo posted on Saturday, October 20, 2007</h2>Rocky,<br>
+<br>
+In viewing your latest updates and notes regarding the trunk and branch
+repository and assembly versions (
+http://www.lhotka.net/weblog/CSLANET35ForVisualStudio2008.aspx)<br>
+and then referring to the svn repository itself, there seems to be a
+missed snapshot for V3-0-2 - or am I looking in the wrong place.<br>
+<br>
+Jimbo<br>
+<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jimbo replied on Friday, October 26, 2007</h2>Attention Rocky,<br>
+Just raising this issue again for your attention.<br>
+I would like to add that as an svn administrator it is not always easy
+to keep up with but the missing tag is rather odd as you have released
+this version along with excellent primers to wcf, wf and wpf&nbsp; in
+the ebook to boot.<br>
+<br>
+Regards <br>
+jimbo<br>
+<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, October 26, 2007</h2><P>Unfortunately, in the middle of all the hectic things going on in my life recently, I forgot to do the tag when I released the code, and then I did some changes corresponding to 3.0.3.</P>
+<P>I don't know if there's a way to go back and apply a tag against a specific date or something, and&nbsp;I haven't had time to research that concept, nor to sort through the exact date/time where the C# and VB tags would be applied (they aren't the same I don't think).</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jmccomb replied on Saturday, October 27, 2007</h2>The tagging part's a doddle if you're using TortoiseSVN and you know the revision number.<br>
+
+1) Right click on the trunk in Explorer, choose TortoiseSVN &gt; Branch/tag...<br>
+
+2) Specify where you're tagging to in the usual way<br>
+
+3) Instead of selecting the "HEAD revision in the respository" option,
+choose "Specific revision in repository" and then enter the revision
+number in the text box.<br>
+
+4) Add message and click OK<br>Working out the correct date/time and then revision number could be a little trickier...<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jimbo replied on Tuesday, October 30, 2007</h2>If you review the csla svn repository structure it will be more clear what is Rocky's delemma.&nbsp; Basically all projects are under the same trunk/tags as against separate projects, each, with its own trunk/branches and tags.&nbsp; There is nothing wrong with Rocky's approach.&nbsp; But when it comes to some situations where focus is on one particular project (solution), it turns out that managing a single global trunk can be an admistrative problem, particularly when there are many [people/teams] and different roadmaps and [issues] involved.&nbsp; In the current structure, Rocky has to ensure that all projects (cs, vb, test etc.) are exactly in sync. in order to create a totally clean branch/tag.&nbsp; As he has mentioned, the focus and pace has changed, and this would suggest that the structure should also change to cope and allow relatively independent development along each stream.&nbsp; Integration of separate projects is another issue, but svn has ways to deal with this.&nbsp; It is a pitty that the milestone "global" edition has not been captured as exactly as we would want; but then there are the build releases that are the backup. You can possibly [carefully] retro fit a build release of each project to fill the gap. Although the revision history numbers would not be as perfect as otherwise. After all - its all history.<br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, October 31, 2007</h2><P>OK, I did create 3.0.2 tags. I believe they are correspond to the download zip archives - or at least they are very close. That'll have to do in any case.</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

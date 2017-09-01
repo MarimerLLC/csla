@@ -1,0 +1,7 @@
+<html><header><title>Managing Business Component Dependencies</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Managing Business Component Dependencies</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/12463.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>comp1mp posted on Saturday, March 08, 2014</h2><p>Hi,</p>
+<p>One of the great things about CSLA, in my opinion, is the ability to write multiple clients across different platforms.</p>
+<p>Does anyone have practical experience they could share when making a breaking change in the business assembly while supporting multiple legacy clients (Web, WinForms, WPF and &nbsp;Android to be specific)?</p>
+<p>Thanks,</p>
+<p>Matthew</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Sunday, March 09, 2014</h2><p>Don&#39;t make the breaking change.</p>
+<p>If you can write a new class and deprecate the old one but leave it intact, that would allow you to update over time.&nbsp; if you cant do that you may have to update all the clients at once.</p>
+<p>What is the nature of the change?&nbsp; if you give more specifics on what you&#39;re doing there might be other options too.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

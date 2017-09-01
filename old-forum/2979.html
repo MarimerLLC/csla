@@ -1,0 +1,361 @@
+<html><header><title>Unhandled Exception</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Unhandled Exception</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/2979.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>culprit posted on Saturday, June 02, 2007</h2><P>I am in the process of creating a large set of BO's based on the CSLA framework. I am relatively new to .Net as well so please forgive me if I should know the answer to this question already. Essentially I want to know how you recommend handling unhandled exceptions (unexpected program errors) in a class library. I have seen examples of how to do this in a forms application but I want to keep my errors in my class library if possible considering that we will have many UIs plugging into these same BO's (also EIF seems like overkill for us). </P>
+<P>Here is what I envision but where to put it I am not sure:</P>
+<P>Select Case TypeOf(Exception)</P>
+<P>&nbsp;&nbsp;&nbsp;Case CslaDataException</P>
+<P>&nbsp;&nbsp;&nbsp;Case InvalidOperatorException</P>
+<P>ETC......</P>
+<P>Here we can do like in our current C++ and VB apps where we send detailed error information to a web service where they can be tracked by user/machine, and other details. </P>
+<P>Thanks in advance for your assistance,</P>
+<P>Rob</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>William replied on Monday, June 04, 2007</h2><P>In most cases, UI should handle and report the error to user for further action.</P>
+<P>I think you should use structured exception to handle the runtime error. This applies to both UI and&nbsp;BO library.&nbsp;For example,</P>
+<P><FONT face="Courier New" size=2>try {<BR>&nbsp;&nbsp;&nbsp;...<BR>}<BR>catch (CslaDataException) {<BR>&nbsp;&nbsp;&nbsp;...<BR>}<BR>catch (InvalidOperatorException) {<BR>&nbsp;&nbsp;&nbsp;...<BR>}<BR>catch (Exception) {<BR>&nbsp;&nbsp;&nbsp;...<BR>}</FONT></P>
+<P>Regards,<BR>William</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>culprit replied on Monday, June 04, 2007</h2><P>William,</P>
+<P>Thanks for the response. But I want to be able to completely handle the unhandled exception within my BO and pass this on to the UI in the manner I see best. The Try/Catch is fine with anticipated errors but with a large complex application dealing with thousands if not millions of data records there is always a possibility for unanticipated errors. Quoting an MSDN article:</P>
+<P>"In this installment of the .NET column I am going to present a handful of tips for dealing with unexpected errors. While it is common practice to catch exceptions to deal with expected failure cases, it is also common for managed applications to encounter errors for which the application is completely unprepared. In an ideal world you will establish clear policies for how your application discovers and responds to unhandled exceptions, reduced security permissions, and other related edge-cases, but in practice these are often overlooked."</P>
+<P>What I would like is some kind of global unhandled error listener within the BO so that I could uniformly respond to among other errors data errors which could occur many places within the BOs. </P>
+<P>Any thoughts or assistance from anyone in the group is greatly appreciated.</P>
+<P>Rob</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Devi replied on Wednesday, March 26, 2008</h2><P>William..</P>
+<P>I hav seen ur valuable comments regarding the Exception handling in both BO and UI.</P>
+<P>But i am asking, can i catch an exception in a EditableRootListBase object....I am trying with it..</P>
+<P>But I cant handle the exception through an EditableRootListBase..</P>
+<P>Any help in this problem..</P>
+<P>Regards</P>
+<P>Devi..</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, June 04, 2007</h2><P>The rule with exceptions is to only catch them if you can do something about the exception, or something useful with the exception. Examples include:</P>
+<UL>
+<LI>Logging (always rethrow)</LI>
+<LI>Resolving (don't rethrow)</LI>
+<LI>Notifying user of issue (don't rethrow)</LI></UL>
+<P>In most applications it is totally impractical to catch and resolve all exceptions in the business layer. As you say, there are unexpected exceptions that you simply can't deal with.</P>
+<P>You are far better off allowing those exceptions to flow up to the UI so you can use the exception detail to notify the user of the issue and take appropriate steps at that level. Remember, the UI is responsible for guiding the user through the application - and some exceptions may require closing a window, opening a new window or whatever.</P>
+<P>If you don't allow the exception to flow up to the UI, you'll be stuck writing Win32 API style (C-style) code where, after every interaction with a business object, your UI must include code to check some error status property to see if something bad happened.</P>
+<P>The whole point of exceptions is to get away from that coding model. Obviously it can be done, but to some large degree you'll be fighting the whole philosophy of .NET.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>culprit replied on Wednesday, June 06, 2007</h2><P>Rocky,</P>
+<P>Thank you for your reply. This is a learning process for me.</P>
+<P>What got me started thinking on this were errors I generated when the database connection did not succeed. I thought it might be nice for a central error catching to catch this error and then throw it on to the UI or log it in the Event Log in the case of a non-UI (ie - Service). </P>
+<P>After your answer in the case of a UI my plan now is to surround the DataPortal_Fetch call (in the factory procedure)&nbsp;with a TryCatch which in turn throws a custom exception which the UI's error handling will respond by bringing up the data settings for the BOs. Does this sound reasonable to you?</P>
+<P>Thanks Again,</P>
+<P>Rob</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, June 06, 2007</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Yes, one valid way to add value is to catch an exception and
+rethrow it as a more explicit or meaningful exception (with the original as the
+innerexception). This is what CSLA does with the dataportalexception for
+example.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> culprit
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Wednesday, June 06, 2007 9:52 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] Unhandled Exception<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Rocky,<o:p></o:p></p>
+
+<p>Thank you for your reply. This is a learning process for me.<o:p></o:p></p>
+
+<p>What got me started thinking on this were errors I generated when the
+database connection did not succeed. I thought it might be nice for a central
+error catching to catch this error and then throw it on to the UI or log it in
+the Event Log in the case of a non-UI (ie - Service). <o:p></o:p></p>
+
+<p>After your answer in the case of a UI my plan now is to surround the
+DataPortal_Fetch call (in the factory procedure)&nbsp;with a TryCatch which in
+turn throws a custom exception which the UI's error handling will respond by
+bringing up the data settings for the BOs. Does this sound reasonable to you?<o:p></o:p></p>
+
+<p>Thanks Again,<o:p></o:p></p>
+
+<p>Rob<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ksirmons replied on Thursday, August 02, 2007</h2><P class=MsoNormal><FONT face=Calibri>Howdy,</FONT></P>
+<P class=MsoNormal><FONT face=Calibri>I am looking over the error handling procedures for a Medical Record application that we are writing.</FONT></P>
+<P class=MsoNormal><FONT face=Calibri>I have an example of a situation and would like to know what the experts out there would suggest.</FONT></P>
+<P class=MsoNormal><FONT face=Calibri>Say I call a simple factory method with a patient id.<SPAN>&nbsp; </SPAN>That then calls the dataportal_fetch.<SPAN>&nbsp; </SPAN></FONT></P>
+<P class=MsoNormal><FONT face=Calibri>My dataportal_fetch method does its sql query and starts to go through the datareader.<SPAN>&nbsp; </SPAN></FONT></P>
+<P class=MsoNormal><FONT face=Calibri>If the datareader has no records then I would say that you had an invalid patient ID and throw a PatientBusinesException(“Invalid PatientId”) exception.<SPAN>&nbsp; </SPAN>This exception then gets wrapped by 2 dataportal exceptions through the framework.</FONT></P>
+<P class=MsoNormal><FONT face=Calibri>Now, the UI caller of the factory method gets a dataportal exception.<SPAN>&nbsp; </SPAN>How is the UI to know that it is an invalid patientID(that it could handle vs a sqlexception that should go up the chain) that started this exception chain without having to write some extra code inside each try catch block that catches a dataportalexception and looks inside to see what really happened?</FONT></P>
+<P class=MsoNormal><FONT face=Calibri>It would seem to me that if I initially threw a custom business exception then that should be on the outer most layer so you can use simple, multiple catch blocks in place of some custom case statement.<SPAN>&nbsp; </SPAN></FONT></P>
+<P class=MsoNormal><FONT face=Calibri>I have thought of catching the dataportal exception inside the shared function and re-throwing the inner exception, but it starts the stack trace over and you lose the initial data.</FONT></P>
+<P class=MsoNormal><FONT face=Calibri>Any guidance would be appreciated</FONT></P>
+<P class=MsoNormal><FONT face=Calibri>Thank you,</FONT></P>
+<P class=MsoNormal><FONT face=Calibri>Keith</FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, August 02, 2007</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Your custom exception can’t be on top of the stack without
+losing the data in the DataPortalException…<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>In VB this is kind of a non-issue thanks to the When clause:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Try<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>  ‘…<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>Catch ex As DataPortalException When TypeOf ex.BusinessException
+Is PatientBusinessException<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>  ‘…<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>Catch ex As DataPortalException When TypeOf ex.BusinessException
+Is SomeOtherException<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>  ‘…<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>Catch ex As Exception<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>  ‘…<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>End Catch<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>But in C# it is rather a pain.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>So here’s an alternative for the factory method:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>public static Patient GetPatient(…)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>{<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>  try<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>  {<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>    DataPortal.Fetch&lt;Patient&gt;(…);<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>  }<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>  catch (DataPortalException ex)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>  {<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>    Exception newEx = <o:p></o:p></span></p>
+
+<p class=MsoNormal><span>      Activator.CreateInstance(typeof(ex.BusinessException.GetType()),<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>      new object[] { ex.BusinessException.Message, ex});<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>    throw newEx;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>  }<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>}<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>To be honest, I just threw this together off the top of my head,
+so it might not work. But it should work – the only oddity you’ll see is that
+your business exception appears twice in the exception stack. The stack will be
+something like this:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>PatientBusinessException<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>DataPortalException<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>PatientBusinessException<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>SqlException<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>The stack trace should remain intact because the inner exception
+of the new exception is the DataPortalException, and it contains the full stack
+trace.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> ksirmons
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Thursday, August 02, 2007 3:46 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: Unhandled Exception<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal><span>Howdy,</span><o:p></o:p></p>
+
+<p class=MsoNormal><span>I am looking over the error handling
+procedures for a Medical Record application that we are writing.</span><o:p></o:p></p>
+
+<p class=MsoNormal><span>I have an example of a situation and
+would like to know what the experts out there would suggest.</span><o:p></o:p></p>
+
+<p class=MsoNormal><span>Say I call a simple factory method
+with a patient id.&nbsp; That then calls the dataportal_fetch.&nbsp; </span><o:p></o:p></p>
+
+<p class=MsoNormal><span>My dataportal_fetch method does its
+sql query and starts to go through the datareader.&nbsp; </span><o:p></o:p></p>
+
+<p class=MsoNormal><span>If the datareader has no records
+then I would say that you had an invalid patient ID and throw a
+PatientBusinesException(â€œInvalid PatientIdâ€</span><span>) exception.&nbsp; This exception then gets wrapped by
+2 dataportal exceptions through the framework.</span><o:p></o:p></p>
+
+<p class=MsoNormal><span>Now, the UI caller of the factory
+method gets a dataportal exception.&nbsp; How is the UI to know that it is an
+invalid patientID(that it could handle vs a sqlexception that should go up the
+chain) that started this exception chain without having to write some extra
+code inside each try catch block that catches a dataportalexception and looks
+inside to see what really happened?</span><o:p></o:p></p>
+
+<p class=MsoNormal><span>It would seem to me that if I initially
+threw a custom business exception then that should be on the outer most layer
+so you can use simple, multiple catch blocks in place of some custom case
+statement.&nbsp; </span><o:p></o:p></p>
+
+<p class=MsoNormal><span>I have thought of catching the
+dataportal exception inside the shared function and re-throwing the inner
+exception, but it starts the stack trace over and you lose the initial data.</span><o:p></o:p></p>
+
+<p class=MsoNormal><span>Any guidance would be appreciated</span><o:p></o:p></p>
+
+<p class=MsoNormal><span>Thank you,</span><o:p></o:p></p>
+
+<p class=MsoNormal><span>Keith</span><o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ksirmons replied on Thursday, August 02, 2007</h2><P>Rocky,</P>
+<P>Thank you.&nbsp; This is exactly what I am looking for.</P>
+<P>We are coding in VB and I will try the When clause, but do you know if your c# code would port to&nbsp;VB?&nbsp; </P>
+<P>Thank you,</P>
+<P>Keith</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, August 02, 2007</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Sure, that same code would work in VB &#8211; pretty much just
+drop the semi-colons </span><span>J</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>But the When clause is often an easier and quite elegant
+solution if you are in VB.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> ksirmons
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Thursday, August 02, 2007 4:45 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: RE: Unhandled Exception<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Rocky,<o:p></o:p></p>
+
+<p>Thank you.&nbsp; This is exactly what I am looking for.<o:p></o:p></p>
+
+<p>We are coding in VB and I will try the When clause, but do you know if your
+c# code would port to&nbsp;VB?&nbsp; <o:p></o:p></p>
+
+<p>Thank you,<o:p></o:p></p>
+
+<p>Keith<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

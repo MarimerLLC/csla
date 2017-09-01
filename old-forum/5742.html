@@ -1,0 +1,26 @@
+<html><header><title>New Csla.Core.BusinessBase event clarification</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>New Csla.Core.BusinessBase event clarification</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5742.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>vdhant posted on Wednesday, November 05, 2008</h2>Hi guys<br><br>I have just looking in Csla.Core.BusinessBase and I am wondering what is the difference between the following 2 methods (see below). I know that unhandled_UnhandledAsyncException get hooked up to the UnhandledAsyncException event via OnAddEventHooksInternal and OnRemoveEventHooksInternal (note this is the only reference to unhandled_UnhandledAsyncException in the code base). But Child_UnhandledAsyncException doesn't get called by anything - the only reference in the whole code base to Child_UnhandledAsyncException is in the method signature.<br><br>To me it seems like these are suppose to be the same method and the current Child_UnhandledAsyncException should be removed and the current unhandled_UnhandledAsyncException refactored to be Child_UnhandledAsyncException.<br><br>Here is the code in question:<br>&nbsp;&nbsp;&nbsp; void Child_UnhandledAsyncException(object sender, ErrorEventArgs e)<br>&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; OnUnhandledAsyncException(e);<br>&nbsp;&nbsp;&nbsp; }<br><br><br>&nbsp;&nbsp;&nbsp; void unhandled_UnhandledAsyncException(object sender, ErrorEventArgs e)<br>&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; OnUnhandledAsyncException(e);<br>&nbsp;&nbsp;&nbsp; }<br><br>Note if this is an issue then the same problem exists for busy_BusyChanged and Child_BusyChanged.<br><br>Cheers<br>Anthony<br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, November 05, 2008</h2>I'll take a look at this, thanks!</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>vdhant replied on Wednesday, November 05, 2008</h2>Cheers<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>vdhant replied on Thursday, November 06, 2008</h2>I think that I might have found another posible issue. The LoadManager property between BusinessBase and ReadOnlyBase is different.<br><br>BusinessBase:<br>&nbsp;&nbsp;&nbsp; internal AsyncLoadManager LoadManager<br>&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; get<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (_loadManager == null)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _loadManager = new AsyncLoadManager();<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>_loadManager.BusyChanged += new BusyChangedEventHandler(loadManager_BusyChanged);</b><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return _loadManager;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>&nbsp;&nbsp;&nbsp; }<br><br>ReadOnlyBase:<br>&nbsp;&nbsp;&nbsp; internal AsyncLoadManager LoadManager<br>&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; get<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (_loadManager == null)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _loadManager = new AsyncLoadManager();<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>_loadManager.BusyChanged += new BusyChangedEventHandler(loadManager_BusyChanged);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _loadManager.UnhandledAsyncException += new EventHandler&lt;ErrorEventArgs&gt;(loadManager_UnhandledAsyncException);</b><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return _loadManager;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>&nbsp;&nbsp;&nbsp; }<br><br>To me the ReadOnlyBase version seems more correct, but there may be a reason why you have done it this way. <br><br>Cheers<br>Anthony<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, November 06, 2008</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Thanks, I&#8217;ll add this to the list too.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,15 @@
+<html><header><title>CSLALight Navigation</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLALight Navigation</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6806.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Dexter posted on Friday, April 17, 2009</h2><P>Hi </P>
+<P>I have been having a look&nbsp;at the navigator class to perform navigation to other silverlight usercontrols.</P>
+<P>This is great and I can easily pass in an id of an object&nbsp;into&nbsp;the usercontrol&nbsp;for it to fetch its business object.</P>
+<P><FONT size=2><FONT size=3>My question is this, If i want to pass a business object into the usercontrol as a <SPAN>parameter </SPAN>(which currently only allows a string parameter), is the best way of&nbsp;achieving this to serializing the&nbsp;business object itself&nbsp;?</FONT></FONT></P>
+<P><FONT size=2><FONT size=3>The scenario i am thinking of is when more than one screen must work on the same business object, before a saving occurs.</FONT></FONT></P>
+<P>Dexter</P>
+<P>&nbsp;</P>
+<P><FONT size=2><FONT size=3></FONT>&nbsp;</P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, April 20, 2009</h2><P>The Navigator control supports a couple scenarios.</P>
+<P>One is to allow the Back/Forward buttons of the browser to work while the user interacts with your application.</P>
+<P>Another is to allow the user to bookmark a URL and come back <EM>directly into the middle of your app</EM>.</P>
+<P>To accomplish both of those scenarios, Navigator puts everything onto the URL - which means it can only work with relatively short string values.</P>
+<P>It is then up to your application to interpret the string parameter value from the URL and translate that into some meaningful value.</P>
+<P>You've probably noticed that you can implement the Csla.Silverlight.ISupportNavigation interface in a form, and that gives you access to parameter values and so forth. This is where you'd take the string value and translate it into an object instance or something like that.</P>
+<P>Keeping in mind that a user might be moving from page to page in your application, you might choose to implement a static Dictionary&lt;string,object&gt; to cache objects so you can easily retrieve them if the user hits the Back button (just remember that data becomes stale, and watch how much memory you consume).</P>
+<P>However, keeping in mind that a user might come back to a page "cold" by bookmarking a URL and opening a browser directly into the middle of your application, your code must also handle the case where the data isn't in your cache - in which case you need to decide whether to load the value via the data portal, or forcibly navigate the user to some other page, rather than the page they asked for.</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

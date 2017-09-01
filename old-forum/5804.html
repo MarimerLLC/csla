@@ -1,0 +1,570 @@
+<html><header><title>Trouble with  Sample Projects - Rolodex</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Trouble with  Sample Projects - Rolodex</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5804.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>kyle.l.watson@gmail.com posted on Friday, November 14, 2008</h2><P>I was trying to get the rolodex project compiled but I am having the hard time trying to do it. </P>
+<P>I have installed the silverlight sdk and tools for VS 2008 from here.</P>
+<P><A href="http://www.microsoft.com/downloads/details.aspx?FamilyId=c22d6a7b-546f-4407-8ef6-d60c8ee221ed&amp;displaylang=en">http://www.microsoft.com/downloads/details.aspx?FamilyId=c22d6a7b-546f-4407-8ef6-d60c8ee221ed&amp;displaylang=en</A></P>
+<P>I then opened up the Rolodex project and rereferenced the CSLA dlls. </P>
+<P>I noticed then when I view any of the silverlight controls I get this error: </P><SPAN>
+<P>Could not load type 'System.Windows.Controls.IEditableObject' from assembly 'System.Windows.Controls.Data, Version=2.0.5.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35'.</P>
+<P>and Building the project results in several misc errors:</P>
+<P>*"ValidateXaml" task failed unexpectedly.</P>
+<P>*&nbsp;'TransactionalAttribute' could not be found&nbsp;</P>
+<P>* 'SerializableAttribute' is an ambiguous reference between 'System.SerializableAttribute' and 'Csla.Serialization.SerializableAttribute'</P>
+<P>And some other errors. Some of these I can fix, though,&nbsp;it&nbsp;seems like I simply didn't&nbsp;install something&nbsp;correctly to have this many&nbsp;compile time errors running around. </P>
+<P>The csla dll referenced was located in the Rolodex sample CslaLight\cs\Rolodex\CslaBin\silverlight\csla.dll</P>
+<P>I am hoping something is glaring obvious and someone can help me get this sample up and running. Any thoughts greatly appreciated.</P>
+<P>&nbsp;</P></SPAN></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Friday, November 14, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I think you got the source code for Rolodex that is too old &#8211;
+prior to Silverlight RTM.&nbsp; IEditableObject interface that the error
+mentions got moved into a different namespace in RTM version.&nbsp; Try to
+download the sample from this page:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><a href="http://www.lhotka.net/cslalight/download.aspx">http://www.lhotka.net/cslalight/download.aspx</a><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>The link is located in Samples column.&nbsp; I would also
+download and compile CSLA itself just in case as well.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Thanks.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img border=0 width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span>
+kyle.l.watson@gmail.com [mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Friday, November 14, 2008 2:14 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> [CSLA .NET] Trouble with Sample Projects - Rolodex<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>I was trying to get the rolodex project compiled but I am having the hard
+time trying to do it. <o:p></o:p></p>
+
+<p>I have installed the silverlight sdk and tools for VS 2008 from here.<o:p></o:p></p>
+
+<p><a href="http://www.microsoft.com/downloads/details.aspx?FamilyId=c22d6a7b-546f-4407-8ef6-d60c8ee221ed&amp;displaylang=en">http://www.microsoft.com/downloads/details.aspx?FamilyId=c22d6a7b-546f-4407-8ef6-d60c8ee221ed&amp;displaylang=en</a><o:p></o:p></p>
+
+<p>I then opened up the Rolodex project and rereferenced the CSLA dlls. <o:p></o:p></p>
+
+<p>I noticed then when I view any of the silverlight controls I get this error:
+<o:p></o:p></p>
+
+<p>Could not load type 'System.Windows.Controls.IEditableObject' from assembly
+'System.Windows.Controls.Data, Version=2.0.5.0, Culture=neutral,
+PublicKeyToken=31bf3856ad364e35'.<o:p></o:p></p>
+
+<p>and Building the project results in several misc errors:<o:p></o:p></p>
+
+<p>*&quot;ValidateXaml&quot; task failed unexpectedly.<o:p></o:p></p>
+
+<p>*&nbsp;'TransactionalAttribute' could not be found&nbsp;<o:p></o:p></p>
+
+<p>* 'SerializableAttribute' is an ambiguous reference between
+'System.SerializableAttribute' and 'Csla.Serialization.SerializableAttribute'<o:p></o:p></p>
+
+<p>And some other errors. Some of these I can fix, though,&nbsp;it&nbsp;seems
+like I simply didn't&nbsp;install something&nbsp;correctly to have this
+many&nbsp;compile time errors running around. <o:p></o:p></p>
+
+<p>The csla dll referenced was located in the Rolodex sample
+CslaLight\cs\Rolodex\CslaBin\silverlight\csla.dll<o:p></o:p></p>
+
+<p>I am hoping something is glaring obvious and someone can help me get this
+sample up and running. Any thoughts greatly appreciated.<o:p></o:p></p>
+
+<p>&nbsp;<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>kyle.l.watson@gmail.com replied on Friday, November 14, 2008</h2><P>Sounds good. I'll make sure it has the latest RTM reference of CSLA.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>kyle.l.watson@gmail.com replied on Friday, November 14, 2008</h2>Thanks, I simply was referencing an older version.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>davidinnz replied on Saturday, November 15, 2008</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>sergeyb:</strong></div><div>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+<div class="Section1">
+
+<p class="MsoNormal"><span>I think you got the source code for Rolodex that is too old –
+prior to Silverlight RTM.&nbsp; IEditableObject interface that the error
+mentions got moved into a different namespace in RTM version.&nbsp; Try to
+download the sample from this page:<o:p></o:p></span></p>
+
+
+
+<p class="MsoNormal"><span><a href="http://www.lhotka.net/cslalight/download.aspx">http://www.lhotka.net/cslalight/download.aspx</a><o:p></o:p></span></p>
+
+<p class="MsoNormal"><span>The link is located in Samples column.&nbsp; I would also
+download and compile CSLA itself just in case as well.<o:p></o:p></span></p></div>
+
+</div></BLOCKQUOTE><br><br>I seem to be having similar problems to Kyle, though I downloaded files from your link above. <br><br>I don't understand why I have to rereference the CSLA.dll in the Rolodex sample, when there is a CslaBin folder included in the solution? Why doesn't the solution point to those DLLs?<br><br>The main error I am getting is:<br><font size="2" face="Arial"><br><font color="#808080">Error&nbsp;&nbsp;&nbsp; 6&nbsp;&nbsp;&nbsp; The "ValidateXaml" task failed unexpectedly.<br>System.TypeLoadException: Method 'GenerateEditingElement' in type 'Csla.Silverlight.ValidatedDataGridTextColumn' from assembly 'Csla, Version=3.6.0.0, Culture=neutral, PublicKeyToken=93be5fdc093e4c30' does not have an implementation.<br>&nbsp;&nbsp; at System.Reflection.Assembly._GetType(String name, Boolean throwOnError, Boolean ignoreCase)<br>&nbsp;&nbsp; at System.Reflection.Assembly.GetType(String name)<br>&nbsp;&nbsp; at MS.Internal.Xaml.Schema.ClrNamespace.SearchAssembliesForShortName(String shortName)<br>&nbsp;&nbsp; at MS.Internal.Xaml.Schema.ClrNamespace.TryGetXamlType(String xamlName, Assembly localAssembly, XamlType&amp; xamlType)<br>&nbsp;&nbsp; at MS.Internal.Xaml.Schema.ClrNamespace.GetXamlType(String typeName, XamlTypeSearchSettings searchSettings, Assembly localAssembly, Boolean throwOnError)<br>&nbsp;&nbsp; at MS.Internal.Xaml.XamlContext.GetXamlType(String prefix, String name, XamlTypeSearchSettings searchSettings, XamlNamespace&amp; xamlNs, Boolean throwOnError)<br>&nbsp;&nbsp; at MS.Internal.Xaml.Parser.XamlScanner.ReadObjectElement(XamlName name, Boolean isEmptyTag)<br>&nbsp;&nbsp; at MS.Internal.Xaml.Parser.XamlScanner.ReadElement()<br>&nbsp;&nbsp; at MS.Internal.Xaml.Parser.XamlScanner.DoXmlRead()<br>&nbsp;&nbsp; at MS.Internal.Xaml.Parser.XamlScanner.Read()<br>&nbsp;&nbsp; at MS.Internal.Xaml.Parser.XamlPullParser.&lt;P_PropertyElement&gt;d__31.MoveNext()<br>&nbsp;&nbsp; at MS.Internal.Xaml.Parser.XamlPullParser.&lt;P_ElementBody&gt;d__23.MoveNext()<br>&nbsp;&nbsp; at MS.Internal.Xaml.Parser.XamlPullParser.&lt;P_Element&gt;d__7.MoveNext()<br>&nbsp;&nbsp; at MS.Internal.Xaml.Parser.XamlPullParser.&lt;P_ElementContent&gt;d__39.MoveNext()<br>&nbsp;&nbsp; at MS.Internal.Xaml.Parser.XamlPullParser.&lt;P_ElementBody&gt;d__23.MoveNext()<br>&nbsp;&nbsp; at MS.Internal.Xaml.Parser.XamlPullParser.&lt;P_Element&gt;d__7.MoveNext()<br>&nbsp;&nbsp; at MS.Internal.Xaml.Parser.XamlPullParser.&lt;P_ElementContent&gt;d__39.MoveNext()<br>&nbsp;&nbsp; at MS.Internal.Xaml.Parser.XamlPullParser.&lt;P_ElementBody&gt;d__23.MoveNext()<br>&nbsp;&nbsp; at MS.Internal.Xaml.Parser.XamlPullParser.&lt;P_Element&gt;d__7.MoveNext()<br>&nbsp;&nbsp; at MS.Internal.Xaml.Parser.XamlPullParser.&lt;Parse&gt;d__0.MoveNext()<br>&nbsp;&nbsp; at MS.Internal.Xaml.TextReaderEnumerator.MoveNext()<br>&nbsp;&nbsp; at MS.Internal.Xaml.XamlTextReader.Read()<br>&nbsp;&nbsp; at MS.MarkupCompiler.ValidationPass.ValidateXaml(String fileName, Assembly[] assemblies, Assembly callingAssembly, TaskLoggingHelper log, Boolean shouldThrow)<br>&nbsp;&nbsp; at Microsoft.Silverlight.Build.Tasks.ValidateXaml.XamlValidator.Execute()<br>&nbsp;&nbsp; at Microsoft.Silverlight.Build.Tasks.ValidateXaml.XamlValidator.Execute()<br>&nbsp;&nbsp; at Microsoft.Silverlight.Build.Tasks.ValidateXaml.Execute()<br>&nbsp;&nbsp; at Microsoft.Build.BuildEngine.TaskEngine.ExecuteInstantiatedTask(EngineProxy engineProxy, ItemBucket bucket, TaskExecutionMode howToExecuteTask, ITask task, Boolean&amp; taskResult)&nbsp;&nbsp;&nbsp; Rolodex</font></font><br><br>It looks like it might be related to this warning?<br><br><font size="2" color="#808080" face="Arial">Warning&nbsp;&nbsp;&nbsp; 5&nbsp;&nbsp;&nbsp; The property 'ManualEnableControl' does not exist on the type 'Button' in the XML namespace 'clr-namespace:Csla.Silverlight;assembly=Csla'.&nbsp;&nbsp;&nbsp; C:\DMW\Dev\CGL\CSLA3.6\CslaLight\cs\Rolodex\Application\CompanyEditor.xaml&nbsp;&nbsp;&nbsp; 58&nbsp;&nbsp;&nbsp; 11&nbsp;&nbsp;&nbsp; Rolodex</font><br><br><br>BTW, I attended your webcast. My only frustration was that I had not managed to get this going beforehand.<br><br>david (Auckland, NZ)<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Saturday, November 15, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>You need to reference DLLs because the ones in the solution may
+be out of date.&nbsp; The sample is used to illustrate an approach, but you
+should always use the latest Csla DLL to incorporate up to date changes and
+fixes.&nbsp; I would start there and see if the error goes away.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> davidinnz
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Saturday, November 15, 2008 5:34 AM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: Trouble with Sample Projects - Rolodex<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<blockquote>
+
+<div>
+
+<p class=MsoNormal><img id="_x0000_i1025" src="/Themes/default/images/icon-quote.gif"><strong>sergeyb:</strong><o:p></o:p></p>
+
+</div>
+
+<div>
+
+<div>
+
+<p class=MsoNormal>I
+think you got the source code for Rolodex that is too old ??? prior to
+Silverlight RTM.&nbsp; IEditableObject interface that the error mentions got
+moved into a different namespace in RTM version.&nbsp; Try to download the
+sample from this page:<o:p></o:p></p>
+
+<p class=MsoNormal><a href="http://www.lhotka.net/cslalight/download.aspx">http://www.lhotka.net/cslalight/download.aspx</a><o:p></o:p></p>
+
+<p class=MsoNormal>The
+link is located in Samples column.&nbsp; I would also download and compile CSLA
+itself just in case as well.<o:p></o:p></p>
+
+</div>
+
+</div>
+
+</blockquote>
+
+<p class=MsoNormal><br>
+<br>
+I seem to be having similar problems to Kyle, though I downloaded files from
+your link above. <br>
+<br>
+I don't understand why I have to rereference the CSLA.dll in the Rolodex
+sample, when there is a CslaBin folder included in the solution? Why doesn't
+the solution point to those DLLs?<br>
+<br>
+The main error I am getting is:<br>
+<span><br>
+<span>Error&nbsp;&nbsp;&nbsp; 6&nbsp;&nbsp;&nbsp; The
+&quot;ValidateXaml&quot; task failed unexpectedly.<br>
+System.TypeLoadException: Method 'GenerateEditingElement' in type
+'Csla.Silverlight.ValidatedDataGridTextColumn' from assembly 'Csla, Version=3.6.0.0,
+Culture=neutral, PublicKeyToken=93be5fdc093e4c30' does not have an
+implementation.<br>
+&nbsp;&nbsp; at System.Reflection.Assembly._GetType(String name, Boolean
+throwOnError, Boolean ignoreCase)<br>
+&nbsp;&nbsp; at System.Reflection.Assembly.GetType(String name)<br>
+&nbsp;&nbsp; at MS.Internal.Xaml.Schema.ClrNamespace.SearchAssembliesForSho
+rtName(String shortName)<br>
+&nbsp;&nbsp; at MS.Internal.Xaml.Schema.ClrNamespace.TryGetXamlType(String
+xamlName, Assembly localAssembly, XamlType&amp; xamlType)<br>
+&nbsp;&nbsp; at MS.Internal.Xaml.Schema.ClrNamespace.GetXamlType(String
+typeName, XamlTypeSearchSettings searchSettings, Assembly localAssembly,
+Boolean throwOnError)<br>
+&nbsp;&nbsp; at MS.Internal.Xaml.XamlContext.GetXamlType(String prefix, String
+name, XamlTypeSearchSettings searchSettings, XamlNamespace&amp; xamlNs, Boolean
+throwOnError)<br>
+&nbsp;&nbsp; at MS.Internal.Xaml.Parser.XamlScanner.ReadObjectElement(XamlName
+name, Boolean isEmptyTag)<br>
+&nbsp;&nbsp; at MS.Internal.Xaml.Parser.XamlScanner.ReadElement()<br>
+&nbsp;&nbsp; at MS.Internal.Xaml.Parser.XamlScanner.DoXmlRead()<br>
+&nbsp;&nbsp; at MS.Internal.Xaml.Parser.XamlScanner.Read()<br>
+&nbsp;&nbsp; at
+MS.Internal.Xaml.Parser.XamlPullParser.&lt;P_PropertyElement&gt;d__31.MoveNext()<br>
+&nbsp;&nbsp; at MS.Internal.Xaml.Parser.XamlPullParser.&lt;P_ElementBody&amp;
+gt;d__23.MoveNext()<br>
+&nbsp;&nbsp; at
+MS.Internal.Xaml.Parser.XamlPullParser.&lt;P_Element&gt;d__7.MoveNext()<br>
+&nbsp;&nbsp; at MS.Internal.Xaml.Parser.XamlPullParser.&lt;P_ElementContent&gt;d__39.MoveNext()<br>
+&nbsp;&nbsp; at
+MS.Internal.Xaml.Parser.XamlPullParser.&lt;P_ElementBody&gt;d__23.MoveNext()<br>
+&nbsp;&nbsp; at
+MS.Internal.Xaml.Parser.XamlPullParser.&lt;P_Element&gt;d__7.MoveNext()<br>
+&nbsp;&nbsp; at MS.Internal.Xaml.Parser.XamlPullParser.&lt;P_ElementContent&gt;d__39.MoveNext()<br>
+&nbsp;&nbsp; at
+MS.Internal.Xaml.Parser.XamlPullParser.&lt;P_ElementBody&gt;d__23.MoveNext()<br>
+&nbsp;&nbsp; at
+MS.Internal.Xaml.Parser.XamlPullParser.&lt;P_Element&gt;d__7.MoveNext()<br>
+&nbsp;&nbsp; at
+MS.Internal.Xaml.Parser.XamlPullParser.&lt;Parse&gt;d__0.MoveNext()<br>
+&nbsp;&nbsp; at MS.Internal.Xaml.TextReaderEnumerator.MoveNext()<br>
+&nbsp;&nbsp; at MS.Internal.Xaml.XamlTextReader.Read()<br>
+&nbsp;&nbsp; at MS.MarkupCompiler.ValidationPass.ValidateXaml(String fileName,
+Assembly[] assemblies, Assembly callingAssembly, TaskLoggingHelper log, Boolean
+shouldThrow)<br>
+&nbsp;&nbsp; at
+Microsoft.Silverlight.Build.Tasks.ValidateXaml.XamlValidator.Execute()<br>
+&nbsp;&nbsp; at
+Microsoft.Silverlight.Build.Tasks.ValidateXaml.XamlValidator.Execute()<br>
+&nbsp;&nbsp; at Microsoft.Silverlight.Build.Tasks.ValidateXaml.Execute()<br>
+&nbsp;&nbsp; at Microsoft.Build.BuildEngine.TaskEngine.ExecuteInstantiatedTask(EngineProxy
+engineProxy, ItemBucket bucket, TaskExecutionMode howToExecuteTask, ITask task,
+Boolean&amp; taskResult)&nbsp;&nbsp;&nbsp; Rolodex</span></span><br>
+<br>
+It looks like it might be related to this warning?<br>
+<br>
+<span>Warning&nbsp;&nbsp;&nbsp;
+5&nbsp;&nbsp;&nbsp; The property 'ManualEnableControl' does not exist on the
+type 'Button' in the XML namespace
+'clr-namespace:Csla.Silverlight;assembly=Csla'.&nbsp;&nbsp;&nbsp;
+C:\DMW\Dev\CGL\CSLA3.6\CslaLight\cs\Rolodex\Application\CompanyEditor.xaml&nbsp;&nbsp;&nbsp;
+58&amp;nbs p;&nbsp;&nbsp; 11&nbsp;&nbsp;&nbsp; Rolodex</span><br>
+<br>
+<br>
+BTW, I attended your webcast. My only frustration was that I had not managed to
+get this going beforehand.<br>
+<br>
+david (Auckland, NZ)<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>atyagi replied on Sunday, November 16, 2008</h2><P>Hi Sergey</P>
+<P>I am getting similar errors while trying to compile any of silverlight samples. </P>
+<P>Specific error i am getting is</P>
+<P>Error&nbsp;1&nbsp;The "ValidateXaml" task failed unexpectedly.<BR>System.IO.FileNotFoundException: Could not load file or assembly 'System.Core, Version=2.0.5.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e' or one of its dependencies. The system cannot find the file specified.<BR>File name: 'System.Core, Version=2.0.5.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e'<BR>&nbsp;&nbsp; at System.ModuleHandle.ResolveType(Int32 typeToken, RuntimeTypeHandle* typeInstArgs, Int32 typeInstCount, RuntimeTypeHandle* methodInstArgs, Int32 methodInstCount)<BR>&nbsp;&nbsp; at System.ModuleHandle.ResolveTypeHandle(Int32 typeToken, RuntimeTypeHandle[] typeInstantiationContext, RuntimeTypeHandle[] methodInstantiationContext)<BR>&nbsp;&nbsp; at System.Reflection.Module.ResolveType(Int32 metadataToken, Type[] genericTypeArguments, Type[] genericMethodArguments)<BR>&nbsp;&nbsp; at System.Reflection.CustomAttribute.FilterCustomAttributeRecord(CustomAttributeRecord caRecord, MetadataImport scope, Assembly&amp; lastAptcaOkAssembly, Module decoratedModule, MetadataToken decoratedToken, RuntimeType attributeFilterType, Boolean mustBeInheritable, Object[] attributes, IList derivedAttributes, RuntimeType&amp; attributeType, RuntimeMethodHandle&amp; ctor, Boolean&amp; ctorHasParameters, Boolean&amp; isVarArg)<BR>&nbsp;&nbsp; at System.Reflection.CustomAttribute.GetCustomAttributes(Module decoratedModule, Int32 decoratedMetadataToken, Int32 pcaCount, RuntimeType attributeFilterType, Boolean mustBeInheritable, IList derivedAttributes)<BR>&nbsp;&nbsp; at System.Reflection.CustomAttribute.GetCustomAttributes(Assembly assembly, RuntimeType caType)<BR>&nbsp;&nbsp; at System.Reflection.Assembly.GetCustomAttributes(Type attributeType, Boolean inherit)<BR>&nbsp;&nbsp; at System.Attribute.GetCustomAttributes(Assembly element, Type attributeType, Boolean inherit)<BR>&nbsp;&nbsp; at MS.Internal.Xaml.MS.Impl.XamlSystemBinding.AddPairsFromAssembly(XamlSchemaContext schemaContext, Assembly asm, String uri, List`1 pairs)<BR>&nbsp;&nbsp; at MS.Internal.Xaml.MS.Impl.XamlSystemBinding.SearchForXamlNamespace(XamlSchemaContext schemaContext, String uriString, IEnumerable`1 referenceAssemblies)<BR>&nbsp;&nbsp; at MS.Internal.Xaml.XamlSchemaContext.GetXamlNamespace(String xmlns, Assembly localAssembly)<BR>&nbsp;&nbsp; at MS.Internal.Xaml.XamlSchemaContext.GetXamlNamespace(String xmlns)<BR>&nbsp;&nbsp; at MS.MarkupCompiler.ValidationPass.ValidateXaml(String fileName, Assembly[] assemblies, Assembly callingAssembly, TaskLoggingHelper log, Boolean shouldThrow)<BR>&nbsp;&nbsp; at Microsoft.Silverlight.Build.Tasks.ValidateXaml.XamlValidator.Execute()<BR>&nbsp;&nbsp; at Microsoft.Silverlight.Build.Tasks.ValidateXaml.XamlValidator.Execute()<BR>&nbsp;&nbsp; at Microsoft.Silverlight.Build.Tasks.ValidateXaml.Execute()<BR>&nbsp;&nbsp; at Microsoft.Build.BuildEngine.TaskEngine.ExecuteInstantiatedTask(EngineProxy engineProxy, ItemBucket bucket, TaskExecutionMode howToExecuteTask, ITask task, Boolean&amp; taskResult)</P>
+<P>This was being raised in silverlight project.<BR>I was able to isolate error by creating brand new simple silverlight project. As soon as&nbsp;I add reference to CSLA.dll (CSLA light) to my project . I thought that may be I am using old CSLA.dll. I downloaded latest CSLA light solution and built it. Then refere the csla.dll from client bin in my new test silverlight project. I again got this error&nbsp;while trying to build. If i remove the reference, I was able to build it. <BR>I am not sure what in CSLA.dll is breaking this. <BR></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Sunday, November 16, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I am guessing that you do not have the latest version of SL
+runtime or SL toolkit on your machine.&nbsp; Is this a possibility?&nbsp; Or,
+maybe you are referencing .NET version of Csla.DLL instead of SL version?<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> atyagi
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Sunday, November 16, 2008 4:11 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: RE: Trouble with Sample Projects - Rolodex<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Hi Sergey<o:p></o:p></p>
+
+<p>I am getting similar errors while trying to compile any of silverlight
+samples. <o:p></o:p></p>
+
+<p>Specific error i am getting is<o:p></o:p></p>
+
+<p>Error&nbsp;1&nbsp;The &quot;ValidateXaml&quot; task failed unexpectedly.<br>
+System.IO.FileNotFoundException: Could not load file or assembly 'System.Core,
+Version=2.0.5.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e' or one of
+its dependencies. The system cannot find the file specified.<br>
+File name: 'System.Core, Version=2.0.5.0, Culture=neutral,
+PublicKeyToken=7cec85d7bea7798e'<br>
+&nbsp;&nbsp; at System.ModuleHandle.ResolveType(Int32 typeToken,
+RuntimeTypeHandle* typeInstArgs, Int32 typeInstCount, RuntimeTypeHandle*
+methodInstArgs, Int32 methodInstCount)<br>
+&nbsp;&nbsp; at System.ModuleHandle.ResolveTypeHandle(Int32 typeToken,
+RuntimeTypeHandle[] typeInstantiationContext, RuntimeTypeHandle[]
+methodInstantiationContext)<br>
+&nbsp;&nbsp; at System.Reflection.Module.ResolveType(Int32 metadataToken,
+Type[] genericTypeArguments, Type[] genericMethodArguments)<br>
+&nbsp;&nbsp; at System.Reflection.CustomAttribute.FilterCustomAttributeRecord(CustomAttributeRecord
+caRecord, MetadataImport scope, Assembly&amp; lastAptcaOkAssembly, Module
+decoratedModule, MetadataToken decoratedToken, RuntimeType attributeFilterType,
+Boolean mustBeInheritable, Object[] attributes, IList derivedAttributes,
+RuntimeType&amp; attributeType, RuntimeMethodHandle&amp; ctor, Boolean&amp;
+ctorHasParameters, Boolean&amp; isVarArg)<br>
+&nbsp;&nbsp; at System.Reflection.CustomAttribute.GetCustomAttributes(Module
+decoratedModule, Int32 decoratedMetadataToken, Int32 pcaCount, RuntimeType
+attributeFilterType, Boolean mustBeInheritable, IList derivedAttributes)<br>
+&nbsp;&nbsp; at System.Reflection.CustomAttribute.GetCustomAttributes(Assembly
+assembly, RuntimeType caType)<br>
+&nbsp;&nbsp; at System.Reflection.Assembly.GetCustomAttributes(Type
+attributeType, Boolean inherit)<br>
+&nbsp;&nbsp; at System.Attribute.GetCustomAttributes(Assembly element, Type
+attributeType, Boolean inherit)<br>
+&nbsp;&nbsp; at
+MS.Internal.Xaml.MS.Impl.XamlSystemBinding.AddPairsFromAssembly(XamlSchemaContext
+schemaContext, Assembly asm, String uri, List`1 pairs)<br>
+&nbsp;&nbsp; at
+MS.Internal.Xaml.MS.Impl.XamlSystemBinding.SearchForXamlNamespace(XamlSchemaContext
+schemaContext, String uriString, IEnumerable`1 referenceAssemblies)<br>
+&nbsp;&nbsp; at MS.Internal.Xaml.XamlSchemaContext.GetXamlNamespace(String
+xmlns, Assembly localAssembly)<br>
+&nbsp;&nbsp; at MS.Internal.Xaml.XamlSchemaContext.GetXamlNamespace(String
+xmlns)<br>
+&nbsp;&nbsp; at MS.MarkupCompiler.ValidationPass.ValidateXaml(String fileName,
+Assembly[] assemblies, Assembly callingAssembly, TaskLoggingHelper log, Boolean
+shouldThrow)<br>
+&nbsp;&nbsp; at
+Microsoft.Silverlight.Build.Tasks.ValidateXaml.XamlValidator.Execute()<br>
+&nbsp;&nbsp; at
+Microsoft.Silverlight.Build.Tasks.ValidateXaml.XamlValidator.Execute()<br>
+&nbsp;&nbsp; at Microsoft.Silverlight.Build.Tasks.ValidateXaml.Execute()<br>
+&nbsp;&nbsp; at Microsoft.Build.BuildEngine.TaskEngine.ExecuteInstantiatedTask(EngineProxy
+engineProxy, ItemBucket bucket, TaskExecutionMode howToExecuteTask, ITask task,
+Boolean&amp; taskResult)<o:p></o:p></p>
+
+<p>This was being raised in silverlight project.<br>
+I was able to isolate error by creating brand new simple silverlight project.
+As soon as&nbsp;I add reference to CSLA.dll (CSLA light) to my project . I
+thought that may be I am using old CSLA.dll. I downloaded latest CSLA light
+solution and built it. Then refere the csla.dll from client bin in my new test
+silverlight project. I again got this error&nbsp;while trying to build. If i
+remove the reference, I was able to build it. <br>
+I am not sure what in CSLA.dll is breaking this. <o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>atyagi replied on Monday, November 17, 2008</h2><P>Thanks for quick reply. </P>
+<P>I have latest SL runtime and&nbsp;Silverlight tool kit. <BR>SL Version: 2.0.31005.0<BR>Microsoft SL Tools for VS 2008 SP1 (Version 9.0.30729.146)</P>
+<P><BR>I am definitely referencing CSLA light version. I downloaded both CSLA light(3.6.0 Beta 2a) and CSLA Windows (3.6.0 Beta 2a) again. Build CSLA Light solution and can see CSLA.dll in output&nbsp;'ClientBin' folder. </P>
+<P>I reference this dll in&nbsp;my silver light app and again got the same error.&nbsp;&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Monday, November 17, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I am not sure then.&nbsp; I can see the file on my machine in C:\Program
+Files\Microsoft SDKs\Silverlight\v2.0\Reference Assemblies<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>Maybe you need to install SL dev. run time, but it should been
+installed with tools. My guess (and it is a guess), that there is something
+wrong with SL run time on your machine.&nbsp; A quick test would be to create an
+SL application from scratch and see if you can run it.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> atyagi
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Monday, November 17, 2008 11:24 AM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: RE: RE: Trouble with Sample Projects -
+Rolodex<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Thanks for quick reply. <o:p></o:p></p>
+
+<p>I have latest SL runtime and&nbsp;Silverlight tool kit. <br>
+SL Version: 2.0.31005.0<br>
+Microsoft SL Tools for VS 2008 SP1 (Version 9.0.30729.146)<o:p></o:p></p>
+
+<p><br>
+I am definitely referencing CSLA light version. I downloaded both CSLA
+light(3.6.0 Beta 2a) and CSLA Windows (3.6.0 Beta 2a) again. Build CSLA Light
+solution and can see CSLA.dll in output&nbsp;'ClientBin' folder. <o:p></o:p></p>
+
+<p>I reference this dll in&nbsp;my silver light app and again got the same
+error.&nbsp;&nbsp;<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>atyagi replied on Monday, November 17, 2008</h2><P>I guess it is just my machine.&nbsp;&nbsp;I created same env. on a colleague's machine and were able to build and run sample CSLA Rolodex silverlight solution!</P>
+<P><BR>I can succesfully run new silverlight application on my machine. Moment&nbsp;I add CSLA.dll (Light) to this simple app, it starts throwing same compile error&nbsp;even though no file in silverlight is referencing this assembly. One interesting thing is that I added same light assembly to just web project (not silverlight)and it compiles fine. <BR></P>
+<P>There may be something wrong with SL runtime. I will try installing it again. </P>
+<P>Thanks to everybody for their help. <BR><BR></P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>kyle.l.watson@gmail.com replied on Monday, November 17, 2008</h2><P>I'm not sure if this helps but this is the link to the silverlight sdk that I downloaded.</P>
+<P><A href="http://www.microsoft.com/downloads/details.aspx?FamilyId=c22d6a7b-546f-4407-8ef6-d60c8ee221ed&amp;displaylang=en">http://www.microsoft.com/downloads/details.aspx?FamilyId=c22d6a7b-546f-4407-8ef6-d60c8ee221ed&amp;displaylang=en</A></P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>atyagi replied on Friday, November 21, 2008</h2><P>Thanks Kyle. </P>
+<P>Issue was with just my machine. As&nbsp;I mentioned in earlier post that I could build easily on my colleague's machine with exaclty same env. &nbsp;I reimaged my OS and issue just went away. </P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>kyle.l.watson@gmail.com replied on Monday, November 17, 2008</h2><P>You basically need to do TWO things to get these projects to work. </P>
+<P>1) Correctly reference the CSLA.dlls. Basically, it is some what confusing because different projects require you to reference either the csla light dll or the csla dll and you need to read the notes to figure out which goes where.</P>
+<P>The path of the Csla dll should look something like this: </P>
+<P>\cslacs\Csla\bin\Debug\Csla.dll</P>
+<P>and the csla light dll path should look like this: </P>
+<P>cslalightcs\Csla\ClientBin\Csla.dll</P>
+<P>You may need to open and build the csla and csla light solutions. </P>
+<P>2) You need to change the location of the referenced sql database(s) in all your project files. For example, the Rolodex project uses a database file called <FONT color=#0000ff size=2><FONT color=#0000ff size=2>Rolodex.mdf. <FONT color=#000000 size=3>Search through the entire solution for Rolodex and make sure it correctly corresponds to where you downloaded or placed the project files.</FONT></FONT></FONT></P>
+<P><FONT color=#0000ff size=2><FONT color=#0000ff size=2><FONT color=#000000 size=3>I believe after these two things everything worked fine for me, I don't think i'm forgetting anything...</FONT></P></FONT></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>davidinnz replied on Friday, November 21, 2008</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>kyle.l.watson@gmail.com:</strong></div><div><p>You basically need to do TWO things to get these projects to work. </p>
+<p>1) Correctly reference the CSLA.dlls. Basically, it is some what confusing because different projects require you to reference either the csla light dll or the csla dll and you need to read the notes to figure out which goes where.</p>
+<p>The path of the Csla dll should look something like this: </p>
+<p>\cslacs\Csla\bin\Debug\Csla.dll</p>
+<p>and the csla light dll path should look like this: </p>
+<p>cslalightcs\Csla\ClientBin\Csla.dll</p>
+<p>You may need to open and build the csla and csla light solutions. </p>
+<p>2) You need to change the location of the referenced sql database(s) in all your project files. For example, the Rolodex project uses a database file called <font color="#0000ff" size="2"><font color="#0000ff" size="2">Rolodex.mdf. <font color="#000000" size="3">Search through the entire solution for Rolodex and make sure it correctly corresponds to where you downloaded or placed the project files.</font></font></font></p>
+<p><font color="#0000ff" size="2"><font color="#0000ff" size="2"><font color="#000000" size="3">I believe after these two things everything worked fine for me, I don't think i'm forgetting anything...</font></font></font></p></div></BLOCKQUOTE><br>This one is the business. Thanks, Kyle.<br><br>I'd only add that you also need VS2008, .NET3.5 SP1, Silverlight2 and SQL 2005 Express.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Mick_G replied on Tuesday, September 29, 2009</h2><P>I wanted to add to this discussion that I had much the same problem happening to me on my laptop. Somewhere in the course of installing a tool, Silverlight 3 or something else I started getting errors and I noticed the refrence to System.Web.Silverlight was not found. After what seemed like weeks I finally found a refrence somewhere to&nbsp;the following control library from silverlight 2 tools:</P>
+<P><A href="http://code.msdn.microsoft.com/aspnetprojects">http://code.msdn.microsoft.com/aspnetprojects</A></P>
+<P>After unziping the file, it has the above dll adding it by browsing to it and adding it solved all my problems.</P>
+<P>Mick</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

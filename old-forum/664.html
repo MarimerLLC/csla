@@ -1,0 +1,64 @@
+<html><header><title>(Probably) an Elementary question</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>(Probably) an Elementary question</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/664.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jav posted on Tuesday, July 18, 2006</h2><P>Class A<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Inherits Csla.BusinessBase<BR><FONT color=#008000>' Contains the standard code&nbsp;- with Protected Constructor</FONT></P>
+<P>End Class</P>
+<P>Class B<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Inherits A<BR><FONT color=#008000>' Declares additional Instance Variables</FONT></P>
+<P>Private Sub New()<BR>End Sub</P>
+<P>Public Shared NewB(..........) As&nbsp;B&nbsp;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT color=#008000>'&nbsp;The following does not work - generates runtime error</FONT>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Return CType(A.NewA(...........), B)<BR>End Sub</P>
+<P>My class A is a&nbsp;Root object with a lot of children.&nbsp; I thought I could subclass it to offer a simpler "front" to the UI&nbsp;into the object hierarchy.&nbsp; What would be a legal way to do it?<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, July 18, 2006</h2><P>You somehow need to get the type (B) into the data portal. CriteriaBase is designed for scenarios like this.</P>
+<P>Have A declare the criteria, but inherit from CriteriaBase. Then the (protected?) factory of A needs to accept a parameter with the type of B. So A's factory might be:</P>
+<P>Protected Shared Function GetA(objType As Type) As A<BR>&nbsp; Return DataPortal.Fetch(New Criteria(objType))<BR>End Function</P>
+<P>The point is, that the data portal needs to know that it should create an instance of B - that can happen either because the criteria object is nested in B, or through the use of CriteriaBase (which requires that you specify the object type when creating the criteria object).</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jav replied on Tuesday, July 18, 2006</h2><P>Thanks Rocky.&nbsp; <BR>Working late?&nbsp; I thought surely everyone is in bed by this time.&nbsp; I will try your suggestions.</P>
+<P>Jav</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>xal replied on Wednesday, July 19, 2006</h2>Jav,<br>I don't thing this is a dataportal problem.<br><br>You say B inherits from A. You're trying to cast an instance of A to B but that is not possible, because A doesn't know how to be B. You can cast an instance of B to A, but not the other way around.<br><br>Try this and see where it fails:<br><br>Public Shared NewB(..........) As&nbsp;B&nbsp;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#008000">'&nbsp;The following does not work - generates runtime error</font>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;  &nbsp;&nbsp;  Dim instance as A = A.NewA(...........)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Return CType(instance, B)<br>End Sub<br><br><br>You can cast an object to the type of a superclass, but you can't cast an object to the type of a derived class.<br><br>Andrés<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jav replied on Wednesday, July 19, 2006</h2><P>Andres,</P>
+<P>Thanks.&nbsp; I am discovering that, and also discovering many other issues.&nbsp; The superclass's DataPortal methods contain code, much of which is tied to its own&nbsp;Type, which ends up being a problem.</P>
+<P>I think the solution is&nbsp;to provide B its own DataPortal methods. I can still make the Properties and Methods of A available, as well as provide access to A's Children, to B, but the process of Object creation and acquisition, and the Factory methods,&nbsp;will have to be specific to B.&nbsp; What do you think?</P>
+<P>Jav</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jav replied on Wednesday, July 19, 2006</h2><P>The preliminary tests show that I can create my subclass by doing the following:</P>
+<P>1. Provide the Factory methods that <STRONG>create</STRONG> or <STRONG>fetch,</STRONG> and the <STRONG>DataPortal_Create</STRONG> and <STRONG>DataPortal_Fetch</STRONG>.&nbsp; Criteria class also if needed.<BR>2. Save method of the superclass should work fine. Also, <STRONG>Insert</STRONG> and <STRONG>Update</STRONG> do not need to be duplicated (I think)<BR>3. The PK instance variable of superclass will need to be made Protected so it can be set in the subclass's Create<BR>4. Make the superclass Constructor Protected.</P>
+<P>Jav<BR></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, July 19, 2006</h2><P>You may want to read this article about inheritance options</P>
+<P><A href="http://www.lhotka.net/Article.aspx?id=e130b265-15cb-453d-9719-d5a944385fd3">http://www.lhotka.net/Article.aspx?id=e130b265-15cb-453d-9719-d5a944385fd3</A></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jav replied on Wednesday, July 19, 2006</h2><P>Rocky,</P>
+<P>I started down this path reading all the discussion about the data and the behavior, and trying to figure out if there is some&nbsp;neat way to rearrange my classes.&nbsp; </P>
+<P>Like&nbsp;most other code generators,&nbsp;I am perfecly happy to&nbsp;have a single class totally in-charge&nbsp;of a&nbsp;given DataTable -&nbsp;reading, writing, and validating&nbsp;the data.&nbsp;Why not? &nbsp;But&nbsp;I thought&nbsp;that if I could interpose another "class" between the Root of a hierarchy on the one hand and the UI on the other - a class that is more behavior-oriented and not so much data-oriented - then I could use the same hierarchy in different scenerios by simply interposing a different class.</P>
+<P>I have not tested it yet, but I am thinking if it might not be possible for the subclass to have the Factory methods as usual, but to call the base class to populate its data from within the DataPortal methods.&nbsp; At that point the SubClass will already be instantiated and the only question will be of its access to some method of the base class.&nbsp; This is probably not too different from a Collection calling its Child object to load itself.</P>
+<P>Jav</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>pelinville replied on Wednesday, July 19, 2006</h2><DIV>This is what I do and is basicaly what Dollard suggests in her book... I think. Maybe I got this from Rocky's site?&nbsp;</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>&nbsp;Maybe it will help.</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>'---The Following Is code Generated and is for 1.x CSLA--</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>Public MustInherit BaseClassA<BR>&nbsp;&nbsp;&nbsp; Inherits BusinessBase<BR>&nbsp;&nbsp; Protected Sub New()<BR>&nbsp;&nbsp; End Sub</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>&nbsp;&nbsp; Public Shared Function GetClass() as ClassA<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Dim Obj as ClassA<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Obj = DirectCast(DataPortal.Fetch(New Criterea()), ClassA)</DIV>
+<DIV>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Obj.Validate<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Obj.MarkOld<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return Obj<BR>&nbsp;&nbsp; End Function</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>&nbsp;&nbsp;&nbsp;Public Shared Function NewClassA() as ClassA</DIV>
+<DIV>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Dim Obj As New ClassA</DIV>
+<DIV>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Obj.MarkNew</DIV>
+<DIV>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return Obj</DIV>
+<DIV>&nbsp;&nbsp;&nbsp;End Function</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>&nbsp;&nbsp;&nbsp;'This one is so the&nbsp;a&nbsp;collection or Root&nbsp;can create them </DIV>
+<DIV>&nbsp;&nbsp;&nbsp;'I have another one that also takes a dataRow as an argument </DIV>
+<DIV>&nbsp;&nbsp;&nbsp;'so that I can work either.</DIV>
+<DIV>&nbsp;&nbsp;&nbsp;Friend Shared Function SetClassA(dr as IDataReader) as ClassA</DIV>
+<DIV>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Dim Obj As New ClassA</DIV>
+<DIV>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Obj.SetByDataReader(dr)</DIV>
+<DIV>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Obj.MarkOld</DIV>
+<DIV>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Obj.MarkAsChild</DIV>
+<DIV>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Return Obj</DIV>
+<DIV>&nbsp;&nbsp;&nbsp;End Function&nbsp;</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>&nbsp;&nbsp; Public Class Criteria<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Inherits CriteriaBase<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Public Sub New()<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Sub<BR>&nbsp;&nbsp; End Class</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>End Class</DIV>
+<DIV>&nbsp;</DIV>
+<DIV><BR>'-------This is Done by Hand<BR>Public Class ClassA<BR>&nbsp;&nbsp; Inherits BaseClassA<BR>&nbsp;&nbsp; <BR>&nbsp;&nbsp; Protected Friend Sub New()</DIV>
+<DIV>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'This has to be Friend so BaseClassA can create it.</DIV>
+<DIV>&nbsp;&nbsp; End Sub</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>&nbsp;&nbsp; 'If I need more Factory Methods<BR>&nbsp;&nbsp; Public Shared Function AnotherGetClassA(inpute as SomeType) as ClassA<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Dim Obj as ClassA<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Obj = DirectCast(DataPortal.Fetch(New Criterea(someType)), ClassA)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Obj.MarkOld</DIV>
+<DIV>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Obj.Validate<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return Obj<BR>&nbsp;&nbsp; End Function</DIV>
+<DIV><BR>End Class</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>The key is that in the generated base class you assume that there will be a subclass and have the factory methods return the Sub type.&nbsp; BaseClassA cannot be created.</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>A draw back is that the Constructor in ClassA is Friend so the Business object coder has to be carefule and not ever call it in another class.&nbsp; But outside the component it is not accessable so it is a minor thing.</DIV></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

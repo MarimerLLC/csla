@@ -1,0 +1,48 @@
+<html><header><title>CSLA &amp; Authorization Manager (AzMan)</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA &amp; Authorization Manager (AzMan)</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/1391.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>AdrenalineWerks posted on Wednesday, October 04, 2006</h2>We are developing a new application and have chosen to use Microsoft's Authorization Manager (AzMan) to manage the mapping of operation to user roles. Our main requirement driving this is: Administrators of the application can create new roles based upon user needs; a role is a collection of tasks and operations defined by the application.<br><br>In order to easily manage AzMan, we have created a static Operations class which works in conjunction with an improved AzManProvider. Instead of passing a role name, we pass an operation. For example, Operations.IsUserAuthorized(1001). The static class calls the imporved AzManProvider, which in turn calls the AzMan API. Eventually a boolean result is returned indicating whether or not the user is authorized to perform this function.<br><br>In order for this to work with CSLA, we would like to create our own <span>implementation </span>of the IAuthorizeReadWrite functions (CanReadProperty and CanWriteProperty) which call our Operations class. This interface is implemented on the CSLA Business Class.<br><br>My initial though was create a new class derived from BusinessBase, however, this would also require us to re-implement the generic classes () as well so they derive from our custom BusinessBase. Not a perfect solution.<br><br>Another solution would be to override the IAuthorizeReadWrite functions in each of our code generated classes, but I don't like this approach since we'll end up with a lot of code duplication.<br><br>My final idea involved changing CSLA, something we're trying <i>not </i>to do, and make the IAuthorizeReadWrite functions into more of a provider pattern. This would allow other users to also change out the security model as needed.<br><br>What are everyone's thoughts? Is there an easier way that I'm missing? Which solution would you <span>implement</span>?<br><br>Thanks,<br>Roger Wilson<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, October 04, 2006</h2><P>I recommend (in general, not just for your case) that people create subclasses of all 7 CSLA base classes. These subclasses are <EM>your</EM> base classes, from which your business objects derive.</P>
+<P>This technique (even if these new base classes are empty), allows you to customize and extend CSLA behavior.</P>
+<P>In your case, I specifically made CanReadProperty() and CanWriteProperty() virtual/Overridable so you could do what you want to do. And the way you tap into this extensibility, is by creating your own base classes that subclass my base classes.</P>
+<P>There've been a couple other threads about this sort of thing - including a relatively recent one (1-2 weeks old) discussing the specific syntax needed to subclass the generic base classes provided by CSLA.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>AdrenalineWerks replied on Wednesday, October 04, 2006</h2>Okay, just to make sure I understand. Instead of subclassing Core.BusinessBase, I should subclass the 7 generic classes and add my custom implementations to the 7 subclasses.<br><br>Specifically, the 7 classes being: BusinessBase&lt;T&gt;, BusinessListBase&lt;T&gt;,
+CommandBase&lt;T&gt;,&nbsp; EditableRootListBase&lt;T&gt;,
+NameValueListBase&lt;T&gt;, ReadOnlyBase&lt;T&gt;, and
+ReadOnlyListBase&lt;T&gt;<br><br>Thanks for the prompt reply.<br><br>Roger Wilson<br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, October 04, 2006</h2><P>Yes, that is exactly correct. For instance:</P>
+<P>[Serializable]<BR>public abstract class MyBusinessBase&lt;T&gt; : BusinessBase&lt;T&gt; where T : MyBusinessBase&lt;T&gt;<BR>{<BR>}</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Thursday, October 05, 2006</h2><P>Rocky,</P>
+<P>Are you still considering implementing a Delegate for IsReadAllowed so that it would call a Function IsInRole(user As IPrincipal, role As String)?</P>
+<P>We had discussed this about 6 weeks ago and you mentioned it was too late for version 2.1. I just want to know if you have followed up on the idea.</P>
+<P>The benefit of this would be to allow people to use 99% of the CSLA framework for Authorization and still extend it. The alternative is a complete re-write of the Authorization (or use of AzMan or ...).</P>
+<P>e.g. IsInRole returns True/False for the list of Roles. But I also have a list of Permissions and I want to be able to call user.HasPermission("somePerm"). If I Override CanReadProperty I can only call IsInRole. I can't call HasPermission without re-writing the CSLA Authorization code. By using a Delegate function deep in the framework, I should be able to call HasPermission without having to re-build what Rocky already built.</P>
+<P>Joe</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, October 05, 2006</h2>
+
+
+
+
+<DIV align=left><SPAN class=312515517-05102006><FONT face=Arial color=#0000ff size=2>Yes Joe, I am still considering this, and will likely put 
+it into 2.1.1 or 2.1.2 or something - relatively soon, but after I've done any 
+required stabilization of 2.1.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=312515517-05102006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=312515517-05102006><FONT face=Arial color=#0000ff size=2>Rocky</FONT></SPAN></DIV><BR>
+<BLOCKQUOTE>
+  <DIV class=OutlookMessageHeader align=left>
+  <HR>
+  <FONT face=Tahoma size=2><B>From:</B> JoeFallon1 [mailto:cslanet@lhotka.net] 
+  <BR><B>Sent:</B> Thursday, October 05, 2006 7:58 AM<BR><B>To:</B> 
+  rocky@lhotka.net<BR><B>Subject:</B> Re: [CSLA .NET] CSLA &amp; Authorization 
+  Manager (AzMan)<BR></FONT><BR></DIV>
+  <DIV></DIV>
+  <P>Rocky,</P>
+  <P>Are you still considering implementing a Delegate for IsReadAllowed so that 
+  it would call a Function IsInRole(user As IPrincipal, role As String)?</P>
+  <P>We had discussed this about 6 weeks ago and you mentioned it was too late 
+  for version 2.1. I just want to know if you have followed up on the idea.</P>
+  <P>The benefit of this would be to allow people to use 99% of the CSLA 
+  framework for Authorization and still extend it. The alternative is a complete 
+  re-write of the Authorization (or use of AzMan or ...).</P>
+  <P>e.g. IsInRole returns True/False for the list of Roles. But I also have a 
+  list of Permissions and I want to be able to call 
+  user.HasPermission("somePerm"). If I Override CanReadProperty I can only call 
+  IsInRole. I can't call HasPermission without re-writing the CSLA Authorization 
+  code. By using a Delegate function deep in the framework, I should be able to 
+  call HasPermission without having to re-build what Rocky already built.</P>
+  <P>Joe</P>
+  <P>&nbsp;</P><BR><BR><BR></BLOCKQUOTE></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

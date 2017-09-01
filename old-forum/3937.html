@@ -1,0 +1,83 @@
+<html><header><title>Authroization for specific user.</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Authroization for specific user.</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3937.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>hanami279 posted on Sunday, November 25, 2007</h2><P>Hi,</P>
+<P>I have a question about authorization. CSLA authorization mechanism is object level. I have a problem with my current project.</P>
+<P>My application maintains a list of customer. Each customer can have CRUD permission to CRUD an order and then submit. I implemented CSLA authorization based on role. Everything work fine but there is still a problem: each customer can see all orders. I need a solution to force a customer can see only order they created. Ex: a customer A can see orders that he was created, and can't see order customer B was created.</P>
+<P>Thanks.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, November 26, 2007</h2><P>This is typically something you'd resolve at the database level.</P>
+<P>The DataPortal_XYZ methods have access to the current principal, just like the rest of your object's code. You can use that principal/identity information to provide required parameters to your database queries so those queries can filter out data that shouldn't be available to the current user.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>stanc replied on Tuesday, December 04, 2007</h2><P>We have the same need. We haven't fully decided yet, but we are leaning to using Criteria to pass the needed customer information to DP calls. Just like Rocky suggested, we will be passing the information directly to the SP for the fetch (and the others as well).<o:p></o:p></P>
+<P>The authorization stuff is strictly to control access to functions and BO. This would be more of a filter on the data.<o:p></o:p></P>
+<P>I would be curious to hear from others who may have already implemented something along these lines or another solution that can handle this.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Wednesday, December 05, 2007</h2><P>I use Rocky's solution.</P>
+<P>Provide the right set of criteria to the SP or query and let the DB filter it out.</P>
+<P>If you need the userkey then it should be available to you as part of the Principal and you don't need it in your Criteria class. Other info may need to be passed in though.</P>
+<P>Joe</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, December 05, 2007</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>The problem with putting the info in Criteria is that it gets
+passed to the app server twice on every call. The user&#8217;s identity is already
+in the current principal, so duplicating that data in the criteria seems like a
+waste.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>If you have other peripheral data about the user (beyond their
+name and roles) then I recommend adding that data into your custom identity
+object so it is part of the current principal, and is automatically available
+on both client and server.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> JoeFallon1
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Wednesday, December 05, 2007 9:03 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] Authroization for specific user.<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>I use Rocky's solution.<o:p></o:p></p>
+
+<p>Provide the right set of criteria to the SP or query and let the DB filter
+it out.<o:p></o:p></p>
+
+<p>If you need the userkey then it should be available to you as part of the
+Principal and you don't need it in your Criteria class. Other info may need to
+be passed in though.<o:p></o:p></p>
+
+<p>Joe<o:p></o:p></p>
+
+<p>&nbsp;<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>stanc replied on Wednesday, December 05, 2007</h2><P>Thanks for the input. We will add the needed&nbsp;additional info to our identity object.</P>
+<P>Stan</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

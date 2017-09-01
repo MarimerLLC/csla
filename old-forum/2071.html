@@ -1,0 +1,22 @@
+<html><header><title>BusinessRules for collection Classes</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>BusinessRules for collection Classes</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/2071.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jimbo posted on Wednesday, January 03, 2007</h2>This is probably a question for Rocky, but in the process of
+implementing both root and child collection classes (ListBase) I have
+come across situations where we would seem to like to see the
+implementation of Type/Instance Business rules - in much the same
+manner as you would do in a root BusinessBase sub class.<br>
+<br>
+For example at the simplest level, a collection could have a rule that
+it cant be an empty collection. The only way to enforce this for a
+child collection is via the IsValid property of the parent. - No chance
+if its a root collection.<br>
+<br>
+A root (or child) collection might need to have a few key properties
+around the collection itself. Say when it represents a batch of items
+to be posted with a common batch No or Date property.&nbsp; I agree
+that you could have a parent business class(with BusinessRules)&nbsp;
+to host the collection - but why? -&nbsp; when its just one or two
+common properties that require validation.<br>
+<br>
+<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Wednesday, January 03, 2007</h2><P>I tend to agree that it would be nice if Editable Child Collections could also have Business Rules.</P>
+<P>I always add those kinds of rules to the Parent BO that contains the collection (because there is no where else to put them.)</P>
+<P>Joe</P>
+<P>&nbsp;</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

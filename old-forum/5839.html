@@ -1,0 +1,138 @@
+<html><header><title>WPFToolkit and how to set the columns at design time</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>WPFToolkit and how to set the columns at design time</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5839.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>GeorgeG posted on Thursday, November 20, 2008</h2><P>I have an&nbsp;Orders object trying to setup&nbsp;the columns in the datagrid. I can see&nbsp; all the columns at run time. However, at design time I am getting "You need to set ItemsSource.." while trying to go to add/edit columns in the datagrid designer. This is what I am using</P>
+<P><FONT color=#0000ff size=2><FONT color=#0000ff size=2>&lt;</FONT><FONT color=#a31515 size=2>csla</FONT><FONT color=#0000ff size=2>:</FONT><FONT color=#a31515 size=2>CslaDataProvider</FONT><FONT color=#ff0000 size=2> x</FONT><FONT color=#0000ff size=2>:</FONT><FONT color=#ff0000 size=2>Key</FONT><FONT color=#0000ff size=2>="Orders"</P></FONT><FONT size=2>
+<P></FONT><FONT color=#ff0000 size=2>ObjectType</FONT><FONT color=#0000ff size=2>="{</FONT><FONT color=#a31515 size=2>x</FONT><FONT color=#0000ff size=2>:</FONT><FONT color=#a31515 size=2>Type</FONT><FONT color=#ff0000 size=2> business</FONT><FONT color=#0000ff size=2>:</FONT><FONT color=#ff0000 size=2>Orders</FONT><FONT color=#0000ff size=2>}"</P></FONT><FONT size=2>
+<P></FONT><FONT color=#ff0000 size=2>FactoryMethod</FONT><FONT color=#0000ff size=2>="GetOrders"</P></FONT><FONT size=2>
+<P></FONT><FONT color=#ff0000 size=2>IsAsynchronous</FONT><FONT color=#0000ff size=2>="False"</P></FONT><FONT size=2>
+<P></FONT><FONT color=#ff0000 size=2>IsInitialLoadEnabled</FONT><FONT color=#0000ff size=2>="False"</P></FONT><FONT size=2>
+<P></FONT><FONT color=#ff0000 size=2>ManageObjectLifetime</FONT><FONT color=#0000ff size=2>="True"/&gt;</P></FONT>
+<P>&nbsp;</P>
+<P>&lt;</FONT><FONT color=#a31515 size=2>grdOrders</FONT><FONT color=#0000ff size=2>:</FONT><FONT color=#a31515 size=2>DataGrid</FONT><FONT color=#ff0000 size=2> Grid.Row</FONT><FONT color=#0000ff size=2>="1"</FONT><FONT color=#ff0000 size=2> Margin</FONT><FONT color=#0000ff size=2>="0,34,6,7"</FONT><FONT size=2> </P>
+<P></FONT><FONT color=#ff0000 size=2>Name</FONT><FONT color=#0000ff size=2>="dataGridOrders"</FONT><FONT size=2> </P>
+<P></FONT><FONT color=#ff0000 size=2>xmlns</FONT><FONT color=#0000ff size=2>:</FONT><FONT color=#ff0000 size=2>grdOrders</FONT><FONT color=#0000ff size=2>="http://schemas.microsoft.com/wpf/2008/toolkit"</FONT><FONT size=2> </P>
+<P></FONT><FONT color=#ff0000 size=2>AutoGenerateColumns</FONT><FONT color=#0000ff size=2>="False"</P></FONT><FONT size=2>
+<P></FONT><FONT color=#ff0000 size=2>ItemsSource</FONT><FONT color=#0000ff size=2>="{</FONT><FONT color=#a31515 size=2>Binding</FONT><FONT color=#ff0000 size=2> Source</FONT><FONT color=#0000ff size=2>={</FONT><FONT color=#a31515 size=2>StaticResource</FONT><FONT color=#ff0000 size=2> Orders</FONT><FONT color=#0000ff size=2>}}"</FONT><FONT size=2> </P>
+<P></FONT><FONT color=#ff0000 size=2>EnableColumnVirtualization</FONT><FONT color=#0000ff size=2>="True"</P></FONT><FONT size=2>
+<P></FONT><FONT color=#ff0000 size=2>AlternatingRowBackground</FONT><FONT color=#0000ff size=2>="LightGray" /&gt;</FONT></P>
+<P><FONT color=#0000ff size=2><FONT color=#000000>What am I missing to&nbsp;select the columns that I need from the DataGrid&nbsp; add/edit columns designer?</FONT></FONT></P>
+<P><FONT color=#0000ff size=2><FONT color=#000000>Thanks</FONT></FONT></P>
+<P><FONT color=#0000ff size=2><FONT color=#000000></FONT>&nbsp;</P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Thursday, November 20, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Assuming this grid is similar to SL grid, you need to add
+columns to the grid.&nbsp; I am not certain the designer supports it, so you
+can do so manually in XAML.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>&lt;grdOrders</span><span>:</span><span>DataGrid.Columns&gt;&lt;&#8230;&nbsp; <o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> GeorgeG
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Thursday, November 20, 2008 3:47 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> [CSLA .NET] WPFToolkit and how to set the columns at design
+time<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>I have an&nbsp;Orders object trying to setup&nbsp;the columns in the
+datagrid. I can see&nbsp; all the columns at run time. However, at design time
+I am getting &quot;You need to set ItemsSource..&quot; while trying to go to
+add/edit columns in the datagrid designer. This is what I am using<o:p></o:p></p>
+
+<p><span>&lt;</span><span>csla</span><span>:</span><span>CslaDataProvider</span><span> x</span><span>:</span><span>Key</span><span>=&quot;Orders&quot;<o:p></o:p></span></p>
+
+<p><span>ObjectType</span><span>=&quot;{</span><span>x</span><span>:</span><span>Type</span><span> business</span><span>:</span><span>Orders</span><span>}&quot;<o:p></o:p></span></p>
+
+<p><span>FactoryMethod</span><span>=&quot;GetOrders&quot;<o:p></o:p></span></p>
+
+<p><span>IsAsynchronous</span><span>=&quot;False&quot;<o:p></o:p></span></p>
+
+<p><span>IsInitialLoadEnabled</span><span>=&quot;False&quot;<o:p></o:p></span></p>
+
+<p><span>ManageObjectLifetime</span><span>=&quot;True&quot;/&gt;<o:p></o:p></span></p>
+
+<p><span>&nbsp;<o:p></o:p></span></p>
+
+<p><span>&lt;</span><span>grdOrders</span><span>:</span><span>DataGrid</span><span> Grid.Row</span><span>=&quot;1&quot;</span><span> Margin</span><span>=&quot;0,34,6,7&quot;</span><span> <o:p></o:p></span></p>
+
+<p><span>Name</span><span>=&quot;dataGridOrders&quot;</span><span> <o:p></o:p></span></p>
+
+<p><span>xmlns</span><span>:</span><span>grdOrders</span><span>=&quot;http://schemas.microsoft.com/wpf/2008/toolkit&quot;</span><span> <o:p></o:p></span></p>
+
+<p><span>AutoGenerateColumns</span><span>=&quot;False&quot;<o:p></o:p></span></p>
+
+<p><span>ItemsSource</span><span>=&quot;{</span><span>Binding</span><span> Source</span><span>={</span><span>StaticResource</span><span>
+Orders</span><span>}}&quot;</span><span> <o:p></o:p></span></p>
+
+<p><span>EnableColumnVirtualization</span><span>=&quot;True&quot;<o:p></o:p></span></p>
+
+<p><span>AlternatingRowBackground</span><span>=&quot;LightGray&quot; /&gt;</span><o:p></o:p></p>
+
+<p><span>What am I missing to&nbsp;select
+the columns that I need from the DataGrid&nbsp; add/edit columns designer?</span><o:p></o:p></p>
+
+<p><span>Thanks</span><o:p></o:p></p>
+
+<p><span>&nbsp;<o:p></o:p></span></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>GeorgeG replied on Thursday, November 20, 2008</h2><P>Setting the column manually does work. This is sample code for just one column. </P><FONT color=#0000ff size=2>
+<P>&lt;</FONT><FONT color=#a31515 size=2>dataGrid</FONT><FONT color=#0000ff size=2>:</FONT><FONT color=#a31515 size=2>DataGrid</FONT><FONT color=#ff0000 size=2> Grid.Row</FONT><FONT color=#0000ff size=2>="1"</FONT><FONT color=#ff0000 size=2> Margin</FONT><FONT color=#0000ff size=2>="0,34,6,7"</FONT><FONT size=2> </P>
+<P></FONT><FONT color=#ff0000 size=2>Name</FONT><FONT color=#0000ff size=2>="dataGridOrders"</FONT><FONT size=2> </P>
+<P></FONT><FONT color=#ff0000 size=2>AutoGenerateColumns</FONT><FONT color=#0000ff size=2>="False"</P></FONT><FONT size=2>
+<P></FONT><FONT color=#ff0000 size=2>ItemsSource</FONT><FONT color=#0000ff size=2>="{</FONT><FONT color=#a31515 size=2>Binding</FONT><FONT color=#ff0000 size=2> Source</FONT><FONT color=#0000ff size=2>={</FONT><FONT color=#a31515 size=2>StaticResource</FONT><FONT color=#ff0000 size=2> Orders</FONT><FONT color=#0000ff size=2>}}"</P></FONT><FONT color=#a31515 size=2>
+<P></FONT><FONT color=#a31515 size=2>dataGrid</FONT><FONT color=#0000ff size=2>:</FONT><FONT color=#a31515 size=2>DataGrid.Columns</FONT><FONT color=#0000ff size=2>&gt;</P></FONT><FONT color=#a31515 size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;</FONT><FONT color=#a31515 size=2>dataGrid</FONT><FONT color=#0000ff size=2>:</FONT><FONT color=#a31515 size=2>DataGridTextColumn</FONT><FONT color=#ff0000 size=2> Binding</FONT><FONT color=#0000ff size=2>="{</FONT><FONT color=#a31515 size=2>Binding</FONT><FONT color=#ff0000 size=2> Path</FONT><FONT color=#0000ff size=2>=Cust_code}"</FONT><FONT size=2> </P>
+<P></FONT><FONT color=#ff0000 size=2>Header</FONT><FONT color=#0000ff size=2>="CustCode"</P></FONT><FONT size=2>
+<P></FONT><FONT color=#ff0000 size=2>IsReadOnly</FONT><FONT color=#0000ff size=2>="True"/&gt;</P></FONT><FONT color=#a31515 size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;/</FONT><FONT color=#a31515 size=2>dataGrid</FONT><FONT color=#0000ff size=2>:</FONT><FONT color=#a31515 size=2>DataGrid.Columns</FONT><FONT color=#0000ff size=2>&gt;</P></FONT><FONT color=#a31515 size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;/</FONT><FONT color=#a31515 size=2>dataGrid</FONT><FONT color=#0000ff size=2>:</FONT><FONT color=#a31515 size=2>DataGrid</FONT><FONT color=#0000ff size=2> &gt;</FONT></P>
+<P><FONT color=#0000ff size=2>Thanks</FONT></P>
+<P><FONT color=#0000ff size=2>&nbsp;</P></FONT></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

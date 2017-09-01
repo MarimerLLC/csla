@@ -1,0 +1,11 @@
+<html><header><title>How to do make a function of BusinessBase run at server?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>How to do make a function of BusinessBase run at server?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/640.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>phucphlq posted on Monday, July 17, 2006</h2><FONT color=#0000ff size=2>
+<P>I have a class</P>
+<P>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>class</FONT><FONT size=2> </FONT><FONT color=#008080 size=2>BasicRoot</FONT><FONT size=2>: Csla.</FONT><FONT color=#008080 size=2>BusinessBase</FONT><FONT size=2>&lt;</FONT><FONT color=#008080 size=2>BasicRoot</FONT><FONT size=2>&gt;</FONT></P>
+<P><FONT size=2>{</FONT></P>
+<P>&nbsp;&nbsp;&nbsp;<FONT size=2>..............</FONT></P>
+<P><FONT size=2>&nbsp;&nbsp; public&nbsp;void Call()</FONT></P>
+<P><FONT size=2>&nbsp; {</FONT></P>
+<P><FONT size=2>&nbsp; }</FONT></P>
+<P><FONT size=2>}</FONT></P>
+<P>&nbsp;</P>
+<P>At client, I call BasicRoot.Call(), I want this function execute at server. How to do?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>kids_pro replied on Monday, July 17, 2006</h2>Read Chapter 12 - Implement Remote Data Portal.<br>In short it just a configuration part which decide your object creation local/server.<br><br>CSLA Cool<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, July 17, 2006</h2>If your goal is to execute a specific method on the server, you'll probably want to have your client-side business object method execute a CommandBase-derived object. This is illustrated in Chapter 8 (toward the end) where I walk through the Exists() command implementation.</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

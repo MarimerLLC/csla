@@ -1,0 +1,49 @@
+<html><header><title>RegisterProperty - no more forceInit trick</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>RegisterProperty - no more forceInit trick</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/7986.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 posted on Thursday, November 12, 2009</h2><P>Rocky, </P>
+<P>Could you please describe how you got rid of the forceInit trick and can now guarantee that all managed properties get registered across the inheritance hierarchy?</P>
+<P>I have this hierarchy:</P>
+<P>1. CSLA.BusinessBase<BR>2. MyBusinessBass<BR>3. SomeBOGen<BR>4. SomeBOBase<BR>5. SomeBO (final type)</P>
+<P>I put managed properties in my code gen level SomeBOGen. Then I put 1 more in the developer level SomeBOBase. There are none in the final type SomeBO.</P>
+<P>When my web page called the Shared method&nbsp;SomeBO.GetSomeBO which is in the SomeBOGen level, the Shared managed properties were the first things that got registered. Then the DataPortal.Fetch call was executed.</P>
+<P>But the Shared properties in the SomeBOBase level were not registered yet.</P>
+<P>When ctor.Invoke(); is called then I assume that all constructors in the hierarch are called from the bottom up (5-1 in the list above) even if the class does not have hand written constructor like 5 and 4 do not. They inherit the Protected Sub New from the Gen level. </P>
+<P>It is at this point that the Shared managed property in SomeBOBase is registered.</P>
+<P>So it looks to me like the construction of the BO is handling the "touching" in each class. But if this is so why was the forceInit trick needed in the first place? </P>
+<P>I know I am missing something here so can you please elaborate a bit?</P>
+<P>Thanks.</P>
+<P>Joe</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Friday, November 13, 2009</h2>I think this happens if you use the overload of RegisterProperty that takes a type as the first argument.&nbsp; Or in Silverlight the PropertyInfo's need to be public.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, November 13, 2009</h2><P>The thing is that .NET treats static and instance fields differently.</P>
+<P>It only initializes static fields on a type (not an object or subclass type, but <EM>each individual type</EM>) when a static member <EM>of that particular type</EM> is touched.</P>
+<P>Touching an instance member doesn't trigger static initialization - only touching a static member triggers static initialization.</P>
+<P>So what I did after it was clear that the forceInit thing was such a pain, was to write a method that runs through your inheritance hierarchy (once per appdomain per subclass type) and uses reflection to find and touch one static field per type.</P>
+<P>In .NET this generally works without issue, because I can use private reflection.</P>
+<P>In Silverlight there is no private reflection (for this anyway), so your static fields must be public for this to work.</P>
+<P>As I said in another thread recently, I've taken to making my PropertyInfo&lt;T&gt; fields public anyway, because I so often want access to them in my DAL and/or UI too.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Friday, November 13, 2009</h2><P>Rocky,</P>
+<P>I made them Public for the reasons you state.</P>
+<P>Where is this code: "write a method that runs through your inheritance hierarchy (once per appdomain per subclass type) and uses reflection to find and touch one static field per type."</P>
+<P>That is what I haven't been able to "find" or "see in action".</P>
+<P>Joe</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, November 13, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>It is FieldDataManager.ForceStaticFieldInit()</span><b><span><o:p></o:p></span></b></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

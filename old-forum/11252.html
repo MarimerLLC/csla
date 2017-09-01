@@ -1,0 +1,89 @@
+<html><header><title>The model of type 'SF.Library.PressRelease.press_release.PressReleaseEdit' could not be updated.</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>The model of type 'SF.Library.PressRelease.press_release.PressReleaseEdit' could not be updated.</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11252.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>xequence posted on Friday, March 23, 2012</h2><p>I am trying to update my model that has a child object. The child object value is set to null to remove the image, but I get the error stated in the subject line.</p>
+<p>I have a gridview of inputs, that I am using to select which image to bind to my child object.</p>
+<p>
+<p>@{</p>
+<p>&nbsp; &nbsp; var highlightData = SF.Library.PressRelease.digital_asset.DigitalAssetList.GetReadOnlyList();</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; WebGrid highlightImageGrid = new WebGrid(source: highlightData, rowsPerPage: 5, canPage: true, ajaxUpdateContainerId: &quot;HighlightImageGrid&quot;);</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; @highlightImageGrid.GetHtml(htmlAttributes: new { id = &quot;HighlightImageGrid&quot; },</p>
+<p>columns: highlightImageGrid.Columns(</p>
+<p>highlightImageGrid.Column(&quot;&quot;, &quot;&quot;, @&lt;text&gt;&lt;div style=&quot;display: inline-block; float: left;&quot;&gt;</p>
+<p>&nbsp; &nbsp; &lt;input type=&quot;radio&quot; &nbsp;name=&quot;radioValue&quot; value=&quot;@item.FK_Digital_Asset_Guid&quot; /&gt;</p>
+<p>&nbsp; &nbsp; &lt;img src=&quot;@Url.Content(&quot;~/Image/150/150/d/&quot;)@item.DigitalAssetId&quot; &nbsp;/&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;/div&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;/text&gt;)</p>
+<p>&nbsp; &nbsp; )</p>
+<p>&nbsp; &nbsp; )</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</p>
+</p>
+<p>&nbsp;</p>
+<p>The problem, is the model does not update and gives me this error.</p>
+<p>
+<p>[HttpPost]</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; [ValidateInput(false)]</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; public ActionResult Edit(FormCollection collection, PressReleaseEdit pe, int id, Guid? radioValue, Guid? highlightImage)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; var model = PressReleaseEdit.AdminGetPressReleaseById(id);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; if (radioValue.HasValue)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; model.PressReleaseDigitalAsset.DigitalAssetGuid = (Guid)radioValue;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; model.PressReleaseDigitalAsset.FK_PressRelease_ID = model.PressReleaseId;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; else</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; collection[&quot;PressReleaseDigitalAsset.DigitalAssetGuid&quot;] = radioValue.ToString();</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; model.PressReleaseDigitalAsset.DigitalAssetGuid = (Guid?)radioValue;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; UpdateModel(model, collection);</p>
+</p>
+<p>&nbsp;</p>
+<p><span>
+<h2><i>The model of type &#39;SF.Library.PressRelease.press_release.PressReleaseEdit&#39; could not be updated.</i></h2>
+</span><span></span><span style="font-family:Arial, Helvetica, Geneva, SunSans-Regular, sans-serif;"><b>Description:&nbsp;</b>An unhandled exception occurred during the execution of the current web request. Please review the stack trace for more information about the error and where it originated in the code.&nbsp;<br /><br /><b>Exception Details:&nbsp;</b>System.InvalidOperationException: The model of type &#39;SF.Library.PressRelease.press_release.PressReleaseEdit&#39; could not be updated.<br /><br /><b>Source Error:</b>&nbsp;<br /><br />
+<table bgcolor="#ffffcc" width="100%">
+<tbody>
+<tr>
+<td><code>
+<pre>Line 59: 
+Line 60: 
+<span style="color:red;">Line 61:             UpdateModel(model, collection);
+</span>Line 62:             LoadProperty(model, PressReleaseEdit.PressReleaseIdProperty, id);
+Line 63:  </pre>
+</code></td>
+</tr>
+</tbody>
+</table>
+</span></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>xequence replied on Friday, March 23, 2012</h2><p>Actually, the problem is if I select my input that is designed for null value, then the error comes. This input is not bound to my imagrGrid. Any suggestions?</p>
+<p>
+<p>&lt;div id=&quot;theImageDivGrid&quot; style=&quot;float: left; padding: 10px&quot;&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; @* testing *@</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;input type=&quot;radio&quot; &nbsp;name=&quot;radioValue&quot; value=&quot;null&quot; /&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; @* end testing *@</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; @{</p>
+<p>&nbsp; &nbsp; var data = SF.Library.PressRelease.digital_asset.DigitalAssetList.GetReadOnlyList();</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; WebGrid imageGrid = new WebGrid(source: data, rowsPerPage: 5, canPage: true, ajaxUpdateContainerId: &quot;theImageDivGrid&quot;);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;table&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; @*&lt;tr&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;td&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;input type=&quot;radio&quot; id=&quot;null&quot; name=&quot;radioValue&quot; value=&quot;0&quot; /&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;div&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; No Image&lt;/div&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;/td&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;/tr&gt;*@</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;tr&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;td&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; @imageGrid.GetHtml(htmlAttributes: new { id = &quot;imageGrid&quot; },</p>
+<p>&nbsp; &nbsp; columns: imageGrid.Columns(</p>
+<p>&nbsp; &nbsp; imageGrid.Column(&quot;&quot;, &quot;&quot;, @&lt;text&gt;&lt;div style=&quot;display: inline-block; float: left;&quot;&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &lt;input type=&quot;radio&quot; id=&quot;@item.DigitalAssetId&quot; name=&quot;radioValue&quot; value=&quot;@item.FK_Digital_Asset_Guid&quot; /&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &lt;img src=&quot;@Url.Content(&quot;~/Image/150/150/d/&quot;)@item.DigitalAssetId&quot; &nbsp;/&gt;</p>
+<p>&nbsp; &nbsp; &lt;/div&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;/text&gt;)</p>
+<p>&nbsp; &nbsp; )</p>
+<p>&nbsp; &nbsp; )</p>
+</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

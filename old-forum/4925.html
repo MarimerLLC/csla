@@ -1,0 +1,20 @@
+<html><header><title>Serialization bug workaround in Global.asax</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Serialization bug workaround in Global.asax</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4925.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Michael Hildner posted on Monday, June 02, 2008</h2><P>Greetings,</P>
+<P>Not sure why, but I just came across a "Could not load file or assembly" exception in my web app. Been a while since I worked on this project, but never had this issue before. I copied the code from EnterpriseServicesPortal.vb into my Global.asax, but then I get a StackOverflowException.</P>
+<P>Stepping&nbsp; throught the code the last line of ResolveEventHandler</P><FONT color=#0000ff size=2>
+<P>Return</FONT><FONT size=2> [Assembly].Load(args.Name)</P></FONT>
+<P>Ends up going back into ResolveEventHandler over and over. Wondering if I'm doing something wrong. Any info is appreciated.</P>
+<P>Thanks,</P>
+<P>Mike</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Michael Hildner replied on Monday, June 02, 2008</h2><P>What a mess...</P>
+<P>I thought I'd try removing the handler, then doing the Assembly.Load as above, then adding the handler again (of course I just try to load the assembly, and return it after the handler is added).</P>
+<P>Got rid of the StackOverflowException, but getting some really odd behaviour now. This error occurs when I add/edit a row in a (Infragistics) grid. So I run the app, try to add/edit a row and I still get the FileNotFoundException with the message of "Could not load file or assembly...".</P>
+<P>Hit the back button in the browser, do the same thing again, then it works just fine. Next time, the error returns. So it looks like it happening exactly every other time, failing the first, third etc. times.</P>
+<P>Urgh. My app doesn't work and right now I'm at a loss on how to fix. Worst of all, it worked fine a few months ago.</P>
+<P>Hope everyone is having a better day than I am!</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Michael Hildner replied on Monday, June 02, 2008</h2><P>Well, I'm not sure about the StackOverflow exception, or why I'd get the FileNotFoundException every other time, but I found the root of the issue, so I don't need to worry about those for now.</P>
+<P>Originally my business objects were in a seperate project, so that created a .dll. I set my CslaBindingSource(s) to that name. Then it was decided to move the bo's under the App_Code folder. So the TypeName of the data source didn't match anymore. Just needed to reset the TypeName.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>slabanum replied on Monday, June 02, 2008</h2>This might be because of the Cassini problem with CSLA bo's.&nbsp; Could not find the exact thread, but try mapping your project to an actual virtual directory and use IIS instead of cassini.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>slabanum replied on Monday, June 02, 2008</h2><P>It's here actually.</P>
+<P>&nbsp;</P>
+<P><A HREF="/forums/thread/6735.aspx">http://forums.lhotka.net/forums/thread/6735.aspx</A></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Michael Hildner replied on Monday, June 02, 2008</h2><P>Thanks for the reply. I always run via IIS as I've seen that issue posted before.</P>
+<P>I did find my problem, posted above - in short my TypeName was incorrect on the CslaDataSource. Not sure about the other issues I was running into, but that's a non-issue for me now.</P>
+<P>Thanks again,</P>
+<P>Mike</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

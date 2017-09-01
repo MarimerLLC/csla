@@ -1,0 +1,31 @@
+<html><header><title>Dynamic Validation Rules Based On Property Value</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Dynamic Validation Rules Based On Property Value</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10882.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>comp1mp posted on Tuesday, November 15, 2011</h2><p>First, I know the following question is the result of a poorly designed object model, Unfortunately, I am stuck using it. I just want to know if it is possible.</p>
+<p>In overrding AddBusinessRules, I need the code to be dynamic based upon the value of a property in the BO instance</p>
+<p>if (ReadProperty&lt;TypeEnum&gt;(TypeProperty) == TypeEnum.Value)</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ValidationRules.AddRule</p>
+<p>This introduces a problem when <strong><span style="text-decoration:underline;">creating</span></strong> a new instance as AddBusinessRules is called before my DataAccess Child_Create code (which has a parameter to set the property value in question). (For all I know, it may be an issue when fetching an existing object also.)</p>
+<p>Is there anyway I can accomplish my goal of dynamically building the rules collection based upon an instances property value when <strong><span style="text-decoration:underline;">creating (or fetching)</span></strong> a BO.</p>
+<p>Thanks,</p>
+<p>Matthew</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>StefanCop replied on Tuesday, November 15, 2011</h2><p>Rules are per design per type and not per instance. So you cannot add rules to one instance but not to another.</p>
+<p>However, your rule can be smart, such that it takes our TypeProperty as another property and later in the Execute decides on the value of this other property, if it should do the actual check. </p>
+<p>Btw: you can also test for all metastate (i.e. IsNew, (ITrackStatus)context.Target ) to get the actual check of a rule not/only runned if IsNew or IsDeleted. </p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>comp1mp replied on Wednesday, November 16, 2011</h2><p><div style='padding-left: 50px;background-color:silver'><b> stefan cop<br></b>
+<p>Rules are per design per type and not per instance. So you cannot add rules to one instance but not to another.</p>
+</div></p>
+<p>Actually Csla 3.8.3 does support per instance rules.&nbsp; My situation is a little bit different in that it would be every instance that has a property value of&nbsp;X, add these business rules.</p>
+<p>I used something similar to the following&nbsp;pseudo&nbsp;code in Child_Create data access code which&nbsp;has a SIngleCriteria parameter that I&nbsp;am interested in.</p>
+<p>private void Child_Create(SingleCriteria value)</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp; if (value== x)</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ValidationRules.AddRule(1)</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ValidationRule.AddRule(2)......</p>
+<p>&nbsp;</p>
+<p>Again, I understand that&nbsp;having to do this is a function of a poorly designed object model,&nbsp;and does not follow the prescribed pattern for setting business rules in the AddBusinessRules overrides, thus decreasing maintainability. However,&nbsp;my boss&nbsp;disagrees :).</p>
+<p>The above appears to work, but I am concerned that some subtle bug may be introduced by going outside of the AddBusinessRules override. Has anyone done something similar and has it worked in productiion?</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Wednesday, November 16, 2011</h2><p>Well, </p>
+<p>You could get it to work with CSLA 3.8 but it would certainly block your migration path to CSLA 4.</p>
+<p>You would have to stick with:</p>
+<p>private void Child_Create(SingleCriteria value)</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp; if (value== x)</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ValidationRules.<b>AddInstanceRule</b>(1)</p>
+<p>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ValidationRules.<b>AddInstanceRule</b>(2).....</p>
+<p>so that the rules are added as instance rules.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>comp1mp replied on Wednesday, November 16, 2011</h2>Thanks! Now I will try and convince my boss as to why its evil :).</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

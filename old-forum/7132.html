@@ -1,0 +1,12 @@
+<html><header><title>Grandchild BLB getting reset on save question</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Grandchild BLB getting reset on save question</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/7132.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>TheEld posted on Thursday, June 18, 2009</h2><P>I have the following...</P>
+<P>GrandChildBLB : BusinessListBase&lt;GrandChildBLB, GrandChildBB&gt; {}</P>
+<P>GrandChildBB : BusinessBase&lt;GrandChildBB&gt; {}</P>
+<P>RootBLB : BusinessListBase&lt;RootBLB, ChildBB&gt; {}</P>
+<P>ChildBB : BusinessBase&lt;ChildBB&gt;<BR>{<BR>&nbsp;&nbsp;&nbsp; private static PropertyInfo&lt;GrandChildBLB&gt; GrandChildBLBProperty = RegisterProperty(new PropertyInfo&lt;GrandChildBLB&gt;("GrandChildBLB", "GrandChildBLB"));</P>
+<P>&nbsp;&nbsp;&nbsp; public GrandChildBLB GCBLB<BR>&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; get { return GetProperty(GrandChildBLBProperty _ValueProperty); }<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; set { SetProperty(Status_GrandChildBLBProperty , value); }<BR>&nbsp;&nbsp;&nbsp; }</P>
+<P><BR>&nbsp;&nbsp; Private vod Child_Insert()<BR>&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; FieldManager.UpdateChildren();&nbsp;&nbsp; <BR>&nbsp;&nbsp; }</P>
+<P>&nbsp;&nbsp; Private vod Child_Update()<BR>&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; FieldManager.UpdateChildren();&nbsp;&nbsp; <BR>&nbsp;&nbsp; }<BR>}</P>
+<P>&nbsp;</P>
+<P>So now in the GUI I would have something like RBLB = RBLB.Save().&nbsp; And all of the Child_Insert()'s and Child_Udates()'s within both ChildBB and GrandChildBB are getting called just fine.&nbsp; My question is...&nbsp; Don't I need somewhere within ChildBB something like GCBLB = ???; so that that BLB gets reset to a new list just like the higher level BLB gets reset to a new list?&nbsp; Or is is magically being reset within FieldManager.UpdateChildren()?</P>
+<P>&nbsp;</P>
+<P>Thanks in advance for your help<BR></P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

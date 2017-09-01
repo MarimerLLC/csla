@@ -1,0 +1,15 @@
+<html><header><title>Remoting from Team Foundation Services Build</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Remoting from Team Foundation Services Build</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3165.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Brian O posted on Tuesday, July 10, 2007</h2><P>I am back with another tricky one. I have a Project which runs Unit Tests for a Class Library project that is a CSLA 2.0 Business Object. This Unit Test project remotes to the application server just fine when I execute things in it by hand. But when my TFS build kicks off, the remoting fails. I get an error which says can not load CSLA assembly or one of its dependencies. The top of the stack reads </P>
+<P>"System.Reflection.Assembly.nLoad(AssemblyName fileName, String codeBase, Evidence assemblySecurity, Assembly locationHint, StackCrawlMark&amp; stackMark, Boolean throwOnFileNotFound, Boolean forIntrospection)"</P>
+<P>I am wondering if there is a security difference that maybe I am not handling, because the TFS Build runs under a special account? </P>
+<P>Also, the TFS build puts all the binaries from the build into a folder and I suppose uses them from that folder, even though my CSLA assembly is in the GAC.</P>
+<P>Any ideas, or anybody having success running Unit Tests Remotely under Team Foundation Server?</P>
+<P>Thanks,</P>
+<P>Brian (<A href="mailto:brian.f.oneil@gmail.com">brian.f.oneil@gmail.com</A>)</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Brian O replied on Sunday, July 15, 2007</h2><P>Found a fix to this problem. I placed some code in the class initialize of my unit test to check for the presence of the CSLA assembly in the CurrentDirectory. If it is not there, I copy it from a known location. Although not elegant, it allows the TFS build to remote the class during the unit test.</P>
+<P>Like I posted before, the class being in the GAC should have allowed it to be used without a local copy. Guess this is just something particular to MSBuild.</P>
+<P>Thanks for listening,</P>
+<P>Brian</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

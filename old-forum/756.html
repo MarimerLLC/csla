@@ -1,0 +1,30 @@
+<html><header><title>Validation Problem</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Validation Problem</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/756.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Bonio posted on Friday, July 28, 2006</h2><P>I have an Item BO - it is comprised of three classes: ItemSKU (Editable Object), ItemSplits (a child list) and ItemSplit (an editable child).</P>
+<P>The problem is this: the ItemSKU object's validation of its own variables works fine, however, validation of the ItemSplit object does not appear to occur. I have added the validation rules to the child object, but it just returns IsValid=true even when it is obviously not.</P>
+<P>I appreciate that this is a tricky question without an example of the relevant code, but I was wondering whether anyone else had had this experience and may be kind enough to give me some tips.</P>
+<P>Thanks</P>
+<P>&nbsp;</P>
+<P>Bonio</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Dawn replied on Friday, July 28, 2006</h2>Do you override ItemSKU (Editable Object)'s IsValid like this.<br><br>public override bool IsValid<br>{<br>&nbsp;&nbsp;&nbsp; get<br>&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;  return base.IsValid &amp;&amp; ItemSplits (a child list).IsValid<br>&nbsp;&nbsp;&nbsp; }<br>}<br><br>Dawn<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Bonio replied on Friday, July 28, 2006</h2><P>Hi Dawn</P>
+<P>I am using this in my ItemSKU class:</P><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>override</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>bool</FONT><FONT size=2> IsValid</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>get</FONT><FONT size=2> { </FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>base</FONT><FONT size=2>.IsValid &amp;&amp; _splits.IsValid; }</P>
+<P>}</P>
+<P>For whatever reason the ItemSKU validation is working, but not validation for ItemSplits??</P>
+<P>Thanks</P>
+<P>Bonio</P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Bonio replied on Friday, July 28, 2006</h2><P>Okay, I think I have found the problem <img src="/emoticons/emotion-3.gif" alt="Surprise [:O]" />:</P>
+<P>It the set property of some of my string variables, I have the following:</P><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>set</P></FONT><FONT size=2>
+<P>{</P>
+<P>CanWriteProperty(</FONT><FONT color=#800000 size=2>"Description"</FONT><FONT size=2>, </FONT><FONT color=#0000ff size=2>true</FONT><FONT size=2>);</P>
+<P></FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (</FONT><FONT color=#0000ff size=2>value</FONT><FONT size=2> == </FONT><FONT color=#0000ff size=2>null</FONT><FONT size=2>) </FONT><FONT color=#0000ff size=2>value</FONT><FONT size=2> = </FONT><FONT color=#0000ff size=2>string</FONT><FONT size=2>.Empty;</P>
+<P></FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (!_description.Equals(</FONT><FONT color=#0000ff size=2>value</FONT><FONT size=2>)</FONT><FONT size=2>)</P>
+<P>{</P>
+<P>_description = </FONT><FONT color=#0000ff size=2>value</FONT><FONT size=2>;</P>
+<P>PropertyHasChanged(</FONT><FONT color=#800000 size=2>"Description"</FONT><FONT size=2>);</P>
+<P>}</P>
+<P>The reason for the problem was I was initializing my variable '_description' to be 'String.Empty', when a user fails to enter a value in 'Description' it remains as 'String.Empty' and therefore the 'PropertyHasChanged' method is not called. Any ideas how I should get round this? I tried not initializing to 'String.Empty' but had problems.</P>
+<P>Thanks</P>
+<P>Bonio</P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Bonio replied on Saturday, July 29, 2006</h2><P>Having done a bit more research, I have fixed the problem by putting</P>
+<P>Validation.CheckRules() in the child's constructor. Is the correct way?</P>
+<P>Thanks</P>
+<P>Bonio</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>xal replied on Saturday, July 29, 2006</h2>If you call DataPortal.Create to make an instance of your child, then you probably want to do it inside DataPortal_Create.<br><br>The reason is that generally, some business objects also need to validate data when you Fetch it too, so you would call CheckRules() at the end of the Fetch method. In that situation, you would be calling CheckRules in the constructor and also inside fetch, which is not ideal.<br><br>If your fetch method doesn't do more than initializing defaults and checking rules, you can mark it with a RunLocal() Attribute, so that it doesn't go through remoting / enterprise services / whatever to do the initialization.<br><br>Another possibility is doing it inside your factory method, before returning the instance of your object.<br><br>Andrés<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

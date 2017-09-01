@@ -1,0 +1,276 @@
+<html><header><title>Issue accessing custom properties from my custom identity</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Issue accessing custom properties from my custom identity</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/12892.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>fujiiface posted on Friday, May 29, 2015</h2><p>Hello,</p>
+<p>Thank you in advance for any help provided here. &nbsp;I read the answers on <a target="_blank" title="this" href="http://forums.lhotka.net/forums/t/11002.aspx">this</a> post and still have a problem with my custom Principal/Identity implementation.</p>
+<p>I am using Csla 4.1.0 and seem to be having a cast issue. &nbsp;This is the same scenario as the OP in the linked thread where I am trying to get to custom properties that have been implemented into my CustomIdentity class.</p>
+<p>When I try to cast Csla.ApplicationContext.User.Identity to CustomIdentity, I get &quot;Unable to cast object of type &#39;System.Security.Principal.GenericPrincipal&#39; to &#39;DMS.Library.Security.CustomIdentity.&#39;</p>
+<p>Here&#39;s the code in question:</p>
+<p>public int UserOrgCount {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; get {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; var identity = (CustomIdentity)Csla.ApplicationContext.User.Identity;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; return identity.Orgs.Count();</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>I thought I followed the ebook pretty well and in fact everything seems to be working. &nbsp;The only thing I want to get access to now is the Identity properties so that I can replace individual database calls with data that&#39;s already been loaded into my custom properties.</p>
+<p>Let me know if there is any other information I can provide.</p>
+<p>For reference, here is my CustomPrincipal and CustomIdentity objects:</p>
+<p>&nbsp;</p>
+<p>using System;</p>
+<p>using System.Security.Principal;</p>
+<p>using Csla.Security;</p>
+<p>using Csla.Serialization;</p>
+<p>&nbsp;</p>
+<p>namespace DMS.Library.Security {</p>
+<p>&nbsp; &nbsp; [Serializable]</p>
+<p>&nbsp; &nbsp; public class CustomPrincipal : CslaPrincipal {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; private CustomPrincipal(IIdentity identity)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; : base(identity) { }</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; /// &lt;summary&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; ///&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; /// &lt;/summary&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; /// &lt;param name=&quot;username&quot;&gt;The user&#39;s username&lt;/param&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; /// &lt;param name=&quot;password&quot;&gt;The user&#39;s password&lt;/param&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; /// &lt;param name=&quot;completed&quot;&gt;&lt;/param&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; public static void BeginLogin(string username, string password, Action&lt;Exception&gt; completed) {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; DMS.Library.Security.CustomIdentity.GetCustomIdentity(username, password, (o, e) =&gt; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; if (e.Error != null)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Logout();</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; else</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Csla.ApplicationContext.User = new CustomPrincipal(e.Object);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; completed(e.Error);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; });</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp;</p>
+<p>#if !SILVERLIGHT</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; /// &lt;summary&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; /// NOT IMPLEMENTED - Attempts to login the user with their username and password</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; /// &lt;/summary&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; /// &lt;param name=&quot;pUserName&quot;&gt;The user&#39;s username&lt;/param&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; /// &lt;param name=&quot;pPassword&quot;&gt;The user&#39;s password&lt;/param&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; /// &lt;remarks&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; /// As of 05/07/2015, this function is not used because it will create a circular execution of code. &nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; /// Validation of credentials is handled within the ValidateUser function of each implemented Membership provider.</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; /// Assuming the ValidateUser function returns true, the Principal&#39;s Load function is used instead</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; /// &lt;/remarks&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; public static void Login(string username, string password) {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; throw new NotImplementedException(&quot;The CustomPrincipal Login method has not been implemented. &nbsp;Refer to the remarks section of method&#39;s code for an explanation.&quot;);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; //var identity = DMS.Library.Security.CustomIdentity.GetCustomIdentity(username, password);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; //Csla.ApplicationContext.User = new CustomPrincipal(identity);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; public static void Load(string username) {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; var identity = DMS.Library.Security.CustomIdentity.GetCustomIdentity(username);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Csla.ApplicationContext.User = new CustomPrincipal(identity);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp;</p>
+<p>#endif</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; /// &lt;summary&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; /// Replaces the current CustomPrincipal object with a new one that has an UnauthenticatedIdentity loaded up.</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; /// &lt;/summary&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; public static void Logout() {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Csla.ApplicationContext.User = new UnauthenticatedPrincipal();</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp; &nbsp; }</p>
+<p>}</p>
+<div></div>
+<div>
+<div>using System;</div>
+<div>using System.Collections.Generic;</div>
+<div>using System.Linq;</div>
+<div>using System.Text;</div>
+<div>using Csla;</div>
+<div>using Csla.Security;</div>
+<div>using Csla.Serialization;</div>
+<div>using DMS.Library.Admin;</div>
+<div></div>
+<div>namespace DMS.Library.Security {</div>
+<div>&nbsp; &nbsp; [Serializable]</div>
+<div>&nbsp; &nbsp; public class CustomIdentity : CslaIdentityBase&lt;CustomIdentity&gt; {</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp;&nbsp;</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; #region Properties</div>
+<div></div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; public static readonly PropertyInfo&lt;string&gt; EmailProperty = RegisterProperty&lt;string&gt;(c =&gt; c.Email);</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; /// &lt;summary&gt;</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; /// The user&#39;s E-mail</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; /// &lt;/summary&gt;</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; public string Email {</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; get { return GetProperty(EmailProperty); }</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; private set { LoadProperty(EmailProperty, value); }</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</div>
+<div></div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; public static readonly PropertyInfo&lt;Guid&gt; UserIdProperty = RegisterProperty&lt;Guid&gt;(p =&gt; p.UserId);</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; /// &lt;summary&gt;</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; /// The user&#39;s internal identifier</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; /// &lt;/summary&gt;</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; public Guid UserId {</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; get { return GetProperty(UserIdProperty); }</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; private set { LoadProperty(UserIdProperty, value); }</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</div>
+<div></div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; public static readonly PropertyInfo&lt;string&gt; FirstNameProperty = RegisterProperty&lt;string&gt;(c =&gt; c.FirstName);</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; /// &lt;summary&gt;</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; /// The user&#39;s first name</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; /// &lt;/summary&gt;</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; public string FirstName {</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; get { return GetProperty(FirstNameProperty); }</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; private set { LoadProperty(FirstNameProperty, value); }</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</div>
+<div></div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; public static readonly PropertyInfo&lt;string&gt; LastNameProperty = RegisterProperty&lt;string&gt;(c =&gt; c.LastName);</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; /// &lt;summary&gt;</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; /// The user&#39;s last name</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; /// &lt;/summary&gt;</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; public string LastName {</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; get { return GetProperty(LastNameProperty); }</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; private set { LoadProperty(LastNameProperty, value); }</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</div>
+<div></div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; public static readonly PropertyInfo&lt;string&gt; FullNameProperty = RegisterProperty&lt;string&gt;(c =&gt; c.FullName);</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; /// &lt;summary&gt;</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; /// The user&#39;s full name</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; /// &lt;/summary&gt;</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; public string FullName {</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; get { return GetProperty(FullNameProperty); }</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; private set { LoadProperty(FullNameProperty, value); }</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</div>
+<div></div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; public static readonly PropertyInfo&lt;string&gt; HomeOrgStringProperty = RegisterProperty&lt;string&gt;(p =&gt; p.HomeOrgString);</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; /// &lt;summary&gt;</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; /// The user&#39;s Home OrgString</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; /// &lt;/summary&gt;</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; public string HomeOrgString {</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; get { return GetProperty(HomeOrgStringProperty); }</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; private set { LoadProperty(HomeOrgStringProperty, value); }</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</div>
+<div></div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; public static readonly PropertyInfo&lt;bool&gt; IsApprovedProperty = RegisterProperty&lt;bool&gt;(p =&gt; p.IsApproved);</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; /// &lt;summary&gt;</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; /// The original membership IsApproved column</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; /// &lt;/summary&gt;</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; /// &lt;remarks&gt;</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; /// Value comes from the aspnet_Membership tables</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; /// &lt;/remarks&gt;</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; public bool IsApproved {</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; get { return GetProperty(IsApprovedProperty); }</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; private set { LoadProperty(IsApprovedProperty, value); }</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</div>
+<div></div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; public static readonly PropertyInfo&lt;List&lt;string&gt;&gt; OrgsProperty = RegisterProperty&lt;List&lt;string&gt;&gt;(p =&gt; p.Orgs);</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; /// &lt;summary&gt;</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; /// Returns the list of Departments that the user belongs to</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; /// &lt;/summary&gt;</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; public List&lt;string&gt; Orgs {</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; get { return GetProperty(OrgsProperty); }</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; private set { LoadProperty(OrgsProperty, value); }</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</div>
+<div></div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; public static readonly PropertyInfo&lt;string&gt; AppNameProperty = RegisterProperty&lt;string&gt;(p =&gt; p.AppName);</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; public string AppName {</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; get { return &quot;AppName&quot;; }</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</div>
+<div></div>
+<div>&nbsp; &nbsp; #endregion</div>
+<div></div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; public static void GetCustomIdentity(string username, string password, EventHandler&lt;DataPortalResult&lt;CustomIdentity&gt;&gt; callback) {</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; DataPortal.BeginFetch&lt;CustomIdentity&gt;(new UsernameCriteria(username, password), callback);</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; }</div>
+<div></div>
+<div>#if !SILVERLIGHT</div>
+<div></div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; /// &lt;summary&gt;</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; /// Gets the user after authenticating them with their username and password</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; /// &lt;/summary&gt;</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; /// &lt;param name=&quot;pUserName&quot;&gt;The user&#39;s employee number&lt;/param&gt;</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; /// &lt;param name=&quot;pPassword&quot;&gt;The user&#39;s password&lt;/param&gt;</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; /// &lt;returns&gt;&lt;/returns&gt;</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; public static CustomIdentity GetCustomIdentity(string username, string password) {</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; return DataPortal.Fetch&lt;CustomIdentity&gt;(new UsernameCriteria(username, password));</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; }</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp;&nbsp;</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; private void DataPortal_Fetch(UsernameCriteria criteria) {</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; AuthenticationType = &quot;Custom&quot;;</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; using (var mgr = DataAccess.DalFactory.GetManager()) {</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; var dal = mgr.GetProvider&lt;DataAccess.IIdentityDal&gt;();</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; if (dal.VerifyUser(criteria.Username, criteria.Password))</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; LoadUserData(criteria.Username, dal);</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; }</div>
+<div></div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; /// &lt;summary&gt;</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; /// Gets the user based on their username</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; /// &lt;/summary&gt;</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; /// &lt;param name=&quot;pUserName&quot;&gt;The user&#39;s employee number&lt;/param&gt;</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; /// &lt;returns&gt;&lt;/returns&gt;</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; internal static CustomIdentity GetCustomIdentity(string username) {</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; return DataPortal.Fetch&lt;CustomIdentity&gt;(username);</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; }</div>
+<div></div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; private void DataPortal_Fetch(string username) {</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; AuthenticationType = &quot;Custom&quot;;</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; using (var mgr = DataAccess.DalFactory.GetManager()) {</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; var dal = mgr.GetProvider&lt;DataAccess.IIdentityDal&gt;();</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; LoadUserData(username, dal);</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; }</div>
+<div></div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; /// &lt;summary&gt;</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; /// Uses the DataAccess DalFactory to dynamically load the required membership provider</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; /// &lt;/summary&gt;</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; /// &lt;param name=&quot;pUserName&quot;&gt;The user&#39;s employee number&lt;/param&gt;</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; /// &lt;param name=&quot;dal&quot;&gt;The Identity&#39;s data access object&lt;/param&gt;</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; private void LoadUserData(string pUserName, DataAccess.IIdentityDal dal) {</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; var userData = dal.GetUser(pUserName);</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; //Step 1 authentication loading - If the user exists in the membership tables, the user is temporarily authenticated</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; this.IsAuthenticated = (userData != null);</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; if (this.IsAuthenticated) {</div>
+<div></div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; this.Name = userData.UserName;</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; this.FirstName = userData.FirstName;</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; this.LastName = userData.LastName;</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; this.FullName = string.Format(&quot;{0} {1}&quot;, userData.FirstName, userData.LastName);</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; this.Email = userData.Email;</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; this.UserId = userData.UserId;</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; this.HomeOrgString = userData.HomeOrgString;</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; this.IsApproved = userData.IsApproved;</div>
+<div></div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; //Step 2 authentication loading - Update the Identity&#39;s IsAuthenticated property based on the membership table</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; this.IsAuthenticated = this.IsApproved;</div>
+<div></div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; //Initialize the MobileList property and then load up the roles once we&#39;ve gotten them</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; this.Roles = new Csla.Core.MobileList&lt;string&gt;();</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; string[] _roles = UserRole.GetRolesForUser(pUserName, string.Empty, true);</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; foreach (var role in _roles) {</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; this.Roles.Add(role);</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</div>
+<div></div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; //Load up the Orgs the user belongs to</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; this.Orgs = UserOrg.GetOrgsForUser(pUserName, true, false).ToList();</div>
+<div></div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; //Step 3 authentication loading - Check to make sure that even if the user is authenticated with AD and exists in the membership table, the user has at least 1 Org and Role</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; if (!(this.Orgs.Count() &gt; 0 &amp;&amp; this.Roles.Count() &gt; 0)) {</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; this.IsAuthenticated = false;</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; throw new InvalidOperationException(string.Format(&quot;User {0} does not have access to any departments and/or roles.\n &nbsp; &nbsp;Org Count: {1};\n &nbsp; &nbsp;Role Count: {2}&quot;, this.Name, this.Orgs.Count(), this.Roles.Count()));</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; }</div>
+<div></div>
+<div>#endif</div>
+<div></div>
+<div>&nbsp; &nbsp; }</div>
+<div>}</div>
+</div></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Saturday, May 30, 2015</h2><p>Hi,</p>
+<p>The issue here is that you have lost your custom principal object and now has the default GenericPrincipal which is a built-in type in .NET.</p>
+<p>This could be caused by some configuration error (AuthenticationType) or that your code has used async methods that does not transfer the &quot;current&quot; principal to the executing (background) thread.&nbsp;</p>
+<p>CSLA contains a custom BackgroundWorker and CslaTaskScheduler that will make sure to transfer the principal and ApplicationContext to background thread.&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>fujiiface replied on Monday, June 01, 2015</h2><p>Hi Jonny,</p>
+<p>Thank you for your response and all of your support with CSLA. &nbsp;Personally, I really appreciate it.</p>
+<p>Regarding my issue, it looks like the problem has been resolved thanks to some of your suggestions. &nbsp;Essentially, I did the following:</p>
+<p><ol>
+<li>Reverted my CustomPrincipal constructor back to accept a CustomIdentity parameter (instead of IIdentity)</li>
+<li>Removed my AuthorizeDataPortal settings from Web.config</li>
+<li>Confirmed that CslaAuthentication was set to &quot;Custom&quot;</li>
+</ol></p>
+<p>To my knowledge, we are not running anything async. &nbsp;Also, it appears the AuthorizeDataPortal configuration I had in place was not set up correctly. &nbsp;As I recall (from when I would debug) within the AuthorizeDataPortal&#39;s Authorize method, I could never get to the CustomPrincipal.Load method. &nbsp;It would always load an UnauthenticatedPrincipal. &nbsp;Once I removed the concept of the AuthorizeDataPortal to avoid passing the Principal object over the wire, I was able to avoid &quot;losing&quot; my Csla.ApplicationContext.User.</p>
+<p>&nbsp;</p>
+<p>As of right now, I believe this was the configuration error you were referring to in your previous post. &nbsp;If anything comes up, I will follow up. &nbsp;Thank you again for all of your support!</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,12 @@
+<html><header><title>3.5 ProjectTracker Example</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>3.5 ProjectTracker Example</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4717.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>SouthSpawn posted on Saturday, April 19, 2008</h2><DIV>I notice that there aren't really many Try Catch blocks around the code.</DIV>
+<DIV><BR>Does anyone know if there is a reason for this?<BR><BR>Thanks,<BR>Mark</DIV></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, April 21, 2008</h2><P>You should only catch an exception if you can do something about it.</P>
+<P>"Do something" generally includes:</P>
+<OL>
+<LI>Fix the problem (or notify the user there was an unfixable problem)</LI>
+<LI>Log the problem</LI>
+<LI>Add information about the problem by wrapping the exception with a more detailed exception</LI></OL>
+<P>If you can't do one of these things, then don't catch the exception.</P>
+<P>ProjectTracker could probably use a little more exception handling than it has at the UI layer. But at the data access and business layers there's really nothing to be done about exceptions, and so there's no reason to catch them.</P>
+<P>In the DataPortal_XYZ methods it is critical that you <EM>do not catch exceptions</EM>, or if you do that you throw a new exception. Having an exception flow up from a DP_XZY method is how TransactionScope and EnterpriseServices know to roll back the failed transaction.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>SouthSpawn replied on Monday, April 21, 2008</h2><DIV>Thanks guys for your responses.</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>Mark</DIV></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>marklindell replied on Monday, April 21, 2008</h2>Ask yourself this question: If you remove all the exception handling code in your application, will it continue to work correctly?&nbsp; If is will not then you are not using exception handling correctly.<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

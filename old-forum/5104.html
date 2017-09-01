@@ -1,0 +1,97 @@
+<html><header><title>Remoting with many databases</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Remoting with many databases</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5104.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Michael Hildner posted on Wednesday, July 16, 2008</h2><P>Greetings,</P>
+<P>Apologies if this has been discussed before, a search didn't turn up anything.</P>
+<P>We've got an application that's using remoting, the databases for different client installs live on one of our servers. Wondering if it's possible to have just one remoting host that would be able to to access a particular database, based on a .config setting.</P>
+<P>Or is it required that we need one remoting host for each client install? The only difference is that different clients use their own databse.</P>
+<P>Thanks,</P>
+<P>Mike</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Wednesday, July 16, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I think I follow the question, so here it goes&#8230;.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>You can have one client remoting server connecting to multiple
+databases.&nbsp; You just have to define all connection strings in
+configuration file and you have to figure out what client is connecting based
+on request information.&nbsp; In other words, unique client ID is passed as
+part of each request/criteria object.&nbsp; I think you will be looking at a
+lot of code refactoring if you are going to go with single service for all
+clients/databases.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Senior Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899<o:p></o:p></span></p>
+
+<p class=MsoNormal><b><i><span>Magenic</span></i></b><span> </span><span>&reg;</span><b><i><span><o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Michael Hildner
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Wednesday, July 16, 2008 11:48 AM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> [CSLA .NET] Remoting with many databases<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Greetings,<o:p></o:p></p>
+
+<p>Apologies if this has been discussed before, a search didn't turn up
+anything.<o:p></o:p></p>
+
+<p>We've got an application that's using remoting, the databases for different
+client installs live on one of our servers. Wondering if it's possible to have
+just one remoting host that would be able to to access a particular database,
+based on a .config setting.<o:p></o:p></p>
+
+<p>Or is it required that we need one remoting host for each client install?
+The only difference is that different clients use their own databse.<o:p></o:p></p>
+
+<p>Thanks,<o:p></o:p></p>
+
+<p>Mike<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Michael Hildner replied on Wednesday, July 16, 2008</h2><P>Thanks Sergey, that makes sense. I appreciate the information.</P>
+<P>Mike</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, July 16, 2008</h2><P>One relatively common solution to this is to use ClientContext to store (and thus pass to the server on every request) a "database id" or "client id" value. That value can then be used in your DAL code to find the right database connection string for that particular id.</P>
+<P>Another solution is to put the id token in your custom Identity object, because that also flows from client to server on every request.</P>
+<P>The thing to consider in both cases is that a malicious hacker could potentially alter this id value in memory on the client, thus spoofing some other id. If this is a concern, then the same techniques will work, but you'll need to use encryption somewhat like ASP.NET does with their authentication cookie. </P>
+<P>The encryption key is symmetric and is only known to the app server. When the user is authenticated, this id token is created and encrypted on the server. The encrypted value is given to the client, so the client can put it in either the Identity object or ClientContext. Either way, each server request gets the encrypted token, can decrypt it and use the value to find the right database connection string for that particular id.</P>
+<P>You should make sure to time-bomb the encrypted token to prevent long-term replay attacks.</P>
+<P>Security is so much fun...</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Michael Hildner replied on Wednesday, July 16, 2008</h2>That's some good information there, thanks Rocky.</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

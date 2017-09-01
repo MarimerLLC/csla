@@ -1,0 +1,10 @@
+<html><header><title>DataAccess layer for Neo4j</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>DataAccess layer for Neo4j</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/12857.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>msrs_it posted on Tuesday, March 31, 2015</h2><p>Recently I was introduced to Neo4j (graph) database and I would like to try it with CSLA.NET. In order to try I&#39;ve a couple of questions</p>
+<p><ol>
+<li>Which data object manager (like ConnectionManager, ObjectContextManager, etc...) can I use?</li>
+<li>Do I need to modify any of the DalFactory.cs or DalManager.cs classes?</li>
+</ol></p>
+<p>Neo4j supports REST API and we can connect to the database using the following connection string &quot;http://localhost:7474/db/data&quot; (if it is installed on the same machine).</p>
+<p>Suggestions will be appreciated.</p>
+<p>Regards,</p>
+<p>SreeRam</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Wednesday, April 01, 2015</h2><p>You&#39;d probably not use any of those, you&#39;d just call the web service it provides in your DataPortal_xyz method.</p>
+<p>Unless they provide a library which implements the normal Ado.Net interfaces like IDbConnection, then you could use ConnectionManager.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

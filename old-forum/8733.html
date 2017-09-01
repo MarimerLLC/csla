@@ -1,0 +1,70 @@
+<html><header><title>ERLB Remove method doesn't remove</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>ERLB Remove method doesn't remove</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/8733.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>CalvaryLogic posted on Friday, March 26, 2010</h2><p>I&#39;m having quite a bit of trouble figuring out why Remove will not remove an item from a ERLB instance.&nbsp; The Add method works fine.&nbsp; I did create workaround that works.&nbsp; I added a Delete method to my list which removes from the Items list of the ERLB, like this...</p>
+<p><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">Public</span></span><span style="font-size:x-small;"> </span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">Sub</span></span><span style="font-size:x-small;"> Delete(</span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">ByVal</span></span><span style="font-size:x-small;"> object </span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">As </span></span><span style="font-size:x-small;">MyClass)<font size="2">
+<p>&nbsp;</p>
+</font></span></p>
+<p>&nbsp;</p>
+<p><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">&nbsp;&nbsp;&nbsp;&nbsp; Me</span></span><span style="font-size:x-small;">.Items.Remove(object)<font size="2">
+<p>&nbsp;</p>
+</font></span></p>
+<p>&nbsp;</p>
+<p><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">&nbsp;&nbsp;&nbsp;&nbsp; Me</span></span><span style="font-size:x-small;">.OnRemoveEventHooks(object)<font size="2">
+<p>&nbsp;</p>
+</font></span></p>
+<p>&nbsp;</p>
+<p><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">End</span></span><span style="font-size:x-small;"> </span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">Sub</span></span></p>
+<p><span style="font-size:x-small;">However, I&#39;m curious as to why the Remove method isn&#39;t working.&nbsp; I also tried RemoveAt, and it also does not remove an item from the list.&nbsp; I have this bound to a ListBox, but I did try removing from the list without it being bound to the ListBox (thought maybe the ListBox was doing something to cause the issue).&nbsp; Remove is returning a &quot;True&quot;, but that&#39;s not saying anything conclusive judging by what is found in System.Collections.ObjectModel.Collection&lt;T&gt;&nbsp;using .NET&nbsp;Reflector...</span></p>
+<p><span style="font-size:x-small;">
+<p>
+<table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:0px;">
+<tbody>
+<tr>
+<td colspan="2" valign="top" style="padding-right:5px;padding-left:5px;padding-bottom:4px;padding-top:4px;">
+<pre><span style="color:#1000a0;">public</span> <a href="http://www.aisto.com/roeder/dotnet/Default.aspx?Target=code://mscorlib:2.0.5.0:7cec85d7bea7798e/System.Boolean" title="System.Boolean">bool</a> <b><a href="http://www.aisto.com/roeder/dotnet/Default.aspx?Target=code://mscorlib:2.0.5.0:7cec85d7bea7798e/System.Collections.ObjectModel.Collection&lt;&gt;/Remove(&lt;!0&gt;):Boolean" class="bold">Remove</a></b>(<a title="T // Generic Argument">T</a> item)
+{
+    <span style="color:#1000a0;">if</span> (<span style="color:#1000a0;">this</span>.<a href="http://www.aisto.com/roeder/dotnet/Default.aspx?Target=code://mscorlib:2.0.5.0:7cec85d7bea7798e/System.Collections.ObjectModel.Collection&lt;&lt;!0&gt;&gt;/items:System.Collections.Generic.IList&lt;&lt;!0&gt;&gt;" title="IList&lt;T&gt; System.Collections.ObjectModel.Collection&lt;T&gt;.items;">items</a>.<a href="http://www.aisto.com/roeder/dotnet/Default.aspx?Target=code://mscorlib:2.0.5.0:7cec85d7bea7798e/System.Collections.Generic.ICollection&lt;&lt;!0&gt;&gt;/property:IsReadOnly:Boolean" title="bool System.Collections.Generic.ICollection&lt;T&gt;.IsReadOnly { ... }">IsReadOnly</a>)
+    {
+        <a href="http://www.aisto.com/roeder/dotnet/Default.aspx?Target=code://mscorlib:2.0.5.0:7cec85d7bea7798e/System.ThrowHelper" title="System.ThrowHelper">ThrowHelper</a>.<a href="http://www.aisto.com/roeder/dotnet/Default.aspx?Target=code://mscorlib:2.0.5.0:7cec85d7bea7798e/System.ThrowHelper/ThrowNotSupportedException(System.ExceptionResource)" title="void System.ThrowHelper.ThrowNotSupportedException(ExceptionResource resource);">ThrowNotSupportedException</a>(<a href="http://www.aisto.com/roeder/dotnet/Default.aspx?Target=code://mscorlib:2.0.5.0:7cec85d7bea7798e/System.ExceptionResource" title="System.ExceptionResource">ExceptionResource</a>.<a href="http://www.aisto.com/roeder/dotnet/Default.aspx?Target=code://mscorlib:2.0.5.0:7cec85d7bea7798e/System.ExceptionResource/NotSupported_ReadOnlyCollection" title="ExceptionResource System.ExceptionResource.NotSupported_ReadOnlyCollection;">NotSupported_ReadOnlyCollection</a>);
+    }
+    <a href="http://www.aisto.com/roeder/dotnet/Default.aspx?Target=code://mscorlib:2.0.5.0:7cec85d7bea7798e/System.Int32" title="System.Int32">int</a> <b>index</b> = <span style="color:#1000a0;">this</span>.<a href="http://www.aisto.com/roeder/dotnet/Default.aspx?Target=code://mscorlib:2.0.5.0:7cec85d7bea7798e/System.Collections.ObjectModel.Collection&lt;&lt;!0&gt;&gt;/items:System.Collections.Generic.IList&lt;&lt;!0&gt;&gt;" title="IList&lt;T&gt; System.Collections.ObjectModel.Collection&lt;T&gt;.items;">items</a>.<a href="http://www.aisto.com/roeder/dotnet/Default.aspx?Target=code://mscorlib:2.0.5.0:7cec85d7bea7798e/System.Collections.Generic.IList&lt;&gt;/IndexOf(&lt;!0&gt;):Int32" title="int System.Collections.Generic.IList&lt;T&gt;.IndexOf(T);">IndexOf</a>(<a title="T item; // Parameter">item</a>);
+    <span style="color:#1000a0;">if</span> (<a title="int index // Local Variable">index</a> &lt; <span style="color:#800000;">0</span>)
+    {
+        <span style="color:#1000a0;">return</span> <span style="color:#800000;">false</span>;
+    }
+    <span style="color:#1000a0;">this</span>.<a href="http://www.aisto.com/roeder/dotnet/Default.aspx?Target=code://mscorlib:2.0.5.0:7cec85d7bea7798e/System.Collections.ObjectModel.Collection&lt;&gt;/RemoveItem(Int32)" title="void System.Collections.ObjectModel.Collection&lt;T&gt;.RemoveItem(int);">RemoveItem</a>(<a title="int index // Local Variable">index</a>);
+    <span style="color:#1000a0;">return</span> <span style="color:#800000;">true</span>;
+}
+</pre>
+</td>
+</tr>
+</tbody>
+</table>
+</p>
+<p>As you can see as long as it finds the object in the collection, and RemoveItem doesn&#39;t throw an exception, it will return a True... regardless of whether or not RemoveItem actually performs its job successfully.&nbsp; Seems like Microsoft has a flaw in logic there.&nbsp; I also tried using ERLB&#39;s override of RemoveItem within my Delete function, instead of Items.Remove and that&#39;s not working either.&nbsp; So, it looks like all roads lead to&nbsp;ERLB.RemoveItem.&nbsp; My list&#39;s properties are AllowEdit = True, AllowNew = False, AllowRemove = True, so that seems to be in order.&nbsp; Next stop CSLA source code to see what&#39;s going on in there, but if anyone has a quick answer I&#39;d appreciate it.</p>
+<p>Thanks,<br />Matt</p>
+</span><span style="font-size:x-small;"></span></p>
+<p><span style="font-size:x-small;"></span></p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>rsbaker0 replied on Friday, March 26, 2010</h2><p>The first thing I would look at is does it actually find the item in the collection? </p>
+<p>CSLA went to reference equality back in 3.0 or so versus value equality, and it is very easy for you to end up holding onto a stale object reference with the way CSLA implements&nbsp;saving. (Any time you save an object&nbsp;in CSLA,&nbsp;it is almost always the case&nbsp;that existing references you have to the object are old and now must be updated with the&nbsp;returned&nbsp;value e.g. obj = obj.Save()).</p>
+<p>&nbsp;</p>
+<p>&nbsp; </p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>CalvaryLogic replied on Friday, March 26, 2010</h2><p><div style='padding-left: 50px;background-color:silver'><b>rsbaker0<br></b> </p>
+<p>The first thing I would look at is does it actually find the item in the collection? </p>
+<p>CSLA went to reference equality back in 3.0 or so versus value equality, and it is very easy for you to end up holding onto a stale object reference with the way CSLA implements&nbsp;saving. (Any time you save an object&nbsp;in CSLA,&nbsp;it is almost always the case&nbsp;that existing references you have to the object are old and now must be updated with the&nbsp;returned&nbsp;value e.g. obj = obj.Save()).</p>
+<div style="CLEAR:both;"></div>
+<p></div></p>
+<p>&nbsp;Thanks for your reply!&nbsp; And those are very good points, which I checked and everything looked good.&nbsp;&nbsp;It does find the item in the collection.&nbsp; Based on the code that I saw in Reflector the only way it could return True is if the item is in the collection.&nbsp; Just to be safe though (not fully trusting Reflector) I did my own IndexOf and it did find it in the list.&nbsp; And also did GetHashCode calls at key points to make sure it was the same object and it was.&nbsp; I&#39;m not doing any type of save with the list at that point in the code, so no chance for it to be re-loaded as a new object.&nbsp; </p>
+<p>Thanks,</p>
+<p>Matt</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rsbaker0 replied on Friday, March 26, 2010</h2><p>Yes, if you tested the return from Remove() and it was true, I&#39;d this this would be a good indicator.&nbsp; </p>
+<p>What happens if you test the .Count property value before and after the Remove(). Does it go down by 1? (If so, this raises the question of what you are looking at that doesn&#39;t reflect the removal). </p>
+<p>(Also, it certainly would be worth having the CSLA project in your solution for debugging rather than just referencing the .DLL&#39;s if that is feasible. I find this almost indispensable for troubleshooting weird CSLA issues)</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Saturday, March 27, 2010</h2><p>If this is an ERLB, have you checked to make sure the delete operation succeeds? ERLB will immediately trigger the delete operation, and if that fails the item won&#39;t be removed from the collection, because of course it wasn&#39;t removed from the database.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>CalvaryLogic replied on Monday, March 29, 2010</h2><p><div style='padding-left: 50px;background-color:silver'><b>RockfordLhotka<br></b>
+<p>If this is an ERLB, have you checked to make sure the delete operation succeeds? ERLB will immediately trigger the delete operation, and if that fails the item won&#39;t be removed from the collection, because of course it wasn&#39;t removed from the database.</p>
+<div style="CLEAR:both;"></div>
+</div></p>
+<p>Ah yes, of course.&nbsp; I don&#39;t have any server-side code handling&nbsp;the delete from the database.&nbsp; The situation is that this is a new list that is being constructed on the client, and will be inserted to the database upon clicking a Save button.&nbsp; I&#39;ve seen several of your posts where you state the specific purpose for ERLB is for databound grids that save immediately after an edit, but it didn&#39;t click with me that it would wait for a successful delete from the data store.&nbsp; Makes complete sense for those purposes.&nbsp; Maybe a BLB would be more appropriate for what I&#39;m doing.</p>
+<p>Thanks Rocky!</p>
+<p>Matt</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>CalvaryLogic replied on Monday, March 29, 2010</h2><p><div style='padding-left: 50px;background-color:silver'><b>rsbaker0<br></b>
+<p>Yes, if you tested the return from Remove() and it was true, I&#39;d this this would be a good indicator.&nbsp; </p>
+<p>What happens if you test the .Count property value before and after the Remove(). Does it go down by 1? (If so, this raises the question of what you are looking at that doesn&#39;t reflect the removal). </p>
+<p>(Also, it certainly would be worth having the CSLA project in your solution for debugging rather than just referencing the .DLL&#39;s if that is feasible. I find this almost indispensable for troubleshooting weird CSLA issues)</p>
+<div style="CLEAR:both;"></div>
+</div></p>
+<p>The count doesn&#39;t go down after the Remove.&nbsp; Good point on the CSLA source code.&nbsp; I think I&#39;ll do that.&nbsp; Rocky nailed it, see below....</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

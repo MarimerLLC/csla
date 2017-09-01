@@ -1,0 +1,12 @@
+<html><header><title>CSLA launched through COM</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA launched through COM</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11968.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>darchele@charter.net posted on Saturday, May 04, 2013</h2><p>We have a VB6 application that launches a .NET CSLA DLL through COM and works fine. &nbsp;However, when the underlying VB6 DLL is launched through COM and then the CSLA DLL is launched through it, it does not know where to find the config file and thus doesn&#39;t get it&#39;s mappings to the data portal. &nbsp;Where should the config file live?&nbsp;</p>
+<p>When it works, the config file is named after the VB6 EXE appname.exe.config. &nbsp;What should it be named and where should it live when launched through COM? &nbsp;I&#39;ve tried naming it after the DLL (dllname.dll.config), but that doesn&#39;t work.</p>
+<p>Any ideas would be greatly appreciated.</p>
+<p>Thanks,</p>
+<p>Darchele</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Saturday, May 04, 2013</h2><p>Hi,</p>
+<p>Use FileMon or ProcMon from Sysinternals to trace file system activity. This will reveal where tha process is loooking for a .config file.&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>darchele@charter.net replied on Saturday, May 04, 2013</h2><p>Thanks... I did try that, but I couldn&#39;t ever see the access to the config file, even when it was working. &nbsp;However, we did figure out the processes by trial and error adding config files.</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>flying_monkey replied on Tuesday, May 07, 2013</h2><p>From the sounds of it you already found the solution but just for 
+anyone else that may be searching for an answer to the same problem.</p>
+<p>The
+ app.config file must be in the working directory of the executable that
+ is calling the VB6 dll/CSLA dll. That is why it worked when the VB6 
+application called the VB6 dll but stopped working when the VB6 dll was 
+called by a different executable.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

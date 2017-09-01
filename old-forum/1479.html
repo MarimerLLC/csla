@@ -1,0 +1,33 @@
+<html><header><title>Basic design questions</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Basic design questions</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/1479.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Crestline posted on Friday, October 13, 2006</h2>First off I want to thank everyone for all the advice offered.&nbsp; This forum is great!<br>
+<br>
+I have a basic application design type question I have been going back
+and forth on for quite sometime.&nbsp; We are creating a schedule
+application where the main form consists of a grid containing
+production items and a&nbsp; gantt chart containing&nbsp; the scheduled
+departments for these production items.&nbsp;&nbsp; With in these
+departments there are workcentre items.&nbsp; In the past, the old
+version, we would load everything (very slow) and manipulate everything
+in memory and on user demand (File|Save or on application close)
+everything would be saved out to the database.&nbsp; Now that we are
+rewriting it, I'd like to get some advice on what might be a better
+approach.<br>
+<br>
+In general, would you get rid of the 'global save' and have all edits
+update the database immediately?&nbsp; I can see then how we need to
+build specific objects for each function (in this case, the edit/add
+forms).&nbsp; In doing so, I'm a little concerned on how the main form
+would get updated when the editing forms save and close.&nbsp; Like
+what would the procedure be to reload a given object and not the entire
+collection?<br>
+<br>
+The current structure mapped out at the moment is basically like our
+old version but I can't help but think that this is just wrong.&nbsp;
+One great big object and its children, grand children that get passed
+between forms, etc...<br>
+<br>
+I'm very new to OO programming, love it, but get a little disoriented
+and find myself going back to data centric design.&nbsp; Any insight,
+links, literature recommendations, etc. would be grateful.<br>
+<br>
+<br>
+<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,8 @@
+<html><header><title>IsDirty == True unexpectedly</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>IsDirty == True unexpectedly</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/12338.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>TSF posted on Wednesday, January 29, 2014</h2><p><strong>[CSLA 4.5.3 in a WinRT app.]</strong></p>
+<p>I&#39;ve got a BusinessBase parent object that has three object properties: one BusinessBase, one BusinessListBase and one ReadOnlyListBase.</p>
+<p>When I save the view, my VM does the following:</p>
+<p style="padding-left:30px;">Model.ApplyEdit();<br />Model.MyBaseObject = await Model.MyBaseObject.SaveAsync();<br />Model.MyListBaseObject = await Model.MyListBaseObject.SaveAsync();</p>
+<p>Everything saves fine; however, the Model.IsSelfDirty unexpectedly remains True. When I look at the individual object properties, each of them show IsDirty == False (as I would expect). The Model&#39;s EditLevel is also 0. The Model has no other properties that I&#39;ve defined.</p>
+<p>What am I missing? Thanks.</p>
+<p>Tim</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>TSF replied on Wednesday, January 29, 2014</h2><p>Sorry, it just occurred to me that I could (and need to) simply call Model.SaveAsync():</p>
+<p style="padding-left:30px;">Model = await Model.SaveAsync();</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

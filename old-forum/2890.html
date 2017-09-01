@@ -1,0 +1,53 @@
+<html><header><title>Need an ISmartField interface</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Need an ISmartField interface</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/2890.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>david.wendelken posted on Wednesday, May 16, 2007</h2><P>Hey Rocky!</P>
+<P>Some of us have created classes emulating SmartDate for other datatypes (such as SmartInt16, SmartInt32, SmartInt64, SmartFloat, SmartBool, etc.).</P>
+<P>I've&nbsp;created an interface to assign to all the locally created Smart structs.&nbsp; It's called ISmartField.</P>
+<P>It makes it much easier (for me at least!) to write generic&nbsp;rule libraries that deal with all the different Smart fields.</P>
+<P>&nbsp;</P>
+<P>It would be really nice if the ISmartField interface was added to CSLA and SmartDate implemented it.</P>
+<P>The interface doesn't actually have&nbsp;to do anything - it just lets us know we can common Smart struc methods like Parse, DBValue, etc.</P>
+<P>I know it's possible to do this other ways, but this seems to be a really pragmatic, productive&nbsp;way to do this.&nbsp; (Of course, maybe I just need to learn yet another new trick.)</P>
+<P><FONT color=#0000ff size=2>using</FONT><FONT size=2> System;<BR></FONT><FONT color=#0000ff size=2>using</FONT><FONT size=2> System.Collections.Generic;<BR></FONT><FONT color=#0000ff size=2>using</FONT><FONT size=2> System.Text;</P></FONT><FONT color=#0000ff size=2>
+<P>namespace</FONT><FONT size=2> Csla<BR>{</P>
+<BLOCKQUOTE dir=ltr>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;summary&gt;<BR></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> All classes that resemble SmartDate implement this interface.<BR></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> Sadly, the methods and properties we actually need to specify in this interface <BR>/// cannot be specified, because:<BR></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> <BR></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> a) one does not specify properties in an interface, and<BR></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> b) one does not specify static methods in an interface.<BR></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> So, this interface mostly lets other code know whether it is dealing with one of the Smart family of <BR></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> data structures. The key methods and properties must be invoked via reflection.<BR></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;/summary&gt;<BR></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>interface</FONT><FONT size=2> </FONT><FONT color=#008080 size=2>ISmartField<BR></FONT><FONT size=2>{<BR></FONT><FONT size=2>}</P></BLOCKQUOTE>
+<P>}</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>What do others think?</P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>DansDreams replied on Thursday, May 17, 2007</h2><P>What need have you found for SmartInt32 that isn't solved by the .NET framework's nullable int?&nbsp; </P>
+<P>I have found them&nbsp;adequate and quite useful, especially with the null-aware DevExpress input controls.&nbsp; I haven't seen a need to even use SmartDate any more.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Brian Criswell replied on Thursday, May 17, 2007</h2>How do you handle cases where null is the maximum date?<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>DansDreams replied on Thursday, May 17, 2007</h2><P>Brian, was your question to me?</P>
+<P>If so, I don't know what you mean.&nbsp; All that max/min date&nbsp;stuff in SmartDate was created to solve the problem of DateTime being a value type, and therefore not nullable, which means there was no way to preserve a true null from the database into the BO and back to the database.</P>
+<P>DateTime? accomplishes exactly that.</P>
+<P>What more is necessary?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Brian Criswell replied on Thursday, May 17, 2007</h2>The classic example is sorting start dates vs sorting end dates.&nbsp; For start dates a null start date would be early than a filled in start date.&nbsp; This would fit in with how I understand DateTime? to sort.&nbsp; However, for end dates you would want a null end date to be later than a filled in end date.&nbsp; How would this work?<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>david.wendelken replied on Thursday, May 17, 2007</h2><P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>Brian Criswell:</strong></div><div>The classic example is sorting start dates vs sorting end dates.&nbsp; For start dates a null start date would be early than a filled in start date.&nbsp; This would fit in with how I understand DateTime? to sort.&nbsp; However, for end dates you would want a null end date to be later than a filled in end date.&nbsp; How would this work?<BR></div></BLOCKQUOTE></P>
+<P>Exactly!&nbsp; Having a class that treats an empty value as the lowest or highest possible value is incredibly handy.&nbsp; That's one of the two reasons I want SmartInt16, SmartDecimal, etc.&nbsp; I sometimes need to deal with the same problem in those data types.</P>
+<P>The other reason has to do with mental bandwidth.&nbsp; I have enough to learn as it is. Consistently using SmartDates (etc.) for nulls and for min/max handling is simpler because it is one less thing to have to learn just to get a program out the door. :)&nbsp;&nbsp; And that learning curve has to be paid by every programmer on the team, so reducing learning curve costs is important.</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, May 18, 2007</h2>I did add this idea to the wish list.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>DansDreams replied on Friday, May 18, 2007</h2><P>Interesting.&nbsp; One of the reasons I&nbsp;prefer using the DateTime? instead of the SmartDate is because of the learning curve issue, which is approximately nothing in my case IMO.</P>
+<P>The sorting issue has not bit me, but that's probably because many of the DevExpress tools seem to have their own sortable wrapper functionality, and I haven't had a specific case of needing to sort a list will nulls.</P>
+<P>Good knowledge to have though.&nbsp; Thanks for esplainin' Lucy.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JTWebMan replied on Thursday, March 20, 2008</h2>
+
+<p class="MsoNormal">Actually I think the reason would be because you can handle
+user input as string and can set the format of the output all in the business
+objects using a factory object. This saves from having to set it in the UI
+code. You also can allow the user to enter in codes like&nbsp;'m' for
+Integer.MaxValue or 'mi' for Integer.MaxValue and could then change thing to
+the integer values. Date time can take advantage of this more adding ’t’ for
+today, 'y' for yesterday, etc... Also if you had a Float and Double one you
+could set the format as well which could help out a lot! I only wish Rocky
+would have written a Smart Field for each value type. It would have saved us
+time on writing them ourselves. I also wrote my own interface for it and for smart
+date ended up using copy paste inheritance. </p>
+
+
+
+<p class="MsoNormal">I have debated on refactoring it using Nullable(Of Type) and
+just writing the convert from and to logic into a shared class. This seems more
+logical to me then maintaining all these structures, especially now that
+Nullables are full blown in VB.net 9.0.</p>
+
+
+
+
+
+<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, March 20, 2008</h2><P>I did add the ISmartField interface in 3.5. </P>
+<P>I also radically enhanced SmartDate with some type conversion capabilities that make it much nicer to work with. But if you look at the code, it totals up to quite a lot - so I'm sure not looking to wrap every primitive .NET type in a class like that <img src="/emoticons/emotion-1.gif" alt="Smile [:)]" /></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JTWebMan replied on Monday, April 07, 2008</h2>I did notice the the CSLA Contrib project does have a few others implemented. I looked into making one for a few different type but defiantly not all of them. It does seem like a ton of work but work that could pay off. I can see it being useful for Decimals, being able to set the places past the decimal to display, as well as the empty being max or min for sorting.<br><br>If I built a few could we add them to the framework? How do you deal with having empty Decimals, Integers, etc.. in you application? Do you not make them strings in your object like you do for smart dates or just do the conversion and validate in the UI code? Also now that LINQ is in CSLA it would be nice that the sorting when some of these fields are empty sorting how you want as null able types act different depending on the type and if its VB.net or C#. This was one of the big selling points for me to start using the smart date.<br><br>Thanks for adding the interface!<br><br>JT<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

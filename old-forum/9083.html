@@ -1,0 +1,8 @@
+<html><header><title>Possible Bug ViewModelBase Not Setting Properties</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Possible Bug ViewModelBase Not Setting Properties</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9083.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>rnb posted on Monday, June 14, 2010</h2><p>Hi,</p>
+<p> I encountered a bug working with CSLA Light 3.8 and I tested on the 4.0 beta as well.</p>
+<p>If I have an ERL as a model, removing the first child does not mark the view model&#39;s CanSave property.&nbsp; The second one triggers the CanSave though, but I suspect it is from the first change.</p>
+<p>It does not seem to be the case with ECL because the root object&#39;s BusinessBase.OnAddEventHooks(IBusinessObject child) method registers the INotifyCollectionChanged and fires the proper notifications to the ViewModelBase.&nbsp; Not in ExtendedBindingList&lt;T&gt;.OnAddEventHooks(T item) though, not sure if this is by design or not.</p>
+<p>Anyways if someone can confirm this, or point out my mistake, that would be awesome.</p>
+<p>Sample test project attached.</p>
+<p>Thanks.</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Monday, June 14, 2010</h2><p>Yes, this is a bug. I found it about a week ago in CSLA 4 - but the ViewModelBase code is pretty much the same in 3.8. I&#39;ll fix it in 3.8.4 (if I haven&#39;t already).</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,16 @@
+<html><header><title>Web App - DHTML or silverlight</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Web App - DHTML or silverlight</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5264.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>MarkB8 posted on Tuesday, August 19, 2008</h2><P>Hello,</P>
+<P>I want to develop a web application and I am not sure whether I should do it in DHTML or Silverlight. I could use the rich UI capabilities of Silverlight, but on the other hand <BR>Silverlight is heavy on the client and not many users installed it. Are there any solutions or suggestions?</P>
+<P>thank you very much</P>
+<P>mark</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, August 19, 2008</h2><P>I'm deep into the process of&nbsp;building CSLA Light right now, so I can offer some Silverlight insight. I'm not an AJAX expert, but as I understand it, the trick to success with AJAX is twofold:</P>
+<OL>
+<LI>Pick a good AJAX framework (I'm no help here, sorry)</LI>
+<LI>Budget to write the UI at least 3-4 times for different browsers</LI></OL>
+<P>I find it hard to get overly excited about spending huge amounts of time troubleshooting every browser out there and tweaking the javascript until it works everywhere (or at least there's a compromise everywhere). Just not my cup of tea...</P>
+<P>Silverlight offers a somewhat more consistent environment, though there are still some variations due to browser differences. Far fewer than with AJAX/DHMTL though.</P>
+<P>The challenge you'll face today with Silverlight is that it is in beta - and it has a fair number of bugs/quriks. You can usually work around them, but they are there and can cause a quite a bit of pain.</P>
+<P>CSLA Light can help to some degree, because we've been working through some of the primary pain points and building the workarounds/solutions into CSLA Light.</P>
+<P>But ultimately I think it comes down to this:</P>
+<P>Silverlight will allow you to run your business objects on the actual client. You can get a comparably interactive experience to WPF or Windows Forms while doing all your work in C# or VB. With CSLA Light, you can reuse a large percentage of your existing business object code when building a Silverlight application, and <EM>still</EM> get all that great user interactivity.</P>
+<P>AJAX/DHTML is still fundamentally a server-side world. Yes, you can run code in the client, but it won't be VB or C#, and you can't easily have the same code running on the client and the server. There's just a substantial impedance mismatch between the client world and server world when doing AJAX. And that can be OK - but you must architect for it, and plan for it, and develop a broader set of skills to do the same work.</P>
+<P>Ultimately I am convinced that Silverlight is going to become the dominant platform for business apps - not just on the web, but on the desktop too.</P>
+<P>In the short term though, the bugs and quirks in the beta make it pretty comparable to AJAX in terms of the difficulties you'll probably face in using it.</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

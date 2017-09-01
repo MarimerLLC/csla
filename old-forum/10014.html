@@ -1,0 +1,11 @@
+<html><header><title>Windows server 2008 &quot;Application Server&quot; server role required for CSLA?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Windows server 2008 &quot;Application Server&quot; server role required for CSLA?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10014.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>JCardina posted on Wednesday, February 02, 2011</h2><p>We&#39;re considering a new dedicated server rental from ServerBeach and the base OS is Windows server 2008 R2 Web Edition which does not come with the &quot;Application Server&quot; role.&nbsp; We can pay more per month to upgrade to a Standard Edition but we may not need it.</p>
+<p>We may be offering a demo hosted software solution on this server based on CSLA and it&#39;s early days yet but I&#39;m wondering if any part of CSLA is going to require that Application Server role if we are offering a service interface through WCF.&nbsp; It seems to impact on WCF but I can&#39;t determine if it will affect CSLA usage or not.</p>
+<p><br />I&#39;ve tried searching for this here and other places but Rocky&#39;s use of the term Application Server and &quot;role&quot; in another context has made it difficult to search for.&nbsp; </p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Wednesday, February 02, 2011</h2><p>CSLA .NET has pretty limited requirements:</p>
+<ol>
+<li>Microsoft .NET</li>
+<li>FullTrust in .NET</li>
+<li>Some http listener (usually IIS or now maybe AppFabric)</li>
+</ol>
+<p>The standard &quot;web server&quot; role is sufficient to get those things.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JCardina replied on Wednesday, February 02, 2011</h2><p>Thanks Rocky, appreciate it.</p>
+<p>Cheers!</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

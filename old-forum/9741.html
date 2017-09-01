@@ -1,0 +1,17 @@
+<html><header><title>WebServicePortal Implementation</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>WebServicePortal Implementation</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9741.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>adesoji posted on Wednesday, November 10, 2010</h2><p>I&#39;m relatively new to OOD, and I&#39;m consolidating my knowledge with a step-by-step, chapter-by-chapter implementation of CSLA (Expert VB 2005 BO). I&#39;m at Chapter 4, and I&#39;m somewhat stumped by the implementation of the WebServicePortal. The only guide I could find to implement the portal is in sidebar (pg 211) that says:</p>
+<p><i>&quot;Setting up the web services was a little tricky. Before creating the WebServicesProxy, I had to implement the WebServicePortal class ... and temporarily host Csla.dll in a virtual root. That allowed me to add a web reference from the Csla project. Once that web reference was established, I was able to create WebServicesProxy ...&quot;</i></p>
+<p>I&#39;d be most grateful for an outline of the steps to implement this portal, please.</p>
+<p>ade</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Wednesday, November 10, 2010</h2><p>This part of CSLA has little to do with OOD, and more to do with the mechanics of implementing a service. But I can explain what I did.</p>
+<p>With services, there&#39;s the service and the consumer. Typically the consumer is created by adding a service reference to the service - which implies that the service already exists. With Csla.dll this is a little tricky since the service and consumer code are in the same assembly. So you are sort of adding a service reference to yourself.</p>
+<p>Still, this implies that the service be created first, so that&#39;s what I did - implement the host part of the data portal. But you still need to <em>actually host the service</em> in order to add the service reference.</p>
+<ol>
+<li>Implement the host part of the data portal</li>
+<li>Compile the project so you have a Csla.dll</li>
+<li>Open a new instance of VS and create a temporary web project to actually host Csla.dll and expose the service, and run that web project</li>
+<li>Back in the Csla project (original instance of VS) add a service reference to your temporary service, thus adding the client code for the service into the Csla project</li>
+<li>Save the Csla project</li>
+<li>Close and discard the temporary web project</li>
+</ol>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>adesoji replied on Thursday, November 11, 2010</h2><p>Ta, very much, for your response and patience, Rocky. My reference to consolidating OOD knowledge pertained to the book in its entirety (not just the portal implementation). By the time I complete the Csla project and the ProjectTracker, I hope to have consolidated all the OOD knowledge I&#39;ve gleaned from here, there and everywhere; the book is priceless in that regard. And, contrary to what my earlier post may suggest, I honestly find the book intuitive and easy to follow.</p>
+<p>Thanks</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

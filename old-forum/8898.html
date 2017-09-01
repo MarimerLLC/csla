@@ -1,0 +1,25 @@
+<html><header><title>Async Socket Callback in a Broker (Middle Server) influence DataPortal Async BeginFetch Callback</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Async Socket Callback in a Broker (Middle Server) influence DataPortal Async BeginFetch Callback</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/8898.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>edreyes77 posted on Friday, May 07, 2010</h2><p>Guys can someone shed some light on a DataPortal/Socket issue please.</p>
+<p>I have a Silverlight client&nbsp;making calls to a .Net Server(Broker) through a DataPortal in Async calls using BeginFetch.</p>
+<p>Within the Broker I use a&nbsp;ObjectFactory where in the Fetch I&nbsp;am using Socket connections(ConnectAsync) and Socket sends(SendAsync) and then my callbacks use Receive.</p>
+<p>I encountered an issue as the callback for the Socket SendAsync in my Broker&nbsp;is calling the the callback in my Silverlight client that is awaiting a response from the Broker Server.&nbsp; Since, I am not exiting the Broker correctly then my return Object value is null.&nbsp; </p>
+<p>Can anyone shed any light on what might be causing this?&nbsp; Am I allowed to used sockets calls in a middle tier server -- that has been called from a Silverlight client -- to make calls to an old application server that uses sockets?</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Friday, May 07, 2010</h2><p>Do you have appropriate blocking code to make sure the primary request thread doesn&#39;t complete until those async calls finish?</p>
+<p>Async coding on the server is different from the client, because the server is stateless. When the primary request thread completes, that&#39;s it - end of story on the server. Any outstanding async operations may complete, but their results will be ignored, because the call already completed.</p>
+<p>So you need to make sure to use thread sync primitives to ensure that the primary thread is blocked until the async tasks finish, thus ensuring that the primary thread doesn&#39;t complete before all server activity is finished.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>edreyes77 replied on Friday, May 07, 2010</h2><p>That did the trick.&nbsp;&nbsp; I was waiting in a loop with&nbsp;calls to sleep, but I did not realize I had an error and was throwing an exception in my logic.</p>
+<p>This caused the Fetch function to exit and my callback on the client to be called.&nbsp; I added code in the client codeback to handle errors as well as</p>
+<p>I fixed the error and will also change to use better synchronization.</p>
+<p>If I&nbsp;am going to process a long process from a dataportal fetch and go into synchronization awaiting a result from the socket callback,</p>
+<p>Is there a way to allow other silverlight clients to make calls into this Broker Service?</p>
+<p>Your book indicates that back end processing should not be interactive.&nbsp; Does this indicate a server using a data portal for entry</p>
+<p>can only process one message at a time because until the fetch returns it will block other messages from coming into the dataportal based</p>
+<p>server?</p>
+<p>Can CSLA support and interactive backend?</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Saturday, May 08, 2010</h2><p>Each client request will get its own request thread on the server, that&#39;s the way ASP.NET works (and if you are using WCF or Remoting or asmx hosted in IIS, you are using ASP.NET).</p>
+<p>So that primary request thread we&#39;re talking about - that&#39;s unique to a specific client request, and there can be many simultaneous client requests.</p>
+<p>There&#39;s a limit of course. Long-running operations on the server are fine, but can radically reduce scalability, which just means you might need more servers in a load-balanced web farm. At this point we&#39;re just talking about normal ASP.NET behaviors and the realities of server-side coding, so there are tons and tons of books and other materials that cover this sort of thing.</p>
+<p>But with a modern server, even with lots of long-running server operations you should be able to handle many clients at the same time.</p>
+<p>Generally the .NET thread pool has 25 threads per CPU core. These request threads come from the pool, and your background threads probably do too, so that should give you some idea how many threads you&#39;ll be consuming. This post might also be helpful:</p>
+<p><a href="http://www.lhotka.net/Article.aspx?area=10&amp;id=1049435b-6b05-412a-8bad-62869b1f1074">http://www.lhotka.net/Article.aspx?area=10&amp;id=1049435b-6b05-412a-8bad-62869b1f1074</a></p>
+<p>&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

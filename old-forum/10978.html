@@ -1,0 +1,18 @@
+<html><header><title>DB2 Time and System.TimeSpan conversion</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>DB2 Time and System.TimeSpan conversion</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10978.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>dblwizard posted on Monday, December 12, 2011</h2><p>Howdy,</p>
+<p>I&#39;m working with CSLA and DB2 and running into an issue.&nbsp; DB2 has a &quot;TIME&quot; type that maps to a .net TimeSpan type.&nbsp; But the CSLA datareader object does not have a &quot;GetTime&quot; or &quot;GetTimeSpan&quot; function.</p>
+<p>2 Questions:</p>
+<p>1.&nbsp; Can we get that added to the CSLA library.</p>
+<p>2.&nbsp; Any suggestions as a way to get around this in the mean time?</p>
+<p>Thanks</p>
+<p>dbl</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Monday, December 12, 2011</h2><p>You can create your own subclass and extend SafeDataReader like this: </p>
+<pre style="font-family:Consolas;font-size:13px;color:black;background:none repeat scroll 0% 0% #fafafa;">&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">class</span>&nbsp;<span style="color:#2b91af;">MySafeDataReader</span>&nbsp;:&nbsp;<span style="color:#2b91af;">SafeDataReader</span>
+&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;MySafeDataReader(<span style="color:#2baaaf;">IDataReader</span>&nbsp;dataReader&nbsp;)&nbsp;:&nbsp;<span style="color:blue;">base</span>(dataReader)
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;System.<span style="color:#2b91af;">TimeSpan</span>&nbsp;GetTime(<span style="color:blue;">string</span>&nbsp;field&nbsp;)
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:green;">//&nbsp;implementation&nbsp;goes&nbsp;here......</span>
+&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;}</pre></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

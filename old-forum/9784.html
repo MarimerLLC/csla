@@ -1,0 +1,50 @@
+<html><header><title>Custom rule with a parameter of type ReadOnlyListBase</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Custom rule with a parameter of type ReadOnlyListBase</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9784.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>lazaroms posted on Friday, November 19, 2010</h2><p>Hi all:</p>
+<p>Can I pass a generic ReadOnlyListBase as a parameter?</p>
+<p>I need to implement a custom rule wich has in the ruleargs a ReadOnlyListBase.</p>
+<p>It will be a rule to check if the list has an element inside, comparing the Ids.</p>
+<p>I have a BO for an user, and the user can work in several offices but not in all offices. Those offices are in a list as a property of the User BO. So the UI can assign and change the office selecting it from the list.</p>
+<p>I want to implement a validation rule in order to check that the selected office be a member of the officelist.</p>
+<p>My idea is implementing a rule and passing the officelist and office Id as a parameter but and I want to implement a generic rule because it will use in other BO with other lists.</p>
+<p>Thanks in advance,</p>
+<p>&nbsp;</p>
+<p>Lazaro Manuel</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Friday, November 19, 2010</h2><p>There&#39;s no way to pass parameters to a rule. </p>
+<p>Well, that&#39;s not <em>strictly</em> true in CSLA 4.</p>
+<p>Rules are associated with a type or property at a static level. So you can pass a static parameter - parameter values that are immutable over the entire lifetime of the app, and that can be shared across all instances of business objects using that rule.</p>
+<p>So you could pass a list of US state codes for example, because that&#39;d be immutable for the lifetime of the app.</p>
+<p>But you couldn&#39;t pass a list of region code specific to a division of your sales group, because that could vary during the apps&#39; lifetime.</p>
+<p>The thing is, objects that are static and immutable over the app&#39;s lifetime don&#39;t need to be passed as a parameter, because you usually implement them as cached singletons - so any code can get that object at any time. So there&#39;s no reason to ever pass them as a parameter.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Saturday, November 20, 2010</h2><p>Hi,</p>
+<p>Where do you store the User BO?&nbsp;&nbsp; ApplicationContext.ClientContext or in the Principal object?</p>
+<p>I would prefer to allow the rule to get access to the User BO and validate that the value is in the actual list&nbsp; rather than sending the list as a parameter to the rule. </p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>lazaroms replied on Saturday, November 20, 2010</h2><p>Thanks for your reponse.</p>
+<p>I think I&#39;ve solved the problem and I&#39;ll tell you how, please check my solution and tell me if it well done.</p>
+<p>The officelist is a property of my identity object.</p>
+<p>I&#39;ve implemented a rule and I tried to make a generic rule for future uses.</p>
+<p>I&acute;ve creted an interface( IExistsIdInList ) for all lists which wants to search for an element via his Idelement. This interface has just one method&nbsp; (ExistsElement)</p>
+<p>So, this is my custom rule.</p>
+<p><b><i>#Region &quot; ExisteElementInList &quot;<br /><br />&nbsp; &lt;System.Diagnostics.CodeAnalysis.SuppressMessage(&quot;Microsoft.Design&quot;, &quot;CA1062:ValidateArgumentsOfPublicMethods&quot;)&gt; _<br />&nbsp; Public Function ExisteElementInList(ByVal target As Object, ByVal e As RuleArgs) As Boolean<br /><br />&nbsp;&nbsp;&nbsp; Dim args As ExistsElementInListRuleArgs = CType(e, ExistsElementInListRuleArgs)</i></b></p>
+<p><b><i>&nbsp;&nbsp;&nbsp; Dim value As Guid = CType((CallByName(target, e.PropertyName, CallType.Get)), Guid)</i></b></p>
+<p><b><i>&nbsp;&nbsp;&nbsp; Dim mylist As IExistsIdInList = CType((CallByName(target, args.TheList, CallType.Get)), IExistsIdInList)<br /><br />&nbsp;&nbsp;&nbsp; If Not mylist.ExistsElement(value) Then<br /><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; e.Description = String.Format(&quot;{0} &quot; &amp; My.Resources.OwnRules.ExistsElementInListRule, e.PropertyFriendlyName)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return False<br /><br />&nbsp;&nbsp;&nbsp; Else<br /><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return True<br /><br />&nbsp;&nbsp;&nbsp; End If<br /><br />&nbsp; End Function<br /><br />&nbsp; Public Class </i><i>ExistsElementInListRuleArgs</i><br /></b><i><b>&nbsp;&nbsp;&nbsp; Inherits DecoratedRuleArgs<br /><br />&nbsp;&nbsp;&nbsp; Public ReadOnly Property TheList() As String<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Get<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return Me(&quot;ListName&quot;)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Get<br />&nbsp;&nbsp;&nbsp; End Property<br /><br />&nbsp;&nbsp;&nbsp; Public Sub New(ByVal propertyInfo As Core.IPropertyInfo, ByVal listname As String)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; MyBase.New(propertyInfo)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Me(&quot;ListName&quot;) = listname<br />&nbsp;&nbsp;&nbsp; End Sub<br /><br />&nbsp; End Class<br /><br />#End Region</b><br /></i></p>
+<p>Because the Officelist is a property of my identity and implements the IExistsIdInList, I can get the list doing a callbyname. I pass the name of the list inside the ruleargs.</p>
+<p>Once I have the office I call his ExistsElement method with the validated property value.</p>
+<p>I think this is working fine but a Ihave a new problem. When I run the project VB.NET does not find the resource I use to form the description in case the rule is broken.</p>
+<p><i><br /></i></p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Saturday, November 20, 2010</h2><p><div style='padding-left: 50px;background-color:silver'><b>JonnyBee<br></b>
+<p>Where do you store the User BO?&nbsp;&nbsp; ApplicationContext.ClientContext or in the Principal object?</p>
+</div></p>
+<p>Neither.</p>
+<p>If the read-only object&#39;s factory implements simple static caching like I show in the book, any code anywhere can simply call the factory to get that cached value. No need to store it anywhere else.</p>
+<p>You absolutely NEVER want to put something like that in the Principal object - remember that the Principal object is serialized to the server, so that&#39;d have a big perf impact!</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>lazaroms replied on Monday, November 22, 2010</h2><p>Sorry friends, when I said User Bo I was referring to my identity object.</p>
+<p>Rocky, the office list is not static, is &quot;almost static&quot;&nbsp; :-) because there&#39;s a small probability of an user get <span id="result_box" class="short_text" lang="en"><span>authorized/</span></span><span id="result_box" class="short_text" lang="en"><span>unauthorized</span></span><span id="result_box" class="short_text" lang="en"><span> to work with an office during life-cycle of the app.</span></span></p>
+<p><span class="short_text" lang="en"><span>Rocky in what chapter do you talk about simple static caching in the VB 2008 business objects?</span></span></p>
+<p>Anyways I&#39;ll take into account the Rocky observation and I&#39;ll implement a function to return the officelist when needed.</p>
+<p>Thanks,</p>
+<p>&nbsp;</p>
+<p>Lazaro Manuel</p>
+<p>&nbsp;</p>
+<p><span class="short_text" lang="en"><span><br /></span></span></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, November 22, 2010</h2><p>I don&#39;t know - I&#39;ve talked about static caching so often it is hard to remember. It isn&#39;t hard, this is the factory method section:</p>
+<p>private MyType _cache;</p>
+<p>public static void ClearCache()<br />{<br />&nbsp; _cache = null;<br />}</p>
+<p>public static GetMyType()<br />{<br />&nbsp; if (_cache == null)<br />&nbsp;&nbsp;&nbsp; _cache = DataPortal.Fetch&lt;MyType&gt;();<br />&nbsp; return _cache;<br />}</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>lazaroms replied on Monday, November 22, 2010</h2><p>Thanks Rocky.</p>
+<p>&nbsp;</p>
+<p>Page 556</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

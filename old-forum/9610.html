@@ -1,0 +1,37 @@
+<html><header><title>Property Status problems</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Property Status problems</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9610.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>hanspret posted on Thursday, October 07, 2010</h2><p>Hi&nbsp;</p>
+<p>How do one refresh the property status in WPF.&nbsp;</p>
+<p>I have a button where the user can cancel edit. I call CancelEdit on the object and set the object to null all the controls behave like expected except the Property Status control. It keep on showing the Business Rule Error image. Like I said I even tried refresing the DataContext of the Grid but nothing happens.</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Thursday, October 07, 2010</h2><p>What version of CSLA are you using? There was a bug for a while that caused this behavior, but it is fixed in the most current version.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>hanspret replied on Thursday, October 07, 2010</h2><p>I am using the newest version 4.0.1. but I got a workaround. </p>
+<p>&nbsp;</p>
+<p>The problem was: </p>
+<p>When you set the datacontext of a grid the propertyStatus works well by checking the Business rules and displaying the error icon. In my case when the user hit cancel I do the following:</p>
+<p>MyController.SelectedBudget = null;</p>
+<p>grdMain.DataContext = MyController.SelectedBudget</p>
+<p>By setting the DataContext effectively null (SelectedBudget is null) the propertyStatus didn&#39;t update and the error message still displayed on the screen.</p>
+<p>My Work around:</p>
+<p>I modified the GoToStatus method on the PropertyStatus class in Csla.Xaml to the following:</p>
+<p>
+<p>&nbsp;&nbsp;protected virtual void GoToState(bool useTransitions)</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;{</p>
+<p>&nbsp;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;if (_loading) return;</p>
+<p>&nbsp;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;BusyAnimation busy = FindChild(this, &quot;busy&quot;) as BusyAnimation;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;if (busy != null)</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;busy.IsRunning = IsBusy;</p>
+<p>&nbsp;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;string newState;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;if (IsBusy)</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;newState = &quot;Busy&quot;;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<b>else if (IsValid || DataContext == null)</b></p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;newState = &quot;PropertyValid&quot;;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;else</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;newState = RuleSeverity.ToString();</p>
+</p>
+<p>&nbsp;</p>
+<p>I don&#39;t know if this is the right way but it is working for me. My thinking was, if datacontext is null clear all error messages</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, October 07, 2010</h2><p>That shouldn&#39;t be necessary. When you call CancelEdit that will cause OnUnknownPropertyChanged to be called, which will basically cause all bound properties to refresh. That should trigger PropertyStatus to re-read the object&#39;s metastate.</p>
+<p>The only thing I can think, is that maybe there&#39;s a bug in PropertyStatus where it doesn&#39;t refresh if the PropertyName provided from the event is null or string.Empty - which is what&#39;ll happen on a cancel.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Thursday, October 07, 2010</h2><p>PropertyStatus checks for both PropertyName and &quot;empty&quot; propertyName so it should work fine with OnUnknownPropertyChanged:</p>
+<p>
+
+<pre style="font-family:consolas;">&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#cc7832;">void</span>&nbsp;source_PropertyChanged(<span style="color:#cc7832;">object</span>&nbsp;sender,&nbsp;<span style="color:#ffc66d;">PropertyChangedEventArgs</span>&nbsp;e)<br />&nbsp;&nbsp;&nbsp;&nbsp;{<br /><b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#cc7832;">if</span>&nbsp;(e<span style="font-weight:400;">.</span>PropertyName&nbsp;<span style="font-weight:400;">==</span>&nbsp;BindingPath&nbsp;<span style="font-weight:400;">||</span>&nbsp;<span style="color:#cc7832;">string</span><span style="font-weight:400;">.</span>IsNullOrEmpty(e<span style="font-weight:400;">.</span>PropertyName))</b><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;UpdateState();<br />&nbsp;&nbsp;&nbsp;&nbsp;}</pre>
+</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, October 07, 2010</h2><p>I thought so - primarily because I have apps where this is all working just fine.</p>
+<p>So then I suggest that there&#39;s something strange with the way you are using CancelEdit or have your bindings set up. Are you using a CslaDataProvider or a ViewModel&lt;T&gt; or something else?</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,30 @@
+<html><header><title>How to delete many items in EditableRootList at the same time?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>How to delete many items in EditableRootList at the same time?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/867.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>phucphlq posted on Wednesday, August 09, 2006</h2><P>Sorry, my english is not well.</P>
+<P>Help me! I have a List&lt;int&gt; with its items are indexes of items in EditableRootList.</P>
+<P>I do:</P>
+<P>&nbsp;&nbsp;&nbsp;for(int i = 0; i &lt; List.Count; i++)</P>
+<P>&nbsp;&nbsp;&nbsp;{</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;EditableRootList.RemoveAt(i)</P>
+<P>&nbsp;&nbsp;&nbsp;}</P>
+<P>&nbsp;But I catch an exception: out of arrange. Because when remove a item in EditableRootList, index is changed.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>pelinville replied on Wednesday, August 09, 2006</h2><DIV>loop backwards</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>for(int i = List.Count -1;&nbsp;i &gt;&nbsp;-1; i--)</DIV>
+<DIV>{</DIV>
+<DIV>&nbsp;&nbsp;&nbsp;List.RemoveAt(i)</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>}</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>or something like that</DIV></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>phucphlq replied on Wednesday, August 09, 2006</h2><P>Sorry, Above code is incorrect</P>
+<P>It is here:</P>
+<P>&nbsp;for(int i = 0; i &lt; List.Count; i++)</P>
+<P>&nbsp;&nbsp;&nbsp;{</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;EditableRootList.RemoveAt(List[ i ])</P>
+<P>&nbsp;&nbsp;&nbsp;}</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Q Johnson replied on Thursday, August 10, 2006</h2><P>Begin with the largest index item, then the next smallest, next smallest...&nbsp; </P>
+<P>Also, your code removes ALL the items.&nbsp; You have a list of integers like {2,11,24,26,49}, right?&nbsp; And you only want to remove items 2, 11, 24, 26, and 49 from the EditableRootList, right?</P>
+<P>I don't know C# very well, but I'm going to assume that the way you refer to an item in a list by its listindex is "List(Index).Value".&nbsp; If that were true, your code should look more like this:</P>
+<P>&nbsp;</P>
+<P>&nbsp;&nbsp;for(int i = List.Count-1; i &gt; -1; i--)</P>
+<P>&nbsp;&nbsp;&nbsp;{</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;EditableRootList.RemoveAt(List(i).Value)</P>
+<P>&nbsp;&nbsp;&nbsp;}</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Fabio replied on Thursday, August 10, 2006</h2>EditableRootList is a template hinerited from&nbsp; BusinessListBase <br>You can change your hinerited class from BusinessListBase and public a method that use the implementation of BusinessListBase.<br>Something like:<br>public void DeleteAllItems() //&lt;&lt;&lt; your method<br>{<br>base.ClearItems();<br>}<br><br>Bye.<br>Fabio.<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

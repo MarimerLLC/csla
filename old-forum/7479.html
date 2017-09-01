@@ -1,0 +1,13 @@
+<html><header><title>CSLA in VSTO Excel Addin</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA in VSTO Excel Addin</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/7479.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>San S posted on Wednesday, August 19, 2009</h2><P>I am using CSLA in VSTO Excel addIn project. The application working fine with 2 tier mode but in 3 tier mode I am getting the following error:</P>
+<P>"Principal must be of type BusinessPrincipal, not System.Security.Principal.GenericPrincipal".</P>
+<P>&nbsp;It would be helpful if any body reply the solution for same.</P>
+<P>&nbsp;</P>
+<P>Thanks</P>
+<P>S</P>
+<P>---------------------------------------------------</P>
+<P><BR>I trace the issue and found the issue exactly at:</P>
+<P>result = Deserialize(wsvc.Fetch(Serialize(request)));</P>
+<P>Error Message: <BR>&nbsp;"Principal must be of type BusinessPrincipal, not System.Security.Principal.GenericPrincipal"<BR>&nbsp;</P>
+<P>This code works when using a local dataproxy but then when switching to calling a WebServicesProxy get this error. </P>
+<P>any help would be great.</P>
+<P><BR>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, August 24, 2009</h2><P>Set your server's CslaAuthentication setting to Windows to make the data portal ignore the principal type.</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

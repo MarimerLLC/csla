@@ -1,0 +1,18 @@
+<html><header><title>Using CslaAuthorizationProvider</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Using CslaAuthorizationProvider</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10468.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>HK.Lee posted on Monday, June 27, 2011</h2><p>Hi all,</p>
+<p>My app is SL4 with Csla 4.1. User roles become bloating so I&#39;m trying to change into custom identity implementing IAuthorizeDataPortal . I changed app settings of web cofig and set my SL bootstrapper to set authenticatetype into &#39;windows&#39; as well as implementing IAuthorizeDataPortal ,which is well addressed in DataPortal.pdf e-book. So far so good. When I opened App and send first rqst,&nbsp;AuthorizeDataportal runs fine and set user roles through my databse.</p>
+<p>However, in some rqsts, received exception that user has no role to fetch.&nbsp;&nbsp; I debug and compare between working and error rqst what &#39;s the difference, but no luck. The procedure is as follows after rqst ;</p>
+<p>1.WcfPortal.Fetch -&gt; 2.SilverlightRequestProcessor.Fetch -&gt; 3.<strong>DataPortal.Fetch</strong> -&gt;</p>
+<p>4.DataPortalClient.LocalProxy.Fetch -&gt; 5.Server.DataPortal.Fetch -&gt; 6.<strong>AuthorizeDataPortal.Authorize</strong></p>
+<p>The difference between working and error rqst is in <strong>step 3</strong>. In working rqst, all steps goes fine to the end&nbsp;but in error rqst,&nbsp; it stops there in <strong>!Csla.Rules.BusinessRules.HasPermission(Rules.AuthorizationActions.GetObject, objectType)</strong> and throw exception.</p>
+<p>At the step 3, AuthenticateType is &#39;windows&#39; and Authenticated is &#39;fase&#39; in both cases. Tried several hours but can&#39;t catch what&#39;s wrong. Both cases runs fine in AuthenticateType is not &#39;windows&#39; and is very simple method as such.</p>
+<p>MyCustomer.GetMyCutomer((o,e) =&gt;</p>
+<p>{</p>
+<p>});</p>
+<p>Any advice would be highly apprciated. Thanks in advance</p>
+<p>HK.Lee</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>HK.Lee replied on Tuesday, July 05, 2011</h2><p>Is there no one who can HELP me ?</p>
+<p>In case of&nbsp; failed request,&nbsp;Csla.AllicationContext.User.Identity is not my specific identity any more but &nbsp;system.generalized.idenity&nbsp;because&nbsp;IAuthorizeDataPortal is not touched so identity is not authenticated. Is there any good method to debug or something to refer ? I&#39;m running app server in vs2010&nbsp;.</p>
+<p>Any advice wud be appreciated. Thanks inadvance.</p>
+<p>HK.Lee</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

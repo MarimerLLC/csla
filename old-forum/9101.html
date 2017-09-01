@@ -1,0 +1,258 @@
+<html><header><title>Shell with Multi Views CSLA.net 4 Silverlight MVVM bxf</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Shell with Multi Views CSLA.net 4 Silverlight MVVM bxf</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9101.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>jjloubser@symbioses.co.za posted on Thursday, June 17, 2010</h2><p>
+
+
+
+
+
+
+
+</p>
+
+ 
+  Normal
+  0
+  
+  
+  
+  
+  false
+  false
+  false
+  
+  EN-ZA
+  X-NONE
+  X-NONE
+  
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+  
+  MicrosoftInternetExplorer4
+  
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+  
+
+ 
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+ 
+
+<p>
+
+</p>
+
+
+
+<p>Hi</p>
+<p>my 1st project was a success in csla.net 3.8.2 Silverlight</p>
+<p>I am busy now with a project using csla.net 4 silverlight</p>
+<p>I got it to work like the shell, view models, ... I got the
+collective project to work</p>
+<p>I would like to use Lhotka&#39;s bxf shell project for navigating, we do not
+want to use advance navigation; I only want a page with multi views that can change
+2+ specific regions content, for example a login content and a middle page content.
+The login content can be replace with a marketing content, but the middle page
+content change all the time, also the main user control should change its
+navigation for full screen navigation also a view... </p>
+<p>I can fix this by fixing: I am struggling to get multi views on one
+page-shell-view:</p>
+<p>this code is my problem inside the view Model:</p>
+<p>:</p>
+<p>&nbsp;</p>
+<p>Shell.Instance.ShowView(<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &quot;StaffSense.LoginScreen,
+StaffSense&quot;,<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &quot;loginViewModelViewSource&quot;,<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; new LoginViewModel(),<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &quot;Content&quot;);</p>
+<p>&nbsp;</p>
+<p>Shell.Instance.ShowView(<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&quot;StaffSense.HomePage, StaffSense&quot;,<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&quot;homePageViewModelViewSource&quot;,<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; new
+HomePageViewModel(),<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&quot;Content&quot;);</p>
+<p class="MsoNormal">&nbsp;</p>
+<p class="MsoNormal">How do I show multi views in the same shell? </p>
+<p class="MsoNormal">I see that the collective project only use 1 view in the
+shell, but in the videos of Lhotka is describe that a shell can contains multi
+views ...</p>
+<p class="MsoNormal">I hope that I do not have to modify the bxf project? Or must
+create multi static shells?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jjloubser@symbioses.co.za replied on Thursday, June 17, 2010</h2><p>like this is not working :</p>
+<p>&nbsp;</p>
+<p>&nbsp;&lt;Border Grid.Column=&quot;6&quot; Grid.Row=&quot;4&quot; Margin=&quot;0,2,0,0&quot;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; BorderBrush=&quot;Black&quot; BorderThickness=&quot;2&quot; HorizontalAlignment=&quot;Right&quot; VerticalAlignment=&quot;Top&quot; Width=&quot;366&quot; Height=&quot;281&quot; Grid.ColumnSpan=&quot;3&quot;&gt;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;app:LoginScreen&nbsp; HorizontalContentAlignment=&quot;Stretch&quot; VerticalContentAlignment=&quot;Stretch&quot; <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; DataContext=&quot;{StaticResource loginViewModelViewSource}&quot;/&gt;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/Border&gt;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>the binding to the viewmodel is not working. it shows the view without loading the viewmodel</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Friday, June 18, 2010</h2><p>Bxf doesn&#39;t provide the actual shell - you provide that. The actual shell is your main form or usercontrol, and the viewmodel/presenter to which it is bound. That&#39;s where you write the code to handle the OnShowView event, which is where you put the content into the right region of the main form.</p>
+<p>The main form typically contains one or more ContentControl controls (or other controls that handle transitions, etc - any container control works really). Each of those content controls is bound to a property on the main form&#39;s viewmodel.</p>
+<p>So in the main form&#39;s viewmodel there&#39;s a handler for OnShowView, and that code just sets the viewmodel property to the new content (usually a usercontrol), and data binding updates the actual main form view.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jjloubser@symbioses.co.za replied on Saturday, June 19, 2010</h2><p>thank you <strong>RockfordLhotka. The problem in my code was that&nbsp;it did not&nbsp;run the presenter events you are talking about, but after I fix that I could see the magic of your bxf and viewModel framework. Only thing I can do now is to add more contentcontrols and adjust my case statement, thanks man...</strong></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jjloubser@symbioses.co.za replied on Saturday, June 19, 2010</h2><p><strong>RockfordLhotka</strong></p>
+<p><strong>I got the collective project to work and understand it. I create my own project with a client and server side. The CollectiveIdentity is on the server side and shared on the client side, when the login verb of my LoginViewModel&nbsp;execute, it must execute a BeginFetch that run a method on this server side CollectiveIdentity file. Error:</strong></p>
+<p><strong>&lt;</strong>&nbsp;</p>
+<p><strong>An error occurred while trying to make a request to URI &#39;http://localhost:21658/WcfSlPortal.svc&#39;. This could be due to attempting to access a service in a cross-domain way without a proper cross-domain policy in place, or a policy that is unsuitable for SOAP services. You may need to contact the owner of the service to publish a cross-domain policy file and to ensure it allows SOAP-related HTTP headers to be sent. This error may also be caused by using internal types in the web service proxy without using the InternalsVisibleToAttribute attribute. Please see the inner exception for more details.</strong></p>
+<p><strong>&gt;</strong></p>
+<p><strong>- my web.config file is fine I think. I tried the collective project web.config file&nbsp;and my previouse web.config file both made no diffrence... &lt;but I think I need a better web.config file from you where we use business.server and business.client side projects; the web.config file from silverlight 3 and 4 have some diffrences&gt;</strong></p>
+<p><strong>- my start up project is the .web project for this was my common problem...</strong></p>
+<p><strong>- what else can I be missing?</strong></p>
+<p><strong></strong></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jjloubser@symbioses.co.za replied on Saturday, June 19, 2010</h2><p>Here is my web.config file:</p>
+<p>&nbsp;</p>
+<p>&lt;?xml version=&quot;1.0&quot;?&gt;<br />&lt;configuration&gt;<br />&nbsp; &lt;appSettings&gt;<br />&nbsp;&nbsp;&nbsp; &lt;add key=&quot;CslaAuthentication&quot; value=&quot;Windows&quot;/&gt;<br />&nbsp; &lt;/appSettings&gt;<br />&nbsp; &lt;connectionStrings&gt;<br />&nbsp;&nbsp; </p>
+<p><br />&nbsp;&nbsp;&nbsp; &lt;!--Description: &lt;add name=&quot;MyModel_Entities&quot; connectionString=&quot;metadata=res://*/MyNamespace.MyModel.bin.Debug.MyModel.csdl|res://*/MyNamespace.MyModel.bin.Debug.MyModel.ssdl|res://*/MyNamespace.MyModel.bin.Debug.MyModel.msll;provider=System.Data.SqlClient;provider connection string=&amp;quot;Data Source=local;Initial Catalog=MyModelDatabase;Integrated Security=True;MultipleActiveResultSets=True&amp;quot;&quot; providerName=&quot;System.Data.EntityClient&quot; /&gt;--&gt;</p>
+<p>&nbsp;&nbsp;&nbsp; &lt;add<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; name=&quot;StaffSenseDb&quot;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; connectionString=&quot;Data Source=xxx;Initial Catalog=xxx;Password=xxx;User ID=sa;MultipleActiveResultSets=True&quot;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; providerName=&quot;System.Data.SqlClient&quot;/&gt;</p>
+<p><br />&nbsp; &lt;/connectionStrings&gt;<br />&nbsp; &lt;system.web&gt;<br />&nbsp;&nbsp;&nbsp; &lt;!-- <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Set compilation debug=&quot;true&quot; to insert debugging <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; symbols into the compiled page. Because this <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; affects performance, set this value to true only <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; during development.<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; --&gt;<br />&nbsp;&nbsp;&nbsp; &lt;compilation debug=&quot;true&quot; targetFramework=&quot;4.0&quot;&gt;<br />&nbsp;&nbsp;&nbsp; &lt;/compilation&gt;<br />&nbsp;&nbsp;&nbsp; &lt;!--<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; The &lt;authentication&gt; section enables configuration <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; of the security authentication mode used by <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ASP.NET to identify an incoming user. <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; --&gt;<br />&nbsp;&nbsp;&nbsp; &lt;authentication mode=&quot;Windows&quot;/&gt;<br />&nbsp;&nbsp;&nbsp; &lt;!--<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; The &lt;customErrors&gt; section enables configuration <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; of what to do if/when an unhandled error occurs <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; during the execution of a request. Specifically, <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; it enables developers to configure html error pages <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; to be displayed in place of a error stack trace.</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;customErrors mode=&quot;RemoteOnly&quot; defaultRedirect=&quot;GenericErrorPage.htm&quot;&gt;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;error statusCode=&quot;403&quot; redirect=&quot;NoAccess.htm&quot; /&gt;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;error statusCode=&quot;404&quot; redirect=&quot;FileNotFound.htm&quot; /&gt;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/customErrors&gt;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; --&gt;<br />&nbsp;&nbsp;&nbsp; &lt;pages controlRenderingCompatibilityVersion=&quot;3.5&quot; clientIDMode=&quot;AutoID&quot;/&gt;<br />&nbsp; &lt;/system.web&gt;<br />&nbsp; &lt;!-- <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; The system.webServer section is required for running ASP.NET AJAX under Internet<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Information Services 7.0.&nbsp; It is not necessary for previous version of IIS.<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br />&nbsp;&nbsp;&nbsp; --&gt;<br />&nbsp; &lt;system.serviceModel&gt;<br />&nbsp;&nbsp;&nbsp; &lt;bindings&gt;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;basicHttpBinding&gt;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;binding name=&quot;MyBinding&quot;&gt;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;security mode=&quot;TransportCredentialOnly&quot;&gt;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;transport clientCredentialType=&quot;Windows&quot;/&gt;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/security&gt;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/binding&gt;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/basicHttpBinding&gt;<br />&nbsp;&nbsp;&nbsp; &lt;/bindings&gt;<br />&nbsp;&nbsp;&nbsp; &lt;behaviors&gt;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;serviceBehaviors&gt;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;behavior name=&quot;WcfPortalBehavior&quot;&gt;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;serviceMetadata httpGetEnabled=&quot;true&quot;/&gt;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;serviceDebug includeExceptionDetailInFaults=&quot;true&quot;/&gt;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/behavior&gt;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;behavior name=&quot;StaffSense.Web.WcfPortalBehavior&quot;&gt;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;serviceMetadata httpGetEnabled=&quot;true&quot;/&gt;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;serviceDebug includeExceptionDetailInFaults=&quot;false&quot;/&gt;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/behavior&gt;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;behavior name=&quot;StaffSense.Web.AuthenticationBehavior&quot;&gt;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;serviceMetadata httpGetEnabled=&quot;true&quot;/&gt;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;serviceDebug includeExceptionDetailInFaults=&quot;false&quot;/&gt;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/behavior&gt;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/serviceBehaviors&gt;<br />&nbsp;&nbsp;&nbsp; &lt;/behaviors&gt;<br />&nbsp;&nbsp;&nbsp; &lt;services&gt;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;service behaviorConfiguration=&quot;WcfPortalBehavior&quot; name=&quot;Csla.Server.Hosts.Silverlight.WcfPortal&quot;&gt;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;endpoint address=&quot;&quot; binding=&quot;basicHttpBinding&quot; contract=&quot;Csla.Server.Hosts.Silverlight.IWcfPortal&quot; bindingConfiguration=&quot;MyBinding&quot;&gt;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;identity&gt;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;dns value=&quot;localhost&quot;/&gt;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/identity&gt;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/endpoint&gt;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/service&gt;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;!--&lt;service behaviorConfiguration=&quot;StaffSense.Web.WcfPortalBehavior&quot; name=&quot;StaffSense.Web.WcfPortal&quot;&gt;<br />&nbsp;&nbsp;&nbsp;&nbsp;&lt;endpoint address=&quot;&quot; binding=&quot;wsHttpBinding&quot; contract=&quot;StaffSense.Web.IWcfPortal&quot;&gt;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;identity&gt;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;dns value=&quot;localhost&quot;/&gt;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/identity&gt;<br />&nbsp;&nbsp;&nbsp;&nbsp;&lt;/endpoint&gt;<br />&nbsp;&nbsp;&nbsp;&lt;/service&gt;<br />&nbsp;&nbsp;&nbsp;&lt;service behaviorConfiguration=&quot;StaffSense.Web.AuthenticationBehavior&quot; name=&quot;StaffSense.Web.Authentication&quot;&gt;<br />&nbsp;&nbsp;&nbsp;&nbsp;&lt;endpoint address=&quot;&quot; binding=&quot;wsHttpBinding&quot; contract=&quot;StaffSense.Web.IAuthentication&quot;&gt;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;identity&gt;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;dns value=&quot;localhost&quot;/&gt;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/identity&gt;<br />&nbsp;&nbsp;&nbsp;&nbsp;&lt;/endpoint&gt;<br />&nbsp;&nbsp;&nbsp;&lt;/service&gt;--&gt;<br />&nbsp;&nbsp;&nbsp; &lt;/services&gt;<br />&nbsp; &lt;/system.serviceModel&gt;<br />&lt;/configuration&gt;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JJLoubser replied on Wednesday, August 18, 2010</h2><p>we just had to creat a new project and play with the dll&#39;s references, bxf class you just have to understand the case statements and the events that is called, web config file did not play any role in the problems</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

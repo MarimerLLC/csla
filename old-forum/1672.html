@@ -1,0 +1,137 @@
+<html><header><title>Determine logical ExecutionLocation</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Determine logical ExecutionLocation</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/1672.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>als_uk posted on Friday, November 03, 2006</h2>&nbsp;&nbsp;&nbsp; I've not looked at the dataportal code lately (but should obviously check), but I need to determine whether I'm logically in a server i.e. my method has been called via a DataPortal method.<br><br>This is mainly to prevent accidental use of a Database class I have that deals with all connections etc.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>guyroch replied on Friday, November 03, 2006</h2><FONT size=2>
+<P><FONT color=#0000ff size=2>Voilà - C#</FONT></P>
+<P><FONT color=#0000ff size=2></FONT>&nbsp;</P>
+<P><FONT color=#0000ff size=2>if</FONT><FONT size=2> (Csla.</FONT><FONT color=#008080 size=2>ApplicationContext</FONT><FONT size=2>.ExecutionLocation == Csla.</FONT><FONT color=#008080 size=2>ApplicationContext</FONT><FONT size=2>.</FONT><FONT color=#008080 size=2>ExecutionLocations</FONT><FONT size=2>.Server)</P>
+<P>{</P>
+<P></FONT><FONT color=#008000 size=2>// Running on server</P></FONT><FONT size=2>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>else</P></FONT><FONT size=2>
+<P>{</P>
+<P></FONT><FONT color=#008000 size=2>// Running on client</P></FONT><FONT size=2>
+<P>}</P></FONT></FONT><FONT size=2></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Friday, November 03, 2006</h2>Just wanted to point out...<br><br>If you're not using remoting or any other data channel (ie, data access runs on the client) then the ExecutionLocation will alawys be Client.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>als_uk replied on Friday, November 03, 2006</h2>Sorry, perhaps I'm workding it wrong. ExecutionLocation does indeed say client when using the LocalProxy, and is therefore useless. I've been looking at the DataPortal, and I reckon that an extra property would be required: ApplicationContext.LogicalExecutionLocation. SetContext (in ApplicationContext) would then need to be modified to set LogicalExecutionLocation to Server when SetExecutionLocation is set to Server (to cover the Server hosts).<br><br>LogicalExecutionLocation would need setting to server locally prior to Fetch,etc calls (to the proxy object), and then reset after the proxy calls so we're back to Client LocationExecutionLocation.<br><br>That's the way I'd see it'd work. Again, probably worded as clearly as mud. I'm going to have a play with it anyway, as I can't see any other work around with the framework in it's existing incarnation.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Friday, November 03, 2006</h2>There is another way to check.. just can't find it right now.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>als_uk replied on Friday, November 03, 2006</h2>No worries. I'm going to trawl through Dataportal stuff a bit more, but probably try the changes. Cheers anyway<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Vaidal replied on Friday, May 25, 2007</h2><P><SPAN>ummmm... I need this.<o:p></o:p></SPAN></P>
+<P><SPAN>When I am developing I don't use remoting but I need to know if I am beyond DataPortal... Any ideas?<o:p></o:p></SPAN></P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Friday, May 25, 2007</h2>What are you trying to acomplish?&nbsp; Usually my code assumes that it won't be 'behind' the DP, other methods assume they will be (usually child data access methods).<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>als_uk replied on Friday, May 25, 2007</h2><div><div>Hi,<br><br>I'm trying to ensure that certain methods on static helper classes are only called while in the dataportal. This is to ensure everyone else's code is behaving and only doing data access via my data access class. So my helper class would check the logical execution location and ensure it was Server. If not an exception is thrown.<br><br>I know what's needed to modify it (not much), just haven't got round to do it as it is a bit of a pain synching our version of csla with the official release.<br><br><div>----- Original Message ----<br>From: ajj3085 &lt;cslanet@lhotka.net&gt;<br>To: "als_uk@yahoo.com" &lt;als_uk@yahoo.com&gt;<br>Sent: Friday, 25 May,
+ 2007 1:30:18 PM<br>Subject: Re: [CSLA .NET] Determine logical ExecutionLocation<br><br>What are you trying to acomplish?&nbsp; Usually my code assumes that it won't be 'behind' the DP, other methods assume they will be (usually child data access methods).<br><br><br><br>
+</div><br></div></div><br>
+		<hr> 
+New Yahoo! Mail is the ultimate force in competitive emailing. Find out more at the <a href="http://uk.rd.yahoo.com/mail/uk/taglines/default/championships/games/*http://uk.rd.yahoo.com/evt=44106/*http://mail.yahoo.net/uk/">Yahoo! Mail Championships</a>. Plus: play games and win prizes.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, May 25, 2007</h2><P>The basic rule is simple: if you are running in DataPortal_XYZ then you are logically in "server code", otherwise you are not. This only gets complex if your DataPortal_XYZ methods call other properties or methods, otherwise the rule is a simple one.</P>
+<P>If you want to create a location flag, you can use ApplicationContext.LocalContext to store such a flag. Just use a null reference check - if the value is null you are on the client, and non-null means on the server. Then in your custom base classes (which everyone should have) override DataPortal_OnDataPortalInvoke and set your flag to a non-null value, and override DataPortal_OnDataPortalInvokeComplete and delete the flag.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>als_uk replied on Friday, May 25, 2007</h2><div><div>Thanks for the reply. Had thought of using this (and yes we do have a set of custom base classes), just that it seemed a neater solution to have it as part of the ApplicationContext.<br><br><div>----- Original Message ----<br>From: RockfordLhotka &lt;cslanet@lhotka.net&gt;<br>To: "als_uk@yahoo.com" &lt;als_uk@yahoo.com&gt;<br>Sent: Friday, 25 May, 2007 3:10:34 PM<br>Subject: Re: [CSLA .NET] Determine logical ExecutionLocation<br><br><p>The basic rule is simple: if you are running in DataPortal_XYZ then you are logically in "server code", otherwise you are not. This only gets complex if your DataPortal_XYZ methods call other properties or methods, otherwise the
+ rule is a simple one.</p>
+<p>If you want to create a location flag, you can use ApplicationContext.LocalContext to store such a flag. Just use a null reference check - if the value is null you are on the client, and non-null means on the server. Then in your custom base classes (which everyone should have) override DataPortal_OnDataPortalInvoke and set your flag to a non-null value, and override DataPortal_OnDataPortalInvokeComplete and delete the flag.</p><br><br><br>
+</div><br></div></div><br>
+		<hr> 
+New Yahoo! Mail is the ultimate force in competitive emailing. Find out more at the <a href="http://uk.rd.yahoo.com/mail/uk/taglines/default/championships/games/*http://uk.rd.yahoo.com/evt=44106/*http://mail.yahoo.net/uk/">Yahoo! Mail Championships</a>. Plus: play games and win prizes.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Vaidal replied on Monday, May 28, 2007</h2><P>well... that runs ok... but it will incur some overhead...</P>
+<P>Maybe Rocky could add a property anywhere...</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>als_uk replied on Monday, May 28, 2007</h2><div><div>Exactly what I've been wondering from the start :). i.e. ApplicationContext.LogicalExecutionLocation. Still I can always add it to our company's CSLA<br><br><div>----- Original Message ----<br>From: Vaidal &lt;cslanet@lhotka.net&gt;<br>To: "als_uk@yahoo.com" &lt;als_uk@yahoo.com&gt;<br>Sent: Monday, 28 May, 2007 1:06:27 PM<br>Subject: Re: [CSLA .NET] Determine logical ExecutionLocation<br><br><p>well... that runs ok... but it will incur some overhead...</p>
+<p>Maybe Rocky could add a property anywhere...</p><br><br><br>
+</div><br></div></div><br>
+
+
+      <hr> 
+Yahoo! Mail is the world's favourite email. Don't settle for less, <a href="http://uk.rd.yahoo.com/evt=44106/*http://uk.docs.yahoo.com/mail/winter07.html">sign up for your free
+account today</a>.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, May 28, 2007</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Added to the <a href="http://www.lhotka.net/Article.aspx?id=42066ed8-ea65-44a3-b7fd-035c9d8bfa36">wish
+list</a>.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Alun Jones
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Monday, May 28, 2007 7:32 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] Determine logical ExecutionLocation<o:p></o:p></span></p>
+
+</div>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<div>
+
+<div>
+
+<p class=MsoNormal>Exactly what I've been
+wondering from the start :). i.e. ApplicationContext.LogicalExecutionLocation.
+Still I can always add it to our company's CSLA<o:p></o:p></p>
+
+<div>
+
+<p class=MsoNormal>----- Original Message ----<br>
+From: Vaidal &lt;cslanet@lhotka.net&gt;<br>
+To: &quot;als_uk@yahoo.com&quot; &lt;als_uk@yahoo.com&gt;<br>
+Sent: Monday, 28 May, 2007 1:06:27 PM<br>
+Subject: Re: [CSLA .NET] Determine logical ExecutionLocation<o:p></o:p></p>
+
+<p>well... that runs ok... but it will incur some overhead...<o:p></o:p></p>
+
+<p>Maybe Rocky could add a property anywhere...<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+</div>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<div class=MsoNormal align=center>
+
+<hr align=center>
+
+</div>
+
+<p class=MsoNormal>Yahoo! Mail is the world's favourite email. Don't settle for
+less, <a href="http://uk.rd.yahoo.com/evt=44106/*http:/uk.docs.yahoo.com/mail/winter07.html">sign
+up for your free account today</a>.<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>als_uk replied on Friday, May 25, 2007</h2><div><div>Hi,<br><br>I know what I need to do to add that to the ApplicationContext, but I'd rather have it in the official release (bit of a pain diff'ing official files to our modified ones!). Just had an email off someone else who is associated with csla, so I'll try and explain to them what is required and - finger crossed - it may get implemented.<br><br><div>----- Original Message ----<br>From: Vaidal &lt;cslanet@lhotka.net&gt;<br>To: "als_uk@yahoo.com" &lt;als_uk@yahoo.com&gt;<br>Sent: Friday, 25 May, 2007 1:06:31 PM<br>Subject: Re: [CSLA .NET] Determine logical ExecutionLocation<br><br><p><span>ummmm... I need this.</span></p> 
+<p><span>When I am developing I don't use remoting but I need to know if I am beyond DataPortal... Any ideas?</span></p> 
+<p>&nbsp;</p><br><br><br>
+</div><br></div></div><br>
+      <hr> 
+Yahoo! Answers - Got a question? Someone out there knows the answer. <a href="http://uk.answers.yahoo.com/;_ylc=X3oDMTEzaDRkZGdlBF9TAzIxMTQ3MTcxOTAEc2VjA01haWwEc2xrA3RhZ2xpbmVz">Try
+it now</a>.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>als_uk replied on Monday, May 28, 2007</h2><div><div>Thanks<br><br><br></div></div><br>
+		<hr> 
+New Yahoo! Mail is the ultimate force in competitive emailing. Find out more at the <a href="http://uk.rd.yahoo.com/mail/uk/taglines/default/championships/games/*http://uk.rd.yahoo.com/evt=44106/*http://mail.yahoo.net/uk/">Yahoo! Mail Championships</a>. Plus: play games and win prizes.</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

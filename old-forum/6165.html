@@ -1,0 +1,435 @@
+<html><header><title>Help! - How to apply Filter on FilteredBindingList?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Help! - How to apply Filter on FilteredBindingList?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6165.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>andrewrajcoomar posted on Thursday, January 15, 2009</h2><P><FONT size=2>I am trying to add a filter functionality to my baseform using a combobox and textbox controls.&nbsp;I am using the&nbsp;BindingSource property in my baseform to add my column names to the combobox, using reflection.&nbsp;The idea is,&nbsp;&nbsp;the user&nbsp;can select any column and type&nbsp;a value in&nbsp;the textbox, hit the Filter button, and then I apply the filter. If there are no matches, I inform the user and&nbsp;discard the criterion.</FONT></P>
+<P><FONT size=2>I do not know how to apply the filter to the underlying list. As you'll see, I believe I am trying to apply the filter to the wrong object (what I need is a way to declare a property of type myBOList, in my baseform and be able to set it's value from another class, don't know...)</FONT></P>
+<P><FONT size=2>This&nbsp;is my code from my inherited form :</FONT></P>
+<P><FONT size=2><FONT color=#0000ff size=2>Public Sub New()</FONT></FONT></P>
+<P><FONT color=#0000ff size=2>......</FONT></P>
+<P><FONT size=2><FONT color=#0000ff size=2>Dim</FONT><FONT size=2> sortedList </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>New</FONT><FONT size=2> SortedBindingList(</FONT><FONT color=#0000ff size=2>Of</FONT><FONT size=2> ChartFieldInfo)(_ChartFieldList)</P>
+<P></FONT><FONT color=#0000ff size=2>Dim</FONT><FONT size=2> filteredList </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>New</FONT><FONT size=2> FilteredBindingList(</FONT><FONT color=#0000ff size=2>Of</FONT><FONT size=2> ChartFieldInfo)(sortedList)</P>
+<P>'set my grid bindingsource datasource</P>
+<P></FONT><FONT color=#0000ff size=2>Me</FONT><FONT size=2>.ChartFieldListBindingSource.DataSource = filteredList</P>
+<P>'set my baseform BindingSource property</FONT><FONT color=#0000ff size=2></FONT></P>
+<P><FONT color=#0000ff size=2>MyBase</FONT><FONT size=2>.BindingSource = </FONT><FONT color=#0000ff size=2>Me</FONT><FONT size=2>.ChartFieldListBindingSource</P></FONT></FONT>
+<P>&nbsp;</P>
+<P>....</P>
+<P>and in my baseform</P><FONT color=#0000ff size=2><FONT color=#0000ff size=2>
+<P>Private</FONT><FONT color=#000000 size=2> </FONT><FONT color=#0000ff size=2>WithEvents</FONT><FONT color=#000000 size=2> _BindingSource </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2><FONT color=#000000> BindingSource</FONT></P></FONT></FONT>
+<P><FONT color=#0000ff size=2>Protected</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Property</FONT><FONT size=2> BindingSource() </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> BindingSource</P>
+<P></FONT><FONT color=#0000ff size=2>Get</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Return</FONT><FONT size=2> _BindingSource</P>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Get</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Set</FONT><FONT size=2>(</FONT><FONT color=#0000ff size=2>ByVal</FONT><FONT size=2> value </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> BindingSource)</P>
+<P>_BindingSource = value</P>
+<P>baseBindingNavigator.BindingSource = value</P>
+<P></FONT><FONT color=#0000ff size=2>If</FONT><FONT size=2> _BindingSource </FONT><FONT color=#0000ff size=2>IsNot</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Nothing</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Then</P></FONT><FONT size=2>
+<P></FONT><FONT color=#008000 size=2>' subscribe to events</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>AddHandler</FONT><FONT size=2> _BindingSource.BindingComplete, </FONT><FONT color=#0000ff size=2>AddressOf</FONT><FONT size=2> BindingComplete</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>AddHandler</FONT><FONT size=2> _BindingSource.DataSourceChanged, </FONT><FONT color=#0000ff size=2>AddressOf</FONT><FONT size=2> BindingSourceChanged</P>
+<P></FONT><FONT color=#008000 size=2>' get a reference to the data source</P></FONT><FONT size=2>
+<P>BindingSourceChanged(</FONT><FONT color=#0000ff size=2>New</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Object</FONT><FONT size=2>, </FONT><FONT color=#0000ff size=2>New</FONT><FONT size=2> EventArgs)</P>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>If</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Set</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Property</FONT></P>
+<P><FONT color=#0000ff size=2>.....</FONT></P><FONT color=#0000ff size=2><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Private</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Sub</FONT><FONT size=2> BindingSourceChanged(</FONT><FONT color=#0000ff size=2>ByVal</FONT><FONT size=2> sender </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Object</FONT><FONT size=2>, </FONT><FONT color=#0000ff size=2>ByVal</FONT><FONT size=2> e </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> EventArgs)</P>
+<P></FONT><FONT color=#0000ff size=2>If</FONT><FONT size=2> _BindingSource </FONT><FONT color=#0000ff size=2>IsNot</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Nothing</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Then</P></FONT><FONT size=2>
+<P>BuildColumnNameLookup()</P>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>If</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Sub</FONT></P>
+<P><FONT color=#0000ff size=2></FONT>&nbsp;</P>
+<P><FONT color=#0000ff size=2>....</FONT></P><FONT color=#0000ff size=2><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Private</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Sub</FONT><FONT size=2> BuildColumnNameLookup()</P>
+<P></FONT><FONT color=#0000ff size=2>If</FONT><FONT size=2> BindingSource.List.Count &gt; 0 </FONT><FONT color=#0000ff size=2>Then</P></FONT><FONT size=2>
+<P>BindingNavigatorLookup.Items.Add(</FONT><FONT color=#a31515 size=2>"(None)"</FONT><FONT size=2>)</P>
+<P></FONT><FONT color=#0000ff size=2>For</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Each</FONT><FONT size=2> p </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> PropertyInfo </FONT><FONT color=#0000ff size=2>In</FONT><FONT size=2> _BindingSource.Item(0).GetType().GetProperties</P>
+<P>BindingNavigatorLookup.Items.Add(p.Name)</P>
+<P></FONT><FONT color=#0000ff size=2>Next</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>If</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Sub</P></FONT></FONT></FONT>
+<P>In my baseform, I have a button named btnApplyFilter. On the click event, I expect I can apply the filter. I have tried this:</P><FONT color=#008000 size=2>
+<P>...</P><FONT size=2>
+<P><FONT color=#0000ff>_BindingSource.Filter = BindingNavigatorLookup.SelectedText = BindingNavigatorFilterValue.Text</FONT></P>
+<P><FONT color=#000000>It seems like _BindingSource is not the right&nbsp;object to use. What should it be (see my last question below).</FONT></P>
+<P><FONT color=#000000><STRONG>I am not sure what else to do at this point, short of selecting from SQL again. But I believe I can apply the filter to my existing list. Please explain how I can implement this.</STRONG></FONT></P></FONT></FONT>
+<P><FONT size=2><FONT size=2><STRONG>Also, how do I create a property, and of what type, in my baseform, so that I can set it from my inherited form, to the value of my filteredList, and be able to reference it in my baseform?</STRONG></FONT></FONT></P>
+<P><FONT size=2><FONT size=2><STRONG>Thanks,</STRONG></FONT></FONT></P>
+<P><FONT size=2><FONT size=2><STRONG>Andrew</STRONG></P></FONT></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, January 15, 2009</h2><P>FilteredBindingList is fully covered in the <EM>CSLA .NET Version 2.1 Handbook</EM> ebook.</P>
+<P>In short, you provide a delegate (or now a lambda) that is defined by the FilterProvider delegate signature. You can look in the CSLA project at the DefaultFilter class to see how such a method is constructed.</P>
+<P>Then you just pass that method to the ApplyFilter() method, or set it as the default filter for the collection.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tarekahf replied on Sunday, February 08, 2009</h2><P>Rocky,</P>
+<P>Thank you for the info.</P>
+<P>I am looking for some sample code to Filter collection of base type "BusinessListBase".</P>
+<P>I think I know how to do that, however, I am a bit lost on how to bind the list to the DataGrid.</P>
+<P>I have developed the BusinessListBase&nbsp;collection object, and it is working properly, and I can see the result after binding it to the DataGrid View.</P>
+<P>My question is that after I apply the filter (using FilterProvider), I get a new filtered list successfully, but&nbsp;the type of the new filtered collection (FilteredBindingList) is different that the original collection (from BusinessListBase)&nbsp;which is already bound to the GridView, so I am not sure how to handle this situation. Because I try to covert (using CTYPE) from the FilteredBindingList type to the BusinessListBase type, and it is giving me compile time error.</P>
+<P>Please help.</P>
+<P>Tarek.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Sunday, February 08, 2009</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Your UI code needs to change the bindingSource.DataSource to point
+to the filteredbindinglist.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Data binding doesn&#8217;t care about the type of the target
+object &#8211; only that the target object have the properties needed by the UI
+controls. Even though your collection type is different, the filtered collection
+points to the same child objects, and so they have the same properties, and so
+data binding will be happy.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> tarekahf
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Sunday, February 08, 2009 8:11 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] Help! - How to apply Filter on
+FilteredBindingList?<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Rocky,<o:p></o:p></p>
+
+<p>Thank you for the info.<o:p></o:p></p>
+
+<p>I am looking for some sample code to Filter collection of base type
+&quot;BusinessListBase&quot;.<o:p></o:p></p>
+
+<p>I think I know how to do that, however, I am a bit lost on how to bind the
+list to the DataGrid.<o:p></o:p></p>
+
+<p>I have developed the BusinessListBase&nbsp;collection object, and it is
+working properly, and I can see the result after binding it to the DataGrid
+View.<o:p></o:p></p>
+
+<p>My question is that after I apply the filter (using FilterProvider), I get a
+new filtered list successfully, but&nbsp;the type of the new filtered
+collection (FilteredBindingList) is different that the original collection
+(from BusinessListBase)&nbsp;which is already bound to the GridView, so I am
+not sure how to handle this situation. Because I try to covert (using CTYPE)
+from the FilteredBindingList type to the BusinessListBase type, and it is
+giving me compile time error.<o:p></o:p></p>
+
+<p>Please help.<o:p></o:p></p>
+
+<p>Tarek.<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tarekahf replied on Sunday, February 08, 2009</h2><P>Ok... this is now making sense !</P>
+<P>I thought I need to apply the filter on the UI code during the Select Event of the CSLA DataSource, right ?</P>
+<P>I mean something like this:</P>
+<P>e.BusinessObject = TheNewFilteredList</P>
+<P>Or do you mean that I should deal with the GridView Properties directly in the UI code to change the DataSource ?</P>
+<P>Tarke.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Sunday, February 08, 2009</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Sorry, didn&#8217;t realize you were talking web.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>You can do filtering and sorting at several levels in a web app,
+including the code behind the page, the object factory method, the
+DataPortal_XYZ method or the stored procedure/SQL statement. I discuss this in
+the <i>CSLA .NET Version 2.1 Handbook</i> ebook, and in some previous threads
+on this forum (though the topic is usually sorting, not filtering).<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>It is most efficient to filter in the database, then the
+DataPortal_XYZ method. The other two options are least efficient, because you&#8217;ve
+pulled out all that data that you then discard.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>But you are right &#8211; you do the filter in the Select event
+handler if you are going to do the filter in the UI.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> tarekahf
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Sunday, February 08, 2009 3:22 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: Help! - How to apply Filter on
+FilteredBindingList?<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Ok... this is now making sense !<o:p></o:p></p>
+
+<p>I thought I need to apply the filter on the UI code during the Select Event
+of the CSLA DataSource, right ?<o:p></o:p></p>
+
+<p>I mean something like this:<o:p></o:p></p>
+
+<p>e.BusinessObject = TheNewFilteredList<o:p></o:p></p>
+
+<p>Or do you mean that I should deal with the GridView Properties directly in
+the UI code to change the DataSource ?<o:p></o:p></p>
+
+<p>Tarke.<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tarekahf replied on Sunday, February 08, 2009</h2><P>Thanks a lot ...!</P>
+<P>It is working 100% successfully now.</P>
+<P>As a matter of fact, I liked the other least efficient methods, because they are very fast ...</P>
+<P>This is because, I am pulling data from 3 different Databases (Adabas/Unix, MS Access, SQL Server) and building a CSLA list of max 300 items. It takes a while to build the list from the Database, and once the master list is cashed on a session variable, then filtering will be very quick, and I like it !</P>
+<P>(Note: I used the FilterProvider to implement a complex filter criteria).</P>
+<P>One more question:</P>
+<P>After I apply the filter, and in order to display the new items in the GridView, I am using the following commands:</P>
+<P>myGridView.DataBind()<BR>myGridView.PageIndex = 0</P>
+<P>Is this the right method ?</P>
+<P>Regards ...</P>
+<P>Tarek.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Sunday, February 08, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Yes, that is the right way to trigger a rebind of the grid&#8217;s
+data.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tarekahf replied on Sunday, February 08, 2009</h2><P>(Note: I almost forgot about the CSLA 2.1 Handbook we purchased last year... it is great.)</P>
+<P>Things can't be better for today !</P>
+<P>Now, I want to apply sorting so that when you click on the GridView Column Header, it will sort accordingly. Also, at the same time, I want to maintain the filter. Is this possible ? </P>
+<P>Just give me hints, I will do the rest.</P>
+<P>Tarek.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, February 09, 2009</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>You can use both FilteredBindingList and SortedBindingList
+together.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I typically filter first, then sort, so the sort has less work
+to do:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>filtered = new FilteredBindingList(_originalList);<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>sorted = new SortedBindingList(filtered);<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Remember these are each views over the other, so if you do
+filtered.ApplyFilter() and then sorted.ApplySort() you&#8217;ll end up with a
+filtered, sorted list.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> tarekahf
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Sunday, February 08, 2009 11:57 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: RE: RE: Help! - How to apply Filter on
+FilteredBindingList?<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>(Note: I almost forgot about the CSLA 2.1 Handbook we purchased last year...
+it is great.)<o:p></o:p></p>
+
+<p>Things can't be better for today !<o:p></o:p></p>
+
+<p>Now, I want to apply sorting so that when you click on the GridView Column
+Header, it will sort accordingly. Also, at the same time, I want to maintain
+the filter. Is this possible ? <o:p></o:p></p>
+
+<p>Just give me hints, I will do the rest.<o:p></o:p></p>
+
+<p>Tarek.<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tarekahf replied on Monday, February 09, 2009</h2><P>When I insert object into CSLA List, and do save as per the following code:</P><PRE>    Protected Sub srcObject_InsertObject(ByVal sender As Object, ByVal e As Csla.Web.InsertObjectArgs) Handles srcObject.InsertObject
+        Try
+            Dim obj As MyCSLA_List = GetMyList()
+            Dim item As MyCSLA_Object = obj.AddNew
+            Csla.Data.DataMapper.Map(e.Values, item)
+            item.DoCalcProperties()  ' Do Calculations here
+            Session("currentObject") = obj.Save
+            e.RowsAffected = 1
+
+        Catch ex As Csla.DataPortalException
+            Me.ErrorLabel.Text = ex.BusinessException.Message
+            e.RowsAffected = 0
+
+        Catch ex As Exception
+            Me.ErrorLabel.Text = ex.Message
+            e.RowsAffected = 0
+        End Try
+    End Sub
+</PRE>
+<P>Things are OK, but I have the following question:</P>
+<P>What is the purpose of e.RowsAffected = 1 ?</P>
+<P>Tarek.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, February 09, 2009</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>The web forms data binding infrastructure wants to know how many
+rows are affected by the operation, and the CslaDataSource allows (requires
+that) you to provide that information.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> tarekahf
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Monday, February 09, 2009 4:59 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: RE: RE: Help! - How to apply Filter on
+FilteredBindingList?<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>When I insert object into CSLA List, and do save as per the following code:<o:p></o:p></p>
+
+<pre>&nbsp;&nbsp;&nbsp; Protected Sub srcObject_InsertObject(ByVal sender As Object, ByVal e As Csla.Web.InsertObjectArgs) Handles srcObject.InsertObject<o:p></o:p></pre><pre>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Try<o:p></o:p></pre><pre>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Dim obj As MyCSLA_List = GetMyList()<o:p></o:p></pre><pre>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Dim item As MyCSLA_Object = obj.AddNew<o:p></o:p></pre><pre>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Csla.Data.DataMapper.Map(e.Values, item)<o:p></o:p></pre><pre>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; item.DoCalcProperties()&nbsp; ' Do Calculations here<o:p></o:p></pre><pre>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Session(&quot;currentObject&quot;) = obj.Save<o:p></o:p></pre><pre>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; e.RowsAffected = 1<o:p></o:p></pre><pre><o:p>&nbsp;</o:p></pre><pre>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Catch ex As Csla.DataPortalException<o:p></o:p></pre><pre>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Me.ErrorLabel.Text = ex.BusinessException.Message<o:p></o:p></pre><pre>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; e.RowsAffected = 0<o:p></o:p></pre><pre><o:p>&nbsp;</o:p></pre><pre>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Catch ex As Exception<o:p></o:p></pre><pre>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Me.ErrorLabel.Text = ex.Message<o:p></o:p></pre><pre>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; e.RowsAffected = 0<o:p></o:p></pre><pre>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Try<o:p></o:p></pre><pre>&nbsp;&nbsp;&nbsp; End Sub<o:p></o:p></pre>
+
+<p>Things are OK, but I have the following questions:<o:p></o:p></p>
+
+<p>What is the purpose of e.RowsAffected = 1 ?<o:p></o:p></p>
+
+<p>Tarek.<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

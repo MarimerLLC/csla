@@ -1,0 +1,128 @@
+<html><header><title>NHibernate with csla Again :(</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>NHibernate with csla Again :(</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/410.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>kariem2k posted on Monday, June 19, 2006</h2><P>Hi</P>
+<P>I fall in love with csla but also i want to use nhibernate for presistance.</P>
+<P>So i am trying to inheret the CSLA BussinessBase&lt;&gt; class&nbsp; to make the NHibernate class&nbsp;and mapping the public properties using the NHibernate attributes, But <FONT size=2><STRONG>Unfortunately</STRONG> NHibernate uses proxies which need all of the class's properties and methods to be virtual but of course there&nbsp;are some non-virtual methods in </FONT><FONT size=3>BussinessBase and it's parent classes.</FONT></P>
+<P>I have read that <FONT color=#000000>David Dilworth is using the same approach so i want how did he overcome this problem.</FONT></P>
+<P>Thanks&nbsp;&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>DavidDilworth replied on Monday, June 19, 2006</h2><P>I'm not exactly sure what you mean when you say "need all of the&nbsp;classes properties and methods to be virtual".</P>
+<P>We are able to persist our BOs exactly as you would expect by just attributing the properties we want to include in the NHibernate mapping.</P>
+<P>Neither did we do anything to make NHibernate use proxies.&nbsp; We're just using plain NHibernate with no special tricks.</P>
+<P>Have you read through all the NHibernate and Hibernate documentation?</P>
+<P>Perhaps you could post an example of what you are trying to do?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>came replied on Monday, June 19, 2006</h2>I'm also interessted in David's way of combining csla and nhibernate. However, reading his posts and knowing a bit of nhibernate I got the impression, that using nhibernate to persist the csla BOs I start building my BOs around the data and not around the business functionality. Maybe I'm wrong, but one nice thing about csla I thought would be to have the opportunity to get my business data from wherever I want to and even from multiple sources. And, am I not bound to one db table once I start using nhibernate to persist my BO?&nbsp; <br>...just tell me I'm wrong, what's my error of reasoning.<br>Thanks a lot...<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>DavidDilworth replied on Monday, June 19, 2006</h2><P>You're wrong &nbsp;<img src="/emoticons/emotion-5.gif" alt="Wink [;)]" /></P>
+<P>Yes, you should work exactly the way you want to, in an OO style.</P>
+<P>NHibernate just gives you a way of doing the ORM bit.&nbsp; </P>
+<P>You can persist BOs across multiple tables and get BOs from different data sources if you want.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>kariem2k replied on Monday, June 19, 2006</h2><P>Thanks for your reply</P>
+<P>In&nbsp;NHibernate&nbsp;1.0.2 the lazy-loading feature is disabled by default so no proxies are used and this problem does not appear so you might have not encountered this problem ,also in the new 1.2-alpha there is a built-in&nbsp;automatic checker&nbsp;that checks if&nbsp;all methods in the class are declared virtual&nbsp;&nbsp;to be compatible with the proxy pattern and this feature was not in 1.0.2, So in 1.0.2&nbsp;you can use the lazy loading&nbsp;and no&nbsp;exceptions &nbsp;will appear but the application will be buggey.</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>DavidDilworth replied on Tuesday, June 20, 2006</h2><P>We are using 1.0.2 - I wasn't aware that there was a 1.20 alpha version.&nbsp; But if&nbsp;it's an alpha then it's not ready for public release yet.</P>
+<P>As for the issue of lazy-loading and proxies.&nbsp; We are not using NHibernate lazy-loading because of the CSLA requirement to have a populated object graph on the server-side of the Data Portal.&nbsp; That way the Data Portal can serialize the object graph for transmission back to the client.</P>
+<P>We have taken the view that if we want to do lazy-loading, then&nbsp;it has to be done as multiple transfers across the Data Portal under our explicit control (i.e. using a lazy-loading pattern but with a BO that knows how to Data Portal itself).</P>
+<P>I think it would be difficult to maintain a server-side NHibernate proxy to allow lazy-loading of your object graph.&nbsp; I haven't really given it much thought, but it instinctively sounds like the wrong way to go.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>kariem2k replied on Tuesday, June 20, 2006</h2><P>Thanks very much for your help.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>kariem2k replied on Tuesday, June 20, 2006</h2>Oh by the way how do you manage the child collections and relationships.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>DavidDilworth replied on Wednesday, June 21, 2006</h2><P>We actually prototyped two different ways of managing child collections.</P>
+<P>(1) Using a &lt;set inverse="true"&gt; mapping in&nbsp;the parent with a &nbsp;&lt;many-to-one&gt; mapping in the child.</P>
+<P>(2) Using a simple &lt;set/&gt; mapping in the parent with a simple &lt;property&gt; mapping in the child.</P>
+<P>Using option (1) NHibernate automatically works out the FK relationship for you and puts the FK identifier into the right column in the child table.</P>
+<P>Using option (2) you explicitly have to manage getting the identifier into the child yourself when you do the save.</P>
+<P>We tested both options and they both worked fine.</P>
+<P>Ultimately we have decided to go with option (2) and keep it under our control.&nbsp; This decision was partly influenced by our need to generate some&nbsp;code automatically (using CodeSmith).&nbsp; We felt the pattern needed for option (2) was easier to automate.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>kariem2k replied on Wednesday, June 21, 2006</h2><P>I am afraid that i did not put the question right,I meant&nbsp; how do you convert the set type to the BusinessListBase type.</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>DavidDilworth replied on Friday, June 30, 2006</h2><P>kariem2k,</P>
+<P>Aha - yes.&nbsp; Someone else has asked me this as well.</P>
+<P>What we currently do is have two private member fields.&nbsp; One is of type ISet (which is the one NHibernate uses to persist to/from the database) the other is a strongly typed List (derived from BusinessListBase).</P>
+<P>But only the CSLA-based field is exposed via a public property.</P>
+<P>Then inside the DataPortal_Fetch we loop over the ISet and call the Add() method to add&nbsp;the item into the strongly-typed CSLA list object.</P>
+<P>The consumer of the BO then sees a strongly-typed CSLA style list, but the data is hidden inside an object that NHibernate knows how to persist.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ItsDubC replied on Tuesday, February 13, 2007</h2>Are you using both lightweight and heavyweight representations of BOs as is the case in the ProjectTracker sample?&nbsp; If this is the case and the ISet is a list of lightweight BOs, did you provide NHibernate mappings for the lightweight BOs as well or are you using HQL to load them?<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>DavidDilworth replied on Wednesday, February 14, 2007</h2><P>@ItsDubC</P>
+<P>We are in the process right now of making an NHibernate version of ProjectTracker.&nbsp;&nbsp;I'm sure I've mentioned this on another thread somewhere else.</P>
+<P>So what we are doing is changing the ProjectTracker.Library code base to use NHibernate as the ORM tool, instead of Stored Procedures.</P>
+<P>The target goal for this mini-project is to get all the ProjectTracker User Interfaces working without changing any of the UI code - not a single line.</P>
+<P>This seems to me to represent an example of the OO principle of Data Hiding.&nbsp; The UI developer uses the classes in the ProjectTracker.Library, but has no idea how/where the data is coming from.</P>
+<P>So, to that end, we are producing a ProjectTracker.Library.NHibernate.Dll&nbsp;that will completely replace the existing ProjectTracker.Library.Dll.&nbsp; </P>
+<P>However, the important thing is that we have NOT CHANGED any of the namespaces or classes for the entities that live inside the DLL.</P>
+<P>It is still a Work In Progress and I'll post when we're finished.</P>
+<P>Now if we could just get rid of those pesky bugs in our production applications that keep slowing us down ... <img src="/emoticons/emotion-5.gif" alt="Wink [;)]" /></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>DavidDilworth replied on Monday, March 12, 2007</h2><P>I have some good news.</P>
+<P>We have completed an NHhibernate version of the ProjectTracker example project.</P>
+<P>I am currently corresponding with Rocky to see if I can get it released as part of the CSLAContrib project on CodePlex.</P>
+<P>Watch this space!</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>kariem2k replied on Friday, March 23, 2007</h2><P>Hi</P>
+<P>I am now using CSLA beside the databinding&nbsp; as a controller in MVC pattern.</P>
+<P>NHibernate: for my domain model, the objects are POCO&nbsp;and works as DAOs.</P>
+<P>CSLA:&nbsp;classes inherit from CSLA classes work as wrappers around the NHibernate's DAOs to support validation,databinding.</P>
+<P>Why?</P>
+<P>NHibernate has a different thinking of class design than CSLA .</P>
+<UL>
+<LI>CSLA : Design is based on behavior not data itself, so you should have a class for every use case even, IMO this approach has two major flaws when working with CSLA as ORM. 
+<OL>
+<LI>You&nbsp;cannot use&nbsp;data inheritance&nbsp;in your domain. 
+<LI>Memory Caching,&nbsp;&nbsp;If every use case has its own class then caching will not be effecient because you will have to cache every&nbsp;class as its own even if these multiple classes point to the same data. 
+<UL>
+<LI>For example Project and ProjectInfo classes point to the same data and you have decided to cache ProjectInfo to save database roundtrips, When you change some property in Project BO you must invalidate the corresponding ProjectInfo in cache to be reloaded from database.This will need extra work and will be error prone.</LI></UL></LI></OL>
+<LI>NHibernate: Design is based on data not use cases, this will enable you to do data inheritance and easy caching, But i love the concept "every use case should have its own class", this will simplify GUI building process and will give me much flexbility.</LI></UL>
+<P>So i have decided to make two designs one for data using NHibenrate, and&nbsp;another&nbsp;one for controllers that handles validation ,business behavior,then bind them to the view using CSLA.</P>
+<P>So ProjectInfo class will be like.</P>
+<P>class ProjectInfo : BussinessBase&lt;ProjectInfo&gt;</P>
+<P>{</P>
+<BLOCKQUOTE dir=ltr>
+<P>private ProjectDAO m_ProjectDAO&nbsp;= null; //ProjectDAO is NHibernate POCO</P>
+<P>public string Name</P>
+<P>{</P>
+<BLOCKQUOTE dir=ltr>
+<P>&nbsp;&nbsp;&nbsp;get{</P>
+<BLOCKQUOTE dir=ltr>
+<P>CanReadProperty(true);</P>
+<P>return ProjectDAO.Name;</P>
+<P>}</P>
+<P>set</P>
+<P>{</P>
+<BLOCKQUOTE dir=ltr>
+<P>CanEditProperty(true);</P>
+<P>if(ProjectDAO.Name != value)</P>
+<P>{</P>
+<BLOCKQUOTE dir=ltr>
+<P>ProjectDAO.Name=value;</P>
+<P>PropertyHasChanged();</P></BLOCKQUOTE>
+<P>}</P></BLOCKQUOTE>
+<P>}</P>
+<P>......................</P>
+<P>//Data Portal will use NHibernate Sessions to load and save data from ProjectDAO.</P>
+<P>......</P></BLOCKQUOTE></BLOCKQUOTE>
+<P>}</P></BLOCKQUOTE>
+<P>}</P>
+<P>Notice that ProjectDAO will contain all the information about the entity and will be used in both Project and ProjectInfo(will have some properties from the DAO) classes.</P>
+<P>IMHO this will give a very good seperation between the UI and Bussiness behavior and the data itself, Also will enable lazy loading in NHibernate because DAOs will not inherit form any class and will not have any Non-Virtual properties also collection lazy loading will not be a problem because the child collections will be simple IList&lt;&gt;&nbsp;not typed collections which NHibernate does not support,And about serialzation and CSLA must know all of the obbject graph before serialization you can access all properties in the DAO to load them first before serialization,&nbsp;I did not try serialization and remoting but i think it that would be the way to go.</P>
+<P>Also you can combine two NHibernate DAOs in one CSLA class using composition pattern.</P>
+<P>I don't know about remoting with this approach but i think it would no problem when using it, except caching i think.</P>
+<P>Sorry for enlargement.</P>
+<P>Thanks</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>burmajam replied on Sunday, March 25, 2007</h2><P>Hi,</P>
+<P>This approach looks very interesting with fields in NH DAO class and properties in the CSLA BO. Can you give us some example how did you do lazy fetching? I'm planing to make my next web project using CSLA and NHibernate, but I have to be sure that I can use everything I did so far with plain CSLA + ADO approach and I have to make decision very fast ...&nbsp;7 days max.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Bayu replied on Monday, March 26, 2007</h2>Hi Kariem2k,<br><br>Your idea is quite interesting!<br><br>But I was wondering if your design would hold also in more complex scenario's than your ProjectInfo/Project/ProjectDAO sample.<br><br>You see, in your example both use-case driven design and data-driven design arrive at the same record of project data. One thing is for sure: your ProjectDAO allows for much more straightforward caching.<br><br>Now let's consider the following example:<br>- I have Customers with Contacts (parent-child relationship established through foreign key on Contact)<br>- I have also have my own Employees (root-level objects)<br>- And I have a Outlook-like interface that asks for a list of all Persons (contacts + employees) to load the addressbook<br><br>My database design is nicely normalized as follows::<br>- Customer table (let's ignore this one in the remainder)<br>- Person table that stores all fields that are shared by Employees and Contacts (like name, email, ...)<br>- Contact table that extends Person with some Contact-specific fields and of course a foreign key to Customer<br>- Employee table that extends Person with some Employee specific fields (e.g. JobTitle, Department, ...)<br><br>While writing this I am getting the feeling that your proposed method with DAOs could make this work wonderfully ...... <br><br>Could you describe how you would propose to satisfy the following needs with your solution?<br><br>- ContactList should be fetchable by CustomerID<br>&nbsp;&nbsp;&nbsp; - involves an inner join on Person<br>- EmployeeList is top-level, so no params<br>&nbsp;&nbsp;&nbsp; - also involves an inner join on Person<br>- PersonList is also top-level<br>&nbsp;&nbsp;&nbsp; - no joins, just deals with the Person table<br><br>Let's see if we can take this one down with the benefits mentioned by you!<br><br>;-)<br><br>Thanks for your ideas,<br>Bayu<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>kariem2k replied on Monday, March 26, 2007</h2><P>Hi</P>
+<P>Thanks for your comment :)</P>
+<P>First, The DAOs</P>
+<P>Use NHibernate inheritance support, the most suitable stratgy for your case is the "table per subclass" stratgy.</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ----------------- Contact </P>
+<P>Person &lt; ------</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;----------------- Employee</P>
+<P>Second, CSLA</P>
+<P>&nbsp;&nbsp;&nbsp;-ContactList: In&nbsp;GetContactsByCustomerID method use nhibernate's&nbsp;HQL&nbsp;"from Contact c where c.Customer.ID = 1" and fill CSLA's ContactInfo&nbsp;BO with each&nbsp;Hibernate's DAO.</P>
+<P>&nbsp; -EmployeeList: In GetEmployees method use ordinary session.Get method and fill CSLA's EmployeeInfo&nbsp;BO with each&nbsp;Hibernate's DAO.</P>
+<P>&nbsp;&nbsp;-PersonList: In GetPersons method use ordinary session.Get method and fill CSLA's PersonInfo&nbsp;BO with each&nbsp;Hibernate's DAO.</P>
+<P>NHibernate will handle all inheritance functionality for you.</P>
+<P>HQL will help you in CSLA's behavioral design.&nbsp;</P>
+<P>I hope i have answered your question.</P>
+<P>Thanks</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Bayu replied on Wednesday, March 28, 2007</h2>Right,<br>
+<br>
+No too much of a challenge there in the end I guess. ;-p<br>
+<br>In an earlier post you mentioned the difference between use-case driven design for Csla objects vs the data-driven design for the DAOs. <br><br>
+This example and your solution to it nicely show the following benefits I think:<br>- Person data is defined only once in DB and hence only once in your PersonDAO object<br>- Contact/Employee simply inherit from this and there you have your 'data inheritance'<br>- authorizaion and validation is still use-case driven and defined in Csla objects that wrap the DAOs<br><br>To have a Csla class for Person with sub-classes Contact and Employee is more cumbersome:<br>- fields of Person may have to be validated differently based on use-case, so Employee/Contact might have validation rules for properties that are defined on Person<br>- similar for authorization, whether users may or may not modify properties is typically use-case based<br><br>So: I very much like your DAOs&nbsp; for the aforementioned reasons.<br><br>But I also see 2 obvious downsides:<br>- performance, values from your DB are copied into your DAO and then all Csla properties wrap the DAO. It would need some testing and measuring to get a good impression of the performance costs. Also, these costs are partily compensated for by the caching possibilities. Although caching most benefits dp_fetch execution time while most of the costs will be in the property accessors. <br><br>- maintainability, I would not use DAOs until I have a codegen (currently still hand-crafting a lot)<br><br>Regards,<br>Bayu<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>kariem2k replied on Wednesday, March 28, 2007</h2><P>Sure there will be a little performance degradation but it won't come from property accessors (It will be soo neglectable) but it will come from NHibernate itself (reflection,Dynamic sql generation,Creation of proxies).But every thing comes with a price right? The flexbility and easiness vs performance is always the issue in programming&nbsp; (Like OOP vs structured programming&nbsp;&nbsp;;)&nbsp;,After all depations saying that Structured programming is faster than OOP you will find the performance difference is really neglectable&nbsp;).</P>
+<P>But don't forget you will have also some easy performance boost from nhibernate,Like lazy-loading, Solution to the famous N+1 selects for grand children in CSLA, and caching of course.</P>
+<P>Finally,IMHO using Nhibernate with CSLA is much more maintainable than using CSLA only.</P>
+<P>Here is the way i use NHibernate:</P>
+<OL>
+<LI>I create hbm mapping files,Describing the object and relational model even the database indexes. 
+<LI>Make Nhibernate generate the Database from hbm files i have created (On any DBMS Sqlite,Sql Server,Oracle,etc... all of them are generated from only the hbm files with no mentionable changes,only tweaks for performance like disabling Out-Joins on Sqlite and enabling them on sql server) unless you are working with legacy data. 
+<LI>Using simple custom CodeSmith templates to generate DAO POCOs from the hbm xml files, I use that templates untill NHibernate's Hbm2Net&nbsp;be able to generate generics.</LI></OL>
+<P>If You notice that i did not touch my CSLA use-case driven classes,only if i am adding or removing properties,Also i use UML for describing the dependancy between CSLA classes and NHibernate classes.</P>
+<P>So Nhibernate will save you the Sql statments and stored-procedures writting, Creation of the database (IMO&nbsp;Xml mapping files are more describing to object and Relational models than DDL or Tables in&nbsp; any GUI database manager.)&nbsp;</P>
+<P>Thanks</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>DavidDilworth replied on Thursday, May 03, 2007</h2><P>I can (at last) announce that there is now a ProjectTracker.NHibernate example solution on the CSLAcontrib site on CodePlex.</P>
+<P>Can I suggest that all future CSLA / NHibernate questions (especially those related to the ProjectTracker.NHibernate solution) are posted on the CslaContrib forum.</P>
+<P>Thank you all for your patience&nbsp;and support.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>PitDog replied on Wednesday, June 21, 2006</h2><DIV><FONT face=Arial size=2>
+<P>How have you found this approach? I have used Hibernate in the Java world to handle ORM however I found it to be very cumbersome in the small to mid sized projects. It was almost something we needed to define a role for on our project. Not to mention most developers just said, "Why can't we map the data ourselves?" </P>
+<P>At the start of most projects I am on this sits in the back of my mind. However I usually decide against it. I would be interested in how you feel about it.</P></FONT></DIV></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>DavidDilworth replied on Friday, June 30, 2006</h2><P>PitDog,</P>
+<P>I can see why developers would ask the "why can't we map the data ourselves" question.</P>
+<P>The counter-question to that is "Why do you want to spend your time writing simple data mapping code instead of writing something else instead?".&nbsp; Data mapping code is surely one part of the overall development process that can be more&nbsp;automated (even code generated)?</P>
+<P>We've chosen to use the NHibernate.Mapping.Attributes extension DLL on our project, as we felt it had a real benefit.&nbsp; So all we now do is simply attribute the private member fields that we want to persist and that's it.&nbsp; NHibernate does the rest.</P>
+<P>I admit that there was an initial learning curve to get over to actually understand what NHibernate was doing and how to get it to do what we wanted.&nbsp; But after that it's been good so far.</P>
+<P>All I can say so far is that everything we have tried to do with NHibernate, it has been able to deliver.&nbsp; The guys behind it (and Hibernate of course) have clearly put a lot of effort into it to make it as functional and extensible as possible.</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

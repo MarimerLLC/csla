@@ -1,0 +1,39 @@
+<html><header><title>Advice needed on subclassed BusinessBase, BusinessListBase, etc.</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Advice needed on subclassed BusinessBase, BusinessListBase, etc.</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/1650.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>david.wendelken posted on Tuesday, October 31, 2006</h2><P>I've been subclassing BusinessBase and BusinessListBase so I can build my business object libraries from the subclasses per Rocky's recommendation.&nbsp; It should reduce the amount of maintenance to make use of new CSLA versions plus allow me to customize things to meet my own needs.</P>
+<P>I've made the list of broken rules publically available so that I can bind them to the UI control.&nbsp; That way, it automagically contains all the things wrong with that object (or not).</P>
+<P>I'm now trying to make the list of actual rules (whether broken or not) publically available so that users, QA testers, documentation writers, (and so on) can see them.&nbsp;&nbsp; By binding the property to a UI control I can provide an inexpensive way to help the application system be self-documenting.</P>
+<P>I'm having a big of a problem with this last task.&nbsp; The classes/interfaces that appear to contain the information I need are defined as internal.&nbsp; (RulesList, RuleMethod and IRuleMethod)</P>
+<P>If I understand things correctly, the only way to access this internal information is to put my subclasses into the same project as CSLA.&nbsp; I had originally intended for my subclasses to be in their own project to cut down on maintenance for new CSLA sub-releases.&nbsp; Anyone know of a better way to make this work?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>guyroch replied on Tuesday, October 31, 2006</h2><P>One word... REFLECTION</P>
+<P>With reflection you can even change the value of a private variable, so I don't think the internal modifier will be much of an issue.</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>david.wendelken replied on Tuesday, October 31, 2006</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>guyroch:</strong></div><div>
+<P>One word... REFLECTION</P>
+<P>With reflection you can even change the value of a private variable, so I don't think the internal modifier will be much of an issue.</P>
+<P></div></BLOCKQUOTE></P>
+<P>I hadn't understood that you could mess with internal or private variables via reflection.&nbsp; </P>
+<P>Interesting&nbsp; :)</P>
+<P>and Scary :{ !!</P>
+<P>Seems like that might enable people to hack their way into data they shouldn't be allowed to see...</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>guyroch replied on Tuesday, October 31, 2006</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>david.wendelken:</strong></div><div>
+<P>and Scary :{ !!</P>
+<P></div></BLOCKQUOTE></P>
+<P>Very scary... ummmm... this thread will self destruct in 5 seconds&nbsp; :-o</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Wednesday, November 01, 2006</h2><P>In Csla 2.1 Rocky added support for getting a list of rules that apply to a Type.</P><FONT size=2>
+<P></FONT><FONT color=#008000 size=2>''' </FONT><FONT color=#808080 size=2>&lt;summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#008000 size=2>''' Returns an array containing the text descriptions of all</P></FONT><FONT size=2>
+<P></FONT><FONT color=#008000 size=2>''' validation rules associated with this object.</P></FONT><FONT size=2>
+<P></FONT><FONT color=#008000 size=2>''' </FONT><FONT color=#808080 size=2>&lt;/summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#008000 size=2>''' </FONT><FONT color=#808080 size=2>&lt;returns&gt;</FONT><FONT color=#008000 size=2>String array.</FONT><FONT color=#808080 size=2>&lt;/returns&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#008000 size=2>''' </FONT><FONT color=#808080 size=2>&lt;remarks&gt;&lt;/remarks&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Function</FONT><FONT size=2> GetRuleDescriptions() </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>String</FONT><FONT size=2>()</P>
+<P></FONT><FONT color=#0000ff size=2>Dim</FONT><FONT size=2> result </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>New</FONT><FONT size=2> List(</FONT><FONT color=#0000ff size=2>Of</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>String</FONT><FONT size=2>)</P>
+<P></FONT><FONT color=#0000ff size=2>Dim</FONT><FONT size=2> rules </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> ValidationRulesManager = RulesToCheck</P>
+<P></FONT><FONT color=#0000ff size=2>For</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Each</FONT><FONT size=2> de </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> Generic.KeyValuePair(</FONT><FONT color=#0000ff size=2>Of</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>String</FONT><FONT size=2>, RulesList) </FONT><FONT color=#0000ff size=2>In</FONT><FONT size=2> rules.RulesDictionary</P>
+<P></FONT><FONT color=#0000ff size=2>For</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Each</FONT><FONT size=2> rule </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> IRuleMethod </FONT><FONT color=#0000ff size=2>In</FONT><FONT size=2> de.Value.GetList(</FONT><FONT color=#0000ff size=2>False</FONT><FONT size=2>)</P>
+<P>result.Add(</FONT><FONT color=#0000ff size=2>CObj</FONT><FONT size=2>(rule).ToString)</P>
+<P></FONT><FONT color=#0000ff size=2>Next</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Next</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Return</FONT><FONT size=2> result.ToArray</P>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Function</P></FONT>
+<P>Joe</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>david.wendelken replied on Wednesday, November 01, 2006</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>JoeFallon1:</strong></div><div>
+<P>In Csla 2.1 Rocky added support for getting a list of rules that apply to a Type.</P><FONT size=2>
+<P></FONT><FONT color=#008000 size=2>''' </FONT><FONT color=#808080 size=2>&lt;summary&gt;<BR></FONT><FONT color=#008000 size=2>''' Returns an array containing the text descriptions of all<BR></FONT><FONT color=#008000 size=2>''' validation rules associated with this object.<BR></FONT><FONT color=#008000 size=2>''' </FONT><FONT color=#808080 size=2>&lt;/summary&gt;<BR></FONT><FONT color=#008000 size=2>''' </FONT><FONT color=#808080 size=2>&lt;returns&gt;</FONT><FONT color=#008000 size=2>String array.</FONT><FONT color=#808080 size=2>&lt;/returns&gt;<BR></FONT><FONT color=#008000 size=2>''' </FONT><FONT color=#808080 size=2>&lt;remarks&gt;&lt;/remarks&gt;<BR></FONT><FONT color=#0000ff size=2>Public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Function</FONT><FONT size=2> GetRuleDescriptions() </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>String</FONT><FONT size=2>()</FONT></P>
+<P></div></BLOCKQUOTE></P>
+<P>I've been looking like crazy for that capability.&nbsp; Thanks!</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

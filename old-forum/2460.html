@@ -1,0 +1,218 @@
+<html><header><title>IEditableBusinessObject  xml doc error</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>IEditableBusinessObject  xml doc error</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/2460.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jimbo posted on Friday, March 02, 2007</h2>I notice that the &lt;summary&gt; descriptions for DeleteChild and SetParent are reversed.<br>
+<br>
+On the subject of the various comments on the use of SetParent in Businessbase and BusinessListBase.:<br>
+<br>
+Can a subclass of BusinessBase&nbsp;  call&nbsp; SetParent independently of the ListBase call?<br>
+I have a case where I need to create a new child object for a dialog
+data entry, and depending on the dialog response either return the new
+object or nothing to the parent form which will then add the object to
+the parent list if its not nothing.&nbsp; The intended "Parent" list
+object is needed&nbsp; so that we can check for duplicate codes etc.<br>
+<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, March 02, 2007</h2><P>The comments in IEditableBusinessObject are correct in 2.1.4, and I think in 2.1.3 - I don't remember fixing them, but they are correct in the current code anyway.</P>
+<P>Yes, any parent may call SetParent() on its immediate child objects. This must be done under a couple conditions:</P>
+<OL>
+<LI>When the child object is first referenced by the parent</LI>
+<LI>When the parent is deserialized (override OnDeserialized)</LI></OL>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jimbo replied on Friday, March 02, 2007</h2>I am talking about the ctor for the "pending" child being able to set
+its "proposed' parent reference. ie the parent reference would be
+passed into the constructor and then set by the child.&nbsp; The parent
+list does not have any knowledge of the new child item at this
+point.&nbsp; The child object is not added to the parent list unless
+there is a successful dialog result and the new child object passed
+back in the finished event args payload.<br>
+<br>
+<br>
+<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, March 02, 2007</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I think you are on your own in that case. The Parent property
+implemented in BusinessBase is read-only, and the field is private. The idea is
+that it is the parent&#8217;s responsibility to handle the hookup &#8211;
+primarily because at that time the parent is almost certainly also performing
+an event hookup, and because the value must be restored after deserialization,
+and only the parent can do that.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>If you want to add a PendingParent property, there&#8217;s no
+reason you couldn&#8217;t do that &#8211; but the only reliable parent value
+over the entirely life of your object is the one managed by the actual parent.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<div>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Jimbo
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Friday, March 02, 2007 2:02 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] IEditableBusinessObject xml doc error<o:p></o:p></span></p>
+
+</div>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>I am talking about the ctor for the &quot;pending&quot;
+child being able to set its &quot;proposed' parent reference. ie the parent
+reference would be passed into the constructor and then set by the child.&nbsp;
+The parent list does not have any knowledge of the new child item at this
+point.&nbsp; The child object is not added to the parent list unless there is a
+successful dialog result and the new child object passed back in the finished
+event args payload.<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jimbo replied on Friday, March 02, 2007</h2>Rocky,<br>
+No problem<br>
+I guess that we do it your way <br>
+1. Add the new pending child to the collection. and all is well regarding the parent ref setting etc.<br>
+2. Pass the pending child to the entry dialog - so we can also access the parent list.<br>
+3. If the entry is not applied (dialog result = none say ) then in the
+return, the pending child is simply removed from the list..<br>
+<br>
+<br>
+<br>
+<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, March 02, 2007</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I think that&#8217;s best &#8211; that is the way CSLA is
+designed to work, because that is the way data binding expects it to work.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>You may be able to simplify your life slightly if you pretend to
+BE data binding </span><span>J</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>In other words, BusinessListBase (indirectly) implements ICancelAddNew,
+which should allow you to tell the collection to remove the newly added child.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Failing that, the IEditableObject interface implemented by
+BusinessBase also solves the issue. If you call CancelEdit() on a newly added
+object, that object will automatically remove itself from its parent
+collection. To do this, you do need to call BeginEdit() right after you&#8217;ve
+added it to the collection.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Basically all you are doing in either case, is simulating what
+data binding does, and in either case CSLA is designed to do the right thing.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<div>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Jimbo
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Friday, March 02, 2007 3:02 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: IEditableBusinessObject xml doc error<o:p></o:p></span></p>
+
+</div>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Rocky,<br>
+No problem<br>
+I guess that we do it your way <br>
+1. Add the new pending child to the collection. and all is well regarding the
+parent ref setting etc.<br>
+2. Pass the pending child to the entry dialog - so we can also access the
+parent list.<br>
+3. If the entry is not applied (dialog result = none say ) then in the return,
+the pending child is simply removed from the list..<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jimbo replied on Saturday, March 03, 2007</h2>It also keeps things consistent - since the same dialog will also be used to edit existing children.<br>
+<br>
+<br>
+<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jimbo replied on Tuesday, March 06, 2007</h2>Rocky,<br>
+There is a drawback with your recommendations. The pending child
+objects are not actually removed but are only marked for deletion.<br>
+In that case, we still end up with the problem that calling CancelEdit
+on the parent collection will restore the very pending child object
+that we rejected.<br>
+Defering Add or AddNew unless the dialog result is ok avoids this issue.<br>
+Andre's post 12707 talks about a similar situation..<br>
+<br>
+.<br>
+<br>
+<br>
+<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Tuesday, March 06, 2007</h2>Jimbo,<br><br>Besides being marked for deletion, they should also be moved to an internal DeletedList, which should take them off any UI displaying the collection.<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

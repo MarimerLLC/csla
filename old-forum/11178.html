@@ -1,0 +1,392 @@
+<html><header><title>Using BrokenRule and BrokenRulesCollection in CSLA Command Object.</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Using BrokenRule and BrokenRulesCollection in CSLA Command Object.</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11178.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>tarekahf posted on Tuesday, February 21, 2012</h2><p>I am trying to use BrokenRulesCollection as a property of a Command Object, but I am unable to create a new instance of a BrokenRule and Add it to the collection.</p>
+<p>In summary, inside the Command Object, I am calling other CSLA Objects to carry out some Database Updates for several Objects inside a Loop.</p>
+<p>I want to capture all possible errors including Validation Errors,&nbsp;and return them in a collection object which can be accessed via the UI code.</p>
+<p>I am thinking to use the BrokenRulesCollection, is this a good idea?</p>
+<p>Or should I use List of String (Arrays) to capture the errors ...etc and return the resutls as a simple array ?</p>
+<p>Why I cannot create BrokenRules objects ?</p>
+<p>Tarek.</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Tuesday, February 21, 2012</h2><p>In general terms - I would not use BrokenRule / BrokenRuleCollection for this purpose. These classes exist for a specific responsibility on BusinessRules. </p>
+<p>1. Your other CSLA objects may have structure/tree of BrokenRules (not just on the root object). </p>
+<p>2. All possible errors (Exceptions) may not map directly to a BrokenRules, f.ex Inner exceptions may hold essential data. Or how about DataPortalException that may or may not have a BusinessException (as inner exception).</p>
+<p>I believe you should create your own structure for this purpose and send back to your client application.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tarekahf replied on Wednesday, February 22, 2012</h2><p>Hi Jonny,</p>
+<p>Yes, I agree with you. This is what I have done to report errors back to the UI:</p>
+<p><blockquote style="overflow-x: scroll;"><pre style="margin: 0px;"></p>
+<p><br />&nbsp;&nbsp;&nbsp; Public Shared Function RefreshDBFields(ByVal theUserCtrlInfoPack As UserCtrlInfoPack, ByVal DoGetCountOnly As Boolean) As RefreshDBFieldsCommand<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Dim result As RefreshDBFieldsCommand<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; If Not AppSecurity.GetSingleton.IsUserAuthorized(AppSecurity.CodesApp.eHRMD, AppSecurity.CodesActions.RefreshDBFlds, AppSecurity.CodesDataTypes.SPMSForm, theUserCtrlInfoPack) Then<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Throw New System.Security.SecurityException( _<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; String.Format( _<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; My.Resources.NotAuthErrorPrm2, _<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; theUserCtrlInfoPack.AuthUserID, _<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; AppSecurity.CodesActions.RefreshDBFlds.ToString, _<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; SPMSForm.GetSPMSFormInits.GetObjectName, &quot;&lt;all&gt;&quot;))<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End If<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; result = DataPortal.Execute(Of RefreshDBFieldsCommand)(New RefreshDBFieldsCommand(theUserCtrlInfoPack, DoGetCountOnly))<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return result<br />&nbsp;&nbsp;&nbsp; End Function</p>
+<p>&nbsp;&nbsp;&nbsp; Public Class RefreshDBFieldsCommand<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Inherits CommandBase</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Private mRecordsToBeRefreshedCnt As Integer<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Private mRecordsRefreshedCnt As Integer<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Private mDoGetCountOnly As Boolean<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Private mRecordVersion As Integer<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Private mUserCtrlInfoPack As UserCtrlInfoPack<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Private mMessages As New List(Of String)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Private mSuccess As Boolean</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Public ReadOnly Property RecordsToBeRefreshedCnt() As Integer<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Get<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return mRecordsToBeRefreshedCnt<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Get<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Property</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Public ReadOnly Property RecordsRefreshedCnt() As Integer<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Get<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return mRecordsRefreshedCnt<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Get<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Property</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Public ReadOnly Property Messages() As String()<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Get<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return mMessages.ToArray()<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Get<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Property</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Public ReadOnly Property Success() As Boolean<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Get<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return mSuccess<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Get<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Property</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Public Sub New(ByVal theUserCtrlInfoPack As UserCtrlInfoPack, ByVal DoGetCountOnly As Boolean)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; mUserCtrlInfoPack = theUserCtrlInfoPack<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; mDoGetCountOnly = DoGetCountOnly<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; mSuccess = True<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Sub</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Protected Overrides Sub DataPortal_Execute()<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Dim theSPMSForm As SPMSForm = Nothing<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Dim theStaffID As String<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Dim theReviewFrom As String<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Dim theMsg As String<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Using cn As New SqlConnection(Database.SPMSFormDB)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; cn.Open()<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Using cm As SqlCommand = cn.CreateCommand<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; cm.CommandType = CommandType.StoredProcedure<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; cm.CommandText = &quot;uspSPMSFormListGetRecVer&quot;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; cm.Parameters.AddWithValue(&quot;@RecVer&quot;, SPMSForm.GetSPMSFormInits.RecordVersion)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; mRecordsToBeRefreshedCnt = 0<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; mRecordsRefreshedCnt = 0<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Using da As New SqlDataAdapter(cm)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Using ds As New DataSet<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; da.Fill(ds)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; mRecordsToBeRefreshedCnt = ds.Tables(0).Rows.Count<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; If Not mDoGetCountOnly Then<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; For Each theRow As DataRow In ds.Tables(0).Rows<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; theStaffID = theRow.Item(&quot;StaffID&quot;)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; theReviewFrom = theRow.Item(&quot;ReviewFrom&quot;)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; mUserCtrlInfoPack.SetQueryUser(theStaffID)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Try<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; theSPMSForm = SPMSForm.GetSPMSForm(cn, mUserCtrlInfoPack, theReviewFrom)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; theSPMSForm.SetSubmitActionRefreshDBFlds()<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; theSPMSForm.SaveForm()<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Catch ex As Csla.Validation.ValidationException<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; mSuccess = False<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; mMessages.AddRange(theSPMSForm.BrokenRulesCollection.ToArray())<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Catch ex As Exception<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; mSuccess = False<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; theMsg = _<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; String.Format(My.Resources.ErrRefreshDBFlds, _<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ex.Message, theSPMSForm.GetObjectName(), theSPMSForm.IDStr, _<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; mUserCtrlInfoPack.AuthUserID)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; mMessages.Add(theMsg)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Try<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; mRecordsRefreshedCnt += 1<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; theSPMSForm = Nothing<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Next<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; If mSuccess Then<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; theMsg = _<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; String.Format( _<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; My.Resources.RefreshDBFldsConf, _<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; SPMSForm.GetSPMSFormInits.GetObjectName(), mRecordsRefreshedCnt.ToString, _<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; mRecordsToBeRefreshedCnt.ToString)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; mMessages.Add(theMsg)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End If<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End If<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Using<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Using<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Using<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Using</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Sub<br />&nbsp;&nbsp;&nbsp; End Class</p>
+<p></pre></blockquote></p>
+<p>I have yet to test the code above. By the way, this is related to the same post I did before (Progress Bar Implementation with Command Object):</p>
+<p><a href="http://forums.lhotka.net/forums/t/11176.aspx">http://forums.lhotka.net/forums/t/11176.aspx</a></p>
+<p>Do you have any comment on this matter?</p>
+<p>Side Questions: Is there an easy way to insert VB or C# code in this forum ?</p>
+<p>Tarek.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Wednesday, February 22, 2012</h2><p>Not knowing how your business object structure is, ther may be some issues with:&nbsp;</p>
+<pre style="margin:0px;">           mMessages.AddRange(theSPMSForm.BrokenRulesCollection.ToArray()) <br /><br />If  theSPMSForm has child objects/lists with broken rules you need to use BusinessRules.GetAllBrokenRules (static method) to <br />get the broken rules from all nodes -  the entire tree - and eventually merge into a list of broken rules. <br /><br />The ProgressBar implementation is very similar (same programming model) to the BackgroundWorker.  <br />This would not necessarily fit so well with a programming model for command object. <br />Do you use n-tier (an own application server)? <br /><br />I haven&#39;t used this component myself, but the &quot;simple&quot; solution would be to run the code in &quot;DataPortal_Execute&quot; inside the DoWork method. <br /><br />Paste code: <br />I use <b>Productivity Power Tools </b>addin for VS2010 - this allows me to do &quot;HTML Copy&quot; of code. <br />And IE will paste this into the forum as HTML (Firefox used to allow this but not the latest versions). <br /> <br /></pre></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tarekahf replied on Wednesday, February 22, 2012</h2><p>&nbsp;</p>
+<p>Thanks Jonny,</p>
+<p>It seems that &quot;BusinessRules.GetAllBrokenRules&quot; is not available in CSLA for .NET 2.0 the one I am using.</p>
+<p>Anyway, I don&#39;t think I need it, since it is a single level object (but very complex).</p>
+<p>I am only concerned about the design of my approach. So seems my appraoch is correct.</p>
+<p>Regarding Productivity Power Tools addin, is there one for VS 2005? I am not using VS2010 yet.</p>
+<p>Tarek.</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Wednesday, February 22, 2012</h2><p>Use this one for VS2005 and VS2008. <a href="http://copysourceashtml.codeplex.com/">http://copysourceashtml.codeplex.com/ </a></p>
+<p>I would prefer to move up to VS2008 or&nbsp; VS2010 anyway (if possible) and use CSLA N2 <br /><a href="http://wwws.lhotka.net/cslanet/N2.aspx">http://wwws.lhotka.net/cslanet/N2.aspx </a></p>
+<p>This will give you access to nearly all of C# 3.0 syntax - including <b>lambdas </b>and <b>linq2objects </b>when your project targets .NET 2.0 SP1.</p>
+<p>Read more about LinqBridge here: <a href="http://www.albahari.com/nutshell/linqbridge.aspx">http://www.albahari.com/nutshell/linqbridge.aspx</a></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tarekahf replied on Wednesday, February 22, 2012</h2><p>Thanks Jonny,</p>
+<p>I&#39;ll try to move to VS2008 or VS2010 ASAP.</p>
+<p>I installed CopyCourseAsHTML (after closing VS2005) from here:</p>
+<p><a href="http://copysourceashtml.codeplex.com/releases/view/31130">http://copysourceashtml.codeplex.com/releases/view/31130</a></p>
+<p>When I started VS2005 (under Windows 7), I did not see &quot;Copy as HTML&quot;. Also, the Add-in Manager box is empty (nothing was installed).</p>
+<p>I know this is off-topic, but I appreciate if some one can help me here.</p>
+<p>Tarek.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tarekahf replied on Wednesday, February 22, 2012</h2><p>Oh, many thanks Jonny, now&nbsp;I am able to use CopySourceAsHTML with VS2055.</p>
+<p>Here is the latest result (to verify):</p>
+<p><blockquote style="overflow-x: scroll;"><pre style="margin: 0px;">
+<div style="font-family:Courier New;font-size:10pt;color:black;background:white;line-height:40%;">
+<span style="color:#2b91af;">&nbsp;&nbsp;&nbsp;&nbsp;1</span>&nbsp;
+
+<pre></pre>
+<span style="color:#2b91af;">&nbsp;&nbsp;&nbsp;&nbsp;2</span>&nbsp;<span style="line-height:40%;">&nbsp;&nbsp;&nbsp; </span><span style="color:blue;line-height:40%;">Public</span><span style="line-height:40%;"> </span><span style="color:blue;line-height:40%;">Shared</span><span style="line-height:40%;"> </span><span style="color:blue;line-height:40%;">Function</span><span style="line-height:40%;"> RefreshDBFields(</span><span style="color:blue;line-height:40%;">ByVal</span><span style="line-height:40%;"> theUserCtrlInfoPack </span><span style="color:blue;line-height:40%;">As</span><span style="line-height:40%;"> UserCtrlInfoPack, </span><span style="color:blue;line-height:40%;">ByVal</span><span style="line-height:40%;"> DoGetCountOnly </span><span style="color:blue;line-height:40%;">As</span><span style="line-height:40%;"> </span><span style="color:blue;line-height:40%;">Boolean</span><span style="line-height:40%;">) </span><span style="color:blue;line-height:40%;">As</span><span style="line-height:40%;"> RefreshDBFieldsCommand</span>
+
+<pre></pre>
+<span style="color:#2b91af;">&nbsp;&nbsp;&nbsp;&nbsp;3</span>&nbsp;<span style="line-height:40%;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; </span><span style="color:blue;line-height:40%;">Dim</span><span style="line-height:40%;"> result </span><span style="color:blue;line-height:40%;">As</span><span style="line-height:40%;"> RefreshDBFieldsCommand</span>
+
+<pre></pre>
+<span style="color:#2b91af;">&nbsp;&nbsp;&nbsp;&nbsp;4</span>&nbsp;<span style="line-height:40%;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; </span><span style="color:blue;line-height:40%;">If</span><span style="line-height:40%;"> </span><span style="color:blue;line-height:40%;">Not</span><span style="line-height:40%;"> AppSecurity.GetSingleton.IsUserAuthorized(AppSecurity.CodesApp.eHRMD, AppSecurity.CodesActions.RefreshDBFlds, AppSecurity.CodesDataTypes.SPMSForm, theUserCtrlInfoPack) </span><span style="color:blue;line-height:40%;">Then</span>
+
+<pre></pre>
+<span style="color:#2b91af;">&nbsp;&nbsp;&nbsp;&nbsp;5</span>&nbsp;<span style="line-height:40%;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; </span><span style="color:blue;line-height:40%;">Throw</span><span style="line-height:40%;"> </span><span style="color:blue;line-height:40%;">New</span><span style="line-height:40%;"> System.Security.SecurityException( _</span>
+
+<pre></pre>
+<span style="color:#2b91af;">&nbsp;&nbsp;&nbsp;&nbsp;6</span>&nbsp;<span style="line-height:40%;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; </span><span style="color:blue;line-height:40%;">String</span><span style="line-height:40%;">.Format( _</span>
+
+<pre></pre>
+<span style="color:#2b91af;">&nbsp;&nbsp;&nbsp;&nbsp;7</span>&nbsp;<span style="line-height:40%;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; </span><span style="color:blue;line-height:40%;">My</span><span style="line-height:40%;">.Resources.NotAuthErrorPrm2, _</span>
+
+<pre></pre>
+<span style="color:#2b91af;">&nbsp;&nbsp;&nbsp;&nbsp;8</span>&nbsp;<span style="line-height:40%;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; theUserCtrlInfoPack.AuthUserID, _</span>
+
+<pre></pre>
+<span style="color:#2b91af;">&nbsp;&nbsp;&nbsp;&nbsp;9</span>&nbsp;<span style="line-height:40%;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; AppSecurity.CodesActions.RefreshDBFlds.ToString, _</span>
+
+<pre></pre>
+<span style="color:#2b91af;">&nbsp;&nbsp;&nbsp;10</span>&nbsp;<span style="line-height:40%;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; SPMSForm.GetSPMSFormInits.GetObjectName, </span><span style="color:#a31515;line-height:40%;">&quot;&lt;all&gt;&quot;</span><span style="line-height:40%;">))</span>
+
+<pre></pre>
+<span style="color:#2b91af;">&nbsp;&nbsp;&nbsp;11</span>&nbsp;<span style="line-height:40%;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; </span><span style="color:blue;line-height:40%;">End</span><span style="line-height:40%;"> </span><span style="color:blue;line-height:40%;">If</span>
+
+<pre></pre>
+<span style="color:#2b91af;">&nbsp;&nbsp;&nbsp;12</span>&nbsp;<span style="line-height:40%;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; result = DataPortal.Execute(</span><span style="color:blue;line-height:40%;">Of</span><span style="line-height:40%;"> RefreshDBFieldsCommand)(</span><span style="color:blue;line-height:40%;">New</span><span style="line-height:40%;"> RefreshDBFieldsCommand(theUserCtrlInfoPack, DoGetCountOnly))</span>
+
+<pre></pre>
+<span style="color:#2b91af;">&nbsp;&nbsp;&nbsp;13</span>&nbsp;<span style="line-height:40%;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; </span><span style="color:blue;line-height:40%;">Return</span><span style="line-height:40%;"> result</span>
+
+<pre></pre>
+<span style="color:#2b91af;">&nbsp;&nbsp;&nbsp;14</span>&nbsp;<span style="line-height:40%;">&nbsp;&nbsp;&nbsp; </span><span style="color:blue;line-height:40%;">End</span><span style="line-height:40%;"> </span><span style="color:blue;line-height:40%;">Function</span>
+
+<pre></pre>
+<span style="color:#2b91af;">&nbsp;&nbsp;&nbsp;15</span>&nbsp;
+
+<pre></pre>
+<span style="color:#2b91af;">&nbsp;&nbsp;&nbsp;16</span>&nbsp;<span style="line-height:40%;">&nbsp;&nbsp;&nbsp; &lt;Serializable()&gt; _</span>
+
+<pre></pre>
+<span style="color:#2b91af;">&nbsp;&nbsp;&nbsp;17</span>&nbsp;<span style="line-height:40%;">&nbsp;&nbsp;&nbsp; </span><span style="color:blue;line-height:40%;">Public</span><span style="line-height:40%;"> </span><span style="color:blue;line-height:40%;">Class</span><span style="line-height:40%;"> RefreshDBFieldsCommand</span>
+
+<pre></pre>
+<span style="color:#2b91af;">&nbsp;&nbsp;&nbsp;18</span>&nbsp;<span style="line-height:40%;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; </span><span style="color:blue;line-height:40%;">Inherits</span><span style="line-height:40%;"> CommandBase</span>
+
+<pre></pre>
+<span style="color:#2b91af;">&nbsp;&nbsp;&nbsp;19</span>&nbsp;
+
+<pre></pre>
+<span style="color:#2b91af;">&nbsp;&nbsp;&nbsp;20</span>&nbsp;<span style="line-height:40%;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; </span><span style="color:blue;line-height:40%;">Private</span><span style="line-height:40%;"> mRecordsToBeRefreshedCnt </span><span style="color:blue;line-height:40%;">As</span><span style="line-height:40%;"> </span><span style="color:blue;line-height:40%;">Integer</span>
+
+<pre></pre>
+<span style="color:#2b91af;">&nbsp;&nbsp;&nbsp;21</span>&nbsp;<span style="line-height:40%;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; </span><span style="color:blue;line-height:40%;">Private</span><span style="line-height:40%;"> mRecordsRefreshedCnt </span><span style="color:blue;line-height:40%;">As</span><span style="line-height:40%;"> </span><span style="color:blue;line-height:40%;">Integer</span>
+
+<pre></pre>
+<span style="color:#2b91af;">&nbsp;&nbsp;&nbsp;22</span>&nbsp;<span style="line-height:40%;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; </span><span style="color:blue;line-height:40%;">Private</span><span style="line-height:40%;"> mDoGetCountOnly </span><span style="color:blue;line-height:40%;">As</span><span style="line-height:40%;"> </span><span style="color:blue;line-height:40%;">Boolean</span>
+
+<pre></pre>
+<span style="color:#2b91af;">&nbsp;&nbsp;&nbsp;23</span>&nbsp;<span style="line-height:40%;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; </span><span style="color:blue;line-height:40%;">Private</span><span style="line-height:40%;"> mRecordVersion </span><span style="color:blue;line-height:40%;">As</span><span style="line-height:40%;"> </span><span style="color:blue;line-height:40%;">Integer</span>
+
+<pre></pre>
+<span style="color:#2b91af;">&nbsp;&nbsp;&nbsp;24</span>&nbsp;<span style="line-height:40%;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; </span><span style="color:blue;line-height:40%;">Private</span><span style="line-height:40%;"> mUserCtrlInfoPack </span><span style="color:blue;line-height:40%;">As</span><span style="line-height:40%;"> UserCtrlInfoPack</span>
+
+<pre></pre>
+<span style="color:#2b91af;">&nbsp;&nbsp;&nbsp;25</span>&nbsp;<span style="line-height:40%;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; </span><span style="color:blue;line-height:40%;">Private</span><span style="line-height:40%;"> mMessages </span><span style="color:blue;line-height:40%;">As</span><span style="line-height:40%;"> </span><span style="color:blue;line-height:40%;">New</span><span style="line-height:40%;"> List(</span><span style="color:blue;line-height:40%;">Of</span><span style="line-height:40%;"> </span><span style="color:blue;line-height:40%;">String</span><span style="line-height:40%;">)</span>
+
+<pre></pre>
+<span style="color:#2b91af;">&nbsp;&nbsp;&nbsp;26</span>&nbsp;<span style="line-height:40%;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; </span><span style="color:blue;line-height:40%;">Private</span><span style="line-height:40%;"> mSuccess </span><span style="color:blue;line-height:40%;">As</span><span style="line-height:40%;"> </span><span style="color:blue;line-height:40%;">Boolean</span>
+
+<pre></pre>
+<span style="color:#2b91af;">&nbsp;&nbsp;&nbsp;27</span>&nbsp;
+
+<pre></pre>
+<span style="color:#2b91af;">&nbsp;&nbsp;&nbsp;28</span>&nbsp;<span style="line-height:40%;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; </span><span style="color:blue;line-height:40%;">Public</span><span style="line-height:40%;"> </span><span style="color:blue;line-height:40%;">ReadOnly</span><span style="line-height:40%;"> </span><span style="color:blue;line-height:40%;">Property</span><span style="line-height:40%;"> RecordsToBeRefreshedCnt() </span><span style="color:blue;line-height:40%;">As</span><span style="line-height:40%;"> </span><span style="color:blue;line-height:40%;">Integer</span>
+
+<pre></pre>
+<span style="color:#2b91af;">&nbsp;&nbsp;&nbsp;29</span>&nbsp;<span style="line-height:40%;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; </span><span style="color:blue;line-height:40%;">Get</span>
+
+<pre></pre>
+<span style="color:#2b91af;">&nbsp;&nbsp;&nbsp;30</span>&nbsp;<span style="line-height:40%;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; </span><span style="color:blue;line-height:40%;">Return</span><span style="line-height:40%;"> mRecordsToBeRefreshedCnt</span>
+
+<pre></pre>
+<span style="color:#2b91af;">&nbsp;&nbsp;&nbsp;31</span>&nbsp;<span style="line-height:40%;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; </span><span style="color:blue;line-height:40%;">End</span><span style="line-height:40%;"> </span><span style="color:blue;line-height:40%;">Get</span>
+
+<pre></pre>
+<span style="color:#2b91af;">&nbsp;&nbsp;&nbsp;32</span>&nbsp;<span style="line-height:40%;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; </span><span style="color:blue;line-height:40%;">End</span><span style="line-height:40%;"> </span><span style="color:blue;line-height:40%;">Property</span>
+
+<pre></pre>
+<span style="color:#2b91af;">&nbsp;&nbsp;&nbsp;33</span>&nbsp;
+
+<pre></pre>
+<span style="color:#2b91af;">&nbsp;&nbsp;&nbsp;34</span>&nbsp;<span style="line-height:40%;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; </span><span style="color:blue;line-height:40%;">Public</span><span style="line-height:40%;"> </span><span style="color:blue;line-height:40%;">ReadOnly</span><span style="line-height:40%;"> </span><span style="color:blue;line-height:40%;">Property</span><span style="line-height:40%;"> RecordsRefreshedCnt() </span><span style="color:blue;line-height:40%;">As</span><span style="line-height:40%;"> </span><span style="color:blue;line-height:40%;">Integer</span>
+
+<pre></pre>
+<span style="color:#2b91af;">&nbsp;&nbsp;&nbsp;35</span>&nbsp;<span style="line-height:40%;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; </span><span style="color:blue;line-height:40%;">Get</span>
+
+<pre></pre>
+<span style="color:#2b91af;">&nbsp;&nbsp;&nbsp;36</span>&nbsp;<span style="line-height:40%;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; </span><span style="color:blue;line-height:40%;">Return</span><span style="line-height:40%;"> mRecordsRefreshedCnt</span>
+
+<pre></pre>
+<span style="color:#2b91af;">&nbsp;&nbsp;&nbsp;37</span>&nbsp;<span style="line-height:40%;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; </span><span style="color:blue;line-height:40%;">End</span><span style="line-height:40%;"> </span><span style="color:blue;line-height:40%;">Get</span>
+
+<pre></pre>
+<span style="color:#2b91af;">&nbsp;&nbsp;&nbsp;38</span>&nbsp;<span style="line-height:40%;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; </span><span style="color:blue;line-height:40%;">End</span><span style="line-height:40%;"> </span><span style="color:blue;line-height:40%;">Property</span>
+
+<pre></pre>
+<span style="color:#2b91af;">&nbsp;&nbsp;&nbsp;39</span>&nbsp;
+
+<pre></pre>
+<span style="color:#2b91af;">&nbsp;&nbsp;&nbsp;40</span>&nbsp;<span style="line-height:40%;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; </span><span style="color:blue;line-height:40%;">Public</span><span style="line-height:40%;"> </span><span style="color:blue;line-height:40%;">ReadOnly</span><span style="line-height:40%;"> </span><span style="color:blue;line-height:40%;">Property</span><span style="line-height:40%;"> Messages() </span><span style="color:blue;line-height:40%;">As</span><span style="line-height:40%;"> </span><span style="color:blue;line-height:40%;">String</span><span style="line-height:40%;">()</span>
+
+<pre></pre>
+<span style="color:#2b91af;">&nbsp;&nbsp;&nbsp;41</span>&nbsp;<span style="line-height:40%;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; </span><span style="color:blue;line-height:40%;">Get</span>
+
+<pre></pre>
+<span style="color:#2b91af;">&nbsp;&nbsp;&nbsp;42</span>&nbsp;<span style="line-height:40%;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; </span><span style="color:blue;line-height:40%;">Return</span><span style="line-height:40%;"> mMessages.ToArray()</span>
+
+<pre></pre>
+<span style="color:#2b91af;">&nbsp;&nbsp;&nbsp;43</span>&nbsp;<span style="line-height:40%;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; </span><span style="color:blue;line-height:40%;">End</span><span style="line-height:40%;"> </span><span style="color:blue;line-height:40%;">Get</span>
+
+<pre></pre>
+<span style="color:#2b91af;">&nbsp;&nbsp;&nbsp;44</span>&nbsp;<span style="line-height:40%;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; </span><span style="color:blue;line-height:40%;">End</span><span style="line-height:40%;"> </span><span style="color:blue;line-height:40%;">Property</span>
+
+<pre></pre>
+<span style="color:#2b91af;">&nbsp;&nbsp;&nbsp;45</span>&nbsp;
+
+<pre></pre>
+<span style="color:#2b91af;">&nbsp;&nbsp;&nbsp;46</span>&nbsp;<span style="line-height:40%;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; </span><span style="color:blue;line-height:40%;">Public</span><span style="line-height:40%;"> </span><span style="color:blue;line-height:40%;">ReadOnly</span><span style="line-height:40%;"> </span><span style="color:blue;line-height:40%;">Property</span><span style="line-height:40%;"> Success() </span><span style="color:blue;line-height:40%;">As</span><span style="line-height:40%;"> </span><span style="color:blue;line-height:40%;">Boolean</span>
+
+<pre></pre>
+<span style="color:#2b91af;">&nbsp;&nbsp;&nbsp;47</span>&nbsp;<span style="line-height:40%;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; </span><span style="color:blue;line-height:40%;">Get</span>
+
+<pre></pre>
+<span style="color:#2b91af;">&nbsp;&nbsp;&nbsp;48</span>&nbsp;<span style="line-height:40%;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; </span><span style="color:blue;line-height:40%;">Return</span><span style="line-height:40%;"> mSuccess</span>
+
+<pre></pre>
+<span style="color:#2b91af;">&nbsp;&nbsp;&nbsp;49</span>&nbsp;<span style="line-height:40%;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; </span><span style="color:blue;line-height:40%;">End</span><span style="line-height:40%;"> </span><span style="color:blue;line-height:40%;">Get</span>
+
+<pre></pre>
+<span style="color:#2b91af;">&nbsp;&nbsp;&nbsp;50</span>&nbsp;<span style="line-height:40%;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; </span><span style="color:blue;line-height:40%;">End</span><span style="line-height:40%;"> </span><span style="color:blue;line-height:40%;">Property</span>
+
+<pre></pre>
+<span style="color:#2b91af;">&nbsp;&nbsp;&nbsp;51</span>&nbsp;
+
+<pre></pre>
+<span style="color:#2b91af;">&nbsp;&nbsp;&nbsp;52</span>&nbsp;<span style="line-height:40%;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; </span><span style="color:blue;line-height:40%;">Public</span><span style="line-height:40%;"> </span><span style="color:blue;line-height:40%;">Sub</span><span style="line-height:40%;"> </span><span style="color:blue;line-height:40%;">New</span><span style="line-height:40%;">(</span><span style="color:blue;line-height:40%;">ByVal</span><span style="line-height:40%;"> theUserCtrlInfoPack </span><span style="color:blue;line-height:40%;">As</span><span style="line-height:40%;"> UserCtrlInfoPack, </span><span style="color:blue;line-height:40%;">ByVal</span><span style="line-height:40%;"> DoGetCountOnly </span><span style="color:blue;line-height:40%;">As</span><span style="line-height:40%;"> </span><span style="color:blue;line-height:40%;">Boolean</span><span style="line-height:40%;">)</span>
+
+<pre></pre>
+<span style="color:#2b91af;">&nbsp;&nbsp;&nbsp;53</span>&nbsp;<span style="line-height:40%;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; mUserCtrlInfoPack = theUserCtrlInfoPack</span>
+
+<pre></pre>
+<span style="color:#2b91af;">&nbsp;&nbsp;&nbsp;54</span>&nbsp;<span style="line-height:40%;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; mDoGetCountOnly = DoGetCountOnly</span>
+
+<pre></pre>
+<span style="color:#2b91af;">&nbsp;&nbsp;&nbsp;55</span>&nbsp;<span style="line-height:40%;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; mSuccess = </span><span style="color:blue;line-height:40%;">True</span>
+
+<pre></pre>
+<span style="color:#2b91af;">&nbsp;&nbsp;&nbsp;56</span>&nbsp;<span style="line-height:40%;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; </span><span style="color:blue;line-height:40%;">End</span><span style="line-height:40%;"> </span><span style="color:blue;line-height:40%;">Sub</span>
+
+<pre></pre>
+<span style="color:#2b91af;">&nbsp;&nbsp;&nbsp;57</span>&nbsp;
+
+<pre></pre>
+<span style="color:#2b91af;">&nbsp;&nbsp;&nbsp;58</span>&nbsp;<span style="line-height:40%;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; </span><span style="color:blue;line-height:40%;">Protected</span><span style="line-height:40%;"> </span><span style="color:blue;line-height:40%;">Overrides</span><span style="line-height:40%;"> </span><span style="color:blue;line-height:40%;">Sub</span><span style="line-height:40%;"> DataPortal_Execute()</span>
+
+<pre></pre>
+<span style="color:#2b91af;">&nbsp;&nbsp;&nbsp;59</span>&nbsp;<span style="line-height:40%;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; </span><span style="color:blue;line-height:40%;">Dim</span><span style="line-height:40%;"> theSPMSForm </span><span style="color:blue;line-height:40%;">As</span><span style="line-height:40%;"> SPMSForm = </span><span style="color:blue;line-height:40%;">Nothing</span>
+
+<pre></pre>
+<span style="color:#2b91af;">&nbsp;&nbsp;&nbsp;60</span>&nbsp;<span style="line-height:40%;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; </span><span style="color:blue;line-height:40%;">Dim</span><span style="line-height:40%;"> theStaffID </span><span style="color:blue;line-height:40%;">As</span><span style="line-height:40%;"> </span><span style="color:blue;line-height:40%;">String</span>
+
+<pre></pre>
+<span style="color:#2b91af;">&nbsp;&nbsp;&nbsp;61</span>&nbsp;<span style="line-height:40%;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; </span><span style="color:blue;line-height:40%;">Dim</span><span style="line-height:40%;"> theReviewFrom </span><span style="color:blue;line-height:40%;">As</span><span style="line-height:40%;"> </span><span style="color:blue;line-height:40%;">String</span>
+
+<pre></pre>
+<span style="color:#2b91af;">&nbsp;&nbsp;&nbsp;62</span>&nbsp;<span style="line-height:40%;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; </span><span style="color:blue;line-height:40%;">Dim</span><span style="line-height:40%;"> theMsg </span><span style="color:blue;line-height:40%;">As</span><span style="line-height:40%;"> </span><span style="color:blue;line-height:40%;">String</span>
+
+<pre></pre>
+<span style="color:#2b91af;">&nbsp;&nbsp;&nbsp;63</span>&nbsp;<span style="line-height:40%;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; </span><span style="color:blue;line-height:40%;">Using</span><span style="line-height:40%;"> cn </span><span style="color:blue;line-height:40%;">As</span><span style="line-height:40%;"> </span><span style="color:blue;line-height:40%;">New</span><span style="line-height:40%;"> SqlConnection(Database.SPMSFormDB)</span>
+
+<pre></pre>
+<span style="color:#2b91af;">&nbsp;&nbsp;&nbsp;64</span>&nbsp;<span style="line-height:40%;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; cn.Open()</span>
+
+<pre></pre>
+<span style="color:#2b91af;">&nbsp;&nbsp;&nbsp;65</span>&nbsp;<span style="line-height:40%;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; </span><span style="color:blue;line-height:40%;">Using</span><span style="line-height:40%;"> cm </span><span style="color:blue;line-height:40%;">As</span><span style="line-height:40%;"> SqlCommand = cn.CreateCommand</span>
+
+<pre></pre>
+<span style="color:#2b91af;">&nbsp;&nbsp;&nbsp;66</span>&nbsp;<span style="line-height:40%;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; cm.CommandType = CommandType.StoredProcedure</span>
+
+<pre></pre>
+<span style="color:#2b91af;">&nbsp;&nbsp;&nbsp;67</span>&nbsp;<span style="line-height:40%;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; cm.CommandText = </span><span style="color:#a31515;line-height:40%;">&quot;uspSPMSFormListGetRecVer&quot;</span>
+
+<pre></pre>
+<span style="color:#2b91af;">&nbsp;&nbsp;&nbsp;68</span>&nbsp;<span style="line-height:40%;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; cm.Parameters.AddWithValue(</span><span style="color:#a31515;line-height:40%;">&quot;@RecVer&quot;</span><span style="line-height:40%;">, SPMSForm.GetSPMSFormInits.RecordVersion)</span>
+
+<pre></pre>
+<span style="color:#2b91af;">&nbsp;&nbsp;&nbsp;69</span>&nbsp;<span style="line-height:40%;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; mRecordsToBeRefreshedCnt = 0</span>
+
+<pre></pre>
+<span style="color:#2b91af;">&nbsp;&nbsp;&nbsp;70</span>&nbsp;<span style="line-height:40%;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; mRecordsRefreshedCnt = 0</span>
+
+<pre></pre>
+<span style="color:#2b91af;">&nbsp;&nbsp;&nbsp;71</span>&nbsp;<span style="line-height:40%;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; </span><span style="color:blue;line-height:40%;">Using</span><span style="line-height:40%;"> da </span><span style="color:blue;line-height:40%;">As</span><span style="line-height:40%;"> </span><span style="color:blue;line-height:40%;">New</span><span style="line-height:40%;"> SqlDataAdapter(cm)</span>
+
+<pre></pre>
+<span style="color:#2b91af;">&nbsp;&nbsp;&nbsp;72</span>&nbsp;<span style="line-height:40%;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; </span><span style="color:blue;line-height:40%;">Using</span><span style="line-height:40%;"> ds </span><span style="color:blue;line-height:40%;">As</span><span style="line-height:40%;"> </span><span style="color:blue;line-height:40%;">New</span><span style="line-height:40%;"> DataSet</span>
+
+<pre></pre>
+<span style="color:#2b91af;">&nbsp;&nbsp;&nbsp;73</span>&nbsp;<span style="line-height:40%;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; da.Fill(ds)</span>
+
+<pre></pre>
+<span style="color:#2b91af;">&nbsp;&nbsp;&nbsp;74</span>&nbsp;<span style="line-height:40%;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; mRecordsToBeRefreshedCnt = ds.Tables(0).Rows.Count</span>
+
+<pre></pre>
+<span style="color:#2b91af;">&nbsp;&nbsp;&nbsp;75</span>&nbsp;<span style="line-height:40%;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; </span><span style="color:blue;line-height:40%;">If</span><span style="line-height:40%;"> </span><span style="color:blue;line-height:40%;">Not</span><span style="line-height:40%;"> mDoGetCountOnly </span><span style="color:blue;line-height:40%;">Then</span>
+
+<pre></pre>
+<span style="color:#2b91af;">&nbsp;&nbsp;&nbsp;76</span>&nbsp;<span style="line-height:40%;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; </span><span style="color:blue;line-height:40%;">For</span><span style="line-height:40%;"> </span><span style="color:blue;line-height:40%;">Each</span><span style="line-height:40%;"> theRow </span><span style="color:blue;line-height:40%;">As</span><span style="line-height:40%;"> DataRow </span><span style="color:blue;line-height:40%;">In</span><span style="line-height:40%;"> ds.Tables(0).Rows</span>
+
+<pre></pre>
+<span style="color:#2b91af;">&nbsp;&nbsp;&nbsp;77</span>&nbsp;<span style="line-height:40%;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; theStaffID = theRow.Item(</span><span style="color:#a31515;line-height:40%;">&quot;StaffID&quot;</span><span style="line-height:40%;">)</span>
+
+<pre></pre>
+<span style="color:#2b91af;">&nbsp;&nbsp;&nbsp;78</span>&nbsp;<span style="line-height:40%;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; theReviewFrom = theRow.Item(</span><span style="color:#a31515;line-height:40%;">&quot;ReviewFrom&quot;</span><span style="line-height:40%;">)</span>
+
+<pre></pre>
+<span style="color:#2b91af;">&nbsp;&nbsp;&nbsp;79</span>&nbsp;<span style="line-height:40%;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; mUserCtrlInfoPack.SetQueryUser(theStaffID)</span>
+
+<pre></pre>
+<span style="color:#2b91af;">&nbsp;&nbsp;&nbsp;80</span>&nbsp;<span style="line-height:40%;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; </span><span style="color:blue;line-height:40%;">Try</span>
+
+<pre></pre>
+<span style="color:#2b91af;">&nbsp;&nbsp;&nbsp;81</span>&nbsp;<span style="line-height:40%;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; theSPMSForm = SPMSForm.GetSPMSForm(cn, mUserCtrlInfoPack, theReviewFrom)</span>
+
+<pre></pre>
+<span style="color:#2b91af;">&nbsp;&nbsp;&nbsp;82</span>&nbsp;<span style="line-height:40%;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; theSPMSForm.SetSubmitActionRefreshDBFlds()</span>
+
+<pre></pre>
+<span style="color:#2b91af;">&nbsp;&nbsp;&nbsp;83</span>&nbsp;<span style="line-height:40%;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; theSPMSForm.SaveForm()</span>
+
+<pre></pre>
+<span style="color:#2b91af;">&nbsp;&nbsp;&nbsp;84</span>&nbsp;<span style="line-height:40%;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; </span><span style="color:blue;line-height:40%;">Catch</span><span style="line-height:40%;"> ex </span><span style="color:blue;line-height:40%;">As</span><span style="line-height:40%;"> Csla.Validation.ValidationException</span>
+
+<pre></pre>
+<span style="color:#2b91af;">&nbsp;&nbsp;&nbsp;85</span>&nbsp;<span style="line-height:40%;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; mSuccess = </span><span style="color:blue;line-height:40%;">False</span>
+
+<pre></pre>
+<span style="color:#2b91af;">&nbsp;&nbsp;&nbsp;86</span>&nbsp;<span style="line-height:40%;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; mMessages.AddRange(theSPMSForm.BrokenRulesCollection.ToArray())</span>
+
+<pre></pre>
+<span style="color:#2b91af;">&nbsp;&nbsp;&nbsp;87</span>&nbsp;<span style="line-height:40%;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; </span><span style="color:blue;line-height:40%;">Catch</span><span style="line-height:40%;"> ex </span><span style="color:blue;line-height:40%;">As</span><span style="line-height:40%;"> Exception</span>
+
+<pre></pre>
+<span style="color:#2b91af;">&nbsp;&nbsp;&nbsp;88</span>&nbsp;<span style="line-height:40%;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; mSuccess = </span><span style="color:blue;line-height:40%;">False</span>
+
+<pre></pre>
+<span style="color:#2b91af;">&nbsp;&nbsp;&nbsp;89</span>&nbsp;<span style="line-height:40%;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; theMsg = _</span>
+
+<pre></pre>
+<span style="color:#2b91af;">&nbsp;&nbsp;&nbsp;90</span>&nbsp;<span style="line-height:40%;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; </span><span style="color:blue;line-height:40%;">String</span><span style="line-height:40%;">.Format(</span><span style="color:blue;line-height:40%;">My</span><span style="line-height:40%;">.Resources.ErrRefreshDBFlds, _</span>
+
+<pre></pre>
+<span style="color:#2b91af;">&nbsp;&nbsp;&nbsp;91</span>&nbsp;<span style="line-height:40%;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; ex.Message, theSPMSForm.GetObjectName(), theSPMSForm.IDStr, _</span>
+
+<pre></pre>
+<span style="color:#2b91af;">&nbsp;&nbsp;&nbsp;92</span>&nbsp;<span style="line-height:40%;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; mUserCtrlInfoPack.AuthUserID)</span>
+
+<pre></pre>
+<span style="color:#2b91af;">&nbsp;&nbsp;&nbsp;93</span>&nbsp;<span style="line-height:40%;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; mMessages.Add(theMsg)</span>
+
+<pre></pre>
+<span style="color:#2b91af;">&nbsp;&nbsp;&nbsp;94</span>&nbsp;<span style="line-height:40%;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; </span><span style="color:blue;line-height:40%;">End</span><span style="line-height:40%;"> </span><span style="color:blue;line-height:40%;">Try</span>
+
+<pre></pre>
+<span style="color:#2b91af;">&nbsp;&nbsp;&nbsp;95</span>&nbsp;<span style="line-height:40%;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; mRecordsRefreshedCnt += 1</span>
+
+<pre></pre>
+<span style="color:#2b91af;">&nbsp;&nbsp;&nbsp;96</span>&nbsp;<span style="line-height:40%;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; theSPMSForm = </span><span style="color:blue;line-height:40%;">Nothing</span>
+
+<pre></pre>
+<span style="color:#2b91af;">&nbsp;&nbsp;&nbsp;97</span>&nbsp;<span style="line-height:40%;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; </span><span style="color:blue;line-height:40%;">Next</span>
+
+<pre></pre>
+<span style="color:#2b91af;">&nbsp;&nbsp;&nbsp;98</span>&nbsp;<span style="line-height:40%;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; </span><span style="color:blue;line-height:40%;">If</span><span style="line-height:40%;"> mSuccess </span><span style="color:blue;line-height:40%;">Then</span>
+
+<pre></pre>
+<span style="color:#2b91af;">&nbsp;&nbsp;&nbsp;99</span>&nbsp;<span style="line-height:40%;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; theMsg = _</span>
+
+<pre></pre>
+<span style="color:#2b91af;">&nbsp;&nbsp;100</span>&nbsp;<span style="line-height:40%;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; </span><span style="color:blue;line-height:40%;">String</span><span style="line-height:40%;">.Format( _</span>
+
+<pre></pre>
+<span style="color:#2b91af;">&nbsp;&nbsp;101</span>&nbsp;<span style="line-height:40%;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; </span><span style="color:blue;line-height:40%;">My</span><span style="line-height:40%;">.Resources.RefreshDBFldsConf, _</span>
+
+<pre></pre>
+<span style="color:#2b91af;">&nbsp;&nbsp;102</span>&nbsp;<span style="line-height:40%;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; SPMSForm.GetSPMSFormInits.GetObjectName(), mRecordsRefreshedCnt.ToString, _</span>
+
+<pre></pre>
+<span style="color:#2b91af;">&nbsp;&nbsp;103</span>&nbsp;<span style="line-height:40%;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; mRecordsToBeRefreshedCnt.ToString)</span>
+
+<pre></pre>
+<span style="color:#2b91af;">&nbsp;&nbsp;104</span>&nbsp;<span style="line-height:40%;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; mMessages.Add(theMsg)</span>
+
+<pre></pre>
+<span style="color:#2b91af;">&nbsp;&nbsp;105</span>&nbsp;<span style="line-height:40%;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; </span><span style="color:blue;line-height:40%;">End</span><span style="line-height:40%;"> </span><span style="color:blue;line-height:40%;">If</span>
+
+<pre></pre>
+<span style="color:#2b91af;">&nbsp;&nbsp;106</span>&nbsp;<span style="line-height:40%;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; </span><span style="color:blue;line-height:40%;">End</span><span style="line-height:40%;"> </span><span style="color:blue;line-height:40%;">If</span>
+
+<pre></pre>
+<span style="color:#2b91af;">&nbsp;&nbsp;107</span>&nbsp;<span style="line-height:40%;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; </span><span style="color:blue;line-height:40%;">End</span><span style="line-height:40%;"> </span><span style="color:blue;line-height:40%;">Using</span>
+
+<pre></pre>
+<span style="color:#2b91af;">&nbsp;&nbsp;108</span>&nbsp;<span style="line-height:40%;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; </span><span style="color:blue;line-height:40%;">End</span><span style="line-height:40%;"> </span><span style="color:blue;line-height:40%;">Using</span>
+
+<pre></pre>
+<span style="color:#2b91af;">&nbsp;&nbsp;109</span>&nbsp;<span style="line-height:40%;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; </span><span style="color:blue;line-height:40%;">End</span><span style="line-height:40%;"> </span><span style="color:blue;line-height:40%;">Using</span>
+
+<pre></pre>
+<span style="color:#2b91af;">&nbsp;&nbsp;110</span>&nbsp;<span style="line-height:40%;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; </span><span style="color:blue;line-height:40%;">End</span><span style="line-height:40%;"> </span><span style="color:blue;line-height:40%;">Using</span>
+
+<pre></pre>
+<span style="color:#2b91af;">&nbsp;&nbsp;111</span>&nbsp;
+
+<pre></pre>
+<span style="color:#2b91af;">&nbsp;&nbsp;112</span>&nbsp;<span style="line-height:40%;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; </span><span style="color:blue;line-height:40%;">End</span><span style="line-height:40%;"> </span><span style="color:blue;line-height:40%;">Sub</span>
+
+<pre></pre>
+<span style="color:#2b91af;">&nbsp;&nbsp;113</span>&nbsp;<span style="line-height:40%;">&nbsp;&nbsp;&nbsp; </span><span style="color:blue;line-height:40%;">End</span><span style="line-height:40%;"> </span><span style="color:blue;line-height:40%;">Class</span>
+
+<pre></pre>
+</div>
+</pre></blockquote></p>
+<p>Much better !<img src="http://forums.lhotka.net/emoticons/emotion-11.gif" alt="Cool" /></p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

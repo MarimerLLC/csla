@@ -1,0 +1,7 @@
+<html><header><title>Stored Proc Template Issue</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Stored Proc Template Issue</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/1884.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>wjcomeaux posted on Friday, December 01, 2006</h2><P>Hello all,</P>
+<P>I have noticed that if you try to generate a store procedure for a table that does not have an identity field, the template will ignore any ReadOnly columns. Meaning, if I specify them as ReadOnly then I get a procedure generated that tries to account for the column on insert but doesn't pass the column in as a parameter.</P>
+<P>In the sproc below, notice that TimeStamp is used but isn't a parameter, and I've set TimeStamp in the ReadOnlyColumns field of the CSLAStoredProcedure.cst</P>
+<P>CREATE PROCEDURE [dbo].[ActionEC_Insert]<BR>&nbsp;@ID int,<BR>&nbsp;@Description varchar(2000)<BR>AS</P>
+<P>SET NOCOUNT ON</P>
+<P>INSERT INTO [dbo].[Action] (<BR>&nbsp;[ID],<BR>&nbsp;[Description],<BR>&nbsp;[TimeStamp]<BR>) VALUES (<BR>&nbsp;@ID,<BR>&nbsp;@Description,<BR>&nbsp;@TimeStamp<BR>)</P>
+<P>GO</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

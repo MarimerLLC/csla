@@ -1,0 +1,29 @@
+<html><header><title>CSLA Validation Version 3.8.2</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA Validation Version 3.8.2</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/8789.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Lazaro posted on Friday, April 09, 2010</h2><p><span style="font-family:Calibri;">
+<p style="margin:0in 0in 10pt;" class="MsoNormal"><span style="font-size:small;">Hello,</span></p>
+<p style="margin:0in 0in 10pt;" class="MsoNormal"><span style="font-size:small;">We are migrating from CSLA version 1.3.0 to 3.8.2 and we need some help with the new broken rules validation model.</span></p>
+<p style="margin:0in 0in 10pt;" class="MsoNormal"><span style="font-size:small;">We had created a method called CheckFinalBrokenRules in the BusinessBase class that gets called by the IsValid property before checking the BrokenRules Collection count and it is implemented/overwritten by the inheriting business objects. This CheckFinalBrokenRules method was created to validate rules that were expensive, &ldquo;complex&rdquo; or &ldquo;not possible to validate&rdquo; in properties (too many properties to monitor and methods to call in too many different objects).</span></p>
+<p style="margin:0in 0in 10pt;" class="MsoNormal"><span style="font-size:small;">&nbsp;Some of the rules that we have in the CheckFinalBrokenRules method include rules that depend on: siblings objects&rsquo; states or just their existence, parent object&rsquo;s state (which could depend on the state of child collections or other related objects), database query for validation, complex code with iterations and referencing other objects, etc. We sort of see the rules that we put in the CheckFinalBrokenRules method as Object/Entity level rules not so much properties specific rules.&nbsp;&nbsp; We limit the rules that are validated in the CheckFinalBrokenRules method to those that are really justified to be there given what we mentioned above (we try to keep the checking of rules in the set of the properties whenever possible).</span></p>
+<p style="margin:0in 0in 10pt;" class="MsoNormal"><span style="font-size:small;">How do we achieve this in the new CSLA version?</span></p>
+<p style="margin:0in 0in 10pt;" class="MsoNormal"><span style="font-size:small;"></span></p>
+<font face="Calibri">
+<p style="margin:0in 0in 10pt;" class="MsoNormal">
+<p style="margin:0in 0in 10pt;" class="MsoNormal">&nbsp;</p>
+</p>
+</font></span>
+<p style="margin:0in 0in 10pt;" class="MsoNormal">
+<p style="margin:0in 0in 10pt;" class="MsoNormal">&nbsp;</p>
+</p>
+</p>
+<p style="margin:0in 0in 10pt;" class="MsoNormal">
+<p style="margin:0in 0in 10pt;" class="MsoNormal">&nbsp;</p>
+<p style="margin:0in 0in 10pt;" class="MsoNormal"><span style="font-family:Calibri;"><font face="Calibri">
+<p>&nbsp;</p>
+</font></span></p>
+<p>&nbsp;</p>
+<p style="margin:0in 0in 10pt;" class="MsoNormal">&nbsp;</p>
+<p style="margin:0in 0in 10pt;" class="MsoNormal">&nbsp;</p>
+</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>rsbaker0 replied on Friday, April 09, 2010</h2><p>I&#39;m not familiar with the rules implementation prior to CSLA 2.0, but perhaps you could leverage the ability to associate one or more rules to a &quot;pseudo&quot; property (e.g. the rules implementation doesn&#39;t care if the property name actually corresponds to a valid property).&nbsp; Rules associates with a pseudo-property won&#39;t typically&nbsp;ever be called in response to a property change. However, note that they do get called if ValidationRules.CheckRules() is called without a property name, notably during DataPortal_Create() in the default implementation, so that case would need to be addressed.</p>
+<p>So, it might be that you can just associate your expensive rules with a pseudo-property -- maybe even call the pseudo-property &quot;CheckFinalBrokenRules&quot;&nbsp;&nbsp;, and in your IsValid method, call ValidationRules.CheckRules(&quot;CheckFinalBrokenRules&quot;).</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Saturday, April 10, 2010</h2><p>There was no real validation rules concept in CSLA 1.x - only broken rules tracking - so your question is not uncommon for people moving from 1.x to something more current.</p>
+<p>CSLA 3.8 has a fairly powerful business rules system with numerous features, and you should learn how they all work before deciding how to migrate. They are discussed (mostly) in the <i>Expert 2008 Business Objects</i> book and I walk through all the features with sample code in the <a href="http://store.lhotka.net">Core 3.8 video series</a>.</p>
+<p>The most common way to handle expensive rules is to set their priority to be 1 or higher. That way they&#39;ll only run if all priority 0 rules pass. The priority/short-circuiting feature is specifically designed to solve most expensive rule issues.</p>
+<p>In the rare case that priorities aren&#39;t enough, you can attach rules to a fake property - rules are attached to a property by IPropertyInfo or by string name. Just attach the expensive rules to a fake property name. Then you can call CheckRules(&quot;FakeName&quot;) when you want to run those specific rules.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,10 @@
+<html><header><title>Exposing NameValueList through WebService</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Exposing NameValueList through WebService</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/177.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Pradeep posted on Tuesday, May 23, 2006</h2><DIV>Hi all,</DIV>
+<DIV>I am reading through the WebServices chapter in the book. We basically create a struct for Project and resource objects. If I am not mistaken, in the UpdateResource method we get a resourceInfo struct, which has a string property called role. Here we just assume that the role the user passed in is the right one?</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>How would the user application know what are the available roles in our system? I am thinking of expose the list of available roles as well in my webservice. So that the user can bind this list to a combo or whatever interface he uses and will send in a roleId in the resourceInfo struct.</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>Could anyone please tell me, what is the best way to expose a NameValueList in the WebService. Should I create another struct containing RoleId, roleName and then expose as a collection of this struct?</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>Thank You</DIV>
+<DIV>Pradeep</DIV>
+<DIV>&nbsp;</DIV></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, May 23, 2006</h2>Yes, create a formal contract (DTO) for the name/value pair and have a method return an array of this type.</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

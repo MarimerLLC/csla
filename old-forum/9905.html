@@ -1,0 +1,48 @@
+<html><header><title>type is not serializable in CSLA 4.0</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>type is not serializable in CSLA 4.0</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9905.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>mrisher posted on Wednesday, December 29, 2010</h2><p>I have a business object called Report that I am binding to textbox controls on a form. The class looks like this:</p>
+<p>&lt;Serializable()&gt; _<br />
+&nbsp;&nbsp;&nbsp; Public Class Report<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Inherits Csla.BusinessBase(Of Report)</p>
+<p>private _description as string =&nbsp; string.empty</p>
+<p>Public
+ Shared DescriptionProperty As PropertyInfo(Of String) = 
+RegisterProperty(Of String)(Function(c) c.Description, 
+RelationshipTypes.PrivateField)<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Public Property Description() As String<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Get<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return GetProperty(DescriptionProperty, _description)<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Get<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Set(ByVal value As String)<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; SetProperty(DescriptionProperty, _description, value)<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Set<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Property</p>
+<p>&#39;&#39;code shortened to conserve space.</p>
+<p>End Class</p>
+<p>The binding is done like this: txtDescription.DataBindings.Add(&quot;EditValue&quot;, Report, &quot;Description&quot;)</p>
+<p>The Report object correctly pulls fields from the database and populates them 
+correctly on the form via the data binding.&nbsp; If a bound control on a form is blank, I type in a value and move to the next field and this is when I get the 
+error: </p>
+<p>&quot;System.Runtime.Serialization.SerializationException was unhandled by user code<br />&nbsp; Message=Type &#39;System.Windows.Forms.Form&#39; in Assembly &#39;System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089&#39; is not marked as serializable.</p>
+<p>I am Using CSLA 4.0 and the error occurs in the BinaryFormatterWrapper.cs.</p>
+<p>I have marked the form I&#39;m using as serializable, but that didn&#39;t seem to help.&nbsp; I&#39;m very new to CSLA and was hoping someone could help.&nbsp; I am glad to post more code if needed.</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Wednesday, December 29, 2010</h2><p>Hi,</p>
+<p>You probably have forms event attached to your BO and these are not 
+serializable or you have some other reference in your BO that points 
+back to the Form. A BO should not have any reference to the UI components. </p>
+<p>In a WinForms app you should use the BindingSource component as an intermediate between the UI and your BO. <br />It seems like you are manually creating DataBinding and connecting UI controls directly to your BO? </p>
+<p>There&#39;s several samples that show this in the samples folder, f.ex SimpleNTier.</p>
+<p>And a Windows Form (and its events) just isn&#39;t serializable -&nbsp; no matter if you add a SerializableAttribute to the form. </p>
+<p>If you are going to save the object you must make sure to UnBind it from the UI (ie: disconnect BindingSources and BOs) before you call bo.Save(). </p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>mrisher replied on Wednesday, December 29, 2010</h2><p>Johnny, thanks for your quick reply.&nbsp; I am instantiating my BO in the EditValueChanged event of a list box based on what was chosen in the list box. See below.</p>
+<p>Private Sub lstExistingReports_EditValueChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles lstExistingReports.EditValueChanged<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Try<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Dim rpt As BusinessObjects.Report = BusinessObjects.Report.GetReportByName(lstExistingReports.Text)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; BindControls(rpt)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Catch ex As Exception<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Throw ex<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Try<br /><br />&nbsp;&nbsp;&nbsp; End Sub</p>
+<p>Private Sub BindControls()<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; txtName.DataBindings.Clear()<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; txtDescription.DataBindings.Clear()<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; txtStoredProcName.DataBindings.Clear()<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; txtFormName.DataBindings.Clear()<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; txtFormInstructions.DataBindings.Clear()<br /><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; txtName.DataBindings.Add(&quot;EditValue&quot;, report, &quot;Name&quot;)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; txtDescription.DataBindings.Add(&quot;EditValue&quot;, report, &quot;Description&quot;)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; txtStoredProcName.DataBindings.Add(&quot;EditValue&quot;, report, &quot;StoredProc&quot;)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; txtFormName.DataBindings.Add(&quot;EditValue&quot;, report, &quot;FormName&quot;)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; txtFormInstructions.DataBindings.Add(&quot;EditValue&quot;, report, &quot;FormInstructions&quot;)<br /><br />&nbsp;&nbsp;&nbsp; End Sub</p>
+<p>&nbsp;</p>
+<p>So this is where my problem lies?&nbsp; Because like I said before, it seems like the binding works just fine.&nbsp; All of the text boxes populate correctly based on the report name I choose in the list box.&nbsp; I can successfully choose a different report name and the correct data populates the text boxes. &nbsp; If a text box is blank (because the database field was blank), I enter in a value in the text box and as soon as the control loses focus I get the serialization error.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Wednesday, December 29, 2010</h2><p>Hi,</p>
+<p>But if you use the Windows Forms designer and DataSources window to create your controls they will automatically be defined with databindings. </p>
+<p>In BindControls you should only need to connect the BindingSource to your BO. </p>
+<p>DataBinding uses a number of interfaces and expects a certain behavior so I&#39;d prefer to use the BindingSource. </p>
+<p>I also recommend to read the following FAQs:<br /><a href="http://windowsclient.net/downloads/folders/applications/entry1332.aspx"></a><a title="DataBinding FAQ" href="http://windowsclient.net/downloads/folders/applications/entry1302.aspx">DataBinding FAQ</a><br /><a title="DataGridView FAQ" href="http://windowsclient.net/downloads/folders/applications/entry1304.aspx">DataGridView FAQ</a></p>
+<p>These documents provide very good info on Forms and DataBinding and are available at <a href="http://www.windowsclient.net%20">http://www.windowsclient.net </a></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>bartol replied on Friday, December 31, 2010</h2><p>The problem might also be somewhere in the code that you left out. Check if any of the properties or fields are of some type that is not serializable. &nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>vbbeta replied on Friday, December 31, 2010</h2>I also faced some strange things in vb classes I would say you should copy the build DLL file from the business object project ( I believe that your doing it this way) if this dont work I would say some times it happens that you need to copy the code from the class and create a new one this code some times solve the problem. ......................
+
+
+
+Try it have fun </div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

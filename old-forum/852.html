@@ -1,0 +1,19 @@
+<html><header><title>Datasource in different controls</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Datasource in different controls</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/852.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>vargasbo posted on Wednesday, August 09, 2006</h2>My object is setup this way, Customer - Comments, Emails, etc.<br><br>My customer object is modified on a certain control, now my same customer object ref is passed to my comment control. The issue I'm having is that when I add a new comment and save my comment, the data in the BO is correct, comment is not marked old.<br><br>But the databinding still shows the object as new. So my question is this, when I reset the binding on my customer object in my customer control, so i have to go off and reset the binding for ever other control that has a ref to my customer object?<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, August 09, 2006</h2>The need to rebind both bindingsource controls (I assume you are doing Windows Forms) is discussed in Chapter 9. Also, there's errata around this:<br><br><a href="http://www.lhotka.net/Cs2005Errata.aspx?id=6432c872-92ce-4bb8-bc26-b610b71956c8">http://www.lhotka.net/Cs2005Errata.aspx?id=6432c872-92ce-4bb8-bc26-b610b71956c8</a><br><br>(and similar errata for VB at <a href="http://www.lhotka.net">www.lhotka.net</a>)<br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>vargasbo replied on Wednesday, August 09, 2006</h2>Wow!<br><br>So I would have to rebind every single DS? my customer root goes down 6 levels. Hmm, I'll have to come up with a savvy way of doing this.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, August 09, 2006</h2>
+
+
+
+
+<DIV align=left><SPAN class=640001422-09082006><FONT face=Arial color=#0000ff size=2>Yeah, it is not ideal...</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=640001422-09082006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=640001422-09082006><FONT face=Arial color=#0000ff size=2>Especially given that you need to follow the model in the 
+book (w/ errata) where you unbind first - to get the bindingsource objects back 
+to their original state - and then rebind. On the other hand, you should be able 
+to ONLY bind the root object, and the rest should rebind by themselves, so I 
+guess in that light it isn't so terribly bad.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=640001422-09082006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=640001422-09082006><FONT face=Arial color=#0000ff size=2>Rocky</FONT></SPAN></DIV><BR>
+<BLOCKQUOTE>
+  <DIV class=OutlookMessageHeader align=left><FONT face=Arial color=#0000ff size=2></FONT>&nbsp;</DIV>
+  <DIV></DIV>Wow!<BR><BR>So I would have to rebind every single DS? my customer 
+  root goes down 6 levels. Hmm, I'll have to come up with a savvy way of doing 
+  this.<BR></BLOCKQUOTE></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

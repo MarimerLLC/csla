@@ -1,0 +1,79 @@
+<html><header><title>Visual Studio 2005 becomes unresponsive when error occurrs in DataPortal</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Visual Studio 2005 becomes unresponsive when error occurrs in DataPortal</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/2550.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>dshafer posted on Monday, March 19, 2007</h2><P>I'm using the local DataPortal with CSLA 2.1.4 and VS2005.&nbsp; When an error occurrs in the DataPortal_Fetch method, for example with a stored procedure call, Visual Studio becomes unresponsive.&nbsp;When&nbsp;this happens,&nbsp;I have to manually terminate the debugging session through the task manager.&nbsp; Has anyone else encountered this problem?</P>
+<P>Dustin</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, March 19, 2007</h2><P>Not quite like that (to my knowledge). However, there are some very odd issues with errors occurring when fetching a read-only list, perhaps you are hitting that or something similar.</P>
+<P>The workaround appears to be in the client-side dataportal's Fetch() method, in the exception handling area where the new DataPortalException is created. The business object from the server (whatever state it is in) is included in that exception's constructor.</P>
+<P>Changing that line of code to pass Nothing/null for the business object parameter works around at least one odd issue.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tetranz replied on Monday, March 19, 2007</h2><P>I think you're hitting the same as we discussed here:</P>
+<P><A HREF="/forums/permalink/3063/3051/ShowThread.aspx#3051">http://forums.lhotka.net/forums/permalink/3063/3051/ShowThread.aspx#3051</A></P>
+<P>I discovered that it can be avoided by&nbsp;going to Tools/Options/Debugging/General and unchecking "Unwind the call stack on unhandled exceptions".</P>
+<P>I haven't tried it&nbsp;with that&nbsp;turned on since I installed VS 2005 SP1.</P>
+<P>Ross</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>dshafer replied on Monday, March 19, 2007</h2><P>Thanks for the feedback guys.&nbsp; I'll give these solutions a try and let y'all know what happens.</P>
+<P>Dustin</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>dshafer replied on Monday, March 19, 2007</h2><P>Rocky/Tetranz,</P>
+<P>You guys hit the nail on the head.&nbsp; Both of your solutions were successfull in fixing the problem.&nbsp; In the end I went with the Visual Studio setting so I didn't have to modify the framework.&nbsp; As Rocky suggested, this was a problem in a ReadOnlyListBase object when a Sql Exception occurred.&nbsp; Sorry if this was a duplicate post, but I had no idea what keywords to use to search for this issue.</P>
+<P>Dustin</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, March 19, 2007</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I just wish I understood what VS was doing to cause the issue so
+I could try and alter ROLB to work around it&#8230; But given that we have a
+workaround, that research is lower on my priority list than other things.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<div>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> dshafer
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Monday, March 19, 2007 3:24 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] Visual Studio 2005 becomes unresponsive when
+error occurrs in DataPortal<o:p></o:p></span></p>
+
+</div>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Rocky/Tetranz,<o:p></o:p></p>
+
+<p>You guys hit the nail on the head.&nbsp; Both of your solutions were
+successfull in fixing the problem.&nbsp; In the end I went with the Visual
+Studio setting so I didn't have to modify the framework.&nbsp; As Rocky
+suggested, this was a problem in a ReadOnlyListBase object when a Sql Exception
+occurred.&nbsp; Sorry if this was a duplicate post, but I had no idea what
+keywords to use to search for this issue.<o:p></o:p></p>
+
+<p>Dustin<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

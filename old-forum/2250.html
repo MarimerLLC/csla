@@ -1,0 +1,9 @@
+<html><header><title>Editable Root question</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Editable Root question</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/2250.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>wjcomeaux posted on Wednesday, January 31, 2007</h2><P>How would I generate an Editable root object based on a table that has both a primary key (ID) and a unique index (User_ID) and let the User_ID property in the business object be settable.</P>
+<P>Right now, CodeSmith is giving me a business object with only a ReadOnly User_ID property. What would be the best way to get around this? I obviously don't want to remove the&nbsp;uniqueness of User_ID&nbsp;from my database as then we could have multiple records for a user and we don't want that.</P>
+<P>Thanks for the input,<BR>Will</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Tray replied on Monday, February 12, 2007</h2><P><FONT face=Arial size=2>Hi Will,</FONT></P>
+<P><FONT face=Arial size=2>Having a unique key that is settable seams to point in the direction of the 'ExistsCommand'.</FONT></P>
+<UL>
+<LI><FONT face=Arial size=2>If you make the User_ID property read/write this will allow the user to set the property.</FONT></LI>
+<LI><FONT face=Arial size=2>In the validation rules, use the ExistsCommand to check that the value <STRONG>is</STRONG> actually unique. If it isn't, the object will become invalid and will not be able to be saved preventing duplicate indexes.</FONT></LI></UL>
+<P><FONT face=Arial size=2>See how you go.</FONT></P>
+<P><FONT face=Arial size=2>Regards,<BR>Tray</FONT></P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

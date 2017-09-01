@@ -1,0 +1,27 @@
+<html><header><title>CancelEdit problem - New Child not removed</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CancelEdit problem - New Child not removed</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9720.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Phlar posted on Friday, November 05, 2010</h2><p>Hi All,</p>
+<p>I&#39;ve seen a few posts (i.e. <a href="http://forums.lhotka.net/forums/p/6514/31450.aspx#31450">http://forums.lhotka.net/forums/p/6514/31450.aspx#31450</a>) in which issuing the CancelEdit on the root object does not remove newly created child objects.&nbsp;&nbsp; I have just encountered this situation and wondered if there was a solution.</p>
+<p>CSLA version:&nbsp; 4.0.30319</p>
+<p>In our scenario we have a root object (BO), containing a list of child objects (BLB and BO).</p>
+<p>Our BLB contains an overridden AddNewCore() method:</p>
+<p>Child _child = new Child();</p>
+<p>this.Add(_child);</p>
+<p>We also use the RebindUI pattern as follows:</p>
+<p>&nbsp;this.rootBindingSource.RaiseListChangedEvents = false; </p>
+<p>this.childItemsBindingSource.RaiseListChangedEvents = false;</p>
+<p>UnbindBindingSource(this.childItemsBindingSource, saveObject, false); </p>
+<p>UnbindBindingSource(this.rootBindingSource, saveObject, true);</p>
+<p>this.childItemsBindingSource.DataSource = this.rootBindingSource;</p>
+<p>_root.CancelEdit();</p>
+<p>if&nbsp;(rebind) </p>
+<p>BindUI();</p>
+<p>&nbsp;this.rootBindingSource.RaiseListChangedEvents = true ; </p>
+<p>&nbsp;this.childItemsBindingSource.RaiseListChangedEvents = true ; </p>
+<p>&nbsp;if (rebind) </p>
+<p>{</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; this.rootBindingSource.ResetBindings(false); </p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; this.childItemsBindingSource.ResetBindings(false);</p>
+<p>}</p>
+<p>I can&#39;t see how/why the child is not removed.&nbsp; Any suggestions?</p>
+<p><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"></span></span></p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>Phlar replied on Friday, November 05, 2010</h2><p>Found the problem (thanks to EL and the logging we have in place).&nbsp; The issue was in relation to adding the new object.&nbsp; The method removed the bindings when adding the new element.&nbsp; Once I removed this line, any additions to the grid were removed when the CancelEdit was called.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Kalpesh Shah replied on Wednesday, January 11, 2012</h2><p>I am also facing the same problem.</p>
+<p>Can u explain how &amp; what exactly you have done to overcome this problem.</p>
+<p>Thanks in Advance!</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

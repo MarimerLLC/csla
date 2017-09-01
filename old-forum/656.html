@@ -1,0 +1,66 @@
+<html><header><title>SortedBindingList.SourceChanged (ListChangedType.ItemAdded behavior)</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>SortedBindingList.SourceChanged (ListChangedType.ItemAdded behavior)</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/656.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>tsmo posted on Tuesday, July 18, 2006</h2>I'm adding items to a SortedBindingList, and it isn't sorting them.&nbsp; Stepping through the code, I found that DoSort() isn't called in SourceChanged after ListChangedType.ItemAdded in the Add() case (e.NewIndex == _list.Count -1) but it is called in the Insert() case (e.NewIndex != _list.Count -1).&nbsp; Is this a bug?<br><br>When I added DoSort() to right before the end of that block, it behaved as expected.&nbsp; What am I missing?<br><br>Thanks,<br>tsmo<br><br>The code in question:<br><br>private void SourceChanged(<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; object sender, ListChangedEventArgs e)<br>&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (_sorted)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; switch (e.ListChangedType)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; case ListChangedType.ItemAdded:<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; T newItem = _list[e.NewIndex];<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (e.NewIndex == _list.Count - 1)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; object newKey;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (_sortBy != null)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; newKey = _sortBy.GetValue(newItem);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; else<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; newKey = newItem;<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (_sortOrder == ListSortDirection.Ascending)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _sortIndex.Add(<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; new ListItem(newKey, e.NewIndex));<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; else<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _sortIndex.Insert(0, <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; new ListItem(newKey, e.NewIndex));<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (!_initiatedLocally)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; OnListChanged(<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; new ListChangedEventArgs(<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ListChangedType.ItemAdded, <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; SortedIndex(e.NewIndex)));<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; else<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; DoSort();<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; break;<br>...<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, July 18, 2006</h2><P>This is intended behavior. The reason is that SortedBindingList can be used as a data source to a DataGridView control in Windows Forms, and if it resorted instantly on adding new rows the user experience for in-place editing would be horrible - unusable actually (I tried <img src="/emoticons/emotion-11.gif" alt="Cool [H]" />).</P>
+<P>So when adding new items to the sorted list, the items aren't resorted unless you reapply the sort by calling ApplySort() again (or do some other operation to the list that does trigger a sort).</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Brian Criswell replied on Tuesday, July 18, 2006</h2>Was the unusable behaviour because it would resort an item after you edited a cell?<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, July 18, 2006</h2>
+
+
+
+
+<DIV align=left><SPAN class=453074620-18072006><FONT face=Arial color=#0000ff size=2>I</FONT></SPAN><SPAN class=453074620-18072006><FONT face=Arial color=#0000ff size=2>t was worse than that. Because when the user 
+arrows down onto the bottom row of the grid is the point at which a new item is 
+created and added to the list. At that instant the new (and probably empty) row 
+gets resorted to the top of the list, leaving the user near the bottom, 
+wondering where their new row went??</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=453074620-18072006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=453074620-18072006><FONT face=Arial color=#0000ff size=2>Rocky</FONT></SPAN></DIV><BR>
+<BLOCKQUOTE>
+  <DIV class=OutlookMessageHeader align=left>
+  <HR>
+  <FONT face=Tahoma size=2><B>From:</B> Brian Criswell 
+  [mailto:cslanet@lhotka.net] <BR><B>Sent:</B> Tuesday, July 18, 2006 3:39 
+  PM<BR><B>To:</B> rocky@lhotka.net<BR><B>Subject:</B> Re: [CSLA .NET] 
+  SortedBindingList.SourceChanged (ListChangedType.ItemAdded 
+  behavior)<BR></FONT><BR></DIV>
+  <DIV></DIV>Was the unusable behaviour because it would resort an item after 
+  you edited a cell?<BR><BR><BR><BR></BLOCKQUOTE></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Brian Criswell replied on Tuesday, July 18, 2006</h2>Okay, so I threw together a test with a DataGridView and a DataView.&nbsp; How does the DataView know to sort only after the user has finished editing a row and moved off of that row?<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, July 18, 2006</h2>
+
+
+
+
+<DIV align=left><SPAN class=890330822-18072006><FONT face=Arial color=#0000ff size=2>I don't know - I only tested with the 
+DataGridView.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=890330822-18072006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=890330822-18072006><FONT face=Arial color=#0000ff size=2>Both DansDreams and I spent a lot of time on this - with a 
+form that has two DataGridView controls - one bound to the original list, the 
+other to the sorted list - both live and supporting in-place add/edit/delete. 
+The goal was to be able to do any operation in either grid and have a meaningful 
+result for the user.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=890330822-18072006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=890330822-18072006><FONT face=Arial color=#0000ff size=2>This is the same testing technique I'm doing for the 
+FilteredBindingList in 2.1 - and I'm finding similar oddities. Like you can't 
+filter out a new row as it is added - and almost all new rows would get filtered 
+out because they wouldn't meet the criteria - stuff like 
+that.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=890330822-18072006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=890330822-18072006><FONT face=Arial color=#0000ff size=2>Rocky</FONT></SPAN></DIV><BR>
+<BLOCKQUOTE>
+  <DIV class=OutlookMessageHeader align=left>
+  <HR>
+  <FONT face=Tahoma size=2><B>From:</B> Brian Criswell 
+  [mailto:cslanet@lhotka.net] <BR><B>Sent:</B> Tuesday, July 18, 2006 4:59 
+  PM<BR><B>To:</B> rocky@lhotka.net<BR><B>Subject:</B> Re: [CSLA .NET] RE: 
+  SortedBindingList.SourceChanged (ListChangedType.ItemAdded 
+  behavior)<BR></FONT><BR></DIV>
+  <DIV></DIV>Okay, so I threw together a test with a DataGridView and a 
+  DataView.&nbsp; How does the DataView know to sort only after the user has 
+  finished editing a row and moved off of that row?<BR><BR><BR><BR></BLOCKQUOTE></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Brian Criswell replied on Tuesday, July 18, 2006</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div><div align="left"><span class="890330822-18072006"><font color="#0000ff" face="Arial" size="2">This is the same testing technique I'm doing for the 
+FilteredBindingList in 2.1 - and I'm finding similar oddities. Like you can't 
+filter out a new row as it is added - and almost all new rows would get filtered 
+out because they wouldn't meet the criteria - stuff like 
+that.</font></span></div>
+<div align="left"><span class="890330822-18072006"><font color="#0000ff" face="Arial" size="2"></font></span>&nbsp;</div>
+<div align="left"><span class="890330822-18072006"><font color="#0000ff" face="Arial" size="2">Rocky</font></span></div></div></BLOCKQUOTE><br>Could you just add something similar to "OR IsNew = 'True'" to the filter if you know you are going to be doing in place editing?<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, July 18, 2006</h2><P>Well the thing is, the filter itself is a pluggable component - so you can write your own custom filters for different purposes or needs. The default filter is fairly simplistic, although often useful. But I can't assume any given filter will provide specific functionality.</P>
+<P>I think I have a pretty workable solution at the moment - it passes all my tests anyway, and it is composable with SortedBindingList, which is really cool.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Brian Criswell replied on Wednesday, July 19, 2006</h2>After doing some more research, I realised that the DataView behaves the way it does because it exposes a DataRowViewCollection, not a DataRowCollection.&nbsp; The DataRowView implements IEditableObject, and the changes made are not made until you change rows.&nbsp; I will do some research into this to see how to modify our object views to use this concept.&nbsp; With luck, we will have views that can sort and filter immediately but will behave properly in a DataGridView.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jh72i replied on Tuesday, October 21, 2008</h2><P>Hi folks,<BR>Having an unexpected problem with FilteredBindingList. When I add a new item to the underlying datasource it appears in the filtered view regardless of whether or not it passes the filtering criteria. You folks have any thoughts on solving this particular problem?</P>
+<P>I know you have problems with adding items before they have properties set (so they might be filtered out before you can even edit them, etc.) but i already have all the properties set.</P>
+<P>I have a number of filtered views on a single datasource. I add to the datasource and the new items appears in each list (instead of the one it should). I'm in a bind so I will probably have to 'plumb' an ...<FONT size=1>if(provider.Invoke(newItem, _filter).....</FONT><FONT size=3>an at the +++ lines below but would love to hear what the 'real' solution should be.</FONT></P>
+<P>thanks</P>
+<P>&nbsp;&nbsp; private void SourceChanged(object sender, ListChangedEventArgs e)<BR>&nbsp;&nbsp;&nbsp; {<BR>...&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; switch (e.ListChangedType)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; case ListChangedType.ItemAdded:<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; listIndex = e.NewIndex;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // add new value to index<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; newItem = _list[listIndex];<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (_filterBy != null)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; newKey = _filterBy.GetValue(newItem);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; else<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; newKey = newItem;</P>
+<P>+++++ hang on - don't add until&nbsp;you see if it matches the filter&nbsp;+++++++<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _filterIndex.Add(<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; new ListItem(newKey, listIndex));<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

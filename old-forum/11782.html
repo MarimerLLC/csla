@@ -1,0 +1,13 @@
+<html><header><title>Edit the list Item in BusinessBindingListBase</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Edit the list Item in BusinessBindingListBase</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11782.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Arjun posted on Friday, January 11, 2013</h2><p>Hi,</p>
+<p>I have an editable list, inherited from BusinessBindingListbase. I should be able to Add, edit or delete items in the list. Add, Edit or Delete is on list not on the database. When the list is changed, I have a task bar icon to save the changed list.</p>
+<p>If a new item is added to the list, clicking on save will call Child_Insert, &nbsp;On edit Child_Update and deleting an item will trigger Child_deleteSelf() methods.</p>
+<p>I am able to do Add and Delete.</p>
+<p>To make the changes in list I used the following:-</p>
+<p><strong>Add:&nbsp;</strong>&nbsp; list.Insert(0, item)</p>
+<p><strong>Delete:&nbsp; </strong>list.remove(item)</p>
+<p>Now, what i want is,&nbsp; How do i change the existing item on the list ?</p>
+<p>Please let me know your suggestions.</p>
+<p>&nbsp;</p>
+<p>Thanks,</p>
+<p>Arjun</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Sunday, January 13, 2013</h2><p>It is as simple as setting data properties on the actual item in the list.&nbsp;</p>
+<p>When a property value is changed - &nbsp;the object will become dirty - and the DataPortal_Update method will be called when you call Save on the list.&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

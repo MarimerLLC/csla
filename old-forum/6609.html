@@ -1,0 +1,238 @@
+<html><header><title>Best Practices - Loading a non Lazy Loaded child object.</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Best Practices - Loading a non Lazy Loaded child object.</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6609.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>bniemyjski posted on Monday, March 16, 2009</h2>Hello,<br><br>I have a BO with some child objects like this:<br><br>private static readonly PropertyInfo&lt; Category &gt; _categoryProperty = RegisterProperty&lt; Category &gt;(p =&gt; p.Category);<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; public Category Category<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; get<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return GetProperty(_categoryProperty); <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; }<br><br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; private static readonly PropertyInfo&lt; ItemList &gt; _itemsProperty = RegisterProperty&lt;ItemList&gt;(p =&gt; p.Items);<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; public ItemList Items<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; get<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return GetProperty(_itemsProperty); <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; }<br><br>I created a fetch helper method like so:<br><br>private void Fetch(SafeDataReader reader)<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; LoadProperty(_productIdProperty, reader.GetString("ProductId"));<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; LoadProperty(_nameProperty, reader.GetString("Name"));<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; LoadProperty(_descnProperty, reader.GetString("Descn"));<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; LoadProperty(_imageProperty, reader.GetString("Image"));<br><br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; LoadProperty(_categoryIdProperty, reader.GetString("CategoryId"));<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; LoadProperty(_categoryProperty, Category.NewCategory());<br><br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; LoadProperty(_itemsProperty, ItemList.NewList());<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br><br>I'm looking into what the best way to manually load the Category and/or Items, when I'm not lazy loading the child objects.<br><br>Change this <br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Product product = Product.GetProduct("BG-03");<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Category cat = Category.GetCategory(product.CategoryId);<br><br>Into:<br><br>Product product = Product.GetProduct("BG-03");<br>product.Category = Category.GetCategory(product.CategoryId);<br><br>I found a previous post by you saying: "One thing - a child property should never have a set block, only a get block. But I don't see how that would be your problem." I looked over the examples but can't find any information on this.<br><br>Also when I do something like this with lazy loading not on, I get an exception.<br><br>Item newItem = Item.NewItem();<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; newItem.ItemId = "EST-86";<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; newItem.ProductId = product.ProductId;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; newItem.ListPrice = 5;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; newItem.UnitCost = 1;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; newItem.SuppId = 1;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; newItem.Name = "New Item that costs 5$";<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; newItem = newItem.Save();&nbsp; // WORKS<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; product.Items.Add(newItem);<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Console.WriteLine("");<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Console.WriteLine("Saving");<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; product = product.Save(); // Throws:&nbsp; "Object is not valid and can not be saved"<br><br>Stack Trace:<br><br>&nbsp;&nbsp; at Csla.BusinessBase`1.Save() in C:\Users\Administrator\Desktop\CSLA3.6.1\Source\CSLA\BusinessBase.cs:line 122<br>&nbsp;&nbsp; at PetShop.UI.Program.Main(String[] args) in C:\Users\Administrator\Documents\CodeSmith\Templates\PetShop\PetShop.UI\Program.cs:line 41<br>&nbsp;&nbsp; at System.AppDomain._nExecuteAssembly(Assembly assembly, String[] args)<br>&nbsp;&nbsp; at Microsoft.VisualStudio.HostingProcess.HostProc.RunUsersAssembly()<br>&nbsp;&nbsp; at System.Threading.ExecutionContext.Run(ExecutionContext executionContext, ContextCallback callback, Object state)<br>&nbsp;&nbsp; at System.Threading.ThreadHelper.ThreadStart()<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (!IsValid &amp;&amp; !IsDeleted)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; throw new Validation.ValidationException(Resources.NoSaveInvalidException);<br><br>Do I have to do something special here? I did find <a href="http://mythicalmanmoth.com/archive/2007/10/05/csla--step-by-step-complex-data-types--some-gotchas.aspx">this </a>on a Google search but it didn't help. The rules should be satisfied as I checked and both the required properties are populated and valid.<br><br>Thanks<br>-Blake Niemyjski</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Monday, March 16, 2009</h2><P>It is not very clear what you are doing.</P>
+<P>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; newItem = newItem.Save();&nbsp; // WORKS<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; product.Items.Add(newItem);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; product = product.Save(); // Throws:&nbsp; "Object is not valid and can not be saved"<BR></P>
+<P>You said newItem is a child BO so why&nbsp;are you calling .Save and updating the reference? That&nbsp;changes it's state.</P>
+<P>Just add it to the list and then call product.Save and it should work normally.</P>
+<P>Joe</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>bniemyjski replied on Monday, March 16, 2009</h2>Hello,<br><br>This still threw an exception when I tried that..<br><br>Thanks<br>-Blake Niemyjski</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, March 16, 2009</h2><P>I am a bit confused by what you are trying to do.</P>
+<P>It appears, on the surface, like you are trying to put root objects into a BusinessListBase. That is not supported. You can make it work, but it requires some hackery because you are flying the in face of the supported model.</P>
+<P>A BLB should contain child objects. Those objects are saved when the BLB is saved, not by themselves.</P>
+<P>You can <EM>create</EM> a child object independently, and then add it to the BLB, but it won't actually get inserted until the BLB is saved (and thus all its child objects are saved).</P>
+<P>So your "newItem = newItem.Save()" code is saving a root object - by definition, if the object is savable then it is a root object.</P>
+<P>You then add it to a BLB, which would normally require that it be a child object. But you created it as a root, so its IsChild property is false. That violates the rules of a BLB, because a BLB can only contain child objects.</P>
+<P>Again, using hackery, you can force it to work. You just need a way to mark the 'newItem' object as a child before adding it to the collection. You'd need to expose some public method on the newItem object that calls MarkAsChild().</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>bniemyjski replied on Tuesday, March 17, 2009</h2>Hello,<br><br>Thanks for the information, onto my first question:<br><br>I'm looking into what the best way to manually load the Category and/or Items, when I'm not lazy loading the child objects.<br><br>Change this<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Product product = Product.GetProduct("BG-03");<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Category cat = Category.GetCategory(product.CategoryId);<br><br>Into:<br><br>Product product = Product.GetProduct("BG-03");<br>product.Category = Category.GetCategory(product.CategoryId);<br><br>Thank you,<br>Blake Niemyjski</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>bniemyjski replied on Thursday, March 19, 2009</h2>Hello,<br><br>Unless I am missing something this seems so trivial......<br><br>I'm looking into what the best way to manually load the Category and/or Items, when I'm not lazy loading the child objects.<br><br>Change this<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Product product = Product.GetProduct("BG-03");<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Category cat = Category.GetCategory(product.CategoryId);<br><br>Into:<br><br>Product product = Product.GetProduct("BG-03");<br>????<br><br>I want to load the read only property... I know it needs to be loaded by CategoryId. I just need to know how the CSLA community would go about loading this property up....<br><br>Thank you,<br>Blake Niemyjski
+
+
+									</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, March 19, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I lost track of this thread, and don&#8217;t recall the history.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>This is a thing, and I don&#8217;t understand where there&#8217;s
+any complexity.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>For a name/value list or other read-only list that is filtered
+based on data related to a specific data element &#8211; like a list of
+categories filtered to be appropriate to a specific product object&#8217;s
+category, I&#8217;d have the Product class load the category list itself.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>public class Product<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>{<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp; private static PropertyInfo&lt;CategoryList&gt; CategoryListProperty
+= RegisterProperty&lt;CategoryList&gt;(c =&gt; c.CategoryList);<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp; public CategoryList CategoryList<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp; {<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp; get { return
+GetProperty(CategoryListProperty); }<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp; }<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp; private void DataPortal_Fetch(&#8230;)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp; {<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp; // load product data as normal<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp; LoadProperty(CategoryListProperty,
+CategoryList.GetList(this.CategoryId));<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp; }<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>}<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>The only drawback is that this round-trips the list with the
+product object. To avoid that, lazy-load the list:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>public class Product<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>{<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp; private static PropertyInfo&lt;CategoryList&gt; CategoryListProperty
+= RegisterProperty&lt;CategoryList&gt;(c =&gt; c.CategoryList);<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp; public CategoryList CategoryList<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp; {<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp; get { return CategoryList.GetList(this.CategoryId);
+}<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp; }<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp; private void DataPortal_Fetch(&#8230;)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp; {<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp; // load product data as normal<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp; }<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>}<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>This is particularly effective if your CategoryList factory
+method includes a bit of caching code to avoid reloading the list from the
+database &#8211; and since these lists are often quite static, caching is
+usually fine.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>shawndewet replied on Tuesday, March 23, 2010</h2><p>Hi Rocky, I&#39;ve been trying to figure out the most efficient way to implement lazy-loaded child collection properties, and came across this thread...</p>
+<p>From your last post you define a lazy-loaded collection property as follows...</p>
+<p>
+public CategoryList CategoryList
+  {
+    get { return CategoryList.GetList(this.CategoryID)}}</p>
+<p>...is the idea here that the GetList method contains a call to DataPortal.FetchChild?</p>
+<p>Doing so has the advantage that the DP is flagging objects as children correctly, but the problem is that this call is not checking whether or not it should run locally or via the remote dataportal, and thus this approach would not work where one is using the remote dataportal.</p>
+<p>The alternative is to have the GetList method call DataPortal.Fetch (as opposed to .FetchChild), but now one would have to bring in some &quot;hackery&quot; to have the returned collection be flagged as a child.</p>
+<p>I&#39;m thinking specifically in a scenario where I have OrderHeader objects, with a property called MyOrderLines. &nbsp;This property of MyOrderLines represents a child collection of editable OrderLine objects, all of which have to be saved from the their OrderHeader&#39;s Save method. &nbsp;But I need advice in how to lazy-load this MyOrderLines property, considering the problems with the two approaches outlined in this post.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Marjon1 replied on Tuesday, March 23, 2010</h2><p>The way that we are planning to use resolve this problem (have just finished writing the code to start using it in our current and future projects), is that we have created a CommandBase object that is used to call the DataPortal.FetchChild or CreateChild for us so that it does go cross the network&nbsp;boundary if it is required. </p>
+<p>Somewhere within the code (either as part of the CategoryList factory or directly in the property) we would make the following call:</p>
+<p>LazyLoadCommand&lt;CategoryList&gt;.FetchObject(this.CategoryId);</p>
+<p>Apologies if the C# code is wrong, it&#39;s not my first language and I didn&#39;t verify it in VS.</p>
+<p>This makes it nice a clear that the ChildDataPortal methods should be used for all children objects, but can still be used in a 3+ tier environment.<br />I get the feeling that this is not the standard approach used by the community (probably because there was no child methods in earlier versions) and they just use the DataPortal_Fetch and manage the extra&nbsp;proprieties&nbsp;required.&nbsp;</p>
+<p>Should you want the code would be happy to post it.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>shawndewet replied on Tuesday, March 23, 2010</h2><p>Hi Marjon,</p>
+<p>It would be great to see the code you are using for this.</p>
+<p>Thanks,</p>
+<p>Shawn.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Marjon1 replied on Tuesday, March 23, 2010</h2><p>Shawn,</p>
+<p>&nbsp;</p>
+<p>As requested here is the code to lazy-load an object using Child_DataPortal methods<br />to ensure that it always cross the network boundary if configured to do. <br /><br />The code is VB.NET as that is what we use and sorry for the lack of formatting, still haven&#39;t manage to master the forum editor!</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p class="MsoNormal"><span lang="EN-US">&lt;Serializable()&gt; _</span></p>
+<p class="MsoNormal"><span lang="EN-US"><span>&nbsp; </span><span>Public</span>
+<span>Class</span> LazyLoadCommand(<span>Of</span>
+T)</span></p>
+<p class="MsoNormal"><span lang="EN-US"><span>&nbsp;&nbsp;&nbsp; </span><span>Inherits</span>
+CommandBase</span></p>
+<p class="MsoNormal"><span lang="EN-US">&nbsp;</span></p>
+<p class="MsoNormal"><span lang="EN-US"><span>&nbsp;&nbsp;&nbsp; </span><span>Private</span>
+_createNew <span>As</span> <span>Boolean</span>
+= <span>True</span></span></p>
+<p class="MsoNormal"><span lang="EN-US"><span>&nbsp;&nbsp;&nbsp; </span><span>Private</span>
+_parameters <span>As</span> <span>Object</span>()</span></p>
+<p class="MsoNormal"><span lang="EN-US"><span>&nbsp;&nbsp;&nbsp; </span><span>Private</span>
+_returnValue <span>As</span> T</span></p>
+<p class="MsoNormal"><span lang="EN-US">&nbsp;</span></p>
+<p class="MsoNormal"><span lang="EN-US"><span>&nbsp;&nbsp;&nbsp; </span><span>Public</span>
+<span>Shared</span> <span>Function</span>
+GetObject(<span>ByVal</span> <span>ParamArray</span>
+parameters() <span>As</span> <span>Object</span>)
+<span>As</span> T</span></p>
+<p class="MsoNormal"><span lang="EN-US"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span>Dim</span>
+cmd <span>As</span> <span>New</span>
+LazyLoadCommand(<span>Of</span> T)(<span>False</span>,
+parameters)</span></p>
+<p class="MsoNormal"><span lang="EN-US"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>DataPortal.Execute(cmd)</span></p>
+<p class="MsoNormal"><span lang="EN-US"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span>Return</span>
+cmd._returnValue</span></p>
+<p class="MsoNormal"><span lang="EN-US"><span>&nbsp;&nbsp;&nbsp; </span><span>End</span>
+<span>Function</span></span></p>
+<p class="MsoNormal"><span lang="EN-US">&nbsp;</span></p>
+<p class="MsoNormal"><span lang="EN-US"><span>&nbsp;&nbsp;&nbsp; </span><span>Public</span>
+<span>Shared</span> <span>Function</span>
+NewObject(<span>ByVal</span> <span>ParamArray</span>
+parameters() <span>As</span> <span>Object</span>)
+<span>As</span> T</span></p>
+<p class="MsoNormal"><span lang="EN-US"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span>Dim</span>
+cmd <span>As</span> <span>New</span>
+LazyLoadCommand(<span>Of</span> T)(<span>True</span>,
+parameters)</span></p>
+<p class="MsoNormal"><span lang="EN-US"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>DataPortal.Execute(cmd)</span></p>
+<p class="MsoNormal"><span lang="EN-US"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span>Return</span>
+cmd._returnValue</span></p>
+<p class="MsoNormal"><span lang="EN-US"><span>&nbsp;&nbsp;&nbsp; </span><span>End</span>
+<span>Function</span></span></p>
+<p class="MsoNormal"><span lang="EN-US">&nbsp;</span></p>
+<p class="MsoNormal"><span lang="EN-US"><span>&nbsp;&nbsp;&nbsp; </span><span>Public</span>
+<span>Shared</span> <span>Function</span>
+NewObject() <span>As</span> T</span></p>
+<p class="MsoNormal"><span lang="EN-US"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span>Dim</span>
+cmd <span>As</span> <span>New</span>
+LazyLoadCommand(<span>Of</span> T)()</span></p>
+<p class="MsoNormal"><span lang="EN-US"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>DataPortal.Execute(cmd)</span></p>
+<p class="MsoNormal"><span lang="EN-US"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span>Return</span>
+cmd._returnValue</span></p>
+<p class="MsoNormal"><span lang="EN-US"><span>&nbsp;&nbsp;&nbsp; </span><span>End</span>
+<span>Function</span></span></p>
+<p class="MsoNormal"><span lang="EN-US">&nbsp;</span></p>
+<p class="MsoNormal"><span lang="EN-US"><span>&nbsp;&nbsp;&nbsp; </span><span>Private</span>
+<span>Sub</span> <span>New</span>()</span></p>
+<p class="MsoNormal"><span lang="EN-US"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span>&#39;Require
+the use of a factory method</span></span></p>
+<p class="MsoNormal"><span lang="EN-US"><span>&nbsp;&nbsp;&nbsp; </span><span>End</span>
+<span>Sub</span></span></p>
+<p class="MsoNormal"><span lang="EN-US">&nbsp;</span></p>
+<p class="MsoNormal"><span lang="EN-US"><span>&nbsp;&nbsp;&nbsp; </span><span>Private</span>
+<span>Sub</span> <span>New</span>(<span>ByVal</span> CreateNew <span>As</span> <span>Boolean</span>, <span>ByVal</span> <span>ParamArray</span> parameters() <span>As</span>
+<span>Object</span>)</span></p>
+<p class="MsoNormal"><span lang="EN-US"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>_createNew = CreateNew</span></p>
+<p class="MsoNormal"><span lang="EN-US"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>_parameters = parameters</span></p>
+<p class="MsoNormal"><span lang="EN-US"><span>&nbsp;&nbsp;&nbsp; </span><span>End</span>
+<span>Sub</span></span></p>
+<p class="MsoNormal"><span lang="EN-US">&nbsp;</span></p>
+<p class="MsoNormal"><span lang="EN-US"><span>&nbsp;&nbsp;&nbsp; </span><span>Protected</span>
+<span>Overrides</span> <span>Sub</span>
+DataPortal_Execute()</span></p>
+<p class="MsoNormal"><span lang="EN-US"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span>If</span>
+_createNew <span>Then</span></span></p>
+<p class="MsoNormal"><span lang="EN-US"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>_returnValue =
+DataPortal.CreateChild(<span>Of</span> T)(_parameters)</span></p>
+<p class="MsoNormal"><span lang="EN-US"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span>Else</span></span></p>
+<p class="MsoNormal"><span lang="EN-US"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>_returnValue =
+DataPortal.FetchChild(<span>Of</span> T)(_parameters)</span></p>
+<p class="MsoNormal"><span lang="EN-US"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span>End</span>
+<span>If</span></span></p>
+<p class="MsoNormal"><span lang="EN-US">&nbsp;</span></p>
+<p class="MsoNormal"><span lang="EN-US"><span>&nbsp;&nbsp;&nbsp; </span><span>End</span>
+<span>Sub</span></span></p>
+<p class="MsoNormal"><span lang="EN-US">&nbsp;</span></p>
+<p class="MsoNormal"><span lang="EN-US"><span>&nbsp; </span><span>End</span> <span>Class</span></span></p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

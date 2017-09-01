@@ -1,0 +1,366 @@
+<html><header><title>Wcf issues - IIS and VS internal web server</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Wcf issues - IIS and VS internal web server</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4108.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>shaih posted on Thursday, January 03, 2008</h2><P>Hi,</P>
+<P>I have two problems (I think they might be connected)</P>
+<P>I have an application a little similar to the project tracker example. I have built a <SPAN id=google-navclient-hilite>Wcf</SPAN> channel, <SPAN id=google-navclient-hilite>Wcf</SPAN> Service and <SPAN id=google-navclient-hilite>Wcf</SPAN> client. I am trying to run the client to get information from the server (similar to the GetProjects example.</P>
+<P>The first problem&nbsp;I have is getting a hard time to work with the <SPAN id=google-navclient-hilite>Wcf</SPAN> service to host on <SPAN id=google-navclient-hilite>IIS</SPAN>. I have created a new V.Directory pointing to the service home directory, modified the V.Dir settings to work with ASP.Net 2 and created an application + execute scripts only. The V.Dir runs with anonymous access (regular anonymous user)</P>
+<P>I am keep getting the following exception when running the&nbsp;"GetProjects" equivalent:</P><FONT size=2>
+<P><EM>System.ServiceModel.Security.SecurityNegotiationException: Secure channel cannot be opened because security negotiation with the remote endpoint has failed. This may be due to absent or incorrectly specified EndpointIdentity in the EndpointAddress used to create the channel. Please verify the EndpointIdentity specified or implied by the EndpointAddress correctly identifies the remote endpoint. ---&gt; System.ServiceModel.FaultException: The request for security token has invalid or malformed elements.</EM></P>
+<P><EM>at System.ServiceModel.Security.SecurityUtils.ThrowIfNegotiationFault(Message message, EndpointAddress target)</EM></P>
+<P><EM>at System.ServiceModel.Security.SspiNegotiationTokenProvider.GetNextOutgoingMessageBody(Message incomingMessage, SspiNegotiationTokenProviderState sspiState)</EM></P>
+<P><FONT size=3>--&gt; When using the visual studio internal web server I am getting past this point but I fail with the following exception:</FONT></P>
+<P><EM>Invalid token for impersonation - it cannot be duplicated</EM></P>
+<P><FONT size=3>This it thrown in the WcfProxy.cs file when running:</FONT></P><FONT size=2>
+<P><EM>WcfResponse response = svr.Create(</EM></FONT><EM><FONT color=#0000ff size=2>new</FONT><FONT size=2> CreateRequest(objectType, criteria, context));</FONT></EM></P>
+<P><EM></EM>&nbsp;</P>
+<P><FONT size=3>I think this is due to some security settings either on <SPAN id=google-navclient-hilite>IIS</SPAN> (BTW - using IIS6 on Windows 2003 Server) - Any help will be greatly appreciated!!!</FONT></P>
+<P><FONT size=2><FONT size=3></FONT>&nbsp;</P></FONT></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, January 03, 2008</h2><P>It could be due to WCF security too. I have found security to be the single biggest roadblock to using WCF...</P>
+<P>One easy solution is to turn of WCF security in your &lt;system.serviceModel&gt; section</P>
+<P>&nbsp;&nbsp;&nbsp; &lt;bindings&gt;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;wsHttpBinding&gt;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;binding name="Transport"&gt;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;security mode="Transport"&gt;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;transport clientCredentialType="None"/&gt;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/security&gt;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/binding&gt;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;binding name="NoSecurity"&gt;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;security mode="None"/&gt;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/binding&gt;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/wsHttpBinding&gt;<BR>&nbsp;&nbsp;&nbsp; &lt;/bindings&gt;<BR></P>
+<P>Or to explicitly set security to what you need - though figuring out even basic security configurations is really tough... I'm still trying to get the darn thing to allow me to use SSL but not to pass the Windows identity over the wire at the same time...</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>shaih replied on Sunday, January 06, 2008</h2><P>Hi Rocky,</P>
+<P>I have tried your suggestion with no luck.</P>
+<P>I have also tried to run the ProjectTracker example with the same result. To run the example I performed the following:</P>
+<P>1. I have added the PTWcfClient, PTWcfServiceAuth and PTWcfService projects/websites to the Project Trackercs solution and compiled it.</P>
+<P>2. Added a virtual directory under the IIS default web site, created an application and changed the website to run with .Net 2 instead of .Net 1.</P>
+<P>3. When running the PTWcfClient I am getting the same following exception (This is thrown on the "<FONT size=2></P>
+<P>PTWcfService.</FONT><FONT color=#2b91af size=2>ProjectData</FONT><FONT size=2>[] list = svc.GetProjectList();</FONT>" line):</P><FONT size=2>
+<P>System.ServiceModel.Security.SecurityNegotiationException: Secure channel cannot be opened because security negotiation with the remote endpoint has failed. This may be due to absent or incorrectly specified EndpointIdentity in the EndpointAddress used to create the channel. Please verify the EndpointIdentity specified or implied by the EndpointAddress correctly identifies the remote endpoint. ---&gt; System.ServiceModel.FaultException: The request for security token has invalid or malformed elements.</P>
+<P>at System.ServiceModel.Security.SecurityUtils.ThrowIfNegotiationFault(Message message, EndpointAddress target)</P>
+<P>at System.ServiceModel.Security.SspiNegotiationTokenProvider.GetNextOutgoingMessageBody(Message incomingMessage, SspiNegotiationTokenProviderState sspiState)</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P><FONT size=3>Any thing else I have missed to run this example (I am using the cslacs-3.0.3-071127[1].zip)</FONT></P>
+<P><FONT size=3>Thanks</FONT></P>
+<P><FONT size=3>Shai</FONT></P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Sunday, January 06, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>PTWcfClient is different from using the WCF data portal channel.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>PTWcfClient has a couple configuration options to support the different
+scenarios I walk through in the ebook. One scenario is unsecured, the other
+passes username/password credentials to the server over an encrypted channel.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Both client and server need to agree on the security model or
+you&#8217;ll get errors like the one you have.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>One thing you can try is to right-click on the service reference
+in PTWcfClient and tell it to refresh/update the reference. That&#8217;ll cause
+it to re-read the WSDL from the service and recreate the client-side config.
+Once you&#8217;ve done that it should work.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>If that does not work, then the service is configured to require
+some sort of security you aren&#8217;t providing. It is probably configured (in
+whole or part) to require the encrypted channel and/or the username/password
+credentials.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>As I say, configuring WCF security is really unpleasant. Read
+carefully through the WCF security section of the ebook, and read the security
+chapter in Juval Lowy&#8217;s <i>Programming WCF Services</i> book, and read
+the MSDN content on WCF security. And remember that the config files are
+case-sensitive.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I find dark humor in all this. One major support issue I&#8217;ve
+always had with CSLA is configuring remoting &#8211; mostly because it is so
+easy to do a typo in the config files. Along comes WCF, which is &#8220;superior&#8221;
+to remoting, with <i>far more complex configuration</i>. Microsoft&#8217;s &#8220;move
+forward&#8221; is (in this case at least) a big move backward if you ask me&#8230;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Though to be fair, there is a Microsoft GUI tool you can use to
+manipulate the WCF config sections. And you may consider using that to
+view/edit both config files because it might help you identify how they are mismatched.
+Here&#8217;s some info on that tool: <a href="http://jeffbarnes.net/portal/blogs/jeff_barnes/archive/2007/02/28/wcf-configuration-editor.aspx">http://jeffbarnes.net/portal/blogs/jeff_barnes/archive/2007/02/28/wcf-configuration-editor.aspx</a><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> shaih
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Sunday, January 06, 2008 8:19 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] Wcf issues - IIS and VS internal web server<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Hi Rocky,<o:p></o:p></p>
+
+<p>I have tried your suggestion with no luck.<o:p></o:p></p>
+
+<p>I have also tried to run the ProjectTracker example with the same result. To
+run the example I performed the following:<o:p></o:p></p>
+
+<p>1. I have added the PTWcfClient, PTWcfServiceAuth and PTWcfService
+projects/websites to the Project Trackercs solution and compiled it.<o:p></o:p></p>
+
+<p>2. Added a virtual directory under the IIS default web site, created an
+application and changed the website to run with .Net 2 instead of .Net 1.<o:p></o:p></p>
+
+<p>3. When running the PTWcfClient I am getting the same following exception
+(This is thrown on the &quot;<span><o:p></o:p></span></p>
+
+<p><span>PTWcfService.<span>ProjectData</span>[]
+list = svc.GetProjectList();</span>&quot; line):<o:p></o:p></p>
+
+<p><span>System.ServiceModel.Security.SecurityNegotiationException:
+Secure channel cannot be opened because security negotiation with the remote
+endpoint has failed. This may be due to absent or incorrectly specified
+EndpointIdentity in the EndpointAddress used to create the channel. Please
+verify the EndpointIdentity specified or implied by the EndpointAddress
+correctly identifies the remote endpoint. ---&gt;
+System.ServiceModel.FaultException: The request for security token has invalid
+or malformed elements.<o:p></o:p></span></p>
+
+<p><span>at
+System.ServiceModel.Security.SecurityUtils.ThrowIfNegotiationFault(Message
+message, EndpointAddress target)<o:p></o:p></span></p>
+
+<p><span>at
+System.ServiceModel.Security.SspiNegotiationTokenProvider.GetNextOutgoingMessageBody(Message
+incomingMessage, SspiNegotiationTokenProviderState sspiState)<o:p></o:p></span></p>
+
+<p><span>&nbsp;<o:p></o:p></span></p>
+
+<p><span>&nbsp;<o:p></o:p></span></p>
+
+<p>Any thing else I have missed to run this example (I am using the
+cslacs-3.0.3-071127[1].zip)<span><o:p></o:p></span></p>
+
+<p>Thanks<span><o:p></o:p></span></p>
+
+<p>Shai<span><o:p></o:p></span></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>shaih replied on Wednesday, January 09, 2008</h2><P>Hi Rocky,</P>
+<P>Thanks for your help, after hard work I was able to make both the ProjectTracker and my application work with the custom security defined.</P>
+<P>I am not clear though on the service side - should a login call be made on each call to the service? Or is it supposed to be managed by the WCF once the configuration files define the custom validator? After debugging the service I have noticed that the P<FONT color=#2b91af size=2><FONT color=#000000 size=3>rincipalPolicy Evaluate is called with my Windows identity and the <FONT color=#2b91af size=2><FONT color=#000000 size=3>CredentialValidator Validate is not called</FONT></P>
+<P><FONT color=#000000 size=3>Any thing I missed - I did not find anything in the CSLA .Net 3 eBook on this</FONT></P>
+<P><FONT color=#000000 size=3></FONT>&nbsp;</P>
+<P><FONT color=#000000 size=3>Thanks</FONT></P></FONT></FONT></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, January 09, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I chose not to cover Windows security in the 3.0 book, because
+that&#8217;s the one topic that is covered in every WCF book I&#8217;ve looked
+at. While passing a custom username/password is covered in <i>none </i>of the
+books I have found, so I was able to cover new (and important) ground.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>It makes total sense that your credential validator wouldn&#8217;t
+be called &#8211; you can&#8217;t validation the Windows credentials, and so
+WCF defers to Windows in that case.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>But it makes sense that the policy evaluation would be called,
+because WCF is claims-based and they need to allow you to create the
+appropriate set of claims/roles based on the Windows user (because Windows
+credentials have no built-in claims).<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>You should be able to implement the policy evaluation class as
+shown in the 3.0 ebook, and use that location to create your custom principal
+based on the username of the validated credential provided by WCF.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>In the end, no, you should not need to call a login method in each
+service implementation - though honestly I think that might be easier than
+implementing the credential validator and policy evaluator... WCF does have an
+impressive extensibility model, but it isn&#8217;t easy.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> shaih
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Wednesday, January 09, 2008 7:56 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: Wcf issues - IIS and VS internal web server<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Hi Rocky,<o:p></o:p></p>
+
+<p>Thanks for your help, after hard work I was able to make both the
+ProjectTracker and my application work with the custom security defined.<o:p></o:p></p>
+
+<p>I am not clear though on the service side - should a login call be made on
+each call to the service? Or is it supposed to be managed by the WCF once the
+configuration files define the custom validator? After debugging the service I
+have noticed that the P<span>rincipalPolicy Evaluate is
+called with my Windows identity and the CredentialValidator Validate is not
+called</span><span><o:p></o:p></span></p>
+
+<p><span>Any thing I missed - I did not find anything in
+the CSLA .Net 3 eBook on this</span><span><o:p></o:p></span></p>
+
+<p><span>&nbsp;<o:p></o:p></span></p>
+
+<p><span>Thanks</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>shaih replied on Wednesday, January 09, 2008</h2><P>Hi Rocky and thanks for the quick reply,</P>
+<P>I think I was not clear in my previous thread. I am using custom credentials - for the matter of question I am running the project Tracker example after implementing the security configurations in the ebook (certificate, custom authentication code and configuration changes). </P>
+<P>The GetProjects method returns all the projects from the database when using for example the "pm" user and "pm" password, but it also returns the project data in case I deliberately send a wrong password for the pm user name.</P>
+<P>I have commented the logout call in the service GetProperties method&nbsp;as instructed in the comment above:&nbsp;&nbsp;//<FONT color=#008000 size=2>TODO: comment out the following if using the&nbsp;</FONT><FONT color=#008000 size=2>PTWcfServiceAuth components to require a&nbsp;</FONT><FONT color=#008000 size=2>username/password from the caller</FONT></P>
+<P><FONT color=#008000 size=2><FONT color=#000000 size=3>My question was - should I replace the logout call with a login call or something else I might have done incorrectly to make this work - the above was tries with the Project tracker example (client and service)</FONT></FONT></P>
+<P><FONT color=#008000 size=2><FONT color=#000000 size=3>Thanks</FONT></FONT></P>
+<P><FONT color=#008000 size=2><FONT color=#000000 size=3>Shai</FONT></P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, January 09, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>If you are using the username/password technique from the book
+then the credential validator should be called. If it is not being called then it
+is likely that the issue is in your server&#8217;s web.config. You need to
+ensure that the config tells WCF to use both the credential and policy classes
+you&#8217;ve created.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> shaih
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Wednesday, January 09, 2008 9:04 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: RE: Wcf issues - IIS and VS internal web
+server<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Hi Rocky and thanks for the quick reply,<o:p></o:p></p>
+
+<p>I think I was not clear in my previous thread. I am using custom credentials
+- for the matter of question I am running the project Tracker example after
+implementing the security configurations in the ebook (certificate, custom
+authentication code and configuration changes). <o:p></o:p></p>
+
+<p>The GetProjects method returns all the projects from the database when using
+for example the &quot;pm&quot; user and &quot;pm&quot; password, but it also
+returns the project data in case I deliberately send a wrong password for the
+pm user name.<o:p></o:p></p>
+
+<p>I have commented the logout call in the service GetProperties method&nbsp;as
+instructed in the comment above:&nbsp;&nbsp;//<span>TODO: comment out the following if using the&nbsp;PTWcfServiceAuth
+components to require a&nbsp;username/password from the caller</span><o:p></o:p></p>
+
+<p><span>My question was - should I replace the logout call
+with a login call or something else I might have done incorrectly to make this
+work - the above was tries with the Project tracker example (client and
+service)</span><o:p></o:p></p>
+
+<p><span>Thanks</span><o:p></o:p></p>
+
+<p><span>Shai</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rajeshvar replied on Thursday, June 12, 2008</h2><P>Thanks a lot Rocky,</P>
+<P>Your solution got me working after 8 hours of struggling. </P>
+<P>Where can I read more about security, next phase I have to implement SSL for the same.</P>
+<P>Thanks,</P>
+<P>Rajesh</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, June 12, 2008</h2><P>Thankfully the Microsoft Patterns and Practices group just got a beta of their WCF security guidance out at <SPAN><A href="http://www.codeplex.com%20/wcfsecurityguide"><FONT color=#0000ff>http://www.codeplex.com /wcfsecurityguide</FONT></A>.</SPAN></P>
+<P><SPAN><FONT face="Times New Roman" color=#000000 size=3>This is probably the single best resource for WCF security information available today.</FONT></SPAN></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Thursday, June 12, 2008</h2><P>Rocky's link did not work for me.</P>
+<P>Here is another one:</P>
+<P><A href="http://www.codeplex.com/Project/ProjectDirectory.aspx?ProjectSearchText=wcfsecurityguide">http://www.codeplex.com/Project/ProjectDirectory.aspx?ProjectSearchText=wcfsecurityguide</A></P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>mr_fuku replied on Wednesday, February 18, 2009</h2>Hey Rocky:<br><br>I've tried your suggestion of altering the &lt;wsHttpBinding&gt; sections of both the web and app config files in an attempt to get the PtWcfClient project working. <br><br>However, the error message I'm now getting is:<br><br>System.ServiceModel.Security.SecurityNegotiationException was unhandled<br>&nbsp; Message="Secure channel cannot be opened because security negotiation with the remote endpoint has failed. <br>&nbsp; This may be due to absent or incorrectly specified EndpointIdentity in the EndpointAddress used to create the channel. <br>&nbsp; Please verify the EndpointIdentity specified or implied by the EndpointAddress correctly identifies the remote endpoint. "<br>&nbsp; Source="mscorlib"<br>&nbsp; StackTrace:<br>&nbsp;&nbsp;&nbsp; Server stack trace: <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at System.ServiceModel.Security.IssuanceTokenProviderBase`1.DoNegotiation(TimeSpan timeout)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at System.ServiceModel.Security.SspiNegotiationTokenProvider.OnOpen(TimeSpan timeout)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at System.ServiceModel.Security.WrapperSecurityCommunicationObject.OnOpen(TimeSpan timeout)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at System.ServiceModel.Channels.CommunicationObject.Open(TimeSpan timeout)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at System.ServiceModel.Security.CommunicationObjectSecurityTokenProvider.Open(TimeSpan timeout)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at System.ServiceModel.Security.SecurityUtils.OpenTokenProviderIfRequired(SecurityTokenProvider tokenProvider, TimeSpan timeout)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at System.ServiceModel.Security.SymmetricSecurityProtocol.OnOpen(TimeSpan timeout)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at System.ServiceModel.Security.WrapperSecurityCommunicationObject.OnOpen(TimeSpan timeout)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at System.ServiceModel.Channels.CommunicationObject.Open(TimeSpan timeout)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at System.ServiceModel.Channels.SecurityChannelFactory`1.ClientSecurityChannel`1.OnOpen(TimeSpan timeout)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at System.ServiceModel.Channels.CommunicationObject.Open(TimeSpan timeout)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at System.ServiceModel.Security.SecuritySessionSecurityTokenProvider.DoOperation(SecuritySessionOperation operation, EndpointAddress target, Uri via, SecurityToken currentToken, TimeSpan timeout)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at System.ServiceModel.Security.SecuritySessionSecurityTokenProvider.GetTokenCore(TimeSpan timeout)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at System.IdentityModel.Selectors.SecurityTokenProvider.GetToken(TimeSpan timeout)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at System.ServiceModel.Security.SecuritySessionClientSettings`1.ClientSecuritySessionChannel.OnOpen(TimeSpan timeout)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at System.ServiceModel.Channels.CommunicationObject.Open(TimeSpan timeout)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at System.ServiceModel.Channels.ServiceChannel.OnOpen(TimeSpan timeout)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at System.ServiceModel.Channels.CommunicationObject.Open(TimeSpan timeout)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at System.ServiceModel.Channels.ServiceChannel.CallOpenOnce.System.ServiceModel.Channels.ServiceChannel.ICallOnce.Call(ServiceChannel channel, TimeSpan timeout)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at System.ServiceModel.Channels.ServiceChannel.CallOnceManager.CallOnce(TimeSpan timeout, CallOnceManager cascade)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at System.ServiceModel.Channels.ServiceChannel.EnsureOpened(TimeSpan timeout)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at System.ServiceModel.Channels.ServiceChannel.Call(String action, Boolean oneway, ProxyOperationRuntime operation, Object[] ins, Object[] outs, TimeSpan timeout)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at System.ServiceModel.Channels.ServiceChannel.Call(String action, Boolean oneway, ProxyOperationRuntime operation, Object[] ins, Object[] outs)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at System.ServiceModel.Channels.ServiceChannelProxy.InvokeService(IMethodCallMessage methodCall, ProxyOperationRuntime operation)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at System.ServiceModel.Channels.ServiceChannelProxy.Invoke(IMessage message)<br>&nbsp;&nbsp;&nbsp; Exception rethrown at [0]: <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at System.Runtime.Remoting.Proxies.RealProxy.HandleReturnMessage(IMessage reqMsg, IMessage retMsg)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at System.Runtime.Remoting.Proxies.RealProxy.PrivateInvoke(MessageData&amp; msgData, Int32 type)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at PTWcfClient.PTWcfService.IPTService.GetRoles(RoleRequest request)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at PTWcfClient.PTWcfService.PTServiceClient.GetRoles(RoleRequest request) in c:\documents and settings\tduncan\my documents\csla\samples\cslanet\cs\projecttrackercs\ptwcfclient\service references\ptwcfservice\reference.cs:line 584<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at PTWcfClient.Form2.Form2_Load(Object sender, EventArgs e) in C:\Documents and Settings\tduncan\My Documents\csla\samples\CslaNet\cs\ProjectTrackercs\PTWcfClient\Form2.cs:line 28<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at System.Windows.Forms.Form.OnLoad(EventArgs e)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at System.Windows.Forms.Form.OnCreateControl()<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at System.Windows.Forms.Control.CreateControl(Boolean fIgnoreVisible)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at System.Windows.Forms.Control.CreateControl()<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at System.Windows.Forms.Control.WmShowWindow(Message&amp; m)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at System.Windows.Forms.Control.WndProc(Message&amp; m)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at System.Windows.Forms.ScrollableControl.WndProc(Message&amp; m)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at System.Windows.Forms.ContainerControl.WndProc(Message&amp; m)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at System.Windows.Forms.Form.WmShowWindow(Message&amp; m)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at System.Windows.Forms.Form.WndProc(Message&amp; m)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at System.Windows.Forms.Control.ControlNativeWindow.OnMessage(Message&amp; m)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at System.Windows.Forms.Control.ControlNativeWindow.WndProc(Message&amp; m)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at System.Windows.Forms.NativeWindow.DebuggableCallback(IntPtr hWnd, Int32 msg, IntPtr wparam, IntPtr lparam)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at System.Windows.Forms.SafeNativeMethods.ShowWindow(HandleRef hWnd, Int32 nCmdShow)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at System.Windows.Forms.Control.SetVisibleCore(Boolean value)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at System.Windows.Forms.Form.SetVisibleCore(Boolean value)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at System.Windows.Forms.Control.set_Visible(Boolean value)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at System.Windows.Forms.Application.ThreadContext.RunMessageLoopInner(Int32 reason, ApplicationContext context)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at System.Windows.Forms.Application.ThreadContext.RunMessageLoop(Int32 reason, ApplicationContext context)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at System.Windows.Forms.Application.RunDialog(Form form)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at System.Windows.Forms.Form.ShowDialog(IWin32Window owner)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at PTWcfClient.MainForm.RoleListButton_Click(Object sender, EventArgs e) in C:\Documents and Settings\tduncan\My Documents\csla\samples\CslaNet\cs\ProjectTrackercs\PTWcfClient\MainForm.cs:line 26<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at System.Windows.Forms.Control.OnClick(EventArgs e)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at System.Windows.Forms.Button.OnClick(EventArgs e)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at System.Windows.Forms.Button.OnMouseUp(MouseEventArgs mevent)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at System.Windows.Forms.Control.WmMouseUp(Message&amp; m, MouseButtons button, Int32 clicks)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at System.Windows.Forms.Control.WndProc(Message&amp; m)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at System.Windows.Forms.ButtonBase.WndProc(Message&amp; m)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at System.Windows.Forms.Button.WndProc(Message&amp; m)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at System.Windows.Forms.Control.ControlNativeWindow.OnMessage(Message&amp; m)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at System.Windows.Forms.Control.ControlNativeWindow.WndProc(Message&amp; m)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at System.Windows.Forms.NativeWindow.DebuggableCallback(IntPtr hWnd, Int32 msg, IntPtr wparam, IntPtr lparam)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at System.Windows.Forms.UnsafeNativeMethods.DispatchMessageW(MSG&amp; msg)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at System.Windows.Forms.Application.ComponentManager.System.Windows.Forms.UnsafeNativeMethods.IMsoComponentManager.FPushMessageLoop(Int32 dwComponentID, Int32 reason, Int32 pvLoopData)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at System.Windows.Forms.Application.ThreadContext.RunMessageLoopInner(Int32 reason, ApplicationContext context)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at System.Windows.Forms.Application.ThreadContext.RunMessageLoop(Int32 reason, ApplicationContext context)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at System.Windows.Forms.Application.Run(Form mainForm)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at PTWcfClient.Program.Main() in C:\Documents and Settings\tduncan\My Documents\csla\samples\CslaNet\cs\ProjectTrackercs\PTWcfClient\Program.cs:line 17<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at System.AppDomain._nExecuteAssembly(Assembly assembly, String[] args)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at System.AppDomain.ExecuteAssembly(String assemblyFile, Evidence assemblySecurity, String[] args)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at Microsoft.VisualStudio.HostingProcess.HostProc.RunUsersAssembly()<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at System.Threading.ThreadHelper.ThreadStart_Context(Object state)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at System.Threading.ExecutionContext.Run(ExecutionContext executionContext, ContextCallback callback, Object state)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at System.Threading.ThreadHelper.ThreadStart()<br>&nbsp; InnerException: System.ServiceModel.FaultException<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Message="The request for security token has invalid or malformed elements."<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Source="System.ServiceModel"<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Action="http://www.w3.org/2005/08/addressing/soap/fault"<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; StackTrace:<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at System.ServiceModel.Security.SecurityUtils.ThrowIfNegotiationFault(Message message, EndpointAddress target)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at System.ServiceModel.Security.SspiNegotiationTokenProvider.GetNextOutgoingMessageBody(Message incomingMessage, SspiNegotiationTokenProviderState sspiState)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; InnerException: <br><br>Any suggestions?<br><br>Thanks!<br>Ted<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

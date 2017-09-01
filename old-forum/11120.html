@@ -1,0 +1,404 @@
+<html><header><title>CheckRules and lazy laoding problem related with ReadProperty</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CheckRules and lazy laoding problem related with ReadProperty</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11120.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Guncho posted on Thursday, February 02, 2012</h2><p>
+<p class="MsoNormal">Hi,</p>
+<p class="MsoNormal">I have lazy loading private field property registered like
+this:</p>
+<p class="MsoNormal"><span>public</span><span> <span>static</span> <span>readonly</span> <span>PropertyInfo</span>&lt;<span>Integration</span>&gt; IntegrationProperty =
+RegisterProperty&lt;<span>Integration</span>&gt;(p =&gt; &nbsp; &nbsp; &nbsp; p.Integration, <span>&quot;Integration&quot;</span>, <span>RelationshipTypes</span>.LazyLoad | <span>RelationshipTypes</span>.PrivateField);</span></p>
+<p class="MsoNormal">Now if you check the implementation of
+BusinessObject, ReadProperty method in the last csla version(4.2.2) you will see:</p>
+<p class="MsoNormal"><span>&nbsp; <span>protected</span> <span>virtual</span> <span>object</span> ReadProperty(<span>IPropertyInfo</span>
+propertyInfo)</span></p>
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp; {</span></p>
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span>if</span> ((propertyInfo.RelationshipType == <span>RelationshipTypes</span>.LazyLoad) &amp;&amp;
+!FieldManager.FieldExists(propertyInfo))</span></p>
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span>throw</span> <span>new</span> <span>InvalidOperationException</span>(<span>Resources</span>.PropertyGetNotAllowed);</span></p>
+<p class="MsoNormal"><span>&nbsp;.........</span></p>
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp; }</span></p>
+<p class="MsoNormal"><span><br /></span></p>
+<p class="MsoNormal"><span>With this implementation my property will not enter
+in the &ldquo;if&rdquo; statement but I think that logically it should and the correct implementation
+should be:</span></p>
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span>if</span> ((propertyInfo.RelationshipType &amp; <span>RelationshipTypes</span>.LazyLoad == <span>RelationshipTypes</span>.LazyLoad) &amp;&amp;
+!FieldManager.FieldExists(propertyInfo))</span></p>
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span>throw</span> <span>new</span> <span>InvalidOperationException</span>(<span>Resources</span>.PropertyGetNotAllowed);</span></p>
+<p class="MsoNormal"><span></span>&nbsp;</p>
+<p class="MsoNormal"><span>However, let&rsquo;s suppose that we use the new implementation and we have some business rule applied to our&nbsp;</span>IntegrationProperty.
+Now if we call manually BussinessRules.CheckRules(); and the property
+is not loaded yet then we will see that in some point of the execution CSLA
+calls the above mentioned ReadProperty for our&nbsp;<span>IntegrationProperty</span>. This happened in the RunRules method in
+the following lines:</p>
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span>foreach</span> (<span>var</span> item <span>in</span> rule.InputProperties)</span></p>
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+context.InputPropertyValues.Add(item, target.ReadProperty(item));</span></p>
+<p class="MsoNormal"><span>&nbsp;</span></p>
+<p class="MsoNormal"><span>The call will throw exception so if we have any
+BusinessRule for the lazyloaded property CheckRules will fail. </span></p>
+<p class="MsoNormal"><span>&nbsp;</span>I am wondering if it is correct to check rules applied to lazy loading property which is not loaded yet? Also what do you think about this CheckRules
+lazy loading properties problem? Am I doing something wrong?</p>
+<p class="MsoNormal"><span>&nbsp;</span></p>
+<p class="MsoNormal"><span>Thanks,</span></p>
+<p class="MsoNormal"><span>Ivo</span></p>
+</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, February 02, 2012</h2><p>Thank you for the bug report on the flag check - I&#39;ll add this to the bug list.</p>
+<p>In terms of the lazy load business rule issue - what do you think should happen in this case? It isn&#39;t clear to me exactly what should happen to make this scenario work in a logical way.</p>
+<p>If the value doesn&#39;t exist, it obviously can&#39;t be read. If the rules engine can&#39;t read it we have perhaps three options:</p>
+<ol>
+<li>Throw exception (current behavior)</li>
+<li>Set the value to null - in which case the rule won&#39;t know if null is the real value or a fake placeholder, so this seems bad</li>
+<li>Never provide the rules with real property values, and instead provide them with an object that contains the property value, plus other metadata about the property (such as whether the value has any meaning) - obviously this would be a breaking change that would break every rule that uses input properties, and it would incur overhead because every rule invocation would require creating these metadata objects - maybe worth it, but not something to be done casually</li>
+</ol>
+<p>I&#39;m certainly open to discussion on how this could be made to work better in some way - it just isn&#39;t clear to me that there&#39;s a great answer?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Thursday, February 02, 2012</h2><p>Thanks for reporting the bug. </p>
+<p>In my view - when a rule needs to know the inner workings of an object like LazyLoading it must be a private rule for that class.</p>
+<p>I&#39;d prefer to create a private &quot;flow rule&quot; that would short circuit the rule engine if the field has no value with a priority below 0 (always execute first)</p>
+<p>You could also create a private gateway rule that would check FieldManager if property has value before running inner rule.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Guncho replied on Friday, February 03, 2012</h2><p>&nbsp;</p>
+<p class="MsoNormal"><span>Rocky</span>, I absolutely agree that there is a lot to discuss
+about the behavior in such a situation.</p>
+<p class="MsoNormal">My opinion is that firstly the consumer of the framework
+should have different options depending on his current use case.</p>
+<p class="MsoNormal">From what I understand about business rules checking when
+you load an already persisted object (and you have confidence that data source will
+provide you with valid data) you expect that it is valid. For that reason we
+don&rsquo;t call the CheckRules when fetching an object but logically if we call it,
+it should return true. Now let&rsquo;s have business object with required (for
+example) lazy loaded property. Obviously when the object is fetched the
+property is not loaded and we expect that it is valid but when we call CheckRules
+explicitly in the current situation we will receive an exception that property can&rsquo;t
+be loaded.</p>
+<p class="MsoNormal">I think that in this situation the CheckRules method should
+validated successfully the object and this could happened in two ways:</p>
+<p class="MsoListParagraphCxSpFirst"><span>&middot;<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span>Op.1: When the underling logic calls ReadProperty,
+instead of throwing an exception we could call property getter which will
+trigger the lazy loading of the property and then we could check if its value
+is valid. If this will break some other logic check rules could call some
+special overload of ReadProperty. In this scenario if we want to skip checking
+of business rule for property we could use Jonny&rsquo;s approach.</p>
+<p class="MsoListParagraphCxSpLast"><span>&middot;<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span>Op.2: CheckRules skip lazy loaded properties which
+haven&rsquo;t been loaded yet and which are not dependent to properties that have
+been already modified (I am not sure if Csla has a mechanism to check if
+particular property value has been modified). Of course if our lazy loading property
+depends on modified property then we should load it like in op. 1 and check
+its value against the rules. &nbsp;I think
+that this approach is correct because if we trust the data in the data source and
+we haven&rsquo;t changed our property or any of the properties it depends on, then we
+should not modify it and it will continue to be valid. Obviously this approach is
+a lot more complicated than the first one and it should be carefully considered.
+&nbsp;For example I missed the crating of New
+object scenario. &nbsp;We should definitely check
+rules for any lazy loaded property in it because the reason why property is not
+loaded could be because a value has never been set to it.</p>
+<p class="MsoNormal">Now after all this writings and after I reread them my opinion
+is that best solution would be a mix of both mentioned above. Imagine that in
+the PropertyInfo object you have some kind of delegate - Boolean function with
+name like &ldquo;NeedBusinessRulesCheckingDelegate which receive as arguments the
+current object instance and the propertyInfo itself. This delegate will be
+optional. There are 3 cases about a particular property:</p>
+<p class="MsoListParagraphCxSpFirst">1)<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>If the delegate is not set at all then CSLA
+assign the default delegate which always returns true. In this case the
+property will behave like in &nbsp;Op.1</p>
+<p class="MsoListParagraphCxSpMiddle">2)<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>Set a delegate defined in the CSLA core which
+has an implementation satisfying op.2<br />
+pseudo code example: (bo, pi) =&gt; bo.IsNew
+|| bo.ModifiedProperties.ContainsAnyOf(pi.GetPropertiesWhichIAmDepenedOn())</p>
+<p class="MsoListParagraphCxSpLast">3)<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>Provide custom method which could handle some
+specific scenario for the property</p>
+<p class="MsoListParagraphCxSpLast">May be this is a little bit&nbsp;over-designed&nbsp;but&nbsp;this was the consequence of my&nbsp;thinking.</p>
+<p class="MsoListParagraphCxSpLast">I can&#39;t wait to here your opinion.</p>
+<p class="MsoListParagraphCxSpLast">Ivo&nbsp;</p>
+<p class="MsoListParagraphCxSpLast">&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Friday, February 03, 2012</h2><p>Hi, </p>
+<p>I disagree and here is my reasoning:</p>
+<p>LazyLoading is typically used for asyncronous load of child objects. And there is no way the rule engine can detect if the lazy loading is asyncronous or syncronous.The rule engine itself is syncronous and provides a callback function for context.Complete so that async rules can update the result in the BO. You must also keep in mind that LazyLading use OnPropertyChanged event to notify UI (and others) that values has been updated.</p>
+<p>So if this was to work - the rule engine would have to:</p>
+<ol>
+<li>&nbsp;if field is LazyLoaded and not initialized yet - call property getter (and asuume this triggers lazyloading. </li>
+<li>Attach to the OnPropertyChanged event and continue processing when property is changed.</li>
+</ol>
+<p>The problem here is #2. There is no way of knowing whether the OnPropertyChanged came as a result of a BusinessRule, the field was initialized to null (before lazy load) or actually because it was fetched. The developer would also be responsible for calling OnPropertyChanged even if there was an error in the async data access. All in all -&nbsp; in my opinion this is not realistic. </p>
+<p>IMO: Lazy loading - whether async or sync - is the developers responsibility and an inner working of the business property that the rule engine has no knowledge of. And I do NOT want to allow rules to trigger lazy loading - if you face this situation you should rather load the data immediately and NOT use lazy loading. You app would be more &quot;sluggish&quot; if you trigger a lot of LaxyLoading rather than loading the data up front.</p>
+<p>CSLA might have a convention that says - skip rules for properties that are lazy loaded and not initialized yed (as PrimaryProperty) - but I can hardly see how it could skip rule processing if a lazy loaded property is an InputProperty to another rule. </p>
+<p>But -&nbsp; you - the developer -&nbsp; could create short cut rules so that the rules for a property would not run when a lazy loaded input property has not been initiallized yet.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Saturday, February 04, 2012</h2><pre style="FONT-FAMILY:Consolas;BACKGROUND:#fafafa;COLOR:black;FONT-SIZE:13px;">Imagine using rules like this. </pre>
+<pre style="FONT-FAMILY:Consolas;BACKGROUND:#fafafa;COLOR:black;FONT-SIZE:13px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:green;">//&nbsp;Gateway&nbsp;rule</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;BusinessRules.AddRule(<span style="COLOR:blue;">new</span>&nbsp;<span style="COLOR:#2b91af;">FieldExists</span>(IntegrationProperty,&nbsp;<span style="COLOR:blue;">new</span>&nbsp;<span style="COLOR:#2b91af;">Required</span>(IntegrationProperty)));
+or</pre>
+<pre style="FONT-FAMILY:Consolas;BACKGROUND:#fafafa;COLOR:black;FONT-SIZE:13px;"><pre style="font-family:Consolas;background:#fafafa;color:black;font-size:13px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:green;">//&nbsp;Short&nbsp;circuit&nbsp;rule</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;BusinessRules.AddRule(<span style="color:blue;">new</span>&nbsp;<span style="color:#2b91af;">StopIfNotFieldExists</span>(IntegrationProperty){Priority&nbsp;=&nbsp;-1});
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;BusinessRules.AddRule(<span style="color:blue;">new</span>&nbsp;<span style="color:#2b91af;">Required</span>(IntegrationProperty));
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:green;">//&nbsp;add&nbsp;more&nbsp;buiness&nbsp;rules&nbsp;</span></pre>
+</pre>
+<pre style="FONT-FAMILY:Consolas;BACKGROUND:#fafafa;COLOR:black;FONT-SIZE:13px;"> 
+The gateway rule will only allow the inner rule to execute if Integration has been loaded/initialized.</pre>
+<pre style="FONT-FAMILY:Consolas;BACKGROUND:#fafafa;COLOR:black;FONT-SIZE:13px;">The short circuit rule wil stop rule processing for that field if Integration has not been loaded/initalized.</pre>
+<h2 style="FONT-FAMILY:Consolas;BACKGROUND:#fafafa;COLOR:black;FONT-SIZE:13px;">Only StopIfNotFieldExists rule will work for now with current implementation in CSLA. </h2>
+<h2 style="FONT-FAMILY:Consolas;BACKGROUND:#fafafa;COLOR:black;FONT-SIZE:13px;">The gateway rule FieldExists will not run OK until we change the RuleEngine. </h2>
+<p style="FONT-FAMILY:Consolas;BACKGROUND:#fafafa;COLOR:black;FONT-SIZE:13px;"><strong>My proposed change is to skip lazy loaded field which have no FieldData (FieldExists = false) and so not add an entry in InputPropertyValues. Else the rule may be provided with &quot;fake&quot; data when in reality it has no value. </strong></p>
+<pre style="FONT-FAMILY:Consolas;BACKGROUND:#fafafa;COLOR:black;FONT-SIZE:13px;"><pre style="FONT-FAMILY:Consolas;BACKGROUND:#fafafa;COLOR:black;FONT-SIZE:13px;"></pre>
+<pre style="FONT-FAMILY:Consolas;BACKGROUND:#fafafa;COLOR:black;FONT-SIZE:13px;">I&#39;ll even include code for the rules here (and I&#39;ll consider to add these to RuleTutorial sample)</pre>
+<pre style="FONT-FAMILY:Consolas;BACKGROUND:#fafafa;COLOR:black;FONT-SIZE:13px;">&nbsp;<span style="COLOR:blue;">public</span>&nbsp;<span style="COLOR:blue;">class</span>&nbsp;<span style="COLOR:#2b91af;">StopIfNotFieldExists</span>&nbsp;:&nbsp;<span style="COLOR:#2b91af;">BusinessRule</span>
+&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:blue;">private</span>&nbsp;<span style="COLOR:blue;">class</span>&nbsp;<span style="COLOR:#2b91af;">Accessor</span>&nbsp;:&nbsp;<span style="COLOR:#2b91af;">ObjectFactory</span>
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:blue;">internal</span>&nbsp;<span style="COLOR:blue;">new</span>&nbsp;<span style="COLOR:blue;">bool</span>&nbsp;FieldExists(<span style="COLOR:blue;">object</span>&nbsp;obj,&nbsp;<span style="COLOR:#2baaaf;">IPropertyInfo</span>&nbsp;property)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:blue;">return</span>&nbsp;<span style="COLOR:blue;">base</span>.FieldExists(obj,&nbsp;property);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:blue;">private</span>&nbsp;<span style="COLOR:blue;">readonly</span>&nbsp;<span style="COLOR:#2b91af;">Accessor</span>&nbsp;_accessor&nbsp;=&nbsp;<span style="COLOR:blue;">new</span>&nbsp;<span style="COLOR:#2b91af;">Accessor</span>();
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:blue;">public</span>&nbsp;StopIfNotFieldExists(<span style="COLOR:#2baaaf;">IPropertyInfo</span>&nbsp;primaryProperty)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;<span style="COLOR:blue;">base</span>(primaryProperty)
+&nbsp;&nbsp;&nbsp;&nbsp;{&nbsp;}
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:blue;">protected</span>&nbsp;<span style="COLOR:blue;">override</span>&nbsp;<span style="COLOR:blue;">void</span>&nbsp;Execute(<span style="COLOR:#2b91af;">RuleContext</span>&nbsp;context)
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:blue;">if</span>&nbsp;(!_accessor.FieldExists(context.Target,&nbsp;PrimaryProperty))
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;context.AddSuccessResult(<span style="COLOR:blue;">true</span>);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;}</pre>
+</pre>
+<pre style="FONT-FAMILY:Consolas;BACKGROUND:#fafafa;COLOR:black;FONT-SIZE:13px;">and </pre>
+<pre style="FONT-FAMILY:Consolas;BACKGROUND:#fafafa;COLOR:black;FONT-SIZE:13px;"><pre style="FONT-FAMILY:Consolas;BACKGROUND:#fafafa;COLOR:black;FONT-SIZE:13px;"><span style="COLOR:blue;">public</span>&nbsp;<span style="COLOR:blue;">class</span>&nbsp;<span style="COLOR:#2b91af;">FieldExists</span>&nbsp;:&nbsp;<span style="COLOR:#2b91af;">BusinessRule</span>
+&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:blue;">private</span>&nbsp;<span style="COLOR:blue;">class</span>&nbsp;<span style="COLOR:#2b91af;">Accessor</span>&nbsp;:&nbsp;<span style="COLOR:#2b91af;">ObjectFactory</span>
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:blue;">internal</span>&nbsp;<span style="COLOR:blue;">new</span>&nbsp;<span style="COLOR:blue;">bool</span>&nbsp;FieldExists(<span style="COLOR:blue;">object</span>&nbsp;obj,&nbsp;<span style="COLOR:#2baaaf;">IPropertyInfo</span>&nbsp;property)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:blue;">return</span>&nbsp;<span style="COLOR:blue;">base</span>.FieldExists(obj,&nbsp;property);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:blue;">private</span>&nbsp;<span style="COLOR:blue;">readonly</span>&nbsp;<span style="COLOR:#2b91af;">Accessor</span>&nbsp;_accessor&nbsp;=&nbsp;<span style="COLOR:blue;">new</span>&nbsp;<span style="COLOR:#2b91af;">Accessor</span>();
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:gray;">///</span><span style="COLOR:green;">&nbsp;</span><span style="COLOR:gray;">&lt;summary&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:gray;">///</span><span style="COLOR:green;">&nbsp;Gets&nbsp;the&nbsp;inner&nbsp;rule.</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:gray;">///</span><span style="COLOR:green;">&nbsp;</span><span style="COLOR:gray;">&lt;/summary&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:blue;">public</span>&nbsp;<span style="COLOR:#2baaaf;">IBusinessRule</span>&nbsp;InnerRule&nbsp;{&nbsp;<span style="COLOR:blue;">get</span>;&nbsp;<span style="COLOR:blue;">private</span>&nbsp;<span style="COLOR:blue;">set</span>;&nbsp;}
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:gray;">///</span><span style="COLOR:green;">&nbsp;</span><span style="COLOR:gray;">&lt;summary&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:gray;">///</span><span style="COLOR:green;">&nbsp;Initializes&nbsp;a&nbsp;new&nbsp;instance&nbsp;of&nbsp;the&nbsp;</span><span style="COLOR:gray;">&lt;see&nbsp;cref=</span><span style="COLOR:gray;">&quot;IsNew&quot;</span><span style="COLOR:gray;">/&gt;</span><span style="COLOR:green;">&nbsp;class.</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:gray;">///</span><span style="COLOR:green;">&nbsp;</span><span style="COLOR:gray;">&lt;/summary&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:gray;">///</span><span style="COLOR:green;">&nbsp;</span><span style="COLOR:gray;">&lt;param&nbsp;name=</span><span style="COLOR:gray;">&quot;primaryProperty&quot;</span><span style="COLOR:gray;">&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:gray;">///</span><span style="COLOR:green;">&nbsp;The&nbsp;primary&nbsp;property.</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:gray;">///</span><span style="COLOR:green;">&nbsp;</span><span style="COLOR:gray;">&lt;/param&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:gray;">///</span><span style="COLOR:green;">&nbsp;</span><span style="COLOR:gray;">&lt;param&nbsp;name=</span><span style="COLOR:gray;">&quot;innerRule&quot;</span><span style="COLOR:gray;">&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:gray;">///</span><span style="COLOR:green;">&nbsp;The&nbsp;inner&nbsp;rule.</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:gray;">///</span><span style="COLOR:green;">&nbsp;</span><span style="COLOR:gray;">&lt;/param&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:blue;">public</span>&nbsp;FieldExists(<span style="COLOR:#2baaaf;">IPropertyInfo</span>&nbsp;primaryProperty,&nbsp;<span style="COLOR:#2baaaf;">IBusinessRule</span>&nbsp;innerRule)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;<span style="COLOR:blue;">base</span>(primaryProperty)
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if (InputProperties&nbsp;== null) </pre>
+<pre style="FONT-FAMILY:Consolas;BACKGROUND:#fafafa;COLOR:black;FONT-SIZE:13px;">          InputProperties = &nbsp;<span style="COLOR:blue;">new</span>&nbsp;<span style="COLOR:#2b91af;">List</span>&lt;<span style="COLOR:#2baaaf;">IPropertyInfo</span>&gt;();</pre>
+<pre style="FONT-FAMILY:Consolas;BACKGROUND:#fafafa;COLOR:black;FONT-SIZE:13px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;InnerRule&nbsp;=&nbsp;innerRule;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;RuleUri.AddQueryParameter(<span style="COLOR:#a31515;">&quot;rule&quot;</span>,&nbsp;System.<span style="COLOR:#2b91af;">Uri</span>.EscapeUriString(InnerRule.RuleName));
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:green;">//&nbsp;merge&nbsp;InnerRule&nbsp;input&nbsp;property&nbsp;list&nbsp;into&nbsp;this&nbsp;rule&#39;s&nbsp;list&nbsp;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:blue;">if</span>&nbsp;(InnerRule.InputProperties&nbsp;!=&nbsp;<span style="COLOR:blue;">null</span>)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;InputProperties.AddRange(InnerRule.InputProperties);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:green;">//&nbsp;remove&nbsp;any&nbsp;duplicates&nbsp;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;InputProperties&nbsp;=&nbsp;<span style="COLOR:blue;">new</span>&nbsp;<span style="COLOR:#2b91af;">List</span>&lt;<span style="COLOR:#2baaaf;">IPropertyInfo</span>&gt;(InputProperties.Distinct());
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;AffectedProperties.AddRange(innerRule.AffectedProperties);
+&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:gray;">///</span><span style="COLOR:green;">&nbsp;</span><span style="COLOR:gray;">&lt;summary&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:gray;">///</span><span style="COLOR:green;">&nbsp;Executes&nbsp;the&nbsp;rule</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:gray;">///</span><span style="COLOR:green;">&nbsp;</span><span style="COLOR:gray;">&lt;/summary&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:gray;">///</span><span style="COLOR:green;">&nbsp;</span><span style="COLOR:gray;">&lt;param&nbsp;name=</span><span style="COLOR:gray;">&quot;context&quot;</span><span style="COLOR:gray;">&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:gray;">///</span><span style="COLOR:green;">&nbsp;The&nbsp;rule&nbsp;context.</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:gray;">///</span><span style="COLOR:green;">&nbsp;</span><span style="COLOR:gray;">&lt;/param&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:blue;">protected</span>&nbsp;<span style="COLOR:blue;">override</span>&nbsp;<span style="COLOR:blue;">void</span>&nbsp;Execute(<span style="COLOR:#2b91af;">RuleContext</span>&nbsp;context)
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:blue;">if</span>&nbsp;(_accessor.FieldExists(context.Target,&nbsp;PrimaryProperty))
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;context.ExecuteRule(InnerRule);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;}</pre>
+<pre style="FONT-FAMILY:Consolas;BACKGROUND:#fafafa;COLOR:black;FONT-SIZE:13px;"></pre>
+<pre style="FONT-FAMILY:Consolas;BACKGROUND:#fafafa;COLOR:black;FONT-SIZE:13px;">You should be very cautions in how you interact whil child collections/objects in the rule implementation. <br />Read more in this thread. <a href="http://forums.lhotka.net/forums/p/10433/48859.aspx#48859">http://forums.lhotka.net/forums/p/10433/48859.aspx#48859</a> </pre>
+Added to bugtracker: <a href="http://lhotka.net/cslabugs/edit_bug.aspx?id=1014">http://lhotka.net/cslabugs/edit_bug.aspx?id=1014</a></pre></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Saturday, February 04, 2012</h2><p>Csla trunk is updated and now the rules can be even more simplified and written like this: </p>
+<pre style="font-family:Consolas;background:#fafafa;color:black;font-size:13px;">&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">class</span>&nbsp;<span style="color:#2b91af;">StopIfNotFieldExists</span>&nbsp;:&nbsp;<span style="color:#2b91af;">BusinessRule</span>
+&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;StopIfNotFieldExists(<span style="color:#2baaaf;">IPropertyInfo</span>&nbsp;primaryProperty)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;<span style="color:blue;">base</span>(primaryProperty)
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">if</span>&nbsp;(InputProperties&nbsp;==&nbsp;<span style="color:blue;">null</span>)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;InputProperties&nbsp;=&nbsp;<span style="color:blue;">new</span>&nbsp;<span style="color:#2b91af;">List</span>&lt;<span style="color:#2baaaf;">IPropertyInfo</span>&gt;();
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;InputProperties.Add(primaryProperty);
+&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">protected</span>&nbsp;<span style="color:blue;">override</span>&nbsp;<span style="color:blue;">void</span>&nbsp;Execute(<span style="color:#2b91af;">RuleContext</span>&nbsp;context)
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">if</span>&nbsp;(!context.InputPropertyValues.ContainsKey(PrimaryProperty))
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;context.AddSuccessResult(<span style="color:blue;">true</span>);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;}</pre>
+<pre style="font-family:Consolas;background:#fafafa;color:black;font-size:13px;">&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">class</span>&nbsp;<span style="color:#2b91af;">FieldExists</span>&nbsp;:&nbsp;<span style="color:#2b91af;">BusinessRule</span>
+&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:#2baaaf;">IBusinessRule</span>&nbsp;InnerRule&nbsp;{&nbsp;<span style="color:blue;">get</span>;&nbsp;<span style="color:blue;">private</span>&nbsp;<span style="color:blue;">set</span>;&nbsp;}
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;FieldExists(<span style="color:#2baaaf;">IPropertyInfo</span>&nbsp;primaryProperty,&nbsp;<span style="color:#2baaaf;">IBusinessRule</span>&nbsp;innerRule)&nbsp;:&nbsp;<span style="color:blue;">base</span>(primaryProperty)
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">if</span>&nbsp;(InputProperties&nbsp;==&nbsp;<span style="color:blue;">null</span>)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;InputProperties&nbsp;=&nbsp;<span style="color:blue;">new</span>&nbsp;<span style="color:#2b91af;">List</span>&lt;<span style="color:#2baaaf;">IPropertyInfo</span>&gt;();
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;InputProperties.Add(primaryProperty);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;InnerRule&nbsp;=&nbsp;innerRule;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;RuleUri.AddQueryParameter(<span style="color:#a31515;">&quot;rule&quot;</span>,&nbsp;System.<span style="color:#2b91af;">Uri</span>.EscapeUriString(InnerRule.RuleName));
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:green;">//&nbsp;merge&nbsp;InnerRule&nbsp;input&nbsp;property&nbsp;list&nbsp;into&nbsp;this&nbsp;rule&#39;s&nbsp;list&nbsp;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">if</span>&nbsp;(InnerRule.InputProperties&nbsp;!=&nbsp;<span style="color:blue;">null</span>)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;InputProperties.AddRange(InnerRule.InputProperties);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:green;">//&nbsp;remove&nbsp;any&nbsp;duplicates&nbsp;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;InputProperties&nbsp;=&nbsp;<span style="color:blue;">new</span>&nbsp;<span style="color:#2b91af;">List</span>&lt;<span style="color:#2baaaf;">IPropertyInfo</span>&gt;(InputProperties.Distinct());
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;AffectedProperties.AddRange(innerRule.AffectedProperties);
+&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">protected</span>&nbsp;<span style="color:blue;">override</span>&nbsp;<span style="color:blue;">void</span>&nbsp;Execute(<span style="color:#2b91af;">RuleContext</span>&nbsp;context)
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">if</span>&nbsp;(context.InputPropertyValues.ContainsKey(PrimaryProperty))
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;context.ExecuteRule(InnerRule);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;}
+</pre>
+<pre style="font-family:Consolas;background:#fafafa;color:black;font-size:13px;">Your rule implementation may also check for the existance of the lazy loded field in </pre>
+<pre style="font-family:Consolas;background:#fafafa;color:black;font-size:13px;">context.InputPropertyValues. </pre>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Guncho replied on Monday, February 06, 2012</h2><p>
+<p class="MsoNormal">Hi, </p>
+<p class="MsoNormal">Thank you very
+much for your fast and exhaustive reply.</p>
+<p class="MsoNormal">Your idea for StopIfNotFieldExists&nbsp;rule
+sounds great. It absolutely replaces my idea for NeedBusinessRulesCheckingDelegate&nbsp;and
+is far more elegant. I have some observations and thoughts about your proposed
+solution and RulesEngine on the whole.</p>
+<p class="MsoNormal">I think that you have a bug in the Execute implementation of
+StopIfNotFieldExists&nbsp; rule:</p>
+<pre><span>&nbsp;&nbsp;&nbsp;&nbsp;</span><span>protected</span><span>&nbsp;</span><span>override</span><span>&nbsp;</span><span>void</span><span>&nbsp;Execute(</span><span>RuleContext</span><span>&nbsp;context)</span></pre>
+<pre><span>&nbsp;&nbsp;&nbsp;&nbsp;{</span></pre>
+<pre><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></pre>
+<pre><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span>if</span><span>&nbsp;(!context.InputPropertyValues.ContainsKey(PrimaryProperty))</span></pre>
+<pre><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{</span></pre>
+<pre><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;context.AddSuccessResult(</span><span>true</span><span>);</span></pre>
+<pre><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</span></pre>
+<pre><span>&nbsp;&nbsp;&nbsp;&nbsp;}</span></pre>
+<p class="MsoNormal">Shouldn&rsquo;t it be the exactly opposite:</p>
+<pre><span>if</span><span>&nbsp;(context.InputPropertyValues.ContainsKey(PrimaryProperty))</span></pre>
+<p class="MsoNormal">&nbsp;</p>
+<p class="MsoNormal">&nbsp;</p>
+<p class="MsoNormal">I prefer to talk with samples so let&rsquo;s have Invoice business
+object which has Buyer property declared like this:</p>
+<p class="MsoNormal"><span>public</span><span> <span>static</span> <span>readonly</span> <span>PropertyInfo</span>&lt;<span>Client</span>&gt; BuyerProperty = RegisterProperty&lt;<span>Client</span>&gt;(c =&gt; c.Buyer, <span>RelationshipTypes</span>.Child
+| <span>RelationshipTypes</span>.LazyLoad);</span></p>
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [<span>Required</span>]</span></p>
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span>public</span> <span>Client</span> Buyer</span></p>
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {</span></p>
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span>get</span></span></p>
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {</span></p>
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span>if</span> (!FieldManager.FieldExists(BuyerProperty))</span></p>
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+{</span></p>
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+LoadProperty(BuyerProperty, ...);</span></p>
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+OnPropertyChanged(BuyerProperty);</span></p>
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+}</span></p>
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span>return</span> GetProperty(BuyerProperty);</span></p>
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</span></p>
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span>set</span></span></p>
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {</span></p>
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+SetProperty(BuyerProperty, <span>value</span>);</span></p>
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</span></p>
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</span></p>
+<p class="MsoNormal">&nbsp;</p>
+<p class="MsoNormal">The question is when the Required rule should be applied and
+when not. I think that when we create new invoice the rule should be applied
+because each invoice should have a Buyer but if we load an existing invoice and
+haven&rsquo;t loaded the Buyer we don&rsquo;t need to apply the rule. My point here is that
+if you want to make StopIfNotFieldExists&nbsp;a best
+practice it should be more complicated and should handle this &ldquo;New&rdquo; scenario
+and also the scenario in which Buyer is dependent on some other property that
+has been changed.</p>
+<p class="MsoNormal">Moreover, there will be a problem
+if a Buyer property depends on another property that has been actually changed;
+in this case, the rules for Buyer property should be executed no matter if the
+Buyer property is LazyLoad or not in order to preserve correctness of the whole
+object. So in this case somehow we should load the Buyer property &ndash; the question
+who will do it, since your valid objection of the rule itself to load it?</p>
+<p class="MsoNormal">My final observation is related to
+FieldExists method of the FieldManager. I am wondering why FieldExists
+implementation can&rsquo;t distinguish between loaded property with null value and
+not loaded yet property? Jonny increase my attention on that with this
+statement &ldquo;<span>The problem here is #2. There is no way of
+knowing whether the OnPropertyChanged came as a result of a BusinessRule, the
+field was initialized to null (before lazy load) or actually because it was
+fetched</span>&rdquo;. May be this point is for other thread but I think that it will
+be great if we could distinguish between this two states because logically they
+are different and practically this <span>mixture</span>
+could lead to performance issues when a value of a lazy loaded property for a
+business object is null and its loading is computation intensive. In this case
+every time the property is accessed it will trigger the computation. Am I misunderstanding
+something here? </p>
+<p class="MsoNormal">Ivo</p>
+</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Monday, February 06, 2012</h2><p><span style="text-decoration:line-through;">Yes, that is a bug in the rule - good catch.</span></p>
+<p>No, it is as it should be. If the field is not initalized then it will not be in the InputPropertyValues dictionary and so it should short circuit the rules for this property.</p>
+<p>FieldManager will distinguish between a &quot;non&quot; initilized field value and a field with value=null. When you set the field value to null then FieldExists will return true.</p>
+<p>Problem #2: when using async loadiing it is quite common to initialize the field to &quot;null&quot; (so that FieldExits returns true) to avoid multiple async fetch. </p>
+<p>For state checking look at RuleTutorial Sample and Gateway rules - that wrap any inner sync rule.</p>
+<p>Ex: IsNew, IsNotNew, CanWrite etc rules.</p>
+<p>I would also say that it is an edge case if you have a required field on a lazy loaded child object/list. You would typically rather have required fields on that object and CSLA will automatically check that all child objects are OK before Save is allowed. In BusinessObject terms we rather tend to simplify the object model and not think of it as an entity model. If invoice has only on possible&nbsp; Buyer then I would flatten the hierarchy. This will also greatly simplify relationship between rules and properties.</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Guncho replied on Tuesday, February 07, 2012</h2><p>
+<p class="MsoNormal">Yes, I completely misunderstand what the method AddSuccessResult
+do.</p>
+<p class="MsoNormal">Thanks, those getaway rules seem to be very helpful.</p>
+<p class="MsoNormal">It is great that you have plans to improve the FieldManager implementation,
+in order to &ldquo;distinguish between a &quot;non&quot; initilized field value and a
+field with value=null&rdquo;, if I understand you correctly, &nbsp;but do you have any idea approximately when it
+will happen?</p>
+<p class="MsoNormal">However, I&rsquo;m not exactly sure if I understand your last point:</p>
+<p class="MsoNormal">&ldquo;<span>If invoice has only on
+possible&nbsp; Buyer then I would flatten the hierarchy. This will also greatly
+simplify relationship between rules and properties.</span>&rdquo;</p>
+<p class="MsoNormal"><span>Did you suggest that if
+the Invoice class has only one Buyer, I should put all properties of Buyer
+object in the Invoice itself? So instead of having hierarchy like</span></p>
+<p class="MsoNormal"><span>Invoice</span></p>
+<p class="MsoNormal"><span>&nbsp; - Buyer</span></p>
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp; - Name</span></p>
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp; - Address</span></p>
+<p class="MsoNormal"><span>I should have</span></p>
+<p class="MsoNormal"><span>Invoice</span></p>
+<p class="MsoListParagraphCxSpFirst"><span>-<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span>BuyerName</p>
+<p class="MsoListParagraphCxSpLast"><span>-<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span>BuyerAddress</p>
+<p class="MsoNormal">If that&rsquo;s the case, I don&rsquo;t think I like this approach at
+least because in this way business objects can hardly be reused and I think
+that they are coupled too much with the UI. </p>
+<p class="MsoNormal">Thanks again,</p>
+<p class="MsoNormal">Ivo</p>
+</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Tuesday, February 07, 2012</h2><p>Hi,</p>
+<p>FieldManager as-is will distinguish between a non initialized value and a field set to null value.(No change planned for FieldManager)</p>
+<p>The point of Business Objects is NOT reuse - it&#39;s Maintainability with lowest level of coupling and complexity.<br />Read Rocky&#39;s post here: <a href="http://forums.lhotka.net/forums/p/3465/17230.aspx#17257">http://forums.lhotka.net/forums/p/3465/17230.aspx#17257</a> </p>
+<p>BusinessObjects works best when they support the UI to make easy-to-bind objects and properties that encapsulate the behavior for that use case. </p>
+<p>For more info read these posts: (and especially Rocky&#39;s posts in these threads):</p>
+<p><a href="http://www.lhotka.net/cslanet/faq/CslaObjectFaq.ashx%20">http://www.lhotka.net/cslanet/faq/CslaObjectFaq.ashx</a> </p>
+<p><a href="http://forums.lhotka.net/forums/p/3465/17230.aspx#17230">http://forums.lhotka.net/forums/p/3465/17230.aspx#17230</a></p>
+<p><a href="http://forums.lhotka.net/forums/t/10243.aspx">http://forums.lhotka.net/forums/t/10243.aspx</a></p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

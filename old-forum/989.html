@@ -1,0 +1,26 @@
+<html><header><title>Delete Item from EditableRootListBase using csla 2.1 for vb</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Delete Item from EditableRootListBase using csla 2.1 for vb</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/989.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>mikeclimbs posted on Wednesday, August 23, 2006</h2><P>I'm using EditableRootListBase as a datasource for a bindingsource.&nbsp; When I call BindingSource removecurrent a&nbsp;NoSaveEditingException is raised.</P>
+<P>I tried calling bindingsource.canceledit,&nbsp; but still have the issue.</P>
+<P>Any suggestions?</P>
+<P>Thanks</P>
+<P>Mike</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, August 23, 2006</h2>Interesting - thanks for pointing this out.<br><br>I am now thinking that I overlooked something in terms of reducing edit levels, and hopefully I can find a workable answer. Inside the collection, when notification of a delete request comes through, the code deletes the object - but it sounds like the edit level is still &gt;0 at that point...<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>mikeclimbs replied on Wednesday, August 23, 2006</h2><P>I'm starting a large app with many grids pointing at EditableRootListBase and&nbsp;would be glad to help you test this, once&nbsp;the issue is resolved.&nbsp;</P>
+<P>Mike</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, August 23, 2006</h2>I appreciate that very much.<br><br>If you could grab the latest version of ERLB.vb in cvs and give it a try that would be great. You'll need updated versions of Core\BusinessBase.vb and Core\IEditableBusinessObject.vb as well - I had to change those slightly to get this resolved.<br><br>I had tested this through unit tests, but that's obviously not enough to catch all the idiosyncratic behaviors of data binding... I think I now have it working correctly within data binding as well.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>mikeclimbs replied on Wednesday, August 23, 2006</h2><P>Rocky,</P>
+<P>Grabbed the latest and the delete is working correctly.&nbsp; I did a quick test of add, edit, delete and they all worked.</P>
+<P>I will do more testing this afternoon and post my results.</P>
+<P>Thanks for the quick response.</P>
+<P>Mike</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>mikeclimbs replied on Wednesday, August 23, 2006</h2><P>Rocky,</P>
+<P>I did some additional testing today with standard VB components and devexpress components and everything worked great.</P>
+<P>Thanks,</P>
+<P>Mike</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, August 23, 2006</h2>
+
+
+
+
+<DIV align=left><SPAN class=484161021-23082006><FONT face=Arial color=#0000ff size=2>That's great news! Thanks, that updated code will be in the 
+next test release of 2.1 then.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=484161021-23082006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=484161021-23082006><FONT face=Arial color=#0000ff size=2>Rocky</FONT></SPAN></DIV><BR>
+<BLOCKQUOTE>
+  <P>I did some additional testing today with standard VB components and 
+  devexpress components and everything worked great.</P>
+  <P>Thanks,</P>
+  <P>Mike</P></BLOCKQUOTE></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

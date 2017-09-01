@@ -1,0 +1,1166 @@
+<html><header><title>Feature input request: WPF collections</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Feature input request: WPF collections</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6218.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka posted on Tuesday, January 20, 2009</h2><P>One issue that has come up repeatedly over the past while is how collections work in WPF, especially now that WPF has a datagrid.</P>
+<P>It turns out that the WPF binding infrastructure works so-so with a BindingList&lt;T&gt;. Actually it works fine, until you have a datagrid. The datagrid seems to make assumptions around the use of simpler list types, and doesn't really like BindingList&lt;T&gt; so much.</P>
+<P>This poses a challenge for CSLA, because its collections are all based on BindingList&lt;T&gt;. This is a requirement for Windows Forms support, because Windows Forms data binding relies on BindingList&lt;T&gt; (or IBindingList) rather extensively.</P>
+<P>There are no good solutions that I'm aware of. Microsoft has painted us into a corner, where you can really support WinForms or WPF, but not both at the same time. Which flies in the face of a primary CSLA goal - which is to enable the creation of UI-neutral business objects.</P>
+<P>So here are the options as I see them:</P>
+<OL>
+<LI>Use a compiler directive so you can build CSLA for Windows or WPF (which you'd have to do on both client and app server in a 3-tier model, because serialization requires the same inheritance structure for the types). When building for WPF, all collections would be based on ObservableCollection&lt;T&gt; instead of BindingList&lt;T&gt;.</LI>
+<LI>Add a new set of WPF-friendly collection base classes - basically WpfBusinessListBase, WpfNameValueListBase, etc. This would nearly double the maintenance work on my end, and would slow progress of CSLA into the future</LI>
+<LI>Drop support for Windows Forms as of CSLA .NET 4.0 - supporting WPF, Silverlight, ASP.NET, XML service and workflow interfaces, but not WinForms</LI></OL>
+<P>If anyone has other suggestions I'm all ears.</P>
+<P>I put number 1 first, because of the three poor choices, it seems like the least poor. It still leaves people building hybrid WinForms/WPF apps in a nasty spot, but does allow CSLA to function properly with WPF for people working entirely in that technology.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>TAC replied on Tuesday, January 20, 2009</h2>I don't see the 3rd option bring an option. Doing would force one of the following options...<br>- Update all WinForms to WPF - Many People will have too much legacy code and having them to rewrite all those screens is a big ask. <br>- Not use the latest version of CSLA - Could really stop the growth of CSLA<br>- Use two versions in the same program - would get quite confusing.<br><br>The first seems to be the best option although not ideal.<br><br>Does this problem only affect WPF or is it Silverlight as well?<br><br>Also could you provide a link to a post which provides more details on what the problem is exactly?<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, January 20, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>The problem doesn&#8217;t affect Silverlight, because the CSLA
+.NET for Silverlight collections are based on a different base class. There is
+no BindingList&lt;T&gt; in Silverlight, because there&#8217;s no Windows Forms.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>The primary issue is automated sorting. If you bind many types
+of list to the WPF datagrid they &#8220;automatically&#8221; sort. This doesn&#8217;t
+happen with an IBindingList list.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I say &#8220;automatically&#8221;, because WPF is actually doing
+a bit of magic to enable this functionality by providing a view over the list. If
+they see an IBindingList they don&#8217;t do their magic, because it would
+conflict with the DataTable, and possibly other IBindingList-based objects.
+Which means a BusinessListBase, or other CSLA collection, won&#8217;t
+automatically sort in the datagrid &#8211; leaving you to handle grid events to
+execute LINQ statements or something.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>In other words, there are workarounds today.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>But let&#8217;s face it. WPF/Silverlight are the future.
+WinForms is legacy technology. I think it is important that CSLA support the
+future, or it could become irrelevant, and so I want to find a solution that
+allows CSLA-based collections to act as first-class citizens in WPF.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>And there&#8217;s a time constraint on this. WPF has had slow
+adoption due to a lack of tooling. But I think it is fair to expect decent
+tooling soon &#8211; Microsoft knows this is the issue blocking adoption. So I anticipate
+needing a good answer by Visual Studio 2010 and .NET 4.0 &#8211; more or less
+at the end of this year.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Which is why I started this thread now. Maybe someone knows of a
+better solution. Maybe someone has a clever idea. Or maybe we have to choose
+one of the options I listed above. In any case, now&#8217;s the time to figure
+out the direction so we all have months to deal with the consequences.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rsbaker0 replied on Wednesday, January 21, 2009</h2>I was going to naively ask if derivation from ObservableCollection&lt;T&gt; while also implementing IBindingList would be possible, but it sounds like WPF is explicitly testing for IBindingList and bypassing the sorting functionality based on what you are saying. </div><div style='padding:0 15 3 15;background-color:powderblue'><h2>lukky replied on Wednesday, January 21, 2009</h2>Rocky,<br><br>I think you're in a very tight spot. Damned if you do, damned if you don't.<br><br>While I understand that WinForms is a legacy technology in the eyes of many, it is still the platform of choice for a lot of new projects even today. You mentioned lack of WPF adoption, or at least slow adoption by the programmer community. I think this is a clear indication that WinForm is still extensively used. Remember that some customers still specifically ask for WinForms for new projects.<br><br>On the other hand, as you told me in another thread a few weeks back, those of us who haven't started to look at WPF should really think about it SOON, and I agree with that. As a side note, I just bought my first WPF book <img src="/emoticons/emotion-5.gif" alt="Wink [;)]" /><br><br>My personal concern is that if you drop WinForms support in 4.0, all of us still using it for new project are going to fell left behind if you should integrate new features in CSLA that don't really depend on WPF, but that would make life easier for WinForms people too. Would you eventually agree to backport those into CSLA 3.X ?<br><br>I'm sorry I don't have any cleaver answers to this dilema. I'm just an egg. One thing that comes to my mind though, is if you could somehow make UI support plugable into the framework. After all, one of the goal is to be UI agnostic, isn't it ? What I mean is that right now, you're using inheritance to do your magic. Would it be at all thinkable to use composition instead ?<br><br>In any case, I personally think it's too early to drop WinForms support.<br><br>Best regards.<br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rsbaker0 replied on Wednesday, January 21, 2009</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div> 
+
+<DIV class=Section1>
+<P class=MsoNormal><SPAN>The problem doesn’t affect Silverlight, because the CSLA .NET for Silverlight collections are based on a different base class. There is no BindingList&lt;T&gt; in Silverlight, because there’s no Windows Forms.</SPAN></P>
+<P class=MsoNormal><SPAN>...<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></div></BLOCKQUOTE></P>
+<P class=MsoNormal>Interesting, because BindingList&lt;T&gt; is in the System.ComponentModel namespace, not the System.Windows.Forms namespace.</P>
+<P class=MsoNormal>Does this mean that WPF is basically going it's own way as far as the previous support in .NET for building components? It looks to me like System.ComponentModel at least makes an attempt to be "WinForms agnostic", but I haven't looked at it closely enough to state this with certainty. </P></DIV></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, January 21, 2009</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Yes, WPF is going their own way.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>They redefined how PropertyChanged (INotifyPropertyChanged) is
+handled, and they redefined how bindable collections are handled.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I think you can argue that the WPF definitions are superior, and
+you can wish that WinForms had done them this way too. But that&#8217;s rather pointless.
+WPF is learning from the things WinForms did right and wrong, and so we&#8217;re
+seeing progress.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>But the interim is painful, because anyone with a business object
+layer (not just CSLA) is left trying to deal with the old and new requirements
+at the same time.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky <o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> rsbaker0
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Wednesday, January 21, 2009 9:32 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: Feature input request: WPF collections<o:p></o:p></span></p>
+
+</div>
+
+<blockquote>
+
+<div>
+
+<div>
+
+<p class=MsoNormal>&nbsp;<o:p></o:p></p>
+
+</div>
+
+</div>
+
+<p class=MsoNormal>Interesting,
+because BindingList&lt;T&gt; is in the System.ComponentModel namespace, not the
+System.Windows.Forms namespace.<o:p></o:p></p>
+
+<p class=MsoNormal>Does
+this mean that WPF is basically going it's own way as far as the previous support
+in .NET for building components? It looks to me like System.ComponentModel at
+least makes an attempt to be &quot;WinForms agnostic&quot;, but I haven't
+looked at it closely enough to state this with certainty. <o:p></o:p></p>
+
+</blockquote>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Wednesday, January 21, 2009</h2>Indeed..<br><br>To make matters worse for me, I'll likely have to heavily integrate Wpf into my existing WinForms application.<br><br>I'd love to move to Wpf.. but I have other things more important to the business to handle.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rfcdejong replied on Wednesday, January 21, 2009</h2>Maybe nice to have a poll about this? Does the CSLA forum support polls? :)<br /><br />Anyway, we are building on WPF and we'll run into this binding problem as well sooner or later. I though the IBindinglist would work perfectly in WPF. <br /><br />Option 1 (won't be that double work same as option 2?) or else Option 3<br /><br />PS: xaml doesn't fully support generics yet, but thats offtopic ;) I was just frustrated today about that, did spend 8 hours on trying to get generics working in our xaml base class.<br /></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, January 21, 2009</h2>>Maybe nice to have a poll about this? <br />>Does the CSLA forum support polls? :)<br /><br />Yes, it does support polls, and I've used them from time to time. I need a<br />better sense of what options I'm willing to consider before asking which of<br />those people prefer.<br /><br />Rocky</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, January 21, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>&gt; </span>To make matters
+worse for me, I'll likely have to heavily <span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&gt; </span>integrate Wpf into
+my existing WinForms application.<br>
+<br>
+<span>Which is a driving reason for me starting this
+thread, in the hopes that there&#8217;s some solution that supports WinForms,
+WPF and a combination.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I don&#8217;t want to give up on the idea of CSLA objects
+supporting all existing UI technologies. That&#8217;s been a core principle of
+the framework all these years.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I suspect the answer is reworking the collection model so the
+underlying collection (BLB) is more separate from the UI view requirements.
+Whether it directly imbeds WinForms or WFP (or neither) support, it starts to
+appear that at least one of the UI technologies will need to use some separate
+view construct.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jack replied on Wednesday, January 21, 2009</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Maybe an app.config value can somehow determine the default view
+construct which makes it easier for a legacy application owner to choose which has
+the less impact?<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Rockford Lhotka [mailto:cslanet@lhotka.net]
+<br>
+<b>Sent:</b> January-21-09 12:13 PM<br>
+<b>To:</b> jaddington@alexandergracie.com<br>
+<b>Subject:</b> RE: [CSLA .NET] RE: RE: Feature input request: WPF collections<o:p></o:p></span></p>
+
+</div>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal><span>&gt; </span><span>To make matters worse for me, I'll likely have to heavily <span><o:p></o:p></span></span></p>
+
+<p class=MsoNormal><span>&gt; </span><span>integrate Wpf into my existing WinForms application.<br>
+<br>
+<span>Which is a driving reason for me starting this
+thread, in the hopes that there&#8217;s some solution that supports WinForms, WPF and
+a combination.<o:p></o:p></span></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I don&#8217;t want to give up on the idea of CSLA objects supporting
+all existing UI technologies. That&#8217;s been a core principle of the framework all
+these years.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I suspect the answer is reworking the collection model so the
+underlying collection (BLB) is more separate from the UI view requirements.
+Whether it directly imbeds WinForms or WFP (or neither) support, it starts to
+appear that at least one of the UI technologies will need to use some separate
+view construct.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tmg4340 replied on Wednesday, January 21, 2009</h2><FONT size=2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div> 
+</FONT>
+<DIV class=Section1>
+<P class=MsoNormal><SPAN><FONT size=2>I suspect the answer is reworking the collection model so the underlying collection (BLB) is more separate from the UI view requirements. Whether it directly imbeds WinForms or WFP (or neither) support, it starts to appear that at least one of the UI technologies will need to use some separate view construct.</FONT></SPAN></P></DIV>
+<P><FONT size=2></div></BLOCKQUOTE></FONT></P>
+<P><FONT face=Tahoma size=2>A "BindingSource" for CSLA objects?&nbsp; That's another idea.&nbsp; BLB is implemented as a generic collection, and then you create WinForms and WPF wrappers that implement the UI plumbing.&nbsp; I still say they should be in separate assemblies, but that may be the best way to make it work.</FONT></P>
+<P><FONT face=Tahoma size=2>- Scott</FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Wednesday, January 21, 2009</h2>Isn't the grid still in CTP?&nbsp; Is there any chance that this functionality will be added before release?&nbsp; I know on the codeplex discussion others have been asking for it.<br><br>Also, I found this <a href="http://www.wpfmentor.com/2008/12/observable-collections-independent-of.html">blog</a>.&nbsp; Maybe this helps in some way?&nbsp; <br><br>Finally.. is the problem just the automatic sorting?&nbsp; Does everything else work?&nbsp; If it's just sorting, I think I've seen that doing myGrid.DataSource&nbsp; = from myBoList select items; will enable sorting.&nbsp; And, if it is just sorting, dumping an entire UI technology (even if it is legacy.. but even at my company we still have 16-bit applications that we're just starting to get rid of) just so automatic sorting works seems pretty extreme.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, January 21, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>&gt;</span> Finally.. is the problem just the automatic sorting?<span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>At the moment, to my knowledge, this is the only issue. My
+primary concerns are twofold &#8211; this could be the tip of the iceberg (more
+issues will arise); and I really don&#8217;t want CSLA to be a second-class
+citizen in what will be the mainstream technology for the next many years.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Again, I want to reinforce that I&#8217;m just putting out all
+the options. I&#8217;m not giving a lot of thought to dropping WinForms support,
+as I agree with the ongoing value of WinForms. But it would be dishonest to leave
+that option off the list.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I&#8217;m really hoping for some other solution to present
+itself. That ExtendedCollectionViewSource idea is interesting, and maybe could
+be adapted into CSLA in some manner. It still requires some non-standard XAML
+binding though.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I&#8217;d almost rather do the reverse &#8211; make BLB become
+an ObservableCollection&lt;T&gt;, and implement an IBindingList wrapper for
+WinForms support. That&#8217;d be a breaking change, as it would impact
+existing code &#8211; but I&#8217;d rather have the &#8220;ugly&#8221; code
+support legacy, and the nice code support the future.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jack replied on Wednesday, January 21, 2009</h2>Rocky,<br><br>I would agree with your last statement - make BLB an ObservableCollection and leave the legacy with a wrapper.&nbsp; While it is painful for existing legacy apps to move forward, most legacy apps don't likely need to have the latest and greatest CSLA version in place.<br><br>I don't have anything technically to add other than likely a best scenario for having a wrapper implemented is in such a way that the worst case is doing a find/replace on the BusinessBaseList&lt;T&gt; across the app to solve most of the implementation issues.&nbsp; Then there are compiler errors so anything not picked up /w a find/replace can be found.<br><br>If I told any of my clients I was going to upgrade the application framework that touched every object in the application they would have huge concerns and likely the testing effort to appease them outweighs the need to use some new feature that a big upgrade to the framework may provide.<br><br>Of course I'm now biased as I have no legacy CSLA apps :-).&nbsp; But if the tradeoff for building future apps is that there are less workarounds and hoops in the framework then that is one less issue on the learning curve for a new technology.<br><br>Just my two cents<br><br>Jack<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jack replied on Wednesday, January 21, 2009</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>After reading the prior post &#8211; about suggestion #2 and maintaining
+two streams&#8230;&nbsp; Isn&#8217;t that essentially going to happen with a
+wrapper anyways?<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Any breaking logic that you add to the WPFxxx objects needs to
+be translated into the wrapper no?<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>While dramatically simplifing - would you not have BusinessBaseList&lt;T&gt;
+then become Wrapper (WpfBusinessBaseList&lt;T&gt;) and all the base objects
+simply migrate to wpfBaseClasses?<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Or can you split the CSLA library into different pieces such
+that CSLA.WinForms.BusinessBase&lt;T&gt; = Wrapper(CSLA.Core.BusinessBase&lt;T&gt;)
+and CSLA.WPF.BusinessBase&lt;T&gt; = CSLA.Core.BusinessBase&lt;T&gt;?&nbsp; I
+don&#8217;t know if you can do something at the config level where you can have
+CSLA.Core be the default and you reference CSLA.WinForms if and only if you
+aren&#8217;t doing WPF/Silverlight etc.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Then hopefully all you are maintaining is the Core Library and 1
+or more wrapper libraries as you obsolete technologies?<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Jack<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Jack
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Wednesday, January 21, 2009 7:54 AM<br>
+<b>To:</b> jaddington@alexandergracie.com<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: Feature input request: WPF collections<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Rocky,<br>
+<br>
+I would agree with your last statement - make BLB an ObservableCollection and
+leave the legacy with a wrapper.&nbsp; While it is painful for existing legacy
+apps to move forward, most legacy apps don't likely need to have the latest and
+greatest CSLA version in place.<br>
+<br>
+I don't have anything technically to add other than likely a best scenario for
+having a wrapper implemented is in such a way that the worst case is doing a
+find/replace on the BusinessBaseList&lt;T&gt; across the app to solve most of
+the implementation issues.&nbsp; Then there are compiler errors so anything not
+picked up /w a find/replace can be found.<br>
+<br>
+If I told any of my clients I was going to upgrade the application framework
+that touched every object in the application they would have huge concerns and
+likely the testing effort to appease them outweighs the need to use some new
+feature that a big upgrade to the framework may provide.<br>
+<br>
+Of course I'm now biased as I have no legacy CSLA apps :-).&nbsp; But if the
+tradeoff for building future apps is that there are less workarounds and hoops
+in the framework then that is one less issue on the learning curve for a new
+technology.<br>
+<br>
+Just my two cents<br>
+<br>
+Jack<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, January 21, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Not entirely.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>What I don&#8217;t want to do is maintain BLB twice. If you look
+at BLB, it is quite large, and quite complex.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>One of the reasons SortedBindingList, FilteredBindingList and
+LinqBindingList exist is to pull out some of the complexity by separating
+concerns where possible. But some concerns are harder to separate &#8211;
+specifically the data binding interface implementations.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>The problem, ultimately, is that WinForms and WPF data binding
+are designed with the assumption that the data collection will implement
+certain interfaces. While they may partially support lesser collections, they
+only _<i>really</i>_ work with collections that implement the right interfaces.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>That forces the collection to assume a certain level of
+complexity, because these interfaces aren&#8217;t always trivial. Even if they
+_<i>look</i>_ trivial, they often have idiosyncrasies of implementation that
+make them complex. So favoring composition is a good ideal &#8211; but it is
+challenging when the collection itself must implement the interfaces, and must
+raise the events.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Now we&#8217;re faced with a case where WinForms and WPF want
+different interfaces, and a given collection can&#8217;t implement both,
+because two of the interfaces directly conflict. Implement both and you get a
+non-functional result.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>One solution is to move these interfaces up, out of the
+collection itself, and into wrappers. On one level this seems elegant, and
+offers better separation of concerns.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>But to the UI developer, you just complicated their life,
+because now they must remember to insert this wrapper between the UI and the
+collection, or they don&#8217;t get the desired result. Often this means they
+are blocked from using RAD features of VS, or at least they must go in manually
+after the RAD feature and tweak the result.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Maybe that&#8217;s the price we pay, but it is a little sad imo,
+because I _<i>like</i>_ using RAD features and being productive&#8230;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky <o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Jack Addington
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Wednesday, January 21, 2009 9:17 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> RE: [CSLA .NET] RE: Feature input request: WPF collections<o:p></o:p></span></p>
+
+</div>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal><span>After reading the prior post &#8211; about suggestion #2 and
+maintaining two streams&#8230;&nbsp; Isn&#8217;t that essentially going to
+happen with a wrapper anyways?<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Any breaking logic that you add to the WPFxxx objects needs to
+be translated into the wrapper no?<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>While dramatically simplifing - would you not have
+BusinessBaseList&lt;T&gt; then become Wrapper (WpfBusinessBaseList&lt;T&gt;)
+and all the base objects simply migrate to wpfBaseClasses?<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Or can you split the CSLA library into different pieces such
+that CSLA.WinForms.BusinessBase&lt;T&gt; =
+Wrapper(CSLA.Core.BusinessBase&lt;T&gt;) and CSLA.WPF.BusinessBase&lt;T&gt; =
+CSLA.Core.BusinessBase&lt;T&gt;?&nbsp; I don&#8217;t know if you can do something
+at the config level where you can have CSLA.Core be the default and you
+reference CSLA.WinForms if and only if you aren&#8217;t doing WPF/Silverlight
+etc.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Then hopefully all you are maintaining is the Core Library and 1
+or more wrapper libraries as you obsolete technologies?<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Jack<o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>TAC replied on Wednesday, January 21, 2009</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div>
+
+
+
+
+
+
+ 
+
+
+
+<div class="Section1">
+
+<p class="MsoNormal"><span>Now we’re faced with a case where WinForms and WPF want
+different interfaces, and a given collection can’t implement both,
+because two of the interfaces directly conflict. Implement both and you get a
+non-functional result.<o:p></o:p></span></p></div></BLOCKQUOTE><br>Just out of curiosity what are the interfaces?<br>
+For WinForms it's IBindingList,<br>
+Is the WPF ones INotifyCollectionChanged and INotifyPropertyChanged?<br><br>Just quickly looking at them I can't see why a class can't implement both. Or is it a case of you can but binding gets confused? If it is that isn't that really a microsoft bug? Shouldn't their WPF binding only use IBindingList if the new interfaces don't exist?<br>So the ideal solution would be for Microsoft to fix this up? Of course this is also the option which we have the least control over.<br></div></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>TAC replied on Wednesday, January 21, 2009</h2>Just found where you talk about it in Expert C# 2008 Business Object (page 52 if anyone is interested) and from how you describe the problem couldn't you solve it with a flag? Collections would implement IBindingList and INotifyCollectionChanged and you could then have a property...<br>public bool RaisesIBindingListEvents { get; set; }<br>then for all the IBindingList stuff would start with<br>if (!RaisesIBindingListEvents)<br>&nbsp;&nbsp;&nbsp; return;<br><br>This seems like the best solution to me.<br><br>---<br>Chris.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, January 21, 2009</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>The problem is that WPF data binding notices that the collection
+<i>implements</i> IBindingList and treats it differently.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>There&#8217;s no way, at runtime, to decide what interfaces a
+type does or doesn&#8217;t implement &#8211; that&#8217;s a compile-time choice&#8230;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> TAC
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Wednesday, January 21, 2009 8:52 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: RE: Feature input request: WPF collections<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Just found where you talk about it in Expert C# 2008
+Business Object (page 52 if anyone is interested) and from how you describe the
+problem couldn't you solve it with a flag? Collections would implement
+IBindingList and INotifyCollectionChanged and you could then have a property...<br>
+public bool RaisesIBindingListEvents { get; set; }<br>
+then for all the IBindingList stuff would start with<br>
+if (!RaisesIBindingListEvents)<br>
+&nbsp;&nbsp;&nbsp; return;<br>
+<br>
+This seems like the best solution to me.<br>
+<br>
+---<br>
+Chris.<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Justin replied on Thursday, January 22, 2009</h2><P>My vote would be choose the "best" (probably wpf) implementation currently and make the other one a wrapper. </P>
+<P>My second choice would make a base implementation and have both winforms and wpf be wrappers.</P>
+<P>I take issue with MS on this as they should have worked out data binding properly in .Net 1.0 so it is not a moving target. Data binding should also not be a UI concern, it should be baked into the base runtime for all objects.</P>
+<P>Take a look at key-value observing in the Apple/Cocoa/obj-c world and how you don't have to manually call any kind of NotifyChanged("PropertyName") in your setters as the runtime can detect and raise changed events on any object property. Built on top of that they give you undo/redo nearly for free with NSUndoManager. This has been done for years over there.</P>
+<P>MS should really build in some sort of property event system in reflection, so say a PropertyInfo object just has BeforeChange/AfterChange events, but I digress hopefully they will at least just stick with the WPF model for a while.<BR></P>
+<P>Look here as a side note if you are interested in Apples approach: <A href="http://dotnetaddict.dotnetdevelopersjournal.com/cocoa_wpf_bindings.htm">http://dotnetaddict.dotnetdevelopersjournal.com/cocoa_wpf_bindings.htm</A></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>dctc42 replied on Friday, January 23, 2009</h2><P>That's a shame. Improving on IBindinlList with <A>INotifyCollectionChanged</A>/INotifyPropertyChanged is fine but if MS is still supporting IBindingList you would think that binding logic would first look for <A>INotifyCollectionChanged</A>/INotifyPropertyChanged&nbsp; and then fallback on IBindingList. This "feels" like an implementation&nbsp; mistake.</P>
+<P>Anyway,&nbsp;&nbsp;IBindingList has methods called AddNew, EndNew, CancelNew. I don't see what repleces these in ObservableCollection&lt;T&gt;. Isn't this a loss of capability? </P>
+<P>Currently, overriding&nbsp;OnAddingNew lets me call the right factory method when adding items to BLB through a grid or other UI binding mechanism. </P>
+<P>If there is no real funtionality loss my vote is for moving&nbsp;to natively support&nbsp;Wpf binding&nbsp;mechanisms&nbsp;and, if practival, adding a wrapper that supports IBindingList.</P>
+<P>IMO, Csla&nbsp;can't choose legacy&nbsp;support&nbsp;(sorry for using the L word guys) over staying current. </P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Friday, January 23, 2009</h2>Well, ideally the Wpf grid from MS would be fixed to honor IBindingList OR Observable collection, but not both.&nbsp; Is there any chance to of getting this done?&nbsp; Maybe Rocky has a favor he can call in from someone inside MS.&nbsp; <img src="/emoticons/emotion-1.gif" alt="Smile [:)]" /><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, January 23, 2009</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Yeah, that&#8217;d be nice :)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>The problem now, of course, is that they&#8217;re working on the
+third (fourth?) release of WPF and have backward compat issues and so forth. So
+a fundamental change in how they treat IBindingList objects is probably not
+real likely.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>The reasoning, btw, behind what they do, is that IBindingList
+itself supports sorting &#8211; if the collection implementing the interface
+supports it anyway. BindingList&lt;T&gt; doesn&#8217;t sort, which is really
+too bad. But they apparently didn&#8217;t feel they should create a sorted view
+over a collection that could support sorting itself, because that could result
+in some very unexpected results.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>On the other hand, in my experiments, binding WPF to a
+SortedBindingList doesn&#8217;t result in sorts working. And that&#8217;s
+surprising, since it was my understanding that they delegated the sorting to
+the IBindingList implementation. Certainly they throw an exception if the
+IBindingList.SupportsSorting returns false, so you would expect they&#8217;d
+call IBindingList.ApplySort() if it returned true&#8230;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Really the whole thing seems very strange and poorly thought out
+to me.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky <o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> ajj3085
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Friday, January 23, 2009 1:09 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: RE: RE: Feature input request: WPF
+collections<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Well, ideally the Wpf grid from MS would be fixed to honor
+IBindingList OR Observable collection, but not both.&nbsp; Is there any chance
+to of getting this done?&nbsp; Maybe Rocky has a favor he can call in from
+someone inside MS.&nbsp; <span><img width=100 height=100 id="_x0000_i1025" alt="Image removed by sender. Smile <img src=" />"></span><br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>FatPigeon replied on Saturday, January 24, 2009</h2><P>I have a use case that I spent some time trying to implement last summer that I think has a bearing on this discussion. </P>
+<P>It is basically the RootChildGrandchildWinFormTest where each row in a grid is bound to a root business object. Other controls on the form are bound to other details of the business object profile. These other controls could include additional grids bound to child lists.&nbsp; The ERLB uses the IEditableObject.EndEdit to trigger the save method of each parent business object.&nbsp; </P>
+<P>The main problem I could not solve was that the WinForms DataGridView fires EndEdit whenever a grid row is departed, even if the user has only left the row to move to a child control bound to the same business object. At this stage the user may not have finished editing the business object and there is no reason to assume that business object is valid, so saving it at this stage does not make sense. I only want the ‘save’ to be triggered if the user moves to another row in the root grid.</P>
+<P>This is a very different style of user interface to the Project Tracker example so it may be that CSLA is not intended to support this type of use case, but if it is, then the following may be relevant.</P>
+<P>I have wondered whether EndEdit should be used to trigger save. The documentation for IEditableObject says that the interface ‘Provides functionality to commit or rollback changes to an object that is used as a data source’. Here it must be intended that the term ‘data source’ refers to the business object and not the persisted data store. An example of this is the implementation of the interface in the dotnet dataset class. The developer is free to leave persistence of the dataset until after allowing the user to make several edits. There is nothing to force persistence on every call to EndEdit.</P>
+<P>I have briefly looked at the WPF grid. It appears that the EndEdit may be even more problematic in that it is triggered even when the user toggles to another application and not even left the grid row at all – but this may just be the CTP version. However, it appears that there may be an alternative for triggering persistence. The WPF data grid has a ‘CurrentChanging’ event. It seems this is only triggered when the user tries to change the current row in the data grid – and it can be cancelled. It occurs to me that this would be a good place to test for business object validity, canceling the event if invalid and saving if valid.</P>
+<P>If the above makes sense then I would propose that option 2 is chosen. I suggest the WinForms classes are left to support the WinForms interface while a new set of WPF classes are developed that support the WPF interface including the above scenario.</P>
+<P>I do not think that this would involve twice the effort. Having one complex set of classes can sometimes be more time consuming (and less fruitful) than two simple sets.</P>
+<P>Regards,</P>
+<P>Patrick<BR></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Sunday, January 25, 2009</h2><BLOCKQUOTE><div><img src="/Themes/basicblue/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div> The problem now, of course, is that they’re working on the
+third (fourth?) release of WPF and have backward compat issues and so forth. So
+a fundamental change in how they treat IBindingList objects is probably not
+real likely.</div></BLOCKQUOTE><br><br>I'm confused; MS has released prior versions of the DataGrid for Wpf?&nbsp; I thought they were only now about to do so, and that it was in CTP.&nbsp; I think they've broken things between CTP versions previously?<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, January 26, 2009</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>The support for IBindingList pre-dates the grid. Most people are
+just seeing the results of the choice now that there is a grid.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>You can use the same binding/sorting techniques that the grid
+uses when binding to a ListBox or other list control. And you’ll get the same
+results (or lack thereof) because the underlying plumbing is the same.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> ajj3085
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Sunday, January 25, 2009 12:06 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: RE: RE: RE: Feature input request: WPF
+collections<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<blockquote>
+
+<div>
+
+<p class=MsoNormal><span><img width=100 height=100 id="_x0000_i1025" alt="Image removed by sender."></span><strong>RockfordLhotka:</strong><o:p></o:p></p>
+
+</div>
+
+<div>
+
+<p class=MsoNormal>The problem now, of course, is that theyâ€™re working on the
+third (fourth?) release of WPF and have backward compat issues and so forth. So
+a fundamental change in how they treat IBindingList objects is probably not
+real likely.<o:p></o:p></p>
+
+</div>
+
+</blockquote>
+
+<p class=MsoNormal><br>
+<br>
+I'm confused; MS has released prior versions of the DataGrid for Wpf?&nbsp; I
+thought they were only now about to do so, and that it was in CTP.&nbsp; I
+think they've broken things between CTP versions previously?<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>TAC replied on Thursday, January 29, 2009</h2>Is this the same issue?<br>https://connect.microsoft.com/feedback/ViewFeedback.aspx?SiteID=212&amp;FeedbackID=344858&amp;wa=wsignin1.0<br>Because Microsoft says it's been Fixed, they don't say what version it was fixed in, but you'd think the VS2010 CTP would definitely have the fix.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, January 29, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Maybe it is fixed. I ran into it early on &#8211; before WPF was
+released &#8211; and never looked back.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>It would sure be nice if BLB can just implement
+INotifyCollectionChanged and magically get all the good stuff. But I very much
+doubt it is that easy. I suspect ObservableCollection&lt;T&gt; is just a much
+more robust collection type than BindingList&lt;T&gt; - at least in terms of
+sorting.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I shudder to think about manually implementing IBindingList
+again (so BLB could inherit from ObservableCollection). I had to implement IBindingList
+in CSLA 1.x, and it was a PITA &#8211; I threw myself a little party when .NET
+2.0 included BindingList&lt;T&gt;. But that might be the answer, and it would
+be worth it if there really is a solid answer.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Friday, January 30, 2009</h2><BLOCKQUOTE><div><img src="/Themes/basicblue/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div>It would sure be nice if BLB can just implement
+INotifyCollectionChanged and magically get all the good stuff. But I very much
+doubt it is that easy. I suspect ObservableCollection&lt;T&gt; is just a much
+more robust collection type than BindingList&lt;T&gt; - at least in terms of
+sorting.</div></BLOCKQUOTE><br><br>Hmm... maybe someone here that has run into the issue of sorting could implement INotifiyCollectionChanged in their custom BLB subclass, and let us know if it works correctly or not?&nbsp; Anyone?<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jgdove replied on Friday, February 06, 2009</h2>I've been having the sorting problem with the new DataGrid, and was able to get it working using the ExtendedCollectionViewSource posted here:<br><br><a href="http://www.wpfmentor.com/2008/12/how-to-sort-bindinglist-using.html">http://www.wpfmentor.com/2008/12/how-to-sort-bindinglist-using.html</a><br><br>There's a similar post that I haven't played around with, but seems more in depth (modifies the collection to raise the same notifications that ObservableCollection raises):<br><br><a href="http://www.wpfmentor.com/2008/12/observable-collections-independent-of.html">http://www.wpfmentor.com/2008/12/observable-collections-independent-of.html</a><br><br>Maybe they'll help.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>CrispinH replied on Thursday, March 26, 2009</h2><P>I've been using CSLA since the early days when it was written in classic VB and have always treated it as as ideas factory - a framework upon which I should build to suit my own purposes - rather that a commercial product which requires product support from the seller - or in this case Rocky.&nbsp; I therefore favour CSLA moving into WPF and leaving WinForms behind.</P>
+<P>Obviously I had a disruptive change moving from the Classic VB to VB.NET versions of CSLA and&nbsp; I expect that this won't be the last time a disruptive change will occur.&nbsp;&nbsp;To deal with this my strategy moved from having a single version of CSLA to a version&nbsp;of CSLA for each client based upon a master copy.&nbsp; If I make a change to one version of CSLA that I think might be beneficial to another, I then use a tool like <EM>Beyond Compare</EM> to show the differences between versions at source code level.&nbsp; However in practice, I find that once project is stable, there is little requirement to make changes (if it ain't broke, don't fix it) so only the master copy gets updated.</P>
+<P>So what to do with the legacy WinForms versions of CSLA?&nbsp; In the same way that the VB version of CLSA is now supported by the CSLA community work, the WinForms versions of CSLA could also be supported by 'the community'.</P>
+<P>Crispin</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Kevin Fairclough replied on Tuesday, April 28, 2009</h2>Hi,<br><br>What is the situation with this problem?&nbsp; Does CSLA (latest) fully support WPF data grids?<br>Looking @ Issue Tracking, what does red/green flag mean?<br><br>Regards<br>Kevin<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, April 28, 2009</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I don&#8217;t use the red/green flag column, and don&#8217;t
+really know its intent.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>CSLA collections are IBindingList at this point, and you will
+need to use one of the known techniques (from google) to wrap an IBindingList with
+an ObservableCollection at this time.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>The &#8220;fix&#8221; to make CSLA collections support WPF will
+be a breaking change, and I&#8217;ll probably do it in CSLA .NET 4.0. As you
+can tell, there&#8217;s a lot of concern about <i>any solution</i> I might use,
+so ultimately I&#8217;m going to break some/all users thanks to WPF being so
+incompatible with the rest of .NET.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I guess what I&#8217;m saying, is you will know when it &#8220;fully
+supports&#8221; WPF data grids, because there&#8217;ll be a lot of noise
+associated with this change, and it won&#8217;t sneak in through a point
+release :)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Kevin Fairclough
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Tuesday, April 28, 2009 10:55 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] Feature input request: WPF collections<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Hi,<br>
+<br>
+What is the situation with this problem?&nbsp; Does CSLA (latest) fully support
+WPF data grids?<br>
+Looking @ Issue Tracking, what does red/green flag mean?<br>
+<br>
+Regards<br>
+Kevin<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rfcdejong replied on Monday, July 20, 2009</h2><P>Crap.. we ran into this :)<BR><BR>I vote for dumping Windows in CSLA 4.0 (or add those directives)<BR><BR>If the business objects would had been of ObservableCollection then IsSyncronisedWithCurrentItem and stuff with ICollectionView.GetDefaultView() would just work&nbsp;nice&nbsp;i suppose. We have a problem because we databind the csla objects directly and not wrap them in a ViewModel.<BR><BR>I find this a high priority since alot of WPF databind power goes down the drain now.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, July 20, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>As I understand it, there are changes coming in WPF 4.0 data
+binding that make it more important to switch to ObservableCollection.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>So I do think what I&#8217;ll end up doing for CSLA .NET 4.0 is
+providing primary support for WPF, and secondary support for Windows Forms.
+Kind of the reverse of what I&#8217;m doing now, where I try to make sure
+things work ideally in Windows Forms and function in WPF.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>That&#8217;s not a final decision, and I&#8217;ll know more once
+I really dig deep into the issues later this year, but I anticipate this to be
+the case.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>The hard part is that it could make upgrading from 3.7 to 4.0
+challenging for Windows Forms users. But the good part is that it will keep
+CSLA .NET relevant as people move to WPF &#8211; which I suspect will happen faster
+once Visual Studio 2010 comes out with decent designer support.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky</span><b><span><o:p></o:p></span></b></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>MadGerbil replied on Tuesday, July 21, 2009</h2>I like the solution of primarily supporting WPF - right out of the box - with support for WinForms being secondary and requiring configuration.<br /><br />Although the move to WPF is painful the little bit of study I've done in it convinces me it is the right choice.  The technology brings way too much to the table to ignore.<br /><br />My next application will be WPF and I'd like to use CSLA 4.0.   When is that due out?  Early next week?</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rfcdejong replied on Tuesday, July 21, 2009</h2><P>Early next week... that would be great lol<BR><BR>I did read alot about differences between ObservableCollection and BindingList, people say that they like BindingList more since it has PropertyChanged etc. But for WPF the ObservableCollection is more powerfull as it supports functionality for ICollectionView and the collection notificates every change within it's collection unlike the bindinglist. The BindingList is a strange object containing so many differend operations in one.. having an generic List as well, the ObservableCollection doesn't. So i wonder how Rockford is going to impliment it. Also implimenting INotifyPropertyChanged etc.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>shawndewet replied on Tuesday, April 28, 2009</h2><P><FONT face=Arial>&nbsp;&nbsp;&nbsp;I fully agree with Crispin.&nbsp; Keep moving forward!</FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, January 21, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Yes, you can implement IBindingList and
+INotifyCollectionChanged. And Windows Forms will work fine, because it ignores
+INCC. But WPF will have no end of trouble because it honors both (more or
+less).<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I know this, because one alpha version of CSLA 3.5 did implement
+both, and it was bad.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Wednesday, January 21, 2009</h2><BLOCKQUOTE><div><img src="/Themes/basicblue/images/icon-quote.gif"> <strong>Jack:</strong></div><div>I would agree with your last statement - make BLB an ObservableCollection and leave the legacy with a wrapper.&nbsp; While it is painful for existing legacy apps to move forward, most legacy apps don't likely need to have the latest and greatest CSLA version in place.</div></BLOCKQUOTE><br><br>I really disagree with this statement.&nbsp; I have a WinForms app; only two years old, and I had started on 2.0 Csla and have been keeping up with it since.&nbsp; The reason is that each version of Csla has offered substantial improvements over previous version; per type rules saved memory and improved performance, the 3.5 changes are allowing me to reduce the amount of code I have to write (and decrease the bugs because I forgot or didn't implement the eliminated code corretly).&nbsp; My UI is WinForms, but the application on a whole is hardly legacy.&nbsp; It's still evolving.<br><br>While I can sneak in Csla updates (and thus simpify code) because I have unit tests, I can't as easily move to a new UI technology.&nbsp; Testing the UI is still largely a manual task.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jack replied on Wednesday, January 21, 2009</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I suppose it was quite broad based but everyone has a different
+opinion of what constitutes legacy :-) &#8211; but the more mature CSLA becomes the
+less revolutionary the changes to older technology becomes until they become
+evolutionary.&nbsp; Were not many of the improvements in 3.5 driven from the need to
+work in Silverlight?&nbsp; <o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Nonetheless each app speaks for itself so one cannot generalize
+perhaps as much as I did.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> ajj3085 [mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> January-21-09 10:58 AM<br>
+<b>To:</b> jaddington@alexandergracie.com<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: Feature input request: WPF collections<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<blockquote>
+
+<div>
+
+<p class=MsoNormal><img id="_x0000_i1025" src="/Themes/basicblue/images/icon-quote.gif"><strong>Jack:</strong><o:p></o:p></p>
+
+</div>
+
+<div>
+
+<p class=MsoNormal>I would agree with your last statement - make BLB an
+ObservableCollection and leave the legacy with a wrapper.&nbsp; While it is
+painful for existing legacy apps to move forward, most legacy apps don't likely
+need to have the latest and greatest CSLA version in place.<o:p></o:p></p>
+
+</div>
+
+</blockquote>
+
+<p class=MsoNormal><br>
+<br>
+I really disagree with this statement.&nbsp; I have a WinForms app; only two
+years old, and I had started on 2.0 Csla and have been keeping up with it
+since.&nbsp; The reason is that each version of Csla has offered substantial
+improvements over previous version; per type rules saved memory and improved
+performance, the 3.5 changes are allowing me to reduce the amount of code I
+have to write (and decrease the bugs because I forgot or didn't implement the
+eliminated code corretly).&nbsp; My UI is WinForms, but the application on a
+whole is hardly legacy.&nbsp; It's still evolving.<br>
+<br>
+While I can sneak in Csla updates (and thus simpify code) because I have unit
+tests, I can't as easily move to a new UI technology.&nbsp; Testing the UI is
+still largely a manual task.<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>HappyJack replied on Wednesday, January 21, 2009</h2><P>Rocky,</P>
+<P>If the problem is just with the datagrid in WPF, what about deriving a new&nbsp;datagrid and try to fix the grid problems with IBindingList.&nbsp; I have not looked at the WPF datagrid at all so I'm not sure if it is possible.&nbsp; Another&nbsp;idea would be to&nbsp;create a new helper collection that can wrap a CSLA bindingList collection and pass the updates back and forth, kind of like the filteredlist.&nbsp;&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tmg4340 replied on Wednesday, January 21, 2009</h2><P><FONT face=Tahoma size=2>I'll start by saying I have no experience with Silverlight, and thus have spent no time looking over the Silverlight support built into CSLA.&nbsp; However, I have read enough of what's going on that I feel qualified to step blindly into this discussion.&nbsp; <img src="/emoticons/emotion-1.gif" alt="Smile [:)]" /></FONT></P>
+<P><FONT face=Tahoma size=2>It seems to me that you've already gone down the path of both #1 and #2.&nbsp; Option #1 was covered when you added compiler directives in CSLA 3.0 to handle .NET 2.0 and .NET 3.0 support.&nbsp; Option #2 was covered (albeit in a slightly different way) when you added Silverlight support.&nbsp; I have never been a huge fan of compiler directives, though I readily admit they have some real use.&nbsp; And while adding Silverlight support didn't require a copy of existing objects, it did require a fair amount of adjunct objects be created.</FONT></P>
+<P><FONT face=Tahoma size=2>While I know what it does to you, I'm wondering if #2 isn't the best option.&nbsp; You could separate the WPF and WinForms support into separate assemblies, thus allowing developers to reference the piece they need.&nbsp; And, as you've noted, the sorting support may be just the first change to contend with.&nbsp; How much more complicated does your compiler-directive code get as WPF and WinForms diverge even more?&nbsp; Sure, 80-90% of the code will be the same -&nbsp;and to be blunt,&nbsp;it sucks to have to have it twice.&nbsp; But in the world of isolating the stuff that changes...</FONT></P>
+<P><FONT face=Tahoma size=2>Again, I know what that does to you - beyond the maintenance work you already alluded to - but it's "The Microsoft Way".&nbsp; Whether that's a good enough reason for you to make your life even harder... well, that I can't help you with.&nbsp; <img src="/emoticons/emotion-1.gif" alt="Smile [:)]" />&nbsp; And while I admit that the fact that I don't have to do the work is something of a contributing factor, I'd probably make this choice even if I were.</FONT></P>
+<P><FONT face=Tahoma size=2>HTH</FONT></P>
+<P><FONT face=Tahoma size=2>- Scott</FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>maxal replied on Sunday, January 25, 2009</h2>Rocky, <br><br>I understand you desire to make WPF support to be native for your objects and totally agree. And since I was one of the people struggling witn sorting in WPF DataGrid, I would like to thank you for giving this problem such high priority and discussing it.<br><br>However, here is the scenario I can easily imagine in our company. In fact, I see it coming. We have WinForms application, that nobody wants to rewrite at the moment, but we want to develop some new tools with WPF. We would want them to be installed together, and use same CSLA objects codebase. Neither of suggested approaches handles this problem, as I can see.<br><br>People were talking about wrappers, and that's may be really the solution. Wherever we use lists in WinForms applications, we use BindingSource component. Will it be possible to just create something like CslaBindingSource that would link to these new WPF friendly lists, and take over all&nbsp; troubles? It may not help us at the moment, but for others, who would start with WinForms application and put CslaBindingSource from the beginning (and the would have to do it), later they could transition to WPF smoothly.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RedShiftZ replied on Monday, July 20, 2009</h2>Leaving Winforms is not really an option for us. We just started developing a new suite of winforms applications using CSLA. We choose CSLA 3.5 for its winforms support and its portable objects.<br><br>If CSLA were to leave winforms behind, you would be leaving us behind. We are just not interested in WPF right now or for the foreseeable future.<br><br>&nbsp;I would vote for the separate assemblies idea as I prefer to just compile and use only what I need.<br><br>That is my view on the matter. <br><br>Thanks,<br><br>Jeff<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

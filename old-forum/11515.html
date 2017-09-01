@@ -1,0 +1,24 @@
+<html><header><title>CSLA 4.5 for .NET 4? </title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA 4.5 for .NET 4? </h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11515.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee posted on Sunday, August 05, 2012</h2><p>Hi all, </p>
+<p>We have discussed the possibility of making CSLA 4.5 run in .NET 4 using the <b>Async Targeting Pack</b> for VS2012 to allow us (and you) to use async/await in VS2012 for applications that target ..NET 4 and SL 5. </p>
+<p>I have just finished the work and checked this into the CSLA repository. Meaning that we can now have</p>
+<p><b>CSLA 4.5 for NET 4 Client Profile </b></p>
+<ul>
+<li>Csla.dll</li>
+<li>Csla.Windows.dll</li>
+<li>Csla.Xaml.dll</li>
+</ul>
+<p><b>CSLA 4.5 for NET 4 Full Profile</b></p>
+<ul>
+<li>Csla.Web.dll</li>
+<li>Csla.Web.Mvc.dll </li>
+</ul>
+<p>If you want to try this - go download the latest source code and build.</p>
+<p>The .Net 4 assemblies is placed into their own folder at <i><b>Csla\Bin\Debug\NET4</b></i> or <i><b>Csla\Bin\Release\NET4</b></i></p>
+<p>I think it will be nice to use the enhanced DataPortal (Task&lt;T&gt;) and other improvements in CSLA 4.5 also for .NET 4.0 (and SL5) projects. </p>
+<p>What do you think?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>pcanada replied on Monday, August 06, 2012</h2><p>Although I intend to use CSLA 4.5 on .NET 4.5, I think this is great news for those targetting .NET 4.</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>g.beraudo@castsoftware.com replied on Tuesday, August 14, 2012</h2><p>Same for me. We will push our customer to upgrade to 4.5. Only if this attempt fail, will we consider &quot;<strong>Async Targeting Pack</strong>&quot; (as a workaround).</p>
+<p>Gilles</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonM replied on Friday, August 17, 2012</h2><p>I agree this is great.&nbsp; This way we can use async on XP machines.&nbsp; Remember .NET 4.5 does not run on Windows XP! Only Windows 7 and up!</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Saturday, August 18, 2012</h2><p>This is also valid for anyone using Windows Server 2003. </p>
+<p>.NET 4.5 minimum requirements is Vista SP2 or Windows Server 2008 R2 SP1 (x64) of Windows Server 2008 SP2.</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Sunday, August 19, 2012</h2><p>Yes, I think this is the important thing.</p>
+<p>People may update their clients to 4.5 faster than their servers, and yet want to run CSLA apps across the data portal between .NET 4.5 clients and .NET 4.0 servers. This way CSLA 4.5 enables that scenario.</p>
+<p>It also enables the scenario where organizations don&#39;t update to .NET 4.5 in the near future, but where the dev teams still want at least some access to the new async/await features in CSLA 4.5, and this scenario is also enabled.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

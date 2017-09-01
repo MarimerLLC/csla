@@ -1,0 +1,51 @@
+<html><header><title>SL App works in XP and W7 machine where built - but NOT when installed on any other W7 machine</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>SL App works in XP and W7 machine where built - but NOT when installed on any other W7 machine</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10481.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>ninoarena posted on Wednesday, June 29, 2011</h2><p><span>Hi,&nbsp;</span></p>
+<p><span>I have a small&nbsp;SL 4 - CSLA 4.0 application deployed and working on XP machine but when we move to W7,&nbsp;the application works on the W7 that the application was built but wouldn&#39;t work on any other W7 machine we tried to deploy it to.&nbsp;&nbsp; I keep&nbsp;getting this message when I try to access the svc -</span></p>
+<p><span>&nbsp;<a href="http://localhost/exchangerate/wcfportal.svc">http://localhost/exchangerate/wcfportal.svc</a></span></p>
+<p><span>We are trying to deploy on localhost.</span></p>
+<p><span></span><span style="font-family:Arial, Helvetica, Geneva, SunSans-Regular, sans-serif;"><b>Description: </b>An unhandled exception occurred during the execution of the current web request. Please review the stack trace for more information about the error and where it originated in the code. <br /><br /><b>Exception Details: </b>System.InvalidOperationException: The type &#39;Csla.Server.Hosts.Silverlight.WcfPortal&#39;, provided as the Service attribute value in the ServiceHost directive, or provided in the configuration element system.serviceModel/serviceHostingEnvironment/serviceActivations could not be found.<br /><br /><b>Source Error:</b> <br /><br />
+<p>
+<table bgcolor="#ffffcc" width="100%">
+<tbody>
+<tr>
+<td><code>An unhandled exception was generated during the execution of the current web request. Information regarding the origin and location of the exception can be identified using the exception stack trace below.</code> </td>
+</tr>
+</tbody>
+</table>
+</p>
+<p><br /><b><span style="font-family:Verdana;">Stack Trace:</span></b> <br /></p>
+<p>
+<table bgcolor="#ffffcc" width="100%">
+<tbody>
+<tr>
+<td><code>
+<pre>[InvalidOperationException: The type &#39;Csla.Server.Hosts.Silverlight.WcfPortal&#39;, provided as the Service attribute value in the ServiceHost directive, or provided in the configuration element system.serviceModel/serviceHostingEnvironment/serviceActivations could not be found.]
+   System.ServiceModel.Activation.ServiceHostFactory.CreateServiceHost(String constructorString, Uri[] baseAddresses) +108258
+   System.ServiceModel.HostingManager.CreateService(String normalizedVirtualPath) +1423
+   System.ServiceModel.HostingManager.ActivateService(String normalizedVirtualPath) +50
+   System.ServiceModel.HostingManager.EnsureServiceAvailable(String normalizedVirtualPath) +1132
+
+[ServiceActivationException: The service &#39;/exchangerate/wcfportal.svc&#39; cannot be activated due to an exception during compilation.  The exception message is: The type &#39;Csla.Server.Hosts.Silverlight.WcfPortal&#39;, provided as the Service attribute value in the ServiceHost directive, or provided in the configuration element system.serviceModel/serviceHostingEnvironment/serviceActivations could not be found..]
+   System.Runtime.AsyncResult.End(IAsyncResult result) +890624
+   System.ServiceModel.Activation.HostedHttpRequestAsyncResult.End(IAsyncResult result) +180062
+   System.Web.AsyncEventExecutionStep.OnAsyncEventCompletion(IAsyncResult ar) +107
+</pre>
+</code></td>
+</tr>
+</tbody>
+</table>
+</p>
+<p>&nbsp;</p>
+<p>
+<hr />
+</p>
+<font face="Arial, Helvetica, Geneva, SunSans-Regular, sans-serif ">
+<p><b><span style="font-family:Verdana;">Version Information:</span></b>&nbsp;Microsoft .NET Framework Version:4.0.30319; ASP.NET Version:4.0.30319.1 </p>
+</font></span></p>
+<h1>Server Error in &#39;/&#39; Application. 
+<hr />
+</h1>
+<h2><i>The type &#39;Csla.Server.Hosts.Silverlight.WcfPortal&#39;, provided as the Service attribute value in the ServiceHost directive, or provided in the configuration element system.serviceModel/serviceHostingEnvironment/serviceActivations could not be found.</i> </h2>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+</div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>ninoarena replied on Wednesday, June 29, 2011</h2><p>After so many hours comparing what I have in the working app and the non-working version.&nbsp; I found that my site does not have an assigned application pool.&nbsp; After I added that, then it started working.&nbsp; So, no help needed on this one.</p>
+<p>Thanks.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

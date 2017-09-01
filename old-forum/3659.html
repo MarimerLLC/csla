@@ -1,0 +1,81 @@
+<html><header><title>a localization problem !</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>a localization problem !</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3659.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>rexhxiao posted on Sunday, October 07, 2007</h2><P>i come from taiwan</P>
+<P>use csla.net 3.0.2.0</P>
+<P>i have code like this:</P>
+<P>&nbsp;&nbsp;&nbsp; ValidationRules.AddRule(<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Csla.Validation.CommonRules.StringRequired,<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; new Csla.Validation.RuleArgs("CaseType", "案件類別"));</P>
+<P>it is work show message =&gt; "案件類別 required"</P>
+<P>follow Resources.zh-TW.resx</P>
+<P>i hope it is show =&gt; "案件類別 不可空白"</P>
+<P>my OS is chinese trandtional version</P>
+<P>so..how to do it?</P>
+<P>i trace csla source code find it</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; internal static string StringRequiredRule<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; get<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return ResourceManager.GetString("StringRequiredRule", resourceCulture);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</P>
+<P>try replace </P>
+<P>&nbsp;&nbsp;&nbsp; return ResourceManager.GetString("StringRequiredRule", resourceCulture);<BR>to</P>
+<P>&nbsp;&nbsp;&nbsp; return ResourceManager.GetString("StringRequiredRule" + resourceCulture.DisplayName, resourceCulture);</P>
+<P>the<BR>&nbsp;private static global::System.Globalization.CultureInfo resourceCulture;</P>
+<P>got a null exception..</P>
+<P>why?,i don't know ?</P>
+<P>My poor English, hoping that someone will see to understand, about my question</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Sunday, October 07, 2007</h2><P>My guess is that you need to have a resource.zh.resx file.</P>
+<P>In other words, your OS is not set to use Tiawanese, but to use Traditional Chinese. So .NET looks for the traditional Chinese resource file, and perhaps there isn't one?</P>
+<P>I don't know what the code is for traditional Chinese. Is it zh or zh-CHS?</P>
+<P>You need to have a resource file with an exact match on the culture code OR a resource file that is more general (like resource.zh.resx).</P>
+<P>So maybe you can try renaming .zh-TW to just .zh and see if that helps.</P>
+<P>The final default is English, because that is what is in resource.resx.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rexhxiao replied on Sunday, October 07, 2007</h2><DIV id=result_box>
+<DIV id=result_box><FONT color=#008000>Really thank you to respond to my questions</FONT></DIV>
+<DIV>&nbsp;</DIV></DIV>
+<DIV>First, resource.zh - TW.resx is from 「cslacs - 3.0.2 - 070928 」<BR>I think this is not a problem <BR>Because if I replace <BR>---------------------------------------------- <BR>&nbsp;&nbsp;&nbsp;<STRONG> Return ResourceManager.GetString ( "StringRequiredRule" resourceCulture); <BR></STRONG>---------------------------------------------- <BR>Changed <BR>---------------------------------------------- <BR>&nbsp;&nbsp;&nbsp; <FONT color=#000000><STRONG>Return ResourceManager.GetString ( "StringRequiredRule" System.Globalization.CultureInfo.CurrentCulture); <BR></STRONG></FONT>---------------------------------------------- <BR>That is right, that is, I want <BR>==&gt; "案件類別 不可空白"&nbsp; (in english,mean is&nbsp;「CaseType required」)<BR>Therefore, resource.zh - TW.resx is no problem </DIV>
+<DIV><BR><FONT color=#ff0000>My question is, why is null resourceCulture</FONT></DIV>
+<DIV>&nbsp;</DIV>
+<DIV>ps.In Taiwan,xp OS version is Traditional Chinese,the CultureInfo name is 「zh-TW」.</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>
+<DIV id=result_box><FONT color=#008000>Once again thanks</FONT></DIV></DIV></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>foxhard replied on Tuesday, November 30, 2010</h2><p>Hi,</p>
+<p>I have the same problem...</p>
+<p>But ,&nbsp;is changing the CSLA source code the&nbsp;unique way to apply localization in the validation rule messages?</p>
+<p>I guess must there be another solution...</p>
+<p>I have added csla.dll (Not the source code of CSLA only the assembly) as reference in my project. And I have in my project WinApp &nbsp;\Properties\Resources.no.resx. And inside this file I have&nbsp;</p>
+<p><b>Name &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Value</b></p>
+<p><strong>StringRequiredRule &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;</strong>er p&aring;krevd</p>
+<p>&nbsp;</p>
+<p>But when I ran my application the text continue in english: <b>&quot;Fieldxxx required.</b></p>
+<p>What happens? the text &quot;requires&quot; should be &quot;er p&aring;krevd&quot;</p>
+<p>&nbsp;</p>
+<p>I hope you can help me.</p>
+<p>Cristhiam</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, November 30, 2010</h2><p>The rules implemented in CommonRules rely on resource files for localization. If you don&#39;t like the text you get as a result there are two options.</p>
+<p>First, if the localization for your language is wrong, or doesn&#39;t exist, please email me an updated resx file for your language. Obviously &quot;wrong&quot; can&#39;t be specific to your application, but must be &quot;wrong for your entire language&quot;.</p>
+<p>Second, if your application requires some specific text other than what&#39;s in the CommonRules implementation (in other words, the CommonRules language is &quot;correct&quot; but just doesn&#39;t work for you), then you should create your own rule implementation.</p>
+<p>At no point should you feel the need to change the CommonRules implementation itself. The whole idea behind the CSLA rules subsystem is that you can create your own rules if you need them.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Wednesday, December 01, 2010</h2><p>First , please check that the resource file is complete with all keys translated from the main resource file. </p>
+<p>ResEx is an excellent tool for this: <a href="http://resex.codeplex.com/%20">http://resex.codeplex.com/ </a></p>
+<p>If the resource file is wrong or needs updating please submit to Rocky as described above. &nbsp;</p>
+<p>Which resource file is used when retrieving text is depending on the CultureInfo on current thread. For a Windows forms application you could force en-US culture using these lines in startup:</p>
+<p>
+
+
+</p>
+<div class="O">
+<div><span style="font-family:Consolas;font-size:58%;">using System.Globalization;
+</span></div>
+<div><span style="font-family:Consolas;font-size:58%;">using System.Threading;</span><span style="font-family:Consolas;font-size:58%;">
+</span></div>
+<div><span style="font-family:Consolas;font-size:58%;">...
+</span></div>
+<div><span style="font-family:Consolas;font-size:58%;">Thread.CurrentThread.CurrentCulture = new CultureInfo(&quot;en-US&quot;);
+</span></div>
+<div><span style="font-family:Consolas;font-size:58%;">Thread.CurrentThread.CurrentUICulture = new CultureInfo(&quot;en-US&quot;);</span></div>
+<div></div>
+</div></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ksavoie replied on Friday, April 08, 2011</h2><p>Hi</p>
+<p>I&#39;m looking into using the Localization in my custom Validation rules.&nbsp; I left the following question under a different discusion without any answer, I&#39;m hoping you can help me.</p>
+<p><span style="font-family:&#39;Arial&#39;,&#39;sans-serif&#39;;color:black;font-size:9pt;">I&#39;ve created my custom Validation rules ok and they work fine.&nbsp; I using windows form (vb.net 2005 with CSLA 2.0), and my users have the option to change the language of the application.&nbsp; With this I need to be able to show the error message in the different language.&nbsp; I can change my CultureInfo no problem, my problem is...</span></p>
+<p><span style="font-family:&#39;Arial&#39;,&#39;sans-serif&#39;;color:black;font-size:9pt;">I&#39;ve used the following code to access the resources files:</span></p>
+<p><span style="font-family:&#39;Arial&#39;,&#39;sans-serif&#39;;color:black;font-size:9pt;">&nbsp;</span><span style="font-family:&#39;Arial&#39;,&#39;sans-serif&#39;;color:blue;font-size:10pt;">Dim</span><span style="font-family:&#39;Arial&#39;,&#39;sans-serif&#39;;color:black;font-size:10pt;"> mRS </span><span style="font-family:&#39;Arial&#39;,&#39;sans-serif&#39;;color:blue;font-size:10pt;">As</span><span style="font-family:&#39;Arial&#39;,&#39;sans-serif&#39;;color:black;font-size:10pt;"> </span><span style="font-family:&#39;Arial&#39;,&#39;sans-serif&#39;;color:blue;font-size:10pt;">New</span><span style="font-family:&#39;Arial&#39;,&#39;sans-serif&#39;;color:black;font-size:10pt;"> ResourceManager(</span><span style="font-family:&#39;Arial&#39;,&#39;sans-serif&#39;;color:maroon;font-size:10pt;">&quot;frmMain&quot;</span><span style="font-family:&#39;Arial&#39;,&#39;sans-serif&#39;;color:black;font-size:10pt;">, System.Reflection.Assembly.Load(</span><span style="font-family:&#39;Arial&#39;,&#39;sans-serif&#39;;color:maroon;font-size:10pt;">&quot;frmMain&quot;</span><span style="font-family:&#39;Arial&#39;,&#39;sans-serif&#39;;color:black;font-size:10pt;">))</span><span style="font-family:&#39;Arial&#39;,&#39;sans-serif&#39;;color:black;font-size:9pt;"></span></p>
+<p><span style="font-family:&#39;Arial&#39;,&#39;sans-serif&#39;;color:black;font-size:10pt;">And in my custom rule this is the code I&#39;m using:</span><span style="font-family:&#39;Arial&#39;,&#39;sans-serif&#39;;color:black;font-size:9pt;"></span></p>
+<p><span style="font-family:&#39;Arial&#39;,&#39;sans-serif&#39;;color:black;font-size:10pt;">e.Description = mRS.GetString(</span><span style="font-family:&#39;Arial&#39;,&#39;sans-serif&#39;;color:maroon;font-size:10pt;">&quot;Invoice_Name&quot;</span><span style="font-family:&#39;Arial&#39;,&#39;sans-serif&#39;;color:black;font-size:10pt;">)</span></p>
+<p><span style="font-family:&#39;Arial&#39;,&#39;sans-serif&#39;;color:black;font-size:10pt;">When I do this, I get a Fetch failed (DataPortal.Fetch failed, Message: &quot;Exception has been thrown by the target of an invocation.&quot;).&nbsp; I&#39;ve tried a few things, and when I thought I had the right code, I was getting a Serialization exception on the save.</span></p>
+<p><span style="font-family:&#39;Arial&#39;,&#39;sans-serif&#39;;color:black;font-size:10pt;">So do you think it would be possible to get an example on localization inside the object itself&nbsp;to help&nbsp;me out?</span></p>
+<p><span style="font-family:&#39;Arial&#39;,&#39;sans-serif&#39;;color:black;font-size:10pt;">Thanks</span></p>
+<p><span style="font-family:&#39;Arial&#39;,&#39;sans-serif&#39;;color:black;font-size:10pt;">K</span></p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

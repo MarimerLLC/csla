@@ -1,0 +1,87 @@
+<html><header><title>Super early CSLA .NET 4.0 preview</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Super early CSLA .NET 4.0 preview</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/8319.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka posted on Friday, January 08, 2010</h2><P>I put a super-early preview of CSLA .NET 4.0 online at <A href="http://www.lhotka.net/cslanet/download.aspx">www.lhotka.net/cslanet/download.aspx</A></P>
+<P>Some key things to look at:</P>
+<UL>
+<LI>Bin, source and sample downloads 
+<LI>Windows (server and client) and Silverlight in one set of downloads 
+<LI>Radical rework of the solution project and folder structure 
+<LI>Separate projects for Csla.Windows, Csla.Web, Csla.Web.Mvc, Csla.Xaml (WPF) 
+<LI>BusinessListBase is now an ObservableCollection&lt;T&gt;, and BusinessBindingListBase is for Windows Forms (it is the old BLB just renamed) 
+<LI>Default AddNewCore() in BLB 
+<LI>Parent properties are now public</LI></UL>
+<P>Most of my focus has been on the sweeping folder/project structure changes, and this is now pretty stable (I think) and so I want to put this preview out to solicit feedback.</P>
+<P>I think the new folder structure is a lot easier to understand. There are a set of clearly defined sln files at the top level, and the layout of the various source folders is now consistent.</P>
+<P>You can't currently build Csla.Core in Release mode due to some issue with System.Transactions - I'm trying to track that down, and any help is appreciated! This means the Binary download is debug-only right now.</P>
+<P>Now that the messy stuff is pretty much done, we can move on to working on feature changes/enhancements.</P>
+<P>Let me know what you think of the changes.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Sunday, January 10, 2010</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div>
+<P>You can't currently build Csla.Core in Release mode due to some issue with System.Transactions - I'm trying to track that down, and any help is appreciated! This means the Binary download is debug-only right now.</P>
+<P></div></BLOCKQUOTE></P>
+<P>It turns out that this issue may have been limited to my particular machine. I completely uninstalled and reinstalled VS10 and the issue appears to be resolved.</P>
+<P>I think my mistake was in not doing a full install of VS to start with. I told it not to install C++, and I think that may have confused the installer, because there were a handful of other quirks as well. Beta software...</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Sunday, January 10, 2010</h2>Hi Rocky, <br><br>I like the project structure and and the fact that we can include the UI parts as needed. And removing the Indexing parts (and C5 classes) is also good. <br><br>I have a couple of questions after reviewing the code tonight. <br><br>1. Csla.ReadOnlyList and Csla.EditableRootListBaase still inherits from MobileBindingList&nbsp; - BindingList. Shouldn't this class inherit from MobileObservableBindingList to support databinding/sorting in WPF and the "old" classes be renamed to ReadOnlyBindingListBase and EditableBindingListBase?<br><br>2. AddNewCore is only added to BLB and I would propose to also add it to BBLB. And if using ObjectFactory will fail (unless overriden BLB) on this line in Server.ChildDataPortal.Create:<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // tell the business object to fetch its data<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; obj.CallMethod("Child_Create", parameters);<br>(IMO: When using ObejctFactory the BO should not need to have Child_XYZ methods). <br><br>Definetily looking good and looking forward to start using Csla 4. <br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Sunday, January 10, 2010</h2><P>Thanks for the feedback Jonny, I appreciate it.</P>
+<P>1) I just haven't gotten to them yet.</P>
+<P>As far as ROLB and NVLB probably without the Windows Forms duplicates. Generally speaking, an ObservableCollection works as well as anything as a read-only collection.</P>
+<P>Sadly ERLB will require the same kind of duplication as BLB.</P>
+<P>2) I agree about BBLB, just haven't gotten to it yet.</P>
+<P>Why do you think it will fail with ObjectFactory? The child data portal doesn't invoke any object factory stuff, so it should just work. The only trick is that it will always invoke Child_Create(), which has a default implementation in BusinessBase.</P>
+<P>If you don't want that behavior then yes, you'll need to override AddNewCore(), and I'm OK with that.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Sunday, January 10, 2010</h2>Hi,<br><br>2) Yes, it will not fail (my mistake) -&nbsp; I hadn't spottet the default implementation of Child_Create in BusinessBase. <br><br>I recall that there were issues with automatic sorting on columns in WPF DataGrid when using BindingList. Wouldn't this also imply that we need separate list classes for ReadOnly lists or does ObservableColletion work with WinForms databinding? ? <br><br>&nbsp;I agree that NVLB only needs to have one baseclass provided that class works with databinding in WinForms. <br><br><br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Sunday, January 10, 2010</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>&gt;</span> I agree that NVLB only needs to have one baseclass
+provided that class works with databinding in WinForms.<span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Yes, it all depends on what Windows Forms can tolerate. Worst
+case is that the existing implementations of all the collection types remain in
+the framework under new names. That&#8217;d be unfortunate, but it seems unavoidable.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>The thing is, in my mind Windows Forms support in CSLA is now
+the same as it is in .NET &#8211; keep it limping along for a few more years while
+people move off, then kill it.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>So things like the AddNewCore() in BLB &#8211; if they are easy I&#8217;ll
+put them in BBLB too &#8211; but I have no real intent around maintaining parity
+between the types. Over time there will be things added to BLB that aren&#8217;t in
+BBLB &#8211; I&#8217;m not signing up for yet another form of double-work on every feature
+like I did for all those years with VB and C#.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<span><br>
+</span>
+
+<p class=MsoNormal><o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rfcdejong replied on Monday, January 11, 2010</h2>Since this require Visual Studio 2010 with .NET 4.0 i won't be able to download and test this, but i'm happy to see that it's done so quickly, nice job!<br /><br />Or maybe i find some time to install VS 2010 :)</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, January 11, 2010</h2><P>Virtual machines are your friend - keep your beta experiments away from your production environment.</P>
+<P>Anyone with a decent computer should be able to use a virtual machine, so the barrier to playing with beta software is extremely low these days.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rxelizondo replied on Tuesday, January 12, 2010</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div><P>Virtual machines are your friend - keep your beta experiments away from your production environment.</P><br /><P>Anyone with a decent computer should be able to use a virtual machine, so the barrier to playing with beta software is extremely low these days.</P></div></BLOCKQUOTE><br /><br />The problem is that each virtual machine requires an OS and as far as I can see, you are required by Microsoft to purchase an OS licence $$$$ per each virtual machines. You can't have the same OS installed in the same machine multiple times period.<br /><br />I supposed that if you have an MSDN subscription you could install the same OS multiple time as long as its used for development but not everyone can afford $2500 bucks!!<br /><br />I supposed also that if you have Windows 7 you could used its built in XP virtual machine and install the beta software there but this will dirty your XP virtual machine and I am not sure that I like that.... mmmm.... maybe there is a way to make a copy of the XP virtual machine that comes licence in Windows 7, I really don't know since I really have not played around with the Virtual PC feature.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, January 12, 2010</h2>For the purpose of testing beta software many people use a trial version of the OS. The beta VS10 won't last long anyway, so you only need a few weeks of the OS too :)</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>TSF replied on Thursday, January 21, 2010</h2>Rocky - can you tell me what virtual software you use to develop/test with?  I'm on Windows 7 Prof 64-bit and I'm trying to decide whether the new Windows Virtual PC will cut it or if I need to use something like VirtualBox.  Thoughts?</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rxelizondo replied on Thursday, January 21, 2010</h2>I downloaded/installed Microsoft Virtual PC SP1 on my Windows 7 Ultimate 64bit PC.<br /><br />I also downloaded the Visual Studio 2010 virtual PC image; I think I downloaded it from here:<br />http://www.microsoft.com/downloads/details.aspx?displaylang=en&amp;FamilyID=540777b0-cbd7-485e-bde5-23a1d4f442e0<br /><br />Once Virtual PC SP1 was installed and I had my VS 2010 image ready to go, it was easy to get things to work. The only thing I noticed is that the Virtual Machine suggests allocating 2 gigs of memory to it. My PC has 4 gigs of memory so sharing half the memory didn’t seem to be an issue for me.<br /><br />One thing I must say is that I just installed this the day before yesterday and played around with the environment for about one hour or so, perhaps I will have issues later but for the one hour I used it, I had no issues.<br /><br />Also note that Microsoft Virtual PC SP1 does not support 64 bit OS but for testing purposes this should not really matter.<br /></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>TSF replied on Thursday, January 21, 2010</h2>Thanks for the info.  When you say you installed Virtual PC SP1...is that the "older" Virtual PC 2007 version, or the new "Windows Virtual PC" version?</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rxelizondo replied on Thursday, January 21, 2010</h2>I installed the newest version (Windows Virtual PC). If I recall correcctly I got it form here:<br /><br />http://www.microsoft.com/windows/virtual-pc/download.aspx<br /><br />The first image that I installed by the way was the XP Mode image, I did that just to make sure that all went well with my Virtual PC installation since the XP mode image is supposed to be fully supported by Microsoft so if that one worked fine then I figured I would be ok with other images.<br /><br />Also, if you install your own OS, I recommend you install something called "Virtual Machine Addition" or something like that, I don't remember exactly what the name of the option is but if you install that thing then among other features, you can go in and out the virtual pc without the virtual pc capturing your mouse. I also noticed that installing those options fixed some issue that I had with my sound and mouse choppiness. This link may help: http://technet.microsoft.com/en-us/library/cc720327(WS.10).aspx</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, January 21, 2010</h2><P>I use a mix.</P>
+<P>I used Virtual PC (pre-7) very happily for a long time. I'm using the Win7 VPC now, and while it is different in some quirky UI ways, it performs better and so I'm generally happy.</P>
+<P>I also have a quad core machine running Win2k8 with HyperV, specifically so I can run virtual machines for beta stuff. But that's a luxury, and isn't strictly necessary :)</P>
+<P>The most important thing is memory. My laptop has 4 gig, which is barely sufficient. My desktop and server have 8 gig. That's fine on the desktop - the server could use more sometimes (it can only run 3-4 vitual machines with 8 gig).</P>
+<P>You really want to allocate 2-3 gig of RAM to the virtual machine, which means your host needs at least 4, or&nbsp;6 if you want to use the host for anything real while running the VM.</P>
+<P>The thing is, most machines have 3-4 gigs, which means you can close everything on the host and allocate 2-3 gigs to your VM and be pretty darned happy.</P>
+<P>This is true with Virtual PC, VirtualBox or any virtualization solution - you need enough memory so you can allocate a decent amount to the VM or you won't be happy.</P>
+<P>It is also beneficial to have the virtual hard drive on a physical hard drive different from the one containing the host OS's page file. To the point that a 7200 rpm USB 2 external drive is typically better for the vhd than an internal C drive. And if your C drive is a 5400 rpm laptop drive then it is <EM>really beneficial</EM> to get the vhd onto a faster external drive.</P>
+<P>And, as noted earlier, when using VPC or HyperV you really do need to install the Virtual Machine Additions - which is easily done, but improves performance and integration with the host OS. Absolutely critical!</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>TSF replied on Thursday, January 21, 2010</h2>Thanks Rocky &amp; rxelizondo.  I just got a new Dell Vostro 1520 and put in 8 gb of ram, so I should be good with memory for at least two VMs.<br /><br />Question - do you use the virtual machines simply for testing what you've already written on another machine (for instance, to simulate an n-tier deployment with your application server on one, your DB on another, etc) or do you actually write your code inside one of the virtual machines?  In other words, is your primary Visual Studio install on the physical host OS or a virtual guest OS?  Thanks, again.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, January 21, 2010</h2><P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>TSF:</strong></div><div>In other words, is your primary Visual Studio install on the physical host OS or a virtual guest OS?</div></BLOCKQUOTE></P>
+<P>That depends. I try to not run beta stuff on a host OS - you never know if you can uninstall it successfully, and I hate to reimage the host.</P>
+<P>So my host runs VS08, .NET 3.5 SP1, SL 3, etc. And my primary dev work for that environment is done on my host.</P>
+<P>I personally have many VMs for different beta sofware and configurations. When I get a new pre-release of a product I spin up a new VM for it. When I'm done with a pre-release I delete the vhd and that's that.</P>
+<P>At the moment I'm working on CSLA .NET 4, and so am doing a fair amount of dev work in the VM. That's why, for me, it is worth having a HyperV server to run that (and other) VMs such that I can run as much stuff as I want/need on my desktop/laptop without competing for resources. I've allocated 3 cores to my primary dev VM, and 3 gigs of RAM, so it is very fast and pleasant to use.</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

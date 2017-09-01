@@ -1,0 +1,42 @@
+<html><header><title>CSLA 4.1 BusinessRule - AffectedProperty not Dirty according to FieldManager</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA 4.1 BusinessRule - AffectedProperty not Dirty according to FieldManager</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10498.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jaans posted on Thursday, July 07, 2011</h2><p>Hi all</p>
+<p>Unless my expectation of what should happen is wrong, I have a potential bug.</p>
+<p>I have a business rule that is a mutator (i.e. changes the value of properties), specifically I have the rule trigger on the primary property called PropertyA. In the rule I let CSLA know that there will be an affected property (called PropertyB), and then in the rule execution I set the value of the property using context.AddOutValue(...).</p>
+<p>The problem is that after the rule is triggered and therefore executes, that the FieldManager.IsFieldDirty( PropertyB ) remains&nbsp;false,&nbsp;despite the property change that came from the rule&#39;s context.AddOutValue( ... ), </p>
+<p>Below is an example of the rule (sorry if it seems contrived, but only because I&#39;m taking out unrelated &quot;fluff&quot;):</p>
+<pre style="font-family:Envy Code R;background:black;color:white;font-size:13px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#cc7832;">private</span>&nbsp;<span style="color:#cc7832;">class</span>&nbsp;<span style="color:#ffc66d;">PropertyAChangeMutatesPropertyB</span>&nbsp;:&nbsp;BusinessRule
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#cc7832;">public</span>&nbsp;PropertyAChangeMutatesPropertyB()&nbsp;:&nbsp;<span style="color:#cc7832;">base</span>(&nbsp;PropertyAProperty&nbsp;)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;AffectedProperties.Add(&nbsp;PropertyBProperty&nbsp;);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#cc7832;">protected</span>&nbsp;<span style="color:#cc7832;">override</span>&nbsp;<span style="color:#cc7832;">void</span>&nbsp;Execute(&nbsp;RuleContext&nbsp;context&nbsp;)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#cc7832;">var</span>&nbsp;target&nbsp;=&nbsp;(MyBusinessObject)context.Target;
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">//&nbsp;If&nbsp;PropertyA&nbsp;is&nbsp;dirty,&nbsp;then&nbsp;we&nbsp;need&nbsp;to&nbsp;set&nbsp;a&nbsp;default&nbsp;for&nbsp;PropertyB</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#cc7832;">if</span>&nbsp;(&nbsp;target.FieldManager.IsFieldDirty(&nbsp;PropertyAProperty&nbsp;)&nbsp;)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">//&nbsp;Default&nbsp;value&nbsp;for&nbsp;property</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;context.AddOutValue(&nbsp;PropertyBProperty,&nbsp;DateTime.Now&nbsp;);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</pre>
+<p>And here&#39;s the code that doesn&#39;t behave as expected:</p>
+<pre style="font-family:Envy Code R;background:black;color:white;font-size:13px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#cc7832;">var</span>&nbsp;myBusinessObject&nbsp;=&nbsp;MyBusinessObject.Get();
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;myBusinessObject.PropertyA&nbsp;=&nbsp;<span style="color:#cc7832;">new</span>&nbsp;DateTime(&nbsp;2000,&nbsp;12,&nbsp;31&nbsp;);&nbsp;<span style="color:gray;">//&nbsp;Trigger&nbsp;the&nbsp;Rule</span>
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">//&nbsp;The&nbsp;Rule&nbsp;does&nbsp;execute</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">//&nbsp;...</span>
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">//&nbsp;Wrong&nbsp;result</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#cc7832;">var</span>&nbsp;shouldBeDirtyButIsNot&nbsp;=&nbsp;myBusinessObject.FieldManager.IsFieldDirty(&nbsp;PropertyBProperty&nbsp;);</pre>
+<p>Am I wrong to expect that the &quot;AffectedProperty&quot; that is changed by context.AddOutValue( PropertyB, ... ) should be setting the IsDirty state for the field?</p>
+<p>Thanks and happy CSLA coding!</p>
+<p>Jaans</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>mesh replied on Friday, July 08, 2011</h2><p>I think that AddOutValue in background calls LoadProperty. There is no SetProperty in BusinessRule. Only thing that you can do is casting context.Target to your BO and than directly&nbsp;set its properties. Unfortunately, if you have some read only properties, or your rule is async than&nbsp;you are stuck. So I gave up using rules for anything more complex.</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Saturday, July 09, 2011</h2><p>Hi Jaans,</p>
+<p>Thanks for reporting this. I will look into it when I get home from vacation.&nbsp;</p>
+<p>My initial respone is to consider it a bug. If a property is changed it should&nbsp;be dirty.</p>
+<p>The challenge is that the rule engine uses the non-generic LoadProperty to provide support for private field properties and this method does not mark the field as dirty.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>GoGO replied on Monday, April 09, 2012</h2><p>Hello Jonny,</p>
+<p><span class="hps">If this is a bug. W</span><span class="hps">ill it be fixed</span><span>?</span></p>
+<p><span><br /></span></p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Monday, April 09, 2012</h2><p>It&#39;s on my todo list for CSLA 4.5. Not completed or checked in yet.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Sunday, April 15, 2012</h2><p>Checked in to repository now. </p>
+<p>http://www.lhotka.net/cslabugs/edit_bug.aspx?id=943</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

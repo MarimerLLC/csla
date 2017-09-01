@@ -1,0 +1,30 @@
+<html><header><title>Anyone implemented the ASP.Net 2.0 identity with CSLA?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Anyone implemented the ASP.Net 2.0 identity with CSLA?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/12836.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>richardb posted on Friday, February 27, 2015</h2><p>So I have my MVC project wired up using the latest ASP.Net identity and registration and login works fine. Now to wire into the Csla principal and am wondering how to do this.</p>
+<p>How much of the ASP.Net identity bits and pieces can I realistically move into the DalEF project (I&#39;m following the ProjectTracker solution here)?</p>
+<p>Anyone tried to implement the SignInManager, UserManager, RoleManager in the Dal like the example simple web membership methods;</p>
+<p>Membership.ValidateUser(username, password)</p>
+<p>and</p>
+<p>var user = Membership.GetUser(username);<br />var result = new UserDto { Username = username };<br />result.Roles = Roles.GetRolesForUser(result.Username);<br />return result;</p>
+<p>Thanks.</p>
+<p>Richard.</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Friday, February 27, 2015</h2><p>Hi,&nbsp;</p>
+<p>Just my opinion from having used CSLA for a long time and now also used ASP.NET Identity 2.x</p>
+<p>I do not believe it is realistically possible to integrate ASP.NET Identity 2.x and CSLA in the same sense as the 1.x version.&nbsp;</p>
+<p>ASP.NET Identity 2.x requires that you use _their_ base classes and inherit from these. </p>
+<p>So the only way to do this then - is to to have CslaIdentity and CslaPrincipal inherit from the base classes in ASP.NET Identity but then the CSLA DataPortal would not make much sense at all. So as I see it - You use ASP.NET Identity to secure an website and you must have a local database to achieve this. (Or at least - not depend on a remote DataPortal to handle the calls to the database). </p>
+<p>In the end - that means the user and identity classes should inherit from the ASP.NET identity classes. </p>
+<p>You _could_ implement your own UserManager class that uses CSLA classes to the data access - it&#39;s just a whole lot of classes and methods to implement that I do not see will give you much advantage.&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>richardb replied on Friday, February 27, 2015</h2><p>Yes I wasn&#39;t having much success. &nbsp;Its useful if you want a quick out-of-the-box asp.net membership up and running.</p>
+<p>Its looking like I need to roll some customization into it anyway, as I need to group logins by customer, limit the number of registrations per customer and product (e.g. max 60 licences allowed product A, 20 licences product B), and have subscription start and end dates. &nbsp;I can extend ASP.Net identity to do this and control access, - I just need to bespoke the AccountController and ManageController template code they give you.</p>
+<p>But I&#39;ll need to switch off parts of the UI if they don&#39;t have access anymore to a product - trial expired, etc. &nbsp;So their &quot;roles&quot; will have expiration dates - sounds like I&#39;m rolling my own custom access here.</p>
+<p>Maybe just need a simple method on the DataPortal to load up the current &quot;roles&quot; so server-side checks can still run.</p>
+<p>Thanks Jonny.</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>skagen00 replied on Friday, February 27, 2015</h2><p>I did some work on this a long time ago.&nbsp; </p>
+<p><a href="http://forums.lhotka.net/forums/p/2916/14844.aspx#14844">http://forums.lhotka.net/forums/p/2916/14844.aspx#14844</a></p>
+<p>I am not actively using this code, but it worked.</p>
+<p>Best,</p>
+<p>Chris</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Saturday, February 28, 2015</h2><p>Way back (2007), that would be ASP.NET Identity 1.x </p>
+<p>The question in this thread is about ASP.NET Identity 2.x and that is a different &quot;beast&quot; where the object model is based on an Entitiy Framework DbContext and base classes that you must inherit from. </p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>skagen00 replied on Saturday, February 28, 2015</h2><p>Sorry, my bad!&nbsp; Not familiar with ASP.Net Identity 2.x.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

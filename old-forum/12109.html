@@ -1,0 +1,245 @@
+<html><header><title>Changing &quot;AuthorizationRuleManager&quot; behaviour.</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Changing &quot;AuthorizationRuleManager&quot; behaviour.</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/12109.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>sash_kr posted on Sunday, August 11, 2013</h2><p>Base class:</p>
+<p>public class MyBusinessBase&lt;T&gt; : BusinessBase&lt;T&gt; where T:&nbsp;
+MyBusinessBase&lt;T&gt;</p>
+<p>{</p>
+<p>&nbsp; &nbsp; protected static void AddObjectAuthorizationRules()<br />        
+&nbsp; &nbsp; 
+{<br />            
+&nbsp; &nbsp; 
+&nbsp; &nbsp; 
+var tp = typeof(T);<br />            
+&nbsp; &nbsp; 
+&nbsp; &nbsp; 
+var roleName = &quot;role_&quot; + tp;<br />            
+&nbsp; &nbsp; 
+&nbsp; &nbsp; 
+BusinessRules.AddRule(tp, new IsInRole(AuthorizationActions.CreateObject, roleName));<br />            
+&nbsp; &nbsp; 
+&nbsp; &nbsp; 
+BusinessRules.AddRule(tp, new IsInRole(AuthorizationActions.GetObject, roleName));<br />
+&nbsp; &nbsp; 
+}</p>
+<p>}</p>
+<p>&nbsp;</p>
+<p>If we will change &quot;AuthorizationRuleManager&quot; behaviour like this:</p>
+<p>&nbsp; &nbsp; private static void InitializePerTypeRules(AuthorizationRuleManager mgr, Type type)<br />    
+&nbsp; &nbsp; 
+{</p>
+<p>
+&nbsp; &nbsp; 
+&nbsp; &nbsp; 
+...</p>
+<p>
+&nbsp; &nbsp; 
+&nbsp; &nbsp; 
+var type2 = type;<br />&nbsp;               
+&nbsp; &nbsp; 
+&nbsp; var flags = BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic | 
+&nbsp;BindingFlags.DeclaredOnly;<br />                
+&nbsp; &nbsp; 
+&nbsp; &nbsp; 
+while (type2 != typeof(object))<br />                
+&nbsp; &nbsp; 
+&nbsp; &nbsp; 
+{<br />                    
+&nbsp; &nbsp; 
+&nbsp; &nbsp; 
+&nbsp; &nbsp; 
+
+// invoke method to add auth roles<br />                    
+&nbsp; &nbsp; 
+&nbsp; &nbsp; 
+&nbsp; &nbsp; 
+
+var method = type2.GetMethod(&quot;AddObjectAuthorizationRules&quot;, flags);<br />                    
+&nbsp; &nbsp; 
+&nbsp; &nbsp; 
+&nbsp; &nbsp; 
+
+if (method != null)<br />                    
+&nbsp; &nbsp; 
+&nbsp; &nbsp; 
+&nbsp; &nbsp; 
+
+{<br />                        
+&nbsp; &nbsp; 
+&nbsp; &nbsp; 
+&nbsp; &nbsp; 
+&nbsp; &nbsp; 
+
+method.Invoke(null, null);<br />                        
+&nbsp; &nbsp; 
+&nbsp; &nbsp; 
+&nbsp; &nbsp; 
+&nbsp; &nbsp; 
+
+break;<br />                    
+&nbsp; &nbsp; 
+&nbsp; &nbsp; 
+&nbsp; &nbsp; 
+
+}<br />                    
+&nbsp; &nbsp; 
+&nbsp; &nbsp; 
+&nbsp; &nbsp; 
+
+type2 = type2.BaseType;<br />                
+&nbsp; &nbsp; 
+&nbsp; &nbsp; 
+}</p>
+<p>
+&nbsp; &nbsp; 
+&nbsp; &nbsp; 
+...</p>
+<p>
+&nbsp; &nbsp; 
+}</p>
+<p>&nbsp;</p>
+<p>We will achive next:</p>
+<p>- all inherited objects will inherit &nbsp;&quot;AddObjectAuthorizationRules&quot; method. And I can even override this method.</p>
+<p>&nbsp;</p>
+<p>So, is this good or bad idea?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Sunday, August 11, 2013</h2><p>I believe you have missed one very important point.</p>
+<p>There can only be one-1 authorization rule for each Type - MethodInfo and AuthorizationAction.&nbsp;</p>
+<p>For object authorization rules the MethodInfo is null - so there can only be one authorization rule per AuthorizationAction.</p>
+<p>This limitation - in my opinion - makes it non-practical to call into a base class or make this an override method..&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sash_kr replied on Monday, August 12, 2013</h2><p><em>&quot;There can only be one-1 authorization rule for each Type - MethodInfo and AuthorizationAction.&quot;</em></p>
+<p>&nbsp;</p>
+<p>&nbsp;&quot;AddObjectAuthorizationRules()&quot; method is static. So it&#39;s OK. If I need to override base &quot;AddObjectAuthorizationRules&quot; method I can just declare new method:</p>
+<p><strong>static</strong> void&nbsp; AddObjectAuthorizationRules()</p>
+<p>{</p>
+<p>&nbsp;BusinessRules.AddRule(typeof(NewType), new IsInRole(AuthorizationActions.CreateObject, &quot;role_NewType_Create&quot;));</p>
+<p>}</p>
+<p>&nbsp;</p>
+<p>So, &nbsp;&quot;AuthorizationRuleManager&quot; will call only this one method. Base method will stay untouched.</p>
+<p><em>&quot;For object authorization rules the MethodInfo is null - so there can only be one authorization rule per AuthorizationAction.&quot;&nbsp;</em></p>
+<p>&nbsp;As you can see, new behaviour doesn&#39;t break this limitation.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sash_kr replied on Tuesday, August 13, 2013</h2><p>I see as usually you didn&#39;t understand me.<br /><br />I think we are like from different planets. Maybe the problem is in my english or we have different kind of thinking?<br /><br />Let&#39;s look at little example:</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; public class <strong>MyBusinessBase</strong>&lt;T&gt; : BusinessBase&lt;T&gt; where T : MyBusinessBase&lt;T&gt;<br />    
+&nbsp; &nbsp; 
+{<br />        
+&nbsp; &nbsp; 
+&nbsp; &nbsp; 
+protected <strong>static</strong> void AddObjectAuthorizationRules()<br />        
+&nbsp; &nbsp; 
+&nbsp; &nbsp; 
+{<br />            
+&nbsp; &nbsp; 
+&nbsp; &nbsp; 
+&nbsp; &nbsp; 
+var tp = typeof(T);<br />            
+&nbsp; &nbsp; 
+&nbsp; &nbsp; 
+&nbsp; &nbsp; 
+var roleName = &quot;role_&quot; + tp.Name;<br />            
+&nbsp; &nbsp; 
+&nbsp; &nbsp; 
+&nbsp; &nbsp; 
+BusinessRules.AddRule(tp, new IsInRole(AuthorizationActions.CreateObject, roleName));<br />            
+&nbsp; &nbsp; 
+&nbsp; &nbsp; 
+&nbsp; &nbsp; 
+BusinessRules.AddRule(tp, new IsInRole(AuthorizationActions.GetObject, roleName));<br />        
+&nbsp; &nbsp; 
+&nbsp; &nbsp; 
+}<br />    
+&nbsp; &nbsp; 
+}</p>
+<p>
+&nbsp; &nbsp; 
+public class Invoice : MyBusinessBase&lt;Invoice&gt;<br />    
+&nbsp; &nbsp; 
+{<br />    
+&nbsp; &nbsp; 
+}</p>
+<p>
+&nbsp; &nbsp; 
+public class Order : MyBusinessBase&lt;Order&gt;<br />    
+&nbsp; &nbsp; 
+{<br />        
+&nbsp; &nbsp; 
+&nbsp; &nbsp; 
+<em>// override base method</em><br />        
+&nbsp; &nbsp; 
+&nbsp; &nbsp; 
+<strong>new static</strong> void AddObjectAuthorizationRules()<br />        
+&nbsp; &nbsp; 
+&nbsp; &nbsp; 
+{<br />            
+&nbsp; &nbsp; 
+&nbsp; &nbsp; 
+&nbsp; &nbsp; 
+BusinessRules.AddRule(typeof(Order), new IsInRole(AuthorizationActions.CreateObject, &quot;role_admin&quot;));<br />            
+&nbsp; &nbsp; 
+&nbsp; &nbsp; 
+&nbsp; &nbsp; 
+BusinessRules.AddRule(typeof(Order), new IsInRole(AuthorizationActions.GetObject, &quot;role_admin&quot;));<br />        
+&nbsp; &nbsp; 
+&nbsp; &nbsp; 
+}<br />    
+&nbsp; &nbsp; 
+}</p>
+<p>&nbsp;</p>
+<p>So, as you can see &quot;Invoice&quot; will use &quot;base&quot;&nbsp; &quot;AddObjectAuthorizationRules&quot; method. And &quot;Order&quot; &quot;overrides&quot; &quot;AddObjectAuthorizationRules&quot; method.</p>
+<p>For now, CSLA doesn&#39;t allow me to do that and &quot;Invoice&quot; class should look like this:</p>
+<p>
+&nbsp; &nbsp; 
+public class <strong>Invoice</strong> : 
+BusinessBase
+&lt;<strong>Invoice</strong>&gt;<br />    
+&nbsp; &nbsp; 
+{<br />&nbsp;       
+&nbsp; &nbsp; 
+&nbsp; <strong>static</strong> void AddObjectAuthorizationRules()<br />        
+&nbsp; &nbsp; 
+&nbsp; &nbsp; 
+{<br />&nbsp;           
+&nbsp; &nbsp; 
+&nbsp; &nbsp; 
+&nbsp; var tp = typeof(<strong>Invoice</strong>);<br />&nbsp; &nbsp; 
+&nbsp; &nbsp; 
+&nbsp; &nbsp; 
+var roleName = &nbsp;&quot;role_Invoice&quot;; &nbsp;<em>//&quot;role_&quot; + tp.Name;</em><br />            
+&nbsp; &nbsp; 
+&nbsp; &nbsp; 
+&nbsp; &nbsp; 
+BusinessRules.AddRule(tp, new IsInRole(AuthorizationActions.CreateObject, roleName));<br />&nbsp;           
+&nbsp; &nbsp; 
+&nbsp; &nbsp; 
+&nbsp; BusinessRules.AddRule(tp, new IsInRole(AuthorizationActions.GetObject, roleName));<br />        
+&nbsp; &nbsp; 
+&nbsp; &nbsp; 
+}<br />    
+&nbsp; &nbsp; 
+}</p>
+<p>&nbsp;</p>
+<p>Is it clear now?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Tuesday, August 13, 2013</h2><p>So what you propose is to add a new BindingFlags.FlattenHierarchy like this:</p>
+<pre style="font-family:Consolas;font-size:13;color:black;background:#fafafa;"><span style="color:green;">//&nbsp;invoke&nbsp;method&nbsp;to&nbsp;add&nbsp;auth&nbsp;roles</span>
+<span style="color:blue;">var</span>&nbsp;flags&nbsp;=&nbsp;<span style="color:#2baf9a;">BindingFlags</span>.Static&nbsp;|&nbsp;<span style="color:#2baf9a;">BindingFlags</span>.Public&nbsp;|&nbsp;<span style="color:#2baf9a;">BindingFlags</span>.NonPublic <br />          |&nbsp;<span style="color:#2baf9a;">BindingFlags</span>.DeclaredOnly<b>&nbsp;|&nbsp;<span style="color:#2baf9a;">BindingFlags</span>.FlattenHierarchy</b>;
+System.Reflection.<span style="color:#2b91af;">MethodInfo</span>&nbsp;method&nbsp;=&nbsp;type.GetMethod(<span style="color:#a31515;">&quot;AddObjectAuthorizationRules&quot;</span>,&nbsp;flags);
+<span style="color:blue;">if</span>&nbsp;(method&nbsp;!=&nbsp;<span style="color:blue;">null</span>)
+method.Invoke(<span style="color:blue;">null</span>,&nbsp;<span style="color:blue;">null</span>);<br /><br /></pre>
+<p>I need Rocky to chime in to this - for now I will add an Issue for this.</p>
+<p>See: <a href="https://github.com/MarimerLLC/csla/issues/192">https://github.com/MarimerLLC/csla/issues/192</a></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sash_kr replied on Tuesday, August 13, 2013</h2><p><em>&quot;So what you propose is to add a new BindingFlags.FlattenHierarchy like this:&quot;</em></p>
+<p>Yes. I forgot about &nbsp;<strong>FlattenHierarchy</strong>.</p>
+<p>But flags should look like this (without <strong>DeclaredOnly</strong>):</p>
+<p>var flags = BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.FlattenHierarchy;</p>
+<p>&nbsp;</p>
+<p>P.S.</p>
+<p>By the way. How do you insert colored text? &quot;Paste from Word&quot; never works for me.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Tuesday, August 13, 2013</h2><p>I use the CopyAsHtml extension for VS2010 - or HtmlCopy in Productivity Power Tools for VS2012 and paste the code into Firefox or IE browser.</p>
+<p>Paste unfortunately doesn&#39;t work that nicely in Chrome.&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Cymro replied on Friday, March 28, 2014</h2><p>Which versions are we looking at here? &nbsp;The&nbsp;<strong>BindingFlags.FlattenHierarchy&nbsp;</strong>flag appeared to disappear somewhere between version 4.1.x and 4.3.14. &nbsp;</p>
+<p>We have a task / role based security system and we implemented a standard implementation (in our MyBusinessBase&lt;T&gt; class). &nbsp;This checks for an attribute on the sub-class and if it exists adds the rules using the Attribute Value.</p>
+<div style="border:#000080 1px solid;color:#000;font-family:&#39;Courier New&#39;, Courier, Monospace;font-size:10pt;">
+<div style="background:#000080;color:#fff;font-family:Verdana, Tahoma, Arial, sans-serif;font-weight:bold;padding:2px 5px;">Code Snippet</div>
+<div style="background:#ddd;max-height:300px;overflow:auto;"><ol style="background:#ffffff;margin:0 0 0 2.5em;padding:0 0 0 5px;">
+<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#0000ff;">Protected</span> <span style="color:#0000ff;">Shared</span> <span style="color:#0000ff;">Sub</span> AddObjectAuthorizationRules()</li>
+<li style="background:#f3f3f3;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#0000ff;">Dim</span> subClass <span style="color:#0000ff;">As</span> <span style="color:#2b91af;">Type</span> = <span style="color:#0000ff;">GetType</span>(<span style="color:#2b91af;">T</span>)</li>
+<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#0000ff;">Dim</span> attr <span style="color:#0000ff;">As</span> <span style="color:#2b91af;">SecuritySubTaskAttribute</span> = <span style="color:#0000ff;">CType</span>(subClass.GetCustomAttributes(<span style="color:#0000ff;">GetType</span>(<span style="color:#2b91af;">SecuritySubTaskAttribute</span>), <span style="color:#0000ff;">False</span>).FirstOrDefault, <span style="color:#2b91af;">SecuritySubTaskAttribute</span>)</li>
+<li style="background:#f3f3f3;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#0000ff;">If</span> attr <span style="color:#0000ff;">IsNot</span> <span style="color:#0000ff;">Nothing</span> <span style="color:#0000ff;">Then</span></li>
+<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Csla.Rules.<span style="color:#2b91af;">BusinessRules</span>.AddRule(<span style="color:#0000ff;">GetType</span>(<span style="color:#2b91af;">T</span>), <span style="color:#0000ff;">New</span> <span style="color:#2b91af;">UserHasAmsRoleSubTask</span>(<span style="color:#2b91af;">AuthorizationActions</span>.CreateObject, attr.SubTaskID))</li>
+<li style="background:#f3f3f3;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Csla.Rules.<span style="color:#2b91af;">BusinessRules</span>.AddRule(<span style="color:#0000ff;">GetType</span>(<span style="color:#2b91af;">T</span>), <span style="color:#0000ff;">New</span> <span style="color:#2b91af;">UserHasAmsRoleSubTask</span>(<span style="color:#2b91af;">AuthorizationActions</span>.GetObject, attr.SubTaskID))</li>
+<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Csla.Rules.<span style="color:#2b91af;">BusinessRules</span>.AddRule(<span style="color:#0000ff;">GetType</span>(<span style="color:#2b91af;">T</span>), <span style="color:#0000ff;">New</span> <span style="color:#2b91af;">UserHasAmsRoleSubTask</span>(<span style="color:#2b91af;">AuthorizationActions</span>.EditObject, attr.SubTaskID))</li>
+<li style="background:#f3f3f3;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Csla.Rules.<span style="color:#2b91af;">BusinessRules</span>.AddRule(<span style="color:#0000ff;">GetType</span>(<span style="color:#2b91af;">T</span>), <span style="color:#0000ff;">New</span> <span style="color:#2b91af;">UserHasAmsRoleSubTask</span>(<span style="color:#2b91af;">AuthorizationActions</span>.DeleteObject, attr.SubTaskID))</li>
+<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#0000ff;">End</span> <span style="color:#0000ff;">If</span></li>
+<li style="background:#f3f3f3;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#0000ff;">End</span> <span style="color:#0000ff;">Sub</span></li>
+</ol></div>
+</div>
+<p class="MsoNormal">This allows for a sub-class to be simply decorated with the &quot;Security SubTaskID&quot;, or it can implement it&#39;s own rules if need be. &nbsp;Unfortunately we have recently upgraded to 4.3.14 and lost this behaviour.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

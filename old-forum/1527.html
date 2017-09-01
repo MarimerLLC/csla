@@ -1,0 +1,128 @@
+<html><header><title>Data Access in custom Validation Rule</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Data Access in custom Validation Rule</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/1527.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>SashaV posted on Wednesday, October 18, 2006</h2>
+
+<p class="MsoNormal"><span>Is there
+any "standard" way to implement the validation rule in which i need </span><span>to</span><span> interact with DB?<o:p></o:p></span></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>skagen00 replied on Wednesday, October 18, 2006</h2><P>An option is certainly a command object - what is the sort of validation rule you're looking to implement? </P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>SashaV replied on Wednesday, October 18, 2006</h2>
+
+<p class="MsoNormal"><span>Thank you for answer!</span></p><p class="MsoNormal"><br><span><o:p></o:p></span></p>
+
+<p class="MsoNormal"><span>The situation is:<o:p></o:p></span></p>
+
+<ul><li class="MsoNormal"><span>server register request (which is business
+     object) from user and store it in DB (broken rule will have severity –
+     warning);<o:p></o:p></span></li><li class="MsoNormal"><span>Later admin process this request.</span></li></ul><br>
+
+
+
+<p class="MsoNormal"><span>When admin
+process request he must view all broken</span><span>rule. One of the rule is:<br>“check <b>is
+there any object</b> in DB with the “serial number” from request?”.</span></p><p class="MsoNormal"><br><span><o:p></o:p></span></p>
+
+
+
+<p class="MsoNormal"><span><o:p>&nbsp;</o:p>I will use </span><span>broken rule with severity – warning,
+for have ability to store business object in DB.</span><span><o:p></o:p></span></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>skagen00 replied on Wednesday, October 18, 2006</h2><P>I think I follow you. </P>
+<P>If&nbsp;it's OK if it's just checked when the admin opens it, you might just return a value from the DB on the fetch request - maybe server request id(s) / names that have the same serial number (but that are different objects than the one you're retrieving). So a collection of ServerRegisterRequestInfo lightweight objects, named as _duplicateSerials). You might just grab a separate result set for the duplicates and pass the data reader along to the collection on the main BO fetch. </P>
+<P>If you fetch a collection you can display the ID's to the admin (and perhaps some navigation to the other objects) as well as utilize it in a business rule - is the collection count greater than 0? then the warning rule is broken. </P>
+<P>Hope that helps. </P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>SashaV replied on Wednesday, October 25, 2006</h2>Thank you for your help! I will consider your decision. I was far from work, so I couldn’t work on this problem, but I start work now.<br><br>In our system we have BO: UserRequestList and UserRequest. <br><br>When we receive message from user, UserRequest is created by calling:<br><br><font face="Courier New" size="2">&nbsp;&nbsp;&nbsp; public static RevocationRequest <b>NewRevocationRequest</b>(string serialNumber)<br>&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return DataPortal.Create&lt;RevocationRequest&gt;(new Criteria(serialNumber));<br>&nbsp;&nbsp;&nbsp; }</font><br><br>As you can see, we use DataPortal.Create <b>with Criteria</b> class and&nbsp; serialNumber as parameters. So I can access DB for see if duplicated serial number exists:<br><br><font face="Courier New" size="2">&nbsp;&nbsp;&nbsp; private void <b>DataPortal_Create</b>(Criteria criteria)<br>&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; using (SqlConnection cn = new SqlConnection(Database.CAConnection))<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; cn.Open();<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; using (SqlCommand cm = cn.CreateCommand())<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; cm.CommandType = CommandType.StoredProcedure;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; cm.CommandText = "getUser";<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; cm.Parameters.AddWithValue("@serialNumber", criteria.SerialNumbers[0]);<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; using (SafeDataReader dr = new SafeDataReader(cm.ExecuteReader()))<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (!dr.Read())<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <i>isValidSerialNumber </i>= false;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; else<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <i>isValidSerialNumber </i>= true;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ValidationRules.CheckRules();<br>&nbsp;&nbsp;&nbsp; }</font><br><br>I use <i>isValidSerialNumber </i>for my validation rule:<br><br><font face="Courier New" size="2">&nbsp;&nbsp;&nbsp; private static bool ValidCertificateSerialNumberRequired(object targets, Csla.Validation.RuleArgs e)<br>&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp; if (!(((UserRequest)targets).isValidSerialNumber))<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; e.Description = "<b>Duplicated Serial Number!</b>";<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return false;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; else<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return true;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br>&nbsp;&nbsp;&nbsp; }</font><br>&nbsp;&nbsp;&nbsp; <br>What do you think about this?<br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>kids_pro replied on Wednesday, October 25, 2006</h2>Base on the book:<br><font face="Times New Roman">If(!UserRequest.Exist(serialNum)){<br>&nbsp; // call create routine ...<br>}</font></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>skagen00 replied on Wednesday, November 01, 2006</h2><P>So there is a server register request object - I'm not sure if you care about the broken rule (warning) at the time the user is working with it, but let's just assume you do. </P>
+<P>I would want this rule to be dependant on the serial number property. </P>
+<P>So, you'll create a rule attached to the serial number property - we'll call it "ValidCertificateSerialNumberRequired".</P>
+<P><FONT face="Courier New" size=2><FONT face="Times New Roman" size=3>This rule will be triggered whenever the serial number property changes. You should also trigger it in when the user request object is fetched (some people may do a check rules on all properties when fetching an object - if you do, it'd be checked - if you don't, you should do a checkrule on the serial number property - it'll trigger the rule handler).</FONT></FONT></P>
+<P>The code below will obviously need to be debugged/tweaked, I just tried to whip something together... </P>
+<P>We'll first create a simple class to serve as a result of the command to give us not only whether the serial number exists under another user request but also the list of user requests where this is the case:</P><FONT size=1>
+<P>[</FONT><FONT color=#008080 size=1>Serializable</FONT><FONT size=1>()]</P>
+<P></FONT><FONT color=#0000ff size=1>public</FONT><FONT size=1> </FONT><FONT color=#0000ff size=1>class</FONT><FONT size=1> </FONT><FONT color=#008080 size=1>SerialNumberCheckResult</P></FONT><FONT size=1>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=1>private</FONT><FONT size=1> </FONT><FONT color=#008080 size=1>List</FONT><FONT size=1>&lt;</FONT><FONT color=#0000ff size=1>int</FONT><FONT size=1>&gt; _userRequestIds = </FONT><FONT color=#0000ff size=1>new</FONT><FONT size=1> </FONT><FONT color=#008080 size=1>List</FONT><FONT size=1>&lt;</FONT><FONT color=#0000ff size=1>int</FONT><FONT size=1>&gt;();</P>
+<P></FONT><FONT color=#808080 size=1>///</FONT><FONT color=#008000 size=1> </FONT><FONT color=#808080 size=1>&lt;summary&gt;</P></FONT><FONT size=1>
+<P></FONT><FONT color=#808080 size=1>///</FONT><FONT color=#008000 size=1> Gets the list of User Request Ids containing this Serial Number (may be empty).</P></FONT><FONT size=1>
+<P></FONT><FONT color=#808080 size=1>///</FONT><FONT color=#008000 size=1> </FONT><FONT color=#808080 size=1>&lt;/summary&gt;</P></FONT><FONT size=1>
+<P></FONT><FONT color=#0000ff size=1>public</FONT><FONT size=1> </FONT><FONT color=#008080 size=1>List</FONT><FONT size=1>&lt;</FONT><FONT color=#0000ff size=1>int</FONT><FONT size=1>&gt; UserRequestIds</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=1>get</FONT><FONT size=1> { </FONT><FONT color=#0000ff size=1>return</FONT><FONT size=1> _userRequestIds; }</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=1>private</FONT><FONT size=1> </FONT><FONT color=#0000ff size=1>bool</FONT><FONT size=1> _exists; </P>
+<P></FONT><FONT color=#808080 size=1>///</FONT><FONT color=#008000 size=1> </FONT><FONT color=#808080 size=1>&lt;summary&gt;</P></FONT><FONT size=1>
+<P></FONT><FONT color=#808080 size=1>///</FONT><FONT color=#008000 size=1> Gets whether the serial number exists in the database under a different User Request</P></FONT><FONT size=1>
+<P></FONT><FONT color=#808080 size=1>///</FONT><FONT color=#008000 size=1> </FONT><FONT color=#808080 size=1>&lt;/summary&gt;</P></FONT><FONT size=1>
+<P></FONT><FONT color=#0000ff size=1>public</FONT><FONT size=1> </FONT><FONT color=#0000ff size=1>bool</FONT><FONT size=1> Exists</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=1>get</FONT><FONT size=1> { </FONT><FONT color=#0000ff size=1>return</FONT><FONT size=1> _exists; }</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=1>internal</FONT><FONT size=1> SerialNumberCheckResult(</FONT><FONT color=#008080 size=1>List</FONT><FONT size=1>&lt;</FONT><FONT color=#0000ff size=1>int</FONT><FONT size=1>&gt; userRequestIds, </FONT><FONT color=#0000ff size=1>bool</FONT><FONT size=1> exists)</P>
+<P>{</P>
+<P>_userRequestIds = userRequestIds;</P>
+<P>_exists = exists;</P>
+<P>}</P>
+<P>}</P>
+<P><FONT size=3>Then, within your UserRequest class, you'd have this inner private command class:</FONT></P><FONT size=1>
+<P></FONT><FONT color=#808080 size=1>///</FONT><FONT color=#008000 size=1> </FONT><FONT color=#808080 size=1>&lt;summary&gt;</P></FONT><FONT size=1>
+<P></FONT><FONT color=#808080 size=1>///</FONT><FONT color=#008000 size=1> This command is used to determine if a particular serial number exists in the database. </P></FONT><FONT size=1>
+<P></FONT><FONT color=#808080 size=1>///</FONT><FONT color=#008000 size=1> Also, what User Request IDs have that serial number</P></FONT><FONT size=1>
+<P></FONT><FONT color=#808080 size=1>///</FONT><FONT color=#008000 size=1> </FONT><FONT color=#808080 size=1>&lt;/summary&gt;</P></FONT><FONT size=1>
+<P>[</FONT><FONT color=#008080 size=1>Serializable</FONT><FONT size=1>()]</P>
+<P></FONT><FONT color=#0000ff size=1>private</FONT><FONT size=1> </FONT><FONT color=#0000ff size=1>class</FONT><FONT size=1> </FONT><FONT color=#008080 size=1>SerialNumberExistsCommand</FONT><FONT size=1> : CommandBase</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=1>private</FONT><FONT size=1> </FONT><FONT color=#0000ff size=1>int</FONT><FONT size=1> _serialNumberToCheck;</P>
+<P></FONT><FONT color=#0000ff size=1>private</FONT><FONT size=1> </FONT><FONT color=#008080 size=1>SerialNumberCheckResult</FONT><FONT size=1> _commandResult; </P>
+<P></FONT><FONT color=#0000ff size=1>public</FONT><FONT size=1> </FONT><FONT color=#008080 size=1>SerialNumberCheckResult</FONT><FONT size=1> CommandResult</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=1>get</P></FONT><FONT size=1>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=1>return</FONT><FONT size=1> _commandResult;</P>
+<P>}</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=1>public</FONT><FONT size=1> <FONT color=#000000>SerialNumberExistsCommand</FONT>(</FONT><FONT color=#0000ff size=1>int</FONT><FONT size=1> serialNumberToCheck)</P>
+<P>{</P>
+<P>_serialNumberToCheck = serialNumberToCheck;</P>
+<P>}</P>
+<P>&nbsp;</P>
+<P></FONT><FONT color=#0000ff size=1>protected</FONT><FONT size=1> </FONT><FONT color=#0000ff size=1>override</FONT><FONT size=1> </FONT><FONT color=#0000ff size=1>void</FONT><FONT size=1> DataPortal_Execute()</P>
+<P>{</P>
+<P></FONT><FONT color=#008080 size=1>List</FONT><FONT size=1>&lt;</FONT><FONT color=#0000ff size=1>int</FONT><FONT size=1>&gt; matchList = </FONT><FONT color=#0000ff size=1>new</FONT><FONT size=1> </FONT><FONT color=#008080 size=1>List</FONT><FONT size=1>&lt;</FONT><FONT color=#0000ff size=1>int</FONT><FONT size=1>&gt;();</P>
+<P></FONT><FONT color=#0000ff size=1>using</FONT><FONT size=1> (</FONT><FONT color=#008080 size=1>SqlConnection</FONT><FONT size=1> cn = </FONT><FONT color=#0000ff size=1>new</FONT><FONT size=1> </FONT><FONT color=#008080 size=1>SqlConnection</FONT><FONT size=1>(Database.ActiveDatabase))</P>
+<P>{</P>
+<P>cn.Open();</P>
+<P></FONT><FONT color=#0000ff size=1>using</FONT><FONT size=1> (</FONT><FONT color=#008080 size=1>SqlCommand</FONT><FONT size=1> cm = cn.CreateCommand())</P>
+<P>{</P>
+<P>cm.CommandType = </FONT><FONT color=#008080 size=1>CommandType</FONT><FONT size=1>.StoredProcedure;</P>
+<P>cm.CommandText = </FONT><FONT color=#800000 size=1>"getUserRequestsWithSerialNumber"</FONT><FONT size=1>; </FONT><FONT color=#008000 size=1>// Return all User Request Ids with a match</P></FONT><FONT size=1>
+<P>cm.Parameters.AddWithValue(</FONT><FONT color=#800000 size=1>"@serialNumber"</FONT><FONT size=1>, _serialNumberToCheck);</P>
+<P>System.Data.SqlClient.</FONT><FONT color=#008080 size=1>SqlDataReader</FONT><FONT size=1> dr = cm.ExecuteReader();</P>
+<P></FONT><FONT color=#0000ff size=1>while</FONT><FONT size=1> (dr.Read())</P>
+<P>{</P>
+<P>matchList.Add(dr[</FONT><FONT color=#800000 size=1>"UserRequestId"</FONT><FONT size=1>]); </P>
+<P>}</P>
+<P>dr.Close();</P>
+<P>}</P>
+<P>}</P>
+<P>_commandResult = </FONT><FONT color=#0000ff size=1>new</FONT><FONT size=1> </FONT><FONT color=#008080 size=1>SerialNumberCheckResult</FONT><FONT size=1>(matchList, matchList.Count &gt; 0);</P>
+<P>}</P>
+<P>}</P></FONT>
+<P><FONT size=3>I'd then have a static method in your User Request class to make this logic reusable</FONT></P><FONT size=1>
+<P></FONT><FONT color=#808080 size=1>///</FONT><FONT color=#008000 size=1> </FONT><FONT color=#808080 size=1>&lt;summary&gt;</P></FONT><FONT size=1>
+<P></FONT><FONT color=#808080 size=1>///</FONT><FONT color=#008000 size=1> Returns whether a specified Query exists in the database using the ID. </P></FONT><FONT size=1>
+<P></FONT><FONT color=#808080 size=1>///</FONT><FONT color=#008000 size=1> </FONT><FONT color=#808080 size=1>&lt;/summary&gt;</P></FONT><FONT size=1>
+<P></FONT><FONT color=#0000ff size=1>public</FONT><FONT size=1> </FONT><FONT color=#0000ff size=1>static</FONT><FONT size=1> </FONT><FONT color=#008080 size=1>SerialNumberCheckResult </FONT><FONT size=1>SerialNumberExists(</FONT><FONT color=#0000ff size=1>int</FONT><FONT size=1> serialNumberToCheck)</P>
+<P>{</P>
+<P></FONT><FONT color=#008080 size=1>SerialNumberExistsCommand<FONT color=#000000 size=1> </FONT></FONT><FONT size=1>existsCommand;</P>
+<P>existsCommand = </FONT><FONT color=#008080 size=1>DataPortal</FONT><FONT size=1>.Execute&lt;</FONT><FONT color=#008080 size=1>SerialNumberExistsCommand<FONT color=#000000 size=1> </FONT></FONT><FONT size=1>&gt;(</FONT><FONT color=#0000ff size=1>new</FONT><FONT size=1> </FONT><FONT color=#008080 size=1>SerialNumberExistsCommand<FONT color=#000000 size=1> </FONT></FONT><FONT size=1>(serialNumberToCheck));</P>
+<P></FONT><FONT color=#0000ff size=1>return</FONT><FONT size=1> existsCommand.CommandResult;</P>
+<P>}</P>
+<P><FONT size=3>And last but not least, your rule (by the way, I'd recommend using the strongly typed generic rules, but no biggie): </FONT></P><FONT face="Courier New" size=2><FONT size=1>
+<P></FONT><FONT color=#0000ff size=1>private</FONT><FONT size=1> </FONT><FONT color=#0000ff size=1>static</FONT><FONT size=1> </FONT><FONT color=#0000ff size=1>bool</FONT><FONT size=1> ValidCertificateSerialNumberRequired(</FONT><FONT color=#0000ff size=1>object</FONT><FONT size=1> target, Csla.Validation.RuleArgs e)</P>
+<P>{</P>
+<P></FONT><FONT color=#008080 size=1>SerialNumberCheckResult</FONT><FONT size=1> existsResult = </FONT><FONT color=#008080 size=1>UserRequest</FONT><FONT size=1>.SerialNumberExists(((</FONT><FONT color=#008080 size=1>UserRequest</FONT><FONT size=1>)target).SerialNumber);</P>
+<P></FONT><FONT color=#0000ff size=1>if</FONT><FONT size=1> (existsResult.Exists)</P>
+<P>{</P>
+<P>e.Description = </FONT><FONT color=#800000 size=1>"Duplicated Serial Number!"</FONT><FONT size=1>; </P>
+<P></FONT><FONT color=#008000 size=1>// Note, you can store the list of user requests conflicting</P></FONT><FONT size=1>
+<P></FONT><FONT color=#008000 size=1>// in a class variable or list them in the error message. </P></FONT><FONT size=1>
+<P></FONT><FONT color=#008000 size=1>// The list of problem children are in existsResult.UserRequestIds</P></FONT><FONT size=1>
+<P></FONT><FONT color=#0000ff size=1>return</FONT><FONT size=1> </FONT><FONT color=#0000ff size=1>false</FONT><FONT size=1>;</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=1>else</P></FONT><FONT size=1>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=1>return</FONT><FONT size=1> </FONT><FONT color=#0000ff size=1>true</FONT><FONT size=1>;</P>
+<P>}</P>
+<P>}</P></FONT></FONT></FONT></FONT></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

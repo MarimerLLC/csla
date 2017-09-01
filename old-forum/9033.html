@@ -1,0 +1,13 @@
+<html><header><title>Mobile Objects</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Mobile Objects</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9033.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Harmanjeet posted on Thursday, June 03, 2010</h2><h4>Hi! Rocky</h4>
+<p>I am reading your book Expert C# Objects 2008.</p>
+<p>Chapter 1: Distributed Architecture</p>
+<p>Page : 28</p>
+<h4>Just Above Paragrapg Heading : A New Logical Architecture</h4>
+<p>You Mentioned: <span style="text-decoration:underline;"><strong><em>As long as there is support for mobile objects,</em></strong></span> this is an ideal solution: it provides code reuse, low maintenance costs, and high performance.</p>
+<p>What do you mean by:&nbsp; that underline sentence ?</p>
+<p>waiting for an early response.</p>
+<p>regards</p>
+<p>Harmanjeet</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Friday, June 04, 2010</h2><p>Not all platforms provide support for the concept of mobile objects. That requires the ability to serialize an object graph at the field level, regardless of the scope of those fields.</p>
+<p>Java and .NET do provide that capability. COM did not, which made this architecture much harder. </p>
+<p>However, since writing that book, I&#39;ve made Silverlight support mobile objects, even though it doesn&#39;t have native support for the concept. That&#39;s the reason for the MobileFormatter - which is how I added mobile object support to a platform that otherwise doesn&#39;t support the idea (due to limitations on reflection).</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

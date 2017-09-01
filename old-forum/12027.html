@@ -1,0 +1,15 @@
+<html><header><title>How to acces(=load) data from the server-side file system?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>How to acces(=load) data from the server-side file system?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/12027.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>stefan posted on Monday, June 17, 2013</h2><p>Hi,</p>
+<p>I would like to visualize files that are located on the server in a csla-client application.</p>
+<p>This should&nbsp;work even with a local DataPortal!</p>
+<p>Image you want the client to display a list representing a server-side document repository.</p>
+<p>What would be&nbsp;the correct pattern, that would be Independent of the actual DataPortal config?</p>
+<p>Maybe&nbsp;a second &quot;Document-DataPortal&quot;? Are there any samples I could have a look at?</p>
+<p>&nbsp;</p>
+<p>Many thanks!</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Monday, June 17, 2013</h2><p>Hi,&nbsp;</p>
+<p>I would create a command or readonly list &nbsp;to get the &quot;server&quot; side document folder structure - whether it is from a file system or a database.</p>
+<p>Basically - use a list with 3 a minimum of 3 values: parent id, id, name and you can create any number of levels in a folder structure.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>stefan replied on Monday, June 17, 2013</h2><p>Thanks Jonny!</p>
+<p>The &quot;real&quot; question was how to access the &quot;real&quot; server side - not the logical server side!</p>
+<p>Designing a business object to retrieve the data is not the problem.</p>
+<p>My logical server side is still on the client, and I must get data from the other side,&nbsp;if possible by using CSLA! Maybe some kind of&nbsp;a CSLA-powered WCF service?</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Monday, June 17, 2013</h2><p>You can combine a local/remote dataportal by using the RunLocal attribute on those &quot;root&quot; methods that should always run locally.<br />Then the DataPortal config may point to either a local or remote portal.</p>
+<p>The other option is to create a totally separate WCF service to expose the folder structure and make your app a client. &nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

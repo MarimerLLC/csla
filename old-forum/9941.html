@@ -1,0 +1,23 @@
+<html><header><title>Data Portal Exception</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Data Portal Exception</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9941.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>mdudley posted on Friday, January 14, 2011</h2><p>&nbsp;</p>
+<p>I have been reading Expert C# 2008 Business Objects and am trying to run the PTWebForms example on my laptop. &nbsp;The website will start up, but the first time it tries to access the DataPortal, I get the following error:</p>
+<p style="padding-left:30px;">System.Data.SqlClient.SqlException was unhandled</p>
+<p style="padding-left:30px;">Message=Failed to generate a user instance of SQL Server due to a failure in starting the process for the user instance. The connection will be closed.</p>
+<p style="padding-left:30px;">Source=.Net SqlClient Data Provider</p>
+<p>I have been searching the book, forums, and google, but have not found the solution. &nbsp;I created a very simple application that can access the ProjectTracker.DalLinq directly, but I cannot access it through the DataPortal.</p>
+<p>Environment:</p>
+<p>
+<ul>
+<li>Windows 7 Ultimate 64 Bit</li>
+<li>Visual Studio 2010</li>
+<li>.net 4.0</li>
+<li>Csla 4.1.0-101210</li>
+</ul>
+</p>
+<p>&nbsp;</p>
+<p style="padding-left:30px;">&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Friday, January 14, 2011</h2><p class="MsoNormal" style="margin:0in 0in 0pt;"><span style="font-family:&#39;Calibri&#39;,&#39;sans-serif&#39;;color:#1f497d;font-size:11pt;mso-ascii-theme-font:minor-latin;mso-hansi-theme-font:minor-latin;mso-bidi-font-family:&#39;Times New Roman&#39;;mso-bidi-theme-font:minor-bidi;mso-themecolor:dark2;">Looks like you are using SQL Express feature to attach a DB to an instance.<span style="mso-spacerun:yes;">&nbsp; </span>To isolate, you might want to correct your connection string and just attach DB to an SQL Server instance.<span style="mso-spacerun:yes;">&nbsp; </span>I am guessing either you do not have Express installed or something wrong with DB.</span></p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>mdudley replied on Friday, January 14, 2011</h2><p>Thanks for pointing me to the connection string. &nbsp;I am not sure why but changing&nbsp;User Instance=True to&nbsp;User Instance=False seems to have fixed the issue. &nbsp;I think you are right too about moving it to SQL Server instead of SQL Express. &nbsp;I was just starting with the downloaded example files.</p>
+<p>Before:</p>
+<p>Data Source=.\SQLEXPRESS;AttachDbFilename=&amp;quot;C:\Visual Studio Projects\csla\Samples\CslaNet\cs\ProjectTrackercs\PTracker.mdf&amp;quot;;Integrated Security=True;<b>User Instance=True</b></p>
+<p>After:</p>
+<p>Data Source=.\SQLEXPRESS;AttachDbFilename=&amp;quot;C:\Visual Studio Projects\csla\Samples\CslaNet\cs\ProjectTrackercs\PTracker.mdf&amp;quot;;Integrated Security=True;<b>User Instance=False</b></p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

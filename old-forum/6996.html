@@ -1,0 +1,114 @@
+<html><header><title>csla 3.6.1 with vs 2008 express stuff</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>csla 3.6.1 with vs 2008 express stuff</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6996.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>pillesoft posted on Monday, May 25, 2009</h2>i have problem with csla.net 3.6.1 using visual c# 2008 express and devexpress.<br><br>in c# express i want to start Win project. after entering pm/pm in login window i receive the following exception in csla\DataPortal.cs in line 262:<br><font face="Courier New">System.ServiceModel.CommunicationException was unhandled<br>&nbsp; Message="Security negotiation failed because the remote party did not send back a reply in a timely manner. This may be because the underlying transport connection was aborted."<br></font><br>i know it is written in the guide that i need studio, but i don't have...<br>the wcfhost is running from devexpress (debug mode)<br><br>i would appreciate if somebody can help me, what i miss here.<br>thanks<br>Ivan<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, May 25, 2009</h2><P>I don't use the Express versions, so I'm not real sure about the current limitations.</P>
+<P>The PTWin project (I assume that's what you are talking about?) uses a remote data portal. That means that there must be a web server running, hosting the server-side data portal and your business components.</P>
+<P>Is it possible that Express doesn't automatically start the web server?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>pillesoft replied on Monday, May 25, 2009</h2>thanks for replying.<br>yes, it is the ptwin project from ...\Projects\CslaNet.3.6.1\cs\ProjectTrackercs folder<br><br>i'm really not an expert of wcf ...<br>what i did is opened WcfHost project from www folder with devexpress, and start it manually. <br>it started in http://localhost:1982/WcfHost/ url<br><br>this url i put in ptwin project app.config file<br>&nbsp;&nbsp;&nbsp; &lt;client&gt;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;endpoint name="WcfDataPortal"<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; address="http://localhost:1982/WcfHost/WcfPortal.svc"<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; binding="wsHttpBinding"<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; contract="Csla.Server.Hosts.IWcfPortal" /&gt;<br>&nbsp;&nbsp;&nbsp; &lt;/client&gt;<br><br>so, wcfhost is running, starting ptwin project, entering pm/pm and received the exception (in the prev. message)<br>do i need to run something else ?<br><br>Ivan<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, May 25, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Try navigating to the server URL in a browser to make sure it is
+actually working and that you have the right address.<o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>pillesoft replied on Monday, May 25, 2009</h2>clicking on this url<br>http://localhost:1982/WcfHost/WcfPortal.svc<br><br>gives error<br><br>what is missing then?<br>The type 'Csla.Server.Hosts.WcfPortal', provided as the Service attribute value in the ServiceHost directive could not be found.BODY {
+	FONT-WEIGHT: normal; FONT-SIZE: 0.7em; COLOR: black; FONT-FAMILY: "Verdana"
+}
+P {
+	MARGIN-TOP: -5px; FONT-WEIGHT: normal; COLOR: black; FONT-FAMILY: "Verdana"
+}
+B {
+	MARGIN-TOP: -5px; FONT-WEIGHT: bold; COLOR: black; FONT-FAMILY: "Verdana"
+}
+H1 {
+	FONT-WEIGHT: normal; FONT-SIZE: 18pt; COLOR: red; FONT-FAMILY: "Verdana"
+}
+H2 {
+	FONT-WEIGHT: normal; FONT-SIZE: 14pt; COLOR: maroon; FONT-FAMILY: "Verdana"
+}
+PRE {
+	FONT-SIZE: 0.9em; FONT-FAMILY: "Lucida Console"
+}
+.marker {
+	FONT-WEIGHT: bold; COLOR: black; TEXT-DECORATION: none
+}
+.version {
+	COLOR: gray
+}
+.error {
+	MARGIN-BOTTOM: 10px
+}
+.expandable {
+	FONT-WEIGHT: bold; CURSOR: hand; COLOR: navy; TEXT-DECORATION: underline
+}
+<span>
+<h1>Server Error in '/WcfHost' Application.
+<hr>
+</h1>
+<h2><i>The type 'Csla.Server.Hosts.WcfPortal', provided as the Service attribute 
+value in the ServiceHost directive could not be found.</i> </h2></span><font face="Arial, Helvetica, Geneva, SunSans-Regular, sans-serif "><b>Description: 
+</b>An unhandled exception occurred during the execution of the current web 
+request. Please review the stack trace for more information about the error and 
+where it originated in the code. <br><br><b>Exception Details: 
+</b>System.InvalidOperationException: The type 'Csla.Server.Hosts.WcfPortal', 
+provided as the Service attribute value in the ServiceHost directive could not 
+be found.<br><br><b>Source Error:</b> <br><br>
+<table bgcolor="#ffffcc">
+
+<tr>
+<td><code>An unhandled exception was generated during the execution of the 
+current web request. Information regarding the origin and location of the 
+exception can be identified using the exception stack trace below.</code> 
+</td></tr></table><br><b>Stack Trace:</b> <br><br>
+<table bgcolor="#ffffcc">
+
+<tr>
+<td><code></code><pre>[InvalidOperationException: The type 'Csla.Server.Hosts.WcfPortal', provided as the Service attribute value in the ServiceHost directive could not be found.]
+   System.ServiceModel.Activation.ServiceHostFactory.CreateServiceHost(String constructorString, Uri[] baseAddresses) +4072062
+   System.ServiceModel.HostingManager.CreateService(String normalizedVirtualPath) +11656092
+   System.ServiceModel.HostingManager.ActivateService(String normalizedVirtualPath) +42
+   System.ServiceModel.HostingManager.EnsureServiceAvailable(String normalizedVirtualPath) +479
+
+[ServiceActivationException: The service '/WcfHost/WcfPortal.svc' cannot be activated due to an exception during compilation.  The exception message is: The type 'Csla.Server.Hosts.WcfPortal', provided as the Service attribute value in the ServiceHost directive could not be found..]
+   System.ServiceModel.AsyncResult.End(IAsyncResult result) +11527290
+   System.ServiceModel.Activation.HostedHttpRequestAsyncResult.End(IAsyncResult result) +194
+   System.ServiceModel.Activation.HostedHttpRequestAsyncResult.ExecuteSynchronous(HttpApplication context, Boolean flowContext) +176
+   System.ServiceModel.Activation.HttpModule.ProcessRequest(Object sender, EventArgs e) +278
+   System.Web.SyncEventExecutionStep.System.Web.HttpApplication.IExecutionStep.Execute() +68
+   System.Web.HttpApplication.ExecuteStep(IExecutionStep step, Boolean&amp; completedSynchronously) +75
+</pre></td></tr></table><br>
+<hr>
+<b>Version Information:</b>&nbsp;Microsoft .NET Framework Version:2.0.50727.3053; 
+ASP.NET Version:2.0.50727.3053 </font><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, May 25, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>It sounds like Csla.dll isn&#8217;t in your bin directory.<o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>pillesoft replied on Thursday, May 28, 2009</h2>right,<br><br>the problem was that this service didn't contain the csla.dll and the other projecttracker related dlls.<br>after i added them as Reference to this project and build it the whole application is working<br><br>thank you very much!<br><br>Ivan<br><br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

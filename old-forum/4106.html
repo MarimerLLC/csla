@@ -1,0 +1,24 @@
+<html><header><title>ListChanged Event</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>ListChanged Event</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4106.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>culprit posted on Wednesday, January 02, 2008</h2><P>Dear Forum,</P>
+<P>I have a particular collection for which I have created a BusinessListBase. For some reason during the Update procedure the ListChanged event is being fired even though I set to false at the beginning of the procedure:</P><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Friend</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Sub</FONT><FONT size=2> Update(</FONT><FONT color=#0000ff size=2>ByVal</FONT><FONT size=2> cn </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> SqlConnection, </FONT><FONT color=#0000ff size=2>ByVal</FONT><FONT size=2> parent </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Object</FONT><FONT size=2>)</P>
+<P>RaiseListChangedEvents = </FONT><FONT color=#0000ff size=2>False</P></FONT><FONT size=2>
+<P></FONT><FONT color=#008000 size=2>' loop through each deleted child object</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>For</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Each</FONT><FONT size=2> deletedChild </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> Ingredient </FONT><FONT color=#0000ff size=2>In</FONT><FONT size=2> DeletedList</P>
+<P>deletedChild.DeleteSelf(cn)</P>
+<P></FONT><FONT color=#0000ff size=2>Next</P></FONT><FONT size=2>
+<P>DeletedList.Clear()</P>
+<P></FONT><FONT color=#008000 size=2>' loop through each non-deleted child object</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>For</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Each</FONT><FONT size=2> child </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> Ingredient </FONT><FONT color=#0000ff size=2>In</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Me</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>If</FONT><FONT size=2> child.IsNew </FONT><FONT color=#0000ff size=2>Then</P></FONT><FONT size=2>
+<P>child.Insert(cn, parent)</P>
+<P></FONT><FONT color=#0000ff size=2>Else</P></FONT><FONT size=2>
+<P>child.Update(cn, parent)</P>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>If</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Next</P></FONT><FONT size=2>
+<P>RaiseListChangedEvents = </FONT><FONT color=#0000ff size=2>True</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Sub</FONT></P>
+<P><FONT color=#0000ff size=2>I do not want the ListChanged event to fire during DB update because there are some calculations being performed on this event that have already been performed when the user edits the list within the grid. </FONT></P>
+<P><FONT color=#0000ff size=2>Could someone let me know what I am doing wrong or what to do to keep this event from firing during the update?</FONT></P>
+<P><FONT color=#0000ff size=2>Thank You,</FONT></P>
+<P><FONT color=#0000ff size=2>Rob</P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, January 02, 2008</h2>This is a known issue (bug) that was fixed in 3.0.3.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>culprit replied on Thursday, January 03, 2008</h2><P>Thank you. Perfect. </P>
+<P>(Can't believe I missed the availability of the book on 3 -- buying it now)</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

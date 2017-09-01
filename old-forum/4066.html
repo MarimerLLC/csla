@@ -1,0 +1,27 @@
+<html><header><title>3.5 New Book</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>3.5 New Book</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4066.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Dodi posted on Thursday, December 20, 2007</h2><P>Hey Rocky,</P>
+<P>Do you have any expected date for the final 3.5 framework?&nbsp;I know its Q1 2008. On the other hand do you plan to write book about the 3.5.</P>
+<P>Technical Part:</P>
+<P>I&nbsp;seen heavily use of reflection, which is so clean indeed, but is there any performance complaint so far?</P>
+<P>Thanks </P>
+<P>Dodi</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>skagen00 replied on Thursday, December 20, 2007</h2><P>Please see his blog entries:</P><A href="http://www.lhotka.net/weblog/CSLANET35StatusUpdateDec5.aspx">http://www.lhotka.net/weblog/CSLANET35StatusUpdateDec5.aspx</A>
+<P><A href="http://www.lhotka.net/weblog/CSLANETStatusUpdateNovember2007.aspx">http://www.lhotka.net/weblog/CSLANETStatusUpdateNovember2007.aspx</A></P>
+<P>And in terms of reflection, the general statement made in this area is that the ~15% performance loss (a number I think Rocky has used) is weighed against the practicalities and usefulness of the actual reflection.</P>
+<P>Perhaps not an entirely thorough reply but hope that helps. </P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, December 20, 2007</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>skagen00:</strong></div><div>
+<P>And in terms of reflection, the general statement made in this area is that the ~15% performance loss (a number I think Rocky has used) is weighed against the practicalities and usefulness of the actual reflection.</P>
+<P></div></BLOCKQUOTE></P>
+<P>That 15% number was for a prototype reflection-based DAL that I wrote - and discarded. I thought that was too high a price to pay for data access.</P>
+<P>The use of reflection in the data portal is incidental given the high cost of talking to a database and/or going to an app server. Essentially there's no impact in any real sense.</P>
+<P>The use of reflection in n-level undo can have an impact on very large object graphs. But most people never see an issue, because this is used behind a smart client, so there's a dedicated client workstation running this code.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, December 20, 2007</h2><P>It is actually Q2 - probably June, maybe even July (as I might try to sneak in some ADO.NET EF and/or Silverlight content). (<A href="http://www.lhotka.net/cslanet/Roadmap.aspx">http://www.lhotka.net/cslanet/Roadmap.aspx</A>)</P>
+<P>The use of reflection isn't as bad as people seem to think. You almost certainly use it every day - if you use the BinaryFormatter, XmlSerializer, any form of data binding, WCF, WPF, WF, etc. They are full of reflection.</P>
+<P>CSLA uses reflection in two primary places - n-level undo and the data portal. </P>
+<P>Of those, n-level undo is by far the heaviest user. Of course n-level undo is an optional feature, and if you don't use it you incur no overhead. If you do use it, you are probably creating either a Windows Forms or WFP UI - in which case you are already neck-deep in reflection thanks to the way those technologies implement data binding.</P>
+<P>On the data portal side the use of reflection is relatively indidental given the overhead of talking to the database and/or going across a network to an app server (<A href="http://www.lhotka.net/Article.aspx?area=4&amp;id=4320e7f2-dd14-4928-b552-4eb0cb82cd68">http://www.lhotka.net/Article.aspx?area=4&amp;id=4320e7f2-dd14-4928-b552-4eb0cb82cd68</A>).</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, December 20, 2007</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div>
+<P>It is actually Q2 - probably June, maybe even July (as I might try to sneak in some ADO.NET EF and/or Silverlight content). (<A href="http://www.lhotka.net/cslanet/Roadmap.aspx">http://www.lhotka.net/cslanet/Roadmap.aspx</A>)</P>
+<P></div></BLOCKQUOTE></P>
+<P>Sorry, I thought you were asking about the books...</P>
+<P>The <EM>framework</EM> is slated for a Q1 release, that's true. I expect to start putting out meaningful test versions toward the end of January, and if all goes well it should be "done" at the end of February.</P>
+<P>I say "done", because the reality is that I change things as I write the books. That book writing process is really a quality check - not only that the code works, but that it is comprehensible and explainable. Every time I've done this the framework has changed during the book writing process, and I doubt this time will be different.</P>
+<P>So 3.5.0 will be out, but by the time the book is done in June/July I'm sure the framework will be at some higher point release - .2 or .3 I suppose.</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

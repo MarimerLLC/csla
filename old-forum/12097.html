@@ -1,0 +1,90 @@
+<html><header><title>Clone/Serialization takes long time</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Clone/Serialization takes long time</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/12097.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>c_manboy posted on Tuesday, July 30, 2013</h2><p>
+ 
+  Normal
+  0
+  
+  
+  false
+  false
+  false
+  
+   
+   
+   
+   
+   
+  
+  MicrosoftInternetExplorer4
+ 
+</p>
+<p>
+ 
+ 
+
+
+
+
+
+
+
+<p class="MsoNormal">I have a BLB EmployeeList which contains a child BLB
+HrDocumentList.<span style="mso-spacerun:yes;">&nbsp; </span>The HrDocumentList uses
+a separate DAL and connection than
+the EmployeeList.<span style="mso-spacerun:yes;">&nbsp; </span>The EmployeeList is
+roughly 110 Employee objects, and each Employee object has roughly 100
+HrDocument objects.</p>
+<p class="MsoNormal">&nbsp;When I save changes the ViewModel class clones the
+EmployeeList prior to saving.<span style="mso-spacerun:yes;">&nbsp; </span>But the clone
+takes 8 seconds.<span style="mso-spacerun:yes;">&nbsp; </span>I made the
+HrDocumentList a private backing field and NonSerialized.<span style="mso-spacerun:yes;">&nbsp; </span>This resolved the performance issue, but
+introduced another issue elsewhere.</p>
+<p class="MsoNormal">&nbsp;I don&rsquo;t fully understand the serialization process and how
+it all works together.<span style="mso-spacerun:yes;">&nbsp; </span>Does the separate
+DAL have anything to do with
+it?<span style="mso-spacerun:yes;">&nbsp; </span>How do I troublehsoot this issue?</p>
+</p>
+<pre style="font-family:Consolas;font-size:13;color:black;background:white;">&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">Public</span>&nbsp;<span style="color:blue;">Shared</span>&nbsp;<span style="color:blue;">ReadOnly</span>&nbsp;HRDocumentsProperty&nbsp;<span style="color:blue;">As</span>&nbsp;<span style="color:#2b91af;">PropertyInfo</span>(<span style="color:blue;">Of</span>&nbsp;<span style="color:#2b91af;">HRDocumentList</span>)&nbsp;=&nbsp;RegisterProperty(<span style="color:blue;">Of</span>&nbsp;<span style="color:#2b91af;">HRDocumentList</span>)(<span style="color:blue;">Function</span>(c)&nbsp;c.HRDocuments,&nbsp;<span style="color:#2b91af;">RelationshipTypes</span>.Child)
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">Public</span>&nbsp;<span style="color:blue;">ReadOnly</span>&nbsp;<span style="color:blue;">Property</span>&nbsp;HRDocuments&nbsp;<span style="color:blue;">As</span>&nbsp;<span style="color:#2b91af;">HRDocumentList</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">Get</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">If</span>&nbsp;<span style="color:blue;">Not</span>&nbsp;(FieldManager.FieldExists(HRDocumentsProperty))&nbsp;<span style="color:blue;">Then</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">Dim</span>&nbsp;criteria&nbsp;<span style="color:blue;">As</span>&nbsp;<span style="color:blue;">New</span>&nbsp;Criteria.<span style="color:#2b91af;">HRDocumentCriteria</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;criteria.And.EmployeeId.Equal(PayrollID)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;LoadProperty(HRDocumentsProperty,&nbsp;<span style="color:#2b91af;">DataPortal</span>.Fetch(<span style="color:blue;">Of</span>&nbsp;<span style="color:#2b91af;">HRDocumentList</span>)(criteria))
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">End</span>&nbsp;<span style="color:blue;">If</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">Return</span>&nbsp;GetProperty(HRDocumentsProperty)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">End</span>&nbsp;<span style="color:blue;">Get</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">End</span>&nbsp;<span style="color:blue;">Property</span>
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:green;">&#39;Public&nbsp;Shared&nbsp;ReadOnly&nbsp;HRDocumentsProperty&nbsp;As&nbsp;PropertyInfo(Of&nbsp;HRDocumentList)&nbsp;=&nbsp;RegisterProperty(Of&nbsp;HRDocumentList)(Function(c)&nbsp;c.HRDocuments,&nbsp;RelationshipTypes.PrivateField)</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:green;">&#39;&lt;NonSerialized&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:green;">&#39;Private&nbsp;_hrDocuments&nbsp;As&nbsp;HRDocumentList</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:green;">&#39;Public&nbsp;ReadOnly&nbsp;Property&nbsp;HRDocuments&nbsp;As&nbsp;HRDocumentList</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:green;">&#39;&nbsp;&nbsp;&nbsp;&nbsp;Get</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:green;">&#39;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;If&nbsp;Not&nbsp;(FieldManager.FieldExists(HRDocumentsProperty))&nbsp;Then</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:green;">&#39;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Dim&nbsp;criteria&nbsp;As&nbsp;New&nbsp;Criteria.HRDocumentCriteria</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:green;">&#39;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;criteria.And.EmployeeId.Equal(PayrollID)</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:green;">&#39;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_hrDocuments&nbsp;=&nbsp;DataPortal.Fetch(Of&nbsp;HRDocumentList)(criteria)</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:green;">&#39;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;End&nbsp;If</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:green;">&#39;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Return&nbsp;GetProperty(HRDocumentsProperty,&nbsp;_hrDocuments)</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:green;">&#39;&nbsp;&nbsp;&nbsp;&nbsp;End&nbsp;Get</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:green;">&#39;End&nbsp;Property</span></pre>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Tuesday, July 30, 2013</h2><p>Maybe you could supply more informatione about your environment such as CSLA version, Client Runtime and which Serializer you use.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>c_manboy replied on Tuesday, July 30, 2013</h2><p>CSLA 4.5.20, .net 4.5, WPF</p>
+<p>I&#39;m not defining a serializer, but objects are marked &lt;Serializable()&gt;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Tuesday, July 30, 2013</h2><p>You may specify the formatter as&nbsp;<span>CslaSerializationFormatter key in app.config/web.config. When not specified you will use the&nbsp;</span><span>System.Runtime.Serialization.Formatters.Binary.BinaryFormatter</span>&nbsp;in NET.</p>
+<p>The BinaryFormatter should only care about the member variables - not the properties as such so it is probably related to the HrDocument. Marking the private field as NonSerialized makes the BinaryFormatter ignore and not serialize this field.&nbsp;</p>
+<p>My best recommendation is to use a <b>memory profiler </b>to get a view of where the time is consumed in your application.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>st3fanus replied on Tuesday, July 30, 2013</h2><p>Hi jonny..</p>
+<p>I have used VS 2012 memory profiler, but I don&#39;t know where to begin.</p>
+<p>Could you have a getting started to used that ?</p>
+<p>&nbsp;</p>
+<p>thanks a lot</p>
+<p>stefanus</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Tuesday, July 30, 2013</h2><p>@stefanus Read this article</p>
+<p>Beginners guide to performance profiling:<br /><a href="http://msdn.microsoft.com/en-us/library/ms182372.aspx">http://msdn.microsoft.com/en-us/library/ms182372.aspx</a></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>st3fanus replied on Wednesday, July 31, 2013</h2><p>thanks a lot jonny</p>
+<p>I&#39;ll read soon</p>
+<p>stefanus</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>skagen00 replied on Tuesday, July 30, 2013</h2><p>Frankly, cloning is slow.&nbsp; Cloning -what- 10k objects is asking for trouble (unless I am misunderstanding things).</p>
+<p>There was a certain part of functionality a colleague developed that involved a clone and it basically ended up being 80% of the overall time a complex process took to execute.</p>
+<p>The clone made things 5X as slow.&nbsp; Maybe with the new serializer things are radically different - I&#39;m just speaking from prior experience.</p>
+<p>I don&#39;t know your application but generally speaking you should not be cloning an object graph of 10k items.</p>
+<p>*Minimally* do some manual handling, only cloning items that are dirty and replacing them as necessary back to the object graph if you need to.&nbsp; I&#39;m sure there are alternative means to your solution other than cloning all 10k items (when likely only a few were changed).</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Tuesday, July 30, 2013</h2><p>Or even reconsider your object graph and do NOT load that much data into memory and allow edit.&nbsp;</p>
+<p>The BinaryFormatter use the users TEMP directory and serializes to/deserialize from disk, That does add to the time used.&nbsp;</p>
+<p>You may want to check the performance with the NetDataContract serializer (default by WCF) rather than the BinaryFormatter.&nbsp;<br />These are he only 2 binary serializers that come with .NET.&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>c_manboy replied on Wednesday, July 31, 2013</h2><p>Thanks for the feedback.&nbsp; I didn&#39;t think through just how many items I was loading and cloning&nbsp;(100 employees times 100 documents really&nbsp;is 10,000 items...go figure).</p>
+<p>In my MVVM approach my model was an editable EmployeeList for master/detail.&nbsp; That&nbsp; made binding easy.&nbsp; But i&#39;m going to move to a readonly list for the master employee list.&nbsp; This should do the trick.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,11 @@
+<html><header><title>Conditional Authorization for a Child Collection</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Conditional Authorization for a Child Collection</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3106.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>JabbaTheNut posted on Wednesday, June 27, 2007</h2><P>I have the following objects:</P>
+<P>Organization (parent)</P>
+<P>---OrganizationRoles (child collection)</P>
+<P>------OrganizationRole (child object)</P>
+<P>Each Organization can have several roles (i.e., Issuer, Broker, Agent, Sponsor, etc.).&nbsp; Organization Administrators are authorized to add, edit and delete most of an Organization's&nbsp;roles.&nbsp; However, some of the roles must be managed by other administrators.&nbsp; For example,&nbsp;the Issuer role must be managed by an Issuer Administrator and the Agent role by an Agent Administrator.</P>
+<P>Typically, I would control authorization to a child object through the CanCreateObject(), CanEditObject(), etc. methods.&nbsp; However, in the above case, I would need to implement instance-based authorization which&nbsp;would be&nbsp;driven&nbsp;by the role being created.&nbsp; This would make UI management somewhat cumbersome.</P>
+<P>My question is...</P>
+<P>Am I approaching this from the wrong direction?&nbsp; How are others approaching this type of problem?</P>
+<P>I thought about adding properties to the Organization object (one for each role)&nbsp;because I can easily control authorization of each property.&nbsp; The problem, however,&nbsp;is that there are a large number of roles and&nbsp;more could be&nbsp;added over time.</P>
+<P>Another thought was to break my OrganizationRoles into groups (e.g., IssuerRoleGroup, AdminRoleGroup, GeneralRoleGroup).&nbsp; But this seems a bit silly.</P>
+<P>Any advise would be appreciated.</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

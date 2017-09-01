@@ -1,0 +1,40 @@
+<html><header><title>Dealing with Time Values</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Dealing with Time Values</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/1161.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>David posted on Friday, September 08, 2006</h2><P>I'm struggling with&nbsp;"Time" values at present and wonder how other people have dealt with this.</P>
+<P>My database (SQL Server 2005)&nbsp;stores Time values&nbsp;in&nbsp;a (nullable) date column with no&nbsp;date component. </P>
+<P>In my BOs I am using a SmartDate. To allow meaningful comparisons, I have ensured that all of my Time values do <STRONG>not</STRONG> contain a date component. However, this means that 12am is the same as DateTime.MinValue, which I use to&nbsp;represent a&nbsp;Null for all my date values.</P>
+<P>I&nbsp;thought about using the&nbsp;MaxValue to represent Nulls, but I'm nervous about not having a consistent approach toward Null representation and how this could easily lead to bugs. Especially since I'm using CodeSmith to create the BOs and they all default to using the MinValue. </P>
+<P>Any ideas on how others have dealt with this would be greaty appreciated.</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Friday, September 08, 2006</h2>You may want to create a SmartTime class, which will ignore any date parts.&nbsp; You can track empty via a boolean variable within the class, instead of comparing the current value to a min or max value, which exludes those values from use in the set.<br><br>HTH<br>Andy<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>figuerres replied on Friday, September 08, 2006</h2><P>More than once I have thought that there should be 3 types:</P>
+<P>Date -- no hours,minutes,seconds etc....</P>
+<P>Time - with hh:mm:ss.tttt that hold a max of 24h 0s </P>
+<P>DateTime - like we have now.</P>
+<P>and be able to add a Date and a time to make a datetime and other related conversions.</P>
+<P>calender apps and other date and time related stuff could really benifit&nbsp; IMHO</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>pelinville replied on Friday, September 08, 2006</h2><DIV>I agree with another poster about the three date/time types. But untill then...</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>For times I store them as integers.&nbsp; Up to this point I only use minute precision but I can see where this will have to change and I will have&nbsp;to use at least second precision to begin with.&nbsp; I have a smartTime class that converts them (integer.minvalue is null) to a datetime value with the date = 1/1/01.</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>After working with this model I should have done the following for all my time stuff.&nbsp; </DIV>
+<DIV>&nbsp;</DIV>
+<DIV>First default to at least second resolution.&nbsp; </DIV>
+<DIV>Second create a UDT in the db to control the allowed values.</DIV>
+<DIV>Third the SmartTime class should use the timespan classes in the frame work as well as the datetime classes.</DIV>
+<DIV>&nbsp;</DIV></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>David replied on Friday, September 08, 2006</h2><P>Thanks for your comments.</P>
+<P>I&nbsp;ended up&nbsp;creating a SmartTime structure stealing a fair bit from the SmartDate source code. I also created a SmartDuration&nbsp;(based on the TimeSpan type) as I required&nbsp;some different behaviour (e.g. values greater than 24hrs).&nbsp;It is now working really well and I was able to greatly simplify the code in my UI controls.</P>
+<P>With regard to storing times in the database as integers, doesn't this complicate your queries? </P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>pelinville replied on Friday, September 08, 2006</h2><DIV>You would think it would but the smart time class goes both ways.&nbsp; Give it a time and it gives back and integer.&nbsp; Or a time range is converted to an integer range.&nbsp; Plug that into the query and all is good.</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>All my queries are called by parent objects so that functionality is readily available.&nbsp; Objects be smart!</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>But I could see a problem if&nbsp;human&nbsp;made quries that don't know the rule must be created.</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>For me not a problem.&nbsp; The database is only a storage mechanism for the objects.&nbsp; For reports we have a second database which is a transformation of the application DB just for reports with those values converted into datetime stuff.</DIV></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>figuerres replied on Saturday, September 09, 2006</h2><P>I wonder....&nbsp; with SQL CLR and 2005 defined types...</P>
+<P>could we have sql return a new type ?</P>
+<P>if not then have a SQL CLR type for time that stores an unsigned int but displays a day + time string </P>
+<P>then have a matching .net type that does the rest of what we might want.</P>
+<P>5,184,000.0 would be 24 hours as 60th's of a second -- that should be good time res for all but a few uses.</P>
+<P>32 bits unsigned would give: 828 days and about 12 hours of storage so it would handle showing </P>
+<P>days hh:mm:ss:tt </P>
+<P>by having sql defined type handle storage and output formating -- like it does with datetime </P>
+<P>then your .net side class would do a .Parse() on reading and a .ToSTring() on writing to sql.</P>
+<P>seems like we could make it very easy to use.</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

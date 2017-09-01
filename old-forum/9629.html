@@ -1,0 +1,15 @@
+<html><header><title>BusinessRules.CheckRules() -&gt; does it set IsDirty?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>BusinessRules.CheckRules() -&gt; does it set IsDirty?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9629.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Ranjini posted on Wednesday, October 13, 2010</h2><p>I know&nbsp;this subject has possibly been discussed several times on this forum, but I am confused as to what it is really meant to do. So, i thought I will throw the question out there and see if i can get some clarity.</p>
+<p>Per , <a href="http://forums.lhotka.net/forums/p/9279/44060.aspx#44060">http://forums.lhotka.net/forums/p/9279/44060.aspx#44060</a>&nbsp;(a post from July of this year), it seems like CheckRules doesnt set IsDirty = true if it changes the value of a property, but I am experiencing otherwise.</p>
+<p>I have a BB (root with other properties) -&gt; BLB -&gt; BB situation. I added a rule to the BB root where i am doing some computation and altering a property of the BB (child) that belongs to the BLB. After the rule executes , the BB (child) is marked as IsSelfDirty and the whole object graph is hence marked IsDirty. Is this how it is meant to work? If it is , is there a way to get around this? I need a clean object coming back from the server and I am unable to find a way to get around this.</p>
+<p>Please clarify.....</p>
+<p>Thanks</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>Marjon1 replied on Wednesday, October 13, 2010</h2><p>As per the previous post, if you are using the direct properties on the BB (child) object then the field would be marked as dirty when the value changed, if you don&#39;t want the object to be marked as dirty, doing one of the following should work.&nbsp;</p>
+<p>&nbsp;</p>
+<p>
+<ul>
+<li>Use LoadProperty methods to set the value on the BB (child)</li>
+<li>Wrap your property changes around a&nbsp;BypassPropertyChecks&nbsp;block</li>
+</ul>
+</p>
+<p>&nbsp;</p>
+<p>Seeing a sample of the code within your business rule would also make this much easier to identify what is causing your problem, but essentially CheckRules is no different to any other code. If you change a property in a way that would normally result in it being marked as dirty, then it will be marked as dirty within this method as well.&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Ranjini replied on Monday, October 18, 2010</h2><p>THanks much...</p>
+<p>I changed SetProperty to LoadProperty on the BB Child&#39;s property i am altering and all is good !! thanks again!</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

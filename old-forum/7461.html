@@ -1,0 +1,504 @@
+<html><header><title>CSLA .NET 3.8.0 alpha 1 available</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA .NET 3.8.0 alpha 1 available</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/7461.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka posted on Saturday, August 15, 2009</h2><P>I've put an early release of 3.8.0 online for download.</P>
+<P>The primary areas of focus are in Csla.Silverlight and Csla.Wpf, and there are breaking changes to the XAML controls in those namespaces, so check the change logs for details. I've been focusing (so far) on InvokeMethod and PropertyStatus.</P>
+<P>On the Silverlight side there's also a new ViewModel base class to help create viewmodel objects, and an enhancement to make CslaDataProvider.ObjectInstance bindable so you can probably use CslaDataProvider as a viewmodel object. I also added a new trigger action called Execute which offers a more modern (though more verbose) way to do something like InvokeMethod.</P>
+<P><EM>Also it occurs to me that CSLA .NET for Silverlight probably won't build if you don't have Expression Blend 3 installed. I'll have to figure out a solution for this - but in the meantime, if you don't have Blend 3 installed you'll need to comment out or remove the Csla.Silverlight.Execute class.</EM></P>
+<P>Finally, on the Silverlight side, MobileFormatter now defaults to using binary XML to serialize objects. This should reduce the memory footprint for n-level undo, and should reduce the size of the byte stream that goes over the data portal. There is a config option you can set to get the text XML serialization if you need that for some reason.</P>
+<P>Unfortunately I haven't had time to do any testing with the binary XML in terms of perf or memory footprint, so I don't know if it makes a big difference or not. I got it implemented and working and that's about it...</P>
+<P>I'm on vacation the week of August 17, so if there are any major issues just remember that this is a <EM>very early</EM> release and it will continue to change.</P>
+<P>In fact - my primary motivation for putting this out right now is to get feedback and input, especially around the changes to InvokeMethod, PropertyStatus, the ViewModel base class and the Execute trigger action. If you have ideas on how these can be improved for the Silverlight 3 world I am eager to hear them!</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>paupdb replied on Monday, August 17, 2009</h2>Hi Rocky<br><br>The two features I'm most interested in will be the ViewModel base and the binary xml serialisation - though I have already implemented both with Csla 3.7.&nbsp; <br>Well on the binary xml side I am using binary encoding for the WCF end at least.<br><br>My current ViewModel base subclasses CslaDataProvider directly and then wraps several properties for easier/clearer binding syntax - for example the Data property.&nbsp; So very keen to see what you have done.<br><br>Thanks for putting in the hard yards on this.&nbsp; <br><br>Cheers<br><br>Paul<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jack replied on Monday, August 17, 2009</h2><P>Paul,</P>
+<P>Did you notice any measurable difference on the binary xml implementation?&nbsp; Is it something you can share for 3.7?&nbsp; I'm looking for some quickfix speed improvements but not sure if I want to put out Alpha software.</P>
+<P>Thanks</P>
+<P>jack</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jack replied on Monday, August 17, 2009</h2>I did the upgrade solely to see the impact of the binary xml implementation.&nbsp; My worst case object graph went from 33.5MB to 19.6MB and was seemed quicker to serialize/deserialize, and obviously was thus quicker to compress, send, and decompress.<br><br>I'm very pleased - now if I can just reduce the overall size I'll be golden.<br><br>jack<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>paupdb replied on Tuesday, August 18, 2009</h2>Jack,<br><br>In my case, I had already implemented a custom WcfProxy class back in Csla 3.6 to include zip compression/decompression code using the SharpZipLib library.<br><br>So the subsequent move to using binary encoding for Wcf didn't reduce my object graphs by that much...although I plan to remove my explicit zip/unzip code to see how pure binary encoding goes.<br><br>That said I think Rocky has taken the binary xml even further into the framework itself for undo etc, so I'm expecting more reduction in terms of memory usage as well as transport objects with 3.8<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Sunday, August 23, 2009</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Yes, my work in 3.8 was to make the actual object graph
+serialization use the binary format. That isn&#8217;t something you can control
+or affect through the WCF configuration.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>If you care about the details, you should read my Silverlight
+blog posts about the MobileFormatter and how it was designed. At a high level
+it works like this:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoListParagraph><span><span>1.<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span></span><span>The business objects&#8217; data is copied into a set of DTOs<o:p></o:p></span></p>
+
+<p class=MsoListParagraph><span><span>2.<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span></span><span>The DTOs are serialized using the DataContractSerializer<o:p></o:p></span></p>
+
+<p class=MsoListParagraph><span><span>3.<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span></span><span>The resulting byte array is stored in memory, or sent over WCF
+or whatever<o:p></o:p></span></p>
+
+<p class=MsoListParagraph><span><span>4.<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span></span><span>If it is sent over WCF, then obviously WCF serializes the
+message &#8211; including the byte array<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>So if you configure WCF to use binary encoding that affects step
+4 in the process. I haven&#8217;t done thorough testing here, but I suspect you&#8217;ll
+see a 40-60% reduction of the data stream over the wire by doing this.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Of course you can also implement compression like I show in the
+video series, and that&#8217;ll radically reduce the size of the data stream
+over the wire &#8211; and the WCF config change will still shrink that by
+around half. So the WCF thing is a big deal.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>My work in 3.8 is to affect step 2 in the process. The exact
+impact of this is difficult to know, and I didn&#8217;t have time to do any
+real testing. This change really affects the way the business object data is
+encoded, and so should have a pretty big impact, but probably more like 20-30%
+I would guess. Less than the use of compression or the WCF change.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I suspect that most people will want to have CSLA use the binary
+encoding for step 2 so that&#8217;s the default. I also suspect that most
+people will configure WCF to use the binary encoding. And that they&#8217;ll
+use compression. The three things combined should produce a really nice overall
+result.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> paupdb
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Tuesday, August 18, 2009 7:07 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] CSLA .NET 3.8.0 alpha 1 available<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Jack,<br>
+<br>
+In my case, I had already implemented a custom WcfProxy class back in Csla 3.6
+to include zip compression/decompression code using the SharpZipLib library.<br>
+<br>
+So the subsequent move to using binary encoding for Wcf didn't reduce my object
+graphs by that much...although I plan to remove my explicit zip/unzip code to
+see how pure binary encoding goes.<br>
+<br>
+That said I think Rocky has taken the binary xml even further into the framework
+itself for undo etc, so I'm expecting more reduction in terms of memory usage
+as well as transport objects with 3.8<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jack replied on Tuesday, August 25, 2009</h2>Rocky,<br><br>Which sample application, if any of them, are you trying out these changes in?<br><br>Thanks<br><br>jack<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, August 25, 2009</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Right now I have two simple experimental projects (one for SL,
+one for WPF) that I&#8217;ve been using. They aren&#8217;t in svn, but perhaps I should add
+them to increase visibility.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Jack
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Tuesday, August 25, 2009 10:08 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] CSLA .NET 3.8.0 alpha 1 available<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Rocky,<br>
+<br>
+Which sample application, if any of them, are you trying out these changes in?<br>
+<br>
+Thanks<br>
+<br>
+jack<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jack replied on Friday, September 11, 2009</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Rocky,<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>When you put out Alpha 2 will you add your samples?<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Thanks<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>jack<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Rockford Lhotka [mailto:cslanet@lhotka.net]
+<br>
+<b>Sent:</b> August-25-09 9:19 AM<br>
+<b>To:</b> jaddington@alexandergracie.com<br>
+<b>Subject:</b> RE: [CSLA .NET] CSLA .NET 3.8.0 alpha 1 available<o:p></o:p></span></p>
+
+</div>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal><span>Right now I have two simple experimental projects (one for SL,
+one for WPF) that I&#8217;ve been using. They aren&#8217;t in svn, but perhaps I should add
+them to increase visibility.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Jack [mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Tuesday, August 25, 2009 10:08 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] CSLA .NET 3.8.0 alpha 1 available<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky,<br>
+<br>
+Which sample application, if any of them, are you trying out these changes in?<br>
+<br>
+Thanks<br>
+<br>
+jack<br>
+<br>
+<o:p></o:p></span></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, August 31, 2009</h2><P>One thing I'm looking at doing with ViewModel&lt;T&gt; is creating two classes.</P>
+<P>ViewModelBase&lt;T&gt; - implements the Model property, public Can___() methods like CanSave(), and protected DoSave(), DoCancel(), etc. In other words, this class exposes no public verb/action/command methods.</P>
+<P>ViewModel&lt;T&gt; - inherits from ViewModelBase and adds public verbs like Save(), Cancel(), etc. for use by InvokeMethod or the new Invoke trigger action.</P>
+<P>The idea is that ViewModelBase can be used as a base class if you are using some other UI framework's commanding model. There are so many out there, and Microsoft has no standard for Silverlight and an iffy standard for WPF - so this would allow you to implement your verbs as required by your UI framework.</P>
+<P>And ViewModel can be used as a base class if you are using the commanding model provided by CSLA .NET, which may be very useful if you are implementing your own UI framework.</P>
+<P>Hopefully this is a way to make everyone reasonably happy :)</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>SonOfPirate replied on Tuesday, September 01, 2009</h2><P>Rocky,</P>
+<P>Any examples using the new ViewModel&lt;T&gt; class yet?&nbsp; I was reviewing the code and it looks like you expect the Model property to be set externally - possibly through data-binding since it is defined as a DependancyProperty.&nbsp; This has me a bit confused since it was my expectation that we would be doing something similar to the CslaDataProvider and supporting the asynchronous loading of the model object under-the-covers of the ViewModel.</P>
+<P>In other words, I expected to see code in the Model getter that trigger an asynchronous method call to retrieve the instance and set it to the Model property.&nbsp; Right now I don't see anything that resembles this.</P>
+<P>Can you share your thoughts and intentions?&nbsp; (Examples always work, too!)</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, September 01, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Creating the Model instance is something I haven&#8217;t figured
+out quite yet, and so I&#8217;ve moved on to working on some other things
+(PropertyStatus) while I think about it.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>But this thread is a good place to solicit input.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>The flaw in the data provider model is that there&#8217;s a
+really steep cliff.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>If your object can be retrieved/created without parameters, or
+with hard-coded parameters, you can do everything in XAML.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>But if your object requires variable parameters &#8211; especially
+if they need to come from a previous page/form &#8211; then there&#8217;s no real
+answer beyond code-behind.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>One of my goals is to eliminate (or radically minimize)
+code-behind, so this means the data provider approach isn&#8217;t desirable, and
+this is one reason I haven&#8217;t replicated it in ViewModel&lt;T&gt;.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>It seems to me that the ideal solution somehow involves the
+ViewModel being in control of the create/retrieve operation. And that somehow
+the ViewModel would have any parameters necessary to do the retrieve.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Since a very common scenario is that we got to the current form
+from a previous form, this implies that the previous form&#8217;s ViewModel has
+a way to pass parameters to this form&#8217;s ViewModel. In fact, it would be
+really nice if the previous form&#8217;s VM could actually create this form&#8217;s
+VM &#8211; or could invoke a Controller that does the creation. Something like
+that.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Then bring the various navigator models into the picture &#8211;
+either the SL 3 one or the CSLA one. They allow passing parameters as long as
+the values can be represented by text (in a URI), and the navigator component
+basically acts like a Controller.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>So now you might argue that the primary model is that form A
+navigates to form B and provides the necessary parameters through the
+navigation URI. So now form B&#8217;s VM needs a way to get the parameters from
+that URI so it can initiate the retrieve of the Model.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>There&#8217;s no scenario I can see where it is desirable for
+the XAML to trigger retrieval of the model.<o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tmg4340 replied on Tuesday, September 01, 2009</h2><P><FONT face=Tahoma size=2>You know, for someone who didn't want to make a UI framework, you seem to be doing a lot of "UI framework"-type things lately... <img src="/emoticons/emotion-1.gif" alt="Smile [:)]" /></FONT></P>
+<P><FONT face=Tahoma size=2>I've seen this come up a couple of different places, but I'm still confused about it.&nbsp; What is the driving force behind the "no code-behind" concept?&nbsp; Maybe I just haven't worked with WPF/Silverlight enough, but I'm still searching for a reason why code that isn't "visual candy" is such&nbsp;a Bad Thing.&nbsp; I'm not talking about putting all your code in the code-behind - but I'm trying to figure out why a "Passive View" concept has become The Way.&nbsp; Sure, it does make for easier testing - but since XAML (and the attendant technologies that use it) is still relatively immature, we seem to be going through an awful lot of hoops...</FONT></P>
+<P><FONT face=Tahoma size=2>Ultimately, all you're doing is replacing developer's code-behind with yours.&nbsp; I do realize there is a difference, and I know that a fair amount of the code would probably be boilerplate anyway.&nbsp; But that could probably be handled through the UI framework you&nbsp;advocate developers build at the start of any project.&nbsp; This code would arguably be simpler than what you're trying to do, since it can be built specifically to solve the application/navigation model they are building.&nbsp;&nbsp;The more you do, the more complicated your code gets, because you have to try and cover the "80/20 Rule".</FONT></P>
+<P><FONT face=Tahoma size=2>- Scott</FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, September 01, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I won&#8217;t argue with you Scott &#8211; I&#8217;m not
+entirely sold on this MVVM thing myself.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I rather liked the data provider model, coupled with UI-oriented
+bits of code in the code-behind. I thought (and think) that it is a very
+effective and productive way to build the UI in XAML.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>You&#8217;ll notice that I&#8217;m not dropping
+CslaDataProvider, and in fact 3.8 includes a couple really nice enhancements of
+the control to make it work better in master-detail scenarios. This is because
+I like the data provider model quite a lot, especially as I did it in
+Silverlight (WPF imposes some not-so-friendly constraints I&#8217;m not happy
+with).<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>At the same time the buzz is all around MVVM, and so I feel that
+it is very important that CSLA work with that model as well. I surely don&#8217;t
+intend on writing a UI framework, but there are aspects to some controls (like
+PropertyStatus) that make the MVVM approach less smooth than it could be.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Additionally, in my mind, if you create a ViewModel you are
+going to want a base set of behaviors when the Model is a CSLA business object,
+and so I&#8217;m creating a basic ViewModel base class (2 actually) to make it
+easier for MVVM people to create their VM types. If someone doesn&#8217;t like
+the base class, they can safely ignore it, but I suspect that most people will
+want their VM to include the stuff in my base classes.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>In the end I absolutely think you are right: the ViewModel is
+just a different place to put code-behind. The only real difference I can see
+that matters is that it is more testable. Whether that is worth the increased
+complexity isn&#8217;t clear to me, but some people accept a lot of complexity
+and cost to get testability &#8211; and as a consultant I can&#8217;t complain
+if I&#8217;m on such a project because I get paid by the hour :)<o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>paupdb replied on Tuesday, September 01, 2009</h2>Rocky,<br><br>I fear any solution to these kinds of issues can only be generic to a certain point, since aspects involved in cases where parameters need to move around are subject to whatever navigation, MVVM and general application paradigms and design decisions made per project/company/application.&nbsp; <br>For example in our application, navigation leverages the SL3 navigation controls but then feeds into a custom Shell which will dynamically download a module and instantiate the View - i.e. a composite application design along the lines of Prism 2 recommendations.<br><br>We found that the CslaDataProvider's Refresh/Save verbs plus the FactoryParameters array were quite usable in a ViewModel case, though we did extend it somewhat as you would have seen.<br>To manage the passing of parameters to the VM, we implemented a pattern/convention stating that all our VMs must have at least one Initialise method which accepts the parameters.&nbsp; In some cases, our VMs have multiple Initialise methods to handle different possible parameter sets:<br><br>An example:<br>/// &lt;summary&gt;<br>&nbsp;&nbsp;&nbsp; /// Initialise with a string of keywords<br>&nbsp;&nbsp;&nbsp; /// &lt;/summary&gt;<br>&nbsp;&nbsp;&nbsp; public void Initialise(string keywords, DisciplineInfo discipline, ProjectInfo project)<br>&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; this.ModelType = typeof(KeywordInfos).AssemblyQualifiedName;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; this.Criteria = new KeywordInfos.Criteria();<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; this.FactoryParameters.Add(Criteria);<br>&nbsp;&nbsp;&nbsp; <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Criteria.Keywords = keywords;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Criteria.Project = project;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Criteria.Discipline = discipline;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Refresh();<br>&nbsp;&nbsp;&nbsp; }<br><br>In the case above, the VM is for a dialog, so it is not directly accessible by a public url and thus we can pass objects into the Initialise.&nbsp; Normal pages in our app - which are normally accessible by public url - have a restriction that all the parameters to the Initialise need to be primitives in order to be ToString'ed into a url query string portion.<br><br>To understand how we enforce the Initialise pattern, below is a snippet of code from our page loading class.&nbsp; Basically our page loading class does the following:<br>1. Look up the View class matching the page number given in the url<br><br>2. Create the View dynamically using reflection<br><br>3. We mandate that all View's must have a StaticResource xaml line included for the ViewModel - this approach effectively creates the VM via parameterless constructor, but more importantly the VM is available in the XAML for data binding from anywhere in that View.<br>&lt;vm:KeywordsSelectDialogViewModel x:Key="ViewModel" d:IsDataSource="true" /&gt;<br><br>4. Our page loading code then executes the code below to extract the VM from the View and executes the relevant Initialise based on the parameter object array given.<br>// Get the ViewModel out of the view's resources.&nbsp; <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var vm = (view.Resources["ViewModel"] as ViewModelBase);<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (vm == null)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; throw new ProjectionException("The ViewModel must be called 'ViewModel' and be declared in the top level Resources section of the View!");<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // Assign the View to the ViewModel<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; vm.View = view;<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; try {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // Initialise the ViewModel<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; vm.GetType().InvokeMember("Initialise", BindingFlags.InvokeMethod, null, vm, viewmodelParameters);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; catch (Exception e) {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; throw new ProjectionException("Error calling ViewModel Initialise", e);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; view.DataContext = vm;<br><br>Hope this helps explain one way that MVVM is implemented based on Csla and CslaDataProvider.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, September 01, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Thanks Paul, that&#8217;s good input.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>This is exactly why my current ViewModel base classes are very
+basic and don&#8217;t impose or implement any create/fetch behaviors. By
+leaving that out of the base classes, I allow you to very easily create your
+own VM base class (subclass of mine presumably) that adds whatever create/fetch
+model you need to integrate with your UI/navigation framework.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I&#8217;ve been doing something very similar to what you
+describe &#8211; requiring a convention by which the primary ViewModel for a
+form is a resource named &#8220;ViewModel&#8221;. That works for a lot of
+simpler forms, but is a little problematic for more complex forms where the
+form leverages multiple VM objects.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>The thing is, as soon as I got to this point I realized that
+every UI framework out there will come up with a different set of such
+conventions. Since Microsoft hasn&#8217;t provided any standard around this, everyone
+will make up their own thing &#8211; and since I don&#8217;t want CSLA to become
+a UI framework, I don&#8217;t really want to make up one too &#8211; at least
+not in CSLA.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>paupdb replied on Tuesday, September 01, 2009</h2>To answer the questions about why MVVM? <br><br>Every application/company is different and there is no definitive pattern that will solve all your problems, so really MVVM is certainly not the only way.<br>All I can provide is the list of reasons why I as an application architect decided to go with it:<br>1. Testability.&nbsp; <br>Having what is effectively your code behind in a seperate class to the UI/View means that you can very easily test actions upon the UI - e.g. like when a button is clicked.&nbsp; This is because your VM should have that action on it - usually associated to the View through an abstraction like a Command.&nbsp; To write test classes against a VM is generally very easy.<br><br>2. Strong seperation of business, and UI logic.<br>This one really comes down to how well you enforce it, but provided you strictly put all business logic in the Model (a CSLA object), keep verbs/actions in the VM and only write View code-behind when you need to do something fancy on the UI (like a complex animation), you end up with a very nicely seperated code base.&nbsp; Its also very easy to know where to look when you are investigating/debugging.<br><br>3. Extremely well suited to a pure data binding implementation (which in turn gives a pure XAML implementation).<br>Goes back to the testability, but also improves maintenance and general readability of code - at least in my opinion.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, September 01, 2009</h2><P>The generic issue is a pain point right now. I was hoping to find a clever solution, but so far that hasn't worked, and I expect that my next move is to change the ViewModel classes to be non-generic.</P>
+<P>I'm not sure we lose much by doing that, but it would have been nice if Model could have been strongly typed :(</P>
+<P>I'll give serious consideration to implementing a create/fetch model in the ViewModel class (though probably not ViewModelBase) since it is somewhat more "CSLA specific" if that makes sense.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>paupdb replied on Tuesday, September 01, 2009</h2>Rocky,<br><br>Agree with you completely.&nbsp; If you go too far in prescribing how to use MVVM with Csla, you risk imposing conventions/assumptions on everyone.<br><br>MVVM, MVC, MVP, etc - these are all valid approaches and Csla works very well with all provided one is willing to write some custom base classes to extend and implement paradigm-specific functionality.<br><br>In terms of providing a base VM class, I think having Refresh and Save verbs is fairly critical.&nbsp; <br>From my perspective, the VM is "in charge", so it should control
+loading and saving the Model - thus I would say Refresh and Save are
+core to any VM.&nbsp; Having an Error (or ModelError) property is probably also fairly core.<br><br>If you provide these using an implemention ala the CslaDataProvider, but ensure that the methods are virtual, then users can simply override and customise how they want the Refresh/Save to work.<br><br>Ultimately I keep coming back to the CslaDataProvider because its really got a lot of the methods and properties that what I want in most of my VMs.&nbsp; Its only some DataProvider specific things in the CslaDataProvider which makes it harder to work with from a VM perspective.<br><br>I'm beginning to think I may not use any ViewModel classes you put out in Csla anyway.&nbsp; There are too many specific things I want to do.<br>I may just take a copy of the CslaDataProvider, rip out all the DataProvider stuff (bye bye ObjectInstance/Data) and make that my ViewModelBase.<br><br>Maybe instead of doing a ViewModel base class, you should consider doing that in Csla too - i.e. create a base CslaProvider class which is everything CslaDataProvider is but with none of the DataProvider specific bits plus everything is marked as virtual for easy subclassing.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, September 01, 2009</h2><P>What I'm not sure is where the value comes in in ViewModel implementing a Refresh() method.</P>
+<P>To do MVVM you need a commanding infrastructure of some sort - beyond the WPF one, and of course there isn't one in SL.</P>
+<P>Everyone's commanding infrastructure is different, and imposes different constraints on the verb method signatures.</P>
+<P>This means there's no value in ViewModelBase providing any public methods at all, because we must assume they'll have the wrong signature for most UI frameworks. </P>
+<P>I am implementing ViewModel as a subclass of ViewModelBase, and ViewModel implements a set of base verbs that work with CSLA's Invoke action and InvokeMethod property (two ways to do the same thing). Essentially ViewModel supports CSLA's commanding implementation.</P>
+<P>But a general Refresh() method would then have to be protected, because everything in ViewModelBase is protected (all methods anyway).</P>
+<P>And since I don't know how to get your criteria/parameters, or which factory method (if you are using factory methods) to invoke on your type to do a refresh, I can't provide any implementation at all really.</P>
+<P>Even if I add a protected property so you can set the name of the factory method in your VMs ctor, I still don't know where to get any parameters.</P>
+<P>And there's also the concept of a child VM - a VM that exists inside a DataTemplate, or even on the main form, but to manage some set of child or detail data. There is no concept of "refresh" on something like that, because it gets its data through binding to the parent VM.</P>
+<P>I could go down the data provider route: have you tell me the name of the static factory and have a protected List&lt;object&gt; for parameters. But I am not sure this saves any code or effort on the part of someone implementing the VM.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>paupdb replied on Tuesday, September 01, 2009</h2>Yes I see what you mean Rocky - I guess I'm probably talking from a fairly specific implementation perspective.<br><br>In terms of the value of having Refresh/Save and FactoryParameters/Criteria - even if these were implemented as protected, I think there is still value gained by having a default way of managing the async calls and the errors/results of these.&nbsp; <br>However the approach you have of making the ViewModel base a generic for the Model type is intriguing too - though I don't think one can use a generic class type as a StaticResource in XAML, so I'm probably left using the CslaDataProvider approach of assigning the ModelType in my VM Initialise/ctors.<br><br>I think the whole discussion has highlighted to me that I need to take my own base VM class away from inheriting from any Csla class.<br>That said I think the core bits of CslaDataProvider are very applicable to my implementation and thus will probably find their way into my own VM base.<br><br>Even if MS put out a MVVM framework/standard tomorrow, my application
+is far enough along with our custom implementation that we won't change
+now.&nbsp; We might incorporate some good elements from such a standard, but I doubt we'd rewrite what is already a decent custom MVVM implementation.<br>Given my specific implementation I can't expect Csla to give me a ready made VM base nor can I expect Rocky to modify
+the CslaDataProvider to make it everything I want for a base VM class.<br><br>So really then maybe the value of having such classes in Csla at all is more to provide a reference implementation for people to learn/borrow from when rolling their own MVVM.&nbsp; In other words something along the lines of what Patterns and Practices do where they release code as reference backing to their recommendations.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>SonOfPirate replied on Tuesday, September 01, 2009</h2><P>This is why I was wondering if you had any examples using the new ViewModel class because I think that may lead to an answer.</P>
+<P>Going along what I was thinking, I could see the ViewModel providing the "hooks" for create/fetch while leaving the implementation to the subclass.&nbsp; So, for instance, in the Model property getter, if the model is null, call the Refresh or GetData abstract method.&nbsp; Since the Model property setter is accessible, the subclass can use whatever means to retrieve or create the object then set the base class property which will raise the necessary event(s) for data-binding to update the UI.</P>
+<P>If I'm doing an asynchronous fetch, Refresh/GetData will start the process and some handler in the subclass will be called when completed and the latter will set the Model property.&nbsp; Seems like the best of both worlds.</P>
+<P>The whole process is triggered in the same manner as with the CslaDataProvider.&nbsp; When&nbsp;data-binding polls the Model property, if null...&nbsp;&nbsp;You could even include an option for InitialLoadEnabled.</P>
+<P>I like the fact that CslaViewModel is abstract and intended for us to subclass.&nbsp; I found myself subclassing the ASP.NET CslaDataSource more often than not as a way to encapsulate the logic and make it easier for designers to work with the features consistently.</P>
+<P>&nbsp;</P>
+<P>To the previous question about no code-behind, I just had the exact same conversation this morning.&nbsp; From my perspective, it really boils down to the idea that these applications are developed by two distinct roles: developers and designers.&nbsp; The latter are graphics/UI people who know how to make great looking interfaces but may not know&nbsp;- or more accurately, are not required to know - how to code.&nbsp; Developers on the other hand, tend to make lousy user interfaces.&nbsp; We put square controls in a table-like grid layout and call it done.&nbsp; If you think about the roles Visual Studio and Expression Blend play in the development process, you'll see that it is consistent with this thinking.</P>
+<P>So, I think the goal is to decouple the code that developers work on from the XAML that designers work on.&nbsp; That's where this stems from.&nbsp; And, imo, I think it is a good thing because it does encapsulate code a little better and allows me to follow this approach to developing my applications.&nbsp; I&nbsp;no longer have&nbsp;developers waiting for designers to check in changes&nbsp;to the UI so they can make code changes and vice versa.</P>
+<P>&nbsp;</P>
+<P>Finally, speaking from very recent experience, locking in how things are done&nbsp;so strictly as to define the name that must be used, etc.&nbsp;only&nbsp;makes code more unusable instead of the other way around.&nbsp;&nbsp;We tend to present these architypes as patterns, approaches and solutions that should be applied when and where they fit.&nbsp; They should be flexible to fit the situation, not dictate every aspect.</P>
+<P>I worked with a brilliant developer not to long ago that had created a UI framework for the company's applications that made it a snap to generate a robust Windows Forms application quickly by&nbsp;subclassing types in his framework.&nbsp; The problem?&nbsp; He wasn't a student of data-binding so when a new developer (me!) tried to work with his framework using some of the latest tools and techniques, including&nbsp;Csla, his framework fell apart because it was way too rigid in its implementation.</P>
+<P>Just my two cents.</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tmg4340 replied on Tuesday, September 01, 2009</h2><FONT size=2 face=Tahoma><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>SonOfPirate:</strong></div><div></FONT>
+<P><FONT size=2 face=Tahoma>To the previous question about no code-behind, I just had the exact same conversation this morning.&nbsp; From my perspective, it really boils down to the idea that these applications are developed by two distinct roles: developers and designers.&nbsp; The latter are graphics/UI people who know how to make great looking interfaces but may not know&nbsp;- or more accurately, are not required to know - how to code.&nbsp; Developers on the other hand, tend to make lousy user interfaces.&nbsp; We put square controls in a table-like grid layout and call it done.&nbsp; If you think about the roles Visual Studio and Expression Blend play in the development process, you'll see that it is consistent with this thinking.</FONT></P>
+<P><FONT size=2 face=Tahoma>So, I think the goal is to decouple the code that developers work on from the XAML that designers work on.&nbsp; That's where this stems from.&nbsp; And, imo, I think it is a good thing because it does encapsulate code a little better and allows me to follow this approach to developing my applications.&nbsp; I&nbsp;no longer have&nbsp;developers waiting for designers to check in changes&nbsp;to the UI so they can make code changes and vice versa.</FONT></P>
+<P><FONT size=2 face=Tahoma></div></BLOCKQUOTE></FONT></P>
+<P><FONT size=2 face=Tahoma>I must be working in the wrong places, because in the years I have been programming (admittedly only about 13), I have never worked in an environment where the UI designer and coder were different people.&nbsp; I understand that's the model that MS is trying to go for with the whole Blend/VS thing, and that's OK.&nbsp; I just don't see that taking off too well in the MS world - Microsoft has not traditionally recruited the "artsy-fartsy" crowd very well.&nbsp; <img src="/emoticons/emotion-1.gif" alt="Smile [:)]" />&nbsp; Also, it didn't take long for developers to b**** about the crappy XAML designer support in VS 2008 - something I understand MS intends to rectify with VS 2010.&nbsp; Realizing that MS has to support both types of development, I'm honestly not going to get much traction asking my boss to hire a "UI Experience designer" when they know that the next version of VS will fix many of my issues - presumably in a format that is not so art-designer-centric (and thus not such a steep learning curve for those of us who are "artistically challenged").</FONT></P>
+<P><FONT size=2 face=Tahoma>As far as the encapsulation aspect, that's certainly a good goal to have, and you certainly do raise a point about "waiting for designers".&nbsp; But I find the whole thing to be a lot of quibbling over what feels like semantics to me.&nbsp; And in the end, the whole no-code-behind MVVM seems to make your coders do more work than they might have to/should.&nbsp; After all, once you take the "event code" and move it one layer away from the actual event, you end up writing a certain amount of code just to transfer control around.&nbsp; This code is <EM>very</EM> boilerplate, and typically can't be abstracted out.&nbsp; Sure, you can test it.&nbsp; But it all ends up being more code, which means more test code...</FONT></P>
+<P><FONT size=2 face=Tahoma>Apparently too old-school for his own good...</FONT></P>
+<P><FONT size=2 face=Tahoma>- Scott</FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jaans replied on Friday, September 04, 2009</h2>Hi Rocky<br /><br />Hope you had a good vacation - usually it's just enough to make you need more ;-)<br /><br />I'm had an early look at 3.8.0 (Alpha 1) and I have a found an issue with using InvokeMethod to target a CslaDataProvider. <br /><br />For the life of me I cannot see what's wrong - the code originally worked fine using 3.7.0 and now with 3.8.0 (and after changing "Resource" property to "Target") it just doesn't work as expected anymore. <br /><br />Perhaps I'm using the wrong syntax to reference the CslaDataProvider in the Target property. Here is a snippet of the relevant XAML:<br /><br />&amp;lt; Button Content="Save" Margin="2" csla:InvokeMethod.TriggerEvent="Click" csla:InvokeMethod.Target="{StaticResource WorkOrderData}" csla:InvokeMethod.MethodName="Save" /><br /><br />My issue is that the button never enables, eventhough CanSave on the data provider is true. I've tried the whole "ManualEnableControl" bit just to see if it has any effect if, but alas it doesn't.<br /><br />It is as if the InvokeMethod doesn't find the method Save on the Target.<br /><br />Any help would be appreciated.<br /><br />Regards,<br />Jaans</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, September 04, 2009</h2>I'm afraid the snippet didn't come through, can you retry?<br /><br />Certainly the syntax of Target is different, and it will change again in<br />Alpha 2 - I'm working to make these all binding-based.<br /><br />I can't honestly remember what syntax was right in A1 vs what I have right<br />now, but now it is a full binding expression, if you set it at all. The idea<br />is that you wouldn't normally set it, because the Target is also the<br />DataContext, which is the CslaDataProvider.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jaans replied on Friday, September 04, 2009</h2>Oops... missed that (I updated the original post).<br /><br />Having the InvokeMethod default to the DataContext is great and probably more consistent behaviour. In this scenario, my current DataContext is actually on the Data property of the CslaDataProvider so that's why I need the button in question to reference the CslaDataProvider itself.<br /><br />I have tried specifying a Binding expression for Target that binds to the CslaDataProvider but it doesn't work (yet).<br /><br />Any thoughts about when Alpha 2 might hit the release button :-) <br /><br />Many thanks</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, September 04, 2009</h2>I'll probably do an A2 release next week sometime. The changes to<br />InvokeMethod (and the new Execute trigger action) and PropertyStatus are<br />pretty substantial - which is bad from a backward compat perspective, but<br />are a big deal for exploiting the SL3 features.<br /><br />I should point out that all the real work here is in SL, not WPF. Once I'm<br />comfortable with the SL behaviors I'll port things to WPF.</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,54 @@
+<html><header><title>CSLA .NET 2.1 is available</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA .NET 2.1 is available</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/1361.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka posted on Saturday, September 30, 2006</h2>CSLA .NET version 2.1 is now available for download from <a href="http://www.lhotka.net/cslanet/download.aspx">www.lhotka.net/cslanet/download.aspx</a><br><br>Please make sure to read the <a href="http://www.lhotka.net/Article.aspx?area=4&amp;id=f12cc951-0452-42d1-96a6-cfa7656863b1">Change log</a> for this release, as there are substantial changes to validation, authorization and other parts of the framework. There are a limited number of breaking changes that may affect your code, so please review the document before attempting to upgrade from 2.0 to 2.1.<br><br>The vast majority of the changes in version 2.1 are due to the community feedback from you here on the forum. Thank you all very much for being so engaged, and for providing productive feedback and input into the process!<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Brian Criswell replied on Saturday, September 30, 2006</h2>Excellent news!&nbsp; Thank you for all of your work and experience that you have poured into CSLA.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, October 03, 2006</h2>Henrik found a bug in ReadOnlyBase (<a HREF="/forums/thread/7103.aspx">http://forums.lhotka.net/forums/thread/7103.aspx</a>), which I've now fixed.<br><br>If you downloaded the RTM right away, you may want to re-download it with the fix. The new C#/VB archive file names are "csla20xx-2.1-RTM-061003.zip" - 061003 is the key, as the previous version had a different date.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Tuesday, October 03, 2006</h2>Hey Rocky,<br><br>Did a diff to see which files were updated; Web\IReportTotalRowCount.cs was missing from the latest download, but was there at some point previously.&nbsp; Is it supposed to be removed?<br><br>Thanks<br>Andy<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, October 03, 2006</h2>
+
+
+
+
+<DIV align=left><SPAN class=015142821-03102006><FONT face=Arial color=#0000ff size=2>I moved it to Csla.Core a couple weeks ago - that interface 
+could be useful to more than just CslaDataSource.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=015142821-03102006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=015142821-03102006><FONT face=Arial color=#0000ff size=2>Rocky</FONT></SPAN></DIV><BR>
+<BLOCKQUOTE>
+  <DIV class=OutlookMessageHeader align=left>
+  <HR>
+  <FONT face=Tahoma size=2><B>From:</B> ajj3085 [mailto:cslanet@lhotka.net] 
+  <BR><B>Sent:</B> Tuesday, October 03, 2006 9:48 AM<BR><B>To:</B> 
+  rocky@lhotka.net<BR><B>Subject:</B> Re: [CSLA .NET] CSLA .NET 2.1 is 
+  available<BR></FONT><BR></DIV>
+  <DIV></DIV>Hey Rocky,<BR><BR>Did a diff to see which files were updated; 
+  Web\IReportTotalRowCount.cs was missing from the latest download, but was 
+  there at some point previously.&nbsp; Is it supposed to be 
+  removed?<BR><BR>Thanks<BR>Andy<BR><BR><BR><BR></BLOCKQUOTE></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>andreask replied on Tuesday, October 03, 2006</h2>Hi<br /><br />are you having problems serving the download?<br />I'm trying to access the link from Norway<br /><br />Yours<br />Andreas</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, October 03, 2006</h2>My ISP had an issue for a few hours this morning - it should be up now.<br /><br />Rocky <br /><br />> -----Original Message-----<br />> From: andreask [mailto:cslanet@lhotka.net] <br />> Sent: Tuesday, October 03, 2006 12:07 PM<br />> To: rocky@lhotka.net<br />> Subject: Re: [CSLA .NET] CSLA .NET 2.1 is available<br />> <br />> Hi<br />> <br />> are you having problems serving the download?<br />> I'm trying to access the link from Norway<br />> <br />> Yours<br />> Andreas<br />> <br />> <br />> <br />></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>figuerres replied on Thursday, October 05, 2006</h2><P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div>My ISP had an issue for a few hours this morning - it should be up now. Rocky &gt; -----Original Message----- &gt; From: andreask [mailto:cslanet@lhotka.net] &gt; Sent: Tuesday, October 03, 2006 12:07 PM &gt; To: rocky@lhotka.net &gt; Subject: Re: [CSLA .NET] CSLA .NET 2.1 is available &gt; &gt; Hi &gt; &gt; are you having problems serving the download? &gt; I'm trying to access the link from Norway &gt; &gt; Yours &gt; Andreas &gt; &gt; &gt; &gt;</div></BLOCKQUOTE></P>
+<P>&nbsp;</P>
+<P>Rocky, if you ever want to have some "Mirror Sites" I think I can put the files on at least 2 different servers in FL. let me know if you want to...</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jav replied on Tuesday, October 03, 2006</h2><P>This is not a bug but troublesome nonetheless.</P>
+<P>When taking care of AddRule methods, one is bound to leave some methods that are not Shared, and where the method call is not changed to AddInstanceRule.&nbsp; This situation, especially in a large hierarchy, is not much fun to debug.&nbsp; The generated error gives no indication of the object's name, and walking through code in the debugger is no picnic either.</P>
+<P>Is there some way to insert the name of the class in the error code message?</P>
+<P>Jav</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, October 04, 2006</h2>
+
+
+
+
+<DIV align=left><SPAN class=312183716-04102006><FONT face=Arial color=#0000ff size=2>That makes good sense. I have updated the code to make this 
+change - in cvs. It will be part of the next release (probably 2.1.1), but you 
+can grab the change out of cvs now if it would help you 
+immediately.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=312183716-04102006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=312183716-04102006><FONT face=Arial color=#0000ff size=2>Rocky</FONT></SPAN></DIV><BR>
+<BLOCKQUOTE>
+  <DIV class=OutlookMessageHeader align=left>
+  <HR>
+  <FONT face=Tahoma size=2><B>From:</B> Jav [mailto:cslanet@lhotka.net] 
+  <BR><B>Sent:</B> Tuesday, October 03, 2006 12:23 PM<BR><B>To:</B> 
+  rocky@lhotka.net<BR><B>Subject:</B> Re: [CSLA .NET] CSLA .NET 2.1 is 
+  available<BR></FONT><BR></DIV>
+  <DIV></DIV>
+  <P>This is not a bug but troublesome nonetheless.</P>
+  <P>When taking care of AddRule methods, one is bound to leave some methods 
+  that are not Shared, and where the method call is not changed to 
+  AddInstanceRule.&nbsp; This situation, especially in a large hierarchy, is not 
+  much fun to debug.&nbsp; The generated error gives no indication of the 
+  object's name, and walking through code in the debugger is no picnic 
+  either.</P>
+  <P>Is there some way to insert the name of the class in the error code 
+  message?</P>
+  <P>Jav</P><BR><BR><BR></BLOCKQUOTE></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jav replied on Wednesday, October 04, 2006</h2><P>Thanks a bunch Rocky.&nbsp; I will download the code.</P>
+<P>Jav</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

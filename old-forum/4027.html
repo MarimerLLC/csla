@@ -1,0 +1,32 @@
+<html><header><title>CSLA 3.0.2: Multi-Tiered Deployment Problem</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA 3.0.2: Multi-Tiered Deployment Problem</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4027.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>cjherasmus posted on Wednesday, December 12, 2007</h2><P class=MsoNormal><FONT face=Tahoma size=2>I have the following setup. If I missed out something, feel free to ask and I'll fill in the gaps.</FONT></P>
+<P class=MsoNormal><o:p><FONT face=Tahoma size=2>&nbsp;</FONT></o:p></P>
+<P class=MsoNormal><FONT face=Tahoma size=2>I have a Windows Application that connects directly to my Security Database via the App.config file. Dead easy.&nbsp; </FONT><FONT face=Tahoma size=2>I have a Web Application that connects directly to my Security Database via the Web.config file. Dead easy.&nbsp; </FONT><FONT face=Tahoma size=2>These are exactly the same Security Database with the same tables and login stored proc.&nbsp; </FONT><FONT face=Tahoma size=2>Both applications use exactly the same XYPrincipal and XYIdentity.</FONT></P>
+<P class=MsoNormal><o:p><FONT face=Tahoma size=2>&nbsp;</FONT></o:p></P>
+<P class=MsoNormal><FONT face=Tahoma size=2>I’ve added a public property “Roles” in XYIdentity to be able to reference the _roles List to which a user belongs to from the Windows and Web front-ends as follows:</FONT></P>
+<P class=MsoNormal><FONT face=Tahoma size=2></FONT>&nbsp;</P>
+<P class=MsoNormal><FONT face=Tahoma size=2>public List&lt;string&gt; Roles</FONT></P>
+<P class=MsoNormal><FONT face=Tahoma size=2>{</FONT></P>
+<P class=MsoNormal>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT face=Tahoma size=2>get { return _roles; }</FONT></P>
+<P class=MsoNormal><FONT face=Tahoma size=2>}</FONT></P>
+<P class=MsoNormal><o:p><FONT face=Tahoma size=2>&nbsp;</FONT></o:p></P>
+<P class=MsoNormal><FONT face=Tahoma size=2>Everything works like a dream.</FONT></P>
+<P class=MsoNormal><o:p><FONT face=Tahoma size=2>&nbsp;</FONT></o:p></P>
+<P class=MsoNormal><FONT face=Tahoma size=2>I then change as follows:</FONT></P>
+<P class=MsoNormal><o:p><FONT face=Tahoma size=2>&nbsp;</FONT></o:p></P>
+<P class=MsoNormal><FONT face=Tahoma size=2>I have an “http://ApplicationServer” in IIS and ASP.NET 2.0 that contains a Web.config file that points to the Security Database via connection string.</FONT></P>
+<P class=MsoNormal><o:p><FONT face=Tahoma size=2>&nbsp;</FONT></o:p></P>
+<P class=MsoNormal><FONT face=Tahoma size=2>I have an “</FONT><A href="http://website/"><FONT face=Tahoma size=2>http://WebSite</FONT></A><FONT face=Tahoma size=2>” in IIS and ASP.NET for the Web Application which contains a Web.config file that points to the “</FONT><A href="http://applicationserver/"><FONT face=Tahoma size=2>http://ApplicationServer</FONT></A><FONT face=Tahoma size=2>” via Remoting. <SPAN>&nbsp;</SPAN>Now the Web Application connects to the “</FONT><A href="http://applicationserver/"><FONT face=Tahoma size=2>http://ApplicationServer</FONT></A><FONT face=Tahoma size=2>” which connects to the Security Database. Dead easy.</FONT></P>
+<P class=MsoNormal><o:p><FONT face=Tahoma size=2>&nbsp;</FONT></o:p></P>
+<P class=MsoNormal><FONT face=Tahoma size=2>I have a local Windows Application points to the “</FONT><A href="http://applicationserver/"><FONT face=Tahoma size=2>http://ApplicationServer</FONT></A><FONT face=Tahoma size=2>” via Remoting. Now the Windows Application connects to the “</FONT><A href="http://applicationserver/"><FONT face=Tahoma size=2>http://ApplicationServer</FONT></A><FONT face=Tahoma size=2>” which connects to the Security Database. Dead easy.</FONT></P>
+<P class=MsoNormal><o:p><FONT face=Tahoma size=2>&nbsp;</FONT></o:p></P>
+<P class=MsoNormal><FONT face=Tahoma size=2>I have thus two different platforms (Windows and Web) on two different locations (local machine and web server) connecting to an “</FONT><A href="http://applicationserver/"><FONT face=Tahoma size=2>http://ApplicationServer</FONT></A><FONT face=Tahoma size=2>” which in-turns connect to the Security Database. Dead easy.</FONT></P>
+<P class=MsoNormal><o:p><FONT face=Tahoma size=2>&nbsp;</FONT></o:p></P>
+<P class=MsoNormal><FONT face=Tahoma size=2>Everything works like a dream, the user is authenticated, etc, except:</FONT></P>
+<P class=MsoNormal><o:p><FONT face=Tahoma size=2>&nbsp;</FONT></o:p></P>
+<P class=MsoNormal><FONT face=Tahoma size=2>The Roles property in XYIdentity is not loaded with the roles from the database anymore. If I change back to the first scenario where I connect directly to the Security Database, the Roles gets loaded again. I need the role for authorization!</FONT></P>
+<P class=MsoNormal><FONT face=Tahoma size=2></FONT>&nbsp;</P>
+<P class=MsoNormal><FONT face=Tahoma size=2>Anyone with a few ideas, please.</FONT></P>
+<P class=MsoNormal><FONT face=Tahoma size=2></FONT>&nbsp;</P>
+<P class=MsoNormal><FONT face=Tahoma size=2>Regards,</FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>cmellon replied on Thursday, December 13, 2007</h2><P>It sounds like your application server has not got the latest build of your business objects.</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>cjherasmus replied on Monday, December 17, 2007</h2><FONT face=Tahoma size=2>Thanks, problem solved.</FONT></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

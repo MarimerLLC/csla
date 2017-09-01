@@ -1,0 +1,14 @@
+<html><header><title>Newbie: Completely Lost</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Newbie: Completely Lost</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/2877.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>toddc posted on Tuesday, May 15, 2007</h2><P>I'm&nbsp;referencing CSLA 2.0 for the moment.</P>
+<P>I'm using CodeSmith 4.0 and the CSLA template to build ReadOnly classes.</P>
+<P>The problem is this Code Smith 4.0 generated code:</P><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Using</FONT><FONT size=2> cn </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> SqlConnection = </FONT><FONT color=#0000ff size=2>New</FONT><FONT size=2> SqlConnection(<STRONG><U>Database</U></STRONG>.VELIVEconnection)</FONT></P>
+<P>Indicated by the error: Name 'Database' is not declared</P>
+<P>How do I fix this in my classes? I really want the connection string to come from settings(I think).</P>
+<P>I'm new to VB and the CSLA. I've read Expert&nbsp;VB 2005 Business Objects and love the concepts. But my understanding of VB and CSLA is like swiss cheese. I have huge holes everywhere.</P>
+<P>The above error is the only one I have in my library class but of course many times in each class.</P>
+<P>Any help to understand this issue is sincerely appreciated.</P>
+<P><FONT size=2>Todd</P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>david.wendelken replied on Tuesday, May 15, 2007</h2><P>I'm not using the templates yet, so this is just a guess.</P>
+<P>I guess that you are expected to write the Database class by hand, and that that class should be public and static, and that it should have a public static property in it that returns the correct connection string, with a name of VELIVEconnection.</P>
+<P>I'm also guessing that somewhere in the generation process&nbsp;you supplied the value "VELIVEconnection" (or it defaulted to it and you didn't notice :), and that you would be expected to supply additional properties for each database connection you intend to use.</P>
+<P>Let us know if that's it!</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>david.wendelken replied on Tuesday, May 15, 2007</h2><P>forgot to add, there is a whole csla forum devoted to the templates.</P>
+<P>you need to go to the forum home and work your way down from there.</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

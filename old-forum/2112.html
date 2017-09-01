@@ -1,0 +1,57 @@
+<html><header><title>Business object design question</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Business object design question</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/2112.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>mselis posted on Wednesday, January 10, 2007</h2><P>Our functional analysts have designed the 'Life' of a Person as a separate domain object called 'Period'.&nbsp; They did this because -according to them- a person's life is like any other period:&nbsp; it has a start and an end. <SPAN>&nbsp;</SPAN>It also has the same business rules applied to it:</P>
+<UL>
+<LI>The start is required.</LI>
+<LI>The end is optional.</LI>
+<LI>If the end is known then it should be greater then the start.</LI></UL>
+<P>They really would like me to do the technical implementation of the business classes the same way. <SPAN>&nbsp;</SPAN>Something like this:</P>
+<P class=MsoNormal><SPAN><FONT size=2><SPAN>&nbsp;&nbsp;&nbsp; </SPAN><SPAN>public</SPAN> <SPAN>class</SPAN> <SPAN>Period<o:p></o:p></SPAN></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT size=2><SPAN>&nbsp;&nbsp;&nbsp; </SPAN>{<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT size=2><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>private</SPAN> <SPAN>DateTime</SPAN> _start;<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT size=2><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>private</SPAN> <SPAN>DateTime</SPAN>? _end;<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><o:p><FONT size=2>&nbsp;</FONT></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p><FONT size=2>&nbsp;</FONT></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><FONT size=2><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>public</SPAN> <SPAN>DateTime</SPAN> Start<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT size=2><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>{<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT size=2><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>get</SPAN> { <SPAN>return</SPAN> _start; }<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT size=2><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>set</SPAN> { _start = <SPAN>value</SPAN>; }<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT size=2><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>}<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><o:p><FONT size=2>&nbsp;</FONT></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><FONT size=2><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>public</SPAN> <SPAN>DateTime</SPAN>? End<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT size=2><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>{<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT size=2><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>get</SPAN> { <SPAN>return</SPAN> _end; }<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT size=2><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>set</SPAN> { _end = <SPAN>value</SPAN>; }<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT size=2><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>}<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT size=2><SPAN>&nbsp;&nbsp;&nbsp; </SPAN>}<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><o:p><FONT size=2>&nbsp;</FONT></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><FONT size=2><SPAN>&nbsp;&nbsp;&nbsp; </SPAN><SPAN>public</SPAN> <SPAN>class</SPAN> <SPAN>Person<o:p></o:p></SPAN></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT size=2><SPAN>&nbsp;&nbsp;&nbsp; </SPAN>{<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT size=2><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>private</SPAN> <SPAN>Period</SPAN> _life = <SPAN>new</SPAN> <SPAN>Period</SPAN>();<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><o:p><FONT size=2>&nbsp;</FONT></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><FONT size=2><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>public</SPAN> <SPAN>DateTime</SPAN> DateOfBirth<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT size=2><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>{<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT size=2><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>get</SPAN> { <SPAN>return</SPAN> _life.Start; }<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT size=2><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>set</SPAN> { _life.Start = <SPAN>value</SPAN>; }<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT size=2><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>}<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><o:p><FONT size=2>&nbsp;</FONT></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><FONT size=2><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>public</SPAN> <SPAN>DateTime</SPAN>? DateOfDeath<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT size=2><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>{<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT size=2><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>get</SPAN> { <SPAN>return</SPAN> _life.End; }<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><o:p><FONT size=2>&nbsp;</FONT></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><FONT size=2><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>set</SPAN> { _life.End = <SPAN>value</SPAN>; }<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT size=2><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>}<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT size=2><SPAN>&nbsp;&nbsp;&nbsp; </SPAN>}<o:p></o:p></FONT></SPAN></P>
+<P>I’m really sceptical about this; because the Life of a person does not exist on itself, it has no Id to identify it and more important: I think it would make things more difficult, because in the UI&nbsp;the validation errors should appear next to the DateOfBirth and DateOfDeath fields of the Person, which means I have to put the validation rules in the Person class also.</P>
+<P>My idea is to forget all about the Period class in the technical implementation and add the business logic that applies to the period directly in the Person class.</P>
+<P>Do you guys have any advice on this?<o:p></o:p></P>
+<P>Thanks in advance,</P>
+<P>Marc</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Wednesday, January 10, 2007</h2>Actually that seems like an ok design to me, if Periods will be showing up elsewhere and WILL always have the same behavior (of which rules are a part).<br><br><br>An alternative would be to have a PeriodRules class, which can check and two dates... but then you have to remember to add the rule in every class that needs it vs. having a seperate class which worries about it.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>mselis replied on Wednesday, January 10, 2007</h2><P>Thanks for your quick reply...</P>
+<P>If the design is ok, how do you solve the problem of showing the broken Period rules in the UI then?</P>
+<P>I'm seeing 2 possible options:</P>
+<UL>
+<LI>expose the Life property (returning a Period)&nbsp;of a Person to the UI, and databind the DateOfBirth and DateOfDeath controls to the Period's Begin and End properties.&nbsp; This has the advantage that the BL will only be executed once.</LI>
+<LI>adding the same rules in the Person class to the DateOfBirth and DateOfDeath fields.&nbsp; This has the advantage that the field names in the eror messages reflect the correct fieldnames of the Person class, and not those of the Period class.</LI></UL>
+<P>I'm fairly new to CSLA.NET, so I don't know what are considered the 'best practices' in cases like this...&nbsp; Maybe there is even a third option I didn't think of?</P>
+<P>Thanks,</P>
+<P>Marc</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Thursday, January 11, 2007</h2>Ahh, good point.&nbsp; You'll have to keep Period public then.&nbsp; You then create a binding source just for the Period object, and bind your two date controls to that.&nbsp; You then set the bindingsource's DataSource to the LifeSpan property of the root object.&nbsp; Finally, you'll need a second error provider, and set it to the binding source for the period.<br><br>I've done this, and it works.<br><br>HTH<br>Andy<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>DansDreams replied on Thursday, January 11, 2007</h2><P>I've done the same thing with addresses.&nbsp; To me, the whole concept is very powerful if you make the Period a very basic business object in its own right, and then make a self-contained user control that edits Periods.&nbsp; By self-contained I mean it has its own BindingSource and error provider as well as the input controls.&nbsp; The control or form hosting the Period user control just needs to handle setting its&nbsp;BindingSource.</P>
+<P>Now you just plunk down that user control on any form or control that edits a business object with a Period property.</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

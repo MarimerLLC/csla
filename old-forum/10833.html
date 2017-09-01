@@ -1,0 +1,157 @@
+<html><header><title>Managed Properties and Memory Leak</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Managed Properties and Memory Leak</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10833.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>jconway posted on Monday, October 31, 2011</h2><p>Recently we upgraded our code base to CSLA.NET 4.1. In doing so we introduced managed properties to most of our business objects. In particular:</p>
+<p>&nbsp;</p>
+<p>
+<p>&nbsp;public static PropertyInfo&lt;TextEncodingInfo&gt; TextEncodingProperty = RegisterProperty&lt;TextEncodingInfo&gt;(c =&gt; c.TextEncoding);</p>
+<p>public TextEncodingInfo TextEncoding<br />{<br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;get<br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;{</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; if (!FieldManager.FieldExists(TextEncodingProperty))<br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;LoadProperty(TextEncodingProperty, TextEncodingInfo.GetReadOnlyItem(TextEncodingId));&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; return GetProperty(TextEncodingProperty);<br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;}<br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;set { SetProperty(TextEncodingProperty, value); }<br />}</p>
+<p>Using a memory profiler we managed to track a memory leak to this property. What we had were a large number of TextEncodingInfo BOs in memory and not being garbage collected. The service memory usage continually grew until the service crashed.</p>
+<p> So we changed this property to use a standard private backing field. The problem went away.</p>
+<p>A few details:</p>
+<p>
+<ul>
+<li>The service is multithreaded</li>
+<li>&nbsp;TextEncodingInfo.GetReadOnlyItem(TextEncodingId)) returns an item from an in memory TextEncodingInfoCollection</li>
+<li>TextEncodingInfoCollection is cached using SQL Cache Dependency</li>
+</ul>
+</p>
+<p>Can anybody explain this behaviour? Why is this happening? Have i approached this in the wrong way?</p>
+</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, October 31, 2011</h2><p>TextEncodingInfo is a child object? I don&#39;t know if this will help the memory issue, but the RegisterProperty call should be marking it as a child object so CSLA knows to treat it correctly.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>geordiepaul replied on Tuesday, November 01, 2011</h2><p>We tried your recommendation is this didn&#39;t fix the issue.</p>
+<p>I created a simple test console app that invoked the factory method over and over again, then descoped the object. With the managed property the object hung around and the app eventually crashed. With a private backing field the memory use remained constant. The console app looked like this...</p>
+<pre><span>for</span>&nbsp;(<span>int</span>&nbsp;i&nbsp;=&nbsp;0;&nbsp;i&nbsp;&lt;&nbsp;10000;&nbsp;i++)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>var</span>&nbsp;email&nbsp;=&nbsp;<span>Factory</span>.GetObjectl(Id);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>var</span>&nbsp;info&nbsp;=&nbsp;email.TextEncoding;
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>Process</span>&nbsp;proc&nbsp;=&nbsp;<span>Process</span>.GetCurrentProcess();
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>Console</span>.WriteLine(<span>&quot;Memory&nbsp;use:&nbsp;{0}&quot;</span>,&nbsp;proc.PrivateMemorySize64);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>//System.Threading.Thread.Sleep(100);</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</pre>
+<p>It appear if the managed property references an object that remains in memory the root object also remains in memory. Technically our code is wrong as we&#39;re lazy loading and object that is already cached however does it highlight a potential bug in the CSLA?
+</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>geordiepaul replied on Tuesday, November 01, 2011</h2><p>I have isolated the problem to a test application.....it&#39;s very crude but it does run out of memory using the managed backing field.</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<pre><span>class</span>&nbsp;<span>Program</span>
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>static</span>&nbsp;<span>void</span>&nbsp;Main(<span>string</span>[]&nbsp;args)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>for</span>&nbsp;(<span>int</span>&nbsp;i&nbsp;=&nbsp;0;&nbsp;i&nbsp;&lt;&nbsp;1000000;&nbsp;i++)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>var</span>&nbsp;email&nbsp;=&nbsp;<span>TestObject</span>.Get();
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>Process</span>&nbsp;proc&nbsp;=&nbsp;<span>Process</span>.GetCurrentProcess();
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>Console</span>.WriteLine(<span>&quot;Memory&nbsp;use:&nbsp;{0}&quot;</span>,&nbsp;proc.PrivateMemorySize64);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>//System.Threading.Thread.Sleep(100);</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>Console</span>.ReadLine();
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;<span>public</span>&nbsp;<span>class</span>&nbsp;<span>TestObject</span>&nbsp;:&nbsp;<span>BusinessBase</span>&lt;<span>TestObject</span>&gt;
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>private</span>&nbsp;TestObject()
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>public</span>&nbsp;<span>static</span>&nbsp;<span>readonly</span>&nbsp;<span>PropertyInfo</span>&lt;<span>CachedListItem</span>&gt;&nbsp;ItemProperty&nbsp;=&nbsp;RegisterProperty&lt;<span>CachedListItem</span>&gt;(c&nbsp;=&gt;&nbsp;c.Item,&nbsp;<span>RelationshipTypes</span>.Child);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>public</span>&nbsp;<span>CachedListItem</span>&nbsp;Item
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>get</span>&nbsp;{&nbsp;<span>return</span>&nbsp;GetProperty(ItemProperty);&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>private</span>&nbsp;<span>set</span>&nbsp;{&nbsp;LoadProperty(ItemProperty,&nbsp;<span>value</span>);&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>//private&nbsp;CachedListItem&nbsp;_item;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>//public&nbsp;CachedListItem&nbsp;Item</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>//{</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>//&nbsp;&nbsp;&nbsp;&nbsp;get&nbsp;{&nbsp;return&nbsp;_item;&nbsp;}</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>//&nbsp;&nbsp;&nbsp;&nbsp;private&nbsp;set&nbsp;{&nbsp;_item&nbsp;=&nbsp;value;&nbsp;}</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>//}</span>
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>public</span>&nbsp;<span>static</span>&nbsp;<span>readonly</span>&nbsp;<span>PropertyInfo</span>&lt;<span>string</span>&gt;&nbsp;LongStringProperty&nbsp;=&nbsp;RegisterProperty&lt;<span>string</span>&gt;(c&nbsp;=&gt;&nbsp;c.LongString);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>public</span>&nbsp;<span>string</span>&nbsp;LongString
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>get</span>&nbsp;{&nbsp;<span>return</span>&nbsp;GetProperty(LongStringProperty);&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>private</span>&nbsp;<span>set</span>&nbsp;{&nbsp;LoadProperty(LongStringProperty,&nbsp;<span>value</span>);&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>public</span>&nbsp;<span>static</span>&nbsp;<span>TestObject</span>&nbsp;Get()
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>return</span>&nbsp;<span>DataPortal</span>.Fetch&lt;<span>TestObject</span>&gt;();
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>private</span>&nbsp;<span>void</span>&nbsp;DataPortal_Fetch()
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Item&nbsp;=&nbsp;<span>CachedListItem</span>.Get(1);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;LongString&nbsp;=&nbsp;<span>new</span>&nbsp;<span>string</span>(<span>&#39;?&#39;</span>,&nbsp;512&nbsp;*&nbsp;1024);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;<span>public</span>&nbsp;<span>class</span>&nbsp;<span>CachedList</span>&nbsp;:&nbsp;<span>ReadOnlyListBase</span>&lt;<span>CachedList</span>,&nbsp;<span>CachedListItem</span>&gt;
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>private</span>&nbsp;CachedList()
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>public</span>&nbsp;<span>CachedListItem</span>&nbsp;GetItem(<span>int</span>&nbsp;Id)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>return</span>&nbsp;<span>this</span>.Where(i&nbsp;=&gt;&nbsp;i.Id&nbsp;==&nbsp;Id).SingleOrDefault();
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>private</span>&nbsp;<span>static</span>&nbsp;<span>CachedList</span>&nbsp;_cache;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>public</span>&nbsp;<span>static</span>&nbsp;<span>CachedList</span>&nbsp;Get()
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>if</span>&nbsp;(_cache&nbsp;==&nbsp;<span>null</span>)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_cache&nbsp;=&nbsp;<span>DataPortal</span>.Fetch&lt;<span>CachedList</span>&gt;();
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>return</span>&nbsp;_cache;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>private</span>&nbsp;<span>void</span>&nbsp;DataPortal_Fetch()
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>this</span>.IsReadOnly&nbsp;=&nbsp;<span>false</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>this</span>.Add(<span>new</span>&nbsp;<span>CachedListItem</span>(1,&nbsp;<span>&quot;Name1&quot;</span>));
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>this</span>.Add(<span>new</span>&nbsp;<span>CachedListItem</span>(2,&nbsp;<span>&quot;Name2&quot;</span>));
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>this</span>.Add(<span>new</span>&nbsp;<span>CachedListItem</span>(3,&nbsp;<span>&quot;Name3&quot;</span>));
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>this</span>.Add(<span>new</span>&nbsp;<span>CachedListItem</span>(4,&nbsp;<span>&quot;Name4&quot;</span>));
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>this</span>.Add(<span>new</span>&nbsp;<span>CachedListItem</span>(5,&nbsp;<span>&quot;Name5&quot;</span>));
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>this</span>.IsReadOnly&nbsp;=&nbsp;<span>true</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;<span>public</span>&nbsp;<span>class</span>&nbsp;<span>CachedListItem</span>&nbsp;:&nbsp;<span>ReadOnlyBase</span>&lt;<span>CachedListItem</span>&gt;
+&nbsp;&nbsp;&nbsp;&nbsp;{
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>private</span>&nbsp;CachedListItem()
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>internal</span>&nbsp;CachedListItem(<span>int</span>&nbsp;id,&nbsp;<span>string</span>&nbsp;name)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Id&nbsp;=&nbsp;id;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Name&nbsp;=&nbsp;name;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>public</span>&nbsp;<span>int</span>&nbsp;Id&nbsp;{&nbsp;<span>get</span>;&nbsp;<span>private</span>&nbsp;<span>set</span>;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>public</span>&nbsp;<span>string</span>&nbsp;Name&nbsp;{&nbsp;<span>get</span>;&nbsp;<span>private</span>&nbsp;<span>set</span>;&nbsp;}
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>public</span>&nbsp;<span>static</span>&nbsp;<span>CachedListItem</span>&nbsp;Get(<span>int</span>&nbsp;id)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>return</span>&nbsp;<span>CachedList</span>.Get().GetItem(id);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;}</pre>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Tuesday, November 01, 2011</h2><p><div style='padding-left: 50px;background-color:silver'><b>geordiepaul<br></b>
+<pre></pre>
+<p>It appear if the managed property references an object that remains in memory the root object also remains in memory. Technically our code is wrong as we&#39;re lazy loading and object that is already cached however does it highlight a potential bug in the CSLA? </p>
+<div style="CLEAR:both;"></div>
+</div></p>
+<p>How is that object cached?</p>
+<p>CSLA does establish event handling between parent and child objects. It is absolutely not legal to cache a child object, especially in some static field or other permanent container (which is obviously what you&#39;d do with a cache).</p>
+<p>This is because the parent of a child does handle the child&#39;s collection/property changed event(s) to implement the ChildChanged event support.</p>
+<p>This is not a bug in CSLA. CSLA assumes that an object graph is a self-contained concept, and that within an object graph (parent and children, grandchildren, etc) we can establish as many internal circular references as necessary to make the object graph work in a rich manner.</p>
+<p>If you want to cache a child object, you should attach a <em>clone</em> of that object as a child of any object graph. The clone won&#39;t be maintained in memory by a static field, and so can be garbage collected.</p>
+<p>Or you should implement a using relationship, so the &quot;child&quot; isn&#39;t part of the object graph at all, but is just <em>used</em> by the object graph. This is done using a private backing field that is marked as notundoable and nonserialized, and registerproperty would not mark it as a child.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>geordiepaul replied on Tuesday, November 01, 2011</h2><p>Thanks for the reply. That&#39;s cleared everything up.<br />Ultimate there was no need to cache the value and that&#39;s how we will fix the code. I just wanted to check the if the behaviour was expected.</p>
+<p>The value was cached with a SQL Cache Dependancy but we&#39;ve moved that to AppFabric now but I don&#39;t think the method matters in this case. We were using a managed property to retrieve and persist a value that was already cached. A simple non persisted non managed field would have sufficed in this case.</p>
+<p>Thanks again.&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

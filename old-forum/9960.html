@@ -1,0 +1,139 @@
+<html><header><title>Need Help to get the Value of a Nullable(Of &lt;T&gt;) Property Using Reflection</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Need Help to get the Value of a Nullable(Of &lt;T&gt;) Property Using Reflection</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9960.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>AndrewR posted on Wednesday, January 19, 2011</h2><p>Hi All,</p>
+<p>I apologize up front as this is more a general .Net question than CSLA.</p>
+<p>I have a sub-class that derives from BusinessBase that I am using to implement Auditing. Itt has Nullable(Of Integer) and Nullable(Of Boolean)&nbsp;as some property types. I am using reflection to get the values from the properties and have code like this (which doesn&#39;t work):</p>
+<p>What I would like to do is check if the property is a nullable(Of T) type, and then check if it has a value, and if it does, get the value and convert it to string, regardless of whether it&#39;s Boolean, Int (which are currently the Nullable(Of T) tyeps of properties that I have.</p>
+<p><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">Dim</span></span><span style="font-size:x-small;"> target </span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">As</span></span><span style="font-size:x-small;"> T = </span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">Me</span></span><span style="font-size:x-small;">.Clone<font size="2" color="#0000ff"><font size="2" color="#0000ff"><font size="2">
+<p>
+<p>&nbsp;</p>
+<p><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">For</span></span><span style="font-size:x-small;"> </span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">Each</span></span><span style="font-size:x-small;"> pi </span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">As</span></span><span style="font-size:x-small;"> PropertyInfo </span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">In</span></span><span style="font-size:x-small;"> target.GetType().GetProperties<font size="2">
+<p style="padding-left:30px;">&nbsp;</p>
+</font></span></p>
+<p style="padding-left:30px;"><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">If</span></span><span style="font-size:x-small;"> Nullable.GetUnderlyingType(pi.PropertyType) </span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">IsNot</span></span><span style="font-size:x-small;"> </span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">Nothing</span></span><span style="font-size:x-small;"> </span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">Then</span></span></p>
+<span style="font-size:x-small;"><font size="2">
+<p style="padding-left:60px;">&nbsp;</p>
+</font></span>
+<p style="padding-left:60px;"><span style="font-size:x-small;color:#008000;"><span style="font-size:x-small;color:#008000;">&#39; property is a Nullable(Of T) for some T</span></span></p>
+<span style="font-size:x-small;"><font size="2">
+<p style="padding-left:60px;">&nbsp;</p>
+</font></span>
+<p style="padding-left:60px;"><span style="font-size:x-small;color:#008000;"><span style="font-size:x-small;color:#008000;">&#39; TODO: throwing exception</span></span></p>
+<span style="font-size:x-small;"><font size="2">
+<p style="padding-left:60px;">&nbsp;</p>
+</font></span>
+<p style="padding-left:60px;"><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">If</span></span><span style="font-size:x-small;"> pi.GetValue(target, </span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">Nothing</span></span><span style="font-size:x-small;">) </span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">IsNot</span></span><span style="font-size:x-small;"> </span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">Nothing</span></span><span style="font-size:x-small;"> </span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">Then</span></span></p>
+<span style="font-size:x-small;"><font size="2">
+<p style="padding-left:90px;">&nbsp;</p>
+</font></span>
+<p style="padding-left:90px;"><span style="font-size:x-small;color:#008000;"><span style="font-size:x-small;color:#008000;">&#39; exception thrown: </span></span></p>
+<span style="font-size:x-small;"><font size="2">
+<p style="padding-left:90px;">&nbsp;</p>
+</font></span>
+<p style="padding-left:90px;"><span style="font-size:x-small;color:#008000;"><span style="font-size:x-small;color:#008000;">&#39;System.Reflection.TargetInvocationException - Exception has been thrown by the target of an invocation.</span></span></p>
+<span style="font-size:x-small;"><font size="2">
+<p style="padding-left:90px;">&nbsp;</p>
+</font></span>
+<p style="padding-left:90px;"><span style="font-size:x-small;color:#008000;"><span style="font-size:x-small;color:#008000;">&#39; use something like property.HasValue</span></span></p>
+<span style="font-size:x-small;"><font size="2">
+<p style="padding-left:90px;">&nbsp;</p>
+</font></span>
+<p style="padding-left:90px;"><span style="font-size:x-small;color:#008000;"><span style="font-size:x-small;color:#008000;">&#39;TODO: to get the value and cast it to string</span></span></p>
+<span style="font-size:x-small;"><font size="2">
+<p style="padding-left:60px;">&nbsp;</p>
+</font></span>
+<p style="padding-left:60px;"><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">Else</span></span></p>
+<span style="font-size:x-small;"><font size="2">
+<p style="padding-left:90px;">value = </p>
+</font></span>
+<p style="padding-left:90px;"><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">String</span></span><span style="font-size:x-small;">.Empty()<font size="2">
+<p style="padding-left:60px;">&nbsp;</p>
+</font></span></p>
+<p style="padding-left:60px;"><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">End</span></span><span style="font-size:x-small;"> </span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">If</span></span></p>
+<span style="font-size:x-small;"><font size="2">
+<p style="padding-left:30px;">&nbsp;</p>
+</font></span>
+<p style="padding-left:30px;"><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">Else</span></span></p>
+<span style="font-size:x-small;"><font size="2">
+<p style="padding-left:60px;">value = pi.GetValue(target, </p>
+</font></span>
+<p style="padding-left:60px;"><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">Nothing</span></span><span style="font-size:x-small;">).ToString()<font size="2">
+<p style="padding-left:30px;">&nbsp;</p>
+</font></span></p>
+<p style="padding-left:30px;"><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">End</span></span><span style="font-size:x-small;"> </span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">If</span></span></p>
+<span style="font-size:x-small;"><font size="2">
+<p>&nbsp;</p>
+</font></span>
+<p><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">Next</span></span></p>
+</p>
+</font><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">Dim</span></span><span style="font-size:x-small;"> value </span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">As</span></span><span style="font-size:x-small;"> </span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">String</span></span><span style="font-size:x-small;"> = </span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">String</span></span><span style="font-size:x-small;">.Empty<font size="2">
+<p>&nbsp;</p>
+</font></span></font></font></span><font size="2" color="#0000ff"><font size="2" color="#0000ff">
+<p>
+<p><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">Dim</span></span><span style="font-size:x-small;"> value </span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">As</span></span><span style="font-size:x-small;"> </span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">String</span></span><span style="font-size:x-small;"> = </span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">String</span></span><span style="font-size:x-small;">.Empty<font size="2">
+<p>&nbsp;</p>
+</font></span></p>
+<p><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">For</span></span><span style="font-size:x-small;"> </span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">Each</span></span><span style="font-size:x-small;"> pi </span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">As</span></span><span style="font-size:x-small;"> PropertyInfo </span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">In</span></span><span style="font-size:x-small;"> target.GetType().GetProperties<font size="2">
+<p style="padding-left:30px;">&nbsp;</p>
+</font></span></p>
+<p style="padding-left:30px;"><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">If</span></span><span style="font-size:x-small;"> Nullable.GetUnderlyingType(pi.PropertyType) </span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">IsNot</span></span><span style="font-size:x-small;"> </span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">Nothing</span></span><span style="font-size:x-small;"> </span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">Then</span></span></p>
+<span style="font-size:x-small;"><font size="2">
+<p style="padding-left:60px;">&nbsp;</p>
+</font></span>
+<p style="padding-left:60px;"><span style="font-size:x-small;color:#008000;"><span style="font-size:x-small;color:#008000;">&#39; property is a Nullable(Of T) for some T</span></span></p>
+<span style="font-size:x-small;"><font size="2">
+<p style="padding-left:60px;">&nbsp;</p>
+</font></span>
+<p style="padding-left:60px;"><span style="font-size:x-small;color:#008000;"><span style="font-size:x-small;color:#008000;">&#39; TODO: throwing exception</span></span></p>
+<span style="font-size:x-small;"><font size="2">
+<p style="padding-left:60px;">&nbsp;</p>
+</font></span>
+<p style="padding-left:60px;"><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">If</span></span><span style="font-size:x-small;"> pi.GetValue(target, </span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">Nothing</span></span><span style="font-size:x-small;">) </span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">IsNot</span></span><span style="font-size:x-small;"> </span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">Nothing</span></span><span style="font-size:x-small;"> </span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">Then</span></span></p>
+<span style="font-size:x-small;"><font size="2">
+<p style="padding-left:90px;">&nbsp;</p>
+</font></span>
+<p style="padding-left:90px;"><span style="font-size:x-small;color:#008000;"><span style="font-size:x-small;color:#008000;">&#39; exception thrown: </span></span></p>
+<span style="font-size:x-small;"><font size="2">
+<p style="padding-left:90px;">&nbsp;</p>
+</font></span>
+<p style="padding-left:90px;"><span style="font-size:x-small;color:#008000;"><span style="font-size:x-small;color:#008000;">&#39;System.Reflection.TargetInvocationException - Exception has been thrown by the target of an invocation.</span></span></p>
+<span style="font-size:x-small;"><font size="2">
+<p style="padding-left:90px;">&nbsp;</p>
+</font></span>
+<p style="padding-left:90px;"><span style="font-size:x-small;color:#008000;"><span style="font-size:x-small;color:#008000;">&#39; use something like property.HasValue</span></span></p>
+<span style="font-size:x-small;"><font size="2">
+<p style="padding-left:90px;">&nbsp;</p>
+</font></span>
+<p style="padding-left:90px;"><span style="font-size:x-small;color:#008000;"><span style="font-size:x-small;color:#008000;">&#39;TODO: to get the value and cast it to string</span></span></p>
+<span style="font-size:x-small;"><font size="2">
+<p style="padding-left:60px;">&nbsp;</p>
+</font></span>
+<p style="padding-left:60px;"><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">Else</span></span></p>
+<span style="font-size:x-small;"><font size="2">
+<p style="padding-left:90px;">value = </p>
+</font></span>
+<p style="padding-left:90px;"><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">String</span></span><span style="font-size:x-small;">.Empty()<font size="2">
+<p style="padding-left:60px;">&nbsp;</p>
+</font></span></p>
+<p style="padding-left:60px;"><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">End</span></span><span style="font-size:x-small;"> </span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">If</span></span></p>
+<span style="font-size:x-small;"><font size="2">
+<p style="padding-left:30px;">&nbsp;</p>
+</font></span>
+<p style="padding-left:30px;"><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">Else</span></span></p>
+<span style="font-size:x-small;"><font size="2">
+<p style="padding-left:60px;">value = pi.GetValue(target, </p>
+</font></span>
+<p style="padding-left:60px;"><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">Nothing</span></span><span style="font-size:x-small;">).ToString()<font size="2">
+<p style="padding-left:30px;">&nbsp;</p>
+</font></span></p>
+<p style="padding-left:30px;"><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">End</span></span><span style="font-size:x-small;"> </span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">If</span></span></p>
+<span style="font-size:x-small;"><font size="2">
+<p>&nbsp;</p>
+</font></span>
+<p><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">Next</span></span></p>
+</p>
+</font></font></span><font size="2" color="#0000ff">
+<p>&nbsp;</p>
+</font></span></p>
+<p>&nbsp;</p>
+<p><span style="font-size:x-small;">Really appreciate some help.</span></p>
+<p><span style="font-size:x-small;">Thanks,</span></p>
+<p><span style="font-size:x-small;">Andrew</span></p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

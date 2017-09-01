@@ -1,0 +1,13 @@
+<html><header><title>Can I implement a CollectionObject with other CollectionObjects as its child</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Can I implement a CollectionObject with other CollectionObjects as its child</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3292.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>BillSun posted on Monday, July 30, 2007</h2><P>I have a case which I need to implement a collectionObject which contains otherCollectionobjects.</P>
+<P>for example, a table&nbsp;named RuleAction&nbsp;with the following columns</P>
+<P>&nbsp;&nbsp;&nbsp;1. RuleCategoryID&nbsp;&nbsp; varchar(16) not null</P>
+<P>&nbsp;&nbsp;&nbsp;2. RuleID&nbsp; varchar(16)&nbsp; not null</P>
+<P>&nbsp;&nbsp;&nbsp;3. SequenceNum&nbsp; int not null</P>
+<P>&nbsp;&nbsp; 4. actionID&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; varchar(16)</P>
+<P>The primary key are (RuleID, SequenceNum)</P>
+<P>using&nbsp;clsa, I can create two editable&nbsp;classes: RuleAction(EditableChild), RuleActions&nbsp;&nbsp;(EditableChildCollection). RuleActions has a property of RuleID which means an instance of RuleActions must always have a ruleID associated with it.&nbsp;within&nbsp;this collection under&nbsp;a ruleID,&nbsp;implemented some business logic.</P>
+<P>However, I need another collection object which has RuleCategoryID as its property, and contains many of the RuleActions objects. </P>
+<P>How can&nbsp;I&nbsp;implemented the last class&nbsp;by&nbsp;using csla framework.&nbsp;or just create a list of RuleActions&nbsp;class?</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, July 31, 2007</h2><P>It sounds like you may be designing your object model based on your data structure, which is a problem.</P>
+<P>What is your use case? What purpose do the objects serve in that use case? What is their responsibility (each object should have only one)?</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

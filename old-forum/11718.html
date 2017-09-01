@@ -1,0 +1,19 @@
+<html><header><title>Logic before Save (Save no longer override)</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Logic before Save (Save no longer override)</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11718.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>correodemarques posted on Wednesday, November 21, 2012</h2><p>In CSLA v 4.5 the method Save is no longer overridable. How can I run some logic before the actual Save takes place?&nbsp;Specifically&nbsp;I need to check a permission for which I cannot use the Authorization rules.</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Wednesday, November 21, 2012</h2><p>As more and more code makes it into async/await and asyncronicity the method to override is:</p>
+<div style="color:black;background:white;font-family:Consolas;font-size:10pt;">
+<pre style="margin:0px;">&nbsp;&nbsp; <span style="color:blue;">protected</span>&nbsp;<span style="color:blue;">async</span>&nbsp;<span style="color:blue;">virtual</span>&nbsp;System.Threading.Tasks.<span style="color:#2b91af;">Task</span>&lt;T&gt;&nbsp;SaveAsync(<span style="color:blue;">bool</span>&nbsp;forceUpdate,&nbsp;<span style="color:blue;">object</span>&nbsp;userState,&nbsp;<span style="color:blue;">bool</span>&nbsp;isSync)
+<br />this method will be called for both sync and async code. <br /><br />&nbsp;&nbsp;&nbsp; <span style="color:blue;">public</span>&nbsp;T&nbsp;Save()
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">try</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">return</span>&nbsp;SaveAsync(<span style="color:blue;">false</span>,&nbsp;<span style="color:blue;">null</span>,&nbsp;<span style="color:blue;">true</span>).Result;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">catch</span>&nbsp;(<span style="color:#2b91af;">AggregateException</span>&nbsp;ex)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">if</span>&nbsp;(ex.InnerExceptions.Count&nbsp;&gt;&nbsp;0)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">throw</span>&nbsp;ex.InnerExceptions[0];
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">else</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">throw</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;}<br /></pre>
+</div>
+<p>&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

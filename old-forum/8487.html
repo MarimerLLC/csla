@@ -1,0 +1,35 @@
+<html><header><title>testing</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>testing</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/8487.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>admin posted on Saturday, February 06, 2010</h2><p>This is a test post</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>bniemyjski replied on Saturday, February 06, 2010</h2>test</div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Saturday, February 06, 2010</h2><p>test post reply</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>rxelizondo replied on Saturday, February 06, 2010</h2><p>No problem, the answer to the test post is:</p>
+<p></p>
+<p>&nbsp;</p>
+<p>using System;</p>
+<p>using Csla.Properties;</p>
+<p>&nbsp;</p>
+<p>namespace Csla</p>
+<p>{</p>
+<p>&nbsp;&nbsp; &nbsp;/// &lt;summary&gt;</p>
+<p>&nbsp;&nbsp; &nbsp;/// Maintains metadata about a property.</p>
+<p>&nbsp;&nbsp; &nbsp;/// &lt;/summary&gt;</p>
+<p>&nbsp;&nbsp; &nbsp;/// &lt;typeparam name=&quot;T&quot;&gt;</p>
+<p>&nbsp;&nbsp; &nbsp;/// Data type of the property.</p>
+<p>&nbsp;&nbsp; &nbsp;/// &lt;/typeparam&gt;</p>
+<p>&nbsp;&nbsp; &nbsp;public class PropertyInfo&lt;T&gt; : Core.IPropertyInfo, IComparable</p>
+<p>&nbsp;&nbsp; &nbsp;{</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;/// &lt;summary&gt;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;/// Creates a new instance of this class.</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;/// &lt;/summary&gt;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;/// &lt;param name=&quot;name&quot;&gt;Name of the property.&lt;/param&gt;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;public PropertyInfo(string name): this(name, &quot;&quot;)</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;{&nbsp;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;}</p>
+<div></div>
+<div></div>
+<div></div>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rxelizondo replied on Saturday, February 06, 2010</h2><p>The code post looks pretty good, but i did&#39;t like all the extra spaces between lines &nbsp;so&nbsp;I am replying to myself using the &quot;Paste from Word&quot; option and pasting the code there, lets see what would happen:</p>
+<p>using System;using Csla.Properties;</p>
+<p>namespace Csla{&nbsp;&nbsp; &nbsp;/// &lt;summary&gt;&nbsp;&nbsp; &nbsp;/// Maintains metadata about a property.&nbsp;&nbsp; &nbsp;/// &lt;/summary&gt;&nbsp;&nbsp; &nbsp;/// &lt;typeparam name=&quot;T&quot;&gt;&nbsp;&nbsp; &nbsp;/// Data type of the property.&nbsp;&nbsp; &nbsp;/// &lt;/typeparam&gt;&nbsp;&nbsp; &nbsp;public class PropertyInfo&lt;T&gt; : Core.IPropertyInfo, IComparable&nbsp;&nbsp; &nbsp;{&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;/// &lt;summary&gt;&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;/// Creates a new instance of this class.&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;/// &lt;/summary&gt;&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;/// &lt;param name=&quot;name&quot;&gt;Name of the property.&lt;/param&gt;&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;public PropertyInfo(string name): this(name, &quot;&quot;)&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;{&nbsp;&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;}</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Saturday, February 06, 2010</h2><p>Pasting code in FF seems pretty good (lose the color, but keep the format)</p>
+<p>&nbsp;&nbsp;&nbsp; public IQueryable&lt;Product&gt; Products<br />&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; get<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var q = from r in _products.AsEnumerable()<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; select new Product { Id = Convert.ToInt32(r[0]), Name = r[1].ToString() };<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return q.AsQueryable();<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br />&nbsp;&nbsp;&nbsp; }</p>
+<p>Pasting code in IE8 (with or without IE7 compat mode) seems pretty iffy...</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rxelizondo replied on Saturday, February 06, 2010</h2><p class="MsoNormal" style="margin:0in 0in 10pt;"><span style="font-family:Calibri;font-size:small;">I like it. My previous code postings where done with Google Chrome, this time I am using IE but I am doing a paste/copy to Notepad to loose the formatting. This is awesome, the simple fact that is the forum no logger gets confused with the &lt;&gt; symbols it perfect. It&rsquo;s so beautiful, think I am going to <img src="http://forums.lhotka.net/emoticons/emotion-9.gif" alt="Crying" /> out of happines!</span></p>
+<p>&nbsp;</p>
+<p>IE post via Notepad paste/copy</p>
+<p>&nbsp;private void Child_Fetch(ProjectTracker.DalLinq.Assignment data)<br />&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; using (BypassPropertyChecks)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ProjectId = data.ProjectId;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ProjectName = data.Project.Name;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; LoadPropertyConvert&lt;SmartDate, DateTime&gt;(AssignedProperty, data.Assigned);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Role = data.Role;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; TimeStamp = data.LastChanged.ToArray();<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br />&nbsp;&nbsp;&nbsp; }</p>
+<p>&nbsp;&nbsp;&nbsp; private void Child_Insert(Resource resource)<br />&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; using (BypassPropertyChecks)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; TimeStamp = Assignment.AddAssignment(<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ProjectId, resource.Id, ReadProperty(AssignedProperty), Role);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br />&nbsp;&nbsp;&nbsp; }</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

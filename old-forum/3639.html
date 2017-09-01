@@ -1,0 +1,93 @@
+<html><header><title>Silverlight version of PT?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Silverlight version of PT?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3639.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>CSLAer posted on Tuesday, October 02, 2007</h2><P><FONT face=Tahoma>Hi Rocky,</FONT></P>
+<P><FONT face=Tahoma>Do you have plan to include a Silverlight version of ProjectTracker?</FONT></P>
+<P><FONT face=Tahoma>Thanks</FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, October 02, 2007</h2><P>There are two types of Silverlight app possible.</P>
+<P>One is a "thin client" that rests on top of a set of server-side services, so the CSLA objects reside only on the server. Once Silverlight has at least a TextBox control something like that becomes quite possible.</P>
+<P>However, full CSLA won't work in Silverlight on the client. Silverlight's sandbox is too restrictive - no private reflection, hence no serialization, so no n-level undo and no data portal as we know it.</P>
+<P>I have done some preliminary research though, along the idea of a "CSLA Light" - a version of CSLA that provides things like validation and perhaps authorization, along with n-level undo done without reflection.</P>
+<P>So the second type of Silverlight app that may be possible, with CSLA Light, would have business objects running on the client. Different ones from those on the server to be sure, but still quite similar, and providing many of the same UI-support benefits you get from CSLA .NET itself.</P>
+<P>All this is speculation of course. Until Silverlight has at least a TextBox and a Button (it has neither today) it is pretty hard to write anything resembling a business application <img src="/emoticons/emotion-1.gif" alt="Smile [:)]" /></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>CSLAer replied on Wednesday, October 03, 2007</h2><P><FONT face=Tahoma>Hi Rocky,</FONT></P>
+<P><FONT face=Tahoma>Thanks for your speedy response.</FONT></P>
+<P><FONT face=Tahoma>My idea is to run the ProjectTracker client under IE, in the same time,&nbsp;it should&nbsp;leverage WPF's righ multimedia function. Is possible to&nbsp;write&nbsp;XBAP (XMAL Browser Application) using CSLA? </FONT></P>
+<P><FONT face=Tahoma>Thanks</FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, October 03, 2007</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Technically it is possible to write an XBAP app using CSLA.
+However, you&#8217;ll encounter security issues, because XBAP apps don&#8217;t
+run with FullTrust. I&#8217;m not sure if you can get them to run with
+FullTrust &#8211; but that&#8217;d be a requirement&#8230;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>The reason is that CSLA uses a bunch of .NET technologies like
+Remoting, WCF, WF, the BinaryFormatter and reflection &#8211; all of which
+require FullTrust (or close).<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>This &#8220;CSLA Light&#8221; I mentioned would avoid using any
+of those technologies &#8211; which seriously limits or removes some CSLA
+features.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>The real challenge is that without serialization (both
+BinaryFormatter and NetDataContractSerializer require FullTrust) it is
+impossible to implement the data portal, in its current form anyway.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>If NDCS were to work in partial trust that&#8217;d solve the
+issue, but I don&#8217;t know that Microsoft has plans in that regard, so I
+think we&#8217;re stuck.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>What this means, is that XBAP and Silverlight apps must be built
+using an SOA mindset, not a client/server or n-tier mindset. You must view the
+client application (XBAP or Silverlight) as a <i>separate application</i> from
+the server application that exposes a set of services (via asmx, because it
+works in partial trust).<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>You can use CSLA .NET to build the server application as
+described in Chapter 11.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>If and when a CSLA Light exists, you&#8217;d be able to use that
+to create a <i>totally separate application</i> that would run on the client in
+XBAP or Silverlight.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>As with all SOA models, you&#8217;ll end up writing the same
+business logic twice in many cases. That&#8217;s the price of doing SOA. But at
+least you&#8217;ll have a low-impact app that is still very rich and
+interactive on the client. And you&#8217;ll have a powerful and complete app
+running on the server, exposed via an XML interface.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky</span><o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>CSLAer replied on Thursday, October 04, 2007</h2><P><FONT face=Tahoma>Hi Rocky,</FONT></P>
+<P><FONT face=Tahoma>Thanks for your detail explanation. By the way, is there any plan for CSLA Light?</FONT></P>
+<P><FONT face=Tahoma>Thanks</FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, October 04, 2007</h2><P>Define "plan" :)</P>
+<P>Right now it is a research project, and will remain so until Silverlight is mature enough that we know what is, and is not, possible in that environment.</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,108 @@
+<html><header><title>WCF Self Host problem in setup.</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>WCF Self Host problem in setup.</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5501.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>tdrake posted on Tuesday, September 30, 2008</h2><P>I'm setting up a service to run the server for a WCF rather then IIS, and have my server app:</P><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>static</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>void</FONT></FONT><FONT size=2> Main()</P>
+<P>{</P></FONT><FONT size=2>
+<P></FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>ServiceHostm</FONT></FONT><FONT size=2> myServicHost = </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>new</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>ServiceHost</FONT></FONT><FONT size=2>(</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>typeof</FONT></FONT><FONT size=2>(</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>WcfPortal</FONT></FONT><FONT size=2>),</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>new</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>Uri</FONT></FONT><FONT size=2>(</FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>"net.tcp://localhost:8001"</FONT></FONT><FONT size=2>));</P>
+<P>myServicHost.Open();</P>
+<P></FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>Application</FONT></FONT><FONT size=2>.Run(</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>new</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>Form1</FONT></FONT><FONT size=2>());</P>
+<P>myServicHost.Close();</P>
+<P>}</P>
+<P>the referces added are my library of BOs and CSLA</P>
+<P>and my app config is:</P><FONT color=#0000ff size=2><FONT color=#0000ff size=2>
+<P>&lt;</FONT></FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>configuration</FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>&gt;</P>
+<P>&lt;</FONT></FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>system.serviceModel</FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>&gt;</P>
+<P>&lt;</FONT></FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>services</FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>&gt;</P>
+<P>&lt;</FONT></FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>service</FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2> </FONT></FONT><FONT color=#ff0000 size=2><FONT color=#ff0000 size=2>name</FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2> = </FONT></FONT><FONT size=2>"</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>WcfPortal</FONT></FONT><FONT size=2>"</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>&gt;</P>
+<P>&lt;</FONT></FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>endpoint</P></FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>
+<P></FONT></FONT><FONT color=#ff0000 size=2><FONT color=#ff0000 size=2>address</FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2> = </FONT></FONT><FONT size=2>"</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>net.tcp://localhost:8001</FONT></FONT><FONT size=2>"</P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>
+<P></FONT></FONT><FONT color=#ff0000 size=2><FONT color=#ff0000 size=2>binding</FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2> = </FONT></FONT><FONT size=2>"</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>netTcpBinding</FONT></FONT><FONT size=2>"</P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>
+<P></FONT></FONT><FONT color=#ff0000 size=2><FONT color=#ff0000 size=2>contract</FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2> = </FONT></FONT><FONT size=2>"</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Csla.Server.Hosts.IWcfPortal</FONT></FONT><FONT size=2>"</P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>
+<P>/&gt;</P>
+<P>&lt;/</FONT></FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>service</FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>&gt;</P>
+<P>&lt;/</FONT></FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>services</FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>&gt;</P>
+<P>&lt;/</FONT></FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>system.serviceModel</FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>&gt;</P>
+<P>&lt;/</FONT></FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>configuration</FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>&gt;</P></FONT></FONT>
+<P>I'm getting "Service 'Csla.Server.Hosts.WcfPortal' has zero application (non-infrastructure) endpoints."</P>
+<P>I feel I'm missing something, such as net.tcp://localhostL8001/????? but not sure what.</P>
+<P>The http version I've got wors well, but is slow, as based on my own nonCSLA testing WCF where you can use netTCP appears to be 5times faster.....</P>
+<P>Thanks Tony</P>
+<P>&nbsp;</P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ixman replied on Wednesday, October 01, 2008</h2><P>Hi,</P>
+<P>Yes, you're missing the endpoint name. The correct address is a valid URI like this:&nbsp;<FONT color=#a31515 size=2>net.tcp://localhost:8001/MyWcfService</FONT></P>
+<P><FONT color=#000000>Just make this change in the URI and address in the configuration file and should be fine...</FONT></P>
+<P>&nbsp;</P>
+<P>Regards,</P>
+<P>George B</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tdrake replied on Wednesday, October 01, 2008</h2><P>Thanks - I see the interface is the key here, not the uri, as long as both the client/server have the same url referece? OK... so&nbsp; I've got past this error now, but when I call the DataPortal (in this case to setup my security):</P>
+<P>"The formatter threw an exception while trying to deserialize the message: There was an error while trying to deserialize parameter <A href="http://ws.lhotka.net/WcfDataPortal:FetchResult">http://ws.lhotka.net/WcfDataPortal:FetchResult</A>. The InnerException message was ''Element' '_fieldManager' from namespace 'http://schemas.datacontract.org/2004/07/Csla' is not expected. Expecting element '_serializableChangedHandlers'.'.&nbsp; Please see InnerException for more details."</P>
+<P>I'm thinking&nbsp;as both the client and server is using the same interface, the the 'joy' of WCF means tha the pmumbing is automatic (as long as the interface IS the same)........ mmmm - Ah!</P>
+<P>I re-added references to CSLA, and bingo!! I'm away... thanks for pointing out&nbsp;the obvious - wcf light has just gone on! (I'm so used to the webservce,iis,soap stuff). </P>
+<P>Thanks Tony</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>shawndewet replied on Monday, November 29, 2010</h2><p>I&#39;m also trying to get this to work with netTcpBinding with a console app as my host:</p>
+<p>Here&#39;s my config:</p>
+<p>
+<p>&lt;system.serviceModel&gt;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp;&lt;services&gt;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;&lt;service name=&quot;Csla.Server.Hosts.WcfPortal&quot;&gt;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&lt;endpoint address=&quot;net.tcp://localhost:7001/WcfPortal&quot; binding=&quot;netTcpBinding&quot;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;bindingConfiguration=&quot;&quot; contract=&quot;Csla.Server.Hosts.IWcfPortal&quot; /&gt;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;&lt;/service&gt;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp;&lt;/services&gt;</p>
+<p>&nbsp;&nbsp; &nbsp;&lt;/system.serviceModel&gt;</p>
+</p>
+<p>&nbsp;</p>
+<p>Here&#39;s my hosting code:</p>
+<p>
+<p>Dim host As New ServiceModel.ServiceHost(GetType(Csla.Server.Hosts.WcfPortal))</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;host.Open()</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;For Each ep In host.Description.Endpoints</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Console.WriteLine(ep.Address)</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Next</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Console.WriteLine(&quot;The service is hosted. Press any key to exit&quot;)</p>
+<div></div>
+<div>I can see the endpoint listed in the console. &nbsp;When I try to add a service reference to the&nbsp;net.tcp://localhost:7001/WcfPortal address, I get this error:</div>
+<div>
+<div>Metadata contains a reference that cannot be resolved: &#39;net.tcp://localhost:7001/WcfPortal&#39;.</div>
+<div>The socket connection was aborted. This could be caused by an error processing your message or a receive timeout being exceeded by the remote host, or an underlying network resource issue. Local socket timeout was &#39;00:04:59.8099892&#39;.</div>
+<div>An existing connection was forcibly closed by the remote host</div>
+<div>If the service is defined in the current solution, try building the solution and adding the service reference again.</div>
+</div>
+<div></div>
+<div>Any pointers please?</div>
+</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>shawndewet replied on Monday, November 29, 2010</h2><p>Resolved it with the following serviceModel config:</p>
+<p>
+<p>&lt;services&gt;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp;&lt;service behaviorConfiguration=&quot;returnFaults&quot; name=&quot;Csla.Server.Hosts.WcfPortal&quot;&gt;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;&lt;host&gt;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&lt;baseAddresses&gt;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&lt;add baseAddress=&quot;net.tcp://localhost:7001/WCFDataPortal&quot;/&gt;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&lt;/baseAddresses&gt;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;&lt;/host&gt;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;&lt;endpoint binding=&quot;netTcpBinding&quot;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;bindingConfiguration=&quot;netTcpBinding_IWcfPortal&quot;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;contract=&quot;Csla.Server.Hosts.IWcfPortal&quot; /&gt;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;&lt;endpoint address=&quot;mex&quot; binding=&quot;netTcpBinding&quot; contract=&quot;IMetadataExchange&quot;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; bindingConfiguration=&quot;mexTcp&quot; /&gt;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp;&lt;/service&gt;</p>
+<p>&nbsp;&nbsp; &nbsp;&lt;/services&gt;</p>
+<p>&nbsp;&nbsp; &nbsp;&lt;behaviors&gt;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp;&lt;serviceBehaviors&gt;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;&lt;behavior name=&quot;returnFaults&quot;&gt;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&lt;serviceDebug includeExceptionDetailInFaults=&quot;true&quot;/&gt;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&lt;serviceMetadata /&gt;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;&lt;/behavior&gt;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp;&lt;/serviceBehaviors&gt;</p>
+<p>&nbsp;&nbsp; &nbsp;&lt;/behaviors&gt;</p>
+<p>&nbsp;&nbsp; &nbsp;&lt;bindings&gt;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp;&lt;netTcpBinding&gt;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;&lt;binding name=&quot;netTcpBinding_IWcfPortal&quot; maxReceivedMessageSize=&quot;2147483647&quot; portSharingEnabled=&quot;true&quot;&gt;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&lt;readerQuotas maxDepth=&quot;1024&quot; maxStringContentLength=&quot;2147483647&quot;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;maxArrayLength=&quot;2147483647&quot; maxBytesPerRead=&quot;2147483647&quot; /&gt;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&lt;security mode=&quot;None&quot; /&gt;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;&lt;/binding&gt;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;&lt;binding name=&quot;mexTcp&quot; portSharingEnabled=&quot;true&quot;&gt;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&lt;security mode=&quot;None&quot; /&gt;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;&lt;/binding&gt;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp;&lt;/netTcpBinding&gt;</p>
+<p>&nbsp;&nbsp; &nbsp;&lt;/bindings&gt;</p>
+</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

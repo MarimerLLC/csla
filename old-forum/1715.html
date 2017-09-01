@@ -1,0 +1,12 @@
+<html><header><title>Interface for Databining</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Interface for Databining</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/1715.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>shawndewet posted on Wednesday, November 08, 2006</h2><P>I have a number of classes that inherit from BusinessBase that I want to use&nbsp;as a&nbsp;databinding source on a single form.&nbsp; They all have a Code property and a Description property.&nbsp; I want to use an interface as the bindingsource of each the two text boxes on the form, as follows: -</P>
+<P>Public Interface ICategory</P>
+<P>&nbsp;Property Code As String</P>
+<P>&nbsp;Property Description As String</P>
+<P>End Interface</P>
+<P>&nbsp;</P>
+<P>Each of my businessbase classes then implement ICategory.&nbsp; The binding works perfectly.</P>
+<P>However when it comes to saving, I have to CType the bound object to the individual class type and call that type's Save method.</P>
+<P>Ideally I would like to add a "Function Save() As BusinessBase" to the interface, and just call the interface save&nbsp;method from my save button.&nbsp; However, because of Generics the above Function Save As BusinessBase requires a "(Of [type] )" and that is where I get stumped. Can I even do this now with generics?&nbsp; What do I put as the [type] in the method definition of the interface?</P>
+<P>Please advise.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, November 08, 2006</h2>In version 2.1 there's an Csla.Core.ISavable interface you can use to save any editable object.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>shawndewet replied on Thursday, November 09, 2006</h2><P>Thanx Rocky, this gave me the pointer I needed, in that I still need to use the Interface I mentioned, but I now also added to it a "Function Save As Object" and implemented it by another "Private Function ISave As Object" that merely returns MyBase.Save.</P>
+<P>Cheers,</P>
+<P>Shawn.</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

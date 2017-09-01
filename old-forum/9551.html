@@ -1,0 +1,32 @@
+<html><header><title>How to choose Business type?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>How to choose Business type?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9551.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>ddredstar posted on Saturday, September 18, 2010</h2><p>Csla has so many different business types, how to decide which one should be the right one?</p>
+<p>for example: EditableRootList and ReadOnlyList</p>
+<p>i &#39;m a newbie of Csla.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Marjon1 replied on Saturday, September 18, 2010</h2><p>Each business type is designed to handle certain situations, the best places to get yourself up to speed are:</p>
+<p>
+<ul>
+<li>The CSLA book available in both physical and e-book form</li>
+<li>The CSLA videos (non-silverlight)&nbsp;</li>
+<li>The sample applications.</li>
+</ul>
+</p>
+<p>Basically the objects are broken into several categories:</p>
+<p>
+<ul>
+<li>BusinessBase - Used for objects which are editable, have business (validation) rules and authorization</li>
+<li>BusinessListBase - Used to have a single list of BusinessBase objects and allow bulk saving of the list all at once.&nbsp;</li>
+<li>ReadOnlyBase &amp; ReadOnlyListBase - Used to have read-only objects (i.e. grids, combo-boxes, etc), no business rules apply.&nbsp;</li>
+<li>NameValueList - A list that contains only two properties (key &amp; value), can be useful for combo-boxes, etc.<br /></li>
+<li>DynamicList or EditableListBase - Used only for very specific situations where you want immediate saves of objects while working within a grid, should be avoided where possible.</li>
+</ul>
+</p>
+<p>CSLA is an excellent framework, but is expected to used in a very&nbsp;different&nbsp;way that many programmers are used to; cannot recommend the book or videos enough if you are seriously looking at using it.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ddredstar replied on Sunday, September 19, 2010</h2><p>BusinessListBase allow bulk saving. So, if don&#39;t have to bulk saving, ReadOnlyListBase is enough, right?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tiago replied on Sunday, September 19, 2010</h2><p>Use ReadOnlyListBase&nbsp;only when&nbsp;you don&#39;t want to change and save the list items.</p>
+<p>Suppose you have a price list.</p>
+<ul>
+<li>In the Sales Manager use case, he can change the prices, add new products, remove (or mark obsolete) some other products. In that use case, a BLB should be used.</li>
+<li>In the sales person use case, he just needs to get the product code, name, and price per unit. He can&#39;t change any of those. In this use case, a ReadOnlyListBase&nbsp;should be used.</li>
+</ul>
+<p>You can have several objects referring to the same piece of data (products and prices). What matters is how you are going to use the objects. You can/should have as many objects as your use cases dictate.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ddredstar replied on Sunday, September 19, 2010</h2><p><div style='padding-left: 50px;background-color:silver'><b>tiago<br></b>In the Sales Manager use case, he can change the prices, add new products, remove (or mark obsolete) some other products. In that use case, a BLB should be used.</div></p>
+<p>if i add or update or delete one product each time, use ReadOnlyListBase to fill grid is enough, right? my reason is that i can use BusinessBase to process single product each time, am right?</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>tiago replied on Sunday, September 19, 2010</h2><p>Please refer to</p>
+<ul>
+<li>New Stereotypes in Csla 3.5 and up - what&#39;s the ReadOnlyList issue - <a href="http://forums.lhotka.net/forums/p/7626/36311.aspx">http://forums.lhotka.net/forums/p/7626/36311.aspx</a></li>
+<li>Summary of Csla 3.5 stereotypes - <a href="http://forums.lhotka.net/forums/p/7631/38578.aspx">http://forums.lhotka.net/forums/p/7631/38578.aspx</a></li>
+</ul></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Sunday, September 19, 2010</h2><p>The stereotypes and base classes are also thoroughly explained in the first few chapters of <em>Expert 2008 Business Objects</em>, and in the <em>Core 3.8</em> video series.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

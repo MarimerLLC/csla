@@ -1,0 +1,40 @@
+<html><header><title>MobileObject infrastructure just for silverlight??</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>MobileObject infrastructure just for silverlight??</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5709.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>vdhant posted on Thursday, October 30, 2008</h2>Hey guys <br>Just wanted to check if the MobileObject infrastructure was put in place just for silverlight or is it used by CSLA even in no n silverslight scenarios?<br>Cheers<br>Anthony <br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, October 30, 2008</h2><P>The IMobileObject interface exists to support the MobileFormatter, and that is currently used only by Silverlight.</P>
+<P>MobileObject, MobileList and other base classes implement IMobileObject to simplify how CSLA .NET implements the interface. And you can use those base classes yourself to create serializable objects for use with the Silverlight data portal (though that's obviously an advanced scenario).</P>
+<P>In CSLA .NET for Windows, none of the code in the MobileObject/etc classes should matter, because nothing would invoke IMobileObject methods.</P>
+<P>In the future you can imagine other interesting ideas though. For instance, a version of CSLA .NET for .NET Compact Framework that uses MobileFormatter. A version of CSLA .NET for Windows Azure that uses the MobileFormatter. A version of CSLA .NET for Partial Trust Web Servers that uses the MobileFormatter.</P>
+<P>I don't know that I'll do all (or any) of those. But the MobileFormatter addresses the single biggest roadblock to making CSLA work in most partial trust environments, and I rather suspect that my use of the BinaryFormatter or NetDataContractSerializer may slowly fade away in the future.</P>
+<P>If that happens, then MobileObject and the related types become rather important in other environments :)</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>vdhant replied on Thursday, October 30, 2008</h2>Thanks for the great info, that makes total sense...<br><br>Just a thought, have you done any performance tests of MobileFormatter vs BinaryFormatter or NetDataContractSerializer.<br><br>Cheers<br>Anthony <br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, October 31, 2008</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>No I haven&#8217;t. it isn&#8217;t entirely relevant, since
+neither of the .NET formatters are available in SL.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>The one thing we DO know is that MobileFormatter can create very
+large XML streams. Behind the scenes it uses the WCF DataContractSerializer,
+which creates pretty verbose XML. The Silverlight data portal has hooks where
+you can plug in compression, and there&#8217;s a sample app showing how to do
+that (the idea came from a thread on this forum a few weeks ago).<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

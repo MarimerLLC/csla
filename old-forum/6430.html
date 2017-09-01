@@ -1,0 +1,141 @@
+<html><header><title>if my project doesn't need authorization what i have to do ?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>if my project doesn't need authorization what i have to do ?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6430.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Programmer1987 posted on Monday, February 16, 2009</h2><P>I mean is there any default values for any properties in </P>
+<P>business class i have to put .</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rsbaker0 replied on Monday, February 16, 2009</h2><P>You are free to not implement any authorization rules and CSLA will work just fine. What will happen is that CanReadProperty() and CanWriteProperty() will always return true. </P>
+<P>However, you will still&nbsp;have to derive some sort of Principal class from <FONT color=#2b91af size=2><FONT color=#2b91af size=2>BusinessPrincipalBase </FONT></FONT>and set it to be the current "user" of your application. </P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, February 16, 2009</h2>You don't even need to create a custom principal object if you tell CSLA to use Windows authentication. In that case it just uses whatever principal is active on the thread (which defaults to a GenericPrincipal).</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rsbaker0 replied on Monday, February 16, 2009</h2>That's good to know, thanks! I was naively responding with my limited experience with the "<FONT color=#008000 size=2><FONT color=#008000 size=2>Principal must be of type BusinessPrincipal, not...</FONT></FONT>" exception in mind. </div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, February 16, 2009</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>That exception is gone in 3.6 btw.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>In 3.6 the rules are (by default) simpler:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoListParagraph><span><span>1.<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span></span><span>With CslaAuthentication=Csla the principal is serialized through
+the data portal, so it must be serializable &#8211; that&#8217;s the only
+constraint<o:p></o:p></span></p>
+
+<p class=MsoListParagraph><span><span>2.<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span></span><span>With CslaAuthentication=Windows the principal is unaffected by
+the data portal and CSLA uses whatever principal exists on the client and
+server &#8211; it is up to you and IIS and WCF and ASP.NET and whatever other
+technologies to get the principal values to be correct<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>And if CslaAuthentication=Csla, you can provide a bit of code that
+is run at the start of every single server call, where you can authenticate the
+principal provided by the client. This is where I used to throw the BusinessPrincipal
+exception, but now it is open for you to do whatever you think is best for your
+app.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> rsbaker0
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Monday, February 16, 2009 2:47 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] if my project doesn't need authorization what i
+have to do ?<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>That's good to know, thanks! I was naively responding with
+my limited experience with the &quot;<span>Principal
+must be of type BusinessPrincipal, not...</span>&quot; exception in mind.<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Monday, February 16, 2009</h2><BLOCKQUOTE><div><img src="/Themes/basicblue/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div>And if CslaAuthentication=Csla, you can provide a bit of code that
+is run at the start of every single server call, where you can authenticate the
+principal provided by the client. This is where I used to throw the BusinessPrincipal
+exception, but now it is open for you to do whatever you think is best for your
+app.</div></BLOCKQUOTE><br><br>Checking the index, I don't see where this code would be.&nbsp; Is there a part of the book that discusses this issue (and the risks of not doing anything)?<br><br>Thanks<br>Andy<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, February 16, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I remember writing about it :)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>But you are right &#8211; I don&#8217;t see it in the index
+either. Fortunately it is relatively easy.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>You need to do this:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoListParagraph><span><span>1.<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span></span><span>Create a class that implements Csla.Server.IAuthorizeDataPortal,
+which means you&#8217;ll implement an Authorize() method<o:p></o:p></span></p>
+
+<p class=MsoListParagraph><span><span>2.<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span></span><span>In that Authorize() method throw an exception to block an inbound
+request, or don&#8217;t throw an exception to allow the request to be processed<o:p></o:p></span></p>
+
+<p class=MsoListParagraph><span><span>3.<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span></span><span>Set the CslaAuthorizationProvider config value to your
+assembly-qualified type name: &#8220;MyAssembly.MyAuthorizer,MyAssembly&#8221; on
+the data portal server (so typically in web.config)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>The Authorize() method is handed a parameter that allows you to
+see (and I suppose manipulate) everything that&#8217;s known about the inbound
+request. This occurs immediately after the inbound objects are deserialized
+from the client, and before anything else (so you aren&#8217;t in a transaction
+yet, or anything like that).<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Monday, February 16, 2009</h2>Thanks!<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Monday, February 16, 2009</h2>Pages 431-432.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Tuesday, February 17, 2009</h2>Excellent, I'll read that today!<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Programmer1987 replied on Wednesday, February 18, 2009</h2><P>thanks alot for you replay</P>
+<P>I tried to put in Config file </P>
+<P>is that enough to tell the BLL that I do't use Authentication </P><FONT color=#0000ff size=2>
+<P>&lt;</FONT><FONT color=#a31515 size=2>add</FONT><FONT color=#0000ff size=2> </FONT><FONT color=#ff0000 size=2>key</FONT><FONT color=#0000ff size=2>=</FONT><FONT size=2>"</FONT><FONT color=#0000ff size=2>CslaAuthentication</FONT><FONT size=2>"</FONT><FONT color=#0000ff size=2> </FONT><FONT color=#ff0000 size=2>value</FONT><FONT color=#0000ff size=2>=</FONT><FONT size=2>"</FONT><FONT color=#0000ff size=2>Windows</FONT><FONT size=2>"</FONT><FONT color=#0000ff size=2> /&gt;</FONT><FONT color=#0000ff size=2></P></FONT></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

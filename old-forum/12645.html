@@ -1,0 +1,23 @@
+<html><header><title>CSLA .NET Contrib 4.5.50 released</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA .NET Contrib 4.5.50 released</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/12645.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>tiago posted on Sunday, May 25, 2014</h2><p>CslaContrib extension library to CSLA .NET 4.5.50 was published on <a href="http://cslacontrib.codeplex.com/releases/view/107018">CodePlex</a>.<br />This release is version synchronized to CSLA .NET 4.5.501 and is also available on <a href="http://www.nuget.org/packages?q=CslaContrib">NuGet</a></p>
+<h3>Feature highlight</h3>
+<ul>
+<li>Fixes missing Silverlight assemblies for CslaContrib and CslaContrib.MEF packages </li>
+<li>Adds SmartDateExtendedParser on CslaContrib package</li>
+</ul>
+<p>&nbsp;</p>
+<h3>SmartDateExtendedParser</h3>
+<p><span lang="PT">Besides standard SmartDate parsing that converts to yesterday, today and tomorrow dates, the extended parser adds parsing for:</span></p>
+<ul>
+<li><span lang="PT">relative days, months and years (eg. &quot;+90&quot; will add 90 days to the current date)</span></li>
+<li><span lang="PT">short form date that is culture sensitive (eg. &quot;0525&quot; converts to &quot;May 25 2014&quot;)</span></li>
+<li><span lang="PT">nearest day (eg. &quot;20&quot; converts to &quot;May 20 2014&quot; but &quot;01&quot; converts to Jun 01 2014)</span></li>
+</ul>
+<p><span lang="PT">Full specifications for SmartDateExtendedParser on attached file.</span></p>
+<p><span lang="PT">&nbsp;</span></p>
+<p><span lang="PT"></span></p>
+<p><span lang="PT"></span></p>
+<h3><span lang="PT">How to use the SmartDateExtendedParser?</span></h3>
+<p><span lang="PT"></span>&nbsp;You just need to declare it once, like this:</p>
+<pre style="font-size:13px;font-family:Consolas;background:white;color:black;"><span style="color:darkblue;">Csla</span>.<span style="color:darkblue;">SmartDate</span>.<span style="color:purple;">CustomParser</span>&nbsp;=&nbsp;<span style="color:darkblue;">CslaContrib</span>.<span style="color:darkblue;">SmartDateExtendedParser</span>.<span style="color:darkcyan;">ExtendedParser</span>;
+</pre>
+<p><span lang="PT"></span>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Sunday, May 25, 2014</h2><p>Nice work!&nbsp; About the version though, is it really .50 or is it .501 to match Csla?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tiago replied on Sunday, May 25, 2014</h2><p>The version is 4.5.50</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

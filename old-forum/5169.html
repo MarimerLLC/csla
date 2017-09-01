@@ -1,0 +1,165 @@
+<html><header><title>CancelEdit Funnyness : Not decrementing EditLevel()?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CancelEdit Funnyness : Not decrementing EditLevel()?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5169.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>awbacker posted on Tuesday, July 29, 2008</h2>I have written a little sample application that pokes and prods a binding source, an IEditableBusinessObject, and displays the state of that bindingsource/business-object in a window to the side (events, BS properties, bindable fields &amp; EditLevel). <br><br>The issue I am having is that CancelEdit() does not decrement the EditLevel, as far as I can tell.&nbsp; It works fine when I implement INotifyPropertyChange directly in my object and use *that*, but not when using PropertyHasChanged()?&nbsp; I think there is something I am missing! &nbsp;<br><br>ApplyEdit() does seem to save the changes and decrement the EditLevel fine, though.<br><br>Here are the steps (button clicks actually) I take:<br><ol><li>Bind new object <i>(makes new instance, sets DataSource=_item)</i></li><li>BindingSource.EndEdit() <i>(resets item EditLevel to zero)</i></li><li>_item.BeginEdit()</li><li>...modify the object if I want ...</li><li>_item.CancelEdit() <i>(undoes changes correct)</i></li><li>EditLevel Shows = 1, .Save() Fails</li></ol><br>The changes I made get backed out, actually, but the EditLevel "(item as IEditableBusinessObject).EditLevel " does not change, and calling Save() gives the infamous "this item is still being edited" error message.<br><br>I noticed this because originally I had implemented INotify on a POCO, and later added BusinessBase&lt;Of Item&gt;.&nbsp; It worked at the start, but removing my INotifyPropertyChanged and using the BusinessBase "broke" it, if you can call it that. &nbsp;<br><br>It is also misbehaving through the bindingSource.CancelEdit() in the same way. &nbsp;<br><br>Any idea what I might be doing wrong? &nbsp;<br><br>// Andrew<br><br>Thanks, Rocky, for CSLA.&nbsp; MS really screwed this one up, as I am sure you know.<br><br>P.S, <i>This text edit area does not work properly in FF 3.&nbsp; Any key that has an action in a web page (slash,up,down,etc) is handled directly by FF, skipping the text edit.&nbsp; So, i cant navigate, type slash (or apostrophe!), and so on.&nbsp; URG!&nbsp; I resorted to typing this in an external editor (EditPlus), so sorry for any spelling issues.</i><br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, July 29, 2008</h2><P>A couple things.</P>
+<P>First, the only versions where you are likely to have any luck at all are 3.0.4 and 3.5.1 - they have the best data binding support. Don't waste your time with any other versions.</P>
+<P>Second, (and this is discussed many times in other threads) you must understand the following rules:</P>
+<OL>
+<LI>The BindingSource will <EM>always</EM> elevate the edit level of the object that has currency. If you call CancelEdit(), it does an <EM>immediate</EM> BeginEdit()</LI>
+<LI>You must <EM>never</EM> call BeginEdit/CancelEdit/ApplyEdit manually on the business object while it is data bound</LI></OL>
+<P>Third, you may want to look at the RootChildGrandchildWinFormTest sample (<A href="http://www.lhotka.net/cslacvs/viewvc.cgi/samples/trunk/RootChildGrandchildWinFormTest/">http://www.lhotka.net/cslacvs/viewvc.cgi/samples/trunk/RootChildGrandchildWinFormTest/</A>). You can use TortoiseSVN to get it directly from the repository (<A href="http://www.lhotka.net/cslanet/Repository.aspx">http://www.lhotka.net/cslanet/Repository.aspx</A>).</P>
+<P>These concepts are discussed in the <EM>Using CSLA .NET 3.0</EM> ebook, along with the code in PTWin that safely unbinds an object from a BindingSource (thanks to the first rule this is not so easy).</P>
+<P>Fwiw, Miguel Castro just checked in a new extender control for CSLA .NET 3.6 that should handle the unbinding/rebinding mess automatically - making it easy to implement Save/Cancel buttons.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>awbacker replied on Tuesday, July 29, 2008</h2>Thanks for the response, though I'm sure you get a lot of these from us who don't know the proper google keywords =) <br><br>The reason this has been an issue for me is that I am working in a wizard framework, and need to undo changes if a user goes back (on certain steps), but keep the objects databound when going foward.&nbsp; The basics were working, but I was concerned that I could get into trouble at some point without knowing it; Hence the little simulator =)&nbsp; <br><br>I'll keep playing with it, but I think I see what I need to do, now.&nbsp; <br><br>Sorry, again, for the redundant question, but thank you for answering so kindly. <br><br>//Andrew<br><br>As for the forum, it's no a big deal.&nbsp; I'll set the site up in IETab and just use it that way =)&nbsp; CS isn't the easiest to upgrade, as I know from others who have tried.<br><br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Codelines replied on Tuesday, February 24, 2009</h2>The link <A href="http://www.lhotka.net/cslacvs/viewvc.cgi/samples/trunk/RootChildGrandchildWinFormTest/">http://www.lhotka.net/cslacvs/viewvc.cgi/samples/trunk/RootChildGrandchildWinFormTest/</A>&nbsp;is inaccessible. Do you have another link?</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, February 25, 2009</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I rearranged the samples for better organization &#8211; please remember
+that these links go directly into the live source repository.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I suggest starting here:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><a href="http://www.lhotka.net/cslacvs/viewvc.cgi/samples/trunk">http://www.lhotka.net/cslacvs/viewvc.cgi/samples/trunk</a><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>and navigating down through the folder structure into the
+CslaNet area, and either cs or vb depending on your language choice. Some
+samples are only in one language or the other, and I don&#8217;t remember which
+language(s) that one uses.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Codelines
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Tuesday, February 24, 2009 7:05 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] CancelEdit Funnyness : Not decrementing
+EditLevel()?<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>The link <a href="http://www.lhotka.net/cslacvs/viewvc.cgi/samples/trunk/RootChildGrandchildWinFormTest/">http://www.lhotka.net/cslacvs/viewvc.cgi/samples/trunk/RootChildGrandchildWinFormTest/</a>&nbsp;is
+inaccessible. Do you have another link?<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rsbaker0 replied on Tuesday, February 24, 2009</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div>
+<P>...</P>
+<OL>
+<LI>You must <EM>never</EM> call BeginEdit/CancelEdit/ApplyEdit manually on the business object while it is data bound</LI></OL>
+<P>...</P>
+<P></div></BLOCKQUOTE></P>
+<P>Does this also apply if you have disabled the IEditableObject interface? My guess would be no since the BO will now ignore any BeginEdit, etc. calls from the data bindings. </P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, February 25, 2009</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I&#8217;m sure the rules are different if you disable
+IEditableObject. That is honestly not an area I&#8217;ve explored, so I can&#8217;t
+say exactly what happens in that case &#8211; you&#8217;ll need to figure that
+out.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> rsbaker0
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Tuesday, February 24, 2009 10:12 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] CancelEdit Funnyness : Not decrementing
+EditLevel()?<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<blockquote>
+
+<div>
+
+<p class=MsoNormal><span><img width=100 height=100 id="_x0000_i1025" alt="Image removed by sender."></span><strong>RockfordLhotka:</strong><o:p></o:p></p>
+
+</div>
+
+<div>
+
+<p>...<o:p></o:p></p>
+
+<ol>
+ <li class=MsoNormal>You must <em>never</em> call
+     BeginEdit/CancelEdit/ApplyEdit manually on the business object while it is
+     data bound<o:p></o:p></li>
+</ol>
+
+<p>...<o:p></o:p></p>
+
+</div>
+
+</blockquote>
+
+<p>Does this also apply if you have disabled the IEditableObject interface? My
+guess would be no since the BO will now ignore any BeginEdit, etc. calls from
+the data bindings. <o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, July 29, 2008</h2><P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>awbacker:</strong></div><div></P>
+<P>P.S, <I>This text edit area does not work properly in FF 3.&nbsp; Any key that has an action in a web page (slash,up,down,etc) is handled directly by FF, skipping the text edit.&nbsp; So, i cant navigate, type slash (or apostrophe!), and so on.&nbsp; URG!&nbsp; I resorted to typing this in an external editor (EditPlus), so sorry for any spelling issues.</I><BR><BR></div></BLOCKQUOTE></P>
+<P>That's unfortunate. But then this version of Community Server is several years old now. It is great that the web is "standards based", but I guess standards only last a couple years before changing <img src="/emoticons/emotion-1.gif" alt="Smile [:)]" /></P>
+<P>The challenge is that it took about&nbsp;6 hours of work for Magenic to upgrade its internal forums to the new version, and they were reasonably current. I shudder to think how many hours of work it will take me to upgrade <EM>this</EM> version to anything current...</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,121 @@
+<html><header><title>Using a derived business object in a generic class</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Using a derived business object in a generic class</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/12074.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>pearljam posted on Wednesday, July 17, 2013</h2><p>So here is my setup. I have a class, CPData that derives from class PointData, that itself derives from BusinessBase&lt;T&gt;. I also have several other classes that derive from PointData,</p>
+<p>I have a generic class, DataObjectCore&lt;T&gt; whose signature looks like this (I also have a member in that class of type BusinessBase&lt;T&gt;)</p>
+<p>public class DataObjectCore&lt;T&gt; : where T : BusinessBase&lt;T&gt;</p>
+<p>Now, in my class that uses DataObjectCore I am having problems. When I do this:</p>
+<p>public class CPDataObject : DataObjectCore&lt;CPData&gt;</p>
+<p>I get an error stating that the type CPData must be convertable to BusinessBase&lt;CPData&gt;. I understand what it&#39;s saying, but I am not sure of a way around it. If I change the type to be PointData it works, since that is the class that initially derived from BusinessBase. However I can&#39;t use PointData in this case. I have several other classes/business objects that pair up like CPData and CPDataObject.</p>
+<p>This came about because we are converting our code from a custom in house business object framework to CSLA. Our in house solution didn&#39;t use generics so we are basically trying to minimize how much of our existing code gets changed. I do realize this isn&#39;t really specific to CSLA and it&#39;s more of an inheritance issue but I figured I&#39;d star here first. Thanks!</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Wednesday, July 17, 2013</h2><p>Inheritance can only go one straight line. </p>
+<p>So you _could_ create a </p>
+<ul>
+<li>DataObjectCore&lt;T&gt; that inerits from BusinessBase&lt;T&gt; and then </li>
+<li>PointData&lt;T&gt;&nbsp;that inherits from DataObjectCore&lt;T&gt; and then </li>
+<li>CPData&lt;T&gt; that inherits from PointData&lt;T&gt; and then</li>
+<li>CPDataObject that inherits from CPData&lt;T&gt;</li>
+</ul>
+<p>There is no straight line in your example which is whay you get the exception. </p>
+<p><strong>Do not confuse generic constraint and&nbsp;&nbsp;inheritance.</strong>&nbsp;<br />In your sample CPDataObject inherits from DataObjectCore and there is no straight line up from DataObjectCore to CPData so that you can use that class as a generic constraint (or even cast the CPDataObject to CPData). </p>
+<p>Once you create an actual (non-generic) type from a generic base class you can no longer inherit from that class. </p>
+<p>You can however create Interfaces that may be implemented by many classes without inheritance so that you can cast the classes to that interface. </p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>comp1mp replied on Sunday, July 21, 2013</h2><p><div style='padding-left: 50px;background-color:silver'><b>JonnyBee<br></b></p>
+<p>Once you create an actual (non-generic) type from a generic base class you can no longer inherit from that class.</p>
+<div style="clear:both;"></div>
+<p></div></p>
+<p>I am confused.</p>
+<p>are you saying the following is not supported?</p>
+<p>Car : Vehicle</p>
+<p>Vehicle : BusinessBase&lt;Vehicle&gt;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Sunday, July 21, 2013</h2><p>Yes,</p>
+<p>You may however create</p>
+<p>
+<ul>
+<li>Car&lt;T&gt; : BusinessBase&lt;Car&lt;T&gt;&gt;</li>
+<li>Vehicle : Car&lt;Vehicle&gt;</li>
+</ul>
+</p>
+<p>But then you will not be able to create an instance of Car&lt;T&gt; and to knowledge the best option is to create an ICar interface for common properties/methods.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>comp1mp replied on Sunday, July 21, 2013</h2><p><div style='padding-left: 50px;background-color:silver'><b>JonnyBee<br></b></p>
+<p>But then you will not be able to create an instance of Car&lt;T&gt; and to knowledge the best option is to create an ICar interface for common properties/methods.</p>
+<div style="clear:both;"></div>
+<p></div></p>
+<p>The problem with this is you cannot utilize scope, as everything is public. I could not create an internal method or property setter to be used only within the business assembly. With a concrete class I can.</p>
+<p>I don&#39;t want to hijack the OPs &nbsp;thread so I will post a separate question.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>skagen00 replied on Sunday, July 21, 2013</h2><p>I could be wrong but I do believe we established an equivalent of ICarInternal, a separate internal interface and that worked successfully.&nbsp; Obviously one needs to cast to use it, but I believe it ended up being sufficient.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>comp1mp replied on Sunday, July 21, 2013</h2><p>My apologies to pearljam, as these posts may not provide a direct answer. Hopefully they provide at least some enlightenment with regards to CSLA and inheritance. Great screen name btw, I just busted out and listened to Ten for the first time in about 5 years after seeing &nbsp;it...</p>
+<p><div style='padding-left: 50px;background-color:silver'><b>skagen00<br></b></p>
+<p>I could be wrong but I do believe we established an equivalent of ICarInternal, a separate internal interface and that worked successfully.&nbsp; Obviously one needs to cast to use it, but I believe it ended up being sufficient.</p>
+<div style="clear:both;"></div>
+<p></div></p>
+<p>Fantastic! It is not as clean as a simple concrete base class, as I would have to implement two interfaces ICar (public) and ICarInternal, plus the required cast as you point out. However, at first glance it appears to be viable a solution.</p>
+<p>&nbsp;[quote user=&quot;JonnyBee&quot;]</p>
+<p>Yes,</p>
+<p>You may however create</p>
+<ul>
+<li>Car&lt;T&gt; : BusinessBase&lt;Car&lt;T&gt;&gt;</li>
+<li>Vehicle : Car&lt;Vehicle&gt;</li>
+</ul>
+<div style="clear:both;"></div>
+<p></div></p>
+<p>Jonny, if I was just using plain old .NET without CSLA, the following would be allowed.</p>
+<ul>
+<li>public class Vehicle&lt;T&gt;</li>
+<li>public class Car : Vehicle&lt;Car&gt;</li>
+<li>public class Boat: Vehicle&lt;Boat&gt;</li>
+<li>public class Edsel : Car</li>
+<li>public class Wavemaker : Boat</li>
+</ul>
+<p>I am assuming then, that CSLA for whatever reason internally does not support the above implementation pattern.</p>
+<p>My searching skills have failed me, is there a definitive thread that describes in detail why this is not supported by CSLA?</p>
+<p>The only thing that comes to mind immediately for me is &nbsp;that one could not use the RegisterProperty with lambda expressions. But surely this is not the only issue, because one could simply use the older RegisterProperty signatures.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Sunday, July 21, 2013</h2><p>Hi,</p>
+<p>There is several places this would blow up in CSLA.&nbsp;</p>
+<p><b>All the places where the generic constraint T is used for input value or return value is not going to work as you expect..</b></p>
+<p>Would you like to have a Save method on Edsel that returned an object of type Car? &nbsp;</p>
+<p>Would you be fine to have a Save method of both Edsel and Car call into the Save method of Car?&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>comp1mp replied on Sunday, July 21, 2013</h2><p><div style='padding-left: 50px;background-color:silver'><b>JonnyBee<br></b></p>
+<p>Hi,</p>
+<p>There is several places this would blow up in CSLA.&nbsp;</p>
+<p><strong>All the places where the generic constraint T is used for input value or return value is not going to work as you expect..</strong></p>
+<p>Would you like to have a Save method on Edsel that returned an object of type Car? &nbsp;</p>
+<p>Would you be fine to have a Save method of both Edsel and Car call into the Save method of Car?&nbsp;</p>
+<div style="clear:both;"></div>
+<p></div></p>
+<p>Lol. Why yes, those things would make my work much more enjoyable <img src="http://forums.lhotka.net/emoticons/emotion-8.gif" alt="Indifferent" /></p>
+<p>In all seriousness, I first considered using inheritance in this manner this weekend, and while playing around the first thing I ran into was the RegisterProperty issue which, surprise, uses the generic constraint of T. The big picture should have clicked in my brain, but it didn&#39;t . My CSLA instincts are obviously no where close to yours.</p>
+<p>Thanks for enlightening me!</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>comp1mp replied on Sunday, July 21, 2013</h2><p><div style='padding-left: 50px;background-color:silver'><b>JonnyBee<br></b></p>
+<p>Hi,</p>
+<p>There is several places this would blow up in CSLA.&nbsp;</p>
+<p><strong>All the places where the generic constraint T is used for input value or return value is not going to work as you expect..</strong></p>
+<p>Would you like to have a Save method on Edsel that returned an object of type Car? &nbsp;</p>
+<p>Would you be fine to have a Save method of both Edsel and Car call into the Save method of Car?&nbsp;</p>
+<div style="clear:both;"></div>
+<p></div></p>
+<p>OK now i am really confused. This is from a different <a href="http://forums.lhotka.net/forums/p/6835/32782.aspx#32782">thread</a>.</p>
+<p>[quote user=&quot;RockfordLhotka&quot;]</p>
+<p>To use inheritance in your classes, you must understand how CSLA manages properties, and you must adjust your coding appropriately. To avoid high levels of complexity, you really want to avoid having anything but your &quot;leaf type&quot; be non-generic. Although the alternative is possible, it means giving up all the simpler generic-based RegisterProperty overloads, and that is a common source of copy-paste errors in people&#39;s code.</p>
+<p></div></p>
+<p>It seems to me that Rocky is saying the inheritance pattern I described is possible in CSLA, but there are two issues.</p>
+<ul>
+<li>You must insure that static properties for everything in the inheritance chain have been initialized, as described in his book Expert C# 2008 Business Objects.</li>
+<li>You lose RegisterProperty with lambda expressions.</li>
+</ul>
+<p>Is he talking about 3.8.x and things have changed for 4.x?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Monday, July 22, 2013</h2><p><div style='padding-left: 50px;background-color:silver'><b>RockfordLhotka<br></b></p>
+<p><b>To avoid high levels of complexity, you really want to avoid having anything but your &quot;leaf type&quot; be non-generic</b>. Although the alternative is possible, it means giving up all the simpler generic-based RegisterProperty overloads, and that is a common source of copy-paste errors in people&#39;s code.</p>
+<p></div>]</p>
+<p>Rocky is recommending:</p>
+<p style="padding-left:30px;">
+<ul>
+<li>Vehicle&lt;T&gt; : BusinessBase&lt;Vehicle&lt;T&gt;
+<ul>
+<li>Car&lt;T&gt; : Vehicle&lt;&lt;Car&lt;T&gt;&gt;
+<ul>
+<li>Edsel : Car&lt;Edsel&gt;</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</p>
+<p>So that it is only the last leaf node that is non-generic.</p>
+<p>I haven&acute;t been successful in the other way.&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>comp1mp replied on Monday, July 22, 2013</h2><p>I agree this is his recommendation, but he does say the alternative is possible. </p>
+<p>The compelling thing about the alternative is you get a nice concrete base class to work with instead of an interface. One of the many beautiful things about CSLA is the ability to write powerful code against the concrete BusinessBase.&nbsp;</p>
+<p>That quote is from two years ago. I would be interested if he still feels the same today, and if he was talking about earlier versions of CSLA or if he was referring to 4.x also. I am using 3.8.x for my current project and have no plans of ever moving to 4.x, at least for that project. </p>
+<p>Maybe Rocky can chime in <img src="http://forums.lhotka.net/emoticons/emotion-1.gif" alt="Smile" />.</p>
+<p>Anyway, &nbsp;thanks for the input Jonny!</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>skagen00 replied on Monday, July 22, 2013</h2><p>Just a suggestion, but you can <em>generally</em> work against the interface like you can work against a base class&nbsp;-- just have your interface (ICar)&nbsp;inherit IBusinessBase, etc - and you&#39;ll typically have a lot of the properties/methods you&#39;d like to utilize from the base classes without having to do any extra casting/etc.</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

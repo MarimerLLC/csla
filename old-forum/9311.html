@@ -1,0 +1,33 @@
+<html><header><title>a  critical performance issue.</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>a  critical performance issue.</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9311.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>keni_nan posted on Sunday, August 01, 2010</h2><p>hello,</p>
+<p>&nbsp;when i do a performance test on CSLA , I found that there two points(<b>&#39;ExtendedBindingList`1::OnAddEventHooks&#39; &nbsp; and &#39; BindableBase::add_PropertyChanged&#39;</b>) spend the most of time .&nbsp;</p>
+<p>&nbsp;</p>
+<p>how can i handle this case?</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>thanks!</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Sunday, August 01, 2010</h2><p>The most common performance issue when loading huge lists of child objects is event-related, but not really in those methods.</p>
+<p>The common error is when people forget to set RaiseListChangedEvents to false before loading the list with data. That causes a lot of entirely useless events to be raised and handled, which slows down the load process (sometimes a lot).</p>
+<p>So make sure you are setting RLCE to false, and then true after the load is complete.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>keni_nan replied on Monday, August 02, 2010</h2><p>hello Rock:</p>
+<p>&nbsp;&nbsp;I have set the property &#39;RaiseListChangedEvents&#39; to false when loading the list. but i found &#39;AddEventHooks(OnAddEventHooks)&#39; is invoked by &#39;LoadPropertyValue&#39;; and &#39;PropertyChanged&#39; is invoked yet.</p>
+<p>&nbsp;</p>
+<p>thanks!</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, August 02, 2010</h2><p>RLCE just stops the list events from being raised, that&#39;s true.</p>
+<p>There is no mechanism to stop PropertyChanged from being raised. Normally that&#39;s unimportant.</p>
+<p>I suspect you are seeing the ChildChanged eventing implementation - that&#39;s the reason PropertyChanged is handled, so it is possible to cascade ChildChanged events up the object graph.</p>
+<p>You must be loading many, many thousands of objects to see any perf impact though... Like 10&#39;s of thousands.</p>
+<p>Either that, or something else is going on - perhaps you have a parent object that is handling ChildChanged, and something is being triggered there as each child is added?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>detritus replied on Monday, November 29, 2010</h2><p>I know this is rather old post but I think it still applies.</p>
+<p>I see the same behaviour when I do a load test on the web site and OnAddEventHooks method is calculated as more costly than the db call (with compiled L2S). I&#39;m not adding 10&#39;s of thousands items to ROLs but it&#39;s a load test thus the ROL.AddRange gets called many times (same number of times with the db calls).</p>
+<p>Anyway, can anybody tell me what will I lose if I just disable these in ReadOnlyListBase (with an empty overrides)? More to the point, do we actually need these events in readonly lists (except may be in Silverlight)?</p>
+<p>Thanks,</p>
+<p>Sinan</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, November 29, 2010</h2><p>The big thing is to make sure you&#39;ve turned off event handling (RaiseListChangedEvents = false) before doing any persistence of a list object.</p>
+<p>What you&#39;ll lose if you don&#39;t call OnAddEventHooks is pretty obvious if you look at the code. You&#39;ll lose:</p>
+<ol>
+<li>Busy change notification</li>
+<li>Unhandled async exception notification</li>
+<li>PropertyChange notification (when child objects change)</li>
+<li>Child changed notification</li>
+</ol>
+<p>If you do no async work and aren&#39;t using Silverlight or the async data portal, 1 and 2 won&#39;t matter.</p>
+<p>If your objects are read-only then 3 and 4 won&#39;t matter.</p>
+<p>If your objects are editable (read-write) then 3 and 4 matter quite a lot, since without them data binding won&#39;t work right.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>detritus replied on Wednesday, December 01, 2010</h2><p>Yes, I especially mentioned I&#39;m thinking overriding those in no-async work and only in ReadOnlyListBase (inherited class in the app).</p>
+<p>I&#39;ve created a test to see what is the performance of the OnAddEventHooks call compared to db call and JSON conversion (with Newtonsoft lib)&nbsp; and it shows that OnAddEventHooks is more expensive than the both if the item count is bigger than 100.</p>
+<p>Then I created another test to see performance of the OnAddEventHooks call with different item counts (no db call or anything) and suprisingly I don&#39;t see any performance problem with it even testing with 1.000.000 items.</p>
+<p>In short, I think I don&#39;t know enough about testing to see what the cause of the problem, I&#39;m not sure if it lies with my application (or test project) code or with OnAddEventHook.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

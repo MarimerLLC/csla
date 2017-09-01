@@ -1,0 +1,67 @@
+<html><header><title>find child objects in a collection</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>find child objects in a collection</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6712.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>DutchDiesel posted on Wednesday, April 01, 2009</h2>I'm trying to find a child object in a collection by a certain property of the child object.<br><br>Do I have to create my own function to implement this functionality or does CSLA offer me something to do this.<br><br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Wednesday, April 01, 2009</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>You
+can just use LINQ.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> DutchDiesel
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Wednesday, April 01, 2009 8:10 AM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> [CSLA .NET] find child objects in a collection<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>I'm trying to find a child object in a collection by a
+certain property of the child object.<br>
+<br>
+Do I have to create my own function to implement this functionality or does
+CSLA offer me something to do this.<br>
+<br>
+<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>reagan123 replied on Wednesday, April 01, 2009</h2>I'm not sure if this is a good approach or not, but i've done something like this.&nbsp; This assumes that there is only one child object that contains that property.&nbsp; <br><br>*** I think the following is right... I typed it from memory.<br><br>&nbsp;Public Function GetItem(ByVal someValue As String) As Child<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; For Each c As Child In Me<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; If c.SomeValue = someValue Then<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return c<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End If<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Next<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return Nothing<br><br>&nbsp;End Function<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>DutchDiesel replied on Wednesday, April 01, 2009</h2><P>I implemented a for loop myself, <BR>but I was wondering if CSLA has a built in implementation for such a functionality?<BR><BR>Indeed this is only possible when only one child contains the property, wich in my case is true,<BR>because the property which I use to find the child object is the PrimaryKey in the database.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Thursday, April 02, 2009</h2>You can easily add such a method to your intermediate base class that sits between CSLA and your BOs. (You *do* have such a class for each type of BO, right?)<br /><br />Something like this - which relies on the optional GetIdValue method (which used to be mandatory).<br /><br /> Public Overloads ReadOnly Property ItemById(ByVal key As Object) As C<br />      Get<br />        Dim obj As IEditableBusinessObject<br />        For Each obj In Me<br /><br />          If obj.GetIdValue.Equals(key) Then<br />            Return DirectCast(obj, C)<br />          End If<br /><br />        Next<br />        Return Nothing<br />      End Get<br />    End Property<br /><br />Joe</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

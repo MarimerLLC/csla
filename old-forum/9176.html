@@ -1,0 +1,17 @@
+<html><header><title>&quot;Untidy&quot; Options for CanReadProperty and CanWriteProperty</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>&quot;Untidy&quot; Options for CanReadProperty and CanWriteProperty</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9176.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonStonecash posted on Tuesday, July 06, 2010</h2><p>Rocky,</p>
+<p>My team is in the process of implementing a claims-based authorization setup.&nbsp; This means that we are calling CanReadProperty and CanWriteProperty a great deal.&nbsp; The standard CSLA (Beta 3 of CSLA 4) offers two choices to identity the property: a string containing the name of the property and the property info object.&nbsp; We do not want to use strings (for all sorts of reasons including typos and the lack of refactoring) and we would prefer to not expose the property info fields.&nbsp; We would like to see CanXXXProperty methods that take an expression, similar to the functionality for registering the property in the first place.</p>
+<p>I hope that this is not too late to get into the final CSLA 4.</p>
+<p>Thanks.</p>
+<p>Jon Stonecash</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Tuesday, July 06, 2010</h2><p>You should expose the PropertyInfo&lt;T&gt; fields as public.</p>
+<p>This is a recommended best practice for CSLA 4, and is basically <em>required</em> for any SL4 work.</p>
+<p>But it also matches the normal declaration and usage of dependency properties, on which CSLA properties are modeled. The whole point of having the metadescriptors (the PropertyInfo&lt;T&gt; fields) is to allow the application to make use of that metadata without resorting to reflection.</p>
+<p>Accepting an expression would require a reflection call every time, which is just not elegant, and will have a perf impact if it is used frequently - and you indicate that it would be used frequently.</p>
+<p>But ultimately, the recommended practice in CSLA 4 is to make the PropertyInfo&lt;T&gt; fields public.</p>
+<ol>
+<li>This follows the common dependency property model</li>
+<li>It allows use of the metadata by an external DAL (like an object factory)</li>
+<li>It allows the use of the metadata by other app code (like the UI)</li>
+<li>It is required for SL4 apps, so CSLA can auto-initialize the static fields before deserialization</li>
+</ol>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonStonecash replied on Tuesday, July 06, 2010</h2><p>Thanks.&nbsp; A version of the application in SL4 is not planned at this time but is a distinct possibility.&nbsp; Public, it is.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

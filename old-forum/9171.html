@@ -1,0 +1,24 @@
+<html><header><title>&quot;Database name not found in config file&quot; weirdness</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>&quot;Database name not found in config file&quot; weirdness</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9171.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>lukky posted on Sunday, July 04, 2010</h2><p>Hi,</p>
+<p>VS2010&#39;s designer throws a ConfigurationErrorsException with above message when I put a call to CustomerList.Get() in the ctor of my ViewModel&lt;T&gt; derived class, though executing the program runs fine.</p>
+<p>A bit of background:</p>
+<p>I have an OrderViewModel&nbsp;derived from&nbsp;ViewModel&lt;Order&gt;. In the Windows&#39; xaml, I declare&nbsp;a resource of type OrderViewModel.</p>
+<p>On the OrderViewModel, I added a DependencyProperty for my CustomerList, and it&#39;s when trying to fill the list in the ctor that the designer pukes. Again, running the code doesn&#39;t give any exception and does retrieve the CustomerList.</p>
+<p>CustomerList derives from ReadOnlyListBase&lt;CustomerList, Customer&gt;</p>
+<p>Any ideas ?&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Monday, July 05, 2010</h2><p>The designer creates an instance of the view (XAML). If your view directly references the viewmodel like this:</p>
+<p>&lt;my:ReallyCoolViewModel x:Key=&quot;ViewModel&quot; /&gt;</p>
+<p>then as the XAML is loaded by the designer, the designer will create an instance of your type. Of course that triggers the constructor, which calls the data portal. And all this is running inside of Visual Studio, so it uses the app.config file for Visual Studio - which obviously doesn&#39;t have your database connection string.</p>
+<p>There are a few other scenarios where this can happen - but it is a recurring theme - as the designer instantiates the XAML, that triggers some of your code that uses the data portal - which fails for perfectly understandable reasons.</p>
+<p>There are a couple solutions.</p>
+<p>One is to use a CollectionViewSource as a resource, instead of directly using your viewmodel:</p>
+<p>&lt;CollectionViewSource x:Key=&quot;ViewModelViewSource&quot; /&gt;</p>
+<p>This is what the designer will do if you use drag-and-drop data binding. This doesn&#39;t automatically create an instance of your type, since some other code must run to hook your viewmodel to the Source property of the CollectionViewSource.</p>
+<p>Another option is to put an &quot;is in design time&quot; check into your viewmodel&#39;s constructor. That&#39;s this line of code:</p>
+<p>if (!System.ComponentModel.DesignerProperties.GetIsInDesignMode(this))</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>lukky replied on Monday, July 05, 2010</h2><p>Rocky,</p>
+<p>I had intuitively used the &quot;design time&quot; check, and it did solve the problem, though I don&#39;t think using this kind of check is clean when doing something other than custom controls. Maybe I&#39;m wrong.</p>
+<p>As for the CollectionViewSource, is there an example of using it in the CSLA samples ?</p>
+<p>Thanks</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, July 05, 2010</h2><p>The C# SL sample called CslaMvvmSl was created using the VS10 designer features, so it uses CVS resources. It also uses a version of <a href="http://bxf.codeplex.com">Bxf</a> (before I put it in CodePlex) to manage the view &lt;-&gt; viewmodel wire-ups, etc.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Curelom replied on Wednesday, July 07, 2010</h2><p>This article may help, though I haven&#39;t tried it yet with CSLA.&nbsp; It shows you how to setup sample data rather than calling the object.</p>
+<p>&nbsp;</p>
+<p><a href="http://blogs.msdn.com/b/wpfsldesigner/archive/2010/06/30/sample-data-in-the-wpf-and-silverlight-designer.aspx">http://blogs.msdn.com/b/wpfsldesigner/archive/2010/06/30/sample-data-in-the-wpf-and-silverlight-designer.aspx</a></p>
+<p>&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

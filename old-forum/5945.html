@@ -1,0 +1,31 @@
+<html><header><title>Managered Properties - change value in setter or business rule?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Managered Properties - change value in setter or business rule?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5945.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 posted on Friday, December 05, 2008</h2>Hi,<br><br>I have a property which is a string.&nbsp; I need to call Trim if the value passes isn't null.&nbsp; Is this best done in the setter, prior to calling SetValue, or should a business rule do this?<br><br>Maybe in the future Csla can do something similar to Coerce value.. done before the value's actually set in the BO but after the security checks are done.<br><br>Thoughts?&nbsp; What's the best way to deal with this issue now?<br><br>Andy<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Fintanv replied on Friday, December 05, 2008</h2>FWIW I do something similar in the setter.&nbsp; I use an extension method that trims and uppercases the input.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, December 05, 2008</h2><P>I recommend creating a rule method to do this sort of thing. That way your property declarations remain untouched and standard. And really, what you are describing is a rule, so it makes sense to implement it at a rule :)</P>
+<P>CSLA can't just trim values arbitrarily - not every property wants/needs that. I think I'm stretching it already by replacing null with "" for string values...</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rsbaker0 replied on Saturday, December 06, 2008</h2><P>^^^^</P>
+<P>Yes, I ran into a similar&nbsp;issue before managed properties were introduced&nbsp;with properties whose code was generated rather than hand written. Since then, I have done such transformations in business rules that fire when these properties change. </P>
+<P>It can be a little tricky depending on what you are doing, though, because someone can always call CheckRules manually. In the case of trimming, this is no big deal, but I've had be careful to structure such rules so that they work even when no change has really been made to underlying data. Trimming, of course, doesn't present much trouble in this case.</P>
+<P>(CSLA 3.0 and earlier&nbsp;didn't know about individual dirty properties either, and a property is still considered dirty if changed back to the original value, so I'm not sure how much the newer dirty property support helps).</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Monday, December 08, 2008</h2>Ok, I though I read you recommending that here before, but I couldn't find the post.&nbsp; I'll update my implementation.<br><br>I wasn't suggesting that Csla do any sort of automatic trimming; merely that it provide a way to register a coercion callbacks, similar to validation rules, but run before validation rules.&nbsp; <br><br>Wpf's DependencyProperties do something similar; you can have a callback to coerce a value, and a separate callback which validates the value.&nbsp; <br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, December 08, 2008</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>You can use priorities to ensure that rules that mutate values
+run before rules the do validation.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

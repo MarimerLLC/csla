@@ -1,0 +1,29 @@
+<html><header><title>Unit Test for Broken Rules</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Unit Test for Broken Rules</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10321.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>rxelizondo posted on Thursday, April 28, 2011</h2><p>Hello,</p>
+<p>When my new object is created (IsNew == true), the object starts up with several broken rules. So I thought I would be nice to create a unit test that creates a new object and makes sure that the appropriate initial broken rules are present.</p>
+<p>This is all good but my problem is that I am not sure how to accomplish this in a strongly typed manner since there is not &ldquo;compiler connection&rdquo; between the BrokenRule and a BusinessRule classes.</p>
+<p>In an ideal word, I would like the BrokenRule class to have two extra properties:</p>
+<p>&nbsp;</p>
+<p>1) <b><span style="text-decoration:underline;">BusinessRule</span></b>: This value is basically the type of the BusinessRule that is the originator of the broken rule (A class that inherits from&nbsp;BusinessRule).</p>
+<p>2) <b><span style="text-decoration:underline;">Property</span></b>: This value is the PropertyInfo associate to the broken rule. This is basically the same as the BrokenRule.Property value but instead of it being a string, I would like it tot be of type of PropertyInfo.</p>
+<p>&nbsp;</p>
+<p>With these two new properties on the BrokenRule class, I can now test to make sure that the BrokenRule is the correct BrokenRule I am looking for, and do it on a strongly typed way like:</p>
+<p>If(myBrokenRule.BusinessRule = typeof(MaxLength) &amp; myBrokenRule.Property == SomeClass.ComeProperty)</p>
+<p>{</p>
+<p>&nbsp;// This rules is the rule I am looking for, and I</p>
+<p>// found this in a strongly typed way.</p>
+<p>}</p>
+<p>&nbsp;</p>
+<p>Am I just approaching this all wrong and asking a dumb question as usual? Is anyone else out doing unit test on broken rules? And if so, how are you handling this?</p>
+<p>Thank you.</p>
+<div></div>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rxelizondo replied on Thursday, April 28, 2011</h2><p>&nbsp;</p>
+<p class="MsoNormal">mmm&hellip; never mind. I think I found a way:</p>
+<p class="MsoNormal">&nbsp;</p>
+<p class="MsoNormal"><span>var</span><span> x = <span>new</span>
+Csla.Rules.CommonRules.<span>Required</span>(SomeClass.SomeProperty);</span></p>
+<p class="MsoNormal"><span>var y =&nbsp;someObject.BrokenRulesCollection[0];</span></p>
+<p class="MsoNormal"><span>Assert</span><span>.IsTrue(x.RuleName == y.RuleName);</span></p>
+<p class="MsoNormal"><span><br /></span></p>
+<p class="MsoNormal"><span>This will require to have the BusinessRule set as public but I guess that not big deal. I also realize that the BrokenRulesCollection is not&nbsp;guarantied&nbsp;to be on a given order, the code&nbsp;above that uses the indexer [0] to get the first rule expecting it represents the rule I am looking for is just an sample code.</span></p>
+<p class="MsoNormal">Thanks.</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, April 28, 2011</h2><p>I frequently use a LINQ query on the broken rules collection to pull out the specific item(s) I&#39;m looking for.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Saturday, April 30, 2011</h2><p>I peronally query the BRC based on property name, then dig deeper to see if the rulename matches something I expect.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

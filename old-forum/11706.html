@@ -1,0 +1,79 @@
+<html><header><title>CslaContrib Mef Error &quot;currently composing another batch...&quot;</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CslaContrib Mef Error &quot;currently composing another batch...&quot;</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11706.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>c_manboy posted on Friday, November 16, 2012</h2><p>I&#39;m using csla 4.3,&nbsp; cslacontrib.mef and cslacontrib.caliburn.micro.&nbsp; One of my viewmodels contains a property:</p>
+<pre style="font-family:Consolas;font-size:13;color:black;background:white;">&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">Private</span>&nbsp;_managerList&nbsp;<span style="color:blue;">As</span>&nbsp;<span style="color:#2b91af;">IEnumerable</span>(<span style="color:blue;">Of</span>&nbsp;Library.Main.<span style="color:#2b91af;">ManagerInfo</span>)
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">Public</span>&nbsp;<span style="color:blue;">ReadOnly</span>&nbsp;<span style="color:blue;">Property</span>&nbsp;ManagerList&nbsp;<span style="color:blue;">As</span>&nbsp;<span style="color:#2b91af;">IEnumerable</span>(<span style="color:blue;">Of</span>&nbsp;Library.Main.<span style="color:#2b91af;">ManagerInfo</span>)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">Get</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">Return</span>&nbsp;Library.Main.<span style="color:#2b91af;">ManagerInfoList</span>.GetAll
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">End</span>&nbsp;<span style="color:blue;">Get</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">End</span>&nbsp;<span style="color:blue;">Property</span></pre>
+<p>But I receive the following error:</p>
+<p>Currently composing another batch in this ComposablePartExportProvider. Only one batch can be composed at a time.</p>
+<p>When I remove the GetAll call, I do not receive the error.</p>
+<p>Edit: I&#39;m basing on the MefRepository sample and have the following in all of my business classes (substituting the correct interface name, of course):</p>
+<pre style="font-family:Consolas;font-size:13;color:black;background:white;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;<span style="color:#2b91af;">NonSerialized</span>(),&nbsp;<span style="color:#2b91af;">NotUndoable</span>()&gt;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">Private</span>&nbsp;_dataAccess&nbsp;<span style="color:blue;">As</span>&nbsp;<span style="color:#2b91af;">IManagerDal</span>
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;<span style="color:#2b91af;">Import</span>(<span style="color:blue;">GetType</span>(<span style="color:#2b91af;">IManagerDal</span>))&gt;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">Private</span>&nbsp;<span style="color:blue;">Property</span>&nbsp;DataAccess&nbsp;<span style="color:blue;">As</span>&nbsp;<span style="color:#2b91af;">IManagerDal</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">Get</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">Return</span>&nbsp;_dataAccess
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">End</span>&nbsp;<span style="color:blue;">Get</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">Set</span>(value&nbsp;<span style="color:blue;">As</span>&nbsp;<span style="color:#2b91af;">IManagerDal</span>)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_dataAccess&nbsp;=&nbsp;value
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">End</span>&nbsp;<span style="color:blue;">Set</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">End</span>&nbsp;<span style="color:blue;">Property</span></pre></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>c_manboy replied on Friday, November 16, 2012</h2><p>In cslacontrib.Mef, I changed all of the inject methods from Ioc.Container.ComposeParts(this) to Ioc.Container.SatisfyImportsOnce(this).&nbsp; </p>
+<p>It works, but I dont&#39; know why and what the ramifications are.&nbsp; I&#39;m going to continue researching this, but if someone could fill me in, that would be very appreciated.</p>
+<p>Thanks.</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Saturday, November 17, 2012</h2><p>Obviosly the Mef Container is not thread safe. </p>
+<p>So you may also update the Ioc.cs Container property getter to:</p>
+<p>public static CompositionContainer Container<br />&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; get<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; //create and configure container if one does not yet exist<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (_container == null)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; lock (_syncRoot)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (_container == null)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Debug.Write(&quot;Start configuring MEF Container&quot;);<br /><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; //create container<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var catalog = new AggregateCatalog();<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; catalog.Catalogs.Add(new DirectoryCatalog(&quot;.&quot;));<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; catalog.Catalogs.Add(new AssemblyCatalog(Assembly.GetExecutingAssembly()));<br /><b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _container = new CompositionContainer(catalog, true);</b>&nbsp; // necessary to make container threadsafe<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _container.ComposeParts();<br /><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Debug.Write(&quot;End configuring MEF Container&quot;);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return _container;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br />&nbsp;&nbsp;&nbsp; }</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>c_manboy replied on Saturday, November 17, 2012</h2><p>Thanks for the reply, but I have already tried that and that change alone does not resolve the issue.&nbsp; I am still required to change each class Inject method.&nbsp; Interestingly (to me), if I make no changes to the code and put a break point in the Container method and F8 (step into) through the all of the calls, I do not receive the error.&nbsp; Not quite sure what that means, but thought it was interesting.</p>
+<p>Reading up on the difference between composeparts and satisfyimportsonce, it seems that the only disadvantage of using satisfyimports once is that I will not be able to recompose my business classes.&nbsp; I do not see that as an issue since the only thing it&#39;s supposed to do is import my data access object.&nbsp; And that doesn&#39;t change during execution.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Sunday, November 18, 2012</h2><p>You&#39;re likely hitting a thread race condition, which is why this works when you add a break point. </p>
+<p>The other part to remember when using MEF is that most IOC containers default to create &quot;new instance&quot; of an object. MEF does not - it defaults to create a &quot;singelton&quot; - shared object. Hence you can use PartCreationPolicy on either the publisher or consumer to specify creation policy.</p>
+<p><a title="http://mef.codeplex.com/wikipage?title=Parts%20Lifetime" href="http://mef.codeplex.com/wikipage?title=Parts%20Lifetime">http://mef.codeplex.com/wikipage?title=Parts%20Lifetime</a></p>
+<p><i>&quot;</i><i>The &ldquo;shareability&rdquo; of a part is defined through the CreationPolicy set 
+(class level) using the PartCreationPolicyAttribute. The following 
+values are supported:
+</i></p>
+<ul>
+<li><b>Shared</b>: the part author is telling MEF that at most one instance of the part may exist per container.</li>
+<li><b>NonShared</b>: the part author is telling MEF that each request for exports of the part will be served by a new instance of it.</li>
+<li><b>Any or not supplied value</b>: the part author allows the part to be used as either &ldquo;Shared&rdquo; or &ldquo;NonShared&rdquo;.</li>
+</ul>
+<p><i>This is a useful for scenarios where the &ldquo;shareability&rdquo; of a part is 
+relevant for the importer. By default, the RequiredCreationPolicy is set
+ to Any, so Shared and NonShared parts can supply the values.</i></p>
+<p><i>The following table summarizes the behavior:<br /></i></p>
+<table>
+<tbody>
+<tr>
+<th><i>- </i></th><th><i> Part.Any </i></th><th><i> Part.Shared </i></th><th><i> Part.NonShared </i></th>
+</tr>
+<tr>
+<td> <i><b>Import.Any</b></i> </td>
+<td><i> Shared </i></td>
+<td><i> Shared </i></td>
+<td><i> Non Shared </i></td>
+</tr>
+<tr>
+<td> <i><b>Import.Shared</b></i> </td>
+<td><i> Shared </i></td>
+<td><i> Shared </i></td>
+<td> <i>No Match</i> </td>
+</tr>
+<tr>
+<td> <i><b>Import.NonShared</b></i> </td>
+<td><i> Non Shared </i></td>
+<td> <i>No Match</i> </td>
+<td><i> Non Shared </i></td>
+</tr>
+</tbody>
+</table>
+<p><i>Note that when both sides define &ldquo;Any&rdquo; the result will be a shared part.&quot;</i></p>
+<p>Good answer on the difference between ComposeParts and satisfyImportsOnce can be found here:<br /><a title="http://stackoverflow.com/questions/6419319/mef-satisfyimportsonce-vs-composeparts" href="http://stackoverflow.com/questions/6419319/mef-satisfyimportsonce-vs-composeparts">http://stackoverflow.com/questions/6419319/mef-satisfyimportsonce-vs-composeparts</a><i> </i></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>c_manboy replied on Sunday, November 18, 2012</h2><p>So how would you approach this scenario?&nbsp;&nbsp;Should I avoid changing the inject methods to SatisfyImportsOnce and try to address the thread race issue?&nbsp; I&#39;m not even sure where I would begin with that...unless there&#39;s a way to put an &quot;IsBusy&quot; on the container so that methods could &quot;wait&quot; for it, which seems kind of hacky.</p>
+<p>Or should I revisit my viewmodel and avoid properties of namevalue lists and readonly cache lists?</p>
+<p>I am concerned about using the mef business objects if there is a posibility of future &quot;thread races&quot;.&nbsp; </p>
+<p>I&#39;ll spend some more time reading the references you provided to see if it sheds some light on this.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Monday, November 19, 2012</h2><p>The unfortunate part&nbsp;about&nbsp;MEF is that it is not thread safe. &nbsp;The second parameter you specify still does not make it completely thread safe either, and if I remember correctly,&nbsp;documentation&nbsp;indeed says that &nbsp;You have to wrap all calls to create a container and compose parts inside lock{}. &nbsp;I ran into this issue about a year ago. &nbsp;I believe the main problem is that MEF was designed initially to support specific set of use cases on the client, thus thread safety was an after thought IMHO. &nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>c_manboy replied on Monday, November 19, 2012</h2><p>Then, is cslacontrib.MEF more of a proof of concept than a recommended way of injecting the data access?&nbsp; I ask that because the container fails to compose parts when the viewmodel contains a list property which fetches data on initialization (resulting in what I assume to be two simulatneous fetches: the viewmodel&#39;s model business object, and the list property&#39;s fetch).</p>
+<p>Or, is my &quot;fix&quot; (see pervious post about changing the inject methods) an acceptable way of getting around this issue?&nbsp; Or will that &quot;fix&quot; give me issues later on in the objects lifecycle?</p>
+<p>Or, thirdly, should I reconsider adding the list property on my view model and find another way to load the list?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Tuesday, November 20, 2012</h2><p>We highly recommend to use &quot;use case controller objects&quot; to retrieve all the data needed for a use case / &quot;screen&quot;.</p>
+<p>The reason behind this is that typically your data access is async and you MUST make sure to have all the drop down lists available at the time that the business objects is databound. So a typical &quot;use case controller&quot; should then be readonly root object that has properties for both business objects and drop down lists and does an async fetch. So when the fetch is completed you are in control of the sequence of when objects gets databound.</p>
+<p>See also <a href="http://forums.lhotka.net/forums/p/1749/9149.aspx#9149">http://forums.lhotka.net/forums/p/1749/9149.aspx#9149</a></p>
+<p>I will also look into fixing the tread race conditions in CslaContrib. </p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

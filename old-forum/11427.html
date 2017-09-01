@@ -1,0 +1,49 @@
+<html><header><title>Portable Class Library</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Portable Class Library</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11427.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>sidwall posted on Sunday, June 24, 2012</h2><p>Hi,</p>
+<p>are there any plans for developing the core in csla using the new Portable Class Library to simplify the deployment to different platforms? Then there could be a csla.winrt.dll targetting winrt, csla.web.mvp.dll targetting web forms mvp, csla.web.mvc.dll targetting aso.net mvc and so on.</p>
+<p>Regards<br />Anders Sidwall<br />Sweden</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Sunday, June 24, 2012</h2><p>I&#39;ve put a lot of thought into this.</p>
+<p>The problem is that the platforms are so different, but that may be changing.</p>
+<p>Right now, we have quite a lot of code that is optimized for full .NET vs SL/WP7 vs WinRT. All that specific code could be refactored into external assemblies, but that would mean that you&#39;d always have to reference two assemblies to use CSLA - the portable Csla.dll, and the platform-specific assembly that is required for each platform.</p>
+<p>That would be silly, as it would gain nothing. In fact, it would be worse than today, because you&#39;d need to do two references instead of one, and it would still be platform-specific.</p>
+<p>However, this appears to be changing. Specifically, Microsoft appears to be settling on WinRT for all client platforms (Win8, WP8, rumors of xbox).</p>
+<p>As a result, I think it is quite realistic to think that the future will be simpler - possibly enabling the use of portable libraries without the downsides of today.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Sunday, June 24, 2012</h2><p>Maybe it will be in the future, but not for Win8 according to this: </p>
+<p><a href="http://www.zdnet.com/blog/microsoft/microsofts-windows-phone-8-finally-gets-a-real-windows-core/12975">http://www.zdnet.com/blog/microsoft/microsofts-windows-phone-8-finally-gets-a-real-windows-core/12975</a></p>
+<p><i>A common core across Windows Phone and Windows 8 also should be good 
+news for developers. It would seem now you could write once and really 
+have it run anywhere? But the reality is a bit more complicated.</i></p>
+<p><i>Developers cannot take their Windows app binaries and just run them 
+on Windows Phone 8. However, there is a high degree of code reuse 
+possible, Sullivan said.</i></p>
+<p><i>Microsoft execs have said repeatedly that <a href="http://www.zdnet.com/blog/microsoft/windows-phone-8-whats-microsofts-developer-story/12353">existing Windows Phone 7 apps will run on Windows Phone 8</a>. The two phone platforms are binary compatible, Sullivan reiterated.</i></p>
+<p><i>According to Microsoft officials, the developer platform for Windows 
+Phone 8, which are powered by ARM processors, and Windows RT &mdash; the 
+version of Windows that runs on ARM processors &mdash; is &ldquo;similar.&rdquo; But it&rsquo;s 
+not exactly the same.</i></p>
+<p><i>&ldquo;We don&rsquo;t have the unified runtimes and APIs (application programming 
+interfaces) exposed,&rdquo; Sullivan acknowledged. &ldquo;But the tools are the 
+same.&rdquo;</i></p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, June 25, 2012</h2><p>Just to follow up with a concrete example for anyone reading this thread in the future.</p>
+<p>Everywhere we currently use #if statements in the CSLA codebase must be normalized to not use that technique. So the public API can&#39;t be conditional at all - it must be universal.</p>
+<p>Take the data portal then, which has (now) three types of API: synchronous, async with events, async with async/await.</p>
+<ol>
+<li>The synchronous model only works on .NET, so it shouldn&#39;t be exposed elsewhere at all.</li>
+<li>The async with events is universal (though now deprecated)</li>
+<li>The async/await doesn&#39;t work at all on WP7</li>
+</ol>
+<p>We could create our own Task&lt;T&gt; type to &#39;fake out&#39; WP7 into compiling the methods, but that&#39;d be ugly.</p>
+<p>In non-.NET platforms we&#39;d have to throw a runtime exception if the sync methods were called - they&#39;d be just noise to all other platforms, but everyone would have to live with that noise because we couldn&#39;t selectively hide invalid options from the developer/compiler.</p>
+<p>There are other, deeper, examples of issues like this - but the data portal API issue is clear an obvious.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Tuesday, June 26, 2012</h2><p>Hi, </p>
+<p>It is&nbsp;possible to create interfaces in the portable class library and allow each platform to supply their actual impementation using&nbsp;resources that are not available in the portable runtime.&nbsp; This is how the WordFeud game was ported to Metro in a rather short time. </p>
+<p>Jonas Folles&oslash; had a talk on this at NDC 2012, available online here: <a href="http://vimeo.com/43548884">http://vimeo.com/43548884</a>&nbsp;</p>
+<p>This might be a way to go in order to avoid the #if statements where the implementation is different for each platform. It would however require us to (probably) use MEF&nbsp;to deliver the extensions inside CSLA as MEF is supported/part of Portable Class Libraries. </p>
+<p>AsyncBridge <a href="https://github.com/OmerMor/AsyncBridge">https://github.com/OmerMor/AsyncBridge</a>&nbsp;adds support for&nbsp;async/await&nbsp;in&nbsp;Portable Class Libraries (which the Async Targeting Pack does NOT support). Also available on NuGet: <a href="https://nuget.org/packages/AsyncBridge">https://nuget.org/packages/AsyncBridge</a>&nbsp;</p>
+<p>So:</p>
+<ol>
+<li>Common code that requires platform specific implementation should be implemented by&nbsp;interfaces.</li>
+<li>Specific code for one runtime should only be made available in that runtime.&nbsp;&nbsp;</li>
+</ol></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>discipline4ever666 replied on Wednesday, December 18, 2013</h2><p>I don&#39;t see the issue here, you could separate everything in differenct libraries. This way you could separate for instance the BusinessBase, BusinessIdentity and other classes into some kind of Csla.Domain library and keep the DataPortals in there respectivly own classes.</p>
+<p>&nbsp;</p>
+<p>Why not use conventions to retrieve the actual dataportal implementation (like Csla.DataPortal.dll). This must only be done at the first call to the dataportal and even open doors to the creation of additional DataPortal implementations in the future like IsolatedStorageDataPortal, AzureDataPortal and others.</p>
+<p>&nbsp;</p>
+<p>maybe it&#39;s time to redesign csla from scratch to implement patterns correctly instead of just patching up old code (if I go through the source I see a lot of violations like multiple classes in a single file, inconsistent namespaces, ...) This would be a great opportunity to get rid of these as well <img src="http://forums.lhotka.net/emoticons/emotion-1.gif" alt="Smile" />)</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

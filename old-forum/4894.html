@@ -1,0 +1,29 @@
+<html><header><title>Edit level mismatch in AcceptChanges occurs in 3.51 Project Tracker “New Project” Action</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Edit level mismatch in AcceptChanges occurs in 3.51 Project Tracker “New Project” Action</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4894.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Stanomatic posted on Sunday, May 25, 2008</h2><P class=MsoNormal><FONT face=Calibri>Hello All,</FONT></P>
+<P class=MsoNormal><o:p><FONT face=Calibri>&nbsp;</FONT></o:p></P>
+<P class=MsoNormal><FONT face=Calibri>I have created a project CD Library app which closely resembles ProjectTracker PT. I didn’t want to sway far from PT code to avoid errors. I have a Disc object with a Serial Key child list object. Upon saving I received the “Edit level mismatch in AcceptChanges”. </FONT></P>
+<P class=MsoNormal><o:p><FONT face=Calibri>&nbsp;</FONT></o:p></P>
+<P class=MsoNormal><FONT face=Calibri>I thought to myself I must have different code from PT. I decided to debug PTWin and add a “New Project” from the menu to simulate what my code was doing. I assigned a new resource, and filled in the rest of the controls and then clicked ok. The code throws “Edit level mismatch in AcceptChanges”.</FONT></P>
+<P class=MsoNormal><o:p><FONT face=Calibri>&nbsp;</FONT></o:p></P>
+<P class=MsoNormal><FONT face=Calibri>I have done my best reading all researched “Edit level mismatch in AcceptChanges” in forums. </FONT></P>
+<P class=MsoNormal><o:p><FONT face=Calibri>&nbsp;</FONT></o:p></P>
+<P class=MsoNormal><A HREF="/forums/thread/23752.aspx"><FONT face=Calibri>http://forums.lhotka.net/forums/thread/23752.aspx</FONT></A><FONT face=Calibri> </FONT></P>
+<P class=MsoNormal><o:p><FONT face=Calibri>&nbsp;</FONT></o:p></P>
+<P class=MsoNormal><A HREF="/forums/2/20590/ShowThread.aspx"><FONT face=Calibri>http://forums.lhotka.net/forums/2/20590/ShowThread.aspx</FONT></A><FONT face=Calibri> </FONT></P>
+<P class=MsoNormal><o:p><FONT face=Calibri>&nbsp;</FONT></o:p></P>
+<P class=MsoNormal><FONT face=Calibri>And more… but they deal with a prior code base.</FONT></P>
+<P class=MsoNormal><o:p><FONT face=Calibri>&nbsp;</FONT></o:p></P>
+<P class=MsoNormal><FONT face=Calibri>Again, I am trying to understand the problem and maybe even a solution but in the mean time if someone beats me to fixing the example code I would certainly appreciate it.</FONT></P>
+<P class=MsoNormal><o:p><FONT face=Calibri>&nbsp;</FONT></o:p></P>
+<P class=MsoNormal><FONT face=Calibri>Thank you, in advance, for the help.</FONT></P>
+<P class=MsoNormal><o:p><FONT face=Calibri>&nbsp;</FONT></o:p></P>
+<P class=MsoNormal><FONT face=Calibri>Stan</FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rkelley replied on Monday, May 26, 2008</h2><P>Stan,</P>
+<P>The first post you referred to is on the same code base that you are on and I am getting similar errors, I am working now trying to dig into it deeper to see what I can find. I am fairly sure that Rocky is aware that there are some issues and he is also working on them.</P>
+<P>One thing to do is to try and get the edit levels for your objects out so that you can tell where you are off at. If I am not mistaken, the root object should be 1 more than the children?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Stanomatic replied on Tuesday, May 27, 2008</h2><P class=MsoNormal><FONT face=Calibri>Hello RKelley,</FONT></P>
+<P class=MsoNormal><FONT face=Calibri></FONT>&nbsp;</P>
+<P class=MsoNormal><FONT face=Calibri>Thank you for the reply. I will dig deeper with your suggestions. </FONT></P>
+<P class=MsoNormal><o:p><FONT face=Calibri>&nbsp;</FONT></o:p></P>
+<P class=MsoNormal><FONT face=Calibri>I appreciate all of Rocky's work and the rest of the community. I use a playground application to get familiar with CSLA. Version 2.0 works BUT I of course wanted to jump on the latest 3.51 code base to start learning the upgraded framework. My plan is to become comfortable with 3.5+ and then implement into production.</FONT></P>
+<P class=MsoNormal><o:p><FONT face=Calibri>&nbsp;</FONT></o:p></P>
+<P class=MsoNormal><FONT face=Calibri>Have a great day!</FONT></P>
+<P class=MsoNormal><FONT face=Calibri>Stan</FONT></P>
+<P>&nbsp;</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

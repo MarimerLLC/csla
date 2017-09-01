@@ -1,0 +1,42 @@
+<html><header><title>AmbiguousMatchException</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>AmbiguousMatchException</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9657.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>TerryH posted on Tuesday, October 19, 2010</h2><p>Hi all</p>
+<p>I have a object graph that is made up of three objects,&nbsp; a firm,which can have multiple Individuals, and which each Individual can have multiple Detail objects. </p>
+<p>Of those objects I create a list of firms (DynamicRootList) which is made up of a Firm (EditableRoot) object. Each Firm object has a list (EditableChildList) of Individual objects(EditableChild), which has a list (EditableChildList) of Detail (EditableChild) objects. </p>
+<p>Using the MVVM example I have created a viewmodel based on the above graph of objects, the viewmodel becomes the datasource for a usercontrol. There is a Save button that has a TriggerAction attached to it with the DataContext =&quot;{Binding Source={StaticResource firmViewModelModeViewSource}, Path=/}&quot; MethodName=&quot;Save&quot;.</p>
+<p>I can edit properties of the Firm object (EditableRoot) exposed in the UI, and click the save button which causes the AmbiguousMatchException, when I debug the code, in the file TriggerAction and the method CallMethod at the line </p>
+<p>var targetMethod = target.GetType().GetMethod(MethodName); </p>
+<p>the exception is thrown.</p>
+<p>I suspect that something is wrong with the binding of the TriggerAction but I&#39;m not sure what .</p>
+<p>Any help would be appreciated</p>
+<p>Thanks</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Wednesday, October 20, 2010</h2><p>TriggerAction doesn&#39;t support overloaded methods. So if there is more than one overload of Save on your object that&#39;d cause this issue.</p>
+<p>ViewModel&lt;T&gt; already has a Save method, so if you&#39;ve added your own (rather than overriding the existing one) that would be an example of something that would cause this to happen.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>TerryH replied on Thursday, October 21, 2010</h2><p>Thanks for the quick response Rocky</p>
+<p>I did have my own Save method, but it was&nbsp;the&nbsp;only&nbsp;overload in my code, so I started looking deeper and wouldn&#39;t you know it, I did find other save methods. I&#39;m using CodeSmith and their CSLA template to generate my CSLA business objects. I looks like for any tables defined as a EditableRoot, in the DataPortal_Update() method a call is made to a Save() method. </p>
+<p>The definition for that Save method is the file Csla.BusinessBase and its defined as </p>
+<p>public virtual T Save()&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </p>
+<p>and</p>
+<p>public T Save(bool forceUpdate)</p>
+<p>Could this method be causing my exception ?</p>
+<p>Here is a snippet of the code</p>
+<p>if(OriginalFirmId != FirmId)<br />{<br />&nbsp;&nbsp;&nbsp; // Insert new child.<br />&nbsp;&nbsp;&nbsp; Firm item = new Firm {FirmId = FirmId, FirmNumber = FirmNumber, FirmName = FirmName, Address1 = Address1, Address2 = Address2};<br />&nbsp;&nbsp;&nbsp; if(CountryId.HasValue) item.CountryId = CountryId.Value;<br />&nbsp;&nbsp;&nbsp;&nbsp;if(LastChangeDate.HasValue) item.LastChangeDate = LastChangeDate.Value;<br />&nbsp;&nbsp;&nbsp;&nbsp;if(NumberOfEmployees.HasValue) item.NumberOfEmployees = NumberOfEmployees.Value;<br />&nbsp;&nbsp;&nbsp;&nbsp;if(LifeTotal.HasValue) item.LifeTotal = LifeTotal.Value;<br />&nbsp;&nbsp;&nbsp;&nbsp;if(LTDTotal.HasValue) item.LTDTotal = LTDTotal.Value;<br />&nbsp;&nbsp;&nbsp;&nbsp;if(RefundAmount.HasValue) item.RefundAmount = RefundAmount.Value;<br />&nbsp;&nbsp;&nbsp;&nbsp;if(FirmDeleted.HasValue) item.FirmDeleted = FirmDeleted.Value;<br /><em>&nbsp;&nbsp;&nbsp;<strong> item = item.Save();</strong></em><br />......</p>
+<p>&nbsp;</p>
+<p>Terry</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, October 21, 2010</h2><p>Hopefully not. TriggerAction should be bound to the viewmodel, not the model, so the save method(s) on the model don&#39;t matter at all.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>TerryH replied on Thursday, October 21, 2010</h2><p>I removed my overloaded version of Save() in the viewmodel and&nbsp;I still get the same exception.&nbsp; </p>
+<p>Could you please give me a couple of other suggestions to follow up on.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, October 21, 2010</h2><p>That exception comes from the .NET type system, and occurs because .NET is unable to uniquely resolve the method name to a specific overload.</p>
+<p>Or to put it simply: there&#39;s still more than one overload of Save on the target object.</p>
+<p>The simplest thing to try at this point is to change the name of the method, thus avoiding the overload you can&#39;t find.</p>
+<p>But you should also look carefully to make sure TriggerAction is binding to the viewmodel and not the model, so you are sure it is interacting with the correct object.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>TerryH replied on Thursday, October 21, 2010</h2><p>Rocky</p>
+<p>Do you offer a consulting service, if not can you recommend someone to me ?</p>
+<p>I have tried Magenic, but I was told that they don&#39;t have anyone with the required skill set.</p>
+<p>If you could please respond using my email account attached to my profile that would be great</p>
+<p>&nbsp;</p>
+<p>Thanks</p>
+<p>&nbsp;</p>
+<p>Terry</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, October 21, 2010</h2><p>For what it is worth, it is less that Magenic doesn&#39;t have CSLA experts (because we have many), but more that Magenic typically engages at a project level to help organizations build entire apps or systems. The company isn&#39;t set up to provide CSLA support, or extremely short-term or small (a few hours of work) type engagements.</p>
+<p>This forum is the only real venue for &quot;support&quot; of CSLA.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>TerryH replied on Sunday, October 24, 2010</h2><p>Rocky, </p>
+<p>I did try your suggestion and it did find the renamed method, but I just received a different exception &quot;Object reference not set to an instance of an object&quot;.</p>
+<p>I suspect the solution to my problem is found in your MVVM video&#39;s and that I should be creating a list of viewmodel objects, then I should be able locate the correct Save. </p>
+<p>I&#39;m confused about sub viewmodels, which in my case I&#39;ll have two sub viewmodels and a viewmodel, the firm viewmodel with a collection of individual viewmodels which has a collection of detail viewmodels.&nbsp; </p>
+<p>Would I be better using a controller to manage three viewmodels, this way the viewmodels don&#39;t need to refer to each other and the controller acts as a mediator between them ?</p>
+<p>Can you please comment about the sub viewmodels vs controller.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Sunday, October 24, 2010</h2><p>The basic theory is this: a viewmodel adds verbs or properties required by the UI, but not required by the business layer itself.</p>
+<p>So any business object that requires extra verbs or derived properties should be wrapped in a viewmodel. Business objects that don&#39;t need extra verbs or properties probably shouldn&#39;t be wrapped, because that&#39;s overhead for no value.</p>
+<p>If you have a list of objects, the list itself will almost certainly have a viewmodel to add verbs. Each child might have a viewmodel, if you need verbs for each child.</p>
+<p>This specific scenario is covered in the MVVM video series, yes.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

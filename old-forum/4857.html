@@ -1,0 +1,54 @@
+<html><header><title>LINQ Question</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>LINQ Question</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4857.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>SouthSpawn posted on Saturday, May 17, 2008</h2><DIV>I am trying to do the following.</DIV>
+<DIV>&nbsp;</DIV>
+<OL>
+<LI class=li1>
+<DIV class=de1>Using DataLinq = ContextManager<SPAN class=br0><FONT color=#008000>(</FONT></SPAN>Of SystemDataLinqDataContext<SPAN class=br0><FONT color=#008000>)</FONT></SPAN>.<SPAN class=me1><FONT color=#0000ff>GetManager</FONT></SPAN><SPAN class=br0><FONT color=#008000>(</FONT></SPAN><SPAN class=st0><FONT color=#808080>"ConnectionString"</FONT></SPAN><SPAN class=br0><FONT color=#008000>)</FONT></SPAN></DIV>
+<LI class=li2>
+<DIV class=de2>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <SPAN class=kw6><FONT color=#0600ff>Dim</FONT></SPAN> DataResult = From CompanyItem In DataLinq.<SPAN class=me1><FONT color=#0000ff>DataContext</FONT></SPAN>.<SPAN class=me1><FONT color=#0000ff>spGetCompanies</FONT></SPAN><SPAN class=br0><FONT color=#008000>(</FONT></SPAN> _</DIV>
+<LI class=li1>
+<DIV class=de1>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;CompanyPageIndex, _</DIV>
+<LI class=li2>
+<DIV class=de2>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;CompanyPageSize, _</DIV>
+<LI class=li1>
+<DIV class=de1>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;CompanyActive, _</DIV>
+<LI class=li2>
+<DIV class=de2>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;_totalRecordCount<SPAN class=br0><FONT color=#008000>) </FONT></SPAN>Order By SortBy.<SPAN class=me1><FONT color=#0000ff>ToString</FONT></SPAN> _</DIV>
+<LI class=li1>
+<DIV class=de1>&nbsp; &nbsp; &nbsp; &nbsp; <SPAN class=kw6><FONT color=#0600ff>Select</FONT></SPAN> <SPAN class=kw2><FONT color=#ff8000>New</FONT></SPAN> CompanyRO<SPAN class=br0><FONT color=#008000>(</FONT></SPAN> _</DIV>
+<LI class=li2>
+<DIV class=de2>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; CompanyItem.<SPAN class=me1><FONT color=#0000ff>CompanyID</FONT></SPAN>, _</DIV>
+<LI class=li1>
+<DIV class=de1>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; CompanyItem.<SPAN class=me1><FONT color=#0000ff>CompanyTypeID</FONT></SPAN>, _</DIV>
+<LI class=li2>
+<DIV class=de2>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; CompanyItem.<SPAN class=me1><FONT color=#0000ff>CompanyTypeDescription</FONT></SPAN>, _</DIV>
+<LI class=li1>
+<DIV class=de1>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; CompanyItem.<SPAN class=me1><FONT color=#0000ff>CompanyTypeActive</FONT></SPAN>, _</DIV>
+<LI class=li2>
+<DIV class=de2>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; CompanyItem.<SPAN class=me1><FONT color=#0000ff>Name</FONT></SPAN>, _</DIV>
+<LI class=li1>
+<DIV class=de1>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; CompanyItem.<SPAN class=me1><FONT color=#0000ff>Description</FONT></SPAN>, _</DIV>
+<LI class=li2>
+<DIV class=de2>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; CompanyItem.<SPAN class=me1><FONT color=#0000ff>RoleID</FONT></SPAN>, _</DIV>
+<LI class=li1>
+<DIV class=de1>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; CompanyItem.<SPAN class=me1><FONT color=#0000ff>Website</FONT></SPAN>, _</DIV>
+<LI class=li2>
+<DIV class=de2>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; CompanyItem.<SPAN class=me1><FONT color=#0000ff>Username</FONT></SPAN>, _</DIV>
+<LI class=li1>
+<DIV class=de1>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; CompanyItem.<SPAN class=me1><FONT color=#0000ff>Password</FONT></SPAN>, _</DIV>
+<LI class=li2>
+<DIV class=de2>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; CompanyItem.<SPAN class=me1><FONT color=#0000ff>CompanyLookUpCode</FONT></SPAN>, _</DIV>
+<LI class=li1>
+<DIV class=de1>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; CompanyItem.<SPAN class=me1><FONT color=#0000ff>Active</FONT></SPAN><SPAN class=br0><FONT color=#008000>)</FONT></SPAN></DIV>
+<LI class=li2>
+<DIV class=de2><FONT color=#008000></FONT>&nbsp;</DIV>
+<LI class=li1>
+<DIV class=de1>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; AddRange<SPAN class=br0><FONT color=#008000>(</FONT></SPAN> _</DIV>
+<LI class=li2>
+<DIV class=de2>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; DataResult<SPAN class=br0><FONT color=#008000>)</FONT></SPAN></DIV>
+<LI class=li1>
+<DIV class=de1>&nbsp; &nbsp; &nbsp; &nbsp; <SPAN class=kw6><FONT color=#0600ff>End</FONT></SPAN> Using</DIV></LI></OL>
+<DIV class=de1>For some reseason, the "SortBy.<SPAN class=me1>ToString" parameter that I am passing in doesn't order the list.</SPAN></DIV></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RedmondScorpio replied on Tuesday, May 20, 2008</h2><P>Hello,</P>
+<P>The order by clause should be something like:</P>
+<P>Order By CompanyItem.<EM>FieldNameInResultSet</EM></P>
+<P>Are you trying to dynamically set the order by field name?</P>
+<P>If so, here is an article abou that.&nbsp; <A href="http://blogs.vertigo.com/personal/jeffv/Blog/Lists/Posts/Post.aspx?ID=10">http://blogs.vertigo.com/personal/jeffv/Blog/Lists/Posts/Post.aspx?ID=10</A></P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

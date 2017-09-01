@@ -1,0 +1,51 @@
+<html><header><title>Databinding to listbox</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Databinding to listbox</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/473.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>ljon posted on Monday, June 26, 2006</h2><P>Hi,</P>
+<P class=MsoNormal>I have a form that contains two list boxes they both are initially populated using NameValue list. They both have DataBinding to my Business Object to two separate Properties. The first listbox is a<SPAN>&nbsp;</SPAN>single mode select and this one seems to&nbsp;work ok. The problem I am having is on the second listbox which is multiSimple mode. What is the proper way to bind a multi select listbox to a business object?</P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal>Thanks</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Tuesday, June 27, 2006</h2>This is similar to a question regarding CheckBoxList.&nbsp; I don't have an answer, but I've been thinknig about this problem too.<br><br>How do you create a list with all possible values, and each selection (or check) would add or remove that value to the list in your BO?<br><br>It seems like you'd have to build the list so that it always contained the objects, and each of those objects would have a selected property.&nbsp; But that also doesn't seem like good design.<br><br>Andy<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Crestline replied on Tuesday, June 27, 2006</h2>We are actually in the middle of a situation like this as well using
+the CheckedBoxList control.&nbsp; We have it databound to a
+NameValuePair object.&nbsp; At the moment, we may just add a method to
+our object that accepts an array or something and then loop through and
+make the necessary changes to the collection.&nbsp; Not the best
+design, but not sure what else to do at this point.&nbsp; We then have
+to have a method on the form that creates this array based on the
+CheckedBoxList.<br>
+<br>
+Looking forward to options others may find.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ljon replied on Tuesday, June 27, 2006</h2><P>Thanks for the replies,</P>
+<P>I actually have the my listbox DataSource pointing to a BindingSource&nbsp;and&nbsp; the BindingSource's DataSource is pointing to my NameValue list and the works fine for the initial load of the values available to the user. I have the DataBinding SelectedValue of the Listbox pointing to another BindingSource which is pointing to my Business object/property and that works as well as long as the listbox is not multiselect. My problem is I am not sure the best way (best practice)&nbsp;to Bind it to the object when the ListBox is a multiSelect. <o:p></o:p></P>
+<P>Thanks again.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Crestline replied on Tuesday, June 27, 2006</h2>... Please delete<br>
+<br>
+<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Crestline replied on Tuesday, June 27, 2006</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>ljon:</strong></div><div><p>Thanks for the replies,</p>
+<p>I actually have the my listbox DataSource pointing to a
+BindingSource&nbsp;and&nbsp; the BindingSource's DataSource is pointing
+to my NameValue list and the works fine for the initial load of the
+values available to the user. I have the DataBinding SelectedValue of
+the Listbox pointing to another BindingSource which is pointing to my
+Business object/property and that works as well as long as the listbox
+is not multiselect. My problem is I am not sure the best way (best
+practice)&nbsp;to Bind it to the object when the ListBox is a
+multiSelect. <o:p></o:p></p>
+<p>Thanks again.</p></div></BLOCKQUOTE><br>
+<br>
+
+										Hmm...&nbsp; I'm trying to get this to work and not having any luck.<br>
+
+<br>
+
+I have a bindingsource filled from a NameValueList which shows the
+items in the CheckedBoxList correctly and then I set the SelectedValue
+of the CheckBoxList to the ID property of my bindingsource that is
+hooked up to my collection object.<br>
+
+<br>
+
+The NameValue list items are all listed as they should be, but nothing
+is getting checked off when I hook my other binding source up to the
+selected value property.&nbsp; I have double checked and the my
+business object collection binding source does have data...<br>
+
+<br>
+
+Any ideas?<br>
+<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>GrullonM replied on Friday, January 05, 2007</h2><P>I have run into the same issues where I am building a web application that has a CheckBoxList where multiple values can be selected. In addition there are a couple of ListBoxes where the SelectionMode is set to Multiple.</P>
+<P>Has anyone found a suitable way to work with these two controls? I am pulling my hair on this.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>xal replied on Sunday, January 07, 2007</h2>The problem here is that the listbox doesn't support "binding for selected values". So you have to do that by hand.<br>I've seen people have the child collection contain all possible values (when there are just a few) and each child item has a property called "selected" or something similar.<br>Then you can bind to&nbsp; a listbox or checkbox and handle the selected item changed event or check changed in order to change that property accordingly.<br><br>Databinding is good, but it won't always do everything for you. Sometimes we have to actually work!! :D<br><br><br>Andrés<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Monday, January 08, 2007</h2><BLOCKQUOTE><div><img src="/Themes/basicblue/images/icon-quote.gif"> <strong>xal:</strong></div><div>Databinding is good, but it won't always do everything for you. Sometimes we have to actually work!! :D</div></BLOCKQUOTE><br><br>Boo!&nbsp; <img src="/emoticons/emotion-1.gif" alt="Smile [:)]" /><br><br>Just to add to this, the object with the Selected propety that Andres suggestes building should probably be part of the UI layer, not the business layer.&nbsp; This UI collection would interperate adding or removing the actual BO from the BO collection as Selected is changed.<br><br>Andy<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

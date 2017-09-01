@@ -1,0 +1,17 @@
+<html><header><title>Question about submitting data to a child of a collection</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Question about submitting data to a child of a collection</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/2680.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>CSLABound posted on Thursday, April 12, 2007</h2><P>I think this may be a really junior question, but I'm just starting c# and CSLA... if I have a windows form that has a binding to a Business List base that shows a listing of users, on the same form I'm allowing people to edit those users.&nbsp; I want to directly pass the Id from the Current User into the save so that the User Id shows up in the database, but I can't figure out how to submit that value to the child of the user collection.&nbsp; Sorry if this sounds confusing.&nbsp; Currently everything else saves fine on the form.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Thursday, April 12, 2007</h2><P>You can always get the current user like this:</P><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Protected</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Friend</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Overridable</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Sub</FONT><FONT size=2> Update(</FONT><FONT color=#0000ff size=2>ByVal</FONT><FONT size=2> tr </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> IDbTransaction</FONT><FONT size=2>)<BR></FONT>&nbsp; <FONT color=#0000ff size=2>Dim</FONT><FONT size=2> user </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2>&nbsp;MyCustomPrincipal<BR>&nbsp; user = </FONT><FONT color=#0000ff size=2>DirectCast</FONT><FONT size=2>(Thread.CurrentPrincipal, MyCustomPrincipal)</FONT></P>
+<P><FONT size=2>&nbsp; Dim userID As String = user.UserID</FONT></P>
+<P><FONT size=2>etc.</FONT></P>
+<P><FONT size=2>&nbsp;</P>
+<P></P></FONT>
+<P>Joe</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>CSLABound replied on Thursday, April 12, 2007</h2><P>Thanks.&nbsp; Would I put that method in th child that I'm updating?</P>
+<P>Also, How would I do that in c#</P>
+<P>Thanks again</P>
+<P>Brian</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>CSLABound replied on Thursday, April 12, 2007</h2>Nevermind.... got it... thanks a ton!!!!</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Thursday, April 12, 2007</h2><P>IN your DP_I or DP_U,</P>
+<P>MyPrincipal prin;</P>
+<P>int userId;</P>
+<P>prin = (MyPrincial)ApplicationContext.User;</P>
+<P>userid = prin.Identity.UserId; // Assuming you have a userID on your Identity object</P>
+<P>HTH</P>
+<P>Andy</P>
+<P>&nbsp;</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

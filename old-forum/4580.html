@@ -1,0 +1,8 @@
+<html><header><title>Serializing Custom Identity/Principal as GenericIdentity/Principal</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Serializing Custom Identity/Principal as GenericIdentity/Principal</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4580.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>fydoh posted on Friday, March 28, 2008</h2><P>Implementing Custom Principal/Identity resulted in the following error:</P>
+<P><STRONG>Type is not resolved for member 'MySystem.Library.Security.MyPrincipal,MySystem.Library'</STRONG></P>
+<P>I knew this problem had to deal with Cassini, but I'm running on Vista, using Web Applications and don't want to run as Administrator to develop in IIS.&nbsp; So, I found a solution on&nbsp;your website, but I'm curious as to why it is not implemented in&nbsp;the CSLA&nbsp;samples.&nbsp; Basically, the idea is to customize the serialization of the custom Principal and Identity to appear as GenericPrincipal or Identity <EM>only when Crossing App Domains</EM>.</P>
+<P>The only gotcha I am guessing would exist here would be if I added properties to my custom Principal/Identity objects that GenericPrincipal/Identity would not carry over.&nbsp; Anything I'm not seeing here?</P>
+<P>Thanks in advance,</P>
+<P>David</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

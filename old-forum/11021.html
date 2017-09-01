@@ -1,0 +1,56 @@
+<html><header><title>ObjectFactory with different types of BOs</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>ObjectFactory with different types of BOs</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11021.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>mspaourh posted on Tuesday, December 27, 2011</h2><p>Hi everyone,</p>
+<p>Is it possible to use a single ObjectFactory class that determines the type of BO to operate on at run-time?</p>
+<p>There is a custom base class (e.g subclass of ReadOnlyBase&lt;T&gt;) that has the ObjectFactoryAttribute applied on it and all its subclasses should use the same ObjectFactory, unless otherwise specified.</p>
+<p>There seems to be no way of communicating the actual business object type from the FactoryDataPortal to the ObjectFactory instance.</p>
+<p>Using CSLA 3.8.4</p>
+<p>&nbsp;</p>
+<p>Thanks in advance,</p>
+<p>Mario</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Tuesday, December 27, 2011</h2><p>Hmmmm, </p>
+<p>You could create your own ObjectFactoryLoader&nbsp; - responsible for creating an instance of the ObjectFactory.</p>
+<p>Basically the name is just a string (and using the default ObjectFactoryLoader this should be a fully qualified class name) and optionally&nbsp; specify other names for the Create/Update/Delete/Fetch methods. </p>
+<p>And if you create your own ObjectFactoryLoader you can decide yourself what the name value should contain. Meaning that you could specify the ObjectFactory attribute with a fully qualified name and actual type - andimplement your own convention to initialize the factory class with actual type name,&nbsp; tho&#39; that would require an ObjectFactoryAttribute on each class.</p>
+<p><b>You should be able to use a generic constraint on the ObjectFactory class - but this would also require the ObjectFactory attribute on each class. It would however allow you to have an object factory that could create multiple types. </b></p>
+<pre style="font-family:Consolas;font-size:13px;color:black;background:none repeat scroll 0% 0% #fafafa;">&nbsp;&nbsp;[<span style="color:#2b91af;">ObjectFactory</span>(<span style="color:blue;">typeof</span>(<span style="color:#2b91af;">MyRootFactory</span>&lt;<span style="color:#2b91af;">Root</span>&gt;))]
+&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">class</span>&nbsp;<span style="color:#2b91af;">Root</span>&nbsp;:&nbsp;<span style="color:#2b91af;">BusinessBase</span>&lt;<span style="color:#2b91af;">Root</span>&gt;<br /><br />and </pre>
+<pre style="font-family:Consolas;font-size:13px;color:black;background:none repeat scroll 0% 0% #fafafa;">&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">class</span>&nbsp;<span style="color:#2b91af;">MyRootFactory</span>&lt;T&gt;&nbsp;:&nbsp;Csla.Server.<span style="color:#2b91af;">ObjectFactory</span>
+&nbsp;&nbsp;{
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;T&nbsp;Create()
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;T&nbsp;o&nbsp;=&nbsp;(T)<span style="color:#2b91af;">MethodCaller</span>.CreateInstance(<span style="color:blue;">typeof</span>(T));
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">return</span>&nbsp;o;
+&nbsp;&nbsp;&nbsp;&nbsp;}<br />  }<br />this will work with the default ObjectFactoryLoader. </pre>
+<p>Besides that - I do not know of any other method or provision for sending the actual object type to the ObjectFactory! <img src="http://forums.lhotka.net/emoticons/emotion-40.gif" alt="Hmm" /></p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>mspaourh replied on Tuesday, December 27, 2011</h2><p>JonnyBee,<br /><br />thanks for your answer.<br /><br />I am trying to drop the requirement of applying the ObjectFactoryAttribute to each subclass.<br /><br />The intention is to provide a &quot;default&quot; behavior for all subclasses of the custom base class by applying the attribute to the custom<br /><br />base class. The behavior can be replaced by explicitly applying the attribute to some subclass.<br /><br />I am aware of the ObjectFactoryLoader class and the IObjectFactoryLoader interface and was intending<br /><br />to use them in this concept. The custom ObjectFactoryLoader could use<br /><br /><blockquote style="overflow-x: scroll;"><pre style="margin: 0px;">public virtual Type MakeGenericType(<br />&nbsp;&nbsp; &nbsp;Type[] typeArguments<br />)</pre></blockquote> </p>
+<p>on the System.Type instance &quot;described&quot; (by interpreting the string) in the ObjectFactoryAttribute to make a closed constructed type, <br />but the actual BO type (Root in your example) required for <b>typeArguments</b> is missing from the whole &quot;context&quot;.</p>
+<pre></pre></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Tuesday, December 27, 2011</h2><p>Hi,</p>
+<p>Yes, you are correct and IMO it is not intended to work the way you want to use it. </p>
+<p>An ObjectFactory must have knowledge of how to create/fetch/update/delete the data and maintain state in the BO. And for an object structure with miltiple levels it must also have knowledge of all the child object factories. </p>
+<p>The ObjectFactoryAttribute is only intended to be used on &quot;root&quot; objects - ie CSLA DataPortal will only use the ObjectFacotryAttribute for the &quot;root&quot; object. .</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>mspaourh replied on Wednesday, December 28, 2011</h2><p>Hi,</p>
+<p>The use of factories in general is required due to plugging of different DALs. An ObjectFactoryLoader takes care of that.</p>
+<p>&nbsp;</p>
+<p>Let me explain what is the goal here. There dozens of database tables (and hence BOs) that have identical structure, e.g.</p>
+<p><blockquote style="overflow-x: scroll;"><pre style="margin: 0px;"></p>
+<p>ID INT NOT NULL PRIMARY KEY,</p>
+<p>CODE NVARCHAR(5),</p>
+<p>DESCR NVARCHAR(50)</p>
+<p></pre></blockquote></p>
+<p>When their data is loaded in an list (editable or read-write) its done with an SQL statement like</p>
+<p><blockquote style="overflow-x: scroll;"><pre style="margin: 0px;">SELECT ID, CODE, DESCR FROM &lt;&lt;tableName&gt;&gt;</pre></blockquote></p>
+<p>and when they are loaded as root objects its done with</p>
+<p><blockquote style="overflow-x: scroll;"><pre style="margin: 0px;">SELECT ID, CODE, DESCR FROM &lt;&lt;tableName&gt;&gt; WHERE ID=@ID</pre></blockquote>. Same pattern with the insert, update, delete statements.</p>
+<p><i>tableName</i> can be derived from the business object type name (using the appropriate convention, or a user-defined attribute in the worst case).</p>
+<p>All of the relevant business object classes are derived from the appropriate custom base class.</p>
+<p>The &quot;generic&quot; factory is a reasonable choice because is a time and effort saver.</p>
+<p>Currently the only limitation for this implementation is the requirement to place an ObjectFactory (or a custom subclass of it!) to every business object class!</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Wednesday, December 28, 2011</h2><p>For now - my recommendation would be to create a ObjectFactory derived base class (ex NameValueListFactory)&nbsp; to implement the &quot;generic&quot; object factory and create a new (nearly empty) ObjectFactory class to keep 1:1 mapping between object type and table. </p>
+<p>The actual ObjectFactory would inherit from the NameValueListFactory and just set the table name to use.</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>mspaourh replied on Thursday, December 29, 2011</h2><p>Thanks jonny.</p>
+<p>&nbsp;</p>
+<p>Although its not what I actually planned, i&#39;ll just stick with that.</p>
+<p>&nbsp;</p>
+<p>Happy 2012 to everyone!</p>
+<p>&nbsp;</p>
+<p>Mario</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

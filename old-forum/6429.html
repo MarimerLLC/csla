@@ -1,0 +1,171 @@
+<html><header><title>Hello I Used CSLDataProvider Command Manager with button to Add object but it is disabled?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Hello I Used CSLDataProvider Command Manager with button to Add object but it is disabled?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6429.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Programmer1987 posted on Monday, February 16, 2009</h2><P>hello this is my first post&nbsp; and this is my first project using CSLA </P>
+<P>I used cslaDataprovider to insert new object ot the list that bound to listbox </P>
+<P>the button that Add </P><FONT color=#0000ff size=2>
+<P>&lt;</FONT><FONT color=#a31515 size=2>Button</FONT><FONT color=#ff0000 size=2>&nbsp;</FONT><FONT color=#ff0000 size=2>&nbsp;Name</FONT><FONT color=#0000ff size=2>="BtnAddItemType"</FONT><FONT color=#ff0000 size=2> </FONT><FONT size=2></FONT><FONT color=#ff0000 size=2>Command</FONT><FONT color=#0000ff size=2>="ApplicationCommands.New"</P></FONT><FONT size=2>
+<P></FONT><FONT color=#ff0000 size=2>CommandParameter</FONT><FONT color=#0000ff size=2>="{</FONT><FONT color=#a31515 size=2>Binding</FONT><FONT color=#0000ff size=2>}"</FONT></P>
+<P><FONT color=#ff0000 size=2>CommandTarget</FONT><FONT color=#0000ff size=2>="{</FONT><FONT color=#a31515 size=2>Binding</FONT><FONT color=#ff0000 size=2> Source</FONT><FONT color=#0000ff size=2>={</FONT><FONT color=#a31515 size=2>StaticResource</FONT><FONT color=#ff0000 size=2> ItemTypesProvider</FONT><FONT color=#0000ff size=2>},</FONT><FONT color=#ff0000 size=2>Path</FONT><FONT color=#0000ff size=2>=ComandManager,</FONT><FONT color=#ff0000 size=2>BindsDirectlyToSource</FONT><FONT color=#0000ff size=2>=True}"</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>&gt;</FONT><FONT color=#a31515 size=2>+</FONT><FONT color=#0000ff size=2>&lt;/</FONT><FONT color=#a31515 size=2>Button</FONT><FONT color=#0000ff size=2>&gt;</FONT></P>
+<P><FONT color=#0000ff size=2>But it is disabled Why and how can i make it enabled </FONT></P>
+<P><FONT color=#0000ff size=2>the csla data probider is :</FONT></P><FONT color=#a31515 size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;</FONT><FONT color=#a31515 size=2>csla</FONT><FONT color=#0000ff size=2>:</FONT><FONT color=#a31515 size=2>CslaDataProvider</FONT><FONT color=#ff0000 size=2> x</FONT><FONT color=#0000ff size=2>:</FONT><FONT color=#ff0000 size=2>Key</FONT><FONT color=#0000ff size=2>="ItemTypesProvider"</P></FONT><FONT size=2>
+<P></FONT><FONT color=#ff0000 size=2>ManageObjectLifetime</FONT><FONT color=#0000ff size=2>="True"</P></FONT><FONT size=2>
+<P></P>
+<P></FONT><FONT color=#0000ff size=2>&gt;</P></FONT><FONT color=#a31515 size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;/</FONT><FONT color=#a31515 size=2>csla</FONT><FONT color=#0000ff size=2>:</FONT><FONT color=#a31515 size=2>CslaDataProvider</FONT><FONT color=#0000ff size=2>&gt;</P></FONT>
+<P><FONT color=#0000ff size=2>and I put the ObjectInstance in Code Behind .</FONT></P>
+<P><FONT color=#0000ff size=2></FONT>&nbsp;</P>
+<P><FONT color=#0000ff size=2>Notice : I didn't put any authorization or validation roles in my business layer is there any relalion ??</P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, February 16, 2009</h2><P>Save is enabled only if all these are met:</P>
+<OL>
+<LI>The object is valid</LI>
+<LI>The object is dirty</LI>
+<LI>The user has authorization</LI></OL>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>dtabako replied on Tuesday, February 17, 2009</h2><P>I am seeing the same issue. The Save button works great - I love the way it automatically enables/disables itself without having to write any code for that. But the "New" button (using ApplicationCommands.New) is disabled and I'm also not sure why that is.</P>
+<P>Incidentally - as a related issue - how would you set up a "New" button for a true child object. Project Tracker uses the click event - assumedly because it interacts with the Assignment object. But if I just have, say, a Customer object that has an editable child list of CustomerAddress objects, is there a way I can use commanding to set up a "New Address" button?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>James Thomas replied on Tuesday, February 17, 2009</h2>I'm using Silverlight - is this the kind of thing you meant dtabako?<br><br>private void AddProposalManagementButton_Click(object sender, RoutedEventArgs e)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ((Proposal)((CslaDataProvider)this.Resources["ProposalData"]).Data).ProposalManagement.AddNew();<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, February 17, 2009</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>The New command only works if the business object is a list that
+has AllowNew=true and overrides AddNewCore() &#8211; it uses the same mechanism
+as other data binding models to create the new item.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> dtabako
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Tuesday, February 17, 2009 8:27 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] Hello I Used CSLDataProvider Command Manager
+with button to Add object but it is disabled?<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>I am seeing the same issue. The Save button works great - I love the way it
+automatically enables/disables itself without having to write any code for
+that. But the &quot;New&quot; button (using ApplicationCommands.New) is
+disabled and I'm also not sure why that is.<o:p></o:p></p>
+
+<p>Incidentally - as a related issue - how would you set up a &quot;New&quot;
+button for a true child object. Project Tracker uses the click event -
+assumedly because it interacts with the Assignment object. But if I just have,
+say, a Customer object that has an editable child list of CustomerAddress
+objects, is there a way I can use commanding to set up a &quot;New
+Address&quot; button?<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>dtabako replied on Tuesday, February 17, 2009</h2><P>James,</P>
+<P>Thanks for the reply. I actually was looking for a way to use the WPF stock application command ApplicationCommands.New so that I could get my "New" button hooked up via markup without using code (like the Save and Cancel buttons do).</P>
+<P>Rocky,</P>
+<P>OK, so to make sure I have this right then: for my main object (Customer) I&nbsp;will not be able to use the ApplicationCommands.New markup to generate a new Customer object. I will have to use a click event handler that grabs a new Customer object and feeds that to the DataProvider. That should be easy enough so it's no big deal. I just liked how clean it was to set up the other buttons' functionality directly in markup.</P>
+<P>But I should be able to set up the child object CustomerAddresses to utilize the ApplicationCommands.New to add a new address (as long as I set up the AllowNew and AddNewCore) correct? I just don't know what to use as the binding source for the command. </P>
+<P>Thanks, Dennis</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, February 17, 2009</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Normally you&#8217;d set the factory method name of the
+CslaDataProvider to your &#8220;new object&#8221; factory if you want to create
+a new root object.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>You&#8217;ll need a CslaDataProvider for the CustomerAddresses
+object if you want to use the data provider&#8217;s New command to add items to
+the collection.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> dtabako
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Tuesday, February 17, 2009 11:51 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: Hello I Used CSLDataProvider Command
+Manager with button to Add object but it is disabled?<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>James,<o:p></o:p></p>
+
+<p>Thanks for the reply. I actually was looking for a way to use the WPF stock
+application command ApplicationCommands.New so that I could get my
+&quot;New&quot; button hooked up via markup without using code (like the Save
+and Cancel buttons do).<o:p></o:p></p>
+
+<p>Rocky,<o:p></o:p></p>
+
+<p>OK, so to make sure I have this right then: for my main object (Customer)
+I&nbsp;will not be able to use the ApplicationCommands.New markup to generate a
+new Customer object. I will have to use a click event handler that grabs a new
+Customer object and feeds that to the DataProvider. That should be easy enough
+so it's no big deal. I just liked how clean it was to set up the other buttons'
+functionality directly in markup.<o:p></o:p></p>
+
+<p>But I should be able to set up the child object CustomerAddresses to utilize
+the ApplicationCommands.New to add a new address (as long as I set up the
+AllowNew and AddNewCore) correct? I just don't know what to use as the binding
+source for the command. <o:p></o:p></p>
+
+<p>Thanks, Dennis<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

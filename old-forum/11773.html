@@ -1,0 +1,25 @@
+<html><header><title>Dynamic Binding Listbase usage</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Dynamic Binding Listbase usage</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11773.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Arjun posted on Wednesday, January 09, 2013</h2><p>Hi,</p>
+<p>I am using CSLA in a windows application. The types of forms I develop are </p>
+<p>1. List Forms : which generally inherit from ReadOnlybindingListBase, to just display a list</p>
+<p>2. Detail Forms : inherits from BusinessBase, to implement Add, Edit, Remove operations.</p>
+<p>The general scenario: Click &quot;Add&quot; button in List form, the corresponding detail form will be populated. fill the details, click OK , the entered values will be saved to database. Refresh the list form to see the newly added item populated.</p>
+<p>But, I have a&nbsp; requirement where a detail form adds data to the list (not to the database). When the user done with adding list items, when he clicks save, all the added items must be saved to the database.</p>
+<p>I tried using DynamicBindingListbase, which is trying to insert an item after each item navigation, which is not i wanted. The control should wait for the user&nbsp;to click &quot;Save&quot;. </p>
+<p>Then i tried BusinessBindingListBase, which is making an item editable at the grid level which does not suit my requirement. </p>
+<p>Please suggest me which class to be used.</p>
+<p>&nbsp;</p>
+<p>Thanks,</p>
+<p>Arjun</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>Peran replied on Wednesday, January 09, 2013</h2><p>Hi Arjun,</p>
+<p>You are correct to use BusinessBindingListBase, just make the grid read only to prevent the user making changes in the grid.</p>
+<p>When the user double clicks on a row, bind the child BusinessBase object from the collection to your Detail Form.&nbsp; When you have changed multiple records, call Save on the collection to save all the modified child&nbsp;BusinessBase objects in one go.</p>
+<p>&nbsp;</p>
+<p>Regards</p>
+<p>Peran</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Arjun replied on Thursday, January 10, 2013</h2><p>Hi Peran,</p>
+<p>Thanks for the reply. I have started using BusinessBindingListBase as you suggested.</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Arjun replied on Thursday, January 10, 2013</h2><p>Hi Peran,</p>
+<p>Thanks for the reply. I have started using BusinessBindingListBase as you suggested.</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

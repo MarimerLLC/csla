@@ -1,0 +1,33 @@
+<html><header><title>Smart Date Enhancer Ver 1.0</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Smart Date Enhancer Ver 1.0</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/1563.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Vinodonly posted on Monday, October 23, 2006</h2><P>I have created a module which enhances functionalities of Smart Date, pasted below are the comments from the original code and code is attached with this post. (Source code ext changed to Txt as VB extension was not getting uploaded)</P>
+<P>I would like to hear feedback from everyone and if this is found to be useful then it can be incorporated in Original Smart Date Structure so everybody can get benefitted.</P>
+<P><FONT color=#008000 size=2>Smart Date Enhancer Ver 1.0</P>
+<P>SDEnhancer adds following additional functionalities to Smart Date (without modifying CSLA Code)</P>
+<P>Assuming Current Date is :- Dec 15, 2006, and Current DateTimeFormat ShortDate Pattern is :- M/d/yyyy</P>
+<P>&nbsp;User Entry :- 12, Gets Converted into 12-1-2006 (Dec 1, 2006)</P>
+<P>User Entry :- 12/20, Gets Converted into 12-20-2006 (Dec 20, 2006)</P>
+<P>User Entry :- 1, Gets Converted into 1-1-2007 (Jan 1, 2007)</P>
+<P>&nbsp;If Current Date is :- Jan 15, 2007</P>
+<P>User Entry :- 12, Gets Converted into 12-1-2006 (Dec 1, 2006)</P>
+<P>mDaysGap variable is by default set to 90 days so it automatically makes a jump of 90 days</P>
+<P>backward/forward depending on current date and value entered by user</P>
+<P>If Enhancer is not able to Apply these enhancements or date entered is illegal then </P>
+<P>original value is returned. </P>
+<P>ShortDate Pattern and Date seperator are taken from Current DateTimeFormat so it should work with </P>
+<P>other local settings also.</P>
+<P><FONT color=#000000>Given below is the property block (Set portion for using it)</FONT></P>
+<P><FONT color=#0000ff><FONT size=2>Set</FONT><FONT size=2>(</FONT><FONT size=2>ByVal</FONT><FONT size=2> Value </FONT><FONT size=2>As</FONT><FONT size=2> </FONT><FONT size=2>String</FONT></FONT><FONT size=2><FONT color=#0000ff>)</FONT></P>
+<P><FONT color=#0000ff>CanWriteProperty(</FONT></FONT><FONT color=#0000ff size=2>True</FONT><FONT size=2><FONT color=#0000ff>)</FONT></P>
+<P></FONT><FONT color=#0000ff size=2>Try</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff><FONT size=2>If</FONT><FONT size=2> mOrderCfmDt &lt;&gt; Value </FONT><FONT size=2>Then</P></FONT></FONT><FONT size=2>
+<P><FONT color=#0000ff>mOrderCfmDt.Text = Value</FONT></P>
+<P><FONT color=#0000ff>PropertyHasChanged()</FONT></P>
+<P></FONT><FONT color=#0000ff><FONT size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>If</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#008000 size=2>' Smart Date throws ArgumentException (Chk Function StringToDate)</P></FONT><FONT size=2>
+<P></FONT><FONT color=#008000 size=2>' which is caught here and SDEnhancer is applied</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff><FONT size=2>Catch</FONT><FONT size=2> ex </FONT><FONT size=2>As</FONT></FONT><FONT size=2><FONT color=#0000ff> ArgumentException</FONT></P>
+<P><FONT color=#0000ff>Value = SDEnhancer.SDEnhancer(Value)</FONT></P>
+<P><FONT color=#0000ff>mOrderCfmDt.Text = Value</FONT></P>
+<P><FONT color=#0000ff>PropertyHasChanged()</FONT></P>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Try</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Set</P></FONT></FONT>
+<P>&nbsp;</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

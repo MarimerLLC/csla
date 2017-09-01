@@ -1,0 +1,92 @@
+<html><header><title>How do you allow for null foreign keys with CSLA</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>How do you allow for null foreign keys with CSLA</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3578.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>SethSpearman posted on Saturday, September 22, 2007</h2><P>Hello,</P>
+<P>I am using GUIDs for my PK fields.</P>
+<P>I have a meeting object.&nbsp; This meeting object has an OPTIONAL LocationID which is a nullable foreign key.&nbsp; The idea is that if a location is used it needs to be enforced to allow only values from the locatrions table.&nbsp; But the field itself should be optional.&nbsp; The location is optional when creating ameeting object.&nbsp; </P>
+<P>The locationID member is initialized to Guid.Empty.&nbsp; This violates the constraint.&nbsp; In my code how do I allow for this field to be nullable.&nbsp; </P>
+<P>So with that as background here are some specific questions:</P>
+<P>1.&nbsp; When creating the object. How do I set the location to null as follows<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set _meeting as meeting.newmeeting<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;....<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;meeting.locationID=????&nbsp; - what do I put here.</P>
+<P>2.&nbsp; How do I get it to assign a NULL value without doing an explicit set ofthe locationID.&nbsp; </P>
+<P>I could probably figure this out but want to do it the BEST way?</P>
+<P>Thanks.</P>
+<P>Seth</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>david.wendelken replied on Saturday, September 22, 2007</h2>I assume you mean the FK in the database is being violated...<br><br>If so, before you send the Guid value to the database, check to see if it = Guid.Empty.<br>If it does, send System.DBNull.Value.<br><br>Or, if you are feeling more adventurous, clone the SmartDate class and turn it into a SmartGuid class.<br><br>Since I don't work with Guids much, I can't say which is the better approach... :)<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>phucphlq replied on Sunday, September 23, 2007</h2>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><font size=2 color=navy face=Arial><span>You should use Nullable&lt;T&gt;<o:p></o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 color=navy face=Arial><span>Ex:<o:p></o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 color=navy face=Arial><span>Nullable&lt;Guid&gt; Key;<o:p></o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 color=navy face=Arial><span>If(Key.HasValue)<o:p></o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 color=navy face=Arial><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; DbParameter.Value
+= Key.Value;<o:p></o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 color=navy face=Arial><span>Else<o:p></o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 color=navy face=Arial><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; DbParameter.Value
+= Dbnull.Value;<o:p></o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 color=navy face=Arial><span><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 color=navy face=Arial><span><o:p>&nbsp;</o:p></span></font></p>
+
+<div>
+
+<div class=MsoNormal align=center><font size=3 face="Times New Roman"><span>
+
+<hr align=center>
+
+</span></font></div>
+
+<p class=MsoNormal><b><font size=2 face=Tahoma><span>From:</span></font></b><font size=2 face=Tahoma><span> david.wendelken
+[mailto:cslanet@lhotka.net] <br>
+<b><span>Sent:</span></b> Sunday, September 23, 2007
+04:15<br>
+<b><span>To:</span></b> phucphlq@dsp.com.vn<br>
+<b><span>Subject:</span></b> Re: [CSLA .NET] How do
+you allow for null foreign keys with CSLA</span></font><o:p></o:p></p>
+
+</div>
+
+<p class=MsoNormal><font size=3 face="Times New Roman"><span><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=MsoNormal><font size=3 face="Times New Roman"><span>I assume you mean the FK in the database is being violated...<br>
+<br>
+If so, before you send the Guid value to the database, check to see if it =
+Guid.Empty.<br>
+If it does, send System.DBNull.Value.<br>
+<br>
+Or, if you are feeling more adventurous, clone the SmartDate class and turn it
+into a SmartGuid class.<br>
+<br>
+Since I don't work with Guids much, I can't say which is the better approach...
+:)<br>
+<br>
+<br>
+<o:p></o:p></span></font></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>SethSpearman replied on Wednesday, October 10, 2007</h2><P>Both Phu and David,</P>
+<P>Thanks&nbsp;for your help and answers.&nbsp;&nbsp; Working great now.&nbsp; I have created a bunch of shared NullIf... function which are doing the trick.</P>
+<P>Thanks for the work and time you guys give to help newbies like me.</P>
+<P>Seth</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

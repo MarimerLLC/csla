@@ -1,0 +1,90 @@
+<html><header><title>Unit Test a CSLA Asynchronous Validation Rule</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Unit Test a CSLA Asynchronous Validation Rule</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10023.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>tomhunter posted on Thursday, February 03, 2011</h2><p>
+<p>I have a validation rule on a CSLA Business Base stereotyped class. I&#39;m having trouble figuring out how to unit test the validation rule as it includes an asynchronous callback lambda expression. Here&#39;s some example code:</p>
+<pre><code>using System;
+using System.Collections.Generic;
+using Csla;
+using Csla.Validation;
+
+namespace UnitTestCSLAAsyncValidationRule
+{
+    public class BusinessObject : BusinessBase&lt;BusinessObject&gt;
+    {
+        protected static PropertyInfo&lt;string&gt; CodeProperty = RegisterProperty&lt;string&gt;(p =&gt; p.Code);
+        public string Code
+        {
+            get { return GetProperty(CodeProperty); }
+            set { SetProperty(CodeProperty, value); }
+        }
+
+        protected override void AddBusinessRules()
+        {
+            ValidationRules.AddRule(CodeValidator, new AsyncRuleArgs(CodeProperty));
+        }
+
+        public static void CodeValidator(AsyncValidationRuleContext context)
+        {
+            var code = (string) context.PropertyValues[&quot;Code&quot;];
+
+            CodeList codeList;
+            CodeList.GetCodeList((o, l) =&gt;
+                {
+                    codeList = l.Object;
+                    if (codeList.Contains(code))
+                    {
+                        context.OutArgs.Result = false;
+                        context.OutArgs.Description = &quot;Code already in use.&quot;;
+                    }
+                    else
+                    {
+                        context.OutArgs.Result = true;
+                    }
+                });
+
+            context.Complete();
+
+        }
+    }
+
+    public class CodeList : List&lt;string&gt;
+    {
+        public static void GetCodeList(EventHandler&lt;DataPortalResult&lt;CodeList&gt;&gt; handler)
+        {
+            DataPortal&lt;CodeList&gt; dp = new DataPortal&lt;CodeList&gt;();
+            dp.FetchCompleted += handler;
+            dp.BeginFetch();
+        }
+
+        private void DataPortal_Fetch()
+        {
+            // some existing codes..
+            Add(&quot;123&quot;);
+            Add(&quot;456&quot;);
+        }
+    }
+}
+</code></pre>
+<p>I would like to test this with a test similar to the following:</p>
+<pre><code>using NUnit.Framework;
+
+namespace UnitTestCSLAAsyncValidationRule.Test
+{
+    [TestFixture]
+    public class BusinessObjectTest
+    {
+        [Test]
+        public void CodeValidationTest()
+        {
+            var bo = new BusinessObject();
+            bo.Code = &quot;123&quot;;
+
+            Assert.IsNotEmpty(bo.BrokenRulesCollection);
+        }
+    }
+}
+</code></pre>
+<p>However, the test Assert runs before the async callback. Is this something UnitDriven could help with? I&#39;ve had a look at it but can&#39;t see how to use it in this scenario.</p>
+<p>Thanks, Tom</p>
+</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Thursday, February 03, 2011</h2><p>Like this:</p>
+<pre style="font-family:consolas;">&nbsp;&nbsp;&nbsp;&nbsp;[<span style="color:#2b91af;">TestMethod</span>]<br />&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">void</span>&nbsp;TestAsyncRulesAndSyncRulesValid()<br />&nbsp;&nbsp;&nbsp;&nbsp;{<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#2b91af;">UnitTestContext</span>&nbsp;context&nbsp;=&nbsp;GetContext();<br /> <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">var</span>&nbsp;har&nbsp;=&nbsp;<span style="color:blue;">new</span>&nbsp;<span style="color:#2b91af;">AsyncRuleRoot</span>();<br /> <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;har.ValidationComplete&nbsp;+=&nbsp;(o,&nbsp;e)&nbsp;=&gt;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;context.Assert.IsFalse(<span style="color:blue;">string</span>.IsNullOrEmpty(har.CustomerNumber));<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;context.Assert.IsFalse(<span style="color:blue;">string</span>.IsNullOrEmpty(har.CustomerName));<br /> <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;context.Assert.IsTrue(har.IsValid,&nbsp;<span style="color:#a31515;">&quot;IsValid&nbsp;2&quot;</span>);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;context.Assert.Success();<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;};<br />      // this triggers the async rule <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;har.CustomerNumber&nbsp;=&nbsp;<span style="color:#a31515;">&quot;123456&quot;</span>;<br /> <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;context.Complete();<br />&nbsp;&nbsp;&nbsp;&nbsp;}</pre>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tomhunter replied on Friday, February 04, 2011</h2><p>Thanks JonnyBee!</p>
+<p>Please not there was a small bug in my validation rule method - the call to AsyncValidationRuleContext.Complete() needs to be inside the lambda.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

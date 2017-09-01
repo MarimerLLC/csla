@@ -1,0 +1,42 @@
+<html><header><title>Remember Me Function</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Remember Me Function</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/102.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeWork posted on Monday, May 15, 2006</h2><P>Hi All,</P>
+<P>&nbsp;</P>
+<P>I saw this in another thread and as you still apprear to have the problem here I thought I would post a solution I found that fixed my own site.</P>
+<P>You modify web.config with this</P>
+<DIV class=ForumPostContentText id=_ctl0__ctl1_bcr__ctl0___PostRepeater__ctl13_PostViewWrapper>
+<P>Add this line</P>
+<P>&lt;machineKey&nbsp;validationKey="xxxxxxxxx" decryptionKey="xxxxxxxxx" validation="SHA1" /&gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <BR><BR>directly within the &lt;system.web&gt; region of web.config (it can't be within another region within system.web).&nbsp; Set validationKey, decryptionKey, and validation&nbsp;on this line to&nbsp;match the corresponding values for MachineValidationKey, MachineDecryptionKey, and MachineValidationMode&nbsp;in the &lt;appSettings&gt; region.</P>
+<P>&nbsp;</P>
+<P>The above was taken form this thread on CS Forums</P>
+<P><A href="http://communityserver.org/forums/5/509974/ShowThread.aspx">http://communityserver.org/forums/5/509974/ShowThread.aspx</A></P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>It fixed my site so hopefully it will fix this one</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></DIV></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, May 15, 2006</h2><P>Thank you Joe, I really appreciate your help tracking down the solution!</P>
+<P>I have applied the change (just now) so hopefully it solves the issue.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Vaxman2 replied on Monday, May 15, 2006</h2><P>Fixed the problem for me at least!&nbsp; Yea!</P>
+<P>&nbsp;</P>
+<P>Edit: I may have spoken too soon! :(</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ChrisD replied on Thursday, June 01, 2006</h2><P>Sorry to be a pain guys but the "remember me" functionality is still not working for me.&nbsp; No matter how recently I have logged into the forum it still wants to forget the fact that I was logged in.</P>
+<P>It's not a huge effort to log in again but this issue is still not resolved yet.</P>
+<P>Is anyone else still having problems with this?</P>
+<P>Cheers</P>
+<P>ChrisD</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>CrispinH replied on Thursday, June 01, 2006</h2><P>Chris</P>
+<P>Yes, I'm still having problems with this as well.</P>
+<P>Crispin</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Thursday, June 01, 2006</h2>I'll add a 'Me too' to this thread.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, June 01, 2006</h2><P>It is most certainly not working. I tried the fix posted earlier and it appears to have had no impact, so obviously it must be another problem...</P>
+<P>I'm (more or less) on vacation this week, but next week I'll email the CS 2.0 guys about this and about the mail gateway crashing issues and see if they have any answers.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeWork replied on Thursday, June 01, 2006</h2><P>Guys your quite right on this site it still appears that it's not working.</P>
+<P>&nbsp;</P>
+<P>Rocky one other thing to check is the cookie settings you can find them in the admin control panel under Membership/Cookie and Anonymous Settings</P>
+<P>I did change mine to my domain name in the cookie domain field.</P>
+<P>&nbsp;</P>
+<P>The guys having trouble it might also be worth trusting this domain as it may be that your browser is not allowing the cookie creation?</P>
+<P>&nbsp;</P>
+<P>Joe</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, June 01, 2006</h2>Thanks Joe, I've now tried that, so hopefully it makes a difference.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>CrispinH replied on Thursday, June 01, 2006</h2><P>Rocky</P>
+<P>My login is now working.&nbsp; I didn't need to change IE cookie settings, it just worked.</P>
+<P>Crispin</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>DavidDilworth replied on Friday, June 02, 2006</h2><P>Working for me now too, with no changes to my browser.</P>
+<P>Thanks.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Tuesday, June 06, 2006</h2>Still not working for me unfortunatly.. I'll try clearing my cookies.<br><br>Using FF1.5.0.4 WinXP.<br><br>Andy<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Tuesday, June 06, 2006</h2>Something weird..<br><br>I removed all cookies, but 2 keep coming back.&nbsp; MSDN and forums.lhotka.net.&nbsp; I clear them, I manually delete the cookies file, but they just keep coming back.<br><br>The MSDN cookie is also a CS server cookie; so it seems like a CS issue.<br><br>Andy<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Tuesday, June 20, 2006</h2>Is there any solution to this?&nbsp; Its happening more frequently; even when I'm trying to post a reply.&nbsp; <img src="/emoticons/emotion-6.gif" alt="Sad [:(]" /><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, June 20, 2006</h2><P>I don't know why it would be getting worse - but your issue with the cookies not being deletable seems odd and probably indicates an issue on your machine. I am able to delete the cookies and they don't come back until I return to the forums.</P>
+<P>Now why the remember me function only seems to last for a couple hours and isn't permanent I just don't know, and haven't had time to research.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Tuesday, June 20, 2006</h2>I cookie issue seems to be a firefox one, as I recently reformatted my workstation (for other problems) and it still happens.<br><br>I'll search again to see if I can't find a resultion to the remember me function.<br><br>Thanks for the reply.<br>Andy<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, June 21, 2006</h2><P>With the help of the CS guys I think the remember me function is finally resolved and should be working (keeping my fingers crossed).</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Wednesday, June 21, 2006</h2>Awesome.&nbsp; Is there anything I would need to do (such as clear old cookies) that may prevent a fix from working for me?<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, June 22, 2006</h2>That couldn't hurt, though on both machines where I've tested this, it just worked without any effort on my part.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jking078 replied on Tuesday, June 27, 2006</h2><P>This function not working seems to be affecting users of various applications based on ASP.NET 2.0.&nbsp; It seems that it is NOT a CommunityServer.org specific issue (users of DotNetNuke.com are reporting same problem when using the ASP.NET 2.0 edition of that application).&nbsp; It seems that basically a "feature" that existed in ASP.NET 1.1 is now fixed so that it actually works, where it was ignored before. I can't verify this myself, but&nbsp;suggest the following:&nbsp;</P>
+<P>In web.config, </P>
+<P>&lt;authentication mode="Forms"&gt;<BR>&nbsp;&nbsp;&nbsp; &lt;forms name=".CommunityServer" protection="All" timeout="60" /&gt;<BR>&lt;/authentication&gt;</P>
+<P>The "timeout" is now honored in ASP.NET 20, where it was ignored in ASP.NET 1.1. Time is in minutes, so cookie only last 60 mins. If it was changed to say a week (10080 minutes) or something...</P>
+<P>Jeff</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Tuesday, June 27, 2006</h2>I'm not sure what Rocky did, but this feature does seem to be fixed for me now.<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

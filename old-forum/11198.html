@@ -1,0 +1,65 @@
+<html><header><title>IsInRole(AuthorizationActions, params string[] roles) in CSLA 4.2</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>IsInRole(AuthorizationActions, params string[] roles) in CSLA 4.2</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11198.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>maxdrive posted on Monday, February 27, 2012</h2><p>Hi,</p>
+<p>I&#39;m using CSLA 4.2 and the above subject is not working on my PC when i&nbsp;put something on&nbsp;the roles part. Did i miss something?</p>
+<p>Below are sample code snippets:</p>
+<p>protected static void AddObjectAuthorizationRules()</p>
+<p>{</p>
+<p>&nbsp;&nbsp;&nbsp; Csla.Rules.BusinessRules.AddRule(typeof(SomeClass), new Csla.Rules.CommonRules.IsInRole(AuthorizationActions.EditObject, &quot;Foo&quot;));</p>
+<p>}</p>
+<p>class AuthRule : AuthorizationRule</p>
+<p>{</p>
+<p><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">public</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> AuthRule(</span></span><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;">AuthorizationActions</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> action) : </span></span><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">base</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">(action)
+<p>{</p>
+<p>}</p>
+</span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">&nbsp;</span><span style="font-family:Consolas;font-size:x-small;"></span></span></p>
+<p><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"><font face="Consolas" size="2"><font face="Consolas" size="2">
+<p>
+<p>
+<p><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">protected</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> </span></span><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">override</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> </span></span><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">void</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> Execute(</span></span><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;">AuthorizationContext </span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">context)<span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> <span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"><font face="Consolas" size="2"><font face="Consolas" size="2">
+<p>
+<p>{</p>
+</p>
+</font></font></span><span style="font-family:Consolas;font-size:x-small;"></span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"><font face="Consolas" size="2">
+<p>
+<p>&nbsp;</p>
+</p>
+</font></span><span style="font-family:Consolas;font-size:x-small;"></span></span></span></span><span style="font-family:Consolas;font-size:x-small;"></span></span></p>
+<p>
+<p>&nbsp;</p>
+</p>
+<p><span style="font-family:Consolas;color:#008000;font-size:x-small;"><span style="font-family:Consolas;color:#008000;font-size:x-small;"><span style="font-family:Consolas;color:#008000;font-size:x-small;"></span></span></span></p>
+<span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"><font face="Consolas" size="2"><font face="Consolas" size="2"><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"><font face="Consolas" size="2"><font face="Consolas" size="2"><font face="Consolas" size="2"><font face="Consolas" size="2">
+<p>context.HasPermission = true;</p>
+</font></font></font></font></span></span></font></font></span></span><span style="font-family:Consolas;font-size:x-small;"><font face="Consolas" size="2"><font face="Consolas" size="2"><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"><font face="Consolas" size="2"><font face="Consolas" size="2"><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></font></font></span></span></font></font></span></span><span style="font-family:Consolas;font-size:x-small;"><font face="Consolas" size="2"><font face="Consolas" size="2"><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"><font face="Consolas" size="2"><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></font></span></span></font></font></span></span><span style="font-family:Consolas;font-size:x-small;"><font face="Consolas" size="2"><font face="Consolas" size="2"><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></span></span></font></font></span></span>
+<p>&nbsp;</p>
+</span></span></p>
+</p>
+</font></font></span></span><span style="font-family:Consolas;font-size:x-small;"><font face="Consolas" size="2">
+<p>
+<p>
+<p>&nbsp;</p>
+</p>
+</p>
+</font></span></span>
+<p>
+<p>
+<p>&nbsp;</p>
+</p>
+</p>
+</p>
+<p>
+<p>
+<p><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">}</span></span></p>
+</p>
+</p>
+<p>
+<p>}</p>
+</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Monday, February 27, 2012</h2><p>The EditObject authorization is only checked by the DataPortal when calling Save on an existing object. </p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>maxdrive replied on Monday, February 27, 2012</h2><p>Hi JB,</p>
+<p>Yes that&#39;s correct but my problem is when i place something on the roles part (2nd parameter), i.e. &quot;Foo&quot;, seems like not working because the link to edit is not enabled. The system checks the role entered during log in and it will check again the role if it is allowed for editing. I have to check my code again though.</p>
+<p>Thanks.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

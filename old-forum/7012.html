@@ -1,0 +1,123 @@
+<html><header><title>Multi-threading &amp; concurrency issues when data-binding a collection</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Multi-threading &amp; concurrency issues when data-binding a collection</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/7012.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>SonOfPirate posted on Wednesday, May 27, 2009</h2><P>I've inherited an application that has a Windows Form interface used to monitor activity on various child threads.&nbsp; In a nutshell, each time a new thread is created (corresponding to an incoming network connection), a new business object is created and added to my business collection.&nbsp; The BO is updated by the corresponding child thread which is then reflected in the UI.</P>
+<P>I've removed the polling used to update the UI in favor of the more performant data-binding.&nbsp; As such, changes to the BOs now bubble&nbsp;through the collection to the UI which is bound to the collection using a BindingSource object.</P>
+<P>I've already implemented a SynchronizationContext object to prevent any cross-threading errors when firing the ListChanged event but am now having problems when the load and frequency of changes is high enough to cause concurrency issues.&nbsp; It seems that I need to modify the collection so that changes are blocked while the UI is handling the ListChanged event.</P>
+<P>It's one thing to make the collection thread-safe, and I've read a lot of posts about all of this but have yet to find anyone discuss it when using data-binding.&nbsp; Is this a case when a ReaderWriterLock would be appropriate?&nbsp; Has anyone dealt with this?&nbsp; If so, how have you resolved the problem?</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, May 27, 2009</h2><P>You should be aware that, like 99% of .NET,&nbsp;CSLA is not threadsafe. Nor are the .NET collection base classes.</P>
+<P>Also, when using data binding, you don't really control when or how the UI interacts with your object. So you really can't use a synchronization primitive to solve your problem, because you can't force data binding to use your primitive.</P>
+<P>What you really need to do is lock the entire collection when data binding is refreshing the UI, and when your writer threads are altering data in the collection. That's the only way to really be safe.</P>
+<P>Again, the problem here is that you can't make data binding lock the collection when it is refreshing the UI...</P>
+<P>But if you can get past that problem, then I suspect a ReaderWriterLock is the correct primitve to use, yes.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>SonOfPirate replied on Wednesday, May 27, 2009</h2><P>Yea, I figured it would be a big undertaking.&nbsp; Any reason why the CSLA classes aren't threadsafe?</P>
+<P>I figure the easy part is locking the collection internals.&nbsp; I could use a Monitor (SyncLock / lock) within the collection which would block execution of each property and method when another thread has access - or the ReaderWriterLock which would supposedly be more performant.&nbsp; The work in this case&nbsp;would be in overriding every property and method!</P>
+<P>However, this still leaves the enumerator.&nbsp; It occurred to me that a custom enumerator wrapping the default enumerator, using the same lock might accomplish most of what I am after.&nbsp; Unfortunately, as you eluded, we have no control over when the enumerator is actually used.&nbsp; So, I have no way to block changes from occuring after GetEnumerator has been called.&nbsp; If changes occur, I get an exception when I try to use the enumerator because the collection has changed.</P>
+<P>If I wrap the OnListChanged call with the same lock, perhaps this will have the desired result as it will lock the collection until the event handler(s) return.&nbsp; Yes?</P>
+<P>The other suggestion I had seen in my research was to create a copy of the collection and return the enumerator for the copy rather than the original collection.&nbsp; This would allow changes to the original to occur without exception to the consumer.&nbsp; My concern with this approach is&nbsp;the impact it will have on&nbsp;performance and memory consumption.</P>
+<P>Oh woe is me.&nbsp; At this point I am open to different approaches to the problem if this model is not appropriate.&nbsp; Suggestions?</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, May 27, 2009</h2><P>I think you should try binding the UI to a copy of the collection. That'd be the safest approach, since the UI would only need to lock the collection while it makes the copy.</P>
+<P>If this is read-only data, you may be able to use LINQ to make the copy. If it is read-write then things are obviously more complex, because you'll need to decide which copy is the 'master', as that's the only one you can actually allow to be edited.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>SonOfPirate replied on Thursday, May 28, 2009</h2><P>It seems that I would have to rebind the UI each time to the new copy made after the original collection has been changed.&nbsp; This kind of defeats the purpose of data-binding, doesn't it?</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, May 28, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Yes, it is a rough situation&#8230;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Here&#8217;s another thought.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Data binding works against an IList or IBindingList.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>You could create a class that implements IBindingList from
+scratch &#8211; literally create your own collection type from the ground up
+(don&#8217;t subclass a base collection type). This class could be a <i>view</i>
+over another actual collection. Not unlike the SortedBindingList or
+FilteredBindingList classes in CSLA &#8211; though simpler since you wouldn&#8217;t
+need to do the sort/filter mapping work.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>The UI would bind to this view, and the binding would not
+change.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Then you could try and do the ReaderWriterLock approach to have
+the view go over the shared collection in memory. I&#8217;m still a bit
+skeptical about this, but it might work.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Or you could have the view go over a copy of the collection.
+When a new copy is available it would just change to point to the new copy and
+raise a ListChanged Reset event so the UI refreshes to reflect the new data &#8211;
+without any rebinding.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><b><span><o:p>&nbsp;</o:p></span></b></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>SonOfPirate replied on Wednesday, June 03, 2009</h2><P>Okay, so I've made some progress and everything seems to be working great with one exception that is quite peculiar.&nbsp; I'm hoping someone can shed some light on what might be going on.</P>
+<P>My first step was to try and make my business collection thread-safe by adding locks to the methods being used.&nbsp; Fortunately only a few of the methods and properties on the collection are being used, so it wasn't too difficult.&nbsp; I implemented the SynchronizationContext approach so that the ListChanged event is in-sync with the UI thread.&nbsp; This eliminated&nbsp;any cross-thread issues.</P>
+<P>Next I've implemented a rough MVC pattern where I put a controller between my UI and my model (business collection).&nbsp; The controller subscribes to the ListChanged events coming from my business collection and sets an internal flag that changes have been made.&nbsp; It also has a reference to the UI view (Form) that displays the information.&nbsp; With this, I am able to leverage a couple of custom interfaces that allow me to interact with the model and view in a controlled manner (pardon the pun).</P>
+<P>So, when all of the various threads update my (thread-safe) business collection, my controller handles the ListChanged event and sets the internal flag.&nbsp; A timer inside the controller fires periodically and tests to see if there are changes pending.&nbsp; If there are, the controller uses the IModel interface to get a copy of the list data from my business collection.&nbsp; This allowed me to put the Copy method in the business collection class where I could include locking, etc. to make sure there were no threading or concurrency issues.&nbsp; Finally, the controller uses the SetDataSource&nbsp;method on the IView interface to pass the copy of my list to the UI.&nbsp; The timer is reset and the process repeats itself.</P>
+<P>In general this works great.&nbsp; I have a couple of UI fields that update each time, such as a status message at the bottom of the form that indicates the number of records in the list.&nbsp; HOWEVER, I cannot get the DataGridView or BindingSource to behave as expected!</P>
+<P>Inside the SetDataSource method, which is implemented on my UI form, I update the aforementioned controls then attempt to reset the BindingSource's DataSource to the list passed into the method, as such:</P>
+<BLOCKQUOTE dir=ltr>
+<P>MyBindingSource.DataSource = list</P></BLOCKQUOTE>
+<P>When I do this, the binding process becomes unresponsive.</P>
+<P>So, I set a breakpoint in the controller at the view.SetDataSource() method call and step into it.&nbsp; I enter the method in my Form and step through updating the controls.&nbsp; When I press F11 to step through the above statement, Visual Studio resumes running, my form comes into the foreground and that's it!&nbsp; The rest of the statements in calling method in my controller never execute - including the statement where I reset the timer so it will trigger again.</P>
+<P>I've tried to call BindingSource.SuspendBinding / ResumeBinding and setting the DataSource property on my DataGridView directly without the BindingSource and always have the same behavior.</P>
+<P>FWIW - If I comment out the statement where I try to reset the DataGridView / BindingSource, the app runs awesome!&nbsp; The other controls update as expected and I have no concurrency or threading issues at all.&nbsp; Now I just need to get the grid to behave!!!</P>
+<P>Does anyone have any idea what is going on here?</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, June 03, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Wrap that line in a try..catch block and see if you can catch
+any exception it might be generating.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>SonOfPirate replied on Wednesday, June 03, 2009</h2><P>Rocky, you da man!</P>
+<P>Turns out my cross-threading issues weren't gone.&nbsp; I don't know why I wasn't seeing the exception (I have them turned on in VS when thrown) - must be something to do with all the threads running amock.</P>
+<P>Anyway, the Try-Catch block worked and I received the cross-thread exception I had before.&nbsp; Quick fix putting the SynchronizationContext logic into my controller.&nbsp; I should have thought of that myself since it is my controller that is interacting with the UI now and not my business collection.&nbsp; Once I used the SynchronizationContext.Post method to sync the call into the UI's SetDataSource method everything worked!!!</P>
+<P>Thanks!!!!!!!!</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

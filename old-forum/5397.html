@@ -1,0 +1,40 @@
+<html><header><title>Csla 3.5 and private variables</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Csla 3.5 and private variables</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5397.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Wal972 posted on Sunday, September 14, 2008</h2><P>Hi Gang</P>
+<P>Just a small question recently migrated to 3.5 and noticed all the changes with the way properties work etc, and my question relates to calculations. VB.Net</P>
+<P>Old 3.x you would do something like this</P>
+<P>private mproperty1 as int16</P>
+<P>private mproperty2 as int16</P>
+<P>property Property1 as int16 </P>
+<P>etc and then if you were calculating you would just go</P>
+<P>Dim manswer1 as int16</P>
+<P>manswer1 = mproperty1 * mproperty2</P>
+<P>how do you do that type of thing now ?</P>
+<P>Thanks in advance</P>
+<P>Ellie</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>triplea replied on Monday, September 15, 2008</h2><P><FONT face="Courier New" color=#0000ff size=2>SetProperty&lt;int&gt;(manswer1, GetProperty&lt;int&gt;(mproperty1) * GetProperty&lt;int&gt;(mproperty2));</FONT></P>
+<P>That would bypass the authorization checks, setting dirty etc and will set the private member values directly. Hope this helps.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>skagen00 replied on Monday, September 15, 2008</h2><P>I think if you want to bypass the authorization checks you may want to use ReadProperty and LoadProperty. You would not, however, get any triggers for PropertyHasChanged, marking the object as dirty or checking validation rules for manswer1, so certainly keep that in mind.&nbsp; </P>
+<P>Using LoadProperty on a managed property really has a similar effect to setting a private field in pre managed property code. </P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>triplea replied on Monday, September 15, 2008</h2>Oops indeed I meant to say ReadProperty/LoadProperty. Thanks for the correction.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Wal972 replied on Monday, September 15, 2008</h2><P>Thanks guys,</P>
+<P>isn't the long way round i mean if i have a calcualtion which is within the BO and uses five or six properties the formulas are going to become unreadable.</P>
+<P>Thanks </P>
+<P>Ellie</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>skagen00 replied on Monday, September 15, 2008</h2><P>It's a trade-off - I agree, you do lose a little readability. </P>
+<P>If you used private backing fields (I don't, but you can) then you'd be able I imagine to use them directly in your formula. Additionally, I believe Rocky has said they are more performant overall.&nbsp;</P>
+<P>For more complex calculations (or esp if I'm reusing the result), sometimes&nbsp;I'll do ReadProperty calls into local variables so that my calculations are easier to read. </P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Wal972 replied on Monday, September 15, 2008</h2><P>i was originally using private or protected variables behind the properties as in (edited)</P>
+<P>Dim mInvoiceNo As int16</P>
+<P>Public&nbsp;Property InvoiceNo as Int16</P>
+<P>Get</P>
+<P>&nbsp;&nbsp;&nbsp;Return mInvoiceNo</P>
+<P>Set</P>
+<P>&nbsp;&nbsp;&nbsp;mInvoiceNo = value</P>
+<P>Therefore the calculations used the mInvoiceNo variable not InvoiceNo the property.</P>
+<P>Are&nbsp;the private backing fields the equivalent ?&nbsp;and how do you blend them with the new structure of PropertyInfo etc.</P>
+<P>Thanks for the assistance</P>
+<P>Ellie</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>SonOfPirate replied on Tuesday, September 16, 2008</h2><P>If readability is your only reason for avoiding managed fields, keep in mind that the earlier example can be refactored as:</P>
+<P>SetProperty&lt;Int16&gt;(manswer, MProperty1 * MProperty2)</P>
+<P>assuming that you have properties called MProperty1 and MProperty2 that implement the GetProperty method to return the values of those managed fields.</P>
+<P>HTH</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Wal972 replied on Tuesday, September 16, 2008</h2><P>No readability is not my only concern. I have a lot of calculations already coded, the new method seems less intuitive and if i remove the private variables they are will need to be recoded and some of the calculations are quite complex. the thought is overwhelming. I use the propertyhaschanged watch (including child collections) to trigger these calculations, so how do i trigger them now.</P>
+<P>When is Rocky publishing the VB.Net ebook for this update.</P>
+<P>Help</P>
+<P>Thanks</P>
+<P>Ellie</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Wal972 replied on Wednesday, September 17, 2008</h2>Any other suggestions&nbsp;/ advice ?</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Kevin Fairclough replied on Thursday, September 18, 2008</h2>Can you not just avoid using managed fields, and use backing fields with the new PropertyInfo?&nbsp; This will keep the private fields allowing normal calculations using the privates. <br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Wal972 replied on Thursday, September 18, 2008</h2><P>That would be good if I knew how to integrate it. If an example could be given (with the&nbsp;appropriate VB.NET code)&nbsp;I would greatly appreciate it.</P>
+<P>Thanks</P>
+<P>Ellie</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>stefan replied on Friday, September 19, 2008</h2>Hi Ellie,<br><br>take a look at the current ProjectTracker code, which is using the new property syntax.<br>The Resource.cs/Resource.vb file is using private backing fields.<br><br>Stefan<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

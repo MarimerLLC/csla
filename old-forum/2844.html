@@ -1,0 +1,42 @@
+<html><header><title>Validation rules in a root editable collection</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Validation rules in a root editable collection</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/2844.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonM posted on Thursday, May 10, 2007</h2><P>Many of my root objects are editable collections.&nbsp; I need collection wide rules for things like: Requiring unique names across child objects and requiring at least 1 item in the collection.</P>
+<P>Can I put validation rules in a&nbsp;Editable Root Collection?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, May 10, 2007</h2><P>You can, but there's no support from CSLA because there's no support from data binding.</P>
+<P>In other words, there's no sanctioned way to display rules from a collection in the UI - data binding simply doesn't have this concept.</P>
+<P>Due to that, I didn't implement anything like ValidationRules in BusinessListBase, because the results couldn't be displayed.</P>
+<P>But you most certainly can implement checks by overriding Save() and making sure the collection is valid before saving it - probably throwing a ValidationException if it is out of order.</P>
+<P>Also, see <A HREF="/forums/thread/14546.aspx">this thread</A>.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonM replied on Friday, May 11, 2007</h2><P>Rocky,</P>
+<P>I checked out the thread, using the parent property to check the other entries makes sense to me.&nbsp; hen I try to use the parent property I get an exception because the parent property hasn't been set.&nbsp; </P>
+<P>Does the CSLA set the parent property automatically or do I need to set it somewhere?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, May 11, 2007</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>BusinessListBase automatically sets the parent property on the
+child objects it contains.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>If you have some other parent-child relationship then the
+property is not automatically set, and you&#8217;ll need to implement you own
+code in the parent to call SetParent() on the child.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky</span><b><span><o:p></o:p></span></b></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

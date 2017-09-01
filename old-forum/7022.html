@@ -1,0 +1,45 @@
+<html><header><title>Subclassing CSLA Base Classes - Best Practice?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Subclassing CSLA Base Classes - Best Practice?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/7022.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Tom_W posted on Saturday, May 30, 2009</h2>Hi All<br><br>I think I may have got myself confused... I know that it's best practice to put a buffer between CSLA and your own code by inheriting the CSLA base classes (to create a YourCSLABaseClass) and then inheriting from these custom versions of the base classes for your actual application classes.<br><br>What I'm confused about is should your custom base classes be:<br><ol><li>Straight subclasses of the CSLA base classes, e.g. YourBusinessBase...</li><li>..or subclasses that correspond to CSLA stereotypes, e.g. YourEditableRoot</li></ol>Either of the above would still inherit from BusinessBase, I'm just ensure which is the 'right' way to go?<br><br>One more related question; there seem to be a lot of posts about issues with generics and inheritance, do I run into these issues by taking either of the approaches above, or does that come if you inherit from your 'concrete' classes (i.e. if you inherit from say a concrete 'Contact' class)?<br><br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Marjon1 replied on Saturday, May 30, 2009</h2>Hey Tom,<br /><br />The approach that we have taken, and what I believe is the recommended approach is to subclass based on the standard CSLA stereotypes. Of course, you may specialize even further down the path, but if you want to add a standard method or behavior to all editable root objects it makes it a-lot easier to do. We have several read-only classes / lists, but they all work of our standard base objects. These all have specific behaviors for what the object does and the read-only subclass really does not but inherit from CSLA.<br /><br />We haven't made the move to 3.6.x yet, so can't really comment on the inheritance issues. But I believe that they come from having more complex scenarios, such as having a generic based contact class. Having a specialized class that uses the same generics as base CSLA objects shouldn't cause any problems that wouldn't when using CSLA normally.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Tom_W replied on Monday, June 01, 2009</h2>Thanks Marjon and Rocky.<br><br>Marjon, do you find there are methods that belong in YourEditableRoot say that don't belong in YourEditableChild?&nbsp; I.e. do you find there's value in stereotype based base classes rather than primary clsa object based base classes?<br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Monday, June 01, 2009</h2>Nope.<br />I have the ones Rocky listed (plus ERLB).<br />No need (for me) to distinguish between Root and Child.<br /><br />Joe<br /></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ritchied replied on Thursday, October 08, 2009</h2><P><FONT>1) Is there some sample code for </FONT>creating&nbsp;abstract&nbsp;subclasses for each of the primary base classes?</P>
+<P>2) Help with subclassing NameValueBase.</P>
+<P>I created&nbsp;my base "look up"&nbsp;class from NameValueBase and a useable decendant class "province look up".&nbsp; My base class contains all the code to read my standard look up tables based on a dynamic string value. (the value is used match the table and column names).&nbsp; My problem is I can't figure out how to set it in the decendant class.</P>
+<P>I can't figure out what method to override to initilize my dynamic string value.</P>
+<P>Sample code that does NOT work:</P>
+<P>public class LookUpBase : NameValueListBase&lt;int, string&gt;<BR>{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; protected string dbName = "";&nbsp; // must be set by decendant class<BR>&nbsp;&nbsp;&nbsp; ...implementation code which&nbsp;uses dbName to build SQL...<BR>}</P>
+<P><BR>&nbsp;public class ProvinceLookUp : LookUpBase<BR>&nbsp;{<BR>&nbsp;&nbsp;&nbsp;&nbsp; <BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; protected override void Initialize()<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// this method never gets called<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; dbName = "PROV";</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; base.Initialize();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<BR>&nbsp;}</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Thursday, October 08, 2009</h2>Hi all, <br><br>Take a look at the MyCsla project - this shows how to make your own subclasses (and may be used directly into your own application). You can download it from CslaContrib and it is also included in the ProjectTracker sample project for Csla 3.7.1 for N2.<br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ritchied replied on Thursday, October 08, 2009</h2>JonnyBee,<br />The MyCsla project and the other stuff in CslaContrib is awesome!  Thanks for sharing.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>lazaroms replied on Thursday, July 08, 2010</h2><p>Where can I find the MyCSLA project for CSLA 3.6?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Sunday, May 31, 2009</h2><P>I generally recommend creating an abstract&nbsp;subclass for each of the primary base classes.</P>
+<UL>
+<LI>BusinessBase&lt;T&gt;</LI>
+<LI>BusinessListBase&lt;T, C&gt;</LI>
+<LI>ReadOnlyBase&lt;T&gt;</LI>
+<LI>ReadOnlyListBase&lt;T, C&gt;</LI>
+<LI>NameValueListBase&lt;K, V&gt;</LI>
+<LI>CommandBase</LI></UL>
+<P>Even if your subclasses are empty, they still provide an extensibility point for the future.</P>
+<P>And since all you are doing is mirroring the existing base classes, your business object code is unaffected, other than choosing to inherit from your base class instead of the CSLA base class.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Tom_W replied on Sunday, May 31, 2009</h2>Hi Both<br><br>Many thanks for the responses.&nbsp; Rocky, are there any obvious gotchas in creating stereotype base classes (YourEditableRoot etc.) as opposed to primary base classes (YourBusinessBase)?&nbsp; It seems like there might be some value in separating out the different stereotypes... although I must admit I can't think exactly what yet.<br><br>In fact, would a hybrid of both of the above be sensible, i.e. YourConcreteClass inherits from YourStereotypeBase inherits from YourBusinessBase inherits from CSLA.BusinessBase?&nbsp; Again, are there any obvious gotchas in this approach... and am I just making life unneccessarily complicated?<br><br>I figure that the hybrid approach might allow the best encapsulation of appropriate functionality at each level?<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Sunday, May 31, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I think there used to be some value in having different base
+classes for ER and EC. But with the child data portal concept in 3.5 and higher
+I don&#8217;t think there&#8217;s any value in the separation anymore.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,15 @@
+<html><header><title>Authorization 4 - AuthorizationActions</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Authorization 4 - AuthorizationActions</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9025.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>tiago posted on Wednesday, June 02, 2010</h2><p>Hi Rocky,</p>
+<p>There are a number of possible AuthorizationActions. Is there any kind of relation between them?</p>
+<p>WriteProperty<br />ReadProperty - if I have no read permission, does it implicitly mean&nbsp;I also don&#39;t have write permission?</p>
+<p>ExecuteMethod<br /><br />CreateObject<br />GetObject - if I have no get permission, does it implicitly mean&nbsp;I also don&#39;t have edit permission?<br />EditObject - if I have no edit permission, does it implicitly mean&nbsp;I also don&#39;t have create permission?<br />DeleteObject</p>
+<p>The answers to the questions above seem obvious although the edit/create relation might be not so obvious, depending on the exact meaning of create. The point is if we can rely on these behaviours. Are there specific unit tests for these cases?</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Wednesday, June 02, 2010</h2><p>The rules and behaviors around these permission are the same as in 3.8. </p>
+<ul>
+<li>WriteProperty drives CanWriteProperty()</li>
+<li>ReadProperty drives CanReadProperty()</li>
+<li>ExecuteMethod drives CanExecuteMethod()</li>
+<li>CreateObject drives CanCreateObject()</li>
+<li>GetObject drives CanGetObject()</li>
+<li>EditObject drives CanEditObject()</li>
+<li>DeleteObject drives CanDeleteObject()</li>
+</ul>
+<p>The ways in which the methods (like CanReadProperty() or CanEditObject()) are used did not change from 3.8 to 4. All that changed is that I opened up the rule system used to evaluate the results of those methods.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

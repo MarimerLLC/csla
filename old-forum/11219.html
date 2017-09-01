@@ -1,0 +1,90 @@
+<html><header><title>Confused over new structure of Child Objects</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Confused over new structure of Child Objects</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11219.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>gajit posted on Thursday, March 08, 2012</h2><p>Hi gents,</p>
+<p>I&#39;m trying to get to grips with CSLA4, specifically it&#39;s implementation of ChildObjects and am somewhat confused.</p>
+<p>I am using the encapsulated invoke model using (Safe)Datareader</p>
+<p>I have a simple Business Object. Userprofiles which has UserRoles as children. </p>
+<p>I currently have - for the parent, UserProfileEdit (and it&#39;s matching Interface and Dal, UserProfileDal and IUserProfileDal)</p>
+<p>And for the children, UserRoleDal and IUserRoleDal.</p>
+<p>I have no requirement to use the userrole as a parent, so I don;t believe I need to create a &quot;UserRoleEdit&quot; class.</p>
+<p>I also have the UserRole(BusinessBase)&nbsp; and UserRoles (BusinessListBase of UserRole) - These two are what I would expect to have used in CSLA2.</p>
+<p>Now, business object can be retrieved and children fetched successfully.</p>
+<p>My problem is the implementation of the methods to Add and Delete Children.</p>
+<p>In CSLA2, I would have had this code in my UserRoles class:</p>
+<p>Public Function GetItem(ByVal role As String) As UserRole</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; For Each u As UserRole In Me<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; If u.ROLE = role Then<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return u<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End If<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Next<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return Nothing</p>
+<p>&nbsp;&nbsp;&nbsp; End Function</p>
+<p>&nbsp;&nbsp;&nbsp; Public Sub Assign(ByVal ROLE As String)</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; If Not Contains(ROLE) Then<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Dim rol As UserRole = _<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; UserRole.NewUserRole(ROLE)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Me.Add(rol)</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Else<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Throw _<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; New InvalidOperationException(&quot;Role already assigned to user&quot;)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End If</p>
+<p>&nbsp;&nbsp;&nbsp; End Sub<br />&nbsp;&nbsp;&nbsp; Public Overloads Sub Remove(ByVal ROLE As String)</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; For Each u As UserRole In Me<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; If u.ROLE = ROLE Then<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Remove(u)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Exit For<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End If<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Next</p>
+<p>&nbsp;&nbsp;&nbsp; End Sub</p>
+<p>&nbsp;&nbsp;&nbsp; Public Overloads Function Contains( _<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ByVal role As String) As Boolean</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; For Each u As UserRole In Me<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; If u.ROLE = role Then<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return True<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End If<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Next</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return False</p>
+<p>&nbsp;&nbsp;&nbsp; End Function</p>
+<p>&nbsp;&nbsp;&nbsp; Public Overloads Function ContainsDeleted( _<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ByVal role As String) As Boolean</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; For Each u As UserRole In DeletedList<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; If u.ROLE = role Then<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return True<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End If<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Next</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return False</p>
+<p>&nbsp;&nbsp;&nbsp; End Function</p>
+<p>and in my USerRole I would have had the factory methods:</p>
+<p>Friend Shared Function NewUserRole( _<br />&nbsp;&nbsp;&nbsp;&nbsp; ByVal rol As String) As UserRole</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return New UserRole(rol)</p>
+<p>&nbsp;&nbsp;&nbsp; End Function</p>
+<p>&nbsp;&nbsp;&nbsp; Friend Shared Function GetUserRole( _<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ByVal dr As SafeDataReader) As UserRole</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return New UserRole(dr)</p>
+<p>&nbsp;&nbsp;&nbsp; End Function</p>
+<p>&nbsp;&nbsp;&nbsp; Private Sub New()</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; MarkAsChild()</p>
+<p>&nbsp;&nbsp;&nbsp; End Sub</p>
+<p>&nbsp;&nbsp;&nbsp; Private Sub New(ByVal dr As SafeDataReader)</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; MarkAsChild()<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Fetch(dr)</p>
+<p>&nbsp;&nbsp;&nbsp; End Sub</p>
+<p>&nbsp;&nbsp;&nbsp; Private Sub New(ByVal role As String)</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; MarkAsChild()</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; mROLE = role</p>
+<p>&nbsp;&nbsp;&nbsp; End Sub</p>
+<p>I could then, from my User interface, add a role to the user by executing the method:</p>
+<p><span style="font-size:small;">
+<p>mUserProfile.ROLES.Assign(cboRoles.Text)</p>
+</span></p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>However, in CSLA 4, in the project tracker solution, in is implemented differently;</p>
+<p><span style="font-family:Tahoma;font-size:small;"><span style="font-family:Tahoma;font-size:small;">
+<p>_project.Resources.Assign(dlg.ResourceId);</p>
+<p>&nbsp;</p>
+</span></span></p>
+<p>&nbsp;</p>
+<p>The ProjectResource class implements the use of a &quot;Creator&quot; class??, : </p>
+<p>public ProjectResourceEdit Assign(int resourceId)<br />&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var resource = ProjectResourceEditCreator.GetProjectResourceEditCreator(resourceId).Result;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; this.Add(resource);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return resource;<br />&nbsp;&nbsp;&nbsp; }<br />#endif</p>
+<p>&nbsp;&nbsp;&nbsp; public void Remove(int resourceId)<br />&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var item = (from r in this<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; where r.ResourceId == resourceId<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; select r).FirstOrDefault();<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (item != null)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Remove(item);<br />&nbsp;&nbsp;&nbsp; }</p>
+<p>&nbsp;&nbsp;&nbsp; public bool Contains(int resourceId)<br />&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var item = (from r in this<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; where r.ResourceId == resourceId<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; select r).Count();<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return item &gt; 0;<br />&nbsp;&nbsp;&nbsp; }</p>
+<p>&nbsp;&nbsp;&nbsp; public bool ContainsDeleted(int resourceId)<br />&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var item = (from r in DeletedList<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; where r.ResourceId == resourceId<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; select r).Count();<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return item &gt; 0;<br />&nbsp;&nbsp;&nbsp; }</p>
+<p>&nbsp;Do I need the creator class?? It intimates that I have to then create a ProjectResourceEdit class (UserRoleEdit in my example) - which is completely superfluous to my needs.</p>
+<p>I have tried to implement the Assign, Delete, etc methods a-la CSLA2; in my UserRoles class as;</p>
+<p>&nbsp; Public Sub Assign(_role As String)</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; If Not Contains(_role) Then<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Dim role As UserRole = _<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; UserRole.NewUserRole(_role)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Me.Add(role)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Else<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Throw _<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; New InvalidOperationException(&quot;Role already assigned to this user&quot;)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End If</p>
+<p>&nbsp;&nbsp;&nbsp; End Sub</p>
+<p>#End If</p>
+<p>&nbsp;&nbsp;&nbsp; Public Overloads Sub Remove(_role As String)</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; For Each item As UserRole In Me<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; If item.Role = _role Then<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Remove(item)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Exit For<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End If<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Next</p>
+<p>&nbsp;&nbsp;&nbsp; End Sub</p>
+<p>&nbsp;&nbsp;&nbsp; Public Overloads Function Contains( _<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _role As String _<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ) As Boolean</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; For Each item As UserRole In Me<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; If item.Role = _role Then<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return True<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End If<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Next</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return False</p>
+<p>&nbsp;&nbsp;&nbsp; End Function</p>
+<p>&nbsp;&nbsp;&nbsp; Public Overloads Function ContainsDeleted( _<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _role As String _<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ) As Boolean</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; For Each item As UserRole In DeletedList<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; If item.Role = _role Then<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return True<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End If<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Next</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return False</p>
+<p>&nbsp;&nbsp;&nbsp; End Function</p>
+<p>It _appears_ to work, but is this code (still) legitimate in the CSLA4 world?</p>
+<p>Bear in mind I&#39;m eventually looking at the other (Silverlight, WP) interfaces. Will this methodology support these technologies?</p>
+<p>Any advice or assistance would be appreciated.</p>
+<p>&nbsp;</p>
+<p>Thanks,</p>
+<p>Graham</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

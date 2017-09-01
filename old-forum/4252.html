@@ -1,0 +1,88 @@
+<html><header><title>ASP.Net Paging</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>ASP.Net Paging</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4252.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>dantruj posted on Tuesday, January 29, 2008</h2>As stated earlier there are 4 places for paging to be implemented.&nbsp; Currently I am doing filtering then sorting in the <FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>protected</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>void</FONT><FONT size=2> ContactsListDataSource_SelectObject(</FONT><FONT color=#0000ff size=2>object</FONT><FONT size=2> sender, Csla.Web.</FONT><FONT color=#2b91af size=2>SelectObjectArgs</FONT><FONT size=2> e) Event.</FONT></P>
+<P>So here are my questions:</P>
+<P>If I do paging in the SelectObject event, do I need to implement the IReportTotalCount interface in my List object?</P>
+<P>Since I do filtering and sorting in the SelectObject event, am I forced to do paging there as well instead of doing it in DP_Fetch?</P>
+<P>I mean if I have 20 contact records that are populated each time I fill my List (ReadonlyListbase), and 5 of them have last names that start with 'A', but they are not in order in the table, I would want to filter them first before paging.&nbsp; Because paging would pull the first 10 records thus excluding some of the contact records that have lastnames that begin with 'A'.&nbsp; Is this correct?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, January 29, 2008</h2>Yes, if you are going to filter/sort in the UI, then you must page in the UI as well. The three concepts are linked to each other. Well, more precisely, paging is dependent on any filter/sort, so the filter/sort must occur first (at or lower in the stack).</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>dantruj replied on Tuesday, January 29, 2008</h2>Cool, thank you</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>dantruj replied on Tuesday, January 29, 2008</h2><P>If filtering and sorting has to be done first before paging, then if I decide to use a stored procedure to page (only pull needed rows) then do I also have to do sorting and filtering in the stored procedure first?&nbsp; If that is true, then that defeats the purpose of FilteredBindingList and SortedBindingList while paging.</P>
+<P>If I truly want to use the UI to do filtering and sorting, then I am forced to pull All records from the database first, which is a waste, unless I do some sort of cache at the UI.&nbsp; But this defeats the purpose of just pulling the rows you need.</P>
+<P>Please explain how I can filter/sort and page in the SelectObject event while only pulling the records I need from the database (not pulling all records and just returning 10 from the BO)? or is this even possible?</P>
+<P>Thanks for help in advance.</P>
+<P>Dan T.</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, January 29, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>The concept of paging is dependent on any filter/sort you apply.
+So you must filter/sort before you can page the resulting data. It is a logical
+progression.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>So yes, you must do the filter/sort before you apply any paging.
+If you do the paging in the database, then you must do the filter/sort there
+first.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> dantruj
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Tuesday, January 29, 2008 4:23 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] ASP.Net Paging<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>If filtering and sorting has to be done first before paging, then if I
+decide to use a stored procedure to page (only pull needed rows) then do I also
+have to do sorting and filtering in the stored procedure first?&nbsp; If that
+is true, then that defeats the purpose of FilteredBindingList and
+SortedBindingList while paging.<o:p></o:p></p>
+
+<p>If I truly want to use the UI to do filtering and sorting, then I am forced
+to pull All records from the database first, which is a waste, unless I do some
+sort of cache at the UI.&nbsp; But this defeats the purpose of just pulling the
+rows you need.<o:p></o:p></p>
+
+<p>Please explain how I can filter/sort and page in the SelectObject event
+while only pulling the records I need from the database (not pulling all
+records and just returning 10 from the BO)? or is this even possible?<o:p></o:p></p>
+
+<p>Thanks for help in advance.<o:p></o:p></p>
+
+<p>Dan T.<o:p></o:p></p>
+
+<p>&nbsp;<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

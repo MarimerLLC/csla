@@ -1,0 +1,55 @@
+<html><header><title>Timestamp problem</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Timestamp problem</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/2944.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>toddb1389 posted on Thursday, May 24, 2007</h2>I'm working on my first <span id="misp_compose_1" class="hm">CSLA</span> app and I'm getting a "Row edited by
+another user" error when I update an object.&nbsp; The relevant code is:<br>
+
+<br><b>
+
+In DataPortal_Update:</b><br>
+
+cm.Parameters.Add("@<span id="misp_compose_3" class="hm">lastChanged</span>", <span id="misp_compose_4" class="hm">SqlDbType</span>.Timestamp);<br>
+
+cm.Parameters["@<span id="misp_compose_5" class="hm">lastChanged</span>"].Value = _timestamp;<br>
+
+<br><b>
+
+In DataPortal_Fetch:</b><br>
+
+<span id="misp_compose_6" class="hm">dr</span>.<span id="misp_compose_7" class="hm">GetBytes</span>("<span id="misp_compose_8" class="hm">LastChanged</span>", 0, _timestamp, 0, 8);<br>
+
+<b><br>
+
+In Stored Procedure:</b><br>
+
+SET<br>
+
+&nbsp;&nbsp;&nbsp; ...&nbsp;&nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;  <br>
+
+&nbsp;&nbsp;&nbsp; WHERE&nbsp;&nbsp;&nbsp; <span id="misp_compose_9" class="hm">BookId</span> = @id<br>
+
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; AND <span id="misp_compose_10" class="hm">LastChanged</span> = @<span id="misp_compose_11" class="hm">lastChanged</span><br>
+
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; IF @@ROWCOUNT = 0<br>
+
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <span id="misp_compose_12" class="hm">RAISERROR</span>('Row has been edited by another user', 16,1)<br>
+
+<br>
+
+This post: <a HREF="/forums/thread/8053.aspx">http://forums.lhotka.net/forums/thread/8053.aspx</a> mentions
+the same problem and I adjusted my code in DataPortal_Update to
+explicitly set the <span id="misp_compose_13" class="hm">datatype</span> of the parameter, as suggested, but I still
+get the 'Row has been edited by another user' error.&nbsp; The database is Sql Server Express.<br>
+
+<br>
+
+Any ideas?<br>
+
+<br>
+
+By the way, Rocky -- I enjoyed the book and really like working with the framework so far.<br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>dcleven replied on Friday, May 25, 2007</h2><P>I think you need to set the direction of the parameter as an InputOutput, like this:</P><FONT size=2>
+<P></FONT>SqlParameter param = new SqlParameter("@NewTimeStamp", SqlDbType.Timestamp);</P>
+<P>param.Direction = ParameterDirection.InputOutput;</P>
+<P>param.Value = m_timestamp;</P>
+<P>cm.Parameters.Add(param);</P>
+<P>cm.ExecuteNonQuery();</P>
+<P>m_timestamp = (byte[])cm.Parameters["@NewTimeStamp"].Value;</P>
+<P>The above code works for me <img src="/emoticons/emotion-1.gif" alt="Smile [:)]" /></P>
+<P>--Doug</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>toddb1389 replied on Monday, May 28, 2007</h2>That did the trick.&nbsp; Thanks Doug!<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

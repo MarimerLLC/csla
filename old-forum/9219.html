@@ -1,0 +1,367 @@
+<html><header><title>Custom BusinessRule</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Custom BusinessRule</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9219.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>MADCookieCSLA posted on Friday, July 16, 2010</h2><p>I am trying to learn how to add custom business rules. I
+am using CSLA 3.8 and I understand the basics from the book about
+adding a business rule like the common rules.</p>
+<p>&nbsp;</p>
+<p>I have an object that has FlightTime (decimal) property.
+This object has 2 other properties whose sum cannot exceed FlightTime, but can equal it.</p>
+<p>&nbsp;</p>
+<p>I have used the Commonrules.MaxValue(of T) as my basis to
+try to create a new rule. It isn&#39;t working. The two property
+names I&#39;m passing in keep calculating to 0D, but if I do it as one
+parameter, then it works fine.</p>
+<p>&nbsp;</p>
+<p>Basically, has anyone written a similar business rule
+that compares several properties of an object to itself? I&#39;d like to
+see how you do it or maybe someone can see my mistake.</p>
+<p>&nbsp;</p>
+<p>Any help would be fantastic!!!!</p>
+<p>Mike</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>
+
+
+
+
+
+
+
+
+ 
+  Normal
+  0
+  
+  
+  
+  
+  false
+  false
+  false
+  
+  EN-US
+  X-NONE
+  X-NONE
+  
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+  
+  
+  
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+  
+
+ 
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+ 
+
+
+
+
+
+<p class="MsoPlainText"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>&#39; PIC
+can&#39;t be more then FlightTime; it can be equal</p>
+<p class="MsoPlainText"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>ValidationRules.AddRule(AddressOf MaxValueAgainstSelf(Of</p>
+<p class="MsoPlainText">Decimal), New MaxValueAgainstSelfRuleArgs(Of</p>
+<p class="MsoPlainText">Decimal)(_flightTimeProperty,
+&quot;PilotInCommandTime&quot;), 1)</p>
+<p class="MsoPlainText"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>&#39; SIC
+can&#39;t be more then FlightTime; it can be equal</p>
+<p class="MsoPlainText"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>ValidationRules.AddRule(AddressOf MaxValueAgainstSelf(Of</p>
+<p class="MsoPlainText">Decimal), New MaxValueAgainstSelfRuleArgs(Of</p>
+<p class="MsoPlainText">Decimal)(_flightTimeProperty,
+&quot;SecondInCommandTime&quot;), 1)</p>
+<p class="MsoPlainText"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>&#39; PIC +
+SIC can&#39;t be more then FlightTime; it can be equal</p>
+<p class="MsoPlainText"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>Dim
+sumPropertyNames As New List(Of String)</p>
+<p class="MsoPlainText"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>sumPropertyNames.Add(&quot;PilotInCommandTime&quot;)</p>
+<p class="MsoPlainText"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>sumPropertyNames.Add(&quot;SecondInCommandTime&quot;)</p>
+<p class="MsoPlainText"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>ValidationRules.AddRule(AddressOf MaxValueAgainstSelf(Of</p>
+<p class="MsoPlainText">Decimal), New MaxValueAgainstSelfRuleArgs(Of</p>
+<p class="MsoPlainText">Decimal)(_flightTimeProperty, sumPropertyNames), 2)</p>
+<p class="MsoPlainText">&nbsp;</p>
+<p class="MsoPlainText"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></p>
+<p class="MsoPlainText"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></p>
+<p class="MsoPlainText"><span>&nbsp;</span>Public Shared
+Function MaxValueAgainstSelf(Of T As IComparable)(ByVal</p>
+<p class="MsoPlainText">target As Object, ByVal e As RuleArgs) As Boolean</p>
+<p class="MsoPlainText"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>Dim
+str2 As String</p>
+<p class="MsoPlainText"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>Dim
+args As DecoratedRuleArgs = DirectCast(e, DecoratedRuleArgs)</p>
+<p class="MsoPlainText"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>Dim
+businessObjectProperty As T =</p>
+<p class="MsoPlainText">DirectCast(target.GetType.GetProperty(e.PropertyName).GetValue(target,</p>
+<p class="MsoPlainText">Nothing), T)</p>
+<p class="MsoPlainText"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>Dim
+compareValue As Decimal = 0D</p>
+<p class="MsoPlainText"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>Dim
+propertyNames As List(Of String) =</p>
+<p class="MsoPlainText">CType(args.Item(&quot;propertyNamesOfSameObjectHoldingMaxValue&quot;),
+List(Of</p>
+<p class="MsoPlainText">String))</p>
+<p class="MsoPlainText"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>If
+propertyNames.Count = 1 Then</p>
+<p class="MsoPlainText"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>compareValue = DirectCast(CallByName(target,</p>
+<p class="MsoPlainText">propertyNames(0), Microsoft.VisualBasic.CallType.Get,
+Nothing),</p>
+<p class="MsoPlainText">Decimal)</p>
+<p class="MsoPlainText"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>Else</p>
+<p class="MsoPlainText"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>Dim
+PropertyValue As Decimal</p>
+<p class="MsoPlainText"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>For
+Each propertyName As String In propertyNames</p>
+<p class="MsoPlainText"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>PropertyValue = DirectCast(CallByName(target,</p>
+<p class="MsoPlainText">propertyName, Microsoft.VisualBasic.CallType.Get,
+Nothing), Decimal)</p>
+<p class="MsoPlainText"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>compareValue = compareValue + PropertyValue</p>
+<p class="MsoPlainText"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>&#39;compareValue = compareValue +</p>
+<p class="MsoPlainText">DirectCast(CallByName(target, propertyName,</p>
+<p class="MsoPlainText">Microsoft.VisualBasic.CallType.Get, Nothing), Decimal)</p>
+<p class="MsoPlainText">&nbsp;</p>
+<p class="MsoPlainText"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>Next</p>
+<p class="MsoPlainText"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>End If</p>
+<p class="MsoPlainText">&nbsp;</p>
+<p class="MsoPlainText"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>If
+(businessObjectProperty.CompareTo(compareValue) &lt; 1) Then</p>
+<p class="MsoPlainText"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>Return True</p>
+<p class="MsoPlainText"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>End If</p>
+<p class="MsoPlainText"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>Dim str
+As String = CStr(args.Item(&quot;Format&quot;))</p>
+<p class="MsoPlainText"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>If
+String.IsNullOrEmpty(str) Then</p>
+<p class="MsoPlainText"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>str2 = compareValue.ToString</p>
+<p class="MsoPlainText"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>Else</p>
+<p class="MsoPlainText"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>str2 = String.Format(String.Format(&quot;{{0:{0}}}&quot;, str),</p>
+<p class="MsoPlainText">compareValue)</p>
+<p class="MsoPlainText"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>End If</p>
+<p class="MsoPlainText"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>e.Description = String.Format(&quot;{0} may not exceed {1}&quot;,</p>
+<p class="MsoPlainText">RuleArgs.GetPropertyName(e), compareValue)</p>
+<p class="MsoPlainText"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>Return
+False</p>
+<p class="MsoPlainText"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>End
+Function</p>
+<p class="MsoPlainText"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></p>
+<p class="MsoPlainText"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></p>
+<p class="MsoPlainText"><span>&nbsp;&nbsp;&nbsp; </span>Public Class
+MaxValueAgainstSelfRuleArgs(Of T)</p>
+<p class="MsoPlainText"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>Inherits
+DecoratedRuleArgs</p>
+<p class="MsoPlainText"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>&#39; Methods</p>
+<p class="MsoPlainText"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>Public Sub
+New(ByVal propertyInfo As IPropertyInfo, ByVal</p>
+<p class="MsoPlainText">propertyNameOfSameObjectHoldingMaxValue As String)</p>
+<p class="MsoPlainText"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>MyBase.New(propertyInfo)</p>
+<p class="MsoPlainText"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>Dim
+names As New List(Of String)</p>
+<p class="MsoPlainText"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>names.Add(propertyNameOfSameObjectHoldingMaxValue)</p>
+<p class="MsoPlainText"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>MyBase.Item(&quot;propertyNamesOfSameObjectHoldingMaxValue&quot;) =
+names</p>
+<p class="MsoPlainText"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>MyBase.Item(&quot;Format&quot;)
+= String.Empty</p>
+<p class="MsoPlainText"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>MyBase.Item(&quot;ValueType&quot;) = GetType(T).FullName</p>
+<p class="MsoPlainText"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>End Sub</p>
+<p class="MsoPlainText">&nbsp;</p>
+<p class="MsoPlainText"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>Public Sub
+New(ByVal propertyInfo As IPropertyInfo, ByVal</p>
+<p class="MsoPlainText">propertyNamesOfSameObjectHoldingMaxValue As List(Of
+String))</p>
+<p class="MsoPlainText"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>MyBase.New(propertyInfo)</p>
+<p class="MsoPlainText"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>MyBase.Item(&quot;propertyNamesOfSameObjectHoldingMaxValue&quot;) =</p>
+<p class="MsoPlainText">propertyNamesOfSameObjectHoldingMaxValue</p>
+<p class="MsoPlainText"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>MyBase.Item(&quot;Format&quot;) = String.Empty</p>
+<p class="MsoPlainText"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>MyBase.Item(&quot;ValueType&quot;) = GetType(T).FullName</p>
+<p class="MsoPlainText"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>End Sub</p>
+<p class="MsoPlainText"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></p>
+<p class="MsoPlainText"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>Public
+ReadOnly Property</p>
+<p class="MsoPlainText">PropertyNamesOfSameObjectHoldingMaxValue() As List(Of
+String)</p>
+<p class="MsoPlainText"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>Get</p>
+<p class="MsoPlainText"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>Return</p>
+<p class="MsoPlainText">DirectCast(MyBase.Item(&quot;propertyNamesOfSameObjectHoldingMaxValue&quot;),</p>
+<p class="MsoPlainText">List(Of String))</p>
+<p class="MsoPlainText"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>End Get</p>
+<p class="MsoPlainText"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>End Property</p>
+<p class="MsoPlainText">&nbsp;</p>
+<p class="MsoPlainText"><span>&nbsp;&nbsp;&nbsp; </span>End Class</p>
+<p class="MsoPlainText">&nbsp;</p>
+</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

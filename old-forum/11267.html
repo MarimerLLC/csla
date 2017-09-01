@@ -1,0 +1,76 @@
+<html><header><title>CSLA 4X Validation Rules: InputProperties how to deal properly with multiple properties?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA 4X Validation Rules: InputProperties how to deal properly with multiple properties?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11267.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>JCardina posted on Wednesday, March 28, 2012</h2><p>There is no example in the Ebooks of how to deal with multiple properties in a validation rule I&#39;ve seen a whole assortment of varying ways to do it in the forums here and now I&#39;m not sure what is correct.</p>
+<p>Assuming you have a validation rule for a property that depends on a secondary property, how do you write that rule so that you can take two properties as parameters to the rule, insert both into InputProperties and then retrieve both in Execute so you can compare their values?&nbsp; (I need to write a rule that checks a start date occurs before an end date)</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Wednesday, March 28, 2012</h2><p>Look at the RuleTutorial sample (Csla 4.3 Samples) or rules on <a href="http://cslacontrib.codeplex.com">http://cslacontrib.codeplex.com</a>&nbsp; and <a href="http://cslagenfork.codeplex.com">http://cslagenfork.codeplex.com</a></p>
+<p>Here&#39;s a bite from RuleTutorial - 2.07 CompareFieldsRules: </p>
+<p><span style="color:#008000;font-weight:bold;">namespace</span>&nbsp;CompareFieldsRules.Rules<br />
+{<br />
+<br />
+&nbsp;&nbsp;<span style="color:#808080;">///</span><span style="color:#008000;">&nbsp;<span style="color:#808080;">&lt;<span style="font-weight:bold;">summary</span>&gt;</span></span><br />
+&nbsp;&nbsp;<span style="color:#808080;">///</span><span style="color:#008000;">&nbsp;Validates that primary property is greater than compareToProperty</span><br />
+&nbsp;&nbsp;<span style="color:#808080;">///</span><span style="color:#008000;">&nbsp;<span style="color:#808080;">&lt;<span style="font-weight:bold;">/</span><span style="font-weight:bold;">summary</span>&gt;</span></span><br />
+&nbsp;&nbsp;<span style="color:#0000ff;font-weight:bold;">public</span>&nbsp;<span style="color:#ff0000;">class</span>&nbsp;GreaterThan : CommonBusinessRule<br />
+&nbsp;&nbsp;{<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#808080;">///</span><span style="color:#008000;">&nbsp;<span style="color:#808080;">&lt;<span style="font-weight:bold;">summary</span>&gt;</span></span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#808080;">///</span><span style="color:#008000;">&nbsp;Gets or sets CompareTo.</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#808080;">///</span><span style="color:#008000;">&nbsp;<span style="color:#808080;">&lt;<span style="font-weight:bold;">/</span><span style="font-weight:bold;">summary</span>&gt;</span></span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#0000ff;font-weight:bold;">private</span>&nbsp;IPropertyInfo CompareTo&nbsp;{&nbsp;<span style="color:#8b4513;">get</span>;&nbsp;<span style="color:#8b4513;">set</span>;&nbsp;}<br />
+<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#808080;">///</span><span style="color:#008000;">&nbsp;<span style="color:#808080;">&lt;<span style="font-weight:bold;">summary</span>&gt;</span></span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#808080;">///</span><span style="color:#008000;">&nbsp;Initializes a new instance of the&nbsp;<span style="color:#808080;">&lt;<span style="font-weight:bold;">see</span>&nbsp;<span style="font-weight:bold;">cref</span><span style="font-weight:bold;">=</span><span style="color:#c0c0c0;font-weight:bold;">&quot;GreaterThan&quot;</span><span style="font-weight:bold;">/</span>&gt;</span>&nbsp;class.</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#808080;">///</span><span style="color:#008000;">&nbsp;<span style="color:#808080;">&lt;<span style="font-weight:bold;">/</span><span style="font-weight:bold;">summary</span>&gt;</span></span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#808080;">///</span><span style="color:#008000;">&nbsp;<span style="color:#808080;">&lt;<span style="font-weight:bold;">param</span>&nbsp;<span style="font-weight:bold;">name</span><span style="font-weight:bold;">=</span><span style="color:#c0c0c0;font-weight:bold;">&quot;primaryProperty&quot;</span>&gt;</span></span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#808080;">///</span><span style="color:#008000;">&nbsp;The primary property.</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#808080;">///</span><span style="color:#008000;">&nbsp;<span style="color:#808080;">&lt;<span style="font-weight:bold;">/</span><span style="font-weight:bold;">param</span>&gt;</span></span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#808080;">///</span><span style="color:#008000;">&nbsp;<span style="color:#808080;">&lt;<span style="font-weight:bold;">param</span>&nbsp;<span style="font-weight:bold;">name</span><span style="font-weight:bold;">=</span><span style="color:#c0c0c0;font-weight:bold;">&quot;compareToProperty&quot;</span>&gt;</span></span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#808080;">///</span><span style="color:#008000;">&nbsp;The compare to property.</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#808080;">///</span><span style="color:#008000;">&nbsp;<span style="color:#808080;">&lt;<span style="font-weight:bold;">/</span><span style="font-weight:bold;">param</span>&gt;</span></span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#0000ff;font-weight:bold;">public</span>&nbsp;<span style="color:#191970;font-weight:bold;">GreaterThan</span>(IPropertyInfo primaryProperty,&nbsp;IPropertyInfo compareToProperty)<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;<span style="font-weight:bold;">base</span>(primaryProperty)<br />
+&nbsp;&nbsp;&nbsp;&nbsp;{<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CompareTo = compareToProperty;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;InputProperties =&nbsp;<span style="color:#008b8b;font-weight:bold;">new</span>&nbsp;List&lt;IPropertyInfo&gt;()&nbsp;{&nbsp;primaryProperty,&nbsp;compareToProperty&nbsp;};<br />
+&nbsp;&nbsp;&nbsp;&nbsp;}<br />
+<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#808080;">///</span><span style="color:#008000;">&nbsp;<span style="color:#808080;">&lt;<span style="font-weight:bold;">summary</span>&gt;</span></span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#808080;">///</span><span style="color:#008000;">&nbsp;Gets the message.</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#808080;">///</span><span style="color:#008000;">&nbsp;<span style="color:#808080;">&lt;<span style="font-weight:bold;">/</span><span style="font-weight:bold;">summary</span>&gt;</span></span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#808080;">///</span><span style="color:#008000;">&nbsp;<span style="color:#808080;">&lt;<span style="font-weight:bold;">returns</span>&gt;</span></span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#808080;">///</span><span style="color:#008000;">&nbsp;The get message.</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#808080;">///</span><span style="color:#008000;">&nbsp;<span style="color:#808080;">&lt;<span style="font-weight:bold;">/</span><span style="font-weight:bold;">returns</span>&gt;</span></span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#0000ff;font-weight:bold;">protected</span>&nbsp;<span style="color:#a52a2a;">override</span>&nbsp;<span style="color:#ff0000;">string</span>&nbsp;<span style="color:#191970;font-weight:bold;">GetMessage</span>()<br />
+&nbsp;&nbsp;&nbsp;&nbsp;{<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#000080;">return</span>&nbsp;HasMessageDelegate&nbsp;?&nbsp;<span style="font-weight:bold;">base</span>.<span style="color:#191970;font-weight:bold;">GetMessage</span>()&nbsp;: Resources.GreaterThanRule;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;}<br />
+<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#808080;">///</span><span style="color:#008000;">&nbsp;<span style="color:#808080;">&lt;<span style="font-weight:bold;">summary</span>&gt;</span></span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#808080;">///</span><span style="color:#008000;">&nbsp;Does the check for primary propert less than compareTo property</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#808080;">///</span><span style="color:#008000;">&nbsp;<span style="color:#808080;">&lt;<span style="font-weight:bold;">/</span><span style="font-weight:bold;">summary</span>&gt;</span></span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#808080;">///</span><span style="color:#008000;">&nbsp;<span style="color:#808080;">&lt;<span style="font-weight:bold;">param</span>&nbsp;<span style="font-weight:bold;">name</span><span style="font-weight:bold;">=</span><span style="color:#c0c0c0;font-weight:bold;">&quot;context&quot;</span>&gt;</span></span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#808080;">///</span><span style="color:#008000;">&nbsp;Rule context object.</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#808080;">///</span><span style="color:#008000;">&nbsp;<span style="color:#808080;">&lt;<span style="font-weight:bold;">/</span><span style="font-weight:bold;">param</span>&gt;</span></span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#0000ff;font-weight:bold;">protected</span>&nbsp;<span style="color:#a52a2a;">override</span>&nbsp;<span style="color:#ff0000;">void</span>&nbsp;<span style="color:#191970;font-weight:bold;">Execute</span>(RuleContext context)<br />
+&nbsp;&nbsp;&nbsp;&nbsp;{<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#000080;">var</span>&nbsp;value1 =&nbsp;(IComparable)context.InputPropertyValues[PrimaryProperty];<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#000080;">var</span>&nbsp;value2 =&nbsp;(IComparable)context.InputPropertyValues[CompareTo];<br />
+<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#0000ff;font-weight:bold;">if</span>&nbsp;(value1.<span style="color:#191970;font-weight:bold;">CompareTo</span>(value2)&nbsp;&lt;=&nbsp;<span style="color:#00008b;">0</span>)<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;context.Results.<span style="color:#191970;font-weight:bold;">Add</span>(<span style="color:#008b8b;font-weight:bold;">new</span>&nbsp;<span style="color:#191970;font-weight:bold;">RuleResult</span>(<span style="font-weight:bold;">this</span>.RuleName,&nbsp;PrimaryProperty,&nbsp;<span style="color:#ff0000;">string</span>.<span style="color:#191970;font-weight:bold;">Format</span>(<span style="color:#191970;font-weight:bold;">GetMessage</span>(),&nbsp;PrimaryProperty.FriendlyName,&nbsp;CompareTo.FriendlyName))&nbsp;{&nbsp;Severity =&nbsp;<span style="font-weight:bold;">this</span>.Severity&nbsp;});<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br />
+&nbsp;&nbsp;&nbsp;&nbsp;}<br />
+&nbsp;&nbsp;}<br />
+}</p>
+<p>Usage:</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; BusinessRules.<span style="color:#191970;font-weight:bold;">AddRule</span>(<span style="color:#008b8b;font-weight:bold;">new</span>&nbsp;<span style="color:#191970;font-weight:bold;">GreaterThan</span>(EndDateProperty,&nbsp;StartDateProperty));<br />or <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; BusinessRules.<span style="color:#191970;font-weight:bold;">AddRule</span>(<span style="color:#008b8b;font-weight:bold;">new</span>&nbsp;<span style="color:#191970;font-weight:bold;">GreaterThan</span>(EndDateProperty,&nbsp;StartDateProperty)&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{MessageText =<span style="color:#0000ff;">&quot;My own error message {0} must be grater than {1}&quot;</span>});<br />or<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;BusinessRules.<span style="color:#191970;font-weight:bold;">AddRule</span>(<span style="color:#008b8b;font-weight:bold;">new</span>&nbsp;<span style="color:#191970;font-weight:bold;">GreaterThan</span>(EndDateProperty,&nbsp;StartDateProperty)&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{MessageDelegate =&nbsp;()&nbsp;=&gt;&nbsp;Resources.MyOwnTransateableResourseString});<br />or<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;BusinessRules.<span style="color:#191970;font-weight:bold;">AddRule</span>(<span style="color:#008b8b;font-weight:bold;">new</span>&nbsp;<span style="color:#191970;font-weight:bold;">GreaterThan</span>(EndDateProperty,&nbsp;StartDateProperty)&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{MessageDelegate =&nbsp;()&nbsp;=&gt;&nbsp;Resources.MyOwnTransateableResourseString,&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Severity = RuleSeverity.Warning});</p>
+<p>In this sample you also have <b><i>GreaterThanOrEqual, LessThan, LessThanOrEqual</i></b> rules.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JCardina replied on Wednesday, March 28, 2012</h2><p>Interesting thank you.</p>
+<p>I wasn&#39;t aware of the rule tutorial stuff, I&#39;ll have to look into that further.</p>
+<p>On a side note: the private CompareTo property being used to get the property out of InputProperties in Execute seems a bit tortuous.&nbsp; </p>
+<p>Is there a possibility of improving the way property parameters are accessed from within Execute in CSLA?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Wednesday, March 28, 2012</h2><p>On a general term, you may have more than 2 InputProperties and need to have the key for the property value.</p>
+<p>Remember also that the rule exists in only one instance per property. IE: one &quot;singelton&quot; instance per property for all BO instances of that type.&nbsp;</p>
+<p>So I prefer this style with input properties for easy unit testing. See the unit test samples in RuleTutorial.</p>
+<p>For more specific rules there&#39;s a few updates coming in CSLA 4.5 to use generics when reading properties.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

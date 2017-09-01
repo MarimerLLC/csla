@@ -1,0 +1,26 @@
+<html><header><title>how to create a new object in a child collection</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>how to create a new object in a child collection</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3808.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>SethSpearman posted on Tuesday, October 30, 2007</h2><P>I am embarrased to ask this question.&nbsp; I know it should be simple but I have spent hours trying to figure out the way to do this.&nbsp; </P>
+<P>I have the following BOs:</P>
+<P>Meeting</P>
+<P>AgendaItems</P>
+<P>AgendaItem</P>
+<P>&nbsp;</P>
+<P>Agenda Items is a child collection property of meeting.&nbsp; Of course, this collection has objects of type AgendaItem.&nbsp; So Meeting--&gt;AgendaItems--&gt;AgendaItem (a collection of them of course).</P>
+<P>Assuming all the BOs are properly implemented.&nbsp; (An assumption I am definitely willing to visit).</P>
+<P>I have written UnitTests to test the meeting BO.&nbsp; It works fine test for all CRUD in the BO.&nbsp; So I added the AgendaItems/AgendaItem in the last few days.&nbsp; I went to mod my unitTests with code like this:</P>
+<P>dim meeting as Meeting<BR>meeting= Meeting.NewMeeting</P>
+<P>...set biz properties .</P>
+<P>Then do<BR>If meeting.IsSavable then meeting=meeting.Save</P>
+<P>All that works fine.&nbsp; So I tried to add the following to my unit test:</P>
+<P>dim ai as agendaItem=meeting.AgendaItems.AddNew.&nbsp; This fails on compile sayinig that no constructor can be found.&nbsp; </P>
+<P>So this raises the simple question for me.&nbsp; How do I create a new AgendaItem into my AgendaItems collection using the meeting object.&nbsp; In other words...I want to add an agendaItem to the meeting.&nbsp; What syntax will work.&nbsp; I looked for hours in the book and online and could not find a clear example.</P>
+<P>I know this is a way noobie question.&nbsp; Just trying to learn this stuff.</P>
+<P>Seth Spearman</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Tuesday, October 30, 2007</h2>If you want to allow the use of AddNew, you'll need to override AddNewCore in your BLB class.<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#a9a9a9"> </font><font color="#a9a9a9">/// &lt;summary&gt;</font><font color="#008000">Creates a new instance<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </font><font color="#008000">/// in the list.</font><font color="#a9a9a9">&lt;/summary&gt;</font><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <font color="#a9a9a9">/// &lt;returns&gt;</font><font color="#008000">An</font> <font color="#a9a9a9">&lt;see cref="Object"/&gt;</font>.<font color="#a9a9a9">&lt;/returns&gt;</font><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <font color="#0000ff">protected override object</font> AddNewCore() {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <font color="#008000">AgendaItem </font>result;<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; result = <font color="#008000">AgendaItem</font>.NewItem();<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; OnAddingNew( <font color="#0000ff">new </font><font color="#008000">AddingNewEventArgs</font>( result ) );<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Add( result );<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <font color="#0000ff">return </font>result;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>alef replied on Tuesday, October 30, 2007</h2><br>
+I have the same question : see thread<br>
+http://forums.lhotka.net/forums/thread/18800.aspx<br>
+<br>
+The implementation of AddNewCore is only to support the binding mechanism to a grid.<br>
+This will not help for unit testing code.<br>
+<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Tuesday, October 30, 2007</h2>That's simply not true.&nbsp; If your unit testing code calls AddNew (which is what the post shows), this will solve the issue there as well.<br><br>Your issue is different, and I'm not quite sure what you're trying to acomplish.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>SethSpearman replied on Tuesday, October 30, 2007</h2><P>ajj,</P>
+<P>Thanks for your post.&nbsp; That did the trick.&nbsp; I had the code in my object class but did not think I needed it.&nbsp; When I uncommented that out then it worked like a charm.</P>
+<P>As I looked over the biz obj Book I&nbsp; realize that Rocky also said that the collection private construction should have AllowNew=True.&nbsp; When do you use that?&nbsp; My code worked without it.&nbsp; </P>
+<P>Seth</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

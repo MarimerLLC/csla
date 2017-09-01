@@ -1,0 +1,48 @@
+<html><header><title>[csla 3.8.4] WPF-Textbox Visibility bound to PropertyStatus.CanRead -&gt; Breaks Required validation rule!</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>[csla 3.8.4] WPF-Textbox Visibility bound to PropertyStatus.CanRead -&gt; Breaks Required validation rule!</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10338.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>stefan posted on Wednesday, May 04, 2011</h2><p>I have a WPF Textbox with its Visibility bound to the CanRead property of a Csla.Wpf.PropertyStatus control.</p>
+<p>The Text is bound to a string property of my business object which is decorated with the Required attribute from the System.ComponentModel.DataAnnotations namespace.</p>
+<p>When CanRead evaluates to false, the Textbox is hidden, but the PropertyStatus control shows up with the Required rule being broken...</p>
+<p>It seems that the PropertyStatus control does not interact with the BO property values directly, but only have access to what is visible...</p>
+<p>Is that right the expected behavior or am I doing something wrong?</p>
+<p>Here is my Xaml:</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;TextBox Text=&quot;{Binding Path=Model.Nr, Mode=TwoWay, ValidatesOnExceptions=true, NotifyOnValidationError=true}&quot; Visibility=&quot;{Binding ElementName=propStatusNr, Path=CanRead, Converter={StaticResource VisibilityConverter}}&quot; /&gt;</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;cslaxaml:PropertyStatus Name=&quot;propStatusNr&quot; Width=&quot;20&quot; Height=&quot;20&quot; Property=&quot;{Binding Path=Model.Nr}&quot; /&gt;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Wednesday, May 04, 2011</h2><p>Your problem is that you want the PropertyStatus to disappear too?</p>
+<p>Just bind its Visibility to CanRead, like you do for the TextBox. Or put the TextBox and PropertyStatus in a container (Grid, StackPanel, etc) and bind the container&#39;s Visibility to hide both controls at once.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>stefan replied on Wednesday, May 04, 2011</h2><p>The problem I see, is that, although one property is hidden, the object is still valid...</p>
+<p>Or does the red Error icon from PropertyStatus not represent a &quot;real&quot; broken rule? </p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, May 04, 2011</h2><p>The rule will run irregardless of whether the user is authorized to see the value. Validation and authorization rules are independent from each other.</p>
+<p>You can use rule short-circuiting to create a rule for that property that prevents other rules from running if the user isn&#39;t authorized. Add that rule at priority -1, and it should prevent CSLA from running even the DataAnnotations rules.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>stefan replied on Thursday, May 05, 2011</h2><p>I finally found the issue. It is an old one that I often struggled with:</p>
+<p>The DataAnnotation rule accesses the object&#39;s properties just like 
+any user would. So if CanReadProperty returns false, the rule just sees a
+ default value (&quot;&quot;|0|NULL).</p>
+<p>This somehow contradicts:</p>
+<p><div style='padding-left: 50px;background-color:silver'><b>RockfordLhotka<br></b></p>
+<p>The rule will run irregardless of whether the user is authorized to see the value. Validation and authorization rules are independent from each other.</p>
+<p></div></p>
+<p>It is like the users authorization also authorizes the rule subsystem&#39;s access to the objects. Not quite independent, as it seems to me.</p>
+<p>So I am left to write my own StringRequired rule for each type, as the rules in the Csla.Validation namespace don&#39;t use BypassPropertyChecks either. (Or did that somehow change in current versions?)</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Thursday, May 05, 2011</h2><p>DataAnnotations attributes are&nbsp;a hybrid scenario, and how they work depends on the UI technology being used.</p>
+<p>In ASP.NET MVC or the Silverlight DataForm control, the UI directly invokes the attributes, and there&#39;s nothing you or I can do about that.</p>
+<p>In all cases, CSLA adds the attributes as priority 0 rules - that&#39;s true in CSLA 3.8 and 4.</p>
+<p>So if you prevent CSLA from running priority 0 rules,&nbsp; such as by having an explicit StopProcessing rule at priority -1, you can prevent CSLA from running the attributes (and all other priority 0+ rules).</p>
+<p>But you can&#39;t stop the UI technology from invoking the attribute - that&#39;s built into the UI platforms themselves.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>stefan replied on Friday, May 06, 2011</h2><p>OK!</p>
+<p>And what about the built-in csla rules using something like BypassPropertyChecks when accessing property getters?</p>
+<p>And does CSLA 4 differ from 3.8&nbsp; regarding that aspect?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, May 06, 2011</h2><p>Business and validation rules are never run through a property getter. Only authorization rules run in a getter, and they are blocked by BypassPropertyChecks.</p>
+<p>The rule is running during a property set operation, or in a explicit CheckRules call (perhaps as the object is created).</p>
+<p>Did you put a short circuit rule in at priority -1 to block rules from running? If so, what does that rule look like?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>stefan replied on Friday, May 06, 2011</h2><p>Sorry if I did not point out clearly what I wanted to know. Mentioning the DataAnnotations obviously misled you...</p>
+<p>My question targets the standard CSLA (built-in) rules like the StringRequired rule. This rule, as any other rule, needs to check the related property value.</p>
+<p>In the past, it did that by invoking the getter using reflection, and it did hit the authorization rules, because there was no BypassPropertyChecks.</p>
+<p>Is this still the case in CSLA 3.8.x and CSLA 4?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, May 06, 2011</h2><p>Business and validation rules have never run from a getter. Only authorization rules. And they are suppressed with BypassPropertyChecks.</p>
+<p>Business, validation, and authorization rules run from a setter. They are all suppressed with BypassPropertyChecks.</p>
+<p>Inside a rule, the rule&#39;s implementation may interact with properties on the object. In that case, to avoid authorization rules from running in the getter, the rule must do one of:</p>
+<ul>
+<li>use BypassPropertyChecks (prior to CSLA 4)</li>
+<li>use ReadProperty to get the property value</li>
+<li>directly use the private backing field (if you are using private backing fields)</li>
+</ul>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>stefan replied on Friday, May 06, 2011</h2><p>So then again, here comes my question unchanged: <img src="http://forums.lhotka.net/emoticons/emotion-9.gif" alt="Crying" /></p>
+<p>How do the built-in validation rules (e.g. StringRequired) handle this issue in 3.8.4 vs. 4?</p>
+<p>P.S.: In any of my posts did I say that rules were called <span style="color:#888888;"><b><span style="color:#000000;">from</span></b><span style="color:#000000;"> a getter, but</span></span> the <b>rules themselves call the getter</b> to do their work.</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Friday, May 06, 2011</h2><p>Sorry, I assumed you&#39;d looked at the code, and were asking a more complex question.</p>
+<p><a href="http://www.lhotka.net/cslacvs/viewvc.cgi/core/branches/V3-8-x/cslacs/Csla/Validation/CommonRules.cs?view=markup">http://www.lhotka.net/cslacvs/viewvc.cgi/core/branches/V3-8-x/cslacs/Csla/Validation/CommonRules.cs?view=markup</a></p>
+<p>The 3.x CommonRules use reflection to invoke the getter, so authorization rules apply.</p>
+<p>In CSLA 4 the rules use the new InputPropertyValues feature, and so get the property values in a way that bypasses authorization rules.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>stefan replied on Friday, May 06, 2011</h2><p>Shame on me - I really should have looked at the code - Should have been a one-line-answer...<img src="http://forums.lhotka.net/emoticons/emotion-10.gif" alt="Embarrassed" /></p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

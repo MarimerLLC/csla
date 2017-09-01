@@ -1,0 +1,46 @@
+<html><header><title>Force a BusinessList to be a parent</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Force a BusinessList to be a parent</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11521.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Chris62 posted on Wednesday, August 08, 2012</h2><p>I&#39;m having a small problem with a list of objects, the list is always coming back marked as a child(I checked in the immediate window during debugging). &nbsp;I have the following code:</p>
+<p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; public static Scores GetScoresBySomeID(int SomeID)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; return DataPortal.Fetch&lt;
+Scores&nbsp;&nbsp;&gt;(
+SomeID&nbsp;);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; }</p>
+</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; private DataPortal_Fetch(int SomeID)</p>
+<p>{</p>
+<p>&nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; bool cancel = false;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; OnFetching(SurveyID, ref cancel); &nbsp;// empty partial method, part of code gen</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; if (cancel) return;</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Fetch(SomeID); &nbsp;// this calls a private method, gets a connection to the db and populates the child</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; // objects in this list</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; OnFetched();// empty partial method, part of code gen</p>
+<p>}</p>
+<p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; private void Fetch(int SurveyID)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; RaiseListChangedEvents = false;</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; ScoresData data = ScoresData.NewScoresData(); &nbsp;// POCO data access object</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; List&lt;
+ScoresData&nbsp;&nbsp;&gt; results = data.GetScoresBySomeID(SomeID);</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; foreach (
+ScoresData&nbsp;&nbsp;info in results)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Add(new ScoreLevel(info)); // creates a csla child biz object and add to list</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; RaiseListChangedEvents = true;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; }</p>
+</p>
+<p>I also have child factory methods(and child_xyz methods)</p>
+<p>I&#39;ve set breakpoints and stepped through the code and it&#39;s stepping through the DataPortal_xyz, but IsChild is still true. &nbsp;I&#39;m not sure what I did wrong, or how to override CSLA and set this list as a Parent.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Chris62 replied on Wednesday, August 08, 2012</h2><p>To add another snippet, in the controller:</p>
+<p>int myID = SomeMethodToGetID();</p>
+<p>Scores myScores = Scores.GetScoresBySomeID(myID);</p>
+<p>&nbsp;</p>
+<p>as far as I know, if myScores were a child it shouldn&#39;t be able to get itself(if it were a child it would need to belong to a parent, and the parent would take the child object(s) through the dataportal). &nbsp;So I don&#39;t quite understand how it can be child and yet go through the dataportal on it&#39;s own.</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>StefanCop replied on Wednesday, August 08, 2012</h2><p>Did you check the list&#39;s default constructor? Does Scores() accidentially<small><i></i></small> set the child flag?</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Chris62 replied on Wednesday, August 08, 2012</h2><p>Good call, I didn&#39;t think to look(and it was code generated(not sure why the constructor is setting that), but that&#39;s where the problem is.</p>
+<p>Thanks for the tip!</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

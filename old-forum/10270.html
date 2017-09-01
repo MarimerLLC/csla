@@ -1,0 +1,44 @@
+<html><header><title>Partial Success with Code Generators.</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Partial Success with Code Generators.</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10270.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>rxelizondo posted on Saturday, April 16, 2011</h2><p>&nbsp;</p>
+<p class="MsoNormal">Hello,</p>
+<p class="MsoNormal">I am currently using a code generator tool with mixed results.<span>&nbsp; </span>Although the tool is doing a great job of generating
+most of the CSLA basic plumbing code, the code generated is not perfect and I
+am finding myself applying a bunch of do-hickies all over the place to bring
+the generated code up to speed and this is getting to be somewhat frustrating process
+for me.</p>
+<p class="MsoNormal"></p>
+<p class="MsoNormal">I am at the point right now where I am thinking of letting the
+code generator tool dump the initial code into some staging project and then simply
+copy and paste that code from that project into a real project and then take it
+from there.&nbsp;In other words, my final code ends up being totally
+disconnected from the code generator tool so any changes to my source metadata will not
+be automatically reflected into my CSLA objects by the code generator tool, I will have to update
+these changes manually</p>
+<p class="MsoNormal"></p>
+<p class="MsoNormal">Before I do that though, I would like to know if anyone here
+has experienced complete success with code generator tools for the CSLA or if most of
+you end up doing what I am planning on doing. </p>
+<p class="MsoNormal">Thank you.</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tiago replied on Sunday, April 17, 2011</h2><p>Hi Rene,</p>
+<p>Some notes:</p>
+<ol>
+<li>If your CodeGen tool is a payed product, I would try to speak to the maintenance people.</li>
+<li>Are there templates you can edit to fit your needs?</li>
+<li>This link&nbsp;<a href="http://cslagenfork.codeplex.com/wikipage?title=Why_CodeGen&amp;referringTitle=Home">Code generation is a good idea</a>&nbsp;discusses the generation/re-generation&nbsp; issue. As you can conclude from the link, CslaGenFork&nbsp;tries to avoid the issue &quot;after re-generation I lost my changes&quot;.</li>
+</ol>
+<p>Since you say <em><strong>code generated is not perfect</strong></em> I guess your problem is well before re-generation. Do you mean the generated code isn&#39;t complete (like you have to hand code the AddBusinessRules method) or it isn&#39;t correct (like PropertyInfo isn&#39;t generated for every property, or parameter passing to Factory or DataPortal methods isn&#39;t allowed or is plain wrong)?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rxelizondo replied on Monday, April 18, 2011</h2><p><div style='padding-left: 50px;background-color:silver'><b>tiago<br></b></p>
+<p>1. If your CodeGen tool is a payed product, I would try to speak to the maintenance people.</p>
+<div style="clear:both;"></div>
+<p></div></p>
+<p>Been there done that, not much I can do other than apply the patches.</p>
+<p><div style='padding-left: 50px;background-color:silver'><b>tiago<br></b></p>
+<p>2. Are there templates you can edit to fit your needs?</p>
+<p></div></p>
+<p>Yeah, but that is one more task I rather not undertake at this&nbsp;time. It is true that the time I spend fixing the templates to fit my exact needs is time well spent since I will save a bunch of time later when I generate the code but I am not sure if I want to deal with that right now.</p>
+<p><div style='padding-left: 50px;background-color:silver'><b>tiago<br></b></p>
+<p>3. This link&nbsp;<a href="http://cslagenfork.codeplex.com/wikipage?title=Why_CodeGen&amp;referringTitle=Home">Code generation is a good idea</a>&nbsp;discusses the generation/re-generation&nbsp; issue. As you can conclude from the link, CslaGenFork&nbsp;tries to avoid the issue &quot;after re-generation I lost my changes&quot;.</p>
+<p></div></p>
+<p>I have already disconnected my code from the code generator tool. A&nbsp;decision&nbsp;that I have a feeling I may come to regret later. In any event, it feels great not to have all those patches on the code and all that extra code bloat (at least&nbsp;is bloat for my particular needs) the generator produces. I hope to have some time in the future to look into creating my own custom templates.</p>
+<p>-----------------------</p>
+<p>Anyway, I guess I was mostly interested to hear what other people are&nbsp;experiencing&nbsp;with code generator tools. I guess I was seeking comfort in the&nbsp;tough&nbsp;that I was perhaps not the only one doing what I am doing. </p>
+<p>In any event, I have high hopes for the future versions of the code generator I am using, they look very&nbsp;promising. I&nbsp;wasn&#39;t&nbsp;aware of your open source code generator, I will take a look into it.</p>
+<p>Thanks.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

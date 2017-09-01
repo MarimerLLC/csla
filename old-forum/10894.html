@@ -1,0 +1,86 @@
+<html><header><title>Csla Data Mapper and Dependant Properties, Order of</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Csla Data Mapper and Dependant Properties, Order of</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10894.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>richardb posted on Thursday, November 17, 2011</h2><p>OK I&#39;m using the Csla Data Mapper in an ASP.Net webforms UI (I dream of doing MVC one day) and have a boolean property firing which sets a default date on another property - the user can also set the date in the UI.</p>
+<p>When mapping, if the date control maps first it gets set to e.g. 18th Nov, but then the boolean setproperty fires and resets my date to today (e.g. 17th Nov).</p>
+<p>Is there anyway to have the business layer object indicate the order I want the data mapper to fire the property mapping in, or will I nedd to / be better off removing the DataMapper and do it manually mapping the properties in my desired order.</p>
+<p>But of course, even if I do it manually the UI developer would need to know the business property dependancies.&nbsp; Not such a problem as they have the source code, but what if they didn&#39;t have the source code?</p>
+<p>&nbsp;</p>
+<p>Thanks,</p>
+<p>Richard.</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Thursday, November 17, 2011</h2><p>It has been a long time since I looked at DataMapper, but I think you can control the order by creating your own DataMap.</p>
+<p>By default DataMapper uses reflection to find the properties, and it loops through them. It <em>might</em> be the case that if you provide a DataMap it walks through the elements in the DataMap in order. It might not work that way - I honestly don&#39;t remember - you can look at the code to see.</p>
+<p>Otherwise you&#39;ll probably need to do manual mapping.</p>
+<p>Though another alternative is to suppress rules during the mapping process. This is a feature of CSLA 4, and can be useful when batch loading properties in scenarios like a web site. The feature is discussed in the <em>Using CSLA 4: Creating Business Objects</em> ebook.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>richardb replied on Friday, November 18, 2011</h2><p>I think manual mapping is what I&#39;ll need to do in my scenario - thanks for the quick response.</p>
+<p>ALthough I may look at extending the DataMapper - I wonder if I can add custom attributes to the properties, and then have the DataMapper fetch the properties in order and map that way.</p>
+<p>E.g.</p>
+<pre style="font-family:Consolas;font-size:13px;color:black;background:none repeat scroll 0% 0% white;">&lt;<span style="color:#2b91af;">AttributeUsage</span>(<span style="color:#2b91af;">AttributeTargets</span>.Property,&nbsp;_
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;AllowMultiple:=<span style="color:blue;">False</span>,&nbsp;Inherited:=<span style="color:blue;">False</span>)&gt;&nbsp;_
+<span style="color:blue;">Public</span>&nbsp;<span style="color:blue;">Class</span>&nbsp;<span style="color:#2b91af;">BindingOrderAttribute</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">Inherits</span>&nbsp;System.<span style="color:#2b91af;">Attribute</span>
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">Private</span>&nbsp;m_BindingOrder&nbsp;<span style="color:blue;">As</span>&nbsp;<span style="color:blue;">Integer</span>
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">Public</span>&nbsp;<span style="color:blue;">Sub</span>&nbsp;<span style="color:blue;">New</span>(<span style="color:blue;">ByVal</span>&nbsp;bindingOrder&nbsp;<span style="color:blue;">As</span>&nbsp;<span style="color:blue;">Integer</span>)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;m_BindingOrder&nbsp;=&nbsp;bindingOrder
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">End</span>&nbsp;<span style="color:blue;">Sub</span>
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">Public</span>&nbsp;<span style="color:blue;">Property</span>&nbsp;BindingOrder()&nbsp;<span style="color:blue;">As</span>&nbsp;<span style="color:blue;">Integer</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">Get</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">Return</span>&nbsp;m_BindingOrder
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">End</span>&nbsp;<span style="color:blue;">Get</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">Set</span>(<span style="color:blue;">ByVal</span>&nbsp;Value&nbsp;<span style="color:blue;">As</span>&nbsp;<span style="color:blue;">Integer</span>)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;m_BindingOrder&nbsp;=&nbsp;Value
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">End</span>&nbsp;<span style="color:blue;">Set</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">End</span>&nbsp;<span style="color:blue;">Property</span>
+ 
+<span style="color:blue;">End</span>&nbsp;<span style="color:blue;">Class<br /><br />Then do this on my properties....<br /><br /></span><span style="color:blue;">Private</span>&nbsp;<span style="color:blue;">Shared</span>&nbsp;<span style="color:blue;">ReadOnly</span>&nbsp;_isSignOffSMProperty&nbsp;<span style="color:blue;">As</span>&nbsp;<span style="color:#2b91af;">PropertyInfo</span>(<span style="color:blue;">Of</span>&nbsp;<span style="color:blue;">Boolean</span>)&nbsp;=&nbsp;RegisterProperty(<span style="color:blue;">Of</span>&nbsp;<span style="color:blue;">Boolean</span>)(<span style="color:blue;">Function</span>(p&nbsp;<span style="color:blue;">As</span>&nbsp;<span style="color:#2b91af;">BusinessCase</span>)&nbsp;p.IsSignOffSM)
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="text-decoration:underline;"><b>&lt;<span style="color:#2b91af;">BindingOrder</span>(0)&gt;&nbsp;_</b></span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">Public</span>&nbsp;<span style="color:blue;">Property</span>&nbsp;IsSignOffSM()&nbsp;<span style="color:blue;">As</span>&nbsp;<span style="color:blue;">Boolean</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">Get</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">Return</span>&nbsp;GetProperty(_isSignOffSMProperty)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">End</span>&nbsp;<span style="color:blue;">Get</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">Set</span>(<span style="color:blue;">ByVal</span>&nbsp;value&nbsp;<span style="color:blue;">As</span>&nbsp;<span style="color:blue;">Boolean</span>)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;SetProperty(_isSignOffSMProperty,&nbsp;value)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">If</span>&nbsp;value&nbsp;=&nbsp;<span style="color:blue;">True</span>&nbsp;<span style="color:blue;">Then</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">Me</span>.SignOffSMDate&nbsp;=&nbsp;<span style="color:blue;">New</span>&nbsp;<span style="color:#2b91af;">SmartDate</span>(<span style="color:blue;">Date</span>.Now).ToString
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;SetProperty(_SMUserIDProperty,&nbsp;Csla.<span style="color:#2b91af;">ApplicationContext</span>.User.Identity.Name)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">Else</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">Me</span>.SignOffSMDate&nbsp;=&nbsp;<span style="color:blue;">New</span>&nbsp;<span style="color:#2b91af;">SmartDate</span>(<span style="color:blue;">True</span>).ToString
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;SetProperty(_SMUserIDProperty,&nbsp;<span style="color:#a31515;">&quot;&quot;</span>)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">End</span>&nbsp;<span style="color:blue;">If</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">End</span>&nbsp;<span style="color:blue;">Set</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">End</span>&nbsp;<span style="color:blue;">Property</span><br /><span style="color:blue;"><br /></span><span style="color:blue;">Private</span>&nbsp;<span style="color:blue;">Shared</span>&nbsp;<span style="color:blue;">ReadOnly</span>&nbsp;_SignOffSMDateProperty&nbsp;<span style="color:blue;">As</span>&nbsp;<span style="color:#2b91af;">PropertyInfo</span>(<span style="color:blue;">Of</span>&nbsp;<span style="color:#2b91af;">SmartDate</span>)&nbsp;=&nbsp;RegisterProperty(<span style="color:blue;">Of</span>&nbsp;<span style="color:#2b91af;">SmartDate</span>)(<span style="color:blue;">Function</span>(p&nbsp;<span style="color:blue;">As</span>&nbsp;<span style="color:#2b91af;">BusinessCase</span>)&nbsp;p.SignOffSMDate,&nbsp;<span style="color:blue;">New</span>&nbsp;<span style="color:#2b91af;">SmartDate</span>(<span style="color:blue;">True</span>))
+&nbsp;&nbsp;&nbsp;&nbsp;<b><span style="text-decoration:underline;">&lt;<span style="color:#2b91af;">BindingOrder</span>(1)&gt;&nbsp;_</span></b>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">Public</span>&nbsp;<span style="color:blue;">Property</span>&nbsp;SignOffSMDate()&nbsp;<span style="color:blue;">As</span>&nbsp;<span style="color:blue;">String</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">Get</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">Return</span>&nbsp;GetPropertyConvert(<span style="color:blue;">Of</span>&nbsp;<span style="color:#2b91af;">SmartDate</span>,&nbsp;<span style="color:blue;">String</span>)(_SignOffSMDateProperty)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">End</span>&nbsp;<span style="color:blue;">Get</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">Set</span>(<span style="color:blue;">ByVal</span>&nbsp;value&nbsp;<span style="color:blue;">As</span>&nbsp;<span style="color:blue;">String</span>)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;SetPropertyConvert(<span style="color:blue;">Of</span>&nbsp;<span style="color:#2b91af;">SmartDate</span>,&nbsp;<span style="color:blue;">String</span>)(_SignOffSMDateProperty,&nbsp;value)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">End</span>&nbsp;<span style="color:blue;">Set</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">End</span>&nbsp;<span style="color:blue;">Property</span></pre>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>and then have another MapInBindingOrder method </p>
+<p>&nbsp;</p>
+<pre style="font-family:Consolas;font-size:13px;color:black;background:none repeat scroll 0% 0% white;">&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">static</span>&nbsp;<span style="color:blue;">void</span>&nbsp;Map(
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;System.Collections.<span style="color:#2b91af;">IDictionary</span>&nbsp;source,
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">object</span>&nbsp;target,&nbsp;<span style="color:blue;">bool</span>&nbsp;suppressExceptions,
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">params</span>&nbsp;<span style="color:blue;">string</span>[]&nbsp;ignoreList)
+&nbsp;&nbsp;&nbsp;&nbsp;{<br /><br />//TODO: Can we modify this to reflect and get properties on object in our custom attribute order ascending,<br />//and then map the values across???????<br /><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="color:#2b91af;">List</span>&lt;<span style="color:blue;">string</span>&gt;&nbsp;ignore&nbsp;=&nbsp;<span style="color:blue;">new</span>&nbsp;<span style="color:#2b91af;">List</span>&lt;<span style="color:blue;">string</span>&gt;(ignoreList);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">foreach</span>&nbsp;(<span style="color:blue;">string</span>&nbsp;propertyName&nbsp;<span style="color:blue;">in</span>&nbsp;source.Keys)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">if</span>&nbsp;(!ignore.Contains(propertyName))
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">try</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;SetPropertyValue(target,&nbsp;propertyName,&nbsp;source[propertyName]);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">catch</span>&nbsp;(<span style="color:#2b91af;">Exception</span>&nbsp;ex)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">if</span>&nbsp;(!suppressExceptions)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">throw</span>&nbsp;<span style="color:blue;">new</span>&nbsp;<span style="color:#2b91af;">ArgumentException</span>(
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#2b91af;">String</span>.Format(<span style="color:#a31515;">&quot;{0}&nbsp;({1})&quot;</span>,
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#2b91af;">Resources</span>.PropertyCopyFailed,&nbsp;propertyName),&nbsp;ex);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;}<br /><br /><br />Is this approach sound?  Technically doable?<br /><br />I think I like it better as the business object is indicating the best way to map.<br />Thoughts?<br /></pre></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,109 @@
+<html><header><title>(2.0) Proper way to handle child events?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>(2.0) Proper way to handle child events?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/278.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Brian Criswell posted on Monday, June 05, 2006</h2>Many examples have been given for CSLA 1.x showing how to have a parent
+object listen in on the ListChanged and IsDirtyChanged events so that
+the parent object knows to fire its IsDirtyChanged event.&nbsp; The examples
+show which methods to override so that the events are hooked up
+properly on object create, fetch, deserialize and cancel edit. My
+question is which methods must be overridden in 2.0 to properly ensure
+the parent's event handlers are properly set up for each of these
+situations (and any I am missing)?</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, June 05, 2006</h2><P>The places where you need to add the handler hookup are:</P>
+<OL>
+<LI>in an override of OnDeserialized()</LI>
+<LI>in your constructor(s) (assuming you create the object in the child object reference field's declaration like I do in the book</LI>
+<LI>any time you set the child object reference in your code (childRef = blah), which is commonly done in the DataPortal_XYZ methods</LI></OL>
+<P>The hookups for child objects in a collection are already part of BusinessListBase and so no extra work is required there. You only need to do this extra work in a BusinessBase-derived parent object.</P>
+<P>Make sure to properly <EM>unhook</EM> the event handler in the case of #3 as well! Failure to do that can result in dangling references and thus effectively memory leaks.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Brian Criswell replied on Tuesday, June 06, 2006</h2>Thanks for the response, Rocky.&nbsp; I had been bitten by my events stopping working after a CancelEdit() in 1.52, which I am assuming 1.53 fixes, but I wanted to make sure I was not missing anything in the move to 2.0.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, June 06, 2006</h2>
+
+
+
+
+<DIV align=left><SPAN class=859543318-06062006><FONT face=Arial color=#0000ff size=2>If the events do cut off in that case then it is a bug, so 
+please let me know so I can fix it.</FONT></SPAN></DIV><BR>
+<BLOCKQUOTE>
+  <DIV class=OutlookMessageHeader align=left>
+  <HR>
+  <FONT face=Tahoma size=2><B>From:</B> Brian Criswell 
+  [mailto:cslanet@lhotka.net] <BR></FONT></DIV>
+  <DIV></DIV>Thanks for the response, Rocky.&nbsp; I had been bitten by my 
+  events stopping working after a CancelEdit() in 1.52, which I am assuming 1.53 
+  fixes, but I wanted to make sure I was not missing anything in the move to 
+  2.0.<BR></BLOCKQUOTE></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Brian Criswell replied on Tuesday, June 06, 2006</h2>Well, here is a link to my old MSN forum post. http://groups.msn.com/cslanet/general.msnw?action=get_message&amp;mview=0&amp;ID_Message=25568&amp;LastModified=4675564369390016792<br><br>Basically, I had an object that had objects all the way down to the great grandchild level.&nbsp; Changing a lookup value in a great grandchild object would be caught by the child object and possibly change the value of a lookup in the child object.&nbsp; If I did a CancelEdit() on the parent, disposed the form and then added it back to a new instance of the form, changing the lookup in a great grandchild would have no effect on the corresponding child.&nbsp; Unfortunately, I have not had an opportunity to test this under 1.53.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tetranz replied on Monday, July 24, 2006</h2>Resurecting other old post topic. Sorry if I'm a bit behind. <img src="/emoticons/emotion-1.gif" alt="Smile [:)]" /><br><br>I nearly always do (3) below to hook ListChanged events in my parent to fire IsDirtyChanged. <br><br>Where is the correct place to unhook the events? Should I override Clone() and unhook before base.Clone()?<br><br>A little off topic but referring to (2) below. I tend to not create a new collection in the reference field (I leave it null)&nbsp; but create it in DataPortal_Create. I also hook the events there. I just seems more consistent with DataPortal_Fetch. Am I missing a reason to do it differently?<br><br>Thanks<br>Ross<br><br><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div><p>The places where you need to add the handler hookup are:</p>
+<ol>
+<li>in an override of OnDeserialized()</li>
+<li>in your constructor(s) (assuming you create the object in the child object reference field's declaration like I do in the book</li>
+<li>any time you set the child object reference in your code (childRef = blah), which is commonly done in the DataPortal_XYZ methods</li></ol>
+<p>The hookups for child objects in a collection are already part of BusinessListBase and so no extra work is required there. You only need to do this extra work in a BusinessBase-derived parent object.</p>
+<p>Make sure to properly <em>unhook</em> the event handler in the case of #3 as well! Failure to do that can result in dangling references and thus effectively memory leaks.</p></div></BLOCKQUOTE></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, July 24, 2006</h2>
+
+
+
+
+<DIV align=left><SPAN class=512072715-24072006><FONT face=Arial color=#0000ff size=2>Regarding #2, creating the collection in 
+DataPortal_Create() should be totally acceptible.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=512072715-24072006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=512072715-24072006><FONT face=Arial color=#0000ff size=2>Regarding #3, this is one case where the unhooking is 
+(probably) least important. The reason being that an event is really a reference 
+from the source (child) to the subscriber (parent). If you are in the process of 
+dropping your reference to the child, then the GC will get it - ASSUMING NOTHING 
+ELSE REFERENCES THAT CHILD.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=512072715-24072006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=512072715-24072006><FONT face=Arial color=#0000ff size=2>It is that last bit where you need to be careful. If you 
+have a straightforward app, where the only thing referencing your objects is 
+data binding, then it is most likely the case that nothing else would be 
+referencing the child, and you have no problem.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=512072715-24072006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=512072715-24072006><FONT face=Arial color=#0000ff size=2>But if you have a more complex app, with objects 
+referencing other objects, or multiple forms referencing the same objects or 
+whatever - then you could end up with something still referencing that old 
+child, and it still referencing the parent and you could have some unintended 
+consequences (memory leaks, errant events, etc.)</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=512072715-24072006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=512072715-24072006><FONT face=Arial color=#0000ff size=2>What I was specifically referring to in #3 is the common 
+case where you are in DataPortal_XYZ, and you create a new instance of your 
+child.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=512072715-24072006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=512072715-24072006><FONT face=Arial color=#0000ff size=2>In DataPortal_Fetch the reference was probably null to 
+start, so there's no unhook issue, but you should do a hook. 
+</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=512072715-24072006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=512072715-24072006><FONT face=Arial color=#0000ff size=2>In DataPortal_Insert/Update the reference was probably to 
+an object, so doing an unhook is wise.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=512072715-24072006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=512072715-24072006><FONT face=Arial color=#0000ff size=2>Then you need to handle the deserialization case - where 
+the objects come back from the app server. This is best done by overriding 
+OnDeserialized() - a method I put into the framework to support this exactly 
+scenario. That should cover both data portal and Clone() cases 
+automatically.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=512072715-24072006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=512072715-24072006><FONT face=Arial color=#0000ff size=2>Rocky</FONT></SPAN></DIV><BR>
+<BLOCKQUOTE>
+  <DIV class=OutlookMessageHeader align=left>
+  <HR>
+  <FONT face=Tahoma size=2><B>From:</B> tetranz [mailto:cslanet@lhotka.net] 
+  <BR><B>Sent:</B> Monday, July 24, 2006 9:43 AM<BR><B>To:</B> 
+  rocky@lhotka.net<BR><B>Subject:</B> Re: [CSLA .NET] (2.0) Proper way to handle 
+  child events?<BR></FONT><BR></DIV>
+  <DIV></DIV>Resurecting other old post topic. Sorry if I'm a bit behind. <IMG alt="Smile <img src=" />" src="/emoticons/emotion-1.gif"><BR><BR>I nearly always do (3) 
+  below to hook ListChanged events in my parent to fire IsDirtyChanged. 
+  <BR><BR>Where is the correct place to unhook the events? Should I override 
+  Clone() and unhook before base.Clone()?<BR><BR>A little off topic but 
+  referring to (2) below. I tend to not create a new collection in the reference 
+  field (I leave it null)&nbsp; but create it in DataPortal_Create. I also hook 
+  the events there. I just seems more consistent with DataPortal_Fetch. Am I 
+  missing a reason to do it differently?<BR><BR>Thanks<BR>Ross<BR><BR>
+  <BLOCKQUOTE>
+    <DIV><IMG src="/Themes/default/images/icon-quote.gif"> 
+    <STRONG>RockfordLhotka:</STRONG></DIV>
+    <DIV>
+    <P>The places where you need to add the handler hookup are:</P>
+    <OL>
+      <LI>in an override of OnDeserialized() 
+      <LI>in your constructor(s) (assuming you create the object in the child 
+      object reference field's declaration like I do in the book 
+      <LI>any time you set the child object reference in your code (childRef = 
+      blah), which is commonly done in the DataPortal_XYZ methods</LI></OL>
+    <P>The hookups for child objects in a collection are already part of 
+    BusinessListBase and so no extra work is required there. You only need to do 
+    this extra work in a BusinessBase-derived parent object.</P>
+    <P>Make sure to properly <EM>unhook</EM> the event handler in the case of #3 
+    as well! Failure to do that can result in dangling references and thus 
+    effectively memory leaks.</P></DIV></BLOCKQUOTE><BR><BR><BR></BLOCKQUOTE></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

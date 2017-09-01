@@ -1,0 +1,23 @@
+<html><header><title>error message binding to a datagrid </title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>error message binding to a datagrid </h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3520.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>griff posted on Wednesday, September 12, 2007</h2><P><FONT face=Arial size=2>Hi</FONT></P>
+<P><FONT face=Arial size=2>I get an error message binding to a datagrid (asp.net ) </FONT></P><FONT face=Arial>
+<P><FONT size=2>&lt;DataBinder.Eval: 'FOLibrary.DFList_ro+DFListInfo' does not contain a property with the name CaseNumber&gt;</FONT></P>
+<P><FONT size=2>I am using a ReadOnlyCollectionBase called DFList with DFListInfo under CSLA 1.53</FONT></P>
+<P><FONT size=2>There is a property CaseNumber present but it seems that its not accessible??</FONT></P>
+<P><FONT size=2>Can anyone help</FONT></P>
+<P><FONT size=2>Many thanks</FONT></P>
+<P><FONT size=2>Richard</FONT></P>
+<P><FONT size=2></FONT>&nbsp;</P></FONT>
+<P><FONT face=Arial size=2></FONT>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Wednesday, September 12, 2007</h2><P>As I recall the data binding in ASP.Net requires the use of&nbsp;Properties, not Fields.<BR>Are you sure it is a real Property and not a Public Field?</P>
+<P>Joe</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>griff replied on Wednesday, September 12, 2007</h2><P>Hi</P>
+<P>the read collection object uses a structure to hold data (as generated from codesmith) I think the bprobme lies here so I've now changed by objects to use a read only BO (to hold data) and the Read Only collection that polulates the RO.....and this works</P>
+<P>Richard</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Thursday, September 13, 2007</h2><P>I used to use Structures and later changed to embedded classes.</P>
+<P>I recall using empty Property Set blocks for some reason.</P>
+<P>So instead of a ReadOnly property, it would be a normal property but with nothing in the Set block so that it was essentially read only.</P>
+<P>Maybe you could try that and see if it works.</P>
+<P>Or forget the whole thing since your alternate solution is running.</P>
+<P>Joe</P>
+<P>&nbsp;</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

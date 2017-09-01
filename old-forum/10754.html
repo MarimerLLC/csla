@@ -1,0 +1,103 @@
+<html><header><title>How to catch controlled error from inside the Update Stored Procedure from SQL Server.</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>How to catch controlled error from inside the Update Stored Procedure from SQL Server.</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10754.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>tarekahf posted on Monday, October 10, 2011</h2><p>I am using the same logic&nbsp;of CSLA .NET for VS 2005 (from the book), to implement the Update Stored Procedure and to prevent simultaneous updates to the same record by different users.</p>
+<p>I am really happy that this logic is working fine, and Yesterday, I received the first report of such case after I deployed the Staff Performance Management System Form (SPMS)&nbsp;a month ago. See a copy of the report below:</p>
+<p><a href="https://docs.google.com/viewer?a=v&amp;pid=explorer&amp;chrome=true&amp;srcid=0B97clwYte2SHYjRiZTUzMWUtNzM2YS00MmZmLWI1MDEtNzViYTM3YWVhZDQy&amp;hl=en_GB">https://docs.google.com/viewer?a=v&amp;pid=explorer&amp;chrome=true&amp;srcid=0B97clwYte2SHYjRiZTUzMWUtNzM2YS00MmZmLWI1MDEtNzViYTM3YWVhZDQy&amp;hl=en_GB</a></p>
+<p>However, the error message is very huge.</p>
+<p>I have the following questions:</p>
+<p>1. Why the message with Stack Trace is that very long ?</p>
+<p>2. I am able to control other errors (Validation for example), and display only the Error Message without the full StackTrace. But for this error, I am not sure how to identify this specific error and diaply a friendly message instead of that very long one. How I can catch this very specific error ?</p>
+<p>Tarek.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Monday, October 10, 2011</h2><p>1. The stacktrace show the number of levels where the execption has been handled and rehtrown.</p>
+<p>2. A nicer way is to catch the SqlException in your DAL code and throw your own serializable exception with just a nicer message. </p>
+<p>You can actually add this code in just on place, look at the sample Samples\NET\cs\CustomErrorHandling.</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tarekahf replied on Monday, October 10, 2011</h2><p>(Note: Why I am unable to add Rich Text Editing to this forum posts ?)</p>
+<p>Thanks Jonny,</p>
+<p>I was checking the samples, but seems that there are not such samples for VS 2005 and VB, right ?</p>
+<p>I appreciate it if you could point me to more specific example of how to do that &quot;add error control on just one place&quot;, in the context of VS 2005 and VB.</p>
+<p>Or, jsut to go for the simple way, how I can catch that specific error whic I am throwing form SQL Server as follows:</p>
+<p><br />USE [SPMSFormDB]<br />GO<br />/****** Object:&nbsp; StoredProcedure [dbo].[uspSPMSFormUpdate]&nbsp;&nbsp;&nbsp; Script Date: 10/10/2011 11:16:18 ******/<br />SET ANSI_NULLS ON<br />GO<br />SET QUOTED_IDENTIFIER ON<br />GO<br />ALTER PROCEDURE [dbo].[uspSPMSFormUpdate]<br />&nbsp;(<br />&nbsp;&nbsp;@StaffID varchar(10),<br />&nbsp;&nbsp;@ReviewFrom varchar(7),<br />&nbsp;&nbsp;@ReviewFromNew varchar(7),<br />&nbsp;&nbsp;@ReviewTo varchar(7),<br />&nbsp;&nbsp;@StaffNameEng nvarchar(150),<br />&nbsp;&nbsp;@FormFileName varchar(25),<br />&nbsp;&nbsp;@StsCde varchar(25) = null,<br />&nbsp;&nbsp;@StsUpdBy varchar(50) = null,<br />&nbsp;&nbsp;@StsUpdTime datetime = null,<br />&nbsp;&nbsp;@lastChanged timestamp = null,<br />&nbsp;&nbsp;@SubmitAction varchar(25) = null,<br />&nbsp;&nbsp;@newLastChanged timestamp output<br />&nbsp;) <br />AS<br />begin try</p>
+<p>&nbsp;declare @MSG varchar(200)<br />&nbsp;update SPMSForm<br />&nbsp;set <br />&nbsp;&nbsp;ReviewFrom = @ReviewFromNew,<br />&nbsp;&nbsp;ReviewTo = @ReviewTo,<br />&nbsp;&nbsp;StaffNameEng = @StaffNameEng,<br />&nbsp;&nbsp;FormFileName = @FormFileName,<br />&nbsp;&nbsp;StsCde = @StsCde,<br />&nbsp;&nbsp;StsUpdBy = @StsUpdBy,<br />&nbsp;&nbsp;StsUpdTime = @StsUpdTime,<br />&nbsp;&nbsp;SubmitAction = @SubmitAction<br />&nbsp;where <br />&nbsp;&nbsp;StaffID = @StaffID and<br />&nbsp;&nbsp;ReviewFrom = @ReviewFrom and<br />&nbsp;&nbsp;LastChanged = @lastChanged <br />&nbsp;if @@ROWCOUNT = 0<br />&nbsp;begin<br />&nbsp;&nbsp;set @MSG = &#39;SPMS Form Update Failed for Staff ID &#39;&#39;&#39; +&nbsp; @StaffID + &#39;&#39;&#39;. Record does not exist or it has been changed by someone.&#39;<br />&nbsp;&nbsp;RAISERROR(@MSG, 16, 1)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;<br />&nbsp;end<br />&nbsp;<br />&nbsp;SELECT @newLastChanged = LastChanged <br />&nbsp;FROM SPMSForm WHERE StaffID = @StaffID<br />&nbsp;/*<br />&nbsp;&nbsp;To Display the last timestamp used in the Database<br />&nbsp;&nbsp;SELECT [master].[dbo].fn_sqlvarbasetostr(@@DBTS)<br />&nbsp;*/<br />end try<br />begin catch<br />&nbsp;EXEC uspRethrowError;<br />end catch</p>
+<p><br />Thanks,</p>
+<p>Tarek.</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>vschaak replied on Monday, October 10, 2011</h2><p>Hi Tarek,</p>
+<p>without beeing an absolute CSLA-Pro like Jonny (or others) I&#39;d suggest something like</p>
+<p><em>TRY</em></p>
+<p><em>[Data access code]</em></p>
+<p><em>CATCH ex as DataError [this has to be of the kind your DB-Provider throws]</em></p>
+<p><em>THROW new myError(&quot;Entity has been changed by someone else&quot;)</em></p>
+<p><em>END TRY</em></p>
+<p>put into you DP-methods. I&#39;d even strongly recommend not to throw such messages to the user/UI, since it uncovers probably sensitive information about your DB.</p>
+<p>Let us know if it works for you.</p>
+<p>HTH</p>
+<p>Volker</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tarekahf replied on Tuesday, October 11, 2011</h2>Thanks Volker,
+
+I think I understand what you mean. But, let me clarify the difficulty I am facing to implement this.
+
+There are 2 types of errors expected from the Update SQL Stored Procedure:
+
+1. The error coming form the THROW statement in case someone else updated the record since last time it was cached.
+
+2. Any other error: Unexpected errors.
+
+My question, How I can throw a nice ERROR to the user only and only in case the error is thrown due to simultaneous update issue ?
+
+Also, in case there are other unexpected errors, I think it is good to thorw the Error Message with a complete Stack Trace, becuasem as per my experience, if I do not get a full stack trace, then it will be nearly impossible to know where the error occured exactly, as you knwo, this is the case especially I am using CSLA.
+
+You have indicated that you do not recommed to throw such messages to the UI, but, how I can debug the error, when reported by the user ? In this case, if there is unexpected error, I need to know where it occurred in the code ? What do you do in this case ?
+
+Tarek.</div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Tuesday, October 11, 2011</h2><p><i>RAISERROR can return either:</i></p>
+<ul>
+<li>
+<p><i>A user-defined error 
+message that has been created using the sp_addmessage system stored 
+procedure. These are messages with a message number greater than 50000 
+that can be viewed in the sys.messages catalog view.</i></p>
+</li>
+<li>
+<p><i>A message string specified in the RAISERROR statement.</i></p>
+</li>
+</ul>
+<p><i>RAISERROR can also:</i></p>
+<ul>
+<li>
+<p><i>Assign a specific error number, severity, and state.</i></p>
+</li>
+<li>
+<p><i>Request that the error be logged in the Database Engine error log and the Microsoft Windows application log.</i></p>
+</li>
+<li>
+<p><i>Substitute argument values into the message text, much like the C language <span><span class="input">printf_s</span></span> function.</i></p>
+</li>
+</ul>
+<p><i>Is a user-defined error message number stored in the <strong>sys.messages</strong> catalog view using <strong>sp_addmessage</strong>. Error numbers for user-defined error messages should be greater than 50000. When <span class="parameter">msg_id</span> is not specified, RAISERROR raises an error message with an error number of 50000.</i></p>
+<p><b>So you should be able to return a specific error number that you can test for in you exception handler to determin it is a user message (&gt;49999) or a system error.</b></p>
+<p><a href="http://msdn.microsoft.com/en-us/library/ms177497.aspx">http://msdn.microsoft.com/en-us/library/ms177497.aspx</a></p>
+<p><a href="http://msdn.microsoft.com/en-us/library/ms177497.aspx">http://msdn.microsoft.com/en-us/library/ms178592.aspx</a></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tarekahf replied on Tuesday, October 11, 2011</h2>Thanks to all who helped.... all your feedabck was truely useful !
+
+Check the attached image, where I highlighted all the areas I changed, and the result:
+
+https://docs.google.com/leaf?id=0B97clwYte2SHY2FlNjdlZmYtMWQ4Yi00YTQyLTllMTctM2VjNjk2OTA5NzBj&amp;hl=en_GB
+
+(but still not sure why I am unable to get Ritch Text Editing in this forum ?!)
+
+Thank you again.
+
+Tarek.</div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>StefanCop replied on Monday, October 17, 2011</h2><p>&gt; but still not sure why I am unable to get Ritch Text Editing in this forum</p>
+<p>In your profile there&#39;s an option (site options / content editor). I have &quot;enhanced&quot; set.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tarekahf replied on Monday, October 17, 2011</h2><p>Oh <span style="font-size:large;">YES!</span> .. it is working now <img src="http://forums.lhotka.net/emoticons/emotion-11.gif" alt="Cool" /> ...</p>
+<p>Thanks</p>
+<p>Tarek.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tiago replied on Monday, October 17, 2011</h2><p><div style='padding-left: 50px;background-color:silver'><b>StefanCop<br></b>
+<p>&gt; but still not sure why I am unable to get Ritch Text Editing in this forum</p>
+<p>In your profile there&#39;s an option (site options / content editor). I have &quot;enhanced&quot; set.</p>
+<div style="CLEAR:both;"></div>
+</div></p>
+<p>This is Off Topic but I also had the same issue a few weeks ago. Furthermore I couldn&#39;t edit my own messsges as the menu wasn&#39;t showing up (the popup menu under &quot;More&quot;). The rich text issue went away by itself (meanig I don&#39;t know how I did it) but the later issue persisted until I changed to a new computer. This problem did show up on Internet Explorer and Chrome. So it didn&#39;t seem like a browser configuration issue. On the new computer I have no issues under IE or Chrome. So the mystery remains...</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tarekahf replied on Monday, October 17, 2011</h2><p>Try the following with IE:</p>
+<p>1. Reset Advanced Settings,</p>
+<p>2. Reset IE Settings,</p>
+<p>3. Delete Browser Cache,</p>
+<p>4. Play around with Compatibility Mode Settings.</p>
+<p>5. Remove and reinstall IE.</p>
+<p>I am nearly 99.987% sure that one of the above will solve the problem.</p>
+<p>Tarek.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>vschaak replied on Tuesday, October 11, 2011</h2><p>Hi Tarek,</p>
+<p>nice to have been of some help.</p>
+<p>Of course this is some sort of dilemna. On one hand, we want to get as much exception-info as possible and on the other hand, we want to hide as much of the inside of our apps. The second aspect surely becomes more and more relevant as your app is used by a greater number of users and if they are, at least to a certain degree, anonym users.</p>
+<p>Since SQL-injection is a major entry door for c/s apps and can be for n-tier apps, if not properly handled, I tend to not publish any DB-details not server-/instance name (try to type a wrong PWD in your connection string and examine the exception details-&gt; the username is published!)&nbsp;nor credentials or names of tables, views. sprocs etc.. (Sprocs can help adding another layer of abstraction, so no table-access is needed for the apps DB-user, thereby adding another barrier) For most DB-related exceptions, your DAL could probably&nbsp;be the best place to handle them... An exception may read &quot;Error while connecting to the database&quot; or &quot;DB-Connection data incorrect&quot; but not &quot;Error connecting user myDBUser&quot;<br />Also, I think handling CSLA as some sort of &quot;black box&quot;, so you don&#39;t need to publish the way your data is routed through the framework, is a good thing.</p>
+<p>And of course testing, testing, testing (a process I have to learn, too)</p>
+<p>Best wishes from germany</p>
+<p>Volker</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

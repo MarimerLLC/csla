@@ -1,0 +1,65 @@
+<html><header><title>Validation Rule for two Property Strange</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Validation Rule for two Property Strange</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/12092.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>st3fanus posted on Friday, July 26, 2013</h2><p>Hi all..</p>
+<p>I&#39;m learning about Business Rules&nbsp; Engine on CSLA 4, so I post my another question on http://forums.lhotka.net/forums/p/12091/56013.aspx#56013, thanks jonny :) </p>
+<p>I have an example for my real rule which is I don&#39;t understand it&#39;s behavior.</p>
+<p>&nbsp; public class CardNumberCustomerRule : BusinessRule<br />&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public CardNumberCustomerRule(Csla.Core.IPropertyInfo primaryProperty, <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Csla.Core.IPropertyInfo custProperty)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; : base(primaryProperty)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; InputProperties = new List&lt;Csla.Core.IPropertyInfo&gt; { PrimaryProperty, custProperty };<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br /><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; protected override void Execute(RuleContext context)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ........<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br />&nbsp;&nbsp;&nbsp; } // end of class</p>
+<p>&nbsp;</p>
+<p>My Question is : this rule is called twice, which are :</p>
+<p>1. when my custProperty on my BO is set , use SetProperty ( this is call FIRST, I don&#39;t know why the rule called on this step ? ) Am I wrong if My Understanding at this step is the rule should not be run ?</p>
+<p>2. when my PrimaryProperty on my BO is set , use SetProperty ( I Accept, and this is what I want )</p>
+<p>&nbsp;</p>
+<p>thanks a lot </p>
+<p>&nbsp;</p>
+<p>stefanus</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Friday, July 26, 2013</h2><p>The InputProperties is considered as Dependency.</p>
+<p>Take f.ex a rule that validates StartDate and EndDate - and StartDate must be before EndDate. The rule must run when ANY of the input properties is changed to make sure that the validation is correct.</p>
+<p>So the basic principle is&nbsp;</p>
+<p>
+<ul>
+<li>you have custProperty as input property because in your execute method of the rule you need som data stored in CustProperty</li>
+<li>and when cust changes this will also affect the result of the rule&nbsp;</li>
+<li>so your rule must be called when any of the input properties is changed.</li>
+</ul>
+</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>st3fanus replied on Friday, July 26, 2013</h2><p>Hi jonny..</p>
+<p>I&#39;m still confusing about this subject, let me give you my understanding currently</p>
+<p>1. If every input properties changed then the rule must be run, honestly I don&#39;t know about this ( I&#39;ll read csla ebook more ), BUT from this conclusion, I have another question about what is the significant availability of primary property ? (currently before your explained, I suppose that rule is run when primary property changed)</p>
+<p>&nbsp;</p>
+<p>2. In my example above , what I want to go is :</p>
+<p style="padding-left:30px;">I want to make a confirmation if my primary property value is exist on database based on custproperty to lookup from database, but I want that this rule is called when my primary property changed ONLY. So on my prev post I ask about IF rule is shared for every instance of Business Object Type =&gt;and I got your explained ( very well :) </p>
+<p style="padding-left:30px;">Because of this, I doubt that I can received custproperty value on MyRule object private property. I read on ebook that property of business rule can&#39;t be changed after first rule alive.</p>
+<p style="padding-left:30px;">&nbsp;</p>
+<p style="padding-left:30px;">Could you give your suggestions ?</p>
+<p style="padding-left:30px;">&nbsp;</p>
+<p style="padding-left:30px;">thanks a lot</p>
+<p style="padding-left:30px;">&nbsp;</p>
+<p style="padding-left:30px;">stefanus</p>
+<p style="padding-left:30px;">&nbsp;</p>
+<p style="padding-left:30px;">&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Friday, July 26, 2013</h2><p>1. I believe this behavior was added in the 4.2 version - as nearly all the times you had InputProperties then you had to add similar Dependency rules to make sure the validation was correct as per the field values.</p>
+<p>2. You may change your rule to inherit from CommonBusinessRule and set CanRunAsAffectedProperty = false. This will exclude the rule from running when the PrimaryProperty is an AffectedProperty of another rule or one of the aggregated InputPropeties for this fields rules has changed.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>st3fanus replied on Friday, July 26, 2013</h2><p>Hi jonny</p>
+<p>thanks for your responds, But I still do not understand with your no 2 suggestion, </p>
+<p>CommonBusinessRule ? is my own definition rule or from csla base class ? </p>
+<p>could you show me an example please ? thanks a lot before</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>stefanus</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Friday, July 26, 2013</h2><p>Make your rule inherit from Csla.Rules.CommonRules.CommonBusinessRule</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>st3fanus replied on Friday, July 26, 2013</h2><p>Hi jonny..</p>
+<p>yes It&#39;s worked, I get what I want to do.</p>
+<p>But I have to learn more about Business Rule System on CSLA. Currently what I know about CSLA I got it from CSLA ebook series.</p>
+<p>what you explained or your suggestion I did not find it from ebook.</p>
+<p>&nbsp;</p>
+<p>I think I have to make a conclusion for my self. [ I think I have more questions for this area, but I will arrange that systematically so I can take a conclusion ]</p>
+<p>thanks a lot jonny</p>
+<p>&nbsp;</p>
+<p>stefanus</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Friday, July 26, 2013</h2><p>You should also read my blog posts about changes to the rule engine in 4.2 and 4.5</p>
+<p>See this post for links:&nbsp;<a href="http://forums.lhotka.net/forums/p/12087/56017.aspx#56017">http://forums.lhotka.net/forums/p/12087/56017.aspx#56017</a></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>st3fanus replied on Friday, July 26, 2013</h2><p>Nice jonny..</p>
+<p>thanks a lot, I&#39;ll read your blog soon</p>
+<p>&nbsp;</p>
+<p>stefanus</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>st3fanus replied on Thursday, August 01, 2013</h2><p>Hi jonny..</p>
+<p>I&#39;ve read your blog about rule engine 4.2.</p>
+<p>1. the default value of CanRunAsAffectedProperty is TRUE, </p>
+<p style="padding-left:30px;">SO =&gt; every property in AffectedProperties CHANGED the rule is execute ? Am I right ?</p>
+<p>2. Use your blog as an example </p>
+<p style="padding-left:30px;">If a Rule is called / triggered with change of each property in AffectedProperties, in your example StartDate and EndDate,</p>
+<p style="padding-left:30px;">why we need add a rule twice for StartDate and EndDate ?</p>
+<p>thanks a lot</p>
+<p>&nbsp;</p>
+<p>stefanus</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Friday, August 02, 2013</h2><p>1. RuleEngine will rerun rules for affected properties from the &quot;changed&quot; property. Only 1 level down.&nbsp;</p>
+<p>2.You only need 2 rules so that error icon is shown on both StartDate and EndDate and rechecked whenever one of them is changed.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

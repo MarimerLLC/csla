@@ -1,0 +1,11 @@
+<html><header><title>CSLA 4: Collection Rules | Templates</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA 4: Collection Rules | Templates</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9812.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>mehgerbil posted on Monday, November 29, 2010</h2><p>I&#39;m enjoying my foray into CSLA 4.</p>
+<p>#1</p>
+<p>Question: What is a good strategy for handling a collection rule.&nbsp; That is, a rule that is based upon the characteristics (totals)&nbsp;of an entire collection.&nbsp; For example, I&#39;ve a collection that represents a list of percentages that may be applied as payments on a debt but the total of the percentages in the payments collection should never be more than 100%.</p>
+<p>Payment 1: 20%, Payment 2: 30%, Payment 3: 70%</p>
+<p>In that example, we&#39;d have a total of 120% which should make the collection invalid.&nbsp; It seems that it may be handled in the parent object but I don&#39;t know if that is supported or not.</p>
+<p>&nbsp;</p>
+<p>#2</p>
+<p>I thought I saw templates for CSLA 4 somewhere but now I cannot find them.&nbsp; Can I get a head&#39;s up?</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Monday, November 29, 2010</h2><p>#1</p>
+<p>Typically you&#39;d put this rule into the parent object containing the collection, and trigger it to run in OnChildChanged.</p>
+<p>#2</p>
+<p>Look in the Support folder, where you&#39;ll find snippets and &quot;templates&quot;. There are no actual Visual Studio templates for CSLA 4. We had some for 3.x, but it turns out to be really hard to maintain the vsix installer and the volunteer who was working on that hasn&#39;t had the time to keep it up to date.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

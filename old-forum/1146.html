@@ -1,0 +1,20 @@
+<html><header><title>StatusBusy class</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>StatusBusy class</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/1146.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>jjm_ewu posted on Wednesday, September 06, 2006</h2><P>Now this might be me but the StatusBusy class isn't work like it should be. When testing out the Project Demo from the main window and you are logged out this is the code that runs....</P><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>private</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>void</FONT><FONT size=2> OK_Click(</FONT><FONT color=#0000ff size=2>object</FONT><FONT size=2> sender, </FONT><FONT color=#008080 size=2>EventArgs</FONT><FONT size=2> e)</P>
+<P>{</FONT><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;</FONT></P>
+<BLOCKQUOTE dir=ltr>
+<P><FONT color=#0000ff size=2>using</FONT><FONT size=2> (</FONT><FONT color=#008080 size=2>StatusBusy</FONT><FONT size=2> busy = </FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> </FONT><FONT color=#008080 size=2>StatusBusy</FONT><FONT size=2>(</FONT><FONT color=#800000 size=2>"Verifying credentials..."</FONT><FONT size=2>))</P></BLOCKQUOTE>
+<BLOCKQUOTE dir=ltr>
+<P>{</P>
+<BLOCKQUOTE dir=ltr>
+<P>ProjectTracker.Library.Security.</FONT><FONT color=#008080 size=2>PTPrincipal</FONT><FONT size=2>.Login(</FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>.UsernameTextBox.Text, </FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>.PasswordTextBox.Text);</P></BLOCKQUOTE>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>.Close();</P></BLOCKQUOTE>
+<P>}</P>
+<P><FONT size=3>So here we are running through the code and first thing that is suppose to happen is the status is suppose to get set to "Verifying credentials.....". Hmm this doesn't happen on my box. Actually no matter what the status is set by it never gets set. Now my thoughts are one of two things are happening...</FONT></P>
+<P><FONT size=3>1. This is only happening to me and my computer</FONT></P>
+<P><FONT size=3>2. The message for the refresh isn't happening. Actually, a UI threading, message pump issue is what I am thinking.</FONT></P>
+<P><FONT size=3>Anyways any ideas would be great to hear.</FONT></P>
+<P><FONT size=3></FONT>&nbsp;</P>
+<P><FONT size=3>James</FONT></P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>karl replied on Thursday, September 07, 2006</h2><P>I had the same problem, fixed it with a My.Application.DoEvents. </P><FONT size=2>
+<P>mMain.pnlStatus.Text = value</P>
+<P></FONT><FONT color=#0000ff size=2>My</FONT><FONT size=2>.Application.DoEvents()</P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>figuerres replied on Thursday, September 07, 2006</h2>it may be better to just get the control to update .... app.dovents is kinda "overkill" to get one control to update.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Thursday, September 07, 2006</h2>Its a UI threading thing; the Login is blocking the UI thread.&nbsp; You can run the code in the background, but it might make it hard to use that StatusBusy class.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>DansDreams replied on Tuesday, December 05, 2006</h2>Since windows forms threading (or simplicity thereof) is going to prevent this thing from really doing much useful, has anybody found a way to use it that works.&nbsp; I really like the concept.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Architecture Astronaut replied on Monday, January 29, 2007</h2>I just call Refresh on my StatusStrip in the StatusBusy constructor.&nbsp; That seems to do the trick.<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

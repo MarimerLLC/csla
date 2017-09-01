@@ -1,0 +1,18 @@
+<html><header><title>Count Rule with AddNewCore</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Count Rule with AddNewCore</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4835.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>sgraham posted on Monday, May 12, 2008</h2><P>I have a parent object that contains a collection of children.</P>
+<P>Parent -&gt; ChildCollection - &gt; Child</P>
+<P>I have a business rule that the parent must have at least&nbsp;two children (rule is attached to "Children" attribute).&nbsp; In order to track counts and changes, the parent has&nbsp;AddChild and RemoveChild methods which call the PropertyHasChanged("Children").</P>
+<P>I want to allow grid additions (using AddNewCore and AllowNew = true).&nbsp; But, this model allows the child collection to do it's own add so the parent isn't aware of the change.</P>
+<P>What can I do?</P>
+<P>Is there a different/better way to implement the rule?</P>
+<P>Is there a way for the child to nofity the parent?</P>
+<P>Thoughts?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Monday, May 12, 2008</h2><P>Sean,</P>
+<P>2 ideas.</P>
+<P>1. Better way to implement the rule? I don't know about better - but here is another way.</P>
+<P>I sometimes override IsValid and before calling MyBase.IsValid I will call Validationrules.CheckRules("Children"). </P>
+<P>I usually only do this with rules which are not attached to real properties and I just use a fake property name. I only want them to run after all the property sets have occurred - the most common example in my web forms is the use of checkboxes - I have a rule that at least one of them must be checked - why bother checking the rule 10 times when I only need it to run once after they are all evaluated? This may not work well in a Winforms environment though. Depends on how early you want the rule evaluated. My Save button always calls IsValid before attempting the save so I know if the rule is broken or not.</P>
+<P>&nbsp;</P>
+<P>2. Is there a way for the child to nofity the parent?</P>
+<P>Yes. I do not do it but there have been many posts on the topic in the past. In fact the issue has been such a problem that Rocky addressed it in 3.5 so that it happens automatically. (I think.) He has a whole section of code on managing child objects automatically. So you can either dig through some old threads or wait for Andy to post the solution in his response. &lt;g&gt;</P>
+<P>Joe</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sgraham replied on Monday, May 12, 2008</h2><P>I'm still on 2.x so option 2 isn't available to be at this point</P>
+<P>But, option 1 worked great!&nbsp; Thanks for the help!</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

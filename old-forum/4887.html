@@ -1,0 +1,159 @@
+<html><header><title>CSLA 3.5 Edit Level Bug</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA 3.5 Edit Level Bug</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4887.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>rkelley posted on Thursday, May 22, 2008</h2><P>Rocky,</P>
+<P>There seems to be a bug with regards to edit level if you are using Managed fields (PropertyInfo) for your field declarations. </P>
+<P>I have a project that has multiple objects with Children and some with Grandchildren. I kept getting Edit Level Mismatch in wierd places so I downloaded your rootChildGrandChild test app and my objects did not look like yours with regards to Edit Levels. </P>
+<P>So I converted my app to use CSLA 2 style fields like the test app and everything worked fine. Then I converted your test app to managed fields and it yielded erroneous results like my app did previously.</P>
+<P>From my small amount of slueth work it appears that UndoableBase propagates the call to the child collections on line 145 </P>
+<P><PRE>// this is a child object, cascade the call
+                  if (!_bindingEdit || value is FieldManager.FieldDataManager)
+                    ((Core.IUndoableObject)value).CopyState(this.EditLevel + 1);
+</PRE>
+<P></P>
+<P>This only happens when using managed fields as the old style field declaration does not match the criteria.</P>
+<P>But shouldnt the field manager be smart enough to propogate the child calls or not?</P>
+<P>I hope I am clear enough, I can provide more detail if needed.</P>
+<P>Ryan</P><PRE></PRE></FONT></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, May 22, 2008</h2><P>Thanks for researching this issue.</P>
+<P>I am not sure what you are suggesting for a solution though?</P>
+<P>UndoableBase cascades the call to FieldManager. In the FieldDataManager object the call is then cascaded to any child objects.</P>
+<P>Oh, are you saying that the FM needs to include the _bindingEdit check before cascading the call?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, May 22, 2008</h2><P>I have changed the 3.5.1 C# code in svn to pass the BindingEdit value to each child so the child can decide whether to act on the method call. This inversion of control makes the code cleaner overall, and appears to solve the problem.</P>
+<P>Can you grab the current code from svn and see if it resolves your issue(s)?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rkelley replied on Friday, May 23, 2008</h2><P>Rocky,</P>
+<P>I am downloading the SVN version now, will test as soon as I get a chance today. </P>
+<P>Ryan</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, May 23, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>You should be able to do a checkout with no need for
+credentials.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><a href="http://www.lhotka.net/cslanet/Repository.aspx">http://www.lhotka.net/cslanet/Repository.aspx</a><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> rkelley
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Friday, May 23, 2008 7:52 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] CSLA 3.5 Edit Level Bug<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Rocky,<o:p></o:p></p>
+
+<p>When trying to import the repository with TortiseSVN I keep getting prompted
+for a username and password, which I can't get to work. Any ideas? I would love
+to test this issue as I think it may fix the problem.<o:p></o:p></p>
+
+<p>Ryan<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rkelley replied on Friday, May 23, 2008</h2><P>Rocky,</P>
+<P>The changes appear to fix the edit level issue for child objects while loading an existing object. However when you modify a child object on the existing parent, or create a new parent you get edit level mismatch exceptions. I am digging into this a bit deeper to see if i can give you some examples on how to replicate the problem.</P>
+<P>Ryan</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rkelley replied on Friday, May 23, 2008</h2><P>Rocky, </P>
+<P>Problem number 1 is easily replicated with your RootChildGrandchildTest. Just try to add a new row in the grid and the app will get stuck in an endless loop on lines 379 and 380 in Core.UndoableBase.cs . I am not sure what is causing this, except for the obvious, bindingEdit = true so it never goes in to update the edit level. </P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rkelley replied on Monday, May 26, 2008</h2><P>Rocky,</P>
+<P>I made a change in my BusinessListBase class, well its more of a hack really and I know it is not the best way to fix this. But here is what I did:</P>
+<P><PRE>private bool _firstTime = true;
+
+    void Core.IUndoableObject.CopyState(int parentEditLevel, bool parentBindingEdit)
+    {
+        if (!parentBindingEdit || _firstTime)
+        {
+
+            CopyState(parentEditLevel);
+            _firstTime = false;
+        }
+    }
+</PRE>&nbsp;
+<P>This is lines 230 - 240 in BusinessListBase. With this change it lets the edit level increase 1 time to prevent the endless loop from occurring. Seems to work fine in the UI on the RootChildGrandchildtest app, and the edit levels appear to match.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, May 27, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Try the updated code in svn (FieldDataManager and UndoableBase) &#8211;
+I think I have the issue(s) resolved now.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> rkelley
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Friday, May 23, 2008 5:08 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: CSLA 3.5 Edit Level Bug<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Rocky,<o:p></o:p></p>
+
+<p>The changes appear to fix the edit level issue for child objects while
+loading an existing object. However when you modify a child object on the
+existing parent, or create a new parent you get edit level mismatch exceptions.
+I am digging into this a bit deeper to see if i can give you some examples on
+how to replicate the problem.<o:p></o:p></p>
+
+<p>Ryan<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rkelley replied on Tuesday, May 27, 2008</h2><P>Rocky,</P>
+<P>This fix seems to be working great! I am able to save and cancel all objects in testing right now.</P>
+<P>The one problem I am having though, which I will make a new post for, is that if I am using an infragistics grid and I call CancelEdit() the edit levels to do reset on one of my grandchild objects in the collection. It works fine with 2 windows grids or even with a Janus Grid though.</P>
+<P>Ryan</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

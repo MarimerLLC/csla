@@ -1,0 +1,9 @@
+<html><header><title>VS 2010 RC</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>VS 2010 RC</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/8517.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>GA30 posted on Thursday, February 11, 2010</h2><p>Hello Everyone,</p>
+<p>Does anyone know if there are any plans to release a CSLA build against VS 2010 RC? I believe the latest build is&nbsp;3.8.2. For now I believe I can just manually upgrade if necessary. Thank you</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Curelom replied on Thursday, February 11, 2010</h2><p>VS 2010 can work with multiple framework targets.&nbsp; So it should work as it with framework 3.5.&nbsp; I&#39;ve upgraded CSLA&nbsp;to framework 4 with it just needing a few reference changes and haven&#39;t seen any issues yet, but it&#39;s only been a day.</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Thursday, February 11, 2010</h2><p>Generally it should work pretty well. </p>
+<p>Known issues:</p>
+<ul>
+<li>There are some breaking changes in MVC 2 (compared to MVC 1) that block the Csla.Web.Mvc code from building.</li>
+<li>There are some issues using the Csla.Xaml PropertyStatus and BusyStatus controls in the VS10 designer (in 3.8 and 4) that I have on the to-do list to fix in CSLA 4.</li>
+<li>We had encountered some issues with a couple of the Windows Forms controls in the .NET 4 client profile, and I think those are fixed in the current CSLA 4 bits.</li>
+</ul>
+<p>Fwiw, I don&#39;t plan to address these issues in 3.8.x - they&#39;ll be addressed in 4.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

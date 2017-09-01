@@ -1,0 +1,94 @@
+<html><header><title>Error: Input String was not in correct format when a field is blank</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Error: Input String was not in correct format when a field is blank</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10061.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>davidng posted on Friday, February 11, 2011</h2><p>Hi,</p>
+<p>I received this error &quot;<strong>Input String was not in correct format&quot;</strong> when I manually clear out this field.</p>
+<p>In Validation section of a BO, I define as MaxLength:</p>
+<p><span style="font-size:x-small;">
+<p><span style="font-family:&#39;Courier New&#39;;font-size:10pt;mso-no-proof:yes;">ValidationRules.AddRule(<span style="color:blue;">AddressOf</span> Csla.Validation.CommonRules.StringMaxLength, <span style="color:blue;">New</span> Csla.Validation.CommonRules.MaxLengthRuleArgs(<span style="color:maroon;">&quot;Proposal_Received&quot;</span>, 2))</span></p>
+<p><span style="font-family:&#39;Courier New&#39;;font-size:10pt;mso-no-proof:yes;">I have 2 questions:</span></p>
+<p><span style="font-family:&#39;Courier New&#39;;font-size:10pt;mso-no-proof:yes;">Q1: Why error happen?<br />Q2:&nbsp;To debug this error, where should I set the breakpoint?</span></p>
+<p><span style="font-family:&#39;Courier New&#39;;font-size:10pt;mso-no-proof:yes;">Thank you in advance for your help.</span></p>
+</span></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Saturday, February 12, 2011</h2><p>What UI are you using?&nbsp; In WinForms you need to set the empty value on the control to empty string instead of null, otherwise you might get this exception.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Saturday, February 12, 2011</h2><p>Basically what Andy said. This message is usually caused by DataBinding beeing unable to convert the UI controls value to the BO property type value. </p>
+<p>1. You can change the &quot;null&quot; value on the databinding: <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (ex:change from null to string.Empty)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; nameTextBox<span style="color:#006400;">.</span>DataBindings<span style="color:#006400;">[</span><span style="color:#0000ff;">&quot;Text&quot;</span><span style="color:#006400;">].</span>NullValue =&nbsp;<span style="color:#ff0000;">string</span><span style="color:#006400;">.</span>Empty<span style="color:#006400;">;</span></p>
+<p>2. You can add hook into the Parse event on the databinding to transform the input value to your property type. </p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>davidng replied on Monday, February 14, 2011</h2><p>Hi Johnyy,</p>
+<p>The object property is a Decimal type. In Data Binding - Advance window, I set NullValue to 0. Please see my previous reply. </p>
+<p>And I still got the error &quot;Input string was not in correct format&quot;</p>
+<p>Am I missing something else? Please advise.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Monday, February 14, 2011</h2><p>The DataBinding.Advanced window is not advanced enough.</p>
+<p>You need to set this in the constructor - after InitializeComponents has been called. </p>
+<p>So like this:<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;control&gt;<span style="color:#006400;">.</span>DataBindings<span style="color:#006400;">[</span><span style="color:#0000ff;">&quot;Text&quot;</span><span style="color:#006400;">].</span>NullValue =&nbsp;<span style="color:#ff0000;">string</span><span style="color:#006400;">.</span>Empty<span style="color:#006400;">;</span></p>
+<p>or add your own Parse method to the databinding.<span style="color:#006400;"><br /></span></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>davidng replied on Monday, February 14, 2011</h2><p>Hi Johnny,</p>
+<p>I did put the code in CONSTRUCTOR as follow.</p>
+<p>&nbsp;<span style="font-size:x-small;">InitializeComponent()<font size="2">
+<p>
+<p>&nbsp;</p>
+</p>
+</font></span></p>
+<p>
+<p>&nbsp;</p>
+<p><span style="color:#008000;font-size:x-small;"><span style="color:#008000;font-size:x-small;">&nbsp;</span></span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">Me</span></span><span style="font-size:x-small;">.txtContrPropReq.DataBindings(</span><span style="color:#800000;font-size:x-small;"><span style="color:#800000;font-size:x-small;">&quot;Text&quot;</span></span><span style="font-size:x-small;">).NullValue = 0</span></p>
+</p>
+<p><span style="font-size:x-small;">However, I still get that error message. By the way, value is Decimal Type, therefore, I use 0, instead of String.Empty.</span></p>
+<p><span style="font-size:x-small;">Thanks.</span></p>
+<p>&nbsp;</p>
+<p>
+<p><span style="font-size:x-small;"></span></p>
+<p><span style="font-size:x-small;"></span></p>
+</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Monday, February 14, 2011</h2><p>I&#39;m guessing the problem is caused by txtContrPropreq.Text&nbsp; is string.Empty and the default parser is not able to convert the string.Empty into a numeric value. If your decimal property is nullable then&nbsp; setting Nullvalue to string.Empty will instruct the default parser to convert an empty string (control.Text)&nbsp; to null when updating the model.</p>
+<p>Your code instruct databinding to convert null-value into 0 (as text) 
+and parse 0 (control.Text) into null when setting the property. If your 
+control.Text is string.Empty the databinding is not able to convert the 
+value and thus will throw exception &quot;Input string was not in correct 
+format&quot;.</p>
+<p>Is your property Nullable? </p>
+<p>If this is not correct behavior then add your own parse and/or formatting implementation. </p>
+<p>DataBinding has 2 important events:<br />* Binding.Format&nbsp;&nbsp;&nbsp;&nbsp; - converts data value to display value (typically control.Text) <br />* Binding.Parse&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - converts text (edited) value to data value </p>
+<p>Read more here: <a href="http://en.csharp-online.net/DataViews_and_Data_Binding%E2%80%94Format_and_Parse">http://en.csharp-online.net/DataViews_and_Data_Binding%E2%80%94Format_and_Parse</a></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>davidng replied on Tuesday, February 15, 2011</h2><p>Hi Johnny,</p>
+<p>Many thanks for your help. The problem is finally sovled.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Tuesday, February 15, 2011</h2><p><div style='padding-left: 50px;background-color:silver'><b>JonnyBee<br></b>
+<p>The DataBinding.Advanced window is not advanced enough.</p>
+<p>You need to set this in the constructor - after InitializeComponents has been called. </p>
+<p>So like this:<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;control&gt;<span style="COLOR:#006400;">.</span>DataBindings<span style="COLOR:#006400;">[</span><span style="COLOR:#0000ff;">&quot;Text&quot;</span><span style="COLOR:#006400;">].</span>NullValue =&nbsp;<span style="COLOR:#ff0000;">string</span><span style="COLOR:#006400;">.</span>Empty<span style="COLOR:#006400;">;</span></p>
+<p>or add your own Parse method to the databinding.<span style="COLOR:#006400;"><br /></span></p>
+<div style="CLEAR:both;"></div>
+</div></p>
+<p>Jonny, are you sure about that?&nbsp; I did a lot of databinding in WinForms and never had to do that, and the code you&#39;re suggesting is pretty much exactly what gets generated in the .designer.cs file.&nbsp; </p>
+<p>Except for interacting with bindingsource components or one special case i had to have a modified Binding for a special case, setting the bindings in the designer was all that was required.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Tuesday, February 15, 2011</h2><p>In the designer.cs I have not found a way to set the NullValue to string.Empty. NullValue is default null.</p>
+<p>Especially on numerical nullable properties I&#39;ve had to add that line of code to make an &quot;empty&quot; value be handled as null. </p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>davidng replied on Friday, February 25, 2011</h2><p>Hi Johnny,</p>
+<p>If the property is of type DATE or SMART DATE, then do you handle differently.</p>
+<p>I thought I solved the problem, but when the property is SMART DATE, I encounter error again.</p>
+<p>I add breakpoint at SET property, but it never got extecuted.</p>
+<p>Please advice.&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, February 25, 2011</h2><p>It is important to understand that SmartDate is not intended to be used as a public type. It is intended to be used as the backing field type behind a string property.</p>
+<p>In some limited scenarios you might expose a public SmartDate type property, but usually not if you intend to bind that property to the UI.</p>
+<p>The intent behind SmartDate is to make it easy to implement a string property where the user can type in values that can be somehow interpreted or parsed as a date, or as an empty value as the string value is set into the SmartDate backing field.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>davidng replied on Friday, February 25, 2011</h2><p>Hi Rocky,</p>
+<p>Thank you very much for your promptness response.&nbsp; I now understand better.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>davidng replied on Monday, February 14, 2011</h2><p><span style="font-family:Courier New;color:#800000;font-size:x-small;">I am using WinForm.</span></p>
+<p><span style="font-family:Courier New;color:#800000;font-size:x-small;">In Data Binding - Advance window, I set Null value to 0. The Designer generated code:</span></p>
+<p>&nbsp;</p>
+<p><span style="font-size:x-small;"><font size="2">
+<p>&nbsp;</p>
+</font></span>
+<p>&nbsp;</p>
+</p>
+<p>
+<p><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">Me</span></span><span style="font-size:x-small;">.txtContrPropReq.DataBindings.Add(</span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">New</span></span><span style="font-size:x-small;"> System.Windows.Forms.Binding(</span><span style="color:#800000;font-size:x-small;"><span style="color:#800000;font-size:x-small;">&quot;Text&quot;</span></span><span style="font-size:x-small;">, </span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">Me</span></span><span style="font-size:x-small;">.ObContractBindingSource, </span><span style="color:#800000;font-size:x-small;"><span style="color:#800000;font-size:x-small;">&quot;<span style="font-family:Courier New;">Proposal_Received</span>&quot;</span></span><span style="font-size:x-small;">, </span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">True</span></span><span style="font-size:x-small;">, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged, 0))<font size="2" color="#0000ff"><font size="2" color="#0000ff"><font size="2">
+<p>
+<p>
+<p>&nbsp;</p>
+<p>I still got the error: &quot; Input String was not in correct format&quot;</p>
+</p>
+</p>
+</font></font></font></span><font size="2" color="#0000ff"><font size="2" color="#0000ff">
+<p>
+<p>
+<p>&nbsp;</p>
+</p>
+</p>
+</font></font></span><font size="2" color="#0000ff">
+<p>
+<p>
+<p>&nbsp;</p>
+</p>
+</p>
+</font></span></p>
+<p>
+<p>
+<p>&nbsp;</p>
+</p>
+<span style="font-family:Courier New;color:#800000;font-size:x-small;"> </span></p>
+</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,20 @@
+<html><header><title>Parameterized Constructor for Businessbase object</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Parameterized Constructor for Businessbase object</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4445.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Pieter posted on Monday, March 03, 2008</h2><font face="Arial" size="2">Hi All,<br><br>I have a class called Session that contains information about the user, database, server, etc.<br>I want to use this class rather than the Database module, as in the examples.<br><br>Is there a way that I can have a constructor on my Businessbase object with a session parameter and a property on the Businessbase called session that will store the passed session object?<br><br>The session object's connection string property will then be used in the DataPortal_Fetch, DataPortal_Create, etc. methods to get the connection string.<br><br>Any thoughts/suggestions will be appreciated.<br><br>Thanks in advance!</font><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>triplea replied on Monday, March 03, 2008</h2><P>Why have a session class and not store this information in your custom Identity class (e.g. PTIdentity equivalent) and just query that on your DataPortal_XYZ methods? </P>
+<P>I could only understand if the information might change for a single user during his session using your app. In that case why not pass it in&nbsp;as criteria in your GetObject static class? So for example you would have something like:</P>
+<P>public static Customer GetCustomer(int id, Session session)<BR>{<BR>&nbsp;&nbsp;&nbsp;return Dataportal.Fetch&lt;Customer&gt;(new CustomerCriteria(id,session));<BR>}&nbsp;</P>
+<P>private class CustomerCriteria<BR>{<BR>&nbsp;&nbsp;&nbsp;private int _id;<BR>&nbsp;&nbsp;&nbsp;private Session _session;</P>
+<P>&nbsp;&nbsp;&nbsp;public int Id { get { return _id; } }<BR>&nbsp;&nbsp;&nbsp;public Session Session { get { return _session; } }</P>
+<P>&nbsp;&nbsp;&nbsp;public CustomerCriteria(int id, Session session)<BR>&nbsp;&nbsp;&nbsp;{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_id = id;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_session = session;<BR>&nbsp;&nbsp;&nbsp;}<BR>}</P>
+<P>protected override void DataPortal_Fetch(object criteria)<BR>{<BR>&nbsp;&nbsp;&nbsp;&lt;use the connectionstring property of your Session class to open the connection&gt;<BR>}</P>
+<P>Finally, a last option would be to pass the Session object in your static "New" method so for example:</P>
+<P>public static Customer NewCustomer(Session session)<BR>{<BR>&nbsp;&nbsp;&nbsp;this._session = session;<BR>}</P>
+<P>And then you have your private member _session in your DataPortal_XYZ methods.</P>
+<P>It depends what you want. Just dont use the constructors directly :-)</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Pieter replied on Monday, March 03, 2008</h2><font face="Arial" size="2">Thanks for the response!<br><br>I'll give your PTIdentity idea a try.<br></font><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Monday, March 03, 2008</h2>There is also the ApplicationContext object which allows you to store
+som config/context data and have it automatically transfered to a
+remoting/webservice server. <br>
+<br>
+User and Roles shold be in the Identity and Principal object. <br><br>
+
+Look at the UserContext part of the object for your usage, such as Server, ConnectionString and others.  <br>
+
+<br>
+/Jonny </div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

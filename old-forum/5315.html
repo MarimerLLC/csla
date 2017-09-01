@@ -1,0 +1,404 @@
+<html><header><title>Csla Light - Couple of questions/issues to report</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Csla Light - Couple of questions/issues to report</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5315.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>paupdb posted on Thursday, August 28, 2008</h2>I've got a few suggestions that I'd like to run by Rocky and the other Magenic guys regarding CSLA Light.<br><br>I'm basing these questions on using the latest 3.6 source code straight out of Subversion (svn://svn.lhotka.net/csla/).<br><br>First question: Csla.Security.CslaIdentity<br><br>I'm currently subclassing the above to have my own custom Identity, but one thing that irritating is the RolesProperty.<br>Currently the RolesProperty PropertyInfo field is private in CslaIdentity, and the protected property Roles has no getter.<br><br>The problem is that I want to be able to get the Roles list out of the Identity in some special circumstances.<br><br>Any chance you can either make the RolesProperty protected in CslaIdentity, or else provide a getter on the Roles property?<br><br>If not, I guess I'll just make a copy of CslaIdentity instead of subclass.<br><br><br>Second question: WcfPortalClient and ServiceReferences.ClientConfig<br><br>The application I'm building will be deployed at many client sites, and as such the urls relating to the website will be different each time.&nbsp; Now having to configure the endpoint address in the web.config is fine, but the ServiceReferences.ClientConfig side is embedded in the Silverlight xap file. <br>Having to unzip the file, update the ServiceReferences.ClientConfig, and rezip the xap is something I want to avoid.<br><br>So what I've done is programatically set the WcfProxy.DefaultUrl and WcfProxy.DefaultBinding properties on startup of my Silverlight app:<font size="2" face="Courier New"><br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; //Csla settings - note it is assumed that WcfPortal.svc exists in web application root<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; string pageUrl = HtmlPage.Document.DocumentUri.AbsoluteUri;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; string appRootUrl = pageUrl.Substring(0, pageUrl.LastIndexOf('/') + 1);<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ApplicationContext.GlobalContext["AppRootUrl"] = appRootUrl;<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; //Set up WcfProxy DataPortal service<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Csla.DataPortalClient.WcfProxy.DefaultUrl = appRootUrl + "WcfPortal.svc";<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; //Set WCF message size to support large resultsets<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; System.ServiceModel.BasicHttpBinding largeBinding = new System.ServiceModel.BasicHttpBinding();<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; largeBinding.MaxReceivedMessageSize = 32000000;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; largeBinding.MaxBufferSize&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; = 32000000; &nbsp;<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Csla.DataPortalClient.WcfProxy.DefaultBinding = largeBinding;<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Csla.DataPortal.ProxyTypeName = "Csla.DataPortalClient.WcfProxy, Csla";</font><br><br>I also went so far as to comment out the endpoint configuration in my ServiceReferences.ClientConfig - just to be sure my programmatic settings were being applied.<br>This all works really well when I access the DataPortal without criteria - i.e. the Csla code runs into WcfProxy.BeginFetch(), which in turn calls WcfProxy.GetProxy() to setup its proxy object.<br>I noticed the GetProxy method checks the DefaultBinding and DefaultUrl properties and uses these if set.<br><br>However, when trying to access the DataPortal with a Criteria object, I found the code was crashing because the endpoint was not defined.<br>This is because WcfProxy.BeginFetch(object criteria, object userState) is not calling GetProxy() to setup its proxy object.&nbsp; Instead it simply calls new WcfPortal.WcfPortalClient().<br>So the DefaultBinding and DefaultUrl are not applied :(<br><br>I'm guessing this is a bug - a call to GetProxy() should be being made imo.<br>Maybe the WcfPortalClient constructor should be private to prevent such cases occurring?&nbsp; Or maybe move the GetProxy onto WcfPortalClient as a factory method?<br><br>Either way can this be fixed?<br><br><br>Other than that, things are rolling on nicely with CslaLight.&nbsp; Great job Magenic guys.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>paupdb replied on Thursday, August 28, 2008</h2>Another minor suggestion: Csla.SingleCriteria&lt;B, C&gt;<br><br>I am inheriting from this class in order to have strongly named criteria classes which make the various data portal methods more distinct.&nbsp; e.g. IDCriteria, NameCriteria etc.<br><br>I also have some custom criteria classes that have more than one property, which inherit from CriteriaBase.<br><br>CriteriaBase has its CSLA.Net parameterless constructor declared as protected - this is nice for subclassing since I don't have to implement a parameterless constructor and the MobileFormatter works with no issue.<br><br>However when subclassing from SingleCriteria, I found I had to explicitly declare parameterless constructors for the CSLA.Net side for MobileFormatter to work; and on top of that I had to call the base SingleCriteria(C value) constructor with a default value (yuk!) in order to get my class to compile:<br><br><font size="2" face="Courier New">public class IDCriteria : SingleCriteria&lt;T, int&gt; { <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public IDCriteria(int id) : base(id) { }<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; #if SILVERLIGHT<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public IDCriteria() { }<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; #else<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; private IDCriteria() : base (-1) { }<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; #endif</font><br><br>This is because the parameterless CSLA.Net constructor in SingleCriteria is declared as private instead of protected, so I can't inherit it.<br><br>Any chance we can get the SingleCriteria CSLA.Net parameterless constructor changed to protected to avoid having to do the above?<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>paupdb replied on Friday, August 29, 2008</h2>Some more behavior I think may be buggy in Csla.DataPortalClient.WcfProxy&lt;T&gt; (in cslalightcs sln):<br><br>As part of a Fetch on one of my business objects, I am setting a value into the ApplicationContext.GlobalContext on the server side (i.e. in the BO DataPortal_Fetch).<br>I expect that value to then be visible in the Silverlight GlobalContext when the Fetch callback method fires.&nbsp; However it isn't :(<br><br>Now my understanding of the GlobalContext is that it should be the same on both client and server side, since it is serialised both ways with every request.&nbsp; <br>So if I set something on the client GlobalContext - I should see it on the server side during a dataportal request (this works as expected), and similarly if I set something into the GlobalContext on the server side during a WcfProxy dataportal fetch, then that should come back to the client side.<br><br>I've done some debugging, and I found that the server GlobalContext is indeed coming back from the server through the WcfProxy, however it is never set onto the SL client side ApplicationContext.GlobalContext.&nbsp; <br>Instead the GlobalContext received from the server side is deserialised and assigned to property _globalContext on the WcfProxy&lt;T&gt;.<br><br>Interestingly, I can access this GlobalContext property from the sender object parameter (eg. o.GlobalContext)  in my callback and hence see the server side value I set has come back to the client.<br>But obviously, having to manually then take o.GlobalContext and set that into the Silverlight client ApplicationContext.GlobalContext seems a little manual to me.<br><br>Surely the ApplicationContext.GlobalContext should be automagically set in WcfProxy according to what is deserialised on both the server and client side?<br>Or are there threading issues?<br><br>For reference - an example of the _globalContext being set (but not the ApplicationContext.GlobalContext) from the FetchCompleted method of WcfProxy (the same setting happens in all the other *Completed methods):<br><br><font size="2" face="Courier New">&nbsp;&nbsp;&nbsp; private void proxy_FetchCompleted(object sender, Csla.WcfPortal.FetchCompletedEventArgs e)<br>&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; try<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (e.Error == null &amp;&amp; e.Result.ErrorData == null)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var buffer = new System.IO.MemoryStream(e.Result.ObjectData);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var formatter = new MobileFormatter();<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; T obj = (T)formatter.Deserialize(buffer);<br><b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _globalContext = (ContextDictionary)MobileFormatter.Deserialize(e.Result.GlobalContext);</b><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; OnFetchCompleted(new DataPortalResult&lt;T&gt;(obj, null, e.UserState));</font><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Friday, August 29, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>This behavior was actually done so by design.&nbsp; The main
+reason was that you can send multiple requests at the same time due to
+asynchronous nature of SilverLight, thus there would never be any guaranty that
+you global context from one call would not be overwritten from another asynchronous
+call before you have a chance to check it.&nbsp; So, instead of resetting
+global context every time it is exposed on a property (as you correctly
+noticed) to allow you do any post-call manipulations with it.&nbsp;
+Asynchronous data portal in .NET behaves the same way incidentally &#8211; it also
+does not overwrite global context.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> paupdb
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Friday, August 29, 2008 8:08 AM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] Csla Light - Couple of questions/issues to
+report<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Some more behavior I think may be buggy in
+Csla.DataPortalClient.WcfProxy&lt;T&gt; (in cslalightcs sln):<br>
+<br>
+As part of a Fetch on one of my business objects, I am setting a value into the
+ApplicationContext.GlobalContext on the server side (i.e. in the BO
+DataPortal_Fetch).<br>
+I expect that value to then be visible in the Silverlight GlobalContext when
+the Fetch callback method fires.&nbsp; However it isn't :(<br>
+<br>
+Now my understanding of the GlobalContext is that it should be the same on both
+client and server side, since it is serialised both ways with every request.<br>
+<br>
+I've done some debugging, and I found that the server GlobalContext is indeed
+coming back from the server through the WcfProxy, however it is never set onto
+the SL client side ApplicationContext.GlobalContext.&nbsp; <br>
+Instead the globalcontext received from the server side is deserialised and
+assigned to property _globalContext on the WcfProxy&lt;T&gt;.<br>
+<br>
+Interestingly, I can access this globalcontext property from the sender object
+o.GlobalContext parameter in my callback (and hence see the server side value I
+set on the GlobalContext).<br>
+But obviously, having to manually then set that into Silverlight client ApplicationContext.GlobalContext
+seems a little manual to me.<br>
+<br>
+Surely the ApplicationContext.GlobalContext should be set according to what is
+deserialised on both the server and client side?<br>
+<br>
+For reference - an example of the _globalContext being set from the FetchCompleted
+method of WcfProxy (the same setting happens in all the other *Completed
+methods):<br>
+<br>
+<span>&nbsp;&nbsp;&nbsp;
+private void proxy_FetchCompleted(object sender,
+Csla.WcfPortal.FetchCompletedEventArgs e)<br>
+&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; try<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (e.Error == null &amp;&amp;
+e.Result.ErrorData == null)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var buffer = new
+System.IO.MemoryStream(e.Result.ObjectData);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var formatter = new
+MobileFormatter();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; T obj =
+(T)formatter.Deserialize(buffer);<br>
+<b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _globalContext =
+(ContextDictionary)MobileFormatter.Deserialize(e.Result.GlobalContext);</b><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; OnFetchCompleted(new
+DataPortalResult&lt;T&gt;(obj, null, e.UserState));</span><br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>paupdb replied on Friday, August 29, 2008</h2><span>Sergey,<br>
+<br>
+Thanks for the feedback.&nbsp; I understand what you mean in terms of the
+GlobalContext design - maintaining consistent client state in the midst
+of asynchronous calls is tricky.<br>
+I can access the GlobalContext property, so thats no major issue :)<br>
+<br>
+Glad to see the other items I reported have been resolved as well :)<br><br>Any chance of that protected parameterless constructor on the SingleCriteria (<a HREF="/forums/permalink/25865/25834/ShowThread.aspx#25834">reported in my second post above</a>)?<br><br>- Paul<br></span></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Sunday, August 31, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Thanks for your feedback, Paul.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>We added paremeter-less constructor to SingleCriteria.&nbsp; You
+should be set to go.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899<o:p></o:p></span></p>
+
+<p class=MsoNormal><b><i><span>Magenic</span></i></b><span> </span><span>&reg;</span><b><i><span><o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> paupdb
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Saturday, August 30, 2008 12:04 AM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: Csla Light - Couple of questions/issues to
+report<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Sergey,<br>
+<br>
+Thanks for the feedback.&nbsp; I understand what you mean in terms of the
+GlobalContext design - maintaining consistent client state in the midst of
+asynchronous calls is tricky.<br>
+I can access the GlobalContext property, so thats no major issue :)<br>
+<br>
+Glad to see the other items I reported have been resolved as well :)<br>
+<br>
+Any chance of that protected parameterless constructor on the SingleCriteria
+(reported in my second post above)?<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>paupdb replied on Sunday, August 31, 2008</h2>You the man Sergey :D<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Sunday, August 31, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>You should thank Rocky &#8211; it was his decision.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899<o:p></o:p></span></p>
+
+<p class=MsoNormal><b><i><span>Magenic</span></i></b><span> </span><span>&reg;</span><b><i><span><o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> paupdb
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Sunday, August 31, 2008 7:00 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: RE: Csla Light - Couple of questions/issues
+to report<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>You the man Sergey :D<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Friday, August 29, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Thank you for your comments, first of all.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>One the first issue, protected get has been added to CslaIdentity.Roles<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>On the second issue, this is a bug, and it has been fixed.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> paupdb
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Thursday, August 28, 2008 8:11 AM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> [CSLA .NET] Csla Light - Couple of questions/issues to report<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>I've got a few suggestions that I'd like to run by Rocky and
+the other Magenic guys regarding CSLA Light.<br>
+<br>
+I'm basing these questions on using the latest 3.6 source code straight out of
+Subversion (svn://svn.lhotka.net/csla/).<br>
+<br>
+First question: Csla.Security.CslaIdentity<br>
+<br>
+I'm currently subclassing the above to have my own custom Identity, but one
+thing that irritating is the RolesProperty.<br>
+Currently the RolesProperty PropertyInfo field is private in CslaIdentity, and
+the protected property Roles has no getter.<br>
+<br>
+The problem is that I want to be able to get the Roles list out of the Identity
+in some special circumstances.<br>
+<br>
+Any chance you can either make the RolesProperty protected in CslaIdentity, or
+else provide a getter on the Roles property?<br>
+<br>
+If not, I guess I'll just make a copy of CslaIdentity instead of subclass.<br>
+<br>
+<br>
+Second question: WcfPortalClient and ServiceReferences.ClientConfig<br>
+<br>
+The application I'm building will be deployed at many client sites, and as such
+the urls relating to the website will be different each time.&nbsp; Now having
+to configure the endpoint address in the web.config is fine, but the
+ServiceReferences.ClientConfig side is embedded in the Silverlight xap file. <br>
+Having to unzip the file, update the ServiceReferences.ClientConfig, and rezip
+the xap is something I want to avoid.<br>
+<br>
+So what I've done is programatically set the WcfProxy.DefaultUrl and
+WcfProxy.DefaultBinding properties on startup of my Silverlight app:<span><br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; //Csla settings - note it is assumed that
+WcfPortal.svc exists in web application root<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; string pageUrl =
+HtmlPage.Document.DocumentUri.AbsoluteUri;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; string appRootUrl = pageUrl.Substring(0,
+pageUrl.LastIndexOf('/') + 1);<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+ApplicationContext.GlobalContext[&quot;AppRootUrl&quot;] = appRootUrl;<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; //Set up WcfProxy DataPortal service<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Csla.DataPortalClient.WcfProxy.DefaultUrl =
+appRootUrl + &quot;WcfPortal.svc&quot;;<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; //Set WCF message size to support large
+resultsets<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; System.ServiceModel.BasicHttpBinding
+largeBinding = new System.ServiceModel.BasicHttpBinding();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; largeBinding.MaxReceivedMessageSize = 32000000;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+largeBinding.MaxBufferSize&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+= 32000000; &nbsp;<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Csla.DataPortalClient.WcfProxy.DefaultBinding =
+largeBinding;<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Csla.DataPortal.ProxyTypeName =
+&quot;Csla.DataPortalClient.WcfProxy, Csla&quot;;</span><br>
+<br>
+I also went so far as to comment out the endpoint configuration in my
+ServiceReferences.ClientConfig - just to be sure my programmatic settings were
+being applied.<br>
+This all works really well when I access the DataPortal without criteria - i.e.
+the Csla code runs into WcfProxy.BeginFetch(), which in turn calls
+WcfProxy.GetProxy() to setup its proxy object.<br>
+I noticed the GetProxy method checks the DefaultBinding and DefaultUrl
+properties and uses these if set.<br>
+<br>
+However, when trying to access the DataPortal with a Criteria object, I found
+the code was crashing because the endpoint was not defined.<br>
+This is because WcfProxy.BeginFetch(object criteria, object userState) is not
+calling GetProxy() to setup its proxy object.&nbsp; Instead it simply calls new
+WcfPortal.WcfPortalClient().<br>
+So the DefaultBinding and DefaultUrl are not applied :(<br>
+<br>
+I'm guessing this is a bug - a call to GetProxy() should be being made imo.<br>
+Maybe the WcfPortalClient constructor should be private to prevent such cases
+occurring?&nbsp; Or maybe move the GetProxy onto WcfPortalClient as a factory
+method?<br>
+<br>
+Either way can this be fixed?<br>
+<br>
+<br>
+Other than that, things are rolling on nicely with CslaLight.&nbsp; Great job
+Magenic guys.<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

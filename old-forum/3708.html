@@ -1,0 +1,104 @@
+<html><header><title>CSLADataSource ReDatabind Design Question</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLADataSource ReDatabind Design Question</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3708.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>AKaplan posted on Sunday, October 14, 2007</h2>I have a question if it would be a good idea to redesign the csladatasource events of the insert, update, and delete to fire the select event after each event has occured? would this make redatabinding easier and faster? i understand this will effect all business Objects that use the datasource, but isn't the point of manipulating data is to retrieve it back anyhow? I'm just wondering if this is a good idea or not.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Sunday, October 14, 2007</h2><P>This isn't the way Web Forms data binding works though. To trigger a rebind, you must start with the UI control itself (DataGrid, etc) and have <EM>that control request the rebind</EM>. A data source control can't initiate a refresh of data or a rebinding - that's too low in the data binding infrastructure.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>AKaplan replied on Monday, October 15, 2007</h2>Alright it was just a thought..</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, October 15, 2007</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>And I appreciate the thought! :)&nbsp;&nbsp; Many of the best
+features of CSLA have come from input on this forum, so keep it coming.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> AKaplan
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Monday, October 15, 2007 7:03 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] CSLADataSource ReDatabind Design Question<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Alright it was just a thought..<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>AKaplan replied on Monday, October 15, 2007</h2><P>I have another thought as well. I'm starting to implement .net 3.0 asynchronous objects and http handlers to speed up application processing. is it as easy as just adding in the implement IAsyncResult in the object? if i do implement this as well.. would this effect regular synchronous behaviour? I'm getting my ideas from <A href="http://msdn2.microsoft.com/en-us/library/ms227433.aspx">http://msdn2.microsoft.com/en-us/library/ms227433.aspx</A>&nbsp;. if you were interested.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, October 16, 2007</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>That&#8217;s not something I&#8217;ve explored &#8211; let us
+know how it works out!<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> AKaplan
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Monday, October 15, 2007 9:51 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: CSLADataSource ReDatabind Design Question<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>I have another thought as well. I'm starting to implement .net 3.0
+asynchronous objects and http handlers to speed up application processing. is
+it as easy as just adding in the implement IAsyncResult in the object? if i do
+implement this as well.. would this effect regular synchronous behaviour? I'm
+getting my ideas from <a href="http://msdn2.microsoft.com/en-us/library/ms227433.aspx">http://msdn2.microsoft.com/en-us/library/ms227433.aspx</a>&nbsp;.
+if you were interested.<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

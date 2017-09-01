@@ -1,0 +1,130 @@
+<html><header><title>CSLA DataPortal Compatibility and JavaMe?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA DataPortal Compatibility and JavaMe?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5080.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>GlennMiller posted on Thursday, July 10, 2008</h2>We are looking to write two mobile applications that essentially look and feel identical. Except one will run on a JavaMe / Blackberry and the other will run on the Windows Mobile platform. We will be architecting the C# client code so that it will easily translate to Java after the fact (using MVP patterns and interfaces, and all that good stuff).<br><br>We currently have a WPF 3.5 Desktop application and have numerous CSLA business objects we want to reuse. Basically the mobile versions will be mini versions of our current desktop version.<br><br>Our initial thought is create a WCF wrapper and use CSLA inside this WCF Service (reavealing CRUD commands). Then once we get to porting our code over to JavaMe we can use the RESTFUL capabilities of WCF (as Java on RIM seems to not support the SOAP JSR libraries).<br><br>Is this a good approach? Or can we create end-points in CSLA and use our business objects directly? How would authentication work then? In .NET CompactFramework 3.5? Easy? JavaME in WCF REST? Easy or hard? How easily could we consume what CSLA is giving us back? <br><br>We known about the WindowsCE version of CSLA. But we don't think we want to use that because of our desire for a later quick port using JavaMe.<br><br>If anyone has some design thoughts we would be glad to hear it!<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, July 11, 2008</h2><P>There are generally two architectures applied to apps for mobile devices: connected, and occassionally connected.</P>
+<P>"Connected" means the app only works when it can connect to the server. Examples include Google's map client and Microsoft's Live client. Both nice apps, but useless if the device has no active Internet connection.</P>
+<P>"Occassionally connected" means that the app works against a local database on the device. The app works as long as the device works, and the local database is synced with a server whenever an Internet connection is available. Examples include all the email clients on most devices, where you can read/send email even without a data connection, and outbound email is delivered when&nbsp;a connection becomes available.</P>
+<P>You need to decided between these architectures first, before doing anything else, because this has a dramatic impact on your technology options.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>GlennMiller replied on Friday, July 11, 2008</h2>We are assuming "Connected" but on an unreliable data network. Basically, we want a "rich" user interface, and decided that Mobile Web Browsers, for the time being, are too limiting. So, JavaME and Windows Mobile .NET CompactFramework seemed like logical choices. Plus we are looking to the future, and have certain features that need to access hardware on the phones that generally can't be accessed in a Browser sandbox.<br><br>We nixed store-and-forward decisions because of three reasons:<br><br>1) It's should be easier to develop (quicker time to market).<br><br>2) The utility of our Mobile app is quickly degraded in a store-and-forward type of model anyway. For example we will be doing mash-ups using Virtual Earth. Also the data needs to be fairly fresh in both the Desktop and Mobile Scenarios for our app to really fly anyway. <br><br>3) The US (our primary market) Cell phone carrier's Data Networks are starting to become mature enough (and reasonably priced) to rely on (at least in the Cities we are planning on deploying this product).<br><br>So, this is our current thinking for now. <br><br>Future compatibility is really paramount. We don't want to have to do a re-write of our Web Service because XYZ platform does not implement SOAP in just the right way to work with a ASMX Web Services (I have had alot of incompatibilities with KSOAP in JavaME for example). WCF with Data Contracts and Bindings seemed like the ticket home, especially with REST and .NET 3.5. In Theory we should be able to go SOAP 1.2 and use any library framework that claims it supports it. But on Mobile platforms this seems problamatic using a Microsoft solution.<br><br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, July 11, 2008</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>If you assume the &#8220;Connected&#8221; model, then (in my
+view) the best architectural model to pursue is an SOA model.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>In that case you are building two separate applications that
+interact with each other.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>You are writing one application that runs on the server, and
+which has an message-based &#8220;UI&#8221;, where the messages are XML.</span><b><span><o:p></o:p></span></b></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>And you are writing a separate application that runs on the
+device, and which uses XML messages as a data access layer to some external
+data source (which is, of course, your server application).<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>It is <i>critical</i> to remember that these are separate
+applications. As soon as either one starts making assumptions about the other
+one, then you are in trouble, because you lose the ability to independently
+version either side, which will seriously harm your overall maintainability.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>This also means that your server-side app has to have a very
+good versioning strategy. You need to be able to create new versions of the
+server app over time, while still hosting and running the previous versions.
+With a mobile app this is even more important, because it is often very
+difficult to get people to update their mobile installs in a timely manner.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>To bring this back to CSLA, it is quite realistic to think that
+you&#8217;d create the server-side app using CSLA. This is similar to what I do
+in Chapter 11 &#8211; but you need to be very careful in designing your XML &#8220;UI&#8221;
+so it is message-based, forward-looking and versionable.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>In my view, your service methods should have only two possible
+method signatures &#8211; EVER:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoListParagraph><span><span>1.<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span></span><span>void DoSomething(RequestType arg)<o:p></o:p></span></p>
+
+<p class=MsoListParagraph><span><span>2.<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span></span><span>ResponseType DoSomething(RequestType arg)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>RequestType and ResponseType are DataContract types that define
+the request and response objects. Ideally you&#8217;d also define FaultException
+attributes on your service methods.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>The end result is that your service interface is defined as a
+set of operations (service methods). And each operation is defined as one-way
+or two-way (choose a method signature), with the following properties:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoListParagraph><span><span>1.<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span></span><span>Operation name<o:p></o:p></span></p>
+
+<p class=MsoListParagraph><span><span>2.<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span></span><span>DataContract for request<o:p></o:p></span></p>
+
+<p class=MsoListParagraph><span><span>3.<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span></span><span>DataContract for response (if two-way)<o:p></o:p></span></p>
+
+<p class=MsoListParagraph><span><span>4.<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span></span><span>DataContract for any FaultContract attributes<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>This will get you a long way toward having a maintainable
+message-based interface. From here, you can read Greggor Hohpe&#8217;s book on
+enterprise messaging patterns and get all sorts of good ideas </span><span>J</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>On the client you may or may not choose to use something like
+CSLA. Certainly I&#8217;m designing CSLA Light to enable this model (as one
+option) for Silverlight &#8211; where a client-only application can be created,
+and the DataPortal_XYZ methods (on the client) can interact with a
+message-based (async) server interface. The same basic concept should work well
+in the mobile environment as well.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>But it may be hard to get parity between that sort of client app
+and a non-.NET one, because you&#8217;d have to port CSLA CE to Java (or
+whatever). You have to evaluate whether it is worth that investment.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>GlennMiller replied on Friday, July 11, 2008</h2>Thanks! This is alot of good information to keep in mind. <br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

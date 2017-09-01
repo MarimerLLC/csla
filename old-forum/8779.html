@@ -1,0 +1,367 @@
+<html><header><title>BindingSource in Infragistics UltraGrid not responding to delete command</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>BindingSource in Infragistics UltraGrid not responding to delete command</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/8779.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Lord02 posted on Wednesday, April 07, 2010</h2><p>-- Edit 3 --- LATEST reply:<br /><br />I guess I **could** track the
+keyDown in the Grid ... if&#39;s &quot;DEL&quot; button, then mark the _project (
+CSLA class, editableRoot ) as deleted ... and then always use the SAVE
+button to triggers the changes ??<br /><br />But that CANNOT be the best
+way ... I need to be able to codeBehind the &quot;delete event&quot; of the Grid
+or actually it should notify the CSLA datasource to delete itself when
+pushing the &quot;DEL&quot; button ... at least the entry is deleted from the
+Grid, so that&#39;s the supposed behaviour I guess<br /><br />Please help<br /><br />-------------------------------------------</p>
+<p>&nbsp;</p>
+<p>--Edit 2 ---</p>
+<p>
+
+
+
+
+
+
+
+
+ 
+  Normal
+  0
+  
+  
+  21
+  
+  
+  false
+  false
+  false
+  
+  IS
+  X-NONE
+  X-NONE
+  
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+  
+  MicrosoftInternetExplorer4
+  
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+  
+
+ 
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+ 
+
+
+
+
+
+</p>
+<p class="MsoNormal"><span style="font-size:11pt;font-family:&#39;Calibri&#39;,&#39;sans-serif&#39;;color:#1f497d;">&hellip;now doing it with a button outside of the UltraGrid &hellip; kind of sucks,
+but works </span><span style="font-size:11pt;font-family:Wingdings;color:#1f497d;"><span>L</span></span><span style="font-size:11pt;font-family:&#39;Calibri&#39;,&#39;sans-serif&#39;;color:#1f497d;"></span></p>
+<p class="MsoNormal"><span style="font-size:11pt;font-family:&#39;Calibri&#39;,&#39;sans-serif&#39;;color:#1f497d;">&nbsp;</span></p>
+<p class="MsoNormal"><span style="font-size:10pt;font-family:Consolas;color:blue;">private</span><span style="font-size:10pt;font-family:Consolas;"> <span style="color:blue;">void</span> _btnDelete_Click(<span style="color:blue;">object</span> sender, <span style="color:#2b91af;">EventArgs</span>
+e)</span></p>
+<p class="MsoNormal"><span style="font-size:10pt;font-family:Consolas;"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>{<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></span></p>
+<p class="MsoNormal"><span style="font-size:10pt;font-family:Consolas;"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>Core.<span style="color:#2b91af;">Project</span>.DeleteProject(_project.ProjectID);</span></p>
+<p class="MsoNormal"><span style="font-size:10pt;font-family:Consolas;"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>_projectBindingSource.DataSource = <span style="color:blue;">null</span>;
+<span style="color:green;">//just to clear the Grid</span></span></p>
+<p class="MsoNormal"><span style="font-size:10pt;font-family:Consolas;color:green;">&nbsp;</span></p>
+<p class="MsoNormal"><span style="font-size:10pt;font-family:Consolas;"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color:green;">//also clear the combo that selects projects:</span></span></p>
+<p class="MsoNormal"><span style="font-size:10pt;font-family:Consolas;"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>Core.<span style="color:#2b91af;">ProjectNameValueList</span>.InvalidateCache();</span></p>
+<p class="MsoNormal"><span style="font-size:10pt;font-family:Consolas;"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>_ucProjectsNameValue.SelectedRow = <span style="color:blue;">null</span>;</span></p>
+<p class="MsoNormal"><span style="font-size:10pt;font-family:Consolas;"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>_projectNameValueList = Core.<span style="color:#2b91af;">ProjectNameValueList</span>.GetAll();</span></p>
+<p class="MsoNormal"><span style="font-size:10pt;font-family:Consolas;"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>_projectNameValueListBindingSource.DataSource =
+_projectNameValueList;<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></span></p>
+<p class="MsoNormal"><span style="font-size:10pt;font-family:Consolas;"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>}</span><span style="font-size:11pt;font-family:&#39;Calibri&#39;,&#39;sans-serif&#39;;color:#1f497d;"></span></p>
+<p class="MsoNormal">&nbsp;</p>
+<p class="MsoNormal">I
+would much rather be able to hit &quot;DEL&quot; on the keyboard and not only
+make the Grid delete the row in the grid, but also make the delete call
+to the CSLA object !</p>
+<p>------</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>--- EDIT ----</p>
+<p>I found out how to delete with a BUTTON, but I want to use the
+&quot;DEL&quot; button on the keyboard for deletion, how would I do that ? I&#39;ve
+already managed to do it like this with a button:</p>
+<p>private void _btnDelete_Click(object sender, EventArgs e)<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; //_projectBindingSource.EndEdit();&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Core.Project.DeleteProject(_project.ProjectID);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; //_projectBindingSource.DataSource = _project;<br />
+<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; //FillProjectsDropDown(); //in case name of some project has changed<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</p>
+<p>----------------------------------------</p>
+<p>Hi there!</p>
+<p>Do you think of any possible reason my BindingSource which is bound against a EditableRoot, does not respond to the DEL ( button on keyboard ) for deleting my databound object ? ( The grid warns me that I&#39;m going to delete the selected record, and when I press yes it&#39;s removed from the GRID, but nothing is called in my CSLA object ).</p>
+<p>The update works very well ( there&#39;s no insert as this is an EditableRoot ), in the GRID and into the DataPortal_Update ...and hence gets updated successfully in the database as well.</p>
+<p>Is there anything special I need to implement so the CSLA object will delete itself in ? I&#39;m using the CodeSmith templates against CSLA v3.8.1 ( I have found Codesmith excellent for generating the CSLA objects by the way! ).</p>
+<p>is there any possible way for me to attach the CSLA class to this forum ? I&#39;ll paste a couple of lines ..<br />There&#39;s also nothing done in my Child ( EditableChild ) when I hit update/delete/insert<br />- it&#39;s only updated/deleted/inserted inside the grid ... but never called to the CSLA classes<br /><br />This code is never entered when pushing the DEL button in the Grid ... and hence there&#39;s no deletion</p>
+<p>The Databinding in the GUI:<br />public RecoveryUI()<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; InitializeComponent();<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; //Fills the Grid:<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; FillProjectsDropDown(); // This will load the parent and children into the Grid, databinded successfully<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br /><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; private void FillGridWithSelectedProject(int projectId)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /*_projectList = Core.ProjectList.GetByProjectID(projectId);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; projectListBindingSource.DataSource = _projectList;*/<br /><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _project = Core.Project.GetByProjectID(projectId);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _projectBindingSource.DataSource = _project;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</p>
+<p>public static void DeleteProject(System.Int32 projectID)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; DataPortal.Delete(new ProjectCriteria {ProjectID = projectID});<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</p>
+<p>[Transactional(TransactionalTypes.TransactionScope)]<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; protected override void DataPortal_DeleteSelf()<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; bool cancel = false;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; OnSelfDeleting(ref cancel);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (cancel) return;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; DataPortal_Delete(new ProjectCriteria (ProjectID));<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; OnSelfDeleted();<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</p>
+<p>[Transactional(TransactionalTypes.TransactionScope)]<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; protected void DataPortal_Delete(ProjectCriteria criteria)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; bool cancel = false;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; OnDeleting(criteria, ref cancel);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (cancel) return;<br /><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; using (SqlConnection connection = new SqlConnection(ADOHelper.ConnectionString))<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; connection.Open();<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; using (SqlCommand command = new SqlCommand(&quot;[dbo].[rp_Project_Delete]&quot;, connection))<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; command.CommandType = CommandType.StoredProcedure;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; command.Parameters.AddRange(ADOHelper.SqlParameters(criteria.StateBag));<br /><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; //result: The number of rows changed, inserted, or deleted. -1 for select statements; 0 if no rows were affected, or the statement failed. <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; int result = command.ExecuteNonQuery();<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (result == 0)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; throw new DBConcurrencyException(&quot;The entity is out of date on the client. Please update the entity and try again. This could also be thrown if the sql statement failed to execute.&quot;);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br /><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; OnDeleted();<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</p>
+<p><br />Thank you,<br />EE</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Lord02 replied on Wednesday, April 07, 2010</h2><p>I just want to clarify that I&#39;m using the standard System.Windows.Forms.BindingSource against the CSLA object</p>
+<p>and the GUI is still very simple - it&#39;s simply done by this:</p>
+<p>public partial class RecoveryUI : Form<br />&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; //Core.ProjectList _projectList;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Core.Project _project;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Core.ProjectNameValueList _projectNameValueList;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; int _selectedProjectId;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br /><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public RecoveryUI()<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; InitializeComponent();<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; //Fills the Grid:<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; FillProjectsDropDown();<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br /><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; private void FillGridWithSelectedProject(int projectId)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /*_projectList = Core.ProjectList.GetByProjectID(projectId);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; projectListBindingSource.DataSource = _projectList;*/<br /><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _project = Core.Project.GetByProjectID(projectId);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _projectBindingSource.DataSource = _project;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br /><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; private void FillProjectsDropDown()<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if( _projectNameValueList != null )<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (_projectNameValueList.Count &gt; 0)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Core.ProjectNameValueList.InvalidateCache();<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br /><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _projectNameValueList = Core.ProjectNameValueList.GetAll();<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _projectNameValueListBindingSource.DataSource = _projectNameValueList;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br /><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; private void _btnSaveProject_Click(object sender, EventArgs e)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /*projectListBindingSource.EndEdit();<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _projectList = _projectList.Save();<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; projectListBindingSource.DataSource = _projectList;*/<br /><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _projectBindingSource.EndEdit();<br /><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _project = _project.Save();<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _projectBindingSource.DataSource = _project;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br /><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; FillProjectsDropDown(); //in case name of some project has changed<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br /><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; private void _ucProjectsNameValue_TextChanged(object sender, EventArgs e)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _selectedProjectId = Int32.Parse(_ucProjectsNameValue.SelectedRow.Cells[&quot;Key&quot;].Value.ToString());<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; FillGridWithSelectedProject(_selectedProjectId);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</p>
+<p>It&#39;s binding to the grid and displaying the children ( I can drill down to them, loaded with lazy loading ) ... but the DEL on the parent is not working, and no functions against the children ( update/delete/insert ) are working</p>
+<p>I&#39;ll paste how the children ( EditableChildren ) are retrieved from the database:</p>
+<p>public partial class Project<br />&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; #region Custom Made Properties<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; private static readonly PropertyInfo&lt;MemberList&gt; _membersProperty = RegisterProperty&lt;MemberList&gt;(p =&gt; p.Members, string.Empty, null);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public MemberList Members<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; get { return GetProperty(_membersProperty); }<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; set { SetProperty(_membersProperty, value); }<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; #endregion<br /><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; partial void OnMapping(Csla.Data.SafeDataReader reader, ref bool cancel)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; try<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {&nbsp;&nbsp; //loads the members (children) for the project<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; LoadProperty(_membersProperty, MemberList.GetByParentID(Int32.Parse(reader[&quot;ProjectID&quot;].ToString())));<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; catch (Exception) { }; // this is done in case there are no children ... default CSLA behaviour is to cast error on this and I&#39;m not fond of it ... so I just catch the error upper and ignore it<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Lord02 replied on Wednesday, April 07, 2010</h2><p>Is there any way can trigger the DEL ( which deletes from the GRID, not the datasource ) work on the CSLA object also ?</p>
+<p>I&#39;m now trying something like this ... which doesn&#39;t make sense I think, but if I do this I can see the CSLA object gets the status IsDeleted = true ... ( after the _project.Delete( )&nbsp; )<br />but it does NOT enter this in the CSLA object:</p>
+<p>public static void DeleteProject(System.Int32 projectID)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; DataPortal.Delete(new ProjectCriteria {ProjectID = projectID});<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br /><br />it just calls the BASE classe&#39;s Delete I guess ... ( behind the scenes ) - the delete I&#39;m calling isn&#39;t taking any parameters ( hence ... it&#39;s the base Delete ... )</p>
+<p>I&#39;m trying something like this:</p>
+<p>private void _btnSaveProject_Click(object sender, EventArgs e)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /*projectListBindingSource.EndEdit();<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _projectList = _projectList.Save();<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; projectListBindingSource.DataSource = _projectList;*/<br /><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _projectBindingSource.EndEdit();<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _project = _project.Save();<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _projectBindingSource.DataSource = _project;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br /><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; FillProjectsDropDown(); //in case name of some project has changed<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</p>
+<p>private void _btnDelete_Click(object sender, EventArgs e)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _projectBindingSource.EndEdit();<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _project = (Core.Project)_projectBindingSource.DataSource;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _project.Delete();&nbsp;&nbsp;&nbsp;&nbsp; &lt;--- calls the BusinessBase, baseClass&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br /><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _projectBindingSource.DataSource = _project;<br /><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; FillProjectsDropDown(); //in case name of some project has changed<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>ajj3085 replied on Thursday, April 08, 2010</h2><p>Are you using an EditableRootListBase as the datasource?&nbsp; If so, your delete code may be hitting an exception.&nbsp; The row would only be removed from the grid if it was actually removed from the database.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Lord02 replied on Thursday, April 08, 2010</h2><p>No, I&#39;m actually not using a EditableRootListBase, but just a EditableRootBase ... because there can only be one &quot;top&quot; / &quot;root&quot;</p>
+<p>But I&#39;m thinking maybe I need a EditableRootListBase as the datasource for databinding, although the &quot;list&quot; will only contain one item ( and that root, will contain loads of children ) .... am I right ? I need to bind to a xxxxxListBase for the deletion to work ?</p>
+<p>rgd,<br />EE</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Thursday, April 08, 2010</h2><p>Do you mean a BusinessBase subclass?&nbsp; That wouldn&#39;t support being bound to a grid, not in the normal way.&nbsp; For grid behavior, you&#39;d need to have a BusinessListBase, containing your single item, which would work as you want.&nbsp; (The grid is wrapping your BO in a list anyway, but not one that supports databinding like a BLB would).</p>
+<p>Then it becomes a question of... if you&#39;re only going to have one item ever, why use a grid at all?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Lord02 replied on Thursday, April 08, 2010</h2><p>I need a Grid because this Project ( the root ) has MULTIPLE levels of Children, all kinds ( read only /&nbsp;&nbsp;&nbsp; read/write&nbsp; etc ... )</p>
+<p>That&#39;s why I used a Grid ...</p>
+<p>Implementing it now with a EditableRootLIST ... but when I hit &quot;DEL&quot; on the keyboard it says<br />&quot;Unable to delete row: Invalid for root objects - use Delete instead&quot; ?? I&#39;m not doing anything in code-behind of the Grid, what method is being called in the CSLA when using this ... ? There&#39;s no static delete method in the EditableRootLIST I&#39;m using ( understandably ) ... only &quot;NewList&quot;, &quot;GetByProjectId&quot; and GetAll&quot; - all makes sense</p>
+<p>But how to delete the EditableRoot, from inside the EditableRootList ? I&#39;m NOT implementing anything myself in the GUI, just fully databinded ...<br />so I&#39;m **NOT** doing anything like for example: <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br />Core.DeleteProject(_project.ProjectID);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br />_projectBindingSource.DataSource = null; //just to clear the Grid</p>
+<p>I want the List ( container / EditableRootList ) to call the EditableRoot items for me .... how to do it ?</p>
+<p>rgd,<br />EE</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Lord02 replied on Thursday, April 08, 2010</h2><p>... and please note, I would like the deletion to go ahead immidielty, not just mark the item in the list for deletion and I have to call something like this:</p>
+<p>_projectList[0].Delete();</p>
+<p>I&#39;ve tried debugging the list **after** the:<br />&quot;Unable to delete row: Invalid for root objects - use Delete instead&quot; ??</p>
+<p>and I see the list is empty(contained 1 item before) - ( and therefore has no items with &quot;IsDeleted&quot; status in it ... so there&#39;s nothing to delete in the</p>
+<p>private void _btnSaveProject_Click(object sender, EventArgs e)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _projectListBindingSource.EndEdit();<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _projectList = _projectList.Save();</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _projectListBindingSource.DataSource = _projectList;&nbsp;&nbsp;&nbsp;&nbsp; }</p>
+<p>&nbsp;</p>
+<p>I also DO NOT want to use the .SAVE method to delete the items ... I just want them deleted the minute the user pushes &quot;DEL&quot; on the keyboard<br />( The Grid gives warning that you&#39;re deleting 1 row ... and then &quot;Unable to delete row: Invalid for root objects - use Delete instead&quot; ??</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Lord02 replied on Thursday, April 08, 2010</h2><p>Hi ...</p>
+<p>I can understand you&#39;re pretty lost reading this :-)</p>
+<p>This is about how to implement the deletion with CSLA</p>
+<p>I&#39;m getting this error now:<br />&quot;Unable to delete row: Invalid for root objects - use Delete instead&quot; </p>
+<p>Can you please have a look at the bottom there ?<br />http://forums.lhotka.net/forums/p/8779/41772.aspx#41772<br /><br />I&#39;ve put a button on the Winform to check the deletion, and THIS is working:<br />Core.Project.DeleteProject(_projectList[0].ProjectID);<br /><br />But
+I do NOT want to have this button ... I want the Grid to delete
+correctly from the EditableRoot, which is beneath the EditableRootList
+( which is bound to the Grid )</p>
+<p>Is there any EVENT on the Grid which let&#39;s me play with it?<br />Some &quot;OnDeleted&quot; ... where can I manipulate the event behind the&nbsp;&quot;DEL&quot; keyboard button on the Grid?<br /><br />Any ideas ?</p>
+<p>To get rid of this error I added the&nbsp;&quot;MarkAsChild()&quot; in the
+constructor of the EditableRoot ( which is &quot;under&quot; the&nbsp;EditableRootLIST
+which is databinded )&nbsp;&nbsp;</p>
+<p>&nbsp;</p>
+<p><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">
+<p>internal</p>
+</span></span></span><span style="color:#0000ff;font-size:x-small;">
+<p>&nbsp;</p>
+</span></span></p>
+<p><span style="font-size:x-small;"> Project(</span><span style="color:#2b91af;font-size:x-small;"><span style="color:#2b91af;font-size:x-small;">SafeDataReader</span></span><span style="font-size:x-small;"> reader)<br />{<br />Map(reader);<br />MarkAsChild(); </span><span style="color:#008000;font-size:x-small;"><span style="color:#008000;font-size:x-small;">//Note: I added this<br /></span></span><span style="font-size:x-small;">} <br /><br />and
+now the DataPortal_Update of the EditableRootList is entered but there
+are no items ... because they&#39;ve already been removed:<br /></span></p>
+<p>protected override void DataPortal_Update()<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; //this<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; bool cancel = false;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; OnUpdating(ref cancel);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (cancel) return;</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; RaiseListChangedEvents = false;</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; foreach(Project item in Items) // here the items have already been removed!<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; item.Save(); &lt;--- will never enter this because of it<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; RaiseListChangedEvents = true;</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; OnUpdated();<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</p>
+<p>&nbsp;</p>
+<p>I&#39;m debugging the EditableRootList now ... and it has DeletedList with one item ( which is the correct item ! )<br />but it never enter this, in the EditableRootList:<br /> foreach(Project item in Items) // here the items have already been removed!<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; item.Save(); &lt;--- will never enter this because of it<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</p>
+<p>&nbsp;</p>
+<p><br /><br />help ?</p>
+<p>rgd,<br />EE</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Thursday, April 08, 2010</h2><p>Right.. but Project is a BB, correct?&nbsp; You can display its values using other controls, and display its children in a grid, and it will be multiple levels since you&#39;re using Infragistics.</p>
+<p>If you really want the top level item in a grid though, you need to create a <strong>new class</strong> which is an ERLB, has a factory method etc, and that ERLB will load up only the single root BB object in its fetch.&nbsp; Then bind the new ERLB class to your binding source, and it should work properly.</p>
+<p>You may want to read up on the first few chapters of the Expert C# 2008 Business Objects book, which explains the role of each of the Csla base class.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Lord02 replied on Thursday, April 08, 2010</h2><p>Hi Andy,</p>
+<p>What do you mean by &quot;BB&quot; ? :)</p>
+<p>I was starting to think of exacly this, using a &quot;Master&quot; class as the root / container ... <b>do you have an example of this ?</b></p>
+<p>p.s. I&#39;ve bought that book and read most of it ... <b>where is this mention of this &quot;new class&quot;/master class as an ERLB ?</b> ( what does ERLB stand for ? :) )</p>
+<p>I was able to do the delete by this ... I marked the &quot;Project&quot; as MarkAsChild() in the fetch of it and then entered this:<br /><br />protected override void RemoveItem(int index)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Project item = this[index];<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Project.DeleteProject(item.ProjectID);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</p>
+<p>This WILL delete the record ... but not refresh the Grid :-(</p>
+<p>&nbsp;</p>
+<p>I also noticed this:<br />-------------------------<br />foreach (Project deleted in DeletedList) &lt;--- &quot;DeletedList&quot; ... that&#39;s exacly where the item is, BUT then I get the error &quot;cannot delete a child&quot; or something like that<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; deleted.Save();<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</p>
+<p><br /></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Thursday, April 08, 2010</h2><p>Hi, by BB I mean &quot;BusinessBase subclass.&quot;&nbsp; ERLB is EditableRootListBase, another Csla type.</p>
+<p>Chapter 2, Framework design, page 68 of the C# book calls this stereotype a &quot;Dynamic Root List.&quot;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Lord02 replied on Thursday, April 08, 2010</h2><p>Andy,</p>
+<p>I first want to try out this Dynamic Root List ... I&#39;ve read the page 67 ( not 68 :-)&nbsp; ) and it says it&#39;s specifically deisgned for my case ... that is, inside editing inside WinForms grids.</p>
+<p>But can you &quot;draw&quot; up the classes I would use for that ?<br />e.g. <br />ProjectList ( DynamicRootList ) &lt;--- databound to the Grid<br />&nbsp;&nbsp; - Project&nbsp; ( DynamicRoot )<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - Members ( EditableChildList? )<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - Member ( EditableChild ? )<br /><br />Is it like that ?<br /></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Lord02 replied on Thursday, April 08, 2010</h2><p>Would I need two dataSources for the binding on this one ... ?</p>
+<p>How would you use this, and what is the class-structure tree like ?</p>
+<p>I see that the DynamicRootList does not have a SAVE operations:</p>
+<p>//------------------------------------------------------------------------------<br />// &lt;autogenerated&gt;<br />//&nbsp;&nbsp;&nbsp;&nbsp; This code was generated using CodeSmith: v5.2.1, CSLA Templates: v2.0.1.1570, CSLA Framework: v3.8.2.<br />//&nbsp;&nbsp;&nbsp;&nbsp; Changes to this file will be lost after each regeneration.<br />//&nbsp;&nbsp;&nbsp;&nbsp; To extend the functionality of this class, please modify the partial class &#39;Project.cs&#39;.<br />//<br />//&nbsp;&nbsp;&nbsp;&nbsp; Template: DynamicRootList.Generated.cst<br />//&nbsp;&nbsp;&nbsp;&nbsp; Template website: http://code.google.com/p/codesmith/<br />// &lt;/autogenerated&gt;<br />//------------------------------------------------------------------------------<br />#region Using declarations<br /><br />using System;<br /><br />using Csla;<br /><br />#endregion<br /><br />namespace RecoveryPlanner.Business<br />{<br />&nbsp;&nbsp;&nbsp; [Serializable]<br />&nbsp;&nbsp;&nbsp; public partial class ProjectList : EditableRootListBase&lt; Project &gt;<br />&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; #region Properties<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; protected override object AddNewCore()<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Project item = RecoveryPlanner.Business.Project.NewProject();<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Add(item);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return item;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; #endregion<br /><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; #region Factory Methods <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public static ProjectList NewList()<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return DataPortal.Create&lt; ProjectList &gt;();<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br /><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public static ProjectList GetAll()<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return DataPortal.Fetch&lt; ProjectList &gt;(new ProjectCriteria());<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br /><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public static ProjectList GetByProjectID(System.Int32 projectID)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return DataPortal.Fetch&lt; ProjectList &gt;(<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; new ProjectCriteria{ProjectID = projectID});<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br /><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; private ProjectList()<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; { <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; AllowNew = true;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; #endregion<br /><br /><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; #region Exists Command<br /><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public static bool Exists(ProjectCriteria criteria)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return RecoveryPlanner.Business.Project.Exists(criteria);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br /><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; #endregion<br />&nbsp;&nbsp;&nbsp; }<br />}</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Lord02 replied on Thursday, April 08, 2010</h2><p>I&#39;ve been able to do the immidiete delete ! :-)</p>
+<p>I did it by creating a Dynamic Root List, which is a container for the Projects ( EditableRoot ), and now insert/update/delete all work on-the-fly inside the Grid<br />at the top level, for all Projects<br /><br />BUT ... now I can&#39;t insert/update/delete the &quot;Members&quot; which is EditableChildList container for EditableChilds<br />- the Grid removes them, but nothing get&#39;s called in the CSLA objects ...<br />What do I need to do to make the Project(EditableRoot) call the Children for Insert/Update/Delete ?<br /><br />The Project(EditableRoot) has this inside it ( and it&#39;s fething the children just fine - just not inserting/update&#39;ing/deleting ... I probably have to implement something in the Project do make it do it ?<br /><br />Inside the Project ( EditableRoot ) is a member variable to reference the Children (Members):</p>
+<p>private static readonly PropertyInfo&lt;MemberList&gt; _membersProperty = RegisterProperty&lt;MemberList&gt;(p =&gt; p.Members, string.Empty, null);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public MemberList Members<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; get { return GetProperty(_membersProperty); }<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; set { SetProperty(_membersProperty, value); }<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; #endregion<br /><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; partial void OnMapping(Csla.Data.SafeDataReader reader, ref bool cancel)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; try<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {&nbsp;&nbsp; //loads the members (children) for the project<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; LoadProperty(_membersProperty, MemberList.GetByParentID(Int32.Parse(reader[&quot;ProjectID&quot;].ToString())));<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; catch (Exception) { } // do nothing ... &thorn;etta er til a&eth; hindra villuna hans Lhotka &thorn;egar engin b&ouml;rn eru til sta&eth;ar<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</p>
+<p>&nbsp;</p>
+<p>The problem is that the Project (EditableRoot) never calls the Child_Update( ) !<br />I shouldn&#39;t need to do something special I think ? If I create a new Member( EditableChild ) in the Grid and leave the cell ( remember, I&#39;m using Dynamic Root List so I don&#39;t have to &quot;push save&quot; ... it happens immidietly after I leave the cells ) it enters the DataPortal_Update for the project ... but never calls the Child_XXXXX throught the Portal ... <br /><br />If I breakpoint and edit the &quot;this&quot; ( Project ... which has the children ) the children are there correctly marked ( in the Members collection ) with &quot;IsDirty&quot; and &quot;IsValid&quot; and everything ... but somehow it never calls the Child&#39;s update ( and I can&#39;t do this.Member[x].Save because it&#39;s a child ... and I DO NOT want to do it either ). I&#39;ve been looking at the flow pictures ( e.g. page 159 ( Figure 4-14 ) in the C# 2008 )<br /><br />Is the mapping maybe done wrongly ? Why does the Project (EditableRoot ) not send the message on to it&#39;s children&#39;s DataPortal_XXXX ?<br /><br />it&#39;s my understanding the FieldManager should should simplify the proccess of updaing the child objects when using the data portal ( which is what I want to do )</p>
+<p>Hope you can answer me ......</p>
+<p>rgd,<br />EE.</p>
+<p>&nbsp;</p>
+<p>Please help ... I&#39;m almost there :-)</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Friday, April 09, 2010</h2><p>See this is where things will get weird.&nbsp; Your Project object, which is a BusinessBase and root, when you&#39;re done editing that (ie. deleting the row, or click out of one of the cells onto another project row) will cause an immediate save.&nbsp; But Project&#39;s children WON&#39;T save when you click out from editing them.&nbsp; They are only saved with the parent Project object.&nbsp; So to trigger a save you&#39;ll need to edit a child, then edit the parent, then leave the row.</p>
+<p>If you WANT the children to save as you leave the row (like Project does now), I think you&#39;d have to have Project as&nbsp;a Root (and not editable in the grid, but by using other controls to allow changing of Projects properties).&nbsp; Member would need to be a root object as well and Members would be an ERLB.</p>
+<p>But I think you can see how this would lead to a confusing user experience.&nbsp; Your best bet would be to get rid of the ProjectList, use text boxes, check boxes, etc to allow editing of Project properties, and the grid to edit the Members.&nbsp; Project is a root, everything else is a child.. and just have a save button on your form to save the whole thing.</p>
+<p>Remember, in Csla terms anything that can save itself is a Root.&nbsp; A root is always also a parent, but a parent isn&#39;t always a root object.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Friday, April 09, 2010</h2><p>If you want to do the Dynamic Root list option, then all your editing would be in the grid.. no need for seperate controls for the root&#39;s fields.</p>
+<p>In that case, you&#39;d have ProjectList, an EditableRootListBase subclass (Dynamic root list stereotype).&nbsp; Project, which is a root and subclasses BusinessBase.&nbsp; Members, which would inherit BusinessListBase, and Member, which would inherit BusinessBase.</p>
+<p>Then your one BindingSource would have the grid bound to it, and you&#39;d set the BS&#39; datasource to a ProjectList instance.</p>
+<p>The only odd thing is that what you&#39;ve described so far you&#39;d only ever have one item in ProjectList.&nbsp; Conceptually odd... but if that&#39;s the use case, then that&#39;s how it would work.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Lord02 replied on Thursday, April 08, 2010</h2><p>Andy,</p>
+<p>If I&#39;m going to use that suggestion ... </p>
+<p>&quot;You can display its values using other controls, and display its
+children in a grid, and it will be multiple levels since you&#39;re using
+Infragistics.&quot;</p>
+<p>Would I still databind against the UltraGrid it like this:<br /><br />&nbsp;&nbsp;&nbsp;&nbsp; - MembersList ( is currently editableChildList, but I would change it to EditableRootList? ) &lt;--- only a &quot;container&quot; ( and I would have to implement a function which is something like MemberList.GetByParentID &lt;-- ( which is the ProjectID )<br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -&nbsp; Members ( is currenctly EditableChild, but I would change it to EditableRoot? ) &lt;--- this will be the top Level visible in the Grid</p>
+<p>&nbsp;</p>
+<p>Trying to do and UPDATE now:</p>
+<p>I&#39;ve tried this and when I call:<br />private void _btnSaveProject_Click(object sender, EventArgs e)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _projectListBindingSource.EndEdit();<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _projectList = _projectList.Save();<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _projectListBindingSource.DataSource = _projectList;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br /><br />the _projectList will go down to the Project and call the DataPortal_Update there ... ** but doesn&#39;t go down to the Members ?? **<br />- The &quot;Members&quot; is never called<br /><br />This is how Projects &quot;own&quot; the MembersList:</p>
+<p>Inside the Projects ( EditableRoot ):<br />---------------------------------------------------<br />#region Custom Made Properties<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; private static readonly PropertyInfo&lt;MemberList&gt; _membersProperty = RegisterProperty&lt;MemberList&gt;(p =&gt; p.Members, string.Empty, null);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public MemberList Members<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; get { return GetProperty(_membersProperty); }<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; set { SetProperty(_membersProperty, value); }<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; #endregion<br /><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; partial void OnMapping(Csla.Data.SafeDataReader reader, ref bool cancel)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; try<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {&nbsp;&nbsp; //loads the members (children) for the project<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; LoadProperty(_membersProperty, MemberList.GetByParentID(Int32.Parse(reader[&quot;ProjectID&quot;].ToString())));<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </p>
+<p>Would be nice if I could attached the CSLA classes in this forum ... <br /><br />rgd,<br />EE</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Thursday, April 08, 2010</h2><p>Ok, if you&#39;re going to try my original suggestion, this is what your class design would be like:</p>
+<p>Project : BusinessBase&lt;Project&gt;</p>
+<p>ProjectMembers : BusinessListBase&lt;ProjectMembers, ProjectMember&gt;</p>
+<p>ProjectMember : BusinessBase&lt;ProjectMember&gt; // I assume this class would also have a Members property, of type ProjectMembers.</p>
+<p>The on your from, you&#39;ll have two BindingSource components (ProjectBindingSource, MembersBindingSource).&nbsp; You&#39;d set ProjectBindingSource&#39;s DataSource property to a Project instance.&nbsp; MembersBindingSource would have a DataSource property of ProjectBindingSource, and a DataMember of Members (or whatever your property name is).&nbsp; That can all be setup in the designer.</p>
+<p>&nbsp;</p>
+<p>I&#39;m thrown by your &quot;Projects&quot; type though.&nbsp; Sounds like it would be a collection of projects... which is fine, but not something I&#39;d expect to support editing, just used as&nbsp;a kind of list for display.&nbsp; You should be able to make a jpg of your current class diagram and attach it to your post.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Lord02 replied on Thursday, April 08, 2010</h2><p>You know what I&#39;m missing ?</p>
+<p>I can see the framework is trying to call the DeleteChild( ) ?</p>
+<p>http://csharp.codefetch.com/example/f1/cslacs10/CSLA/BusinessBase.cs</p>
+<pre><span class="s2">// allow the parent object to delete us</span><br />    <span class="s2">// (internal scope)</span><br />    <span class="s8">internal</span> <span class="s10">void</span> <span class="s6">DeleteChild</span>()<br />    <span class="s18">{</span><br />      <span class="s8">if</span>(<span class="s18">!</span><span class="s14">this</span><span class="s18">.</span>IsChild)<br />        <span class="s8">throw</span> <span class="s8">new</span> <span class="s6">NotSupportedException</span>(<b><span class="s13">&quot;Invalid for root objects &quot;</span> <span class="s18">+</span><br />          <span class="s13">&quot;- use Delete instead&quot;</span></b>)<span class="s18">;</span><br />    <br />      <span class="s6">MarkDeleted</span>()<span class="s18">;</span><br />    <span class="s18">}</span><br /><br />How can I delete and EditableRoot from EditableRootList which is databound ? What do I need to implement ...<br /><br />rgd,<br />EE</pre></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

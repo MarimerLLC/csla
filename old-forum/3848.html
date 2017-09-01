@@ -1,0 +1,13 @@
+<html><header><title>CSLA 3.0.2: BO Re-Use</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA 3.0.2: BO Re-Use</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3848.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>cjherasmus posted on Tuesday, November 06, 2007</h2><P><FONT face=Arial size=2>Good Day,</FONT></P>
+<P><FONT face=Arial size=2>I'm going to attempt code re-use (CSLA BO's) across 3 applications and would appreciate some thoughts.</FONT></P>
+<P><FONT face=Arial size=2>I have 1 Windows-based desktop application ( I will call it ABCWin ) and 2 Web-based applications ( I will call them DEFWeb and GHJWeb). They all use the exact same XYZPrincipal and XYZIdentity for security, which talks to a single security database on my SQL 2005 Database Server. I want to put this dll on an Application Server under IIS and ASP. CSLA is on the Application Server. For ABCWin BO's and CSLA is on Desktop as well.</FONT></P>
+<P><FONT face=Arial size=2>I have shared functions across all 3 applications. I want to put this dll also on the Application Server.</FONT></P>
+<P><FONT face=Arial size=2>I want to "pool" my BO's (their are a few BO's that is used amongst all applications) into their own dll's and put them on the Application Server.</FONT></P>
+<P><FONT face=Arial size=2>The Application Server will have a web.config file which contains the info for talking to the Database Server and that supports .NET remoting.</FONT></P>
+<P><FONT face=Arial size=2>ABCWin will talk to Application Server&nbsp;which talks to Database Server.</FONT></P>
+<P><FONT face=Arial size=2>DEFWeb of which the website is on a Intranet Server will talk to the Application Server which talks to Database Server.</FONT></P>
+<P><FONT face=Arial size=2>GHJWeb of which the website is on a Internet Server will also talk to the Application Server which talks to Database Server.</FONT></P>
+<P><FONT face=Arial size=2>How does that sound?</FONT></P>
+<P><FONT face=Arial size=2>Regards,</FONT></P>
+<P><FONT face=Arial size=2></FONT>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>DavidDilworth replied on Tuesday, November 06, 2007</h2><P>Sounds like a perfectly acceptable thing to do.&nbsp;&nbsp;You're taking the same business functionality and exposing different aspects of it across 3 different UIs.</P>
+<P>Sounds like exactly the kind of requirement CSLA was designed to handle.</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

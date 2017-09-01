@@ -1,0 +1,146 @@
+<html><header><title>Need help with PropertyHasChanged() error</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Need help with PropertyHasChanged() error</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4501.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>TooMuch posted on Friday, March 14, 2008</h2><P>I have a databound textbox that throws a System.StackOverflowException in Csla.dll everytime I try to update the value of the databound textbox .&nbsp; Here is the call stack when the exception is thrown:</P>
+<P>Csla.dll!Csla.Core.BindableBase.OnPropertyChanged(string propertyName = "SiteID") Line 102&nbsp;C#<BR>Csla.dll!Csla.Core.BusinessBase.PropertyHasChanged(string propertyName = "SiteID") Line 276&nbsp;C#<BR>Csla.dll!Csla.Core.BusinessBase.PropertyHasChanged() Line 257&nbsp;C#<BR>ClaimAudit.Biz.dll!ClaimAudit.Biz.ClaimAudit.SiteID.set(string value = "249000029") Line 589 + 0x8 bytes&nbsp;C#<BR>[External Code]&nbsp;<BR>ClaimAudit.Windows.exe!ClaimAudit.Windows.Program.Main() Line 21 + 0x1a bytes&nbsp;C#<BR></P>
+<P>and here is the SiteID property that is bound to the textbox:</P><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>string</FONT><FONT size=2> SiteID</P>
+<P>{</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[</FONT><FONT color=#2b91af size=2>MethodImpl</FONT><FONT size=2>(</FONT><FONT color=#2b91af size=2>MethodImplOptions</FONT><FONT size=2>.NoInlining)]</P>
+<P></FONT><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get</FONT><FONT size=2> </P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CanReadProperty(</FONT><FONT color=#0000ff size=2>true</FONT><FONT size=2>);</P>
+<P></FONT><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return</FONT><FONT size=2> _siteID; </P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[</FONT><FONT color=#2b91af size=2>MethodImpl</FONT><FONT size=2>(</FONT><FONT color=#2b91af size=2>MethodImplOptions</FONT><FONT size=2>.NoInlining)]</P>
+<P></FONT><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set</P></FONT><FONT size=2>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CanWriteProperty(</FONT><FONT color=#0000ff size=2>true</FONT><FONT size=2>);</P>
+<P></FONT><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if</FONT><FONT size=2> (_siteID != </FONT><FONT color=#0000ff size=2>value</FONT><FONT size=2>)</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_siteID = </FONT><FONT color=#0000ff size=2>value</FONT><FONT size=2>;</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;PropertyHasChanged();</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</P>
+<P>}</P></FONT>
+<P>This is the line in BindableBase.OnPropertyChanged that is throwing the exception:</P><FONT size=2>
+<P>_nonSerializableHandlers.Invoke(</FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>, </FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> PropertyChangedEventArgs(propertyName));</FONT></P>
+<P>&nbsp;</P>
+<P>Can anyone give me some insight into what I am doing incorrectly?</P>
+<P><FONT size=2>&nbsp;</P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Saturday, March 15, 2008</h2>You probably have some code in your UI that is triggered when the control's value changes, and then it changes the value of the property on the control or object - thus causing an endless loop.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>TooMuch replied on Sunday, March 16, 2008</h2><P>I get what you're saying about the endless loop, that would explain the StackOverflowException.&nbsp; So after reading your message, I took the windows form and stripped it down to one textbox that&nbsp;is bound to the SiteID property of my business object via the designer (dragging from Data Sources) and the only code behind the form is the following:</P><FONT color=#0000ff size=2>
+<P>using</FONT><FONT size=2> System;</P></FONT><FONT color=#0000ff size=2>
+<P>using</FONT><FONT size=2> System.Windows.Forms;</FONT><FONT size=2></P></FONT><FONT color=#0000ff size=2>
+<P>namespace</FONT><FONT size=2> ClaimAudit.Windows</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>partial</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>class</FONT><FONT size=2> </FONT><FONT color=#2b91af size=2>ClaimAuditFormTest</FONT><FONT size=2> : </FONT><FONT color=#2b91af size=2>Form</P></FONT><FONT size=2>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{</P>
+<P></FONT><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;public</FONT><FONT size=2> ClaimAuditFormTest(ClaimAudit.Biz.</FONT><FONT color=#2b91af size=2>ClaimAudit</FONT><FONT size=2> claimAudit)</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;InitializeComponent();</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ClaimAuditBindingSource.DataSource = claimAudit;</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</P>
+<P>}</P>
+<P>Yet I still get the same System.StackOverflowException in Csla.dll exception when after editing the SiteId textbox.&nbsp; Since there is now next to nothing in the code behind the form,&nbsp;where could this endless loop be occurring?</P>
+<P>&nbsp;</P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Sunday, March 16, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Use the debugger and trace through. Obviously you have some code
+(not in the UI apparently) that is triggered when your property changes, and is
+then changing the property.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> TooMuch
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Sunday, March 16, 2008 7:33 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] Need help with PropertyHasChanged() error<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>I get what you're saying about the endless loop, that would explain the
+StackOverflowException.&nbsp; So after reading your message, I took the windows
+form and stripped it down to one textbox that&nbsp;is bound to the SiteID
+property of my business object via the designer (dragging from Data Sources)
+and the only code behind the form is the following:<o:p></o:p></p>
+
+<p><span>using</span><span> System;<o:p></o:p></span></p>
+
+<p><span>using</span><span> System.Windows.Forms;<o:p></o:p></span></p>
+
+<p><span>namespace</span><span> ClaimAudit.Windows<o:p></o:p></span></p>
+
+<p><span>{<o:p></o:p></span></p>
+
+<p><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;public</span><span> <span>partial</span> <span>class</span> <span>ClaimAuditFormTest</span>
+: <span>Form<o:p></o:p></span></span></p>
+
+<p><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<o:p></o:p></span></p>
+
+<p><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;public</span><span> ClaimAuditFormTest(ClaimAudit.Biz.<span>ClaimAudit</span> claimAudit)<o:p></o:p></span></p>
+
+<p><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<o:p></o:p></span></p>
+
+<p><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;InitializeComponent();<o:p></o:p></span></p>
+
+<p><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ClaimAuditBindingSource.DataSource
+= claimAudit;<o:p></o:p></span></p>
+
+<p><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<o:p></o:p></span></p>
+
+<p><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<o:p></o:p></span></p>
+
+<p><span>}<o:p></o:p></span></p>
+
+<p><span>Yet I still get the same
+System.StackOverflowException in Csla.dll exception when after editing the
+SiteId textbox.&nbsp; Since there is now next to nothing in the code behind the
+form,&nbsp;where could this endless loop be occurring?<o:p></o:p></span></p>
+
+<p><span>&nbsp;<o:p></o:p></span></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>TooMuch replied on Tuesday, March 18, 2008</h2><P>Ok, this one was a hard one to track down because I couldn't use the normal methods of debugging/tracing since the error was occurring in the BindableBase.OnPropertyChanged event with the line:<BR><FONT size=2></FONT></P>
+<P><FONT size=2>_nonSerializableHandlers.Invoke(</FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>, </FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> PropertyChangedEventArgs(propertyName));</FONT></P>
+<P><FONT size=2></FONT>&nbsp;</P>
+<P>Since you can't step into that call while debugging it made it more difficult to catch.&nbsp; But the StackOverflowException was being caused by my business objects override of GetIdValue, which in hindsight was terribly wrong, but it looked like this:</P><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>protected</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>override</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>object</FONT><FONT size=2> GetIdValue()</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>;</P>
+<P>}</P></FONT>
+<P>That's a definite no-no since this will be called by&nbsp;Equals() and creates the endless loop, I changed the override to the following:</P>
+<P><FONT color=#0000ff size=2>protected</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>override</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>object</FONT><FONT size=2> GetIdValue()</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>this._auditID</FONT><FONT size=2>;</P>
+<P>}</FONT></P>
+<P>Thanks for the assistance in helping me track down the exception, I'm still learning the intracacies of the Csla framework!</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

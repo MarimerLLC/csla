@@ -1,0 +1,22 @@
+<html><header><title>OnChildChanged Not firing from TryUpdateModel call</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>OnChildChanged Not firing from TryUpdateModel call</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10542.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>EbenK posted on Wednesday, July 20, 2011</h2><p>&nbsp;</p>
+<p style="margin:0in;font-family:Arial;color:black;font-size:9pt;">I am working with an MVC 3 application using CSLA 4.0, and I have set in the global.asax to use the CslaModelBinder.<span style="mso-spacerun:yes;">&nbsp; </span>I have a top level object that derives from BusinessBase&lt;T&gt; (I will call it Labor), and that object has a child collection (LaborLogList) that derives from BusinessListBase&lt;T&gt; that is made up of objects (LaborLog) that derive from BusinessBase&lt;T&gt;.</p>
+<p style="margin:0in;font-family:Calibri;font-size:11pt;">&nbsp;</p>
+<p style="margin:0in;font-family:Arial;color:black;font-size:9pt;">I need to have some properties update on the Labor object whenever the LaborLogList has been changed (ie: something was inserted into the collection, removed from the collection, or updated in the collection).<span style="mso-spacerun:yes;">&nbsp; </span>In order to achieve this requirement, I created an override for OnChildChanged at the Labor object level, and I am easily able to capture the collection changed events (insert and remove), but I am having some trouble in trying to capture the update events.<span style="mso-spacerun:yes;">&nbsp; </span>I expected to be able to just listen for the property name that I expect to change through e.PropertyChangedArgs.PropertyName, but the child changed event is never being fired for the properties that I have updated through my UI.</p>
+<p style="margin:0in;font-family:Arial;color:black;font-size:9pt;">&nbsp;</p>
+<p style="margin:0in;font-family:Arial;color:black;font-size:9pt;">After further investigation of this, it seems that the any property that I update from the UI will not fire the OnChildChanged event at the parent level.<span style="mso-spacerun:yes;">&nbsp; </span>Here is an sample from<span style="mso-spacerun:yes;">&nbsp; </span>the controller method I am using:</p>
+<p style="margin:0in;font-family:Calibri;font-size:11pt;">&nbsp;</p>
+<pre style="FONT-FAMILY:Consolas;BACKGROUND:white;COLOR:black;FONT-SIZE:13px;"><span style="COLOR:blue;"><pre style="FONT-FAMILY:Consolas;BACKGROUND:white;COLOR:black;FONT-SIZE:13px;"><span style="COLOR:blue;">if</span> (TryUpdateModel(logVM))
+{</pre>
+<pre style="padding-left:30px;font-family:Consolas;background:white;color:black;font-size:13px;"><span style="COLOR:#2b91af;">Labor</span> labor = <span style="COLOR:#2b91af;">Labor</span>.GetByOID(returnId, <span style="COLOR:blue;">true</span>);
+ 
+ labor.Logs.Add(logVM.Log);
+</pre>
+<pre style="padding-left:30px;font-family:Consolas;background:white;color:black;font-size:13px;"> ...</pre>
+<pre style="padding-left:30px;font-family:Consolas;background:white;color:black;font-size:13px;"> 
+ labor.Save();</pre>
+<pre style="FONT-FAMILY:Consolas;BACKGROUND:white;COLOR:black;FONT-SIZE:13px;">}</pre>
+<pre style="FONT-FAMILY:Consolas;BACKGROUND:white;COLOR:black;FONT-SIZE:13px;"></pre>
+</span>&nbsp;</pre>
+<p style="margin:0in;font-family:Arial;color:black;font-size:9pt;">It would appear that the TryUpdateModel method does not fire the Csla OnChildChanged event.<span style="mso-spacerun:yes;">&nbsp; </span>The property values are changing, but the event is not being seen at the parent level.<span style="mso-spacerun:yes;">&nbsp; </span>Does anyone have any ideas on why this may be happening, or how I could get around it?</p>
+<p><span style="COLOR:#2b91af;"><span style="color:#000000;">Thanks,</span></span></p>
+<p><span style="COLOR:#2b91af;"><span style="color:#000000;">Eben</span></span></p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

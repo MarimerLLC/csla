@@ -1,0 +1,66 @@
+<html><header><title>NuPack package manager - Maybe it can work around some CSLA installer issues?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>NuPack package manager - Maybe it can work around some CSLA installer issues?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9616.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jaans posted on Friday, October 08, 2010</h2><p>Hi Rocky</p>
+<p>Not sure if you read Scott Guthrie&#39;s post about NuPack - maybe something worth exploring?</p>
+<p>Here&#39;s a link (there are many already): </p>
+<ul>
+<li><a href="http://weblogs.asp.net/scottgu/archive/2010/10/06/announcing-nupack-asp-net-mvc-3-beta-and-webmatrix-beta-2.aspx">http://weblogs.asp.net/scottgu/archive/2010/10/06/announcing-nupack-asp-net-mvc-3-beta-and-webmatrix-beta-2.aspx</a></li>
+<li><a href="http://www.hanselman.com/blog/IntroducingNuPackPackageManagementForNETAnotherPieceOfTheWebStack.aspx">http://www.hanselman.com/blog/IntroducingNuPackPackageManagementForNETAnotherPieceOfTheWebStack.aspx</a><br />(this is from Scott Hanselman)</li>
+</ul>
+<p>Regards,<br />Jaans</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, October 08, 2010</h2><p>Yes, I read through that information. I think it is a great idea, and I absolutely plan to try and figure it out.</p>
+<p>It does look like there&#39;s some real effort involved in figuring out how to create a package, and then how to automate that creation on my end (creating some scripts or something), but it will probably be well worth the time required.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, October 08, 2010</h2><p>&lt;shameless plea&gt;</p>
+<p>Of course I wouldn&#39;t turn down any offers to help get it up and running :)</p>
+<p>&lt;/shameless plea&gt;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jaans replied on Friday, October 08, 2010</h2><p>Hi Rocky</p>
+<p>I started to look into it in some more detail (just to try and gauge the effort required). It doesn&#39;t seem too laborious and mostly an initial&nbsp;effort to define a &quot;Package Specification&quot; that describes the library. This package specification and package contents is then submitted online, to enable developers to discover and consume the packages.</p>
+<p>Put very simply, the creation of a package boils down to:</p>
+<ul>
+<li>Create a NuSpec file (XML based file)
+<ul>
+<li>Define metadata for package</li>
+<li>Define dependencies on other packages</li>
+<li>Define contents of the package
+<ul>
+<li>Tools</li>
+<li>Content - Samples / Source could potentially be specified here</li>
+<li>Llb / Assemblies - <strong>The framework and version can be specified</strong>. For example: Bin\{framework name}{version} which could be:
+<ul>
+<li>\Bin\.NET2.0&nbsp; --&gt; .NET Framework version 2.0</li>
+<li>\Bin\.NET4.0 --&gt; .NET Framework version 4.0</li>
+<li>\Bin\SL4 --&gt; Silverlight 4.0</li>
+<li>etc.</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Build a package
+<ul>
+<li>This&nbsp;can be specified&nbsp;as Visual Studio Post-Build Event. Future versions of NuPack intend to create a MSBuild Task)</li>
+<li>Use NuPack.exe to build a package. For example
+<ul>
+<li>&quot;$(SolutionDir)Tools\NuPack.exe&quot; &quot;CSLA.NuSpec&quot;</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Submit
+<ul>
+<li>This is where I&#39;m coming up empty. Not sure if I&#39;m just not seeing it, but it appears that this is not yet available. I have noticed a couple of other users enquiring about it too, so I&#39;m sure they&#39;ll get that information out soon.</li>
+<li>It&#39;s worth noting that the source of packages is &quot;feed&quot; based and that while there is a &quot;central&quot; feed maintained by the community, you can also specify a custom feed which could even be local/internal feed (useful for corporate environments).</li>
+</ul>
+</li>
+</ul>
+<p>Here are some direct links to useful bits of info:</p>
+<ul>
+<li><a href="http://nupack.codeplex.com/" title="CodePlex - NuPack">The CodePlex site for NuPack</a></li>
+<li><a title="Getting started - using packages" href="http://nupack.codeplex.com/documentation?title=Getting%20Started">Getting started - Using packages</a></li>
+<li><a title="Creating a Package" href="http://nupack.codeplex.com/documentation?title=Creating%20a%20Package">Creating a package</a></li>
+<li><a title="NuSpec format" href="http://nupack.codeplex.com/documentation?title=Nuspec%20Format">NuSpec format</a></li>
+<li><a title="NuSpec FAQ" href="http://nupack.codeplex.com/wikipage?title=Frequently%20Asked%20Questions">NuSpec FAQ</a></li>
+<li><a title="Available packages" href="http://nupack.codeplex.com/wikipage?title=AvailablePackages&amp;FocusElement=Comment">Current list of available packages</a></li>
+</ul>
+<p>PS: I like that is has the ability to request a list of available updates for the packages already referenced (E.g. List-Package &ndash;updates).</p>
+<p>Summary: At first glance it seems great and probably overdue&nbsp;for the VS environment, but it is still a bit v1.0 at this stage and there are a couple of small issues. I suspect it&#39;s going to gain momentum and with it some good polish to go with what is an already great start. I&#39;m not particularly fond of where it places the downloaded package and files in your solution / project nor the fact that you cannot control it (yet). It might also just be a case of resistance to change from my own practices. </p>
+<p>I&#39;ll try to keep following it and update here if I&nbsp;get time.</p>
+<p>Jaans</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, October 08, 2010</h2><p>I do have a way to submit a package. Right now they are in a beta phase, so there aren&#39;t public submissions, but I do have access, so if we can get a package put together I can get it into the mix.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jaans replied on Friday, October 08, 2010</h2><p>That&#39;s great.</p>
+<p>Some more good news, I&#39;ve spent some time (OK.. I admit, I got interested and carried away) and have made great progress. I&#39;ve cracked the proverbial nut and I&#39;ll have something detailed for you soon.</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jaans replied on Saturday, October 09, 2010</h2><p>FYI - I&#39;ve sent you and email that includes source code and power points to explain and demonstrate an implementation.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

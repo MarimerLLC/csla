@@ -1,0 +1,55 @@
+<html><header><title>DynamicListBase&lt;T&gt; Model.SaveItem possible bug?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>DynamicListBase&lt;T&gt; Model.SaveItem possible bug?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10021.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Devman posted on Thursday, February 03, 2011</h2><p>Hi,</p>
+<p>Im using a View Model that has a DynamicListBase as the Model type. I have a ListBox who&#39;s ItemSource is bound to the model property, SelectedIndex&nbsp; is also bound to a SelectedIndex property on the VM.</p>
+<p> I navigate the ListBox items using the SelectedIndex property on the VM, the bindings work as expected...So far so good. </p>
+<p>I call Model.AddNew() to add the the collection,select it, and the selected index property on the vm is correctly set.</p>
+<p>The problem arrises however when I call Model.SaveItem(). After calling this,When I try to select this item in the listbox, the bound selected index property on the vm is set to -1..Its as if there has not been a propertychanged notification fired or something similar.</p>
+<p>To confirm, this issue only arrises after calling Model.SaveItem(..) .</p>
+<p>The only way i can correct this is if i reset the ItemSource to null and then back to the model.</p>
+<p>Any thoughts?</p>
+<p>&nbsp;</p>
+<p>Regards</p>
+<p>David</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Thursday, February 03, 2011</h2><p>Hi,</p>
+<p>DynamicListBase will save changes immediately to each row when another object is selected.<br />So the ViewModel is created for BusinessListBase lists - not DynamicListBase lists and will not work well with DynamicListBase . </p>
+<p>Se also this thread: <a href="http://forums.lhotka.net/forums/p/9978/46789.aspx#46789">http://forums.lhotka.net/forums/p/9978/46789.aspx#46789 </a></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Devman replied on Thursday, February 03, 2011</h2><p>Many thanks for the quick reply,</p>
+<p>I&#39;ve looked at the other thread and tried this senario with a ListBox and DataGrid with the same results.&nbsp; Im confused, what is the DynamicListBase used for then if you suggest using BusinessListBase instead?? &nbsp; I thought for our scenario DynamicListBase would be a good fit as each BB within the list needs to be saved individually, due to them containing large binary data. Therefore using BLB could result in saving many objects with large binary data at once</p>
+<p>If DLB is not going to work for us and BLB give this undesired potential mass saving of data, what would you suggest be the best way forward?</p>
+<p>Best Regards</p>
+<p>David</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Thursday, February 03, 2011</h2><p>The DynamicList is what you want in your case, so my guess would be that you don&#39;t need a ViewModel in the mix at all since saving / canceling is done automatically via databinding, so the ViewModel isn&#39;t buying you anything (or very much).&nbsp; Maybe&nbsp;a simpler ViewModel based on DependencyObject is all you really need.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Devman replied on Friday, February 04, 2011</h2><p>Andy/Jonny</p>
+<p>Ive removed the csla ViewModel classes from the equation and now have the following VM
+
+</p>
+<p>
+<pre style="font-family:consolas;"><span style="color:#2b91af;">MyViewModel</span>&nbsp;:<span style="color:#2b91af;">INotifyPropertyChanged</span>...<br /></pre>
+</p>
+<p>However I still have the same Issue and thats with the DLB.SaveItem(). When a DLB is bound to a ListBox/DataGrid and a new entry is saved via SaveItem,(be that automatically in the DataGrid instance), when selecting the item in the list/datagrid the SelectedIndex property is set to -1 as i said in my initial post. Maybe im missing something but VM, or no VM, this seems like a problem with the DLB and change notifications not being sent correctly.</p>
+<p>I need DLB for my senario but cant use/bind to it without&nbsp; refreshing the bound control&#39;s itemssource on the saved event of DLB. Im using this work around but surely this cant be right??</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, February 04, 2011</h2><p>Is this WPF or Silverlight?</p>
+<p>The WPF datagrid is notoriously poor in terms of handling data changed events, and there are a couple issues that I&#39;ve been unable to solve.</p>
+<p>If this is failing in SL I&#39;m more concerned, because that datagrid is much more reliable.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Devman replied on Monday, February 07, 2011</h2><p>Hi Rocky,</p>
+<p>This is WPF.....and having looked at the source i can see a problem.&nbsp; In DLB.SaveItem() I see there has been a change regarding Silverlight DataGrid not supporting the replace action, which calls OnCollectionChanged twice with Remove and then Add as params.</p>
+<p>However, with WPF,replacing an item in the list OnCollectionChanged is called once with Replace as the param. The base.OnCollectionChanged() is not being fired in this instance.&nbsp;</p>
+<p>&nbsp;</p>
+<p>
+
+<pre style="font-family:consolas;">&nbsp;<span style="color:blue;">protected</span>&nbsp;<span style="color:blue;">override</span>&nbsp;<span style="color:blue;">void</span>&nbsp;OnCollectionChanged(<span style="color:#2b91af;">NotifyCollectionChangedEventArgs</span>&nbsp;e)<br />&nbsp;&nbsp;&nbsp;&nbsp;{<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:green;">//&nbsp;SL&nbsp;Data&nbsp;Grid&#39;s&nbsp;DataGridDataConnection&nbsp;object&nbsp;does&nbsp;not&nbsp;support&nbsp;replace&nbsp;action.&nbsp;&nbsp;</span><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:green;">//&nbsp;It&nbsp;throws&nbsp;an&nbsp;excpetioon&nbsp;when&nbsp;this&nbsp;occurs.</span><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">if</span>&nbsp;(<span style="color:blue;">this</span>.RaiseListChangedEvents&nbsp;&amp;&amp;&nbsp;(e.Action&nbsp;!=&nbsp;<span style="color:#2b91af;">NotifyCollectionChangedAction</span>.Replace&nbsp;||&nbsp;RaiseReplaceEvents))<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">base</span>.OnCollectionChanged(e);<br />&nbsp;&nbsp;&nbsp;&nbsp;}<br /></pre>
+</p>
+<p>Regards</p>
+<p>David</p>
+<p>
+<pre style="font-family:consolas;"></pre>
+</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Devman replied on Monday, February 07, 2011</h2><p>After looking at this further, If i set RaiseReplaceEvents to True, the base.OnCollectionChanged() is called twice but an InvalidOperationException is thrown on the second call. </p>
+<p>&quot;Cannot find removed item.&quot;</p>
+<p>So it seems the only way for me to get this working in WPF is to replace the following code within DLB.SaveItem();</p>
+<p>Replace;</p>
+<p>
+
+</p>
+<pre style="font-family:consolas;">&nbsp;OnCollectionChanged(<span style="color:blue;">new</span>&nbsp;<span style="color:#2b91af;">NotifyCollectionChangedEventArgs</span>(<span style="color:#2b91af;">NotifyCollectionChangedAction</span>.Replace,&nbsp;result,&nbsp;item));<br /></pre>
+<p>&nbsp;</p>
+<p>With;</p>
+<p>
+
+</p>
+<pre style="font-family:consolas;">&nbsp;OnCollectionChanged(<span style="color:blue;">new</span>&nbsp;<span style="color:#2b91af;">NotifyCollectionChangedEventArgs</span>(<span style="color:#2b91af;">NotifyCollectionChangedAction</span>.Remove,&nbsp;item,&nbsp;index));<br />&nbsp;OnCollectionChanged(<span style="color:blue;">new</span>&nbsp;<span style="color:#2b91af;">NotifyCollectionChangedEventArgs</span>(<span style="color:#2b91af;">NotifyCollectionChangedAction</span>.Add,&nbsp;<span style="color:blue;">this</span>[index],&nbsp;index));<br /><br /></pre>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, February 07, 2011</h2><p>Thank you for continuing to dig into this issue, I appreciate it.</p>
+<p>What I find interesting about this solution, is that I had to do a similar thing for the SL datagrid because it didn&#39;t honor the Replace action correctly either...</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, February 07, 2011</h2><p><a href="http://www.lhotka.net/cslabugs/edit_bug.aspx?id=900">http://www.lhotka.net/cslabugs/edit_bug.aspx?id=900</a></p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,75 @@
+<html><header><title>Delayed type of Add with BusinessListBase</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Delayed type of Add with BusinessListBase</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/8322.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>BrentE posted on Friday, January 08, 2010</h2>
+ 
+  Normal
+  0
+  
+  
+  false
+  false
+  false
+  
+   
+   
+   
+   
+   
+  
+  MicrosoftInternetExplorer4
+ 
+
+ 
+ 
+
+
+
+
+ /* Style Definitions */
+ table.MsoNormalTable
+	{mso-style-name:"Table Normal";
+	mso-tstyle-rowband-size:0;
+	mso-tstyle-colband-size:0;
+	mso-style-noshow:yes;
+	mso-style-parent:"";
+	mso-padding-alt:0in 5.4pt 0in 5.4pt;
+	mso-para-margin:0in;
+	mso-para-margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	font-size:10.0pt;
+	font-family:"Times New Roman";
+	mso-ansi-language:#0400;
+	mso-fareast-language:#0400;
+	mso-bidi-language:#0400;}
+
+
+
+<p class="MsoNormal">At my current client, we are using CSLA 3.8.1 with
+WPF.&nbsp; We have a parent object which derives from BusinessBase.&nbsp; That
+parent object contains a CommentCollection which derives from
+BusinessListBase.&nbsp; The CommentCollection is comprised of Comment objects which
+also derive from BusinessBase.<br>
+<br>
+The client has requested that we show the list of existing comments for the
+parent and have a text box below them for the user to enter a new
+comment.&nbsp; The catch is that there is no "Add Comment"
+button.&nbsp; The client wants to be able to hit Save and have it save the new
+comment along with everything else in the parent object.<br>
+<br>
+In my first attempt, I had the property the new comment text box binds to add a
+new Comment to the collection when the text is first changed.&nbsp; The problem
+with that is the comment would show up in the existing comments list display
+immediately and be updated as the user changed the comment text.&nbsp; We need
+to not add the new comment to the collection until the user presses the Save
+button.<br>
+<br>
+My second attempt was to add a NewCommentText property on the CommentCollection
+object which the text box binds to.&nbsp; The issue there is that there are no
+managed properties on the BusinessListBase, so the parent doesn't know when the
+property changes.&nbsp; I tried overriding IsSavable on the CommentCollection
+and adding an overload for Child_Update, hoping that I could slip in a new
+Comment object right before the update happens.&nbsp; However, the parent
+object still is not aware that the Comment object is savable when I change the
+NewCommentText property.<br>
+<br>
+Now I'm stumped.&nbsp; What would be the best way to add this delayed add type
+of functionality?</p><p class="MsoNormal"><br></p><p class="MsoNormal">Thanks,</p><p class="MsoNormal">Brent<br></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>BrentE replied on Friday, January 08, 2010</h2>Whoa.&nbsp; My first post and Word blew my formatting for me.&nbsp; Let me try that again...<br><br>At my current client, we are using CSLA 3.8.1 with WPF.&nbsp; We have a parent object which derives from BusinessBase.&nbsp; That parent object contains a CommentCollection which derives from BusinessListBase.&nbsp; The CommentCollection is comprised of Comment objects which also derive from BusinessBase.<br><br>The client has requested that we show the list of existing comments for the parent and have a text box below them for the user to enter a new comment.&nbsp; The catch is that there is no "Add Comment" button.&nbsp; The client wants to be able to hit Save and have it save the new comment along with everything else in the parent object.<br><br>In my first attempt, I had the property the new comment text box binds to add a new Comment to the collection when the text is first changed.&nbsp; The problem with that is the comment would show up in the existing comments list display immediately and be updated as the user changed the comment text.&nbsp; We need to not add the new comment to the collection until the user presses the Save button.<br><br>My second attempt was to add a NewCommentText property on the CommentCollection object which the text box binds to.&nbsp; The issue there is that there are no managed properties on the BusinessListBase, so the parent doesn't know when the property changes.&nbsp; I tried overriding IsSavable on the CommentCollection and adding an overload for Child_Update, hoping that I could slip in a new Comment object right before the update happens.&nbsp; However, the parent object still is not aware that the Comment object is savable when I change the NewCommentText property.<br><br>Now I'm stumped.&nbsp; What would be the best way to add this delayed add type of functionality?<br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>BrentE replied on Friday, January 08, 2010</h2>I should also point out that doing the obvious thing, adding the Comment object prior to calling Save on the parent when the Save button is clicked, is not an option in this situation.&nbsp; We are using a separate control for the Comments to enable them to be reused in other situations where they are a child of different parent types.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Monday, January 11, 2010</h2><P>Are you using a grid to display your comments?&nbsp; If so, your standard grid should have support for the AddNew concept.&nbsp; You should be able to restyle your grid so that it doesn't really look like a grid, and have the AddNew row at the bottom.</P>
+<P>Otherwise, you'll have to manually add a new&nbsp;comment (but one which you've called MarkClean on)&nbsp;to the end of your collection on fetch operations, and after Insert / Update on the root, detect if there's a new but clean instance at the end and re-add if its not.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>BrentE replied on Monday, January 11, 2010</h2>Thanks for the suggestion.&nbsp; I actually decided to go back to my first attempt, but add a style in there for the comment template that collapses it if IsSavable is true.&nbsp; That way I can let the business objects do what they do best and just hide it from the user so it doesn't look strange.&nbsp; Sometimes a little slight of hand is the best way to go!<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

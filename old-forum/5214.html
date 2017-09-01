@@ -1,0 +1,33 @@
+<html><header><title>Using Forms Authentication &amp; Custom (Csla) Principal/Identity</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Using Forms Authentication &amp; Custom (Csla) Principal/Identity</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5214.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>kenb posted on Friday, August 08, 2008</h2><P>If you've followed the instructions on page 535 of Expert C# 2005 Business Objects, then you've created an ASP.Net website which uses Forms Authentication in conjunction with custom Csla-based Principal and Identity objects.</P>
+<P>After implementing this, I noticed odd behavior where&nbsp;the user passed authorization checks (those defined in web.config &lt;authorization&gt; section)&nbsp;even after&nbsp;his session timed out from inactivity (and the Csla-based Principal/Identity is lost).</P>
+<P>To address this issue, I've modified Rocky's code by changing:</P><PRE>If principal Is Nothing Then
+&nbsp;&nbsp;&nbsp;' didn't get a principal from Session, so
+&nbsp;&nbsp;&nbsp;' set it to the unathenticated MyCslaBasedPrincipal
+&nbsp;&nbsp;&nbsp;MyCslaBasedPrincipal.Logout()
+Else
+&nbsp;&nbsp;&nbsp;' use the principal from session
+&nbsp;&nbsp;&nbsp;Csla.ApplicationContext.User = principal
+End If</PRE>
+<P>To:</P><PRE>If principal Is Nothing Then
+&nbsp;&nbsp;&nbsp;<B>If User.Identity.IsAuthenticated AndAlso TypeOf User.Identity Is System.Web.Security.FormsIdentity Then
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' We should only get here when the session expires after
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' we have logged in (have a valid FormsIdentity)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;FormsAuthentication.SignOut()
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Response.Redirect(Request.Url.PathAndQuery)
+&nbsp;&nbsp;&nbsp;End If</B>
+&nbsp;&nbsp;&nbsp;' didn't get a principal from Session, so
+&nbsp;&nbsp;&nbsp;' set it to the unathenticated MyCslaBasedPrincipal
+&nbsp;&nbsp;&nbsp;MyCslaBasedPrincipal.Logout()
+Else
+&nbsp;&nbsp;&nbsp;' use the principal from session
+&nbsp;&nbsp;&nbsp;Csla.ApplicationContext.User = principal
+End If
+</PRE></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, August 08, 2008</h2><P>That's a nice change - thanks for sharing it!</P>
+<P>I'll probably incorporate this into PTWeb at some point.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Friday, August 08, 2008</h2><P>I wrote virtually that same code 3-4 years ago.</P>
+<P>Very useful.</P>
+<P>Joe</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>kenb replied on Tuesday, September 09, 2008</h2><P>Due to WebResource.axd requests, I've found it is also necesary to wrap the relevent code with a check like this:</P>
+<P><PRE><B>If TypeOf HttpContext.Current.Handler Is IRequiresSessionState Then</B>
+...
+<B>End If</B></PRE>
+<P></P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

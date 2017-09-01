@@ -1,0 +1,30 @@
+<html><header><title>Confused about state of new objects</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Confused about state of new objects</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/192.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>stevevrporter posted on Wednesday, May 24, 2006</h2><P class=MsoNormal><SPAN>Hi all,</SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>I’m very new to CSLA, but I’m excited about the potential. <SPAN>&nbsp;</SPAN>My first task was to create some unit tests for the sample project included in the sample code, but I’m getting unexpected behaviour.</SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Here’s the test…</SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>[<SPAN>TestMethod</SPAN>()]<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>public</SPAN><SPAN> <SPAN>void</SPAN> CreationTest()<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>{<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN><SPAN>Resource</SPAN> res = <SPAN>Resource</SPAN>.NewResource();<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN><SPAN>Assert</SPAN>.IsFalse(res.IsValid, <SPAN>"new Resource is not valid."</SPAN>);<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>}</SPAN><SPAN><o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>I expected the newly created resource to be invalid since it’s first name and last name are both empty (the private member variables are initialized to string.empty) and there is a business rule attached to this object that both of those values must not be empty.</SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>But that’s not what happens.<SPAN>&nbsp; </SPAN>It looks like the rules only get invoked once I attempt to set a property. <SPAN>&nbsp;</SPAN>Is this the expected behaviour?<SPAN>&nbsp; </SPAN>Should the object perform a validation after it’s created to make sure that it’s left in the correct state? <SPAN>&nbsp;</SPAN>I added a couple of calls to <B>PropertyHasChanged</B> in <B>DataPortal_Create</B> and this addressed the issue, but I’m left wondering if I’m missing something bleedingly obvious.</SPAN></P>
+<P class=MsoNormal><SPAN><BR>Ta.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Steve Porter</SPAN></P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>nermin replied on Wednesday, May 24, 2006</h2><P>I beleive I remember Rocky talking about this.&nbsp; I think this behavior is by design.&nbsp; In most of the cases you will have object either load its state from DB or be initialized in the Factory Method.</P>
+<P>The results of both are presumed to be valid by default.&nbsp; E.g. if you saved something to DB you must have validated it first, so therefore no need for validation.&nbsp; Same is the case for the result of the Factory Method (after all you are initializing the fields to constants therefore you should know if they are valid or not).</P>
+<P>Your approach of adding the calls in DataPortal_Create (after initializing the fields to the default values is a correct approach)</P>
+<P>&nbsp;</P>
+<P>Nermin</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>stevevrporter replied on Wednesday, May 24, 2006</h2><P>Howdy,</P>
+<P>OK, that sounds familiar now.&nbsp; </P>
+<P>Hmm, is the better change to adjust&nbsp;the initializations to make the class valid?&nbsp; That doesn't seem correct, but it seems to be more in line with Rocky's intent.</P>
+<P><BR>Ta.</P>
+<P>Steve Porter</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>nermin replied on Wednesday, May 24, 2006</h2><P>No, I don't think you want to do that.</P>
+<P>I think Rocky just&nbsp;assumed that&nbsp; most of the initial states are going to be valid, and therefore no need for overhead of validation by default.&nbsp; If not, we can always call validation&nbsp;after setting the values.&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>xal replied on Wednesday, May 24, 2006</h2>If your object requires that the rules are checked upon creation, then you should be calling CheckRules() inside your dataportal_create().... (No need to call propertyhaschanged!!)<br><br>Andrés<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>stevevrporter replied on Wednesday, May 24, 2006</h2><SPAN>Brilliant</SPAN>!&nbsp; That's just what I was looking for.&nbsp; Thanks.</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

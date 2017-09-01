@@ -1,0 +1,147 @@
+<html><header><title>CslaDatasource.Datasource?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CslaDatasource.Datasource?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5038.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>justin.fisher posted on Monday, June 30, 2008</h2><font face="Courier New">I am the backend developer on a project that is divided into
+two parts; the back end business objects and the user interface that exposes
+those business objects (all csla).<span>&nbsp; </span>Our user
+interface designer is building a web application interface using the Microsoft
+Patterns and Practices Web Client Software Factory which provides an
+implementation of the Model View Presenter (MVP) pattern.<span>&nbsp; </span>During integration the issue came up that we
+can not directly set the ‘.Datasource’ for the CslaDatasource as we can with
+the ObjectDataSource.<span>&nbsp; </span>Instead it must
+use the SelectObject event of the CslaDatasource.<span>&nbsp; </span>I am not too clear on the details of MVP but
+the problem seems to be ‘who’ is in charge of setting the datasource.<span> <br><br> </span></font>
+
+
+
+<p class="MsoNormal"><font face="Courier New">Our UI designer has a view interface that has a write only
+property defined for the business object being exposed.<span>&nbsp; </span>The presenter is responsible for calling code
+on the controller to actually load the business object and set the property on the
+view.<span>&nbsp; </span>We were able to propagate the
+events to the controller and get things working but this solution was described
+as ‘funky’ and the action item that arose from this 'funky' solution was to modify the CslaDatasource to allow directly setting
+the DataSource for the CslaDatasource vice using events.</font></p><p class="MsoNormal"><font face="Courier New"><br></font></p>
+
+
+
+<p class="MsoNormal"><font face="Courier New">I have read the discussions in <a href="/forums/thread/1633.aspx">this thread</a> and
+while very helpful in explaining the differences between using an
+objectdatasource and the csladatasource I’m still a bit confused.<span>&nbsp; </span>Is there any reason why I can’t directly set
+the data source for the CslaDatasource?<span>&nbsp; </span><span>&nbsp;</span>This would make my UI designer happy and allow
+me to continue using Csla normally with this one exception.</font></p><p class="MsoNormal"><font face="Courier New"><br></font></p>
+
+
+
+<p class="MsoNormal"><font face="Courier New">The more I work with web applications the more I like
+winforms!<span>&nbsp; </span>Things that are easy and
+straight forward in a winform seem twice as hard to implement and only provide
+a fraction of the functionality of a winform.<span>&nbsp; </span>Ajax is all the rage and it only simulates the functionality we have had
+in winforms for years.&nbsp; With WCF we have the access from anywhere previously provided only from the web PLUS all the responsiveness and ease of use of a web form.</font></p><p class="MsoNormal"><font face="Courier New"><br></font></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, July 01, 2008</h2><P>I don't believe that ObjectDataSource has a Datasource property - not according to <A href="http://msdn.microsoft.com/en-us/library/system.web.ui.webcontrols.objectdatasource_members.aspx">this MSDN documentation</A> (unless my tired-at-the-end-of-the-day eyes are missing something).</P>
+<P>The ASP.NET Web Forms data binding infrastructure is designed to use an eventing scheme like the one in CslaDataSource. </P>
+<P>The ObjectDataSource invokes methods on one object to get at the data object. CslaDataSource does a similar thing, but raises events rather than calling an external object.</P>
+<P>Either way you have to write the same kind of code - with ObjectDataSource in a method, and with CslaDataSource in an event handler (which is a method) - so I guess I don't understand the issue?</P>
+<P>In all cases this is UI layer code - the UI is ultimately responsible for calling the right factory method to get back a business object.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>justin.fisher replied on Tuesday, July 01, 2008</h2>
+
+<p class="MsoNormal"><span>I'll need to
+apologize for a typo in my earlier thread.&nbsp; I meant to refer to the <a href="http://msdn.microsoft.com/en-us/library/cc304698.aspx">ObjectContainerDataSource</a>
+not the ObjectDataSource.&nbsp; Apparently the ObjectContainerDataSource is
+an object included in the Microsoft Enterprise Library Web Client Software
+Factory (WCSF) which provides a Model View Presenter (MVP) implementation.&nbsp;
+<br>
+<br>
+The main difference between it and the 'vanilla' ObjectDataSource seems to be
+the .DataSource property that can be directly set on the view by the presenter after
+a call to the controller in their MVP implementation.<br>
+<br>
+One item that jumped out at me in the ObjectContainerDataSource documentation is
+the requirement of a parameterless constructor, which means the object is
+allowed to bypass the factory methods of the CSLA business object.&nbsp; So I
+am assuming many (all?) the shortcomings you pointed out <a HREF="/forums/thread/1633.aspx">here</a> will exist in
+this implementation also.<o:p></o:p></span></p><span><o:p></o:p></span><span>Has anyone else out there had
+any experience with a web application using the MVP pattern?<o:p></o:p></span>&nbsp; <font face="Courier New">I have always been more of a business object developer and could care less who sets what where in the UI code.</font><font face="Courier New"><br></font><br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, July 02, 2008</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I haven&#8217;t looked at the WCSF, so I can&#8217;t comment.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I have looked at the ASP.NET MVC implementation, which is a real
+product that is shipping in a few months. It doesn&#8217;t use data binding at
+all, and so doesn&#8217;t use DataSource controls. It works very nicely with
+CSLA &#8211; I really like it a lot. My guess is that having a real MVC product
+will cause the quasi-open-source variants like WCSF to fade away, because they
+are unsupported and don&#8217;t have the budget, while ASP.NET MVC will be
+supported and has a budget :)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>If you stick with WCSF, you might have to create a &#8220;CslaContainerDataSource&#8221;
+control that is WCSF friendly, and works with CSLA objects.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Every time there&#8217;s a new UI framework, I do have to figure
+out what plumbing is required to make that framework and CSLA play nicely. But
+I only do this for the .NET framework itself &#8211; which is plenty to keep me
+busy. There are dozens of other UI frameworks out there, some from Microsoft,
+some not, but none are part of .NET itself, and so are outside of my scope.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>seraph replied on Tuesday, June 16, 2009</h2>The main reason why the WCSF team created the ObjectContainerDataSource was to have events for Selecting, Updating, Inserting and Deleting from where you can then call a method on your presenter that gets, inserts, etc and then sets an item in the view as per MVP.&nbsp; If you want to use the CslaDataSource with WCSF MVP all you have to do is call your presenter code from the relevant event of the CslaDataSource.&nbsp; The only thing you wont be able to do as you mention is set the datasource.&nbsp; This is easily overcome by just having a getter as well as a setter for your view property and having it backed by a private field.&nbsp; Then in your Selecting event you simply set e.BusinessObject to the view property.&nbsp; You are still using the presenter / controller / data service to get your data and you are still using the presenter to set your view.<br><br>Having a getter as well as the setter is a small price to pay IMO.&nbsp; This is much simpler than going about creating some kind of CslaObjectContainerDataSource.<br><br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>seraph replied on Tuesday, June 16, 2009</h2>I messed up a bit in my post, sorry if I confused anyone.<br><br>the idea is to set e.BusinessObject in your selecting event of the datasource to your already set view property<br><br>ie<br><br>e.BusinessObject = this.MyObjects<br><br>you could have called the code to set MyObjects in your OnViewInitialised / Loaded.<br><br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, June 17, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>So you want to have CslaDataSource maintain a reference to the
+business object?<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Today it has no reference, and it is up to you to manage the
+business object in your event handlers &#8211; with the exception of data
+retrieval, where the object does flow through the datasource to data binding.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>If the datasource had a reference to the business object, how
+would you want it to be expressed? Obviously none of the current eventargs
+objects have it, for example, because it isn&#8217;t part of the Web Forms
+model.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky</span><b><span><o:p></o:p></span></b></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

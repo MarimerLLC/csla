@@ -1,0 +1,23 @@
+<html><header><title>How To Stop Debug Symbols</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>How To Stop Debug Symbols</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/1110.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Smeat posted on Sunday, September 03, 2006</h2><P>Hi All</P>
+<P>I have compiled the CSLA framework in release mode and reference the release dll from my projects but when debugging my apps, each time my code calls into the CSLA framework, the debugger jumps into the CSLA code.</P>
+<P>How can I stop the CSLA framework source code being available while i'm debugging my apps?</P>
+<P>I'm using VS.NET 2005 Pro with CSLA 2.0.3</P>
+<P>TIA for any help</P>
+<P>Smeat</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Brian Criswell replied on Sunday, September 03, 2006</h2>I think that if you remove the .pdb file from wherever you are referencing the .dll, it should not have debug information and will not step in.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Smeat replied on Monday, September 04, 2006</h2><P>Thanks for the reply.</P>
+<P>I tried removing the .pdb files from both my project bin directory and the CSLA project bin directory but this has no effect.</P>
+<P>I'm sure there must be a way to compile without debug symbols but I can't find seem to find how.</P>
+<P>Any ideas?</P>
+<P>Smeat</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Brian Criswell replied on Monday, September 04, 2006</h2>Do you have the CSLA project as part of your solution file?<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Smeat replied on Monday, September 04, 2006</h2>No, ive compiled the CSLA framework in release mode and referenced the .dll in the bin/release directory.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Brian Criswell replied on Monday, September 04, 2006</h2>One thing I do is create a folder called "Referenced Assemblies" in the same folder as my solution folder.&nbsp; You could try doing that and copying the built .dll, .pdb and .xml files into the new folder and removing the references and adding a reference to the new .dll in the new folder.&nbsp; Then build clean and rebuild.&nbsp; If that does not do it, I am not sure what will.&nbsp; Somehow your project knows where the source files are and is opening them.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Smeat replied on Tuesday, September 05, 2006</h2><P>Thanks for the responses, I managed to solve this as follows:</P>
+<P>1.Open the CSLA framework solution.</P>
+<P>2. Right click on the Csla project and select properties.</P>
+<P>3. Select the Build tab.</P>
+<P>4. Set the Configuration dropdown to "Release".</P>
+<P>5. Click the Advanced tab.</P>
+<P>6. Set the Debug Info to "none".</P>
+<P>7. Recompile the Csla framework.</P>
+<P>8. Open your own project.</P>
+<P>9. Right clickyour project in Solution Explorer and select "Clean".</P>
+<P>10. Recompile your project.</P>
+<P>Now you can debug your project without stepping into the Csla framework code.</P>
+<P>Hope this helps someone else.</P>
+<P>Smeat</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Reactance replied on Wednesday, September 06, 2006</h2>Thanks guys that helped me alot :-), </div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,60 @@
+<html><header><title>Can not directly mark a child object for deletion - use its parent collection?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Can not directly mark a child object for deletion - use its parent collection?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/618.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>shahram posted on Friday, July 14, 2006</h2><P>Hi!</P>
+<P>What this means:</P>
+<P><FONT color=#ff0000>"Can not directly mark a child object for deletion - use its parent collection"</FONT></P>
+<P><FONT color=#ff0000><FONT color=#000000>This is code in my object:</FONT></FONT></P><FONT color=#ff0000 size=2>
+<P>#region</FONT><FONT size=2> Data Access - Delete</P>
+<P></FONT><FONT color=#0000ff size=2>protected</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>virtual</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>void</FONT><FONT size=2> DeleteChildren(</FONT><FONT color=#008080 size=2>SqlConnection</FONT><FONT size=2> cn)</P>
+<P>{</P>
+<P>_invoicePolicyCollection.Delete(cn, </FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>); //step 2</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>protected</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>override</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>void</FONT><FONT size=2> ExecuteDelete(</FONT><FONT color=#008080 size=2>SqlConnection</FONT><FONT size=2> cn)</P>
+<P>{</P>
+<P>DeleteChildren(cn);&nbsp;// Step 1</P>
+<P></FONT><FONT color=#0000ff size=2>using</FONT><FONT size=2> (</FONT><FONT color=#008080 size=2>SqlCommand</FONT><FONT size=2> cm = cn.CreateCommand())</P>
+<P>{</P></FONT><FONT size=2>
+<P>}</FONT><FONT color=#008000 size=2>//using</P></FONT><FONT size=2>
+<P>}</P></FONT><FONT color=#ff0000 size=2>
+<P>#endregion</FONT><FONT size=2> </FONT><FONT color=#008000 size=2>//Data Access - Delete</FONT></P>
+<P><FONT color=#008000 size=2><FONT color=#000000>and this is delete method in invoicePolicyCollection:</FONT></FONT></P><FONT color=#008000 size=2><FONT color=#ff0000 size=2>
+<P>#region</FONT><FONT size=2><FONT color=#000000> Data Access</FONT></P>
+<P><FONT color=#000000></FONT>&nbsp;</P>
+<P></FONT><FONT color=#0000ff size=2>internal</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>void</FONT><FONT size=2> Delete&lt;P&gt;(</FONT><FONT color=#008080 size=2>SqlConnection</FONT><FONT size=2> cn, P parent) </FONT><FONT color=#0000ff size=2>where</FONT><FONT size=2> P : </FONT><FONT color=#008080 size=2>ContractBase</FONT><FONT size=2>&lt;P&gt;</P>
+<P>{</P>
+<P></FONT><FONT color=#008000 size=2>// loop through each child object</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>foreach</FONT><FONT size=2> (</FONT><FONT color=#008080 size=2>InvoicePolicy</FONT><FONT size=2> child </FONT><FONT color=#0000ff size=2>in</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>)</P>
+<P>{</P>
+<P>child.Delete();<FONT color=#000080>//step 3, Here I get Exception</FONT></P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>.Update(cn, parent);</P>
+<P>}</P></FONT><FONT color=#ff0000 size=2>
+<P>#endregion</FONT><FONT color=#000000 size=2> </FONT><FONT color=#008000 size=2>//Data Access</FONT></P>
+<P><FONT color=#008000 size=2><FONT color=#000000>Regards</FONT></P></FONT></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Friday, July 14, 2006</h2>You're calling BusinessBase.Delete directly on the child object, which is not allowed.<br><br>You need to remove it from the parent collection, by calling BusinessListBase.Remove( child );<br><br>HTH<br>Andy<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>shahram replied on Friday, July 14, 2006</h2><P>Well, when I use </P><FONT color=#0000ff size=2>
+<P>foreach</FONT><FONT size=2> (</FONT><FONT color=#008080 size=2>Contract</FONT><FONT size=2> child </FONT><FONT color=#0000ff size=2>in</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>)</P>
+<P>{child.Delete();}</P>
+<P>it says no delete on child use parent collection...</P>
+<P>and when I use this</P>
+<P><FONT color=#0000ff> </FONT></P>
+<P>foreach<FONT size=2> (</FONT><FONT color=#008080 size=2>Contract</FONT><FONT size=2> child </FONT><FONT color=#0000ff size=2>in</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>)</P>
+<P>{this.Remove(child);}</P>
+<P>there is another exception that collection has been modified...</P>
+<P>so the question is what exactly you must do to delete child objects?</P></FONT></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RRorije replied on Friday, July 14, 2006</h2>Well I think this is not a CSLA feature, but standard .NET.<br><br>The same thing happens when you do this:<br>&lt;code&gt;<br><br>Dim _arraylist As New Arraylist()<br>_arraylist.Add(1)<br>_arraylist.Add(2)<br>_arraylist.Add(3)<br>
+_arraylist.Add(4)<br><br>
+For Each i As Integer In _arrayList<br>&nbsp;&nbsp;&nbsp; If _arraylist(i) % 2 = 0 Then<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;  _arraylist.Remove(i)<br>&nbsp;&nbsp;&nbsp; End If<br>Next<br><br>&lt;/code&gt;<br><br>A workaround is to iterate through the collection using the index, because the collection is not addressed then. Be sure to iterate through the collection reversely, because else indices will be altered.<br>this should work then <br><br>For index As Integer = childs.count -1 To 0 Step -1<br>&nbsp;&nbsp;&nbsp; Me.removeAt(index)<br>Next<br><br><br>Sorry for replying in VB.Net instead of C#, but I am more customed to vb.net. Therefore typos are less likely to occur&nbsp; ;)<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>matt tag replied on Friday, July 14, 2006</h2><font face="Verdana" size="1">if you want to delete ALL child objects, use&nbsp; the Clear method.<br><br>Yoursecond error is happening b/c your trying to modify a collection while iterating through it with "for each", which is not allowed. You could do this <br><br>for i as integer = me.count - 1 to 0 step -1<br>&nbsp;&nbsp; child = me.item(i)<br>&nbsp;&nbsp; me.remove(child)<br>next<br><br>or this<br><br>do while me.count &gt; 0<br>&nbsp; child = me.item(0)<br>&nbsp; me.remove(child<br>loop<br><br>or just call the Clear method<br><br><br>matt tag<br></font></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>shahram replied on Friday, July 14, 2006</h2>The Clear() method was my first choice but it seems&nbsp;that &nbsp;clear() only removes items from the collection and do not delete them from database. Is it correct?</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Friday, July 14, 2006</h2>That is correct; but using Remove to delete the children won't immediately delete them either.<br><br>You need to Save the parent collection to actually commit the changes (in this case, deletions) to the database.&nbsp; Normally this isn't a problem.<br><br>Is there a reason they MUST be deleted from the database immediately?&nbsp; I'm not sure how to do immediate deletion of child objects (I typically don't do deletions at all).<br><br>Andy<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>shahram replied on Friday, July 14, 2006</h2><FONT face=Arial>What is the difference between Clear() and <FONT size=2>ClearItems() methods?</FONT></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>shahram replied on Friday, July 14, 2006</h2><P>The only thing I want to do is when deleting som object from database it's child become deleted from DB too!</P>
+<P>Belive me this is not good when even simplest things get so unobvious and timecomsuming to do.</P>
+<P>It was my first time and will be last time to use this CSLA. Maybe it a very good approch theoretically but not practical. It is not good for BUSINESS!</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, July 14, 2006</h2><P>I wouldn't recommend doing your deletes at the object level.</P>
+<P>If you delete a parent object, it is typically a lot more efficient to have it delete its data and its child data, rather than having each child delete itself from the database. Why would you make that many database calls?</P>
+<P>Other people prefer to use the database itself to do this. You can set up the database so when you delete the parent row, any child rows are automatically deleted by the database itself.</P>
+<P>In short, if you mark a parent object as deleted, there should be no reason to go through all the work of marking its child objects as deleted&nbsp; And if this <EM>is</EM> what you want to do, then you should be able to just call Clear() on the collection, because that will automatically mark all the child objects for deletion and move them to the deletedList.</P>
+<P>I'm afraid that if calling Clear() on a collection is considered unobvious or complex, then .NET itself will probably continue to be very frustrating for&nbsp;you <img src="/emoticons/emotion-6.gif" alt="Sad [:(]" /></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>shahram replied on Friday, July 14, 2006</h2><P>Thank you for your post, now I understand it better.</P>
+<P>But still I have the question that when I use Clear() in a collection like this this.Clear();</P>
+<P>it seems the childs just removes from the collection but then when I check in database they are not deleted.</P>
+<P>Regards</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Friday, July 14, 2006</h2>You must call Save on the root object; either the collection (if that's not a child collection) or the containing BusinessBase object. <br><br>Take a look at the sample that comes with Csla, specifically the portions on deleting projects or resources.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jacco replied on Saturday, May 30, 2009</h2>I can kinda see where he is coming from.&nbsp; if you have a foreign key in
+your database, you then would have to delete the children before the
+parent, otherwise you get a violation. But to do this by trying to force the
+children to delete themselves is silly.<br>
+<br>
+As Rocky says, why not let the database deal with that?&nbsp; Write a stored
+procedure, and call it from the parent.&nbsp; Then
+you can use the yourChildCollection.Clear() and you are done, one db
+connection</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tetranz replied on Friday, July 14, 2006</h2>As the exception suggests, you can't modify a collection while using a enumerator to loop around it which is what foreach does. The enumerator would get horribly confused if it let you do that.<br><br>I looks like you want to delete all child items. If that's correct then this.Clear() will probably do what you want.<br><br>In a more general case, you just need to call Remove(child) while not looping around the same collection. I think the usual way is to first build a list of "items for deletion". That can be done while looping around the list because all you are doing is building another list. Then loop around that list calling Remove() on the first list.<br><br>Ross<br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Friday, July 14, 2006</h2>You cannot use foreach when you are modifying the contents of the collection. <br><br>Change your code to something like this:<br><br>while( this.Count &gt; 0 ) {<br>&nbsp;&nbsp;&nbsp;&nbsp; this.RemoveAt( 0 );<br>}<br><br>That will properly clear all the children; as an alternate:<br><br>this.Clear();<br><br>HTH<br>Andy<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

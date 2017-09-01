@@ -1,0 +1,56 @@
+<html><header><title>Client-Side access to BOs, their method invocation and two way integration with web controls</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Client-Side access to BOs, their method invocation and two way integration with web controls</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/12754.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>sachseb1 posted on Thursday, September 18, 2014</h2><p>Rocky, I have been a huge fan of your framework, publications, thoughts and patterns for years and have used the CSLA framework in many enterprise applications within our fortune 500&#39;s custom applications.</p>
+<p>Our team has created a streamlined, loosely coupled framework that extends to the client to offer access to business objects and their methods with virtually no middle layer code modification per instance. &nbsp;Additionally, it integrates html controls to the data defined by the corresponding business object with a pattern of self description and a single line of activation code. &nbsp;This allows two way integration between the control and the database (via the bo).&nbsp;</p>
+<p>As an additional benefit of this extension, we have been able to create the appropriate patterns to allow view level access, while keeping the responsibilities at the server side object level for security, reliability and guaranteed rule adherence. &nbsp;Finally, we&#39;ve capitalized on the dynamic creation of those views for an easy to retrieve, secure, robust web control.</p>
+<p>I would like to have a discussion with you, Rocky, around the potential that this offers and whether or not you may be able to capitalize on the technique and extension for the CSLA framework. &nbsp;</p>
+<p>&nbsp;</p>
+<p>Here is an example of the usage to add 3 carrots to your shopping cart and update the screen afterward:</p>
+<div>
+<p class="MsoNormal">&nbsp;<b> &nbsp; &nbsp; &nbsp;</b><b><span>var</span><span> Cart = </span><span>new</span><span> SmartObject(</span><span>&#39;Cart&#39;</span><span>, CartId);</span></b></p>
+<p class="MsoNormal"><b><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Cart.InvokeMethod(</span><span>&#39;AddItem&#39;</span><span></span></b></p>
+<p class="MsoNormal"><b><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ,
+GetArray(</span><span>&#39;Carrot&#39;</span><span>,
+3)</span></b></p>
+<p class="MsoNormal"><b><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; , </span><span>function</span><span> () {</span></b></p>
+<p class="MsoNormal"><b><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span>if</span><span> (</span><span>typeof</span><span> (LoadList) == </span><span>&#39;function&#39;</span><span>) LoadList();</span></b></p>
+<p class="MsoNormal"><span><b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</b></span></p>
+<p class="MsoNormal"><span><b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );</b></span></p>
+</div>
+<div>&nbsp;</div>
+<div>Here is an example to access the attributes (specifically total tax) of the Cart and update the label.</div>
+<div>
+<div>
+<div><b>&nbsp; &nbsp; &nbsp; &nbsp; var Cart = new SmartObject(&#39;Cart&#39;, CartId);</b></div>
+<div><b>&nbsp; &nbsp; &nbsp; &nbsp; var cartAttrs = Cart.LoadData();</b></div>
+<div><b>&nbsp; &nbsp; &nbsp; &nbsp; var taxOnSale = cartAttrs.TotalTax;</b></div>
+<div><b>&nbsp; &nbsp; &nbsp; &nbsp; $(&#39;#lblTaxOnSale&#39;).text(taxOnSale);</b></div>
+<div>&nbsp;</div>
+<div></div>
+<div>This is an example of updating the control with the data (including the self description markup) from the bo dynamically on the client:</div>
+<div><b>&nbsp; &nbsp; &nbsp; &nbsp;$(&#39;#</b><b>divUserObject</b><b>&#39;).smartControl();</b></div>
+</div>
+<div>&nbsp;</div>
+<div></div>
+<div>Updating the database from the control:</div>
+<div><b>&nbsp; &nbsp; &nbsp; $(&#39;#divUserObject&#39;).updateFromSmartControl();</b></div>
+<div>&nbsp;</div>
+<div></div>
+<div>An example of reloading the entire user control and replacing the html dynamically - which allows for control specific, postback free loading (similar to ajax UpdatePanel):</div>
+<div>
+<div>&nbsp; &nbsp; <b>&nbsp; &nbsp;$(&#39;#</b><b>divUserObject</b><b>&#39;).fetchSmartControl({</b></div>
+<div><b>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; params: {</b></div>
+<div><b>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; entityType: &#39;UserObject&#39;</b></div>
+<div><b>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; , entityId: UserObjectId</b></div>
+<div><b>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</b></div>
+<div><b>&nbsp; &nbsp; &nbsp; &nbsp; });</b></div>
+</div>
+</div>
+<div>&nbsp;</div>
+<div></div>
+<div>Having only seen the csla.js briefly and reviewing the code, I see some overlap in the serialization and reflection, bu,t still believe that we&#39;ve pushed the envelope a bit further because of the dynamic nature, integration with html controls and less middle layer coding required of this implementation. I would be happy to be corrected, if that is not true.</div>
+<div>&nbsp;</div>
+<div></div>
+<div>I don&#39;t know the right forum to begin the conversation with you around this topic, and apologize if this isn&#39;t it, although I assure you that I&#39;m not a hack and/or looking for a sale, here. &nbsp;I firmly believe that you will enjoy the conversation, if given the chance to have it. &nbsp;We have several very solid examples and implementations with real business solutions that we could share with you and discuss, if you&#39;d like to hear more.&nbsp;</div>
+<div>&nbsp;</div>
+<div></div>
+<div>Rocky, is this something you&#39;d like to discuss with us. &nbsp;If so, I promise to be brief, mutually beneficially intelligent and somewhat entertaining. &nbsp;Thank you for any feedback.</div></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

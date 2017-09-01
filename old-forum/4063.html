@@ -1,0 +1,34 @@
+<html><header><title>Remoting/Connection pooling issue?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Remoting/Connection pooling issue?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4063.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>rlriggs posted on Wednesday, December 19, 2007</h2><P>I'm stumped and hoping someone may be able to give me a clue how to resolve this.</P>
+<P>Have a Windows app using remoting.&nbsp;&nbsp; The SQL 2005 resides on the same box as IIS that hosts the remoting objects.&nbsp;&nbsp;&nbsp; Application works fine on my machine, works most of the time using remoting.&nbsp;&nbsp;</P>
+<P>In the remote environment, I can log on, I can perform the majority of the business object calls and successfully read and save to database.&nbsp;&nbsp; However, in two places in my code I get the following error:</P>
+<P>'An error has occurred while establishing a connection to the server.&nbsp;&nbsp; When connecting to SQL Server 2005, this failure may be caused by the fact that under the default settins SQL Server does not allow remote connections.'&nbsp;&nbsp; Seems like this is pointing to a connection pooling problem??</P>
+<P>This is odd, because I'm connecting and doing everything under the same connection string.&nbsp;&nbsp;&nbsp; The places in my code where this pops up is in an 'unassign method' I use to remove a child object from a parent - similar to Rocky's AssignProjectResources/unassignProjectResources methods.&nbsp;&nbsp; One code sample (again this works locally, but will not work in the remoting environment)</P><FONT color=#0000ff size=4>
+<P><FONT size=2>Public</FONT></FONT><FONT size=2><B> </B><FONT color=#0000ff>Sub</FONT><B> RemoveCourseCategory(</B><FONT color=#0000ff>ByVal</FONT><B> courseID </B><FONT color=#0000ff>As</FONT><B> </B><FONT color=#0000ff>Integer</FONT><B>, </B><FONT color=#0000ff>ByVal</FONT><B> courseCategoryID </B><FONT color=#0000ff>As</FONT><B> </B><FONT color=#0000ff>Integer</FONT></FONT><B><FONT size=2>)</FONT></P>
+<P></B><FONT color=#008000><FONT size=2>'method to remove a course category</FONT></P></FONT><B>
+<P></B><FONT size=2><FONT color=#0000ff>Using</FONT><B> cn </B><FONT color=#0000ff>As</FONT><B> </B><FONT color=#0000ff>New</FONT></FONT><B><FONT size=2> SqlConnection(HelperFunctions.GetConnectionString())</FONT></B></P>
+<P><B><FONT size=2>cn.Open()</FONT></P>
+<P></B><FONT size=2><FONT color=#0000ff>Using</FONT><B> cm </B><FONT color=#0000ff>As</FONT></FONT><B><FONT size=2> SqlCommand = cn.CreateCommand</FONT></P>
+<P></B><FONT color=#0000ff size=2>With</FONT><B><FONT size=2> cm</FONT></P>
+<P><FONT size=2>.Connection = cn</FONT></P>
+<P><FONT size=2>.CommandType = CommandType.StoredProcedure</FONT></P>
+<P><FONT size=2>.CommandText = </FONT></B><FONT color=#a31515><FONT size=2>"boDelCategoryCourseEdit"</FONT></P></FONT><B>
+<P><FONT size=2>cm.Parameters.AddWithValue(</FONT></B><FONT color=#a31515 size=2>"@CourseID"</FONT><B><FONT size=2>, courseID)</FONT></P>
+<P><FONT size=2>cm.Parameters.AddWithValue(</FONT></B><FONT color=#a31515 size=2>"@CourseCategoryID"</FONT><B><FONT size=2>, courseCategoryID)</FONT></P>
+<P><FONT size=2>.ExecuteNonQuery()</FONT></P>
+<P></B><FONT size=2><FONT color=#0000ff>End</FONT><B> </B><FONT color=#0000ff>With</P></FONT></FONT><B>
+<P></B><FONT size=2><FONT color=#0000ff>End</FONT><B> </B><FONT color=#0000ff>Using</P></FONT></FONT><B>
+<P></B><FONT size=2><FONT color=#0000ff>End</FONT><B> </B><FONT color=#0000ff>Using</P></FONT></FONT><B>
+<P></B><FONT size=2><FONT color=#0000ff>End</FONT><B> </B><FONT color=#0000ff size=4>Sub</P></FONT></FONT>
+<P>I'm missing something apparently very simple, but it's tough to debug in he remote environment and it works fine locally.&nbsp;&nbsp; Any words of wisdom?</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, December 19, 2007</h2>Is it possible that this method is somehow being called outside a DataPortal_XYZ method? In other words, it could be running on the client instead of the server?</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Commuterman replied on Thursday, December 20, 2007</h2><P>Could the following KB article help?</P>
+<P><A href="http://support.microsoft.com/default.aspx?scid=kb;EN-US;914277">http://support.microsoft.com/default.aspx?scid=kb;EN-US;914277</A></P>
+<P>Additionally, in SQL Server Management Studio, right click SQL server instance, properties, connections and check settings of the "Allow remote connections to this server".</P>
+<P>If you have remoting working for other business objects and&nbsp;onward calls to SQL server then the above&nbsp;checks probably won't resolve&nbsp;anything.</P>
+<P>As you are no doubt aware there are many articles on the internet that suggest reasons for remote connections to SQL server not working, so hopefully one of those will have your solution.&nbsp; Failing that&nbsp;I can only suggest&nbsp;simplifying&nbsp;your code so that all it is doing is trying to perform the simplest hop from your remote business object to SQL server and then building up from there.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Thursday, December 20, 2007</h2><P>I second Rocky's question.</P>
+<P>Where is the call to that Sub being made from?</P>
+<P>Unless you are in a DataPortal method it will only work locally.</P>
+<P>Joe</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rlriggs replied on Thursday, December 20, 2007</h2><P>Good news/Bad news - Rocky, as usual, was dead on in that I was making the call outside the data portal (kind of the whole point of the framework, eh?)&nbsp;- that's the good news.&nbsp;&nbsp; The bad news is I'm such a dork for not seeing this.&nbsp;&nbsp;&nbsp; I was also very consistent and duplicated the error in about 12 different places, but now it should be easy to fix.</P>
+<P>Again, thank you for all the great work and all your prompt replies - happy holidays to all.</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Thursday, December 20, 2007</h2>Don't feel bad, it's easy to end up doing such things.&nbsp; I'm sure everyone here has that happen to them, and it can be difficult tracking down where you let data slip out where it shouldn't be.<br><br>Andy<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rlriggs replied on Thursday, December 20, 2007</h2>More good news - true epiphany and realizing why Rocky created Command objects.</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

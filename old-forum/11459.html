@@ -1,0 +1,16 @@
+<html><header><title>BO is not busy while business rules are running?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>BO is not busy while business rules are running?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11459.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>rfcdejong posted on Friday, July 06, 2012</h2><p>Using CSLA 4.3</p>
+<p>I notice that a business object isn&#39;t busy even thru there are business rules active. Is there a reason for not implementing that in the base? For ASync rules i can understand that, but the Sync rules are causing the main thread to be very busy where alot of custom code can be listening to OnPropertyChanged. Is it a mistake to believe that a BO is busy while sync business rules are running?<br /><br />Ofcourse i can do this, but i might be missing some fundemental reason.</p>
+<p>
+<pre>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>public</span>&nbsp;<span>override</span>&nbsp;<span>bool</span>&nbsp;IsBusy
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>get</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>return</span>&nbsp;!BusinessRules.RunningRules&nbsp;&amp;&amp;&nbsp;!BusinessRules.RunningAsyncRules&nbsp;&amp;&amp;&nbsp;<span>base</span>.IsBusy;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+</pre>
+</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Friday, July 06, 2012</h2><p>Hi,</p>
+<p>If the sync rules takes time the your main UI thread will be busy and can not do any other processing. . </p>
+<p>The rule engine will not raise PropertyChanged - this is done by the base class after rules have completed (in either PropertyHasChanged or CheckObjectRules). </p>
+<p>I would not mark the object as busy while sync rules is running - as the sync rules are running on the UI thread and making this busy. You cannot f.ex show a message to the user because the UI thread is busy.</p>
+<p>For Async runles - running on other threads this makes sense and is implemented.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rfcdejong replied on Friday, July 06, 2012</h2><p>It&#39;s the cascading stuff in our abstraction layer doing a new CheckRules with the properties that changed, in there the OnPropertyChanged is done foreach property affected. Yes, i know, it&#39;s wrong. It&#39;s a workaround not implemented by me. I agree that OnPropertyChanged should not be done while running business rules. Again it ends into that it would be nice to have the rule engine checking if a value changed and if it did then run the &#39;cascade&#39; business rules again.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

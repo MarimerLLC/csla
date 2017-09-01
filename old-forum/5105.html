@@ -1,0 +1,201 @@
+<html><header><title>Self-Referencing Hierarchical Data</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Self-Referencing Hierarchical Data</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5105.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>GregDobbs posted on Wednesday, July 16, 2008</h2><P><FONT size=2><FONT face=Arial>I am developing a chart of accounts application that uses two types of accounts:</FONT></FONT></P>
+<P><FONT face=Arial size=2>1) Posting Accounts that allow transaction entry</FONT></P>
+<P><FONT face=Arial size=2>2) Rollup Accounts that consolidate Posting Account data.</FONT></P>
+<P><FONT face=Arial size=2>The table structure for the accounts uses a self-referencing PK&nbsp;structure; AccountKey and ParentAccountKey.</FONT></P>
+<P><FONT face=Arial size=2>There is no predefined limit on nesting levels. Thus, a Rollup Account might contain a few Posting Accounts as children, along with a few Consolidation Accounts that also have children and perhaps Consolidation Accounts as well.</FONT></P>
+<P><FONT face=Arial size=2>&nbsp;I plan on using a Treeview in the UI to allow users to create Charts of Accounts.</FONT></P>
+<P><FONT face=Arial size=2>This seems to be a complex issue in building using the CSLA framework since if a parent RollupAccount is new, it has no PK to populate the child accounts with. (I use a temporary key system, where new objects are populated with a negative-number temporary key until they get their real PK in the save process. Thus, children can't be assigned the ParentAccountKey until AFTER the save of the parent.)</FONT></P>
+<P><FONT face=Arial size=2>Has anyone encountered a similar situation, and is there any elegant method to implementing this type of self-referencing structure in BOs?</FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Wednesday, July 16, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>If I follow this correct, I did implement this one time.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>I had classes: Account, AccountList.&nbsp; One of the properties
+in Account class was AccountList (for sub-accounts).&nbsp; Unique ID of the
+parent is not really a problem as long as you can get to it before updating a
+child.&nbsp; You just pass a parent ID (or parent) to each list&#8217;s update method.&nbsp;
+I did this in 2.1 though, and never tried in 3.5. &nbsp;On new accounts
+GetIDValue would return a temporary ID, such as GUID.&nbsp; <o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Senior Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899<o:p></o:p></span></p>
+
+<p class=MsoNormal><b><i><span>Magenic</span></i></b><span> </span><span>&reg;</span><b><i><span><o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> GregDobbs
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Wednesday, July 16, 2008 1:42 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> [CSLA .NET] Self-Referencing Hierarchical Data<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p><span>I am
+developing a chart of accounts application that uses two types of accounts:</span><o:p></o:p></p>
+
+<p><span>1) Posting
+Accounts that allow transaction entry</span><o:p></o:p></p>
+
+<p><span>2) Rollup
+Accounts that consolidate Posting Account data.</span><o:p></o:p></p>
+
+<p><span>The table
+structure for the accounts uses a self-referencing PK&nbsp;structure;
+AccountKey and ParentAccountKey.</span><o:p></o:p></p>
+
+<p><span>There is no
+predefined limit on nesting levels. Thus, a Rollup Account might contain a few
+Posting Accounts as children, along with a few Consolidation Accounts that also
+have children and perhaps Consolidation Accounts as well.</span><o:p></o:p></p>
+
+<p><span>&nbsp;I plan
+on using a Treeview in the UI to allow users to create Charts of Accounts.</span><o:p></o:p></p>
+
+<p><span>This seems
+to be a complex issue in building using the CSLA framework since if a parent
+RollupAccount is new, it has no PK to populate the child accounts with. (I use
+a temporary key system, where new objects are populated with a negative-number
+temporary key until they get their real PK in the save process. Thus, children
+can't be assigned the ParentAccountKey until AFTER the save of the parent.)</span><o:p></o:p></p>
+
+<p><span>Has anyone
+encountered a similar situation, and is there any elegant method to
+implementing this type of self-referencing structure in BOs?</span><o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>GregDobbs replied on Wednesday, July 16, 2008</h2><P><FONT face=Arial size=2>Hello, Sergey.</FONT></P>
+<P><FONT face=Arial size=2>Thanks for your reply.</FONT></P>
+<P><FONT face=Arial size=2>I forgot to mention that I am using CSLA 2.1.</FONT></P>
+<P><FONT face=Arial size=2>Your solution is good, but I believe it only works for one level of nested account( sub-account).</FONT></P>
+<P><FONT face=Arial size=2>In other words, what if one of the accounts in the AccountList itself has an&nbsp;AccountList? Then, to refer to it you'd have to use Account.AccountList.Account.AccountList - and to get to an Account in that "sub" AccountList you'd have to use Account.AccountList.Account.AccountList.Account. And so on for more levels. :-)</FONT></P>
+<P><FONT face=Arial size=2>Any thoughts? </FONT></P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Wednesday, July 16, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>That is true, but why does each account need to care of any
+accounts beyond ParentList.ParentAccount.&nbsp; This should be the only ID you
+need to save.&nbsp; I could be missing something though&#8230;.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Senior Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899<o:p></o:p></span></p>
+
+<p class=MsoNormal><b><i><span>Magenic</span></i></b><span> </span><span>&reg;</span><b><i><span><o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> GregDobbs
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Wednesday, July 16, 2008 2:40 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: Self-Referencing Hierarchical Data<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p><span>Hello,
+Sergey.</span><o:p></o:p></p>
+
+<p><span>Thanks for
+your reply.</span><o:p></o:p></p>
+
+<p><span>I forgot to
+mention that I am using CSLA 2.1.</span><o:p></o:p></p>
+
+<p><span>Your
+solution is good, but I believe it only works for one level of nested account(
+sub-account).</span><o:p></o:p></p>
+
+<p><span>In other
+words, what if one of the accounts in the AccountList itself has
+an&nbsp;AccountList? Then, to refer to it you'd have to use Account.AccountList.Account.AccountList
+- and to get to an Account in that &quot;sub&quot; AccountList you'd have to
+use Account.AccountList.Account.AccountList.Account. And so on for more levels.
+:-)</span><o:p></o:p></p>
+
+<p><span>Any
+thoughts? </span><o:p></o:p></p>
+
+<p>&nbsp;<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>GregDobbs replied on Wednesday, July 16, 2008</h2><P><FONT face=Arial size=2>Hi, Sergey.</FONT></P>
+<P><FONT face=Arial size=2>Actually, you might have the correct solution here. I am going to do a little experimentation and see if this works. If so I'll post my findings. Meantime, any other thoughts are welcome!</FONT></P>
+<P><FONT face=Arial size=2>Thanks again!.</FONT></P>
+<P>&nbsp;</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

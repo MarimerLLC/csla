@@ -1,0 +1,141 @@
+<html><header><title>Unable to undo on PropertyInfo type using Reflection w/Invoke</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Unable to undo on PropertyInfo type using Reflection w/Invoke</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4700.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>ErikPhilips posted on Wednesday, April 16, 2008</h2><P>The majority of my GUI base code uses reflection to BeginEdit, CancelEdit and ApplyEdit to the BindingSources current object.&nbsp; Since the code won't ever know the&nbsp;instance type, I'm using reflection to call the instance method.&nbsp; I've migrated my object properties to PropertyInfo, but they are apparently not a field found by CopyState, UndoChanges nor AcceptChanges in UndoableBase.cs when executed by an invoke which prevents any Undo/Apply operations.&nbsp;&nbsp; The following example code shows the difference between a standard property and the new 3.5 PropertyInfo class.</P>
+<P>To use the following code, create a new application, copy-paste the entire code&nbsp;over the current code in the Form1.cs.&nbsp; Add the CSLA 3.5 Project, and create a reference to it in the new Project.</P><PRE>using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Text;
+using System.Windows.Forms;
+using Csla;
+using Csla.Core;
+using System.Reflection;
+
+namespace &lt;YourApplicationNamespace&gt;
+{
+   public partial class Form1: Form
+   {
+      public Form1()
+      {
+         InitializeComponent();
+         this.Load += new System.EventHandler(this.Form1_Load);
+      }
+
+      Dog d = new Dog();
+      Cat c = new Cat();
+      TextBox t = new TextBox();
+      TextBox t2 = new TextBox();
+      Button bDog = new Button();
+      Button bCat = new Button();
+      Button bCancel = new Button();
+      Button bApply = new Button();
+      BindingSource bs = new BindingSource();
+      public void Form1_Load(object sender, EventArgs e)
+      {
+         d.Name = "Dog Name";
+         d.Color = "Dog Color";
+         c.Name = "Cat Name";
+         c.Color = "Cat Color";
+         t.Left = 10; t.Top = 50; Controls.Add(t);
+         t2.Left = 120; t2.Top = 50; Controls.Add(t2);
+         bDog.Text = "Load Dog"; bDog.Left = 10; bDog.Top = 10; Controls.Add(bDog);
+         bDog.Click += new EventHandler(bDog_Click);
+         bCat.Text = "Load Cat"; bCat.Left = 90; bCat.Top = 10; Controls.Add(bCat);
+         bCat.Click += new EventHandler(bCat_Click);
+         bCancel.Text = "Cancel Edit"; bCancel.Left = 10; bCancel.Top = 90; Controls.Add(bCancel);
+         bCancel.Click += new EventHandler(bCancel_Click);
+         bApply.Text = "Apply Edit"; bApply.Left = 90; bApply.Top = 90; Controls.Add(bApply);
+         bApply.Click += new EventHandler(bApply_Click);
+         bs.DataSource = d;
+         t.DataBindings.Add("Text", bs, "Name");
+         t2.DataBindings.Add("Text", bs, "Color");
+         BeginEdit();
+      }
+
+      void bCat_Click(object sender, EventArgs e)
+      {
+         CancelEdit();
+         bs.DataSource = c;
+      }
+
+      void bDog_Click(object sender, EventArgs e)
+      {
+         CancelEdit();
+         bs.DataSource = d;
+      }
+
+      void bCancel_Click(object sender, EventArgs e)
+      {
+         CancelEdit();
+      }
+
+      void bApply_Click(object sender, EventArgs e)
+      {
+         ApplyEdit();
+      }
+
+      void BeginEdit()
+      {
+         Type type = bs.Current.GetType();
+         MethodInfo mi = type.GetMethod("BeginEdit");
+         mi.Invoke(bs.Current, null);
+      }
+
+      void CancelEdit()
+      {
+         Type type = bs.Current.GetType();
+         MethodInfo mi = type.GetMethod("CancelEdit");
+         mi.Invoke(bs.Current, null);
+      }
+
+      void ApplyEdit()
+      {
+         Type type = bs.Current.GetType();
+         MethodInfo mi = type.GetMethod("ApplyEdit");
+         mi.Invoke(bs.Current, null);
+      }
+   }
+
+   [Serializable()]
+   public class Dog: BusinessBase
+   {
+      private static PropertyInfo _name = RegisterProperty(typeof(Dog), new PropertyInfo("Name"));
+      public string Name
+      {
+         get { return GetProperty(_name); }
+         set { SetProperty(_name, value); }
+      }
+
+      private string _color;
+      public string Color
+      {
+         get { return _color; }
+         set { _color = value; }
+      }
+   }
+
+   [Serializable()]
+   public class Cat: BusinessBase
+   {
+      private static PropertyInfo _name = RegisterProperty(typeof(Cat), new PropertyInfo("Name"));
+      public string Name
+      {
+         get { return GetProperty(_name); }
+         set { SetProperty(_name, value); }
+      }
+
+      private string _color;
+      public string Color
+      {
+         get { return _color; }
+         set { _color = value; }
+      }
+   }
+}
+
+</PRE></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, April 16, 2008</h2><P>The rule when using Windows Forms data binding is</P>
+<P><STRONG><EM>Never directly interact with a business object while it is data bound - only interact with the bindingsource.</EM></STRONG></P>
+<P>This has been discussed in several other threads on the forum, and several of the people on this forum have put in a lot of research time on issues around this. The rule appears to be a hard rule - and violating that rule appears to really make data binding unhappy.</P>
+<P>As a result, CSLA doesn't support violation of this rule either. If Microsoft set such a hard-and-fast rule, I'm not going to buck it <img src="/emoticons/emotion-1.gif" alt="Smile [:)]" /></P>
+<P>So calling CancelEdit() or other methods directly on the business object while it is data bound is absolutely not supported and is a really bad idea.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ErikPhilips replied on Thursday, April 17, 2008</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div>
+<P>The rule when using Windows Forms data binding is</P>
+<P><STRONG><EM>Never directly interact with a business object while it is data bound - only interact with the bindingsource.</EM></STRONG></P>
+<P></div></BLOCKQUOTE></P>
+<P>Can we get this added to the FAQ section in the Forums?&nbsp; I did read them all before I started posting.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ErikPhilips replied on Thursday, April 17, 2008</h2><P>Ahh just ignore all this.</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

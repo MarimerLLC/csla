@@ -1,0 +1,55 @@
+<html><header><title>Multiple language support in CSLA framework</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Multiple language support in CSLA framework</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5400.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Lalit posted on Monday, September 15, 2008</h2><P>Hi all,</P>
+<P>In my current applicaton i have to provide multi language support.&nbsp;I noticed that for Common Validation Rules of CSLA we no more can provide custom validation message in 3.0+ versions, am i right? Do CSLA provides such support internally? If yes than i think i will require resource files for those languages. If no please suggest how to implement this.</P>
+<P>Thanks in advance.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, September 15, 2008</h2><P>The rule methods in CommonRules have always used description strings from the Csla.dll resource files. They have never been customizable through code.</P>
+<P>You can implement your own rule methods, and customize the description text in any way you choose.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Lalit replied on Tuesday, September 16, 2008</h2><P>Hi Rocky,</P>
+<P>Thanks for your reply. So that means i need not to worry about language things. CSLA will take care of in which language it should display the messages depending upon the current culture selected? It seems meaningful to me as i located resource files in diff languages in properties folder.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, September 16, 2008</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>The .NET framework changes which resource file is used based on
+the UICulture setting of your application&#8217;s thread.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Generous people from around the world have, from time to time,
+contributed translations of the default US English resources into many other
+languages.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Some of those resource files are up to date (for 3.0 anyway, and
+maybe 3.5). Others are fairly old.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>If there is a translation for a description, it will be used
+automatically by .NET. If there is not a translation, the US English
+description is the default.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>If you find a missing translation, and wish to supply an updated
+resx file, I will include it in future versions of the framework.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky</span><b><span><o:p></o:p></span></b></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

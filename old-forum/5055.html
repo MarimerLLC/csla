@@ -1,0 +1,170 @@
+<html><header><title>Total Record Count in paging</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Total Record Count in paging</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5055.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Zafar Ullah posted on Thursday, July 03, 2008</h2><DIV class=ForumPostContentText id=ctl00_ctl01_bcr_ctl00___PostRepeater_ctl01_PostViewWrapper>
+<P>Hello,</P>
+<P>I am using CSLA version 3.0.4.0&nbsp;and my application is web based(ASP.NET with C#)</P>
+<P>I&nbsp;have a huge number of records to display&nbsp;in our database e.g over 20 million&nbsp;and above in some tables rest of&nbsp;them are under&nbsp;1 lac. I hav&nbsp;implemented paging and a max of 100 records can be shown displayed in a grid at 1 time.</P>
+<P>Actually what we do is we send call to Collection class to load all records which meet under certain search criteria and take its count. like this</P><FONT color=#008080 size=2>
+<P>AMCollection</FONT><FONT size=2>.GetAMCollection(crit).Count</FONT></P>
+<P><FONT size=2>In background&nbsp;Collection holds objects so it&nbsp;make objects of&nbsp;&nbsp;all records e.g 1million and then we have a count. which make web page response very slow over 30 sec on first load and&nbsp; 20 to 25 sec on each postback.</FONT></P>
+<P><FONT size=2>Is there any way to take the total count with out making objects because that&nbsp;make it slow.</FONT></P>
+<P><FONT size=2>(we are not using Stored Procedures)</FONT></P>
+<P><FONT size=2>Thanks in advance</FONT></P>
+<P><FONT size=2>Zafar Ullah</P></FONT></DIV></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Thursday, July 03, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>You can probably just use command object that just gets total
+count of records by calling &#8220;Select Count(1) From &#8230;.&#8221; and just
+returning single number.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Senior Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899<o:p></o:p></span></p>
+
+<p class=MsoNormal><b><i><span>Magenic</span></i></b><span> </span><span>&reg;</span><b><i><span><o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Zafar Ullah
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Thursday, July 03, 2008 3:08 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> [CSLA .NET] Total Record Count in paging<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<div id="ctl00_ctl01_bcr_ctl00___PostRepeater_ctl01_PostViewWrapper">
+
+<p>Hello,<o:p></o:p></p>
+
+<p>I am using CSLA version 3.0.4.0&nbsp;and my application is web based(ASP.NET
+with C#)<o:p></o:p></p>
+
+<p>I&nbsp;have a huge number of records to display&nbsp;in our database e.g
+over 20 million&nbsp;and above in some tables rest of&nbsp;them are
+under&nbsp;1 lac. I hav&nbsp;implemented paging and a max of 100 records can be
+shown displayed in a grid at 1 time.<o:p></o:p></p>
+
+<p>Actually what we do is we send call to Collection class to load all records
+which meet under certain search criteria and take its count. like this<o:p></o:p></p>
+
+<p><span>AMCollection</span><span>.GetAMCollection(crit).Count</span><o:p></o:p></p>
+
+<p><span>In background&nbsp;Collection holds objects
+so it&nbsp;make objects of&nbsp;&nbsp;all records e.g 1million and then we have
+a count. which make web page response very slow over 30 sec on first load
+and&nbsp; 20 to 25 sec on each postback.</span><o:p></o:p></p>
+
+<p><span>Is there any way to take the total count with
+out making objects because that&nbsp;make it slow.</span><o:p></o:p></p>
+
+<p><span>(we are not using Stored Procedures)</span><o:p></o:p></p>
+
+<p><span>Thanks in advance</span><o:p></o:p></p>
+
+<p><span>Zafar Ullah<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, July 03, 2008</h2><P>You shouldn't even need a command object.</P>
+<P>You are loading the page of rows in a DataPortal_Fetch() method. That method should use one of the many techniques to only load the required rows from the database.</P>
+<P>That method <EM>also</EM> must get the total rows available. That's just another SQL statement - typically with a COUNT or something.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Zafar Ullah replied on Friday, July 04, 2008</h2><P>Thanks Rocky,</P>
+<P>but what if i am using NHibernate.Actually i put my question in CSLAContrib but no body reply me there so i put it here with default CSLA behavior.</P>
+<P>This is the actual post:</P>
+<P>I am using CSLA.NHibernate from&nbsp;CSLA Contrib. </P>
+<P>I am using CSLA version 3.0.4.0 and CSLA.NHibernate version is compiled using the same version of CSLA and my application is web based(ASP.NET with C#)</P>
+<P>I&nbsp;have a huge number of records to display&nbsp;in our database e.g over 20 million&nbsp;and above in some tables rest of&nbsp;them are under&nbsp;1 lac. I hav&nbsp;implemented paging and a max of 100 records can be shown displayed in a grid at 1 time.</P>
+<P>Actually what we do is we send call to Collection class to load all records which meet under certain search criteria and take its count. like this</P><FONT color=#008080 size=2>
+<P>AMCollection</FONT><FONT size=2>.GetAMCollection(crit).Count</FONT></P>
+<P><FONT size=2>In background NHibernate make objects of&nbsp;&nbsp;all records e.g 1million and then we have a count. which make web page response very slow over 30 sec.</FONT></P>
+<P><FONT size=2>Is there any way to take the total count with out making objects of each record that NHibernate pulls.</FONT></P>
+<P><FONT size=2>Thanks in advance</FONT></P>
+<P><FONT size=2>Zafar Ullah</P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Saturday, July 05, 2008</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>It doesn&#8217;t matter what data access technology you are
+using. Your DataPortal_Fetch needs to do two things:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoListParagraph><span><span>1.<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span></span><span>Get the page worth of data<o:p></o:p></span></p>
+
+<p class=MsoListParagraph><span><span>2.<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span></span><span>Get the total number of rows available<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I don&#8217;t know how you do that in NHibernate, but there must
+be a way to do it?<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky</span><b><span><o:p></o:p></span></b></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rsbaker0 replied on Sunday, July 06, 2008</h2><P>We looked at NHibernate before settling on the Wilson ORMapper. (In fact I transated. CSLA.NHibernate to CLSA.WORMapper... :) </P>
+<P>I recall that NHibernate fully supports paged collections. You tell it the starting page you want and number of records, and it should do the rest for you. (I don't remember the exact parameter interface, but this was a requirement for us an NHibernate met it easily)</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Zafar Ullah replied on Monday, July 07, 2008</h2><P>Thanks </P>
+<P>here is the code your are talking about</P><FONT size=2>
+<P>for example you can pick top 20 records based on the given criteria like this</P>
+<P>_iCriteria is an object of ICrietria Class</P>
+<P>_iCriteria.SetFirstResult(0);</P>
+<P>_iCriteria.SetMaxResults(20);</P>
+<P>But the problem is that if we have to show total records which meets the given criteria where as the above 2 statements returs only top 20 records. How could i get Total.</P>
+<P>e.g this will be my output if i have a page size of 20 and total records found are 100.</P>
+<P>Total Records: 100&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Page 1 of 5&nbsp;&nbsp;&gt;&gt;</P>
+<P>Is there any way that existing crietria give me 100 as total count along with page size records.(20)</P>
+<P>&nbsp;</P>
+<P>Hope its clear now.</P></FONT></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,33 @@
+<html><header><title>CSLA 3.5 - ChildList Questions</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA 3.5 - ChildList Questions</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4843.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Patrick posted on Wednesday, May 14, 2008</h2>Hi,<br><br>I would appreciate some help regaring child properties in CSLA 3.5.<br><br>This is the way Rocky recommends to declare child properties in the ProjectTracker example:<br>&nbsp;&nbsp;&nbsp; private static PropertyInfo&lt;ProjectResources&gt; ResourcesProperty = RegisterProperty&lt;ProjectResources&gt;(typeof(Project), new PropertyInfo&lt;ProjectResources&gt;("Resources"));<br>&nbsp;&nbsp;&nbsp; public ProjectResources Resources<br>&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; get<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (!(FieldManager.FieldExists(ResourcesProperty)))<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; SetProperty&lt;ProjectResources&gt;(ResourcesProperty, ProjectResources.NewProjectResources());<br>---- or for lazy loading ----<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; SetProperty&lt;ProjectResources&gt;(ResourcesProperty, ProjectResources.GetProjectResources(this.ProjectId));<br>&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp; }<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return GetProperty&lt;ProjectResources&gt;(ResourcesProperty);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>&nbsp;&nbsp;&nbsp; }<br><br>So my questions are: &nbsp;  <br>1) If I used lazy loading it would mean Resources isn't set during the fetch operation. So on first access to the Resources property the resources will be retrieved. Using SetProperty&lt;ProjectResources&gt; marks the Project business object as dirty though... but it seems like Project shouldn't really be dirty considering it just fetch some extra from the database?<br><br>2) If I did't use lazy loading and didn't set Resources during the fetch the same thing would happen. Project.IsDirty == true after accessing Resources for the first time.<br><br>3) 2) seems to mean I have to set Resources during the fetch but then Resources are an empty list (NewProjectResources()). Then it seems like that later on it will be difficult to know if Resources is an empty list because there are no records in the database or because Resources was set to NewProjectResources() during fetch?<br><br>Thanks for you help, <img src="/emoticons/emotion-1.gif" alt="Smile [:)]" /><br>Patrick</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, May 16, 2008</h2><P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>Patrick:</strong></div><div><BR>1) If I used lazy loading it would mean Resources isn't set during the fetch operation. So on first access to the Resources property the resources will be retrieved. Using SetProperty&lt;ProjectResources&gt; marks the Project business object as dirty though... but it seems like Project shouldn't really be dirty considering it just fetch some extra from the database?<BR></div></BLOCKQUOTE></P>
+<P>You can use LoadProperty() instead, thus not marking the object as dirty.<BR></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Patrick replied on Wednesday, May 21, 2008</h2><BLOCKQUOTE><div><img src="/Themes/basicblue/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div>You can use LoadProperty() instead, thus not marking the object as dirty.</div></BLOCKQUOTE><br>Thank you. I mainly wanted to understand though why you decided to use SetProperty in your sample before I implement it differently <img src="/emoticons/emotion-1.gif" alt="Smile [:)]" /><br><br>Thanks a lot,<br>Patrick<br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, May 21, 2008</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>It probably should be LoadProperty in the sample, that is true. The
+ProjectTracker code is something I use for testing and proving things &#8211;
+until I get into the latter half of the book, and then it becomes more focused
+on being an example of the &#8220;right approach&#8221;. We&#8217;re at that
+awkward in-between stage just at the moment.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky</span><b><span><o:p></o:p></span></b></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

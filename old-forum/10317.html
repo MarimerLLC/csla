@@ -1,0 +1,20 @@
+<html><header><title>CSLA 4.0.1.0, .NET 4.0, WCF REST Service</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA 4.0.1.0, .NET 4.0, WCF REST Service</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10317.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>mhsimkin posted on Thursday, April 28, 2011</h2><p>Hi:</p>
+<p>I am building several WCF REST services in .NET 4.0 using the new WebServiceHostFactory classes.</p>
+<p>The user needs to authenticate to the site using Forms Auth.&nbsp; That works as expected.&nbsp; The Csla.ApplicationContext.User has my custom principal.</p>
+<p>When a call is made to the service instance, Csla.ApplicationContext.User is the GenericPrincipal and not my custom principal object.&nbsp; If I look at the HttpContext.Current.User from within the service code, it does have&nbsp;my custom principal object.</p>
+<p>I&#39;m using C#, CSLA 4.0.1.0, .NET 4.0 with SP1.</p>
+<p>Any thoughts,&nbsp;guidance on what is happening and why?</p>
+<p>Thanks</p>
+<p>marc&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>mhsimkin replied on Thursday, April 28, 2011</h2><p>I have some more information.</p>
+<p>It looks like CSLA is creating an instance of ApplicationContextManager for the web application.&nbsp; I&#39;m not sure if this is expected or not.&nbsp; </p>
+<p>When the Forms Auth code runs and it sets the current user via Csla.ApplicationContext.User = MyPrincipal, the ApplicationContextManager instance is associating the custom principal with the current thread.</p>
+<p>Now, that authentication has passed, the service is being created, and it is on a DIFFERENT thread.</p>
+<p>Any ideas why this is happening? How can I fix it so that the user information is maintained correctly.</p>
+<p>The authentication and service call are all on the same web server and in the same web application.</p>
+<p>thanks</p>
+<p>marc</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>mhsimkin replied on Thursday, April 28, 2011</h2><p>I have some more details.</p>
+<p>I have my WCF Rest service configured for ServiceBehavior(InstanceContextMode = InstanceContextMode.PerCall).&nbsp; When I change to PerSession, the ApplicationContext.User has my custom principal.</p>
+<p>So, why is my web app creating an instance of Csla.ApplicationContextManager and not Csla.Web.ApplicationContextManager?</p>
+<p>Is there some other Csla configuration option I need to set to make Clsa.ApplicationContext create an instance of Csla.Web.ApplicationContextManager?</p>
+<p>Thanks</p>
+<p>marc</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Thursday, April 28, 2011</h2><p>The ApplicationContext is designed to auto-detect the context manager to use based on the assemblies available at runtime. If your project references Csla.Web.dll then it should use the context manager from that assembly. If that assembly isn&#39;t in your \bin folder, obviously that type can&#39;t be used, so CSLA falls back to the smart client implementation.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

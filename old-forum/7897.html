@@ -1,0 +1,80 @@
+<html><header><title>Editable Child Created From Pick List Best Practice</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Editable Child Created From Pick List Best Practice</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/7897.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>fussion_am posted on Wednesday, October 28, 2009</h2><P>I am looking for some guidance on a situation we have.&nbsp; We are using silverlight and CSLA 3.8.0.&nbsp; The object model is such that we have an editable root that contains an editable child exposed as a property.&nbsp; The use case calls for allowing the user to select from a list of these child info objects to set the editable root's child property.</P>
+<P>My understanding is that best practice is not to expose the child static fetch method.&nbsp; Should we expose a method on the parent LoadChildEntity which takes an instance of the childInfo object?&nbsp; This method would then call the internal static child fetch method&nbsp;which would then in turn execute the dataporta.FetchChild using the local proxy and place the code to 'hydrate' the editable child in the Child_Fetch...am I making sense?</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, October 28, 2009</h2><P>So you basically have something like</P>
+<P>Root-&gt;Child</P>
+<P>And you also have</P>
+<P>ChildItems-&gt;ChildItemInfo</P>
+<P>Root is an editable root, and Child is an editable child.</P>
+<P>ChildItems is probably a readonly list and ChildItemInfo is probably a readonly child.</P>
+<P>The user selects a ChildItemInfo, and you need to instantiate a Child object that corresponds to it, so you can make that the child of Root.</P>
+<P>And, of course, you want to keep the UI code as simple (and dumb) as possible, so the UI developer can't make a mistake.</P>
+<P>So I'd put a method on Root called AddChild() or SetChild() - maybe SetChild(), since there's only one, and you aren't really "adding". Then the UI code would be something like this:</P>
+<P>var selection = &lt;some ChildItemInfo from the UI&gt;;<BR>_root.SetChild(selection);</P>
+<P>The SetChild() method in Root accepts the readonly child - primarily to get its Id property (I assume). Using that information it can get the child object:</P>
+<P>public void SetChild(ChildItemInfo info)<BR>{<BR>&nbsp; var dp = new DataPortal&lt;Child&gt;();<BR>&nbsp; dp.FetchCompleted += (o, e) =&gt;<BR>&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; this.Child = e.Object;<BR>&nbsp;&nbsp;&nbsp; };<BR>&nbsp; dp.BeginFetch(new SingleCriteria&lt;Child, int&gt;(info.Id));<BR>}</P>
+<P>This does mean that your Child class will implement a DataPortal_Fetch() that accepts the SingleCriteria parameter, and loads the child with its data. Also, that DataPortal_Fetch() <EM>must call MarkAsChild()</EM> for this to work.</P>
+<P>You might also put that data portal code in an internal scoped factory method on the Child class - that's really up to you.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>fussion_am replied on Thursday, October 29, 2009</h2><P>Thanks for the prompt response on this, I know you are a busy guy.</P>
+<P>&nbsp;</P>
+<P>That's the basic idea, except that the ChildInfo object has all the data needed to create the EditableChild so we don't need to ge back to the server.</P>
+<P>&nbsp;</P>
+<P>The only difference in my thinking is that we would use Dataportal.FetchChild... So&nbsp;the parent's SetChild method would call the child's static internal factory method which would call dataportal fetch child (so that we don't need to call MarkAsChild().)&nbsp; <o:p></o:p></P>
+<P><o:p>&nbsp;</o:p></P>
+<P>I think I muddied the waters by referring to the local proxy...&nbsp; when we use FetchChild there is no local proxy yes?&nbsp; There is no client\server interaction the call is just 'delegated' to the private Child_Fetch method?<o:p></o:p></P>
+<P>public class Parent// in shared .cs file<o:p></o:p></P>
+<P>{<o:p></o:p></P>
+<P>&nbsp;&nbsp;&nbsp;<SPAN><o:p></o:p></SPAN></P>
+<P>&nbsp;&nbsp;&nbsp;private static PropertyInfo&lt;Child&gt; ChildProperty = RegisterProperty&lt;Child&gt;(c =&gt; c.PropChild);<o:p></o:p></P>
+<P>&nbsp;&nbsp;&nbsp;public Child PropChild<o:p></o:p></P>
+<P>&nbsp;&nbsp;&nbsp;{<o:p></o:p></P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get<o:p></o:p></P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<o:p></o:p></P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return GetProperty(ChildProperty);<o:p></o:p></P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<o:p></o:p></P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;private set<o:p></o:p></P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<o:p></o:p></P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;SetProperty(ChildProperty, value);<o:p></o:p></P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<o:p></o:p></P>
+<P>&nbsp;&nbsp;&nbsp;public void SetChild(ChildItemInfo info)<o:p></o:p></P>
+<P>&nbsp;&nbsp;&nbsp;{<o:p></o:p></P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;this.PropChild = Child.GetChild(info); <o:p></o:p></P>
+<P>&nbsp;&nbsp;&nbsp;}<o:p></o:p></P>
+<P>}&nbsp;&nbsp;&nbsp;<o:p></o:p></P>
+<P>&nbsp;<o:p></o:p></P>
+<P>public class Child //in 'shared' .cs file<o:p></o:p></P>
+<P>{<o:p></o:p></P>
+<P>&nbsp;&nbsp;&nbsp;internal&nbsp;static void GetChild(ChildItemInfo info)<o:p></o:p></P>
+<P>&nbsp;&nbsp;&nbsp;{<o:p></o:p></P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DataPortal.FetchChild&lt;Child&gt;(info); <o:p></o:p></P>
+<P>&nbsp;&nbsp;&nbsp;}<o:p></o:p></P>
+<P>&nbsp;&nbsp;&nbsp;private void Child_Fetch(ChildItemInfo info)<o:p></o:p></P>
+<P>&nbsp;&nbsp;&nbsp;{&nbsp;&nbsp;&nbsp;<o:p></o:p></P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//populate this with info<o:p></o:p></P>
+<P>&nbsp;&nbsp;&nbsp;}<o:p></o:p></P>
+<P>}<o:p></o:p></P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, October 29, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>The problem is that FetchChild() won&#8217;t go across the wire. So in
+an n-tier deployment you <i>must call Fetch()</i> or your code will try to run
+the data access code on the client and it will fail.</span><b><span><o:p></o:p></span></b></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>fussion_am replied on Thursday, October 29, 2009</h2><P>I think that is our desired result.&nbsp; Since the info object has all the data required for the editable child, our intent is to use that as the datasource....</P>
+<P>Is this bad design as it couples our info object with our editable object?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, October 29, 2009</h2><P>This is probably fine, as long as you remember that the Child_Fetch() will run on the machine where it was invoked - client or server. So it should be written to be location neutral - not making assumptions about location-specific context.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>fussion_am replied on Thursday, October 29, 2009</h2>Sweet.&nbsp; Thanks again for the feedback.</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

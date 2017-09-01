@@ -1,0 +1,10 @@
+<html><header><title>Create a Variable to Store BusinessBase(of T)</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Create a Variable to Store BusinessBase(of T)</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/1057.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>mikeclimbs posted on Tuesday, August 29, 2006</h2><P>I'm creating a generic form to Edit BO's.&nbsp; I'm using vb and csla 2.1. I'm hoping to pass the form a BO and have generic save btn that calls bo.save.</P>
+<P>I can't figure out how to declare a public variable I can place any&nbsp;Businessbase of T in.&nbsp; I was able to use core.businessbase, but it doesn't expose save.&nbsp; I also tried to cast my object to businessbase with no success</P>
+<P>I'm new to vb just moved from delphi so I maybe missing something obvious.</P>
+<P>I searched the forum and found some discussion of this, but the solutions seemed overly complicated.</P>
+<P>Thanks,</P>
+<P>Mike</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Tuesday, August 29, 2006</h2>Try using the ISavable interface instead of BusinessBase&lt;T&gt;.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>xal replied on Tuesday, August 29, 2006</h2>You can use Csla.Core.ISavable for that purpose.<br><br>Andrés<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>mikeclimbs replied on Tuesday, August 29, 2006</h2><P>Thanks,&nbsp;&nbsp;Csla.Core.ISavable&nbsp;did the trick.&nbsp;</P>
+<P>I'm still passing it as csla.core.businessbase and casting as Isaveable when I need to save.&nbsp; This gives me access to some of the other businessbase functionalty.</P>
+<P>&nbsp;</P>
+<P>Mike</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

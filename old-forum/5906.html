@@ -1,0 +1,150 @@
+<html><header><title>[Transactional(TransactionalTypes.TransactionScope)]</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>[Transactional(TransactionalTypes.TransactionScope)]</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5906.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>DazedAndConfused posted on Monday, December 01, 2008</h2><P>We have been struggling to get this working: Should the below code work?</P>
+<P>The first call </P>
+<P>myTestA.Save() should work</P>
+<P>myTestB.Save causes a truncation error on the table, and my thoughts are that A should roll back.</P>
+<P>This is a SQL 2005 back end and the table and proc are:</P><FONT color=#0000ff size=1>
+<P>Create</FONT><FONT size=1> </FONT><FONT color=#0000ff size=1>TABLE</FONT><FONT size=1> [dbo]</FONT><FONT color=#808080 size=1>.</FONT><FONT size=1>[TestTran]</FONT><FONT color=#808080 size=1>(</P></FONT><FONT size=1>
+<P>[TestTranID] [int] </FONT><FONT color=#0000ff size=1>IDENTITY</FONT><FONT color=#808080 size=1>(</FONT><FONT size=1>1</FONT><FONT color=#808080 size=1>,</FONT><FONT size=1>1</FONT><FONT color=#808080 size=1>)</FONT><FONT size=1> </FONT><FONT color=#808080 size=1>NOT</FONT><FONT size=1> </FONT><FONT color=#808080 size=1>NULL,</P></FONT><FONT size=1>
+<P>[Name] [varchar]</FONT><FONT color=#808080 size=1>(</FONT><FONT size=1>5</FONT><FONT color=#808080 size=1>)</FONT><FONT size=1> </FONT><FONT color=#0000ff size=1>COLLATE</FONT><FONT size=1> Latin1_General_CI_AS </FONT><FONT color=#808080 size=1>NOT</FONT><FONT size=1> </FONT><FONT color=#808080 size=1>NULL</P>
+<P>)</P>
+<P>&nbsp;</P></FONT><FONT color=#0000ff size=1>
+<P>Create</FONT><FONT size=1> </FONT><FONT color=#0000ff size=1>Proc</FONT><FONT size=1> dbo</FONT><FONT color=#808080 size=1>.</FONT><FONT size=1>InsertTestTran @myvalue </FONT><FONT color=#0000ff size=1>int</P>
+<P>as</P>
+<P>if</FONT><FONT size=1> @myvalue </FONT><FONT color=#808080 size=1>=</FONT><FONT size=1> 1</P>
+<P></FONT><FONT color=#0000ff size=1>begin</P></FONT><FONT size=1>
+<P></FONT><FONT color=#0000ff size=1>Insert</FONT><FONT size=1> [TestTran] </FONT><FONT color=#808080 size=1>(</FONT><FONT color=#0000ff size=1>Name</FONT><FONT color=#808080 size=1>)</P></FONT><FONT size=1>
+<P></FONT><FONT color=#0000ff size=1>values</FONT><FONT color=#808080 size=1>(</FONT><FONT size=1> </FONT><FONT color=#ff0000 size=1>'Test1111111111111111'</FONT><FONT color=#808080 size=1>)</P></FONT><FONT size=1>
+<P></FONT><FONT color=#0000ff size=1>END</P>
+<P>else</P></FONT><FONT size=1>
+<P></FONT><FONT color=#0000ff size=1>Insert</FONT><FONT size=1> [TestTran] </FONT><FONT color=#808080 size=1>(</FONT><FONT color=#0000ff size=1>Name</FONT><FONT color=#808080 size=1>)</P></FONT><FONT size=1>
+<P></FONT><FONT color=#0000ff size=1>values</FONT><FONT color=#808080 size=1>(</FONT><FONT size=1> </FONT><FONT color=#ff0000 size=1>'Test1'</FONT><FONT color=#808080 size=1>)</P></FONT>
+<P>This is the c# code:</P>
+<P><FONT color=#0000ff size=1>using</FONT><FONT size=1> System;</P></FONT><FONT color=#0000ff size=1>
+<P>using</FONT><FONT size=1> System.Collections.Generic;</P></FONT><FONT color=#0000ff size=1>
+<P>using</FONT><FONT size=1> System.Text;</P></FONT><FONT color=#0000ff size=1>
+<P>using</FONT><FONT size=1> Csla;</P></FONT><FONT color=#0000ff size=1>
+<P>using</FONT><FONT size=1> Csla.Data;</P></FONT><FONT color=#0000ff size=1>
+<P>using</FONT><FONT size=1> System.Data.SqlClient;</P></FONT><FONT color=#0000ff size=1>
+<P>using</FONT><FONT size=1> System.Data;</P></FONT><FONT color=#0000ff size=1>
+<P>namespace</FONT><FONT size=1> ADFTest</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=1>class</FONT><FONT size=1> </FONT><FONT color=#2b91af size=1>Program</P></FONT><FONT size=1>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=1>private</FONT><FONT size=1> </FONT><FONT color=#0000ff size=1>static</FONT><FONT size=1> </FONT><FONT color=#2b91af size=1>SqlConnection</FONT><FONT size=1> _Connection;</P>
+<P></FONT><FONT color=#0000ff size=1>static</FONT><FONT size=1> </FONT><FONT color=#0000ff size=1>void</FONT><FONT size=1> Main(</FONT><FONT color=#0000ff size=1>string</FONT><FONT size=1>[] args)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=1>try</P></FONT><FONT size=1>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=1>string</FONT><FONT size=1> mystring = getDBConnection</FONT><FONT size=1></P>
+<P></FONT><FONT color=#2b91af size=1>SqlConnection</FONT><FONT size=1> myConn = </FONT><FONT color=#0000ff size=1>new</FONT><FONT size=1> </FONT><FONT color=#2b91af size=1>SqlConnection</FONT><FONT size=1>(mystring);</P>
+<P>myConn.Open();</P>
+<P>_Connection = myConn;</P>
+<P>TestTransaction();</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=1>catch</P></FONT><FONT size=1>
+<P>{ }</P>
+<P>}</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>[</FONT><FONT color=#2b91af size=1>Transactional</FONT><FONT size=1>(</FONT><FONT color=#2b91af size=1>TransactionalTypes</FONT><FONT size=1>.TransactionScope)]</P>
+<P></FONT><FONT color=#0000ff size=1>static</FONT><FONT size=1> </FONT><FONT color=#0000ff size=1>void</FONT><FONT size=1> TestTransaction()</P>
+<P>{</P>
+<P></FONT><FONT color=#2b91af size=1>ClassA</FONT><FONT size=1> myTestA = </FONT><FONT color=#0000ff size=1>new</FONT><FONT size=1> </FONT><FONT color=#2b91af size=1>ClassA</FONT><FONT size=1>();</P>
+<P></FONT><FONT color=#2b91af size=1>ClassB</FONT><FONT size=1> myTestB = </FONT><FONT color=#0000ff size=1>new</FONT><FONT size=1> </FONT><FONT color=#2b91af size=1>ClassB</FONT><FONT size=1>();</P>
+<P>myTestA.Save();</P>
+<P>myTestB.Save();</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=1>public</FONT><FONT size=1> </FONT><FONT color=#0000ff size=1>static</FONT><FONT size=1> </FONT><FONT color=#2b91af size=1>SqlConnection</FONT><FONT size=1> GetDBConnection()</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=1>return</FONT><FONT size=1> _Connection;</P>
+<P>}</P>
+<P>}</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P></FONT><FONT color=#0000ff size=1>class</FONT><FONT size=1> </FONT><FONT color=#2b91af size=1>ClassA</FONT><FONT size=1> : </FONT><FONT color=#2b91af size=1>BusinessBase</FONT><FONT size=1>&lt;</FONT><FONT color=#2b91af size=1>ClassA</FONT><FONT size=1>&gt;</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=1>public</FONT><FONT size=1> </FONT><FONT color=#0000ff size=1>static</FONT><FONT size=1> </FONT><FONT color=#2b91af size=1>ClassA</FONT><FONT size=1> NewObject()</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=1>return</FONT><FONT size=1> </FONT><FONT color=#2b91af size=1>DataPortal</FONT><FONT size=1>.Create&lt;</FONT><FONT color=#2b91af size=1>ClassA</FONT><FONT size=1>&gt;();</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=1>public</FONT><FONT size=1> </FONT><FONT color=#0000ff size=1>override</FONT><FONT size=1> </FONT><FONT color=#0000ff size=1>object</FONT><FONT size=1> GetIdValue()</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=1>return</FONT><FONT size=1> 1;</P>
+<P>}</P>
+<P>[</FONT><FONT color=#2b91af size=1>Transactional</FONT><FONT size=1>(</FONT><FONT color=#2b91af size=1>TransactionalTypes</FONT><FONT size=1>.TransactionScope)]</P>
+<P></FONT><FONT color=#0000ff size=1>protected</FONT><FONT size=1> </FONT><FONT color=#0000ff size=1>override</FONT><FONT size=1> </FONT><FONT color=#0000ff size=1>void</FONT><FONT size=1> DataPortal_Insert()</P>
+<P>{</P>
+<P></FONT><FONT color=#2b91af size=1>SqlCommand</FONT><FONT size=1> sqlCmd2 = </FONT><FONT color=#0000ff size=1>new</FONT><FONT size=1> </FONT><FONT color=#2b91af size=1>SqlCommand</FONT><FONT size=1>(</FONT><FONT color=#a31515 size=1>"dbo.InsertTestTran"</FONT><FONT size=1>, </FONT><FONT color=#2b91af size=1>Program</FONT><FONT size=1>.GetDBConnection());</P>
+<P>sqlCmd2.CommandType = </FONT><FONT color=#2b91af size=1>CommandType</FONT><FONT size=1>.StoredProcedure;</P>
+<P></FONT><FONT color=#2b91af size=1>SqlParameter</FONT><FONT size=1> myparam2 = </FONT><FONT color=#0000ff size=1>new</FONT><FONT size=1> </FONT><FONT color=#2b91af size=1>SqlParameter</FONT><FONT size=1>(</FONT><FONT color=#a31515 size=1>"@myvalue"</FONT><FONT size=1>, </FONT><FONT color=#a31515 size=1>'0'</FONT><FONT size=1>);</P>
+<P>sqlCmd2.Parameters.Add(myparam2);</P>
+<P>sqlCmd2.ExecuteNonQuery();</P>
+<P>}</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=1>class</FONT><FONT size=1> </FONT><FONT color=#2b91af size=1>ClassB</FONT><FONT size=1> : </FONT><FONT color=#2b91af size=1>BusinessBase</FONT><FONT size=1>&lt;</FONT><FONT color=#2b91af size=1>ClassB</FONT><FONT size=1>&gt;</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=1>public</FONT><FONT size=1> </FONT><FONT color=#0000ff size=1>static</FONT><FONT size=1> </FONT><FONT color=#2b91af size=1>ClassB</FONT><FONT size=1> NewObject()</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=1>return</FONT><FONT size=1> </FONT><FONT color=#2b91af size=1>DataPortal</FONT><FONT size=1>.Create&lt;</FONT><FONT color=#2b91af size=1>ClassB</FONT><FONT size=1>&gt;();</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=1>public</FONT><FONT size=1> </FONT><FONT color=#0000ff size=1>override</FONT><FONT size=1> </FONT><FONT color=#0000ff size=1>object</FONT><FONT size=1> GetIdValue()</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=1>return</FONT><FONT size=1> 1;</P>
+<P>}</P>
+<P>[</FONT><FONT color=#2b91af size=1>Transactional</FONT><FONT size=1>(</FONT><FONT color=#2b91af size=1>TransactionalTypes</FONT><FONT size=1>.TransactionScope)]</P>
+<P></FONT><FONT color=#0000ff size=1>protected</FONT><FONT size=1> </FONT><FONT color=#0000ff size=1>override</FONT><FONT size=1> </FONT><FONT color=#0000ff size=1>void</FONT><FONT size=1> DataPortal_Insert()</P>
+<P>{</P>
+<P></FONT><FONT color=#008000 size=1>// This will cause a Truncation error in the database:</P></FONT><FONT size=1>
+<P></FONT><FONT color=#2b91af size=1>SqlCommand</FONT><FONT size=1> sqlCmd2 = </FONT><FONT color=#0000ff size=1>new</FONT><FONT size=1> </FONT><FONT color=#2b91af size=1>SqlCommand</FONT><FONT size=1>(</FONT><FONT color=#a31515 size=1>"dbo.InsertTestTran"</FONT><FONT size=1>, </FONT><FONT color=#2b91af size=1>Program</FONT><FONT size=1>.GetDBConnection());</P>
+<P>sqlCmd2.CommandType = </FONT><FONT color=#2b91af size=1>CommandType</FONT><FONT size=1>.StoredProcedure;</P>
+<P></FONT><FONT color=#2b91af size=1>SqlParameter</FONT><FONT size=1> myparam2 = </FONT><FONT color=#0000ff size=1>new</FONT><FONT size=1> </FONT><FONT color=#2b91af size=1>SqlParameter</FONT><FONT size=1>(</FONT><FONT color=#a31515 size=1>"@myvalue"</FONT><FONT size=1>, </FONT><FONT color=#a31515 size=1>'1'</FONT><FONT size=1>);</P>
+<P>sqlCmd2.Parameters.Add(myparam2);</P>
+<P>sqlCmd2.ExecuteNonQuery();</P>
+<P>}</P>
+<P>}</P>
+<P>}</FONT></P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, December 01, 2008</h2><P>The Transactional attribute is <EM>only</EM> useful when applied to a DataPortal_XYZ method of a root object. It has absolutely no meaning on any other method.</P>
+<P>So you are using it on your static factory method, where it is entirely ignored. And you use it on both DP_XYZ methods - but they are treated as separate data portal calls and so run in separate transactional contexts.</P>
+<P>You need to have ONE root object that is invoked through the data portal, and then that object does the insert/update of the other (child) object. Put the Transactional attribute on the DP_XYZ methods of that one root object and you should get the desired result.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>whelzer replied on Monday, December 01, 2008</h2>Apologies for the hijack..seems like a good place to ask:<br><br>What happens when using (Transactional(TransactionalTypes.TransactionScope) from say myBO_DP_Insert and its calls myBO2_DP_Insert with also has the Transactional attribute.<br><br>Is there only one transaction?&nbsp; Is the "second" transaction nested?&nbsp; Is there a way to use the old MTS style RequiresTransaction etc.<br><br>We're using DTC and the above methods - all was going very well until we came across a use case where one BO needs to create, populate and save a different BO.&nbsp; 99.99% of the time these objects are created from the UI.&nbsp; Is there a standard way of doing this?<br><br>Any info or links much appreciated.<br><br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, December 01, 2008</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>The Transactional attribute is designed to make the common case
+trivial. That is the case where you have one root object with child objects and
+they should all be saved within the context of a single transaction.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>If that is not your scenario, you should not use the Transactional
+attribute, and instead should create your own TransactionScope object.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Let&#8217;s face it, the Transactional attribute really saves
+you a whopping 2 lines of code in your root object&#8217;s DataPortal_XYZ
+method. That&#8217;s all! It isn&#8217;t worth getting hung up on it, or
+worrying about paying a huge cost if you need more control. Just don&#8217;t
+use Transactional, and do wrap all code in your root object&#8217;s
+DataPortal_XYZ methods in a using block with a TransactionScope object.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky </span><o:p></o:p></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

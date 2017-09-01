@@ -1,0 +1,18 @@
+<html><header><title>Read-only Calculated Property</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Read-only Calculated Property</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10495.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>rxelizondo posted on Tuesday, July 05, 2011</h2><p>
+<p class="MsoNormal">Given a business object called &ldquo;Rectangle&rdquo; consisting of three
+integer properties &ldquo;Width&rdquo;, &ldquo;Height&rdquo; and a read-only &ldquo;Area&rdquo;.</p>
+<p class="MsoNormal">Would you make the read-only
+&ldquo;Area&rdquo; property a full blown PropertyInfo property? If so, you would need to create a rule that sets this
+property value by multiplying &ldquo;Width&rdquo; * &ldquo;Height&rdquo; and have this rule run every
+time the &ldquo;Width&rdquo; or &ldquo;Height&rdquo; property are modified. Is the CSLA official way to do
+something like this? I guess that&rsquo;s the way to go if you have to bind the
+property to some UI control but it just feels like such overkill to me.</p>
+<p class="MsoNormal">&nbsp;Just want to make sure I
+am approaching this correctly.</p>
+<p class="MsoNormal"></p>
+<p class="MsoNormal">&nbsp;Thanks.</p>
+<p class="MsoNormal"></p>
+</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Marjon1 replied on Wednesday, July 06, 2011</h2><p>I would say don&#39;t make it a propertyInfo unless you need a rule to be based on Area, otherwise a simple readonly property that multiples area x height would suffice.....</p>
+<p>Obviously the more complex the readonly property, the more argument their is to effectively calculate on change and store in a propertyInfo.</p>
+<p>In a WinForms app this would work fine with binding, cannot say what affect this would have in other UI technologies. Assume they require a PropertyHasChanged event to be raised to refresh? Anyone?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Saturday, July 09, 2011</h2><p>Surely, you could make a simple property and create a calculate method for calculate Area and raise OnPropertyChanged.</p>
+<p>But in general terms I prefer my properties to be as simple as possible (&quot;properties is not code&quot;) and create rules that does the calculation. Rules are generally easier to test and reuse and I prefer to make them as indepent as possible and independet of the actual BO.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

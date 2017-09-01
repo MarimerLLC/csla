@@ -1,0 +1,153 @@
+<html><header><title>Unit of Work</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Unit of Work</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9863.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>gjbrown posted on Sunday, December 12, 2010</h2><p>The scenrio is this. CSLA 3.8.4,&nbsp;VS 2008 and MVVM.&nbsp; I have a simple control that uses a Unit Of Work to get a BusinessBase and a NVL List. This works well up to a point. You can bind to the NVL or the Business Base, but it is a bit different then binding to the Model Property.&nbsp; The Model implements a couple of useful properties such as CanSave and CanCancel.&nbsp; Is there anyway to do this using Unit of Work. My Code is below.</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>
+<p><span style="font-size:x-small;"><font size="2">
+<p>[</p>
+</font></span>
+<p><span style="color:#2b91af;font-size:x-small;"><span style="color:#2b91af;font-size:x-small;">Serializable</span></span><span style="font-size:x-small;">]</span></p>
+</p>
+</p>
+<p>&nbsp;</p>
+<p><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">public</span></span><span style="font-size:x-small;"> </span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">class</span></span><span style="font-size:x-small;"> </span><span style="color:#2b91af;font-size:x-small;"><span style="color:#2b91af;font-size:x-small;">VerifyUoW</span></span><span style="font-size:x-small;"> : </span><span style="color:#2b91af;font-size:x-small;"><span style="color:#2b91af;font-size:x-small;">ReadOnlyBase</span></span><span style="font-size:x-small;">&lt;</span><span style="color:#2b91af;font-size:x-small;"><span style="color:#2b91af;font-size:x-small;">VerifyUoW</span></span><span style="font-size:x-small;">&gt;{<font size="2">
+<p>&nbsp;</p>
+</font></span></p>
+<p><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">private</span></span><span style="font-size:x-small;"> </span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">static</span></span><span style="font-size:x-small;"> </span><span style="color:#2b91af;font-size:x-small;"><span style="color:#2b91af;font-size:x-small;">PropertyInfo</span></span><span style="font-size:x-small;">&lt;</span><span style="color:#2b91af;font-size:x-small;"><span style="color:#2b91af;font-size:x-small;">Loan</span></span><span style="font-size:x-small;">&gt; LoanProperty = RegisterProperty&lt;</span><span style="color:#2b91af;font-size:x-small;"><span style="color:#2b91af;font-size:x-small;">Loan</span></span><span style="font-size:x-small;">&gt;(p =&gt; p.Loan);</span></p>
+<p><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">public</span></span><span style="font-size:x-small;"> </span><span style="color:#2b91af;font-size:x-small;"><span style="color:#2b91af;font-size:x-small;">Loan</span></span><span style="font-size:x-small;"> Loan </span><span style="font-size:x-small;">{ </span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">get</span></span><span style="font-size:x-small;"> { </span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">return</span></span><span style="font-size:x-small;"> GetProperty(LoanProperty); } }<font size="2">
+<p>&nbsp;</p>
+</font></span></p>
+<p>&nbsp;</p>
+<p><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">private</span></span><span style="font-size:x-small;"> </span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">static</span></span><span style="font-size:x-small;"> </span><span style="color:#2b91af;font-size:x-small;"><span style="color:#2b91af;font-size:x-small;">PropertyInfo</span></span><span style="font-size:x-small;">&lt;</span><span style="color:#2b91af;font-size:x-small;"><span style="color:#2b91af;font-size:x-small;">CodeExceptionList</span></span><span style="font-size:x-small;">&gt; CodeExceptionListProperty = gisterProperty&lt;</span><span style="color:#2b91af;font-size:x-small;"><span style="color:#2b91af;font-size:x-small;">CodeExceptionList</span></span><span style="font-size:x-small;">&gt;(p =&gt; p.CodeExceptionList);<font size="2">
+<p>&nbsp;</p>
+</font></span></p>
+<p>&nbsp;</p>
+<p><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">public</span></span><span style="font-size:x-small;"> </span><span style="color:#2b91af;font-size:x-small;"><span style="color:#2b91af;font-size:x-small;">CodeExceptionList</span></span></p>
+<p><span style="font-size:x-small;"> CodeExceptionList { </span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">get</span></span><span style="font-size:x-small;"> { </span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">return</span></span><span style="font-size:x-small;"> GetProperty(CodeExceptionListProperty); } }<font size="2">
+<p>&nbsp;</p>
+</font></span></p>
+<p>&nbsp;</p>
+<p><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">public</span></span><span style="font-size:x-small;"> </span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">static</span></span><span style="font-size:x-small;"> </span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">void</span></span><span style="font-size:x-small;"> GetVerifyUoW(</span><span style="color:#2b91af;font-size:x-small;"><span style="color:#2b91af;font-size:x-small;">EventHandler</span></span><span style="font-size:x-small;">&lt;</span><span style="color:#2b91af;font-size:x-small;"><span style="color:#2b91af;font-size:x-small;">DataPortalResult</span></span><span style="font-size:x-small;">&lt;</span><span style="color:#2b91af;font-size:x-small;"><span style="color:#2b91af;font-size:x-small;">VerifyUoW</span></span><span style="font-size:x-small;">&gt;&gt; handler)
+<p>{</p>
+<font size="2">
+<p>&nbsp;</p>
+</font></span></p>
+<p>&nbsp;</p>
+<p><span style="color:#2b91af;font-size:x-small;"><span style="color:#2b91af;font-size:x-small;">DataPortal</span></span><span style="font-size:x-small;">&lt;</span><span style="color:#2b91af;font-size:x-small;"><span style="color:#2b91af;font-size:x-small;">VerifyUoW</span></span><span style="font-size:x-small;">&gt; dp = </span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">new</span></span><span style="font-size:x-small;"> </span><span style="color:#2b91af;font-size:x-small;"><span style="color:#2b91af;font-size:x-small;">DataPortal</span></span><span style="font-size:x-small;">&lt;</span><span style="color:#2b91af;font-size:x-small;"><span style="color:#2b91af;font-size:x-small;">VerifyUoW</span></span><span style="font-size:x-small;">&gt;();
+<p>dp.FetchCompleted += handler;</p>
+<p>dp.BeginFetch();</p>
+<p>}</p>
+</span></p>
+<p><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;"><font size="2" color="#0000ff"><font size="2" color="#0000ff">
+<p>#if</p>
+</font></font></span><font size="2" color="#0000ff">
+<p>&nbsp;</p>
+</font></span>
+<p><span style="font-size:x-small;"> !SILVERLIGHT<font size="2">
+<p>&nbsp;</p>
+</font></span></p>
+</p>
+<p>&nbsp;</p>
+<p><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">private</span></span><span style="font-size:x-small;"> </span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">void</span></span></p>
+<p><span style="font-size:x-small;"> DataPortal_Fetch()
+<p>{</p>
+<font size="2">
+<p>LoadProperty(LoanProperty, </p>
+</font></span></p>
+<p><span style="color:#2b91af;font-size:x-small;"><span style="color:#2b91af;font-size:x-small;">Loan</span></span><span style="font-size:x-small;">.NewLoan());<font size="2">
+<p>LoadProperty(CodeExceptionListProperty, </p>
+</font></span></p>
+<p><span style="color:#2b91af;font-size:x-small;"><span style="color:#2b91af;font-size:x-small;">CodeExceptionList</span></span><span style="font-size:x-small;">.GetCodeExceptionList());
+<p>}</p>
+</span></p>
+<p><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">
+<p>#endif</p>
+</span></span><span style="font-size:x-small;">
+<p>}</p>
+</span></p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Sunday, December 12, 2010</h2><p>I use two ViewModel&lt;T&gt; objects/elements. One for the root (UOW), and the second is bound to the first (to set its Model property to the editable object), and manages the editable root object. Most of my UI then binds to this second ViewModel object - eliminating the complexity.</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>Peran replied on Monday, December 13, 2010</h2><p>I took a slightly different approach and extended ViewModelBase&lt;T&gt; to create ViewModelBase&lt;T, Uow&gt;; with a UnitOfWork property and associated&nbsp; BeginRefreshUow method.</p>
+<p>The view model can decide when to call BeginRefresh or BeginRefreshUow dependent on how much data you want to pull from the server.&nbsp; In OnUnitOfWorkChanged I set the properties of the view model from the values returned by the UOW ensuring the NVL&#39;s are set first as UI combo boxes work best when the drop down list is bound before the model is bound.</p>
+<p>&nbsp;</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; protected override void OnUnitOfWorkChanged(Uow oldValue, Uow newValue)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; this.SomeNVL = newValue.SomeNVL;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; this.Model = newValue.SomeEditableObject;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</p>
+<p>&nbsp;</p>
+<p>Peran</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>gjbrown replied on Tuesday, December 14, 2010</h2><p>Thanks to Rocky and Peran for repying to my post.&nbsp; Very useful info in Both posts.</p>
+<p>The final solution for those interested is </p>
+<p>(1) -&nbsp; UnitOfWork Class Remains unchanged</p>
+<p>(2) - Added the following to <span style="color:#2b91af;font-size:x-small;"><span style="color:#2b91af;font-size:x-small;">LoanVerifyViewModel Class</span></span></p>
+<p>&nbsp;<span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">public</span></span><span style="font-size:x-small;"> </span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">static</span></span><span style="font-size:x-small;"> </span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">readonly</span></span><span style="font-size:x-small;"> </span><span style="color:#2b91af;font-size:x-small;"><span style="color:#2b91af;font-size:x-small;">DependencyProperty</span></span></p>
+<p><span style="font-size:x-small;">LoanViewModelProperty = </span><span style="color:#2b91af;font-size:x-small;"><span style="color:#2b91af;font-size:x-small;">DependencyProperty</span></span><span style="font-size:x-small;">.Register(</span><span style="color:#a31515;font-size:x-small;"><span style="color:#a31515;font-size:x-small;">&quot;LoanViewModel&quot;</span></span><span style="font-size:x-small;">, </span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">typeof</span></span><span style="font-size:x-small;">(</span><span style="color:#2b91af;font-size:x-small;"><span style="color:#2b91af;font-size:x-small;">LoanViewModel</span></span><span style="font-size:x-small;">), </span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">typeof</span></span><span style="font-size:x-small;">(</span><span style="color:#2b91af;font-size:x-small;"><span style="color:#2b91af;font-size:x-small;">LoanVerifyViewModel</span></span><span style="font-size:x-small;">), </span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">null</span></span><span style="font-size:x-small;">);<font size="2">
+<p>&nbsp;</p>
+</font></span></p>
+<p>&nbsp;</p>
+<p><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">public</span></span><span style="font-size:x-small;"> </span><span style="color:#2b91af;font-size:x-small;"><span style="color:#2b91af;font-size:x-small;">LoanViewModel</span></span></p>
+<p><span style="font-size:x-small;">LoanViewModel{</span></p>
+<p><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">get</span></span><span style="font-size:x-small;"> { </span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">return</span></span><span style="font-size:x-small;"> (</span><span style="color:#2b91af;font-size:x-small;"><span style="color:#2b91af;font-size:x-small;">LoanViewModel</span></span><span style="font-size:x-small;">)GetValue(LoanViewModelProperty); }<font size="2">
+<p>&nbsp;</p>
+</font></span></p>
+<p>&nbsp;</p>
+<p><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">set</span></span><span style="font-size:x-small;"> { SetValue(LoanViewModelProperty, </span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">value</span></span></p>
+<p><span style="font-size:x-small;">); }</span></p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p><span style="color:#2b91af;font-size:x-small;"><span style="color:#2b91af;font-size:x-small;"><span style="font-size:x-small;"><font size="2">
+<p>&nbsp;</p>
+</font></span>
+<p><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">protected</span></span><span style="font-size:x-small;"> </span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">override</span></span><span style="font-size:x-small;"> </span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">void</span></span><span style="font-size:x-small;"> OnModelChanged(</span><span style="color:#2b91af;font-size:x-small;"><span style="color:#2b91af;font-size:x-small;">VerifyUoW</span></span><span style="font-size:x-small;"> oldValue, </span><span style="color:#2b91af;font-size:x-small;"><span style="color:#2b91af;font-size:x-small;">VerifyUoW</span></span><span style="font-size:x-small;"> newValue)
+<p>{</p>
+<p>&nbsp;</p>
+<p>
+<p><span style="font-size:x-small;"><font size="2">
+<p>&nbsp;</p>
+</font></span>
+<p>&nbsp;</p>
+<span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">base</span></span>
+<p><span style="font-size:x-small;">.OnModelChanged(oldValue, newValue);<font size="2">
+<p>LoanViewModel = </p>
+</font></span></p>
+<p>&nbsp;</p>
+<span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">new</span></span><span style="font-size:x-small;"> </span><span style="color:#2b91af;font-size:x-small;"><span style="color:#2b91af;font-size:x-small;">LoanViewModel</span></span>
+<p><span style="font-size:x-small;">(newValue.Loan);</span></p>
+</p>
+</p>
+<p>(3) Added New ViewModel</p>
+<p><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">public</span></span><span style="font-size:x-small;"> </span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">class</span></span><span style="font-size:x-small;"> </span><span style="color:#2b91af;font-size:x-small;"><span style="color:#2b91af;font-size:x-small;">LoanViewModel</span></span><span style="font-size:x-small;"> : </span><span style="color:#2b91af;font-size:x-small;"><span style="color:#2b91af;font-size:x-small;">DisburseViewModel</span></span><span style="font-size:x-small;">&lt;</span><span style="color:#2b91af;font-size:x-small;"><span style="color:#2b91af;font-size:x-small;">Loan</span></span><span style="font-size:x-small;">&gt;{
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<font size="2">
+<p>&nbsp;</p>
+</font></span></p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">&nbsp;public</span></span><span style="font-size:x-small;"> LoanViewModel(</span><span style="color:#2b91af;font-size:x-small;"><span style="color:#2b91af;font-size:x-small;">Loan</span></span><span style="font-size:x-small;"> Loan)
+<p>{</p>
+<p>Model = Loan;</p>
+<p>}}</p>
+<font size="2">
+<p>&nbsp;</p>
+</font></span>
+<p>&nbsp;</p>
+&nbsp;(4) Updated XAML </p>
+<p>- Changed to point to New LoanViewModelProperty</p>
+<p>- Change DataContext for Save and Cancel&nbsp;triggers to Point to New ViewModel </p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<font size="2" color="#2b91af"><font size="2" color="#2b91af"><font size="2">
+<p>&nbsp;</p>
+</font></font></font></span></p>
+<font size="2" color="#2b91af"><font size="2" color="#2b91af">
+<p>&nbsp;</p>
+</font></font></span><font size="2" color="#2b91af">
+<p>&nbsp;</p>
+</font></span></p>
+<p>&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

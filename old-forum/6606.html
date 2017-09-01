@@ -1,0 +1,10 @@
+<html><header><title>Supplying Alternate Network Credentials</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Supplying Alternate Network Credentials</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6606.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>sholder posted on Friday, March 13, 2009</h2><P><FONT face=Arial>I'm looking to provide an alternate set of network credentials for a WPF application communicating to a WCF service, mimicking the following WCF functionality with the Dataportal.</FONT></P>
+<P><FONT face="Courier New">ChannnelFactory&lt;T&gt; fact = new ChannelFactory&lt;T&gt;(endpoint);<BR></FONT><FONT face="Courier New">fact.Credentials.Windows.ClientCredential = <BR></FONT><FONT face="Courier New">new NetworkCredential("user","password","DOMAIN");<BR>fact.Open();<BR>...</FONT></P>
+<P>Is there a standard mechanism in CSLA for providing alternate credentials or would this require that I modify the framework?</P>
+<P>Thanks,</P>
+<P>Shane Holder</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, March 13, 2009</h2>In CSLA 3.6 you can subclass WcfProxy and overload a couple methods to create your own channel factory, proxy, etc.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sholder replied on Friday, March 13, 2009</h2>Why is it that the obvious answers are sometimes the most elusive?
+
+Thanks Rocky.
+
+
+Shane Holder</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

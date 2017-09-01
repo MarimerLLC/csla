@@ -1,0 +1,37 @@
+<html><header><title>How to implement warning messages in CSLA</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>How to implement warning messages in CSLA</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10525.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>San posted on Wednesday, July 13, 2011</h2><p>Hi, All</p>
+<p>We are using CSLA 3.5 and we would like to implement some warning messages on our web app, i have no clue how we will do this in CSLA, could any one guide me through this please or share some code examples.</p>
+<p>Thanks!</p>
+<p>San</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Friday, July 15, 2011</h2><p>Warning messages are essentially broken rules with Severity = Warning.</p>
+<p>They are part of the BrokenRules collection as normal Error rules. </p>
+<p>How you visualize this to the user is up to you.There may be helper classes in Csla.Web but I&#39;m not sure about this. Check the Csla.Web namespace.</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>San replied on Friday, July 15, 2011</h2><p>Hi, Jonny</p>
+<p>I appreciate your response! &nbsp;but i am running in to the problems, &nbsp;Here is the example i would like to implement an warning message.</p>
+<p>
+<p>&nbsp;private static bool NameValidation&lt;T&gt;(T target, RuleArgs e) where T : Project</p>
+<p>&nbsp;{</p>
+<p>&nbsp; &nbsp; &nbsp;&nbsp;&nbsp; &nbsp; &nbsp;if (target.name== null)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;{</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;e.Description = &quot;Are you sure you want to continue with out a Name&quot;;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; return false;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp;}</p>
+<p>return true;</p>
+<p>&nbsp; &nbsp; }</p>
+<p>The above code is in my validation class, So when they tab out from the texbox i would like to throw an warning message as &quot;Are you sure you want to continute with out a Name&quot; not as pop-up though, probaly I use a label control to populate the warning message.&nbsp;</p>
+</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Friday, July 15, 2011</h2><p>you should also set e.Severity to Warning before returning false.</p>
+<p>By default the Severity is Error. </p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>San replied on Friday, July 15, 2011</h2><p>Yes, it is working but &nbsp;i can still see the warning messages after saving the record in to the database.</p>
+<p>-San</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Friday, July 15, 2011</h2><p>Well, you may have hit one of the challenges with a rule engine. </p>
+<p>Assuming that NameProperty is a managed field you should be able to ask the FieldManager if the NameProperty is dirty or not (ie: has the user changed the NameProperty) and&nbsp; only do the validation if the field is Dirty. </p>
+<p>Which also means that you should verify that the Save method calls </p>
+<ul>
+<li>MarkOld and</li>
+<li>CheckRules</li>
+</ul>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Saturday, July 16, 2011</h2><p>Caling MarkOld or CheckRules is NOT necessary in the usual use cases, Csla will do that for you after a successful save or when you change the value in Name, respectiely.</p>
+<p>If the rule should only be active for new records, or modified records, the rule should check IsNew or IsDirty before running.&nbsp; For example the OPs rule would be this if the rule only applied when new or dirty:</p>
+<p>if ( (target.IsNew || target.IsDirty) &amp;&amp; target.name== null ){</p>
+<p>&nbsp; e.Description = &quot;Name required&quot;;</p>
+<p>&nbsp; e.Severity = RuleSeverity.Warning;</p>
+<p>&nbsp; return false;</p>
+<p>}</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,140 @@
+<html><header><title>Serialization Error on BusinessListBase</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Serialization Error on BusinessListBase</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/7289.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>pondosinat posted on Thursday, July 16, 2009</h2><P>I'm trying to add a property to a BLB-derived class that is of type BO. When doing so, I get a serialization error on load. Here is the code:</P><FONT size=2>
+<BLOCKQUOTE dir=ltr>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Private</FONT></FONT><FONT size=2> _Note </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>As</FONT></FONT><FONT size=2> Note.Note = </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>New</FONT></FONT><FONT size=2> Note.Note</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Public</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>ReadOnly</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Property</FONT></FONT><FONT size=2> Note() </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>As</FONT></FONT><FONT size=2> Note.Note</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Get</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Return</FONT></FONT><FONT size=2> _Note</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>End</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Get</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>End</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Property</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Protected</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Overrides</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Sub</FONT></FONT><FONT size=2> OnGetState(</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>ByVal</FONT></FONT><FONT size=2> info </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>As</FONT></FONT><FONT size=2> Csla.Serialization.Mobile.SerializationInfo)</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>MyBase</FONT></FONT><FONT size=2>.OnGetState(info)</P>
+<P>info.AddValue(</FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>"_Note"</FONT></FONT><FONT size=2>, _Note)</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>End</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Sub</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Protected</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Overrides</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Sub</FONT></FONT><FONT size=2> OnSetState(</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>ByVal</FONT></FONT><FONT size=2> info </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>As</FONT></FONT><FONT size=2> Csla.Serialization.Mobile.SerializationInfo)</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>MyBase</FONT></FONT><FONT size=2>.OnSetState(info)</P>
+<P>_Note = </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>CType</FONT></FONT><FONT size=2>(info.Values(</FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>"_Note"</FONT></FONT><FONT size=2>).Value, Note.Note)</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>End</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Sub</FONT></FONT></P></BLOCKQUOTE>
+<P><FONT color=#0000ff size=2><FONT color=#0000ff size=2></FONT></FONT>&nbsp;</P>
+<P><FONT color=#0000ff><FONT color=#0000ff><FONT color=#000000>And the error when loading:</FONT></FONT></FONT></P>
+<P><FONT color=#0000ff><FONT color=#0000ff><FONT color=#000000>Type 'Business.BusinessClasses.Note.Note' with data contract name 'Note:http://schemas.datacontract.org/2004/07/Business.BusinessClasses.Note' is not expected. Add any types not known statically to the list of known types - for example, by using the KnownTypeAttribute attribute or by adding them to the list of known types passed to DataContractSerializer.</FONT></FONT></FONT></P>
+<P>Is there something&nbsp;wrong with this approach? I haven't tried adding a child property like this to a BLB before. Am I missing something?&nbsp;Thanks</P>
+<P><FONT color=#0000ff size=2><FONT color=#0000ff size=2><FONT color=#000000></FONT>&nbsp;</P></FONT></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, July 17, 2009</h2><P>The MobileFormatter (which uses the DataContractSerializer behind the scenes) only works with types that implement IMobileObject. If your Note type doesn't implement that interface (which is best done by inheriting from one of the CSLA base classes, or at least MobileObject) then it can't be serialized.</P>
+<P>An alternative, if you absolutely can't make Note implement the right interface, is for you to manually convert the state of Note into a byte stream (string, byte[], XML string, etc) and put that into the SerializationInfo object.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>pondosinat replied on Friday, July 17, 2009</h2><P>Based on what you said, it sounds like this should be working. The Note object is a standard CSLA BO. I even tried creating a simple class that implements IMobileObject and uses private backing fields (a la this thread <A HREF="/forums/thread/31394.aspx">http://forums.lhotka.net/forums/thread/31394.aspx</A>) but no luck.</P>
+<P>I'm wondering&nbsp;if my problem is that I'm putting my property on a BLB object? Is this supported?&nbsp;</P>
+<P>I've changed my approach in the meantime from using a Note object to using a bunch of primitive type properties. Ideally I would like to get it working with the Note object...</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, July 17, 2009</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Ahh, it occurs to me that you need to add the Note object as a <i>child</i>,
+not as a field.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>You are overriding OnSetState(), etc. There&#8217;s a separate pair
+of methods to get/set child object references in the serialization stream,
+because more work is done for a child object reference than for a field.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I don&#8217;t remember if BLB allows you to override the get/set
+child methods though, because it obviously uses them to get/set the contents of
+the collection itself. But you should check and see if they are available for
+override (just make sure to call the base implementations or you&#8217;ll lose
+the contents of the collection!).<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> pondosinat
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Friday, July 17, 2009 10:20 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] Serialization Error on BusinessListBase<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Based on what you said, it sounds like this should be working. The Note
+object is a standard CSLA BO. I even tried creating a simple class that
+implements IMobileObject and uses private backing fields (a la this thread <a href="/forums/thread/31394.aspx">http://forums.lhotka.net/forums/thread/31394.aspx</a>)
+but no luck.<o:p></o:p></p>
+
+<p>I'm wondering&nbsp;if my problem is that I'm putting my property on a BLB
+object? Is this supported?&nbsp;<o:p></o:p></p>
+
+<p>I've changed my approach in the meantime from using a Note object to using a
+bunch of primitive type properties. Ideally I would like to get it working with
+the Note object...<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>pondosinat replied on Friday, July 17, 2009</h2><P>This is what I've done:</P><FONT size=2>
+<BLOCKQUOTE dir=ltr>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Private</FONT></FONT><FONT size=2> _Note </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>As</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>New</FONT></FONT><FONT size=2> Note.EventNote</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Public</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>ReadOnly</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Property</FONT></FONT><FONT size=2> Note() </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>As</FONT></FONT><FONT size=2> Note.EventNote</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Get</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>If</FONT></FONT><FONT size=2> _Note </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Is</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Nothing</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Then</P></FONT></FONT><FONT size=2>
+<P>_Note = </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>New</FONT></FONT><FONT size=2> Note.EventNote</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>End</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>If</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Return</FONT></FONT><FONT size=2> _Note</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>End</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Get</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>End</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Property</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Protected</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Overrides</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Sub</FONT></FONT><FONT size=2> OnGetChildren(</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>ByVal</FONT></FONT><FONT size=2> info </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>As</FONT></FONT><FONT size=2> Csla.Serialization.Mobile.SerializationInfo, </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>ByVal</FONT></FONT><FONT size=2> formatter </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>As</FONT></FONT><FONT size=2> Csla.Serialization.Mobile.MobileFormatter)</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>MyBase</FONT></FONT><FONT size=2>.OnGetChildren(info, formatter)</P>
+<P>info.AddValue(</FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>"_Note"</FONT></FONT><FONT size=2>, _Note)</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>End</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Sub</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Protected</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Overrides</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Sub</FONT></FONT><FONT size=2> OnSetChildren(</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>ByVal</FONT></FONT><FONT size=2> info </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>As</FONT></FONT><FONT size=2> Csla.Serialization.Mobile.SerializationInfo, </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>ByVal</FONT></FONT><FONT size=2> formatter </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>As</FONT></FONT><FONT size=2> Csla.Serialization.Mobile.MobileFormatter)</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>MyBase</FONT></FONT><FONT size=2>.OnSetChildren(info, formatter)</P>
+<P>_Note = </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>CType</FONT></FONT><FONT size=2>(info.Values(</FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>"_Note"</FONT></FONT><FONT size=2>).Value, Note.EventNote)</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>End</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Sub</FONT></FONT></P>
+<P><FONT color=#0000ff size=2><FONT color=#0000ff size=2></FONT></FONT>&nbsp;</P></BLOCKQUOTE>
+<P dir=ltr><FONT color=#0000ff size=2><FONT color=#0000ff size=2><FONT color=#000000 size=3>But I'm running into the same error. I've tried making note inherit a BusinessBase object and mark it as child, but that made no difference. Does this code look ok?</FONT></FONT></FONT></P>
+<P dir=ltr><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Thanks</P></FONT></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>pondosinat replied on Friday, July 17, 2009</h2><P>I've found the answer to my own question: calling the "AddChild" method rather than "AddValue". For future reference, below is the code that is now working (commented out code is the faild attempt):</P><FONT size=2>
+<BLOCKQUOTE dir=ltr>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Private</FONT></FONT><FONT size=2> _Note </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>As</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>New</FONT></FONT><FONT size=2> Note.EventNote</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Public</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>ReadOnly</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Property</FONT></FONT><FONT size=2> Note() </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>As</FONT></FONT><FONT size=2> Note.EventNote</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Get</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>If</FONT></FONT><FONT size=2> _Note </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Is</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Nothing</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Then</P></FONT></FONT><FONT size=2>
+<P>_Note = </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>New</FONT></FONT><FONT size=2> Note.EventNote</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>End</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>If</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Return</FONT></FONT><FONT size=2> _Note</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>End</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Get</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>End</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Property</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Protected</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Overrides</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Sub</FONT></FONT><FONT size=2> OnGetChildren(</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>ByVal</FONT></FONT><FONT size=2> info </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>As</FONT></FONT><FONT size=2> Csla.Serialization.Mobile.SerializationInfo, </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>ByVal</FONT></FONT><FONT size=2> formatter </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>As</FONT></FONT><FONT size=2> Csla.Serialization.Mobile.MobileFormatter)</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>MyBase</FONT></FONT><FONT size=2>.OnGetChildren(info, formatter)</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Dim</FONT></FONT><FONT size=2> fieldManagerInfo = formatter.SerializeObject(_Note)</P>
+<P>info.AddChild(</FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>"_Note"</FONT></FONT><FONT size=2>, fieldManagerInfo.ReferenceId)</P>
+<P></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2>'info.AddValue("_Note", _Note)</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>End</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Sub</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Protected</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Overrides</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Sub</FONT></FONT><FONT size=2> OnSetChildren(</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>ByVal</FONT></FONT><FONT size=2> info </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>As</FONT></FONT><FONT size=2> Csla.Serialization.Mobile.SerializationInfo, </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>ByVal</FONT></FONT><FONT size=2> formatter </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>As</FONT></FONT><FONT size=2> Csla.Serialization.Mobile.MobileFormatter)</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>MyBase</FONT></FONT><FONT size=2>.OnSetChildren(info, formatter)</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Dim</FONT></FONT><FONT size=2> childData = info.Children(</FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>"_Note"</FONT></FONT><FONT size=2>)</P>
+<P>_Note = </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>CType</FONT></FONT><FONT size=2>(formatter.GetObject(childData.ReferenceId), Note.EventNote)</P>
+<P></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2>'_Note = CType(info.Values("_Note").Value, Note.EventNote)</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>End</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Sub</P></BLOCKQUOTE></FONT></FONT></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

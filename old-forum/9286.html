@@ -1,0 +1,28 @@
+<html><header><title>CSLA4: A suggestion for Csla.Rules.CommonRules.Lambda class</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA4: A suggestion for Csla.Rules.CommonRules.Lambda class</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9286.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Cuong posted on Wednesday, July 28, 2010</h2><p>Hi Rocky,</p>
+<p><br />I just found an issue with the Lambda class. Please have a look on the code below:</p>
+<p>protected override void AddBusinessRules()<br />{</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var rule1 = new Lambda(MyPropertyInfo, context =&gt; context.AddErrorResult(&quot;Error&quot;));</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; BusinessRules.AddRule(rule1);</p>
+<p><br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; var rule2 = new Lambda(MyPropertyInfo, context =&gt; {});</p>
+<p> &nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp; BusinessRules.AddRule(rule2);</p>
+<p>
+}</p>
+<p>By the code we can see BusinessRules.IsValid is always False when MyProperty changes. But in fact BusinessRules.IsValid is True. The reason is both rule1 and rule2 have the same RuleName. So when BusinessRules.CheckRules is called, the rule2&#39;s result (Success) overrides the rule1&#39;s result (Failed)</p>
+<p>&nbsp;</p>
+<p>For resolving this issue, I suggest that you change the original code:</p>
+<p>public Lambda(Action&lt;RuleContext&gt; rule)<br />{<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Rule = rule;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; base.RuleUri.AddQueryParameter(&quot;r&quot;, Rule.GetHashCode().ToString());<br />}</p>
+<p>to</p>
+<p>public Lambda(Action&lt;RuleContext&gt; rule)<br />
+{<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Rule = rule;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; base.RuleUri.AddQueryParameter(&quot;r&quot;, Rule.<b>Method</b>.GetHashCode().ToString());<br />
+}</p>
+<p>or safer</p>
+<p>public Lambda(Action&lt;RuleContext&gt; rule)<br />
+{<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Rule = rule;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; base.RuleUri.AddQueryParameter(&quot;r&quot;, <b></b></p>
+<p><b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Convert.ToBase64String(Encoding.Unicode.GetBytes(Rule.Method.ToString()))</b>);<br />
+}</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, July 28, 2010</h2><p>Thanks, that&#39;s clearly a bug, I&#39;ll add it to the list.</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Tuesday, August 03, 2010</h2><p>The fix will be in 4.0.1.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

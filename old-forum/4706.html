@@ -1,0 +1,111 @@
+<html><header><title>WCF Service Powered By CSLA Objects</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>WCF Service Powered By CSLA Objects</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4706.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>wentwj posted on Thursday, April 17, 2008</h2>We're building a WCF Service that uses CSLA objects behind the scenes to power everything.<br><br>I'm fairly new to both WCF and CSLA so I hope I understand the interaction between the two correctly.&nbsp; Currently what I'm doing is converting the CSLA object into a seperatly defiend Data Contract (similarly to how the example Project Tracker app does).&nbsp; The WCF service then sends that Data Contract back from the client.<br><br>To update an object then, the client sends back a Data Contract, which we then run against the CSLA object and make any appropriate changes, run validation, ect.<br><br>The issue is that for performance reasons we are using a per-call instanced WCF service, and we then run into issues creating new object.&nbsp; We want the client to be able to call a "New" operation which generates all default values, including primary keys, and returns the Data Contract for this object.&nbsp; However, when they go to "insert" it then, since the service is per-call we don't have the object in memory to use.<br><br>So our general problem is:<br>Client calls Service<br>Service creates CSLA object A {PK=1, A=null, B=null, ect. }<br>Service returns Data Contract A {PK=1, A=null, B=null, ect }<br>Client modifies Data Contract<br>Client passes Data Contract A back {PK=1, A=foo, B=bar, ect}<br><br>Now we need to get this Data Contract back into a CSLA object.<br><br>Since our CSLA objects don't allow editing of the primary key fields (as well as a few other generated fields), we need to store this object somewhere between the call, or else develop a mechanism in our business objects to accept primary keys to be loaded.&nbsp; We need to be able to solve this when the service could be running off multiple machines.&nbsp; If at all possible we'd like to avoid allowing the primary keys to be set directly on our business objects, so some other solution would be preferable.<br><br>Anyone else run into this issue, and if so how'd you resolve it?&nbsp; Any ideas would be greatly appreciated.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Thursday, April 17, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Sounds like you do need to allow the setting of primary
+key.&nbsp; You can however still have read-only property for primary key and
+have a public method that loads the data.&nbsp; I am thinking of something like
+<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Public Function GetBO (dataToLoad as ISomeConstract) as BO<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;_PK = ISomeContract.PK<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>End Function <o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Senior Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> wentwj
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Thursday, April 17, 2008 12:09 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> [CSLA .NET] WCF Service Powered By CSLA Objects<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>We're building a WCF Service that uses CSLA objects behind
+the scenes to power everything.<br>
+<br>
+I'm fairly new to both WCF and CSLA so I hope I understand the interaction
+between the two correctly.&nbsp; Currently what I'm doing is converting the
+CSLA object into a seperatly defiend Data Contract (similarly to how the
+example Project Tracker app does).&nbsp; The WCF service then sends that Data
+Contract back from the client.<br>
+<br>
+To update an object then, the client sends back a Data Contract, which we then
+run against the CSLA object and make any appropriate changes, run validation,
+ect.<br>
+<br>
+The issue is that for performance reasons we are using a per-call instanced WCF
+service, and we then run into issues creating new object.&nbsp; We want the
+client to be able to call a &quot;New&quot; operation which generates all
+default values, including primary keys, and returns the Data Contract for this
+object.&nbsp; However, when they go to &quot;insert&quot; it then, since the
+service is per-call we don't have the object in memory to use.<br>
+<br>
+So our general problem is:<br>
+Client calls Service<br>
+Service creates CSLA object A {PK=1, A=null, B=null, ect. }<br>
+Service returns Data Contract A {PK=1, A=null, B=null, ect }<br>
+Client modifies Data Contract<br>
+Client passes Data Contract A back {PK=1, A=foo, B=bar, ect}<br>
+<br>
+Now we need to get this Data Contract back into a CSLA object.<br>
+<br>
+Since our CSLA objects don't allow editing of the primary key fields (as well
+as a few other generated fields), we need to store this object somewhere
+between the call, or else develop a mechanism in our business objects to accept
+primary keys to be loaded.&nbsp; We need to be able to solve this when the service
+could be running off multiple machines.&nbsp; If at all possible we'd like to
+avoid allowing the primary keys to be set directly on our business objects, so
+some other solution would be preferable.<br>
+<br>
+Anyone else run into this issue, and if so how'd you resolve it?&nbsp; Any
+ideas would be greatly appreciated.<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,79 @@
+<html><header><title>CSLA 4.x ProjectTracker please</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA 4.x ProjectTracker please</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10196.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>JCardina posted on Wednesday, March 23, 2011</h2><p>I&#39;ve paid for the ebooks, I have all the samples, nothing is equal to a good working full featured sample project that illustrates *all* the business object stereotypes. </p>
+<p>I&#39;m still floundering with aspects of CSLA 4.x that would be instantly understandable with a simple good working sample like project tracker.</p>
+<p>Please port the project tracker sample to 4.x csla.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, March 23, 2011</h2><p>You&#39;ve made this request in at least a couple previous threads. I have said that I plan to do this as part of the final three ebooks in the series. Is it really necessary to repeat this discussion yet again?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JCardina replied on Wednesday, March 23, 2011</h2><p>Whoa!&nbsp; Hold up a second there Rocky, I don&#39;t mean to annoy anyone and I apologize if I was but I think you&#39;re thinking of someone else.&nbsp; </p>
+<p>I posted a question a while ago about having trouble getting project tracker working.</p>
+<p>JonnyBee related to my and other people&#39;s surprise that of course it was not working and should not be used as that was supposedly common knowledge.</p>
+<p>You posted a lengthy message about how you really didn&#39;t want to support it and that it was difficult to do and would result in at least 4 different sets of code and you&#39;d prefer smaller targetted samples in future but then at the bottom of that message you stated that you might look at it again in March as part of another ebook you&#39;d be working on.</p>
+<p>At no point have I understood it to be a given that there would *ever* be a Project Tracker sample or even any fully working sample with every object stereotype in it.</p>
+<p>Hence my request and why I didn&#39;t think I was repeating anything at all.</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Wednesday, March 23, 2011</h2><p>Sorry - it must not have been you. The topic has come up numerous times over the past couple months.</p>
+<p>It is true - after 15 or so years of maintaining that same app, I find it very uninspiring.</p>
+<p>At the same time, it is a decent app, that demonstrates many of the stereotypes (though not all). The sample app for the <em>Data Access</em> ebook demonstrates them all - but without a UI - only unit tests.</p>
+<p>I&#39;ve said more than once though, that boring or not, I intend on using ProjectTracker for the WPF/Silverlight, ASP.NET MVC, and WP7 ebooks. That requires that I rewrite the app with those types of interface - and while I&#39;m at it, I&#39;m rewriting the data access model to match the encapsulated invoke model used in the <em>Data Access</em> ebook. Probably the DTO variant, though I&#39;m still considering using the data reader variant because it is more efficient.</p>
+<p>I will be dropping the Windows Forms, Web Forms, and XML service interfaces though - at least for now. They aren&#39;t part of the ebook series, so they aren&#39;t a focus in the short term.</p>
+<p>If/when I write individual ebooks for those UI technologies (and I&#39;ll almost certainly do a service-based ebook at some point), I&#39;ll add those interface types back into the solution.</p>
+<p>(I must be honest and say that I probably won&#39;t write a Windows Forms ebook - since that technology hasn&#39;t changed in any meaningful way for 6+ years, it is hard to imagine there&#39;s a lot of value in such an ebook? The same is true for Web Forms - unless the next version of .NET actually enhances Web Forms in some way, it too hasn&#39;t changed for 6+ years...)</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tiago replied on Thursday, March 24, 2011</h2><p><div style='padding-left: 50px;background-color:silver'><b>RockfordLhotka<br></b></p>
+<p>I&#39;ve said more than once though, that boring or not, I intend on using ProjectTracker for the WPF/Silverlight, ASP.NET MVC, and WP7 ebooks. That requires that I rewrite the app with those types of interface - and while I&#39;m at it, I&#39;m rewriting the data access model to match the encapsulated invoke model used in the <em>Data Access</em> ebook. Probably the DTO variant, though I&#39;m still considering using the data reader variant because it is more efficient.</div></p>
+<p>People tend to reproduce the sample applications. Beginners in special, start by reproducing them. You chose to port PTracker to encapsulated invoke as this model is the one you recommend <em>(Using Csla 4: 01-Overview, p. 104)</em>. I guess that&#39;s the model that will be most followed even by people that didn&#39;t read the ebook. If&nbsp; the PTracker sample uses DTO, most people will use DTO. As you say the data reader variant is more efficient and provides optimal performance <em>(Using Csla 4: 01-Overview, p. 75)</em>. As a conclusion, I&#39;d say it&#39;s best to use a data reader variant.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>bcn replied on Thursday, March 24, 2011</h2><p>Tiago.</p>
+<p>Perhaps I&#39;m wrong, but according Lhotka&nbsp;views it is true&nbsp;that&nbsp;&nbsp;the data reader approach has better performance. But as for me, this way is only valid for small applications, with not to many fields to be readed/saved. I think it&#39;s a more useful sample (in a future Project Tracker sample) the  Encapsulated Invocation Model with DTO (according the data ebook).</p>
+<p>If I&#39;m wrong, I apologize for my poor understanding.</p>
+<p>Ra&uacute;l</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, March 24, 2011</h2><p>I want to be very clear here.</p>
+<p>The code samples that come with the <em>Using CSLA 4: Data Access</em> ebook show how to implement every stereotype with three data access models:</p>
+<ol>
+<li>Encapsulated invoke (data reader)</li>
+<li>Encapsulated invoke (DTO)</li>
+<li>Factory implementation</li>
+</ol>
+<p>I chose not to create sample code for:</p>
+<ol>
+<li>Factory invoke (data reader)</li>
+<li>Factory invoke (DTO)</li>
+<li>Encapsulated implementation</li>
+</ol>
+<p>Partially because these are (imo) not the best approaches. And partially because if you know the first three, you should be able to figure out how to do the other three - they are just variations on the same themes.</p>
+<p>So when we talk about ProjectTracker, I need to pick one of the three preferred models. I thought about selecting the model by rolling a d6/2 (yes, I&#39;m a gamer geek), but I personally prefer the encapsulated invoke model as a general rule.</p>
+<p>So that means it is either data reader or DTO. That&#39;s a toss-up. I&#39;ll be implementing mock and EF DAL implementations (and <em>maybe</em> a raw ADO.NET implementation, but probably not initially). At this point I really could flip a coin - they are both extremely similar in implementation, but they aren&#39;t interchangeable.</p>
+<p>The data reader approach is more efficient, but doesn&#39;t lend itself well to a DAL that calls services instead of a database. But I don&#39;t plan to show a DAL that calls services - at least not in ProjectTracker.</p>
+<p>The DTO approach is more elegant and flexible, but is less efficient.</p>
+<p>If people want to copy some code for their app - they should read the <em>Data Access</em> book, make an intelligent decision based on the information in that book, and then copy one of the three sample apps from the book. That&#39;s the smart thing to do.</p>
+<p>On the other hand, if people want to copy the somewhat arbitrary choice I make for ProjectTracker, without educating themselves on the other options - I guess that&#39;s their &quot;choice&quot; :)</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>gajit replied on Thursday, February 16, 2012</h2><p>Rocky, is there any news on a sample project for the Encapsulated Invoke Data reader model?</p>
+<p>That model makes most sense to me. As I&#39;m only getting my feet wet in CSLA 4, the process of re-engineering the PTracker project from DTO to Datareader will, I&#39;m sure prove frustrating.</p>
+<p>I don&#39;t *See* evidence of it in the samples....</p>
+<p>Thanks,</p>
+<p>Graham</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, February 16, 2012</h2><p>This is one of the samples that comes with the Data Access book.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>gajit replied on Thursday, February 16, 2012</h2><p>I have the book - and have downloaded the samples. The only ProjectTracker solution I see is:</p>
+<p>\CSLA\05-WpfSl-111028\05-WpfSl-111028\NET\cs\ProjectTracker\ProjectTracker.sln</p>
+<p>Which if I am correct is the DTO model and not the DataReader model. Should I be looking elsewhere?</p>
+<p>Thanks,</p>
+<p>Graham</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, February 16, 2012</h2><p>There are a set of samples for the data access book that demonstrate the different data access techniques I recommend.</p>
+<p>It is unrealistic for me to maintain something like projecttracker with several different DAL models, so I created more targeted samples for the data access book.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>gajit replied on Thursday, February 16, 2012</h2><p>Yeah, the ActionExtenderSample doesn&#39;t really help.</p>
+<p>My re-igniting this thread was mainly due to your comment Rocky, that you were probably going to produce a ProjectTracker sample using the Encapsulated Invoke with datareader model. </p>
+<p>Previous posters made valida points about using the sample application to form the basis for ones own development - which I did successfully in CSLA2.</p>
+<p>As Enscapsulated invoke is one of your suggested models, and DTO is an overhead that - if I understand correctly should only really be necessary if we aren&#39;t directly using ADO/Net, then I *thought* that the ProjectTracker sample would have been written using that model.</p>
+<p>Another nice thing about using the ProjectTracker example as a base, is that it incorporates authentication, which obviously the samples in the DAta access code don&#39;t.</p>
+<p>My dilemma/issue is caused by a number of factors;</p>
+<p>I have to try and piece the samples together&nbsp;from various projects like ProjectTracker, EncapsulatedInvole, etc and TRY to come up with a basis that incorporates the required model AND using authentication. As I code in VB.Net, this is exponentially made harder as I have to somehow, deconstruct/construct or translate the C# code before creating the new classes. Subsequent errors, reference issues are then a headache, because I&#39;m second-gessing whether the code is translated correctly or whether I have issues with references to libraries, etc.</p>
+<p>If no ProjectTracker for this model is provided, would it be a chore to put together a structure of the Libraries/classes that should comprise such a project?</p>
+<p>E.g. </p>
+<p>ProjectTracker.Dal</p>
+<p style="padding-left:30px;">DalFactory.cs</p>
+<p style="padding-left:30px;">IDalManager.cs</p>
+<p style="padding-left:30px;">IResourceDal.cs</p>
+<p style="padding-left:30px;">...</p>
+<p>ProjectTracker.DalMock</p>
+<p style="padding-left:30px;">Dalmanager.cs</p>
+<p style="padding-left:30px;">ResourceDal.cs</p>
+<p>ProjectTracker.Library</p>
+<p style="padding-left:30px;">ResourceEdit.cs</p>
+<p>&nbsp;</p>
+<p>etc...</p>
+<p>The DTO objects in the sample project are&nbsp;definitely muddying the waters for me...</p>
+<p>Thanks,</p>
+<p>Graham</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, February 16, 2012</h2><p>There is a project that shows the structure and full implementation in the samples for the &#39;Using CSLA 4: Data Access&#39; book.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Thursday, February 16, 2012</h2><p>The ActionExtenderSample also uses DataReader for data access. </p>
+<p>ProjectTracker is also included in the CSLA Samples download here:<br /><a href="http://www.lhotka.net/cslanet/Download.aspx">http://www.lhotka.net/cslanet/Download.aspx</a></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>gajit replied on Thursday, February 16, 2012</h2><p>Sorry, but I really don&#39;t want be seem dense, but I have downloaded the 4.2.2 Samples and I see no version of ProjectTracker that uses the datareader model for EncapInv&nbsp; - which is what is inferred at the start of this thread.</p>
+<p>Jonny, where is the ActionExtenderSample exactly?</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Thursday, February 16, 2012</h2><p>Samples\NET\cs\ActionExtenderSample&nbsp; in the Samples download.</p>
+<p>ProjectTracker is updated recently and is in the latest Csla 4.3.2 Samples download.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

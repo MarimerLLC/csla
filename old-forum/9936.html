@@ -1,0 +1,22 @@
+<html><header><title>CSLA Silverlight and WCF Deployment</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA Silverlight and WCF Deployment</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9936.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>pgroenenstein posted on Wednesday, January 12, 2011</h2><p>Hi everybody I&#39;m struggling to deploy a SL app. Everythings works 100% in the development environment. But when I deploy it, my Wcf Service fails to Start. If I start the App in VS and THEN start the &quot;default&quot; page from within my browser it works like a charm. I have set my Wcf project as my startup project. </p>
+<p>&nbsp;</p>
+<p>I know I must &quot;make&quot; my Wcf into a windows service...but I&#39;m totally at lack for it on how to go about it.. </p>
+<p>&nbsp;</p>
+<p>What I need to know is how to set up my app in order for my service to start automatically when a user request the default page from my website. </p>
+<p>&nbsp;</p>
+<p>Thank you.</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Wednesday, January 12, 2011</h2><p>I do not think you &quot;must&quot; make Wcf into Windows service.&nbsp; You can if you want to, but I have never done so.&nbsp; I let Wcf live in IIS along with SL app.&nbsp; I think this is much easier for deploymnet, since you need web server to serve SL app anyway.&nbsp; If your windows service fails to start, it is likely throughing unhandles exception that should end up in Windows Event Log.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>pgroenenstein replied on Wednesday, January 12, 2011</h2><p>Thanks Sergey for your reply, after surfing the net I gathered that I should rather stick with vanilla IIS. But I&#39;m totally at a loss as to what setting need to be set in my app o make it deployable on IIS.</p>
+<p>Thanks</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>pgroenenstein replied on Wednesday, January 12, 2011</h2><p>No events get registered in Event viewer..not even the opening of the database(which does get logged in dev time).</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Wednesday, January 12, 2011</h2><p>Navigate to WcfPortal.svc (or whatever you called it) in IE in your deployment environment to verify that WCF is installed properly.&nbsp; Then check your ServiceReference.ClicnConfig to make sure it points to the same place.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>pgroenenstein replied on Thursday, January 13, 2011</h2><p>Thanks again for your reply Sergey.</p>
+<p>That is just it, My WCF services does not seem to be working. But I have no clue how to fix it.</p>
+<p> When last I played around with CSLA and WCF I eventually got it to work, but that over a year ago&nbsp; and I forgot the steps involved.</p>
+<p>Thanks</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>pgroenenstein replied on Wednesday, January 12, 2011</h2><p>Can anybody please help! I&#39;m going nuts here! I JUST want to deploy my perfectly working app in dev enviroment to IIS. What can possibly be so difficult. I usde the &quot;Rolodex&quot; project as template and worked from there to make my App work. My &quot;app&quot; is a SL 3 app using CSLA 3.8.4.</p>
+<p>&nbsp;</p>
+<p>Everything just works great in dev time, but I CANNOT get it to work in IIS.. It shows my &quot;first&quot; login screen but just returns an invalid login each and everytime. Should I start the aap in Dev time THEN my &quot;IIS&quot; app sees the service, uses it and execute normally.</p>
+<p>In IIS the SL app JUST DOES NOT START&nbsp; the Wcf Services. ALL the sample on the net for working with Wcf DIFFER such a great deal from the Rolodex Sample that it is a daunting task to try and figure out how to apply it to CSLA type programming.</p>
+<p>&nbsp;</p>
+<p>I HAVE NO CLUE where to start even, What setting have to be set in my apps Before I &quot;Publish&quot; and wahat not?</p>
+<p>&nbsp;</p>
+<p>Please help!</p>
+<p>&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

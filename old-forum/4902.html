@@ -1,0 +1,125 @@
+<html><header><title>New behavior in WPF 3.5?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>New behavior in WPF 3.5?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4902.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka posted on Wednesday, May 28, 2008</h2><P>I am observing what appears to be new/different behavior from WPF 3.0 to 3.5, and I'm wondering if anyone else has seen this.</P>
+<P>In WPF 3.0, like Windows Forms, a PropertyChanged event causes all controls for the related data source (business object) to refresh. So changing a property causes all other properties of that object bound to the UI to refresh in the display.</P>
+<P>In WPF 3.5 it appears that only the changed property's control is refreshed. Other controls on the form are not refreshed. This is a problem for validation error reporting, because it is also the case that the ValidatesOnErrors setting only causes revalidation when the display is refreshed.</P>
+<P>Has anyone else seen this, or is it a quirk I'm running into in my project?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Curelom replied on Wednesday, May 28, 2008</h2><P>I have come across this same issue.&nbsp; To work around it, I've added a PropertyChanged method to the form that walks through the visual tree, grabs the binding expressions, then calls UpdateSource on the appropriate expressions.&nbsp; This hasn't been working perfectly, as I have a tab control, and walking the visual tree doesn't go through the controls on the unselected tabs.&nbsp; I also have to account for the different binding expressions for the different type of controls such as textboxes and Comboboxes.</P><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>public</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>void</FONT></FONT><FONT size=2> ValidationControls(</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>Visual</FONT></FONT><FONT size=2> myVisual) {</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;for</FONT></FONT><FONT size=2> (</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>int</FONT></FONT><FONT size=2> i = 0; i &lt; </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>VisualTreeHelper</FONT></FONT><FONT size=2>.GetChildrenCount(myVisual); i++) {</P>
+<P></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// Retrieve child visual at specified index value.</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Visual</FONT></FONT><FONT size=2> childVisual = (</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>Visual</FONT></FONT><FONT size=2>)</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>VisualTreeHelper</FONT></FONT><FONT size=2>.GetChild(myVisual, i);</P>
+<P></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// Do processing of the child visual object.</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if</FONT></FONT><FONT size=2> (childVisual </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>is</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>Control</FONT></FONT><FONT size=2> &amp;&amp; ((</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>Control</FONT></FONT><FONT size=2>)childVisual).Name != </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>null</FONT></FONT><FONT size=2>) { </P>
+<P></FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Control</FONT></FONT><FONT size=2> ctl = (</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>Control</FONT></FONT><FONT size=2>)childVisual;</P>
+<P></FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Console</FONT></FONT><FONT size=2>.WriteLine(ctl.Name);</P></FONT><FONT size=2>
+<P></FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;BindingExpression</FONT></FONT><FONT size=2> be = </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>null</FONT></FONT><FONT size=2>;</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if</FONT></FONT><FONT size=2> (ctl </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>is</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>TextBox</FONT></FONT><FONT size=2> || ctl </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>is</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>ComboBox</FONT></FONT><FONT size=2>) {</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if</FONT></FONT><FONT size=2> (ctl </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>is</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>TextBox</FONT></FONT><FONT size=2>)</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;be = ctl.GetBindingExpression(</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>TextBox</FONT></FONT><FONT size=2>.TextProperty);</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; else</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>if</FONT></FONT><FONT size=2> (ctl </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>is</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>ComboBox</FONT></FONT><FONT size=2>)</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;be = ctl.GetBindingExpression(</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>ComboBox</FONT></FONT><FONT size=2>.SelectedValueProperty);</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if</FONT></FONT><FONT size=2>(be != </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>null</FONT></FONT><FONT size=2>)</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;be.UpdateSource();</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</P>
+<P></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// Enumerate children of the child visual object.</P></FONT></FONT><FONT size=2>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ValidationControls(childVisual);</P>
+<P>&nbsp;&nbsp;&nbsp;}</P>
+<P>}</P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, May 28, 2008</h2><P>Good, at least I'm not making it up <img src="/emoticons/emotion-1.gif" alt="Smile [:)]" /></P>
+<P>I think I can solve it inside CSLA - but it means divergent behavior between data binding for Windows Forms and for WPF. Up to now I've been able to keep them consistent, so this is sad. But Microsoft has apparently decided to diverge their behavior, so I think we're stuck.</P>
+<P>The solution I think might work (and I haven't dug into the code on this) is for SetProperty() (or more likely PropertyHasChanged()) to get back a list of changed properties from CheckRules(), and then call OnPropertyChanged() for each property in the list.</P>
+<P>In other words, ValidationRules.CheckRules() could return an array of property names for each property that changed - or at least each property for which rules were checked. PropertyHasChanged() is running in the actual business object (in BusinessBase) and so it can raise PropertyChanged events.</P>
+<P>In Windows Forms this would be <EM>very</EM> inefficient, since each of the PropertyChanged events would cause a refresh of the UI. But in WPF they are doing what Windows Forms probably <EM>should have done</EM> and only refreshing controls bound to changed properties. Raising multiple PropertyChanged events makes sense in WPF.</P>
+<P>So then there needs to be a configuration switch so you could activate this new behavior. Perhaps Csla.ApplicationContext.PropertyChangedMode, which would be either Default or Xaml (assuming Silverlight follows the WPF model).</P>
+<P>I think I'd make this PropertyChangedMode load from app.config, or be something you can set in code. In other words, it would be a read-write property.</P>
+<P>Thoughts?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Curelom replied on Wednesday, May 28, 2008</h2>That certainly sounds like a better solution then my kludge.<img src="/emoticons/emotion-5.gif" alt="Wink [;)]" />&nbsp; I'm suprised you were able to keep them from diverging up to this point.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, May 28, 2008</h2><P>In talking to a member of the WPF team, it sounds like this is NOT&nbsp;a behavioral change from 3.0 to 3.5. </P>
+<P>I imagine I never noticed the issue in 3.0 because I was using Csla.Wpf.Validator for validation error display, and it replicates the Windows Forms ErrorProvider behavior. Now in 3.5 I'm using the new validation behavior built-in to WPF and so am seeing the issue.</P>
+<P>Ultimately the current WPF behavior is clearly the <EM>correct</EM> behavior, in that I'd expect only a changed property to be updated in the UI. The Windows Forms model never seemed right in that regard.</P>
+<P>I'll work on adding the solution I proposed above to 3.5.1 and all will be well.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tetranz replied on Wednesday, May 28, 2008</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div>Ultimately the current WPF behavior is clearly the <em>correct</em> behavior, in that I'd expect only a changed property to be updated in the UI. The Windows Forms model never seemed right in that regard.</div></BLOCKQUOTE><br>But, thankfully (I think), it did enable the chkIsDirty trick hack in CSLA version 1. <img src="/emoticons/emotion-1.gif" alt="Smile [:)]" /><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Curelom replied on Friday, June 20, 2008</h2><P>Hot dog, your fix works.</P>
+<P>Thank you</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Adam replied on Wednesday, June 03, 2009</h2>Hi there<br><br>I have created some calculating columns in silverlight using the business objects as found in this thread <br>http://forums.lhotka.net/forums/33722/ShowThread.aspx#33722 but I am unable to get them to update with user changes to the UI. Shawn has suggested that PropertyChangedMode might help but I can't get it do update the caluated fields in either mode.<br><br>I have tried the following line in both App.xaml.cs Application_Startup
+and in the constructor for my invoice viewer without success.<br><br>//Fire events for all xaml not just the current control http://forums.lhotka.net/forums/thread/23824.aspx<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Csla.ApplicationContext.PropertyChangedMode = Csla.ApplicationContext.PropertyChangedModes.Xaml;<br><br><br>Any help would be greatly appreciated.<br><br>Adam<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, June 03, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>When a property changes, a PropertyChanged event <i>for that
+property</i> must be raised.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>If the property is a managed property and you use SetProperty(),
+then CSLA raises the event for you.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>If you implement the property in any other manner (so you don&#8217;t
+call SetProperty()), then <i>you</i> must raise the PropertyChanged event for
+that property. You do that by calling OnPropertyChanged().<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>In a WPF setting, you <i>must</i> set the PropertyChangedMode to
+Xaml, or data binding simply won&#8217;t refresh correctly, because CSLA won&#8217;t
+raise enough PropertyChanged events. In the older Windows Forms model you
+wanted to minimize the number of PropertyChanged events raised, but in WPF you
+need to explicitly raise an event for every changed property. The
+PropertyChangedMode tells CSLA which model to use.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky</span><b><span><o:p></o:p></span></b></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Adam replied on Thursday, June 04, 2009</h2>Brilliant, that works a treat - OnPropertyChnaged("VATAmount") in the
+Setting for the property that changes! <br><br>Then only question now is I need
+to update the Invoice's Totals but can't see how to do that from the
+property that changes. InvoiceItem( BusinessBase) is a child of InvoiceItemList(BusinessListBase) which is a child of Invoice(BusinessBase)<br><br>Any ideas?<br><br>This is also in thread http://forums.lhotka.net/forums/33750/ShowThread.aspx#33750<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, June 04, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I don&#8217;t have the full picture here.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Your VATAmount property is in a child of a collection? And you
+have a property on the parent object that needs to recalculate?<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>This has been discussed in numerous threads &#8211; the answer
+is that the parent object needs to handle the ListChanged event of the
+collection and use that as a trigger to do the calculation.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

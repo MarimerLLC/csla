@@ -1,0 +1,568 @@
+<html><header><title>MVC Model Binder for CSLA Part II</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>MVC Model Binder for CSLA Part II</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5484.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>rasupit posted on Sunday, September 28, 2008</h2><p>I have described in my previous post that it is possible to build CSLA model 
+binder for ASP.NET MVC.&nbsp; There are two ways we can do this: The first method is 
+to&nbsp; create custom binder by implementing <strong>IModelBinder.</strong> The 
+second method is to create custom binding attribute (parameter attribute) by 
+implementing <strong>CustomModelBinderAttribute</strong>.&nbsp; I have also explained 
+how to create CslaBindAttribute.&nbsp; You can read the first part by clicking the 
+following link <a>http://forums.lhotka.net/forums/thread/26553.aspx</a></p>
+<p>Implementing IModelBinder allow us to define model binding definitions at 
+controller level or even at application level.&nbsp; Again, just like 
+CslaBindAttribute, the challenge is to tell our binder how to instantiate CSLA 
+objects.&nbsp; In addition, we need to be able to tell our binder to use which 
+factory method on which action method. We need to be able to register mapping of 
+action method to factory method.&nbsp; Our custom binder would use the mapping table 
+to locate a factory method when trying to instantiate CSLA object.&nbsp; Similar to 
+URL routing, I think we can register the mapping on global.asax</p>
+<p>So the first step is to create a module to register an action to factory 
+mapping.&nbsp; Inspired by <a href="http://www.codinginstinct.com/2008/09/url-routing-fluent-interface.html">this 
+post</a>, I thought we can use Fluent Interface for defining our factory 
+methods.&nbsp; Here is a sample of defining factory method in fluent interface:</p>
+<div>
+<div><pre><span>   1:</span> <span>//use separate factory class</span></pre><pre><span>   2:</span> CslaFactory</pre><pre><span>   3:</span>     .ForController&lt;ProjectTracker.Web.Controllers.ProjectController&gt;()</pre><pre><span>   4:</span>     .WhereActionIs(a =&gt; a.Index(<span>null</span>))</pre><pre><span>   5:</span>     .UseMethod&lt;ProjectTracker.Web.Models.CatalogService&gt;((x) =&gt; x.GetAllProjects());</pre><pre><span>   6:</span>&nbsp; </pre><pre><span>   7:</span> <span>//use standard factory method</span></pre><pre><span>   8:</span> CslaFactory</pre><pre><span>   9:</span>     .ForController&lt;ProjectTracker.Web.Controllers.ProjectController&gt;()</pre><pre><span>  10:</span>     .WhereActionIs(a =&gt; a.Edit(<span>null</span>))</pre><pre><span>  11:</span>     .UseStaticMethod(()=&gt; Project.GetProject(Guid.Empty), <span>new</span> [] {<span>"Id"</span>});</pre></div></div>
+
+<p>&nbsp;Final step is to create custom binder CslaModelBinder. I choose to inherit 
+from DefaultModelBinder instead of creating the binder from scratch and 
+implementing IModelBinder.&nbsp; We can override the GetValue method only when the 
+object is CSLA type and let other types handled by default binder.&nbsp;Here is the 
+code snippet:</p>
+<div>
+<div><pre><span>   1:</span> <span>public</span> <span>override</span> <span>object</span> GetValue(ControllerContext controllerContext, <span>string</span> modelName, Type modelType, ModelStateDictionary modelState)</pre><pre><span>   2:</span> {</pre><pre><span>   3:</span>     <span>if</span> (!(<span>typeof</span>(Csla.Core.IBusinessObject).IsAssignableFrom(modelType)))</pre><pre><span>   4:</span>         <span>return</span> <span>base</span>.GetValue(controllerContext, modelName, modelType, modelState);</pre><pre><span>   5:</span> &nbsp;</pre><pre><span>   6:</span>     <span>//1. get controller type</span></pre><pre><span>   7:</span>     <span>//2. get action name</span></pre><pre><span>   8:</span>     Type controllerType = controllerContext.Controller.GetType();</pre><pre><span>   9:</span>     <span>string</span> actionName = controllerContext.RouteData.GetRequiredString(<span>"action"</span>);</pre><pre><span>  10:</span> &nbsp;</pre><pre><span>  11:</span>     <span>//3. get csla type object</span></pre><pre><span>  12:</span>     var factoryMap = CslaFactory.GetMapTable(controllerType, actionName);</pre><pre><span>  13:</span>     <span>if</span>(factoryMap == <span>null</span>)</pre><pre><span>  14:</span>         <span>throw</span> <span>new</span> InvalidOperationException(<span>"Factory method not defined for model type "</span> + modelType);</pre><pre><span>  15:</span> &nbsp;</pre><pre><span>  16:</span>     <span>object</span>[] parValues = _binder.GetArgumentValues(controllerContext, factoryMap.FactoryArguments);</pre><pre><span>  17:</span> &nbsp;</pre><pre><span>  18:</span>     <span>object</span> obj = _instantiator.CreateInstance(factoryMap, parValues);</pre><pre><span>  19:</span> &nbsp;</pre><pre><span>  20:</span>     <span>if</span> (obj <span>is</span> Csla.Core.IReadOnlyCollection || obj <span>is</span> Csla.Core.IReadOnlyObject)</pre><pre><span>  21:</span>         <span>return</span> obj;</pre><pre><span>  22:</span> &nbsp;</pre><pre><span>  23:</span>     <span>//4. bind data, update model state from broken rules</span></pre><pre><span>  24:</span>     _binder.Map(controllerContext, obj, modelState);</pre><pre><span>  25:</span>     _binder.UpdateModelState(modelState, (Csla.Core.BusinessBase)obj, controllerContext.HttpContext.Request.Form);</pre><pre><span>  26:</span> &nbsp;</pre><pre><span>  27:</span>     <span>return</span> obj;</pre><pre><span>  28:</span> }</pre></div></div>
+<p>In summary, I was able to&nbsp;show through this <em>prove of concept</em> that we 
+can build model binder that&nbsp;works with CSLA object.&nbsp; The source code of this 
+prove of concept is attached on this post.&nbsp; The code by no means complete; 
+Complex data binding such as binding on child object and root collection object 
+are not yet supported.&nbsp;Data filter (include/exclude) is also not yet 
+supported.&nbsp;SmatDate type conversion is not available.&nbsp; </p>
+<p>There are also improvements that I think could be made.&nbsp; The factory 
+registration can be somewhat cumbersome for large application with large number 
+of controllers and large business objects.&nbsp; MVC follows the <a href="http://en.wikipedia.org/wiki/Convention_over_Configuration">Convention 
+over Configuration</a> design paradigm.&nbsp;To follow the CoC paradigm, I think we 
+can improve or complement the factory mapping by&nbsp;using default convention. 
+Therefore the registration can be simplify to just registering the controller to 
+factory class mapping.&nbsp; The convention could be:</p>
+<table cellpadding="2" cellspacing="0">
+
+<tr>
+<td>action: create*|add*</td>
+<td>&lt;==&gt;</td>
+<td>factory: New*</td></tr>
+<tr>
+<td>action: edit*</td>
+<td>&lt;==&gt;</td>
+<td>factory: Get*</td></tr>
+<tr>
+<td>action: index*|list*</td>
+<td>&lt;==&gt;</td>
+<td>factory: 
+Get*List|Get*Collection</td></tr></table>
+
+<p>Finally, I'm hoping that MVC can get the same love as Silverlight in CSLA and 
+Rocky can&nbsp;include MVC features like model binder on CSLA future version. <img src="/emoticons/emotion-5.gif" alt="Wink [;)]" /></p>
+<p>Comments and ideas are welcome,</p>
+<p>Ricky Supit</p><p>NOTE:&nbsp; The source code is too large to be attached on this post. So you can download the source code <a href="http://www.codeplex.com/CSLAcontrib/Release/ProjectReleases.aspx?ReleaseId=17759">here</a>.</p><p><b>10/24/2008: </b><b>I have updated the source code to work with MVC Beta version and made some improvement by implementing the instantiator by convention.&nbsp; I hope to write up these new features when I get the chance.&nbsp; In the meantime, the source code can be found at <a href="http://www.codeplex.com/CSLAcontrib/Release/ProjectReleases.aspx?ReleaseId=17759">the same place</a>.</b><br></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Sunday, September 28, 2008</h2><P>I was hoping MVC would be farther along and could be part of 3.6, but it appears unlikely to release before Silverlight 2.0 and so support build into CSLA for MVC will have to wait for some later release.</P>
+<P>In terms of invoking factory methods, you should look at the work done in Csla.Silverlight.CslaDataProvider (I think the good parts are in MethodCaller). Sergey wrote code for the data provider that is capable of dynamically invoking the correct factory method, and I suspect the exact same solution would solve the binder issue for MVC.</P>
+<P>I don't know what Fluent is, but it sounds like a potential dependency? Dependencies are something I avoid as much as possible.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>nermin replied on Sunday, September 28, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Simply put Fluent Interfaces are ability to chain actions on
+your object, class.&nbsp; So basically if you have an object ATM that you
+instantiate and use like this:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>ATM atm = new ATM(bankcard);<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>atm.EnterPassword(pwdValue);<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>atm.SelectAccount(checking);<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>int newBalance= atm.Withdraw(500);<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>with Fluent Interface the code above would look like:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>int newBalance = newATM(bankcard)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; .EnterPassword(pwdValue)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; .SelectAccount(checking)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; .Withdraw(500);<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>So as you can see the list of actions is kind of described in
+more something that resembles a sentence flow.&nbsp; Instantiate ATM, enter
+password, select account &#8211; checking, and withdraw $500.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>While this is not perfect example for Fluent Interface as EnterPassword()
+and SelectAccount() can branch out have different results, at least I shows how
+the &#8220;Fluent&#8221; code looks like.&nbsp; The trick is that EnterPassword()
+and SelectAccount() return ATM() instance &#8211; &#8220;this&#8221; instead of
+&#8220;void&#8221;.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Most common usage for this is in Building Query criterias, like:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>Var query =new SelectQuery()<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>.WhereContinentIdEqual(35)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>.CompanyNameIn(&#8220;IBM&#8221;,&#8221;Microsoft&#8221;);<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>And also there are examples where it is useful in certain test
+scenarios- I think I have a blog post or two about it.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Nermin<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> RockfordLhotka
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Sunday, September 28, 2008 6:27 PM<br>
+<b>To:</b> Nermin Dibek<br>
+<b>Subject:</b> Re: [CSLA .NET] MVC Model Binder for CSLA Part II<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>I was hoping MVC would be farther along and could be part of 3.6, but it
+appears unlikely to release before Silverlight 2.0 and so support build into
+CSLA for MVC will have to wait for some later release.<o:p></o:p></p>
+
+<p>In terms of invoking factory methods, you should look at the work done in
+Csla.Silverlight.CslaDataProvider (I think the good parts are in MethodCaller).
+Sergey wrote code for the data provider that is capable of dynamically invoking
+the correct factory method, and I suspect the exact same solution would solve
+the binder issue for MVC.<o:p></o:p></p>
+
+<p>I don't know what Fluent is, but it sounds like a potential dependency?
+Dependencies are something I avoid as much as possible.<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rasupit replied on Monday, September 29, 2008</h2>Rocky,<br><br>I read somewhere that they plan to relase MVC at the end of this year.<br><br>I think you're referring to the following method in MethodCaller: <br><font size="2" face="Courier New">public static object CallFactoryMethod(Type objectType, string method, params object[] parameters);<br></font>The method is similar with the code I used when calling factory method from CslaBindAttribute; however mine also accepting factoryType in case it uses separate factory class.<br><br>There is no outside dependency on Fluent Interface other than System.Linq.Expression.&nbsp; Linq expression was used to avoid hard coded string and to take advantage of intellisense.&nbsp; So instead of UseStaticMethod(typeof(Project), "GetProject", new [] {typeof(Guid)}) we can do the following with the help of intellisense UseStaticMethod(() =&gt; Project.GetProject(Guid.Empty))<br><br>Ricky<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>nermin replied on Monday, September 29, 2008</h2>
+ 
+  Normal
+  0
+  
+  
+  
+  
+  false
+  false
+  false
+  
+  EN-US
+  X-NONE
+  X-NONE
+  
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+  
+  MicrosoftInternetExplorer4
+  
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+  
+
+ 
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+ 
+
+
+
+
+ /* Style Definitions */
+ table.MsoNormalTable
+	{mso-style-name:"Table Normal";
+	mso-tstyle-rowband-size:0;
+	mso-tstyle-colband-size:0;
+	mso-style-noshow:yes;
+	mso-style-priority:99;
+	mso-style-qformat:yes;
+	mso-style-parent:"";
+	mso-padding-alt:0in 5.4pt 0in 5.4pt;
+	mso-para-margin:0in;
+	mso-para-margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	font-size:10.0pt;
+	font-family:"Times New Roman","serif";}
+
+
+
+<p class="MsoNormal"><span>Ricky,<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><o:p>&nbsp;</o:p></span></p>
+
+<p class="MsoNormal"><span>You should take a look at the MVC +ExtJs + Csla.Net demo series
+of posts I have on my blog:<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><a href="http://nermins.net/post/2008/09/Implementing-MVC-site-using-CSLA-and-ExtJs-%E2%80%93-Part-1---Introduction.aspx">http://nermins.net/post/2008/09/Implementing-MVC-site-using-CSLA-and-ExtJs-%E2%80%93-Part-1---Introduction.aspx</a><o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><a href="http://nermins.net/post/2008/09/Implementing-MVC-SIte-using-Csla-and-ExtJs---Part-2---Solution-Structure.aspx">http://nermins.net/post/2008/09/Implementing-MVC-SIte-using-Csla-and-ExtJs---Part-2---Solution-Structure.aspx</a><o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><a href="http://nermins.net/post/2008/09/Implementing-MVC-Site-using-Csla-and-ExtJs---Part-3---UI%2c-ExtJs-Customer-DropDown-List.aspx">http://nermins.net/post/2008/09/Implementing-MVC-Site-using-Csla-and-ExtJs---Part-3---UI%2c-ExtJs-Customer-DropDown-List.aspx</a><o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><o:p>&nbsp;</o:p></span></p>
+
+<p class="MsoNormal"><span>There will be few more articles in this series, and part 5
+should deal with Factories, and Unit Testing. But the source code that can be
+downloaded from either one of those posts already has the factory code.<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><o:p>&nbsp;</o:p></span></p>
+
+<p class="MsoNormal"><span>Great thing about Csla, is that it encourages Factory Method,
+but does not force you to use it.&nbsp; The reason to use Factory Method is the
+fact that Csla objects are Instantiated on the server and then serialized to
+the client.&nbsp; But one could use an Abstract Facory Patter as well.&nbsp; <o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><o:p>&nbsp;</o:p></span></p>
+
+<p class="MsoNormal"><span>Since Factory Method pattern makes it lot harder to mock Csla
+objects, and MVC is all about TDD- Test Driven Development, in that demo I am
+using an Abstract Factory:<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><o:p>&nbsp;</o:p></span></p>
+
+<p class="MsoNormal"><span>&nbsp;
+[HandleError]<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span>&nbsp;
+public class CustomerController : Controller<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span>&nbsp; {<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;
+#region Constructor<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><o:p>&nbsp;</o:p></span></p>
+
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;
+private readonly AbstractBusinessFactory&lt;CustomerList&gt; customerFactory;<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><o:p>&nbsp;</o:p></span></p>
+
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;
+public CustomerController()<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+: this(new ReadOnlyListFactory&lt;CustomerList, CustomerInfo&gt;())<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;
+{<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;
+}<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><o:p>&nbsp;</o:p></span></p>
+
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;
+public CustomerController(AbstractBusinessFactory&lt;CustomerList&gt;
+customerFactory)<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;
+{<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+this.customerFactory = customerFactory;<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;
+}<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><o:p>&nbsp;</o:p></span></p>
+
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;
+#endregion<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;
+<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;
+#region Actions<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><o:p>&nbsp;</o:p></span></p>
+
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;
+public ActionResult Index()<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;
+{<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+return RedirectToAction("List");<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;
+}<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><o:p>&nbsp;</o:p></span></p>
+
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;
+public ActionResult List()<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;
+{<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+var selectList = new SelectList(customerFactory.RetreiveAll(),
+"CustomerID", "CompanyName");<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+return View("List", selectList);<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;
+}<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><o:p>&nbsp;</o:p></span></p>
+
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;
+#endregion<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span>&nbsp; }<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><o:p>&nbsp;</o:p></span></p>
+
+<p class="MsoNormal"><span>If you take a look you will notice 2 constructors on a
+controller.&nbsp; Default one call second one that accepts the AbstractFactory
+as a parameter.&nbsp; &nbsp;The second constructor also can be later called
+from the IoC container – where IoC will register specific factory for each
+controller same as your code does.&nbsp; This also helps as during testing as
+we can Inject Mock Csla objects to test that Controller does what it is
+supposed to do.&nbsp; Tests like:<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><o:p>&nbsp;</o:p></span></p>
+
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;
+[Fact]<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;
+public void ListAction_ReturnsSelectListOfCustomers()<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;
+{<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+var controller = new CustomerController(GetMockCustomerFactory());<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+var result = (ViewResult)controller.List();<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><o:p>&nbsp;</o:p></span></p>
+
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Assert.True(result.ViewName == "List");<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Assert.True(result.ViewData.Model is SelectList);<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;
+}<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><o:p>&nbsp;Here is then the actual implementation of one of the factories (this one being for ReadOnlyListBase):</o:p></span></p><p class="MsoNormal"><font color="#000000" face="Courier New"><br><span><o:p></o:p></span></font></p><p class="MsoNormal"><font color="#000000" face="Courier New"><span><o:p>&nbsp; public class ReadOnlyListFactory&lt;T, C&gt; : <br>&nbsp;&nbsp;&nbsp; AbstractBusinessFactory&lt;T&gt; <br>&nbsp;&nbsp;&nbsp; where T : ReadOnlyListBase&lt;T,C&gt;<br>&nbsp; {<br>&nbsp;&nbsp;&nbsp; public override T CreateNew()<br>&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return DataPortal.Create&lt;T&gt;();<br>&nbsp;&nbsp;&nbsp; }<br><br>&nbsp;&nbsp;&nbsp; public override T RetreiveAll()<br>&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return DataPortal.Fetch&lt;T&gt;();<br>&nbsp;&nbsp;&nbsp; }<br><br>&nbsp;&nbsp;&nbsp; public override T RetreiveBy(CriteriaBase criteria)<br>&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return DataPortal.Fetch&lt;T&gt;(criteria);<br>&nbsp;&nbsp;&nbsp; }<br>&nbsp; }</o:p></span></font></p><p class="MsoNormal"><br><span><o:p></o:p></span></p><p class="MsoNormal"><span><o:p>Model Binder that I implement will be based on this abstract factory pattern, and will circumvent Factory Method implementation.&nbsp; </o:p>My instinct is also that your
+CslaFactory registry duplicates the ability of Inversion Of Control IoC
+containers.&nbsp; In fact if you take a look at the StructureMap registry
+(non-xml version- the fluent version) you will notice that it does the same
+thing, and the code looks quite simillar.&nbsp; <br></span></p><p class="MsoNormal"><br><span></span></p><p class="MsoNormal"><span>As far as when will I have this example - it will have to wait.&nbsp; Unfortunately lately I have
+been working on some other things lately like VS templates and wizards for Csla 3.6.&nbsp; I find those features extremely high priority, and MVC
+will have to wait a bit.&nbsp; Other than the Binding example you have given us
+we really do not need anything MVC specific in Csla.&nbsp; All we need is fully
+functional Project Tracker. <o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><o:p>&nbsp;</o:p></span></p>
+
+<p class="MsoNormal"><span>Unfortunately based on my schedule that will be most likely mid
+November at earliest.&nbsp; The biggest problem is that we will be using few
+new features like ObjectFactory, and then not use FactoryModel.&nbsp;&nbsp; When you
+combine that with custom ajax, the fact that MVC itself does not resemble
+anything like Web Form, it is really important that we have good, and well
+documented examples.&nbsp; That takes time.<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><o:p>&nbsp;</o:p></span></p>
+
+<p class="MsoNormal"><span>Nermin<o:p></o:p></span></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rasupit replied on Monday, September 29, 2008</h2>Nermin,<br>Thanks for giving your thought about my Model Binder implementation. <br><br>Based from your reply, I'm not sure if I was clear enough what I was trying to address with Model Binder.&nbsp; I was not trying to address the testability issue of CSLA object or trying to build another IoC container specific for CSLA object.&nbsp; Your idea about separating the factory method to a separate class and making the constructor on csla object public will work and will make CSLA object more testable because it is easier to mock.<br><br>There are many ways to create an action method. Before preview 5, the method signature is to pass primitive types as arguments. With this approach we have to write code to perform model instantiation, data binding, validation, and redirects.&nbsp; Because we have to do all these tasks, we need factory method to instantiate the object, binding helper to help put the value from form to object (unless you want to hand code the left hand right hand assignments), and model state helper to update ModelState if there is any broken rules.<br><br>Because we need to instantiate the object inside the controller, having separate factory class (that implement an interface of course) along with IoC helps makes the controller loosely coupled therefore make it testable.&nbsp; You have showcased your solution to address this scenario very well (although you did not give POST example) on your articles.<br><br>In <a href="http://weblogs.asp.net/scottgu/archive/2008/09/02/asp-net-mvc-preview-5-and-form-posting-scenarios.aspx">preview 5</a>, ScottGu introduce another approach of creating an action method.<br><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>ScottGu:</strong></div><div><br>One of the new capabilities in "Preview 5" that can make this scenario cleaner is its "Model Binder" support.&nbsp; Model Binders provide a way for complex types to be de-serialized from the incoming HTTP input, and passed to a Controller action method as arguments.&nbsp; They also provide support for handling input exceptions, and make it easier to redisplay forms when errors occur (without requiring the end-user to have to re-enter all their data again - more on this later in this blog post). <br></div></BLOCKQUOTE><br>Because we _don't_ need to instantiate the object inside the controller, there is no need to have a provider class inside the controller which also eliminate the need of IoC help to inject a provider class.&nbsp; Of course this is only true on CSLA object because the save method attach on the object itself.<br><br>This approach (which I like because of its simplicity) by no means makes the controller less testable compare to the first approach. In fact you don't have to inject mock object when testing the controller because you can pass the object as parameter.&nbsp; Testing the object of course is a separate concern and your solution works very well.<br><br><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>nermin:</strong></div><div><br>My instinct is also that your CslaFactory registry duplicates the ability of Inversion Of Control IoC containers.&nbsp; In fact if you take a look at the StructureMap registry (non-xml version- the fluent version) you will notice that it does the same thing, and the code looks quite simillar. <br></div></BLOCKQUOTE><br>If you can show me some sample code on how I can tell StructureMap to invoke a factory method with provided arguments when I have an action method; I'll be happy to ditch the CslaFactory.<br><br><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>nermin:</strong></div><div><br>Other than the Binding example you have given us we really do not need anything MVC specific in Csla. <br></div></BLOCKQUOTE><br>I'm sure we can make the same argument on CslaDataSource in webform or other similar helper that CSLA provided for winform, wpf or silverlight.&nbsp; I've been following CSLA since pre .NET days and I found that the framework always look for opportunity to reduce redundant, error prone and boring code.&nbsp; I hope to see it continues.<br><br>Ricky Supit<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rasupit replied on Friday, October 24, 2008</h2>New version is available to work with MVC Beta.&nbsp; The link to download can be found at the top of this thread.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>fretje replied on Wednesday, April 22, 2009</h2>Hello,<br>I'm trying to get this to work on the release version of asp.net mvc...<br>I'm having trouble with the "ShouldUpdateProperty" method which apparently doesn't exist anymore on ModelBindingContext...<br>Anybody has any suggestions, or already implemented this in the new version?<br>Any other hints, tips or links are appreciated!<br><br>Greetings,<br><br>Fretje<br><br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

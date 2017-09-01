@@ -1,0 +1,85 @@
+<html><header><title>MSTest multithreaded issue: Collection was modified; enumeration operation may not execute.</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>MSTest multithreaded issue: Collection was modified; enumeration operation may not execute.</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11317.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>decius posted on Thursday, April 19, 2012</h2><p>When I run my MSTests with multithreading enabled, I experience an&nbsp;<a href="http://xunitpatterns.com/Erratic%20Test.html">erratic test smell</a>. It always occurs during&nbsp;BusinessRules.CheckRules(); but I can&#39;t seem to figure out what&#39;s causing this for me. All of my business rules utilize the context.AddOutValue syntax, so I&#39;m just not sure what my problem is. Can anyone help? Stacktrace below (just one example, it seems to occur on multiple business objects erratically).&nbsp;</p>
+<p>&nbsp;</p>
+<p>
+<p>Test method Aps.SaasHr.Test.M3Migration.MigrantTest.ColumnMgrs_LazyOnOldTest threw exception:&nbsp;</p>
+<p>Csla.DataPortalException: DataPortal.Update failed (Csla.DataPortalException: ChildDataPortal.Create failed on the server ---&gt; Csla.Reflection.CallMethodException: Child_Create method call failed ---&gt; Csla.DataPortalException: ChildDataPortal.Fetch failed on the server ---&gt; Csla.Reflection.CallMethodException: Child_Fetch method call failed ---&gt; System.InvalidOperationException: <b>Collection was modified; enumeration operation may not execute.</b></p>
+<p>&nbsp; &nbsp;at System.ThrowHelper.ThrowInvalidOperationException(ExceptionResource resource)</p>
+<p>&nbsp; &nbsp;at System.Collections.Generic.List`1.Enumerator.MoveNextRare()</p>
+<p>&nbsp; &nbsp;at System.Collections.Generic.List`1.Enumerator.MoveNext()</p>
+<p>&nbsp; &nbsp;at System.Linq.Enumerable.WhereSelectListIterator`2.MoveNext()</p>
+<p>&nbsp; &nbsp;at System.Linq.Enumerable.&lt;DistinctIterator&gt;d__81`1.MoveNext()</p>
+<p>&nbsp; &nbsp;at Csla.Rules.BusinessRules.CheckRules()</p>
+<p>&nbsp; &nbsp;at Aps.SaasHr.Library.M3Migration.CalcCodeMap.Child_Fetch(String e, String dedType) in C:\Documents and Settings\markb\My Documents\Visual Studio 2010\Projects\Aps.SaasHr\Aps.Saas.Library\M3Migration\CalcCodeMap.cs:line 789</p>
+<p>&nbsp; &nbsp;at lambda_method(Closure , Object , Object[] )</p>
+<p>&nbsp; &nbsp;at Csla.Reflection.MethodCaller.CallMethod(Object obj, DynamicMethodHandle methodHandle, Boolean hasParameters, Object[] parameters)</p>
+<p>&nbsp; &nbsp;--- End of inner exception stack trace ---</p>
+</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Friday, April 20, 2012</h2><p>Which version of CSLA are you using? </p>
+<p>Do you use async rules? </p>
+<p>Are you able to create a test project that replicates the issue? <br />This would help us identify the problem.</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>decius replied on Friday, April 20, 2012</h2><p>using version 4.3.2.0. I&#39;ll see if I can recreate the problem in a different project and post if I can.&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>decius replied on Friday, April 20, 2012</h2><p>Having trouble recreating this, so it&#39;s likely something funky with my class. No, I&#39;m not using async rules, should I be?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>decius replied on Friday, April 20, 2012</h2><p>Okay, so it looks like this has SOMETHING to do with the ContextManager. I have this child object that&#39;s in a completely different part of the object graph, but it seems that its insert is causing issues. If I remove the SubmitChanges from this unrelated object, the erratic smell goes away. Is there anything that might not be threadsafe in the ContextManager? The code below belongs to a child in a child collection of the parent. The checkrules throwing exception is in a lazy-<span style="text-decoration:underline;">S</span>yncronous child of the parent. Both perform data operations off the ContextManager.</p>
+<p>I suppose in real life this isn&#39;t as much of a problem unless the app goes completely multithreaded, but it&#39;s really screwing with my tests, so it&#39;s quite annoying.&nbsp;</p>
+<p>
+<p>This is all just a hunch, so I&#39;ll see if I can spin up a simple test that recreates this in a simple project.</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>private void Child_Insert(DefaultConfig parent)</p>
+<p><span>		</span>{</p>
+<p><span>			</span>using (var mgr = Csla.Data.ContextManager&lt;DalLinq.M3MigrationDataContext&gt;.GetManager(&quot;M3Migration&quot;))</p>
+<p><span>			</span>{</p>
+<p><span>				</span>var data = new DalLinq.DefaultDetail()</p>
+<p><span>				</span>{</p>
+<p><span>					</span>DefaultConfigId = parent.Id,</p>
+<p><span>					</span>DisplayText = DisplayText,</p>
+<p><span>					</span>PropertyName = PropertyName,</p>
+<p><span>					</span>IsSelected = IsSelected,</p>
+<p><span>					</span>IsRequired = IsRequired</p>
+<p><span>				</span>};</p>
+<p>&nbsp;</p>
+<p><span>				</span>mgr.DataContext.DefaultDetails.InsertOnSubmit(data);</p>
+<p>&nbsp;</p>
+<p><span>				</span>try</p>
+<p><span>				</span>{</p>
+<p><span>					</span>mgr.DataContext.SubmitChanges(ConflictMode.ContinueOnConflict);</p>
+<p><span>				</span>}</p>
+<p><span>				</span>catch (ChangeConflictException e)</p>
+<p><span>				</span>{</p>
+<p><span>					</span>foreach (ObjectChangeConflict occ in mgr.DataContext.ChangeConflicts)</p>
+<p><span>					</span>{</p>
+<p><span>						</span>// All database values overwrite current values with&nbsp;</p>
+<p><span>						</span>//values from database</p>
+<p><span>						</span>occ.Resolve(RefreshMode.OverwriteCurrentValues);</p>
+<p><span>					</span>}</p>
+<p><span>				</span>}</p>
+<p>&nbsp;</p>
+<p><span>				</span>LoadProperty(IdProperty, data.DefaultDetailId);</p>
+<p><span>			</span>}</p>
+<p><span>		</span>}</p>
+</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Saturday, April 21, 2012</h2><p>Hi,</p>
+<p>Try changing the code into</p>
+<p><b>using (var mgr = Csla.Data.ContextManager&lt;DalLinq.M3MigrationDataContext&gt;.GetManager(System.Guid.NewGuid().ToString(&quot;N&quot;)))</b></p>
+<p><b>When you call SubmitChanges in a child method you should always make sure that the &quot;ContextManager&quot; is owned by your method. <br />IE: If any parent code on the same thread uses that named &quot;ContextManager&quot; you would submit more changes to the database than you might expect. </b></p>
+<p><br />The preferred solution to load the ID property (assuming that this is part of a &quot;larger&quot; transaction) would be like this: <b></b></p>
+<pre style="font-family:Consolas;font-size:13px;color:black;background:none repeat scroll 0% 0% #fafafa;">&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">private</span>&nbsp;<span style="color:blue;">void</span>&nbsp;Child_Insert(<span style="color:red;">DefaultConfig</span>&nbsp;parent)
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">using</span>&nbsp;(<span style="color:blue;">var</span>&nbsp;mgr&nbsp;=&nbsp;<span style="color:red;">Csla</span>.Data.ContextManager&lt;DalLinq.<span style="color:red;">M3MigrationDataContext</span>&gt;.GetManager(<span style="color:#a31515;">&quot;M3Migration&quot;</span>))
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">var</span>&nbsp;data&nbsp;=&nbsp;<span style="color:blue;">new</span>&nbsp;DalLinq.<span style="color:red;">DefaultDetail</span>()
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:red;">DefaultConfigId</span>&nbsp;=&nbsp;parent.<span style="color:red;">Id</span>,
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:red;">DisplayText</span>&nbsp;=&nbsp;<span style="color:red;">DisplayText</span>,
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:red;">PropertyName</span>&nbsp;=&nbsp;<span style="color:red;">PropertyName</span>,
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:red;">IsSelected</span>&nbsp;=&nbsp;<span style="color:red;">IsSelected</span>,
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:red;">IsRequired</span>&nbsp;=&nbsp;<span style="color:red;">IsRequired</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;};
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;mgr.<span style="color:red;">DataContext</span>.DefaultDetails.InsertOnSubmit(data);
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;data.<span style="color:red;">PropertyChanged</span>&nbsp;+=&nbsp;(o,&nbsp;e)&nbsp;=&gt;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">if</span>&nbsp;(e.<span style="color:red;">PropertyName</span>&nbsp;=&nbsp;<span style="color:#a31515;">&quot;DefaultDetailId&quot;</span>)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:red;">LoadProperty</span>(<span style="color:red;">IdProperty</span>,&nbsp;((<span style="color:red;">DefaultDetail</span>)&nbsp;o).DefaultDetailId);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;};
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;}</pre></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Sunday, April 22, 2012</h2><p>The context dictionaries in ApplicationContext are stored, by default, in an AppDomain level singleton. This will cause issues with multithreaded unit test runners. You can overcome this by supplying your own context provider that uses thread local storage instead.</p>
+<p>The provider is easy to write and use, just implement an interface and tell csla to use your type. I don&#39;t remember the interface type off the top of my head, but you can look at the ApplicationContext code to find it.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Sunday, April 22, 2012</h2><p>You must implement IContextManager and you testcode must set the </p>
+<p>ApplicationContext.ContextManager (and)<br />ApplicationContext.WebContextManager (can be set to null)</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>decius replied on Monday, April 23, 2012</h2><p>Thank you both very much! Exactly what I needed&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

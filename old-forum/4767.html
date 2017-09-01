@@ -1,0 +1,12 @@
+<html><header><title>DataMapper and Property copy failed</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>DataMapper and Property copy failed</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4767.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>mike7 posted on Tuesday, April 29, 2008</h2><P>Hi,</P>
+<P>I'm having a hard time now trying to map a complex object into a DTO (data transfer object). I always got the following error: "Property copy failed (IsNew)"</P>
+<P>I don't understand why&nbsp;its happening&nbsp;because it is specifically written in the "Expert VB 2005 Business Objects" that the IsNew, IsDeleted, IsDirty, etc.... are automatically filtered out in the DataMapper.Map if the object is base on BusinessBase of CSLA.</P>
+<P>I tried to put the "suppresExceptions" parameter to True and it works but if a got other errors I will not be aware of them.</P>
+<P>Here is my code:</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 'mapping the Range body<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; DataMapper.Map(objRange, rangeDTO, New String() {"ExtensionData", "PostalCodeInfo", "DeliveryModesList", "POCCount", "StreetRangesList", "SuiteRangesList", "LockBoxRangesList", "IsValid", "IsDirty", "IsNew"})<BR></P>
+<P>As you can see I need to specify each CSLA based property (IsNew, IsDirty, ....)</P>
+<P>Has anyone already had this problem ???</P>
+<P>Thank you !</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>mike7 replied on Thursday, May 01, 2008</h2><P>Do not consider this thread, we implemented something new in the CSLA framework and we screwed something. Once it was fixed, everything is working fine.</P>
+<P>&nbsp;</P>
+<P>Thank you</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

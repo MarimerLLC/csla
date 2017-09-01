@@ -1,0 +1,289 @@
+<html><header><title>Anybody come across this exception before? Exception in DataPortal.Fetch() --&gt; Ms.Wind32</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Anybody come across this exception before? Exception in DataPortal.Fetch() --&gt; Ms.Wind32</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/8189.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jaans posted on Monday, December 21, 2009</h2>Hi All<br /><br />I have an exception that appears to be faulting in the DataPortal stack down into Ms.Win32<br /><br />Some background: This code is running under as a Windows Service project and uses background workers to divide and conquer various queud workloads. CSLA is configured with an application server (WCF) and this service connects to that WCF DataPortal.<br /><br />I'm having a hard time figuring out what's the cause of the problem here. <br />The following is a snippet of the stack trace of the exception that's occuring in a production environment. <br /><br />------------ Start Exception ----------<br />System.ComponentModel.Win32Exception: The system cannot find the file specified<br />   at MS.Win32.UnsafeNativeMethods.RegisterClassEx(WNDCLASSEX_D wc_d)<br />   at MS.Win32.HwndWrapper..ctor(Int32 classStyle, Int32 style, Int32 exStyle, Int32 x, Int32 y, Int32 width, Int32 height, String name, IntPtr parent, HwndWrapperHook[] hooks)<br />   at MS.Win32.MessageOnlyHwndWrapper..ctor()<br />   at System.Windows.Threading.Dispatcher..ctor()<br />   at System.Windows.Threading.Dispatcher.get_CurrentDispatcher()<br />   at System.Windows.DependencyObject..ctor()<br />   at Csla.DataPortal.GetDataPortalProxy(Boolean forceLocal)<br />   at Csla.DataPortal.Fetch(Type objectType, Object criteria)<br />   at Csla.DataPortal.Fetch[T](Object criteria)<br />   at XXXXX.BusinessLogic.XXXXXX.PrintXXXXXXList.Get(Int32 Id)<br />   at XXXXXX.Service.Windows.Printing.PrintService.XXXXXPrintBackgroundWorker_DoWork(Object sender, DoWorkEventArgs e)<br />------------ END ----------<br /><br />I have yet to be able to repro it in the dev environment and was hoping that maybe some else has run into something similar.<br /><br />What's worse is that it's happening intermittendly and at some point it just returns to normal working state. In other (much worse) cases it just stops working altogether. Almost like a hang?<br /><br />Any insights would greatly be appreciated?<br /><br />Regards,<br />Jaan</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, December 21, 2009</h2><P>It looks to me like you are calling an external (unmanaged) component using p/invoke or COM? Or .NET is doing so on your behalf.</P>
+<P>Calling unmanaged code in a multithreaded environment can be tricky, because it is often necessary to make sure the background threads have the correct context, and with COM the correct apartment model.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Paul Czywczynski replied on Monday, December 21, 2009</h2>We started getting this exact same error on our project when we upgraded from 3.8 beta 1 to 3.8 RTM on Nov 19th. I am not sure if it was a change between those two 3.8 iterations or something further back. We jumped from 3.0.4 to 3.8 in our development a few months ago. We're currently in the process of releasing our newest application version with CSLA 3.8. <br /><br />In our infrastructure we host our DataPortal WCF services in an IIS7 farm. When this error occurs, everything in that app pool stops working. All we can do is recycle the app pool and everything is fine again. This error happens at completely random times with random DataPortal_xyz methods at various server loads. Currently I am thinking it is a memory pressure thing so I moved the affected 3.8 DataPortals to their own dedicated server running Win2008 R2 x64 8GB ram with IIS7.5. It seems to help since I have not seen the error in the last week. The odd thing is we host more than two dozen DataPortals on our IIS7 farm. The other DataPortals are running CSLA 3.0.4 and when I was/am having this problem only the 3.8 DataPortals were affected. On a single server the 3.0.4 DataPortals would still be servicing 50+ connections each but the 3.8 DataPortal hung only servicing about 10 connections.<br /><br />Based on my observations it seems something between 3.0.4 (or maybe 3.8 beta 1) and 3.8 RTM has caused this problem to bubble up. I can't reproduce it reliably and I can't attach a debugger to the affected 3.8 DataPortal. A Google search of "RegisterClassEx(WNDCLASSEX_D wc_d)" turns up very little besides a WPF bug a while back but that has been long fixed in the latest .NET bits we have.<br /><br />At this point I am not sure where to go. It seems helpful to have more server resources available, like memory. I guess this theory will be tested during the first week of January. Our first 3.8 customer goes live and we'll be servicing about 60 user connections from them. I don't like the idea of crossing my fingers and hoping for the best. I am out of options besides going back to 3.0.4 and I really don't want to do that.<br /><br />-Paul<br /></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, December 21, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoPlainText><span>Hmm.<o:p></o:p></span></p>
+
+<p class=MsoPlainText><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoPlainText><span>Since
+1 October the following changes are possible candidates (as far as I can see):<o:p></o:p></span></p>
+
+<p class=MsoPlainText><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoPlainText><span><span>1.<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span></span><span>Added
+support for (and therefore a reference to)
+System.ComponentModel.DataAnnotations<o:p></o:p></span></p>
+
+<p class=MsoPlainText><span><span>2.<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span></span><span>Added
+support for (and therefore a reference to) System.Windows.Interactivity<o:p></o:p></span></p>
+
+<p class=MsoPlainText><span><span>3.<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span></span><span>Rehook
+ValidationRules on deserialization so async rules work correctly<o:p></o:p></span></p>
+
+<p class=MsoPlainText><span><span>4.<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span></span><span>BLB.Child_Update
+now checks IsDirty before updating child objects<o:p></o:p></span></p>
+
+<p class=MsoPlainText><span><span>5.<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span></span><span>ValiationComplete
+is raised even if there are no async rules<o:p></o:p></span></p>
+
+<p class=MsoPlainText><span><span>6.<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span></span><span>Check
+for null value before adding property to index in L2C<o:p></o:p></span></p>
+
+<p class=MsoPlainText><span><span>7.<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span></span><span>CanReadProperty
+cache wasn't updating properly<o:p></o:p></span></p>
+
+<p class=MsoPlainText><span><span>8.<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span></span><span>Make
+RefCount a public property in all Csla.Data manager classes<o:p></o:p></span></p>
+
+<p class=MsoPlainText><span><span>9.<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span></span><span>Add
+commit/rollback to TransactionManager<o:p></o:p></span></p>
+
+<p class=MsoPlainText><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoPlainText><span>These are candidates because they include svn check-in of source
+files that would run on an app server. Most of the 3.8 changes are client-only
+and so it is hard to imagine they'd impact any server-side behavior.<o:p></o:p></span></p>
+
+<p class=MsoPlainText><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoPlainText><span>But looking at this list of changes, it is hard to see where they would
+cause this issue either. The first two are perhaps the most suspect -
+especially the Interactivity reference. But the thing is, that's used by
+exactly one class: Csla.Wpf.Execute - which should never be loaded on the
+server.<o:p></o:p></span></p>
+
+<p class=MsoPlainText><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoPlainText><b><span>But are you guys using the DataAnnotations attributes?<o:p></o:p></span></b></p>
+
+<p class=MsoPlainText><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoPlainText><span>Perhaps the next likely candidate is that we now rehook the changed
+event from ValidationRules on deserialization. <b>Are you guys running async
+validation rules?</b> And if so, are you maybe executing them on the server (by
+setting properties, etc)?<o:p></o:p></span></p>
+
+<p class=MsoPlainText><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoPlainText><span>Along that same line, the ValidationComplete event is now raised
+when validation is complete, even if there are no async rules defined. <b>Are
+you handling this event in your code and assuming it is only raised on async
+completion?</b><o:p></o:p></span></p>
+
+<p class=MsoPlainText><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoPlainText><b><span>Are you using L2C indexing?</span></b><span> <o:p></o:p></span></p>
+
+<p class=MsoPlainText><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoPlainText><span>The last 3 items in the list are in 3.8.2, so you probably don't
+have them, and the other items are so trivial it is hard to see where they&#8217;d
+be an issue.<o:p></o:p></span></p>
+
+<p class=MsoPlainText><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoPlainText><span>When you upgraded to CSLA 3.8, did you also upgrade your .NET framework
+&#8211; <b>like installing SP1?</b><o:p></o:p></span></p>
+
+<p class=MsoPlainText><span><o:p>&nbsp;</o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tmg4340 replied on Monday, December 21, 2009</h2><P><FONT face=Tahoma size=2>I did some digging into the 3.7 codebase I currently have at my fingertips... I don't think 3.8 significantly changed in this area, but I think I can at least pinpoint the issue.</FONT></P>
+<P><FONT face=Tahoma size=2>If you look through the stack trace, you see where it goes from the DataPortal to a DependencyObject, to a Dispatcher object, and so on and so on.&nbsp; What I think is the problem is the "IsInDesignMode" property call - which&nbsp;uses a DependencyObject.&nbsp; I haven't traced the whole thing yet, but I think the DependencyObject's potential use of a callback method&nbsp;to do some things is what's getting the Dispatcher involved.</FONT></P>
+<P><FONT face=Tahoma size=2>(Reflector is your friend here...) <img src="/emoticons/emotion-1.gif" alt="Smile [:)]" /></FONT></P>
+<P><FONT face=Tahoma size=2>If this is the case, and WPF is trying to thread out from a spawned background thread... well, I can see the potential issues there.</FONT></P>
+<P><FONT face=Tahoma size=2>In any event, I think this is a WPF/service issue.&nbsp; The Google search Paul references may be&nbsp;the below-linked issue:</FONT></P>
+<P><A href="https://connect.microsoft.com/VisualStudio/feedback/ViewFeedback.aspx?FeedbackID=361469"><FONT face=Tahoma size=2>https://connect.microsoft.com/VisualStudio/feedback/ViewFeedback.aspx?FeedbackID=361469</FONT></A></P>
+<P><FONT face=Tahoma size=2>Which, on the one hand, sounds like it's been resolved - but maybe not.&nbsp; The article title talks about using WPF within IIS, but if you read some of the comments, it sounds like its a general WPF/service issue.</FONT></P>
+<P><FONT face=Tahoma size=2>The reason I say it may not be completely resolved is that the last comment on the post (from January of this year)&nbsp;says the patch worked, but then goes on to present an event-log snapshot of the error.&nbsp; His goes through the Media namespaces (since the ultimate basis of that post is that people are using WPF to generate&nbsp;images on-the-fly and serve them through IIS), but ultimately it ends up at the same place.&nbsp; So I can't tell whether it's "really fixed" or not.</FONT></P>
+<P><FONT face=Tahoma size=2>Given the reliance on WPF in VS 2010, one would hope that this has been resolved there (though VS isn't a good analog to using WPF in a service environment.)&nbsp; But if not, the design-mode check may have to resort to some other means to avoid this...</FONT></P>
+<P><FONT face=Tahoma size=2>HTH</FONT></P>
+<P><FONT face=Tahoma size=2>- Scott</FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, December 21, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>That is some good insight.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>We may be able to overcome this pretty easily, if we can assume
+that there is never a &#8220;design mode&#8221; on a server. If that&#8217;s a
+valid assumption, the code could see if HttpContext.Current is something, and
+if it is, then we&#8217;re in ASP.NET and therefore aren&#8217;t in design
+mode. That&#8217;d eliminate the need to call a DependencyObject.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Something like this (in the client-side DataPortal class):<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp; public static bool IsInDesignMode<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp; {<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; get <o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if
+(System.Web.HttpContext.Current != null)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return
+false;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; else<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return
+DesignerProperties.GetIsInDesignMode(new DependencyObject()); <o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp; }<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Thoughts?<o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, December 21, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Alternately the solution might be more in line with
+Csla.ApplicationContext.User, which checks to see if System.Windows.Application.Current
+is null &#8211; thereby detecting whether the code is running in WPF. Though that
+check occurs after checking HttpContext.Current &#8211; so maybe both checks are
+required&#8230;<o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jaans replied on Monday, December 21, 2009</h2>Hi All<br /><br />Thanks for the help!<br /><br />For us, the issue has now steadily become a daily one, requiring the windows service (client) to be restarted regularly since it becomes "hung".<br /><br />Here are some specific points that may help to rule some theories out or even in. Some of these are answers to questions asked in previous replies.<br /><br />* We're not calling (that we directly know of) any COM object or doing interop in any of the methods indicated in the call stack.<br /><br />* We are however using Log4Net for our logging. <br />  Paul, are you also using this?<br /><br />* This project is NOT using the DataAnnotations attributes on any of the classes<br /><br />* Also NOT using any Async validation rules<br /><br />* Generally we are using L2C, but it's NOT on the BO object referenced in the exception. In fact, the BO is a very simple Read Only Root list and Child (RoRL+RoC)<br /><br />* The "client" is throwing the exception and eventually "hangs". The windows service I'm referring to is a "client" that performs automated processing. It is this service that connects to a WCF data portal host running on under different windows service on another server.<br /><br />* This exception has NOT been thrown by any of our other UI clients running Windows Forms or by the ASP.NET web sites.<br /><br />* We are NOT running the client (or server) under WPF nor are we making calls (directly anyway) into WPF or the WPF namespace of CSLA.<br /><br />* NOT hosting the DataPortal in IIS instead we are self hosting WCF under a windows service.<br /><br />* The data portal host (application tier server) is running as a Windows Service hosting the WCF Data Portal Proxy using the binary formatter (NetDataContract).<br /><br />* The data portal host has not logged a single exception.<br /><br />* We are running CSLA 3.8.1 RTM<br /><br />* I can confirm that both the servers (hosting the dataportal and the client) are running .NET 3.5 SP1<br /><br />Hope that helps!<br /><br />Regards,<br />Jaans</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, December 21, 2009</h2>Jaans,<br /><br />Since you have such a repeatable scenario you may be in the best position to<br />help test the solution.<br /><br />If the theory of the design time check issue is correct, then my previous<br />post may contain the answer. Though since you aren't running in IIS/ASP.NET<br />perhaps HttpContext.Current will be null?<br /><br />Is it possible to have you try making this change to the client-side<br />DataPortal.cs file:<br /><br />    public static bool IsInDesignMode<br />    {<br />      get <br />      {<br />        if (System.Web.HttpContext.Current != null ||<br />System.Windows.Application.Current == null)<br />          return false;<br />        else<br />          return DesignerProperties.GetIsInDesignMode(new<br />DependencyObject()); <br />      }<br />    }<br /><br />If the issue is with GetIsInDesignMode() this may be the answer. If you are<br />running in ASP.NET or not in WPF then this should avoid the use of a<br />DependencyObject() and (probably more importantly) the DesignerProperties<br />type.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jaans replied on Monday, December 21, 2009</h2>Hi Rocky<br /><br />Makes sense - I'll make the change and schedule some maintenance time to update the production servers.<br /><br />Just a quick question, should the test for WPF not be System.Windows.Application.Context != null ?<br />(your example shows "== null" - am I missing something?)<br /></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jaans replied on Monday, December 21, 2009</h2>DOH! <br /><br />Scratch that... I am being daft... I get it now.<br /><br />It's about not being in WPF.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, December 21, 2009</h2>I think I was right.<br /><br />If HttpContext.Current is NOT NULL we're on a server.<br /><br />OR<br /><br />If Application.Context IS NULL we're on a server (or at least not in WPF)<br /><br />THEN<br /><br />Return false</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tmg4340 replied on Monday, December 21, 2009</h2><P><FONT size=2 face=Tahoma>I don't know whether it would be worth the time to check, but I might also suggest that Jaan and Paul check to see whether the 3.5 SP1 patch referenced in the feedback link I provided is in place - or, if not, if applying it does the trick.</FONT></P>
+<P><FONT size=2 face=Tahoma>I'm not suggesting that re-working the design-time check isn't appropriate, and it may be an easier fix to put into place than a .NET patch.&nbsp; But the patch is supposed to fix this very issue, so I thought it might be worth investigating...</FONT></P>
+<P><FONT size=2 face=Tahoma>- Scott</FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Paul Czywczynski replied on Tuesday, December 22, 2009</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>tmg4340:</strong></div><div><P><FONT size=2 face=Tahoma>I don't know whether it would be worth the time to check, but I might also suggest that Jaan and Paul check to see whether the 3.5 SP1 patch referenced in the feedback link I provided is in place - or, if not, if applying it does the trick.</FONT></P><br /><P><FONT size=2 face=Tahoma>I'm not suggesting that re-working the design-time check isn't appropriate, and it may be an easier fix to put into place than a .NET patch.&#160; But the patch is supposed to fix this very issue, so I thought it might be worth investigating...</FONT></P><br /><P><FONT size=2 face=Tahoma>- Scott</FONT></P></div></BLOCKQUOTE><br /><br />Scott, shortly after this error started to appear I searched and found the MS Connect thread. I applied the patch to two of my three DataPortal servers. I reserved the third just in case the patch brought down my servers and I was without any DataPortal servers. I did take the third out of the IIS farm. I monitored for a few more days and found that the error was still happening. I then reformatted the third to make sure I had the latest bits of everything. I then moved my CSLA 3.8 DataPortals to this new third server. This is where I am today. This third server is more heavy duty so I don't have the memory pressure as I had on my previous two. Since I put this configuration into play (Dec 11th) I have not had the error but my user load is down because the customer using this build has completed their training and parallel data entry.<br /><br />This is my infrastructure today:<br /><br />Hosting CSLA 3.0.4 DataPortals (each server hosts about 90 to 120 connections per second daily)<br /><br />DataPortal00 - Dual 2.0GHz Opteron 2212, 4GB ram, Win2008 x86 w/SP2 and WPF patch<br />DataPortal01 - Dual 2.0GHz Opteron 2212, 4GB ram, Win2008 x86 w/SP2 and WPF patch<br /><br />Hosting CSLA 3.8.1 DataPortals (at max load it only has about 15 to 25 connections per second)<br /><br />DataPortal02 - Dual 2.8 Xeon, 8GB ram, Win2008 R2 x64<br /><br /></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, December 22, 2009</h2>Based on the stack traces thus far, I don't think the issue is on your<br />server. Applying patches to the servers will probably have no impact.<br /><br />It could be that applying the patches to the clients might fix the issue. It<br />certainly does look like the client-side data portal is failing when it<br />tries to get the proxy object.<br /><br />JonnyBee's suggestion may be a good one, as it would eliminate the whole<br />design-time issue from release code, where it is useless anyway.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Paul Czywczynski replied on Tuesday, December 22, 2009</h2>I do see your point with the stack traces. When we first came across this error I started tearing into client side code. The problem with the client side theory is once one users get the error they all start to get it. Restarting the client does not help, I have to recycle the DataPortal app pool and then everyone can connect again. Another odd thing is I would think this bug would consistently come up and not be as random as it is. In our experience it seems to work for a few hour to a few days and then boom, it all goes down until I recycle the app pool. We're going thru our DataPortal code looking for any obvious memory leaks that would add pressure to the system but we haven't found anything significant yet.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jaans replied on Tuesday, December 22, 2009</h2>We managed to get a new customised version of our system into Production yesterday in order to test a potential solution to the problem (that would be Rocky’s suggestion to test a different IsInDesignMode implementation).<br /><br />Again, for clarity's sake I'll detail what’s changed and where.<br /><br />Application Tier: We have a dedicated data portal host running in it's own Windows Service that services CSLA Data Portal requests over WCF. It services connections from 3 sources/clients:<br />A. another Windows Service that performs automation and printing<br />B. 50+ Windows Forms Applications<br />C. 4-Server web farm running ASP.NET<br /><br />The errors we were experiencing were only showing up on the Windows Service A. (which is a Client in terms of architecture). <br /><br />The other clients B. C. have no such exception showing in the logs or otherwise reported. The application server (aka. data portal host) also did not have any exceptions.<br /><br />I've only updated A. and the modified CSLA 3.8.1 is only deployed to A. The Application Server (Data Portal Host) and the other clients B. C. are still running the original CSLA without the change.<br /><br />Is it working?<br />Well, so far it's looking good - for the past 20 hours the exception hasn't occurred again. I'll keep monitoring and will only draw a conclusion that it has been resolved if after a week we don't see it again (because it's such an intermittent issue).<br /><br />Questions / possible conclusions:<br />* Considering that only one client was changed (A), that the issue is indeed a client side issue and has nothing to do with the server side of the data portal?<br /><br />That said, what Paul is experiencing in the IIS environment may actually be due to an (side) effect the issue may have on the WCF stack, perhaps causing it to leak connections? Interestingly I've run into issue in the past we're if code doesn't "guarantee" WCF connections to be closed and disposed that you suddenly start running out of available connections and your scaling declines. Perhaps it's related to what we interpret as the "hang" which in itself doesn't raise / throw exceptions - just stops working from the client's point of view. Paul's mileage may vary.<br /><br />* I'm not so sure about a compiler directive since we treat CSLA as a 3rd party black box and so our development only uses Release builds of CSLA, even when still doing development. That could mean we would always be excluded from the "Design Time Experience" offered by CSLA if using compiler directives.<br /><br />* It all may be a moot point with the advent of VS2010, so perhaps the suggested change is sufficient to carry us over until then. As a point of curiosity, what is the "new way" with VS 2010?<br /><br />* What are the practical ramifications for development if the IsInDesignTime property just returns false? E.g. Would Grids (windows or web) still discover the properties of the BO, etc.?</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, December 23, 2009</h2><P>And the change you made was to ensure that IsInDesignMode returns false?</P>
+<P>If that property was, for example, hard-coded to return false the only impact is that no design time sample data would be rendered in Expression Blend or VS08 when someone is designing&nbsp;a XAML UI that binds to a business object.</P>
+<P>The designer still works, there's just no generated sample data.</P>
+<P>As I mentioned, VS10 has a different model for generating sample data in the designer, so as far as I know this whole feature of the data portal becomes meaningless in 4.0.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jaans replied on Wednesday, December 23, 2009</h2>Here is the changed code (DataPortal.cs):<br /><br />    #region Design Time Support<br /><br />    /// <br />    /// Gets a value indicating whether the code is running<br />    /// in WPF design mode.<br />    /// <br />    public static bool IsInDesignMode<br />    {<br />        get<br />        {<br />            if ( System.Web.HttpContext.Current != null || System.Windows.Application.Current == null )<br />                return false;<br />            else<br />                return DesignerProperties.GetIsInDesignMode( new DependencyObject() );<br />        }<br />    }<br /><br />    #endregion<br /><br />So if I understand correctly, having that property always return false will just impact having dummy/sample data when binding UI in XAML?<br /><br />Furthermore, it does not affect Web Applications or Windows Forms Application's ability to discover the "Schema" of the business object? (Not talking about data for that schema, merely that the designer knows that there is (for example) an OrderId property that is read only on the BO?<br /><br />If that's the case I personally am not bothered to have sample data for XAML UI Binding. Not sure about other users, but for us it would not impact productivity or ease of use of CSLA business objects in the respective designers.<br /><br />Ps: I just checked the logs again, and the exception hasn't happened yet, so good news.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, December 23, 2009</h2><P>Thanks. That change will work for you, because your "client" is not a WPF app.</P>
+<P>It probably won't help others who are seeing the issue when using a WPF client app, because the DesignerProperties call would still be made, and that sure seems to be the core problem.</P>
+<P>I am beginning to think that 3.8.2 should either always return false (kind of in preparation for 4.0).</P>
+<P>Or I could add a config switch that you'd set in production - like CslaDataPortalDisableDesignMode - to turn off the feature. I'm not real happy about adding yet another config switch, but I also don't see a clean answer to this problem.</P>
+<P>It seems pretty obvious that we're dealing with some sort of bug in WPF...</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Wednesday, December 23, 2009</h2><P>I think a CslaDataPortal<STRONG>Enable</STRONG>DesignMode&nbsp; might make more sense.&nbsp; Turn it off for everyone by default (which would solve the problem for those not aware of the issue), and those that want design time data can enable it.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, December 23, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I agree that an &#8220;enable&#8221; switch would make more sense. But it
+needs to be enabled in VS and Blend, where we have no way of providing a config
+file to enable the feature&#8230;</span><b><span><o:p></o:p></span></b></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Paul Czywczynski replied on Wednesday, December 23, 2009</h2>I grabbed 3.8.2 and hardwired the getter to return false. I'll deploy it out to our live customer over lunch and switch them back to our normal IIS farm from their dedicated DataPortal server. Being the holidays I don't think it'll get hammered too much so it might take a while to pop up again if this didn't fix it. I'll report back if I find anything out in the meantime.<br /></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Wednesday, December 23, 2009</h2>Can't put it in devenv.exe.config or blend.exe.config? <img src="/emoticons/emotion-1.gif" alt="Smile [:)]" /></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Paul Czywczynski replied on Thursday, December 31, 2009</h2>Quick follow up. Everything has been good this week. If we make it thru next week then I think we found the problem.<br /><br />-Paul</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jaans replied on Thursday, December 31, 2009</h2>Same here. <br /><br />Been running since 22 Dec without issue.<br /><br />Jaans</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Paul Czywczynski replied on Monday, December 21, 2009</h2>Follow up on previous questions.<br /><br />- No DataAnnotations<br /><br />- No async validation rules<br /><br />- No Linq to CSLA<br /><br />- Our DataPortal_XYZ methods do not make any calls to WPF. The client is WPF but we have not yet experienced the error in 2-tier mode.<br /><br />- We're using NLog on both the client and server.<br /><br />- We upgraded all our clients and servers to 3.51 at the beginning of this year.<br /><br />- We do host the WCF service in IIS. Inside of the WCF service on IIS we do impersonate an ActiveDirectory user to gain access to the SQL Server.<br /><br />Like Jaans, the client throws the error, nothing is reported on the DataPortal server.<br /><br />-Paul<br /><br /><br /></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, December 21, 2009</h2>Paul,<br /><br />If the exception occurs on the client, then it is in WPF right? If that is<br />true then my suggestion won't help, because the existing code will still run<br />since it is in WPF.<br /><br />I suppose we could consider removing the design-time support concept from<br />the data portal. VS10 uses a different model for generating design time data<br />anyway, so this idea of detecting design time in the business layer is<br />probably not useful long-term regardless.<br /><br />I suppose one thing to try, as a test, would be to hard-code the design time<br />method in DataPortal.cs to just always return false - entirely eliminating<br />the actual check.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Tuesday, December 22, 2009</h2>Hi all,<br><br>How about adding a compiler directive: <br><br><font size="2">&nbsp;&nbsp;&nbsp; public static bool IsInDesignMode<br>&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; get<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>#if DEBUG<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return DesignerProperties.GetIsInDesignMode(new DependencyObject());<br>#else <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return false;<br>#endif<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>&nbsp;&nbsp;&nbsp; }<br></font><br>System.Windows.Application (and DependencyObject) both inherits from System.Windows.Threading which seems to be where the exception occurs. The constructor for System.Windows.Application (following the Singelton pattern) also creates threads and calls BeginInvoke. <br><br>After all -this is a support feature for development and I would propose to exclude that feature from a&nbsp; "Release" build. <br><br>Another solution would be to add a new configuration flag like ForceNoDesignMode and test for this flag before DesignerProperties is called if you need to have a release build with designer support. <br><br>Would it be possible for you guys to try this out in your environment? <br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Paul Czywczynski replied on Tuesday, December 22, 2009</h2>Rocky, this is the exception from one of our customer's client application log file. This is the only time I see the error, when it is returned in a DataPortalException. Nothing is ever logged on the server. It's a cascade affect. Once one client instance fails with this error they all start to fail until that DataPortal's app pool is restarted.<br /><br /><br />=== Unhandled Exception occured === <br />DateTime: 12/2/2009 12:24:29 PM<br />FX Version: 14.2.9336.1007<br />OS Version: Microsoft Windows NT 5.2.3790 Service Pack 2<br />TWFX.exe Error: 0 : Csla.DataPortalException: DataPortal.Fetch failed (The system cannot find the file specified) ---> Csla.Reflection.CallMethodException: DataPortal_Fetch method call failed ---> System.ComponentModel.Win32Exception: The system cannot find the file specified<br />   at MS.Win32.UnsafeNativeMethods.RegisterClassEx(WNDCLASSEX_D wc_d)<br />   at MS.Win32.HwndWrapper..ctor(Int32 classStyle, Int32 style, Int32 exStyle, Int32 x, Int32 y, Int32 width, Int32 height, String name, IntPtr parent, HwndWrapperHook[] hooks)<br />   at MS.Win32.MessageOnlyHwndWrapper..ctor()<br />   at System.Windows.Threading.Dispatcher..ctor()<br />   at System.Windows.Threading.Dispatcher.get_CurrentDispatcher()<br />   at System.Windows.DependencyObject..ctor()<br />   at Csla.DataPortal.GetDataPortalProxy(Boolean forceLocal)<br />   at Csla.DataPortal.Fetch(Type objectType, Object criteria)<br />   at Csla.DataPortal.Fetch[T](Object criteria)<br />   at TWFX.BusinessObjects.Entities.Tasking.WorkflowOriginCollection.GetWorkflowOriginCollection(Byte[] TS, LinkingType Type)<br />   at TWFX.BusinessObjects.Entities.Tasking.ScheduledNotificationCollection.ExecuteFetch(FilterCriteria criteria)<br />   at TWFX.BusinessObjects.Entities.Tasking.ScheduledNotificationCollection.DataPortal_Fetch(FilterCriteria criteria)<br />   at dm(Object , Object[] )<br />   at Csla.Reflection.MethodCaller.CallMethod(Object obj, DynamicMethodHandle methodHandle, Object[] parameters)<br />   --- End of inner exception stack trace ---<br />   at MS.Win32.UnsafeNativeMethods.RegisterClassEx(WNDCLASSEX_D wc_d)<br />   at MS.Win32.HwndWrapper..ctor(Int32 classStyle, Int32 style, Int32 exStyle, Int32 x, Int32 y, Int32 width, Int32 height, String name, IntPtr parent, HwndWrapperHook[] hooks)<br />   at MS.Win32.MessageOnlyHwndWrapper..ctor()<br />   at System.Windows.Threading.Dispatcher..ctor()<br />   at System.Windows.Threading.Dispatcher.get_CurrentDispatcher()<br />   at System.Windows.DependencyObject..ctor()<br />   at Csla.DataPortal.GetDataPortalProxy(Boolean forceLocal)<br />   at Csla.DataPortal.Fetch(Type objectType, Object criteria)<br />   at Csla.DataPortal.Fetch[T](Object criteria)<br />   at TWFX.BusinessObjects.Entities.Tasking.WorkflowOriginCollection.GetWorkflowOriginCollection(Byte[] TS, LinkingType Type)<br />   at TWFX.BusinessObjects.Entities.Tasking.ScheduledNotificationCollection.ExecuteFetch(FilterCriteria criteria)<br />   at TWFX.BusinessObjects.Entities.Tasking.ScheduledNotificationCollection.DataPortal_Fetch(FilterCriteria criteria)<br />   at dm(Object , Object[] )<br />   at Csla.Reflection.MethodCaller.CallMethod(Object obj, DynamicMethodHandle methodHandle, Object[] parameters)<br />   at Csla.Reflection.MethodCaller.CallMethod(Object obj, DynamicMethodHandle methodHandle, Object[] parameters)<br />   at Csla.Reflection.MethodCaller.CallMethod(Object obj, String method, Object[] parameters)<br />   at Csla.Server.SimpleDataPortal.Fetch(Type objectType, Object criteria, DataPortalContext context)<br />   --- End of inner exception stack trace ---<br />   at MS.Win32.UnsafeNativeMethods.RegisterClassEx(WNDCLASSEX_D wc_d)<br />   at MS.Win32.HwndWrapper..ctor(Int32 classStyle, Int32 style, Int32 exStyle, Int32 x, Int32 y, Int32 width, Int32 height, String name, IntPtr parent, HwndWrapperHook[] hooks)<br />   at MS.Win32.MessageOnlyHwndWrapper..ctor()<br />   at System.Windows.Threading.Dispatcher..ctor()<br />   at System.Windows.Threading.Dispatcher.get_CurrentDispatcher()<br />   at System.Windows.DependencyObject..ctor()<br />   at Csla.DataPortal.GetDataPortalProxy(Boolean forceLocal)<br />   at Csla.DataPortal.Fetch(Type objectType, Object criteria)<br />   at Csla.DataPortal.Fetch[T](Object criteria)<br />   at TWFX.BusinessObjects.Entities.Tasking.WorkflowOriginCollection.GetWorkflowOriginCollection(Byte[] TS, LinkingType Type)<br />   at TWFX.BusinessObjects.Entities.Tasking.ScheduledNotificationCollection.ExecuteFetch(FilterCriteria criteria)<br />   at TWFX.BusinessObjects.Entities.Tasking.ScheduledNotificationCollection.DataPortal_Fetch(FilterCriteria criteria)<br />   at dm(Object , Object[] )<br />   at Csla.Reflection.MethodCaller.CallMethod(Object obj, DynamicMethodHandle methodHandle, Object[] parameters)<br />   at Csla.Reflection.MethodCaller.CallMethod(Object obj, DynamicMethodHandle methodHandle, Object[] parameters)<br />   at Csla.Reflection.MethodCaller.CallMethod(Object obj, String method, Object[] parameters)<br />   at Csla.Server.SimpleDataPortal.Fetch(Type objectType, Object criteria, DataPortalContext context)<br />   at TWFX.Win.Helpers.ExceptionHandler(Exception exception, Boolean AllowNavigateBack)<br />   at TWFX.Win.App.ExceptionHandler(Object sender, Exception e)<br />   at TWFX.Win.App.Current_DispatcherUnhandledException(Object sender, DispatcherUnhandledExceptionEventArgs e)<br />   at System.Windows.Threading.Dispatcher.CatchException(Exception e)<br />   at System.Windows.Threading.Dispatcher.CatchExceptionStatic(Object source, Exception e)<br />   at System.Windows.Threading.ExceptionWrapper.CatchException(Object source, Exception e, Delegate catchHandler)<br />   at System.Windows.Threading.ExceptionWrapper.TryCatchWhen(Object source, Delegate callback, Object args, Boolean isSingleParameter, Delegate catchHandler)<br />   at System.Windows.Threading.Dispatcher.WrappedInvoke(Delegate callback, Object args, Boolean isSingleParameter, Delegate catchHandler)<br />   at System.Windows.Threading.DispatcherOperation.InvokeImpl()<br />   at System.Windows.Threading.DispatcherOperation.InvokeInSecurityContext(Object state)<br />   at System.Threading.ExecutionContext.runTryCode(Object userData)<br />   at System.Runtime.CompilerServices.RuntimeHelpers.ExecuteCodeWithGuaranteedCleanup(TryCode code, CleanupCode backoutCode, Object userData)<br />   at System.Threading.ExecutionContext.RunInternal(ExecutionContext executionContext, ContextCallback callback, Object state)<br />   at System.Threading.ExecutionContext.Run(ExecutionContext executionContext, ContextCallback callback, Object state)<br />   at System.Windows.Threading.DispatcherOperation.Invoke()<br />   at System.Windows.Threading.Dispatcher.ProcessQueue()<br />   at System.Windows.Threading.Dispatcher.WndProcHook(IntPtr hwnd, Int32 msg, IntPtr wParam, IntPtr lParam, Boolean&amp; handled)<br />   at MS.Win32.HwndWrapper.WndProc(IntPtr hwnd, Int32 msg, IntPtr wParam, IntPtr lParam, Boolean&amp; handled)<br />   at MS.Win32.HwndSubclass.DispatcherCallbackOperation(Object o)<br />   at System.Windows.Threading.ExceptionWrapper.InternalRealCall(Delegate callback, Object args, Boolean isSingleParameter)<br />   at System.Windows.Threading.ExceptionWrapper.TryCatchWhen(Object source, Delegate callback, Object args, Boolean isSingleParameter, Delegate catchHandler)<br />   at System.Windows.Threading.Dispatcher.WrappedInvoke(Delegate callback, Object args, Boolean isSingleParameter, Delegate catchHandler)<br />   at System.Windows.Threading.Dispatcher.InvokeImpl(DispatcherPriority priority, TimeSpan timeout, Delegate method, Object args, Boolean isSingleParameter)<br />   at System.Windows.Threading.Dispatcher.Invoke(DispatcherPriority priority, Delegate method, Object arg)<br />   at MS.Win32.HwndSubclass.SubclassWndProc(IntPtr hwnd, Int32 msg, IntPtr wParam, IntPtr lParam)<br />   at MS.Win32.UnsafeNativeMethods.DispatchMessage(MSG&amp; msg)<br />   at System.Windows.Threading.Dispatcher.PushFrameImpl(DispatcherFrame frame)<br />   at System.Windows.Threading.Dispatcher.PushFrame(DispatcherFrame frame)<br />   at System.Windows.Window.ShowHelper(Object booleanBox)<br />   at System.Windows.Window.Show()<br />   at System.Windows.Window.ShowDialog()<br />   at TWFX.Win.MainWindow.OpenDialog(Window dlg, Boolean isModal)<br />   at TWFX.Win.MainWindow.AddAssociateCommandExecuted(Object sender, ExecutedRoutedEventArgs e)<br />   at System.Windows.Input.CommandBinding.OnExecuted(Object sender, ExecutedRoutedEventArgs e)<br />   at System.Windows.Input.CommandManager.ExecuteCommandBinding(Object sender, ExecutedRoutedEventArgs e, CommandBinding commandBinding)<br />   at System.Windows.Input.CommandManager.FindCommandBinding(CommandBindingCollection commandBindings, Object sender, RoutedEventArgs e, ICommand command, Boolean execute)<br />   at System.Windows.Input.CommandManager.FindCommandBinding(Object sender, RoutedEventArgs e, ICommand command, Boolean execute)<br />   at System.Windows.Input.CommandManager.OnExecuted(Object sender, ExecutedRoutedEventArgs e)<br />   at System.Windows.UIElement.OnExecutedThunk(Object sender, ExecutedRoutedEventArgs e)<br />   at System.Windows.Input.ExecutedRoutedEventArgs.InvokeEventHandler(Delegate genericHandler, Object target)<br />   at System.Windows.RoutedEventArgs.InvokeHandler(Delegate handler, Object target)<br />   at System.Windows.RoutedEventHandlerInfo.InvokeHandler(Object target, RoutedEventArgs routedEventArgs)<br />   at System.Windows.EventRoute.InvokeHandlersImpl(Object source, RoutedEventArgs args, Boolean reRaised)<br />   at System.Windows.UIElement.RaiseEventImpl(DependencyObject sender, RoutedEventArgs args)<br />   at System.Windows.UIElement.RaiseEvent(RoutedEventArgs args, Boolean trusted)<br />   at System.Windows.Input.RoutedCommand.ExecuteImpl(Object parameter, IInputElement target, Boolean userInitiated)<br />   at System.Windows.Input.RoutedCommand.ExecuteCore(Object parameter, IInputElement target, Boolean userInitiated)<br />   at MS.Internal.Commands.CommandHelpers.CriticalExecuteCommandSource(ICommandSource commandSource, Boolean userInitiated)<br />   at System.Windows.Controls.Primitives.ButtonBase.OnClick()<br />   at System.Windows.Controls.Button.OnClick()<br />   at System.Windows.Controls.Primitives.ButtonBase.OnMouseLeftButtonUp(MouseButtonEventArgs e)<br />   at System.Windows.UIElement.OnMouseLeftButtonUpThunk(Object sender, MouseButtonEventArgs e)<br />   at System.Windows.Input.MouseButtonEventArgs.InvokeEventHandler(Delegate genericHandler, Object genericTarget)<br />   at System.Windows.RoutedEventArgs.InvokeHandler(Delegate handler, Object target)<br />   at System.Windows.RoutedEventHandlerInfo.InvokeHandler(Object target, RoutedEventArgs routedEventArgs)<br />   at System.Windows.EventRoute.InvokeHandlersImpl(Object source, RoutedEventArgs args, Boolean reRaised)<br />   at System.Windows.UIElement.ReRaiseEventAs(DependencyObject sender, RoutedEventArgs args, RoutedEvent newEvent)<br />   at System.Windows.UIElement.CrackMouseButtonEventAndReRaiseEvent(DependencyObject sender, MouseButtonEventArgs e)<br />   at System.Windows.UIElement.OnMouseUpThunk(Object sender, MouseButtonEventArgs e)<br />   at System.Windows.Input.MouseButtonEventArgs.InvokeEventHandler(Delegate genericHandler, Object genericTarget)<br />   at System.Windows.RoutedEventArgs.InvokeHandler(Delegate handler, Object target)<br />   at System.Windows.RoutedEventHandlerInfo.InvokeHandler(Object target, RoutedEventArgs routedEventArgs)<br />   at System.Windows.EventRoute.InvokeHandlersImpl(Object source, RoutedEventArgs args, Boolean reRaised)<br />   at System.Windows.UIElement.RaiseEventImpl(DependencyObject sender, RoutedEventArgs args)<br />   at System.Windows.UIElement.RaiseEvent(RoutedEventArgs args, Boolean trusted)<br />   at System.Windows.Input.InputManager.ProcessStagingArea()<br />   at System.Windows.Input.InputManager.ProcessInput(InputEventArgs input)<br />   at System.Windows.Input.InputProviderSite.ReportInput(InputReport inputReport)<br />   at System.Windows.Interop.HwndMouseInputProvider.ReportInput(IntPtr hwnd, InputMode mode, Int32 timestamp, RawMouseActions actions, Int32 x, Int32 y, Int32 wheel)<br />   at System.Windows.Interop.HwndMouseInputProvider.FilterMessage(IntPtr hwnd, Int32 msg, IntPtr wParam, IntPtr lParam, Boolean&amp; handled)<br />   at System.Windows.Interop.HwndSource.InputFilterMessage(IntPtr hwnd, Int32 msg, IntPtr wParam, IntPtr lParam, Boolean&amp; handled)<br />   at MS.Win32.HwndWrapper.WndProc(IntPtr hwnd, Int32 msg, IntPtr wParam, IntPtr lParam, Boolean&amp; handled)<br />   at MS.Win32.HwndSubclass.DispatcherCallbackOperation(Object o)<br />   at System.Windows.Threading.ExceptionWrapper.InternalRealCall(Delegate callback, Object args, Boolean isSingleParameter)<br />   at System.Windows.Threading.ExceptionWrapper.TryCatchWhen(Object source, Delegate callback, Object args, Boolean isSingleParameter, Delegate catchHandler)<br />   at System.Windows.Threading.Dispatcher.WrappedInvoke(Delegate callback, Object args, Boolean isSingleParameter, Delegate catchHandler)<br />   at System.Windows.Threading.Dispatcher.InvokeImpl(DispatcherPriority priority, TimeSpan timeout, Delegate method, Object args, Boolean isSingleParameter)<br />   at System.Windows.Threading.Dispatcher.Invoke(DispatcherPriority priority, Delegate method, Object arg)<br />   at MS.Win32.HwndSubclass.SubclassWndProc(IntPtr hwnd, Int32 msg, IntPtr wParam, IntPtr lParam)<br />   at MS.Win32.UnsafeNativeMethods.DispatchMessage(MSG&amp; msg)<br />   at System.Windows.Threading.Dispatcher.PushFrameImpl(DispatcherFrame frame)<br />   at System.Windows.Threading.Dispatcher.PushFrame(DispatcherFrame frame)<br />   at System.Windows.Threading.Dispatcher.Run()<br />   at System.Windows.Application.RunDispatcher(Object ignore)<br />   at System.Windows.Application.RunInternal(Window window)<br />   at System.Windows.Application.Run(Window window)<br />   at System.Windows.Application.Run()<br />   at TWFX.Win.App.Main()<br />    ProcessId=25616<br />    ThreadId=1</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, January 12, 2010</h2><P>Is this the final solution:</P>
+<P>&nbsp;&nbsp;&nbsp; public static bool IsInDesignMode<BR>&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; get <BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (System.Web.HttpContext.Current != null || System.Windows.Application.Current == null)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return false;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; else<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return DesignerProperties.GetIsInDesignMode(new DependencyObject()); <BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<BR>&nbsp;&nbsp;&nbsp; }</P>
+<P>Now that a couple of you have run this (or some) code for a while, is this a good solution?</P>
+<P>Or did you entirely disable design mode by hard-coding this to return false?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Paul Czywczynski replied on Tuesday, January 12, 2010</h2>I hard-coded a return false because us old school xaml guys never use a designer :)<br /></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jaans replied on Tuesday, January 12, 2010</h2><P><FONT size=2 face=Verdana>We&nbsp;used the alternative property implementation (instead of just returning false) and seems to work just fine.<BR><BR>I'm not bothered about it... returning just false is "A-OK" with me.</FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>chachek replied on Wednesday, May 05, 2010</h2><p>We just started getting this exception.</p>
+<p>Rocky, is this fixed in most current release of CSLA 3.8.x ?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, May 05, 2010</h2><p>Yes, I think it was fixed in 3.8.2, but for sure in 3.8.3. Basically we just disabled the design time data support for WPF and Silverlight.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tmg4340 replied on Tuesday, December 22, 2009</h2><P><FONT face=Tahoma size=2>I may be wrong, but I don't think Paul is saying the exception is happening on his WPF client - I think he's saying he doesn't <EM>see</EM> it until it gets back to his client.&nbsp; If you look at Paul's stack trace, the exception is coming back in a DataPortalException, so I think it's still happening in his IIS-hosted WCF DataPortal - which should still fit the criteria for the potential issue.</FONT></P>
+<P><FONT face=Tahoma size=2>Like I said earlier, I still think it would be useful to re-work the design-time indicator, especially in light of your comments about how VS changed design-time behavior in VS 2010 anyway.&nbsp; While I'm not a fan of compiler directives, Jonny's suggestion isn't a bad one - presumably, people aren't using debug builds in production, and they probably aren't using debug builds for load-testing either.&nbsp; Other than that, I think the "Are we on the server?" checks we have would be another good place to start.&nbsp; While the System.Windows.Application object does use some of the same threading code as a DependencyObject, the "Current" property is guaranteed to be thread-safe, which may combat this issue.</FONT></P>
+<P><FONT face=Tahoma size=2>HTH</FONT></P>
+<P><FONT face=Tahoma size=2>- Scott</FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, December 22, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>The stack trace shows the exception occurring when the data
+portal is getting the proxy &#8211; that&#8217;s client-side code.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>And to lend strength to the theory, the first thing
+GetDataPortalProxy() does is check IsInDesignMode, and it uses a DependencyObject
+and (presumably behind the scenes) the WPF Dispatcher object &#8211; all of which are
+in the stack trace.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>So I&#8217;m pretty sure JonnyBee&#8217;s solution would fix the issue &#8211; or just
+hard-coding IsInDesignMode to return false.<o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, January 12, 2010</h2><P>That's why I'm asking :)</P>
+<P>It might be simplest to just make 3.8.2 return false and be done with it, as in 4.0 I plan to drop the concept entirely anyway.</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

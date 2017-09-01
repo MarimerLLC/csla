@@ -1,0 +1,10 @@
+<html><header><title>Bug in CancelEdit CSLA Editable Child List</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Bug in CancelEdit CSLA Editable Child List</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3854.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>boo posted on Wednesday, November 07, 2007</h2><P>Not sure if this has been reported.&nbsp; To reproduce.</P>
+<P>EditableParent, Contains EditableChildList.</P>
+<P>Two properties in child object (that&nbsp;composes the&nbsp;list), X (read only string), Y (editable string).&nbsp; The unique id of child object is based off a GUID.</P>
+<P>In your unit test, create the parent, and add 2 items to the child list.&nbsp; Save.</P>
+<P>After the parent is old and not dirty, do a BeginEdit.</P>
+<P>Clear the editable child list.</P>
+<P>Do a CancelEdit.</P>
+<P>Notice now that the items in the child list have swapped.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, November 07, 2007</h2><P>Undeleting items from a list doesn't result in the items being returned to their original locations. While this could be a bug, I prefer to view it as a "feature" <img src="/emoticons/emotion-5.gif" alt="Wink [;)]" /></P>
+<P>The reason, is that solving this is difficult, especially if you interleave adds, deletes and clears in arbitrary orders. It isn't clear where you'd undelete an item into the list if you've added (inserted) items above/below/near the original location of the item.</P>
+<P>If you care about the order of items in the list, use SortedBindingList to get an ordered view of the items.</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,26 @@
+<html><header><title>NullReferenceException at GetRuleDescriptions</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>NullReferenceException at GetRuleDescriptions</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/2303.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Vaidal posted on Thursday, February 08, 2007</h2><P>Hi Rocky,</P>
+<P>I've got System.NullReferenceException in the variable "rules" in this section of code:</P><FONT color=#0000ff>
+<P><FONT face="Courier New" size=2>namespace</FONT></FONT><FONT face="Courier New" size=2> Csla.Validation</FONT></P>
+<P><FONT face="Courier New" size=2>{</FONT></P>
+<P><FONT face="Courier New"><FONT size=2><FONT color=#808080>///</FONT><FONT color=#008000> </FONT><FONT color=#808080>&lt;summary&gt;</P></FONT></FONT></FONT>
+<P><FONT face="Courier New"><FONT size=2><FONT color=#808080>///</FONT><FONT color=#008000> Tracks the business rules broken within a business object.</P></FONT></FONT></FONT>
+<P><FONT face="Courier New"><FONT size=2><FONT color=#808080>///</FONT><FONT color=#008000> </FONT><FONT color=#808080>&lt;/summary&gt;</P></FONT></FONT></FONT>
+<P><FONT size=2><FONT face="Courier New">[</FONT><FONT face="Courier New" color=#2b91af>Serializable</FONT><FONT face="Courier New">()]</FONT></FONT></P>
+<P><FONT size=2><FONT face="Courier New"><FONT color=#0000ff>public</FONT> <FONT color=#0000ff>class</FONT></FONT><FONT face="Courier New"> ValidationRules</FONT></FONT></P>
+<P><FONT face="Courier New" size=2>{</FONT></P>
+<P><FONT face="Courier New" size=2>&nbsp; [...]</FONT></P>
+<P><FONT size=2><FONT face="Courier New">&nbsp; </FONT><FONT face="Courier New"><FONT color=#0000ff>public</FONT> <FONT color=#0000ff>string</FONT></FONT><FONT face="Courier New">[] GetRuleDescriptions()</FONT></FONT></P>
+<P><FONT face="Courier New" size=2>&nbsp; {</FONT></P>
+<BLOCKQUOTE dir=ltr>
+<P><FONT size=2><FONT face="Courier New"><FONT color=#2b91af>List</FONT>&lt;<FONT color=#0000ff>string</FONT>&gt; result = <FONT color=#0000ff>new</FONT> <FONT color=#2b91af>List</FONT>&lt;<FONT color=#0000ff>string</FONT></FONT><FONT face="Courier New">&gt;();</FONT></FONT></P>
+<P><FONT face="Courier New" size=2>ValidationRulesManager rules = RulesToCheck;</FONT></P>
+<P><FONT size=2><FONT face="Courier New"><FONT color=#0000ff>foreach</FONT> (<FONT color=#2b91af>KeyValuePair</FONT>&lt;<FONT color=#0000ff>string</FONT>, RulesList&gt; de <FONT color=#0000ff>in</FONT></FONT><FONT face="Courier New"> <FONT color=#ffff00><FONT color=#000000><STRONG><U>rules.</U></STRONG></FONT></FONT>RulesDictionary)</FONT></FONT></P>
+<P><FONT size=2><FONT face="Courier New"><FONT color=#0000ff>&nbsp; foreach</FONT> (IRuleMethod rule <FONT color=#0000ff>in</FONT> de.Value.GetList(<FONT color=#0000ff>false</FONT></FONT><FONT face="Courier New">))</FONT></FONT></P>
+<P><FONT face="Courier New" size=2>&nbsp;&nbsp;&nbsp; result.Add(rule.ToString());</FONT></P>
+<P><FONT size=2><FONT face="Courier New" color=#0000ff>return</FONT><FONT face="Courier New"> result.ToArray();</FONT></FONT></P></BLOCKQUOTE>
+<P dir=ltr><FONT face="Courier New" size=2>&nbsp; }</FONT></P>
+<P><FONT face="Courier New" size=2>}</FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, February 08, 2007</h2>Which version of CSLA? And under what condition?</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Vaidal replied on Friday, February 09, 2007</h2><P>We are using CSLA 201cs</P>
+<P>The problem appears in a test project with a BusinessListBase&nbsp;(without&nbsp;parent) that is binded to a devexpress grid. </P>
+<P>You must check if rules variable is null before the call to rules.RulesDictionary.<FONT size=2></P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, February 20, 2007</h2><P>I'm trying to address a couple issues related to a BLB root - but I can't replicate the problems you guys are seeing. Please refer to this thread, where I posted a sample app and some instructions on how you can help isolate the issue.</P>
+<P><A HREF="/forums/12341/ShowThread.aspx#12341">http://forums.lhotka.net/forums/12341/ShowThread.aspx#12341</A></P>
+<P>Thanks!</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,10 @@
+<html><header><title>Stack overflow, recursive BOs?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Stack overflow, recursive BOs?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/1362.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Kinergy posted on Saturday, September 30, 2006</h2><P>Hi, I thought I was exceedingly clever with my BO design and everything worked fine until I tried to bind an EditableRootList to a DataGridView. If anybody can help, it would be much appreciated! Here's what I did:</P>
+<P>State: EditableRoot<BR>-Products: EditableRootList of Product: EditableChild</P>
+<P>Product also contains:</P>
+<P>private State _state;</P>
+<P>which introduces potential cyclical references.</P>
+<P>The problem is that UndoableBase:CopyState() crashes with a stack overflow when I bind Products to a DataGridView. When I remove _state, everything works fine, but I need each of my BOs to have a reference to the top most BO so they can traverse the tree and access other objects as necessary. How can I fix my problem?</P>
+<P>TIA,<BR>K</P>
+<P>PS. I'm using CSLA 2.1 RC1, it looks really nice! I'm looking forward to using the filtered lists in a few days, just what I needed!</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Kinergy replied on Saturday, September 30, 2006</h2><P>Never mind...</P>
+<P>[NotUndoable()] fixed my problem!</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

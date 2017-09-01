@@ -1,0 +1,12 @@
+<html><header><title>Collection with Parent reference</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Collection with Parent reference</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4143.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>FreeAsInBeer posted on Thursday, January 10, 2008</h2>Hi all,<br><br>I've been afk for about 6 months :), but I'm back with some nooby questions!!!<br><br>I have the same situation mentioned here;<br><br>http://forums.lhotka.net/forums/permalink/13793/13787/ShowThread.aspx#13787<br><br>Root<br>&nbsp;contains Col1<br>&nbsp;&nbsp; contains ChildA objects<br><br>I need Col1 to have a reference to Root. <br><br>In Col1 I have a method that does a check like this;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br><blockquote>if (ChildA.Size &gt; Root.MaximumChildSize) throw SomeException<br></blockquote><br>This is just one example, there are others. This isn't a validation thing, it's a check in an Add/Assign etc.<br><br>However, in another post i read this;<br><br><blockquote><span>One of the
+basic OOP principles to keep in mind is program to an interface and not an
+implementation.<span>&nbsp; </span>A child should not have
+a reference to its concrete parent.<span>&nbsp; </span>A
+child should know as little about its parent as possible.<span>&nbsp; </span>It is not a good idea for the child to have a
+reference to its parent because it becomes tightly-coupled with its parent.<span>&nbsp; </span>This creates a rigid design and does not make
+your child reusable.<span>&nbsp; </span>The most common way
+to solve your problem is to abstract out what your child needs into an
+interface or abstract class.<span>&nbsp; </span>The parent
+should implement this interface and the child should only reference the parent
+through this interface.<br></span></blockquote><span></span><br>My dilemna - the 'SetParent and [NonSerialized(), NotUndoable()]' way or the 'OOP interface' way. <br><br>Does anyone have a working c# sample of the SetParent way that they could please share?<br><br>thanks in advance<br>FiaB<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>SomeGuy replied on Thursday, January 10, 2008</h2><P>You could also have root monitor col1 for changes and throw the exception.</P>
+<P>&nbsp;</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

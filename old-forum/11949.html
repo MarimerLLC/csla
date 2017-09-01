@@ -1,0 +1,20 @@
+<html><header><title>Naming layers/tiers</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Naming layers/tiers</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11949.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka posted on Monday, April 22, 2013</h2><p>Prior to version 4.5 the data portal supported 3- and 4-tier deployments.</p>
+<p>In a 3-tier deployment the layers and tiers are named like this:</p>
+<p>Client -&gt; Server -&gt; &lt;your database goes here&gt;<br />&nbsp;&nbsp;&nbsp; or<br />Silverlight -&gt; Client -&gt;&nbsp; &lt;your database goes here&gt;</p>
+<p>In a 4-tier deployment the layers and tiers are named like this:</p>
+<p>Silverlight -&gt; Client -&gt; Server -&gt; &lt;your database goes here&gt;</p>
+<p>We now face a problem I didn&#39;t really anticipate, because in 4.5.30 and higher you&#39;ll be able to use the &quot;Silverlight&quot; or Mobile data portal implementation in a pure .NET environment.</p>
+<p>Sadly this results in something like this:</p>
+<p>Client -&gt; Client -&gt; &lt;your database goes here&gt;<br />&nbsp;&nbsp;&nbsp; or<br />Client -&gt; Client -&gt; Server -&gt; &lt;your database goes here&gt;</p>
+<p>Obviously this is confusing and blocks effective use of the ExecutionLocation app setting property.</p>
+<p>Behind the scenes the way this works is pretty simple. As the server-side data portal starts its processing it sets the ExecutionLocation property.</p>
+<ul>
+<li>The original .NET data portal host sets the value to Server.</li>
+<li>The Mobile data portal host sets the value to Client.</li>
+</ul>
+<p>I could make the Mobile data portal host set the value to Server, and that would solve the 1-, 2-, and 3-tier scenarios. But that&#39;d leave the 4-tier scenario with two &quot;Server&quot; values.</p>
+<p>I could make the server-side data portal default to Server, but also add an AppServer value that you can specify via a setting in web.config. That would allow the most back-end server to be different in a 4-tier setting.</p>
+<p>Client -&gt;&nbsp;Server -&gt; AppServer -&gt; &lt;your database goes here&gt;</p>
+<p>Or I could make the server-side data portal default to Server, but also add a WebServer value that you can specify via a setting in web.config. That would allow the middle DMZ server to be different in a 4-tier setting.</p>
+<p>Client -&gt;&nbsp;WebServer -&gt; Server -&gt; &lt;your database goes here&gt;</p>
+<p>Thoughts?</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

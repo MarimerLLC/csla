@@ -1,0 +1,31 @@
+<html><header><title>No Role present when applying authorization rules</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>No Role present when applying authorization rules</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/1826.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>f.scherer posted on Friday, November 24, 2006</h2><P>Hi,</P>
+<P>my login works the same way as in the projecttracker application. I run a stored procedure which returns the in a first resultset the name of the person which logged in&nbsp;and in a second resultset the role in which ther person is in.</P><FONT size=2>
+<P>m.Parameters.AddWithValue(</FONT><FONT color=#800000 size=2>"@username"</FONT><FONT size=2>, criteria.Username)</P>
+<P>cm.Parameters.AddWithValue(</FONT><FONT color=#800000 size=2>"@password"</FONT><FONT size=2>, criteria.Password)</P>
+<P></FONT><FONT color=#0000ff size=2>Using</FONT><FONT size=2> dr </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> SqlDataReader = cm.ExecuteReader()</P>
+<P></FONT><FONT color=#0000ff size=2>If</FONT><FONT size=2> dr.Read() </FONT><FONT color=#0000ff size=2>Then</P></FONT><FONT size=2>
+<P>mName = criteria.Username</P>
+<P>mIsAuthenticated = </FONT><FONT color=#0000ff size=2>True</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>If</FONT><FONT size=2> dr.NextResult </FONT><FONT color=#0000ff size=2>Then</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>While</FONT><FONT size=2> dr.Read</P>
+<P>mRoles.Add(dr.GetString(0))</P>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>While</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>If</FONT></P>
+<P><FONT color=#0000ff size=2><FONT color=#000000 size=3>Now the role is added to the mRoles list. The problem is that if i want to use the role to set up the page look (also like the example) i always get a "false" when calling "object.caneditobject" for example.</FONT></FONT></P>
+<P><FONT color=#0000ff size=2><FONT color=#000000 size=3>Did somebody have the same problem yet? Thanks for your help in advance,</FONT></FONT></P>
+<P>Frank.<FONT color=#0000ff size=2></P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>f.scherer replied on Friday, November 24, 2006</h2><P>Hello??</P>
+<P>I had this working in another application. What happened there was that when the IsInRole Mehtod was called the corresponding method in the principal class was adressed. </P><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Shared</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Function</FONT><FONT size=2> CanEditObject() </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Boolean</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>If</FONT><FONT size=2> Csla.ApplicationContext.User.IsInRole(</FONT><FONT color=#800000 size=2>"GS"</FONT><FONT size=2>) </FONT><FONT color=#0000ff size=2>Then</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Return</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>True</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>If</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Return</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>False</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Function</FONT></P>
+<P><FONT color=#000000>Now it is not adressing the principal class anymore. I don´t know why. </FONT></P>
+<P>Thanks for your help in advance.</P>
+<P>Frank.</P>
+<P><FONT color=#0000ff size=2>&nbsp;</P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Monday, November 27, 2006</h2>Did you check the principal and identity to ensure its what you think it is?<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>f.scherer replied on Monday, November 27, 2006</h2><P>hi <STRONG>ajj3085 </STRONG></P>
+<P><STRONG>i just found out.... i forgot&nbsp;to add the global.asax file. There i had to add the application_acquireRequestState. After doing that, everthing is working fine now.</STRONG></P>
+<P>Thx,</P>
+<P>&nbsp;</P>
+<P>Frank</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

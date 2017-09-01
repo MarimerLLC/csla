@@ -1,0 +1,287 @@
+<html><header><title>Using CSLA .NET 3.0 ebook available (and CSLA .NET 3.0.2)</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Using CSLA .NET 3.0 ebook available (and CSLA .NET 3.0.2)</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3615.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka posted on Friday, September 28, 2007</h2>CSLA .NET version&nbsp;3.0 adds support for Microsoft .NET 3.0 features. This ~120 page ebook covers how to use these new capabilities: 
+<P></P>
+<UL>
+<LI>Windows Presentation Foundation (WPF) 
+<UL>
+<LI>Creating&nbsp;WPF forms using business objects 
+<LI>Using the new controls in the Csla.Wpf namespace 
+<UL>
+<LI>CslaDataProvider 
+<LI>Validator 
+<LI>Authorizer 
+<LI>ObjectStatus 
+<LI>IdentityConverter</LI></UL>
+<LI>Maximizing XAML and minimizing C#/VB code</LI></UL>
+<LI>Windows Communication Foundation (WCF) 
+<UL>
+<LI>Using the new WCF data portal channel to seamlessly upgrade from Remoting, Web services or Enterprise Services 
+<LI>Building WCF services using business objects 
+<LI>Applying WCF security to encrypt data on the wire 
+<LI>Sending username/password credentials to a WCF service 
+<UL>
+<LI>Including use of the new Csla.Security.PrincipalCache class</LI></UL>
+<LI>Using the DataContract attribute instead of the Serializable attribute</LI></UL>
+<LI>Windows Workflow Foundation (WF) 
+<UL>
+<LI>Creating activities using business objects 
+<LI>Invoking a workflow from a business object 
+<LI>Using the WorkflowManager class in the Csla.Workflow namespace</LI></UL></LI></UL>
+<P>Version 3.0 is an <EM>additive update</EM>, meaning that you only need to use the .NET 3.0 features if you are using .NET 3.0. CSLA .NET 3.0 <EM>is useful <A href="http://www.lhotka.net/Article.aspx?area=4&amp;id=ac20fe4c-6afc-4176-bcb4-d74b5a370356">for people using .NET 2.0</A>!!</EM> These features include:</P>
+<UL>
+<LI>Enhancements to the validation subsystem 
+<UL>
+<LI>Friendly names for properties 
+<LI>Better null handling in the RegExMatch rule method 
+<LI>New StringMinLength rule method 
+<LI>Help for code generation through the DecoratedRuleArgs class</LI></UL>
+<LI>Data binding issues 
+<UL>
+<LI>Fixed numerous bugs in BusinessListBase to improve data binding behavior 
+<LI>Throw exception when edit levels get out of sync, making debugging easier 
+<LI>N-level undo changed to provide parity with Windows Forms data binding requirements</LI></UL>
+<LI>AutoCloneOnUpdate 
+<UL>
+<LI>Automatically clone objects when Save() is called, but only when data portal is local</LI></UL>
+<LI>Enhancements to the authorization subsystem 
+<UL>
+<LI>CanExecuteMethod() allows authorization for arbitrary methods</LI></UL></LI></UL>
+<P>CSLA .NET 3.0 includes numerous bug fixes and some feature enhancements that benefit everyone. If you are using version 2.0 or 2.1, you should consider upgrading to 3.0 to gain these benefits, even if you aren't using .NET 3.0.</P>
+<P>See the change logs for <A href="http://www.lhotka.net/Article.aspx?area=4&amp;id=0c94aa82-b975-455b-a0c5-f4f7196a2408">version 3.0</A>, <A href="http://www.lhotka.net/Article.aspx?area=4&amp;id=4534c39c-c5d8-4553-88af-bdc1c8149cbc">version 3.0.1</A> and <A href="http://www.lhotka.net/Article.aspx?area=4&amp;id=7360998d-d842-49f6-b1f0-a21b517798e3">version 3.0.2</A> for a more detailed list of changes.</P>
+<P><EM>Using CSLA .NET 3.0</EM> is completely focused on how to use the new features in version 3.0. The book does not detail the internal changes to CSLA .NET itself, so all ~120 pages help you use the enhancements added since version 2.1.</P>
+<P><FONT size=5>Get the book at </FONT><A href="http://store.lhotka.net/"><FONT size=5>store.lhotka.net</FONT></A><FONT size=5>. <BR>(C# available now, VB available in early October)</FONT></P>
+<P>Download the 3.0.2 code from the <A href="http://www.lhotka.net/cslanet/download.aspx">CSLA .NET download page</A>.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tiago replied on Sunday, September 30, 2007</h2><P>I'm using CSLA .NET 3.0.2 with Microsoft .NET 2.0.</P>
+<P>PTracker 2.1.4 works fine.</P>
+<P>BTW there is a small problem in C# version of PTracker 2.1.4. In ResourceEdit.cs&nbsp;the order of the columns in Assigned Projects changed. So the part that reads</P>
+<P><FONT face="Courier New"><FONT color=#008000 size=2>// enable/disable role column in grid<BR></FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>.AssignmentsDataGridView.Columns[3].ReadOnly = !canEdit;</P></FONT></FONT>
+<P>should read</P><FONT size=2>
+<P></FONT><FONT face="Courier New"><FONT color=#008000 size=2>// enable/disable role column in grid<BR></FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>.AssignmentsDataGridView.Columns[0].ReadOnly = !canEdit;</P></FONT></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Sunday, September 30, 2007</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I don&#8217;t think so. The Role column is column 3 (the id
+column is 0 and it is hidden), and it is the role column the code is disabling.
+<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> tiago
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Sunday, September 30, 2007 6:32 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] Using CSLA .NET 3.0 ebook available (and CSLA
+.NET 3.0.2)<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>I'm using CSLA .NET 3.0.2 with Microsoft .NET 2.0.<o:p></o:p></p>
+
+<p>PTracker 2.1.4 works fine.<o:p></o:p></p>
+
+<p>BTW there is a small problem in C# version of PTracker 2.1.4. In
+ResourceEdit.cs&nbsp;the order of the columns in Assigned Projects changed. So
+the part that reads<o:p></o:p></p>
+
+<p><span>//
+enable/disable role column in grid<br>
+</span><span>this</span><span>.AssignmentsDataGridView.Columns[3].ReadOnly
+= !canEdit;<o:p></o:p></span></p>
+
+<p>should read<o:p></o:p></p>
+
+<p><span>//
+enable/disable role column in grid<br>
+</span><span>this</span><span>.AssignmentsDataGridView.Columns[0].ReadOnly
+= !canEdit;<o:p></o:p></span></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tiago replied on Sunday, September 30, 2007</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div> 
+
+<DIV class=Section1>
+<P class=MsoNormal><SPAN>I don’t think so. The Role column is column 3 (the id column is 0 and it is hidden), and it is the role column the code is disabling. <o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Rocky</SPAN></div></BLOCKQUOTE></P>
+<P class=MsoNormal>You are right as Role is indeed column 3. I must have messed things up when I was localizing PTracker.</P>
+<P class=MsoNormal>But the ID (column 0) is hidden only if there are no Assigned Projects. If there are Assigned Projects, it is hidden until this line</P><FONT color=#0000ff size=2>
+<P><FONT face="Courier New">this</FONT></FONT><FONT size=2><FONT face="Courier New">.ResourceBindingSource.DataSource = _resource;</FONT></P></FONT>
+<P class=MsoNormal>After that it becomes visible.</P>
+<P class=MsoNormal>The same behaviour can be seen at ProjectEdit.cs</P></DIV></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Sunday, September 30, 2007</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Yeah, the fact that column 0 becomes “unhidden” has been a
+problem forever. Perhaps some ASP.NET expert knows a solution, but I’ve never
+been able to figure it out…<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> tiago
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Sunday, September 30, 2007 11:35 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: Using CSLA .NET 3.0 ebook available (and
+CSLA .NET 3.0.2)<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<blockquote>
+
+<div>
+
+<p class=MsoNormal><img id="_x0000_i1025" src="/Themes/default/images/icon-quote.gif"><strong>RockfordLhotka:</strong><o:p></o:p></p>
+
+</div>
+
+<div>
+
+<div>
+
+<p class=MsoNormal>I
+donâ€™t think so. The Role column is column 3 (the id column is 0 and it is
+hidden), and it is the role column the code is disabling. <o:p></o:p></p>
+
+<p class=MsoNormal>&nbsp;<o:p></o:p></p>
+
+<p class=MsoNormal>Rocky<o:p></o:p></p>
+
+</div>
+
+</div>
+
+<p class=MsoNormal>You
+are right as Role is indeed column 3. I must have messed things up when I was
+localizing PTracker.<o:p></o:p></p>
+
+<p class=MsoNormal>But
+the ID (column 0) is hidden only if there are no Assigned Projects. If there
+are Assigned Projects, it is hidden until this line<o:p></o:p></p>
+
+<p><span>this</span><span>.ResourceBindingSource.DataSource
+= _resource;</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal>After
+that it becomes visible.<o:p></o:p></p>
+
+<p class=MsoNormal>The
+same behaviour can be seen at ProjectEdit.cs<o:p></o:p></p>
+
+</blockquote>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockoWPB replied on Monday, October 01, 2007</h2>Can't wait for the VB version. Also do I need to get the 2.1 handbook and the 3.0 handbook to get caught up with all the changes from book?</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, October 01, 2007</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>The <i>CSLA .NET Version 2.1 Handbook</i> and <i>Using CSLA .NET
+3.0</i> are both purely additive. Which is to say that they both assume you&#8217;ve
+read what came before.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> RockoWPB
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Monday, October 01, 2007 9:10 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] Using CSLA .NET 3.0 ebook available (and CSLA
+.NET 3.0.2)<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Can't wait for the VB version. Also do I need to get the 2.1
+handbook and the 3.0 handbook to get caught up with all the changes from book?<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

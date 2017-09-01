@@ -1,0 +1,69 @@
+<html><header><title>CSLA 2.1 - N level undo</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA 2.1 - N level undo</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/1257.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Ouistiti posted on Tuesday, September 19, 2006</h2><P>Hi,</P>
+<P>I've recently downloaded csla 2.1, and I've encountered a problem with the new Saved event.</P>
+<P>I have a winform that has&nbsp;uses this event to update&nbsp;the&nbsp;reference to the new saved object.&nbsp;If BeginEdit is called after the event handler has been set, the CopyState&nbsp;method raises a SerializationException (&lt;form&gt; type&nbsp;is not marked as serializable) because it tries to serialize the <FONT size=2><FONT size=3>_nonSerializableSavedHandlers field, which is not marked as NotUndoable. I've noticed that the _nonSerializableHandlers&nbsp;field of UndoableBase is also not marked as NotUndoable, but CopyState's loop stops when it reaches typeof(UndoableBase) in the inheritance chain, so it's value is not serialized.</FONT></FONT></P>
+<P><FONT size=2><FONT size=3>Should _nonSerializableSavedHandlers be marked as NotUndoable, or am I missing something ?</FONT></FONT></P>
+<P><FONT size=2><FONT size=3>Thanks for your answer.</FONT></P>
+<P></FONT>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, September 19, 2006</h2>Thank you, that is most certainly a bug. I have fixed it in cvs (adding the NotUndoable attribute), so it will be fixed in the next release.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Ouistiti replied on Tuesday, September 19, 2006</h2>Thank you for your quick&nbsp;answer.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Tuesday, September 19, 2006</h2>Rocky..<br><br>Is the 2.1 RTM (RTWeb?) still slated for September?&nbsp; <br><br>Andy<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, September 19, 2006</h2>
+
+
+
+
+<DIV align=left><SPAN class=359135213-19092006><FONT face=Arial color=#0000ff size=2>Yes.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=359135213-19092006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=359135213-19092006><FONT face=Arial color=#0000ff size=2>The one major outstanding issue (that I'm aware of) is that 
+the CslaDataSource can't be added as a "new data source" directly from a 
+grid/details control. I am still hoping to find time to troubleshoot that issue 
+- but even if I don't get time I'll release with that as a known issue (because 
+the control works in other scenarios, so there is a 
+workaround).</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=359135213-19092006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=359135213-19092006><FONT face=Arial color=#0000ff size=2>However, I am also trying to give people as much time to 
+work with the beta as possible to find and squish any other bugs - like the one 
+on this thread...</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=359135213-19092006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=359135213-19092006><FONT face=Arial color=#0000ff size=2>Rocky</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=359135213-19092006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV><FONT face=Arial color=#0000ff size=2></FONT><BR>
+<BLOCKQUOTE>Is 
+  the 2.1 RTM (RTWeb?) still slated for September?&nbsp; 
+<BR><BR>Andy<BR></BLOCKQUOTE></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Sarosh replied on Tuesday, September 19, 2006</h2><P>Hi!</P>
+<P>What does cvs mean how can we get this change or which class/property should we add the&nbsp; NotUndoable attribute to?</P>
+<P>Rocky, is there a way that we can get notified whenever some sends us a reply to message in the forum(s)</P>
+<P>Sarosh</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, September 19, 2006</h2>
+
+
+
+
+<DIV align=left><SPAN class=828512918-19092006><FONT face=Arial color=#0000ff size=2>I keep all the source code in source control using cvs. The 
+cvs repository is publicly available (for read) to everyone, both through the 
+web and with a cvs client. You can go to <A href="http://www.lhotka.net/cslacvs">www.lhotka.net/cslacvs</A> to view the code 
+and its history, and you can go here</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=828512918-19092006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=828512918-19092006><FONT face=Arial color=#0000ff size=2><A href="http://www.lhotka.net/Article.aspx?id=5987a664-4b44-45a7-bc1d-695610964718">http://www.lhotka.net/Article.aspx?id=5987a664-4b44-45a7-bc1d-695610964718</A></FONT></SPAN></DIV>
+<DIV align=left><SPAN class=828512918-19092006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=828512918-19092006><FONT face=Arial color=#0000ff size=2>for instructions on using a cvs client.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=828512918-19092006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=828512918-19092006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=828512918-19092006><FONT face=Arial color=#0000ff size=2>Regarding the forum, there are a couple ways to be 
+notified. You can use the RSS feed, or you can enable email support in your 
+profile, or you can enable email support for just this 
+thread.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=828512918-19092006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=828512918-19092006><FONT face=Arial color=#0000ff size=2>Rocky</FONT></SPAN></DIV><BR>
+<BLOCKQUOTE>
+  <DIV class=OutlookMessageHeader align=left>
+  <HR>
+  <FONT face=Tahoma size=2><B>From:</B> Sarosh [mailto:cslanet@lhotka.net] 
+  <BR><B>Sent:</B> Tuesday, September 19, 2006 1:07 PM<BR><B>To:</B> 
+  rocky@lhotka.net<BR><B>Subject:</B> Re: [CSLA .NET] CSLA 2.1 - N level 
+  undo<BR></FONT><BR></DIV>
+  <DIV></DIV>
+  <P>Hi!</P>
+  <P>What does cvs mean how can we get this change or which class/property 
+  should we add the&nbsp; NotUndoable attribute to?</P>
+  <P>Rocky, is there a way that we can get notified whenever some sends us a 
+  reply to message in the forum(s)</P>
+  <P>Sarosh</P><BR><BR><BR></BLOCKQUOTE></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Sarosh replied on Tuesday, September 19, 2006</h2><P>Hi!</P>
+<P>Got it!</P>
+<P>Thanks</P>
+<P>&nbsp;</P>
+<P>Sarosh</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

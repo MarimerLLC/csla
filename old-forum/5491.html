@@ -1,0 +1,123 @@
+<html><header><title>De-serialization error after minor CSLA upgrade (3.0.2 - 3.0.4)</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>De-serialization error after minor CSLA upgrade (3.0.2 - 3.0.4)</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5491.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>rsbaker0 posted on Monday, September 29, 2008</h2><P>I've run into an apparent snag trying to reload an object created when we were using a different version of CSLA. The object was serialized to binary and saved in the database, but when I try to reinstantiate it, I get this error:</P>
+<P><FONT face="Courier New">Could not load file or assembly 'Csla, Version=3.0.2.0, Culture=neutral, PublicKeyToken=93be5fdc093e4c30' or one of its dependencies. The located assembly's manifest definition does not match the assembly reference. (Exception from HRESULT: 0x80131040)</FONT></P>
+<P>We're using Csla 3.0.4 now, but I was surprised to see that just this minor upgrade could cause this.</P>
+<P>Any thoughts as to why I might be seeing this? It looks like there may be some perils to just serializing things out of convenience that we hadn't anticipated. </P>
+<P>&nbsp;(A potential side issue is that&nbsp;I don't even see how the object I'm restoring even would reference CSLA, since there are no CSLA base classes in it's parent hierarchy or of its members, but that's a another story). </P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Tuesday, September 30, 2008</h2>Well, it's a BO you've serialized right?&nbsp; So BusinessBase had it's fields serialized as well.&nbsp; There's a way to configure the binary serializer to ignore version information.&nbsp; That might work.. but this is the main reason that it's recommended NOT to store serialized BOs anywhere for any length of time.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rsbaker0 replied on Tuesday, September 30, 2008</h2><P>No, but&nbsp;that's part II of the mystery. It's a very simple class with no parent in the CSLA framework:</P><FONT size=2>
+<P>[</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>Serializable</FONT></FONT><FONT size=2>()]</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>public</FONT></FONT><FONT size=2> class CachedColumnList : List&lt;CachedColumn&gt;</P></FONT>
+<P>Neither class has anything to do with CSLA - these are U/I classes just for remembering how a user had arranged the width and order of columns in a grid. (CachedColumn has no base class). </P>
+<P>You offer some good advice though. I guess if you want to serialize something that needs to survive version changes, that you need to write your own custom serialization instead of just relying solely on the binary serializer. Seems like a shame, though. :(</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Tuesday, September 30, 2008</h2>Hmm... mystery indeed.&nbsp; The serializer stores assembly version information, but I wouldn't think it would store that assemblies dependencies... although perhaps it did.&nbsp; Does your cached column class live in an assembly that references Csla?&nbsp; maybe it does store that...<br><br>At any rate.. the serialization is meant to move .Net objects across a wire, not for persistence.&nbsp; If you view serialization in that context, it makes sense.&nbsp; The version information is included because maybe in 1.0 there was FieldB, but in your next version of the assembly is 1.1, and FieldB is gone, and FieldC is now included.&nbsp; What's the serializer to do?&nbsp; Well, you can configute it to ignore versions... but you're instancated object is now not valid.&nbsp; FieldB's value is lost, and C will have the defaut value..<br><br>So, I'm not sure how I'd think you shoudl proceed, but that's the problem anyway...<br><br>Were you able to find the .config setting to ignore the version on deserialization?&nbsp; If the class hasn't changed, you should be fine.&nbsp; <br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rsbaker0 replied on Tuesday, September 30, 2008</h2><P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>ajj3085:</strong></div><div>... Does your cached column class live in an assembly that references Csla?&nbsp; maybe it does store that...<BR><BR>At any rate.. the serialization is meant to move .Net objects across a wire, not for persistence.&nbsp; If you view serialization in that context, it makes sense.&nbsp; The version information is included because maybe in 1.0 there was FieldB, but in your next version of the assembly is 1.1, and FieldB is gone, and FieldC is now included.&nbsp; What's the serializer to do?&nbsp; </P>
+<P>Were you able to find the .config setting to ignore the version on deserialization?&nbsp; If the class hasn't changed, you should be fine.&nbsp; <BR></div></BLOCKQUOTE></P>
+<P>Yes, the assembly itself references CSLA, so this was probably it. </P>
+<P>Thanks for the insight -- I'm very glad I opened this can of worms early rather than once we had this in production. </P>
+<P>In cases where I was using serialization for persistence, I was generally using a dictionary-derived class for the persisted data, that way it would just be a generalized Bag that I could put anything into it that I want. </P>
+<P>I thought this would protect me from issues like this, but of course you could store any serializable class there, which opens up your FieldB, FieldC scenario with the contained objects. Back to the drawing board...</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Tuesday, September 30, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>If you really have to find a way to persist, you can use (cannot
+believe I am saying this : - )) &nbsp;data sets in conjunction with DataMapper
+to populate them off the objects.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> rsbaker0
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Tuesday, September 30, 2008 3:37 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] De-serialization error after minor CSLA upgrade
+(3.0.2 - 3.0.4)<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<blockquote>
+
+<div>
+
+<p class=MsoNormal><img id="_x0000_i1025" src="/Themes/default/images/icon-quote.gif"><strong>ajj3085:</strong><o:p></o:p></p>
+
+</div>
+
+<div>
+
+<p class=MsoNormal>... Does your cached column class live in an assembly that
+references Csla?&nbsp; maybe it does store that...<br>
+<br>
+At any rate.. the serialization is meant to move .Net objects across a wire,
+not for persistence.&nbsp; If you view serialization in that context, it makes
+sense.&nbsp; The version information is included because maybe in 1.0 there was
+FieldB, but in your next version of the assembly is 1.1, and FieldB is gone,
+and FieldC is now included.&nbsp; What's the serializer to do?&nbsp; <o:p></o:p></p>
+
+<p>Were you able to find the .config setting to ignore the version on
+deserialization?&nbsp; If the class hasn't changed, you should be fine.&nbsp; <o:p></o:p></p>
+
+</div>
+
+</blockquote>
+
+<p>Yes, the assembly itself references CSLA, so this was probably it. <o:p></o:p></p>
+
+<p>Thanks for the insight -- I'm very glad I opened this can of worms early
+rather than once we had this in production. <o:p></o:p></p>
+
+<p>In cases where I was using serialization for persistence, I was generally
+using a dictionary-derived class for the persisted data, that way it would just
+be a generalized Bag that I could put anything into it that I want. <o:p></o:p></p>
+
+<p>I thought this would protect me from issues like this, but of course you
+could store any serializable class there, which opens up your FieldB, FieldC
+scenario with the contained objects. Back to the drawing board...<o:p></o:p></p>
+
+<p>&nbsp;<o:p></o:p></p>
+
+<p>&nbsp;<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, September 30, 2008</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>rsbaker0:</strong></div><div>
+<P>I guess if you want to serialize something that needs to survive version changes, that you need to write your own custom serialization instead of just relying solely on the binary serializer. Seems like a shame, though. :(</P>
+<P></div></BLOCKQUOTE></P>
+<P>This is absolutely true!! Microsoft recommends against using the BinaryFormatter or NetDataContractSerializer for any sort of persistence. These formatters should only be used for transient data, because the versioning consequences can be very serious if you change your assemblies while serialized data is outstanding.</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

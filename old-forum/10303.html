@@ -1,0 +1,15 @@
+<html><header><title>Upgrading from 3.6.2</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Upgrading from 3.6.2</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10303.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>rogercito posted on Tuesday, April 26, 2011</h2><p>Hi,</p>
+<p>I have a client/server Silverlight application that uses 3.6.2 and i&#39;m trying to upgrade to a more recent version without going in too much breaking changes (UI and server side).</p>
+<p>I understand a lot has been done since that version, so i tried version 3.7.1 but the first thing i noticed (and its a breaking change) was that ValidatedDataGridTextColumn was not available anymore for my datagrids.</p>
+<p>I did search the forum site for more than 2 hours and couldn&#39;t find something about this missing function, can someone advise how to proceed? what breaking changes concepts i need to do? I bought the 2008 book but it doesnt include SL.</p>
+<p>Greetings to all the CSLA community.</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Tuesday, April 26, 2011</h2><p>All of what was the Csla.Silverlight namespace is now the Csla.Xaml namespace, and it is in the separate Csla.Xaml.dll assembly.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, April 26, 2011</h2><p>btw, the best information about building a Silverlight application with 3.7 is the CSLA .NET for Silverlight video series on <a href="http://store.lhotka.net">http://store.lhotka.net</a>. </p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rogercito replied on Thursday, April 28, 2011</h2><p>Hi Rocky,</p>
+<p>The ValidatedDataGridTextColumn problem was related 
+to a mis-referenced assembly of windows.control.data (not the correct SL
+ version, my mistake)</p>
+<p>Thanks for your answer, indeed we know we 
+are not updated with the 3.8+ CSLA versions that take advantage of the 
+SL 3-4 capabilities; I will look to the 3.6 - 4.0 migration 
+implications, what areas will need to be changed since we dont use 
+ViewModel. Thanks for the video suggestion, will be a must in the near 
+future for us.</p>
+<p>Greetings to you and all the CSLA community :)</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

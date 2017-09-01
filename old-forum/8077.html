@@ -1,0 +1,28 @@
+<html><header><title>Setting value of an XElement property</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Setting value of an XElement property</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/8077.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>russelle posted on Wednesday, December 02, 2009</h2><P class=MsoNormal><FONT face=Calibri>I have a business object property of type System.Xml.Linq.XElement:</FONT></P>
+<P class=MsoNormal><SPAN>//HouseholdDemographicsXML Property<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>private static PropertyInfo&lt;XElement&gt; HouseholdDemographicsXMLProperty =<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp; </SPAN>RegisterProperty(typeof(Household), <o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp; </SPAN>new PropertyInfo&lt;XElement&gt;("HouseholdDemographicsXML", "Household Demographics XML"));<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>public XElement HouseholdDemographicsXML<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp; </SPAN>{<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>get { return GetProperty(HouseholdDemographicsXMLProperty); }<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>set { SetProperty(HouseholdDemographicsXMLProperty, value); }<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp; </SPAN>}<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><FONT face=Calibri>When I try and set the value<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>LoadProperty(HouseholdDemographicsXML, XElement.Parse(data.Demographics));<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><FONT face=Calibri>where data.Demographics is a string representing an XML fragment, I get the errors<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>The best overloaded method match for Csla.Core.BusinessBase.LoadProperty&lt;System.Xml.Linq.XElement&gt;(Csla.PropertyInfo&lt;System.Xml.Linq.XElement&gt;, System.Xml.Linq.XElement)' has some invalid arguments<SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN></SPAN></SPAN>&nbsp;</P>
+<P class=MsoNormal><SPAN><SPAN>and</SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN><SPAN>Argument 1: cannot convert from 'System.Xml.Linq.XElement' to 'Csla.PropertyInfo&lt;System.Xml.Linq.XElement&gt;'</P>
+<P class=MsoNormal></SPAN>&nbsp; </SPAN><o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><FONT face=Calibri>What am I doing wrong? Can’t a business object property be an XElement?<o:p></o:p></FONT></SPAN></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Wednesday, December 02, 2009</h2><P>I think you need to change this:</P>
+<P class=MsoNormal><SPAN>LoadProperty(HouseholdDemographicsXML, XElement.Parse(data.Demographics));</SPAN></P>
+<P class=MsoNormal><SPAN>to this:</SPAN></P><SPAN>
+<P class=MsoNormal><SPAN>LoadProperty(HouseholdDemographicsXML<STRONG>Property</STRONG>, XElement.Parse(data.Demographics));<O:P></O:P></SPAN></P><O:P></O:P></SPAN></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>russelle replied on Wednesday, December 02, 2009</h2>You're right. Thanks. Silly of me to miss that!</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

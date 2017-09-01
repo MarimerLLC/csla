@@ -1,0 +1,40 @@
+<html><header><title>Csla 4 and Asp.Net MVC 2</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Csla 4 and Asp.Net MVC 2</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9973.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 posted on Sunday, January 23, 2011</h2><p>Hi,</p>
+<p>I know Im kinda fighting how Asp.Net MVC wants to work, but this is what I&#39;m trying to do.&nbsp; We have a root object, which a child collecion.&nbsp; Editing is done all on the same page.</p>
+<p>Normally MVC wants to blow away everything in the collection and recreate it (setting your ids values for you).&nbsp; ideally I&#39;d like to keep the collection intact, and not allow setting of the ids.&nbsp; </p>
+<p>I&#39;m trying to keep this Csla business objects as clean as possible, as I want to demo Csla in MVC and Silverlight, using the same classes.&nbsp; I&#39;m trying to get my company to consider Csla so we&#39;re not re-inventing the wheel as we continue to build our &quot;domain&nbsp;model.&quot;</p>
+<p>Andy</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Sunday, January 23, 2011</h2><p>It is the stateful vs stateless thing...</p>
+<p>MVC defaults to stateless, but you can enable Session and use it. If you do that, you can use the same techniques I used in the Web Forms ProjectTracker PTWeb project to reuse the same business model from a smart client. </p>
+<p>You lose some scalability, but it may be worth it to gain the reuse - all depends on the app requirements.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Tuesday, January 25, 2011</h2><p>Rocky,</p>
+<p>Yes, that part is easier.&nbsp; And we have memcache servers which already hold the little session state we have.</p>
+<p>My main confusion lies in the ModelBinder stuff;&nbsp; do I just need a modelbinder which looks for collection items who&#39;s Id isn&#39;t in the form post and remove, and manually add the new ones?&nbsp; </p>
+<p>Andy</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>xAvailx replied on Wednesday, January 26, 2011</h2><p>I&#39;ve accomplished this in a few ways...</p>
+<p>1-) In controller create/update I fetch object graph from db. Then I model bind only the root using try update model and manually update the child collection.</p>
+<p>2-) Create a custom model binder for your object. This moves the complexity of binding from controller into a custom model binder.&nbsp;</p>
+<p>Unfortunately the MVC model binder destroys the collection, and likes to re-add / remove items. I&#39;ve had same issue even when using EF Feature 5 CTP POCOs. In the past I had posted about updating the Csla Model Binder to work better with collections, but don&#39;t think any work was done.</p>
+<p><a href="http://forums.lhotka.net/forums/p/9419/44655.aspx#44655">http://forums.lhotka.net/forums/p/9419/44655.aspx#44655</a></p>
+<p><a href="http://stackoverflow.com/questions/1242758/what-is-correct-behaviour-of-updatemodel-in-asp-net-mvc">http://stackoverflow.com/questions/1242758/what-is-correct-behaviour-of-updatemodel-in-asp-net-mvc</a></p>
+<p>HTH...</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, January 26, 2011</h2><p>@xAvailx, have you looked at the CSLA 4 CslaModelBinder? I think Gary and/or&nbsp;Ricky did some work around collections.</p>
+<p>In the context of this particular thread however, there&#39;s one other option.</p>
+<p>If your controller implements IModelCreator (from Csla.Web.Mvc), the CslaModelBinder will invoke a CreateModel method on the controller when an instance of the model is required. This allows your controller to easily return an appropriate model instance for use by the model binder.</p>
+<p>Normally you&#39;d create an instance of the model by using DataPortal.Create, but in this case you could retrieve an existing model from Session.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>xAvailx replied on Thursday, January 27, 2011</h2><p>Hi Rocky,</p>
+<p>IIRC I was using 3.8 but using the Model Binder for 4.0. So I believe the problem is still there for 4.x</p>
+<p>Thx.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>nandini replied on Saturday, November 26, 2011</h2><p><div style='padding-left: 50px;background-color:silver'><b>xAvailx<br></b>
+<p>I&#39;ve accomplished this in a few ways...</p>
+<p>1-) In controller create/update I fetch object graph from db. Then I model bind only the root using try update model and manually update the child collection.</p>
+<p>2-) Create a custom model binder for your object. This moves the complexity of binding from controller into a custom model binder.&nbsp;</p>
+<p>Unfortunately the MVC model binder destroys the collection, and likes to re-add / remove items. I&#39;ve had same issue even when using EF Feature 5 CTP POCOs. In the past I had posted about updating the Csla Model Binder to work better with collections, but don&#39;t think any work was done.</p>
+<p><a href="http://forums.lhotka.net/forums/p/9419/44655.aspx#44655">http://forums.lhotka.net/forums/p/9419/44655.aspx#44655</a></p>
+<p><a href="http://stackoverflow.com/questions/1242758/what-is-correct-behaviour-of-updatemodel-in-asp-net-mvc">http://stackoverflow.com/questions/1242758/what-is-correct-behaviour-of-updatemodel-in-asp-net-mvc</a></p>
+<p>HTH...</p>
+<div style="CLEAR:both;"></div>
+</div></p>
+<p>Hi</p>
+<p>How can we update the child collection manually, provide me some samples related to child collection. I am getting hanged in my solution where I am using parent and child collection object, I am dynamically adding the child collection in runtime, when I post the object back to the controller, child collection object showing as count=0, it is not binding to the parent object.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, November 28, 2011</h2><p>fwiw, there are some improvements to collection binding in 4.2.</p>
+<p>I think there&#39;ll be more yet in 4.3 to support the latest MVC datagrid concepts.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>msrs_it replied on Monday, November 28, 2011</h2><p><div style='padding-left: 50px;background-color:silver'><b>RockfordLhotka<br></b></p>
+<p>fwiw, there are some improvements to collection binding in 4.2.</p>
+<p>I think there&#39;ll be more yet in 4.3 to support the latest MVC datagrid concepts.</p>
+<div style="clear:both;"></div>
+<p></div></p>
+<p>Where can I get that information? I&#39;ve purchased CSLA 4 E-book series and currently using the 4.2 version. facing the same problems with the child collection objects and child object in MVC 3. If there are any specific examples in this regard please let me know.</p>
+<p>Thanks and Regards</p>
+<p>SreeRam.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, November 28, 2011</h2><p>The ebook uses 4.1. There is no documentation for the (as yet unreleased) 4.2 changes.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

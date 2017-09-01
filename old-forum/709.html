@@ -1,0 +1,115 @@
+<html><header><title>CSLA and SQL Cache Dependency.</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA and SQL Cache Dependency.</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/709.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>geordiepaul posted on Monday, July 24, 2006</h2><P><FONT face=Arial size=2>I have been trying to implement some server side SQL Cache Dependencies withing my business objects. Basically within my DataPortal_Fetch I create the dependency and add an event handler to expire the cached data when the data changes within the DB.</FONT></P>
+<P><FONT face=Arial size=2>The problem I'm having is that the SQLDependency.Start() methods fails when the Csla.ApplicationContext&nbsp;sets the Thread.CurrentPrincipal to the Csla version of the principal/identity. It reports that it can't find my assambly! The application web based so I have changed the User property of the ApplicationContext class to the following....</FONT></P><FONT color=#0000ff size=2>
+<P><FONT face="Courier New">public</FONT></FONT><FONT><FONT face="Courier New"><FONT size=2> </FONT><FONT color=#0000ff size=2>static</FONT><FONT size=2> </FONT><FONT color=#008080 size=2>IPrincipal</FONT></FONT></FONT><FONT><FONT face="Courier New"><FONT size=2> User<BR>{<BR></FONT><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;get<BR></FONT></FONT></FONT><FONT size=2><FONT face="Courier New">&nbsp;&nbsp;&nbsp;{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</FONT></FONT><FONT><FONT face="Courier New"><FONT color=#0000ff size=2>if</FONT><FONT size=2> (</FONT><FONT color=#008080 size=2>HttpContext</FONT><FONT size=2>.Current == </FONT><FONT color=#0000ff size=2>null</FONT></FONT></FONT><FONT size=2><FONT face="Courier New">)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</FONT></FONT><FONT><FONT face="Courier New"><FONT color=#0000ff size=2>return</FONT><FONT size=2> </FONT><FONT color=#008080 size=2>Thread</FONT></FONT></FONT><FONT size=2><FONT face="Courier New">.CurrentPrincipal;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</FONT></FONT><FONT color=#0000ff size=2><FONT face="Courier New">else<BR></FONT></FONT><FONT><FONT face="Courier New"><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return</FONT><FONT size=2> </FONT><FONT color=#008080 size=2>HttpContext</FONT></FONT></FONT><FONT size=2><FONT face="Courier New">.Current.User;<BR>&nbsp;&nbsp;&nbsp;</FONT><FONT face="Courier New">}<BR></FONT></FONT><FONT color=#0000ff size=2><FONT face="Courier New">&nbsp;&nbsp;&nbsp;set<BR></FONT></FONT><FONT size=2><FONT face="Courier New">&nbsp;&nbsp;&nbsp;{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</FONT></FONT><FONT><FONT face="Courier New"><FONT color=#0000ff size=2>if</FONT><FONT size=2> (</FONT><FONT color=#008080 size=2>HttpContext</FONT><FONT size=2>.Current != </FONT><FONT color=#0000ff size=2>null</FONT></FONT></FONT><FONT size=2><FONT face="Courier New">)<BR></FONT></FONT><FONT><FONT face="Courier New"><FONT color=#008080 size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;HttpContext</FONT><FONT size=2>.Current.User = </FONT><FONT color=#0000ff size=2>value</FONT></FONT></FONT><FONT size=2><FONT face="Courier New">;<BR></FONT></FONT><FONT><FONT face="Courier New"><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;else <FONT color=#008000>// &lt;--- NEW</FONT><BR></FONT></FONT></FONT><FONT><FONT face="Courier New"><FONT color=#008080 size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Thread</FONT><FONT size=2>.CurrentPrincipal = </FONT><FONT color=#0000ff size=2>value</FONT></FONT></FONT><FONT size=2><FONT face="Courier New">;<BR></FONT><FONT face="Courier New">&nbsp;&nbsp;&nbsp;}<BR></FONT><FONT face="Courier New">}</FONT></FONT></P>
+<P><FONT size=2><FONT face=Arial color=#000000>This works fine but I am a little concerned as to the impact this will have and I can't find any documention covering this area of SQL Cache Depenencies.</FONT></FONT></P>
+<P><FONT size=2><FONT face=Arial>Just wondered if anyone had experinced the same problems??</FONT></FONT></P>
+<P><FONT size=2><FONT face=Arial>Thanks</FONT></FONT><FONT size=2></P></FONT>
+<P><FONT face=Arial size=2></FONT>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, July 24, 2006</h2>Are you trying to run your code within IIS or Cassini? CSLA custom security won't work in Cassini - I've blogged about this and mention it several places in the book as well.<br><br>Your change is dangerous, because it means that the thread's principal isn't being set and may not match the httpcontext principal. While all CSLA code uses ApplicationContext, and yours probably does too, any code not based on CSLA may be doing the wrong thing and using the thread's principal when in ASP.NET (certainly any .NET 1.x code would do that) - and thus would be using the wrong principal.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>david.wendelken replied on Monday, July 24, 2006</h2><P>FYI, Cassini is the name for the webserver built into Visual Studio.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>geordiepaul replied on Tuesday, July 25, 2006</h2><P><FONT face=Arial size=2>No, I'm using IIS. This is the error I get when I remove the "else" from the above code.</FONT></P>
+<H2><I><FONT face=Arial></FONT></I>&nbsp;</H2>
+<H2><I><FONT face=Arial>Unable to find assembly 'AssemblyName, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null'.</FONT></I> </H2>
+<P><FONT face="Arial, Helvetica, Geneva, SunSans-Regular, sans-serif "><B>Description: </B>An unhandled exception occurred during the execution of the current web request. Please review the stack trace for more information about the error and where it originated in the code. <BR><BR><B>Exception Details: </B>System.Runtime.Serialization.SerializationException: Unable to find assembly 'Communicator, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null'.<BR><BR><B>Source Error:</B> <BR><BR>
+<TABLE bgColor=#ffffcc>
+
+<TR>
+<TD><CODE><PRE>Line 35:             if (!m_DependancyStarted)
+Line 36:             {
+<FONT color=red>Line 37:                 SqlDependency.Start(ConnectionString);
+</FONT>Line 38:                 m_DependancyStarted = true;
+Line 39:             }</PRE></CODE></TD></TR></TABLE><BR><B><FONT face=Verdana>Source File: </FONT></B>C:\Documents\Visual Studio 2005\projects\....<B><FONT face=Verdana>&nbsp;&nbsp;&nbsp; Line: </FONT></B>37 </FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>geordiepaul replied on Tuesday, July 25, 2006</h2><P><FONT face=Arial size=2>One thing I should add is that this only fails in ASP.NET applications. If I call the same method in a Console Application then it works as expected even with my "else" added, since...</FONT></P>
+<P><FONT size=2><FONT color=#008080><FONT color=#008080>HttpContext</FONT><FONT color=#000000>.Current == </FONT><FONT color=#0000ff>null</FONT></FONT></FONT></P>
+<P><FONT size=2><FONT color=#008080>Thread</FONT>.CurrentPrincipal <FONT face=Arial>gets set anyway.</FONT></FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, July 25, 2006</h2>
+
+
+
+
+<DIV align=left><SPAN class=059341814-25072006><FONT face=Arial color=#0000ff size=2>Sure, that would work fine in a console 
+app.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=059341814-25072006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=059341814-25072006><FONT face=Arial color=#0000ff size=2>But the problem is, that in an ASP.NET app you wouldn't set 
+the thread principal. Some code (lots actually) rely on the thread principal 
+only, because (in theory) that's the right thing to do. Thank's to Scott 
+Hanselman I discovered that in .NET 2.0 they changed some things, so there are 
+some edge cases where the thread principal isn't safe to use in ASP.NET (which 
+really sucks), and so this is why ApplicationContext does what it 
+does.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=059341814-25072006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=059341814-25072006><FONT face=Arial color=#0000ff size=2>If you ONLY use ApplicationContext, and you KNOW that you 
+are only using code that uses it (or an equivilent) then you could get away with 
+your change. But you really can't, because that means you can't use any 3rd 
+party controls/components and even the .NET framework itself is not sure to work 
+(all the security demand attributes use the thread 
+principal...)</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=059341814-25072006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=059341814-25072006><FONT face=Arial color=#0000ff size=2>My guess is that SqlDependency is switching threads, and 
+that it (or ASP.NET) is using dynamic assembly loading. There's a known issue 
+deep, deep in the .NET runtime that causes problems with finding dynamically 
+loaded assemblies during deserialization. So deep that they can't/won't fix it - 
+nor have they officially agreed that it is a bug, but it is very clearly not 
+desired behavior...</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=059341814-25072006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=059341814-25072006><FONT face=Arial color=#0000ff size=2>The possible solution is to handle the appdomain event for 
+failure to resolve the assembly, and to handle it yourself.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=059341814-25072006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=059341814-25072006><FONT face=Arial color=#0000ff size=2>I do this in Chapter 4 for the implementation of the 
+EnterpriseServices data portal host, because this issue exists for any 
+dynamically loaded assemblies in COM+. You can find the code in Chatper 4 called 
+"Serialization Workaround". In a web setting you'd want to call the hookup once 
+in global.asax, as the initial hook should just run once per appdomain. The rest 
+is automatic.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=059341814-25072006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=059341814-25072006><FONT face=Arial color=#0000ff size=2>Whether this fixes your problem or not I don't know - 
+you'll have to try and see.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=059341814-25072006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=059341814-25072006><FONT face=Arial color=#0000ff size=2>Rocky</FONT></SPAN></DIV><BR>
+<BLOCKQUOTE>
+  <DIV class=OutlookMessageHeader align=left>
+  <HR>
+  <FONT face=Tahoma size=2><B>From:</B> geordiepaul [mailto:cslanet@lhotka.net] 
+  <BR><B>Sent:</B> Tuesday, July 25, 2006 4:00 AM<BR><B>To:</B> 
+  rocky@lhotka.net<BR><B>Subject:</B> Re: [CSLA .NET] CSLA and SQL Cache 
+  Dependency.<BR></FONT><BR></DIV>
+  <DIV></DIV>
+  <P><FONT face=Arial size=2>One thing I should add is that this only fails in 
+  ASP.NET applications. If I call the same method in a Console Application then 
+  it works as expected even with my "else" added, since...</FONT></P>
+  <P><FONT size=2><FONT color=#008080><FONT color=#008080>HttpContext</FONT><FONT color=#000000>.Current == </FONT><FONT color=#0000ff>null</FONT></FONT></FONT></P>
+  <P><FONT size=2><FONT color=#008080>Thread</FONT>.CurrentPrincipal <FONT face=Arial>gets set anyway.</FONT></FONT></P><BR><BR><BR></BLOCKQUOTE></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>xal replied on Tuesday, July 25, 2006</h2>Yes, that is very crazy!! I learned that the hard way. For me, the app was raising exceptions when I closed some forms that where using csla objects. The problem was that it wasn't finding csla's assembly.<br><br>I do this when the app starts:<br>AddHandler AppDomain.CurrentDomain.AssemblyResolve, AddressOf ResolveAssembly<br><br>And the function does this:<br>&nbsp;&nbsp;&nbsp; Private Function ResolveAssembly(ByVal sender As Object, _<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; ByVal e As ResolveEventArgs) As Assembly<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; For Each ass As Assembly In AppDomain.CurrentDomain.GetAssemblies<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; If e.Name.Contains(ass.FullName) Then<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return ass<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End If<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Next<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return Nothing<br>&nbsp;&nbsp;&nbsp; End Function<br><br>(Yeah, I know I didn't pick the best name for the assembly variable, but ins spanish it doesn't mean anything) <img src="/emoticons/emotion-1.gif" alt="Smile [:)]" /><br><br><br>Anyway, the reason for this to happen is beyond me. It is a winforms app. I could never find the cause.<br><br>Andrés<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>geordiepaul replied on Wednesday, July 26, 2006</h2><P><FONT face=Arial size=2>Hi, Thanks for you help and advice.</FONT></P>
+<P><FONT face=Arial><FONT size=2>I have tried to implement the event handler with the Application_Start. The ResolveAssembly method never fires (even though the event is correctly connected through the application_start event)&nbsp;and the problem persists.</FONT></FONT></P>
+<P><FONT face=Arial size=2>The code is global.asax looks like this....</FONT></P><FONT face=Arial><FONT color=#0000ff size=2>
+<P>void</FONT><FONT size=2> Application_Start(</FONT><FONT color=#0000ff size=2>object</FONT><FONT size=2> sender, </FONT><FONT color=#008080 size=2>EventArgs</FONT><FONT size=2> e) <BR></FONT><FONT size=2>{<BR>&nbsp;&nbsp;&nbsp;</FONT><FONT color=#008080 size=2>AppDomain</FONT><FONT size=2>.CurrentDomain.AssemblyResolve += </FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> </FONT><FONT color=#008080 size=2>ResolveEventHandler</FONT><FONT size=2>(ResolveAssembly);<BR>}</FONT></P><FONT size=2><FONT color=#0000ff size=2>
+<P>private</FONT><FONT size=2> </FONT><FONT size=2>System.Reflection.</FONT><FONT color=#008080 size=2>Assembly</FONT><FONT size=2> ResolveAssembly(</FONT><FONT color=#008080 size=2>Object</FONT><FONT size=2> sender, </FONT><FONT color=#008080 size=2>ResolveEventArgs</FONT><FONT size=2> e)<BR>{<BR>&nbsp;&nbsp;&nbsp;</FONT><FONT color=#0000ff size=2>foreach</FONT><FONT size=2> (System.Reflection.</FONT><FONT color=#008080 size=2>Assembly</FONT><FONT size=2> assembly </FONT><FONT color=#0000ff size=2>in</FONT><FONT size=2> </FONT><FONT color=#008080 size=2>AppDomain</FONT><FONT size=2>.CurrentDomain.GetAssemblies())<BR>&nbsp;&nbsp;&nbsp;{<BR>&nbsp;&nbsp;&nbsp;</FONT><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;if</FONT><FONT size=2> (assembly.FullName == e.Name)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> ass;<BR>&nbsp;&nbsp;&nbsp;</FONT><FONT size=2>}<BR>&nbsp;&nbsp;&nbsp;</FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>null</FONT><FONT size=2>;<BR>}</FONT></P>
+<P>Could the SqlDependency.Start() method be operating outside the ASP.NET AppDomain? It's not an area I'm particularly knowledgeable?</P>
+<P><FONT size=2>&nbsp;</P></FONT></FONT></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, July 26, 2006</h2>
+
+
+
+
+<DIV align=left><SPAN class=794214213-26072006><FONT face=Arial color=#0000ff size=2>Yes, I imagine it could. I haven't looked at this area at 
+all, so I really don't know... If that is the case, you may be in a difficult 
+position - but in that case it would be similar to issues faced when doing nunit 
+tests.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=794214213-26072006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=794214213-26072006><FONT face=Arial color=#0000ff size=2>The workaround for nunit tests is to make sure to do a 
+Logout() before allowing the appdomain transition. So what you might try is 
+wrapping your call to SqlDependency in a method. Have that method first store 
+the value of Thread.CurrentPrincipal, then clear it (to GenericPrincipal or 
+Nothing/null), then call SqlDepdendency, then restore Thread.CurrentPrincipal to 
+its original value.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=794214213-26072006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=794214213-26072006><FONT face=Arial color=#0000ff size=2>Rocky</FONT></SPAN></DIV><BR>
+<BLOCKQUOTE><FONT face=Arial>
+  <P>Could the SqlDependency.Start() method be operating outside the ASP.NET 
+  AppDomain? It's not an area I'm particularly 
+knowledgeable?</P></FONT></BLOCKQUOTE></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>geordiepaul replied on Wednesday, July 26, 2006</h2><P><FONT face=Arial size=2>That's a great idea and it worked too! <img src="/emoticons/emotion-2.gif" alt="Big Smile [:D]" /></FONT></P>
+<P><FONT face=Arial size=2>I already had the call to start the dependancy in the method in a database class so it was a simple change and here's is the code for anyone who has a similar problem...</FONT></P><FONT color=#808080 size=2>
+<P><FONT face="Courier New">///</FONT></FONT><FONT face="Courier New" color=#008000 size=2> </FONT><FONT face="Courier New"><FONT color=#808080 size=2>&lt;summary&gt;<BR></FONT><FONT color=#808080 size=2>///</FONT></FONT><FONT face="Courier New"><FONT color=#008000 size=2> Starts the SQL Cache dependancy if it not already started within the <BR></FONT><FONT color=#808080 size=2>///</FONT></FONT><FONT face="Courier New"><FONT color=#008000 size=2> current application<BR></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT></FONT><FONT face="Courier New"><FONT color=#808080 size=2>&lt;/summary&gt;<BR></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>static</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>void</FONT></FONT><FONT face="Courier New"><FONT size=2> StartSqlCacheDependancy()<BR>{<BR></FONT><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;if</FONT></FONT><FONT face="Courier New"><FONT size=2> (!m_DependancyStarted)<BR>&nbsp;&nbsp;&nbsp;{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;System.Security.Principal.</FONT><FONT color=#008080 size=2>IPrincipal</FONT></FONT><FONT face="Courier New"><FONT size=2> principal;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;principal = System.Threading.</FONT><FONT color=#008080 size=2>Thread</FONT></FONT><FONT face="Courier New"><FONT size=2>.CurrentPrincipal;<BR></FONT></FONT><FONT face="Courier New"><FONT size=2><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;System.Threading.</FONT><FONT color=#008080 size=2>Thread</FONT><FONT size=2>.CurrentPrincipal = </FONT><FONT color=#0000ff size=2>null</FONT></FONT><FONT face="Courier New" size=2>;<BR></FONT><FONT face="Courier New" color=#0000ff size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<BR></FONT><FONT face="Courier New" color=#0000ff size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;try<BR></FONT><FONT face="Courier New"><FONT size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<BR></FONT><FONT color=#008080 size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;SqlDependency</FONT></FONT><FONT face="Courier New"><FONT size=2>.Start(ConnectionString);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;m_DependancyStarted = </FONT><FONT color=#0000ff size=2>true</FONT></FONT><FONT face="Courier New"><FONT size=2>;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR></FONT><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;catch</FONT><FONT size=2> (</FONT><FONT color=#008080 size=2>Exception</FONT></FONT><FONT face="Courier New"><FONT size=2> ex)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<BR></FONT><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;throw</FONT></FONT><FONT face="Courier New" size=2> (ex);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR></FONT><FONT face="Courier New" color=#0000ff size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;finally<BR></FONT><FONT face="Courier New"><FONT size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;System.Threading.</FONT><FONT color=#008080 size=2>Thread</FONT></FONT><FONT size=2><FONT face="Courier New">.CurrentPrincipal = principal;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>&nbsp;&nbsp;&nbsp;}<BR>}</FONT></P></FONT>
+<P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div> </P>
+<DIV align=left><SPAN class=794214213-26072006><FONT face=Arial color=#0000ff size=2>The workaround for nunit tests is to make sure to do a Logout() before allowing the appdomain transition. So what you might try is wrapping your call to SqlDependency in a method. Have that method first store the value of Thread.CurrentPrincipal, then clear it (to GenericPrincipal or Nothing/null), then call SqlDepdendency, then restore Thread.CurrentPrincipal to its original value.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=794214213-26072006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=794214213-26072006><FONT face=Arial color=#0000ff size=2>Rocky</FONT></SPAN></DIV><BR>
+<BLOCKQUOTE><FONT face=Arial>
+<P>Could the SqlDependency.Start() method be operating outside the ASP.NET AppDomain? It's not an area I'm particularly knowledgeable?</P></FONT></BLOCKQUOTE></div></BLOCKQUOTE></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ljcorreia replied on Monday, February 14, 2011</h2><p>Hi,</p>
+<p>I know this post is quite old, but I had this problem for quite a while and never came across this solution, so the SqlCacheDependency I have for Sitemap was never getting noticated in SQL 2005 and therefore I never was able to solve this problem until I bang into this thread.</p>
+<p>I just want to say thank you very much. I also solved my problem.</p>
+<p>Kind regards,</p>
+<p>Leo</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

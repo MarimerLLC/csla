@@ -1,0 +1,42 @@
+<html><header><title>Validation rules on child collection</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Validation rules on child collection</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5640.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Frédéric posted on Tuesday, October 21, 2008</h2><P class=MsoNormal><SPAN>I have the following issue with validation rules. I have created a validation rule in one of my BO that will validate the state of one of the property of my child BO.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>For example, let say I have Libray object which have a collection of Books object. I want to create a validation rule that validate that I don’t have in my collection a book of type “boring”. (note that a book by himself can be boring, so the validation rule must be at the library level)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>ValidationRules.AddRule(<SPAN>Of</SPAN> Library)(<SPAN>AddressOf</SPAN> NoBoringBook, <SPAN>"Books"</SPAN>)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Private</SPAN><SPAN> <SPAN>Shared</SPAN> <SPAN>Function</SPAN> NoBoringBook (<SPAN>Of</SPAN> T <SPAN>As</SPAN> Library)( _<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>ByVal</SPAN> target <SPAN>As</SPAN> T, _<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>ByVal</SPAN> e <SPAN>As</SPAN> Validation.RuleArgs) <SPAN>As</SPAN> <SPAN>Boolean<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>For</SPAN> <SPAN>Each</SPAN> aBook <SPAN>As</SPAN> Book <SPAN>In</SPAN> target.Books<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>If aBook.IsBoring = True</SPAN> <SPAN>Then<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>e.Description = <SPAN>"Cannot add boring books to my library"<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>'Set the severity of the error, only Error severity breaks a rule<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>e.Severity = Validation.RuleSeverity.Error<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>'Stop checking other rules<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>e.StopProcessing = <SPAN>True<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>End</SPAN> <SPAN>If<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>Next<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN><SPAN>End</SPAN> <SPAN>Function</SPAN></SPAN><SPAN><o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>My problem is that the validation is not fired if I add a boring book and save my library. My understanding is that the validationrule.checkrule will run if the PropertyAsChange is set to true on a property. But in my case, books is not a property but a collection of child object.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Did someone already had this issue and is there an easy solution. Thanks.<SPAN>&nbsp; </SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN></SPAN></SPAN>&nbsp;</P>
+<P class=MsoNormal><SPAN><SPAN>Fred</SPAN><o:p></o:p></SPAN></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>skagen00 replied on Tuesday, October 21, 2008</h2><P>In prior versions of CSLA one would subscribe to the ListChanged event of the collection from the root. Then, in the handler for the ListChanged, you would call ValidationRules.CheckRules("Books"). The subscription should happen both when the object is initially instantiated as well as within an OnDeserialized override. </P>
+<P>In the newest versions of CSLA there is an OnChildChanged event that you may override in your root object. If the e.ChildObject is the collection or it "is a book", then make the call to ValidationRules.CheckRules("Books"). ListChanged subscriptions won't work the same way in the newest versions of CSLA, you need to use OnChildChanged. </P>
+<P>Hope that helps! </P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Tuesday, October 21, 2008</h2><P>Another idea is to override IsValid in your parent object and make the call there.</P>
+<P>ValidationRules.CheckRules("Books"). </P>
+<P>Then call MyBase.IsValid.</P>
+<P>Joe</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>skagen00 replied on Tuesday, October 21, 2008</h2><P>Ah, didn't think of that. While your BrokenRulesCollection won't necessarily be accurate through the lifetime of the object up until saving, there are few places where I recollect actually examining the BrokenRulesCollection for an object -- and the overhead is less as you wouldn't be responding to changes in the list all the time to calculate the rule some of the time. </P>
+<P>And I suppose if it's important for the BrokenRulesCollection to be meaningfully accurate you could simply override BrokenRulesCollection and do the same sort of thing. </P>
+<P>Just trying to think if there are any other side effects by "deferring" the checking of the rule until you request IsValid... </P>
+<P>&nbsp;</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,330 @@
+<html><header><title>SQL Query in column</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>SQL Query in column</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5022.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>jfreeman posted on Thursday, June 26, 2008</h2><P>I have a scenario where I have a ReadOnlyList BO that returns 3 columns from a table.&nbsp; One of the columns contains SQL for a Select.&nbsp;&nbsp;After a user enters data into a field, the SQL in that column needs to be ran (it adds the user input to the Where clause) and results retrieved to a grid.&nbsp; </P>
+<P>Any ideas on how to accompish this?&nbsp; I am using CSLA 3.5.&nbsp; Thanks.</P>
+<P>&nbsp;</P>
+<P>Jonathan</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Thursday, June 26, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I really do not know a good way to do this in CSLA.&nbsp; If
+query for results grid is not set and is varying a lot, I do not think CSLA is
+good for this.&nbsp; I would recommend using data table or dataset for results
+grid instead.&nbsp; Beware of SQL injection because this solution is very prone
+to it.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Senior Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> jfreeman
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Thursday, June 26, 2008 2:24 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> [CSLA .NET] SQL Query in column<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>I have a scenario where I have a ReadOnlyList BO that returns 3 columns from
+a table.&nbsp; One of the columns contains SQL for a Select.&nbsp;&nbsp;After a
+user enters data into a field, the SQL in that column needs to be ran (it adds
+the user input to the Where clause) and results retrieved to a grid.&nbsp; <o:p></o:p></p>
+
+<p>Any ideas on how to accompish this?&nbsp; I am using CSLA 3.5.&nbsp; Thanks.<o:p></o:p></p>
+
+<p>&nbsp;<o:p></o:p></p>
+
+<p>Jonathan<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Q Johnson replied on Thursday, June 26, 2008</h2>
+
+
+
+
+<DIV align=left><SPAN class=531495118-26062008><FONT face=Tahoma color=#000080>You'd be a lot happier (or someone would &lt;g&gt;) if you take 
+the user's input and use it as a parameter value for a query.&nbsp; Pasting user 
+input into a where clause is exactly the scenario we all try to avoid because it 
+leaves us wide open to SQL Injection attacks.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=531495118-26062008><FONT face=Tahoma color=#000080></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=531495118-26062008><FONT face=Tahoma color=#000080>So for your SQL, just have SQL for a parameterized query, read it, 
+and take the user's input for your</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=531495118-26062008><FONT face=Tahoma color=#000080></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=531495118-26062008><FONT face=Tahoma color=#000080>&nbsp;&nbsp; cmd.Paratmers.Add(@parmName, 
+"UserEnteredText")</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=531495118-26062008><FONT face=Tahoma color=#000080></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=531495118-26062008><FONT face=Tahoma color=#000080>statement.&nbsp; Or, even easier, just save the SQL as a stored 
+procedure and keep the sProc's name in that database column rather than the 
+actual SQL.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=531495118-26062008><FONT face=Tahoma color=#000080></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=531495118-26062008><FONT face=Tahoma color=#000080>Hope you find this helpful,</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=531495118-26062008><FONT face=Tahoma color=#000080></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=531495118-26062008><FONT face=Tahoma color=#000080>Q</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=531495118-26062008><FONT face=Tahoma color=#000080></FONT></SPAN>&nbsp;</DIV><BR>
+<DIV class=OutlookMessageHeader align=left>
+<HR>
+<FONT face=Tahoma size=2><B>From:</B> jfreeman [mailto:cslanet@lhotka.net] 
+<BR><B>Sent:</B> Thursday, June 26, 2008 1:26 PM<BR><B>To:</B> 
+QJohnson@TeamNFP.com<BR><B>Subject:</B> [CSLA .NET] SQL Query in 
+column<BR></FONT><BR></DIV>
+<DIV></DIV>
+<P>I have a scenario where I have a ReadOnlyList BO that returns 3 columns from 
+a table.&nbsp; One of the columns contains SQL for a Select.&nbsp;&nbsp;After a 
+user enters data into a field, the SQL in that column needs to be ran (it adds 
+the user input to the Where clause) and results retrieved to a grid.&nbsp; </P>
+<P>Any ideas on how to accompish this?&nbsp; I am using CSLA 3.5.&nbsp; 
+Thanks.</P>
+<P>&nbsp;</P>
+<P>Jonathan</P><BR><BR><BR></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jfreeman replied on Thursday, June 26, 2008</h2><P>Thanks for the replies.&nbsp; The SQL commands look similar to this:</P>
+<P>SELECT CustomerID, CompanyName, CustomerNo [Company Code] FROM Customer WHERE Customer.CustomerID = {Customer ID} ORDER BY Customer.CustomerID</P>
+<P>All we do is take the user input and replace {CustomerID}.&nbsp; So we're not just adding a Where clause.&nbsp; Any other thoughts?&nbsp; Thanks.</P>
+<P>Jonathan</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, June 26, 2008</h2><P>So your resulting list of columns is fixed? You always get back the same data?</P>
+<P>You should be able to do this relatively easily by using a ReadOnlyBase object to retrieve the new values.</P>
+<P>The process would be kind of like this:</P>
+<OL>
+<LI>Fetch an Editable Root with the initial data</LI>
+<LI>When the user does whatever they do to trigger loading the other fields, your Editable Root can fetch a Read-only Root that contains the data (the criteria for the Read-only Root is the value supplied by the user)</LI>
+<LI>The Editable Root takes the values from the Read-only Root and puts them into its own fields. It then discards the Read-only Root (the UI never sees any of this btw)</LI>
+<LI>You may need to call OnUnknownPropertyChanged at this point to force data binding to refresh the UI with the new values</LI>
+<LI>The user then edits the object some more, possibly including these values</LI>
+<LI>The user clicks Save, and the Editable Root saves itself - also saving these field values if they are present</LI></OL>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jfreeman replied on Thursday, June 26, 2008</h2><P>Unfortunately, they are not fixed.&nbsp; The SQL could also be something like this:</P>
+<P>SELECT ProductID, ProductNo, ProductDescription, ProductType&nbsp;FROM Product WHERE ProductNo LIKE '{Product No}%' order by ProductNo</P>
+<P>The SQL command is different based on other selections a user makes before the application retrieves the SQL portion.&nbsp; Thanks.</P>
+<P>Jonathan</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, June 26, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>What I&#8217;m saying is that your SELECT seems consistent (in
+your examples) &#8211; only the WHERE varies.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>If the SELECT is consistent then this isn&#8217;t too hard
+(though the injection attack is a real problem).<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>If the SELECT varies (so the user gets to pick the columns to
+return) then an untyped DataTable is probably your easiest solution. Just get
+the data into the DataTable &#8211; the DataTable is a field of your object &#8211;
+and return your object to the client, then give the DataTable to the UI via a
+property.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> jfreeman
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Thursday, June 26, 2008 3:03 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: SQL Query in column<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Unfortunately, they are not fixed.&nbsp; The SQL could also be something
+like this:<o:p></o:p></p>
+
+<p>SELECT ProductID, ProductNo, ProductDescription, ProductType&nbsp;FROM
+Product WHERE ProductNo LIKE '{Product No}%' order by ProductNo<o:p></o:p></p>
+
+<p>The SQL command is different based on other selections a user makes before
+the application retrieves the SQL portion.&nbsp; Thanks.<o:p></o:p></p>
+
+<p>Jonathan<o:p></o:p></p>
+
+<p>&nbsp;<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jfreeman replied on Thursday, June 26, 2008</h2><P>Could the CommandBase be used to pass the SQL into and return a DataTable?&nbsp; </P>
+<P>Jonathan</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, June 26, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Yes, either that or a ReadOnlyBase object &#8211; either would
+work.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> jfreeman
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Thursday, June 26, 2008 4:44 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: SQL Query in column<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Could the CommandBase be used to pass the SQL into and return a
+DataTable?&nbsp; <o:p></o:p></p>
+
+<p>Jonathan<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jfreeman replied on Friday, June 27, 2008</h2><P>Can you explain how this might work in a ReadOnlyBase?&nbsp; Sample code maybe?&nbsp; Thanks.</P>
+<P>Jonathan</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Friday, June 27, 2008</h2>Well each search sounds like a different use case.. so you'd have a set of read only objects that are the result of one kind of query and another for the other kind of query.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, July 07, 2008</h2><P>I could have the use of the tableadapter wrong - I don't use them more than once every couple years for some demo or other, but the basic structure of using ReadOnlyBase is like this:</P>
+<P>[Serializable]<BR>public class GetDataTable : ReadOnlyBsae&lt;GetDataTable&gt;<BR>{<BR>&nbsp; private DataTable _table;</P>
+<P>&nbsp; public DataTable Table<BR>&nbsp; {<BR>&nbsp;&nbsp;&nbsp; get { return _table; }<BR>&nbsp; }</P>
+<P>&nbsp; public static GetDataTable GetObject()<BR>&nbsp; {<BR>&nbsp;&nbsp;&nbsp; return DataPortal.Fetch&lt;GetDataTable&gt;();<BR>&nbsp; }</P>
+<P>&nbsp; private GetDataTable()<BR>&nbsp; { /* require use of factory */ }</P>
+<P>&nbsp; private void DataPortal_Fetch()<BR>&nbsp; {<BR>&nbsp;&nbsp;&nbsp; _table = new DataTable();<BR>&nbsp;&nbsp;&nbsp; var da = new MyTableAdapter();<BR>&nbsp;&nbsp;&nbsp; da.Fill(_table);<BR>&nbsp; }<BR>}</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Friday, June 27, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Yes, it can be.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Senior Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> jfreeman
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Thursday, June 26, 2008 5:44 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: SQL Query in column<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Could the CommandBase be used to pass the SQL into and return a
+DataTable?&nbsp; <o:p></o:p></p>
+
+<p>Jonathan<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Thursday, June 26, 2008</h2>If your customer types <b>0; drop database master</b> for you'll be in for a world of hurt.&nbsp; Use command parameters.<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

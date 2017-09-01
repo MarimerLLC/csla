@@ -1,0 +1,77 @@
+<html><header><title>Is WcfProxy 30 times slower then RemotingProxy?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Is WcfProxy 30 times slower then RemotingProxy?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/7090.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Cuong posted on Friday, June 12, 2009</h2>I am converting my old WindowsForm app to Silverlight. Both are client/server app and run on IIS. The WindowsForm app uses the RemotingProxy and it needs only about 6 seconds to transfer data of 10MB between clients and server. The Silverlight app uses WcfProxy and needs about 180 seconds to transfer the same data. Both apps (include clients and server) run on the same machines. Is WcfProxy 30 times slower then RemotingProxy or did I config something wrong?<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ixman replied on Friday, June 12, 2009</h2>Hi,<br /><br />Check the binding... It must be WSHttpBinding... and is slow... Do you need security or encryption?If not, disable them. If you don't have a problem with opening a TCP port in your firewall use NetTcpBinding, is almost as fast as remoting.<br /><br />Regards,</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>esaulsberry replied on Friday, June 12, 2009</h2><P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>ixman:</strong></div><div>Hi, Check the binding... It must be WSHttpBinding... and is slow... Do you need security or encryption?If not, disable them. If you don't have a problem with opening a TCP port in your firewall use NetTcpBinding, is almost as fast as remoting. Regards,</div></BLOCKQUOTE></P>
+<P>Alas, Silverlight only supports Basic HTTP binding.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Cuong replied on Friday, June 12, 2009</h2>My app does not need security or encryption. I only need some ways to improve data transferring in Silverlight app. Could you instruct me the way to disable security and encryption features of WcfProxy.<br><br>In fact I am using CompressedProxy in Silverlight app and it consumes 180s for transferring data of 10MB. This proxy is good for transferring business objects. But for raw data as my case, I see the speed is not improved much.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Saturday, June 13, 2009</h2><P>Wait, are you saying you are trying to use the data portal to transfer 10MB of raw data?</P>
+<P>Don't do that!! Really!!</P>
+<P>The Silverlight data portal is designed to move business objects between Silverlight and .NET. To make this possible we had to do a lot of work around serializing and encoding object data, and I don't think that can be avoided when dealing with object graphs. In other words the overhead is required and unavoidable.</P>
+<P>But you must realize that serialization incurs overhead that is <EM>not necessary</EM> for raw data, and it seems silly to incur that overhead when you don't need to.</P>
+<P>Just set up another WCF service on your web/app server, define your own data contract for your raw data, and transfer the data directly through WCF, not through the data portal.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>skagen00 replied on Friday, June 12, 2009</h2>You absolutely have to use compression. Are you using compression? If not, I'll dig up a link for you. </div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Paul Czywczynski replied on Friday, June 12, 2009</h2>We are using a custom formatter and compression. <br><br><a href="http://www.noemax.com/products/fastinfoset/index.html">http://www.noemax.com/products/fastinfoset/index.html</a><br><br>If anyone has anymore ideas to tweak more speed out of WCF I am all ears.<br><br>-Paul<br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Friday, June 12, 2009</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I
+do not believe this product will work well with CSLA for Silverlight because the
+message is already in binary format by the time it gets to WCF, so this product
+will not give you much.&nbsp; You can use Fiddler to confirm this.&nbsp; You
+can also find an example of Silverlight compression for CSLA under samples in
+SVN.&nbsp; It is using CSharpZipLib.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Paul Czywczynski
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Friday, June 12, 2009 12:28 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] Is WcfProxy 30 times slower then RemotingProxy?<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>We are using a custom formatter and compression. <br>
+<br>
+<a href="http://www.noemax.com/products/fastinfoset/index.html">http://www.noemax.com/products/fastinfoset/index.html</a><br>
+<br>
+If anyone has anymore ideas to tweak more speed out of WCF I am all ears.<br>
+<br>
+-Paul<br>
+<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

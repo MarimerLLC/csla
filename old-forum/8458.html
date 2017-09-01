@@ -1,0 +1,36 @@
+<html><header><title>BusinessListBase Child_PropertyChanged not calling ReIndexItem</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>BusinessListBase Child_PropertyChanged not calling ReIndexItem</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/8458.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>scottlerch posted on Tuesday, February 02, 2010</h2><p>I noticed SearchByExpression was not always working on properties marked as Indexable.  After diggging through the CSLA code I saw BusinessListBase.Child_PropertyChanged was not calling ReIndexItem because my object was never deserialized.  This was because it was just created on the client side and not yet saved.  Plus, I can&#39;t figure out why that check or RaiseListChangedEvents should matter when reindexing properties.
+
+I believe the following code needs to have the reindexing part pulled out of the conditional checks for deserialized and RaiseListChangedEvent, while keeping the check for e != null.
+
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    protected override void Child_PropertyChanged(object sender, PropertyChangedEventArgs e)
+    {
+      if (_deserialized &amp;&amp; RaiseListChangedEvents &amp;&amp; e != null)
+      {
+        DeferredLoadIndexIfNotLoaded();
+        if (_indexSet.HasIndexFor(e.PropertyName))
+          ReIndexItem((C)sender, e.PropertyName);
+
+        for (int index = 0; index &lt; Count; index++)
+        {
+          if (ReferenceEquals(this[index], sender))
+          {
+            PropertyDescriptor descriptor = GetPropertyDescriptor(e.PropertyName);
+            if (descriptor != null)
+              OnListChanged(new ListChangedEventArgs(
+                ListChangedType.ItemChanged, index, descriptor));
+            else
+              OnListChanged(new ListChangedEventArgs(
+                ListChangedType.ItemChanged, index));
+          }
+        }
+      }
+      base.Child_PropertyChanged(sender, e);
+    }
+
+Does that sound reasonable or am I missing something?  This seems to be the same issue as this post: http://forums.lhotka.net/forums/thread/32553.aspx
+
+I noticed the problem in 3.8.1 and it seems to still exist in 4.0.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, February 03, 2010</h2><p>The problem won&#39;t exist in 4.0, because the whole indexing concept has been removed.</p>
+<p>It is a little-used feature, only useful in very narrow scenarios, and you can do indexing using other frameworks (like i4o).</p>
+<p>And it complicated the hell out of CSLA collections and has been a maintenance mess ever since it was implemented.</p>
+<p>So it is gone. And so is the C5 dependency. It is all goodness and light and joy :)</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>scottlerch replied on Thursday, February 04, 2010</h2>Well, that's one way to fix it :-)<br /><br />I ended up making the necessary fixes for our code since the index was useful to us, but it's good to know about i4o for future reference.  Thanks for the info!</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

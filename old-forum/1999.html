@@ -1,0 +1,14 @@
+<html><header><title>CSLA.1.x for .Net 2.0 framework</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA.1.x for .Net 2.0 framework</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/1999.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Brian Tian posted on Monday, December 18, 2006</h2><P>Hi, All,</P>
+<P>We have an application that uses CSLA.1.4.0 under .Net1.1, now we want to convert this application from VS2003 to VS2005. What is the better csla version that I should use for .Net2.0, is Csla.1.5.2 or Csla1.5.3? We don't have too much time left for creating new csla2.0 business objects and&nbsp;I know this&nbsp;should be&nbsp;the best solution but we can not do it now. We just want our application would run under .Net2.0. Does anyone do this before? any suggestions?</P>
+<P>&nbsp;</P>
+<P>Thank you!</P>
+<P>Brian</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Monday, December 18, 2006</h2><P>I run CSLA 1.x and 2.0 side by side in VS2005.</P>
+<P>I am not sure we even re-compiled CSLA 1.x first. May have just used the existing .dlls.</P>
+<P>This way I can transition to CSLA 2.0 when I find more time.</P>
+<P>You have to change the Namespace in either 1.x or 2.0 though to avoid conflicts.</P>
+<P>I found it easier to change it in 2.0 to Csla2 in the Project. So my one .dll file is named Csla2.dll.</P>
+<P>Everything works.</P>
+<P>I modified my custom Principal to use Csla2 and 1.x.</P>
+<P>If you want to do remoting you have to set up 2 separate endpoints in your config file. </P>
+<P>Joe</P>
+<P>&nbsp;</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

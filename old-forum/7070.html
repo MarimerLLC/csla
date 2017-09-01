@@ -1,0 +1,32 @@
+<html><header><title>OMG Becky...</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>OMG Becky...</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/7070.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>jasona22 posted on Wednesday, June 10, 2009</h2><P>&lt;subject is a reference to "I like big butts" by Sir Mix-a-lot&gt;</P>
+<P>I am verclempt.&nbsp; What follows is an explaniation of what I have and what I am running into.&nbsp;&nbsp; The question is "WHY?"</P>
+<P>I am a team member for a product.&nbsp; One of my tasks is to build a Windows Service that reads a table that contains the data required to execute process listed in the table on a time schedule.&nbsp; Each record is a separate process.</P>
+<P>The process record contains:</P>
+<P>Start Date Time, Frequency, Process Function To Execute and some other fields that are not necessary for this discussion.</P>
+<P>So for each record in the table, I create a process class.</P>
+<P>In the process class, as many as 2 timers are created.&nbsp; First timer (a single shot) executes a delta from "now" to the Start Date Time value.&nbsp; When that timer executes, &nbsp;the "process function" is called&nbsp;and it creates a second timer that then handles the "frequency" (once a day, once an hour etc) for on going process function calls -- I know there is a timer that does this sort of thing already, but there are other features that this gives that I am using that the other timer does not.</P>
+<P>When the process executes, it uses reflection to create an assembly, an instance of the assembly and then invokes a method on that assembly passing a single string parameter.</P>
+<P>For all intents and purposes, that is all this service does.&nbsp; I do not explicitly use CSLA or anything fancy.&nbsp; I added no references (other than System.Configuration) for app config handling.</P>
+<P>Running against my stub, I execute fine.&nbsp; I have ran against the stub at 100 milliseconds for up to 5 timed processes and never even hic-uped.&nbsp; </P>
+<P>Changing my app config to point to the DLL that I am to actually reference... a DLL that actually does use CSLA and suddenly the Windows Service starts erroring.</P>
+<P>The error is something to the effect of "Object not Found" and the inner exception complains about a missing CSLA 3.0.4.0 reference.&nbsp; I look at the other guys install directory and the CSLA file is there... longer story short, it turns out that it is complainging about my Windows Service not containing a reference to CSLA.</P>
+<P>I add a CSLA reference to my Windows Service and that series of erros goes away.&nbsp; This breaks all coding logic I have ever been involved with.&nbsp; </P>
+<P>So, the question is: Why does my windows service need to reference CSLA (as in right click References and select Add Reference and browse to the CSLA.dll) even though I never create anything out of it, never follow the frameworks structure or otherwise use it directly?&nbsp; </P>
+<P>Never before can I recall needing to add an external reference to any dll just because one that I was referencing used it.</P>
+<P>In testing this, I went back to my Stub application, removed the CSLA reference from my service and ti worked fine.&nbsp; Added a reference to CSLA in the Stub and the Windows Service stopped working again... added a reference to CSLA back into my Windows Service and it was happy once more.</P>
+<P>Very strange behavior and I would love to understand it.</P>
+<P>Thank you for your knowledge and willingness to share it.</P>
+<P>&nbsp;</P>
+<P>Jason</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, June 10, 2009</h2><P>Often the trick is to just make sure that Csla.dll is in the right folder so the .NET type loader can find it.</P>
+<P>If your service itself isn't using Csla.dll, then you shouldn't need to reference it. But if some other assembly is using Csla.dll, you <EM>must make sure Csla.dll is in the EXE's folder</EM>.</P>
+<P>Often the easiest way to get a DLL into a folder is to have the host project (the EXE, web project or whatever) reference that DLL. But you can manually copy the DLL into place, or use a post-build operation to do the copy if you want to avoid using a reference.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jasona22 replied on Wednesday, June 10, 2009</h2><P>Thanks.&nbsp; It just seems a little more tightly coupled than I would expect.&nbsp; It would seem that if you are reflecting a dll (based on data in a app.config file), that needing to add a reference or move dll's would make the service know too much about what it is reflecting.</P>
+<P>But I do see your point, since the service is technically the app domain for the call, the execution will be with the exe and need the dependencies of the called dll as well.</P>
+<P>Hmmm...</P>
+<P>&nbsp;</P>
+<P>Thanks again</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, June 10, 2009</h2><P>All I'm saying, is that if you want Visual Studio to automatically ensure that your DLLs are in the folder, then you need the references.</P>
+<P>If you come up with some other scheme to get the DLLs into the folder before the service is running, then you can do that instead - but VS won't help you unless you use references.</P>
+<P>So you can choose to be less tightly coupled, and I think that's fine, you just need to come up with your own infrastructure to make that work.</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

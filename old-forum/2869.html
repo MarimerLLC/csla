@@ -1,0 +1,277 @@
+<html><header><title>Problem with BusinessBase.Parent after serialization!</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Problem with BusinessBase.Parent after serialization!</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/2869.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>geordiepaul posted on Tuesday, May 15, 2007</h2><P><FONT face=Arial size=2>We have a slight problem when binding a BusinessListBase to a 3rd part grid component. Under the hood ths grid component must do some serialization of the object during databinding and as a result the state of the BusinessBase.Parent property is returning null. Our object requires this to work.</FONT></P>
+<P><FONT face=Arial size=2>I have noticed in BusinessBase that _parent is marked as [<FONT color=#2b91af>NonSerialized</FONT>()] but there is a handler for deserialization on BusinessListBase that resets the parent when deserialization occurs!</FONT></P>
+<P><FONT face=Arial size=2>Am I missing something that we're required to do in order for BusinessBase.Parent to maintain it's state during deserialization? As a quick test I removed the [<FONT color=#2b91af>NonSerialized</FONT>()] from _parent on BusinessBase and everything worked but obviously this is not a real solution.</FONT></P>
+<P><FONT face=Arial size=2>Thanks</FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, May 15, 2007</h2><P>It sounds like the grid is serializing the child object outside the context of the list, rather than serializing the list itself. </P>
+<P>What grid is this? That's not a particularly safe/good/supported thing to do!</P>
+<P>I don't know how you can address this. If you can determine when this deserialization has happened (like in the UI or something?) perhaps you can call a method (of your creation) on the list object to tell it to reset the parent reference.</P>
+<P>Or perhaps you can add an event to your child object so it can raise that event to tell the list that it has been deserialized? That could be very tricky to get right, but could maybe work. It might not though - because this grid control almost certainly deserializes the child first and then re-adds it to the list.</P>
+<P>Ahh, maybe that is the answer. In your list class you could override the method from BindingList&lt;T&gt; that is called when an item is replaced in the list and call SetParent() on the child from within that method. I bet that work work.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>geordiepaul replied on Wednesday, May 16, 2007</h2><P><FONT face=Arial size=2>Hi</FONT></P>
+<P><FONT face=Arial size=2>Thanks for the reply.</FONT></P>
+<P><FONT face=Arial size=2>It turns out that the grid is actually cloning the object which in turn serializes the object and causes the problem. The grid in question is Teleriks (</FONT><A href="http://www.telerik.com"><FONT face=Arial size=2>www.telerik.com</FONT></A><FONT face=Arial size=2>)</FONT></P>
+<P><FONT face=Arial size=2>There suggested fix was the override the GetClone method and reset the parent object like so...</FONT></P>
+<P>
+<TABLE cellSpacing=0 cellPadding=0>
+
+<TR>
+<TD><FONT face="Courier New"><FONT size=2><FONT>protected</FONT><FONT>&nbsp;</FONT><FONT>override</FONT><FONT>&nbsp;</FONT><FONT>object</FONT><FONT>&nbsp;GetClone()&nbsp;</FONT></FONT></FONT></TD></TR>
+<TR>
+<TD><FONT face="Courier New" size=2>{&nbsp;</FONT></TD></TR>
+<TR>
+<TD><FONT face="Courier New"><FONT size=2>&nbsp;&nbsp;&nbsp;Item&nbsp;clone&nbsp;=&nbsp;(Item)&nbsp;<FONT>base</FONT><FONT>.GetClone();&nbsp;</FONT></FONT></FONT></TD></TR>
+<TR>
+<TD><FONT face="Courier New"><FONT size=2>&nbsp;&nbsp;&nbsp;&nbsp;(clone&nbsp;<FONT>as</FONT><FONT>&nbsp;Csla.Core.IEditableBusinessObject).SetParent(</FONT><FONT>this</FONT><FONT>.Parent);&nbsp;</FONT></FONT></FONT></TD></TR>
+<TR>
+<TD><FONT face="Courier New"><FONT size=2>&nbsp;&nbsp;&nbsp;&nbsp;<FONT>return</FONT><FONT>&nbsp;clone;&nbsp;</FONT></FONT></FONT></TD></TR>
+<TR>
+<TD><FONT face="Courier New" size=2>}</FONT>&nbsp;</TD></TR></TABLE></P>
+<P><FONT face=Arial size=2>Not sure if this is a valid fix as yet as we have encountered a problem with the SetItem method on BusinessListBase in that it does not set the Parent property like InsertItem does.</FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, May 17, 2007</h2>
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Interesting &#8211; yes I see where the SetItem method should
+call SetParent(). Worse, it also needs to ensure that the &#8220;new object&#8217;s&#8221;
+edit level is correct by decreasing or increasing it to match the list.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I&#8217;ve make these changes in a way that I think is correct &#8211;
+here&#8217;s the new method. Can you test it to see if it resolves your issue?<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Thanks, Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp; <span>protected</span>
+<span>override</span> <span>void</span>
+SetItem(<span>int</span> index, C item)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp; {<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; C child = <span>default</span>(C);<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span>if</span> (!(ReferenceEquals((C)(<span>this</span>[index]),
+item)))<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; child = <span>this</span>[index];<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span>// replace the original object with this new<o:p></o:p></span></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span>// object<o:p></o:p></span></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span>bool</span> oldRaiseListChangedEvents = <span>this</span>.RaiseListChangedEvents;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span>try<o:p></o:p></span></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span>this</span>.RaiseListChangedEvents = <span>false</span>;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span>// set parent reference<o:p></o:p></span></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+item.SetParent(<span>this</span>);<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span>// if item's edit level is too high,<o:p></o:p></span></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span>// reduce it to match list<o:p></o:p></span></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span>while</span> (item.EditLevel &gt; <span>this</span>.EditLevel)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+item.AcceptChanges();<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span>// reset EditLevelAdded if necessary<o:p></o:p></span></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span>if</span> (child.EditLevelAdded &gt; <span>this</span>.EditLevel)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+child.EditLevelAdded = <span>this</span>.EditLevel;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span>// if item's edit level is too low,<o:p></o:p></span></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span>// increase it to match list<o:p></o:p></span></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span>while</span> (item.EditLevel &lt; <span>this</span>.EditLevel)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+item.CopyState();<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span>base</span>.SetItem(index, item);<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span>finally<o:p></o:p></span></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span>this</span>.RaiseListChangedEvents =
+oldRaiseListChangedEvents;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span>if</span> (child != <span>null</span>)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+CopyToDeletedList(child);<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; OnListChanged(<span>new</span> <span>ListChangedEventArgs</span>(<span>ListChangedType</span>.ItemChanged, index));<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp; }<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> geordiepaul
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Wednesday, May 16, 2007 7:24 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] Problem with BusinessBase.Parent after
+serialization!<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p><span>Hi</span><o:p></o:p></p>
+
+<p><span>Thanks for
+the reply.</span><o:p></o:p></p>
+
+<p><span>It turns out
+that the grid is actually cloning the object which in turn serializes the
+object and causes the problem. The grid in question is Teleriks (</span><a href="http://www.telerik.com"><span>www.telerik.com</span></a><span>)</span><o:p></o:p></p>
+
+<p><span>There
+suggested fix was the override the GetClone method and reset the parent object
+like so...</span><o:p></o:p></p>
+
+<table class=MsoNormalTable cellspacing=0 cellpadding=0>
+ <tr>
+  <td>
+  <p class=MsoNormal><span>protected&nbsp;override&nbsp;object&nbsp;GetClone()&nbsp;</span><o:p></o:p></p>
+  </td>
+ </tr>
+ <tr>
+  <td>
+  <p class=MsoNormal><span>{&nbsp;</span><o:p></o:p></p>
+  </td>
+ </tr>
+ <tr>
+  <td>
+  <p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;Item&nbsp;clone&nbsp;=&nbsp;(Item)&nbsp;base.GetClone();&nbsp;</span><o:p></o:p></p>
+  </td>
+ </tr>
+ <tr>
+  <td>
+  <p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;(clone&nbsp;as&nbsp;Csla.Core.IEditableBusinessObject).SetParent(this.Parent);&nbsp;</span><o:p></o:p></p>
+  </td>
+ </tr>
+ <tr>
+  <td>
+  <p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;clone;&nbsp;</span><o:p></o:p></p>
+  </td>
+ </tr>
+ <tr>
+  <td>
+  <p class=MsoNormal><span>}</span>&nbsp;<o:p></o:p></p>
+  </td>
+ </tr>
+</table>
+
+<p><span>Not sure if
+this is a valid fix as yet as we have encountered a problem with the SetItem
+method on BusinessListBase in that it does not set the Parent property like
+InsertItem does.</span><o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+<p><span>No virus found in this incoming message.<br>
+Checked by AVG Free Edition.<br>
+Version: 7.5.467 / Virus Database: 269.7.1/805 - Release Date: 5/15/2007 10:47
+AM</span><o:p></o:p></p>
+
+</div>
+
+
+
+
+<BR>
+
+<P><FONT SIZE=2>No virus found in this outgoing message.<BR>
+Checked by AVG Free Edition.<BR>
+Version: 7.5.467 / Virus Database: 269.7.1/807 - Release Date: 5/16/2007 6:05 PM<BR>
+</FONT> </P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>geordiepaul replied on Friday, May 18, 2007</h2><P><FONT face=Arial size=2>Hi,</FONT></P>
+<P><FONT face=Arial size=2>Thanks for looking at that issue!! :-)</FONT></P>
+<P><FONT face=Arial size=2>Yes that appears to have resolved our issue. (We had just called set parent in our custom base object as a quick fix for us) . We don't use any of the n-level undo in our application so I can't confirm whether there are any issue on that front.</FONT></P>
+<P><FONT face=Arial size=2>Will you be adding this change to an official release? (pre v3.0)</FONT></P>
+<P><FONT face=Arial size=2>Once again thanks!!!</FONT></P>
+<P><FONT face=Arial size=2>Paul</FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, May 18, 2007</h2>
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I will not be creating a 2.1.5, no. This change will be in 3.0.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>The reason I&#8217;m doing that, is because 3.0 doesn&#8217;t
+have any (major) breaking changes from 2.1.4 &#8211; it merely adds optional
+support for .NET 3.0. It really is much like a 2.1.5, but with additional
+goodies for those that need them.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+</div>
+
+
+
+
+<BR>
+
+<P><FONT SIZE=2>No virus found in this outgoing message.<BR>
+Checked by AVG Free Edition.<BR>
+Version: 7.5.467 / Virus Database: 269.7.3/809 - Release Date: 5/17/2007 5:18 PM<BR>
+</FONT> </P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>geordiepaul replied on Friday, May 18, 2007</h2><P>Ok that makes sense.</P>
+<P>We'll have to wait for the final release of 3.0 before taking advantage of this change as I tend not to like ad-hoc addition by anyone other than yourself&nbsp;i.e. a proper release! :-)</P>
+<P>Many thanks</P>
+<P>Paul</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, May 18, 2007</h2><P>No problem. This has been quite useful actually, because (combined with <A HREF="/forums/thread/14762.aspx">this other thread</A>) it has forced me to walk through the SetItem and some other n-level undo behaviors in exquisite detail and I've been able to resolve some issues that have been hanging around for a while.</P>
+<P>The comprehensive fix extends (unfortunately) beyond just SetItem() and into some other code, and the results are quite positive! <img src="/emoticons/emotion-11.gif" alt="Cool [H]" /></P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

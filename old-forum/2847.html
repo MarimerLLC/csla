@@ -1,0 +1,36 @@
+<html><header><title>CancelEdit Problem</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CancelEdit Problem</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/2847.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>yuhnkee posted on Thursday, May 10, 2007</h2>I have read tons of posts about different situations on how cancel edit is not working and I am very confused if these are the same as my sissue.&nbsp; I have a Collection of editable root objects.&nbsp; I have a form with a grid displaying some of the info and textboxes displaying all of the details, both bound to a bindingsource.&nbsp; I click on the grid(activating a new current item in the binding source) which is also reflected in the details section.&nbsp; I edit the item in the details section and when I cancel or save (Child.Save() or Child.Cancel() everything works fine.&nbsp; The problem is if I go to a diffent item and come back to dirty child.&nbsp; When I save it works fine. When I call cancel it doesn't change the properties back to the original values(edit level is at 1 before the cancel is called).<br><br>If I edit something, change current item, come back edit more, Child.Cancel() only cancels the second change (yet edit level is at 1 before I call the cancel).<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, May 10, 2007</h2><P>I think <A HREF="/forums/permalink/10718/10713/ShowThread.aspx#10713">this post </A>covers it pretty well.</P>
+<P>Don't call BeginEdit at all.</P>
+<P>Make sure to call CancelEdit on the <EM>child</EM> bindingsource before the parent bindingsource. I don't know what you mean by Child.Cancel(), but if you are calling CancelEdit on the child object itself you are doomed.</P>
+<P>Make sure to call EndEdit on the <EM>child</EM> bindingsource before the parent bindingsource. I don't know what you mean by Child.Save(), but if you are calling ApplyEdit on the child object itself you are doomed.</P>
+<P>You have to think of the bindingsources as being nested, because they are nested. So you have to unwind all calls from the inside (child) out (parent). And you <EM>must</EM> call the methods on the bindingsource objects, not on the business objects themselves. The UI code&nbsp;should (ideally) never interact with anything but the bindingsource controls.</P>
+<P>Also be aware that there are bugs in the grid control, and there are hotfixes from Microsoft for some of them. I don't know the details, but others on the forum have found and mentioned these issues.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>yuhnkee replied on Friday, May 11, 2007</h2>Sorry, I think I confused myself and you.&nbsp; <br><br>What I was trying to say was I have a collection of editable root objects.&nbsp; I only have 1 bindingsource (no parent and child binding source).&nbsp; I never call BeginEdit (on the collection, object in the collection or the bindingsoure) I thought it got called automatically.&nbsp; Also I am using an Infragistics grid.&nbsp;&nbsp; I am calling CancelEdit on an item in the collection.&nbsp; I think you are telling me I shouldn't call CancelEdit on the business object but on the binding source.&nbsp; I replaced collection[0].CancelEdit() with BindingSource.CancelEdit() and I still have the same behavior(works when I stay on the current item but If I come back and try to cancel it doesn't).&nbsp; I am dealing with alot of records thus why I wanted to call cancel and apply on the object not the collection(or binding source).<br><br>Obviously I don't always use a binding source, I am not going to have a problem calling those functions on the business objects am I?</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, May 11, 2007</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>When using an ERLB collection you shouldn&#8217;t have to
+manually call any *Edit() methods at all &#8211; they should be handled by data
+binding automatically. The only exception might be that you need to call bindingSource.
+EndEdit()) when the form is being closed to make sure the last row gets committed
+if that&#8217;s your desire. Otherwise that last row&#8217;s edit would be effectively
+canceled because it would never get saved.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky</span><o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>yuhnkee replied on Friday, May 11, 2007</h2>I must be doing something else wrong because calling CancelEdit() on the binding source produces the same behavior..<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>yuhnkee replied on Friday, May 11, 2007</h2>I figured it out, the EndEdit() was getting called when a different row got activated.<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,10 @@
+<html><header><title>Use of PropertyHasChanged method in Parent Child scenario</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Use of PropertyHasChanged method in Parent Child scenario</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3603.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Ank posted on Thursday, September 27, 2007</h2><P>I am wondering how to handle such a case where property of the parent is cumulative of the property of the child objects say Invoice.Amount is sum of LineAmounts of all invoice lines. <o:p></o:p></P>
+<P>If I show the invoice object in a hierarchical grid and allow the user to modify the invoice object, the Invoice.Amount cell does not refresh when the line amount of any invoice line is changed.<o:p></o:p></P>
+<P>Amount property only has a Get method as <o:p></o:p></P>
+<P>for each line as InvoiceLine in me.InvoiceLines<o:p></o:p></P>
+<P>Amount = Amount + line.Amount<o:p></o:p></P>
+<P>next<o:p></o:p></P>
+<P>return Amount.<o:p></o:p></P>
+<P>Thanks,<o:p></o:p></P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Thursday, September 27, 2007</h2>ank,<br><br>I have the same thing (Invoice &amp; line items) and this is what I do.&nbsp; Just remember though if the price of an item changes, you'll need to have your root BO listen for the lists' ListChanged event so it can raise a property change event as well (if you're displaying the total somewhere on the form).<br><br>HTH<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Ank replied on Thursday, September 27, 2007</h2><P>Thank you HTH, It works!</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Friday, September 28, 2007</h2>Glad to hear it!&nbsp; Mmy name is actually Andy.&nbsp; HTH = Hope That Helps.<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

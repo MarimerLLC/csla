@@ -1,0 +1,11 @@
+<html><header><title>Clone operations very slow when using Linq and changing underlying BO</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Clone operations very slow when using Linq and changing underlying BO</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/8527.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Vinodonly posted on Sunday, February 14, 2010</h2><p>i moved to csla version 3.8.2 with the hope that i will get solution for this problem but it remains the same..</p>
+<p>issue is that Clone operations are very slow when using Linq and changing underlying BO..</p>
+<p>I have a req where i have to clone objects for processing.. But whenever i&#39;m performing the clone operations alongwith linq then full process is very slow.. </p>
+<p>I did this to have better performance i.e. instead of loading same objects from db, i thought to use clone but surprisngly result is much slower.. can anbody help in this..</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>bniemyjski replied on Monday, February 15, 2010</h2><p>
+<p>Hello,</p>
+<p>Can you post a snippet of code that will reproduce this issue. How much longer does it take when linq is involved&nbsp;compared&nbsp;to the non linq method?</p>
+<p>Thanks</p>
+<p>-Blake Niemyjski</p>
+<p>&nbsp;</p>
+</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Monday, February 15, 2010</h2><p>It might be that you&#39;re results are triggering Linq to Csla.&nbsp;&nbsp; Do you have any indexes on your BOs?&nbsp; You might have to not use Linq to get around this.&nbsp; </p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

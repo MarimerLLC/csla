@@ -1,0 +1,9 @@
+<html><header><title>Dynamic Objects</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Dynamic Objects</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/8635.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>FrazerS posted on Tuesday, March 09, 2010</h2><p>In my application, I have&nbsp;objects Contact, &nbsp;Folder and&nbsp;Email and a list object, EmailList.</p>
+<p>I need to associate the Email with the Contact from whom it originated.&nbsp; Contacts do not have Folders. I need to make the Email appear logically in mutliple Folders (associated with Employees), but for obvious reasons, I don&#39;t want to physycally replicate the Email data row everytime it gets &quot;added&quot; to a Contact or an Employee&#39;s Folder.&nbsp; </p>
+<p>I am wondering whether implementing Email as a Dynamic object is the way to go.&nbsp; I would then implement a property of type EmailList in the Contact and Folder objects.&nbsp;&nbsp; What I am wondering is, can I then create Email as a root, but then add it to whatever EmailList collections I subsequently associate it with?</p>
+<p>Frazer</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>FrazerS replied on Tuesday, March 09, 2010</h2><p>You can disregard this one.&nbsp; </p>
+<p>&nbsp;I decided to go with a many-to-many solution, modelled after ProjectResources in PTracker.&nbsp; Simpler in my case, since I only need to manage the owner-email associations from the owner side.&nbsp; I will leave Email as a ER.</p>
+<p>&nbsp;</p>
+<p>Frazer</p>
+<p>&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

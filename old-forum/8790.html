@@ -1,0 +1,35 @@
+<html><header><title>Entity Framework and TimeStamps and Concurrency </title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Entity Framework and TimeStamps and Concurrency </h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/8790.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Mick_G posted on Friday, April 09, 2010</h2><p style="margin:0in 0in 10pt;" class="MsoNormal"><span style="font-size:small;font-family:Calibri;">I am taking the plunge into EF on my latest project. In the past I&rsquo;ve adopted the method used in Rocky&rsquo;s books to use a Stored Procedure, checking for a change in the TimeStamp. Since in EF handling of Stored Procedures is a real kludge in my opinion, what is everyone else doing? I have looked high and low and just haven&rsquo;t found a good example. </span></p>
+<p style="margin:0in 0in 10pt;" class="MsoNormal"><span style="font-size:small;font-family:Calibri;">Mick</span></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>simon replied on Friday, May 13, 2011</h2><p>I have the same issue!&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>ajj3085 replied on Friday, May 13, 2011</h2><p>Ditch the stored procedures.&nbsp; I used to have them for all operations, until I came to realize that they&#39;re not buying me anything, it was just more for me to maintain.&nbsp; EF can check the timestamp column for you.&nbsp; There may be a few specialized procedures worth keeping, so certainly keep those were it makes sense.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>simon replied on Friday, May 13, 2011</h2><p>I use the code below according to Using Csla4</p>
+<p>
+<p>&nbsp;public void Child_Update()</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; using (var ctx = Csla.Data.ObjectContextManager&lt;MES.Server.Entities.MM&gt;.GetManager(MES.Server.Entities.Database.MES))</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; using (BypassPropertyChecks)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; var data = new MES.Server.Entities.Item();</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; data.Id = Id;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; var entityKey = new EntityKey(&quot;MM.Items&quot;, &quot;Id&quot;, Id);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; data.EntityKey = entityKey;</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; ctx.ObjectContext.Attach(data);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; data.ItemNo = ItemNo;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; data.Name = Name;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; data.LastChanged = LastChanged;</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; var count = ctx.ObjectContext.SaveChanges();</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; if (count == 0)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; throw new InvalidOperationException(&quot;Item.Insert&quot;);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; }</p>
+</p>
+<p>the Lastchanged in entity &nbsp;is set to&nbsp;Computed &amp; Fixed.</p>
+<p>when change the data and save, an exception throw:</p>
+<p><span>Store update, insert, or delete statement affected an unexpected number of rows ({0}). Entities may have been modified or deleted since entities were loaded. Refresh ObjectStateManager entries.</span></p>
+<p>What can i do?</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Sunday, May 15, 2011</h2><p>You&#39;ll have to set the column&#39;s UpdateCheck, at least that&#39;s what its called in Linq to sql.&nbsp; EF should have a similar setting.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

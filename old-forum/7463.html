@@ -1,0 +1,15 @@
+<html><header><title>Silverlight CslaDataProvider Data vs. ObjectInstance property</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Silverlight CslaDataProvider Data vs. ObjectInstance property</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/7463.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>SonOfPirate posted on Sunday, August 16, 2009</h2><P>Forgive my ignorance, but I am confused why we have two properties on the CslaDataProvider class for accessing the business object.</P>
+<P>I'm not a big WPF user, but I understand that in WPF the DataSourceProvider class provides a read-only Data property which is supposed to return the "underlying data object" and the ObjectDataProvider presents an ObjectInstance property which has the following logic:</P>
+<OL>
+<LI>If the ObjectType property is defined by the user, an instance of this type will be created and returned by the ObjectInstance property</LI>
+<LI>If an object is explicitly set to the ObjectInstance property:</LI>
+<OL>
+<LI>If that object is a DataSourceProvider, the object's Data property will be returned</LI>
+<LI>Otherwise, the object will be returned</LI></OL></OL>
+<P>It seems to be a pretty convoluted way to allow users to set the data object.&nbsp; Was the intent to provide a base property that would always allow access to the data object but provide a more useful way in the subclasses?&nbsp; I notice that the XmlDataProvider exposes a Document property which is essentially a strongly-typed version of ObjectInstance.</P>
+<P>Anyway, in looking at the CslaDataProvider for Silverlight, I see that both properties are still present even though there is no framework (base class).&nbsp; Can I ask why we need both properties?</P>
+<P>If I bind my UI to ObjectInstance, I don't get any of the internal workings that are triggered when polling the Data property.&nbsp; But, to define the data object, I <STRONG>must</STRONG> use the ObjectInstance property.&nbsp; This seems kinda inconsistent to me.</P>
+<P>Can anyone help me wrap my head around this?</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, August 24, 2009</h2><P>You'll really have to ask Microsoft. I modeled CslaDataProvider off ObjectDataProvider, and it has a Data property for data binding (that's part of the data provider infrastructure in WPF) and an ObjectInstance property to allow code to get/set the object value.</P>
+<P>When we created the SL version of the component, as with all of the code, my goal was to maintain as much parity between .NET and SL as possible, so the same implementation came across.</P>
+<P>As I mentioned in a post earlier today, I rather suspect that the whole data provider infrastructure is on its way out. While it was introduced at the beginning of WPF's lifetime, it is clear that it isn't trendy and a lot of people seem to dislike it...</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

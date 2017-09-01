@@ -1,0 +1,34 @@
+<html><header><title>Template to Generate Metadata</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Template to Generate Metadata</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/1808.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>wjcomeaux posted on Tuesday, November 21, 2006</h2><P>Ok, I've now got a working version of a template that generates a metadata file.</P>
+<P>The template requires a table in the target database called OrmDefinition.</P>
+<P>Each row in the table specifies a CSLA BO to be generated. You can look in the template file to see the specification of the table. Some things it allows. </P>
+<P>ObjectName, TableToGenerateFrom, ExcludedColumns, ReadOnlyColumns, CSLAPropertyNames, FieldsForCRUD operations and other stuff. (Above names not actual, see template file for actual table column names).</P>
+<P>If you guys would like it for the Contrib or if anyone else wants a copy just let me know. It I am currently using it to generate a set of 15 business objects from the PTracker database and they all compile. I have not formally tested the output code yet but it's the same as if you would generate these objects one at a time using the other templates.</P>
+<P>Will</P>
+<P>P.S. Thanks to all for your help in understanding CSLA and Codesmith and for your continued patience. I'm still learning. :)</P>
+<P>Let me know where I should send the template.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>wjcomeaux replied on Wednesday, November 22, 2006</h2><P>I've also just completed a template that generates all of the stored procedures defined in the metadata.</P>
+<P>Basically, each row in the database table represents an object. There are columns that define the stored procedure names to use for all the procedures. My script checks each row and if a column is not DBNull.Value then I execute the template to generate the sproc for the table indicated on the current row.</P>
+<P>So, for instance, I have a row with this data (more data is available in the record)</P>
+<P>
+<TABLE>
+
+<TR>
+<TD>ObjectName</TD>
+<TD>NamespaceTable</TD>
+<TD>CSLAType</TD>
+<TD>InsertCommand</TD>
+<TD>FetchCommand</TD>
+<TD>UpdateCommand</TD>
+<TD>DeleteCommand</TD></TR>
+<TR>
+<TD>BuildingER</TD>
+<TD>MyCSLA</TD>
+<TD>Building</TD>
+<TD>EditableRoot</TD>
+<TD>gen_BuildingER_Insert</TD>
+<TD>gen_BuildingER_Fetch</TD>
+<TD>gen_BuildingER_Update</TD>
+<TD>gen_BuildingER_Delete</TD></TR></TABLE></P>
+<P>The record also has columns for FetchByForeignKey, DeleteByForeignKey, etc but I exclude them here for brevity.</P>
+<P>You guys are welcome to this is you want it.</P>
+<P>The table setup would be very easy to wrap a front end around for actually entering the ORM data but I just plan to key it in by hand for now.</P>
+<P>Will</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

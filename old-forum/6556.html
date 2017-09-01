@@ -1,0 +1,87 @@
+<html><header><title>Silverlight - passing in Windows username to Principal.Login</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Silverlight - passing in Windows username to Principal.Login</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6556.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>pondosinat posted on Wednesday, March 04, 2009</h2><P>I need to make a call to the webserver from Silverlight to retrieve the user's windows domain name, presumably from my Security.Identity class. So it's just a simple string function. What's the easiest way to do this? Use the Dataportal&nbsp;and go through the BeginFetch etc..? or is there a simpler synchronous way to achieve this?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, March 04, 2009</h2><P>If I understand you correctly, this scenario is already supported by CSLA .NET for Silverlight. Look under the Tests download and you'll find a number of applications to test various authentication models, including one to pull the server's Windows identity back to the client.</P>
+<P>There's a little more too it than you might expect, because you need to ensure that the web server runs service calls under the right identity, otherwise it is&nbsp;a relatively straightforward process.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>pondosinat replied on Wednesday, March 04, 2009</h2><P>Thank you. Just to be clear - what I'm going after is being able to use the CSLA's model of SQL based roles, but just using the windows username as the tie in to the CSLA "Users" table. So the initial call I'm asking about is really just to pass in the windows username into the Principal.Login method (with no password), since the fact that the user is authenticated with a valid username would be sufficient. </P>
+<P>With that in mind, would it make sense to do a simple GetUserName call to the web server and if so how would I achieve that?</P>
+<P>&nbsp;</P>
+<P>Thanks</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, March 04, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>The example I mentioned is still a good resource. To get the
+username from the server, you need to ensure that the service you are calling
+actually runs under the user&#8217;s identity (and of course the user must have
+already logged into the web site with their Windows credentials).<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>You certainly can do this with a simple asmx or WCF web service &#8211;
+as long as you ensure the service runs under the right identity.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>But you could also do it as part of your login process, without
+a separate server call.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Why not just send your login request through the data portal to
+the web server, grab the user&#8217;s Windows identity to get the name, and
+then use that name to get the data from the database? All done in one trip to
+the server.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky</span><b><span><o:p></o:p></span></b></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>pondosinat replied on Wednesday, March 04, 2009</h2><P>Yes, your one trip approach is much better! I found yet another option that I thought I would detail for anyone else who may be interested. This approach makes use of the InitParameters of your ASP.NET Silverlight control. In the asp.net startup page, simply set an input parameter as such:</P><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Protected</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Sub</FONT></FONT><FONT size=2> Page_Load(</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>ByVal</FONT></FONT><FONT size=2> sender </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>As</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Object</FONT></FONT><FONT size=2>, </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>ByVal</FONT></FONT><FONT size=2> e </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>As</FONT></FONT><FONT size=2> System.EventArgs) </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Handles</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Me</FONT></FONT><FONT size=2>.Load</P>
+<P>Xaml1.InitParameters = </FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>"username="</FONT></FONT><FONT size=2> &amp; System.Security.Principal.WindowsIdentity.GetCurrent().Name</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>End</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Sub</P></FONT></FONT>
+<P>Then use this value in your silver light app like so:</P><SPAN>
+<P>Private<FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Sub</FONT></FONT><FONT size=2> Application_Startup(</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>ByVal</FONT></FONT><FONT size=2> sender </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>As</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Object</FONT></FONT><FONT size=2>, </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>ByVal</FONT></FONT><FONT size=2> e </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>As</FONT></FONT><FONT size=2> StartupEventArgs)</FONT><FONT color=#008000 size=2><FONT color=#008000 size=2></P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Dim</FONT></FONT><FONT size=2> usernameValue </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>As</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>String</FONT></FONT><FONT size=2> = e.InitParams("username")</P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>
+<P>End</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Sub</FONT></FONT></P>
+<P><FONT color=#0000ff size=2><FONT color=#0000ff size=2><FONT color=#000000 size=3>Finally, simply pass in usernameValue into the CSLA login method, and you're logged in...</FONT></P></FONT></FONT></SPAN></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, March 04, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>That&#8217;s a great tip, thanks!!<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky</span><b><span><o:p></o:p></span></b></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

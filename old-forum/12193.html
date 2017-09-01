@@ -1,0 +1,11 @@
+<html><header><title>Dynamic List Query</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Dynamic List Query</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/12193.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>harrybow5 posted on Tuesday, October 22, 2013</h2><p>Hey Guys,</p>
+<p>I am pretty sure I know the response to this but I am stuck having to ask this anyhow.</p>
+<p>I have a Dynamic List that is data bound to a DGV, I know the standard behaviour is to commit when you come off of the row and this works perfectly when the object is valid. </p>
+<p>I am having an issue when I go to come off of the DGV and the object is not valid(it will throw a commit issue), I was originally handling this in &quot;RowValidating&quot; saying when the object is not valid don&#39;t move off the row. and this works brilliantly with the left click!</p>
+<p>The DGV I am using is our own custom DGV which when you right click a cell the cell will become selected and will also become the current cell. This is what is causing the error I believe. </p>
+<p>I have been asked if I am handling the commit error correctly or if the row should just show in error until it has been filled out and then commit?</p>
+<p>Any help would be appreciated</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, October 22, 2013</h2><p>Normally Windows users don&#39;t expect to be trapped in a control (a textbox, grid cell, etc.), and that can cause issues depending on how it is implemented (such as trapping the user in the app as well as in a control).</p>
+<p>So yes, normally people would expect to leave the row and have the row show error status information.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>harrybow5 replied on Wednesday, October 23, 2013</h2><p>Does this mean that the dynamic list is inadvisable for normal window users? </p>
+<p>Is trapping them in the control the correct way to use the dynamic list? </p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

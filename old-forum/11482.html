@@ -1,0 +1,236 @@
+<html><header><title>Multiple Binding Source Sample Project Logical Bug</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Multiple Binding Source Sample Project Logical Bug</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11482.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>comp1mp posted on Tuesday, July 17, 2012</h2><p>Hi,</p>
+<p>Don&#39;t know if this is the place to post this.</p>
+<p>Multiple BindingSource project which comes with 4.0.0 has the following extension code for a BindingSource.</p>
+<p>
+ 
+  
+ 
+
+ 
+  Normal
+  0
+  
+  
+  
+  
+  false
+  false
+  false
+  
+  EN-US
+  X-NONE
+  X-NONE
+  
+   
+   
+   
+   
+   
+   
+   
+   
+   
+  
+  
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+  
+
+ 
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+ 
+
+
+
+</p>
+<p class="MsoNormal" style="margin-bottom:0.0001pt;line-height:normal;"><span style="font-size:8pt;font-family:&#39;Arial Narrow&#39;,&#39;sans-serif&#39;;color:blue;">public</span><span style="font-size:8pt;font-family:&#39;Arial Narrow&#39;,&#39;sans-serif&#39;;"> <span style="color:blue;">static</span> <span style="color:blue;">void</span> UnbindDataSource(<span style="color:blue;">this</span>
+<span style="color:#2b91af;">BindingSource</span> source, <span style="color:blue;">bool</span> cancel, <span style="color:blue;">bool</span>
+isRoot)</span></p>
+<p class="MsoNormal" style="margin-bottom:0.0001pt;line-height:normal;"><span style="font-size:8pt;font-family:&#39;Arial Narrow&#39;,&#39;sans-serif&#39;;">{</span></p>
+<p class="MsoNormal" style="margin-bottom:0.0001pt;line-height:normal;"><span style="font-size:8pt;font-family:&#39;Arial Narrow&#39;,&#39;sans-serif&#39;;"><span>&nbsp;&nbsp;&nbsp; </span><span style="color:#2b91af;">IEditableObject</span> current = <span style="color:blue;">null</span>;</span></p>
+<p class="MsoNormal" style="margin-bottom:0.0001pt;line-height:normal;"><span style="font-size:8pt;font-family:&#39;Arial Narrow&#39;,&#39;sans-serif&#39;;"><span>&nbsp;&nbsp;&nbsp; </span><span style="color:green;">// position may be -1 if bindigsource is already unbound
+which results in Exception when trying to address current</span></span></p>
+<p class="MsoNormal" style="margin-bottom:0.0001pt;line-height:normal;"><span style="font-size:8pt;font-family:&#39;Arial Narrow&#39;,&#39;sans-serif&#39;;"><span>&nbsp;&nbsp;&nbsp; </span><span style="color:blue;">if</span> ((source.DataSource != <span style="color:blue;">null</span>)
+&amp;&amp; (source.Position &gt; -1))</span></p>
+<p class="MsoNormal" style="margin-bottom:0.0001pt;line-height:normal;"><span style="font-size:8pt;font-family:&#39;Arial Narrow&#39;,&#39;sans-serif&#39;;"><span>&nbsp;&nbsp;&nbsp; </span>{</span></p>
+<p class="MsoNormal" style="margin-bottom:0.0001pt;line-height:normal;"><span style="font-size:8pt;font-family:&#39;Arial Narrow&#39;,&#39;sans-serif&#39;;"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>current =
+source.Current <span style="color:blue;">as</span> <span style="color:#2b91af;">IEditableObject</span>;</span></p>
+<p class="MsoNormal" style="margin-bottom:0.0001pt;line-height:normal;"><span style="font-size:8pt;font-family:&#39;Arial Narrow&#39;,&#39;sans-serif&#39;;"><span>&nbsp;&nbsp;&nbsp; </span>}</span></p>
+<p class="MsoNormal" style="margin-bottom:0.0001pt;line-height:normal;"><span style="font-size:8pt;font-family:&#39;Arial Narrow&#39;,&#39;sans-serif&#39;;">&nbsp;</span></p>
+<p class="MsoNormal" style="margin-bottom:0.0001pt;line-height:normal;"><span style="font-size:8pt;font-family:&#39;Arial Narrow&#39;,&#39;sans-serif&#39;;"><span>&nbsp;&nbsp;&nbsp; </span><span style="color:green;">// set Raise list changed to True</span></span></p>
+<p class="MsoNormal" style="margin-bottom:0.0001pt;line-height:normal;"><span style="font-size:8pt;font-family:&#39;Arial Narrow&#39;,&#39;sans-serif&#39;;"><span>&nbsp;&nbsp;&nbsp;
+</span>source.RaiseListChangedEvents = <span style="color:blue;">false</span>;</span></p>
+<p class="MsoNormal" style="margin-bottom:0.0001pt;line-height:normal;"><span style="font-size:8pt;font-family:&#39;Arial Narrow&#39;,&#39;sans-serif&#39;;"><span>&nbsp;&nbsp;&nbsp; </span><span style="color:green;">// tell currency manager to suspend binding</span></span></p>
+<p class="MsoNormal" style="margin-bottom:0.0001pt;line-height:normal;"><span style="font-size:8pt;font-family:&#39;Arial Narrow&#39;,&#39;sans-serif&#39;;"><span>&nbsp;&nbsp;&nbsp;
+</span>source.SuspendBinding(); <span style="color:green;">//RESEARCH:This
+invokes IEditableObject.EndEdit() </span></span></p>
+<p class="MsoNormal" style="margin-bottom:0.0001pt;line-height:normal;"><span style="font-size:8pt;font-family:&#39;Arial Narrow&#39;,&#39;sans-serif&#39;;color:green;">&nbsp;</span></p>
+<p class="MsoNormal" style="margin-bottom:0.0001pt;line-height:normal;"><span style="font-size:8pt;font-family:&#39;Arial Narrow&#39;,&#39;sans-serif&#39;;"><span>&nbsp;&nbsp;&nbsp; </span><span style="color:blue;">if</span> (isRoot) source.DataSource = <span style="color:blue;">null</span>;</span></p>
+<p class="MsoNormal" style="margin-bottom:0.0001pt;line-height:normal;"><span style="font-size:8pt;font-family:&#39;Arial Narrow&#39;,&#39;sans-serif&#39;;"><span>&nbsp;&nbsp;&nbsp; </span><span style="color:blue;">if</span> (current == <span style="color:blue;">null</span>) <span style="color:blue;">return</span>;</span></p>
+<p class="MsoNormal" style="margin-bottom:0.0001pt;line-height:normal;"><span style="font-size:8pt;font-family:&#39;Arial Narrow&#39;,&#39;sans-serif&#39;;">&nbsp;</span></p>
+<p class="MsoNormal" style="margin-bottom:0.0001pt;line-height:normal;"><span style="font-size:8pt;font-family:&#39;Arial Narrow&#39;,&#39;sans-serif&#39;;"><span>&nbsp;&nbsp;&nbsp; </span><span style="color:blue;">if</span> (cancel)</span></p>
+<p class="MsoNormal" style="margin-bottom:0.0001pt;line-height:normal;"><span style="font-size:8pt;font-family:&#39;Arial Narrow&#39;,&#39;sans-serif&#39;;"><span>&nbsp;&nbsp;&nbsp; </span>{</span></p>
+<p class="MsoNormal" style="margin-bottom:0.0001pt;line-height:normal;"><span style="font-size:8pt;font-family:&#39;Arial Narrow&#39;,&#39;sans-serif&#39;;"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>current.CancelEdit();</span></p>
+<p class="MsoNormal" style="margin-bottom:0.0001pt;line-height:normal;"><span style="font-size:8pt;font-family:&#39;Arial Narrow&#39;,&#39;sans-serif&#39;;"><span>&nbsp;&nbsp; </span><span>&nbsp;</span>}</span></p>
+<p class="MsoNormal" style="margin-bottom:0.0001pt;line-height:normal;"><span style="font-size:8pt;font-family:&#39;Arial Narrow&#39;,&#39;sans-serif&#39;;"><span>&nbsp;&nbsp;&nbsp; </span><span style="color:blue;">else</span></span></p>
+<p class="MsoNormal" style="margin-bottom:0.0001pt;line-height:normal;"><span style="font-size:8pt;font-family:&#39;Arial Narrow&#39;,&#39;sans-serif&#39;;"><span>&nbsp;&nbsp;&nbsp; </span>{</span></p>
+<p class="MsoNormal" style="margin-bottom:0.0001pt;line-height:normal;"><span style="font-size:8pt;font-family:&#39;Arial Narrow&#39;,&#39;sans-serif&#39;;"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>current.EndEdit();</span></p>
+<p class="MsoNormal" style="margin-bottom:0.0001pt;line-height:normal;"><span style="font-size:8pt;font-family:&#39;Arial Narrow&#39;,&#39;sans-serif&#39;;"><span>&nbsp;&nbsp;&nbsp; </span>}</span></p>
+<p class="MsoNormal"><span style="font-size:8pt;line-height:115%;font-family:&#39;Arial Narrow&#39;,&#39;sans-serif&#39;;">}</span><span style="font-size:8pt;line-height:115%;font-family:&#39;Arial Narrow&#39;,&#39;sans-serif&#39;;"></span></p>
+<p>&nbsp;</p>
+<p>The issue is the call to SuspendBinding. </p>
+<p>This invokes IEditableObject.EndEdit underneath the hood. The call to CancelEdit will always be ignored by Csla b/c the  IEditableObject.EndEdit call sets BindingEdit = false.</p>
+<p>&nbsp;</p>
+<p>Please let me know if there is a different place I need to be sending this information to.</p>
+<p>Thanks,</p>
+<p>Matthew</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Tuesday, July 17, 2012</h2><p>Hi,</p>
+<p>Thanks, I will look into it when I am back from vacation.&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

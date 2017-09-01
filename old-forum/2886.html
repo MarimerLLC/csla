@@ -1,0 +1,86 @@
+<html><header><title>Object events after serialization (SQL Server session state)</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Object events after serialization (SQL Server session state)</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/2886.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>geordiepaul posted on Wednesday, May 16, 2007</h2><P><FONT face=Arial size=2>Some of out Parent objects have methods that are fired when a child list changed. Simply done by subscribing the to the ListChangedEvent of the child list.</FONT></P>
+<P><FONT face=Arial size=2>In our web environment the parent object is cached on session and all works fine with InProc session state but when changing to SQLServer which serializes the object none of the event fire once the object has been retrieved.</FONT></P>
+<P><FONT face=Arial size=2>Is this something I have to handle myself? i.e. rewire the events on deserialization or should it work?</FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, May 16, 2007</h2>In current versions of the framework (1.53 and 2.1.4) the events should be re-hooked automatically on deserialization.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Skeeboe replied on Wednesday, May 16, 2007</h2>Rocky the onlistchanged and onisdirty changed events are not working for remoting in 1.53 compiled in .net 2.0. See:<br>http://forums.lhotka.net/forums/thread/9575.aspx<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, May 16, 2007</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>That is quite possible, but I am not making any attempt to port
+or support CSLA 1.x under .NET 2.0.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I know a couple issues have been discovered, but I simply don&#8217;t
+have the ability to deal with the possible variants of where everything may be
+run as time goes on. What support I provide is for 1.53 on .NET 1.1 and 2.x on
+.NET 2.0 (and soon 3.0 on .NET 3.0).<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Microsoft changed the way remoting works from 1.1 to 2.0, and so
+it doesn&#8217;t entirely surprise me that the older CSLA code doesn&#8217;t
+work properly. Odds are that some of the CSLA 2.0 code/techniques could be
+back-ported into 1.53 to create some sort of 1.53-for-.NET-2.0 hybrid.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<div>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Skeeboe
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Wednesday, May 16, 2007 9:22 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] Object events after serialization (SQL Server
+session state)<o:p></o:p></span></p>
+
+</div>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Rocky the onlistchanged and
+onisdirty changed events are not working for remoting in 1.53 compiled in .net
+2.0. See:<br>
+http://forums.lhotka.net/forums/thread/9575.aspx<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>geordiepaul replied on Thursday, May 17, 2007</h2><P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div>In current versions of the framework (1.53 and 2.1.4) the events should be re-hooked automatically on deserialization.</div></BLOCKQUOTE></P>
+<P><FONT face=Arial size=2>This does not seem to be working for us, we are using the latest version 2.1.4 we have had to override the OnDeserialized method and re-hook the events which then fixes everything.</FONT></P>
+<P><FONT face=Arial size=2>An example of what we have would be</FONT></P><FONT color=#0000ff>
+<P><FONT face="Courier New" size=2>public</FONT></FONT><FONT face="Courier New"><FONT size=2> <FONT color=#0000ff>class</FONT> <FONT color=#2b91af>Parent</FONT> : <FONT color=#2b91af>BusinessBase</FONT>&lt;<FONT color=#2b91af>Parent</FONT></FONT></FONT><FONT size=2><FONT face="Courier New">&gt;<BR>{<BR><FONT color=#0000ff>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;private</FONT> <FONT color=#2b91af>ChildCollection</FONT></FONT><FONT face="Courier New"> m_Collection;</FONT></FONT></P>
+<P><FONT face="Courier New"><FONT size=2><FONT color=#0000ff>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;private</FONT> <FONT color=#0000ff>void</FONT> Collection_ListChanged(<FONT color=#0000ff>object</FONT> sender, System.ComponentModel.<FONT color=#2b91af>ListChangedEventArgs</FONT></FONT></FONT><FONT face="Courier New" size=2> e)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</FONT></P>
+<P><FONT size=2><FONT face="Courier New">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[</FONT><FONT face="Courier New" color=#2b91af>RunLocal</FONT></FONT><FONT face="Courier New"><FONT size=2>()]<BR><FONT color=#0000ff>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;protected</FONT> <FONT color=#0000ff>void</FONT></FONT></FONT><FONT face="Courier New"><FONT size=2> DataPortal_Create(Criteria criteria)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;m_Collection = <FONT color=#2b91af>ChildCollection</FONT></FONT></FONT><FONT face="Courier New"><FONT size=2>.GetChildCollection();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;m_Collection.ListChanged&nbsp;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;+= <FONT color=#0000ff>new&nbsp;</FONT>&nbsp;System.ComponentModel.<FONT color=#2b91af>ListChangedEventHandler</FONT></FONT></FONT><FONT face="Courier New" size=2>&nbsp;&nbsp;&nbsp;(Collection_ListChanged);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</FONT></P>
+<P><FONT face="Courier New" size=2>}</FONT></P>
+<P><FONT face="Courier New"><FONT size=2><FONT color=#0000ff>public</FONT> <FONT color=#0000ff>class</FONT> <FONT color=#2b91af>ChildCollection</FONT> : <FONT color=#2b91af>BusinessListBase</FONT>&lt;<FONT color=#2b91af>ChildCollection</FONT>, <FONT color=#2b91af>ChildItem</FONT></FONT></FONT><FONT face="Courier New" size=2>&gt;<BR>{<BR>}</FONT></P>
+<P><FONT face="Courier New"><FONT size=2><FONT color=#0000ff>public</FONT> <FONT color=#0000ff>class</FONT> <FONT color=#2b91af>ChildItem</FONT> : <FONT color=#2b91af>BusinessBase</FONT>&lt;<FONT color=#2b91af>ChildItem</FONT></FONT></FONT><FONT face="Courier New" size=2>&gt;<BR>{<BR>}</FONT></P>
+<P><FONT face=Arial size=2>Would the events be re-hooked in this instance?</FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, May 17, 2007</h2><P>CSLA only manages event hookups between a collection and its children. Nothing else.</P>
+<P>So if you have a parent object that hooks ListChanged, then you are entirely on your own - and yes, you would need to take care of the deserialiation case yourself.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>geordiepaul replied on Thursday, May 17, 2007</h2><P>Ok thanks just needed to know whether it was something I needed to handle or not.</P>
+<P>Thanks for you help :-)</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

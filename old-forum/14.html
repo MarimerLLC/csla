@@ -1,0 +1,204 @@
+<html><header><title>BusinessBase child objects fail to instantiate</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>BusinessBase child objects fail to instantiate</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/14.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>BBM posted on Friday, May 05, 2006</h2><P>I have an application that I am trying to switch from the C# version of CSLA to the VB version (1.52)&nbsp;&nbsp;in preparation for re-writing the app in VB.&nbsp; I was concerned about whether the framework would work identically, but so far, except for some minor re-naming that I had to do in th C# source, it seems to work fine,&nbsp; EXCEPT...</P>
+<P>I have a very simple BusinessCollectionBase object that is an attribute of one of my main entity objects.&nbsp; It contains "child" BusinessBase objects.&nbsp; The code in the BusinessCollectionBase object creates a DataReader and interates over it.&nbsp; On each iteration it calls the "get" static method in the child class.&nbsp; The child "get" method looks like this...</P><FONT color=#0000ff size=2>
+<P>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>static</FONT><FONT size=2> DesAttribute GetDesAttribute(IDataReader dr)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;try</P></FONT><FONT size=2>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DesAttribute da = </FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> DesAttribute();</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;da.Fetch(dr);</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;da.MarkAsChild();</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;da.AddBusinessRules();</P>
+<P></FONT><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return</FONT><FONT size=2> da;</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</P>
+<P></FONT><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;catch</FONT><FONT size=2> (System.Exception ex)</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{</P>
+<P></FONT><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</FONT><FONT size=2></FONT><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>null</FONT><FONT size=2>;</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</P>
+<P></P>
+<P>}</P>
+<P><FONT size=3>Nothing fancy here, but the program throws an exception as it tries to execute the declaration (private DesAttribute()) of the constructor of the child object and it gets caught in my catch block above.&nbsp; None of the statements in the constructor run.&nbsp; The message of the exception says that <FONT size=1></P>
+<P><FONT size=2>"Object reference not set to an instance of an object."</FONT></P>
+<P><FONT size=3>Which I presume is true because da is never instantiated?</FONT></P>
+<P><FONT size=3>One thing you should know is that I am running a "remote" DataPortal (under IIS) on the same machine.&nbsp; Also, the same C# code runs fine with the C# CSLA Framework on another computer.</FONT></P>
+<P><FONT size=3>I'm stumped (admittedly not that hard to do).</FONT></P>
+<P><FONT size=3>Any hints or debugging suggestions are welcome.</FONT></P>
+<P><FONT size=3>BBM</FONT></P></FONT></FONT></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, May 05, 2006</h2>
+
+
+
+
+<DIV align=left><SPAN class=857543021-05052006><FONT face=Arial color=#0000ff size=2>I suggest you debug to find out if da is indeed null, or if 
+it is the Fetch() method that's causing the exception.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=857543021-05052006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=857543021-05052006><FONT face=Arial color=#0000ff size=2>Rocky</FONT></SPAN></DIV><BR>
+<BLOCKQUOTE>
+  <DIV class=OutlookMessageHeader align=left>
+  <HR>
+  <FONT face=Tahoma size=2><B>From:</B> BBM [mailto:cslanet@lhotka.net] 
+  <BR><B>Sent:</B> Friday, May 05, 2006 4:25 PM<BR><B>To:</B> 
+  rocky@lhotka.net<BR><B>Subject:</B> [CSLA .NET] BusinessBase child objects 
+  fail to instantiate<BR></FONT><BR></DIV>
+  <DIV></DIV>
+  <P>I have an application that I am trying to switch from the C# version of 
+  CSLA to the VB version (1.52)&nbsp;&nbsp;in preparation for re-writing the app 
+  in VB.&nbsp; I was concerned about whether the framework would work 
+  identically, but so far, except for some minor re-naming that I had to do in 
+  th C# source, it seems to work fine,&nbsp; EXCEPT...</P>
+  <P>I have a very simple BusinessCollectionBase object that is an attribute of 
+  one of my main entity objects.&nbsp; It contains "child" BusinessBase 
+  objects.&nbsp; The code in the BusinessCollectionBase object creates a 
+  DataReader and interates over it.&nbsp; On each iteration it calls the "get" 
+  static method in the child class.&nbsp; The child "get" method looks like 
+  this...</P><FONT color=#0000ff size=2>
+  <P>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>static</FONT><FONT size=2> DesAttribute GetDesAttribute(IDataReader 
+  dr)</P>
+  <P>{</P>
+  <P></FONT><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;try</P></FONT><FONT size=2>
+  <P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{</P>
+  <P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DesAttribute 
+  da = </FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> 
+  DesAttribute();</P>
+  <P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;da.Fetch(dr);</P>
+  <P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;da.MarkAsChild();</P>
+  <P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;da.AddBusinessRules();</P>
+  <P></FONT><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return</FONT><FONT size=2> da;</P>
+  <P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</P>
+  <P></FONT><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;catch</FONT><FONT size=2> (System.Exception ex)</P>
+  <P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{</P>
+  <P></FONT><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</FONT><FONT size=2></FONT><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>null</FONT><FONT size=2>;</P>
+  <P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</P>
+  <P></P>
+  <P>}</P>
+  <P><FONT size=3>Nothing fancy here, but the program throws an exception as it 
+  tries to execute the declaration (private DesAttribute()) of the constructor 
+  of the child object and it gets caught in my catch block above.&nbsp; None of 
+  the statements in the constructor run.&nbsp; The message of the exception says 
+  that <FONT size=1></P>
+  <P><FONT size=2>"Object reference not set to an instance of an 
+  object."</FONT></P>
+  <P><FONT size=3>Which I presume is true because da is never 
+  instantiated?</FONT></P>
+  <P><FONT size=3>One thing you should know is that I am running a "remote" 
+  DataPortal (under IIS) on the same machine.&nbsp; Also, the same C# code runs 
+  fine with the C# CSLA Framework on another computer.</FONT></P>
+  <P><FONT size=3>I'm stumped (admittedly not that hard to do).</FONT></P>
+  <P><FONT size=3>Any hints or debugging suggestions are welcome.</FONT></P>
+  <P><FONT size=3>BBM</FONT></P></FONT></FONT></FONT><BR><BR><BR></BLOCKQUOTE></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>BBM replied on Friday, May 05, 2006</h2><P>Hi Rocky,</P>
+<P>Thanks for your help.&nbsp; I tried your suggestions.&nbsp; da is indeed null.&nbsp; Fetch() never gets called.</P>
+<P>I rearranged the code a little so that I could examine da from inside the catch block.</P><FONT color=#0000ff size=2>
+<P>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>static</FONT><FONT size=2> DesAttribute GetDesAttribute(IDataReader dr)</P>
+<P>&nbsp;&nbsp;{</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DesAttribute da;</P>
+<P></FONT><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;try</P></FONT><FONT size=2>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;da = </FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> DesAttribute();</P>
+<P></P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</P>
+<P></FONT><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;catch</FONT><FONT size=2> (System.Exception ex)</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>null</FONT><FONT size=2>;</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;da.Fetch(dr);</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;da.MarkAsChild();</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;da.AddBusinessRules();</P>
+<P></FONT><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return</FONT><FONT size=2> da;</P>
+<P>}</P>
+<P><FONT size=3>When I examined the stack trace of the exception, it showed that the exception was actually thrown in AddBusinessRules() (I have an override version in DesAttribute).&nbsp; I added CSLA to my Solution, and found that the BusinessBase Constructor is getting called on each instantiation, even though I don't explicitly call it, and it's calling AddBusinessRules.&nbsp; AddBusinessRules fails because an object reference it needs hasn't been set yet (won't be until Fetch() is complete).</FONT></P>
+<P><FONT size=3>My constructor looks like this...</FONT></P><FONT color=#0000ff size=2>
+<P>private</FONT><FONT size=2> DesAttribute()</P>
+<P>{</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;createDate = DateTime.Now;</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;createUser = System.Security.Principal.WindowsIdentity.GetCurrent().Name;</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;lastDate = DateTime.Now;</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;lastUser = System.Security.Principal.WindowsIdentity.GetCurrent().Name;</P>
+<P>}</P>
+<P><FONT size=3>The class declaration looks like this...</FONT></P><FONT size=2>
+<P>[Serializable()]</P>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>class</FONT><FONT size=2> DesAttribute : BusinessBase</FONT></P>
+<P><FONT size=2><FONT size=3>Any idea why the BusinessBase constructor is getting called?&nbsp; &nbsp;It happens right after the declaration of the DesAttribute constructor before any code in the constructor runs.&nbsp; It's just as if I called MyBase.New() (the C# equivalent of course) as the first line in the Constructor.</FONT></FONT></P>
+<P><FONT size=2><FONT size=3>Can you shed some light on this?&nbsp; I think I'll search the old message board, and also step through my "pure" C# version to see what happens.&nbsp;</FONT></FONT></P>
+<P><FONT size=2><FONT size=3>BBM</FONT></P></FONT></FONT></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, May 05, 2006</h2>
+
+
+
+
+<DIV align=left><SPAN class=764205404-06052006><FONT face=Arial color=#0000ff size=2>Constructors are always called all the way up the 
+inheritance chain. Actually all the way down, since the deepest one runs first, 
+then the next, all the way out to yours. That's just the way constructors 
+work.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=764205404-06052006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=764205404-06052006><FONT face=Arial color=#0000ff size=2>Perhaps the C# framework is missing a call to 
+AddBusinessRules in its ctor? The call should be there, and should be triggered 
+when the object is created. Rules shouldn't be _triggered_ there - just 
+configured. In other words, your AddBusinessRules method is probably calling 
+CheckRules - which it should not.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=764205404-06052006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=764205404-06052006><FONT face=Arial color=#0000ff size=2>Rocky</FONT></SPAN></DIV><BR>
+<BLOCKQUOTE>
+  <DIV class=OutlookMessageHeader align=left>
+  <HR>
+  <FONT face=Tahoma size=2><B>From:</B> BBM [mailto:cslanet@lhotka.net] 
+  <BR><B>Sent:</B> Friday, May 05, 2006 10:27 PM<BR><B>To:</B> 
+  rocky@lhotka.net<BR><B>Subject:</B> Re: [CSLA .NET] RE: BusinessBase child 
+  objects fail to instantiate<BR></FONT><BR></DIV>
+  <DIV></DIV>
+  <P>Hi Rocky,</P>
+  <P>Thanks for your help.&nbsp; I tried your suggestions.&nbsp; da is indeed 
+  null.&nbsp; Fetch() never gets called.</P>
+  <P>I rearranged the code a little so that I could examine da from inside the 
+  catch block.</P><FONT color=#0000ff size=2>
+  <P>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>static</FONT><FONT size=2> DesAttribute GetDesAttribute(IDataReader 
+  dr)</P>
+  <P>&nbsp;&nbsp;{</P>
+  <P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DesAttribute da;</P>
+  <P></FONT><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;try</P></FONT><FONT size=2>
+  <P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{</P>
+  <P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;da = </FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> DesAttribute();</P>
+  <P></P>
+  <P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</P>
+  <P></FONT><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;catch</FONT><FONT size=2> 
+  (System.Exception ex)</P>
+  <P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{</P></FONT><FONT size=2>
+  <P></FONT><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>null</FONT><FONT size=2>;</P>
+  <P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</P>
+  <P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;da.Fetch(dr);</P>
+  <P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;da.MarkAsChild();</P>
+  <P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;da.AddBusinessRules();</P>
+  <P></FONT><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return</FONT><FONT size=2> da;</P>
+  <P>}</P>
+  <P><FONT size=3>When I examined the stack trace of the exception, it showed 
+  that the exception was actually thrown in AddBusinessRules() (I have an 
+  override version in DesAttribute).&nbsp; I added CSLA to my Solution, and 
+  found that the BusinessBase Constructor is getting called on each 
+  instantiation, even though I don't explicitly call it, and it's calling 
+  AddBusinessRules.&nbsp; AddBusinessRules fails because an object reference it 
+  needs hasn't been set yet (won't be until Fetch() is complete).</FONT></P>
+  <P><FONT size=3>My constructor looks like this...</FONT></P><FONT color=#0000ff size=2>
+  <P>private</FONT><FONT size=2> DesAttribute()</P>
+  <P>{</P>
+  <P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;createDate = DateTime.Now;</P>
+  <P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;createUser = 
+  System.Security.Principal.WindowsIdentity.GetCurrent().Name;</P>
+  <P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;lastDate = DateTime.Now;</P>
+  <P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;lastUser = 
+  System.Security.Principal.WindowsIdentity.GetCurrent().Name;</P>
+  <P>}</P>
+  <P><FONT size=3>The class declaration looks like this...</FONT></P><FONT size=2>
+  <P>[Serializable()]</P>
+  <P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>class</FONT><FONT size=2> DesAttribute : 
+  BusinessBase</FONT></P>
+  <P><FONT size=2><FONT size=3>Any idea why the BusinessBase constructor is 
+  getting called?&nbsp; &nbsp;It happens right after the declaration of the 
+  DesAttribute constructor before any code in the constructor runs.&nbsp; It's 
+  just as if I called MyBase.New() (the C# equivalent of course) as the first 
+  line in the Constructor.</FONT></FONT></P>
+  <P><FONT size=2><FONT size=3>Can you shed some light on this?&nbsp; I think 
+  I'll search the old message board, and also step through my "pure" C# version 
+  to see what happens.&nbsp;</FONT></FONT></P>
+  <P><FONT size=2><FONT size=3>BBM</FONT></P></FONT></FONT></FONT><BR><BR><BR></BLOCKQUOTE></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>BBM replied on Saturday, May 06, 2006</h2><P>Thanks for your help.&nbsp;&nbsp;I am clearly mistaken&nbsp;on how the base constructor gets called and apologize for wasting your time on this.</P>
+<P>The constructor in the C# framework code (ver 1.4 I think) is missing the&nbsp;AddBusinessRules() call (in fact&nbsp;I don't see a Constructor in BusinessBase&nbsp;or it's parent classes).</P>
+<P>Good luck with your new book(s) - I got mine yesterday.</P>
+<P>Best Regards.</P>
+<P>BBM</P>
+<P>&nbsp;</P>
+<P>&nbsp;&nbsp; </P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

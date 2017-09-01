@@ -1,0 +1,12 @@
+<html><header><title>Validation question</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Validation question</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9409.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>lee_mre posted on Thursday, August 19, 2010</h2><p>I have a root object which has a child.</p>
+<p>There are strings that are required in the child object only when the parent object has a property set to some specific value.</p>
+<p>&nbsp;</p>
+<p>How would I perform validation in this sceneario?</p>
+<p>&nbsp;</p>
+<p>Thx</p>
+<p>-wen</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Saturday, August 21, 2010</h2><p>This is a two step process:</p>
+<ol>
+<li>Implement an internal method on the child that calls BusinessRules.CheckRules(). The child object&#39;s rules obviously interact with Parent to find that value you mention.</li>
+<li>Implement a rule that calls this internal method on the child, and attach that rule to the parent object&#39;s property, so when the important property is changed, this rule is run and it calls the internal method on the child, which runs the rules in the child.</li>
+</ol>
+<p>&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

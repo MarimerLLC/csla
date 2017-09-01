@@ -1,0 +1,144 @@
+<html><header><title>Dynamic Sorting, ReadOnlyListBase and LINQ</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Dynamic Sorting, ReadOnlyListBase and LINQ</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5170.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>raz0rf1sh posted on Tuesday, July 29, 2008</h2>I use ReadOnlyListBase objects to display lists of data to my users.&nbsp; For example, a list of customers.&nbsp; <br><br>I would like to use Linq to sort the collection, and it works great!&nbsp; My problem is that I would like the "order by" to be dynamic, based on a variable.&nbsp; <br><br>I have looked at the Dynamic Query code provide by ScottGu, but it looks like the object has to implement IQueryable.&nbsp; I notice the BusinessListBase object does implement IQueryable, just not the ReadOnlyListBase. &nbsp;<br><br>I'd really like to use Linq to do this, and am interested to hear how everyone else is doing this, if they are even doing this at all.<br><br>Thanks!<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, July 29, 2008</h2><P>Would this help?</P>
+<P><A href="http://weblogs.asp.net/scottgu/archive/2008/01/07/dynamic-linq-part-1-using-the-linq-dynamic-query-library.aspx">http://weblogs.asp.net/scottgu/archive/2008/01/07/dynamic-linq-part-1-using-the-linq-dynamic-query-library.aspx</A></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>raz0rf1sh replied on Tuesday, July 29, 2008</h2>Hi Rocky,<br><br>The problem is that the Csla.ReadOnlyListBase doesn't implement IQueryable ... which is where I am having my problem trying to work with ScottGu's code.<br><br>Thanks!<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, July 29, 2008</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>My confusion is that his article doesn&#8217;t mention the need
+to override the default implementation of IQueryable.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>ROLB does implement that interface, because it inherits
+(ultimately) from IEnumerable&lt;T&gt;, which is where Microsoft&#8217;s
+default implementation is hanging.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>BLB only overrides the default IQueryable implementation because
+it changes the standard query behavior in a couple ways. But that should have
+nothing to do with standard LINQ to Objects working or not working.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>List&lt;T&gt; doesn&#8217;t implement IQueryable either &#8211;
+it inherits it from IEnumerable&lt;T&gt; as well, but it seems implied that the
+techniques in Scott&#8217;s post would work against something like a
+List&lt;T&gt;.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky</span><o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>raz0rf1sh replied on Tuesday, July 29, 2008</h2>I added the code to my library that inherits Csla.&nbsp; My code looks like:<br><br>Aragorn.ApplicationInfoList list = null; // This inherits from My.ReadOnlyRootList, which inherits from Csla.ReadOnlyListBase<br><br>list = Aragorn.RequestProvider.ApplicationFetchList();<br><br>((IQueryable)list).OrderBy("Name");<br>&nbsp; <br>I receive the following error:<br><br>Unable to cast object of type 'CreativeLogic.Aragorn.ApplicationInfoList' to type 'System.Linq.IQueryable'.<br><br>My extension method ONLY appears when I type cast my list as IQueryable.<br><br>Thanks!<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, July 29, 2008</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>You know, I was thinking about the way they hook the extension
+methods to IEnumerable&lt;T&gt;, not IQueryable, my bad&#8230;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Do you have to attach your extension method to IQueryable? Can&#8217;t
+you attach it to a lower level list interface (IList&lt;T&gt; or something)?<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>raz0rf1sh replied on Wednesday, July 30, 2008</h2>ScottGu's code is extending IQueryable, as in:<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public static IQueryable&lt;T&gt; Where&lt;T&gt;(this IQueryable&lt;T&gt; source, string predicate, params object[] values) {<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br><br>Are you thinking I might be able to change this to IList&lt;T&gt;?<br><br>Thanks!<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>raz0rf1sh replied on Monday, August 04, 2008</h2>Well ... I tried replacing IQueryable with IList ... didn't work.&nbsp; So I guess I'm stuck with ObjectView.&nbsp; Is there anyway Csla could include support for IQueryable in the ReadOnlyCollectionBase?<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>AaronErickson replied on Monday, August 04, 2008</h2>Direct support for IQueryable should be possible, reason we have not yet has more to do with the fact that ReadOnlyListBase did not need the functionality we needed for BusinessListBase in terms of syncing the collections (i.e. add and removal tracking).&nbsp; That said, if one wanted to implement this, I would start by perhaps putting the same implementation of IQueryable into ROLB that we have in BLB, which is actually pretty simple, since the real work is in CslaQueryProvider, which has the IQueryProvider implementation.<br><br>YMMV, but that is where I would start.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>raz0rf1sh replied on Wednesday, August 06, 2008</h2>My only concern with doing this is that it would make upgrading to the next version of the Csla framework a little more difficult.<br><br>Currently I have a class library that inherits from the Csla library, I'm wondering if I can just put the implementation in there.<br><br>Any other suggestions would be appreciated.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>raz0rf1sh replied on Saturday, August 16, 2008</h2>That isn't going to work either as the Csla.QueryProvider is looking for a child of type IEditableBusinessObject, which my objects are IReadOnlyObject.&nbsp; <br><br>Any way we could see Linq implemented on the ReadOnlyListBast in future version of Csla?&nbsp; Please! <img src="/emoticons/emotion-1.gif" alt="Smile [:)]" /><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, August 20, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I&#8217;ll add this to the wish list.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> raz0rf1sh
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Saturday, August 16, 2008 5:20 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: RE: Dynamic Sorting, ReadOnlyListBase and
+LINQ<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>That isn't going to work either as the Csla.QueryProvider is
+looking for a child of type IEditableBusinessObject, which my objects are
+IReadOnlyObject.&nbsp; <br>
+<br>
+Any way we could see Linq implement on the ReadOnlyListBast in future version
+of Csla?&nbsp; Please! <span><img width=100 height=100 id="_x0000_i1025" alt="Image removed by sender. Smile <img src=" />"></span><br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ozhug replied on Wednesday, August 20, 2008</h2><P><FONT face=Verdana size=2>Hi raz0rf1sh </FONT></P>
+<P><FONT face=Verdana size=2>I have been using ScottGu Linq Dynamic Query Code with CSLA ReadOnlyListBase</FONT></P>
+<P><FONT face=Verdana size=2>I am using this on a web page. I also do linq filtering on the list so this variable is set at the page level.</FONT></P>
+<P><FONT face=Verdana size=2>&nbsp; IOrderedEnumerable&lt;gw.dealerorders.library.ProductInfo&gt; productfilter;</FONT></P>
+<P><FONT face=Verdana size=2>My&nbsp;sorting is done in the SelectObject of the CLSA datasource as below.<BR></FONT><FONT face=Verdana size=2>lv is a Listview bound to this datasource.</FONT></P>
+<P><FONT face=Verdana size=2>protected void cdsProductInfo_SelectObject(object sender, Csla.Web.SelectObjectArgs e)<BR>{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (null == productfilter)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; productfilter =<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; from f in GetProductList()<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; orderby f.PlatformPage, f.Title <BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; select f;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var list = productfilter.AsQueryable();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (lv.SortExpression.Length &gt; 1)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; string sort = lv.SortExpression;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; switch (sort)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; case "Title":<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; sort = " PlatformPage, Title ";<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; break;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; switch (lv.SortDirection)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; case SortDirection.Ascending:<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; list = list.OrderBy(sort + " Asc" );<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; break;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; case SortDirection.Descending:<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; list = list.OrderBy(sort + " Desc");<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; break;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; e.BusinessObject = list;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</FONT></P>
+<P><FONT face=Verdana size=2>GetProductList() returns the ReadOnlyListBase (much the same as projectracker)</FONT></P>
+<P dir=ltr><FONT face=Verdana size=2>private gw.dealerorders.library.ProductInfoList GetProductList()<BR>{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; gw.dealerorders.library.ProductInfoList&nbsp; obj = &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(gw.dealerorders.library.ProductInfoList)Session[PRODUCTINFO];<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (obj == null || SupplierId != obj.SupplierId)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; try<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; obj = gw.dealerorders.library.ProductInfoList.GetProductInfoList(SupplierId);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; SupplierId = obj.SupplierId;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Session[PRODUCTINFO] = obj;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; catch (System.Security.SecurityException)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Response.Redirect("/securityfailed.aspx");<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return (gw.dealerorders.library.ProductInfoList)obj;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</FONT></P>
+<P dir=ltr><FONT face=Verdana size=2></FONT>&nbsp;</P>
+<P dir=ltr><FONT face=Verdana size=2>Hope this make sense and helps you out</FONT></P>
+<P dir=ltr><FONT face=Verdana size=2></FONT>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>raz0rf1sh replied on Thursday, August 28, 2008</h2>That worked!&nbsp; Thank you!&nbsp; Still looking forward it be implemented directly in the ReadOnlyList! =)<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>setiabud replied on Thursday, March 26, 2009</h2>I got a similar problem that is just killing me. One of my object (let's say Parent) has many children (let's call them Children - a list of Child). Parent is a Editable Root (BusinessBase) and Children is an Editable Child List and Child is EditableChild.<br /><br />What I am trying to do is to do this: <br />Parent x = Parent.GetParent(id);<br />IQueryable y = Parent.MyChildren.OrderBy("Age DESC");<br /><br />In theory, y then should be filled with a collection of children sorted descendingly by their age (assuming "Age" is a property of Child object). <br /><br />But, what I got is that y.Count() = 0. Although if I do a Parent.MyChildren.Count() there aren't 0. Is this a bug in Dynamic LINQ or CSLA? This (the error) does not happen in readonly list for me.<br /><br />For the post above, about the readonly list, you can just simply do this: <br /><br />IQueryable qOL = myReadOnlyList.AsQueryable(); <br />Then you can execute the dynamic linq query against it.<br /><br />Help!<br />Joe</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Friday, March 27, 2009</h2>Dynamic LINQ code like this works on ReadOnlyLists:<br /><br /> Private mSortedList As System.Linq.IQueryable<br /><br />  mSortedList = mList.AsQueryable.OrderBy(mSortExp &amp; " " &amp; mSortDirection.ToString)<br /><br />dataGrid.DataSource = mSortedList.ToList<br /><br />For Some reason the MS Dynamic Query Library is missing the ToList extension. So I added this to my copy:<br /><br /> 'JF - 1/5/09 added this extension: http://forums.microsoft.com/MSDN/ShowPost.aspx?PostID=2666544&amp;SiteID=1#2670101<br />    Extension() _<br />    Public Function ToList(ByVal query As IQueryable) As IList<br />      Return DirectCast(Activator.CreateInstance(GetType(List(Of )).MakeGenericType(query.ElementType), query), IList)<br />    End Function<br /><br /><br />Joe<br /><br />PS - Aaron and I just fixed the latest version of Csla for the LinqBindingList to be able to sort multiple columns using MS Dynamic Query. Not sure if it is checked in yet though. All Editable Child Collections return LBLs so the code for them is slightly different.<br /><br />PPS - the forum does not allow angle brackets around the word Extension above so the attribute code is not quite correct!<br /></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, March 27, 2009</h2>Joe, you should check to see if it is in the version 3.6.2 release candidate<br />(www.lhotka.net/cslanet/download.aspx) because that's the version that'll be<br />released on Monday or Tuesday (barring anyone raising a big alert).<br /><br />Rocky<br /><br /><br />-----Original Message-----<br />From: JoeFallon1 [mailto:cslanet@lhotka.net] <br />Sent: Friday, March 27, 2009 8:58 AM<br />To: rocky@lhotka.net<br />Subject: Re: [CSLA .NET] RE: RE: RE: Dynamic Sorting, ReadOnlyListBase and<br />LINQ<br /><br />Dynamic LINQ code like this works on ReadOnlyLists:<br /><br /> Private mSortedList As System.Linq.IQueryable<br /><br />  mSortedList = mList.AsQueryable.OrderBy(mSortExp &amp; " " &amp;<br />mSortDirection.ToString)<br /><br />dataGrid.DataSource = mSortedList.ToList<br /><br />For Some reason the MS Dynamic Query Library is missing the ToList<br />extension. So I added this to my copy:<br /><br /> 'JF - 1/5/09 added this extension:<br />http://forums.microsoft.com/MSDN/ShowPost.aspx?PostID=2666544&amp;SiteID=1#26701<br />01<br />     _<br />    Public Function ToList(ByVal query As IQueryable) As IList<br />      Return DirectCast(Activator.CreateInstance(GetType(List(Of<br />)).MakeGenericType(query.ElementType), query), IList)<br />    End Function<br /><br /><br />Joe<br /><br />PS - Aaron and I just fixed the latest version of Csla for the<br />LinqBindingList to be able to sort multiple columns using MS Dynamic Query.<br />Not sure if it is checked in yet though. All Editable Child Collections<br />return LBLs so the code for them is slightly different.<br /><br /></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Friday, March 27, 2009</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div>Joe, you should check to see if it is in the version 3.6.2 release candidate<br />(www.lhotka.net/cslanet/download.aspx) because that's the version that'll be<br />released on Monday or Tuesday (barring anyone raising a big alert).<br /><br />Rocky<br /></div></BLOCKQUOTE><br /><br />I just checked - it is not there. <br />I sent it to you and Aaron a while back. Aaron wanted to run some unit tests on it last weekend. I have not heard anything about that though.<br />Joe<br /></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>setiabud replied on Sunday, March 29, 2009</h2>It looks like in the 3.6.2 release notes there is a note about Dynamic LINQ to BusinessListBase. Is that what you meant, Rocky - that the bug is suppose to be fixed in 3.6.2? I am still using 3.5 right now. <br /><br />For Joe: That ToList extension method you noted is just for ReadOnlyList, correct? Because my ReadOnlyList sorting with Dynamic LINQ works perfectly right now. It is just when I am trying to sort a BusinessListBase that somehow getting back an empty back.<br /><br /><br /><br />Joe</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Sunday, March 29, 2009</h2>Several changes/fixes around LINQ to CSLA are in 3.6.2. Unfortunately the<br />support for Dynamic LINQ in 3.6.2 doesn't completely work. Hopefully the<br />issues can be resolved for 3.6.3.<br /><br />Rocky</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Monday, March 30, 2009</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>setiabud:</strong></div><div>It looks like in the 3.6.2 release notes there is a note about Dynamic LINQ to BusinessListBase. Is that what you meant, Rocky - that the bug is suppose to be fixed in 3.6.2? I am still using 3.5 right now. <br /><br />For Joe: That ToList extension method you noted is just for ReadOnlyList, correct? Because my ReadOnlyList sorting with Dynamic LINQ works perfectly right now. It is just when I am trying to sort a BusinessListBase that somehow getting back an empty back.<br /><br /><br /><br />Joe</div></BLOCKQUOTE><br /><br />Your sorting works perfectly right now because you are doing a single column sort. Maybe 2 columns. It will fail on 3 or more. That is the fix we are adding to Dynamic Linq.<br /><br />ToList is used for ReadOnly Lists as an optional feature. If you do not use it but bind the list to a grid directly then you need to set additional grid properties (to tell it the number of items I think).<br /><br />Joe<br /></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

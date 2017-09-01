@@ -1,0 +1,53 @@
+<html><header><title>Swapping A Child Object Between Two Collections</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Swapping A Child Object Between Two Collections</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9852.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>NickTaylor posted on Friday, December 10, 2010</h2><p>Hi,</p>
+<p>I wonder if anyone can tell me if this is possible please ?</p>
+<p>I have a parent business object ( based on BusinessBase ) which in turn contains two child collections ( each based on BusinessListBase ).</p>
+<p>In this particular scenario I would like to be able to swap objects from one collection to another without marking the object as dirty which in turn provokes a delete when the parent business object saves. This is mainly for cosmetic reasons as the object needs to appear in the right&nbsp;collection following a save of the parent.</p>
+<p>My code is something like:-</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"><font face="Consolas" size="2"><font face="Consolas" size="2">
+<p>Collection1.RaiseListChangedEvents = </p>
+</font></font></span><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></span>
+<p><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">false</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">;<font face="Consolas" size="2"><font face="Consolas" size="2">
+<p>Collection2.RaiseListChangedEvents = f</p>
+</font></font></span><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></span></p>
+<p><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">alse;</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">
+<p>Collection1.Remove(myObject);</p>
+<p>Collection2.Add(myObject);</p>
+<font face="Consolas" size="2"><font face="Consolas" size="2">
+<p>Collection1.RaiseListChangedEvents = </p>
+</font></font></span><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></span></p>
+<p><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">true</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">;<font face="Consolas" size="2"><font face="Consolas" size="2">
+<p>Collection2.RaiseListChangedEvents = </p>
+</font></font></span><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></span></p>
+<p><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">true</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">;</span></span></p>
+</p>
+<p><span style="font-family:Consolas;"><span style="font-family:Consolas;"><span style="font-family:Arial;font-size:x-small;">Running this code marks the child object as dirty and then tries to remove it.</span></span></span></p>
+<p><span style="font-family:Consolas;"><span style="font-family:Consolas;"><span style="font-family:Arial;font-size:x-small;">Is there any way I can make the swap without this happening ?</span></span></span></p>
+<p><span style="font-family:Consolas;"><span style="font-family:Consolas;"><span style="font-family:Arial;font-size:x-small;">Many thanks,</span></span></span></p>
+<p><span style="font-family:Consolas;"><span style="font-family:Consolas;"><span style="font-family:Arial;font-size:x-small;">Nick</span></span></span></p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Friday, December 10, 2010</h2><p>There&#39;s some information in the FAQ on moving objects from one editable list to another</p>
+<p><a href="http://www.lhotka.net/cslanet/faq/CslaObjectFaq.ashx">http://www.lhotka.net/cslanet/faq/CslaObjectFaq.ashx</a></p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>NickTaylor replied on Saturday, December 11, 2010</h2><p>Hi Rocky,</p>
+<p>As always, many thanks for your response.</p>
+<p>I must confess I&#39;m struggling to see the solution in the article suggested, although I do understand what you are saying. I guess I am fighting the framework here and that&#39;s something I wish to avoid!</p>
+<p>I have also realised that the Add part of my scenario also marks the object as &quot;IsNew&quot; which is also technically incorrect in this scenario.</p>
+<p>I suspect what I am trying to do isn&#39;t quite right. Trying to move objects on the fly before a save takes place is probably going to end up with a messy workaround right ?</p>
+<p>Perhaps the easier ( and technically correct ? ) solution would be to go ahead and perform the save and then repopulate the two child collections&nbsp;at the end of the&nbsp;DataPortal_Update code ?&nbsp;</p>
+<p>Many thanks,</p>
+<p>Nick</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Saturday, December 11, 2010</h2><p>This can be complex, and I think the key is to understand what &quot;move an object&quot; is modeling.</p>
+<p>If you were doing this with forms in two stacks of paper, how would it be done? Or if these were widgets in a warehouse that you were moving from one bin to another, how would it be done?</p>
+<p>Objects should model the real world - they are simulating some real-world business operation or task after all.</p>
+<p>That doesn&#39;t always help, but sometimes it does - in terms of coming up with a meaningful solution for implementing the objects.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>NickTaylor replied on Tuesday, December 14, 2010</h2><p>Many thanks Rocky. I think for now I will take a different approach to this.</p>
+<p>The need to switch objects was only really for cosmetic reasons, and for now, I will look to re-load the collections after the update has completed.</p>
+<p>As always, I appreciate your input.</p>
+<p>With many thanks,</p>
+<p>Nick</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

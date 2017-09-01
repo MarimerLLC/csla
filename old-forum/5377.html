@@ -1,0 +1,171 @@
+<html><header><title>WCF Performance Question</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>WCF Performance Question</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5377.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>danielrail posted on Wednesday, September 10, 2008</h2><P>Hi,</P>
+<P>I'm trying to develop an application that uses CSLA.Net 3.5 and is using WCF for the application server.&nbsp; And, it doesn't help that I'm new to both.&nbsp; </P>
+<P>The simple test that I have is to query 2,000 records from the database and show them in the grid.&nbsp; When I connect directly to the database from the client application, I get a very fast performance(under 1 second).&nbsp; But, when I connect to the WCF application server to retrieve the same data, it takes almost 9 seconds(and the application server and client application are both on the same machine).&nbsp; In the WCF app server, I'm testing with netTCPBinding, and I'm using read-only CSLA objects.&nbsp; </P>
+<P>Any hints on how I can improve that performance.&nbsp; Especially considering that the application will have to connect via the internet.&nbsp; We are currently at the planning stage of the application and are wondering what would be the best approach, Winforms client application connecting to the server via the internet or having a ASP.Net client application.</P>
+<P>Any hints and/or ideas are welcomed.</P>
+<P>Daniel Rail</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Wednesday, September 10, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Assuming that the issue is WCF communication process, you can
+try to modify settings for your binding to see if performance improves.&nbsp;
+If you do not need security, turn it off.&nbsp; You can also increase buffer
+size.&nbsp; I suspect though, you will not come even close to your 1 second
+though, because there is an inherent overhead with WCF communications.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Here is an example:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>&lt;</span><span>netTcpBinding</span><span>&gt;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&lt;</span><span>binding</span><span> </span><span>transferMode</span><span>=</span><span>&quot;<span>Buffered</span>&quot;<span>&nbsp; </span><span>maxBufferSize</span><span>=</span>&quot;<span>10000000</span>&quot;<span> </span><span>maxReceivedMessageSize</span><span>=</span>&quot;<span>10000000</span>&quot;<span> &gt;<o:p></o:p></span></span></p>
+
+<p class=MsoNormal><span>&lt;</span><span>security</span><span> </span><span>mode</span><span>=</span><span>&quot;<span>None</span>&quot;<span>/&gt;</span></span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> danielrail
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Wednesday, September 10, 2008 9:37 AM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> [CSLA .NET] WCF Performance Question<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Hi,<o:p></o:p></p>
+
+<p>I'm trying to develop an application that uses CSLA.Net 3.5 and is using WCF
+for the application server.&nbsp; And, it doesn't help that I'm new to
+both.&nbsp; <o:p></o:p></p>
+
+<p>The simple test that I have is to query 2,000 records from the database and
+show them in the grid.&nbsp; When I connect directly to the database from the
+client application, I get a very fast performance(under 1 second).&nbsp; But,
+when I connect to the WCF application server to retrieve the same data, it
+takes almost 9 seconds(and the application server and client application are
+both on the same machine).&nbsp; In the WCF app server, I'm testing with
+netTCPBinding, and I'm using read-only CSLA objects.&nbsp; <o:p></o:p></p>
+
+<p>Any hints on how I can improve that performance.&nbsp; Especially
+considering that the application will have to connect via the internet.&nbsp;
+We are currently at the planning stage of the application and are wondering
+what would be the best approach, Winforms client application connecting to the
+server via the internet or having a ASP.Net client application.<o:p></o:p></p>
+
+<p>Any hints and/or ideas are welcomed.<o:p></o:p></p>
+
+<p>Daniel Rail<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>danielrail replied on Wednesday, September 10, 2008</h2><P>Thanks for the reply.&nbsp; But, I already have those kind of settings&nbsp;with improvement.&nbsp; I'm going to give SocketPro a try, their performance numbers seem promising.&nbsp; I'll know more when I have a chance to test it(hopefully within the next two days).</P>
+<P>Daniel</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>BillInPA replied on Wednesday, November 26, 2008</h2>Danial, how did you make out with SocketPro?<br>We are trying to use wcf, and are thinking we have to keep open to alternatives<br>As we got into it, the limitations in size of message are solveable only by implementing alteernate bindings/channels/etc<br>IMO, this should have been basic functionality, not something the developer would ever have to see<br>&nbsp;<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Wednesday, November 26, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>As far as I know, you can control the message size in config
+file without any issues.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> BillInPA
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Wednesday, November 26, 2008 2:26 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: WCF Performance Question<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Danial, how did you make out with SocketPro?<br>
+We are trying to use wcf, and are thinking we have to keep open to alternatives<br>
+As we got into it, the limitations in size of message are solveable only by
+implementing alteernate bindings/channels/etc<br>
+IMO, this should have been basic functionality, not something the developer
+would ever have to see<br>
+&nbsp;<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

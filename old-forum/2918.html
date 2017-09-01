@@ -1,0 +1,9 @@
+<html><header><title>CSLA with Oracle</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA with Oracle</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/2918.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>RSB posted on Monday, May 21, 2007</h2><P>Hi</P>
+<P>I am new to CSLA. </P>
+<P>I am trying to do Insert with TransacationalScope attribute set. I am using Oracle10g, ODP.NET 2.0 and use a separate&nbsp;Data Access Layer.&nbsp; I do the insert and after establishing the Oracle connection successfully, and creating an Oracle&nbsp;command, parameters. I execute </P>
+<P>cmd.ExecuteNonQuery();&nbsp;&nbsp; // this step fails and the error I get is "Transaction rolled back"</P>
+<P>I do not understand what is failing? Any help appreciated.&nbsp; </P>
+<P>Thank you<BR>RSB</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>david.wendelken replied on Monday, May 21, 2007</h2><P>Verify the parameter values you are using, then go into Sql*Plus (Sql*Navigator, Toad, etc.) and run the underlying SQL command with the same to see what the real error is.</P>
+<P>I'm assuming that you've debugged the values in the exception that was raised and none of the data in that exception provides more detailed info.</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Tuesday, May 22, 2007</h2>Also verify that Distributed Transactions is enabled on both computers, and the appropriate firewall ports have been opened.&nbsp; <br><br>I think that using TS with Oracle will automatically promote the transaction to distributed.<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

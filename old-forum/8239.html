@@ -1,0 +1,119 @@
+<html><header><title>Why View-First when using ViewModel&lt;T&gt;?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Why View-First when using ViewModel&lt;T&gt;?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/8239.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>triplea posted on Wednesday, December 30, 2009</h2><P>Hi</P>
+<P>I am a bit new to this so please don't hit back hard. I am checking the (very cool) ViewModel class and integrating it with a small PRISM app. From what I understand, the approach used is that of View-first, since the View is responsible for creating the ViewModel.<BR>The problem with this is that you loose out on using an IOC to create the ViewModel and injecting the dependencies. This has been discussed and even solved in these usual reference posts:</P>
+<P><A href="http://blogs.msdn.com/erwinvandervalk/archive/2009/03/02/how-to-build-an-outlook-style-application.aspx">http://blogs.msdn.com/erwinvandervalk/archive/2009/03/02/how-to-build-an-outlook-style-application.aspx</A><BR><A href="http://blogs.msdn.com/erwinvandervalk/archive/2009/04/29/how-to-build-an-outlook-style-application-with-prism-v2-part-2.aspx">http://blogs.msdn.com/erwinvandervalk/archive/2009/04/29/how-to-build-an-outlook-style-application-with-prism-v2-part-2.aspx</A></P>
+<P>Where the ViewModel appears to be set as the DataContext of the view.</P>
+<P>I have a couple of questions at this point:</P>
+<P>1. Was the View-first approach used intentionally? I appreciate that it may not be possible to get the ViewModel approach working, yet it would be quite cool.<BR>2. Would setting the ViewModel as the data context on a View work? I will try this but since I am new to this I don't want to get completly lost on the wrong track.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Wednesday, December 30, 2009</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I
+think you are going to get as many opinions on the matter as there are people
+using Prism </span><span>J</span><span>.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>I
+personally use ViewModel first approach and inject view into ViewModel using dependency
+injection.&nbsp; Thus, my views are not aware of view models, but view models
+are aware of views, although I only use this knowledge to set datacontext on
+the view to view model and that is it.&nbsp; In my case I can take advantage of
+using container.Resolve on all types, views and viewmodels.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> triplea
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Wednesday, December 30, 2009 11:15 AM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> [CSLA .NET] Why View-First when using ViewModel&lt;T&gt;?<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Hi<o:p></o:p></p>
+
+<p>I am a bit new to this so please don't hit back hard. I am checking the
+(very cool) ViewModel class and integrating it with a small PRISM app. From
+what I understand, the approach used is that of View-first, since the View is
+responsible for creating the ViewModel.<br>
+The problem with this is that you loose out on using an IOC to create the
+ViewModel and injecting the dependencies. This has been discussed and even
+solved in these usual reference posts:<o:p></o:p></p>
+
+<p><a href="http://blogs.msdn.com/erwinvandervalk/archive/2009/03/02/how-to-build-an-outlook-style-application.aspx">http://blogs.msdn.com/erwinvandervalk/archive/2009/03/02/how-to-build-an-outlook-style-application.aspx</a><br>
+<a href="http://blogs.msdn.com/erwinvandervalk/archive/2009/04/29/how-to-build-an-outlook-style-application-with-prism-v2-part-2.aspx">http://blogs.msdn.com/erwinvandervalk/archive/2009/04/29/how-to-build-an-outlook-style-application-with-prism-v2-part-2.aspx</a><o:p></o:p></p>
+
+<p>Where the ViewModel appears to be set as the DataContext of the view.<o:p></o:p></p>
+
+<p>I have a couple of questions at this point:<o:p></o:p></p>
+
+<p>1. Was the View-first approach used intentionally? I appreciate that it may
+not be possible to get the ViewModel approach working, yet it would be quite
+cool.<br>
+2. Would setting the ViewModel as the data context on a View work? I will try
+this but since I am new to this I don't want to get completly lost on the wrong
+track.<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>triplea replied on Thursday, December 31, 2009</h2><P>Thanks for the feedback Sergey. I wasn't sure if this approach would allow you to take full advantage of the ViewModelBase&lt;T&gt; and ViewModel&lt;T&gt; classes but I am about to give it a go and see how this works. Just 1 more question, Rocky mentioned that Blend/VS2010 data binding support may not work with this approach (if I understood his statement correctly), is that something you take as a known limitation or do yuo work around this problem differently?</P>
+<P>I have to admit that the Blend support is not on my list of priorities (I use it as yet) but if data binding in VS2010 is workable, it would be nice to do some work on a designer again!</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, December 30, 2009</h2><P>I approached the problem from a XAML-centric perspective, not code-centric.</P>
+<P>If you assume the View is pure XAML, nothing else, then it is really challenging to do anything but view-first because there's no guaranteed way to hook the ViewModel to the View later.</P>
+<P>Typically the ViewModel will be a resource at the form level (top level of the view). A lot of people that want VM first apparently decide on a convention where the resource is always named "RootViewModel" - which works, but seems fragile to me, since it relies on the XAML designer always naming it correctly.</P>
+<P>The resource approach is nice because it means the VM is addressable throughout the XAML. You could make the VM the data context for the form itself, but you lose a level of addressability, and you lose any hope of doing data binding in a RAD way in Blend or VS10.</P>
+<P>But I don't think the CSLA ViewModel&lt;T&gt; class requires view first. You just need to figure out how you are going to set the data context of the view to the viewmodel. That's not the viewmodel's job - so this implies that there's some other bit of code (a presenter or controller or renderer) that does hook up the viewmodel to the view.</P>
+<P>I didn't want to create a complete UI framework - MVC/MVP/etc - so I essentially dodged that issue by choosing to support a XAML-centric worldview.</P>
+<P>But I also don't want to lose the drag-and-drop designer support in VS10, and that is a XAML-centric model also.</P>
+<P>To me, the big reason XAML (WPF/SL) is so cool is the massive UI code reduction. My continual goal is to have 0 (zero) lines of code behind the XAML. Absolutely none. This means a codeless view.</P>
+<P>There are a couple ways to do this, the primary ones being the XAML-centric approach (let XAML create the objects it needs - that's what XAML is for after all), or an MVC/MVP approach.</P>
+<P>The thing about MVC/MVP patterns is that they are really a lot more than Model/View/Controller or Presenter. That's the part a business developer writes. But to really make the "M" patterns work, you need a message router, a render engine and other components that are part of the framework. The "M" patterns are only productive if you have a framework that does all the hard work so you can just do the MVC/MVP parts :)</P>
+<P>Look at ASP.NET MVC - an awesome implementation of MVC. A postback comes from the user and that causes a controller method to be invoked. But how does that happen? There's a whole message routing and translation engine in there first. Then your controller returns a View object. You never render the View - it might not ever render (think testing) - so this means the MVC framework has an entire rendering engine too - so it does the right thing with the View, the ViewData, ViewState, etc.</P>
+<P>It is all very cool stuff. Lots of fun - but a framework unto itself, and so out of bounds for core CSLA.</P>
+<P>My goal with ViewModel was to create a type that wraps a Model with commonly useful verbs/commands, and that works in a XAML-centric world. I have no doubt that it works in code-centric models as well, but then you need all that other plumbing :)</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>triplea replied on Thursday, December 31, 2009</h2><P>Rocky thanks for the in depth explanation. </P>
+<P>I am a bit confused with this statement:</P>
+<P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div></P>
+<P>The resource approach is nice because it means the VM is addressable throughout the XAML. You could make the VM the data context for the form itself, but you lose a level of addressability, and you lose any hope of doing data binding in a RAD way in Blend or VS10.</P>
+<P>But I don't think the CSLA ViewModel&lt;T&gt; class requires view first. You just need to figure out how you are going to set the data context of the view to the viewmodel. </P>
+<P></div></BLOCKQUOTE></P>
+<P>You mentioned loosing the Blend/VS2010 binding support if I&nbsp;set the VM as the View's datacontext but then suggest doing that in the next paragraph. Or is that an alternative approach if you are willing to loose the RAD stuff?</P>
+<P>But I can see that some plumbing is probably unavoidable. I don't mind it and you are right that this stuff is cool. But it would be cooler with&nbsp;as fewer&nbsp;lines of code as possible :-)</P>
+<P>Thanks a lot and have a happy new year!</P>
+<P>&nbsp;</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

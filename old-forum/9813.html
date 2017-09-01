@@ -1,0 +1,12 @@
+<html><header><title>Some queries about new businessrule system</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Some queries about new businessrule system</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9813.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>tikluganguly posted on Tuesday, November 30, 2010</h2><p>Hi All,</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;I do have some server side rules and some client side rules for a business object. And when I am hitting the save button I am explicitly calling the checkrules for the business object. &nbsp;The whole system is working just fine. Even when I am changing field with some data in it and going to the next field it is automatically checking the rules for both sync and async rules. And nothing is broken there.</p>
+<p>&nbsp;&nbsp; &nbsp; The server side rules are actually async rules. Now what I want is if any of the client side rules (that is non async rules) fails I don&#39;t want to call the server side rules during the object saving process. Can anyone let me know if this feature is already available in CSLA 4.0.1 or do i have to write something for it. Also just an added note I am using Silverlight 4.</p>
+<p>Hope I was been clear about my issue. Awaiting your reply.&nbsp;</p>
+<p>Regards</p>
+<p>Tiklu.</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Tuesday, November 30, 2010</h2><p>This feature is readily available. </p>
+<p>Use Priority on you rules:<br />Set sync rules to have Priority = 0 (this is the default value so you may not need to change anything)<br />Set async rules to Priority = 1</p>
+<p>That should do it. </p>
+<p>Explanation:<br />The BusinessRules have a property : ProcessThroughPriority - default value is 0. <br />All rules with lower or equal priority are processed even if a rule is already broken and and the broken rule does not explicitly shorctut RuleEngine (StopProcessing = true).</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tikluganguly replied on Wednesday, December 01, 2010</h2><p>Hi Jonny,</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Thank you for the reply. This is what I wanted to know</p>
+<p>- Tiklu</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,658 @@
+<html><header><title>CSLA .NET 3.0 Beta 1 available</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA .NET 3.0 Beta 1 available</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/2921.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka posted on Monday, May 21, 2007</h2><P>I have made CSLA .NET 3.0 Beta 1 available for download from the <A href="http://www.lhotka.net/cslanet/download.aspx"><STRONG><FONT color=#800080>CSLA download page</FONT></STRONG></A>.</P>
+<P>The changes in CSLA .NET version 3.0 are primarily focused on adding support for .NET 3.0 features: specifically WCF and WPF. No extra work was required to allow business objects to invoke WF workflows or to be used from activities in a WF workflow. There are also some very important bug fixes and feature enhancements that most people will want even when not using .NET 3.0.</P>
+<P>There are no major or intentional breaking changes from version 2.1.4 to version 3.0. </P>
+<P>CSLA 3.0 <EM>will work on .NET 2.0.</EM> You do not need .NET 3.0 to use this version. Obviously the WCF/WPF/WF features are only available to you if you have .NET 3.0.</P>
+<P>The WCF support comes in two forms: a data portal channel, and comprehensive support for the DataContract/DataMember attributes. The data portal support comes in the form of a new data portal proxy, which is functionally equivalent to the CSLA 2.0 channels. In other words, upgrading to WCF is entirely transparent. The DataContract support is an optional configuration switch you can set in app.config/web.config to tell CSLA to use the WCF serializer rather than the BinaryFormatter. This affects n-level undo and cloning. If you want to use DataContract instead of Serializable on your business classes you <EM>must</EM> use this config switch.</P>
+<P>The WPF support comes as a set of controls. These controls provide support for validation (like the Windows Forms ErrorProvider), authorization and a couple other key features. There is also a CSLA data provider control, allowing the creation of codeless XAML forms in some cases (for read-only data).</P>
+<P>In addition to the .NET 3.0 support, there are some other functional enhancements to various areas. Here are some highlights:</P>
+<OL>
+<LI>Validation RuleArgs are now more sophisticated, allowing for more expressive human-readable rule descriptions, and providing a better model for code generators when specifying arguments to be passed into a rule method. 
+<LI>A number of bugs in BusinessListBase related to data binding scenarios have been fixed. Event handling for other list classes has been standardized as well. You will likely find that data binding to grids is much more reliable in 3.0 than in 2.1.4. 
+<LI>SmartDate has some minor enhancements and bug fixes. 
+<LI>N-level undo now detects when edit levels are out of sync and throws an exception. This helps locate and debug problems where nested begin/cancel/apply calls are out of order. While this feature will most likely cause some short-term pain as you find these issues, the result is that your code will behave properly.</LI></OL>
+<P>For the complete list of changes, see the <A href="http://www.lhotka.net/Article.aspx?area=4&amp;id=0c94aa82-b975-455b-a0c5-f4f7196a2408"><STRONG><FONT color=#800080>change log</FONT></STRONG></A>.</P>
+<P>My plan is to leave this beta online for 2-3 weeks, followed by a second beta in mid-June and a release at the end of June. If you plan to move to CSLA .NET 3.0 within the next few months, please consider downloading and testing this beta. Let me know about any issues you find so I can resolve them for Beta 2.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Brian Criswell replied on Tuesday, May 22, 2007</h2>Thanks, Rocky. I have been using the last alpha version for a couple of weeks now and will give this a go.&nbsp; Did you see my PM about resetting DataContext and object.Equals overrides?<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jimbo replied on Tuesday, May 22, 2007</h2>Many of us will be in .net 2 for a long while yet.<br>The change log for csla 3 identifies some important areas that I would think can be included in ongoing&nbsp; csla 2 revisions. The most important seem to be are the very shaky nLevel undo and windows binding issues. Next comes the handling of nullables. ( is there going to be some fixes for Object Adapter ?) etc.<br>or is 2.1.4 the end ?<br><br>Jimbo<br>&nbsp;<br><br><br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, May 22, 2007</h2>
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>CSLA 2.1.4 is the end of CSLA 2.x.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>But please note that CSLA 3.0 <i>does work on .NET 2.0</i>.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><i><span>You do not need .NET 3.0 to use CSLA 3.0</span></i><span>.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I can&#8217;t afford to maintain two versions of the same code
+just to keep a version number in sync with .NET, but I can do what Microsoft
+did and make the .NET 3.0 changes <i>purely additive</i>.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I thought I made this clear in the original post &#8211; but if
+not, hopefully it is clear now </span><span>J</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Jimbo
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Tuesday, May 22, 2007 7:09 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] CSLA .NET 3.0 Beta 1 available<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Many of us will be in .net 2
+for a long while yet.<br>
+The change log for csla 3 identifies some important areas that I would think
+can be included in ongoing&nbsp; csla 2 revisions. The most important seem to
+be are the very shaky nLevel undo and windows binding issues. Next comes the
+handling of nullables. ( is there going to be some fixes for Object Adapter ?)
+etc.<br>
+or is 2.1.4 the end ?<br>
+<br>
+Jimbo<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+
+<BR>
+
+<P><FONT SIZE=2>No virus found in this outgoing message.<BR>
+Checked by AVG Free Edition.<BR>
+Version: 7.5.467 / Virus Database: 269.7.6/814 - Release Date: 5/21/2007 2:01 PM<BR>
+</FONT> </P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, May 22, 2007</h2><P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>Jimbo:</strong></div><div></P>
+<P>Next comes the handling of nullables.<BR></div></BLOCKQUOTE></P>
+<P>What do you think CSLA can do to help with nullable types?</P>
+<P>I realize ObjectAdapter needs some help (in general actually), but building business objects that have Nullable&lt;T&gt; properties and/or fields works today as far as I know. If there are specific things that can help support Nullable&lt;T&gt; I'm open to considering them.</P>
+<P>It is important to realize however, that version 3.0 is now locked. I'm only doing bug fixes for 3.0, and anything beyond that (including reworking ObjectAdapter) will be in a later version.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>DansDreams replied on Thursday, May 24, 2007</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div> 
+<P>I realize ObjectAdapter needs some help (in general actually), but building business objects that have Nullable&lt;T&gt; properties and/or fields works today as far as I know. If there are specific things that can help support Nullable&lt;T&gt; I'm open to considering them.</div></BLOCKQUOTE></P>
+<P>Yes, I have a few DateTime? properties and a few strings where I preserve database nulls, and they do indeed work fine.&nbsp; </P>
+<P>I did need to tweak my CustomDataReader to add a couple of methods&nbsp;GetStringNullable() and GetDateTimeNullable(), since part of the purpose of the original SafeDataReader was to&nbsp;shield the business objects from&nbsp;null database values.&nbsp; </P>
+<P>Rocky, I guess you couuld throw those into the SafeDataReader at some point if you wanted to round it out for handling nulls.&nbsp; (Even in this case, the SafeDataReader (or my customization of it) does provide a useful thing in allowing the use of column names instead of ordinal positions.)</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, May 24, 2007</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>DansDreams:</strong></div><div>
+<P>I did need to tweak my CustomDataReader to add a couple of methods&nbsp;GetStringNullable() and GetDateTimeNullable(), since part of the purpose of the original SafeDataReader was to&nbsp;shield the business objects from&nbsp;null database values.&nbsp; </P>
+<P>Rocky, I guess you couuld throw those into the SafeDataReader at some point if you wanted to round it out for handling nulls.&nbsp; (Even in this case, the SafeDataReader (or my customization of it) does provide a useful thing in allowing the use of column names instead of ordinal positions.)</P>
+<P></div></BLOCKQUOTE></P>
+<P>I don't think I'll do that. The purpose of SafeDataReader is to de-null things. It really shouldn't be used if you actually <EM>want</EM> null values.</P>
+<P>What I could see doing is creating a <EM>second</EM> datareader wrapper that only added the column name translation. Then SafeDataReader could inherit from that or something.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Blarm replied on Thursday, May 24, 2007</h2><P>Rocky,</P>
+<P>Have you had any chance to look at the DataMapper/FormView/Nullable problem as per item 23 of your Feature Wish List and <A href="/forums/thread/11921.aspx">http://forums.lhotka.net/forums/thread/11921.aspx</A>&nbsp;</P>
+<P>Thanks,</P>
+<P>Bill</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, May 24, 2007</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>No, unfortunately not yet&#8230;&nbsp; That&#8217;ll have to
+wait for a future release.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Blarm
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Thursday, May 24, 2007 11:21 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] CSLA .NET 3.0 Beta 1 available<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Rocky,<o:p></o:p></p>
+
+<p>Have you had any chance to look at the DataMappewr/FormView/Nullable problem
+as per item 23 of your Feature Wish List and <a href="/forums/thread/11921.aspx">http://forums.lhotka.net/forums/thread/11921.aspx</a>&nbsp;<o:p></o:p></p>
+
+<p>Thanks,<o:p></o:p></p>
+
+<p>Bill<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>dg78 replied on Thursday, May 24, 2007</h2><P class=MsoNormal><SPAN>Hi Rocky,<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>I tried to use CSLA 3.0 but without WCF and WPF (I don’t install <SPAN>&nbsp;</SPAN>.net 3.0).<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>It easy to remove (or exclude of the Csla Project) all codes due to WCF because the name of the files include WCF <SPAN>&nbsp;</SPAN>or Wpf : (WcfProxy.vb, WcfPortal.vb, IWcfPortal.vb) or it is a directory : \DataPortal\Hosts\WcfChannel or \Wpf.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>But there is one file : \Serialization\NetDataContractSerializerWrapper which is used with Wcf <SPAN>&nbsp;</SPAN>(it use <SPAN>NetDataContractSerializer which is part of .net 3.0). <o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN>Perhaps it will be good if there is Wcf inside the file name.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>I need also to put a ‘ before Return New NetDataContractSerializerWrapper() <o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>In </SPAN><SPAN>\Serialization\</SPAN><SPAN>SerializationFormatterFactory.vb</SPAN><SPAN><o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Cheers<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Dominique<o:p></o:p></SPAN></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, May 24, 2007</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Yes, that’s a good point – while you can build the full thing
+and still run it under 2.0, you can’t actually build without the 3.0 runtime
+installed…<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I can address that with compiler directives. I hate to do that,
+as the code starts to get messy, but it may be the only realistic solution…<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> dg78
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Thursday, May 24, 2007 4:32 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: CSLA .NET 3.0 Beta 1 available<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Hi
+Rocky,<o:p></o:p></p>
+
+<p class=MsoNormal>&nbsp;<o:p></o:p></p>
+
+<p class=MsoNormal>I
+tried to use CSLA 3.0 but without WCF and WPF (I donâ€™t install &nbsp;.net
+3.0).<o:p></o:p></p>
+
+<p class=MsoNormal>&nbsp;<o:p></o:p></p>
+
+<p class=MsoNormal>It
+easy to remove (or exclude of the Csla Project) all codes due to WCF because
+the name of the files include WCF &nbsp;or Wpf : (WcfProxy.vb, WcfPortal.vb,
+IWcfPortal.vb) or it is a directory : \DataPortal\Hosts\WcfChannel or \Wpf.<o:p></o:p></p>
+
+<p class=MsoNormal>&nbsp;<o:p></o:p></p>
+
+<p class=MsoNormal>But
+there is one file : \Serialization\NetDataContractSerializerWrapper which is
+used with Wcf &nbsp;(it use NetDataContractSerializer which is part of .net
+3.0). <o:p></o:p></p>
+
+<p class=MsoNormal>Perhaps
+it will be good if there is Wcf inside the file name.<o:p></o:p></p>
+
+<p class=MsoNormal>&nbsp;<o:p></o:p></p>
+
+<p class=MsoNormal>I
+need also to put a â€˜ before Return New NetDataContractSerializerWrapper() <o:p></o:p></p>
+
+<p class=MsoNormal>In
+\Serialization\SerializationFormatterFactory.vb<o:p></o:p></p>
+
+<p class=MsoNormal>&nbsp;<o:p></o:p></p>
+
+<p class=MsoNormal>Cheers<o:p></o:p></p>
+
+<p class=MsoNormal>&nbsp;<o:p></o:p></p>
+
+<p class=MsoNormal>Dominique<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Thursday, May 24, 2007</h2><P>Rocky,</P>
+<P>Please do NOT add compiler directives!</P>
+<P>It is not unreasonable that a Developer has .Net 3.0 installed so they can compile CSLA 3.0. They cna then run it on a .Net 2.0 platform if they wish.</P>
+<P>Joe</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, May 24, 2007</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>If I _<i>do</i>_ decide to do directives, 3.0 would be the
+default. In other words, only people without 3.0 on their dev boxes would need
+to do any work.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>But I&#8217;m really not keen on the directive idea. It is a rat&#8217;s
+nest, because 3.5 is just months away, and it could get way too messy&#8230;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> JoeFallon1
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Thursday, May 24, 2007 4:55 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: RE: CSLA .NET 3.0 Beta 1 available<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Rocky,<o:p></o:p></p>
+
+<p>Please do NOT add compiler directives!<o:p></o:p></p>
+
+<p>It is not unreasonable that a Developer has .Net 3.0 installed so they can
+compile CSLA 3.0. They cna then run it on a .Net 2.0 platform if they wish.<o:p></o:p></p>
+
+<p>Joe<o:p></o:p></p>
+
+<p>&nbsp;<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ianinspain replied on Friday, May 25, 2007</h2>Hi Rocky,<br><br>do you plan on releasing a how to update from 2.1 to 3.xx as pdf or something?<br><br>Just interested<br><br>Thanks<br><br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, May 25, 2007</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I&#8217;m still&nbsp; trying to decide whether it makes the most
+sense to write Expert VB/C# 200x Business Objects to cover 3.0 and 3.5 together,
+or to do a CSLA .NET Version 3.0 Handbook and a CSLA .NET Version 3.5 Handbook
+in pdf form.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>The latter would come out quicker each, but the former would be
+more comprehensive (probably).<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>However, the issue with the Expert Business Objects book
+approach is that CSLA has gotten too big to fit into the existing book
+structure. So a 200x book would almost certainly have to drop Windows Forms,
+ASP.NET and Web services in favor of WPF, WF and WCF &#8211; and maybe AJAX and
+maybe Silverlight. It is a real challenge to scope this thing&#8230;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I think I&#8217;ll probably put up a poll here on the forum to
+see what people think </span><span>J</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> ianinspain
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Friday, May 25, 2007 11:46 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: RE: RE: CSLA .NET 3.0 Beta 1 available<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Hi Rocky,<br>
+<br>
+do you plan on releasing a how to update from 2.1 to 3.xx as pdf or something?<br>
+<br>
+Just interested<br>
+<br>
+Thanks<br>
+<br>
+<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>MBonner replied on Friday, May 25, 2007</h2><P>You might consider multiple .pdf's with specific scopes i.e. one pdf covering winform, asp.net, web services, another covering the WxF's, and a supplemental pdfs&nbsp;for AJAX and Silverlight?&nbsp; Or possibly change the focus i.e. one pdf covering dataportal topics with both web services/remoting/WCF, another covering web front-end topics ASP.NET/AJAX/Silverlight, and a supplement for the workflow and any other topics that don't easily fit with the other two.</P>
+<P>I'd certainly be willing to buy and get work to buy more than one .pdf version, and then you could kind of mix and match what you needed.&nbsp; </P>
+<P>-- Mike :-)</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>lefty replied on Friday, May 25, 2007</h2><br>There are those of us that work for companies where the standardized desktop is still Windows 2000.&nbsp; I don't have a system that I can install .NET 3.0 on in order to compile CLSA 3.0.&nbsp;&nbsp; I would prefer compiler directives to nothing.<br><br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>david.wendelken replied on Friday, May 25, 2007</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div> 
+
+<DIV class=Section1>
+<P class=MsoNormal><SPAN>Yes, that’s a good point – while you can build the full thing and still run it under 2.0, you can’t actually build without the 3.0 runtime installed…<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>I</o:p></SPAN><SPAN> can address that with compiler directives. I hate to do that, as the code starts to get messy, but it may be the only realistic solution…</SPAN></div></BLOCKQUOTE></P>
+<P class=MsoNormal>Some developers work in secured environments where new versions of the operating system, .net framework, etc., have to go thru a security test before they can be deployed.&nbsp; This can delay adoption of new stuff by a year or more, not counting the usual FUD factor (Fear, Uncertainty and Doubt)&nbsp;that management may apply. :(</P>
+<P class=MsoNormal>Csla, being code that we "write" and compile, isn't a problem. :)</P>
+<P class=MsoNormal>For some folks, using the new release of Csla 3.x won't be an option if it cannot compile against .net 2.x</P>
+<P class=MsoNormal>Personally, I don't mind having to remove a set of files from the deliverable.&nbsp; Or even commenting out specific lines of code in the files, as long as they are clearly identified.</P>
+<P class=MsoNormal>Obviously, compiler directives would be simpler for folks in a secured environment.&nbsp; But being able to do it without .net 3.0 installed on the developer machine can be a deal breaker.</P>
+<P class=MsoNormal>&nbsp;</P>
+<P class=MsoNormal>&nbsp;</P></DIV></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, June 12, 2007</h2><P>I have decided (for better or worse) to go with a NET20 compiler symbol. If this is defined, then all the .NET 3.0 stuff is automatically removed from the build, allowing the project to be built on a machine where the .NET 3.0 runtime is not installed.</P>
+<P>The default is to include the .NET 3.0 features.</P>
+<P>This change is in svn, and will be in Beta 2 - which I expect to post later this week.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, May 22, 2007</h2>
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>No, I didn&#8217;t &#8211; can you repeat them on this thread?<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Thanks - Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Brian Criswell
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Tuesday, May 22, 2007 7:08 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] CSLA .NET 3.0 Beta 1 available<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Thanks, Rocky. I have been
+using the last alpha version for a couple of weeks now and will give this a
+go.&nbsp; Did you see my PM about resetting DataContext and object.Equals
+overrides?<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+
+<BR>
+
+<P><FONT SIZE=2>No virus found in this outgoing message.<BR>
+Checked by AVG Free Edition.<BR>
+Version: 7.5.467 / Virus Database: 269.7.6/814 - Release Date: 5/21/2007 2:01 PM<BR>
+</FONT> </P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Brian Criswell replied on Tuesday, May 22, 2007</h2>I saw a blog post regarding how DataContext uses object.Equals to determine if you are setting it to a different object and it should update.&nbsp; So this.DataContext = obj.Save() might have problems if you have GetIdValue return the real id of the object.<br><a href="http://kentb.blogspot.com/2007/03/beware-datacontext-and-equals.html">http://kentb.blogspot.com/2007/03/beware-datacontext-and-equals.html</a><br>If you were aware of this, do you have any strategies to work around it?<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, May 22, 2007</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Well, hmm. You are correct, in that ProjectTracker is busted.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>The most obvious strategy is to do exactly as recommended and
+set DataContext to null/Nothing before resetting it to the object.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Brian Criswell
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Tuesday, May 22, 2007 3:51 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: CSLA .NET 3.0 Beta 1 available<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>I saw a blog post regarding how DataContext uses
+object.Equals to determine if you are setting it to a different object and it
+should update.&nbsp; So this.DataContext = obj.Save() might have problems if
+you have GetIdValue return the real id of the object.<br>
+<a href="http://kentb.blogspot.com/2007/03/beware-datacontext-and-equals.html">http://kentb.blogspot.com/2007/03/beware-datacontext-and-equals.html</a><br>
+If you were aware of this, do you have any strategies to work around it?<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Brian Criswell replied on Wednesday, May 23, 2007</h2>One thing I was thinking about is having all objects return a unique Guid for GetIdValue().&nbsp; This would work for this situation, but object.Equals would have a little less meaning (in that objects of the same type with the same id would not be equal, which is what I have done previously).<br>Anyway, it is by no means a deal breaker, and CSLA allows you to target either strategy.&nbsp; It just means that you have to know the pros and cons of each and make a choice.&nbsp; Thanks for making a flexible framework, Rocky.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, May 22, 2007</h2><P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>Brian Criswell:</strong></div><div>Thanks, Rocky. I have been using the last alpha version for a couple of weeks now and will give this a go.&nbsp; Did you see my PM about resetting DataContext and object.Equals overrides?<BR></div></BLOCKQUOTE></P>
+<P>I did see the PM.</P>
+<P>I never even noticed the issue, because in Windows Forms you have to set the BindingSource.DataSource to Nothing/null to reset it as well. So when I wrote my WPF code I just did the same thing - by habit I suppose...</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Brian Criswell replied on Friday, May 25, 2007</h2>Hi Rocky,<br><br>In the release announcement in your blog, I noticed you mentioned "back button issues."&nbsp; What were those issues?<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, May 25, 2007</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>There are two basic ways to build a WPF app: page model or
+windows model.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>In the page model your forms (pages) are loaded in a browser &#8211;
+called a navigation window. There are a couple navigation windows: one that
+hosts in IE and one that hosts natively in Windows. There&#8217;s also the Frame
+control that can act as a navigation window.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>In all those cases, the nav window provides a history journal,
+along with back/forward buttons. Also, navigation works differently depending
+on whether you use link-style navigation, or create-a-page-object-and-navigate-to-it
+style navigation.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>In general, however, you can&#8217;t count on page instances
+sticking around. In link-land they are discarded when the user leaves. In
+instance-land they stick around.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>In no case (that I can find) can you navigate to a SPECIFIC page
+in history. You can only (through the API) go back one or forward one.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>So in my case, you load the ProjectEdit page, and it stays in
+memory (instance-model). The user can always go back there, and use that
+instance. But since I can&#8217;t get back there programmatically, then next
+time you want to edit that same project, you get a NEW ProjectEdit page
+instance. Now there&#8217;s a sync issue between them. Total PITA.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I&#8217;ve thought up a couple solutions to the problem, but
+they seem way too complex to solve what SHOULD be such a simple problem&#8230;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Specifically, I can keep my own &#8220;object journal&#8221;, so
+when you try to edit the same project a second time, the new ProjectEdit page
+instance can edit the _<i>original</i>_ project object. That seems pretty
+workable, but there&#8217;s no way that I can find to know when it is safe to
+eliminate items from this object journal. Yet it can&#8217;t grow forever.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I keep assuming that I&#8217;m missing something about the
+journal history API. And I probably am. But I&#8217;ve done enough work with it
+to know that it is a PITA, and at this point I don&#8217;t have more time to
+waste on figuring it out, so I&#8217;m exploring a windows model. That&#8217;s
+more like Windows Forms, but it still isn&#8217;t at all obvious how to do some
+things that seem quite trivial.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>In short, the learning curve on WPF is no less than moving from
+VB6 to Windows Forms. Everything you know is kind of, sort of, there, but not
+really.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Brian Criswell
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Friday, May 25, 2007 5:50 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] CSLA .NET 3.0 Beta 1 available<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Hi Rocky,<br>
+<br>
+In the release announcement in your blog, I noticed you mentioned &quot;back
+button issues.&quot;&nbsp; What were those issues?<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,58 @@
+<html><header><title>System architectures beyond client/server</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>System architectures beyond client/server</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4112.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>JHemminger posted on Thursday, January 03, 2008</h2><div><font face="Times New Roman">Fellow CSLAers - <br><br>We are looking to use&nbsp;<span class="211142018-03012008">CSLA </span>in our product which is predominantly a 
+client/server environment<span class="211142018-03012008">, which&nbsp;CSLA shines 
+happily in.</span>&nbsp; I however work with a<span class="211142018-03012008">n 
+ancillary product that allows our client to see their data over the web.&nbsp; Our 
+architecture for this has 3 points of communication.&nbsp; The web pages are hosted in house, 
+our clients install our "weblink" software which is required to be on a separate 
+server than the DB/application server&nbsp;and in a DMZ, the weblink machine then 
+communicates to the application server.&nbsp; So in order&nbsp;for CSLA to work with our 
+full product line we need it to be able to scale beyond just a client server 
+architecture.&nbsp; Currently if I were to configure my web pages to get data from 
+the server it would try to instantiate and use the objects on the weblink 
+machine.&nbsp; I need the weblink machine to NOT do this, but rather pass the call to 
+the "real" server.</span></font></div>
+<div><font face="Times New Roman"><span class="211142018-03012008"></span>&nbsp;</font></div>
+<div><font face="Times New Roman" size="3"><span class="211142018-03012008">My Solution:&nbsp; I have modified the 
+DataPortalClient, and the&nbsp;RemotingProxy classes to basically look to see if the 
+config file has a setting for CslaDataPortalUrl when a call comes in through the 
+remoting channel.&nbsp; If it finds a setting it then acts just like a client and 
+passes the call to the configured server.&nbsp; This code change provides a solution 
+to our problem.&nbsp; I have ran some performance tests and have not seen any adverse 
+affects due this extra check.</span></font></div>
+<div><font face="Times New Roman" size="3"><span class="211142018-03012008"></span>&nbsp;</font></div>
+<div><font face="Times New Roman" size="3"><span class="211142018-03012008">Has anyone else ran 
+into this problem?&nbsp; If so, what was your solution?</span></font></div>
+<div><font face="Times New Roman" size="3"><span class="211142018-03012008"></span>&nbsp;</font></div>
+<div><font face="Times New Roman" size="3"><span class="211142018-03012008">Questions?&nbsp; 
+Comments?&nbsp; Suggestions?</span></font></div>
+<div><font face="Times New Roman" size="3"><span class="211142018-03012008"></span>&nbsp;</font></div>
+<div><font face="Times New Roman" size="3"><span class="211142018-03012008">I can post my 
+changes to the two classes if anyone is interested.</span></font></div>
+<div><font face="Times New Roman" size="3"><span class="211142018-03012008"></span>&nbsp;</font></div>
+<div><font face="Arial"><font size="2"><font face="Times New Roman" size="3"><span class="211142018-03012008">Thanks,<br>Joel</span></font><span class="211142018-03012008"></span></font></font></div></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, January 03, 2008</h2><P>You should be able to do this without modifying CSLA itself.</P>
+<P>The data portal is interface-based, and so it should be possible to create a "relay" application that includes a custom host class. Probably start with a copy of Csla.Hosts.RemotingPortal, perhaps called RemotingRelayPortal.</P>
+<P>You'd then change RemotingRelayPortal to <EM>not</EM> delegate the call to Csla.Server.DataPortal, but instead to delegate the call to an instance of RemotingProxy. For example, the Create() method would look something like this:</P>
+<P>&nbsp;&nbsp;&nbsp; Public Function Create( _<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ByVal objectType As System.Type, _<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ByVal criteria As Object, _<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ByVal context As Server.DataPortalContext) As Server.DataPortalResult _<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Implements Server.IDataPortalServer.Create</P>
+<P>&nbsp; &nbsp;&nbsp;&nbsp; Dim proxy As DataPortalClient.IDataPortalProxy = New RemotingProxy<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Return proxy.Create(objectType, criteria, context)<BR>&nbsp;&nbsp;&nbsp; End Function</P>
+<P>On your relay server, your web.config would route inbound remoting calls to this RemotingRelayPortal class, which would simply re-route them to the real server.</P>
+<P>There <EM>will be</EM> a performance hit though, because Remoting will deserialize the inbound message before invoking your relay method, and then the parameters are serialized again as they are sent to the real app server. The same with data going the other way.</P>
+<P>But if the perf hit isn't troublesome to you, then it doesn't really matter <img src="/emoticons/emotion-1.gif" alt="Smile [:)]" /></P>
+<P>The only way I know of to avoid this perf hit is to use WCF and implement the relay at the transport or maybe at the message layers - before deserialization/serialization occurs.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Friday, January 04, 2008</h2>In addition I think a forum search would be a good idea because, IIRC, someone has already implemented such a remoting proxy.&nbsp; <br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>mr_lasseter replied on Friday, January 04, 2008</h2><P>Maybe I didn't understand the architecture of the original post, but it was my understanding that the following would work out of the box with CSLA:</P>
+<P>DMZ&nbsp;- (Contains&nbsp;web pages )&nbsp;-&gt; App Server (contains the business objects) -&gt; Database (contains the database server)</P>
+<P>I am guessing the original poster couldn't do this since the object weblink server was really just a proxy to the dmz server?&nbsp; Am I missing something?</P>
+<P>Thanks,</P>
+<P>Mike</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JHemminger replied on Friday, January 04, 2008</h2>Thanks for the info Rocky.&nbsp; I will change what I currently have and try that new class.<br><br>In response to this:<br>"Maybe I didn't understand the architecture of the original post, but
+it was my understanding that the following would work out of the box
+with CSLA:
+<p>DMZ&nbsp;- (Contains&nbsp;web pages )&nbsp;-&gt; App Server (contains the business objects) -&gt; Database (contains the database server)"<br><br>You are correct and CSLA would work right out of the box for this.&nbsp; But this is not my scenario, there is another machine between the App Server, it would in a sense look like this:</p>DMZ&nbsp;- (Contains&nbsp;web pages )&nbsp;-&gt; DMZ&nbsp;- (Link to App Server From Web )&nbsp;-&gt; App Server (contains the business objects) -&gt; Database (contains the database server)<br><br>Thanks all,<br>Joel<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, January 04, 2008</h2><P>That was my understanding. That for external clients he has:</P>
+<P>client-&gt;relay-&gt;app server-&gt;database</P>
+<P>While for internal clients he has</P>
+<P>client-&gt;app server-&gt;database</P>
+<P>So the trick is to write a data portal host/proxy combo to act as a relay.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JHemminger replied on Friday, January 04, 2008</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div><p>That was my understanding. That for external clients he has:</p>
+<p>client-&gt;relay-&gt;app server-&gt;database</p>
+<p>While for internal clients he has</p>
+<p>client-&gt;app server-&gt;database</p>
+<p>So the trick is to write a data portal host/proxy combo to act as a relay.</p></div></BLOCKQUOTE><br><br>Correct.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JHemminger replied on Friday, January 04, 2008</h2>If anyone is interested here are the classes I made/well copied and hacked!&nbsp; And remember to change your config files accordingly.<br><br>Thanks Rocky.<br><br>~Joel<br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Friday, January 04, 2008</h2><P>I use the architecture Mike describes "out of the box". So there must be something different about the poster's app.</P>
+<P>Joe</P>
+<P>&nbsp;</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,10 @@
+<html><header><title>User not authorized to create object type Company.</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>User not authorized to create object type Company.</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11688.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>neel.sawant posted on Friday, November 09, 2012</h2><p>at Csla.DataPortal.Create(Type objectType, Object criteria)<br />&nbsp;&nbsp; at Csla.DataPortal.Create[T]()</p>
+<p>&nbsp;</p>
+<p>Facing above issue while inserting &amp; creating new company object.</p>
+<p>Calling above method through WCF.</p>
+<p>1) Below line code write in <strong>Service_1_0.svc</strong> file.<br /><strong>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </strong>project.Business.entity objBusEntity = &nbsp;<strong>&nbsp;</strong>project.Business.entity objBusEntity</p>
+<p>2) Below line code write in Company.Generated.cs</p>
+<p>&nbsp;public static Company NewCompany(){</p>
+<p><strong>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; //getting error here<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return DataPortal.Create&lt; Company &gt;();</strong><br />}</p>
+<p>For resolving above issue i implemented below link step also.</p>
+<p>http://forums.lhotka.net/forums/p/11305/52543.aspx</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

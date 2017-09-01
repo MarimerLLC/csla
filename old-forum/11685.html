@@ -1,0 +1,36 @@
+<html><header><title>CSLA 4.5 used over WcfProxy blocks the UI</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA 4.5 used over WcfProxy blocks the UI</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11685.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>olbix posted on Thursday, November 08, 2012</h2><p>Hi,</p>
+<p>i&#39;m switching our WPF-app to CSLA 4.5 .<br />I have just recompiled the solution with new csla dlls.<br /><br />We are using the wcf-portal of csla.</p>
+<p>Now he Save() - Method of the BusinessListBase-Class blocks the UI-Thread.</p>
+<p>If I&#39;m using CSLA locally all went well.</p>
+<p>Have anyone a suggestion for me.</p>
+<p>&nbsp;</p>
+<p>Regards</p>
+<p>Werner</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>robertharris replied on Thursday, November 08, 2012</h2><p>we have noticed the same issue here as well and have been looking into this today.</p>
+<p>It appears that in the call to the Update method in WcfProxy.cs the isSync flag is set to false.</p>
+<p>I don&#39;t have a fix for this though.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, November 12, 2012</h2><p>The Save method is synchronous, so it should block the thread.</p>
+<p>The BeginSave or SaveAsync methods are async and so should not block the thread.</p>
+<p>However, if you are using the local data portal, you&#39;ll need to make sure your DataPortal_Fetch method is an async method (private async Task) or _it_ will be invoked synchronously, and that&#39;ll also block the calling thread.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>olbix replied on Tuesday, November 13, 2012</h2><p>Hello Rocky,</p>
+<p>Thany You for Your response.</p>
+<p>It is not hte problem that the Save method is synchronous. <br /><br />The problem is that the call to the Save method never returns if im using the WcfProxy.</p>
+<p>If I&#39;m using the same call to the Save method locally it works well.</p>
+<p>------------------------------<br /><br />// TestTableList := BusinessListBase<br />TestTableList myList = TestTableList.New();<br />myList.AddNew();<br /><strong>myList.Save();</strong><br />// this line is <strong>never reached</strong> if using the WcfProxy </p>
+<p>---------------------------------</p>
+<p>&nbsp;</p>
+<p>Werner</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, November 13, 2012</h2><p>And this is with the final release of 4.5?</p>
+<p>I ask, because there was a bug that caused this in one or more of the pre-releases.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>olbix replied on Wednesday, November 14, 2012</h2><p>Yes Sir.</p>
+<p>I&#39;ve downloaded the Installer (4.5.10) from <a href="http://www.lhotka.net/cslanet/download.aspx">http://www.lhotka.net/cslanet/download.aspx</a></p>
+<p>Here are the properties of the csla.dll:</p>
+<p>Description&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;: CSLA.NET for Windows (server) and&nbsp; .NET4<br />FileVersion&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; : 4.5.10.0<br />Product&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;:&nbsp;CSLA.NET<br />ProductVersion : 4.5.10.0<br />Copyright&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; : Copyright 2010-2012 Marimer LLC<br />Size&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;: 463 KB<br />Date&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; : 10/24/2012 5:50pm</p>
+<p>Werner</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, November 16, 2012</h2><p>I&#39;m able to confirm that there&#39;s a bug here. I&#39;ll add it to the bug list.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Tai replied on Monday, April 15, 2013</h2><p>Hi.</p>
+<p>Has this been fixed in the latest release?</p>
+<p>I have just come up against this same issue.<br />The Save method of the&nbsp;<span>BusinessListBase never returns when using WCF. There appears to be no error on the server.</span></p>
+<p>&nbsp;</p>
+<p><span>
+<div>Thanks</div>
+<div></div>
+<div>Tai</div>
+</span></p>
+<p><span><br /></span></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, April 15, 2013</h2><p>Yes, it will be in the 4.5.30 release</p>
+<p><a href="https://github.com/MarimerLLC/csla/issues?milestone=4&amp;page=1&amp;state=closed">https://github.com/MarimerLLC/csla/issues?milestone=4&amp;page=1&amp;state=closed</a></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Tai replied on Monday, April 15, 2013</h2><p>Awesome. Thanks for the quick response.</p>
+<p>&nbsp;</p>
+<p>Tai</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

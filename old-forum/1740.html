@@ -1,0 +1,188 @@
+<html><header><title>N-Level Undo Trouble - again!  - Rocky can you explain?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>N-Level Undo Trouble - again!  - Rocky can you explain?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/1740.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>razorkai posted on Saturday, November 11, 2006</h2><P>Hi folks.</P>
+<P>I expect this issue is down to me doing something wrong, but I'm having a nightmare trying to sort it out.&nbsp; I have a collection of editable business objects bound to a grid.&nbsp; The grid is readonly, and is only used for display/selection of the record to be edited.&nbsp; The form has an edit button that makes lots of other buttons available and also does a BeginEdit on the collection object.&nbsp; The reason for this is&nbsp;so that I can let the user make lots of changes and then choose to save or discard them all.&nbsp; Personally I don't like this approach, but this is what I have been asked for.&nbsp; Anyway the BeginEdit call puts all objects in the collection at EditLevel 1.&nbsp; Another button will open a modal form that takes the object that is selected&nbsp;in the grid in its constructor.&nbsp; The modal form presents several fields from the object and allows editing them.&nbsp; The fields are presented via text boxes and bound via a BindingSource component.&nbsp; The act of setting the BindingSource's DataSource property to my object triggers a second BeginEdit call, taking my object to EditLevel 2.&nbsp; This is fine, all ok so far.</P>
+<P>The trouble comes when the user closes the form.&nbsp;&nbsp;At this point&nbsp;I want to either accpet or cancel the user's chanegs based on whether they cancelled the form or not.&nbsp; Rocky recommends calling CancelEdit or EndEdit on the BindingSource, so this is what I do.&nbsp; Stepping through the code,&nbsp;CancelEdit leads into UndoableBase.UndoChanges.&nbsp; </P>
+<P>I watch as this lowers the edit level to 1 and goes on through to the BusinessBase.UndoChangesComplete.&nbsp; At this point the edit level is still 1, which is correct.&nbsp; UndoChangesComplete calls OnUnknownPropertyChanged which in turn calls OnPropertyChanged passing an empty string.&nbsp; <BR>When we hit the following line of code within this method, the edit level of my object jumps back up to 2!</P><FONT size=2>
+<P>_nonSerializableHandlers.Invoke(</FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>, </FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> PropertyChangedEventArgs(propertyName));</FONT></P>
+<P><FONT size=2>WHY?</FONT></P>
+<P>This problems is screwing me up as no matter what I do I can't seem to make my UI work the way I need to.&nbsp; AM I doing something stupid?&nbsp; Please help if you can.</P>
+<P><FONT size=2><FONT size=3>John.</FONT></P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Saturday, November 11, 2006</h2>My guess is that the "read-only" grid on the main form is raising the edit level for the currently selected row. I don't know that for sure, but that's my guess.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>razorkai replied on Sunday, November 12, 2006</h2>I have to admit I'm always surprised by the lack of responses when I post questions about N-Level Undo here.&nbsp; Normally there are&nbsp;at least a few responses, but this subject never seems to raise much interest.&nbsp; Is this because not many people are using the feature?</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Sunday, November 12, 2006</h2>I think it is because the complexity isn't actually in n-level undo, as much as in Windows Forms 2.0 data binding, and the way it uses IEditableObject. All the issues raised by you and others thus far have ultimately been resolved by digging into the way data binding is invoking the n-level undo capability - and researching that is somewhat of a PITA... <img src="/emoticons/emotion-6.gif" alt="Sad [:(]" /><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>razorkai replied on Sunday, November 12, 2006</h2><P>From my testing it seems that data binding invokes IEditableObject at unpredictable moments, particularly when using third party components.&nbsp; This is fine if you are doing a simple undo function as the Csla is coded to try and deal with the issue, but it can mess you up totally if you are relying on on object being at a certain edit level at a given moment.&nbsp; For example, I am using a Developer Express XtraGrid on a tab that starts off hidden.&nbsp; When I assign an object to the grid's bindingsource DataSource property BeginEdit gets called via IEditableObject- so far this is normal.&nbsp; The&nbsp;thing is that when you switch to the tab which the grid is on ApplyEdit gets called via IEditableObject.&nbsp; This means that if I happen to be on the grid's tab when I assign an object to the BindingSource my object ends up at a different EditLevel to when I do it when the tab is not visible.</P>
+<P>It is this sort of unpredictability that is causing me so many problems.&nbsp; I just tried commenting out the IEditableObject stuff from the Csla and was able to get my N-Level Undo to function exactly how I want it to.&nbsp; The drawbacks of course being a) I have modified the Csla, b) Objects will not function correctly in an object being edited in place within a grid.&nbsp; I have just read a post in the old forum about someone who implemented a property, EnableIEditableObject, to let each object switch the behaviour on or off.&nbsp; Maybe I'll look further down this route, as this could be an&nbsp;ok solution.&nbsp; I don't suppose there is any chance of a similar switch being added to the framework is there?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, November 13, 2006</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>razorkai:</strong></div><div><p>I don't suppose there is any chance of a similar switch being added to the framework is there?</p></div></BLOCKQUOTE><br><br>Maybe. It seems to be a recurring issue - though I fear that the solution may be worse than the problem. I can just see people turning off the normal behavior and posting here wondering why data binding isn't working right...<br><br>I think I'd do it with an enum<br><br>_customer.UndoMode = UndoModes.Manual<br>_customer.UndoMode = UndoModes.DataBinding<br>
+<br>or something like that. If there's a way to make the switch's meaning clear, I'd prefer that.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>DansDreams replied on Wednesday, December 27, 2006</h2><P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div>I think it is because the complexity isn't actually in n-level undo, as much as in Windows Forms 2.0 data binding, and the way it uses IEditableObject. All the issues raised by you and others thus far have ultimately been resolved by digging into the way data binding is invoking the n-level undo capability - and researching that is somewhat of a PITA... <img src="/emoticons/emotion-6.gif" alt="Sad [:(]" /><BR></div></BLOCKQUOTE></P>
+<P>I've avoided editable grids like the plague before now, but I have some&nbsp;very simple editing of contacts' phone numbers that seems appropriate to allow in the grid.</P>
+<P>I have spent way too many hours trying to track down this BeginEdit/ApplyEdit/CancelEdit behavior of the DevExpress grid using CSLA.&nbsp; I have a Account:BusinessBase BO with a child OwnersList:BusinessListBase containing Owner:BusinessBase objects.&nbsp;&nbsp;A common&nbsp;scenario I believe.</P>
+<P>The grid is very generous with spewing out these method calls and&nbsp;twisting the EditLevels all up.&nbsp; In standard grid fashion, navigating from one grid row to another is considered as an indication to save any changes on that row and ApplyEdit gets called.&nbsp; </P>
+<P>In another thread I read Rocky advising to let Windows data binding do it's thing as much as possible rather than try to manually control it, but that clearly doesn't work.</P>
+<P>Is there a standard 1-2-3 step procedure that someone has found to consistently make grids work in this situation?&nbsp; There seems to be several threads on the subject but no definitive guidance.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>pelinville replied on Thursday, December 28, 2006</h2><DIV>Something about all devexpress controls I have found is that they do it "their" way.&nbsp; This is both good and bad.</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>For example the grids do not, by default,&nbsp;use the IBindingList sorting methods you may create.&nbsp; I have found also that other expected behaviors just do not act the way you would expect.</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>If you purchased the source code for the controls I suggest you compile it and step through it to find out exactly what they are doing.&nbsp; I have found that often it isn't crazy but it is not "standard" behavior. And see if there are updates to the controls you are using.&nbsp; The early 2005 versions simply sucked. Sometimes I have been able to either override the behavior (DevExpress at least builds good overridability in) or find another way.&nbsp; Their support is horrible.</DIV></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>DansDreams replied on Friday, December 29, 2006</h2>Are you saying that with the standard Microsoft DataGridView you can just plunk it on a form and set a BindingSource up to point to the child collection as in my scenario and it works exactly like you'd expect with the final save and cancel authority still the parent root object?&nbsp; I would have expected from the other comments that this isn't the case, or is everybody that's having trouble using 3rd party controls?</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Friday, December 29, 2006</h2>Well the easiest way to determine this is to try it out and see.&nbsp; It would also help you figure out if its the grid that's behaving badly.<br><br>FWIW, it seems most of the problems are with the devex grid.&nbsp; I don't recall others having problems with the infragistics or the standard DGV once their code was setup properly.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, December 29, 2006</h2>
+
+
+
+
+<DIV align=left><SPAN class=067434414-29122006><FONT face=Arial color=#0000ff size=2>I have done exactly this many times - with the standard 
+DataGridView - and it works as expected. I haven't directly tested this with any 
+3rd party grids, so I suspect that the issues are due to some inconsistency with 
+the DevExpress grid, where they don't follow the pattern used by 
+Microsoft.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=067434414-29122006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=067434414-29122006><FONT face=Arial color=#0000ff size=2>If you can identify the pattern they do use, and if it 
+doesn't conflict with Microsoft's pattern from the perspective of BLB, I'm happy 
+to try and alter BLB to support their pattern too.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=067434414-29122006></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=067434414-29122006><FONT face=Arial color=#0000ff size=2>Rocky</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=067434414-29122006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV><BR>
+<BLOCKQUOTE>
+  <DIV class=OutlookMessageHeader align=left>
+  <HR>
+  <FONT face=Tahoma size=2><B>From:</B> DansDreams [mailto:cslanet@lhotka.net] 
+  <BR><B>Sent:</B> Friday, December 29, 2006 7:06 AM<BR><B>To:</B> 
+  rocky@lhotka.net<BR><B>Subject:</B> Re: [CSLA .NET] N-Level Undo Trouble - 
+  again! - Rocky can you explain?<BR></FONT><BR></DIV>
+  <DIV></DIV>Are you saying that with the standard Microsoft DataGridView you 
+  can just plunk it on a form and set a BindingSource up to point to the child 
+  collection as in my scenario and it works exactly like you'd expect with the 
+  final save and cancel authority still the parent root object?&nbsp; I would 
+  have expected from the other comments that this isn't the case, or is 
+  everybody that's having trouble using 3rd party controls?<BR><BR><BR></BLOCKQUOTE></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>DansDreams replied on Friday, December 29, 2006</h2><P>I just made up a simple form using only MS controls including the DataGridView and it exhibits the same behavior.</P>
+<P>I modify the first row in the grid, then navigate to the second row, then back to the first.&nbsp; Hit the main cancel button which calls EndEdit on the main/root BindingSource and the first row of the grid does NOT revert back to its original state.&nbsp; In fact, it gets downright bizarre from the user's perspective... The original value in the first row is "hello".&nbsp; I change it to "hi".&nbsp; I click on the second row.&nbsp; I then click back on the first row and change the value to "bye".&nbsp; I hit the form's main Cancel button and it goes back to "hi" not to "hello".</P>
+<P>I can see that the MS grid is also very generous with its BeginEdit and ApplyEdit calls every time the row&nbsp;selection is changed, so I don't think this is a DevExpress problem.&nbsp; Could still be something boneheaded I've done of course.&nbsp; I'm still trying to debug from that perspective.</P>
+<P>Can anyone verify that this specific chain of&nbsp;events works ok in their application?</P>
+<P>On a more theoretical note, one thing that this has shown me is that apparently there is going to be some extra memory gobbled up at the very least, my problem notwithstanding, because the CopyState cascades from the IEditableObject.BeginEdit on the root object and also gets called through the explicit IEditableObject.BeginEdit call on each row.</P>
+<P>As someone who will likely never use&nbsp;the n-level undo complexity, I'd like to offer my thoughts&nbsp;on the "switch" discussed previously in this thread.&nbsp; I would prefer a config switch that would limit the state stacking to a single level, effectively turning n-level undo to just simple "original state" tracking.&nbsp; A property accepting an enum parameter like you described might be useful, but I don't want to think about it all the times it wouldn't.&nbsp; In any event, I want to leave the IEditableObject interface working as written, because I think (at this point) that if the undo wasn't doing all the EditLevel tracking it would solve that problem anyway.&nbsp; Maybe the uniqueness of each person's situation would require both, but I offer that there were several threads on the old forum wherein people suggest n-level was overkill.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Friday, December 29, 2006</h2><BLOCKQUOTE><div><img src="/Themes/basicblue/images/icon-quote.gif"> <strong>DansDreams:</strong></div><div>Hit the main cancel button which calls EndEdit on the main/root BindingSource and the first row of the grid does NOT revert back to its original state. </div></BLOCKQUOTE><br><br>What "main cancel button?"&nbsp; I don't recall the DGV having a cancel button.&nbsp; What happens if you just hit ESC?&nbsp; Or is that what you mean by "main cancel button?"<br><br>If you put in a button to call CancelEdit on the collections object, I'd remove it.&nbsp; The grid should work as expected without you having to put code in to do any of that.<br><br>Also, what does GetIdValue return?&nbsp; If you're using ints, you'll need to keep them unique.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>DansDreams replied on Friday, December 29, 2006</h2><P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>ajj3085:</strong></div><div><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>DansDreams:</strong></div><div>Hit the main cancel button which calls EndEdit on the main/root BindingSource and the first row of the grid does NOT revert back to its original state. </div></BLOCKQUOTE><BR><BR>What "main cancel button?"&nbsp; I don't recall the DGV having a cancel button.&nbsp; What happens if you just hit ESC?&nbsp; Or is that what you mean by "main cancel button?"<BR><BR>If you put in a button to call CancelEdit on the collections object, I'd remove it.&nbsp; The grid should work as expected without you having to put code in to do any of that.<BR><BR>Also, what does GetIdValue return?&nbsp; If you're using ints, you'll need to keep them unique.<BR></div></BLOCKQUOTE></P>
+<P>Remember, my scenario is a BusinessBase object containing a BusinessListBase collection of BusinessBase objects:&nbsp; Account -&gt; OwnerList -&gt; Owner.&nbsp; My form is for editing the Account and&nbsp;includes a grid for editing the Owners among the controls for editing the Account itself.&nbsp; So my "main" Cancel button is the one for the whole form - at the Account level.</P>
+<P>I'm only editing objects retrieved from the database, so there's no issue with IDs.</P>
+<P>I understand part of the problem here may be the way people design their UI.&nbsp; By that I mean some people may have never thought to have a form like I do.&nbsp; But because I generally think Microsoft's grids have expected way too much from the user what I've described is how I want it to work.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, December 29, 2006</h2>
+
+
+
+
+<DIV align=left><SPAN class=520242719-29122006><FONT face=Arial color=#0000ff size=2>To do a cancel button on the form - for the parent object - 
+does impose some requirements on how you interact with your 
+objects.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=520242719-29122006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=520242719-29122006><FONT face=Arial color=#0000ff size=2>Most notably - DON'T interact with your objects directly. 
+Instead, always interact with them through the BindingSource 
+objects.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=520242719-29122006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=520242719-29122006><FONT face=Arial color=#0000ff size=2>Also, make sure to interact with the child bindingsource 
+FIRST, then the parent bindingsource.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=520242719-29122006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=520242719-29122006><FONT face=Arial color=#0000ff size=2>So a cancel button event handler must go something like 
+this:</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=520242719-29122006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=520242719-29122006><FONT face=Arial color=#0000ff size=2>&nbsp; childBindingSource.CancelEdit()</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=520242719-29122006><FONT face=Arial color=#0000ff size=2>&nbsp; parentBindingSource.CancelEdit()</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=520242719-29122006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=520242719-29122006><FONT face=Arial color=#0000ff size=2>Notice that I'm not interacting with the objects directly - 
+as that confuses the hell out of data binding. And notice that I cancel the 
+child bindingsource first, then the parent bindingsource. This is required 
+because it is the reverse of the way the bindingsource objects did their 
+BeginEdit() calls - so the nesting is unrolled properly.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=520242719-29122006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=520242719-29122006><FONT face=Arial color=#0000ff size=2>Rocky</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=520242719-29122006></SPAN>&nbsp;</DIV><BR>
+<BLOCKQUOTE>
+  <DIV class=OutlookMessageHeader align=left>
+  <HR>
+  <FONT face=Tahoma size=2><B>From:</B> DansDreams [mailto:cslanet@lhotka.net] 
+  <BR><B>Sent:</B> Friday, December 29, 2006 12:49 PM<BR><B>To:</B> 
+  rocky@lhotka.net<BR><B>Subject:</B> Re: [CSLA .NET] N-Level Undo Trouble - 
+  again! - Rocky can you explain?<BR></FONT><BR></DIV>
+  <DIV></DIV>
+  <P>
+  <BLOCKQUOTE>
+    <DIV><IMG src="/Themes/default/images/icon-quote.gif"> 
+    <STRONG>ajj3085:</STRONG></DIV>
+    <DIV>
+    <BLOCKQUOTE>
+      <DIV><IMG src="/Themes/default/images/icon-quote.gif"> 
+      <STRONG>DansDreams:</STRONG></DIV>
+      <DIV>Hit the main cancel button which calls EndEdit on the main/root 
+      BindingSource and the first row of the grid does NOT revert back to its 
+      original state. </DIV></BLOCKQUOTE><BR><BR>What "main cancel button?"&nbsp; 
+    I don't recall the DGV having a cancel button.&nbsp; What happens if you 
+    just hit ESC?&nbsp; Or is that what you mean by "main cancel 
+    button?"<BR><BR>If you put in a button to call CancelEdit on the collections 
+    object, I'd remove it.&nbsp; The grid should work as expected without you 
+    having to put code in to do any of that.<BR><BR>Also, what does GetIdValue 
+    return?&nbsp; If you're using ints, you'll need to keep them 
+    unique.<BR></DIV></BLOCKQUOTE>
+  <P></P>
+  <P>Remember, my scenario is a BusinessBase object containing a 
+  BusinessListBase collection of BusinessBase objects:&nbsp; Account -&gt; 
+  OwnerList -&gt; Owner.&nbsp; My form is for editing the Account 
+  and&nbsp;includes a grid for editing the Owners among the controls for editing 
+  the Account itself.&nbsp; So my "main" Cancel button is the one for the whole 
+  form - at the Account level.</P>
+  <P>I'm only editing objects retrieved from the database, so there's no issue 
+  with IDs.</P>
+  <P>I understand part of the problem here may be the way people design their 
+  UI.&nbsp; By that I mean some people may have never thought to have a form 
+  like I do.&nbsp; But because I generally think Microsoft's grids have expected 
+  way too much from the user what I've described is how I want it to 
+  work.</P><BR><BR><BR></BLOCKQUOTE></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>DansDreams replied on Friday, December 29, 2006</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div> 
+
+<DIV align=left><SPAN class=520242719-29122006><FONT face=Arial color=#0000ff size=2>To do a cancel button on the form - for the parent object - does impose some requirements on how you interact with your objects.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=520242719-29122006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=520242719-29122006><FONT face=Arial color=#0000ff size=2>Most notably - DON'T interact with your objects directly. Instead, always interact with them through the BindingSource objects.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=520242719-29122006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=520242719-29122006><FONT face=Arial color=#0000ff size=2>Also, make sure to interact with the child bindingsource FIRST, then the parent bindingsource.</FONT></SPAN><BR></DIV>
+<P></div></BLOCKQUOTE></P>
+<P>Ok, I think I got it.</P>
+<P>This is the code that works:</P>
+<P>========</P>
+<P>ownersBindingSource.RaiseListChangedEvents = false;<BR>ownersBindingSource.CancelEdit();<BR><BR>accountBindingSource.CancelEdit();<BR><BR>ownersBindingSource.RaiseListChangedEvents&nbsp;= true;<BR>ownersBindingSource.ResetBindings(false);</P>
+<P>=======</P>
+<P>Apparently, the problem with the simple suggestion to call the child BindingSource first is that MS DataBinding sees that reset of values in the child object as a change and thinks it&nbsp;better call BeginEdit!&nbsp; Ouch.</P>
+<P>At least that what it looks like.&nbsp; What I saw in the debug messages I was spewing out was that between the time of the start of CancelEdit on the child object and its UndoChanges being completed, a IEditableObject.BeginEdit call was made, which raised the EditLevel artificially so the (rest of the) UndoChanges was just backing out nonsense and ending up right back where it started.</P>
+<P>I've tried all kinds of mixes of row navigating and editing and the main Cancel always gets me back to the original state for everything with the code above.&nbsp; Someone make a note of this for the next time somebody asks.&nbsp; LOL.</P>
+<P>Rocky, here's some more to ponder.&nbsp; In the case of a form like this, the logic to check if IEditableObject.BeginEdit has already been called and can subsequently be ignored really needs to cascade through the CopyState calls.&nbsp; That is to say, in this case the initial snapshot throughout the whole object graph as a result of the root object's IEditableObject.BeginEdit call really is what I want considered as the honoring of the first call throughout the whole graph.&nbsp; I think this also would have solved my problem.&nbsp; Regarding the previously discussed "switches", perhaps a&nbsp;way to indicate that this "honoring" should cascade as well&nbsp;is another answer.&nbsp; Then it would indeed make sense to make it a property of Core.BusinessBase where the UI designer would set it according to the design of the particular parent-child UI.</P>
+<P>Man, I can't believe I spent all day on THIS!</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>DansDreams replied on Friday, December 29, 2006</h2>Ah well, I'm not done yet.&nbsp; Back to the real form with the DevExpress grid I find it still behaves slightly differently - apparently being smarter in that it seems to be holding on to its edit state independent of the BindingSource.&nbsp; So I think I need to find a way to tell the grid to abandon its edit.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>kbcb replied on Friday, July 13, 2007</h2><P>I'm trying to get this right, right now... Not fully understanding things.&nbsp;&nbsp;&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, July 13, 2007</h2>With the DevExpress grid, or the original problem with the child dialog? Very different scenarios...</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>kbcb replied on Monday, July 16, 2007</h2><P>We are using the devexpress grids.</P>
+<P>Seems as though the Mr. Billings found that devexpress is way different... 'would like to see what he did to solve his problem.</P>
+<P>Rocky, do you know the solution to this problem using the devexpress grids?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, July 16, 2007</h2>I'm not entirely sure, but this may be one of the scenarios I addressed with some changes in CSLA3 - there was one grid (might be this one) that was serializing each row to implement its own undo, and I had to make a change to BusinessListBase's SetItem code to make the edit levels and object state end up in a consistent state in that case.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>alef replied on Friday, August 24, 2007</h2><P>Hi,</P>
+<P>Devexpress or not, the n-level undo is not working the way it should. In my opion the cause is due to databiding. Even in the project tracker example there is a problem with 1-level undo.</P>
+<P>So try the following: (<STRONG>this scenario doesn't work</STRONG>)</P>
+<P>1) Open a project.</P>
+<P>2) Edit the role for the first resource.</P>
+<P>3) Click cancel and you see that the modifications aren't rolled back.</P>
+<P>&nbsp;</P>
+<P>Try the following (<STRONG>this scenario works</STRONG>)</P>
+<P>1) Open a project.</P>
+<P>2) Edit the role for the first resource.</P>
+<P><STRONG>3) Click on whatever column on the second resource.</STRONG></P>
+<P>4) Click on Cancel</P>
+<P>What I've discovered is that the first item in the resources collection is just by opening the form already on level 2. The root object is still on level 1.&nbsp; So what I don't understand is that at some way BeginEdit is called on the first object in the child collection without doing this through the root object.</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, August 24, 2007</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Are you using the 3.0.1 release?<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>There are numerous bugs fixed from 2.1.4 to 3.0.1, both in
+BusinessListBase, and more importantly in PTWin.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky</span><o:p></o:p></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,16 @@
+<html><header><title>Object Design \ Grid Binging Issue</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Object Design \ Grid Binging Issue</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/2834.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Husker Dan posted on Tuesday, May 08, 2007</h2><P>I am having an issue reconcilling the design of my objects with the desired disaply of the data in the Infragistics Grid. The design of the objects is as follows</P>
+<P><FONT face=Tahoma color=#0000ff>NomGroupList</FONT></P>
+<P><FONT face=Tahoma color=#0000ff>&nbsp;&nbsp;&nbsp;NomGroup</FONT></P>
+<P><FONT face=Tahoma color=#0000ff>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NomGroupPropertyList</FONT></P>
+<P><FONT face=Tahoma color=#0000ff>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NomGroupProperty</FONT></P>
+<P>The number of items in both collections is variable. The problem I am having is that the Business folks want the data displayed like</P>
+<P><FONT face=Tahoma color=#800080>Property&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NomGroupA&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NomGroupB</FONT></P>
+<P><FONT face=Tahoma color=#ff0000><FONT color=#800080>Property1</FONT>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Value1&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Value1</FONT></P>
+<P><FONT face=Tahoma color=#ff0000><FONT color=#800080>Property2&nbsp;&nbsp;</FONT>&nbsp;&nbsp;&nbsp;&nbsp;Value2&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Value2</FONT></P>
+<P>The built in Databinding doesn't seem to have a way to get the data to display like this and, since both the X and Y elements are variable, I haven't been able to come up with an object design that would accomplish this. I don't want to sacrafice databinding nor the Validation in my Business Objects.</P>
+<P>Does anyone know of a way to accomplish this?</P>
+<P>&nbsp;</P>
+<P>Thanks!</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, May 08, 2007</h2><P>More or less what you are describing is a crosstab query.</P>
+<P>My suggestion is to create a helper object in the UI that re-shapes the data into the right format for data binding, but delegates all the calls down into the real objects.</P>
+<P>NomGroupList list = NomGroupList.GetList();<BR>NomCrosstab ct = new NomCrosstab(list);<BR>bindingSource.DataSource = ct;</P>
+<P>This NomCrosstab object would contain the original list, and would delegate all calls down to it. But you'd code it to be a list of values in the shape required by the UI.</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,125 @@
+<html><header><title>Help please! New to CSLA and UltraWinGrid</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Help please! New to CSLA and UltraWinGrid</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5000.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>gmui posted on Saturday, June 21, 2008</h2>Hi,<br>I have to build a prototype app this weekend using Infragistic's UltraWinGrid and came across CSLA last night.&nbsp; I know there's a bunch to read and learn, but I was hoping to see if there were any examples of using CSLA to make binding to the UltraWinGrid to my List of business objects easier.&nbsp; Most things I've seen show how to bind to datasources (like databases) but since I'll be getting Lists of objects retrieved from a Java server, I'd like to bind to a List of objects.&nbsp; I'm not using Webservices so my source is not in XML form (Using Hessian service exported from a Java / Spring server).<br><br>Does this seem like a good application of CSLA.NET?<br><br>Thanks,<br>Gary<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>nermin replied on Saturday, June 21, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>With standard list of objects, (anything implementing IList, I
+believe) you get one way binding &#8211; read only grid.&nbsp; In order to make
+grid &#8220;editable&#8221; your list needs to implement IBindingList, which is
+a complex interface.&nbsp; But if your list inherits form Csla&#8217;s
+BindingListBase (which implements that interface for you) then you get an &#8220;editable
+list&#8221; that can be bound to your grid. <o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Csla objects and lists can be serialized /deserialized from
+database, web service, file it does not matter.&nbsp; It is up to you and the
+implementation goes to DataPortal_Create, DataPortal_Fetch, DataPortal_Update, &#8230;
+methods.&nbsp; So basically inside those methods you just need to define
+mapping from/to Java/Spring service DTOs. <o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Nermin<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> gmui
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Saturday, June 21, 2008 10:27 AM<br>
+<b>To:</b> Nermin Dibek<br>
+<b>Subject:</b> [CSLA .NET] Help please! New to CSLA and UltraWinGrid<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Hi,<br>
+I have to build a prototype app this weekend using Infragistic's UltraWinGrid
+and came across CSLA last night.&nbsp; I know there's a bunch to read and
+learn, but I was hoping to see if there were any examples of using CSLA to make
+binding to the UltraWinGrid to my List of business objects easier.&nbsp; Most
+things I've seen show how to bind to datasources (like databases) but since
+I'll be getting Lists of objects retrieved from a Java server, I'd like to bind
+to a List of objects.&nbsp; I'm not using Webservices so my source is not in
+XML form (Using Hessian service exported from a Java / Spring server).<br>
+<br>
+Does this seem like a good application of CSLA.NET?<br>
+<br>
+Thanks,<br>
+Gary<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>gmui replied on Saturday, June 21, 2008</h2>Hi Nermin,<br><br>Thanks for the reply and info.&nbsp; I wasn't able to find BindingListBase - did you mean BusinessListBase?<br><br>Thanks,<br>Gary<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>nermin replied on Sunday, June 22, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Yes, exactly - BusinessListBase.&nbsp; Sorry for the typo.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>Nermin<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> gmui
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Saturday, June 21, 2008 8:14 PM<br>
+<b>To:</b> Nermin Dibek<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: Help please! New to CSLA and UltraWinGrid<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Hi Nermin,<br>
+<br>
+Thanks for the reply and info.&nbsp; I wasn't able to find BindingListBase -
+did you mean BusinessListBase?<br>
+<br>
+Thanks,<br>
+Gary<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

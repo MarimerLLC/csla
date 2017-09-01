@@ -1,0 +1,64 @@
+<html><header><title>List GroupBy?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>List GroupBy?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3716.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>SonOfPirate posted on Monday, October 15, 2007</h2><P><STRONG>Has anyone implemented or given any thought to how you would implement GroupBy behavior in a business list?</STRONG></P>
+<P><STRONG>We have a couple of use-cases where we are applying a multi-column sort to our list then checking for changes in the column values as we iterate through the list so that we can render the items in the desired groupings.</STRONG></P>
+<P><STRONG>As an example, let's say we extended the sample ProjectTracker application to identify the Customer for each Project and we want to be able to view projects, grouped by customer and the start month.&nbsp; So, our GroupBy phrase would be, "Customer, Month(StartDate)" - or something.&nbsp; To do this, we have the following code in place now:</STRONG></P>
+<P><CODE>string customer = "";<BR>int month = 0;</CODE><CODE><BR><BR>foreach (Project p in Projects)<BR>{<BR>&nbsp; &nbsp; if (p.Customer != customer)<BR>&nbsp; &nbsp; {<BR>&nbsp; &nbsp; &nbsp; &nbsp; newCustomer = true;<BR>&nbsp; &nbsp; &nbsp; &nbsp; newMonth = true;<BR>&nbsp; &nbsp; }<BR>&nbsp; &nbsp; else if (p.StartDate.Month != month)<BR>&nbsp; &nbsp; &nbsp; &nbsp; newMonth = true;<BR><BR>&nbsp; &nbsp; if (newCustomer)<BR>&nbsp; &nbsp; {<BR>&nbsp; &nbsp; &nbsp; &nbsp; // Render Customer group row<BR>&nbsp; &nbsp; }<BR><BR>&nbsp; &nbsp; if (newMonth)<BR>&nbsp; &nbsp; {<BR>&nbsp; &nbsp; &nbsp; &nbsp; // Render Month group row<BR>&nbsp; &nbsp; }<BR><BR>&nbsp; &nbsp; // Render (normal) Project row<BR>} </CODE></P>
+<P><STRONG>Projects is a SortedList with "Customer, StartDate, Name" as the sort expression.</STRONG></P>
+<P><STRONG>It would be great if we could something like:</STRONG></P>
+<P><CODE>foreach (X customerGroup in Projects.GroupBy("Customer"))<BR>{<BR>&nbsp; &nbsp; // Render Customer group row<BR>&nbsp; &nbsp; <BR>&nbsp; &nbsp; foreach (X monthGroup in customerGroup.GroupBy("Month(StartDate)"))<BR>&nbsp; &nbsp; {<BR>&nbsp; &nbsp; &nbsp; &nbsp; // Render Month group row<BR></CODE><CODE><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; foreach (Project p in monthGroup)<BR>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; // Render (normal) Project row<BR>&nbsp; &nbsp; }<BR>}</CODE></P>
+<P><STRONG>At a minimum, I'd be interested if anyone has even implemented just a single level GroupBy (e.g. by Customer).</STRONG></P>
+<P><STRONG>Any thoughts, ideas or suggestions???</STRONG></P>
+<P><STRONG>Thx.</STRONG></P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Monday, October 15, 2007</h2>Hmm... sounds like something Linq would be handy for.&nbsp; <br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>SonOfPirate replied on Monday, October 15, 2007</h2><P>Yea, I'd thought of that.&nbsp; But (and I admit I am still learning Linq, so I may be off a bit), the "collection" created by Linq would be no different than what we already possess - a list of objects with properties that correspond to the groupings and sorted on those properties.&nbsp; I don't believe Linq behaves any differently than if we used a GroupBy clause in SQL (not meant to be true SQL!):</P>
+<P><FONT face="Courier New" size=2>SELECT * FROM Projects ORDER BY Customer, StartDate, Name GROUP BY Customer, StartDate</FONT></P>
+<P>would result in:</P>
+<TABLE cellSpacing=2 cellPadding=2>
+
+<TR>
+<TD><B>Customer</B></TD>
+<TD><B>StartDate</B></TD>
+<TD><B>Name</B></TD>
+<TD><B>etc.</B></TD></TR>
+<TR>
+<TD>Acme Acres</TD>
+<TD>1/1/07</TD>
+<TD>Project1</TD>
+<TD>...</TD></TR>
+<TR>
+<TD>Acme Acres</TD>
+<TD>6/1/07</TD>
+<TD>Project2</TD>
+<TD>...</TD></TR>
+<TR>
+<TD>Acme Industries</TD>
+<TD>3/1/07</TD>
+<TD>Project3</TD>
+<TD>...</TD></TR>
+<TR>
+<TD>Acme Industries</TD>
+<TD>3/15/07</TD>
+<TD>Project4</TD></TR></TABLE>
+<P>This is the same as if we used a SortedList sorted on Customer, StartDate and Name.&nbsp; The key is how to now <STRONG>access</STRONG> the data in a GroupBy way - almost heirarchically - with the underlying data that our business list contains unchanged.</P>
+<P>Thx.</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Monday, October 15, 2007</h2>From what I've read, you could create a list of Customers, which contains a list of Projects, etc.&nbsp; But I haven't done much with it. <br><br>If you don't want to do Linq, you could make a view object (in your UI layer) that could be created by passing it the list you do have.. and it could create the object hierarchy that you want.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Monday, October 15, 2007</h2><P>Not sure if I missed the point here entirely but...</P>
+<P>On my web screens I sometimes use nested repeaters to give the effect of grouping.</P>
+<P>This uses 2 collections. The first collection provides the Group ID and the 2nd is filtered by that ID to return only the rows for that group. This is repeated until the first collection is exhausted.</P>
+<P>Joe</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Curelom replied on Monday, October 15, 2007</h2>In WPF, you could use a CollectionView/CollectionViewSource.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>SonOfPirate replied on Monday, October 15, 2007</h2><P>Andy - Yea, we could build the heirarchy that way but that still doesn't help us group by date, for instance.&nbsp; And, in this case (although I could change it), the Customer field is strictly a text-field - so perhaps Customer was a bad example.</P>
+<P>Joe - Who's doing the filtering?&nbsp;And where does the GroupID come from?&nbsp; That's getting to where I am.&nbsp; </P>
+<P>If I can make a quick assumption from what you are describing, it sounds like you have a notion of groups coded or defined in your app.&nbsp; For our needs, the notion of a group is completely dynamic and user-defined at run-time.&nbsp; There is no "GroupID" per se.</P>
+<P>Curelom - I'm not proficient in WPF yet, so I'll have to take a closer look at those two classes and how they work.&nbsp; While I do not believe that they will do the trick because they are part of the UI framework and we need this behavior in our BO libraries to share across multiple platforms, presentation layers, etc, it does appear that I might be able to get some insight in how MS has structured this behavior by looking at these classes.&nbsp; To early to tell.</P>
+<P>Thx.</P>
+<P>&nbsp;</P>
+<P>&nbsp; </P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Curelom replied on Monday, October 15, 2007</h2>Perhaps with linq, you could use one linq query to gather the groups from the list, then use another linq query to grab all the items from each of the&nbsp;groups.&nbsp; So if you had 3 groups, you would run 4 queries, one for the groups, then one for each group.&nbsp; I don't know what performance would be like.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>SonOfPirate replied on Monday, October 15, 2007</h2><P>Perhaps someone can give me an example of the LINQ code used to accomplish this.&nbsp; I still am not seeing how this saves me anything and that may be the key to my understanding.</P>
+<P>Again, the goal is to provide a single, encapsulated business object/list that can be provided to another BO or UI developer to consume.&nbsp; I don't want them to have to know or handle the logic described in my initial post - for a couple of reasons.&nbsp; One, it slows development time.&nbsp; And, two, there's a ton of duplication when this structure exists all over our applications.</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Curelom replied on Monday, October 15, 2007</h2><P>With groupby in linq, it actuall gets you an IGrouping IEnumerable that you can use in a foreach to grab each of the groups.</P>
+<P>for example the following code groups by the length of the string</P>
+<P>string[] names = { "Albert", "Burke", "Connor", "David",<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; "Everett", "Frank", "George", "Harris"};<BR><BR>// group by length<BR>var groups = names.GroupBy(s =&gt; s.Length, s =&gt; s[0]);<BR>foreach (IGrouping&lt;int, char&gt; group in groups) {<BR>&nbsp;&nbsp;&nbsp; Console.WriteLine("Strings of length {0}", group.Key);<BR><BR>&nbsp;&nbsp;&nbsp; foreach (char value in group)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Console.WriteLine("&nbsp; {0}", value);<BR>}&nbsp; </P>
+<P>would produce the following output</P>Strings of length 6<BR>&nbsp; A<BR>&nbsp; C<BR>&nbsp; G<BR>&nbsp; H<BR>Strings of length 5<BR>&nbsp; B<BR>&nbsp; D<BR>&nbsp; F<BR>Strings of length 7<BR>&nbsp; E
+<P>More details at <A href="http://msdn2.microsoft.com/en-us/library/bb308959.aspx">http://msdn2.microsoft.com/en-us/library/bb308959.aspx</A></P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>SonOfPirate replied on Monday, October 15, 2007</h2><P>EXCELLENT!</P>
+<P>Now I see what you were getting at and that does address my lack of understanding.&nbsp; I will delve into the article more...</P>
+<P>Pardon my ignorance of LINQ (I'm reading as fast as I can!), but where does GroupBy come from and what type(s) does it apply to?&nbsp; Can it be used on any enumerable?</P>
+<P>&nbsp;</P>
+<P>So, does this mean the end of SortedList, FilteredList, etc???</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Tuesday, October 16, 2007</h2>Its an extension method declared in one of the Linq assemblies. I BELIEVE it does in fact extend IEnumberable&lt;T&gt;, so anything that implements that should be good to go.<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

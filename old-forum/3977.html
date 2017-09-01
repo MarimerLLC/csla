@@ -1,0 +1,129 @@
+<html><header><title>Enterprise Library Roles Base Security with CSLA</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Enterprise Library Roles Base Security with CSLA</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3977.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>bigface3 posted on Monday, December 03, 2007</h2><P>This is going to be a long post, and I really hope someone can help me out.</P>
+<P>I'm trying to use Enterprise Library roles based security with CSLA and Windows Authentication.&nbsp; I want to use a WindowsPrincipal identity object and check IsInRole() (which works perfectly on it's own), but I also want to read roles out of a database table and also check them using Enterprise Library.&nbsp; Each&nbsp;role in the database table&nbsp;are saved in such a way that they can be converted into a EntLib IAuthorizationRule and can then be evaluted as a BooleanExpression.&nbsp; In EnterpriseLibrary calling BooleanExpression.Evalute in turn calls IsInRole() on the IPrincipal object to check that users' groups.</P>
+<P>For Example say my WindowsIdentity is in the following Active Directory groups: ProjectAdmins, ProjectTransfer, and ProjectView groups.&nbsp; Simply calling Csla.ApplicationContext.User.IsInRole("ProjectAdmins") works perfectly fine for the CanGetObject, CanAdd, etc, and it also works fine for the authorization rules like AuthorizationRules.AllowRead("Name", "ProjectAdmins")...perfect.&nbsp; Now I want to introduce EnterpriseLibrary into the picture.&nbsp;&nbsp;Here&nbsp;I may have a role in my database table with a name of AllowTransfer that has the following expression: R:ProjectAdmins OR R:ProjectTransfer.&nbsp; The expression field is a BooleanExpression that can be evaluated against the WindowsIdentity which cheks to see if I am in the ProjectAdmins group or the ProjectTransfer Active Directory groups.</P>
+<P>I have implemented the following, and it works using a local dataportal but does not work using a remote WCF dataportal -- and I understand why, it's because my principal object is not attached to the WCF context since I tell CSLA that I am using Windows Authentication.&nbsp; If I tell CSLA to use for example anything else as the Authentication method I always get a "System.ServiceModel.FaultException`1[System.ServiceModel.ExceptionDetail]: Invalid token for impersonation - it cannot be duplicated.." error because I am keeping a instance of the WindowsIdentity in my principal object - I think that's why I get the error.&nbsp; The reason why it goes out to the dataportal is to get the roles from the Database table so it can also evaluate them.</P>
+<P>Here is my code (I have both my client and WCF service configured to use Windows security at this point so I have not posted my app.config or web.config):</P>
+<P><FONT size=2>I start with the following in my Main:</FONT></P>
+<P><FONT size=2>AppDomain.CurrentDomain.SetPrincipalPolicy(System.Security.Principal.PrincipalPolicy.WindowsPrincipal);<BR>MyLibrary.Security.CSLAPrincipal.Login(System.Threading.Thread.CurrentPrincipal);</FONT></P>
+<P><FONT size=2>then for instance I call:</FONT></P><FONT size=2>
+<P></FONT><FONT size=2><FONT color=#2b91af>Project</FONT>.GetProject(5);&nbsp; // 5 is the id number of the project I'm trying to retrieve</FONT></P>
+<P><FONT size=2>Here is my CSLAPrincipal object (CSLAPrincipal.cs):</FONT></P>
+<P><FONT size=2>using System;<BR>using System.Collections.Generic;<BR>using System.Text;<BR>using System.Security;<BR>using System.Security.Principal;<BR>using Microsoft.Practices.EnterpriseLibrary.Security;<BR>using Microsoft.Practices.EnterpriseLibrary.Security.Configuration;</FONT></P>
+<P><FONT size=2>namespace MyLibrary.Security<BR>{<BR>&nbsp;&nbsp;&nbsp; [Serializable]<BR>&nbsp;&nbsp;&nbsp; public class CSLAPrincipal : Csla.Security.BusinessPrincipalBase<BR>&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; private static IPrincipal _windowsIdentity;</FONT></P>
+<P><FONT size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; private CSLAPrincipal(IIdentity identity)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; : base(identity) { }</FONT></P>
+<P><FONT size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public static bool Login(IPrincipal principal)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _windowsIdentity = principal;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return SetPrincipal(principal);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</FONT></P>
+<P><FONT size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; private static bool SetPrincipal(IPrincipal principal)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (principal.Identity.IsAuthenticated)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; CSLAPrincipal cslaPrincipal = new CSLAPrincipal(principal.Identity);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Csla.ApplicationContext.User = cslaPrincipal;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return principal.Identity.IsAuthenticated;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</FONT></P>
+<P><FONT size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; private static bool Authorize(IPrincipal principal, string ruleName)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (principal == null) throw new ArgumentNullException("principal");<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (ruleName == null || ruleName.Length == 0) throw new ArgumentNullException("ruleName");</FONT></P>
+<P><FONT size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; IDictionary&lt;string, IAuthorizationRule&gt; rules = RuleCollection.ToDictionary();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; BooleanExpression booleanExpression = GetParsedExpression(ruleName, rules);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (booleanExpression == null)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return false;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; //throw new InvalidOperationException(String.Format("Authorization Rule {0} not found.", ruleName));<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</FONT></P>
+<P><FONT size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; bool result = booleanExpression.Evaluate(principal);</FONT></P>
+<P><FONT size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return result;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</FONT></P>
+<P><FONT size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; private static BooleanExpression GetParsedExpression(string ruleName, IDictionary&lt;string, IAuthorizationRule&gt; rules)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; IAuthorizationRule rule = null;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; rules.TryGetValue(ruleName, out rule);</FONT></P>
+<P><FONT size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (rule == null) return null;</FONT></P>
+<P><FONT size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Parser parser = new Parser();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return parser.Parse(rule.Expression);</FONT></P>
+<P><FONT size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</FONT></P>
+<P><FONT size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public override bool IsInRole(string role)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return _windowsIdentity.IsInRole(role) ||<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Authorize(_windowsIdentity, role);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<BR>&nbsp;&nbsp;&nbsp; }</FONT></P>
+<P><FONT size=2>&nbsp;&nbsp;&nbsp; public partial class RuleCollection<BR>&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public static IDictionary&lt;string, IAuthorizationRule&gt; ToDictionary()<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; IDictionary&lt;string, IAuthorizationRule&gt; rules = new Dictionary&lt;string, IAuthorizationRule&gt;();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; foreach (NameValuePair item in RuleCollection.GetRuleCollection())<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; AuthorizationRuleData rule = new AuthorizationRuleData(item.Key, item.Value);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; rules.Add(rule.Name, rule);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return rules;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<BR>&nbsp;&nbsp;&nbsp; }<BR>}</FONT></P>
+<P><FONT size=2>RuleCollection is a <FONT size=2>Csla.</FONT><FONT color=#2b91af size=2>NameValueListBase</FONT><FONT size=2>&lt;</FONT><FONT color=#0000ff size=2>string</FONT><FONT size=2>, </FONT><FONT color=#0000ff size=2>string</FONT><FONT size=2>&gt; defined in another class that basically gets all of the Roles from the database table.&nbsp; I add extra functionality to RuleCollection by means of the ToDictionary() method shown above within CSLAPrincipal.cs that converts the Name/Value pair list into a Dictionary of AuthorizationRules.</FONT></FONT></P>
+<P><FONT size=2><FONT size=2>So in my Project object when I call something like <FONT color=#0000ff size=2>if</FONT><FONT size=2> (Csla.</FONT><FONT color=#2b91af size=2>ApplicationContext</FONT><FONT size=2>.User.IsInRole(</FONT><FONT color=#a31515 size=2>"<FONT color=#000000 size=3>AllowTransfer</FONT>"</FONT><FONT size=2>)) CSLA calls my overridden IsInRole method which checks the groups of the windows principal and the roles from the name/value pair list which in turn really just convert to groups.&nbsp; Note when I call the Login method of CSLAPrincipal I keep a static _windowsIdentity of the current Windows Identity.</FONT></FONT></FONT></P>
+<P><FONT size=2><FONT size=2><FONT size=2></FONT></FONT></FONT>&nbsp;</P>
+<P><FONT size=2><FONT size=2><FONT size=2>Am I going about this all wrong?</P></FONT></FONT></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, December 04, 2007</h2><P>I'd suggest you not hold a reference to the windows principal. It is always available as an ambient value anyway (you can always directly get the current WindowsPrincipal object directly).</P>
+<P>If you code just uses the current WindowsPrincipal, it should always be right - at least if you set up your virtual root security correctly to require impersonation, and configure WCF to pass the Windows identity over the wire.</P>
+<P>Then you can tell CSLA to use custom authentication so it passes your custom principal too.</P>
+<P>The current principal will always be the custom principal, but the WindowsPrincipal will be the user's principal, and the two will work together on both sides of the wire.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>bigface3 replied on Tuesday, December 04, 2007</h2><P>Thanx Rocky!</P>
+<P>So I can always get the WindowPrincipal by doing something like this in my IsInRole() method? instead of holding a reference to it...</P><FONT color=#2b91af size=2>
+<P>IPrincipal</FONT><FONT size=2> principal = </FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> </FONT><FONT color=#2b91af size=2>WindowsPrincipal</FONT><FONT size=2>(</FONT><FONT color=#2b91af size=2>WindowsIdentity</FONT><FONT size=2>.GetCurrent());</P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, December 04, 2007</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>That is my understanding, yes. In fact I thought there was an
+easier way to get the WindowsPrincipal, but perhaps I&#8217;m mis-remembering.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> bigface3
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Tuesday, December 04, 2007 10:21 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] Enterprise Library Roles Base Security with
+CSLA<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Thanx Rocky!<o:p></o:p></p>
+
+<p>So I can always get the WindowPrincipal by doing something like this in my
+IsInRole() method? instead of holding a reference to it...<o:p></o:p></p>
+
+<p><span>IPrincipal</span><span> principal = <span>new</span> <span>WindowsPrincipal</span>(<span>WindowsIdentity</span>.GetCurrent());<o:p></o:p></span></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>bigface3 replied on Wednesday, December 05, 2007</h2><P>Thanx Rocky, this really helped!</P>
+<P>To summarize what I did to get this to work: I created a Identity object that basically just implements the items it needs to from IIdentity (AuthenticationType, IsAuthenticated, and Name) and also contains the methods that check the EntLibe authorization rules (moved these from the custom Principal object).&nbsp; In my Principal object I no longer keep a reference to the windows principal, instead in my IsInRole method I get the current windows user as I describes above, and I also get the current custom identity object from the principal, and check both the IsInRole of the windows principal and the EntLib authorization on the identity object.&nbsp; I also set the CslaAuthentication in the *.config files to be something other than Windows.&nbsp; My errors go away! and I can use my custom Principal on both a local dataportal and a remote dataportal.</P>
+<P>Oh while I'm thinking about it, I do have a question about the CslaAuthentication setting in the config file.&nbsp; Does it have to be set in the config file?&nbsp; Can't it be set in code?&nbsp; I tried briefly through code, and when I tried to build VS told me that the CslaAuthentication property was read-only.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, December 05, 2007</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Config settings really should be set in the config file.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>However, you can do a hack and set the value in
+System.Configuration.ConfigurationManager, because AppSettings is really just a
+dictionary and so is read-write.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I&#8217;m not sure that&#8217;s a great idea, but it does work.
+And really, the only reason I&#8217;m not sure it is a great idea is that you
+never know if Microsoft will someday decide to change that to a read-only
+dictionary or something.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

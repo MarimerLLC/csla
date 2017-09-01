@@ -1,0 +1,64 @@
+<html><header><title>Call BeginSave on a Root BusinessListBase</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Call BeginSave on a Root BusinessListBase</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11749.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Andrew posted on Thursday, December 13, 2012</h2><p>Hi,</p>
+<p>I just created a BusinessListBase object on monodevelop project which is not a child of any other BusinessBase.</p>
+<p>When I tried to call BeginSave on BusinessListBase&#39;s instance, an error said &quot; Element is an invalid node type&quot;.</p>
+<p>when I debug into Csla.ios, I found issue happened at BeginUpdate in LocalProxy in DataPortalClient.</p>
+<p>&nbsp;</p>
+<p>
+<p><span>public</span> <span>void</span> BeginUpdate(<span>object</span> obj, <span>object</span> userState)</p>
+<p>&nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; <span>var</span> handler = <span>new</span> CompletedHandler(OnUpdateCompleted);</p>
+<p>&nbsp; &nbsp; &nbsp; _userState = userState;</p>
+<p>&nbsp; &nbsp; &nbsp; <span>var</span> cloneable = obj <span>as</span> ICloneable;</p>
+<p>&nbsp; &nbsp; &nbsp; <span>if</span> (cloneable != <span>null</span>)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; obj = cloneable.Clone();</p>
+</p>
+<p>&nbsp;</p>
+<p>go deeper, &nbsp;it happened at CslaXmlBinaryReader in Mobile ,</p>
+<p><span>public</span> <span>class</span> CslaXmlBinaryReader : ICslaReader</p>
+<p><span>	</span>{</p>
+<p><span><span>		</span></span><span>/// &lt;</span>summary<span>&gt;</span></p>
+<p><span><span>		</span></span>/// Read the data from a stream and produce list of &lt;<span>see</span> <span>cref</span>=<span>&quot;SerializationInfo&quot;</span>/&gt; objects</p>
+<p><span><span>		</span></span>/// &lt;/<span>summary</span>&gt;</p>
+<p><span><span>		</span></span>/// &lt;<span>param</span> <span>name</span>=<span>&quot;serializationStream&quot;</span>&gt;Stream to read the data from&lt;/<span>param</span>&gt;</p>
+<p><span><span>		</span></span>/// &lt;<span>returns</span>&gt;List of SerializationInfo objects&lt;/<span>returns</span>&gt;</p>
+<p><span>		</span><span>public</span> List&lt;SerializationInfo&gt; Read(Stream serializationStream)</p>
+<p>&nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; List&lt;SerializationInfo&gt; returnValue = <span>null</span>;</p>
+<p>&nbsp; &nbsp; &nbsp; <span>try</span></p>
+<p>&nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; <span>using</span> (<span>var</span> xmlReader = XmlDictionaryReader.CreateBinaryReader(serializationStream, XmlDictionaryReaderQuotas.Max))</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>I have attached my classes as zip.</p>
+<p>&nbsp;</p>
+<p>Thanks in advance for any help.</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, December 14, 2012</h2><p>Before you spend much more time (any more time really) you should understand that CSLA .NET only runs in the iOS simulator, not in real iOS. This is because of legal limits from Apple on what monotouch can do in terms of handling some C# features. Sadly CSLA makes heavy use of interfaces that return a generic type, specifically in a way that Apple blocks on real iOS.</p>
+<p>So while CSLA .NET works great on iOS in the simulator, it won&#39;t work on real devices. Very sad...</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Andrew replied on Sunday, December 16, 2012</h2><p>Thank you&nbsp;very much&nbsp;for your replying.</p>
+<p>I had ever faced the Generic problem in using CSLA,&nbsp; which is as following.</p>
+<p><span style="font-family:Consolas;color:#008000;font-size:x-small;"><span style="font-family:Consolas;color:#008000;font-size:x-small;"><span style="font-family:Consolas;color:#008000;font-size:x-small;">
+<p>//public static readonly Csla.PropertyInfo&lt;T&gt; ValueProperty = RegisterProperty&lt;T&gt;(c =&gt; c.Value);</p>
+</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"><font face="Consolas" size="2"><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></font></span><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></span>
+<p>&nbsp;</p>
+<p><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">public</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> </span></span><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">static</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> </span></span><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">readonly</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> Csla.</span></span><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;">PropertyInfo</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">&lt;T&gt; ValueProperty = RegisterProperty&lt;T&gt;(</span></span><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">new</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> Csla.</span></span><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;">PropertyInfo</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">&lt;T&gt;(</span></span><span style="font-family:Consolas;color:#a31515;font-size:x-small;"><span style="font-family:Consolas;color:#a31515;font-size:x-small;"><span style="font-family:Consolas;color:#a31515;font-size:x-small;">&quot;Value&quot;</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">));
+<p>&nbsp;</p>
+<font face="Consolas" size="2"><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></font></span><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></span></p>
+<p>&nbsp;</p>
+<p>The commented out line did work on iOS simulator but not on real iOS device.&nbsp;I had to use the code under the commentted-out code instead which worked on both iOS simulator and iOS device.</p>
+</p>
+<p>but the issue I asked might be different, because the problem happened when I tried to run application on iOS Simulator as well.</p>
+<p>Currentlty, I tried to avoid this problem by call BeginSave of Business Base one by one&nbsp;instead of &nbsp;calling BeginSave on Business List Base.</p>
+<p>Kind regards,</p>
+<p>Andrew</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, December 17, 2012</h2><p>The exception you mention in your original post is a serialization exception.</p>
+<p>Because of the issues with generics in iOS we mostly stopped testing or enhancing the iOS codebase. It is very possible that some of the serialization code in MobileFormatter doesn&#39;t work for some reason. Or our custom XmlWriter. It is also possible (but I think less likely) that there is a bug with the monotouch DataContractSerializer implementation.</p>
+<p>It is possible to configure MobileFormatter to use the Microsoft (monotouch) XmlWriter and XmlReader types. They create much larger XML data streams, but might not have the same issue with iOS.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

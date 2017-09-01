@@ -1,0 +1,49 @@
+<html><header><title>IsExpandable property of a folder like ER object.</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>IsExpandable property of a folder like ER object.</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6478.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>markell posted on Sunday, February 22, 2009</h2>Dear sirs.<br>&nbsp;&nbsp;&nbsp; My folder like object has an <font face="Courier New">IsExpandable</font> property, which is data bound in WPF, so that when the property is true an expansion icon is drawn immediately before the folder's name (much like in windows explorer). <br>&nbsp;&nbsp;&nbsp; The folder's children are lazy loaded, the idea is that when the user expands the folder for the first time, its children are loaded, which may turn off the <font face="Courier New">IsExpandable</font> property, if there are no children at all.<br>&nbsp;&nbsp;&nbsp; The property is implemented like this:<br><font face="Courier New" size="2">public bool IsExpandable<br>{<br>&nbsp;&nbsp;&nbsp; get { return m_children == null || m_children.Count &gt; 0; }<br>}<br></font>and the children are obtained through the <font face="Courier New">Children</font> property:<br><font face="Courier New" size="2">[NonSerialized]<br>private FolderStubList m_children;<br>public FolderStubList Children<br>{<br>&nbsp;&nbsp;&nbsp; get<br>&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (m_children == null)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp; &nbsp; m_children = FolderStubList.GetFolderStubList(this);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // IsExpandable property might have changed - needs to check it.<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return m_children;<br>&nbsp;&nbsp;&nbsp; }<br>}</font><br>(where FolderStubList is ERLB)<br><br>My question is what is the best way to notify WPF that <font face="Courier New">IsExpandable</font> is changed? At first I thought to call <font face="Courier New">PropertyHasChanged("IsExpandable")</font> from within the <font face="Courier New">Children</font> property getter. But that marks the folder as dirty, which is wrong.<br>I can, of course, copy the contents of the <font face="Courier New">PropertyHasChanged</font> method omitting the call to <font face="Courier New">MarkDirty</font>, but I am wondering if there is a better way.<br><br>Thanks.<br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>markell replied on Sunday, February 22, 2009</h2>The way I solved it in my code is by changing the <font face="Courier New">PropertyHasChanged</font> method like this:<br><br><font face="Courier New">if (!IsCalculatedProperty(propertyName))<br>{<br>&nbsp; MarkDirty(true);<br>}<br></font><br>where <font face="Courier New">IsCalculatedProperty</font> is a new <font face="Courier New">protected virtual</font> method, returning false by default. My folder object overrides it and returns true for the <font face="Courier New">IsExpandable</font> property.<br><br>Any feedback?<br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Sunday, February 22, 2009</h2>If all you want to do is raise the PropertyChanged event, then use OnPropertyChanged(), not PropertyHasChanged().</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>markell replied on Sunday, March 01, 2009</h2>Thanks, Rocky, for the reply.<br><br>At first, that is exactly what I did, but then I had to copy almost all of the PropertyHasChanged method, because all it really does is mark the BO as dirty and then trigger the PropertyChanged event (taking WPF/WinForms into account).<br>I cannot be 100% percent sure that any UI written on top of my BO will be WPF. It might be WinForms as well, so I have to copy all that logic from the PropertyHasChanged method.<br>Is that what you would have done in my place?<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Sunday, March 01, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>The complexity in raising PropertyChanged for Windows Forms only
+comes into play because multiple properties might be indirectly affected by
+CheckRules(). If all you are doing is changing a single property and not
+invoking business rules that may affect other properties, then you should feel
+comfortable just raising PropertyChanged.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Yes, it might be slightly less efficient in a WinForms setting,
+but not enough to complicate your code so much.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Think about it this way. If you use LINQ to SQL, or the Entity
+Framework, or just about any other code-gen model out there, every property
+that changes will raise a PropertyChanged event. And each time that happens,
+WinForms will refresh all bindings. And people build software with that stuff
+all the time, regardless of the fact that it is inefficient.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Most of your CSLA code will be more efficient, because of my
+optimizations. But if you have one property here or there that acts &#8220;normally&#8221;
+that really isn&#8217;t going to harm you.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>markell replied on Sunday, March 01, 2009</h2>Thanks, Rocky.<br>I guess you are right. I will undo my changes and just trigger the PropertyChanged event. I guess this is not going to be the 20% of the code that takes up 80% of the time.<br><br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

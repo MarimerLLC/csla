@@ -1,0 +1,90 @@
+<html><header><title>Remoting, System.Reflection.TargetInvocationException </title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Remoting, System.Reflection.TargetInvocationException </h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3905.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>SimonW posted on Friday, November 16, 2007</h2><font face="Arial" size="2">I'm new to CSLA, and havebeen struggling with trying to set up Remoting. I've got a response from the server-side so am trying to get my BOs mobile. It looks like I have a serialization issue, but I'm really struggling to see how to move forward.<br><br>Could someone give me some pointers about what I should be looking for and to move forward on this. I'm on CSLA 3.01.<br><br>Thanks<br><br>Simon<br><br>Sorry about this but I'm going to have to paste in a stack trace. <br><br>
+Server stack trace: <br>
+&nbsp;&nbsp; at System.RuntimeMethodHandle._SerializationInvoke(Object target,
+SignatureStruct&amp; declaringTypeSig, SerializationInfo info,
+StreamingContext context)<br>
+&nbsp;&nbsp; at System.RuntimeMethodHandle.SerializationInvoke(Object target,
+SignatureStruct declaringTypeSig, SerializationInfo info,
+StreamingContext context)<br>
+&nbsp;&nbsp; at
+System.Reflection.RuntimeConstructorInfo.SerializationInvoke(Object
+target, SerializationInfo info, StreamingContext context)<br>
+&nbsp;&nbsp; at
+System.Runtime.Serialization.ObjectManager.CompleteISerializableObject(Object
+obj, SerializationInfo info, StreamingContext context)<br>
+&nbsp;&nbsp; at System.Runtime.Serialization.ObjectManager.FixupSpecialObject(ObjectHolder holder)<br>
+&nbsp;&nbsp; at System.Runtime.Serialization.ObjectManager.DoFixups()<br>
+&nbsp;&nbsp; at
+System.Runtime.Serialization.Formatters.Binary.ObjectReader.Deserialize(HeaderHandler
+handler, __BinaryParser serParser, Boolean fCheck, Boolean
+isCrossAppDomain, IMethodCallMessage methodCallMessage)<br>
+&nbsp;&nbsp; at
+System.Runtime.Serialization.Formatters.Binary.BinaryFormatter.Deserialize(Stream
+serializationStream, HeaderHandler handler, Boolean fCheck, Boolean
+isCrossAppDomain, IMethodCallMessage methodCallMessage)<br>
+&nbsp;&nbsp; at
+System.Runtime.Remoting.Channels.CoreChannel.DeserializeBinaryRequestMessage(String
+objectUri, Stream inputStream, Boolean bStrictBinding, TypeFilterLevel
+securityLevel)<br>
+&nbsp;&nbsp; at
+System.Runtime.Remoting.Channels.BinaryServerFormatterSink.ProcessMessage(IServerChannelSinkStack
+sinkStack, IMessage requestMsg, ITransportHeaders requestHeaders,
+Stream requestStream, IMessage&amp; responseMsg, ITransportHeaders&amp;
+responseHeaders, Stream&amp; responseStream)<br><br>
+Exception rethrown at [0]: <br>
+&nbsp;&nbsp; at System.Runtime.Remoting.Proxies.RealProxy.HandleReturnMessage(IMessage reqMsg, IMessage retMsg)<br>
+&nbsp;&nbsp; at System.Runtime.Remoting.Proxies.RealProxy.PrivateInvoke(MessageData&amp; msgData, Int32 type)<br>
+&nbsp;&nbsp; at Csla.Server.IDataPortalServer.Fetch(Type objectType, Object criteria, DataPortalContext context)<br>
+&nbsp;&nbsp; at Csla.DataPortalClient.RemotingProxy.Fetch(Type objectType, Object
+criteria, DataPortalContext context) in C:\Documents and Settings\Simon
+Woods\My Documents\Visual Studio
+2005\Projects\cslavb\cslavb\Csla\DataPortal\Client\RemotingProxy.vb:line
+113<br>
+&nbsp;&nbsp; at Csla.DataPortal.Fetch(Type objectType, Object criteria) in
+C:\Documents and Settings\Simon Woods\My Documents\Visual Studio
+2005\Projects\cslavb\cslavb\Csla\DataPortal\Client\DataPortal.vb:line
+197<br>
+&nbsp;&nbsp; at Csla.DataPortal.Fetch[T](Object criteria) in C:\Documents and
+Settings\Simon Woods\My Documents\Visual Studio
+2005\Projects\cslavb\cslavb\Csla\DataPortal\Client\DataPortal.vb:line
+148<br>
+&nbsp;&nbsp; at InfoFlex.Definitions.DefinitionBase`1.GetDefinition(String p_Key,
+Boolean p_Reload) in C:\Documents and Settings\Simon Woods\My
+Documents\Visual Studio
+2005\Projects\InfoFlex\InfoFlex.Definitions\DefinitionBase.vb:line 297<br>
+&nbsp;&nbsp; at InfoFlex.Definitions.DefinitionBase`1.GetDefinition(String p_Key)
+in C:\Documents and Settings\Simon Woods\My Documents\Visual Studio
+2005\Projects\InfoFlex\InfoFlex.Definitions\DefinitionBase.vb:line 283<br>
+&nbsp;&nbsp; at IfxTest.Form1.Button1_Click(Object sender, EventArgs e) in
+C:\Documents and Settings\Simon Woods\My Documents\Visual Studio
+2005\Projects\InfoFlex\IfxTest\Form1.vb:line 5<br>
+&nbsp;&nbsp; at System.Windows.Forms.Control.OnClick(EventArgs e)<br>
+&nbsp;&nbsp; at System.Windows.Forms.Button.OnClick(EventArgs e)<br>
+&nbsp;&nbsp; at System.Windows.Forms.Button.OnMouseUp(MouseEventArgs mevent)<br>
+&nbsp;&nbsp; at System.Windows.Forms.Control.WmMouseUp(Message&amp; m, MouseButtons button, Int32 clicks)<br>
+&nbsp;&nbsp; at System.Windows.Forms.Control.WndProc(Message&amp; m)<br>
+&nbsp;&nbsp; at System.Windows.Forms.ButtonBase.WndProc(Message&amp; m)<br>
+&nbsp;&nbsp; at System.Windows.Forms.Button.WndProc(Message&amp; m)<br>
+&nbsp;&nbsp; at System.Windows.Forms.Control.ControlNativeWindow.OnMessage(Message&amp; m)<br>
+&nbsp;&nbsp; at System.Windows.Forms.Control.ControlNativeWindow.WndProc(Message&amp; m)<br>
+&nbsp;&nbsp; at System.Windows.Forms.NativeWindow.DebuggableCallback(IntPtr hWnd, Int32 msg, IntPtr wparam, IntPtr lparam)<br>
+&nbsp;&nbsp; at System.Windows.Forms.UnsafeNativeMethods.DispatchMessageW(MSG&amp; msg)<br>
+&nbsp;&nbsp; at
+System.Windows.Forms.Application.ComponentManager.System.Windows.Forms.UnsafeNativeMethods.IMsoComponentManager.FPushMessageLoop(Int32
+dwComponentID, Int32 reason, Int32 pvLoopData)<br>
+&nbsp;&nbsp; at System.Windows.Forms.Application.ThreadContext.RunMessageLoopInner(Int32 reason, ApplicationContext context)<br>
+&nbsp;&nbsp; at System.Windows.Forms.Application.ThreadContext.RunMessageLoop(Int32 reason, ApplicationContext context)<br>
+&nbsp;&nbsp; at System.Windows.Forms.Application.Run(ApplicationContext context)<br>
+&nbsp;&nbsp; at Microsoft.VisualBasic.ApplicationServices.WindowsFormsApplicationBase.OnRun()<br>
+&nbsp;&nbsp; at Microsoft.VisualBasic.ApplicationServices.WindowsFormsApplicationBase.DoApplicationModel()<br>
+&nbsp;&nbsp; at Microsoft.VisualBasic.ApplicationServices.WindowsFormsApplicationBase.Run(String[] commandLine)<br>
+&nbsp;&nbsp; at IfxTest.My.MyApplication.Main(String[] Args) in 17d14f5c-a337-4978-8281-53493378c1071.vb:line 81<br>
+&nbsp;&nbsp; at System.AppDomain.nExecuteAssembly(Assembly assembly, String[] args)<br>
+&nbsp;&nbsp; at System.AppDomain.ExecuteAssembly(String assemblyFile, Evidence assemblySecurity, String[] args)<br>
+&nbsp;&nbsp; at Microsoft.VisualStudio.HostingProcess.HostProc.RunUsersAssembly()<br>
+&nbsp;&nbsp; at System.Threading.ThreadHelper.ThreadStart_Context(Object state)<br>
+&nbsp;&nbsp; at System.Threading.ExecutionContext.Run(ExecutionContext executionContext, ContextCallback callback, Object state)<br>
+&nbsp;&nbsp; at System.Threading.ThreadHelper.ThreadStart()</font></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>SimonW replied on Sunday, November 18, 2007</h2>Thanks but I've managed to sort this. I'm pretty new to the CSLA and was struggling to set everything up properly. I hadn't understood about authentication and my DB connection string wasn't correct. <br><br>I think one of the problems when you're new to this is that the error messages don't give any pointers to what the problem might be. Further, because my knowledge is pretty limited , it is difficult to know how to break the problem down.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Monday, November 19, 2007</h2><P>For newbies, I always recommend setting up everything to run locally at first.</P>
+<P>Once that works things like connection string errors won;t be an issue - since you will have fixed them already. Debug remoting issues becomes&nbsp;a search for a&nbsp;configuration problem, since your code works locally!</P>
+<P>Joe</P>
+<P>&nbsp;</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,75 @@
+<html><header><title>Detecting when CancelEdit() is being called.</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Detecting when CancelEdit() is being called.</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11697.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>rxelizondo posted on Monday, November 12, 2012</h2><p>&nbsp;</p>
+<p>Hello,</p>
+<p>I have a couple of objects where I override the OnPropertyChanged and OnChildChanged functions.&nbsp;</p>
+<p>All is good until I call the &ldquo;CancelEdit()&rdquo; fuction because &ldquo;CancelEdit()&rdquo; will eventually trigger a call to the OnPropertyChanged and OnChildChanged functions and I have code on the OnPropertyChanged and OnChildChanged function that I don&rsquo;t want to execute when a &nbsp;&ldquo;CancelEdit()&rdquo; is taking place.</p>
+<p>So ideally, I would want to be able to detect when the OnPropertyChanged and OnChildChanged functions are being called due to a call to the &ldquo;CancelEdit()&rdquo; method.</p>
+<p>My&nbsp;first&nbsp;thought was to override &ldquo;CancelEdit()&rdquo; to set up a flag that indicated the method was being called but it looks like &ldquo;CancelEdit()&rdquo; is not virtual.</p>
+<p>I understand that there may be better ways to solve the problem I am experiencing but this is my first stab at trying to fix it.</p>
+<p>Any help is appreciated.</p>
+<p>Thanks.</p>
+<div></div>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Monday, November 12, 2012</h2><p>Look at the code in UndoableBase.cs:</p>
+<p>&nbsp;&nbsp;&nbsp; <span style="color:#008000;"><span style="color:#808080;">///</span>&nbsp;<span style="color:#808080;">&lt;<span style="font-weight:bold;">summary</span>&gt;</span></span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#008000;"><span style="color:#808080;">///</span>&nbsp;This method is invoked after the UndoChanges</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#008000;"><span style="color:#808080;">///</span>&nbsp;operation is complete.</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#008000;"><span style="color:#808080;">///</span>&nbsp;<span style="color:#808080;">&lt;<span style="font-weight:bold;">/</span><span style="font-weight:bold;">summary</span>&gt;</span></span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;[<span style="color:#191970;font-weight:bold;">EditorBrowsable</span>(EditorBrowsableState.Advanced)]<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#0000ff;font-weight:bold;">protected</span>&nbsp;<span style="color:#a52a2a;">virtual</span>&nbsp;<span style="color:#ff0000;">void</span>&nbsp;<span style="color:#191970;font-weight:bold;">UndoChangesComplete</span>()<br />
+&nbsp;&nbsp;&nbsp;&nbsp;{<br />
+&nbsp;&nbsp;&nbsp;&nbsp;}<br />
+<br />
+&nbsp;&nbsp;&nbsp; <span style="color:#008000;"><span style="color:#808080;">///</span>&nbsp;<span style="color:#808080;">&lt;<span style="font-weight:bold;">summary</span>&gt;</span></span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#008000;"><span style="color:#808080;">///</span>&nbsp;This method is invoked before the UndoChanges</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#008000;"><span style="color:#808080;">///</span>&nbsp;operation begins.</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#008000;"><span style="color:#808080;">///</span>&nbsp;<span style="color:#808080;">&lt;<span style="font-weight:bold;">/</span><span style="font-weight:bold;">summary</span>&gt;</span></span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;[<span style="color:#191970;font-weight:bold;">EditorBrowsable</span>(EditorBrowsableState.Advanced)]<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#0000ff;font-weight:bold;">protected</span>&nbsp;<span style="color:#a52a2a;">virtual</span>&nbsp;<span style="color:#ff0000;">void</span>&nbsp;<span style="color:#191970;font-weight:bold;">UndoingChanges</span>()<br />
+&nbsp;&nbsp;&nbsp;&nbsp;{<br />
+&nbsp;&nbsp;&nbsp;&nbsp;}<br />
+<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#008000;"><span style="color:#808080;">///</span>&nbsp;<span style="color:#808080;">&lt;<span style="font-weight:bold;">summary</span>&gt;</span></span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#008000;"><span style="color:#808080;">///</span>&nbsp;Restores the object&#39;s state to the most recently</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#008000;"><span style="color:#808080;">///</span>&nbsp;copied values from the state stack.</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#008000;"><span style="color:#808080;">///</span>&nbsp;<span style="color:#808080;">&lt;<span style="font-weight:bold;">/</span><span style="font-weight:bold;">summary</span>&gt;</span></span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#008000;"><span style="color:#808080;">///</span>&nbsp;<span style="color:#808080;">&lt;<span style="font-weight:bold;">remarks</span>&gt;</span></span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#008000;"><span style="color:#808080;">///</span>&nbsp;Restores the state of the object to its</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#008000;"><span style="color:#808080;">///</span>&nbsp;previous value by taking the data out of</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#008000;"><span style="color:#808080;">///</span>&nbsp;the stack and restoring it into the fields</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#008000;"><span style="color:#808080;">///</span>&nbsp;of the object.</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#008000;"><span style="color:#808080;">///</span>&nbsp;<span style="color:#808080;">&lt;<span style="font-weight:bold;">/</span><span style="font-weight:bold;">remarks</span>&gt;</span></span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;[<span style="color:#191970;font-weight:bold;">EditorBrowsable</span>(EditorBrowsableState.Never)]<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#0000ff;font-weight:bold;">protected</span>&nbsp;<span style="color:#0000ff;font-weight:bold;">internal</span>&nbsp;<span style="color:#ff0000;">void</span>&nbsp;<span style="color:#191970;font-weight:bold;">UndoChanges</span>(<span style="color:#ff0000;font-weight:bold;">int</span>&nbsp;parentEditLevel)<br />
+&nbsp;&nbsp;&nbsp;&nbsp;{<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#191970;font-weight:bold;">UndoingChanges</span>();</p>
+<p>&nbsp; &nbsp;&nbsp;&nbsp; <span style="color:#008000;"><span style="color:#808080;">///</span> Undo code goes here</span><br /><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#191970;font-weight:bold;">UndoChangesComplete</span>();<br />
+&nbsp;&nbsp;&nbsp;&nbsp;}</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rxelizondo replied on Thursday, November 15, 2012</h2><p>&nbsp;</p>
+<p class="MsoNormal">Jonny,</p>
+<p class="MsoNormal">Sorry for my late response, I got caught up with some other stuff
+and was unable to follow up on your response until just some time ago.</p>
+<p class="MsoNormal">I tried your suggestion and it worked great (thank you very
+much), nevertheless, something does not feel right with what I am doing.</p>
+<p class="MsoNormal">The reason I say this is
+because is my understanding that the&nbsp;
+CSLA preferred method of having a parent object listen to changes on its child
+objects is through overriding its &ldquo;OnChildChanged&rdquo; function. But unless I am
+the exception to the rule, many times is necessary to skip some
+of the code residing under the &ldquo;OnChildChanged&rdquo; function when a cancel edit is
+in progress (This may be to avoid side&nbsp;effects&nbsp;or for&nbsp;performance&nbsp;reasons).&nbsp;</p>
+<p class="MsoNormal">Having said that, I would
+have expected that the CSLA would have included some sort of built in flag indicating
+if a cancel edit is in progress so that people could use that flag inside their &ldquo;OnChildChanged&rdquo; functions to make determinations on&nbsp;whether&nbsp;to exclude running certain code or not.</p>
+<p class="MsoNormal">Does this make sense? Does it make&nbsp;sense&nbsp;for the CSLA to have such built in flag?</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Friday, November 16, 2012</h2><p>Hi, </p>
+<p>If you have your own intermediate base classes it&#39;s easily extendable. <br />It&#39;s really up to Rocky to make the decision on whether or not to add and make available flags like:</p>
+<ul>
+<li>IsCancelEdit</li>
+<li>IsApplyEdit</li>
+<li>IsBindingEdit&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp; &nbsp; (is this in context of DataBinding have called IEditableObject.BeginEdit) <br />(Actually - there is a protected BindingEdit flag in BusinessBase - marked with [EditorBrowsable(EditorBrowsableState.Never)])
+</li>
+</ul>
+<p>My &quot;fear&quot; is that there will be a LOT of these flags.</p>
+<p>It&#39;s one thing for the &quot;parent&quot; object - but what if the OnChildChanged is called because the child object is performing&nbsp; a &quot;CancelEdit&quot;.<br />You are probable aware that DataBinding will also call the methods frequently (at least in Windows Forms) for each edit of a field&nbsp; (either ApplyEdit/EndEdit).</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rxelizondo replied on Friday, November 16, 2012</h2><p>Thanks Jonny,</p>
+<p>The&nbsp;truth&nbsp;is that the reason why we needed to have a way to detect when a cancel edit was in progress was due to some special&nbsp;circumstances, and after looking further into the matter we are pretty sure there are probably better ways to handle our&nbsp;scenario&nbsp;so that we don&#39;t have to rely on such flag.</p>
+<p>As of now, you solution helps us move on and give us some extra time to think things through a little better.</p>
+<p>Thanks a lot!</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

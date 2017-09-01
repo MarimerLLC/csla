@@ -1,0 +1,161 @@
+<html><header><title>Any reason why IEditableCollectionView isn't implimented?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Any reason why IEditableCollectionView isn't implimented?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9969.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>rfcdejong posted on Friday, January 21, 2011</h2><p>The infragistics datagrid worked in 3.8 using the BLB and all the time i wanted the BLB to derive from ObservableCollection. I&#39;m happy that 4.0 that has been done by default and for legacy the BBLB is available.</p>
+<p>It seems that the BLB is not implimenting the IEditableCollectionView so that binding must be done against a CollectionViewSource.GetDefaultView() resulting into using a ListCollectionView.<br /><br />At the moment our framework causes directly binding against an&nbsp;abstractionlayer of&nbsp;a&nbsp;BO containing BLB properties etc. Not using a datasource or view objects.<br /><br />Is there a reason why the IEditableCollectionView interface isn&#39;t implimented?</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Monday, January 24, 2011</h2><p>I looked at this interface, and I&#39;m pretty sure I&#39;ve said this in a previous thread.</p>
+<p>It is&nbsp;a view interface, not a model interface. Years ago I made the mistake of putting view-level concerns too deeply into the collection base class, and that was a bad mistake - one I had to fix in CSLA 2.0 with SortedBindingList, etc.</p>
+<p>iirc, IEditableCollectionView supports things like paging, which can&#39;t be supported at the BLB level.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Tuesday, January 25, 2011</h2><p>No. It has nothing to do with paging. <a href="http://msdn.microsoft.com/en-us/library/system.componentmodel.ieditablecollectionview.aspx">http://msdn.microsoft.com/en-us/library/system.componentmodel.ieditablecollectionview.aspx</a></p>
+<p>&quot;Defines methods and properties that a <span><a href="http://msdn.microsoft.com/en-us/library/system.windows.data.collectionview.aspx">CollectionView</a></span>
+ implements to provide editing capabilities to a collection.&quot;</p>
+<p><b><i>Properties: </i></b><br /><i>CanAddNew <br />CanCancelEdit <br />CanRemove <br />CurrentAddItem <br />CurrentEditItem <br />IsAddingNew <br />IsEditingItem <br />NewItemPlaceholderPosition <br /><b><br />Methods: </b><br />AddNew <br />CancelEdit <br />CancelNew <br />CommitEdit <br />CommitNew <br />EditItem <br />Remove <br />RemoveAt </i></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, January 25, 2011</h2><p>Ahh, so a different interface.</p>
+<p>I still wonder if it should be implemented directly in the model. It is clearly a &quot;view&quot; interface, and past experience implementing &quot;view&quot; oriented interfaces in the model (CSLA) has not proven to be a good choice.</p>
+<p>Microsoft clearly expects that we&#39;ll be using CVS objects in the view to mediate interaction with the model, and I surely don&#39;t want to fight with Microsoft. I tried that with Windows Forms for years and ultimately it caused nothing but pain...</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Tuesday, January 25, 2011</h2><p>I&#39;m wondering if this could be implemented in a wrapper class -&nbsp; much like SortedBindingList and FilteredBindingList. </p>
+<p>I believe it could be &quot;cluttering up the code&quot; to implement this directly in the model. </p>
+<p>If anyone is up for a try on this you may publish the code at CslaContrib!!</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, January 25, 2011</h2><p>It is implemented in a wrapper class called CollectionViewSource :)</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Tuesday, January 25, 2011</h2><p>No, CollectionViewSource does NOT implement IEditableCollectionView</p>
+<table style="margin-bottom:0px;" cellpadding="0" cellspacing="0" width="100%">
+<tbody>
+<tr>
+<td style="padding:4px 5px;" colspan="2" valign="top">
+<pre><span style="color:#1000a0;">Public</span> <span style="color:#1000a0;">Class</span> <b><a class="bold" href="http://www.aisto.com/roeder/dotnet/Default.aspx?Target=code://PresentationFramework:4.0.0.0:31bf3856ad364e35/System.Windows.Data.CollectionViewSource">CollectionViewSource</a></b><br />  <span style="color:#1000a0;">Inherits</span> <a title="System.Windows.DependencyObject" href="http://www.aisto.com/roeder/dotnet/Default.aspx?Target=code://WindowsBase:4.0.0.0:31bf3856ad364e35/System.Windows.DependencyObject">DependencyObject</a><br />  <span style="color:#1000a0;">Implements</span> <a title="System.ComponentModel.ISupportInitialize" href="http://www.aisto.com/roeder/dotnet/Default.aspx?Target=code://System:4.0.0.0:b77a5c561934e089/System.ComponentModel.ISupportInitialize">ISupportInitialize</a>, <a title="System.Windows.IWeakEventListener" href="http://www.aisto.com/roeder/dotnet/Default.aspx?Target=code://WindowsBase:4.0.0.0:31bf3856ad364e35/System.Windows.IWeakEventListener">IWeakEventListener</a><br /></pre>
+</td>
+</tr>
+</tbody>
+</table></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, January 25, 2011</h2><p>So now I&#39;m puzzled as to the purpose of this interface?</p>
+<p>Normally the datagrid controls appear to work just fine through a CVS to a BLB (ObservableCollection) right?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rfcdejong replied on Wednesday, April 06, 2011</h2><p>Sorry for answering 3 months later..</p>
+<p>But i&nbsp;had other work @ work then upgrading to CSLA 4.x <br />I&#39;m back into this issue&nbsp;&nbsp;<br /><br />It&#39;s not the datagrid i&#39;m talking about, it&#39;s the Infragistics grid.<br />Infragistics &quot;AddNew&quot; functionality expect a IBindingList or a Viewer<br /><a href="http://blogs.infragistics.com/forums/p/41946/232427.aspx">http://blogs.infragistics.com/forums/p/41946/232427.aspx</a></p>
+<p>In csla.xaml i would expect the &quot;ViewModel&quot; to impliment this, at least..</p>
+<p>I&#39;m going to build it into our own framework<br /><br />PS: I don&#39;t know why i mentioned the interface in my first post..</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, April 06, 2011</h2><p>Thank you for getting back with your thoughts.</p>
+<p>This is in line with my thinking too - that the interface is a view or viewmodel concern, not something that BLB should implement (for example).</p>
+<p>It is possible that a future Csla.Xaml will have more detailed viewmodel types - such as one for a single object vs one for an editable collection.</p>
+<p>I suspect that&#39;ll be more of a 4.3 thing, because 4.2 is almost entirely focused on mono/monotouch/monodroid support.</p>
+<p>I expect 4.3 to be all about Silverlight 5, and therefore XAML-related functionality.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rfcdejong replied on Thursday, April 07, 2011</h2><p>No problem, there is just alot of work to do..&nbsp;<br />I was almost about to derive from the old version of BLB, the BBLB</p>
+<p>After switching to the latest infragistics controls (.NET 4.0 WPF 2010 volume 3) i still&nbsp;didn&#39;t manage to get it working.<br /><br />There is an issue in .NET with empty collections and somehow the CanAddNew is always false&nbsp;when the constructor is internal.<br />I tried to use reflection to tell the collection the constructor&nbsp;to use but still it didn&#39;t work.<br /><br />Finally i got it working by just <strong>making the constructor public</strong>.. and ofcourse wrap the BusinessList in a CollectionView (by using GetDefaultView())<br /><br />Here is my code, a bit hacky assuming a IEditableCollection is always a BusinessListBase&lt;,&gt;</p>
+<pre style="font-family:Consolas;background:white;color:black;font-size:13px;"><span style="text-decoration:line-through;"><span style="color:blue;">#if</span>&nbsp;!SILVERLIGHT&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">if</span>&nbsp;(model&nbsp;<span style="color:blue;">is</span>&nbsp;<span style="color:#2b91af;">IObservableBindingList</span>&nbsp;&amp;&amp;&nbsp;model&nbsp;<span style="color:blue;">is</span>&nbsp;<span style="color:#2b91af;">IEditableCollection</span>)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_collectionView&nbsp;=&nbsp;<span style="color:#2b91af;">CollectionViewSource</span>.GetDefaultView(model);
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">var</span>&nbsp;args&nbsp;=&nbsp;model.GetType().BaseType.GetGenericArguments();
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">var</span>&nbsp;type&nbsp;=&nbsp;args[1];
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#2b91af;">ConstructorInfo</span>&nbsp;ci&nbsp;=&nbsp;type.GetConstructor(
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#2b91af;">BindingFlags</span>.Instance&nbsp;|&nbsp;<span style="color:#2b91af;">BindingFlags</span>.Public&nbsp;|&nbsp;<span style="color:#2b91af;">BindingFlags</span>.NonPublic,
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">null</span>,&nbsp;<span style="color:#2b91af;">Type</span>.EmptyTypes,&nbsp;<span style="color:blue;">null</span>);
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#2b91af;">FieldInfo</span>&nbsp;field&nbsp;=&nbsp;_collectionView.GetType().GetField(<span style="color:#a31515;">&quot;_itemConstructor&quot;</span>,&nbsp;<span style="color:#2b91af;">BindingFlags</span>.Instance&nbsp;|&nbsp;<span style="color:#2b91af;">BindingFlags</span>.NonPublic);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;field.SetValue(_collectionView,&nbsp;ci);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">return</span>&nbsp;_collectionView;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+<span style="color:blue;">#endif</span></span></pre></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rfcdejong replied on Thursday, April 07, 2011</h2><p>Ok &quot;The final solution&quot;, <strong>without the need to make the constructors public</strong>.. after looking at the .NET source code for the ListCollectionView.cs<br />Again using reflection... there is another private boolean in the .NET code screwing around.. just need to set it true so it doesn&#39;t mess all up.</p>
+<pre style="font-family:Consolas;background:white;color:black;font-size:13px;"><span style="text-decoration:line-through;"><span style="color:blue;">#if</span>&nbsp;!SILVERLIGHT&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">if</span>&nbsp;(model&nbsp;<span style="color:blue;">is</span>&nbsp;<span style="color:#2b91af;">IObservableBindingList</span>&nbsp;&amp;&amp;&nbsp;model&nbsp;<span style="color:blue;">is</span>&nbsp;<span style="color:#2b91af;">IEditableCollection</span>)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_collectionView&nbsp;=&nbsp;<span style="color:#2b91af;">CollectionViewSource</span>.GetDefaultView(model);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">if</span>&nbsp;(_collectionView&nbsp;<span style="color:blue;">is</span>&nbsp;<span style="color:#2b91af;">ListCollectionView</span>)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">var</span>&nbsp;args&nbsp;=&nbsp;model.GetType().BaseType.GetGenericArguments();
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">var</span>&nbsp;type&nbsp;=&nbsp;args[1];
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#2b91af;">ConstructorInfo</span>&nbsp;ci&nbsp;=&nbsp;type.GetConstructor(
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#2b91af;">BindingFlags</span>.Instance&nbsp;|&nbsp;<span style="color:#2b91af;">BindingFlags</span>.Public&nbsp;|&nbsp;<span style="color:#2b91af;">BindingFlags</span>.NonPublic,
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">null</span>,&nbsp;<span style="color:#2b91af;">Type</span>.EmptyTypes,&nbsp;<span style="color:blue;">null</span>);
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">var</span>&nbsp;itemConstructor&nbsp;=&nbsp;_collectionView.GetType().GetField(<span style="color:#a31515;">&quot;_itemConstructor&quot;</span>,&nbsp;<span style="color:#2b91af;">BindingFlags</span>.Instance&nbsp;|&nbsp;<span style="color:#2b91af;">BindingFlags</span>.NonPublic);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;itemConstructor.SetValue(_collectionView,&nbsp;ci);
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">var</span>&nbsp;isItemConstructorValid&nbsp;=&nbsp;_collectionView.GetType().GetField(<span style="color:#a31515;">&quot;_isItemConstructorValid&quot;</span>,&nbsp;<span style="color:#2b91af;">BindingFlags</span>.Instance&nbsp;|&nbsp;<span style="color:#2b91af;">BindingFlags</span>.NonPublic);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;isItemConstructorValid.SetValue(_collectionView,&nbsp;<span style="color:blue;">true</span>);
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">return</span>&nbsp;_collectionView;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</span>
+<span style="color:blue;">#endif</span></pre></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rfcdejong replied on Monday, April 18, 2011</h2><p>Because&nbsp;i totally forgot about the AddNewCore calling the static factory methods to create an item, the post above are bugged.<br />And Microsoft didn&#39;t expose any virtual methods in the ListCollectionView so&nbsp;i don&#39;t see a very elegant way to override methods.</p>
+<p>Reintroducing them and re-implimenting the interfaces is the work around i implimented in our frontend framework.</p>
+<pre style="FONT-FAMILY:Consolas;BACKGROUND:white;COLOR:black;FONT-SIZE:13px;"><span style="COLOR:blue;">if</span>&nbsp;(model&nbsp;<span style="COLOR:blue;">is</span>&nbsp;<span style="COLOR:#2b91af;">IObservableBindingList</span>&nbsp;&amp;&amp;&nbsp;model&nbsp;<span style="COLOR:blue;">is</span>&nbsp;<span style="COLOR:#2b91af;">IEditableCollection</span>)
+{
+    _collectionView&nbsp;=&nbsp;<span style="COLOR:blue;">new</span>&nbsp;<span style="COLOR:#2b91af;">MyListCollectionView</span>(model&nbsp;<span style="COLOR:blue;">as</span>&nbsp;<span style="COLOR:#2b91af;">IList</span>);
+<span style="COLOR:blue;">    return</span>&nbsp;_collectionView;
+}</pre>
+<p>&nbsp;and the CollectionView</p>
+<pre style="font-family:Consolas;background:white;color:black;font-size:13px;"><span style="color:blue;"><pre style="font-family:Consolas;background:white;color:black;font-size:13px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">private</span>&nbsp;<span style="color:#2b91af;">IList</span>&nbsp;SourceList
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">get</span>&nbsp;{&nbsp;<span style="color:blue;">return</span>&nbsp;SourceCollection&nbsp;<span style="color:blue;">as</span>&nbsp;<span style="color:#2b91af;">IList</span>;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">new</span>&nbsp;<span style="color:blue;">bool</span>&nbsp;CanRemove
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">get</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#2b91af;">Type</span>&nbsp;itemType&nbsp;=&nbsp;Csla.<span style="color:#2b91af;">Utilities</span>.GetChildItemType(<span style="color:blue;">this</span>.SourceCollection.GetType());
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">if</span>&nbsp;(itemType&nbsp;==&nbsp;<span style="color:blue;">null</span>)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">return</span>&nbsp;<span style="color:blue;">false</span>;
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#2b91af;">IBusinessListBase</span>&nbsp;businessListBase&nbsp;=&nbsp;(<span style="color:blue;">this</span>.SourceCollection&nbsp;<span style="color:blue;">as</span>&nbsp;<span style="color:#2b91af;">IBusinessListBase</span>);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">return</span>&nbsp;Csla.Rules.<span style="color:#2b91af;">BusinessRules</span>.HasPermission(Csla.Rules.<span style="color:#2b91af;">AuthorizationActions</span>.DeleteObject,&nbsp;itemType)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&amp;&amp;&nbsp;SourceList.Count&nbsp;&gt;&nbsp;0&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&amp;&amp;&nbsp;!businessListBase.IsBusy;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">new</span>&nbsp;<span style="color:blue;">bool</span>&nbsp;CanAddNew
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">get</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#2b91af;">Type</span>&nbsp;itemType&nbsp;=&nbsp;Csla.<span style="color:#2b91af;">Utilities</span>.GetChildItemType(<span style="color:blue;">this</span>.SourceCollection.GetType());
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">if</span>&nbsp;(itemType&nbsp;==&nbsp;<span style="color:blue;">null</span>)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">return</span>&nbsp;<span style="color:blue;">false</span>;
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#2b91af;">IBusinessListBase</span>&nbsp;businessListBase&nbsp;=&nbsp;(<span style="color:blue;">this</span>.SourceCollection&nbsp;<span style="color:blue;">as</span>&nbsp;<span style="color:#2b91af;">IBusinessListBase</span>);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">return</span>&nbsp;Csla.Rules.<span style="color:#2b91af;">BusinessRules</span>.HasPermission(Csla.Rules.<span style="color:#2b91af;">AuthorizationActions</span>.CreateObject,&nbsp;itemType)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&amp;&amp;&nbsp;businessListBase.AllowNew
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&amp;&amp;&nbsp;!businessListBase.IsBusy;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">new</span>&nbsp;<span style="color:blue;">object</span>&nbsp;AddNew()
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">var</span>&nbsp;verifyRefreshNotDeferredMethod&nbsp;=&nbsp;<span style="color:blue;">this</span>.GetType().GetMethod(<span style="color:#a31515;">&quot;VerifyRefreshNotDeferred&quot;</span>,&nbsp;<span style="color:#2b91af;">BindingFlags</span>.NonPublic&nbsp;|&nbsp;<span style="color:#2b91af;">BindingFlags</span>.Instance&nbsp;|&nbsp;<span style="color:#2b91af;">BindingFlags</span>.InvokeMethod);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;verifyRefreshNotDeferredMethod.Invoke(<span style="color:blue;">this</span>,&nbsp;<span style="color:blue;">null</span>);
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">if</span>&nbsp;(IsEditingItem)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CommitEdit();&nbsp;&nbsp;&nbsp;<span style="color:green;">//&nbsp;implicitly&nbsp;close&nbsp;a&nbsp;previous&nbsp;EditItem&nbsp;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CommitNew();&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:green;">//&nbsp;implicitly&nbsp;close&nbsp;a&nbsp;previous&nbsp;AddNew&nbsp;</span>
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">if</span>&nbsp;(!CanAddNew)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">throw</span>&nbsp;<span style="color:blue;">new</span>&nbsp;<span style="color:#2b91af;">InvalidOperationException</span>(<span style="color:#a31515;">&quot;AddNew&nbsp;is&nbsp;not&nbsp;allowed&quot;</span>);
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">var</span>&nbsp;_newItemIndexProp&nbsp;=&nbsp;<span style="color:blue;">this</span>.GetType().BaseType.GetField(<span style="color:#a31515;">&quot;_newItemIndex&quot;</span>,&nbsp;<span style="color:#2b91af;">BindingFlags</span>.NonPublic&nbsp;|&nbsp;<span style="color:#2b91af;">BindingFlags</span>.Instance);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_newItemIndexProp.SetValue(<span style="color:blue;">this</span>,&nbsp;-2);&nbsp;&nbsp;<span style="color:green;">//&nbsp;this&nbsp;is&nbsp;a&nbsp;signal&nbsp;that&nbsp;the&nbsp;next&nbsp;Add&nbsp;event&nbsp;comes&nbsp;from&nbsp;AddNew&nbsp;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">var</span>&nbsp;newItem&nbsp;=&nbsp;(<span style="color:blue;">this</span>.SourceCollection&nbsp;<span style="color:blue;">as</span>&nbsp;<span style="color:#2b91af;">IObservableBindingList</span>).AddNew();
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">int</span>&nbsp;index&nbsp;=&nbsp;(<span style="color:blue;">this</span>.SourceCollection&nbsp;<span style="color:blue;">as</span>&nbsp;<span style="color:#2b91af;">IList</span>).IndexOf(newItem);
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:green;">//&nbsp;if&nbsp;the&nbsp;source&nbsp;doesn&#39;t&nbsp;raise&nbsp;collection&nbsp;change&nbsp;events,&nbsp;fake&nbsp;one&nbsp;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">if</span>&nbsp;(!(<span style="color:blue;">this</span>.SourceCollection&nbsp;<span style="color:blue;">is</span>&nbsp;<span style="color:#2b91af;">INotifyCollectionChanged</span>))
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:green;">//&nbsp;the&nbsp;index&nbsp;returned&nbsp;by&nbsp;IList.Add&nbsp;isn&#39;t&nbsp;always&nbsp;reliable</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">if</span>&nbsp;(!<span style="color:#2b91af;">Object</span>.Equals(newItem,&nbsp;SourceList[index]))
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;index&nbsp;=&nbsp;SourceList.IndexOf(newItem);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">var</span>&nbsp;beginAddNewMethod&nbsp;=&nbsp;<span style="color:blue;">this</span>.GetType().GetMethod(<span style="color:#a31515;">&quot;BeginAddNew&quot;</span>,&nbsp;<span style="color:#2b91af;">BindingFlags</span>.NonPublic&nbsp;|&nbsp;<span style="color:#2b91af;">BindingFlags</span>.Instance&nbsp;|&nbsp;<span style="color:#2b91af;">BindingFlags</span>.InvokeMethod);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;beginAddNewMethod.Invoke(<span style="color:blue;">this</span>,&nbsp;<span style="color:blue;">new</span>&nbsp;<span style="color:blue;">object</span>[]&nbsp;{newItem,&nbsp;index}&nbsp;);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;MoveCurrentTo(newItem);
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#2b91af;">ISupportInitialize</span>&nbsp;isi&nbsp;=&nbsp;newItem&nbsp;<span style="color:blue;">as</span>&nbsp;<span style="color:#2b91af;">ISupportInitialize</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">if</span>&nbsp;(isi&nbsp;!=&nbsp;<span style="color:blue;">null</span>)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;isi.BeginInit();
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#2b91af;">IEditableObject</span>&nbsp;ieo&nbsp;=&nbsp;newItem&nbsp;<span style="color:blue;">as</span>&nbsp;<span style="color:#2b91af;">IEditableObject</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">if</span>&nbsp;(ieo&nbsp;!=&nbsp;<span style="color:blue;">null</span>)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ieo.BeginEdit();
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">return</span>&nbsp;newItem;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</pre>
+</span></pre></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

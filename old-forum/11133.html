@@ -1,0 +1,10 @@
+<html><header><title>Xaml.PropertyInfo</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Xaml.PropertyInfo</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11133.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>st3fanus posted on Monday, February 06, 2012</h2><p>Hi all,</p>
+<p>&nbsp;</p>
+<p>Are there any more examples about Xaml.PropertyInfo Non visual Control</p>
+<p>I have read on ebook about this control, But I have no idea how to get started with this control</p>
+<p>I use WPF , CSLA4.2, and MVVM pattern ( MVVMLight Toolkit ), So I want to tried a rich display for errors use this control</p>
+<p>&nbsp;</p>
+<p>Thanks a lot</p>
+<p>&nbsp;</p>
+<p>stefanus</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Monday, February 06, 2012</h2><p>Although it is relatively complex, most of the WPF/SL samples now use&nbsp;a style (defined in App.xaml) for the TextBox control that relies on the PropertyInfo control to do its work. The style gets its information from PropertyInfo and uses that information to control the appearance of the TextBox control.</p>
+<p>The WpUI project in ProjectTracker uses it as well, because the whole point of creating PropertyInfo was to support Windows Phone. It just happens to be really useful for WPF/SL projects too.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

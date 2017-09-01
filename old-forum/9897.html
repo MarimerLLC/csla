@@ -1,0 +1,6 @@
+<html><header><title>ObservableBindingList&lt;T&gt;  AddedNew event</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>ObservableBindingList&lt;T&gt;  AddedNew event</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9897.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>enkidu posted on Wednesday, December 22, 2010</h2><p>Is there any reason why this event shouldn&#39;t be marked as </p>
+<p style="font-family:consolas;">[field:NonSerialized]<br />
+[field:NotUndoable]</p>
+<p style="font-family:consolas;">?</p>
+<p style="font-family:consolas;">I had a handler attached to this event on my ViewModel and it took a while to figure out why I was getting a serialization exception on save when it was trying to serialize the <i>viewmodel</i>.</p>
+<p style="font-family:consolas;">I&#39;m now attaching to the CollectionChanged event, and everything is working fine now.</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Wednesday, December 22, 2010</h2><p>Yes, that looks like a bug. I&#39;ll add it to the list for 4.1.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

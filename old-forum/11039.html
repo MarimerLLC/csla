@@ -1,0 +1,41 @@
+<html><header><title>Disabling rules on Object Creation</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Disabling rules on Object Creation</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11039.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>veryblue posted on Saturday, January 07, 2012</h2><p>Hi,</p>
+<p>Is there a way to disable business rules on Object creation ? I have rules that hit the database and I dont want the rules to run when I first create an object.&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rxelizondo replied on Saturday, January 07, 2012</h2><p>&nbsp;</p>
+<p>The default implementation of BusinessBase &ldquo;DataPortal_Create()&rdquo; and &quot;Child_Create()&quot; automatically call &quot;BusinessRules.CheckRules()&quot;, for example, the code below is the default implementation of &quot;DataPortal_Create()&quot;:</p>
+<p>&nbsp;</p>
+<p>[RunLocal]</p>
+<p>protected virtual void DataPortal_Create()</p>
+<p>{</p>
+<p>&nbsp; &nbsp; &nbsp;BusinessRules.CheckRules();</p>
+<p>}</p>
+<p>&nbsp;</p>
+<p>So if you don&rsquo;t want to run the rules then one option is to override &ldquo;DataPortal_Create()&rdquo; or &quot;Child_Create()&quot;&nbsp;and don&rsquo;t call the base implementation as in:</p>
+<p>&nbsp;</p>
+<p>[RunLocal]</p>
+<p>protected override void DataPortal_Create()</p>
+<p>{</p>
+<p>}</p>
+<p>&nbsp;</p>
+<p>If the problem is that you are loading property values during creation then you can use the &quot;LoadProperty()&quot; to bypass running rules or still use the &quot;SetProperty()&quot; method but use it between a using directive:</p>
+<p>&nbsp;</p>
+<p>using (BypassPropertyChecks)</p>
+<p>{</p>
+<p>&nbsp; &nbsp;SetProperty(MyProperty, SomeValue);</p>
+<p>&nbsp; &nbsp;-OR-</p>
+<p>&nbsp; &nbsp;this.MyProperty = SomeValue;</p>
+<p>}</p>
+<p>&nbsp;</p>
+<p>I believe that the newer version of the CSLA has a way to create rules that don&rsquo;t run during object creation but I am not 100% sure about that.
+</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<div></div>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Sunday, January 08, 2012</h2><p>Which version of CSLA do you use? </p>
+<p>Assuming that you only want to prevent running rules that hit the database (all others should run on creation):</p>
+<p>In CSLA 4.2 and when your rule inherits from PropertyRule or CommonRules.CommonBusinessRule you can set one of these flags in the constructor:</p>
+<p>CanRunOnServer &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -&nbsp; when false will deny the rule from running on &quot;logical&quot; server side.</p>
+<p>CsnRunInCheckRules&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;&nbsp; - when&nbsp; false will deny the rule from running in&nbsp; CheckRules</p>
+<p>CanRunAsAffectedProperty&nbsp;&nbsp; - when false will deny cascading execution when this primaryProperty is an AffectedProperty from another rule. </p>
+<p>When all 3 flags as false the rule will only run when the user edits a field (or your code sets the field with BypassProperyChecks). </p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>veryblue replied on Sunday, January 08, 2012</h2><p>CSLA 4</p>
+<p>I am binding an empty object to a asp.net mvc view, so dont want any rules fired. I already am&nbsp;overriding&nbsp;the DataPortal_Create so not calling the checkrules there fixed my problem.</p>
+<p>Its good to know the various options&nbsp;available&nbsp;though, thanks a lot!</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

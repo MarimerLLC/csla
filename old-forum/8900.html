@@ -1,0 +1,39 @@
+<html><header><title>Error when creating derived class with annotated property and forceinit, property in base class</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Error when creating derived class with annotated property and forceinit, property in base class</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/8900.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>MarkOviedo posted on Saturday, May 08, 2010</h2><p>I&#39;ve recently upgraded from CSLA 3.8.2 to CSLA 4 Beta 1, and I have been hitting a runtime error in my code. I have a base class that has a CSLA property on it and is using the forceInit trick to ensure static initialization. I then have a derived class that also has a CSLA property with a [Required] data annotation attribute.</p>
+<p>When I try to instantiate the derived class, it fails with a&nbsp;System.TypeInitializationException :&nbsp;Can not register property x after containing type (y) has been instantiated.</p>
+<p>When I trace into the CSLA code, the BusinessBase processes the DataAnnotation on the derived class; when it hits the forceInit in the base constructor, the error occurs.</p>
+<p>I have attached a sample application with CSLA 4, .NET 4 and Silverlight 4 that reproduces this issue.</p>
+<p>Any help would be appreciated!</p>
+<p>Mark</p>
+<p>Stack trace from my attached sample application :</p>
+<p>{System.TypeInitializationException: The type initializer for &#39;Csla4Troubleshoot.Troubleshoot.MyBaseClass`1&#39; threw an exception. ---&gt; System.InvalidOperationException: Can not register property Id after containing type (Employee) has been instantiated</p>
+<p>&nbsp;&nbsp; at Csla.Core.FieldManager.PropertyInfoManager.RegisterProperty[T](Type objectType, PropertyInfo`1 info)</p>
+<p>&nbsp;&nbsp; at Csla.BusinessBase`1.RegisterProperty[P](PropertyInfo`1 info)</p>
+<p>&nbsp;&nbsp; at Csla.BusinessBase`1.RegisterProperty[P](Expression`1 propertyLambdaExpression)</p>
+<p>&nbsp;&nbsp; at Csla4Troubleshoot.Troubleshoot.MyBaseClass`1..cctor()</p>
+<p>&nbsp;&nbsp; --- End of inner exception stack trace ---</p>
+<p>&nbsp;&nbsp; at Csla4Troubleshoot.Troubleshoot.MyBaseClass`1..ctor()</p>
+<p>&nbsp;&nbsp; at Csla4Troubleshoot.Troubleshoot.Employee..ctor()</p>
+<p>&nbsp;&nbsp; at Csla4Troubleshoot.App.Application_Startup(Object sender, StartupEventArgs e)</p>
+<p>&nbsp;&nbsp; at MS.Internal.CoreInvokeHandler.InvokeEventHandler(Int32 typeIndex, Delegate handlerDelegate, Object sender, Object args)</p>
+<p>&nbsp;&nbsp; at MS.Internal.JoltHelper.FireEvent(IntPtr unmanagedObj, IntPtr unmanagedObjArgs, Int32 argsTypeIndex, String eventName)}</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>MarkOviedo replied on Saturday, May 08, 2010</h2><p>To respond to my own question : I removed the forceInit from the base class and simply made my PropertyInfo&lt;T&gt; declarations public (as prescribed by this thread -&nbsp;<a href="http://forums.lhotka.net/forums/p/7986/38220.aspx#38220">http://forums.lhotka.net/forums/p/7986/38220.aspx#38220</a>). This eliminated the initialization issue I was encountering.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>artsd replied on Wednesday, May 19, 2010</h2><p>I am trying to use a custom identity derived from&nbsp;Csla.Security.CslaIdentity. For now I am just adding an extra test property that is <b>public static</b> and I still get the error about &quot;Can not register propery ExtraString after container type (CslaIdentity) has been instantiated at ....&quot;.</p>
+<p>Can you see anything wrong with this class?</p>
+<p>
+<p>namespace Profiler.Lib</p>
+<p>{</p>
+<p>&nbsp;&nbsp; &nbsp;[Serializable()]</p>
+<p>&nbsp;&nbsp; &nbsp;public class UsiIdentity : Csla.Security.CslaIdentity // Csla.Silverlight.Security.WindowsIdentity</p>
+<p>&nbsp;&nbsp; &nbsp;{</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;public UsiIdentity() { }</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;public static PropertyInfo&lt;string&gt; ExtraStringProperty = RegisterProperty&lt;string&gt;(new PropertyInfo&lt;string&gt;(&quot;ExtraString&quot;, &quot;Extra String Test Property&quot;, string.Empty));</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;public string ExtraString</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;{</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;get { return GetProperty(ExtraStringProperty); }</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;}</p>
+<div>[......]</div>
+<div></div>
+</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>artsd replied on Wednesday, May 19, 2010</h2><p>Please ignore. I found another forum post that explained the problem is because CslaIdentity is not a generic and therefore you have to use long form of RegisterProperty() like this:</p>
+<p>
+<p>public static PropertyInfo&lt;string&gt; ExtraStringProperty = RegisterProperty(<b>typeof(UsiIdentity)</b>, new PropertyInfo&lt;string&gt;(&quot;ExtraString&quot;, &quot;Extra String Test Property&quot;));</p>
+<div></div>
+</p>
+<p>&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

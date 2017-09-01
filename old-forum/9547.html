@@ -1,0 +1,23 @@
+<html><header><title>Can a NameValueList be sorted?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Can a NameValueList be sorted?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9547.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>stevenkahan posted on Friday, September 17, 2010</h2><p>We are upgrading our winforms application&nbsp;from .NET 1.x to 2.0 </p>
+<p>In our original CSLA Code&nbsp;(CSLA Extentinons) we implemented a BindableNameValueList, Inheriting from CSLA.NameValueList and a SortComparer Class which allowed us to sort a BindableNameValueList object by the value.&nbsp; Their primary use is binding to comboboxes.</p>
+<p>During our upgrade we converted all the BindableNameValueList objects to NameValueListBase(of K,V)</p>
+<p>We then realized we had not sorted the NVL objects and attempted to do this by using SortedBindingList&nbsp;.</p>
+<p>This did not work as it seems that NVL does not implement IList(of T) [is this true? I am confused about this...]&nbsp; <br /><br />error: Unable to cast object of type &#39;PlanServicesLibrary.LicenseStatus&#39; to type &#39;System.Collections.Generic.IList`1[PlanServicesLibrary.LicenseStatus]&#39;.&quot;</p>
+<p><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">Public&nbsp;</span></span><span style="font-size:x-small;"> </span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">Class</span></span><span style="font-size:x-small;"> LicenseStatus<br /></span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">Inherits</span></span><span style="font-size:x-small;"> NameValueListBase(</span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">Of</span></span><span style="font-size:x-small;"> </span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">String</span></span><span style="font-size:x-small;">, </span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">String)</span></span></p>
+<p>
+<p>
+<p>My question(s) are:</p>
+</p>
+</p>
+<p>1.&nbsp; Are we wrong and we should be able to use SortedBindingList?</p>
+<p>2.&nbsp; Should we just sort the data as we populate the NVL?</p>
+<p>3.&nbsp; Should we use something other than NVL?</p>
+<p>Thanks,<br />Steve</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Friday, September 17, 2010</h2><p>I think at that time I was using Microsoft&#39;s key/value collection type as a base. In more recent versions of CSLA I switched to subclass ReadOnlyBindingList, which ultimately is a subclass of BindingList&lt;T&gt;.</p>
+<p>If you are moving to .NET 2, I strongly recommend you at least move to CSLA 3.0.5, or use the N2 release which is basically 3.7, but running on .NET 2.0.</p>
+<p>You should absolutely avoid CSLA .NET 2.0 in favor of at least 2.1 - but 3.0.5 is the recommended release for .NET 2.0.</p>
+<p>And in 3.0.5 NLVB inherits from ReadOnlyBindingList, which will probably address your issue.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>stevenkahan replied on Friday, September 17, 2010</h2><p>By knowing that this should work we continued to investigate our code (we are using CSLA 3.0.5) and realized that we were passing the wrong object to SortedBindingList. </p>
+<p>(We had SortedBindingList (of &lt;List&gt;) instead of &lt;List.NameValuePair&gt;)</p>
+<p>Thank you for your help.&nbsp; <img src="http://forums.lhotka.net/emoticons/emotion-2.gif" alt="Big Smile" /></p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,115 @@
+<html><header><title>Not sure what to do in this scenario... Disconnected Application</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Not sure what to do in this scenario... Disconnected Application</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4695.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>reagan123 posted on Tuesday, April 15, 2008</h2><P>Hi there.<BR>Here is a quick description of my setup and issues... I'm lost on how to handle this.</P>
+<P>I have 2 different modes of running an appliction.</P>
+<P>Scenario 1. User&nbsp;hits a central database server and can perfomr basic CRUD operations (This works fine)<BR><BR>Scenario 2. User selects an object on the database server&nbsp;and&nbsp;chooses to work with it on an offline database.&nbsp; Basically they choose an object and we serialize all the data they need to&nbsp;a file.&nbsp; They then take that file to a laptop that has a blank of our database and we deserialize all of the objects to the blank database on the laptop.&nbsp; This user&nbsp; does their work on the object... and we basically reverse the process and it eventually goes back into the server.</P>
+<P>Here is the big issue... It is possible for the users in scenario 1 to do work on the parent only (not the kids) and the users in scenario 2 can update the child information but not the parent.&nbsp; I'm not sure how to allow this to happen without concurrency issues or the fear of overwriting data when bringing the disconnected data back to the database server.</P>
+<P>Did that make sense???&nbsp; </P>
+<P>Objects:<BR>BusinessBase: Equipment (Scenario 1 can change)<BR>Child: WorkOrders (Scenario&nbsp;2 can change)<BR>Child: PartOrders (Scenario&nbsp;2 can change)<BR></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Tuesday, April 15, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Maybe I am missing something, but how can you overwrite parent
+data when synchronizing disconnected data?<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Senior Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> reagan123
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Tuesday, April 15, 2008 2:55 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> [CSLA .NET] Not sure what to do in this scenario...
+Disconnected Application<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Hi there.<br>
+Here is a quick description of my setup and issues... I'm lost on how to handle
+this.<o:p></o:p></p>
+
+<p>I have 2 different modes of running an appliction.<o:p></o:p></p>
+
+<p>Scenario 1. User&nbsp;hits a central database server and can perfomr basic
+CRUD operations (This works fine)<br>
+<br>
+Scenario 2. User selects an object on the database server&nbsp;and&nbsp;chooses
+to work with it on an offline database.&nbsp; Basically they choose an object
+and we serialize all the data they need to&nbsp;a file.&nbsp; They then take
+that file to a laptop that has a blank of our database and we deserialize all
+of the objects to the blank database on the laptop.&nbsp; This user&nbsp; does
+their work on the object... and we basically reverse the process and it
+eventually goes back into the server.<o:p></o:p></p>
+
+<p>Here is the big issue... It is possible for the users in scenario 1 to do
+work on the parent only (not the kids) and the users in scenario 2 can update
+the child information but not the parent.&nbsp; I'm not sure how to allow this
+to happen without concurrency issues or the fear of overwriting data when
+bringing the disconnected data back to the database server.<o:p></o:p></p>
+
+<p>Did that make sense???&nbsp; <o:p></o:p></p>
+
+<p>Objects:<br>
+BusinessBase: Equipment (Scenario 1 can change)<br>
+Child: WorkOrders (Scenario&nbsp;2 can change)<br>
+Child: PartOrders (Scenario&nbsp;2 can change)<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>brucep replied on Tuesday, April 15, 2008</h2><P>Reagan:</P>
+<P>Sounds like you need your disconnected app to do a little more work. Specifically:</P>
+<OL>
+<LI>When disconnected, your Save() method must persist old/deleted child references.</LI>
+<LI>You probably need to use Guids as some kind of surrogate key, for comparison purposes when resynching.</LI>
+<LI>You will need some logic to do versioning, such as a stamp on each item, both parent and child. I typically only use stamps on parent objects, but that probably wouldn't work in the disconnected case.</LI>
+<LI>Finally, you need to have a good Merge() method when resynching. The simplest case is you check the stamp of the parent object&nbsp;in the primary DB, and if it is lower (I use ints for stamps), then all is okay, just Save() as normal. If it is the same or higher, then you have to bring up some kind of comparison screen that shows the changes side by side and lets the user decide if they want to proceed. And of course in this case you must have some logic in the SPROC that will override the concurrency error that would usually result.</LI></OL>
+<P>HTH,</P>
+<P>Bruce</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>reagan123 replied on Tuesday, April 15, 2008</h2><P>Thanks guys..</P>
+<P>Bruce, You bring up an interesting concept.&nbsp; What is the best way to compare 2 objects when doing something like this.</P>
+<P>I'm still new to the framework and objects etc...</P>
+<P>I really appreciate the help.</P>
+<P>&nbsp;</P>
+<P>Sergey, <BR>Everytime a record is saved in our database we update the DateTimeStamp.&nbsp; I guess my issue here was if someone updated the parent record in the connected db then the datetimestamp was updated.&nbsp; When I try to resync.. the disconnected datetimestamp was older and I would get a concurrency check error.&nbsp; I guess this is a seperate problem... :)<BR>Thanks for the reply as well</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>brucep replied on Tuesday, April 15, 2008</h2><P>Reagan:</P>
+<P>It helps to think of your parent object in a "wholistic" way (not sure if that's a word or not). In other words, if anything changes in a child object or the fields of the parent itself, the parent object should <EM>always</EM> be saved and have its stamp updated. In other words, even if no fields changed in the parent object, in reality its stamp <EM>did</EM> change, because the object "as a whole" changed. I'm fairly certain the CSLA framework handles it this way already, but I've been out of&nbsp; the loop so long that I don't know. Somebody can enlighten me if I'm just preaching to the choir here.</P>
+<P>Enough soapbox, though. A great example of very fast side-by-side comparisons of things is Red Gate's SQL Compare (<A href="http://www.red-gate.com">www.red-gate.com</A>). I can't say I know how SQL Compare works internally, but one of the best comparison tools in the .NET framework is Dictionary&lt;K, V&gt; which allows you to create a key-value pair collection and then compare with keys in the dictionary. So you would create a Dictionary for each of the child collections and then compare with the existing object in the primary DB in a side-by-side grid. Dictionaries are <EM>extremely fast</EM>, even for huge collections, and they eliminate the need for nested looping to compare two collections.</P>
+<P>As for the comparison itself, there are a mind-bogglingly large number of ways to do it. The most code would be to just compare the fields yourself in a method. Another way would be to&nbsp;mark the persisted fields or properties with some sort of Attribute, and use reflection to compare only fields / properties with that Attribute.</P>
+<P>I would suggest you download a copy of SQL Compare, if nothing else just to see how it works. I'll also give it a plug as being incredibly cool software that paid for itself the first day I bought it.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>reagan123 replied on Tuesday, April 15, 2008</h2>Thanks again... Some of that stuff is new to me so i'll do some research.<BR><BR>I appreciate it.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>reagan123 replied on Thursday, April 17, 2008</h2>Thanks again guys... New question/issue.<br><br>The way our program is setup is as follows.<br>The user has a piece of equipment in the connected system that has 4 workorders in the child collection.&nbsp; This is displayed in a treeview.&nbsp; The user selects a WO that they want for the disconnected environment.&nbsp; Right know I bring the whole object and all (4) workorders... The user just wants the one WO they selected to come over.&nbsp; Is this possible to only bring a few of the child objects and not the whole collection?&nbsp; <br><br>My big issue is that the person who designed all of this left our group and now we are trying to figure out what's going on.<br><br><b>Example: </b><br><b>Connected System</b><br>Equipment<br>&nbsp;&nbsp;&nbsp; |--WO-1<br>&nbsp;&nbsp;&nbsp; |--WO-2&nbsp; -------&gt; User Selects WO2 to work on in the disconnected environment<br>&nbsp;&nbsp;&nbsp; |--WO-3<br>&nbsp;&nbsp;&nbsp; |--WO-4<br><br><b>Disconnected System</b><br>Equipment<br>&nbsp;&nbsp;&nbsp; |--WO-2<br>&nbsp;&nbsp;&nbsp; <br>&nbsp;&nbsp;&nbsp; <br>&nbsp;&nbsp;&nbsp; <br>&nbsp; <br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

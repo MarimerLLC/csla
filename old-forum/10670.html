@@ -1,0 +1,26 @@
+<html><header><title>dataGridView and sorting</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>dataGridView and sorting</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10670.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>al4114al posted on Friday, September 09, 2011</h2><p>Hi everyone!</p>
+<p>I&#39;m using Csla 3.6.1 for my project.&nbsp; I have a form that contains, among other things, a dataGridView I&#39;ll call xyz. To provide sorting, I have:</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; xyz.DataSource = new SortedBindingList&lt;item&gt;(items);</p>
+<p>The &#39;parent&#39; abc form is bound as:</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp; abc.DataSource = _abc_thingy;</p>
+<p>When column headers are clicked, sorting works as I hoped.&nbsp; However, when hitting any of OK, Apply, Cancel or Close buttons, the whole application shuts down with no kind of message.&nbsp; If I only go into the form and, without sorting, use any of the four buttons, I get normal behavior.</p>
+<p>I&#39;m pouring through the forum for ideas on this, but so far I haven&#39;t hit on anything.</p>
+<p>Has anyone dealt with this problem?&nbsp; If my continued putzing with the code solves this, I&#39;ll post the solution so someone else may use it.</p>
+<p>&nbsp;</p>
+<p>Thanks for any help.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Saturday, September 10, 2011</h2><p>Hi, </p>
+<p>I assume you are using Windows Forms?</p>
+<p>I&#39;d start by grabbing the latest versions of SortedBindingList and FileteredBindingList. There&#39;s been a few bugfixes to these lists so that you should make sure to have updated versions. These were bugs where ListChanged event was raised with an erronous Index og the item in the list (added, removed or changed) - when the list is sorted.</p>
+<p>In WinForms I always recommend to use BindingSource component between the data objects and UI components. The BindingSource will allow you to hook into databinding errors to find out what exceptions are beeing thrown. </p>
+<p>Look at theBindingSource.DataError event.<br /><a href="http://msdn.microsoft.com/en-us/library/system.windows.forms.bindingsource.dataerror.aspx">http://msdn.microsoft.com/en-us/library/system.windows.forms.bindingsource.dataerror.aspx</a></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>al4114al replied on Saturday, September 10, 2011</h2><p>Hi Jonny -</p>
+<p>Thank you for the quick reply.&nbsp; I&#39;ll follow up on what you suggest.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>al4114al replied on Monday, September 12, 2011</h2><p>Hi Jonny -</p>
+<p>As you suggested, I got the&nbsp;latest SortedBindingList.&nbsp; I&#39;m sure it will help me avoid future problems.</p>
+<p>As it turned out, I didn&#39;t have a binding issue.&nbsp; It seems that having forms use WinPart rather than Form can cause some types of error messages to not display.&nbsp; My real problem is yet another instance of someone encountering&nbsp;&quot;Edit level mismatch in CopyState&quot;.&nbsp; Blecchh!</p>
+<p>Now I am looking, both in the forum and at-large for anything about what the heck sort actually does to a dataGridView in terms of its edit level, so I can &#39;fake it out&#39; or whatever.</p>
+<p>If anyone can assert that upgrading to newer MS technologies will eliminate this madness, I could move up my upgrade plans to the immediate.&nbsp; Failing in that, can someone offer either a known workaround, or a source of emotional stability help?&nbsp; Either would be much appreciated.</p>
+<p>Of course, if I can find my own solution to my edition of the problem, I&#39;ll post it.</p>
+<p>Thanks to all who read this.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Monday, September 12, 2011</h2><p>These problems is probably fixed in a newer version of Csla. </p>
+<p>It&#39;s related to the implementation of IEditableObject (BeginEdit/CancelEdit/EndEdit) in BusinessBase.</p>
+<p>BusinessBase must keep track of whether IEditableObject.BeginEdit is already called and only honor the first call on the interface method. <br />This will enable you to use multiple binding sources (or&nbsp; datagrids) on the same list/BO and avoid Edit Level mismatch. </p>
+<p>Fixed in CSLA 4.0.x and you can look at the implementation in Csla.Core.BusinessBase of the IEditableObject interface and update these in your version.&nbsp;</p>
+<p>More details on the issue can be found here: <a href="http://www.lhotka.net/cslabugs/edit_bug.aspx?id=241%20">http://www.lhotka.net/cslabugs/edit_bug.aspx?id=241</a></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>al4114al replied on Monday, September 12, 2011</h2><p>Again, Jonny, thank you so much.</p>
+<p>I&#39;ll dig into this.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

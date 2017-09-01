@@ -1,0 +1,18 @@
+<html><header><title>Security Question</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Security Question</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/1058.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>CSlaughter posted on Tuesday, August 29, 2006</h2>I'm developing an application that has two roles ("Admins" and "Guest").&nbsp; Guest can create an account to become a member.&nbsp; My requirements are:<br><ol><li>Admins can edit any members information</li><li>A member is allowed to update only his/her information</li><li>Guest can read any member's information</li></ol>So my thought is once a member logins I can load the members ID (GUID) as a role and then do something like Csla.ApplicationContext.User.IsInRole(Member.ID.tostring) in the Authorization Rules section to check if the user can edit the selected Member object.&nbsp; Does this sound correct?<br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>figuerres replied on Tuesday, August 29, 2006</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>CSlaughter:</strong></div><div>I'm developing an application that has two roles ("Admins" and "Guest").&nbsp; Guest can create an account to become a member.&nbsp; My requirements are:<BR>
+<OL>
+<LI>Admins can edit any members information
+<LI>A member is allowed to update only his/her information
+<LI>Guest can read any member's information</LI></OL>
+<P>So my thought is once a member logins I can load the members ID (GUID) as a role and then do something like Csla.ApplicationContext.User.IsInRole(Member.ID.tostring) in the Authorization Rules section to check if the user can edit the selected Member object.&nbsp; Does this sound correct?<BR><BR></div></BLOCKQUOTE></P>
+<P>&nbsp;</P>
+<P>#3 -- Id say a guest can read only a select part of members info... not all the data!</P>
+<P>normaly the members roles will be in a seperate table and not based on the ID<BR>what I would do is this:</P>
+<P>create a role named "Guest"</P>
+<P>when you allow a user to "Self Create" assign them the Guest Role.</P>
+<P>then go from there.... let an Admin edit the users roles to include other roles and take them out of Guest.</P>
+<P>Edit /&nbsp; Update:&nbsp; just have a bit of logic that allows a user to edit thier data but not the roles they are assigned to.</P>
+<P>if (User.ID=SelectedUser.ID) and (NOT inRole("Guest"))</P>
+<P>-- Edit my stuff</P>
+<P>else</P>
+<P>&nbsp;-- sorry guest you are not permited -- talk to an admin.</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>CSlaughter replied on Tuesday, August 29, 2006</h2>Thanks for the quick reply.&nbsp; Regarding the (User.ID = SelectedUser.ID), would User be a new class? I'd like to use the existing Identity class so I guess I could modify it to have a new property for ID.&nbsp; Sound good?<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

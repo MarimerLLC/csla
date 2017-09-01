@@ -1,0 +1,21 @@
+<html><header><title>Exception methodology to use for server-side validation? </title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Exception methodology to use for server-side validation? </h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5924.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>rsbaker0 posted on Tuesday, December 02, 2008</h2><P>For those of you doing server-side validation by explicitly checking rules at object Save time, how do you handle the broken rules that are newly detected on the server?</P>
+<P>For example, if you call CheckRules() on the server side of the data portal on a previous "valid" object (e.g. no broken rules), and now the object appears to be broken, what is the best way to communicate this back to the client? I've seen posts that reference rules associated with a&nbsp;pseudo-property to defer them until they are explicitly checked server-side, so I was mainly interested in this case. </P>
+<P>You could throw a ValidationException, but since the object presumably was cloned before the save attempt, the original object still won't have any broken rules. </P>
+<P>One possibility might be to just return the invalid object and not throw an exception, but I'd think the client would have to be expecting this possibility so I'm not sure about that approach. </P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Wednesday, December 03, 2008</h2><P>In my web app I use a code style like this for my btnSave code:</P>
+<P>If myBO.IsValid Then</P>
+<P>&nbsp; 'save BO&nbsp; (optionally bypass the call to IsValid in the normal CSLA dataportal since we just did it.)</P>
+<P>Else</P>
+<P>&nbsp; 'show list of broken rules</P>
+<P>End If</P>
+<P>Joe</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>SonOfPirate replied on Wednesday, December 03, 2008</h2><P>What would be the reason/benefit of only validating the rules on the server?</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rsbaker0 replied on Wednesday, December 03, 2008</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>SonOfPirate:</strong></div><div>
+<P>What would be the reason/benefit of only validating the rules on the server?</P>
+<P>&nbsp;</P>
+<P></div></BLOCKQUOTE></P>
+<P>I haven't actually done this yet -- I got this idea from other forum participants. One area in which this seemed to possibly make sense was for business rules that hit the database. </P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>SonOfPirate replied on Wednesday, December 03, 2008</h2><P>Ok, that makes sense then.</P>
+<P>So, the problem is really because the broken rules are maintained outside of the BO (in the ValidationRules instance).&nbsp; But, it is still part of the object's state and, I believe, it is serialized between the server and client along with the BO.&nbsp; So, when the instance is returned from the server with the broken rules, you could replace the original BO's _validationRules variable with the instance returned from the server.&nbsp; Then your original object would have the complete list of rules that were broken during validation on the server.</P>
+<P>Unfortunately, this would have to be done in Core.BusinessBase which has access to the private _validationRules variable or some other work-around will have to be found.</P>
+<P>&nbsp;</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

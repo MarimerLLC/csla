@@ -1,0 +1,22 @@
+<html><header><title>DataPortalException not be thrown in remote environment</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>DataPortalException not be thrown in remote environment</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4427.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>boo posted on Wednesday, February 27, 2008</h2><P>This is a very odd error, and I have a feeling it has to do with my custom exception, but not sure what to look at.</P>
+<P>Have a command object...one of the unit tests ensure an exception is thrown, and looks for the right exception in the DataPortalException.BusinessException.</P>
+<P>On my remote machine, with &lt;customError="RemoteOnly | On" /&gt; I just get a generic exception:</P>
+<P>Server encountered an internal error. For more information, turn off customErrors in the server's .config file.</P>
+<P>On my remote machine, with &lt;customError="Off" /&gt; I get the the DataPortalException with the correct business exception.</P>
+<P>I have a feeling the portal is having a problem serializing my custom exception, but I'm not getting any error messages.&nbsp; This is the code for the custom exception:</P><FONT size=2>
+<P>[</FONT><FONT color=#2b91af size=2>Serializable</FONT><FONT size=2>()]</P>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>sealed</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>class</FONT><FONT size=2> Custom</FONT><FONT color=#2b91af size=2>Exception</FONT><FONT size=2> : </FONT><FONT color=#2b91af size=2>Exception</P></FONT><FONT size=2>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> CustomException() </P>
+<P>: </FONT><FONT color=#0000ff size=2>base</FONT><FONT size=2>() { }</P>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> CustomException(</FONT><FONT color=#0000ff size=2>string</FONT><FONT size=2> message) </P>
+<P>: </FONT><FONT color=#0000ff size=2>base</FONT><FONT size=2>(message) { }</P>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> CustomException(</FONT><FONT color=#0000ff size=2>string</FONT><FONT size=2> message, </FONT><FONT color=#2b91af size=2>Exception</FONT><FONT size=2> innerException)</P>
+<P>: </FONT><FONT color=#0000ff size=2>base</FONT><FONT size=2>(message, innerException) { }</P>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> CustomException(</FONT><FONT color=#2b91af size=2>SerializationInfo</FONT><FONT size=2> info, </FONT><FONT color=#2b91af size=2>StreamingContext</FONT><FONT size=2> context)</P>
+<P>: </FONT><FONT color=#0000ff size=2>base</FONT><FONT size=2>(info, context) { }</P>
+<P>}</P>
+<P>&nbsp;</P>
+<P>Any ideas?</P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, February 27, 2008</h2>You can always create a little test using ObjectCloner to serialize/deserialize your exception object to see if it fails to go through the process.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>boo replied on Thursday, February 28, 2008</h2><P>Goes through cloner just fine.</P>
+<P>Getting even stranger errors now that I took out of remoting scenario - before it was remoting both off of cassini and another machine's IIS just fine, while debugging this, I took out remoting and running all local again.&nbsp; Not I'm getting the 'Type is not resolved for member' error...but I'm not even remoting at this point!</P>
+<P>I'm going to pull my hair out because now I'm totaly dead in the water.&nbsp; This fricken error is occuring only when it tries to read the settings file and is having a problem with the type that I created to deal with the whole CSLA principal thing.</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

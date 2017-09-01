@@ -1,0 +1,11 @@
+<html><header><title>Silverlight delegate question</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Silverlight delegate question</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9378.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>greengumby posted on Monday, August 16, 2010</h2><p>Hi,</p>
+<p>I have a Parent-Child where I want the child to have a reference to a delegate on the parent. ie CanWriteProperty(). &nbsp;Basically I need the parent to decide whether the child is editable.&nbsp;</p>
+<p>This is ok by passing a reference from the parent to the child during Create/Fetch however as this is built up on the .server, what will happen when it gets passed to the Silverlight application from WCF.</p>
+<p>My initial thoughts are that I would have to have a managed property to hold that delegate or alternatively on the client I would have to recurse the structure re-creating the link.&nbsp;</p>
+<p>Does anyone have any thoughts/suggestions on a better approach.</p>
+<p>Thanks</p>
+<p>Jeremy</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Monday, August 16, 2010</h2><p>Why not just have a property on the parent which the child can query in its CanWriteProperty override?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>greengumby replied on Monday, August 16, 2010</h2><p>Ah I should have mentioned.</p>
+<p>Parent - Child - GrandChild.... (each determining its editable status via root node)</p>
+<p>Plus I&#39;m trying to achieve loose coupling between my objects</p>
+<p>The property on the parent will be my fallback :)</p>
+<p>Thanks<br />Jeremy&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

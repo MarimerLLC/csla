@@ -1,0 +1,22 @@
+<html><header><title>Help - Generic UniqueIndex Rule</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Help - Generic UniqueIndex Rule</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6862.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>cdkisa posted on Tuesday, April 28, 2009</h2>Hi,<br><br>I saw an example (http://www.codeproject.com/KB/cs/CslaERLB2.aspx) of a NoDuplicates rule and thought it was a great idea. It would save an error from being returned from the database and provide a consistent way to ensure a column/field is unique within the collection.<br><br>My question is, is there a way to make this rule generic?<br><code><pre>Private Shared Function UniqueIndex(Of T As SomeBusinessObject)(ByVal target As T, ByVal e As Csla.Validation.RuleArgs) As Boolean
+	Dim parent As SomeBusinessObjectList = CType(target.Parent, SomeBusinessObjectList)
+
+	If parent IsNot Nothing Then
+
+		For Each item As SomeBusinessObject In parent
+
+			If item.Name.ToUpperInvariant() _
+			= target.Name.ToUpperInvariant() _
+			AndAlso Not ReferenceEquals(item, target) Then
+
+				e.Description = e.PropertyFriendlyName & " must be unique."
+				Return False
+
+			End If
+
+		Next
+
+	End If
+
+	Return True
+End Function</pre></code></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

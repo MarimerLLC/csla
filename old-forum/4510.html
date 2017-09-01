@@ -1,0 +1,81 @@
+<html><header><title>CSLA Silverlight?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA Silverlight?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4510.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonM posted on Monday, March 17, 2008</h2><P>Has anyone tried any CSLA with the new silverlight 2.0 beta 1?&nbsp; I realize that silverlight is a small subset of .NET (like the Compact Framework).&nbsp;&nbsp; I think it would be great to get CSLA objects in silverlight that talk to&nbsp;a wcf&nbsp;dataportal.&nbsp; Then the wcf dataportal on server end could talk to the real database and perhaps rerun the validation rules.&nbsp; Also, it would be great if the CSLA could support both dataportals inside of its framework.&nbsp; One dataportal over wcf from the client to the server.&nbsp; Then another dataportal that optionally revalidates business rules and&nbsp;talks to the real datastore (probably MSSQL).</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, March 17, 2008</h2><P>I've done quite a bit of research in this area, and the roadmap includes creation of CSLA Light for use on Silverlight. </P>
+<P>Actually implementing CSLA Light requires a hole in my (currently) ridiculously overbooked schedule, but it will happen <img src="/emoticons/emotion-1.gif" alt="Smile [:)]" /></P>
+<P>There are numerous issues. Obvious ones like the lack of BinaryFormatter/NetDataContractSerializer will cause some big limitations/changes. Non-obvious ones like the lack of System.Collection.Generic.Stack are inconveniences, but take time to overcome.</P>
+<P>Certainly it takes quite a few hours of work to trim out and/or replace enough code to even get something to compile. And I have yet to get something that really works in practice - but that was all pre-Beta 1.</P>
+<P>Silverlight Beta 1 includes more functionality that I expected, but still is missing quite a lot of stuff from full .NET, so it is a non-trivial exercise.</P>
+<P>My goal, as I've stated in my blog, is to keep the business class structure/code as close to full CSLA as possible - even if some functionality isn't quite the same behind the scenes. For example, the data portal will almost certainly be different, but I plan to keep the same coding structure for interacting with the data portal to make it as easy as possible to move business code to/from .NET and Silverlight.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Tuesday, March 18, 2008</h2><P>Rocky,</P>
+<P>I am very interested in how you envision CSLA will be used in Silverlight. Could you provide a high level overview of how you perceive the interactions at the various levels?</P>
+<P>e.g. The Web Server has normal CSLA BOs which contact the DB through the DataPortal. Then a request comes in and a "Silverlight page" is sent to the user. What happens then? Is the CSLA light BO created with the page and sent along to provide client side validation? What if there are validation rules which hit the DB? What else are you thinking about?</P>
+<P>Thanks for any insight.</P>
+<P>Joe</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonM replied on Tuesday, March 18, 2008</h2><P>Rocky,</P>
+<P>Your plan sounds great.&nbsp; A light version would probably do the trick.&nbsp; I didn't realize generics were missing.&nbsp; That is a real hassle.</P>
+<P>Thanks,</P>
+<P>Jon</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, March 18, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Generics aren&#8217;t missing &#8211; just some (many) generic
+types. And many other types. I just threw out Stack&lt;T&gt; as an example to
+illustrate that this is a subset of .NET. There are over a dozen .NET types I
+need to recreate (or work around their absence) to port CSLA.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>That&#8217;s OK &#8211; to be expected &#8211; but the point
+being that there&#8217;s some effort involved, and it really will be a
+different version of CSLA.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> JonM
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Tuesday, March 18, 2008 9:04 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] CSLA Silverlight?<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Rocky,<o:p></o:p></p>
+
+<p>Your plan sounds great.&nbsp; A light version would probably do the
+trick.&nbsp; I didn't realize generics were missing.&nbsp; That is a real
+hassle.<o:p></o:p></p>
+
+<p>Thanks,<o:p></o:p></p>
+
+<p>Jon<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

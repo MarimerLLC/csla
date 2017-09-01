@@ -1,0 +1,25 @@
+<html><header><title>MethodCaller bug?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>MethodCaller bug?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4435.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Bob Matthew posted on Thursday, February 28, 2008</h2><P class=MsoNoSpacing><FONT face=Calibri>Rocky,</FONT></P>
+<P class=MsoNoSpacing><o:p><FONT face=Calibri>&nbsp;</FONT></o:p></P>
+<P class=MsoNoSpacing><FONT face=Calibri>There appears to be a small issue in the MethodCaller.cs file on lines 225-229 of your latest trunk code of the CSLA 3.5.</FONT></P>
+<P class=MsoNoSpacing><o:p><FONT face=Calibri>&nbsp;</FONT></o:p></P>
+<P class=MsoNoSpacing><FONT face=Calibri>Right now the code found on those lines is catching any and all exceptions that occur as a result of invoking “methodHandle.DynamicMethod”.<SPAN>&nbsp; </SPAN>Then, once an exception has been caught it attempts to return the InnerException, if one exists, of the exception that’s caught.</FONT></P>
+<P class=MsoNoSpacing><o:p><FONT face=Calibri>&nbsp;</FONT></o:p></P>
+<P class=MsoNoSpacing><FONT face=Calibri>In my particular situation, I was wrapping a SqlException in my own custom exception and the above code was stripping off my custom exception and returning only the SqlException.</FONT></P>
+<P class=MsoNoSpacing><o:p><FONT face=Calibri>&nbsp;</FONT></o:p></P>
+<P class=MsoNoSpacing><FONT face=Calibri>I was a bit baffled by this behavior so I went back the C# <U>2005</U> Business Objects book to investigate why the CallMethodException exists in the first place.</FONT></P>
+<P class=MsoNoSpacing><o:p><FONT face=Calibri>&nbsp;</FONT></o:p></P>
+<P class=MsoNoSpacing><FONT face=Calibri>On page 183 of your book it states that:</FONT></P>
+<P class=MsoNoSpacing><o:p><FONT face=Calibri>&nbsp;</FONT></o:p></P>
+<P class=MsoNoSpacing><FONT face=Calibri>Remember that MethodCaller.CallMethod uses reflection to invoke the business method.<SPAN>&nbsp; </SPAN>When an exception occurs in the business method, a reflection exception is thrown – with the original business exception nested inside.<SPAN>&nbsp; </SPAN>CallMethod() strips off the reflection exception and provides the original business exception as a parameter during the creation of the CallMethodException object.</FONT></P>
+<P class=MsoNoSpacing><o:p><FONT face=Calibri>&nbsp;</FONT></o:p></P>
+<P class=MsoNoSpacing><FONT face=Calibri>This appears to explain why the behavior occurs – it’s by design.<SPAN>&nbsp; </SPAN>Granted the quotation was from the CSLA 2.0 days, but the idea should still hold.</FONT></P>
+<P class=MsoNoSpacing><o:p><FONT face=Calibri>&nbsp;</FONT></o:p></P>
+<P class=MsoNoSpacing><FONT face=Calibri>Here’s the problem: A ReflectionException is never thrown. <SPAN>&nbsp;</SPAN>I tried various things including all DataPortal operations: Fetch, Insert, Update, Delete and Execute both with an external DataPortal defined in my configuration and without one and haven’t seen any ReflectionExceptions thrown.</FONT></P>
+<P class=MsoNoSpacing><o:p><FONT face=Calibri>&nbsp;</FONT></o:p></P>
+<P class=MsoNoSpacing><FONT face=Calibri>If there is a possibility that a ReflectionException will be thrown and I’m not seeing it, one could easily do an “ex is ReflectionException” check and then grab the inner exception, otherwise the whole exception is rethrown.</FONT></P>
+<P class=MsoNoSpacing><o:p><FONT face=Calibri>&nbsp;</FONT></o:p></P>
+<P class=MsoNoSpacing><FONT face=Calibri>If this isn’t a bug and is “by design” could you give a little bit of insight?</FONT></P>
+<P class=MsoNoSpacing><o:p><FONT face=Calibri>&nbsp;</FONT></o:p></P>
+<P class=MsoNoSpacing><FONT face=Calibri>Thanks!</FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, February 28, 2008</h2><P>Yes, good catch!</P>
+<P>This is because reflection is no longer used in 3.5. Instead, a dynamic method technique is used - and so of course there's no intermediate reflection exception anymore... I'm glad you noticed this!</P>
+<P>I've fixed it in svn - though I also did some cleanup by moving CallMethodException to Csla.Reflection where it belongs (which could be a breaking change I suppose - but needs to happen).</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

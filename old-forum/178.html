@@ -1,0 +1,19 @@
+<html><header><title>ErrorProvider and comboboxes</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>ErrorProvider and comboboxes</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/178.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jeff Flowerday posted on Tuesday, May 23, 2006</h2><P>CSLA .NET 2.0</P>
+<P>I can't get the ErrorProvider to flash when I have a null value in a&nbsp;bound ComboBox.&nbsp; It works&nbsp;just fine&nbsp;with TextBoxes that are bound to validated properties.&nbsp; Anyone have any ideas?</P><FONT size=1>
+<P></FONT>loBinding = new Binding("SelectedValue", moCMRequest, "TypeID");</P>
+<P>cmbType.DataBindings.Add(loBinding);</P>
+<P><FONT size=1>&nbsp;</P>
+<P><FONT size=3>TypeID is a Nullable&lt;Guid&gt; property of my business object.</FONT></P>
+<P><FONT size=3></FONT>&nbsp;</P></FONT><FONT size=1>
+<P></FONT>protected override void AddBusinessRules()</P>
+<P>{</P>
+<P>ValidationRules.AddRule(TypeIDNotNull, "TypeID");</P>
+<P>}</P>
+<P>private bool TypeIDNotNull(object target, Csla.Validation.RuleArgs e)</P>
+<P>{</P>
+<P>if (mgTypeID == null)</P>
+<P>return false;</P>
+<P>else</P>
+<P>return true;</P>
+<P>}</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>xal replied on Tuesday, May 23, 2006</h2>Try not to go to the Nullable&lt;T&gt; way... specially if you're relying on databinding.<br><br>If I where you I'd declare mgTypeID as regular GUID and use Guid.Empty as null value.<br>then your combobox can contain the valid values and an extra value which would be Guid.Empty to which you can add a description like &lt;Enter a valid value&gt; (although that last part is not neccesary).<br>That way the binding WILL set a value of Guid.Empty to your bo and you will get an error.<br><br>Your rule should be changed to<br>if (mgTypeID.Equals(Guid.Empty))<br>return false;<br>else<br>return true;<br><br>or simply<br>return (!mgTypeID.Equals(Guid.Empty))<br><br>Andrés<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jeff Flowerday replied on Tuesday, May 23, 2006</h2><P>I wasn't setting e.Description.&nbsp; My Bad!!</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jwooley replied on Wednesday, May 24, 2006</h2><P>SelectedValueChanged does not fire when the combobox is cleared. You need to bind to SelectedTextChanged as well.</P>
+<P>Jim</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,24 @@
+<html><header><title>Worker Processes and Large Objects</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Worker Processes and Large Objects</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4806.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Brian O posted on Tuesday, May 06, 2008</h2><P>Two questions that are related here : </P>
+<P>&nbsp; What is a good number of worker processes to assign to the App Pool used by the Remoting Host on IIS 6.0?</P>
+<P>Second part is : </P>
+<P>&nbsp; If you have BusinessBase object that is containing a large byte array in a variable, is there a usage recommendation for hosting such an object? For example, a business object which retrieves the contents of a file and stores it in the byte array during DataPortal_Fetch. We are seeing IIS run out of memory periodically, and under Task Manager the W3P.EXE is gobbling up memory.</P>
+<P>Thanks in advance,</P>
+<P>Brian</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tmg4340 replied on Tuesday, May 06, 2008</h2><FONT size=2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>Brian O:</strong></div><div></FONT>
+<P><FONT size=2>&nbsp; What is a good number of worker processes to assign to the App Pool used by the Remoting Host on IIS 6.0?</FONT></P>
+<P><FONT size=2></div></BLOCKQUOTE></FONT></P>
+<P><FONT face=Tahoma size=2>I can't speak to this one - sorry.</FONT></P>
+<P><FONT size=2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>Brian O:</strong></div><div></FONT></P>
+<P><FONT size=2>Second part is : </FONT></P>
+<P><FONT size=2>&nbsp; If you have BusinessBase object that is containing a large byte array in a variable, is there a usage recommendation for hosting such an object? For example, a business object which retrieves the contents of a file and stores it in the byte array during DataPortal_Fetch. We are seeing IIS run out of memory periodically, and under Task Manager the W3P.EXE is gobbling up memory.</FONT></P>
+<P><FONT size=2></div></BLOCKQUOTE></FONT></P>
+<P><FONT face=Tahoma size=2>It sort of depends on what you intend to use the&nbsp;byte array&nbsp;for.&nbsp; I am presuming that you're getting the file to stream it back to the browser/client/etc.</FONT></P>
+<P><FONT face=Tahoma size=2>In any event, the standard technique is to read the file in chunks and stream those chunks as you get them.&nbsp; If you look at the "GetBytes" method on a DataReader, this allows you to "chunk" your field into pieces, thus allowing you to use a smaller in-memory buffer.&nbsp; However, depending on how you are getting that back to the client, you may have some issues.</FONT></P>
+<P><FONT face=Tahoma size=2>Ultimately, you have to get the whole thing back in your BusinessBase object, right?&nbsp; What you might look into is creating a "placeholder" property for your file contents.&nbsp; When the property is accessed, you execute a Command to the DataPortal that retrieves the file.&nbsp; That way, you have a separate execution path to get all that data, potentially making the "chunking" process&nbsp;back to your business object&nbsp;easier.&nbsp; Yes, it introduces a potential performance hit on your object, and depending on how you use it, it might be a little cumbersome.&nbsp; But it's the best way I can think of to manage such large files.&nbsp; And if the user never needs the file, it's not loaded unnecessarily.</FONT></P>
+<P><FONT face=Tahoma size=2>There is a school of thought that says you shouldn't store large objects in a database - you should store pointers to the object instead.&nbsp; That's a whole other discussion, though.</FONT></P>
+<P><FONT face=Tahoma size=2>HTH</FONT></P>
+<P><FONT face=Tahoma size=2>- Scott</FONT></P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,17 @@
+<html><header><title>a question</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>a question</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/12033.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>ramona posted on Saturday, June 22, 2013</h2><p>hi,</p>
+<p>I used CSLA 4.3.12&nbsp;&nbsp; in&nbsp;&nbsp; VS 2012 .</p>
+<p>when I generate the Entity framework , I have error which means </p>
+<p>can not convert DBContext&nbsp; Entity Framework to&nbsp; ObjectContext&nbsp; Entity Framework...</p>
+<p>How to convert my Entity framework to ObjectContext&nbsp;&nbsp; ,which CSLA can run it ???</p>
+<p>tnx<span style="font-size:x-small;font-family:Consolas;color:#2b91af;"><span style="font-size:x-small;font-family:Consolas;color:#2b91af;"><span style="font-size:x-small;font-family:Consolas;color:#2b91af;">
+<p>&nbsp;</p>
+</span></span></span></p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Sunday, June 23, 2013</h2><p>Hi,</p>
+<p>The EF helper classes in CSLA 4.3.12 only provides support for the EF version included in .NET 4.0.&nbsp;</p>
+<p>The Model First DBContext was introduced later and is not supported out of the box. </p>
+<p>For CSLA 4.5 there is 2 new assemblies to provide support for the latest versions of EF4 and EF5 (as these are different reference assemblies).</p>
+<p>You can grab the code for the corresponding one of these and compile with references to CSLA 4.3.12 to get the helper class for DBContext.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ramona replied on Tuesday, June 25, 2013</h2><p>thanks for your kind answer.</p>
+<p>would you please tell me where&nbsp;is CSLA 4.5( for VS2012 ) , to download ?</p>
+<p>Unfortunately I couldn&#39;t find it.</p>
+<p>Regards,</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Tuesday, June 25, 2013</h2><p>Hi,</p>
+<p>Goto <a href="http://www.cslanet.com/%20">http://www.cslanet.com/ </a>and select &quot;Download ZIP File&quot; to get the latest source code.</p>
+<p>The link points to&nbsp;<a href="https://github.com/MarimerLLC/csla">https://github.com/MarimerLLC/csla</a>&nbsp;where you can also select the same &quot;Zip&quot; button to download source code.&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

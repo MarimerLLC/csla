@@ -1,0 +1,63 @@
+<html><header><title>One-way clsa object</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>One-way clsa object</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5308.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>ssuing8825 posted on Wednesday, August 27, 2008</h2><P>I have the need to ping a server to maintain state. I don't need the object to come back to me. Is there a way to write a one-way fire and forget command object?</P>
+<P>Thanks</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Wednesday, August 27, 2008</h2>I don't think so... but if you just have a command object with no member fields, I can't image the return trip will take very long.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Wednesday, August 27, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I do not think so either.&nbsp; WCF does have a support for this
+sort of behavior, but it is not implemented in CSLA because it always needs a
+return value from every call.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899<o:p></o:p></span></p>
+
+<p class=MsoNormal><b><i><span>Magenic</span></i></b><span> </span><span>&reg;</span><b><i><span><o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> ajj3085
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Wednesday, August 27, 2008 9:16 AM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] One-way clsa object<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>I don't think so... but if you just have a command object
+with no member fields, I can't image the return trip will take very long.<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rsbaker0 replied on Wednesday, August 27, 2008</h2><P>Since CLSA must return the object, why not make just very simple command that returns the server "status" (e.g. a single numeric field). It's not going to be that many bytes anyway. If your concern is having the client wait for the reply, then we can look at executing the command on another thread that exits as soon as the command returns. </P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ssuing8825 replied on Wednesday, August 27, 2008</h2>Thanks everyone.</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

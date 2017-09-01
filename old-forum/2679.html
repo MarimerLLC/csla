@@ -1,0 +1,20 @@
+<html><header><title>Rocky question - Fixed - Re: Why ApplySorting causes BindingSource_ListChanged's ListChangedEventArgs to return null </title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Rocky question - Fixed - Re: Why ApplySorting causes BindingSource_ListChanged's ListChangedEventArgs to return null </h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/2679.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>GeorgeG posted on Wednesday, April 11, 2007</h2><P>Rocky, <BR>this is reference to thread </P>
+<P><A HREF="/forums/thread/13635.aspx">http://forums.lhotka.net/forums/thread/13635.aspx</A></P>
+<P>&nbsp;I have not seen any reply from you.<BR>In summary, a framework method does not pass the event args as parameter.<BR>Do you think we should update the framework?</P>
+<P>In the SortedBindingList class<BR>&nbsp;method SourceChanged()<BR>&nbsp;added e.PropertyDescriptor to constructor under ListChangedType.ItemChanged<BR></P><FONT size=2><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>case</FONT><FONT size=2> </FONT><FONT color=#2b91af size=2>ListChangedType</FONT><FONT size=2>.ItemChanged:</P>
+<P></FONT><FONT color=#008000 size=2>// an item changed - just relay the event with</P></FONT><FONT size=2>
+<P></FONT><FONT color=#008000 size=2>// a translated index value</P></FONT><FONT size=2>
+<P>OnListChanged(</P>
+<P></FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> </FONT><FONT color=#2b91af size=2>ListChangedEventArgs</FONT><FONT size=2>(</P>
+<P></FONT><FONT color=#2b91af size=2>ListChangedType</FONT><FONT size=2>.ItemChanged, SortedIndex( e.NewIndex ), e.PropertyDescriptor ) );</FONT><FONT color=#008000 size=2>//added e.PropertyDescriptor</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>break</FONT><FONT size=2>;</FONT></P>
+<P><FONT size=2>&nbsp;</P></FONT></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>skagen00 replied on Wednesday, April 11, 2007</h2><P>This may be related to, but is probably not addressed by, this thread and Rocky's last post in this thread (just this morning).</P>
+<P><A HREF="/forums/thread/4078.aspx">http://forums.lhotka.net/forums/thread/4078.aspx</A></P>
+<P>Namely:</P>
+<P>"I've added the event handling code back into the current code, so the PropertyDescriptor should be included when the event is raised after deserialization. This only affects BLB and is current in svn. "</P>
+<P>I am not entirely sure what the problem you're outlining in your thread is, but it sounded familiar so I wanted to let you know of the post in the other thread that seemed like a similar issue. </P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, April 11, 2007</h2><P>I've been <A href="http://www.lhotka.net/weblog/HealthWoes.aspx">recovering from unexpected surgery</A>, which is why I haven't been all that active the past couple weeks.</P>
+<P>I've added this to the <A href="http://www.lhotka.net/Article.aspx?area=4&amp;id=42066ed8-ea65-44a3-b7fd-035c9d8bfa36">to-do list</A>, though I haven't actually researched to find the nature of the issue as yet.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>GeorgeG replied on Wednesday, April 11, 2007</h2>Thanks and hope you get well soon.</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,124 @@
+<html><header><title>Cross Property Priority</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Cross Property Priority</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4131.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>pfQuinton posted on Tuesday, January 08, 2008</h2>Is there currently any means of ordering all broken rules (spanning different properities) by priority?&nbsp; If there isn't, is it possible that BrokenRule could be given a the IRuleMethod's priority in later versions of CSLA so that the BrokenRuleCollection could be manually sorted afterwards?<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, January 08, 2008</h2><P>So when ValidationRules.CheckRules() is called you want some properties to be checked before others?</P>
+<P>Or when ValidationRules.CheckRules() is called you want all the rules for all properties to be assembled into a single list, sorted by priority and then checked?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>pfQuinton replied on Tuesday, January 08, 2008</h2>"Or when ValidationRules.CheckRules() is called you want all the rules
+for all properties to be assembled into a single list, sorted by
+priority and then checked?" -- Yes.<br><br>The order of their evaluation in my case is not important.&nbsp; What is important is that the final BrokenRulesCollection be sorted by severity, then by priority.&nbsp; We select the most "important" BrokenRule to display a message to user about what is wrong when all the rules are evaluated.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, January 08, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>OK, so your request is to include the rule priority value in the
+broken rule detail so you can do that sort?<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I&#8217;ll add that to the wish list.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> pfQuinton
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Tuesday, January 08, 2008 9:59 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] Cross Property Priority<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>&quot;Or when ValidationRules.CheckRules() is called you
+want all the rules for all properties to be assembled into a single list,
+sorted by priority and then checked?&quot; -- Yes.<br>
+<br>
+The order of their evaluation in my case is not important.&nbsp; What is
+important is that the final BrokenRulesCollection be sorted by severity, then
+by priority.&nbsp; We select the most &quot;important&quot; BrokenRule to
+display a message to user about what is wrong when all the rules are evaluated.<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rsbaker0 replied on Wednesday, July 30, 2008</h2><P>Sorry to resurrect an old thread, but I ran into an issue related to this today.</P>
+<P>I previously had the impression that when a set of rules would be evaluated as a result of calling CheckRules() or a property change, that *all* the potential rules to be evaluated would be executed in the order of priority, including dependent properties. </P>
+<P>Evidently this isn't the case (at least not in the property changed case) -- the main property rules are checked first, then the dependencies, even if the dependent property rule has a higher priority. </P>
+<P>Was this the intent? If so, it means you can't do cross-property short-circuiting, which I was trying to use to handle a complicated validation sequence that involved multiple properties. </P>
+<P>Would strict evaluation of all rules in priority order be a bad thing to implement?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, July 30, 2008</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>The behavior you are observing is the way it is implemented.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>&gt;</span> Would strict evaluation of all rules in priority
+order be a bad thing to implement?<span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I don&#8217;t know. It would certainly be a fairly substantial
+change in behavior, and would require rewriting a large chunk of the code that
+checks rules (there&#8217;s all sorts of caching of rules, and the rules are
+stored/cached per-property) &#8211; I think it would take major effort.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>My biggest concern though, is the substantial change in behavior
+&#8211; because this couldn&#8217;t be an option &#8211; the rewrite is too
+substantial so it is one way or the other.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rsbaker0 replied on Wednesday, July 30, 2008</h2><P>Ok, thanks. When I first saw the rules being invoked in an unexpected order, I waded into the ValidationRules processing and it looked like it would just be a matter of collecting the rules for the various properties and sorting them before invoking them, but I can see how this would complex for cascading dependencies.</P>
+<P>I've worked around it now that I understand it, but I did enjoy the temporary illusion that you could guarantee the processing order using the priorty (indpendent of property name)... :)</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Thursday, July 31, 2008</h2><P>I think the behavior can not be changed now.</P>
+<P>In regards to the complex property rule and multiple properties - I usually approach this from a different perspective.</P>
+<P>1. I do not attach the rule to all the various properties - because then it gets run multiple times during unbinding. And it is only "real" once unbinding is complete so all the earlier runs of the rule were "a waste of time".</P>
+<P>2. I attach the rule to a fake property name (one that is not in the class.) This means it is never run during unbinding. So when is it run? </P>
+<P>3. I override IsValid and call ValidationRules.CheckRules("FakePropertyName") and then call MyBase.IsValid. So it is only run when you call IsValid from your UI or the Save command. You can determine where in your UI you want to call IsValid. Or you can add a new method to "check special rules" and have that method call this (and others like it.) Then you can call that in lots of places in your UI.</P>
+<P>4. This complex rule has access to all the current values and can be properly evaluated once.</P>
+<P>Joe</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rsbaker0 replied on Thursday, July 31, 2008</h2><P>^^^^ </P>
+<P>That's an interesting idea, but I guess you're trading off the ability to use the error provider during the actual manipulation of the data by the user (although that may not be that big a limitation - certainly not my use case that prompted my entry into this thread as I'm considering not using an error provider at all for this case).</P>
+<P>Question: Why do all the rules run during unbinding? </P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Thursday, July 31, 2008</h2><P>Question: Why do all the rules run during unbinding? </P>
+<P>Answer: I have a large Web app. (I do not have an Winforms or WPF apps with UIs.)</P>
+<P>Joe</P>
+<P>&nbsp;</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

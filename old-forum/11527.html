@@ -1,0 +1,67 @@
+<html><header><title>Lambda business rule  can cause a memory leak</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Lambda business rule  can cause a memory leak</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11527.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>rfcdejong posted on Monday, August 13, 2012</h2><p>With the help of ANTS i&#39;m happy after finding this.&nbsp;</p>
+<p>It seems that the Lambda business rule has a risk if not used correctly. If you assign a local method of the business object as the rule parameter Action&lt;RuleContext&gt; then the BO won&#39;t be garbage collected as the _target of the Action is referencing the BO. If you do it in-code then it won&#39;t be a problem.</p>
+<p>No memoryleak:<br /><br />&nbsp;<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span>protected</span><span>&nbsp;</span><span>override</span><span>&nbsp;</span><span>void</span><span>&nbsp;AddBusinessRules()<br /></span>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;{<br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;base.AddBusinessRules();<br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;BusinessRules.AddRule(new&nbsp;Lambda((context)&nbsp;=&gt;&nbsp;{&nbsp;context.AddInformationResult(&quot;Test&quot;);&nbsp;}));<br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;}</p>
+<p>Memoryleak:&nbsp;</p>
+<p>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;   <span>protected</span>&nbsp;<span>override</span>&nbsp;<span>void</span>&nbsp;AddBusinessRules()
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;{<br /><span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span>base</span><span>.AddBusinessRules();<br /></span>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;BusinessRules.AddRule(new&nbsp;Lambda((context)&nbsp;=&gt;&nbsp;{&nbsp;Test(context);&nbsp;}));<br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;}
+</p>
+<p>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>private</span>&nbsp;<span>void</span>&nbsp;Test(Csla.Rules.<span>RuleContext</span>&nbsp;context)<br />&nbsp; &nbsp; &nbsp; &nbsp; {<br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; context.AddInformationResult(<span>&quot;Test&quot;</span>);<br />&nbsp; &nbsp; &nbsp; &nbsp; }
+</p>
+<p>
+This will cause the _target inside the action to reference the BO.</p>
+<p><img style="max-width:550px;" border="0" src="https://lh6.googleusercontent.com/-fmseOgsEuic/UCj9dy5a02I/AAAAAAAABEY/SlGbgnhfjWs/s400/LambdaDanger.jpg" alt="" /></p>
+<p>&nbsp;</p>
+<p>Maybe this can be solved, to allow people to use a method as an action.</p>
+<p><a href="http://blog.catenalogic.com/post/2011/12/29/Using-true-weak-actions-without-causing-memory-leaks.aspx">http://blog.catenalogic.com/post/2011/12/29/Using-true-weak-actions-without-causing-memory-leaks.aspx</a>
+</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Monday, August 13, 2012</h2><p>Wouldn&acute;t it be better and easier to make the Test method static?&nbsp;</p>
+<p>Rules in CSLA is declared at the Type&nbsp;level and AddBusinessRules is only called once per Type of BusinessObject. <br />This means that the static method or instance method MUST be available for the duration of the application. </p>
+<p>So I wouldn&#39;t call this a memory leak - the method MUST be available for ALL intances of this object type. <br /><strong>I&#39;d rather call this a logical error by the developer. </strong></p>
+<p>If you create a weak link and the object instance gets disposed - this rule will ALWAYS fail as it cannot find the method. </p>
+<p>We could maybe&nbsp;add a check to make sue the Action is to a static typed - but there is absolutely nothing wrong about having that rule method point to an instance method of a rule class. </p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rfcdejong replied on Tuesday, August 14, 2012</h2><p>Yes, in this case it would be better to make the test method static and it is a logical error by the developer, but most developers do this kind of things by mistake. They know by now that they have to unbind events. In my case the lambda was &nbsp;used to force a PropertyHasChanged and i was the one that had to dive into the strange behaviour...</p>
+<p>When used wrong it will not only cause a memoryleak, the action holds a reference to the first instance of a business object, which means that a second instance of the same type of the business object will be missing the business rule. I think you know better and that AddBusinessRules is not called once per Type, but instead the BusinessRule anager is static. BusinessRules will be kept in memory for each business object type.</p>
+<p>A check to make sure the Action is a to static method just blocks the road, perhaps there can be a check if it&#39;s a static method or instance method?</p>
+<p>In case of a instance method, then the code below works. It&#39;s not holding a weak reference, but it creates a delegate and does a late-bound invoke.<br /><br /><span style="text-decoration:underline;">In the constructor it creates a delegate.</span><br />var&nbsp;delegateType&nbsp;=&nbsp;typeof(OpenInstanceGenericAction&lt;&gt;).MakeGenericType(typeof(TParameter),&nbsp;targetType);<br />_action&nbsp;=&nbsp;Delegate.CreateDelegate(delegateType,&nbsp;null,&nbsp;action.Method);<br /><br /><span style="text-decoration:underline;">&nbsp;In the execute it does a late-bound invoke</span><br />_action.DynamiclyInvoke(target, parameter)&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Tuesday, August 14, 2012</h2><p>Well, in order to raise OnPropertyChanged you only need to add the property to AffectedProperties for that Property. </p>
+<p>Actually - you second instance will call the lambda target&nbsp;method on the first object and in your case raise OnPropertyChanged on that property in the first object.!!</p>
+<p>Yes. BusinessRuleManager&nbsp;maintains a static store of&nbsp;registered rules for ALL&nbsp;types. <br /><strong>IE: Per AppDomain, the AddBusinessRules method is&nbsp;called only ONCE for each ObjectType and then the rules is added to the static store. </strong></p>
+<p>And what the compiler does is actually:</p>
+<p>&nbsp;<span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; protected override void AddBusinessRules()<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; base.AddBusinessRules();<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; BusinessRules.AddRule(new Lambda(Test));<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</span><span style="font-family:Consolas;font-size:x-small;">
+<p>&nbsp;</p>
+</span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; private void Test(RuleContext context)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; OnPropertyChanged(NameProperty);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br /><br />This code will only - ever - call&nbsp;OnPropertyChanged in the first BusinessObject. </span></span></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Tuesday, August 14, 2012</h2><p>These 3 variants will make a dynamic call - when the developer is aware of it: </p>
+<pre style="font-family:Consolas;background:#fafafa;color:black;font-size:13px;"><span style="color:blue;">protected</span>&nbsp;<span style="color:blue;">override</span>&nbsp;<span style="color:blue;">void</span>&nbsp;AddBusinessRules()
+{
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">base</span>.AddBusinessRules();
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:green;">//&nbsp;using&nbsp;dynamic&nbsp;to&nbsp;invoke&nbsp;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;BusinessRules.AddRule(<span style="color:blue;">new</span>&nbsp;<span style="color:#2b91af;">Lambda</span>(IdProperty,&nbsp;(context)&nbsp;=&gt;&nbsp;((<span style="color:blue;">dynamic</span>)&nbsp;context.Target).Test(context)));
+}
+ 
+ 
+<span style="color:blue;">protected</span>&nbsp;<span style="color:blue;">override</span>&nbsp;<span style="color:blue;">void</span>&nbsp;AddBusinessRules()
+{
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">base</span>.AddBusinessRules();
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:green;">//&nbsp;using&nbsp;MethodCaller&nbsp;in&nbsp;Csla.Reflection</span>
+&nbsp;&nbsp;&nbsp;&nbsp;BusinessRules.AddRule(<span style="color:blue;">new</span>&nbsp;<span style="color:#2b91af;">Lambda</span>(IdProperty,&nbsp;<br />            (context)&nbsp;=&gt;&nbsp;<span style="color:#2b91af;">MethodCaller</span>.CallMethod(context.Target,&nbsp;<span style="color:#a31515;">&quot;Test&quot;</span>,&nbsp;context)));
+}
+ 
+ 
+<span style="color:blue;">protected</span>&nbsp;<span style="color:blue;">override</span>&nbsp;<span style="color:blue;">void</span>&nbsp;AddBusinessRules()
+{
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">base</span>.AddBusinessRules();
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:green;">//&nbsp;using&nbsp;FasterFlect&nbsp;-&nbsp;http://fasterflect.codeplex.com/</span>
+&nbsp;&nbsp;&nbsp;&nbsp;BusinessRules.AddRule(<span style="color:blue;">new</span>&nbsp;<span style="color:#2b91af;">Lambda</span>(IdProperty,&nbsp;(context)&nbsp;=&gt;&nbsp;context.Target.CallMethod(<span style="color:#a31515;">&quot;Test&quot;</span>,&nbsp;context)));
+}</pre>
+<pre style="font-family:Consolas;background:#fafafa;color:black;font-size:13px;">&nbsp;</pre>
+<pre>And adding code to check for static / non static is not so simple. </pre>
+<pre>Inline Lambdas (that work) is also non-static methods and one would have to check for:</pre>
+<ul>
+<li>lamda not define inside AddBusinessRules (but AddBusinessRules may also call another method to add business rules legally) </li>
+<li>and lamda is not a static method </li>
+</ul></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rfcdejong replied on Tuesday, August 14, 2012</h2><p>It is good to have a topic like this to make developers aware of it. Most developers just test the functionality just after starting the debugger so it won&#39;t raise until it has been deployed for test.</p>
+<p>Lambda rule should be used with care, using one of the 3 variants.</p>
+<p>Developers have to be aware, yes.</p>
+<p>About the AffectedProperties, the business rule engine does not go n-level, while we have so many scenario&#39;s in our &#39;new&#39; financial application that it must continue running business rules until no more values change.</p>
+<p>On a side note:<br />In our abstraction layer code we implimented some sort of ChildRules which replace the OnChildChanged functionality, in there it&#39;s nearly the same as the BusinessRules with a ChildRulesManager with static ChildRules in the initialization AddChildRules, OnGetChildren _childChangedRules, OnDeserialize etc, except they get executed when a child property change or when a collection is changed. Almost all of the ChildChangedRules do something with the instance of the current BO as parent. In there the ChildChangedRules are constructed with a Action being wrapped by the WeakAction. This works.</p>
+<p>&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>
